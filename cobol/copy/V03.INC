@@ -29,14 +29,10 @@
                 04  V03-VALUE              PIC X(3).
               03  V03-SEIDONAME.
                 04  V03-VALUE              PIC X(100).
-              03  V03-CMB-HKNKBN.
-                04  V03-HKNKBN             PIC X(20).
-                04  V03-HKNKBN-COUNT       PIC S9(9)   BINARY.
-                04  V03-HKNKBNLST          PIC X(20)   OCCURS  5 TIMES.
-              03  V03-CMB-RJNHKNKBN.
-                04  V03-RJNHKNKBN          PIC X(20).
-                04  V03-RJNHKNKBN-COUNT    PIC S9(9)   BINARY.
-                04  V03-RJNHKNKBNLST       PIC X(20)   OCCURS  5 TIMES.
+              03  V03-CMB-PTKBN.
+                04  V03-PTKBN              PIC X(20).
+                04  V03-PTKBN-COUNT        PIC S9(9)   BINARY.
+                04  V03-PTKBNLST           PIC X(20)   OCCURS  5 TIMES.
               03  V03-CMB-FTNKBN.
                 04  V03-FTNKBN             PIC X(40).
                 04  V03-FTNKBN-COUNT       PIC S9(9)   BINARY.
@@ -63,8 +59,7 @@
                     06  V03-TCITYNUM       PIC X(3).
                     06  V03-TKOHNUM        PIC X(3).
                     06  V03-TSEIDONAME     PIC X(100).
-                    06  V03-THKNKBN        PIC X(4).
-                    06  V03-TRJNHKNKBN     PIC X(4).
+                    06  V03-TPTKBN         PIC X(6).
                     06  V03-TFTNKBN        PIC X(4).
                     06  V03-TYUKOSTYMD     PIC X(9).
                     06  V03-TYUKOEDYMD     PIC X(9).

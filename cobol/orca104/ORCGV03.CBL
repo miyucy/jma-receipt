@@ -2102,7 +2102,7 @@
                MOVE    "主保険区分入力エラー"
                                                TO  SPA-ERRMSG
            WHEN    "0007"
-               MOVE    "老人保健区分入力エラー"
+               MOVE    "患者区分入力エラー"
                                                TO  SPA-ERRMSG
            WHEN    "0008"
                MOVE    "患者負担区分入力エラー"
@@ -2141,7 +2141,7 @@
                MOVE    "主保険区分を入力してください"
                                                TO  SPA-ERRMSG
            WHEN    "1007"
-               MOVE    "老人保健区分を入力してください"
+               MOVE    "患者区分を入力してください"
                                                TO  SPA-ERRMSG
            WHEN    "1008"
                MOVE    "患者負担区分を入力してください"
