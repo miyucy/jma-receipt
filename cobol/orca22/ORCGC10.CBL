@@ -26,6 +26,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-藤原    04/05/14  簡単修正時の開始日と
+      *                                     保険組合せのチェックの修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -786,10 +788,6 @@
            OR    ( WRK-HENSYU-DATA-O (7)   NOT =   SPACE AND "-" )
                PERFORM VARYING IDXX    FROM    1   BY  1
                        UNTIL   IDXX    >       5
-      *??
-           DISPLAY "ST=" IDXX "#" WRK-STNUM-O (IDXX) "#"
-                                  WRK-EDNUM-O (IDXX) "#"
-      *??
                    IF      WRK-STNUM-O (IDXX)  >   ZERO
                        PERFORM VARYING IDX     FROM
                                            WRK-STNUM-O (IDXX)  BY  1
@@ -824,14 +822,8 @@
       *    保険適用と開始日のチェック
            IF     WRK-HENSYU-DATA-O (7)  
                                NOT =   "-" AND SPACE  
-      *??
-           DISPLAY "SPA=" IDX "#" SPA-NAI-C02-TSRYYMD (IDX)
-           DISPLAY "WRK="  WRK-TEKSTYMD "#" WRK-TEKEDYMD
-      *??
                IF    ( SPA-NAI-C02-TSRYYMD (IDX)
                                    <=   WRK-TEKEDYMD )
-               AND   ( SPA-NAI-C02-TSRYYMD (IDX) 
-                                   >=   WRK-TEKSTYMD )
                    CONTINUE
                ELSE    
                    MOVE    "0085"     TO  SPA-ERRCD

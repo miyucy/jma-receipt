@@ -140,6 +140,8 @@
       *                                     の病名編集フラグの設定を修正
       *  01.08.10    NACL-藤原    04/04/20  ２１の修飾語コード＋病名コード
       *                                     入力時の病名編集フラグの設定
+      *  01.08.11    NACL-藤原    04/05/14  簡単修正時の開始日と
+      *                                     保険組合せのチェックの修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2634,8 +2636,6 @@
                                NOT =   "-" AND SPACE  
                IF    ( SPA-NAI-C02-TSRYYMD (IDX)
                                    <=   WRK-TEKEDYMD )
-               AND   ( SPA-NAI-C02-TSRYYMD (IDX) 
-                                   >=   WRK-TEKSTYMD )
                    CONTINUE
                ELSE    
                    MOVE    "0085"     TO  SPA-ERRCD
