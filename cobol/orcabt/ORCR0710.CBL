@@ -95,6 +95,7 @@
       *  01.02.07    NACL-ÌçÏÆ    05/01/13  ¸øÈñÀÁµá¥Æ¡¼¥Ö¥ëÊÝ¸±ÁÈ¹ç¤»
       *                                     ÈÖ¹æ¾ðÊóÊÔ½¸½¤Àµ
       *  01.02.08    NACL-Æ£¸¶    05/01/21  ¼õ¿ÇÆü»ØÄêÂÐ±þ
+      *  01.02.09    NACL-ÌçÏÆ    05/02/14  ¹âÎð¼Ô°ìÉôÉéÃ´³Ûµ­ºÜ½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -4223,7 +4224,8 @@
            IF      RECE62-TOTALTEN (IDX1)     >   ZERO
                MOVE    RECE62-TOTALTEN (IDX1) TO  WRK-KGK10
                MOVE    WRK-KGK10              TO  HC06-TOTALTEN(1)
-               IF      RECE62-FTNMONEY (IDX1) >   ZERO
+               IF    ( RECE62-FTNMONEY (IDX1) >    ZERO   )
+               OR    ( RECE62-KOUREI      NOT =    SPACE  )
                    MOVE    RECE62-FTNMONEY (IDX1) TO  WRK-KGK7
                    MOVE    WRK-KGK7               TO  HC06-FTNMONEY(1)
                END-IF

@@ -356,6 +356,8 @@
       *                                     SYUDAY-DEL3,4追加
       *  01.01.164   NACL-門脇    05/02/09  SYUNOU-KEY40追加
       *                                     SYUDAY-DEL5追加
+      *  01.01.165   NACL-門脇    05/02/10  HKNCOMBI-KEY5追加
+      *                                     SYUNOU-KEY41追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1389,6 +1391,9 @@
                WHEN    ANY             ALSO   "HKNCOMBI-KEY4"
                    MOVE    PATH-TBL-HKNCOMBI-KEY4
                                        TO  WRK-PATH
+               WHEN    ANY             ALSO   "HKNCOMBI-KEY5"
+                   MOVE    PATH-TBL-HKNCOMBI-KEY5
+                                       TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "HKNCOMBI-ALL"
                    MOVE    PATH-TBL-HKNCOMBI-ALL
@@ -2086,6 +2091,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SYUNOU-KEY40"
                    MOVE    PATH-TBL-SYUNOU-KEY40
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SYUNOU-KEY41"
+                   MOVE    PATH-TBL-SYUNOU-KEY41
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "SYUNOU-ALL"

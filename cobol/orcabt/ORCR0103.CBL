@@ -79,6 +79,7 @@
       *                                     ÈÖ¹æ¾ðÊóÊÔ½¸½¤Àµ
       *  01.03.04    NACL-Æ£¸¶    05/01/14  ¼õ¿ÇÆü»ØÄêÂÐ±þ
       *  01.03.05    NACL-Æ£¸¶    05/01/30  ÄûÀµÆü»ØÄêÂÐ±þ
+      *  01.03.06    NACL-ÌçÏÆ    05/02/14  ¹âÎð¼Ô°ìÉôÉéÃ´³Ûµ­ºÜ½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2935,7 +2936,8 @@
                    MOVE    RECE02-YKZFTN   (IDX1) TO  WRK-KGK6
                    MOVE    WRK-KGK6               TO  HC06-YKZFTN  (1)
                END-IF    
-               IF      RECE02-FTNMONEY (IDX1) >   ZERO
+               IF    ( RECE02-FTNMONEY (IDX1) >    ZERO   )
+               OR    ( RECE02-ZAITAKU     NOT =    SPACE  )
                    MOVE    RECE02-FTNMONEY (IDX1) TO  WRK-KGK7
                    MOVE    WRK-KGK7               TO  HC06-FTNMONEY(1)
                END-IF

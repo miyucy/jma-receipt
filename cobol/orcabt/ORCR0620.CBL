@@ -74,6 +74,7 @@
       *  01.01.03    NACL-藤原    04/11/01  記載なしの公費の処理
       *  01.01.04    NACL-藤原    05/01/08  同月に継続なしで２回入院した
       *                                     場合の入院年月日の記載方法
+      *  01.01.05    NACL-門脇    05/02/14  高齢者一部負担額記載修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1114,20 +1115,22 @@
            END-EVALUATE
       *     
       *    高齢者フラグ
-           IF    ( RECE62-AGE          >=  70      )   OR
-                 ( RECE62-AGE          >=  65  AND                    
-                   RECE61-KOHID    NOT  =   ZERO   )   OR             
-                 ( RECE62-AGE          >=  65  AND                    
-                   FLG-ROUJINHOKEN      =   1      )
-               MOVE    "1"                 TO  RECE62-KOUREI
+           IF      RECE62-SRYYM      >=  "200210"
+              IF    ( RECE62-AGE          >=  70      )   OR
+                    ( RECE62-AGE          >=  65  AND                    
+                      RECE61-KOHID    NOT  =   ZERO   )   OR             
+                    ( RECE62-AGE          >=  65  AND                    
+                      FLG-ROUJINHOKEN      =   1      )
+                  MOVE    "1"                 TO  RECE62-KOUREI
       *
-               IF  RECE62-RECESYUBETU   =   "8888"
-                   MOVE  SPACE       TO  RECE62-KOUREI
-               END-IF
-      ***      IF  RECE62-HKNNUM        =   SPACE 
-      ***          MOVE  SPACE       TO  RECE62-KOUREI
-      ***      END-IF
+                  IF  RECE62-RECESYUBETU   =   "8888"
+                      MOVE  SPACE       TO  RECE62-KOUREI
+                  END-IF
+      ***         IF  RECE62-HKNNUM        =   SPACE 
+      ***             MOVE  SPACE       TO  RECE62-KOUREI
+      ***         END-IF
       *
+              END-IF
            END-IF
       *
       *    病院・診療所区分
