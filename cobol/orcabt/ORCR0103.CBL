@@ -72,6 +72,8 @@
       *  01.02.11    NACL-門脇    04/05/13  初診時に時間外・深夜・休日が
       *                                     ２つ以上あった場合の記載対応
       *  01.02.12    NACL-小豆沢  04/05/19  ＤＢ書き込み時のコミット追加
+      *  中止処理追加
+      *  01.01.01    NACL-藤原    04/09/28  中止処理の追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -117,7 +119,7 @@
                                    RECORD  KEY     IS  RECE11-KEY
                                    FILE    STATUS  IS  STS-RECE11.
       *
-006900*    エラーファイル
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
@@ -155,7 +157,7 @@
        01  RECE11-REC. 
            COPY    "CPRCF011.INC".
       *
-006900*    エラーファイル
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
@@ -326,6 +328,7 @@
                05  WRK-PARA-SRYYM   PIC  X(06).
                05  WRK-PARA-TERMID  PIC  X(16).
                05  WRK-PARA-SYSYMD  PIC  X(08).
+               05  WRK-PARA-SYOKBN  PIC  X(01).
                05  WRK-PARA-RECEKBN PIC  X(01).
                05  WRK-PARA-RECEYM  PIC  X(06). 
                05  WRK-PARA-JOBID   PIC  9(07).
@@ -463,8 +466,6 @@
            03  WRK-R061-ZAINUM-O               PIC 9(08).
            03  WRK-R061-SRYKBN-O               PIC X(02).
            03  WRK-R061-KOHBUNRI-O             PIC 9(01).
-      *
-      *****03  WRK-IN                          PIC X(01).
       *
            03  WRK-SRYYMD                      PIC X(08).
            03  WRK-KGKZ                        PIC ZZZ,ZZZ,ZZZ.
@@ -632,6 +633,10 @@
            COPY    "CPPTINF.INC"      REPLACING  //PTINF//
                                       BY         //WRK-PTINF//.
       *
+       01  WRK-RECE07-REC. 
+           COPY    "CPRCF007.INC"  REPLACING  //RECE07//
+                                   BY         //WRK-RECE07//.
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -648,9 +653,15 @@
            COPY    "CPSK1001.INC".
            COPY    "CPSK1002.INC".
       *
+      *    レセプト作成指示（個別指示）コード
+           COPY    "CPSK2002.INC".
+      *
            COPY    "CPRCF008.INC".
       *
            COPY    "CPRCF010.INC".
+      *
+      *    レセプト電算
+           COPY    "CPRECEDEN.INC".
       *
       *    保険マスタ
        01  HKNNUM-REC.
@@ -733,6 +744,9 @@
       *
            MOVE    COMMAND-PARAM       TO  WRK-PARA
       *
+      *    ファイルＯＰＥＮ処理
+           PERFORM 110-FILE-OPEN-SEC
+      *
            PERFORM 100-DBOPEN-SEC
       *
       *    ステップ管理開始処理
@@ -748,13 +762,32 @@
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC
       *
-      *    ファイルＯＰＥＮ処理
-           PERFORM 110-FILE-OPEN-SEC
+      *    処理中止設定処理
+           IF      SPA-STS             =   ZERO
+               PERFORM 500-CANCEL-HENSYU-SEC
+           END-IF
+      *         
+      *    ジョブ管理更新（中止フラグ非活性）処理
+           IF      SPA-STS             =   ZERO
+               MOVE    "STP"           TO  SJOBKANRI-MODE
+               INITIALIZE                  JOBKANRI-REC
+               MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+               MOVE    WRK-PARA-SHELLID
+                                       TO  JOB-SHELLID
+               MOVE    3               TO  JOB-STOPFLG
+               CALL    "ORCSJOB"       USING
+                                       ORCSJOBKANRIAREA  
+                                       JOBKANRI-REC
+           END-IF
       *
       *    システム管理マスタ（医療機関情報）
-           PERFORM 120-HOSPINF-GET-SEC
+           IF      SPA-STS             =   ZERO
+               PERFORM 120-HOSPINF-GET-SEC
+           END-IF
       *
-           MOVE    ZERO                TO  WRK-RECENUM
+           IF      SPA-STS             =   ZERO
+               PERFORM 5001-DB-DELETE-SEC
+           END-IF
       *
            IF      SPA-STS             =   ZERO
               PERFORM 990-RECE02-READ-SEC
@@ -3850,7 +3883,401 @@
            EXIT.
       *
       *****************************************************************
-      *    終了　　処理
+      *    処理中止処理
+      *****************************************************************
+       500-CANCEL-HENSYU-SEC                SECTION.
+      *
+           MOVE    "CHK"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
+           IF    ( SJOBKANRI-RETURN
+                                   =   ZERO )
+           AND   ( JOB-STOPFLG     =   1    )
+               MOVE    "処理が中止されました"
+                                           TO  WRK-RECEERR
+      *
+               OPEN    INPUT   RECEERR-FILE
+               IF      STS-RECEERR         =   ZERO
+                   CLOSE   RECEERR-FILE
+               ELSE
+                   OPEN    OUTPUT              RECEERR-FILE
+      *    
+                   MOVE    WRK-RECEERR         TO  RECEERR-REC
+                   WRITE   RECEERR-REC
+                   CLOSE   RECEERR-FILE
+      *         
+      *            ジョブ管理終了処理
+                   MOVE    "CAN"           TO  SJOBKANRI-MODE
+                   INITIALIZE                  JOBKANRI-REC
+                   MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+                   MOVE    WRK-PARA-SHELLID
+                                           TO  JOB-SHELLID
+                   MOVE    WRK-RECEERR     TO  JOB-YOBI
+                   MOVE    "8888"          TO  JOB-ERRCD
+                   MOVE    2               TO  JOB-STOPFLG
+                   CALL    "ORCSJOB"       USING
+                                           ORCSJOBKANRIAREA  
+                                           JOBKANRI-REC
+               END-IF
+      *                             
+               MOVE    1                   TO  FLG-END
+               MOVE    2                   TO  SPA-STS
+           END-IF
+           .
+       500-CANCEL-HENSYU-EXT.
+           EXIT.
+      * 
+      *****************************************************************
+      *    中止処理時データ削除処理
+      *****************************************************************
+       5001-DB-DELETE-SEC               SECTION.
+      *
+           IF      WRK-PARA-SYOKBN     =   "1"
+      *        診療年月の請求管理削除処理（社保分）
+               IF      WRK-PARA-RECEKBN    =   "0" OR  "1"          
+                   INITIALIZE                  RECE10-REC
+                   MOVE    SYS-1001-HOSPID     TO  RECE10-HOSPID
+                   MOVE    WRK-PARA-SRYYM      TO  RECE10-SRYYM
+                   MOVE    "2"                 TO  RECE10-NYUGAIKBN
+                   MOVE    1                   TO  RECE10-TEISYUTUSAKI
+                   MOVE    "2"                 TO  RECE10-NYUGAIKBN
+                   MOVE    RECE10-REC          TO  MCPDATA-REC
+                   MOVE    "SEIKYU-DEL6"       TO  ORC-DBPATH
+                   MOVE    "DBDELETE"          TO  MCP-FUNC
+                   CALL    "ORCMCPSUB"              USING
+                                                    MCPAREA
+                                                    ORCMCPAREA
+                                                    MCPDATA-REC      
+                   IF      MCP-RC           NOT =   ZERO
+                       DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
+                       MOVE
+                       "請求管理削除処理（社保分）でエラーとなりました"
+                                           TO    WRK-RECEERR
+                       PERFORM 500-ERR-HENSYU-SEC
+                       GO  TO  5001-DB-DELETE-EXT
+                   END-IF
+               END-IF      
+      *
+      *        診療年月の請求管理削除処理（国保分）
+               IF      WRK-PARA-RECEKBN    =   "0" OR  "2"          
+                   INITIALIZE                      RECE10-REC
+                   MOVE    SYS-1001-HOSPID     TO  RECE10-HOSPID
+                   MOVE    WRK-PARA-SRYYM      TO  RECE10-SRYYM
+                   MOVE    "2"                 TO  RECE10-NYUGAIKBN
+                   MOVE    2                   TO  RECE10-TEISYUTUSAKI
+                   MOVE    "2"                 TO  RECE10-NYUGAIKBN
+                   MOVE    RECE10-REC          TO  MCPDATA-REC
+                   MOVE    "SEIKYU-DEL6"       TO  ORC-DBPATH
+                   MOVE    "DBDELETE"          TO  MCP-FUNC
+                   CALL    "ORCMCPSUB"              USING
+                                                    MCPAREA
+                                                    ORCMCPAREA
+                                                    MCPDATA-REC      
+                   IF      MCP-RC           NOT =   ZERO
+                       DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
+                       MOVE
+                       "請求管理削除処理（国保分）でエラーとなりました"
+                                           TO    WRK-RECEERR
+                       PERFORM 500-ERR-HENSYU-SEC
+                       GO  TO  5001-DB-DELETE-EXT
+                   END-IF
+               END-IF      
+      *
+      *        診療年月の公費請求書削除処理（社保分）
+               IF      WRK-PARA-RECEKBN    =   "0" OR  "1"          
+                   INITIALIZE                      KOHSKY-REC
+                   MOVE    SYS-1001-HOSPID     TO  KOHSKY-HOSPID
+                   MOVE    WRK-PARA-SRYYM      TO  KOHSKY-SRYYM
+                   MOVE    1                   TO  KOHSKY-TEISYUTUSAKI
+                   MOVE    "2"                 TO  KOHSKY-NYUGAIKBN
+                   MOVE    KOHSKY-REC          TO  MCPDATA-REC
+                   MOVE    "KOHSKY-DEL1"       TO  ORC-DBPATH
+                   MOVE    "DBDELETE"          TO  MCP-FUNC
+                   CALL    "ORCMCPSUB"              USING
+                                                    MCPAREA
+                                                    ORCMCPAREA
+                                                    MCPDATA-REC      
+                   IF      MCP-RC           NOT =   ZERO
+                       DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
+                       MOVE
+                      "公費請求書削除処理（社保分）でエラーとなりました"
+                                               TO    WRK-RECEERR
+                       PERFORM 500-ERR-HENSYU-SEC
+                       GO  TO  5001-DB-DELETE-EXT
+                   END-IF
+               END-IF      
+      *
+      *        診療年月公費請求書削除処理（国保分）
+               IF      WRK-PARA-RECEKBN    =   "0" OR  "2"          
+                   INITIALIZE                      KOHSKY-REC
+                   MOVE    SYS-1001-HOSPID     TO  KOHSKY-HOSPID
+                   MOVE    WRK-PARA-SRYYM      TO  KOHSKY-SRYYM
+                   MOVE    2                   TO  KOHSKY-TEISYUTUSAKI
+                   MOVE    "2"                 TO  KOHSKY-NYUGAIKBN
+                   MOVE    KOHSKY-REC          TO  MCPDATA-REC
+                   MOVE    "KOHSKY-DEL1"        TO  ORC-DBPATH
+                   MOVE    "DBDELETE"          TO  MCP-FUNC
+                   CALL    "ORCMCPSUB"              USING
+                                                    MCPAREA
+                                                    ORCMCPAREA
+                                                    MCPDATA-REC      
+                   IF      MCP-RC           NOT =   ZERO
+                       DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
+                       MOVE
+                      "公費請求書削除処理（国保分）でエラーとなりました"
+                                               TO    WRK-RECEERR
+                       PERFORM 500-ERR-HENSYU-SEC
+                       GO  TO  5001-DB-DELETE-EXT
+                   END-IF
+               END-IF      
+      *
+      *        診療年月のレセ電削除処理（社保分）
+               IF      WRK-PARA-RECEKBN    =   "0" OR  "1"          
+                   INITIALIZE                  RECEDEN-REC
+                   MOVE    SYS-1001-HOSPID     TO  RECEDEN-HOSPID
+                   MOVE    WRK-PARA-SRYYM      TO  RECEDEN-SRYYM
+                   MOVE    1                   TO  RECEDEN-TEISYUTUSAKI
+                   MOVE    "2"                 TO  RECEDEN-NYUGAIKBN
+                   MOVE    RECEDEN-REC         TO  MCPDATA-REC
+                   MOVE    "RECEDEN-DEL1"      TO  ORC-DBPATH
+                   MOVE    "DBDELETE"          TO  MCP-FUNC
+                   CALL    "ORCMCPSUB"              USING
+                                                    MCPAREA
+                                                    ORCMCPAREA
+                                                    MCPDATA-REC      
+                   IF      MCP-RC           NOT =   ZERO
+                       DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
+                       MOVE
+                       "レセ電削除処理（社保分）でエラーとなりました"
+                                               TO    WRK-RECEERR
+                       PERFORM 500-ERR-HENSYU-SEC
+                       GO  TO  5001-DB-DELETE-EXT
+                   END-IF
+               END-IF      
+      *
+      *        診療年月のレセ電削除処理（国保分）
+               IF      WRK-PARA-RECEKBN    =   "0" OR  "2"          
+                   INITIALIZE                  RECEDEN-REC
+                   MOVE    SYS-1001-HOSPID     TO  RECEDEN-HOSPID
+                   MOVE    WRK-PARA-SRYYM      TO  RECEDEN-SRYYM
+                   MOVE    2                   TO  RECEDEN-TEISYUTUSAKI
+                   MOVE    "2"                 TO  RECEDEN-NYUGAIKBN
+                   MOVE    RECEDEN-REC         TO  MCPDATA-REC
+                   MOVE    "RECEDEN-DEL1"      TO  ORC-DBPATH
+                   MOVE    "DBDELETE"          TO  MCP-FUNC
+                   CALL    "ORCMCPSUB"              USING
+                                                    MCPAREA
+                                                    ORCMCPAREA
+                                                    MCPDATA-REC      
+                   IF      MCP-RC           NOT =   ZERO
+                       DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
+                       MOVE
+                       "レセ電削除処理（国保分）でエラーとなりました"
+                                               TO    WRK-RECEERR
+                       PERFORM 500-ERR-HENSYU-SEC
+                       GO  TO  5001-DB-DELETE-EXT
+                   END-IF
+               END-IF      
+      *
+      *        診療年月レセプト管理削除処理（一括分）
+               INITIALIZE                  RECE07-REC
+               MOVE    "HC06"              TO  RECE07-PRTID
+               MOVE    WRK-PARA-SRYYM      TO  RECE07-SRYYM
+               MOVE    "1"                 TO  RECE07-SYOKBN
+               MOVE    "2"                 TO  RECE07-NYUGAIKBN
+               MOVE    WRK-PARA-RECEKBN    TO  RECE07-RECEKBN
+               MOVE    RECE07-REC          TO  MCPDATA-REC
+               MOVE    "RECEKANRI-KEY7"    TO  WRK-PATH
+               PERFORM 900-RECE07-INV-SEC
+               IF      FLG-RECE07          =   ZERO
+                   MOVE    RECE07-REC          TO  WRK-RECE07-REC
+                   MOVE    RECE07-REC          TO  MCPDATA-REC 
+                   MOVE    "RECEKANRI-DEL1"    TO  ORC-DBPATH
+                   MOVE    "DBDELETE"          TO  MCP-FUNC
+                   CALL    "ORCMCPSUB"              USING
+                                                    MCPAREA
+                                                    ORCMCPAREA
+                                                    MCPDATA-REC    
+                   IF      MCP-RC           NOT =   ZERO
+                       DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
+                       MOVE
+                           "レセプト管理削除処理でエラーとなりました"
+                                                TO    WRK-RECEERR
+                       PERFORM 500-ERR-HENSYU-SEC
+                       GO  TO  5001-DB-DELETE-EXT
+                   END-IF
+      *
+      *            診療年月レセプト削除処理（一括分）
+                   INITIALIZE                  RECE08-REC
+                   MOVE    WRK-RECE07-PRTID    TO  RECE08-PRTID
+                   MOVE    WRK-RECE07-SRYYM    TO  RECE08-RECEYM
+                   MOVE    WRK-RECE07-CREYMD   TO  RECE08-CREYMD
+                   MOVE    WRK-RECE07-CREHMS   TO  RECE08-CREHMS
+                   MOVE    WRK-RECE07-NYUGAIKBN
+                                               TO  RECE08-NYUGAIKBN
+                   MOVE    RECE08-REC          TO  MCPDATA-REC
+                   MOVE    "RECEPRT-DEL1"      TO  ORC-DBPATH
+                   MOVE    "DBDELETE"          TO  MCP-FUNC
+                   CALL    "ORCMCPSUB"             USING
+                                                   MCPAREA
+                                                   ORCMCPAREA
+                                                   MCPDATA-REC
+                   IF      MCP-RC           NOT =   ZERO
+                       DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
+                       MOVE
+                           "レセプト削除処理でエラーとなりました"
+                                               TO    WRK-RECEERR
+                       PERFORM 500-ERR-HENSYU-SEC
+                       GO  TO  5001-DB-DELETE-EXT
+                   END-IF
+               END-IF
+           ELSE
+               MOVE    TBL-SYS1001 (1)     TO  SYS-1001-REC
+      *
+      *        レセプト管理削除処理（個別分）
+               INITIALIZE                  RECE07-REC
+               MOVE    "HC06"              TO  RECE07-PRTID  
+               MOVE    "2"                 TO  RECE07-NYUGAIKBN
+               MOVE    RECE07-REC          TO  MCPDATA-REC
+               MOVE    "RECEKANRI-DEL2"    TO  ORC-DBPATH 
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               CALL    "ORCMCPSUB"              USING
+                                                    MCPAREA
+                                                    ORCMCPAREA
+                                                    MCPDATA-REC      
+               IF      MCP-RC           NOT =   ZERO
+                   DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
+                   MOVE
+                   "レセプト管理削除処理（個別分）でエラーとなりました"
+                                           TO    WRK-RECEERR
+                   PERFORM 500-ERR-HENSYU-SEC
+                   GO  TO  5001-DB-DELETE-EXT
+               END-IF
+      *
+      *        レセプト削除処理（個別分）
+               INITIALIZE                  RECE08-REC
+               MOVE    "HC06"              TO  RECE08-PRTID
+               MOVE    "2"                 TO  RECE08-NYUGAIKBN
+               MOVE    RECE08-REC          TO  MCPDATA-REC 
+               MOVE    "RECEPRT-DEL2"      TO  ORC-DBPATH
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               CALL    "ORCMCPSUB"              USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC      
+               IF      MCP-RC           NOT =   ZERO
+                   DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
+                   MOVE
+                       "レセプト削除処理（個別分）でエラーとなりました"
+                                           TO    WRK-RECEERR
+                   PERFORM 500-ERR-HENSYU-SEC
+                   GO  TO  5001-DB-DELETE-EXT
+               END-IF
+      *
+      *        レセプト指示（個別指示）コード読み込み
+               INITIALIZE                      SYS-2002-REC
+               MOVE    "2002"              TO  SYS-2002-KANRICD
+               MOVE    ZERO                TO  ORC-DBYMD
+               MOVE    SYS-2002-REC        TO  MCPDATA-REC
+               MOVE    "DBSELECT"          TO  MCP-FUNC
+               MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+                   PERFORM 900-KANRIMST-NEXT-SEC
+               ELSE
+                   MOVE    1                   TO  FLG-KANRIMST
+               END-IF
+      *
+               PERFORM             UNTIL       FLG-KANRIMST    =   1
+                   MOVE    MCPDATA-REC         TO  SYS-2002-REC
+      *            診療年月の請求管理削除処理
+                   INITIALIZE                  RECE10-REC
+                   MOVE    SYS-1001-HOSPID     TO  RECE10-HOSPID
+                   MOVE    SYS-2002-PTID       TO  RECE10-PTID
+                   MOVE    SYS-2002-SRYYM      TO  RECE10-SRYYM
+                   MOVE    SYS-2002-NYUGAIKBN  TO  RECE10-NYUGAIKBN
+                   MOVE    RECE10-REC          TO  MCPDATA-REC
+                   MOVE    "SEIKYU-DEL4"       TO  ORC-DBPATH
+                   MOVE    "DBDELETE"          TO  MCP-FUNC
+                   CALL    "ORCMCPSUB"             USING
+                                                   MCPAREA
+                                                   ORCMCPAREA
+                                                   MCPDATA-REC      
+                   IF      MCP-RC           NOT =   ZERO
+                       DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
+                       MOVE
+                       "請求管理削除処理（個別分）でエラーとなりました"
+                                               TO    WRK-RECEERR
+                       PERFORM 500-ERR-HENSYU-SEC
+                       GO  TO  5001-DB-DELETE-EXT
+                   END-IF
+      *
+      *            診療年月の公費請求書削除処理
+                   INITIALIZE                  KOHSKY-REC
+                   MOVE    SYS-1001-HOSPID     TO  KOHSKY-HOSPID
+                   MOVE    SYS-2002-PTID       TO  KOHSKY-PTID
+                   MOVE    SYS-2002-SRYYM      TO  KOHSKY-SRYYM
+                   MOVE    SYS-2002-NYUGAIKBN  TO  KOHSKY-NYUGAIKBN
+                   MOVE    KOHSKY-REC          TO  MCPDATA-REC
+                   MOVE    "KOHSKY-DEL2"       TO  ORC-DBPATH
+                   MOVE    "DBDELETE"          TO  MCP-FUNC
+                   CALL    "ORCMCPSUB"             USING
+                                                   MCPAREA
+                                                   ORCMCPAREA
+                                                   MCPDATA-REC
+                   IF      MCP-RC           NOT =   ZERO
+                       DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
+                       MOVE
+                      "公費請求書削除処理（個別分）でエラーとなりました"
+                                                   TO    WRK-RECEERR
+                       PERFORM 500-ERR-HENSYU-SEC
+                       GO  TO  5001-DB-DELETE-EXT
+                   END-IF
+      *
+      *            診療年月のレセ電削除処理
+                   INITIALIZE                  RECEDEN-REC
+                   MOVE    SYS-1001-HOSPID     TO  RECEDEN-HOSPID
+                   MOVE    SYS-2002-PTID       TO  RECEDEN-PTID
+                   MOVE    SYS-2002-SRYYM      TO  RECEDEN-SRYYM
+                   MOVE    SYS-2002-NYUGAIKBN  TO  RECEDEN-NYUGAIKBN
+                   MOVE    RECEDEN-REC         TO  MCPDATA-REC
+                   MOVE    "RECEDEN-DEL2"      TO  ORC-DBPATH
+                   MOVE    "DBDELETE"          TO  MCP-FUNC
+                   CALL    "ORCMCPSUB"             USING
+                                                   MCPAREA
+                                                   ORCMCPAREA
+                                                   MCPDATA-REC
+                   IF      MCP-RC           NOT =   ZERO
+                       DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
+                       MOVE
+                       "レセ電削除処理（個別分）でエラーとなりました"
+                                                   TO    WRK-RECEERR
+                       PERFORM 500-ERR-HENSYU-SEC
+                       GO  TO  5001-DB-DELETE-EXT
+                   END-IF
+      *
+                   MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+                   PERFORM 900-KANRIMST-NEXT-SEC
+               END-PERFORM 
+      *
+               MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+               PERFORM 900-DBCLOSE-SEC
+           END-IF
+           .
+       5001-DB-DELETE-EXT.
+           EXIT.    
+      *
+      *****************************************************************
+      *    終了処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
@@ -4159,6 +4586,40 @@
            EXIT.
       *
       *****************************************************************
+      *    レセプト管理読込（キー）
+      *****************************************************************
+       900-RECE07-INV-SEC         SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    WRK-PATH            TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    WRK-PATH            TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO                TO  FLG-RECE07
+                   MOVE    MCPDATA-REC         TO  RECE07-REC
+               ELSE
+                   MOVE    1                   TO  FLG-RECE07
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-RECE07
+           END-IF
+      *
+           MOVE    WRK-PATH            TO  ORC-DBPATH
+           PERFORM 900-DBCLOSE-SEC
+           .
+       900-RECE07-INV-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    レセプト印刷読込処理
       *****************************************************************
        900-RECE08-READ-SEC           SECTION.
@@ -4424,6 +4885,20 @@
       *
            .
        900-PTINF-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢＣＬＯＳＥ処理
+      *****************************************************************
+       900-DBCLOSE-SEC                 SECTION.
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           .
+       900-DBCLOSE-EXT.
            EXIT.
       *      
       *****************************************************************

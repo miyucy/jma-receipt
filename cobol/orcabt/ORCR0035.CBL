@@ -20,7 +20,7 @@
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : レセプト
-      *  コンポーネント名  : 
+      *  コンポーネント名  : 公費分点数判定
       *  管理者            : 
       *  作成日付    作業者        記述
       *  00/12/01    MCC−小豆沢   新規作成
@@ -36,6 +36,8 @@
       *                                     合計点数情報（ぶん点・公費分離
       *                                     区分編集用）を使用するよう修正
       *  01.00.06    NACL-門脇    04.08.04  同一保険番号対応
+      *  中止処理追加
+      *  01.01.01    NACL-藤原    04/09/28  中止処理の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -57,7 +59,7 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE05-KEY
                                    FILE    STATUS  IS  STS-RECE05.
-006900*    エラーファイル
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
@@ -76,7 +78,7 @@
        01  RECE05-REC. 
            COPY    "CPRCF005.INC".
       * 
-006900*    エラーファイル
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
@@ -114,6 +116,7 @@
       *    カウント領域
        01  CNT-AREA.
            03  CNT-IN                                  PIC 9(06).
+           03  CNT-IN-CANCEL                           PIC 9(06).
            03  CNT-OUT1                                PIC 9(06).
            03  CNT-OUT2                                PIC 9(06).
            03  CNT-OUT3                                PIC 9(06).
@@ -197,6 +200,19 @@
       *
            MOVE    COMMAND-PARAM       TO  WRK-PARA
       *
+           MOVE    "RECE020"           TO  RECE01PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE01PARA-TERMID
+      *
+           MOVE    "RECE040"           TO  RECE04PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE04PARA-TERMID
+      *
+           MOVE    "RECE050"           TO  RECE05PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE05PARA-TERMID
+      *
+           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
+      *
+      *    ＤＢオープン処理
            PERFORM 100-DBOPEN-SEC
       *
       *    ステップ管理開始処理
@@ -212,23 +228,14 @@
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC
       *
-           MOVE    "RECE020"           TO  RECE01PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE01PARA-TERMID
-      *
-           MOVE    "RECE040"           TO  RECE04PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE04PARA-TERMID
-      *
-           MOVE    "RECE050"           TO  RECE05PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE05PARA-TERMID
-      *
-           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
+      *    処理中止設定処理
+           PERFORM 500-CANCEL-HENSYU-SEC
       *
            OPEN    INPUT               RECE02-FILE
            OPEN    I-O                 RECE04-FILE
                                        RECE05-FILE
       *
-           PERFORM    RECE02-READ-SEC
+           PERFORM    900-RECE02-READ-SEC
       *
           .
        100-INIT-EXT.
@@ -239,9 +246,15 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-           PERFORM     210-HENSYU-SEC
+           PERFORM     2001-HENSYU-SEC
       *
-           PERFORM     RECE02-READ-SEC
+           PERFORM     900-RECE02-READ-SEC
+      *
+      *    処理中止設定処理
+           IF      CNT-IN-CANCEL   =   50
+               MOVE    ZERO            TO  CNT-IN-CANCEL
+               PERFORM 500-CANCEL-HENSYU-SEC
+           END-IF
            .
        200-MAIN-EXT.
            EXIT.
@@ -249,7 +262,7 @@
       *****************************************************************
       *    編集処理
       *****************************************************************
-       210-HENSYU-SEC                   SECTION.
+       2001-HENSYU-SEC                   SECTION.
       *
            IF (RECE02-HENTOTALTEN(2)       =      ZERO)    AND
               (RECE02-HENTOTALTEN(3)       =      ZERO)
@@ -258,23 +271,23 @@
                IF (RECE02-HENTOTALTEN(2)   NOT =  ZERO)              AND
                   (RECE02-HENTOTALTEN(1)   NOT =  RECE02-HENTOTALTEN(2))
                    MOVE      1          TO     BUN-IDX
-                   PERFORM   RECE04-HENSYU-SEC
+                   PERFORM   20011-RECE04-HENSYU-SEC
                END-IF
                IF (RECE02-HENTOTALTEN(3)   NOT =  ZERO)              AND
                   (RECE02-HENTOTALTEN(1)   NOT =  RECE02-HENTOTALTEN(3))
                    MOVE      2          TO     BUN-IDX
-                   PERFORM   RECE04-HENSYU-SEC
+                   PERFORM   20011-RECE04-HENSYU-SEC
                END-IF
            END-IF
       *
            .
-       210-HENSYU-EXT.
+       2001-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
       *    レセプト中間ファイルの作成（Ｆ００４）
       *****************************************************************
-       RECE04-HENSYU-SEC                SECTION.
+       20011-RECE04-HENSYU-SEC                SECTION.
       *
            MOVE    SPACE                TO      RECE04-REC
            INITIALIZE                           RECE04-REC
@@ -293,7 +306,7 @@
                        MOVE   1         TO      FLG-RECE04
                    NOT  INVALID
                        MOVE   ZERO      TO      FLG-RECE04
-                       PERFORM   RECE04-NEXT-SEC
+                       PERFORM    900-RECE04-NEXT-SEC
            END-START
            PERFORM   UNTIL
                     (RECE02-HOSPID    NOT = RECE04-HOSPID)    OR
@@ -307,20 +320,20 @@
                     (RECE02-TEKSTYMD  NOT = RECE04-TEKSTYMD)  OR
                     (FLG-RECE04       =    1)
                      MOVE   RECE04-ZAINUM    TO   WK-ZAINUM
-                     PERFORM      KOHBUNRI-SET-SEC
-                     PERFORM      RECE04-REWRITE-SEC
-                     PERFORM      RECE05-HENSYU-SEC
-                     PERFORM      RECE04-NEXT-SEC
+                     PERFORM      200111-KOHBUNRI-SET-SEC
+                     PERFORM      200112-RECE04-REWRITE-SEC
+                     PERFORM      200113-RECE05-HENSYU-SEC
+                     PERFORM       900-RECE04-NEXT-SEC
            END-PERFORM
       *
            .
-       RECE04-HENSYU-EXT.
+       20011-RECE04-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
       *    公費分離区分の算出
       *****************************************************************
-       KOHBUNRI-SET-SEC               SECTION.
+       200111-KOHBUNRI-SET-SEC               SECTION.
       *
       *****EVALUATE  TRUE
       *        WHEN  (RECE04-HKNCOMBI   =    RECE02-HKNCOMBI(1))
@@ -360,15 +373,27 @@
            IF    RECE04-KOHBUNRI     =      ZERO
                MOVE    KH-IDX          TO        RECE04-KOHBUNRI
            END-IF
-      *     ACCEPT  WRK-IN FROM CONSOLE 
            .
-       KOHBUNRI-SET-EXT.
+       200111-KOHBUNRI-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    データ出力処理（Ｆ００４）
+      *****************************************************************
+       200112-RECE04-REWRITE-SEC                SECTION.
+      *
+           REWRITE   RECE04-REC
+      *
+           ADD     1                   TO  CNT-OUT1
+      *
+           .
+       200112-RECE04-REWRITE-EXT.
            EXIT.
       *
       *****************************************************************
       *    レセプト中間ファイルの作成（Ｆ００５）
       *****************************************************************
-       RECE05-HENSYU-SEC               SECTION.
+       200113-RECE05-HENSYU-SEC               SECTION.
       *
            MOVE    SPACE                TO      RECE05-REC
            INITIALIZE                           RECE05-REC
@@ -388,7 +413,7 @@
                        MOVE    1        TO      FLG-RECE05
                    NOT  INVALID
                        MOVE    ZERO     TO      FLG-RECE05
-                       PERFORM   RECE05-NEXT-SEC
+                       PERFORM    900-RECE05-NEXT-SEC
            END-START
            PERFORM   UNTIL
                   (RECE02-HOSPID        NOT =  RECE05-HOSPID)    OR
@@ -404,41 +429,28 @@
                   (FLG-RECE05           =      1)
                    IF    RECE05-KOHBUNRI     =      ZERO
                      MOVE   KH-IDX        TO     RECE05-KOHBUNRI
-                     PERFORM      RECE05-REWRITE-SEC
+                     PERFORM      2001131-RECE05-REWRITE-SEC
                    END-IF
-                   PERFORM      RECE05-NEXT-SEC
+                   PERFORM       900-RECE05-NEXT-SEC
            END-PERFORM
       *
            .
-       RECE05-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    データ出力処理（Ｆ００４）
-      *****************************************************************
-       RECE04-REWRITE-SEC                SECTION.
-      *
-           REWRITE   RECE04-REC
-      *
-           ADD     1                   TO  CNT-OUT1
-      *
-           .
-       RECE04-REWRITE-EXT.
+       200113-RECE05-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
       *    データ出力処理（Ｆ００５）
       *****************************************************************
-       RECE05-REWRITE-SEC                SECTION.
+       2001131-RECE05-REWRITE-SEC                SECTION.
       *
            REWRITE   RECE05-REC
       *
            ADD     1                   TO  CNT-OUT2
       *
            .
-       RECE05-REWRITE-EXT.
+       2001131-RECE05-REWRITE-EXT.
            EXIT.
-057400*
+      *
       *****************************************************************
       *    エラー出力処理
       *****************************************************************
@@ -474,6 +486,55 @@
            EXIT.
       *
       *****************************************************************
+      *    処理中止処理
+      *****************************************************************
+       500-CANCEL-HENSYU-SEC                SECTION.
+      *
+           MOVE    "CHK"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
+           IF    ( SJOBKANRI-RETURN
+                                   =   ZERO )
+           AND   ( JOB-STOPFLG     =   1    )
+               MOVE    "処理が中止されました"
+                                           TO  WRK-RECEERR
+      *
+               OPEN    INPUT   RECEERR-FILE
+               IF      STS-RECEERR         =   ZERO
+                   CLOSE   RECEERR-FILE
+               ELSE
+                   OPEN    OUTPUT              RECEERR-FILE
+      *    
+                   MOVE    WRK-RECEERR         TO  RECEERR-REC
+                   WRITE   RECEERR-REC
+                   CLOSE   RECEERR-FILE
+      *         
+      *            ジョブ管理終了処理
+                   MOVE    "CAN"           TO  SJOBKANRI-MODE
+                   INITIALIZE                  JOBKANRI-REC
+                   MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+                   MOVE    WRK-PARA-SHELLID
+                                           TO  JOB-SHELLID
+                   MOVE    WRK-RECEERR     TO  JOB-YOBI
+                   MOVE    "8888"          TO  JOB-ERRCD
+                   MOVE    2               TO  JOB-STOPFLG
+                   CALL    "ORCSJOB"       USING
+                                           ORCSJOBKANRIAREA  
+                                           JOBKANRI-REC
+               END-IF
+      *                             
+               MOVE    1                   TO  FLG-END
+           END-IF
+           .
+       500-CANCEL-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    終了処理
       *****************************************************************
        300-TERM-SEC                SECTION.
@@ -505,24 +566,25 @@
       *****************************************************************
       *    中間ファイルＲＥＡＤ処理（Ｆ００２）
       *****************************************************************
-       RECE02-READ-SEC            SECTION.
+       900-RECE02-READ-SEC            SECTION.
       *
            READ    RECE02-FILE   NEXT
                AT  END
                    MOVE    1     TO    FLG-END
                NOT  AT  END
                    ADD     1     TO    CNT-IN
+                                       CNT-IN-CANCEL
       *
                    DISPLAY "RECE02  PTNUM=" RECE02-PTNUM
            END-READ
            .
-       RECE02-READ-EXT.
+       900-RECE02-READ-EXT.
            EXIT.
       *
       *****************************************************************
       *    中間ファイルＲＥＡＤ処理（Ｆ００４）
       *****************************************************************
-       RECE04-NEXT-SEC            SECTION.
+        900-RECE04-NEXT-SEC            SECTION.
       *
            MOVE    ZERO          TO    FLG-RECE04
            READ    RECE04-FILE   NEXT
@@ -530,13 +592,13 @@
                    MOVE    1     TO    FLG-RECE04
            END-READ
            .
-       RECE04-NEXT-EXT.
+        900-RECE04-NEXT-EXT.
            EXIT.
       *
       *****************************************************************
       *    中間ファイルＲＥＡＤ処理（Ｆ００５）
       *****************************************************************
-       RECE05-NEXT-SEC            SECTION.
+        900-RECE05-NEXT-SEC            SECTION.
       *
            MOVE    ZERO          TO    FLG-RECE05
            READ    RECE05-FILE   NEXT
@@ -544,7 +606,7 @@
                    MOVE    1     TO    FLG-RECE05
            END-READ
            .
-       RECE05-READ-EXT.
+       900-RECE05-NEXT-EXT.
            EXIT.
       *
       *      

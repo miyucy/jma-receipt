@@ -20,7 +20,7 @@
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : レセプト
-      *  コンポーネント名  : 
+      *  コンポーネント名  : 診療区分別点数集計
       *  管理者            : 
       *  作成日付    作業者        記述
       *  00/12/01    MCC−小豆沢   新規作成
@@ -178,6 +178,8 @@
       *  01.04.08   NACL-門脇     04/08/11  複数保険・複数科入力対応
       *  01.04.09   NACL-門脇     04/09/17  ＯＣＲ公費２の編集修正
       *  01.04.10   NACL-藤原     04/09/17  ＯＣＲ区分の設定に追加
+      *  中止処理追加
+      *  01.01.01    NACL-藤原    04/09/28  中止処理の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -318,6 +320,7 @@
       *
       *    カウント領域
        01  CNT-AREA.
+           03  CNT-IN-CANCEL                           PIC 9(06).
            03  CNT-IN-COMMIT                           PIC 9(06).
            03  CNT-OUT1                                PIC 9(06).
            03  CNT-OUT2                                PIC 9(06).
@@ -874,20 +877,25 @@
       *
            MOVE    COMMAND-PARAM       TO  WRK-PARA
       *
+           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
+      *
+      *    ＤＢオープン処理
            PERFORM 100-DBOPEN-SEC
       *
       *    ステップ管理開始処理
-           MOVE    "STS"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
-           MOVE    "ORCR0030"      TO  JOB-PGID
+           MOVE    "STS"               TO  SJOBKANRI-MODE
+           INITIALIZE                      JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
+           MOVE    "ORCR0030"          TO  JOB-PGID
            MOVE    "診療区分別点数集計"
-                                   TO  JOB-SHELLMSG
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA  
-                                   JOBKANRI-REC
+                                       TO  JOB-SHELLMSG
+           CALL    "ORCSJOB"           USING
+                                       ORCSJOBKANRIAREA  
+                                       JOBKANRI-REC
+      *    処理中止設定処理
+           PERFORM 500-CANCEL-HENSYU-SEC
       *
            IF   WRK-PARA-SRYYM    NOT =  ZERO
       *       医療機関情報
@@ -1022,9 +1030,6 @@
                MOVE    ZERO             TO  SYS-2005-KKHOCRKBN
            END-IF
       *
-           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
-      *
           .
        100-INIT-EXT.
            EXIT.
@@ -1084,13 +1089,21 @@
            PERFORM    RECE02-READ-SEC
       *
            PERFORM                     UNTIL   FLG-RECE02  =   1
+                                       OR      FLG-END     =   1
                PERFORM     210-HENSYU-SEC
       *
                PERFORM     RECE02-READ-SEC
-               IF  CNT-IN-COMMIT   =   300
-                   MOVE  ZERO          TO      CNT-IN-COMMIT
+      *
+               IF  CNT-IN-COMMIT       =   300
+                   MOVE  ZERO              TO  CNT-IN-COMMIT
                    PERFORM 900-DBCOMMIT-SEC
                    PERFORM 900-DBSTART-SEC
+               END-IF
+      *
+      *        処理中止設定処理
+               IF      CNT-IN-CANCEL   =   50
+                   MOVE    ZERO            TO  CNT-IN-CANCEL
+                   PERFORM 500-CANCEL-HENSYU-SEC
                END-IF
            END-PERFORM
       *
@@ -5529,6 +5542,55 @@
            EXIT.
       *
       *****************************************************************
+      *    処理中止処理
+      *****************************************************************
+       500-CANCEL-HENSYU-SEC                SECTION.
+      *
+           MOVE    "CHK"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
+           IF    ( SJOBKANRI-RETURN
+                                   =   ZERO )
+           AND   ( JOB-STOPFLG     =   1    )
+               MOVE    "処理が中止されました"
+                                           TO  WRK-RECEERR
+      *
+               OPEN    INPUT   RECEERR-FILE
+               IF      STS-RECEERR         =   ZERO
+                   CLOSE   RECEERR-FILE
+               ELSE
+                   OPEN    OUTPUT              RECEERR-FILE
+      *    
+                   MOVE    WRK-RECEERR         TO  RECEERR-REC
+                   WRITE   RECEERR-REC
+                   CLOSE   RECEERR-FILE
+      *         
+      *            ジョブ管理終了処理
+                   MOVE    "CAN"           TO  SJOBKANRI-MODE
+                   INITIALIZE                  JOBKANRI-REC
+                   MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+                   MOVE    WRK-PARA-SHELLID
+                                           TO  JOB-SHELLID
+                   MOVE    WRK-RECEERR     TO  JOB-YOBI
+                   MOVE    "8888"          TO  JOB-ERRCD
+                   MOVE    2               TO  JOB-STOPFLG
+                   CALL    "ORCSJOB"       USING
+                                           ORCSJOBKANRIAREA  
+                                           JOBKANRI-REC
+               END-IF
+      *                             
+               MOVE    1                   TO  FLG-END
+           END-IF
+           .
+       500-CANCEL-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    終了処理
       *****************************************************************
        300-TERM-SEC                SECTION.
@@ -5973,67 +6035,69 @@
                NOT  AT  END
                    ADD     1     TO    CNT-IN (IDZ)
                    ADD     1     TO    CNT-IN-COMMIT
+                                       CNT-IN-CANCEL
       *
                    DISPLAY "RECE02 " IDZ " PTNUM=" RECE02-PTNUM     
       *
-                   IF   WRK-PARA-SRYYM    NOT =  ZERO
-                     CONTINUE
-                   ELSE
-      *              医療機関ＩＤ編集
-                     MOVE  ZERO           TO  FLG-SET
-                     MOVE  RECE02-SRYYM   TO  WRK-SYS-SRYYMD(1:6)
-                     MOVE  "01"           TO  WRK-SYS-SRYYMD(7:2)
-                     PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
-                           UNTIL  ( SYSKAN-IDX              >  10   )
-                            OR    ( TBL-SYS1001(SYSKAN-IDX) = SPACE )
-                            OR    ( FLG-SET                 =   1   )
-      *
-                       MOVE  TBL-SYS1001(SYSKAN-IDX)  TO  SYS-1001-REC
-                       IF   ( SYS-1001-STYUKYMD  <=  WRK-SYS-SRYYMD    )
-                       AND  ( WRK-SYS-SRYYMD     <=  SYS-1001-EDYUKYMD )
-                          MOVE     1       TO    FLG-SET
-                       END-IF
-      *
-                     END-PERFORM
-                     IF     FLG-SET  =  ZERO
-               STRING  "医療機関情報が取得できませんでした。診療年月＝"
-                                               DELIMITED  BY  SIZE 
-                       RECE02-SRYYM            DELIMITED  BY  SIZE
-                                       INTO    WRK-RECEERR
-               END-STRING
-                        PERFORM 500-ERR-HENSYU-SEC
-                        MOVE    1              TO  FLG-RECE02
-                     END-IF
+                   IF      WRK-PARA-SRYYM     =  ZERO
+      *                 医療機関編集
+                       MOVE  RECE02-SRYYM   TO  WRK-SYS-SRYYMD(1:6)
+                       MOVE  "01"           TO  WRK-SYS-SRYYMD(7:2)
+                       PERFORM 900-SYSKANRI-HENSYU-SEC
                    END-IF
-      *
-                   IF   WRK-PARA-SRYYM    NOT =  ZERO
-                     CONTINUE
-                   ELSE
-      *              診療行為機能情報
-                     MOVE  ZERO           TO  FLG-SET
-                     MOVE  RECE02-SRYYM   TO  WRK-SYS-SRYYMD(1:6)
-                     MOVE  "01"           TO  WRK-SYS-SRYYMD(7:2)
-                     PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
-                           UNTIL  ( SYSKAN-IDX              >  10   )
-                            OR    ( TBL-SYS1038(SYSKAN-IDX) = SPACE )
-                            OR    ( FLG-SET                 =   1   )
-      *
-                       MOVE  TBL-SYS1038(SYSKAN-IDX)  TO  SYS-1038-REC
-                       IF   ( SYS-1038-STYUKYMD  <=  WRK-SYS-SRYYMD    )
-                       AND  ( WRK-SYS-SRYYMD     <=  SYS-1038-EDYUKYMD )
-                          MOVE     1       TO    FLG-SET
-                       END-IF
-      *
-                     END-PERFORM
-                     IF     FLG-SET  =  ZERO
-                           INITIALIZE               SYS-1038-REC
-                           MOVE    "0"          TO  SYS-1038-KAGRPFLG
-                     END-IF
-                   END-IF
-      *
            END-READ
            .
        RECE02-READ-EXT.
+           EXIT.
+      *
+      ****************************************************************
+      *    診療年月の対象となるシス管理を取得（個別処理のみ
+      ****************************************************************
+       900-SYSKANRI-HENSYU-SEC         SECTION.
+      *
+      *    医療機関情報（基本情報）
+           MOVE    ZERO                TO  FLG-SET
+      *
+           PERFORM VARYING SYSKAN-IDX  FROM    1   BY  1
+                   UNTIL ( SYSKAN-IDX              >  10   )
+                   OR    ( TBL-SYS1001(SYSKAN-IDX) = SPACE )
+                   OR    ( FLG-SET                 =   1   )
+               MOVE    TBL-SYS1001(SYSKAN-IDX) TO  SYS-1001-REC
+               IF    ( SYS-1001-STYUKYMD       <= WRK-SYS-SRYYMD    )
+               AND   ( WRK-SYS-SRYYMD          <= SYS-1001-EDYUKYMD )
+                   MOVE     1                  TO  FLG-SET
+               END-IF
+           END-PERFORM
+           IF      FLG-SET             =   ZERO
+               STRING  "医療機関情報が取得できませんでした。診療年月＝"
+                                               DELIMITED  BY  SIZE 
+                       WRK-SYS-SRYYMD (1:6)    DELIMITED  BY  SIZE
+                                       INTO    WRK-RECEERR
+               END-STRING
+               PERFORM 500-ERR-HENSYU-SEC
+               MOVE    1              TO  FLG-RECE02
+               GO  TO  900-SYSKANRI-HENSYU-EXT
+           END-IF
+      *
+      *    診療行為機能情報
+           MOVE    ZERO                TO  FLG-SET
+           PERFORM VARYING SYSKAN-IDX  FROM    1   BY  1
+                   UNTIL ( SYSKAN-IDX              >  10   )
+                   OR    ( TBL-SYS1038(SYSKAN-IDX) = SPACE )
+                   OR    ( FLG-SET                 =   1   )
+               MOVE  TBL-SYS1038(SYSKAN-IDX)   TO  SYS-1038-REC
+               IF   ( SYS-1038-STYUKYMD        <=  WRK-SYS-SRYYMD    )
+               AND  ( WRK-SYS-SRYYMD           <=  SYS-1038-EDYUKYMD )
+                   MOVE    1                   TO  FLG-SET
+               END-IF
+           END-PERFORM
+      *
+           IF     FLG-SET          =   ZERO
+              INITIALIZE                   SYS-1038-REC
+              MOVE    "0"              TO  SYS-1038-KAGRPFLG
+           END-IF
+           .
+       900-SYSKANRI-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************

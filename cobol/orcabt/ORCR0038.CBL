@@ -35,6 +35,8 @@
       *                                     算定時の点滴注射のコメント対応
       *  01.01.02    NACL-門脇    04.07.12  ファイルクリア追加
       *  01.01.03    NACL-門脇    04.08.17  レセプト科の編集
+      *  中止処理追加
+      *  01.02.01    NACL-藤原    04/09/28  中止処理の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -150,6 +152,7 @@
       *    カウント領域
        01  CNT-AREA.
            03  CNT-IN                                  PIC 9(06).
+           03  CNT-IN-CANCEL                           PIC 9(06).
            03  CNT-RECE042                             PIC 9(06).
            03  CNT-RECE04W                             PIC 9(06). 
       *
@@ -233,6 +236,21 @@
       *
            MOVE    COMMAND-PARAM       TO  WRK-PARA
       *
+           MOVE    "RECE020"           TO  RECE02PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE02PARA-TERMID
+      *
+           MOVE    "RECE040"           TO  RECE04PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE04PARA-TERMID
+      *
+           MOVE    "RECE042"           TO  RECE042PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE042PARA-TERMID
+      *
+           MOVE    "RECE04W"           TO  RECE04WPARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE04WPARA-TERMID
+      *
+           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
+      *
            PERFORM 100-DBOPEN-SEC
       *
       *    ステップ管理開始処理
@@ -248,20 +266,8 @@
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC
       *
-           MOVE    "RECE020"           TO  RECE02PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE02PARA-TERMID
-      *
-           MOVE    "RECE040"           TO  RECE04PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE04PARA-TERMID
-      *
-           MOVE    "RECE042"           TO  RECE042PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE042PARA-TERMID
-      *
-           MOVE    "RECE04W"           TO  RECE04WPARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE04WPARA-TERMID
-      *
-           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
+      *    処理中止設定処理
+           PERFORM 500-CANCEL-HENSYU-SEC
       *
            OPEN    OUTPUT              RECE042X-FILE
            CLOSE                       RECE042X-FILE
@@ -286,19 +292,23 @@
       *
            PERFORM 210-RECE042-WRITE-SEC
                                    UNTIL   FLG-RECE02  =   1
+                                   OR      FLG-END     =   1
            CLOSE   RECE042-FILE
                    RECE04-FILE
                    RECE02-FILE
       *
       *    元のレイアウトに出力処理
-           OPEN    INPUT   RECE042-FILE
-                   OUTPUT  RECE04W-FILE
+           IF      FLG-END             =   ZERO
+               OPEN    INPUT   RECE042-FILE
+                       OUTPUT  RECE04W-FILE
+               PERFORM 900-RECE042-READ-SEC 
       *
-           PERFORM 900-RECE042-READ-SEC 
-           PERFORM 220-RECE04W-WRITE-SEC
+               PERFORM 220-RECE04W-WRITE-SEC
                                    UNTIL   FLG-RECE042 =   1
-           CLOSE   RECE04W-FILE
-                   RECE042-FILE
+                                   OR      FLG-END     =   1
+               CLOSE   RECE04W-FILE
+                       RECE042-FILE
+           END-IF
       *
            MOVE    1               TO  FLG-END
            .
@@ -336,7 +346,8 @@
                    PERFORM 900-RECE04-READ-SEC
            END-START
            PERFORM
-               UNTIL  ( FLG-RECE04           =   1                   )
+               UNTIL  ( FLG-END              =   1                   )
+               OR     ( FLG-RECE04           =   1                   )
                OR     ( RECE02-HOSPID    NOT =   RECE04-HOSPID       )
                OR     ( RECE02-SRYYM     NOT =   RECE04-SRYYM        )
                OR     ( RECE02-NYUGAIKBN NOT =   RECE04-NYUGAIKBN    )
@@ -446,20 +457,28 @@
                END-IF
       *
                PERFORM     900-RECE04-READ-SEC
+      *
+      *        処理中止設定処理
+               IF      CNT-IN-CANCEL   =   50
+                   MOVE    ZERO            TO  CNT-IN-CANCEL
+                   PERFORM 500-CANCEL-HENSYU-SEC
+               END-IF
            END-PERFORM
       *
-           MOVE      WRK-KOHBUNRI-MIN   TO   RECE02-KOHBUNRI-MIN
-           REWRITE   RECE02-REC
+           IF      FLG-END             =   ZERO
+               MOVE      WRK-KOHBUNRI-MIN   TO   RECE02-KOHBUNRI-MIN
+               REWRITE   RECE02-REC
       *
       *
-           PERFORM 900-RECE02-READ-SEC
+               PERFORM 900-RECE02-READ-SEC
+           END-IF
            .
        210-RECE042-WRITE-EXT.
            EXIT.
       *
       * 
       *****************************************************************
-      *    主処理
+      *    元のレイアウトに出力処理
       *****************************************************************
        220-RECE04W-WRITE-SEC                SECTION.
       *
@@ -473,6 +492,12 @@
            ADD     1                   TO  CNT-RECE04W
       *
            PERFORM     900-RECE042-READ-SEC
+      *
+      *    処理中止設定処理
+           IF      CNT-IN-CANCEL   =   50
+               MOVE    ZERO            TO  CNT-IN-CANCEL
+               PERFORM 500-CANCEL-HENSYU-SEC
+           END-IF
            .
        220-RECE04W-WRITE-EXT.
            EXIT.
@@ -509,6 +534,55 @@
       *
            .
        500-ERR-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    処理中止処理
+      *****************************************************************
+       500-CANCEL-HENSYU-SEC                SECTION.
+      *
+           MOVE    "CHK"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
+           IF    ( SJOBKANRI-RETURN
+                                   =   ZERO )
+           AND   ( JOB-STOPFLG     =   1    )
+               MOVE    "処理が中止されました"
+                                           TO  WRK-RECEERR
+      *
+               OPEN    INPUT   RECEERR-FILE
+               IF      STS-RECEERR         =   ZERO
+                   CLOSE   RECEERR-FILE
+               ELSE
+                   OPEN    OUTPUT              RECEERR-FILE
+      *    
+                   MOVE    WRK-RECEERR         TO  RECEERR-REC
+                   WRITE   RECEERR-REC
+                   CLOSE   RECEERR-FILE
+      *         
+      *            ジョブ管理終了処理
+                   MOVE    "CAN"           TO  SJOBKANRI-MODE
+                   INITIALIZE                  JOBKANRI-REC
+                   MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+                   MOVE    WRK-PARA-SHELLID
+                                           TO  JOB-SHELLID
+                   MOVE    WRK-RECEERR     TO  JOB-YOBI
+                   MOVE    "8888"          TO  JOB-ERRCD
+                   MOVE    2               TO  JOB-STOPFLG
+                   CALL    "ORCSJOB"       USING
+                                           ORCSJOBKANRIAREA  
+                                           JOBKANRI-REC
+               END-IF
+      *                             
+               MOVE    1                   TO  FLG-END
+           END-IF
+           .
+       500-CANCEL-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -564,6 +638,7 @@
                NOT AT END    
                    MOVE    ZERO          TO    FLG-RECE04
                    ADD     1             TO    CNT-IN
+                   ADD     1             TO    CNT-IN-CANCEL
            END-READ
            .
        900-RECE04-READ-EXT.
@@ -576,9 +651,10 @@
       *
            READ    RECE042-FILE   NEXT
                AT  END
-                   MOVE    1             TO    FLG-RECE042
+                   MOVE    1             TO  FLG-RECE042
                NOT AT END    
-                   MOVE    ZERO          TO    FLG-RECE042
+                   MOVE    ZERO          TO  FLG-RECE042
+                   ADD     1             TO  CNT-IN-CANCEL
            END-READ
            .
        900-RECE042-READ-EXT.
@@ -596,7 +672,7 @@
                    MOVE    ZERO          TO    FLG-RECE042
            END-READ
            .
-       900-RECE042-READ-EXT.
+       900-RECE042-INV-EXT.
            EXIT.
       *
       *****************************************************************

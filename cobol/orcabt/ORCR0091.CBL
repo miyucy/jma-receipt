@@ -52,6 +52,8 @@
       *  01.00.14    NACL-門脇    03.03.06  初再診のコメント編集対応
       *  01.00.15    NACL-門脇    03.11.26  自費レセプトの自費分
       *                                     摘要欄記載対応
+      *  中止処理追加
+      *  01.01.01    NACL-藤原    04/09/28  中止処理の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -126,6 +128,7 @@
       *    カウント領域
        01  CNT-AREA.
            03  CNT-IN                                  PIC 9(06).
+           03  CNT-IN-CANCEL                           PIC 9(06).
            03  CNT-OUT                                 PIC 9(06).
       *
       *    一時領域
@@ -193,11 +196,18 @@
       *
            INITIALIZE                  CNT-AREA
                                        WRK-AREA
-      *
-           MOVE    ZERO                TO  FLG-END
-           MOVE    SPACE               TO  SAISHIN-FLG
+                                       FLG-AREA
       *
            MOVE    COMMAND-PARAM       TO  WRK-PARA
+      *
+           MOVE    "RECE060"           TO  RECE06PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE06PARA-TERMID
+      *
+           MOVE    "RECE061"           TO  RECE061PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE061PARA-TERMID
+      *
+           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -213,14 +223,8 @@
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC
       *
-           MOVE    "RECE060"           TO  RECE06PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE06PARA-TERMID
-      *
-           MOVE    "RECE061"           TO  RECE061PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE061PARA-TERMID
-      *
-           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
+      *    処理中止設定処理
+           PERFORM 500-CANCEL-HENSYU-SEC
       *
       *
            OPEN    OUTPUT              RECE0661-FILE
@@ -229,7 +233,7 @@
            OPEN    INPUT               RECE06-FILE
            OPEN    I-O                 RECE061-FILE
       *
-           PERFORM    RECE06-READ-SEC
+           PERFORM    900-RECE06-READ-SEC
       *
           .
        100-INIT-EXT.
@@ -242,7 +246,13 @@
       *
            PERFORM     210-HENSYU-SEC
       *
-           PERFORM     RECE06-READ-SEC
+           PERFORM     900-RECE06-READ-SEC
+      *
+      *    処理中止設定処理
+           IF      CNT-IN-CANCEL   =   50
+               MOVE    ZERO            TO  CNT-IN-CANCEL
+               PERFORM 500-CANCEL-HENSYU-SEC
+           END-IF
            .
        200-MAIN-EXT.
            EXIT.
@@ -351,11 +361,11 @@
       *****IF     RECE06-SRYKBN  NOT =  "11" AND "95" AND "96"
            IF     RECE06-RECESYUBETU  =  8888
               IF     RECE06-ZAITEN  NOT =  ZERO
-                  PERFORM     RECE061-WRITE-SEC
+                  PERFORM     2101-RECE061-WRITE-SEC
               END-IF
            ELSE
               IF     RECE06-SRYKBN  NOT =  "95" AND "96"
-                  PERFORM     RECE061-WRITE-SEC
+                  PERFORM     2101-RECE061-WRITE-SEC
               END-IF
            END-IF
            .
@@ -365,14 +375,14 @@
       *****************************************************************
       *    データ更新処理（Ｆ００６１）
       *****************************************************************
-       RECE061-WRITE-SEC                SECTION.
+       2101-RECE061-WRITE-SEC                SECTION.
       *
            WRITE   RECE061-REC
       *
            ADD     1                   TO  CNT-OUT
       *
            .
-       RECE061-WRITE-EXT.
+       2101-RECE061-WRITE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -410,6 +420,55 @@
            EXIT.
       *
       *****************************************************************
+      *    処理中止処理
+      *****************************************************************
+       500-CANCEL-HENSYU-SEC                SECTION.
+      *
+           MOVE    "CHK"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
+           IF    ( SJOBKANRI-RETURN
+                                   =   ZERO )
+           AND   ( JOB-STOPFLG     =   1    )
+               MOVE    "処理が中止されました"
+                                           TO  WRK-RECEERR
+      *
+               OPEN    INPUT   RECEERR-FILE
+               IF      STS-RECEERR         =   ZERO
+                   CLOSE   RECEERR-FILE
+               ELSE
+                   OPEN    OUTPUT              RECEERR-FILE
+      *    
+                   MOVE    WRK-RECEERR         TO  RECEERR-REC
+                   WRITE   RECEERR-REC
+                   CLOSE   RECEERR-FILE
+      *         
+      *            ジョブ管理終了処理
+                   MOVE    "CAN"           TO  SJOBKANRI-MODE
+                   INITIALIZE                  JOBKANRI-REC
+                   MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+                   MOVE    WRK-PARA-SHELLID
+                                           TO  JOB-SHELLID
+                   MOVE    WRK-RECEERR     TO  JOB-YOBI
+                   MOVE    "8888"          TO  JOB-ERRCD
+                   MOVE    2               TO  JOB-STOPFLG
+                   CALL    "ORCSJOB"       USING
+                                           ORCSJOBKANRIAREA  
+                                           JOBKANRI-REC
+               END-IF
+      *                             
+               MOVE    1                   TO  FLG-END
+           END-IF
+           .
+       500-CANCEL-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    終了処理
       *****************************************************************
        300-TERM-SEC                SECTION.
@@ -439,18 +498,19 @@
       *****************************************************************
       *    中間ファイルＲＥＡＤ処理
       *****************************************************************
-       RECE06-READ-SEC            SECTION.
+       900-RECE06-READ-SEC            SECTION.
       *
            READ    RECE06-FILE   NEXT
                AT  END
                    MOVE    1     TO    FLG-END
                NOT  AT  END
                    ADD     1     TO    CNT-IN
+                                       CNT-IN-CANCEL
       *
                    DISPLAY "RECE06  PTID=" RECE06-PTID
            END-READ
            .
-       RECE06-READ-EXT.
+       900-RECE06-READ-EXT.
            EXIT.
       *
       *      

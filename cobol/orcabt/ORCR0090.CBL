@@ -124,6 +124,8 @@
       *                                     合計で行うようにする 
       *  01.05.04    NACL-藤原    04.08.30  剤で記載する項目がないときは
       *                                     点数・回数の編集を行わない 
+      *  中止処理追加
+      *  01.01.01    NACL-藤原    04/09/28  中止処理の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -254,6 +256,7 @@
            03  CNT-RECE04          PIC 9(06).
            03  CNT-RECE05          PIC 9(06).
            03  CNT-RECE06          PIC 9(06).
+           03  CNT-IN-CANCEL       PIC 9(06).
       *
            03  CNT-SRYKBN60        PIC 9(03).     
       *
@@ -899,6 +902,9 @@
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC
       *
+      *    処理中止設定処理
+           PERFORM 500-CANCEL-HENSYU-SEC
+      *
            PERFORM 990-RECE02-READ-SEC
            .
        100-INIT-EXT.
@@ -1010,10 +1016,10 @@
       *         
                PERFORM 2002-TBLZAIW-TAIHI-SEC
       *
-      *        レセプト０４剤編集前処理
-               PERFORM 2001-RECE04-ZAIHEN-MAE-SEC
-      *
                IF      SPA-STS          =   ZERO
+      *
+      *            レセプト０４剤編集前処理
+                   PERFORM 2001-RECE04-ZAIHEN-MAE-SEC
       * 
       *            レセプト０４ファイル編集処理
                    EVALUATE    RECE04-SRYKBN
@@ -1034,21 +1040,29 @@
                    ADD     1               TO  CNT-RECE04
       *
                    PERFORM 990-RECE04-NEXT-SEC
+      *
+      *            処理中止設定処理
+                   IF      CNT-IN-CANCEL   =   50
+                       MOVE    ZERO            TO  CNT-IN-CANCEL
+                       PERFORM 500-CANCEL-HENSYU-SEC
+                   END-IF
                END-IF     
            END-PERFORM
       *
-      *    検査があるときまとめる
-           IF      WRK-RECE04-MAX          >   ZERO
-               PERFORM 2007-SRYKBN60-HENSYU-SEC
-           END-IF         
+           IF      SPA-STS             =   ZERO
+      *        検査があるときまとめる
+               IF      WRK-RECE04-MAX          >   ZERO
+                   PERFORM 2007-SRYKBN60-HENSYU-SEC
+               END-IF         
       *
-      *    検査のとき回数を編集する
-           IF      WRK-KENSA-KAISU        >   ZERO
-               MOVE    WRK-KENSA-KAISU        TO  RECE02-KAISU  (29)
-               REWRITE RECE02-REC
-           END-IF
+      *        検査のとき回数を編集する
+               IF      WRK-KENSA-KAISU        >   ZERO
+                   MOVE    WRK-KENSA-KAISU        TO  RECE02-KAISU (29)
+                   REWRITE RECE02-REC
+               END-IF
       *
-           PERFORM 990-RECE02-READ-SEC
+               PERFORM 990-RECE02-READ-SEC
+           END-IF    
       *
            .
        200-MAIN-EXT.
@@ -1306,6 +1320,12 @@
                ADD     1                 TO  CNT-RECE05
       *
                PERFORM 990-RECE05-NEXT-SEC
+      *
+      *        処理中止設定処理
+               IF      CNT-IN-CANCEL   =   50
+                   MOVE    ZERO            TO  CNT-IN-CANCEL
+                   PERFORM 500-CANCEL-HENSYU-SEC
+               END-IF
            END-PERFORM
       *
            .
@@ -2820,7 +2840,7 @@
            .
        450-RECE06-OUT-EXT.
            EXIT.
-057400*
+     *
       *****************************************************************
       *    エラー出力処理
       *****************************************************************
@@ -2849,10 +2869,59 @@
                                        JOBKANRI-REC
            END-IF
       *                             
-           MOVE    1                   TO  FLG-END
+           MOVE    2                   TO  SPA-STS
       *
            .
        500-ERR-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    処理中止処理
+      *****************************************************************
+       500-CANCEL-HENSYU-SEC                SECTION.
+      *
+           MOVE    "CHK"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
+           IF    ( SJOBKANRI-RETURN
+                                   =   ZERO )
+           AND   ( JOB-STOPFLG     =   1    )
+               MOVE    "処理が中止されました"
+                                           TO  WRK-RECEERR
+      *
+               OPEN    INPUT   RECEERR-FILE
+               IF      STS-RECEERR         =   ZERO
+                   CLOSE   RECEERR-FILE
+               ELSE
+                   OPEN    OUTPUT              RECEERR-FILE
+      *    
+                   MOVE    WRK-RECEERR         TO  RECEERR-REC
+                   WRITE   RECEERR-REC
+                   CLOSE   RECEERR-FILE
+      *         
+      *            ジョブ管理終了処理
+                   MOVE    "CAN"           TO  SJOBKANRI-MODE
+                   INITIALIZE                  JOBKANRI-REC
+                   MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+                   MOVE    WRK-PARA-SHELLID
+                                           TO  JOB-SHELLID
+                   MOVE    WRK-RECEERR     TO  JOB-YOBI
+                   MOVE    "8888"          TO  JOB-ERRCD
+                   MOVE    2               TO  JOB-STOPFLG
+                   CALL    "ORCSJOB"       USING
+                                           ORCSJOBKANRIAREA  
+                                           JOBKANRI-REC
+               END-IF
+      *                             
+               MOVE    2                   TO  SPA-STS
+           END-IF
+           .
+       500-CANCEL-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2995,7 +3064,6 @@
                    MOVE    2           TO  SPA-STS
                NOT AT  END
                    ADD     1           TO  CNT-RECE02
-                   MOVE    ZERO        TO  FLG-END
       *
                    DISPLAY "RECE02  PTNUM=" RECE02-PTNUM
            END-READ
@@ -3014,6 +3082,7 @@
                    MOVE    1         TO  FLG-RECE04
                NOT AT  END
                    MOVE    ZERO      TO  FLG-RECE04
+                   ADD     1         TO  CNT-IN-CANCEL 
            END-READ
       *
            .
@@ -3030,6 +3099,7 @@
                    MOVE    1         TO  FLG-RECE05
                NOT AT  END
                    MOVE    ZERO      TO  FLG-RECE05
+                   ADD     1         TO  CNT-IN-CANCEL 
            END-READ
       *
            .

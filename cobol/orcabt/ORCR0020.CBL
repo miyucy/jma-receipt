@@ -20,7 +20,7 @@
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : レセプト
-      *  コンポーネント名  : 
+      *  コンポーネント名  : 保険情報編集
       *  管理者            : 
       *  作成日付    作業者        記述
       *  00/12/01    MCC−小豆沢   新規作成
@@ -111,6 +111,8 @@
       *  01.00.45    NACL-藤原    04/10/04  特例退職者＋老人のとき本人の
       *                                     み不明分とする
       *  01.00.46    NACL-門脇    04/10/05  公費単独の在総診フラグセットの修正
+      *  中止処理追加
+      *  01.01.01    NACL-藤原    04/09/28  中止処理の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -241,6 +243,7 @@
       *    カウント領域
        01  CNT-AREA.
            03  CNT-RECE09                              PIC 9(06). 
+           03  CNT-IN-CANCEL                           PIC 9(06).
            03  CNT-TBL-OCC                             OCCURS  2. 
                05  CNT-IN                              PIC 9(06).
                05  CNT-OUT                             PIC 9(06).
@@ -254,12 +257,6 @@
            03  IDZ                                     PIC 9(02).
            03  TOKKI-IDX                               PIC 9(02).
            03  SYSKAN-IDX                              PIC 9(03).
-           03  SYSKAN-1017-IDX                         PIC 9(03).
-      *
-      *    患者登録機能制御情報退避用領域
-       01  TBL-SYS1017-T.
-           03  TBL-SYS1017-OCC                         OCCURS  10.
-               05  TBL-SYS1017                         PIC X(610).
       *
       *    パス名領域
        01  WK-PATH                                     PIC X(20).
@@ -385,9 +382,6 @@
       *    医療機関情報
            COPY  "CPSK1001.INC".
       *
-      *    患者登録機能制御情報
-           COPY  "CPSK1017.INC".
-      *
       *    月代わり受給者番号
        01  MONTHLYNUM-REC.
            COPY    "CPMONTHLYNUM.INC".
@@ -462,6 +456,10 @@
       *
            MOVE    COMMAND-PARAM       TO  WRK-PARA
       *
+           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
+      *
+      *    ＤＢオープン処理
            PERFORM 100-DBOPEN-SEC
       *
       *    ステップ管理開始処理
@@ -475,78 +473,8 @@
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC
-      *
-           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
-      *
-      *    患者登録機能制御情報
-           IF      WRK-PARA-SRYYM      NOT =   ZERO
-               INITIALIZE                      SYSKANRI-REC
-               MOVE    "1017"              TO  SYS-KANRICD
-               MOVE    "*"                 TO  SYS-KBNCD
-               MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)              
-               MOVE    "01"                TO  ORC-DBYMD (7:2)   
-               MOVE    "SYSKANRI-KEY"      TO  WRK-PATH    
-               MOVE    SYSKANRI-REC        TO  MCPDATA-REC       
-               PERFORM 800-SYSKANRI-READ-SEC
-               IF      FLG-SYSKANRI        =   ZERO
-                   MOVE    MCPDATA-REC         TO  SYS-1017-REC
-               ELSE    
-                   INITIALIZE                      SYS-1017-REC
-               END-IF
-               IF      SYS-1017-SEIHO-JKYSNUM
-                                           =   SPACE
-                   MOVE    ZERO            TO  SYS-1017-SEIHO-JKYSNUM
-               END-IF
-           ELSE
-               MOVE     ZERO               TO  SYSKAN-1017-IDX
-               MOVE     SPACE              TO  TBL-SYS1017-T
-               INITIALIZE                      TBL-SYS1017-T
-      *
-               INITIALIZE                      SYSKANRI-REC
-               MOVE    "1017"              TO  SYS-KANRICD
-               MOVE    "*"                 TO  SYS-KBNCD
-               MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-               MOVE    "DBSELECT"          TO  MCP-FUNC
-               MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"             USING
-                                               MCPAREA
-                                               ORCMCPAREA
-                                               MCPDATA-REC
-               IF      MCP-RC              =   ZERO
-                   MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
-                   PERFORM 810-SYSKANRI-READ-SEC
-                   PERFORM  UNTIL   FLG-SYSKANRI  =    1
-                       MOVE    MCPDATA-REC     TO  SYS-1017-REC
-                       IF      SYS-1017-SEIHO-JKYSNUM
-                                               =   SPACE
-                           MOVE    ZERO            TO
-                                               SYS-1017-SEIHO-JKYSNUM
-                       END-IF
-                       ADD     1               TO  SYSKAN-1017-IDX
-                       MOVE    SYS-1017-REC    TO
-                                         TBL-SYS1017(SYSKAN-1017-IDX)
-      *
-                       MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
-                       PERFORM 810-SYSKANRI-READ-SEC
-                   END-PERFORM
-               ELSE
-                   INITIALIZE                  SYS-1017-REC
-                   MOVE    ZERO            TO  SYS-1017-STYUKYMD
-                   MOVE    ALL "9"         TO  SYS-1017-EDYUKYMD
-                   MOVE    ZERO            TO  SYS-1017-SEIHO-JKYSNUM
-                   ADD     1               TO  SYSKAN-1017-IDX
-                   MOVE    SYS-1017-REC    TO
-                                           TBL-SYS1017(SYSKAN-1017-IDX)
-               END-IF
-      *
-               MOVE    "DBCLOSE"           TO  MCP-FUNC
-               MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
-           END-IF    
+      *    処理中止設定処理
+           PERFORM 500-CANCEL-HENSYU-SEC
       *
           .
        100-INIT-EXT.
@@ -618,6 +546,7 @@
            PERFORM     RECE01-READ-SEC
       *
            PERFORM                     UNTIL   FLG-RECE01  =   1
+                                       OR      FLG-END     =   1
       *
       *        保険履歴情報編集処理
                IF      IDZ             =   1               
@@ -640,6 +569,12 @@
                END-EVALUATE
       *
                PERFORM     RECE01-READ-SEC
+      *
+      *        処理中止設定処理
+               IF      CNT-IN-CANCEL       =   50
+                   MOVE    ZERO                TO  CNT-IN-CANCEL
+                   PERFORM 500-CANCEL-HENSYU-SEC
+               END-IF
            END-PERFORM
       *
            CLOSE   RECE01-FILE
@@ -2541,6 +2476,55 @@
            EXIT.
       *
       *****************************************************************
+      *    処理中止処理
+      *****************************************************************
+       500-CANCEL-HENSYU-SEC                SECTION.
+      *
+           MOVE    "CHK"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
+           IF    ( SJOBKANRI-RETURN
+                                   =   ZERO )
+           AND   ( JOB-STOPFLG     =   1    )
+               MOVE    "処理が中止されました"
+                                           TO  WRK-RECEERR
+      *
+               OPEN    INPUT   RECEERR-FILE
+               IF      STS-RECEERR         =   ZERO
+                   CLOSE   RECEERR-FILE
+               ELSE
+                   OPEN    OUTPUT              RECEERR-FILE
+      *    
+                   MOVE    WRK-RECEERR         TO  RECEERR-REC
+                   WRITE   RECEERR-REC
+                   CLOSE   RECEERR-FILE
+      *         
+      *            ジョブ管理終了処理
+                   MOVE    "CAN"           TO  SJOBKANRI-MODE
+                   INITIALIZE                  JOBKANRI-REC
+                   MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+                   MOVE    WRK-PARA-SHELLID
+                                           TO  JOB-SHELLID
+                   MOVE    WRK-RECEERR     TO  JOB-YOBI
+                   MOVE    "8888"          TO  JOB-ERRCD
+                   MOVE    2               TO  JOB-STOPFLG
+                   CALL    "ORCSJOB"       USING
+                                           ORCSJOBKANRIAREA  
+                                           JOBKANRI-REC
+               END-IF
+      *                             
+               MOVE    1                   TO  FLG-END
+           END-IF
+           .
+       500-CANCEL-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    終了処理
       *****************************************************************
        300-TERM-SEC                SECTION.
@@ -2908,6 +2892,55 @@
            EXIT.
       *
       *****************************************************************
+      *    カーソルクローズ処理
+      *****************************************************************
+       CSR-CLOSE-SEC            SECTION.
+      *
+           INITIALIZE                  MCPAREA
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    WK-PATH             TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           .
+       CSR-CLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    中間ファイルＲＥＡＤ処理
+      *****************************************************************
+       RECE01-READ-SEC            SECTION.
+      *
+           READ    RECE01-FILE   NEXT
+               AT  END
+                   MOVE    1     TO    FLG-RECE01
+               NOT  AT  END
+                   ADD     1     TO    CNT-IN (IDZ)
+                                       CNT-IN-CANCEL
+      *
+                   DISPLAY "RECE01 " IDZ " PTNUM=" RECE01-PTNUM     
+           END-READ
+           .
+       RECE01-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険履歴情報読込
+      *****************************************************************
+       900-RECE09-READ-SEC             SECTION.
+      *
+           READ    RECE09-FILE
+               INVALID
+                   MOVE    1           TO  FLG-RECE09
+               NOT INVALID
+                   MOVE    ZERO        TO  FLG-RECE09
+           END-READ
+           .
+       900-RECE09-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
@@ -2946,72 +2979,4 @@
       *
            .
        900-DBDISCONNECT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    カーソルクローズ処理
-      *****************************************************************
-       CSR-CLOSE-SEC            SECTION.
-      *
-           INITIALIZE                  MCPAREA
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    WK-PATH             TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           .
-       CSR-CLOSE-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    中間ファイルＲＥＡＤ処理
-      *****************************************************************
-       RECE01-READ-SEC            SECTION.
-      *
-           READ    RECE01-FILE   NEXT
-               AT  END
-                   MOVE    1     TO    FLG-RECE01
-               NOT  AT  END
-                   ADD     1     TO    CNT-IN (IDZ)
-      *
-                   DISPLAY "RECE01 " IDZ " PTNUM=" RECE01-PTNUM     
-      *
-                   IF      WRK-PARA-SRYYM  =  ZERO
-      *                患者登録機能制御情報                    *
-                       MOVE  RECE01-SRYYM   TO  WRK-SYS-SRYYMD(1:6)
-                       MOVE  "01"           TO  WRK-SYS-SRYYMD(7:2)
-                       PERFORM  VARYING  SYSKAN-1017-IDX  FROM  1  BY  1
-                                UNTIL  ( SYSKAN-1017-IDX  >  10      )
-                                OR    ( TBL-SYS1017(SYSKAN-1017-IDX)
-                                                          =   SPACE  )
-                           MOVE  TBL-SYS1017(SYSKAN-1017-IDX)
-                                                       TO  SYS-1017-REC
-                           IF   ( SYS-1017-STYUKYMD
-                                               <=  WRK-SYS-SRYYMD    )
-                           AND  ( WRK-SYS-SRYYMD
-                                               <=  SYS-1017-EDYUKYMD )
-                              MOVE     10      TO    SYSKAN-1017-IDX
-                           END-IF
-                       END-PERFORM
-                   END-IF
-           END-READ
-           .
-       RECE01-READ-EXT.
-           EXIT.
-      *
-      *
-      *****************************************************************
-      *    保険履歴情報読込
-      *****************************************************************
-       900-RECE09-READ-SEC             SECTION.
-      *
-           READ    RECE09-FILE
-               INVALID
-                   MOVE    1           TO  FLG-RECE09
-               NOT INVALID
-                   MOVE    ZERO        TO  FLG-RECE09
-           END-READ
-           .
-       900-RECE09-READ-EXT.
            EXIT.
