@@ -7387,12 +7387,6 @@
            MOVE    WRK-TSUSAN      TO  SYOKIKSN-IN-TUSANNISSU
            MOVE    WRK-SANTEISTYMD
                                    TO  SYOKIKSN-IN-SANTEISTYMD
-      *-     IF    ( SPA-GMN-I01-SYORIKBN-CD =   "01" )
-      *-         PERFORM 4801-NYUTSUSAN-SANTEI-GET-SEC
-      *-     ELSE
-      *-         PERFORM 4801-IDOTSUSAN-SANTEI-GET-SEC
-      *-     END-IF
-      *
       *
            IF      SPA-GMN-I01-TOKNYUIN-CD    NOT =   SPACE
                PERFORM   4801-TOKTEI-NYUIN-SET-SEC
@@ -8021,12 +8015,6 @@
            MOVE    WRK-TSUSAN      TO  SYOKIKSN-IN-TUSANNISSU
            MOVE    WRK-SANTEISTYMD
                                    TO  SYOKIKSN-IN-SANTEISTYMD
-      *-     IF    ( SPA-GMN-I01-SYORIKBN-CD =   "07" )
-      *-         PERFORM 4801-NYUTSUSAN-SANTEI-GET-SEC
-      *-     ELSE
-      *-         PERFORM 4801-IDOTSUSAN-SANTEI-GET-SEC
-      *-     END-IF
-      *
       *
            DISPLAY "SYOKIKSN-IN-TUSANNISSU  = "
                     SYOKIKSN-IN-TUSANNISSU
@@ -8258,11 +8246,12 @@
            MOVE    WRK-SANTEISTYMD
                                    TO  SYOKIKSN-IN-SANTEISTYMD
       *
+           DISPLAY   "ﾄｸﾃｲﾆﾕｳｲﾝ ﾂｳｻﾝﾋﾞ = " STUSAN-NISSU06
       *    特定集中治療室管理料算定時に特定入院での算定日が１４日を
       *    経過していた場合は一般の入院料算定とする
            IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
                IF   PTNYUINRRK-TOKUTEI-NYUIN   =  "09"  OR  "16"
-                   IF   STUSAN-NISSU06   >   14
+                   IF   STUSAN-NISSU06   >=   14
                        MOVE    SPACE   TO   SPA-GMN-I01-TOKNYUIN-CD
                    END-IF
                END-IF
@@ -8429,12 +8418,7 @@
                      MOVE   SPA-NAI-I01-IDOYMD
                                                TO  LNK-DAY6-KIJUN
                      MOVE    "1"               TO  LNK-DAY6-ZOGENPTN
-      **               IF     WK-TOKUTEI-DAY     >=   6
-      **                      MOVE   6            TO   LNK-DAY6-ZOGEN
-      **               ELSE
-      **                      MOVE  WK-TOKUTEI-DAY  TO  LNK-DAY6-ZOGEN
-      **               END-IF
-                     MOVE   WK-TOKUTEI-DAY2      TO   LNK-DAY6-ZOGEN
+                     MOVE   WK-TOKUTEI-DAY2    TO  LNK-DAY6-ZOGEN
                      CALL  "ORCSDAY"           USING   STS-AREA-DAY
                                                        LNK-DAY6-AREA
                      MOVE    LNK-DAY6-KEISAN
@@ -8466,9 +8450,6 @@
                                            TO  LNK-DAY6-KIJUN
                  MOVE    "1"               TO  LNK-DAY6-ZOGENPTN
                  MOVE   WK-TOKUTEI-DAY     TO  LNK-DAY6-ZOGEN
-                 IF     STUSAN-NISSU06     NOT =   ZERO
-                     ADD    1                  TO  LNK-DAY6-ZOGEN
-                 END-IF
                  CALL  "ORCSDAY"           USING   STS-AREA-DAY
                                                    LNK-DAY6-AREA
                  MOVE    LNK-DAY6-KEISAN
@@ -8668,11 +8649,6 @@
            MOVE    WRK-TSUSAN      TO  SYOKIKSN-IN-TUSANNISSU
            MOVE    WRK-SANTEISTYMD
                                    TO  SYOKIKSN-IN-SANTEISTYMD
-      *-     IF    ( SPA-GMN-I01-SYORIKBN-CD =   "01" )
-      *-         PERFORM 4801-NYUTSUSAN-SANTEI-GET-SEC
-      *-     ELSE
-      *-         PERFORM 4801-IDOTSUSAN-SANTEI-GET-SEC
-      *-     END-IF
       *
            INITIALIZE              SYSKANRI-REC
            MOVE    "5001"          TO  SYS-KANRICD
