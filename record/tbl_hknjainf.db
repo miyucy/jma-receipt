@@ -11,6 +11,8 @@ tbl_hknjainf {
 	BANTI 		    	varchar(200);
 	TEL 			    varchar(15);
 	KIGO    			varchar(80);
+	IDOKBN  			varchar(1);
+	IDOYMD  			varchar(8);
 	TERMID   			varchar(16);
 	OPID     			varchar(16);
 	CREYMD   			char(8);
@@ -28,7 +30,7 @@ path	key		{
 		SELECT *
 		FROM tbl_hknjainf
 			WHERE   HOSPID      =   :HOSPID  AND
-					HKNJANUM	=   :HKNJANUM
+				HKNJANUM	=   :HKNJANUM
 		;
 	};
 };
