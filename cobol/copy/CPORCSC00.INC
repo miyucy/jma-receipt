@@ -52,7 +52,7 @@
            03  LNK-ORCSC-ZAIKEI        PIC 9(08).
       *    老人区分
            03  LNK-ORCSC-ROUJIN        PIC 9(01).
-      *     年齢 
+      *    年齢 
            03  LNK-ORCSC-NENREI.
                05  LNK-ORCSC-NENREI-YY     PIC 9(03).
                05  LNK-ORCSC-NENREI-MM     PIC 9(02).
@@ -138,8 +138,17 @@
       *理学療法当月内算定
            03  LNK-ORCSC-RIGAKU-TBL.
                05  LNK-ORCSC-RIGAKU-OCCS       OCCURS  6.
-                   07  LNK-ORCSC-RIGAKU-SRYCD       PIC  X(09).
-                   07  LNK-ORCSC-RIGAKU-CNT         PIC  9(03).
+                   07  LNK-ORCSC-RIGAKU-SRYCD  PIC  X(09).
+                   07  LNK-ORCSC-RIGAKU-CNT    PIC  9(03).
+      *            入院用追加
+                   07  LNK-ORCSC-RIG-KBN       PIC  X(01).
+                   07  LNK-ORCSC-RIG-RYO       PIC  X(01).
+                   07  LNK-ORCSC-RIG-DAY-G.
+                       09  LNK-ORCSC-RIG-DAY   PIC  9(01)
+                                               OCCURS 31.
+               05  LNK-ORCSC-SOUKI-G.
+                   07  LNK-ORCSC-SOUKI-FLG PIC  9(01)
+                                               OCCURS 31.
       *投薬の継続分チェック
            03  LNK-ORCSC-KBN20.
       *継続区分

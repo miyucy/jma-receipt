@@ -409,6 +409,15 @@
                05  WRK-RIGAKU-OCCS       OCCURS  6.
                    07  WRK-RIGAKU-SRYCD       PIC  X(09).
                    07  WRK-RIGAKU-CNT         PIC  9(03).
+      *            入院用追加
+                   07  WRK-ORCSC-RIG-KBN       PIC  X(01).
+                   07  WRK-ORCSC-RIG-RYO       PIC  X(01).
+                   07  WRK-ORCSC-RIG-DAY-G.
+                       09  WRK-ORCSC-RIG-DAY   PIC  9(01)
+                                               OCCURS 31.
+               05  WRK-ORCSC-SOUKI-G.
+                   07  WRK-ORCSC-SOUKI-FLG PIC  9(01)
+                                               OCCURS 31.
       *
       *    約束セット用
            03  WRK-IDX-YAKUSOKU.
@@ -7774,6 +7783,8 @@
            MOVE    SPA-GAIRAI-NASI     TO  LNK-ORCSC-GAIRAI-NASI
       *    労災用 外来管理点数
            MOVE    SPA-GAIRAI-TEN      TO  LNK-ORCSC-GAIRAI-TEN
+      *    理学療法当月内算定
+           MOVE    WRK-RIGAKU-TBL      TO  LNK-ORCSC-RIGAKU-TBL
       *    労災用 救急医療管理加算有無
       **   MOVE    SPA-RSI-KYUKASN     TO  LNK-ORCSC-RSI-KYUKASN
       *    労災用 療養の給付請求書有無
