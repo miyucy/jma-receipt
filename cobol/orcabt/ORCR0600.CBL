@@ -739,8 +739,8 @@
            IF      WRK-SEIKYUSTYMD     =   ZERO
                MOVE    WRK-STYMD           TO  WRK-SEIKYUSTYMD
            END-IF 
-           IF      WRK-SEIKYUEDYMD     =   ZERO    OR 
-                                           99999999
+           IF    ( WRK-SEIKYUEDYMD     =   ZERO    OR   99999999 )
+           OR    ( WRK-SEIKYUEDYMD     >   WRK-EDYMD             )
                MOVE    WRK-EDYMD           TO  WRK-SEIKYUEDYMD
            END-IF 
       *
