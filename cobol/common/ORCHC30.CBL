@@ -34,6 +34,7 @@
       *  00.01.04    NACL-森脇    02.09.27  内容の変更
       *  00.01.05    NACL-森脇    02.10.01  マスタ読み込みの修正
       *  00.01.06    NACL-森脇    02.10.02  区分の作業領域のクリア
+      *  00.01.07    NACL-森脇    02.11.07  記号の折り返し桁数変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -494,6 +495,10 @@
        230-KEIJYO-SET-SEC              SECTION.
       *
            MOVE    1                   TO  IDX
+      *----(00.01.07)--ADD-START----
+           MOVE    2                   TO  IDY
+           MOVE    16                  TO  IDZ
+      *----(00.01.07)--ADD-END------
       *
       *    色編集
            MOVE    YAKUJYO-COLOR       TO  WRK-HENKEIJYO
@@ -504,6 +509,22 @@
            PERFORM 231-HENKEIJYO-SET-SEC
       *
       *    記号編集
+      *----(00.01.07)--ADD-START----
+           IF          YAKUJYO-MARK    =   SPACE
+               GO  TO  230-KEIJYO-SET-EXT
+           END-IF
+      *    記号チェック
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    1                   TO  KANACHK-SYORI
+           MOVE    YAKUJYO-MARK        TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
+      *
+           IF          KANACHK-SYUBETU     =   1
+               MOVE    1                   TO  IDY
+               MOVE    14                  TO  IDZ
+           END-IF
+      *----(00.01.07)--ADD-END-----
+      *
            MOVE    YAKUJYO-MARK        TO  WRK-HENKEIJYO
            PERFORM 231-HENKEIJYO-SET-SEC
       *
@@ -523,12 +544,14 @@
            PERFORM UNTIL   (WRK-HENKEIJYO(END-KET:)    =   SPACE)
                    OR      (IDX    >   10)
       *
+      *----(00.01.07)--UPD-START----
                PERFORM UNTIL   (WRK-HENKEIJYO(END-KET:)    =   SPACE)
                        OR      (WRK-HENKEIJYO(END-KET:1)   =   X"0A")
-                       OR      (NUM-KET    =   16)
-                   COMPUTE END-KET     =   END-KET     +   2
-                   COMPUTE NUM-KET     =   NUM-KET     +   2
+                       OR      (NUM-KET    =   IDZ)
+                   COMPUTE END-KET     =   END-KET     +   IDY
+                   COMPUTE NUM-KET     =   NUM-KET     +   IDY
                END-PERFORM
+      *----(00.01.07)--UPD-END------
       *
                MOVE    WRK-HENKEIJYO(STR-KET:NUM-KET)
                                        TO  WRK-YKJ-KEIJYO(CNT-LINE IDX)
