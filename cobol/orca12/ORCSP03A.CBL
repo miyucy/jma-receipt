@@ -1531,6 +1531,10 @@
            MOVE    SPACE               TO  WRK-ATO-TEKSTYMD
            PERFORM
                UNTIL   FLG-HKNNUM      =   1
+      *        支払区分のないものは対象外とする
+             IF      HKN-PAYKBN        =   SPACE
+               CONTINUE
+             ELSE
                IF     (SPA-NAI-HTEKSTYMD   >=  HKN-TEKSTYMD )  AND
                       (SPA-NAI-HTEKEDYMD   <=  HKN-TEKEDYMD )
                    MOVE    1               TO  FLG-CHK
@@ -1542,6 +1546,8 @@
                        MOVE    HKN-TEKSTYMD    TO  WRK-ATO-TEKSTYMD
                    END-IF
                END-IF
+             END-IF
+      *
                IF      FLG-HKNNUM          =   ZERO
                    MOVE    "HKNNUM-KEY2"   TO  ORC-DBPATH
                    PERFORM 921-HKNMST-NEXT-SEC
