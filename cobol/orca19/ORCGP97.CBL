@@ -35,6 +35,8 @@
       *   01.01.01    MCC-藤原     01/09/21  JOINの修正      
       *   01.00.06    MCC-多々納   01/09/25  一覧表選択の追加
       *   01.00.07    NACL-多々納  02/12/12  検索条件の追加
+      *   01.00.08    NACL-太田    03/02/06  入力引数に名前が設定されて
+      *                                      いる場合は全角変換して使う
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -217,6 +219,9 @@
       *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
       *
+      *    全角チェックパラメタ
+           COPY    "CPORCSKANACHK.INC".
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -392,8 +397,23 @@
       *    前の画面より、氏名の受け取り
            IF      SPA-NAME        NOT =   SPACE
                MOVE    SPA-NAME            TO  SPA-GMN-NAMEKEN
-               MOVE    1                   TO  SPA-GMN-PAGE
+      *
+      *        全角変換処理
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "2"             TO  KANACHK-SYORI
+               MOVE    SPA-GMN-NAMEKEN TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+               IF      ( KANACHK-RC    =   ZERO )
+                   MOVE    KANACHK-OUT-INPUT
+                                       TO  SPA-GMN-NAMEKEN
+               END-IF
+      *
                PERFORM 2011-KNJKEN-HEN-SEC
+               IF      SPA-GMN-MAX     >   ZERO
+                   MOVE    4           TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    1           TO  SPA-GMN-CUR
+               END-IF
            ELSE
                MOVE    1               TO  SPA-GMN-PAGE
            END-IF
