@@ -751,6 +751,7 @@
                    IF     (SRY-SRYCD (IDZ)(1:1)    =   "8"  )  OR
                           (SRY-SRYCD (IDZ)(1:3)    =   "001")  OR
                           (SRY-SRYCD (IDZ)         =   "099209901") OR
+                          (SRY-SRYCD (IDZ)         =   "099309901") OR
                           (SRY-AUTOKBN(IDZ)    NOT =   SPACE )
                        CONTINUE
                    ELSE
