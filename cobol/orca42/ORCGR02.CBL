@@ -873,6 +873,8 @@
                ADD     RECE07-KENSU    TO  SPA-GMN-TKENSU(1 36)
                                            SPA-GMN-KENSUH
            END-IF
+      *
+           MOVE    1               TO  SPA-GMN-PAGE         
            .
        3101-PAGE-HENSYU-01-EXT.
            EXIT.
