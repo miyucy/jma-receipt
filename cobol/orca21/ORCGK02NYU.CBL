@@ -5901,7 +5901,9 @@
                MOVE    ISET-INPUTCD    TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
                IF      ISET-SURYO1     =   ZERO
       *            数量ゼロフラグ
-                   IF      SPA-SURYOZERO-FLG   =   ZERO
+                   IF     (SPA-SURYOZERO-FLG   =   ZERO    )  OR
+                          (ISET-INPUTCD(1:1)   NOT =   "6" 
+                                                   AND "7" )
                        MOVE    1           TO  SPA-COM-SURYO
                                                          (SPA-GMN-IDX)
                    ELSE
