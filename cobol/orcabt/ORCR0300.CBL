@@ -61,6 +61,9 @@
       *                                     老人減免区分コードの編集
       *                                     医薬品・特定器材の出力順
       *  01.00.20    NACL-藤原    03/11/26  生体検査の加算について
+      *  01.00.21    NACL-藤原    03/12/11  診療識別が指導（１３）
+      *                                     在宅（１４）のときコメントは
+      *                                     最後に記載する
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -425,6 +428,13 @@
       *----(01.00.04) LINE ADD END ------------------------------------
                05  TBL-KOUI-KZMCOMPSIKIBETU     PIC  9(01).
                05  TBL-KOUI-NAME                PIC  X(200).
+      *
+      *    コメントデータ用テーブル
+       01  TBL-COMMENT-AREA.
+           03  TBL-COMMENT-REC                  OCCURS  10.
+               05  TBL-COMMENT-SRYCD            PIC  X(09).
+               05  TBL-COMMENT-NAME             PIC  X(200).
+      *
       *    並び替え用ワーク
        01  TBL-KOUI-SORT                        PIC X(200).
       *
@@ -1749,6 +1759,7 @@
            INITIALIZE                      TBL-ZAIW-AREA
                                            TBL-KOUI-AREA
                                            TBL-KOUI-SRYKBN12-AREA
+                                           TBL-COMMENT-AREA
            INITIALIZE                      WRK-RECE05-REC
                                            WRK-KASAN-RECE05-REC
                                            WRK-TEIGEN-RECE05-REC
@@ -1819,7 +1830,11 @@
                    EVALUATE    RECE05-SRYCD (IDX) (1:1)
                        WHEN    "0"
                        WHEN    "8"
-                           PERFORM 200711-COMMENT-TAIHI-SEC
+                           IF      RECE041-SRYKBN  =   "13"    OR  "14"
+                               PERFORM 200711-SRYKBN13-COMMENT-TAIHI-SEC
+                           ELSE
+                               PERFORM 200711-COMMENT-TAIHI-SEC
+                           END-IF
                        WHEN    "1"
                            PERFORM 200711-KOUI-TAIHI-SEC
                        WHEN    "6"
@@ -1944,6 +1959,97 @@
            END-IF
            .
        200711-COMMENT-TAIHI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    摘要データ（コメント）退避処理
+      *****************************************************************
+       200711-SRYKBN13-COMMENT-TAIHI-SEC       SECTION.
+      *
+      *    診療行為コード＝'０'のとき対象外出力しない
+           IF      RECE05-SRYCD (IDX) (1:1) =   "0"
+               IF      RECE05-SRYCD (IDX)(1:3)  =   "002"
+                   CONTINUE
+               ELSE
+                   GO  TO  200711-SRYKBN13-COMMENT-TAIHI-EXT
+               END-IF
+           END-IF    
+      *               
+           IF      WRK-TBLMAX8         >=  10
+               MOVE    "*** ORCR0300 COMMENT TABLE  OVER  ***"
+                                           TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+           ELSE
+               ADD     1                   TO  WRK-TBLMAX8
+      *
+               MOVE    RECE05-SRYCD (IDX)  TO
+                                   TBL-COMMENT-SRYCD (WRK-TBLMAX8)
+               MOVE    RECE05-NAME  (IDX)  TO
+                                   TBL-COMMENT-NAME  (WRK-TBLMAX8)
+      *                             
+               IF      RECE05-SRYCD (IDX) (1:1) =   "0"
+      *            部位／薬剤
+                   MOVE    "810000001"     TO  
+                                   TBL-COMMENT-SRYCD (WRK-TBLMAX8)
+               ELSE
+                   IF      RECE05-SRYCD (IDX)   =   "810000001"
+                       CONTINUE
+                   ELSE
+                     IF      RECE05-INPUTNUM(IDX) =   ZERO
+                           MOVE    "810000001"     TO  
+                                       TBL-COMMENT-SRYCD (WRK-TBLMAX8)
+                     ELSE
+                       MOVE    RECE02-HOSPID           TO  PTCOM-HOSPID
+                       MOVE    RECE02-PTID             TO  PTCOM-PTID
+                       MOVE    RECE05-ZAINUM           TO  PTCOM-ZAINUM
+                       MOVE    RECE05-SRYCD   (IDX)    TO  PTCOM-SRYCD
+                       MOVE    RECE05-INPUTNUM(IDX)    TO  PTCOM-RENNUM
+                       PERFORM 950-PTCOM-READ-SEC
+                       IF      PTCOM-INPUTCHI1     =   SPACE
+                           INITIALIZE                  TNS-TENSU-REC
+                           MOVE    RECE05-SRYCD (IDX)  TO  TNS-SRYCD
+                           PERFORM 900-TENSU-READ-SEC
+                           INITIALIZE              ORCSKANACHKAREA
+                           MOVE    "2"             TO  KANACHK-SYORI 
+                           MOVE    TNS-NAME        TO  KANACHK-MAE-INPUT
+                           CALL    "ORCSKANACHK"   USING
+                                                       ORCSKANACHKAREA
+                           IF    ( KANACHK-RC      =   ZERO )
+                           AND   ( KANACHK-MAX     >   ZERO )
+                               COMPUTE IDW =   KANACHK-MAX +   1
+                               MOVE    PTCOM-INPUTCOMENT (IDW:)
+                                                   TO
+                                       TBL-COMMENT-NAME (WRK-TBLMAX8)
+                           ELSE
+                               MOVE    PTCOM-INPUTCOMENT
+                                                   TO
+                                       TBL-COMMENT-NAME (WRK-TBLMAX8)
+                           END-IF
+                       ELSE
+                           MOVE    SPACE               TO
+                                       TBL-COMMENT-NAME (WRK-TBLMAX8)  
+                           INITIALIZE              ORCSKANACHKAREA
+                           MOVE    "2"             TO  KANACHK-SYORI 
+                           STRING  PTCOM-INPUTCHI1 DELIMITED  BY  SPACE
+                                   PTCOM-INPUTCHI2 DELIMITED  BY  SPACE
+                                   PTCOM-INPUTCHI3 DELIMITED  BY  SPACE
+                                   PTCOM-INPUTCHI4 DELIMITED  BY  SPACE
+                                   INTO   KANACHK-MAE-INPUT
+                           END-STRING
+                           CALL    "ORCSKANACHK"   USING
+                                                       ORCSKANACHKAREA
+                           IF      KANACHK-RC      =   ZERO
+                               MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                                   TO
+                                       TBL-COMMENT-NAME (WRK-TBLMAX8)
+                           END-IF
+                       END-IF
+                     END-IF
+                   END-IF    
+               END-IF
+           END-IF
+           .
+       200711-SRYKBN13-COMMENT-TAIHI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2376,6 +2482,12 @@
                PERFORM 5001-FILE-WRITE-SEC
            END-PERFORM
       *
+      *    コメントデータの編集（診療区分１３・１４）                 
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       WRK-TBLMAX8
+               PERFORM 200724-COMMENT-HENSYU-SEC
+           END-PERFORM            
+      *
       *    医薬品データの編集                 
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       WRK-TBLMAX6
@@ -2389,6 +2501,45 @@
            END-PERFORM            
            .
        20072-ZAI-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    摘要データ（コメント）編集処理（診療区分１３・１４）
+      *****************************************************************
+       200724-COMMENT-HENSYU-SEC       SECTION.
+      *
+           MOVE    SPACE               TO  WRK-REC
+           MOVE    ZERO                TO  WRK-REC-LENGTH
+      *
+           MOVE    "CO,"               TO  WRK-REC
+           MOVE    3                   TO  WRK-REC-LENGTH
+      *    診療識別
+           IF      IDX                 =   1
+           AND     WRK-SRYKBN      NOT =   SPACE     
+               MOVE    WRK-SRYKBN          TO  WRK-DATA
+               MOVE    2                   TO  WRK-NAGASA
+               MOVE    SPACE               TO  WRK-SRYKBN
+           END-IF    
+           PERFORM 5004-MOJI-HENSYU-SEC  
+      *    負担区分
+           MOVE    WRK-FTNKBN          TO  WRK-DATA
+           MOVE    1                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC  
+      *    コメントコード
+           MOVE    TBL-COMMENT-SRYCD (IDX)
+                                       TO  WRK-DATA
+           MOVE    9                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC  
+      *    文字データ
+           MOVE    TBL-COMMENT-NAME(IDX)
+                                       TO  WRK-DATA
+           MOVE    76                  TO  WRK-NAGASA
+           MOVE    1                   TO  WRK-END 
+           PERFORM 5004-MOJI-HENSYU-SEC  
+      *
+            PERFORM 5001-FILE-WRITE-SEC
+           .
+       200724-COMMENT-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
