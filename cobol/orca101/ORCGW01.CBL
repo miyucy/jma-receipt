@@ -433,7 +433,7 @@
            MOVE    "労災自賠医療機関情報"  TO  SPA-GMN-KANRICDMEIL(24)
            MOVE    "9000"                  TO  SPA-GMN-KANRICDL (25)
       *****MOVE    "労災医療機関情報"
-           MOVE    "ＣＬＡＩＭ"            TO  SPA-GMN-KANRICDMEIL(25)
+           MOVE    "ＣＬＡＩＭ接続情報"    TO  SPA-GMN-KANRICDMEIL(25)
       *
       *    入院はベット数がある時のみ
            IF      SPA-BEDSU           =   ZERO
