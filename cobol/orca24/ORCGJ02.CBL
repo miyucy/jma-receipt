@@ -6446,6 +6446,11 @@
       *****************************************************************
        4100-HKNHEN-SEC            SECTION.
       *
+           IF      SPA-GMN-BANGO   NOT =   ZERO
+               MOVE    "0009"          TO  SPA-ERRCD
+               GO      TO      4100-HKNHEN-EXT
+           END-IF
+      *
            MOVE    "0109"              TO  SPA-JIDCD
       *
            .

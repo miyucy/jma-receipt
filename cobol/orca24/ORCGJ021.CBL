@@ -1055,10 +1055,14 @@
            PERFORM 300314-SANTEI-UPD-SEC
       *
            IF      SPA-ERRCD           =   SPACE
-               MOVE    1               TO  SPA-J021-ENDFLG
-      *        処理終了のメッセージを表示する
-               MOVE    "0010"          TO  SPA-ERRCD
-               PERFORM 510-ERRSET-SEC
+               IF      SPA-NYUGAIKBN       =   "2"
+                   MOVE    1               TO  SPA-J021-ENDFLG
+      *            処理終了のメッセージを表示する
+                   MOVE    "0010"          TO  SPA-ERRCD
+                   PERFORM 510-ERRSET-SEC
+               ELSE
+                   PERFORM 210-BACK
+               END-IF
            END-IF
            .
        30031-HENKOU-SYORI-EXT.
