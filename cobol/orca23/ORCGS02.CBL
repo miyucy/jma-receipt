@@ -3134,6 +3134,11 @@
                 CONTINUE                                                010112
              ELSE                                                       010112 
                 MOVE   ACCT-SYUTEN1  TO  TBL-SYUTEN(IDX1)                010112
+                IF   SYU-SYUHKNNUM       =   "973"
+                AND  ACCT-SRYKBN         =   "70"
+                    COMPUTE  TBL-SYUTEN(IDX1) =  TBL-SYUTEN(IDX1)
+                                              -  ACCT-SYUTEN2
+                END-IF
              END-IF                                                     010112
       *----(01.00.03) LINE MOD END   -------------------------------
              ADD     1             TO  IDX1

@@ -1382,6 +1382,12 @@
                                   COMPUTE   WK-YKZTEN =                 
                                                       ACCT-KIZAITEN  +  
                                                       ACCT-YKZTEN       
+                                  IF  SRY-SRYKBN  =  "70"
+                                     COMPUTE  WK-SYUTEN  =  WK-SYUTEN
+                                                         -  ACCT-SYUTEN2
+                                     COMPUTE  WK-YKZTEN  =  WK-YKZTEN
+                                                         +  ACCT-SYUTEN2
+                                  END-IF
                              END-IF
                            END-IF                                       
                          END-IF

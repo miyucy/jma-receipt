@@ -1326,6 +1326,19 @@
                                   TBL-YKZTEN-JI(ID1)  -
                                  ( WRK-ZAIKAISU-JI * ACCT-ZAITEN   )
                      ELSE 
+                       IF   ACCT-SRYKBN  =  "70"
+                         COMPUTE  WRK-KEISAN-JI   =  ACCT-SYUTEN1
+                                                  -  ACCT-SYUTEN2
+                         COMPUTE  TBL-SYUTEN-JI(ID1)  =
+                                  TBL-SYUTEN-JI(ID1)  +
+                                 ( WRK-ZAIKAISU-JI * WRK-KEISAN-JI )
+                         COMPUTE  WRK-KEISAN-JI   =  ACCT-SYUTEN2   +
+                                                     ACCT-KIZAITEN  +
+                                                     ACCT-YKZTEN
+                         COMPUTE  TBL-YKZTEN-JI(ID1)  =
+                                  TBL-YKZTEN-JI(ID1)  +
+                                 ( WRK-ZAIKAISU-JI * WRK-KEISAN-JI )
+                       ELSE
                          COMPUTE  TBL-SYUTEN-JI(ID1)  =
                                   TBL-SYUTEN-JI(ID1)  +
                                  ( WRK-ZAIKAISU-JI * ACCT-SYUTEN1  )
@@ -1334,6 +1347,7 @@
                          COMPUTE  TBL-YKZTEN-JI(ID1)  =
                                   TBL-YKZTEN-JI(ID1)  +
                                  ( WRK-ZAIKAISU-JI * WRK-KEISAN-JI )
+                       END-IF
                      END-IF
                    END-IF
       *
