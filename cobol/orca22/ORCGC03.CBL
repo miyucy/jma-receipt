@@ -511,8 +511,8 @@
                        MOVE    SPA-GMN-BYOMEICD(IDZ)
                                            TO  BYO-BYOMEICD
                        PERFORM 410111-BYOMEI-HENSYU-SEC
-                   END-IF
-                   PERFORM 4101111-BYOMEI-SELECT-HENSYU-SEC              
+                   END-IF              
+                   PERFORM 4101111-BYOMEI-SELECT-HENSYU-SEC
                    PERFORM 41021-BYOMEI-HENSYU-SEC
                WHEN    "0103"
                    IF      SPA-CID2-FLG    =   "OK"
@@ -999,7 +999,6 @@
       *****************************************************************
        4101111-BYOMEI-SELECT-HENSYU-SEC      SECTION.
       *      
-      *      
            MOVE    SPA-GMN-TBYOMEI       (SPA-GMN-BANGO)
                                        TO  SPA-GMN-BYOMEI
       *      
@@ -1019,7 +1018,7 @@
                                        TO  SPA-GMN-UTAGAIFLG
            MOVE    SPA-GMN-TUTAGAIFLG (SPA-GMN-BANGO)
                                        TO  SPA-GMN-UTAGAIFLGMEI
-      *                                 
+      *
            IF      SPA-NAI-TMANSEIKBN (SPA-GMN-BANGO)
                                        NOT =   ZERO
                MOVE    SPA-NAI-TMANSEIKBN (SPA-GMN-BANGO)
@@ -1278,11 +1277,12 @@
                    SPA-NAI-BYOMEI (6) DELIMITED  BY  SPACE
                               INTO          WRK-BYOMEI
            END-STRING
-           MOVE    WRK-BYOMEI          TO  SPA-GMN-BYOMEI
+      *****MOVE    WRK-BYOMEI          TO  SPA-GMN-BYOMEI
       *
       *    疑いフラグ編集
-           MOVE    SPACE               TO  SPA-GMN-UTAGAIFLG-G 
-           PERFORM VARYING IDX FROM    1   BY  1
+           IF      WRK-BYOMEI      NOT =   SPA-GMN-BYOMEI
+             MOVE    SPACE               TO  SPA-GMN-UTAGAIFLG-G 
+             PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       6
                    OR      SPA-GMN-UTAGAIFLG   =   "3"
                EVALUATE    SPA-NAI-UTAGAIFLG   (IDX)
@@ -1303,20 +1303,23 @@
                    WHEN    "3"
                        MOVE    "3"         TO  SPA-GMN-UTAGAIFLG
                 END-EVALUATE
-           END-PERFORM
-           PERFORM 5001-UTAGAIFLG-HENSYU-SEC
+             END-PERFORM
+             PERFORM 5001-UTAGAIFLG-HENSYU-SEC
       *            
       *    慢性区分編集
-           MOVE    SPACE               TO  SPA-GMN-MANSEIKBN-G  
-           PERFORM VARYING IDX FROM    1   BY  1
+             MOVE    SPACE               TO  SPA-GMN-MANSEIKBN-G  
+             PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       6
                IF      SPA-NAI-TOKSKNCD (IDX)   NOT =   ZERO
                    MOVE    SPA-NAI-TOKSKNCD (IDX)
                                            TO  SPA-GMN-MANSEIKBN
                    MOVE    6               TO  IDX
                END-IF   
-           END-PERFORM
-           PERFORM 5001-MANSEIKBN-HENSYU-SEC
+             END-PERFORM
+             PERFORM 5001-MANSEIKBN-HENSYU-SEC
+           END-IF
+      *
+           MOVE    WRK-BYOMEI          TO  SPA-GMN-BYOMEI
       *
       *    病名コードエラーの時以下の処理はしない
            IF      SPA-ERRCD            NOT =   SPACE     
