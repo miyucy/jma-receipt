@@ -45,5 +45,12 @@ W13	{
 			count	int;
 			item	varchar(20)[2];
 		};
+		TAXKBN_COMBO	{
+			TAXKBN	{
+				value	varchar(10);
+			};
+			count	int;
+			item	varchar(10)[2];
+		};
 	};
 };

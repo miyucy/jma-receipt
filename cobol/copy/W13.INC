@@ -45,3 +45,7 @@
                 04  W13-RSIIRYOKBN       PIC X(20).
                 04  W13-RSIIRYOKBN-COUNT PIC S9(9)   BINARY.
                 04  W13-RSIIRYOKBNLST    PIC X(20)   OCCURS  2 TIMES.
+              03  W13-TAXKBN-COMBO.
+                04  W13-TAXKBN           PIC X(10).
+                04  W13-TAXKBN-COUNT     PIC S9(9)   BINARY.
+                04  W13-TAXKBNLST        PIC X(10)   OCCURS  2 TIMES.

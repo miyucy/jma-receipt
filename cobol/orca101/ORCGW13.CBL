@@ -31,6 +31,7 @@
       *  01.00.01    NACL-Æ£¸¶    02.09.17  ²Ã»»Î¨ÄÉ²Ã
       *  01.00.02    NACL-Æ£¸¶    02.09.30  »ØÄêÉÂ±¡ÈÖ¹æ¤Î¶õÇò¥Á¥§¥Ã¥¯½¤Àµ
       *  02.00.01    NACL-Â¿¡¹Ç¼  02/11/14  °ì³çÆþÎÏ 
+      *  02.00.02    NACL-ÂÀÅÄ    03.04.04  Ê¸½ñÎÁ¡Ê¾ÃÈñÀÇ¡ËÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -75,6 +76,11 @@
                                               PIC X(18).
                        09  SPA-GMN-RSIIRYOCDN PIC X(40). 
                        09  SPA-GMN-KSNRATE    PIC 9(02).
+                       09  SPA-GMN-TAXKBN-G.
+                           11  SPA-GMN-TAXKBN PIC X(01).
+                           11  SPA-GMN-F1     PIC X(01).
+                           11  SPA-GMN-TAXKBNMEI
+                                              PIC X(08).
                    07  SPA-GMN-KOUMOKU1.
                        09  SPA-GMN-SONSHOUKBN.                 
                            11  SPA-GMN-SONSHOUKBN1
@@ -100,6 +106,13 @@
                        09  SPA-GMN-TENKBNMEIL
                                               PIC X(18).
                    07  SPA-GMN-TENKBN-MAX     PIC 9(02).    
+                   07  SPA-GMN-TAXKBNLST      OCCURS  2.
+                       09  SPA-GMN-TAXKBNL    PIC X(01).
+                       09  SPA-GMN-F1L        PIC X(01).
+                       09  SPA-GMN-TAXKBNMEIL
+                                              PIC X(08).
+                   07  SPA-GMN-TAXKBN-MAX     PIC 9(02).    
+      *                                        
       *
                    07  SPA-GMN-TBL.            
                        09  SPA-GMN-TBL-G      OCCURS  40.
@@ -391,6 +404,12 @@
            MOVE    "2"                 TO  SPA-GMN-TENKBNL      (2)
            MOVE    "£±£²±ß"            TO  SPA-GMN-TENKBNMEIL   (2)
            MOVE    2                   TO  SPA-GMN-TENKBN-MAX 
+      *     
+           MOVE    "1"                 TO  SPA-GMN-TAXKBNL      (1)
+           MOVE    "¤Ê¤·"              TO  SPA-GMN-TAXKBNMEIL   (1)
+           MOVE    "2"                 TO  SPA-GMN-TAXKBNL      (2)
+           MOVE    "¤¢¤ê"              TO  SPA-GMN-TAXKBNMEIL   (2)
+           MOVE    2                   TO  SPA-GMN-TAXKBN-MAX 
       * 
            MOVE    SPACE               TO  SYS-4001-REC
            INITIALIZE                      SYS-4001-REC
@@ -432,6 +451,18 @@
                    MOVE    ZERO                TO  SYS-4001-KSNRATE
                END-IF                    
                MOVE    SYS-4001-KSNRATE    TO  SPA-GMN-KSNRATE
+      *         
+               MOVE    SYS-4001-TAXKBN TO  SPA-GMN-TAXKBN
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-TAXKBN-MAX
+                   IF      SPA-GMN-TAXKBN 
+                                   =   SPA-GMN-TAXKBNL (IDY)
+                       MOVE    SPA-GMN-TAXKBNLST (IDY)
+                                           TO  SPA-GMN-TAXKBN-G
+                       MOVE    SPA-GMN-TAXKBN-MAX
+                                           TO  IDY
+                   END-IF                                     
+               END-PERFORM
            END-IF             
       *
       * 
@@ -492,6 +523,9 @@
            END-IF                                              
            IF     SPA-GMN-TENKBN-G      =   SPACE
                MOVE    SPA-GMN-TENKBNLST(1) TO  SPA-GMN-TENKBN-G
+           END-IF                                              
+           IF     SPA-GMN-TAXKBN-G      =   SPACE
+               MOVE    SPA-GMN-TAXKBNLST(1) TO  SPA-GMN-TAXKBN-G
            END-IF                                              
       *
            MOVE    1                    TO  SPA-GMN-CUR
@@ -564,6 +598,7 @@
            MOVE    W13-KSNRATE         TO  SPA-GMN-KSNRATE 
            MOVE    W13-RSIIRYOCDN      TO  SPA-GMN-RSIIRYOCDN 
            MOVE    W13-TENKBN          TO  SPA-GMN-TENKBN-G 
+           MOVE    W13-TAXKBN          TO  SPA-GMN-TAXKBN-G 
       *    Â»½ý¶èÊ¬
            MOVE    W13-SONSHOUKBN1     TO  SPA-GMN-SONSHOUKBN1
            MOVE    W13-SONSHOUKBN2     TO  SPA-GMN-SONSHOUKBN2
@@ -594,6 +629,11 @@
            END-IF
       *
            PERFORM 4102-KSNRATE-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4101-TAXKBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -722,6 +762,33 @@
            EXIT.
       *
       *****************************************************************
+      *    Ê¸½ñÎÁ¡Ê¾ÃÈñÀÇ¡Ë¥Á¥§¥Ã¥¯
+      *****************************************************************
+       4101-TAXKBN-CHK-SEC       SECTION.
+      *
+           IF      SPA-GMN-TAXKBN      =   SPACE
+               MOVE    SPA-GMN-TAXKBNLST (1)
+                                       TO  SPA-GMN-TAXKBN-G
+           ELSE
+               MOVE    ZERO                TO  FLG-OK
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-TAXKBN-MAX
+                   IF      SPA-GMN-TAXKBN 
+                                   =   SPA-GMN-TAXKBNL (IDY)
+                       MOVE    SPA-GMN-TAXKBNLST (IDY)
+                                               TO  SPA-GMN-TAXKBN-G
+                       MOVE    SPA-GMN-TAXKBN-MAX
+                                               TO  IDY
+                       MOVE    1               TO  FLG-OK
+                   END-IF
+               END-PERFORM
+               IF      FLG-OK              =   ZERO
+                   MOVE    SPA-GMN-TAXKBNLST (1)
+                                       TO  SPA-GMN-TAXKBN-G
+               END-IF
+           END-IF       
+      *     
+      *****************************************************************
       *    Â»½ý¶èÊ¬£±¥Á¥§¥Ã¥¯
       *****************************************************************
        4106-SONSHOUKBN1-CHK-SEC       SECTION.
@@ -739,7 +806,7 @@
                       (SNUM-MINKBN     NOT =   SPACE )   OR
                       (SNUM-SYOKBN     NOT =   SPACE )
                    MOVE    "0007"              TO  SPA-ERRCD
-                   MOVE    4                   TO  SPA-GMN-CUR
+                   MOVE    5                   TO  SPA-GMN-CUR
                    GO  TO  4106-SONSHOUKBN1-CHK-EXT
                ELSE
                    MOVE    SNUM-OUTNUM        TO  WRK-NUM
@@ -768,7 +835,7 @@
                       (SNUM-MINKBN     NOT =   SPACE )   OR
                       (SNUM-SYOKBN     NOT =   SPACE )
                    MOVE    "0007"              TO  SPA-ERRCD
-                   MOVE    5                   TO  SPA-GMN-CUR
+                   MOVE    6                   TO  SPA-GMN-CUR
                    GO  TO  4104-SONSHOUKBN2-CHK-EXT
                END-IF
            END-IF
@@ -818,7 +885,7 @@
       *
            IF      IDX                 =   ZERO
                IF      SPA-GMN-MAX         >=  WRK-CONS-LINE-MAX
-                   MOVE    6                   TO  SPA-GMN-CUR
+                   MOVE    7                   TO  SPA-GMN-CUR
                    MOVE    "0010"              TO  SPA-ERRCD
                    GO  TO  4105-SONSHOUNAME-CHK-EXT
                END-IF    
@@ -950,6 +1017,7 @@
            MOVE    SPA-GMN-TENKBN          TO  SYS-4001-TENKBN
            MOVE    SPA-GMN-RSIIRYOCDN      TO  SYS-4001-RSIIRYOCDN
            MOVE    SPA-GMN-KSNRATE         TO  SYS-4001-KSNRATE
+           MOVE    SPA-GMN-TAXKBN          TO  SYS-4001-TAXKBN
            MOVE    SYS-4001-REC            TO  SYSKANRI-REC
       *     
            IF      FLG-SYSKANRI            =   ZERO
@@ -1103,6 +1171,7 @@
            MOVE    SPA-GMN-RSIIRYOKBN-G     TO  W13-RSIIRYOKBN
            MOVE    SPA-GMN-KSNRATE          TO  W13-KSNRATE 
            MOVE    SPA-GMN-TENKBN-G         TO  W13-TENKBN
+           MOVE    SPA-GMN-TAXKBN-G         TO  W13-TAXKBN
       *     
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       SPA-GMN-RSIIRYOKBN-MAX
@@ -1120,6 +1189,13 @@
            MOVE    SPA-GMN-TENKBN-MAX  TO  W13-TENKBN-COUNT 
       *
            MOVE    SPA-GMN-RSIIRYOCDN  TO  W13-RSIIRYOCDN
+      *     
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-TAXKBN-MAX
+               MOVE    SPA-GMN-TAXKBNLST (IDY)
+                                       TO  W13-TAXKBNLST (IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-TAXKBN-MAX  TO  W13-TAXKBN-COUNT 
       *     
       *
            MOVE    SPA-GMN-SONSHOUKBN1   TO  W13-SONSHOUKBN1
@@ -1259,12 +1335,14 @@
                 WHEN    3
                     MOVE  "TENKBN"         TO   MCP-WIDGET
                 WHEN    4
-                    MOVE  "SONSHOUKBN1"    TO   MCP-WIDGET
+                    MOVE  "TAXKBN"         TO   MCP-WIDGET
                 WHEN    5
-                    MOVE  "SONSHOUKBN2"    TO   MCP-WIDGET
+                    MOVE  "SONSHOUKBN1"    TO   MCP-WIDGET
                 WHEN    6
-                    MOVE  "SONSHOUNAME"    TO   MCP-WIDGET
+                    MOVE  "SONSHOUKBN2"    TO   MCP-WIDGET
                 WHEN    7
+                    MOVE  "SONSHOUNAME"    TO   MCP-WIDGET
+                WHEN    8
                     MOVE  "KSNRATE"        TO   MCP-WIDGET
                 WHEN    99
                     MOVE  "B12"            TO   MCP-WIDGET
@@ -1284,17 +1362,17 @@
                WHEN    "RSIIRYOCDN"
                    MOVE    3               TO  SPA-GMN-CUR
                WHEN    "TENKBN"
-                   MOVE    7               TO  SPA-GMN-CUR
-               WHEN    "KSNRATE"
                    MOVE    4               TO  SPA-GMN-CUR
+               WHEN    "KSNRATE"
+                   MOVE    5               TO  SPA-GMN-CUR
                WHEN    "SONSHOUKBN1"
                    IF      SPA-GMN-SONSHOUKBN1     =   SPACE
                        MOVE    99              TO  SPA-GMN-CUR
                    ELSE
-                       MOVE    5               TO  SPA-GMN-CUR
+                       MOVE    6               TO  SPA-GMN-CUR
                    END-IF
                WHEN    "SONSHOUKBN2"
-                   MOVE    6               TO  SPA-GMN-CUR
+                   MOVE    7               TO  SPA-GMN-CUR
                WHEN    "SONSHOUNAME"
                    MOVE    99              TO  SPA-GMN-CUR
             END-EVALUATE
