@@ -81,6 +81,7 @@
                05  WRK-MM                  PIC 9(02).
                05  WRK-DD                  PIC 9(02).
       *
+           03  WRK-GAIHAKU-SRYCD           PIC X(09).
            03  WRK-CNT                     PIC 9(03).
            03  WRK-MEISAISU                PIC 9(03).
       *
@@ -102,9 +103,11 @@
            03  WRK-GENSAN4                 PIC X(09).
       *
       *    Æü¾ïÀ¸³è¾ã³²²Ã»»
-           03  WRK-NICHIJOU-KSN            PIC X(09).
+           03  WRK-NICHIJOU-KSN1           PIC X(09) VALUE "190109170".
+           03  WRK-NICHIJOU-KSN2           PIC X(09) VALUE "190807570".
       *    ÃÔÊò²Ã»»
-           03  WRK-CHIHOU-KSN              PIC X(09).
+           03  WRK-CHIHOU-KSN1             PIC X(09) VALUE "190109270".
+           03  WRK-CHIHOU-KSN2             PIC X(09) VALUE "190808670".
       *
       *    ¿ÇÎÅ¥³¡¼¥É·×½¸·×ÍÑ
            03  WRK-SRYCD-X                 PIC X(09).
@@ -431,17 +434,19 @@
                    MOVE   WRK-GENSAN4       TO  LNK-SROUNYUIN-SRYCD
                                            (IDX WRK-MEISAISU)
                END-IF
-      *        Ï«ºÒ¾è¿ô
-               EVALUATE  LNK-SROUNYUIN-JOUSU-KBN(IDX)
-                   WHEN  "1"
-                       ADD      1           TO  WRK-MEISAISU
-                       MOVE   "101900010"   TO  LNK-SROUNYUIN-SRYCD
-                                           (IDX WRK-MEISAISU)
-                   WHEN  "2"
-                       ADD      1           TO  WRK-MEISAISU
-                       MOVE   "101900020"   TO  LNK-SROUNYUIN-SRYCD
-                                           (IDX WRK-MEISAISU)
-               END-EVALUATE
+      *        Ï«ºÒ¾è¿ô¡ÊÆÃÄêÆþ±¡ÎÁ¤Î¾ì¹ç¤ÏÏ«ºÒ¾è¿ô¤Ê¤·¡Ë
+               IF       LNK-SROUNYUIN-SRYKBN(IDX)    =    "90"
+                   EVALUATE  LNK-SROUNYUIN-JOUSU-KBN(IDX)
+                       WHEN  "1"
+                           ADD      1           TO  WRK-MEISAISU
+                           MOVE   "101900010"   TO  LNK-SROUNYUIN-SRYCD
+                                               (IDX WRK-MEISAISU)
+                       WHEN  "2"
+                           ADD      1           TO  WRK-MEISAISU
+                           MOVE   "101900020"   TO  LNK-SROUNYUIN-SRYCD
+                                               (IDX WRK-MEISAISU)
+                   END-EVALUATE
+               END-IF
       *        ½é´ü²Ã»»¡ÊÄ¹´ü¸º»»¡Ë
                IF      (LNK-SROUNYUIN-GAIHAKU(IDX)   =   ZERO)    AND
                        (WRK-SHOKIKSN(IDX)   NOT =        SPACE)
@@ -594,8 +599,14 @@
        210-TENSU-KEISAN-SEC            SECTION.
       *
            INITIALIZE                      TNS-TENSU-REC
-           MOVE    LNK-SROUNYUIN-SRYCD(IDX IDX2)
+           IF     (IDX2      =    1)      AND
+                  (LNK-SROUNYUIN-GAIHAKU(IDX)   NOT =  ZERO)
+               PERFORM    GAIHAKU-NYUINKHN-SET-SEC
+               MOVE    WRK-GAIHAKU-SRYCD   TO  TNS-SRYCD
+           ELSE
+               MOVE    LNK-SROUNYUIN-SRYCD(IDX IDX2)
                                            TO  TNS-SRYCD
+           END-IF
            MOVE    LNK-SROUNYUIN-SANTEIYM  TO  ORC-DBYMD(1:6)
            MOVE    "01"                    TO  ORC-DBYMD(7:2)
            PERFORM TENSU-READ-SEC
@@ -634,6 +645,150 @@
       *
            .
        210-TENSU-KEISAN-EXT.
+           EXIT.
+      *
+      **************************************************************
+      *    ³°Çñ»þ¤ÎÆþ±¡´ðËÜÎÁ¼èÆÀ
+      **************************************************************
+       GAIHAKU-NYUINKHN-SET-SEC           SECTION.
+      *
+           MOVE    SPACE    TO   WRK-GAIHAKU-SRYCD
+      *
+           EVALUATE  LNK-SROUNYUIN-SRYCD(IDX IDX2)
+               WHEN  "190078210"
+                     MOVE  "190077410"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190078310"
+                     MOVE  "190077510"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190078410"
+                     MOVE  "190077610"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190078510"
+                     MOVE  "190077710"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190078610"
+                     MOVE  "190077810"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190078710"
+                     MOVE  "190077910"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190078810"
+                     MOVE  "190078010"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190078910"
+                     MOVE  "190078110"      TO   WRK-GAIHAKU-SRYCD
+      *
+               WHEN  "190082410"
+                     MOVE  "190081710"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190082510"
+                     MOVE  "190081810"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190082610"
+                     MOVE  "190081910"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190082710"
+                     MOVE  "190082010"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190082810"
+                     MOVE  "190082110"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190082910"
+                     MOVE  "190082210"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190083010"
+                     MOVE  "190082310"      TO   WRK-GAIHAKU-SRYCD
+      *
+               WHEN  "190084310"
+                     MOVE  "190083610"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190084410"
+                     MOVE  "190083710"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190084510"
+                     MOVE  "190083810"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190084610"
+                     MOVE  "190083910"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190084710"
+                     MOVE  "190084010"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190084810"
+                     MOVE  "190084110"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190084910"
+                     MOVE  "190084210"      TO   WRK-GAIHAKU-SRYCD
+      *
+               WHEN  "190087410"
+                     MOVE  "190085910"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190087510"
+                     MOVE  "190086010"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190087610"
+                     MOVE  "190086110"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190087710"
+                     MOVE  "190086210"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190087810"
+                     MOVE  "190086310"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190087910"
+                     MOVE  "190086410"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190088010"
+                     MOVE  "190086510"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190088110"
+                     MOVE  "190086610"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190088210"
+                     MOVE  "190086710"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190088310"
+                     MOVE  "190086810"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190088410"
+                     MOVE  "190086910"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190088510"
+                     MOVE  "190087010"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190088610"
+                     MOVE  "190087110"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190088710"
+                     MOVE  "190087210"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190088810"
+                     MOVE  "190087310"      TO   WRK-GAIHAKU-SRYCD
+      *
+               WHEN  "190094710"
+                     MOVE  "190093710"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190094810"
+                     MOVE  "190093810"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190094910"
+                     MOVE  "190093910"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190095010"
+                     MOVE  "190094010"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190095110"
+                     MOVE  "190094110"      TO   WRK-GAIHAKU-SRYCD
+      *
+               WHEN  "190797410"
+                     MOVE  "190796610"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190797510"
+                     MOVE  "190796710"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190797610"
+                     MOVE  "190796810"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190797710"
+                     MOVE  "190796910"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190797810"
+                     MOVE  "190797010"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190797910"
+                     MOVE  "190797110"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190798010"
+                     MOVE  "190797210"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190798110"
+                     MOVE  "190797310"      TO   WRK-GAIHAKU-SRYCD
+      *
+               WHEN  "190803510"
+                     MOVE  "190802810"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190803610"
+                     MOVE  "190802910"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190803710"
+                     MOVE  "190803010"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190803810"
+                     MOVE  "190803110"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190803910"
+                     MOVE  "190803210"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190804010"
+                     MOVE  "190803310"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190804110"
+                     MOVE  "190803410"      TO   WRK-GAIHAKU-SRYCD
+      *
+               WHEN  "190091210"
+                     MOVE  "190090210"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190091310"
+                     MOVE  "190090310"      TO   WRK-GAIHAKU-SRYCD
+      *
+               WHEN  "190109670"
+                     MOVE  "190097010"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190808870"
+                     MOVE  "190805710"      TO   WRK-GAIHAKU-SRYCD
+           END-EVALUATE
+      *
+           .
+       GAIHAKU-NYUINKHN-SET-EXT.
            EXIT.
       *
       *****************************************************************
