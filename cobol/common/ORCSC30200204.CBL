@@ -664,9 +664,11 @@
                                        =   "099303301")
                IF      WRK-SRYCD       NOT =   LNK-ACCT2-SRYCD
                    IF      WRK-COM-KZMFLG (IDX-SYU)    =   SPACE
+                      AND (LNK-ORCSC-KEI-IDX        =   ZERO )
                        MOVE    "K006"          TO  WRK-ERRCD
                        MOVE    "1"             TO  WRK-COM-KZMFLG
                                                               (IDX-SYU)
+                       MOVE    IDX-SYU         TO  LNK-ORCSC-KEI-IDX
                    END-IF
                END-IF
                GO    TO      1002-TENTEKI-CHK-EXT
