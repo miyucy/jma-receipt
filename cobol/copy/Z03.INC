@@ -73,7 +73,7 @@
                     06  Z03-SRYKBN.
                       07  Z03-VALUE   PIC X(21).
                     06  Z03-SRYKBN-COUNT   PIC S9(9)   BINARY.
-                    06  Z03-SRYKBN-ITEM    PIC X(20)   OCCURS  70.
+                    06  Z03-SRYKBN-ITEM    PIC X(20)   OCCURS  100.
                   05  Z03-TENSIKIBETUCOB.
                     06  Z03-TENSIKIBETU.
                       07  Z03-VALUE   PIC X(31).
@@ -88,7 +88,7 @@
                     06  Z03-SRYSYUKBN.
                       07  Z03-VALUE   PIC X(75).
                     06  Z03-SRYSYUKBN-COUNT   PIC S9(9)   BINARY.
-                    06  Z03-SRYSYUKBN-ITEM    PIC X(74)   OCCURS  70.
+                    06  Z03-SRYSYUKBN-ITEM    PIC X(74)   OCCURS  100.
                   05  Z03-NYUGAITEKKBNCOMB.
                     06  Z03-NYUGAITEKKBN.
                       07  Z03-VALUE   PIC X(21).
