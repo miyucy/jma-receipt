@@ -108,6 +108,7 @@
            03  IDH3                     PIC 9(04).
       *
            03  IDX-HZN                 PIC 9(04).
+           03  IDX-STR                 PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -590,8 +591,9 @@
                MOVE    WRK-GYO-MAX     TO  IDX2
            END-IF
            MOVE    ZERO                TO  IDX-TEI
+           COMPUTE IDX-STR             =   ORCSCWKSRY-STRIDX  +  1
       *    約束コード以外の画面再編集
-           PERFORM VARYING     IDX-1 FROM    1   BY  1
+           PERFORM VARYING     IDX-1 FROM    IDX-STR BY  1
                    UNTIL      (IDX-1     >   WRK-GYO-MAX )  OR
                               (IDX-1     >   IDX2   )
                IF     (SPA-GMN-INPUTCD(IDX-1)(1:1)   =   "S" OR ".") OR
@@ -757,10 +759,10 @@
       *
       *    約束コードの画面用再編集
            MOVE    SPACE               TO  WRK-ERRCD
-           PERFORM VARYING     IDX-1   FROM    1   BY  1
-                   UNTIL      (IDX-1   >   200 )  OR
-                              (SPA-COM-INPUTCD(IDX-1)    =   SPACE  AND
-                               SPA-GMN-INPUTCD(IDX-1)    =   SPACE )
+           PERFORM VARYING     IDX-1   FROM    IDX-STR   BY  1
+                   UNTIL      (IDX-1   >   WRK-GYO-MAX )  OR
+                             ((SPA-COM-INPUTCD(IDX-1)    =   SPACE) AND
+                              (SPA-GMN-INPUTCD(IDX-1)    =   SPACE))
                IF      SPA-COM-INPUTCD(IDX-1)(1:1)   =   "S"
                    MOVE    IDX-1               TO  IDX
                    MOVE    SPA-COM-INPUTCD (IDX-1)
