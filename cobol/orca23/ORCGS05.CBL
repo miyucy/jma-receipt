@@ -343,7 +343,7 @@
            MOVE    SPA-HOSPID              TO  SYU-HOSPID
            MOVE    SPA-S01-PTID            TO  SYU-PTID
            MOVE    SYUNOU-REC              TO  MCPDATA-REC
-           MOVE    "SYUNOU-KEY20"          TO  WRK-DBPATH
+           MOVE    "SYUNOU-KEY24"          TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
            IF    ( FLG-DBRC            NOT =   ZERO )
                MOVE    1                   TO  FLG-SYUNOU
@@ -359,7 +359,7 @@
       *
                PERFORM 31011-SYULIST-HEN-SEC
       *
-               MOVE    "SYUNOU-KEY20"          TO  WRK-DBPATH
+               MOVE    "SYUNOU-KEY24"          TO  WRK-DBPATH
                PERFORM 900-TBL-READ-SEC
                IF    ( FLG-DBRC            NOT =   ZERO )
                    MOVE    1                   TO  FLG-SYUNOU
@@ -369,7 +369,7 @@
       *
            END-PERFORM
       *
-           MOVE    "SYUNOU-KEY20"              TO  WRK-DBPATH
+           MOVE    "SYUNOU-KEY24"              TO  WRK-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
       *
            IF    ( FLG-SYUNOU              =   ZERO )
@@ -450,7 +450,7 @@
                COMPUTE WRK-SKIP-KNS    =   WRK-SKIP-KNS
                                        +   1
       *
-               MOVE    "SYUNOU-KEY20"      TO  WRK-DBPATH
+               MOVE    "SYUNOU-KEY24"      TO  WRK-DBPATH
                PERFORM 900-TBL-READ-SEC
                IF    ( FLG-DBRC            NOT =   ZERO )
                    MOVE    1               TO  FLG-SYUNOU

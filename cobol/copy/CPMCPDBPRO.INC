@@ -298,6 +298,7 @@
       *  01.01.117   NACL-小豆沢  04/01/14  SYUNOU-KEY22追加
       *                                     SYUNOU-KEY23追加
       *  01.01.118   NACL-門脇  　04/01/14  SRYACCT-KEY29,30,31,32,33追加
+      *  01.01.119   NACL-太田    04/01/19  SYUNOU-KEY24追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1824,6 +1825,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SYUNOU-KEY23"
                    MOVE    PATH-TBL-SYUNOU-KEY23
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SYUNOU-KEY24"
+                   MOVE    PATH-TBL-SYUNOU-KEY24
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "SYUNOU-ALL"
