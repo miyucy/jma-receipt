@@ -119,7 +119,7 @@ path	key6 	{
 			AND   KOHNUM      =   :KOHNUM
 			AND   TEKSTYMD    <=  :TEKSTYMD
 			AND   TEKEDYMD    >=  :TEKEDYMD
-			AND   SAKJOKBN    <>   "1"
+			AND   SAKJOKBN    <>   '1'
 			ORDER   BY      KOHID
 		;
 	};
@@ -128,14 +128,15 @@ path	key6 	{
 path	key7 	{
 	DBSELECT	{
 		DECLARE tbl_ptkohinf_key7_csr CURSOR FOR
-		SELECT *
-		FROM tbl_ptkohinf
-			WHERE HOSPID      =   :HOSPID
-			AND   KOHNUM      =   :KOHNUM
-			AND   TEKSTYMD    <   :TEKSTYMD
-			AND   TEKEDYMD    >=  :TEKEDYMD
-			AND   SAKJOKBN    <>   "1"
-			ORDER   BY      FTNJANUM
+		SELECT a.*
+		FROM tbl_ptkohinf a,tbl_ptinf b
+			WHERE a.HOSPID      =   :HOSPID
+			AND   a.KOHNUM      =   :KOHNUM
+			AND   a.TEKSTYMD    <   :TEKSTYMD
+			AND   a.TEKEDYMD    >=  :TEKEDYMD
+			AND   a.SAKJOKBN    <>   '1'
+			AND   a.PTID      =   b.PTID
+			ORDER   BY      a.FTNJANUM,b.KANANAME
 		;
 	};
 };
