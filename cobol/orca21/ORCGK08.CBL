@@ -2845,6 +2845,7 @@
                                                    =   SPACE )
                        PERFORM 45051-ORCS01-SET-SEC
                    END-PERFORM
+               END-IF
            END-PERFORM
       *
       *    剤ごとに点数を入れ直す
