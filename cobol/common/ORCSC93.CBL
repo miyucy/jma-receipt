@@ -114,7 +114,12 @@
            03  WRK-INPUTCD         PIC X(22).
       *
            03  WRK-ZAI-CNT         PIC 9(04).
+      *    ¾®»ù²Ê³°Íè¿Ç»¡ÎÁ²Ã»»È½Äê
+           03  WRK-SYONIKA-KBN         PIC X(01).
       *
+      *
+      *    ¾®»ù²Ê³°Íè¿Ç»¡ÎÁ¥Æ¡¼¥Ö¥ë
+           COPY   "CMSYONIKATBL.INC".
       *
       *    ²èÌÌ£Ó£Ð£ÁÎÎ°è¥ï¡¼¥¯
        01  WRK-SCR-REC.
@@ -1276,21 +1281,15 @@
       *    ¾®»ù²Ê³°Íè¿Ç»¡ÎÁ¤Î»þ´Ö³°¤Î¤ß¤Ï£Ï£Ë¤È¤¹¤ë
            IF      FLG-ARI             =   ZERO
                IF      LNK-SC93-SYONIKA-ARI2   =   1
-                   EVALUATE    SPA-COM-INPUTCD (IDX) 
-      *                ºÆ¿Ç»þ»þ´Ö³°²Ã»»
-                       WHEN    "112005770"
-      *                ºÆ¿Ç»þµÙÆü²Ã»»
-                       WHEN    "112005870"
-      *                ºÆ¿Ç»þ¿¼Ìë²Ã»»
-                       WHEN    "112005970"
-      *                ºÆ¿Ç»þ»þ´Ö³°ÆÃÎã
-                       WHEN    "112006070"
-                           IF     (IDX             >   1 )  AND
-                                  (SPA-GMN-INPUTCD(IDX - 1)(1:4)
-                                                   =   ".130")
-                               MOVE    1           TO  FLG-ARI
-                           END-IF
-                   END-EVALUATE
+                   PERFORM 10052-SYONIKASRYCD-CHK-SEC
+      *            ºÆ¿Ç¤Î»þ´Ö³°¤Î»þ¡¢£Ï£Ë¤È¤¹¤ë
+                   IF      WRK-SYONIKA-KBN     =   "4"
+                       IF     (IDX             >   1 )  AND
+                              (SPA-GMN-INPUTCD(IDX - 1)(1:4)
+                                               =   ".130")
+                           MOVE    1           TO  FLG-ARI
+                       END-IF
+                   END-IF
                END-IF
       *        ºßÂð»ØÆ³ÎÁ¤Î»þ¡¢ÅÀ¿ô²Ã»»¤Ï£Ï£Ë
       ******** IF      LNK-SC93-NETAKIRI-ARI   =   1
@@ -1348,6 +1347,26 @@
            .
        51012-KASAN-CHK-EXT.
            EXIT.
+      *****************************************************************
+      *    ¾®»ù²Ê³°Íè¿Ç»¡ÎÁ²Ê¥Á¥§¥Ã¥¯¥¯½èÍý
+      *****************************************************************
+       10052-SYONIKASRYCD-CHK-SEC                SECTION.
+      *
+      *    ¿Ç»¡ÎÁ¸¡º÷
+           SET     TBL-SYO             TO  1
+           SEARCH  TBL-SYONIKA-OCC     VARYING   TBL-SYO
+               AT  END
+                   MOVE    SPACE           TO  WRK-SYONIKA-KBN
+                WHEN   SPA-COM-INPUTCD (IDX)
+                                           =   TBL-SYONIKA-SRYCD
+                                                      (TBL-SYO)
+                   MOVE    TBL-SYONIKA-KBN (TBL-SYO)
+                                           TO  WRK-SYONIKA-KBN
+           END-SEARCH
+           .
+       10052-SYONIKASRYCD-CHK-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *     ¿ÇÎÅ¼ïÊÌ¶èÊ¬Ì¾¾Î¡¢¿ÇÎÅ¹Ô°Ù¶èÊ¬¥»¥Ã¥È

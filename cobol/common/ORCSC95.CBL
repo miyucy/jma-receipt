@@ -102,6 +102,7 @@
            03  FLG-DRCDCHK         PIC 9(01).
            03  FLG-NO              PIC 9(01).
            03  FLG-OK              PIC 9(01).
+           03  FLG-TIME            PIC 9(01).
       *
            03  FLG-JIKAN           PIC 9(01).
            03  FLG-COMMENT         PIC 9(01).
@@ -198,6 +199,13 @@
       *
            03  WRK-DRCD                PIC X(05).
            03  WRK-DRCD2               PIC X(05).
+      *
+      *    »þ´Ö
+           03  WRK-SYS-TIME.
+               05  WRK-SYS-HHMM        PIC 9(04).
+               05  WRK-SYS-SS          PIC 9(04).
+      *
+           03  SYS-TIME                PIC 9(08).
       *
       *Â¾²Ê¼õ¿Ç²ÊÍ­¤ê
        01  WRK-TAKA-SRYKA-AREA.
@@ -511,6 +519,45 @@
                    MOVE    SYS-1008-CHOKICHK-FLG
                                            TO  SPA-CHOKICHK-FLG
                END-IF
+      *        »þ´Ö³°²Ã»»ÆÃÎãÆýÍÄ»ù
+               IF      SYS-1008-JIKANTOKU-NYU-FLG  =   SPACE
+                   MOVE    ZERO            TO  SPA-JIKANTOKU-NYU
+               ELSE
+                   MOVE    SYS-1008-JIKANTOKU-NYU-FLG
+                                           TO  SPA-JIKANTOKU-NYU
+               END-IF
+      *        ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£±¡Ê¼Ì¿¿¿ÇÃÇ¡Ë
+               IF      SYS-1008-GAZOUKSN1-FLG  =   SPACE
+                   MOVE    ZERO            TO  SPA-GAZOUKSN1
+               ELSE
+                   MOVE    SYS-1008-GAZOUKSN1-FLG
+                                           TO  SPA-GAZOUKSN1
+               END-IF
+      *        »þ´Ö³°²Ã»»ÆýÍÄ»ù¥Á¥§¥Ã¥¯
+               IF      SYS-1008-JIKANTOKU-CHK  =   SPACE
+                   MOVE    ZERO            TO  SPA-JIKANTOKU-CHK
+               ELSE
+                   MOVE    SYS-1008-JIKANTOKU-CHK
+                                           TO  SPA-JIKANTOKU-CHK
+               END-IF
+               IF      SPA-JIKANTOKU-CHK   =   "1"
+      *            ÍËÆü¤Ë¤è¤êÈ½Äê
+                   IF      SPA-SYSYMD-YOBI     =   "6"
+      *                ÅÚÍË
+                       MOVE    SYS-1008-JIKANCHK-SAT (1)
+                                               TO  SPA-JIKANCHK-TIME (1)
+                       MOVE    SYS-1008-JIKANCHK-SAT (2)
+                                               TO  SPA-JIKANCHK-TIME (2)
+                   ELSE
+      *                ÅÚÍË°Ê³°
+                       MOVE    SYS-1008-JIKANCHK-WEEK(1)
+                                               TO  SPA-JIKANCHK-TIME (1)
+                       MOVE    SYS-1008-JIKANCHK-WEEK (2)
+                                               TO  SPA-JIKANCHK-TIME (2)
+                   END-IF
+               ELSE
+                   MOVE    ZERO            TO  SPA-JIKANCHK-TIME-G
+               END-IF
       *
            ELSE
                MOVE    ZERO                TO  SPA-INTERACT-KIKAN
@@ -522,6 +569,10 @@
                MOVE    ZERO                TO  SPA-NYU-SYOSIN
                MOVE    ZERO                TO  SPA-SURYOZERO-FLG
                MOVE    ZERO                TO  SPA-CHOKICHK-FLG
+               MOVE    ZERO                TO  SPA-JIKANTOKU-NYU
+               MOVE    ZERO                TO  SPA-GAZOUKSN1
+               MOVE    ZERO                TO  SPA-JIKANCHK-TIME-G
+               MOVE    ZERO                TO  SPA-JIKANTOKU-CHK
            END-IF
       *
       *    ¿ÇÎÅ²Ê
@@ -784,6 +835,20 @@
                    MOVE    SYS-1008-CHOKICHK-FLG
                                            TO  SPA-CHOKICHK-FLG
                END-IF
+      *        »þ´Ö³°²Ã»»ÆÃÎãÆýÍÄ»ù
+               IF      SYS-1008-JIKANTOKU-NYU-FLG  =   SPACE
+                   MOVE    ZERO            TO  SPA-JIKANTOKU-NYU
+               ELSE
+                   MOVE    SYS-1008-JIKANTOKU-NYU-FLG
+                                           TO  SPA-JIKANTOKU-NYU
+               END-IF
+      *        ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£±¡Ê¼Ì¿¿¿ÇÃÇ¡Ë
+               IF      SYS-1008-GAZOUKSN1-FLG  =   SPACE
+                   MOVE    ZERO            TO  SPA-GAZOUKSN1
+               ELSE
+                   MOVE    SYS-1008-GAZOUKSN1-FLG
+                                           TO  SPA-GAZOUKSN1
+               END-IF
            ELSE
                MOVE    ZERO                TO  SPA-INTERACT-KIKAN
       *
@@ -793,6 +858,8 @@
                MOVE    ZERO                TO  SPA-NYU-SYOSIN
                MOVE    ZERO                TO  SPA-SURYOZERO-FLG
                MOVE    ZERO                TO  SPA-CHOKICHK-FLG
+               MOVE    ZERO                TO  SPA-JIKANTOKU-NYU
+               MOVE    ZERO                TO  SPA-GAZOUKSN1
            END-IF
       *
       *    ¿ÇÎÅ²Ê
@@ -2093,6 +2160,13 @@
                PERFORM 1101-PTINF-HENSYU-SEC
            END-IF
       *
+           MOVE    ZERO            TO  SPA-JIKANCHK-ERR
+      *    ´µ¼Ô·èÄê»þ¡¢»þ´Ö¥Á¥§¥Ã¥¯
+           IF     (LNK-SC95-KBN        =   "2" ) AND
+                  (SPA-JIKANTOKU-CHK   =   "1" )
+               PERFORM 1109-TIMEI-CHK-SEC
+           END-IF
+      *
       *    ½é¿ÇÆü¡¢ºÇ½ª¿Ç»¡Æü
            MOVE    SPACE               TO  SPA-SYOYMD 
            MOVE    SPACE               TO  SPA-LSTYMD 
@@ -2408,6 +2482,42 @@
       *
            .
        401011-TABOO-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    »þ´Ö³°¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       1109-TIMEI-CHK-SEC            SECTION.
+      *
+           ACCEPT  SYS-TIME            FROM    TIME
+      *
+           MOVE    SYS-TIME            TO  WRK-SYS-TIME
+      *
+           MOVE    ZERO                TO  FLG-TIME
+           IF      SPA-JIKANCHK-TIME (1)   NOT =   ZERO
+               IF      (WRK-SYS-HHMM       >=  SPA-JIKANCHK-STR(1))
+                   AND (WRK-SYS-HHMM       <=  SPA-JIKANCHK-END(1))
+                   CONTINUE
+               ELSE
+                   MOVE    1               TO  FLG-TIME
+               END-IF
+           END-IF
+           IF      SPA-JIKANCHK-TIME (2)   NOT =   ZERO
+               IF      (WRK-SYS-HHMM       >=  SPA-JIKANCHK-STR(2))
+                   AND (WRK-SYS-HHMM       <=  SPA-JIKANCHK-END(2))
+                   CONTINUE
+               ELSE
+                   MOVE    1               TO  FLG-TIME
+               END-IF
+           END-IF
+      *    ½ü³°»þ´Ö³°
+           IF      FLG-TIME            =   1
+               MOVE    "1"             TO  SPA-JIKANCHK-ERR
+           ELSE
+               MOVE    ZERO            TO  SPA-JIKANCHK-ERR
+           END-IF
+           .
+       1109-TIMEI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3270,7 +3380,7 @@
                                                             (IDX-JYU)
                        MOVE    1                   TO  FLG-SYORI
                    END-IF
-      *        ÄûÀµ½èÍý»þ¡¢¥É¥¯¥¿¡¼¡¢ÊÝ¸±ÁÈ¹ç¤»¡¢ÅÁÉ¼ÈÖ¹æ¤ò¼èÆÀ¤¹¤ë
+      *            ÄûÀµ½èÍý»þ¡¢¥É¥¯¥¿¡¼¡¢ÊÝ¸±ÁÈ¹ç¤»¡¢ÅÁÉ¼ÈÖ¹æ¤ò¼èÆÀ¤¹¤ë
                    IF      LNK-SC95-KBN        =   "4"
                        MOVE    JYURRK-DRCD         TO  SPA-DRCD
                        MOVE    JYURRK-HKNCOMBINUM  TO  SPA-HKNCOMBINUM

@@ -67,6 +67,7 @@
       *  03.00.19    NACL-多々納  03/09/12  同一検査削除追加
       *  03.00.20    NACL-多々納  03/09/26  ＣＴ、ＭＲＩ同時入力追加
       *  03.00.21    NACL-多々納  04/02/20  セット展開変更
+      *  03.00.22    NACL-多々納  04/03/XX  Ｈ１６年４月改正対応他
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -573,6 +574,12 @@
       *
       *    診察料有無
            03  WRK-SINSATU-ARI          PIC 9(01).
+      *
+      *    小児科外来診察料加算判定
+           03  WRK-SYONIKA-KBN         PIC X(01).
+      *
+      *    小児科外来診察料テーブル
+           COPY   "CMSYONIKATBL.INC".
       *
       *   年齢表示
        01  WRK-NENREI-G.
@@ -2349,7 +2356,7 @@
       *    診療行為、計計算処理、編集
            MOVE    "2"             TO  FLG-TOROKU
            PERFORM 510-TBLHEN-SEC
-           MOVE    SPACE           TO  FLG-TOROKU
+           MOVE    SPACE               TO  FLG-TOROKU
       *
            MOVE    SPACE               TO  SPA-KID1-FLG
            .
@@ -3503,11 +3510,11 @@
                    OR (LNK-WKSRY-SRYKBN    (IDX)       =   "11" AND
                        LNK-WKSRY-SRYCD (IDX IDY)       =   "830000020")
       *                訂正の時、時間外のみの時
-                  OR ((LNK-WKSRY-SRYKBN    (IDX)       =   "13"  ) AND
-                      (LNK-WKSRY-SRYCD (IDX IDY)       =   "112005770"
-                                                       OR  "112005870"
-                                                       OR  "112005970"
-                                                       OR  "112006070"))
+      *********   OR ((LNK-WKSRY-SRYKBN    (IDX)       =   "13"  ) AND
+      *               (LNK-WKSRY-SRYCD (IDX IDY)       =   "112005770"
+      *                                                OR  "112005870"
+      *                                                OR  "112005970"
+      **********                                       OR  "112006070"))
       *                訂正の時、ダミー診察の時
                   OR ((LNK-WKSRY-SRYKBN    (IDX)       =   "11" OR
                                                            "12"   ) AND
@@ -3516,6 +3523,13 @@
                                                        OR  "820000005"
                                                        OR  "820000006"))
                    MOVE    1                   TO  FLG-SYUBETU
+               END-IF
+               IF      LNK-WKSRY-SRYKBN    (IDX)       =   "13"
+      *            小児科外来診察料の加算のみ
+                   PERFORM 310119-SYONIKA-CHK-SEC
+                   IF      WRK-SYONIKA-KBN     =   "4"
+                       MOVE    1                   TO  FLG-SYUBETU
+                   END-IF
                END-IF
       *
                IF      FLG-SYUBETU         =   1
@@ -3717,6 +3731,26 @@
       *
            .
        31011-SPA-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   小児科外来診察料科チェックク処理
+      *****************************************************************
+       310119-SYONIKA-CHK-SEC                  SECTION.
+      *
+      *    診察料検索
+           SET     TBL-SYO             TO  1
+           SEARCH  TBL-SYONIKA-OCC     VARYING   TBL-SYO
+               AT  END
+                   MOVE    SPACE           TO  WRK-SYONIKA-KBN
+                WHEN   LNK-WKSRY-SRYCD (IDX IDY)
+                                           =   TBL-SYONIKA-SRYCD
+                                                      (TBL-SYO)
+                   MOVE    TBL-SYONIKA-KBN (TBL-SYO)
+                                           TO  WRK-SYONIKA-KBN
+           END-SEARCH
+           .
+       310119-SYONIKA-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4484,6 +4518,7 @@
            INITIALIZE                  SPA-DENPNUM
            INITIALIZE                  SPA-CONTFLG
            INITIALIZE                  SPA-KYOTUKEY
+           INITIALIZE                  SPA-K02SET-AREA
       *    受付一覧からの時、ドクターを編集する
            IF      WRK-MOTOPG          =   "U01"
                MOVE    WRK-SPA-DRCD    TO  SPA-DRCD
@@ -4571,7 +4606,12 @@
            INITIALIZE                  SPA-K02
            INITIALIZE                  SPA-SCR-REC
       *    診療日に変更があったらＳＰＡを指定する
-           IF      SPA-SRYYMD      NOT =   SPA-SYSYMD
+           IF      SPA-SRYYMD          =   SPA-SYSYMD
+               MOVE    SPA-SYSYMDWH        TO  SPA-SRYYMDW
+               MOVE    SPA-SYSYMD          TO  SPA-SRYYMD
+      *        院外処方区分
+               MOVE    SPA-SYOHOKBN        TO  SPA-INGAIKBN
+           ELSE
       *
            MOVE    "1"                 TO  LNK-SC95-KBN
            MOVE    "K02"               TO  LNK-SC95-PG
@@ -4582,9 +4622,6 @@
                                        SPA-K01KYOUTU
                                        SPA-K02
       *
-           ELSE
-      *        院外処方区分
-               MOVE    SPA-SYOHOKBN        TO  SPA-INGAIKBN
            END-IF
       *
            MOVE    "2"                 TO  LNK-SC95-KBN
@@ -7357,6 +7394,9 @@
       *    時間外特例区分
            MOVE    SPA-JIKANTOKU       TO  LNK-ORCSC-JIKANTOKU
       *
+      *    時間外加算特例乳幼児
+           MOVE    SPA-JIKANTOKU-NYU   TO  LNK-ORCSC-JIKANTOKU-NYU
+      *
       *    電話再診の有無
            MOVE    SPA-TELSAI-ARI      TO  LNK-ORCSC-TELSAI-ARI
       *
@@ -8452,6 +8492,9 @@
            MOVE    SPA-TOKUTEIFLG      TO  LNK-ORCSC-TOKUTEIFLG
       *    時間外特例区分
            MOVE    SPA-JIKANTOKU       TO  LNK-ORCSC-JIKANTOKU
+      *
+      *    時間外加算特例乳幼児
+           MOVE    SPA-JIKANTOKU-NYU   TO  LNK-ORCSC-JIKANTOKU-NYU
       *    診察回数
            MOVE    SPA-SINSATU-CNT     TO  LNK-ORCSC-SINSATU-CNT
       *   １５歳未満再診科算定有り
@@ -8504,6 +8547,8 @@
       *    リハビリ逓減確認
            MOVE    FLG-RIHTEI          TO  LNK-ORCSC-FLG-RIHTEI
       *
+           MOVE    ZERO                TO  LNK-ORCSC-JIKANERR-FLG
+           MOVE    SPACE               TO  SPA-GMN-JIKANMSG
       *            診療
            IF     (SPA-SRYKBN-CNT (01) >   ZERO )
              OR   (SPA-HKNKBN          =   1    )
@@ -8550,6 +8595,12 @@
                END-IF
       *
                MOVE    LNK-ORCSC-KIDCD     TO  SPA-KIDCD
+      *        小児科特例時間外チェック
+               IF      LNK-ORCSC-JIKANERR-FLG  =   1
+                   MOVE    "小児科時間外特例"  TO  SPA-GMN-JIKANMSG
+               ELSE
+                   MOVE    SPACE               TO  SPA-GMN-JIKANMSG
+               END-IF
            END-IF
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
                   (SPA-KIDCD       NOT =   SPACE )
@@ -12704,6 +12755,14 @@
                                                              (IDX)
            END-PERFORM
            MOVE    SPA-TABOO-MAX       TO  K02-TABOO-COUNT
+      *
+      *    小児科時間外
+           IF      SPA-GMN-JIKANMSG    =   SPACE
+               MOVE    SPACE               TO  K02-JIKANMSG-VALUE
+           ELSE
+               MOVE    "red"               TO  K02-JIKANMSG-STYLE
+               MOVE    SPA-GMN-JIKANMSG    TO  K02-JIKANMSG-VALUE
+           END-IF
       *
       *    非活性処理
            PERFORM 510-GSRAUTH-SEC
