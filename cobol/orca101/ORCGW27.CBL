@@ -92,6 +92,7 @@
            03  WRK-KBNCD                           PIC X(08).
            03  WRK-IDX                             PIC 9(05).
            03  WRK-KJNYMD                          PIC X(08).
+           03  WRK-KJNYMD-BAK                      PIC X(08).
            03  WRK-NUM-EDIT.
                05  WRK-99                  PIC 9(02).
                05  WRK-99999               PIC 9(05).
@@ -372,15 +373,12 @@
            INITIALIZE                  SPA-W27
                                            W27
       *
-           MOVE    SPA-SYSYMD      TO  SPA-GMN-W27-KJNYMD-S
-           MOVE    SPA-SYSYMDWH    TO  SPA-GMN-W27-KJNYMD
+      *    画面初期化処理
+           PERFORM 420-CLEAR-SEC
       *
       *    コンボボックス初期化
            PERFORM 310-CMB-SYOKI-SEC
       *
-      *
-      *    画面初期化処理
-           PERFORM 420-CLEAR-SEC
       *
            .
        310-SPASET-EXT.
@@ -709,22 +707,7 @@
                                        TO  WRK-BTU-NAME
                PERFORM 420-CLEAR-SEC
                MOVE    WRK-BTU-NAME    TO  SPA-GMN-W27-BTU-NAME
-               MOVE    SPA-SYSYMD      TO  SPA-GMN-W27-KJNYMD-S
-               MOVE    SPA-SYSYMDWH    TO  SPA-GMN-W27-KJNYMD
                MOVE    1               TO  SPA-GMN-W27-CUR
-               GO  TO  4102-KIHON-CHK-EXT
-           END-IF
-      *
-      *    基準日チェック処理
-           PERFORM 4101-KJNYMD-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               PERFORM 4201-INPUT-AREA-CLEAR-SEC
-               PERFORM VARYING IDX1    FROM    1   BY  1
-                       UNTIL ( IDX1    >   SPA-GMN-W27-BRMLST-CNT )
-                   MOVE    ZERO    TO  SPA-GMN-W27-TYUKO-FLG (IDX1)
-               END-PERFORM
-      *
-               MOVE    100         TO  SPA-GMN-W27-CUR
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
@@ -789,6 +772,9 @@
                        SPA-GMN-W27-INPUT-AREA
                        SPA-GMN-W27-KJNYMD-AREA
            PERFORM 4201-CHK-BTN-CLEAR-SEC
+      *
+           MOVE    SPA-SYSYMD      TO  SPA-GMN-W27-KJNYMD-S
+           MOVE    SPA-SYSYMDWH    TO  SPA-GMN-W27-KJNYMD
       *
            MOVE    1               TO  SPA-GMN-W27-CUR
       *
@@ -934,9 +920,6 @@
       *
            PERFORM 420-CLEAR-SEC
       *
-           MOVE    SPA-SYSYMD      TO  SPA-GMN-W27-KJNYMD-S
-           MOVE    SPA-SYSYMDWH    TO  SPA-GMN-W27-KJNYMD
-      *
            MOVE    1               TO  SPA-GMN-W27-CUR
       *
            MOVE    W27-BTU-NAME    TO  SPA-GMN-W27-BTU-NAME
@@ -987,23 +970,39 @@
       *****************************************************************
        4100-KJNYMD-CHK-SEC             SECTION.
       *
-           PERFORM 4201-INPUT-AREA-CLEAR-SEC
+           MOVE    SPA-GMN-W27-KJNYMD-S
+                                   TO  WRK-KJNYMD-BAK
       *
            MOVE    SPACE           TO  SPA-GMN-W27-KJNYMD-S
       *
            MOVE    W27-KJNYMD      TO  SPA-GMN-W27-KJNYMD
       *
-           PERFORM 4101-KJNYMD-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               PERFORM VARYING IDX1    FROM    1   BY  1
-                       UNTIL ( IDX1    >   SPA-GMN-W27-BRMLST-CNT )
-                   MOVE    ZERO    TO  SPA-GMN-W27-TYUKO-FLG (IDX1)
-               END-PERFORM
+           IF    ( SPA-GMN-W27-KJNYMD  =   SPACE )
+               MOVE    SPA-SYSYMD      TO  SPA-GMN-W27-KJNYMD-S
+               MOVE    SPA-SYSYMDWH    TO  SPA-GMN-W27-KJNYMD
+               MOVE    2               TO  SPA-GMN-W27-CUR
+               PERFORM 4201-INPUT-AREA-CLEAR-SEC
+               PERFORM 4100-BRMLST-EDIT-SEC
+               GO  TO  4100-KJNYMD-CHK-EXT
+           END-IF
       *
+           MOVE    SPA-GMN-W27-KJNYMD
+                                   TO   WRK-YMD
+           PERFORM 5002-HIZUKE-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =    SPACE )
+               MOVE    WRK-KJNYMD-BAK
+                                   TO   WRK-YMD
+               PERFORM 5002-HIZUKE-CHK-SEC
+               MOVE    WRK-HENYMDG TO  SPA-GMN-W27-KJNYMD
+               MOVE    WRK-SYMD    TO  SPA-GMN-W27-KJNYMD-S
                MOVE    100         TO  SPA-GMN-W27-CUR
                GO  TO  4100-KJNYMD-CHK-EXT
            END-IF
       *
+           MOVE    WRK-HENYMDG     TO  SPA-GMN-W27-KJNYMD
+           MOVE    WRK-SYMD        TO  SPA-GMN-W27-KJNYMD-S
+      *
+           PERFORM 4201-INPUT-AREA-CLEAR-SEC
            PERFORM 4100-BRMLST-EDIT-SEC
       *
            MOVE    2               TO  SPA-GMN-W27-CUR
@@ -1011,31 +1010,6 @@
            .
       *
        4100-KJNYMD-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    基準日チェック処理
-      *****************************************************************
-       4101-KJNYMD-CHK-SEC             SECTION.
-      *
-           IF    ( SPA-GMN-W27-KJNYMD  =   SPACE )
-               MOVE    SPA-SYSYMD      TO  SPA-GMN-W27-KJNYMD-S
-               MOVE    SPA-SYSYMDWH    TO  SPA-GMN-W27-KJNYMD
-               GO  TO  4101-KJNYMD-CHK-EXT
-           END-IF
-      *
-           MOVE    SPA-GMN-W27-KJNYMD
-                                   TO   WRK-YMD
-           PERFORM 5002-HIZUKE-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =    SPACE )
-               GO  TO  4101-KJNYMD-CHK-EXT
-           END-IF
-      *
-           MOVE    WRK-HENYMDG     TO  SPA-GMN-W27-KJNYMD
-           MOVE    WRK-SYMD        TO  SPA-GMN-W27-KJNYMD-S
-      *
-           .
-      *
-       4101-KJNYMD-CHK-EXT.
            EXIT.
       *****************************************************************
       *    開始選択番号チェック処理
@@ -1844,24 +1818,24 @@
       *****************************************************************
        4103-CMB-BTU-NAME-SRH-SEC       SECTION.
       *
-           SET     CMB-IDX01       TO  1
+           SET     CMB-IDX21       TO  1
            SEARCH  SPA-GMN-W27-BTU-NAME-ITM-OCC
-                   VARYING CMB-IDX01
+                   VARYING CMB-IDX21
            AT  END
                INITIALIZE          WRK-CMB-ITM
                                    WRK-CMB-ITM2
                                    WRK-CMB-ITM3
                                    WRK-CMB-IDX
-           WHEN    SPA-GMN-W27-BTU-NAME-ITM (CMB-IDX01) (1 : 2)
-                                   =   WRK-CMB-CD
-               SET WRK-CMB-IDX     TO  CMB-IDX01
-               MOVE    SPA-GMN-W27-BTU-NAME-ITM  (CMB-IDX01)
+           WHEN    SPA-GMN-W27-BTU-NAME-ITM (CMB-IDX21) (1 : 2)
+                                   =   WRK-CMB-CD (1 : 2)
+               SET WRK-CMB-IDX     TO  CMB-IDX21
+               MOVE    SPA-GMN-W27-BTU-NAME-ITM  (CMB-IDX21)
                                    TO  WRK-CMB-ITM
-               MOVE    SPA-GMN-W27-BTU-NAME-ITM2 (CMB-IDX01)
+               MOVE    SPA-GMN-W27-BTU-NAME-ITM2 (CMB-IDX21)
                                    TO  WRK-CMB-ITM2
-               MOVE    SPA-GMN-W27-BTU-NAME-ITM3 (CMB-IDX01)
+               MOVE    SPA-GMN-W27-BTU-NAME-ITM3 (CMB-IDX21)
                                    TO  WRK-CMB-ITM3
-           WHEN    SPA-GMN-W27-BTU-NAME-ITM (CMB-IDX01)
+           WHEN    SPA-GMN-W27-BTU-NAME-ITM (CMB-IDX21)
                                    =   SPACE
                INITIALIZE          WRK-CMB-ITM
                                    WRK-CMB-ITM2
