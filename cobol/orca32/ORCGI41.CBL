@@ -4983,10 +4983,12 @@
       *    動票及た爛ェ情恔手き迋
       *    菌抰菌萌ェ情恔
       *    域挀普癆導斯樊ェ情啣恓棟咥恔
+      *    甩奶弗失交瓦永玄ェ情啣恓棟咥恔
            IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
                IF   PTNYUINRRK-TOKUTEI-NYUIN = "03" OR "04" OR "05" OR
                                                "06" OR "07" OR "08" OR
-                                               "09" OR "14" OR "16"
+                                               "09" OR "14" OR "16" OR
+                                               "17"
                    MOVE    SPACE   TO    WRK-TOKUTEI-NYUIN
                END-IF
            END-IF
