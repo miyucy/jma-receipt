@@ -7176,6 +7176,11 @@
                          TO  LNK-SCNYUACCT-KAGEN-EDYUKYMD(IDX6)
            END-PERFORM
       *
+      *    通算算定済日数
+           MOVE   WRK-TSUSAN    TO  LNK-SCNYUACCT-NYUKHN-NISUU
+      *    入院料加算診療コード取り込み
+           PERFORM    4801-NYUKSN-GET-SEC
+      *
       *    特定入院で入院料が変更になるコードの対応
            IF    SYOKIKSN-IN-KHNSRYCD   =   "190774110"
                  MOVE   SPACE       TO   SYOKIKSN-IN-KHNSRYCD
@@ -7210,11 +7215,6 @@
                  MOVE    "99999999"
                                   TO LNK-SCNYUACCT-KAGEN-EDYUKYMD(2)
            END-IF
-      *
-      *    通算算定済日数
-           MOVE   WRK-TSUSAN    TO  LNK-SCNYUACCT-NYUKHN-NISUU
-      *    入院料加算診療コード取り込み
-           PERFORM    4801-NYUKSN-GET-SEC
       *    特定入院料区分のセット
            IF      SPA-GMN-I01-TOKNYUIN-CD    =   SPACE
                MOVE     "0"     TO  LNK-SCNYUACCT-TOKUTEINYUIN-KBN
