@@ -977,7 +977,7 @@
                            OR      SPA-STS        =   2 
       *
       *        患者情報読込処理      
-               PERFORM 2001-PTINF-HEN-SEC 
+      *********PERFORM 2001-PTINF-HEN-SEC 
       *        患者番号別保険履歴情報編集処理      
                PERFORM 2001-RIREKI-HEN-SEC 
                MOVE    KEY-NEW         TO  KEY-OLD
@@ -1020,8 +1020,8 @@
       *
            MOVE    KEY-N-HOSPID        TO  PTINF-HOSPID
            MOVE    KEY-N-PTID          TO  PTINF-PTID
-           PERFORM 900-PTINF-READ-SEC
-           MOVE    PTINF-REC           TO  WRK-PTINF-REC
+      *****PERFORM 900-PTINF-READ-SEC
+      *****MOVE    PTINF-REC           TO  WRK-PTINF-REC
            . 
         2001-PTINF-HEN-EXT.
            EXIT.
@@ -4224,7 +4224,7 @@
        3904-RECE10-HENSYU-SEC        SECTION.
       * 
       *    テスト患者のとき更新しない
-           IF      WRK-PTINF-TSTPTNUMKBN   =   "1"
+           IF      RECE02-TSTPTNUMKBN   =   "1"
                GO  TO  3904-RECE10-HENSYU-EXT
            END-IF
       * 

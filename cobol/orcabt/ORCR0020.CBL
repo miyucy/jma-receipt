@@ -86,6 +86,7 @@
       *  01.00.31    NACL-藤原    03/10/07  福岡県の地方公費は主保険が
       *                                     国保の場合は公費カウントしない
       *                                     （法別番号４１以外のとき）
+      *  01.00.32    NACL-藤原    03/10/27  患者情報の編集の修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -592,13 +593,8 @@
                    OR      RECE01-TEKSTYMDX (IDX)  =   SPACE
                MOVE    RECE01-TEKSTYMDX (IDX)  TO  RECE02-TEKSTYMD
            END-PERFORM        
-      *    患者番号変換
-           INITIALIZE                       ORCSPTIDAREA
-           MOVE    RECE01-HOSPID        TO  SPTID-HOSPID
-           MOVE    RECE01-PTID          TO  SPTID-PTID
-           CALL    "ORCSPTID"           USING   ORCSPTIDAREA
-                                                SPA-1009-TBL
-           MOVE    SPTID-PTNUM          TO  RECE02-PTNUM
+      *    患者番号
+           MOVE    RECE01-PTNUM        TO  RECE02-PTNUM
       *    診療科情報のセット
            PERFORM   VARYING   IDX   FROM   1   BY   1
                      UNTIL    (IDX      >   20)    OR
@@ -612,66 +608,14 @@
                MOVE    1                TO  RECE02-TEISYUTUSAKI
            END-IF
       *    患者情報の取得
-           INITIALIZE                           PTINF-REC
-           MOVE    RECE01-HOSPID        TO      PTINF-HOSPID
-           MOVE    RECE01-PTID          TO      PTINF-PTID
-           MOVE    PTINF-REC            TO      MCPDATA-REC
-           MOVE    "DBSELECT"           TO      MCP-FUNC
-           MOVE    "PTINF-KEY"          TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"           USING   MCPAREA
-                                                 ORCMCPAREA
-                                                 MCPDATA-REC
-           IF      MCP-RC               =       ZERO
-               MOVE    "PTINF-KEY"      TO      ORC-DBPATH
-               PERFORM  PTINF-READ-SEC
-               IF      FLG-PTINF           =   ZERO
-                   MOVE   PTINF-KANANAME   TO  RECE02-KANANAME
-                   MOVE   PTINF-NAME       TO  RECE02-NAME
-                   MOVE   PTINF-SEX        TO  RECE02-SEX
-                   MOVE   PTINF-BIRTHDAY   TO  RECE02-BIRTHDAY
-                   MOVE   PTINF-DEATHKBN   TO  RECE02-DEATHKBN
-                   MOVE   PTINF-TSTPTNUMKBN
-                                           TO  RECE02-TSTPTNUMKBN
-      *            患者年齢計算
-                   INITIALIZE                  ORCSAGECHKAREA
-                   MOVE    RECE01-HOSPID   TO  AGECHK-HOSPID
-                   MOVE    RECE01-PTID     TO  AGECHK-PTID
-                   MOVE    RECE01-SRYYM    TO  AGECHK-SRYYMD(1:6)
-                   MOVE    "01"            TO  AGECHK-SRYYMD(7:2)
-                   MOVE    PTINF-BIRTHDAY  TO  AGECHK-BIRTHDAY
-                   CALL    "ORCSAGECHK"        USING
-                                               ORCSAGECHKAREA
-                   IF      AGECHK-RC       =   ZERO
-                       MOVE  AGECHK-NENREI TO  WRK-NENREI
-                                               RECE02-AGE
-                   ELSE
-                       DISPLAY  "PTINF AGE-CHK ERR " RECE01-PTID
-                   END-IF
-               ELSE
-                   DISPLAY  "PTINF FETCH ERR " RECE01-PTID  " " 
-               END-IF
-           ELSE
-               DISPLAY   "PTINF SELECT ERR" 
-           END-IF
-           MOVE   "PTINF-KEY"      TO  WK-PATH
-           PERFORM   CSR-CLOSE-SEC
-      *    旧姓履歴の取得
-           INITIALIZE                           KYUSEIRRK-REC
-           MOVE    RECE01-HOSPID        TO      KYUSEI-HOSPID
-           MOVE    RECE01-PTID          TO      KYUSEI-PTID
-           INITIALIZE                          STS-AREA-DAY
-           INITIALIZE                          LNK-DAY7-AREA
-           MOVE    "71"                 TO  LNK-DAY7-IRAI
-           MOVE    RECE02-SRYYM         TO  LNK-DAY7-YM
-           CALL    "ORCSDAY"            USING   STS-AREA-DAY
-                                                LNK-DAY7-AREA
-           MOVE    LNK-DAY7-KOYOMI      TO      KYUSEI-CHGYMD
-           MOVE    KYUSEIRRK-REC        TO      MCPDATA-REC
-           PERFORM 800-KYUSEIRRK-READ-SEC
-           IF       FLG-KYUSEIRRK           =   ZERO
-               MOVE    KYUSEI-NAME          TO  RECE02-NAME
-               MOVE    KYUSEI-KANANAME      TO  RECE02-KANANAME
-           END-IF         
+           MOVE   RECE01-KANANAME      TO  RECE02-KANANAME
+           MOVE   RECE01-NAME          TO  RECE02-NAME
+           MOVE   RECE01-SEX           TO  RECE02-SEX
+           MOVE   RECE01-BIRTHDAY      TO  RECE02-BIRTHDAY
+           MOVE   RECE01-DEATHKBN      TO  RECE02-DEATHKBN
+           MOVE   RECE01-TSTPTNUMKBN   TO  RECE02-TSTPTNUMKBN
+           MOVE   RECE01-AGE           TO  WRK-NENREI
+                                           RECE02-AGE
                 
       *    患者保険情報テーブルから主保険情報の取得
            IF  RECE01-HKNID             NOT =   ZERO

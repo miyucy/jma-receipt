@@ -62,9 +62,10 @@
       *
       *  レセ電機能追加
       *  01.02.01    NACL-藤原    03/08/05  外来レセ電処理の追加
-      *  01.00.31    NACL-藤原    03/10/07  福岡県の地方公費対応（国保）
+      *  01.02.02    NACL-藤原    03/10/07  福岡県の地方公費対応（国保）
       *                                     県外扱いの保険者
       *                                     ２７老人＋障害者医療
+      *  01.02.03    NACL-藤原    03/10/27  患者情報の編集追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -165,6 +166,7 @@
            03  FLG-SEIKYU                              PIC 9(01).
            03  FLG-KOHSKY                              PIC 9(01).
            03  FLG-RECE07                              PIC 9(01).
+           03  FLG-KYUSEIRRK                           PIC 9(01).
       * 
            03  FLG-KOH                                 PIC 9(01).
            03  FLG-CONTKBN                             PIC 9(01).
@@ -338,6 +340,9 @@
            COPY  "CPSK1001.INC".
       *    医療機関情報
            COPY  "CPSK1005.INC".
+      *
+      *    患者番号構成管理情報
+           COPY    "CPSK1009.INC".
       *    レセプト作成指示コード
            COPY    "CPSK2001.INC".
       *    レセプト作成指示（個別指示）コード
@@ -381,6 +386,10 @@
       *    レセプト電算
            COPY    "CPRECEDEN.INC".
       *
+      *    旧姓履歴情報
+       01  KYUSEIRRK-REC.
+           COPY    "CPKYUSEIRRK.INC".
+      *
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
@@ -397,10 +406,14 @@
            COPY    "CPORCSPTID.INC".
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
+      *   保険算定用年齢・割合計算サブ
+           COPY    "CPORCSAGECHK.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
+      *
+           COPY    "COMMON-SPA".
       *
       ****************************************************************
        LINKAGE                 SECTION.
@@ -473,6 +486,32 @@
                MOVE    MCPDATA-REC         TO  SYS-1001-REC
            ELSE
                MOVE    "医療機関情報が取得できませんでした。"
+                                           TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+           END-IF
+      *
+      *    患者番号構成管理情報編集
+           INITIALIZE                  SYS-1009-REC
+           MOVE    "1009"              TO  SYS-1009-KANRICD
+           MOVE    "*"                 TO  SYS-1009-KBNCD
+           MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)
+           MOVE    "01"                TO  ORC-DBYMD (7:2)
+           MOVE    SYS-1009-REC        TO  MCPDATA-REC
+           PERFORM 910-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1009-REC
+               MOVE    SYS-1009-PTNUMKSIKBN
+                                       TO  SPA-1009-PTNUMKSIKBN
+               MOVE    SYS-1009-HJNKSIKBN  
+                                       TO  SPA-1009-HJNKSIKBN
+               MOVE    SYS-1009-HJNKSINENKBN 
+                                       TO  SPA-1009-HJNKSINENKBN
+               MOVE    SYS-1009-HJNKSIRENNUMKBN
+                                       TO  SPA-1009-HJNKSIRENNUMKBN
+               MOVE    SYS-1009-HJNKSIRENNUMKETA
+                                       TO  SPA-1009-HJNKSIRENNUMKETA
+           ELSE
+               MOVE    "患者番号構成管理情報が取得できませんでした"
                                            TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -1297,6 +1336,51 @@
                MOVE    WRK-ERR-TEKEDYMD   TO  WRK-RECE01-ERR-TEKEDYMD
            END-IF 
       *
+      *    患者番号
+           INITIALIZE                      ORCSPTIDAREA
+           MOVE    WRK-RECE01-HOSPID   TO  SPTID-HOSPID
+           MOVE    WRK-RECE01-PTID     TO  SPTID-PTID
+           CALL    "ORCSPTID"          USING   ORCSPTIDAREA
+                                               SPA-1009-TBL
+           MOVE    SPTID-PTNUM         TO  WRK-RECE01-PTNUM
+      *
+      *    患者情報
+           MOVE   PTINF-KANANAME       TO  WRK-RECE01-KANANAME
+           MOVE   PTINF-NAME           TO  WRK-RECE01-NAME
+           MOVE   PTINF-SEX            TO  WRK-RECE01-SEX
+           MOVE   PTINF-BIRTHDAY       TO  WRK-RECE01-BIRTHDAY
+           MOVE   PTINF-DEATHKBN       TO  WRK-RECE01-DEATHKBN
+           MOVE   PTINF-TSTPTNUMKBN    TO  WRK-RECE01-TSTPTNUMKBN
+      *    患者年齢計算
+           INITIALIZE                      ORCSAGECHKAREA
+           MOVE    WRK-RECE01-HOSPID       TO  AGECHK-HOSPID
+           MOVE    WRK-RECE01-PTID         TO  AGECHK-PTID
+           MOVE    WRK-RECE01-SRYYM        TO  AGECHK-SRYYMD(1:6)
+           MOVE    "01"                TO  AGECHK-SRYYMD(7:2)
+           MOVE    PTINF-BIRTHDAY      TO  AGECHK-BIRTHDAY
+           CALL    "ORCSAGECHK"            USING
+                                           ORCSAGECHKAREA
+           IF      AGECHK-RC           =   ZERO
+               MOVE  AGECHK-NENREI         TO  WRK-RECE01-AGE
+           END-IF
+      *    旧姓履歴の取得
+           INITIALIZE                      KYUSEIRRK-REC
+           MOVE    WRK-RECE01-HOSPID       TO  KYUSEI-HOSPID
+           MOVE    WRK-RECE01-PTID         TO  KYUSEI-PTID
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY7-AREA
+           MOVE    "71"                TO  LNK-DAY7-IRAI
+           MOVE    WRK-RECE01-SRYYM        TO  LNK-DAY7-YM
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY7-AREA
+           MOVE    LNK-DAY7-KOYOMI     TO  KYUSEI-CHGYMD
+           MOVE    KYUSEIRRK-REC       TO  MCPDATA-REC
+           PERFORM 900-KYUSEIRRK-READ-SEC
+           IF       FLG-KYUSEIRRK      =   ZERO
+               MOVE    KYUSEI-NAME         TO  WRK-RECE01-NAME
+               MOVE    KYUSEI-KANANAME     TO  WRK-RECE01-KANANAME
+           END-IF         
+      *
            EVALUATE    WRK-SYOKBN
                WHEN    "1"
                    MOVE    WRK-RECE01-REC      TO  RECE01-REC
@@ -1561,6 +1645,11 @@
        20021-KOBETU-HENSYU-SEC              SECTION.
       *
            MOVE    MCPDATA-REC         TO  SYS-2002-REC
+      *
+      *    患者情報取得
+           MOVE    SYS-1001-HOSPID     TO  PTINF-HOSPID
+           MOVE    SYS-2002-PTID       TO  PTINF-PTID
+           PERFORM 900-PTINF-READ-SEC
       *
       *    診療年月編集
            MOVE    SYS-2002-SRYYM      TO  WRK-STYMD (1:6)
@@ -2135,6 +2224,45 @@
                                        MCPDATA-REC
            .
        900-RECE07-INV-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    旧姓履歴マスタ読み込み
+      *****************************************************************
+       900-KYUSEIRRK-READ-SEC          SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "KYUSEIRRK-KEY3"    TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "KYUSEIRRK-KEY3"    TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  KYUSEIRRK-REC
+                   MOVE    ZERO                TO  FLG-KYUSEIRRK
+               ELSE
+                   MOVE    1                   TO  FLG-KYUSEIRRK
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-KYUSEIRRK
+           END-IF
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "KYUSEIRRK-KEY3"    TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       900-KYUSEIRRK-READ-EXT.
            EXIT.
       *
       *****************************************************************
