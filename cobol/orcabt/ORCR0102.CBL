@@ -43,6 +43,7 @@
       *  01.01.01    NACL-藤原    02/09/27  帳票ＩＤをＤＢより編集
       *                                     パラメタに入外区分の追加
       *  01.01.02    NACL-藤原    02/10/21  印刷用ファイルにサイト区分を追加
+      *  01.01.03    NACL-藤原    03/01/08  印刷順通し番号を追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -71,7 +72,7 @@
            03  PRT-SITEKBN         PIC X(01).
            03  PRT-PRTDATA         PIC X(10000).
       *
-006900*    エラーファイル
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
@@ -114,6 +115,19 @@
       *
            03  WRK-PATH                PIC X(64). 
       *
+      *    通し番号
+           03  WRK-RENNUM              PIC 9(05).
+      *
+      *    通し番号編集エリア
+           03  WRK-HEN-RENNUM-AREA.
+               05  WRK-HEN-RENNUM1     PIC ZZZZZZ9.
+               05  WRK-HEN-RENNUM-R    REDEFINES   WRK-HEN-RENNUM1.   
+                   07  FILLER          PIC X(01).
+                   07  WRK-HEN-FL1     PIC X(01).
+                   07  WRK-HEN-RENNUM2 PIC ZZZ9.
+                   07  WRK-HEN-FL2     PIC X(01).
+                     
+      *
            03  WRK-PARA.
                05  WRK-PARA-JOBID                PIC 9(07).
                05  WRK-PARA-SHELLID              PIC X(08).
@@ -133,8 +147,13 @@
                                                  PIC X(04).
                    07  WRK-PARA-RECE09-NYUGAIKBN PIC X(01).                              
                05  WRK-PARA-TERMID32             PIC X(32).
+               05  WRK-PARA-SYOKBN               PIC X(01).
       *
-           03  WRK-IN                PIC X(01).
+           COPY    "HCM06.INC".
+           COPY    "HCM06V01.INC".
+           COPY    "HCN06.INC".
+           COPY    "HCN061.INC".
+           COPY    "HCN062.INC".
       *
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
@@ -218,6 +237,7 @@
                                              WRK-PARA1
                                              WRK-PARA-RECE09-KEY
                                              WRK-PARA-TERMID32
+                                             WRK-PARA-SYOKBN
            END-UNSTRING                                  
       *
            PERFORM 100-DBOPEN-SEC
@@ -292,8 +312,16 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    帳票印刷処理
+      *    通し番号初期値設定
+           MOVE    ZERO                TO  WRK-RENNUM 
       *
+           MOVE    SPACE               TO  WRK-HEN-RENNUM-AREA
+           IF      WRK-PARA-SYOKBN     =   "2"
+               MOVE    "["                 TO  WRK-HEN-FL1
+               MOVE    "]"                 TO  WRK-HEN-FL2
+           END-IF              
+      *
+      *    帳票印刷処理
            OPEN    OUTPUT              PRT-FILE
       *     
       *****MOVE    "RECEPRT-KEY3"      TO  WRK-PATH
@@ -310,7 +338,6 @@
            CLOSE                       PRT-FILE
       *
       *    帳票クリア処理
-      *
       *****MOVE    "RECEPRT-KEY4"      TO  WRK-PATH
            MOVE    "RECEPRT-KEY13"     TO  WRK-PATH
            PERFORM 900-RECEPRT-SELECT-SEC
@@ -351,7 +378,7 @@
       *    帳票印刷処理
       *****************************************************************
        2001-RECEPRT-PRINT-SEC          SECTION.
-      * 
+      *      
            MOVE    SPACE               TO  PRT-REC 
       *****MOVE    "HC06"              TO  PRT-PRTID
            MOVE    RECE08-FORMID       TO  PRT-PRTID
@@ -363,7 +390,40 @@
                WHEN    "2" 
                    MOVE    SYS-2005-KKHPRTNM   TO  PRT-PRTNM
            END-EVALUATE
-      *              
+      *
+      *    通し番号印刷のときのみ編集
+           IF      SYS-2005-RENNUMHENKBN   =   "1"
+               ADD     1                   TO  WRK-RENNUM
+               IF      WRK-PARA-SYOKBN     =   "1"
+                   MOVE    WRK-RENNUM          TO  WRK-HEN-RENNUM1
+               ELSE
+                   MOVE    WRK-RENNUM          TO  WRK-HEN-RENNUM2
+               END-IF        
+      *         
+               EVALUATE    RECE08-FORMID
+                   WHEN    "HCM06.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM06
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM06-RENNUM
+                       MOVE    HCM06               TO  RECE08-PRTDATA
+                   WHEN    "HCM06V01.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM06V01
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM06V01-RENNUM
+                       MOVE    HCM06V01            TO  RECE08-PRTDATA
+                   WHEN    "HCN06.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCN06
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCN06-RENNUM
+                       MOVE    HCN06               TO  RECE08-PRTDATA
+                   WHEN    "HCN061.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCN061
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCN061-RENNUM
+                       MOVE    HCN061              TO  RECE08-PRTDATA
+                   WHEN    "HCN062.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCN062
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCN062-RENNUM
+                       MOVE    HCN062              TO  RECE08-PRTDATA
+               END-EVALUATE
+           END-IF            
+      *             
            MOVE    RECE08-PRTDATA      TO  PRT-PRTDATA
            WRITE   PRT-REC
       *
