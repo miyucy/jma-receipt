@@ -4262,6 +4262,9 @@
            IF      LNK-SKOHPLUS-RC =   ZERO
                MOVE   LNK-SKOHPLUS-FTNKBN    TO   WK-KOH-FTNKBN
                MOVE   WK-KOH-FTNRATE         TO   WK-GAIKFTNRATE
+               IF     WK-GAIKFTNRATE  =  ZERO
+                      MOVE    SPACE   TO  COMB-KOH-GAIJGNKBN(KOH-IDX)
+               END-IF
            END-IF
       *
            .
@@ -4279,10 +4282,15 @@
                COMPUTE   WK-FUTANWARI  =
                               WK-GAIKFTNRATE  /  100
                IF    WK-KOH-FTNKBN   NOT =  SPACE
-                 COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX)  =
-                           LNK-SYU-KYUFUGAI-GOKEI-TEN
+                 EVALUATE  WK-KOH-FTNKBN
+                    WHEN  "1"
+                      COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX)  =
+                                LNK-SYU-KYUFUGAI-GOKEI-TEN
                                         *  10
                                         *  WK-FUTANWARI
+                    WHEN  "2"
+                      MOVE    ZERO   TO   LNK-SYU-KOH-COMPFTN(KOH-IDX)
+                 END-EVALUATE
                ELSE
                  COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX)  =
                            WK-ZENGAKU   *  WK-FUTANWARI
@@ -4534,10 +4542,15 @@
                COMPUTE   WK-FUTANWARI  =
                               WK-GAIKFTNRATE  /  100
                IF    WK-KOH-FTNKBN   NOT =  SPACE
-                 COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX)  =
-                           LNK-SYU-KYUFUGAI-GOKEI-TEN
+                 EVALUATE  WK-KOH-FTNKBN
+                    WHEN  "1"
+                      COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX)  =
+                                LNK-SYU-KYUFUGAI-GOKEI-TEN
                                         *  10
                                         *  WK-FUTANWARI
+                    WHEN  "2"
+                      MOVE    ZERO   TO   LNK-SYU-KOH-COMPFTN(KOH-IDX)
+                 END-EVALUATE
                ELSE
                  COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX)  =
                            WK-ZENGAKU   *  WK-FUTANWARI
