@@ -854,6 +854,7 @@ COPYS = \
         CPPGKANRI.INC \
         CPPGKANRIC.INC \
         M97.INC \
+        CPORCSFTNJGNCHK.INC \
 
 DBPATH = \
 	ORCA-DBPATH
