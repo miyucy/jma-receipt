@@ -57,6 +57,7 @@
       *  01.02.04    NACL-ÌçÏÆ    05/01/26  ¥·¥¹¥Æ¥à´ÉÍý£´£°£°£±¤Ë´Ø¤¹¤ë½¤Àµ
       *  01.02.05    NACL-ÌçÏÆ    05/01/27  ¹ø¡¦¶»Éô¸ÇÄêÂÓ²Ã»»¡¢ÁÏ³°¸ÇÄê´ï
       *                                     »ÈÍÑ²Ã»»¤Îµ»½Ñ¡¦ÌôºÞÅù¤ÎÁªÂòÂÐ±þ
+      *  01.02.06    NACL-ÌçÏÆ    05/01/28  Ê¸½ñÎÁ¤Î¥³¥á¥ó¥ÈÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2655,6 +2656,30 @@
                           ( SRY-SRYCD(IDX2) NOT = "830000020"   ))
                       OR (( ACCT-SRYKBN     = "11"              ) AND
                           ( SRY-SRYCD(IDX2)(1:3)   =   "008"    ))
+                      OR (( ACCT-SRYKBN     = "13"              ) AND
+                          ( SRY-SRYCD(1)    =  CONS-ROUSAI3  OR
+                                               CONS-ROUSAI4  OR
+                                               CONS-ROUSAI5  OR
+                                               CONS-ROUSAI6  OR
+                                               CONS-ROUSAI7  OR
+                                               CONS-ROUSAI8  OR
+                                               CONS-ROUSAI9  OR
+                                               CONS-ROUSAI10 OR
+                                               CONS-ROUSAI11 OR
+                                               CONS-ROUSAI12    ) AND
+                          ( SRY-SRYCD(IDX2)(1:3)   =   "008"    ))
+                      OR (( ACCT-SRYKBN     = "13"              ) AND
+                          ( SRY-SRYCD(1)    =  CONS-ROUSAI3  OR
+                                               CONS-ROUSAI4  OR
+                                               CONS-ROUSAI5  OR
+                                               CONS-ROUSAI6  OR
+                                               CONS-ROUSAI7  OR
+                                               CONS-ROUSAI8  OR
+                                               CONS-ROUSAI9  OR
+                                               CONS-ROUSAI10 OR
+                                               CONS-ROUSAI11 OR
+                                               CONS-ROUSAI12    ) AND
+                          ( SRY-SRYCD(IDX2)(1:1)   =   "8"      ))
       *
                          ADD    1      TO    WRK-MEISAI-CNT             
                          MOVE  "2"     TO    RECE85-SIKFLG(IDX4)
