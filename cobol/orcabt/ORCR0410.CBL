@@ -24,7 +24,7 @@
       *                              （保険情報編集）
       *  管理者            : 
       *  作成日付    作業者        記述
-      *  02/06/13    MCC−門脇　   新規作成
+      *  02/06/13    MCC−門脇労   新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
@@ -549,6 +549,8 @@
               INITIALIZE                          TBL-G26NISSU
               MOVE       SPACE             TO     TBL-GXXNISSU
               INITIALIZE                          TBL-GXXNISSU
+      *
+              MOVE       ZERO              TO     WRK-TAIHI-FLG
       *        
               PERFORM    VARYING    IDX    FROM   1   BY   1
                          UNTIL     (IDX      >   10)  OR
