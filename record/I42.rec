@@ -1,29 +1,29 @@
 I42	{
 	fixed19	{
 		PTNUM	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		KANANAME	{
-			value	varchar(31);
+			value	varchar(30);
 		};
 		NAME	{
-			value	varchar(31);
+			value	varchar(30);
 		};
 		BIRTHDAY	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		SEX	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		SRYKA	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		scrolledwindow1	{
 			SRYACTYMD	{
 				count	int;
 				item	{
-					value1	varchar(10);
-					value2	varchar(40);
+					value0	varchar(10);
+					value1	varchar(40);
 				}	[100];
 				select	bool[100];
 			};
@@ -32,9 +32,9 @@ I42	{
 			SRYACTCNT	{
 				count	int;
 				item	{
-					value1	varchar(7);
-					value2	varchar(41);
-					value3	varchar(5);
+					value0	varchar(7);
+					value1	varchar(40);
+					value2	varchar(5);
 				}	[100];
 				select	bool[100];
 			};

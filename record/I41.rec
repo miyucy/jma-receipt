@@ -1,43 +1,43 @@
 I41	{
 	fixed1	{
 		PTNUM	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		SRYYM	{
-			value	varchar(7);
+			value	varchar(6);
 		};
 		KANANAME	{
-			value	varchar(51);
+			value	varchar(50);
 		};
 		NAME	{
-			value	varchar(51);
+			value	varchar(50);
 		};
 		BIRTHDAY	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		SEX	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		IJYOU91	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		IJYOU180	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		NYUINBI	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		TAINBI	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		NUM	{
-			value	varchar(4);
+			value	varchar(3);
 		};
 		MEISYO	{
-			value	varchar(51);
+			value	varchar(50);
 		};
 		KOMENTO	{
-			value	varchar(51);
+			value	varchar(50);
 		};
 		DAY01	{
 			value	varchar(2);
@@ -134,23 +134,24 @@ I41	{
 		};
 		NYUINKACOMB	{
 			NYUINKA	{
-				value	varchar(17);
+				value	varchar(16);
 			};
 			count	int;
-			item	varchar(16)[30];
+			item	varchar(16)[100];
 		};
 		scrolledwindow1	{
 			DATELIST	{
 				count	int;
 				item	{
-					value1	varchar(3);
-					value2	varchar(60);
-					value3	varchar(5);
+					value0	varchar(3);
+					value1	varchar(60);
+					value2	varchar(5);
+					value3	varchar(2);
 					value4	varchar(2);
 					value5	varchar(2);
 					value6	varchar(2);
 					value7	varchar(2);
-					value8 	varchar(2);
+					value8	varchar(2);
 					value9	varchar(2);
 					value10	varchar(2);
 					value11	varchar(2);
@@ -176,7 +177,6 @@ I41	{
 					value31	varchar(2);
 					value32	varchar(2);
 					value33	varchar(2);
-					value34	varchar(2);
 				}	[400];
 				select	bool[400];
 			};
@@ -185,8 +185,8 @@ I41	{
 			KUMILIST	{
 				count	int;
 				item	{
-					value1	varchar(8);
-					value2	varchar(32);
+					value0	varchar(8);
+					value1	varchar(32);
 				}	[30];
 				select	bool[30];
 			};
@@ -195,8 +195,8 @@ I41	{
 			SAGAKULIST	{
 				count	int;
 				item	{
-					value1	varchar(4);
-					value2	varchar(12);
+					value0	varchar(4);
+					value1	varchar(12);
 				}	[30];
 				select	bool[30];
 			};
