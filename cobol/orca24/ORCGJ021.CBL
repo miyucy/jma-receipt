@@ -185,6 +185,7 @@
            COPY    "J022.INC".
            COPY    "J023.INC".
            COPY    "J024.INC".
+           COPY    "J025.INC".
            COPY    "J03.INC".
            COPY    "J04.INC".
            COPY    "J041.INC".
@@ -1756,7 +1757,7 @@
                WHEN    "0010"
                    MOVE    "保険組合せの変更が終了しました。"
                                        TO  SPA-ERRMSG
-                   MOVE    "収納で請求額の変更して下さい。"
+                   MOVE    "収納更新で請求額の変更して下さい。"
                                        TO  SPA-ERRMSG(33:)
                WHEN    "0011"
                    MOVE    "変換エラーです。"

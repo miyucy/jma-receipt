@@ -16,14 +16,14 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION              DIVISION.
-       PROGRAM-ID.                 ORCGJ041.
+       PROGRAM-ID.                 ORCGJ025.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
-      *  サブシステム名    : 会計照会
-      *  コンポーネント名  : 禁忌エラー一覧 （Ｊ０４１）(編集はＪ０４）
+      *  サブシステム名    : 会計カード
+      *  コンポーネント名  : 収納変更確認（Ｊ０２５）
       *  管理者            : 
       *  作成日付    作業者        記述
-      *  00/12/01    MCC−多々納   新規作成
+      *  04/08/02    NACL−多々納  新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
@@ -35,28 +35,27 @@
        FILE-CONTROL.
       *
        DATA                        DIVISION.
-      *FILE                        SECTION.
+       FILE                        SECTION.
       *
       *
        WORKING-STORAGE             SECTION.
-      *
       *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    診療行為用共通パラメタ
+      *    会計照会共通パラメタ
            COPY    "J01COMMON-SPA".
       *
       *    画面スパ領域
-           COPY    "J04SCR-SPA".
+           COPY    "J02SCR-SPA".
       *
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
       *
+      *
       *    カウント領域
        01  CNT-AREA.
            03  CNT-ERR             PIC 9(06).
-           03  CNT-ENT             PIC 9(06).
       *
       *    添字領域
        01  IDX-AREA.
@@ -66,19 +65,27 @@
       *    一時領域
        01  WRK-AREA.
            03  WRK-SYSYMD.
+               05  WRK-SYSYY       PIC 9(04).
+               05  WRK-SYSMM       PIC 9(02).
+               05  WRK-SYSDD       PIC 9(02).
+           03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).
                05  WRK-SMM         PIC 9(02).
                05  WRK-SDD         PIC 9(02).
-           03  WRK-SEYMD.
-               05  WRK-SEYY        PIC 9(04).
-               05  WRK-SEMM        PIC 9(02).
-               05  WRK-SEDD        PIC 9(02).
+           03  WRK-WYMD.
+               05  WRK-WGO         PIC X(01).
+               05  WRK-WYY         PIC 9(02).
+               05  WRK-WMM         PIC 9(02).
+               05  WRK-WDD         PIC 9(02).
+           03  WRK-ENDDD           PIC 9(02).
       *
-           03  WRK-ERRMSG          PIC X(40).
+           03  WRK-Z7              PIC Z,ZZZ,ZZ9.
+           03  WRK-Z3              PIC ZZ9.
       *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
+      *
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -89,8 +96,6 @@
            COPY    "CPORCSLNK.INC".
       *    数字変換領域
            COPY    "CPORCSNUM.INC".
-      *   患者番号変換サブ
-           COPY    "CPORCSPTID.INC".
       *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
@@ -134,8 +139,12 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  WRK-AREA
+           INITIALIZE                  IDX-AREA
+      *
            MOVE    SPA-COMMON      TO  SPA-AREA.
-           MOVE    SPA-FREE        TO  SPA-J04
+           MOVE    SPA-FREE        TO  SPA-J02
            MOVE    SPA-WORK        TO  SPA-J01KYOUTU
       *
            MOVE    SPACE           TO  SPA-ERRCD
@@ -145,7 +154,7 @@
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
       *    画面遷移
-               WHEN     "PUTG"         ALSO   "CLICKED"
+               WHEN     "PUTG"           ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
       *    入力
                WHEN      OTHER
@@ -157,34 +166,41 @@
                PERFORM 500-SET-SCREEN
            END-IF
       *
+           MOVE    SPA-J01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
-           MOVE    SPA-J04         TO  SPA-FREE
+           MOVE    SPA-J02         TO  SPA-FREE
       *
            .
            EXIT    PROGRAM
            .
+      *
       *****************************************************************
       *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
+      *    エラー画面より
+           IF      SPA-MOTOPG          =   "JERR"
+               MOVE    SPACE               TO  SPA-MOTOPG
+               PERFORM 5001-MAPCUR-SEC
+           ELSE
       *
-           INITIALIZE                  FLG-AREA
-           INITIALIZE                  CNT-AREA
-           INITIALIZE                  WRK-AREA
+      *        初期画面編集
+      *D       PERFORM 300-SCREEN-SEC
       *
-      *    初期画面セット
-      *D   PERFORM 300-SCREEN-SEC
+      *        画面編集
+               PERFORM 500-GMNHEN-SEC
+           END-IF
       *
-      *    画面編集
-      *D   PERFORM 500-GMNHEN-SEC
+           MOVE    SPACE               TO  LINKAREA
       *
            MOVE   "NEW"                TO  MCP-PUTTYPE.
-           MOVE   "J041"               TO  MCP-WINDOW.
+           MOVE   "J025"               TO  MCP-WINDOW.
       *
            PERFORM 900-PUT-WINDOW.
       *
            MOVE    1                   TO  FLG-END
+          .
       *
            .
        100-INIT-EXT.
@@ -193,25 +209,80 @@
       *****************************************************************
       *    初期画面処理
       *****************************************************************
-       300-SCREEN-SEC             SECTION.
+       300-SCREEN-SEC              SECTION.
+      *
+           PERFORM                     310-SPA-SET-SEC
+      *
+           MOVE    1                   TO  SPA-GMN-CUR
       *
            .
-       300-SCREEN-EXT.
+       3OO-SCREEN-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    画面編集処理
+      *****************************************************************
+       310-SPA-SET-SEC                  SECTION.
+      *
+      *
+           .
+       310-SPA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面編集処理
+      *****************************************************************
+       500-GMNHEN-SEC                  SECTION.
+      *
+           MOVE    SPACE               TO  J025
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-J025-MAX
+               MOVE    SPA-J025-DENPNUM (IDX)  TO  J025-DENPNUM (IDX)
+               MOVE    SPA-J025-SRYKA   (IDX)  TO  J025-SRYKA (IDX)
+               MOVE    SPA-J025-HKNCOMBI(IDX)  TO  J025-HKNCOMBI (IDX)
+               MOVE    SPA-J025-FTNRATE (IDX)  TO  WRK-Z3
+               MOVE    WRK-Z3                  TO  J025-FTNRATE (IDX)
+               MOVE    SPA-J025-DENPPRTYMD(IDX)
+                                               TO  J025-DENPPRTYMD(IDX)
+               MOVE    SPA-J025-SRYYMD  (IDX)  TO  J025-SRYYMD (IDX)
+               MOVE    SPA-J025-MAE-SKYMONEY (IDX) TO  WRK-Z7
+               MOVE    WRK-Z7                  TO  J025-MAE-SKYMONEY
+                                                             (IDX)
+               MOVE    SPA-J025-ATO-SKYMONEY (IDX) TO  WRK-Z7
+               MOVE    WRK-Z7                  TO  J025-ATO-SKYMONEY
+                                                             (IDX)
+               MOVE    SPA-J025-KBNMEI  (IDX)  TO  J025-KBNMEI (IDX)
+           END-PERFORM
+           MOVE    SPA-J025-MAX        TO  J025-SYUNOULIST-COUNT
+      *
+           PERFORM 5001-MAPCUR-SEC
+           .
+       500-GMNHEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面カーソルセット処理
+      *****************************************************************
+       5001-MAPCUR-SEC             SECTION.
+      *
+           EVALUATE    SPA-J025-CUR
+               WHEN    1
+                   MOVE    "B01"               TO  MCP-WIDGET
+           END-EVALUATE
+      *
+           .
+       5001-MAPCUR-EXT.
+           EXIT.
       *****************************************************************
       *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
       *
+      *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
       *        戻る
                WHEN    "CLICKED"       ALSO    "B01"
-                   MOVE    ZERO            TO  SPA-J041-CHK
-                   PERFORM 210-BACK
-      *        登録
-               WHEN    "CLICKED"       ALSO    "B12"
-                   MOVE    1               TO  SPA-J041-CHK
                    PERFORM 210-BACK
            END-EVALUATE
       *
@@ -223,24 +294,22 @@
       *****************************************************************
        200-ENTRY                   SECTION.
       *
+      *
            .
        200-ENTRY-EXT.
            EXIT.
+      *
       *
       *****************************************************************
       *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
       *
-           MOVE    "J04"               TO  SPA-SAKIPG
-           MOVE    "J041"              TO  SPA-MOTOPG
+           MOVE    "J02"               TO  SPA-SAKIPG
+           MOVE    "J025"              TO  SPA-MOTOPG
       *
-           MOVE    SPA-J01KYOUTU       TO  SPA-WORK
-      *
-      *    MOVE    "CHANGE"            TO  MCP-PUTTYPE
-      *****MOVE    "BACK"              TO  MCP-PUTTYPE 
-           MOVE    "JOIN"              TO  MCP-PUTTYPE 
-           MOVE    "J04"               TO  MCP-WINDOW
+           MOVE    "JOIN"              TO  MCP-PUTTYPE.
+           MOVE    "J02"               TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *
@@ -255,17 +324,52 @@
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
-      *D   PERFORM 500-GMNHEN-SEC
+            PERFORM 500-GMNHEN-SEC
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               PERFORM 510-ERRSET-SEC
+               GO      TO      500-SET-SCREEN-EXT
+           END-IF
+      *
+           MOVE    SPACE               TO  LINKAREA
       *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE.
-           MOVE    "J041"              TO  MCP-WINDOW.
+           MOVE    "J025"              TO  MCP-WINDOW.
       *
            PERFORM 900-PUT-WINDOW.
            .
        500-SET-SCREEN-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    エラーメッセージ表示理
+      *****************************************************************
+       510-ERRSET-SEC              SECTION.
+           MOVE    SPACE               TO  SPA-ERRMSG
       *
+           EVALUATE    SPA-ERRCD
+               WHEN    "0001"
+                   MOVE    "入力エラー"
+                                       TO  SPA-ERRMSG
+           END-EVALUATE
+      *
+           MOVE    SPACE               TO  JERR
+           MOVE    SPA-ERRCD           TO  JERR-ERRCODE
+           MOVE    SPA-ERRMSG          TO  JERR-ERRMSG
+           MOVE    "B01"               TO  MCP-WIDGET
+      *
+           MOVE    "J025"              TO  SPA-MOTOPG
+           MOVE    "JERR"              TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE.
+           MOVE    "JERR"              TO  MCP-WINDOW.
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+           .
+       510-ERRSET-EXT.
+           EXIT.
       *****************************************************************
       *    ＰＵＴ　処理
       *****************************************************************
@@ -280,4 +384,5 @@
            .
        900-PUT-WINDOW-EXT.
            EXIT.
+      *
       *

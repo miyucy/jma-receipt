@@ -145,6 +145,7 @@
            COPY    "J022.INC".
            COPY    "J023.INC".
            COPY    "J024.INC".
+           COPY    "J025.INC".
            COPY    "J03.INC".
            COPY    "J04.INC".
            COPY    "J041.INC".
@@ -164,6 +165,11 @@
       *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
+      *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  STS-AREA
+           INITIALIZE                  WRK-AREA
+           INITIALIZE                  IDX-AREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA.
            MOVE    SPA-FREE        TO  SPA-J02

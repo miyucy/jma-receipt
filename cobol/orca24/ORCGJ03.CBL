@@ -107,8 +107,8 @@
                                13  SPA-GMN-TKAISU2     PIC 9(04).
                            11  SPA-GMN-TMAX            PIC 9(04).
       *
-                   07  SPA-GMN-TENSU           PIC 9(07).
-                   07  SPA-GMN-NYUTENSU        PIC 9(07).
+                   07  SPA-GMN-TENSU           PIC S9(07).
+                   07  SPA-GMN-NYUTENSU        PIC S9(07).
                    07  SPA-GMN-RSITENSU        PIC 9(07).
                    07  SPA-GMN-JIHIKIN         PIC 9(08).
       *
@@ -237,9 +237,11 @@
            03  WRK-GOK-RSITENSU    PIC 9(08).
            03  WRK-GOK-TENSU       PIC S9(07).
            03  WRK-GOK-NYUTEN      PIC S9(07).
+           03  WRK-GOK-NYUTEN2     PIC S9(07).
       *
            03  WRK-ZZZ              PIC ZZZ.
            03  WRK-Z8               PIC ZZ,ZZZ,ZZZ.
+           03  WRK-Z82              PIC --,---,---.
       *
            03  WRK-ERRMSG          PIC X(40).
       *
@@ -427,6 +429,7 @@
            COPY    "J022.INC".
            COPY    "J023.INC".
            COPY    "J024.INC".
+           COPY    "J025.INC".
            COPY    "J03.INC".
            COPY    "J04.INC".
            COPY    "J041.INC".
@@ -1620,6 +1623,7 @@
            MOVE    ZERO                TO  WRK-GOK-TENSU
            MOVE    ZERO                TO  WRK-GOK-RSITENSU
            MOVE    ZERO                TO  WRK-GOK-JIHIKIN
+           MOVE    ZERO                TO  WRK-GOK-NYUTEN2
       *    診療会計マスターから編集
            INITIALIZE                      SRYACCT-REC
            MOVE    SPA-HOSPID          TO  ACCT-HOSPID
@@ -1670,18 +1674,36 @@
                        PERFORM 31092-SRYACCT-HEN-SEC
                    ELSE
                        MOVE    ZERO                TO  FLG-GENZAN
+      *!診療会計に減額フラグを追加するまで
       *                内服の逓減かどうかを判定する
                        IF      ACCT-SRYKBN         =   "21"
+                                                   OR  "90"
+                                                   OR  "92"
+                                                   OR  "97"
                            PERFORM 31092-SRYACCT-HEN-SEC
                        END-IF
                        COMPUTE WRK-TENSU       =   ACCT-ZAITEN
                                                *   ACCT-ZAIKAISU
-                       IF      FLG-GENZAN          =   ZERO
-                           COMPUTE WRK-GOK-TENSU   =   WRK-GOK-TENSU
-                                                   +   WRK-TENSU
+                       IF      ACCT-SRYKBN         =   "90"
+                                                   OR  "92"
+                                                   OR  "97"
+                           IF      FLG-GENZAN          =   ZERO
+                               COMPUTE WRK-GOK-NYUTEN2 =
+                                                       WRK-GOK-NYUTEN2
+                                                       +   WRK-TENSU
+                           ELSE
+                               COMPUTE WRK-GOK-NYUTEN2 =
+                                                       WRK-GOK-NYUTEN2
+                                                       -   WRK-TENSU
+                           END-IF
                        ELSE
-                           COMPUTE WRK-GOK-TENSU   =   WRK-GOK-TENSU
-                                                   -   WRK-TENSU
+                           IF      FLG-GENZAN          =   ZERO
+                               COMPUTE WRK-GOK-TENSU   =   WRK-GOK-TENSU
+                                                       +   WRK-TENSU
+                           ELSE
+                               COMPUTE WRK-GOK-TENSU   =   WRK-GOK-TENSU
+                                                       -   WRK-TENSU
+                           END-IF
                        END-IF
                    END-IF
                END-IF
@@ -1704,6 +1726,7 @@
       *    入院の時、入院料の点数合計
            IF      SPA-GMN-NYUGAIKBN   =   "1"
                PERFORM 31091-NYUACCT-TENSU-SEC
+               ADD     WRK-GOK-NYUTEN2     TO  SPA-GMN-NYUTENSU
            END-IF
       *
            .
@@ -1890,6 +1913,7 @@
       *
            MOVE    ZERO                TO  FLG-GENZAN
            PERFORM UNTIL       FLG-SRYACT      =   1
+      *!診療会計に減額フラグを追加するまで
       *        薬剤料逓減　を減算
                IF     (ACCT-SRYKBN         =   "21" )  AND
                       (SRY-SRYCD (01)      =   "630010002")
@@ -1908,6 +1932,20 @@
                            UNTIL      (IDZ         >   5   )  OR
                                       (SRY-SRYCD (IDZ) =   SPACE )  OR
                                       (FLG-SRYACT      =   1     )
+      *!診療会計に減額フラグを追加するまで
+      *                入院の減額
+                       IF      ACCT-SRYKBN         =   "90" OR  "92"
+                                                   OR  "97"
+                           MOVE    SRY-SRYCD (IDZ)     TO  TNS-SRYCD
+                           PERFORM 910-TENSU-READ-SEC
+                           IF      TNS-TENSIKIBETU     =   7
+                                                       OR  8
+                               IF      TNS-TEN         =   ACCT-ZAITEN
+                                    MOVE    1          TO  FLG-GENZAN
+                                    MOVE    1          TO  FLG-SRYACT
+                               END-IF
+                           END-IF
+                       END-IF
       *
       *                労災コードの時、点数取得
                        IF      (SRY-SRYCD (IDZ)(1:3)   =   "101"  )  OR
@@ -1945,6 +1983,8 @@
       *    自費の時、自費合計を集計
            IF      ACCT-SRYKBN         =   "96"  OR  "95"
                                        OR  "21"
+                                       OR  "90"  OR  "92"
+                                       OR  "97"
                GO      TO      31092-SRYACCT-HEN-EXT
            END-IF
       *
@@ -2040,8 +2080,13 @@
            IF      SPA-GMN-NYUGAIKBN   =   "1"
                MOVE    "入院点数"          TO  J03-MIDASIN
            END-IF
-           MOVE    SPA-GMN-NYUTENSU    TO  WRK-Z8
-           MOVE    WRK-Z8              TO  J03-NYUTENSU
+           IF      SPA-GMN-NYUTENSU    <   ZERO
+               MOVE    SPA-GMN-NYUTENSU    TO  WRK-Z82
+               MOVE    WRK-Z82             TO  J03-NYUTENSU
+           ELSE
+               MOVE    SPA-GMN-NYUTENSU    TO  WRK-Z8
+               MOVE    WRK-Z8              TO  J03-NYUTENSU
+           END-IF
       *
            EVALUATE    SPA-GMN-SYORI
                WHEN    1
