@@ -88,7 +88,7 @@
                05  SPA-GMN-CUR                   PIC 9(02).
       *
                05  SPA-GMN-TBL.
-                   07  SPA-GMN-TBLREC  OCCURS  400.
+                   07  SPA-GMN-TBLREC  OCCURS  500.
                        09  SPA-GMN-TBANGO      PIC 9(03).
                        09  SPA-GMN-TDELFLG     PIC 9(01).
                        09  SPA-GMN-TMEISYO     PIC X(200).
@@ -140,7 +140,7 @@
       *
            03  SPA-NAI-AREA.
                05  SPA-NAI-TBL.
-                   07  SPA-NAI-TBLREC  OCCURS  400.
+                   07  SPA-NAI-TBLREC  OCCURS  500.
                        09  SPA-NAI-BANGO           PIC 9(03).
                        09  SPA-NAI-EDANUM          PIC 9(03).
                        09  SPA-NAI-ZAINUM          PIC 9(08).
@@ -151,7 +151,6 @@
                        09  SPA-NAI-HKNSFLG         PIC 9(01).
       *
                        09  SPA-NAI-JIDFLG          PIC 9(01).
-      *
       *
       *    フラグ領域
        01  STS-AREA.
@@ -403,14 +402,14 @@
       *
       *    診療行為マスタワーク
        01  LNK-WKSRYACT-AREA.
-           02  LNK-WKSRYACT-REC      OCCURS   400.
+           02  LNK-WKSRYACT-REC      OCCURS   500.
            COPY    "CPWKSRYACT.INC"  REPLACING
                                      //WKSRY-// BY //LNK-WKSRY-//.
        01  LNK-WKSRYACT-MAX           PIC 9(04).
       *
       *    診療行為マスタワーク
        01  SRT-WKSRYACT-AREA.
-           02  SRT-WKSRYACT-REC      OCCURS   400.
+           02  SRT-WKSRYACT-REC      OCCURS   500.
            COPY    "CPWKSRYACT.INC"  REPLACING
                                      //WKSRY-// BY //SRT-WKSRY-//.
       *
@@ -663,7 +662,11 @@
            END-IF
       *
       *    最大件数
-           MOVE    IDG                 TO  SPA-K08-MAX
+           IF      IDG                 >   500
+               MOVE    500                 TO  SPA-K08-MAX
+           ELSE
+               MOVE    IDG                 TO  SPA-K08-MAX
+           END-IF
       *    各点数
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   10
@@ -705,7 +708,7 @@
            END-IF
            PERFORM
                    UNTIL      (FLG-PARA    =    1   )  OR
-                              (IDX         >=   400 )
+                              (IDX         >=   500 )
       *        ワーク診療行
                IF      PARA-FILEMEI    =   "WKSRYACT"
                    ADD     1                    TO  IDX
@@ -794,7 +797,8 @@
            MOVE    ZERO                TO  FLG-KAISUU-ARI2
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   IDX-KOUI
+                   UNTIL      (IDX     >   IDX-KOUI )
+                           OR (IDG     >   500 )
       *
       *        剤点数計
                MOVE    LNK-WKSRY-ZAITENKEI(IDX)    TO  WRK-ZAITEN
@@ -813,13 +817,17 @@
                IF      IDX                 =   1
                    MOVE    ZERO                TO  FLG-RSIFLG
                    ADD     1                   TO  IDG
-                   PERFORM 31011-GYO1-HEN-SEC
+                   IF      IDG                 >   500
+                       MOVE    "1000"              TO  SPA-ERRCD
+                   ELSE
+                       PERFORM 31011-GYO1-HEN-SEC
+                   END-IF
                END-IF
       *
       *        剤明細編集
                PERFORM VARYING     IDZ     FROM    1   BY  1
                        UNTIL      (IDZ         >   5   )  OR
-                                  (IDG         >   400 )  OR
+                                  (IDG         >   500 )  OR
                                   (LNK-WKSRY-SRYCD (IDX IDZ)
                                                   =   SPACE  AND
                                    LNK-WKSRY-INPUTCD(IDX IDZ)
@@ -891,6 +899,7 @@
                ELSE
                    ADD    1                    TO  IDG
                END-IF
+               IF      IDG                 <=  500
                PERFORM 31013-INPUTCD-HEN-SEC
                MOVE    WRK-ZAIKEIJ         TO  SPA-GMN-TZAIKEI (IDG)
       *
@@ -905,6 +914,8 @@
                INSPECT SPA-GMN-TYOBI2  (IDG)   REPLACING
                                                ALL "  "  BY  "　"
       *
+               END-IF
+      *
            END-IF
            MOVE    WRK-BANGO           TO  SPA-GMN-NAIBANGO (IDG)
       *
@@ -915,7 +926,7 @@
       *
       *    剤終了編集
            ADD     1                   TO  IDG
-           IF      IDG                 >   400
+           IF      IDG                 >   500
                GO      TO      3101-WKSRYACT-HEN-EXT
            END-IF
            MOVE    ALL "-"             TO  SPA-GMN-TMEISYO (IDG)
@@ -1272,7 +1283,7 @@
        31012-ZAIMEI-HEN-SEC                  SECTION.
       *
            ADD     1                   TO  IDG
-           IF      IDG                 >   400
+           IF      IDG                 >   500
                GO      TO      31012-ZAIMEI-HEN-EXT
            END-IF
            MOVE    WRK-BANGO           TO  SPA-GMN-NAIBANGO (IDG)
@@ -1374,7 +1385,7 @@
        31013-JIHIMEI-HEN-SEC           SECTION.
       *
            ADD     1                   TO  IDG
-           IF      IDG                 >   400
+           IF      IDG                 >   500
                GO      TO      31013-JIHIMEI-HEN-EXT
            END-IF
            MOVE    WRK-BANGO           TO  SPA-GMN-NAIBANGO (IDG)
@@ -1471,7 +1482,7 @@
                INSPECT SPA-GMN-TYOBI33 (IDG)  REPLACING
                                               ALL "  "  BY  "　"
                ADD     1                   TO  IDG
-               IF      IDG                 >   400
+               IF      IDG                 >   500
                    GO      TO      31013-JIHIMEI-HEN-EXT
                END-IF
            END-IF
@@ -1786,7 +1797,7 @@
       *    行選択
            MOVE    ZERO                TO  WRK-SELNUM
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   400
+                   UNTIL       IDX     >   500
                IF      K08-SELECT (IDX)        =   "T"
                    MOVE    SPA-GMN-NAIBANGO (IDX)  TO  WRK-SELNUM
                END-IF
@@ -1916,7 +1927,7 @@
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDY     FROM    1   BY  1
-                   UNTIL      (IDY             >   400 )  OR
+                   UNTIL      (IDY             >   500 )  OR
                               (FLG-OK          =   1     )  OR
                               (SPA-ERRCD   NOT =   SPACE )
                IF      SPA-GMN-SELNUM (IDX)    =   SPA-NAI-BANGO (IDY)
@@ -2203,13 +2214,13 @@
                    UNTIL       IDX     >   LNK-WKSRYACT-MAX
                MOVE    ZERO                TO  FLG-DEL
                PERFORM VARYING     IDY     FROM    1   BY  1
-                       UNTIL       IDY     >   400
+                       UNTIL       IDY     >   500
                    IF      LNK-WKSRY-ZAINUM (IDX)  =   SPA-NAI-ZAINUM
                                                                  (IDY)
                        IF      SPA-NAI-DELFLG (IDY)    =   1
                            MOVE    1               TO  FLG-DEL
                        END-IF
-                       MOVE    400             TO  IDY
+                       MOVE    500             TO  IDY
                    END-IF
                END-PERFORM
                IF      FLG-DEL             =   ZERO
@@ -3007,6 +3018,7 @@
       *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
+      *
            MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
@@ -3021,6 +3033,11 @@
                                        TO  SPA-ERRMSG
                    MOVE    "削除できません。"
                                        TO  SPA-ERRMSG(27:)
+               WHEN    "1000"
+                   MOVE    "５００行以上になります。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "５００行以上は表示しません。"
+                                       TO  SPA-ERRMSG(25:)
            END-EVALUATE
       *
            MOVE    SPACE               TO  KERR

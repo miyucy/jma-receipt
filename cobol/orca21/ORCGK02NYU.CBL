@@ -8537,13 +8537,21 @@
                GO      TO      460-ATOGMN-EXT
            END-IF
       *
-           COMPUTE WRK-FREE            =   SPA-GMN-PAGE  *  20
-      *****IF      SPA-GMN-MAX         <   WRK-FREE
+           IF      SPA-GMN-PAGE        =   8
+               MOVE    1                   TO  SPA-GMN-CUR
+               MOVE    "7002"              TO  SPA-ERRCD
+               GO      TO      460-ATOGMN-EXT
+           END-IF
+      *
+           COMPUTE WRK-FREE            =   SPA-GMN-PAGE  *  24
            IF      SPA-GMN-INPUTCD(WRK-FREE)   =   SPACE
                GO  TO                 460-ATOGMN-EXT
            END-IF
       *
            ADD     1                   TO  SPA-GMN-PAGE
+           IF      SPA-GMN-PAGE        =   8
+               MOVE    "7003"              TO  SPA-ERRCD
+           END-IF
       *
            MOVE    88                  TO  SPA-GMN-CUR
            .

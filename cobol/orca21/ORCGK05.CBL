@@ -624,7 +624,7 @@
            COPY    "CPSANTEI.INC".
       *
        01  LNK-WKSRYACT-AREA.
-           02  LNK-WKSRYACT-REC          OCCURS   100.
+           02  LNK-WKSRYACT-REC          OCCURS   200.
            COPY    "CPWKSRYACT.INC"  REPLACING
                                      //WKSRY-// BY //LNK-WKSRY-//.
        01  LNK-WKSRYACT-MAX           PIC 9(04).
@@ -1245,7 +1245,8 @@
            MOVE    ZERO                TO  FLG-SET
       *    診療室入力あり編集
            PERFORM     VARYING   IDX   FROM    1   BY  1
-                       UNTIL     IDX   >   LNK-WKSRYACT-MAX
+                       UNTIL    (IDX   >   LNK-WKSRYACT-MAX )
+                             OR (IDX2  >   200  )
       *
       *        自動作成分、診療、保険外は飛ばす
                IF      LNK-WKSRY-SRYKBN (IDX)   =   "11"  OR
@@ -1325,7 +1326,8 @@
                    IF      SPA-COM-KAIFLG (IDX)  =   "1"
                        IF     (SPA-COM-KAISU(IDX)    >   1  )  OR
                               (SPA-COM-SRYKBN(IDX)(1:1)
-                                                   =   "2"    )
+                                                   =   "2"    )  OR
+                              (IDX                 =   200    )
                            CONTINUE
                        ELSE
                            IF     (SPA-COM-INPUTCD(IDX + 1)
@@ -1420,6 +1422,10 @@
                   (LNK-WKSRY-RENNUM (IDX)  =   1   )
                IF      LNK-WKSRY-SRYSYUKBN (IDX)   NOT =   SPACE
                    ADD     1                   TO  IDX2
+                   IF      IDX2                >   200
+                       MOVE    "7004"          TO  SPA-ERRCD
+                       GO      TO      31011-SPA-HEN-EXT
+                   END-IF
                    MOVE    "."                 TO  SPA-GMN-INPUTCD
                                                             (IDX2)(1:1)
                    MOVE    LNK-WKSRY-SRYSYUKBN (IDX)
@@ -1435,6 +1441,10 @@
       *
       *    明細編集
            ADD     1                   TO  IDX2
+           IF      IDX2                >   200
+                MOVE    "7004"         TO  SPA-ERRCD
+                GO      TO      31011-SPA-HEN-EXT
+           END-IF
            MOVE    LNK-WKSRY-SRYKBN(IDX)
                                        TO  SPA-COM-SRYKBN  (IDX2)
            MOVE    LNK-WKSRY-SRYSYUKBN(IDX)
@@ -4808,7 +4818,16 @@
                GO  TO                 460-ATOGMN-EXT
            END-IF
       *
+           IF      SPA-GMN-PAGE        =   8
+               MOVE    3                   TO  SPA-GMN-CUR
+               MOVE    "7002"              TO  SPA-ERRCD
+               GO      TO      460-ATOGMN-EXT
+           END-IF
+      *
            ADD     1                   TO  SPA-GMN-PAGE
+           IF      SPA-GMN-PAGE        =   8
+               MOVE    "7003"              TO  SPA-ERRCD
+           END-IF
       *
            MOVE    3                   TO  SPA-GMN5-CUR
            .

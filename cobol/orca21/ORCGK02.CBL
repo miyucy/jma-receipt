@@ -229,6 +229,8 @@
       *
            03  FLG-SYUBETU         PIC 9(01).
       *
+           03  FLG-K09TUIKA           PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -514,6 +516,8 @@
            03  WRK-GYOUMU-KBN          PIC X(04).
       *    ドクターコード
            03  WRK-DRCD                PIC X(05).
+      *
+           03  WRK-ERRCD1              PIC X(04).
       *
       *   年齢表示
        01  WRK-NENREI-G.
@@ -2126,6 +2130,7 @@
            IF     (SPA-K09-SELOK       =   1    )  AND
                   (LNK-WKSRYACT-MAX    >   ZERO )
                MOVE    ZERO            TO  FLG-SYOSIN
+               MOVE    1               TO  FLG-K09TUIKA
                PERFORM 3103-SAIHEN-HEN-SEC
       *
       *        診療行為、計計算処理、編集
@@ -2687,6 +2692,7 @@
       *
       *    再表示編集処理
            IF      LNK-WKSRYACT-MAX    >   ZERO
+               MOVE    ZERO            TO  FLG-K09TUIKA
                PERFORM 3103-SAIHEN-HEN-SEC
       *
                IF      SPA-SYORIFLG            =   1
@@ -2779,7 +2785,8 @@
       *
       *    診療室入力あり編集
            PERFORM     VARYING   IDX   FROM    1   BY  1
-                       UNTIL     IDX   >   LNK-WKSRYACT-MAX
+                       UNTIL    (IDX   >   LNK-WKSRYACT-MAX )  OR
+                                (IDX2  >   200 )
       *
       *        ワーク診療行為からの時は、訂正と同様に編集する
                IF     (LNK-WKSRY-TERMID (IDX)    =   "WKSRYACT" )
@@ -2994,6 +3001,13 @@
                END-IF
            END-PERFORM
       *
+           IF      WRK-ERRCD1      NOT =   SPACE
+               MOVE    WRK-ERRCD1          TO  SPA-ERRCD
+               IF      FLG-K09TUIKA        =   1
+                   MOVE    "7004"          TO  SPA-ERRCD
+               END-IF
+               GO      TO      3103-SAIHEN-HEN-EXT
+           END-IF
            MOVE    WRK-ERRCD           TO  SPA-ERRCD
       *
            .
@@ -3065,6 +3079,10 @@
       *
                IF      FLG-SYUBETU         =   1
                    ADD     1                   TO  IDX2
+                   IF      IDX2                >   200
+                       MOVE    "9100"          TO  WRK-ERRCD1
+                       GO      TO      31011-SPA-HEN-EXT
+                   END-IF
                    MOVE    "."                 TO  SPA-GMN-INPUTCD
                                                             (IDX2)(1:1)
                    MOVE    LNK-WKSRY-SRYSYUKBN (IDX)
@@ -3099,6 +3117,10 @@
       *
       *    明細編集
            ADD     1                   TO  IDX2
+           IF      IDX2                >   200
+                MOVE    "9100"         TO  WRK-ERRCD1
+                GO      TO      31011-SPA-HEN-EXT
+           END-IF
            MOVE    LNK-WKSRY-SRYKBN(IDX)
                                        TO  SPA-COM-SRYKBN  (IDX2)
            MOVE    LNK-WKSRY-SRYSYUKBN(IDX)
@@ -9143,6 +9165,12 @@
                GO      TO      460-ATOGMN-EXT
            END-IF
       *
+           IF      SPA-GMN-PAGE        =   10
+               MOVE    1                   TO  SPA-GMN-CUR
+               MOVE    "7002"              TO  SPA-ERRCD
+               GO      TO      460-ATOGMN-EXT
+           END-IF
+      *
            COMPUTE WRK-FREE            =   SPA-GMN-PAGE  *  20
       *****IF      SPA-GMN-MAX         <   WRK-FREE
            IF      SPA-GMN-INPUTCD(WRK-FREE)   =   SPACE
@@ -9150,6 +9178,9 @@
            END-IF
       *
            ADD     1                   TO  SPA-GMN-PAGE
+           IF      SPA-GMN-PAGE        =   10
+               MOVE    "7003"              TO  SPA-ERRCD
+           END-IF
       *
            MOVE    88                  TO  SPA-GMN-CUR
            .
