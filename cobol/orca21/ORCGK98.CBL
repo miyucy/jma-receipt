@@ -1093,7 +1093,7 @@
            IF      TNS-SRYCD (1:1)     =   "6"  OR  "7"
                MOVE    TNS-TANINAME        TO  SPA-K98-GMN-TANI(IDX)
            END-IF
-      *
+      * 
       *!   診療コードの時、種別
       *!   IF      TNS-SRYCD (1:1)     =   "1"
       *!       MOVE    TNS-SRYKBN          TO  SPA-K98-GMN-TANI(IDX)

@@ -1294,6 +1294,8 @@
            INITIALIZE              SPA-K02
            INITIALIZE              SPA-SCR-REC
       *
+           MOVE    "1"                 TO  SPA-NYUGAIKBN
+      *
       *    初期ＳＰＡ編集処理
            INITIALIZE                  ORCSC95AREA
            MOVE    SPA-SYSYMD          TO  LNK-SC95-SRYYMD
@@ -7517,10 +7519,10 @@
            IF     (SPA-SRYKBN-CNT (03) >   ZERO )
       *            入院で手術の時も点滴チェックを行う
              OR  ((SPA-SRYKBN-CNT (05) >   ZERO  )  AND
-                  (SPA-NYUGAIKBN       =   1     ))
+                  (SPA-NYUGAIKBN       =   "1"     ))
       *            入院で画像診断の時も点滴チェックを行う
              OR  ((SPA-SRYKBN-CNT (08) >   ZERO  )  AND
-                  (SPA-NYUGAIKBN       =   1     ))
+                  (SPA-NYUGAIKBN       =   "1"     ))
                CALL    "ORCSC30"       USING
                                        MCPAREA
                                        ORCSC00AREA

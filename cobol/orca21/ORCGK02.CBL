@@ -1402,6 +1402,8 @@
            INITIALIZE              SPA-K02
            INITIALIZE              SPA-SCR-REC
       *
+           MOVE    "2"                 TO  SPA-NYUGAIKBN
+      *
       *    ½é´ü£Ó£Ð£ÁÊÔ½¸½èÍý
            INITIALIZE                  ORCSC95AREA
            MOVE    SPA-SYSYMD          TO  LNK-SC95-SRYYMD

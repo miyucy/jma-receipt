@@ -776,7 +776,7 @@
                                         MCPDATA-REC
       *
       *    入外区分
-           MOVE    "2"                 TO  SPA-NYUGAIKBN
+      *****MOVE    "2"                 TO  SPA-NYUGAIKBN
       *    診療日
            MOVE    SPA-SYSYMDWH        TO  SPA-GMN-SRYYMD
            MOVE    SPA-SYSYMD          TO  SPA-NAI-SRYYMDS
@@ -869,7 +869,7 @@
       *    前回処方表示フラグ
            MOVE    SPA-ZENSYOHOFLG    TO  SPA-GMN-ZENKAI
       *    入外区分
-           MOVE    "2"                 TO  SPA-NYUGAIKBN
+      *****MOVE    "2"                 TO  SPA-NYUGAIKBN
       *    診療日
            MOVE    SPA-SRYYMDW         TO  SPA-GMN-SRYYMD
            MOVE    SPA-SRYYMD          TO  SPA-NAI-SRYYMDS
@@ -2495,7 +2495,7 @@
            MOVE    SPA-GMN-PTID        TO  SPA-PTID
            MOVE    SPA-NAI-SRYYMDS     TO  SPA-SRYYMD
            MOVE    SPA-GMN-SRYYMD      TO  SPA-SRYYMDW
-           MOVE    "2"                 TO  SPA-NYUGAIKBN
+      *****MOVE    "2"                 TO  SPA-NYUGAIKBN
       *
       *    患者マスター読み込み
            MOVE    SPA-HOSPID          TO  PTINF-HOSPID
