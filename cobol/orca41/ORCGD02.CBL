@@ -52,6 +52,8 @@
       *  01.00.16    ひさなが     03/04/17  入外区分が入院の入院会計の
       *                                     実日数チェック
       *                                     外泊チェックの追加
+      *  01.00.17    ひさなが     03/05/09  病名に対応する病名コードの
+      *                                     未入力チェックの追加
       *
       *****************************************************************
       *
@@ -419,6 +421,9 @@
            03  T-MESSAGE-510-05    PIC X(90)   VALUE
                "510-05初診入力日に病名が登録されていません              
       -        "                                  ".
+           03  T-MESSAGE-510-06    PIC X(90)   VALUE
+               "510-06該当患者は病名に対応する病名コードが入力されていま
+      -        "せん                              ".
            03  T-MESSAGE-520-01    PIC X(90)   VALUE
                "520-01診療科履歴情報テーブル異常                        
       -        "                                  ".
@@ -2151,6 +2156,27 @@
                            MOVE    "*"               TO  T-ERR-05
                            MOVE    "ED"              TO  T-HANNTEI6
                        END-IF
+      *修正/*開始*03.05.09*********************************************
+                       IF  (SPA-GMN-CNV (5)    = "1")    AND
+                           (T-ERR-05           = SPACE)  AND
+                           (PTBYO-BYOMEI  NOT  = SPACE)  AND
+                           (PTBYO-BYOMEICD (1) = SPACE)  AND
+                           (PTBYO-BYOMEICD (2) = SPACE)  AND
+                           (PTBYO-BYOMEICD (3) = SPACE)  AND
+                           (PTBYO-BYOMEICD (4) = SPACE)  AND
+                           (PTBYO-BYOMEICD (5) = SPACE)  AND
+                           (PTBYO-BYOMEICD (6) = SPACE)
+                           COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
+                           MOVE SPACE                TO  DID2-REC
+                           MOVE ACCT-HOSPID          TO  DID2-REC(1:24)
+                           MOVE "-"                  TO  DID2-REC(25:1)
+                           MOVE ACCT-PTID            TO  DID2-REC(26:10)
+                           MOVE T-MESSAGE-510-06     TO  DID2-REC(71:90)
+                           WRITE   DID2-REC
+                           MOVE    "*"               TO  T-ERR-05
+                           MOVE    "ED"              TO  T-HANNTEI6
+                       END-IF
+      *修正/*終了*03.05.09*********************************************
                        IF  (SPA-GMN-CNV (7)   = "1")          AND
                            (PTBYO-TENKIKBN    = SPACE)        AND
                            (PTBYO-UTAGAIFLG   = "1")          AND
