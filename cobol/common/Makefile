@@ -1,4 +1,4 @@
-qSRCS = ORCHC01.CBL \
+SRCS = ORCHC01.CBL \
        ORCHC02.CBL \
        ORCHC03.CBL \
        ORCHC19.CBL \
