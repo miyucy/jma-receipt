@@ -254,6 +254,7 @@
            03  WRK-NYUGAI-MES                          PIC X(10).
            03  WRK-PTINF-NAME                          PIC X(100).
            03  WRK-PTINF-KANANAME                      PIC X(100).
+           03  WRK-CHK-SRYCD                           PIC X(09).
       *    
       *    TEST
            03  WRK-DATE                                PIC X(08).
@@ -365,9 +366,21 @@
                    07  THEIYOU-NYUGAIKBN2              PIC X(01).
                    07  THEIYOU-SRYCD2                  PIC X(09).
       *
+      *    チェックマスタに存在しない診療行為退避ワーク
+       01  TCHK-AREA.
+           05  TCHK-FLG                                PIC 9(01).
+           05  TCHK-YKZ-BYO-MAX                        PIC 9(05).
+           05  TCHK-SRY-BYO-MAX                        PIC 9(05).
+           05  TCHK-HEI-YKZ-MAX                        PIC 9(05).
+           05  TCHK-HEI-SRY-MAX                        PIC 9(05).
+           05  TCHK-SRYCD-OCC                          OCCURS  2000.
+               07  TCHK-YKZ-BYO-SRYCD                  PIC X(09).
+               07  TCHK-SRY-BYO-SRYCD                  PIC X(09).
+               07  TCHK-HEI-YKZ-SRYCD                  PIC X(09).
+               07  TCHK-HEI-SRY-SRYCD                  PIC X(09).
       *
        01  KEY-AREA.
-           03  KEY-HKNCOMBI                            PIC X(04).
+           03  KEY-HKNCOMBI                        PIC X(04).
       *
        01  SRH-AREA.
            03  SRH-IDX                             PIC 9(05).
@@ -437,6 +450,8 @@
                                                        VALUE   2000.
            03  CONST-TBYOMEICD-MAX                     PIC 9(05)
                                                        VALUE   100.
+           03  CONST-TCHK-MAX                          PIC 9(05)
+                                                       VALUE   2000.
       *
       *    エラーメッセージ
            COPY    "CPDTCHKERRMES.INC".
@@ -651,6 +666,8 @@
       *
            MOVE    ORCBSD01-SRYYM      TO  WRK-KJNYMD
            MOVE    "01"                TO  WRK-KJNYMD(7:2)
+      *
+           INITIALIZE                      TCHK-AREA
       *
            .
        1001-INIT-VAL-SET-EXT.
@@ -3044,11 +3061,16 @@
                      OR  ( FLG-CHKEND (8)      =   1 )
       *
                PERFORM VARYING IDX7    FROM    1   BY  1
-                       UNTIL ( IDX7    >   TSRYKA-SRYCD-MAX (IDX7))
+                       UNTIL ( IDX7    >   TSRYKA-SRYCD-MAX (IDX6))
                          OR  ( FLG-CHKEND (8)  =   1 )
       *
                    IF    ( TSRYKA-SRYCD (IDX6 IDX7)(1:1)   =   "6" )
-                       PERFORM 200112-CHKMST-YKZ-BYO-CHK-SEC
+                       MOVE    TSRYKA-SRYCD (IDX6 IDX7)
+                                       TO  WRK-CHK-SRYCD
+                       PERFORM 200112-TCHK-YKZ-BYO-CHK-SEC
+                       IF    ( TCHK-FLG        =   ZERO )
+                           PERFORM 200112-CHKMST-YKZ-BYO-CHK-SEC
+                       END-IF
                    END-IF
       *
                END-PERFORM
@@ -3056,6 +3078,24 @@
       *
            .
        200112-YKZ-BYO-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェックマスタに存在しない診療行為退避ワークチェック
+      *****************************************************************
+       200112-TCHK-YKZ-BYO-CHK-SEC     SECTION.
+      *
+           MOVE    ZERO                TO  TCHK-FLG
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0        >   TCHK-YKZ-BYO-MAX )
+                    OR   ( TCHK-FLG    =   1 )
+      *
+               IF    ( WRK-CHK-SRYCD   =   TCHK-YKZ-BYO-SRYCD (IDX0) )
+                   MOVE    1           TO  TCHK-FLG
+               END-IF
+      *
+           END-PERFORM
+      *
+       200112-TCHK-YKZ-BYO-CHK-EXT.
            EXIT.
       *****************************************************************
       *    薬剤と病名チェック処理（チェックマスタチェック）
@@ -3080,6 +3120,13 @@
            ELSE
                MOVE    1               TO  FLG-CHKMST
                MOVE    2               TO  FLG-CHKMST-BYOMEI
+               IF    ( CONST-TCHK-MAX  >   TCHK-YKZ-BYO-MAX )
+                   COMPUTE TCHK-YKZ-BYO-MAX
+                       =   TCHK-YKZ-BYO-MAX    +   1
+                   MOVE    TSRYKA-SRYCD (IDX6 IDX7)
+                                       TO  TCHK-YKZ-BYO-SRYCD
+                                                (TCHK-YKZ-BYO-MAX)
+               END-IF
            END-IF
       *
            PERFORM UNTIL ( FLG-CHKMST  NOT =   ZERO )
@@ -3088,15 +3135,14 @@
       *        チェックマスタより患者病名チェック処理
                PERFORM VARYING IDX10   FROM    1   BY  1
                        UNTIL ( IDX10           >   10 )
+                          OR ( CHK-CD (IDX10)      =   SPACE )
                           OR ( FLG-CHKMST-BYOMEI   =  1 )
       *
-                   IF    ( CHK-CD (IDX10)  =   SPACE )
-                       MOVE    TSRYKA-SRYKA (IDX6)
+                   MOVE    TSRYKA-SRYKA (IDX6)
                                        TO  WRK-SRYKA
-                       MOVE    CHK-CD (IDX10)
+                   MOVE    CHK-CD (IDX10)
                                        TO  WRK-CHK-CD
-                       PERFORM 200112-CHKMST-BYO-CHK-SEC
-                   END-IF
+                   PERFORM 200112-CHKMST-BYO-CHK-SEC
       *
                END-PERFORM
       *
@@ -3134,6 +3180,7 @@
            MOVE    DTCHK003-HOSPID     TO  PTBYO-HOSPID
            MOVE    DTCHK003-PTID       TO  PTBYO-PTID
            MOVE    WRK-SRYKA           TO  PTBYO-SRYKA
+      *
            PERFORM VARYING IDX8    FROM    1   BY  1
                    UNTIL ( IDX8    >   6 )
                MOVE    WRK-CHK-CD
@@ -3151,7 +3198,6 @@
       *
            PERFORM UNTIL ( FLG-PTBYOMEI            NOT =   ZERO )
                     OR   ( FLG-CHKMST-BYOMEI           =   1 )
-      *
       *
                PERFORM 2001121-PTBYO-TAISYO-CHK-SEC
                IF    ( FLG-PTBYO-TAISYO    =   1 )
@@ -3274,12 +3320,17 @@
                      OR  ( FLG-CHKEND (9)      =   1 )
       *
                PERFORM VARYING IDX7    FROM    1   BY  1
-                       UNTIL ( IDX7    >   TSRYKA-SRYCD-MAX (IDX7))
+                       UNTIL ( IDX7    >   TSRYKA-SRYCD-MAX (IDX6))
                          OR  ( FLG-CHKEND (9)  =   1 )
       *
                    IF    ( TSRYKA-SRYCD (IDX6 IDX7)(1:1)   NOT =   "6" )
                     AND  ( TSRYKA-SRYCD (IDX6 IDX7)(1:1)   NOT =   "7" )
-                       PERFORM 200112-CHKMST-SRY-BYO-CHK-SEC
+                       MOVE    TSRYKA-SRYCD (IDX6 IDX7)
+                                       TO  WRK-CHK-SRYCD
+                       PERFORM 200112-TCHK-SRY-BYO-CHK-SEC
+                       IF    ( TCHK-FLG        =   ZERO )
+                           PERFORM 200112-CHKMST-SRY-BYO-CHK-SEC
+                       END-IF
                    END-IF
       *
                END-PERFORM
@@ -3287,6 +3338,24 @@
       *
            .
        200112-SRY-BYO-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェックマスタに存在しない診療行為退避ワークチェック
+      *****************************************************************
+       200112-TCHK-SRY-BYO-CHK-SEC     SECTION.
+      *
+           MOVE    ZERO                TO  TCHK-FLG
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0        >   TCHK-SRY-BYO-MAX )
+                    OR   ( TCHK-FLG    =   1 )
+      *
+               IF    ( WRK-CHK-SRYCD   =   TCHK-SRY-BYO-SRYCD (IDX0) )
+                   MOVE    1           TO  TCHK-FLG
+               END-IF
+      *
+           END-PERFORM
+      *
+       200112-TCHK-SRY-BYO-CHK-EXT.
            EXIT.
       *****************************************************************
       *    診療行為と病名チェック処理（チェックマスタチェック）
@@ -3311,6 +3380,13 @@
            ELSE
                MOVE    1               TO  FLG-CHKMST
                MOVE    2               TO  FLG-CHKMST-BYOMEI
+               IF    ( CONST-TCHK-MAX  >   TCHK-SRY-BYO-MAX )
+                   COMPUTE TCHK-SRY-BYO-MAX
+                       =   TCHK-SRY-BYO-MAX    +   1
+                   MOVE    TSRYKA-SRYCD (IDX6 IDX7)
+                                       TO  TCHK-SRY-BYO-SRYCD
+                                                (TCHK-SRY-BYO-MAX)
+               END-IF
            END-IF
       *
            PERFORM UNTIL ( FLG-CHKMST  NOT =   ZERO )
@@ -3319,15 +3395,14 @@
       *        チェックマスタより患者病名チェック処理
                PERFORM VARYING IDX10   FROM    1   BY  1
                        UNTIL ( IDX10           >   10 )
+                          OR ( CHK-CD (IDX10)      =   SPACE )
                           OR ( FLG-CHKMST-BYOMEI   =  1 )
       *
-                   IF    ( CHK-CD (IDX10)  =   SPACE )
-                       MOVE    TSRYKA-SRYKA (IDX6)
+                   MOVE    TSRYKA-SRYKA (IDX6)
                                        TO  WRK-SRYKA
-                       MOVE    CHK-CD (IDX10)
+                   MOVE    CHK-CD (IDX10)
                                        TO  WRK-CHK-CD
-                       PERFORM 200112-CHKMST-BYO-CHK-SEC
-                   END-IF
+                   PERFORM 200112-CHKMST-BYO-CHK-SEC
       *
                END-PERFORM
       *
@@ -3450,14 +3525,19 @@
       *
                IF    ( TSRYCD-SRYCD (IDX6)(1:1)    =   "6" )
       *
-      *            チェックマスタよりチェック
-                   IF    ( FLG-CHKEND (10)     =   ZERO )
-                       PERFORM 200112-CHKMST-HEI-YKZ-CHK-SEC
-                   END-IF
-      *
       *            相互作用テーブルよりチェック
                    IF    ( FLG-CHKEND (10)     =   ZERO )
                        PERFORM 200112-INTERACT-CHK-SEC
+                   END-IF
+      *
+      *            チェックマスタよりチェック
+                   IF    ( FLG-CHKEND (10)     =   ZERO )
+                       MOVE    TSRYCD-SRYCD (IDX6)
+                                               TO  WRK-CHK-SRYCD
+                       PERFORM 200112-TCHK-HEI-YKZ-CHK-SEC
+                       IF    ( TCHK-FLG        =   ZERO )
+                           PERFORM 200112-CHKMST-HEI-YKZ-CHK-SEC
+                       END-IF
                    END-IF
                END-IF
       *
@@ -3470,6 +3550,24 @@
       *
            .
        200112-HEI-YKZ-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェックマスタに存在しない診療行為退避ワークチェック
+      *****************************************************************
+       200112-TCHK-HEI-YKZ-CHK-SEC     SECTION.
+      *
+           MOVE    ZERO                TO  TCHK-FLG
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0        >   TCHK-HEI-YKZ-MAX )
+                    OR   ( TCHK-FLG    =   1 )
+      *
+               IF    ( WRK-CHK-SRYCD   =   TCHK-HEI-YKZ-SRYCD (IDX0) )
+                   MOVE    1           TO  TCHK-FLG
+               END-IF
+      *
+           END-PERFORM
+      *
+       200112-TCHK-HEI-YKZ-CHK-EXT.
            EXIT.
       *****************************************************************
       *    併用禁忌の薬剤チェック処理（チェックマスタ）
@@ -3489,6 +3587,13 @@
                MOVE    MCPDATA-REC     TO  CHK-REC
            ELSE
                MOVE    1               TO  FLG-CHKMST
+               IF    ( CONST-TCHK-MAX  >   TCHK-HEI-YKZ-MAX )
+                   COMPUTE TCHK-HEI-YKZ-MAX
+                       =   TCHK-HEI-YKZ-MAX    +   1
+                   MOVE    TSRYCD-SRYCD (IDX6)
+                                       TO  TCHK-HEI-YKZ-SRYCD
+                                                (TCHK-HEI-YKZ-MAX)
+               END-IF
            END-IF
       *
            PERFORM UNTIL ( FLG-CHKMST  NOT =   ZERO )
@@ -3497,6 +3602,7 @@
       *        チェックマスタより診療行為チェック処理
                PERFORM VARYING IDX10   FROM    1   BY  1
                        UNTIL ( IDX10           >   10 )
+                          OR ( CHK-CD (IDX10)  =  SPACE )
                           OR ( FLG-CHKEND (10) =  1 )
       *
                    MOVE    IDX6            TO  IDX-TSRYCD
@@ -3797,7 +3903,12 @@
       *
       *            チェックマスタよりチェック
                    IF    ( FLG-CHKEND (11)     =   ZERO )
-                       PERFORM 200112-CHKMST-HEI-SRY-CHK-SEC
+                       MOVE    TSRYCD-SRYCD (IDX6)
+                                       TO  WRK-CHK-SRYCD
+                       PERFORM 200112-TCHK-HEI-SRY-CHK-SEC
+                       IF    ( TCHK-FLG        =   ZERO )
+                           PERFORM 200112-CHKMST-HEI-SRY-CHK-SEC
+                       END-IF
                    END-IF
       *
                END-IF
@@ -3811,6 +3922,24 @@
       *
            .
        200112-HEI-SRY-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェックマスタに存在しない診療行為退避ワークチェック
+      *****************************************************************
+       200112-TCHK-HEI-SRY-CHK-SEC     SECTION.
+      *
+           MOVE    ZERO                TO  TCHK-FLG
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0        >   TCHK-HEI-SRY-MAX )
+                    OR   ( TCHK-FLG    =   1 )
+      *
+               IF    ( WRK-CHK-SRYCD   =   TCHK-HEI-SRY-SRYCD (IDX0) )
+                   MOVE    1           TO  TCHK-FLG
+               END-IF
+      *
+           END-PERFORM
+      *
+       200112-TCHK-HEI-SRY-CHK-EXT.
            EXIT.
       *****************************************************************
       *    併用算定の診療行為チェック処理（チェックマスタ）
@@ -3830,6 +3959,13 @@
                MOVE    MCPDATA-REC     TO  CHK-REC
            ELSE
                MOVE    1               TO  FLG-CHKMST
+               IF    ( CONST-TCHK-MAX  >   TCHK-HEI-SRY-MAX )
+                   COMPUTE TCHK-HEI-SRY-MAX
+                       =   TCHK-HEI-SRY-MAX    +   1
+                   MOVE    TSRYCD-SRYCD (IDX6)
+                                       TO  TCHK-HEI-SRY-SRYCD
+                                                (TCHK-HEI-SRY-MAX)
+               END-IF
            END-IF
       *
            PERFORM UNTIL ( FLG-CHKMST  NOT =   ZERO )
@@ -3838,6 +3974,7 @@
       *        チェックマスタより診療行為チェック処理
                PERFORM VARYING IDX10   FROM    1   BY  1
                        UNTIL ( IDX10           >   10 )
+                          OR ( CHK-CD (IDX10)  =  SPACE )
                           OR ( FLG-CHKEND (11) =  1 )
       *
                    MOVE    IDX6            TO  IDX-TSRYCD
@@ -4468,7 +4605,7 @@
       *
            STRING  "［"                DELIMITED   BY  SIZE
                    SRH-SRYKAMEI2       DELIMITED   BY  SPACE
-                   "]"                 DELIMITED   BY  SIZE
+                   "］"                DELIMITED   BY  SIZE
                    WRK-ERRMES          DELIMITED   BY  SPACE
                    "【"                DELIMITED   BY  SIZE
                    WRK-ERRMES-PLUS     DELIMITED   BY  SPACE
@@ -4496,7 +4633,7 @@
       *
            STRING  "［"                DELIMITED   BY  SIZE
                    SRH-SRYKAMEI2       DELIMITED   BY  SPACE
-                   "]"                 DELIMITED   BY  SIZE
+                   "］"                 DELIMITED   BY  SIZE
                    WRK-ERRMES          DELIMITED   BY  SPACE
            INTO    DTCHK004-ERRMSG
            END-STRING
