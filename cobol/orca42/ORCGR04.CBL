@@ -1478,7 +1478,8 @@
                                        TO  WRK-RECE09-EDDATA 
            IF      WRK-RECE09-STDATA   =   SPACE
                IF      SPA-GMN-PRTJYUN =   "03"
-                   MOVE    "£Á"        TO  WRK-RECE09-STDATA (1:2)
+      *************MOVE    "£Á"        TO  WRK-RECE09-STDATA (1:2)
+                   MOVE    SPACE       TO  WRK-RECE09-STDATA
                ELSE
                    MOVE    "0"         TO  WRK-RECE09-STDATA (1:1)
                END-IF
