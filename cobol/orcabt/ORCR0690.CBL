@@ -173,6 +173,7 @@
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
+           03  IDXX                PIC 9(04).
       *    点数回数編集用     
            03  IDA                 PIC 9(04).
            03  IDB                 PIC 9(04).
@@ -1622,47 +1623,48 @@
        2007-SRYKBN60-HENSYU-SEC         SECTION.
       *     
       *    検査のまとめ処理
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       31
+           PERFORM VARYING IDXX FROM    1   BY  1
+                   UNTIL   IDXX >       31
                INITIALIZE                  WRK-RECE64-FLG-TABLE
                                            WRK-KAISU-G
                                            WRK-HOUKNSKBN
                                            WRK-KOHBUNRI
+               DISPLAY "IDXX = " IDXX
       *
-               IF      WRK-SUM-KAISU (IDX)   >   ZERO
+               IF      WRK-SUM-KAISU (IDXX)   >   ZERO
                    PERFORM VARYING IDY FROM    1   BY  1
                            UNTIL   IDY >       WRK-RECE64-MAX
-                       IF      WRK-RECE64-KAISU (IDY 1 IDX)    
+                       IF      WRK-RECE64-KAISU (IDY 1 IDXX)    
                                                >   ZERO
                            IF      WRK-KAISU (1)   =   ZERO
-                               MOVE    WRK-RECE64-KAISU (IDY 1 IDX)
+                               MOVE    WRK-RECE64-KAISU (IDY 1 IDXX)
                                                    TO  WRK-KAISU (1)
-                               MOVE    WRK-RECE64-KAISU (IDY 2 IDX)
+                               MOVE    WRK-RECE64-KAISU (IDY 2 IDXX)
                                                    TO  WRK-KAISU (2)
-                               MOVE    WRK-RECE64-KAISU (IDY 3 IDX)
+                               MOVE    WRK-RECE64-KAISU (IDY 3 IDXX)
                                                    TO  WRK-KAISU (3)
-                               MOVE    WRK-RECE64-KAISU (IDY 4 IDX)
+                               MOVE    WRK-RECE64-KAISU (IDY 4 IDXX)
                                                    TO  WRK-KAISU (4)
                                MOVE    WRK-RECE64-HOUKNSKBN (IDY)
                                                    TO  WRK-HOUKNSKBN                    
                                MOVE    WRK-RECE64-KOHBUNRI (IDY)
                                                    TO  WRK-KOHBUNRI                  
                            END-IF
-                           IF      WRK-RECE64-KAISU (IDY 2 IDX)
+                           IF      WRK-RECE64-KAISU (IDY 2 IDXX)
                                                    =   WRK-KAISU (2)
-                           AND     WRK-RECE64-KAISU (IDY 3 IDX)
+                           AND     WRK-RECE64-KAISU (IDY 3 IDXX)
                                                    =   WRK-KAISU (3)
-                           AND     WRK-RECE64-KAISU (IDY 4 IDX)
+                           AND     WRK-RECE64-KAISU (IDY 4 IDXX)
                                                    =   WRK-KAISU (4)
                            AND     WRK-RECE64-HOUKNSKBN (IDY)
                                                    =   WRK-HOUKNSKBN
                            AND     WRK-RECE64-KOHBUNRI  (IDY)
                                                    =   WRK-KOHBUNRI
                                MOVE    ZERO        TO
-                                           WRK-RECE64-KAISU (IDY 1 IDX)
-                               COMPUTE WRK-SUM-KAISU (IDX) 
+                                       WRK-RECE64-KAISU (IDY 1 IDXX)
+                               COMPUTE WRK-SUM-KAISU (IDXX) 
                                                    =
-                                                   WRK-SUM-KAISU (IDX) - 
+                                               WRK-SUM-KAISU (IDXX) - 
                                                    WRK-KAISU   (1)                                       
                                MOVE    "1"         TO  WRK-RECE64-FLG 
                                                        (IDY)
@@ -1674,7 +1676,7 @@
                    END-IF
       *
       *            同じ検査が月に何日あるか
-                   COMPUTE IDX1    =   IDX     +   1
+                   COMPUTE IDX1    =   IDXX     +   1
                    PERFORM VARYING IDZ FROM    IDX1    BY  1
                            UNTIL   IDZ >       31
                        MOVE    ZERO                TO  FLG-OK                            
@@ -1740,6 +1742,7 @@
                            PERFORM 2002-TBLZAIW-TAIHI-SEC
                        END-IF
                    END-PERFORM    
+               DISPLAY "2002 IDXX = " IDXX
                    COMPUTE RECE64-ZAIKAISU     =
                                WRK-KAISU (1)   *   WRK-KAISU1                
                    MOVE    WRK-RECE64-ZAITEN       TO  RECE64-SYUTEN1
@@ -1747,12 +1750,15 @@
       *
       *            レセプト０４剤編集前処理
                    PERFORM 2001-RECE64-ZAIHEN-MAE-SEC
+               DISPLAY "2001 IDXX = " IDXX
       *
                    IF      SPA-STS          =   ZERO
                        PERFORM 20051-SRYKBNELSE-KENSA-SEC
+               DISPLAY "20051 IDXX = " IDXX
       *                剤・診療行為テーブル出力処理
                        PERFORM 450-RECE66-OUT-SEC
                    END-IF    
+               DISPLAY "450 IDXX = " IDXX
                END-IF
            END-PERFORM                        
            .
