@@ -44,6 +44,7 @@
       *                                     パラメタに入外区分の追加
       *  01.01.02    NACL-藤原    02/10/21  印刷用ファイルにサイト区分を追加
       *  01.01.03    NACL-藤原    03/01/08  印刷順通し番号を追加
+      *  01.01.04    NACL-藤原    03/02/07  頁数のジョブ管理ＤＢへの更新
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -249,6 +250,8 @@
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
            MOVE    "ORCR0102"      TO  JOB-PGID
+           MOVE    "レセプト印刷処理"
+                                   TO  JOB-SHELLMSG
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC
@@ -509,6 +512,7 @@
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
+           MOVE    CNT-OUT         TO  JOB-UPDCNT                         
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC

@@ -31,12 +31,13 @@
       *  01.00.01    NACL-藤原    02/09/12  ディレクトリをサブプロへ
       *  01.00.02    NACL-藤原    02/09/27  帳票ＩＤをＤＢより編集
       *                                     パラメタに入外区分の追加
-      *  01.01.03    NACL-藤原    02/10/21  印刷用ファイルにサイト区分を追加
-      *  01.01.04    NACL-藤原    03/01/10  印刷順通し番号を追加
-      *  01.01.05    NACL-門脇    03/01/31  事業所名の長さ変更のため
+      *  01.00.03    NACL-藤原    02/10/21  印刷用ファイルにサイト区分を追加
+      *  01.00.04    NACL-藤原    03/01/10  印刷順通し番号を追加
+      *  01.00.05    NACL-門脇    03/01/31  事業所名の長さ変更のため
       *                                     帳票ＩＤ追加
       *  01.00.06    NACL-門脇    03/02/12  医療機関名の長さ変更のため
       *                                     帳票ＩＤ追加
+      *  01.00.07    NACL-藤原    03/02/14  頁数のジョブ管理ＤＢへの更新
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -252,6 +253,8 @@
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
            MOVE    "ORCR0500"      TO  JOB-PGID
+           MOVE    "レセプト印刷処理"
+                                   TO  JOB-SHELLMSG
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC
@@ -555,6 +558,7 @@
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
+           MOVE    CNT-OUT         TO  JOB-UPDCNT                         
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC
