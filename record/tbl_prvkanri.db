@@ -73,7 +73,7 @@ path	key3		{
                     AND     SHORI_RENNUM =   :SHORI_RENNUM 
                     AND     PAGE         >=  :STPAGE
                     AND     PAGE         <=  :EDPAGE
-                    ORDER BY PAGE    
+                    ORDER BY TBL_KEY,RENNUM,TBL_GROUP,SHORI_RENNUM,PAGE    
 		;
 	};
 };
@@ -103,6 +103,34 @@ path	key5		{
 		;
 	};
 };
+
+
+path	key6		{ 	
+	DBSELECT	{
+		DECLARE tbl_prvkanri_key6_csr CURSOR FOR
+		SELECT *
+		FROM tbl_prvkanri
+                    WHERE   TBL_KEY      =   :TBL_KEY
+                    AND     TBL_GROUP    =   :TBL_GROUP
+                    ORDER BY TBL_KEY,RENNUM,TBL_GROUP,SHORI_RENNUM,PAGE   
+		;
+	};
+};
+
+
+path	key7		{ 	
+	DBSELECT	{
+		DECLARE tbl_prvkanri_key7_csr CURSOR FOR
+		SELECT *
+		FROM tbl_prvkanri
+                    WHERE   TBL_KEY      =   :TBL_KEY
+                    AND     TBL_GROUP    =   :TBL_GROUP
+                    AND     RENNUM       =   :RENNUM 
+                    ORDER BY TBL_KEY,RENNUM,TBL_GROUP,SHORI_RENNUM,PAGE 
+		;
+	};
+};
+
 path	del11	{
 	DBDELETE	{
 		DELETE
