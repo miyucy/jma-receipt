@@ -42,6 +42,7 @@
       *  02.00.05    NACL-多々納  02/10/18  入院回数追加
       *  02.00.06    NACL-多々納  02/10/21  慢性疼痛管理料の改正追加
       *  02.00.07    NACL-多々納  02/11/28  慢性疼痛管理料の改正修正
+      *  02.00.08    NACL-多々納  02/12/06  慢性疼痛の算定チェック修正
       *****************************************************************
       *
       *
@@ -920,19 +921,10 @@
       *
       *    慢性疼痛疾患管理料のチェック
            IF     (LNK-SC92-ERRCD6 NOT =   SPACE      )  AND
-                  (LNK-SC92-SRYCD      =   "113006510")  AND
-                  (SPA-SRYYMD          >=  "20021017" )
-      *        理学療法４、消炎鎮痛等処置の時チェック
-               IF      WRK-CHK-CD      =   "180707410"
-                                       OR  "180022810"
-                                       OR  "180707510"
-                                       OR  "140029610"
-                                       OR  "140040310"
-                                       OR  "140002210"
-                                       OR  "140002310"
-                                       OR  "140047670"
-                   PERFORM 20053-MANSEI-CHK-SEC
-               END-IF
+                  (SPA-SRYYMD          >=  "20021017" )  AND
+                  (LNK-SC92-SRYCD      =   "113006510" OR
+                   WRK-CHK-CD          =   "113006510" )
+               PERFORM 20053-MANSEI-CHK-SEC
            END-IF
       *
            .
@@ -1104,12 +1096,40 @@
       *****************************************************************
        20053-MANSEI-CHK-SEC        SECTION.
       *
+      *    理学療法４、消炎鎮痛等処置の時チェック
+           IF     (LNK-SC92-SRYCD      =   "180707410"
+                                       OR  "180022810"
+                                       OR  "180707510"
+                                       OR  "140029610"
+                                       OR  "140040310"
+                                       OR  "140002210"
+                                       OR  "140002310"
+                                       OR  "140047670" )  OR
+                  (WRK-CHK-CD          =   "180707410"
+                                       OR  "180022810"
+                                       OR  "180707510"
+                                       OR  "140029610"
+                                       OR  "140040310"
+                                       OR  "140002210"
+                                       OR  "140002310"
+                                       OR  "140047670" )
+               CONTINUE
+           ELSE
+               GO      TO      20053-MANSEI-CHK-EXT
+           END-IF
+      *
       *    直帰の初診算定日を決定する
            PERFORM 200531-SYOSIN-SANTEI-SEC
       *
       *    直帰の慢性疼痛疾患管理料算定日
            MOVE    "113006510"         TO  WRK-SRYCD
            PERFORM 2005332-SANTEI-CHK-SEC
+      *
+      *    初回慢性疼痛がない時ＯＫ
+           IF      WRK-YMD             =   SPACE
+               MOVE    SPACE           TO  LNK-SC92-ERRCD6
+               MOVE    SPACE           TO  LNK-SC92-ERRMSG
+           END-IF
       *    訂正の時、当日ならＯＫとする
            IF      LNK-SC92-SYORIFLG   =   1
                IF      WRK-YMD         =   SPA-SRYYMD
@@ -1263,6 +1283,14 @@
                        END-PERFORM
                        MOVE    SANTEI-SRYYM        TO  WRK-YYMM
                        MOVE    1                   TO  FLG-SANTEI
+      *                初回慢性疼痛の時、診療日より後の時なしとする
+                       IF     (WRK-SRYCD       =   "113006510" ) AND
+                              (SANTEI-FSANTEIYMD(1:6)
+                                               =   SANTEI-SRYYM ) AND
+                              (SPA-SRYYMD(1:6) =   SANTEI-SRYYM ) AND
+                              (SPA-SRYYMD(7:2) <   SANTEI-MSANTEID)
+                           MOVE    SPACE               TO  WRK-YMD
+                       END-IF
                    END-IF
                END-IF
       *

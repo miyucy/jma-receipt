@@ -812,6 +812,7 @@
                    WHEN    2
                        IF       WRK-COM-INPUTCD (IDX1 - 1)
                                                 =   "101400020"
+                                                OR  "099509901"
                            CONTINUE
                        ELSE
                            MOVE    "8005"      TO  WRK-ERRCD

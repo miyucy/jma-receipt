@@ -2791,7 +2791,10 @@
       *
            IF      SPA-HKNKBN          =   1
       *        労災の時、外来管理加算の読み替えチェック
-               PERFORM 20011-RSIGAIKAN-SYORI-SEC
+               IF      IDX-ZAI1            =   ZERO
+      *            再診の時のみ
+                   PERFORM 20011-RSIGAIKAN-SYORI-SEC
+               END-IF
            ELSE
       *        労災以外の外来管理加算の算定チェック
                PERFORM 20012-GAIKAN-SYORI-SEC
