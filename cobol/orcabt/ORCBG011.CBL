@@ -720,10 +720,10 @@
                    IF    ( WRK-PARA-KKNEDYM    NOT =   "999999" )
       *                処理区分
                        IF    ( WRK-PARA-KKNPROCKBN     =   "1" )
-                           MOVE    "締月翌月以降の訂正・入金を含める"
+                           MOVE    "締月翌月以降の訂正・入金を含む"
                                                    TO  WKHCM39-MES
                        ELSE
-                           MOVE    "締月翌月以降の訂正・入金を含めない"
+                           MOVE    "締月翌月以降の訂正・入金を含まず"
                                                    TO  WKHCM39-MES
                        END-IF
                    END-IF

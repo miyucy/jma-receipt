@@ -92,7 +92,6 @@
       *
       *    フラグ領域
        01  FLG-AREA.
-           03  FLG-ERR                 PIC 9(01).
            03  FLG-END                 PIC 9(01).
            03  FLG-TOKEI               PIC 9(01).
            03  FLG-BD003               PIC 9(01).
@@ -344,7 +343,6 @@
                MOVE    "医療機関情報が取得できませんでした"
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
-               MOVE    1               TO  FLG-END
                GO  TO  110-PARA-HENSYU-EXT
            END-IF
       *
@@ -369,8 +367,6 @@
       *****************************************************************
        120-PARA-CHECK-SEC          SECTION.
       *
-           MOVE    ZERO            TO  FLG-ERR
-      *
       *    期間指定区分チェック
            EVALUATE    PARA-SITEIKBN
            WHEN    "0"
@@ -380,59 +376,39 @@
            WHEN    "1"
       *        期間開始年月チェック
                PERFORM 1201-PARA-STR-CHECK-SEC
-               IF          FLG-ERR         NOT =   ZERO
-                   MOVE    "期間開始年月を正しく入力してください"
-                                           TO  WRK-RECEERR
-                   PERFORM 500-ERR-HENSYU-SEC
-                   MOVE    1               TO  FLG-END
+               IF          FLG-END         NOT =   ZERO
                    GO  TO  120-PARA-CHECK-EXT
                END-IF
       *
       *        期間終了年月チェック
                PERFORM 1201-PARA-END-CHECK-SEC
-               IF          FLG-ERR         NOT =   ZERO
-                   MOVE    "期間終了年月を正しく入力してください"
-                                           TO  WRK-RECEERR
-                   PERFORM 500-ERR-HENSYU-SEC
-                   MOVE    1               TO  FLG-END
+               IF          FLG-END         NOT =   ZERO
                    GO  TO  120-PARA-CHECK-EXT
                END-IF
            WHEN    OTHER
-               MOVE    "期間指定区分を正しく入力してください"
-                                       TO  WRK-RECEERR
+               MOVE    SPACE           TO  WRK-RECEERR
+               STRING  "期間指定区分が誤りです［"
+                                                   DELIMITED   BY  SIZE
+                       PARA-SITEIKBN               DELIMITED   BY  SIZE
+                       "］"                        DELIMITED   BY  SIZE
+               INTO    WRK-RECEERR
+               END-STRING
                PERFORM 500-ERR-HENSYU-SEC
-               MOVE    1               TO  FLG-END
                GO  TO  120-PARA-CHECK-EXT
            END-EVALUATE
       *
       *    期間範囲チェック
            PERFORM 1201-PARA-KIKAN-CHECK-SEC
-           IF          FLG-ERR         NOT =   ZERO
+           IF          FLG-END         NOT =   ZERO
                MOVE    "期間を正しく入力してください"
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
-               MOVE    1               TO  FLG-END
                GO  TO  120-PARA-CHECK-EXT
            END-IF
       *
       *    期間処理区分チェック
-           EVALUATE    PARA-SYORIKBN
-           WHEN    "1"
-               MOVE    "締月翌月以降の訂正・入金を含める"
-                                       TO  WRK-MES
-           WHEN    "2"
-               MOVE    "締月翌月以降の訂正・入金は含まず"
-                                       TO  WRK-MES
-           WHEN    OTHER
-               MOVE    "期間処理区分を正しく入力してください"
-                                       TO  WRK-RECEERR
-               PERFORM 500-ERR-HENSYU-SEC
-               MOVE    1               TO  FLG-END
-               GO  TO  120-PARA-CHECK-EXT
-           END-EVALUATE
-      *
-           IF          WRK-YUKOENDYMD  =   "99999999"
-               MOVE    SPACE           TO  WRK-MES
+           IF          WRK-YUKOENDYMD  NOT =   "99999999"
+               PERFORM 1201-PARA-SYORIKBN-CHECK-SEC
            END-IF
            .
       *
@@ -447,7 +423,9 @@
       *    期間開始年月チェック
            EVALUATE    PARA-YUKOSTRYM
            WHEN    SPACE
-               MOVE    1               TO  FLG-ERR
+               MOVE    "開始年月が未設定です"
+                                       TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
            WHEN    "000000"
                MOVE    "00000000"      TO  WRK-YUKOSTRYMD
            WHEN    OTHER
@@ -460,7 +438,13 @@
                                            TO  WRK-YUKOSTRYM
                    MOVE    WRK-SYMD        TO  WRK-YUKOSTRYMD
                ELSE
-                   MOVE    1               TO  FLG-ERR
+                   MOVE    SPACE           TO  WRK-RECEERR
+                   STRING  "開始年月が誤りです［"
+                                               DELIMITED   BY  SIZE
+                       PARA-YUKOSTRYM          DELIMITED   BY  SIZE
+                       "］"                    DELIMITED   BY  SIZE
+                   INTO    WRK-RECEERR
+                   END-STRING
                END-IF
            END-EVALUATE
       *
@@ -487,7 +471,14 @@
                END-IF
                PERFORM 20021-GETUMATU-GET-SEC
                IF          STS-DAY-RC1     NOT =   ZERO
-                   MOVE    1               TO  FLG-ERR
+                   MOVE    SPACE           TO  WRK-RECEERR
+                   STRING  "終了年月が誤りです［"
+                                               DELIMITED   BY  SIZE
+                       PARA-YUKOENDYM          DELIMITED   BY  SIZE
+                       "］"                    DELIMITED   BY  SIZE
+                   INTO    WRK-RECEERR
+                   END-STRING
+                   PERFORM 500-ERR-HENSYU-SEC
                END-IF
       *
                PERFORM 31012-SEIWA-HEN-SEC
@@ -496,7 +487,14 @@
                                            TO  WRK-YUKOENDYM
                    MOVE    WRK-SYMD        TO  WRK-YUKOENDYMD
                ELSE
-                   MOVE    1               TO  FLG-ERR
+                   MOVE    SPACE           TO  WRK-RECEERR
+                   STRING  "終了年月が誤りです［"
+                                               DELIMITED   BY  SIZE
+                       PARA-YUKOENDYM          DELIMITED   BY  SIZE
+                       "］"                    DELIMITED   BY  SIZE
+                   INTO    WRK-RECEERR
+                   END-STRING
+                   PERFORM 500-ERR-HENSYU-SEC
                END-IF
            END-EVALUATE
       *
@@ -517,7 +515,9 @@
            ELSE
                IF          WRK-YUKOSTRYMD(1:6)
                                        >   WRK-YUKOENDYMD(1:6)
-                   MOVE    1               TO  FLG-ERR
+                   MOVE    "開始年月＞終了年月となっています"
+                                           TO  WRK-RECEERR
+                   PERFORM 500-ERR-HENSYU-SEC
                    GO  TO  1201-PARA-KIKAN-CHECK-EXT
                END-IF
                IF        ( WRK-YUKOSTRYMD  =   "00000000" )
@@ -541,6 +541,34 @@
            .
       *
        1201-PARA-KIKAN-CHECK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    期間処理区分チェック処理
+      *****************************************************************
+       1201-PARA-SYORIKBN-CHECK-SEC   SECTION.
+      *
+      *    期間処理区分チェック
+           EVALUATE    PARA-SYORIKBN
+           WHEN    "1"
+               MOVE    "締月翌月以降の訂正・入金を含む"
+                                       TO  WRK-MES
+           WHEN    "2"
+               MOVE    "締月翌月以降の訂正・入金は含まず"
+                                       TO  WRK-MES
+           WHEN    OTHER
+               MOVE    SPACE           TO  WRK-RECEERR
+               STRING  "期間処理区分が誤りです［"
+                                                   DELIMITED   BY  SIZE
+                       PARA-SYORIKBN               DELIMITED   BY  SIZE
+                       "］"                        DELIMITED   BY  SIZE
+               INTO    WRK-RECEERR
+               END-STRING
+               PERFORM 500-ERR-HENSYU-SEC
+           END-EVALUATE
+       .
+      *
+       1201-PARA-SYORIKBN-CHECK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -598,12 +626,11 @@
       *
            MOVE    ZERO            TO  WRK-GSURYO
       *    キーセット
-           EVALUATE    PARA-SYORIKBN
-           WHEN    "1"
-               MOVE    "BD003-KEY"     TO  WRK-DBPATH
-           WHEN    "2"
+           IF          PARA-SYORIKBN   =   "2"
                MOVE    "BD003-KEY2"    TO  WRK-DBPATH
-           END-EVALUATE
+           ELSE
+               MOVE    "BD003-KEY"     TO  WRK-DBPATH
+           END-IF
       *
       *    未収金一覧用収納明細情報読み込み
            PERFORM 900-BD003-SELECT-SEC
