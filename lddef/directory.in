@@ -40,7 +40,7 @@ ld	{
 	orca104	"localhost:9204";
 	orca105	"localhost:9205"; 
 	orca106	"localhost:9206"; 
-        orca107	"localhost:9207"; 
+	orca107	"localhost:9207"; 
 };
 bd	{
         orcabt;
