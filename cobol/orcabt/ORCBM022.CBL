@@ -29,6 +29,8 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    02/11/07  船員保険の集計の追加 
+      *  01.00.02    NACL-藤原    02/11/26  共済組合の下船３ヶ月の
+      *                                     集計の追加 
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -344,6 +346,9 @@
       *    医療保険欄
            IF      RECE10-RJNHKNNUM        =   SPACE
            AND     RECE10-HKNNUM       NOT =   SPACE
+      *      
+      *        船員保険の補助区分が前期高齢者以外の時
+         
                IF      RECE10-HKNNUM           =   "002"
                AND     RECE10-HOJOKBN          =   "1" OR  "2" OR  "3"
                                                        OR  SPACE 
@@ -351,35 +356,17 @@
                        MOVE    5                       TO  IDY1
                    ELSE                    
                        IF      RECE10-HONKZKKBN        =   "1"
-                           MOVE    3                       TO  IDY1
+                          MOVE    3                       TO  IDY1
                        ELSE     
-                           MOVE    4                       TO  IDY1
+                          MOVE    4                       TO  IDY1
                        END-IF
                    END-IF
                ELSE    
-                   IF      RECE10-AGE          >=  70
-                       IF      RECE10-HKNNUM           =   "002"
-                           EVALUATE    RECE10-HOJOKBN
-                               WHEN    "9"
-                               WHEN    "A"
-                               WHEN    "B"
-                               WHEN    "C"
-                                   MOVE    1                   TO  IDY1
-                               WHEN    "8"    
-                               WHEN    "D"
-                               WHEN    "E"
-                               WHEN    "F"
-                                   MOVE    2                   TO  IDY1
-                           END-EVALUATE
-                       ELSE            
-                           EVALUATE    RECE10-KYURATE
-                               WHEN    9
-                                   MOVE    1                   TO  IDY1
-                               WHEN    8
-                                   MOVE    2                   TO  IDY1
-                           END-EVALUATE
-                       END-IF            
-                   ELSE
+      *      
+      *            共済組合の補助区分が前期高齢者以外の時     
+                   IF      RECE10-HKNNUM           >=  "031"   AND
+                                                   <=  "034"
+                   AND     RECE10-HOJOKBN          =   "2" OR  SPACE 
                        IF      RECE10-AGE              <   3
                            MOVE    5                       TO  IDY1
                        ELSE                    
@@ -389,7 +376,53 @@
                                MOVE    4                       TO  IDY1
                            END-IF
                        END-IF
-                   END-IF    
+                   ELSE    
+                       IF      RECE10-AGE          >=  70
+      *                    船員保険の補助区分が前期高齢者の時
+                           IF      RECE10-HKNNUM           =   "002"
+                               EVALUATE    RECE10-HOJOKBN
+                                   WHEN    "9"
+                                   WHEN    "A"
+                                   WHEN    "B"
+                                   WHEN    "C"
+                                       MOVE    1               TO  IDY1
+                                   WHEN    "8"    
+                                   WHEN    "D"
+                                   WHEN    "E"
+                                   WHEN    "F"
+                                       MOVE    2               TO  IDY1
+                               END-EVALUATE
+                           ELSE            
+      *                        共済組合の補助区分が前期高齢者の時
+                               IF      RECE10-HKNNUM   >=  "031"   AND
+                                                       <=  "034"
+                                   EVALUATE    RECE10-HOJOKBN
+                                       WHEN    "B"
+                                           MOVE    1           TO  IDY1
+                                       WHEN    "E"
+                                           MOVE    2           TO  IDY1
+                                   END-EVALUATE
+                               ELSE            
+                                   EVALUATE    RECE10-KYURATE
+                                       WHEN    9
+                                           MOVE    1           TO  IDY1
+                                       WHEN    8
+                                           MOVE    2           TO  IDY1
+                                   END-EVALUATE
+                               END-IF
+                           END-IF
+                       ELSE
+                           IF      RECE10-AGE              <   3
+                               MOVE    5                       TO  IDY1
+                           ELSE                    
+                               IF      RECE10-HONKZKKBN    =   "1"
+                                   MOVE    3                   TO  IDY1
+                               ELSE     
+                                   MOVE    4                   TO  IDY1
+                               END-IF
+                           END-IF
+                       END-IF
+                   END-IF        
                END-IF
       *                      
                IF      RECE10-KOHNUM (1)   NOT =   SPACE
@@ -414,7 +447,12 @@
                                WHEN    "004"
                                    MOVE    6               TO  IDY2
                                WHEN    "031"  THRU  "034"
-                                   MOVE    8               TO  IDY2
+                                   EVALUATE    RECE10-HOJOKBN
+                                       WHEN    "B"
+                                           MOVE    7       TO  IDY2
+                                       WHEN    OTHER
+                                           MOVE    8       TO  IDY2
+                                   END-EVALUATE        
                                WHEN    "006"
                                    MOVE    9               TO  IDY2
                                WHEN    "063"
@@ -435,12 +473,17 @@
                                            MOVE    4       TO  IDY2
                                    END-EVALUATE        
                                WHEN    "031"  THRU  "034"
-                                   MOVE    6               TO  IDY2
+                                   EVALUATE    RECE10-HOJOKBN
+                                       WHEN    "E"
+                                           MOVE    5       TO  IDY2
+                                       WHEN    OTHER
+                                           MOVE    6       TO  IDY2
+                                   END-EVALUATE        
                                WHEN    "006"
                                    MOVE    7               TO  IDY2
                                WHEN    "063"
                                WHEN    "072"  THRU  "075"
-                                   MOVE    9               TO  IDY2
+                                   MOVE    8               TO  IDY2
                            END-EVALUATE
                        WHEN    3
                            EVALUATE    RECE10-HKNNUM
@@ -461,7 +504,12 @@
                                WHEN    "004"
                                    MOVE    6               TO  IDY2
                                WHEN    "031"  THRU  "034"
-                                   MOVE    8               TO  IDY2
+                                   EVALUATE    RECE10-HOJOKBN
+                                       WHEN    "2"
+                                           MOVE    7       TO  IDY2
+                                       WHEN    OTHER
+                                           MOVE    8       TO  IDY2
+                                   END-EVALUATE        
                                WHEN    "006"
                                    MOVE    9               TO  IDY2
                                WHEN    "007"
