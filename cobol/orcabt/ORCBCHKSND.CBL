@@ -172,14 +172,19 @@
       *
        01  MES-AREA.
            03  MES-MES01.
-               05  PIC X(30)  VALUE   "　新マスタに登録済みでした".
-               05  PIC X(30)  VALUE   "（旧マスタから削除しました）  ".
+               05  PIC X(40)
+                   VALUE   "　移行先マスタに登録済みでした    ".
+               05  PIC X(40)
+                   VALUE   "（移行元マスタから削除しました）  ".
            03  MES-MES02.
-               05  PIC X(30)  VALUE   "　＜旧マスタの病名＞          ".
+               05  PIC X(40)
+                   VALUE   "　＜移行元マスタの病名＞          ".
            03  MES-MES03.
-               05  PIC X(30)  VALUE   "　新マスタの更新に失敗しました".
+               05  PIC X(40)
+                   VALUE   "　移行先マスタの更新に失敗しました".
            03  MES-MES04.
-               05  PIC X(30)  VALUE   "　旧マスタの更新に失敗しました".
+               05  PIC X(40)
+                   VALUE   "　移行元マスタの更新に失敗しました".
       *
            COPY    "CPSHELLTBL.INC".
       *
@@ -299,7 +304,7 @@
                                        WRK-PARA-SHELLID
                                        WRK-PARA-HOSPID
       *
-           MOVE    "病名チェック更新"
+           MOVE    "適用病名情報更新"
                                        TO  WRK-TITLE
       *
       *    ステップ管理開始処理
@@ -432,7 +437,7 @@
            INITIALIZE                  HCMSL80
       *
            STRING
-               "＊＊＊＊　病名チェック更新確認リスト　＊＊＊"
+               "＊＊＊＊　適用病名情報更新確認リスト　＊＊＊"
                                                    DELIMITED   BY  SIZE
                "（作成日："                        DELIMITED   BY  SIZE
                LNK-PRTKANRI-SKYYMD(1:4)            DELIMITED   BY  SIZE
@@ -784,7 +789,7 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
            MOVE   "HCMSL80.red"        TO  SPRT-PRTID
-           MOVE    "病名チェック更新確認リスト"
+           MOVE    "適用病名情報更新確認リスト"
                                        TO  SPRT-TITLE
            MOVE    HCMSL80             TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
