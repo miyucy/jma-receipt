@@ -703,7 +703,7 @@
       *    通算日数を求める
            MOVE    PTNYUINRRK-NYUINYMD
                                    TO  WRK-STYMD
-      *    暫定的に月初め又は入院日を設定（実際は請求開始日）
+      *    請求開始日を設定
            MOVE    WRK-SEIKYUSTYMD
                                    TO  WRK-EDYMD
            PERFORM 5002-KIKAN-CALC-SEC
@@ -728,7 +728,7 @@
            MOVE    "1"             TO  LNK-S02-NYUGAIKBN
            MOVE    PTNYUINRRK-PTID TO  LNK-S02-PTID
            MOVE    WRK-NISSU1      TO  LNK-S02-NYUIN-TSUSAN-NISSU
-      *    暫定的に月初め又は入院日を設定（実際は請求開始日）
+      *    請求開始日を設定
            MOVE    WRK-SEIKYUSTYMD
                                    TO  LNK-S02-SKYSTYMD
            MOVE    WRK-SEIKYUEDYMD
@@ -774,6 +774,9 @@
       *
            MOVE    LNK-SYUNOU-REC (IDX1)
                                        TO  SYUNOU-REC
+      *
+           MOVE    WRK-SEIKYUSTYMD     TO  SYU-SKYSTYMD
+           MOVE    WRK-SEIKYUEDYMD     TO  SYU-SKYEDYMD
       *
            MOVE    PTNYUINRRK-REC      TO  WKPTNYUINRRK-REC
       *    請求時最終履歴取得処理

@@ -2684,6 +2684,27 @@
            MOVE    SPA-I0-SYUNOU-DAT (IDX-SYU)
                                    TO  SYUNOU-REC
       *
+           IF    ( SPA-I01-I04-SKYSTYMD (1:6)
+                                   NOT =   SPA-I01-I04-SKYEDYMD (1:6) )
+               IF    ( SPA-I01-I04-SKYSTYMD (1:6)
+                                       =   SYU-SKYSTYMD (1:6))
+                   MOVE    SPA-I01-I04-SKYSTYMD    TO  SYU-SKYSTYMD
+                   MOVE    SPA-I01-I04-SKYSTYMD    TO  WRK-SYMD
+                   PERFORM 5002-GETUMATU-SEC
+                   MOVE    WRK-SYMD                TO  SYU-SKYEDYMD
+               END-IF
+               IF    ( SPA-I01-I04-SKYEDYMD (1:6)
+                                       =   SYU-SKYEDYMD (1:6))
+                   MOVE    SPA-I01-I04-SKYEDYMD (1:6)
+                                                   TO  SYU-SKYSTYMD(1:6)
+                   MOVE    "01"                    TO  SYU-SKYSTYMD(7:2)
+                   MOVE    SPA-I01-I04-SKYEDYMD    TO  SYU-SKYEDYMD
+               END-IF
+           ELSE
+               MOVE    SPA-I01-I04-SKYSTYMD    TO  SYU-SKYSTYMD
+               MOVE    SPA-I01-I04-SKYEDYMD    TO  SYU-SKYEDYMD
+           END-IF
+      *
       *    伝票番号取得処理
            PERFORM 4801-DENPNUM-SET-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
@@ -3342,6 +3363,22 @@
            .
        5002-CALENDAR-EXT.
            EXIT.
+      *****************************************************************
+      *    月末日取得処理
+      *****************************************************************
+       5002-GETUMATU-SEC      SECTION.
+      *
+           INITIALIZE                  STS-AREA-DAY
+           INITIALIZE                  LNK-DAY1-AREA
+           MOVE    "71"                TO   LNK-DAY7-IRAI
+           MOVE    WRK-SYMD (1 : 6)    TO   LNK-DAY7-YM
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                       LNK-DAY7-AREA
+           MOVE    LNK-DAY7-KOYOMI     TO  WRK-SYMD
+      *
+           .
+       5002-GETUMATU-EXT.
+            EXIT.
       *****************************************************************
       *    全角半角混在チェック
       *****************************************************************
