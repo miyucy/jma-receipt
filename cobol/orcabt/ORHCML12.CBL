@@ -108,7 +108,7 @@
                05  WRK-SDD         PIC 9(02).
            03  WRK-HENYMDG         PIC X(22).
       *
-           03  WRK-NAME            PIC X(48).
+           03  WRK-NAME            PIC X(100).
       *
            03  WRK-PAGE            PIC ZZ,ZZ9.
            03  WRK-TEN             PIC Z,ZZZ,ZZ9.99.
@@ -223,7 +223,7 @@
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
            MOVE    "ORHCML12"      TO  JOB-PGID
-           MOVE    "点数マスタ一覧表・薬剤"
+           MOVE    "点数マスタ一覧表・薬剤分類区分"
                                    TO  JOB-SHELLMSG
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
