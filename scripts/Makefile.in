@@ -63,7 +63,7 @@ ruby_scripts = \
 	daily/print_parent2.rb \
 	daily/print_parent.rb \
 	daily/orcred2ps.rb \
-	daily/print_parent_prv.rb
+	daily/print_parent_prv.rb \
 	daily/toukei2.sh.in \
 
 claim_scripts = \
