@@ -434,45 +434,7 @@
                IF    ( LNK-ORDER-ITEM (IDXA)   =   SPACE )
                    CONTINUE
                ELSE
-      *
-                   MOVE    "5013"      TO  WRK-SYS-KANRICD
-                   MOVE    LNK-ORDER-ITEM (IDXA)
-                                       TO  WRK-SYS-KBNCD
-                   PERFORM 900-SYSKANRI-KEY2-SEL-SEC
-                   IF    ( FLG-SYSKANRI    =   ZERO )
-                       MOVE    MCPDATA-REC TO  SYS-5013-REC
-                   END-IF
-      *
-                   MOVE    ZERO            TO  FLG-HIT
-                   PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
-                             OR  ( ITEM-TAIINCD    NOT =   SPACE    )
-      *
-                       IF    ( LNK-ORDER-REMARKS (IDXA)
-                                           =   SYS-5013-NAME )
-                           MOVE    SYS-5013-KBNCD
-                                           TO  ITEM-TAIINCD
-                       END-IF
-      *
-                       MOVE    PATH-TBL-SYSKANRI-KEY2
-                                           TO   MCP-PATH
-                       PERFORM 910-DBFETCH-SEC
-                       IF    ( MCP-RC          =   ZERO )
-                           MOVE    MCPDATA-REC TO  SYS-5013-REC
-                       ELSE
-                           MOVE    1           TO  FLG-SYSKANRI
-                           INITIALIZE          SYS-5013-REC
-                       END-IF
-      *
-                   END-PERFORM
-               END-IF
-      *
-               MOVE    PATH-TBL-SYSKANRI-KEY2
-                                       TO   MCP-PATH
-               PERFORM 910-DBCLOSE-SEC
-      *
-               IF    ( ITEM-TAIINCD            =   SPACE )
-                   MOVE    "2001"  TO   ERRCD-ERRCD
-                   PERFORM 2100-ITEM-WRN-SET-SEC
+                   PERFORM 200111-TAIINCD-CHK-SEC
                END-IF
            ELSE
       *
@@ -482,6 +444,53 @@
       *
            .
        20011-TAIINCD-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    退院事由チェック処理
+      *****************************************************************
+       200111-TAIINCD-CHK-SEC          SECTION.
+      *
+           MOVE    "5013"      TO  WRK-SYS-KANRICD
+           MOVE    LNK-ORDER-ITEM (IDXA)
+                               TO  WRK-SYS-KBNCD
+           PERFORM 900-SYSKANRI-KEY2-SEL-SEC
+           IF    ( FLG-SYSKANRI    =   ZERO )
+               MOVE    MCPDATA-REC TO  SYS-5013-REC
+           END-IF
+      *
+           MOVE    ZERO            TO  FLG-HIT
+           PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
+                     OR  ( ITEM-TAIINCD    NOT =   SPACE    )
+      *
+               IF    ( LNK-ORDER-REMARKS (IDXA)
+                                   =   SYS-5013-NAME )
+                   MOVE    SYS-5013-KBNCD
+                                   TO  ITEM-TAIINCD
+               END-IF
+      *
+               MOVE    PATH-TBL-SYSKANRI-KEY2
+                                   TO   MCP-PATH
+               PERFORM 910-DBFETCH-SEC
+               IF    ( MCP-RC          =   ZERO )
+                   MOVE    MCPDATA-REC TO  SYS-5013-REC
+               ELSE
+                   MOVE    1           TO  FLG-SYSKANRI
+                   INITIALIZE          SYS-5013-REC
+               END-IF
+      *
+           END-PERFORM
+      *
+           MOVE    PATH-TBL-SYSKANRI-KEY2
+                                       TO   MCP-PATH
+           PERFORM 910-DBCLOSE-SEC
+      *
+           IF    ( ITEM-TAIINCD            =   SPACE )
+               MOVE    "2001"  TO   ERRCD-ERRCD
+               PERFORM 2100-ITEM-WRN-SET-SEC
+           END-IF
+      *
+           .
+       200111-TAIINCD-CHK-EXT.
            EXIT.
       *****************************************************************
       *    入院科チェック処理
@@ -752,7 +761,7 @@
       *    同日再入院の場合、入院日≠退院日となっていること
            IF    ( PTNYUINRRK-DOUJITSUKBN   =   "1" )
                IF    ( PTNYUINRRK-NYUINYMD  =   SODR-SRYYMD )
-                   MOVE    "2019"  TO  SPA-ERRCD
+                   MOVE    "2019"  TO  ERRCD-ORDER
                    GO  TO  20021-NYUINRRK-CHK-EXT
                END-IF
            END-IF

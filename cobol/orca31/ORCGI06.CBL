@@ -3079,6 +3079,14 @@
                PERFORM 2300-TAIINCD-SET-SEC
            END-IF
       *
+           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+               PERFORM 2300-NYUINKA-SET-SEC
+           END-IF
+      *
+           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+               PERFORM 2300-HKNCOMBI-SET-SEC
+           END-IF
+      *
            MOVE   IDX-ITM          TO  LNK-ORDER-MAX
       *
            CALL   "ORCSODR02"      USING   SODR-AREA
@@ -3337,7 +3345,8 @@
                                            SYS-EDYUKYMD
                PERFORM 900-SYSKANRI-KEY10-SEL-SEC
                MOVE    SYSKANRI-REC    TO  SYS-5013-REC
-               MOVE    SYS-5013-NAME   TO  LNK-ORDER-ITEM (IDX-ITM)
+               MOVE    SPA-GMN-TAIINCD TO  LNK-ORDER-ITEM (IDX-ITM)
+                                           LNK-ORDER-REMARKS (IDX-ITM)
            END-IF
       *
            .
