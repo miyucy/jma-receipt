@@ -2284,6 +2284,9 @@
       *****************************************************************
        4902-KOUSIN-SYORI-SEC           SECTION.
       *
+           MOVE    SPA-P02KYOUTU   TO  SPA-WORK
+           MOVE    SPA-P02SCRAREA  TO  SPA-FREE
+           MOVE    SPA-AREA        TO  SPA-COMMON
       *    更新サブへ
            CALL    "ORCGP029"      USING   MCPAREA
                                            SPAAREA
