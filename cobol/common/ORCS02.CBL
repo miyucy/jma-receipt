@@ -38,6 +38,7 @@
       *  01.00.06    NACL-門脇    03/05/08  船員保険（職務上）の食事負担無し
       *                                     に修正
       *  01.00.07    NACL-門脇    03/05/21  減免の端数設定対応
+      *  01.00.08    NACL-門脇    03/06/06  消費税端数対応
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -109,7 +110,11 @@
            03  WK-RATE                 PIC 9(1)V9(2).
       *
       *    減免端数区分
-           03  WK-HASU-KBN             PIC X(1).
+           03  WK-HASU1001-KBN         PIC X(1).
+      *
+      *    消費税端数区分
+           03  WK-TAX1001-KBN          PIC X(1).
+      *
       *
       *    公費の患者負担上限金額の退避用エリア
        01  HOKEN-MAX-AREA.
@@ -348,6 +353,33 @@
            MOVE           ZERO     TO  LNK-SYU-SKYMONEY-SKJ-JIHI-TAX.
            MOVE           ZERO     TO  LNK-SYU-SKYMONEY-SKJ-JIHI-KEI.
       *
+      *    減免端数区分・消費税端数区分の取り込み
+           INITIALIZE                         SYS-1001-REC.
+           MOVE    "1001"               TO    SYS-1001-KANRICD.
+           MOVE    "*"                  TO    SYS-1001-KBNCD.
+           MOVE    LNK-SYU-SRYYMD       TO    ORC-DBYMD.
+           MOVE    SYS-1001-REC         TO    MCPDATA-REC.
+           MOVE    "DBSELECT"           TO    MCP-FUNC.
+           MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH.
+           CALL    "ORCMCPSUB"    USING       MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC.
+           IF      MCP-RC               =     ZERO
+               MOVE     "SYSKANRI-KEY"  TO    ORC-DBPATH
+               PERFORM   SYSKANRI-READ-SEC
+               MOVE      SYS-1001-DISCOUNT-HASU-KBN  
+                                        TO    WK-HASU1001-KBN
+               MOVE      SYS-1001-TAX-HASU-KBN       
+                                        TO    WK-TAX1001-KBN
+           END-IF.
+      *
+           MOVE    "DBCLOSE"            TO  MCP-FUNC.
+           MOVE    "SYSKANRI-KEY"       TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
       *    保険組合せマスタの参照部分確定
            PERFORM   100-KAKUTEI-SEC.
       *
@@ -460,7 +492,13 @@
                                                LNK-SYU-JIHI-TAXARI(3) +
                                                LNK-SYU-JIHI-TAXARI(4) +
                                                LNK-SYU-JIHI-TAXARI(5)).
-           COMPUTE   LNK-SYU-JIHI-TAX = LNK-SYU-JIHI-TOTAL-TAX * 0.05.
+      *
+           IF    WK-TAX1001-KBN  =  "1"
+             COMPUTE LNK-SYU-JIHI-TAX = (LNK-SYU-JIHI-TOTAL-TAX * 0.05)
+                                      +  0.5
+           ELSE
+             COMPUTE LNK-SYU-JIHI-TAX =  LNK-SYU-JIHI-TOTAL-TAX * 0.05
+           END-IF.
       *
       *    保険適用外金額の加算
            MOVE       ZERO              TO  LNK-SYU-TGMONEY(12).
@@ -472,8 +510,14 @@
                       ADD       LNK-SYU-TGMONEY-TAX(HKNNYU-IDX)
                                         TO  LNK-SYU-TGMONEY-TAX(12)
            END-PERFORM.
-           COMPUTE  LNK-SYU-TGMONEY-TAX(12)  =  LNK-SYU-TGMONEY-TAX(12)
-                                             *  1.05.
+      *
+           IF    WK-TAX1001-KBN  =  "1"
+             COMPUTE   LNK-SYU-TGMONEY-TAX(12)   = 
+                     ( LNK-SYU-TGMONEY-TAX(12) * 1.05 )  +  0.5
+           ELSE
+             COMPUTE   LNK-SYU-TGMONEY-TAX(12)   = 
+                       LNK-SYU-TGMONEY-TAX(12) * 1.05          
+           END-IF.
       *
       *    請求金額の計算（調整金含まず）
            COMPUTE    LNK-SYU-SKYMONEY  =   
@@ -532,8 +576,13 @@
            IF  ( COMB-SYU-HKNKOHSBTKBN  =  "8" ) AND
                ( COMB-HOJOKBN           =  "1" )
       *
-              COMPUTE  LNK-SYU-SKYMONEY   =  LNK-SYU-SKYMONEY
-                                          *  1.05
+              IF    WK-TAX1001-KBN  =  "1"
+                 COMPUTE  LNK-SYU-SKYMONEY   =  
+                           ( LNK-SYU-SKYMONEY  *  1.05 ) + 0.5
+              ELSE
+                 COMPUTE  LNK-SYU-SKYMONEY   =  
+                             LNK-SYU-SKYMONEY  *  1.05
+              END-IF
       *
            END-IF.     
       *
@@ -579,30 +628,6 @@
        GENMEN-KEISAN-SEC          SECTION.
       *
            IF   PTINF-DISCOUNT  NOT =   SPACE  AND  "00"
-      *
-               INITIALIZE                         SYS-1001-REC
-               MOVE    "1001"               TO    SYS-1001-KANRICD
-               MOVE    "*"                  TO    SYS-1001-KBNCD
-               MOVE    LNK-SYU-SRYYMD       TO    ORC-DBYMD
-               MOVE    SYS-1001-REC         TO    MCPDATA-REC
-               MOVE    "DBSELECT"           TO    MCP-FUNC
-               MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH
-               CALL    "ORCMCPSUB"    USING        MCPAREA
-                                                   ORCMCPAREA
-                                                   MCPDATA-REC
-               IF      MCP-RC               =     ZERO
-                   MOVE     "SYSKANRI-KEY"  TO    ORC-DBPATH
-                   PERFORM   SYSKANRI-READ-SEC
-                   MOVE      SYS-1001-DISCOUNT-HASU-KBN  
-                                            TO    WK-HASU-KBN
-               END-IF
-      *
-               MOVE    "DBCLOSE"            TO  MCP-FUNC
-               MOVE    "SYSKANRI-KEY"       TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
       *
                INITIALIZE                         SYS-1026-REC
                MOVE    "1026"               TO    SYS-1026-KANRICD
@@ -651,7 +676,7 @@
                                COMPUTE  WK-RATE  =  
                                         (100 - SYS-1027-DISCOUNT-RATE)
                                         /  100
-                               EVALUATE   WK-HASU-KBN
+                               EVALUATE   WK-HASU1001-KBN
                                   WHEN  " "
                                   WHEN  "1"
                                     COMPUTE    LNK-SYU-SKYMONEY  =
@@ -3831,9 +3856,13 @@
                IF    COMB-HOJOKBN           =  "1" 
                  CONTINUE
                ELSE
-                 COMPUTE LNK-SYU-SKYMONEY-SKJ-TAX 
-                                              = LNK-SYU-SKYMONEY-SKJ
-                                              * 0.05
+                 IF    WK-TAX1001-KBN  =  "1"
+                    COMPUTE LNK-SYU-SKYMONEY-SKJ-TAX   =
+                          ( LNK-SYU-SKYMONEY-SKJ  *   0.05 )  +  0.5
+                 ELSE
+                    COMPUTE LNK-SYU-SKYMONEY-SKJ-TAX   =
+                            LNK-SYU-SKYMONEY-SKJ  *   0.05          
+                 END-IF
                END-IF
              END-IF
            END-IF.
@@ -3893,9 +3922,13 @@
                                               + WK-SHOKUJI-RYOYOHI96.
            COMPUTE  LNK-SYU-SKYMONEY-SKJ-JIHI = WK-SHOKUJI-FTN95
                                               + WK-SHOKUJI-FTN96.
-           COMPUTE  LNK-SYU-SKYMONEY-SKJ-JIHI-TAX
-                                              = WK-SHOKUJI-FTN96
-                                              * 0.05.
+           IF    WK-TAX1001-KBN  =  "1"
+               COMPUTE  LNK-SYU-SKYMONEY-SKJ-JIHI-TAX  =
+                      ( WK-SHOKUJI-FTN96  *  0.05 )  +  0.5
+           ELSE
+               COMPUTE  LNK-SYU-SKYMONEY-SKJ-JIHI-TAX  =
+                        WK-SHOKUJI-FTN96  *  0.05          
+           END-IF.
            COMPUTE  LNK-SYU-SKYMONEY-SKJ-JIHI-KEI
                                       = LNK-SYU-SKYMONEY-SKJ-JIHI
                                       + LNK-SYU-SKYMONEY-SKJ-JIHI-TAX.

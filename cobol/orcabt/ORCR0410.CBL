@@ -38,6 +38,7 @@
       *  01.00.07    NACL-門脇    03.05.13  自賠責：腰部固定帯加算対応
       *  01.00.08    NACL-門脇    03.05.19  自賠責の初診日の編集修正
       *  01.00.09    NACL-門脇    03.05.20  自賠責：療養担当手当て対応
+      *  01.00.10    NACL-門脇    03.06.09  消費税端数対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -185,6 +186,9 @@
            03  WRK-KEISAN-JI                           PIC  9(09).
            03  WRK-TEN-JI                              PIC  9(09).
       *
+      *    消費税端数区分
+           03  WRK-TAX1001-KBN                         PIC  X(01).
+      *
       *    手技点・薬剤等点数用領域
        01  TBL-TENSUG-JI.
            03  TBL-TENSU-JI                            OCCURS   31.
@@ -272,6 +276,8 @@
       *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
+      *    医療機関情報−基本
+           COPY    "CPSK1001.INC".
       *    患者番号構成管理情報
            COPY    "CPSK1009.INC".
       *    労災自賠医療機関情報
@@ -363,6 +369,26 @@
            MOVE    WRK-PARA-TERMID     TO  RECE41PARA-TERMID
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
+      *
+      *    医療機関情報−基本
+           INITIALIZE                  SYS-1001-REC
+           MOVE    "1001"              TO  SYS-1001-KANRICD
+           MOVE    "*"                 TO  SYS-1001-KBNCD
+           MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)
+           MOVE    "01"                TO  ORC-DBYMD (7:2)
+           MOVE    SYS-1001-REC        TO  MCPDATA-REC
+           MOVE    "SYSKANRI-KEY"      TO  WRK-PATH
+           PERFORM 800-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    SYSKANRI-REC    TO  SYS-1001-REC
+               MOVE    SYS-1001-TAX-HASU-KBN
+                                       TO  WRK-TAX1001-KBN
+           ELSE
+               MOVE    "医療機関情報−基本が取得できませんでした"
+                                           TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+               MOVE    1                   TO  FLG-END
+           END-IF
       *
       *    患者番号構成管理情報編集
            INITIALIZE                  SYS-1009-REC
@@ -1727,8 +1753,13 @@
            ELSE                                                         
                 MOVE   WRK-SINDAN-TUU      TO  RECE41-SINDAN-TUU        
                 IF    WRK-TAXKBN      =   "2"                           
-                   COMPUTE  WRK-SINDAN-KIN  =  WRK-SINDAN-KIN           
-                                            *  1.05                     
+                  IF  WRK-TAX1001-KBN =   "1"
+                     COMPUTE  WRK-SINDAN-KIN  =  
+                             (WRK-SINDAN-KIN  *  1.05)  +  0.5          
+                  ELSE
+                     COMPUTE  WRK-SINDAN-KIN  =  
+                              WRK-SINDAN-KIN  *  1.05                   
+                  END-IF
                 END-IF                                                  
                 MOVE   WRK-SINDAN-KIN      TO  RECE41-SINDAN-KIN        
            END-IF
@@ -1738,8 +1769,13 @@
            ELSE                                                         
                 MOVE   WRK-MEISAI-TUU      TO  RECE41-MEISAI-TUU        
                 IF    WRK-TAXKBN      =   "2"                           
-                   COMPUTE  WRK-MEISAI-KIN  =  WRK-MEISAI-KIN           
-                                            *  1.05                     
+                  IF  WRK-TAX1001-KBN =   "1"
+                     COMPUTE  WRK-MEISAI-KIN  =  
+                             (WRK-MEISAI-KIN  *  1.05)  +  0.5          
+                  ELSE
+                     COMPUTE  WRK-MEISAI-KIN  =  
+                              WRK-MEISAI-KIN  *  1.05                   
+                  END-IF
                 END-IF                                                  
                 MOVE   WRK-MEISAI-KIN      TO  RECE41-MEISAI-KIN
            END-IF                                                       
