@@ -637,3 +637,19 @@ path	key30	{
 		;
 	};
 };
+
+path	upd1	{
+	DBUPDATE	{
+		UPDATE  tbl_receprt
+                    SET     PRTJYUN      =   0,
+                            PRTRENNUM    =   0 
+                    WHERE   PRTID        =   :PRTID
+                    AND     RECEYM       =   :RECEYM
+                    AND     CREYMD       =   :CREYMD
+                    AND     CREHMS       =   :CREHMS
+                    AND     PRTJYUN      >   0
+                    AND     PRTRENNUM    >   0 
+                    AND     NYUGAIKBN    =   :NYUGAIKBN 
+		;
+	};
+};
