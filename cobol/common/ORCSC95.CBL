@@ -872,6 +872,10 @@
            END-IF
       *    受診履歴情報セット
            PERFORM 1001-SPA-JYUSIN-SEC
+      *
+      *    特定疾患の有無検索
+           PERFORM 11011-TOKUTEI-SYORI-SEC
+      *
       *    中途終了分処理
            PERFORM 200-WKSRYACT-SYORI-SEC
       *    前回患者保存
@@ -1842,7 +1846,7 @@
            PERFORM 49011-MISYU-HEN-SEC
       *
       *    特定疾患の有無検索
-           PERFORM 11011-TOKUTEI-SYORI-SEC
+      *****PERFORM 11011-TOKUTEI-SYORI-SEC
       *
       *    診療月の累計点数編集
       *****PERFORM 49012-ZAITENTOTAL-SEC
@@ -2382,6 +2386,10 @@
       *
       *    保険組合せ名称編集
            PERFORM 10013-HKNCOMBI-SEC
+      *
+      *    特定疾患の有無検索
+           PERFORM 11011-TOKUTEI-SYORI-SEC
+      *
       *
            PERFORM 200-WKSRYACT-SYORI-SEC
            .
