@@ -576,6 +576,8 @@
                MOVE    SYS-1007-SANTEI (2:1)   TO  SPA-YAKJYO-1
                MOVE    SYS-1007-SANTEI (3:1)   TO  SPA-YAKJYO-2
                MOVE    SYS-1007-SANTEI (4:1)   TO  SPA-YAKJYO-3
+      *        Œ≈Õ‹√¥≈ˆºÍ≈ˆ
+               MOVE    SYS-1007-SANTEI (5:1)   TO  SPA-RYOYOU-FLG
            END-IF
       *
       *    MOVE    "DBCLOSE"           TO  MCP-FUNC
