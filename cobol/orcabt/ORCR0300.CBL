@@ -1901,6 +1901,7 @@
                        ELSE 
                            PERFORM 20051-KOH-HENSYU-SEC
                        END-IF
+                   END-IF
                END-PERFORM                      
       *****END-IF                            
            .
@@ -4854,6 +4855,7 @@
                            AND   ( RECE02-ETC-KOHNUM (IDW1)
                                                    =   WRK-2006-HKNNUM )
                                PERFORM 8001-SYS2006-CHECK-SEC
+                           END-IF
                        END-PERFORM
       *
                        MOVE    4               TO  IDW1
