@@ -1137,6 +1137,10 @@
                MOVE    IDX                 TO  S02-NYUGAIKBN-COUNT
            END-PERFORM
       *
+      *    幻年 ST
+           MOVE    WIDGET-NORMAL           TO  S02-B04-STATE
+      *    幻年 ED
+      *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >       SPA-GMN-MAX
                MOVE    SPA-GMN-TBANGO (IDX)    TO  WRK-TBANGO-W
@@ -1155,6 +1159,12 @@
       *         
                IF      IDX             =   SPA-NAI-SELNO
                    MOVE    "T"             TO  S02-SELECT (IDX)
+      *        幻年 ST
+                   IF  SPA-NAI-TNYUGAIKBN(IDX) =   "1"
+                       MOVE    WIDGET-INSENSITIVE
+                                           TO  S02-B04-STATE
+                   END-IF
+      *        幻年 ED
                ELSE
                    MOVE    "F"             TO  S02-SELECT (IDX)
                END-IF

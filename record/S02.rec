@@ -1,5 +1,8 @@
 S02	{
 	fixed12	{
+		B04	{
+	           	state	int;
+		};
 		B03S	{
 	           	state	int;
 		};
