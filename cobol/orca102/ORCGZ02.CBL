@@ -107,6 +107,8 @@
                05  SPA-NAI-YUKOSTYMD           PIC X(08).
                05  SPA-NAI-YUKOEDYMD           PIC X(08).
       *
+               05  SPA-SRYCDCHK                PIC 9(01).
+      *
       *    フラグエリア
        01  FLG-AREA.
            03  FLG-TENSU                         PIC 9(01).
@@ -343,6 +345,7 @@
        310-SPASET-SEC              SECTION.
       *    点数マスタ該当データ読み出し
            INITIALIZE                        SPA-GMN-AREA
+           INITIALIZE                        SPA-NAI-AREA
       *
            MOVE  SPA-Z01-SRYCD               TO  SPA-GMN-SRYCDH
       *
@@ -595,9 +598,6 @@
       *    登録時、必須入力チェック
            IF      FLG-TOUROKU         =   1
                PERFORM 4109-TOUROKU-CHK-SEC
-               IF      SPA-ERRCD       NOT =   SPACE
-                   GO      TO      410-INPUT-CHK-EXT
-               END-IF
            END-IF
       *
            .
@@ -906,9 +906,57 @@
                MOVE    4                   TO  SPA-GMN-CUR
                GO      TO      4109-TOUROKU-CHK-EXT
            END-IF
+      *    自費コードの時、コードチェック
+           IF      SPA-Z01-SRYCD(1:3)  =  "095"  OR  "096"
+               IF      SPA-SRYCDCHK       =   ZERO
+                   PERFORM 41091-SRYCD-CHK-SEC
+               END-IF
+           END-IF
            .
       *
        4109-TOUROKU-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    自費コードのコードチェック処理
+      *****************************************************************
+       41091-SRYCD-CHK-SEC             SECTION.
+      *
+           MOVE    1                   TO  SPA-SRYCDCHK
+           EVALUATE    SPA-Z01-SRYCD(4:2)
+               WHEN    "00"
+               WHEN    "11"
+               WHEN    "12"
+               WHEN    "13"
+               WHEN    "14"
+               WHEN    "21"
+               WHEN    "22"
+               WHEN    "23"
+               WHEN    "24"
+               WHEN    "25"
+               WHEN    "26"
+               WHEN    "27"
+               WHEN    "31"
+               WHEN    "32"
+               WHEN    "33"
+               WHEN    "40"
+               WHEN    "50"
+               WHEN    "54"
+               WHEN    "60"
+               WHEN    "70"
+               WHEN    "80"
+               WHEN    "91"
+               WHEN    "92"
+               WHEN    "93"
+               WHEN    "94"
+                   CONTINUE
+               WHEN    OTHER
+                   MOVE    "K001"              TO  SPA-ERRCD
+                   MOVE    20                  TO  SPA-GMN-CUR
+           END-EVALUATE
+           .
+      *
+       41091-SRYCD-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1597,6 +1645,12 @@
                WHEN    "0007"
                    MOVE    "部位区分がありません"
                                                  TO  SPA-ERRMSG
+      *
+               WHEN    "K001"
+                   MOVE    "警告！自費コードの診療区分がありません。"
+                                                 TO  SPA-ERRMSG
+                   MOVE    "その他に集計されます。"
+                                                 TO  SPA-ERRMSG(41:)
       *
       *        以下共通
                WHEN    "1010"
