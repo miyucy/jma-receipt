@@ -161,7 +161,6 @@
            03  WRK-EDTYMD3                         PIC X(22).
            03  WRK-RECEERR                         PIC X(200).
            03  WRK-PTNUM                           PIC X(20).
-           03  WRK-BD003-DBPATH                    PIC X(100).
            03  WRK-TITLE                           PIC X(100).
            03  WRK-STR                             PIC X(200).
            03  WRK-LEN                             PIC 9(05).
@@ -808,7 +807,7 @@
       *
                COMPUTE CNT-BG011   =   CNT-BG011   +   1
       *
-               MOVE    WRK-BD003-DBPATH    TO  WRK-DBPATH
+               MOVE    "BD003-KEY2"        TO  WRK-DBPATH
                PERFORM 900-TBL-READ-SEC
                IF    ( FLG-DBRC    NOT =   ZERO )
                    MOVE    1               TO  FLG-BD003
@@ -818,7 +817,7 @@
       *
            END-PERFORM
       *
-           MOVE    WRK-BD003-DBPATH    TO  WRK-DBPATH
+           MOVE    "BD003-KEY2"            TO  WRK-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
       *
            CLOSE   BG01101-FILE
@@ -831,42 +830,37 @@
       *****************************************************************
        20011-BD003-SEL-SEC             SECTION.
       *
-           MOVE    SPACE               TO  WRK-BD003-DBPATH
            MOVE    ZERO                TO  FLG-BD003
       *
            INITIALIZE                      BD003-REC
            MOVE    WRK-PARA-HOSPID     TO  BD003-HOSPID
            MOVE    WRK-PARA-NYUGAIKBN  TO  BD003-NYUGAIKBN
            IF    ( WRK-PARA-KKNLMTKBN  =   "0" )
-               MOVE    "00000000"      TO  BD003-SRYYMD
-               MOVE    "99999999"      TO  BD003-NYUHEN-YMD
+               MOVE    "00000000"      TO  BD003-STSRYYMD
+               MOVE    "99999999"      TO  BD003-EDSRYYMD
            ELSE
-               MOVE    WRK-PARA-KKNSTYM    TO  BD003-SRYYMD
-               MOVE    "01"                TO  BD003-SRYYMD(7:2)
+               MOVE    WRK-PARA-KKNSTYM    TO  BD003-STSRYYMD
+               MOVE    "01"                TO  BD003-STSRYYMD(7:2)
                IF    ( WRK-PARA-KKNEDYM    =   SPACE )
                    MOVE    WRK-PARA-KKNSTYM
-                                           TO  BD003-NYUHEN-YMD
-                   MOVE    "31"            TO  BD003-NYUHEN-YMD(7:2)
+                                           TO  BD003-EDSRYYMD
+                   MOVE    "31"            TO  BD003-EDSRYYMD(7:2)
                ELSE
                    MOVE    WRK-PARA-KKNEDYM
-                                           TO  BD003-NYUHEN-YMD
-                   MOVE    "31"            TO  BD003-NYUHEN-YMD(7:2)
+                                           TO  BD003-EDSRYYMD
+                   MOVE    "31"            TO  BD003-EDSRYYMD(7:2)
                END-IF
            END-IF
       *
-           MOVE    BD003-REC           TO  MCPDATA-REC
-      *
-           IF    ( WRK-PARA-KKNLMTKBN  =   "0" )
-               MOVE    "BD003-KEY3"        TO  WRK-BD003-DBPATH
+           IF    ( WRK-PARA-KKNPROCKBN     =   "1" )
+               MOVE    "99999999"          TO  BD003-NYUHEN-YMD
            ELSE
-               IF    ( WRK-PARA-KKNPROCKBN =   "1" )
-                   MOVE    "BD003-KEY3"    TO  WRK-BD003-DBPATH
-               ELSE
-                   MOVE    "BD003-KEY4"    TO  WRK-BD003-DBPATH
-               END-IF
+               MOVE    BD003-EDSRYYMD      TO  BD003-NYUHEN-YMD
            END-IF
       *
-           MOVE    WRK-BD003-DBPATH        TO  WRK-DBPATH
+           MOVE    BD003-REC               TO  MCPDATA-REC
+      *
+           MOVE    "BD003-KEY2"            TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
            IF    ( FLG-DBRC        NOT =   ZERO )
                MOVE    1                   TO  FLG-BD003

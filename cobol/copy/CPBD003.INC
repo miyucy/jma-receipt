@@ -25,3 +25,9 @@
            03  BD003-NYUHEN-YMD        PIC  X(08).
       *診療日
            03  BD003-SRYYMD            PIC  X(08).
+      *検索用項目
+           03  BD003-SEL-KEY.
+      *        開始診療年月日
+               05  BD003-STSRYYMD      PIC X(08).
+      *        終了診療年月日
+               05  BD003-EDSRYYMD      PIC X(08).

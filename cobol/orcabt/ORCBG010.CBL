@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者        日付      内容
       * 01.00.01     NACL-森脇     03/01/06  最終受診日セット修正
       * 01.00.02     NACL-森脇     04/02/02  退院日ラベル表示、診療科
+      * 01.00.03     NACL-太田     04/02/04  最終入金日を追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -755,6 +756,9 @@
       *        診療科名編集
                PERFORM 3201-BODY-SRYKA-HEN-SEC
       *
+      *        最終入金日編集
+               PERFORM 3201-BODY-LASTNYKNYMD-HEN-SEC
+      *
       *        未収金額セット
                MOVE    TOKEI-MISYU     TO  WRK-Z11
                MOVE    WRK-Z11         TO  HCM38-MISYU(CNT-LINE)
@@ -769,7 +773,6 @@
       *
       *----(01.00.02)--ADD-START---
            IF          CNT-TAIIN      >   ZERO
-               DISPLAY "CNT-TAIIN=" CNT-TAIIN
                MOVE    "*退院日"      TO  HCM38-TAIIN
            END-IF
       *----(01.00.02)--ADD-END-----
@@ -1072,6 +1075,23 @@
            .
        3201-BODY-SRYKA-HEN-EXT.
            EXIT.
+      *****************************************************************
+      *    最終入金日編集処理
+      *****************************************************************
+       3201-BODY-LASTNYKNYMD-HEN-SEC   SECTION.
+      *
+      *    最終入金日を求める
+           PERFORM 900-BD003-KEY3-SEL-SEC
+           IF    ( FLG-BD003         =   ZERO )
+               MOVE    BD003-NYUHEN-YMD
+                                       TO  WRK-SYMD
+               PERFORM 31012-SEIWA-HEN-SEC
+               MOVE    WRK-HENYMD      TO  HCM38-LASTNYKNYMD(CNT-LINE)
+           END-IF
+      *
+           .
+       3201-BODY-LASTNYKNYMD-HEN-EXT.
+           EXIT.
       *
       *****************************************************************
       *    患者氏名・自宅電話番号編集処理
@@ -1079,7 +1099,11 @@
        3201-BODY-NAMETEL-HEN-SEC   SECTION.
       *
       *    患者氏名セット
-           MOVE    PTINF-NAME      TO  HCM38-NAME(CNT-LINE)
+           IF    ( PTINF-NAME (31:)    =   SPACE )
+               MOVE    PTINF-NAME      TO  HCM38-NAME(CNT-LINE)
+           ELSE
+               MOVE    PTINF-NAME      TO  HCM38-NAME2(CNT-LINE)
+           END-IF
       *
       *    半角全角チェック
            INITIALIZE                  ORCSKANACHKAREA
@@ -1473,11 +1497,17 @@
       *
            INITIALIZE                  BD003-REC
            MOVE    PARA-HOSPID     TO  BD003-HOSPID
-           MOVE    WRK-YUKOSTRYMD  TO  BD003-SRYYMD
-           MOVE    WRK-YUKOENDYMD  TO  BD003-NYUHEN-YMD
+           IF    ( PARA-SYORIKBN   =   "1" )
+               MOVE    "99999999"  TO  BD003-NYUHEN-YMD
+           ELSE
+               MOVE    WRK-YUKOENDYMD
+                                   TO  BD003-NYUHEN-YMD
+           END-IF
+           MOVE    WRK-YUKOSTRYMD  TO  BD003-STSRYYMD
+           MOVE    WRK-YUKOENDYMD  TO  BD003-EDSRYYMD 
            MOVE    BD003-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
+           MOVE    "BD003-KEY"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
@@ -1498,7 +1528,7 @@
        900-BD003-FETCH-SEC         SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
+           MOVE    "BD003-KEY"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
@@ -1519,13 +1549,67 @@
        900-BD003-CLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSE"       TO  MCP-FUNC
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
+           MOVE    "BD003-KEY"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
            .
        900-BD003-CLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    未収金一覧用収納明細読み込み
+      *****************************************************************
+       900-BD003-KEY3-SEL-SEC          SECTION.
+      *
+           MOVE    ZERO            TO  FLG-BD003
+      *
+           INITIALIZE                  BD003-REC
+           MOVE    PARA-HOSPID     TO  BD003-HOSPID
+           MOVE    TOKEI-PTID      TO  BD003-PTID
+           IF    ( PARA-SYORIKBN   =   "1" )
+               MOVE    "99999999"  TO  BD003-NYUHEN-YMD
+           ELSE
+               MOVE    WRK-YUKOENDYMD
+                                   TO  BD003-NYUHEN-YMD
+           END-IF
+           MOVE    WRK-YUKOSTRYMD  TO  BD003-STSRYYMD
+           MOVE    WRK-YUKOENDYMD  TO  BD003-EDSRYYMD 
+           MOVE    BD003-REC       TO  MCPDATA-REC
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           MOVE    "BD003-KEY3"    TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    "DBFETCH"       TO  MCP-FUNC
+               MOVE    "BD003-KEY3"    TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"     USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+               IF        ( MCP-RC      =   ZERO )
+                   MOVE    MCPDATA-REC TO  BD003-REC
+               ELSE
+                   MOVE    1           TO  FLG-BD003
+                   INITIALIZE          BD003-REC
+               END-IF
+           ELSE
+                   MOVE    1           TO  FLG-BD003
+                   INITIALIZE          BD003-REC
+           END-IF
+      *
+           MOVE    "DBCLOSE"       TO  MCP-FUNC
+           MOVE    "BD003-KEY3"    TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       900-BD003-KEY3-SEL-EXT.
            EXIT.
       *
       *****************************************************************
