@@ -534,8 +534,14 @@
                            MOVE    "ÀÁµá³Û¤Ê¤·"
                                                TO  WRK-JYOTAI(CNT-DENP)
                        WHEN    "1"
-                           MOVE    "ÀÁµá¡¦Æþ¶â"
+                            IF   ( SYU-SKYMONEY
+                                           >   SMEI-NYUHEN-MONEY )
+                               MOVE    "ÀÁµá¡¦Ì¤¼ý"
                                                TO  WRK-JYOTAI(CNT-DENP)
+                            ELSE
+                               MOVE    "ÀÁµá¡¦Æþ¶â"
+                                               TO  WRK-JYOTAI(CNT-DENP)
+                            END-IF
                        WHEN    "2"
                            MOVE    "Æþ¶â"      TO  WRK-JYOTAI(CNT-DENP)
                        WHEN    "3"

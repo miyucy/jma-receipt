@@ -690,8 +690,15 @@
                             MOVE   "ÀÁµá³Û¤Ê¤·"
                                       TO    SPA-GMN-JOUTAI-T (IDX)
                        WHEN "1"
-                            MOVE   "ÀÁµá¡¦Æþ¶â"
+                            IF   ( SYU-SKYMONEY
+                                           >   SMEI-NYUHEN-MONEY )
+                                MOVE   "ÀÁµá¡¦Ì¤¼ý"
                                       TO    SPA-GMN-JOUTAI-T (IDX)
+                            ELSE
+                                MOVE   "ÀÁµá¡¦Æþ¶â"
+                                      TO    SPA-GMN-JOUTAI-T (IDX)
+                            END-IF
+      *
                             MOVE   "01  ¸½¶â"
                                       TO    SPA-GMN-JOUTAI-TX (IDX)
                        WHEN "2"
