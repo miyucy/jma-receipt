@@ -41,6 +41,8 @@
       *                                     なしの追加
       *  01.01.10    NACL-藤原    02/11/05  入外区分追加
       *  01.01.11    NACL-太田    02/12/12  前回未収額表示の不具合を修正
+      *  01.01.12    NACL-太田    02/12/13  請求金額を超えて入金できる
+      *                                     不具合を修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -118,8 +120,10 @@
                        09  SPA-GMN-NYUKINCD      PIC X(02).
                        09  SPA-GMN-NYU1          PIC X(01).
                        09  SPA-GMN-NYUKINMEI     PIC X(20).
-                   07  SPA-GMN-NYUKINLST         PIC X(27)
-                                                 OCCURS  10.
+                   07  SPA-GMN-NYUKINLST         OCCURS  10.
+                       09  SPA-GMN-NYUKINL       PIC X(02).
+                       09  SPA-GMN-FI1L          PIC X(01).
+                       09  SPA-GMN-NYUKINLMEI    PIC X(24).
       *
                    07  SPA-GMN-TBL               OCCURS  12.
                        09  SPA-GMN-EDABAN-T      PIC 9(02).
@@ -175,6 +179,7 @@
            03  FLG-ERR             PIC 9(01).
            03  FLG-ARI             PIC 9(01).
            03  FLG-SINKI           PIC 9(01).
+           03  FLG-CHK             PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -199,6 +204,7 @@
            03  IDX-KOUI            PIC 9(04).
            03  IDX-SIN             PIC 9(04).
            03  IDX-ATO             PIC 9(04).
+           03  IDX3                PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -1015,9 +1021,10 @@
                                        TO  S03-NYUKINYMD
                MOVE    SPA-GMN-NYUKINLST (1)
                                        TO  S03-NYUKINHOUHOULST(1)
-               MOVE    SPA-GMN-NYUKINLST (2)
-                                       TO  S03-NYUKINHOUHOULST(2)
-               MOVE    2               TO  S03-NYUKINHOUHOU-COUNT
+      *        MOVE    SPA-GMN-NYUKINLST (2)
+      *                                TO  S03-NYUKINHOUHOULST(2)
+      *        MOVE    2               TO  S03-NYUKINHOUHOU-COUNT
+               MOVE    1               TO  S03-NYUKINHOUHOU-COUNT
                MOVE    SPA-GMN-NYUKIN-DSP  TO  S03-NYUKINHOUHOU
            END-IF.
            IF     SPA-S01-SYORINO      =   "08"
@@ -1130,7 +1137,6 @@
                         CONTINUE
                    ELSE
                         PERFORM 410-KOUMOKU-SYORI-SEC
-                        PERFORM 310-SPA-SET-SEC
                    END-IF
       *----(01.00.01) LINE MOD END   -------------------------------
            END-EVALUATE
@@ -1237,24 +1243,101 @@
       *     登録
            EVALUATE     SPA-S01-SYORINO
                WHEN     "05"
-                   IF  SPA-ERRCD = SPACE
-                     PERFORM   420-NYUKIN-SEC
+      *            登録前チェック
+                   PERFORM 410-TOROK-MAE-CHK-SEC
+                   IF  ( SPA-ERRCD NOT = SPACE )
+                       GO  TO  410-KOUMOKU-SYORI-EXT
                    END-IF
+                   PERFORM   420-NYUKIN-SEC
                    MOVE    2       TO  SPA-GMN-CUR
                WHEN     "07"
                    PERFORM   430-CHOSEIKIN-SEC
                WHEN     "08"
-                   IF  SPA-ERRCD = SPACE
-                     PERFORM   440-RIREKI-SEC
-                     MOVE    1       TO  SPA-GMN-CUR
-                   ELSE
-                     MOVE    2       TO  SPA-GMN-CUR
+      *            登録前チェック
+                   PERFORM 410-TOROK-MAE-CHK-SEC
+                   IF  ( SPA-ERRCD NOT = SPACE )
+                       GO  TO  410-KOUMOKU-SYORI-EXT
                    END-IF
+                   PERFORM   440-RIREKI-SEC
+                   MOVE    1       TO  SPA-GMN-CUR
            END-EVALUATE
+      *
+           PERFORM 310-SPA-SET-SEC
+      *
            .
        410-KOUMOKU-SYORI-EXT.
            EXIT.
       *
+      *************************************************************
+      *    登録前チェック処理
+      *************************************************************
+       410-TOROK-MAE-CHK-SEC           SECTION.
+      *
+      *    入金額チェック処理
+           PERFORM 41011-CHK-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO  TO  410-TOROK-MAE-CHK-EXT
+           END-IF
+      *
+      *    入金日チェック
+           IF  SPA-S01-SYORINO    =    "08"
+           AND SPA-IDX            =   ZERO
+               MOVE    "0006"          TO  SPA-ERRCD
+               MOVE    3               TO  SPA-GMN-CUR
+               GO  TO  410-TOROK-MAE-CHK-EXT
+           END-IF    
+      *
+           MOVE   ZERO               TO  SPA-GMN-NYUKINYMD-IN99
+      *
+           IF     SPA-GMN-NYUKINYMD-IN     =   SPACE
+               MOVE    SPA-SYSYMDWH        TO  SPA-GMN-NYUKINYMD-IN
+               MOVE    SPA-SYSYMD          TO  SPA-GMN-NYUKINYMD-IN99
+           ELSE 
+      *
+      *        日付画面チェックサブ
+               INITIALIZE                      ORCSGDAYAREA
+               MOVE    SPA-GMN-NYUKINYMD-IN    TO  SGDAY-INDAY
+               CALL    "ORCSGDAY"          USING
+                                           ORCSGDAYAREA
+               IF      SGDAY-RC            =   ZERO
+                   MOVE    SGDAY-OTDAY     TO  SPA-GMN-NYUKINYMD-IN
+                   MOVE    SGDAY-SDAY      TO  SPA-GMN-NYUKINYMD-IN99
+               ELSE
+                   MOVE    "0001"          TO  SPA-ERRCD
+                   MOVE    3               TO  SPA-GMN-CUR
+                   GO  TO  410-TOROK-MAE-CHK-EXT
+               END-IF
+           END-IF 
+      *
+      *    入金方法チェック
+           IF  SPA-GMN-NYUKINCD        =   SPACE
+               MOVE    "0004"          TO  SPA-ERRCD
+               MOVE    4               TO  SPA-GMN-CUR
+               GO     TO    410-TOROK-MAE-CHK-EXT
+           END-IF
+      *
+           MOVE    1                   TO  FLG-CHK
+           PERFORM VARYING IDX3    FROM    1   BY  1
+               UNTIL     ( IDX3    >   10 )
+               OR        ( SPA-GMN-NYUKINL (IDX3)  =   SPACE )
+      *
+               IF    ( SPA-GMN-NYUKINL (IDX3)  =   SPA-GMN-NYUKINCD )
+                   MOVE    ZERO        TO  FLG-CHK
+                   MOVE    10          TO  IDX3
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( FLG-CHK     NOT =   ZERO )
+               MOVE    "0001"          TO  SPA-ERRCD
+               MOVE    4               TO  SPA-GMN-CUR
+               GO  TO  410-TOROK-MAE-CHK-EXT
+           END-IF
+      *
+      *
+           .
+       410-TOROK-MAE-CHK-EXT.
+           EXIT.
       *************************************************************
       *    項目入力　処理
       *************************************************************
@@ -1303,6 +1386,8 @@
       *************************************************************
        41011-CHK-SEC              SECTION.
       *
+           MOVE     2             TO  SPA-GMN-CUR
+      *
            MOVE     ZERO          TO  SPA-NYUKINGK
            EVALUATE    SPA-S01-SYORINO
                WHEN    "05"
@@ -1334,6 +1419,8 @@
       *************************************************************
        41012-DAY-SEC              SECTION.
       *
+           MOVE    3              TO  SPA-GMN-CUR
+      *
            IF  SPA-S01-SYORINO    =    "08"
            AND SPA-IDX            =   ZERO
                MOVE    "0006"          TO  SPA-ERRCD
@@ -1344,7 +1431,7 @@
            MOVE   S03-NYUKINYMD      TO   SPA-GMN-NYUKINYMD-IN
       *
            IF     SPA-GMN-NYUKINYMD-IN     =   SPACE
-               MOVE    SPA-SYSYMDW         TO  SPA-GMN-NYUKINYMD-IN
+               MOVE    SPA-SYSYMDWH        TO  SPA-GMN-NYUKINYMD-IN
                MOVE    SPA-SYSYMD          TO  SPA-GMN-NYUKINYMD-IN99
            ELSE 
       *----(01.00.01) LINE MOD START   ----------------------------------
@@ -1383,12 +1470,32 @@
       *************************************************************
        41013-HOU-SEC              SECTION.
       *
+           MOVE        4               TO  SPA-GMN-CUR 
+      *
            MOVE    S03-NYUKINHOUHOU    TO  SPA-GMN-NYUKIN-DSP
       *
            IF  SPA-GMN-NYUKINCD        =   SPACE
                MOVE    "0004"          TO  SPA-ERRCD
                GO     TO    41013-HOU-EXT
-           END-IF 
+           END-IF
+      *
+           MOVE    1                   TO  FLG-CHK
+           PERFORM VARYING IDX3    FROM    1   BY  1
+               UNTIL     ( IDX3    >   10 )
+               OR        ( SPA-GMN-NYUKINL (IDX3)  =   SPACE )
+      *
+               IF    ( SPA-GMN-NYUKINL (IDX3)  =   SPA-GMN-NYUKINCD )
+                   MOVE    ZERO        TO  FLG-CHK
+                   MOVE    10          TO  IDX3
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( FLG-CHK     NOT =   ZERO )
+               MOVE    "0001"          TO  SPA-ERRCD
+               GO  TO  41013-HOU-EXT
+           END-IF
+      *
            MOVE       02               TO  SPA-GMN-CUR 
            .
       *
@@ -1529,7 +1636,7 @@
            MOVE    SPA-GMN-NYUKIN-IN   TO  SMEI-NYUHEN-MONEY
       *入返金日
            IF  SPA-GMN-NYUKINYMD-IN99  =  ZERO
-               MOVE    SPA-SYSYMDW            TO SMEI-NYUHEN-YMD
+               MOVE    SPA-SYSYMD             TO  SMEI-NYUHEN-YMD
            ELSE
                MOVE    SPA-GMN-NYUKINYMD-IN99 TO  SMEI-NYUHEN-YMD
            END-IF
