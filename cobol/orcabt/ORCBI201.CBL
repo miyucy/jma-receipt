@@ -88,9 +88,9 @@
       *
        01  ASSIGN-NAME-AREA.
       *        パラメータファイル名
-           03  PRFNAME                 PIC X(100).
+           03  PRFNAME                 PIC X(200).
       *        ＣＳＶファイル名
-           03  CSVNAME                 PIC X(100).
+           03  CSVNAME                 PIC X(200).
       *
       *    ステータス領域
        01  STS-AREA.
@@ -125,7 +125,7 @@
            03  WRK-ADRS                PIC X(400).
            03  WRK-PARA.
                05  WRK-PARA-PAFNAME
-                                       PIC X(100).
+                                       PIC X(200).
                05  WRK-PARA-TERMID     PIC X(64).
                05  WRK-PARA-SYSYMD     PIC X(08).
                05  WRK-PARA-SYSTIME    PIC X(08).

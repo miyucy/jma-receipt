@@ -36,7 +36,7 @@
            05  SPA-I20-I22-SENI-AREA.
                07  SPA-I20-I22-PROC-FLG     PIC 9(01).
       *        ファイル名(O)
-               07  SPA-I20-I22-FILENAME     PIC X(100).
+               07  SPA-I20-I22-FILENAME     PIC X(200).
       *        開始件数（ページ数）(I)
                07  SPA-I20-I22-STNUM        PIC 9(09).
       *        終了件数（ページ数）(I)
