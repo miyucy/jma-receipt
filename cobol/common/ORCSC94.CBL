@@ -444,6 +444,12 @@
            IF      SPA-SURYOZERO-FLG   =   1
                MOVE    WRK-SURYO-S1        TO  WRK-SURYO-Z1-9
            END-IF
+      *    ¥Õ¥£¥ë¥à¤ÎÆýÍÄ»ù²Ã»»¡¦»ÀÁÇÊäÀµÎ¨¤Ï¶õÇò
+           IF      SPA-COM-INPUTCD(IDX)    =   "799990070"
+                                           OR  "770020070"
+               MOVE    SPACE               TO  WRK-SURYO-X
+               GO      TO      2001-SURYO-HEN-EXT
+           END-IF
       *
            MOVE    ZERO                TO  FLG-SP
            PERFORM VARYING     IDM     FROM    3  BY  -1
