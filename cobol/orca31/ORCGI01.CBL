@@ -8114,17 +8114,17 @@
                    IF    ( WRK-TAIINYM     =   ACCT-SRYYM )
                        MOVE    WRK-TAIINDD TO  IDX14
                    ELSE
-                       MOVE    ZERO        TO  IDX14
+                       MOVE    1           TO  IDX14
                    END-IF
       *
                    PERFORM UNTIL ( IDX14               >   31 )
                            OR    ( SPA-I0IDCD      NOT =   SPACE )
       *
-                       COMPUTE IDX14       =   IDX14   +   1
-      *
                        IF    ( ACCT-DAY (1 IDX14)      >   ZERO )
                            MOVE    "3004"          TO  SPA-I0IDCD
                        END-IF
+      *
+                       COMPUTE IDX14       =   IDX14   +   1
       *
                    END-PERFORM
                END-IF
