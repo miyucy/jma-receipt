@@ -582,6 +582,7 @@
            MOVE    PTKOH-HOSPID        TO  MONTHLYNUM-HOSPID
            MOVE    PTKOH-PTID          TO  MONTHLYNUM-PTID
            MOVE    PTKOH-KOHNUM        TO  MONTHLYNUM-KOHNUM
+           MOVE    "2"                 TO  MONTHLYNUM-NYUGAIKBN
       *    適用開始年月日
            MOVE    PTKOH-TEKSTYMD(1:6) TO  MONTHLYNUM-SRYYM
            PERFORM 925-MONTHLYNUM-READ-SEC
@@ -621,6 +622,7 @@
                MOVE    PTKOH-PTID          TO  MONTHLYNUM-PTID
                MOVE    PTKOH-KOHNUM        TO  MONTHLYNUM-KOHNUM
                MOVE    PTKOH-TEKSTYMD(1:6) TO  MONTHLYNUM-SRYYM
+               MOVE    "2"                 TO  MONTHLYNUM-NYUGAIKBN
                MOVE    PTKOH-JKYSNUM       TO  MONTHLYNUM-JKYSNUM
       *
                MOVE    MONTHLYNUM-REC      TO  MCPDATA-REC
@@ -954,10 +956,10 @@
                MOVE    PTNUM-REC           TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 PTNUM INS ERR:" MCP-RC
                           ",KEY:" PTNUM-KEY   "."
@@ -974,10 +976,10 @@
                MOVE    PTNUM-REC           TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 PTNUM UPD ERR:" MCP-RC "."
                END-IF
