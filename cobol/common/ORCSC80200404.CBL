@@ -1293,6 +1293,13 @@
                PERFORM 20023-KAISU-HEN-SEC
                GO      TO      2002-GAIRAI-ALL-CHK-EXT
            END-IF
+      *    労災の時、理学療法の逓減は傷病発生６ヶ月日以降とする
+           IF     (SPA-HKNKBN          =   1        )  AND
+                  (SPA-SRYYMD(1:6)     =   SPA-RSI-SHOBYOYMD3(1:6))
+               MOVE    SPA-RSI-SHOBYOYMD3(7:2) TO  IDX-STR
+           ELSE
+               MOVE    1                       TO  IDX-STR
+           END-IF
       *
       *    急性発生１８０日以内の時、上限回数変更
            IF      (LNK-ORCSC-KYUSEI-FLG   =   1   )  OR
@@ -1312,7 +1319,7 @@
       *        集団
                WHEN    "S"
                    MOVE    ZERO                TO  WRK-TUKI-CNT
-                   PERFORM VARYING     IDY     FROM    1   BY  1
+                   PERFORM VARYING     IDY     FROM    IDX-STR BY  1
                            UNTIL       IDY     >   IDD
                        COMPUTE WRK-TUKI-CNT    =   WRK-TUKI-CNT
                                                +   WRK-DCNT-SN
@@ -1353,7 +1360,7 @@
       *!               MOVE    LNK-ORCSC-KYUSEI-90(7:2)
       *!                                       TO  IDX-STR
       *!           ELSE
-                       MOVE    1               TO  IDX-STR
+      *!               MOVE    1               TO  IDX-STR
       *!           END-IF
                    PERFORM VARYING     IDY     FROM    IDX-STR  BY  1
                            UNTIL       IDY     >   IDD
@@ -1730,13 +1737,20 @@
                PERFORM 20023-KAISU-HEN-SEC
                GO      TO      20012-NTUKIMAX-CHK-EXT
            END-IF
+      *    労災の時、理学療法の逓減は傷病発生６ヶ月日以降とする
+           IF     (SPA-HKNKBN          =   1        )  AND
+                  (SPA-SRYYMD(1:6)     =   SPA-RSI-SHOBYOYMD3(1:6))
+               MOVE    SPA-RSI-SHOBYOYMD3(7:2) TO  IDX-STR
+           ELSE
+               MOVE    1                       TO  IDX-STR
+           END-IF
       *
       *    月上限判定
            EVALUATE    WRK-RIGAKU-RYO
       *        集団
                WHEN    "S"
                    MOVE    ZERO                TO  WRK-TUKI-CNT
-                   PERFORM VARYING     IDY     FROM    1   BY  1
+                   PERFORM VARYING     IDY     FROM    IDX-STR  BY  1
                            UNTIL       IDY     >   IDD
                        COMPUTE WRK-TUKI-CNT    =   WRK-TUKI-CNT
                                                +   WRK-DCNT-SN
@@ -1780,7 +1794,7 @@
       *                MOVE    LNK-ORCSC-KYUSEI-90(7:2)
       *                                        TO  IDX-STR
       *!           ELSE
-                       MOVE    1               TO  IDX-STR
+      *!               MOVE    1               TO  IDX-STR
       *!           END-IF
                    PERFORM VARYING     IDY     FROM    IDX-STR   BY  1
                            UNTIL       IDY     >   IDD
