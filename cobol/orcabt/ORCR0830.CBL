@@ -1013,17 +1013,17 @@
            MOVE    RECE82-HKNCOMBI     TO  LNK-SROUNYUIN-HKNCOMBI
            MOVE    "1"                 TO  LNK-SROUNYUIN-RYAKUKBN
       *    Ï«ºÒ¾è¿ô¶èÊ¬¥»¥Ã¥È
-           PERFORM    VARYING   IDY   FROM   1   BY   1
-                       UNTIL    IDY    >    31
+      **>     PERFORM    VARYING   IDY   FROM   1   BY   1
+      **>                 UNTIL    IDY    >    31
       *
-              MOVE    RECE82-SRYYM     TO  WRK-KOYOMI2-YYMM
-              MOVE    IDY              TO  WRK-KOYOMI2-DD
-              IF      WRK-KOYOMI2-YMD  <=  WRK-KOYOMI-YMD
-                   MOVE    "1"    TO   LNK-SROUNYUIN-JOUSU-KBN(IDY)
-              ELSE
-                   MOVE    "2"    TO   LNK-SROUNYUIN-JOUSU-KBN(IDY)
-              END-IF
-           END-PERFORM
+      **>        MOVE    RECE82-SRYYM     TO  WRK-KOYOMI2-YYMM
+      **>        MOVE    IDY              TO  WRK-KOYOMI2-DD
+      **>        IF      WRK-KOYOMI2-YMD  <=  WRK-KOYOMI-YMD
+      **>             MOVE    "1"    TO   LNK-SROUNYUIN-JOUSU-KBN(IDY)
+      **>        ELSE
+      **>             MOVE    "2"    TO   LNK-SROUNYUIN-JOUSU-KBN(IDY)
+      **>        END-IF
+      **>     END-PERFORM
       *
            CALL    "ORCSROUNYUIN"      USING   MCPAREA
                                                ORCSROUNYUIN-AREA

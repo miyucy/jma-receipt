@@ -2011,17 +2011,17 @@
            MOVE    SYU-HKNCOMBINUM     TO  LNK-SROUNYUIN-HKNCOMBI
            MOVE    SPACE               TO  LNK-SROUNYUIN-RYAKUKBN
       *    Ï«ºÒ¾è¿ô¶èÊ¬¥»¥Ã¥È
-           PERFORM    VARYING   SYU-IDX   FROM   1   BY   1
-                       UNTIL    SYU-IDX    >    31
+      **>     PERFORM    VARYING   SYU-IDX   FROM   1   BY   1
+      **>                 UNTIL    SYU-IDX    >    31
       *
-              MOVE    SYU-SRYYMD(1:6)  TO  WRK-KOYOMI2-YYMM
-              MOVE    SYU-IDX          TO  WRK-KOYOMI2-DD
-              IF      WRK-KOYOMI2-YMD  <=  WRK-KOYOMI-YMD
-                   MOVE    "1"    TO   LNK-SROUNYUIN-JOUSU-KBN(SYU-IDX)
-              ELSE
-                   MOVE    "2"    TO   LNK-SROUNYUIN-JOUSU-KBN(SYU-IDX)
-              END-IF
-           END-PERFORM
+      **>        MOVE    SYU-SRYYMD(1:6)  TO  WRK-KOYOMI2-YYMM
+      **>        MOVE    SYU-IDX          TO  WRK-KOYOMI2-DD
+      **>        IF      WRK-KOYOMI2-YMD  <=  WRK-KOYOMI-YMD
+      **>             MOVE    "1"    TO   LNK-SROUNYUIN-JOUSU-KBN(SYU-IDX)
+      **>        ELSE
+      **>             MOVE    "2"    TO   LNK-SROUNYUIN-JOUSU-KBN(SYU-IDX)
+      **>        END-IF
+      **>     END-PERFORM
       *
            CALL    "ORCSROUNYUIN"      USING   MCPAREA
                                                ORCSROUNYUIN-AREA
