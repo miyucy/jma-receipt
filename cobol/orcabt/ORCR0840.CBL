@@ -192,6 +192,8 @@
            03  FLG-SET                                 PIC 9(01).
            03  FLG-HEYA                                PIC 9(01).
            03  FLG-KHN                                 PIC 9(01).
+           03  FLG-NYUINRYO                            PIC 9(01).
+           03  FLG-HKNCOMBI                            PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -541,6 +543,10 @@
       *    患者コメント
        01  PTCOM-REC.
            COPY    "CPPTCOM.INC".
+      *
+      *    保険組み合わせ
+       01  HKNCOMBI-REC.
+           COPY    "CPHKNCOMBI.INC".
       *
       *****************************************************************
       *    サブプロ用領域
@@ -3898,6 +3904,8 @@
       *****************************************************************
        260-FTN-SET-SEC                SECTION.
       *
+           MOVE    ZERO                 TO      FLG-NYUINRYO
+      *
            INITIALIZE                           SYUNOU-REC
            MOVE    RECE82-HOSPID        TO      SYU-HOSPID
            MOVE    RECE82-NYUGAIKBN     TO      SYU-NYUGAIKBN
@@ -3936,6 +3944,12 @@
       *    レセプト中間ファイルの項目転送−負担金（Ｆ００２）
       *****************************************************************
        2601-RECE82-FTN-HENSYU-SEC               SECTION.
+      *
+           IF   RECE82-NYUINRYOFLG       =   "1"
+           AND  FLG-NYUINRYO             =   ZERO
+               PERFORM         26011-NYUINRYOFLG-SET-SEC
+           END-IF
+      *
       *
            PERFORM  VARYING  ID1    FROM    1   BY  1
                          UNTIL   ID1   >   2
@@ -3985,6 +3999,74 @@
       *
            .
        2601-RECE82-FTN-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    他保険にて入院料を算定している場合の保険決定
+      *****************************************************************
+       26011-NYUINRYOFLG-SET-SEC               SECTION.
+      *
+      *    入院基本料無し、又は、組み合わせ＝自費・・・１
+      *    組み合わせ＝労災                      ・・・２
+      *    組み合わせ＝自賠責                    ・・・３
+      *    組み合わせ＝国保                      ・・・４
+      *    組み合わせ＝社保                      ・・・５
+      *
+           PERFORM  VARYING  IDY    FROM    1   BY  1
+                            UNTIL   IDY     >       31
+      *
+             IF      SYU-DAY(IDY)    =    "2"
+      *
+                IF         WRK-DAY5(IDY)      NOT =  ZERO
+                AND        WRK-DAY1(IDY)      NOT =  ZERO
+                   INITIALIZE                  HKNCOMBI-REC
+                   MOVE    RECE82-HOSPID   TO  COMB-HOSPID
+                   MOVE    RECE82-PTID     TO  COMB-PTID
+                   MOVE    WRK-DAY5(IDY)   TO  COMB-HKNCOMBINUM
+                   MOVE    HKNCOMBI-REC    TO  MCPDATA-REC
+                   PERFORM HKNCOMBI-INV-SEC
+                   IF      FLG-HKNCOMBI    =   ZERO
+                     IF   COMB-HKNNUM(1:2)  =  "98"
+                     OR   COMB-HKNNUM       =  "971"
+                     OR   COMB-HKNNUM       =  "973"
+                       IF   COMB-HKNNUM(1:2)  =  "98"
+                          MOVE    "1"   TO   RECE82-NYUINRYOFLG
+                       END-IF
+                       IF   COMB-HKNNUM       =  "971"
+                          MOVE    "2"   TO   RECE82-NYUINRYOFLG
+                       END-IF
+                       IF   COMB-HKNNUM       =  "973"
+                          MOVE    "3"   TO   RECE82-NYUINRYOFLG
+                       END-IF
+                     ELSE
+                       IF   COMB-HKNNUM       =  "060" OR  "067"
+                          MOVE    "4"   TO   RECE82-NYUINRYOFLG
+                       ELSE
+                          MOVE    "5"   TO   RECE82-NYUINRYOFLG
+                       END-IF
+                     END-IF
+                   END-IF
+                   MOVE    "DBCLOSE"           TO  MCP-FUNC
+                   MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+                   CALL    "ORCMCPSUB"          USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
+                ELSE
+                   IF      WRK-DAY5(IDY)      NOT =  ZERO
+                          MOVE    "1"   TO   RECE82-NYUINRYOFLG
+                   END-IF
+                END-IF
+      *
+                MOVE      1       TO     FLG-NYUINRYO
+                MOVE     31       TO     IDY
+      *
+             END-IF
+      *
+           END-PERFORM
+      *
+           .
+       26011-NYUINRYOFLG-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4321,6 +4403,43 @@
       *
            .
        SYUNOU-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険組合せマスタ読込
+      *****************************************************************
+       HKNCOMBI-INV-SEC         SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO                TO  FLG-HKNCOMBI
+                   MOVE    MCPDATA-REC         TO  HKNCOMBI-REC
+                   IF      COMB-DELKBN         =   "1"
+                       MOVE    1               TO  FLG-HKNCOMBI
+                   END-IF
+               ELSE
+                   MOVE    1                   TO  FLG-HKNCOMBI
+                   INITIALIZE                      HKNCOMBI-REC
+               END-IF
+           ELSE
+               MOVE    1                       TO  FLG-HKNCOMBI
+               INITIALIZE                          HKNCOMBI-REC
+           END-IF
+      *
+           .
+       HKNCOMBI-INV-EXT.
            EXIT.
       *
       *****************************************************************

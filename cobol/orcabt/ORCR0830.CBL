@@ -83,7 +83,6 @@
            03  FLG-NYURYAKUSHO                         PIC 9(01).
            03  FLG-KYUKYU                              PIC 9(01).
            03  FLG-SET                                 PIC 9(01).
-           03  FLG-HKNCOMBI                            PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -135,8 +134,6 @@
                05  WRK-PARA-SHELLID                    PIC  X(08).
       *
            03  WRK-SYS-SRYYMD                          PIC  X(08).
-      *
-           03  WRK-TAHKNCOMBI                          PIC  9(04).
       *
            03  WRK-TAIHI-FLG                           PIC  9(01).
            03  WRK-TAIHI-SRYYMD.
@@ -274,10 +271,6 @@
       *    入院略称
        01  NYURYAKUSHO-REC.
            COPY    "CPNYUINRYAKUSHO.INC".
-      *
-      *    保険組み合わせ
-       01  HKNCOMBI-REC.
-           COPY    "CPHKNCOMBI.INC".
       *
       *****************************************************************
       *    サブプロ用領域
@@ -722,18 +715,9 @@
                                            ORCMCPAREA
                                            MCPDATA-REC
       *
-      *
-           MOVE     ZERO      TO      WRK-TAHKNCOMBI
-      *
            PERFORM  VARYING  IDY    FROM    1   BY  1
                           UNTIL   IDY     >       31
       *
-               IF     RECE82-NYUINRYOFLG     =  "1"
-                 IF        WRK-DAY5(IDY)      NOT =  ZERO
-                 AND       WRK-DAY1(IDY)      NOT =  ZERO
-                     MOVE  WRK-DAY5(IDY)      TO    WRK-TAHKNCOMBI
-                 END-IF
-               ELSE
                  IF        WRK-DAY5(IDY)   =   RECE82-HKNCOMBI
                       MOVE    ZERO            TO    FLG-SHOSAISIN
                       IF   WRK-DAY1(IDY)   NOT =    ZERO    
@@ -741,47 +725,8 @@
                       END-IF
                       PERFORM   2201-RECE82-TENSOU11-SEC
                  END-IF
-               END-IF
       *
            END-PERFORM
-      *
-      *    ＜他保険にて入院料を算定している場合の保険決定＞
-      *    入院基本料無し、又は、組み合わせ＝自費・・・１
-      *    組み合わせ＝労災                      ・・・２
-      *    組み合わせ＝自賠責                    ・・・３
-      *    組み合わせ＝その他                    ・・・４
-           IF   RECE82-NYUINRYOFLG       =  "1"
-           AND  WRK-TAHKNCOMBI      NOT  =  ZERO
-                   INITIALIZE                  HKNCOMBI-REC
-                   MOVE    RECE82-HOSPID   TO  COMB-HOSPID
-                   MOVE    RECE82-PTID     TO  COMB-PTID
-                   MOVE    WRK-TAHKNCOMBI  TO  COMB-HKNCOMBINUM
-                   MOVE    HKNCOMBI-REC    TO  MCPDATA-REC
-                   PERFORM HKNCOMBI-INV-SEC
-                   IF      FLG-HKNCOMBI    =   ZERO
-                      IF  COMB-HKNNUM(1:2)  =  "98"
-                      OR  COMB-HKNNUM       =  "971"
-                      OR  COMB-HKNNUM       =  "973"
-      *                  IF  COMB-HKNNUM(1:2)  =  "98"
-      *                     CONTINUE
-      *                  END-IF
-                         IF  COMB-HKNNUM       =  "971"
-                            MOVE    "2"   TO   RECE82-NYUINRYOFLG
-                         END-IF
-                         IF  COMB-HKNNUM       =  "973"
-                            MOVE    "3"   TO   RECE82-NYUINRYOFLG
-                         END-IF
-                      ELSE
-                            MOVE    "4"   TO   RECE82-NYUINRYOFLG
-                      END-IF
-                   END-IF
-                   MOVE    "DBCLOSE"           TO  MCP-FUNC
-                   MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
-                   CALL    "ORCMCPSUB"          USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC
-           END-IF
       *
       *+++
       *
@@ -2335,43 +2280,6 @@
       *
            .
        SYSKANRI-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    保険組合せマスタ読込
-      *****************************************************************
-       HKNCOMBI-INV-SEC         SECTION.
-      *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-               IF      MCP-RC              =   ZERO
-                   MOVE    ZERO                TO  FLG-HKNCOMBI
-                   MOVE    MCPDATA-REC         TO  HKNCOMBI-REC
-                   IF      COMB-DELKBN         =   "1"
-                       MOVE    1               TO  FLG-HKNCOMBI
-                   END-IF
-               ELSE
-                   MOVE    1                   TO  FLG-HKNCOMBI
-                   INITIALIZE                      HKNCOMBI-REC
-               END-IF
-           ELSE
-               MOVE    1                       TO  FLG-HKNCOMBI
-               INITIALIZE                          HKNCOMBI-REC
-           END-IF
-      *
-           .
-       HKNCOMBI-INV-EXT.
            EXIT.
       *
       *****************************************************************

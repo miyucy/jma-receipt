@@ -974,8 +974,12 @@
                MOVE    "极清勒にて掐薄瘟换年貉" 
                                        TO  COM-NAME(1)
              WHEN     "4"
-               MOVE     12             TO  COM-YUKOKETA(1)
-               MOVE    "板闻瘦副にて掐薄瘟换年貉" 
+               MOVE     10             TO  COM-YUKOKETA(1)
+               MOVE    "柜瘦にて掐薄瘟换年貉" 
+                                       TO  COM-NAME(1)
+             WHEN     "5"
+               MOVE     10             TO  COM-YUKOKETA(1)
+               MOVE    "家瘦にて掐薄瘟换年貉" 
                                        TO  COM-NAME(1)
            END-EVALUATE
       *

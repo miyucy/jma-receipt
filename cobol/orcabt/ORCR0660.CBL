@@ -641,7 +641,11 @@
       *
            IF   RECE62-NYUINRYOFLG   NOT =   SPACE
       *
-              PERFORM   2001-NYUINRYO-COMMENT-SEC
+              IF    RECE62-RECESYUBETU  =  8888
+                  CONTINUE
+              ELSE
+                  PERFORM   2001-NYUINRYO-COMMENT-SEC
+              END-IF
       *
            END-IF
       *
@@ -968,6 +972,10 @@
              WHEN     "3"
                MOVE     11             TO  COM-YUKOKETA(1)
                MOVE    "¼«ÇåÀÕ¤Ë¤ÆÆþ±¡ÎÁ»»ÄêºÑ" 
+                                       TO  COM-NAME(1)
+             WHEN     "6"
+               MOVE     11             TO  COM-YUKOKETA(1)
+               MOVE    "Â¾ÊÝ¸±¤Ë¤ÆÆþ±¡ÎÁ»»ÄêºÑ" 
                                        TO  COM-NAME(1)
            END-EVALUATE
       *
