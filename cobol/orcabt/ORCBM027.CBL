@@ -31,43 +31,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    03/06/10  老人保険の一部負担金の編集
       *  01.00.02    NACL-藤原    03/07/21  公費欄の特定疾患の名称の変更
-      *  01.00.03    NACL-藤原    03/10/30  備考欄に老人再掲を追加
-      *  01.00.04    NACL-藤原    04/01/19  公費欄の保険番号の表示を法別番号
-      *                                     に修正
-      *  01.00.05    NACL-藤原    04/09/14  開設者氏名の文字数変更
-      *  01.00.06    NACL-藤原    04/12/10  備考欄の一部負担金等の記載
-      *返戻分対応  
-      *  01.01.01    NACL-藤原    05/02/25  返戻分対応
-      *
-      *  02.08.01    NACL-藤原    06/02/20  主科対応
-      *
-      *  ２００６年４月改正対応
-      *  02.09.01    NACL-藤原    06/04/13  ２００６年４月改正対応
-      *                                     HCM2LV03.red → HCM2Y.red 
-      *                                     MONFUNC対応
-      *
-      *  03.02.01    NACL-藤原    06/07/24  マル長の別総括対応
-      *                                     HCM2KV03.red → HCM2KV04.red
-      *                                     HCM2Y.red    → HCM2YV01.red 
-      *
-      *  03.03.01    NACL-藤原    06/10/10  ２００６年１０月改正対応
-      *                                     HCM2KV04.red → HCM2KV05.red
-      *  03.04.01    NACL-森脇    07/01/16  医療機名称、住所編集
-      *
-      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
-      *  03.05.02    NACL-藤原    07/09/11  新潟県中越沖地震対応
-      *                                     ２００７年９月〜１２月対象 
-      *
-      *  04.01.01    NACL-藤原    07/10/24  総括表の地方公費記載対応
-      *
-      *  04.05.01    NACL-藤原    11/04/04  災害対応
-      *                                     備考欄の記載等追加
-      *
-      *  04.07.01    NACL-藤原    12/01/24  monpe-0.6.20対応
-      *  04.07.02    NACL-藤原    15/08/18  医療機関編集情報への開設者名
-      *                                     追加対応
-      *
-      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
+      *  01.01.03    NACL-藤原    03/10/30  備考欄に老人再掲を追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -89,23 +53,15 @@
        WORKING-STORAGE             SECTION.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPRECEERR.INC".
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01PARA//
+                                   BY         //RECEERR//.
+           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
-      *****COPY    "HCM2K.INC".
-      *****COPY    "HCM2KV01.INC"  REPLACING  //HCM2KV01//
-      *****COPY    "HCM2KV02.INC"  REPLACING  //HCM2KV02//
-      *****COPY    "HCM2KV03.INC"  REPLACING  //HCM2KV03//
-      *****COPY    "HCM2KV04.INC"  REPLACING  //HCM2KV04//
-           COPY    "HCM2KV05.INC"  REPLACING  //HCM2KV05//
-                                   BY         //HCM2K//.
+           COPY    "HCM2K.INC".
       *****COPY    "HCM2L.INC".
-      *****COPY    "HCM2LV01.INC"  REPLACING  //HCM2LV01//
-      *****COPY    "HCM2LV02.INC"  REPLACING  //HCM2LV02//
-      *****COPY    "HCM2LV03.INC"  REPLACING  //HCM2LV03//
-      *****                        BY         //HCM2L//.
-      *****COPY    "HCM2Y.INC".
-           COPY    "HCM2YV01.INC"  REPLACING  //HCM2YV01//
-                                   BY         //HCM2Y//.
+           COPY    "HCM2LV01.INC"  REPLACING  //HCM2LV01//
+                                   BY         //HCM2L//.
       *
       *    スパ領域
        01  STS-AREA.
@@ -116,7 +72,6 @@
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-HKNNUM          PIC 9(01).
-      *
            03  FLG-MF01-END        PIC 9(01).
            03  FLG-PRTKBN          PIC 9(01).
       *
@@ -125,16 +80,21 @@
            03  CNT-LINE            PIC 9(02).
            03  CNT-PAGE            PIC 9(03).
       *
+      *    システム領域
+       01  SYS-AREA.
+           03  SYS-YMD.
+               05  SYS-YY          PIC 9(02).
+               05  SYS-MM          PIC 9(02).
+               05  SYS-DD          PIC 9(02).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
-           03  IDXX                PIC 9(04).
       *
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).      
-           03  IDX3                PIC 9(04).      
       *
       *    一時領域
        01  WRK-AREA.
@@ -151,6 +111,8 @@
       *
            03  WRK-RECEERR             PIC X(200). 
       *
+           03  WRK-YMD               PIC X(07).
+      *
            03  WRK-Z9                PIC ZZZZZ.
            03  WRK-ZZ9               PIC ZZ,ZZZ,ZZZ.
            03  WRK-NISSUZ            PIC ZZZZZZ.
@@ -162,19 +124,13 @@
            03  WRK-KOHKBN.
                05  WRK-KOHNUM        PIC X(04).
                05  WRK-HKNNAME       PIC X(40). 
-      *----(03.04.01)--ADD-START---
-           03  WRK-HOSPNAME            PIC X(100).
-           03  WRK-HOSPNAME-R          REDEFINES   WRK-HOSPNAME.
-               05  WRK-HOSPNAME1       PIC X(50).
-               05  WRK-HOSPNAME2       PIC X(50).
-           03  WRK-HOSPADRS            PIC X(100).
-           03  WRK-HOSPADRS-R          REDEFINES   WRK-HOSPADRS.
-               05  WRK-HOSPADRS1       PIC X(50).
-               05  WRK-HOSPADRS2       PIC X(50).
-           03  WRK-KAISETUNAME         PIC X(80).
-      *----(03.04.01)--ADD-END-----
       *
            COPY    "CPSHELLTBL.INC".
+      *     
+           COPY    "ORCA-DBPATH".
+      *
+      *    ２００３年４月改正
+           03  WRK-CONS-SRYYM-200304   PIC X(06)   VALUE   "200304".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -196,14 +152,6 @@
       *
       *    医療機関情報−所在地、連絡先 
            COPY    "CPSK1002.INC".
-      *    
-           COPY    "CPSK1005.INC".
-      *----(03.04.01)--ADD-START---
-           COPY    "CPSK1900.INC".
-           COPY    "CPSK1901.INC".
-           COPY    "CPSK1902.INC".
-           COPY    "CPSK1903.INC".
-      *----(03.04.01)--ADD-END-----
       *
        01  PRTKANRI-REC.
            COPY    "CPPRTKANRI.INC".
@@ -233,6 +181,7 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
+           COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -241,8 +190,6 @@
       *
       *    集計領域
        01  SUM-AREA.
-         02  SUM-TABLE-OCC         OCCURS  100.
-           03  SUM-TBL-SRYKA       PIC X(02).
       *    1:その他のレセ、2:在総診を算定したレセ 
            03  SUM-TBL-OCC         OCCURS  2.
       *        医療保険　1,2:７０以上 3:本人 4:家族 5:三歳 
@@ -286,13 +233,12 @@
                        09  SUM-KOH-SHOKUJIKENSU   PIC  9(06).
                        09  SUM-KOH-SHOKUJIRYOYOHI PIC  9(10).
                        09  SUM-KOH-SHOKUJIFTN     PIC  9(10).
-                       09  SUM-KOH-MEISYO         PIC  X(44).
       *        老人保健（再掲）      
                05  SUM-ROU-KOH-TABLE           OCCURS  10. 
                    07  SUM-ROU-KOH-TBL.
                        09  SUM-ROU-KOH-KENSU          PIC  9(06).
                        09  SUM-ROU-KOH-NISSU          PIC  9(06).
-                       09  SUM-ROU-KOH-ITBFTN         PIC  9(08).
+                       09  SUM-ROU-KOH-YKZFTN         PIC  9(08).
                        09  SUM-ROU-KOH-FTNMONEY       PIC  9(09).
                        09  SUM-ROU-KOH-SHOKUJIKENSU   PIC  9(06).
                        09  SUM-ROU-KOH-SHOKUJINISSU   PIC  9(06).
@@ -302,49 +248,20 @@
                05  SUM-GOK-TBL         OCCURS  4.
                    07  SUM-GOK-KENSU      PIC 9(06).    
                    07  SUM-GOK-SHOKENSU   PIC 9(06).
-      *
-      *        備考欄（未確定分） 
-               05  SUM-BIKOU. 
-                   07  SUM-BIKOU-KENSU          PIC  9(06).
-                   07  SUM-BIKOU-NISSU          PIC  9(06).
-                   07  SUM-BIKOU-TOTALTEN       PIC  9(10).
-                   07  SUM-BIKOU-FTNMONEY       PIC  9(10).
-                   07  SUM-BIKOU-SHOKUJIKENSU   PIC  9(06).
-                   07  SUM-BIKOU-SHOKUJINISSU   PIC  9(06).
-                   07  SUM-BIKOU-SHOKUJIRYOYOHI PIC  9(10).
-                   07  SUM-BIKOU-SHOKUJIFTN     PIC  9(10).
       *         
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
+           03  WRK-PARA-HOSPID     PIC X(24).
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
-           03  WRK-PARA-HOSPNUM    PIC 9(02).
            03  WRK-PARA-PAGE       PIC 9(10).
            03  WRK-PARA-NYUGAIKBN  PIC X(01).
-           03  WRK-PARA-SYOKBN     PIC X(01).
-           03  WRK-PARA-MARUCHO    PIC X(01).
-           03  WRK-PARA-GENMENKBN  PIC X(01).
-      *
-       01  WRK-SYOKBN              PIC X(01).
-      *
-       01  WRK-PRTFLG              PIC 9(01).
-grpsys*
-grpsys     COPY    "COMMON-SPA".
-      *
-      *    エラーファイル 名称領域 
-           COPY    "CPRECEERR.INC" REPLACING  //RECEERR//
-                                   BY         //LNK-RECEERR//.
       *
       ******************************************************************
       *
        PROCEDURE                       DIVISION
                                        USING   SUM-AREA
-                                               WRK-PARA
-                                               WRK-SYOKBN
-                                               WRK-PRTFLG
-                                               SPA-AREA
-                                               LNK-RECEERR
-           .
+                                               WRK-PARA.
       *
       *****************************************************************
       *    主　　処理
@@ -366,13 +283,12 @@ grpsys     COPY    "COMMON-SPA".
        100-INIT-SEC                SECTION.
       *
            DISPLAY "*** ORCBM027 START ***"
+      * 
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
-      *
-           MOVE    LNK-RECEERR         TO  RECEERR
       *
            MOVE    LNK-PRTKANRI-SRYYM  TO  WRK-SRYYMD (1:6)
            MOVE    "01"                TO  WRK-SRYYMD (7:2)
@@ -380,6 +296,9 @@ grpsys     COPY    "COMMON-SPA".
            MOVE    "01"                TO  WRK-SYMD (7:2)
            PERFORM 31012-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG(1:16)   TO  WRK-SRYYMWH 
+      *
+           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
+           MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
       *
       *    システム管理マスタ（医療機関情報）
            PERFORM 120-HOSPINF-GET-SEC
@@ -408,10 +327,6 @@ grpsys     COPY    "COMMON-SPA".
            INITIALIZE                  SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
            MOVE    "*"                 TO  SYS-1001-KBNCD
-           MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1001-STYUKYMD (1:6)
-           MOVE    "01"                TO  SYS-1001-STYUKYMD (7:2)
-           MOVE    SYS-1001-STYUKYMD   TO  SYS-1001-EDYUKYMD 
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -433,10 +348,6 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
            INITIALIZE                  SYS-1002-REC
            MOVE    "1002"              TO  SYS-1002-KANRICD
            MOVE    "*"                 TO  SYS-1002-KBNCD
-           MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1002-STYUKYMD (1:6)
-           MOVE    "01"                TO  SYS-1002-STYUKYMD (7:2)
-           MOVE    SYS-1002-STYUKYMD   TO  SYS-1002-EDYUKYMD 
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1002-HOSPNUM
            MOVE    SYS-1002-REC        TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -450,13 +361,6 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1002-HOSPNUM
                PERFORM 500-ERR-HENSYU-SEC
                MOVE    1                   TO  FLG-END
            END-IF 
-      *
-           MOVE    SYS-1001-HOSPNAME   TO  WRK-HOSPNAME
-           MOVE    SYS-1001-KAISETUNAME
-                                       TO  WRK-KAISETUNAME
-           MOVE    SYS-1002-ADRS       TO  WRK-HOSPADRS
-      *    医療機関編集情報
-           PERFORM 900-1900-READ-SEC
            .
        120-HOSPINF-GET-EXT.
            EXIT.
@@ -467,60 +371,23 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1002-HOSPNUM
        200-MAIN-SEC                SECTION.
       *
            MOVE    ZERO                TO  FLG-MF01-END 
-      *
-           IF      SUM-TBL-SRYKA (2)   =   SPACE
-               MOVE    100                 TO  IDXX
-           ELSE
-               MOVE    1                   TO  IDXX
-           END-IF
-      *       
-           PERFORM VARYING IDX3    FROM   IDXX    BY  1
-                   UNTIL   IDX3    >      100
-               IF    ( SUM-TBL-SRYKA (IDX3)   =   SPACE )
-               AND   ( IDX3                   <   100   )
-                   CONTINUE
-               ELSE
-      *            主科名称
-                   IF      SUM-TBL-SRYKA (IDX3)   =   "00"
-                       MOVE    "主科未設定"       TO  SYS-1005-SRYKANAME
-                   ELSE
-                       INITIALIZE                  SYS-1005-REC
-                       MOVE    "1005"          TO  SYS-1005-KANRICD
-                       MOVE    SUM-TBL-SRYKA (IDX3)
-                                               TO  SYS-1005-KBNCD
-                       MOVE    LNK-PRTKANRI-SRYYM
-                                               TO SYS-1005-STYUKYMD(1:6)
-                       MOVE    "01"            TO SYS-1005-STYUKYMD(7:2)
-                       MOVE    SYS-1005-STYUKYMD
-                                               TO  SYS-1005-EDYUKYMD 
-grpsys                 MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
-                       MOVE    SYS-1005-REC    TO  MCPDATA-REC
-                       PERFORM 800-SYSKANRI-READ-SEC
-                       IF      FLG-SYSKANRI    =   ZERO
-                           MOVE    MCPDATA-REC     TO  SYS-1005-REC
-                       ELSE
-                           INITIALIZE                  SYS-1005-REC
-                       END-IF
-                   END-IF
-      *        
-                   PERFORM VARYING IDX1    FROM   1   BY  1
-                           UNTIL   IDX1    >      2
-                       IF      SUM-GOK-KENSU (IDX3 IDX1 4)     >   ZERO 
-                           MOVE    ZERO            TO  FLG-PRTKBN
+      *     
+           PERFORM VARYING IDX1    FROM   1   BY  1
+                   UNTIL   IDX1    >   2
+               IF      SUM-GOK-KENSU (IDX1 4)     >   ZERO 
+                   MOVE    ZERO            TO  FLG-PRTKBN
       *           
-      *                    帳票編集<見出し・ＨＣＭ２Ｋ>処理
-                           PERFORM 310-HEAD-HEN-01-SEC
-      *                    帳票編集<見出し・ＨＣＭ２Ｌ>処理
-                           PERFORM 310-HEAD-HEN-02-SEC
-      *                    帳票編集<明細>処理
-                           PERFORM 320-BODY-HEN-SEC
-      *                    帳票編集<合計>処理
-                           PERFORM 330-TERM-HEN-SEC
-      *                    帳票印刷処理（２頁以降）
-                           PERFORM 390-PRINT-OUT-SEC
-                       END-IF    
-                   END-PERFORM 
-               END-IF   
+      *            帳票編集<見出し・ＨＣＭ２Ｋ>処理
+                   PERFORM 310-HEAD-HEN-01-SEC
+      *            帳票編集<見出し・ＨＣＭ２Ｌ>処理
+                   PERFORM 310-HEAD-HEN-02-SEC
+      *            帳票編集<明細>処理
+                   PERFORM 320-BODY-HEN-SEC
+      *            帳票編集<合計>処理
+                   PERFORM 330-TERM-HEN-SEC
+      *            帳票印刷処理（２頁以降）
+                   PERFORM 390-PRINT-OUT-SEC
+               END-IF    
            END-PERFORM    
       *
            MOVE    1                  TO  FLG-END
@@ -541,45 +408,22 @@ grpsys                 MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
            MOVE    WRK-SRYYMWH         TO  HCM2K-PRTYM
       *
       *    医療機関住所
-           MOVE    WRK-HOSPADRS        TO  HCM2K-ADRS
-           INSPECT HCM2K-ADRS          REPLACING   ALL "  "    BY  "　"
+           MOVE    SYS-1002-ADRS       TO  HCM2K-ADRS
       *    医療機関名
-           MOVE    WRK-HOSPNAME        TO  HCM2K-HOSPNAME
-           INSPECT HCM2K-HOSPNAME      REPLACING   ALL "  "    BY  "　"
-      *
+           MOVE    SYS-1001-HOSPNAME   TO  HCM2K-HOSPNAME
       *    開設者名
-           MOVE    WRK-KAISETUNAME     TO  HCM2K-KAISETUNAME
-      *
+           MOVE    SYS-1001-KAISETUNAME
+                                       TO  HCM2K-KAISETUNAME
+      *    
            MOVE    SYS-1001-HOSPCDN    TO  HCM2K-HOSPCD
       *
            EVALUATE    IDX1
                WHEN    1
                    MOVE    "その他のレセ"      TO  HCM2K-TITLE  
                WHEN    2
-                   IF      WRK-PRTFLG          =   1
-                       MOVE    "在総診または在医総を算定したレセ"
-                                                   TO  HCM2K-TITLE
-                   ELSE   
-                       MOVE    "在医総管または在医総を算定したレセ"
-                                                   TO  HCM2K-TITLE
-                   END-IF
+                   MOVE    "在総診または在医総を算定したレセ"
+                                               TO  HCM2K-TITLE     
            END-EVALUATE
-      *
-           MOVE    "８"          TO  HCM2K-TITLE2
-           MOVE    "八"          TO  HCM2K-TITLE3
-      * 
-           EVALUATE    WRK-SYOKBN
-               WHEN    "2"
-                   MOVE    "（返戻分）"  TO  HCM2K-TITLE1
-           END-EVALUATE           
-      *
-           EVALUATE    WRK-PARA-MARUCHO
-               WHEN    "2"
-                   MOVE    "◯"          TO  HCM2K-MARUCHO (1)
-                   MOVE    "長"          TO  HCM2K-MARUCHO (2)
-           END-EVALUATE           
-      *
-           MOVE    SYS-1005-SRYKANAME    TO  HCM2K-SRYKA
            .
        310-HEAD-HEN-01-EXT.
            EXIT.
@@ -589,41 +433,17 @@ grpsys                 MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
       *****************************************************************
        310-HEAD-HEN-02-SEC          SECTION.
       *
-           INITIALIZE                      HCM2Y
+           INITIALIZE                      HCM2L
       *    
-           MOVE    SYS-1001-HOSPCDN    TO  HCM2Y-HOSPCD 
+           MOVE    SYS-1001-HOSPCDN    TO  HCM2L-HOSPCD 
       *
            EVALUATE    IDX1
                WHEN    1
-                   MOVE    "その他のレセ"      TO  HCM2Y-TITLE  
+                   MOVE    "その他のレセ"      TO  HCM2L-TITLE  
                WHEN    2
-                   IF      WRK-PRTFLG          =   1
-                       MOVE    "在総診または在医総を算定したレセ"
-                                                   TO  HCM2Y-TITLE     
-                   ELSE   
-                       MOVE    "在医総管または在医総を算定したレセ"
-                                                   TO  HCM2Y-TITLE
-                   END-IF
+                   MOVE    "在総診または在医総を算定したレセ"
+                                               TO  HCM2L-TITLE     
            END-EVALUATE
-      *
-           EVALUATE    WRK-SYOKBN
-               WHEN    "2"
-                   MOVE    "（返戻分）"  TO  HCM2Y-TITLE1
-           END-EVALUATE           
-      *
-           IF      WRK-PRTFLG          =   1
-               MOVE    "食事日数"          TO  HCM2Y-TITLE2
-           ELSE   
-               MOVE    "食事回数"          TO  HCM2Y-TITLE2
-           END-IF
-      *
-           EVALUATE    WRK-PARA-MARUCHO
-               WHEN    "2"
-                   MOVE    "◯"        TO  HCM2Y-MARUCHO (1)
-                   MOVE    "長"        TO  HCM2Y-MARUCHO (2)
-           END-EVALUATE           
-      *
-           MOVE    SYS-1005-SRYKANAME  TO  HCM2Y-SRYKA
       *
            .
        310-HEAD-HEN-02-EXT.
@@ -638,108 +458,106 @@ grpsys                 MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
            MOVE    1                   TO  IDX
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       10
-               MOVE    SUM-KENSU    (IDX3 IDX1 IDX IDY)  TO  WRK-KENSUZ
+               MOVE    SUM-KENSU    (IDX1 IDX IDY)  TO  WRK-KENSUZ
                MOVE    WRK-KENSUZ              TO  HCM2K-KENSU1 (IDY)
-               MOVE    SUM-NISSU    (IDX3 IDX1 IDX IDY)  TO  WRK-NISSUZ 
+               MOVE    SUM-NISSU    (IDX1 IDX IDY)  TO  WRK-NISSUZ 
                MOVE    WRK-NISSUZ              TO  HCM2K-NISSU1 (IDY) 
-               MOVE    SUM-TOTALTEN (IDX3 IDX1 IDX IDY)  TO  WRK-TENSUZ
+               MOVE    SUM-TOTALTEN (IDX1 IDX IDY)  TO  WRK-TENSUZ
                MOVE    WRK-TENSUZ              TO  HCM2K-TENSU1 (IDY)
-               MOVE    SUM-FTNMONEY (IDX3 IDX1 IDX IDY)
-                                               TO  WRK-FTNMONEYZ
+               MOVE    SUM-FTNMONEY (IDX1 IDX IDY)  TO  WRK-FTNMONEYZ
                MOVE    WRK-FTNMONEYZ           TO  HCM2K-ITBFTN1(IDY)
            END-PERFORM
-           MOVE    SUM-KENSU    (IDX3 IDX1 IDX 12)   TO  WRK-KENSUZ
+           MOVE    SUM-KENSU    (IDX1 IDX 12)   TO  WRK-KENSUZ
            MOVE    WRK-KENSUZ              TO  HCM2K-KENSU1 (11)
-           MOVE    SUM-NISSU    (IDX3 IDX1 IDX 12)   TO  WRK-NISSUZ 
+           MOVE    SUM-NISSU    (IDX1 IDX 12)   TO  WRK-NISSUZ 
            MOVE    WRK-NISSUZ              TO  HCM2K-NISSU1 (11) 
-           MOVE    SUM-TOTALTEN (IDX3 IDX1 IDX 12)   TO  WRK-TENSUZ
+           MOVE    SUM-TOTALTEN (IDX1 IDX 12)   TO  WRK-TENSUZ
            MOVE    WRK-TENSUZ              TO  HCM2K-TENSU1 (11)
-           MOVE    SUM-FTNMONEY (IDX3 IDX1 IDX 12)   TO  WRK-FTNMONEYZ
+           MOVE    SUM-FTNMONEY (IDX1 IDX 12)   TO  WRK-FTNMONEYZ
            MOVE    WRK-FTNMONEYZ           TO  HCM2K-ITBFTN1(11)
       *
       *    医保単独（７０以上８割）
            MOVE    2                   TO  IDX
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       8
-               MOVE    SUM-KENSU    (IDX3 IDX1 IDX IDY)  TO  WRK-KENSUZ
+               MOVE    SUM-KENSU    (IDX1 IDX IDY)  TO  WRK-KENSUZ
                MOVE    WRK-KENSUZ              TO  HCM2K-KENSU2 (IDY)
-               MOVE    SUM-NISSU    (IDX3 IDX1 IDX IDY)  TO  WRK-NISSUZ 
+               MOVE    SUM-NISSU    (IDX1 IDX IDY)  TO  WRK-NISSUZ 
                MOVE    WRK-NISSUZ              TO  HCM2K-NISSU2 (IDY) 
-               MOVE    SUM-TOTALTEN (IDX3 IDX1 IDX IDY)  TO  WRK-TENSUZ
+               MOVE    SUM-TOTALTEN (IDX1 IDX IDY)  TO  WRK-TENSUZ
                MOVE    WRK-TENSUZ              TO  HCM2K-TENSU2 (IDY)
-               MOVE    SUM-FTNMONEY (IDX3 IDX1 IDX IDY)
-                                               TO  WRK-FTNMONEYZ
+               MOVE    SUM-FTNMONEY (IDX1 IDX IDY)  TO  WRK-FTNMONEYZ
                MOVE    WRK-FTNMONEYZ           TO  HCM2K-ITBFTN2(IDY)
            END-PERFORM
-           MOVE    SUM-KENSU    (IDX3 IDX1 IDX 12)   TO  WRK-KENSUZ
+           MOVE    SUM-KENSU    (IDX1 IDX 12)   TO  WRK-KENSUZ
            MOVE    WRK-KENSUZ              TO  HCM2K-KENSU2 (9)
-           MOVE    SUM-NISSU    (IDX3 IDX1 IDX 12)   TO  WRK-NISSUZ 
+           MOVE    SUM-NISSU    (IDX1 IDX 12)   TO  WRK-NISSUZ 
            MOVE    WRK-NISSUZ              TO  HCM2K-NISSU2 (9) 
-           MOVE    SUM-TOTALTEN (IDX3 IDX1 IDX 12)   TO  WRK-TENSUZ
+           MOVE    SUM-TOTALTEN (IDX1 IDX 12)   TO  WRK-TENSUZ
            MOVE    WRK-TENSUZ              TO  HCM2K-TENSU2 (9)
-           MOVE    SUM-FTNMONEY (IDX3 IDX1 IDX 12)   TO  WRK-FTNMONEYZ
+           MOVE    SUM-FTNMONEY (IDX1 IDX 12)   TO  WRK-FTNMONEYZ
            MOVE    WRK-FTNMONEYZ           TO  HCM2K-ITBFTN2(9)
       *
       *    医保単独（本人）
            MOVE    3                   TO  IDX
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       11
-               MOVE    SUM-KENSU    (IDX3 IDX1 IDX IDY)  TO  WRK-KENSUZ
+               MOVE    SUM-KENSU    (IDX1 IDX IDY)  TO  WRK-KENSUZ
                MOVE    WRK-KENSUZ              TO  HCM2K-KENSU3 (IDY)
-               MOVE    SUM-NISSU    (IDX3 IDX1 IDX IDY)  TO  WRK-NISSUZ 
+               MOVE    SUM-NISSU    (IDX1 IDX IDY)  TO  WRK-NISSUZ 
                MOVE    WRK-NISSUZ              TO  HCM2K-NISSU3 (IDY) 
-               MOVE    SUM-TOTALTEN (IDX3 IDX1 IDX IDY)  TO  WRK-TENSUZ
+               MOVE    SUM-TOTALTEN (IDX1 IDX IDY)  TO  WRK-TENSUZ
                MOVE    WRK-TENSUZ              TO  HCM2K-TENSU3 (IDY)
                IF      IDY             =   3
-                   MOVE    SUM-FTNMONEY (IDX3 IDX1 IDX IDY) 
+                   MOVE    SUM-FTNMONEY (IDX1 IDX IDY) 
                                                TO  WRK-FTNMONEYZ
                    MOVE    WRK-FTNMONEYZ       TO  HCM2K-ITBFTN3
                END-IF
            END-PERFORM
-           MOVE    SUM-KENSU    (IDX3 IDX1 IDX 12)   TO  WRK-KENSUZ
+           MOVE    SUM-KENSU    (IDX1 IDX 12)   TO  WRK-KENSUZ
            MOVE    WRK-KENSUZ              TO  HCM2K-KENSU3 (12)
-           MOVE    SUM-NISSU    (IDX3 IDX1 IDX 12)   TO  WRK-NISSUZ 
+           MOVE    SUM-NISSU    (IDX1 IDX 12)   TO  WRK-NISSUZ 
            MOVE    WRK-NISSUZ              TO  HCM2K-NISSU3 (12) 
-           MOVE    SUM-TOTALTEN (IDX3 IDX1 IDX 12)   TO  WRK-TENSUZ
+           MOVE    SUM-TOTALTEN (IDX1 IDX 12)   TO  WRK-TENSUZ
            MOVE    WRK-TENSUZ              TO  HCM2K-TENSU3 (12)
       *
       *    医保単独（家族）
            MOVE    4                   TO  IDX
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       8
-               MOVE    SUM-KENSU    (IDX3 IDX1 IDX IDY)  TO  WRK-KENSUZ
+               MOVE    SUM-KENSU    (IDX1 IDX IDY)  TO  WRK-KENSUZ
                MOVE    WRK-KENSUZ              TO  HCM2K-KENSU4 (IDY)
-               MOVE    SUM-NISSU    (IDX3 IDX1 IDX IDY)  TO  WRK-NISSUZ 
+               MOVE    SUM-NISSU    (IDX1 IDX IDY)  TO  WRK-NISSUZ 
                MOVE    WRK-NISSUZ              TO  HCM2K-NISSU4 (IDY) 
-               MOVE    SUM-TOTALTEN (IDX3 IDX1 IDX IDY)  TO  WRK-TENSUZ
+               MOVE    SUM-TOTALTEN (IDX1 IDX IDY)  TO  WRK-TENSUZ
                MOVE    WRK-TENSUZ              TO  HCM2K-TENSU4 (IDY)
            END-PERFORM
-           MOVE    SUM-KENSU    (IDX3 IDX1 IDX 12)   TO  WRK-KENSUZ
+           MOVE    SUM-KENSU    (IDX1 IDX 12)   TO  WRK-KENSUZ
            MOVE    WRK-KENSUZ              TO  HCM2K-KENSU4 (9)
-           MOVE    SUM-NISSU    (IDX3 IDX1 IDX 12)   TO  WRK-NISSUZ 
+           MOVE    SUM-NISSU    (IDX1 IDX 12)   TO  WRK-NISSUZ 
            MOVE    WRK-NISSUZ              TO  HCM2K-NISSU4 (9) 
-           MOVE    SUM-TOTALTEN (IDX3 IDX1 IDX 12)   TO  WRK-TENSUZ
+           MOVE    SUM-TOTALTEN (IDX1 IDX 12)   TO  WRK-TENSUZ
            MOVE    WRK-TENSUZ              TO  HCM2K-TENSU4 (9)
       *
       *    医保単独（三歳）
            MOVE    5                   TO  IDX
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       8
-               MOVE    SUM-KENSU    (IDX3 IDX1 IDX IDY)  TO  WRK-KENSUZ
+               MOVE    SUM-KENSU    (IDX1 IDX IDY)  TO  WRK-KENSUZ
                MOVE    WRK-KENSUZ              TO  HCM2K-KENSU5 (IDY)
-               MOVE    SUM-NISSU    (IDX3 IDX1 IDX IDY)  TO  WRK-NISSUZ 
+               MOVE    SUM-NISSU    (IDX1 IDX IDY)  TO  WRK-NISSUZ 
                MOVE    WRK-NISSUZ              TO  HCM2K-NISSU5 (IDY) 
-               MOVE    SUM-TOTALTEN (IDX3 IDX1 IDX IDY)  TO  WRK-TENSUZ
+               MOVE    SUM-TOTALTEN (IDX1 IDX IDY)  TO  WRK-TENSUZ
                MOVE    WRK-TENSUZ              TO  HCM2K-TENSU5 (IDY)
            END-PERFORM
-           MOVE    SUM-KENSU    (IDX3 IDX1 IDX 12)   TO  WRK-KENSUZ
+           MOVE    SUM-KENSU    (IDX1 IDX 12)   TO  WRK-KENSUZ
            MOVE    WRK-KENSUZ              TO  HCM2K-KENSU5 (9)
-           MOVE    SUM-NISSU    (IDX3 IDX1 IDX 12)   TO  WRK-NISSUZ 
+           MOVE    SUM-NISSU    (IDX1 IDX 12)   TO  WRK-NISSUZ 
            MOVE    WRK-NISSUZ              TO  HCM2K-NISSU5 (9) 
-           MOVE    SUM-TOTALTEN (IDX3 IDX1 IDX 12)   TO  WRK-TENSUZ
+           MOVE    SUM-TOTALTEN (IDX1 IDX 12)   TO  WRK-TENSUZ
            MOVE    WRK-TENSUZ              TO  HCM2K-TENSU5 (9)
       *
-           MOVE    SUM-GOK-KENSU (IDX3 IDX1 1)  TO  WRK-KENSUZ
+           MOVE    SUM-GOK-KENSU (IDX1 1)  TO  WRK-KENSUZ
            MOVE    WRK-KENSUZ              TO  HCM2K-KENSUG   
       *
       *    老人保健
@@ -747,43 +565,43 @@ grpsys                 MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
                    UNTIL   IDX >       2
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       3
-                   MOVE    SUM-ROU-KENSU    (IDX3 IDX1 IDX IDY) 
+                   MOVE    SUM-ROU-KENSU    (IDX1 IDX IDY) 
                                            TO  WRK-KENSUZ
-                   MOVE    WRK-KENSUZ      TO  HCM2Y-ROU-KENSU (IDX IDY)
+                   MOVE    WRK-KENSUZ      TO  HCM2L-ROU-KENSU (IDX IDY)
                    IF      IDY                 <   3
-                       MOVE    SUM-ROU-NISSU    (IDX3 IDX1 IDX IDY)
+                       MOVE    SUM-ROU-NISSU    (IDX1 IDX IDY)
                                            TO  WRK-NISSUZ 
-                       MOVE    WRK-NISSUZ  TO  HCM2Y-ROU-NISSU (IDX IDY)
-                       MOVE    SUM-ROU-TOTALTEN (IDX3 IDX1 IDX IDY)
+                       MOVE    WRK-NISSUZ  TO  HCM2L-ROU-NISSU (IDX IDY)
+                       MOVE    SUM-ROU-TOTALTEN (IDX1 IDX IDY)
                                            TO  WRK-TENSUZ
-                       MOVE    WRK-TENSUZ  TO  HCM2Y-ROU-TENSU (IDX IDY)
-                       MOVE    SUM-ROU-FTNMONEY (IDX3 IDX1 IDX IDY)
+                       MOVE    WRK-TENSUZ  TO  HCM2L-ROU-TENSU (IDX IDY)
+                       MOVE    SUM-ROU-FTNMONEY (IDX1 IDX IDY)
                                            TO  WRK-FTNMONEYZ
                        MOVE    WRK-FTNMONEYZ
-                                           TO  HCM2Y-ROU-ITBFTN(IDX IDY)
+                                           TO  HCM2L-ROU-ITBFTN(IDX IDY)
                    END-IF
                END-PERFORM    
            END-PERFORM
       *     
-           MOVE    SUM-GOK-KENSU (IDX3 IDX1 2)  TO  WRK-KENSUZ
-           MOVE    WRK-KENSUZ              TO  HCM2Y-KENSUG (1)    
+           MOVE    SUM-GOK-KENSU (IDX1 2)  TO  WRK-KENSUZ
+           MOVE    WRK-KENSUZ              TO  HCM2L-KENSUG (1)    
       *
       *    公費再掲編集処理
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       10
-               IF      SUM-ROU-KOH-KENSU (IDX3 IDX1 IDX)    >   ZERO
-                   MOVE    SUM-ROU-KOH-KENSU    (IDX3 IDX1 IDX) 
+               IF      SUM-ROU-KOH-KENSU (IDX1 IDX)    >   ZERO
+                   MOVE    SUM-ROU-KOH-KENSU    (IDX1 IDX) 
                                            TO  WRK-KENSUZ
-                   MOVE    WRK-KENSUZ      TO  HCM2Y-BKO-KENSU (IDX) 
-                   MOVE    SUM-ROU-KOH-NISSU    (IDX3 IDX1 IDX)
+                   MOVE    WRK-KENSUZ      TO  HCM2L-BKO-KENSU (IDX) 
+      *************IF      IDX             =   1
+                       MOVE    SUM-ROU-KOH-NISSU    (IDX1 IDX)
                                            TO  WRK-NISSUZ 
-                   MOVE    WRK-NISSUZ      TO  HCM2Y-BKO-NISSU (IDX) 
-                   MOVE    SUM-ROU-KOH-ITBFTN   (IDX3 IDX1 IDX)
+                       MOVE    WRK-NISSUZ  TO  HCM2L-BKO-NISSU (IDX) 
+                       MOVE    SUM-ROU-KOH-FTNMONEY (IDX1 IDX)
                                            TO  WRK-FTNMONEYZ
-                   MOVE    WRK-FTNMONEYZ   TO  HCM2Y-BKO-ITBFTN(IDX)
-                   MOVE    SUM-ROU-KOH-FTNMONEY (IDX3 IDX1 IDX)
-                                           TO  WRK-FTNMONEYZ
-                   MOVE    WRK-FTNMONEYZ   TO  HCM2Y-BKO-KOJYO (IDX)
+      *                 MOVE    WRK-FTNMONEYZ
+      *                                     TO  HCM2L-BKO-ITBFTN(IDX)
+      *************END-IF                        
                END-IF
            END-PERFORM    
       *     
@@ -810,39 +628,38 @@ grpsys                 MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       6         
                    OR      FLG-MF01-END    =   1  
-               IF      SUM-KOH-KOHNUM (IDX3 IDX1 1 IDX2)    =   SPACE
-               AND     SUM-KOH-KOHNUM (IDX3 IDX1 2 IDX2)    =   SPACE
-               AND     SUM-KOH-KOHNUM (IDX3 IDX1 3 IDX2)    =   SPACE
+               IF      SUM-KOH-KOHNUM (IDX1 1 IDX2)    =   SPACE
+               AND     SUM-KOH-KOHNUM (IDX1 2 IDX2)    =   SPACE
+               AND     SUM-KOH-KOHNUM (IDX1 3 IDX2)    =   SPACE
                    MOVE    1                   TO  FLG-MF01-END
                ELSE    
                    PERFORM VARYING IDX     FROM    1   BY  1
                            UNTIL   IDX     >       3
-                       IF      SUM-KOH-KOHNUM (IDX3 IDX1 IDX IDX2)
-                                               =   SPACE
+                       IF      SUM-KOH-KOHNUM (IDX1 IDX IDX2)  =   SPACE
                            CONTINUE
                        ELSE    
                            PERFORM 3202-HKNNUM-HENSYU-SEC     
-                           MOVE    SUM-KOH-KENSU (IDX3 IDX1 IDX IDX2)
+                           MOVE    SUM-KOH-KENSU (IDX1 IDX IDX2)
                                            TO  WRK-KENSUZ        
                            MOVE    WRK-KENSUZ
-                                           TO  HCM2Y-KOH-KENSU (IDX IDY)
-                           MOVE    SUM-KOH-TOTALTEN (IDX3 IDX1 IDX IDX2)
+                                           TO  HCM2L-KOH-KENSU (IDX IDY)
+                           MOVE    SUM-KOH-TOTALTEN (IDX1 IDX IDX2)
                                            TO  WRK-TENSUZ         
                            MOVE    WRK-TENSUZ
-                                           TO  HCM2Y-KOH-TENSU (IDX IDY)
-                           MOVE    SUM-KOH-FTNMONEY (IDX3 IDX1 IDX IDX2)
+                                           TO  HCM2L-KOH-TENSU (IDX IDY)
+                           MOVE    SUM-KOH-FTNMONEY (IDX1 IDX IDX2)
                                            TO  WRK-FTNMONEYZ
                            MOVE    WRK-FTNMONEYZ
-                                           TO  HCM2Y-KOH-ITBFTN(IDX IDY)
+                                           TO  HCM2L-KOH-ITBFTN(IDX IDY)
                        END-IF
                    END-PERFORM
                    ADD     1                   TO  IDX2   
                END-IF        
            END-PERFORM
       *
-           IF      SUM-KOH-KOHNUM (IDX3 IDX1 1 IDX2)    =   SPACE
-           AND     SUM-KOH-KOHNUM (IDX3 IDX1 2 IDX2)    =   SPACE
-           AND     SUM-KOH-KOHNUM (IDX3 IDX1 3 IDX2)    =   SPACE
+           IF      SUM-KOH-KOHNUM (IDX1 1 IDX2)    =   SPACE
+           AND     SUM-KOH-KOHNUM (IDX1 2 IDX2)    =   SPACE
+           AND     SUM-KOH-KOHNUM (IDX1 3 IDX2)    =   SPACE
                MOVE    1                      TO  FLG-MF01-END
            ELSE
       *        帳票印刷処理（２頁以降）
@@ -858,93 +675,84 @@ grpsys                 MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
       *****************************************************************
       *    公費保険区分編集処理
       *****************************************************************
+      *    
        3202-HKNNUM-HENSYU-SEC         SECTION.
       *
            MOVE    SPACE               TO  WRK-KOHKBN
       *
-      *    公費番号まとめ情報からの集計か
-           IF      SUM-KOH-MEISYO  (IDX3 IDX1 IDX IDX2)
-                                       =   SPACE
+           MOVE    SUM-KOH-KOHNUM (IDX1 IDX IDX2)
+                                       TO  WRK-Z9
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"                 TO  KANACHK-SYORI 
+           MOVE    WRK-Z9 (4:2)        TO  KANACHK-MAE-INPUT 
+           CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
+           IF      KANACHK-RC          =   ZERO
+           AND     KANACHK-MAX         >   ZERO
+               MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                           TO  WRK-KOHNUM
+           END-IF    
+      *    特定疾患のとき 
+           IF      SUM-KOH-KOHNUM (IDX1 IDX IDX2)
+                                       =   "051"
+               MOVE    "（特定疾患）"      TO   WRK-HKNNAME
+           ELSE
       *        保険番号読込み  
                INITIALIZE                      HKNNUM-REC
-grpsys         MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
-               MOVE   SUM-KOH-KOHNUM (IDX3 IDX1 IDX IDX2)
+               MOVE   SYS-1001-HOSPID      TO    HKN-HOSPID
+               MOVE   SUM-KOH-KOHNUM (IDX1 IDX IDX2)
                                            TO    HKN-HKNNUM
                MOVE   HKNNUM-REC           TO    MCPDATA-REC
-               MOVE    "tbl_hknnum"        TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-grpsys         PERFORM 900-DBSELECT-SEC
+               MOVE   "DBSELECT"           TO    MCP-FUNC
+               MOVE   "HKNNUM-KEY2"        TO    ORC-DBPATH
+               CALL   "ORCMCPSUB"           USING MCPAREA
+                                                  ORCMCPAREA
+                                                  MCPDATA-REC
                IF      MCP-RC              =   ZERO
-                   MOVE    "tbl_hknnum"        TO  MCP-TABLE
-                   MOVE    "key2"              TO  MCP-PATHNAME
+                   MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
                    PERFORM 900-HKNNUM-READ-SEC
                ELSE
                    MOVE    1                  TO  FLG-HKNNUM
                END-IF
       *
                PERFORM UNTIL       FLG-HKNNUM      =   1
-                   IF    ( HKN-TEKSTYMD            <=  WRK-SRYYMD )
-                   AND   ( HKN-TEKEDYMD            >=  WRK-SRYYMD )
-                       IF     SUM-KOH-KOHNUM (IDX3 IDX1 IDX IDX2)
-                                                       =   "027"
-      *                    老人保険のとき 
-                           IF    ( SYS-1001-HOSPSBT
-                                                   =   HKN-PAYKBN(1:1) )
-                           AND   ( SYS-1001-ROUPAYKBN
-                                                   =   HKN-PAYKBN(2:1) )
-                               STRING  "（"        DELIMITED  BY  SIZE
-                                       HKN-TANSEIDONAME
+                   IF      HKN-TEKSTYMD            <=  WRK-SRYYMD
+                   AND     HKN-TEKEDYMD            >=  WRK-SRYYMD
+                     IF     SUM-KOH-KOHNUM (IDX1 IDX IDX2)    =   "027"
+                       IF      SYS-1001-HOSPSBT    =   HKN-PAYKBN (1:1)
+                       AND     SYS-1001-ROUPAYKBN  =   HKN-PAYKBN (2:1)
+                           STRING  "（"            DELIMITED  BY  SIZE
+                                   HKN-TANSEIDONAME
                                                    DELIMITED  BY  SPACE
-                                       "）"        DELIMITED  BY  SIZE
+                                   "）"            DELIMITED  BY  SIZE
                                                    INTO   WRK-HKNNAME
-                               END-STRING
-                               MOVE    1               TO  FLG-HKNNUM
-                           END-IF
-                       ELSE
-      *                    特定疾患のとき 
-                           IF      SUM-KOH-KOHNUM (IDX3 IDX1 IDX IDX2)
-                                                   =   "051"
-                               MOVE    "（特定疾患）"  TO   WRK-HKNNAME
-                           ELSE
-      *                    その他の保険のとき 
-                               STRING  "（"        DELIMITED  BY  SIZE
-                                       HKN-TANSEIDONAME
-                                                   DELIMITED  BY  SPACE
-                                       "）"        DELIMITED  BY  SIZE
+                           END-STRING
+                           MOVE    1                   TO  FLG-HKNNUM
+                       END-IF
+                     ELSE
+                       STRING  "（"                DELIMITED  BY  SIZE
+                               HKN-TANSEIDONAME    DELIMITED  BY  SPACE
+                               "）"                DELIMITED  BY  SIZE
                                                    INTO   WRK-HKNNAME
-                               END-STRING
-                           END-IF
-                           MOVE    1               TO  FLG-HKNNUM 
-                       END-IF     
+                       END-STRING
+                       MOVE    1                   TO  FLG-HKNNUM 
+                     END-IF     
                    END-IF
       *
                    IF      FLG-HKNNUM           =   ZERO
-                       MOVE    "tbl_hknnum"        TO  MCP-TABLE
-                       MOVE    "key2"              TO  MCP-PATHNAME
+                       MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
                        PERFORM 900-HKNNUM-READ-SEC
-                   ELSE
-                       MOVE    HKN-HBTNUM      TO  WRK-Z9
-                       INITIALIZE                  ORCSKANACHKAREA
-                       MOVE    "2"                 TO  KANACHK-SYORI 
-                       MOVE    WRK-Z9 (4:2)    TO  KANACHK-MAE-INPUT 
-                       CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
-                       IF    ( KANACHK-RC      =   ZERO )
-                       AND   ( KANACHK-MAX     >   ZERO )
-                           MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
-                                                       TO  WRK-KOHNUM
-                       END-IF    
                    END-IF 
-               END-PERFORM
-      *    
-               MOVE    "tbl_hknnum"        TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 900-CLOSE-SEC
-           ELSE
-               MOVE    SUM-KOH-MEISYO (IDX3 IDX1 IDX IDX2)
-                                           TO   WRK-KOHKBN
+115900         END-PERFORM
+      *        カーソルクロース
+               MOVE    "DBCLOSE"           TO  MCP-FUNC
+               MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
            END-IF
       *
-           MOVE    WRK-KOHKBN          TO  HCM2Y-KOHKBN (IDX IDY)
+           MOVE    WRK-KOHKBN          TO  HCM2L-KOHKBN (IDX IDY)
            .
        3202-HKNNUM-HENSYU-EXT.
            EXIT.
@@ -956,11 +764,11 @@ grpsys         PERFORM 900-DBSELECT-SEC
        330-TERM-HEN-SEC         SECTION.
       *    合計・総合計
       *
-           MOVE    SUM-GOK-KENSU (IDX3 IDX1 3)  TO  WRK-KENSUZ
-           MOVE    WRK-KENSUZ              TO  HCM2Y-KENSUG (2)
+           MOVE    SUM-GOK-KENSU (IDX1 3)  TO  WRK-KENSUZ
+           MOVE    WRK-KENSUZ              TO  HCM2L-KENSUG (2)
       *
-           MOVE    SUM-GOK-KENSU (IDX3 IDX1 4)  TO  WRK-GKENSUZ
-           MOVE    WRK-GKENSUZ             TO  HCM2Y-GKENSU
+           MOVE    SUM-GOK-KENSU (IDX1 4)  TO  WRK-GKENSUZ
+           MOVE    WRK-GKENSUZ             TO  HCM2L-GKENSU
            .
        330-TERM-HEN-EXT.
            EXIT.
@@ -988,60 +796,26 @@ grpsys         PERFORM 900-DBSELECT-SEC
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
            IF      FLG-PRTKBN          =   ZERO                            
-      *********MOVE    "HCM2K.red"         TO  SPRT-PRTID
-      *********MOVE    "HCM2KV01.red"      TO  SPRT-PRTID
-      *********MOVE    "HCM2KV02.red"      TO  SPRT-PRTID
-      *********MOVE    "HCM2KV03.red"      TO  SPRT-PRTID
-      *********MOVE    "HCM2KV04.red"      TO  SPRT-PRTID
-               MOVE    "HCM2KV05.red"      TO  SPRT-PRTID
+               MOVE    "HCM2K.red"         TO  SPRT-PRTID
                MOVE    HCM2K               TO  SPRT-PRTDATA
            ELSE                          
       *********MOVE    "HCM2L.red"         TO  SPRT-PRTID
-      *********MOVE    "HCM2LV01.red"      TO  SPRT-PRTID
-      *********MOVE    "HCM2LV02.red"      TO  SPRT-PRTID
-      *********MOVE    "HCM2LV03.red"      TO  SPRT-PRTID
-      *********MOVE    "HCM2Y.red"         TO  SPRT-PRTID
-               MOVE    "HCM2YV01.red"      TO  SPRT-PRTID
-              MOVE    HCM2Y               TO  SPRT-PRTDATA
+               MOVE    "HCM2LV01.red"      TO  SPRT-PRTID
+               MOVE    HCM2L               TO  SPRT-PRTDATA
            END-IF    
-           IF      WRK-PARA-MARUCHO    =   "2"
-               EVALUATE    IDX1    ALSO    WRK-SYOKBN
-                   WHEN    1       ALSO    "1"                      
-                       MOVE    "マル長分　社保総括表"
-                                                   TO  SPRT-TITLE
-                   WHEN    2       ALSO    "1"                        
-                       MOVE    "マル長分　社保総括表（在医総等）"
-                                                   TO  SPRT-TITLE
-                   WHEN    1       ALSO    "2"                        
-                       MOVE    "マル長分　社保総括表［返戻分］"
-                                                   TO  SPRT-TITLE
-                   WHEN    2       ALSO    "2"                        
-                       MOVE
-                           "マル長分　社保総括表（在医総等）［返戻分］"
-                                                   TO  SPRT-TITLE
-               END-EVALUATE
-           ELSE
-               EVALUATE    IDX1    ALSO    WRK-SYOKBN
-                   WHEN    1       ALSO    "1"                      
-                       MOVE    "社保総括表"        TO  SPRT-TITLE
-                   WHEN    2       ALSO    "1"                        
-                       MOVE    "社保総括表（在医総等）"
-                                                   TO  SPRT-TITLE
-                   WHEN    1       ALSO    "2"                        
-                       MOVE    "社保総括表［返戻分］"
-                                                   TO  SPRT-TITLE
-                   WHEN    2       ALSO    "2"                        
-                       MOVE    "社保総括表（在医総等）［返戻分］"
-                                                   TO  SPRT-TITLE
-               END-EVALUATE
-           END-IF
+           EVALUATE    IDX1
+               WHEN    1                            
+                   MOVE    "社保総括表"        TO  SPRT-TITLE
+               WHEN    2                            
+                   MOVE    "社保総括表（在総診等）"
+                                               TO  SPRT-TITLE
+           END-EVALUATE        
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
            MOVE    LNK-PRTKANRI-OPID   TO  SPRT-OPID
            MOVE    LNK-PRTKANRI-PRTNM  TO  SPRT-PRTNM
            MOVE    "1"                 TO  SPRT-SITEKBN
            CALL    "ORCSPRT"           USING
                                        ORCSPRTAREA
-grpsys                                 SPA-AREA
            IF      SPRT-RETURN         =   ZERO
                CONTINUE
            ELSE
@@ -1069,7 +843,7 @@ grpsys                                 SPA-AREA
            .
        31012-SEIWA-HEN-EXT.
            EXIT.
-      *
+057400*
       *****************************************************************
       *    エラー出力処理
       *****************************************************************
@@ -1088,9 +862,14 @@ grpsys                                 SPA-AREA
       *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
+               MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+               MOVE    WRK-PARA-SHELLID
+                                       TO  JOB-SHELLID
                MOVE    WRK-RECEERR     TO  JOB-YOBI
                MOVE    "9999"          TO  JOB-ERRCD
-grpsys         PERFORM 900-CALL-ORCSJOB-SEC
+               CALL    "ORCSJOB"       USING
+                                       ORCSJOBKANRIAREA  
+                                       JOBKANRI-REC
            END-IF
       *
            MOVE    1                   TO  FLG-END     
@@ -1112,157 +891,40 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
        300-END-EXT.
            EXIT.
       *
-      *----(03.04.01)--ADD-START---
-      *****************************************************************
-      *    医療機関編集情報読み込み
-      *****************************************************************
-       900-1900-READ-SEC           SECTION.
-      *
-      *    医療機関編集情報読み込み
-           MOVE    SPACE           TO  SYS-1900-REC
-           INITIALIZE                  SYS-1900-REC
-           MOVE    "1900"          TO  SYS-1900-KANRICD
-           MOVE    "*"             TO  SYS-1900-KBNCD
-           MOVE    LNK-PRTKANRI-SRYYM
-                                   TO  SYS-1900-STYUKYMD (1:6)
-           MOVE    "01"            TO  SYS-1900-STYUKYMD (7:2)
-           MOVE    SYS-1900-STYUKYMD
-                                   TO  SYS-1900-EDYUKYMD
-grpsys     MOVE    SPA-HOSPNUM     TO  SYS-1900-HOSPNUM
-           MOVE    SYS-1900-REC    TO  MCPDATA-REC
-           PERFORM 800-SYSKANRI-READ-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC     TO  SYS-1900-REC
-               IF      SYS-1900-PRTKBN(7)  NOT =   SPACE
-      *            医療機関名称編集情報
-                   PERFORM 900-1901-READ-SEC
-      *            医療機関住所編集情報
-                   PERFORM 900-1902-READ-SEC
-      *            医療機関名称編集情報（２）
-                   PERFORM 900-1903-READ-SEC
-                END-IF
-           ELSE
-               INITIALIZE                  SYS-1900-REC
-           END-IF
-           .
-      *
-       900-1900-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    医療機関名称編集情報読み込み
-      *****************************************************************
-       900-1901-READ-SEC           SECTION.
-      *
-      *    医療機関名称編集情報読み込み
-           MOVE    SPACE           TO  SYS-1901-REC
-           INITIALIZE                  SYS-1901-REC
-           MOVE    "1901"          TO  SYS-1901-KANRICD
-           MOVE    SYS-1900-PRTKBN(7)
-                                   TO  SYS-1901-KBNCD
-           MOVE    LNK-PRTKANRI-SRYYM
-                                   TO  SYS-1901-STYUKYMD (1:6)
-           MOVE    "01"            TO  SYS-1901-STYUKYMD (7:2)
-           MOVE    SYS-1901-STYUKYMD
-                                   TO  SYS-1901-EDYUKYMD
-grpsys     MOVE    SPA-HOSPNUM     TO  SYS-1901-HOSPNUM
-           MOVE    SYS-1901-REC    TO  MCPDATA-REC
-           PERFORM 800-SYSKANRI-READ-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1901-REC
-               MOVE    SYS-1901-HOSPNAME1  TO  WRK-HOSPNAME1
-               MOVE    SYS-1901-HOSPNAME2  TO  WRK-HOSPNAME2
-           ELSE
-               INITIALIZE                      SYS-1901-REC
-           END-IF
-           .
-      *
-       900-1901-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    医療機関住所編集情報読み込み
-      *****************************************************************
-       900-1902-READ-SEC           SECTION.
-      *
-      *    医療機関住所編集情報読み込み
-           MOVE    SPACE           TO  SYS-1902-REC
-           INITIALIZE                  SYS-1902-REC
-           MOVE    "1902"          TO  SYS-1902-KANRICD
-           MOVE    SYS-1900-PRTKBN(7)
-                                   TO  SYS-1902-KBNCD
-           MOVE    LNK-PRTKANRI-SRYYM
-                                   TO  SYS-1902-STYUKYMD (1:6)
-           MOVE    "01"            TO  SYS-1902-STYUKYMD (7:2)
-           MOVE    SYS-1902-STYUKYMD
-                                   TO  SYS-1902-EDYUKYMD
-grpsys     MOVE    SPA-HOSPNUM     TO  SYS-1902-HOSPNUM
-           MOVE    SYS-1902-REC    TO  MCPDATA-REC
-           PERFORM 800-SYSKANRI-READ-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1902-REC
-               MOVE    SYS-1902-ADRS1      TO  WRK-HOSPADRS1
-               MOVE    SYS-1902-ADRS2      TO  WRK-HOSPADRS2
-           ELSE
-               INITIALIZE                      SYS-1902-REC
-           END-IF
-           .
-      *
-       900-1902-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    医療機関名称編集情報（２）読み込み
-      *****************************************************************
-       900-1903-READ-SEC           SECTION.
-      *
-           MOVE    SPACE           TO  SYS-1903-REC
-           INITIALIZE                  SYS-1903-REC
-           MOVE    SPA-HOSPNUM     TO  SYS-1903-HOSPNUM
-           MOVE    "1903"          TO  SYS-1903-KANRICD
-           MOVE    SYS-1900-PRTKBN(7)
-                                   TO  SYS-1903-KBNCD
-           MOVE    WRK-SYMD        TO  SYS-1903-STYUKYMD
-                                       SYS-1903-EDYUKYMD
-           MOVE    SYS-1903-REC    TO  MCPDATA-REC
-           PERFORM 800-SYSKANRI-READ-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1903-REC
-               MOVE    SYS-1903-KAISETUNAME
-                                           TO  WRK-KAISETUNAME
-           ELSE
-               INITIALIZE                      SYS-1903-REC
-           END-IF
-           .
-      *
-       900-1903-READ-EXT.
-           EXIT.
-      *
-      *----(03.04.01)--ADD-END-----
       *****************************************************************
       *    管理マスタ読み込み
       *****************************************************************
        800-SYSKANRI-READ-SEC           SECTION.
       *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-grpsys     PERFORM 900-DBSELECT-SEC
+           MOVE    LNK-PRTKANRI-SKYYMD     TO  ORC-DBYMD
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key10"             TO  MCP-PATHNAME
-grpsys         PERFORM 900-DBFETCH-SEC
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
                IF      MCP-RC              =   ZERO
-                   MOVE    ZERO                TO  FLG-SYSKANRI
+                   MOVE    ZERO            TO  FLG-SYSKANRI
                ELSE
-                   MOVE    1                   TO  FLG-SYSKANRI
+                   MOVE    1               TO  FLG-SYSKANRI
                END-IF
            ELSE
-               MOVE    1                   TO  FLG-SYSKANRI
+               MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        800-SYSKANRI-READ-EXT.
@@ -1273,7 +935,11 @@ grpsys         PERFORM 900-DBFETCH-SEC
       *****************************************************************
        900-HKNNUM-READ-SEC         SECTION.
       *
-grpsys     PERFORM 900-DBFETCH-SEC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  HKNNUM-REC
                MOVE    ZERO            TO  FLG-HKNNUM
@@ -1286,74 +952,3 @@ grpsys     PERFORM 900-DBFETCH-SEC
        900-HKNNUM-READ-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    ジョブ管理ＤＢ制御処理
-      *****************************************************************
-       900-CALL-ORCSJOB-SEC            SECTION.
-      *
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
-grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA 
-                                   JOBKANRI-REC
-                                   SPA-AREA
-           .
-       900-CALL-ORCSJOB-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ＤＢＳＥＬＥＣＴ処理
-      *****************************************************************
-       900-DBSELECT-SEC                SECTION.
-      *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
-           IF      MCP-RC              =   ZERO
-               CONTINUE
-           ELSE
-               DISPLAY "SELECT ERR table=" MCP-TABLE
-                       " pathname="        MCP-PATHNAME
-           END-IF
-           .
-       900-DBSELECT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ＤＢＦＥＴＣＨ処理
-      *****************************************************************
-       900-DBFETCH-SEC                SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
-      *
-           .
-       900-DBFETCH-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    テーブルクローズ処理
-      *****************************************************************
-       900-CLOSE-SEC               SECTION.
-      *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
-      *
-           .
-       900-CLOSE-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    テーブルアクセス処理
-      *****************************************************************
-       900-ORCDBMAIN-SEC               SECTION.
-      *
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           .
-      *
-       900-ORCDBMAIN-EXT.
-           EXIT.
-      *      
