@@ -6462,15 +6462,15 @@
                    MOVE    "変更はできません。"
                                        TO  WRK-ERRMSG(43:18)
                WHEN    "0034"
-                   MOVE    "入力可能な文字は０、１のいずれかです。"
+                   MOVE    "入力可能な区分は０、１のいずれかです。"
                                        TO  WRK-ERRMSG
                WHEN    "0035"
-                   MOVE    "外泊での入力可能な文字は０、１、２、３、４"
+                   MOVE    "外泊での入力可能な区分は０、１、２、３、４"
                                        TO  WRK-ERRMSG(1:42)
                    MOVE    "のいずれかです。"
                                        TO  WRK-ERRMSG(43:16)
                WHEN    "0036"
-                   MOVE    "選定入院料での入力可能な文字は０、３、４の"
+                   MOVE    "選定入院料での入力可能な区分は０、３、４の"
                                        TO  WRK-ERRMSG(1:42)
                    MOVE    "いずれかです。"
                                        TO  WRK-ERRMSG(43:14)
@@ -6480,7 +6480,7 @@
                    MOVE    "ていません。"
                                        TO  WRK-ERRMSG(43:12)
                WHEN    "0038"
-                   MOVE    "食事での入力可能な文字は０、１、２、３、４"
+                   MOVE    "食事での入力可能な区分は０、１、２、３、４"
                                        TO  WRK-ERRMSG(1:42)
                    MOVE    "のいずれかです。"
                                        TO  WRK-ERRMSG(43:16)
@@ -6495,10 +6495,10 @@
                    MOVE    "れていません。"
                                        TO  WRK-ERRMSG(43:14)
                WHEN    "0041"
-                   MOVE    "入院料加算での入力可能な文字は０、１、のい"
+                   MOVE    "入院料加算での入力可能な区分は０、１のいず"
                                        TO  WRK-ERRMSG(1:42)
-                   MOVE    "ずれかです。"
-                                       TO  WRK-ERRMSG(43:12)
+                   MOVE    "れかです。"
+                                       TO  WRK-ERRMSG(43:10)
                WHEN    "0042"
                    MOVE    "この日は外泊されている日ですから入院料加算"
                                        TO  WRK-ERRMSG(1:42)
