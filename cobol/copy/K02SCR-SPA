@@ -232,7 +232,7 @@
       *
       *    訂正の時、算定していた診療コード
            03  SPA-K02-TEISEI-AREA.
-               05  SPA-K02-TEISEI-OCC          OCCURS   100.
+               05  SPA-K02-TEISEI-OCC          OCCURS   200.
                    07  SPA-K02-TEI-SRYCD       PIC X(09).
                    07  SPA-K02-TEI-KAISU       PIC 9(03).
       *

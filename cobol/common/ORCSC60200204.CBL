@@ -1076,7 +1076,7 @@
       *        前回分集計
                MOVE    ZERO                TO  WRK-TEI-CNT
                PERFORM VARYING     IDT     FROM    1   BY  1
-                       UNTIL      (IDT     >   100 )  OR
+                       UNTIL      (IDT     >   200 )  OR
                                   (LNK-ORCSC-TEI-SRYCD(IDT)
                                            =   SPACE )
                    IF      WRK-SRYCD       =   LNK-ORCSC-TEI-SRYCD(IDT)

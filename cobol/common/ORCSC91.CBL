@@ -292,7 +292,7 @@
       *
            MOVE    ZERO                TO  WRK-TEI-CNT
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   100 )  OR
+                   UNTIL      (IDX     >   200 )  OR
                               (LNK-SC91-TEI-SRYCD(IDX)
                                            =   SPACE )
                IF      WRK-SRYCD           =   LNK-SC91-TEI-SRYCD(IDX)

@@ -23,6 +23,7 @@
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-多々納  02/09/02  併用算定分を表示
       ************************************************************
       *
        01  ORCSC91AREA.
@@ -39,7 +40,7 @@
            03  LNK-SC91-KAISU          PIC 9(03).
       *    訂正時の診療コード
            03  LNK-SC91-TEISEI-AREA.
-               05  LNK-SC91-TEISEI-OCC      OCCURS   100.
+               05  LNK-SC91-TEISEI-OCC      OCCURS   200.
                    07  LNK-SC91-TEI-SRYCD   PIC X(09).
                    07  LNK-SC91-TEI-KAISU   PIC 9(03).
       *    労災のリハビリ（０：チェックあり、１：３月以内なし）
@@ -56,6 +57,9 @@
            03  LNK-SC91-DAYCNT         PIC 9(04).
       *    訂正後回数
            03  LNK-SC91-ATO-CNT        PIC 9(04).
+      *
       *    エラーコード
            03  LNK-SC91-ERRCD          PIC X(04).
+      *    エラー診療メッセージ
+           03  LNK-SC91-ERRMSG         PIC X(100).
       *
