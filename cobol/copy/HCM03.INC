@@ -44,3 +44,4 @@
             02  HCM03-IRYOADRS  PIC X(60).
             02  HCM03-IRYOMEI   PIC X(40).
             02  HCM03-IRYOTEL   PIC X(15).
+            02  HCM03-MIDASHI   PIC X(10).

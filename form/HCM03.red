@@ -226,6 +226,11 @@
         <embed object="string" length="15"/>
       </appinfo>
     </element>
+    <element name="MIDASHI" occurs="1">
+      <appinfo>
+        <embed object="string" length="10"/>
+      </appinfo>
+    </element>
   </dictionarydata>
   <diagramdata>
     <attribute name="background">
@@ -5502,6 +5507,48 @@
           </attribute>
           <attribute name="multi">
             <real val="0.17675"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="Embed - Text" version="0" id="O159">
+      <attribute name="obj_pos">
+        <point val="19.9,1.8"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="19.0819,1.44818;19.9,1.89818"/>
+      </attribute>
+      <attribute name="dnode_path">
+        <string>#MIDASHI#</string>
+      </attribute>
+      <attribute name="embed_text_string">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#NEW#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.45"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="19.9,1.8"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="2"/>
+          </attribute>
+          <attribute name="single">
+            <real val="0.2727"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.22725"/>
           </attribute>
         </composite>
       </attribute>
