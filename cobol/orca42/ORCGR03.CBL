@@ -1192,10 +1192,6 @@
            END-IF
            MOVE    RECE07-REC          TO  MCPDATA-REC
            PERFORM 900-RECE07-INV-SEC
-      *???
-           DISPLAY "RECE07=" FLG-RECE07 "##" RECE07-KEY "##" 
-                             WRK-PATH(1:20) "##"
-      *???                            
            IF      FLG-RECE07          =   ZERO
                MOVE    RECE07-KEY          TO  SPA-RECE07-KEY
                MOVE    RECE07-RECEKBN      TO  SPA-RECE07-RECEKBN

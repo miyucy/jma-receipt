@@ -438,10 +438,6 @@
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
-      *???
-           DISPLAY "SPA-R01-RECE07=" SPA-R01-RECE07-KEY "##"
-                                     SPA-R01-RECE07-SRYYM "##"
-      *???     
            INITIALIZE              SPA-R02-AREA
       *
       *    ½èÍý¶èÊ¬
