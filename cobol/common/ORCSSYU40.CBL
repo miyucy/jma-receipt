@@ -176,7 +176,7 @@
            03  FILLER              PIC X(09)   VALUE   "111010270".
       *
       *    ∞Èª˘±…Õ‹ªÿ∆≥Œ¡
-           03  FILLER              PIC X(09)   VALUE   "099134001".
+           03  FILLER              PIC X(09)   VALUE   "099114001".
            03  FILLER              PIC X(09)   VALUE   "111000470".
       *
        01  TBL2-SYOKAI-AREAR       REDEFINES   TBL2-SYOKAI-AREA.
@@ -769,7 +769,7 @@
                        PERFORM 300111-TBL-CHK-SEC
                    END-IF
                    IF     (ACCT-SRYKBN             =   "99")  AND
-                          (SRY-SRYCD (IDZ)         =   "099130401")
+                          (SRY-SRYCD (IDZ)         =   "099114001")
                        PERFORM 300111-TBL-CHK-SEC
                    END-IF
                END-PERFORM
