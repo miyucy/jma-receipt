@@ -480,7 +480,6 @@
                END-IF
            END-IF
       *
-      *
       *    システム管理検索（チェック機能制御情報）
            MOVE    SPACE               TO  SYS-1008-REC
            INITIALIZE                  SYS-1008-REC
@@ -3214,9 +3213,15 @@
       *    診療診療行為マスタより作成
            IF     (FLG-WKSYORI         =   ZERO )  AND
                   (SPA-ZENSYOHOFLG     =   0    )  AND
+      *           新規の時のみ
+                  (SPA-SYORIFLG        =   0    )  AND
       *           再診の時のみ
                   (SPA-SYOSIN          =   0    )
-                PERFORM 4901-PARA-OUT-SEC
+               PERFORM 4901-PARA-OUT-SEC
+      *        ワーク診療行為作成有無
+               IF     LNK-SC95-WKSRYACT    =   1
+                   MOVE    2               TO  LNK-SC95-WKSRYACT
+               END-IF 
            END-IF
       *
            CLOSE                       PARA-FILE
@@ -3573,6 +3578,7 @@
                        MOVE    JYURRK-SRYYMD       TO  WRK-RRK-SRYYMD
                        MOVE    JYURRK-DENPNUM      TO  WRK-RRK-DENPNUM
                        MOVE    JYURRK-RENNUM       TO  WRK-RENNUM
+                       MOVE    JYURRK-SRYKA        TO  WRK-KEY-SRYKA
                        MOVE    JYURRK-ZAINUM-G     TO  WRK-ZAINUM-G
                                                           (IDX-JYU)
                        MOVE    1                   TO  FLG-SYORI
