@@ -25,6 +25,9 @@
       ************************************************************
       *
        01  SPA-I4.
+           03  SPA-I4-FUNC-BTN-AREA.
+               05  SPA-GMN-B05-FLG-41                    PIC 9(01).
+               05  SPA-GMN-B05-LABEL-41                  PIC X(10).
            03  SPA-I4-AREA.
                05  SPA-GMN-PAGE-41                       PIC 9(02).
                05  SPA-MAX-PAGE-41                       PIC 9(02).
@@ -85,9 +88,10 @@
                    07  SPA-GMN-SRYKA-MAX-41              PIC 9(04).
       *    室料差額情報
            03  SPA-GMN-SAGAKUTBL-41.
+               05  SPA-GMN-SAGAKU-TITLE-41               PIC X(22).
                05  SPA-GMN-SAGAKULIST-41                 OCCURS  30.
                    07  SPA-GMN-SAGAKUNO-41               PIC X(04).
-                   07  SPA-GMN-SAGAKU-41                 PIC X(12).
+                   07  SPA-GMN-SAGAKU-41                 PIC X(22).
                05  SPA-SAGAKU-MAX-41                     PIC 9(03).
       *    保険組合せ一覧画面用
            03  SPA-I41-AREA-41.

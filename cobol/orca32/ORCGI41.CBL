@@ -542,12 +542,13 @@
                IF      FLG-END         =   1
                    GO      TO      100-INIT-EXT
                END-IF
+      *
       *        ¿ÇÎÅ¼ïÊÌ¥Æ¡¼¥Ö¥ë¥»¥Ã¥È
                PERFORM 1001-SRYKBN-SET-SEC
       *        Æþ±¡²Ê¥Æ¡¼¥Ö¥ë¥»¥Ã¥È
                PERFORM 3005-NYUINKA-HEN-SEC
       *        ¼¼ÎÁº¹³Û¥Æ¡¼¥Ö¥ë¥»¥Ã¥È
-               PERFORM 3113-SAGAKU-HEN-SEC
+      *        PERFORM 3113-SAGAKU-HEN-SEC
       *        Æþ±¡´ðËÜ¥Æ¡¼¥Ö¥ë¥»¥Ã¥È
                PERFORM 3500-KIHON-HEN-SEC
       *        ²èÌÌÊÔ½¸
@@ -629,6 +630,17 @@
            INITIALIZE                  SPA-SCR-REC-41.
            INITIALIZE                  SPA-5000-GENSAN-DSP-TBL-41.
            INITIALIZE                  SPA-5000-GENSAN-CHK-TBL-41.
+      *
+           IF    ( SPA-MOTOPG(1:3)     =      "M01"
+                                           OR "I01"
+                                                    )
+               INITIALIZE              SPA-GMN-B05-FLG-41
+                                       SPA-GMN-B05-LABEL-41
+      *        ¼¼ÎÁº¹³Û¥Æ¡¼¥Ö¥ë¥»¥Ã¥È
+               PERFORM 3113-SAGAKU-HEN-SEC
+      *
+           END-IF
+      *
            EVALUATE    SPA-MOTOPG(1:3)
       *         ¶ÈÌ³ÁªÂò¤è¤ê
                WHEN    "M01"
@@ -851,7 +863,15 @@
       *****************************************************************
        3113-SAGAKU-HEN-SEC                 SECTION.
       *
+           MOVE    1                   TO  SPA-GMN-B05-FLG-41
+      *    £Â£°£µ¥Ü¥¿¥ó¥é¥Ù¥ë
+           MOVE    "¿©»ö"              TO  SPA-GMN-B05-LABEL-41
+      *
            INITIALIZE                  SPA-GMN-SAGAKUTBL-41.
+      *
+           MOVE    "¼¼ÎÁº¹³Û"
+                                       TO  SPA-GMN-SAGAKU-TITLE-41
+      *
       *    ¼¼ÎÁº¹³Û
            MOVE    SPACE               TO  SYS-5113-REC.
            MOVE    "5113"              TO  SYS-5113-KANRICD.
@@ -892,6 +912,72 @@
        3113-SAGAKU-HEN-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    ¿©»ö½é´üÊÔ½¸
+      *****************************************************************
+       3113-SHOKUJI-HEN-SEC               SECTION.
+      *
+           MOVE    2                   TO  SPA-GMN-B05-FLG-41
+      *    £Â£°£µ¥Ü¥¿¥ó¥é¥Ù¥ë
+           MOVE    "³°Çñ"          TO  SPA-GMN-B05-LABEL-41
+      *
+           INITIALIZE                  SPA-GMN-SAGAKUTBL-41.
+      *
+           MOVE    "¿©»ö"
+                                       TO  SPA-GMN-SAGAKU-TITLE-41
+      *
+           MOVE    SPACE               TO  SPA-GMN-SAGAKUNO-41 (1)
+           MOVE    "¿©»ö¤Ê¤·"          TO  SPA-GMN-SAGAKU-41   (1)
+      *
+           MOVE    "01"                TO  SPA-GMN-SAGAKUNO-41 (2)
+           MOVE    "¿©»öÎÅÍÜ¤Î¤ß"      TO  SPA-GMN-SAGAKU-41   (2)
+      *
+           MOVE    "02"                TO  SPA-GMN-SAGAKUNO-41 (3)
+           MOVE    "¿©»öÎÅÍÜ¡ÜÆÃ¿©"    TO  SPA-GMN-SAGAKU-41   (3)
+      *
+           MOVE    "03"                TO  SPA-GMN-SAGAKUNO-41 (4)
+           MOVE    "¿©»öÎÅÍÜ¡ÜÁªÂò¿©"  TO  SPA-GMN-SAGAKU-41   (4)
+      *
+           MOVE    "04"                TO  SPA-GMN-SAGAKUNO-41 (5)
+           MOVE    "¿©»öÎÅÍÜ¡ÜÆÃ¿©¡ÜÁªÂò¿©"
+                                       TO  SPA-GMN-SAGAKU-41   (5)
+      *
+           MOVE    5                   TO  SPA-SAGAKU-MAX-41
+      *
+           .
+       3113-SHOKUJI-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    ³°Çñ½é´üÊÔ½¸
+      *****************************************************************
+       3113-GAIHAKU-HEN-SEC               SECTION.
+      *
+           MOVE    3                   TO  SPA-GMN-B05-FLG-41
+      *    £Â£°£µ¥Ü¥¿¥ó¥é¥Ù¥ë
+           MOVE    "¼¼ÎÁº¹³Û"          TO  SPA-GMN-B05-LABEL-41
+      *
+           INITIALIZE                  SPA-GMN-SAGAKUTBL-41.
+      *
+           MOVE    "³°Çñ"
+                                       TO  SPA-GMN-SAGAKU-TITLE-41
+      *
+           MOVE    "01"                TO  SPA-GMN-SAGAKUNO-41 (1)
+           MOVE    "³°Çñ"              TO  SPA-GMN-SAGAKU-41   (1)
+      *
+           MOVE    "02"                TO  SPA-GMN-SAGAKUNO-41 (2)
+           MOVE    "¼£ÎÅ¤Î°Ù¤Î³°Çñ"    TO  SPA-GMN-SAGAKU-41   (2)
+      *
+           MOVE    "03"                TO  SPA-GMN-SAGAKUNO-41 (3)
+           MOVE    "ÁªÄêÆþ±¡Ãæ¤Î³°Çñ"  TO  SPA-GMN-SAGAKU-41   (3)
+      *
+           MOVE    "04"                TO  SPA-GMN-SAGAKUNO-41 (4)
+           MOVE    "Â¾°åÎÅµ¡´Ø¼õ¿Ç"    TO  SPA-GMN-SAGAKU-41   (4)
+      *
+           MOVE    4                   TO  SPA-SAGAKU-MAX-41
+      *
+           .
+       3113-GAIHAKU-HEN-EXT.
+           EXIT.
       *****************************************************************
       *    Æþ±¡´ðËÜ¾ðÊó½é´üÊÔ½¸
       *****************************************************************
@@ -1969,6 +2055,9 @@
       *
            MOVE    SPACE               TO  I41.
       *
+           MOVE    SPA-GMN-B05-LABEL-41
+                                       TO  I41-B05-LABEL
+      *
            MOVE    SPA-GMN-PTNUM       TO  I41-PTNUM.
            MOVE    SPA-GMN-KANANAME    TO  I41-KANANAME.
            MOVE    SPA-GMN-NAME        TO  I41-NAME.
@@ -2071,6 +2160,7 @@
                MOVE    "00"                TO  WRK-TEKEDYMD
            END-IF.
       *    ¼¼ÎÁº¹³Û
+           MOVE    SPA-GMN-SAGAKU-TITLE-41 TO  I41-SAGAKU-TITLE
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   SPA-SAGAKU-MAX-41
                MOVE    SPA-GMN-SAGAKULIST-41 (IDX)
@@ -2344,6 +2434,9 @@
       *    ¥Õ¥ê¡¼¥³¥á¥ó¥È½èÍý
                WHEN    "CLICKED"       ALSO    "B04S"
                    PERFORM 430-FREEMSG-SEC
+      *    ¼¼ÎÁº¹³Û¥ê¥¹¥ÈÊÔ½¸½èÍý
+               WHEN    "CLICKED"       ALSO    "B05"
+                   PERFORM 450-SAGAKULIST-HEN-SEC
       *    Á°·îÁªÂò
                WHEN    "CLICKED"       ALSO    "B06"
                    PERFORM 41018-ZENGETU-HEN-SEC
@@ -2818,6 +2911,18 @@
                    MOVE    SPA-GMN-TSRYCD-41  (IDX)
                                            TO  SPA-WRK-KOMENTO-SRYCD
                END-IF
+      *
+               EVALUATE SPA-GMN-TZAISKBKBN-41  (IDX)
+      *        ³°Çñ
+               WHEN "2"
+                   PERFORM 3113-GAIHAKU-HEN-SEC
+      *        ¼¼ÎÁº¹³Û
+               WHEN "3"
+                   PERFORM 3113-SAGAKU-HEN-SEC
+      *        ¿©»ö
+               WHEN "4"
+                   PERFORM 3113-SHOKUJI-HEN-SEC
+               END-EVALUATE
       *
                MOVE    1                   TO  SPA-IDXZ-41
       *
@@ -4124,6 +4229,23 @@
        430-FREEMSG-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    ¼¼ÎÁº¹³Û¥³¥é¥à¥ê¥¹¥ÈÊÔ½¸½èÍý
+      *****************************************************************
+       450-SAGAKULIST-HEN-SEC            SECTION.
+      *
+           EVALUATE    SPA-GMN-B05-FLG-41
+           WHEN    1
+               PERFORM 3113-SHOKUJI-HEN-SEC
+           WHEN    2
+               PERFORM 3113-GAIHAKU-HEN-SEC
+           WHEN    3
+               PERFORM 3113-SAGAKU-HEN-SEC
+           END-EVALUATE
+      *
+           .
+       450-SAGAKULIST-HEN-EXT.
+           EXIT.
       *****************************************************************
       *    Á°·îÁªÂò¡¡½èÍý
       *****************************************************************

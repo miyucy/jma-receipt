@@ -16,6 +16,8 @@
       * 113-8621, Japan.
       ********************************************************************
         02  I41.
+          03  I41-B05.
+            04  I41-B05-LABEL   PIC X(10).
           03  I41-PTNUM.
             04  I41-VALUE       PIC X(20).
           03  I41-SRYYM.
@@ -73,8 +75,9 @@
               05  I41-HEYALIST-SELECT  PIC X      OCCURS  30 TIMES.
           03  I41-SCROLLEDWINDOW3.
             04  I41-SAGAKULIST.
+              05  I41-SAGAKU-TITLE     PIC X(22).
               05  I41-SAGAKULIST-COUNT PIC S9(9)   BINARY.
               05  I41-SAGAKU-ITEM      OCCURS  30 TIMES.
                 06  I41-SAGAKUNO       PIC X(4).
-                06  I41-SAGAKU         PIC X(12).
+                06  I41-SAGAKU         PIC X(22).
               05  I41-SAGAKULIST-SELECT  PIC X      OCCURS  30 TIMES.
