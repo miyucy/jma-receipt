@@ -1197,8 +1197,8 @@
            IF      I48-SELNUM(IDX-1)   =   "*  "  OR
                                            " * "  OR
                                            "  *" 
-               IF     (SPA-I48-GMN-SYORI   =   "9"   AND
-                       SPA-I48-GMN-SYORI2  =   SPACE )
+               IF     (SPA-I48-GMN-SYORI   =   "9")   AND
+                      (SPA-I48-GMN-SYORI2  =   SPACE)
                    CONTINUE
                ELSE
                    MOVE    "1"                 TO  SPA-I48-GMN-ALL

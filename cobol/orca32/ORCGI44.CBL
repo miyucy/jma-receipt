@@ -898,8 +898,8 @@
       *    入力コードの画面用再編集
            PERFORM VARYING     IDX-1   FROM    1   BY  1
                    UNTIL      (IDX-1   >   200 )  OR
-                              (SPA-GMN-INPUTCD(IDX-1)  =   SPACE  AND
-                               SPA-COM-INPUTCD(IDX-1)  =   SPACE )
+                              ((SPA-GMN-INPUTCD(IDX-1) = SPACE)  AND
+                               (SPA-COM-INPUTCD(IDX-1) = SPACE))
                EVALUATE    SPA-GMN-INPUTCD(IDX-1)(1:1)
                    WHEN    "."
                        CONTINUE
@@ -2044,18 +2044,18 @@
       *
                IF     (WRK-MOJI                     =   "6" OR
                                                         "7" )  OR
-                      (WRK-MOJI                     =   "1" AND
-                       TNS-SRYSYUKBN(1:1)       NOT =   "7" AND
-                       TNS-KZMCOMPSIKIBETU      NOT =   0   )  OR
+                      ((WRK-MOJI                     =   "1") AND
+                       (TNS-SRYSYUKBN(1:1)       NOT =   "7") AND
+                       (TNS-KZMCOMPSIKIBETU      NOT =   0  ))  OR
                       (SPA-COM-INPUTCD(SPA-GMN-IDX4)(1:3)
                                                     =   "001" ) OR
-                      (SPA-COM-INPUTCD(SPA-GMN-IDX4)(1:2)
-                                                    =   "84"  AND
-                       TNS-SSTKIJUNCDTBL(1)     NOT =   ZERO )  OR
-                      (SPA-COM-INPUTCD(SPA-GMN-IDX4)(1:5)
-                                                    =   "09500" OR
-                                                        "09600" AND
-                       TNS-TEN                      =   ZERO )
+                      ((SPA-COM-INPUTCD(SPA-GMN-IDX4)(1:2)
+                                                     =   "84")  AND
+                       (TNS-SSTKIJUNCDTBL(1)     NOT =   ZERO))  OR
+                      ((SPA-COM-INPUTCD(SPA-GMN-IDX4)(1:5)
+                                                     =   "09500" OR
+                                                         "09600") AND
+                       (TNS-TEN                      =   ZERO))
                    MOVE    "2"            TO  SPA-COM-IN2 (SPA-GMN-IDX4)
                    MOVE    "1"            TO  SPA-COM-IN3 (SPA-GMN-IDX4)
                END-IF
@@ -3390,23 +3390,6 @@
        210-BACK-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    行為セット　処理
-      *****************************************************************
-       420-KOUISET-SEC             SECTION.
-      *
-      *
-       420-KOUISET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    番号検索　処理
-      *****************************************************************
-       430-BANKENSAKU-SEC             SECTION.
-      *
-      *
-       430-BANKENSAKU-EXT.
-           EXIT.
       *****************************************************************
       *    前頁　処理
       *****************************************************************
