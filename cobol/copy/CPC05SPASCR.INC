@@ -67,6 +67,14 @@
                                13  SPA-NAI-THAISIYMDH  PIC X(22).
                                13  SPA-NAI-THAISIYMD   PIC X(08).
                                13  SPA-NAI-TIKOSAKICD  PIC X(07).
+      *                病名コード移行用領域
+                       09  SPA-C05-IKOSAKI-BYOMEICD
+                                                       PIC X(07).
+                       09  SPA-C05-IKOSAKI-BYOMEI      PIC X(200).
+                       09  SPA-C05-IKOSAKI-INDEX       PIC 9(02).  
+                       09  SPA-C05-IKOMOTO-BYOMEICD
+                                                       PIC X(07).
+                       09  SPA-C05-IKOMOTO-BYOMEI      PIC X(200).
       *
                    07  SPA-NAI-SELNO1                  PIC 9(04).                             
                    07  SPA-NAI-SELNO2                  PIC 9(02).                             
