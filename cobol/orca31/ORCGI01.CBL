@@ -322,9 +322,6 @@
       *    入院登録サブ
            COPY    "CPI0SUB01.INC".
       *
-      *    入院会計作成サブ
-           COPY    "CPORCSNYUACCT.INC".
-      *
       *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
