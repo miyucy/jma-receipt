@@ -1045,19 +1045,27 @@
                        END-IF 
                        MOVE  ACCT-ZAITEN       TO   WK-ZAITEN
                        IF   RECE41-HKNKBN    NOT  =  "4"                
+      *                  IF    SRY-SRYKBN     =  "40"  OR  "50"  OR
+      *                                          "70"  OR  "80"  OR
+      *                                          "54"
+      *                      COMPUTE  WK-SYUTEN   =   ACCT-SYUTEN1  +
+      *                                               ACCT-KIZAITEN
+      *                      MOVE  ACCT-YKZTEN   TO   WK-YKZTEN
+      *                  ELSE
+      *                      IF   SRY-SRYKBN      =   "60"
+      *                           MOVE   ACCT-SYUTEN1   TO   WK-SYUTEN
+      *                           COMPUTE   WK-YKZTEN =
+      *                                               ACCT-KIZAITEN  +
+      *                                               ACCT-YKZTEN
+      *                      END-IF
+      *                  END-IF
                          IF    SRY-SRYKBN     =  "40"  OR  "50"  OR
                                                  "70"  OR  "80"  OR
-                                                 "54"
-                             COMPUTE  WK-SYUTEN   =   ACCT-SYUTEN1  +
-                                                      ACCT-KIZAITEN
-                             MOVE  ACCT-YKZTEN   TO   WK-YKZTEN
-                         ELSE
-                             IF   SRY-SRYKBN      =   "60"
+                                                 "54"  OR  "60"
                                   MOVE   ACCT-SYUTEN1   TO   WK-SYUTEN
                                   COMPUTE   WK-YKZTEN =
                                                       ACCT-KIZAITEN  +
                                                       ACCT-YKZTEN
-                             END-IF
                          END-IF
                        ELSE                                             
                          IF ( ACCT-SRYKBN          =  "80"    )   AND
