@@ -63,7 +63,7 @@
                            13  SPA-GMN-SRYNAIYOMEI PIC X(08).
                            13  SPA-GMN-SRYNAIYO    PIC X(02).
                            13  SPA-GMN-DRCD        PIC X(05).
-                           13  SPA-GMN-DRCDMEI     PIC X(20).
+                           13  SPA-GMN-DRCDMEI     PIC X(24).
                            13  SPA-GMN-UKETIMEH    PIC X(08).
                            13  SPA-GMN-YYKTIMEH    PIC X(08).
                            13  SPA-GMN-UKETIME     PIC X(06).
@@ -171,7 +171,7 @@
                    07  SPA-WRK-SRYNAIYOMEI PIC X(08).
                    07  SPA-WRK-SRYNAIYO    PIC X(02).
                    07  SPA-WRK-DRCD        PIC X(05).
-                   07  SPA-WRK-DRCDMEI     PIC X(20).
+                   07  SPA-WRK-DRCDMEI     PIC X(24).
                    07  SPA-WRK-UKETIMEH    PIC X(08).
                    07  SPA-WRK-YYKTIMEH    PIC X(08).
                    07  SPA-WRK-UKETIME     PIC X(06).
@@ -364,7 +364,7 @@
            CALL    "ORCSDAY"           USING  STS-AREA-DAY
                                               LNK-DAY2-AREA
            IF      STS-DAY-RC1         =   ZERO
-               MOVE  LNK-DAY2-EDTYMD2     TO  WRK-HENNYMD
+               MOVE  LNK-DAY2-EDTYMD3     TO  WRK-HENNYMD
            END-IF
            INITIALIZE                  LNK-DAY3-AREA
            MOVE    "31"                TO  LNK-DAY3-IRAI
