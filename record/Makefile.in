@@ -448,6 +448,7 @@ DB_files = \
 	tbl_help.db \
 	query_dtchk.db \
 	tbl_chksnd.db \
+	tbl_receupd.db \
 
 all:   
 
