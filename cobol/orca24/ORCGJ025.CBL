@@ -255,6 +255,12 @@
                MOVE    SPA-J025-KBNMEI  (IDX)  TO  J025-KBNMEI (IDX)
            END-PERFORM
            MOVE    SPA-J025-MAX        TO  J025-SYUNOULIST-COUNT
+           MOVE    SPA-J025-ERRMSG     TO  J025-ERRMSG-VALUE
+           IF      SPA-J025-ERRMSG     =   SPACE
+               MOVE    SPACE               TO  J025-ERRMSG-STYLE
+           ELSE
+               MOVE    "red"               TO  J025-ERRMSG-STYLE
+           END-IF
       *
            PERFORM 5001-MAPCUR-SEC
            .

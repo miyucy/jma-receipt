@@ -7599,6 +7599,11 @@
                IF      SPA-J025-MAX        <=  100
                    MOVE    "エラ−"    TO  SPA-J025-KBNMEI
                                                  (SPA-J025-MAX)
+                   MOVE    "収納にまとめ作成分があります。"
+                                       TO  SPA-J025-ERRMSG
+                   MOVE
+                   "再計算できませんので、診療行為で訂正して下さい"
+                                       TO  SPA-J025-ERRMSG(31:)
                END-IF
            END-IF
            IF     (FLG-SYUNOU          =   ZERO )  AND

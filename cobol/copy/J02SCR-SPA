@@ -338,4 +338,5 @@
                        09  SPA-J025-ATO-SKYMONEY  PIC 9(07).
                        09  SPA-J025-KBNMEI        PIC X(06).
                    07  SPA-J025-MAX               PIC 9(04).
+               05  SPA-J025-ERRMSG         PIC X(100).
       *

@@ -15,3 +15,6 @@
                     06  J025-KBNMEI      PIC X(6).
                   05  J025-SELECT
                           PIC X       OCCURS  100 TIMES.
+              03  J025-ERRMSG.
+                04  J025-ERRMSG-STYLE  PIC X(20).
+                04  J025-ERRMSG-VALUE  PIC X(100).
