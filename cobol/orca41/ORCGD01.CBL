@@ -39,6 +39,7 @@
       *  01.00.05    ひさなが     03/05/13  ボタンが押せない場合修正
       *  01.00.06    ひさなが     03/06/06  病名コード抜けのチェク追加
       *  01.00.07    ひさなが     03/07/29  チェック内容全件印刷追加
+      *  01.00.08    ひさなが     03/08/26  院外処方、自費の指示追加
       *
       *****************************************************************
       *
@@ -151,10 +152,18 @@
                "チェク条件が指定されていません。".
            03  T-MESSAGE-800-06    PIC X(16)   VALUE
                "入力エラーです。".
-           03  T-MESSAGE-800-51    PIC X(12)   VALUE
-               "確認        ".
-           03  T-MESSAGE-800-52    PIC X(12)   VALUE
-               "確認  全印刷".
+           03  T-MESSAGE-800-51    PIC X(14)   VALUE
+               "確認          ".
+           03  T-MESSAGE-800-52    PIC X(14)   VALUE
+               "確認  全印刷  ".
+           03  T-MESSAGE-800-53    PIC X(14)   VALUE
+               "院外処方  含む".
+           03  T-MESSAGE-800-54    PIC X(14)   VALUE
+               "院外処方  のみ".
+           03  T-MESSAGE-800-55    PIC X(14)   VALUE
+               "自費      含む".
+           03  T-MESSAGE-800-56    PIC X(14)   VALUE
+               "自費      のみ".
            03  T-MESSAGE-900-01    PIC X(10)   VALUE
                "入院      ".
            03  T-MESSAGE-900-02    PIC X(10)   VALUE
@@ -200,7 +209,9 @@
            03  T-MESSAGE-900-22    PIC X(40)   VALUE
                "1234567890123456789012345678901234567890".
            03  T-MESSAGE-900-23    PIC X(40)   VALUE
-               "1234567890123456789012345678901234567890".
+               "院外処方の処理＿＿＿＿＿＿＿＿＿＿＿＿＿".
+           03  T-MESSAGE-900-24    PIC X(40)   VALUE
+               "自費の処理＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿".
       *
       *    シェル用領域
            COPY    "CPSHELLTBL.INC".
@@ -497,6 +508,16 @@
            MOVE    "2"                    TO  SPA-GMN-CHKKBN-K (15 2).
            MOVE    T-MESSAGE-800-51       TO  SPA-GMN-CHKKBN-M (15 1).
            MOVE    T-MESSAGE-800-52       TO  SPA-GMN-CHKKBN-M (15 2).
+           MOVE    T-MESSAGE-900-24       TO  SPA-GMN-MSG (19).
+           MOVE    "1"                    TO  SPA-GMN-CHKKBN-K (19 1).
+           MOVE    "2"                    TO  SPA-GMN-CHKKBN-K (19 2).
+           MOVE    T-MESSAGE-800-55       TO  SPA-GMN-CHKKBN-M (19 1).
+           MOVE    T-MESSAGE-800-56       TO  SPA-GMN-CHKKBN-M (19 2).
+           MOVE    T-MESSAGE-900-23       TO  SPA-GMN-MSG (20).
+           MOVE    "1"                    TO  SPA-GMN-CHKKBN-K (20 1).
+           MOVE    "2"                    TO  SPA-GMN-CHKKBN-K (20 2).
+           MOVE    T-MESSAGE-800-53       TO  SPA-GMN-CHKKBN-M (20 1).
+           MOVE    T-MESSAGE-800-54       TO  SPA-GMN-CHKKBN-M (20 2).
            IF  SPA-MOTOPG   =   "XA01"  OR  "XB01"
                MOVE    SPA-WRK-AREA            TO  SPA-D01-AREA
            END-IF.
