@@ -743,37 +743,9 @@
       *
            END-IF.     
       *
-      *    ÉÂ±¡¸ºÌÈ¤Î·×»»
-           IF     LNK-SYU-SKYMONEY      NOT =   ZERO
-      ***      IF   LNK-S01-SAIKEISAN-KBN    =   "1"
-      ***          IF   LNK-SYU-DISCOUNT-RATEKBN  NOT = SPACE AND  "00"
-      ***               EVALUATE  LNK-SYU-DISCOUNT-TEIRITU
-      ***                   WHEN  "1"
-      ***                       MOVE    ZERO    TO   WK-RATE
-      ***                       COMPUTE  WK-RATE  =
-      ***                               (100 - LNK-SYU-DISCOUNT-RATE) /
-      ***                                100
-      ***                       COMPUTE  LNK-SYU-SKYMONEY  =
-      ***                                LNK-SYU-SKYMONEY  *
-      ***                                WK-RATE
-      ***                       COMPUTE  LNK-SYU-SKYMONEY  =
-      ***                                LNK-SYU-SKYMONEY  +  5
-      ***                       COMPUTE  LNK-SYU-SKYMONEY  =
-      ***                                LNK-SYU-SKYMONEY  / 10
-      ***                       COMPUTE  LNK-SYU-SKYMONEY  =
-      ***                                LNK-SYU-SKYMONEY  * 10
-      ***                   WHEN  "2"
-      ***                       IF    LNK-SYU-DISCOUNT-RATE  >=
-      ***                                            LNK-SYU-SKYMONEY
-      ***                           MOVE  ZERO  TO  LNK-SYU-SKYMONEY
-      ***                       ELSE
-      ***                           COMPUTE    LNK-SYU-SKYMONEY  =
-      ***                                      LNK-SYU-SKYMONEY  -
-      ***                                      LNK-SYU-DISCOUNT-RATE
-      ***                       END-IF
-      ***               END-EVALUATE
-      ***          END-IF
-      ***      ELSE
+      *    ÉÂ±¡¸ºÌÈ¤Î·×»»¡Ê¼«Èñ¤ò½ü¤¯¡Ë
+           IF     LNK-SYU-SKYMONEY         NOT  =   ZERO
+           AND    COMB-SYU-HKNKOHSBTKBN    NOT  =   "8" 
                    INITIALIZE                           PTINF-REC
                    MOVE    LNK-SYU-HOSPID       TO      PTINF-HOSPID
                    MOVE    LNK-SYU-PTID         TO      PTINF-PTID
@@ -801,13 +773,11 @@
                                                  MCPAREA
                                                  ORCMCPAREA
                                                  MCPDATA-REC
-      ***      END-IF
            END-IF.
       *
       *    ÀÁµá¶â³Û¤Î·×»»¡ÊÏ«ºÒÊÝ¸±Å¬ÍÑ»þ¤Î±ß·ú¤Æ¹àÌÜ²Ã»»¡Ë
            IF   (WK-HKNKBN               =    "1")   AND
                 (LNK-SYU-SYUHKNNUM       =    "971")  
-      *----(01.00.16) LINE ADD START --------------------------
                  MOVE    ZERO      TO       LNK-SYU-SKYMONEY
            COMPUTE    LNK-SYU-SKYMONEY  =   LNK-SYU-SKYMONEY    +
                                             LNK-SYU-TGMONEY(12) +
@@ -815,16 +785,6 @@
                                             LNK-SYU-JIHI-TOTAL  +
                                             LNK-SYU-JIHI-TOTAL-TAX  +
                                             LNK-SYU-JIHI-TAX
-      *----(01.00.16) LINE ADD END   --------------------------
-      *----(01.00.16) LINE DEL START --------------------------
-      *      IF  COMB-GAI-FTNKBN   =       "1"
-      *        COMPUTE  LNK-SYU-SKYMONEY =  LNK-SYU-SKYMONEY         +
-      *                                     LNK-SYU-RSISHOSHIN-MONEY +
-      *                                     LNK-SYU-RSISAISHIN-MONEY +
-      *                                     LNK-SYU-RSISDO-MONEY     +
-      *                                     LNK-SYU-RSIETC-MONEY
-      *      END-IF
-      *----(01.00.16) LINE DEL END   --------------------------
            END-IF.
       *
       *----(01.00.19) LINE ADD START --------------------------
@@ -838,11 +798,6 @@
       *          COMPUTE  LNK-SYU-RSISDO-MONEY      =
       *                   LNK-SYU-RSISDO-MONEY      *  WK-KSNRATE
                  COMPUTE    LNK-SYU-SKYMONEY  =   LNK-SYU-SKYMONEY  +
-      *                                     LNK-SYU-TGMONEY(12)     +
-      *                                     LNK-SYU-TGMONEY-TAX(12) +
-      *                                     LNK-SYU-JIHI-TOTAL      +
-      *                                     LNK-SYU-JIHI-TOTAL-TAX  +
-      *                                     LNK-SYU-JIHI-TAX        +
                                             LNK-SYU-RSISHOSHIN-MONEY +
                                             LNK-SYU-RSISAISHIN-MONEY +
                                             LNK-SYU-RSISDO-MONEY     +
@@ -861,8 +816,6 @@
       *        ÉÂ±¡¸ºÌÈ·×»»½èÍý                                    *
       ******************************************************************
        GENMEN-KEISAN-SEC          SECTION.
-      *
-           MOVE    SPACE                TO      FLG-SANSHOU.
       *
            IF   PTINF-DISCOUNT  NOT =   SPACE  AND  "00"
                INITIALIZE                         SYS-1026-REC

@@ -472,8 +472,9 @@
       *
            END-IF.     
       *
-      *    ÉÂ±¡¸ºÌÈ¤Î·×»»
-           IF     LNK-SYU-SKYMONEY      NOT =   ZERO
+      *    ÉÂ±¡¸ºÌÈ¤Î·×»»¡Ê¼«Èñ¤ò½ü¤¯¡Ë
+           IF     LNK-SYU-SKYMONEY         NOT  =   ZERO
+           AND    COMB-SYU-HKNKOHSBTKBN    NOT  =   "8"
                    INITIALIZE                           PTINF-REC
                    MOVE    LNK-SYU-HOSPID       TO      PTINF-HOSPID
                    MOVE    LNK-SYU-PTID         TO      PTINF-PTID
@@ -513,13 +514,6 @@
                                             LNK-SYU-JIHI-TOTAL  +
                                             LNK-SYU-JIHI-TOTAL-TAX  +
                                             LNK-SYU-JIHI-TAX
-      *      IF  COMB-NYU-FTNKBN   =       "1"
-      *        COMPUTE  LNK-SYU-SKYMONEY =  LNK-SYU-SKYMONEY         +
-      *                                     LNK-SYU-RSISHOSHIN-MONEY +
-      *                                     LNK-SYU-RSISAISHIN-MONEY +
-      *                                     LNK-SYU-RSISDO-MONEY     +
-      *                                     LNK-SYU-RSIETC-MONEY
-      *      END-IF
            END-IF.
       *
       *    ¼«ÇåÀÕÊÝ¸±¤Î¾ì¹ç¡¢Ï«ºÒ±ß·ú¤Æ¹àÌÜ¤Ø¤Î²Ã»»Î¨·×»»ÄÉ²Ã
@@ -532,11 +526,6 @@
       *          COMPUTE  LNK-SYU-RSISDO-MONEY      =
       *                   LNK-SYU-RSISDO-MONEY      *  WK-KSNRATE
                  COMPUTE    LNK-SYU-SKYMONEY  =   LNK-SYU-SKYMONEY  +
-      *                                     LNK-SYU-TGMONEY(12)     +
-      *                                     LNK-SYU-TGMONEY-TAX(12) +
-      *                                     LNK-SYU-JIHI-TOTAL      +
-      *                                     LNK-SYU-JIHI-TOTAL-TAX  +
-      *                                     LNK-SYU-JIHI-TAX        +
                                             LNK-SYU-RSISHOSHIN-MONEY +
                                             LNK-SYU-RSISAISHIN-MONEY +
                                             LNK-SYU-RSISDO-MONEY     +
