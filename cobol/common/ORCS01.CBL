@@ -135,6 +135,7 @@
       *  01.01.03    NACL-ÌçÏÆ    04/08/23  ¹­Åç¸©ÃÏÊý¸øÈñÂÐ±þ
       *  01.01.04    NACL-ÌçÏÆ    04/09/07  £±£°±ßÌ¤Ëþ»Í¼Î¸ÞÆþ¤·¤Ê¤¤¾ì¹ç
       *                                     ¤Î½¤Àµ
+      *  01.01.05    NACL-ÌçÏÆ    04/09/07  ËÌ³¤Æ»ÃÏÊý¸øÈñÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -6796,6 +6797,18 @@
                END-IF
            END-IF.
       *
+           IF     (WK-1001-PREFNUM         =  01           ) AND
+                  (COMB-KOHHKNNUM(KOH-IDX) = "142" OR "143"
+                                                   OR "144") AND
+                  (LNK-SYU-SRYYMD(1:6)    >= "200410"      )
+               IF    LNK-S01-SYOSINFLG  =  SPACE
+                    MOVE    SPACE   TO   COMB-KOH-GAIJGNKBN(KOH-IDX)
+                    MOVE    ZERO    TO   WK-GAIKFTNRATE
+                    MOVE    "0"     TO   WK-GAIYKZFTNKBN
+                    MOVE    ZERO    TO   WK-GAIKKOTGAK
+               END-IF
+           END-IF.
+      *
        2302-KOH-HKNREAD-EXT.
            EXIT.
       *
@@ -6872,11 +6885,13 @@
                   ( (LNK-SYU-SRYYMD(1:6)        >=  "200404"      ) AND
                     (LNK-SYU-KOH-HKNNUM(KOH-IDX) =  "015" OR "016") )
                    IF    WK-TOKUTEI-COMPFTN   NOT =    ZERO
-                       MOVE  WK-TOKUTEI-COMPFTN  TO  LNK-SYU-SYUCOMPFTN
+                       MOVE  WK-TOKUTEI-COMPFTN
+                                        TO  LNK-SYU-SYUCOMPFTN
                    END-IF
                    IF    LNK-SYU-KOH-HKNNUM(1)    =    "027"
                      IF  WK-TOKUTEI-COMPFTN3  NOT =    ZERO
-                       MOVE  WK-TOKUTEI-COMPFTN3 TO  LNK-SYU-KOH-COMPFTN(1)
+                       MOVE  WK-TOKUTEI-COMPFTN3
+                                        TO  LNK-SYU-KOH-COMPFTN(1)
                      END-IF
                    END-IF
       *********    CONTINUE
@@ -7488,11 +7503,13 @@
                   ( (LNK-SYU-SRYYMD(1:6)        >=  "200404"      ) AND
                     (LNK-SYU-KOH-HKNNUM(KOH-IDX) =  "015" OR "016") )
                    IF    WK-TOKUTEI-COMPFTN   NOT =    ZERO
-                       MOVE  WK-TOKUTEI-COMPFTN  TO  LNK-SYU-SYUCOMPFTN
+                       MOVE  WK-TOKUTEI-COMPFTN
+                                        TO  LNK-SYU-SYUCOMPFTN
                    END-IF
                    IF    LNK-SYU-KOH-HKNNUM(1)    =    "027"
                      IF  WK-TOKUTEI-COMPFTN3  NOT =    ZERO
-                       MOVE  WK-TOKUTEI-COMPFTN3 TO  LNK-SYU-KOH-COMPFTN(1)
+                       MOVE  WK-TOKUTEI-COMPFTN3
+                                        TO  LNK-SYU-KOH-COMPFTN(1)
                      END-IF
                    END-IF
       *********    CONTINUE

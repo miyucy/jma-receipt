@@ -68,6 +68,8 @@
            03  LNK-S02-MEISAI              PIC  9(07).
       *自賠責療養担当手当点数
            03  LNK-S02-RYOYO               PIC  9(07).
+      *初診料算定フラグ（地方公費用）
+           03  LNK-S02-SYOSINFLG           PIC  X(01).
       *復帰コード
            03  LNK-S02-RC                  PIC S9(9)   BINARY.
       *
