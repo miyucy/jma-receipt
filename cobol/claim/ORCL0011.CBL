@@ -826,10 +826,20 @@
                            PERFORM 910-PTKOHINF-INV-SEC
                            MOVE    IDY1            TO
                                            WRK-LF01-PRIORITY (IDX IDY1)
+                     IF    PTKOH-FTNJANUM          =   SPACE
+                           MOVE    "mikinyu"       TO
+                                            WRK-LF01-FTNJANUM(IDX IDY1)
+                     ELSE
                            MOVE    PTKOH-FTNJANUM  TO
                                             WRK-LF01-FTNJANUM(IDX IDY1)
+                     END-IF
+                     IF    PTKOH-JKYSNUM           =   SPACE
+                           MOVE    "mikinyu"       TO
+                                            WRK-LF01-JKYSNUM (IDX IDY1)
+                     ELSE
                            MOVE    PTKOH-JKYSNUM   TO
                                             WRK-LF01-JKYSNUM (IDX IDY1)
+                     END-IF
                            MOVE    PTKOH-TEKSTYMD  TO  WRK-WYMD
                            PERFORM 500-HIZUKE-HENSYU-SEC
                            MOVE    WRK-HENYMD      TO
