@@ -22,6 +22,7 @@
       *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  01.00.01    MCC-Â¿¡¹Ç¼   02/04/10  Ï«ºÒÄÉ²Ã
+      *  01.00.02    NACL-Â¿¡¹Ç¼  02/10/21  Æþ³°¶èÊ¬ÄÉ²Ã
       ************************************************************
       *01  JYURRK-REC.
       *¼õ¿ÇÍúÎò
@@ -30,6 +31,8 @@
                05  JYURRK-HOSPID           PIC  X(24).
       *  ´µ¼Ô£É£Ä
                05  JYURRK-PTID             PIC  9(10).
+      *  Æþ³°¶èÊ¬
+               05  JYURRK-NYUGAIKBN        PIC  X(01).
       *  ¿ÇÎÅ²Ê
                05  JYURRK-SRYKA            PIC  X(02).
       *  ¿ÇÎÅÆü
@@ -132,6 +135,7 @@
            03  JYURRKUP-KEY.
                05  JYURRK-UPHOSPID           PIC  X(24).
                05  JYURRK-UPPTID             PIC  9(10).
+               05  JYURRK-UNYUGAIKBN         PIC  X(01).
                05  JYURRK-UPSRYKA            PIC  X(02).
                05  JYURRK-UPSRYYMD           PIC  X(08).
                05  JYURRK-UPRENNUM           PIC  9(01).
