@@ -91,14 +91,17 @@
       *  01.02.15    NACL-藤原    02.12.02  酸素の時単価を表示するように追加
       *  01.02.16    NACL-藤原    03.01.10  検査の回数の編集
       *  01.02.17    NACL-藤原    03.01.10  画像診断のフィルムを手技に表示
-      *  01.00.18    NACL-藤原    03.01.30  乳幼児加算の時手技に表示
-      *  01.00.09    NACL-藤原    03.02.12  補助区分の追加
-      *  01.00.10    NACL-門脇    03.03.06  初再診のコメント編集対応
-      *  01.00.11    NACL-門脇    03.03.12  先頭の診療行為コードの判定修正
-      *  01.00.12    NACL-門脇    03.05.08  先頭の診療行為コードの判定修正
-      *  01.00.13    NACL-藤原    03.05.27  検査の適用欄の編集の修正
-      *  01.00.14    NACL-門脇    03.05.30  平成１５年６月改正に関わる
+      *  01.02.18    NACL-藤原    03.01.30  乳幼児加算の時手技に表示
+      *  01.02.19    NACL-藤原    03.02.12  補助区分の追加
+      *  01.02.20    NACL-門脇    03.03.06  初再診のコメント編集対応
+      *  01.02.21    NACL-門脇    03.03.12  先頭の診療行為コードの判定修正
+      *  01.02.22    NACL-門脇    03.05.08  先頭の診療行為コードの判定修正
+      *  01.02.23    NACL-藤原    03.05.27  検査の適用欄の編集の修正
+      *  ２００３年６月改正対応
+      *  01.03.01    NACL-門脇    03.05.30  平成１５年６月改正に関わる
       *                                     再診料関係の摘要欄編集修正
+      *  01.03.02    NACL-藤原    03.06.30  薬剤・器材の剤点数が０のとき
+      *                                     摘要欄に印刷しないように修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1805,6 +1808,12 @@
       **       AND     RECE04-YKZTEN     <=  20
       **           CONTINUE
       *********ELSE    
+               IF    (    (RECE04-YKZTEN     =   ZERO )
+                      AND (IDX1              =   5    ) )
+               OR    (    (RECE04-KIZAITEN   =   ZERO )
+                      AND (IDX1              =   4    ) )
+                   CONTINUE
+               ELSE    
                    IF   (( RECE04-SRYKBN     =   "31"  AND
                            FLG-HIKAKIN       =   1          )  OR 
                          ( RECE04-SRYKBN     =   "32"       )     )
@@ -1829,7 +1838,7 @@
                            END-IF    
                        END-PERFORM
                    END-IF    
-      *********END-IF
+               END-IF
                IF      WRK-ZAIWMAX (IDX1)    >   ZERO        
                    MOVE    SPACE             TO  WRK-ZAI
                END-IF    
@@ -1849,6 +1858,7 @@
       *        点数・回数セット処理（特定器材）
                IF      IDX1              =   4
                AND     WRK-ZAIWMAX(IDX1) >   ZERO
+               AND     RECE04-KIZAITEN   >   ZERO
                    IF      RECE04-SRYKBN     >=  "33"   
                        MOVE    RECE04-KIZAITEN   TO  WRK-ZAITENX
                        MOVE    RECE04-ZAIKAISU   TO  WRK-ZAIKAISUX
@@ -1861,6 +1871,7 @@
       *        点数・回数セット処理（薬剤）
                IF      IDX1              =   5
                AND     WRK-ZAIWMAX(IDX1) >   ZERO
+               AND     RECE04-YKZTEN     >   ZERO
                    IF      RECE04-SRYKBN     >=  "31"   
       *****************IF      RECE04-SRYKBN     =   "31"    OR  
       **                                             "32"    OR  "33"  

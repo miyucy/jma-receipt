@@ -38,6 +38,8 @@
       *  01.00.06    NACL-門脇    03.03.10  初診時の摘要対象コード変更等
       *  01.00.07    NACL-門脇    03.05.08  先頭の診療行為コードの判定修正
       *  01.00.08    NACL-藤原    03.05.27  検査の適用欄の編集の修正
+      *  01.00.09    NACL-藤原    03.06.30  薬剤・器材の剤点数が０のとき
+      *                                     摘要欄に印刷しないように修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1411,30 +1413,37 @@
                IF      RECE64-SRYKBN   <=   "33"
                    MOVE    "＊"            TO  WRK-ZAI-MK
                END-IF    
-               IF   (( RECE64-SRYKBN     =   "31"  AND
-                       FLG-HIKAKIN       =   1          )  OR 
-                     ( RECE64-SRYKBN     =   "32"       )     )
-               AND  (  IDX1              =   3                )
+               IF    (    (RECE64-YKZTEN     =   ZERO )
+                      AND (IDX1              =   5    ) )
+               OR    (    (RECE64-KIZAITEN   =   ZERO )
+                      AND (IDX1              =   4    ) )
                    CONTINUE
                ELSE    
-                   IF      RECE64-SRYKBN     =   "31"  AND
-                           FLG-HIKAKIN       =   ZERO  AND
-                           WRK-ZAIWMAX (3)   >   ZERO  AND
-                           IDX1              >   3
-                       MOVE    SPACE             TO  WRK-ZAI-MK
-                   END-IF            
-                   PERFORM VARYING IDX2    FROM    1   BY  1
-                           UNTIL   IDX2    >   WRK-ZAIWMAX (IDX1)  
-                       MOVE    ZERO          TO  FLG-NOPRT
-                       MOVE    IDX1          TO  WRK-WIDX1
-                       MOVE    IDX2          TO  WRK-WIDX2
-                       PERFORM 200521-SEYKBNELSE-MEISAI-SEC
-                       IF  FLG-NOPRT         =   ZERO
-      *                    レセプト０５剤編集処理
-                           PERFORM 430-TBLZAI-HEN-SEC
-                       END-IF    
-                   END-PERFORM
-               END-IF    
+                   IF   (( RECE64-SRYKBN     =   "31"  AND
+                           FLG-HIKAKIN       =   1          )  OR 
+                         ( RECE64-SRYKBN     =   "32"       )     )
+                   AND  (  IDX1              =   3                )
+                       CONTINUE
+                   ELSE    
+                       IF      RECE64-SRYKBN     =   "31"  AND
+                               FLG-HIKAKIN       =   ZERO  AND
+                               WRK-ZAIWMAX (3)   >   ZERO  AND
+                               IDX1              >   3
+                           MOVE    SPACE             TO  WRK-ZAI-MK
+                       END-IF            
+                       PERFORM VARYING IDX2    FROM    1   BY  1
+                               UNTIL   IDX2    >   WRK-ZAIWMAX (IDX1)  
+                           MOVE    ZERO          TO  FLG-NOPRT
+                           MOVE    IDX1          TO  WRK-WIDX1
+                           MOVE    IDX2          TO  WRK-WIDX2
+                           PERFORM 200521-SEYKBNELSE-MEISAI-SEC
+                           IF  FLG-NOPRT         =   ZERO
+      *                        レセプト０５剤編集処理
+                               PERFORM 430-TBLZAI-HEN-SEC
+                           END-IF    
+                       END-PERFORM
+                   END-IF
+               END-IF        
                IF      WRK-ZAIWMAX (IDX1)    >   ZERO        
                    MOVE    SPACE             TO  WRK-ZAI
                END-IF    
@@ -1455,6 +1464,7 @@
       *        点数・回数セット処理（特定器材）
                IF      IDX1              =   4
                AND     WRK-ZAIWMAX(IDX1) >   ZERO
+               AND     RECE64-KIZAITEN   >   ZERO
       ***********  IF      RECE64-SRYKBN     >=  "33"                   
                    IF      RECE64-SRYKBN     >   "33"                   
                        MOVE    RECE64-KIZAITEN   TO  WRK-ZAITENX
@@ -1468,6 +1478,7 @@
       *        点数・回数セット処理（薬剤）
                IF      IDX1              =   5
                AND     WRK-ZAIWMAX(IDX1) >   ZERO
+               AND     RECE64-YKZTEN     >   ZERO
                    IF      RECE64-SRYKBN     >=  "31"   
       *****************IF      RECE64-SRYKBN     =   "31"    OR  
       **                                             "32"    OR  "33"  

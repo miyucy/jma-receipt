@@ -48,6 +48,8 @@
       *  01.00.13    NACL-門脇    03.05.13  腰部固定帯加算を器材点へ
       *  01.00.14    NACL-藤原    03.05.27  検査のまとめの修正
       *  01.00.15    NACL-門脇    03.06.05  摘要欄出力条件修正
+      *  01.00.16    NACL-藤原    03.06.30  薬剤・器材の剤点数が０のとき
+      *                                     摘要欄に印刷しないように修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1502,6 +1504,12 @@
                END-IF    
       *************IF      RECE44-SRYKBN     =   "31"  OR  "32"
       *************AND     IDX1              =   3
+               IF    (    (RECE44-YKZTEN     =   ZERO )
+                      AND (IDX1              =   5    ) )
+               OR    (    (RECE44-KIZAITEN   =   ZERO )
+                      AND (IDX1              =   4    ) )
+                   CONTINUE
+               ELSE    
                    IF   (( RECE44-SRYKBN     =   "31"  AND
                            FLG-HIKAKIN       =   1          )  OR 
                          ( RECE44-SRYKBN     =   "32"       )     )
@@ -1525,7 +1533,8 @@
                                PERFORM 430-TBLZAI-HEN-SEC
                            END-IF    
                        END-PERFORM
-                   END-IF    
+                   END-IF
+               END-IF     
                IF      WRK-ZAIWMAX (IDX1)    >   ZERO        
                    MOVE    SPACE             TO  WRK-ZAI
                END-IF    
@@ -1545,6 +1554,7 @@
       *        点数・回数セット処理（特定器材）
                IF      IDX1              =   4
                AND     WRK-ZAIWMAX(IDX1) >   ZERO
+               AND     RECE44-KIZAITEN   >   ZERO
                    IF      RECE44-SRYKBN     >=  "33"   
                        MOVE    RECE44-KIZAITEN   TO  WRK-ZAITENX
                        MOVE    RECE44-ZAIKAISU   TO  WRK-ZAIKAISUX
@@ -1557,6 +1567,7 @@
       *        点数・回数セット処理（薬剤）
                IF      IDX1              =   5
                AND     WRK-ZAIWMAX(IDX1) >   ZERO
+               AND     RECE44-YKZTEN     >   ZERO
                    IF      RECE44-SRYKBN     >=  "31"   
       *                点数・回数セット
                        IF      RECE44-SRYKBN     >=   "33"
