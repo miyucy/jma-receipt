@@ -1401,7 +1401,8 @@
            MOVE    SPACE               TO  SPA-NAME
            MOVE    WRK-HZN-PTNUM       TO  SPA-HZN-PTNUM
            MOVE    WRK-HZN-MOTOPG      TO  SPA-HZN-MOTOPG
-           IF      SPA-HZN-MOTOPG      =   "U02"
+           IF     (SPA-HZN-MOTOPG      =   "U02" )  AND
+                  (SPA-HZN-PTNUM       =   SPACE )
                CONTINUE
            ELSE
                MOVE    ZERO                TO  SPA-P02-UKEID
