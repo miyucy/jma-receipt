@@ -99,7 +99,6 @@
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                             PIC 9(01).
-           03  FLG-DBRC                            PIC 9(01).
            03  FLG-SYUNOU                          PIC 9(01).
            03  FLG-SKIP                            PIC 9(01).
            03  FLG-HIZUKE-ERR                      PIC 9(01).
@@ -120,19 +119,11 @@
            03  WRK-YMD                     PIC X(10).
            03  WRK-SYMD                    PIC X(08).
            03  WRK-HENYMDG                 PIC X(10).
-           03  WRK-DBPATH                  PIC X(100).
            03  WRK-SKIP-KNS                PIC 9(05).
            03  WRK-SKIP-MAX                PIC 9(05).
            03  WRK-SEIKYU                  PIC ZZ,ZZZ,ZZZ.
            03  WRK-MISYU                   PIC --,---,---.
            03  WRK-MCP-WIDGET              PIC X(64).
-           03  WRK-SRYKALST-G.
-               05  WRK-SRYKALST-MAX        PIC 9(05).
-               05  WRK-SRYKALST-OCC        OCCURS 50.
-                   07  WRK-SRYKAL          PIC X(02).
-                   07  WRK-SRYKAL-STYUKYMD PIC X(08).
-                   07  WRK-SRYKAL-EDYUKYMD PIC X(08).
-                   07  WRK-SRYKAMEIL       PIC X(12).
       *
       *    保険組合せ名称
            03  WRK-KUMINO                  PIC X(04).
@@ -146,6 +137,14 @@
            03  WK-GMN-FTNRITU              PIC ZZZ.
            03  WK-GMN-PA                   PIC X(01).
            03  FILLER                      PIC X(01).
+      *
+       01  S1005-SRYKALST-G.
+           03  S1005-SRYKALST-MAX          PIC 9(05).
+           03  S1005-SRYKALST-OCC          OCCURS 50.
+               05  S1005-SRYKAL            PIC X(02).
+               05  S1005-SRYKAL-STYUKYMD   PIC X(08).
+               05  S1005-SRYKAL-EDYUKYMD   PIC X(08).
+               05  S1005-SRYKAMEIL         PIC X(12).
       *
        01  CONST-AREA.
            03  CONST-SYULIST-MAX           PIC 9(05)   VALUE 200.
@@ -343,9 +342,9 @@
            MOVE    SPA-HOSPID              TO  SYU-HOSPID
            MOVE    SPA-S01-PTID            TO  SYU-PTID
            MOVE    SYUNOU-REC              TO  MCPDATA-REC
-           MOVE    "SYUNOU-KEY24"          TO  WRK-DBPATH
-           PERFORM 900-TBL-SELECT-SEC
-           IF    ( FLG-DBRC            NOT =   ZERO )
+           MOVE    "SYUNOU-KEY24"          TO  ORC-DBPATH
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              NOT =   ZERO )
                MOVE    1                   TO  FLG-SYUNOU
            ELSE
                MOVE    MCPDATA-REC         TO  SYUNOU-REC
@@ -359,9 +358,9 @@
       *
                PERFORM 31011-SYULIST-HEN-SEC
       *
-               MOVE    "SYUNOU-KEY24"          TO  WRK-DBPATH
-               PERFORM 900-TBL-READ-SEC
-               IF    ( FLG-DBRC            NOT =   ZERO )
+               MOVE    "SYUNOU-KEY24"          TO  ORC-DBPATH
+               PERFORM 910-DBFETCH-SEC
+               IF    ( MCP-RC              NOT =   ZERO )
                    MOVE    1                   TO  FLG-SYUNOU
                ELSE
                    MOVE    MCPDATA-REC         TO  SYUNOU-REC
@@ -369,8 +368,8 @@
       *
            END-PERFORM
       *
-           MOVE    "SYUNOU-KEY24"              TO  WRK-DBPATH
-           PERFORM 900-TBL-CLOSE-SEC
+           MOVE    "SYUNOU-KEY24"              TO  ORC-DBPATH
+           PERFORM 910-DBCLOSE-SEC
       *
            IF    ( FLG-SYUNOU              =   ZERO )
                    MOVE    1                   TO  SPA-GMN-SYULIST-NEXT
@@ -384,40 +383,40 @@
       *************************************************************
        3101-SRYKALST-HEN-SEC           SECTION.
       *
-           INITIALIZE  WRK-SRYKALST-G
+           INITIALIZE  S1005-SRYKALST-G
       *
            INITIALIZE  SYS-1005-REC
            MOVE    ZERO                TO  FLG-SYSKANRI
       *
            MOVE    "1005"              TO  SYS-1005-KANRICD
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
-           MOVE    "SYSKANRI-KEY5"     TO  WRK-DBPATH
-           PERFORM 900-TBL-SELECT-SEC
-           IF    ( FLG-DBRC        NOT =   ZERO )
+           MOVE    "SYSKANRI-KEY5"     TO  ORC-DBPATH
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          NOT =   ZERO )
                MOVE    1               TO  FLG-SYSKANRI
            ELSE
                MOVE    MCPDATA-REC     TO  SYS-1005-REC
            END-IF
       *
            PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
-                    OR   ( WRK-SRYKALST-MAX   >=   50   )
+                    OR   ( S1005-SRYKALST-MAX   >=   50   )
       *
-               COMPUTE WRK-SRYKALST-MAX
-                   =   WRK-SRYKALST-MAX    +   1
+               COMPUTE S1005-SRYKALST-MAX
+                   =   S1005-SRYKALST-MAX    +   1
       *
-               MOVE    WRK-SRYKALST-MAX    TO  IDXA
+               MOVE    S1005-SRYKALST-MAX    TO  IDXA
       *
-               MOVE    SYS-1005-KBNCD      TO  WRK-SRYKAL    (IDXA)
-               MOVE    SYS-1005-STYUKYMD   TO  WRK-SRYKAL-STYUKYMD
+               MOVE    SYS-1005-KBNCD      TO  S1005-SRYKAL    (IDXA)
+               MOVE    SYS-1005-STYUKYMD   TO  S1005-SRYKAL-STYUKYMD
                                                              (IDXA)
-               MOVE    SYS-1005-EDYUKYMD   TO  WRK-SRYKAL-EDYUKYMD
+               MOVE    SYS-1005-EDYUKYMD   TO  S1005-SRYKAL-EDYUKYMD
                                                              (IDXA)
-               MOVE    SYS-1005-SRYKANAME1 TO  WRK-SRYKAMEIL
+               MOVE    SYS-1005-SRYKANAME1 TO  S1005-SRYKAMEIL
                                                              (IDXA)
       *
-               MOVE    "SYSKANRI-KEY5"     TO  WRK-DBPATH
-               PERFORM 900-TBL-READ-SEC
-               IF    ( FLG-DBRC        NOT =   ZERO )
+               MOVE    "SYSKANRI-KEY5"     TO  ORC-DBPATH
+               PERFORM 910-DBFETCH-SEC
+               IF    ( MCP-RC          NOT =   ZERO )
                    MOVE    1               TO  FLG-SYSKANRI
                ELSE
                    MOVE    MCPDATA-REC     TO  SYS-1005-REC
@@ -425,8 +424,8 @@
       *
            END-PERFORM
       *
-           MOVE    SYS-1005-REC        TO  MCPDATA-REC
-           PERFORM 900-TBL-CLOSE-SEC
+           MOVE    "SYSKANRI-KEY5"         TO  ORC-DBPATH
+           PERFORM 910-DBCLOSE-SEC
       *
            .
        3101-SRYKALST-HEN-EXT.
@@ -447,9 +446,9 @@
                COMPUTE WRK-SKIP-KNS    =   WRK-SKIP-KNS
                                        +   1
       *
-               MOVE    "SYUNOU-KEY24"      TO  WRK-DBPATH
-               PERFORM 900-TBL-READ-SEC
-               IF    ( FLG-DBRC            NOT =   ZERO )
+               MOVE    "SYUNOU-KEY24"      TO  ORC-DBPATH
+               PERFORM 910-DBFETCH-SEC
+               IF    ( MCP-RC              NOT =   ZERO )
                    MOVE    1               TO  FLG-SYUNOU
                ELSE
                    MOVE    MCPDATA-REC     TO  SYUNOU-REC
@@ -513,16 +512,16 @@
       *
       *    診療科名
            PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1        >   WRK-SRYKALST-MAX )
+                   UNTIL ( IDX1        >   S1005-SRYKALST-MAX )
       *
-               IF    ( SYU-SRYKA       =   WRK-SRYKAL (IDX1))
-                AND  ( SYU-SRYYMD     >=   WRK-SRYKAL-STYUKYMD (IDX1))
-                AND  ( SYU-SRYYMD     <=   WRK-SRYKAL-EDYUKYMD (IDX1))
-                   MOVE    WRK-SRYKAMEIL (IDX1)
+               IF    ( SYU-SRYKA       =   S1005-SRYKAL (IDX1))
+                AND  ( SYU-SRYYMD     >=   S1005-SRYKAL-STYUKYMD (IDX1))
+                AND  ( SYU-SRYYMD     <=   S1005-SRYKAL-EDYUKYMD (IDX1))
+                   MOVE    S1005-SRYKAMEIL (IDX1)
                                        TO  SPA-GMN-TSRYKA (IDX-LST)
-                   MOVE    WRK-SRYKAL (IDX1)
+                   MOVE    S1005-SRYKAL (IDX1)
                                        TO  SPA-NAI-TSRYKA (IDX-LST)
-                   MOVE    WRK-SRYKALST-MAX
+                   MOVE    S1005-SRYKALST-MAX
                                        TO  IDX1
                END-IF
       *
@@ -1093,134 +1092,52 @@
        800-SEIWA-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    テーブル検索処理
+      *    ＤＢ検索処理
       *****************************************************************
-       900-TBL-SELECT-SEC              SECTION.
+       910-DBSELECT-SEC                SECTION.
       *
-           MOVE    ZERO            TO  FLG-DBRC
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
-           MOVE    "DBSELECT"      TO  MCP-FUNC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
            IF    ( MCP-RC          =   ZERO )
-               MOVE    WRK-DBPATH  TO  ORC-DBPATH
-               MOVE    "DBFETCH"   TO  MCP-FUNC
-               CALL    "ORCMCPSUB"     USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-               IF    ( MCP-RC          =   ZERO )
-                   CONTINUE
-               ELSE
-                   MOVE    1       TO  FLG-DBRC
-               END-IF
-           ELSE
-               MOVE    1           TO  FLG-DBRC
+               PERFORM 910-DBFETCH-SEC
            END-IF
       *
            .
-       900-TBL-SELECT-EXT.
+      *
+       910-DB-SELECT-EXT.
            EXIT.
       *****************************************************************
-      *    テーブル読込処理
+      *    ＤＢ読み込み処理
       *****************************************************************
-       900-TBL-READ-SEC                SECTION.
+       910-DBFETCH-SEC                 SECTION.
       *
-           MOVE    ZERO            TO  FLG-DBRC
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
-           MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-           IF    ( MCP-RC          =   ZERO )
-               CONTINUE
-           ELSE
-               MOVE    1           TO  FLG-DBRC
-           END-IF
-      *
-           .
-       900-TBL-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    テーブルクローズ処理
-      *****************************************************************
-       900-TBL-CLOSE-SEC               SECTION.
-      *
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
-           MOVE    "DBCLOSE"       TO  MCP-FUNC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
       *
            .
-       900-TBL-CLOSE-EXT.
+      *
+       910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    テーブル更新処理
+      *    ＤＢクローズ処理
       *****************************************************************
-       900-TBL-UPDATE-SEC              SECTION.
+       910-DBCLOSE-SEC                 SECTION.
       *
-           MOVE    ZERO            TO  FLG-DBRC
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
-           MOVE    "DBUPDATE"      TO  MCP-FUNC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
-           IF    ( MCP-RC          =   ZERO )
-               CONTINUE
-           ELSE
-               MOVE    1           TO  FLG-DBRC
-           END-IF
       *
            .
-       900-TBL-UPDATE-EXT.
-           EXIT.
-      *****************************************************************
-      *    テーブル追加処理
-      *****************************************************************
-       900-TBL-INSERT-SEC              SECTION.
       *
-           MOVE    ZERO            TO  FLG-DBRC
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
-           MOVE    "DBINSERT"      TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-           IF    ( MCP-RC          =   ZERO )
-               CONTINUE
-           ELSE
-               MOVE    1           TO  FLG-DBRC
-           END-IF
-      *
-           .
-       900-TBL-INSERT-EXT.
-           EXIT.
-      *****************************************************************
-      *    テーブル削除処理
-      *****************************************************************
-       900-TBL-DELETE-SEC              SECTION.
-      *
-           MOVE    ZERO            TO  FLG-DBRC
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
-           MOVE    "DBDELETE"      TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-           IF    ( MCP-RC          =   ZERO )
-               CONTINUE
-           ELSE
-               MOVE    1           TO  FLG-DBRC
-           END-IF
-      *
-           .
-       900-TBL-DELETE-EXT.
+       910-DBCLOSE-EXT.
            EXIT.
       *************************************************************
       *    ＰＵＴ　処理
