@@ -44,6 +44,7 @@
       *  01.00.14    NACL-太田    03/06/06  消費税端数区分追加
       *  01.00.15    NACL-太田    03/07/09  割引率区分・定額定率区分の
       *                                     入力をコンボボックスに変更
+      *  01.00.16    NACL-太田    03/07/31  減免事由情報に割引対象を追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -236,6 +237,18 @@
                            11                     PIC X(01).
                            11  SPA-GMN-DISCOUNT-KBNMEI
                                                   PIC X(20).
+                       09  SPA-GMN-DISCOUNT-OBJLST    OCCURS  10.
+                           11  SPA-GMN-DISCOUNT-OBJL
+                                                  PIC X(01).
+                           11                     PIC X(01).
+                           11  SPA-GMN-DISCOUNT-OBJMEIL
+                                                  PIC X(18).
+                       09  SPA-GMN-DISCOUNT-OBJ-G.
+                           11  SPA-GMN-DISCOUNT-OBJ
+                                                  PIC X(01).
+                           11                     PIC X(01).
+                           11  SPA-GMN-DISCOUNT-OBJMEI
+                                                  PIC X(18).
                    07  SPA-GMN-1027-AREA.
                        09  SPA-GMN-TEIRITULST         OCCURS  2.
                            11  SPA-GMN-TEIRITUL       PIC X(01).
@@ -706,6 +719,18 @@
       * 
            MOVE    "2"         TO  SPA-GMN-TEIRITUL (2)
            MOVE    "定額"      TO  SPA-GMN-TEIRITUMEIL (2)
+      *
+           MOVE    "1"         TO  SPA-GMN-DISCOUNT-OBJL (1)
+           MOVE    "保険診療＋自費分" 
+                               TO  SPA-GMN-DISCOUNT-OBJMEIL (1)
+      *
+           MOVE    "2"         TO  SPA-GMN-DISCOUNT-OBJL (2)
+           MOVE    "保険診療のみ"
+                               TO  SPA-GMN-DISCOUNT-OBJMEIL (2)
+      *
+           MOVE    "3"         TO  SPA-GMN-DISCOUNT-OBJL (3)
+           MOVE    "自費分のみ"
+                               TO  SPA-GMN-DISCOUNT-OBJMEIL (3)
       * 
       *    割引率区分設定処理
            PERFORM 3101-DISCOUNT-KBN-SET-SEC
@@ -912,6 +937,22 @@
                                MOVE    SPA-GMN-DISCOUNT-KBNLST (IDY)
                                        TO  SPA-GMN-DISCOUNT-KBN-G
                                MOVE    SPA-GMN-DISCOUNT-KBN-MAX
+                                       TO  IDY
+                           END-IF
+                       END-PERFORM
+                       PERFORM VARYING IDY     FROM    1   BY  1
+                               UNTIL ( IDY
+                                       >   3 )
+      *                    空白の場合は"1"に置き換える
+                           IF    ( SYS-1026-DISCOUNT-OBJ   =   SPACE )
+                               MOVE    1
+                                       TO  SYS-1026-DISCOUNT-OBJ
+                           END-IF
+                           IF    ( SYS-1026-DISCOUNT-OBJ
+                                       =   SPA-GMN-DISCOUNT-OBJL (IDY) )
+                               MOVE    SPA-GMN-DISCOUNT-OBJLST (IDY)
+                                       TO  SPA-GMN-DISCOUNT-OBJ-G
+                               MOVE    3
                                        TO  IDY
                            END-IF
                        END-PERFORM
@@ -1145,6 +1186,7 @@
       *
            MOVE    W02-DISCOUNTBODY    TO  SPA-GMN-DISCOUNT-BODY
            MOVE    W02-DISCOUNTKBN     TO  SPA-GMN-DISCOUNT-KBN-G
+           MOVE    W02-DISCOUNTOBJ     TO  SPA-GMN-DISCOUNT-OBJ-G
       *
            MOVE    W02-CONDITIONBODY   TO  SPA-GMN-CONDITION-BODY
            MOVE    W02-CONDITIONWORD   TO  SPA-GMN-CONDITION-WORD
@@ -1357,6 +1399,15 @@
       *
       *    割引率区分チェック処理
            PERFORM 4122-DISCOUNT-KBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  41021-KIHON-1026-EXT
+           END-IF
+      *
+      *    割引対象チェック処理
+           PERFORM 4122-DISCOUNT-OBJ-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  41021-KIHON-1026-EXT
+           END-IF
            .
        41021-KIHON-1026-EXT.
            EXIT.
@@ -1812,7 +1863,8 @@
       *
            MOVE    ZERO            TO  FLG-OK
            PERFORM VARYING IDZ     FROM    1   BY  1
-                   UNTIL ( IDZ     >   SPA-GMN-DISCOUNT-KBN-MAX )
+                   UNTIL ( FLG-OK      =   1 )
+                    OR   ( IDZ         >   SPA-GMN-DISCOUNT-KBN-MAX )
                IF    ( SPA-GMN-DISCOUNT-KBN
                                    =   SPA-GMN-DISCOUNT-KBNL (IDZ) )
                    MOVE    SPA-GMN-DISCOUNT-KBNLST (IDZ)
@@ -1829,6 +1881,33 @@
       *
            .
        4122-DISCOUNT-KBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    割引率区分チェック処理
+      *****************************************************************
+       4122-DISCOUNT-OBJ-CHK-SEC        SECTION.
+      *
+           MOVE    ZERO            TO  FLG-OK
+           PERFORM VARYING IDZ     FROM    1   BY  1
+                   UNTIL ( FLG-OK      =   1 )
+                    OR   ( IDZ     >   3 )
+               IF    ( SPA-GMN-DISCOUNT-OBJ
+                                   =   SPA-GMN-DISCOUNT-OBJL (IDZ) )
+                   MOVE    SPA-GMN-DISCOUNT-OBJLST (IDZ)
+                                   TO  SPA-GMN-DISCOUNT-OBJ-G
+                   MOVE    1       TO  FLG-OK
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-OK          =   ZERO
+               MOVE    "0016"              TO  SPA-ERRCD
+               MOVE    52                  TO  SPA-GMN-CUR
+               GO  TO  4122-DISCOUNT-OBJ-CHK-EXT
+           END-IF
+      *
+           .
+       4122-DISCOUNT-OBJ-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2156,6 +2235,8 @@
                                            TO  SYS-1026-DISCOUNT-BODY 
                    MOVE    SPA-GMN-DISCOUNT-KBN
                                            TO  SYS-1026-DISCOUNT-KBN 
+                   MOVE    SPA-GMN-DISCOUNT-OBJ
+                                           TO  SYS-1026-DISCOUNT-OBJ 
                    MOVE    SYS-1026-REC        TO  SYSKANRI-REC
       * 
       *    医療機関情報ー割引率情報
@@ -2465,6 +2546,13 @@
            END-PERFORM    
            MOVE    SPA-GMN-DISCOUNT-BODY    TO  W02-DISCOUNTBODY
            MOVE    SPA-GMN-DISCOUNT-KBN-G   TO  W02-DISCOUNTKBN
+           MOVE    3                   TO  W02-DISCOUNTOBJ-COUNT
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL ( IDX >       3 )
+               MOVE    SPA-GMN-DISCOUNT-OBJLST (IDX)
+                                       TO  W02-DISCOUNTOBJLST (IDX)
+           END-PERFORM    
+           MOVE    SPA-GMN-DISCOUNT-OBJ-G   TO  W02-DISCOUNTOBJ
       *
       *    医療機関情報ー状態コメント情報
            MOVE    SPA-GMN-CONDITION-BODY   TO  W02-CONDITIONBODY
@@ -2583,6 +2671,9 @@
                                                TO  SPA-ERRMSG
                WHEN    "0015"
                    MOVE    "定率定額区分入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0016"
+                   MOVE    "割引対象入力エラー"
                                                TO  SPA-ERRMSG
       *----(01.00.09) LINE ADD END   ----------------------------------
                WHEN    "0099"
@@ -2722,6 +2813,8 @@
                     MOVE  "DISCOUNTBODY"   TO   MCP-WIDGET
                 WHEN    51
                     MOVE  "DISCOUNTKBN"    TO   MCP-WIDGET
+                WHEN    52
+                    MOVE  "DISCOUNTOBJ"    TO   MCP-WIDGET
                 WHEN    60
                     MOVE  "CONDITIONBODY"  TO   MCP-WIDGET
                 WHEN    61
@@ -2831,6 +2924,8 @@
               WHEN    "DISCOUNTBODY"
                   MOVE    51               TO  SPA-GMN-CUR
               WHEN    "DISCOUNTKBN"
+                  MOVE    52               TO  SPA-GMN-CUR
+              WHEN    "DISCOUNTOBJ"
                   MOVE    50               TO  SPA-GMN-CUR
       *       減免事由情報
               WHEN    "CONDITIONBODY"

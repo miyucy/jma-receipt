@@ -133,6 +133,12 @@
                                              PIC S9(9)   BINARY.
                     06  W02-DISCOUNTKBNLST   PIC X(23)
                                                          OCCURS  10.
+                  05  W02-DISCOUNTOBJ-COMBO.
+                    06  W02-DISCOUNTOBJ      PIC X(20).
+                    06  W02-DISCOUNTOBJ-COUNT
+                                             PIC S9(9)   BINARY.
+                    06  W02-DISCOUNTOBJLST   PIC X(20)
+                                                         OCCURS  5.
                 04  W02-N05-STATE   PIC S9(9)   BINARY.
                 04  W02-FIXED28.
                   05  W02-CONDITIONBODY.

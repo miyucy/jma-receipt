@@ -40,8 +40,10 @@
                05  SYS-1026-DISCOUNT-BODY    PIC  X(40).
       *割引率（区分）
                05  SYS-1026-DISCOUNT-KBN     PIC  X(02).
+      *割引対象
+               05  SYS-1026-DISCOUNT-OBJ     PIC  X(01).
       *予備
-           03                           PIC  X(458).
+           03                           PIC  X(457).
       *端末ＩＤ
            03  SYS-1026-TERMID          PIC  X(16).
       *オペーレータＩＤ

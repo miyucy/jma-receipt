@@ -181,6 +181,13 @@ W02	{
 					count	int;
 					item	varchar(23)[10];
 				};
+				DISCOUNTOBJ_COMBO	{
+					DISCOUNTOBJ	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[5];
+				};
 			};
 	            N05	{
 	            	state	int;
