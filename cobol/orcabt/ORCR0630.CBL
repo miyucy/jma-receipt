@@ -238,7 +238,7 @@
            03  WRK-NYUTOKRYO                           PIC 9(09).
            03  WRK-SHOKUJIRYOYO                        PIC 9(01).
            03  WRK-TOKUKANRIKASAN                      PIC 9(01).
-           03  WRK-SRYCD                               PIC 9(09).
+           03  WRK-SRYCD                               PIC X(09).
            03  WRK-RYAKUSHO                            PIC X(14).
            03  WRK-SRYYMD                              PIC X(08).       
            03  WRK-SRYYMD-TAIHI                        PIC X(08).   
@@ -2560,9 +2560,9 @@
       *
                IF   FLG-MIJISI-INNAI   =   1
       ***        IF    RECE62-RJNHKNNUM    =    SPACE
-                    MOVE    190080570      TO   WRK-SRYCD
+                    MOVE    "190080570"    TO   WRK-SRYCD
       ***        ELSE
-      ***           MOVE    190799770      TO   WRK-SRYCD
+      ***           MOVE    "190799770"    TO   WRK-SRYCD
       ***        END-IF
                  MOVE    WRK-SRYYMD-TAIHI  TO   WRK-SRYYMD
       *
@@ -2571,9 +2571,9 @@
       *
                IF   FLG-MIJISI-IRYO    =   1
       ***        IF    RECE62-RJNHKNNUM    =    SPACE
-                    MOVE    190111690      TO   WRK-SRYCD
+                    MOVE    "190111690"    TO   WRK-SRYCD
       ***        ELSE
-      ***           MOVE    190809090      TO   WRK-SRYCD
+      ***           MOVE    "190809090"    TO   WRK-SRYCD
       ***        END-IF
                  MOVE    WRK-SRYYMD-TAIHI  TO   WRK-SRYYMD
       *
@@ -2582,9 +2582,9 @@
       *
                IF   FLG-MIJISI-JYOKU   =   1
       ***        IF    RECE62-RJNHKNNUM    =    SPACE
-                    MOVE    190111790      TO   WRK-SRYCD
+                    MOVE    "190111790"    TO   WRK-SRYCD
       ***        ELSE
-      ***           MOVE    190809190      TO   WRK-SRYCD
+      ***           MOVE    "190809190"    TO   WRK-SRYCD
       ***        END-IF
                  MOVE    WRK-SRYYMD-TAIHI  TO   WRK-SRYYMD
       *

@@ -1191,7 +1191,7 @@
                                                   "6" OR  "7" OR
                                                   "8"
       *
-               ADD     1                  TO    IDX4                                  *
+               ADD     1                  TO    IDX4
                MOVE    SRY-SRYCD(IDX2)    TO    RECE45-SRYCD(IDX4)
       *
                IF      SRY-SRYKBN         =     "12"

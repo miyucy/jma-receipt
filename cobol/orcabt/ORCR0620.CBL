@@ -1295,7 +1295,7 @@
       *    自費のときのレセプト種別を編集
            IF     (RECE62-HKNNUM        NOT =   SPACE)   AND
                   (WRK-JIHI-FLG         =   "1"      ) 
-               MOVE    "8888"               TO  RECE62-RECESYUBETU    
+               MOVE    8888                 TO  RECE62-RECESYUBETU    
                GO  TO  RECESYUBETU-SET-EXT
            END-IF
       *         
