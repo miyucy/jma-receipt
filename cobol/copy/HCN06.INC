@@ -75,7 +75,9 @@
             02  HCN06-SYOKBN    PIC X(2)        OCCURS  4 TIMES.
             02  HCN06-SYOGAK    PIC X(4)        OCCURS  4 TIMES.
             02  HCN06-SYOKAISU  PIC X(2)        OCCURS  4 TIMES.
+            02  HCN06-FOOT  PIC X(28).
             02  HCN06-GAIITBFTN PIC X(7).
+            02  HCN06-GENGAKUMEI    PIC X(30).
             02  HCN06-SYONISSU  PIC X(2)        OCCURS  3 TIMES.
             02  HCN06-SYOTOTALTEN   PIC X(7)    OCCURS  3 TIMES.
             02  HCN06-SYOFTNMONEY   PIC X(8)    OCCURS  3 TIMES.
