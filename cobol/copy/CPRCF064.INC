@@ -46,6 +46,8 @@
                05  RECE64-TEKSTYMD        PIC  X(08). 
       *∫ﬁ»÷πÊ
                05  RECE64-ZAINUM          PIC  9(05).
+      *∫ﬁœ¢»÷
+               05  RECE64-ZAIREN          PIC  9(02).
       *∏¯»Ò ¨Œ•∂Ë ¨
            03  RECE64-KOHBUNRI            PIC  9(01).
       *ø«Œ≈∂Ë ¨
