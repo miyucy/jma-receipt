@@ -84,6 +84,7 @@
       *  01.00.39    NACL-小豆沢  03.10.24  労災（自賠）入院時に老人点数無効
       *  01.00.40    NACL-小豆沢  03.10.27  労災（自賠）入院時に選定入院なし
       *  01.00.41    NACL-太田    03.11.14  更新日付編集対応
+      *  01.00.42    NACL-小豆沢  03.11.26  老人患者の判定条件追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -505,6 +506,10 @@
       *    入院会計
        01  NYUINACCT-REC.
            COPY    "CPNYUINACCT.INC".
+      *
+      *    患者公費情報
+       01  PTKOHINF-REC.
+           COPY    "CPPTKOHINF.INC".
       *
       *
       *****************************************************************
@@ -10118,6 +10123,24 @@
                   (AGECHK-ROUJIN    =    1)
                MOVE    1            TO  FLG-RJN
            END-IF
+      *
+      *    患者公費情報から老人保健の登録チェック
+           INITIALIZE                    PTKOHINF-REC
+           MOVE    SPA-HOSPID       TO   PTKOH-HOSPID
+           MOVE    SPA-NAI-I01-PTID TO   PTKOH-PTID
+           MOVE    "027"            TO   PTKOH-KOHNUM
+           MOVE    WRK-AGECHK-SRYYMD
+                                    TO   PTKOH-TEKSTYMD
+           MOVE    WRK-AGECHK-SRYYMD
+                                    TO   PTKOH-TEKEDYMD
+           MOVE    PTKOHINF-REC     TO   MCPDATA-REC
+           MOVE    "PTKOHINF-KEY6"  TO   WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC 
+           IF    ( FLG-DBRC    =   ZERO )
+               MOVE    1            TO  FLG-RJN
+           END-IF
+           MOVE    "PTKOHINF-KEY6"  TO   WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
       *
            .
        4801-RJN-TAISYO-CHK-EXT.
