@@ -2081,6 +2081,7 @@
                   (P02-P02-HKAKUNINYMD =   SPA-GMN-HKAKUNINYMD)
                MOVE    ZERO            TO  FLG-IN-HKN
            ELSE
+               MOVE    P02-P02-HKNJANUM    TO  SPA-GMN-HKNJANUM
                MOVE    1               TO  FLG-IN-HKN
            END-IF
            .
@@ -2259,6 +2260,7 @@
                    INITIALIZE                  SPA-GMN-HKN-AREA
                    MOVE    ZERO                TO  SPA-NAI-HKNSTR
                    MOVE    8                   TO  SPA-GMN-CUR
+                   MOVE    1                   TO  FLG-HKN-DEL
                    GO      TO      4101-KHNJANUM-CHK-EXT
                END-IF
                MOVE    "0043"          TO  SPA-ERRCD
@@ -2299,6 +2301,7 @@
       *        次の対象を表示する
       *        保険情報ＴＢＬから編集
                PERFORM 3101-HKN-TBL-SPA-SEC
+               MOVE    8                   TO  SPA-GMN-CUR
                GO      TO      4101-KHNJANUM-CHK-EXT
            END-IF
       *
@@ -2307,6 +2310,7 @@
                INITIALIZE                  SPA-GMN-HKN-AREA
                MOVE    ZERO                TO  SPA-NAI-HKNSTR
                MOVE    8                   TO  SPA-GMN-CUR
+               MOVE    1                   TO  FLG-HKN-DEL
            END-IF
       *
            .
@@ -2367,6 +2371,14 @@
                END-IF
                MOVE    1                   TO  FLG-KOH-DEL
                INITIALIZE                  SPA-GMN-KOH-TBL(IDX-K)
+               EVALUATE    IDX-K
+                   WHEN    1
+                       MOVE    20          TO  SPA-GMN-CUR
+                   WHEN    2
+                       MOVE    26          TO  SPA-GMN-CUR
+                   WHEN    3
+                        MOVE    32          TO  SPA-GMN-CUR
+               END-EVALUATE
            END-IF
       *    追加の判定（どの行で入力されても、最初の1行のみを開ける）
            IF      SPA-GMN-FTNJANUM(IDX-K)(1:2)
@@ -2378,6 +2390,14 @@
                END-IF
                MOVE    SPA-MAE-FTNJANUM(IDX-K)
                                         TO  SPA-GMN-FTNJANUM(IDX-K)
+               EVALUATE    IDX-K
+                   WHEN    1
+                       MOVE    20          TO  SPA-GMN-CUR
+                   WHEN    2
+                       MOVE    26          TO  SPA-GMN-CUR
+                   WHEN    3
+                        MOVE    32          TO  SPA-GMN-CUR
+               END-EVALUATE
            END-IF
            .
       *
