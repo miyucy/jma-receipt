@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-藤原    03.07.05  タイマー機能の追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -204,6 +205,7 @@
                WHEN    "CLICKED"       ALSO    "B01"
                    PERFORM 210-BACK
       *    処理状態
+               WHEN    "CLICKED"       ALSO    "pandatimer1"
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 490-KAKUNIN-SEC
            END-EVALUATE
