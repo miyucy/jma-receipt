@@ -107,6 +107,8 @@
       *  01.00.33    NACL¡ÝÌçÏÆ   03/04/15  ¼«ÇåÀÕÊ¸½ñÎÁ¾ÃÈñÀÇÂÐ±þ
       *  01.00.34    NACL¡ÝÌçÏÆ   03/04/16  Á¥°÷ÊÝ¸±¡ÊÈïÊÝ¸±¼Ô¡Ë¡ÜÄÌ¶ÐºÒ³²
       *                                     ¡Ü½é¿Ç»þ¡¡ÂÐ±þ
+      *  01.00.35    NACL-ÌçÏÆ    03/05/07  ÃÏÊýÏ·¿Í¤ÎÉéÃ´³Û¤Î»Í¼Î¸ÞÆþ¤ÎÀßÄê
+      *                                     ¤òÊÝ¸±ÈÖ¹æ¥Þ¥¹¥¿¤ÎÀßÄê¤Ç¹Ô¤¦¡£
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -3447,9 +3449,9 @@
                     MOVE   LNK-SYU-KOH-COMPFTN(KOH-IDX)                 
                                             TO WK-TOKUTEI-COMPFTN3      
                END-IF                                                   
-               IF ((HKN-HKNKOHSBTKBN     =       "3")    AND
-                   (LNK-SYU-KOH-HKNNUM(KOH-IDX)  NOT =  "027")) OR
-                  ( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "051" ) OR
+      ***      IF ((HKN-HKNKOHSBTKBN     =       "3")    AND
+      ***          (LNK-SYU-KOH-HKNNUM(KOH-IDX)  NOT =  "027")) OR
+               IF ( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "051" ) OR
                   ( HKN-RECEFTNDSPKBN            =      "2"   )
                    CONTINUE
                ELSE
@@ -3516,17 +3518,17 @@
                          LNK-SYU-KOH-COMPFTN(KOH-IDX)     +
                          LNK-SYU-KOH-COMPYKZFTN(KOH-IDX)
            ELSE
-               IF      ((HKN-HKNKOHSBTKBN     =       "3")    AND
-                        (LNK-SYU-KOH-HKNNUM(KOH-IDX)  NOT =  "027")) OR
-                       ( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "051" ) OR
+      ***      IF      ((HKN-HKNKOHSBTKBN     =       "3")    AND
+      ***               (LNK-SYU-KOH-HKNNUM(KOH-IDX)  NOT =  "027")) OR
+               IF      ( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "051" ) OR
                        ( HKN-RECEFTNDSPKBN            =      "2"   )
                    IF    WK-TOKUTEI-COMPFTN   NOT =    ZERO
                        MOVE  WK-TOKUTEI-COMPFTN  TO  LNK-SYU-SYUCOMPFTN
                    END-IF
                END-IF
-               IF     (((HKN-HKNKOHSBTKBN     =       "3")    AND       
-                        (LNK-SYU-KOH-HKNNUM(KOH-IDX)  NOT =  "027")) OR 
-                       ( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "051" ) OR 
+      ***      IF     (((HKN-HKNKOHSBTKBN     =       "3")    AND       
+      ***               (LNK-SYU-KOH-HKNNUM(KOH-IDX)  NOT =  "027")) OR 
+               IF     (( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "051" ) OR 
                        ( HKN-RECEFTNDSPKBN            =      "2"   ))   
                AND    (  LNK-SYU-KOH-HKNNUM(1)        =   "027"     )   
                    IF    WK-TOKUTEI-COMPFTN3   NOT =    ZERO            
@@ -3735,9 +3737,9 @@
                                             TO WK-TOKUTEI-COMPFTN3      
                END-IF                                         
       **       IF    LNK-SYU-KOH-HKNNUM(KOH-IDX)  =   "051"       
-               IF ((HKN-HKNKOHSBTKBN     =       "3")    AND
-                   (LNK-SYU-KOH-HKNNUM(KOH-IDX)  NOT =  "027")) OR
-                  ( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "051" ) OR
+      ***      IF ((HKN-HKNKOHSBTKBN     =       "3")    AND
+      ***          (LNK-SYU-KOH-HKNNUM(KOH-IDX)  NOT =  "027")) OR
+               IF ( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "051" ) OR
                   ( HKN-RECEFTNDSPKBN            =      "2"   )
                    CONTINUE
                ELSE
@@ -3764,17 +3766,17 @@
       *
                  MOVE  WK-GAIKKOTGAK TO  LNK-SYU-KOH-COMPFTN(KOH-IDX)
       *
-                 IF    ((HKN-HKNKOHSBTKBN     =       "3")    AND
-                        (LNK-SYU-KOH-HKNNUM(KOH-IDX)  NOT =  "027")) OR
-                       ( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "051" ) OR
+      ***        IF    ((HKN-HKNKOHSBTKBN     =       "3")    AND
+      ***               (LNK-SYU-KOH-HKNNUM(KOH-IDX)  NOT =  "027")) OR
+                 IF    ( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "051" ) OR
                        ( HKN-RECEFTNDSPKBN            =      "2"   )
                    IF    WK-TOKUTEI-COMPFTN   NOT =    ZERO
                        MOVE  WK-TOKUTEI-COMPFTN  TO  LNK-SYU-SYUCOMPFTN
                    END-IF
                  END-IF
-                 IF   (((HKN-HKNKOHSBTKBN     =       "3")    AND       
-                        (LNK-SYU-KOH-HKNNUM(KOH-IDX)  NOT =  "027")) OR 
-                       ( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "051" ) OR 
+      ***        IF   (((HKN-HKNKOHSBTKBN     =       "3")    AND       
+      ***               (LNK-SYU-KOH-HKNNUM(KOH-IDX)  NOT =  "027")) OR 
+                 IF   (( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "051" ) OR 
                        ( HKN-RECEFTNDSPKBN            =      "2"   ))   
                  AND  (  LNK-SYU-KOH-HKNNUM(1)        =   "027"     )   
                    IF    WK-TOKUTEI-COMPFTN3   NOT =    ZERO            

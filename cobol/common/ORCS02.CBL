@@ -33,6 +33,8 @@
       *  01.00.03    NACL-門脇    03/03/25  更正・育成等の患者公費負担対応
       *  01.00.04    NACL-門脇    03/04/16  船員保険（被保険者）＋通勤災害
       *                                     ＋初診時　対応
+      *  01.00.05    NACL-門脇    03/05/07  地方老人の負担額の四捨五入の設定
+      *                                     を保険番号マスタの設定で行う。
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -3099,9 +3101,9 @@
                     MOVE   LNK-SYU-KOH-COMPFTN(KOH-IDX)                 
                                             TO WK-TOKUTEI-COMPFTN3      
                END-IF                                      
-               IF ((HKN-HKNKOHSBTKBN     =       "3")    AND
-                   (LNK-SYU-KOH-HKNNUM(KOH-IDX)  NOT =  "027")) OR
-                  ( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "051" ) OR
+      ***      IF ((HKN-HKNKOHSBTKBN     =       "3")    AND
+      ***          (LNK-SYU-KOH-HKNNUM(KOH-IDX)  NOT =  "027")) OR
+               IF ( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "051" ) OR
                   ( HKN-RECEFTNDSPKBN            =      "2"   ) OR
                   ( FLG-KOUGAKUCYO               =       1    )
                    CONTINUE
@@ -3175,17 +3177,17 @@
                                       TO   LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
                END-EVALUATE
            ELSE
-               IF      ((HKN-HKNKOHSBTKBN     =       "3")    AND
-                        (LNK-SYU-KOH-HKNNUM(KOH-IDX)  NOT =  "027")) OR
-                       ( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "051" ) OR
+      ***      IF      ((HKN-HKNKOHSBTKBN     =       "3")    AND
+      ***               (LNK-SYU-KOH-HKNNUM(KOH-IDX)  NOT =  "027")) OR
+               IF      ( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "051" ) OR
                        ( HKN-RECEFTNDSPKBN            =      "2"   )
                    IF    WK-TOKUTEI-COMPFTN   NOT =    ZERO
                        MOVE  WK-TOKUTEI-COMPFTN  TO  LNK-SYU-SYUCOMPFTN
                    END-IF
                END-IF
-               IF     (((HKN-HKNKOHSBTKBN     =       "3")    AND       
-                        (LNK-SYU-KOH-HKNNUM(KOH-IDX)  NOT =  "027")) OR 
-                       ( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "051" ) OR
+      ***      IF     (((HKN-HKNKOHSBTKBN     =       "3")    AND       
+      ***               (LNK-SYU-KOH-HKNNUM(KOH-IDX)  NOT =  "027")) OR 
+               IF     (( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "051" ) OR
                        ( HKN-RECEFTNDSPKBN            =      "2"   ))  
                AND    (  LNK-SYU-KOH-HKNNUM(1)        =   "027"     )   
                    IF    WK-TOKUTEI-COMPFTN3   NOT =    ZERO            
@@ -3372,9 +3374,9 @@
                     MOVE   LNK-SYU-KOH-COMPFTN(KOH-IDX)                 
                                             TO WK-TOKUTEI-COMPFTN3      
                END-IF                
-               IF ((HKN-HKNKOHSBTKBN     =       "3")    AND
-                   (LNK-SYU-KOH-HKNNUM(KOH-IDX)  NOT =  "027")) OR
-                  ( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "051" ) OR
+      ***      IF ((HKN-HKNKOHSBTKBN     =       "3")    AND
+      ***          (LNK-SYU-KOH-HKNNUM(KOH-IDX)  NOT =  "027")) OR
+               IF ( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "051" ) OR
                   ( HKN-RECEFTNDSPKBN            =      "2"   )
                    CONTINUE
                ELSE
