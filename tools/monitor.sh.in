@@ -159,6 +159,9 @@ if test "x"$Start_dbredirector = "xtrue"; then
     done
 fi
 
+$WFC -dir $DIRECTORY -lddir $LDDEF -bddir $LDDEF -base $ORCA_DIR >/dev/null &
+	sleep 10
+
 for i in $ALWAYS_LD; do
     LDNUM=`echo $i|sed -e "s/[^0-9]//g"`
     ORCA_PORT=`expr $START_PORT + $LDNUM`
@@ -171,6 +174,12 @@ for i in $LD; do
     $APS -nocheck -dir $DIRECTORY -lddir $LDDEF -record $RECORD -base $ORCA_DIR $i -port $ORCA_PORT &
 done
 
-$WFC -dir $DIRECTORY -lddir $LDDEF -bddir $LDDEF -base $ORCA_DIR >/dev/null
-
-
+while :
+do 
+  read END
+  if [ "$END" == "exit" ]; then
+    killall wfc
+    kill $glpid
+    break
+  fi
+done

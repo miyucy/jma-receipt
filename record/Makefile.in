@@ -416,6 +416,7 @@ DB_files = \
         metadb.db \
 	tbl_opecom.db \
 	tbl_syutotal.db \
+	blob.db \
 
 all:   
 

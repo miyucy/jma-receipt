@@ -2,13 +2,18 @@ name	orca;
 
 base	"@ORCA_DIR@";
 
-lddir	"@sitelddefdir@:@patchlddefdir@:@lddefdir@";
-bddir	"@sitelddefdir@:@patchlddefdir@:@lddefdir@";
+ddir	"@sitelddefdir@:@patchlddefdir@:@lddefdir@";
 record	"@siterecorddir@:@patchrecorddir@:@recorddir@";
 
 multiplex_level	aps;
 
 linkage	orcalink;
+
+blob {
+    space   "=/blob";
+    port    "/tmp/blog.blob";
+    auth    "/etc/jma-receipt/passwd";
+};
 
 ld	{
 	orca00	"localhost" * 1;

@@ -19,3 +19,6 @@ db_group "shell" {
 db_group "system" {
  type "System";
 };
+db_group    "blob_body" {
+ type    "NativeBLOB";
+};

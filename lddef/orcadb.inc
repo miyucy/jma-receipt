@@ -87,3 +87,6 @@ db	"shell"	{
 db	"system"	{
 	metadb;
 };
+db      "blob_body"{
+         blob;
+};

@@ -892,6 +892,7 @@ COPYS = \
         J025.INC \
         K97.INC  \
 	CPQSUB03.INC \
+	ORCA-BLOB \
 
 
 DBPATH = \

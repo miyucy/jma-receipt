@@ -252,6 +252,7 @@
            COPY    "CPSHELLTBL.INC".
       *     
            COPY    "ORCA-DBPATH".
+           COPY    "ORCA-BLOB".
       *
        01  WRK-LNK-AREA.
            COPY    "CPORCSPRTLNK.INC".   
@@ -490,6 +491,7 @@
                    MOVE "/tmp/"
                                TO  SPA-NAI-ENV
            END-IF
+           MOVE "/tmp/"                   TO  SPA-NAI-ENV
       *
            EVALUATE    SPA-PRTKANRI-TBL-KEY
                WHEN    "SOKATU"
@@ -2160,7 +2162,14 @@
       *    MOVE    SPA-GMN-TITLE2      TO  XC01-HEAD2
       *     
            MOVE    SPA-GMN-SELNUM      TO  XC01-SELNUM
-           MOVE    SPA-GMN-FILENAME    TO  XC01-PSAREA
+      *    MOVE    SPA-GMN-FILENAME    TO  XC01-PSAREA
+           MOVE   "BLOBIMPORT"         TO  MCP-FUNC
+           MOVE    PATH-BLOB-PRIMARY   TO  MCP-PATH
+           MOVE    SPA-GMN-FILENAME    TO  ORCA-BLOB-FILE
+           CALL   "MCPSUB"             USING
+                                       MCPAREA
+                                       ORCA-BLOB
+           MOVE    ORCA-BLOB-OBJECT    TO  XC01-PSAREA
       *****IF      XC01-PSAREA         =   SPACE
       *            MOVE  SPA-NAI-FILENAME(1)
       *                                TO  XC01-PSAREA
