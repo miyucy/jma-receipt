@@ -17,7 +17,7 @@
       ********************************************************************
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCGI41.
-      *****************************************************************
+      ********************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 入院会計照会
       *  コンポーネント名  : 入院会計カード入力（Ｉ４１）
@@ -3368,12 +3368,6 @@
       *    チェック画面へ
       *****************************************************************
        430-CHEKU-SEC              SECTION.
-      *
-           IF      SPA-GMN-SRYKA-I-41   =   "00"
-               MOVE    6               TO  SPA-GMN-CUR-41
-               MOVE    "0023"          TO  SPA-ERRCD
-               GO      TO      430-CHEKU-EXT
-           END-IF.
       *    剤修正のチェック
            IF      SPA-GMN-NUM-41   NOT =   ZERO
                MOVE    "0009"          TO  SPA-ERRCD
@@ -3652,15 +3646,15 @@
                MOVE    "SRYACT-KEY7"       TO  ORC-DBPATH
                PERFORM 930-SRYACT-RAED-SEC
            ELSE
-               INITIALIZE                  SRYACCT-REC
-               MOVE    1               TO  FLG-SRYACCT
+               INITIALIZE                  SRYACT-REC
+               MOVE    1               TO  FLG-SRYACT
            END-IF.
       *
-           IF      FLG-SRYACCT               =   1
+           IF      FLG-SRYACT               =   1
                CONTINUE
            ELSE
-               PERFORM UNTIL      (FLG-SRYACCT     =   1)  OR
-                                  (IDZ3            =   50)
+               PERFORM UNTIL      (FLG-SRYACT     =   1)  OR
+                                  (IDZ3           =   50)
                    ADD     1               TO  IDZ3
                    IF      SPA-GMN-SRYKA-I-41     =   "00"
                        MOVE    1             TO

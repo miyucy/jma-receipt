@@ -523,26 +523,24 @@
                MOVE    "SRYACT-KEY7"       TO  ORC-DBPATH
                PERFORM 930-SRYACT-RAED-SEC
            ELSE
-               INITIALIZE                  SRYACCT-REC
-               MOVE    1               TO  FLG-SRYACCT
+               INITIALIZE                  SRYACT-REC
+               MOVE    1               TO  FLG-SRYACT
            END-IF.
       *
-           IF      FLG-SRYACCT               =   1
+           IF      FLG-SRYACT               =   1
                CONTINUE
            ELSE
-               PERFORM UNTIL      (FLG-SRYACCT     =   1)  OR
-                                  (IDX5            =   50)
+               PERFORM UNTIL      (FLG-SRYACT     =   1)  OR
+                                  (IDX5           =   50)
                    ADD     1               TO  IDX5
-                   IF      SPA-GMN-SRYKA-I-41     =   SRY-SRYKA
-                       MOVE    SRY-NYUGAIKBN TO
+                   MOVE    SRY-NYUGAIKBN   TO
                                            WRK-SRY-NYUGAIKBN (IDX5)
-                       MOVE    SRY-SRYKA     TO
+                   MOVE    SRY-SRYKA       TO
                                            WRK-SRY-SRYKA (IDX5)
-                       MOVE    SRY-ZAINUM    TO
+                   MOVE    SRY-ZAINUM      TO
                                            WRK-SRY-ZAINUM (IDX5)
-                       MOVE    SRY-SRYKBN    TO
+                   MOVE    SRY-SRYKBN      TO
                                            WRK-SRY-SRYKBN (IDX5)
-                   END-IF
                    PERFORM 930-SRYACT-RAED-SEC
                END-PERFORM
            END-IF.
@@ -752,8 +750,7 @@
       *            点数マスタを取得する
                        MOVE    NSRY-SRYCD (IDZ)    TO  TNS-SRYCD
                        PERFORM 910-TENSU-READ-SEC
-                       IF     (FLG-TENSU           =   ZERO  )  AND
-                              (TNS-DATAKBN     NOT =   2  AND  3 )
+                       IF     FLG-TENSU           =   ZERO
                            PERFORM 31011-NYUKOUI-SPA-SEC
                        END-IF
                    END-IF
