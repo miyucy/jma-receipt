@@ -133,7 +133,8 @@
            03  WK-GAIKFTNRATE          PIC 9(03).
            03  WK-GAIYKZFTNKBN         PIC X(01).
            03  WK-TOKUTEI-COMPFTN      PIC 9(08).
-           03  WK-TOKUTEI-COMPFTN2     PIC 9(08).                       
+           03  WK-TOKUTEI-COMPFTN2     PIC 9(08).
+           03  WK-TOKUTEI-COMPFTN3     PIC 9(08).
        01  SHOHOUSEN-AREA.
            03  FLG-INNAI               PIC X(01).
            03  FLG-INGAI               PIC X(01).
@@ -550,6 +551,7 @@
            MOVE         ZERO              TO     LNK-SYU-YKZ-FTN.
            MOVE         ZERO              TO     LNK-SYU-RESE-YKZ-FTN.
            PERFORM      YAKFTN-SANTEI-SEC.
+           MOVE         YAKFTN-SOGOKEI    TO     LNK-SYU-RESE-YKZ-FTN.
            EVALUATE     FLG-SANSHOU
                WHEN     "1"
                    IF  COMB-GAI-YKZFTNKBN      NOT =   "0"
@@ -557,6 +559,8 @@
                        IF     COMB-GAI-YKZFTNKBN     =   "1"
                             MOVE   YAKFTN-SOGOKEI  TO  LNK-SYU-YKZ-FTN
                        END-IF
+      *             ELSE
+      *                 MOVE   YAKFTN-SOGOKEI   TO  LNK-SYU-RESE-YKZ-FTN
                    END-IF
                WHEN     "2"
                    IF  COMB-TSY-GAIYKZFTNKBN   NOT =   "0"
@@ -564,6 +568,8 @@
                        IF   COMB-TSY-GAIYKZFTNKBN  =   "1"
                             MOVE   YAKFTN-SOGOKEI  TO  LNK-SYU-YKZ-FTN
                        END-IF
+      *             ELSE
+      *                 MOVE   YAKFTN-SOGOKEI   TO  LNK-SYU-RESE-YKZ-FTN
                    END-IF
                WHEN     "3"
                    IF  COMB-TNK-GAIYKZFTNKBN   NOT =   "0"
@@ -571,6 +577,8 @@
                        IF   COMB-TNK-GAIYKZFTNKBN  =   "1"
                             MOVE   YAKFTN-SOGOKEI  TO  LNK-SYU-YKZ-FTN
                        END-IF
+      *             ELSE
+      *                 MOVE   YAKFTN-SOGOKEI   TO  LNK-SYU-RESE-YKZ-FTN
                    END-IF
            END-EVALUATE.
       *
@@ -2673,6 +2681,8 @@
       *
       *----(2002/03/13  ŽÍŽÝŽºŽ³)---------------------------------------
       *
+           MOVE     ZERO     TO     WK-TOKUTEI-COMPFTN3.
+      *
            PERFORM    VARYING   KOH-IDX    FROM   1   BY   1
                       UNTIL    (KOH-IDX    >      4)
                IF   COMB-KOHHKNNUM(KOH-IDX)  NOT =  SPACE
@@ -3229,6 +3239,10 @@
                               WK-GAIKFTNRATE  /  100
                COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX)  =
                          WK-ZENGAKU   *  WK-FUTANWARI
+               IF   LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "027"           
+                    MOVE   LNK-SYU-KOH-COMPFTN(KOH-IDX)                 
+                                            TO WK-TOKUTEI-COMPFTN3      
+               END-IF                                                   
                IF ((HKN-HKNKOHSBTKBN     =       "3")    AND
                    (LNK-SYU-KOH-HKNNUM(KOH-IDX)  NOT =  "027")) OR
                    (LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "051")
@@ -3300,6 +3314,15 @@
                        MOVE  WK-TOKUTEI-COMPFTN  TO  LNK-SYU-SYUCOMPFTN
                    END-IF
                END-IF
+               IF     (((HKN-HKNKOHSBTKBN     =       "3")    AND       
+                        (LNK-SYU-KOH-HKNNUM(KOH-IDX)  NOT =  "027")) OR 
+                        (LNK-SYU-KOH-HKNNUM(KOH-IDX)  =   "051")    )   
+               AND    (  LNK-SYU-KOH-HKNNUM(1)        =   "027"     )   
+                   IF    WK-TOKUTEI-COMPFTN3   NOT =    ZERO            
+                       MOVE   WK-TOKUTEI-COMPFTN3                       
+                                            TO  LNK-SYU-KOH-COMPFTN(1)  
+                   END-IF                                               
+               END-IF                                                   
                IF    LNK-SYU-SYUCOMPFTN   NOT =    ZERO
                    IF  (( LNK-S01-KOUREI-ZAITAKU-KBN   =   "1"     ) 
                    OR   ( FLG-KOUREI-KBN               =   "1"     ))
@@ -3456,6 +3479,10 @@
                               WK-GAIKFTNRATE  /  100
                COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX)  =
                          WK-ZENGAKU   *  WK-FUTANWARI
+               IF   LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "027"           
+                    MOVE   LNK-SYU-KOH-COMPFTN(KOH-IDX)                 
+                                            TO WK-TOKUTEI-COMPFTN3      
+               END-IF                                         
       **       IF    LNK-SYU-KOH-HKNNUM(KOH-IDX)  =   "051"       
                IF ((HKN-HKNKOHSBTKBN     =       "3")    AND
                    (LNK-SYU-KOH-HKNNUM(KOH-IDX)  NOT =  "027")) OR
@@ -4397,6 +4424,20 @@
                MOVE    "SYUNOU-KEY3"    TO     ORC-DBPATH
                PERFORM  SYUNOU-READ-SEC
                PERFORM  UNTIL  (FLG-SYUNOU   =    "1")
+                 DISPLAY  "LNK-SYU-DENPNUM = " LNK-SYU-DENPNUM
+                 IF    LNK-SYU-DENPNUM   NOT =    1
+                   IF  LNK-SYU-DENPNUM   >   SYU-DENPNUM
+                     IF  WK-CONT-YAKFTNKIN1    =    ZERO
+                         MOVE   SYU-RESE-YKZ-FTN
+                                          TO     WK-CONT-YAKFTNKIN1
+                     ELSE
+                         MOVE   SYU-RESE-YKZ-FTN
+                                          TO     WK-CONT-YAKFTNKIN2
+                     END-IF
+                   END-IF
+                   MOVE      "SYUNOU-KEY3"  TO     ORC-DBPATH
+                   PERFORM    SYUNOU-READ-SEC
+                 ELSE
                    IF  WK-CONT-YAKFTNKIN1    =    ZERO
                        MOVE   SYU-RESE-YKZ-FTN
                                         TO     WK-CONT-YAKFTNKIN1
@@ -4406,6 +4447,7 @@
                    END-IF
                    MOVE      "SYUNOU-KEY3"  TO     ORC-DBPATH
                    PERFORM   SYUNOU-READ-SEC
+                 END-IF
                END-PERFORM
            END-IF.
       *
