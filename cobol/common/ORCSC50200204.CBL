@@ -34,6 +34,7 @@
       * 01.00.05     NACL-多々納  02/10/03  労災加算なしの追加
       * 01.00.06     NACL-多々納  02/11/22  労災の機能回復指導加算の修正
       * 01.00.07     NACL-多々納  03/06/06  フィルム追加
+      * 01.00.06     NACL-多々納  03/06/06  人工心肺不使用加算の計算修正
       *****************************************************************
       *
       *
@@ -730,6 +731,23 @@
                MOVE    WRK-COM-TIMEFLG(IDX-ZS)     TO  WRK-TIMEFLG
            END-IF
       *
+      *    入院の時、手技料の時間外フラグを優先する
+           IF     (SPA-NYUGAIKBN       =   "1"  )  AND
+                  (WRK-COM-TIMEFLG(IDX-ZS) NOT =   ZERO )
+      *        時間外区分の無い場合はクリアする
+               IF     (WRK-GMN-INPUTCD(IDX-ZS)(1:1)    NUMERIC) AND
+                      (WRK-GMN-INPUTCD(IDX-ZS)(2:1)    =   SPACE )  AND
+                      (WRK-GMN-INPUTCD(IDX-ZS)(3:) NOT =   SPACE )
+                   MOVE    WRK-COM-TIMEFLG(IDX-ZS) TO  WRK-TIMEFLG
+               ELSE
+                   IF      LNK-ORCSC-TIMEFLG       =   ZERO
+                       MOVE    ZERO                TO  WRK-TIMEFLG
+                       MOVE    ZERO                TO  WRK-COM-TIMEFLG
+                                                                (IDX-ZS)
+                   END-IF
+               END-IF
+           END-IF
+      *
       *    時間加算
            EVALUATE    WRK-TIMEFLG
       *      /* 時間外 */
@@ -773,6 +791,12 @@
            IF      FLG-ADD             =   1
                MOVE    "2"             TO  WRK-COM-AUTOKBN (IDX-S)
                MOVE    1               TO  WRK-COM-SANFLG (IDX-S)
+           END-IF
+      *
+      *    入院の時、手技料に時間外フラグを設定する
+           IF     (SPA-NYUGAIKBN       =   "1"  )  AND
+                  (WRK-COM-TIMEFLG(IDX-ZS) =   ZERO )
+               MOVE    WRK-TIMEFLG         TO  WRK-COM-TIMEFLG(IDX-ZS)
            END-IF
       *
            .

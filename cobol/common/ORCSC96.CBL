@@ -863,6 +863,16 @@
                                        TO  SPA-ERRMSG(1:24)
                    MOVE    "診療科の変更はできません"
                                        TO  SPA-ERRMSG(25:)
+               WHEN    "1030"
+                   MOVE    "処方せんプログラムがありません。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "システム管理を確認して下さい。"
+                                       TO  SPA-ERRMSG(33:)
+               WHEN    "1031"
+                   MOVE    "薬剤情報印刷プログラムがありません。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "システム管理を確認して下さい。"
+                                       TO  SPA-ERRMSG(35:)
                WHEN    "K001"
                    MOVE    "警告！時間外算定がありません"
                                        TO  SPA-ERRMSG

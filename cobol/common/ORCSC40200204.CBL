@@ -542,8 +542,10 @@
       *        労災の時、チェックをしない
                AND (SPA-HKNKBN         =   ZERO  )
                MOVE    ZERO            TO  WRK-DAY-CNT
+               MOVE    SPACE           TO  WRK-ERRCD2
                PERFORM VARYING     IDX-TBL     FROM    1   BY  1
-                       UNTIL       IDX-TBL     >   4
+                       UNTIL      (IDX-TBL     >   4   )   OR
+                                  (WRK-ERRCD2  NOT =   SPACE)
                    SET     TBL-IDX             TO  IDX-TBL
                    MOVE    TBL-SRYCD (TBL-IDX) TO  WRK-SRYCD
                    PERFORM 3001-SANTEI-CHK-SEC
@@ -946,6 +948,12 @@
                AND (SPA-NYUGAIKBN      =   "2"  )
                PERFORM 10012-JIKANKASAN-SET-SEC
            END-IF
+      *    入院の時、時間加算区分のみ
+           IF      (SPA-NYUGAIKBN      =   "1"  )   AND
+                   (WRK-COM-TIMEFLG (IDX-ZS)   NOT =   ZERO )  AND
+                   (WRK-COM-TIMEKSNKBN(IDX-ZS) NOT =   ZERO )
+               PERFORM 10012-JIKANKASAN-SET-SEC
+           END-IF
       *
       *    年齢加算処理
            PERFORM 10013-NENREI-SET-SEC
@@ -961,6 +969,10 @@
       *
            MOVE    LNK-ORCSC-TIMEFLG   TO  WRK-TIMEFLG
            IF      WRK-TIMEFLG         =   ZERO
+               MOVE    WRK-COM-TIMEFLG(IDX-ZS) TO  WRK-TIMEFLG
+           END-IF
+      *    入院の時
+           IF      SPA-NYUGAIKBN       =   "1"
                MOVE    WRK-COM-TIMEFLG(IDX-ZS) TO  WRK-TIMEFLG
            END-IF
       *

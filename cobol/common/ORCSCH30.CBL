@@ -150,6 +150,9 @@
       *    薬情報出力パラメタ
            COPY    "CPORCHC30.INC".
       *
+      *    オンライン帳票名・出力先プリンタ名取得パラ
+           COPY    "CPORCSPRTNM.INC".
+      *
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
       *
@@ -216,41 +219,56 @@
       *****************************************************************
        300-HC30-PRINT-SEC             SECTION.
       *
-      *    帳票プログラム取得
-           MOVE    SPACE               TO  WRK-YAKJYO-PG
-           MOVE    SPACE               TO  SYS-1032-REC
-           INITIALIZE                      SYS-1032-REC
-           MOVE    "1032"              TO  SYS-1032-KANRICD
-           MOVE    "00000004"          TO  SYS-1032-KBNCD
+      *    薬情報出力
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "1"                 TO  ORCSPRTNM-KBN
+           MOVE    "00000004"          TO  ORCSPRTNM-KBNCD
+           MOVE    SPA-SRYYMD          TO  ORCSPRTNM-SRYYMD
+           CALL    "ORCSPRTNM"         USING
+                                           ORCSPRTNMAREA
+                                           SPA-AREA
+                                           SYS-1032-REC
+           IF      ORCSPRTNM-RC    NOT =   ZERO
+               GO      TO      300-HC30-PRINT-EXT
+           END-IF
+           MOVE    ORCSPRTNM-PRTPG     TO  WRK-YAKJYO-PG
       *
-           MOVE    SYS-1032-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-               PERFORM 960-KANRIMST-READ-SEC
-           ELSE
-               INITIALIZE                  SYS-1032-REC
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1032-REC
+      *    帳票プログラム取得
+      ***  MOVE    SPACE               TO  WRK-YAKJYO-PG
+      *    MOVE    SPACE               TO  SYS-1032-REC
+      *    INITIALIZE                      SYS-1032-REC
+      *    MOVE    "1032"              TO  SYS-1032-KANRICD
+      *    MOVE    "00000004"          TO  SYS-1032-KBNCD
+      *
+      *    MOVE    SYS-1032-REC        TO  MCPDATA-REC
+      *    MOVE    "DBSELECT"          TO  MCP-FUNC
+      *    MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+      *    MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+      *    CALL    "ORCMCPSUB"          USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      *                                 MCPDATA-REC
+      *    IF      MCP-RC              =   ZERO
+      *        MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+      *        PERFORM 960-KANRIMST-READ-SEC
+      *    ELSE
+      *        INITIALIZE                  SYS-1032-REC
+      *        MOVE    1               TO  FLG-SYSKANRI
+      *    END-IF
+      *    IF      FLG-SYSKANRI        =   ZERO
+      *        MOVE    MCPDATA-REC         TO  SYS-1032-REC
       *        独自開発分
-               IF      SYS-1032-ORCACSTCHK     =   "T"
-                   MOVE    SYS-1032-ORCACSTNM  TO  WRK-YAKJYO-PG
-               ELSE
+      *        IF      SYS-1032-ORCACSTCHK     =   "T"
+      *            MOVE    SYS-1032-ORCACSTNM  TO  WRK-YAKJYO-PG
+      *        ELSE
       *        ＯＲＣＡ標準分
-                   MOVE    SYS-1032-ORCAORGNM  TO  WRK-YAKJYO-PG
-               END-IF
-           END-IF
-           IF      WRK-YAKJYO-PG       =   SPACE
-               MOVE    "ORCHC30"           TO  WRK-YAKJYO-PG
-           END-IF
+      *            MOVE    SYS-1032-ORCAORGNM  TO  WRK-YAKJYO-PG
+      *        END-IF
+      *    END-IF
+      *    IF      WRK-YAKJYO-PG       =   SPACE
+      *        MOVE    "ORCHC30"           TO  WRK-YAKJYO-PG
+      *****END-IF
+      *
            CALL    WRK-YAKJYO-PG           USING
                                            SPA-AREA
                                            ORCHC30AREA

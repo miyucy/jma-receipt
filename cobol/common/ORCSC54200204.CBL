@@ -558,6 +558,23 @@
                MOVE    WRK-COM-TIMEFLG(IDX-ZS)     TO  WRK-TIMEFLG
            END-IF
       *
+      *    入院の時、手技料の時間外フラグを優先する
+           IF     (SPA-NYUGAIKBN       =   "1"  )  AND
+                  (WRK-COM-TIMEFLG(IDX-ZS) NOT =   ZERO )
+      *        時間外区分の無い場合はクリアする
+               IF     (WRK-GMN-INPUTCD(IDX-ZS)(1:1)    NUMERIC) AND
+                      (WRK-GMN-INPUTCD(IDX-ZS)(2:1)    =   SPACE )  AND
+                      (WRK-GMN-INPUTCD(IDX-ZS)(3:) NOT =   SPACE )
+                   MOVE    WRK-COM-TIMEFLG(IDX-ZS) TO  WRK-TIMEFLG
+               ELSE
+                   IF      LNK-ORCSC-TIMEFLG       =   ZERO
+                       MOVE    ZERO                TO  WRK-TIMEFLG
+                       MOVE    ZERO                TO  WRK-COM-TIMEFLG
+                                                                (IDX-ZS)
+                   END-IF
+               END-IF
+           END-IF
+      *
       *    時間加算
            EVALUATE    WRK-TIMEFLG
       *      /* 時間外 */
@@ -600,6 +617,12 @@
            PERFORM 1002-KASAN-SET-SEC
            IF      FLG-ADD             =   1
                MOVE    1               TO  WRK-COM-SANFLG(IDX-S)
+           END-IF
+      *
+      *    入院の時、手技料に時間外フラグを設定する
+           IF     (SPA-NYUGAIKBN       =   "1"  )  AND
+                  (WRK-COM-TIMEFLG(IDX-ZS) =   ZERO )
+               MOVE    WRK-TIMEFLG         TO  WRK-COM-TIMEFLG(IDX-ZS)
            END-IF
       *
            .

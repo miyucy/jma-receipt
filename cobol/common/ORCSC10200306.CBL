@@ -754,6 +754,13 @@
       *    時間加算チェック
            IF     WRK-COM-TIMEFLG (IDX-Z)  NOT =   ZERO
                PERFORM 1002-KASAN-SET-SEC
+           ELSE
+      *        入院の場合、時間外区分も対象とする
+               IF      (SPA-NYUGAIKBN      =   "1"  )  AND
+                       (LNK-ORCSC-TIMEFLG  NOT =   ZERO)  AND
+                       (WRK-COM-DATAKBN(IDX-Z) =   "1" )
+                   PERFORM 1002-KASAN-SET-SEC
+               END-IF
            END-IF
       *
       *    時間加算を入力された時、自動振替をする
@@ -1155,9 +1162,35 @@
       *****************************************************************
        1002-KASAN-SET-SEC              SECTION.
       *
-      *    診察の時、他の時間加算もする
-           MOVE    WRK-COM-TIMEFLG(IDX-Z)
+      *    入院の場合、時間外区分も対象とする
+           IF      (SPA-NYUGAIKBN      =   "1"     )  AND
+                   (LNK-ORCSC-TIMEFLG  NOT =   ZERO)  AND
+                   (WRK-COM-TIMEFLG(IDX-Z) =   ZERO)
+               MOVE    LNK-ORCSC-TIMEFLG       TO  WRK-COM-TIMEFLG
+                                                              (IDX-Z)
+           END-IF
+           IF     (SPA-NYUGAIKBN       =   "1"  )  AND
+                  (WRK-COM-TIMEFLG(IDX-Z)  NOT =   ZERO )
+      *        時間外区分の無い場合はクリアする
+               IF     (WRK-GMN-INPUTCD(IDX-Z)(1:1)     NUMERIC) AND
+                      (WRK-GMN-INPUTCD(IDX-Z)(2:1)     =   SPACE )  AND
+                      (WRK-GMN-INPUTCD(IDX-Z)(3:)  NOT =   SPACE )
+                   CONTINUE
+               ELSE
+                   IF      LNK-ORCSC-TIMEFLG       =   ZERO
+                       MOVE    ZERO                TO  WRK-COM-TIMEFLG
+                                                                (IDX-Z)
+                   ELSE
+                       MOVE    LNK-ORCSC-TIMEFLG   TO  WRK-COM-TIMEFLG
+                                                              (IDX-Z)
+                   END-IF
+               END-IF
+           END-IF
+      *    診察の時、他の時間加算もする（外来のみ）
+           IF       SPA-NYUGAIKBN      =   "2"
+               MOVE    WRK-COM-TIMEFLG(IDX-Z)
                                        TO  LNK-ORCSC-TIMEFLG
+           END-IF
       *
            MOVE    SPACE               TO  WRK-SRYCD
       *
@@ -1459,7 +1492,6 @@
       *****************************************************************
        1008-NENREI-CHENGE-SEC           SECTION.
       *
-      *
            MOVE    WRK-NYU-SRYCD       TO  WRK-SRYCD
       *    加算存在チェック
            PERFORM 1110-KASAN-CHK-SEC
@@ -1467,7 +1499,7 @@
                GO      TO      1008-NENREI-CHENGE-EXT
            END-IF
       *
-           MOVE    IDX-SYU               TO  IDX-S
+           MOVE    IDX-SYU             TO  IDX-S
            EVALUATE    WRK-COM-SRYKBN(IDX-SYU)
                WHEN    "11"
       *            初診
@@ -2440,11 +2472,11 @@
                    ELSE
       *                他科にて受診済みも診察料とする
                        IF     (WRK-COM-INPUTCD(IDX-Z)  =  "830000021")
-                         AND  (WRK-COM-SRYKBN (IDX-Z)  =   "12"      )
+                         AND  (WRK-COM-SRYKBN (IDX-Z)  =  "12"      )
                            ADD     1               TO  IDX-ZAI2
                        END-IF
                        IF     (WRK-COM-INPUTCD(IDX-Z)  =  "830000020")
-                         AND  (WRK-COM-SRYKBN (IDX-Z)  =   "11"      )
+                         AND  (WRK-COM-SRYKBN (IDX-Z)  =  "11"      )
                            ADD     1               TO  IDX-ZAI1
                        END-IF
                    END-IF
