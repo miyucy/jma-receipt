@@ -215,6 +215,8 @@
            03  IDX-J               PIC 9(04).
       *
            03  IDX-Z               PIC 9(04).
+           03  IDX-IN              PIC 9(02).
+           03  IDX-IN2             PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -3398,14 +3400,32 @@
                    END-IF
                ELSE
                    MOVE    SNUM-OUTNUM     TO  SPA-GMN-DAY (IDX)
-                   IF      SPA-GMN-DAY (IDX)   >   ZERO
+      *************IF      SPA-GMN-DAY (IDX)   >   ZERO
       *                受診歴有無のチェック
-                       PERFORM 410121-RRK-DAYCHK-SEC
-                       IF      SPA-ERRCD       NOT =   SPACE
-                           IF      WRK-IDX             =   ZERO
-                               MOVE    IDX                 TO  WRK-IDX
-                           END-IF
-                       END-IF
+      *                PERFORM 410121-RRK-DAYCHK-SEC
+      *                IF      SPA-ERRCD       NOT =   SPACE
+      *                    IF      WRK-IDX             =   ZERO
+      *                        MOVE    IDX                 TO  WRK-IDX
+      *                    END-IF
+      *                END-IF
+      ************ END-IF
+               END-IF
+           END-PERFORM
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    WRK-IDX         TO  SPA-DAY-IDX
+               GO      TO     41012-DAY-CHK-EXT
+           END-IF
+      *
+      *    受診歴有無のチェック
+           PERFORM   VARYING   IDX     FROM    1   BY  1
+                     UNTIL    (IDX         >   31  )  OR
+                              (SPA-ERRCD   NOT =   SPACE )
+               IF      SPA-GMN-DAY (IDX)   >   ZERO
+      *            受診歴有無のチェック
+                   PERFORM 410121-RRK-DAYCHK-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       MOVE    IDX             TO  WRK-IDX
+                       MOVE    WRK-IDX         TO  SPA-DAY-IDX
                    END-IF
                END-IF
            END-PERFORM
@@ -3414,44 +3434,70 @@
                GO      TO     41012-DAY-CHK-EXT
            END-IF
       *
+      *
       *    IF      SPA-GMN-DAY (SPA-DAY-IDX)   =   SPA-GNAI-DAY
       *                                            (1 SPA-DAY-IDX)
       *        CONTINUE
       *****ELSE
-           PERFORM   VARYING   SPA-DAY-IDX     FROM    1   BY  1
-                     UNTIL    (SPA-DAY-IDX     >   31  )  OR
+      *    今回入力位置
+           IF    (MCP-EVENT       =   "ACTIVATE"  ) AND
+                 (MCP-WIDGET(1:3) =   "DAY"       )
+               MOVE    MCP-WIDGET(4:2)     TO  IDX-IN
+           ELSE
+               MOVE    ZERO                TO  IDX-IN
+           END-IF
+      *
+           PERFORM   VARYING   IDX-IN2         FROM    1   BY  1
+                     UNTIL    (IDX-IN2         >   31  )  OR
                               (SPA-ERRCD   NOT =   SPACE) OR
                               (FLG-END         =   1    )
-               MOVE    SPA-GMN-DAY (SPA-DAY-IDX)
-                                           TO  SPA-GNAI-DAY
-                                                    (1 SPA-DAY-IDX)
-               IF     (SPA-GNAI-DAY (3 SPA-DAY-IDX)  >   ZERO  )  OR
-                      (SPA-GNAI-DAY (4 SPA-DAY-IDX)  >   ZERO  )
-                   INITIALIZE                  SPA-J022-AREA
-                   MOVE    1               TO  SPA-NAI-DAYCHK
+               MOVE    IDX-IN2             TO  SPA-DAY-IDX
+               IF     (SPA-GMN-DAY (SPA-DAY-IDX)
+                                       NOT =   SPA-GNAI-DAY
+                                                    (1 SPA-DAY-IDX))
+                   OR (SPA-DAY-IDX         =   IDX-IN )
+      *            今回変更があり、履歴がある時
+                   IF     (SPA-GNAI-DAY (3 SPA-DAY-IDX)  >   ZERO  )  OR
+                          (SPA-GNAI-DAY (4 SPA-DAY-IDX)  >   ZERO  )
+                        PERFORM 410121-J022-SET-SEC
+                    END-IF
+                END-IF
+                IF     FLG-END             =   ZERO
+                    MOVE    SPA-GMN-DAY (SPA-DAY-IDX)
+                                               TO  SPA-GNAI-DAY
+                                                        (1 SPA-DAY-IDX)
+                   IF     (SPA-GNAI-DAY (3 SPA-DAY-IDX)  >   ZERO  )  OR
+                          (SPA-GNAI-DAY (4 SPA-DAY-IDX)  >   ZERO  )
+                       INITIALIZE                  SPA-J022-AREA
+                       MOVE    1               TO  SPA-NAI-DAYCHK
+                                                         (SPA-DAY-IDX)
+                       MOVE    SPA-GNAI-DAY (2 SPA-DAY-IDX)
+                                               TO  SPA-NAI-DAY1
                                                         (SPA-DAY-IDX)
-                   MOVE    SPA-GNAI-DAY (2 SPA-DAY-IDX)
-                                           TO  SPA-NAI-DAY1
+                       MOVE    SPA-GNAI-DAY (3 SPA-DAY-IDX)
+                                               TO  SPA-NAI-DAY2
                                                         (SPA-DAY-IDX)
-                   MOVE    SPA-GNAI-DAY (3 SPA-DAY-IDX)
-                                           TO  SPA-NAI-DAY2
+                       MOVE    SPA-GNAI-DAY (4 SPA-DAY-IDX)
+                                               TO  SPA-NAI-DAY3
                                                         (SPA-DAY-IDX)
-                   MOVE    SPA-GNAI-DAY (4 SPA-DAY-IDX)
-                                           TO  SPA-NAI-DAY3
-                                                        (SPA-DAY-IDX)
-                   PERFORM 410121-J022-SET-SEC
+      *************PERFORM 410121-J022-SET-SEC
       *************GO      TO      41012-DAY-CHK-EXT
-               ELSE
-                   MOVE    SPA-GMN-DAY (SPA-DAY-IDX)
+                   ELSE
+                       MOVE    SPA-GMN-DAY (SPA-DAY-IDX)
                                            TO  SPA-GNAI-DAY
                                                         (1 SPA-DAY-IDX)
-                   MOVE    SPA-GMN-DAY (SPA-DAY-IDX)
+                       MOVE    SPA-GMN-DAY (SPA-DAY-IDX)
                                            TO  SPA-GNAI-DAY
                                                         (2 SPA-DAY-IDX)
-      *            受診履歴の剤変更
-                   PERFORM 410122-RRK-ZAINUM-SEC
+      *                受診履歴の剤変更
+                       PERFORM 410122-RRK-ZAINUM-SEC
+                   END-IF
                END-IF
            END-PERFORM
+      *
+           IF      FLG-END             =   1
+               GO      TO      41012-DAY-CHK-EXT
+           END-IF
       *
       *    ＯＫの時、次ぎの日へ
            IF    (MCP-EVENT       =   "ACTIVATE"  ) AND
@@ -3635,14 +3681,28 @@
       *****************************************************************
        410121-J022-SET-SEC             SECTION.
       *
-      *    開始位置
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   31
-               IF      SPA-NAI-DAYCHK (IDX)    =   1
-                   MOVE    IDX             TO  SPA-J022-IDX
-                   MOVE    31              TO  IDX
-               END-IF
-           END-PERFORM
+           MOVE    SPA-GMN-DAY (SPA-DAY-IDX)
+                                       TO  SPA-GNAI-DAY
+                                                        (1 SPA-DAY-IDX)
+           INITIALIZE                  SPA-J022-AREA
+           MOVE    1                   TO  SPA-NAI-DAYCHK
+                                                        (SPA-DAY-IDX)
+           MOVE    SPA-GNAI-DAY (2 SPA-DAY-IDX)
+                                       TO  SPA-NAI-DAY1 (SPA-DAY-IDX)
+           MOVE    SPA-GNAI-DAY (3 SPA-DAY-IDX)
+                                       TO  SPA-NAI-DAY2 (SPA-DAY-IDX)
+           MOVE    SPA-GNAI-DAY (4 SPA-DAY-IDX)
+                                       TO  SPA-NAI-DAY3 (SPA-DAY-IDX)
+      *
+           MOVE    SPA-DAY-IDX         TO  SPA-J022-IDX
+      **** 開始位置
+      *    PERFORM VARYING     IDX     FROM    1   BY  1
+      *            UNTIL       IDX     >   31
+      *        IF      SPA-NAI-DAYCHK (IDX)    =   1
+      *            MOVE    IDX             TO  SPA-J022-IDX
+      *            MOVE    31              TO  IDX
+      *        END-IF
+      *****END-PERFORM
       *
            MOVE    SPA-GNAI-DAY (2 SPA-J022-IDX) 
                                        TO  SPA-J022-DAY1
