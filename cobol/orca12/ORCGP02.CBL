@@ -372,6 +372,9 @@
       *    排他制御サブパラメタ
            COPY    "CPORCSLOCK.INC".
       *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
@@ -1803,6 +1806,11 @@
       *****************************************************************
        49911-DB-DELETE-SEC             SECTION.
       *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
       *    患者情報削除
            INITIALIZE                      PTINF-REC
            MOVE    SPA-HOSPID          TO  PTINF-HOSPID
@@ -2001,7 +2009,7 @@
       *    受付
            INITIALIZE                      UKETUKE-REC
            MOVE    SPA-HOSPID          TO  UKE-HOSPID
-           MOVE    SPA-GMN-PTID            TO  UKE-PTID
+           MOVE    SPA-GMN-PTID        TO  UKE-PTID
            MOVE    UKETUKE-REC         TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "UKETUKE-DEL1"      TO  ORC-DBPATH
@@ -2097,7 +2105,7 @@
       *    予約
            INITIALIZE                      YYK-REC
            MOVE    SPA-HOSPID          TO  YYK-HOSPID
-           MOVE    SPA-GMN-PTID            TO  YYK-PTID
+           MOVE    SPA-GMN-PTID        TO  YYK-PTID
            MOVE    YYK-REC             TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "YYK-KEY6"          TO  ORC-DBPATH
@@ -2128,6 +2136,9 @@
                    PERFORM 900-YOYAKU-READ-SEC
                    COMPUTE YYK-YYKCNT          =   YYK-YYKCNT
                                                -   1
+      *
+                   MOVE    SMCNDATE-YMD        TO  YYK-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  YYK-UPHMS
       *            更新
                    MOVE    YYK-REC             TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC

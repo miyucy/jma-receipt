@@ -425,6 +425,9 @@
       *    排他制御サブパラメタ
            COPY    "CPORCSLOCK.INC".
       *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
@@ -2725,6 +2728,11 @@
                GO      TO      420-YYKDEL-EXT
            END-IF
       *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
            INITIALIZE                  YYK-REC
            MOVE    SPA-HOSPID          TO  YYK-HOSPID
            MOVE    SPA-GMN-SRYNAIYOCD  TO  YYK-SRYNAIYO
@@ -2757,6 +2765,10 @@
       *
            IF      FLG-YYK             =   ZERO
                COMPUTE YYK-YYKCNT      =   YYK-YYKCNT   -  1
+      *
+               MOVE    SMCNDATE-YMD        TO  YYK-UPYMD
+               MOVE    SMCNDATE-HMS        TO  YYK-UPHMS
+      *
       *        更新
                MOVE    YYK-REC             TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -2867,6 +2879,12 @@
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      490-TOROKU-EXT
            END-IF
+      *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
            IF      SPA-Y01-YYKID       =   ZERO
       *        予約追加処理
                PERFORM 4901-YYKADD-SEC
@@ -2971,6 +2989,9 @@
                ADD     1                   TO  YYK-YYKCNT
                MOVE    YYK-YYKCNT          TO  WRK-YYKID
       *
+               MOVE    SMCNDATE-YMD        TO  YYK-UPYMD
+               MOVE    SMCNDATE-HMS        TO  YYK-UPHMS
+      *
                MOVE    YYK-REC         TO  MCPDATA-REC
                MOVE    "DBUPDATE"      TO  MCP-FUNC
                MOVE    "YYK-KEY"       TO  ORC-DBPATH
@@ -2997,6 +3018,10 @@
                MOVE    1                   TO  YYK-YYKCNT
                MOVE    1                   TO  WRK-YYKID
                MOVE    ZERO                TO  YYK-PTID
+      *
+               MOVE    SMCNDATE-YMD        TO  YYK-CREYMD
+               MOVE    SMCNDATE-YMD        TO  YYK-UPYMD
+               MOVE    SMCNDATE-HMS        TO  YYK-UPHMS
       *
                MOVE    YYK-REC             TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -3065,6 +3090,11 @@
            MOVE    SPA-GMN-YYKKBN      TO  YYK-YYKKBN
            MOVE    SPA-GMN-KAKREN      TO  YYK-KAKREN
       *
+           MOVE    SMCNDATE-YMD        TO  YYK-CREYMD
+           MOVE    SMCNDATE-YMD        TO  YYK-UPYMD
+           MOVE    SMCNDATE-HMS        TO  YYK-UPHMS
+      *
+      *
            MOVE    YYK-REC             TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "YYK-KEY"           TO  ORC-DBPATH
@@ -3097,6 +3127,10 @@
                MOVE    SPA-GMN-SRYKA       TO  YYK-SRYKA
                MOVE    SPA-GMN-YYKKBN      TO  YYK-YYKKBN
                MOVE    SPA-GMN-KAKREN      TO  YYK-KAKREN
+      *
+               MOVE    SMCNDATE-YMD        TO  YYK-UPYMD
+               MOVE    SMCNDATE-HMS        TO  YYK-UPHMS
+      *
                MOVE    YYK-REC         TO  MCPDATA-REC
                MOVE    "DBUPDATE"      TO  MCP-FUNC
                MOVE    "YYK-KEY"       TO  ORC-DBPATH
@@ -3137,6 +3171,10 @@
       ******** MOVE    SPA-GMN-SRYKA       TO  YYK-SRYKA
       *        MOVE    SPA-GMN-YYKKBN      TO  YYK-YYKKBN
       ******** MOVE    SPA-GMN-KAKREN      TO  YYK-KAKREN
+      *
+               MOVE    SMCNDATE-YMD        TO  YYK-UPYMD
+               MOVE    SMCNDATE-HMS        TO  YYK-UPHMS
+      *
                MOVE    YYK-REC             TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "YYK-KEY"           TO  ORC-DBPATH
@@ -3209,6 +3247,10 @@
                ELSE
                    MOVE    "1"             TO  YYK-RAIINZUMI
                END-IF
+      *
+               MOVE    SMCNDATE-YMD        TO  YYK-UPYMD
+               MOVE    SMCNDATE-HMS        TO  YYK-UPHMS
+      *
       *        更新
                MOVE    YYK-REC             TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC

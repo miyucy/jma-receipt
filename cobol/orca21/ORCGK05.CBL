@@ -676,6 +676,9 @@
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
+      *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -5198,6 +5201,11 @@
            MOVE    SPACE               TO  SPA-UPDFLG
       *----(01.00.01) LINE ADD END   ----------------------------------
       *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
       *    入力コード更新処理 
            PERFORM 410021-INPUTCD-SYORI-SEC
            IF      SPA-ERRCD       NOT =   SPACE
@@ -5422,6 +5430,11 @@
            MOVE    SPA-GMN-DSPNAME     TO  ICD-DSPNAME
            MOVE    SPA-GMN-SETCODE     TO  ICD-SRYCD
       *
+           MOVE    SMCNDATE-YMD        TO  ICD-CREYMD
+           MOVE    SMCNDATE-YMD        TO  ICD-UPYMD
+           MOVE    SMCNDATE-HMS        TO  ICD-UPHMS
+      *
+      *
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "INPUTCD-KEY2"      TO  ORC-DBPATH
@@ -5505,6 +5518,10 @@
                       (ICD-INPUTCD         =   SPA-K051-INPUTCD (IDX))
       *            更新処理
                    MOVE    SPA-GMN-DSPNAME     TO  ICD-DSPNAME
+      *
+                   MOVE    SMCNDATE-YMD        TO  ICD-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  ICD-UPHMS
+      *
                    MOVE    INPUTCD-REC         TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    "INPUTCD-KEY2"      TO  ORC-DBPATH
@@ -5650,6 +5667,10 @@
       *
       *        入力セット内容編集処理
                PERFORM 4100221-INPUTSET-HEN-SEC
+      *
+               MOVE    SMCNDATE-YMD        TO  ISET-CREYMD
+               MOVE    SMCNDATE-YMD        TO  ISET-UPYMD
+               MOVE    SMCNDATE-HMS        TO  ISET-UPHMS
       *
                MOVE    INPUTSET-REC        TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC

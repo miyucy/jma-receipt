@@ -273,6 +273,9 @@
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
       *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
+      *
       *
       *****************************************************************
       *    連絡　領域
@@ -320,6 +323,11 @@
            INITIALIZE                  STS-AREA
            INITIALIZE                  CNT-AREA
            INITIALIZE                  WRK-AREA
+      *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
       *
            .
        100-INIT-EXT.
@@ -444,9 +452,11 @@
       *        入力値編集
                PERFORM 2101-PTINF-HENSYU-SEC
       *        作成年月日
-               MOVE    SPA-SYSYMD          TO  PTINF-CREYMD
+               MOVE    SMCNDATE-YMD        TO  PTINF-CREYMD
       *        更新年月日
-               MOVE    SPA-SYSYMD          TO  PTINF-UPYMD
+               MOVE    SMCNDATE-YMD        TO  PTINF-UPYMD
+      *
+               MOVE    SMCNDATE-HMS        TO  PTINF-UPHMS
       *
                MOVE    PTINF-REC           TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -464,7 +474,9 @@
       *        入力値編集
                PERFORM 2101-PTINF-HENSYU-SEC
       *        更新年月日
-               MOVE    SPA-SYSYMD          TO  PTINF-UPYMD
+               MOVE    SMCNDATE-YMD        TO  PTINF-UPYMD
+      *
+               MOVE    SMCNDATE-HMS        TO  PTINF-UPHMS
       *
                MOVE    PTINF-REC           TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -560,6 +572,11 @@
            PERFORM 910-PTHKNINF-READ-SEC
       *
            IF      FLG-PTHKNINF        =   1
+      *        更新情報
+               MOVE    SMCNDATE-YMD        TO  PTHKN-CREYMD
+               MOVE    SMCNDATE-YMD        TO  PTHKN-UPYMD
+               MOVE    SMCNDATE-HMS        TO  PTHKN-UPHMS
+      *
                MOVE    PTHKNINF-REC        TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "PTHKNINF-KEY"      TO  ORC-DBPATH
@@ -573,6 +590,10 @@
                            ",PTHKN-TEKSTYMD:" PTHKN-TEKSTYMD
                END-IF
            ELSE
+      *        更新情報
+               MOVE    SMCNDATE-YMD        TO  PTHKN-UPYMD
+               MOVE    SMCNDATE-HMS        TO  PTHKN-UPHMS
+      *
                MOVE    PTHKNINF-REC        TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "PTHKNINF-KEY"      TO  ORC-DBPATH
@@ -602,6 +623,11 @@
       *
            IF      FLG-PTKOHINF        =   1
                MOVE    SPA-GMN-PTID        TO  PTKOH-PTID
+      *        更新情報
+               MOVE    SMCNDATE-YMD        TO  PTKOH-CREYMD
+               MOVE    SMCNDATE-YMD        TO  PTKOH-UPYMD
+               MOVE    SMCNDATE-HMS        TO  PTKOH-UPHMS
+      *
                MOVE    PTKOHINF-REC        TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "PTKOHINF-KEY"      TO  ORC-DBPATH
@@ -614,6 +640,10 @@
                            ",KEY:" PTKOH-KEY
                END-IF
            ELSE
+      *        更新情報
+               MOVE    SMCNDATE-YMD        TO  PTKOH-UPYMD
+               MOVE    SMCNDATE-HMS        TO  PTKOH-UPHMS
+      *
                MOVE    PTKOHINF-REC        TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "PTKOHINF-KEY"      TO  ORC-DBPATH
@@ -667,6 +697,10 @@
       *            修正分
                    IF      PTKOH-JKYSNUM   NOT =   MONTHLYNUM-JKYSNUM
                        MOVE    PTKOH-JKYSNUM   TO  MONTHLYNUM-JKYSNUM
+      *                更新情報
+                       MOVE    SMCNDATE-YMD        TO  MONTHLYNUM-UPYMD
+                       MOVE    SMCNDATE-HMS        TO  MONTHLYNUM-UPHMS
+      *
       *
                        MOVE    MONTHLYNUM-REC      TO  MCPDATA-REC
                        MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -694,6 +728,11 @@
                MOVE    PTKOH-TEKSTYMD(1:6) TO  MONTHLYNUM-SRYYM
                MOVE    "2"                 TO  MONTHLYNUM-NYUGAIKBN
                MOVE    PTKOH-JKYSNUM       TO  MONTHLYNUM-JKYSNUM
+      *
+               MOVE    SMCNDATE-YMD        TO  MONTHLYNUM-CREYMD
+               MOVE    SMCNDATE-YMD        TO  MONTHLYNUM-UPYMD
+               MOVE    SMCNDATE-HMS        TO  MONTHLYNUM-UPHMS
+      *
       *
                MOVE    MONTHLYNUM-REC      TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -746,6 +785,9 @@
                    END-IF
                    MOVE    UKE-PTID            TO  WRK-UKEID
       *
+                   MOVE    SMCNDATE-YMD        TO  UKE-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  UKE-UPHMS
+      *
                    MOVE    UKETUKE-REC         TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    "UKETUKE-KEY"       TO  ORC-DBPATH
@@ -766,6 +808,10 @@
                    MOVE    1                   TO  UKE-PTID
                    MOVE    UKE-PTID            TO  WRK-UKEID
       *
+                   MOVE    SMCNDATE-YMD        TO  UKE-CREYMD
+                   MOVE    SMCNDATE-YMD        TO  UKE-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  UKE-UPHMS
+      *
                    MOVE    UKETUKE-REC         TO  MCPDATA-REC
                    MOVE    "DBINSERT"          TO  MCP-FUNC
                    MOVE    "UKETUKE-KEY"       TO  ORC-DBPATH
@@ -784,6 +830,9 @@
                MOVE    SPA-GMN-PTID        TO  UKE-PTID
                MOVE    WRK-UKEID           TO  UKE-UKEID
       *
+               MOVE    SMCNDATE-YMD        TO  UKE-CREYMD
+               MOVE    SMCNDATE-YMD        TO  UKE-UPYMD
+               MOVE    SMCNDATE-HMS        TO  UKE-UPHMS
       *
                MOVE    UKETUKE-REC         TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -815,6 +864,10 @@
                                ",KEY:"  UKE-KEY
                    END-IF
                ELSE
+      *
+                   MOVE    SMCNDATE-YMD        TO  UKE-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  UKE-UPHMS
+      *
       *            更新
                    MOVE    UKETUKE-REC         TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -873,6 +926,10 @@
                                         MCPDATA-REC
      *
            IF      FLG-YYK             =   ZERO
+      *
+               MOVE    SMCNDATE-YMD        TO  YYK-UPYMD
+               MOVE    SMCNDATE-HMS        TO  YYK-UPHMS
+      *
                IF      UKE-UPYMD       =   ALL "9"
                    IF      YYK-RAIINZUMI   =   "1"
                        MOVE    SPACE               TO  YYK-RAIINZUMI
@@ -923,6 +980,11 @@
            END-IF
       *
            IF      FLG-HKNCOMBI        =   1
+      *
+               MOVE    SMCNDATE-YMD        TO  COMB-CREYMD
+               MOVE    SMCNDATE-YMD        TO  COMB-UPYMD
+               MOVE    SMCNDATE-HMS        TO  COMB-UPHMS
+      *
                MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
@@ -936,6 +998,10 @@
                    MOVE    "9003"          TO  SPA-ERRCD
                END-IF
            ELSE
+      *
+               MOVE    SMCNDATE-YMD        TO  COMB-UPYMD
+               MOVE    SMCNDATE-HMS        TO  COMB-UPHMS
+      *
                MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
@@ -1064,10 +1130,22 @@
                                                TO  KYUSEI-NAME
                    MOVE    SPA-GMN25-KYU-NICKNAME (IDX)
                                                TO  KYUSEI-NICKNAME
-                   MOVE    SPA-GMN25-KYU-UPYMD (IDX)
-                                               TO  KYUSEI-UPYMD
-                   MOVE    SPA-GMN25-KYU-CREYMD (IDX)
-                                               TO  KYUSEI-CREYMD
+      ************ MOVE    SPA-GMN25-KYU-UPYMD (IDX)
+      *                                        TO  KYUSEI-UPYMD
+      *            MOVE    SPA-GMN25-KYU-CREYMD (IDX)
+      *************                            TO  KYUSEI-CREYMD
+      *
+      *            更新日が当日以外は更新とする
+                   IF      SPA-GMN25-KYU-UPYMD (IDX)
+                                               =   SMCNDATE-YMD
+                       MOVE    SMCNDATE-YMD        TO  KYUSEI-CREYMD
+                       MOVE    SMCNDATE-YMD        TO  KYUSEI-UPYMD
+                       MOVE    SMCNDATE-HMS        TO  KYUSEI-UPHMS
+                   ELSE
+                       MOVE    SMCNDATE-YMD        TO  KYUSEI-UPYMD
+                       MOVE    SMCNDATE-HMS        TO  KYUSEI-UPHMS
+                   END-IF
+      *
       *
                    MOVE    "DBINSERT"          TO  MCP-FUNC
                    MOVE    "KYUSEIRRK-KEY"     TO  ORC-DBPATH
@@ -1140,11 +1218,14 @@
                    GO      TO      280-PTNUM-SYORI-EXT
                END-IF
                IF      SYS-1009-PTID       =   ALL "9"
-                   MOVE    "8001"              TO  WRK-ERRCD
+                   MOVE    "8001"              TO  SPA-ERRCD
                    MOVE    ZERO                TO  SYS-1009-PTID
                END-IF
                COMPUTE SYS-1009-PTID           =   SYS-1009-PTID  +   1
                MOVE    SYS-1009-PTID           TO  SPA-GMN-PTID
+      *
+               MOVE    SMCNDATE-YMD        TO  SYS-1009-UPYMD
+               MOVE    SMCNDATE-HMS        TO  SYS-1009-UPHMS
       *        患者番号採番  更新
                MOVE    SYS-1009-REC        TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -1195,6 +1276,11 @@
                MOVE    SPA-PTNUM-AUTOCOMBINUM  TO  PTNUM-AUTOCOMBINUM
                MOVE    SPA-PTNUM-MANUCOMBINUM  TO  PTNUM-MANUCOMBINUM
       *
+               MOVE    SMCNDATE-YMD        TO  PTNUM-CREYMD
+               MOVE    SMCNDATE-YMD        TO  PTNUM-UPYMD
+               MOVE    SMCNDATE-HMS        TO  PTNUM-UPHMS
+      *
+      *
                MOVE    PTNUM-REC           TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
@@ -1218,6 +1304,9 @@
                MOVE    SPA-PTNUM-KOHID         TO  PTNUM-KOHID
                MOVE    SPA-PTNUM-AUTOCOMBINUM  TO  PTNUM-AUTOCOMBINUM
                MOVE    SPA-PTNUM-MANUCOMBINUM  TO  PTNUM-MANUCOMBINUM
+      *
+               MOVE    SMCNDATE-YMD        TO  PTNUM-UPYMD
+               MOVE    SMCNDATE-HMS        TO  PTNUM-UPHMS
       *
                MOVE    PTNUM-REC           TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -1258,6 +1347,10 @@
                END-IF
       *    変更
            WHEN    ( TSYRRK-NINSTYMD-O     NOT =   SPACE )
+      *
+               MOVE    SMCNDATE-YMD        TO  TSYRRK-UPYMD
+               MOVE    SMCNDATE-HMS        TO  TSYRRK-UPHMS
+      *
                MOVE    TSYRRK-REC      TO  MCPDATA-REC
                MOVE    "DBUPDATE"      TO  MCP-FUNC
                MOVE    "TSYRRK-UPD1"   TO  ORC-DBPATH
@@ -1272,6 +1365,11 @@
       *    追加
            WHEN    OTHER
                MOVE    SPA-GMN-PTID    TO  TSYRRK-PTID
+      *
+               MOVE    SMCNDATE-YMD        TO  TSYRRK-CREYMD
+               MOVE    SMCNDATE-YMD        TO  TSYRRK-UPYMD
+               MOVE    SMCNDATE-HMS        TO  TSYRRK-UPHMS
+      *
                MOVE    TSYRRK-REC      TO  MCPDATA-REC
                MOVE    "DBINSERT"      TO  MCP-FUNC
                MOVE    "TSYRRK-KEY"    TO  ORC-DBPATH
@@ -1312,6 +1410,10 @@
                END-IF
       *    変更
            WHEN    ( TNKRRK-STYMD-O    NOT =   SPACE )
+      *
+               MOVE    SMCNDATE-YMD        TO  TNKRRK-UPYMD
+               MOVE    SMCNDATE-HMS        TO  TNKRRK-UPHMS
+      *
                MOVE    TNKRRK-REC      TO  MCPDATA-REC
                MOVE    "DBUPDATE"      TO  MCP-FUNC
                MOVE    "TNKRRK-UPD1"   TO  ORC-DBPATH
@@ -1326,6 +1428,11 @@
       *    追加
            WHEN    OTHER
                MOVE    SPA-GMN-PTID    TO  TNKRRK-PTID
+      *
+               MOVE    SMCNDATE-YMD        TO  TNKRRK-CREYMD
+               MOVE    SMCNDATE-YMD        TO  TNKRRK-UPYMD
+               MOVE    SMCNDATE-HMS        TO  TNKRRK-UPHMS
+      *
                MOVE    TNKRRK-REC      TO  MCPDATA-REC
                MOVE    "DBINSERT"      TO  MCP-FUNC
                MOVE    "TNKRRK-KEY"    TO  ORC-DBPATH
@@ -1354,6 +1461,11 @@
            PERFORM 990-PTRSIINF-READ-SEC
       *
            IF      FLG-PTRSIINF        =   1
+      *
+               MOVE    SMCNDATE-YMD        TO  PTRSI-CREYMD
+               MOVE    SMCNDATE-YMD        TO  PTRSI-UPYMD
+               MOVE    SMCNDATE-HMS        TO  PTRSI-UPHMS
+      *
                MOVE    PTRSIINF-REC        TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "PTRSIINF-KEY"      TO  ORC-DBPATH
@@ -1366,6 +1478,10 @@
                           ",KEY:" PTRSI-KEY
                END-IF
            ELSE
+      *
+               MOVE    SMCNDATE-YMD        TO  PTRSI-UPYMD
+               MOVE    SMCNDATE-HMS        TO  PTRSI-UPHMS
+      *
                MOVE    PTRSIINF-REC        TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "PTRSIINF-KEY"      TO  ORC-DBPATH
@@ -1406,6 +1522,11 @@
       *
            IF      FLG-PTKOHFTN        =   1
                MOVE    PARA-DATA-REC       TO  PTKOHFTN-REC
+      *
+               MOVE    SMCNDATE-YMD        TO  PTKOHFTN-CREYMD
+               MOVE    SMCNDATE-YMD        TO  PTKOHFTN-UPYMD
+               MOVE    SMCNDATE-HMS        TO  PTKOHFTN-UPHMS
+      *
       *        新規
                MOVE    SPA-GMN-PTID        TO  PTKOHFTN-PTID
                MOVE    PTKOHFTN-REC        TO  MCPDATA-REC
@@ -1422,6 +1543,10 @@
                END-IF
            ELSE
                MOVE    PARA-DATA-REC       TO  PTKOHFTN-REC
+      *
+               MOVE    SMCNDATE-YMD        TO  PTKOHFTN-UPYMD
+               MOVE    SMCNDATE-HMS        TO  PTKOHFTN-UPHMS
+      *
       *        更新
                MOVE    PTKOHFTN-REC        TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC

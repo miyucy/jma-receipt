@@ -318,6 +318,9 @@
       *    排他制御サブパラメタ
            COPY    "CPORCSLOCK.INC".
       *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
+      *
       *===> For Claim Start
            COPY    "CPSHELLTBL.INC".
            COPY    "ORCA-DBPATH".
@@ -780,6 +783,7 @@
                                                TO  WRK-SORT-TNAME (IDX)
                                MOVE    PTINF-NAME
                                                TO  UKE-NAME
+      *
                                MOVE    UKETUKE-REC     TO  MCPDATA-REC
                                MOVE    "DBUPDATE"      TO  MCP-FUNC
                                MOVE    "UKETUKE-KEY"   TO  ORC-DBPATH
@@ -2682,6 +2686,11 @@
       *****************************************************************
        49001-KOUSIN-SEC             SECTION.
       *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
       *    受付マスタ追加          
            IF      SPA-GMN-SELNUM            =   ZERO
                PERFORM 4901-UKEADD-SEC
@@ -2817,6 +2826,10 @@
                    GO  TO  4901-UKEADD-EXT
                END-IF
                MOVE    UKE-PTID            TO  WRK-UKEID
+      *
+               MOVE    SMCNDATE-YMD        TO  UKE-UPYMD
+               MOVE    SMCNDATE-HMS        TO  UKE-UPHMS
+      *
                MOVE    UKETUKE-REC         TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "UKETUKE-KEY"       TO  ORC-DBPATH
@@ -2831,6 +2844,11 @@
                MOVE    ZERO                TO  UKE-UKEID
                MOVE    1                   TO  UKE-PTID
                MOVE    1                   TO  WRK-UKEID
+      *        作成年月日
+               MOVE    SMCNDATE-YMD        TO  UKE-CREYMD
+               MOVE    SMCNDATE-YMD        TO  UKE-UPYMD
+               MOVE    SMCNDATE-HMS        TO  UKE-UPHMS
+      *
                MOVE    UKETUKE-REC         TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "UKETUKE-KEY"       TO  ORC-DBPATH
@@ -2866,8 +2884,8 @@
                MOVE    SPA-GMN-DRCD             TO  UKE-DRCD(2:4)
            END-IF
            MOVE    SPA-GMN-SRYNAIYOCD       TO  UKE-SRYNAIYO
-           MOVE    UKE-UKEYMD               TO  UKE-CREYMD
-                                                UKE-UPYMD
+      **** MOVE    UKE-UKEYMD               TO  UKE-CREYMD
+      ****                                      UKE-UPYMD
            IF      SPA-GMN-SELNUM           >   ZERO
                MOVE    SPA-GMN-SELNUM           TO  IDX 
                IF      SPA-GMN-TYYKTIME(IDX)    NOT =  SPACE
@@ -2876,6 +2894,10 @@
                    MOVE    SPA-GMN-TYYKID   (IDX)   TO  UKE-YYKID
                END-IF
            END-IF
+      *    作成年月日
+           MOVE    SMCNDATE-YMD        TO  UKE-CREYMD
+           MOVE    SMCNDATE-YMD        TO  UKE-UPYMD
+           MOVE    SMCNDATE-HMS        TO  UKE-UPHMS
       *
            MOVE    UKETUKE-REC              TO  WRK-UKETUKE-REC
            PERFORM 900-UKETUKE-READ-SEC
@@ -2933,8 +2955,8 @@
                MOVE    SPA-GMN-TKYYKTIME(IDX)    TO  UKE-KEYYYKTIME
                MOVE    SPA-GMN-TYYKID   (IDX)    TO  UKE-YYKID
            END-IF
-           MOVE    UKE-UKEYMD                TO  UKE-CREYMD
-                                                 UKE-UPYMD
+      *****MOVE    UKE-UKEYMD                TO  UKE-CREYMD
+      *****                                      UKE-UPYMD
       *
       **** PERFORM  900-UKETUKE-READ-SEC
       *    IF      FLG-UKETUKE         NOT =   ZERO
@@ -2942,6 +2964,10 @@
       *        DISPLAY "U02 UKETUKE UPD ERR KEY:" UKE-KEY
       *        GO      TO      4902-UKEUPD-EXT
       *****END-IF
+      *
+           MOVE    SMCNDATE-YMD        TO  UKE-UPYMD
+           MOVE    SMCNDATE-HMS        TO  UKE-UPHMS
+      *
       *
            MOVE    UKETUKE-REC               TO  MCPDATA-REC
            MOVE    "DBUPDATE"                TO  MCP-FUNC
@@ -2975,15 +3001,19 @@
            MOVE   SPA-GMN-TKYYKTIME(IDX) TO  YYK-KEYYYKTIME
            MOVE   SPA-GMN-TYYKID   (IDX) TO  YYK-YYKID
            PERFORM 900-YOYAKU-READ-SEC
-           IF      FLG-YYK               =   ZERO
-               MOVE  "1"                     TO  YYK-RAIINZUMI
-               MOVE    YYK-REC               TO  MCPDATA-REC
-               MOVE    "DBUPDATE"            TO  MCP-FUNC
-               MOVE    "YYK-KEY"             TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"            USING
-                                              MCPAREA
-                                              ORCMCPAREA
-                                              MCPDATA-REC
+           IF      FLG-YYK             =   ZERO
+               MOVE  "1"                   TO  YYK-RAIINZUMI
+      * 
+               MOVE    SMCNDATE-YMD        TO  YYK-UPYMD
+               MOVE    SMCNDATE-HMS        TO  YYK-UPHMS
+      * 
+               MOVE    YYK-REC             TO  MCPDATA-REC
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    "YYK-KEY"           TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
       *
                IF      MCP-RC          NOT =   ZERO 
                    MOVE    "1004"              TO  SPA-ERRCD
@@ -3193,6 +3223,9 @@
                            MOVE    SPA-NAI-KAKUNINYMD (IDX)
                                                    TO  PTHKN-KAKUNINYMD
       *
+                           MOVE    SMCNDATE-YMD        TO  PTHKN-UPYMD
+                           MOVE    SMCNDATE-HMS        TO  PTHKN-UPHMS
+      *
                            MOVE    PTHKNINF-REC        TO  MCPDATA-REC
                            MOVE    "DBUPDATE"          TO  MCP-FUNC
                            MOVE    "PTHKNINF-KEY"      TO  ORC-DBPATH
@@ -3225,6 +3258,9 @@
                        IF      FLG-PTKOHINF        =   ZERO
                            MOVE    SPA-NAI-KAKUNINYMD (IDX)
                                                    TO  PTKOH-KAKUNINYMD
+      *
+                           MOVE    SMCNDATE-YMD        TO  PTKOH-UPYMD
+                           MOVE    SMCNDATE-HMS        TO  PTKOH-UPHMS
       *
                            MOVE    PTKOHINF-REC        TO  MCPDATA-REC
                            MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -3296,6 +3332,10 @@
                PERFORM 900-YOYAKU-READ-SEC
                IF      FLG-YYK             =   ZERO
                    MOVE    SPACE               TO  YYK-RAIINZUMI
+      *
+                   MOVE    SMCNDATE-YMD        TO  YYK-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  YYK-UPHMS
+      *
                    MOVE    YYK-REC             TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    "YYK-KEY"           TO  ORC-DBPATH

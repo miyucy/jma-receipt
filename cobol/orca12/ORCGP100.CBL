@@ -141,6 +141,9 @@
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "ORCA-DBPATH".
@@ -605,9 +608,10 @@
                    MOVE    SPA-GMN-P100-KANJINAME (IDX1)
                                            TO  JINMEI-KANJI
       *
-                   MOVE    SPA-SYSYMD      TO  JINMEI-UPYMD
+                   MOVE    SMCNDATE-YMD    TO  JINMEI-UPYMD
       *
-                   ACCEPT  JINMEI-UPHMS    FROM    TIME
+                   MOVE    SMCNDATE-HMS    TO  JINMEI-UPHMS
+      *************ACCEPT  JINMEI-UPHMS    FROM    TIME
       *
       *            人名テーブル読み込み処理
                    PERFORM 900-JINMEI-READ-SEC

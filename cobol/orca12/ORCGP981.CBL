@@ -110,6 +110,9 @@
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
@@ -652,6 +655,12 @@
       *       登録処理
       *****************************************************************
        490-KOUSHIN-SEC           SECTION.
+      *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
       * 
            INITIALIZE                      SYS-1015-REC
            MOVE    "1015"                  TO  SYS-1015-KANRICD
@@ -673,6 +682,13 @@
            MOVE    SPA-GMN981-LPUBCD       TO  SYS-1015-LPUBCD  
            MOVE    SPA-GMN981-POST         TO  SYS-1015-POST
            MOVE    SPA-GMN981-RENNUM       TO  SYS-1015-RENNUM
+      *
+           IF      FLG-SYSKANRI            =   1
+               MOVE    SMCNDATE-YMD        TO  SYS-1015-CREYMD
+           END-IF
+           MOVE    SMCNDATE-YMD        TO  SYS-1015-UPYMD
+           MOVE    SMCNDATE-HMS        TO  SYS-1015-UPHMS
+      *
       *
            MOVE    SYS-1015-REC            TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
