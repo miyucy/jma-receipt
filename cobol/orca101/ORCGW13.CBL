@@ -162,6 +162,7 @@
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-OK              PIC 9(01).
+           03  FLG-OK2             PIC 9(01).
            03  FLG-TOUROKU         PIC 9(01).
       *
       *    カウント領域
@@ -552,6 +553,101 @@
                                         MCPDATA-REC
       *                                  
            MOVE    IDX                 TO  SPA-GMN-MAX
+      *
+      *
+           IF      IDX      =      ZERO
+      *
+              MOVE    ZERO                TO  FLG-OK2
+      *
+              MOVE    SPACE               TO  SYS-4001-REC
+              INITIALIZE                      SYS-4001-REC
+              MOVE    "4001"              TO  SYS-4001-KANRICD
+              MOVE    "*"                 TO  SYS-4001-KBNCD
+              MOVE    SYS-4001-REC        TO  MCPDATA-REC
+              MOVE    "DBSELECT"          TO  MCP-FUNC
+              MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
+              CALL    "ORCMCPSUB"          USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+              IF      MCP-RC              =   ZERO
+                  MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
+                  PERFORM 900-SYSKANRI-READ-SEC
+                  PERFORM     UNTIL   FLG-SYSKANRI   =   1
+                               OR     FLG-OK2        =   1
+      *
+                    MOVE    MCPDATA-REC    TO  SYS-4001-REC
+                    IF   SYS-4001-STYUKYMD  <  SPA-W01-STYUKYMD
+      *
+                       MOVE    1                   TO  FLG-OK2
+      *
+                       MOVE    SPACE               TO  SYS-4002-REC
+                       INITIALIZE                      SYS-4002-REC
+                       MOVE    "4002"              TO  SYS-4002-KANRICD
+                       MOVE    SYS-4001-STYUKYMD   TO  ORC-DBYMD
+                       MOVE    SYS-4002-REC        TO  MCPDATA-REC
+                       MOVE    "DBSELECT"          TO  MCP-FUNC
+                       MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+                       CALL    "ORCMCPSUB"          USING
+                                                    MCPAREA
+                                                    ORCMCPAREA
+                                                    MCPDATA-REC
+                       IF      MCP-RC              =   ZERO
+                           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+                           PERFORM 900-SYSKANRI-READ-SEC
+                       ELSE
+                           INITIALIZE                  SYSKANRI-REC
+                           MOVE    1               TO  FLG-SYSKANRI
+                       END-IF
+      *
+                       MOVE    ZERO                TO  IDX
+                       PERFORM      UNTIL   FLG-SYSKANRI   =   1
+                                     OR     IDX           >= 
+                                                      WRK-CONS-LINE-MAX
+                            MOVE    MCPDATA-REC        TO  SYS-4002-REC
+                            ADD     1              TO  IDX
+                            MOVE    SYS-4002-KBNCD (1:3)
+                                        TO  SPA-NAI-TSONSHOUKBN   (IDX)
+                            MOVE    SYS-4002-SONSHOUNAME
+                                        TO  SPA-GMN-TSONSHOUNAME  (IDX)
+                            MOVE    SPA-NAI-TSONSHOUKBN1 (IDX)
+                                        TO  SPA-GMN-TSONSHOUKBN1  (IDX)
+                            IF      SPA-NAI-TSONSHOUKBN2 (IDX)
+                                                  NOT =   SPACE
+                                MOVE    "-"
+                                        TO  SPA-GMN-TSONSHOUKBN-FL(IDX)
+                                MOVE    SPA-NAI-TSONSHOUKBN2 (IDX)
+                                        TO  SPA-GMN-TSONSHOUKBN2  (IDX)
+                            END-IF
+      *
+                            MOVE    "SYSKANRI-KEY2"    TO  ORC-DBPATH
+                            PERFORM 900-SYSKANRI-READ-SEC
+                       END-PERFORM
+      *                カーソルクロース
+                       MOVE    "DBCLOSE"           TO  MCP-FUNC
+                       MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+                       CALL    "ORCMCPSUB"          USING
+                                                    MCPAREA
+                                                    ORCMCPAREA
+                                                    MCPDATA-REC
+      *
+                       MOVE    IDX                 TO  SPA-GMN-MAX
+      *
+                    END-IF
+                    MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
+                    PERFORM 900-SYSKANRI-READ-SEC
+                  END-PERFORM
+              END-IF
+      *       カーソルクロース
+              MOVE    "DBCLOSE"           TO  MCP-FUNC
+              MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
+              CALL    "ORCMCPSUB"         USING
+                                          MCPAREA
+                                          ORCMCPAREA
+                                          MCPDATA-REC
+      *
+           END-IF
+      *
       *
            IF     SPA-GMN-RSIIRYOKBN-G  =   SPACE
                MOVE    SPA-GMN-RSIIRYOKBNLST (1)
