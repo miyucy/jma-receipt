@@ -135,6 +135,7 @@
            03  IDW8                PIC 9(04).
            03  IDW9                PIC 9(04).
            03  IDV                 PIC 9(04).
+           03  IDX-HKN             PIC 9(02).
       *    点数マスタ予約コード領域（選定入院料）
        01  WRK-YOYAKU.
            03  W-YOYAKU            PIC X(09)   VALUE   "099999916".
@@ -240,6 +241,7 @@
            03  WRK-ZOGEN           PIC S9(05).
            03  WRK-KEISANYMD       PIC X(08).
            03  WRK-TAIHI-SRYYM-41  PIC X(06).
+           03  WRK-TAIHI-HKN       PIC 9(03).
       *    医療機関設定の入院料加算チェック用
            03  WRK-NYUKHNKSN-SRYCD PIC X(09)  OCCURS 20.
            03  WRK-NYUKSNKBN       PIC X(03).
@@ -4157,6 +4159,17 @@
                    IF      NACCT-ZAISKBKBN     =   "1"
                        MOVE   1                TO   FLG-NYUINKHNRYO
                    END-IF
+      *            最終日の保険組合せを退避（次月会計の作成用）
+                   MOVE    ZERO                TO  WRK-TAIHI-HKN
+                   IF      NACCT-ZAISKBKBN     =   "5"
+                       PERFORM VARYING     IDX-HKN   FROM   1   BY  1
+                         UNTIL       IDX-HKN  >   31
+                          IF      NACCT-DAY (IDX-HKN)  NOT =   ZERO
+                              MOVE   NACCT-DAY(IDX-HKN) TO
+                                                        WRK-TAIHI-HKN
+                          END-IF
+                       END-PERFORM
+                   END-IF
       *
                    MOVE    "NYUINACCT-KEY16"   TO  ORC-DBPATH
                    PERFORM 900-NYUINACCT-READ-SEC
@@ -4707,6 +4720,7 @@
                                 TO  WRK-HKNCOMBINUM
            MOVE   WRK-HKNCOMBINUM9 
                                 TO  LNK-SCNYUACCT-HKNCOMBINUM
+      *     MOVE   WRK-TAIHI-HKN  TO  LNK-SCNYUACCT-HKNCOMBINUM
            DISPLAY   "LNK-SCNYUACCT-HKNCOMBINUM = "
                                     LNK-SCNYUACCT-HKNCOMBINUM
       *    転科元入院科
