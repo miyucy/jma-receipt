@@ -5,12 +5,9 @@
   <name>J02</name>
   <program_name>J02</program_name>
   <directory></directory>
-  <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
-  <language>C</language>
   <gnome_support>True</gnome_support>
   <gtkpanda_support>True</gtkpanda_support>
-  <gettext_support>True</gettext_support>
 </project>
 
 <widget>
@@ -2675,6 +2672,29 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B11S</name>
+      <x>840</x>
+      <y>700</y>
+      <width>84</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>GDK_SHIFT_MASK</modifiers>
+	<key>GDK_F11</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Thu, 21 Dec 2000 08:32:06 GMT</last_modification_time>
+      </signal>
+      <label>Æþ±¡Ä´ºÞÊÑ¹¹</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
   </widget>
 </widget>
