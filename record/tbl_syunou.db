@@ -271,6 +271,7 @@ path	key5 	{
 			AND   PTID        =   :PTID
 			AND   SKYSTYMD    >=  :SKYSTYMD
 			AND   SKYEDYMD    <=  :SKYEDYMD
+			ORDER   BY        SRYYMD
 		;
 	};
 };
