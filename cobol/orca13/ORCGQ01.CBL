@@ -3409,8 +3409,9 @@
                                        =   SPA-NAI-Q01-BYOMEI-OLD(IDX1))
       *
                IF    ( WRK-WIDGET (1 : 6)
-                                           =   "BYOMEI" )
-                AND  ( WRK-WIDGET6         =   IDX1 )
+                                               =   "BYOMEI" )
+                AND  ( WRK-WIDGET (7 : 2)  NOT =   "CD" )
+                AND  ( WRK-WIDGET6             =   IDX1 )
                    IF    ( SPA-GMN-Q01-BYOMEI (IDX1)   =   SPACE )
                        MOVE    SPACE   TO  SPA-GMN-Q01-BYOMEICD  (IDX1)
                                            SPA-GMN-Q01-BYOMEI    (IDX1)
