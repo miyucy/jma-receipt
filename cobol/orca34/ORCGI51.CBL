@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.01.01    NACL-太田    02.12.16  前回患者ボタン追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -828,8 +829,12 @@
       *    戻る
            WHEN    "CLICKED"       ALSO    "B01"
                PERFORM 210-BACK
-      *    選択
+      *    前回患者
            WHEN    "CLICKED"       ALSO    "B03"
+               MOVE   "CHANGE"             TO  MCP-PUTTYPE
+               PERFORM 420-MAEPTINF-SET-SEC
+      *    選択
+           WHEN    "CLICKED"       ALSO    "B04"
                MOVE    101           TO    SPA-GMN-I51-CUR
       *    氏名検索
            WHEN    "CLICKED"       ALSO    "B09"
@@ -1209,6 +1214,9 @@
                MOVE    WRK-FTNRATE     TO  SPA-GMN-I51-FTNRATE
            END-IF
       *
+           MOVE    SPA-GMN-I51-PTNUM   TO  SPA-LAST-PTNUM
+           MOVE    SPA-NAI-I51-PTID    TO  SPA-LAST-PTID
+      *
            .
       *
        4101-PTINF-SET-EXT.
@@ -1502,6 +1510,50 @@
            .
       *
        480-KENSAKU-EXT.
+           EXIT.
+      *****************************************************************
+      *    前回患者設定処理
+      *****************************************************************
+       420-MAEPTINF-SET-SEC            SECTION.
+      *
+      *    前回患者が設定されているばあは前回患者を表示する
+           IF    ( SPA-LAST-PTNUM  NOT =   SPACE )
+               MOVE    SPA-LAST-PTID   TO  SPA-NAI-I51-PTID
+               MOVE    SPA-LAST-PTNUM  TO  SPA-GMN-I51-PTNUM
+               PERFORM 4101-PTINF-SELECT-SEC 
+           END-IF
+      *
+           .
+      *
+       420-MAEPTINF-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者情報検索処理
+      *****************************************************************
+       4101-PTINF-SELECT-SEC              SECTION.
+      *
+      *    患者マスタ検索
+           INITIALIZE  PTINF-REC
+           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+           MOVE    SPA-NAI-I51-PTID    TO  PTINF-PTID
+           MOVE    PTINF-REC           TO  MCPDATA-REC
+      *
+           MOVE    "PTINF-KEY"         TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC        =   ZERO )
+      *
+      *        患者情報設定
+               PERFORM 4101-PTINF-SET-SEC
+           END-IF
+      *
+      *    患者マスタクローズ
+           MOVE    "PTINF-KEY"         TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+      *
+           .
+       4101-PTINF-SELECT-EXT.
            EXIT.
       *****************************************************************
       *    仮計算　処理
