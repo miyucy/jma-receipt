@@ -12,6 +12,7 @@ TEKSTYMD			char(8);
 RECKBN				char(1);
 RENNUM				number(4);
 CREYMD				char(8);
+TOTALTEN			number(10);
 RECEDATA			char(250);
 };
 

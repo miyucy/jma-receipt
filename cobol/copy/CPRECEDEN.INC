@@ -51,5 +51,7 @@
                05  RECEDEN-RENNUM           PIC  9(04).
       *作成年月日
            03  RECEDEN-CREYMD               PIC  X(08).
+      *合計点数
+           03  RECEDEN-TOTALTEN             PIC  9(10).
       *レセ電データ
            03  RECEDEN-RECEDATA             PIC  X(250).
