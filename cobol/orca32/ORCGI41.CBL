@@ -4833,6 +4833,7 @@
        410191-NYUACCT-SAKUSEI-SEC   SECTION.                             021118
       *                                                                 021118
       *     DISPLAY   "410191-NYUACCT-SAKUSEI-SEC"
+            DISPLAY   "SPA-NAI-SRYYM-41 = " SPA-NAI-SRYYM-41
            INITIALIZE      ORCSSYOKIKSNAREA
            MOVE    SPA-NAI-SRYYM-41   TO   WRK-NAI-SRYYM-41.
       *
@@ -4921,10 +4922,11 @@
       *    ¼¡·î¤Î²ñ·×ºîÀ®»þ¤ÏÌµ¾ò·ï¤Ë°ìÈÌ¤ÎÆþ±¡ÎÁ»»Äê¤È¤¹¤ë
       *    °Ê²¼¤ÎÆÃÄêÆþ±¡ÎÁ¤âÆ±ÍÍ
       *    µßÌ¿µßµÞÆþ±¡ÎÁ
+      *    °ìÎà´¶À÷¾É´µ¼ÔÆþ±¡°åÎÅ´ÉÍýÎÁ
            IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
                IF   PTNYUINRRK-TOKUTEI-NYUIN = "03" OR "04" OR "05" OR
                                                "06" OR "07" OR "08" OR
-                                               "09" OR "16"
+                                               "09" OR "14" OR "16"
                    MOVE    SPACE   TO    WRK-TOKUTEI-NYUIN
                END-IF
            END-IF
@@ -4989,6 +4991,7 @@
       *    Æþ±¡ÎÁ²Ã»»¿ÇÎÅ¥³¡¼¥É¼è¤ê¹þ¤ß
            PERFORM    410191-NYUKSN-GET-SEC
       *    ÆÃÄêÆþ±¡¤ÇÆþ±¡ÎÁ¤¬ÊÑ¹¹¤Ë¤Ê¤ë¥³¡¼¥É¤ÎÂÐ±þ
+      *    ¿ÇÎÅ½êÏ·¿Í°åÎÅ´ÉÍýÎÁ
            IF    SYOKIKSN-IN-KHNSRYCD   =   "190774110"
                  MOVE   SPACE       TO   SYOKIKSN-IN-KHNSRYCD
                  MOVE   "190774210" TO   LNK-SCNYUACCT-NYUKHN-SRYCD(1)
@@ -5008,6 +5011,40 @@
                                   TO LNK-SCNYUACCT-KAGEN-EDYUKYMD(1)
       *
                  MOVE   "190774210"  TO  LNK-SCNYUACCT-KAGEN-SRYCD(2)
+                 INITIALIZE                STS-AREA-DAY
+                 INITIALIZE                LNK-DAY6-AREA
+                 MOVE    "61"              TO  LNK-DAY6-IRAI
+                 MOVE    LNK-SCNYUACCT-KAGEN-EDYUKYMD(1)
+                                           TO  LNK-DAY6-KIJUN
+                 MOVE    "1"               TO  LNK-DAY6-ZOGENPTN
+                 MOVE     1                TO  LNK-DAY6-ZOGEN
+                 CALL  "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY6-AREA
+                 MOVE    LNK-DAY6-KEISAN
+                                  TO LNK-SCNYUACCT-KAGEN-STYUKYMD(2)
+                 MOVE    "99999999"
+                                  TO LNK-SCNYUACCT-KAGEN-EDYUKYMD(2)
+           END-IF
+      *    Ï·¿ÍÀ­ÃÔÊò¼À´µ¼£ÎÅÉÂÅïÆþ±¡ÎÁ
+           IF    SYOKIKSN-IN-KHNSRYCD   =   "190739910"
+                 MOVE   SPACE        TO   SYOKIKSN-IN-KHNSRYCD
+                 MOVE   "190740010"  TO   LNK-SCNYUACCT-NYUKHN-SRYCD(1)
+                 MOVE   "190739910"  TO   LNK-SCNYUACCT-KAGEN-SRYCD(1)
+                 MOVE   PTNYUINRRK-TENNYUYMD
+                                  TO  LNK-SCNYUACCT-KAGEN-STYUKYMD(1)
+                 INITIALIZE                STS-AREA-DAY
+                 INITIALIZE                LNK-DAY6-AREA
+                 MOVE    "61"              TO  LNK-DAY6-IRAI
+                 MOVE   PTNYUINRRK-TENNYUYMD
+                                           TO  LNK-DAY6-KIJUN
+                 MOVE    "1"               TO  LNK-DAY6-ZOGENPTN
+                 MOVE    89                TO  LNK-DAY6-ZOGEN
+                 CALL  "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY6-AREA
+                 MOVE    LNK-DAY6-KEISAN
+                                  TO LNK-SCNYUACCT-KAGEN-EDYUKYMD(1)
+      *
+                 MOVE   "190740010"  TO  LNK-SCNYUACCT-KAGEN-SRYCD(2)
                  INITIALIZE                STS-AREA-DAY
                  INITIALIZE                LNK-DAY6-AREA
                  MOVE    "61"              TO  LNK-DAY6-IRAI
@@ -5356,7 +5393,10 @@
       *°åÎÅµ¡´Ø²Ã»»¡Ê¸º»»¡Ë¾ðÊó
            INITIALIZE              SYSKANRI-REC
            MOVE    "5000"          TO  SYS-KANRICD
-           MOVE    SPA-SYSYMD      TO  ORC-DBYMD
+           MOVE    SPA-NAI-SRYYM-41
+                                   TO  ORC-DBYMD(1:6)
+           MOVE    "01"            TO  ORC-DBYMD(7:2)
+      *     MOVE    SPA-SYSYMD      TO  ORC-DBYMD
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
       *
       *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿¤Î°åÎÅµ¡´Ø¾ðÊó¤è¤ê¼èÆÀ
@@ -5752,7 +5792,10 @@
            MOVE    "5001"          TO  SYS-KANRICD
            MOVE    PTNYUINRRK-BTUNUM
                                    TO  SYS-KBNCD
-           MOVE    SPA-SYSYMD      TO  ORC-DBYMD
+           MOVE    SPA-NAI-SRYYM-41
+                                   TO  ORC-DBYMD(1:6)
+           MOVE    "01"            TO  ORC-DBYMD(7:2)
+      *     MOVE    SPA-SYSYMD      TO  ORC-DBYMD
       *     DISPLAY "4801-BTUSEL-SEC PTNYUINRRK-BTUNUM = " 
       *                                  PTNYUINRRK-BTUNUM
       *     DISPLAY "4801-BTUSEL-SEC SPA-SYSYMD = " SPA-SYSYMD
@@ -5786,7 +5829,10 @@
            MOVE    "5002"          TO  SYS-KANRICD
            MOVE    PTNYUINRRK-BRMNUM
                                    TO  SYS-KBNCD
-           MOVE    SPA-SYSYMD      TO  ORC-DBYMD
+           MOVE    SPA-NAI-SRYYM-41
+                                   TO  ORC-DBYMD(1:6)
+           MOVE    "01"            TO  ORC-DBYMD(7:2)
+      *     MOVE    SPA-SYSYMD      TO  ORC-DBYMD
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY10"
                                    TO  WRK-DBPATH
