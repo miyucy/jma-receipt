@@ -734,8 +734,12 @@
                DISPLAY "ORCSNYUACCT TENSU INV:" TBL-SRYCD (IDX)
                MOVE    2               TO  LNK-SCNYUACCT-RC
            END-IF
-      *    対象年齢チェック
-           PERFORM 40011-NENREI-CHK-SEC
+      *    対象年齢チェック（入院基本料以外）
+           IF      WRK-ACT-ZAISKBKBN    =  "1"
+               CONTINUE
+           ELSE
+               PERFORM 40011-NENREI-CHK-SEC
+           END-IF
       *
            MOVE    TNS-TENSIKIBETU     TO  TBL-TENSIKIBETU (IDX)
            MOVE    TNS-TEN             TO  TBL-TENSU       (IDX)
