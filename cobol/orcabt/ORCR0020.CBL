@@ -56,6 +56,8 @@
       *                                     を行う
       *  01.00.15   NACL-門脇     02.10.07  （平成１４年１０月改正対応）
       *                                     低所得フラグのセットを行う
+      *  01.00.16   NACL-小豆沢   02.10.16  （平成１４年１０月改正対応）
+      *                                     国保退職者の給付割合セット
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1819,10 +1821,21 @@
                           END-EVALUATE
                       END-IF
                   WHEN    "067"
-                      IF      COMB-HONKZKKBN        =    "1"
-                          MOVE   HKN-HON-GAIKFTNRATE  TO  RECE02-KYURATE
+                      IF      COMB-HOJOKBN          NOT =  SPACE
+                          EVALUATE   COMB-HOJOKBN
+                              WHEN   "8"
+                                  MOVE   20        TO   RECE02-KYURATE
+                              WHEN   "9"
+                                  MOVE   10        TO   RECE02-KYURATE
+                          END-EVALUATE
                       ELSE
-                          MOVE   HKN-KZK-GAIKFTNRATE  TO  RECE02-KYURATE
+                          IF      COMB-HONKZKKBN        =    "1"
+                              MOVE   HKN-HON-GAIKFTNRATE
+                                                   TO   RECE02-KYURATE
+                          ELSE
+                              MOVE   HKN-KZK-GAIKFTNRATE
+                                                   TO   RECE02-KYURATE
+                          END-IF
                       END-IF
                   WHEN    OTHER
                       IF   WRK-NENREI           <     3
