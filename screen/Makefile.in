@@ -171,6 +171,7 @@ SCREEN_screen = \
 	SERR.glade \
 	SID1.glade \
 	T01.glade \
+	T02.glade \
 	T99.glade \
 	TERR.glade \
 	TID1.glade \
