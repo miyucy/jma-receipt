@@ -8,7 +8,7 @@ libdir = @libdir@
 
 CPP = @CPP@
 # dummy flags
-LDFLAGS = -x c
+LDFILEFLAGS = -x c
 
 LDFILE_sources = \
 	orca00.ld.in \
@@ -61,7 +61,7 @@ INSTALL_LDFILE = $(LDFILE) $(BDFILE) $(DIRECTORYFILE) \
 .SUFFIXES: .ld.in .bd.in .ld .bd 
 
 .ld.in.ld .bd.in.bd:
-	$(CPP) $(LDFLAGS) $< > $@
+	$(CPP) $(LDFILEFLAGS) $< > $@
 
 all: $(LDFILE) $(BDFILE) $(DIRECTORYFILE)
 
