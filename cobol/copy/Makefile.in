@@ -792,6 +792,7 @@ COPYS = \
         XC99.INC \
         XCERR.INC \
         XCID1.INC 
+        HCM28.INC \
 
 DBPATH = \
 	ORCA-DBPATH
