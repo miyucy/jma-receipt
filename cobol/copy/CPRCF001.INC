@@ -86,4 +86,3 @@
            03  RECE01-TEISEIKBN           PIC  X(01).
       *Í½È÷
            03  FILLER                     PIC  X(20).
-      

@@ -53,4 +53,3 @@
            03  RECE20-YOBI                PIC  X(183).
       *改行コード
            03  RECE20-RETURNCD            PIC  X(01).
-      

@@ -51,4 +51,3 @@
            03  RECE26-YOBI                PIC  X(208).
       *改行コード
            03  RECE26-RETURNCD            PIC  X(01).
-           

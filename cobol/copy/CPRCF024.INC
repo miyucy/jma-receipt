@@ -37,4 +37,3 @@
            03  RECE24-TEKIYOU             PIC  X(241).
       *改行コード
            03  RECE24-RETURNCD            PIC  X(01).
-      

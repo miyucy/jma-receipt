@@ -64,4 +64,3 @@
            03  RECE23-YOBI1               PIC  X(01).
       *改行コード
            03  RECE23-RETURNCD            PIC  X(01).
-      

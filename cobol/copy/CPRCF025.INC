@@ -101,4 +101,3 @@
            03  RECE25-YOBI3               PIC  X(57).
       *改行コード
            03  RECE25-RETURNCD            PIC  X(01).
-      

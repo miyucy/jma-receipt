@@ -88,4 +88,3 @@
            03  RECE45-SIKFLGINF           OCCURS  5.
       *識別フラグ
                05  RECE45-SIKFLG          PIC  X(01).
-      
