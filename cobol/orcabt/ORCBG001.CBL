@@ -615,7 +615,7 @@
       *----(02.01.01)--UPD-START---
                IF      ACCT-ZAITEN         >   ZERO
       *            点数がある時
-                   IF      WRK-PARA-INGAIKBN   NOT =   2
+                   IF      WRK-PARA-INGAIKBN   NOT =   1
                        MOVE    1           TO  WRK-INGAIKBN
                        PERFORM 240-MAIN-HEN-SEC
                    END-IF
@@ -626,12 +626,13 @@
                                                    "233"  OR
                                                    "950"  OR
                                                    "960")
-                       IF      WRK-PARA-INGAIKBN   NOT =   2
+                       IF      WRK-PARA-INGAIKBN   NOT =   1
                            MOVE    1           TO  WRK-INGAIKBN
                            PERFORM 240-MAIN-HEN-SEC
                        END-IF
                    ELSE
-                       IF      WRK-PARA-INGAIKBN   NOT =   1
+                       IF      ( WRK-PARA-INGAIKBN   =   1 )
+                           OR  ( WRK-PARA-INGAIKBN   =   2 )
                            MOVE    2           TO  WRK-INGAIKBN
                            PERFORM 240-MAIN-HEN-SEC
                        END-IF
