@@ -368,6 +368,8 @@
                WHEN    "K"
       *            受診履歴情報セット
                    PERFORM 1001-SPA-JYUSIN-SEC
+      *            特定疾患の有無検索
+                   PERFORM 11011-TOKUTEI-SYORI-SEC
       *            中途終了分編集
                    PERFORM 200-WKSRYACT-SYORI-SEC
            END-EVALUATE
