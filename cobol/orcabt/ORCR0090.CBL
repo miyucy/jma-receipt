@@ -80,6 +80,8 @@
       *                                     するようにする
       *  01.02.08    NACL-藤原    02.09.01  検査のときの表示方法を変更
       *  01.02.09    NACL-藤原    02.09.06  初診加算のとき編集する
+      *  01.02.10    NACL-藤原    02.09.26  皮下筋肉注射以外で手技がないとき
+      *                                     ＊を印刷する
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1530,6 +1532,7 @@
                    ELSE    
                        IF      RECE04-SRYKBN     =   "31"  AND
                                FLG-HIKAKIN       =   ZERO  AND
+                               WRK-ZAIWMAX (3)   >   ZERO  AND
                                IDX1              >   3
                            MOVE    SPACE             TO  WRK-ZAI-MK
                        END-IF            
