@@ -247,6 +247,7 @@
       *  01.01.75    NACL-藤原    03/05/21  SEIKYU-KEY4,KEY11,KEY12,KEY13,
       *                                     KEY14,KEY21,KEY22のとき保険者番号
       *                                     に初期値を編集
+      *  01.01.76    NACL-小豆沢　03/05/28  JYURRK-KEY24追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1268,6 +1269,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "JYURRK-KEY23"
                    MOVE    PATH-TBL-JYURRK-KEY23
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "JYURRK-KEY24"
+                   MOVE    PATH-TBL-JYURRK-KEY24
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "JYURRK-ALL"
                    MOVE    PATH-TBL-JYURRK-ALL

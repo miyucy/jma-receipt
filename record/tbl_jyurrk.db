@@ -576,6 +576,36 @@ path	key23	{
 		;
 	};
 };
+path	key24	{
+	DBSELECT	{
+		DECLARE tbl_jyurrk_key12_csr CURSOR FOR
+		SELECT *
+		FROM tbl_jyurrk
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   SRYKA       =   :SRYKA
+                        AND  (SRYYMD      >=  :SRYYMD
+                        AND   SRYYMD      <=  :UPSRYYMD)
+			AND   LASTKBN     =   '1'
+                        AND   SRYKBN1     <>  '  '
+                        AND   SRYKBN2     <>  '  '
+                        AND   SRYKBN3     <>  '  '
+                        AND   SRYKBN4     <>  '  '
+                        AND   SRYKBN5     <>  '  '
+                        AND   SRYKBN6     <>  '  '
+                        AND   SRYKBN7     <>  '  '
+                        AND   SRYKBN8     <>  '  '
+                        AND   SRYKBN9     <>  '  '
+                        AND   SRYKBN10    <>  '  '
+                        AND   SRYKBN11    <>  '  '
+			ORDER   BY        SRYYMD  DESC,
+			                  RENNUM,
+			                  DOUJI_RENNUM,
+			                  EDANUM
+		;
+	};
+};
 
 
 path	all2 	{
