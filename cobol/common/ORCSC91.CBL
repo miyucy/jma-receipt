@@ -160,14 +160,21 @@
            03  FILLER                  PIC X(03)   VALUE   "006".
            03  FILLER                  PIC X(09)   VALUE   "112702270".
       *
+      *    長期投薬加算（処方箋料）
+           03  FILLER                  PIC X(03)   VALUE   "007".
+           03  FILLER                  PIC X(09)   VALUE   "120003270".
+      *    長期投薬加算（処方料）
+           03  FILLER                  PIC X(03)   VALUE   "007".
+           03  FILLER                  PIC X(09)   VALUE   "120003170".
+      *
        01  TBL-DOUJI-AREA-R            REDEFINES  TBL-DOUJI-AREA.
       *****03  TBL-DOUJI-OCC           OCCURS   9   INDEXED   TBL-IDX.
       *****03  TBL-DOUJI-OCC           OCCURS   13  INDEXED   TBL-IDX.
-           03  TBL-DOUJI-OCC           OCCURS   16  INDEXED   TBL-IDX.
+           03  TBL-DOUJI-OCC           OCCURS   18  INDEXED   TBL-IDX.
                05  TBL-CODE                PIC X(03).
                05  TBL-SRYCD               PIC X(09).
       *01  TBL-MAX                     PIC 9(04)   VALUE   9.
-       01  TBL-MAX                     PIC 9(04)   VALUE   16.
+       01  TBL-MAX                     PIC 9(04)   VALUE   18.
       *
       *    保険別算定履歴テーブル
            COPY   "CMSANTEITBL.INC".

@@ -445,20 +445,25 @@
                        MOVE    "150302090"         TO  WRK-SRYCD
                    END-IF
                    MOVE    IDX-Z               TO  IDX-S
-                   IF      WRK-COM-INPUTCD (IDX-Z + 1) =   WRK-SRYCD
-                       MOVE    2               TO  WRK-COM-SANFLG
-                                                     (IDX-Z + 1)
+      *            自動発生位置決定
+                   MOVE    ZERO                TO  FLG-ARI
+                   PERFORM 1001112-KIJUNN-ICHI-SEC
+      **********   IF      WRK-COM-INPUTCD (IDX-Z + 1) =   WRK-SRYCD
+      *                MOVE    2               TO  WRK-COM-SANFLG
+      *                                              (IDX-Z + 1)
+      **********   ELSE
+                   IF      FLG-ARI         =   1
+                       MOVE    IDX-TUS         TO  IDX-T
                    ELSE
-                       MOVE    IDX-ZS2         TO  IDX-S
-                       MOVE    ZERO            TO  FLG-ARI
-                       PERFORM 1002-KASAN-SET-SEC
-                       IF      FLG-ADD        =   1
-                           MOVE    IDX-S           TO  IDX-ZS2
-                           MOVE    2               TO  WRK-COM-SANFLG
+                       MOVE    IDX-TUS         TO  IDX-S
+                   END-IF
+                   PERFORM 1002-KASAN-SET-SEC
+                   IF      FLG-ADD         =   1
+                       MOVE    IDX-S           TO  IDX-ZS2
+                       MOVE    2               TO  WRK-COM-SANFLG
                                                           (IDX-S)
-                       END-IF
-                  END-IF
-              END-IF
+                   END-IF
+               END-IF
            END-IF
       *
       *    加算の時、対象の手技が有ること
@@ -516,6 +521,46 @@
       *
            .
        1001111-SSTKIJUN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    施設規準自動算定位置処理
+      *****************************************************************
+       1001112-KIJUNN-ICHI-SEC                  SECTION.
+      *
+           MOVE    ZERO                TO  IDX-TUS
+      *
+           PERFORM VARYING     IDX1    FROM    IDX-S   BY  1
+                   UNTIL      (IDX1        >   200     )   OR
+                             ((WRK-GMN-INPUTCD (IDX1)  =   SPACE ) AND
+                              (WRK-COM-INPUTCD (IDX1)  =   SPACE)) OR
+                              (FLG-ARI                 =   1     )
+      *
+               IF      WRK-COM-INPUTCD (IDX1)  =   WRK-SRYCD
+                   MOVE    1                   TO  FLG-ARI
+                   MOVE    IDX1                TO  IDX-TUS
+               END-IF
+      *
+      *        次の手術をまで対象とする
+               IF     (IDX1                >   IDX-S     )   AND
+                      (WRK-COM-DATAKBN (IDX1)  =   "1"   )   AND
+                      (WRK-COM-INPUTCD (IDX1)(1:1) =   "1" )
+                   MOVE    200             TO  IDX1
+               ELSE
+      *        最後の通則加算対象位置
+                   IF     (WRK-COM-INPUTCD (IDX1)(1:1) =   "1" )  AND
+                          (WRK-COM-TUSOKUGAIKBN(IDX1)  NOT =   "1" )
+                       MOVE    IDX1            TO  IDX-TUS
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           IF      IDX-TUS             =   ZERO
+               MOVE    IDX-Z           TO  IDX-TUS
+           END-IF
+      *
+           .
+       1001112-KIJUNN-ICHI-EXT.
            EXIT.
       *
       *****************************************************************
