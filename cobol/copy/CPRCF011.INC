@@ -22,7 +22,8 @@
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.00.03    NACL-藤原    03/03/12  補助区分の追加
+      *  01.00.01    NACL-藤原    03/03/12  補助区分の追加
+      *  01.00.02    NACL-藤原    03/03/26  給付割合〜公費情報の追加
       ************************************************************
       *01  RECE11-REC.
            03  RECE11-KEY.
@@ -46,5 +47,21 @@
                05  RECE11-HOJOKBN         PIC  X(01).
       *適用開始年月日
                05  RECE11-TEKSTYMD        PIC  X(08). 
+      *給付割合
+           03  RECE11-KYURATE             PIC  9(03).
+      *療養の給付情報
+           03  RECE11-TOTALTENINF         OCCURS  5.
+      *合計点数
+               05  RECE11-TOTALTEN        PIC  9(08).
+      *負担金額
+               05  RECE11-FTNMONEY        PIC  9(09).
+      *実日数
+               05  RECE11-JNISSU          PIC  9(02).
+      *公費情報
+           03  RECE11-KOHINF              OCCURS  4.
+      *公費−負担者番号
+               05  RECE11-KOHFTNJANUM     PIC  X(08).
+      *公費−受給者番号
+               05  RECE11-KOHJKYSNUM      PIC  X(20).
       *帳票データ
            03  RECE11-PRTDATA             PIC  X(4500).
