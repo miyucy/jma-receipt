@@ -224,6 +224,10 @@
        01  SANTEI-REC.
            COPY    "CPSANTEI.INC".
       *
+      *    診療科履歴
+       01  SRYKARRK-REC.
+           COPY    "CPSRYKARRK.INC".
+      *
       *    点数マスタ−
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
@@ -259,6 +263,9 @@
       *
       *   算定履歴更新サブ
            COPY    "CPORCSSANTEI.INC".
+      *
+      *   診療科算定履歴更新サブ
+           COPY    "CPORCSKARRK.INC".
       *
       *    ＳＰＡパラメタ（ORCSC97.CBL 用のDAMMY)
        01  SPA-SCR-REC.
@@ -380,7 +387,20 @@
                PERFORM 100-SRYACT-KOU-SEC
                PERFORM 200-JYURRK-SYORI-SEC
            END-IF
+      * 
+      *    診療科履歴変更
+           INITIALIZE                  ORCSKARRKAREA
+           MOVE    SPA-SRYYMD(1:6)     TO  SKARRK-SRYYM
+           CALL    "ORCSKARRK"         USING
+                                       ORCSKARRKAREA
+                                       SPA-AREA
       *
+      *    退院日がある時、最終受診日を編集する
+           IF      ORCSCNYUIN-TAIINYMD =   SPACE OR  ALL "9"
+               CONTINUE
+           ELSE
+               PERFORM 500-SRYKARRK-UPD-SEC
+           END-IF
       *
       *    ワーク診療行為マスタ−が存在した時、削除する
            PERFORM 400-WKSRYACT-DEL-SEC
@@ -606,8 +626,8 @@
       *            数量計をゼロで作成していたものがあったので、
       *            ゼロを１で判定する
                  IF     (ACCT-SURYOUTOTAL     =   WRK-SRYSURYOKEI)  OR
-                        (WRK-SRYSURYOKEI      =   1     AND
-                         ACCT-SURYOUTOTAL     =   ZERO OR 1 )
+                        ((WRK-SRYSURYOKEI     =   1     ) AND
+                        (ACCT-SURYOUTOTAL     =   ZERO OR 1 ))
                    MOVE    ACCT-ZAINUM      TO  WRK-H-ZAINUM
       *            診療行為内容の比較処理
                    PERFORM 45012-SRYACCT-CHK-SEC
@@ -750,7 +770,7 @@
                    MOVE    SRY-SRYSYUKBN   TO  WRK-MAE-SRYSYUKBN
                END-IF
       *        診療種別区分判定
-               IF       WRK-SRYSYUKBN       =   WRK-MAE-SRYSYUKBN
+               IF      WRK-SRYSYUKBN        =   WRK-MAE-SRYSYUKBN
                    MOVE     1               TO  FLG-CHK-OK
                ELSE
                    MOVE     ZERO            TO  FLG-CHK-OK
@@ -1095,10 +1115,10 @@
                        UNTIL      (IDY     >   5   )  OR
                                   (LNK-WKSRY-SRYCD (IDX IDY) =   SPACE)
       *            手技料の時、算定歴を判定する
-                   IF      LNK-WKSRY-SRYCD (IDX IDY)(1:1)  =   "1"
+                   IF    ( LNK-WKSRY-SRYCD (IDX IDY)(1:1)  =   "1" )
       *            自費の時、履歴なし
-                   AND     LNK-WKSRY-SRYKBN(IDX)   NOT =   "95"  AND
-                                                           "96"
+                   AND   ( LNK-WKSRY-SRYKBN(IDX)   NOT =   "95"  AND
+                                                           "96" )
                        MOVE    LNK-WKSRY-SRYCD (IDX IDY)
                                                    TO  WRK-SRYCD
       *
@@ -1311,14 +1331,6 @@
            MOVE    ZERO                TO  WRK-JYURRK-EDANUM
            PERFORM
                    UNTIL       FLG-JYURRK      =   1
-      *TEST
-              DISPLAY "WRK-JYURRK-DOUJI-RENNUM:" WRK-JYURRK-DOUJI-RENNUM
-                      ",JYURRK-DOUJI-RENNUM:" JYURRK-DOUJI-RENNUM
-                      ",JYURRK-HKNCOMBINUM:" JYURRK-HKNCOMBINUM
-                      ",SPA-HKNCOMBINUM:" SPA-HKNCOMBINUM
-                      ",JYURRK-RENNUM:" JYURRK-RENNUM
-                      ",JYURRK-EDANUM:" JYURRK-EDANUM
-      *TEST
                IF      (WRK-JYURRK-DOUJI-RENNUM    =
                                             JYURRK-DOUJI-RENNUM ) AND
                        (JYURRK-HKNCOMBINUM     =   SPA-HKNCOMBINUM)
@@ -1340,9 +1352,6 @@
                            END-IF
                        END-IF
                    END-PERFORM
-      *TEST
-                   DISPLAY "WRK-ZAINUM:" WRK-ZAINUM
-                           ",FLG-ARI:" FLG-ARI
       *
                    IF     (FLG-ARI             =   2    )  OR
                           (JYURRK-EDANUM       =   1    )
@@ -1864,6 +1873,59 @@
            EXIT.
       *
       *****************************************************************
+      *    診療科履歴更新処理
+      *****************************************************************
+       500-SRYKARRK-UPD-SEC              SECTION.
+      *
+      *    退院日がある時、最終受診日を編集する
+           MOVE    SPACE               TO  SRYKARRK-REC
+           INITIALIZE                      SRYKARRK-REC
+           MOVE    SPA-HOSPID          TO  KARRK-HOSPID
+           MOVE    SPA-PTID            TO  KARRK-PTID
+           MOVE    SPA-SRYKA           TO  KARRK-SRYKA
+      *
+           MOVE    SRYKARRK-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SRYKARRK-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SRYKARRK-KEY"      TO  ORC-DBPATH
+               PERFORM 975-SRYKARRK-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SRYKARRK
+           END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SRYKARRK-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      FLG-SRYKARRK        =   ZERO
+      *        更新
+               IF      KARRK-LASTYMD       <   ORCSCNYUIN-TAIINYMD
+                   MOVE    ORCSCNYUIN-TAIINYMD TO  KARRK-LASTYMD
+      *
+                   MOVE    SRYKARRK-REC        TO  MCPDATA-REC
+                   MOVE    "DBUPDATE"          TO  MCP-FUNC
+                   MOVE    "SRYKARRK-KEY"      TO  ORC-DBPATH
+                   CALL    "ORCMCPSUB"          USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
+                   IF      MCP-RC          NOT =   ZERO
+                       DISPLAY "ORCSCNYUIN SRYKARRK UPD ERR:"  MCP-RC
+                               ",KEY:" KARRK-KEY  ";"
+                   END-IF
+               END-IF
+           END-IF
+           .
+       500-SRYKARRK-UPD-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ワーク診療行為マスタ−削除処理
       *****************************************************************
        400-WKSRYACT-DEL-SEC              SECTION.
@@ -1949,6 +2011,17 @@
                                         ORCMCPAREA
                                         MCPDATA-REC
       *
+           IF      ORCSCNYUIN-TAIINYMD =   SPACE OR  ALL "9"
+      *        入院取消の時、診療科履歴の修正
+               INITIALIZE                  ORCSKARRKAREA
+               MOVE    ORCSCNYUIN-YMD(1:6) TO  SKARRK-SRYYM
+               CALL    "ORCSKARRK"         USING
+                                           ORCSKARRKAREA
+                                           SPA-AREA
+           ELSE
+      *        退院の時、最終受診日を編集する
+               PERFORM 500-SRYKARRK-UPD-SEC
+           END-IF
       *
            .
        200-TAIIN-SYORI-EXT.
@@ -2159,6 +2232,28 @@
       *
            .
        970-JYURRK-NEXT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療科歴データ主キー検索
+      *****************************************************************
+       975-SRYKARRK-READ-SEC           SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  SRYKARRK-REC
+               MOVE    ZERO                TO  FLG-SRYKARRK
+           ELSE
+               MOVE    1                   TO  FLG-SRYKARRK
+               INITIALIZE                  SRYKARRK-REC
+           END-IF
+      *
+           .
+       975-SRYKARRK-READ-EXT.
            EXIT.
       *****************************************************************
       *    算定歴マスタ読み込み
