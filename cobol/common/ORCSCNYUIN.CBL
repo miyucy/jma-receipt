@@ -1284,6 +1284,10 @@
       *****************************************************************
        4502-SANTEI-SYORI-SEC              SECTION.
       *
+           IF      SPA-HKNCOMBINUM     =   "9999"
+               GO      TO      4502-SANTEI-SYORI-EXT
+           END-IF
+      *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   IDX-KOUI
                PERFORM VARYING     IDY     FROM    1   BY  1
