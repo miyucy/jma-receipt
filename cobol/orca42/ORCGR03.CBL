@@ -585,6 +585,7 @@
                END-IF
            ELSE        
                INITIALIZE                  SPA-GMN-SRYYM
+                                           SPA-NAI-SRYYM
                                            SPA-NAI-SRYYMH
            END-IF    
       *
