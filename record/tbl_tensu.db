@@ -150,6 +150,8 @@ tbl_tensu {
 	EDSRYKBN			char(2),virtual;
 	TK_CDKBN_KBNNUM		number(3,0),virtual;
 	TK_CDKBN_KOUBAN    	number(2,0),virtual;
+	TK_TEN             	number(9,0),virtual;
+	TK_EDTEN             	number(9,0),virtual;
 	
 };
 primary	{
@@ -1114,3 +1116,24 @@ path	key24 	{
 		;
 	};
 };
+
+path	key93	{
+	DBSELECT	{
+		DECLARE tbl_tensu_key93_csr CURSOR FOR
+		SELECT *
+		FROM tbl_tensu
+			WHERE YUKOSTYMD    <=  :YUKOSTYMD
+			AND   YUKOEDYMD    >=  :YUKOEDYMD
+			AND  (TEN          >=  :TK_TEN
+			AND   TEN          <=  :TK_EDTEN )
+			AND  (SRYKBN       >=  :STSRYKBN
+			AND   SRYKBN       <=  :EDSRYKBN )
+			ORDER   BY          TEN,
+                                            CDKBN_KBN,
+                                            CDKBN_KBNNUM,
+					    CDKBN_KBNNUM_EDA,
+					    SRYCD
+			;
+	};
+};
+
