@@ -29,6 +29,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      * 01.00.01     NACL-Â¿¡¹Ç¼  02/10/07  ºßÂðÌôºÞ¡¦´ïºà¤Î±¡³°ÍÑÄÉ²Ã
       *****************************************************************
       *
       *
@@ -81,6 +82,7 @@
            03  FLG-OK              PIC 9(01).
            03  FLG-SYORI           PIC 9(01).
            03  FLG-ZAITAKU         PIC 9(01).
+           03  FLG-ZAITAKU-ARI     PIC 9(01).
       *
            03  FLG-SYOHOU          PIC 9(01).
       *
@@ -1283,6 +1285,7 @@
            MOVE    ZERO                TO  IDX-S
            MOVE    ZERO                TO  FLG-KAISU
            MOVE    ZERO                TO  FLG-ZAITAKU
+           MOVE    ZERO                TO  FLG-ZAITAKU-ARI
            PERFORM
                    UNTIL   FLG-SRYACT      =   1
       *
@@ -1295,11 +1298,30 @@
                    PERFORM VARYING     IDXA    FROM    1   BY  1
                            UNTIL      (IDXA    >   5   )   OR
                                       (SRY-SRYCD (IDXA)    =   SPACE)
-                       IF      SRY-SRYCD (IDXA)(1:1)       =   "6"
-                           MOVE    1               TO  FLG-ZAITAKU
+                       IF      SRY-SRYCD (IDXA)(1:1)       =   "6"  OR
+                                                               "7"
+      ******************** MOVE    1               TO  FLG-ZAITAKU
+                           MOVE    1               TO  FLG-ZAITAKU-ARI
                        END-IF
                    END-PERFORM
                END-IF
+      *
+      *        ºßÂð¤ÇÌôºÞ¡¦´ïºà¤¬¤¢¤ë»þ¡¢
+               MOVE    ZERO                TO  FLG-ZAITAKU
+               IF     (SRY-SRYKBN          =   "14" )  AND
+                      (FLG-ZAITAKU-ARI     =   1    )
+                   IF     (SRY-SRYSYUKBN       =   "148"  OR
+                                                   "149" )  AND
+                          (ORCHC19-KBN     NOT =   "3"   )
+                       MOVE    1               TO  FLG-ZAITAKU
+                   END-IF
+                   IF     (SRY-SRYSYUKBN   NOT =   "148"  AND
+                                                   "149" )  AND
+                          (ORCHC19-KBN         =   "3"   )
+                       MOVE    1               TO  FLG-ZAITAKU
+                   END-IF
+               END-IF
+      *
       *        ÌôºÞ¤òÂÐ¾Ý¤È¤¹¤ë
       *****    IF      SRY-SRYSYUKBN       =   "210"  OR  "220"  OR
       *                                        "230"  OR  "212"  OR
@@ -1873,9 +1895,10 @@
       *********END-IF
       *        ºßÂð¼«¸ÊÃí¼Í¤Ï¤¹¤Ù¤Æ¤ÇÂÐ¾Ý¤È¤¹¤ë
                IF     (WKSRY-SRYKBN        =   "14"    )  AND
-                      (WKSRY-YKZTEN        >   ZERO    )
+                      (WKSRY-YKZTEN        >   ZERO   OR
+                       WKSRY-KIZAITEN      >   ZERO    )
                    MOVE    1               TO  FLG-OK
-                   MOVE    2               TO  FLG-OK2
+      ************ MOVE    2               TO  FLG-OK2
                END-IF
       *        ÅêÌôÂÐ¾Ý
                IF      WKSRY-SRYKBN        =   "21"  OR
@@ -1984,6 +2007,21 @@
                    MOVE    1               TO  FLG-OK2
                END-IF
            END-IF
+      *
+      *    ºßÂð¤ÇÌôºÞ¡¦´ïºà¤¬¤¢¤ë»þ¡¢
+           IF      WRK-SRYKBN          =   "14"
+               IF     (WRK-SRYSYUKBN       =   "148"  OR
+                                               "149" )  AND
+                      (ORCHC19-KBN         =   "4"   )
+                   MOVE    1               TO  FLG-OK2
+               END-IF
+               IF     (SRY-SRYSYUKBN   NOT =   "148"  AND
+                                               "149" )  AND
+                      (ORCHC19-KBN         =   "5"  )
+                   MOVE    1               TO  FLG-OK2
+               END-IF
+           END-IF
+      *
            IF      FLG-OK2             =   ZERO
                IF      IDX-Z               >   ZERO
                    COMPUTE IDX-Z           =   IDX-Z     -   1
