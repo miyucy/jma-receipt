@@ -122,6 +122,10 @@
       *  01.02.10    NACL-ÃÁœ∆    05/02/28  ° •µ°Àµ≠∫‹¬–±˛
       *  01.02.11    NACL-ÃÁœ∆    05/03/03  ∆√µ≠ªˆπ‡§Œ ‘Ω∏Ω§¿µ
       *  01.02.12    NACL-ÃÁœ∆    05/03/03  ø©ªˆ§À¥ÿ§π§Î ‘Ω∏Ω§¿µ
+      *  01.02.13    NACL-ÃÁœ∆    05/03/16  …È√¥∂‚≥€° ∞Ï…Ù…È√¥≥€°À°¶
+      *                                     …È√¥∂‚≥€° πµΩ¸≥€°À°¶
+      *                                     ∞Ï…Ù…È√¥∂‚°¶ø©ªˆŒ≈Õ‹»Ò…∏Ω‡
+      *                                     …È√¥≥€∂Ë ¨§Œ ‘Ω∏
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1348,7 +1352,6 @@
                PERFORM    2103-RECE64-HENSYU3-SEC
                PERFORM    2104-FTN-SET-SEC
       ***  END-PERFORM
-           PERFORM     2105-SAIKEI-KEISAN-SEC
       *
       *    •Ï•ª•◊•»¿¡µ·∂Ë ¨§À§Ë§Î∏¯»Òæ Û§Œø∂§Í ¨§±ΩËÕ˝
            MOVE    ZERO            TO  FLG-RECESKYKBN
@@ -6146,7 +6149,11 @@
            MOVE   "SYUNOU-KEY17"     TO  WK-PATH
            PERFORM   CSR-CLOSE-SEC
       *
-      *    ø©ªˆ…È√¥¥ﬁ§‡æÂ∏¬≥€§Œ§¢§Î∏¯»Ò§Œ∞Ï…Ù…È√¥∂‚≥€ ‘Ω∏
+      *    ∞Ï…Ù…È√¥∂‚∫∆∑«§Œ∑◊ªªΩËÕ˝
+      *
+           PERFORM         21046-SAIKEI-KEISAN-SEC
+      *
+      *    ø©ªˆ…È√¥¥ﬁ§‡æÂ∏¬≥€§Œ§¢§Î∏¯»Ò§Œ∞Ï…Ù…È√¥∂‚≥€ ‘Ω∏≈˘
       *
            PERFORM         21045-KOH-FUTAN-SET-SEC
       *
@@ -6406,8 +6413,8 @@
                                        RECE62-SHOKUJIRYOYOHI(1)
                    ADD   SYU-SKJ-FTN-RECE(1)  TO
                                        RECE62-SHOKUJIFTN(1)
-      **>          ADD   SYU-SKJ-FTN-RECE(1)  TO
-      **>                              RECE62-RJNNYUFTN
+      *            ADD   SYU-SKJ-FTN-RECE(1)  TO
+      *                                RECE62-RJNNYUFTN
              END-IF
            END-IF
       *
@@ -6425,7 +6432,7 @@
            ELSE
              IF    RECE62-RJNHKNNUM    NOT =    SPACE
                 ADD    SYU-KOH1COMPFTN  TO   RECE62-FTNMONEY(1)
-                ADD    SYU-KOH1COMPFTN  TO   RECE62-RJNNYUFTN
+      ***>      ADD    SYU-KOH1COMPFTN  TO   RECE62-RJNNYUFTN
              END-IF
       *      ¡•∞˜ ›∏±° »Ô ›∏±º‘°À°‹ƒÃ∂–∫“≥≤
              IF    RECE62-SENIN-TUUSAI     =    "1"
@@ -6462,15 +6469,18 @@
                                                            OR "051")
                          ADD   SYU-KOH-HKNFTNMONEY(IDX3)  TO
                                          RECE62-FTNMONEY(KH-IDX)
+                                         RECE62-FTNMONEY-KOJ(KH-IDX)
                          ADD   SYU-SKJ-FTN(IDX3)          TO
                                          WRK-SKJ-FTN(KH-IDX)
                       ELSE
                          IF    (RECE62-FTNMONEY(1)  =  ZERO)
                          AND   (RECE62-KOHNUM(1)    =  "010" OR "021")
-                               CONTINUE
+                               ADD   SYU-KOH-COMPFTN(IDX3)  TO
+                                            RECE62-FTNMONEY-KOJ(KH-IDX)
                          ELSE
                                ADD   SYU-KOH-COMPFTN(IDX3)  TO
                                             RECE62-FTNMONEY(KH-IDX)
+                                            RECE62-FTNMONEY-KOJ(KH-IDX)
                                ADD   SYU-SKJ-FTN(IDX3)      TO
                                             WRK-SKJ-FTN(KH-IDX)
                          END-IF
@@ -6535,15 +6545,18 @@
                                                            OR "051")
                          ADD   SYU-KOH-HKNFTNMONEY(IDX3)  TO
                                          RECE62-FTNMONEY(KH-IDX)
+                                         RECE62-FTNMONEY-KOJ(KH-IDX)
                          ADD   SYU-SKJ-FTN(IDX3)          TO
                                          WRK-SKJ-FTN(KH-IDX)
                       ELSE
                          IF    (RECE62-FTNMONEY(1)  =  ZERO)
                          AND   (RECE62-KOHNUM(2)    =  "010" OR "021")
-                               CONTINUE
+                               ADD   SYU-KOH-COMPFTN(IDX3)  TO
+                                            RECE62-FTNMONEY-KOJ(KH-IDX)
                          ELSE
                                ADD   SYU-KOH-COMPFTN(IDX3)  TO
                                             RECE62-FTNMONEY(KH-IDX)
+                                            RECE62-FTNMONEY-KOJ(KH-IDX)
                                ADD   SYU-SKJ-FTN(IDX3)      TO
                                             WRK-SKJ-FTN(KH-IDX)
                          END-IF
@@ -6608,15 +6621,18 @@
                                                            OR "051")
                          ADD   SYU-KOH-HKNFTNMONEY(IDX3)  TO
                                          RECE62-FTNMONEY(KH-IDX)
+                                         RECE62-FTNMONEY-KOJ(KH-IDX)
                          ADD   SYU-SKJ-FTN(IDX3)          TO
                                          WRK-SKJ-FTN(KH-IDX)
                       ELSE
                          IF    (RECE62-FTNMONEY(1)  =  ZERO)
                          AND   (RECE62-KOHNUM(3)    =  "010" OR "021")
-                               CONTINUE
+                               ADD   SYU-KOH-COMPFTN(IDX3)  TO
+                                            RECE62-FTNMONEY-KOJ(KH-IDX)
                          ELSE
                                ADD   SYU-KOH-COMPFTN(IDX3)  TO
                                             RECE62-FTNMONEY(KH-IDX)
+                                            RECE62-FTNMONEY-KOJ(KH-IDX)
                                ADD   SYU-SKJ-FTN(IDX3)      TO
                                             WRK-SKJ-FTN(KH-IDX)
                          END-IF
@@ -6681,15 +6697,18 @@
                                                            OR "051")
                          ADD   SYU-KOH-HKNFTNMONEY(IDX3)  TO
                                          RECE62-FTNMONEY(KH-IDX)
+                                         RECE62-FTNMONEY-KOJ(KH-IDX)
                          ADD   SYU-SKJ-FTN(IDX3)          TO
                                          WRK-SKJ-FTN(KH-IDX)
                       ELSE
                          IF    (RECE62-FTNMONEY(1)  =  ZERO)
                          AND   (RECE62-KOHNUM(4)    =  "010" OR "021")
-                               CONTINUE
+                               ADD   SYU-KOH-COMPFTN(IDX3)  TO
+                                            RECE62-FTNMONEY-KOJ(KH-IDX)
                          ELSE
                                ADD   SYU-KOH-COMPFTN(IDX3)  TO
                                             RECE62-FTNMONEY(KH-IDX)
+                                            RECE62-FTNMONEY-KOJ(KH-IDX)
                                ADD   SYU-SKJ-FTN(IDX3)      TO
                                             WRK-SKJ-FTN(KH-IDX)
                          END-IF
@@ -6822,7 +6841,7 @@
                 AND  ( SYU-KOH-HKNNUM(4)   =   SPACE  )                 
                     IF    RECE62-RJNHKNNUM    NOT =    SPACE            
                       ADD    SYU-KOH1COMPFTN  TO   RECE62-FTNMONEY(1)   
-                                                   RECE62-RJNNYUFTN     
+      ***>                                         RECE62-RJNNYUFTN     
                                                    WRK-KOH-GAI          
                     ELSE                                                
                       ADD    SYU-SYUCOMPFTN   TO   RECE62-FTNMONEY(1)   
@@ -6895,7 +6914,7 @@
       ***          AND  ( SYU-KOH-HKNNUM(4)   =   SPACE  )                 
       ***              IF    RECE62-RJNHKNNUM    NOT =    SPACE            
       ***                ADD    SYU-KOH1COMPFTN  TO   RECE62-FTNMONEY(1)   
-      ***                                             RECE62-RJNNYUFTN     
+      ******>                                         RECE62-RJNNYUFTN     
       ***                                             WRK-KOH-GAI          
       ***              ELSE                                                
       ***                ADD    SYU-SYUCOMPFTN   TO   RECE62-FTNMONEY(1)   
@@ -6904,7 +6923,7 @@
       ***          ELSE
       ***              IF    RECE62-RJNHKNNUM    NOT =    SPACE            
       ***                ADD    SYU-KOH1COMPFTN  TO   RECE62-FTNMONEY(1)   
-      ***                                             RECE62-RJNNYUFTN     
+      ******>                                         RECE62-RJNNYUFTN     
       ***                                             FTN-KOH-XXX          
       ***              ELSE                                                
       ***                ADD    SYU-SYUCOMPFTN   TO   RECE62-FTNMONEY(1)   
@@ -6932,15 +6951,15 @@
            IF  WRK-FTNKEI  >  FTN-KOH-YYY
                 ADD      FTN-KOH-YYY  TO  RECE62-FTNMONEY(1)
                                           FTN-KOH-XXX
-                IF    RECE62-RJNHKNNUM    NOT =    SPACE
-                    ADD  FTN-KOH-YYY  TO  RECE62-RJNNYUFTN
-                END-IF
+      ***>      IF    RECE62-RJNHKNNUM    NOT =    SPACE
+      ***>          ADD  FTN-KOH-YYY  TO  RECE62-RJNNYUFTN
+      ***>      END-IF
            ELSE
                 ADD      WRK-FTNKEI   TO  RECE62-FTNMONEY(1)
                                           FTN-KOH-XXX
-                IF    RECE62-RJNHKNNUM    NOT =    SPACE
-                    ADD  WRK-FTNKEI   TO  RECE62-RJNNYUFTN
-                END-IF
+      ***>      IF    RECE62-RJNHKNNUM    NOT =    SPACE
+      ***>          ADD  WRK-FTNKEI   TO  RECE62-RJNNYUFTN
+      ***>      END-IF
            END-IF
       *
            .
@@ -6975,7 +6994,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ø©ªˆ…È√¥¥ﬁ§‡æÂ∏¬≥€§Œ§¢§Î∏¯»Ò§Œ∞Ï…Ù…È√¥∂‚≥€ ‘Ω∏
+      *    ø©ªˆ…È√¥¥ﬁ§‡æÂ∏¬≥€§Œ§¢§Î∏¯»Ò§Œ∞Ï…Ù…È√¥∂‚≥€ ‘Ω∏≈˘
       *****************************************************************
        21045-KOH-FUTAN-SET-SEC               SECTION.
       *
@@ -7000,17 +7019,20 @@
       *
                 IF  WRK-FTNKEI3  =  14000
                     MOVE  WRK-FTNKEI3  
-                                   TO  RECE62-FTNMONEY(KOHFTN-IDX + 1)
+                              TO  RECE62-FTNMONEY(KOHFTN-IDX + 1)
+                                  RECE62-FTNMONEY-KOJ(KOHFTN-IDX + 1)
                 END-IF
                 IF  WRK-FTNKEI3  <  14000
                 AND WRK-FTNKEI4  =  14000
                     MOVE  WRK-FTNKEI4
-                                   TO  RECE62-FTNMONEY(KOHFTN-IDX + 1)
+                              TO  RECE62-FTNMONEY(KOHFTN-IDX + 1)
+                                  RECE62-FTNMONEY-KOJ(KOHFTN-IDX + 1)
                 END-IF
                 IF  WRK-FTNKEI3  <  14000
                 AND WRK-FTNKEI4  <  14000
                     MOVE  WRK-FTNKEI2
-                                   TO  RECE62-FTNMONEY(KOHFTN-IDX + 1)
+                              TO  RECE62-FTNMONEY(KOHFTN-IDX + 1)
+                                  RECE62-FTNMONEY-KOJ(KOHFTN-IDX + 1)
                 END-IF
       *
              END-IF
@@ -7045,23 +7067,27 @@
                 IF  RECE62-KOHNUM(KOHFTN-IDX) =  "012"
                     IF    RECE62-HKNNUM   =  SPACE
                       MOVE  WRK-NYUJGNGAK
-                                   TO  RECE62-FTNMONEY(KOHFTN-IDX + 1)
+                              TO  RECE62-FTNMONEY(KOHFTN-IDX + 1)
+                                  RECE62-FTNMONEY-KOJ(KOHFTN-IDX + 1)
                     END-IF
                 ELSE
                   IF  WRK-NYUJGNGAK  NOT =  ZERO
                     IF  WRK-FTNKEI3  =  WRK-NYUJGNGAK
                       MOVE  WRK-FTNKEI3  
-                                   TO  RECE62-FTNMONEY(KOHFTN-IDX + 1)
+                              TO  RECE62-FTNMONEY(KOHFTN-IDX + 1)
+                                  RECE62-FTNMONEY-KOJ(KOHFTN-IDX + 1)
                     END-IF
                     IF  WRK-FTNKEI3  <  WRK-NYUJGNGAK
                     AND WRK-FTNKEI4  =  WRK-NYUJGNGAK
                       MOVE  WRK-FTNKEI4
-                                   TO  RECE62-FTNMONEY(KOHFTN-IDX + 1)
+                              TO  RECE62-FTNMONEY(KOHFTN-IDX + 1)
+                                  RECE62-FTNMONEY-KOJ(KOHFTN-IDX + 1)
                     END-IF
                     IF  WRK-FTNKEI3  <  WRK-NYUJGNGAK
                     AND WRK-FTNKEI4  <  WRK-NYUJGNGAK
                       MOVE  WRK-FTNKEI2
-                                   TO  RECE62-FTNMONEY(KOHFTN-IDX + 1)
+                              TO  RECE62-FTNMONEY(KOHFTN-IDX + 1)
+                                  RECE62-FTNMONEY-KOJ(KOHFTN-IDX + 1)
                     END-IF
                   END-IF
                 END-IF
@@ -7144,6 +7170,33 @@
       *
            END-IF
       *
+      *    ∞Ï…Ù…È√¥∂‚°¶ø©ªˆŒ≈Õ‹»Ò…∏Ω‡…È√¥≥€∂Ë ¨§Œ ‘Ω∏
+      *
+           EVALUATE    RECE62-TEISYOTOKU
+                   WHEN    "1"
+                       MOVE    "3"   TO   RECE62-SHOKUJIFTNKBN
+                   WHEN    "2"
+                       MOVE    "1"   TO   RECE62-SHOKUJIFTNKBN
+                   WHEN    "3"
+                       MOVE    "2"   TO   RECE62-SHOKUJIFTNKBN
+           END-EVALUATE
+      *
+      *    œ∑øÕ ›∏±°‹¡¥πÒ∏¯»Ò
+           IF      RECE62-SRYYM      >=  "200210"
+      *
+             PERFORM    VARYING   KOHFTN-IDX   FROM   1   BY   1
+                         UNTIL    KOHFTN-IDX     >    4
+      *
+               IF  ( RECE62-RJNHKNNUM            NOT =    SPACE )  AND
+                   ( RECE62-KOHNUM(KOHFTN-IDX)(1:1)  =    "0"   )
+                  MOVE   FTN-KOH-XXX  TO
+                                  RECE62-FTNMONEY-FTN(KOHFTN-IDX + 1)
+               END-IF
+      *
+             END-PERFORM
+      *
+           END-IF
+      *
            .
        21045-KOH-FUTAN-SET-EXT.
            EXIT.
@@ -7195,7 +7248,7 @@
       *****************************************************************
       *    ∞Ï…Ù…È√¥∂‚∫∆∑«§Œ∑◊ªªΩËÕ˝
       *****************************************************************
-       2105-SAIKEI-KEISAN-SEC               SECTION.
+       21046-SAIKEI-KEISAN-SEC               SECTION.
       *
            IF   FTN-KOH-XXX    >    WRK-CHK-ICHIBUGAKU
                 COMPUTE  FTN-KOH-XXX = FTN-KOH-XXX - WRK-CHK-ICHIBUGAKU
@@ -7226,6 +7279,7 @@
                      END-IF
                      IF  FLG-KOH  =   2
                         ADD   WRK-KOH-GAI   TO  RECE62-FTNMONEY(2)
+                                                RECE62-FTNMONEY-KOJ(2)
                         COMPUTE   RECE62-KOUREI-SAIKEI  =  
                                   FTN-KOH-XXX
                      END-IF
@@ -7240,7 +7294,7 @@
            END-IF
       *
            .
-       2105-SAIKEI-KEISAN-EXT.
+       21046-SAIKEI-KEISAN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -7280,6 +7334,10 @@
                                        TO  RECE62-TOTALTEN      (1)
            MOVE    WRK-RECE62-FTNMONEY      (1)
                                        TO  RECE62-FTNMONEY      (1)
+           MOVE    WRK-RECE62-FTNMONEY-FTN  (1)
+                                       TO  RECE62-FTNMONEY-FTN  (1)
+           MOVE    WRK-RECE62-FTNMONEY-KOJ  (1)
+                                       TO  RECE62-FTNMONEY-KOJ  (1)
            MOVE    WRK-RECE62-HENTOTALTEN   (1)
                                        TO  RECE62-HENTOTALTEN   (1)
            MOVE    WRK-RECE62-SHOKUJIINF    (1)
@@ -7330,6 +7388,10 @@
                                            TO  RECE62-TOTALTEN    (IDYX)
                            MOVE    WRK-RECE62-FTNMONEY    (IDXX)
                                            TO  RECE62-FTNMONEY    (IDYX)
+                           MOVE    WRK-RECE62-FTNMONEY-FTN(IDXX)
+                                           TO  RECE62-FTNMONEY-FTN(IDYX)
+                           MOVE    WRK-RECE62-FTNMONEY-KOJ(IDXX)
+                                           TO  RECE62-FTNMONEY-KOJ(IDYX)
                            MOVE    WRK-RECE62-SHOKUJIINF  (IDXX)
                                            TO  RECE62-SHOKUJIINF  (IDYX)
                            MOVE    WRK-RECE62-NYUKHNKEI2  (IDXX)
@@ -7368,6 +7430,10 @@
                                            TO RECE62-ETC-TOTALTEN(IDZX)
                            MOVE    WRK-RECE62-FTNMONEY (IDXX)
                                            TO RECE62-ETC-FTNMONEY(IDZX)
+                           MOVE    WRK-RECE62-FTNMONEY-FTN (IDXX)
+                                       TO RECE62-ETC-FTNMONEY-FTN(IDZX)
+                           MOVE    WRK-RECE62-FTNMONEY-KOJ (IDXX)
+                                       TO RECE62-ETC-FTNMONEY-KOJ(IDZX)
                            MOVE    WRK-RECE62-SHOKUJINISSU   (IDXX)
                                            TO  RECE62-ETC-SHOKUJINISSU
                                                                  (IDZX)

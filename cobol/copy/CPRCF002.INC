@@ -54,6 +54,8 @@
       *  01.02.17    NACL-藤原    04.07.06  組合せ公費保険ＩＤの追加
       *  01.02.18    NACL-門脇    04.12.15  公費一部負担金レセ記載フラグの追加
       *                                     公費一部負担金０円記載フラグの追加
+      *  01.02.19    NACL-門脇    05.03.11  負担金額情報に項目追加
+      *                                     レセプト記載外公費情報に項目追加
       ************************************************************
       *01  RECE02-REC.
            03  RECE02-KEY.
@@ -206,20 +208,24 @@
                05  RECE02-FTNMONEYINF     OCCURS  5.
       *負担金額
                    07  RECE02-FTNMONEY    PIC  9(09).
+      *負担金額（一部負担額）
+                   07  RECE02-FTNMONEY-FTN    PIC  9(09).
+      *負担金額（控除額）
+                   07  RECE02-FTNMONEY-KOJ    PIC  9(09).
       *
-      *老人減免区分
+      *老人減免区分（未使用）
            03  RECE02-RJNGENMENKBN        PIC  X(01).
-      *老人外来金額
+      *老人外来金額（未使用）
            03  RECE02-RJNGAIFTN           PIC  9(09).
-      *老人入院金額
+      *老人入院金額（未使用）
            03  RECE02-RJNNYUFTN           PIC  9(09).
-      *国保減免区分
+      *国保減免区分（未使用）
            03  RECE02-KKHGENMENKBN        PIC  X(01).
-      *国保減額割合
+      *国保減額割合（未使用）
            03  RECE02-KKHGENGAKURATE      PIC  X(03).
-      *国保減額金額
+      *国保減額金額（未使用）
            03  RECE02-KKHGENGAKU          PIC  X(03).
-      *割引点数単価
+      *割引点数単価（未使用）
            03  RECE02-DISCOUNTTENTNK      PIC  X(02).
       *食事療養費情報
            03  RECE02-SHOKUJIINF          OCCURS  5.
@@ -229,13 +235,15 @@
                05  RECE02-SHOKUJIRYOYOHI  PIC  9(09).
       *標準負担額
                05  RECE02-SHOKUJIFTN      PIC  9(09).
-      *標準負担区分
+      *
+      *一部負担金・食事療養費標準負担額区分
            03  RECE02-SHOKUJIFTNKBN       PIC  X(01).
-      *老人公費負担金額情報
+      *
+      *老人公費負担金額情報（未使用）
            03  RECE02-RJNKOHFTNINF        OCCURS  3.
-      *老人外来公費負担額
+      *老人外来公費負担額（未使用）
                05  RECE02-RJNGAIKOHFTN    PIC  9(09).
-      *老人入院公費負担額
+      *老人入院公費負担額（未使用）
                05  RECE02-RJNNYUKOHFTN    PIC  9(09).
       *
       *薬剤一部負担金情報
@@ -263,9 +271,15 @@
       *記載外公費−負担金額
                    07  RECE02-ETC-FTNMONEY
                                           PIC  9(09).
+      *記載外公費−負担金額（一部負担額）
+                   07  RECE02-ETC-FTNMONEY-FTN
+                                          PIC  9(09).
+      *記載外公費−負担金額（控除額）
+                   07  RECE02-ETC-FTNMONEY-KOJ
+                                          PIC  9(09).
       *記載外公費−薬剤一部負担金情報
                    07  RECE02-ETC-YKZFTN  PIC  9(05).
-      *補足区分
+      *補足区分（未使用）
            03  RECE02-HOSOKUKBN           PIC  X(01).
       *初診時間区分
            03  RECE02-SHOSHINTIME         PIC  X(01).

@@ -76,6 +76,7 @@
       *                                     場合の入院年月日の記載方法
       *  01.01.05    NACL-門脇    05/02/14  高齢者一部負担額記載修正
       *  01.01.06    NACL-門脇    05/02/25  特記事項”老保”編集修正
+      *  01.01.07    NACL-門脇    05/03/16  高齢者フラグ編集修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1125,9 +1126,9 @@
                   IF  RECE62-RECESYUBETU   =   "8888"
                       MOVE  SPACE       TO  RECE62-KOUREI
                   END-IF
-      ***         IF  RECE62-HKNNUM        =   SPACE 
-      ***             MOVE  SPACE       TO  RECE62-KOUREI
-      ***         END-IF
+                  IF  RECE62-HKNNUM        =   SPACE 
+                      MOVE  SPACE       TO  RECE62-KOUREI
+                  END-IF
       *
               END-IF
            END-IF

@@ -31,8 +31,13 @@
       *  01.01.03    NACL-藤原    03/03/06  補助区分の追加
       *                                     点数のタイプ変更
       *                                     レセプト記載外公費情報追加
-      *  01.01.04    NACL-藤原    03/04/11  在総診区分の追加
+      *  01.01.04    NACL-藤原    03/04/11  診療年月検索用項目の追加
       *  01.01.05    NACL-藤原    03/05/19  対象保険者番号の追加
+      *  01.01.06    NACL-門脇    05/03/11  負担金額情報に項目追加
+      *                                     一部負担金・食事療養費標準
+      *                                     負担額区分追加
+      *                                     記載外公費−負担金額に項目
+      *                                     追加
       ************************************************************
        01  RECE10-REC.
       *ＫＥＹ
@@ -117,6 +122,11 @@
            03  RECE10-FTNMONEYINF         OCCURS  5.
       *負担金額
                05  RECE10-FTNMONEY        PIC  9(09).
+      *負担金額（一部負担額）
+               05  RECE10-FTNMONEY-FTN    PIC  9(09).
+      *負担金額（控除額）
+               05  RECE10-FTNMONEY-KOJ    PIC  9(09).
+      *
       *食事療養費情報
            03  RECE10-SHOKUJIINF          OCCURS  5.
       *食事日数
@@ -125,6 +135,10 @@
                05  RECE10-SHOKUJIRYOYOHI  PIC  9(09).
       *標準負担額
                05  RECE10-SHOKUJIFTN      PIC  9(09).
+      *
+      *一部負担金・食事療養費標準負担額区分
+           03  RECE10-SHOKUJIFTNKBN       PIC  X(01).
+      *
       *薬剤一部負担金情報
            03  RECE10-YKZFTNINF           OCCURS  5.
       *薬剤一部負担金
@@ -141,8 +155,10 @@
                05  RECE10-ETC-TOTALTENINF.
                    07  RECE10-ETC-TOTALTEN PIC  9(08)   OCCURS  4.
       *記載外公費−負担金額
-               05  RECE10-ETC-FTNMONEYINF.
-                   07  RECE10-ETC-FTNMONEY PIC  9(09)   OCCURS  4.
+               05  RECE10-ETC-FTNMONEYINF               OCCURS  4.
+                   07  RECE10-ETC-FTNMONEY     PIC  9(09).
+                   07  RECE10-ETC-FTNMONEY-FTN PIC  9(09).
+                   07  RECE10-ETC-FTNMONEY-KOJ PIC  9(09).
       *記載外公費−薬剤一部負担金情報
                05  RECE10-ETC-YKZFTNINF.
                    07  RECE10-ETC-YKZFTN   PIC  9(05)   OCCURS  4.

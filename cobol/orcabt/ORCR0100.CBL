@@ -137,6 +137,8 @@
       *  01.01.01    NACL-∆£∏∂    04/09/28  √ÊªﬂΩËÕ˝§Œƒ…≤√
       *  01.01.02    NACL-ÃÁœ∆    05/01/13  ∏¯»Ò¿¡µ·•∆°º•÷•Î ›∏±¡»πÁ§ª
       *                                     »÷πÊæ Û ‘Ω∏Ω§¿µ
+      *  01.01.03    NACL-ÃÁœ∆    05/03/17  ∏¯»Ò¿¡µ·°¶¿¡µ·¥…Õ˝§Œ…È√¥∂‚≥€
+      *                                      ‘Ω∏Ω§¿µ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1604,8 +1606,10 @@
                                        TO  KOHSKY-JNISSUINF (IDX)
                MOVE    RECE02X-TOTALTENINF (IDX)
                                        TO  KOHSKY-TOTALTENINF (IDX)
-               MOVE    RECE02X-FTNMONEYINF(IDX)
-                                       TO  KOHSKY-FTNMONEYINF (IDX)
+      *********MOVE    RECE02X-FTNMONEYINF(IDX)
+      *********                        TO  KOHSKY-FTNMONEYINF (IDX)
+               MOVE    RECE02X-FTNMONEY   (IDX)
+                                       TO  KOHSKY-FTNMONEY    (IDX)
                MOVE    RECE02X-SHOKUJIINF (IDX)
                                        TO  KOHSKY-SHOKUJIINF (IDX)
                MOVE    RECE02X-YKZFTNINF  (IDX)
@@ -1615,6 +1619,9 @@
            MOVE    RECE02X-ZAITAKU     TO  KOHSKY-ZAITAKU
            MOVE    RECE02X-ZAITAKU-SAIKEI
                                        TO  KOHSKY-ZAITAKU-SAIKEI
+      *    ∞Ï…Ù…È√¥∂‚°¶ø©ªˆŒ≈Õ‹»Ò…∏Ω‡…È√¥≥€∂Ë ¨
+           MOVE    RECE02X-SHOKUJIFTNKBN
+                                       TO  KOHSKY-SHOKUJIFTNKBN
       *
            MOVE    KOHSKY-REC          TO  MCPDATA-REC
            MOVE    "KOHSKY-KEY"        TO  ORC-DBPATH
@@ -3887,6 +3894,9 @@
                MOVE    RECE02-ETC-KOHNUM (IDX) TO
                                        RECE10-ETC-KOHNUM (IDX)
            END-PERFORM
+      *    ∞Ï…Ù…È√¥∂‚°¶ø©ªˆŒ≈Õ‹»Ò…∏Ω‡…È√¥≥€∂Ë ¨
+           MOVE    RECE02-SHOKUJIFTNKBN
+                                       TO  RECE10-SHOKUJIFTNKBN
       *
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "SEIKYU-KEY"        TO  ORC-DBPATH

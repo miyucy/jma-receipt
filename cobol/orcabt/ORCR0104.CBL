@@ -88,6 +88,8 @@
       *  01.02.07    NACL-∆£∏∂    05/01/14  ºıø«∆¸ªÿƒÍ¬–±˛
       *  01.02.08    NACL-∆£∏∂    05/01/30  ƒ˚¿µ∆¸ªÿƒÍ¬–±˛
       *  01.02.09    NACL-ÃÁœ∆    05/02/14  π‚Œº‘∞Ï…Ù…È√¥≥€µ≠∫‹Ω§¿µ
+      *  01.02.10    NACL-ÃÁœ∆    05/03/17  ∏¯»Ò¿¡µ·°¶¿¡µ·¥…Õ˝§Œ…È√¥∂‚≥€
+      *                                      ‘Ω∏Ω§¿µ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1804,8 +1806,10 @@
                                        TO  KOHSKY-JNISSUINF (IDX)
                MOVE    RECE02X-TOTALTENINF (IDX)
                                        TO  KOHSKY-TOTALTENINF (IDX)
-               MOVE    RECE02X-FTNMONEYINF(IDX)
-                                       TO  KOHSKY-FTNMONEYINF (IDX)
+      *********MOVE    RECE02X-FTNMONEYINF(IDX)
+      *********                        TO  KOHSKY-FTNMONEYINF (IDX)
+               MOVE    RECE02X-FTNMONEY   (IDX)
+                                       TO  KOHSKY-FTNMONEY    (IDX)
                MOVE    RECE02X-SHOKUJIINF (IDX)
                                        TO  KOHSKY-SHOKUJIINF (IDX)
            END-PERFORM
@@ -1813,6 +1817,9 @@
            MOVE    RECE02X-ZAITAKU     TO  KOHSKY-ZAITAKU
            MOVE    RECE02X-ZAITAKU-SAIKEI
                                        TO  KOHSKY-ZAITAKU-SAIKEI
+      *    ∞Ï…Ù…È√¥∂‚°¶ø©ªˆŒ≈Õ‹»Ò…∏Ω‡…È√¥≥€∂Ë ¨
+           MOVE    RECE02X-SHOKUJIFTNKBN
+                                       TO  KOHSKY-SHOKUJIFTNKBN
       *
            MOVE    KOHSKY-REC          TO  MCPDATA-REC
            MOVE    "KOHSKY-KEY"        TO  ORC-DBPATH
@@ -5210,7 +5217,14 @@
                                        RECE10-ETC-TOTALTEN (IDX)
                MOVE    RECE02-ETC-FTNMONEY (IDX)   TO
                                        RECE10-ETC-FTNMONEY (IDX)
+               MOVE    RECE02-ETC-FTNMONEY-FTN (IDX)   TO
+                                       RECE10-ETC-FTNMONEY-FTN (IDX)
+               MOVE    RECE02-ETC-FTNMONEY-KOJ (IDX)   TO
+                                       RECE10-ETC-FTNMONEY-KOJ (IDX)
            END-PERFORM
+      *    ∞Ï…Ù…È√¥∂‚°¶ø©ªˆŒ≈Õ‹»Ò…∏Ω‡…È√¥≥€∂Ë ¨
+           MOVE    RECE02-SHOKUJIFTNKBN
+                                       TO  RECE10-SHOKUJIFTNKBN
       *
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "SEIKYU-KEY"        TO  ORC-DBPATH

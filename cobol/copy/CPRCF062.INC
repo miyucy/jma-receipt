@@ -47,6 +47,8 @@
       *                                     の追加
       *                                     公費一部負担金０円記載フラグ
       *                                     の追加
+      *  01.00.19    NACL-門脇    05.03.11  負担金額情報に項目追加
+      *                                     レセプト記載外公費情報に項目追加
       ************************************************************
       *01  RECE62-REC.
            03  RECE62-KEY.
@@ -190,6 +192,10 @@
                05  RECE62-FTNMONEYINF     OCCURS  5.
       *負担金額
                    07  RECE62-FTNMONEY    PIC  9(09).
+      *負担金額（一部負担額）
+                   07  RECE62-FTNMONEY-FTN    PIC  9(09).
+      *負担金額（控除額）
+                   07  RECE62-FTNMONEY-KOJ    PIC  9(09).
       *
       *実日数情報
            03  RECE62-JNISSUINF-AREA.
@@ -252,8 +258,9 @@
                                           PIC  9(09).
       *標準負担額
                    07  RECE62-SHOKUJIFTN  PIC  9(09).
-      *標準負担区分
-               05  RECE62-SHOKUJIFTNKBN   PIC  X(01).
+      *
+      *一部負担金・食事療養費標準負担額区分
+           03  RECE62-SHOKUJIFTNKBN       PIC  X(01).
       *
       *食事種別情報
            03  RECE62-SHOKUJISYUINF       OCCURS   3.
@@ -309,6 +316,12 @@
       *記載外公費−負担金額
                    07  RECE62-ETC-FTNMONEY
                                           PIC  9(09).
+      *記載外公費−負担金額（一部負担額）
+                   07  RECE62-ETC-FTNMONEY-FTN
+                                          PIC  9(09).
+      *記載外公費−負担金額（控除額）
+                   07  RECE62-ETC-FTNMONEY-KOJ
+                                          PIC  9(09).
       *記載外公費−食事日数
                    07  RECE62-ETC-SHOKUJINISSU
                                           PIC  9(02).
@@ -326,29 +339,29 @@
            03  RECE62-KOUREI-SAIKEI       PIC  9(09).
       *船員保険（被保険者）＋通勤災害フラグ
            03  RECE62-SENIN-TUUSAI        PIC  X(01).
-      *補足区分
+      *補足区分（未使用）
            03  RECE62-HOSOKUKBN           PIC  X(01).
       *初診時間区分
            03  RECE62-SHOSHINTIME         PIC  X(01).
-      *老人減免区分
+      *老人減免区分（未使用）
            03  RECE62-RJNGENMENKBN        PIC  X(01).
-      *老人外来金額
+      *老人外来金額（未使用）
            03  RECE62-RJNGAIFTN           PIC  9(09).
-      *老人入院金額
+      *老人入院金額（未使用）
            03  RECE62-RJNNYUFTN           PIC  9(09).
-      *国保減免区分
+      *国保減免区分（未使用）
            03  RECE62-KKHGENMENKBN        PIC  X(01).
-      *国保減額割合
+      *国保減額割合（未使用）
            03  RECE62-KKHGENGAKURATE      PIC  X(03).
-      *国保減額金額
+      *国保減額金額（未使用）
            03  RECE62-KKHGENGAKU          PIC  X(03).
-      *割引点数単価
+      *割引点数単価（未使用）
            03  RECE62-DISCOUNTTENTNK      PIC  X(02).
-      *老人公費負担金額情報
+      *老人公費負担金額情報（未使用）
            03  RECE62-RJNKOHFTNINF        OCCURS  3.
-      *老人外来公費負担額
+      *老人外来公費負担額（未使用）
                05  RECE62-RJNGAIKOHFTN    PIC  9(09).
-      *老人入院公費負担額
+      *老人入院公費負担額（未使用）
                05  RECE62-RJNNYUKOHFTN    PIC  9(09).
       *コメントカウントフラグ
            03  RECE62-COMCNTFLG           PIC  X(01).

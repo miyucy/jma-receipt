@@ -154,7 +154,7 @@
                05  KOHSKY-SHOKUJIRYOYOHI  PIC  9(09).
       *…∏Ω‡…È√¥≥€
                05  KOHSKY-SHOKUJIFTN      PIC  9(09).
-      *…∏Ω‡…È√¥∂Ë ¨
+      *∞Ï…Ù…È√¥∂‚°¶ø©ªˆŒ≈Õ‹»Ò…∏Ω‡…È√¥≥€∂Ë ¨
            03  KOHSKY-SHOKUJIFTNKBN       PIC  X(01).
       *ΩÈø«ª˛¥÷∂Ë ¨
            03  KOHSKY-SHOSHINTIME         PIC  X(01).
