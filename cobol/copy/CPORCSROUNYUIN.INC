@@ -25,6 +25,10 @@
       ************************************************************
        01  ORCSROUNYUIN-AREA.
       *
+      *°åÎÅµ¡´Ø£É£Ä
+           03  LNK-SROUNYUIN-HOSPID                  PIC  X(24).
+      *´µ¼Ô£É£Ä
+           03  LNK-SROUNYUIN-PTID                    PIC  9(10).
       *»»ÄêÆü
            03  LNK-SROUNYUIN-SANTEIYMD               PIC  X(08).
       *ÊÝ¸±ÁÈ¹ç¤»
