@@ -3909,11 +3909,18 @@
                    MOVE    "113003710"         TO  WRK-SRYCD
                END-IF
            ELSE
-      *    小児科外来診察料以外
-               MOVE    "11"                TO  WRK-SRYKBN
-               MOVE    "F"                 TO  WRK-KBN
-      *        診察コードをテーブルより決定
-               PERFORM 2001-SRYCD-TBL-SEC
+               IF      SPA-HKNKBN          =   1
+      *            労災の初診料算定
+                   MOVE    ZERO                TO  WRK-KAISU
+                   MOVE    "F"                 TO  WRK-KBN
+                   PERFORM 20091-RSI-SINSATU-SEC
+               ELSE
+      *            小児科外来診察料以外
+                   MOVE    "11"                TO  WRK-SRYKBN
+                   MOVE    "F"                 TO  WRK-KBN
+      *            診察コードをテーブルより決定
+                   PERFORM 2001-SRYCD-TBL-SEC
+               END-IF
            END-IF
       *
       *    点数マスタ編集・基本チェック
