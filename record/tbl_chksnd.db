@@ -9,6 +9,7 @@ tbl_chksnd	{
 	BYOMEI			varchar(160);
 	COMPKBN			char(1);
 	BYOMEIHENFLG	char(1);
+	NYUGAIKBN		char(1);
 	TERMID  		varchar(16);
 	OPID    		varchar(16);
 	CREYMD  		char(8);
@@ -269,6 +270,24 @@ path	key12	{
 			AND   RENNUM      =   1
 			ORDER  BY  YUKOSTYMD,
                                    RENNUM
+		;
+	};
+};
+
+
+path	key13	{ 	
+	DBSELECT	{
+		DECLARE tbl_chksnd_key13_csr CURSOR FOR
+		SELECT *
+		FROM tbl_chksnd
+			WHERE   CHKKBN    =   :CHKKBN
+			AND   SRYCD       =   :SRYCD
+			AND   YUKOSTYMD  <=   :YUKOSTYMD
+			AND   YUKOEDYMD  >=   :YUKOEDYMD
+			AND   CDKBN       =   :CDKBN
+			AND   RENNUM      =   1
+			ORDER   BY        SRYCD,
+                                          RENNUM
 		;
 	};
 };

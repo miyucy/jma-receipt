@@ -3981,16 +3981,27 @@
            MOVE    WRK-KJNYMD          TO  CHKSND-YUKOSTYMD
                                            CHKSND-YUKOEDYMD
            MOVE    CHKSND-REC          TO  MCPDATA-REC
-           MOVE    PATH-TBL-CHKSND-KEY3
+           MOVE    PATH-TBL-CHKSND-KEY13
                                        TO  MCP-PATH
            PERFORM 920-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
-      *
                MOVE    MCPDATA-REC     TO  CHKSND-REC
+               IF    ( CHKSND-NYUGAIKBN    =   SPACE )
+                OR   ( CHKSND-NYUGAIKBN    =   ORCBSD01-NYUGAIKBN )
+                   CONTINUE
+               ELSE
+                   MOVE    1           TO  FLG-CHKMST
+               END-IF
+           ELSE
+                   MOVE    1           TO  FLG-CHKMST
+                   INITIALIZE              CHKSND-REC
+           END-IF
       *
-               MOVE    PATH-TBL-CHKSND-KEY3
+           MOVE    PATH-TBL-CHKSND-KEY13
                                        TO  MCP-PATH
-               PERFORM 920-DBCLOSE-SEC
+           PERFORM 920-DBCLOSE-SEC
+      *
+           IF    ( FLG-CHKMST          =   ZERO )
       *
                INITIALIZE                  SDTCHK01AREA
                MOVE    ALL "1"         TO  SDTCHK01-CHK-PTN-G

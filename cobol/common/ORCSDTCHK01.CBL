@@ -151,7 +151,6 @@
        200-MAIN-SEC                    SECTION.
       *
            PERFORM 900-QDTCHK-KEY-SEL-SEC
-           DISPLAY "FLG-QDTCHK = " FLG-QDTCHK
       *
            PERFORM UNTIL ( FLG-QDTCHK      NOT =   ZERO )
                     OR   ( FLG-CHKMST-BYOMEI   =   1    )
@@ -172,7 +171,7 @@
       *
            END-PERFORM
       *
-           MOVE    PATH-QUERY-DTCHK-KEY    TO  MCP-PATH
+           MOVE    PATH-QUERY-DTCHK-KEY2   TO  MCP-PATH
            PERFORM 910-DBCLOSE-SEC
       *
            .
@@ -502,7 +501,7 @@
            MOVE    SDTCHK01-CDKBN      TO  QDTCHK-SELCDKBN
       *
            MOVE    QDTCHK-REC          TO  MCPDATA-REC
-           MOVE    PATH-QUERY-DTCHK-KEY    TO  MCP-PATH
+           MOVE    PATH-QUERY-DTCHK-KEY2   TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO  QDTCHK-REC
@@ -519,7 +518,7 @@
       *****************************************************************
        900-QDTCHK-KEY-FET-SEC          SECTION.
       *
-           MOVE    PATH-QUERY-DTCHK-KEY    TO  MCP-PATH
+           MOVE    PATH-QUERY-DTCHK-KEY2   TO  MCP-PATH
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO  QDTCHK-REC

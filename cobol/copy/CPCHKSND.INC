@@ -44,6 +44,8 @@
                05  CHKSND-COMPKBN        PIC  X(1).
       *病名編集フラグ
                05  CHKSND-BYOMEIHENFLG   PIC  X(1).
+      *入外区分
+               05  CHKSND-NYUGAIKBN      PIC  X(1).
       *端末ＩＤ
            03  CHKSND-TERMID             PIC  X(16).
       *オペーレータＩＤ

@@ -725,6 +725,13 @@
       *
            PERFORM 900-CHKSND-KEY2-SEL-SEC
       *
+           IF    ( FLG-CHKSND      =   ZERO )
+               MOVE    CHKSND-NYUGAIKBN
+                                       TO  SPA-GMN-NYUGAIKBN
+               PERFORM 4200-NYUGAIKBNLST-CHK-SEC
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-NYUGAIKBN-G
+           END-IF
+      *
            PERFORM UNTIL ( FLG-CHKSND  NOT =   ZERO )
                     OR   ( SPA-GMN-BYOLST-MAX  >=  CONST-BYOLST-MAX )
       *
@@ -839,6 +846,7 @@
                PERFORM 4101-BYOTRK-SEC
       *    病名削除
            WHEN    "CLICKED"       ALSO    "B07"
+           WHEN    "CLICKED"       ALSO    "BTN_DEL"
                PERFORM 4101-BYODEL-SEC
       *    病名リストへ追加
            WHEN    "CLICKED"       ALSO    "BTN_INS"
@@ -2745,6 +2753,7 @@
                                            TO  CHKSND-COMPKBN
                MOVE    SPA-NAI-TBYOSTATUS (IDXD)
                                            TO  CHKSND-BYOMEIHENFLG
+               MOVE    SPA-GMN-NYUGAIKBN   TO  CHKSND-NYUGAIKBN
       *
                PERFORM 800-MCNDATE-SEC
                MOVE    SMCNDATE-YMD        TO  CHKSND-CREYMD

@@ -18,6 +18,7 @@ CREATE TABLE "tbl_chksnd" (
 	"byomei"  	character(160),
 	"compkbn" 	character(1),
 	"byomeihenflg" 	character(1),
+	"nyugaikbn" 	character(1),
 	"termid" 	character varying(16),
 	"opid" 		character varying(16),
 	"creymd" 	character(8),
