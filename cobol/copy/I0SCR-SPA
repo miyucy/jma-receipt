@@ -42,7 +42,7 @@
       *          患者誕生日
                  11  SPA-GMN-I01-BIRTHDAY          PIC X(09).
       *          患者年齢
-                 11  SPA-GMN-I01-AGE               PIC X(07).
+                 11  SPA-GMN-I01-AGE               PIC X(08).
       *          処理区分
                  11  SPA-GMN-I01-SYORIKBN.
                    13  SPA-GMN-I01-SYORIKBN-CD     PIC X(02).

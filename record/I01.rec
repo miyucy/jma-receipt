@@ -22,7 +22,7 @@ I01	{
 			value	varchar(9);
 		};
 		AGE	{
-			value	varchar(7);
+			value	varchar(8);
 		};
 		CMB_SYORIKBN	{
 			SYORIKBN	{

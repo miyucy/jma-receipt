@@ -24,7 +24,7 @@
               04  I01-NAME                         PIC X(60).
               04  I01-SEX                          PIC X(4).
               04  I01-BIRTHDAY                     PIC X(9).
-              04  I01-AGE                          PIC X(7).
+              04  I01-AGE                          PIC X(8).
               04  I01-CMB-SYORIKBN.
                 05  I01-SYORIKBN                   PIC X(23).
                 05  I01-SYORIKBN-CNT               PIC S9(9)   BINARY.
