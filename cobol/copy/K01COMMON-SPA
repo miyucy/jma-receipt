@@ -156,6 +156,12 @@
                05  SPA-CHOKITOFLG          PIC  9(01).
       *Ä¹´üÅêÌô²Ã»»·Ù¹ð
                05  SPA-CHOKITOFLG-CHK      PIC  9(01).
+      *ÆÃÄê¼À´µ²Ê
+               05  SPA-TOKUTEI-AREA-G.
+                   07  SPA-TOKU-SRYKA-G   OCCURS   10.
+                       09  SPA-TOKU-SRYKA      PIC X(02).
+                       09  SPA-TOKU-FLG        PIC 9(02).
+               05  SPA-TOKUTEI-SRYKA       PIC  X(02).
       *
       *Åö·îÎß·×ÅÀ¿ô
                05  SPA-ZAITENTOTAL         PIC  9(10).

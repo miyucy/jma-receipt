@@ -343,6 +343,7 @@
       *  01.01.153   NACL-藤原    04/09/10  SYSKANRI-KEY12追加
       *  01.01.154   NACL-多々納  04/10/12  WKSRYACT-KEY6,KEY7追加
       *  01.01.155   NACL-藤原    04/11/10  KOHSKY-KEY7追加
+      *  01.01.156   NACL-多々納  04/11/19  PTBYOMEI-KEY24追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1596,6 +1597,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTBYOMEI-KEY23"
                    MOVE    PATH-TBL-PTBYOMEI-KEY23
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTBYOMEI-KEY24"
+                   MOVE    PATH-TBL-PTBYOMEI-KEY24
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTBYOMEI-ALL"
                    MOVE    PATH-TBL-PTBYOMEI-ALL
