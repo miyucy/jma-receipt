@@ -70,6 +70,7 @@ db	{
 	tbl_lock;
         tbl_kensasort;
         tbl_senteicdchg;
+	tbl_ptkohftn;
 };
 db	"shell"	{
 	shell;

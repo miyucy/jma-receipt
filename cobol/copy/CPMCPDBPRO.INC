@@ -214,7 +214,9 @@
       *                                     INTERACT-UPD1,DEL1追加 
       *  01.01.48    NACL-藤原    03/03/14  PTBYO-KEY7追加
       *  01.01.49    NACL-藤原    03/03/16  KOHSKY-KEY5,KEY6追加
-      *                                     SEIKYU-KEY16,KEY17,KEY18追加   
+      *                                     SEIKYU-KEY16,KEY17,KEY18追加
+      *  01.01.50    NACL-太田    03/03/19  PTKOHFTN-KEY,KEY2,KEY3,DEL1
+      *                                     UPD1,ALL追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -940,6 +942,12 @@
                                        TO  WRK-PATH
                WHEN    "DBDELETE"      ALSO   "RECEPRT-DEL2"
                    MOVE    PATH-TBL-RECEPRT-DEL2
+                                       TO  WRK-PATH
+               WHEN    "DBUPDATE"      ALSO   "PTKOHFTN-UPD1"
+                   MOVE    PATH-TBL-PTKOHFTN-UPD1
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "PTKOHFTN-DEL1"
+                   MOVE    PATH-TBL-PTKOHFTN-DEL1
                                        TO  WRK-PATH
       *---- (NYUIN.08) LINE ADD END      ------------------------------
                WHEN    ANY             ALSO   "SYSKANRI-KEY"
@@ -2499,6 +2507,18 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SENTEICDCHG-ALL"
                    MOVE    PATH-TBL-SENTEICDCHG-ALL
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTKOHFTN-KEY"
+                   MOVE    PATH-TBL-PTKOHFTN-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTKOHFTN-KEY2"
+                   MOVE    PATH-TBL-PTKOHFTN-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTKOHFTN-KEY3"
+                   MOVE    PATH-TBL-PTKOHFTN-KEY3
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTKOHFTN-ALL"
+                   MOVE    PATH-TBL-PTKOHFTN-ALL
                                        TO  WRK-PATH
                WHEN    OTHER
                    MOVE    -9          TO  MCP-RC

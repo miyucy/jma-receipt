@@ -1,0 +1,108 @@
+tbl_ptkohftn {
+	HOSPID			char(24);
+	PTID			number(10);
+	KOHID			number(10);
+	TEKSTYMD		char(8);
+	TEKEDYMD		char(8);
+	KOHNUM			char(3);
+	PAYKBN			char(2);
+	GAIJGNGAK		number(7);
+	NYUJGNGAK		number(7);
+	KAKUNINYMD		char(8);
+	TERMID			varchar(16);
+	OPID			varchar(16);
+	CREYMD			char(8);
+	UPYMD			char(8);
+	UPHMS			char(6);
+#-----> 主キー更新用項目
+	UPHOSPID			char(24),virtual;
+	UPPTID 				number(10,0),virtual;
+	UPKOHID				number(10,0),virtual;
+	UPTEKSTYMD			char(8),virtual;
+};
+
+primary	{
+	HOSPID,PTID,KOHID,TEKSTYMD;
+};
+
+path	key 	{
+	DBSELECT	{
+		DECLARE tbl_ptkohftn_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptkohftn
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   KOHID       =   :KOHID
+			AND   TEKSTYMD    =   :TEKSTYMD
+		;
+	};
+};
+
+path	key2 	{
+	DBSELECT	{
+		DECLARE tbl_ptkohftn_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptkohftn
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+		;
+	};
+};
+
+path	key3 	{
+	DBSELECT	{
+		DECLARE tbl_ptkohftn_key3_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptkohftn
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			ORDER   BY        KOHNUM,TEKSTYMD DESC
+		;
+	};
+};
+
+path	del1 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_ptkohftn
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+		;
+	};
+};
+
+path	upd1	{ 	
+	DBUPDATE	{
+		UPDATE	tbl_ptkohftn 
+				SET	
+                   HOSPID              = :HOSPID,
+                   PTID                = :PTID,
+                   KOHID               = :KOHID,
+                   TEKSTYMD            = :TEKSTYMD,
+                   TEKEDYMD            = :TEKEDYMD,
+                   KOHNUM              = :KOHNUM,
+                   PAYKBN              = :PAYKBN,
+                   GAIJGNGAK           = :GAIJGNGAK,
+                   NYUJGNGAK           = :NYUJGNGAK,
+                   KAKUNINYMD          = :KAKUNINYMD,
+                   TERMID              = :TERMID,
+                   OPID                = :OPID,
+                   CREYMD              = :CREYMD,
+                   UPYMD               = :UPYMD,
+                   UPHMS               = :UPHMS
+               WHERE   HOSPID      =   :UPHOSPID
+                 AND   PTID        =   :UPPTID
+                 AND   KOHID       =   :UPKOHID
+                 AND   TEKSTYMD    =   :UPTEKSTYMD
+		;
+	};
+};
+
+path	all 	{
+	DBSELECT	{
+		DECLARE tbl_ptkohftn_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptkohftn
+		;
+	};
+};

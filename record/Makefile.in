@@ -369,6 +369,7 @@ DB_files = \
 	tbl_ldmap.db \
 	tbl_lock.db \
 	tbl_senteicdchg.db \
+	tbl_ptkohftn.db \
 	view_I001.db \
 	view_Q001.db \
 	view_bd001.db \
