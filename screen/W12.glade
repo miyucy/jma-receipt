@@ -416,10 +416,10 @@
       <y>100</y>
       <width>150</width>
       <height>16</height>
-      <label>傷病名編集区分    </label>
+      <label>傷病名編集区分</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
-      <xalign>0.5</xalign>
+      <xalign>0.0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -472,10 +472,10 @@
       <y>200</y>
       <width>150</width>
       <height>16</height>
-      <label>転帰日編集区分    </label>
+      <label>転帰日編集区分</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
-      <xalign>0.5</xalign>
+      <xalign>0.0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -531,7 +531,7 @@
       <label>国保レセ電出力区分</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
-      <xalign>0.5</xalign>
+      <xalign>0.0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -587,7 +587,7 @@
       <label>社保レセ電出力区分</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
-      <xalign>0.5</xalign>
+      <xalign>0.0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -603,7 +603,7 @@
       <label>レセ電データ出力先</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
-      <xalign>0.5</xalign>
+      <xalign>0.0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -619,7 +619,7 @@
       <label>社保出力先プリンタ名</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
-      <xalign>0.5</xalign>
+      <xalign>0.0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -635,7 +635,7 @@
       <label>国保出力先プリンタ名</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
-      <xalign>0.5</xalign>
+      <xalign>0.0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -803,7 +803,7 @@
       <label>国保診療報酬請求書</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
-      <xalign>0.5</xalign>
+      <xalign>0.0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -927,7 +927,7 @@
       <label>国保ＯＣＲ出力区分</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
-      <xalign>0.5</xalign>
+      <xalign>0.0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -940,10 +940,10 @@
       <y>440</y>
       <width>144</width>
       <height>16</height>
-      <label>県別レセプト編集    </label>
+      <label>県別レセプト編集</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
-      <xalign>0.5</xalign>
+      <xalign>0.0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -952,14 +952,14 @@
     <widget>
       <class>GtkLabel</class>
       <name>label225</name>
-      <x>112</x>
+      <x>80</x>
       <y>456</y>
       <width>144</width>
       <height>16</height>
-      <label>    プログラム名</label>
+      <label>プログラム名</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
-      <xalign>0.5</xalign>
+      <xalign>1.0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
