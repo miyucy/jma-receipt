@@ -31,6 +31,8 @@
       *  01.00.01    NACL-藤原    02/11/07  船員保険の集計の追加 
       *  01.00.02    NACL-藤原    02/11/26  共済組合の下船３ヶ月の
       *                                     集計の追加 
+      *  01.00.03    NACL-藤原    02/12/09  共済組合の前期高齢者の集計の
+      *                                     修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -397,8 +399,10 @@
                                IF      RECE10-HKNNUM   >=  "031"   AND
                                                        <=  "034"
                                    EVALUATE    RECE10-HOJOKBN
+                                       WHEN    "9"
                                        WHEN    "B"
                                            MOVE    1           TO  IDY1
+                                       WHEN    "8"
                                        WHEN    "E"
                                            MOVE    2           TO  IDY1
                                    END-EVALUATE
