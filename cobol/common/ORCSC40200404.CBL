@@ -1437,6 +1437,7 @@
       *
       *    腰部固定帯加算は通則加算対象外とする
            IF      WRK-COM-INPUTCD (IDX-Z) =   "140037490"
+                                           OR  "140040110"
                MOVE    "1"                 TO  WRK-COM-TUSOKUGAIKBN
                                                               (IDX-Z)
            END-IF
