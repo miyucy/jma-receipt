@@ -3031,6 +3031,9 @@
                MOVE    ORCSHKN-GMN-FTNRATEMEI  (IDX1)
                                        TO  SPA-GMN-I01-HKNCOMBI-ITM2
                                                        (IDX1)
+               MOVE    ORCSHKN-NAI-RSI-HKNKBN (IDX1)
+                                       TO  SPA-GMN-I01-HKNCOMBI-ITM3
+                                                       (IDX1)
       *
            END-PERFORM
       *
@@ -3040,6 +3043,8 @@
                                        TO  SPA-GMN-I01-HKNCOMBI
                MOVE    SPA-GMN-I01-HKNCOMBI-ITM2 (ORCSHKN-IDX)
                                        TO  SPA-NAI-I01-FTNRATE
+               MOVE    SPA-GMN-I01-HKNCOMBI-ITM3 (ORCSHKN-IDX)
+                                       TO  SPA-NAI-I01-RSI-HKNKBN
            END-IF
       *
            .
@@ -4277,12 +4282,19 @@
                MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-HKNCOMBI
                MOVE    WRK-CMB-ITM2
                                    TO  SPA-NAI-I01-FTNRATE
+               MOVE    WRK-CMB-ITM3
+                                   TO  SPA-NAI-I01-RSI-HKNKBN
            ELSE
                MOVE    "0023"      TO  SPA-ERRCD
                MOVE    15          TO  SPA-GMN-I01-CUR
                GO  TO  4101-HKNCOMBI-CHK-EXT
            END-IF
       *
+           IF    SPA-NAI-I01-RSI-HKNKBN     =    "3"
+               MOVE    "1033"      TO  SPA-ERRCD
+               MOVE    15          TO  SPA-GMN-I01-CUR
+               GO  TO  4101-HKNCOMBI-CHK-EXT
+           END-IF
            .
       *
        4101-HKNCOMBI-CHK-EXT.
@@ -4654,6 +4666,7 @@
            AT  END
                INITIALIZE          WRK-CMB-ITM
                                    WRK-CMB-ITM2
+                                   WRK-CMB-ITM3
                                    WRK-CMB-IDX
            WHEN    SPA-GMN-I01-HKNCOMBI-ITM (CMB-IDX07) (1 : 4)
                                    =   WRK-CMB-CD
@@ -4662,10 +4675,13 @@
                                    TO  WRK-CMB-ITM
                MOVE    SPA-GMN-I01-HKNCOMBI-ITM2 (CMB-IDX07)
                                    TO  WRK-CMB-ITM2
+               MOVE    SPA-GMN-I01-HKNCOMBI-ITM3 (CMB-IDX07)
+                                   TO  WRK-CMB-ITM3
            WHEN    SPA-GMN-I01-HKNCOMBI-ITM (CMB-IDX07)
                                    =   SPACE
                INITIALIZE          WRK-CMB-ITM
                                    WRK-CMB-ITM2
+                                   WRK-CMB-ITM3
                                    WRK-CMB-IDX
            END-SEARCH
       *
@@ -11252,6 +11268,9 @@
                                        TO  SPA-ERRMSG (1 : 40)
                MOVE    "歴の退院日の翌日にしてください"
                                        TO  SPA-ERRMSG (41 : )
+           WHEN    "1033"
+               MOVE    "労災保険（アフターケア）は入院できません"
+                                       TO  SPA-ERRMSG
            WHEN    "2012"
                MOVE    "退院計算に必要な会計情報が作成されていません"
                                        TO  SPA-ERRMSG

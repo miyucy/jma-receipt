@@ -205,6 +205,8 @@
                  11  SPA-NAI-I01-TAIINYMD          PIC X(08).
       *           ›∏±¡»§ﬂπÁ§Ô§ª
                  11  SPA-NAI-I01-HKNCOMBI-MOT      PIC X(04).
+      *          œ´∫“°¶ ›∏±∂Ë ¨
+                 11  SPA-NAI-I01-RSI-HKNKBN        PIC X(01).
       *
       *           ›∏±¡»§ﬂπÁ§Ô§ª…È√¥Œ®
                  11  SPA-NAI-I01-FTNRATE           PIC X(05).
@@ -293,6 +295,7 @@
                                            INDEXED BY  CMB-IDX07.
                      15  SPA-GMN-I01-HKNCOMBI-ITM  PIC X(51).
                      15  SPA-GMN-I01-HKNCOMBI-ITM2 PIC X(05).
+                     15  SPA-GMN-I01-HKNCOMBI-ITM3 PIC X(01).
                                            
                    13  SPA-GMN-I01-HKNCOMBI-ITM-STT
                                                    PIC S9(9)   BINARY.
