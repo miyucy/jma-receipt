@@ -426,6 +426,87 @@
                    07  SPA-C08-BUNREIMAX         PIC 9(04).
                05  SPA-C08-SELNUM       PIC 9(03).
                05  SPA-C08-TBL          PIC 9(03).
+      *              
+      *    簡単修正画面
+           03  SPA-C10.
+               05  SPA-GMN-C10-MAX         PIC 9(04).
+               05  SPA-GMN-C10-CUR         PIC 9(02).
+               05  SPA-GMN-C10-AREA.
+                   07  SPA-GMN-C10-AREA.
+                       09  SPA-GMN-C10-KOUMOKU.
+                           11  SPA-GMN-C10-UTAGAIFLG-G.
+                               13  SPA-GMN-C10-UTAGAIFLG   PIC X(01).
+                               13  SPA-GMN-F1              PIC X(01).
+                               13  SPA-GMN-C10-UTAGAIFLGMEI
+                                                           PIC X(12).
+                           11  SPA-GMN-C10-SYUBYOFLG-G.
+                               13  SPA-GMN-C10-SYUBYOFLG   PIC X(01).
+                               13  SPA-GMN-F1              PIC X(01).
+                               13  SPA-GMN-C10-SYUBYOFLGMEI
+                                                           PIC X(12).
+                           11  SPA-GMN-C10-MANSEIKBN-G.
+                               13  SPA-GMN-C10-MANSEIKBN   PIC X(02).
+                               13  SPA-GMN-F1              PIC X(01).
+                               13  SPA-GMN-C10-MANSEIKBNMEI
+                                                           PIC X(42).
+                           11  SPA-GMN-C10-NYUGAIKBN-G.
+                               13  SPA-GMN-C10-NYUGAIKBN   PIC X(01).
+                               13  SPA-GMN-F1              PIC X(01).
+                               13  SPA-GMN-C10-NYUGAIKBNMEI
+                                                           PIC X(06).
+                           11  SPA-GMN-C10-HKNCOMBI-G.
+                               13  SPA-GMN-C10-HKNCOMBI    PIC X(04).
+                               13  SPA-GMN-F1              PIC X(01).
+                               13  SPA-GMN-C10-HKNCOMBIMEI
+                                                           PIC X(40).
+                           11  SPA-GMN-C10-TENKIKBN-G.
+                               13  SPA-GMN-C10-TENKIKBN    PIC X(01).
+                               13  SPA-GMN-F1              PIC X(01).
+                               13  SPA-GMN-C10-TENKIKBNMEI PIC X(06).
+                           11  SPA-GMN-C10-TENKIYMD        PIC X(10).
+                       09  SPA-GMN-C10-UTAGAIFLGLST        OCCURS  5.
+                           11  SPA-GMN-C10-UTAGAIFLGL      PIC X(01).
+                           11  SPA-GMN-F1L                 PIC X(01).
+                           11  SPA-GMN-C10-UTAGAIFLGMEIL   PIC X(12).
+                       09  SPA-GMN-C10-UTAGAIFLG-MAX       PIC 9(02).
+      *                         
+                       09  SPA-GMN-C10-SYUBYOFLGLST        OCCURS  5.
+                           11  SPA-GMN-C10-SYUBYOFLGL      PIC X(01).
+                           11  SPA-GMN-F1L                 PIC X(01).
+                           11  SPA-GMN-C10-SYUBYOFLGMEIL   PIC X(12).    
+                       09  SPA-GMN-C10-SYUBYOFLG-MAX       PIC 9(02).
+      *                         
+                       09  SPA-GMN-C10-MANSEIKBNLST        OCCURS  5.
+                           11  SPA-GMN-C10-MANSEIKBNL      PIC X(02).
+                           11  SPA-GMN-F1L                 PIC X(01).
+                           11  SPA-GMN-C10-MANSEIKBNMEIL   PIC X(42).    
+                       09  SPA-GMN-C10-MANSEITANLST        OCCURS  5.
+                           11  SPA-GMN-C10-MANSEIKBNTANL   PIC X(10).    
+                       09  SPA-GMN-C10-MANSEIKBN-MAX       PIC 9(02).
+      *                         
+                       09  SPA-GMN-C10-NYUGAIKBNLST        OCCURS  5.
+                           11  SPA-GMN-C10-NYUGAIKBNL      PIC X(01).
+                           11  SPA-GMN-F1L                 PIC X(01).
+                           11  SPA-GMN-C10-NYUGAIKBNMEIL   PIC X(06).    
+                       09  SPA-GMN-C10-NYUGAIKBN-MAX       PIC 9(02).
+      *
+                       09  SPA-GMN-C10-HKNCOMBILST-G.                         
+                           11  SPA-GMN-C10-HKNCOMBILST     OCCURS  20.
+                               13  SPA-GMN-C10-HKNCOMBIL   PIC X(04).
+                               13  SPA-GMN-F1L             PIC X(01).
+                               13  SPA-GMN-C10-HKNCOMBIMEIL
+                                                           PIC X(40).    
+                       09  SPA-GMN-C10-HKNCOMBI-MAX        PIC 9(02).
+      *                         
+                       09  SPA-GMN-C10-TENKIKBNLST         OCCURS  5.
+                           11  SPA-GMN-C10-TENKIKBNL       PIC X(01).
+                           11  SPA-GMN-F1L                 PIC X(01).
+                           11  SPA-GMN-C10-TENKIKBNMEIL    PIC X(04).    
+                       09  SPA-GMN-C10-TENKIKBN-MAX       PIC 9(02).
+      *                         
+                   07  SPA-NAIB-C10-AREA.
+                       09  SPA-NAI-C10-KOUMOKU.
+                           11  SPA-NAI-C10-TENKIYMD        PIC X(08).
       *
       *    他の画面
            03  SPA-C02SONOTA                  PIC X(30000). 
