@@ -753,9 +753,9 @@
            END-IF
            MOVE    SPACE               TO  LINKAREA
       *
-      *****MOVE   "NEW"                TO  MCP-PUTTYPE.
-           MOVE   SPACE                TO  MCP-PUTTYPE.
-           MOVE   "J02"                TO  MCP-WINDOW.
+      *****MOVE   "NEW"                TO  MCP-PUTTYPE
+           MOVE   SPACE                TO  MCP-PUTTYPE
+           MOVE   "J02"                TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW.
       *
@@ -1463,16 +1463,12 @@
            .
        3006-SRYKBN-HEN-EXT.
            EXIT.
-      *
-      *
       *****************************************************************
       *   保険一覧編集処理
       *****************************************************************
        3008-HKNCOMBI-HEN-SEC             SECTION.
       *
-      *
            INITIALIZE                  SPA-GMN-HKNCOMBI-LISTG
-      *
            MOVE    SPA-GMN-BIRTHDAY    TO  SPA-BIRTHDAY
            MOVE    SPA-NAI-SRYYM       TO  SPA-SRYYMD(1:6)
            MOVE    "00"                TO  SPA-SRYYMD(7:2)
@@ -6298,7 +6294,7 @@
       *****************************************************************
        4901-SRYACCT-KOUSIN-SEC           SECTION.
       *
-      *        回数変更時、算定履歴を変更する
+      *    回数変更時、算定履歴を変更する
            IF      SPA-NAI-DAY-AREA (IDX)  NOT =   ACCT-DAY-AREA
                PERFORM 4902-SANTEI-KOUSIN-SEC
            END-IF
@@ -6871,6 +6867,11 @@
       *
       *    包括入力の時対象外
            IF      ACCT-HKNCOMBI       =   "9999"
+               GO      TO      4902-SANTEI-KOUSIN-EXT
+           END-IF
+      *
+      *    自費の時対象外
+           IF      ACCT-SRYKBN         =   "95"  OR  "96"
                GO      TO      4902-SANTEI-KOUSIN-EXT
            END-IF
       *
