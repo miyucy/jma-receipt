@@ -51,6 +51,7 @@
            03  FLG-TENSU           PIC 9(01).
            03  FLG-NYUINACCT       PIC 9(01).
            03  FLG-PTNYUINRRK      PIC 9(01).
+           03  FLG-HKNCOMBI        PIC 9(01).
       *
            03  FLG-ARI             PIC 9(01).
            03  FLG-MADOKU          PIC 9(01).
@@ -620,7 +621,11 @@
                UNTIL   FLG-NYUINACCT       =   1
                PERFORM VARYING     IDX     FROM    1   BY  1
                        UNTIL       IDX     >   31
-                   IF      NACCT-DAY (IDX) >   ZERO
+      *************IF      NACCT-DAY (IDX) >   ZERO
+      *            陸⑨及未伕午ㄣ反覆擂陸
+                   IF      NACCT-DAY (IDX) =   ZERO  OR  4
+                       CONTINUE
+                   ELSE
                        MOVE    NACCT-DAY (IDX)     TO  TBL-GAI-DAY(IDX)
                    END-IF
                END-PERFORM
