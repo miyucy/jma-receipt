@@ -1753,11 +1753,6 @@
                GO  TO  41013-BYOMEI-CHK-EXT
            END-IF
       *
-           IF      SPA-GMN-BYOMEI (81:) NOT =   SPACE
-               MOVE    "0007"              TO  SPA-ERRCD
-               GO  TO  41013-BYOMEI-CHK-EXT
-           END-IF
-      *     
       *    È¾³Ñ¥Á¥§¥Ã¥¯
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI 
