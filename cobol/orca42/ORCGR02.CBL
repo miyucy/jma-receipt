@@ -2668,8 +2668,8 @@ d                   07  SPA-NAI-TBL.
                IF    ( SPA-GMN-SYOKBN      =   "F"   )
                AND   ( SPA-GMN-TCHK-VALUE  (IDW IDX)
                                            =   "T"   )
-                   MOVE    "black"         TO  R02-TCHK-STYLE   (IDX)
-                   MOVE    "blue"          TO  R02-TPAGE-STYLE  (IDX)
+                   MOVE    "blue-bar"      TO  R02-TCHK-STYLE   (IDX)
+                   MOVE    "blue-rev"      TO  R02-TPAGE-STYLE  (IDX)
                                                R02-TKENSU-STYLE (IDX)
                ELSE
                    MOVE    "black"         TO  R02-TCHK-STYLE   (IDX)
