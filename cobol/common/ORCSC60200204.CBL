@@ -734,9 +734,10 @@
        1007-NENREI-SYORI-SEC           SECTION.
       *
            MOVE    ZERO                 TO  IDX-S
-      *    ÄÌÂ§Ç¯Îð¶èÊ¬
-           IF     (WRK-COM-TSUSOKUAGE (IDX-Z)  =   "1" ) AND
-                  (WRK-COM-AUTOKBN (IDX-Z) NOT =   "2" )
+      *    ÄÌÂ§Ç¯Îð¶èÊ¬¤¬¤¢¤ê¡¢£³ºÐÌ¤Ëþ¤Î»þ
+           IF     (WRK-COM-TSUSOKUAGE (IDX-Z)  =   "1")  AND
+                  (WRK-COM-DATAKBN (IDX-Z)     =   "1")  AND
+                  (LNK-ORCSC-NENREI-YY         <=  3   )
       *        ¿·À¸»ù²Ã»»¡ÊÀ¸ÂÎ¸¡ºº¡Ë
                MOVE    "160155290"         TO  WRK-SRYCD
                MOVE    IDX-Z               TO  IDX-S
@@ -1103,7 +1104,8 @@
       *                Äþ¸º¤¢¤êÅÀ¿ô·×»»
                        IF      WRK-COM-TEIGENKBN (IDX-Z)   =   1
       *                    ÄÌÂ§Ç¯ÎðÂÐ¾Ý³°¶èÊ¬È½Äê
-                           IF      WRK-COM-TSUSOKUAGE (IDX-Z)  =   "1"
+      *********************IF      WRK-COM-TSUSOKUAGE (IDX-Z)  =   "1"
+                           IF      WRK-COM-TUSOKUGAIKBN(IDX-Z) =   "0"
                                ADD     WRK-COM-KISOTEN (IDX-Z)
                                                    TO  WRK-TENSUKEI-TNEN
                            ELSE
@@ -1112,7 +1114,8 @@
                            END-IF
                        ELSE
       *                    ÄÌÂ§Ç¯ÎðÂÐ¾Ý³°¶èÊ¬È½Äê
-                           IF      WRK-COM-TSUSOKUAGE (IDX-Z)  =   "1"
+      *********************IF      WRK-COM-TSUSOKUAGE (IDX-Z)  =   "1"
+                           IF      WRK-COM-TUSOKUGAIKBN(IDX-Z) =   "0"
                                ADD     WRK-COM-KISOTEN (IDX-Z)
                                                    TO  WRK-TENSUKEI-NNEN
                            ELSE
