@@ -82,3 +82,6 @@ db	{
 db	"shell"	{
 	shell;
 };
+db	"system"	{
+	metadb;
+};

@@ -407,6 +407,7 @@ DB_files = \
 	view_bd003.db \
         tbl_syuday.db \
         tbl_pgkanri.db \
+        metadb.db \
 
 all:   
 

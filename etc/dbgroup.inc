@@ -17,3 +17,6 @@ db_group "shell" {
  type "Shell";
  priority 1000;
 };
+db_group "system" {
+ type "System";
+};
