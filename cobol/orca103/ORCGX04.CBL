@@ -727,7 +727,7 @@
       *
            IF    ( FLG-CHKSND      =   ZERO )
                MOVE    CHKSND-NYUGAIKBN
-                                       TO  SPA-GMN-NYUGAIKBN
+                                       TO  WRK-CMB-CD
                PERFORM 4200-NYUGAIKBNLST-CHK-SEC
                MOVE    WRK-CMB-ITM     TO  SPA-GMN-NYUGAIKBN-G
            END-IF
