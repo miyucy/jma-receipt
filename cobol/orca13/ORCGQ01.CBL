@@ -116,7 +116,6 @@
                05  WRK-HIZUKE-MM                   PIC 9(02).
                05  WRK-HIZUKE-DD                   PIC 9(02).
            03  WRK-EDITADRS-NAME                   PIC X(220).
-           03  WRK-IDX                             PIC 9(04).
            03  WRK-BYOBUN-COUNT                    PIC 9(04).
            03  WRK-CNB-BYOBUN-ITEM-AREA.
                05  WRK-CNB-BYOBUNCD                PIC X(3)
@@ -4390,9 +4389,11 @@
                MOVE    SPA-GMN-Q01-CNB-KOHNUM-COUNT (IDX1)
                                            TO  Q01-CNB-KOHNUM-COUNT
                                                            (IDX1)
+                                               IDX3
+      *
       *
                PERFORM VARYING IDX2    FROM    1   BY  1
-                   UNTIL     ( IDX2        >   Q01-CNB-KOHNUM-COUNT )
+                   UNTIL     ( IDX2        >   IDX3 )
       *
                    MOVE    SPA-GMN-Q01-CNB-KOHNUM-ITEM (IDX1 IDX2)
                                TO  Q01-CNB-KOHNUM-ITEM (IDX1 IDX2)

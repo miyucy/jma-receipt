@@ -2724,7 +2724,7 @@
            MOVE    1                   TO  FLG-END
       *
            .
-       210-BACK-EXT.
+       210-BACK-SYORI-EXT.
            EXIT.
       *
       *----(01.00.02) LINE ADD END   ----------------------------------
