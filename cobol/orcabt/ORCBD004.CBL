@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 00.00.01     NACL-森脇    03/04/25  NYUGAIKBNキーに追加
       *                                     使用するHOSPIDの変更
+      * 00.00.02     NACL-森脇    03/05/02  金額をカンマ編集
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -112,7 +113,9 @@
                05  WRK-SDD         PIC 9(02).
            03  WRK-HENYMDG         PIC X(22).
       *
-           03  WRK-Z9              PIC --------9.
+      *----(00.00.02)--UPD-START---
+           03  WRK-Z9              PIC ---,---,--9.
+      *----(00.00.02)--UPD-END-----
       *
            03  WRK-SRYKA           PIC X(20).
            03  WRK-SYORIYMD        PIC X(24).
