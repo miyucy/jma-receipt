@@ -202,35 +202,35 @@ Q01	{
 						value	varchar(20);
 					};
 					count	int;
-					item	varchar(20)[50];
+					item	varchar(20)[150];
 				};
 				CNB_KOHNUM2	{
 					KOHNUM2	{
 						value	varchar(20);
 					};
 					count	int;
-					item	varchar(20)[50];
+					item	varchar(20)[150];
 				};
 				CNB_KOHNUM3	{
 					KOHNUM3	{
 						value	varchar(20);
 					};
 					count	int;
-					item	varchar(20)[50];
+					item	varchar(20)[150];
 				};
 				CNB_KOHNUM4	{
 					KOHNUM4	{
 						value	varchar(20);
 					};
 					count	int;
-					item	varchar(20)[50];
+					item	varchar(20)[150];
 				};
 				CNB_KOHNUM5	{
 					KOHNUM5	{
 						value	varchar(20);
 					};
 					count	int;
-					item	varchar(20)[50];
+					item	varchar(20)[150];
 				};
 				FTNJANUM1	{
 					value	varchar(8);

@@ -185,7 +185,7 @@
                                    15  SPA-GMN-Q01-CNB-KOHNUM-ITEM-AR.
                                        17  SPA-GMN-Q01-CNB-KOHNUM-ITEM
                                                        PIC X(20)
-                                                       OCCURS  50.
+                                                       OCCURS  150.
       *----(01.00.02) LINE ADD END   ----------------------------------
       *                    ∏¯»Ò°°…È√¥º‘»÷πÊ
                            11  SPA-GMN-Q01-FTNJANUMTBL.

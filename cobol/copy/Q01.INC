@@ -62,7 +62,7 @@
                     07  Q01-CNB-KOHNUM-OCC                 OCCURS 5.
                       08  Q01-KOHNUM           PIC X(20).
                       08  Q01-CNB-KOHNUM-COUNT PIC S9(9)   BINARY.
-                      08  Q01-CNB-KOHNUM-ITEM  PIC X(20)   OCCURS  50.
+                      08  Q01-CNB-KOHNUM-ITEM  PIC X(20)   OCCURS 150.
                   06  Q01-FTNJANUM-TBL.
                     07  Q01-FTNJANUM           PIC X(8)    OCCURS 5.
                 05  Q01-FIXED18.
