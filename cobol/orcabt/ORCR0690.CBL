@@ -296,6 +296,9 @@
            03  WRK-SRYKBN                      PIC X(02).
            03  WRK-Z9                          PIC ZZZ9.
       *
+      *    剤の診療種別区分
+           03  WRK-SRYSYUKBN                   PIC X(03).
+      *
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMDG         PIC X(22).
@@ -314,7 +317,9 @@
       *
       *    剤・診療行為テーブル
        01  TBL-ZAI-AREA.
-           03  TBL-ZAI      OCCURS 100  PIC X(52).
+           03  TBL-ZAI-OCC         OCCURS   100.
+               05  TBL-ZAI         PIC X(52).
+               05  TBL-ZAI-IDX     PIC 9(01).
       *
       *    検査をまとめるテーブル
        01  WRK-KAISU-G.
@@ -816,6 +821,7 @@
                                                FLG-HIKAKIN 
                MOVE    ZERO                TO  WRK-RECE65
                                                IDY                           
+               MOVE    SPACE               TO  WRK-SRYSYUKBN
       *         
                PERFORM 2002-TBLZAIW-TAIHI-SEC
       *
@@ -994,6 +1000,8 @@
                        IF      WRK-RECE65        =   ZERO
                            MOVE    RECE65-SRYCD (IDX)
                                                  TO  TBL-ZAIW-SRYCD1 
+                           MOVE    RECE65-SRYSYUKBN
+                                                 TO  WRK-SRYSYUKBN
                            MOVE    1             TO  WRK-RECE65
                        END-IF
       *                                                         
@@ -1871,6 +1879,7 @@
                                                    FLG-HIKAKIN 
                    MOVE    ZERO                TO  WRK-RECE65
                                                    IDY
+                   MOVE    SPACE               TO  WRK-SRYSYUKBN
       *                                             
                    MOVE    SPACE               TO  RECE64-REC
                    INITIALIZE                      RECE64-REC
@@ -2261,6 +2270,7 @@
       *         ACCEPT   WRK-IN       FROM    CONSOLE
            END-IF
            MOVE    WRK-ZAI           TO  TBL-ZAI (WRK-TBLMAX)
+           MOVE    IDX1              TO  TBL-ZAI-IDX(WRK-TBLMAX)
            MOVE    SPACE             TO  WRK-ZAI
       *
            .
@@ -2307,6 +2317,7 @@
                MOVE    SPACE             TO  WRK-ZAI
                MOVE    WRK-TNSKAI        TO  WRK-ZAI-TNSKAI
                MOVE    WRK-ZAI           TO  TBL-ZAI (IDY)
+               MOVE    IDX1              TO  TBL-ZAI-IDX(IDY)
                MOVE    SPACE             TO  WRK-ZAI
            END-IF
       *
@@ -2338,6 +2349,40 @@
                    MOVE   RECE64-ZAINUM  TO  RECE66-ZAISKBBAN
                END-IF
                MOVE    TBL-ZAI (IDY)     TO  RECE66-TEKIYO-INF
+      *
+               IF      RECE64-SRYKBN      =  "33"
+                  IF   WRK-SRYSYUKBN      =  "330" OR "331"
+                     EVALUATE  TBL-ZAI-IDX(IDY)
+                       WHEN   1
+                         MOVE   7        TO  RECE66-TENTEKIKBN
+                       WHEN   2
+                         MOVE   9        TO  RECE66-TENTEKIKBN
+                       WHEN   3
+                         MOVE   1        TO  RECE66-TENTEKIKBN
+                       WHEN   4
+                         MOVE   5        TO  RECE66-TENTEKIKBN
+                       WHEN   5
+                         MOVE   3        TO  RECE66-TENTEKIKBN
+                     END-EVALUATE
+                     MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
+                  END-IF
+                  IF   WRK-SRYSYUKBN      =  "340"
+                     EVALUATE  TBL-ZAI-IDX(IDY)
+                       WHEN   1
+                         MOVE   8        TO  RECE66-TENTEKIKBN
+                       WHEN   2
+                         MOVE  10        TO  RECE66-TENTEKIKBN
+                       WHEN   3
+                         MOVE   2        TO  RECE66-TENTEKIKBN
+                       WHEN   4
+                         MOVE   6        TO  RECE66-TENTEKIKBN
+                       WHEN   5
+                         MOVE   4        TO  RECE66-TENTEKIKBN
+                     END-EVALUATE
+                     MOVE   RECE64-ZAINUM  TO  RECE66-TENTEKIBAN
+                  END-IF
+               END-IF
+      *
       *---------適用欄並び替え用の編集（表用番号等）-----------------
                IF      IDY               =   1
       *
@@ -2354,7 +2399,7 @@
                  ELSE  
                      MOVE    TBL-ZAIW-SRYCD1   TO  TNS-SRYCD
                      MOVE    TNS-TENSU-REC     TO  MCPDATA-REC
-                     MOVE    RECE65-SRYYM      TO  ORC-DBYMD(1:6)
+                     MOVE    RECE64-SRYYM      TO  ORC-DBYMD(1:6)
                      MOVE    "01"              TO  ORC-DBYMD(7:2)
                      PERFORM 900-TENSU-INV-SEC
                      IF      FLG-TENSU            =       1

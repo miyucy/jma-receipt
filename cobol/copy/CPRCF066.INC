@@ -62,6 +62,10 @@
            03  RECE66-ZAISKBKBN           PIC  X(01).
       *剤識別内番号
            03  RECE66-ZAISKBBAN           PIC  9(08).
+      *点滴出力区分
+           03  RECE66-TENTEKIKBN          PIC  9(02).
+      *点滴出力区分別内番号
+           03  RECE66-TENTEKIBAN          PIC  9(08).
       *適要欄情報
            03  RECE66-TEKIYO-INF.
       *剤区切（＊）

@@ -52,6 +52,10 @@
                05  RECE661-ZAISKBKBN       PIC  X(01).
       *剤識別内番号
                05  RECE661-ZAISKBBAN       PIC  9(08).
+      *点滴出力区分
+               05  RECE661-TENTEKIKBN      PIC  9(02).
+      *点滴出力区分別内番号
+               05  RECE661-TENTEKIBAN      PIC  9(08).
       *検査実施区分
                05  RECE661-KNSJISKBN       PIC  9(01).
       *表用番号

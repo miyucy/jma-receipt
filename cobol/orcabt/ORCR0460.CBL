@@ -2166,7 +2166,7 @@
                  ELSE  
                    MOVE    TBL-ZAIW-SRYCD1      TO      TNS-SRYCD
                    MOVE    TNS-TENSU-REC        TO      MCPDATA-REC
-                   MOVE    RECE45-SRYYM         TO      ORC-DBYMD(1:6)
+                   MOVE    RECE44-SRYYM         TO      ORC-DBYMD(1:6)
                    MOVE    "01"                 TO      ORC-DBYMD(7:2)
                    PERFORM 900-TENSU-INV-SEC
                    IF      FLG-TENSU            =       1
