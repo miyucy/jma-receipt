@@ -2203,38 +2203,54 @@
                                         ORCMCPAREA
                                         MCPDATA-REC
       *
-           IF      WRK-JRK-SRYKA  NOT        =  SPACE
+           IF      WRK-JRK-SRYKA  NOT  =  SPACE
+               MOVE    ZERO                TO  FLG-HENFLG
+               PERFORM VARYING IDY         FROM   1   BY  1
+                       UNTIL  (IDY         >   SPA-SRYKA-MAX )
+                       OR     (FLG-HENFLG  =   1  )
+                   IF      WRK-JRK-SRYKA   =   SPA-GMN-SRYKALST
+                                                       (IDY)(1:2) 
+                       MOVE    SPA-GMN-SRYKALST (IDY)
+                                               TO  SPA-GMN-SRYKA-G
+                       MOVE    1               TO  FLG-HENFLG
+                   END-IF
+               END-PERFORM
       *
-      *        診療科情報をＳＰＡにセット
-               INITIALIZE                       SYS-1005-REC
-               MOVE    "1005"               TO  SYS-1005-KANRICD
-               MOVE    WRK-JRK-SRYKA        TO  SYS-1005-KBNCD
-               MOVE    SYS-1005-REC         TO  MCPDATA-REC
-               PERFORM 910-SYSKANRI-READ-SEC
-               IF      FLG-SYSKANRI         =   ZERO
-                   MOVE    MCPDATA-REC      TO  SYS-1005-REC 
-                   MOVE    WRK-JRK-SRYKA    TO  SPA-GMN-SRYKA
-                   MOVE    SPACE            TO  SPA-GMN-SRYKA1
-                   MOVE    SYS-1005-SRYKANAME
-                                            TO  SPA-GMN-SRYKANAME
+               IF      SPA-GMN-SRYKA       NOT =   SPA-MAE-SRYKA
+      *            診療科が変わった時、ドクターを再編集する
+                   INITIALIZE                  ORCSDRSETAREA
+                   MOVE    SPA-SYSYMD          TO  ORCSDR-SYSYMD
+                   MOVE    "1"                 TO  ORCSDR-KBN
+                   MOVE    SPA-GMN-SRYKA       TO  ORCSDR-SRYKA
+                   CALL    "ORCSDRSET"         USING
+                                               SPA-AREA
+                                               ORCSDRSETAREA
+                   MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN-DRCDLST-G
+                   MOVE    ORCSDR-DRCD-MAX     TO  SPA-DRCD-MAX
                END-IF
+               MOVE    ZERO                TO  FLG-CHK
+               PERFORM VARYING   IDX       FROM    1   BY  1
+                       UNTIL     IDX           >   SPA-DRCD-MAX 
+                   IF      WRK-JRK-DRCD(2:4)   =   SPA-GMN-DRCDLST(IDX)
+                                                                 (1:4)
+                       MOVE    SPA-GMN-DRCDLST(IDX)
+                                                   TO  SPA-GMN-DRCD-G
+                       MOVE    1               TO  FLG-CHK
+                       MOVE    SPA-DRCD-MAX    TO  IDX
+                   END-IF
+               END-PERFORM
+               IF      FLG-CHK             =   ZERO
+                   MOVE    WRK-JRK-DRCD(2:4)
+                                              TO  SPA-GMN-DRCD
+      *           ドクター
+                   PERFORM 4105-DRCD-CHK-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       MOVE    SPA-GMN-DRCDLST(1)
+                                                   TO  SPA-GMN-DRCD-G
+                   END-IF
+               END-IF
+               MOVE    SPA-GMN-SRYKA       TO  SPA-MAE-SRYKA
       *
-      *        職員情報をＳＰＡにセット
-               INITIALIZE                       SYS-1010-REC
-               MOVE  "1010"                 TO  SYS-1010-KANRICD
-               MOVE    "1"                  TO  SYS-1010-KBNCD(1:1)
-               MOVE    WRK-JRK-DRCD         TO  SYS-1010-KBNCD(2:4)
-               MOVE    SYS-1010-REC         TO  MCPDATA-REC
-               PERFORM  910-SYSKANRI-READ-SEC
-               IF      FLG-SYSKANRI          =   ZERO
-                   MOVE    MCPDATA-REC      TO  SYS-1010-REC 
-                   MOVE    SYS-1010-KBNCD(2:4)
-                                            TO  SPA-GMN-DRCD
-                   MOVE    SPACE            TO  SPA-GMN-DRCD1
-                   MOVE    SYS-1010-NAME    TO  SPA-GMN-DRNAME
-               END-IF
-      *        保険組合せ
-      *********MOVE    WRK-JRK-HKNCOMBI    TO  SPA-GMN-COMBINUM
       *        削除分ならないことと
                PERFORM VARYING    IDX-C    FROM    1   BY  1
                        UNTIL     (IDX-C    >   15  )  OR
