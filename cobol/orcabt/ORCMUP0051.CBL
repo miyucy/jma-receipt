@@ -392,13 +392,13 @@
                PERFORM 2040-ERR-SYORI-SEC
                GO      TO      2010-INSERT-SYORI-EXT
            END-IF
-           IF      TNS-ROUTEKKBN       =   1
-               CONTINUE
-           ELSE
-               MOVE    7               TO  WRK-ERRCD
-               PERFORM 2040-ERR-SYORI-SEC
-               GO      TO      2010-INSERT-SYORI-EXT
-           END-IF
+      *     IF      TNS-ROUTEKKBN       =   1
+      *         CONTINUE
+      *     ELSE
+      *         MOVE    7               TO  WRK-ERRCD
+      *         PERFORM 2040-ERR-SYORI-SEC
+      *         GO      TO      2010-INSERT-SYORI-EXT
+      *     END-IF
       *    老人コードチェック
            MOVE    SPACE               TO  TNS-TENSU-REC
            MOVE    CHGWK-RJNSRYCD      TO  TNS-SRYCD
@@ -408,13 +408,13 @@
                PERFORM 2040-ERR-SYORI-SEC
                GO      TO      2010-INSERT-SYORI-EXT
            END-IF
-           IF      TNS-ROUTEKKBN       =   2
-               CONTINUE
-           ELSE
-               MOVE    8               TO  WRK-ERRCD
-               PERFORM 2040-ERR-SYORI-SEC
-               GO      TO      2010-INSERT-SYORI-EXT
-           END-IF
+      *     IF      TNS-ROUTEKKBN       =   2
+      *         CONTINUE
+      *     ELSE
+      *         MOVE    8               TO  WRK-ERRCD
+      *         PERFORM 2040-ERR-SYORI-SEC
+      *         GO      TO      2010-INSERT-SYORI-EXT
+      *     END-IF
       *
       *    ＤＢ追加
            PERFORM 20101-SRYCDCHG-INS-SEC
@@ -537,6 +537,7 @@
        20401-PLF-OUT-SEC            SECTION.
       *
            MOVE    CHGWK-SYORIKBN     TO  WRK-SYORIKBN
+           MOVE    SPACE              TO  WRK-CHKKBN
            MOVE    CHGWK-IPNSRYCD     TO  WRK-IPNSRYCD
            MOVE    CHGWK-RJNSRYCD     TO  WRK-RJNSRYCD
            EVALUATE    WRK-ERRCD
@@ -680,7 +681,7 @@
       *
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+           MOVE    "TENSU-KEY4"        TO  ORC-DBPATH
            MOVE    WRK-SYMD            TO  ORC-DBYMD
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -688,7 +689,7 @@
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+               MOVE    "TENSU-KEY4"        TO  ORC-DBPATH
                CALL    "ORCMCPSUB"          USING
                                             MCPAREA
                                             ORCMCPAREA
