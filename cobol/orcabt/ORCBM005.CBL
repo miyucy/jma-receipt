@@ -21,7 +21,7 @@
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 請求帳票
-      *  コンポーネント名  : 未請求患者一覧表（ＨＣ０５）
+      *  コンポーネント名  : チェックリスト（ＨＣ０５）
       *  管理者            : 
       *  作成日付    作業者        記述
       *  02/03/05    MCC-森脇      新規作成
@@ -37,6 +37,8 @@
       *                                     dia→monpeに変更
       *  01.01.03    NACL-藤原    04.02.27  実日数の追加
       *                                     プレビュー・再印刷処理に対応
+      *  ver.2.5.0
+      *  01.02.01    NACL-藤原    05.03.08  実日数１、実日数２の追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -63,7 +65,8 @@
                                    BY         //RECEERR//.
            03  FILLER              PIC X(04)   VALUE   ".dat".
       *
-           COPY    "HCM05.INC"     REPLACING  //HCM05//
+      *****COPY    "HCM05.INC"     REPLACING  //HCM05//
+           COPY    "HCM05V01.INC"  REPLACING  //HCM05V01//
                                    BY         //HC05//.
       *    スパ領域
        01  STS-AREA.
@@ -129,6 +132,8 @@
            03  SUM-GMONEY1           PIC 9(08).
            03  SUM-GMONEY2           PIC 9(08).
            03  SUM-GJNISSU           PIC 9(08).
+           03  SUM-GJNISSU1          PIC 9(08).
+           03  SUM-GJNISSU2          PIC 9(08).
            03  SUM-RENNUM            PIC 9(05).
       *
       *    キー領域
@@ -368,7 +373,11 @@
                MOVE    PTINF-NAME          TO  HC05-NAME(CNT-LINE)
       *****END-IF    
       *
-           MOVE    RECE10-HKNJANUM     TO  HC05-HKNJANUM(CNT-LINE)
+           IF      RECE10-HKNJANUM     =    "00000000"
+               CONTINUE
+           ELSE
+               MOVE    RECE10-HKNJANUM     TO  HC05-HKNJANUM(CNT-LINE)
+           END-IF
       *
            MOVE    RECE10-SRYYM        TO  WRK-SYMD(1:6)
            MOVE    "01"                TO  WRK-SYMD(7:2)
@@ -393,6 +402,10 @@
            MOVE    WRK-TEN             TO  HC05-MONEY2(CNT-LINE)
            MOVE    RECE10-JNISSU  (1)  TO  WRK-JNISSU
            MOVE    WRK-JNISSU          TO  HC05-JNISSU(CNT-LINE)
+           MOVE    RECE10-JNISSU  (2)  TO  WRK-JNISSU
+           MOVE    WRK-JNISSU          TO  HC05-JNISSU1(CNT-LINE)
+           MOVE    RECE10-JNISSU  (3)  TO  WRK-JNISSU
+           MOVE    WRK-JNISSU          TO  HC05-JNISSU2(CNT-LINE)
       *
            EVALUATE    RECE10-SKYKBN
                WHEN    "0"
@@ -419,6 +432,8 @@
                    ADD     RECE10-TOTALTEN(2)  TO  SUM-GMONEY1
                    ADD     RECE10-TOTALTEN(3)  TO  SUM-GMONEY2
                    ADD     RECE10-JNISSU  (1)  TO  SUM-GJNISSU
+                   ADD     RECE10-JNISSU  (2)  TO  SUM-GJNISSU1
+                   ADD     RECE10-JNISSU  (3)  TO  SUM-GJNISSU2
                ELSE
                    IF    ( RECE10-SKYKBN   NOT =   ZERO               )
                    AND   ( RECE10-SKYYM        =   LNK-PRTKANRI-SRYYM )
@@ -429,6 +444,8 @@
                        ADD     RECE10-TOTALTEN(2)  TO  SUM-GMONEY1
                        ADD     RECE10-TOTALTEN(3)  TO  SUM-GMONEY2
                        ADD     RECE10-JNISSU  (1)  TO  SUM-GJNISSU
+                       ADD     RECE10-JNISSU  (2)  TO  SUM-GJNISSU1
+                       ADD     RECE10-JNISSU  (3)  TO  SUM-GJNISSU2
                    END-IF
                END-IF
            END-IF        
@@ -456,6 +473,10 @@
            MOVE    WRK-TEN           TO  HC05-GMONEY2
            MOVE    SUM-GJNISSU       TO  WRK-JNISSU
            MOVE    WRK-JNISSU        TO  HC05-GJNISSU
+           MOVE    SUM-GJNISSU1      TO  WRK-JNISSU
+           MOVE    WRK-JNISSU        TO  HC05-GJNISSU1
+           MOVE    SUM-GJNISSU2      TO  WRK-JNISSU
+           MOVE    WRK-JNISSU        TO  HC05-GJNISSU2
       *
            .
        330-SUM-HEN-EXT.
@@ -481,7 +502,8 @@
                                        TO  SPRT-SHORI-RENNUM
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
-           MOVE    "HCM05.red"         TO  SPRT-PRTID
+      *****MOVE    "HCM05.red"         TO  SPRT-PRTID
+           MOVE    "HCM05V01.red"      TO  SPRT-PRTID
            MOVE    "総括チェックリスト"TO  SPRT-TITLE
            MOVE    HC05                TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
