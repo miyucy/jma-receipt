@@ -2224,8 +2224,22 @@
                CONTINUE
            ELSE
       *        入力コードより編集の時、内服（Ｆ２）とする
-               IF      SPA-K98-TYPE        =   "1" 
-                   PERFORM 230-NAIFUKU-SEC
+               IF      SPA-K98-TYPE        =   "1"
+                   IF      SPA-K98-GMN-SYORI   =   "3"  OR  "4"  OR  "5"
+                       CONTINUE
+                   ELSE
+      *                内服
+                       MOVE    "3"             TO  SPA-K98-GMN-SYORI
+                   END-IF
+                   MOVE    "2"                 TO  SPA-K98-TYPE
+      *
+                   INITIALIZE                      SPA-K98-NAI-SELNUM-G
+                   INITIALIZE                      SPA-K98-GMN-SELNUM-G
+                   MOVE    SPACE               TO  SPA-K98-SRYCD-G
+                   MOVE    SPACE               TO  SPA-K98-GMN-ALL
+                   MOVE    ZERO                TO  SPA-K98-NEXT
+      *            ＳＰＡセット
+                   PERFORM                     310-SPA-SET-SEC
                ELSE
                    MOVE    "1"                 TO  SPA-K98-GMN-ALL
       *
