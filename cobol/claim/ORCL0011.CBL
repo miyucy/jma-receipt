@@ -183,6 +183,8 @@
            03  WRK-FTNRATEMEI          PIC X(05).
            03  WRK-ZZ9                 PIC ZZZZ9.
       *
+           03  WRK-C-UID               PIC X(36).
+      *
        01  WRK-SRT-AREA.
            03  WRK-SRT-TABLE.
                05                      PIC X(03)   VALUE   "027".  
@@ -471,6 +473,8 @@
            COPY    "CPSK1001.INC".
       *    医療機関情報−所在地、連絡先 
            COPY    "CPSK1002.INC".
+      *
+           COPY    "CPSK1010.INC".
       *
       *    ＣＬＡＩＭ接続情報
            COPY  "CPSK9000.INC".
@@ -863,6 +867,17 @@
                                            WRK-LF01-CRE301-DPERTID
                MOVE    "I"                 TO  WRK-LF01-SRYREP
            END-IF
+      *    ドクター
+           IF      LNK-DRCD            =   "@@@@@"
+               MOVE    SPACE           TO  WRK-LF01-CRE301-FULLNAME
+               MOVE    SPACE           TO  WRK-LF01-CRE301-PERSONALID
+           ELSE
+               PERFORM 2001-DRCD-NAME-SEC
+               MOVE    SYS-1010-NAME   TO  WRK-LF01-CRE301-FULLNAME
+               MOVE    LNK-DRCD        TO  WRK-LF01-CRE301-PERSONALID
+           END-IF
+      *
+           MOVE    SPACE               TO  WRK-C-UID
       *
       *    保険情報  
            INITIALIZE                  HKNCOMBI-REC
@@ -927,6 +942,11 @@
                        MOVE    C-UID               TO
                                                WRK-LF01-UID2    (IDX)
                                                LF03-UID         (IDX)
+      *
+                       IF      LNK-HKNCOMBI        =   COMB-HKNCOMBINUM
+                           MOVE    C-UID           TO  WRK-C-UID
+                       END-IF
+      *
                        MOVE    LNK-SYSYMD          TO  WRK-WYMD
                        PERFORM 500-HIZUKE-HENSYU-SEC
                        MOVE    WRK-HENYMD          TO  
@@ -991,6 +1011,11 @@
                        MOVE    C-UID               TO
                                                WRK-LF01-UID2    (IDX)
                                                LF03-UID         (IDX)
+      *
+                       IF      LNK-HKNCOMBI        =   COMB-HKNCOMBINUM
+                           MOVE    C-UID           TO  WRK-C-UID
+                       END-IF
+      *
                        MOVE    LNK-SYSYMD          TO  WRK-WYMD
                        PERFORM 500-HIZUKE-HENSYU-SEC
                        MOVE    WRK-HENYMD          TO  
@@ -1075,6 +1100,8 @@
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
+      *    使用保険 (claim:insuranceUid)
+           MOVE    WRK-C-UID           TO  WRK-LF01-FIL1
       *
       *    初診／再診
            MOVE    SPACE               TO  WRK-SYOYMD
@@ -1288,6 +1315,45 @@
       *
            .
        200-MAIN-EXT.
+           EXIT.
+      * 
+      *****************************************************************
+      *    ドクター設定処理
+      *****************************************************************
+       2001-DRCD-NAME-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  SYS-1010-REC
+           INITIALIZE                      SYS-1010-REC
+           MOVE    "1010"              TO  SYS-1010-KANRICD
+           MOVE    LNK-DRCD            TO  SYS-1010-KBNCD
+           MOVE    LNK-SYSYMD          TO  ORC-DBYMD
+           MOVE    SYS-1010-REC        TO  MCPDATA-REC
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO                TO  FLG-SYSKANRI
+                   MOVE    MCPDATA-REC         TO  SYS-1010-REC
+               ELSE
+                   INITIALIZE                      SYS-1010-REC
+               END-IF
+           ELSE
+               INITIALIZE                      SYS-1010-REC
+           END-IF
+      *
+           .
+       2001-DRCD-NAME-EXT.
            EXIT.
       * 
       *****************************************************************
