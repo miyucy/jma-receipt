@@ -194,3 +194,14 @@ path	key11		{
 		;
 	};
 };
+
+path	key12		{ 	
+	DBSELECT	{
+		DECLARE tbl_syskanri_key12_csr CURSOR FOR
+		SELECT KANRICD,STYUKYMD,EDYUKYMD
+		FROM tbl_syskanri
+			WHERE   KANRICD      =   :KANRICD 
+			GROUP BY KANRICD,STYUKYMD,EDYUKYMD
+		;
+	};
+};
