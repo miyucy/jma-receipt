@@ -7,33 +7,19 @@ INSTALL_DATA = @INSTALL_DATA@
 ETC_files = \
 	kentan.inc \
 	orcadbs.inc \
-	jma-receipt.env \
-	jma-receipt.conf \
-	jma-receipt-crontab \
-	ORCADC.PARA \
-	jppinfo.list \
-	das-upload.conf
+	jma-receipt.env
 
 DBGROUP_files = dbgroup.inc 
 
-all: jma-receipt-crontab
-
-jma-receipt-crontab: jma-receipt-crontab.in
-	sed -e "s|@SCRIPTSDIR@|$(scriptsdir)|g" \
-	-e "s|@PATCHSCRIPTSDIR@|$(PATCHSCRIPTSDIR)|g" \
-	-e "s|@SITESCRIPTSDIR@|$(SITESCRIPTSDIR)|g" $< > $@
+all:   
 
 filecheck:
 
-clean:
-	-rm -f jma-receipt-crontab
+clean: 
 
-distclean:
-	-rm -f jma-receipt-crontab
+distclean: 
 	-rm -f jma-receipt.env
-	-rm -f jma-receipt.conf
 	-rm -f Makefile
-	-rm -f jppinfo.list
 
 install: all
 	$(INSTALL) -d $(sysconfdir)
