@@ -48,6 +48,7 @@
       *  01.00.10    NACL-Æ£¸¶    02.11.07  °åÎÅµ¡´Ø£É£Ä¡¦¿ÇÎÅÇ¯·î¤òÄÉ²Ã
       *  01.00.11    NACL-ÌçÏÆ    02.11.26  ¸¡¿Ç¥³¡¼¥É¤Î¿ÇÎÅ¶èÊ¬ÊÔ½¸
       *  01.00.12    NACL-Æ£¸¶    03.03.12  Êä½õ¶èÊ¬¤ÎÄÉ²Ã
+      *  01.00.13    NACL-ÌçÏÆ    03.03.03  ºÞÈÖ¹æ·å½¤ÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -280,10 +281,10 @@
            MOVE    RECE06-TEKSTYMD      TO      RECE061-TEKSTYMD
            MOVE    RECE06-KOHBUNRI      TO      RECE061-KOHBUNRI
            MOVE    RECE06-ZAINUM        TO      RECE061-ZAINUM
-           IF      RECE06-ZAINUM(1:4)  =  9998
+           IF      RECE06-ZAINUM(1:7)  =  9999998
                  MOVE     ZERO          TO      RECE061-ZAINUM
            END-IF
-           IF      RECE06-ZAINUM       =  99999
+           IF      RECE06-ZAINUM       =  99999999
                  MOVE     ZERO          TO      RECE061-ZAINUM
            END-IF
            IF      RECE06-SRYKBN        =       "60"
