@@ -30,6 +30,7 @@
       *  01.00.02    MCC-太田     02.06.26+ ジョブ管理機能追加
       *                                   +-出力項目に年齢追加
       *  01.00.03    NACL-太田    02/09/13  ディレクトリをサブプロへ
+      *  01.00.04    NACL-太田    02/10/21  印刷用ファイルにサイト区分を追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -66,6 +67,7 @@
        01  PRT-REC.
            03  PRT-PRTID               PIC X(30).
            03  PRT-PRTNM               PIC X(20).
+           03  PRT-SITEKBN             PIC X(01).
            03  PRT-PRTDATA             PIC X(10000).
       *
       *    ＣＳＶファイル
@@ -570,6 +572,7 @@
            MOVE    SPACE           TO  PRT-REC
            MOVE    "HC28"          TO  PRT-PRTID
            MOVE    WRK-PRTNM       TO  PRT-PRTNM
+           MOVE    "1"             TO  PRT-SITEKBN
            MOVE    HC28            TO  PRT-PRTDATA
            WRITE   PRT-REC
       *
