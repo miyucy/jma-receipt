@@ -201,6 +201,7 @@
            03  IDX-TKAISU                              PIC 9(05).
            03  IDX-ERRCD                               PIC 9(05).
            03  IDX-TSRYCD                              PIC 9(05).
+           03  IDX-TTNS                                PIC 9(05).
            03  IDX-DAY                                 PIC 9(02).
       *
        01  WRK-AREA.
@@ -412,6 +413,28 @@
                    07  SRH-SRYKAMEI2L              PIC X(12).
                    07  SRH-SRYKAMEI3L              PIC X(04).
       *
+      *    点数マスタ退避ワーク
+      *    薬剤
+       01  TTNS-AREA.
+           03  TTNS-FLG                            PIC 9(01).
+           03  TTNS-YKZ-G.
+               05 TTNS-YKZ-MAX                     PIC 9(05).
+               05 TTNS-YKZ-KEY-OCC                 OCCURS 2000.
+                  07   TTNS-YKZ-KEY-SRYCD          PIC X(09).
+                  07   TTNS-YKZ-KEY-YUKOSTYMD      PIC X(08).
+                  07   TTNS-YKZ-KEY-YUKOEDYMD      PIC X(08).
+               05   TTNS-YKZ-DAT                   PIC X(2000)
+                                                   OCCURS 2000.
+      *    薬剤以外
+           03  TTNS-ETC-G.
+               05 TTNS-ETC-MAX                     PIC 9(05).
+               05 TTNS-ETC-KEY-OCC                 OCCURS 2000.
+                  07   TTNS-ETC-KEY-SRYCD          PIC X(09).
+                  07   TTNS-ETC-KEY-YUKOSTYMD      PIC X(08).
+                  07   TTNS-ETC-KEY-YUKOEDYMD      PIC X(08).
+               05   TTNS-ETC-DAT                   PIC X(2000)
+                                                   OCCURS 2000.
+      *
       *    パラメタ領域
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
@@ -451,6 +474,8 @@
            03  CONST-TBYOMEICD-MAX                     PIC 9(05)
                                                        VALUE   100.
            03  CONST-TCHK-MAX                          PIC 9(05)
+                                                       VALUE   2000.
+           03  CONST-TTNS-MAX                          PIC 9(05)
                                                        VALUE   2000.
       *
       *    エラーメッセージ
@@ -668,6 +693,7 @@
            MOVE    "01"                TO  WRK-KJNYMD(7:2)
       *
            INITIALIZE                      TCHK-AREA
+                                           TTNS-AREA
       *
            .
        1001-INIT-VAL-SET-EXT.
@@ -5079,25 +5105,113 @@
        900-TENSU-KEY-SEL-SEC           SECTION.
       *
            MOVE    ZERO                TO  FLG-TENSU
-           INITIALIZE                      TNS-TENSU-REC
-           MOVE    WRK-SRYCD           TO  TNS-SRYCD
-           MOVE    WRK-TNS-YMD         TO  ORC-DBYMD
-           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC     TO  TNS-TENSU-REC
-           ELSE
-               MOVE    1               TO  FLG-TENSU
-               INITIALIZE                  TNS-TENSU-REC
-           END-IF
       *
-           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-           PERFORM 910-DBCLOSE-SEC
+      *    点数マスタ退避ワークチェック
+           PERFORM 9001-TTNS-CHK-SEC
+      *
+      *    退避ワークに存在しない場合はＤＢを検索
+           IF    ( TTNS-FLG            =   ZERO )
+      *
+               INITIALIZE                      TNS-TENSU-REC
+               MOVE    WRK-SRYCD           TO  TNS-SRYCD
+               MOVE    WRK-TNS-YMD         TO  ORC-DBYMD
+               MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+               MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+               PERFORM 910-DBSELECT-SEC
+               IF    ( MCP-RC          =   ZERO )
+                   MOVE    MCPDATA-REC     TO  TNS-TENSU-REC
+      *
+      *            点数マスタ退避ワークに編集する
+                   PERFORM 9001-TTNS-HEN-SEC
+               ELSE
+                   MOVE    1               TO  FLG-TENSU
+                   INITIALIZE                  TNS-TENSU-REC
+               END-IF
+      *
+               MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+               PERFORM 910-DBCLOSE-SEC
+           END-IF
       *
            .
       *
        900-TENSU-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    点数マスタ退避ワークチェック処理
+      *****************************************************************
+       9001-TTNS-CHK-SEC               SECTION.
+      *
+           MOVE    ZERO                TO  TTNS-FLG
+           INITIALIZE                      TNS-TENSU-REC
+      *
+           IF    ( WRK-SRYCD (1:1)     =   "6" )
+               PERFORM VARYING IDX-TTNS    FROM    1   BY  1
+                       UNTIL ( IDX-TTNS    >   TTNS-YKZ-MAX )
+                        OR   ( TTNS-FLG    =   1 )
+                   IF    ( TTNS-YKZ-KEY-SRYCD (IDX-TTNS)
+                                           =   WRK-SRYCD )
+                     AND ( TTNS-YKZ-KEY-YUKOSTYMD (IDX-TTNS)
+                                          <=   WRK-TNS-YMD )
+                     AND ( TTNS-YKZ-KEY-YUKOEDYMD (IDX-TTNS)
+                                          >=   WRK-TNS-YMD )
+                       MOVE    1           TO  TTNS-FLG
+                       MOVE    TTNS-YKZ-DAT (IDX-TTNS)
+                                           TO  TNS-TENSU-REC
+                   END-IF
+               END-PERFORM
+           ELSE
+               PERFORM VARYING IDX-TTNS    FROM    1   BY  1
+                       UNTIL ( IDX-TTNS    >   TTNS-ETC-MAX )
+                        OR   ( TTNS-FLG    =   1 )
+                   IF    ( TTNS-ETC-KEY-SRYCD (IDX-TTNS)
+                                           =   WRK-SRYCD )
+                     AND ( TTNS-ETC-KEY-YUKOSTYMD (IDX-TTNS)
+                                          <=   WRK-TNS-YMD )
+                     AND ( TTNS-ETC-KEY-YUKOEDYMD (IDX-TTNS)
+                                          >=   WRK-TNS-YMD )
+                       MOVE    1           TO  TTNS-FLG
+                       MOVE    TTNS-ETC-DAT (IDX-TTNS)
+                                           TO  TNS-TENSU-REC
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+           .
+       9001-TTNS-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    点数マスタ退避ワーク編集処理
+      *****************************************************************
+       9001-TTNS-HEN-SEC               SECTION.
+      *
+           IF    ( TNS-SRYCD (1:1)     =   "6" )
+               IF    ( CONST-TTNS-MAX  >   TTNS-YKZ-MAX )
+                   COMPUTE TTNS-YKZ-MAX    =   TTNS-YKZ-MAX    +   1
+                   MOVE    TNS-SRYCD   TO  TTNS-YKZ-KEY-SRYCD
+                                                       (TTNS-YKZ-MAX)
+                   MOVE    TNS-YUKOSTYMD   TO  TTNS-YKZ-KEY-YUKOSTYMD
+                                                       (TTNS-YKZ-MAX)
+                   MOVE    TNS-YUKOEDYMD   TO  TTNS-YKZ-KEY-YUKOEDYMD
+                                                       (TTNS-YKZ-MAX)
+                   MOVE    TNS-TENSU-REC   TO  TTNS-YKZ-DAT
+                                                       (TTNS-YKZ-MAX)
+               END-IF
+           ELSE
+               IF    ( CONST-TTNS-MAX  >   TTNS-ETC-MAX )
+                   COMPUTE TTNS-ETC-MAX    =   TTNS-ETC-MAX    +   1
+                   MOVE    TNS-SRYCD   TO  TTNS-ETC-KEY-SRYCD
+                                                       (TTNS-ETC-MAX)
+                   MOVE    TNS-YUKOSTYMD   TO  TTNS-ETC-KEY-YUKOSTYMD
+                                                       (TTNS-ETC-MAX)
+                   MOVE    TNS-YUKOEDYMD   TO  TTNS-ETC-KEY-YUKOEDYMD
+                                                       (TTNS-ETC-MAX)
+                   MOVE    TNS-TENSU-REC   TO  TTNS-ETC-DAT
+                                                       (TTNS-ETC-MAX)
+               END-IF
+           END-IF
+      *
+           .
+       9001-TTNS-HEN-EXT.
            EXIT.
       *****************************************************************
       *    患者番号取得処理
