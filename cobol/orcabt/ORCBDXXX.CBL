@@ -54,7 +54,7 @@
                                    BY         //RECEERR//.
            03  FILLER              PIC X(04)   VALUE   ".dat".
       *
-           COPY    "HC17.INC".
+           COPY    "HC17V02.INC".
       *
       *    •π•—ŒŒ∞Ë
        01  STS-AREA.
@@ -309,11 +309,11 @@
            MOVE    ZERO                TO  CNT-LINE
            ADD     1                   TO  CNT-PAGE
       *
-           INITIALIZE                      HC17      
-           MOVE    WRK-SYSYMDWH        TO  HC17-SYSYMD
+           INITIALIZE                      HC17V02      
+           MOVE    WRK-SYSYMDWH        TO  HC17V02-SYSYMD
       *
            MOVE    CNT-PAGE            TO  WRK-PAGE
-           MOVE    WRK-PAGE            TO  HC17-PAGE
+           MOVE    WRK-PAGE            TO  HC17V02-PAGE
       *
            .
        310-HEAD-HEN-EXT.
@@ -331,22 +331,22 @@
       *    
                ADD     1                   TO  CNT-LINE
       *    œ¢»÷
-               ADD     1                   TO  WRK-RENNUM
-               MOVE    WRK-RENNUM          TO  WRK-RENNUM-X
-               MOVE    WRK-RENNUM-X        TO  HC17-RENNUM (CNT-LINE)     
+               ADD     1               TO  WRK-RENNUM
+               MOVE    WRK-RENNUM      TO  WRK-RENNUM-X
+               MOVE    WRK-RENNUM-X    TO  HC17V02-RENNUM (CNT-LINE)
       *    ¥µº‘»÷πÊ
-               MOVE    BD002-PTNUM         TO  HC17-PTNUM  (CNT-LINE)
+               MOVE    BD002-PTNUM     TO  HC17V02-PTNUM  (CNT-LINE)
       *    ª·Ãæ
-               MOVE    PTINF-NAME          TO  HC17-NAME   (CNT-LINE)
+               MOVE    PTINF-NAME      TO  HC17V02-NAME   (CNT-LINE)
       *    ≈¡…º»÷πÊ
-               MOVE    BD002-DENPNUM       TO  WRK-DENPNUM
-               MOVE    WRK-DENPNUM         TO  HC17-HKNTEN (CNT-LINE)
+               MOVE    BD002-DENPNUM   TO  WRK-DENPNUM
+               MOVE    WRK-DENPNUM     TO  HC17V02-HKNTEN (CNT-LINE)
       *    ≈¡…º»Øπ‘∆¸
-               MOVE    BD002-DENPPRTYMD    TO  WRK-SYMD
+               MOVE    BD002-DENPPRTYMD TO WRK-SYMD
                PERFORM 31012-SEIWA-HEN-SEC
                MOVE    LNK-DAY2-EDTYMD1 (5:)
-                                           TO
-                                           HC17-MONEY (1 CNT-LINE) (2:)
+                                       TO
+                                     HC17V02-MONEY (1 CNT-LINE) (2:)
       *
                MOVE    ZERO                TO  FLG-ROJIN                                            
       *
@@ -377,10 +377,10 @@
                                        TO  SPRT-SHORI-RENNUM
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
-           MOVE   "HC17V01"            TO  SPRT-PRTID
+           MOVE   "HC17V02V01"         TO  SPRT-PRTID
            MOVE    "ÃÙ∫ﬁ∞Ï…Ù…È√¥§‚§Ï∞ÏÕ˜…Ω"
                                        TO  SPRT-TITLE
-           MOVE    HC17                TO  SPRT-PRTDATA
+           MOVE    HC17V02             TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
            MOVE    LNK-PRTKANRI-OPID   TO  SPRT-OPID
            MOVE    LNK-PRTKANRI-PRTNM  TO  SPRT-PRTNM
