@@ -373,6 +373,8 @@
       *
            03  WRK-GMN-IDX         PIC 9(04).
       *
+           03  WRK-MAX-IDX         PIC 9(04).
+      *
       *    自費用
            03  WRK-TENTTLKBN       PIC 9(03).
            03  WRK-HOZ-KEI         PIC 9(08).
@@ -1168,12 +1170,19 @@
                        MOVE    SPA-GMN-INPUTCD(SPA-GMN-IDX)(1:6)
                                                    TO  WRK-INPUTCD
                        PERFORM 41011921-INPSET-MEI-SEC
+                       MOVE    SPACE               TO  SPA-COM-INPUTCD
+                                                        (SPA-GMN-IDX)
       *            その他
                    WHEN    OTHER
       *                入力コードの画面用再編集
                        INITIALIZE                  WRK-MOJI-AREA
                        MOVE    IDX-1               TO  IDX
                        PERFORM 3101-INPUTCD-HEN-SEC
+                       IF      SPA-ERRCD           =   SPACE
+                           MOVE    SPA-GMN-INPUTCD(SPA-GMN-IDX)
+                                                   TO  SPA-MAE-INPUTCD
+                                                          (SPA-GMN-IDX)
+                       END-IF
                END-EVALUATE
            END-PERFORM
       *
@@ -1371,7 +1380,7 @@
            END-IF
       *    分画数を編集
            IF      SRY-SRYKBN          =   "23"
-      *********MOVE    SRY-SRYKAISU (IDS)  TO  SPA-COM-KAISU2 (IDX2)
+               MOVE    SRY-SRYKAISU (IDS)  TO  SPA-CHOKIKAISU
                IF      SRY-SRYKAISU (IDS)  >=  28
                    MOVE    1               TO  SPA-CHOKITOFLG
                END-IF
@@ -1621,7 +1630,7 @@
       *    診療行為マスターを検索する
            INITIALIZE                      SRYACT-REC
            MOVE    SPA-HOSPID          TO  SRY-HOSPID
-           MOVE    SPA-GMN-PTID            TO  SRY-PTID
+           MOVE    SPA-GMN-PTID        TO  SRY-PTID
            MOVE    WRK-SRYYM           TO  SRY-SRYYM
       *
            MOVE    SRYACT-REC          TO  MCPDATA-REC
@@ -2173,7 +2182,9 @@
       *
            IF     LNK-SC97-NYURYOKU    =   1
       *        セットが変更削除の時セット内容を削除する
-               IF      SPA-MAE-INPUTCD(SPA-GMN-IDX)(1:1)   =   "S"
+               IF     (SPA-MAE-INPUTCD(SPA-GMN-IDX)(1:1)   =   "S" ) OR
+                      ((SPA-GMN-IDX            <   200   )  AND
+                       (SPA-COM-SET  (SPA-GMN-IDX + 1)     =   "1"))
                    PERFORM 41016-SETDEL-SEC
                END-IF
                MOVE    SPA-COM-TIMEFLG(SPA-GMN-IDX)    TO  WRK-TIMEFLG
@@ -2239,6 +2250,7 @@
       *
            MOVE    ZERO                TO  WRK-IN-IDX
            MOVE    ZERO                TO  WRK-IN-IDX2
+           MOVE    ZERO                TO  WRK-MAX-IDX
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   200
                IF      SPA-COM-IN  (IDX)   =   "1"
@@ -2247,10 +2259,15 @@
                IF      SPA-COM-IN  (IDX)   =   "3"
                    MOVE    IDX                 TO  WRK-IN-IDX2
                END-IF
+               IF     (SPA-COM-SET (IDX)   =   SPACE )  AND
+                      (SPA-GMN-INPUTCD(IDX)    NOT =   SPACE )
+                   MOVE    IDX             TO  WRK-MAX-IDX
+               END-IF
            END-PERFORM
       *
            IF      WRK-IN-IDX          =   ZERO
-               MOVE    SPA-GMN-MAX         TO  SPA-GMN-IDX
+      ******** MOVE    SPA-GMN-MAX         TO  SPA-GMN-IDX
+               MOVE    WRK-MAX-IDX         TO  SPA-GMN-IDX
            ELSE
                MOVE    WRK-IN-IDX          TO  SPA-GMN-IDX
            END-IF
@@ -4795,6 +4812,12 @@
                                                              (IDX-ATO)
                    IF      SPA-COM-DATAKBN (IDX1)   =   "3"
                        MOVE    SPA-COM-BUNGSU (IDX)
+                                               TO  ORCSCZAICHK-SRYKAISU
+                                                             (IDX-ATO)
+                   END-IF
+      *            外用薬の入力回数
+                   IF      SPA-COM-SRYKBN  (IDX1)   =   "23"
+                       MOVE    SPA-CHOKIKAISU
                                                TO  ORCSCZAICHK-SRYKAISU
                                                              (IDX-ATO)
                    END-IF
