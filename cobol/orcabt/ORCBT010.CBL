@@ -42,6 +42,8 @@
       *                                     補助区分の追加に伴うレセプト
       *                                     種別の編集を変更
       *  01.00.05    NACL-藤原    05/01/30  入院対応
+      *  01.00.06    NACL-藤原    05/04/05  県番号によるレセプト種別の設定
+      *                                     を中止
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1564,12 +1566,12 @@
       *        地方公費のときレセプト請求区分を取得
                IF      COMB-KOHHKNNUM (IDX)(1:1)
                                            >=  "1" AND <=  "8"
-      *            福岡県の国保のとき（４１老人以外）
-                   IF    ( COMB-HKNNUM         =   "060"   OR  "067" )
-                   AND   ( SYS-1001-PREFNUM    =   "40"              )
-                   AND   ( HKN-HBTNUM      NOT =   "41"              )    
-                       PERFORM 20011-PREFKBN-40-CHECK-SEC
-                   ELSE
+      ************ 福岡県の国保のとき（４１老人以外）
+      ************ IF    ( COMB-HKNNUM         =   "060"   OR  "067" )
+      ************ AND   ( SYS-1001-PREFNUM    =   "40"              )
+      ************ AND   ( HKN-HBTNUM      NOT =   "41"              )    
+      ************     PERFORM 20011-PREFKBN-40-CHECK-SEC
+      ************ ELSE
                        IF      COMB-HKNNUM     =   "060"   OR  "067" 
                            IF      HKN-RECESKYKBN  =   "1" OR  "3"
                                MOVE    "2" TO  TOUKEI01-TRECESKYKBN(IDY)
@@ -1583,7 +1585,7 @@
                                MOVE    "1" TO  TOUKEI01-TRECESKYKBN(IDY)
                            END-IF
                        END-IF
-                   END-IF
+      ************ END-IF
                    IF     TOUKEI01-TRECESKYKBN (IDY)   =   1
       *                地方公費レセ記載判定
                        INITIALIZE          ORCSFTNJGNCHKAREA
@@ -1807,44 +1809,6 @@
                    ADD     1               TO  WK-KOHI-CNT
                END-IF
            END-PERFORM
-      *
-      *    山形地方公費対応
-           IF      WRK-PARA-PREFNUM    =   "06"
-               IF  WK-KOKUHO               =     "1"  OR  "2"
-                   IF   (TOUKEI01-TKOHHKNNUM(1) (1:1)  =   "1")   OR
-                        (TOUKEI01-TKOHHKNNUM(2) (1:1)  =   "1")   OR
-                        (TOUKEI01-TKOHHKNNUM(3) (1:1)  =   "1")   OR
-                        (TOUKEI01-TKOHHKNNUM(4) (1:1)  =   "1")   OR
-                        (TOUKEI01-TKOHHKNNUM(1) (1:1)  =   "2")   OR
-                        (TOUKEI01-TKOHHKNNUM(2) (1:1)  =   "2")   OR
-                        (TOUKEI01-TKOHHKNNUM(3) (1:1)  =   "2")   OR
-                        (TOUKEI01-TKOHHKNNUM(4) (1:1)  =   "2")
-                       COMPUTE  WK-KOHI-CNT  =  WK-KOHI-CNT  -  1
-                   END-IF
-               END-IF
-           END-IF
-      *
-      *    福岡地方公費対応
-           IF      WRK-PARA-PREFNUM    =   "40"
-               IF  WK-KOKUHO               =   "1" OR  "2"
-                   IF   (TOUKEI01-TKOHHKNNUM(1)(1:1)  =   "1" OR  "2")
-                   AND  (TOUKEI01-TKOHHBTNUM(1)   NOT =   "41"       )     
-                       COMPUTE  WK-KOHI-CNT  =  WK-KOHI-CNT  -  1
-                   END-IF
-                   IF   (TOUKEI01-TKOHHKNNUM(2)(1:1)  =   "1" OR  "2")
-                   AND  (TOUKEI01-TKOHHBTNUM(2)   NOT =   "41"       )     
-                       COMPUTE  WK-KOHI-CNT  =  WK-KOHI-CNT  -  1
-                   END-IF
-                   IF   (TOUKEI01-TKOHHKNNUM(3)(1:1)  =   "1" OR  "2")
-                   AND  (TOUKEI01-TKOHHBTNUM(3)   NOT =   "41"       )     
-                       COMPUTE  WK-KOHI-CNT  =  WK-KOHI-CNT  -  1
-                   END-IF
-                   IF   (TOUKEI01-TKOHHKNNUM(4)(1:1)  =   "1" OR  "2")
-                   AND  (TOUKEI01-TKOHHBTNUM(4)   NOT =   "41"       )     
-                       COMPUTE  WK-KOHI-CNT  =  WK-KOHI-CNT  -  1
-                   END-IF
-               END-IF
-           END-IF
       *
            IF  TOUKEI01-HKNNUM     NOT =   SPACE
                IF      WRK-PARA-SRYYM      >=  "200210"
