@@ -38,6 +38,7 @@
       * 01.00.06     NACL-多々納  03/03/06  剤明細１９以上の編集修正
       *                                     全角変換時空白判定追加
       * 01.00.07     NACL-多々納  03/04/17  免除判定削除
+      * 01.00.08     NACL-多々納  03/06/18  用法２０文字以上編集修正
       *****************************************************************
       *
       *
@@ -1736,10 +1737,12 @@
            ELSE
       *        用法
                IF      SRY-SRYCD (IDXA)(1:3)   =   "001"
+                   MOVE    SPACE           TO  WRK-TNS-NAME
                    STRING     "【"             DELIMITED   BY  SIZE
                               TNS-NAME         DELIMITED   BY  "    "
                               "】"             DELIMITED   BY  SIZE
-                          INTO                 WRK-MEISYOU1 (IDX-S)
+      ********************INTO                 WRK-MEISYOU1 (IDX-S)
+                          INTO                 WRK-TNS-NAME
                    END-STRING
                ELSE
       *            その他
@@ -1748,9 +1751,10 @@
                    ELSE
                        PERFORM 31032-PTCOM-SET-SEC
                    END-IF
+               END-IF
       *            名称編集
                    PERFORM 31031-MEISYOU-HEN-SEC
-               END-IF
+      *********END-IF
            END-IF
       *
            INSPECT WRK-MEISYOU1 (IDX-S)    REPLACING  ALL "  "  BY  "　"
@@ -1799,6 +1803,7 @@
                END-IF
            END-IF
            IF      WRK-TNS-NAME(81:)   NOT =   SPACE
+               ADD     1                   TO  IDX-S
                MOVE    WRK-TNS-NAME(81:)   TO  WRK-MEISYOU3 (IDX-S)
                IF     (SRY-SRYCD (IDXA)(1:1)   =   "6"  OR  "7" )  OR
                       (SRY-SRYCD (IDXA)(1:3)   =   "059"  )
