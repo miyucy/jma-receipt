@@ -206,6 +206,7 @@
                    MOVE    SPACE           TO  SPA-COM-SRYKBN    (IDX)
                    MOVE    SPACE           TO  SPA-COM-SRYSYUKBN (IDX)
                ELSE
+      *
                    IF    ( SPA-COM-SRYSYUKBN (IDX)
                                      NOT =   SPA-COM-TNSSRYSYUKBN(IDX))
                      AND ( SPA-COM-SRYSYUKBN (IDX)
@@ -283,7 +284,6 @@
                    MOVE    "7006"          TO  SPA-ERRCD
                    MOVE    "1"             TO  SPA-COM-CUR(IDX)
                END-IF
-      *
            END-PERFORM
            .
       *
@@ -1059,7 +1059,8 @@
            IF      FLG-SYORI           =   ZERO
       *        剤継続
                MOVE    SPACE           TO  SPA-COM-ZAIEND (IDX)
-               IF      IDX             >   1
+               IF     (IDX             >   1  )  AND
+                      (SPA-COM-ZAIEND(IDX - 1)   =   SPACE )
                    MOVE    SPA-COM-SRYSYUKBN(IDX - 1)
                                        TO  SPA-COM-SRYSYUKBN (IDX)
                END-IF
@@ -1161,7 +1162,8 @@
            END-IF
       *    前回自費の時、元へ
            IF      SPA-COM-SRYSYUKBN (IDX) =   "960"  OR
-                                               "950"
+                                               "950"  OR
+                                               SPACE
                MOVE    SPA-COM-TNSSRYSYUKBN(IDX)
                                            TO  SPA-COM-SRYSYUKBN (IDX)
                MOVE    SPACE               TO  SPA-COM-KEIFLG    (IDX)
