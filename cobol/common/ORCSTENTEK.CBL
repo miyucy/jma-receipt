@@ -245,6 +245,8 @@
            INITIALIZE                  ORCSTEN-ERRCD
            MOVE    ZERO                TO  ORCSTEN-HENFLG
       *
+           MOVE    "1"                 TO  SPA-NYUGAIKBN
+      *
       *    診療行為編集処理
            PERFORM 100-HENSYU-SYORI-SEC
       *    点数計算処理

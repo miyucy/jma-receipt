@@ -246,6 +246,8 @@
       *
            INITIALIZE                  ORCSCHO-ERRCD
       *
+           MOVE    "1"                 TO  SPA-NYUGAIKBN
+      *
       *    投薬の日数編集
            PERFORM 100-TOUYAKU-HEN-SEC
       *
