@@ -278,6 +278,16 @@
       *
            03  WRK-ERRMSG          PIC X(40).
       *
+           03  WRK-1033-TABLE.
+               05  WRK-1033-TBL    OCCURS  5.
+                   07  WRK-1033-HKNJANUM-G.
+                       09  WRK-1033-HKNJANUM
+                                   PIC X(08) OCCURS  20.
+                   07  WRK-1033-STYUKYMD
+                                   PIC X(08).
+                   07  WRK-1033-EDYUKYMD 
+                                   PIC X(08).                                       
+      *
       *    県単用項目ファイル用ワーク     
            COPY    "HC06.INC"     REPLACING  //HC06//
                                    BY         //RECE11-HC06//.
@@ -750,16 +760,51 @@
            END-IF
       * 
       *    県内扱い保険者情報
+           MOVE    SPACE            TO  WRK-1033-TABLE
+      *     
            MOVE    SPACE            TO  SYSKANRI-REC
            INITIALIZE                   SYSKANRI-REC
            MOVE    "1033"           TO  SYS-KANRICD
            MOVE    "*"              TO  SYS-KBNCD
-           PERFORM 960-KANRIMST-READ-SEC
-           IF      FLG-KANRIMST    =   ZERO
-               MOVE    MCPDATA-REC     TO  SYS-1033-REC
-           ELSE    
-               MOVE    SPACE           TO  SYS-1033-REC
-           END-IF                           
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY5"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY5"     TO  ORC-DBPATH
+               PERFORM 900-KANRIMST-NEXT-SEC
+           ELSE
+               MOVE    1               TO  FLG-KANRIMST
+           END-IF
+      *
+           MOVE    ZERO                TO  IDX
+           PERFORM             UNTIL   FLG-KANRIMST   =   1
+                               OR      IDX            >=  5
+               MOVE    MCPDATA-REC         TO  SYS-1033-REC
+               IF      SYS-1033-EDYUKYMD   <   "20021001"
+                   CONTINUE
+               ELSE    
+                   ADD     1              TO  IDX
+                   MOVE    SYS-1033-STYUKYMD
+                                          TO  WRK-1033-STYUKYMD   (IDX)
+                   MOVE    SYS-1033-EDYUKYMD
+                                          TO  WRK-1033-EDYUKYMD   (IDX)
+                   MOVE    SYS-1033-TBL   TO  WRK-1033-HKNJANUM-G (IDX)
+               END-IF    
+      *
+               MOVE    "SYSKANRI-KEY5"    TO  ORC-DBPATH
+               PERFORM 900-KANRIMST-NEXT-SEC
+           END-PERFORM
+      *    カーソルクロース
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY5"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            .
        120-HOSPINF-GET-EXT.
            EXIT.
@@ -2617,13 +2662,25 @@
                    MOVE    "1"             TO  RECE08-PREFKBN
                ELSE
                    MOVE    "2"             TO  RECE08-PREFKBN
+                   MOVE    RECE02-SRYYM        TO  WRK-SYMD (1:6)
+                   MOVE    "01"                TO  WRK-SYMD (7:2)
                    PERFORM VARYING IDX FROM    1   BY  1
-                           UNTIL   IDX >       20     
-                       IF      RECE02-HKNJANUM-KEY = 
-                                       SYS-1033-HKNJANUM (IDX)
-                           MOVE    "1"             TO  RECE08-PREFKBN
-                           MOVE    20              TO  IDX
-                       END-IF    
+                           UNTIL   IDX >       5
+                           OR      WRK-1033-STYUKYMD (IDX) =   SPACE
+                       IF      WRK-1033-STYUKYMD   (IDX) <=  WRK-SYMD
+                       AND     WRK-1033-EDYUKYMD   (IDX) >=  WRK-SYMD      
+                           PERFORM VARYING IDY FROM    1   BY  1
+                                   UNTIL   IDY >       20
+                                   OR      WRK-1033-HKNJANUM (IDX IDY)
+                                                       =   SPACE     
+                               IF      RECE02-HKNJANUM-KEY = 
+                                       WRK-1033-HKNJANUM (IDX IDY)
+                                   MOVE    "1"     TO  RECE08-PREFKBN
+                                   MOVE    20      TO  IDY
+                                   MOVE    5       TO  IDX
+                               END-IF
+                           END-PERFORM
+                       END-IF            
                    END-PERFORM
                END-IF        
            ELSE
@@ -3266,6 +3323,27 @@
                                        MCPDATA-REC
            .
        960-KANRIMST-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システム管理マスタ読み込み処理
+      *****************************************************************
+       900-KANRIMST-NEXT-SEC         SECTION.
+      *
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO            TO  FLG-KANRIMST
+           ELSE
+               MOVE    1               TO  FLG-KANRIMST
+           END-IF
+      *
+           .
+       900-KANRIMST-NEXT-EXT.
            EXIT.
       *****************************************************************
       *    保険番号マスタ次検索処理
