@@ -506,6 +506,22 @@ path	key20	{
 	};
 };
 
+path	key21	{
+	DBSELECT	{
+		DECLARE tbl_sryacct_key21_csr CURSOR FOR
+		SELECT  A.PTID
+		FROM tbl_ptnum B 
+		JOIN tbl_sryacct A ON A.HOSPID=B.HOSPID AND A.PTID=B.PTID  
+			WHERE  A.HOSPID	    =  :HOSPID
+			AND    A.NYUGAIKBN  =  :NYUGAIKBN
+			AND    A.SRYYM      =  :SRYYM 
+			AND    A.ZAITEN     <> 0
+			AND    A.ZAIKAISU   <> 0
+			GROUP BY A.PTID,B.PTNUM 
+			ORDER BY B.PTNUM;
+	};
+};
+
 path	all2	{
 	DBSELECT	{
 		DECLARE tbl_sryacct_all2_csr CURSOR FOR

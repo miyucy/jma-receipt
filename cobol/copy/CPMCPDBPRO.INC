@@ -262,6 +262,7 @@
       *  01.01.86    NACL-藤原    03/07/25  PTNYUINRRK-KEY21,KEY22,KEY23
       *                                     追加
       *  01.01.87    NACL-太田  　03/07/25  SRYACCT-KEY20追加 
+      *  01.01.88    NACL-太田  　03/07/31  SRYACCT-KEY21追加 
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1551,6 +1552,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SRYACCT-KEY20"
                    MOVE    PATH-TBL-SRYACCT-KEY20
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYACCT-KEY21"
+                   MOVE    PATH-TBL-SRYACCT-KEY21
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SRYACCT-ALL"
                    MOVE    PATH-TBL-SRYACCT-ALL
