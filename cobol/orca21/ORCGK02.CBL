@@ -1118,7 +1118,7 @@
                IF      WRK-MOTOPG(1:3)     =   "Y01"
                    IF      SPA-PTID            =   ZERO
                        INITIALIZE              SPA-K01SET-AREA
-                       MOVE    SPA-SYOHOPRTFLG TO  SPA-INGAIKBN
+                       MOVE    SPA-SYOHOKBN    TO  SPA-INGAIKBN
                        MOVE    ZERO            TO  SPA-GMN-CUR
                    END-IF
                    GO      TO      300-SCREEN-EXT
@@ -4195,6 +4195,9 @@
                                        SPA-K01KYOUTU
                                        SPA-K02
       *
+           ELSE
+      *        ±°≥∞ΩË ˝∂Ë ¨
+               MOVE    SPA-SYOHOKBN        TO  SPA-INGAIKBN
            END-IF
       *
            MOVE    "2"                 TO  LNK-SC95-KBN
@@ -11258,11 +11261,11 @@
       *    ∑—¬≥∂Ë ¨
       *****MOVE    SPA-CONTKBN         TO  SYU-CONTKBN
       *     ›∏±æ Û
-           MOVE    SPA-HKNNUM           TO  SYU-SYUHKNNUM
-           MOVE    SPA-KOH1HKNNUM       TO  SYU-KOH1HKNNUM
-           MOVE    SPA-KOH2HKNNUM       TO  SYU-KOH2HKNNUM
-           MOVE    SPA-KOH3HKNNUM       TO  SYU-KOH3HKNNUM
-           MOVE    SPA-KOH4HKNNUM       TO  SYU-KOH4HKNNUM
+           MOVE    SPA-HKNNUM          TO  SYU-SYUHKNNUM
+           MOVE    SPA-KOH1HKNNUM      TO  SYU-KOH1HKNNUM
+           MOVE    SPA-KOH2HKNNUM      TO  SYU-KOH2HKNNUM
+           MOVE    SPA-KOH3HKNNUM      TO  SYU-KOH3HKNNUM
+           MOVE    SPA-KOH4HKNNUM      TO  SYU-KOH4HKNNUM
       *    ∆±ª˛ø«Œ≈≈¡…º»÷πÊ
            MOVE    SPA-DOUJI-DENPNUM   TO  SYU-DOUJI-DENPNUM
       *    ±°≥∞ΩË ˝∂Ë ¨
@@ -12614,7 +12617,6 @@
            MOVE    SPA-GMN-MAX1        TO  K02-COUNT
       *
            MOVE    SPA-GMN-DOSELNUM    TO  K02-DOSELNUM
-      *
       *
       *    ±°∆‚±°≥∞
            IF      SPA-INGAIKBN        =   "1"  OR  "0"

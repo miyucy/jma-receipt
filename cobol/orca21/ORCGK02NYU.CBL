@@ -1082,7 +1082,7 @@
                IF      WRK-MOTOPG(1:3)     =   "Y01"
                    IF      SPA-PTID            =   ZERO
                        INITIALIZE              SPA-K01SET-AREA
-                       MOVE    SPA-SYOHOPRTFLG TO  SPA-INGAIKBN
+                       MOVE    SPA-SYOHOKBN    TO  SPA-INGAIKBN
                        MOVE    ZERO            TO  SPA-GMN-CUR
                    END-IF
                    GO      TO      300-SCREEN-EXT
