@@ -3543,31 +3543,32 @@
                MOVE    "乳・障・母"        TO  HC06-KYUFUGAI2
                MOVE    "給付外点数"        TO  HC06-KYUFUGAI3
                MOVE    "点"                TO  HC06-KYUFUGAI4
-           END-IF
-           IF    ( RECE02-TOTALTEN (IDX2) >   ZERO                 )
-           AND   ((RECE02-TOTALTEN (IDX2)
+           ELSE
+               IF    ( RECE02-TOTALTEN (IDX2) >   ZERO             )
+               AND   ((RECE02-TOTALTEN (IDX2)
                                   NOT =   RECE02-TOTALTEN (IDX1)) OR
-                  (RECE02-FTNMONEY (IDX2)
+                      (RECE02-FTNMONEY (IDX2)
                                   NOT =   RECE02-FTNMONEY (IDX1))  )
-               IF    RECE02-FTNMONEY (IDX2)   >   ZERO
-                   MOVE    RECE02-FTNMONEY (IDX2)
+                   IF    RECE02-FTNMONEY (IDX2)   >   ZERO
+                       MOVE    RECE02-FTNMONEY (IDX2)
                                               TO  WRK-KGK7
-                   MOVE    WRK-KGK7           TO  HC06-FTNMONEY(2)
+                       MOVE    WRK-KGK7           TO  HC06-FTNMONEY(2)
+                   END-IF
                END-IF
-           END-IF
-           IF    ( RECE02-TOTALTEN (IDX2) >   ZERO                  )
-           AND   ( RECE02-FTNMONEY (IDX2) =   RECE02-FTNMONEY (IDX1))
-           AND   ( RECE02-KISAIFLG (IDX2) =   "1"                   )
-               IF    RECE02-FTNMONEY (IDX2)   >   ZERO
-                   MOVE    RECE02-FTNMONEY (IDX2) TO  WRK-KGK7
-                   MOVE    WRK-KGK7               TO  HC06-FTNMONEY(2)
+               IF  ( RECE02-TOTALTEN (IDX2) >  ZERO              )
+               AND ( RECE02-FTNMONEY (IDX2) =  RECE02-FTNMONEY (IDX1))
+               AND   ( RECE02-KISAIFLG (IDX2) =   "1"               )
+                   IF    RECE02-FTNMONEY (IDX2)   >   ZERO
+                       MOVE    RECE02-FTNMONEY (IDX2) TO  WRK-KGK7
+                       MOVE    WRK-KGK7           TO  HC06-FTNMONEY(2)
+                   END-IF
                END-IF
-           END-IF
-           IF    ( RECE02-TOTALTEN (IDX2)     >   ZERO )
-           AND   ( RECE02-FTNMONEY (IDX2)     =   ZERO )
-           AND   ( RECE02-ZEROKISAIFLG (IDX2) =   "1"  )
-                   MOVE    RECE02-FTNMONEY (IDX2) TO  WRK-KGK7
-                   MOVE    WRK-KGK7               TO  HC06-FTNMONEY(2)
+               IF    ( RECE02-TOTALTEN (IDX2)     >   ZERO )
+               AND   ( RECE02-FTNMONEY (IDX2)     =   ZERO )
+               AND   ( RECE02-ZEROKISAIFLG (IDX2) =   "1"  )
+                       MOVE    RECE02-FTNMONEY (IDX2) TO  WRK-KGK7
+                       MOVE    WRK-KGK7           TO  HC06-FTNMONEY(2)
+               END-IF
            END-IF
            IF      RECE02-TOTALTEN (IDX2) >   ZERO                     
            AND     RECE02-TOTALTEN (IDX2)
@@ -3582,36 +3583,37 @@
                MOVE    "乳・障・母"        TO  HC06-KYUFUGAI2
                MOVE    "給付外点数"        TO  HC06-KYUFUGAI3
                MOVE    "点"                TO  HC06-KYUFUGAI4
-           END-IF
-           IF    (RECE02-TOTALTEN (IDX3) >   ZERO                  )
-           AND   ((RECE02-TOTALTEN (IDX3)
+           ELSE
+               IF    (RECE02-TOTALTEN (IDX3) >   ZERO              )
+               AND   ((RECE02-TOTALTEN (IDX3)
                                   NOT =   RECE02-TOTALTEN (IDX1)) OR
-                  (RECE02-FTNMONEY (IDX3)
+                      (RECE02-FTNMONEY (IDX3)
                                   NOT =   RECE02-FTNMONEY (IDX1))  )
       *
-             IF    RECE02-FTNMONEY (IDX3)
+                 IF    RECE02-FTNMONEY (IDX3)
                                   NOT =   RECE02-FTNMONEY (IDX2)
       *
-               IF    RECE02-FTNMONEY (IDX3)   >   ZERO
-                   MOVE    RECE02-FTNMONEY (IDX3)
+                   IF    RECE02-FTNMONEY (IDX3)   >   ZERO
+                       MOVE    RECE02-FTNMONEY (IDX3)
                                               TO  WRK-KGK7
-                   MOVE    WRK-KGK7           TO  HC06-FTNMONEY(3)
+                       MOVE    WRK-KGK7       TO  HC06-FTNMONEY(3)
+                   END-IF
+                 END-IF
                END-IF
-             END-IF
-           END-IF
-           IF    ( RECE02-TOTALTEN (IDX3) >   ZERO                  )
-           AND   ( RECE02-FTNMONEY (IDX3) =   RECE02-FTNMONEY (IDX2))
-           AND   ( RECE02-KISAIFLG (IDX3) =   "1"                   )
-               IF    RECE02-FTNMONEY (IDX3)   >   ZERO
+               IF  ( RECE02-TOTALTEN (IDX3) > ZERO              )
+               AND ( RECE02-FTNMONEY (IDX3) = RECE02-FTNMONEY (IDX2))
+               AND ( RECE02-KISAIFLG (IDX3) = "1"                   )
+                   IF    RECE02-FTNMONEY (IDX3)   >   ZERO
+                       MOVE    RECE02-FTNMONEY (IDX3) TO  WRK-KGK7
+                       MOVE    WRK-KGK7           TO  HC06-FTNMONEY(3)
+                   END-IF
+               END-IF
+               IF    ( RECE02-TOTALTEN (IDX3)     >   ZERO )
+               AND   ( RECE02-FTNMONEY (IDX3)     =   ZERO )
+               AND   ( RECE02-ZEROKISAIFLG (IDX3) =   "1"  )
                    MOVE    RECE02-FTNMONEY (IDX3) TO  WRK-KGK7
                    MOVE    WRK-KGK7               TO  HC06-FTNMONEY(3)
                END-IF
-           END-IF
-           IF    ( RECE02-TOTALTEN (IDX3)     >   ZERO )
-           AND   ( RECE02-FTNMONEY (IDX3)     =   ZERO )
-           AND   ( RECE02-ZEROKISAIFLG (IDX3) =   "1"  )
-                   MOVE    RECE02-FTNMONEY (IDX3) TO  WRK-KGK7
-                   MOVE    WRK-KGK7               TO  HC06-FTNMONEY(3)
            END-IF
            IF      RECE02-TOTALTEN (IDX3) >   ZERO                      
            AND     RECE02-TOTALTEN (IDX3)
