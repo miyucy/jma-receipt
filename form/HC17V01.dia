@@ -18060,6 +18060,48 @@
       </object>
     </group>
     <group>
+      <object type="ORCA - Text" version="0" id="O462">
+        <attribute name="obj_pos">
+          <point val="27.5592,3.35677"/>
+        </attribute>
+        <attribute name="obj_bb">
+          <rectangle val="25.8624,3.09659;27.5592,3.44659"/>
+        </attribute>
+        <attribute name="orca_id">
+          <string>#MONEY91#</string>
+        </attribute>
+        <attribute name="orca_type">
+          <enum val="0"/>
+        </attribute>
+        <attribute name="orca_size">
+          <int val="8"/>
+        </attribute>
+        <attribute name="orca_hankaku">
+          <boolean val="true"/>
+        </attribute>
+        <attribute name="text">
+          <composite type="text">
+            <attribute name="string">
+              <string>#99999999#</string>
+            </attribute>
+            <attribute name="font">
+              <font name="Courier"/>
+            </attribute>
+            <attribute name="height">
+              <real val="0.35"/>
+            </attribute>
+            <attribute name="pos">
+              <point val="27.5592,3.35677"/>
+            </attribute>
+            <attribute name="color">
+              <color val="#000000"/>
+            </attribute>
+            <attribute name="alignment">
+              <enum val="2"/>
+            </attribute>
+          </composite>
+        </attribute>
+      </object>
       <object type="ORCA - Text" version="0" id="O463">
         <attribute name="obj_pos">
           <point val="27.5592,3.85705"/>
@@ -18068,7 +18110,7 @@
           <rectangle val="25.8624,3.59687;27.5592,3.94687"/>
         </attribute>
         <attribute name="orca_id">
-          <string>#MONEY91#</string>
+          <string>#MONEY92#</string>
         </attribute>
         <attribute name="orca_type">
           <enum val="0"/>
@@ -18110,7 +18152,7 @@
           <rectangle val="25.8624,4.09715;27.5592,4.44715"/>
         </attribute>
         <attribute name="orca_id">
-          <string>#MONEY92#</string>
+          <string>#MONEY93#</string>
         </attribute>
         <attribute name="orca_type">
           <enum val="0"/>
@@ -18152,7 +18194,7 @@
           <rectangle val="25.8624,4.59743;27.5592,4.94743"/>
         </attribute>
         <attribute name="orca_id">
-          <string>#MONEY93#</string>
+          <string>#MONEY94#</string>
         </attribute>
         <attribute name="orca_type">
           <enum val="0"/>
@@ -18194,7 +18236,7 @@
           <rectangle val="25.8624,5.09771;27.5592,5.44771"/>
         </attribute>
         <attribute name="orca_id">
-          <string>#MONEY94#</string>
+          <string>#MONEY95#</string>
         </attribute>
         <attribute name="orca_type">
           <enum val="0"/>
@@ -18236,7 +18278,7 @@
           <rectangle val="25.8624,5.59799;27.5592,5.94799"/>
         </attribute>
         <attribute name="orca_id">
-          <string>#MONEY95#</string>
+          <string>#MONEY96#</string>
         </attribute>
         <attribute name="orca_type">
           <enum val="0"/>
@@ -18278,7 +18320,7 @@
           <rectangle val="25.8624,6.09827;27.5592,6.44827"/>
         </attribute>
         <attribute name="orca_id">
-          <string>#MONEY96#</string>
+          <string>#MONEY97#</string>
         </attribute>
         <attribute name="orca_type">
           <enum val="0"/>
@@ -18320,7 +18362,7 @@
           <rectangle val="25.8624,6.59855;27.5592,6.94855"/>
         </attribute>
         <attribute name="orca_id">
-          <string>#MONEY97#</string>
+          <string>#MONEY98#</string>
         </attribute>
         <attribute name="orca_type">
           <enum val="0"/>
@@ -18362,7 +18404,7 @@
           <rectangle val="25.8624,7.09883;27.5592,7.44883"/>
         </attribute>
         <attribute name="orca_id">
-          <string>#MONEY98#</string>
+          <string>#MONEY99#</string>
         </attribute>
         <attribute name="orca_type">
           <enum val="0"/>
@@ -18404,7 +18446,7 @@
           <rectangle val="25.8624,7.59911;27.5592,7.94911"/>
         </attribute>
         <attribute name="orca_id">
-          <string>#MONEY99#</string>
+          <string>#MONEY910#</string>
         </attribute>
         <attribute name="orca_type">
           <enum val="0"/>
@@ -18446,7 +18488,7 @@
           <rectangle val="25.8624,8.09939;27.5592,8.44939"/>
         </attribute>
         <attribute name="orca_id">
-          <string>#MONEY910#</string>
+          <string>#MONEY911#</string>
         </attribute>
         <attribute name="orca_type">
           <enum val="0"/>
@@ -18488,7 +18530,7 @@
           <rectangle val="25.8624,8.59967;27.5592,8.94967"/>
         </attribute>
         <attribute name="orca_id">
-          <string>#MONEY911#</string>
+          <string>#MONEY912#</string>
         </attribute>
         <attribute name="orca_type">
           <enum val="0"/>
@@ -18530,7 +18572,7 @@
           <rectangle val="25.8624,9.09995;27.5592,9.44995"/>
         </attribute>
         <attribute name="orca_id">
-          <string>#MONEY912#</string>
+          <string>#MONEY913#</string>
         </attribute>
         <attribute name="orca_type">
           <enum val="0"/>
@@ -18572,7 +18614,7 @@
           <rectangle val="25.8624,9.60023;27.5592,9.95023"/>
         </attribute>
         <attribute name="orca_id">
-          <string>#MONEY913#</string>
+          <string>#MONEY914#</string>
         </attribute>
         <attribute name="orca_type">
           <enum val="0"/>
@@ -18614,7 +18656,7 @@
           <rectangle val="25.8624,10.1005;27.5592,10.4505"/>
         </attribute>
         <attribute name="orca_id">
-          <string>#MONEY914#</string>
+          <string>#MONEY915#</string>
         </attribute>
         <attribute name="orca_type">
           <enum val="0"/>
@@ -18656,7 +18698,7 @@
           <rectangle val="25.8624,10.6008;27.5592,10.9508"/>
         </attribute>
         <attribute name="orca_id">
-          <string>#MONEY915#</string>
+          <string>#MONEY916#</string>
         </attribute>
         <attribute name="orca_type">
           <enum val="0"/>
@@ -18698,7 +18740,7 @@
           <rectangle val="25.8624,11.1011;27.5592,11.4511"/>
         </attribute>
         <attribute name="orca_id">
-          <string>#MONEY916#</string>
+          <string>#MONEY917#</string>
         </attribute>
         <attribute name="orca_type">
           <enum val="0"/>
@@ -18740,7 +18782,7 @@
           <rectangle val="25.8624,11.6013;27.5592,11.9513"/>
         </attribute>
         <attribute name="orca_id">
-          <string>#MONEY917#</string>
+          <string>#MONEY918#</string>
         </attribute>
         <attribute name="orca_type">
           <enum val="0"/>
@@ -18782,7 +18824,7 @@
           <rectangle val="25.8624,12.1016;27.5592,12.4516"/>
         </attribute>
         <attribute name="orca_id">
-          <string>#MONEY918#</string>
+          <string>#MONEY919#</string>
         </attribute>
         <attribute name="orca_type">
           <enum val="0"/>
@@ -18824,7 +18866,7 @@
           <rectangle val="25.8624,12.6019;27.5592,12.9519"/>
         </attribute>
         <attribute name="orca_id">
-          <string>#MONEY919#</string>
+          <string>#MONEY920#</string>
         </attribute>
         <attribute name="orca_type">
           <enum val="0"/>
@@ -18866,7 +18908,7 @@
           <rectangle val="25.8624,13.1022;27.5592,13.4522"/>
         </attribute>
         <attribute name="orca_id">
-          <string>#MONEY920#</string>
+          <string>#MONEY921#</string>
         </attribute>
         <attribute name="orca_type">
           <enum val="0"/>
@@ -18908,7 +18950,7 @@
           <rectangle val="25.8624,13.6025;27.5592,13.9525"/>
         </attribute>
         <attribute name="orca_id">
-          <string>#MONEY921#</string>
+          <string>#MONEY922#</string>
         </attribute>
         <attribute name="orca_type">
           <enum val="0"/>
@@ -18950,7 +18992,7 @@
           <rectangle val="25.8624,14.1027;27.5592,14.4527"/>
         </attribute>
         <attribute name="orca_id">
-          <string>#MONEY922#</string>
+          <string>#MONEY923#</string>
         </attribute>
         <attribute name="orca_type">
           <enum val="0"/>
@@ -18992,7 +19034,7 @@
           <rectangle val="25.8624,14.603;27.5592,14.953"/>
         </attribute>
         <attribute name="orca_id">
-          <string>#MONEY923#</string>
+          <string>#MONEY924#</string>
         </attribute>
         <attribute name="orca_type">
           <enum val="0"/>
@@ -19034,7 +19076,7 @@
           <rectangle val="25.8624,15.1033;27.5592,15.4533"/>
         </attribute>
         <attribute name="orca_id">
-          <string>#MONEY924#</string>
+          <string>#MONEY925#</string>
         </attribute>
         <attribute name="orca_type">
           <enum val="0"/>
@@ -19076,7 +19118,7 @@
           <rectangle val="25.8624,15.6036;27.5592,15.9536"/>
         </attribute>
         <attribute name="orca_id">
-          <string>#MONEY925#</string>
+          <string>#MONEY926#</string>
         </attribute>
         <attribute name="orca_type">
           <enum val="0"/>
@@ -19118,7 +19160,7 @@
           <rectangle val="25.8624,16.1039;27.5592,16.4539"/>
         </attribute>
         <attribute name="orca_id">
-          <string>#MONEY926#</string>
+          <string>#MONEY927#</string>
         </attribute>
         <attribute name="orca_type">
           <enum val="0"/>
@@ -19160,7 +19202,7 @@
           <rectangle val="25.8624,16.6041;27.5592,16.9541"/>
         </attribute>
         <attribute name="orca_id">
-          <string>#MONEY927#</string>
+          <string>#MONEY928#</string>
         </attribute>
         <attribute name="orca_type">
           <enum val="0"/>
@@ -19202,7 +19244,7 @@
           <rectangle val="25.8624,17.1044;27.5592,17.4544"/>
         </attribute>
         <attribute name="orca_id">
-          <string>#MONEY928#</string>
+          <string>#MONEY929#</string>
         </attribute>
         <attribute name="orca_type">
           <enum val="0"/>
@@ -19244,48 +19286,6 @@
           <rectangle val="25.8624,17.6047;27.5592,17.9547"/>
         </attribute>
         <attribute name="orca_id">
-          <string>#MONEY929#</string>
-        </attribute>
-        <attribute name="orca_type">
-          <enum val="0"/>
-        </attribute>
-        <attribute name="orca_size">
-          <int val="8"/>
-        </attribute>
-        <attribute name="orca_hankaku">
-          <boolean val="true"/>
-        </attribute>
-        <attribute name="text">
-          <composite type="text">
-            <attribute name="string">
-              <string>#99999999#</string>
-            </attribute>
-            <attribute name="font">
-              <font name="Courier"/>
-            </attribute>
-            <attribute name="height">
-              <real val="0.35"/>
-            </attribute>
-            <attribute name="pos">
-              <point val="27.5592,17.8649"/>
-            </attribute>
-            <attribute name="color">
-              <color val="#000000"/>
-            </attribute>
-            <attribute name="alignment">
-              <enum val="2"/>
-            </attribute>
-          </composite>
-        </attribute>
-      </object>
-      <object type="ORCA - Text" version="0" id="O462">
-        <attribute name="obj_pos">
-          <point val="27.5592,3.35677"/>
-        </attribute>
-        <attribute name="obj_bb">
-          <rectangle val="25.8624,3.09659;27.5592,3.44659"/>
-        </attribute>
-        <attribute name="orca_id">
           <string>#MONEY930#</string>
         </attribute>
         <attribute name="orca_type">
@@ -19309,7 +19309,7 @@
               <real val="0.35"/>
             </attribute>
             <attribute name="pos">
-              <point val="27.5592,3.35677"/>
+              <point val="27.5592,17.8649"/>
             </attribute>
             <attribute name="color">
               <color val="#000000"/>
