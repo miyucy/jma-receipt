@@ -435,3 +435,49 @@ path	key17 	{
 	};
 };
 
+
+path	key18	{
+	DBSELECT	{
+		DECLARE tbl_sryacct_key18_csr CURSOR FOR
+		SELECT *
+		FROM tbl_sryacct A,tbl_sryact B
+			WHERE   A.HOSPID    =   :HOSPID
+			AND   A.NYUGAIKBN   =   :NYUGAIKBN
+			AND   A.PTID        =   :PTID
+			AND   A.SRYKA       =   :SRYKA
+			AND   A.SRYYM       =   :SRYYM
+                        AND   A.HOSPID    = B.HOSPID
+                        AND   A.NYUGAIKBN = B.NYUGAIKBN
+                        AND   A.PTID      = B.PTID
+                        AND   A.SRYKA     = B.SRYKA
+                        AND   A.SRYYM     = B.SRYYM
+                        AND   A.ZAINUM    = B.ZAINUM
+			ORDER   BY      A.SRYKBN,
+                                        B.SRYSYUKBN, 
+                                        A.ZAINUM
+		;
+	};
+};
+
+path	key19	{
+	DBSELECT	{
+		DECLARE tbl_sryacct_key19_csr CURSOR FOR
+		SELECT *
+		FROM tbl_sryacct A,tbl_sryact B
+			WHERE   HOSPID    =   :HOSPID
+			AND   A.NYUGAIKBN   =   :NYUGAIKBN
+			AND   A.PTID        =   :PTID
+			AND   A.SRYYM       =   :SRYYM
+                        AND   A.HOSPID    = B.HOSPID
+                        AND   A.NYUGAIKBN = B.NYUGAIKBN
+                        AND   A.PTID      = B.PTID
+                        AND   A.SRYKA     = B.SRYKA
+                        AND   A.SRYYM     = B.SRYYM
+                        AND   A.ZAINUM    = B.ZAINUM
+			ORDER  BY   A.SRYKA,
+                                    A.SRYKBN,
+                                    B.SRYSYUKBN,
+                                    A.ZAINUM
+		;
+	};
+};
