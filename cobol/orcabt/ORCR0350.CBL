@@ -1405,6 +1405,24 @@
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC         
       *    ÆÃµ­»ö¹à
+           IF      FLG-RECE67          =   ZERO
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       5
+                   IF      RECE67-TOKKI (IDX)  NOT =   SPACE
+                       PERFORM VARYING IDZ FROM    1   BY  1
+                               UNTIL   IDZ >       5
+                           IF      RECE62-TOKKI (IDZ)  =   SPACE
+                               MOVE    RECE67-TOKKI (IDX)
+                                               TO  RECE62-TOKKI (IDZ)
+                           END-IF
+                           IF      RECE67-TOKKI (IDX)
+                                               =   RECE62-TOKKI (IDZ)      
+                               MOVE    5       TO  IDZ
+                           END-IF
+                       END-PERFORM
+                   END-IF
+               END-PERFORM
+           END-IF 
            MOVE    1               TO  IDZ                  
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       5
