@@ -3345,6 +3345,12 @@
                ADD     1                  TO    IDX4    
       *
                MOVE    SRY-SRYCD(IDX2)    TO    RECE65-SRYCD(IDX4)
+      *
+               IF      SRY-SRYCD(IDX2)(1:1)  =  "S"
+                  COMPUTE   RECE64-MEISAISU  =  RECE64-MEISAISU
+                                             -  1
+               END-IF
+      *
                MOVE    SRY-SRYSURYO(IDX2) TO    RECE65-SRYSURYO(IDX4)
                MOVE    SRY-SRYKAISU(IDX2) TO    RECE65-SRYKAISU(IDX4)
                MOVE    SRY-MEISKYFLG(IDX2) TO   RECE65-MEISKYFLG(IDX4)
