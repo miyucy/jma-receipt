@@ -24,7 +24,7 @@
               03  P02F-SELNUM.
                 04  P02F-VALUE  PIC S9(3).
               03  P02F-KNJKEY.
-                04  P02F-VALUE  PIC X(21).
+                04  P02F-VALUE  PIC X(20).
               03  P02F-SCROLLEDWINDOW1.
                 04  P02F-KNJLIST.
                   05  P02F-COUNT  PIC S9(9)   BINARY.

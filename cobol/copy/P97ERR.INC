@@ -22,6 +22,6 @@
         02  P97ERR.
             03  P97ERR-FIXED1.
               04  P97ERR-ERRCODE.
-                05  P97ERR-VALUE    PIC X(11).
+                05  P97ERR-VALUE    PIC X(10).
               04  P97ERR-ERRMSG.
-                05  P97ERR-VALUE    PIC X(61).
+                05  P97ERR-VALUE    PIC X(60).

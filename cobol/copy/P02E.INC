@@ -22,16 +22,16 @@
         02  P02E.
       ******02  P02E-FIXED10.
               03  P02E-PTNUM.
-                04  P02E-VALUE  PIC X(21).
+                04  P02E-VALUE  PIC X(20).
               03  P02E-ADRS1.
-                04  P02E-VALUE  PIC X(101).
+                04  P02E-VALUE  PIC X(100).
               03  P02E-NAME.
-                04  P02E-VALUE  PIC X(51).
+                04  P02E-VALUE  PIC X(50).
               03  P02E-ADRS2.
-                04  P02E-VALUE  PIC X(101).
+                04  P02E-VALUE  PIC X(100).
               03  P02E-BIRTHDAY.
-                04  P02E-VALUE  PIC X(10).
+                04  P02E-VALUE  PIC X(09).
               03  P02E-NENREI.
-                04  P02E-VALUE  PIC X(9).
+                04  P02E-VALUE  PIC X(8).
               03  P02E-SEX.
-                04  P02E-VALUE  PIC X(5).
+                04  P02E-VALUE  PIC X(4).

@@ -22,14 +22,14 @@
         02  P981.
      ******02  P981-FIXED1.
               03  P981-POST.
-                04  P981-VALUE  PIC X(8).
+                04  P981-VALUE  PIC X(7).
               03  P981-TOWNNAMEDSP.
-                04  P981-VALUE  PIC X(21).
+                04  P981-VALUE  PIC X(20).
               03  P981-LPUBCD.
-                04  P981-VALUE  PIC X(6).
+                04  P981-VALUE  PIC X(5).
               03  P981-RENNUM.
                 04  P981-VALUE  PIC S9(2).
               03  P981-TOWNNAME.
-                04  P981-VALUE  PIC X(101).
+                04  P981-VALUE  PIC X(100).
               03  P981-KBNCD.
                 04  P981-VALUE  PIC S9(3).

@@ -16,73 +16,73 @@
       * 113-8621, Japan.
       ********************************************************************
         02  P02D.
-     ****   02  P02D-FIXED10.
+      *****  02  P02D-FIXED10.
               03  P02D-KOHNUM2.
-                04  P02D-VALUE  PIC X(10).
+                04  P02D-VALUE  PIC X(9).
               03  P02D-JIGYOUNAME.
-                04  P02D-VALUE  PIC X(21).
+                04  P02D-VALUE  PIC X(20).
               03  P02D-HIHKNJANAME.
-                04  P02D-VALUE  PIC X(51).
+                04  P02D-VALUE  PIC X(50).
               03  P02D-SHOBYOYMD.
-                04  P02D-VALUE  PIC X(11).
+                04  P02D-VALUE  PIC X(10).
               03  P02D-KOHNUM1.
-                04  P02D-VALUE  PIC X(15).
-              03  P02D-SINSATUYMD.
-                04  P02D-VALUE  PIC X(11).
-              03  P02D-KOHNUM3.
                 04  P02D-VALUE  PIC X(14).
+              03  P02D-SINSATUYMD.
+                04  P02D-VALUE  PIC X(10).
+              03  P02D-KOHNUM3.
+                04  P02D-VALUE  PIC X(13).
               03  P02D-RYOEDYMD.
-                04  P02D-VALUE  PIC X(11).
+                04  P02D-VALUE  PIC X(10).
               03  P02D-RYOSTYMD.
-                04  P02D-VALUE  PIC X(11).
+                04  P02D-VALUE  PIC X(10).
               03  P02D-CITYNAME.
-                04  P02D-VALUE  PIC X(21).
+                04  P02D-VALUE  PIC X(20).
               03  P02D-HKNKBNCOMBO.
                 04  P02D-HKNKBN.
-                  05  P02D-VALUE  PIC X(17).
+                  05  P02D-VALUE  PIC X(16).
                 04  P02D-HKNKBN-COUNT  PIC S9(9)   BINARY.
                 04  P02D-HKNKBN-ITEM   PIC X(16)   OCCURS  4 TIMES.
               03  P02D-COMMENT.
-                04  P02D-VALUE  PIC X(101).
+                04  P02D-VALUE  PIC X(100).
               03  P02D-SONSHOUKBNCOMBO.
                 04  P02D-SONSHOUKBN.
-                  05  P02D-VALUE  PIC X(41).
+                  05  P02D-VALUE  PIC X(40).
                 04  P02D-SONSHOUKBN-COUNT  PIC S9(9)   BINARY.
                 04  P02D-SONSHOUKBN-ITEM   PIC X(40)   OCCURS  30 TIMES.
               03  P02D-PREFNAMECOMBO.
                 04  P02D-PREFNAME.
-                  05  P02D-VALUE  PIC X(21).
+                  05  P02D-VALUE  PIC X(20).
                 04  P02D-PREFNAME-COUNT  PIC S9(9)   BINARY.
                 04  P02D-PREFNAME-ITEM   PIC X(20)   OCCURS  47 TIMES.
               03  P02D-PREFKBNCOMBO.
                 04  P02D-PREFKBN.
-                  05  P02D-VALUE  PIC X(5).
+                  05  P02D-VALUE  PIC X(4).
                 04  P02D-PREFKBN-COUNT  PIC S9(9)   BINARY.
                 04  P02D-PREFKBN-ITEM   PIC X(4)    OCCURS  4 TIMES.
               03  P02D-CITYKBNCOMBO.
                 04  P02D-CITYKBN.
-                  05  P02D-VALUE  PIC X(5).
+                  05  P02D-VALUE  PIC X(4).
                 04  P02D-CITYKBN-COUNT  PIC S9(9)   BINARY.
                 04  P02D-CITYKBN-ITEM   PIC X(4)    OCCURS  3 TIMES.
               03  P02D-SISIKBNCOMBO.
                 04  P02D-SISIKBN.
-                  05  P02D-VALUE  PIC X(9).
+                  05  P02D-VALUE  PIC X(8).
                 04  P02D-SISIKBN-COUNT  PIC S9(9)   BINARY.
                 04  P02D-SISIKBN-ITEM   PIC X(8)    OCCURS  3 TIMES.
               03  P02D-SINKEICOMBO.
                 04  P02D-SINKEI.
-                  05  P02D-VALUE  PIC X(11).
+                  05  P02D-VALUE  PIC X(10).
                 04  P02D-SINKEI-COUNT  PIC S9(9)   BINARY.
                 04  P02D-SINKEI-ITEM   PIC X(10)   OCCURS  4 TIMES.
               03  P02D-TENKICOMBO.
                 04  P02D-TENKI.
-                  05  P02D-VALUE  PIC X(9).
+                  05  P02D-VALUE  PIC X(8).
                 04  P02D-TENKI-COUNT  PIC S9(9)   BINARY.
                 04  P02D-TENKI-ITEM   PIC X(8)    OCCURS  5 TIMES.
               03  P02D-SAIGAICOB.
                 04  P02D-SAIGAI.
-                  05  P02D-VALUE  PIC X(21).
+                  05  P02D-VALUE  PIC X(20).
                 04  P02D-SAIGAI-COUNT  PIC S9(9)   BINARY.
                 04  P02D-SAIGAI-ITEM   PIC X(20)   OCCURS  3 TIMES.
               03  P02D-SINSATUEND.
-                04  P02D-VALUE  PIC X(11).
+                04  P02D-VALUE  PIC X(10).

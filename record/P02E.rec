@@ -1,25 +1,25 @@
 P02E	{
 	fixed10	{
 		PTNUM	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		ADRS1	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		NAME	{
-			value	varchar(51);
+			value	varchar(50);
 		};
 		ADRS2	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		BIRTHDAY	{
-			value	varchar(10);
-		};
-		NENREI	{
 			value	varchar(9);
 		};
+		NENREI	{
+			value	varchar(8);
+		};
 		SEX	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 	};
 };

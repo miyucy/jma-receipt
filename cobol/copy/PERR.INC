@@ -21,5 +21,5 @@
       *****************************************************************
          02  PERR.
             03  PERR-FIXED1.
-              04  PERR-ERRCODE    PIC X(11).
-              04  PERR-ERRMSG PIC X(81).
+              04  PERR-ERRCODE    PIC X(10).
+              04  PERR-ERRMSG PIC X(80).

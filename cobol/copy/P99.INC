@@ -21,12 +21,12 @@
       *****************************************************************
          02  P99.
             03  P99-FIXED1.
-              04  P99-SELNUM  PIC X(5).
+              04  P99-SELNUM  PIC X(4).
               04  P99-SCROLLEDWINDOW1.
                 05  P99-ADRSLIST.
                   06  P99-ADRSLIST-COUNT PIC S9(9) BINARY.
                   06  P99-ADRSLIST-ITEM  OCCURS 50 TIMES.
                     07  P99-NUM  PIC X(4).
                     07  P99-POST PIC X(9).
-                    07  P99-ADRS PIC X(51).
+                    07  P99-ADRS PIC X(50).
                   06  P99-ADRSLIST-SELECT PIC X OCCURS 50 TIMES.

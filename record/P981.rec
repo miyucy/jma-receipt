@@ -1,19 +1,19 @@
 P981	{
 	fixed1	{
 		POST	{
-			value	varchar(8);
+			value	varchar(7);
 		};
 		TOWNNAMEDSP	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		LPUBCD	{
-			value	varchar(6);
+			value	varchar(5);
 		};
 		RENNUM	{
 			value	number(2);
 		};
 		TOWNNAME	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		KBNCD	{
 			value	number(3);

@@ -20,17 +20,15 @@
               03  P97-SELNO.
                 04  P97-VALUE   PIC S9(4).
               03  P97-NAMEKEN.
-                04  P97-VALUE   PIC X(31).
-              03  P97-KANA.
-                04  P97-VALUE   PIC X(11).
+                04  P97-VALUE   PIC X(30).
               03  P97-SCROLLEDWINDOW2.
                 04  P97-LIST.
                   05  P97-COUNT   PIC S9(9)   BINARY.
                   05  P97-ITEM        OCCURS  100 TIMES.
                     07  P97-NO      PIC X(5).
-                    07  P97-PTNUM   PIC X(21).
-                    07  P97-NAME    PIC X(51).
-                    07  P97-SEX     PIC X(5).
-                    07  P97-BIRTH   PIC X(13).
-                    07  P97-RRKYMD  PIC X(13).
+                    07  P97-PTNUM   PIC X(20).
+                    07  P97-NAME    PIC X(50).
+                    07  P97-SEX     PIC X(4).
+                    07  P97-BIRTH   PIC X(12).
+                    07  P97-RRKYMD  PIC X(12).
                   05  P97-SELECT  PIC X       OCCURS  100 TIMES.

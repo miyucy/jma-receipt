@@ -20,7 +20,7 @@ P100	{
 					state	int;
 				};
 				KANJINAME1	{
-					value	varchar(51);
+					value	varchar(50);
 				};
 			};
 		};
@@ -44,7 +44,7 @@ P100	{
 					state	int;
 				};
 				KANJINAME2	{
-					value	varchar(51);
+					value	varchar(50);
 				};
 			};
 		};

@@ -2,15 +2,15 @@ P014	{
 	fixed1	{
 		PTNUM1	{
 			state	int;
-			value	varchar(21);
+			value	varchar(20);
 		};
 		PTNUM2	{
 			state	int;
-			value	varchar(21);
+			value	varchar(20);
 		};
 		PTNUM3	{
 			state	int;
-			value	varchar(21);
+			value	varchar(20);
 		};
 	};
 };

@@ -1,7 +1,7 @@
 P0201	{
 	fixed1	{
 		SELNUM	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		scrolledwindow1	{
 			YYKLIST	{
@@ -9,8 +9,8 @@ P0201	{
 				item	{
 					value1	varchar(5);
 					value2	varchar(6);
-					value3	varchar(31);
-					value4	varchar(11);
+					value3	varchar(30);
+					value4	varchar(10);
 				}	[20];
 				select	bool[20];
 			};

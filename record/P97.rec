@@ -4,21 +4,18 @@ P97	{
 			value	number(4);
 		};
 		NAMEKEN	{
-			value	varchar(31);
-		};
-		KANA	{
-			value	varchar(11);
+			value	varchar(30);
 		};
 		scrolledwindow2	{
 			LIST	{
 				count	int;
 				item	{
 					value1	varchar(5);
-					value2	varchar(21);
-					value3	varchar(51);
-					value4	varchar(5);
-					value5	varchar(13);
-					value6	varchar(13);
+					value2	varchar(20);
+					value3	varchar(50);
+					value4	varchar(4);
+					value5	varchar(12);
+					value6	varchar(12);
 				}	[100];
 				select	bool[100];
 			};

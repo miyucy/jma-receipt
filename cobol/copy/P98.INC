@@ -22,11 +22,11 @@
         02  P98.
      *******02  P98-FIXED1.
               03  P98-ADRS.
-                04  P98-VALUE   PIC X(101).
+                04  P98-VALUE   PIC X(100).
               03  P98-POST.
-                04  P98-VALUE   PIC X(8).
+                04  P98-VALUE   PIC X(7).
               03  P98-TADRS-G OCCURS  50.
-                  04  P98-TADRS   PIC X(21).
+                  04  P98-TADRS   PIC X(20).
               03  P98-SELNUM.
                 04  P98-VALUE   PIC S9(3).
               03  P98-CHK-TADRS011.

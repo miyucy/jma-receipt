@@ -26,10 +26,10 @@
                   05  P02A-DUALLIST-COUNT  PIC S9(9)   BINARY.
                   05  P02A-DUALLIST-ITEM       OCCURS  20 TIMES.
                     07  P02A-NUM   PIC X(4).
-                    07  P02A-PTNUM PIC X(21).
-                    07  P02A-NAME  PIC X(31).
-                    07  P02A-ADRS  PIC X(51).
+                    07  P02A-PTNUM PIC X(20).
+                    07  P02A-NAME  PIC X(30).
+                    07  P02A-ADRS  PIC X(50).
                     07  P02A-TEL   PIC X(16).
                   05  P02A-DUALLIST-SELECT PIC X       OCCURS  20 TIMES.
               03  P02A-MIDASI.
-                04  P02A-VALUE  PIC X(21).
+                04  P02A-VALUE  PIC X(22).

@@ -1,7 +1,7 @@
 P99	{
 	fixed1	{
 		SELNUM	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		scrolledwindow1	{
 			ADRSLIST	{
@@ -9,7 +9,7 @@ P99	{
 				item	{
 					value1	varchar(4);
 					value2	varchar(9);
-					value3	varchar(51);
+					value3	varchar(50);
 				}	[50];
 				select	bool[50];
 			};

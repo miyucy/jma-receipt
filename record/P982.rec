@@ -1,7 +1,7 @@
 P982	{
 	fixed32	{
 		SELNUM	{
-			value	varchar(4);
+			value	varchar(3);
 		};
 		scrolledwindow26	{
 			LIST	{

@@ -1,103 +1,103 @@
 P02D	{
 	fixed10	{
 		KOHNUM2	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		JIGYOUNAME	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		HIHKNJANAME	{
-			value	varchar(51);
+			value	varchar(50);
 		};
 		SHOBYOYMD	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		KOHNUM1	{
-			value	varchar(15);
-		};
-		SINSATUYMD	{
-			value	varchar(11);
-		};
-		KOHNUM3	{
 			value	varchar(14);
 		};
+		SINSATUYMD	{
+			value	varchar(10);
+		};
+		KOHNUM3	{
+			value	varchar(13);
+		};
 		RYOEDYMD	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		RYOSTYMD	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		CITYNAME	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		HKNKBNCOMBO	{
 			HKNKBN	{
-				value	varchar(17);
+				value	varchar(16);
 			};
 			count	int;
 			item	varchar(16)[4];
 		};
 		COMMENT	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		SONSHOUKBNCOMBO	{
 			SONSHOUKBN	{
-				value	varchar(41);
+				value	varchar(40);
 			};
 			count	int;
 			item	varchar(40)[30];
 		};
 		PREFNAMECOMBO	{
 			PREFNAME	{
-				value	varchar(21);
+				value	varchar(20);
 			};
 			count	int;
 			item	varchar(20)[47];
 		};
 		PREFKBNCOMBO	{
 			PREFKBN	{
-				value	varchar(5);
+				value	varchar(4);
 			};
 			count	int;
 			item	varchar(4)[4];
 		};
 		CITYKBNCOMBO	{
 			CITYKBN	{
-				value	varchar(5);
+				value	varchar(4);
 			};
 			count	int;
 			item	varchar(4)[3];
 		};
 		SISIKBNCOMBO	{
 			SISIKBN	{
-				value	varchar(9);
+				value	varchar(8);
 			};
 			count	int;
 			item	varchar(8)[3];
 		};
 		SINKEICOMBO	{
 			SINKEI	{
-				value	varchar(11);
+				value	varchar(10);
 			};
 			count	int;
 			item	varchar(10)[4];
 		};
 		TENKICOMBO	{
 			TENKI	{
-				value	varchar(9);
+				value	varchar(8);
 			};
 			count	int;
 			item	varchar(8)[5];
 		};
 		SAIGAICOB	{
 			SAIGAI	{
-				value	varchar(21);
+				value	varchar(20);
 			};
 			count	int;
 			item	varchar(20)[3];
 		};
 		SINSATUEND	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 	};
 };

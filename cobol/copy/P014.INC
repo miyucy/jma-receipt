@@ -19,10 +19,10 @@
       ***   02  P014-FIXED1.
               03  P014-PTNUM1-G.
                 04  P014-PTNUM1-STATE  PIC S9(9)   BINARY.
-                04  P014-PTNUM1  PIC X(21).
+                04  P014-PTNUM1  PIC X(20).
               03  P014-PTNUM2-G.
                 04  P014-PTNUM2-STATE  PIC S9(9)   BINARY.
-                04  P014-PTNUM2  PIC X(21).
+                04  P014-PTNUM2  PIC X(20).
               03  P014-PTNUM3-G.
                 04  P014-PTNUM3-STATE  PIC S9(9)   BINARY.
-                04  P014-PTNUM3   PIC X(21).
+                04  P014-PTNUM3   PIC X(20).

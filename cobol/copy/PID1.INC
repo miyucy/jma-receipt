@@ -22,6 +22,6 @@
         02  PID1.
       *D      02  PID1-FIXED1.
               03  PID1-ID1CODE.
-                04  PID1-VALUE  PIC X(11).
+                04  PID1-VALUE  PIC X(10).
               03  PID1-ID1MSG.
-                04  PID1-VALUE  PIC X(81).
+                04  PID1-VALUE  PIC X(80).

@@ -21,13 +21,13 @@
       *****************************************************************
          02  P0201.
             03  P0201-FIXED1.
-              04  P0201-SELNUM    PIC X(5).
+              04  P0201-SELNUM    PIC X(4).
               04  P0201-SCROLLEDWINDOW1.
                 05  P0201-YYKLIST.
                   06  P0201-COUNT PIC S9(9)   BINARY.
                   06  P0201-ITEM      OCCURS  20 TIMES.
                     07  P0201-NUM       PIC X(5).
                     07  P0201-YYKTIME   PIC X(6).
-                    07  P0201-NAME      PIC X(31).
-                    07  P0201-SRYKA     PIC X(11).
+                    07  P0201-NAME      PIC X(30).
+                    07  P0201-SRYKA     PIC X(10).
                   06  P0201-SELECT    PIC X   OCCURS  20 TIMES.
