@@ -2292,7 +2292,9 @@
       *    ワーク診療行為マスタ−が存在した時、削除する
            PERFORM 45002-WKSRYACT-DEL-SEC
       *    受診内容データに時間を設定し、更新する
-           PERFORM 45003-UKETUKE-SEC
+           IF      SPA-SYORIFLG        =   ZERO
+               PERFORM 45003-UKETUKE-SEC
+           END-IF
       *
       *    各帳票印刷
            PERFORM 45009-PRINT-SEC
