@@ -1951,15 +1951,6 @@
       *****************************************************************
       *    点数再計算処理
       *****************************************************************
-       20071-SRYKBN60-HENSYU-SEC    SECTION.
-      *
-           .
-       20071-SRYKBN60-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    点数再計算処理
-      *****************************************************************
        400-TENSU-SAIKEISAN-SEC    SECTION.
       *
            MOVE    SPACE               TO  WRK-ZAI
@@ -2226,9 +2217,12 @@
       *
                        IF  WRK-YOHAKU        >=  WRK-WKETA
       *                    < 名称 + 空白 + 数量 + 単位 + 空白 + 分画数>
-                           STRING  TBL-ZAIW-NAME (WRK-WIDX1 WRK-WIDX2)
-                                                  DELIMITED  BY  " "
-                                   "  "           DELIMITED  BY  SIZE
+      ********************STRING  TBL-ZAIW-NAME (WRK-WIDX1 WRK-WIDX2)
+      ********************                        DELIMITED  BY  " "
+      ********************         "  "           DELIMITED  BY  SIZE
+                          STRING  TBL-ZAIW-NAME (WRK-WIDX1 WRK-WIDX2)
+                                                (1:WRK-NAMEKETA)
+                                                  DELIMITED  BY  SIZE
                                    WRK-SRYSURYOW  DELIMITED  BY  " "
                                    TBL-ZAIW-TANINAME
                                                  (WRK-WIDX1 WRK-WIDX2)
