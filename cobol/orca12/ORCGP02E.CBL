@@ -1006,6 +1006,8 @@
                    MOVE    "PTHKNINF"          TO  PARA-FILEMEI
                    MOVE    IDX                 TO  PARA-EDANUM
                    MOVE    PTHKNINF-REC        TO  PARA-DATA-REC
+                   ADD     1                   TO  SPA-PTNUM-HKNID
+                   MOVE    SPA-PTNUM-HKNID     TO  PTHKN-HKNID
                    PERFORM 400-PARA-INSERT-SEC
       *            £Ó£Ð£Á¤Ë¤âÊÔ½¸¤¹¤ë
                    IF      IDX               >  40
@@ -1059,6 +1061,8 @@
                    MOVE    "PTKOHINF"          TO  PARA-FILEMEI
                    MOVE    IDX                 TO  PARA-EDANUM
                    MOVE    PTKOHINF-REC        TO  PARA-DATA-REC
+                   ADD     1                   TO  SPA-PTNUM-KOHID
+                   MOVE    SPA-PTNUM-KOHID     TO  PTKOH-KOHID
                    PERFORM 400-PARA-INSERT-SEC
       **           £Ó£Ð£Á¤Ë¤âÊÔ½¸¤¹¤ë
                    IF      IDX               >  40

@@ -77,6 +77,9 @@
       *    処方箋印刷パラメータ
            COPY    "CPORCHC02.INC".
       *
+      *    カルテパラメータ
+           COPY    "CPORCHC01.INC".
+      *
       *    処方箋印刷パラメータ
            COPY    "CPORCHC19.INC".
       *
@@ -531,8 +534,9 @@
                                             MCPAREA
                                             ORCMCPAREA
                                             MCPDATA-REC
-               IF      MCP-RC          NOT =   ZERO
+             IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 PTHKNINF INS ERR:" MCP-RC 
+                           ",PTHKN-KEY:" PTHKN-TEKSTYMD
                END-IF
            ELSE
                MOVE    PTHKNINF-REC        TO  MCPDATA-REC
@@ -544,6 +548,7 @@
                                             MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 PTHKNINF UPD ERR:" MCP-RC
+                           ",PTHKN-KEY:" PTHKN-TEKSTYMD
                END-IF
            END-IF
            .
@@ -1232,7 +1237,7 @@
            PERFORM 21000-PRINT-PG-SEC
       *
       *    基本画面のカルテ出力
-           IF      SPA-GMN-HAKKO       =   "1"
+           IF      SPA-GMN-HAKKO       =   "1"  OR  "2"
                PERFORM 21003-HC01-CALL2-SEC
            END-IF
       *
@@ -1245,7 +1250,7 @@
       *********IF  ( SPA-GMN20-TKARUTE (IDX2)      =   "1"   )  AND
       *            ( SPA-GMN20-THKNKUMI(IDX2)  NOT =   SPACE  AND
       **********     SPA-GMN20-THKNKUMI(IDX2)  NOT =   ZERO  )
-               IF    SPA-GMN20-TKARUTE (IDX2)      =   "1"
+               IF    SPA-GMN20-TKARUTE (IDX2)      =   "1"  OR  "2"
                    PERFORM 21001-HC01-CALL-SEC
                END-IF
       *        処方箋出力
@@ -1351,8 +1356,10 @@
            MOVE    SPA-GMN-SELNUM      TO  SPA-HKNCOMBINUM
            MOVE    SPA-GMN-SRYKA       TO  SPA-SRYKA
            MOVE    SPA-GMN-SRYKAMEI    TO  SPA-SRYKAMEI
+           MOVE    SPA-GMN-HAKKO       TO  ORCHC01-SYORIKBN
       *
            CALL    WRK-KARUTE-PG     USING  SPA-AREA
+                                            ORCHC01AREA
       *
            .
        21003-HC01-CALL2-EXT.
@@ -1373,9 +1380,12 @@
                                      TO  SPA-SRYKA
            MOVE    SPA-GMN20-TSRYKA  (IDX2)
                                      TO  SPA-SRYKAMEI
+           MOVE    SPA-GMN20-TKARUTE (IDX2)
+                                     TO  ORCHC01-SYORIKBN
       *
       *****CALL    "ORCHC01"         USING  SPA-AREA
            CALL    WRK-KARUTE-PG     USING  SPA-AREA
+                                            ORCHC01AREA
       *
            .
        21001-HC01-CALL-EXT.

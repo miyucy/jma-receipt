@@ -795,7 +795,6 @@
                                                        SPA-P02KYOUTU
                WHEN    "0202"
                WHEN    "0204"
-      *            保険切り替え処理
                    IF      SPA-HKN-IDX1        =   ZERO
       *                新規の時、１行開ける
                        PERFORM 410311-HKNTBL-INS-SEC
@@ -4233,13 +4232,14 @@
       *    Ｈ１５．４改正対応のため、毎回、すべてのチェックを行う
       *!   IF    ( SPA-P02-SYORI       =   1     )  AND
       *!         ( FLG-TOUROKU2    NOT =   ZERO  )
+           IF      FLG-TOUROKU     NOT =   ZERO
                PERFORM 4501-ALLHKN-CHK-SEC
                IF     (SPA-ERRCD       NOT =   SPACE )  OR
                       (SPA-PIDCD       NOT =   SPACE )  OR
                       (SPA-FLG-END     NOT =   ZERO  )
                    GO      TO      450-HKNCOMBI-EXT
                END-IF
-      *!   END-IF
+           END-IF
       *
       *
       *    保険ＴＢＬからＰＡＲＡファイルへ編集
@@ -4289,9 +4289,10 @@
                END-IF
                MOVE    WRK-NAI-HKNSTR      TO  SPA-NAI-HKNSTR
                MOVE    SPA-NAI-HKNSTR      TO  IDX
-               IF      IDX                 >   ZERO
-                   PERFORM 3101-HOKEN-HEN-SEC
+               IF      IDX                 =   ZERO
+                   MOVE    1               TO  IDX
                END-IF
+               PERFORM 3101-HOKEN-HEN-SEC
            END-IF
       *
       *    公費は３件以上の時行う
@@ -4656,6 +4657,7 @@
        4101-BETUGAMEN-SEC          SECTION.
       *
            MOVE    1                   TO  FLG-TOUROKU 
+           MOVE    ZERO                TO  FLG-TOUROKU2
       *    保険組合せを作成する（入力チェック込み）
            PERFORM 450-HKNCOMBI-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )  OR

@@ -2130,7 +2130,8 @@
            MOVE    ZERO                TO  SPA-NAI-HKNSTR
            MOVE    ZERO                TO  SPA-NAI-HKNID
            MOVE    SPACE               TO  SPA-NAI-SAKJOKBN
-           MOVE    SPACE               TO  SPA-MAE-HKN-AREA
+           INITIALIZE                  SPA-MAE-HKN-AREA
+      *
       *    ³«»ÏÆü
            MOVE    SPA-STR-TEKSTYMD    TO  SPA-NAI-HTEKSTYMD
            MOVE    SPA-STR-TEKSTYMD    TO  WRK-SYMD

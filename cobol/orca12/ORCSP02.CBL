@@ -112,6 +112,7 @@
            03  FLG-PTKOHFTN        PIC 9(01).
       *
            03  FLG-OK              PIC 9(01).
+           03  FLG-KOUSIN          PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -159,6 +160,9 @@
                05  WRK-YY-01       PIC 9(04).
                05  WRK-MM-01       PIC 9(02).
                05  WRK-DD-01       PIC 9(02).
+      *
+           03  WRK-HKNID-MAX           PIC 9(10).
+           03  WRK-KOHID-MAX           PIC 9(10).
       *
       *   年齢表示
        01  WRK-NENREI-AREA.
@@ -1049,13 +1053,16 @@
       *
            MOVE    "0 発行なし"        TO  SPA-GMN20-KARUTE-LST (1)
            MOVE    "1 発行あり"        TO  SPA-GMN20-KARUTE-LST (2)
+           MOVE    "2 続紙頭書"        TO  SPA-GMN20-KARUTE-LST (3)
            MOVE    SPA-GMN20-KARUTE-LST(1)
                                        TO  SPA-GMN20-KARUTE-G
+           MOVE    3                   TO  SPA-KARUTE-MAX
       *
            MOVE    "0 発行なし"        TO  SPA-GMN20-SYOHOU-LST (1)
            MOVE    "1 発行あり"        TO  SPA-GMN20-SYOHOU-LST (2)
            MOVE    SPA-GMN20-SYOHOU-LST(1)
                                        TO  SPA-GMN20-SYOHOU-G
+           MOVE    2                   TO  SPA-SYOHOU-MAX
       *
            .
        1005-COMB-SET-EXT.
@@ -1230,6 +1237,8 @@
       *
       *****MOVE    SPA-TERMID          TO  FILE-TERMID1
       *****OPEN    OUTPUT              PARA-FILE
+           MOVE    ZERO                TO  WRK-HKNID-MAX
+           MOVE    ZERO                TO  WRK-KOHID-MAX
       *
       *    患者情報編集
            PERFORM 10021-PTINF-SET-SEC
@@ -1542,6 +1551,11 @@
            END-IF
            MOVE    ZERO                TO  IDX
            PERFORM     UNTIL   FLG-PTHKNINF    =   1
+      *
+               IF      PTHKN-HKNID         >   WRK-HKNID-MAX
+                   MOVE    PTHKN-HKNID         TO  WRK-HKNID-MAX
+               END-IF
+      *
                IF      PTHKN-SAKJOKBN        =   SPACE
                    ADD     1                   TO  IDX
                    MOVE    SPACE               TO  PARA-REC
@@ -1590,6 +1604,11 @@
            END-IF
            MOVE    ZERO                TO  IDX
            PERFORM     UNTIL     FLG-PTKOHINF  =   1
+      *
+               IF      PTKOH-KOHID         >   WRK-KOHID-MAX
+                   MOVE    PTKOH-KOHID         TO  WRK-KOHID-MAX
+               END-IF
+      *
                IF      PTKOH-SAKJOKBN        =   SPACE
                    ADD     1                   TO  IDX
                    MOVE    SPACE               TO  PARA-REC
@@ -1851,6 +1870,19 @@
       *
       *    患者番号変換の保存
            IF      FLG-PTNUM           =   ZERO
+      *        保険ＩＤを対象の最大とする
+               MOVE    ZERO                TO  FLG-KOUSIN
+               IF      PTNUM-HKNID         <   WRK-HKNID-MAX
+                   MOVE    WRK-HKNID-MAX       TO  PTNUM-HKNID
+                   MOVE    1                   TO  FLG-KOUSIN
+               END-IF
+               IF      PTNUM-KOHID         <   WRK-KOHID-MAX
+                   MOVE    WRK-KOHID-MAX       TO  PTNUM-KOHID
+                   MOVE    1                   TO  FLG-KOUSIN
+               END-IF
+               IF      FLG-KOUSIN          =   1
+                   PERFORM 100221-PTNUM-UPDATE-SEC
+               END-IF
                MOVE    PTNUM-HKNID         TO  SPA-PTNUM-HKNID
                MOVE    PTNUM-KOHID         TO  SPA-PTNUM-KOHID
                MOVE    PTNUM-AUTOCOMBINUM  TO  SPA-PTNUM-AUTOCOMBINUM
@@ -1870,6 +1902,26 @@
        10022-PARA-SET-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    患者番号更新処理
+      *****************************************************************
+       100221-PTNUM-UPDATE-SEC           SECTION.
+      *
+           MOVE    PTNUM-REC           TO  MCPDATA-REC
+           MOVE    "DBUPDATE"          TO  MCP-FUNC
+           MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO
+               DISPLAY "P029 PTNUM UPD ERR:" MCP-RC "."
+                       ",KEY:" PTNUM-KEY
+           END-IF
+      *
+           .
+       100221-PTNUM-UPDATE-EXT.
+           EXIT.
       *
       *****************************************************************
       *    公費負担ＴＢＬから編集処理
@@ -2355,8 +2407,9 @@
            MOVE    SPA-GMN20-SRYNAI-MAX    TO  P02-P020-SRYNAIYO-COUNT
            MOVE    SPA-GMN20-SRYNAI        TO  P02-P020-SRYNAIYO
       *
+      *    カルテ
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   2
+                   UNTIL       IDX     >   SPA-KARUTE-MAX
                MOVE    SPA-GMN20-KARUTE-LST (IDX)
                                        TO  P02-P020-KARUTE-ITEM (IDX)
                IF      SPA-GMN20-KARUTE  =   SPA-GMN20-KARUTE-LST (IDX)
@@ -2369,7 +2422,7 @@
            MOVE    SPA-GMN20-KARUTE-G  TO  P02-P020-KARUTE
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   2
+                   UNTIL       IDX     >   SPA-SYOHOU-MAX
                MOVE    SPA-GMN20-SYOHOU-LST (IDX)
                                        TO  P02-P020-SYOHOU-ITEM (IDX)
                IF      SPA-GMN20-SYOHOU  =   SPA-GMN20-SYOHOU-LST (IDX)
