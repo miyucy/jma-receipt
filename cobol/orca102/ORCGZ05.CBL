@@ -262,6 +262,9 @@
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
+      *    点数附加情報更新内容
+           COPY    "CPORCGZS02.INC".
+      *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -304,6 +307,11 @@
       *    主　　処理
       *****************************************************************
        000-PROC-SEC                              SECTION.
+      *
+           INITIALIZE                            FLG-AREA
+           INITIALIZE                            WRK-AREA
+           INITIALIZE                            IDX-AREA
+           INITIALIZE                            CNT-AREA
       *
            MOVE    SPA-COMMON                    TO  SPA-AREA.
            MOVE    SPA-WORK                      TO  SPA-Z01KYOUTU
@@ -1815,6 +1823,20 @@
       *****************************************************************
        4129-TENSUPLUS-UPD-SEC                       SECTION.
       *
+      *
+           INITIALIZE                  ORCGZS02AREA
+           MOVE    SPA-NAI-YUKOSTYMD   TO  ZS02-NAI-YUKOSTYMD
+           MOVE    SPA-NAI-YUKOEDYMD   TO  ZS02-NAI-YUKOEDYMD
+           MOVE    WRK-YUKOEDYMD       TO  ZS02-YUKOEDYMD
+      *
+           MOVE    SPA-GMN-INPCHKKBN   TO  ZS02-INPCHKKBN
+      *    入力コード更新
+           CALL    "ORCGZS02"          USING
+                                       MCPAREA
+                                       SPAAREA
+                                       ORCGZS02AREA
+      *TEST
+           GO        TO    4129-TENSUPLUS-UPD-EXT
       *    点数マスタ付加情報検索
            IF      SPA-Z01-SYORIKBN    =   2  OR  3
                MOVE    SPACE               TO  TENSUPLUS-REC

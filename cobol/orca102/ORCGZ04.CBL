@@ -231,6 +231,8 @@
       *
            03  WRK-YMD             PIC X(08).
            03  WRK-OTYMD           PIC X(08).
+      *    改正前日
+           03  WRK-YUKOEDYMD       PIC X(08).
       *
            03  WRK-MAE-INPUT       PIC X(400).
            03  WRK-OUT-INPUT       PIC X(400).
@@ -280,6 +282,9 @@
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
+      *    点数附加情報更新内容
+           COPY    "CPORCGZS02.INC".
+      *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -322,6 +327,11 @@
       *    主　　処理
       *****************************************************************
        000-PROC-SEC                              SECTION.
+      *
+           INITIALIZE                            FLG-AREA
+           INITIALIZE                            CNT-AREA
+           INITIALIZE                            WRK-AREA
+           INITIALIZE                            IDX-AREA
       *
            MOVE    SPA-COMMON                    TO  SPA-AREA.
            MOVE    SPA-WORK                      TO  SPA-Z01KYOUTU
@@ -1101,6 +1111,7 @@
                        PERFORM  833-YMDCONV61-SEC
                        IF  STS-DAY-RC1            =  ZERO
                            MOVE  WRK-SYMD        TO  TNS-YUKOEDYMD
+                           MOVE  WRK-SYMD        TO  WRK-YUKOEDYMD
                        ELSE
                            MOVE    "YUKOSTYMD"   TO  SPA-GMN-CUR
                            MOVE    "0004"        TO  SPA-ERRCD
@@ -1271,6 +1282,28 @@
       *     点数マスタ付加情報更新処理
       *****************************************************************
        4129-TENSUPLUS-UPD-SEC                       SECTION.
+      *
+           INITIALIZE                  ORCGZS02AREA
+           MOVE    SPA-NAI-YUKOSTYMD   TO  ZS02-NAI-YUKOSTYMD
+           MOVE    SPA-NAI-YUKOEDYMD   TO  ZS02-NAI-YUKOEDYMD
+           MOVE    WRK-YUKOEDYMD       TO  ZS02-YUKOEDYMD
+      *
+           MOVE    SPA-GMN-SHONAME     TO  ZS02-SHONAME
+                                           WRK-STRINGTBL
+           MOVE    100                 TO  CNT-STRING
+           PERFORM 891-STRCOUNT-SEC
+           MOVE    CNT-STRING          TO  ZS02-SHOYUKOKETA
+           MOVE    SPA-GMN-INPCHKKBN   TO  ZS02-INPCHKKBN
+           MOVE    SPA-GMN-BUNRUIKBN   TO  ZS02-TENPUYAKKBN
+      *    入力コード更新
+           CALL    "ORCGZS02"          USING
+                                       MCPAREA
+                                       SPAAREA
+                                       ORCGZS02AREA
+      *TEST
+      *TEST
+           GO        TO   4129-TENSUPLUS-UPD-EXT
+      *
       *
       *    点数マスタ付加情報検索
            IF      SPA-Z01-SYORIKBN    =   2  OR  3

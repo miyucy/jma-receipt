@@ -587,6 +587,7 @@
       *    点数マスタで対象が有った時、タイプを変更する
            IF      SPA-Z98-GMN-MAX     >   ZERO
                MOVE    "2"             TO  SPA-Z98-TYPE
+               MOVE    SPACE           TO  SPA-Z98-GMN-SYORI
            END-IF
       *
            IF      SPA-Z98-GMN-MAX     =   ZERO
@@ -1662,7 +1663,7 @@
                WHEN    "CLICKED"       ALSO    "B07"
                    PERFORM 270-NEXT-SEC
            END-EVALUATE
-          .
+           .
       *
        200-GMNSENI-EXT.
            EXIT.
@@ -2443,6 +2444,10 @@
            IF      SPA-Z98-GMN-SYORI   =   "9"
                GO      TO      290-MAE-EXT
            END-IF
+      *    区分番号以外
+           IF      SPA-Z98-GMN-INPUT(1:1)   =   "*"
+               GO      TO      290-MAE-EXT
+           END-IF
       *
            INSPECT SPA-Z98-GMN-INPUT   REPLACING  ALL "＊"  BY  "  "
            MOVE    SPACE               TO  WRK-INPUTCD
@@ -2477,6 +2482,10 @@
            END-IF
       *    検査以外の時のみ
            IF      SPA-Z98-GMN-SYORI   =   "9"
+               GO      TO      291-BUB-EXT
+           END-IF
+      *    区分番号以外
+           IF      SPA-Z98-GMN-INPUT(1:1)   =   "*"
                GO      TO      291-BUB-EXT
            END-IF
       *
@@ -2517,6 +2526,10 @@
            END-IF
       *    検査以外の時のみ
            IF      SPA-Z98-GMN-SYORI   =   "9"
+               GO      TO      292-ATO-EXT
+           END-IF
+      *    区分番号以外
+           IF      SPA-Z98-GMN-INPUT(1:1)   =   "*"
                GO      TO      292-ATO-EXT
            END-IF
       *

@@ -130,6 +130,10 @@
            03  IDXY                              PIC 9(02).
            03  IDXZ                              PIC 9(02).
       *
+           03  IDX1                              PIC 9(04).
+           03  IDX2                              PIC 9(04).
+           03  IDX-H                             PIC 9(04).
+      *
       *    ワーク領域
        01  WRK-AREA.
            03  WRK-ZIDMSG                        PIC X(70).
@@ -180,6 +184,7 @@
       *    入力コード
         01  INPUTCD-REC.
            COPY    "CPINPUTCD.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -194,6 +199,8 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
+      *    点数附加情報更新内容
+           COPY    "CPORCGZS02.INC".
       *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
@@ -237,6 +244,10 @@
       *    主　　処理
       *****************************************************************
        000-PROC-SEC                              SECTION.
+      *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  CNT-AREA
+           INITIALIZE                  WRK-AREA
       *
            MOVE    SPA-COMMON                    TO  SPA-AREA.
            MOVE    SPA-WORK                      TO  SPA-Z01KYOUTU
@@ -1324,121 +1335,20 @@
       *****************************************************************
        4129-TENSUPLUS-UPD-SEC                       SECTION.
       *
-      *    点数マスタ付加情報検索
-      *****IF      SPA-Z01-SYORIKBN    =   2  OR  3
-           IF      SPA-Z01-SELNUM      >   ZERO
-               MOVE    SPACE               TO  TENSUPLUS-REC
-               MOVE    SPA-Z01-SRYCD       TO  TNSP-SRYCD
-               MOVE    SPA-Z01-TYUKOSTYMD(SPA-Z01-SELNUM)
-                                           TO  TNSP-YUKOSTYMD
-               MOVE    SPA-Z01-TYUKOEDYMD(SPA-Z01-SELNUM)
-                                           TO  TNSP-YUKOEDYMD
-      *
-               MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
-               MOVE    "DBSELECT"          TO  MCP-FUNC
-               MOVE    "TENSUPLUS-KEY"     TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-               IF      MCP-RC               =   ZERO
-                   MOVE    "TENSUPLUS-KEY"     TO  ORC-DBPATH
-                   PERFORM 990-TENSUPLUS-READ-SEC
-               ELSE
-                   MOVE    1               TO  FLG-TENSUPLUS
-               END-IF
-               MOVE    "DBCLOSE"           TO  MCP-FUNC
-               MOVE    "TENSUPLUS-KEY"     TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-           ELSE
-      *        新規
-               MOVE    1                   TO  FLG-TENSUPLUS
-           END-IF
-      *
-      *    有効期限更新
-           IF      FLG-TENSUPLUS       =   ZERO
-               EVALUATE    SPA-Z01-SYORIKBN
-                   WHEN    3
-      *                改正時処理
-                       MOVE    WRK-YUKOEDYMD       TO  TNSP-YUKOEDYMD
-      *
-                       MOVE    SPA-Z01-SRYCD       TO  TNSPUP-SRYCD
-                       MOVE    SPA-Z01-TYUKOSTYMD(SPA-Z01-SELNUM)
-                                                   TO  TNSPUP-YUKOSTYMD
-                       MOVE    SPA-Z01-TYUKOEDYMD(SPA-Z01-SELNUM)
-                                                   TO  TNSPUP-YUKOEDYMD
-                       MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
-                       MOVE    "DBUPDATE"          TO  MCP-FUNC
-                       MOVE    "TENSUPLUS-UPD1"    TO  ORC-DBPATH
-                       CALL    "ORCMCPSUB"          USING
-                                                    MCPAREA
-                                                    ORCMCPAREA
-                                                    MCPDATA-REC
-                       IF      MCP-RC           NOT =   ZERO
-                           MOVE    "9004"          TO  SPA-ERRCD
-                           DISPLAY "Z02 TENSUPLUS UPD ERR:" MCP-RC
-                                   ",KEY:" TNSP-KEY
-                           GO      TO      4129-TENSUPLUS-UPD-EXT
-                       END-IF
-      *
-                   WHEN    1
-                   WHEN    2
-      *                更新時処理
-                       MOVE    SPA-NAI-YUKOSTYMD   TO  TNSP-YUKOSTYMD
-                       MOVE    SPA-NAI-YUKOEDYMD   TO  TNSP-YUKOEDYMD
-                       MOVE    SPA-GMN-INPCHKKBN   TO  TNSP-INPCHKKBN
-      *
-                       MOVE    SPA-Z01-SRYCD       TO  TNSPUP-SRYCD
-                       MOVE    SPA-Z01-TYUKOSTYMD(SPA-Z01-SELNUM)
-                                                   TO  TNSPUP-YUKOSTYMD
-                       MOVE    SPA-Z01-TYUKOEDYMD(SPA-Z01-SELNUM)
-                                                   TO  TNSPUP-YUKOEDYMD
-                       MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
-                       MOVE    "DBUPDATE"          TO  MCP-FUNC
-                       MOVE    "TENSUPLUS-UPD1"    TO  ORC-DBPATH
-                       CALL    "ORCMCPSUB"          USING
-                                                    MCPAREA
-                                                    ORCMCPAREA
-                                                    MCPDATA-REC
-                       IF      MCP-RC          NOT =   ZERO
-                           MOVE    "9004"          TO  SPA-ERRCD
-                           DISPLAY "Z02 TENSUPLUS UPD ERR:" MCP-RC
-                                   ",KEY:" TNSP-KEY
-                           GO      TO      4129-TENSUPLUS-UPD-EXT
-                       END-IF
-               END-EVALUATE
-           END-IF
-      *
-      *    新規追加
-           IF     (FLG-TENSUPLUS       =   1   )  AND
-                  (SPA-Z01-SYORIKBN    =   3  OR  1 )
-               INITIALIZE                      TENSUPLUS-REC
-               MOVE    SPA-Z01-SRYCD       TO  TNSP-SRYCD
-               MOVE    SPA-NAI-YUKOSTYMD   TO  TNSP-YUKOSTYMD
-               MOVE    SPA-NAI-YUKOEDYMD   TO  TNSP-YUKOEDYMD
-               MOVE    SPA-GMN-INPCHKKBN   TO  TNSP-INPCHKKBN
-               MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
-               MOVE    "DBINSERT"          TO  MCP-FUNC
-               MOVE    "TENSUPLUS-KEY"     TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC
-               IF      MCP-RC              NOT =   ZERO
-                   MOVE    20              TO  SPA-GMN-CUR
-                   MOVE    "9004"          TO  SPA-ERRCD
-                   DISPLAY "Z02 TENSUPLUS INS ERR:" MCP-RC
-                          ",KEY:" TNSP-KEY
-               END-IF
-           END-IF
+           INITIALIZE                  ORCGZS02AREA
+           MOVE    SPA-NAI-YUKOSTYMD   TO  ZS02-NAI-YUKOSTYMD
+           MOVE    SPA-NAI-YUKOEDYMD   TO  ZS02-NAI-YUKOEDYMD
+           MOVE    WRK-YUKOEDYMD       TO  ZS02-YUKOEDYMD
+           MOVE    SPA-GMN-INPCHKKBN   TO  ZS02-INPCHKKBN
+      *    入力コード更新
+           CALL    "ORCGZS02"          USING
+                                       MCPAREA
+                                       SPAAREA
+                                       ORCGZS02AREA
       *
            .
        4129-TENSUPLUS-UPD-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *    半角チェック処理

@@ -310,6 +310,7 @@
       *  01.01.128   NACL-藤原    04/02/25  PTBYOMEI-KEY21,KEY22,KEY23追加
       *  01.01.129   NACL-太田    04/03/01  CHK-KEY8,CHK-KEY9,CHK-KEY10追加
       *  01.01.130   NACL-太田    04/03/02  TENSU-KEY24追加
+      *  01.01.131   NACL-多々納　04/03/02  TENSUPLUS-KEY2追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -2276,6 +2277,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "TENSUPLUS-KEY"
                    MOVE    PATH-TBL-TENSUPLUS-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "TENSUPLUS-KEY2"
+                   MOVE    PATH-TBL-TENSUPLUS-KEY2
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "TENSUPLUS-ALL"
