@@ -34,6 +34,7 @@
       *  01.00.04    MCC°›¬ø°π«º  02.03.18  ª‹¿ﬂ…‘≈¨πÁ§Œƒ…≤√
       *  01.00.05    MCC-¬ø°π«º   02/04/16  œ´∫“Õ—ƒ…≤√
       *  01.00.06    NACL-¬ø°π«º  02/10/25  ∆˛±°¬–±˛
+      *  01.00.07    NACL-¬ø°π«º  02/12/03   Ò≥ÁøÙΩ§¿µ
       *****************************************************************
       *
       *
@@ -115,7 +116,7 @@
            03  WRK-ERRCD           PIC X(04). 
            03  WRK-SRYCD           PIC X(09). 
       *
-           03  WRK-IDX             PIC 9(03).
+           03  WRK-IDX             PIC 9(04).
       *    ∆˝Õƒª˘§Œº´∆∞≤√ªª•≥°º•…
            03  WRK-NYU-SRYCD       PIC X(09).
       *
@@ -158,7 +159,6 @@
            03  WRK-Z9              PIC Z9.
            03  WRK-HEN-Z9          PIC X(04).
            03  WRK-MEISYO          PIC X(62).
-      *
       *
       *    ∏°∫∫°°»Ω√«•∞•Î°º•◊
        01  WRK-KENSA-AREA.
@@ -1189,12 +1189,24 @@
            IF      FLG-TENSU           =   ZERO
                ADD     TNS-TEN             TO  WRK-TENSUKEI
            END-IF
-      *     Ò≥Á§Œ∫«∏Â§Œπ‘§À Ò≥ÁøÙ§Ú ‘Ω∏§π§Î
-           MOVE    WRK-COM-INPUTCD(IDX-MAX)    TO  TNS-SRYCD
-           PERFORM 910-TENSU-READ-SEC
-           IF      FLG-TENSU           =   ZERO
-               MOVE    TNS-NAME            TO  WRK-GMN-MEISYO (IDX-MAX)
+      *
+           MOVE    ZERO                TO  WRK-IDX
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL       IDY     >   IDX-MAX
+               IF      WRK-COM-INPUTCD(IDY)(1:1)   =   "1"
+                   MOVE    WRK-COM-INPUTCD(IDY)    TO  TNS-SRYCD
+                   PERFORM 910-TENSU-READ-SEC
+                   IF      FLG-TENSU           =   ZERO
+                       MOVE    TNS-NAME        TO  WRK-GMN-MEISYO (IDY)
+                   END-IF
+                   MOVE    IDY                 TO  WRK-IDX
+               END-IF
+           END-PERFORM
+           IF      WRK-IDX             =   ZERO
+               MOVE    IDX-MAX             TO  WRK-IDX
            END-IF
+      *
+      *     Ò≥Á§Œ∫«∏Â§Œπ‘§À Ò≥ÁøÙ§Ú ‘Ω∏§π§Î
            MOVE    WRK-HOUKNS-CNT(IDX)     TO  WRK-Z9
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "2"                 TO  KANACHK-SYORI
@@ -1207,15 +1219,15 @@
            ELSE
                MOVE    SPACE           TO  WRK-HEN-Z9
            END-IF
-           IF      WRK-GMN-INPUTCD(IDX-MAX)(1:1)   =   "*"
-               MOVE    SPACE           TO  WRK-GMN-MEISYO (IDX-MAX)
-           END-IF
-           MOVE    WRK-GMN-MEISYO (IDX-MAX)    TO  WRK-MEISYO
-           MOVE    SPACE               TO  WRK-GMN-MEISYO  (IDX-MAX)
+      *****IF      WRK-GMN-INPUTCD(IDX-MAX)(1:1)   =   "*"
+      *        MOVE    SPACE           TO  WRK-GMN-MEISYO (IDX-MAX)
+      *****END-IF
+           MOVE    WRK-GMN-MEISYO (WRK-IDX)    TO  WRK-MEISYO
+           MOVE    SPACE               TO  WRK-GMN-MEISYO  (WRK-IDX)
            STRING  WRK-MEISYO          DELIMITED   BY  SPACE
                    "°°°°π‡Ã‹øÙ°ß"      DELIMITED   BY  SIZE
                    WRK-HEN-Z9          DELIMITED   BY  SIZE
-                   INTO                    WRK-GMN-MEISYO (IDX-MAX)
+                   INTO                    WRK-GMN-MEISYO (WRK-IDX)
            END-STRING
       *
            .
