@@ -1131,10 +1131,12 @@
       *
       *    労災の外来管理加算読み替え処理
            IF      SPA-HKNKBN          =   1
-      *        回数を掛けた点数で判定する
-      *          （２単位以上の時、読み替えはないはず）
-               COMPUTE WRK-SYOKEI      =   WRK-COM-SYUTEN2 (IDX-SYU)
-                                       *   LNK-ORCSC-KAISU
+      *!       回数を掛けた点数で判定する
+      *!         （２単位以上の時、読み替えはないはず）
+      *!       COMPUTE WRK-SYOKEI      =   WRK-COM-SYUTEN2 (IDX-SYU)
+      *!                               *   LNK-ORCSC-KAISU
+               MOVE    WRK-COM-SYUTEN2 (IDX-SYU)
+                                       TO  WRK-SYOKEI
                IF     (WRK-COM-RSIGIRI (IDX-SYU)
                                            =   1  )  AND
                       (WRK-SYOKEI          <   LNK-ORCSC-GAIRAI-TEN)
@@ -1142,7 +1144,6 @@
                                            TO  LNK-SC90-TENSUKEI
                END-IF
            END-IF
-      *
       *
            ADD     LNK-SC90-TENSUKEI   TO  WRK-GOK-TENSUKEI
            ADD     LNK-SC90-TENGAKEI   TO  WRK-GOK-TENGAKEI
@@ -1293,11 +1294,6 @@
            ELSE
                MOVE    8                   TO  WRK-MAX-CNT
            END-IF
-      *TEST
-           DISPLAY "C80 WRK-MAX-CNT:" WRK-MAX-CNT
-                 ",LNK-ORCSC-KYUSEI-180:" LNK-ORCSC-KYUSEI-180
-                 ",WRK-RIGAKU-RYO:" WRK-RIGAKU-RYO
-      *TEST
       *    急性発生９０日以内の時、逓減なし
            IF      (LNK-ORCSC-KYUSEI-FLG   =   1   )  OR
                    (LNK-ORCSC-KYUSEI-90    >   WRK-SRYYMD)
@@ -1315,10 +1311,6 @@
                                                +   WRK-DCNT-SN
                                                           (IDX-R1 IDY)
                    END-PERFORM
-      *TEST
-           DISPLAY "C80 WRK-TUKI-CNT:" WRK-TUKI-CNT
-                 ",WRK-KAISU:" WRK-KAISU
-      *TEST
       *            １月８単位、１２単位まで
                    IF     (WRK-TUKI-CNT    +   WRK-KAISU)
                                            >   WRK-MAX-CNT
@@ -1718,11 +1710,6 @@
            ELSE
                MOVE    8                   TO  WRK-MAX-CNT
            END-IF
-      *TEST
-           DISPLAY "C80 WRK-MAX-CNT:" WRK-MAX-CNT
-                 ",LNK-ORCSC-SYOEN-CNT:" LNK-ORCSC-SYOEN-CNT
-                 ",LNK-ORCSC-KYUSEI-180:" LNK-ORCSC-KYUSEI-180
-      *TEST
       *    急性発生９０日以内の時、逓減なし
            IF      (LNK-ORCSC-KYUSEI-FLG   =   1   )  OR
                    (LNK-ORCSC-KYUSEI-90    >   WRK-SRYYMD)

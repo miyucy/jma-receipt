@@ -3813,6 +3813,13 @@
                    END-IF
                 END-IF
            END-PERFORM
+      *    最初の読み替え分の回数が１以上の時、エラー
+           IF      WRK-GAI-CNT     >   ZERO
+               IF      WRK-COM-KAISU (WRK-GAI-IDX)   >   1
+                   MOVE    "0140"          TO  SPA-ERRCD
+                   MOVE    "1"             TO  WRK-COM-CUR (WRK-GAI-IDX)
+               END-IF
+           END-IF
       *
            IF      WRK-GAI-CNT         >   1
       *        外来管理加算へ読み替える
