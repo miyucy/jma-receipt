@@ -142,6 +142,8 @@
                            11  SPA-NAI-TSTYUKYMD   PIC 9(08).
                            11  SPA-NAI-TEDYUKYMD   PIC 9(08).  
                            11  SPA-NAI-TKBNCD      PIC X(03).
+                           11  SPA-NAI-TRJNKBN     PIC X(01).
+                           11  SPA-NAI-TZAITAKU    PIC X(01).
       *
               05  SPA-NAI-SELNUM                    PIC 9(03).
       *
@@ -488,6 +490,9 @@
                PERFORM 5001-TEISYUTUSAKI-HENSYU-SEC
                MOVE    WRK-KBNMEI          TO  SPA-GMN-TTEISYUTUSAKI
                                                                  (IDX)
+      *
+               MOVE    SYS-2006-RJNKBN     TO  SPA-NAI-TRJNKBN   (IDX)
+               MOVE    SYS-2006-ZAITAKU    TO  SPA-NAI-TZAITAKU  (IDX)
       *
                MOVE    PATH-TBL-SYSKANRI-KEY5
                                        TO WRK-SYSKANRI-PATH
@@ -1286,13 +1291,21 @@ x           IF      SPA-GMN-RECEDEN-TOKKI
                END-IF
            END-IF      
       *
-      *    同一保険番号で期間重複があるか
+      *    同一保険番号の条件で期間重複があるか
            IF      SPA-ERRCD           =   SPACE
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       SPA-GMN-MAX
                        OR      SPA-ERRCD   NOT =   SPACE
-                   IF      SPA-GMN-THKNNUM (IDX)
-                                               =   SPA-GMN-HKNNUM
+                   IF    ( SPA-GMN-THKNNUM       (IDX)
+                                           =   SPA-GMN-HKNNUM       )
+                   AND   ( SPA-GMN-TTEISYUTUSAKI (IDX)
+                                           =   SPA-GMN-TEISYUTUSAKI )
+                   AND   ( SPA-GMN-THKNJANUM     (IDX)
+                                           =   SPA-GMN-HKNJANUM     )
+                   AND   ( SPA-NAI-TRJNKBN       (IDX)
+                                           =   SPA-GMN-RJNKBN       )
+                   AND   ( SPA-NAI-TZAITAKU      (IDX)
+                                           =   SPA-GMN-ZAITAKU      )
                        IF      SPA-NAI-SELNUM  NOT =   IDX 
                            IF    ( SPA-NAI-EDYUKYMD
                                            <   SPA-NAI-TSTYUKYMD (IDX) )
@@ -1810,7 +1823,8 @@ x           IF      SPA-GMN-RECEDEN-TOKKI
                    MOVE    "有効期間の変更が行われています"
                                            TO  SPA-ERRMSG
                WHEN    "0105"
-                   MOVE    "有効期間の重複するデータが存在します"
+                   MOVE
+                      "条件が同じで有効期間の重複するデータが存在します"
                                            TO  SPA-ERRMSG
                WHEN    "0106"
                    MOVE    "有効期間開始日は１日で入力して下さい"
