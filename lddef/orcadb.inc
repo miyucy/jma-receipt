@@ -60,6 +60,7 @@ db	{
 	tbl_nyuinact;
 	view_I001;
 	tbl_nyuksnchk;
+	tbl_nyuinryakusho;
 };
 db	"shell"	{
 	shell;

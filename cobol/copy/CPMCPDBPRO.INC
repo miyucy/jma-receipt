@@ -167,6 +167,9 @@
       *  01.01.20    NACL-太田    02/12/13  SYUNOU-KEY6追加
       *  01.01.21    NACL-藤原    02/12/17  PTNYUINRRK-KEY12,KEY13追加
       *  01.01.22    NACL-多々納  02/12/18  PTINF-KEY6,KEY7,KEY8,KEY9
+      *  01.01.23    NACL-太田    02/12/13  NYUINRYAKUSHO-KEY,ALL追加
+      *                                     SRYACT-KEY9追加
+      *                                     NYUINACT-KEY9追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -810,6 +813,7 @@
                WHEN    "DBUPDATE"      ALSO   "NYUINACT-KEY6"
                WHEN    "DBUPDATE"      ALSO   "NYUINACT-KEY7"
                WHEN    "DBUPDATE"      ALSO   "NYUINACT-KEY8"
+               WHEN    "DBUPDATE"      ALSO   "NYUINACT-KEY9"
                    MOVE    PATH-TBL-NYUINACT-KEY
                                        TO  WRK-PATH
                WHEN    "DBDELETE"      ALSO   "NYUINACT-DEL11"
@@ -1312,6 +1316,9 @@
                    MOVE    PATH-TBL-SRYACT-KEY8
                                        TO  WRK-PATH
       *追加/*終了*01.09.12********************************************
+               WHEN    ANY             ALSO   "SRYACT-KEY9"
+                   MOVE    PATH-TBL-SRYACT-KEY9
+                                       TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "SRYACT-ALL"
                    MOVE    PATH-TBL-SRYACT-ALL
@@ -2150,6 +2157,9 @@
                WHEN    ANY             ALSO   "NYUINACT-KEY8"
                    MOVE    PATH-TBL-NYUINACT-KEY8
                                        TO  WRK-PATH
+               WHEN    ANY             ALSO   "NYUINACT-KEY9"
+                   MOVE    PATH-TBL-NYUINACT-KEY9
+                                       TO  WRK-PATH
                WHEN    ANY             ALSO   "NYUINACT-ALL"
                    MOVE    PATH-TBL-NYUINACT-ALL
                                        TO  WRK-PATH
@@ -2168,6 +2178,12 @@
                                        TO  WRK-PATH
                    PERFORM 2001-SEL-NYUKSNCHK-SEC
       *---- (NYUIN.15) LINE ADD END      -----------------------------
+               WHEN    ANY             ALSO   "NYUINRYAKUSHO-KEY"
+                   MOVE    PATH-TBL-NYUINRYAKUSHO-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "NYUINRYAKUSHO-ALL"
+                   MOVE    PATH-TBL-NYUINRYAKUSHO-ALL
+                                       TO  WRK-PATH
                WHEN    OTHER
                    MOVE    -9          TO  MCP-RC
            END-EVALUATE
