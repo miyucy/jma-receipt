@@ -6684,6 +6684,20 @@
                        MOVE    7           TO  SPA-GMN-I01-CUR
                        GO  TO  4801-NYUIN-TOUROKU-CHK-EXT
                    END-IF
+      *
+      *            同日再入院の場合継続入院となっていること
+                   IF    ( SPA-NAI-I01-TTAIINYMD (1)
+                                   =    SPA-NAI-I01-NYUINYMD )
+                       IF    ( SPA-GMN-I01-SHOKAI-CD   =   "2" )
+                         AND ( SPA-GMN-I01-SHONUM
+                                   =   SPA-GMN-I01-TSHONUM (1)  )
+                           CONTINUE
+                       ELSE
+                           MOVE    "1038"  TO  SPA-ERRCD
+                           MOVE    10      TO  SPA-GMN-I01-CUR
+                           GO  TO  4801-NYUIN-TOUROKU-CHK-EXT
+                       END-IF
+                   END-IF
                ELSE
                    IF    ( SPA-NAI-I01-TTAIINYMD (1)
                                   <     SPA-NAI-I01-NYUINYMD )
@@ -13757,6 +13771,9 @@
                                        TO  SPA-ERRMSG
            WHEN    "1037"
                MOVE    "同日再入院の場合、同日の退院登録は行えません"
+                                       TO  SPA-ERRMSG
+           WHEN    "1038"
+               MOVE    "同日再入院は継続入院のみ可能です"
                                        TO  SPA-ERRMSG
            WHEN    "2012"
                MOVE    "退院計算に必要な会計情報が作成されていません"
