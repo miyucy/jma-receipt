@@ -506,8 +506,8 @@
                GO      TO      200-FTNRATE-EXT
            END-IF
       *    £·£µºÐ°Ê¾å¤Î»þ¡¢Ï·¿Í¸øÈñ¤¬¤¢¤ë¤³¤È
-           IF     (AGECHK-NENREI       >=  75 )  AND
-      ************(FLG-OK          NOT =   2   ) AND
+      **** IF     (AGECHK-NENREI       >=  75 )  AND
+           IF     (AGECHK-NENREI       >=  WRK-ROU-NEN )  AND
                   (FLG-OK2             =   ZERO)
                MOVE    2               TO  AGECHK-RJNCHK
            END-IF
