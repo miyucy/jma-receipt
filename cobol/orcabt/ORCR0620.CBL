@@ -840,39 +840,41 @@
            AND     RECE62-KOHHBTNUM (2) =   SPACE
            AND     RECE62-KOHHBTNUM (3) =   SPACE
            AND     RECE62-KOHHBTNUM (4) =   SPACE
-             IF      RECE61-SRYYM         >=  "200210"
-             AND     RECE62-AGE           >=  75 
+               IF  (   RECE61-SRYYM         >=  "200210"            )
+               AND ((  RECE62-AGE           >=  75             ) OR 
+                    (( RECE62-BIRTHDAY      <=  19320930 ) AND
+                     ( RECE62-AGE           >=  70       )     )    )
                    ADD      1           TO  TOKKI-IDX
                    MOVE    "04"         TO  RECE62-TOKKI (TOKKI-IDX)
-             ELSE
-               INITIALIZE                       PTKOHINF-REC
-               MOVE    RECE61-HOSPID        TO  PTKOH-HOSPID
-               MOVE    RECE61-PTID          TO  PTKOH-PTID
-               MOVE    "027"                TO  PTKOH-KOHNUM
-               MOVE    PTKOHINF-REC         TO  MCPDATA-REC
-               MOVE    "DBSELECT"           TO  MCP-FUNC
-               MOVE    "PTKOHINF-KEY4"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING   MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-               IF      MCP-RC               =       ZERO
-                   MOVE    "PTKOHINF-KEY4"  TO      ORC-DBPATH
-                   PERFORM  PTKOHINF-READ-SEC
-                   PERFORM  UNTIL   FLG-PTKOHINF    =   1
-                       IF      PTKOH-TEKSTYMD(1:6)  <=  RECE61-SRYYM
-                       AND     RECE61-SRYYM         <=
+               ELSE
+                   INITIALIZE                       PTKOHINF-REC
+                   MOVE    RECE61-HOSPID        TO  PTKOH-HOSPID
+                   MOVE    RECE61-PTID          TO  PTKOH-PTID
+                   MOVE    "027"                TO  PTKOH-KOHNUM
+                   MOVE    PTKOHINF-REC         TO  MCPDATA-REC
+                   MOVE    "DBSELECT"           TO  MCP-FUNC
+                   MOVE    "PTKOHINF-KEY4"      TO  ORC-DBPATH
+                   CALL    "ORCMCPSUB"           USING   MCPAREA
+                                                         ORCMCPAREA
+                                                         MCPDATA-REC
+                   IF      MCP-RC               =       ZERO
+                       MOVE    "PTKOHINF-KEY4"  TO      ORC-DBPATH
+                       PERFORM  PTKOHINF-READ-SEC
+                       PERFORM  UNTIL   FLG-PTKOHINF    =   1
+                           IF      PTKOH-TEKSTYMD(1:6)  <=  RECE61-SRYYM
+                           AND     RECE61-SRYYM         <=
                                                     PTKOH-TEKEDYMD(1:6)
-                           ADD      1           TO  TOKKI-IDX
-                           MOVE    "04"         TO  RECE62-TOKKI
+                               ADD      1           TO  TOKKI-IDX
+                               MOVE    "04"         TO  RECE62-TOKKI
                                                             (TOKKI-IDX)
-                           MOVE    1            TO  FLG-PTKOHINF     
-                       ELSE
-                          MOVE    "PTKOHINF-KEY4"  TO  ORC-DBPATH
-                          PERFORM  PTKOHINF-READ-SEC
-                       END-IF   
-                   END-PERFORM
+                               MOVE    1            TO  FLG-PTKOHINF     
+                           ELSE
+                              MOVE    "PTKOHINF-KEY4"  TO  ORC-DBPATH
+                              PERFORM  PTKOHINF-READ-SEC
+                           END-IF   
+                       END-PERFORM
+                   END-IF
                END-IF
-             END-IF
            END-IF              
       *
       *    Ç¯¶âÍúÎò¤è¤ê

@@ -68,7 +68,9 @@
       *                                     を修正
       *  01.00.20   NACL-藤原     03.01.17  特記事項０４老保の判定に年齢判定
       *                                     を追加する
-      *  01.00.20   NACL-藤原     03.01.20  月代り受給者番号に入外区分を追加
+      *  01.00.21   NACL-藤原     03.01.20  月代り受給者番号に入外区分を追加
+      *  01.00.22   NACL-藤原     03.01.30  特記事項０４老保の判定にを７０歳
+      *                                     を追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -848,8 +850,10 @@
            AND     RECE02-KOHHBTNUM (2) =   SPACE
            AND     RECE02-KOHHBTNUM (3) =   SPACE
            AND     RECE02-KOHHBTNUM (4) =   SPACE
-               IF      RECE01-SRYYM         >=  "200210"
-               AND     RECE02-AGE           >=  75 
+               IF  (   RECE01-SRYYM         >=  "200210"            )
+               AND ((  RECE02-AGE           >=  75             ) OR 
+                    (( RECE02-BIRTHDAY      <=  19320930 ) AND
+                     ( RECE02-AGE           >=  70       )     )    )
                    ADD      1           TO  TOKKI-IDX
                    MOVE    "04"         TO  RECE02-TOKKI (TOKKI-IDX)
                ELSE
