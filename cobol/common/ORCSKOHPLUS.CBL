@@ -208,6 +208,10 @@
                  END-IF
            END-PERFORM
       *
+           IF       KOH-IDX   =   ZERO
+                MOVE    3              TO  LNK-SKOHPLUS-RC
+                GO   TO    200-MAIN-EXT
+           END-IF
       *市町村番号の取得（公費負担者番号の５桁目から長さ３桁）
            INITIALIZE                         PTKOHINF-REC
            MOVE    LNK-SKOHPLUS-HOSPID    TO  PTKOH-HOSPID
