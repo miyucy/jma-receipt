@@ -1169,8 +1169,21 @@
                            MOVE    "1"             TO  WRK-COM-CUR
                                                              (IDX-Z)
                            MOVE    "K070"          TO  WRK-ERRCD
+                       END-IF
                    END-IF
            END-EVALUATE
+      *
+      *    同時併施の診断料で撮影が１回の場合警告
+           IF     (WRK-CNT-SATUEI      =   1   )  AND
+                  (WRK-COM-TNSSRYSYUKBN(IDX-Z) =   "710")
+               IF     (WRK-COM-KZMFLG (IDX-Z)  =   SPACE ) AND
+                      (LNK-ORCSC-KEI-IDX       =   ZERO  )
+                   MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
+                   MOVE    "1"             TO  WRK-COM-KZMFLG (IDX-Z)
+                   MOVE    "1"             TO  WRK-COM-CUR   (IDX-Z)
+                   MOVE    "K070"          TO  WRK-ERRCD
+               END-IF
+           END-IF
            .
       *
        10015-SIDAN-DOUJI-CHK-EXT.
@@ -1812,6 +1825,12 @@
                                MOVE    "170022830"     TO  WRK-SRYCD
                                MOVE    "170022730"     TO  WRK-SRYCD-2
                            END-IF
+                           IF     (IDX-DOJI1           >   ZERO )  AND
+                                  (WRK-COM-INPUTCD (IDX-DOJI1)
+                                                       =   "170022830")
+      *                        同時併施のコードあり
+                               MOVE    SPACE               TO  WRK-SRYCD
+                           END-IF
                        WHEN    2
       *                    頭・胸・腹・脊髄（イ）
                            MOVE    WRK-XSEN-SRYCD-I    TO  WRK-SRYCD
@@ -1821,14 +1840,13 @@
                                MOVE    "170022730"     TO  WRK-SRYCD
                                MOVE    "170022830"     TO  WRK-SRYCD-2
                            END-IF
+                           IF     (IDX-DOJI1           >   ZERO )  AND
+                                  (WRK-COM-INPUTCD (IDX-DOJI1)
+                                                       =   "170022730")
+      *                        同時併施のコードあり
+                               MOVE    SPACE               TO  WRK-SRYCD
+                           END-IF
                    END-EVALUATE
-                   IF      IDX-DOJI1           >   ZERO
-                       IF      WRK-COM-INPUTCD (IDX-DOJI1)
-                                                   =   WRK-SRYCD
-      *                    同時併施のコードあり
-                           MOVE    SPACE               TO  WRK-SRYCD
-                       END-IF
-                   END-IF
                WHEN    OTHER
       *            その他の単純撮影の診断料
                    EVALUATE    FLG-BUIKBN
