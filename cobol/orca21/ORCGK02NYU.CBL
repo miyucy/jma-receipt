@@ -2102,6 +2102,11 @@
                END-IF
            END-IF
       *
+      *    労災・自賠責の場合、老人でも一般とする
+           IF      SPA-HKNKBN          =   1
+               MOVE    ZERO                TO  SPA-NAI-ROUJIN
+           END-IF
+      *
            .
        3102-ROUJIN-SET-EXT.
            EXIT.

@@ -2574,6 +2574,10 @@
       *        END-IF
       ******** MOVE    ZERO                TO  SPA-NAI-ROUSTR
            END-IF
+      *    労災・自賠責の場合、老人でも一般とする
+           IF      SPA-HKNKBN          =   1
+               MOVE    ZERO                TO  SPA-NAI-ROUJIN
+           END-IF
       *
       *    ＤＯ診療日付編集
       *****PERFORM 3101-DORRKYMD-HEN-SEC

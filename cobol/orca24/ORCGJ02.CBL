@@ -3348,6 +3348,12 @@
                    MOVE    ZERO            TO  SPA-NAI-ROUJIN
                                                      (SPA-NAI-BANGO)
                END-IF
+      *        労災・自賠責の場合、老人でも一般とする
+               IF      SPA-NAI-HKNKBN      =   1
+                   MOVE    ZERO            TO  SPA-NAI-ROUJIN
+                                                     (SPA-NAI-BANGO)
+               END-IF
+      *
                MOVE    SPA-NAI-ROUJIN   (SPA-NAI-BANGO)
                                            TO  SPA-GMN-ROUJIN
       *----(01.00.01) LINE ADD START ----------------------------------
