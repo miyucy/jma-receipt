@@ -144,6 +144,8 @@
       *    パス名領域
            03  WRK-DBPATH          PIC X(20).
       *    入院会計作成用ワーク
+           03  WRK-NAI-SRYYM-41    PIC X(06).
+           03  WRK-NYUINYMD        PIC X(08).
            03  WRK-TSUSAN          PIC 9(05).
            03  WRK-RRKNUM          PIC 9(03).
            03  WRK-STYMD           PIC X(08).
@@ -3961,7 +3963,8 @@
            MOVE    ZERO               TO  FLG-SET.
            PERFORM 41019-JIGETU-COMPUTE-SEC.
       *
-           MOVE    SPA-NAI-SRYYM-41   TO  WRK-SYMD(1:6).
+           MOVE    SPA-NAI-SRYYM-41   TO  WRK-SYMD(1:6)
+                                          WRK-NAI-SRYYM-41.
            MOVE    "01"               TO  WRK-SYMD(7:2).
            PERFORM 41012-SEIWA-HEN-SEC.
            MOVE    WRK-HENYMDG(1:6)   TO  SPA-GMN-SRYYM-41.
@@ -4112,13 +4115,22 @@
                MOVE    PTNYUINRRK-TENNYUYMD
                                            TO  WRK-STYMD
                IF      PTNYUINRRK-TENSTUYMD    NOT =   SPACE
-                       MOVE    SPA-NAI-SRYYM-41   TO  WRK-EDYMD(1:6)
+                       MOVE    WRK-NAI-SRYYM-41   TO  WRK-EDYMD(1:6)
                        MOVE    "31"               TO  WRK-EDYMD(7:2)
+      *               月末算定
+                       INITIALIZE                      STS-AREA-DAY
+                       INITIALIZE                      LNK-DAY7-AREA
+                       MOVE    "71"                TO  LNK-DAY7-IRAI
+                       MOVE    WRK-NAI-SRYYM-41    TO  LNK-DAY7-YM
+                       CALL    "ORCSDAY"           USING STS-AREA-DAY
+                                                         LNK-DAY7-AREA
+                       IF      STS-DAY-RC1         =   ZERO
+                           MOVE    LNK-DAY7-KOYOMI     TO  WRK-EDYMD
+                       END-IF
                ELSE
-                       MOVE    PTNYUINRRK-TENSTUYMD
+                   MOVE    PTNYUINRRK-TENSTUYMD
                                            TO  WRK-EDYMD
                END-IF
-               MOVE   "20030228"             TO  WRK-EDYMD
                PERFORM    410191-KIKAN-CALC-SEC
                ADD      WRK-NISSU2         TO  WRK-TSUSAN
                MOVE    "PTNYUINRRK-KEY9"   TO  ORC-DBPATH
