@@ -548,9 +548,15 @@
       *
       *----(01.01.01)--ADD-START--
            IF      PTKOH-KOHNUM    =   "027"
-               MOVE    "01"                TO  PTKOH-PAYKBN
-               IF  PTKOH-TEKSTYMD  <   "20021001"
+      *
+               IF     (PTKOH-TEKSTYMD  <   "20021001" )  AND
+                      (PTKOH-TEKEDYMD  >   "20021001" )
                    MOVE    "20021001"      TO  PTKOH-TEKSTYMD
+               END-IF
+               IF      PTKOH-TEKSTYMD  <   "20021001"
+                   MOVE    "00"                TO  PTKOH-PAYKBN
+               ELSE
+                   MOVE    "01"                TO  PTKOH-PAYKBN
                END-IF
            ELSE
                MOVE    "00"                TO  PTKOH-PAYKBN
