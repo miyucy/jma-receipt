@@ -33,6 +33,7 @@
       *  01.00.04    MCC-藤原     02/03/13  負担区分の追加      
       *  01.00.05    MCC-藤原     02/03/22  保険番号マスタの読込みの修正
       *  01.00.06    NACL-多々納  02/12/24  負担区分の初期値の編集
+      *  01.00.07    NACL-太田    03/01/08  レセプト負担金額コンボ追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -127,6 +128,13 @@
                        09  SPA-GMN-RECESKYKBNMEIL PIC X(22).
                    07  SPA-GMN-RECESKYKBN-MAX     PIC 9(01).
       *
+                   07  SPA-GMN-RECEFTNDSPKBNLST   OCCURS  2.
+                       09  SPA-GMN-RECEFTNDSPKBNL PIC X(01).
+                       09  SPA-GMN-F1L            PIC X(01).
+                       09  SPA-GMN-RECEFTNDSPKBNMEIL
+                                                  PIC X(28).
+                   07  SPA-GMN-RECEFTNDSPKBN-MAX  PIC 9(01).
+      *
                    07  SPA-GMN-HBTNUM         PIC X(02).
                    07  SPA-GMN-SEIDONAME      PIC X(100).
                    07  SPA-GMN-TANSEIDONAME   PIC X(10).
@@ -159,6 +167,11 @@
                        09  SPA-GMN-RECESKYKBN     PIC X(01).
                        09  SPA-GMN-F1             PIC X(01).
                        09  SPA-GMN-RECESKYKBNMEI  PIC X(22).
+                   07  SPA-GMN-RECEFTNDSPKBN-G.
+                       09  SPA-GMN-RECEFTNDSPKBN  PIC X(01).
+                       09  SPA-GMN-F1             PIC X(01).
+                       09  SPA-GMN-RECEFTNDSPKBNMEI
+                                                  PIC X(28).
       *
                    07  SPA-GMN-HKN-AREA-G     OCCURS  4.
                        09  SPA-GMN-GAIFTNKBN-G.
@@ -479,6 +492,16 @@
                                        TO  SPA-GMN-RECESKYKBNMEIL(4)
            MOVE    4                   TO  SPA-GMN-RECESKYKBN-MAX
       *
+           MOVE    "1"                 TO  SPA-GMN-RECEFTNDSPKBNL(1)
+           MOVE    "１０円未満四捨五入する"
+                                       TO  SPA-GMN-RECEFTNDSPKBNMEIL(1)
+           MOVE    "2"                 TO  SPA-GMN-RECEFTNDSPKBNL(2)
+           MOVE    "１０円未満四捨五入しない"
+                                       TO  SPA-GMN-RECEFTNDSPKBNMEIL(2)
+           MOVE    2                   TO  SPA-GMN-RECEFTNDSPKBN-MAX
+           MOVE    SPA-GMN-RECEFTNDSPKBNLST (1)
+                                       TO  SPA-GMN-RECEFTNDSPKBN-G
+      *
            MOVE    "0"                 TO  SPA-GMN-GAIFTNKBNL    (1)
            MOVE    "使用しない"        TO  SPA-GMN-GAIFTNKBNMEIL (1)
            MOVE    "1"                 TO  SPA-GMN-GAIFTNKBNL    (2)
@@ -598,6 +621,18 @@
                        MOVE    SPA-GMN-RECESKYKBNMEIL (IDY)
                                           TO  SPA-GMN-RECESKYKBNMEI
                        MOVE    SPA-GMN-RECESKYKBN-MAX
+                                          TO  IDY
+                   END-IF
+               END-PERFORM
+      *
+               MOVE    HKN-RECEFTNDSPKBN  TO  SPA-GMN-RECEFTNDSPKBN
+               PERFORM VARYING IDY FROM   1   BY  1
+                       UNTIL   IDY >      SPA-GMN-RECEFTNDSPKBN-MAX
+                   IF      SPA-GMN-RECEFTNDSPKBN
+                                      =   SPA-GMN-RECEFTNDSPKBNL (IDY)
+                       MOVE    SPA-GMN-RECEFTNDSPKBNMEIL (IDY)
+                                          TO  SPA-GMN-RECEFTNDSPKBNMEI
+                       MOVE    SPA-GMN-RECEFTNDSPKBN-MAX
                                           TO  IDY
                    END-IF
                END-PERFORM
@@ -776,6 +811,8 @@
                    PERFORM 4110-TENTNK-CHK-SEC
                WHEN    "ACTIVATE"      ALSO    "RECESKYKBN"
                    PERFORM 4130-RECESKYKBN-CHK-SEC
+               WHEN    "ACTIVATE"      ALSO    "RECEFTNDSPKBN"
+                   PERFORM 4140-RECEFTNDSPKBN-CHK-SEC
                WHEN    "ACTIVATE"      ALSO    "GAIFTNKBN1"
                WHEN    "ACTIVATE"      ALSO    "GAIFTNKBN2"
                WHEN    "ACTIVATE"      ALSO    "GAIFTNKBN3"
@@ -1079,10 +1116,28 @@
            IF      SPA-GMN-RECESKYKBNMEI    =   SPACE
               MOVE    "0005"           TO  SPA-ERRCD
            ELSE       
-               MOVE    20              TO  SPA-GMN-CUR
+               MOVE    15              TO  SPA-GMN-CUR
            END-IF    
            .
        4130-RECESKYKBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト金額チェック
+      *****************************************************************
+       4140-RECEFTNDSPKBN-CHK-SEC      SECTION.
+      *
+           MOVE    15                  TO  SPA-GMN-CUR
+      *
+           MOVE    V02-RECEFTNDSPKBN   TO  SPA-GMN-RECEFTNDSPKBN-G
+      *
+           IF      SPA-GMN-RECEFTNDSPKBNMEI    =   SPACE
+              MOVE    "0011"           TO  SPA-ERRCD
+           ELSE
+               MOVE    20              TO  SPA-GMN-CUR
+           END-IF
+           .
+       4140-RECEFTNDSPKBN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1750,6 +1805,7 @@
            MOVE    SPA-GMN-JOKENEDYEAR     TO  HKN-JOKEN-EDYEAR 
            MOVE    SPA-GMN-TENTNK          TO  HKN-TENTNK
            MOVE    SPA-GMN-RECESKYKBN      TO  HKN-RECESKYKBN
+           MOVE    SPA-GMN-RECEFTNDSPKBN   TO  HKN-RECEFTNDSPKBN
       *        
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       4  
@@ -1960,6 +2016,8 @@
            MOVE    SPA-GMN-JOKENEDYEAR  TO  V02-JOKENEDYEAR
            MOVE    SPA-GMN-TENTNK       TO  V02-TENTNK
            MOVE    SPA-GMN-RECESKYKBN-G TO  V02-RECESKYKBN
+           MOVE    SPA-GMN-RECEFTNDSPKBN-G
+                                        TO  V02-RECEFTNDSPKBN
       *
            PERFORM VARYING IDX FROM     1  BY  1
                    UNTIL   IDX >        4  
@@ -2038,6 +2096,13 @@
            END-PERFORM
            MOVE    SPA-GMN-RECESKYKBN-MAX
                                        TO  V02-RECESKYKBN-COUNT
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX     >   SPA-GMN-RECEFTNDSPKBN-MAX
+               MOVE    SPA-GMN-RECEFTNDSPKBNLST (IDX)
+                                       TO  V02-RECEFTNDSPKBNLST (IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-RECEFTNDSPKBN-MAX
+                                       TO  V02-RECEFTNDSPKBN-COUNT
                                                     
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       4
@@ -2124,6 +2189,9 @@
                                                TO  SPA-ERRMSG
                WHEN    "0010"
                    MOVE    "該当の保険番号のとき選べない負担区分です"
+                                               TO  SPA-ERRMSG
+               WHEN    "0011"
+                   MOVE    "レセプト負担金額入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0099"
                    MOVE    "未入力の項目があります"
@@ -2225,6 +2293,8 @@
                     MOVE  "TENTNK"          TO   MCP-WIDGET
                 WHEN    14
                     MOVE  "RECESKYKBN"      TO   MCP-WIDGET
+                WHEN    15
+                    MOVE  "RECEFTNDSPKBN"   TO   MCP-WIDGET
       * 
                 WHEN    20
                     MOVE  "GAIFTNKBN1"      TO   MCP-WIDGET
