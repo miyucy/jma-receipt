@@ -87,6 +87,7 @@
       *  01.01.02    NACL-藤原    04/04/22  画像診断の加算が複数ある場合の
       *                                     出力の修正
       *  01.01.03    NACL-藤原    04/04/26  乳幼児の時間加算の追加
+      *  01.01.04    NACL-藤原    04/04/27  ユーザーコメントの追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2041,6 +2042,7 @@
       *    診療行為コード＝'０'のとき対象外出力しない
            IF      RECE05-SRYCD (IDX) (1:1) =   "0"
                IF    ( RECE05-SRYCD (IDX)(1:3)  =   "002"             )
+               OR    ( RECE05-SRYCD (IDX)(1:3)  =   "008"             )
                OR    ( RECE05-SRYCD (IDX)       =   WRK-CONS-COMMENT1 ) 
                OR    ( RECE05-SRYCD (IDX)       =   WRK-CONS-COMMENT2 ) 
       *********OR    ( RECE05-SRYCD (IDX)       =   WRK-CONS-COMMENT3 ) 
@@ -2063,7 +2065,8 @@
                MOVE    RECE05-NAME  (IDX)  TO
                                            TBL-KOUI-NAME  (WRK-TBLMAX1)
       *
-               IF      RECE05-SRYCD (IDX) (1:1) =   "0"
+               IF    ( RECE05-SRYCD (IDX) (1:1)     =   "0"   )
+               AND   ( RECE05-SRYCD (IDX) (1:3) NOT =   "008" )
       *            部位／薬剤
                    MOVE    "810000001"     TO  
                                        TBL-KOUI-SRYCD (WRK-TBLMAX1)
@@ -2075,13 +2078,22 @@
                            MOVE    "810000001"     TO  
                                            TBL-KOUI-SRYCD (WRK-TBLMAX1)
                      ELSE
+                       IF      RECE05-SRYCD (IDX) (1:3)    =   "008"
+                           MOVE    "810000001"     TO  
+                                           TBL-KOUI-SRYCD (WRK-TBLMAX1)
+                       END-IF
                        MOVE    RECE02-HOSPID           TO  PTCOM-HOSPID
                        MOVE    RECE02-PTID             TO  PTCOM-PTID
                        MOVE    RECE05-ZAINUM           TO  PTCOM-ZAINUM
                        MOVE    RECE05-SRYCD   (IDX)    TO  PTCOM-SRYCD
                        MOVE    RECE05-INPUTNUM(IDX)    TO  PTCOM-RENNUM
                        PERFORM 950-PTCOM-READ-SEC
-                       IF      PTCOM-INPUTCHI1     =   SPACE
+                       IF      RECE05-SRYCD (IDX) (1:3)    =   "008"
+                           MOVE    PTCOM-INPUTCOMENT
+                                                   TO
+                                           TBL-KOUI-NAME (WRK-TBLMAX1)
+                       ELSE
+                         IF      PTCOM-INPUTCHI1     =   SPACE
                            INITIALIZE                  TNS-TENSU-REC
                            MOVE    RECE05-SRYCD (IDX)  TO  TNS-SRYCD
                            PERFORM 900-TENSU-READ-SEC
@@ -2101,7 +2113,7 @@
                                                    TO
                                            TBL-KOUI-NAME (WRK-TBLMAX1)
                            END-IF
-                       ELSE
+                         ELSE
                            MOVE    SPACE           TO
                                            TBL-KOUI-NAME (WRK-TBLMAX1)  
                            INITIALIZE              ORCSKANACHKAREA
@@ -2119,6 +2131,7 @@
                                                    TO
                                            TBL-KOUI-NAME (WRK-TBLMAX1)
                            END-IF
+                         END-IF
                        END-IF
                      END-IF
                    END-IF    
@@ -2136,6 +2149,7 @@
       *    診療行為コード＝'０'のとき対象外出力しない
            IF      RECE05-SRYCD (IDX) (1:1) =   "0"
                IF    ( RECE05-SRYCD (IDX)(1:3)  =   "002"             )
+               OR    ( RECE05-SRYCD (IDX)(1:3)  =   "008"             )
                OR    ( RECE05-SRYCD (IDX)       =   WRK-CONS-COMMENT1 ) 
                OR    ( RECE05-SRYCD (IDX)       =   WRK-CONS-COMMENT2 ) 
       *********OR    ( RECE05-SRYCD (IDX)       =   WRK-CONS-COMMENT3 ) 
@@ -2158,7 +2172,8 @@
                MOVE    RECE05-NAME  (IDX)  TO
                                    TBL-COMMENT-NAME  (WRK-TBLMAX8)
       *                             
-               IF      RECE05-SRYCD (IDX) (1:1) =   "0"
+               IF    ( RECE05-SRYCD (IDX) (1:1)     =   "0"   )
+               AND   ( RECE05-SRYCD (IDX) (1:3) NOT =   "008" )
       *            部位／薬剤
                    MOVE    "810000001"     TO  
                                    TBL-COMMENT-SRYCD (WRK-TBLMAX8)
@@ -2170,13 +2185,22 @@
                            MOVE    "810000001"     TO  
                                        TBL-COMMENT-SRYCD (WRK-TBLMAX8)
                      ELSE
+                       IF      RECE05-SRYCD (IDX) (1:3)    =   "008"
+                           MOVE    "810000001"     TO  
+                                       TBL-COMMENT-SRYCD (WRK-TBLMAX8)
+                       END-IF
                        MOVE    RECE02-HOSPID           TO  PTCOM-HOSPID
                        MOVE    RECE02-PTID             TO  PTCOM-PTID
                        MOVE    RECE05-ZAINUM           TO  PTCOM-ZAINUM
                        MOVE    RECE05-SRYCD   (IDX)    TO  PTCOM-SRYCD
                        MOVE    RECE05-INPUTNUM(IDX)    TO  PTCOM-RENNUM
                        PERFORM 950-PTCOM-READ-SEC
-                       IF      PTCOM-INPUTCHI1     =   SPACE
+                       IF      RECE05-SRYCD (IDX) (1:3)    =   "008"
+                           MOVE    PTCOM-INPUTCOMENT
+                                                   TO
+                                       TBL-COMMENT-NAME (WRK-TBLMAX8)
+                       ELSE
+                         IF      PTCOM-INPUTCHI1     =   SPACE
                            INITIALIZE                  TNS-TENSU-REC
                            MOVE    RECE05-SRYCD (IDX)  TO  TNS-SRYCD
                            PERFORM 900-TENSU-READ-SEC
@@ -2196,7 +2220,7 @@
                                                    TO
                                        TBL-COMMENT-NAME (WRK-TBLMAX8)
                            END-IF
-                       ELSE
+                         ELSE
                            MOVE    SPACE               TO
                                        TBL-COMMENT-NAME (WRK-TBLMAX8)  
                            INITIALIZE              ORCSKANACHKAREA
@@ -2214,6 +2238,7 @@
                                                    TO
                                        TBL-COMMENT-NAME (WRK-TBLMAX8)
                            END-IF
+                         END-IF
                        END-IF
                      END-IF
                    END-IF    
