@@ -10207,7 +10207,7 @@
                                                                  (IDY)
       *            回数
                    IF      SPA-COM-DATAKBN (IDX)   =   "3"
-                       MOVE    SPA-COM-BUNGSU(IDX) TO  WKSRY-ZAIKAISU
+                       MOVE    SPA-COM-BUNGSU(IDX) TO  WKSRY-SRYKAISU
                                                                  (IDY)
                    END-IF
       *            自動算定区分
