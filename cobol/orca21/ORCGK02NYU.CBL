@@ -476,6 +476,7 @@
       *
            03  WRK-ERRCD           PIC X(04).
            03  WRK-ERRCD1          PIC X(04).
+           03  WRK-ERRCD2          PIC X(04).
            03  WRK-KIDCD           PIC X(04).
       *    パス名
            03  WRK-PATH            PIC X(64).
@@ -1200,7 +1201,13 @@
                IF      SPA-ERRCD       NOT =   SPACE
       *            画面編集
                    PERFORM 500-GMNHEN-SEC
-                   PERFORM 510-ERRSET-SEC
+      *            エラー編集
+      *            数量ゼロの場合、エラー表示しない
+                   IF      SPA-ERRCD           =   "A001"
+                       MOVE    SPACE               TO  SPA-ERRCD
+                   ELSE
+                       PERFORM 510-ERRSET-SEC
+                   END-IF
                    GO      TO      300-SCREEN-EXT
                END-IF
                IF      SPA-KIDCD       NOT =   SPACE
@@ -4523,6 +4530,7 @@
       *    入力のチェック
            MOVE    WRK-STR             TO  SPA-GMN-IDX
            MOVE    ZERO                TO  FLG-INS
+           MOVE    SPACE               TO  WRK-ERRCD2
            PERFORM
                    UNTIL      (SPA-GMN-IDX     >   WRK-GYO-MAX)  OR
                               (SPA-ERRCD   NOT =   SPACE )  OR
@@ -4552,6 +4560,12 @@
                PERFORM 410119-SAIINPUT-SEC
                GO      TO      410112-KOUI-SPACHK-EXT
            END-IF
+      *
+      *    数量ゼロエラー
+           IF      WRK-ERRCD2      NOT =   SPACE
+               MOVE    WRK-ERRCD2          TO  SPA-ERRCD
+           END-IF
+      *
       *
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
                   (FLG-END             =   1     )
@@ -4769,6 +4783,13 @@
                MOVE    SPACE           TO  SPA-MAE-INPUTCD(SPA-GMN-IDX)
                MOVE    "1"             TO  SPA-COM-CUR (SPA-GMN-IDX)
            END-IF
+      *
+      *    数量ゼロエラーはエラー表示しない
+           IF      SPA-ERRCD           =   "A001"
+               MOVE    SPA-ERRCD           TO  WRK-ERRCD2
+               MOVE    SPACE               TO  SPA-ERRCD
+           END-IF
+      *
       *
            .
        41011-KOUI-HEN2-EXT.
@@ -5157,6 +5178,23 @@
            END-IF
       *
            MOVE    SPACE               TO  SPA-COM-IN3 (SPA-GMN-IDX)
+      *
+      *    数量ゼロはエラーとする
+           IF     (WRK-SUR-MCNT        >   ZERO  )  AND
+                  (WRK-SURYO           =   ZERO  )
+               IF      SPA-COM-INPUTCD(SPA-GMN-IDX)(1:1)
+                                               =   "6"  OR  "7"
+                   MOVE    "A001"              TO  SPA-ERRCD
+               ELSE
+                   MOVE    "A002"              TO  SPA-ERRCD
+               END-IF
+               IF      LNK-SC97-NYURYOKU   =   1
+                   MOVE    TNS-NAME        TO  SPA-GMN-MEISYO
+                                                     (SPA-GMN-IDX)
+               END-IF
+               GO      TO      4101113-INPUTCD-CHK-EXT
+           END-IF
+      *
       *
       *    数量以降入力なし（’＿’編集用）
            IF     (WRK-SUR-MCNT        =   ZERO )  AND
@@ -5744,7 +5782,15 @@
       *
                MOVE    ISET-INPUTCD    TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
                IF      ISET-SURYO1     =   ZERO
-                   MOVE    1           TO  SPA-COM-SURYO (SPA-GMN-IDX)
+      *            数量ゼロフラグ
+                   IF      SPA-SURYOZERO-FLG   =   ZERO
+                       MOVE    1           TO  SPA-COM-SURYO
+                                                         (SPA-GMN-IDX)
+                   ELSE
+                       MOVE    ZERO        TO  SPA-COM-SURYO
+                                                         (SPA-GMN-IDX)
+                       MOVE    "A001"      TO  WRK-ERRCD2
+                   END-IF
                ELSE
                    MOVE    ISET-SURYO1 TO  SPA-COM-SURYO (SPA-GMN-IDX)
                END-IF
@@ -5898,13 +5944,15 @@
       *                保険外金額判定
                        PERFORM 4101191-JIHI-HEN-SEC
       *
-      *?????           IF      SPA-COM-KAIFLG (SPA-GMN-IDX)    =   "1"
-      *????                PERFORM 4101192-NYUINKAISU-SEC
-      *????            ELSE
-      *                    入力コードの画面用再編集
-                           MOVE    SPA-GMN-IDX         TO  IDX
-                           PERFORM 3101-INPUTCD-HEN-SEC
-      *???             END-IF
+      *                入力コードの画面用再編集
+                       MOVE    SPA-GMN-IDX         TO  IDX
+                       PERFORM 3101-INPUTCD-HEN-SEC
+      *
+      *                数量ゼロの時、カーソル移動
+                       IF      SPA-COM-SURYO (SPA-GMN-IDX)  =   ZERO
+                           MOVE    "1"             TO  SPA-COM-CUR
+                                                          (SPA-GMN-IDX)
+                       END-IF
                    END-IF
       *
                    END-IF
@@ -5968,6 +6016,12 @@
                    MOVE    "1"         TO  SPA-COM-CUR (WRK-GMN-IDX)
                END-IF
            END-IF
+      *
+      *    数量ゼロがあったら、エラー
+           IF      WRK-ERRCD2      NOT =   SPACE
+               MOVE    WRK-ERRCD2          TO  SPA-ERRCD
+           END-IF
+      *
       *
            .
        4101191-INPUTSET-SYORI-EXT.
@@ -11532,6 +11586,12 @@
            IF      SPA-HKN-ERR         =   3
                MOVE    "1006"              TO  SPA-ERRCD
            END-IF
+      *
+      *    数量ゼロの場合、エラー表示しない
+           IF      SPA-ERRCD           =   "A001"
+               MOVE    SPACE               TO  SPA-ERRCD
+           END-IF
+      *
       *
            IF      SPA-ERRCD       NOT =   SPACE
                PERFORM 510-ERRSET-SEC

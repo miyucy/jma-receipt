@@ -3239,6 +3239,7 @@
       *
       *    電話再診かのチェック
            IF      SPA-GMN-IDX         >   ZERO
+               AND SPA-GMN-IDX         <=  200
                PERFORM 3001-TELSAISIN-CHK-SEC
                IF      FLG-TEL-ARI         =   1
                    GO      TO      300-DOUSAISIN-SET-EXT
@@ -4616,6 +4617,12 @@
                        END-IF
                        MOVE    1               TO  FLG-CHK
                    END-IF
+      *TEST
+                DISPLAY "C10S IDX:" IDX
+                 ",INPUTCD:" HZN-COM-INPUTCD(IDX)
+                 ",FLG-ARI:" FLG-ARI
+                 ",FLG-CHK:" FLG-CHK
+      *TEST
                END-IF
                IF      FLG-ARI                 =   ZERO
                    IF      FLG-CHK             =   ZERO
@@ -4626,7 +4633,8 @@
       *
       *        剤毎に対象を編集する
                IF     (HZN-COM-ZAIEND (IDX)    =   "1" )  OR
-                      (WRK-GMN-INPUTCD(IDX + 1)(1:1)  =  ".")
+                     ((IDX                     <   200  )  AND
+                      (WRK-GMN-INPUTCD(IDX + 1)(1:1)  =  "."))
                    IF     (IDX3                =   1  )  AND
                           (WRK-GMN-INPUTCD(IDX3)(1:1)  =  "." )
                        MOVE    ZERO                TO  IDX3

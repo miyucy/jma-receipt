@@ -132,6 +132,8 @@
       *    複数科まとめ有無
            03  FLG-FUKU-FLG              PIC 9(01).
       *
+           03  FLG-TOUROKU         PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -237,6 +239,8 @@
            03  WRK-NYUKINRENNUM        PIC  9(02).
       *伝票状態区分
            03  WRK-DENPJTIKBN          PIC  X(01).
+      *入金額
+           03  WRK-NYUKIN              PIC  9(07).
       *
       *    処方せんＰＧ名
            03  WRK-SYOHOU-PG           PIC X(20).
@@ -339,6 +343,8 @@
            COPY    "CPSK1010.INC".
       *    帳票ＰＧ
            COPY    "CPSK1032.INC".
+      *    診療行為一括入金管理情報
+           COPY    "CPSK1038.INC".
       *
       *　　（ＣＬＡＩＭ接続）
            COPY    "CPSK9000.INC".
@@ -465,6 +471,9 @@
       *
       *    診療行為外来更新パラメタ領域
            COPY    "CPORCSCGAIRAI.INC".
+      *
+      *    まとめ入金編集パラメタ領域
+           COPY    "CPORCSNYUKIN.INC".
       *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
@@ -782,6 +791,11 @@
            MOVE    WRK-Z92             TO  SPA-GMN-CHOSEI-X
       *    前回未収
            MOVE    SPA-MISYUMONEY      TO  SPA-GMN-ZENMISYU
+      *    前回未収額がマイナスの時、超過額とする
+           IF      SPA-MISYUMONEY      <   ZERO
+               MOVE    SPA-MISYUMONEY      TO  SPA-GMN-CHOKAKIN
+               MOVE    ZERO                TO  SPA-GMN-ZENMISYU
+           END-IF
       *
       *    労災初診
            MOVE    SYU-RSISHOSHIN-MONEY    TO  SPA-GMN-ROUSYOSIN
@@ -864,6 +878,9 @@
       *
       *    複数科編集
            PERFORM 3104-FUKU-HEN-SEC
+      *
+      *    入金取扱い
+           PERFORM 3105-NYUKINKBN-HEN-SEC
       *
             .
        310-SPA-SET-EXT.
@@ -1246,6 +1263,79 @@
            EXIT.
       *
       *****************************************************************
+      *    入金取扱い編集処理
+      *****************************************************************
+       3105-NYUKINKBN-HEN-SEC           SECTION.
+      *
+      *    入院の取扱い
+           INITIALIZE                  SPA-GMN-NYUKINKBN-G
+           INITIALIZE                  SPA-GMN-NYUKINKBN-LIST
+           INITIALIZE                  SPA-NYUKINKBN-MAX
+           MOVE    "1 今回請求分のみ入力"
+                                       TO  SPA-GMN-NYUKINKBN-LST(01)
+           MOVE    "2 今回分・日付の古い未収順に入金"
+                                       TO  SPA-GMN-NYUKINKBN-LST(02)
+           MOVE    "3 今回分・日付の新しい未収順に入金"
+                                       TO  SPA-GMN-NYUKINKBN-LST(03)
+           MOVE    "4 日付の古い未収順に入金"
+                                       TO  SPA-GMN-NYUKINKBN-LST(04)
+           MOVE    "5 日付の新しい未収順に入金"
+                                       TO  SPA-GMN-NYUKINKBN-LST(05)
+      *    訂正の時、１のみとする
+           IF      SPA-SYORIFLG        =   1
+               MOVE    1                   TO  SPA-NYUKINKBN-MAX
+               MOVE    SPA-GMN-NYUKINKBN-LST(01)
+                                           TO  SPA-GMN-NYUKINKBN-G
+               MOVE    SPA-GMN-NYUKINKBN   TO  SPA-MAE-NYUKINKBN
+               GO      TO      3105-NYUKINKBN-HEN-EXT
+           ELSE
+               MOVE    5                   TO  SPA-NYUKINKBN-MAX
+           END-IF
+      *
+      *    診療行為一括入金管理情報
+           MOVE    SPACE               TO  SYS-1038-REC
+           MOVE    "1038"              TO  SYS-1038-KANRICD
+      *    システム管理検索
+           MOVE    SYS-1038-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY2"      TO  ORC-DBPATH
+               PERFORM 960-KANRIMST-READ-SEC
+           ELSE
+               INITIALIZE                  SYS-1038-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-1038-REC
+      *        入金管理区分
+               MOVE    SYS-1038-NYKNKNRKBN     TO  SPA-GMN-NYUKINKBN
+           ELSE
+               MOVE    "1"                     TO  SPA-GMN-NYUKINKBN
+           END-IF
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-NYUKINKBN-MAX
+               IF      SPA-GMN-NYUKINKBN   =   SPA-GMN-NYUKINKBN-LST
+                                                           (IDX)(1:1)
+                   MOVE    SPA-GMN-NYUKINKBN-LST (IDX)
+                                               TO  SPA-GMN-NYUKINKBN-G
+                   MOVE    SPA-NYUKINKBN-MAX   TO  IDX
+               END-IF
+           END-PERFORM
+      *
+           MOVE    SPA-GMN-NYUKINKBN   TO  SPA-MAE-NYUKINKBN
+      *
+           .
+       3105-NYUKINKBN-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    合計請求額計算処理
       *****************************************************************
        310411-SYUNOU-ADD-SEC           SECTION.
@@ -1479,6 +1569,9 @@
       *    前回未収
            MOVE    SPA-GMN-ZENMISYU    TO  WRK-Z92
            MOVE    WRK-Z92             TO  K03-MISYUZAN
+      *    前回超過
+           MOVE    SPA-GMN-CHOKAKIN    TO  WRK-Z92
+           MOVE    WRK-Z92             TO  K03-CHOUKAKIN
       *    合計請求額
            MOVE    SPA-GMN-SEIGOK      TO  WRK-Z99
            MOVE    WRK-Z99             TO  K03-GOKSKY
@@ -1541,6 +1634,15 @@
            END-IF
            MOVE    SPA-GMN-FUKUZENMDS  TO  K03-FUKUZENMDS
       *
+      *    入金の取扱い
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-NYUKINKBN-MAX
+               MOVE    SPA-GMN-NYUKINKBN-LST (IDX)
+                                           TO  K03-NYUKINKBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-NYUKINKBN-MAX       TO  K03-NYUKINKBN-COUNT
+           MOVE    SPA-GMN-NYUKINKBN-G     TO  K03-NYUKINKBN
+      *
            PERFORM 5001-MAPCUR-SEC
            .
        500-GMNHEN-EXT.
@@ -1570,6 +1672,8 @@
                    MOVE    "DRCD"            TO  MCP-WIDGET
                WHEN    06
                    MOVE    "CHOSEI"          TO  MCP-WIDGET
+               WHEN    10
+                   MOVE    "NYUKINKBN"       TO  MCP-WIDGET
                WHEN    07
                    MOVE    "B12"             TO  MCP-WIDGET
                WHEN    08
@@ -1599,6 +1703,9 @@
                           (SPA-SYORIFLG            =   ZERO )
                        MOVE    09              TO  SPA-GMN-CUR
                    END-IF
+      *        入院の取扱い
+               WHEN    "NYUKINKBN"
+                   MOVE    02          TO  SPA-GMN-CUR
       *       請求発行
                WHEN    "HAKFLG"
                    MOVE    03          TO  SPA-GMN-CUR
@@ -1669,7 +1776,7 @@
            MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
            MOVE    ZERO                TO  SPA-GMN-CUR
       *
-      **** MOVE    ZERO                TO  FLG-TOUROKU
+           MOVE    ZERO                TO  FLG-TOUROKU
       *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
       *
@@ -1704,6 +1811,8 @@
            MOVE    K03-CHOSEI          TO  SPA-GMN-CHOSEI-X
       *    入金額
            MOVE    K03-NYUKIN          TO  SPA-GMN-NYUKIN-X
+      *    入金の取扱い
+           MOVE    K03-NYUKINKBN       TO  SPA-GMN-NYUKINKBN
       *
            MOVE    K03-HAKFLG          TO  SPA-GMN-HAKFLG-G
            MOVE    K03-SYOHOPRTFLG     TO  SPA-GMN-SYOHOPRTFLG-G
@@ -1729,6 +1838,11 @@
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
+      *    入金の取扱い
+           PERFORM 450-NYUKINKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
       *    請求発行
            PERFORM 420-SKYKUKBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
@@ -1749,6 +1863,24 @@
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
+      *
+      *    関連チェック
+      *    変更が無い時
+           IF     (SPA-GMN-NYUKINKBN   =   SPA-MAE-NYUKINKBN )  AND
+                  (SPA-GMN-NYUKIN      =   SPA-MAE-NYUKIN    )  AND
+                  (SPA-GMN-CHOSEI      =   SPA-MAE-CHOSEI    )  AND
+                  (FLG-TOUROKU         =   ZERO              )
+               CONTINUE
+           ELSE
+      *        入金額計算計算処理
+               PERFORM 31051-NYUKIN-KEISAN-SEC
+               IF      SPA-ERRCD           =   SPACE
+                   MOVE    SPA-GMN-NYUKINKBN   TO  SPA-MAE-NYUKINKBN
+                   MOVE    SPA-GMN-NYUKIN      TO  SPA-MAE-NYUKIN
+                   MOVE    SPA-GMN-CHOSEI      TO  SPA-MAE-CHOSEI
+               END-IF
+           END-IF
+      *
            .
       *
        4102-KIHON-CHK-EXT.
@@ -1778,18 +1910,134 @@
                    MOVE    1                   TO  SPA-GMN-CUR
                    GO      TO      450-NYUKIN-CHK-EXT
                END-IF
-      *        今回入金が請求額以下であること
+      ****     今回入金が請求額以下であること
+      *        IF    ((SPA-GMN-SEIKYU          >=  ZERO  )  AND
+      *               (SPA-GMN-NYUKIN          >   SPA-GMN-SEIKYU)) OR
+      *              ((SPA-GMN-SEIKYU          <   ZERO  )  AND
+      *               (SPA-GMN-NYUKIN          >   ZERO  ))
+      *            MOVE    "0008"              TO  SPA-ERRCD
+      *            MOVE    1                   TO  SPA-GMN-CUR
+      *            GO      TO      450-NYUKIN-CHK-EXT
+      *****    END-IF
+           END-IF
+           .
+       450-NYUKIN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入金の取扱い処理
+      *****************************************************************
+       450-NYUKINKBN-CHK-SEC                SECTION.
+      *
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-NYUKINKBN-MAX )  OR
+                              (FLG-CHK NOT =   ZERO )
+               IF      SPA-GMN-NYUKINKBN   =   SPA-GMN-NYUKINKBN-LST
+                                                           (IDX)(1:1)
+                   MOVE    SPA-GMN-NYUKINKBN-LST (IDX)
+                                           TO  SPA-GMN-NYUKINKBN-G
+                   MOVE    1               TO  FLG-CHK
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-CHK               =   ZERO
+               MOVE    "0022"            TO  SPA-ERRCD
+               MOVE    10                TO  SPA-GMN-CUR
+               GO      TO      450-NYUKINKBN-CHK-EXT
+           END-IF
+           .
+      *
+       450-NYUKINKBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入金額計算計算処理
+      *****************************************************************
+       31051-NYUKIN-KEISAN-SEC           SECTION.
+      *
+      *    今回請求のみの場合
+           IF      SPA-GMN-NYUKINKBN   =   "1"
+      *        今回請求額が入金額以内であること
                IF    ((SPA-GMN-SEIKYU          >=  ZERO  )  AND
                       (SPA-GMN-NYUKIN          >   SPA-GMN-SEIKYU)) OR
                      ((SPA-GMN-SEIKYU          <   ZERO  )  AND
                       (SPA-GMN-NYUKIN          >   ZERO  ))
                    MOVE    "0008"              TO  SPA-ERRCD
                    MOVE    1                   TO  SPA-GMN-CUR
-                   GO      TO      450-NYUKIN-CHK-EXT
+               END-IF
+               GO      TO      31051-NYUKIN-KEISAN-EXT
+           END-IF
+      *
+           IF      SPA-GMN-NYUKINKBN   =   "2"  OR  "3"
+      *        入金額−今回請求額
+               IF      SPA-GMN-SEIKYU      <   SPA-GMN-NYUKIN
+                   COMPUTE WRK-NYUKIN      =   SPA-GMN-NYUKIN
+                                           -   SPA-GMN-SEIKYU
+               ELSE
+      *            入金額が今回請求額以下の場合、そのまま
+                   GO      TO      31051-NYUKIN-KEISAN-EXT
+               END-IF
+           ELSE
+               MOVE    SPA-GMN-NYUKIN      TO  WRK-NYUKIN
+           END-IF
+      *
+      *    未入金が無い場合対象外
+           IF      SPA-GMN-NYUKIN      =   ZERO
+               GO      TO      31051-NYUKIN-KEISAN-EXT
+           END-IF
+           IF      SPA-GMN-ZENMISYU    =   ZERO
+               IF      SPA-GMN-SEIKYU      <   SPA-GMN-NYUKIN
+                   MOVE    "0008"              TO  SPA-ERRCD
+                   MOVE    1                   TO  SPA-GMN-CUR
+               END-IF
+               GO      TO      31051-NYUKIN-KEISAN-EXT
+           END-IF
+      *
+      *    まとめ入金編集
+           INITIALIZE                  ORCSNYUKINAREA
+           MOVE    SPA-HOSPID          TO  LNK-SCNYUKIN-HOSPID
+           MOVE    SPA-PTID            TO  LNK-SCNYUKIN-PTID
+           MOVE    SPA-NYUGAIKBN       TO  LNK-SCNYUKIN-NYUGAIKBN
+      *    処理区分
+           MOVE    "1"                 TO  LNK-SCNYUKIN-SYORIKBN
+      *    更新区分
+           MOVE    "1"                 TO  LNK-SCNYUKIN-KOUSHINKBN
+      *    入金管理区分
+           MOVE    SPA-GMN-NYUKINKBN   TO  LNK-SCNYUKIN-NYKNKNRKBN
+      *    入金額
+           MOVE    WRK-NYUKIN          TO  LNK-SCNYUKIN-NYUKIN-MONEY
+      *    入金日
+           MOVE    SPA-SYSYMD          TO  LNK-SCNYUKIN-NYUKIN-YMD
+      *
+           CALL    "ORCSNYUKIN"        USING
+                                       ORCSNYUKINAREA
+                                       SPA-AREA
+      *
+           IF      LNK-SCNYUKIN-RC NOT =   ZERO
+               MOVE    "0013"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-GMN-CUR
+               GO      TO      31051-NYUKIN-KEISAN-EXT
+           END-IF
+      *
+           IF      SPA-GMN-NYUKINKBN   =   "2"  OR  "3"
+               IF      LNK-SCNYUKIN-FURIWAKEZAN    >   ZERO
+      *            今回請求有りの時、入金振り分け残額ありはエラー
+                   MOVE    "0014"              TO  SPA-ERRCD
+                   MOVE    1                   TO  SPA-GMN-CUR
+                   GO      TO      31051-NYUKIN-KEISAN-EXT
+               END-IF
+           ELSE
+               IF      LNK-SCNYUKIN-FURIWAKEZAN    >  SPA-GMN-SEIKYU
+      *            今回請求額＜入金振り分け残額はエラー
+                   MOVE    "0014"              TO  SPA-ERRCD
+                   MOVE    1                   TO  SPA-GMN-CUR
+                   GO      TO      31051-NYUKIN-KEISAN-EXT
                END-IF
            END-IF
+      *
            .
-       450-NYUKIN-CHK-EXT.
+       31051-NYUKIN-KEISAN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2037,6 +2285,7 @@
       *****************************************************************
        450-TOROKU-SEC             SECTION.
       *
+           MOVE    1                   TO  FLG-TOUROKU
       *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
            IF      SPA-ERRCD      NOT =   SPACE
@@ -2344,6 +2593,16 @@
       *****************************************************************
        45001-TOROKU-KOUSIN-SEC          SECTION.
       *
+      *    入金額振り分け処理
+           IF      SPA-GMN-NYUKINKBN   =   "1"
+               MOVE    SPA-GMN-NYUKIN      TO  WRK-NYUKIN
+           ELSE
+               PERFORM 450011-NYUKIN-KEISAN-SEC
+               IF      SPA-ERRCD           NOT =   SPACE
+                   GO      TO      45001-TOROKU-KOUSIN-EXT
+               END-IF
+           END-IF
+      *
       *    外来更新処理
            INITIALIZE                  ORCSCGAIRAIAREA
       *    登録・更新
@@ -2355,7 +2614,7 @@
       *    今回請求額
            MOVE    SPA-KON-SKYMONEY    TO  ORCSCGAIRAI-KON-SKYMONEY
       *    入金額
-           MOVE    SPA-GMN-NYUKIN      TO  ORCSCGAIRAI-NYUKIN
+           MOVE    WRK-NYUKIN          TO  ORCSCGAIRAI-NYUKIN
       *    複数科まとめ
            MOVE    SPA-GMN-SYORI       TO  ORCSCGAIRAI-SYORI
            CALL    "ORCSCGAIRAI"       USING
@@ -2378,6 +2637,67 @@
       *
            .
        45001-TOROKU-KOUSIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入金額計算計算処理
+      *****************************************************************
+       450011-NYUKIN-KEISAN-SEC           SECTION.
+      *
+      *
+           IF      SPA-GMN-NYUKINKBN   =   "2"  OR  "3"
+      *        入金額−今回請求額
+               IF      SPA-GMN-SEIKYU      <   SPA-GMN-NYUKIN
+                   COMPUTE WRK-NYUKIN      =   SPA-GMN-NYUKIN
+                                           -   SPA-GMN-SEIKYU
+               ELSE
+      *            入金額が今回請求額以下の場合、そのまま
+                   MOVE    SPA-GMN-NYUKIN      TO  WRK-NYUKIN
+                   GO      TO      450011-NYUKIN-KEISAN-EXT
+               END-IF
+           ELSE
+               MOVE    SPA-GMN-NYUKIN      TO  WRK-NYUKIN
+           END-IF
+      *
+      *    未入金が無い場合対象外
+           IF     (SPA-GMN-NYUKIN      =   ZERO )  OR
+                  (SPA-GMN-ZENMISYU    =   ZERO )
+               GO      TO      450011-NYUKIN-KEISAN-EXT
+           END-IF
+      *
+      *    まとめ入金編集
+           INITIALIZE                  ORCSNYUKINAREA
+           MOVE    SPA-HOSPID          TO  LNK-SCNYUKIN-HOSPID
+           MOVE    SPA-PTID            TO  LNK-SCNYUKIN-PTID
+           MOVE    SPA-NYUGAIKBN       TO  LNK-SCNYUKIN-NYUGAIKBN
+      *    処理区分
+           MOVE    "1"                 TO  LNK-SCNYUKIN-SYORIKBN
+      *    更新区分
+           MOVE    "2"                 TO  LNK-SCNYUKIN-KOUSHINKBN
+      *    入金管理区分
+           MOVE    SPA-GMN-NYUKINKBN   TO  LNK-SCNYUKIN-NYKNKNRKBN
+      *    入金額
+           MOVE    WRK-NYUKIN          TO  LNK-SCNYUKIN-NYUKIN-MONEY
+      *    入金日
+           MOVE    SPA-SYSYMD          TO  LNK-SCNYUKIN-NYUKIN-YMD
+      *
+           CALL    "ORCSNYUKIN"        USING
+                                       ORCSNYUKINAREA
+                                       SPA-AREA
+      *
+           IF      LNK-SCNYUKIN-RC NOT =   ZERO
+               MOVE    "0015"              TO  SPA-ERRCD
+               GO      TO      450011-NYUKIN-KEISAN-EXT
+           END-IF
+      *
+           IF      SPA-GMN-NYUKINKBN   =   "2"  OR  "3"
+               MOVE    SPA-GMN-SEIKYU              TO  WRK-NYUKIN
+           ELSE
+               MOVE    LNK-SCNYUKIN-FURIWAKEZAN    TO  WRK-NYUKIN
+           END-IF
+      *
+           .
+       450011-NYUKIN-KEISAN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2830,6 +3150,18 @@
                                        TO  SPA-ERRMSG
                WHEN    "0011"
                    MOVE    "ドクター選択エラー"
+                                       TO  SPA-ERRMSG
+               WHEN    "0012"
+                   MOVE    "入金取扱い選択エラー"
+                                       TO  SPA-ERRMSG
+               WHEN    "0013"
+                   MOVE    "入金振り分けができません。"
+                                       TO  SPA-ERRMSG
+               WHEN    "0014"
+                   MOVE    "入金額が入金可能金額以上です。"
+                                       TO  SPA-ERRMSG
+               WHEN    "0015"
+                   MOVE    "入金振り分け更新エラーです。"
                                        TO  SPA-ERRMSG
                WHEN    "0020"
                    MOVE    "複数科まとめのできない保険です。"

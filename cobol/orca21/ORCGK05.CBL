@@ -35,6 +35,7 @@
       *  02.00.03    NACL¡ÝÂ¿¡¹Ç¼ 02/09/24  ¸¡º÷½¤Àµ
       *  02.00.04    NACL¡ÝÂ¿¡¹Ç¼ 03/08/01  ²èÁü¿ÇÃÇ¤Î»£±Æ²ó¿ôÊÑ¹¹
       *  02.00.05    NACL¡ÝÂ¿¡¹Ç¼ 03/12/09  Æþ³°¶èÊ¬¡¢Ï·¿Í¶èÊ¬ÄÉ²Ã
+      *  02.00.06    NACL¡ÝÂ¿¡¹Ç¼ 04/01/16  ¿ôÎÌ¥¼¥íÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2741,17 +2742,6 @@
                GO      TO      4101113-INPUTCD-CHK-EXT
            END-IF
       *
-      *    ¿ÇÎÅ¹Ô°Ù¥³¡¼¥É¤ò¤â¤È¤ËÅÀ¿ô¥Þ¥¹¥¿¡¼¸¡º÷
-           MOVE    ZERO                TO  FLG-TENSU
-           MOVE    SPA-COM-INPUTCD(SPA-GMN-IDX)
-                                       TO  TNS-SRYCD
-      *
-           PERFORM 910-TENSU-READ-SEC
-           IF      FLG-TENSU           =   1
-               MOVE    "0001"              TO  SPA-ERRCD
-               GO      TO      4101113-INPUTCD-CHK-EXT
-           END-IF
-      *
            MOVE    SPACE               TO  SPA-COM-IN3 (SPA-GMN-IDX)
       *
       *    ¿ôÎÌ°Ê¹ßÆþÎÏ¤Ê¤·¡Ê¡Ç¡²¡ÇÊÔ½¸ÍÑ¡Ë
@@ -2793,6 +2783,19 @@
            IF      LNK-SC97-SURYOFLG   >   5
                MOVE    "0051"          TO  SPA-ERRCD
                GO      TO      4101113-INPUTCD-CHK-EXT
+           END-IF
+      *    ¿ôÎÌ¥¼¥í¥Õ¥é¥°
+           IF      SPA-SURYOZERO-FLG   =   1
+               IF     (WRK-SUR-MCNT        >   ZERO )  AND
+                      (WRK-SURYO           =   ZERO )
+                   IF      SPA-COM-INPUTCD(SPA-GMN-IDX)(1:1)
+                                               =   "6"  OR  "7"
+                       CONTINUE
+                   ELSE
+                       MOVE    "A002"          TO  SPA-ERRCD
+                       GO      TO      4101113-INPUTCD-CHK-EXT
+                   END-IF
+               END-IF
            END-IF
       *
       *    ¿ôÎÌ¡¦²ó¿ôÊÔ½¸
@@ -3168,7 +3171,11 @@
            ELSE
                MOVE    WRK-SURYO       TO  SPA-COM-SURYO(SPA-GMN-IDX)
                IF      SPA-COM-SURYO(SPA-GMN-IDX)  =  ZERO
-                   MOVE    1           TO  SPA-COM-SURYO(SPA-GMN-IDX)
+      *            ¿ôÎÌ¥¼¥í¥Õ¥é¥°
+                   IF      SPA-SURYOZERO-FLG   =   ZERO
+                       MOVE    1           TO  SPA-COM-SURYO
+                                                          (SPA-GMN-IDX)
+                   END-IF
                END-IF
                MOVE    "1"             TO  SPA-COM-SURFLG(SPA-GMN-IDX)
            END-IF
@@ -3356,7 +3363,14 @@
       *
                MOVE    ISET-INPUTCD    TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
                IF      ISET-SURYO1     =   ZERO
-                   MOVE    1           TO  SPA-COM-SURYO (SPA-GMN-IDX)
+      *            ¿ôÎÌ¥¼¥í¥Õ¥é¥°
+                   IF      SPA-SURYOZERO-FLG   =   ZERO
+                       MOVE    1           TO  SPA-COM-SURYO
+                                                         (SPA-GMN-IDX)
+                   ELSE
+                       MOVE    ZERO        TO  SPA-COM-SURYO
+                                                         (SPA-GMN-IDX)
+                   END-IF
                ELSE
                    MOVE    ISET-SURYO1 TO  SPA-COM-SURYO (SPA-GMN-IDX)
                END-IF

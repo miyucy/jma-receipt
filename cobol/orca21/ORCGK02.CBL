@@ -561,6 +561,7 @@
            03  WRK-DRCD                PIC X(05).
       *
            03  WRK-ERRCD1              PIC X(04).
+           03  WRK-ERRCD2              PIC X(04).
       *
       *   年齢表示
        01  WRK-NENREI-G.
@@ -1242,7 +1243,12 @@
       *            画面編集
                    PERFORM 500-GMNHEN-SEC
       *            エラー編集
-                   PERFORM 510-ERRSET-SEC
+      *            数量ゼロの場合、エラー表示しない
+                   IF      SPA-ERRCD           =   "A001"
+                       MOVE    SPACE               TO  SPA-ERRCD
+                   ELSE
+                       PERFORM 510-ERRSET-SEC
+                   END-IF
                    GO      TO      300-SCREEN-EXT
                END-IF
                IF      SPA-KIDCD       NOT =   SPACE
@@ -1611,10 +1617,16 @@
                    MOVE    WRK-DRCD            TO  SPA-DRCD
                END-IF
            ELSE
-               IF     (SPA-PTID            =   SPA-GMN-PTID )  AND
-                      (SPA-NAI-SRYYMD  NOT =   SPA-SRYYMD   )
-                   MOVE    SPA-GMN-SRYYMD      TO  SPA-SRYYMDW
-                   MOVE    SPA-NAI-SRYYMD      TO  SPA-SRYYMD
+               IF      SPA-MOTOPG          =   "K01"
+                   MOVE    SPA-DRCD            TO  WRK-DRCD
+                   MOVE    SPA-SRYYMDW         TO  SPA-GMN-SRYYMD
+                   MOVE    SPA-SRYYMD          TO  SPA-NAI-SRYYMD
+               ELSE
+                   IF     (SPA-PTID            =   SPA-GMN-PTID )  AND
+                          (SPA-NAI-SRYYMD  NOT =   SPA-SRYYMD   )
+                       MOVE    SPA-GMN-SRYYMD      TO  SPA-SRYYMDW
+                       MOVE    SPA-NAI-SRYYMD      TO  SPA-SRYYMD
+                   END-IF
                END-IF
            END-IF
            IF      SPA-PTID            =   ZERO
@@ -2136,7 +2148,7 @@
                         MOVE    SPACE              TO  FLG-TOROKU
                    END-IF
       *
-      *        包括まとめ入力変更確認
+      *        包括分入力変更確認
                WHEN    "0190"
                    MOVE    SPACE               TO  SPA-KIDCD
                    IF      SPA-KID1-FLG        =   "OK"
@@ -3793,7 +3805,7 @@
            END-IF
            PERFORM UNTIL       (FLG-SRYACCT         =   1       )
       *
-      *      包括まとめ入力は対象外
+      *      包括分入力は対象外
              IF      ACCT-HKNCOMBI     =   "9999"
                CONTINUE
              ELSE
@@ -4756,7 +4768,7 @@
            EXIT.
       *
       *****************************************************************
-      *    包括まとめ入力変換処理
+      *    包括分入力変換処理
       *****************************************************************
        410122-HOUKATU-HKNCOMBI-SEC         SECTION.
       *
@@ -4861,7 +4873,7 @@
       *****************************************************************
        4101213-RRKHKNCHK-SEC         SECTION.
       *
-      *    包括まとめ入力は対象外
+      *    包括分入力は対象外
            IF      SPA-HKNCOMBINUM     =   "9999"
                GO      TO      4101213-RRKHKNCHK-EXT
            END-IF
@@ -5272,6 +5284,12 @@
                    MOVE    ZERO                TO  FLG-INPUT-NASI
                END-IF
       *
+               IF     (SPA-GMN-INPUTCD(SPA-GMN-IDX)
+                                           NOT =   SPA-MAE-INPUTCD
+                                                         (SPA-GMN-IDX))
+                   MOVE    ZERO                TO  FLG-INPUT-NASI
+               END-IF
+      *
                MOVE    K02-INPUTCD (WRK-IDX2)  TO  SPA-GMN-INPUTCD
                                                            (SPA-GMN-IDX)
                MOVE    K02-MEISYO  (WRK-IDX2)  TO  SPA-GMN-MEISYO-G
@@ -5299,6 +5317,9 @@
                    END-IF
                END-IF
            END-PERFORM
+      *TEST
+           DISPLAY "K02 2 FLG-INPUT-NASI:" FLG-INPUT-NASI
+      *TEST
       *
            IF     (SPA-GMN-IDX     >=  200     )  AND
                   (WRK-IDX2        <=  20      )
@@ -5380,6 +5401,7 @@
       *    入力のチェック
            MOVE    WRK-STR             TO  SPA-GMN-IDX
            MOVE    ZERO                TO  FLG-INS
+           MOVE    SPACE               TO  WRK-ERRCD2
            PERFORM
                    UNTIL      (SPA-GMN-IDX     >   200   )  OR
                               (SPA-ERRCD   NOT =   SPACE )  OR
@@ -5403,11 +5425,15 @@
                END-IF
            END-PERFORM
       *
-      *
            IF      SPA-ERRCD           =   "0021"
       *        診療コード入力
                PERFORM 410119-SAIINPUT-SEC
                GO      TO      410112-KOUI-SPACHK-EXT
+           END-IF
+      *
+      *    数量ゼロエラー
+           IF      WRK-ERRCD2      NOT =   SPACE
+               MOVE    WRK-ERRCD2          TO  SPA-ERRCD
            END-IF
       *
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
@@ -5470,6 +5496,20 @@
                    MOVE    SPA-ERRCD           TO  WRK-ERRCD
                END-IF
            END-IF
+      *
+      *!!  数量ゼロで、薬剤、器材以外は削除とする
+      *    IF     (LNK-SC97-NYURYOKU   =   ZERO         )  AND
+      *           (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:1)
+      *                            NOT =   "6"  AND "7" )  AND
+      *           (LNK-SC97-SURYOCNT   >   ZERO         )  AND
+      *           (LNK-SC97-SURYO      =   ZERO         )
+      *        MOVE    " "             TO  LNK-SC97-INPUTCD
+      *        MOVE    ZERO            TO  LNK-SC97-SURYOCNT
+      *        MOVE    ZERO            TO  LNK-SC97-SURYO
+      *        MOVE    ZERO            TO  LNK-SC97-SURYOFLG
+      *!!  END-IF
+      *
+           MOVE    LNK-SC97-INCD       TO  WRK-CD
       *
       *    削除時
            IF      LNK-SC97-INPUTCD(1:1)   =   SPACE
@@ -5638,6 +5678,12 @@
            ELSE
                MOVE    SPACE           TO  SPA-MAE-INPUTCD(SPA-GMN-IDX)
                MOVE    "1"             TO  SPA-COM-CUR (SPA-GMN-IDX)
+           END-IF
+      *
+      *    数量ゼロエラーはエラー表示しない
+           IF      SPA-ERRCD           =   "A001"
+               MOVE    SPA-ERRCD           TO  WRK-ERRCD2
+               MOVE    SPACE               TO  SPA-ERRCD
            END-IF
       *
            .
@@ -6015,6 +6061,22 @@
            END-IF
       *
            MOVE    SPACE               TO  SPA-COM-IN3 (SPA-GMN-IDX)
+      *
+      *    数量ゼロはエラーとする
+           IF     (WRK-SUR-MCNT        >   ZERO  )  AND
+                  (WRK-SURYO           =   ZERO  )
+               IF      SPA-COM-INPUTCD(SPA-GMN-IDX)(1:1)
+                                               =   "6"  OR  "7"
+                   MOVE    "A001"              TO  SPA-ERRCD
+               ELSE
+                   MOVE    "A002"              TO  SPA-ERRCD
+               END-IF
+               IF      LNK-SC97-NYURYOKU   =   1
+                   MOVE    TNS-NAME        TO  SPA-GMN-MEISYO
+                                                     (SPA-GMN-IDX)
+               END-IF
+               GO      TO      4101113-INPUTCD-CHK-EXT
+           END-IF
       *
       *    数量以降入力なし（’＿’編集用）
            IF     (WRK-SUR-MCNT        =   ZERO )  AND
@@ -6678,18 +6740,27 @@
                PERFORM 41014-GYOINSN-SEC
            END-IF
       *
+           MOVE    SPACE               TO  WRK-ERRCD2
            PERFORM
                    UNTIL     (FLG-INPUTSET     =   1 )  OR
                              (SPA-ERRCD    NOT =   SPACE ) OR
                              (SPA-GMN-IDX      >   200 )
       *        セット展開
-               MOVE    1                   TO  FLG-SETSYORI
+               MOVE    1                TO  FLG-SETSYORI
       *
                ADD     1               TO  IDX-IP
       *
                MOVE    ISET-INPUTCD    TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
                IF      ISET-SURYO1     =   ZERO
-                   MOVE    1           TO  SPA-COM-SURYO (SPA-GMN-IDX)
+      *            数量ゼロフラグ
+                   IF      SPA-SURYOZERO-FLG   =   ZERO
+                       MOVE    1           TO  SPA-COM-SURYO
+                                                         (SPA-GMN-IDX)
+                   ELSE
+                       MOVE    ZERO        TO  SPA-COM-SURYO
+                                                         (SPA-GMN-IDX)
+                       MOVE    "A001"      TO  WRK-ERRCD2
+                   END-IF
                ELSE
                    MOVE    ISET-SURYO1 TO  SPA-COM-SURYO (SPA-GMN-IDX)
                END-IF
@@ -6848,6 +6919,12 @@
       *                入力コードの画面用再編集
                        MOVE    SPA-GMN-IDX         TO  IDX
                        PERFORM 3101-INPUTCD-HEN-SEC
+      *
+      *                数量ゼロの時、カーソル移動
+                       IF      SPA-COM-SURYO (SPA-GMN-IDX)  =   ZERO
+                           MOVE    "1"             TO  SPA-COM-CUR
+                                                          (SPA-GMN-IDX)
+                       END-IF
                    END-IF
       *
                    END-IF
@@ -6912,6 +6989,11 @@
                    MOVE    WRK-ERRCD   TO  SPA-ERRCD
                    MOVE    "1"         TO  SPA-COM-CUR (WRK-GMN-IDX)
                END-IF
+           END-IF
+      *
+      *    数量ゼロがあったら、エラー
+           IF      WRK-ERRCD2      NOT =   SPACE
+               MOVE    WRK-ERRCD2          TO  SPA-ERRCD
            END-IF
       *
            .
@@ -7458,7 +7540,7 @@
       *
            END-PERFORM
       *
-      *    包括まとめ入力はリハビリ対象外
+      *    包括分入力はリハビリ対象外
            IF      SPA-HKNCOMBINUM     =   "9999"
                MOVE    ZERO                TO  FLG-SONOTA
            END-IF
@@ -12954,6 +13036,11 @@
                MOVE    "1006"              TO  SPA-ERRCD
            END-IF
       *
+      *    数量ゼロの場合、エラー表示しない
+           IF      SPA-ERRCD           =   "A001"
+               MOVE    SPACE               TO  SPA-ERRCD
+           END-IF
+      *
            IF      SPA-ERRCD       NOT =   SPACE
                PERFORM 510-ERRSET-SEC
                GO      TO      500-SET-SCREEN-EXT
@@ -13208,7 +13295,7 @@
                MOVE    WRK-GOKEI-Z2        TO  K02-ZAITENTOTAL
       *    END-IF
       *
-      *    包括まとめ入力は、累計に集計しない
+      *    包括分入力は、累計に集計しない
            IF      SPA-HKNCOMBINUM     =   "9999"
                MOVE    SPA-ZAITENTOTAL     TO  WRK-GOKEI-Z2
                MOVE    WRK-GOKEI-Z2        TO  K02-ZAITENTOTAL
@@ -13703,10 +13790,10 @@
                    MOVE    "逓減しますか？"
                                        TO  WRK-KIDMSG(31:)
                WHEN    "0190"
-                   MOVE    "包括まとめ入力に変更されました。"
+                   MOVE    "包括分入力に変更されました。"
                                        TO  WRK-KIDMSG
                    MOVE    "現在の診療内容をクリアしますか？"
-                                       TO  WRK-KIDMSG(33:)
+                                       TO  WRK-KIDMSG(29:)
                WHEN    "2001"
                    MOVE    "内服薬剤が７種類以上になります。"
                                        TO  WRK-KIDMSG
