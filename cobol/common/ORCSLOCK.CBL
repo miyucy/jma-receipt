@@ -63,7 +63,7 @@
            03  WRK-LDNAME              PIC X(40).
            03  WRK-LD                  PIC X(20).
            03  WRK-WINDOW              PIC X(10).
-           03  WRK-TERMID              PIC X(50).
+           03  WRK-TERMID              PIC X(64).
            03  WRK-OPID                PIC X(16).
            03  WRK-IPV4-TABLE.
              05 WRK-IPV4-TBL           PIC 9(03)  OCCURS 4.
