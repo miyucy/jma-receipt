@@ -36,6 +36,7 @@
       *                                     »Í¼Î¸ÞÆþ¤ËÊÑ¹¹
       *  01.00.06    NACL-ÌçÏÆ    03.04.15  ¼«ÇåÀÕÊ¸½ñÎÁ¾ÃÈñÀÇÂÐ±þ
       *  01.00.07    NACL-ÌçÏÆ    03.05.13  ¹øÉô¸ÇÄêÂÓ²Ã»»¤ò´ïºàÅÀ¤Ø
+      *  01.00.08    NACL-ÌçÏÆ    03.05.19  ¼«ÇåÀÕ¤Î½é¿ÇÆü¤ÎÊÔ½¸½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -613,9 +614,9 @@
                          UNTIL     (IDX      >   20)  OR
                                    (RECE40-SRYKA(IDX)   =   SPACE)
                   PERFORM    NISUU-HENSYU-SEC
-                  IF    RECE41-HKNKBN   =   "4"                         
-                     PERFORM    NISUU-HENSYU4-SEC                       
-                  END-IF                                                
+      ***         IF    RECE41-HKNKBN   =   "4"                         
+      ***            PERFORM    NISUU-HENSYU4-SEC                       
+      ***         END-IF                                                
               END-PERFORM
       *
               PERFORM     HENSYU-SET-SEC
@@ -1707,9 +1708,10 @@
                     END-IF                                              
            END-PERFORM                                                  
       *
-           IF     WRK-TAIHI-FLG2      =   1                             
-                MOVE   WRK-TAIHI-SRYYMD2   TO  RECE41-SHOSHINYMD        
-           END-IF                                                       
+      ***  IF     WRK-TAIHI-FLG2      =   1                             
+      ***       MOVE   WRK-TAIHI-SRYYMD2   TO  RECE41-SHOSHINYMD        
+      ***  END-IF                                                       
+           MOVE    RECE41-RYOSTYMD         TO  RECE41-SHOSHINYMD
       *
            IF     WRK-SINDAN-TUU      =   ZERO                          
                 CONTINUE                                                
