@@ -2,3 +2,4 @@ Makefile
 build-stamp
 orca-db-create.sh
 orca-db-install.sh
+orca-db-clear.sh
