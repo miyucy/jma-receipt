@@ -695,7 +695,13 @@
       *    医療機関入院基本情報検索処理
            PERFORM 310-SYS-5000-SEL-SEC
            IF    ( FLG-SYSKANRI    NOT =   ZERO )
-               GO  TO  310-INPUT-AREA-EDIT-EXT
+      *
+      *        医療機関入院基本情報検索処理（期間切り替えチェック）
+               PERFORM 311-SYS-5000-SEL-SEC
+               IF    ( FLG-SYSKANRI    NOT =   ZERO )
+                   GO  TO  310-INPUT-AREA-EDIT-EXT
+               END-IF
+      *
            END-IF
       *
       *    食事療養費
@@ -895,7 +901,7 @@
       *
            MOVE    ZERO            TO  FLG-SYSKANRI
       *
-      *    施設基準情報検索
+      *    医療機関入院基本情報検索
            INITIALIZE  SYSKANRI-REC
            MOVE    "5000"          TO  SYS-KANRICD
            MOVE    "*"             TO  SYS-KBNCD
@@ -910,12 +916,39 @@
                MOVE    MCPDATA-REC TO  SYS-5000-REC
            END-IF
       *
-      *    施設基準情報クローズ
+      *    医療機関入院基本情報クローズ
            MOVE    "SYSKANRI-KEY"  TO  WRK-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
            .
       *
        310-SYS-5000-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    医療機関入院基本情報検索処理（期間切り替え時）
+      *****************************************************************
+       311-SYS-5000-SEL-SEC        SECTION.
+      *
+           MOVE    ZERO            TO  FLG-SYSKANRI
+      *
+      *    医療機関入院基本情報検索
+           INITIALIZE  SYSKANRI-REC
+           MOVE    "5000"          TO  SYS-KANRICD
+           MOVE    "*"             TO  SYS-KBNCD
+           MOVE    SYSKANRI-REC    TO  MCPDATA-REC
+           MOVE    "SYSKANRI-KEY8" TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC        NOT =   ZERO )
+               MOVE    1           TO  FLG-SYSKANRI
+           ELSE
+               MOVE    MCPDATA-REC TO  SYS-5000-REC
+           END-IF
+      *
+      *    医療機関入院基本情報クローズ
+           MOVE    "SYSKANRI-KEY8" TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+           .
+      *
+       311-SYS-5000-SEL-EXT.
            EXIT.
       *****************************************************************
       *    診療行為コードセット処理
@@ -2242,6 +2275,7 @@
       *        全角
                IF      KANACHK-SYUBETU     =   2
                    MOVE    1               TO  FLG-KANJI
+                   MOVE    SPACE   TO   SPA-GMN-W24-SRYCD (IDXZ)(9:)
                ELSE
                    MOVE    ZERO            TO  FLG-KANJI
                END-IF
