@@ -1825,6 +1825,9 @@
        45001-JYURRK-SYORI3-SEC          SECTION.
       *
       *
+      *    受診履歴連番を編集する
+           MOVE    JYURRK-RENNUM       TO  ORCSCGAIRAI-JYURRK-RENNUM
+      *
            MOVE    SMCNDATE-YMD        TO  JYURRK-CREYMD
            MOVE    SMCNDATE-YMD        TO  JYURRK-UPYMD
            MOVE    SMCNDATE-HMS        TO  JYURRK-UPHMS

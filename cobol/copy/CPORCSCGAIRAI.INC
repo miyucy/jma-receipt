@@ -42,4 +42,6 @@
       *
       *    ≈¡…º»÷πÊ
                05  ORCSCGAIRAI-DENPNUM         PIC 9(07).
+      *    ºıø«Õ˙ŒÚ»÷πÊ
+               05  ORCSCGAIRAI-JYURRK-RENNUM   PIC 9(01).
       *
