@@ -2518,6 +2518,8 @@
                                                         (WRK-IDX-IN)
                MOVE    WRK-SRYCD           TO  SPA-COM-INPUTCD
                                                         (WRK-IDX-IN)
+               MOVE    WRK-SRYCD           TO  SPA-GMN-INPUTCD
+                                                        (WRK-IDX-IN)
            END-IF
            MOVE    "K02"               TO  LNK-SC92-PG
            MOVE    WRK-SRYCD           TO  LNK-SC92-SRYCD
@@ -3395,9 +3397,13 @@
       *            ¿²¤¿¤­¤êÏ·¿ÍºßÂðÁí¹ç¿ÇÎÅ²Ê¡Ê±¡³°½èÊýäµ¤¢¤ê¡Ë
                    WHEN    "114701210"
                        MOVE    1               TO  SPA-NETAKIRI-ARI
+      *                ±¡³°
+                       MOVE    "1"             TO  SPA-INGAIKBN
       *            ¿²¤¿¤­¤êÏ·¿ÍºßÂðÁí¹ç¿ÇÎÅ²Ê¡Ê±¡³°½èÊýäµ¤Ê¤·¡Ë
                    WHEN    "114701710"
                        MOVE    2               TO  SPA-NETAKIRI-ARI
+      *                ±¡Æâ
+                       MOVE    "0"             TO  SPA-INGAIKBN
       *
       **********   Ï·¿ÍËýÀ­¼ÀÉÂ³°ÍèÁí¹ç¿ÇÎÅ²Ê¡Ê±¡³°½èÊý¤¢¤ê¡Ë
       *            WHEN    "113701010"
@@ -3426,17 +3432,25 @@
                    WHEN    "113003910"
                    WHEN    "113005810"
                    WHEN    "113005910"
+      *                ±¡³°
+                       MOVE    "1"             TO  SPA-INGAIKBN
+                       MOVE    1               TO  SPA-SEIKATU-ARI
                    WHEN    "113004010"
                    WHEN    "113006010"
                    WHEN    "113006110"
+      *                ±¡Æâ
+                       MOVE    "0"             TO  SPA-INGAIKBN
                        MOVE    1               TO  SPA-SEIKATU-ARI
       *
       *            ¾®»ù²Ê³°Íè¿ÇÎÅ²Ê»»Äê
-      *************WHEN    "113003510"
-      *            WHEN    "113003610"
-      *            WHEN    "113003710"
-      *            WHEN    "113003810"
-      *                MOVE    1               TO  SPA-SYONIKA-ARI
+                   WHEN    "113003510"
+                   WHEN    "113003610"
+      *                ±¡³°
+                       MOVE    "1"             TO  SPA-INGAIKBN
+                   WHEN    "113003710"
+                   WHEN    "113003810"
+      *                ±¡Æâ
+                       MOVE    "0"             TO  SPA-INGAIKBN
       *
       *            ÅÅÏÃºÆ¿Ç»»Äê
       *            WHEN    "112002850"
