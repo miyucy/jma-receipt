@@ -93,6 +93,7 @@
            03  IDX-K               PIC 9(04).
            03  IDX-SA              PIC 9(04).
            03  IDX-KBN             PIC 9(04).
+           03  IDX-IDY             PIC 9(04).
       *
            03  IDX-MAX             PIC 9(04).
       *
@@ -1316,6 +1317,9 @@
            PERFORM 3003-SYUJYU-CHK-SEC
       *    当日のすべての画像点滴手技の有無を判定
            PERFORM 3003-GAZOU-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      300-AUTO-SYORI-EXT
+           END-IF
       *
            MOVE    ZERO                TO  IDXS
       *
@@ -1440,17 +1444,18 @@
            ELSE
                MOVE    1                   TO  FLG-SRYACCT
            END-IF
-           PERFORM UNTIL       (FLG-SRYACCT         =   1       )
+           PERFORM UNTIL       (FLG-SRYACCT        =   1       )
+                           OR  (SPA-ERRCD      NOT =   SPACE )
                MOVE    ZERO                TO  FLG-ZAIARI
                PERFORM VARYING     IDY     FROM    1   BY  1
                        UNTIL       IDY     >   31
                    IF      ACCT-DAY (1 IDY)    >   ZERO
-                       IF     (TBL-DAY (IDY)   >   ZERO )  OR
-                              (TBL-IVH-DAY(IDY)    >   ZERO )  OR
-                              (TBL-SYU-DAY(IDY)    >   ZERO )  OR
-                              (TBL-GAZ-DAY(IDY)    >   ZERO )
+      **********       IF     (TBL-DAY (IDY)   >   ZERO )  OR
+      *                       (TBL-IVH-DAY(IDY)    >   ZERO )  OR
+      *                       (TBL-SYU-DAY(IDY)    >   ZERO )  OR
+      *******                 (TBL-GAZ-DAY(IDY)    >   ZERO )
                            MOVE    1           TO  FLG-ZAIARI
-                       END-IF
+      ***              END-IF
                    END-IF
                END-PERFORM
       *        訂正の時、集計なし
@@ -1612,7 +1617,22 @@
                    END-IF
       *            中心静脈
                    IF      WRK-TEN-SRYCD1  NOT =   SPACE
-                       MOVE    WRK-TEN-SRYCD1  TO  TBL-IVH-SRYCD (IDY)
+      *TEST
+                     DISPLAY "C30 WRK-TEN-SRYCD1:" WRK-TEN-SRYCD1
+                            ",IDY:" IDY
+                            ",SRYCD:" TBL-IVH-SRYCD (IDY)
+                            ",IDX:" TBL-IVH-IDX   (IDY)
+      *TEST
+                       IF     (TBL-IVH-SRYCD (IDY) NOT =   SPACE )  AND
+                              (TBL-IVH-IDX   (IDY)     >   ZERO  )
+                           MOVE    "9026"              TO  SPA-ERRCD
+                           MOVE    TBL-IVH-IDX (IDY)   TO  IDX-IDY
+                           MOVE    "1"                 TO  WRK-COM-CUR
+                                                              (IDX-IDY)
+                       ELSE
+                           MOVE    WRK-TEN-SRYCD1  TO  TBL-IVH-SRYCD
+                                                                 (IDY)
+                       END-IF
                    END-IF
       *            生物学的製剤区分
                    IF      FLG-SEIBUTU         =   1
@@ -1875,7 +1895,9 @@
                    ELSE
                        IF      TBL-IVH-CHUIDX (IDY)   >   ZERO
                            MOVE    TBL-IVH-CHUIDX (IDY)   TO  IDX-KBN
-                           IF      WRK-COM-KZMFLG (IDX-KBN)    =   SPACE
+                           MOVE    IDY                    TO  IDX-IDY
+                           IF      WRK-COM-NYU-KZMFLG (IDX-KBN IDY)
+                                                           =   SPACE
                                MOVE    "K014"          TO  WRK-ERRCD
                                MOVE    "1"             TO  WRK-COM-CUR
                                                               (IDX-KBN)
@@ -1888,7 +1910,7 @@
                       (TBL-IVH-SRYCD (IDY) NOT =   SPACE)
                    IF      TBL-IVH-IDX (IDY)   >   ZERO
       *                手技料エラー
-                       MOVE    "9016"              TO  SPA-ERRCD
+                       MOVE    "9027"              TO  SPA-ERRCD
                        MOVE    TBL-IVH-IDX (IDY)   TO  IDX-K
                        MOVE    "1"                 TO  WRK-COM-CUR
                                                               (IDX-K)
@@ -1900,7 +1922,9 @@
                    IF      TBL-SYU-IDX (IDY)   >   ZERO
       *                手技料エラー
                        MOVE    TBL-SYU-IDX (IDY)   TO  IDX-KBN
-                       IF      WRK-COM-KZMFLG (IDX-KBN)    =   SPACE
+                       MOVE    IDY                 TO  IDX-IDY
+                       IF      WRK-COM-NYU-KZMFLG (IDX-KBN IDY)
+                                                       =   SPACE
                            MOVE    "K015"              TO  WRK-ERRCD
                            MOVE    "1"                 TO  WRK-COM-CUR
                                                               (IDX-KBN)
@@ -1924,8 +1948,10 @@
            IF      SPA-ERRCD           =   SPACE
                IF      WRK-ERRCD       NOT =   SPACE
                    MOVE    WRK-ERRCD       TO  SPA-ERRCD
+                   MOVE    "1"             TO  WRK-COM-NYU-KZMFLG
+                                                      (IDX-KBN IDX-IDY)
                    MOVE    "1"             TO  WRK-COM-KZMFLG
-                                                          (IDX-KBN)
+                                                   (IDX-KBN)
                END-IF
            END-IF
       *
@@ -2029,7 +2055,9 @@
                           (TBL-TEN-SRYCD(IDY)  NOT =   "130004410")
       *                液量エラー
                        MOVE    TBL-TEN-IDX (IDY)   TO  IDX-KBN
-                       IF      WRK-COM-KZMFLG (IDX-KBN)    =   SPACE
+                       MOVE    IDY                 TO  IDX-IDY
+                       IF      WRK-COM-NYU-KZMFLG (IDX-KBN IDY)
+                                                       =   SPACE
                            MOVE    "K012"          TO  WRK-ERRCD
                            MOVE    "1"             TO  WRK-COM-CUR
                                                           (IDX-KBN)
@@ -2081,7 +2109,8 @@
       *                手技料エラー（警告）
                        IF      TBL-SYU-IDX (IDY)   >   ZERO
                            MOVE    TBL-SYU-IDX (IDY)   TO  IDX-KBN
-                           IF      WRK-COM-KZMFLG (IDX-KBN)
+                           MOVE    IDY                 TO  IDX-IDY
+                           IF      WRK-COM-NYU-KZMFLG (IDX-KBN IDY)
                                                        =   SPACE
                               MOVE    "K010"       TO  WRK-ERRCD
                               MOVE    "1"          TO  WRK-COM-CUR
@@ -2113,7 +2142,8 @@
                        MOVE    SPACE               TO  SPA-ERRCD
                        IF      TBL-TEN-IDX (IDY)   >   ZERO
                            MOVE    TBL-TEN-IDX (IDY)   TO  IDX-KBN
-                           IF      WRK-COM-KZMFLG (IDX-KBN)
+                           MOVE    IDY                 TO  IDX-IDY
+                           IF      WRK-COM-NYU-KZMFLG (IDX-KBN IDY)
                                                        =   SPACE
                               MOVE    "K013"       TO  WRK-ERRCD
                               MOVE    "1"          TO  WRK-COM-CUR
@@ -2128,8 +2158,10 @@
            IF      SPA-ERRCD           =   SPACE
                IF      WRK-ERRCD       NOT =   SPACE
                    MOVE    WRK-ERRCD       TO  SPA-ERRCD
+                   MOVE    "1"             TO  WRK-COM-NYU-KZMFLG
+                                                   (IDX-KBN IDX-IDY)
                    MOVE    "1"             TO  WRK-COM-KZMFLG
-                                                          (IDX-KBN)
+                                                   (IDX-KBN)
                END-IF
            END-IF
       *

@@ -2322,6 +2322,7 @@
                           ((SPA-GMN-INPUTCD(IDX)   =   SPACE ) AND
                            (SPA-COM-INPUTCD(IDX)   =   SPACE ))
                MOVE    SPACE           TO  SPA-COM-KZMFLG (IDX)
+               MOVE    SPACE           TO  SPA-COM-NYU-KZMFLG-G(IDX)
            END-PERFORM
       *
            MOVE    SPACE               TO  SPA-ERRCD

@@ -680,6 +680,16 @@
                                        TO  SPA-ERRMSG
                    MOVE    "点滴手技料は算定できません。"
                                        TO  SPA-ERRMSG(29:)
+               WHEN    "9026"
+                   MOVE    "既に中心静脈注射料が算定済に日です。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "算定できません。"
+                                       TO  SPA-ERRMSG(37:)
+               WHEN    "9027"
+                   MOVE    "手術が算定されています。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "中心静脈注射料は算定できません。"
+                                       TO  SPA-ERRMSG(25:)
                WHEN    "9100"
                    MOVE    "診療内容が２００行を超えます。"
                                        TO  SPA-ERRMSG
