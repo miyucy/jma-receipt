@@ -818,7 +818,9 @@
                ADD     RECE10-YKZFTN         (IDX1)
                                  TO  SUM-YKZFTN         (IDY3 IDY1 IDY2)
            END-IF
-           IF      IDY1              <   3                          
+           IF    (  IDY1              <   3        )
+           OR    ( (IDY1              =   3 ) AND
+                   (IDY2              =   3 )      )                          
                ADD     RECE10-FTNMONEY       (IDX1)
                                  TO  SUM-FTNMONEY       (IDY3 IDY1 IDY2)
            END-IF                          
