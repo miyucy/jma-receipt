@@ -104,6 +104,7 @@
            03  FLG-OK              PIC 9(01).
       *
            03  FLG-JIKAN           PIC 9(01).
+           03  FLG-COMMENT         PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -116,6 +117,7 @@
            03  IDX-S               PIC 9(04).
            03  IDXS                PIC 9(04).
            03  IDX2                PIC 9(04).
+           03  IDK                 PIC 9(04).
            03  IDX-SRY             PIC 9(04).
            03  IDX-TEI             PIC 9(04).
            03  IDX-HKN             PIC 9(04).
@@ -305,6 +307,9 @@
       *
       *    保険組合せセット領域
            COPY    "CPORCSHKNSET.INC".
+      *
+      *    全角チェックパラメタ
+           COPY    "CPORCSKANACHK.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -2228,16 +2233,50 @@
            END-IF
       *
       *    コメント１
-           IF      PTINF-COMMENT-1   NOT =   SPACE
-                ADD     1                  TO  IDX
-                MOVE    "コメント："       TO  SPA-GMN-TABOO (IDX)
-                MOVE    PTINF-COMMENT-1    TO  SPA-GMN-TABOO (IDX)
+           MOVE    ZERO                TO  FLG-COMMENT
+           IF      PTINF-COMMENT-1 NOT =   SPACE
+      *        全角・半角判定
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"                 TO  KANACHK-SYORI
+               MOVE    PTINF-COMMENT-1     TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
+               IF      KANACHK-SYUBETU     =   ZERO
+                   MOVE    1                   TO  FLG-COMMENT
+               ELSE
+                   MOVE    ZERO                TO  FLG-COMMENT
+               END-IF
+               ADD     1                  TO  IDX
+               MOVE    "コメント："       TO  SPA-GMN-TABOO (IDX)
+      *
+               IF      FLG-COMMENT        =   1
+      *            最大桁数判定
+                   MOVE    ZERO                TO  KANACHK-MAX
+                   PERFORM VARYING     IDK     FROM    200  BY  -1
+                           UNTIL       IDK     <   1
+                       IF     KANACHK-MAE-INPUT (IDK:1)    NOT =   SPACE
+                          MOVE    IDK             TO  KANACHK-MAX
+                          MOVE    1               TO  IDK
+                      END-IF
+                   END-PERFORM
+                   IF      KANACHK-MAX        <=  48
+                       MOVE    PTINF-COMMENT-1(1:KANACHK-MAX)
+                                          TO  SPA-GMN-TABOO (IDX)
                                                              (11:)
-                IF      PTINF-COMMENT-1(49:)   NOT =   SPACE
-                    ADD     1                  TO  IDX
-                    MOVE    PTINF-COMMENT-1(49:) TO  SPA-GMN-TABOO (IDX)
-                END-IF
-                IF      PTINF-COMMENT-1(111:)  NOT =   SPACE
+                   ELSE
+                       MOVE    "全角半角混在の為表示できません"
+                                          TO  SPA-GMN-TABOO (IDX)
+                                                             (11:)
+                   END-IF
+               ELSE
+      *
+               MOVE    PTINF-COMMENT-1    TO  SPA-GMN-TABOO (IDX)
+                                                             (11:)
+               IF      PTINF-COMMENT-1(49:)   NOT =   SPACE
+                   ADD     1                  TO  IDX
+                   MOVE    PTINF-COMMENT-1(49:) TO  SPA-GMN-TABOO (IDX)
+               END-IF
+               IF      PTINF-COMMENT-1(111:)  NOT =   SPACE
                     ADD     1                  TO  IDX
                     MOVE    PTINF-COMMENT-1(111:)
                                                TO  SPA-GMN-TABOO (IDX)
@@ -2247,9 +2286,38 @@
                     MOVE    PTINF-COMMENT-1(173:)
                                                TO  SPA-GMN-TABOO (IDX)
                 END-IF
+      *
+                END-IF
+      *
            END-IF
       *    コメント２
            IF      PTINF-COMMENT-2 NOT =   SPACE
+      *        全角・半角判定
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"                 TO  KANACHK-SYORI
+               MOVE    PTINF-COMMENT-2     TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
+               IF      KANACHK-SYUBETU     =   ZERO
+      *            最大桁数判定
+                   MOVE    ZERO                TO  KANACHK-MAX
+                   PERFORM VARYING     IDK     FROM    200  BY  -1
+                           UNTIL       IDK     <   1
+                       IF     KANACHK-MAE-INPUT (IDK:1)    NOT =   SPACE
+                          MOVE    IDK             TO  KANACHK-MAX
+                          MOVE    1               TO  IDK
+                      END-IF
+                   END-PERFORM
+                   ADD     1                   TO  IDX
+                   IF      KANACHK-MAX        <=  62
+                       MOVE    PTINF-COMMENT-2(1:KANACHK-MAX)
+                                          TO  SPA-GMN-TABOO (IDX)
+                   ELSE
+                       MOVE    "全角半角混在の為表示できません"
+                                          TO  SPA-GMN-TABOO (IDX)
+                   END-IF
+               ELSE
+      *
                ADD     1                   TO  IDX
                MOVE    PTINF-COMMENT-2     TO  SPA-GMN-TABOO (IDX)
                IF      PTINF-COMMENT-2(63:)     NOT =   SPACE
@@ -2266,6 +2334,8 @@
                    ADD     1                   TO  IDX
                    MOVE    PTINF-COMMENT-2(187:)
                                                TO  SPA-GMN-TABOO (IDX)
+               END-IF
+      *
                END-IF
            END-IF
            MOVE    IDX                 TO  SPA-TABOO-MAX
