@@ -381,6 +381,12 @@
            COPY    "ORCA-DBPATH".
       *===> For Claim End
       *
+      *!!!TEST
+      *    空き患者番号編集サブ
+           COPY    "CPORCBZ001S.INC".
+      *    システム管理（患者番号構成情報）
+           COPY    "CPSK1009.INC".
+      *!!!TEST
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -918,6 +924,13 @@
                    PERFORM 460-YOYAKU-SEC
       *    受付一覧へ
                WHEN    "CLICKED"       ALSO    "B11"
+      *!!TEST
+                   INITIALIZE              ORCBZ001SAREA
+                   CALL "ORCBZ001S"  USING 
+                                 SPA-AREA
+                                 ORCBZ001SAREA
+                                 SYS-1009-REC
+      *!!TEST
                    PERFORM 490-UKEICHI-SEC
       *    複写処理
                WHEN    "CLICKED"       ALSO    "B11S"

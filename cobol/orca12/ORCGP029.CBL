@@ -37,6 +37,7 @@
       *  02.00.01    NACL-多々納  02/07/31  パラメタファイルをＤＢへ
       *  02.00.02    NACL-多々納  03/03/24  公費負担額追加
       *  02.00.03    NACL-多々納  03/04/22  保険組合変更時メッセージ追加
+      *  02.00.04    NACL-多々納  03/06/27  カスタマイズ帳票名取得サブ追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -268,6 +269,9 @@
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
+      *
+      *    オンライン帳票名・出力先プリンタ名取得パラ
+           COPY    "CPORCSPRTNM.INC".
       *
       *
       *****************************************************************
@@ -1482,68 +1486,92 @@
       *
       *    カルテ
            MOVE    SPACE               TO  WRK-KARUTE-PG
-           INITIALIZE                      SYS-1032-REC
-           MOVE    "1032"              TO  SYS-1032-KANRICD
-           MOVE    "00000001"          TO  SYS-1032-KBNCD
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "1"                 TO  ORCSPRTNM-KBN
+           MOVE    "00000001"          TO  ORCSPRTNM-KBNCD
+           MOVE    SPA-SYSYMD          TO  ORCSPRTNM-SRYYMD
+           MOVE    "2"                 TO  ORCSPRTNM-NYUGAIKBN
+           CALL    "ORCSPRTNM"         USING
+                                           ORCSPRTNMAREA
+                                           SPA-AREA
+                                           SYS-1032-REC
+           MOVE    ORCSPRTNM-PRTPG     TO  WRK-KARUTE-PG
       *
-           MOVE    SYS-1032-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
-               PERFORM 960-SYSKANRI-READ-SEC
-           ELSE
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1032-REC
+      *    処方せん
+           MOVE    SPACE               TO  WRK-SYOHOU-PG
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "1"                 TO  ORCSPRTNM-KBN
+           MOVE    "00000002"          TO  ORCSPRTNM-KBNCD
+           MOVE    SPA-SYSYMD          TO  ORCSPRTNM-SRYYMD
+           MOVE    "2"                 TO  ORCSPRTNM-NYUGAIKBN
+           CALL    "ORCSPRTNM"         USING
+                                           ORCSPRTNMAREA
+                                           SPA-AREA
+                                           SYS-1032-REC
+           MOVE    ORCSPRTNM-PRTPG     TO  WRK-SYOHOU-PG
+      *
+      **** INITIALIZE                      SYS-1032-REC
+      *    MOVE    "1032"              TO  SYS-1032-KANRICD
+      *    MOVE    "00000001"          TO  SYS-1032-KBNCD
+      *
+      *    MOVE    SYS-1032-REC        TO  MCPDATA-REC
+      *    MOVE    "DBSELECT"          TO  MCP-FUNC
+      *    MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+      *    MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+      *    CALL    "ORCMCPSUB"          USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      *                                 MCPDATA-REC
+      *    IF      MCP-RC              =   ZERO
+      *        MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
+      *        PERFORM 960-SYSKANRI-READ-SEC
+      *    ELSE
+      *        MOVE    1               TO  FLG-SYSKANRI
+      *    END-IF
+      *    IF      FLG-SYSKANRI        =   ZERO
+      *        MOVE    MCPDATA-REC         TO  SYS-1032-REC
       *        独自開発分
-               IF      SYS-1032-ORCACSTCHK     =   "T"
-                   MOVE    SYS-1032-ORCACSTNM  TO  WRK-KARUTE-PG
-               ELSE
+      *        IF      SYS-1032-ORCACSTCHK     =   "T"
+      *            MOVE    SYS-1032-ORCACSTNM  TO  WRK-KARUTE-PG
+      *        ELSE
       *        ＯＲＣＡ標準分
-                   MOVE    SYS-1032-ORCAORGNM  TO  WRK-KARUTE-PG
-               END-IF
-           END-IF
+      *            MOVE    SYS-1032-ORCAORGNM  TO  WRK-KARUTE-PG
+      *        END-IF
+      *****END-IF
            IF      WRK-KARUTE-PG       =   SPACE
                MOVE    "ORCHC01"           TO  WRK-KARUTE-PG
            END-IF
       *
-      *    処方せん
-           MOVE    SPACE               TO  WRK-SYOHOU-PG
-           INITIALIZE                      SYS-1032-REC
-           MOVE    "1032"              TO  SYS-1032-KANRICD
-           MOVE    "00000002"          TO  SYS-1032-KBNCD
+      *****処方せん
+      *    MOVE    SPACE               TO  WRK-SYOHOU-PG
+      *    INITIALIZE                      SYS-1032-REC
+      *    MOVE    "1032"              TO  SYS-1032-KANRICD
+      *    MOVE    "00000002"          TO  SYS-1032-KBNCD
       *
-           MOVE    SYS-1032-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
-               PERFORM 960-SYSKANRI-READ-SEC
-           ELSE
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1032-REC
+      *    MOVE    SYS-1032-REC        TO  MCPDATA-REC
+      *    MOVE    "DBSELECT"          TO  MCP-FUNC
+      *    MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+      *    MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+      *    CALL    "ORCMCPSUB"          USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      *                                 MCPDATA-REC
+      *    IF      MCP-RC              =   ZERO
+      *        MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
+      *        PERFORM 960-SYSKANRI-READ-SEC
+      *    ELSE
+      *        MOVE    1               TO  FLG-SYSKANRI
+      *    END-IF
+      *    IF      FLG-SYSKANRI        =   ZERO
+      *        MOVE    MCPDATA-REC         TO  SYS-1032-REC
       *        独自開発分
-               IF      SYS-1032-ORCACSTCHK     =   "T"
-                   MOVE    SYS-1032-ORCACSTNM  TO  WRK-SYOHOU-PG
-               ELSE
+      *        IF      SYS-1032-ORCACSTCHK     =   "T"
+      *            MOVE    SYS-1032-ORCACSTNM  TO  WRK-SYOHOU-PG
+      *        ELSE
       *        ＯＲＣＡ標準分
-                   MOVE    SYS-1032-ORCAORGNM  TO  WRK-SYOHOU-PG
-               END-IF
-           END-IF
+      *            MOVE    SYS-1032-ORCAORGNM  TO  WRK-SYOHOU-PG
+      *        END-IF
+      *****END-IF
            IF      WRK-SYOHOU-PG       =   SPACE
                MOVE    "ORCHC19"           TO  WRK-SYOHOU-PG
            END-IF

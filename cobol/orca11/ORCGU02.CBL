@@ -56,6 +56,7 @@
       *  02.00.06    NACL-多々納  03/03/05  排他制御処理追加
       *  02.00.07    NACL-多々納  03/03/26  カルテ続紙印刷追加
       *  02.00.08    NACL-多々納  03/06/25  受付一覧更新追加
+      *  02.00.09    NACL-多々納  03/06/30  カスタマイズ帳票名取得サブ追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -109,12 +110,12 @@
       *
       *    添字領域
        01  IDX-AREA.
-           03  IDX                                     PIC 9(04).
-           03  IDX2                                    PIC 9(04).
-           03  IDX3                                    PIC 9(04).
-           03  IDY                                     PIC 9(04).
-           03  IDZ                                     PIC 9(04).
-           03  IDX-C                                   PIC 9(04).
+           03  IDX                     PIC 9(04).
+           03  IDX2                    PIC 9(04).
+           03  IDX3                    PIC 9(04).
+           03  IDY                     PIC 9(04).
+           03  IDZ                     PIC 9(04).
+           03  IDX-C                   PIC 9(04).
       *
       *    ＣＬＡＩＭファイル名
        01  CLAIM-FILE.
@@ -299,6 +300,9 @@
       *
       *    処方箋印刷パラメタ（Ａ５）
            COPY    "CPORCHC19.INC".
+      *
+      *    オンライン帳票名・出力先プリンタ名取得パラ
+           COPY    "CPORCSPRTNM.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -992,7 +996,6 @@
                    PERFORM 493-CLEAR-SEC
       *---- (01.00.05) LINE ADD END ----------------------------------
       *TEST    受付一覧更新
-               WHEN    "CLICKED"       ALSO    "pandatimer1"
                WHEN    "CLICKED"       ALSO    "B11S"
                    PERFORM 4931-UKELIST-SEC
       *
@@ -2566,42 +2569,68 @@
       *
       *    カルテ
            MOVE    SPACE               TO  WRK-KARUTE-PG
-           INITIALIZE                      SYS-1032-REC
-           MOVE    "1032"              TO  SYS-1032-KANRICD
-           MOVE    "00000001"          TO  SYS-1032-KBNCD
-           MOVE    SYS-1032-REC        TO  MCPDATA-REC
-           PERFORM 910-SYSKANRI-READ-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1032-REC
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "1"                 TO  ORCSPRTNM-KBN
+           MOVE    "00000001"          TO  ORCSPRTNM-KBNCD
+           MOVE    SPA-SYSYMD          TO  ORCSPRTNM-SRYYMD
+           MOVE    "2"                 TO  ORCSPRTNM-NYUGAIKBN
+           CALL    "ORCSPRTNM"         USING
+                                           ORCSPRTNMAREA
+                                           SPA-AREA
+                                           SYS-1032-REC
+           MOVE    ORCSPRTNM-PRTPG     TO  WRK-KARUTE-PG
+      *
+      *    処方せん
+           MOVE    SPACE               TO  WRK-SYOHOU-PG
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "1"                 TO  ORCSPRTNM-KBN
+           MOVE    "00000002"          TO  ORCSPRTNM-KBNCD
+           MOVE    SPA-SYSYMD          TO  ORCSPRTNM-SRYYMD
+           MOVE    "2"                 TO  ORCSPRTNM-NYUGAIKBN
+           CALL    "ORCSPRTNM"         USING
+                                           ORCSPRTNMAREA
+                                           SPA-AREA
+                                           SYS-1032-REC
+           MOVE    ORCSPRTNM-PRTPG     TO  WRK-SYOHOU-PG
+      *
+      *    カルテ
+      *****MOVE    SPACE               TO  WRK-KARUTE-PG
+      *    INITIALIZE                      SYS-1032-REC
+      *    MOVE    "1032"              TO  SYS-1032-KANRICD
+      *    MOVE    "00000001"          TO  SYS-1032-KBNCD
+      *    MOVE    SYS-1032-REC        TO  MCPDATA-REC
+      *    PERFORM 910-SYSKANRI-READ-SEC
+      *    IF      FLG-SYSKANRI        =   ZERO
+      *        MOVE    MCPDATA-REC         TO  SYS-1032-REC
       *        独自開発分
-               IF      SYS-1032-ORCACSTCHK     =   "T"
-                   MOVE    SYS-1032-ORCACSTNM  TO  WRK-KARUTE-PG
-               ELSE
+      *        IF      SYS-1032-ORCACSTCHK     =   "T"
+      *            MOVE    SYS-1032-ORCACSTNM  TO  WRK-KARUTE-PG
+      *        ELSE
       *        ＯＲＣＡ標準分
-                   MOVE    SYS-1032-ORCAORGNM  TO  WRK-KARUTE-PG
-               END-IF
-           END-IF
+      *            MOVE    SYS-1032-ORCAORGNM  TO  WRK-KARUTE-PG
+      *        END-IF
+      *****END-IF
            IF      WRK-KARUTE-PG       =   SPACE
                MOVE    "ORCHC01"           TO  WRK-KARUTE-PG
            END-IF
       *
-      *    処方せん
-           MOVE    SPACE               TO  WRK-SYOHOU-PG
-           INITIALIZE                      SYS-1032-REC
-           MOVE    "1032"              TO  SYS-1032-KANRICD
-           MOVE    "00000002"          TO  SYS-1032-KBNCD
-           MOVE    SYS-1032-REC        TO  MCPDATA-REC
-           PERFORM 910-SYSKANRI-READ-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1032-REC
+      ***  処方せん
+      *    MOVE    SPACE               TO  WRK-SYOHOU-PG
+      *    INITIALIZE                      SYS-1032-REC
+      *    MOVE    "1032"              TO  SYS-1032-KANRICD
+      *    MOVE    "00000002"          TO  SYS-1032-KBNCD
+      *    MOVE    SYS-1032-REC        TO  MCPDATA-REC
+      *    PERFORM 910-SYSKANRI-READ-SEC
+      *    IF      FLG-SYSKANRI        =   ZERO
+      *        MOVE    MCPDATA-REC         TO  SYS-1032-REC
       *        独自開発分
-               IF      SYS-1032-ORCACSTCHK     =   "T"
-                   MOVE    SYS-1032-ORCACSTNM  TO  WRK-SYOHOU-PG
-               ELSE
+      *        IF      SYS-1032-ORCACSTCHK     =   "T"
+      *            MOVE    SYS-1032-ORCACSTNM  TO  WRK-SYOHOU-PG
+      *        ELSE
       *        ＯＲＣＡ標準分
-                   MOVE    SYS-1032-ORCAORGNM  TO  WRK-SYOHOU-PG
-               END-IF
-           END-IF
+      *            MOVE    SYS-1032-ORCAORGNM  TO  WRK-SYOHOU-PG
+      *        END-IF
+      *****END-IF
            IF      WRK-SYOHOU-PG       =   SPACE
                MOVE    "ORCHC19"           TO  WRK-SYOHOU-PG
            END-IF
