@@ -561,7 +561,7 @@
                GO  TO  350-G03-SET-EXT
            ELSE
       *
-               COMPUTE SPA-G01-CUR
+               COMPUTE SPA-GMN-G01-CUR
                    =   SPA-G01-CUR +   WRK-CONS-PARA-MAX   +   1
       *
                IF    ( SPA-G01-IDX    >=   WRK-CONS-SCR-MAX )
