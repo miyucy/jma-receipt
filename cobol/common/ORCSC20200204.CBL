@@ -1003,6 +1003,12 @@
            PERFORM 3001-INGAI-SYORI-SEC
       *    院内分
            PERFORM 3002-INNAI-SYORI-SEC
+      *
+           IF      LNK-ORCSC-KIDCD     NOT =   SPACE
+               MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+               GO      TO      300-AUTO-SYORI-EXT
+           END-IF
+      *
       *     特定疾患処方管理加算処方箋料がある時、処方箋料があること
            IF      FLG-TOKUSYO1        =   1
                IF      FLG-SYOHOSENN       =   ZERO
@@ -1124,6 +1130,13 @@
                GO      TO      3001-INGAI-SYORI-EXT
            END-IF
       *
+      *    ７種類以上確認後、しない場合は回数を変更する
+           IF      SPA-NAIFUKU-CHK     =   1
+               IF      SPA-NAIFUKU-OK      =   ZERO
+                   MOVE    6               TO  WRK-ZAICNT2
+               END-IF
+           END-IF
+      *
       *    処方箋料
            IF      FLG-KOUHATU         =   ZERO
       *        後発医薬品を含まない
@@ -1149,6 +1162,16 @@
                   (FLG-TONPUK2         =   1    )  OR
                   (FLG-GAIYAK2         =   1    ))   AND
                   (IDX-SYOHOU          =   ZERO )
+               IF      SPA-NAIFUKU-CHK     =   ZERO
+      *            ７種類以上の場合、確認
+                   IF      WRK-ZAICNT2         >=  7
+      *            内服の薬剤逓減有りチェック
+                       MOVE    1               TO  SPA-NAIFUKU-CHK
+                       MOVE    "2002"          TO  LNK-ORCSC-KIDCD
+                       GO      TO      3001-INGAI-SYORI-EXT
+                   END-IF
+               END-IF
+      *
                PERFORM 3002-KASAN-SYORI-SEC
                IF      FLG-ERR             =   ZERO
                    MOVE    "820"           TO  LNK-ORCSC-SRYSYUKBN
@@ -1230,14 +1253,27 @@
       *
            MOVE    ZERO                TO  FLG-SYOHORYO
       *
+      *
            IF      WRK-ZAICNT          >=  7
-      *        薬剤料逓減あり
-               COMPUTE WRK-SANTEN-9    =   WRK-KEIKEI
-                                       *   90
-                                       /   100.00
-                                       +   0.5
-               MOVE    WRK-SANTEN-9    TO  WRK-SANTEN
-               PERFORM 3001-GENHEN-SEC
+      *        内服の薬剤逓減有りチェック
+               IF      SPA-NAIFUKU-CHK     =   ZERO
+                   MOVE    1               TO  SPA-NAIFUKU-CHK
+                   MOVE    "2001"          TO  LNK-ORCSC-KIDCD
+                   GO      TO      3002-INNAI-SYORI-EXT
+               ELSE
+                  IF      SPA-NAIFUKU-OK       =   1
+      *            薬剤料逓減あり
+                   COMPUTE WRK-SANTEN-9    =   WRK-KEIKEI
+                                           *   90
+                                           /   100.00
+                                           +   0.5
+                       MOVE    WRK-SANTEN-9    TO  WRK-SANTEN
+                       PERFORM 3001-GENHEN-SEC
+                   ELSE
+      *            逓減なし
+                       MOVE    6           TO  WRK-ZAICNT
+                   END-IF
+               END-IF
            END-IF
       *
       *    薬剤料逓減
