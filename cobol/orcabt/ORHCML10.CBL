@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-太田    03/10/15  自費消費税分の考慮漏れを修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -574,7 +575,7 @@
       *
            INITIALIZE                  TNS-TENSU-REC
            MOVE    "095000000"         TO  TNS-SRYCD
-           MOVE    "095999999"         TO  TNSUP-SRYCD 
+           MOVE    "096999999"         TO  TNSUP-SRYCD 
       *
            EVALUATE    WRK-PARA-CYUKBN ALSO    WRK-PARA-SYUKBN
                WHEN    1               ALSO    1
