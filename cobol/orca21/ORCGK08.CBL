@@ -764,6 +764,14 @@
       *    調剤料のメッセージ
            MOVE    SPACE               TO  SPA-GMN-MSGDATA
            IF      SPA-SYOHO-KBN   NOT =   ZERO
+      *        保険空白日本語変換
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "2"                 TO  KANACHK-SYORI
+               MOVE    SPA-SYOHO-HKNMEI    TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
+               MOVE    KANACHK-OUT-INPUT   TO  SPA-SYOHO-HKNMEI
+      *
                STRING    SPA-SYOHO-MEI     DELIMITED   BY  SPACE
                          "は他保険で算定済。"
                                            DELIMITED   BY  SIZE
