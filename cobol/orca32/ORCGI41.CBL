@@ -3053,15 +3053,15 @@
       *****************************************************************
        420-ZAIHENKOU-SEC        SECTION.
       *
-           IF      SPA-GMN-SRYKA-I-41   =   "00"
-               MOVE    6                   TO  SPA-GMN-CUR-41
-               MOVE    "0023"              TO  SPA-ERRCD
-               GO      TO      420-ZAIHENKOU-EXT
-           END-IF.
-      *
            IF      SPA-GMN-NUM-41    =   ZERO
                MOVE    1                   TO  SPA-GMN-CUR-41
                MOVE    "0013"              TO  SPA-ERRCD
+               GO      TO      420-ZAIHENKOU-EXT
+           END-IF.
+      *
+           IF      SPA-NAI-TZAISKBKBN-41 (SPA-GMN-NUM-41)   NOT =   "1"
+               MOVE    1                   TO  SPA-GMN-CUR-41
+               MOVE    "0029"              TO  SPA-ERRCD
                GO      TO      420-ZAIHENKOU-EXT
            END-IF.
       *
@@ -3157,6 +3157,10 @@
       *    労災区分
            MOVE    SPA-NAI-RSI-HKNKBN  TO  SPA-RSI-HKNKBN.
       *
+           MOVE    SPA-GMN-SRYKA-I-41      TO  SPA-I40-SRYKA.
+           MOVE    SPA-GMN-SRYKAMEI-I-41   TO  SPA-I40-SRYKAMEI.
+           MOVE    SPA-NAI-TSRYKA-41 (IDX) TO  SPA-I40-SRYKA-READ.
+      *
       *    入院会計マスター更新
            PERFORM 4901-NYUINACCT-UPD-SEC.
            IF      SPA-ERRCD       NOT =   SPACE
@@ -3166,8 +3170,6 @@
       *    保存用パラメタ作成
            PERFORM 4201-NYUINACCT-PARA-SEC.
       *
-           MOVE    SPA-GMN-SRYKA-I-41     TO  SPA-I40-SRYKA.
-           MOVE    SPA-GMN-SRYKAMEI-I-41  TO  SPA-I40-SRYKAMEI.
            MOVE    SPACE                  TO  SPA-IIDCD.
            INITIALIZE                     SPA-GMN-INPUT-41.
       *
@@ -4331,6 +4333,9 @@
                                        TO  WRK-ERRMSG
                WHEN    "0028"
                    MOVE    "次月データはありません。"
+                                       TO  WRK-ERRMSG
+               WHEN    "0029"
+                   MOVE    "剤識別区分が入院料以外の指定はできません。"
                                        TO  WRK-ERRMSG
                WHEN    "1005"
                    MOVE    "受診履歴番号が存在しません"
