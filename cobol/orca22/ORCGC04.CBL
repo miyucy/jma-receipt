@@ -36,6 +36,7 @@
       *
       *  01.02.01    NACL-藤原    03/08/28  登録数の制限をなくす
       *                                     病名種別の追加
+      *  01.02.02    NACL-藤原    04/02/25  分類毎の表示の前次頁の処理
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1244,13 +1245,21 @@
                                            SPA-NAI-C04-BYOMEI-TBL
                                            SPA-GMN-C04-KENBYOMEI
            MOVE    ZERO                TO  SPA-GMN-C04-MAX
-                                           SPA-GMN-C04-BUNRUICD
-                                           SPA-NAI-C04-BUNRUICD-IDX
+      *****                                SPA-GMN-C04-BUNRUICD
+      *****                                SPA-NAI-C04-BUNRUICD-IDX
                                            SPA-GMN-C04-SELNUM
       *    検索処理
-           MOVE    "USERBYOMEI-KEY3"   TO  WRK-DBPATH
-           INITIALIZE                  USERBYOMEI-REC
-           MOVE    SPA-HOSPID          TO  USBYO-HOSPID
+           IF      SPA-GMN-C04-BUNRUICD    =   ZERO
+               MOVE    "USERBYOMEI-KEY3"   TO  WRK-DBPATH
+               INITIALIZE                  USERBYOMEI-REC
+               MOVE    SPA-HOSPID          TO  USBYO-HOSPID
+           ELSE
+               MOVE    "USERBYOMEI-KEY7"   TO  WRK-DBPATH
+               INITIALIZE                  USERBYOMEI-REC
+               MOVE    SPA-HOSPID          TO  USBYO-HOSPID
+               MOVE    SPA-GMN-C04-BUNRUICD 
+                                       TO  USBYO-BUNRUICD
+           END-IF
            PERFORM 3101-USERBYOMEI-LST-SEC
       *
            MOVE    2                   TO  SPA-GMN-C04-CUR     
@@ -1274,13 +1283,21 @@
                                            SPA-NAI-C04-BYOMEI-TBL
                                            SPA-GMN-C04-KENBYOMEI
            MOVE    ZERO                TO  SPA-GMN-C04-MAX
-                                           SPA-GMN-C04-BUNRUICD
-                                           SPA-NAI-C04-BUNRUICD-IDX
+      *****                                SPA-GMN-C04-BUNRUICD
+      *****                                SPA-NAI-C04-BUNRUICD-IDX
                                            SPA-GMN-C04-SELNUM
       *    検索処理
-           MOVE    "USERBYOMEI-KEY3"   TO  WRK-DBPATH
-           INITIALIZE                  USERBYOMEI-REC
-           MOVE    SPA-HOSPID          TO  USBYO-HOSPID
+           IF      SPA-GMN-C04-BUNRUICD    =   ZERO
+               MOVE    "USERBYOMEI-KEY3"   TO  WRK-DBPATH
+               INITIALIZE                  USERBYOMEI-REC
+               MOVE    SPA-HOSPID          TO  USBYO-HOSPID
+           ELSE
+               MOVE    "USERBYOMEI-KEY7"   TO  WRK-DBPATH
+               INITIALIZE                  USERBYOMEI-REC
+               MOVE    SPA-HOSPID          TO  USBYO-HOSPID
+               MOVE    SPA-GMN-C04-BUNRUICD 
+                                       TO  USBYO-BUNRUICD
+           END-IF
            PERFORM 3101-USERBYOMEI-LST-SEC
       *
            MOVE    2                   TO  SPA-GMN-C04-CUR     
