@@ -1825,7 +1825,8 @@
                        WHEN    "820000004"
                        WHEN    "820000005"
                        WHEN    "820000006"
-                           IF      WRK-KARRK-SYOSINYMD2    =   SPACE
+                           IF     (LNK-WKSRY-SRYKBN (IDX)  =   "11") AND
+                                  (WRK-KARRK-SYOSINYMD2    =   SPACE)
                                MOVE    SYU-SRYYMD  TO
                                                    WRK-KARRK-SYOSINYMD2
                                MOVE    1           TO  FLG-SYOSIN-DUMMY
