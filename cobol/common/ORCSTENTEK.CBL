@@ -27,6 +27,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  01.00.01    NACL-Â¿¡¹Ç¼  03/03/20  ÌôºÞÅÀ¿ô·×»»½¤Àµ
       *****************************************************************
       *
       *
@@ -64,6 +65,7 @@
            03  FLG-OK              PIC 9(01).
            03  FLG-CHK             PIC 9(01).
            03  FLG-ERR             PIC 9(01).
+           03  FLG-TENTEKI         PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -105,6 +107,7 @@
       *
            03  WRK-TENSU-KEI       PIC 9(07)V9(04).
            03  WRK-SYOKEIS2        PIC 9(08)V9(03).
+           03  WRK-TENSU-GOK       PIC 9(08)V9(03).
       *
            03  WRK-SRYCD               PIC X(08).
            03  WRK-MAX-RYOU            PIC 9(07).
@@ -800,16 +803,37 @@
            PERFORM VARYING     IDX-D   FROM    1   BY  1
                    UNTIL       IDX-D   >   31
                MOVE    ZERO            TO  IDX
+               MOVE    ZERO            TO  WRK-TENSU-GOK
+               MOVE    ZERO            TO  FLG-TENTEKI
                PERFORM VARYING     IDX-T   FROM    1   BY  1
                        UNTIL      (IDX-T   >   50  )  OR
                                   (TBL-SRYCD (IDX-T)   =   SPACE)
                    IF      TBL-DAY (IDX-T IDX-D)   >   ZERO
+                       MOVE    1               TO  FLG-TENTEKI
                        ADD     1               TO  IDX
                        IF      IDX             <=  50
                            PERFORM 2001-TBL-HENSYU-SEC
                        END-IF
                    END-IF
                END-PERFORM
+      *        ÅÀ¿ô·×»»
+               IF      FLG-TENTEKI         =   1
+                   IF      WRK-TENSU-GOK       <=  15
+                       MOVE    1               TO  WRK-SYOKEIS2
+                   ELSE
+                       COMPUTE WRK-SYOKEIS2    =  ((WRK-TENSU-GOK
+                                               -  15)
+                                               /    10 )
+                                               +   1
+                   END-IF
+                   COMPUTE WRK-TENSU           =   WRK-SYOKEIS2
+                                               +  0.999
+                   MOVE    WRK-TENSU           TO  ORCSTEN-ZAITEN
+                                                           (IDX-D)
+               ELSE
+                   MOVE    ZERO                TO  ORCSTEN-ZAITEN
+                                                           (IDX-D)
+               END-IF
            END-PERFORM
       *
            .
@@ -827,16 +851,18 @@
       *
            COMPUTE WRK-TENSU-KEI       =   TBL-TEN  (IDX-T)
                                        *   TBL-SURYO (IDX-T IDX-D)
-           IF      WRK-TENSU-KEI       <=  15
-               MOVE    1               TO  WRK-SYOKEIS2
-           ELSE
-               COMPUTE WRK-SYOKEIS2    =  ((WRK-TENSU-KEI   -  15)
-                                           /    10 )
-                                           +   1
-           END-IF
-           COMPUTE WRK-TENSU           =   WRK-SYOKEIS2   +  0.999
+           COMPUTE WRK-TENSU-GOK       =   WRK-TENSU-GOK 
+                                       +   WRK-TENSU-KEI
+      *****IF      WRK-TENSU-KEI       <=  15
+      *        MOVE    1               TO  WRK-SYOKEIS2
+      *    ELSE
+      *        COMPUTE WRK-SYOKEIS2    =  ((WRK-TENSU-KEI   -  15)
+      *                                    /    10 )
+      *                                    +   1
+      *    END-IF
+      *    COMPUTE WRK-TENSU           =   WRK-SYOKEIS2   +  0.999
       *
-           ADD     WRK-TENSU           TO  ORCSTEN-ZAITEN (IDX-D)
+      *****ADD     WRK-TENSU           TO  ORCSTEN-ZAITEN (IDX-D)
       *    ±ÕÎÌ
            ADD     TBL-CHUSYARYO (IDX-T IDX-D)
                                        TO  ORCSTEN-CHUSYARYO (IDX-D)
