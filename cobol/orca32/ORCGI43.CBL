@@ -17,7 +17,7 @@
       ********************************************************************
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCGI43.
-      *****************************************************************
+      ********************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 入院会計照会
       *  コンポーネント名  : チェック（Ｉ４３）
@@ -107,7 +107,6 @@
            03  WRK-I43-NSRYKA-AREA.
                05  WRK-I43-NSRYKA-LIST    OCCURS  100.
                    07  WRK-I43-NSRYKA          PIC X(02).
-                   07  WRK-I43-NSRYKA-KBN      PIC X(01).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -573,12 +572,10 @@
       *    入院科セット
            PERFORM VARYING    IDX      FROM    1   BY  1
                    UNTIL      IDX      >   SPA-GMN-SRYKA-MAX-41
-               IF      SPA-GMN-SRYKA-L-41 (IDX)     NOT =   "00"
-                   ADD     1               TO  IDY
-                   MOVE    SPA-GMN-SRYKA-L-41 (IDX)
-                                           TO  WRK-I43-NSRYKA (IDY)
-                   MOVE    IDY             TO  IDZ
-               END-IF
+               ADD     1               TO  IDY
+               MOVE    SPA-GMN-SRYKA-L-41 (IDX)
+                                       TO  WRK-I43-NSRYKA (IDY)
+               MOVE    IDY             TO  IDZ
            END-PERFORM.
       *
            MOVE    ZERO                TO  WRK-I43-HKNMAX.
@@ -622,12 +619,6 @@
                        MOVE    "1"             TO  WRK-I43-FLG (IDX)
                    END-IF
                END-PERFORM
-               PERFORM VARYING     IDY     FROM    1   BY  1
-                       UNTIL       IDY     >   IDZ
-                   IF     WRK-I43-NSRYKA (IDY)   =   NACCT-SRYKA
-                       MOVE    "1"         TO   WRK-I43-NSRYKA-KBN (IDY)
-                   END-IF
-               END-PERFORM
       *
                MOVE    "NYUINACCT-KEY12"   TO  ORC-DBPATH
                PERFORM 970-NYUINACCT-READ-SEC
@@ -665,10 +656,6 @@
                    MOVE    SPA-GMN-SRYKA-MAX-41    TO  IDY
                END-IF
            END-PERFORM.
-      *
-           IF      WRK-NSRYKA          =   ZERO
-               MOVE    SPACE               TO  WRK-NSRYKAMEI
-           END-IF.
       *
        810-NSRYKA-SET-EXT.
            EXIT.
@@ -933,10 +920,8 @@
            END-PERFORM.
            PERFORM VARYING    IDX      FROM    1   BY  1
                    UNTIL      WRK-I43-NSRYKA (IDX)   =   SPACE
-               IF    ((WRK-I43-NSRYKA (IDX)     =  SPA-I43-SRYKA)  AND
-                      (WRK-I43-NSRYKA-KBN (IDX) =  "1"))  OR
-                     (SPA-I43-SRYKA             =  "00")
-                       MOVE    1               TO  FLG-OK
+               IF    WRK-I43-NSRYKA (IDX)     =  SPA-I43-SRYKA
+                   MOVE    1               TO  FLG-OK
                END-IF
            END-PERFORM.
            IF      FLG-OK              =   ZERO
@@ -1098,11 +1083,7 @@
       *
            PERFORM VARYING     IDY     FROM    1   BY  1
                    UNTIL       IDY     >   IDZ
-              IF    ((SPA-I43-SRYKA              =   "00")  AND
-                     (WRK-I43-NSRYKA-KBN (IDY)   =   "1"))  OR
-                    ((SPA-I43-SRYKA          NOT =   "00")  AND
-                     (WRK-I43-NSRYKA (IDY)       =   SPA-I43-SRYKA) AND
-                     (WRK-I43-NSRYKA-KBN (IDY)   =   "1"))
+              IF    WRK-I43-NSRYKA (IDY)       =   SPA-I43-SRYKA
                   PERFORM 2120-RECECOM-SEL-SEC
               END-IF
            END-PERFORM.
@@ -1154,11 +1135,7 @@
       *
            PERFORM VARYING     IDY     FROM    1   BY  1
                    UNTIL       IDY     >   IDZ
-              IF    ((SPA-I43-SRYKA              =   "00")  AND
-                     (WRK-I43-NSRYKA-KBN (IDY)   =   "1"))  OR
-                    ((SPA-I43-SRYKA          NOT =   "00")  AND
-                     (WRK-I43-NSRYKA (IDY)       =   SPA-I43-SRYKA) AND
-                     (WRK-I43-NSRYKA-KBN (IDY)   =   "1"))
+              IF    WRK-I43-NSRYKA (IDY)       =   SPA-I43-SRYKA
                   PERFORM 2120-RECECOM-SEL-SEC
                   IF      FLG-RECECOM         =   ZERO
       *               更新
