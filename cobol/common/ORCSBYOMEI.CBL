@@ -31,6 +31,9 @@
       *                                     病名のコード編集
       *                                     ２１個のコード検索時に未検索の
       *                                     病名が存在するときの処理
+      *  00.00.03    NACL-藤原    04/07/08  病名システム予約コードが存在
+      *                                     する場合の疑い・慢性疾患区分の
+      *                                     編集を行なう
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -917,6 +920,39 @@
       *    病名コード数
            MOVE    LNK-BYO-BYOMEI-MAX  TO  LNK-BYO-BYOMEICDSU
       *
+      *    疑いフラグ・慢性区分
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       LNK-BYO-BYOMEI-MAX
+      *
+               IF      LNK-BYO-UTAGAIFLG   =   "3"
+                   CONTINUE
+               ELSE
+                   EVALUATE    LNK-BYO-TUTAGAIFLG   (IDX)
+                       WHEN    "1"
+                           IF      LNK-BYO-UTAGAIFLG   =   "2"
+                               MOVE    "3"     TO  LNK-BYO-UTAGAIFLG
+                            ELSE
+                               MOVE    "1"     TO  LNK-BYO-UTAGAIFLG
+                            END-IF    
+                       WHEN    "2"
+                           IF      LNK-BYO-UTAGAIFLG  =   "1"
+                               MOVE    "3"     TO  LNK-BYO-UTAGAIFLG
+                            ELSE
+                               MOVE    "2"     TO  LNK-BYO-UTAGAIFLG
+                           END-IF
+                       WHEN    "3"
+                           MOVE    "3"     TO  LNK-BYO-UTAGAIFLG
+                    END-EVALUATE
+               END-IF
+      *
+               IF      LNK-BYO-TTOKSKNCD (IDX) 
+                                       NOT =   ZERO
+               AND     LNK-BYO-MANSEIKBN   =   ZERO
+                   MOVE    LNK-BYO-TTOKSKNCD (IDX)
+                                           TO  LNK-BYO-MANSEIKBN 
+               END-IF   
+           END-PERFORM
+      *
       *    病名編集フラグ
            IF      WRK-BYOMEI-FLG-TBL  NOT =   SPACE
                MOVE    "1"             TO  LNK-BYO-BYOMEIHENFLG
@@ -987,35 +1023,6 @@
                             MOVE    2      TO  LNK-BYO-BYOMEICD-ERR
                        END-IF    
                END-EVALUATE
-      *           
-      *        疑いフラグ
-               IF      LNK-BYO-UTAGAIFLG   =   "3"
-                   CONTINUE
-               ELSE
-                   EVALUATE    LNK-BYO-TUTAGAIFLG   (IDX)
-                       WHEN    "1"
-                           IF      LNK-BYO-UTAGAIFLG   =   "2"
-                               MOVE    "3"     TO  LNK-BYO-UTAGAIFLG
-                            ELSE
-                               MOVE    "1"     TO  LNK-BYO-UTAGAIFLG
-                            END-IF    
-                       WHEN    "2"
-                           IF      LNK-BYO-UTAGAIFLG  =   "1"
-                               MOVE    "3"     TO  LNK-BYO-UTAGAIFLG
-                            ELSE
-                               MOVE    "2"     TO  LNK-BYO-UTAGAIFLG
-                           END-IF
-                       WHEN    "3"
-                           MOVE    "3"     TO  LNK-BYO-UTAGAIFLG
-                    END-EVALUATE
-               END-IF
-      *        慢性区分
-               IF      LNK-BYO-TTOKSKNCD (IDX) 
-                                       NOT =   ZERO
-               AND     LNK-BYO-MANSEIKBN   =   ZERO
-                   MOVE    LNK-BYO-TTOKSKNCD (IDX)
-                                           TO  LNK-BYO-MANSEIKBN 
-               END-IF   
            END-PERFORM
       *
       *    病名種別
