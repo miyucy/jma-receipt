@@ -646,7 +646,7 @@
       *    ¡™ƒÍŒ≈Õ‹»Ò
            IF      LNK-SCNYUACCT-SENTEI-SRYCD  NOT =   SPACE
                IF      LNK-SCNYUACCT-SENTEI-STYMD
-                                               <   WRK-EDYMD
+                                               <=  WRK-EDYMD
                    INITIALIZE                  TBL-NYUIN-AREA
                    MOVE    LNK-SCNYUACCT-SENTEI-SRYCD
                                                TO  TBL-SRYCD (1)
