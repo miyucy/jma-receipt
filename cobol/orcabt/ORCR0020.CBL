@@ -98,6 +98,8 @@
       *  01.00.38    NACL-門脇    04/04/06  公費単独７０歳未満で老人保険入力
       *                                     のある方の在総診フラグ編集修正
       *  01.00.39    NACL-門脇    04/05/21  DBOPEN,DBDISCONNECT削除
+      *  01.00.40    NACL-藤原    04/05/27  同一開始日の複数自費レセプトが
+      *                                     別々に作成されるように修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -135,7 +137,7 @@
                                    ACCESS  MODE    IS  SEQUENTIAL
                                    RECORD  KEY     IS  RECE11-KEY
                                    FILE    STATUS  IS  STS-RECE11.
-006900*    エラーファイル
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
@@ -169,7 +171,7 @@
        01  RECE11-REC. 
            COPY    "CPRCF011.INC".
       *     
-006900*    エラーファイル
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
@@ -659,7 +661,11 @@
            MOVE    RECE01-NYUGAIKBN     TO  RECE02-NYUGAIKBN
            MOVE    RECE01-PTID          TO  RECE02-PTID
            MOVE    RECE01-RECEKA        TO  RECE02-RECEKA
-           MOVE    RECE01-HKNJANUM      TO  RECE02-HKNJANUM-KEY
+           IF      RECE01-HKNNUM (1:2)  =   "98"
+               MOVE    RECE01-HKNNUM        TO  RECE02-HKNJANUM-KEY
+           ELSE  
+               MOVE    RECE01-HKNJANUM      TO  RECE02-HKNJANUM-KEY
+           END-IF
            MOVE    RECE01-HOJOKBN       TO  RECE02-HOJOKBN-KEY
       *****MOVE    RECE01-TEKSTYMD      TO  RECE02-TEKSTYMD
       *****MOVE    RECE01-TEKSTYMDX     TO  RECE02-TEKSTYMD
@@ -2415,7 +2421,7 @@
            .
        230-RECE09-HENSYU-EXT.
            EXIT.
-057400*
+      *
       *****************************************************************
       *    エラー出力処理
       *****************************************************************
