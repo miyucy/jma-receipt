@@ -768,6 +768,9 @@
            ADD     SYU-JIHI-TOTAL      TO  WRK-SYU-JIHI-TOTAL
            ADD     SYU-JIHI-TOTAL-TAX  TO  WRK-SYU-JIHI-TOTAL-TAX
            ADD     SYU-JIHI-TAX        TO  WRK-SYU-JIHI-TAX
+      *    ÀÁµá¶â³Û¡Ý¾ÃÈñÀÇ¡ÊºÆ·Ç¡Ë
+           ADD     SYU-SKYMONEY-TAX-SAI
+                                       TO  WRK-SYU-SKYMONEY-TAX-SAI
       *
       *    ³Æ¶â³Û
            ADD     SYU-RJN-FTN         TO  WRK-SYU-RJN-FTN
@@ -1020,7 +1023,14 @@
       *    º£²óÀÁµá³Û¾ÃÈñÀÇ¡ÊºÆ·Ç¡Ë
            MOVE    ORCHC03-SEIKYU-TAX-SAI TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
-           MOVE    WRK-Z72-G            TO  HC03-SEIKYUZEI
+           MOVE    WRK-Z72-G           TO  HC03-SEIKYUZEI
+      *    Ê£¿ô²Ê¤Þ¤È¤á¤Î»þ¡¢¤Þ¤È¤á³Û
+           IF      ORCHC03-FUKU-DENPNUM    >   ZERO
+               MOVE    WRK-SYU-SKYMONEY-TAX-SAI
+                                           TO  WRK-Z72
+               PERFORM 800-HENKAN-SEC
+               MOVE    WRK-Z72-G       TO  HC03-SEIKYUZEI
+           END-IF
       *
       *    º£²óÆþ¶â³Û
       *****MOVE    SYU-NYUKIN-TOTAL    TO  WRK-Z7
