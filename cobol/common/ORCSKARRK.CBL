@@ -634,12 +634,12 @@
                    END-IF
                END-IF
       *
-               MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+               MOVE    "SRYACCT-KEY3"      TO  ORC-DBPATH
                PERFORM 930-SRYACCT-READ-SEC
            END-PERFORM
       *
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+           MOVE    "SRYACCT-KEY3"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
