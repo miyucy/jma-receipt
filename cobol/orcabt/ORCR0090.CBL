@@ -2792,9 +2792,9 @@
                      MOVE    ALL "9"            TO
                                             WRK-ZAIW-CDKBN-AREA
                      IF    WRK-ZAIW-SRYCD1(1:1)  =   "6"
-                       MOVE   "999999998"  TO  WRK-ZAIW-KOUHYOJYUNNUM
+                       MOVE    999999998   TO  WRK-ZAIW-KOUHYOJYUNNUM
                      ELSE
-                       MOVE   "999999999"  TO  WRK-ZAIW-KOUHYOJYUNNUM
+                       MOVE    999999999   TO  WRK-ZAIW-KOUHYOJYUNNUM
                      END-IF
                  END-IF
                END-IF

@@ -2407,9 +2407,9 @@
                      MOVE    ALL "9"            TO
                                             TBL-ZAIW-CDKBN-AREA
                      IF    TBL-ZAIW-SRYCD1(1:1)  =   "6"
-                       MOVE   "999999998"  TO  TBL-ZAIW-KOUHYOJYUNNUM
+                       MOVE    999999998   TO  TBL-ZAIW-KOUHYOJYUNNUM
                      ELSE
-                       MOVE   "999999999"  TO  TBL-ZAIW-KOUHYOJYUNNUM
+                       MOVE    999999999   TO  TBL-ZAIW-KOUHYOJYUNNUM
                      END-IF
                  END-IF
                END-IF
