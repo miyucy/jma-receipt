@@ -46,6 +46,8 @@
                05  LNK-ORCHCN33SUB-HENKYAKU-TBL      OCCURS  31.
       *点数
                    07  LNK-ORCHCN33SUB-TEN           PIC  9(07).
+      *食事療養
+                   07  LNK-ORCHCN33SUB-SKJ           PIC  9(07).
       *
       *復帰コード（１：算定年月エラー　２：患者検索エラー　３：診療科エラー
       *            ４：入院会計なし　　５：入院履歴なし）
