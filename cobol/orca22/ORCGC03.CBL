@@ -65,6 +65,8 @@
       *                                     病名種別の追加
       *  01.02.02    NACL-藤原    04/02/28  病名コード欄の追加
       *                                     分類選択時の前次頁処理の修正
+      *  01.02.03    NACL-藤原    04/03/15  病名入力後の入力コード入力時の
+      *                                     項目クリアをやめる
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1133,6 +1135,8 @@
       *
            MOVE    1                   TO  SPA-GMN-CUR
       *
+           MOVE    ZERO                TO  SPA-NAI-SELNO
+      *
            MOVE    C03-BANGO           TO  SPA-GMN-BANGO
       *
            IF      SPA-GMN-BANGO       =   ZERO
@@ -1150,6 +1154,9 @@
                GO      TO      41001-BANGO-CHK-EXT
            END-IF
       *
+           MOVE    WRK-BANGO       TO  SPA-NAI-SELNO
+                                       C03-BYOMEILST-ROW
+      *
            PERFORM 410111-BYOMEI-SELECT-SEC
       *
            .
@@ -1161,9 +1168,9 @@
       *****************************************************************
        410111-BYOMEI-SELECT-SEC         SECTION.
       *      
-           MOVE    SPA-NAI-TCDSYU (WRK-BANGO)
+           MOVE    SPA-NAI-TCDSYU         (SPA-NAI-SELNO)
                                        TO SPA-NAI-CDSYU
-           MOVE    SPA-GMN-TBYOMEIINPUTCD (WRK-BANGO)
+           MOVE    SPA-GMN-TBYOMEIINPUTCD (SPA-NAI-SELNO)
                                        TO  SPA-GMN-BYOMEIINPUTCD
            PERFORM 410111-USERBYOMEI-HENSYU-SEC
       *
@@ -1253,7 +1260,7 @@
                        MOVE    "0075"              TO  SPA-ERRCD
                    END-IF
                END-IF
-           END-IF                     
+           END-IF       
            .
        410111-BYOMEI-SELECT-EXT.
            EXIT.
@@ -1864,9 +1871,9 @@
                GO  TO  41002-BYOMEIINPUT-CHK-EXT
            END-IF
       *
-           INITIALIZE                 SPA-GMN-KOUMOKU1
-                                      SPA-NAI-KOUMOKU
-                                      SPA-NAI-SELNO
+      *****INITIALIZE                 SPA-GMN-KOUMOKU1
+      *****                           SPA-NAI-KOUMOKU
+      *****                           SPA-NAI-SELNO
       *                  
            MOVE    C03-BYOMEIINPUTCD  TO  SPA-GMN-BYOMEIINPUTCD
       *
@@ -1895,7 +1902,35 @@
            END-IF           
       *
            IF      SPA-GMN-BANGO   =   ZERO
-               PERFORM 410111-USERBYOMEI-HENSYU-SEC
+               IF    ( SPA-GMN-BYOMEICD-G  NOT =   SPACE )
+               OR    ( SPA-GMN-BYOMEI      NOT =   SPACE )
+                   INITIALIZE              USERBYOMEI-REC
+                   MOVE    SPA-HOSPID      TO  USBYO-HOSPID
+                   MOVE    SPA-NAI-CDSYU   TO  USBYO-CDSYU
+                   MOVE    SPA-GMN-BYOMEIINPUTCD
+                                           TO  USBYO-BYOMEIINPUTCD
+                   PERFORM 900-USBYO-INV-SEC
+                   IF      FLG-USERBYOMEI  =   ZERO    
+                       MOVE    "0002"          TO  SPA-ERRCD
+                       MOVE    SPACE           TO  SPA-GMN-BYOMEIINPUTCD
+                       GO  TO  41002-BYOMEIINPUT-CHK-EXT
+                   END-IF
+               ELSE
+                   PERFORM 410111-USERBYOMEI-HENSYU-SEC
+                   IF      FLG-USERBYOMEI  =   ZERO
+                       PERFORM VARYING     IDX     FROM    1   BY  1
+                               UNTIL       IDX     >   SPA-GMN-MAX
+                           IF      SPA-GMN-BYOMEIINPUTCD   =
+                                           SPA-GMN-TBYOMEIINPUTCD (IDX)
+                               MOVE    IDX             TO  SPA-NAI-SELNO
+                               MOVE    SPA-GMN-TBANGO (SPA-NAI-SELNO)
+                                                       TO  SPA-GMN-BANGO
+                               MOVE    SPA-NAI-SELNO   TO
+                                                       C03-BYOMEILST-ROW
+                           END-IF    
+                       END-PERFORM
+                   END-IF
+               END-IF
            END-IF      
       *
            MOVE    3                   TO  SPA-GMN-CUR
@@ -2433,7 +2468,6 @@
       *
            MOVE    SPA-GMN-TBANGO (SPA-NAI-SELNO)
                                        TO  SPA-GMN-BANGO
-           MOVE    SPA-NAI-SELNO       TO  WRK-BANGO
       *                                 
            PERFORM 410111-BYOMEI-SELECT-SEC     
            .

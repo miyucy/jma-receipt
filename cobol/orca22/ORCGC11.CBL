@@ -2083,10 +2083,8 @@
                MOVE    SPA-GMN-C11-COM-TNUM (IDX)
                                            TO  WRK-NUM
                MOVE    WRK-NUM             TO  C11-COM-TNUM      (IDX)
-               IF      SPA-GMN-C11-SRYKA   =   ZERO
-                   MOVE    SPA-GMN-C11-COM-TSRYKA     (IDX)
+               MOVE    SPA-GMN-C11-COM-TSRYKA     (IDX)
                                            TO  C11-COM-TSRYKA    (IDX)
-               END-IF
                MOVE    SPA-GMN-C11-COM-TSRYYMD    (IDX)
                                            TO  C11-COM-TSRYYMD   (IDX)
                MOVE    SPA-GMN-C11-COM-TOPENAME   (IDX)
