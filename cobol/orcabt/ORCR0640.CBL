@@ -3386,11 +3386,11 @@
       *****************************************************************
        RECE65-TENSOU-COMCNT-HEN-SEC               SECTION.
       *
-           IF      SRY-SRYKBN         =     "11"
-              IF   SRY-SRYCD(IDX2)    =     "830000020"
-                        MOVE   "1"        TO    RECE62-COMCNTFLG
-              END-IF
-           END-IF
+      ***  IF      SRY-SRYKBN         =     "11"
+      ***     IF   SRY-SRYCD(IDX2)    =     "830000020"
+      ***               MOVE   "1"        TO    RECE62-COMCNTFLG
+      ***     END-IF
+      ***  END-IF
       *
            IF      SRY-SRYKBN         =     "80"
               IF   SRY-SRYCD(IDX2)    =     "180706910"   OR

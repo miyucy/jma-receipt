@@ -723,10 +723,10 @@
                OR     ( RECE62-TEKSTYMD  NOT =   RECE64-TEKSTYMD     )
       *
                EVALUATE      RECE64-SRYKBN
-                   WHEN      "11"
-      *            （初診料算定科：のカウント）
-                      MOVE    CONS-SYOSINSANTEIKA  TO  WRK-SRYCD
-                      PERFORM    2001-SANTEIKA-COUNT-SEC
+      ***          WHEN      "11"
+      ***          （初診料算定科：のカウント）
+      ***             MOVE    CONS-SYOSINSANTEIKA  TO  WRK-SRYCD
+      ***             PERFORM    2001-SANTEIKA-COUNT-SEC
                    WHEN      "80"
       *            （リハビリのカウント）
                       PERFORM    2001-RIHA-COUNT-SEC
