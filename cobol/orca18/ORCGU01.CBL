@@ -263,6 +263,10 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  CNT-AREA
+           INITIALIZE                  WRK-AREA
+      *
            MOVE    SPA-COMMON      TO  SPA-AREA.
            MOVE    SPA-FREE        TO  SPA-U01.
       *
@@ -295,8 +299,6 @@
       *    初期　処理
       *****************************************************************
        100-INIT                    SECTION.
-      *
-      *    DISPLAY "*** ORCSNPL    START  ***"
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  CNT-AREA
