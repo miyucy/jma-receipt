@@ -78,6 +78,7 @@
            03  FLG-LINE                            PIC 9(01).
            03  FLG-MINUS                           PIC 9(01).
            03  FLG-LOOPEND                         PIC 9(01).
+           03  FLG-SYSKANRI                        PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -216,6 +217,10 @@
            03  WRK-KEY-HKNCOMBI                    PIC X(04).
            03  WRK-TNS-HOUKNSKBN                   PIC 9(02).
            03  WRK-KUGIRI                          PIC X(02).
+           03  WRK-TTL-JIHI                        PIC 9(09).
+           03  WRK-TTL-JIHI-TAX                    PIC 9(09).
+           03  WRK-KINGAKKU-LBL                    PIC X(100).
+           03  WRK-KINGAKKU                        PIC 9(09).
       *
        01  WRK-SRYKA-TBL.
            03  WRK-SRYKA-OCC                       OCCURS  20.
@@ -536,6 +541,12 @@
            INITIALIZE                  SRH-AREA
            INITIALIZE                  ORCHCM34-OT
       *
+      *    °åÎÅµ¡´Ø¾ðÊó¼èÆÀ½èÍý
+           PERFORM 1001-SYS1001-GET-SEC
+           IF    ( ORCHCM34-RC     NOT =   ZERO )
+               GO  TO  100-INIT-EXT
+           END-IF
+      *
       *    ÊÝ¸±¤Î¼ïÎà¡¦¸øÈñ¤Î¼ïÎàÊÔ½¸½èÍý
            PERFORM 1001-HKNKOH-HEN-SEC
       *    ¿ÇÎÅ²ÊÊÔ½¸½èÍý
@@ -559,9 +570,43 @@
            MOVE    ZERO                TO  CNT-PAGE
            MOVE    ZERO                TO  CNT-SRYACT-LINE
            MOVE    LOW-VALUE           TO  WRK-KEY-HKNCOMBI
+           MOVE    ZERO                TO  WRK-TTL-JIHI
+           MOVE    ZERO                TO  WRK-TTL-JIHI-TAX
       *
            .
        100-INIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    °åÎÅµ¡´Ø¾ðÊó¼èÆÀ½èÍý
+      *****************************************************************
+       1001-SYS1001-GET-SEC                SECTION.
+      *
+      *    °åÎÅµ¡´Ø£É£ÄÊÔ½¸
+           MOVE    ZERO                TO  FLG-SYSKANRI
+           INITIALIZE                      SYS-1001-REC
+           MOVE    "1001"              TO  SYS-1001-KANRICD
+           MOVE    "*"                 TO  SYS-1001-KBNCD
+           MOVE    ORCHCM34-SRYYM      TO  ORC-DBYMD (1:6)
+           MOVE    "01"                TO  ORC-DBYMD (7:2)
+           MOVE    SYS-1001-REC        TO  MCPDATA-REC
+           MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC        NOT =   ZERO )
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+           IF    ( FLG-SYSKANRI        =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYS-1001-REC
+           ELSE
+               MOVE    1               TO  ORCHCM34-RC
+               GO  TO  1001-SYS1001-GET-EXT
+           END-IF
+      *
+           .
+       1001-SYS1001-GET-EXT.
            EXIT.
       *****************************************************************
       *    ´ðËÜ¾ðÊóÊÔ½¸
@@ -1769,6 +1814,8 @@
       *
            END-PERFORM
       *
+           PERFORM 200111-JIHI-TOTAL-HEN-SEC
+      *
            .
        2001-SRYACT-HEN-EXT.
            EXIT.
@@ -2051,17 +2098,18 @@
                GO  TO  20011-SRYACT-HEN-EXT
            END-IF
       *
-           MOVE    "5"                     TO  WRK-ITEM-KBN
            IF    ( IDX1    >     1 )
+               PERFORM 210-WRK-SRYACT-TBL-SYOKI-SEC
                MOVE    SRT-SRYACCT-IDX (IDX1 - 1)
                                            TO  IDX12
                IF    ( WKACCT-HKNCOMBI (IDX11)
                                    NOT =  WKACCT-HKNCOMBI (IDX12))
+                   PERFORM 200111-JIHI-TOTAL-HEN-SEC
                    MOVE    1               TO  FLG-LINE
                ELSE
                    MOVE    ZERO            TO  FLG-LINE
                END-IF
-               PERFORM 210-WRK-SRYACT-TBL-SYOKI-SEC
+               MOVE    "5"                 TO  WRK-ITEM-KBN
                PERFORM 210-SRYACT-HEN-SEC
            END-IF
       *
@@ -2292,13 +2340,103 @@
            MOVE    WRK-OUT-INPUT   TO  WRK-SRYACT-STR
            PERFORM 210-WRK-SRYACT-TBL-HEN3-SEC
       *
+           COMPUTE WRK-TTL-JIHI    =   WRK-TTL-JIHI
+                                   + ( SRY-JIHIMONEY (IDX9)
+                                   *   ACCT-ZAIKAISU )
+      *
+           IF    ( ACCT-SRYKBN         =   "96" )
+               COMPUTE WRK-TTL-JIHI-TAX    =   WRK-TTL-JIHI-TAX
+                                           + ( SRY-JIHIMONEY (IDX9)
+                                           * ACCT-ZAIKAISU )
+           END-IF
+      *
            .
        200111-JIHIMEI-HEN-EXT.
            EXIT.
       *****************************************************************
+      *    ¼«Èñ·×ÊÔ½¸½èÍý
+      *****************************************************************
+       200111-JIHI-TOTAL-HEN-SEC       SECTION.
+      *
+           IF    ( WRK-TTL-JIHI    >   ZERO )
+      *
+      *        ¶õ¹Ô¤ò£±¹ÔÊÔ½¸
+               PERFORM 210-WRK-SRYACT-TBL-SYOKI-SEC
+      *
+               MOVE    "¡¡"                TO   WRK-SRYACT-STR
+               PERFORM 210-WRK-SRYACT-TBL-HEN-SEC
+      *
+               MOVE    "5"                 TO  WRK-ITEM-KBN
+               MOVE    ZERO                TO  FLG-LINE
+               PERFORM 210-SRYACT-HEN-SEC
+      *
+               MOVE    "¡¡¡¡¡¡¡¡¡¡¼«Èñ¹ç·×³Û"
+                                           TO  WRK-KINGAKKU-LBL
+               MOVE    WRK-TTL-JIHI        TO  WRK-KINGAKKU
+               PERFORM 2001111-KINGAKU-HEN-SEC
+      *
+      *        ¾ÃÈñÀÇÊ¬¤¬¤¢¤ë¾ì¹ç¤Ï¾ÃÈñÀÇ³Û¤òÊÔ½¸
+               IF    ( WRK-TTL-JIHI-TAX    >   ZERO )
+                   MOVE    "¡¡¡¡¡¡¡¡¡¡¼«Èñ¾ÃÈñÀÇ³Û"
+                                           TO  WRK-KINGAKKU-LBL
+                   IF   ( SYS-1001-TAX-HASU-KBN =   "1" )
+                       COMPUTE  WRK-KINGAKKU
+                            = ( WRK-TTL-JIHI-TAX   *  0.05 )
+                            +  0.5
+                   ELSE
+                       COMPUTE  WRK-KINGAKKU
+                            = ( WRK-TTL-JIHI-TAX   *  0.05 )
+                   END-IF
+                   PERFORM 2001111-KINGAKU-HEN-SEC
+               END-IF
+           END-IF
+      *
+           MOVE    ZERO                TO  WRK-TTL-JIHI
+           MOVE    ZERO                TO  WRK-TTL-JIHI-TAX
+      *
+           PERFORM 210-WRK-SRYACT-TBL-SYOKI-SEC
+      *
+           .
+      *
+       200111-JIHI-TOTAL-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¶â³ÛÊÔ½¸½èÍý
+      *****************************************************************
+       2001111-KINGAKU-HEN-SEC         SECTION.
+      *
+           PERFORM 210-WRK-SRYACT-TBL-SYOKI-SEC
+      *
+           MOVE    WRK-KINGAKKU-LBL    TO   WRK-SRYACT-STR
+           PERFORM 210-WRK-SRYACT-TBL-HEN-SEC
+      *
+           MOVE    1               TO  WRK-PNT
+           MOVE    SPACE           TO  WRK-TENSUKAISU
+           MOVE    WRK-KINGAKKU    TO  WRK-STR-LEFT-ZX99
+      *
+           PERFORM 800-STR-HIDARIZUME-HEN-SEC
+           STRING  WRK-STR-LEFT        DELIMITED   BY  SPACE
+                   "±ß"                DELIMITED   BY  SIZE
+           INTO    WRK-TENSUKAISU
+           WITH    POINTER WRK-PNT
+           END-STRING
+      *
+           MOVE    WRK-TENSUKAISU  TO  WRK-MAE-INPUT
+           PERFORM 800-ZENKAKU-HEN-SEC
+           MOVE    WRK-OUT-INPUT   TO  WRK-SRYACT-STR
+           PERFORM 210-WRK-SRYACT-TBL-HEN3-SEC
+      *
+           MOVE    "5"                     TO  WRK-ITEM-KBN
+           MOVE    ZERO                    TO  FLG-LINE
+           PERFORM 210-SRYACT-HEN-SEC
+           .
+      *
+       2001111-KINGAKU-HEN-EXT.
+           EXIT.
+      *****************************************************************
       *   ¸¡ºº¿ô  ÊÔ½¸½èÍý
       *****************************************************************
-       200111-KENSASU-HEN-SEC           SECTION.
+       200111-KENSASU-HEN-SEC          SECTION.
       *
            IF    ( WRK-TNS-HOUKNSKBN   >=  1 )
             AND  ( WRK-TNS-HOUKNSKBN   <=  8 )
@@ -3275,7 +3413,7 @@
            IF    ( SPRT-RETURN         =   ZERO )
                CONTINUE
            ELSE
-               MOVE    9               TO  ORCHCM34-RC
+               MOVE    2               TO  ORCHCM34-RC
            END-IF
       *
            .
@@ -3299,7 +3437,7 @@
            IF    ( SPRT-RETURN         =   ZERO )
                CONTINUE
            ELSE
-               MOVE    9               TO  ORCHCM34-RC
+               MOVE    3               TO  ORCHCM34-RC
            END-IF
       *
            .
