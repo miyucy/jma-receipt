@@ -3182,7 +3182,7 @@
                        IF  (SNUM-RC         NOT =   ZERO)    OR
                            (SNUM-MINKBN     NOT =   SPACE)   OR
                            (SNUM-SYOKBN     NOT =   SPACE)
-                           CONTINUE
+                           MOVE    31              TO  IDW1
                        ELSE
                            MOVE    SNUM-OUTNUM     TO  IDW1
                        END-IF
@@ -3197,7 +3197,7 @@
                        IF  (SNUM-RC         NOT =   ZERO)    OR
                            (SNUM-MINKBN     NOT =   SPACE)   OR
                            (SNUM-SYOKBN     NOT =   SPACE)
-                           CONTINUE
+                           MOVE     1               TO  IDW2
                        ELSE
                            IF  PTNYUINRRK-TAIINYMD   =
                                                  PTNYUINRRK-TENSTUYMD
@@ -3239,7 +3239,7 @@
            IF  (SNUM-RC         NOT =   ZERO)    OR
                (SNUM-MINKBN     NOT =   SPACE)   OR
                (SNUM-SYOKBN     NOT =   SPACE)
-               CONTINUE
+               MOVE    1               TO  IDW1
            ELSE
                COMPUTE   IDW1   =   SNUM-OUTNUM   +   1
            END-IF.
@@ -3354,9 +3354,6 @@
                                    MOVE    "-"       TO   DID2-REC(25:1)
                                    MOVE    W1-SRY-PTID
                                                      TO  DID2-REC(26:10)
-                                   MOVE    "-"       TO  DID2-REC(36:1)
-                                   MOVE    W-JITU-SRYCD (IDY3)
-                                                     TO  DID2-REC(37:9)
                                    MOVE    T-MESSAGE-500-06
                                                      TO  DID2-REC(71:90)
                                    MOVE    "Æþ±¡"    TO  DID2-REC(115:4)
@@ -3500,8 +3497,6 @@
                        MOVE    W1-SRY-HOSPID         TO  DID2-REC(1:24)
                        MOVE    "-"                   TO  DID2-REC(25:1)
                        MOVE    W1-SRY-PTID           TO  DID2-REC(26:10)
-                       MOVE    "-"                   TO  DID2-REC(36:1)
-                       MOVE    W-JITU-SRYCD (IDY3)   TO  DID2-REC(37:9)
                        MOVE    T-MESSAGE-500-06      TO  DID2-REC(71:90)
                        MOVE    "Æþ±¡"                TO  DID2-REC(115:4)
                        WRITE   DID2-REC
@@ -3590,7 +3585,7 @@
                        PERFORM VARYING  IDY3  FROM  1  BY  1
                                UNTIL    IDY3  >    20
                            IF  W-JITU-SRYCD (IDY3)  =  NSRY-SRYCD (IDX6)
-                               MOVE    30            TO  IDX7
+                               MOVE    30            TO  IDY3
                            ELSE
                                IF  W-JITU-SRYCD (IDY3)   =   SPACE
                                    MOVE    NSRY-SRYCD (IDX6)
