@@ -243,6 +243,7 @@
                        09  SPA-NAI-C02-B21-SYOKBN          PIC X(01).
                        09  SPA-NAI-C02-HEAD.
                            11  SPA-NAI-C02-PTID            PIC 9(10).
+                           11  SPA-NAI-C02-BIRTHDAY        PIC X(08).
                        09  SPA-NAI-C02-KOUMOKU.
                            11  SPA-NAI-C02-SRYYMD          PIC X(08).
                            11  SPA-NAI-C02-RENNUM          PIC 9(02).

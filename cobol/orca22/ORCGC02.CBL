@@ -142,6 +142,7 @@
       *                                     入力時の病名編集フラグの設定
       *  01.08.11    NACL-藤原    04/05/14  簡単修正時の開始日と
       *                                     保険組合せのチェックの修正
+      *  01.08.12    NACL-藤原    04/06/21  アフターケア日の表示修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2032,7 +2033,8 @@
                        WHEN    "2"
                            MOVE    "女"          TO  SPA-GMN-C02-SEX
                    END-EVALUATE
-                   MOVE    PTINF-BIRTHDAY    TO  WRK-SYMD
+                   MOVE    PTINF-BIRTHDAY    TO  SPA-NAI-C02-BIRTHDAY
+                                                 WRK-SYMD
                    PERFORM 5002-HIZUKE-HEN-SEC
                    MOVE    WRK-HENYMDG       TO  SPA-GMN-C02-BIRTHDAY
                    MOVE    SPA-NAI-C02-PTID  TO  SPA-LAST-PTID
