@@ -3721,6 +3721,13 @@
                                                              (IDX-Z))
                        MOVE    "0042"          TO  SPA-ERRCD
                        MOVE    IDX             TO  IDX-CHU
+      *                同じコードで自動発生の場合はＯＫとする
+                       IF     (WRK-COM-AUTOKBN (IDX)   =   "2" ) AND
+                              (WRK-COM-INPUTCD (IDX)   =
+                                               WRK-COM-INPUTCD(IDX-Z))
+                           MOVE    SPACE       TO  SPA-ERRCD
+                           MOVE    ZERO        TO  IDX-CHU
+                       END-IF
                    END-IF
                END-IF
       *        診察料以外は、剤内のチェックとする

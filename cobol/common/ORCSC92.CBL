@@ -680,7 +680,13 @@
                                                    =  TNS-CHUKSNCD) AND
                                (SPA-COM-CHUKSNTUBAN(IDX)
                                                    =   TNS-CHUKSNTUBAN)
-                           MOVE    "0042"          TO  SPA-ERRCD
+                          MOVE    "0042"          TO  SPA-ERRCD
+                          IF      (LNK-SC92-CHUKSN    =   "1" )  AND
+                                  (SPA-COM-INPUTCD (IDX)
+                                                   =   LNK-SC92-SRYCD)
+                               MOVE    SPACE           TO  SPA-ERRCD
+                          END-IF
+      *
                        END-IF
                    END-IF
                END-PERFORM

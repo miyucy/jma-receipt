@@ -768,6 +768,14 @@
       *         GO      TO      300-DELETE-SYORI-EXT
       ***** END-IF
       *
+      *    健保以外でＣＴ・ＭＲＩの作成なし
+           IF     (SPA-HKNKBN      NOT =   ZERO   )  AND
+                  (SSANTEI-SRYCD       =   "099700101"  OR
+                                           "099700102"  OR
+                                           "099700103" )
+               GO      TO      300-DELETE-SYORI-EXT
+            END-IF
+      *
       *    対象データが無い時、終了
            IF      FLG-SANTEI          =   1
                GO      TO      300-DELETE-SYORI-EXT
