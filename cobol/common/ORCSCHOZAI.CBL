@@ -52,6 +52,7 @@
            03  FLG-NYUINACCT       PIC 9(01).
            03  FLG-PTNYUINRRK      PIC 9(01).
            03  FLG-HKNCOMBI        PIC 9(01).
+           03  FLG-JYURRK          PIC 9(01).
       *
            03  FLG-ARI             PIC 9(01).
            03  FLG-MADOKU          PIC 9(01).
@@ -60,6 +61,8 @@
       *
            03  FLG-SYORI           PIC 9(01).
            03  FLG-CHK             PIC 9(01).
+      *
+           03  FLG-SRYACCT-DEL     PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -197,6 +200,11 @@
       *    点数マスタ−
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
+      *
+      *    診療会計マスタ−
+       01  HZN-SRYACCT-REC.
+           COPY    "CPSRYACCT.INC"  REPLACING
+                                    //ACCT-// BY //HZN-ACCT-//.
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -664,22 +672,22 @@
                                                    <  ORCSCHO-SRYYM)
       *        入院日から９０日以上の判定
                MOVE    ZERO                    TO  WRK-MAX
-               IF      PTNYUINRRK-NYUINYMD(1:6)    <   ORCSCHO-SRYYM
-                   INITIALIZE                      STS-AREA-DAY
-                   INITIALIZE                      LNK-DAY6-AREA
-                   MOVE    "61"                TO  LNK-DAY6-IRAI
-                   MOVE    PTNYUINRRK-NYUINYMD TO  LNK-DAY6-KIJUN
-                   MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
-                   MOVE    90                  TO  LNK-DAY6-ZOGEN
-                   CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                                       LNK-DAY6-AREA
-                   IF      LNK-DAY6-KOYOMI(1:6)    =   ORCSCHO-SRYYM
-                       MOVE    LNK-DAY6-KOYOMI(7:2)    TO  WRK-MAX
-                   END-IF
-                   IF      LNK-DAY6-KOYOMI(1:6)    <   ORCSCHO-SRYYM
-                       MOVE    31                      TO  WRK-MAX
-                   END-IF
-               END-IF
+      ******** IF      PTNYUINRRK-NYUINYMD(1:6)    <   ORCSCHO-SRYYM
+      *            INITIALIZE                      STS-AREA-DAY
+      *            INITIALIZE                      LNK-DAY6-AREA
+      *            MOVE    "61"                TO  LNK-DAY6-IRAI
+      *            MOVE    PTNYUINRRK-NYUINYMD TO  LNK-DAY6-KIJUN
+      *            MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
+      *            MOVE    90                  TO  LNK-DAY6-ZOGEN
+      *            CALL    "ORCSDAY"           USING   STS-AREA-DAY
+      *                                                LNK-DAY6-AREA
+      *            IF      LNK-DAY6-KOYOMI(1:6)    =   ORCSCHO-SRYYM
+      *                MOVE    LNK-DAY6-KOYOMI(7:2)    TO  WRK-MAX
+      *            END-IF
+      *            IF      LNK-DAY6-KOYOMI(1:6)    <   ORCSCHO-SRYYM
+      *                MOVE    31                      TO  WRK-MAX
+      *            END-IF
+      ******** END-IF
       *
       *        入院中の時
                MOVE    ZERO                TO  IDX-S
@@ -1108,26 +1116,31 @@
       *            診療会計マスターを変更する
                    MOVE    TBL-CHO-DAY-AREA(IDX)   TO  ACCT-DAY-AREA
                    PERFORM 40051-DAY-UPD-SEC
-      *
+      *            回数がない時、対象の科・保険で投薬のない時削除
+                   MOVE    ZERO                TO  FLG-SRYACCT-DEL
+                   IF      ACCT-ZAIKAISU       =   ZERO
+                       PERFORM 40054-DELETE-CHK-SEC
+                   END-IF
       *            退院で回数がない時、削除する
-                   IF     (ORCSCHO-KBN         =   "2"  )  AND
-                          (ACCT-ZAIKAISU       =   ZERO )
+                   IF    ((ORCSCHO-KBN         =   "2"  )  AND
+                          (ACCT-ZAIKAISU       =   ZERO ))  OR
+                         ( FLG-SRYACCT-DEL     =   1     )
                        PERFORM 40052-SRYACCT-DEL-SEC
                    ELSE
       *
-                   MOVE    SRYACCT-REC         TO  MCPDATA-REC
-                   MOVE    "DBUPDATE"          TO  MCP-FUNC
-                   MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
-                   CALL    "ORCMCPSUB"          USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC
-                   IF      MCP-RC          NOT =   ZERO
-                        DISPLAY "ORCSCHOZAI SRYACCT UPD ERR:" MCP-RC
+                       MOVE    SRYACCT-REC         TO  MCPDATA-REC
+                       MOVE    "DBUPDATE"          TO  MCP-FUNC
+                       MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
+                       CALL    "ORCMCPSUB"         USING
+                                                   MCPAREA
+                                                   ORCMCPAREA
+                                                   MCPDATA-REC
+                       IF      MCP-RC          NOT =   ZERO
+                            DISPLAY "ORCSCHOZAI SRYACCT UPD ERR:" MCP-RC
                                 ",KEY:" ACCT-KEY
-                        MOVE    1               TO  ORCSCHO-ERRCD
-                        GO  TO  4005-CHOU-UPDATE-EXT
-                   END-IF
+                            MOVE    1               TO  ORCSCHO-ERRCD
+                            GO  TO  4005-CHOU-UPDATE-EXT
+                       END-IF
       *
                    END-IF
                ELSE
@@ -1156,9 +1169,81 @@
            EXIT.
       *
       *****************************************************************
+      *    診療会計マスター削除チェック処理
+      *****************************************************************
+       40054-DELETE-CHK-SEC           SECTION.
+      *
+           MOVE    SRYACCT-REC         TO  HZN-SRYACCT-REC
+      *
+           INITIALIZE                      SRYACCT-REC
+           MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+           MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
+           MOVE    ORCSCHO-PTID        TO  ACCT-PTID
+           MOVE    HZN-ACCT-SRYKA      TO  ACCT-SRYKA
+           MOVE    ORCSCHO-SRYYM       TO  ACCT-SRYYM
+           MOVE    HZN-ACCT-HKNCOMBI   TO  ACCT-HKNCOMBI
+      *
+           MOVE    SRYACCT-REC         TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SRYACCT-KEY11"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SRYACCT-KEY11"     TO  ORC-DBPATH
+               PERFORM 930-SRYACCT-READ-SEC
+           ELSE
+               INITIALIZE                  SRYACCT-REC
+               MOVE    1               TO  FLG-SRYACCT
+           END-IF
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM
+               UNTIL   (FLG-SRYACCT    =   1  )   OR
+                       (FLG-CHK        =   1  )
+               IF      ACCT-SRYKBN         =   "21"  OR
+                                               "22"  OR
+                                               "23"
+                   MOVE    1               TO  FLG-CHK
+               END-IF
+      *
+               MOVE    "SRYACCT-KEY11"     TO  ORC-DBPATH
+               PERFORM 930-SRYACCT-READ-SEC
+           END-PERFORM
+           IF      FLG-CHK             =   ZERO
+               MOVE    1               TO  FLG-SRYACCT-DEL
+           END-IF
+      *
+           MOVE    HZN-SRYACCT-REC     TO  SRYACCT-REC
+      *
+           .
+       40054-DELETE-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    診療会計マスター削除処理
       *****************************************************************
        40052-SRYACCT-DEL-SEC           SECTION.
+      *
+           INITIALIZE                  SRYACT-REC
+           MOVE    ACCT-HOSPID         TO  SRY-HOSPID
+           MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
+           MOVE    ACCT-PTID           TO  SRY-PTID
+           MOVE    ACCT-SRYKA          TO  SRY-SRYKA
+           MOVE    ACCT-SRYYM          TO  SRY-SRYYM
+           MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
+      *
+           MOVE    SRYACT-REC          TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO
+               DISPLAY "ORCSCHOZAI SRYACT DEL ERR:" MCP-RC
+                       ",KEY:" SRY-KEY
+           END-IF
       *
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
@@ -1172,6 +1257,77 @@
                                 ",KEY:" ACCT-KEY
                MOVE    1               TO  ORCSCHO-ERRCD
            END-IF
+      *
+      *    受診履歴削除
+           MOVE    ACCT-HOSPID         TO  SRY-HOSPID
+           MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
+           MOVE    ACCT-PTID           TO  SRY-PTID
+           MOVE    ACCT-SRYKA          TO  SRY-SRYKA
+           MOVE    ACCT-SRYYM          TO  SRY-SRYYM
+           MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
+      *
+           MOVE    SPACE               TO  JYURRK-REC
+           INITIALIZE                      JYURRK-REC
+           MOVE    ACCT-HOSPID         TO  JYURRK-HOSPID
+           MOVE    ACCT-PTID           TO  JYURRK-PTID
+           MOVE    ACCT-NYUGAIKBN      TO  JYURRK-NYUGAIKBN
+           MOVE    ACCT-SRYKA          TO  JYURRK-SRYKA
+           MOVE    ACCT-HKNCOMBI       TO  JYURRK-HKNCOMBINUM
+           PERFORM VARYING     IDX3    FROM    1  BY  1
+                   UNTIL       IDX3    >   15
+               MOVE    ACCT-ZAINUM         TO  JYURRK-ZAINUM (IDX3)
+           END-PERFORM
+      *
+           MOVE    JYURRK-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "JYURRK-KEY20"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "JYURRK-KEY20"      TO  ORC-DBPATH
+               PERFORM 970-JYURRK-NEXT-SEC
+           ELSE
+               MOVE    1                   TO  FLG-JYURRK
+           END-IF
+           PERFORM
+                   UNTIL      (FLG-JYURRK      =   1 )  OR
+                              (FLG-OK          =   1 )
+               PERFORM VARYING     IDX3    FROM    1  BY  1
+                       UNTIL       IDX3    >   15
+                   IF      ACCT-ZAINUM         =   JYURRK-ZAINUM (IDX3)
+                       MOVE    ZERO            TO  JYURRK-ZAINUM (IDX3)
+                   END-IF
+               END-PERFORM
+      *
+               PERFORM VARYING     IDX3    FROM    1   BY  1
+                       UNTIL       IDX3    >   15
+                   IF     (JYURRK-ZAINUM (IDX3)    =   ZERO)  AND
+                          (IDX3                    <   15  )
+                       MOVE    JYURRK-ZAINUM (IDX3 + 1)
+                                               TO  JYURRK-ZAINUM (IDX3)
+                       MOVE    ZERO            TO  JYURRK-ZAINUM
+                                                             (IDX3 + 1)
+                   END-IF
+               END-PERFORM
+      *
+               MOVE    JYURRK-REC          TO  MCPDATA-REC
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    "JYURRK-KEY"        TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO
+                    DISPLAY "ORCSCHOZAI JYURRK UPD ERR:" MCP-RC
+                            ",KEY:" JYURRK-KEY
+               END-IF
+      *
+               MOVE    "JYURRK-KEY20"      TO  ORC-DBPATH
+               PERFORM 970-JYURRK-NEXT-SEC
+           END-PERFORM
+      *
       *
            .
        40052-SRYACCT-DEL-EXT.
@@ -1231,9 +1387,15 @@
       *            診療会計マスターを変更する
                    MOVE    TBL-MAD-DAY-AREA(IDX)   TO  ACCT-DAY-AREA
                    PERFORM 40051-DAY-UPD-SEC
+      *            回数がない時、対象の科・保険で投薬のない時削除
+                   MOVE    ZERO                TO  FLG-SRYACCT-DEL
+                   IF      ACCT-ZAIKAISU       =   ZERO
+                       PERFORM 40054-DELETE-CHK-SEC
+                   END-IF
       *            退院で回数がない時、削除する
-                   IF     (ORCSCHO-KBN         =   "2"  )  AND
-                          (ACCT-ZAIKAISU       =   ZERO )
+                   IF    ((ORCSCHO-KBN         =   "2"  )  AND
+                          (ACCT-ZAIKAISU       =   ZERO ))  OR
+                         ( FLG-SRYACCT-DEL     =   1    )
                        PERFORM 40052-SRYACCT-DEL-SEC
                    ELSE
       *
@@ -1660,4 +1822,25 @@
            .
        910-PTNYUINRRK-READ-EXT.
            EXIT.
+      *****************************************************************
+      *    受診履歴順読み
+      *****************************************************************
+       970-JYURRK-NEXT-SEC           SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  JYURRK-REC 
+               MOVE    ZERO                TO  FLG-JYURRK
+           ELSE
+               MOVE    1                   TO  FLG-JYURRK
+           END-IF
+      *
+           .
+       970-JYURRK-NEXT-EXT.
+           EXIT.
+      *
       *
