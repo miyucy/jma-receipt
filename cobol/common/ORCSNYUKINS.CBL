@@ -144,7 +144,7 @@
       *
       *    ¼ýÇ¼¹¹¿·
            PERFORM    VARYING  IDX   FROM  1  BY  1
-             UNTIL    (LNK-SCNYUKINS-DENPNUM(IDX)  =   ZERO)   OR
+             UNTIL    (IDX        >   LNK-SCNYUKINS-MAX )   OR
                       (IDX        >   400)                     OR
                       (LNK-SCNYUKINS-RC   NOT =    ZERO)
                        PERFORM   300-SYUNOU-UPD-SEC

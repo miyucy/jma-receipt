@@ -1,0 +1,101 @@
+S06	{
+	fixed12	{
+		PTNUM	{
+			value	varchar(20);
+		};
+		NAME	{
+			value	varchar(50);
+		};
+		CMB_NYUGAIKBN	{
+			NYUGAIKBN	{
+				value	varchar(10);
+			};
+			count	int;
+			item	varchar(10)[03];
+		};
+		LBLMSG	{
+			style   varchar(20);
+			value	varchar(50);
+		};
+		GAI_MISYU	{
+			value	number(9);
+		};
+		NYU_MISYU	{
+			value	number(9);
+		};
+		SELNUM	{
+			value	number(3);
+			state	int;
+		};
+		RD_NYUKIN_IKT	{
+			value	bool;
+		};
+		RD_NYUKIN_KBT	{
+			value	bool;
+		};
+		CMB_NYKNKNRKBN	{
+			NYKNKNRKBN	{
+				value	varchar(42);
+				state	int;
+			};
+			count	int;
+			item	varchar(42)[5];
+			state	int;
+		};
+		NYUKINYMD	{
+			value	varchar(10);
+		};
+		CMB_SKYPRTKBN	{
+			SKYPRTKBN	{
+				value	varchar(14);
+			};
+			count	int;
+			item	varchar(14)[2];
+		};
+		GAI_NYUKIN	{
+			value	number(9);
+			state	int;
+		};
+		GAI_NYUKIN_MAX	{
+			value	number(9);
+			state	int;
+		};
+		NYU_NYUKIN	{
+			value	number(9);
+			state	int;
+		};
+		NYU_NYUKIN_MAX	{
+			value	number(9);
+			state	int;
+		};
+		NYUKIN	{
+			value	number(9);
+			state	int;
+		};
+		NYUKIN_MAX	{
+			value	number(9);
+			state	int;
+		};
+		scrolledwindow1	{
+			SYULIST	{
+				count	int;
+				row	int;
+				rowattr	int;
+				item	{
+					value0	varchar(5);
+					value1	varchar(9);
+					value2	varchar(6);
+					value3	varchar(4);
+					value4	varchar(50);
+					value5	varchar(5);
+					value6	varchar(11);
+					value7	varchar(15);
+					value8	varchar(11);
+					value9	varchar(11);
+					value10	varchar(11);
+				}	[400];
+				select	bool[400];
+			};
+		};
+	};
+};

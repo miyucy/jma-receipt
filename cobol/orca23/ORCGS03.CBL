@@ -381,6 +381,7 @@
            COPY    "S03N.INC".
            COPY    "S04.INC".
            COPY    "S05.INC".
+           COPY    "S06.INC".
            COPY    "SERR.INC".
            COPY    "SID1.INC".
       *

@@ -543,6 +543,7 @@
            COPY    "S03N.INC".
            COPY    "S04.INC".
            COPY    "S05.INC".
+           COPY    "S06.INC".
            COPY    "SERR.INC".
            COPY    "SID1.INC".
       *----(01.01.19)--ADD-END-----
@@ -671,6 +672,7 @@
                WHEN    "S03"
                WHEN    "S03N"
                WHEN    "S04"
+               WHEN    "S06"
                    PERFORM 320-S03SPASET-SEC
                    GO  TO  300-SCREEN-EXT
                WHEN    "S05"
@@ -786,6 +788,9 @@
            MOVE    SPA-SYSYMDWH(1:6)    TO  SPA-GMN-SRYYM
            MOVE    SPA-SYSYMD  (1:6)    TO  SPA-NAI-SRYYM
            MOVE    SPA-SYSYMD           TO  SPA-SRYYMD
+           MOVE    SPA-SRYYMD           TO  WRK-SYMD
+           PERFORM 31011-SEIWA-HEN-SEC
+           MOVE    WRK-HENYMDG          TO  SPA-SRYYMDW
       *
            PERFORM 3101-SRYKA-SPA-SEC
       *
@@ -893,6 +898,9 @@
                MOVE    SPA-SYSYMDWH(1:6)   TO  SPA-GMN-SRYYM
                MOVE    SPA-SYSYMD  (1:6)   TO  SPA-NAI-SRYYM
            ELSE
+               MOVE    SPA-SRYYMD          TO  WRK-SYMD
+               PERFORM 31011-SEIWA-HEN-SEC
+               MOVE    WRK-HENYMDG         TO  SPA-SRYYMDW
                MOVE    SPA-SRYYMDW(1:6)    TO  SPA-GMN-SRYYM
                MOVE    SPA-SRYYMD (1:6)    TO  SPA-NAI-SRYYM
            END-IF
@@ -1692,6 +1700,9 @@
       *    入金
            WHEN    "CLICKED"       ALSO    "B05S"
                    PERFORM 460-NYUKIN-SEC
+      *    一括入金画面（Ｓ06）
+           WHEN    "CLICKED"       ALSO    "B06S"
+                   PERFORM 460-IKKATU-NYUKIN-SEC
       *    入金取消
            WHEN    "CLICKED"       ALSO    "B08"
                    PERFORM 470-NYUDEL-SEC
@@ -2197,6 +2208,7 @@
                                            TO  ORCHC03-SEIKYU-TAX-SAI 
                        MOVE   SYU-NYUKIN-TOTAL
                                            TO  ORCHC03-NYUKIN
+                       MOVE   1            TO  ORCHC03-HAKKOFLG
       *****************CALL  "ORCHC03"     USING   WRK-SPA-AREA
                        CALL  WRK-SEIKYU-PG     USING
                                                WRK-SPA-AREA
@@ -4292,6 +4304,35 @@
       *
            .
        460-NYUKIN-EXT.
+           EXIT.
+      *************************************************************
+      *    一括入金処理
+      *************************************************************
+       460-IKKATU-NYUKIN-SEC           SECTION.
+      *
+           IF    ( SPA-GMN-PTID        =   ZERO )
+               MOVE    "1003"          TO  SPA-ERRCD
+               GO  TO  460-IKKATU-NYUKIN-EXT
+           END-IF
+      *
+           INITIALIZE                  SPA-S01KYOUTU
+      *
+           PERFORM 4901-SPAKYOTUKEY-SET-SEC
+      *
+           MOVE    SPA-S01KYOUTU       TO  SPA-WORK
+      *
+           MOVE    "S02"               TO  SPA-MOTOPG
+           MOVE    "S06"               TO  SPA-SAKIPG
+      *
+           MOVE    "CHANGE"            TO  MCP-PUTTYPE.
+           MOVE    "S06    "           TO  MCP-WINDOW.
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       460-IKKATU-NYUKIN-EXT.
            EXIT.
       *
       *************************************************************

@@ -33,6 +33,7 @@
            03  LNK-SCNYUKINS-NYUKIN-YMD      PIC X(08).
       *    入金額設定情報
            03  LNK-SCNYUKINS-AREA.
+               05  LNK-SCNYUKINS-MAX         PIC 9(05).
                05  LNK-SCNYUKINS-TBL    OCCURS 400.
       *            入外区分
                    07  LNK-SCNYUKINS-NYUGAIKBN     PIC X(01).
