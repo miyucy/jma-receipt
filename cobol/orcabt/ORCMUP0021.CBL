@@ -317,11 +317,64 @@
       *****************************************************************
        2010-INSERT-SYORI-SEC               SECTION.
       *
+      *    単純追加
+           IF      SYSWK-EDYUKYMD2     =   SPACE
+               PERFORM    2011-INSERT-SYORI-SEC
+           ELSE
+               PERFORM    2012-INSERT-SYORI-SEC
+           END-IF
+      *
+           .
+       2010-INSERT-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    単純追加  処理
+      *****************************************************************
+       2011-INSERT-SYORI-SEC               SECTION.
+      *
+           INITIALIZE                  SYSKANRI-REC
+           MOVE    SYSWK-KEY           TO  SYS-KEY
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    SYSWK-STYUKYMD      TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM                     910-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SYS
+           END-IF
+      *
+      *    追加エラー
+           IF      FLG-SYS             =   ZERO
+                   MOVE    1               TO  WRK-ERRCD
+                   PERFORM 2040-ERR-SYORI-SEC
+                   GO      TO      2011-INSERT-SYORI-EXT
+           END-IF
+      *
+      *    ＤＢ追加
+           PERFORM 20101-SYSKANRI-INS-SEC
+      *
+           .
+       2011-INSERT-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    改正追加  処理
+      *****************************************************************
+       2012-INSERT-SYORI-SEC               SECTION.
+      *
            INITIALIZE                  SYSKANRI-REC
            MOVE    SYSWK-KEY           TO  SYS-KEY
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY4"     TO  ORC-DBPATH
+           MOVE    SYSWK-STYUKYMD      TO  ORC-DBYMD
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
@@ -333,49 +386,35 @@
                MOVE    1                   TO  FLG-SYS
            END-IF
       *
-      *    単純追加
-           IF      SYSWK-EDYUKYMD2     =   SPACE
-      *        追加エラー
-               IF      FLG-SYS             =   ZERO
-                   MOVE    1               TO  WRK-ERRCD
-                   PERFORM 2040-ERR-SYORI-SEC
-                   GO      TO      2010-INSERT-SYORI-EXT
-               END-IF
-      *
-      *        ＤＢ追加
-               PERFORM 20101-SYSKANRI-INS-SEC
-           ELSE
-      *
       *    追加更新
-               MOVE    ZERO                TO  FLG-SYORI
-               PERFORM UNTIL   (FLG-SYS        =   1  )  OR
-                               (FLG-SYORI      =   1  )
-                   IF     (SYS-STYUKYMD    <=  SYSWK-EDYUKYMD2 ) AND
-                          (SYS-EDYUKYMD    >=  SYSWK-EDYUKYMD2 )
-      *                更新
-                       MOVE    SYS-KEY             TO  SYSUPD-KEY
-                       MOVE    SYSWK-EDYUKYMD2     TO  SYS-EDYUKYMD
-                       PERFORM 20102-SYSKANRI-UPD-SEC
-      *
-      *                ＤＢ追加
-                       PERFORM 20101-SYSKANRI-INS-SEC
-      *
-                       MOVE    1                   TO  FLG-SYORI
-                   ELSE
-                       MOVE    "SYSKANRI-KEY4"     TO  ORC-DBPATH
-                       PERFORM                     910-SYSKANRI-READ-SEC
-                   END-IF
-               END-PERFORM
-      *
-               IF      FLG-SYORI           =   ZERO
+           MOVE    ZERO                TO  FLG-SYORI
+           PERFORM UNTIL   (FLG-SYS        =   1  )  OR
+                           (FLG-SYORI      =   1  )
+               IF     (SYS-STYUKYMD    <=  SYSWK-EDYUKYMD2 ) AND
+                      (SYS-EDYUKYMD    >=  SYSWK-EDYUKYMD2 )
+      *            更新
+                   MOVE    SYS-KEY             TO  SYSUPD-KEY
+                   MOVE    SYSWK-EDYUKYMD2     TO  SYS-EDYUKYMD
+                   PERFORM 20102-SYSKANRI-UPD-SEC
       *
       *            ＤＢ追加
                    PERFORM 20101-SYSKANRI-INS-SEC
+      *
+                   MOVE    1                   TO  FLG-SYORI
+               ELSE
+                   MOVE    "SYSKANRI-KEY4"     TO  ORC-DBPATH
+                   PERFORM                     910-SYSKANRI-READ-SEC
                END-IF
+           END-PERFORM
+      *
+           IF      FLG-SYORI           =   ZERO
+      *
+      *        ＤＢ追加
+               PERFORM 20101-SYSKANRI-INS-SEC
            END-IF
       *
            .
-       2010-INSERT-SYORI-EXT.
+       2012-INSERT-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -537,7 +576,7 @@
            END-PERFORM
       *
       *    削除エラー
-           IF      FLG-SYORI       NOT =   ZERO
+           IF      FLG-SYORI           =   ZERO
                MOVE    5               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
            END-IF
