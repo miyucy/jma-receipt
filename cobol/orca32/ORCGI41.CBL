@@ -4223,8 +4223,20 @@
                    IF      NACCT-ZAISKBKBN     =   "1"
                        MOVE   1                TO   FLG-NYUINKHNRYO
                    END-IF
+      *            最終日の食事を退避（次月会計の作成用）
+                   IF      WRK-TAIHI-SHOKUJI   =    ZERO
+                     IF      NACCT-ZAISKBKBN     =   "4"
+                       MOVE    ZERO            TO  WRK-TAIHI-SHOKUJI
+                       PERFORM VARYING     IDX-HKN   FROM   1   BY  1
+                         UNTIL       IDX-HKN  >   31
+                          IF      NACCT-DAY (IDX-HKN)  NOT =   ZERO
+                              MOVE   NACCT-DAY(IDX-HKN) TO
+                                                    WRK-TAIHI-SHOKUJI
+                          END-IF
+                       END-PERFORM
+                     END-IF
+                   END-IF
       *            最終日の保険組合せを退避（次月会計の作成用）
-                   DISPLAY  "HKN-TAIHI"
                    IF      WRK-TAIHI-HKN   =    ZERO
                      IF      NACCT-ZAISKBKBN     =   "5"
                        MOVE    ZERO            TO  WRK-TAIHI-HKN
@@ -4237,7 +4249,6 @@
                        END-PERFORM
                      END-IF
                    END-IF
-                   DISPLAY "WRK-TAIHI-HKN = " WRK-TAIHI-HKN
       *
                    MOVE    "NYUINACCT-KEY16"   TO  ORC-DBPATH
                    PERFORM 900-NYUINACCT-READ-SEC
@@ -4781,7 +4792,8 @@
            END-IF
       *    食事区分
            MOVE   "099999913"   TO  LNK-SCNYUACCT-SHOKUJI-SRYCD
-           MOVE   1             TO  LNK-SCNYUACCT-SHOKUJIKBN
+      *     MOVE   1             TO  LNK-SCNYUACCT-SHOKUJIKBN
+            MOVE   WRK-TAIHI-SHOKUJI  TO  LNK-SCNYUACCT-SHOKUJIKBN
       *    保険組合せ
            MOVE   "099999914"   TO  LNK-SCNYUACCT-HKNCOMBINUM-SRYCD
       *     MOVE   PTNYUINRRK-HKNCOMBINUM
@@ -5949,7 +5961,17 @@
                    PERFORM 4901-NYUINACCT-KOUSIN-SEC
       *
                    MOVE    NYUINACCT-REC       TO  MCPDATA-REC
-                     IF      NACCT-ZAISKBKBN     =   "5"
+                   IF      NACCT-ZAISKBKBN     =   "4"
+                       MOVE    ZERO            TO  WRK-TAIHI-SHOKUJI
+                       PERFORM VARYING     IDX-HKN   FROM   1   BY  1
+                         UNTIL       IDX-HKN  >   31
+                          IF      NACCT-DAY (IDX-HKN)  NOT =   ZERO
+                              MOVE   NACCT-DAY(IDX-HKN) TO
+                                                    WRK-TAIHI-SHOKUJI
+                          END-IF
+                       END-PERFORM
+                   END-IF
+                   IF      NACCT-ZAISKBKBN     =   "5"
                        MOVE    ZERO            TO  WRK-TAIHI-HKN
                        PERFORM VARYING     IDX-HKN   FROM   1   BY  1
                          UNTIL       IDX-HKN  >   31
@@ -5958,7 +5980,7 @@
                                                         WRK-TAIHI-HKN
                           END-IF
                        END-PERFORM
-                     END-IF
+                   END-IF
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    "NYUINACCT-UPD1"    TO  ORC-DBPATH
                    CALL    "ORCMCPSUB"         USING
@@ -6149,7 +6171,17 @@
                    END-PERFORM
       *
                    MOVE    NYUINACCT-REC       TO  MCPDATA-REC
-                     IF      NACCT-ZAISKBKBN     =   "5"
+                   IF      NACCT-ZAISKBKBN     =   "4"
+                       MOVE    ZERO            TO  WRK-TAIHI-SHOKUJI
+                       PERFORM VARYING     IDX-HKN   FROM   1   BY  1
+                         UNTIL       IDX-HKN  >   31
+                          IF      NACCT-DAY (IDX-HKN)  NOT =   ZERO
+                              MOVE   NACCT-DAY(IDX-HKN) TO
+                                                    WRK-TAIHI-SHOKUJI
+                          END-IF
+                       END-PERFORM
+                   END-IF
+                   IF      NACCT-ZAISKBKBN     =   "5"
                        MOVE    ZERO            TO  WRK-TAIHI-HKN
                        PERFORM VARYING     IDX-HKN   FROM   1   BY  1
                          UNTIL       IDX-HKN  >   31
@@ -6158,7 +6190,7 @@
                                                         WRK-TAIHI-HKN
                           END-IF
                        END-PERFORM
-                     END-IF
+                   END-IF
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    "NYUINACCT-UPD1"    TO  ORC-DBPATH
                    CALL    "ORCMCPSUB"         USING
