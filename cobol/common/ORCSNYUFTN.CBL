@@ -806,10 +806,10 @@
                END-PERFORM
            END-IF
       *
-           PERFORM   VARYING   IDZ   FROM  1   BY   1
-                     UNTIL     IDZ   >     11
-                     ADD    SYU-HKNTEN (IDZ)  TO  SYU-HKNTEN (12)
-           END-PERFORM
+      *     PERFORM   VARYING   IDZ   FROM  1   BY   1
+      *               UNTIL     IDZ   >     11
+      *               ADD    SYU-HKNTEN (IDZ)  TO  SYU-HKNTEN (12)
+      *     END-PERFORM
            MOVE     "SYSKANRI-KEY"     TO  WK-PATH
            PERFORM   CSR-CLOSE-SEC
       *
@@ -1047,7 +1047,7 @@
            MOVE   "SRYACCT-KEY9"       TO  WK-PATH
            PERFORM   CSR-CLOSE-SEC
       *
-      *  保険点数集計
+      *    保険点数集計
            PERFORM     VARYING   IDZ    FROM   1    BY    1
                          UNTIL   IDZ    >      10
                   ADD    SYU-HKNTEN(IDZ)      TO  SYU-HKNTEN(12)
