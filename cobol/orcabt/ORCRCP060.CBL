@@ -2106,8 +2106,12 @@
       *    ¸©Ã±ÍÑ¹àÌÜ
            IF      FLG-RECE11          =   ZERO
            AND     RECE11-KYURATE      >   ZERO
-               COMPUTE WRK-KYURATE-9   =   (100 -   RECE11-KYURATE)
-                                           / 10 
+               IF      RECE11-KYURATE      =   999
+                   MOVE    10                  TO  WRK-KYURATE-9
+               ELSE
+                   COMPUTE WRK-KYURATE-9   =   (100 -   RECE11-KYURATE)
+                                               / 10
+               END-IF
                IF      WRK-KYURATE-9       >   ZERO
                    MOVE   "µë³ä"           TO  HC06-KYURATE
                    MOVE    WRK-KYURATE-9   TO  WRK-KYURATE

@@ -47,6 +47,7 @@
       *  01.00.15    NACL-Æ£¸¶    03/04/23  ¸øÈñÀÁµá½ñ£Ä£Â¤ÎµëÉÕ³ä¹ç¤ò½¤Àµ
       *  01.00.16    NACL-Æ£¸¶    03/05/09  ÆþÂà±¡ÍúÎò¾ðÊó¤ÎÆþ±¡Ãæ¶èÊ¬¤¬
       *                                     £±¤Î¤È¤­¼¡¤ÎÂà±¡Æü¤È°ì½ï¤ËÉ½¼¨¤¹¤ë
+      *  01.00.17    NACL-Æ£¸¶    03/05/23  µëÉÕ³ä¹ç¤Î¥«¥¹¥¿¥Þ¥¤¥ºÊýË¡¤Î½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2354,8 +2355,12 @@
       *    ¸©Ã±ÍÑ¹àÌÜ
            IF      FLG-RECE67          =   ZERO
            AND     RECE67-KYURATE      >   ZERO
-               COMPUTE WRK-KYURATE-9   =   (100 -   RECE67-KYURATE)
-                                           / 10 
+               IF      RECE67-KYURATE      =   999
+                   MOVE    10                  TO  WRK-KYURATE-9
+               ELSE
+                   COMPUTE WRK-KYURATE-9   =   (100 -   RECE67-KYURATE)
+                                               / 10
+               END-IF
                IF      WRK-KYURATE-9       >   ZERO
                    MOVE   "µë³ä"           TO  HC06-KYURATE
                    MOVE    WRK-KYURATE-9   TO  WRK-KYURATE
