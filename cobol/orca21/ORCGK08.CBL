@@ -3822,6 +3822,9 @@
            MOVE    ZERO                TO  IDX-KOUI
            MOVE    ZERO                TO  LNK-WKSRYACT-MAX
            INITIALIZE                  HZN-PARA-AREA
+           MOVE    SPACE               TO  LNK-SYUNOU-AREA
+           INITIALIZE                  LNK-SYUNOU-AREA
+           MOVE    ZERO                TO  LNK-SYUNOU-MAX
       *
            MOVE    SPA-TERMID          TO  FILE-TERMID2
            OPEN    INPUT               PARA-FILE
@@ -3839,7 +3842,22 @@
                        ADD     1                   TO  IDX
                        MOVE    PARA-DATA-REC       TO  LNK-WKSRYACT-REC
                                                                 (IDX)
+                       IF      LNK-WKSRY-HKNCOMBI(IDX) =   ZERO
+                           MOVE    SPA-HKNCOMBINUM TO
+                                                LNK-WKSRY-HKNCOMBI(IDX)
+                       END-IF
+                       IF      LNK-WKSRY-SRYKA   (IDX) =   SPACE
+                           MOVE    SPA-SRYKA       TO
+                                                LNK-WKSRY-SRYKA   (IDX)
+                       END-IF
                        MOVE    IDX                 TO  LNK-WKSRYACT-MAX
+      *            ¼ýÇ¼
+                   WHEN    "SYUNOU"
+                       ADD     1                   TO  LNK-SYUNOU-MAX
+                       IF      LNK-SYUNOU-MAX      <=  15
+                           MOVE    PARA-DATA-REC   TO  LNK-SYUNOU-REC
+                                                       (LNK-SYUNOU-MAX)
+                       END-IF
       *            ¤½¤ÎÂ¾
                    WHEN    OTHER
                        ADD     1                   TO  IDY
@@ -3889,6 +3907,13 @@
       *        ¿·µ¬¡¢¹¹¿·
                MOVE    "1"                 TO  ORCSCGAIRAI-KBN
            END-IF
+      *    ¼ýÇ¼¾ðÊó
+           MOVE    LNK-SYUNOU-MAX      TO  ORCSCGAIRAI-SYUNOU-MAX
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   LNK-SYUNOU-MAX
+               MOVE    LNK-SYUNOU-REC(IDX) TO  ORCSCGAIRAI-SYUNOU-REC
+                                                               (IDX)
+           END-PERFORM
       *
            CALL    "ORCSCGAIRAI"       USING
                                        SPA-AREA

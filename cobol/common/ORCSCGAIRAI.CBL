@@ -478,13 +478,13 @@
                           OR  (SPA-ERRCD   NOT =   SPACE )
                MOVE    ZERO                TO  WRK-KA-DENPNUM
                MOVE    SPA-TBL-HKNCOMBI (IDH)  TO  WRK-HKNCOMBI
-               IF     (SPA-TBL-SRYKA(IDH 2)    NOT =   SPACE ) AND
-                      (SPA-KAGRPFLG        NOT =   "1"       )  AND
-                      (WRK-HKNCOMBI        NOT =   "9999"    )
+               IF     (SPA-TBL-SRYKA(IDH 2)    =   SPACE ) OR
+                      (SPA-KAGRPFLG        NOT =   "0"    )  OR
+                      (WRK-HKNCOMBI            =   "9999" )
+                   MOVE    ZERO                TO  FLG-FUKU-FLG
+               ELSE
       *            複数科まとめあり
                    MOVE    1                   TO  FLG-FUKU-FLG
-               ELSE
-                   MOVE    ZERO                TO  FLG-FUKU-FLG
                END-IF
                PERFORM VARYING     IDH2    FROM    1   BY  1
                        UNTIL      (IDH2    >   15  )  OR
@@ -610,6 +610,7 @@
       *
       **** CLOSE                        PARA-FILE
       *
+           MOVE    ZERO                TO  IDH-GAI
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   ORCSCGAIRAI-SYUNOU-MAX) OR
@@ -649,7 +650,7 @@
                    UNTIL      (FLG-PARA   =    1  )  OR
                               (SPA-ERRCD  NOT =   SPACE)
                IF      PARA-FILEMEI        =   "WKSRYACT"
-                   MOVE    PARA-DATA-REC    TO  WRK-WKSRYACT-REC
+                 MOVE    PARA-DATA-REC    TO  WRK-WKSRYACT-REC
                  IF     (WRK-WKSRY-SRYKA      =   WRK-SRYKA)  AND
                         (WRK-WKSRY-HKNCOMBI   =   WRK-HKNCOMBI) AND
                         (WRK-WKSRY-SRYCD (1)(1:1)
@@ -735,6 +736,10 @@
       *        包括保険の場合、伝票番号のみ取得
                IF      SPA-HKNCOMBINUM     =   "9999"
                    MOVE    WRK-DENPNUM         TO  SYU-DENPNUM
+      *            まとめ入力伝票番号
+                   IF      ORCSCGAIRAI-SYUNOU-MAX  >   1
+                       ADD     1               TO  WRK-GRP-RENNUM
+                   END-IF
                ELSE
                    PERFORM 10021-SYUNOU-SYORI-SEC
                END-IF
@@ -3113,7 +3118,7 @@
            MOVE    WRK-KA-DENPNUM      TO  SYUTTL-DENPNUM
            MOVE    SYUTTL-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYUTOTAL-KEY"        TO  ORC-DBPATH
+           MOVE    "SYUTOTAL-KEY"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
@@ -3125,6 +3130,10 @@
                MOVE    1               TO  FLG-SYUTTL
                INITIALIZE              SYUTTL-REC
            END-IF
+      *TEST
+            DISPLAY "SYUTTL:" WRK-KA-DENPNUM
+                 ",FLG-SYUTTL:" FLG-SYUTTL
+      *TEST
       *
            MOVE    SPACE               TO  SYUTTL-REC
            INITIALIZE                  SYUTTL-REC
@@ -3243,6 +3252,7 @@
                                            MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "K03 SYUTTL INS ERR:" SYUTTL-KEY
+                       ",MCP-RC:"  MCP-RC
                    MOVE    "0005"          TO  SPA-ERRCD
                END-IF
            ELSE
@@ -3260,6 +3270,7 @@
                                            MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "K03 SYUTTL UPD ERR:" SYUTTL-KEY
+                       ",MCP-RC:"  MCP-RC
                    MOVE    "0005"          TO  SPA-ERRCD
                END-IF
            END-IF
