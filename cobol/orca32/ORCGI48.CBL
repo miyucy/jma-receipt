@@ -145,6 +145,7 @@
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-HDD         PIC 9(02).
            03  WRK-WIDGET          PIC X(03).
+           03  WRK-WIDGET-SW       PIC X(01).
            03  WRK-INPUTCD-W       PIC X(22).
       *
       *
@@ -329,7 +330,7 @@
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
       *    画面遷移
-               WHEN     "PUTG"           ALSO   "CLICKED"
+               WHEN    "PUTG"          ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
       *    入力
                WHEN      OTHER
@@ -386,26 +387,27 @@
        300-SCREEN-SEC             SECTION.
       *    J04 で初期化する
            MOVE    SPA-I48-INPUTCD     TO  SPA-I48-GMN-INPUT.
+           MOVE    SPA-I48-INPUTCD     TO  WRK-INPUTCD.
            MOVE    ZERO                TO  SPA-I48-NEXT.
       *
       *    リストボックス
-           MOVE    "1:内服薬"          TO  SPA-I48-JIINLST (1).
-           MOVE    "2:外用薬"          TO  SPA-I48-JIINLST (2).
-           MOVE    "3:注射薬"          TO  SPA-I48-JIINLST (3).
-           MOVE    "4:処置"            TO  SPA-I48-JIINLST (4).
-           MOVE    "5:診察"            TO  SPA-I48-JIINLST (5).
-           MOVE    "6:注射"            TO  SPA-I48-JIINLST (6).
-           MOVE    "7:手術・麻酔"      TO  SPA-I48-JIINLST (7).
-           MOVE    "8:画像診断"        TO  SPA-I48-JIINLST (8).
-           MOVE    "9:その他"          TO  SPA-I48-JIINLST (9).
+      **     MOVE    "1:内服薬"          TO  SPA-I48-JIINLST (1).
+      **     MOVE    "2:外用薬"          TO  SPA-I48-JIINLST (2).
+      **     MOVE    "3:注射薬"          TO  SPA-I48-JIINLST (3).
+           MOVE    "1:処置"            TO  SPA-I48-JIINLST (1).
+           MOVE    "2:診察"            TO  SPA-I48-JIINLST (2).
+           MOVE    "3:注射"            TO  SPA-I48-JIINLST (3).
+           MOVE    "4:手術・麻酔"      TO  SPA-I48-JIINLST (4).
+           MOVE    "5:画像診断"        TO  SPA-I48-JIINLST (5).
+           MOVE    "6:その他"          TO  SPA-I48-JIINLST (6).
            MOVE    SPACE               TO  SPA-I48-JIIN-G.
       *
       *    ユーザー登録他
-           MOVE    "1:用法"            TO  SPA-I48-USERLST (1).
-           MOVE    "2:部位"            TO  SPA-I48-USERLST (2).
-           MOVE    "3:その他"          TO  SPA-I48-USERLST (3).
-           MOVE    "4:コメント"        TO  SPA-I48-USERLST (4).
-           MOVE    "5:労災"            TO  SPA-I48-USERLST (5).
+      **     MOVE    "1:用法"            TO  SPA-I48-USERLST (1).
+      **     MOVE    "2:部位"            TO  SPA-I48-USERLST (2).
+      **     MOVE    "3:その他"          TO  SPA-I48-USERLST (3).
+           MOVE    "1:コメント"        TO  SPA-I48-USERLST (1).
+           MOVE    "2:労災"            TO  SPA-I48-USERLST (2).
            MOVE    SPACE               TO  SPA-I48-USER-G.
       *
            IF      (SPA-I48-GMN-INPUT  =   SPACE )  AND
@@ -413,7 +415,10 @@
                CONTINUE
            ELSE
                MOVE    SPACE               TO  WRK-WIDGET
-               PERFORM                     290-ALL-SEL-SEC
+               PERFORM                     310-SPA-SET-SEC
+               IF       WRK-WIDGET-SW         =   "1"
+                   MOVE   "B09"                TO  WRK-WIDGET
+               END-IF
                MOVE    SPACE               TO  SPA-ERRCD
            END-IF.
       *
@@ -428,6 +433,7 @@
            INITIALIZE                  SPA-I48-GMN-TBL.
            MOVE    ZERO                TO  SPA-I48-GMN-MAX.
            MOVE    ZERO                TO  FLG-MAX.
+           MOVE    SPACE               TO  WRK-WIDGET-SW.
       *
            IF       SPA-I48-TYPE         =   "1"
                PERFORM 3101-INPUTCD-SET-SEC
@@ -435,7 +441,14 @@
            IF     (SPA-I48-GMN-MAX     =   ZERO  )  AND
                   (SPA-I48-CDSYUBETU   =   "J"   )  OR
                   (SPA-I48-GMN-SYORI   =   "9"  OR  "U")
+               MOVE    "1"                 TO  WRK-WIDGET-SW
                PERFORM 3102-TENSU-SET-SEC
+      *        点数マスタ検索時、自院がゼロ件の時、全体を検索
+               IF     (SPA-I48-GMN-ALL     =   SPACE)  AND
+                      (SPA-I48-GMN-MAX     =   ZERO)
+                   MOVE    "1"             TO  SPA-I48-GMN-ALL
+                   PERFORM 3102-TENSU-SET-SEC
+               END-IF
            END-IF.
       *
            IF      SPA-I48-GMN-MAX     =   ZERO
@@ -479,7 +492,6 @@
                MOVE    "INPUTCD-KEY"       TO  WRK-PATH
            END-IF.
       *
-      *
            MOVE    SPACE               TO  INPUTCD-REC.
            MOVE    SPA-HOSPID          TO  ICD-HOSPID.
            MOVE    SPA-I48-CDSYUBETU   TO  ICD-CDSYU.
@@ -508,27 +520,27 @@
                    IF     (ICD-DSPNAME     NOT =   SPACE )  AND
                           (ICD-SRYCD(1:1)      =   "S"  OR  "P")
       *
-                       ADD     1                   TO  WRK-CNT-ENT
-                       MOVE    IDX                 TO  SPA-I48-GMN-NO
-                                                                (IDX)
+                       ADD     1               TO  WRK-CNT-ENT
+                       MOVE    IDX             TO  SPA-I48-GMN-NO
+                                                                  (IDX)
                        MOVE    ICD-INPUTCD     TO  SPA-I48-GMN-INPUTCD
-                                                                (IDX)
-                       MOVE    ICD-SRYCD           TO  SPA-I48-GMN-SRYCD
-                                                                (IDX)
-                       MOVE    ICD-DSPNAME         TO  SPA-I48-GMN-NAME
-                                                               (IDX)
+                                                                  (IDX)
+                       MOVE    ICD-SRYCD       TO  SPA-I48-GMN-SRYCD
+                                                                  (IDX)
+                       MOVE    ICD-DSPNAME     TO  SPA-I48-GMN-NAME
+                                                                  (IDX)
                    ELSE
       *                点数マスタより編集
-                       INITIALIZE                  TNS-TENSU-REC
-                       MOVE    ICD-SRYCD           TO  TNS-SRYCD
-                       MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-                       MOVE    "DBSELECT"          TO  MCP-FUNC
-                       MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-                       MOVE    SPA-SRYYMD          TO  ORC-DBYMD
-                       CALL    "ORCMCPSUB"          USING
-                                                    MCPAREA
-                                                    ORCMCPAREA
-                                                    MCPDATA-REC
+                       INITIALIZE              TNS-TENSU-REC
+                       MOVE    ICD-SRYCD       TO  TNS-SRYCD
+                       MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
+                       MOVE    "DBSELECT"      TO  MCP-FUNC
+                       MOVE    "TENSU-KEY"     TO  ORC-DBPATH
+                       MOVE    SPA-SRYYMD      TO  ORC-DBYMD
+                       CALL    "ORCMCPSUB"     USING
+                                               MCPAREA
+                                               ORCMCPAREA
+                                               MCPDATA-REC
                        IF      MCP-RC              =   ZERO
                            MOVE    "TENSU-KEY"         TO  ORC-DBPATH
                            PERFORM                 910-TENSU-READ-SEC
@@ -642,56 +654,56 @@
       *
                IF      SPA-I48-GMN-ALL     =   SPACE
       *        自院分のみ
-                   EVALUATE    SPA-I48-GMN-SYORI
+      **             EVALUATE    SPA-I48-GMN-SYORI
       *            内服
-                       WHEN    "3"
-                           MOVE    "TENSU-KEY51J"       TO  WRK-PATH
+      **                 WHEN    "3"
+      **                     MOVE    "TENSU-KEY51J"       TO  WRK-PATH
       *            外用
-                       WHEN    "4"
-                           MOVE    "TENSU-KEY52J"       TO  WRK-PATH
+      **                 WHEN    "4"
+      **                     MOVE    "TENSU-KEY52J"       TO  WRK-PATH
       *            注射
-                       WHEN    "5"
-                           MOVE    "TENSU-KEY53J"       TO  WRK-PATH
+      **                 WHEN    "5"
+      **                     MOVE    "TENSU-KEY53J"       TO  WRK-PATH
       *            器材
-                       WHEN    "7"
-                           MOVE    "TENSU-KEY6J"        TO  WRK-PATH
+      **                 WHEN    "7"
+      **                     MOVE    "TENSU-KEY6J"        TO  WRK-PATH
       *            診療行為
-                       WHEN    "8"
+      **                 WHEN    "8"
                            MOVE    "TENSU-KEY7J"        TO  WRK-PATH
       *            検査
-                       WHEN    "9"
-                           MOVE    "TENSU-KEY42JK"      TO  WRK-PATH
+      **                 WHEN    "9"
+      **                     MOVE    "TENSU-KEY42JK"      TO  WRK-PATH
       *            内服
-                       WHEN    OTHER
-                           MOVE    "3"             TO  SPA-I48-GMN-SYORI
-                           MOVE    "TENSU-KEY51J"  TO  WRK-PATH
-                   END-EVALUATE
+      **                 WHEN    OTHER
+      **                     MOVE    "3"             TO  SPA-I48-GMN-SYORI
+      **                     MOVE    "TENSU-KEY51J"  TO  WRK-PATH
+      **             END-EVALUATE
                ELSE
       *        全体分
-                   EVALUATE    SPA-I48-GMN-SYORI
+      **             EVALUATE    SPA-I48-GMN-SYORI
       *            内服
-                       WHEN    "3"
-                           MOVE    "TENSU-KEY51"       TO  WRK-PATH
+      **                 WHEN    "3"
+      **                     MOVE    "TENSU-KEY51"       TO  WRK-PATH
       *            外用
-                       WHEN    "4"
-                           MOVE    "TENSU-KEY52"       TO  WRK-PATH
+      **                 WHEN    "4"
+      **                     MOVE    "TENSU-KEY52"       TO  WRK-PATH
       *            注射
-                       WHEN    "5"
-                           MOVE    "TENSU-KEY53"       TO  WRK-PATH
+      **                 WHEN    "5"
+      **                     MOVE    "TENSU-KEY53"       TO  WRK-PATH
       *            器材
-                       WHEN    "7"
-                           MOVE    "TENSU-KEY6"        TO  WRK-PATH
+      **                 WHEN    "7"
+      **                     MOVE    "TENSU-KEY6"        TO  WRK-PATH
       *            診療行為
-                       WHEN    "8"
+      **                 WHEN    "8"
                            MOVE    "TENSU-KEY7"        TO  WRK-PATH
       *            検査
-                       WHEN    "9"
-                           MOVE    "TENSU-KEY42K"      TO  WRK-PATH
+      **                 WHEN    "9"
+      **                     MOVE    "TENSU-KEY42K"      TO  WRK-PATH
       *            内服
-                       WHEN    OTHER
-                           MOVE    "3"             TO  SPA-I48-GMN-SYORI
-                           MOVE    "TENSU-KEY51"   TO  WRK-PATH
-                   END-EVALUATE
+      **                 WHEN    OTHER
+      **                     MOVE    "3"             TO  SPA-I48-GMN-SYORI
+      **                     MOVE    "TENSU-KEY51"   TO  WRK-PATH
+      **             END-EVALUATE
                END-IF
            END-IF.
       *
@@ -776,7 +788,7 @@
       *
       *    労災分表示の時、残りのマスタを表示する
            EVALUATE    SPA-I48-GMN-SYORI3
-               WHEN    "U5"
+               WHEN    "U2"
                    PERFORM 31022-RSI-HENSYU-SEC
            END-EVALUATE.
       *
@@ -796,86 +808,86 @@
            EVALUATE    SPA-I48-GMN-SYORI3
                WHEN    "J1"
       *            自院・内服
-                   MOVE    "TENSU-KEY11M1"      TO  WRK-PATH
-                   MOVE    "600000000"          TO  TNS-SRYCD
-                   MOVE    "699999999"          TO  TNSUP-SRYCD
-                   MOVE    "1"                  TO  TNS-YKZKBN
-                   MOVE    "1"                  TO  SPA-I48-GMN-ALL
-               WHEN    "J2"
+      **             MOVE    "TENSU-KEY11M1"      TO  WRK-PATH
+      **             MOVE    "600000000"          TO  TNS-SRYCD
+      **             MOVE    "699999999"          TO  TNSUP-SRYCD
+      **             MOVE    "1"                  TO  TNS-YKZKBN
+      **             MOVE    "1"                  TO  SPA-I48-GMN-ALL
+      **         WHEN    "J2"
       *            自院・外用
-                   MOVE    "TENSU-KEY11M1"      TO  WRK-PATH
-                   MOVE    "600000000"          TO  TNS-SRYCD
-                   MOVE    "699999999"          TO  TNSUP-SRYCD
-                   MOVE    "6"                  TO  TNS-YKZKBN
-                   MOVE    "1"                  TO  SPA-I48-GMN-ALL
-               WHEN    "J3"
+      **             MOVE    "TENSU-KEY11M1"      TO  WRK-PATH
+      **             MOVE    "600000000"          TO  TNS-SRYCD
+      **             MOVE    "699999999"          TO  TNSUP-SRYCD
+      **             MOVE    "6"                  TO  TNS-YKZKBN
+      **             MOVE    "1"                  TO  SPA-I48-GMN-ALL
+      **         WHEN    "J3"
       *            自院・注射
-                   MOVE    "TENSU-KEY11M1"      TO  WRK-PATH
-                   MOVE    "600000000"          TO  TNS-SRYCD
-                   MOVE    "699999999"          TO  TNSUP-SRYCD
-                   MOVE    "4"                  TO  TNS-YKZKBN
-                   MOVE    "1"                  TO  SPA-I48-GMN-ALL
-               WHEN    "J4"
+      **             MOVE    "TENSU-KEY11M1"      TO  WRK-PATH
+      **             MOVE    "600000000"          TO  TNS-SRYCD
+      **             MOVE    "699999999"          TO  TNSUP-SRYCD
+      **             MOVE    "4"                  TO  TNS-YKZKBN
+      **             MOVE    "1"                  TO  SPA-I48-GMN-ALL
+               WHEN    "J1"
       *            自院・処置
                    MOVE    "TENSU-KEY12M1"      TO  WRK-PATH
                    MOVE    "140000000"          TO  TNS-SRYCD
                    MOVE    "149999999"          TO  TNSUP-SRYCD
                    MOVE    "1"                  TO  SPA-I48-GMN-ALL
-               WHEN    "J5"
+               WHEN    "J2"
       *            自院・診察
                    MOVE    "TENSU-KEY12M1"      TO  WRK-PATH
                    MOVE    "1"                  TO  SPA-I48-GMN-ALL
                    MOVE    "110000000"          TO  TNS-SRYCD
                    MOVE    "119999999"          TO  TNSUP-SRYCD
-               WHEN    "J6"
+               WHEN    "J3"
       *            自院・注射
                    MOVE    "TENSU-KEY12M1"      TO  WRK-PATH
                    MOVE    "1"                  TO  SPA-I48-GMN-ALL
                    MOVE    "130000000"          TO  TNS-SRYCD
                    MOVE    "139999999"          TO  TNSUP-SRYCD
-               WHEN    "J7"
+               WHEN    "J4"
       *            自院・手術
                    MOVE    "TENSU-KEY12M1"      TO  WRK-PATH
                    MOVE    "1"                  TO  SPA-I48-GMN-ALL
                    MOVE    "150000000"          TO  TNS-SRYCD
                    MOVE    "159999999"          TO  TNSUP-SRYCD
-               WHEN    "J8"
+               WHEN    "J5"
       *            自院・画像診断
                    MOVE    "TENSU-KEY12M1"      TO  WRK-PATH
                    MOVE    "1"                  TO  SPA-I48-GMN-ALL
                    MOVE    "170000000"          TO  TNS-SRYCD
                    MOVE    "179999999"          TO  TNSUP-SRYCD
-               WHEN    "J9"
+               WHEN    "J6"
       *            自院・その他
                    MOVE    "TENSU-KEY12M1"      TO  WRK-PATH
                    MOVE    "1"                  TO  SPA-I48-GMN-ALL
                    MOVE    "180000000"          TO  TNS-SRYCD
                    MOVE    "199999999"          TO  TNSUP-SRYCD
-               WHEN    "U4"
+               WHEN    "U1"
       *            自院・コメント
                    MOVE    "TENSU-KEY12S"       TO  WRK-PATH
                    MOVE    "1"                  TO  SPA-I48-GMN-ALL
                    MOVE    "800000000"          TO  TNS-SRYCD
                    MOVE    "899999999"          TO  TNSUP-SRYCD
-               WHEN    "U1"
+      **         WHEN    "U1"
       *            用法
-                   MOVE    "TENSU-KEY12S"       TO  WRK-PATH
-                   MOVE    "001000000"          TO  TNS-SRYCD
-                   MOVE    "001999999"          TO  TNSUP-SRYCD
-                   MOVE    "1"                  TO  SPA-I48-GMN-ALL
-               WHEN    "U2"
+      **             MOVE    "TENSU-KEY12S"       TO  WRK-PATH
+      **             MOVE    "001000000"          TO  TNS-SRYCD
+      **             MOVE    "001999999"          TO  TNSUP-SRYCD
+      **             MOVE    "1"                  TO  SPA-I48-GMN-ALL
+      **         WHEN    "U2"
       *            部位
-                   MOVE    "TENSU-KEY12S"       TO  WRK-PATH
-                   MOVE    "002000000"          TO  TNS-SRYCD
-                   MOVE    "002999999"          TO  TNSUP-SRYCD
-                   MOVE    "1"                  TO  SPA-I48-GMN-ALL
-               WHEN    "U3"
+      **             MOVE    "TENSU-KEY12S"       TO  WRK-PATH
+      **             MOVE    "002000000"          TO  TNS-SRYCD
+      **             MOVE    "002999999"          TO  TNSUP-SRYCD
+      **             MOVE    "1"                  TO  SPA-I48-GMN-ALL
+      **         WHEN    "U3"
       *            その他
-                   MOVE    "TENSU-KEY12S"       TO  WRK-PATH
-                   MOVE    "003000000"          TO  TNS-SRYCD
-                   MOVE    "098999999"          TO  TNSUP-SRYCD
-                   MOVE    "1"                  TO  SPA-I48-GMN-ALL
-               WHEN    "U5"
+      **             MOVE    "TENSU-KEY12S"       TO  WRK-PATH
+      **             MOVE    "003000000"          TO  TNS-SRYCD
+      **             MOVE    "098999999"          TO  TNSUP-SRYCD
+      **             MOVE    "1"                  TO  SPA-I48-GMN-ALL
+               WHEN    "U2"
       *            労災診察
                    MOVE    "TENSU-KEY12S"       TO  WRK-PATH
                    MOVE    "100000000"          TO  TNS-SRYCD
@@ -1098,41 +1110,41 @@
       *
            EVALUATE    SPA-I48-GMN-SYORI
       *        内服
-               WHEN    "3"
-                   IF      SPA-I48-GMN-ALL     =   SPACE
-                       MOVE    "内服（自院）" 
-                                               TO  I48-SENTAKU
-                   ELSE
-                       MOVE    "内服（全体）" 
-                                               TO  I48-SENTAKU
-                   END-IF
+      **         WHEN    "3"
+      **             IF      SPA-I48-GMN-ALL     =   SPACE
+      **                 MOVE    "内服（自院）" 
+      **                                         TO  I48-SENTAKU
+      **             ELSE
+      **                 MOVE    "内服（全体）" 
+      **                                         TO  I48-SENTAKU
+      **             END-IF
       *        外用
-               WHEN    "4"
-                   IF      SPA-I48-GMN-ALL     =   SPACE
-                       MOVE    "外用（自院）" 
-                                               TO  I48-SENTAKU
-                   ELSE
-                       MOVE    "外用（全体）" 
-                                               TO  I48-SENTAKU
-                   END-IF
+      **         WHEN    "4"
+      **             IF      SPA-I48-GMN-ALL     =   SPACE
+      **                 MOVE    "外用（自院）" 
+      **                                         TO  I48-SENTAKU
+      **             ELSE
+      **                 MOVE    "外用（全体）" 
+      **                                         TO  I48-SENTAKU
+      **             END-IF
       *        注射
-               WHEN    "5"
-                   IF      SPA-I48-GMN-ALL     =   SPACE
-                       MOVE    "注射（自院）" 
-                                               TO  I48-SENTAKU
-                   ELSE
-                       MOVE    "注射（全体）" 
-                                               TO  I48-SENTAKU
-                   END-IF
+      **         WHEN    "5"
+      **             IF      SPA-I48-GMN-ALL     =   SPACE
+      **                 MOVE    "注射（自院）" 
+      **                                         TO  I48-SENTAKU
+      **             ELSE
+      **                 MOVE    "注射（全体）" 
+      **                                         TO  I48-SENTAKU
+      **             END-IF
       *        器材
-               WHEN    "7"
-                   IF      SPA-I48-GMN-ALL     =   SPACE
-                       MOVE    "器材（自院）" 
-                                               TO  I48-SENTAKU
-                   ELSE
-                       MOVE    "器材（全体）" 
-                                               TO  I48-SENTAKU
-                   END-IF
+      **         WHEN    "7"
+      **             IF      SPA-I48-GMN-ALL     =   SPACE
+      **                 MOVE    "器材（自院）" 
+      **                                         TO  I48-SENTAKU
+      **             ELSE
+      **                 MOVE    "器材（全体）" 
+      **                                         TO  I48-SENTAKU
+      **             END-IF
       *        診療行為
                WHEN    "8"
                    IF      SPA-I48-GMN-ALL     =   SPACE
@@ -1143,58 +1155,58 @@
                                                TO  I48-SENTAKU
                    END-IF
       *        検査
-               WHEN    "9"
-                   MOVE    "検査"              TO  I48-SENTAKU
-                   IF      SPA-I48-NAI-KENSANO     NOT =   ZERO
-                       PERFORM 5010-GRPMEI-SET-SEC
-                       MOVE    WRK-GRP-MEI-X       TO  I48-SENTAKU
-                   END-IF
+      **         WHEN    "9"
+      **             MOVE    "検査"              TO  I48-SENTAKU
+      **             IF      SPA-I48-NAI-KENSANO     NOT =   ZERO
+      **                 PERFORM 5010-GRPMEI-SET-SEC
+      **                 MOVE    WRK-GRP-MEI-X       TO  I48-SENTAKU
+      **             END-IF
       *        セット
                WHEN    "P"
                    MOVE    "セット"            TO  I48-SENTAKU
       *        ユーザー登録
                WHEN    "U"
                    EVALUATE    SPA-I48-GMN-SYORI3
+      **                 WHEN    "J1"
+      **                     MOVE    "自院採用（内服）"
+      **                                         TO  I48-SENTAKU
+      **                 WHEN    "J2"
+      **                     MOVE    "自院採用（外用）"
+      **                                         TO  I48-SENTAKU
+      **                 WHEN    "J3"
+      **                     MOVE    "自院採用（注射）"
+      **                                         TO  I48-SENTAKU
                        WHEN    "J1"
-                           MOVE    "自院採用（内服）"
+                           MOVE    "自院採用（処置）"
                                                TO  I48-SENTAKU
                        WHEN    "J2"
-                           MOVE    "自院採用（外用）"
+                           MOVE    "自院採用（診察）"
                                                TO  I48-SENTAKU
                        WHEN    "J3"
                            MOVE    "自院採用（注射）"
                                                TO  I48-SENTAKU
                        WHEN    "J4"
-                           MOVE    "自院採用（処置）"
-                                               TO  I48-SENTAKU
-                       WHEN    "J5"
-                           MOVE    "自院採用（診察）"
-                                               TO  I48-SENTAKU
-                       WHEN    "J6"
-                           MOVE    "自院採用（注射）"
-                                               TO  I48-SENTAKU
-                       WHEN    "J7"
                            MOVE    "自院採用（手術・麻酔）"
                                                TO  I48-SENTAKU
-                       WHEN    "J8"
+                       WHEN    "J5"
                            MOVE    "自院採用（画像診断）"
                                                TO  I48-SENTAKU
-                       WHEN    "J9"
+                       WHEN    "J6"
                            MOVE    "自院採用（その他）"
                                                TO  I48-SENTAKU
+      **                 WHEN    "U1"
+      **                     MOVE    "用法（全体）"
+      **                                         TO  I48-SENTAKU
+      **                 WHEN    "U2"
+      **                     MOVE    "撮影部位（全体）"
+      **                                         TO  I48-SENTAKU
+      **                 WHEN    "U3"
+      **                     MOVE    "ユーザー登録（その他）"
+      **                                         TO  I48-SENTAKU
                        WHEN    "U1"
-                           MOVE    "用法（全体）"
-                                               TO  I48-SENTAKU
-                       WHEN    "U2"
-                           MOVE    "撮影部位（全体）"
-                                               TO  I48-SENTAKU
-                       WHEN    "U3"
-                           MOVE    "ユーザー登録（その他）"
-                                               TO  I48-SENTAKU
-                       WHEN    "U4"
                            MOVE    "コメント（全体）"
                                                TO  I48-SENTAKU
-                       WHEN    "U5"
+                       WHEN    "U2"
                            MOVE    "労災"
                                                TO  I48-SENTAKU
                    END-EVALUATE
@@ -1362,23 +1374,23 @@
                    MOVE    SPACE               TO  SPA-I48-SRYCD-G
                    PERFORM 210-BACK
       *        内服
-               WHEN    "CLICKED"       ALSO    "B02"
-                   PERFORM 230-NAIFUKU-SEC
+      **         WHEN    "CLICKED"       ALSO    "B02"
+      **             PERFORM 230-NAIFUKU-SEC
       *        外用
-               WHEN    "CLICKED"       ALSO    "B03"
-                   PERFORM 240-GAIYOU-SEC
+      **         WHEN    "CLICKED"       ALSO    "B03"
+      **             PERFORM 240-GAIYOU-SEC
       *        注射
-               WHEN    "CLICKED"       ALSO    "B04"
-                   PERFORM 250-CHUUSYA-SEC
+      **         WHEN    "CLICKED"       ALSO    "B04"
+      **             PERFORM 250-CHUUSYA-SEC
       *        器材
-               WHEN    "CLICKED"       ALSO    "B05"
-                   PERFORM 270-KIZAI-SEC
+      **         WHEN    "CLICKED"       ALSO    "B05"
+      **             PERFORM 270-KIZAI-SEC
       *        診療行為
                WHEN    "CLICKED"       ALSO    "B06"
                    PERFORM 280-SINRYOU-SEC
       *        検査
-               WHEN    "CLICKED"       ALSO    "B08"
-                   PERFORM 290-KENSA-SEC
+      **         WHEN    "CLICKED"       ALSO    "B08"
+      **             PERFORM 290-KENSA-SEC
       *        全体
                WHEN    "CLICKED"       ALSO    "B09"
                    PERFORM 290-ALL-SEL-SEC
@@ -1468,7 +1480,6 @@
                MOVE    "J"                 TO  SPA-I48-CDSYUBETU
                MOVE    "1"                 TO  SPA-I48-TYPE
                MOVE    SPACE               TO  SPA-I48-GMN-ALL
-      *
            ELSE
                MOVE    SPACE               TO  SPA-I48-GMN-ALL
       *        半角入力（入力セットマスタより）
@@ -1493,7 +1504,6 @@
                END-IF
            END-IF.
            MOVE    1                   TO  SPA-GMN-CUR4.
-      *
       *    ＳＰＡセット
            MOVE    ZERO                TO  SPA-I48-NEXT.
            PERFORM                     310-SPA-SET-SEC.
@@ -1533,18 +1543,17 @@
                    CONTINUE
                ELSE
       *            入力コードより編集の時、内服（Ｆ２）とする
-                   IF      SPA-I48-TYPE        =   "1" 
-                       PERFORM 230-NAIFUKU-SEC
-                   ELSE
+      **             IF      SPA-I48-TYPE        =   "1" 
+      **                 PERFORM 230-NAIFUKU-SEC
+      **             ELSE
                        MOVE    "1"                 TO  SPA-I48-GMN-ALL
-      *
                        INITIALIZE              SPA-I48-NAI-SELNUM-G
                        INITIALIZE              SPA-I48-GMN-SELNUM-G
                        MOVE    SPACE           TO  SPA-I48-SRYCD-G
       *                ＳＰＡセット
                        MOVE    ZERO                TO  SPA-I48-NEXT
                        PERFORM                     310-SPA-SET-SEC
-                   END-IF
+      **             END-IF
                    GO      TO      41011-SELNUM-CHK-EXT
                END-IF
            END-IF.
@@ -1654,7 +1663,6 @@
                    MOVE    SPACE               TO  SPA-I48-NAI-HOUKATU
            END-EVALUATE.
       *
-      *
            PERFORM 5010-GRPMEI-SET-SEC.
            IF      WRK-GRP-MEI         =   SPACE
                MOVE    "0001"              TO  SPA-ERRCD
@@ -1664,7 +1672,6 @@
                INITIALIZE                      SPA-I48-GMN-SELNUM-G
                INITIALIZE                      SPA-I48-NAI-SELNUM-G
                MOVE    SPACE               TO  SPA-I48-SRYCD-G
-      *
       *        ＳＰＡセット
                MOVE    ZERO                TO  SPA-I48-NEXT
                PERFORM 310-SPA-SET-SEC
@@ -1738,9 +1745,7 @@
                                            TO  SPA-I48-NAI-SELNUM(IDX1)
                    MOVE    WRK-I48-SRYCD (IDX2)
                                            TO  SPA-I48-SRYCD   (IDX1)
-      *
                    MOVE    IDX1            TO  IDX
-      *
                END-IF
            END-PERFORM.
       *
@@ -1824,78 +1829,78 @@
       *****************************************************************
       *    内服薬剤選択処理
       *****************************************************************
-       230-NAIFUKU-SEC                   SECTION.
+      ** 230-NAIFUKU-SEC                   SECTION.
       *
-           MOVE    "3"                 TO  SPA-I48-GMN-SYORI.
-           MOVE    "2"                 TO  SPA-I48-TYPE.
+      **     MOVE    "3"                 TO  SPA-I48-GMN-SYORI.
+      **     MOVE    "2"                 TO  SPA-I48-TYPE.
       *
-           INITIALIZE                      SPA-I48-NAI-SELNUM-G.
-           INITIALIZE                      SPA-I48-GMN-SELNUM-G.
-           MOVE    SPACE               TO  SPA-I48-SRYCD-G.
-           MOVE    SPACE               TO  SPA-I48-GMN-ALL.
-           MOVE    ZERO                TO  SPA-I48-NEXT.
+      **     INITIALIZE                      SPA-I48-NAI-SELNUM-G.
+      **     INITIALIZE                      SPA-I48-GMN-SELNUM-G.
+      **     MOVE    SPACE               TO  SPA-I48-SRYCD-G.
+      **     MOVE    SPACE               TO  SPA-I48-GMN-ALL.
+      **     MOVE    ZERO                TO  SPA-I48-NEXT.
       *    ＳＰＡセット
-           PERFORM                     310-SPA-SET-SEC.
+      **     PERFORM                     310-SPA-SET-SEC.
       *
-       230-NAIFUKU-EXT.
-           EXIT.
+      ** 230-NAIFUKU-EXT.
+      **     EXIT.
       *
       *****************************************************************
       *    外用薬選択処理
       *****************************************************************
-       240-GAIYOU-SEC                   SECTION.
+      ** 240-GAIYOU-SEC                   SECTION.
       *
-           MOVE    "4"                 TO  SPA-I48-GMN-SYORI.
-           MOVE    "2"                 TO  SPA-I48-TYPE.
+      **     MOVE    "4"                 TO  SPA-I48-GMN-SYORI.
+      **     MOVE    "2"                 TO  SPA-I48-TYPE.
       *
-           INITIALIZE                      SPA-I48-NAI-SELNUM-G.
-           INITIALIZE                      SPA-I48-GMN-SELNUM-G.
-           MOVE    SPACE               TO  SPA-I48-SRYCD-G.
-           MOVE    SPACE               TO  SPA-I48-GMN-ALL.
+      **     INITIALIZE                      SPA-I48-NAI-SELNUM-G.
+      **     INITIALIZE                      SPA-I48-GMN-SELNUM-G.
+      **     MOVE    SPACE               TO  SPA-I48-SRYCD-G.
+      **     MOVE    SPACE               TO  SPA-I48-GMN-ALL.
       *    ＳＰＡセット
-           MOVE    ZERO                TO  SPA-I48-NEXT.
-           PERFORM                     310-SPA-SET-SEC.
+      **     MOVE    ZERO                TO  SPA-I48-NEXT.
+      **     PERFORM                     310-SPA-SET-SEC.
       *
-       240-GAIYOU-EXT.
-           EXIT.
+      ** 240-GAIYOU-EXT.
+      **     EXIT.
       *
       *****************************************************************
       *    注射薬選択処理
       *****************************************************************
-       250-CHUUSYA-SEC                   SECTION.
+      ** 250-CHUUSYA-SEC                   SECTION.
       *
-           MOVE    "5"                 TO  SPA-I48-GMN-SYORI.
-           MOVE    "2"                 TO  SPA-I48-TYPE.
+      **     MOVE    "5"                 TO  SPA-I48-GMN-SYORI.
+      **     MOVE    "2"                 TO  SPA-I48-TYPE.
       *
-           INITIALIZE                      SPA-I48-NAI-SELNUM-G.
-           INITIALIZE                      SPA-I48-GMN-SELNUM-G.
-           MOVE    SPACE               TO  SPA-I48-SRYCD-G.
-           MOVE    SPACE               TO  SPA-I48-GMN-ALL.
+      **     INITIALIZE                      SPA-I48-NAI-SELNUM-G.
+      **     INITIALIZE                      SPA-I48-GMN-SELNUM-G.
+      **     MOVE    SPACE               TO  SPA-I48-SRYCD-G.
+      **     MOVE    SPACE               TO  SPA-I48-GMN-ALL.
       *    ＳＰＡセット
-           MOVE    ZERO                TO  SPA-I48-NEXT.
-           PERFORM                     310-SPA-SET-SEC.
+      **     MOVE    ZERO                TO  SPA-I48-NEXT.
+      **     PERFORM                     310-SPA-SET-SEC.
       *
-       250-CHUUSYA-EXT.
-           EXIT.
+      ** 250-CHUUSYA-EXT.
+      **     EXIT.
       *
       *****************************************************************
       *    器材選択処理
       *****************************************************************
-       270-KIZAI-SEC                   SECTION.
+      ** 270-KIZAI-SEC                   SECTION.
       *
-           MOVE    "7"                 TO  SPA-I48-GMN-SYORI.
-           MOVE    "2"                 TO  SPA-I48-TYPE.
+      **     MOVE    "7"                 TO  SPA-I48-GMN-SYORI.
+      **     MOVE    "2"                 TO  SPA-I48-TYPE.
       *
-           INITIALIZE                      SPA-I48-NAI-SELNUM-G.
-           INITIALIZE                      SPA-I48-GMN-SELNUM-G.
-           MOVE    SPACE               TO  SPA-I48-SRYCD-G.
-           MOVE    SPACE               TO  SPA-I48-GMN-ALL.
+      **     INITIALIZE                      SPA-I48-NAI-SELNUM-G.
+      **     INITIALIZE                      SPA-I48-GMN-SELNUM-G.
+      **     MOVE    SPACE               TO  SPA-I48-SRYCD-G.
+      **     MOVE    SPACE               TO  SPA-I48-GMN-ALL.
       *    ＳＰＡセット
-           MOVE    ZERO                TO  SPA-I48-NEXT.
-           PERFORM                     310-SPA-SET-SEC.
+      **     MOVE    ZERO                TO  SPA-I48-NEXT.
+      **     PERFORM                     310-SPA-SET-SEC.
       *
-       270-KIZAI-EXT.
-           EXIT.
+      ** 270-KIZAI-EXT.
+      **     EXIT.
       *
       *****************************************************************
       *    診療行為選択処理
@@ -1938,12 +1943,12 @@
                    MOVE    "J5"            TO  SPA-I48-GMN-SYORI3
                WHEN    "6"
                    MOVE    "J6"            TO  SPA-I48-GMN-SYORI3
-               WHEN    "7"
-                   MOVE    "J7"            TO  SPA-I48-GMN-SYORI3
-               WHEN    "8"
-                   MOVE    "J8"            TO  SPA-I48-GMN-SYORI3
-               WHEN    "9"
-                   MOVE    "J9"            TO  SPA-I48-GMN-SYORI3
+      **         WHEN    "7"
+      **             MOVE    "J7"            TO  SPA-I48-GMN-SYORI3
+      **         WHEN    "8"
+      **             MOVE    "J8"            TO  SPA-I48-GMN-SYORI3
+      **         WHEN    "9"
+      **             MOVE    "J9"            TO  SPA-I48-GMN-SYORI3
                WHEN    OTHER
                    MOVE    "0010"          TO  SPA-ERRCD
                    GO      TO      41014-JIIN-CHK-EXT
@@ -1977,12 +1982,12 @@
                    MOVE    "U1"            TO  SPA-I48-GMN-SYORI3
                WHEN    "2"
                    MOVE    "U2"            TO  SPA-I48-GMN-SYORI3
-               WHEN    "3"
-                   MOVE    "U3"            TO  SPA-I48-GMN-SYORI3
-               WHEN    "4"
-                   MOVE    "U4"            TO  SPA-I48-GMN-SYORI3
-               WHEN    "5"
-                   MOVE    "U5"            TO  SPA-I48-GMN-SYORI3
+      **         WHEN    "3"
+      **             MOVE    "U3"            TO  SPA-I48-GMN-SYORI3
+      **         WHEN    "4"
+      **             MOVE    "U4"            TO  SPA-I48-GMN-SYORI3
+      **         WHEN    "5"
+      **             MOVE    "U5"            TO  SPA-I48-GMN-SYORI3
                WHEN    OTHER
                    MOVE    "0011"          TO  SPA-ERRCD
                    GO      TO      41014-USER-CHK-EXT
@@ -2005,37 +2010,37 @@
       *****************************************************************
       *    検査選択処理
       *****************************************************************
-       290-KENSA-SEC                   SECTION.
+      ** 290-KENSA-SEC                   SECTION.
       *
-           MOVE    "9"                 TO  SPA-I48-GMN-SYORI.
-           MOVE    SPACE               TO  SPA-I48-GMN-SYORI2.
-           MOVE    SPACE               TO  SPA-I48-GMN-SYORI3.
-           MOVE    "2"                 TO  SPA-I48-TYPE.
-           MOVE    SPACE               TO  SPA-I48-GMN-ALL.
+      **     MOVE    "9"                 TO  SPA-I48-GMN-SYORI.
+      **     MOVE    SPACE               TO  SPA-I48-GMN-SYORI2.
+      **     MOVE    SPACE               TO  SPA-I48-GMN-SYORI3.
+      **     MOVE    "2"                 TO  SPA-I48-TYPE.
+      **     MOVE    SPACE               TO  SPA-I48-GMN-ALL.
       *
       *    ＳＰＡセット
-           INITIALIZE                  SPA-I48-GMN-TBL.
-           MOVE    ZERO                TO  SPA-I48-GMN-MAX.
-           INITIALIZE                      SPA-I48-NAI-SELNUM-G.
-           INITIALIZE                      SPA-I48-GMN-SELNUM-G.
-           MOVE    SPACE               TO  SPA-I48-SRYCD-G.
+      **     INITIALIZE                  SPA-I48-GMN-TBL.
+      **     MOVE    ZERO                TO  SPA-I48-GMN-MAX.
+      **     INITIALIZE                      SPA-I48-NAI-SELNUM-G.
+      **     INITIALIZE                      SPA-I48-GMN-SELNUM-G.
+      **     MOVE    SPACE               TO  SPA-I48-SRYCD-G.
       *
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   24
+      **     PERFORM VARYING     IDX     FROM    1   BY  1
+      **             UNTIL       IDX     >   24
       *
-               SET     TBL-IDX                 TO  IDX
-               MOVE    TBL-GRP-KBN (TBL-IDX)   TO  SPA-I48-GMN-NO-X
-                                                               (IDX)
-               MOVE    TBL-GRP-MEI (TBL-IDX)   TO  SPA-I48-GMN-NAME
-                                                               (IDX)
-           END-PERFORM.
+      **         SET     TBL-IDX                 TO  IDX
+      **         MOVE    TBL-GRP-KBN (TBL-IDX)   TO  SPA-I48-GMN-NO-X
+      **                                                         (IDX)
+      **         MOVE    TBL-GRP-MEI (TBL-IDX)   TO  SPA-I48-GMN-NAME
+      **                                                         (IDX)
+      **     END-PERFORM.
       *
-           MOVE    24                  TO  SPA-I48-GMN-MAX.
+      **     MOVE    24                  TO  SPA-I48-GMN-MAX.
       *
-           MOVE    1                   TO  SPA-GMN-CUR4.
+      **     MOVE    1                   TO  SPA-GMN-CUR4.
       *
-       290-KENSAU-EXT.
-           EXIT.
+      ** 290-KENSAU-EXT.
+      **     EXIT.
       *
       *****************************************************************
       *    全体一致処理
@@ -2052,19 +2057,23 @@
                ELSE
                    MOVE    SPACE               TO  SPA-I48-GMN-ALL
                END-IF
-               MOVE    MCP-WIDGET          TO  WRK-WIDGET
       *        入力コードより編集の時、内服（Ｆ２）とする
-               IF      SPA-I48-TYPE        =   "1" 
-                   PERFORM 230-NAIFUKU-SEC
-               ELSE
-      **             MOVE    "1"                 TO  SPA-I48-GMN-ALL
-      *
+      **         IF      SPA-I48-TYPE        =   "1" 
+      **             PERFORM 230-NAIFUKU-SEC
+      **         ELSE
                    INITIALIZE                  SPA-I48-NAI-SELNUM-G
                    INITIALIZE                  SPA-I48-GMN-SELNUM-G
                    MOVE    SPACE               TO  SPA-I48-SRYCD-G
                    MOVE    ZERO                TO  SPA-I48-NEXT
+      ***             
+               MOVE    SPACE               TO  SPA-I48-TYPE
+      ***             
       *            ＳＰＡセット
                    PERFORM                     310-SPA-SET-SEC
+      **         END-IF
+      *
+               IF       WRK-WIDGET-SW         =   "1"
+                   MOVE   MCP-WIDGET           TO  WRK-WIDGET
                END-IF
            END-IF.
       *
@@ -2112,18 +2121,23 @@
            ELSE
                MOVE    SPACE               TO  SPA-I48-GMN-ALL
            END-IF.
-           MOVE    MCP-WIDGET          TO  WRK-WIDGET.
       *    入力コードより編集の時、内服（Ｆ２）とする
-           IF      SPA-I48-TYPE        =   "1" 
-               PERFORM 230-NAIFUKU-SEC
-           ELSE
-      *
+      **     IF      SPA-I48-TYPE        =   "1" 
+      **         PERFORM 230-NAIFUKU-SEC
+      **     ELSE
                INITIALIZE                  SPA-I48-NAI-SELNUM-G
                INITIALIZE                  SPA-I48-GMN-SELNUM-G
                MOVE    SPACE               TO  SPA-I48-SRYCD-G
                MOVE    ZERO                TO  SPA-I48-NEXT
+      ***             
+               MOVE    SPACE               TO  SPA-I48-TYPE
+      ***
       *        ＳＰＡセット
                PERFORM                     310-SPA-SET-SEC
+      **     END-IF.
+      *
+           IF       WRK-WIDGET-SW         =   "1"
+               MOVE   MCP-WIDGET           TO  WRK-WIDGET
            END-IF.
       *
        291-BUB-EXT.
@@ -2153,18 +2167,23 @@
            ELSE
                MOVE    SPACE               TO  SPA-I48-GMN-ALL
            END-IF.
-           MOVE    MCP-WIDGET          TO  WRK-WIDGET.
       *    入力コードより編集の時、内服（Ｆ２）とする
-           IF      SPA-I48-TYPE        =   "1" 
-               PERFORM 230-NAIFUKU-SEC
-           ELSE
-      *
+      **     IF      SPA-I48-TYPE        =   "1" 
+      **         PERFORM 230-NAIFUKU-SEC
+      **     ELSE
                INITIALIZE                  SPA-I48-NAI-SELNUM-G
                INITIALIZE                  SPA-I48-GMN-SELNUM-G
                MOVE    SPACE               TO  SPA-I48-SRYCD-G
                MOVE    ZERO                TO  SPA-I48-NEXT
+      ***             
+               MOVE    SPACE               TO  SPA-I48-TYPE
+      ***
       *        ＳＰＡセット
                PERFORM                     310-SPA-SET-SEC
+      **     END-IF.
+      *
+           IF       WRK-WIDGET-SW         =   "1"
+               MOVE   MCP-WIDGET           TO  WRK-WIDGET
            END-IF.
       *
        292-ATO-EXT.
