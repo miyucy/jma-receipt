@@ -47,6 +47,7 @@ shell_sources = \
 	monthly/teiki1.sh.in \
 	monthly/teiki2.sh.in \
 	monthly/toukei1.sh.in \
+	monthly/receden_sokatu.sh.in \
 	claim/HL01.sh.in \
 	claim/HL02.sh.in \
 	claim/HL03.sh.in \
