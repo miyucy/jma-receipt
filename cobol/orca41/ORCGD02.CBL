@@ -625,6 +625,8 @@
            03  W-HKNNUM2           PIC X(03)   VALUE   "980".
            03  W-HKNNUM3           PIC X(03)   VALUE   "960".
            03  W-HKNNUM4           PIC X(03)   VALUE   "950".
+      *    テスト患者
+           03  W-TSTPTNUMKBN       PIC X(01)   VALUE   "1".
        01  WRK-BIRTHDAY.
       *    老人
            03  W-BIRTHDAY1         PIC X(08)   VALUE   "19320929".
@@ -1055,6 +1057,7 @@
       *
            IF  (T-HANNTEI1   NOT  =  "*")  AND
                (T-HANNTEI2   NOT  =  "*")
+      *    診療会計テーブル参照
                PERFORM T-100-RECECHEK-SEC
            ELSE
                IF  T-HANNTEI1   =  "*"
@@ -1082,6 +1085,7 @@
       *
       *****************************************************************
       *    診療会計テーブル 参照処理
+      *        指定された年月、入外区分に誤り無い時実行
       *****************************************************************
        T-100-RECECHEK-SEC                SECTION.
       *
@@ -1113,10 +1117,7 @@
                PERFORM UNTIL      MCP-RC   NOT  =  ZERO
                    MOVE    MCPDATA-REC               TO    SRYACCT-REC
                    COMPUTE T-CNT-IN    =   T-CNT-IN    +   1
-      *修正/*開始*03.08.26*********************************************
-      *             IF  ACCT-ZAIKAISU   NOT =  ZERO
-      *                 PERFORM T-100-RECECHEK-HANTEI-1-SEC
-      *             END-IF
+      *    院外処方の処理条件確認  判定領域初期化  対象データ抽出
                    IF  ((SPA-GMN-CNV (20)   =   SPACE)         AND
                         (ACCT-ZAITEN   NOT =   ZERO))             OR
                        ((SPA-GMN-CNV (20)   =   SPACE)         AND
@@ -1129,22 +1130,23 @@
                         (ACCT-SRYCDTOTAL(6:9) NOT =  W-YOYAKU7))
                        PERFORM T-100-RECECHEK-HANTEI-1-SEC
                    END-IF
-      *修正/*終了*03.08.26*********************************************
                    PERFORM T-100-RECECHEK-READ-SEC
                END-PERFORM
-      *修正/*開始*03.08.06*********************************************
                MOVE    SPACE             TO  T-ERR-08
                MOVE    SPACE             TO  T-ERR-09
+      *    診療行為と病名チェック対象出力
                IF  W-PTBYO-MAX2   NOT =  ZERO
                    PERFORM T-530-RECECHEK-CHK8-1-SEC
                END-IF
+      *    薬剤と病名チェック対象出力
                IF  W-PTBYO-MAX1   NOT =  ZERO
                    PERFORM T-530-RECECHEK-CHK9-1-SEC
                END-IF
-      *修正/*終了*03.08.06*********************************************
+      *    診療開始日チェック対象出力
                IF  W-S-KBN   =   "*"
                    PERFORM T-520-RECECHEK-SEC
                END-IF
+      *    実日数チェック対象出力
                IF  (SPA-GMN-CNV (12) NOT =  SPACE)        AND
                    (T-ERR-12             =  SPACE)        AND
                    (W-JITU-DAY4      NOT =  ZERO)         AND
@@ -1161,6 +1163,9 @@
                                        ORCMCPAREA
                                        MCPDATA-REC.
       *
+      *    入院会計情報テーブル参照して
+      *        実日数チェック用作業区分設定
+      *        保険組合せ有効期間チェック用作業区分設定
            IF  (SPA-GMN-HOSPID    NOT =   SPACE)  AND
                (T-NYUGAIKBN-AREA      =   "1")    AND
                ((SPA-GMN-CNV (12)  NOT =   SPACE)  OR
@@ -1231,7 +1236,9 @@
       *
            IF  (ACCT-HOSPID   NOT =   W1-SRY-HOSPID)  OR
                (ACCT-PTID     NOT =   W1-SRY-PTID)
+      *    患者情報テーブル参照
                PERFORM T-500-RECECHEK-SEC
+      *    実日数チェック対象出力
                IF  (SPA-GMN-CNV (12) NOT =  SPACE)        AND
                    (T-ERR-12             =  SPACE)        AND
                    (W-JITU-DAY4      NOT =  ZERO)         AND
@@ -1273,12 +1280,20 @@
                MOVE    SPACE             TO  T-ERR-14
                MOVE    SPACE             TO  T-ERR-15
            END-IF.
-           IF  PTINF-TSTPTNUMKBN  NOT =  "1"
+           IF  PTINF-TSTPTNUMKBN  NOT =  W-TSTPTNUMKBN
+      *    保険組合せテーブル参照
+      *        自費保険患者の処理条件確認
+      *        保険組合せ有効期間チェック対象出力
                IF  (ACCT-HOSPID     NOT =   COMB-HOSPID)      OR
                    (ACCT-PTID       NOT =   COMB-PTID)        OR
                    (ACCT-HKNCOMBI   NOT =   COMB-HKNCOMBINUM)
                    PERFORM T-200-RECECHEK-SEC
                END-IF
+      *    実日数チェックのため
+      *        患者入院履歴情報テーブル参照
+      *            実日数計算用作業区分設定
+      *        入院会計情報テーブル参照
+      *            剤識別区分用作業区分設定
                IF  (T-HANNTEI8         =   "*")               AND
                    ((ACCT-HOSPID   NOT =   W1-SRY-HOSPID)  OR
                     (ACCT-PTID     NOT =   W1-SRY-PTID))      AND
@@ -1287,9 +1302,13 @@
                    PERFORM T-540-RECECHEK-CHK3-SEC
                    PERFORM T-540-RECECHEK-CHK7-SEC
                END-IF
+      *    患者保険情報テーブル 患者公費情報テーブル 参照
                IF  T-HANNTEI5   =   "*"
                    PERFORM T-200-RECECHEK-CHK1-SEC
                END-IF
+      *    患者情報テーブル参照
+      *        保険適応年齢チェック対象出力
+      *        患者氏名チェック対象出力
                IF  (T-HANNTEI8         =   "*")               AND
                    ((ACCT-HOSPID   NOT =   W1-SRY-HOSPID)  OR
                     (ACCT-PTID     NOT =   W1-SRY-PTID))      AND
@@ -1303,26 +1322,31 @@
                    MOVE    SPACE             TO  WK1-HKNNUM-S
                END-IF
                MOVE    SPACE             TO  WK-SRYSYUKBN
-      *修正/*開始*03.08.26*********************************************
-      *         PERFORM T-100-RECECHEK-HANTEI-CHK1-SEC
                IF  (W1-SRY-HOSPID   NOT =  ALL "*")        AND
                    ((ACCT-HOSPID   NOT =   W1-SRY-HOSPID)  OR
                     (ACCT-PTID     NOT =   W1-SRY-PTID))
                    MOVE    SPACE             TO  T-ERR-08
                    MOVE    SPACE             TO  T-ERR-09
+      *    診療行為と病名チェック対象出力
                    IF  W-PTBYO-MAX2   NOT =  ZERO
                        PERFORM T-530-RECECHEK-CHK8-1-SEC
                    END-IF
+      *    薬剤と病名チェック対象出力
                    IF  W-PTBYO-MAX1   NOT =  ZERO
                        PERFORM T-530-RECECHEK-CHK9-1-SEC
                    END-IF
                    INITIALIZE                W-PTBYO-BYOMEI-AREA1
                    INITIALIZE                W-PTBYO-BYOMEI-AREA2
                END-IF
+      *    患者病名情報テーブル参照
+      *        患者病名チェック対象出力
+      *        疑い病名チェック対象出力
+      *        病名コード抜けチェック対象出力
+      *        患者病名チェック対象出力
+      *        実日数チェック対象出力
                IF  T-HANNTEI8   =   "*"
                    PERFORM T-100-RECECHEK-HANTEI-CHK1-SEC
                END-IF
-      *修正/*終了*03.08.26*********************************************
            END-IF.
       *
            MOVE    ACCT-HOSPID  TO  W1-SRY-HOSPID.
@@ -1346,9 +1370,8 @@
                MOVE    SPACE             TO  T-ERR-07
                MOVE    SPACE             TO  T-ERR-15
                MOVE    "*"               TO  T-HANNTEI3
-      *修正/*開始*03.08.12*********************************************
+      *    診療行為情報テーブルを指示入力された入外区分以外の参照
                PERFORM T-100-RECECHEK-HANTEI-2-SEC
-      *修正/*終了*03.08.12*********************************************
                PERFORM VARYING  IDX5  FROM  1  BY 1
                        UNTIL    IDX5  >   100
                    IF  W-HANNTEI-ACCTSRYKA (IDX5)  =  ACCT-SRYKA
@@ -1357,10 +1380,15 @@
                        MOVE    "ED"              TO  T-HANNTEI6
                    ELSE
                        IF  W-HANNTEI-ACCTSRYKA (IDX5)  =  SPACE
+      *    診療開始日チェック対象出力
                            IF  W-S-KBN   =   "*"
                                PERFORM T-520-RECECHEK-SEC
                            END-IF
                            INITIALIZE                      W-TABLE-S4
+      *    患者病名情報テーブル参照
+      *        患者病名チェック対象出力
+      *        疑い病名チェック対象出力
+      *        病名コード抜けチェック対象出力
                            PERFORM T-510-RECECHEK-SEC
                            MOVE    ACCT-SRYKA
                                          TO  W-HANNTEI-ACCTSRYKA (IDX5)
@@ -1371,8 +1399,10 @@
            ELSE
                MOVE    SPACE             TO  T-HANNTEI3
            END-IF.
+      *    診療行為情報テーブル参照
            PERFORM T-530-RECECHEK-CHK1-SEC
       *
+      *    患者病名チェック対象出力
            IF  (SPA-GMN-CNV (5) NOT =  SPACE)  AND
                (T-ERR-05            =  SPACE)  AND
                (T-HANNTEI6          =  "CH")   AND
@@ -1391,6 +1421,7 @@
                END-IF
            END-IF.
       *
+      *    患者病名チェック対象出力
            IF  (SPA-GMN-CNV (5) NOT = SPACE)  AND
                (T-ERR-05            = SPACE)  AND
                (T-HANNTEI3          = "*")
@@ -1417,6 +1448,7 @@
                END-IF
            END-IF.
       *
+      *    実日数チェック対象出力
            IF  (SPA-GMN-CNV (12)  NOT =   SPACE)  AND
                (W-NACCT-DAY-K-ERR     =   ZERO)   AND
                (T-NYUGAIKBN-AREA      =   "1")
@@ -1456,9 +1488,9 @@
        T-100-RECECHEK-HANTEI-CHK1-EXT.
            EXIT.
       *
-      *修正/*開始*03.08.12*********************************************
       *****************************************************************
       *    診療行為情報テーブルを指示入力された入外区分以外の参照処理
+      *        併用禁忌の薬剤、併用算定の診療行為を指定時実行
       *****************************************************************
        T-100-RECECHEK-HANTEI-2-SEC       SECTION.
       *
@@ -1519,6 +1551,7 @@
                                        END-IF
                                    END-IF
                                END-PERFORM
+      *    併用算定の診療行為チェック対象出力
                                IF  (T-ERR-11            =  SPACE)    AND
                                    (W-SRYCD-S3-KBN  NOT =  "*")      AND
                                    (W-CHK-ST3-KBN   NOT =  "*")      AND
@@ -1541,6 +1574,7 @@
                                        END-IF
                                    END-IF
                                END-PERFORM
+      *    併用算定の診療行為チェック対象出力
                                IF  (T-ERR-11-2          =  SPACE)    AND
                                    (W-SRYCD-S3-KBN  NOT =  "*")      AND
                                    (W-CHK-ST3-KBN   NOT =  "*")      AND
@@ -1580,6 +1614,7 @@
                                    END-IF
                                END-IF
                            END-PERFORM
+      *    併用禁忌の薬剤チェック対象出力
                            IF  (SPA-GMN-CNV (10)  NOT =  SPACE)  AND
                                ((W-SRYCD-S3-KBN    NOT =  "*")    OR
                                 (W-SRYCD-S3-KBN2   NOT =  "*"))  AND
@@ -1618,10 +1653,11 @@
        T-100-RECECHEK-READ2-EXT.
            EXIT.
       *
-      *修正/*終了*03.08.12*********************************************
-      *
       *****************************************************************
       *    保険組合せテーブル 参照処理
+      *        自費保険患者の処理条件確認
+      *        保険組合せ有効期間を指定時実行
+      *          保険組合せ有効期間チェック対象出力
       *****************************************************************
        T-200-RECECHEK-SEC                SECTION.
       *
@@ -1630,9 +1666,7 @@
            MOVE    ACCT-HOSPID         TO  COMB-HOSPID.
            MOVE    ACCT-PTID           TO  COMB-PTID.
            MOVE    ACCT-HKNCOMBI       TO  COMB-HKNCOMBINUM.
-      *修正/*開始*03.08.26*********************************************
            MOVE    SPACE               TO  T-HANNTEI8.
-      *修正/*終了*03.08.26*********************************************
       *
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC.
            MOVE    "DBSELECT"          TO  MCP-FUNC.
@@ -1670,7 +1704,7 @@
                ELSE
                    MOVE    MCPDATA-REC            TO  HKNCOMBI-REC
                    MOVE    "*"                    TO  T-HANNTEI5
-      *修正/*開始*03.08.26*********************************************
+      *    自費保険患者の処理条件確認
                    IF  ((SPA-GMN-CNV (19)  =   SPACE)  AND
                         (COMB-HKNNUM   NOT =   W-HKNNUM2   AND
                                                W-HKNNUM3   AND
@@ -1682,7 +1716,7 @@
                                                W-HKNNUM4))
                        MOVE    "*"               TO  T-HANNTEI8
                    END-IF
-      *修正/*終了*03.08.26*********************************************
+      *    保険組合せ有効期間チェック対象出力
                    IF  (T-HANNTEI8           =  "*")    AND
                        (SPA-GMN-CNV (14) NOT =  SPACE)  AND
                        (T-ERR-14             =  SPACE)
@@ -1718,48 +1752,14 @@
       *
       *******************
       *
+      *    患者保険情報テーブル 患者公費情報テーブル 参照
+      *
        T-200-RECECHEK-CHK1-SEC           SECTION.
       *
-      *修正/*開始*03.08.26*********************************************
-      *     IF  ((T-ERR-01          =   SPACE)         OR
-      *          (T-ERR-02          =   SPACE))       AND
-      *         (((ACCT-PTID     NOT =   PTHKN-PTID)  AND
-      *           (COMB-HKNID    NOT =   ZERO))        OR
-      *          ((ACCT-PTID         =   PTHKN-PTID)  AND
-      *           (COMB-HKNID    NOT =   PTHKN-HKNID) AND
-      *           (COMB-HKNID    NOT =   ZERO)))      AND
-      *         (COMB-HKNNUM   NOT =   W-HKNNUM1  AND  W-HKNNUM2)
-      *         PERFORM T-300-RECECHEK-SEC
-      *     END-IF.
-      *     IF  ((ACCT-PTID      NOT =   PTKOH-PTID)  AND
-      *          (COMB-KOH1ID    NOT =   ZERO))        OR
-      *         ((ACCT-PTID          =   PTKOH-PTID)  AND
-      *          (COMB-KOH1ID    NOT =   PTKOH-KOHID) AND
-      *          (COMB-KOH1ID    NOT =   ZERO))
-      *         PERFORM T-401-RECECHEK-SEC
-      *     END-IF.
-      *     IF  ((ACCT-PTID      NOT =   PTKOH-PTID)  AND
-      *          (COMB-KOH2ID    NOT =   ZERO))        OR
-      *         ((ACCT-PTID          =   PTKOH-PTID)  AND
-      *          (COMB-KOH2ID    NOT =   PTKOH-KOHID) AND
-      *          (COMB-KOH2ID    NOT =   ZERO))
-      *         PERFORM T-402-RECECHEK-SEC
-      *     END-IF.
-      *     IF  ((ACCT-PTID      NOT =   PTKOH-PTID)  AND
-      *          (COMB-KOH3ID    NOT =   ZERO))        OR
-      *         ((ACCT-PTID          =   PTKOH-PTID)  AND
-      *          (COMB-KOH3ID    NOT =   PTKOH-KOHID) AND
-      *          (COMB-KOH3ID    NOT =   ZERO))
-      *         PERFORM T-403-RECECHEK-SEC
-      *     END-IF.
-      *     IF  ((ACCT-PTID      NOT =   PTKOH-PTID)  AND
-      *          (COMB-KOH4ID    NOT =   ZERO))        OR
-      *         ((ACCT-PTID          =   PTKOH-PTID)  AND
-      *          (COMB-KOH4ID    NOT =   PTKOH-KOHID) AND
-      *          (COMB-KOH4ID    NOT =   ZERO))
-      *         PERFORM T-404-RECECHEK-SEC
-      *     END-IF.
            IF  T-HANNTEI8         =   "*"
+      *    患者保険情報テーブル参照
+      *        保険者番号抜けチェック対象出力
+      *        被保険者記号・番号抜けチェック対象出力
                IF  ((T-ERR-01          =   SPACE)         OR
                     (T-ERR-02          =   SPACE))       AND
                    (((ACCT-PTID     NOT =   PTHKN-PTID)  AND
@@ -1773,6 +1773,8 @@
                                           W-HKNNUM4)
                    PERFORM T-300-RECECHEK-SEC
                END-IF
+      *    患者公費情報テーブル参照（公費１）
+      *        公費負担者番号・受給者番号抜けチェック対象出力
                IF  ((ACCT-PTID      NOT =   PTKOH-PTID)  AND
                     (COMB-KOH1ID    NOT =   ZERO))        OR
                    ((ACCT-PTID          =   PTKOH-PTID)  AND
@@ -1780,6 +1782,8 @@
                     (COMB-KOH1ID    NOT =   ZERO))
                    PERFORM T-401-RECECHEK-SEC
                END-IF
+      *    患者公費情報テーブル参照（公費２）
+      *        公費負担者番号・受給者番号抜けチェック対象出力
                IF  ((ACCT-PTID      NOT =   PTKOH-PTID)  AND
                     (COMB-KOH2ID    NOT =   ZERO))        OR
                    ((ACCT-PTID          =   PTKOH-PTID)  AND
@@ -1787,6 +1791,8 @@
                     (COMB-KOH2ID    NOT =   ZERO))
                    PERFORM T-402-RECECHEK-SEC
                END-IF
+      *    患者公費情報テーブル参照（公費３）
+      *        公費負担者番号・受給者番号抜けチェック対象出力
                IF  ((ACCT-PTID      NOT =   PTKOH-PTID)  AND
                     (COMB-KOH3ID    NOT =   ZERO))        OR
                    ((ACCT-PTID          =   PTKOH-PTID)  AND
@@ -1794,6 +1800,8 @@
                     (COMB-KOH3ID    NOT =   ZERO))
                    PERFORM T-403-RECECHEK-SEC
                END-IF
+      *    患者公費情報テーブル参照（公費４）
+      *        公費負担者番号・受給者番号抜けチェック対象出力
                IF  ((ACCT-PTID      NOT =   PTKOH-PTID)  AND
                     (COMB-KOH4ID    NOT =   ZERO))        OR
                    ((ACCT-PTID          =   PTKOH-PTID)  AND
@@ -1802,12 +1810,14 @@
                    PERFORM T-404-RECECHEK-SEC
                END-IF
            END-IF.
-      *修正/*終了*03.08.26*********************************************
       *
        T-200-RECECHEK-CHK1-EXT.
            EXIT.
       *
       *******************
+      *
+      *    保険組合せ有効期間チェック対象出力
+      *        保険組合せ有効期間を指定時実行
       *
        T-200-RECECHEK-CHK2-SEC           SECTION.
       *
@@ -1865,6 +1875,9 @@
       *
       *****************************************************************
       *    患者保険情報テーブル 参照処理
+      *        保険者番号抜け、被保険者記号・番号抜けを指定時実行
+      *          保険者番号抜けチェック対象出力
+      *          被保険者記号・番号抜けチェック対象出力
       *****************************************************************
        T-300-RECECHEK-SEC                SECTION.
       *
@@ -2064,7 +2077,9 @@
            EXIT.
       *
       *****************************************************************
-      *    患者公費情報テーブル 参照処理
+      *    患者公費情報テーブル 参照処理（公費１）
+      *        公費負担者番号・受給者番号抜けを指定時実行
+      *          公費負担者番号・受給者番号抜けチェック対象出力
       *****************************************************************
        T-401-RECECHEK-SEC                SECTION.
       *
@@ -2186,6 +2201,10 @@
       *
       *******************
       *
+      *    患者公費情報テーブル 参照（公費２）
+      *        公費負担者番号・受給者番号抜けを指定時実行
+      *          公費負担者番号・受給者番号抜けチェック対象出力
+      *
        T-402-RECECHEK-SEC                SECTION.
       *
            INITIALIZE                  PTKOHINF-REC.
@@ -2306,6 +2325,10 @@
       *
       *******************
       *
+      *    患者公費情報テーブル 参照（公費３）
+      *        公費負担者番号・受給者番号抜けを指定時実行
+      *          公費負担者番号・受給者番号抜けチェック対象出力
+      *
        T-403-RECECHEK-SEC                SECTION.
       *
            INITIALIZE                  PTKOHINF-REC.
@@ -2425,6 +2448,10 @@
            EXIT.
       *
       *******************
+      *
+      *    患者公費情報テーブル 参照（公費４）
+      *        公費負担者番号・受給者番号抜けを指定時実行
+      *          公費負担者番号・受給者番号抜けチェック対象出力
       *
        T-404-RECECHEK-SEC                SECTION.
       *
@@ -2559,7 +2586,8 @@
            EXIT.
       *
       *****************************************************************
-      *    患者情報テーブル 参照処理
+      *    患者情報テーブル 参照処理（診療会計）
+      *        患者番号未登録チェック対象出力
       *****************************************************************
       *
        T-500-RECECHEK-SEC                SECTION.
@@ -2631,6 +2659,11 @@
            EXIT.
       *
       *******************
+      *
+      *    患者情報テーブル参照
+      *        保険適応年齢、患者氏名を指定時実行
+      *          保険適応年齢チェック対象出力
+      *          患者氏名チェック対象出力
       *
        T-500-RECECHEK2-SEC               SECTION.
       *
@@ -2791,6 +2824,9 @@
       *
       *******************
       *
+      *    患者情報テーブル 参照（入院会計）
+      *        患者番号未登録チェック対象出力
+      *
        T-500-RECECHEK3-SEC               SECTION.
       *
            INITIALIZE                  PTINF-REC.
@@ -2847,6 +2883,12 @@
       *
       *****************************************************************
       *    患者病名情報テーブル 参照処理
+      *        患者病名、診療開始日、疑い病名、病名コード抜けを
+      *                                                      指定時実行
+      *          患者病名チェック対象出力
+      *          診療開始日チェック対象出力
+      *          疑い病名チェック対象出力
+      *          病名コード抜けチェック対象出力
       *****************************************************************
        T-510-RECECHEK-SEC                SECTION.
       *
@@ -3205,6 +3247,8 @@
       *
       *****************************************************************
       *    診療科履歴情報テーブル 参照処理
+      *        診療開始日を指定時実行
+      *          診療開始日チェック対象出力
       *****************************************************************
        T-520-RECECHEK-SEC                SECTION.
       *
@@ -3255,10 +3299,7 @@
                        COMPUTE T-CNT-OUT = T-CNT-OUT + 1
                    ELSE
                        MOVE    MCPDATA-REC       TO  SRYKARRK-REC
-      *修正/*開始*03.08.26*********************************************
-      *                 IF  PTBYO-SRYYMD(1:6)   <   KARRK-SYOSINYMD1(1:6)
                        IF  W-S-SRYYMD (IDW4)    NOT =  KARRK-SYOSINYMD1
-      *修正/*終了*03.08.26*********************************************
                            MOVE    SPACE             TO  DID2-REC
                            MOVE    W-S-HOSPID (IDW4) TO  DID2-REC(1:24)
                            MOVE    "-"               TO  DID2-REC(25:1)
@@ -3305,6 +3346,13 @@
       *
       *****************************************************************
       *    診療行為情報テーブル 参照処理
+      *        実日数、併用算定の診療行為、診療行為と病名、
+      *                                          薬剤と病名を指定時実行
+      *          実日数チェック用作業区分設定
+      *          併用算定の診療行為チェック対象出力
+      *          併用禁忌の薬剤チェック対象出力
+      *          診療行為と病名チェック用作業区分設定
+      *          薬剤と病名チェック用作業区分設定
       *****************************************************************
        T-530-RECECHEK-CHK1-SEC           SECTION.
       *
@@ -3366,6 +3414,7 @@
                    END-PERFORM
                    PERFORM VARYING IDX3  FROM  1  BY 1
                            UNTIL   IDX3  >     5
+      *    点数情報テーブル参照
                        IF  (SPA-GMN-CNV (12)  NOT =  SPACE)  AND
                            (T-ERR-12              =  SPACE)  AND
                            (T-NYUGAIKBN-AREA      =  "2")    AND
@@ -3398,6 +3447,7 @@
                                        END-IF
                                    END-IF
                                END-PERFORM
+      *    併用算定の診療行為チェック対象出力
                                IF  (T-ERR-11            =  SPACE)    AND
                                    (W-SRYCD-S3-KBN  NOT =  "*")      AND
                                    (W-CHK-ST3-KBN   NOT =  "*")      AND
@@ -3420,6 +3470,7 @@
                                        END-IF
                                    END-IF
                                END-PERFORM
+      *    併用算定の診療行為チェック対象出力
                                IF  (T-ERR-11-2          =  SPACE)    AND
                                    (W-SRYCD-S3-KBN  NOT =  "*")      AND
                                    (W-CHK-ST3-KBN   NOT =  "*")      AND
@@ -3443,7 +3494,6 @@
                                    END-IF
                                END-IF
                            END-PERFORM
-      *修正/*開始*03.08.08*********************************************
                            MOVE    SPACE             TO  W-SRYCD-S3-KBN2
                            MOVE    ZERO              TO  IDY6
                            PERFORM VARYING IDY1  FROM  1  BY 1
@@ -3460,7 +3510,7 @@
                                    END-IF
                                END-IF
                            END-PERFORM
-      *修正/*終了*03.08.08*********************************************
+      *    併用禁忌の薬剤チェック対象出力
                            IF  (SPA-GMN-CNV (10)  NOT =  SPACE)  AND
                                ((W-SRYCD-S3-KBN    NOT =  "*")    OR
                                 (W-SRYCD-S3-KBN2   NOT =  "*"))  AND
@@ -3484,16 +3534,8 @@
                                    END-IF
                                END-IF
                            END-PERFORM
-      *修正/*開始*03.08.19*********************************************
-      *                     PERFORM VARYING IDY1  FROM  1  BY 1
-      *                             UNTIL   IDY1  >  1000
-      *                         IF  W-SRYCD-91-N (IDY1)   =
-      *                                                  SRY-SRYCD (IDX3)
-      *                             MOVE    "*"      TO  W-SRYCD-S3-KBN
-      *                             MOVE    2000     TO  IDY1
-      *                         END-IF
-      *                     END-PERFORM
-      *修正/*終了*03.08.19*********************************************
+      *    チェク情報テーブル参照
+      *    診療行為と病名チェック用作業区分設定
                            IF  (SPA-GMN-CNV (9)  NOT =  SPACE)  AND
                                (W-SRYCD-S3-KBN   NOT =  "*")    AND
                                (W-CHK-ST2-KBN    NOT =  "*")    AND
@@ -3518,16 +3560,8 @@
                                    END-IF
                                END-IF
                            END-PERFORM
-      *修正/*開始*03.08.19*********************************************
-      *                     PERFORM VARYING IDY1  FROM  1  BY 1
-      *                             UNTIL   IDY1  >  1000
-      *                         IF  W-SRYCD-92-N (IDY1)   =
-      *                                            SRY-SRYCD (IDX3)
-      *                             MOVE    "*"      TO  W-SRYCD-S3-KBN
-      *                             MOVE    2000     TO  IDY1
-      *                         END-IF
-      *                     END-PERFORM
-      *修正/*終了*03.08.19*********************************************
+      *    チェク情報テーブル参照
+      *    薬剤と病名チェック用作業区分設定
                            IF  (SPA-GMN-CNV (8)  NOT =  SPACE)  AND
                                (W-SRYCD-S3-KBN   NOT =  "*")    AND
                                (W-CHK-ST1-KBN    NOT =  "*")    AND
@@ -3631,6 +3665,9 @@
       *
       *****************************************************************
       *    チェク情報テーブル 参照処理
+      *        併用算定の診療行為を指定時実行
+      *          診療コード用作業区分設定
+      *          チェックコード判定
       *****************************************************************
        T-530-RECECHEK-CHK2-1-SEC         SECTION.
       *
@@ -3704,6 +3741,11 @@
       *
       *******************
       *
+      *    チェク情報テーブル 参照処理
+      *        併用算定の診療行為を指定時実行
+      *          診療コード用作業区分設定
+      *          チェックコード判定
+      *
        T-530-RECECHEK-CHK2-2-SEC         SECTION.
       *
            INITIALIZE                CHK-REC.
@@ -3776,7 +3818,11 @@
       *
       *******************
       *
-      *修正/*開始*03.08.08*********************************************
+      *    チェク情報テーブル 参照処理
+      *        併用禁忌の薬剤を指定時実行
+      *          診療コード用作業区分設定
+      *          チェックコード判定
+      *
        T-530-RECECHEK-CHK2-3-SEC         SECTION.
       *
            INITIALIZE                CHK-REC.
@@ -3856,7 +3902,6 @@
       *
        T-530-RECECHEK-CHK2-3-EXT.
            EXIT.
-      *修正/*終了*03.08.08*********************************************
       *
       *******************
       *
@@ -3873,6 +3918,9 @@
            EXIT.
       *
       *******************
+      *
+      *    併用算定の診療行為チェック対象出力
+      *        併用算定の診療行為を指定時実行
       *
        T-530-RECECHEK-CHK3-1-SEC         SECTION.
       *
@@ -3905,6 +3953,7 @@
                    IF  (W-SRYCD-11 (IDX4)   =   SPACE)  AND
                        (W-SRYCD-12 (IDX4)   =   SPACE)
                        MOVE    IDX4                TO  IDY1
+      *    チェク情報テーブル参照
                        IF  W-SRYCD-S3-KBN  =  SPACE
                            PERFORM T-530-RECECHEK-CHK2-1-SEC
                        END-IF
@@ -3921,6 +3970,9 @@
            EXIT.
       *
       *******************
+      *
+      *    併用算定の診療行為チェック対象出力
+      *        併用算定の診療行為を指定時実行
       *
        T-530-RECECHEK-CHK3-2-SEC         SECTION.
       *
@@ -3953,6 +4005,7 @@
                    IF  (W-SRYCD-13 (IDX4)   =   SPACE)  AND
                        (W-SRYCD-14 (IDX4)   =   SPACE)
                        MOVE    IDX4                TO  IDY1
+      *    チェク情報テーブル参照
                        IF  W-SRYCD-S3-KBN  =  SPACE
                            PERFORM T-530-RECECHEK-CHK2-2-SEC
                        END-IF
@@ -3970,6 +4023,8 @@
       *
       *****************************************************************
       *    相互作用テーブル 参照処理
+      *        併用禁忌の薬剤を指定時実行
+      *          診療コード用作業区分設定
       *****************************************************************
        T-530-RECECHEK-CHK4-SEC           SECTION.
       *
@@ -4045,6 +4100,9 @@
       *
       *******************
       *
+      *    併用禁忌の薬剤チェック対象出力
+      *        併用禁忌の薬剤を指定時実行
+      *
        T-530-RECECHEK-CHK4-1-SEC         SECTION.
       *
            PERFORM VARYING IDX4  FROM  1  BY 1
@@ -4076,14 +4134,14 @@
                    IF  (W-SRYCD-21 (IDX4)   =   SPACE)  AND
                        (W-SRYCD-22 (IDX4)   =   SPACE)
                        MOVE    IDX4                TO  IDY1
+      *    相互作用テーブル参照
                        IF  W-SRYCD-S3-KBN  NOT =  "*"
                            PERFORM T-530-RECECHEK-CHK4-SEC
                        END-IF
-      *修正/*開始*03.08.08*********************************************
+      *    チェク情報テーブル参照
                        IF  W-SRYCD-S3-KBN2  NOT =  "*"
                            PERFORM T-530-RECECHEK-CHK2-3-SEC
                        END-IF
-      *修正/*終了*03.08.08*********************************************
                        MOVE    2000                TO  IDX4
                    ELSE
                        IF  W-SRYCD-21 (IDX4)   =   SRY-SRYCD (IDX3)
@@ -4098,6 +4156,9 @@
       *
       *****************************************************************
       *    患者病名情報テーブル 参照処理
+      *        薬剤と病名を指定時実行
+      *          転帰日、入外区分、診療日をもとに
+      *          薬剤と病名チェック用作業区分設定
       *****************************************************************
        T-530-RECECHEK-CHK5-1-SEC         SECTION.
       *
@@ -4223,6 +4284,11 @@
            EXIT.
       *
       *******************
+      *
+      *    患者病名情報テーブル 参照処理
+      *        診療行為と病名を指定時実行
+      *          転帰日、入外区分、診療日をもとに
+      *          診療行為と病名チェック用作業区分設定
       *
        T-530-RECECHEK-CHK5-2-SEC         SECTION.
       *
@@ -4363,6 +4429,9 @@
       *
       *****************************************************************
       *    チェク情報テーブル 参照処理
+      *        診療行為と病名を指定時実行
+      *          診療コード用作業区分設定
+      *          チェックコード判定
       *****************************************************************
        T-530-RECECHEK-CHK6-SEC         SECTION.
       *
@@ -4412,6 +4481,7 @@
                    MOVE    MCPDATA-REC         TO  CHK-REC
                    PERFORM VARYING IDY2  FROM  1  BY 1
                            UNTIL   IDY2  >    10
+      *    患者病名情報テーブル参照
                        IF  (CHK-CD (IDY2)   NOT =   SPACE) AND
                            (CHK-CD (IDY2)   NOT =   ZERO)
                            PERFORM T-530-RECECHEK-CHK5-2-SEC
@@ -4443,6 +4513,9 @@
            EXIT.
       *
       *******************
+      *
+      *    チェク情報テーブル 参照処理
+      *        薬剤と病名を指定時実行
       *
        T-530-RECECHEK-CHK7-SEC         SECTION.
       *
@@ -4492,6 +4565,7 @@
                    MOVE    MCPDATA-REC         TO  CHK-REC
                    PERFORM VARYING IDY2  FROM  1  BY 1
                            UNTIL   IDY2  >    10
+      *    患者病名情報テーブル参照
                        IF  (CHK-CD (IDY2)   NOT =   SPACE) AND
                            (CHK-CD (IDY2)   NOT =   ZERO)
                            PERFORM T-530-RECECHEK-CHK5-1-SEC
@@ -4523,6 +4597,10 @@
            EXIT.
       *
       *******************
+      *
+      *    診療行為と病名チェック対象出力
+      *        診療行為と病名を指定時実行
+      *          転帰日、入外区分、診療日をもとにメッセージを編集する
       *
        T-530-RECECHEK-CHK8-1-SEC         SECTION.
       *
@@ -4593,20 +4671,15 @@
                WRITE   DID2-REC
                COMPUTE T-CNT-OUT = T-CNT-OUT + 1
            END-PERFORM.
-      *修正/*開始*03.08.19*********************************************
-      *     PERFORM VARYING IDY1  FROM  1  BY 1
-      *             UNTIL   IDY1  >  1000
-      *         IF  W-SRYCD-91-N (IDY1)   =   SPACE
-      *             MOVE    SRY-SRYCD (IDX3)  TO  W-SRYCD-91-N (IDY1)
-      *             MOVE    2000              TO  IDY1
-      *         END-IF
-      *     END-PERFORM.
-      *修正/*終了*03.08.19*********************************************
       *
        T-530-RECECHEK-CHK8-1-EXT.
            EXIT.
       *
       *******************
+      *
+      *    薬剤と病名チェック対象出力
+      *        薬剤と病名を指定時実行
+      *          転帰日、入外区分、診療日をもとにメッセージを編集する
       *
        T-530-RECECHEK-CHK9-1-SEC         SECTION.
       *
@@ -4677,21 +4750,14 @@
                WRITE   DID2-REC
                COMPUTE T-CNT-OUT = T-CNT-OUT + 1
            END-PERFORM.
-      *修正/*開始*03.08.19*********************************************
-      *     PERFORM VARYING IDY1  FROM  1  BY 1
-      *             UNTIL   IDY1  >  1000
-      *         IF  W-SRYCD-92-N (IDY1)   =   SPACE
-      *             MOVE    SRY-SRYCD (IDX3)  TO  W-SRYCD-92-N (IDY1)
-      *             MOVE    2000              TO  IDY1
-      *         END-IF
-      *     END-PERFORM.
-      *修正/*終了*03.08.19*********************************************
       *
        T-530-RECECHEK-CHK9-1-EXT.
            EXIT.
       *
       *****************************************************************
       *    点数情報テーブル 参照処理
+      *        実日数を指定時実行
+      *          診療区分別実日数計算
       *****************************************************************
        T-540-RECECHEK-CHK-SEC            SECTION.
       *
@@ -4757,17 +4823,6 @@
                    END-IF
                ELSE
                    MOVE    MCPDATA-REC       TO  TNS-TENSU-REC
-      *修正/*開始*03.08.21*********************************************
-      *             IF  (TNS-SRYKBN    NOT =  "11")  AND
-      *                 (TNS-SRYKBN    NOT =  "12")  AND
-      *                 (TNS-JITUDAY       =   1)    AND
-      *                 (TNS-DAYCNT        =   0)
-      *                 MOVE    "*"               TO  W-SRYCD-S3-KBN
-      *                 MOVE    "*"               TO  W-SRYCD-82 (IDY5)
-      *             ELSE
-      *                 MOVE    SPACE             TO  W-SRYCD-S3-KBN
-      *                 MOVE    SPACE             TO  W-SRYCD-82 (IDY5)
-      *             END-IF
                    IF  TNS-SRYKBN        =  "11"        OR
                                             "12"        OR
                                             "13"        OR
@@ -4819,7 +4874,6 @@
                          END-IF
                        END-IF
                    END-IF
-      *修正/*終了*03.08.21*********************************************
                END-IF
            END-IF.
       *
@@ -4849,6 +4903,9 @@
            EXIT.
       *
       *******************
+      *
+      *    実日数チェック対象出力
+      *        実日数を指定時実行
       *
        T-540-RECECHEK-CHK2-SEC           SECTION.
       *
@@ -4898,6 +4955,8 @@
       *
       *****************************************************************
       *    患者入院履歴情報テーブル 参照処理
+      *        実日数を指定時実行
+      *          実日数計算用作業区分設定
       *****************************************************************
        T-540-RECECHEK-CHK3-SEC           SECTION.
       *
@@ -5024,6 +5083,10 @@
       *
       *******************
       *
+      *    患者入院履歴情報テーブル参照
+      *        保険組合せ有効期間を指定時実行
+      *          診療期間判定用作業区分設定
+      *
        T-540-RECECHEK-CHK3-2-SEC         SECTION.
       *
            IF  W1-SRY-PTID   =   ZERO
@@ -5120,6 +5183,9 @@
       *
       *****************************************************************
       *    入院会計情報テーブル 参照処理
+      *        実日数、保険組合せ有効期間を指定時実行
+      *          実日数チェック用作業区分設定
+      *          保険組合せ有効期間チェック用作業区分設定
       *****************************************************************
        T-540-RECECHEK-CHK4-SEC           SECTION.
       *
@@ -5157,9 +5223,12 @@
                        INITIALIZE                       W-HKNCOMBI-AREA
                        MOVE    SPACE                    TO  T-ERR-12
                        MOVE    SPACE                    TO  T-ERR-14
+      *    患者情報テーブル参照  患者情報未登録チェック対象出力
                        PERFORM T-500-RECECHEK3-SEC
-                       IF  PTINF-TSTPTNUMKBN   NOT =  "1"
+      *    患者入院履歴情報テーブル参照  作業区分設定
+                       IF  PTINF-TSTPTNUMKBN   NOT =  W-TSTPTNUMKBN
                            PERFORM T-540-RECECHEK-CHK3-2-SEC
+      *    保険組合せ有効期間チェック対象出力
                            IF  T-HANNTEI4   =   "*"
                                PERFORM T-540-RECECHEK-WRITE4-3-SEC
                            END-IF
@@ -5186,12 +5255,14 @@
                                (T-ERR-14             =   SPACE)
                                MOVE    1             TO  IDX6
                                PERFORM UNTIL      IDX6    >    31
+      *    保険組合せテーブル参照 作業日付区分設定
                                    IF  W-NACCT-DAY (IDX6)   NOT =
                                                                 ALL ZERO
                                        PERFORM T-540-RECECHEK-CHK6-SEC
                                    END-IF
                                    COMPUTE IDX6 = IDX6 + 1
                                END-PERFORM
+      *    保険組合せ有効期間チェック対象出力
                                IF  (WK-NYUINACCT  NOT =  ALL ZERO)  AND
                                    (T-HANNTEI4        =   SPACE)
                                    PERFORM T-540-RECECHEK-WRITE4-1-SEC
@@ -5202,9 +5273,11 @@
                            END-IF
                            IF  (SPA-GMN-CNV (12) NOT =   SPACE)  AND
                                (T-ERR-12             =   SPACE)
+      *    入院行為情報テーブル参照
                                IF  W-JITU-DAY5  <   W-JITU-DAY4
                                    PERFORM T-540-RECECHEK-CHK5-SEC
                                END-IF
+      *    実日数チェック対象出力
                                IF  T-HANNTEI4   =   SPACE
                                    PERFORM T-540-RECECHEK-WRITE4-2-SEC
                                END-IF
@@ -5253,6 +5326,7 @@
                                    END-IF
                                END-PERFORM
                            END-IF
+      *    入院行為情報テーブル参照
                            IF  (SPA-GMN-CNV (12) NOT =  SPACE)      AND
                                (W-JITU-DAY5          <  W-JITU-DAY4)
                                PERFORM T-540-RECECHEK-CHK5-SEC
@@ -5304,7 +5378,9 @@
                        END-IF
                    END-PERFORM
                END-IF
+      *    患者入院履歴情報テーブル参照  作業区分設定
                PERFORM T-540-RECECHEK-CHK3-2-SEC
+      *    保険組合せ有効期間チェック対象出力
                IF  T-HANNTEI4   =   "*"
                    PERFORM T-540-RECECHEK-WRITE4-3-SEC
                END-IF
@@ -5312,11 +5388,13 @@
                    (T-ERR-14             =   SPACE)
                    MOVE    1             TO  IDX6
                    PERFORM UNTIL      IDX6    >    31
+      *    保険組合せテーブル参照 作業日付区分設定
                        IF  W-NACCT-DAY (IDX6)   NOT =   ALL ZERO
                            PERFORM T-540-RECECHEK-CHK6-SEC
                        END-IF
                        COMPUTE IDX6 = IDX6 + 1
                    END-PERFORM
+      *    保険組合せ有効期間チェック対象出力
                    IF  (WK-NYUINACCT    NOT =   ALL ZERO)  AND
                        (T-HANNTEI4          =   SPACE)
                        PERFORM T-540-RECECHEK-WRITE4-1-SEC
@@ -5327,9 +5405,11 @@
                END-IF
                IF  (SPA-GMN-CNV (12) NOT =   SPACE)  AND
                    (T-ERR-12             =   SPACE)
+      *    入院行為情報テーブル参照
                    IF  W-JITU-DAY5  <   W-JITU-DAY4
                        PERFORM T-540-RECECHEK-CHK5-SEC
                    END-IF
+      *    実日数チェック対象出力
                    IF  T-HANNTEI4   =   SPACE
                        PERFORM T-540-RECECHEK-WRITE4-2-SEC
                    END-IF
@@ -5362,6 +5442,10 @@
            EXIT.
       *
       *******************
+      *
+      *    入院会計情報テーブル
+      *        保険組合せ有効期間を指定時実行
+      *          保険組合せ有効期間チェック対象出力
       *
        T-540-RECECHEK-WRITE4-1-SEC       SECTION.
       *
@@ -5419,6 +5503,10 @@
       *
       *******************
       *
+      *    入院会計情報テーブル
+      *        実日数を指定時実行
+      *          実日数チェック対象出力
+      *
        T-540-RECECHEK-WRITE4-2-SEC       SECTION.
       *
            PERFORM VARYING  IDY3  FROM  1  BY  1
@@ -5463,6 +5551,10 @@
       *
       *******************
       *
+      *    入院会計情報テーブル
+      *        保険組合せ有効期間を指定時実行
+      *          保険組合せ有効期間チェック対象出力
+      *
        T-540-RECECHEK-WRITE4-3-SEC       SECTION.
       *
            MOVE    SPACE                  TO  DID2-REC
@@ -5485,6 +5577,8 @@
       *
       *****************************************************************
       *    入院行為情報テーブル 参照処理
+      *        実日数を指定時実行
+      *          作業診療コード区分設定
       *****************************************************************
        T-540-RECECHEK-CHK5-SEC           SECTION.
       *
@@ -5570,6 +5664,8 @@
       *
       *****************************************************************
       *    保険組合せテーブル 参照処理（入院）
+      *        保険組合せ有効期間を指定時実行
+      *          作業日付区分設定
       *****************************************************************
        T-540-RECECHEK-CHK6-SEC           SECTION.
       *
@@ -5650,6 +5746,8 @@
       *
       *****************************************************************
       *    入院会計情報テーブル 参照処理（診療会計の関連チェック）
+      *        実日数を指定時実行
+      *          剤識別区分用作業区分設定
       *****************************************************************
        T-540-RECECHEK-CHK7-SEC           SECTION.
       *
