@@ -38,6 +38,7 @@
       * 01.00.09     NACL-多々納  02/12/20  自費修正時の修正
       * 01.00.10     NACL-多々納  03/01/30  入院時検査まとめをやめる
       * 01.00.11     NACL-多々納  03/02/12  自費の剤分離の修正
+      * 01.00.12     NACL-多々納  03/02/21  入院料の加算のみ修正
       *****************************************************************
       *
       *
@@ -1193,6 +1194,16 @@
                        ELSE
                            MOVE    1                   TO  FLG-ARI
                        END-IF
+                   END-IF
+               END-IF
+      *
+      *        入院種別が入力されていること
+               IF      SPA-NYUGAIKBN           =   1
+                   IF      (SPA-COM-TNSSRYSYUKBN (IDX) =   "900")  AND
+                           (IDX                    >   1 )  AND
+                           (SPA-GMN-INPUTCD(IDX - 1)(1:4)
+                                                   =   ".900")
+                       MOVE    1                   TO  FLG-ARI
                    END-IF
                END-IF
       *

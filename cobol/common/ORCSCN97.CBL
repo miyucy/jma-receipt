@@ -438,6 +438,13 @@
                    MOVE    IDX-Z           TO  IDX1
                END-IF
            END-PERFORM
+      *    入院種別が入力されていること
+           IF      (WRK-COM-TNSSRYSYUKBN (IDX-Z) =   "900")  AND
+                   (IDX-Z                  >   1 )  AND
+                   (WRK-GMN-INPUTCD(IDX-Z - 1)(1:4)
+                                               =   ".900")
+               MOVE    1                   TO  FLG-ARI
+           END-IF
       *
            IF      FLG-ARI             =   ZERO
                MOVE    "0013"          TO  WRK-ERRCD
@@ -553,6 +560,13 @@
                    PERFORM 100212-TENSUKEI-SEC
                END-IF
                MOVE    IDX-Z               TO  IDX-ZS
+           ELSE
+               IF      IDX-ZS          =   ZERO
+                   IF     (WRK-MOJI        =   "1" )  AND
+                          (WRK-COM-DATAKBN (IDX-Z)    =   "2" )
+                       MOVE    IDX-Z               TO  IDX-ZS
+                   END-IF
+               END-IF
            END-IF
       *
            MOVE    LNK-ORCSC-KAISU     TO  LNK-SC90-KAISU
