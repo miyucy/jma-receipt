@@ -367,7 +367,7 @@
       *
       *    ¿ÇÎÅ¹Ô°Ù¥Ç¡¼¥¿ÍÑ¥Æ¡¼¥Ö¥ë
        01  TBL-KOUI-AREA.
-           03  TBL-KOUI-REC                     OCCURS  30.
+           03  TBL-KOUI-REC                     OCCURS  100.
       *        ÊÂ¤ÓÂØ¤¨ÍÑ£ë£å£ù      
                05  TBL-KOUI-KEY.
       *            ¹ð¼¨Åù¼±ÊÌ¶èÊ¬
@@ -1670,7 +1670,7 @@
       *
            ADD     1                   TO  WRK-TBLMAX1
       *     
-           IF      WRK-TBLMAX1         >   30
+           IF      WRK-TBLMAX1         >   100
                MOVE    "*** ORCR0300 KOUI TABLE OVER  ***"
                                            TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
