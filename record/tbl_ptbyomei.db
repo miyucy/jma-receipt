@@ -340,7 +340,6 @@ path	key15	{
 	};
 };
 
-
 path	key16	{ 	
 	DBSELECT	{
 		DECLARE tbl_ptbyomei_key16_csr CURSOR FOR
@@ -439,6 +438,35 @@ path	key21	{
 			AND     SRYKA     =   :SRYKA
 			AND   NYUGAIKBN   IN (' ',:NYUGAIKBN)
 			AND     BYOMEI    =   :BYOMEI
+		;
+	};
+};
+
+path	key22	{ 	
+	DBSELECT	{
+		DECLARE tbl_ptbyomei_key22_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptbyomei
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   SRYKA       =   :SRYKA
+			AND   SRYYMD      <=  :SRYYMD
+			AND   NYUGAIKBN   IN (' ',:NYUGAIKBN)
+			ORDER BY SRYYMD,RENNUM 
+		;
+	};
+};
+
+path	key23	{ 	
+	DBSELECT	{
+		DECLARE tbl_ptbyomei_key23_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptbyomei
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   SRYYMD      <=  :SRYYMD
+			AND   NYUGAIKBN   IN (' ',:NYUGAIKBN)
+			ORDER  BY  PTID,SRYYMD,SRYKA,RENNUM
 		;
 	};
 };
