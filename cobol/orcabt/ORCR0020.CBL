@@ -279,7 +279,7 @@
                                    PIC X(03)   VALUE   "980". 
       *    
       *    ¸ÇÄêÃ¼Ëö£É£Ä
-           03  WRK-CONS-TERMID     PIC X(32)   VALUE
+           03  WRK-CONS-TERMID     PIC X(64)   VALUE
                                    "0100007FZZZZZZZZZZZZZZZZZZZZZZZZ". 
       *
       *    ºßÁí¿Ç¥Æ¡¼¥Ö¥ë

@@ -51,7 +51,7 @@
       *FD  PARA-FILE.
       *01  PARA-REC.
       *    03  PAR-KEY.
-      *********05  PAR-TERMID          PIC X(32).
+      *********05  PAR-TERMID          PIC X(64).
       *        05  PAR-FILEMEI         PIC X(08).
       *        05  PAR-EDANUM          PIC 9(04).
       **** 03  PAR-DATA-REC            PIC X(3000).
@@ -61,7 +61,7 @@
        01  FILE-NAME1.
            03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
            03  FILLER              PIC X(07)   VALUE   "P01PARA".
-           03  FILE-TERMID1        PIC X(32)   VALUE   SPACE.
+           03  FILE-TERMID1        PIC X(64)   VALUE   SPACE.
       *
       *    ¥¹¥ÑÎÎ°è
            COPY    "COMMON-SPA".

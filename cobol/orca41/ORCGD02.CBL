@@ -227,7 +227,7 @@
        01  W-AREA.
            03  WRK-PARA.
                05  WRK-PARA-SRYYM                  PIC X(06).
-               05  WRK-PARA-TERMID                 PIC X(32).
+               05  WRK-PARA-TERMID                 PIC X(64).
                05  WRK-PARA-SYSYMD                 PIC X(08).
                05  WRK-PARA-OPID                   PIC X(16).
                05  WRK-PARA-SYOKBN                 PIC X(01).

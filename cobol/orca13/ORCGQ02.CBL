@@ -92,7 +92,7 @@
        01  PRFNAME.
            03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
            03  FILLER              PIC X(07)   VALUE   "ORCBQ01".
-           03  PRFNAME-TERMID      PIC X(32).
+           03  PRFNAME-TERMID      PIC X(64).
            03  PRFNAME-SYSYMD      PIC X(08).
            03  PRFNAME-SYSTIME     PIC 9(08).
            03  FILLER              PIC X(04)   VALUE   ".TXT".

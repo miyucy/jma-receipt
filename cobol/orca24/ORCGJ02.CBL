@@ -69,7 +69,7 @@
       *FD  PARA-FILE.
       *01  PARA-REC.
       *    03  PARA-KEY.
-      *********05  PARA-TERMID          PIC X(32).
+      *********05  PARA-TERMID          PIC X(64).
       *        05  PARA-FILEMEI         PIC X(08).
       *        05  PARA-EDANUM          PIC 9(03).
       *    03  PARA-DATA-REC            PIC X(3500).
@@ -80,13 +80,13 @@
        01  FILE-NAME1.
            03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
            03  FILLER              PIC X(09)   VALUE   "J02SPASCR".
-           03  FILE-TERMID         PIC X(32)   VALUE   SPACE.
+           03  FILE-TERMID         PIC X(64)   VALUE   SPACE.
            03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
        01  FILE-NAME2.
            03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
            03  FILLER              PIC X(07)   VALUE   "J01PARA".
-           03  FILE-TERMID2        PIC X(32)   VALUE   SPACE.
+           03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
       *
        01  WRK-DATA-REC.
            03  WRK-DATA            PIC X(30000)

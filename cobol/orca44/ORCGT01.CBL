@@ -250,7 +250,7 @@
                                    PIC 9(07)   VALUE   1.
       *    
       *    ¸ÇÄêÃ¼Ëö£É£Ä
-           03  WRK-CONS-TERMID     PIC X(32)   VALUE
+           03  WRK-CONS-TERMID     PIC X(64)   VALUE
                                    "0100007FZZZZZZZZZZZZZZZZZZZZZZZZ". 
       *
       *****************************************************************

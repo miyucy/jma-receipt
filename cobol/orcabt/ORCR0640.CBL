@@ -391,7 +391,7 @@
       *
        01  WRK-CONS-AREA.    
       *    ¸ÇÄêÃ¼Ëö£É£Ä
-           03  WRK-CONS-TERMID     PIC X(32)   VALUE
+           03  WRK-CONS-TERMID     PIC X(64)   VALUE
                                    "0100007FZZZZZZZZZZZZZZZZZZZZZZZZ". 
       *
            COPY    "MCPAREA".

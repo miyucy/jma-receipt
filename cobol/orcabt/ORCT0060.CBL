@@ -161,7 +161,7 @@
            03  WRK-PARA.
                05  WRK-PARA-ARG1.
                    07   WRK-PARA-SRYYM             PIC  X(06).
-                   07   WRK-PARA-TERMID            PIC  X(32).
+                   07   WRK-PARA-TERMID            PIC  X(64).
                    07   WRK-PARA-SYSYMD            PIC  X(08).
                05  WRK-PARA-SYOKBN                 PIC  X(01).
                05  WRK-PARA-KIKAN-OCC  OCCURS 3.

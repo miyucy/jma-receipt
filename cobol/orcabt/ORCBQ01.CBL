@@ -149,7 +149,7 @@
            03  WRK-PARA.
                05  WRK-PARA-PAFNAME
                                        PIC X(100).
-               05  WRK-PARA-TERMID     PIC X(32).
+               05  WRK-PARA-TERMID     PIC X(64).
                05  WRK-PARA-SYSYMD     PIC X(08).
                05  WRK-PARA-SYSTIME    PIC X(08).
            03  WRK-PROC-KNS            PIC 9(09).

@@ -72,7 +72,7 @@
       *FD  NC01PARA-FILE.
       *01  NC01PARA-REC.
       *    03  PARA-NC01-KEY.
-      *        05  PARA-NC01-TERMID    PIC X(32).
+      *        05  PARA-NC01-TERMID    PIC X(64).
       *        05  PARA-NC01-EDANUM    PIC 9(04).
       *    03  PARA-NC01-REC           PIC X(500).
       ***  03  PARA-NC01-FLG           PIC 9(01).
@@ -83,13 +83,13 @@
       *01  FILE-NAME1.
       *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
       *    03  FILLER              PIC X(07)   VALUE   "P01PARA".
-      *    03  FILE-TERMID1        PIC X(32)   VALUE   SPACE.
+      *    03  FILE-TERMID1        PIC X(64)   VALUE   SPACE.
       *
       *    パラメタファイル名
       *01  FILE-NAME2.
       *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
       *    03  FILLER              PIC X(08)   VALUE   "NC01PARA".
-      *    03  FILE-TERMID2        PIC X(32)   VALUE   SPACE.
+      *    03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
       *
       *    フラグ領域
        01  STS-AREA.

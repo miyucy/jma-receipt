@@ -65,7 +65,7 @@
       *01  FILE-NAME1.
       *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
       *    03  FILLER              PIC X(07)   VALUE   "P01PARA".
-      *    03  FILE-TERMID1        PIC X(32)   VALUE   SPACE.
+      *    03  FILE-TERMID1        PIC X(64)   VALUE   SPACE.
       *
       *    ¥¹¥ÑÎÎ°è
            COPY    "COMMON-SPA".

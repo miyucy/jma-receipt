@@ -60,14 +60,14 @@
        01  FILE-NAME1.
            03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
            03  FILLER              PIC X(09)   VALUE   "I01SCRSPA".
-           03  FILE-TERMID1        PIC X(32)   VALUE   SPACE.
+           03  FILE-TERMID1        PIC X(64)   VALUE   SPACE.
            03  FILLER              PIC X(04)   VALUE   ".TXT".
       *
       *    £Ã£Ï£Í£Í£Ï£Î¥Ç¡¼¥¿
        01  FILE-NAME2.
            03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
            03  FILLER              PIC X(09)   VALUE   "I01COMMON".
-           03  FILE-TERMID2        PIC X(32)   VALUE   SPACE.
+           03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
            03  FILLER              PIC X(04)   VALUE   ".TXT".
       *
       *    ¥¹¥Æ¡¼¥¿¥¹ÎÎ°è

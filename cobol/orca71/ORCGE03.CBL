@@ -109,7 +109,7 @@
                05  WRK-PARA-SRYYM      PIC  X(06).
       *½¤Àµ/*³«»Ï*02.12.20*********************************************
       *         05  WRK-PARA-TERMID     PIC  X(16).
-               05  WRK-PARA-TERMID     PIC  X(32).
+               05  WRK-PARA-TERMID     PIC  X(64).
       *½¤Àµ/*½ªÎ»*02.12.20*********************************************
                05  WRK-PARA-SYSYMD     PIC  X(08).
                05  WRK-PARA-SYOKBN     PIC  X(01).

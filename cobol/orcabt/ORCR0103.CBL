@@ -516,7 +516,7 @@
                ALL "¡Ý".
       *    
       *    ¸ÇÄêÃ¼Ëö£É£Ä
-           03  WRK-CONS-TERMID     PIC X(32)   VALUE
+           03  WRK-CONS-TERMID     PIC X(64)   VALUE
                                    "0100007FZZZZZZZZZZZZZZZZZZZZZZZZ". 
       *
       *    ²þ¹Ô¥³¡¼¥É

@@ -90,7 +90,7 @@
                    07  WRK-PARA-BTUNUM-OCC     OCCURS 50.
                        09  WRK-PARA-BTUNUM     PIC X(02).
                05  WRK-PARA-SYSYMD             PIC X(08).
-               05  WRK-PARA-TERMID             PIC X(32).
+               05  WRK-PARA-TERMID             PIC X(64).
                05  WRK-PARA-JOBID              PIC 9(07).
                05  WRK-PARA-SHELLID            PIC X(08).
       *

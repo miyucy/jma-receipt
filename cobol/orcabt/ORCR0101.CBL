@@ -107,7 +107,7 @@
                05  WRK-PARA1.  
                    07  WRK-PARA-SRYYM            PIC X(06).
       *************07  WRK-PARA-TERMID           PIC X(16).
-                   07  WRK-PARA-TERMID           PIC X(32).
+                   07  WRK-PARA-TERMID           PIC X(64).
                    07  WRK-PARA-SYSYMD           PIC X(08).
                05  WRK-PARA-RECE09-REC. 
                    07  WRK-PARA-RECE09-KEY.

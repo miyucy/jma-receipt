@@ -209,7 +209,7 @@
                05  WRK-WDD         PIC 9(02).
            03  WRK-SHELL-ARG1.
              05  WRK-SHELL-SRYYM   PIC  X(06).
-             05  WRK-SHELL-TERMID  PIC  X(32).
+             05  WRK-SHELL-TERMID  PIC  X(64).
              05  WRK-SHELL-SYSYMD  PIC  X(08).  
            03  WRK-SHELL-ARG3.
              05  WRK-SHELL-ARG3-TBL.

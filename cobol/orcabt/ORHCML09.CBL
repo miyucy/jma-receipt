@@ -87,7 +87,7 @@
       *    °ì»þÎÎ°è
        01  WRK-AREA. 
            03  WRK-PARA.
-               05  WRK-PARA-TERMID    PIC X(32).
+               05  WRK-PARA-TERMID    PIC X(64).
                05  WRK-PARA-SYSYMD    PIC X(8).
                05  WRK-PARA-HOSPID    PIC X(24).               
       *

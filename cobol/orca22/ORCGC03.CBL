@@ -75,7 +75,7 @@
            03  FILLE               PIC X(18)   VALUE
                                                "/var/tmp/C03SPASCR".
       *****03  FILE-TERMID         PIC X(16)   VALUE   SPACE.
-           03  FILE-TERMID         PIC X(32)   VALUE   SPACE.
+           03  FILE-TERMID         PIC X(64)   VALUE   SPACE.
            03  FILLER              PIC X(04)   VALUE   ".TXT".
       *
        01  WRK-DATA-REC.
@@ -207,7 +207,7 @@
        01  SHELL-AREA.
            03  SHELL-NAME          PIC X(27)   VALUE
                "scripts/allways/orhcml09.sh".
-           03  SHELL-TERMID        PIC X(32).
+           03  SHELL-TERMID        PIC X(64).
            03  SHELL-SYSYMD        PIC X(8).
            03  SHELL-HOSPID        PIC X(24).   
       *
