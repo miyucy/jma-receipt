@@ -99,7 +99,7 @@
       *
       *    保険組合せワーク
            03  WRK-J023-HKNCOMB-COMB.
-               05  WRK-J023-HKN-LIST    OCCURS  10.
+               05  WRK-J023-HKN-LIST    OCCURS  30.
                    07  WRK-J023-THKNCOMBINUM    PIC X(04).
                    07  WRK-J023-THKNCOMBY1      PIC X(01).
                    07  WRK-J023-THKNCOMBIMEI    PIC X(100).
@@ -415,7 +415,6 @@
                MOVE    IDH             TO  SPA-J023-HKNMAX
            END-PERFORM
       *
-      *
            .
        3101-HKNCOMBI-HEN-EXT.
       *
@@ -632,11 +631,11 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >    SPA-J023-HKNMAX
                MOVE    SPA-J023-THKNCOMBINUM(IDX)
-                                      TO  WRK-J023-THKNCOMBINUM(IDX)
+                                       TO  WRK-J023-THKNCOMBINUM(IDX)
                MOVE    SPA-J023-THKNCOMBIMEI(IDX)
-                                      TO  WRK-J023-THKNCOMBIMEI(IDX)
+                                       TO  WRK-J023-THKNCOMBIMEI(IDX)
                MOVE    SPA-J023-RSI-THKNKBN  (IDX)
-                                      TO  WRK-J023-RSI-HKNKBN  (IDX)
+                                       TO  WRK-J023-RSI-HKNKBN  (IDX)
            END-PERFORM
            MOVE    SPA-J023-HKNMAX     TO  WRK-J023-HKNMAX
       *
@@ -705,7 +704,7 @@
       *    初期編集
            MOVE    SPA-J023-SRYKA-LIST(01)
                                        TO  SPA-J023-SRYKA-G
-           MOVE    SPA-J023-HKN-LIST(01)
+           MOVE    SPA-J023-HKN-LIST (01)
                                        TO  SPA-J023-HKNCOMBI-G
       *    労災保険区分がアフターケアの時、履歴日を表示する
            MOVE    SPA-J023-RSI-THKNKBN (01)
@@ -722,7 +721,6 @@
       *    労災保険区分がアフターケアの時、履歴日編集処理
       *****************************************************************
        31401-AFTER-JYURRK-SEC          SECTION.
-      *
       *
       *    受診歴を検索する  医療機関、患者ＩＤ
            INITIALIZE                  JYURRK-REC
