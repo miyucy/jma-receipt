@@ -29,15 +29,15 @@
                05  SPA-GMN-W10-MAX                 PIC 9(03).
                05  SPA-GMN-W10-CUR                 PIC 9(03).
       *
-               05  SPA-W10-STYUKYMD                PIC 9(08).
-               05  SPA-W10-EDYUKYMD                PIC 9(08).
+               05  SPA-W10-STYUKYMD                PIC X(08).
+               05  SPA-W10-EDYUKYMD                PIC X(08).
                05  SPA-W10-STYUKYMDH               PIC X(09).
                05  SPA-W10-EDYUKYMDH               PIC X(09).
       *
                05  SPA-W10-SELNUM                  PIC 9(03).
                05  SPA-W10-PRGNAME                 PIC X(24).
-               05  SPA-W10-SEL-STYUKYMD            PIC 9(08).
-               05  SPA-W10-SEL-EDYUKYMD            PIC 9(08).
+               05  SPA-W10-SEL-STYUKYMD            PIC X(08).
+               05  SPA-W10-SEL-EDYUKYMD            PIC X(08).
       *
                05  SPA-W10-KANRICD                 PIC X(04).
                05  SPA-W10-KBNCD                   PIC X(08).
