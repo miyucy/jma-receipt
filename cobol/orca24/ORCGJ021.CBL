@@ -901,7 +901,41 @@
                                        INTO    SPA-J021-MAE-HKNCOMBIMEI
                END-STRING
            END-IF
-           IF      COMB-GAI-KFTNRATE   >   ZERO
+      *
+      *   ¼ýÇ¼¤«¤éÉéÃ´³ä¹ç¤òÊÔ½¸¤¹¤ë
+           INITIALIZE                  SYUNOU-REC
+           MOVE    SPA-HOSPID          TO  SYU-HOSPID
+           MOVE    SPA-GMN-PTID        TO  SYU-PTID
+           MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
+           MOVE    JYURRK-DENPNUM      TO  SYU-DENPNUM
+      *
+           MOVE    SYUNOU-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+               PERFORM 980-SYUNOU-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYUNOU-REC
+               INITIALIZE                  SYUNOU-REC
+               MOVE    1               TO  FLG-SYUNOU
+           END-IF
+      *
+      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *    MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+      *    CALL    "ORCMCPSUB"          USING
+      *                                     MCPAREA
+      *                                     ORCMCPAREA
+      *                                     MCPDATA-REC
+      *
+           IF      FLG-SYUNOU          =   ZERO
+               MOVE    SYU-PTFTNRATE       TO  COMB-GAI-KFTNRATE
+           END-IF
+           IF      COMB-GAI-KFTNRATE    >   ZERO
                MOVE    COMB-GAI-KFTNRATE   TO  WRK-ZZZ
                MOVE    WRK-ZZZ             TO  SPA-J021-MAE-FTNRATE
                MOVE    "%"                 TO  SPA-J021-MAE-FTNRATE(4:)
