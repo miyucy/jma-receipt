@@ -22,6 +22,7 @@
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-門脇    04/10/01  自賠責特定器材等消費税対応
       ************************************************************
       *01  LNK-ORCS02-REC.
       *医療機関ＩＤ
@@ -58,6 +59,10 @@
               05  LNK-S02-IKUSEI-OCC       OCCURS   2.
                 07  LNK-S02-IKUSEI-YYMM    PIC  X(06).
                 07  LNK-S02-IKUSEI-NISUU   PIC  9(02).
+      *
+      *初診料算定フラグ（地方公費用）
+           03  LNK-S02-SYOSINFLG           PIC  X(01).
+      *
       *船員保険（被保険者）＋通勤災害＋初診時
            03  LNK-S02-SENINFLG            PIC  X(01).
       *自賠責手技点合計
@@ -68,8 +73,13 @@
            03  LNK-S02-MEISAI              PIC  9(07).
       *自賠責療養担当手当点数
            03  LNK-S02-RYOYO               PIC  9(07).
-      *初診料算定フラグ（地方公費用）
-           03  LNK-S02-SYOSINFLG           PIC  X(01).
+      *自賠責その他コード（０９５９１．９２．９３）の診療行為コード等
+           03  LNK-S02-SONOTA.
+              05  LNK-S02-SONOTA-OCC         OCCURS  50.
+                07  LNK-S02-SONOTA-SRYCD     PIC  X(09).
+                07  LNK-S02-SONOTA-ZAIKAISU  PIC  9(07).
+                07  LNK-S02-SONOTA-TANKA     PIC  9(07).
+      *
       *復帰コード
-           03  LNK-S02-RC                  PIC S9(9)   BINARY.
+           03  LNK-S02-RC                  PIC  S9(9)   BINARY.
       *

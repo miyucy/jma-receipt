@@ -24,6 +24,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     NACL-多々納  03/04/16  自賠責・船員保険追加
       * 01.00.02     NACL-門脇    04/06/30  レイアウト修正
+      * 01.00.03     NACL-門脇    04/10/01  自賠責特定器材等消費税対応
       ************************************************************
        01  LNK-ORCS01-REC.
       *
@@ -59,6 +60,8 @@
                  06  LNK-S01-TENSUU        PIC  9(07).
       *
            03  LNK-S01-OCC                 OCCURS  15.
+      *船員保険（被保険者）＋通勤災害＋初診時
+             04  LNK-S01-SENINFLG          PIC  X(01).
       *自賠責手技点合計
              04  LNK-S01-SYUTEN            PIC  9(07).
       *自賠責診断書料金額
@@ -67,8 +70,12 @@
              04  LNK-S01-MEISAI            PIC  9(07).
       *自賠責療養担当手当点数
              04  LNK-S01-RYOYO             PIC  9(07).
-      *船員保険（被保険者）＋通勤災害＋初診時
-             04  LNK-S01-SENINFLG          PIC  X(01).
+      *自賠責その他コード（０９５９１．９２．９３）の診療行為コード等
+             04  LNK-S01-SONOTA.
+               05  LNK-S01-SONOTA-OCC         OCCURS  20.
+                 06  LNK-S01-SONOTA-SRYCD     PIC  X(09).
+                 06  LNK-S01-SONOTA-ZAIKAISU  PIC  9(07).
+                 06  LNK-S01-SONOTA-TANKA     PIC  9(07).
       *
       *使用インデックス
            03  LNK-S01-IDX                 PIC  9(02).
@@ -76,6 +83,7 @@
            03  LNK-S01-OCC2                OCCURS  15.
       *合計レコードをもつレコード識別フラグ
              04  LNK-S01-TTLARIFLG         PIC  X(01).
+      *
       *復帰コード
            03  LNK-S01-RC                  PIC  S9(9)   BINARY.
       *
