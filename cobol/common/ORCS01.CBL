@@ -3274,6 +3274,10 @@
                      MOVE   ZAN-KOHI-T(KOH-IDX)   TO
                                           LNK-SYU-KOH-COMPFTN(KOH-IDX)
                      MOVE   ZERO        TO  ZAN-KOHI-T(KOH-IDX)
+                     IF   LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "027"     
+                          MOVE   LNK-SYU-KOH-COMPFTN(KOH-IDX)           
+                                            TO WK-TOKUTEI-COMPFTN3      
+                     END-IF                                             
                ELSE
                      COMPUTE  ZAN-KOHI-T(KOH-IDX)    =
                               ZAN-KOHI-T(KOH-IDX)    -
@@ -3370,6 +3374,7 @@
                        END-IF 
                    END-IF                                               
                ELSE
+                 IF    LNK-SYU-KOH-COMPFTN(1)   NOT =    ZERO
                    IF  (( LNK-S01-KOUREI-ZAITAKU-KBN   =   "1"     ) 
                    OR   ( FLG-KOUREI-KBN               =   "1"     ))
                    AND (  LNK-SYU-KOH-HKNNUM(KOH-IDX)  NOT =  "027" )
@@ -3413,7 +3418,8 @@
                                     ZAN-KOHI-T(KOH-IDX)  -
                                     LNK-SYU-KOH-COMPFTN(KOH-IDX)
                        END-IF
-                   END-IF                                               
+                   END-IF
+                 END-IF                                               
                END-IF
                MOVE  WK-GAIYKZFTNKBN   TO  LNK-SYU-KOH-YKZFTNKBN
                                                         (KOH-IDX)
