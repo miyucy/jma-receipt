@@ -127,11 +127,15 @@
        01  TABLE-GAIHAKU.
            03  TBL-GAIHAKU                 PIC 9(01)   OCCURS  31.
       *
+      * ³°Çñ¥«¥¦¥ó¥ÈÎÎ°è     
+       01  WRK-GAIHAKU-COUNT               PIC 9(02).
+      *
       * ÁªÄêÎÅÍÜÂàÈòÍÑ¥Æ¡¼¥Ö¥ë     
        01  TABLE-SENTEI.
            03  TBL-SENTEI                  PIC 9(01)   OCCURS  31.
       *
       * ÁªÄê³°Çñ·×»»ÎÎ°è
+       01  WRK-SENTEI-GAIHAKU-KEISU        PIC 9V99.
        01  WRK-SENTEI-GAIHAKU1             PIC 9(08).
        01  WRK-SENTEI-GAIHAKU2             PIC 9(08).
       *
@@ -1080,6 +1084,9 @@
            MOVE     "NYUINACT-KEY9"    TO  WK-PATH
            PERFORM   CSR-CLOSE-SEC
       *
+      *ÁªÄê³°Çñ¤Î·¸¿ô¥»¥Ã¥È
+           PERFORM   SENTEI-GAIHAKU-KEISU-SET-SEC
+      *
       *Æþ±¡ÎÁ´Ø·¸¤Î¼èÆÀ
       *
            MOVE    ZERO                TO  NYUIN-COUNT
@@ -1113,6 +1120,7 @@
            PERFORM   CSR-CLOSE-SEC
       *
       *°åÎÅµ¡´Ø¸º»»¤Î¼èÆÀ¡Ê¥·¥¹¥Æ¥à´ÉÍý¥Æ¡¼¥Ö¥ë¤è¤ê¡Ë
+           COMPUTE  NYUIN-COUNT = NYUIN-COUNT  -  WRK-GAIHAKU-COUNT
            MOVE    ZERO                TO  FLG-SYSKANRI
            INITIALIZE                      SYSKANRI-REC
            MOVE    "5000"              TO  SYS-KANRICD
@@ -1141,6 +1149,7 @@
                             WHEN  4
                                 COMPUTE SYU-HKNTEN(11) = SYU-HKNTEN(11)
                                                     - (5 * NYUIN-COUNT)
+                        END-EVALUATE
                END-PERFORM
            END-IF
       *
@@ -1164,6 +1173,7 @@
        GAIHAKU-SET-SEC           SECTION.
       *
            IF  NACCT-SRYYM      =   SYU-SKYSTYMD(1:6)
+               MOVE     ZERO        TO  WRK-GAIHAKU-COUNT
       *    ³°Çñ¾ðÊó¤Î¥Æ¡¼¥Ö¥ë¥»¥Ã¥È
                IF   NACCT-ZAISKBKBN   =   "2"
                    PERFORM   VARYING  SYU-IDX  FROM  1  BY  1
@@ -1172,6 +1182,7 @@
                            (NACCT-DAY(SYU-IDX) NOT =  ZERO)
                            MOVE   NACCT-DAY(SYU-IDX)
                                       TO  TBL-GAIHAKU (SYU-IDX)
+                           ADD    1   TO  WRK-GAIHAKU-COUNT
                        END-IF
                    END-PERFORM
                    MOVE     1         TO  FLG-GAIHAKU-SET 
@@ -1209,6 +1220,31 @@
            .
       *
        SENTEI-SET-EXT.
+           EXIT.
+      *
+      **************************************************************
+      *    ÁªÄê³°Çñ»þ¤Î·¸¿ô¥»¥Ã¥È½èÍý
+      **************************************************************
+       SENTEI-GAIHAKU-KEISU-SET-SEC           SECTION.
+      *
+           MOVE      ZERO           TO     WRK-SENTEI-GAIHAKU-KEISU
+      *
+           IF  SYU-SKYSTYMD(1:6)    <=    "200303"
+               MOVE   0.1           TO     WRK-SENTEI-GAIHAKU-KEISU
+           END-IF
+      *
+           IF (SYU-SKYSTYMD(1:6)    >=    "200304")   AND
+              (SYU-SKYSTYMD(1:6)    <=    "200403")
+               MOVE   0.05           TO    WRK-SENTEI-GAIHAKU-KEISU
+           END-IF
+      *
+           IF  SYU-SKYSTYMD(1:6)    >=    "200404"
+               MOVE   ZERO          TO     WRK-SENTEI-GAIHAKU-KEISU
+           END-IF
+      *
+           .
+      *
+       SENTEI-GAIHAKU-KEISU-SET-EXT.
            EXIT.
       *
       **************************************************************
@@ -1251,7 +1287,8 @@
                                  WHEN   3
                                      COMPUTE  SYU-HKNTEN(11)  =
                                               SYU-HKNTEN(11)  +
-                                            ((WRK-KHNTEN      *  0.1)
+                                            ((WRK-KHNTEN      *
+                                              WRK-SENTEI-GAIHAKU-KEISU)
                                                               +  0.5)
       *                          Â¾°åÎÅµ¡´Ø¼õ¿Ç¡Ê£±£µ¡ó¡Ë
                                  WHEN   4
@@ -1270,13 +1307,15 @@
                                  WHEN   1
                                      COMPUTE  SYU-HKNTEN(11)  =
                                               SYU-HKNTEN(11)  +
-                                             ((WRK-KHNTEN    *  0.1)
+                                             ((WRK-KHNTEN    *
+                                               WRK-SENTEI-GAIHAKU-KEISU)
                                                              +  0.5)
       *                          ³°Çñ¡ÊÁªÄêÎÅÍÜÈñ£±£°¡ó¡Ë
                                  WHEN   3
                                      COMPUTE  SYU-HKNTEN(11)  =
                                               SYU-HKNTEN(11)  +
-                                            ((WRK-KHNTEN      *  0.1)
+                                            ((WRK-KHNTEN      *
+                                              WRK-SENTEI-GAIHAKU-KEISU)
                                                               +  0.5)
       *                          Â¾°åÎÅµ¡´Ø¼õ¿Ç¡Ê£±£µ¡ó¡Ë
                                  WHEN   4
@@ -1295,14 +1334,16 @@
                                  DISPLAY "WRK-KHNTEN = " WRK-KHNTEN
                                  DISPLAY "WRK-SENTEI-KHNTEN = " 
                                                     WRK-SENTEI-KHNTEN
-      *                          ³°Çñ¡Ê£±£µ¡ó¤È£±£°¡ó¤Îº¹³Û¡Ë
+      *                          ³°Çñ¡Ê£±£µ¡ó¤ÈÁªÄê³°Çñ¤Îº¹³Û¡Ë
                                  WHEN   3
                                      MOVE  ZERO TO WRK-SENTEI-GAIHAKU1
                                      MOVE  ZERO TO WRK-SENTEI-GAIHAKU2
                                      COMPUTE  WRK-SENTEI-GAIHAKU1 =
                                              (WRK-KHNTEN * 0.15) + 0.5
                                      COMPUTE  WRK-SENTEI-GAIHAKU2 =
-                                             (WRK-KHNTEN * 0.1) + 0.5
+                                             (WRK-KHNTEN * 
+                                              WRK-SENTEI-GAIHAKU-KEISU)
+                                                                 + 0.5
                                      COMPUTE  NYUIN-TGMONEY  =
                                               NYUIN-TGMONEY  +
                                              (WRK-SENTEI-GAIHAKU1 -
