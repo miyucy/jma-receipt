@@ -37,7 +37,7 @@
                    07  SPA-GMN-C02-TBANGO      PIC 9(05).
                    07  SPA-GMN-C02-TSRYKA      PIC X(04).
                    07  SPA-GMN-C02-TSRYYMD     PIC X(09).
-                   07  SPA-GMN-C02-TBYOMEI     PIC X(81).
+                   07  SPA-GMN-C02-TBYOMEI     PIC X(80).
                    07  SPA-GMN-C02-TUTAGAIFLG  PIC X(14).
                    07  SPA-GMN-C02-TSYUBYOFLG  PIC X(12).
                    07  SPA-GMN-C02-TMANSEIKBN  PIC X(42).
