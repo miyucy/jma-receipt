@@ -3283,9 +3283,9 @@
                    MOVE    TNS-TEN   TO   LNK-SYU-SHOKUJI3
                 END-IF
       *
-      **>       IF  COMB-SYU-HKNKOHSBTKBN   =   "8"
+                IF  COMB-SYU-HKNKOHSBTKBN   =   "8"
                   ADD   WK-SHOKUJI-JIHI    TO   WK-SHOKUJI-FTN
-      **>       END-IF
+                END-IF
       *
              END-IF
       *
