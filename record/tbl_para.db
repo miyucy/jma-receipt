@@ -1,6 +1,6 @@
 tbl_para {
 	GYOUMUID			char(3);
-	TERMID				char(32);
+	TERMID				char(64);
 	FILEMEI 			char(20);
 	EDANUM  			number(3,0);
 	DATA_REC 			char(5000);
