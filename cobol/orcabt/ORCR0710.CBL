@@ -34,6 +34,7 @@
       *                                     ¤òÄÉ²Ã
       *  01.00.05    NACL-ÌçÏÆ    03.03.06  ¸º»»É½¼¨¢¤¤ò¢¥¤ËÊÑ¹¹
       *  01.00.06    NACL-Æ£¸¶    03/03/11  ¼ïÊÌÉÔÌÀ¤Î¾ðÊó¤òÊÔ½¸
+      *  01.00.07    NACL-Æ£¸¶    03/03/20  ¥«¥¹¥¿¥Þ¥¤¥º¹àÌÜ¤ÎÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1964,10 +1965,8 @@
                MOVE    3               TO  IDX3
            END-IF
       *    ¸øÉé£±
-      *
-      *    ¸©Ã±ÍÑ¹àÌÜ
            IF      RECE62-KOHFTNJANUM(IDA)
-                                   NOT =   SPACE
+                                       NOT =   SPACE
                INITIALIZE              ORCSKANACHKAREA
                MOVE    "1"             TO  KANACHK-SYORI 
                MOVE    RECE62-KOHFTNJANUM(IDA)
@@ -1976,16 +1975,16 @@
                IF      KANACHK-RC      =   ZERO
                    IF      KANACHK-SYUBETU =   1
                        MOVE    RECE62-KOHFTNJANUM(IDA)
-                                           TO  HC06-KOHFTNJANUM1
+                                       TO  HC06-KOHFTNJANUM1
                    ELSE
                        MOVE    RECE62-KOHFTNJANUM(IDA)
-                                           TO  HC06-KOHFTNJANUM1N
+                                       TO  HC06-KOHFTNJANUM1N
                    END-IF
                END-IF                        
-           END-IF    
+           END-IF
       *    ¸øÉé£²
            IF      RECE62-KOHFTNJANUM(IDB)
-                                   NOT =   SPACE
+                                       NOT =   SPACE
                INITIALIZE              ORCSKANACHKAREA
                MOVE    "1"             TO  KANACHK-SYORI 
                MOVE    RECE62-KOHFTNJANUM(IDB)
@@ -2000,10 +1999,10 @@
                                            TO  HC06-KOHFTNJANUM2N
                    END-IF
                END-IF                        
-           END-IF    
+           END-IF
       *    ¸ø¼õ£±
            IF      RECE62-KOHJKYSNUM(IDA)
-                                   NOT =   SPACE
+                                      NOT =   SPACE
                INITIALIZE              ORCSKANACHKAREA
                MOVE    "1"             TO  KANACHK-SYORI 
                MOVE    RECE62-KOHJKYSNUM(IDA)
@@ -2017,11 +2016,11 @@
                        MOVE    RECE62-KOHJKYSNUM(IDA)
                                            TO  HC06-KOHJKYSNUM1N
                    END-IF
-               END-IF                        
-           END-IF    
+               END-IF
+           END-IF                        
       *    ¸ø¼õ£²
            IF      RECE62-KOHJKYSNUM(IDB)
-                                   NOT =   SPACE
+                                       NOT =   SPACE
                INITIALIZE              ORCSKANACHKAREA
                MOVE    "1"             TO  KANACHK-SYORI 
                MOVE    RECE62-KOHJKYSNUM(IDB)
@@ -2034,6 +2033,88 @@
                    ELSE
                        MOVE    RECE62-KOHJKYSNUM(IDB)
                                            TO  HC06-KOHJKYSNUM2N
+                   END-IF
+               END-IF
+           END-IF                        
+      *        ¸©Ã±ÍÑ¹àÌÜ
+           IF      FLG-RECE67              =   ZERO
+               IF      RECE67-KOHINF (IDA) NOT =   SPACE
+                   MOVE    SPACE               TO   HC06-KOH-TBL1
+      *            ¸øÉé£±
+                   IF      RECE67-KOHFTNJANUM(IDA)
+                                       NOT =   SPACE
+                       INITIALIZE              ORCSKANACHKAREA
+                       MOVE    "1"             TO  KANACHK-SYORI 
+                       MOVE    RECE67-KOHFTNJANUM(IDA)
+                                               TO  KANACHK-MAE-INPUT
+                       CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                       IF      KANACHK-RC      =   ZERO
+                           IF      KANACHK-SYUBETU =   1
+                               MOVE    RECE67-KOHFTNJANUM(IDA)
+                                               TO  HC06-KOHFTNJANUM1
+                           ELSE
+                               MOVE    RECE67-KOHFTNJANUM(IDA)
+                                               TO  HC06-KOHFTNJANUM1N
+                           END-IF
+                       END-IF
+                   END-IF
+      *            ¸ø¼õ£±
+                   IF      RECE67-KOHJKYSNUM(IDA)
+                                       NOT =   SPACE
+                       INITIALIZE              ORCSKANACHKAREA
+                       MOVE    "1"             TO  KANACHK-SYORI 
+                       MOVE    RECE67-KOHJKYSNUM(IDA)
+                                               TO  KANACHK-MAE-INPUT
+                       CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                       IF      KANACHK-RC      =   ZERO
+                           IF      KANACHK-SYUBETU =   1
+                              MOVE    RECE67-KOHJKYSNUM(IDA)
+                                               TO  HC06-KOHJKYSNUM1
+                           ELSE
+                               MOVE    RECE67-KOHJKYSNUM(IDA)
+                                               TO  HC06-KOHJKYSNUM1N
+                           END-IF
+                       END-IF                        
+                   END-IF
+               END-IF 
+      *
+               IF      RECE67-KOHINF (IDB) NOT =   SPACE
+                   MOVE    SPACE               TO   HC06-KOH-TBL2
+      *            ¸øÉé£²
+                   IF      RECE67-KOHFTNJANUM(IDB)
+                                       NOT =   SPACE
+                       INITIALIZE              ORCSKANACHKAREA
+                       MOVE    "1"             TO  KANACHK-SYORI 
+                       MOVE    RECE67-KOHFTNJANUM(IDB)
+                                               TO  KANACHK-MAE-INPUT
+                       CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                       IF      KANACHK-RC      =   ZERO
+                           IF      KANACHK-SYUBETU =   1
+                               MOVE    RECE67-KOHFTNJANUM(IDB)
+                                               TO  HC06-KOHFTNJANUM2
+                           ELSE
+                               MOVE    RECE67-KOHFTNJANUM(IDB)
+                                               TO  HC06-KOHFTNJANUM2N
+                           END-IF
+                       END-IF                        
+                   END-IF
+      *            ¸ø¼õ£²
+                   IF      RECE67-KOHJKYSNUM(IDB)
+                                           NOT =   SPACE
+                       INITIALIZE              ORCSKANACHKAREA
+                       MOVE    "1"             TO  KANACHK-SYORI 
+                       MOVE    RECE67-KOHJKYSNUM(IDB)
+                                               TO  KANACHK-MAE-INPUT
+                       CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                       IF      KANACHK-RC      =   ZERO
+                           IF      KANACHK-SYUBETU =   1
+                              MOVE    RECE67-KOHJKYSNUM(IDB)
+                                               TO  HC06-KOHJKYSNUM2
+                           ELSE
+                               MOVE    RECE67-KOHJKYSNUM(IDB)
+                                               TO  HC06-KOHJKYSNUM2N
+                           END-IF
+                       END-IF                        
                    END-IF
                END-IF                        
            END-IF    
@@ -2055,10 +2136,25 @@
                                            TO  WRK-JINISSUZ
                    MOVE    WRK-JINISSU     TO  HC06-JINISSU2
                END-IF
+      *        ¸©Ã±ÍÑ¹àÌÜ
+               IF      FLG-RECE67           =   ZERO
+                   IF      RECE67-JNISSU (IDX1) >   ZERO
+                       MOVE    RECE67-JNISSU (IDX1)
+                                               TO  WRK-JINISSUZ
+                       MOVE    WRK-JINISSU     TO  HC06-JINISSU
+                   END-IF
+                   IF      RECE67-JNISSU (IDX2) >   ZERO
+                       MOVE    RECE67-JNISSU (IDX2)
+                                               TO  WRK-JINISSUZ
+                       MOVE    WRK-JINISSU     TO  HC06-JINISSU1
+                   END-IF
+                   IF      RECE67-JNISSU (IDX3) >   ZERO
+                       MOVE    RECE67-JNISSU (IDX3)
+                                               TO  WRK-JINISSUZ
+                       MOVE    WRK-JINISSU     TO  HC06-JINISSU2
+                   END-IF
+               END-IF
            END-IF
-      *
-      *    ¸©Ã±ÍÑ¹àÌÜ
-      ***     IF      FLG-RECE67           =   ZERO
       *
            .
        3110-KANREN-NUM-SET-EXT.
@@ -2070,7 +2166,6 @@
        3110-KYURATE-SET-SEC        SECTION.
       *
            MOVE   SPACE              TO  HC06-KYURATE
-      *          
       *    ¹ñÊÝORÂà¿¦¼Ô¤Î¤ß°õ»ú
            IF  ((RECE62-TEISYUTUSAKI =   "2"  )       AND
                 (RECE62-RJNHKNNUM    =   SPACE)           )  OR
@@ -2081,7 +2176,8 @@
                                          WRK-RETIRE5  OR
                                          WRK-RETIRE6      )
                IF      RECE62-AGE        <   70                          
-                   COMPUTE WRK-KYURATE-9   =   (100 -   RECE62-KYURATE)
+                   COMPUTE WRK-KYURATE-9   = 
+                                      (100 -   RECE62-KYURATE)
                                                / 10 
                    IF      WRK-KYURATE-9       >   ZERO
                        MOVE   "µë³ä"               TO  HC06-KYURATE
@@ -2089,15 +2185,36 @@
                        INITIALIZE              ORCSKANACHKAREA
                        MOVE    "2"             TO  KANACHK-SYORI 
                        MOVE    WRK-KYURATE     TO  KANACHK-MAE-INPUT
-                       CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                       CALL    "ORCSKANACHK"   USING
+                                               ORCSKANACHKAREA
                        IF      KANACHK-RC      =   ZERO
                        AND     KANACHK-MAX     >   ZERO 
                            MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
-                                               TO  HC06-KYURATE(5:)
+                                                   TO  HC06-KYURATE(5:)
                        END-IF    
                    END-IF
                END-IF    
            END-IF
+      *
+      *    ¸©Ã±ÍÑ¹àÌÜ
+           IF      FLG-RECE67          =   ZERO
+           AND     RECE67-KYURATE      >   ZERO
+               COMPUTE WRK-KYURATE-9   =   (100 -   RECE62-KYURATE)
+                                           / 10 
+               IF      WRK-KYURATE-9       >   ZERO
+                   MOVE   "µë³ä"           TO  HC06-KYURATE
+                   MOVE    WRK-KYURATE-9   TO  WRK-KYURATE
+                   INITIALIZE              ORCSKANACHKAREA
+                   MOVE    "2"             TO  KANACHK-SYORI 
+                   MOVE    WRK-KYURATE     TO  KANACHK-MAE-INPUT
+                   CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                   IF      KANACHK-RC      =   ZERO
+                   AND     KANACHK-MAX     >   ZERO 
+                       MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                           TO  HC06-KYURATE(5:)
+                   END-IF    
+               END-IF
+           END-IF    
            .
        3110-KYURATE-SET-EXT.
            EXIT.
@@ -3068,8 +3185,84 @@
                END-IF
            END-IF
       *
-      * 
-      *
+      *    ¸©Ã±ÍÑ¹àÌÜ
+           IF      FLG-RECE67          =   ZERO
+      *        ÊÝ¸±
+               IF      RECE67-TOTALTEN (IDX1)  >   ZERO
+                   MOVE    RECE67-TOTALTEN (IDX1)  TO  WRK-KGK6
+                   MOVE    WRK-KGK6                TO  HC06-TOTALTEN(1)
+               END-IF
+               IF      RECE67-FTNMONEY (IDX1)  >   ZERO
+                   MOVE    RECE67-FTNMONEY (IDX1)  TO  WRK-KGK7
+                   MOVE    WRK-KGK7                TO  HC06-FTNMONEY(1)
+               END-IF
+               IF      RECE67-SHOKUJINISSU (IDX1)   >   ZERO
+                   MOVE    RECE67-SHOKUJINISSU (IDX1)
+                                                   TO  WRK-KGK2
+                   MOVE    WRK-KGK2                TO  HC06-SYONISSU(1)
+               END-IF
+               IF      RECE67-SHOKUJIRYOYOHI (IDX1)
+                                                   >   ZERO
+                   MOVE    RECE67-SHOKUJIRYOYOHI (IDX1)
+                                               TO  WRK-KGK6
+                   MOVE    WRK-KGK6            TO  HC06-SYOTOTALTEN (1)
+               END-IF
+               IF      RECE67-SHOKUJIFTN (IDX1)    >   ZERO
+                   MOVE    RECE67-SHOKUJIFTN (IDX1)
+                                               TO  WRK-KGK7
+                   MOVE    WRK-KGK7            TO  HC06-SYOFTNMONEY (1)
+               END-IF
+      *        ¸øÈñ£±
+               IF      RECE67-TOTALTEN (IDX2)  >   ZERO                     
+                   MOVE    RECE67-TOTALTEN (IDX2)  TO  WRK-KGK6
+                   MOVE    WRK-KGK6                TO  HC06-TOTALTEN(2)
+               END-IF
+               IF    RECE67-FTNMONEY (IDX2)    >   ZERO
+                   MOVE    RECE67-FTNMONEY (IDX2)  TO  WRK-KGK7
+                   MOVE    WRK-KGK7                TO  HC06-FTNMONEY(2)
+               END-IF
+               IF     RECE67-SHOKUJINISSU (IDX2)   >   ZERO 
+                   MOVE    RECE67-SHOKUJINISSU (IDX2)
+                                                   TO  WRK-KGK2 
+                   MOVE    WRK-KGK2                TO  HC06-SYONISSU(2)
+               END-IF
+               IF      RECE67-SHOKUJIRYOYOHI (IDX2)
+                                               >   ZERO
+                   MOVE    RECE67-SHOKUJIRYOYOHI (IDX2)
+                                               TO  WRK-KGK6
+                   MOVE    WRK-KGK6            TO  HC06-SYOTOTALTEN (2)
+               END-IF
+               IF      RECE67-SHOKUJIFTN (IDX2)    >   ZERO
+                   MOVE    RECE67-SHOKUJIFTN (IDX2)
+                                               TO  WRK-KGK7
+                   MOVE    WRK-KGK7            TO  HC06-SYOFTNMONEY (2)
+               END-IF
+      *        ¸øÈñ£²
+               IF      RECE67-TOTALTEN (IDX3)  >   ZERO                      
+                   MOVE    RECE67-TOTALTEN (IDX3)  TO  WRK-KGK6
+                   MOVE    WRK-KGK6                TO  HC06-TOTALTEN(3)
+               END-IF
+               IF      RECE67-FTNMONEY (IDX3)  >   ZERO
+                   MOVE    RECE67-FTNMONEY (IDX3)  TO  WRK-KGK7
+                   MOVE    WRK-KGK7                TO  HC06-FTNMONEY(3)
+               END-IF
+               IF     RECE67-SHOKUJINISSU (IDX3)   >   ZERO
+                   MOVE    RECE67-SHOKUJINISSU (IDX3)
+                                                   TO  WRK-KGK2
+                   MOVE    WRK-KGK2                TO  HC06-SYONISSU(3)
+               END-IF
+               IF      RECE67-SHOKUJIRYOYOHI (IDX3)
+                                               >   ZERO
+                   MOVE    RECE67-SHOKUJIRYOYOHI (IDX3)
+                                               TO  WRK-KGK6
+                   MOVE    WRK-KGK6            TO  HC06-SYOTOTALTEN(3)
+               END-IF
+               IF      RECE67-SHOKUJIFTN (IDX3)    >   ZERO
+                   MOVE    RECE67-SHOKUJIFTN (IDX3)
+                                               TO  WRK-KGK7
+                   MOVE    WRK-KGK7            TO  HC06-SYOFTNMONEY(3)
+               END-IF
+           END-IF
            .
        330-HC101-TENSU-HEN-EXT.
            EXIT.

@@ -44,5 +44,29 @@
                05  RECE67-HOJOKBN         PIC  X(01).
       *適用開始年月日
                05  RECE67-TEKSTYMD        PIC  X(08). 
+      *主保険−給付割合
+           03  RECE67-KYURATE             PIC  9(03).
+      *療養の給付情報
+           03  RECE67-TOTALTENINF         OCCURS  5.
+      *合計点数
+               05  RECE67-TOTALTEN        PIC  9(08).
+      *負担金額
+               05  RECE67-FTNMONEY        PIC  9(09).
+      *実日数
+               05  RECE67-JNISSU          PIC  9(02).
+      *食事療養費情報
+           03  RECE67-SHOKUJIINF          OCCURS  5.
+      *食事日数
+               05  RECE67-SHOKUJINISSU    PIC  9(02).
+      *食事療養費
+               05  RECE67-SHOKUJIRYOYOHI  PIC  9(09).
+      *標準負担額
+               05  RECE67-SHOKUJIFTN      PIC  9(09).
+      *公費情報
+           03  RECE67-KOHINF              OCCURS  4.
+      *公費−負担者番号
+               05  RECE67-KOHFTNJANUM     PIC  X(08).
+      *公費−受給者番号
+               05  RECE67-KOHJKYSNUM      PIC  X(20).
       *帳票データ
            03  RECE67-PRTDATA             PIC  X(4500).
