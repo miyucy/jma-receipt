@@ -29,6 +29,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-太田    03.02.05  自院歴作成データを考慮する
+      *  01.00.02    NACL-太田    04.10.14  退院事由対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -91,10 +92,8 @@
            03  WRK-HENYMDG                 PIC X(09).
            03  WRK-KANACHK-MAE-INPUT       PIC X(400).
            03  WRK-KBNCD                   PIC X(02).
-           03  WRK-SRYKANAME               PIC X(20).
-           03  WRK-BTUNAME                 PIC X(20).
+           03  WRK-TAIINCD                 PIC X(20).
            03  WRK-BRMNUM                  PIC X(06).
-           03  WRK-DR                      PIC X(24).
            03  WRK-999999                  PIC 999999.
            03  WRK-ZZZZZ9                  PIC ZZZZZ9.
            03  WRK-ZZZZ9                   PIC ZZZZ9.
@@ -164,6 +163,8 @@
       *    （病室情報）
            COPY    "CPSK5002.INC".
       *
+           COPY    "CPSK5013.INC".
+      *
       *    患者入院履歴
        01  PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC".
@@ -212,6 +213,7 @@
            COPY    "I02.INC".
            COPY    "I03.INC".
            COPY    "I04.INC".
+           COPY    "I05.INC".
            COPY    "I0ERR.INC".
            COPY    "I0ID1.INC".
            COPY    "I0ID2.INC".
@@ -270,6 +272,7 @@
       *
       *    エラー画面より
            IF    ( SPA-MOTOPG          =   "I0ERR" )
+               MOVE    SPACE           TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
       *        初期画面セット
@@ -311,12 +314,37 @@
       *
            END-IF
       *
+           EVALUATE    SPA-MOTOPG
+           WHEN    "I05"
+                   PERFORM 350-I05-SET-SEC
+           END-EVALUATE
+      *
            PERFORM 310-SPASET-SEC
       *
            .
        300-SCREEN-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    退院事由設定画面より戻り時の処理
+      *****************************************************************
+       350-I05-SET-SEC          SECTION.
+      *
+           IF    ( SPA-I02-I05-TAIINCD     =   SPACE )
+               MOVE    SPACE               TO  SPA-GMN-I02-TAIINCD
+                                               SPA-NAI-I02-TAIINCD
+           ELSE
+               MOVE    SPA-I02-I05-TAIINCD TO  WRK-KBNCD
+               PERFORM 3101-S5013-SEL-SEC
+               MOVE    SYS-5013-TANNAME    TO  SPA-GMN-I02-TAIINCD
+      *
+               MOVE    SPA-I02-I05-TAIINCD TO  SPA-NAI-I02-TAIINCD
+      *
+           END-IF
+      *
+           .
+       350-I05-SET-EXT.
+           EXIT.
       *****************************************************************
       *    スパ初期編集処理
       *****************************************************************
@@ -349,8 +377,6 @@
                MOVE    ZERO    TO  SPA-NAI-I02-NYURRK-FLG
       *        病名リスト編集処理
                PERFORM 3101-BYOMEILST-EDIT-SEC
-               MOVE    WIDGET-NORMAL   TO  SPA-GMN-I02-NYUGAI-STT
-                                           SPA-GMN-I02-NYUGAI-ITM-STT
            ELSE
                MOVE    1       TO  SPA-NAI-I02-NYURRK-FLG
                MOVE    SPACE   TO  SPA-GMN-I02-NYUGAI
@@ -365,10 +391,6 @@
       *            病名リスト編集処理
                    PERFORM 3101-BYOMEILST-EDIT2-SEC
                END-IF
-      *
-               MOVE    WIDGET-INSENSITIVE
-                                       TO  SPA-GMN-I02-NYUGAI-STT
-                                           SPA-GMN-I02-NYUGAI-ITM-STT
            END-IF
       *
            MOVE    1                   TO  SPA-GMN-I02-CUR
@@ -448,7 +470,8 @@
                                        TO  SPA-GMN-I02-BTUNAME
            ELSE
                PERFORM 3101-S5001-SEL-SEC
-               MOVE    WRK-BTUNAME     TO  SPA-GMN-I02-BTUNAME
+               MOVE    SYS-5001-BTU-NAME
+                                       TO  SPA-GMN-I02-BTUNAME
            END-IF
       *
       *    病室番号
@@ -463,10 +486,11 @@
            MOVE    PTNYUINRRK-NYUINYMD
                                    TO  SPA-NAI-I02-NYUINYMD
       *
-      *    退院日
+      *    退院日、退院事由
            IF    ( PTNYUINRRK-TAIINYMD     =   "99999999" )
                MOVE    SPACE       TO  SPA-GMN-I02-TAIINYMD
                                        SPA-NAI-I02-TAIINYMD
+                                       SPA-GMN-I02-TAIINCD
            ELSE
                MOVE    PTNYUINRRK-TAIINYMD
                                    TO  WRK-YMD
@@ -474,17 +498,25 @@
                MOVE    WRK-HENYMDG TO  SPA-GMN-I02-TAIINYMD
                MOVE    PTNYUINRRK-TAIINYMD
                                    TO  SPA-NAI-I02-TAIINYMD
+               MOVE    PTNYUINRRK-TAIINCD
+                                   TO  WRK-KBNCD
+               PERFORM 3101-S5013-SEL-SEC
+               MOVE    SYS-5013-TANNAME
+                                   TO  SPA-GMN-I02-TAIINCD
+               MOVE    PTNYUINRRK-TAIINCD
+                                   TO  SPA-NAI-I02-TAIINCD
            END-IF
       *
       *    入院科
            MOVE    PTNYUINRRK-NYUINKA
                                    TO  WRK-KBNCD
            PERFORM 3101-S1005-SEL-SEC
-           MOVE    WRK-SRYKANAME   TO  SPA-GMN-I02-NYUINKA
+           MOVE    SYS-1005-SRYKANAME
+                                   TO  SPA-GMN-I02-NYUINKA
       *
       *    主治医
            PERFORM 3101-S1010-SEL-SEC
-           MOVE    WRK-DR          TO  SPA-GMN-I02-DR
+           MOVE    SYS-1010-NAME   TO  SPA-GMN-I02-DR
       *
            .
        3101-NEW-NYUINRRK-EDIT-EXT.
@@ -493,8 +525,6 @@
       *    病棟情報検索処理
       *****************************************************************
        3101-S5001-SEL-SEC              SECTION.
-      *
-           MOVE    SPACE           TO  WRK-BTUNAME
       *
            INITIALIZE              SYSKANRI-REC
            MOVE    "5001"          TO  SYS-KANRICD
@@ -510,8 +540,8 @@
            PERFORM 900-TBL-SELECT-SEC
            IF    ( FLG-DBRC        =   ZERO )
                MOVE    MCPDATA-REC TO  SYS-5001-REC
-               MOVE    SYS-5001-BTU-NAME
-                                   TO  WRK-BTUNAME
+           ELSE
+               INITIALIZE              SYS-5001-REC
            END-IF
       *
       *    システム管理マスタクローズ処理
@@ -551,8 +581,6 @@
       *****************************************************************
        3101-S1005-SEL-SEC              SECTION.
       *
-           MOVE    SPACE           TO  WRK-SRYKANAME
-      *
            INITIALIZE  SYSKANRI-REC
            MOVE    "1005"          TO  SYS-KANRICD
            MOVE    WRK-KBNCD       TO  SYS-KBNCD
@@ -563,8 +591,8 @@
            PERFORM 900-TBL-SELECT-SEC
            IF    ( FLG-DBRC    =   ZERO )
                MOVE    MCPDATA-REC TO  SYS-1005-REC
-               MOVE    SYS-1005-SRYKANAME
-                                   TO  WRK-SRYKANAME
+           ELSE
+               INITIALIZE              SYS-1005-REC
            END-IF
       *
            MOVE    "SYSKANRI-KEY10"
@@ -578,8 +606,6 @@
       *    職員情報検索処理
       *****************************************************************
        3101-S1010-SEL-SEC              SECTION.
-      *
-           MOVE    SPACE           TO  WRK-DR
       *
            INITIALIZE              SYSKANRI-REC
            MOVE    "1010"          TO  SYS-KANRICD
@@ -596,8 +622,8 @@
            PERFORM 900-TBL-SELECT-SEC
            IF    ( FLG-DBRC        =   ZERO )
                MOVE    MCPDATA-REC TO  SYS-1010-REC
-               MOVE    SYS-1010-NAME
-                                   TO  WRK-DR
+           ELSE
+               INITIALIZE              SYS-1010-REC
            END-IF
       *
       *    システム管理マスタクローズ処理
@@ -608,6 +634,32 @@
            .
       *
        3101-S1010-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    退院事由情報検索処理
+      *****************************************************************
+       3101-S5013-SEL-SEC              SECTION.
+      *
+           INITIALIZE  SYSKANRI-REC
+           MOVE    "5013"          TO  SYS-KANRICD
+           MOVE    WRK-KBNCD       TO  SYS-KBNCD
+           MOVE    SPA-SYSYMD      TO  ORC-DBYMD
+           MOVE    SYSKANRI-REC    TO  MCPDATA-REC
+           MOVE    "SYSKANRI-KEY10"
+                                   TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC    =   ZERO )
+               MOVE    MCPDATA-REC TO  SYS-5013-REC
+           ELSE
+               INITIALIZE              SYS-5013-REC
+           END-IF
+      *
+           MOVE    "SYSKANRI-KEY10"
+                                   TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+           .
+      *
+       3101-S5013-SEL-EXT.
            EXIT.
       *****************************************************************
       *    他院付加情報検索処理
@@ -802,7 +854,7 @@
            MOVE    PTNYUINRRK-NYUINKA
                                        TO  WRK-KBNCD
            PERFORM 3101-S1005-SEL-SEC
-           MOVE    WRK-SRYKANAME
+           MOVE    SYS-1005-SRYKANAME
                                        TO  SPA-GMN-I02-TNYUINKA (IDX1)
       *
       *    病棟名
@@ -811,7 +863,8 @@
                                        TO  SPA-GMN-I02-TBTUNAME (IDX1)
            ELSE
                PERFORM 3101-S5001-SEL-SEC
-               MOVE    WRK-BTUNAME     TO  SPA-GMN-I02-TBTUNAME (IDX1)
+               MOVE    SYS-5001-BTU-NAME
+                                       TO  SPA-GMN-I02-TBTUNAME (IDX1)
            END-IF
       *
       *    病室番号
@@ -1082,7 +1135,7 @@
       *    診療科
            MOVE    PTBYO-SRYKA TO  WRK-KBNCD
            PERFORM 3101-S1005-SEL-SEC
-           MOVE    WRK-SRYKANAME
+           MOVE    SYS-1005-SRYKANAME
                                    TO  SPA-GMN-I02-TSRYKA (IDX2)
       *
       *    病名
@@ -1178,6 +1231,8 @@
            WHEN    "CLICKED"       ALSO    "B01"
                MOVE   "CHANGE"             TO  MCP-PUTTYPE
                PERFORM 210-BACK
+           WHEN    "CLICKED"       ALSO    "B05"
+               PERFORM 250-I05-SENI-SEC
            END-EVALUATE.
       *
        200-GMNSENI-EXT.
@@ -1252,10 +1307,14 @@
       *
        4103-CMB-NYUGAI-SRH-EXT.
            EXIT.
-     *****************************************************************
+      *****************************************************************
       *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
+      *
+           MOVE    SPA-NAI-I02-TAIINYMD
+                                       TO  SPA-I01-I02-TAIINYMD
+           MOVE    SPA-NAI-I02-TAIINCD TO  SPA-I01-I02-TAIINCD
       *
            MOVE    "I01"               TO  SPA-SAKIPG
            MOVE    "I02"               TO  SPA-MOTOPG
@@ -1270,6 +1329,54 @@
            .
       *
        210-BACK-EXT.
+           EXIT.
+      *****************************************************************
+      *    退院事由設定画面へ遷移処理
+      *****************************************************************
+       250-I05-SENI-SEC                SECTION.
+      *
+           MOVE    SPA-I01-I02-PTID    TO  SPA-I02-I05-PTID
+           MOVE    SPA-I01-I02-PTRRKNUM
+                                       TO  SPA-I02-I05-PTRRKNUM
+           MOVE    SPA-NAI-I02-TAIINYMD
+                                       TO  SPA-I02-I05-TAIINYMD
+           MOVE    SPA-NAI-I02-TAIINCD TO  SPA-I02-I05-TAIINCD
+      *
+           MOVE    SPACE           TO  SPA-MOTOPG
+      *
+           MOVE    SPA-I0KYOUTU    TO  SPA-WORK
+           MOVE    SPA-AREA        TO  SPA-COMMON
+           MOVE    SPA-I0FREE      TO  SPA-FREE
+      *
+           MOVE    "LINK"          TO  MCP-STATUS
+           MOVE    SPACE           TO  MCP-EVENT
+      *
+           CALL    "ORCGI05"      USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+      *
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-FREE        TO  SPA-I0FREE
+           MOVE    SPA-WORK        TO  SPA-I0KYOUTU
+      *
+           MOVE    "TAIINCD"       TO  MCP-WIDGET
+      *
+           MOVE    "I02"           TO  SPA-MOTOPG
+           MOVE    "I05"           TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"           TO  MCP-PUTTYPE
+           MOVE    "I05"           TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE  1             TO  FLG-END
+      *
+           .
+      *
+       250-I05-SENI-EXT.
            EXIT.
       *****************************************************************
       *    自画面編集処理
@@ -1308,6 +1415,8 @@
            MOVE    SPA-GMN-I02-NYUINYMD    TO  I02-NYUINYMD
       *    退院日
            MOVE    SPA-GMN-I02-TAIINYMD    TO  I02-TAIINYMD
+      *    退院事由
+           MOVE    SPA-GMN-I02-TAIINCD     TO  I02-TAIINCD
       *    入院科
            MOVE    SPA-GMN-I02-NYUINKA     TO  I02-NYUINKA
       *    主治医
@@ -1412,10 +1521,22 @@
       *****************************************************************
        500-GMNHEN-STATE-EDIT-SEC       SECTION.
       *
-           MOVE    SPA-GMN-I02-NYUGAI-STT
-                                   TO  I02-NYUGAI-STT
-           MOVE    SPA-GMN-I02-NYUGAI-ITM-STT
-                                   TO  I02-NYUGAI-ITM-STT
+           MOVE    WIDGET-NORMAL   TO  I02-B05-STT
+                                       I02-NYUGAI-STT
+                                       I02-NYUGAI-ITM-STT
+      *
+           IF    ( SPA-NAI-I02-NYURRK-FLG  NOT =   ZERO )
+               MOVE    WIDGET-INSENSITIVE
+                                   TO  I02-B05-STT
+                                       I02-NYUGAI-STT
+                                       I02-NYUGAI-ITM-STT
+           END-IF
+      *
+           IF    ( SPA-NAI-I02-TAIINYMD
+                                       =   SPACE )
+               MOVE    WIDGET-INSENSITIVE
+                                   TO  I02-B05-STT
+           END-IF
       *
            .
        500-GMNHEN-STATE-EDIT-EXT.
@@ -1426,7 +1547,7 @@
        5001-MAPCUR-SEC              SECTION.
       *
            IF    ( SPA-GMN-I02-CUR =   1   )
-               IF    ( SPA-GMN-I02-NYUGAI-STT  =   WIDGET-NORMAL )
+               IF    ( I02-NYUGAI-STT  =   WIDGET-NORMAL )
                    MOVE    "NYUGAI"    TO  MCP-WIDGET
                ELSE
                    MOVE    "B01"       TO  MCP-WIDGET

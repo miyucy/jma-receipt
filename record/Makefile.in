@@ -280,6 +280,8 @@ RECORD_files = \
 	N31ID1.rec \
 	JID2.rec \
 	P015.rec \
+	I05.rec \
+	W29.rec \
 
 DEF_files = \
 	HC01.def \

@@ -228,6 +228,7 @@
            COPY    "W26.INC".
            COPY    "W27.INC".
            COPY    "W28.INC".
+           COPY    "W29.INC".
            COPY    "W98.INC".
            COPY    "W99.INC".
            COPY    "WERR.INC".

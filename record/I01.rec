@@ -99,6 +99,15 @@ I01	{
 			value	varchar(10);
 			state	int;
 		};
+		CMB_TAIINCD	{
+			TAIINCD	{
+				value	varchar(23);
+				state	int;
+			};
+			count	int;
+			item	varchar(23)[50];
+			state	int;
+		};
 		CMB_DR1	{
 			DR1	{
 				value	varchar(29);

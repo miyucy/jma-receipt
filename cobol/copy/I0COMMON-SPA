@@ -39,6 +39,11 @@
            05  SPA-I01-I02-PTID                PIC 9(10).
       *        Æþ±¡ÍúÎòÈÖ¹æ
            05  SPA-I01-I02-PTRRKNUM            PIC 9(03).
+      *        Âà±¡Æü
+           05  SPA-I01-I02-TAIINYMD            PIC X(08).
+      *        Âà±¡»öÍ³
+           05  SPA-I01-I02-TAIINCD             PIC X(02).
+      *
       *      £É£°£±¢«¢ª£É£°£³Á«°Ü¾ðÊó
          03  SPA-I01-I03-AREA.
       *       ½èÍý¶èÊ¬¡Ê£±¡§ÅÐÏ¿¡¿£²¡§½¤Àµ¡¿£³¡§½¤Àµ¡ÊÆüÉÕÊÑ¹¹ÉÔ²Ä¡Ë¡Ë
@@ -67,7 +72,14 @@
            05  SPA-I01-I04-NYUINKA             PIC X(02).
            05  SPA-I01-I04-NYUINYMD            PIC X(08).
            05  SPA-I01-I04-TAIINYMD            PIC X(08).
+           05  SPA-I01-I04-TAIINCD             PIC X(02).
            05  SPA-I01-I04-SKYSTYMD            PIC X(08).
            05  SPA-I01-I04-SKYEDYMD            PIC X(08).
            05  SPA-I01-I04-TORIKESI-FLG        PIC 9(01).
            05  SPA-I01-I04-BTN                 PIC X(03).
+      *      £É£°£²¢«¢ª£É£°£µÁ«°Ü¾ðÊó
+         03  SPA-I02-I05-AREA.
+           05  SPA-I02-I05-PTID                PIC 9(10).
+           05  SPA-I02-I05-PTRRKNUM            PIC 9(03).
+           05  SPA-I02-I05-TAIINYMD            PIC X(08).
+           05  SPA-I02-I05-TAIINCD             PIC X(02).

@@ -101,6 +101,11 @@
       *          Âà±¡Æü
                  11  SPA-GMN-I01-TAIINYMD          PIC X(10).
                  11  SPA-GMN-I01-TAIINYMD-STT      PIC S9(9)   BINARY.
+                 11  SPA-GMN-I01-TAIINCD.
+                   13  SPA-GMN-I01-TAIINCD-CD      PIC X(02).
+                   13                              PIC X(01).
+                   13  SPA-GMN-I01-TAIINCD-NM      PIC X(20).
+                 11  SPA-GMN-I01-TAIINCD-STT       PIC S9(9)   BINARY.
       *          Ã´Åö°å
                  11  SPA-GMN-I01-DR-TBL.
                    13 SPA-GMN-I01-DR-OCC           OCCURS  3.
@@ -286,6 +291,12 @@
                                            OCCURS  5
                                            INDEXED BY  CMB-IDX05.
                    13  SPA-GMN-I01-SHOKAI-ITM-STT  PIC S9(9)   BINARY.
+      *          Âà±¡»öÍ³¥³¥ó¥Ü
+                 11  SPA-GMN-I01-CMB-TAIINCD.
+                   13  SPA-GMN-I01-TAIINCD-CNT      PIC S9(9)   BINARY.
+                   13  SPA-GMN-I01-TAIINCD-ITM      PIC X(23)
+                                                    OCCURS  50.
+                   13  SPA-GMN-I01-TAIINCD-ITM-STT  PIC S9(9)   BINARY.
       *          Ã´Åö°å¥³¥ó¥Ü
                  11  SPA-GMN-I01-CMB-DR.
                    13 SPA-GMN-I01-CMB-DR-OCC       OCCURS  3.
@@ -358,6 +369,8 @@
                  11  SPA-GMN-I02-NYUINYMD          PIC X(9).
       *          Âà±¡Æü
                  11  SPA-GMN-I02-TAIINYMD          PIC X(9).
+      *          Âà±¡»öÍ³
+                 11  SPA-GMN-I02-TAIINCD           PIC X(10).
       *          Æþ±¡²Ê
                  11  SPA-GMN-I02-NYUINKA           PIC X(20).
       *          ¼ç¼£°å
@@ -369,7 +382,6 @@
                      13  SPA-GMN-I02-NYUGAI-CD     PIC X(01).
                      13                            PIC X(01).
                      13  SPA-GMN-I02-NYUGAI-NM     PIC X(06).
-                  11 SPA-GMN-I02-NYUGAI-STT        PIC S9(9)   BINARY.
       *
       *        Å¾²Ê¡ÊÅ¾Åï¡¦Å¾¼¼¡ËÍúÎò
                09  SPA-GMN-I02-TENKALST-AREA.
@@ -421,6 +433,8 @@
                  11  SPA-NAI-I02-NYUINYMD          PIC X(08).
       *          Âà±¡Æü¡ÊÀ¾Îñ¡Ë
                  11  SPA-NAI-I02-TAIINYMD          PIC X(08).
+      *          Âà±¡»öÍ³
+                 11  SPA-NAI-I02-TAIINCD           PIC X(08).
       *        Å¾²Ê¡ÊÅ¾Åï¡¦Å¾¼¼¡ËÍúÎòÆâÉôÎÎ°è
                09  SPA-NAI-I02-TENKALST-AREA.
                  11  SPA-NAI-I02-TENKALST-ITM      OCCURS  100.
@@ -440,7 +454,6 @@
                    13  SPA-GMN-I02-NYUGAI-ITM      PIC X(8)
                                            OCCURS  5
                                            INDEXED BY  CMB-IDX14.
-                   13  SPA-GMN-I02-NYUGAI-ITM-STT  PIC S9(9)   BINARY.
       *  Æþ±¡ÎòºîÀ®²èÌÌ
          03  SPA-I03.
            05  SPA-I03-AREA.
@@ -543,6 +556,8 @@
                        11  SPA-GMN-I04-FTNRATE       PIC X(05).
       *                Æþ±¡²Ê
                        11  SPA-GMN-I04-NYUINKA       PIC X(10).
+      *                Âà±¡»öÍ³
+                       11  SPA-GMN-I04-TAIINCD       PIC X(10).
                    09  SPA-GMN-I04-INPUT-AREA.
       *                È¯¹ÔÆü
                        11  SPA-GMN-I04-HAKYMD        PIC X(09).
@@ -684,6 +699,8 @@
                        11  SPA-NAI-I04-NYUINYMD      PIC X(08).
       *                Âà±¡Æü
                        11  SPA-NAI-I04-TAIINYMD      PIC X(08).
+      *                Âà±¡»öÍ³
+                       11  SPA-NAI-I04-TAIINCD       PIC X(02).
       *                È¯¹ÔÆü
                        11  SPA-NAI-I04-HAKYMD        PIC X(08).
       *                ÀÁµá¥Ç¡¼¥¿
@@ -745,6 +762,24 @@
                            13  SPA-GMN-I04-DR-ITM    PIC X(29)
                                                      OCCURS  50
                                                INDEXED BY  CMB-IDX15.
+         03  SPA-I05.
+           05  SPA-I05-AREA.
+               07  SPA-GMN-I05-CUR                   PIC 9(03).
+               07  SPA-GMN-I05-AREA.
+                   09  SPA-GMN-I05-TAIINCD.
+                       11  SPA-GMN-I05-TAIINCD-CD    PIC X(02).
+                       11                            PIC X(01).
+                       11  SPA-GMN-I05-TAIINCD-NM    PIC X(20).
+      *
+      *            ²èÌÌ¥³¥ó¥Ü¥Ç¡¼¥¿ÎÎ°è
+               07  SPA-GMN-I05-CMB-DAT-AREA.
+      *            Âà±¡»öÍ³
+                   09  SPA-GMN-I05-CMB-TAIINCD.
+                       11  SPA-GMN-I05-TAIINCD-CNT
+                                                     PIC 9(5).
+                       11  SPA-GMN-I05-TAIINCD-ITM
+                                                     PIC X(23)
+                                                     OCCURS  50.
       *  ¼ýÇ¼¥Ç¡¼¥¿
          03  SPA-I0-SYUNOU-TBL.
            05  SPA-I0-SYUNOU-CNT                     PIC 9(05).

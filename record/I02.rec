@@ -1,5 +1,8 @@
 I02	{
 	fixed4	{
+		B05	{
+			state	int;
+		};
 		SHOKAI	{
 			value	varchar(4);
 		};
@@ -17,6 +20,9 @@ I02	{
 		};
 		TAIINYMD	{
 			value	varchar(9);
+		};
+		TAIINCD	{
+			value	varchar(10);
 		};
 		NYUINKA	{
 			value	varchar(20);

@@ -38,6 +38,7 @@
       *  01.00.09    NACL-太田    03.11.14  更新日付編集対応
       *  01.00.10    NACL-太田    04.08.02  定期請求中は退院登録は不可
       *                                     とする
+      *  01.00.11    NACL-太田    04.10.14  退院事由追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -241,6 +242,8 @@
       *
            COPY  "CPSK1041.INC".
       *
+           COPY  "CPSK5013.INC".
+      *
       *    患者マスタ−
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
@@ -407,6 +410,7 @@
            COPY    "I02.INC".
            COPY    "I03.INC".
            COPY    "I04.INC".
+           COPY    "I05.INC".
            COPY    "I0ERR.INC".
            COPY    "I0ID1.INC".
            COPY    "I0ID2.INC".
@@ -741,7 +745,6 @@
                INITIALIZE                  SYS-1005-REC
            END-IF
       *
-      *    システム管理マスタクローズ処理
            MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
       *
@@ -762,6 +765,28 @@
                                        TO  WRK-YMD
            PERFORM 5002-HIZUKE-CHK-SEC
            MOVE    WRK-HENYMDG         TO  SPA-GMN-I04-TAIINYMD
+      *
+      *    退院事由
+           INITIALIZE                      SYS-5013-REC
+           MOVE    "5013"              TO  SYS-5013-KANRICD
+           MOVE    SPA-I01-I04-TAIINCD TO  SYS-5013-KBNCD
+           MOVE    SPA-I01-I04-KJNYMD  TO  ORC-DBYMD
+           MOVE    SYS-5013-REC        TO  MCPDATA-REC
+      *
+           MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC            =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYS-5013-REC
+           ELSE
+               INITIALIZE                  SYS-5013-REC
+           END-IF
+      *
+           MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+           MOVE    SYS-5013-TANNAME    TO  SPA-GMN-I04-TAIINCD
+      *
+           MOVE    SPA-I01-I04-TAIINCD TO  SPA-NAI-I04-TAIINCD
       *
             .
        3100-SYOKI-SET-EXT.
@@ -1268,6 +1293,9 @@
       *    退院日
            MOVE    SPA-GMN-I04-TAIINYMD
                                        TO  I04-TAIINYMD
+      *    退院事由
+           MOVE    SPA-GMN-I04-TAIINCD
+                                       TO  I04-TAIINCD
       *    診療料
            MOVE    SPA-GMN-I04-HKNRYO (01)
                                        TO  WRK-Z9
@@ -2950,6 +2978,9 @@
                    MOVE    SPA-NAI-I04-TAIINYMD
                                        TO  PTNYUINRRK-TAIINYMD
                END-IF
+      *
+               MOVE    SPA-NAI-I04-TAIINCD
+                                       TO  PTNYUINRRK-TAIINCD
       *
                PERFORM 800-MCNDATE-SEC
                MOVE    SMCNDATE-YMD    TO  PTNYUINRRK-UPYMD

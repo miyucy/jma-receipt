@@ -310,16 +310,18 @@
            03  FILLER              PIC X(35)   VALUE
                "5010 定期請求情報".
            03  FILLER              PIC X(35)   VALUE
+               "5013 退院事由情報".
+           03  FILLER              PIC X(35)   VALUE
                "9000 ＣＬＡＩＭ接続情報".
            03  FILLER              PIC X(35)   VALUE
                "9800 排他制御情報".
       *
        01  TBL-KANRICD-N-AREAR         REDEFINES   TBL-KANRICD-N-AREA.
-           03  TBL-KANRICD-N-TBL           OCCURS   10.
+           03  TBL-KANRICD-N-TBL           OCCURS   11.
                05  TBL-KANRICD-N           PIC X(04).
                05  TBL-FILLER              PIC X(01).
                05  TBL-KANRICDMEI-N        PIC X(30).
-       01  TBL-KANRICDN-MAX                PIC 9(04)   VALUE   10.
+       01  TBL-KANRICDN-MAX                PIC 9(04)   VALUE   11.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -357,6 +359,8 @@
            COPY    "CPSK2004.INC".
       *
            COPY    "CPSK1041.INC".
+      *
+           COPY    "CPSK5013.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -419,6 +423,7 @@
            COPY    "W26.INC".
            COPY    "W27.INC".
            COPY    "W28.INC".
+           COPY    "W29.INC".
            COPY    "W98.INC".
            COPY    "W99.INC".
            COPY    "WERR.INC".
@@ -993,6 +998,7 @@
                WHEN    "1026"
                WHEN    "1027"
                WHEN    "1041"
+               WHEN    "5013"
       *---- (01.02.04) LINE ADD START --------------------------------
                WHEN    "3001"
                WHEN    "3002"
@@ -1015,6 +1021,9 @@
                                                    TO  SPA-GMN-MIDASI
                        WHEN    "1041"
                            MOVE    "入金方法コード"
+                                                   TO  SPA-GMN-MIDASI
+                       WHEN    "5013"
+                           MOVE    "退院事由コード"
                                                    TO  SPA-GMN-MIDASI
                        WHEN    OTHER
                            MOVE    "区分コード　　"
@@ -1288,6 +1297,9 @@
                        MOVE    SYSKANRI-REC   TO  SYS-1041-REC
                        MOVE    SYS-1041-NYKN-NAME
                                               TO  SPA-GMN-KBNCDMEIL(IDX)
+                   WHEN    "5013"
+                       MOVE    SYSKANRI-REC   TO  SYS-5013-REC
+                       MOVE    SYS-5013-NAME  TO  SPA-GMN-KBNCDMEIL(IDX)
                END-EVALUATE
       *
                MOVE    "SYSKANRI-KEY6"    TO  ORC-DBPATH
@@ -1348,6 +1360,7 @@
                WHEN    "1026"
                WHEN    "1027"
                WHEN    "1041"
+               WHEN    "5013"
       *---- (01.02.02) LINE ADD START --------------------------------
       *********WHEN    "2003"
       *---- (01.02.02) LINE ADD END   --------------------------------
@@ -1663,6 +1676,8 @@
                    MOVE    "W28"               TO  SPA-SAKIPG
                WHEN    "5010"
                    MOVE    "W23"               TO  SPA-SAKIPG
+               WHEN    "5013" 
+                   MOVE    "W29"               TO  SPA-SAKIPG
                WHEN    "9000"
                    MOVE    "W99"               TO  SPA-SAKIPG
       *        排他 INS ST
@@ -1723,6 +1738,7 @@
                WHEN    "1026"
                WHEN    "1027"
                WHEN    "1041"
+               WHEN    "5013"
       *---- (01.02.04) LINE ADD START --------------------------------
                WHEN    "3001"
                WHEN    "3002"
@@ -1810,6 +1826,7 @@
                WHEN    "1026"
                WHEN    "1027"
                WHEN    "1041"
+               WHEN    "5013"
       *---- (01.02.04) LINE ADD START --------------------------------
                WHEN    "3001"
                WHEN    "3002"

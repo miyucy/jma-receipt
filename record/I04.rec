@@ -31,6 +31,9 @@ I04	{
 		SRYKA	{
 			value	varchar(10);
 		};
+		TAIINCD	{
+			value	varchar(10);
+		};
 		HAKYMD	{
 			value	varchar(9);
 		};

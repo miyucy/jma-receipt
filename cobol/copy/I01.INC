@@ -72,6 +72,13 @@
               04  I01-LBL-SHONYUINYMD              PIC X(16).
               04  I01-TAIINYMD                     PIC X(10).
               04  I01-TAIINYMD-STT                 PIC S9(9)   BINARY.
+              04  I01-CMB-TAIINCD.
+                05  I01-TAIINCD                    PIC X(23).
+                05  I01-TAIINCD-STT                PIC S9(9)   BINARY.
+                05  I01-TAIINCD-CNT                PIC S9(9)   BINARY.
+                05  I01-TAIINCD-ITM                PIC X(23)
+                                                   OCCURS  50.
+                05  I01-TAIINCD-ITM-STT            PIC S9(9)   BINARY.
               04  I01-CMB-DR-TBL.
                 05 I01-CMB-DR-OCC                  OCCURS 3.
                   06  I01-DR                       PIC X(29).

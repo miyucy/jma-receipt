@@ -46,6 +46,8 @@
                 04  I04-VALUE   PIC X(8).
               03  I04-SRYKA.
                 04  I04-VALUE   PIC X(10).
+              03  I04-TAIINCD.
+                04  I04-VALUE   PIC X(10).
               03  I04-HAKYMD.
                 04  I04-VALUE   PIC X(9).
               03  I04-NYUINYMD.

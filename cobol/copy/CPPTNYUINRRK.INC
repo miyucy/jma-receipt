@@ -47,6 +47,8 @@
            03  PTNYUINRRK-NYUINYMD                PIC  X(08).
       *轉情ゥ
            03  PTNYUINRRK-TAIINYMD                PIC  X(08).
+      *轉情儀苀
+           03  PTNYUINRRK-TAIINCD                 PIC  X(02).
       *た爛ェ情恔嗉坌﹋ㄠ“啣恓窗楮▼ㄡ“匟麟▼ㄢ“匟撮﹌
            03  PTNYUINRRK-TOKUTEI-KBN             PIC  X(01).
       *た爛ェ情恔

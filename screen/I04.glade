@@ -2199,22 +2199,6 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>LBLTAIINKEISAN</name>
-      <x>840</x>
-      <y>35</y>
-      <width>150</width>
-      <height>25</height>
-      <label>¡öÂà±¡ºÆ·×»»¡ö</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkPandaCombo</class>
       <name>CMB_TAIPRTOUT</name>
       <x>448</x>
@@ -2439,6 +2423,37 @@
       <width>67</width>
       <height>24</height>
       <label>Æþ¶âÊýË¡</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>TAIINCD</name>
+      <x>800</x>
+      <y>8</y>
+      <width>88</width>
+      <height>24</height>
+      <editable>False</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>10</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLTAIINKEISAN</name>
+      <x>840</x>
+      <y>35</y>
+      <width>150</width>
+      <height>25</height>
+      <label>¡öÂà±¡ºÆ·×»»¡ö</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>
