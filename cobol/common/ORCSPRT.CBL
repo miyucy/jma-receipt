@@ -28,20 +28,23 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    02/10/10  サイト区分追加
+      *  01.00.02    NACL-藤原    03/03/03  印刷済フラグ追加
+      *  01.01.02    NACL-藤原    03/03/04  印刷ＤＢへのプリンタ名追加による
+      *                                     修正
       *****************************************************************
-001200*
-001300 ENVIRONMENT             DIVISION.
-001400 CONFIGURATION           SECTION.
-001500 INPUT-OUTPUT            SECTION.
-001600 FILE-CONTROL.
-007000 DATA                    DIVISION.
-010200 WORKING-STORAGE         SECTION.
       *
-018000*    フラグ領域
+       ENVIRONMENT             DIVISION.
+       CONFIGURATION           SECTION.
+       INPUT-OUTPUT            SECTION.
+       FILE-CONTROL.
+       DATA                    DIVISION.
+       WORKING-STORAGE         SECTION.
       *
-018100 01  FLG-AREA.
+      *    フラグ領域
+      *
+       01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
-018900     03  FLG-PRTKANRI            PIC 9(01).
+           03  FLG-PRTKANRI            PIC 9(01).
            03  FLG-PRTDATA             PIC 9(01). 
       *
       *****************************************************************
@@ -164,7 +167,11 @@
                MOVE    SPRT-SKYYMD         TO  PRTKANRI-SKYYMD
                MOVE    SPRT-PRIORITY       TO  PRTKANRI-PRIORITY
                MOVE    1                   TO  PRTKANRI-PAGE
-               MOVE    SPACE               TO  PRTKANRI-PRTFLG
+               IF      SPRT-PRTFLG         =   "1"
+                   MOVE    "1"                 TO  PRTKANRI-PRTFLG
+               ELSE
+                   MOVE    SPACE               TO  PRTKANRI-PRTFLG
+               END-IF
                MOVE    SPRT-TITLE          TO  PRTKANRI-TITLE
                MOVE    SPRT-TERMID         TO  PRTKANRI-TERMID
                MOVE    SPRT-OPID           TO  PRTKANRI-OPID
@@ -224,12 +231,17 @@
            MOVE    SPRT-PTID           TO  PRTDATA-PTID 
            MOVE    SPRT-PRIORITY       TO  PRTDATA-PRIORITY
            MOVE    PRTKANRI-PAGE       TO  PRTDATA-PAGE
-           MOVE    SPACE               TO  PRTDATA-PRTFLG
+           IF      SPRT-PRTFLG         =   "1"
+               MOVE    "1"                 TO  PRTDATA-PRTFLG
+           ELSE
+               MOVE    SPACE               TO  PRTDATA-PRTFLG
+           END-IF
            IF      SPRT-SITEKBN        =   SPACE
                MOVE    "0"                 TO  PRTDATA-SITEKBN
            ELSE    
                MOVE    SPRT-SITEKBN        TO  PRTDATA-SITEKBN
            END-IF    
+           MOVE    SPRT-PRTNM          TO  PRTDATA-PRTNM
            MOVE    SPRT-PRTDATA        TO  PRTDATA-PRTDATA
       *
            MOVE    PRTDATA-REC         TO  MCPDATA-REC
