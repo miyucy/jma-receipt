@@ -645,6 +645,9 @@
            END-IF
       *
       *
+      *??
+           DISPLAY "ORCR0010 FILE OPEN START"
+      *??
            OPEN    OUTPUT              RECE011-FILE
            CLOSE                       RECE011-FILE
       *
@@ -654,6 +657,9 @@
            CLOSE                       RECE011X-FILE
       *
            OPEN    I-O                 RECE01X-FILE  
+      *??
+           DISPLAY "ORCR0010 FILE OPEN END"
+      *??
            .
        100-INIT-EXT.
            EXIT.
