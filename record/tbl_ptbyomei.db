@@ -350,6 +350,7 @@ path	key16	{
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
 			AND   SRYYMD      <=  :SRYYMD
+			AND   NYUGAIKBN   IN (' ',:NYUGAIKBN)
 			ORDER BY SRYYMD,RENNUM 
 		;
 	};
@@ -363,6 +364,7 @@ path	key17	{
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   SRYYMD      <=  :SRYYMD
+			AND   NYUGAIKBN   IN (' ',:NYUGAIKBN)
 			ORDER  BY  PTID,SRYYMD,SRYKA,RENNUM
 		;
 	};
@@ -423,8 +425,22 @@ path	key20	{
 			WHERE   HOSPID    =   :HOSPID
 			AND     PTID      =   :PTID
 			AND     SRYYMD    =   :SRYYMD
-			AND     BYOMEI       :BYOMEI
+			AND     BYOMEI    =  :BYOMEI
 			ORDER  BY  SRYKA
+		;
+	};
+};
+
+path	key21	{ 	
+	DBSELECT	{
+		DECLARE tbl_ptbyomei_key21_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptbyomei
+			WHERE   HOSPID    =   :HOSPID
+			AND     PTID      =   :PTID
+			AND     SRYKA     =   :SRYKA
+			AND   NYUGAIKBN   IN (' ',:NYUGAIKBN)
+			AND     BYOMEI    =   :BYOMEI
 		;
 	};
 };
