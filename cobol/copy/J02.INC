@@ -69,10 +69,10 @@
                         PIC X(16)   OCCURS  41 TIMES.
               03  J02-SRYKBNCOMB.
                 04  J02-SRYKBN.
-                  05  J02-VALUE   PIC X(9).
+                  05  J02-VALUE   PIC X(19).
                 04  J02-SRYKBN-COUNT   PIC S9(9)   BINARY.
                 04  J02-SRYKBN-ITEM
-                        PIC X(9)    OCCURS  30 TIMES.
+                        PIC X(19)    OCCURS  30 TIMES.
               03  J02-NYUINKIKAN.
                 04  J02-VALUE   PIC X(30).
               03  J02-HHKNCOMBICOMB.

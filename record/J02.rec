@@ -209,10 +209,10 @@ J02	{
 		};
 		SRYKBNCOMB	{
 			SRYKBN	{
-				value	varchar(9);
+				value	varchar(19);
 			};
 			count	int;
-			item	varchar(9)[30];
+			item	varchar(19)[30];
 		};
 		NYUINKIKAN	{
 			value	varchar(30);
