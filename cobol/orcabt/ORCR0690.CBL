@@ -27,9 +27,11 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.00.01    NACL-藤原    02.01.20  未実施減算のときの▲表示
+      *  01.00.01    NACL-藤原    03.01.20  未実施減算のときの▲表示
       *                                     検査の回数の編集
       *                                     画像診断のフィルムを手技に表示
+      *  01.00.02    NACL-藤原    03.01.28  検査のとき加算は検査数の対象と
+      *                                     しない
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -353,6 +355,8 @@
       *            漢字有効桁数/漢字名称
                    07  TBL-YUKOKETA        PIC  9(02).
                    07  TBL-NAME            PIC  X(200).
+      *        データ区分情報
+               05  TBL-DATAKBN             PIC  9(01).
       *
       *     検査の項目数用
         01  WRK-KOUMOKUSU               PIC 9(02). 
@@ -409,6 +413,9 @@
       *                漢字有効桁数/漢字名称
                        09  TBL-ZAIW-YUKOKETA        PIC  9(02).
                        09  TBL-ZAIW-NAME            PIC  X(200).
+      *                データ区分情報
+                   07  TBL-ZAIW-DATAKBNINF.
+                       09  TBL-ZAIW-DATAKBN         PIC  9(01).
       *
        01  TBL-ZAI-MAX         PIC  9(03)  VALUE   100.              
       *
@@ -981,6 +988,8 @@
                                      TO  TBL-ZAIW-SRYACTINF (IDY IDZ)
                        MOVE    RECE65-NAMEINF   (IDX)
                                      TO  TBL-ZAIW-NAMEINF   (IDY IDZ)
+                       MOVE    RECE65-DATAKBNINF(IDX)
+                                     TO  TBL-ZAIW-DATAKBNINF(IDY IDZ)
                        IF      RECE65-SRYCD (IDX) (1:1)
                                                  =   "1"
                        AND     RECE64-SRYKBN     =   "70"
@@ -1367,6 +1376,7 @@
                                              TO  TBL-TANIMOJISU(IDX)
                MOVE    TBL-ZAIW-TANINAME(3 IDX)  TO  TBL-TANINAME(IDX)
                MOVE    TBL-ZAIW-SRYCD   (3 IDX)  TO  TBL-SRYCD   (IDX)
+               MOVE    TBL-ZAIW-DATAKBN (3 IDX)  TO  TBL-DATAKBN (IDX)
                IF      TBL-YUKOKETA (IDX)      =   ZERO
                    PERFORM VARYING IDZ FROM   200 BY  -1
                            UNTIL   IDZ <      1
@@ -1410,6 +1420,8 @@
                                     TBL-ZAIW-TANINAME(3 IDZ)
                    MOVE    TBL-SRYCD   (IDX)   TO
                                     TBL-ZAIW-SRYCD   (3 IDZ)
+                   MOVE    TBL-DATAKBN (IDX)   TO
+                                    TBL-ZAIW-DATAKBN (3 IDZ)
                    ADD     1                   TO  IDX                     
                ELSE
                    IF      IDX             =   1
@@ -1466,7 +1478,9 @@
                        END-IF
       *                 
                        ADD     1           TO  IDX
-                       ADD     1           TO  WRK-KOUMOKUSU 
+                       IF      TBL-DATAKBN (IDX)   NOT =   "2"
+                           ADD     1           TO  WRK-KOUMOKUSU 
+                       END-IF
                    END-PERFORM                            
                    ADD     1               TO  WRK-ZAIWMAX (3)
                    MOVE    WRK-ZAIWMAX (3) TO  IDZ
@@ -2361,7 +2375,7 @@
                IF  STS-RECE66        NOT =   ZERO
                    DISPLAY "*** ORCR0690 RECE66 WRITE ERR  ***"
                    MOVE   WRK-TBLMAX     TO  IDY
-      *???             MOVE    2             TO  SPA-STS                       
+      ***          MOVE    2             TO  SPA-STS                       
                ELSE
                    ADD     1             TO  CNT-RECE66
                END-IF    
