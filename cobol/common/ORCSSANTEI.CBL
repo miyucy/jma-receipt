@@ -181,6 +181,7 @@
       *
            IF      SSANTEI-HKNKBN      =   SPACE
                MOVE    SPA-HKNKBN      TO  SSANTEI-HKNKBN
+               MOVE    SPA-HKNCOMBINUM TO  SSANTEI-HKNCOMBINUM
            END-IF
       *
            EVALUATE    SSANTEI-SYORI
