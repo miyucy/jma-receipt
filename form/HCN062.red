@@ -43,22 +43,22 @@
         </appinfo>
       </element>
     </element>
-    <element name="RJNFTNJANUM" occurs="8">
-      <element name="RJNFTNJANUMS" occurs="1">
+    <element name="RJNFTNJANUM" occurs="1">
+      <element name="RJNFTNJANUMS" occurs="8">
         <appinfo>
           <embed object="string" type="X" length="1"/>
         </appinfo>
       </element>
     </element>
-    <element name="KOHFTNJANUM1" occurs="8">
-      <element name="KOHFTNJANUM1S" occurs="1">
+    <element name="KOHFTNJANUM1" occurs="1">
+      <element name="KOHFTNJANUM1S" occurs="8">
         <appinfo>
           <embed object="string" type="X" length="1"/>
         </appinfo>
       </element>
     </element>
-    <element name="KOHFTNJANUM2" occurs="8">
-      <element name="KOHFTNJANUM2S" occurs="1">
+    <element name="KOHFTNJANUM2" occurs="1">
+      <element name="KOHFTNJANUM2S" occurs="8">
         <appinfo>
           <embed object="string" type="X" length="1"/>
         </appinfo>
@@ -74,8 +74,8 @@
         <embed object="string" type="X" length="20"/>
       </appinfo>
     </element>
-    <element name="HKNJANUM" occurs="8">
-      <element name="HKNJANUMS" occurs="1">
+    <element name="HKNJANUM" occurs="1">
+      <element name="HKNJANUMS" occurs="8">
         <appinfo>
           <embed object="string" type="X" length="1"/>
         </appinfo>
@@ -86,22 +86,22 @@
         <embed object="string" type="X" length="8"/>
       </appinfo>
     </element>
-    <element name="RJNJKYSNUM" occurs="7">
-      <element name="RJNJKYSNUMS" occurs="1">
+    <element name="RJNJKYSNUM" occurs="1">
+      <element name="RJNJKYSNUMS" occurs="7">
         <appinfo>
           <embed object="string" type="X" length="1"/>
         </appinfo>
       </element>
     </element>
-    <element name="KOHJKYSNUM1" occurs="7">
-      <element name="KOHJKYSNUM1S" occurs="1">
+    <element name="KOHJKYSNUM1" occurs="1">
+      <element name="KOHJKYSNUM1S" occurs="7">
         <appinfo>
           <embed object="string" type="X" length="1"/>
         </appinfo>
       </element>
     </element>
-    <element name="KOHJKYSNUM2" occurs="7">
-      <element name="KOHJKYSNUM2S" occurs="1">
+    <element name="KOHJKYSNUM2" occurs="1">
+      <element name="KOHJKYSNUM2S" occurs="7">
         <appinfo>
           <embed object="string" type="X" length="1"/>
         </appinfo>
@@ -1951,7 +1951,7 @@
         <rectangle val="2,2.58832;2.303,3.08832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#KOHFTNJANUM1[0].KOHFTNJANUM1S#</string>
+        <string>#KOHFTNJANUM1.KOHFTNJANUM1S[0]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -1993,7 +1993,7 @@
         <rectangle val="13.2,2.18832;13.503,2.68832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#HKNJANUM[0].HKNJANUMS#</string>
+        <string>#HKNJANUM.HKNJANUMS[0]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -2077,7 +2077,7 @@
         <rectangle val="7.1,2.18832;7.403,2.68832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#RJNJKYSNUM[0].RJNJKYSNUMS#</string>
+        <string>#RJNJKYSNUM.RJNJKYSNUMS[0]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -2119,7 +2119,7 @@
         <rectangle val="7.1,2.58832;7.403,3.08832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#KOHJKYSNUM1[0].KOHJKYSNUM1S#</string>
+        <string>#KOHJKYSNUM1.KOHJKYSNUM1S[0]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -2161,7 +2161,7 @@
         <rectangle val="7.1,2.98832;7.403,3.48832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#KOHJKYSNUM2[0].KOHJKYSNUM2S#</string>
+        <string>#KOHJKYSNUM2.KOHJKYSNUM2S[0]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -11863,7 +11863,7 @@
         <rectangle val="2,2.18832;2.303,2.68832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#RJNFTNJANUM[0].RJNFTNJANUMS#</string>
+        <string>#RJNFTNJANUM.RJNFTNJANUMS[0]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -11905,7 +11905,7 @@
         <rectangle val="2.5,2.18832;2.803,2.68832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#RJNFTNJANUM[1].RJNFTNJANUMS#</string>
+        <string>#RJNFTNJANUM.RJNFTNJANUMS[1]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -11947,7 +11947,7 @@
         <rectangle val="3,2.18832;3.303,2.68832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#RJNFTNJANUM[2].RJNFTNJANUMS#</string>
+        <string>#RJNFTNJANUM.RJNFTNJANUMS[2]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -11989,7 +11989,7 @@
         <rectangle val="3.5,2.18832;3.803,2.68832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#RJNFTNJANUM[3].RJNFTNJANUMS#</string>
+        <string>#RJNFTNJANUM.RJNFTNJANUMS[3]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -12031,7 +12031,7 @@
         <rectangle val="4,2.18832;4.303,2.68832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#RJNFTNJANUM[4].RJNFTNJANUMS#</string>
+        <string>#RJNFTNJANUM.RJNFTNJANUMS[4]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -12073,7 +12073,7 @@
         <rectangle val="4.5,2.18832;4.803,2.68832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#RJNFTNJANUM[5].RJNFTNJANUMS#</string>
+        <string>#RJNFTNJANUM.RJNFTNJANUMS[5]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -12115,7 +12115,7 @@
         <rectangle val="5,2.18832;5.303,2.68832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#RJNFTNJANUM[6].RJNFTNJANUMS#</string>
+        <string>#RJNFTNJANUM.RJNFTNJANUMS[6]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -12157,7 +12157,7 @@
         <rectangle val="5.5,2.18832;5.803,2.68832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#RJNFTNJANUM[7].RJNFTNJANUMS#</string>
+        <string>#RJNFTNJANUM.RJNFTNJANUMS[7]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -12199,7 +12199,7 @@
         <rectangle val="2.5,2.58832;2.803,3.08832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#KOHFTNJANUM1[1].KOHFTNJANUM1S#</string>
+        <string>#KOHFTNJANUM1.KOHFTNJANUM1S[1]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -12241,7 +12241,7 @@
         <rectangle val="3,2.58832;3.303,3.08832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#KOHFTNJANUM1[2].KOHFTNJANUM1S#</string>
+        <string>#KOHFTNJANUM1.KOHFTNJANUM1S[2]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -12283,7 +12283,7 @@
         <rectangle val="3.5,2.58832;3.803,3.08832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#KOHFTNJANUM1[3].KOHFTNJANUM1S#</string>
+        <string>#KOHFTNJANUM1.KOHFTNJANUM1S[3]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -12325,7 +12325,7 @@
         <rectangle val="4,2.58832;4.303,3.08832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#KOHFTNJANUM1[4].KOHFTNJANUM1S#</string>
+        <string>#KOHFTNJANUM1.KOHFTNJANUM1S[4]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -12367,7 +12367,7 @@
         <rectangle val="4.5,2.58832;4.803,3.08832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#KOHFTNJANUM1[5].KOHFTNJANUM1S#</string>
+        <string>#KOHFTNJANUM1.KOHFTNJANUM1S[5]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -12409,7 +12409,7 @@
         <rectangle val="5,2.58832;5.303,3.08832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#KOHFTNJANUM1[6].KOHFTNJANUM1S#</string>
+        <string>#KOHFTNJANUM1.KOHFTNJANUM1S[6]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -12451,7 +12451,7 @@
         <rectangle val="5.5,2.58832;5.803,3.08832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#KOHFTNJANUM1[7].KOHFTNJANUM1S#</string>
+        <string>#KOHFTNJANUM1.KOHFTNJANUM1S[7]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -12493,7 +12493,7 @@
         <rectangle val="2,2.98832;2.303,3.48832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#KOHFTNJANUM2[0].KOHFTNJANUM2S#</string>
+        <string>#KOHFTNJANUM2.KOHFTNJANUM2S[0]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -12535,7 +12535,7 @@
         <rectangle val="2.5,2.98832;2.803,3.48832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#KOHFTNJANUM2[1].KOHFTNJANUM2S#</string>
+        <string>#KOHFTNJANUM2.KOHFTNJANUM2S[1]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -12577,7 +12577,7 @@
         <rectangle val="3,2.98832;3.303,3.48832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#KOHFTNJANUM2[2].KOHFTNJANUM2S#</string>
+        <string>#KOHFTNJANUM2.KOHFTNJANUM2S[2]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -12619,7 +12619,7 @@
         <rectangle val="3.5,2.98832;3.803,3.48832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#KOHFTNJANUM2[3].KOHFTNJANUM2S#</string>
+        <string>#KOHFTNJANUM2.KOHFTNJANUM2S[3]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -12661,7 +12661,7 @@
         <rectangle val="4,2.98832;4.303,3.48832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#KOHFTNJANUM2[4].KOHFTNJANUM2S#</string>
+        <string>#KOHFTNJANUM2.KOHFTNJANUM2S[4]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -12703,7 +12703,7 @@
         <rectangle val="4.5,2.98832;4.803,3.48832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#KOHFTNJANUM2[5].KOHFTNJANUM2S#</string>
+        <string>#KOHFTNJANUM2.KOHFTNJANUM2S[5]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -12745,7 +12745,7 @@
         <rectangle val="5,2.98832;5.303,3.48832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#KOHFTNJANUM2[6].KOHFTNJANUM2S#</string>
+        <string>#KOHFTNJANUM2.KOHFTNJANUM2S[6]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -12787,7 +12787,7 @@
         <rectangle val="5.5,2.98832;5.803,3.48832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#KOHFTNJANUM2[7].KOHFTNJANUM2S#</string>
+        <string>#KOHFTNJANUM2.KOHFTNJANUM2S[7]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -12829,7 +12829,7 @@
         <rectangle val="7.6,2.18832;7.903,2.68832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#RJNJKYSNUM[1].RJNJKYSNUMS#</string>
+        <string>#RJNJKYSNUM.RJNJKYSNUMS[1]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -12871,7 +12871,7 @@
         <rectangle val="8.1,2.18832;8.403,2.68832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#RJNJKYSNUM[2].RJNJKYSNUMS#</string>
+        <string>#RJNJKYSNUM.RJNJKYSNUMS[2]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -12913,7 +12913,7 @@
         <rectangle val="8.6,2.18832;8.903,2.68832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#RJNJKYSNUM[3].RJNJKYSNUMS#</string>
+        <string>#RJNJKYSNUM.RJNJKYSNUMS[3]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -12955,7 +12955,7 @@
         <rectangle val="9.1,2.18832;9.403,2.68832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#RJNJKYSNUM[4].RJNJKYSNUMS#</string>
+        <string>#RJNJKYSNUM.RJNJKYSNUMS[4]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -12997,7 +12997,7 @@
         <rectangle val="9.6,2.18832;9.903,2.68832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#RJNJKYSNUM[5].RJNJKYSNUMS#</string>
+        <string>#RJNJKYSNUM.RJNJKYSNUMS[5]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -13039,7 +13039,7 @@
         <rectangle val="10.1,2.18832;10.403,2.68832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#RJNJKYSNUM[6].RJNJKYSNUMS#</string>
+        <string>#RJNJKYSNUM.RJNJKYSNUMS[6]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -13081,7 +13081,7 @@
         <rectangle val="7.6,2.58832;7.903,3.08832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#KOHJKYSNUM1[1].KOHJKYSNUM1S#</string>
+        <string>#KOHJKYSNUM1.KOHJKYSNUM1S[1]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -13123,7 +13123,7 @@
         <rectangle val="8.1,2.58832;8.403,3.08832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#KOHJKYSNUM1[2].KOHJKYSNUM1S#</string>
+        <string>#KOHJKYSNUM1.KOHJKYSNUM1S[2]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -13165,7 +13165,7 @@
         <rectangle val="8.6,2.58832;8.903,3.08832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#KOHJKYSNUM1[3].KOHJKYSNUM1S#</string>
+        <string>#KOHJKYSNUM1.KOHJKYSNUM1S[3]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -13207,7 +13207,7 @@
         <rectangle val="9.1,2.58832;9.403,3.08832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#KOHJKYSNUM1[4].KOHJKYSNUM1S#</string>
+        <string>#KOHJKYSNUM1.KOHJKYSNUM1S[4]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -13249,7 +13249,7 @@
         <rectangle val="9.6,2.58832;9.903,3.08832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#KOHJKYSNUM1[5].KOHJKYSNUM1S#</string>
+        <string>#KOHJKYSNUM1.KOHJKYSNUM1S[5]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -13291,7 +13291,7 @@
         <rectangle val="10.1,2.58832;10.403,3.08832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#KOHJKYSNUM1[6].KOHJKYSNUM1S#</string>
+        <string>#KOHJKYSNUM1.KOHJKYSNUM1S[6]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -13333,7 +13333,7 @@
         <rectangle val="7.6,2.98832;7.903,3.48832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#KOHJKYSNUM2[1].KOHJKYSNUM2S#</string>
+        <string>#KOHJKYSNUM2.KOHJKYSNUM2S[1]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -13375,7 +13375,7 @@
         <rectangle val="8.1,2.98832;8.403,3.48832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#KOHJKYSNUM2[2].KOHJKYSNUM2S#</string>
+        <string>#KOHJKYSNUM2.KOHJKYSNUM2S[2]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -13417,7 +13417,7 @@
         <rectangle val="8.6,2.98832;8.903,3.48832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#KOHJKYSNUM2[3].KOHJKYSNUM2S#</string>
+        <string>#KOHJKYSNUM2.KOHJKYSNUM2S[3]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -13459,7 +13459,7 @@
         <rectangle val="9.1,2.98832;9.403,3.48832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#KOHJKYSNUM2[4].KOHJKYSNUM2S#</string>
+        <string>#KOHJKYSNUM2.KOHJKYSNUM2S[4]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -13501,7 +13501,7 @@
         <rectangle val="9.6,2.98832;9.903,3.48832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#KOHJKYSNUM2[5].KOHJKYSNUM2S#</string>
+        <string>#KOHJKYSNUM2.KOHJKYSNUM2S[5]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -13543,7 +13543,7 @@
         <rectangle val="10.1,2.98832;10.403,3.48832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#KOHJKYSNUM2[6].KOHJKYSNUM2S#</string>
+        <string>#KOHJKYSNUM2.KOHJKYSNUM2S[6]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -13585,7 +13585,7 @@
         <rectangle val="13.8,2.18832;14.103,2.68832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#HKNJANUM[1].HKNJANUMS#</string>
+        <string>#HKNJANUM.HKNJANUMS[1]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -13627,7 +13627,7 @@
         <rectangle val="14.4,2.18832;14.703,2.68832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#HKNJANUM[2].HKNJANUMS#</string>
+        <string>#HKNJANUM.HKNJANUMS[2]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -13669,7 +13669,7 @@
         <rectangle val="15,2.18832;15.303,2.68832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#HKNJANUM[3].HKNJANUMS#</string>
+        <string>#HKNJANUM.HKNJANUMS[3]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -13711,7 +13711,7 @@
         <rectangle val="15.6,2.18832;15.903,2.68832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#HKNJANUM[4].HKNJANUMS#</string>
+        <string>#HKNJANUM.HKNJANUMS[4]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -13753,7 +13753,7 @@
         <rectangle val="16.15,2.18832;16.453,2.68832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#HKNJANUM[5].HKNJANUMS#</string>
+        <string>#HKNJANUM.HKNJANUMS[5]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -13795,7 +13795,7 @@
         <rectangle val="16.75,2.18832;17.053,2.68832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#HKNJANUM[6].HKNJANUMS#</string>
+        <string>#HKNJANUM.HKNJANUMS[6]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -13837,7 +13837,7 @@
         <rectangle val="17.35,2.18832;17.653,2.68832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#HKNJANUM[7].HKNJANUMS#</string>
+        <string>#HKNJANUM.HKNJANUMS[7]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>

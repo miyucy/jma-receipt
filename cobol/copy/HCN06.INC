@@ -80,3 +80,6 @@
             02  HCN06-SYOTOTALTEN   PIC X(7)    OCCURS  3 TIMES.
             02  HCN06-SYOFTNMONEY   PIC X(8)    OCCURS  3 TIMES.
             02  HCN06-SYOFTNMONEYSAI    PIC X(11).
+            02  HCN06-TENSUN    PIC X(14)       OCCURS  10 TIMES.
+            02  HCN06-KOHTENN   PIC X(14)       OCCURS  10 TIMES.
+            02  HCN06-KHNTENN   PIC X(14)       OCCURS  9 TIMES.
