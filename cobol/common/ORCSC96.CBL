@@ -389,6 +389,9 @@
                                        TO  SPA-ERRMSG
                    MOVE    "２回目以降のコードを入力して下さい"
                                        TO  SPA-ERRMSG(33:)
+               WHEN    "0079"
+                   MOVE    "撮影料がありません。"
+                                       TO  SPA-ERRMSG
                WHEN    "0080"
                    MOVE    "名称は全角で入力して下さい"
                                        TO  SPA-ERRMSG

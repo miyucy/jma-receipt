@@ -1135,6 +1135,15 @@
       *****************************************************************
        10015-SIDAN-DOUJI-CHK-SEC           SECTION.
       *
+      *    »£±ÆÎÁ¤¬¤¢¤ë¤³¤È
+           IF      FLG-SINDAN          =   1
+               CONTINUE
+           ELSE
+               MOVE    "1"             TO  WRK-COM-CUR(IDX-Z)
+               MOVE    "0079"          TO  WRK-ERRCD
+               GO      TO      10015-SIDAN-DOUJI-CHK-EXT
+           END-IF
+      *
            EVALUATE    WRK-COM-INPUTCD (IDX-Z)
                WHEN    "170000730"
       *            ÆÃ¼ì»£±Æ¤Î¼Ì¿¿¿ÇÃÇ¡ÊÆ±»þ¡Ë
@@ -1228,6 +1237,7 @@
       *****MOVE    1                   TO  IDX-HOZ
            PERFORM 10001-XSEN-SINDAN-SEC
       *
+           MOVE    ZERO                TO  IDX-NYU
            MOVE    ZERO                TO  IDX-SAT
            MOVE    ZERO                TO  IDX-GEN
            MOVE    ZERO                TO  LNK-SC90-BUNGSU
@@ -1305,6 +1315,10 @@
                MOVE    IDX-SAT         TO  IDX-SAT2
            END-IF
       *
+      *    ÆýÍÄ»ù²Ã»»¤¢¤ê
+           IF      IDX-NYU             >   ZERO
+               MOVE    IDX-NYU         TO  IDX-SAT2
+           END-IF
       *
            MOVE    IDX-SAT2            TO  IDX-S
            PERFORM 100012-SINDAN-SET-SEC
