@@ -144,11 +144,13 @@
                            11  SPA-COM-CHKFLG        PIC X(01).
       *                    時間加算フラグ
                            11  SPA-COM-TIMEFLG       PIC 9(01).
+      *                    自動発生済フラグ
+                           11  SPA-COM-AUTOFLG       PIC X(01).
       *                計算チェック済フラグ（毎回クリア）
                        09  SPA-COM-SANFLG        PIC 9(01).
-      *                逓減対象有無（１：逓減有り）
+      *                逓減検査対象有無（１：逓減有り）
                        09  SPA-COM-TEIGEN-FLG    PIC  9(01).
-      *                逓減対象チェック済
+      *                逓減検査対象チェック済
                        09  SPA-COM-TEIGEN-CHK    PIC  9(01).
       *                労災区分（労災用のコード）
                        09  SPA-COM-RSIKBN        PIC  9(01).
