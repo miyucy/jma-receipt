@@ -36,6 +36,8 @@
       *                                     外来管理加算を削除する
       * 02.00.03     MCC-多々納   02/04/10  労災用追加
       * 02.00.04     NACL-多々納  02/08/09  労災チェック追加
+      * 02.00.05     NACL-多々納  02/10/02  注加算チェックの追加
+      *                                     （すべての診区のチェック）
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -114,6 +116,8 @@
            03  IDX-2               PIC 9(02).
       *    診察料の位置
            03  IDX-SINSATU          PIC 9(04).
+      *    注加算位置
+           03  IDX-CHU              PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -2514,6 +2518,19 @@
                IF      WRK-COM-INPUTCD(IDX-Z) =   "099999902"
                    MOVE    1               TO  FLG-TAHOKEN
                END-IF
+      *
+      *        注加算コードのチェック（すべての診区で行う）
+               IF      (WRK-COM-SRYKBN     (IDX-Z)
+                                           =   "95" OR  "96"
+                                                    OR  "99")   OR
+                       (WRK-COM-CHUKSNCD   (IDX-Z)
+                                           =   SPACE  OR  ZERO )  OR
+                       (WRK-COM-CHUKSNTUBAN(IDX-Z)
+                                           =   SPACE  OR  ZERO)
+                   CONTINUE
+               ELSE
+                   PERFORM 290-CHUKSNCHK-SEC
+               END-IF
            END-PERFORM
       *
            IF      SPA-ERRCD       NOT =   SPACE
@@ -3286,6 +3303,53 @@
       *
            .
        20014-RSISAISIN-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    注加算コードのチェック処理
+      *****************************************************************
+       290-CHUKSNCHK-SEC                SECTION.
+      *
+           MOVE    ZERO                TO  IDX-CHU
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   200      )   OR
+                              (WRK-GMN-INPUTCD(IDX)    =   SPACE )
+               IF      IDX             NOT =   IDX-Z
+      *                    注加算コード、通番が同じ時エラー
+                   IF      (WRK-COM-SRYKBN (IDX)
+                                           =   WRK-COM-SRYKBN
+                                                           (IDX-Z)) AND
+                           (WRK-COM-CHUKSNCD   (IDX)
+                                           =   WRK-COM-CHUKSNCD
+                                                           (IDX-Z)) AND
+                           (WRK-COM-CHUKSNTUBAN(IDX)
+                                           =   WRK-COM-CHUKSNTUBAN
+                                                             (IDX-Z))
+                       MOVE    "0042"          TO  SPA-ERRCD
+                       MOVE    IDX             TO  IDX-CHU
+                   END-IF
+               END-IF
+      *        診察料以外は、剤内のチェックとする
+               IF      WRK-COM-ZAIEND (IDX)    =   "1"
+                   IF      WRK-COM-SRYKBN (IDX-Z)  =   "11"  OR  "12"
+                       CONTINUE
+                   ELSE
+                       IF      IDX                 <   IDX-Z
+                           MOVE    SPACE           TO  SPA-ERRCD
+                       END-IF
+                       IF      IDX                 >=  IDX-Z
+                           MOVE    200             TO  IDX
+                       END-IF
+                   END-IF
+               END-IF
+           END-PERFORM
+           IF      (SPA-ERRCD      NOT =   SPACE )  AND
+                   (IDX-CHU        NOT =   ZERO  )
+                MOVE    "1"             TO  WRK-COM-CUR(IDX-CHU)
+           END-IF
+      *
+           .
+       290-CHUKSNCHK-EXT.
            EXIT.
       *
       *****************************************************************

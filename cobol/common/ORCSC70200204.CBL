@@ -80,6 +80,11 @@
            03  FLG-SYORI            PIC 9(01).
       *    »ÜÀß´ð½àÉÔÅ¬¹ç
            03  FLG-KIJUNN          PIC 9(01).
+      *    ±ó³Ö²èÁü¿ÇÃÇ²Ã»»
+           03  FLG-ENKALL          PIC 9(01).
+           03  FLG-ENK1            PIC 9(01).
+           03  FLG-ENK2            PIC 9(01).
+           03  FLG-ENK3            PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -2189,12 +2194,16 @@
            MOVE    ZERO                TO  FLG-CTMRI
            MOVE    ZERO                TO  FLG-XSEN
            MOVE    ZERO                TO  FLG-KAKUI
+           MOVE    ZERO                TO  FLG-ENKALL
+           MOVE    ZERO                TO  FLG-ENK1
+           MOVE    ZERO                TO  FLG-ENK2
+           MOVE    ZERO                TO  FLG-ENK3
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
                    UNTIL      (IDX-Z       >   200     )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
-               IF     (WRK-COM-SRYSYUKBN (IDX-Z)  =   "700")  AND
+               IF     (WRK-COM-SRYKBN (IDX-Z)  =   "70")  AND
                       (WRK-COM-INPUTCD(IDX-Z)(1:1)
                                                =   "1"  )  AND
                       (WRK-COM-DATAKBN(IDX-Z)  =   "1"  )
@@ -2214,24 +2223,37 @@
                        WHEN    32
                            MOVE    1                   TO  FLG-CTMRI
                    END-EVALUATE
+      *
+      *            ±ó³Ö²èÁü¿ÇÃÇ´ÉÍý²Ã»»¥Á¥§¥Ã¥¯
+                   EVALUATE    WRK-COM-INPUTCD (IDX-Z)
+                       WHEN    "170024910"
+                       WHEN    "170025010"
+                           MOVE    1                   TO  FLG-ENKALL
+                       WHEN    "170025910"
+      *                    £ØÀþ
+                           MOVE    1                   TO  FLG-ENK1
+                       WHEN    "170026100"
+                       WHEN    "170026210"
+      *                    ³Ë°å³Ø
+                           MOVE    1                   TO  FLG-ENK2
+                       WHEN    "170026110"
+                       WHEN    "170026310"
+      *                    ¥³¥ó¥Ô¥å¡¼¥¿
+                           MOVE    1                   TO  FLG-ENK3
+                   END-EVALUATE
                END-IF
            END-PERFORM
-      *
       *
            MOVE    ZERO                TO  IDXS
       *
       *    ²èÁü¿ÇÃÇ´ÉÍý²Ã»»ÄÉ²Ã¡Ê¼Ì¿¿¿ÇÃÇ¡Ë
-           IF      FLG-XSEN            =   1
+           IF     (FLG-XSEN            =   1    )  AND
+                  (FLG-ENKALL          =   ZERO )  AND
+                  (FLG-ENK1            =   ZERO )
       *        ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£±
                MOVE    "170025210"         TO  WRK-SRYCD
                MOVE    SPACE               TO  WRK-SRYCD-2
                PERFORM 3002-KASAN-SYORI-SEC
-               IF      FLG-ERR             =   ZERO
-                   MOVE    "700"           TO  LNK-ORCSC-SRYSYUKBN
-                                                         (08 IDXS)
-                   MOVE    "70"            TO  LNK-ORCSC-SRYKBN
-                                                         (08 IDXS)
-               END-IF
            END-IF
       *
       *    ³Ë°å³Ø¿ÇÃÇÎÁ²Ã»»Í­¤ê
@@ -2240,7 +2262,9 @@
                MOVE    "170015310"         TO  WRK-SRYCD
                MOVE    SPACE               TO  WRK-SRYCD-2
                PERFORM 3002-KASAN-SYORI-SEC
-               IF      FLG-ERR             =   ZERO
+               IF     (FLG-ERR             =   ZERO )  AND
+                      (FLG-ENKALL          =   ZERO )  AND
+                      (FLG-ENK2            =   ZERO )
       *            ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£²¡Ê³Ë°å³Ø¡Ë
                    MOVE    "170025610"         TO  WRK-SRYCD
                    MOVE    SPACE               TO  WRK-SRYCD-2
@@ -2264,7 +2288,9 @@
                MOVE    "170015410"         TO  WRK-SRYCD
                MOVE    SPACE               TO  WRK-SRYCD-2
                PERFORM 3002-KASAN-SYORI-SEC
-               IF      FLG-ERR             =   ZERO
+               IF     (FLG-ERR             =   ZERO )  AND
+                      (FLG-ENKALL          =   ZERO )  AND
+                      (FLG-ENK3            =   ZERO )
       *            ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£²¡Ê¥³¥ó¥Ô¥å¡¼¥¿ÃÇÁØ¿ÇÃÇ¡Ë
                    MOVE    "170025710"         TO  WRK-SRYCD
                    MOVE    SPACE               TO  WRK-SRYCD-2

@@ -37,6 +37,7 @@
       *  02.00.01    NACL-多々納  02/08/06  時間外判定に労災再診を追加
       *  02.00.02    NACL-多々納  02/08/26  用法の時施設基準チェックをし
       *                                     ない
+      *  02.00.03    NACL-多々納  02/10/02  注加算チェックを剤毎とする
       *****************************************************************
       *
       *
@@ -579,9 +580,10 @@
                   (TNS-CHUKSNTUBAN     =   ZERO  OR  SPACE )
                CONTINUE
            ELSE
+             IF      LNK-SC92-KBN        =   "1"
+      *        追加挿入の時のチェックとする
                PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL      (IDX     >   WRK-MAX   )  OR
-                                  (SPA-ERRCD       NOT =   SPACE )
+                       UNTIL       IDX     >   WRK-MAX
                    IF      IDX         NOT =   IDX-T
       *                    注加算コード、通番が同じ時エラー
                        IF      (SPA-COM-CHUKSNCD   (IDX)
@@ -592,6 +594,7 @@
                        END-IF
                    END-IF
                END-PERFORM
+             END-IF
            END-IF
       *
       *    同一剤内に時間加算は１つのみ
@@ -1291,14 +1294,6 @@
                MOVE    1               TO  SPA-COM-RSIKBN (IDX-T)
            END-IF
       *
-      *    自賠責明細料・診断料
-      *    IF     (SPA-RSI-HKNKBN      =   "4"  )  AND
-      *           (SPA-COM-SRYKBN  (IDX-T) =   "80" ) AND
-      *           (SPA-COM-INPUTCD (IDX-T)(1:4)    =   "0958" OR
-      *                                                "0959" )
-      *        COMPUTE SPA-COM-KISOTEN  (IDX-T)    =   TNS-TEN
-      *                                            /   10
-      *****END-IF
            .
        3000-RSIJIB-HEN-EXT.
            EXIT.

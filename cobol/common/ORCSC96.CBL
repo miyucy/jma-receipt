@@ -223,8 +223,11 @@
                    MOVE    "未熟児加算はできません"
                                        TO  SPA-ERRMSG
                WHEN    "0042"
-                   MOVE    "この加算はできません"
+      ************ MOVE    "この加算はできません"
+                   MOVE    "既に同じ種類の加算があります。"
                                        TO  SPA-ERRMSG
+                   MOVE    "この加算はできません"
+                                       TO  SPA-ERRMSG(31:)
                WHEN    "0043"
                    MOVE    "時間外加算は１件です"
                                        TO  SPA-ERRMSG
