@@ -118,6 +118,8 @@
            03  WRK-SUM-TENSUKEI        PIC 9(08)V99.
       *    点数計（通則加算対象外計）
            03  WRK-SUM-TENGAKEI        PIC 9(08)V99.
+      *    点数計（人工心肺不使用加算計）
+           03  WRK-JIN-TENSUKEI        PIC 9(08)V99.
       *    労災点数
            03  WRK-RSI-TENSUKEI        PIC 9(08)V99.
       *
@@ -1058,6 +1060,12 @@
            IF      WRK-COM-INPUTCD(IDX-Z)(1:3) =   "101"
                ADD     WRK-COM-KISOTEN (IDX-Z) TO  WRK-RSI-TENSUKEI
            ELSE
+      *        人工心肺不使用加算は施設基準逓減の対象外とする
+               IF      WRK-COM-INPUTCD (IDX-Z) =   "150302770"
+                                               OR  "150302870"
+                   ADD     WRK-COM-KISOTEN (IDX-Z) TO  WRK-JIN-TENSUKEI
+                   GO      TO      100212-SYUGI-KEI-EXT
+               END-IF
       *        通則加算対象外区分判定
                IF      WRK-COM-TUSOKUGAIKBN (IDX-Z)  =   "1"
                    ADD     WRK-COM-KISOTEN (IDX-Z) TO  WRK-SUM-TENGAKEI
@@ -1159,15 +1167,21 @@
                END-IF
            END-IF
       *
+      *    人工心肺不使用加算を通則分に加算する
+           COMPUTE LNK-SC90-TENSUKEI   =   LNK-SC90-TENSUKEI
+                                       +   WRK-JIN-TENSUKEI
+      *
            ADD     LNK-SC90-TENSUKEI   TO  WRK-GOK-TENSUKEI
            ADD     LNK-SC90-TENGAKEI   TO  WRK-GOK-TENGAKEI
            ADD     WRK-RSI-TENSUKEI    TO  WRK-GRSI-TENSUKEI
+      *
       *
            MOVE    ZERO                TO  LNK-SC90-TENSUKEI
            MOVE    ZERO                TO  LNK-SC90-TENGAKEI
            MOVE    ZERO                TO  WRK-SUM-TENSUKEI
            MOVE    ZERO                TO  WRK-SUM-TENGAKEI
            MOVE    ZERO                TO  WRK-RSI-TENSUKEI
+           MOVE    ZERO                TO  WRK-JIN-TENSUKEI
       *
       *    最後の手技料時に、以下の計算を行う
            IF      FLG-SYUGI           =   2
@@ -1216,11 +1230,18 @@
                                                /   100
                                                +   0.5
                        MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
+      *                人工心肺不使用加算は施設基準逓減の対象外とする
+                       IF      WRK-COM-INPUTCD (IDX) =   "150301970"
+                           ADD     WRK-TENSUKEI-9  TO  WRK-JIN-TENSUKEI
+                       ELSE
+      *
       *                通則加算対象外区分判定
                        IF      WRK-COM-TUSOKUGAIKBN (IDX-ZS)  =   "1"
                            ADD     WRK-TENSUKEI-9  TO  WRK-TENGAKEI-K
                        ELSE
                            ADD     WRK-TENSUKEI-9  TO  WRK-TENSUKEI-K
+                       END-IF
+      *
                        END-IF
                    END-IF
       *            ％減算
