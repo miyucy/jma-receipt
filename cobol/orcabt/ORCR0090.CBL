@@ -1024,8 +1024,9 @@
                        EVALUATE    RECE05-SRYCD (IDX) (1:1)
                            WHEN    "0"
                              IF      RECE05-SRYCD (IDX) (1:3) = "059"
-                                 IF      RECE05-DATAKBN (IDX)
-                                                              =   "3"
+                                 IF     ( RECE04-SRYKBN     =   "70" )
+                                 AND    ( RECE05-DATAKBN (IDX)
+                                                              =   "3")
                                      MOVE    3             TO  IDY
                                  ELSE
                                      MOVE    4             TO  IDY
@@ -2366,8 +2367,9 @@
                    MOVE    SPACE       TO  WRK-ZAI-NAME
                    COMPUTE WRK-NAMEKETA    =   WRK-NAMEKETA  -  50
       *   　       < 名称後半 + 空白 + 数量 + 単位 + 分画数>
-                   STRING  TBL-ZAIW-NAME     (WRK-WIDX1 WRK-WIDX2)(51:)
-                                              DELIMITED  BY  " "
+                   STRING  TBL-ZAIW-NAME     (WRK-WIDX1 WRK-WIDX2)
+                                             (51:WRK-NAMEKETA)
+                                              DELIMITED  BY  SIZE
                            "  "               DELIMITED  BY  SIZE
                            WRK-SRYSURYOW      DELIMITED  BY  " "
                            TBL-ZAIW-TANINAME (WRK-WIDX1 WRK-WIDX2)
