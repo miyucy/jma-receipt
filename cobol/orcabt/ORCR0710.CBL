@@ -42,9 +42,9 @@
       *  01.00.11    NACL-藤原    03/04/17  出力件数をジョブ管理ＤＢへ更新
       *  01.00.12    NACL-門脇    03/04/18  食事療養”３月超”の記載廃止
       *  01.00.13    NACL-藤原    03/04/21  地方公費データのとき主保険が無い
-      *                                     ときは不明分としてレセプトを作成
-      *                                     する
+      *                                     ときは不明分としてレセプトを作成する
       *  01.00.14    NACL-門脇    03/04/22  食事療養”３月超”の記載
+      *  01.00.15    NACL-藤原    03/04/23  公費請求書ＤＢの給付割合を修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1384,18 +1384,7 @@
                                            TO  KOHSKY-SRYKA (IDX)
                END-PERFORM
                MOVE    RECE62X-HKN         TO  KOHSKY-HKN
-               IF      RECE62X-KYURATE  >  ZERO
-                   COMPUTE WRK-KYURATE-9   =
-                              (100     -   RECE62X-KYURATE)
-                                               / 10 
-                   MOVE    WRK-KYURATE-9   TO  KOHSKY-KYURATE
-               ELSE
-               IF      RECE62-TEISYUTUSAKI =   "1"
-                   MOVE    ZERO            TO  RECE10-KYURATE
-               ELSE
-                   MOVE    10              TO  RECE10-KYURATE
-               END-IF        
-               END-IF             
+               MOVE    RECE62X-KYURATE     TO  KOHSKY-KYURATE
                MOVE    RECE62X-RJNHKN      TO  KOHSKY-RJNHKN
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       4

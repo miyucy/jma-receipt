@@ -58,6 +58,7 @@
       *                                     出力件数をジョブ管理ＤＢへ更新
       *  01.02.02    NACL-藤原    03/04/21  地方公費データのとき主保険が無い
       *                                     ときは不明分としてレセプトを作成する
+      *  01.02.03    NACL-藤原    03/04/23  公費請求書ＤＢの給付割合を修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1316,14 +1317,15 @@
                                        TO  KOHSKY-SRYKA (IDX)
            END-PERFORM
            MOVE    RECE02X-HKN         TO  KOHSKY-HKN
-           IF      RECE02X-KYURATE  >  ZERO
-               COMPUTE WRK-KYURATE-9   =
-                              (100     -   RECE02X-KYURATE)
-                                               / 10 
-               MOVE    WRK-KYURATE-9   TO  KOHSKY-KYURATE
-           ELSE
-               MOVE    ZERO            TO  KOHSKY-KYURATE
-           END-IF             
+      *****IF      RECE02X-KYURATE  >  ZERO
+      *         COMPUTE WRK-KYURATE-9   =
+      *                        (100     -   RECE02X-KYURATE)
+      *                                         / 10 
+      *         MOVE    WRK-KYURATE-9   TO  KOHSKY-KYURATE
+      *     ELSE
+      *         MOVE    ZERO            TO  KOHSKY-KYURATE
+      *****END-IF             
+           MOVE    RECE02X-KYURATE     TO  KOHSKY-KYURATE
            MOVE    RECE02X-RJNHKN      TO  KOHSKY-RJNHKN
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       4
