@@ -125,7 +125,7 @@
       *レセプト個別作成出力順区分
                05  SYS-2005-PRTJYUNKBN2 PIC  X(02).
       *予備
-           03  FILLER                   PIC  X(172).
+           03  FILLER                   PIC  X(171).
       *端末ＩＤ
            03  SYS-2005-TERMID          PIC  X(16).
       *オペーレータＩＤ
