@@ -117,6 +117,7 @@
       *  01.00.40    NACL-門脇    03/07/01  レセ記載用一部負担金編集修正
       *  01.00.41    NACL-門脇    03/08/27  特定疾患改正対応
       *  01.00.42    NACL-小豆沢  03/09/02  福岡県地方公費対応
+      *
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -997,6 +998,11 @@
                                             LNK-SYU-JIHI-TOTAL-TAX  +
                                             LNK-SYU-JIHI-TAX
            END-IF.
+      *
+      *    特別計算対応
+           CALL   "ORCSDOKUJI"      USING   MCPAREA
+                                            LNK-SYU-SYUNOU-REC.
+      *
       *
       *    請求金額の計算（調整金の加減算）
            COMPUTE    LNK-SYU-SKYMONEY  =   LNK-SYU-SKYMONEY    +
