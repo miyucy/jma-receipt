@@ -27,6 +27,9 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-太田    03.12.04  看護師３人以上でない場合、
+      *                                     有床診療所１群入院基本料１
+      *                                     は看護対置適合に置き換える
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -128,31 +131,61 @@
       *
            PERFORM 800-NYUKHN-SEL-SEC
            IF    ( FLG-NYUKHN      =   ZERO )
-               MOVE    ZERO        TO  W20SUB01-O-RC
-               MOVE    WRK-TNS-NAME
-                                   TO  W20SUB01-O-NAME
-               MOVE    NYUKHN-KHNSRYCD
-                                   TO  W20SUB01-O-KHNSRYCD
-               MOVE    NYUKHN-KHNTEN
-                                   TO  W20SUB01-O-KHNTEN
-               MOVE    NYUKHN-SSTKIJUNKBN
-                                   TO  W20SUB01-O-SSTKIJUNKBN
-               MOVE    NYUKHN-BTUSBTKBN
-                                   TO  W20SUB01-O-BTUSBTKBN
-               MOVE    NYUKHN-HEIKINZAIKBN
-                                   TO  W20SUB01-O-HEIKINZAIKBN
-               MOVE    NYUKHN-KANGOHAICHIKBN
-                                   TO  W20SUB01-O-KANGOHAICHIKBN
-               MOVE    NYUKHN-KANGOHIRITUKBN
-                                   TO  W20SUB01-O-KANGOHIRITUKBN
-               MOVE    NYUKHN-KANGOHOJOHAICHIKBN
-                                   TO  W20SUB01-O-KANGOHOJOHAICHIKBN
+      *        看護配置・平均在日数等で検索の場合、
+      *        有床診療所１群入院基本料１で、入力パラメータの
+      *        看護師数区分が空白の場合、看護配置適合に置き換える
+               IF    ( W20SUB01-I-KBN          =   "2" )
+                 AND ( NYUKHN-KHNSRYCD         =   "190097010" )
+                 AND ( W20SUB01-I-KNGSISUKBN   =   "1" )
+                   INITIALIZE  NYUINKHN-REC
+                   MOVE    "190109670"     TO  NYUKHN-KHNSRYCD
+                   MOVE    W20SUB01-I-KJNYMD
+                                           TO  NYUKHN-YUKOSTYMD
+                                               NYUKHN-YUKOEDYMD
+                   MOVE    "NYUINKHN-KEY"  TO  WRK-DBPATH
+                   PERFORM 800-NYUKHN-SEL-SEC
+                   IF    ( FLG-NYUKHN      =   ZERO )
+                       PERFORM 1001-W20SUB01-0-HEN-SEC
+                   ELSE
+                       MOVE    1       TO  W20SUB01-O-RC
+                   END-IF
+               END-IF
+      *
+               PERFORM 1001-W20SUB01-0-HEN-SEC
            ELSE
                MOVE    1               TO  W20SUB01-O-RC
            END-IF
       *
            .
        100-EDIT-EXT.
+          EXIT.
+      *****************************************************************
+      *    入院基本料算出サブ返却値編集処理
+      *****************************************************************
+       1001-W20SUB01-0-HEN-SEC         SECTION.
+      *
+           MOVE    ZERO        TO  W20SUB01-O-RC
+           MOVE    WRK-TNS-NAME
+                               TO  W20SUB01-O-NAME
+           MOVE    NYUKHN-KHNSRYCD
+                               TO  W20SUB01-O-KHNSRYCD
+           MOVE    NYUKHN-KHNTEN
+                               TO  W20SUB01-O-KHNTEN
+           MOVE    NYUKHN-SSTKIJUNKBN
+                               TO  W20SUB01-O-SSTKIJUNKBN
+           MOVE    NYUKHN-BTUSBTKBN
+                               TO  W20SUB01-O-BTUSBTKBN
+           MOVE    NYUKHN-HEIKINZAIKBN
+                               TO  W20SUB01-O-HEIKINZAIKBN
+           MOVE    NYUKHN-KANGOHAICHIKBN
+                               TO  W20SUB01-O-KANGOHAICHIKBN
+           MOVE    NYUKHN-KANGOHIRITUKBN
+                               TO  W20SUB01-O-KANGOHIRITUKBN
+           MOVE    NYUKHN-KANGOHOJOHAICHIKBN
+                               TO  W20SUB01-O-KANGOHOJOHAICHIKBN
+      *
+           .
+       1001-W20SUB01-0-HEN-EXT.
           EXIT.
       *****************************************************************
       *    検索キー編集処理

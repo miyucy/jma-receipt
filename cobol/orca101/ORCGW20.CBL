@@ -31,6 +31,7 @@
       *                                     情報を取得するよう修正
       *                                     病棟科を最大９９件に変更
       * 00.00.02     NACL−太田   03/01/29  有効開始日のチェック追加
+      * 01.00.01     NACL-太田    03.11.17  更新日付編集対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -219,6 +220,9 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
+      *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
       *
       *****************************************************************
       *    連絡領域
@@ -2081,6 +2085,10 @@
                                        TO  SYSUP-STYUKYMD
                MOVE    WRK-EDYUKYMD    TO  SYSUP-EDYUKYMD
       *
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD    TO  SYS-UPYMD
+               MOVE    SMCNDATE-HMS    TO  SYS-UPHMS
+      *
                MOVE    SYSKANRI-REC    TO  MCPDATA-REC
       *
                MOVE    "SYSKANRI-UPD1" TO  WRK-DBPATH
@@ -2189,6 +2197,11 @@
                                    TO  SYSUP-STYUKYMD
            MOVE    SPA-NAI-W20-YUKOEDYMD-OLD
                                    TO  SYSUP-EDYUKYMD
+      *
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD    TO  SYS-UPYMD
+           MOVE    SMCNDATE-HMS    TO  SYS-UPHMS
+      *
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
       *
            MOVE    "SYSKANRI-UPD1" TO  WRK-DBPATH
@@ -2227,6 +2240,11 @@
       *
       *    病棟加算情報編集処理
            PERFORM 4201-BTU-KSN-EDIT-SEC
+      *
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD    TO  SYS-5001-CREYMD
+                                       SYS-5001-UPYMD
+           MOVE    SMCNDATE-HMS    TO  SYS-5001-UPHMS
       *
            MOVE    SYS-5001-REC    TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"  TO  WRK-DBPATH
@@ -3465,11 +3483,11 @@
            MOVE    SPA-NAI-W20-YUKOSTYMD
                                    TO  W20SUB01-I-KJNYMD
       *
-      *    IF    ( SPA-GMN-W20-CHK-BTU-KNGSIS  =   "T" )
-      *        MOVE    "1"             TO  W20SUB01-I-KNGSISUKBN
-      *    ELSE
-      *        MOVE    SPACE           TO  W20SUB01-I-KNGSISUKBN
-      *    END-IF
+           IF    ( SPA-GMN-W20-CHK-BTU-KNGSIS  =   "T" )
+               MOVE    "1"             TO  W20SUB01-I-KNGSISUKBN
+           ELSE
+               MOVE    SPACE           TO  W20SUB01-I-KNGSISUKBN
+           END-IF
       *
            MOVE    SPA-GMN-W20-BTU-SBT-CD
                                        TO  W20SUB01-I-BTUSBTKBN
@@ -5678,6 +5696,17 @@
       *
            .
        800-ENRTRY-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    マシン日付取得サブ
+      *****************************************************************
+       800-MCNDATE-SEC         SECTION.
+      *
+           CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
+      *
+           .
+      *
+       800-MCNDATE-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理
