@@ -81,8 +81,8 @@
                05  SPA-P02-RSHKNMAX           PIC 9(04).
       *
       *        二重登録表示有無
-               05  SPA-P02A-FLG1              PIC 9(04).
-               05  SPA-P02A-FLG2              PIC 9(04).
+               05  SPA-P02A-FLG1              PIC 9(01).
+               05  SPA-P02A-FLG2              PIC 9(01).
       *
       * 組合せ表示　総件数（既削除データ除く）
                05  SPA-P02-COMBMAX            PIC 9(04).
@@ -124,6 +124,9 @@
                05  SPA-KOH-ADD              PIC 9(01).
       *
                05  SPA-HKN-TEKEDYMD         PIC X(08).
+               05  SPA-HKN2-KOHNUM          PIC X(03).
+               05  SPA-HKN2-TEKSTYMD        PIC X(08).
+               05  SPA-HKN2-TEKEDYMD        PIC X(08).
       *
       *    労災・自賠責保険登録有無
            03  SPA-ROSAI-FLG                PIC 9(01).
