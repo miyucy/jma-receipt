@@ -747,6 +747,20 @@ COPYS = \
 	HCM35.INC \
 	HCM36.INC \
 	CPORCHCM34.INC \
+        CPRCF082.INC \
+        CPRCF083.INC \
+        CPRCF0831.INC \
+        CPRCF084.INC \
+        CPRCF0842.INC \
+        CPRCF085.INC \
+        CPRCF086.INC \
+        CPRCF0861.INC \
+        CPRCF087.INC \
+        CPRCF0871.INC \
+        CPRCF088.INC \
+        HCN21.INC \
+        HCN22.INC \
+        HCN23.INC \
 
 DBPATH = \
 	ORCA-DBPATH

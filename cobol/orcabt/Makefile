@@ -95,6 +95,27 @@ SRCS = \
        ORCR0690.CBL \
        ORCR0700.CBL \
        ORCR0710.CBL \
+       ORCR0800.CBL \
+       ORCR0805.CBL \
+       ORCR0810.CBL \
+       ORCR0815.CBL \
+       ORCR0820.CBL \
+       ORCR0830.CBL \
+       ORCR0840.CBL \
+       ORCR0850.CBL \
+       ORCR0860.CBL \
+       ORCR0870.CBL \
+       ORCR0880.CBL \
+       ORCR0890.CBL \
+       ORCR0900.CBL \
+       ORCR0910.CBL \
+       ORCR0920.CBL \
+       ORCR0930.CBL \
+       ORCR0935.CBL \
+       ORCR0940.CBL \
+       ORCR0950.CBL \
+       ORCR0951.CBL \
+       ORCR0955.CBL \
        ORCRCP060.CBL \
        ORCBM026.CBL \
        ORCBDXXX.CBL \

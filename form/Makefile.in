@@ -148,6 +148,9 @@ FORM_files = \
               HCML04.red \
               HCM35.red \
               HCM36.red \
+              HCN21.red \
+              HCN22.red \
+              HCN23.red \
 
 all:   
 
