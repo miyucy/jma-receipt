@@ -15,45 +15,46 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-000200 IDENTIFICATION          DIVISION.
-000300 PROGRAM-ID.             ORCSJOB.
-000400*****************************************************************
-000500*  システム名        : ＯＲＣＡ
-000600*  サブシステム名    : ジョブ管理
-000700*  コンポーネント名  : ジョブ管理ＤＢ制御
-000800*  管理者            : 
-000900*  作成日付    作業者        記述
+       IDENTIFICATION          DIVISION.
+       PROGRAM-ID.             ORCSJOB.
+      *****************************************************************
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : ジョブ管理
+      *  コンポーネント名  : ジョブ管理ＤＢ制御
+      *  管理者            : 
+      *  作成日付    作業者        記述
       *  02/01/20    MCC−藤原　   新規作成
-001100*****************************************************************
+      *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    MCC-藤原     02/05/15  DELALLの追加  
       *  01.00.02    NACL-藤原    02/08/30  ステップ件数の追加
       *  01.00.03    NACL-藤原    03/02/24  頁数のチェック
       *  01.00.04    NACL-太田    03/08/11  途中経過更新処理を追加
+      *  01.00.05    NACL-藤原    04/09/28  STP,CANを追加
       *****************************************************************
-001200*
-001300 ENVIRONMENT             DIVISION.
-001400 CONFIGURATION           SECTION.
-001500 INPUT-OUTPUT            SECTION.
-001600 FILE-CONTROL.
-007000 DATA                    DIVISION.
-010200 WORKING-STORAGE         SECTION.
       *
-018000*    フラグ領域
+       ENVIRONMENT             DIVISION.
+       CONFIGURATION           SECTION.
+       INPUT-OUTPUT            SECTION.
+       FILE-CONTROL.
+       DATA                    DIVISION.
+       WORKING-STORAGE         SECTION.
       *
-018100 01  FLG-AREA.
+      *    フラグ領域
+      *
+       01  FLG-AREA.
            03  FLG-END                                 PIC 9(01).
-018900     03  FLG-JOBKANRI                            PIC 9(01).
-020800*    カウント領域
-020900 01  CNT-AREA.
-021000     03  CNT-IN                                  PIC 9(06).
+           03  FLG-JOBKANRI                            PIC 9(01).
+      *    カウント領域
+       01  CNT-AREA.
+           03  CNT-IN                                  PIC 9(06).
       *
        01  INDEX-AREA.
            03  IDX                                     PIC 9(03). 
       *
       *
-024200 01  WRK-AREA.
+       01  WRK-AREA.
            03  WRK-SRYYMD.
                05  WRK-SRYYM           PIC 9(06).
                05  WRK-SRYDD           PIC 9(02).  
@@ -135,6 +136,14 @@
                        PERFORM 170-DELALL-SEC
                WHEN    "CHK"
                        PERFORM 150-CHK-SEC
+               WHEN    "STP"
+                       PERFORM 190-STP-SEC
+                       PERFORM 900-DBCOMMIT-SEC
+                       PERFORM 900-DBSTART-SEC
+               WHEN    "CAN"
+                       PERFORM 200-CANCEL-SEC
+                       PERFORM 900-DBCOMMIT-SEC
+                       PERFORM 900-DBSTART-SEC
                WHEN    OTHER
                        MOVE  10            TO  SJOBKANRI-RETURN  
                        MOVE  1             TO  FLG-END
@@ -386,9 +395,6 @@
                MOVE    ZERO            TO  SJOBKANRI-RETURN
                MOVE    WRK-JOBKANRI-REC
                                        TO  JOBKANRI-REC
-      *???
-           DISPLAY "150=" JOBKANRI-REC "##"
-      *???     
            END-IF
       *
            .
@@ -435,6 +441,79 @@
            .
        180-STM-EXT.
            EXIT.
+      * 
+      *****************************************************************
+      *    中止フラグセット処理
+      *****************************************************************
+       190-STP-SEC                 SECTION.
+      *
+           MOVE    JOBKANRI-REC        TO  MCPDATA-REC
+           PERFORM 910-JOBKANRI-INV2-SEC
+           IF      FLG-JOBKANRI   NOT  =  ZERO
+               MOVE  MCP-RC                TO  SJOBKANRI-RETURN
+               GO  TO  190-STP-EXT
+           END-IF
+      *
+      *    レコード更新
+           MOVE    JOB-STOPFLG         TO  WRK-JOB-STOPFLG
+           MOVE    WRK-JOBKANRI-REC    TO  MCPDATA-REC
+           MOVE    "DBUPDATE"          TO  MCP-FUNC
+           MOVE    PATH-TBL-JOBKANRI-UPD1
+                                       TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           IF      MCP-RC     =   ZERO
+               MOVE  MCP-RC            TO  SJOBKANRI-RETURN
+           ELSE
+               DISPLAY "UPDATE ERR KEY = [" MCP-RC JOB-SHELLID "]"   
+               MOVE  MCP-RC            TO  SJOBKANRI-RETURN
+           END-IF
+      *
+           .
+       190-STP-EXT.
+           EXIT.
+      * 
+      * 
+      *****************************************************************
+      *    ジョブ中止処理
+      *****************************************************************
+       200-CANCEL-SEC                 SECTION.
+      *
+      *    レコード存在チェック
+           MOVE    JOBKANRI-REC        TO  MCPDATA-REC
+           PERFORM 910-JOBKANRI-INV2-SEC
+           IF      FLG-JOBKANRI   NOT  =  ZERO
+               MOVE  MCP-RC                TO  SJOBKANRI-RETURN
+               GO  TO  120-JBE-EXT
+           END-IF
+      *
+      *    レコード更新
+           ACCEPT  WRK-JOB-ENDYMD      FROM DATE
+           ACCEPT  WRK-JOB-ENDTIME     FROM TIME
+           MOVE    JOB-YOBI            TO  WRK-JOB-YOBI
+           MOVE    JOB-ERRCD           TO  WRK-JOB-ERRCD
+           MOVE    JOB-STOPFLG         TO  WRK-JOB-STOPFLG
+           MOVE    WRK-JOBKANRI-REC    TO  MCPDATA-REC
+           MOVE    "DBUPDATE"          TO  MCP-FUNC
+           MOVE    PATH-TBL-JOBKANRI-UPD1
+                                       TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           IF      MCP-RC     =   ZERO
+               MOVE  MCP-RC            TO  SJOBKANRI-RETURN
+           ELSE
+               DISPLAY "UPDATE ERR KEY = [" MCP-RC JOB-SHELLID "]"   
+               MOVE  MCP-RC            TO  SJOBKANRI-RETURN
+           END-IF
+      *
+           .
+       200-CANCEL-EXT.
+           EXIT.
+      * 
       * 
       *****************************************************************
       *    ジョブ管理マスタ読込
