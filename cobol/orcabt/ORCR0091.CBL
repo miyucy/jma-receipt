@@ -46,6 +46,7 @@
       *  01.00.08    NACL-Æ£¸¶    02.09.06  ½é¿Ç¤Î¤È¤­ÊÔ½¸¤¹¤ë
       *  01.00.09    NACL-¾®Æ¦Âô  02.09.28  ¸¡ºº¤ÎÅ¦Í×Íó°õºþ½ç¤ò½¤Àµ
       *  01.00.10    NACL-Æ£¸¶    02.11.07  °åÎÅµ¡´Ø£É£Ä¡¦¿ÇÎÅÇ¯·î¤òÄÉ²Ã
+      *  01.00.11    NACL-ÌçÏÆ    02.11.26  ¸¡¿Ç¥³¡¼¥É¤Î¿ÇÎÅ¶èÊ¬ÊÔ½¸
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -303,7 +304,9 @@
            MOVE    RECE06-ZAIMEISAISU   TO      RECE061-ZAIMEISAISU
            MOVE    RECE06-PTNUM         TO      RECE061-PTNUM
            MOVE    RECE06-SRYKA         TO      RECE061-SRYKA
-           IF      RECE06-SRYKBN        =       "99"
+           IF   (  RECE06-SRYKBN        =       "99"          )
+           OR   (( RECE06-SRYKBN        =       "11" OR "12" )  AND
+                 ( RECE06-ZAITEN        =       ZERO         )) 
                MOVE  SPACE              TO      RECE061-SRYKBN
            ELSE
                MOVE  RECE06-SRYKBN      TO      RECE061-SRYKBN
