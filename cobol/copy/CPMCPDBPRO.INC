@@ -198,6 +198,7 @@
       *  01.01.38    NACL-森脇    03/02/10  SRYACCT-KEY16追加
       *  01.01.39    NACL-多々納  03/02/17  SRYACCT-KEY17追加
       *  01.01.39    NACL-太田    03/02/22  PTNYUINRRK-ALL追加
+      *  01.01.40    ひさなが     03/02/25  PTNYUINRRK-KEY18の追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -2195,6 +2196,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTNYUINRRK-KEY17"
                    MOVE    PATH-TBL-PTNYUINRRK-KEY17
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTNYUINRRK-KEY18"
+                   MOVE    PATH-TBL-PTNYUINRRK-KEY18
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTNYUINRRK-ALL"
                    MOVE    PATH-TBL-PTNYUINRRK-ALL
