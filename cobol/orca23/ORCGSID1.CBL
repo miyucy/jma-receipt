@@ -15,34 +15,35 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-       IDENTIFICATION              DIVISION.
-       PROGRAM-ID.                 ORCGSERR.
+       IDENTIFICATION                  DIVISION.
+       PROGRAM-ID.                     ORCGSID1.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 収納登録
-      *  コンポーネント名  : エラーメッセージ（ＥＲＲ）
+      *  コンポーネント名  : 確認画面１（ＳＩＤ１）
       *  管理者            : 
-      *  作成日付    作業者        記述
-      *  XX.XX.XX    ＮＮＮ        新規作成
+      *  03/02/18    NACL−太田   新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.00.01    MCC-藤原     01/11/07  S01の削除
       *****************************************************************
       *
-       ENVIRONMENT                 DIVISION.
-       CONFIGURATION               SECTION.
-       INPUT-OUTPUT                SECTION.
+       ENVIRONMENT                     DIVISION.
+       CONFIGURATION                   SECTION.
+       INPUT-OUTPUT                    SECTION.
        FILE-CONTROL.
       *
-       DATA                        DIVISION.
-      *FILE                        SECTION.
+       DATA                            DIVISION.
+      *FILE                            SECTION.
       *
       *
-       WORKING-STORAGE             SECTION.
+       WORKING-STORAGE                 SECTION.
       *
       *    スパ領域
            COPY    "COMMON-SPA".
+      *
+      *    収納共通パラメタ
+           COPY    "S01COMMON-SPA".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -52,29 +53,30 @@
       *    ファイルレイアウト
       *****************************************************************
       *
-      *    ＤＢ検索
-           COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
-      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
+      *
+      *    ＤＢ検索
+           COPY    "MCPDATA.INC".
+      *     
+           COPY    "CPORCMCP.INC".  
       *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
-           COPY    "MCPAREA".
+           COPY    MCPAREA.
            COPY    "ORCA-SPA".
       *
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-      *****COPY    "S01.INC".
            COPY    "S02.INC".
            COPY    "S03.INC".
            COPY    "S03N.INC".
+           COPY    "S04.INC".
            COPY    "SERR.INC".
            COPY    "SID1.INC".
       *
@@ -90,15 +92,18 @@
        000-PROC-SEC                SECTION.
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-WORK        TO  SPA-S01KYOUTU
+      *
       * 
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
       *    画面遷移
-               WHEN      OTHER
-                   PERFORM 210-BACK
+               WHEN     "PUTG"           ALSO   "CLICKED"
+                   PERFORM 200-GMNSENI
            END-EVALUATE.
       *
+           MOVE    SPA-S01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
       *
            .
@@ -112,14 +117,34 @@
            .
        100-INIT-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    画面遷移処理
+      *****************************************************************
+       200-GMNSENI                   SECTION.
+      *
+           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+      *        戻る
+               WHEN    "CLICKED"       ALSO    "B01"
+                   MOVE    SPACE           TO  SPA-SID1-FLG
+                   PERFORM 210-BACK
+      *     登録
+               WHEN    "CLICKED"       ALSO    "B12"
+                   MOVE    "OK"            TO  SPA-SID1-FLG
+                   PERFORM 210-BACK
+           END-EVALUATE
+      *
+           .
+       200-GMNSENI-EXT.
+           EXIT.
       *****************************************************************
       *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
-      *
+      * 
            MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
-           MOVE    "SERR"              TO  SPA-MOTOPG
-     *
+           MOVE    "SID1"              TO  SPA-MOTOPG
+      *
            MOVE    "JOIN"              TO  MCP-PUTTYPE
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
@@ -137,10 +162,10 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"   USING
-                                MCPAREA
-                                ORCMCPAREA
-                                MCPDATA-REC.
+           CALL    "ORCMCPSUB"          USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            .
        900-PUT-WINDOW-EXT.

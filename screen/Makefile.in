@@ -160,6 +160,7 @@ SCREEN_screen = \
 	S03.glade \
 	S03N.glade \
 	SERR.glade \
+	SID1.glade \
 	T01.glade \
 	T99.glade \
 	TERR.glade \

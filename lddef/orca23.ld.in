@@ -9,6 +9,7 @@ bind	"S03"		"OpenCOBOL"	"ORCGS03";
 bind	"S03N"		"OpenCOBOL"	"ORCGS03N";
 bind    "S04"           "OpenCOBOL"     "ORCGS04";
 bind	"SERR"		"OpenCOBOL"	"ORCGSERR";
+bind	"SID1"		"OpenCOBOL"	"ORCGSID1";
 
 multiplex_group	orca23;
 
@@ -22,6 +23,7 @@ data	{
 		S03N;
                 S04;
                 SERR;
+                SID1;
 	};
 };
 

@@ -165,6 +165,7 @@ RECORD_files = \
 	S03.rec \
 	S03N.rec \
 	SERR.rec \
+	SID1.rec \
 	T01.rec \
 	T99.rec \
 	TERR.rec \
