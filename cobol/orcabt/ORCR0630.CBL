@@ -113,6 +113,7 @@
        01  WRK-DAY-TABLE.
            03  WRK-DAY-T                               OCCURS   31.
                05  WRK-DAY1                            PIC 9(04).
+               05  WRK-DAY1-NYUTENTTLKBN               PIC 9(03).
                05  WRK-DAY2                            PIC 9(04).
                05  WRK-DAY4                            PIC 9(04).
                05  WRK-DAY41                           PIC 9(04).
@@ -465,31 +466,34 @@
              IF       NACCT-DAY(IDY)   NOT =  ZERO 
       *
                IF     NACCT-ZAISKBKBN    =    "1"  
-                    MOVE   NACCT-DAY(IDY)  TO   WRK-DAY1(IDY) 
+                    MOVE   NACCT-DAY(IDY)   TO  WRK-DAY1(IDY) 
+                    PERFORM      NYUINKHN-GET-SEC
+                    MOVE   WRK-NYUTENTTLKBN TO  WRK-DAY1-NYUTENTTLKBN
+                                                                (IDY) 
                END-IF 
       *
                IF     NACCT-ZAISKBKBN    =    "2"  
-                    MOVE   NACCT-DAY(IDY)  TO   WRK-DAY2(IDY) 
+                    MOVE   NACCT-DAY(IDY)   TO  WRK-DAY2(IDY) 
                END-IF 
       *
                IF     NACCT-ZAISKBKBN    =    "4"  
                  IF    NACCT-SRYCDTOTAL  =    197000570 
-                    MOVE   NACCT-DAY(IDY)  TO   WRK-DAY41(IDY) 
+                    MOVE   NACCT-DAY(IDY)   TO  WRK-DAY41(IDY) 
                  ELSE 
-                    MOVE   NACCT-DAY(IDY)  TO   WRK-DAY4(IDY) 
+                    MOVE   NACCT-DAY(IDY)   TO  WRK-DAY4(IDY) 
                  END-IF
                END-IF 
       *
                IF     NACCT-ZAISKBKBN    =    "5"  
-                    MOVE   NACCT-DAY(IDY)  TO   WRK-DAY5(IDY) 
+                    MOVE   NACCT-DAY(IDY)   TO  WRK-DAY5(IDY) 
                END-IF 
       *
                IF     NACCT-ZAISKBKBN    =    "6"  
-                 PERFORM      NYUINKHN-GET2-SEC
-                 IF   WRK-NYUTENTTLKBN  =  920
-                    MOVE   NACCT-DAY(IDY)  TO   WRK-DAY6(IDY) 
-                    ADD    NACCT-ZAITEN    TO   WRK-DAY6-ZAITEN(IDY)
-                 END-IF
+                    MOVE   NACCT-DAY(IDY)   TO  WRK-DAY6(IDY) 
+                    PERFORM      NYUINKHN-GET2-SEC
+                    IF  WRK-NYUTENTTLKBN   NOT =  ZERO
+                      ADD    NACCT-ZAITEN   TO  WRK-DAY6-ZAITEN(IDY)
+                    END-IF
                END-IF 
       *
              END-IF
@@ -838,14 +842,15 @@
       **************************************************************
        NYUINACCT-GET2-SEC           SECTION.
       *
-           EVALUATE   WRK-NYUTENTTLKBN
-                WHEN   903
+           IF  WRK-NYUTENTTLKBN   NOT =  ZERO
+      *
+              EVALUATE   WRK-DAY1-NYUTENTTLKBN(IDY)
+                 WHEN   903
                     COMPUTE  RECE62-NYUKHNKEI2(KH-IDX)  =
                              RECE62-NYUKHNKEI2(KH-IDX)  +  NACCT-ZAITEN
-      *         WHEN   920
-      *             COMPUTE  RECE62-NYUTOKKEI2(KH-IDX)  =
-      *                      RECE62-NYUTOKKEI2(KH-IDX)  +  NACCT-ZAITEN
-           END-EVALUATE
+              END-EVALUATE
+      *
+           END-IF
       *
            .
        NYUINACCT-GET2-EXT.
