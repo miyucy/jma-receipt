@@ -50,6 +50,8 @@
                05  RECE661-SRYKBN          PIC  X(02).
       *剤識別区分
                05  RECE661-ZAISKBKBN       PIC  X(01).
+      *剤識別内番号
+               05  RECE661-ZAISKBBAN       PIC  9(05).
       *検査実施区分
                05  RECE661-KNSJISKBN       PIC  9(01).
       *表用番号
