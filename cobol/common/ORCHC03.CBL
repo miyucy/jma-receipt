@@ -630,6 +630,7 @@
            IF      SPA-HKNKBN          =   1
                MOVE    SPACE               TO  HC03-HKNRYO1
                MOVE    SPACE               TO  HC03-HKNRYO2
+               MOVE    SPACE               TO  HC03-HKNRYO3
                MOVE    SPACE               TO  HC03-HKNRYO4
                MOVE    SPACE               TO  HC03-HKNRYO5
                MOVE    SPACE               TO  HC03-HKNRYO6
