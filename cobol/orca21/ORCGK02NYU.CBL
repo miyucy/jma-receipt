@@ -923,9 +923,6 @@
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  IDX-AREA
-           MOVE    ZERO                TO  LNK-WKSRYACT-MAX
-           MOVE    SPACE               TO  LNK-WKSRYACT-AREA
-      *
       *
            MOVE    SPA-COMMON          TO  SPA-AREA
            MOVE    SPA-FREE            TO  SPA-K02
@@ -4154,6 +4151,9 @@
       *
       *    チェック用月内診療行為セット
            PERFORM                 320-SPA-CHKSET-SEC
+      *    パラメタファイルより表示
+           MOVE    3               TO  FLG-PARASET
+           PERFORM                 3002-PARA-SET-SEC
       *
       *    初診料自動発生
            PERFORM 310-SPA-GMNSET-SEC
