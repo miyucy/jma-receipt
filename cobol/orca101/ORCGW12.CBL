@@ -592,11 +592,11 @@
                                            TO  IDY
                    END-IF                                     
                END-PERFORM
-      *         
-               MOVE    SYS-2005-KKHRECEKBN TO  SPA-GMN-KKHRECEKBN
-               IF      SPA-GMN-KKHRECEKBN  =   "2"
-                   MOVE    "1"                 TO  SPA-GMN-KKHRECEKBN
+      *
+               IF      SYS-2005-KKHRECEKBN  =   "2"
+                   MOVE    SPACE               TO  SYS-2005-KKHRECEKBN
                END-IF    
+               MOVE    SYS-2005-KKHRECEKBN TO  SPA-GMN-KKHRECEKBN
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       SPA-GMN-KKHRECEKBN-MAX
                    IF      SPA-GMN-KKHRECEKBN 
@@ -608,10 +608,10 @@
                    END-IF                                     
                END-PERFORM
       *         
-               MOVE    SYS-2005-SYARECEKBN TO  SPA-GMN-SYARECEKBN
-               IF      SPA-GMN-SYARECEKBN  =   "2"
-                   MOVE    "1"                 TO  SPA-GMN-SYARECEKBN
+               IF      SYS-2005-SYARECEKBN  =   "2"
+                   MOVE    SPACE               TO  SYS-2005-SYARECEKBN
                END-IF    
+               MOVE    SYS-2005-SYARECEKBN TO  SPA-GMN-SYARECEKBN
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       SPA-GMN-SYARECEKBN-MAX
                    IF      SPA-GMN-SYARECEKBN 
