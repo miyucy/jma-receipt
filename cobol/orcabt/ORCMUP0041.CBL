@@ -168,7 +168,7 @@
                03  FILLER              PIC X(01)   VALUE   ",".
                03  WRK-RENNUM          PIC 9(02).
                03  FILLER              PIC X(01)   VALUE   ",".
-               05  WRK-NAME            PIC X(100).
+               03  WRK-NAME            PIC X(100).
       *
       *****************************************************************
       *    ファイル定義
