@@ -1726,7 +1726,7 @@
                GO      TO      200121-NYUTUKI-HEN-EXT
            END-IF
       *
-           MOVE    IDX                 TO  LNK-ORCSC-KEI-IDX
+           MOVE    IDX-Z               TO  LNK-ORCSC-KEI-IDX
            MOVE    "1"                 TO  WRK-COM-KZMFLG (IDX-Z)
            MOVE    "K081"              TO  SPA-ERRCD
            MOVE    SPACE               TO  LNK-ORCSC-ERRMSG

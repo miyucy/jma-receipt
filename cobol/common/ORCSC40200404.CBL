@@ -461,6 +461,7 @@
                    MOVE    2                   TO  FLG-KIJUNN
       *            エタナールの局所注入は対象外
                    IF      WRK-COM-INPUTCD (IDX-Z) =   "140032510"
+                                                   OR  "140048515"
                        CONTINUE
                    ELSE
       *                施設基準不適合（処置）
