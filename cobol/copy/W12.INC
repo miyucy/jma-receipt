@@ -40,11 +40,11 @@
               03  W12-KKHRECEKBN-COMBO.
                 04  W12-KKHRECEKBN         PIC X(20).
                 04  W12-KKHRECEKBN-COUNT   PIC S9(9)   BINARY.
-                04  W12-KKHRECEKBNLST      PIC X(20)   OCCURS  3 TIMES.
+                04  W12-KKHRECEKBNLST      PIC X(20)   OCCURS  2 TIMES.
               03  W12-SYARECEKBN-COMBO.
                 04  W12-SYARECEKBN         PIC X(20).
                 04  W12-SYARECEKBN-COUNT   PIC S9(9)   BINARY.
-                04  W12-SYARECEKBNLST      PIC X(20)   OCCURS  3 TIMES.
+                04  W12-SYARECEKBNLST      PIC X(20)   OCCURS  2 TIMES.
               03  W12-RECEDENOUT.
                 04  W12-VALUE   PIC X(30).
               03  W12-KKHOCRKBN-COMBO.
@@ -59,16 +59,24 @@
                 04  W12-VALUE   PIC X(15).
               03  W12-SYAPRTNM.
                 04  W12-VALUE   PIC X(16).
+              03  W12-SYAPRTNM-NEXT.
+                04  W12-VALUE   PIC X(16).
               03  W12-KKHPRTNM.
+                04  W12-VALUE   PIC X(16).
+              03  W12-KKHPRTNM-NEXT.
                 04  W12-VALUE   PIC X(16).
               03  W12-RENNUMHENKBN-COMBO.
                 04  W12-RENNUMHENKBN       PIC X(22).
                 04  W12-RENNUMHENKBN-COUNT PIC S9(9)   BINARY.
                 04  W12-RENNUMHENKBNLST    PIC X(22)   OCCURS  3 TIMES.
               03  W12-NEXTPRTKBN-COMBO.
-                04  W12-NEXTPRTKBN         PIC X(22).
+                04  W12-NEXTPRTKBN         PIC X(10).
                 04  W12-NEXTPRTKBN-COUNT   PIC S9(9)   BINARY.
-                04  W12-NEXTPRTKBNLST      PIC X(22)   OCCURS  2 TIMES.
+                04  W12-NEXTPRTKBNLST      PIC X(10)   OCCURS  2 TIMES.
+              03  W12-NEXTPRTKBN1-COMBO.
+                04  W12-NEXTPRTKBN1        PIC X(10).
+                04  W12-NEXTPRTKBN1-COUNT  PIC S9(9)   BINARY.
+                04  W12-NEXTPRTKBN1LST     PIC X(10)   OCCURS  3 TIMES.
               03  W12-KKHPRTKBN-COMBO.
                 04  W12-KKHPRTKBN       PIC X(20).
                 04  W12-KKHPRTKBN-COUNT PIC S9(9)   BINARY.
