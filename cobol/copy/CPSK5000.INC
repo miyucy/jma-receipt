@@ -68,8 +68,14 @@
       *退院証明書発行区分
                05  SYS-5000-TAIPRTKBN
                                            PIC  X(01).
+      *選定入院消費税区分
+               05  SYS-5000-SENTEI-TAXKBN
+                                           PIC  X(01).
+      *選定入院点数単価
+               05  SYS-5000-SENTEI-TANKA
+                                           PIC  9(02).
       *予備（２）
-               05                          PIC  X(29).
+               05                          PIC  X(26).
       *端末ＩＤ
            03  SYS-5000-TERMID             PIC  X(16).
       *オペーレータＩＤ
