@@ -32,6 +32,7 @@
       * 00.01.02     NACL-森脇     20020829  初期表示追加
       * 00.01.03     NACL-森脇     20021011  ーボタン追加
       * 00.01.04     NACL-森脇     20021011  登録時のクリア処理変更
+      * 00.01.05     NACL-森脇     20021107  記号の半角全角混在チェック
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -844,6 +845,28 @@
                    MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-SHAPE
                END-IF
            END-IF
+      *
+      *----(00.01.05)--ADD-START----
+      *    記号半角文字混在チェック
+           IF          SPA-GMN-MARK      NOT     =   SPACE
+               INITIALIZE                ORCSKANACHKAREA
+               MOVE    1                 TO  KANACHK-SYORI
+               MOVE    SPA-GMN-MARK     TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"         USING
+                                             ORCSKANACHKAREA
+      *
+               IF          KANACHK-RC      =   1
+                   MOVE    "0005"      TO  SPA-ERRCD
+                   MOVE    8           TO  SPA-GMN-CUR
+                   GO  TO  430-TEXTCHK-EXT
+               END-IF
+      *
+               IF          KANACHK-SYUBETU     =   2
+                   MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-MARK
+               END-IF
+      *
+           END-IF
+      *----(00.01.05)--ADD-END------
       *
       *    注意事項半角文字混在チェック
            IF          SPA-GMN-CAUTION   NOT     =   SPACE
