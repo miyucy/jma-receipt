@@ -32,6 +32,7 @@
       *  01.00.02    NACL-藤原    02/09/27  帳票ＩＤをＤＢより編集
       *                                     パラメタに入外区分の追加
       *  01.01.03    NACL-藤原    02/10/21  印刷用ファイルにサイト区分を追加
+      *  01.01.04    NACL-藤原    03/01/10  印刷順通し番号を追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -103,6 +104,18 @@
       *
            03  WRK-PATH                PIC X(64). 
       *
+      *    通し番号
+           03  WRK-RENNUM              PIC 9(05).
+      *
+      *    通し番号編集エリア
+           03  WRK-HEN-RENNUM-AREA.
+               05  WRK-HEN-RENNUM1     PIC ZZZZZZ9.
+               05  WRK-HEN-RENNUM-R    REDEFINES   WRK-HEN-RENNUM1.   
+                   07  FILLER          PIC X(01).
+                   07  WRK-HEN-FL1     PIC X(01).
+                   07  WRK-HEN-RENNUM2 PIC ZZZ9.
+                   07  WRK-HEN-FL2     PIC X(01).
+      *
            03  WRK-PARA.
                05  WRK-PARA-JOBID                PIC 9(07).
                05  WRK-PARA-SHELLID              PIC X(08).
@@ -122,8 +135,18 @@
                                                  PIC X(04).
                    07  WRK-PARA-RECE09-NYUGAIKBN PIC X(01).                              
                05  WRK-PARA-TERMID32             PIC X(32).
+               05  WRK-PARA-SYOKBN               PIC X(01).
       *
-           03  WRK-IN                PIC X(01).
+      *    労災レセプト
+           COPY    "HCM21.INC".
+           COPY    "HCM22.INC".
+           COPY    "HCM24.INC".
+           COPY    "HCM18.INC".
+           COPY    "HCM20.INC".
+      *
+      *    自賠責レセプト
+           COPY    "HCM23.INC".
+           COPY    "HCM29.INC".           
       *
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
@@ -142,6 +165,9 @@
       *
       *    出力先プリンタ名割り当て情報
            COPY    "CPSK1031.INC".
+      *     
+      *    レセプト印刷情報
+           COPY    "CPSK2005.INC".
       *
            COPY    "CPRCF008.INC".
       *
@@ -204,6 +230,7 @@
                                              WRK-PARA1
                                              WRK-PARA-RECE09-KEY
                                              WRK-PARA-TERMID32
+                                             WRK-PARA-SYOKBN
            END-UNSTRING                                  
       *
            PERFORM 100-DBOPEN-SEC
@@ -248,6 +275,19 @@
            ELSE    
                INITIALIZE                  SYS-1031-REC
            END-IF                                     
+      *
+      *    レセプト印刷情報編集
+           MOVE    SPACE               TO  SYS-2005-REC
+           INITIALIZE                  SYS-2005-REC
+           MOVE    "2005"              TO  SYS-2005-KANRICD
+           MOVE    "*"                 TO  SYS-2005-KBNCD
+           MOVE    SYS-2005-REC        TO  MCPDATA-REC
+           PERFORM 800-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-2005-REC
+           ELSE    
+               INITIALIZE                  SYS-2005-REC
+           END-IF
            .
        110-PARA-HENSYU-EXT.
            EXIT.
@@ -257,6 +297,15 @@
       *    主　　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
+      *
+      *    通し番号初期値設定
+           MOVE    ZERO                TO  WRK-RENNUM 
+      *
+           MOVE    SPACE               TO  WRK-HEN-RENNUM-AREA
+           IF      WRK-PARA-SYOKBN     =   "2"
+               MOVE    "["                 TO  WRK-HEN-FL1
+               MOVE    "]"                 TO  WRK-HEN-FL2
+           END-IF              
       *
       *    帳票印刷処理
       *****MOVE    "RECEPRT-KEY3"      TO  WRK-PATH
@@ -344,6 +393,47 @@
       *****END-EVALUATE
            MOVE    RECE08-FORMID       TO  PRT-PRTID
            MOVE    SYS-1031-PRTNM(4)   TO  PRT-PRTNM 
+      *
+      *    通し番号印刷のときのみ編集
+           IF      SYS-2005-RENNUMHENKBN   =   "1"
+               ADD     1                   TO  WRK-RENNUM
+               IF      WRK-PARA-SYOKBN     =   "1"
+                   MOVE    WRK-RENNUM          TO  WRK-HEN-RENNUM1
+               ELSE
+                   MOVE    WRK-RENNUM          TO  WRK-HEN-RENNUM2
+               END-IF        
+      *         
+               EVALUATE    RECE08-FORMID
+                   WHEN    "HCM21.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM21
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM21-RENNUM
+                       MOVE    HCM21               TO  RECE08-PRTDATA
+                   WHEN    "HCM22.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM22
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM22-RENNUM
+                       MOVE    HCM22               TO  RECE08-PRTDATA
+                   WHEN    "HCM24.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM24
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM24-RENNUM
+                       MOVE    HCM24               TO  RECE08-PRTDATA
+                   WHEN    "HCM18.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM18
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM18-RENNUM
+                       MOVE    HCM18               TO  RECE08-PRTDATA
+                   WHEN    "HCM20.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM20
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM20-RENNUM
+                       MOVE    HCM20               TO  RECE08-PRTDATA
+                   WHEN    "HCM23.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM23
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM23-RENNUM
+                       MOVE    HCM23               TO  RECE08-PRTDATA
+                   WHEN    "HCM29.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM29
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM29-RENNUM
+                       MOVE    HCM29               TO  RECE08-PRTDATA
+               END-EVALUATE
+           END-IF            
            MOVE    RECE08-PRTDATA      TO  PRT-PRTDATA
            WRITE   PRT-REC
       *
