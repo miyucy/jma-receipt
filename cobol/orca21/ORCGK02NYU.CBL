@@ -4145,6 +4145,9 @@
       *    チェック用月内診療行為セット
            PERFORM                 320-SPA-CHKSET-SEC
       *
+      *    初診料自動発生
+           PERFORM 310-SPA-GMNSET-SEC
+      *
            MOVE    1               TO  SPA-GMN-PAGE
            MOVE    1               TO  SPA-GMN-CUR
            MOVE    1               TO  SPA-MAP-IDX

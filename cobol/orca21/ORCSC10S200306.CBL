@@ -2025,6 +2025,24 @@
                GO      TO      3301-SYOSIN-SYORI-EXT
            END-IF
       *
+      *    外来で診察料の時、時間外区分を付ける
+           IF     (SPA-SYORIFLG        =   ZERO )  AND
+                  (SPA-NYUGAIKBN       =   "2"  )  AND
+                  (WRK-SRYCD(1:1)      =   "1"  )  AND
+                  (SPA-SRYYMD          =   SPA-SYSYMD) AND
+                  (SPA-GAI-JIKANKBN    NOT =   ZERO )
+               MOVE    SPA-GMN-INPUTCD (SPA-GMN-IDX)
+                                           TO  WRK-INPUTCD
+               MOVE    SPACE               TO  SPA-GMN-INPUTCD
+                                                         (SPA-GMN-IDX)
+               MOVE    SPA-GAI-JIKANKBN    TO  SPA-GMN-INPUTCD
+                                                     (SPA-GMN-IDX)(1:1)
+               MOVE    WRK-INPUTCD         TO  SPA-GMN-INPUTCD
+                                                     (SPA-GMN-IDX)(3:)
+               MOVE    SPA-GAI-JIKANKBN    TO  SPA-COM-TIMEFLG
+                                                     (SPA-GMN-IDX)
+           END-IF
+      *
            MOVE    ZERO                TO  FLG-OK
       *
       *    以降、再診時のみ
@@ -2451,6 +2469,23 @@
       *    再編集処理
            MOVE    SPA-GMN-IDX         TO  IDX
            PERFORM 3101-INPUTCD-HEN-SEC
+      *
+      *    外来で診察料の時、時間外区分を付ける
+           IF     (SPA-SYORIFLG        =   ZERO )  AND
+                  (SPA-NYUGAIKBN       =   "2"  )  AND
+                  (SPA-SRYYMD          =   SPA-SYSYMD) AND
+                  (SPA-GAI-JIKANKBN    NOT =   ZERO )
+               MOVE    SPA-GMN-INPUTCD (SPA-GMN-IDX)
+                                           TO  WRK-INPUTCD
+               MOVE    SPACE               TO  SPA-GMN-INPUTCD
+                                                         (SPA-GMN-IDX)
+               MOVE    SPA-GAI-JIKANKBN    TO  SPA-GMN-INPUTCD
+                                                     (SPA-GMN-IDX)(1:1)
+               MOVE    WRK-INPUTCD         TO  SPA-GMN-INPUTCD
+                                                     (SPA-GMN-IDX)(3:)
+               MOVE    SPA-GAI-JIKANKBN    TO  SPA-COM-TIMEFLG
+                                                     (SPA-GMN-IDX)
+           END-IF
       *
            MOVE    1                   TO  FLG-SYONIKA
            MOVE    1                   TO  SPA-SYONIKA-ARI
@@ -3133,6 +3168,25 @@
           IF      WRK-SRYCD(1:2)      =   "83"
                MOVE    "0109"              TO  SPA-KIDCD
                GO      TO      2009-RSIHKN-SET-EXT
+           END-IF
+      *
+      *    外来で診察料の時、時間外区分を付ける
+           IF     (SPA-SYORIFLG        =   ZERO )  AND
+                  (FLG-ADD             =   1    )  AND
+                  (SPA-NYUGAIKBN       =   "2"  )  AND
+                  (WRK-SRYCD(1:1)      =   "1"  )  AND
+                  (SPA-SRYYMD          =   SPA-SYSYMD) AND
+                  (SPA-GAI-JIKANKBN    NOT =   ZERO )
+               MOVE    SPA-GMN-INPUTCD (SPA-GMN-IDX)
+                                           TO  WRK-INPUTCD
+               MOVE    SPACE               TO  SPA-GMN-INPUTCD
+                                                         (SPA-GMN-IDX)
+               MOVE    SPA-GAI-JIKANKBN    TO  SPA-GMN-INPUTCD
+                                                     (SPA-GMN-IDX)(1:1)
+               MOVE    WRK-INPUTCD         TO  SPA-GMN-INPUTCD
+                                                     (SPA-GMN-IDX)(3:)
+               MOVE    SPA-GAI-JIKANKBN    TO  SPA-COM-TIMEFLG
+                                                     (SPA-GMN-IDX)
            END-IF
       *
       *    以降、再診時のみ
@@ -4546,6 +4600,13 @@
                   (FLG-SINSATU-ARI     =   ZERO )
                GO      TO      1010-SINSATU-HEN-EXT
            END-IF
+      *    中途終了で同日再診ですでに診察がある時
+           IF     (LNK-SC10S-SYORI     =   "W"  )  AND
+                  (WRK-KBN3            =   "D"  )  AND
+                 ((SPA-LSTYMD          =   SPA-SRYYMD) OR
+                  (SPA-RRK-LSTYMD      =   SPA-SRYYMD))
+               GO      TO      1010-SINSATU-HEN-EXT
+           END-IF
       *    初診料算定で、既に当日受診がある時は対象
            IF     (LNK-SC10S-SYORI     =   "W"  )  AND
                   (SPA-SYOSIN          =   1    )
@@ -4617,12 +4678,6 @@
                        END-IF
                        MOVE    1               TO  FLG-CHK
                    END-IF
-      *TEST
-                DISPLAY "C10S IDX:" IDX
-                 ",INPUTCD:" HZN-COM-INPUTCD(IDX)
-                 ",FLG-ARI:" FLG-ARI
-                 ",FLG-CHK:" FLG-CHK
-      *TEST
                END-IF
                IF      FLG-ARI                 =   ZERO
                    IF      FLG-CHK             =   ZERO
@@ -4676,7 +4731,13 @@
       *    時間外入力あり
            IF      FLG-JIKAN       NOT =   ZERO
                IF      SPA-COM-INPUTCD(01)(1:1)    =   "1"
-                   MOVE    SPA-GMN-INPUTCD(01) TO  WRK-INPUTCD
+                  MOVE    SPA-GMN-INPUTCD(01) TO  WRK-INPUTCD
+      *           既に時間外がある場合、前の時間外へ
+                  IF     (SPA-GMN-INPUTCD(01)(1:1) NUMERIC  )  AND
+                         (SPA-GMN-INPUTCD(01)(2:1) =   SPACE)
+                       MOVE    SPA-GMN-INPUTCD(01)(3:)
+                                               TO  WRK-INPUTCD
+                   END-IF
                    MOVE    SPACE               TO  SPA-GMN-INPUTCD(01)
                    MOVE    FLG-JIKAN           TO  SPA-GMN-INPUTCD(01)
                                                                 (1:1)

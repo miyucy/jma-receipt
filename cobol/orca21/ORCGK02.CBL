@@ -570,6 +570,9 @@
            03  WRK-K02-ROWATTR         PIC S9(09).
            03  FLG-GMN-INIT            PIC  9(01).
       *
+      *    診察料有無
+           03  WRK-SINSATU-ARI          PIC 9(01).
+      *
       *   年齢表示
        01  WRK-NENREI-G.
            03  WRK-NENREI-Z        PIC ZZ9.
@@ -6643,24 +6646,13 @@
       *    時間加算チェック
            IF     (SPA-ERRCD           =   SPACE   )  AND
                   (LNK-SC97-JIKAN  NOT =   ZERO    )
-      *        時間加算区分
-               IF     (LNK-SC97-JIKAN      =   1   OR  2  OR  3
-                                                   OR  4       )  AND
-                      (((LNK-SC97-NYURYOKU     =   1    )  AND
+      *        時間加算区分は手技料であること
+               IF      ((LNK-SC97-NYURYOKU     =   1    )  AND
                         (TNS-DATAKBN           =   "1"  ))   OR
-                       ((LNK-SC97-NYURYOKU     =   ZERO   )  AND
+                       ((LNK-SC97-NYURYOKU     =   ZERO )  AND
                         (SPA-COM-DATAKBN(SPA-GMN-IDX)
-                                               =   "1"  )) )
-                   IF     (SPA-NAI-TIMEFLG     NOT =   ZERO    )  AND
-                          (SPA-NAI-TIMEFLG     NOT =   LNK-SC97-JIKAN)
-                                                                  AND
-                          (SPA-COM-TIMEFLG(SPA-GMN-IDX)
-                                                   =   ZERO    )
-                       MOVE    "0030"              TO  SPA-ERRCD
-                   ELSE
-                       MOVE    LNK-SC97-JIKAN      TO  SPA-COM-TIMEFLG
-                                                          (SPA-GMN-IDX)
-                   END-IF
+                                               =   "1"  ))
+                   PERFORM 41011211-JIKANGAI-CHK-SEC
                ELSE
                    MOVE    "0030"          TO  SPA-ERRCD
                END-IF
@@ -6674,6 +6666,50 @@
            END-IF
            .
        4101121-INPUTCD-CHECK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    時間外区分チェック処理
+      *****************************************************************
+       41011211-JIKANGAI-CHK-SEC      SECTION.
+      *
+           IF      LNK-SC97-NYURYOKU   =   ZERO
+               MOVE    SPA-COM-SRYKBN (SPA-GMN-IDX)
+                                           TO  TNS-SRYKBN
+               MOVE    SPA-COM-TIMEKSNKBN(SPA-GMN-IDX)
+                                           TO  TNS-TIMEKSNKBN
+           END-IF
+           IF       TNS-SRYKBN         =   "11"
+                                       OR  "12"
+                                       OR  "13"
+               CONTINUE
+           ELSE
+      *        診察料以外は時間外加算が算定できること
+               IF      TNS-TIMEKSNKBN      =   ZERO
+                   MOVE    "0030"              TO  SPA-ERRCD
+                   GO      TO      41011211-JIKANGAI-CHK-EXT
+               END-IF
+           END-IF
+      *
+      *     時間外区分に変更が無い時
+           IF     (SPA-NAI-TIMEFLG     =   ZERO  )  OR
+                  (SPA-NAI-TIMEFLG     =   LNK-SC97-JIKAN)
+               MOVE    LNK-SC97-JIKAN      TO  SPA-COM-TIMEFLG
+                                                          (SPA-GMN-IDX)
+               MOVE    LNK-SC97-JIKAN      TO  SPA-NAI-TIMEFLG
+               GO      TO      41011211-JIKANGAI-CHK-EXT
+           END-IF
+      *    診察料の時、時間外区分の変更
+           IF      SPA-NAI-TIMEFLG     =   SPA-COM-TIMEFLG
+                                                          (SPA-GMN-IDX)
+               MOVE    LNK-SC97-JIKAN      TO  SPA-COM-TIMEFLG
+                                                          (SPA-GMN-IDX)
+               GO      TO      41011211-JIKANGAI-CHK-EXT
+           ELSE
+               MOVE    "0089"              TO  SPA-ERRCD
+           END-IF
+           .
+       41011211-JIKANGAI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -7962,7 +7998,8 @@
            MOVE    SPA-K02N-TAIINYMD   TO  LNK-ORCSC-TAIINYMD
       *    リハビリ逓減確認
            MOVE    FLG-RIHTEI          TO  LNK-ORCSC-FLG-RIHTEI
-      *
+      *    診察料有無
+           MOVE    WRK-SINSATU-ARI     TO  LNK-ORCSC-SINSATU-ARI
       *
            EVALUATE    WRK-COM-SRYKBN (01)
       *            診療
@@ -8004,6 +8041,9 @@
       *            労災用 外来管理点数
                    MOVE    LNK-ORCSC-GAIRAI-TEN
                                            TO  SPA-GAIRAI-TEN
+      *            診察料有無
+                   MOVE    LNK-ORCSC-SINSATU-ARI
+                                           TO  WRK-SINSATU-ARI
       *
       *            薬剤
                WHEN    "21"
