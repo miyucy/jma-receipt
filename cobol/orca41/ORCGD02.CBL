@@ -60,6 +60,9 @@
       *                                     Ì¤ÆþÎÏ¥Á¥§¥Ã¥¯¤Î½¤Àµ
       *  01.00.20    ¤Ò¤µ¤Ê¤¬     03/06/10  µ¿¤¤¥Õ¥é¥°¤¬µÞÀ­¤«¤Äµ¿¤¤¤Î
       *                                     ¥Á¥§¥Ã¥¯¤Ë´Ø·¸¤¹¤ë½¤Àµ
+      *  01.00.21    ¤Ò¤µ¤Ê¤¬     03/06/13  ¥Æ¡¼¥Ö¥ë°Û¾ï¤Î½èÍý½¤Àµ
+      *  01.00.22    ¤Ò¤µ¤Ê¤¬     03/06/19  µ¿¤¤¥Á¥§¥Ã¥¯´ü´Ö£±¥õ·î¤Ø
+      *                                     ¥Á¥§¥Ã¥¯¤Ë´Ø·¸¤¹¤ë½¤Àµ
       *
       *****************************************************************
       *
@@ -149,6 +152,11 @@
            03  T-HANNTEI4          PIC X(01).
            03  T-HANNTEI5          PIC X(01).
            03  T-HANNTEI6          PIC X(02).
+           03  T-HANNTEI6-1        PIC X(02).
+           03  T-HANNTEI6-2        PIC X(02).
+           03  T-HANNTEI6-3        PIC X(02).
+           03  T-HANNTEI6-4        PIC X(02).
+           03  T-HANNTEI6-5        PIC X(02).
            03  T-HANNTEI7          PIC X(02).
            03  T-HANNTEI8          PIC X(02).
            03  T-ERR-01            PIC X(01).
@@ -179,6 +187,7 @@
            03  FLG-TBL             PIC 9(01).
            03  FLG-TENKIYMD-ER     PIC 9(01).
            03  FLG-RED             PIC 9(01).
+           03  FLG-ERR-TBL         PIC 9(01).
       *
       *    ¥¨¥ó¥É¥¹¥Æ¡¼¥¿¥¹ÎÎ°è
        01  STS-AREA.
@@ -306,7 +315,11 @@
            03  W-TABLE-S4.
                05  W-SRYCD-S4-TABLE    OCCURS  1000.
                    07  W-SRYCD-91      PIC X(09).
+                   07  W-SRYCD-91-T    PIC X(01).
+                   07  W-SRYCD-91-Y    PIC X(01).
                    07  W-SRYCD-92      PIC X(09).
+                   07  W-SRYCD-92-T    PIC X(01).
+                   07  W-SRYCD-92-Y    PIC X(01).
            03  W-CHK-KUBUN.
                05  W-CHK-ST1-KBN       PIC X(01).
                05  W-CHK-ST2-KBN       PIC X(01).
@@ -668,6 +681,9 @@
            INITIALIZE                      W-TABLE-S3.
            MOVE    ZERO                    TO  W-JITU-DAY3.
            MOVE    ZERO                    TO  W-JITU-DAY4.
+      *½¤Àµ/*³«»Ï*03.06.13*********************************************
+           MOVE    ZERO                    TO  FLG-ERR-TBL.
+      *½¤Àµ/*½ªÎ»*03.06.13*********************************************
            MOVE    ALL "*"                 TO  W1-SRY-HOSPID.
       *    ³ÎÇ§¾ò·ï ÆþÎÏ½èÍý
            PERFORM T-000-CHEKCHEK-SEC VARYING IDX1  FROM  1  BY 1
@@ -692,10 +708,19 @@
                                        MCPDATA-REC.
       *
            IF  MCP-RC   NOT =   ZERO
+               MOVE    "*"                     TO  W-CHK-ST1-KBN
                MOVE    ZERO                    TO  FLG-CHK
-               MOVE    SPACE                   TO  DID2-REC
-               MOVE    T-MESSAGE-530-01        TO  DID2-REC(10:90)
-               WRITE   DID2-REC
+      *½¤Àµ/*³«»Ï*03.06.13*********************************************
+      *         MOVE    SPACE                   TO  DID2-REC
+      *         MOVE    T-MESSAGE-530-01        TO  DID2-REC(10:90)
+      *         WRITE   DID2-REC
+               IF  FLG-ERR-TBL   =   ZERO
+                   MOVE    1                       TO  FLG-ERR-TBL
+                   MOVE    SPACE                   TO  DID2-REC
+                   MOVE    T-MESSAGE-530-01        TO  DID2-REC(10:90)
+                   WRITE   DID2-REC
+               END-IF
+      *½¤Àµ/*½ªÎ»*03.06.13*********************************************
                MOVE    SPACE                   TO  DID3-REC
                MOVE    T-MESSAGE-530-01(1:60)  TO  DID3-REC(1:60)
                WRITE   DID3-REC
@@ -729,10 +754,19 @@
                                        MCPDATA-REC.
       *
            IF  MCP-RC   NOT =   ZERO
+               MOVE    "*"                     TO  W-CHK-ST2-KBN
                MOVE    ZERO                    TO  FLG-CHK
-               MOVE    SPACE                   TO  DID2-REC
-               MOVE    T-MESSAGE-530-01        TO  DID2-REC(10:90)
-               WRITE   DID2-REC
+      *½¤Àµ/*³«»Ï*03.06.13*********************************************
+      *         MOVE    SPACE                   TO  DID2-REC
+      *         MOVE    T-MESSAGE-530-01        TO  DID2-REC(10:90)
+      *         WRITE   DID2-REC
+               IF  FLG-ERR-TBL   =   ZERO
+                   MOVE    1                       TO  FLG-ERR-TBL
+                   MOVE    SPACE                   TO  DID2-REC
+                   MOVE    T-MESSAGE-530-01        TO  DID2-REC(10:90)
+                   WRITE   DID2-REC
+               END-IF
+      *½¤Àµ/*½ªÎ»*03.06.13*********************************************
                MOVE    SPACE                   TO  DID3-REC
                MOVE    T-MESSAGE-530-01(1:60)  TO  DID3-REC(1:60)
                WRITE   DID3-REC
@@ -766,10 +800,19 @@
                                        MCPDATA-REC.
       *
            IF  MCP-RC   NOT =   ZERO
+               MOVE    "*"                     TO  W-CHK-ST3-KBN
                MOVE    ZERO                    TO  FLG-CHK
-               MOVE    SPACE                   TO  DID2-REC
-               MOVE    T-MESSAGE-530-01        TO  DID2-REC(10:90)
-               WRITE   DID2-REC
+      *½¤Àµ/*³«»Ï*03.06.13*********************************************
+      *         MOVE    SPACE                   TO  DID2-REC
+      *         MOVE    T-MESSAGE-530-01        TO  DID2-REC(10:90)
+      *         WRITE   DID2-REC
+               IF  FLG-ERR-TBL   =   ZERO
+                   MOVE    1                       TO  FLG-ERR-TBL
+                   MOVE    SPACE                   TO  DID2-REC
+                   MOVE    T-MESSAGE-530-01        TO  DID2-REC(10:90)
+                   WRITE   DID2-REC
+               END-IF
+      *½¤Àµ/*½ªÎ»*03.06.13*********************************************
                MOVE    SPACE                   TO  DID3-REC
                MOVE    T-MESSAGE-530-01(1:60)  TO  DID3-REC(1:60)
                WRITE   DID3-REC
@@ -881,27 +924,27 @@
        T-000-CHEKCHEK-SEC                SECTION.
       *
            READ    DID1-FILE
-                   AT   END
-                        MOVE    5                      TO  IDX1
-                   NOT  AT  END
-                        EVALUATE    IDX1
-                          WHEN    01
-                              MOVE    DID1-REC(1:24)
-                                      TO  SPA-GMN-HOSPID
-                          WHEN    02
-                              MOVE    DID1-REC(7:6)
-                                      TO  SPA-GMN-SRYYMD(1:6)
-                                          T-SINRYOU-AREA
-                          WHEN    03
-                              MOVE    DID1-REC(1:1)
-                                      TO  SPA-GMN-NYUGAIKBN
-                                          T-NYUGAIKBN-AREA
-                              MOVE    DID1-REC(2:10)
-                                      TO  SPA-GMN-NYUGAIKBN-MSG
-                          WHEN    04
-                              MOVE    DID1-REC(1:20)
-                                      TO  SPA-GMN-TBLG2
-                        END-EVALUATE
+               AT   END
+                    MOVE    5                      TO  IDX1
+               NOT  AT  END
+                    EVALUATE    IDX1
+                      WHEN    01
+                          MOVE    DID1-REC(1:24)
+                                  TO  SPA-GMN-HOSPID
+                      WHEN    02
+                          MOVE    DID1-REC(7:6)
+                                  TO  SPA-GMN-SRYYMD(1:6)
+                                      T-SINRYOU-AREA
+                      WHEN    03
+                          MOVE    DID1-REC(1:1)
+                                  TO  SPA-GMN-NYUGAIKBN
+                                      T-NYUGAIKBN-AREA
+                          MOVE    DID1-REC(2:10)
+                                  TO  SPA-GMN-NYUGAIKBN-MSG
+                      WHEN    04
+                          MOVE    DID1-REC(1:20)
+                                  TO  SPA-GMN-TBLG2
+                    END-EVALUATE
            END-READ.
       *
        T-000-CHEKCHEK-EXT.
@@ -987,11 +1030,19 @@
                                        MCPDATA-REC.
       *
            IF  MCP-RC    NOT  =   ZERO
-               MOVE    SPACE                     TO    DID2-REC
-               MOVE    T-MESSAGE-100-01          TO    DID2-REC(10:90)
-               WRITE   DID2-REC
-               MOVE    SPACE                     TO    DID3-REC
-               MOVE    T-MESSAGE-100-01(1:60)    TO    DID3-REC(1:60)
+      *½¤Àµ/*³«»Ï*03.06.13*********************************************
+      *         MOVE    SPACE                     TO  DID2-REC
+      *         MOVE    T-MESSAGE-100-01          TO  DID2-REC(10:90)
+      *         WRITE   DID2-REC
+               IF  FLG-ERR-TBL   =   ZERO
+                   MOVE    1                       TO  FLG-ERR-TBL
+                   MOVE    SPACE                   TO  DID2-REC
+                   MOVE    T-MESSAGE-100-01        TO  DID2-REC(10:90)
+                   WRITE   DID2-REC
+               END-IF
+      *½¤Àµ/*½ªÎ»*03.06.13*********************************************
+               MOVE    SPACE                     TO  DID3-REC
+               MOVE    T-MESSAGE-100-01(1:60)    TO  DID3-REC(1:60)
                WRITE   DID3-REC
            ELSE
                PERFORM T-100-RECECHEK-READ-SEC
@@ -1097,6 +1148,11 @@
                MOVE    ZERO              TO  W-JITU-DAY4
                MOVE    ZERO              TO  W-JITU-DAY5
                MOVE    SPACE             TO  T-HANNTEI6
+               MOVE    SPACE             TO  T-HANNTEI6-1
+               MOVE    SPACE             TO  T-HANNTEI6-2
+               MOVE    SPACE             TO  T-HANNTEI6-3
+               MOVE    SPACE             TO  T-HANNTEI6-4
+               MOVE    SPACE             TO  T-HANNTEI6-5
                MOVE    SPACE             TO  T-HANNTEI7
                MOVE    SPACE             TO  T-HANNTEI8
                MOVE    "---"             TO  W-COMB-HANNTEI1
@@ -1232,9 +1288,17 @@
                                        MCPDATA-REC.
       *
            IF  MCP-RC    NOT  =   ZERO
-               MOVE    SPACE                  TO  DID2-REC
-               MOVE    T-MESSAGE-200-01       TO  DID2-REC(10:90)
-               WRITE   DID2-REC
+      *½¤Àµ/*³«»Ï*03.06.13*********************************************
+      *         MOVE    SPACE                  TO  DID2-REC
+      *         MOVE    T-MESSAGE-200-01       TO  DID2-REC(10:90)
+      *         WRITE   DID2-REC
+               IF  FLG-ERR-TBL   =   ZERO
+                   MOVE    1                      TO  FLG-ERR-TBL
+                   MOVE    SPACE                  TO  DID2-REC
+                   MOVE    T-MESSAGE-200-01       TO  DID2-REC(10:90)
+                   WRITE   DID2-REC
+               END-IF
+      *½¤Àµ/*½ªÎ»*03.06.13*********************************************
                MOVE    SPACE                  TO  DID3-REC
                MOVE    T-MESSAGE-200-01(1:60) TO  DID3-REC(1:60)
                WRITE   DID3-REC
@@ -1381,9 +1445,17 @@
                                        MCPDATA-REC.
       *
            IF  MCP-RC   NOT =   ZERO
-               MOVE    SPACE                  TO  DID2-REC
-               MOVE    T-MESSAGE-300-01       TO  DID2-REC(10:90)
-               WRITE   DID2-REC
+      *½¤Àµ/*³«»Ï*03.06.13*********************************************
+      *         MOVE    SPACE                  TO  DID2-REC
+      *         MOVE    T-MESSAGE-300-01       TO  DID2-REC(10:90)
+      *         WRITE   DID2-REC
+               IF  FLG-ERR-TBL   =   ZERO
+                   MOVE    1                      TO  FLG-ERR-TBL
+                   MOVE    SPACE                  TO  DID2-REC
+                   MOVE    T-MESSAGE-300-01       TO  DID2-REC(10:90)
+                   WRITE   DID2-REC
+               END-IF
+      *½¤Àµ/*½ªÎ»*03.06.13*********************************************
                MOVE    SPACE                  TO  DID3-REC
                MOVE    T-MESSAGE-300-01(1:60) TO  DID3-REC(1:60)
                WRITE   DID3-REC
@@ -1548,9 +1620,17 @@
                                        MCPDATA-REC.
       *
            IF  MCP-RC    NOT  =   ZERO
-               MOVE    SPACE                   TO  DID2-REC
-               MOVE    T-MESSAGE-400-01        TO  DID2-REC(10:90)
-               WRITE   DID2-REC
+      *½¤Àµ/*³«»Ï*03.06.13*********************************************
+      *         MOVE    SPACE                   TO  DID2-REC
+      *         MOVE    T-MESSAGE-400-01        TO  DID2-REC(10:90)
+      *         WRITE   DID2-REC
+               IF  FLG-ERR-TBL   =   ZERO
+                   MOVE    1                       TO  FLG-ERR-TBL
+                   MOVE    SPACE                   TO  DID2-REC
+                   MOVE    T-MESSAGE-400-01        TO  DID2-REC(10:90)
+                   WRITE   DID2-REC
+               END-IF
+      *½¤Àµ/*½ªÎ»*03.06.13*********************************************
                MOVE    SPACE                   TO  DID3-REC
                MOVE    T-MESSAGE-400-01(1:60)  TO  DID3-REC(1:60)
                WRITE   DID3-REC
@@ -1623,9 +1703,17 @@
                                        MCPDATA-REC.
       *
            IF  MCP-RC    NOT  =   ZERO
-               MOVE    SPACE                   TO  DID2-REC
-               MOVE    T-MESSAGE-400-02        TO  DID2-REC(10:90)
-               WRITE   DID2-REC
+      *½¤Àµ/*³«»Ï*03.06.13*********************************************
+      *         MOVE    SPACE                   TO  DID2-REC
+      *         MOVE    T-MESSAGE-400-02        TO  DID2-REC(10:90)
+      *         WRITE   DID2-REC
+               IF  FLG-ERR-TBL   =   ZERO
+                   MOVE    1                       TO  FLG-ERR-TBL
+                   MOVE    SPACE                   TO  DID2-REC
+                   MOVE    T-MESSAGE-400-02        TO  DID2-REC(10:90)
+                   WRITE   DID2-REC
+               END-IF
+      *½¤Àµ/*½ªÎ»*03.06.13*********************************************
                MOVE    SPACE                   TO  DID3-REC
                MOVE    T-MESSAGE-400-02(1:60)  TO  DID3-REC(1:60)
                WRITE   DID3-REC
@@ -1698,9 +1786,17 @@
                                        MCPDATA-REC.
       *
            IF  MCP-RC    NOT  =   ZERO
-               MOVE    SPACE                   TO  DID2-REC
-               MOVE    T-MESSAGE-400-03        TO  DID2-REC(10:90)
-               WRITE   DID2-REC
+      *½¤Àµ/*³«»Ï*03.06.13*********************************************
+      *         MOVE    SPACE                   TO  DID2-REC
+      *         MOVE    T-MESSAGE-400-03        TO  DID2-REC(10:90)
+      *         WRITE   DID2-REC
+               IF  FLG-ERR-TBL   =   ZERO
+                   MOVE    1                       TO  FLG-ERR-TBL
+                   MOVE    SPACE                   TO  DID2-REC
+                   MOVE    T-MESSAGE-400-03        TO  DID2-REC(10:90)
+                   WRITE   DID2-REC
+               END-IF
+      *½¤Àµ/*½ªÎ»*03.06.13*********************************************
                MOVE    SPACE                   TO  DID3-REC
                MOVE    T-MESSAGE-400-03(1:60)  TO  DID3-REC(1:60)
                WRITE   DID3-REC
@@ -1773,9 +1869,17 @@
                                        MCPDATA-REC.
       *
            IF  MCP-RC    NOT  =   ZERO
-               MOVE    SPACE                   TO  DID2-REC
-               MOVE    T-MESSAGE-400-04        TO  DID2-REC(10:90)
-               WRITE   DID2-REC
+      *½¤Àµ/*³«»Ï*03.06.13*********************************************
+      *         MOVE    SPACE                   TO  DID2-REC
+      *         MOVE    T-MESSAGE-400-04        TO  DID2-REC(10:90)
+      *         WRITE   DID2-REC
+               IF  FLG-ERR-TBL   =   ZERO
+                   MOVE    1                       TO  FLG-ERR-TBL
+                   MOVE    SPACE                   TO  DID2-REC
+                   MOVE    T-MESSAGE-400-04        TO  DID2-REC(10:90)
+                   WRITE   DID2-REC
+               END-IF
+      *½¤Àµ/*½ªÎ»*03.06.13*********************************************
                MOVE    SPACE                   TO  DID3-REC
                MOVE    T-MESSAGE-400-04(1:60)  TO  DID3-REC(1:60)
                WRITE   DID3-REC
@@ -1839,7 +1943,7 @@
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
-                                       MCPDATA-REC.    
+                                       MCPDATA-REC.
       *
        T-400-RECECHEK-READ-EXT.
            EXIT.
@@ -1863,9 +1967,17 @@
                                        MCPDATA-REC.
       *
            IF  MCP-RC   NOT =   ZERO
-               MOVE    SPACE                   TO  DID2-REC
-               MOVE    T-MESSAGE-500-01        TO  DID2-REC(10:90)
-               WRITE   DID2-REC
+      *½¤Àµ/*³«»Ï*03.06.13*********************************************
+      *         MOVE    SPACE                   TO  DID2-REC
+      *         MOVE    T-MESSAGE-500-01        TO  DID2-REC(10:90)
+      *         WRITE   DID2-REC
+               IF  FLG-ERR-TBL   =   ZERO
+                   MOVE    1                       TO  FLG-ERR-TBL
+                   MOVE    SPACE                   TO  DID2-REC
+                   MOVE    T-MESSAGE-500-01        TO  DID2-REC(10:90)
+                   WRITE   DID2-REC
+               END-IF
+      *½¤Àµ/*½ªÎ»*03.06.13*********************************************
                MOVE    SPACE                   TO  DID3-REC
                MOVE    T-MESSAGE-500-01(1:60)  TO  DID3-REC(1:60)
                WRITE   DID3-REC
@@ -1905,7 +2017,7 @@
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
-                                       MCPDATA-REC.    
+                                       MCPDATA-REC.
       *
        T-500-RECECHEK-READ-EXT.
            EXIT.
@@ -1949,20 +2061,11 @@
                    WRITE   DID2-REC
                    MOVE    "*"               TO  T-ERR-04
                END-IF
-               IF  (W-COMB-HANNTEI1      =   "---")  AND
-                   (T-SINRYOU-AREA       >   W-YM3)
-                   COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
-                   MOVE    SPACE             TO  DID2-REC
-                   MOVE    W1-SRY-HOSPID     TO  DID2-REC(1:24)
-                   MOVE    "-"               TO  DID2-REC(25:1)
-                   MOVE    W1-SRY-PTID       TO  DID2-REC(26:10)
-                   MOVE    T-MESSAGE-500-05  TO  DID2-REC(71:90)
-                   WRITE   DID2-REC
-                   MOVE    "*"               TO  T-ERR-04
-               END-IF
-               IF  (W-COMB-HANNTEI1      =   "---")  AND
-                   (T-SINRYOU-AREA       =   W-YM3)  AND
-                   (PTINF-BIRTHDAY(7:2)  =   "01")
+               IF  ((W-COMB-HANNTEI1      =   "---")  AND
+                    (T-SINRYOU-AREA       >   W-YM3))  OR
+                   ((W-COMB-HANNTEI1      =   "---")  AND
+                    (T-SINRYOU-AREA       =   W-YM3)  AND
+                    (PTINF-BIRTHDAY(7:2)  =   "01"))
                    COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
                    MOVE    SPACE             TO  DID2-REC
                    MOVE    W1-SRY-HOSPID     TO  DID2-REC(1:24)
@@ -2029,9 +2132,17 @@
                                        MCPDATA-REC.
       *
            IF  MCP-RC   NOT =   ZERO
-               MOVE    SPACE                   TO  DID2-REC
-               MOVE    T-MESSAGE-500-01        TO  DID2-REC(10:90)
-               WRITE   DID2-REC
+      *½¤Àµ/*³«»Ï*03.06.13*********************************************
+      *         MOVE    SPACE                   TO  DID2-REC
+      *         MOVE    T-MESSAGE-500-01        TO  DID2-REC(10:90)
+      *         WRITE   DID2-REC
+               IF  FLG-ERR-TBL   =   ZERO
+                   MOVE    1                       TO  FLG-ERR-TBL
+                   MOVE    SPACE                   TO  DID2-REC
+                   MOVE    T-MESSAGE-500-01        TO  DID2-REC(10:90)
+                   WRITE   DID2-REC
+               END-IF
+      *½¤Àµ/*½ªÎ»*03.06.13*********************************************
                MOVE    SPACE                   TO  DID3-REC
                MOVE    T-MESSAGE-500-01(1:60)  TO  DID3-REC(1:60)
                WRITE   DID3-REC
@@ -2069,17 +2180,25 @@
       *
            MOVE    ACCT-SRYYM          TO  W-YMD4(1:6).
            MOVE    00                  TO  W-YMD4(7:2).
-           IF  (W-MM4   =   1) OR
-               (W-MM4   =   2)
+      *½¤Àµ/*³«»Ï*03.06.18*********************************************
+      *     IF  (W-MM4   =   1) OR
+      *         (W-MM4   =   2)
+      *         COMPUTE  W-YY4 = W-YY4 - 1
+      *         IF  W-MM4   =   1  
+      *             MOVE    11              TO  W-MM4
+      *         ELSE
+      *             MOVE    12              TO  W-MM4
+      *         END-IF
+      *     ELSE
+      *         COMPUTE  W-MM4 = W-MM4 - 2
+      *     END-IF.
+           IF  W-MM4   =   1
                COMPUTE  W-YY4 = W-YY4 - 1
-               IF  W-MM4   =   1  
-                   MOVE    11              TO  W-MM4
-               ELSE
-                   MOVE    12              TO  W-MM4
-               END-IF
+               MOVE    12              TO  W-MM4
            ELSE
-               COMPUTE  W-MM4 = W-MM4 - 2
+               COMPUTE  W-MM4 = W-MM4 - 1
            END-IF.
+      *½¤Àµ/*½ªÎ»*03.06.18*********************************************
       *
            INITIALIZE                  PTBYOMEI-REC.
            MOVE    ACCT-HOSPID         TO  PTBYO-HOSPID.
@@ -2095,9 +2214,17 @@
                                        MCPDATA-REC.
       *
            IF  MCP-RC   NOT =   ZERO
-               MOVE    SPACE                   TO  DID2-REC
-               MOVE    T-MESSAGE-510-01        TO  DID2-REC(10:90)
-               WRITE   DID2-REC
+      *½¤Àµ/*³«»Ï*03.06.13*********************************************
+      *         MOVE    SPACE                   TO  DID2-REC
+      *         MOVE    T-MESSAGE-510-01        TO  DID2-REC(10:90)
+      *         WRITE   DID2-REC
+               IF  FLG-ERR-TBL   =   ZERO
+                   MOVE    1                       TO  FLG-ERR-TBL
+                   MOVE    SPACE                   TO  DID2-REC
+                   MOVE    T-MESSAGE-510-01        TO  DID2-REC(10:90)
+                   WRITE   DID2-REC
+               END-IF
+      *½¤Àµ/*½ªÎ»*03.06.13*********************************************
                MOVE    SPACE                   TO  DID3-REC
                MOVE    T-MESSAGE-510-01(1:60)  TO  DID3-REC(1:60)
                WRITE   DID3-REC
@@ -2110,21 +2237,24 @@
       *                 ((T-ERR-05          = SPACE)   OR
       *                  (T-ERR-07          = SPACE))
                IF  MCP-RC   NOT =   ZERO
-                   IF  (SPA-GMN-CNV (5)   =  "1")  AND
+                   IF  (SPA-GMN-CNV (5)   =  "1")   AND
                        (T-ERR-05          = SPACE)
       *½¤Àµ/*½ªÎ»*03.06.10*********************************************
-                       COMPUTE T-CNT-OUT = T-CNT-OUT + 1
-                       MOVE    SPACE                 TO  DID2-REC
-                       MOVE    ACCT-HOSPID           TO  DID2-REC(1:24)
-                       MOVE    "-"                   TO  DID2-REC(25:1)
-                       MOVE    ACCT-PTID             TO  DID2-REC(26:10)
-                       MOVE    T-MESSAGE-510-02      TO  DID2-REC(71:90)
-                       WRITE   DID2-REC
-                       MOVE    "*"                   TO  T-ERR-05
+                       IF  T-HANNTEI6-1      = SPACE
+                           COMPUTE T-CNT-OUT = T-CNT-OUT + 1
+                           MOVE    SPACE             TO  DID2-REC
+                           MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
+                           MOVE    "-"               TO  DID2-REC(25:1)
+                           MOVE    ACCT-PTID         TO  DID2-REC(26:10)
+                           MOVE    T-MESSAGE-510-02  TO  DID2-REC(71:90)
+                           WRITE   DID2-REC
+                       END-IF
+                       MOVE    "*"               TO  T-ERR-05
       *½¤Àµ/*³«»Ï*03.06.10*********************************************
-      *                 MOVE    "*"                   TO  T-ERR-07
+      *                 MOVE    "*"               TO  T-ERR-07
       *½¤Àµ/*½ªÎ»*03.06.10*********************************************
-                       MOVE    "ED"                  TO  T-HANNTEI6
+                       MOVE    "ED"              TO  T-HANNTEI6
+                       MOVE    "ED"              TO  T-HANNTEI6-1
                    END-IF
                ELSE
                    PERFORM UNTIL      MCP-RC   NOT  =  ZERO
@@ -2145,15 +2275,18 @@
                            (T-ERR-05          = SPACE)  AND
                            ((T-HANNTEI3      = "*")     OR
                             (PTBYO-BYOMEI    = SPACE))
-                           COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
-                           MOVE SPACE                TO  DID2-REC
-                           MOVE ACCT-HOSPID          TO  DID2-REC(1:24)
-                           MOVE "-"                  TO  DID2-REC(25:1)
-                           MOVE ACCT-PTID            TO  DID2-REC(26:10)
-                           MOVE T-MESSAGE-510-03     TO  DID2-REC(71:90)
-                           WRITE   DID2-REC
+                           IF  T-HANNTEI6-1      = SPACE
+                               COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
+                               MOVE SPACE            TO  DID2-REC
+                               MOVE ACCT-HOSPID      TO  DID2-REC(1:24)
+                               MOVE "-"              TO  DID2-REC(25:1)
+                               MOVE ACCT-PTID        TO  DID2-REC(26:10)
+                               MOVE T-MESSAGE-510-03 TO  DID2-REC(71:90)
+                               WRITE   DID2-REC
+                           END-IF
                            MOVE    "*"               TO  T-ERR-05
                            MOVE    "ED"              TO  T-HANNTEI6
+                           MOVE    "ED"              TO  T-HANNTEI6-1
                        END-IF
       *½¤Àµ/*³«»Ï*03.06.10*********************************************
                        IF  ((SPA-GMN-CNV (7)     = "1")      AND
@@ -2164,14 +2297,18 @@
                             (PTBYO-TENKIKBN  NOT = SPACE)    AND
                             (PTBYO-TENKIYMD      = SPACE)    AND
                             (T-ERR-07            = SPACE))
-                           COMPUTE T-CNT-OUT = T-CNT-OUT + 1
-                           MOVE    SPACE             TO  DID2-REC
-                           MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
-                           MOVE    "-"               TO  DID2-REC(25:1)
-                           MOVE    PTBYO-PTID        TO  DID2-REC(26:10)
-                           MOVE    T-MESSAGE-510-07  TO  DID2-REC(71:90)
-                           WRITE   DID2-REC
+                           IF  T-HANNTEI6-3        = SPACE
+                               COMPUTE T-CNT-OUT = T-CNT-OUT + 1
+                               MOVE    SPACE         TO  DID2-REC
+                               MOVE    ACCT-HOSPID   TO  DID2-REC(1:24)
+                               MOVE    "-"           TO  DID2-REC(25:1)
+                               MOVE    PTBYO-PTID    TO  DID2-REC(26:10)
+                               MOVE    T-MESSAGE-510-07
+                                                     TO  DID2-REC(71:90)
+                               WRITE   DID2-REC
+                           END-IF
                            MOVE    "*"               TO  T-ERR-07
+                           MOVE    "ED"              TO  T-HANNTEI6-3
                        END-IF
       *½¤Àµ/*½ªÎ»*03.06.10*********************************************
                        IF  (SPA-GMN-CNV (7)   = "1")          AND
@@ -2182,16 +2319,21 @@
       *½¤Àµ/*½ªÎ»*03.06.10*********************************************
                            (PTBYO-SRYYMD(1:6) < W-YMD4(1:6))  AND
                            (T-ERR-07          = SPACE)
-                           COMPUTE T-CNT-OUT = T-CNT-OUT + 1
-                           MOVE    SPACE             TO  DID2-REC
-                           MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
-                           MOVE    "-"               TO  DID2-REC(25:1)
-                           MOVE    PTBYO-PTID        TO  DID2-REC(26:10)
-                           MOVE    T-MESSAGE-510-04  TO  DID2-REC(71:90)
-                           WRITE   DID2-REC
+                           IF  T-HANNTEI6-3      = SPACE
+                               COMPUTE T-CNT-OUT = T-CNT-OUT + 1
+                               MOVE    SPACE         TO  DID2-REC
+                               MOVE    ACCT-HOSPID   TO  DID2-REC(1:24)
+                               MOVE    "-"           TO  DID2-REC(25:1)
+                               MOVE    PTBYO-PTID    TO  DID2-REC(26:10)
+                               MOVE    T-MESSAGE-510-04
+                                                     TO  DID2-REC(71:90)
+                               WRITE   DID2-REC
+                           END-IF
                            MOVE    "*"               TO  T-ERR-07
+                           MOVE    "ED"              TO  T-HANNTEI6-3
                        END-IF
-                       IF  (SPA-GMN-CNV (13)   =   "1")  AND
+                       IF  (SPA-GMN-CNV (13)   =   "1")    AND
+                           (T-HANNTEI6-4       =   SPACE)  AND
                            (T-ERR-13-3         =   SPACE)
                            INITIALIZE              ORCSKANACHKAREA
                            MOVE    "1"             TO  KANACHK-SYORI
@@ -2208,9 +2350,11 @@
                                                    TO  DID2-REC(71:90)
                                WRITE   DID2-REC
                                MOVE    "*"         TO  T-ERR-13-3
+                               MOVE    "ED"        TO  T-HANNTEI6-4
                            END-IF
                        END-IF
-                       IF  (SPA-GMN-CNV (13)   =   "1")  AND
+                       IF  (SPA-GMN-CNV (13)   =   "1")    AND
+                           (T-HANNTEI6-4       =   SPACE)  AND
                            (T-ERR-13-3         =   SPACE)
                            INITIALIZE          ORCSKANACHKAREA
                            MOVE    "1"         TO  KANACHK-SYORI
@@ -2220,14 +2364,15 @@
                                                    ORCSKANACHKAREA
                            IF  KANACHK-RC   NOT =   ZERO
                                COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
-                               MOVE    SPACE         TO  DID1-REC
-                               MOVE    ACCT-HOSPID   TO  DID2-REC(1:24)
-                               MOVE    "-"           TO  DID2-REC(25:1)
-                               MOVE    ACCT-PTID     TO  DID2-REC(26:10)
+                               MOVE    SPACE       TO  DID1-REC
+                               MOVE    ACCT-HOSPID TO  DID2-REC(1:24)
+                               MOVE    "-"         TO  DID2-REC(25:1)
+                               MOVE    ACCT-PTID   TO  DID2-REC(26:10)
                                MOVE    T-MESSAGE-600-04
-                                                     TO  DID2-REC(71:90)
+                                                   TO  DID2-REC(71:90)
                                WRITE   DID2-REC
-                               MOVE    "*"       TO  T-ERR-13-3
+                               MOVE    "*"         TO  T-ERR-13-3
+                               MOVE    "ED"        TO  T-HANNTEI6-4
                            END-IF
                        END-IF
                        IF  (T-HANNTEI6           =  "CH")       AND
@@ -2255,7 +2400,8 @@
                                    MOVE    99            TO  IDX2
                                END-IF
                            END-PERFORM
-                           IF  PTBYO-SRYYMD   >   W-YMD5
+                           IF  (PTBYO-SRYYMD    >   W-YMD5)  AND
+                               (T-HANNTEI6-2    =   SPACE)
                                PERFORM T-520-RECECHEK-SEC
                            END-IF
                        END-IF
@@ -2269,14 +2415,17 @@
                            (PTBYO-BYOMEICD (4) = SPACE)  AND
                            (PTBYO-BYOMEICD (5) = SPACE)  AND
                            (PTBYO-BYOMEICD (6) = SPACE)
-                           COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
-                           MOVE SPACE                TO  DID2-REC
-                           MOVE ACCT-HOSPID          TO  DID2-REC(1:24)
-                           MOVE "-"                  TO  DID2-REC(25:1)
-                           MOVE ACCT-PTID            TO  DID2-REC(26:10)
-                           MOVE T-MESSAGE-510-06     TO  DID2-REC(71:90)
-                           WRITE   DID2-REC
+                           IF  T-HANNTEI6-5   =   SPACE
+                               COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
+                               MOVE SPACE            TO  DID2-REC
+                               MOVE ACCT-HOSPID      TO  DID2-REC(1:24)
+                               MOVE "-"              TO  DID2-REC(25:1)
+                               MOVE ACCT-PTID        TO  DID2-REC(26:10)
+                               MOVE T-MESSAGE-510-06 TO  DID2-REC(71:90)
+                               WRITE   DID2-REC
+                           END-IF
                            MOVE    "*"               TO  T-ERR-15
+                           MOVE    "ED"              TO  T-HANNTEI6-5
                        END-IF
       *½¤Àµ/*½ªÎ»*03.06.06*********************************************
                        PERFORM T-510-RECECHEK-READ-SEC
@@ -2328,9 +2477,17 @@
                                        MCPDATA-REC.
       *
            IF  MCP-RC   NOT =   ZERO
-               MOVE    SPACE                   TO  DID2-REC
-               MOVE    T-MESSAGE-520-01        TO  DID2-REC(10:90)
-               WRITE   DID2-REC
+      *½¤Àµ/*³«»Ï*03.06.13*********************************************
+      *         MOVE    SPACE                   TO  DID2-REC
+      *         MOVE    T-MESSAGE-520-01        TO  DID2-REC(10:90)
+      *         WRITE   DID2-REC
+               IF  FLG-ERR-TBL   =   ZERO
+                   MOVE    1                       TO  FLG-ERR-TBL
+                   MOVE    SPACE                   TO  DID2-REC
+                   MOVE    T-MESSAGE-520-01        TO  DID2-REC(10:90)
+                   WRITE   DID2-REC
+               END-IF
+      *½¤Àµ/*½ªÎ»*03.06.13*********************************************
                MOVE    SPACE                   TO  DID3-REC
                MOVE    T-MESSAGE-520-01(1:60)  TO  DID3-REC(1:60)
                WRITE   DID3-REC
@@ -2347,6 +2504,7 @@
                    MOVE    T-MESSAGE-520-02      TO  DID2-REC(71:90)
                    WRITE   DID2-REC
                    MOVE    "*"                   TO  T-ERR-06
+                   MOVE    "ED"                  TO  T-HANNTEI6-2
                ELSE
                    MOVE    MCPDATA-REC           TO  SRYKARRK-REC
                    IF  PTBYO-SRYYMD(1:6)   <   KARRK-SYOSINYMD1(1:6)
@@ -2360,6 +2518,7 @@
                        MOVE    T-MESSAGE-520-03      TO  DID2-REC(71:90)
                        WRITE   DID2-REC
                        MOVE    "*"                   TO  T-ERR-06
+                       MOVE    "ED"                  TO  T-HANNTEI6-2
                    END-IF
                END-IF
            END-IF.
@@ -2411,9 +2570,17 @@
                                        MCPDATA-REC.
       *
            IF  MCP-RC    NOT  =   ZERO
-               MOVE    SPACE                   TO  DID2-REC
-               MOVE    T-MESSAGE-530-02        TO  DID2-REC(10:90)
-               WRITE   DID2-REC
+      *½¤Àµ/*³«»Ï*03.06.13*********************************************
+      *         MOVE    SPACE                   TO  DID2-REC
+      *         MOVE    T-MESSAGE-530-02        TO  DID2-REC(10:90)
+      *         WRITE   DID2-REC
+               IF  FLG-ERR-TBL   =   ZERO
+                   MOVE    1                       TO  FLG-ERR-TBL
+                   MOVE    SPACE                   TO  DID2-REC
+                   MOVE    T-MESSAGE-530-02        TO  DID2-REC(10:90)
+                   WRITE   DID2-REC
+               END-IF
+      *½¤Àµ/*½ªÎ»*03.06.13*********************************************
                MOVE    SPACE                   TO  DID3-REC
                MOVE    T-MESSAGE-530-02(1:60)  TO  DID3-REC(1:60)
                WRITE   DID3-REC
@@ -2706,9 +2873,17 @@
       *
            IF  MCP-RC   NOT =   ZERO
                MOVE    ZERO                    TO  FLG-CHK
-               MOVE    SPACE                   TO  DID2-REC
-               MOVE    T-MESSAGE-530-01        TO  DID2-REC(10:90)
-               WRITE   DID2-REC
+      *½¤Àµ/*³«»Ï*03.06.13*********************************************
+      *         MOVE    SPACE                   TO  DID2-REC
+      *         MOVE    T-MESSAGE-530-01        TO  DID2-REC(10:90)
+      *         WRITE   DID2-REC
+               IF  FLG-ERR-TBL   =   ZERO
+                   MOVE    1                       TO  FLG-ERR-TBL
+                   MOVE    SPACE                   TO  DID2-REC
+                   MOVE    T-MESSAGE-530-01        TO  DID2-REC(10:90)
+                   WRITE   DID2-REC
+               END-IF
+      *½¤Àµ/*½ªÎ»*03.06.13*********************************************
                MOVE    SPACE                   TO  DID3-REC
                MOVE    T-MESSAGE-530-01(1:60)  TO  DID3-REC(1:60)
                WRITE   DID3-REC
@@ -2772,9 +2947,17 @@
       *
            IF  MCP-RC   NOT =   ZERO
                MOVE    ZERO                    TO  FLG-CHK
-               MOVE    SPACE                   TO  DID2-REC
-               MOVE    T-MESSAGE-530-01        TO  DID2-REC(10:90)
-               WRITE   DID2-REC
+      *½¤Àµ/*³«»Ï*03.06.13*********************************************
+      *         MOVE    SPACE                   TO  DID2-REC
+      *         MOVE    T-MESSAGE-530-01        TO  DID2-REC(10:90)
+      *         WRITE   DID2-REC
+               IF  FLG-ERR-TBL   =   ZERO
+                   MOVE    1                       TO  FLG-ERR-TBL
+                   MOVE    SPACE                   TO  DID2-REC
+                   MOVE    T-MESSAGE-530-01        TO  DID2-REC(10:90)
+                   WRITE   DID2-REC
+               END-IF
+      *½¤Àµ/*½ªÎ»*03.06.13*********************************************
                MOVE    SPACE                   TO  DID3-REC
                MOVE    T-MESSAGE-530-01(1:60)  TO  DID3-REC(1:60)
                WRITE   DID3-REC
@@ -2945,9 +3128,17 @@
       *
            IF  MCP-RC   NOT =   ZERO
                MOVE    ZERO                    TO  FLG-CHK
-               MOVE    SPACE                   TO  DID2-REC
-               MOVE    T-MESSAGE-530-08        TO  DID2-REC(10:90)
-               WRITE   DID2-REC
+      *½¤Àµ/*³«»Ï*03.06.13*********************************************
+      *         MOVE    SPACE                   TO  DID2-REC
+      *         MOVE    T-MESSAGE-530-08        TO  DID2-REC(10:90)
+      *         WRITE   DID2-REC
+               IF  FLG-ERR-TBL   =   ZERO
+                   MOVE    1                       TO  FLG-ERR-TBL
+                   MOVE    SPACE                   TO  DID2-REC
+                   MOVE    T-MESSAGE-530-08        TO  DID2-REC(10:90)
+                   WRITE   DID2-REC
+               END-IF
+      *½¤Àµ/*½ªÎ»*03.06.13*********************************************
                MOVE    SPACE                   TO  DID3-REC
                MOVE    T-MESSAGE-530-08(1:60)  TO  DID3-REC(1:60)
                WRITE   DID3-REC
@@ -3134,9 +3325,17 @@
       *
            IF  MCP-RC   NOT =   ZERO
                MOVE    ZERO                    TO  FLG-CHK
-               MOVE    SPACE                   TO  DID2-REC
-               MOVE    T-MESSAGE-530-01        TO  DID2-REC(10:90)
-               WRITE   DID2-REC
+      *½¤Àµ/*³«»Ï*03.06.13*********************************************
+      *         MOVE    SPACE                   TO  DID2-REC
+      *         MOVE    T-MESSAGE-530-01        TO  DID2-REC(10:90)
+      *         WRITE   DID2-REC
+               IF  FLG-ERR-TBL   =   ZERO
+                   MOVE    1                       TO  FLG-ERR-TBL
+                   MOVE    SPACE                   TO  DID2-REC
+                   MOVE    T-MESSAGE-530-01        TO  DID2-REC(10:90)
+                   WRITE   DID2-REC
+               END-IF
+      *½¤Àµ/*½ªÎ»*03.06.13*********************************************
                MOVE    SPACE                   TO  DID3-REC
                MOVE    T-MESSAGE-530-01(1:60)  TO  DID3-REC(1:60)
                WRITE   DID3-REC
@@ -3161,16 +3360,24 @@
                        PERFORM VARYING IDY1  FROM  1  BY 1
                                UNTIL   IDY1  >  1000
                            IF  W-SRYCD-91 (IDY1)   =   SPACE
-                               MOVE    CHK-CD (IDY2)      TO  W-SRYCD-91
-                                                                  (IDY1)
-                               MOVE    2000               TO  IDY1
+                               MOVE    CHK-CD (IDY2)
+                                                  TO  W-SRYCD-91 (IDY1)
                                IF  (CHK-CD (IDY2)   NOT =   SPACE) AND
                                    (CHK-CD (IDY2)   NOT =   ZERO)
                                    PERFORM T-530-RECECHEK-CHK5-SEC
+                                   MOVE    FLG-TBL
+                                                 TO  W-SRYCD-91-T (IDY1)
+                                   MOVE    FLG-TENKIYMD-ER
+                                                 TO  W-SRYCD-91-Y (IDY1)
                                END-IF
+                               MOVE    2000               TO  IDY1
                            ELSE
                                IF  W-SRYCD-91 (IDY1)  =  CHK-CD (IDY2)
-                                   MOVE    2000               TO  IDY1
+                                   MOVE    W-SRYCD-91-T (IDY1)
+                                                     TO  FLG-TBL
+                                   MOVE    W-SRYCD-91-Y (IDY1)
+                                                     TO  FLG-TENKIYMD-ER
+                                   MOVE    2000      TO  IDY1
                                END-IF
                            END-IF
                        END-PERFORM
@@ -3219,9 +3426,17 @@
       *
            IF  MCP-RC   NOT =   ZERO
                MOVE    ZERO                    TO  FLG-CHK
-               MOVE    SPACE                   TO  DID2-REC
-               MOVE    T-MESSAGE-530-01        TO  DID2-REC(10:90)
-               WRITE   DID2-REC
+      *½¤Àµ/*³«»Ï*03.06.13*********************************************
+      *         MOVE    SPACE                   TO  DID2-REC
+      *         MOVE    T-MESSAGE-530-01        TO  DID2-REC(10:90)
+      *         WRITE   DID2-REC
+               IF  FLG-ERR-TBL   =   ZERO
+                   MOVE    1                       TO  FLG-ERR-TBL
+                   MOVE    SPACE                   TO  DID2-REC
+                   MOVE    T-MESSAGE-530-01        TO  DID2-REC(10:90)
+                   WRITE   DID2-REC
+               END-IF
+      *½¤Àµ/*½ªÎ»*03.06.13*********************************************
                MOVE    SPACE                   TO  DID3-REC
                MOVE    T-MESSAGE-530-01(1:60)  TO  DID3-REC(1:60)
                WRITE   DID3-REC
@@ -3246,15 +3461,23 @@
                        PERFORM VARYING IDY1  FROM  1  BY 1
                                UNTIL   IDY1  >  1000
                            IF  W-SRYCD-92 (IDY1)   =   SPACE
-                               MOVE    CHK-CD (IDY2)      TO  W-SRYCD-92
-                                                                  (IDY1)
-                               MOVE    2000               TO  IDY1
+                               MOVE    CHK-CD (IDY2)
+                                                  TO  W-SRYCD-92 (IDY1)
                                IF  (CHK-CD (IDY2)   NOT =   SPACE) AND
                                    (CHK-CD (IDY2)   NOT =   ZERO)
                                    PERFORM T-530-RECECHEK-CHK5-SEC
+                                   MOVE    FLG-TBL
+                                                 TO  W-SRYCD-92-T (IDY1)
+                                   MOVE    FLG-TENKIYMD-ER
+                                                 TO  W-SRYCD-92-Y (IDY1)
                                END-IF
+                               MOVE    2000               TO  IDY1
                            ELSE
                                IF  W-SRYCD-92 (IDY1)  =  CHK-CD (IDY2)
+                                   MOVE    W-SRYCD-92-T (IDY1)
+                                                     TO  FLG-TBL
+                                   MOVE    W-SRYCD-92-Y (IDY1)
+                                                     TO  FLG-TENKIYMD-ER
                                    MOVE    2000               TO  IDY1
                                END-IF
                            END-IF
@@ -3353,9 +3576,17 @@
       *
            IF  MCP-RC   NOT =   ZERO
                MOVE    ZERO                    TO  FLG-CHK
-               MOVE    SPACE                   TO  DID2-REC
-               MOVE    T-MESSAGE-540-01        TO  DID2-REC(10:90)
-               WRITE   DID2-REC
+      *½¤Àµ/*³«»Ï*03.06.13*********************************************
+      *         MOVE    SPACE                   TO  DID2-REC
+      *         MOVE    T-MESSAGE-540-01        TO  DID2-REC(10:90)
+      *         WRITE   DID2-REC
+               IF  FLG-ERR-TBL   =   ZERO
+                   MOVE    1                       TO  FLG-ERR-TBL
+                   MOVE    SPACE                   TO  DID2-REC
+                   MOVE    T-MESSAGE-540-01        TO  DID2-REC(10:90)
+                   WRITE   DID2-REC
+               END-IF
+      *½¤Àµ/*½ªÎ»*03.06.13*********************************************
                MOVE    SPACE                   TO  DID3-REC
                MOVE    T-MESSAGE-540-01(1:60)  TO  DID3-REC(1:60)
                WRITE   DID3-REC
@@ -3502,9 +3733,17 @@
       *
            IF  MCP-RC   NOT =   ZERO
                MOVE    ZERO                    TO  FLG-CHK
-               MOVE    SPACE                   TO  DID2-REC
-               MOVE    T-MESSAGE-540-04        TO  DID2-REC(10:90)
-               WRITE   DID2-REC
+      *½¤Àµ/*³«»Ï*03.06.13*********************************************
+      *         MOVE    SPACE                   TO  DID2-REC
+      *         MOVE    T-MESSAGE-540-04        TO  DID2-REC(10:90)
+      *         WRITE   DID2-REC
+               IF  FLG-ERR-TBL   =   ZERO
+                   MOVE    1                       TO  FLG-ERR-TBL
+                   MOVE    SPACE                   TO  DID2-REC
+                   MOVE    T-MESSAGE-540-04        TO  DID2-REC(10:90)
+                   WRITE   DID2-REC
+               END-IF
+      *½¤Àµ/*½ªÎ»*03.06.13*********************************************
                MOVE    SPACE                   TO  DID3-REC
                MOVE    T-MESSAGE-540-04(1:60)  TO  DID3-REC(1:60)
                WRITE   DID3-REC
@@ -3604,7 +3843,7 @@
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
-                                       MCPDATA-REC. 
+                                       MCPDATA-REC.
       *
        T-540-RECECHEK-READ3-EXT.
            EXIT.
@@ -3628,11 +3867,19 @@
                                        MCPDATA-REC.
       *
            IF  MCP-RC    NOT  =   ZERO
-               MOVE    SPACE                     TO    DID2-REC
-               MOVE    T-MESSAGE-540-05          TO    DID2-REC(10:90)
-               WRITE   DID2-REC
-               MOVE    SPACE                     TO    DID3-REC
-               MOVE    T-MESSAGE-540-05(1:60)    TO    DID3-REC(1:60)
+      *½¤Àµ/*³«»Ï*03.06.13*********************************************
+      *         MOVE    SPACE                     TO  DID2-REC
+      *         MOVE    T-MESSAGE-540-05          TO  DID2-REC(10:90)
+      *         WRITE   DID2-REC
+               IF  FLG-ERR-TBL   =   ZERO
+                   MOVE    1                       TO  FLG-ERR-TBL
+                   MOVE    SPACE                   TO  DID2-REC
+                   MOVE    T-MESSAGE-540-05        TO  DID2-REC(10:90)
+                   WRITE   DID2-REC
+               END-IF
+      *½¤Àµ/*½ªÎ»*03.06.13*********************************************
+               MOVE    SPACE                     TO  DID3-REC
+               MOVE    T-MESSAGE-540-05(1:60)    TO  DID3-REC(1:60)
                WRITE   DID3-REC
            ELSE
                PERFORM T-540-RECECHEK-READ4-SEC
@@ -3892,11 +4139,19 @@
                                        MCPDATA-REC.
       *
            IF  MCP-RC    NOT  =   ZERO
-               MOVE    SPACE                     TO    DID2-REC
-               MOVE    T-MESSAGE-540-06          TO    DID2-REC(10:90)
-               WRITE   DID2-REC
-               MOVE    SPACE                     TO    DID3-REC
-               MOVE    T-MESSAGE-540-06(1:60)    TO    DID3-REC(1:60)
+      *½¤Àµ/*³«»Ï*03.06.13*********************************************
+      *         MOVE    SPACE                     TO  DID2-REC
+      *         MOVE    T-MESSAGE-540-06          TO  DID2-REC(10:90)
+      *         WRITE   DID2-REC
+               IF  FLG-ERR-TBL   =   ZERO
+                   MOVE    1                       TO  FLG-ERR-TBL
+                   MOVE    SPACE                   TO  DID2-REC
+                   MOVE    T-MESSAGE-540-06        TO  DID2-REC(10:90)
+                   WRITE   DID2-REC
+               END-IF
+      *½¤Àµ/*½ªÎ»*03.06.13*********************************************
+               MOVE    SPACE                     TO  DID3-REC
+               MOVE    T-MESSAGE-540-06(1:60)    TO  DID3-REC(1:60)
                WRITE   DID3-REC
            ELSE
                PERFORM T-540-RECECHEK-READ5-SEC
@@ -3970,9 +4225,17 @@
                                        MCPDATA-REC.
       *
            IF  MCP-RC    NOT  =   ZERO
-               MOVE    SPACE                  TO  DID2-REC
-               MOVE    T-MESSAGE-200-01       TO  DID2-REC(10:90)
-               WRITE   DID2-REC
+      *½¤Àµ/*³«»Ï*03.06.13*********************************************
+      *         MOVE    SPACE                  TO  DID2-REC
+      *         MOVE    T-MESSAGE-200-01       TO  DID2-REC(10:90)
+      *         WRITE   DID2-REC
+               IF  FLG-ERR-TBL   =   ZERO
+                   MOVE    1                      TO  FLG-ERR-TBL
+                   MOVE    SPACE                  TO  DID2-REC
+                   MOVE    T-MESSAGE-200-01       TO  DID2-REC(10:90)
+                   WRITE   DID2-REC
+               END-IF
+      *½¤Àµ/*½ªÎ»*03.06.13*********************************************
                MOVE    SPACE                  TO  DID3-REC
                MOVE    T-MESSAGE-200-01(1:60) TO  DID3-REC(1:60)
                WRITE   DID3-REC
@@ -4042,11 +4305,19 @@
                                        MCPDATA-REC.
       *
            IF  MCP-RC    NOT  =   ZERO
-               MOVE    SPACE                     TO    DID2-REC
-               MOVE    T-MESSAGE-540-05          TO    DID2-REC(10:90)
-               WRITE   DID2-REC
-               MOVE    SPACE                     TO    DID3-REC
-               MOVE    T-MESSAGE-540-05(1:60)    TO    DID3-REC(1:60)
+      *½¤Àµ/*³«»Ï*03.06.13*********************************************
+      *         MOVE    SPACE                    TO  DID2-REC
+      *         MOVE    T-MESSAGE-540-05         TO  DID2-REC(10:90)
+      *         WRITE   DID2-REC
+               IF  FLG-ERR-TBL   =   ZERO
+                   MOVE    1                       TO  FLG-ERR-TBL
+                   MOVE    SPACE                   TO  DID2-REC
+                   MOVE    T-MESSAGE-540-05        TO  DID2-REC(10:90)
+                   WRITE   DID2-REC
+               END-IF
+      *½¤Àµ/*½ªÎ»*03.06.13*********************************************
+               MOVE    SPACE                     TO  DID3-REC
+               MOVE    T-MESSAGE-540-05(1:60)    TO  DID3-REC(1:60)
                WRITE   DID3-REC
            ELSE
                PERFORM T-540-RECECHEK-READ7-SEC
