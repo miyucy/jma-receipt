@@ -4588,20 +4588,30 @@
       *
            MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
       *
-      ***  MOVE    "1"                 TO  SHELLTBL-ARG1
-           MOVE    SPA-GMN-SCODE       TO  SHELLTBL-ARG1
-           MOVE    SPA-PTID            TO  WRK-PTID
-           MOVE    WRK-PTID            TO  SHELLTBL-ARG2
-           MOVE    SPA-SRYKA           TO  SHELLTBL-ARG3
-           MOVE    SPA-SRYYMD          TO  SHELLTBL-ARG4
-           MOVE    SPA-HKNCOMBINUM     TO  SHELLTBL-ARG5
-           MOVE    SPA-HOSPID          TO  SHELLTBL-ARG6
-           MOVE    SHELLTBL            TO  MCPDATA-REC
-           MOVE    "SHELL"             TO  MCP-FUNC
-           MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                   MCPAREA
-                   MCPDATA-REC
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-SYUNOU-MAX
+               MOVE    SPA-SYUNOU-REC(IDX) TO  SYUNOU-REC
+               IF     (SYU-SRYKA           =   ZERO OR
+                                               SPACE )  OR
+                      (SYU-HKNCOMBINUM     =   SPACE OR
+                                               ZERO  )
+                   CONTINUE
+               ELSE
+                   MOVE    SPA-GMN-SCODE       TO  SHELLTBL-ARG1
+                   MOVE    SPA-PTID            TO  WRK-PTID
+                   MOVE    WRK-PTID            TO  SHELLTBL-ARG2
+                   MOVE    SYU-SRYKA           TO  SHELLTBL-ARG3
+                   MOVE    SPA-SRYYMD          TO  SHELLTBL-ARG4
+                   MOVE    SYU-HKNCOMBINUM     TO  SHELLTBL-ARG5
+                   MOVE    SPA-HOSPID          TO  SHELLTBL-ARG6
+                   MOVE    SHELLTBL            TO  MCPDATA-REC
+                   MOVE    "SHELL"             TO  MCP-FUNC
+                   MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
+                   CALL    "MCPSUB"            USING
+                                               MCPAREA
+                                               MCPDATA-REC
+               END-IF
+           END-PERFORM
       *
            .
        4906-CLAIM-SOUSIN-EXT.
