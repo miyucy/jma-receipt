@@ -31,6 +31,7 @@
       * 01.00.02     NACL-多々納  02/10/03  負担者番号からの公費種類設定修正
       * 01.00.03     NACL-多々納  02/10/29  負担者番号の全角対応
       * 01.00.04     NACL-多々納  03/02/14  法別番号チェック区分追加
+      * 01.00.05     NACL-多々納  03/04/03  公費変更チェック修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -152,6 +153,8 @@
            03  WRK-HKN2-TEKEDYMD        PIC X(08).
       *
            03  WRK-CUR                 PIC 9(02).
+      *    法別番号チェックフラグ
+           03  WRK-KOHHBTNUMKBN        PIC X(01).
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMD.
@@ -479,6 +482,24 @@
       *****************************************************************
        10011-HKNNUM-SET-SEC           SECTION.
       *
+           MOVE    SPACE               TO  WRK-KOHHBTNUMKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-KOHMAX
+               IF     (SPA-MAE-KOHNUM(IDX-K)
+                                      =    SPA-GMN-KOHNUML (IDX)) AND
+                      (SPA-MAE-KOHKBN(IDX-K)
+                                      =    SPA-GMN-KOHKBNL (IDX))
+      *            法別番号チェック区分
+                   MOVE    SPA-NAI-KOHHBTNUMKBN (IDX)
+                                           TO  WRK-KOHHBTNUMKBN
+               END-IF
+           END-PERFORM
+      *    法別番号チェック区分をしない
+           IF      WRK-KOHHBTNUMKBN    =   ZERO
+               MOVE    SPA-MAE-KOHNUM(IDX-K)   TO  WRK-MAE-KOHNUM
+               GO      TO      10011-HKNNUM-SET-EXT
+           END-IF
+      *
            INITIALIZE                  HKNNUM-REC
            MOVE    SPA-HOSPID          TO  HKN-HOSPID
            MOVE    SPA-GMN-FTNJANUM(IDX-K) (1:2)
@@ -574,15 +595,22 @@
                        MOVE    1               TO  FLG-CHK
                    END-IF
                ELSE
-                   MOVE    1               TO  FLG-CHK
+                   MOVE    SPA-GMN-KOHNUM(IDX-K)   TO  WRK-MAE-KOHNUM
+                   PERFORM 10011-HKNNUM-HENCHK-SEC
+      *************MOVE    1               TO  FLG-CHK
                END-IF
-               IF      FLG-CHK             =   1
+               IF     (FLG-CHK             =   1 )  OR
+                      (SPA-ERRCD       NOT =   SPACE)
       *            前の公費へ戻す
                    MOVE    SPA-MAE-KOHNUM-G (IDX-K)
                                            TO  SPA-GMN-KOHNUM-G(IDX-K)
                    MOVE    "0074"          TO  SPA-ERRCD
                    MOVE    22              TO  SPA-GMN-CUR
                END-IF
+           END-IF
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      1001-KOHNUM-CHK-EXT
            END-IF
       *
            IF      SPA-GMN-KOHNUM(IDX-K)   =   SPACE
