@@ -58,6 +58,8 @@
            03  UKE-HYOJIJUN            PIC 9(04).
       *確認連絡
            03  UKE-KAKREN              PIC X(02).
+      *送受信フラグ
+           03  UKE-SRFLG               PIC X(02).
       *端末ＩＤ
            03  UKE-TERMID              PIC  X(16).
       *オペーレータＩＤ

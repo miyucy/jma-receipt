@@ -15,6 +15,7 @@ tbl_uketuke {
 	YYKID   			number(2);
 	HYOJIJUN  			number(4);
 	KAKREN  			char(2);
+	SRFLG    			char(2);
 	TERMID  			varchar(16);
 	OPID    			varchar(16);
 	CREYMD  			char(8);
