@@ -46,6 +46,8 @@
       *  01.00.12    NACL-ÌçÏÆ    03/11/27  ¡ÉÏ·ÊÝ¡ÉÊÔ½¸¾ò·ï½¤Àµ
       *  01.00.13    NACL-ÌçÏÆ    04/02/12  Ç¯ÎðÈ½ÄêÊ¸½¤Àµ
       *  01.00.14    NACL-Æ£¸¶    04/03/08  ¥·¥¹´É¤Ë¤è¤ëÀ¸ÊÝ¼õµë¼ÔÈÖ¹æ¤ÎÊÔ½¸
+      *  01.00.15    NACL-ÌçÏÆ    04/04/06  ¸øÈñÃ±ÆÈ£·£°ºÐÌ¤Ëþ¤ÇÏ·¿ÍÊÝ¸±ÆþÎÏ
+      *                                     ¤Î¤¢¤ëÊý¤Î¹âÎð¼Ô¥Õ¥é¥°ÊÔ½¸½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -202,6 +204,7 @@
            03  FLG-PTNYUINRRK23                        PIC 9(01).
            03  FLG-ARI                                 PIC 9(01).
            03  FLG-SET                                 PIC 9(01).
+           03  FLG-ROUJINHOKEN                         PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -1032,6 +1035,7 @@
       *
       *    ÆÃµ­»ö¹à¤Î¥»¥Ã¥È
       *    Ï·ÊÝ¤ÎÊÔ½¸
+           MOVE    ZERO       TO     FLG-ROUJINHOKEN
       ***> IF      RECE62-HKNHBTNUM     =   SPACE
            IF      RECE62-HKNNUM        =   SPACE
       ***> AND     RECE62-KOHHBTNUM (1) =   "12"
@@ -1067,6 +1071,7 @@
                                ADD      1           TO  TOKKI-IDX
                                MOVE    "04"         TO  RECE62-TOKKI
                                                             (TOKKI-IDX)
+                               MOVE    1            TO  FLG-ROUJINHOKEN
                                MOVE    1            TO  FLG-PTKOHINF     
                            ELSE
                               MOVE    "PTKOHINF-KEY4"  TO  ORC-DBPATH
@@ -1149,7 +1154,9 @@
       *    ¹âÎð¼Ô¥Õ¥é¥°
            IF    ( RECE62-AGE          >=  70      )   OR
                  ( RECE62-AGE          >=  65  AND                    
-                   RECE61-KOHID    NOT  =   ZERO   )                  
+                   RECE61-KOHID    NOT  =   ZERO   )   OR             
+                 ( RECE62-AGE          >=  65  AND                    
+                   FLG-ROUJINHOKEN      =   1      )
                MOVE    "1"                 TO  RECE62-KOUREI
       *
                IF  RECE62-RECESYUBETU   =   "8888"
