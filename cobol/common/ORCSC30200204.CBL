@@ -1552,6 +1552,10 @@
                       (ACCT-HKNCOMBI      =   LNK-ORCSC-OLD-HKNCOMBI)
                    MOVE    ZERO               TO  FLG-ZAIARI
                END-IF
+      *        包括まとめは対象外
+               IF      ACCT-HKNCOMBI           =   "9999"
+                   MOVE    ZERO               TO  FLG-ZAIARI
+               END-IF
       *
       *        回数があるもの
                IF      FLG-ZAIARI          =   1
@@ -1801,6 +1805,10 @@
                IF      ACCT-SYUTEN1        =   ZERO
                    MOVE    ZERO               TO  FLG-ZAIARI
                END-IF
+      *        包括まとめは対象外
+               IF      ACCT-HKNCOMBI           =   "9999"
+                   MOVE    ZERO               TO  FLG-ZAIARI
+               END-IF
       *        輸血の判定
                IF      FLG-ZAIARI          =   1
       *            診療行為より
@@ -1908,6 +1916,10 @@
                END-IF
       *        手技料点数がないものは対象外
                IF      ACCT-SYUTEN1       =   ZERO
+                   MOVE    ZERO               TO  FLG-ZAIARI
+               END-IF
+      *        包括まとめは対象外
+               IF      ACCT-HKNCOMBI           =   "9999"
                    MOVE    ZERO               TO  FLG-ZAIARI
                END-IF
                IF      FLG-ZAIARI         =   1
@@ -2116,10 +2128,6 @@
                   (LNK-ORCSC-NYUINYMD  NUMERIC )
       *        入院歴より決定
                PERFORM 30051-NYUINREKI-SEC
-      *TEST
-           DISPLAY "WRK-NYMD:" WRK-NYMD
-                   ",SPA-SRYYMD:" SPA-SRYYMD
-      *TEST
       *******  MOVE    LNK-ORCSC-NYUINYMD  TO  WRK-NYMD
       *        COMPUTE WRK-NYY             =   WRK-NYY
       *******                              +   1

@@ -2334,6 +2334,10 @@
                        END-IF
                    END-IF
                END-IF
+      *        Êñ³ç¤Þ¤È¤á¤ÏÂÐ¾Ý³°
+               IF      JYURRK-HKNCOMBINUM      =   "9999"
+                   MOVE    1                   TO  FLG-JYURRK-END
+               END-IF
       *
                PERFORM VARYING     IDX     FROM    1   BY  1
                        UNTIL      (IDX                 >   15  )  OR
