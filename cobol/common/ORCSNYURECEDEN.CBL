@@ -43,29 +43,31 @@
       *
       *    フラグ領域
        01  FLG-AREA.
-           03  FLG-NYUINACCT       PIC 9(01).
-           03  FLG-NYUINACT        PIC 9(01).
-           03  FLG-SRYACCT         PIC 9(01).
-           03  FLG-TENSU           PIC 9(01).
-           03  FLG-PTINF           PIC 9(01).
-           03  FLG-SYSKANRI        PIC 9(01).
-           03  FLG-HKNCOMBI        PIC 9(01).
-           03  FLG-RJN             PIC 9(01).
-           03  FLG-ROUSAI          PIC 9(01).
-           03  FLG-RYAKU           PIC 9(01).
-           03  FLG-OK              PIC 9(01).
-           03  FLG-KSN             PIC 9(01).
+           03  FLG-NYUINACCT               PIC 9(01).
+           03  FLG-NYUINACT                PIC 9(01).
+           03  FLG-SRYACCT                 PIC 9(01).
+           03  FLG-TENSU                   PIC 9(01).
+           03  FLG-PTINF                   PIC 9(01).
+           03  FLG-SYSKANRI                PIC 9(01).
+           03  FLG-HKNCOMBI                PIC 9(01).
+           03  FLG-RJN                     PIC 9(01).
+           03  FLG-ROUSAI                  PIC 9(01).
+           03  FLG-RYAKU                   PIC 9(01).
+           03  FLG-OK                      PIC 9(01).
+           03  FLG-KSN                     PIC 9(01).
+           03  FLG-SENTEI-SET              PIC 9(01).
+           03  FLG-SENTEICDCHG             PIC 9(01).
       *    添字領域
        01  IDX-AREA.
-           03  IDX                 PIC 9(04).
-           03  IDX1                PIC 9(04).
-           03  IDX2                PIC 9(04).
-           03  IDX3                PIC 9(04).
-           03  IDX4                PIC 9(04).
-           03  KSN-IDX             PIC 9(04).
-           03  GENSAN-IDX          PIC 9(04).
-           03  GENSAN-IDX2         PIC 9(04).
-           03  IDV                 PIC 9(02).
+           03  IDX                         PIC 9(04).
+           03  IDX1                        PIC 9(04).
+           03  IDX2                        PIC 9(04).
+           03  IDX3                        PIC 9(04).
+           03  IDX4                        PIC 9(04).
+           03  KSN-IDX                     PIC 9(04).
+           03  GENSAN-IDX                  PIC 9(04).
+           03  GENSAN-IDX2                 PIC 9(04).
+           03  IDV                         PIC 9(02).
       *
       *    コンスタント値
        01  CONSTANT-AREA.
@@ -222,6 +224,11 @@
                    07  WRK-SKJ3-HKNCOMBI-DAY   PIC 9(03).
                    07  WRK-SKJ3-TOKU-SHOKU     PIC X(09).
                    07  WRK-SKJ3-KAISU          PIC 9(02).
+      *
+      *
+      * 選定療養退避用テーブル
+           03  TABLE-SENTEI.
+               05  TBL-SENTEI                  PIC 9(01)   OCCURS  31.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -501,9 +508,9 @@
       *
       *入院時の外泊取得
            INITIALIZE                          NYUINACCT-REC
-           MOVE    LNK-NYURECEDEN-HOSPID    TO  NACCT-HOSPID
-           MOVE    LNK-NYURECEDEN-PTID      TO  NACCT-PTID
-           MOVE    LNK-NYURECEDEN-SANTEIYM  TO  NACCT-SRYYM
+           MOVE    LNK-NYURECEDEN-HOSPID   TO  NACCT-HOSPID
+           MOVE    LNK-NYURECEDEN-PTID     TO  NACCT-PTID
+           MOVE    LNK-NYURECEDEN-SANTEIYM TO  NACCT-SRYYM
            MOVE    "2"                     TO  NACCT-ZAISKBKBN
            MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
            PERFORM 910-NYUINACCT-SELECT-SEC
@@ -524,7 +531,38 @@
                END-PERFORM
            END-IF
       *    入院会計クローズ
-           MOVE    "NYUINACCT-KEY17"           TO  ORC-DBPATH
+           MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
+           PERFORM   910-DB-CLOSE-SEC
+      *
+      *選定療養情報の取得
+           MOVE    ZERO                    TO  FLG-SENTEI-SET
+           MOVE    ZERO                    TO  FLG-NYUINACCT
+           INITIALIZE                          NYUINACCT-REC
+           MOVE    LNK-NYURECEDEN-HOSPID   TO  NACCT-HOSPID
+           MOVE    LNK-NYURECEDEN-PTID     TO  NACCT-PTID
+           MOVE    LNK-NYURECEDEN-SANTEIYM TO  NACCT-SRYYM
+           MOVE    "NYUINACCT-KEY22"       TO  ORC-DBPATH
+           PERFORM 910-NYUINACCT-SELECT-SEC
+           IF      FLG-NYUINACCT           =   ZERO
+               MOVE     "NYUINACCT-KEY22"  TO  ORC-DBPATH
+               PERFORM   910-NYUINACCT-READ-SEC
+               PERFORM   UNTIL   (FLG-NYUINACCT    =   1)
+      *            選定入院の退避
+                   PERFORM    VARYING   IDX1   FROM   1   BY   1
+                              UNTIL     IDX1   >   31
+                       IF    (WRK-NYUINKHN(IDX1) NOT = SPACE) 
+                       AND   (NACCT-DAY(IDX1)    NOT =  ZERO) 
+                           MOVE   NACCT-DAY(IDX1)
+                                              TO  TBL-SENTEI (IDX1)
+                           MOVE     1         TO  FLG-SENTEI-SET 
+                       END-IF
+                   END-PERFORM
+                   MOVE    "NYUINACCT-KEY22"       TO  ORC-DBPATH
+                   PERFORM 910-NYUINACCT-READ-SEC
+               END-PERFORM
+           END-IF
+      *    入院会計クローズ
+           MOVE    "NYUINACCT-KEY22"       TO  ORC-DBPATH
            PERFORM   910-DB-CLOSE-SEC
       *
       *老人対象患者チェック
@@ -606,7 +644,7 @@
                    END-IF
                    IF     SYS-5000-SHOKUCD(2)  NOT =  SPACE
                        IF  SYS-5000-SHOKUKBN(2) =     "2"
-                           MOVE  SYS-5000-SHOKUCD(3)
+                           MOVE  SYS-5000-SHOKUCD(2)
                                           TO WRK-SYS5000-SHOKUCD(3 IDX)
                        END-IF
                    END-IF
@@ -682,7 +720,6 @@
                  IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
                       (ACCT-ZAIKAISU  NOT =    ZERO)
                    IF   ACCT-SRYKBN  =  "90" OR "92"
-                     DISPLAY  "ACCT-SRYCDTOTAL = " ACCT-SRYCDTOTAL
                      IF   ACCT-SRYCDTOTAL(6:9)  =   
                                             CONS-KEIKAKU-GENSAN1
                                         OR  CONS-KEIKAKU-GENSAN2
@@ -707,7 +744,6 @@
                               EVALUATE   ACCT-SRYCDTOTAL(6:9)
       *                         入院診療計画未実施減算
                                 WHEN  CONS-KEIKAKU-GENSAN1
-                                  DISPLAY "MIJITSUSHI GENSAN ARI -!!"
                                   MOVE   ACCT-DAY(1 IDX1)
                                         TO  WRK-KEIKAKU-GENSAN1(IDX1)
                                 WHEN  CONS-KEIKAKU-GENSAN2
