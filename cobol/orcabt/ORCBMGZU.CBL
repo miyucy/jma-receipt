@@ -247,7 +247,8 @@
                    END-IF
                END-PERFORM
       *        器材料がある時、再計算する
-               IF      ACCT-KIZAITEN       >   ZERO
+               IF     (ACCT-KIZAITEN       >   ZERO )  AND
+                      (ACCT-SYUTEN2        =   ZERO )
                    PERFORM 201-KIZAIKEI-SEC
                END-IF
       *
@@ -331,6 +332,12 @@
                MOVE    ACCT-KIZAITEN       TO  WRK-FIRUMU
            END-IF
       *
+      *    変更がない時、更新をしない
+           IF     (WRK-KIZAITEN        =   ACCT-KIZAITEN )  AND
+                  (WRK-FIRUMU          =   ACCT-SYUTEN2  )
+               GO      TO      201-KIZAIKEI-EXT
+           END-IF
+      *
            MOVE    WRK-KIZAITEN        TO  ACCT-KIZAITEN
            MOVE    WRK-FIRUMU          TO  ACCT-SYUTEN2
            COMPUTE ACCT-SYUTEN1        =   ACCT-SYUTEN1
@@ -344,10 +351,10 @@
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
-      *!   IF      MCP-RC          NOT =   ZERO
+           IF      MCP-RC          NOT =   ZERO
                DISPLAY "ORCBMGZU SRYACCT UPD ERR:"  MCP-RC
                        ",KEY:"   ACCT-KEY
-      *!   END-IF
+           END-IF
            ADD     1                   TO  CNT-UPD
       *
            .
@@ -365,6 +372,10 @@
       *
       *    フィルム以外の点数
            IF      TNS-DATAKBN         =   "3"
+                GO      TO      2011-KIZAI-TEN-EXT
+           END-IF
+      *    ％加算以外であること
+           IF      TNS-TENSIKIBETU     =   5   OR  6
                 GO      TO      2011-KIZAI-TEN-EXT
            END-IF
       *
