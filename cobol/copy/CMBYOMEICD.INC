@@ -50,11 +50,11 @@
                05  FILLER          PIC X(02)   VALUE   "』".
                05  FILLER          PIC X(07)   VALUE   "ZZZ(206".
                05  FILLER          PIC X(02)   VALUE   "、".
-               05  FILLER          PIC X(07)   VALUE   "ZZZ,001".
+               05  FILLER          PIC X(07)   VALUE   "ZZZC001".
                05  FILLER          PIC X(02)   VALUE   "，".
-               05  FILLER          PIC X(07)   VALUE   "ZZZ,002".
+               05  FILLER          PIC X(07)   VALUE   "ZZZC002".
                05  FILLER          PIC X(02)   VALUE   "・".
-               05  FILLER          PIC X(07)   VALUE   "ZZZ,003".
+               05  FILLER          PIC X(07)   VALUE   "ZZZC003".
       *
        01  TBL-BYOMEICD-AREA-R     REDEFINES   TBL-BYOMEICD-AREA.
            03  TBL-BYOMEICD-OCC    OCCURS      15
