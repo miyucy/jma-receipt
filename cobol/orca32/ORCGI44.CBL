@@ -195,6 +195,7 @@
                05  WRK-KIZAITEN            PIC  9(07).
       *
            03  WRK-MOJI            PIC X(01).
+           03  WRK-MKBN            PIC X(01).
       *    警告済フラグ保存
            03  WRK-TIMEFLG         PIC X(01).
       *    入力位置
@@ -615,8 +616,10 @@
                            PERFORM 510-ERRSET-SEC
                            GO      TO      300-SCREEN-EXT
                        END-IF
-                       MOVE    ALL SPACE       TO  SPA-COM-CUR
+                       IF      WRK-MKBN       =   "1"
+                           MOVE    "1"             TO  SPA-COM-CUR
                                                           (SPA-GMN-IDX4)
+                       END-IF
                        MOVE    1               TO  FLG-GMN
                    ELSE
                        MOVE    SPA-I44GMN-AREA TO  SPA-SCR-REC
@@ -747,26 +750,24 @@
            MOVE    SPA-GMN-IDX4        TO  WRK-STR.
            MOVE    ZERO                TO  IDY-STR.
       *
-           PERFORM VARYING     IDX-I48 FROM    1   BY  1
-                   UNTIL      (IDX-I48             >   5   )  OR
-                              (SPA-I48-SRYCD(IDX-I48)  =   SPACE )
+           IF      IDY-STR             =   ZERO
+               MOVE    SPA-GMN-IDX4        TO  IDY-STR
+           END-IF.
       *
-               IF      IDY-STR             =   ZERO
-                   MOVE    SPA-GMN-IDX4    TO  IDY-STR
-               END-IF
-      *
-               IF      IDX-I48             =   1
-                   MOVE    SPA-I48-SRYCD(IDX-I48)
-                                           TO  SPA-GMN-INPUTCD
-                                                       (SPA-GMN-IDX4)
+           MOVE    SPA-I48-SRYCD(1)    TO  SPA-GMN-INPUTCD
+                                                   (SPA-GMN-IDX4).
+           IF      SPA-I48-SRYCD(1)(1:2)   =
+                                   "81"  OR  "83"  OR  "84"  OR  "89"
+               IF      SPA-GMN-IDX4   =    SPA-GMN-MAX
+                   MOVE    SPACE               TO  WRK-MKBN
+                   MOVE    ZERO                TO  FLG-MEI
                ELSE
-                   ADD     1               TO  SPA-GMN-IDX4
-                   PERFORM 41014-GYOINSN-SEC
-                   MOVE    SPA-I48-SRYCD(IDX-I48)
-                                           TO  SPA-GMN-INPUTCD
-                                                       (SPA-GMN-IDX4)
+                   MOVE    "1"                 TO  WRK-MKBN
                END-IF
-           END-PERFORM.
+           ELSE
+               MOVE    SPACE               TO  WRK-MKBN
+               MOVE    1                   TO  FLG-MEI
+           END-IF.
       *
       *    入力コード・名称チェック処理
            MOVE    SPACE           TO  FLG-TOROKU.
@@ -2024,11 +2025,6 @@
            MOVE    WRK-STR             TO  SPA-GMN-IDX4.
            MOVE    ZERO                TO  WRK-IDX2.
            MOVE    ZERO                TO  FLG-INS.
-           IF     SPA-MOTOPG      =    "I48"
-               MOVE    "1"                 TO  FLG-MEI
-           ELSE
-               MOVE    ZERO                TO  FLG-MEI
-           END-IF.
            PERFORM VARYING SPA-GMN-IDX4    FROM    WRK-STR  BY  1
                    UNTIL   SPA-GMN-IDX4    >   200
                IF     (SPA-MAE-INPUTCD (SPA-GMN-IDX4)  NOT =
@@ -2304,6 +2300,11 @@
                MOVE    WRK-IN-IDX4         TO  SPA-GMN-IDX4
            END-IF.
       *
+           IF     WRK-MKBN     =   "1"
+               MOVE    WRK-STR             TO  SPA-GMN-IDX4
+           END-IF.
+           MOVE    SPACE               TO  WRK-MKBN.
+      *
            IF     FLG-MEI   NOT =   1
                IF     (SPA-COM-SURFLG (SPA-GMN-IDX4)  =   SPACE) AND
                       (SPA-COM-IN2    (SPA-GMN-IDX4)  =   "2"  ) AND
@@ -2386,7 +2387,6 @@
                MOVE    "0001"              TO  SPA-ERRCD
                GO      TO      4101113-INPUTCD-CHK-EXT
            END-IF.
-      *
       *
            MOVE    SPACE               TO  SPA-COM-IN3 (SPA-GMN-IDX4).
       *
@@ -5145,8 +5145,9 @@
                            END-IF
                        END-IF
       *                フリーコメントで未入力の行
-                       IF     (SPA-COM-IN2 (IDX)   =   "3" ) AND
-                              (SPA-COM-IN  (IDX)   =   "1" )
+      **                 IF     (SPA-COM-IN2 (IDX)   =   "3") AND
+      **                        (SPA-COM-IN  (IDX)   =   "1")
+                       IF     SPA-COM-IN2 (IDX)   =   "3"
                            MOVE    IDX             TO  WRK-MAP-CUR3
                            MOVE    WRK-PAGE        TO  WRK-MAP-PAGE3
                        END-IF
