@@ -522,3 +522,32 @@ path	key23	{
 		;
 	};
 };
+
+path	key24	{
+	DBSELECT	{
+		DECLARE tbl_nyuinacct_key24_csr CURSOR FOR
+		SELECT *
+		FROM tbl_nyuinacct
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   '1'
+			AND   PTID        =   :PTID
+			AND   SRYYM       >   :SRYYM
+            AND   ZAISKBKBN   =   '1'
+			ORDER  BY  SRYYM
+		;
+	};
+};
+
+path	key25	{
+	DBSELECT	{
+		DECLARE tbl_nyuinacct_key25_csr CURSOR FOR
+		SELECT *
+		FROM tbl_nyuinacct
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   '1'
+			AND   PTID        =   :PTID
+			AND   SRYYM       <   :SRYYM
+			ORDER BY  SRYYM   DESC
+		;
+	};
+};

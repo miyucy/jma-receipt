@@ -42,6 +42,8 @@
       *  01.00.51    NACL-小豆沢  04.03.16  １５歳未満の患者は選定入院対象外
       *  02.00.00    NACL-多々納  04.05.06  仕様統一による改造
       *  02.00.01    NACL-多々納  04.08.31  食事加算の削除追加
+      *  02.00.02    NACL-太田    04.09.09  前月ボタン押下時フリーズする
+      *                                     不具合の修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -485,6 +487,7 @@
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
+           COPY    "ORCA-DBPATH".
       *
       *****************************************************************
       *    連絡　領域
@@ -1353,9 +1356,6 @@
            MOVE    ZERO                TO  SPA-NAI-MAX-41
            MOVE    ZERO                TO  SPA-GMN-MAX-41
       *
-      *    対象の患者の入院会計作成済み年月判定
-           PERFORM 31019-NYUINACCT-SEL-SEC
-      *
       *    入院履歴より当月の対象科判定
            PERFORM 31010-PTNYUINRRK-CHK-SEC
       *
@@ -1904,50 +1904,6 @@
       *
        3101211-SRYACCT-HEN-EXT.
            EXIT.
-      *****************************************************************
-      *    入院会計マスター最大診療年月、最小診療年月抽出　処理
-      *****************************************************************
-       31019-NYUINACCT-SEL-SEC          SECTION.
-      *
-           MOVE    "999999"            TO  SPA-SRYYM-SML.
-           MOVE    "000000"            TO  SPA-SRYYM-BIG.
-      *
-           INITIALIZE                      NYUINACCT-REC.
-           MOVE    SPA-HOSPID          TO  NACCT-HOSPID.
-           MOVE    SPA-NYUGAIKBN       TO  NACCT-NYUGAIKBN.
-           MOVE    SPA-GMN-PTID        TO  NACCT-PTID.
-           MOVE    "00"                TO  NACCT-SRYKA.
-      *
-           MOVE    NYUINACCT-REC       TO  MCPDATA-REC.
-           MOVE    "DBSELECT"          TO  MCP-FUNC.
-           MOVE    "NYUINACCT-KEY4"    TO  ORC-DBPATH.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
-           IF      MCP-RC              =   ZERO
-               MOVE    "NYUINACCT-KEY4"    TO  ORC-DBPATH
-               PERFORM 900-NYUINACCT-READ-SEC
-           ELSE
-               INITIALIZE                  NYUINACCT-REC
-               MOVE    1               TO  FLG-NYUINACCT
-           END-IF.
-           PERFORM UNTIL       FLG-NYUINACCT   =   1
-               IF      NACCT-ZAISKBKBN     =   "1"
-                   IF      SPA-SRYYM-SML       >   NACCT-SRYYM
-                       MOVE    NACCT-SRYYM         TO  SPA-SRYYM-SML
-                   END-IF
-                   IF      SPA-SRYYM-BIG       <   NACCT-SRYYM
-                       MOVE    NACCT-SRYYM         TO  SPA-SRYYM-BIG
-                   END-IF
-               END-IF
-               MOVE    "NYUINACCT-KEY4"    TO  ORC-DBPATH
-               PERFORM 900-NYUINACCT-READ-SEC
-           END-PERFORM.
-      *
-       31019-NYUINACCT-SEL-EXT.
-           EXIT.
-      *
       *****************************************************************
       *    保険組合編集処理
       *****************************************************************
@@ -4010,11 +3966,9 @@
            MOVE    ZERO                TO  FLG-SET
            MOVE    SPA-NAI-SRYYM       TO  WRK-SRYYM
       *
-           PERFORM UNTIL  (FLG-SET         =   1   )  OR
-                          (WRK-SRYYM       <   SPA-SRYYM-SML)
-      *        入院会計マスターより対象の判定
-               PERFORM 41018-ZENGETU-COMPUTE-SEC
-           END-PERFORM
+      *    入院会計マスターより対象の判定
+           PERFORM 41018-ZENGETU-COMPUTE-SEC
+      *
       *    対象なし
            IF      FLG-SET             =   ZERO
                MOVE    "0027"              TO  SPA-ERRCD
@@ -4059,39 +4013,43 @@
       *****************************************************************
        41018-ZENGETU-COMPUTE-SEC       SECTION.
       *
-           COMPUTE WRK-SRYYM-MM        =   WRK-SRYYM-MM    -   1
-           IF      WRK-SRYYM-MM         =   ZERO
-               MOVE    12              TO  WRK-SRYYM-MM
-               COMPUTE WRK-SRYYM-YY    =   WRK-SRYYM-YY   -   1
-           END-IF.
-      *
       *    入院会計マスター判定
-           INITIALIZE                      NYUINACCT-REC
+           INITIALIZE                      NYUINACCT-REC.
            MOVE    SPA-HOSPID          TO  NACCT-HOSPID
-           MOVE    SPA-NYUGAIKBN       TO  NACCT-NYUGAIKBN
+           MOVE    SPA-NYUGAIKBN       TO  NACCT-NYUGAIKBN.
            MOVE    SPA-GMN-PTID        TO  NACCT-PTID
-           MOVE    "00"                TO  NACCT-SRYKA
-           MOVE    WRK-SRYYM           TO  NACCT-SRYYM
+           MOVE    SPA-NAI-SRYYM       TO  NACCT-SRYYM
       *
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC.
-           MOVE    "DBSELECT"          TO  MCP-FUNC.
-           MOVE    "NYUINACCT-KEY16"   TO  ORC-DBPATH.
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    PATH-TBL-NYUINACCT-KEY25
+                                       TO  MCP-PATH
+           CALL    "MCPSUB"            USING
                                        MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC.
-           IF      MCP-RC              =   ZERO
-               MOVE    "NYUINACCT-KEY16"   TO  ORC-DBPATH
-               PERFORM 900-NYUINACCT-READ-SEC
-           ELSE
-               INITIALIZE                  NYUINACCT-REC
-               MOVE    1               TO  FLG-NYUINACCT
+                                       MCPDATA-REC
+           IF    ( MCP-RC              =   ZERO )
+      *
+               MOVE    "DBFETCH"       TO  MCP-FUNC
+               MOVE    PATH-TBL-NYUINACCT-KEY25
+                                       TO  MCP-PATH
+               CALL    "MCPSUB"        USING
+                                       MCPAREA
+                                       MCPDATA-REC
            END-IF
       *
-           IF      FLG-NYUINACCT       =   ZERO
-      *        対象あり
-               MOVE    1                   TO  FLG-SET
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  NYUINACCT-REC
+               MOVE    1               TO  FLG-SET
+               MOVE    NACCT-SRYYM     TO  WRK-SRYYM
            END-IF
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    PATH-TBL-NYUINACCT-KEY25
+                                       TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
            .
       *
        41018-ZENGETU-COMPUTE-EXT.
@@ -4147,11 +4105,9 @@
            MOVE    ZERO                TO  FLG-SET
            MOVE    SPA-NAI-SRYYM       TO  WRK-SRYYM
       *
-           PERFORM UNTIL  (FLG-SET         =   1   )  OR
-                          (WRK-SRYYM       >   SPA-SRYYM-BIG)
-      *        入院会計マスターより対象の判定
-               PERFORM 41019-JIGETU-COMPUTE-SEC
-           END-PERFORM
+      *    入院会計マスターより対象の判定
+           PERFORM 41019-JIGETU-COMPUTE-SEC
+      *
       *    対象なし
            IF      FLG-SET             =   ZERO
                IF      SPA-NAI-SRYYM       =   SPA-NAI-TAINBI(1:6)
@@ -4209,41 +4165,43 @@
       *****************************************************************
        41019-JIGETU-COMPUTE-SEC        SECTION.
       *
-      *
-           COMPUTE WRK-SRYYM-MM        =   WRK-SRYYM-MM   +   1
-           IF      WRK-SRYYM-MM        >   12
-               MOVE    01              TO  WRK-SRYYM-MM
-               COMPUTE WRK-SRYYM-YY    =   WRK-SRYYM-YY   +   1
-           END-IF.
-      *
       *    入院会計マスター判定
            INITIALIZE                      NYUINACCT-REC.
            MOVE    SPA-HOSPID          TO  NACCT-HOSPID
            MOVE    SPA-NYUGAIKBN       TO  NACCT-NYUGAIKBN.
            MOVE    SPA-GMN-PTID        TO  NACCT-PTID
-           MOVE    "00"                TO  NACCT-SRYKA
-           MOVE    WRK-SRYYM           TO  NACCT-SRYYM
+           MOVE    SPA-NAI-SRYYM       TO  NACCT-SRYYM
       *
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC.
-           MOVE    "DBSELECT"          TO  MCP-FUNC.
-           MOVE    "NYUINACCT-KEY16"   TO  ORC-DBPATH.
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    PATH-TBL-NYUINACCT-KEY24
+                                       TO  MCP-PATH
+           CALL    "MCPSUB"            USING
                                        MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC.
-           IF      MCP-RC              =   ZERO
-               MOVE    "NYUINACCT-KEY16"   TO  ORC-DBPATH
-               PERFORM 900-NYUINACCT-READ-SEC
-           ELSE
-               INITIALIZE                  NYUINACCT-REC
-               MOVE    1               TO  FLG-NYUINACCT
+                                       MCPDATA-REC
+           IF    ( MCP-RC              =   ZERO )
+      *
+               MOVE    "DBFETCH"       TO  MCP-FUNC
+               MOVE    PATH-TBL-NYUINACCT-KEY24
+                                       TO  MCP-PATH
+               CALL    "MCPSUB"        USING
+                                       MCPAREA
+                                       MCPDATA-REC
            END-IF
       *
-           IF      (FLG-NYUINACCT       =   ZERO)   AND
-                   (NACCT-ZAISKBKBN     =   "1")
-      *        対象あり
-               MOVE    1                   TO  FLG-SET
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  NYUINACCT-REC
+               MOVE    1               TO  FLG-SET
+               MOVE    NACCT-SRYYM     TO  WRK-SRYYM
            END-IF
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    PATH-TBL-NYUINACCT-KEY24
+                                       TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
            .
       *
        41019-JIGETU-COMPUTE-EXT.

@@ -83,8 +83,8 @@
                        09  SPA-NAI-NENREI-MM   PIC 9(02).
                        09  SPA-NAI-NENREI-DD   PIC 9(02).
       *    入院会計マスター診療期間年月
-               05  SPA-SRYYM-SML                   PIC X(06).
-               05  SPA-SRYYM-BIG                   PIC X(06).
+      *        05  SPA-SRYYM-SML                   PIC X(06).
+      *        05  SPA-SRYYM-BIG                   PIC X(06).
       *
       *    次月会計作成用の保険組合せと食事の退避領域
                05  SPA-TAIHI-HKN                   PIC 9(03).
