@@ -1365,7 +1365,8 @@
                                  WHEN   4
                                      COMPUTE  SYU-HKNTEN(11)  =
                                               SYU-HKNTEN(11)  +
-                                            ((WRK-KHNTEN      *  0.15)
+                                            ((WRK-KHNTEN      *
+                                              WRK-SENTEI-GAIHAKU-KEISU)
                                                               +  0.5)
                                END-EVALUATE
       *                        ÁªÄê´ü´Ö¤Î´µ¼Ô¼«¸ÊÉéÃ´³Û»»Äê
@@ -1747,6 +1748,7 @@
                                               SYS-5000-SENTEI-TANKA
       *                          ³°Çñ¡Ê£±£µ¡ó¤ÈÁªÄê³°Çñ¤Îº¹³Û¡Ë
                                  WHEN   3
+                                 WHEN   4
                                      MOVE  ZERO TO WRK-SENTEI-GAIHAKU1
                                      MOVE  ZERO TO WRK-SENTEI-GAIHAKU2
                                      COMPUTE  WRK-SENTEI-GAIHAKU1 =
@@ -1773,6 +1775,7 @@
                                               1.05
       *                          ³°Çñ¡Ê£±£µ¡ó¤ÈÁªÄê³°Çñ¤Îº¹³Û¡Ë
                                  WHEN   3
+                                 WHEN   4
                                      MOVE  ZERO TO WRK-SENTEI-GAIHAKU1
                                      MOVE  ZERO TO WRK-SENTEI-GAIHAKU2
                                      COMPUTE  WRK-SENTEI-GAIHAKU1 =
@@ -1801,6 +1804,7 @@
                                EVALUATE   TBL-GAIHAKU(SYU-IDX)
                                  WHEN   ZERO
                                  WHEN   3
+                                 WHEN   4
                                      COMPUTE  NYUIN-TGMONEY =
                                               NYUIN-TGMONEY +
                                               SYS-5000-SENTEI-KINGAKU
@@ -1810,6 +1814,7 @@
                                EVALUATE   TBL-GAIHAKU(SYU-IDX)
                                  WHEN   ZERO
                                  WHEN   3
+                                 WHEN   4
                                      COMPUTE  NYUIN-TGMONEY =
                                               NYUIN-TGMONEY +
                                              (SYS-5000-SENTEI-KINGAKU *
@@ -1846,6 +1851,7 @@
                                          SBTUSENTEI-DAY-TANKA(SYU-IDX)
       *                      ³°Çñ¡Ê£±£µ¡ó¤ÈÁªÄê³°Çñ¤Îº¹³Û¡Ë
                              WHEN   3
+                             WHEN   4
                                  MOVE  ZERO TO WRK-SENTEI-GAIHAKU1
                                  MOVE  ZERO TO WRK-SENTEI-GAIHAKU2
                                  COMPUTE  WRK-SENTEI-GAIHAKU1 =
@@ -1872,6 +1878,7 @@
                                           1.05
       *                      ³°Çñ¡Ê£±£µ¡ó¤ÈÁªÄê³°Çñ¤Îº¹³Û¡Ë
                              WHEN   3
+                             WHEN   4
                                  MOVE  ZERO TO WRK-SENTEI-GAIHAKU1
                                  MOVE  ZERO TO WRK-SENTEI-GAIHAKU2
                                  COMPUTE  WRK-SENTEI-GAIHAKU1 =
@@ -1897,6 +1904,7 @@
                            EVALUATE   TBL-GAIHAKU(SYU-IDX)
                              WHEN   ZERO
                              WHEN   3
+                             WHEN   4
                                  COMPUTE  NYUIN-TGMONEY =
                                           NYUIN-TGMONEY +
                                        SBTUSENTEI-DAY-KINGAKU(SYU-IDX)
@@ -1906,6 +1914,7 @@
                            EVALUATE   TBL-GAIHAKU(SYU-IDX)
                              WHEN   ZERO
                              WHEN   3
+                             WHEN   4
                                  COMPUTE  NYUIN-TGMONEY =
                                           NYUIN-TGMONEY +
                                     (SBTUSENTEI-DAY-KINGAKU(SYU-IDX) *
