@@ -1007,7 +1007,18 @@
            MOVE  ZERO                            TO  SPA-Z01NAI-COUNT
                                                      SPA-NAI-SELNO
       *
-           MOVE  Z01-SRYCD                       TO  SPA-Z01GMN-SRYCD
+      *    全角入力の時、４文字まで
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    Z01-SRYCD(1:8)      TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           IF     (KANACHK-RC          =   ZERO )  AND
+                  (KANACHK-SYUBETU     =   2    )
+               MOVE  Z01-SRYCD(1:8)        TO  SPA-Z01GMN-SRYCD
+           ELSE
+               MOVE  Z01-SRYCD             TO  SPA-Z01GMN-SRYCD
+           END-IF
       *
       *    "//" 入力の時、検索画面へ
            IF      SPA-Z01GMN-SRYCD(1:2)   =  "//"
