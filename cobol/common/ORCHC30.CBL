@@ -36,6 +36,7 @@
       *  00.01.06    NACL-森脇    02.10.02  区分の作業領域のクリア
       *  00.01.07    NACL-森脇    02.11.07  記号の折り返し桁数変更
       *  01.01.01    NACL-森脇    02.12.12  MONPEに対応
+      *  01.01.02    NACL-森脇    03.01.06  画像サイズ変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -172,7 +173,7 @@
              05  WRK-YKJ-NUM         PIC  X(2).
              05  WRK-YKJ-YKZNAME     PIC  X(26)   OCCURS  3.
              05  WRK-YKJ-KONOKOKA    PIC  X(30)   OCCURS  6.
-             05  WRK-YKJ-GAZO        PIC  X(100).
+             05  WRK-YKJ-GAZO        PIC  X(1024).
              05  WRK-YKJ-KEIJYO      PIC  X(16)   OCCURS  10.
              05  WRK-YKJ-KBN         PIC  X(2)    OCCURS  4.
              05  WRK-YKJ-NAIYO       PIC  X(16)   OCCURS  8.

@@ -35,6 +35,7 @@
       * 00.01.05     NACL-森脇     20021107  記号の半角全角混在チェック
       * 01.01.01     NACL-森脇     20021209  検索文字変更
       * 01.01.02     NACL-森脇     20021212  検索文字引数クリア
+      * 01.01.03     NACL-森脇     20030108  画面入力文字数変更
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -74,14 +75,16 @@
                    11  SPA-GMN-TNAME   PIC X(100).
                  09  SPA-GMN-TCD       PIC X(09)   OCCURS  200.
       *
+      *----(01.01.03)--UPD-START---
                07  SPA-GMN-ENTRY.
-                 09  SPA-GMN-NAME      PIC X(85).
-                 09  SPA-GMN-EFFECT    PIC X(200).
-                 09  SPA-GMN-COLOR     PIC X(180).
-                 09  SPA-GMN-SHAPE     PIC X(180).
-                 09  SPA-GMN-MARK      PIC X(180).
-                 09  SPA-GMN-CAUTION   PIC X(425).
+                 09  SPA-GMN-NAME      PIC X(80).
+                 09  SPA-GMN-EFFECT    PIC X(186).
+                 09  SPA-GMN-COLOR     PIC X(136).
+                 09  SPA-GMN-SHAPE     PIC X(136).
+                 09  SPA-GMN-MARK      PIC X(136).
+                 09  SPA-GMN-CAUTION   PIC X(410).
                  09  SPA-GMN-PHOTO     PIC X(256).
+      *----(01.01.03)--UPD-END-----
       *
              05  SPA-NAI-AREA.
                07  SPA-NAI-SRYCD       PIC X(09).

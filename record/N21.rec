@@ -23,22 +23,22 @@ N21	{
 			value	number(3);
 		};
 		NAME	{
-			value	varchar(85);
+			value	varchar(80);
 		};
 		EFFECT	{
-			value	varchar(200);
+			value	varchar(186);
 		};
 		COLOR	{
-			value	varchar(180);
+			value	varchar(136);
 		};
 		SHAPE	{
-			value	varchar(180);
+			value	varchar(136);
 		};
 		MARK	{
-			value	varchar(180);
+			value	varchar(136);
 		};
 		CAUTION	{
-			value	varchar(425);
+			value	varchar(410);
 		};
 		PHOTO	{
 			value	varchar(256);
