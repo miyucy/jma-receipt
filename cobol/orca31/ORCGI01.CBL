@@ -257,10 +257,10 @@
            03  WRK-SKYEDYMD                PIC X(08).
            03  WRK-SKYMONEY                PIC  S9(07).
       *    ∞ÂŒ≈µ°¥ÿ¿ﬂƒÍ§Œ∆˛±°Œ¡≤√ªª•¡•ß•√•ØÕ—
+           03  WRK-NYUKHNKSN-SRYCD         PIC X(09)  OCCURS 20.
            03  WRK-NYUKSNKBN               PIC X(03).
            03  WRK-BTU-NYUKSNKBN           PIC X(03).
            03  WRK-KSN-NYUKSNKBN           PIC X(03).
-           03  WRK-SRYCD                   PIC X(09).
            03  WRK-STYUKYMD                PIC X(08).
            03  WRK-TAIINYMD.
                05  WRK-TAIINYM             PIC X(06).
@@ -6708,34 +6708,21 @@
       *
            IF   FLG-DBRC           =    ZERO
                MOVE    MCPDATA-REC TO   SYS-5000-REC
-      *        ∞ÂŒ≈µ°¥ÿ∏∫ªªæ Û
-      *         PERFORM   VARYING   IDX7   FROM   1  BY  1
-      *           UNTIL  (SYS-5000-GENCD(IDX7)    =   SPACE)  OR
-      *                  (IDX7                    >   5)
-      *              IF   SYS-5000-GENKBN(IDX7)   =   "2"
-      *                   ADD    1                TO  IDX8
-      *                   MOVE   SYS-5000-GENCD(IDX7)  TO
-      *                             LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
-      *              END-IF
-      *         END-PERFORM
       *        ∆˛±°Œ¡≤√ªª
                PERFORM   VARYING   IDX7   FROM   1  BY  1
                  UNTIL  (SYS-5000-KSNCD(IDX7)    =   SPACE)  OR
                         (IDX7                    >   20)
                     IF   SYS-5000-KSNKBN(IDX7)   =   "2"
-                         PERFORM   4801-NYUKSN-CHK-SEC
-                         IF     FLG-NYUKSN       =   ZERO   
                              ADD    1                TO  IDX8
                              MOVE   SYS-5000-KSNCD(IDX7)  TO
-                                   LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
-                         END-IF
+                                             WRK-NYUKHNKSN-SRYCD(IDX8)
                     END-IF
                END-PERFORM
       *        √œ∞Ë≤√ªª
                IF   SYS-5000-CHIIKIKSN    NOT =   SPACE
                     ADD    1        TO   IDX8
                     MOVE   SYS-5000-CHIIKIKSN   TO
-                                   LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                                             WRK-NYUKHNKSN-SRYCD(IDX8)
                END-IF
            END-IF
       *
@@ -6754,19 +6741,19 @@
                    EVALUATE     SYS-5001-BTU-KNGHJOKSN
                        WHEN     "01"
                            MOVE  "190103070"   TO
-                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                                              WRK-NYUKHNKSN-SRYCD(IDX8)
                        WHEN     "02"
                            MOVE  "190103470"   TO
-                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                                              WRK-NYUKHNKSN-SRYCD(IDX8)
                        WHEN     "03"
                            MOVE  "190103770"   TO
-                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                                              WRK-NYUKHNKSN-SRYCD(IDX8)
                        WHEN     "04"
                            MOVE  "190103970"   TO
-                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                                              WRK-NYUKHNKSN-SRYCD(IDX8)
                        WHEN     "05"
                            MOVE  "190104070"   TO
-                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                                              WRK-NYUKHNKSN-SRYCD(IDX8)
                    END-EVALUATE
                END-IF
       *
@@ -6776,27 +6763,26 @@
                    EVALUATE     SYS-5001-BTU-YAKANKNGKSN
                        WHEN     "01"
                            MOVE  "190109870"   TO
-                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                                              WRK-NYUKHNKSN-SRYCD(IDX8)
                        WHEN     "02"
                            MOVE  "190076070"   TO
-                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                                              WRK-NYUKHNKSN-SRYCD(IDX8)
                        WHEN     "03"
                            MOVE  "190076170"   TO
-                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                                              WRK-NYUKHNKSN-SRYCD(IDX8)
                        WHEN     "04"
                            MOVE  "190076370"   TO
-                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                                              WRK-NYUKHNKSN-SRYCD(IDX8)
                        WHEN     "05"
                            MOVE  "190076470"   TO
-                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                                              WRK-NYUKHNKSN-SRYCD(IDX8)
                    END-EVALUATE
                END-IF
       *
       *        æÆª˘∆˛±°∞ÂŒ≈¥…Õ˝Œ¡≤√ªª°  ›∞ÈªŒ£±øÕ∞ æÂ°À
                IF    SYS-5001-BTU-HIKSISUKBN   =   "2"
                    ADD      1          TO     IDX8
-                   MOVE  "190111370"   TO
-                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                   MOVE  "190111370"   TO  WRK-NYUKHNKSN-SRYCD(IDX8)
                END-IF
       *
       *        …¬≈Ô∆˛±°Œ¡≤√ªª
@@ -6810,14 +6796,14 @@
                              IF     WRK-NENREI    <      20
                                  ADD    1                TO  IDX8
                                  MOVE   SYS-5001-KSNCD(IDX7)  TO
-                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                                           WRK-NYUKHNKSN-SRYCD(IDX8)
                              END-IF
                         END-IF
                     ELSE
                         IF   SYS-5001-KSNKBN(IDX7)   =   "2"
                              ADD    1                TO  IDX8
                              MOVE   SYS-5001-KSNCD(IDX7)  TO
-                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                                           WRK-NYUKHNKSN-SRYCD(IDX8)
                         END-IF
                     END-IF
                END-PERFORM
@@ -6831,33 +6817,45 @@
                IF   SYS-5002-SINSEIJI-KBN     =   "2"
                     ADD     1       TO     IDX8
                     MOVE   SYS-5002-SINSEIJI-CD  TO
-                                   LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                                   WRK-NYUKHNKSN-SRYCD(IDX8)
                END-IF
       *        ø«Œ≈ΩÍŒ≈Õ‹…¬æ≤Œ≈Õ‹¥ƒ∂≠≤√ªª° £±°À
                IF   SYS-5002-SNR-RYOYO-KBN(1)     =   "2"
                     ADD     1       TO     IDX8
                     MOVE   SYS-5002-SNR-RYOYO-CD(1)  TO
-                                   LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                                   WRK-NYUKHNKSN-SRYCD(IDX8)
                END-IF
       *        ø«Œ≈ΩÍŒ≈Õ‹…¬æ≤Œ≈Õ‹¥ƒ∂≠≤√ªª° £≤°À
                IF   SYS-5002-SNR-RYOYO-KBN(2)     =   "2"
                     ADD     1       TO     IDX8
                     MOVE   SYS-5002-SNR-RYOYO-CD(2)  TO
-                                   LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                                   WRK-NYUKHNKSN-SRYCD(IDX8)
                END-IF
       *         ¸ºÕ¿˛º£Œ≈…¬ºº¥…Õ˝≤√ªª
                IF   SYS-5002-HOSYASEN-KBN     =   "2"
                     ADD     1       TO     IDX8
                     MOVE   SYS-5002-HOSYASEN-CD  TO
-                                   LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                                   WRK-NYUKHNKSN-SRYCD(IDX8)
                END-IF
       *        Œ≈Õ‹¥ƒ∂≠≤√ªª
                IF   SYS-5002-RYOYO-KBN     =   "2"
                     ADD     1       TO     IDX8
                     MOVE   SYS-5002-RYOYO-CD  TO
-                                   LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                                   WRK-NYUKHNKSN-SRYCD(IDX8)
                END-IF
            END-IF
+      *
+      *    ∆˛±°Œ¡§»∆˛±°Œ¡≤√ªª§Œ ªªªƒÍ•¡•ß•√•Ø
+           PERFORM    VARYING    IDX8   FROM   1   BY   1
+                      UNTIL      (WRK-NYUKHNKSN-SRYCD(IDX8)  =  SPACE)
+                         OR      (IDX8   >     20)
+                         PERFORM   4801-NYUKSN-CHK-SEC
+                         IF     FLG-NYUKSN       =   ZERO   
+                             ADD    1                TO  IDX9
+                             MOVE   WRK-NYUKHNKSN-SRYCD(IDX8)  TO
+                                   LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX9)
+                         END-IF
+           END-PERFORM
       *
            .
       *
@@ -6871,7 +6869,7 @@
       *
            MOVE    ZERO            TO  FLG-NYUKSN
       *
-           EVALUATE   SYS-5000-KSNCD(IDX7)
+           EVALUATE   WRK-NYUKHNKSN-SRYCD(IDX8)
       *        ø«Œ≈œø¥…Õ˝¬Œ¿©≤√ªª
                WHEN   "190100370"
                    IF   SPA-GMN-I01-SYORIKBN-CD   =  "08"
@@ -6960,7 +6958,7 @@
            MOVE    ZERO            TO  FLG-TENSU
            INITIALIZE              TNS-TENSU-REC
       *
-           MOVE    SYS-5000-KSNCD(IDX7)
+           MOVE    WRK-NYUKHNKSN-SRYCD(IDX8)
                                    TO  TNS-SRYCD
            MOVE    SYOKIKSN-IN-SANTEISTYMD    TO  ORC-DBYMD
            MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
