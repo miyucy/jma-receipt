@@ -793,9 +793,10 @@
       *
            MOVE    "DBCLOSE"           TO  MCP-FUNC
            MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
       *    À„∆«Œ¡
            MOVE    ZERO                TO  IDX1
@@ -838,9 +839,10 @@
       *
            MOVE    "DBCLOSE"           TO  MCP-FUNC
            MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        300-CHOZAI-HEN-EXT.

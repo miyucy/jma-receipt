@@ -3217,15 +3217,6 @@
                MOVE    1                   TO  LNK-DAY6-ZOGEN
                CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                    LNK-DAY6-AREA
-      *TEST
-               DISPLAY "C10 LNK-ORCSC-SYOYMD:" LNK-ORCSC-SYOYMD
-                     ",LNK-DAY6-KOYOMI:" LNK-DAY6-KOYOMI
-                     ",LNK-DAY6-KOYOMIZEN:" LNK-DAY6-KOYOMIZEN
-                     ",LNK-DAY6-KOYOMIGO:" LNK-DAY6-KOYOMIGO
-               DISPLAY "C10 LNK-DAY6-KEISAN:" LNK-DAY6-KEISAN
-                     ",LNK-DAY6-KEISANZEN:" LNK-DAY6-KEISANZEN
-                     ",LNK-DAY6-KEISANGO:" LNK-DAY6-KEISANGO
-      *TEST
                MOVE    LNK-DAY6-KEISAN     TO  WRK-KEIYMD
                MOVE    LNK-DAY6-KEISANZEN  TO  WRK-KEIYMDZEN
                IF      LNK-DAY6-KEISAN NOT =   LNK-DAY6-KEISANZEN

@@ -57,6 +57,7 @@
            03  FLG-CHKMST          PIC 9(01).
            03  FLG-SRYACT          PIC 9(01).
            03  FLG-SRYACCT         PIC 9(01).
+           03  FLG-PTNYUINRRK      PIC 9(01).
       *
            03  FLG-ERR             PIC 9(01).
            03  FLG-SP              PIC 9(01).
@@ -79,6 +80,7 @@
            03  FLG-CHK             PIC 9(01).
       *
            03  FLG-GAZO-ARI        PIC 9(01).
+      *
       *
       *    添字領域
        01  IDX-AREA.
@@ -264,6 +266,10 @@
       *    診療会計マスタ−
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
+      *
+      *    患者入院履歴
+       01  PTNYUINRRK-REC.
+           COPY    "CPPTNYUINRRK.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -475,7 +481,7 @@
                    END-IF
       *            入院時の剤内容のチェック
                    IF     (WRK-COM-DATAKBN (IDX-Z) =   "2" ) AND
-                          (SPA-NYUGAIKBN           =   1   )
+                          (SPA-NYUGAIKBN           =   "1"   )
                        PERFORM 1005-ZAI-CHK-SEC
                    END-IF
       *
@@ -494,7 +500,7 @@
                                            *   WRK-COM-SURYO  (IDX-Z))
                                            +   WRK-CHUSYA
       *            入院時の薬剤と手技料を分ける
-                   IF    (SPA-NYUGAIKBN        =   1   ) AND
+                   IF    (SPA-NYUGAIKBN        =   "1" ) AND
                          (FLG-SYUGI            =   1   ) AND
                          (WRK-COM-SRYSYUKBN (IDX-Z)    =   "330" OR
                                                            "331")
@@ -1192,7 +1198,7 @@
            END-IF
       *
       *    入院の時、自動発生する
-           IF      SPA-NYUGAIKBN       =   2
+           IF      SPA-NYUGAIKBN       =   "2"
                GO      TO      300-AUTO-SYORI-EXT
            END-IF
            MOVE    SPACE               TO  WRK-ERRCD
@@ -1889,11 +1895,6 @@
                       (TBL-IVH-DAY   (IDY)     >   ZERO )  AND
                       (TBL-SYU-DAY   (IDY)     =   ZERO )
       *           点滴がない時
-      *TEST
-                  DISPLAY "C30 IDY:" IDY
-                           ",TBL-TEN-IDX:" TBL-TEN-IDX (IDY)
-                           ",SRYCD:" TBL-TEN-SRYCD (IDY)
-      *TEST
                    IF    ((TBL-TEN-IDX   (IDY)     >   ZERO  )  OR
                           (TBL-TEN-SRYCD (IDY)     =   SPACE )) AND
                           (TBL-TEN-SRYCD2(IDY)     =   SPACE )
@@ -1996,9 +1997,11 @@
            MOVE    SPACE               TO  WRK-NYMD
            IF     (LNK-ORCSC-ROUJIN    =   1  )  AND
                   (LNK-ORCSC-NYUINYMD  NUMERIC )
-               MOVE    LNK-ORCSC-NYUINYMD  TO  WRK-NYMD
-               COMPUTE WRK-NYY             =   WRK-NYY
-                                           +   1
+      *        入院歴より決定
+               PERFORM 30051-NYUINREKI-SEC
+      *******  MOVE    LNK-ORCSC-NYUINYMD  TO  WRK-NYMD
+      *        COMPUTE WRK-NYY             =   WRK-NYY
+      *******                              +   1
            END-IF
            PERFORM VARYING     IDY     FROM    1   BY  1
                    UNTIL       IDY     >   31
@@ -2174,6 +2177,62 @@
       *
            .
        3005-TENTEKI-AUTO-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院歴より入院開始日決定処理
+      *****************************************************************
+       30051-NYUINREKI-SEC         SECTION.
+      *
+      *    入院履歴判定
+           MOVE    SPACE               TO  PTNYUINRRK-REC
+           INITIALIZE                  PTNYUINRRK-REC
+           MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
+           MOVE    SPA-PTID            TO  PTNYUINRRK-PTID
+      *
+           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTNYUINRRK-KEY2"   TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "PTNYUINRRK-KEY2"   TO  ORC-DBPATH
+               PERFORM 910-PTNYUINRRK-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-PTNYUINRRK
+               INITIALIZE                  PTNYUINRRK-REC
+           END-IF
+      *
+           MOVE    SPACE               TO  WRK-NYMD
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM
+                   UNTIL      (FLG-PTNYUINRRK      =   1 )  OR
+                              (FLG-OK              =   1 )
+      *        入院日前
+               IF      PTNYUINRRK-NYUINYMD     <   LNK-ORCSC-NYUINYMD
+      *            入院中区分判定
+                   IF      PTNYUINRRK-NYUINCHUKBN  =   "1"
+                       MOVE    PTNYUINRRK-NYUINYMD     TO  WRK-NYMD
+                   END-IF
+                   MOVE    1                   TO  FLG-OK
+               END-IF
+      *
+               MOVE    "PTNYUINRRK-KEY2"   TO  ORC-DBPATH
+               PERFORM 910-PTNYUINRRK-READ-SEC
+           END-PERFORM
+      *
+           IF      WRK-NYMD            =   SPACE
+               MOVE    LNK-ORCSC-NYUINYMD  TO  WRK-NYMD
+           END-IF
+      *    入院日より１年後
+           COMPUTE WRK-NYY             =   WRK-NYY
+                                       +   1
+      *
+      *
+           .
+       30051-NYUINREKI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2467,3 +2526,26 @@
            .
        940-SINACCT-READ-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    入院履歴マスター読込
+      *****************************************************************
+       910-PTNYUINRRK-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
+               MOVE    ZERO            TO  FLG-PTNYUINRRK
+           ELSE
+               INITIALIZE                  PTNYUINRRK-REC
+               MOVE    1               TO  FLG-PTNYUINRRK
+           END-IF
+      *
+           .
+       910-PTNYUINRRK-READ-EXT.
+           EXIT.
+      *****************************************************************
