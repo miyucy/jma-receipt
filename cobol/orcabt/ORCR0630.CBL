@@ -84,6 +84,7 @@
            03  FLG-ARI                                 PIC 9(01).
            03  FLG-SYSKANRI                            PIC 9(01).
            03  FLG-NYURYAKUSHO                         PIC 9(01).
+           03  FLG-GAIHAKU                             PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -101,6 +102,7 @@
            03  HC-IDX                                  PIC 9(03).
            03  KH-IDX                                  PIC 9(03).
            03  NYUINACT-IDX                            PIC 9(03).
+           03  NYUINACT-IDX2                           PIC 9(03).
            03  ID1                                     PIC 9(03).
            03  GENSAN-IDX                              PIC 9(03).
       *
@@ -149,6 +151,7 @@
            03  WRK-SHOKUJIRYOYO                        PIC 9(01).
            03  WRK-TOKUKANRIKASAN                      PIC 9(01).
            03  WRK-SRYCD                               PIC 9(09).
+           03  WRK-RYAKUSHO                            PIC X(14).
       *
            COPY    "MCPAREA".
       *
@@ -768,9 +771,13 @@
                          COMPUTE  WRK-NYUKHNRYO =
                                  (WRK-KHNTEN    *  0.3)
                                                 +  0.5
-                     WHEN   5
+                     WHEN   3
                          COMPUTE  WRK-NYUKHNRYO =
                                  (WRK-KHNTEN    *  0.1)
+                                                +  0.5
+                     WHEN   4
+                         COMPUTE  WRK-NYUKHNRYO =
+                                 (WRK-KHNTEN    *  0.15)
                                                 +  0.5
                   END-EVALUATE
                   COMPUTE  RECE62-NYUTOKKEI2(KH-IDX)  =
@@ -796,19 +803,72 @@
                                        TO  RECE62-NYUKHNKEI(ID1 KH-IDX)
                   END-IF
                WHEN   920
+      *           MOVE      ZERO   TO  WRK-NYUTOKRYO
+      *           EVALUATE   WRK-DAY2(IDY)
+      *              WHEN   ZERO
+      *                  MOVE     NACCT-ZAITEN   TO  
+      *                                WRK-NYUTOKRYO
+      *              WHEN   1
+      *                  COMPUTE  WRK-NYUTOKRYO =
+      *                          (WRK-KHNTEN    *  0.15)
+      *                                         +  0.5
+      *              WHEN   2
+      *                  COMPUTE  WRK-NYUTOKRYO =
+      *                          (WRK-KHNTEN    *  0.3)
+      *                                         +  0.5
+      *              WHEN   4
+      *                  COMPUTE  WRK-NYUTOKRYO =
+      *                          (WRK-KHNTEN    *  0.15)
+      *                                         +  0.5
+      *           END-EVALUATE
+      *           IF  WRK-DAY6(IDY)          NOT =  ZERO
+      *           AND WRK-DAY6-ZAITEN(IDY)   NOT =  ZERO
+      *               COMPUTE  WRK-NYUTOKRYO = WRK-NYUTOKRYO
+      *                                      + WRK-DAY6-ZAITEN(IDY)
+      *           END-IF
+      *           COMPUTE  RECE62-NYUTOKKEI2(KH-IDX)  =
+      *                    RECE62-NYUTOKKEI2(KH-IDX)  -  WRK-MIJISI
+      *           MOVE     ZERO     TO    FLG-ARI
+      *           PERFORM  VARYING  ID1    FROM    1   BY  1
+      *                         UNTIL   ID1                   > 10
+      *                           OR    RECE62-NYUTOKRYO(ID1) = ZERO
+      *                           OR    FLG-ARI               = 1
+      *               IF  RECE62-NYUTOKRYO(ID1)  =  WRK-NYUTOKRYO
+      *                     IF   KH-IDX =  1
+      *                       ADD   1   TO   RECE62-NYUTOKNISSU(ID1)
+      *                     END-IF
+      *                     ADD   WRK-NYUTOKRYO
+      *                               TO   RECE62-NYUTOKKEI(ID1 KH-IDX)
+      *                     MOVE  1   TO   FLG-ARI
+      *               END-IF
+      *           END-PERFORM  
+      *           IF  FLG-ARI  =  ZERO  
+      *               ADD        1           TO  RECE62-NYUTOKNISSU(ID1)
+      *               MOVE   WRK-NYUTOKRYO   TO  RECE62-NYUTOKRYO(ID1)
+      *               ADD    WRK-NYUTOKRYO   
+      *                                TO  RECE62-NYUTOKKEI(ID1 KH-IDX)
+      *           END-IF
                   MOVE      ZERO   TO  WRK-NYUTOKRYO
+                  MOVE      ZERO   TO  FLG-GAIHAKU
                   EVALUATE   WRK-DAY2(IDY)
                      WHEN   ZERO
                          MOVE     NACCT-ZAITEN   TO  
                                        WRK-NYUTOKRYO
-                     WHEN   3
+                     WHEN   1
                          COMPUTE  WRK-NYUTOKRYO =
                                  (WRK-KHNTEN    *  0.15)
                                                 +  0.5
-                     WHEN   4
+                         MOVE   1   TO   FLG-GAIHAKU
+                     WHEN   2
                          COMPUTE  WRK-NYUTOKRYO =
                                  (WRK-KHNTEN    *  0.3)
                                                 +  0.5
+                         MOVE   1   TO   FLG-GAIHAKU
+                     WHEN   4
+                         COMPUTE  WRK-NYUTOKRYO =
+                                 (WRK-KHNTEN    *  0.15)
+                                                +  0.5
+                         MOVE   1   TO   FLG-GAIHAKU
                   END-EVALUATE
                   IF  WRK-DAY6(IDY)          NOT =  ZERO
                   AND WRK-DAY6-ZAITEN(IDY)   NOT =  ZERO
@@ -817,11 +877,36 @@
                   END-IF
                   COMPUTE  RECE62-NYUTOKKEI2(KH-IDX)  =
                            RECE62-NYUTOKKEI2(KH-IDX)  -  WRK-MIJISI
-                  MOVE     ZERO     TO    FLG-ARI
-                  PERFORM  VARYING  ID1    FROM    1   BY  1
-                                UNTIL   ID1                   > 10
-                                  OR    RECE62-NYUTOKRYO(ID1) = ZERO
-                                  OR    FLG-ARI               = 1
+                  IF     FLG-GAIHAKU  =  ZERO
+                    MOVE     ZERO     TO    FLG-ARI
+                    PERFORM  VARYING  ID1    FROM    1   BY  1
+                        UNTIL ( ID1                          > 10    )  
+                          OR  ( RECE62-NYUTOKRYO(ID1)        = ZERO   
+                            AND RECE62-NYUTOKRYO-RYAKU(ID1)  = SPACE )
+                          OR  ( FLG-ARI                      = 1     )
+                      IF  RECE62-NYUTOKRYO-RYAKU(ID1)  =  WRK-RYAKUSHO
+                            IF   KH-IDX =  1
+                              ADD   1   TO   RECE62-NYUTOKNISSU(ID1)
+                            END-IF
+                            ADD   WRK-NYUTOKRYO
+                                      TO   RECE62-NYUTOKKEI(ID1 KH-IDX)
+                            MOVE  1   TO   FLG-ARI
+                      END-IF
+                    END-PERFORM  
+                    IF  FLG-ARI  =  ZERO  
+                      ADD        1           TO  RECE62-NYUTOKNISSU(ID1)
+                      MOVE   WRK-RYAKUSHO    TO  RECE62-NYUTOKRYO-RYAKU
+                                                                   (ID1)
+                      ADD    WRK-NYUTOKRYO   
+                                       TO  RECE62-NYUTOKKEI(ID1 KH-IDX)
+                    END-IF
+                  ELSE
+                    MOVE     ZERO     TO    FLG-ARI
+                    PERFORM  VARYING  ID1    FROM    1   BY  1
+                        UNTIL ( ID1                          > 10    )  
+                          OR  ( RECE62-NYUTOKRYO(ID1)        = ZERO   
+                            AND RECE62-NYUTOKRYO-RYAKU(ID1)  = SPACE )
+                          OR  ( FLG-ARI                      = 1     )
                       IF  RECE62-NYUTOKRYO(ID1)  =  WRK-NYUTOKRYO
                             IF   KH-IDX =  1
                               ADD   1   TO   RECE62-NYUTOKNISSU(ID1)
@@ -830,12 +915,13 @@
                                       TO   RECE62-NYUTOKKEI(ID1 KH-IDX)
                             MOVE  1   TO   FLG-ARI
                       END-IF
-                  END-PERFORM  
-                  IF  FLG-ARI  =  ZERO  
+                    END-PERFORM  
+                    IF  FLG-ARI  =  ZERO  
                       ADD        1           TO  RECE62-NYUTOKNISSU(ID1)
                       MOVE   WRK-NYUTOKRYO   TO  RECE62-NYUTOKRYO(ID1)
                       ADD    WRK-NYUTOKRYO   
                                        TO  RECE62-NYUTOKKEI(ID1 KH-IDX)
+                    END-IF
                   END-IF
            END-EVALUATE
       *
@@ -869,6 +955,8 @@
       *
            MOVE    ZERO               TO   WRK-KHNTEN
                                            WRK-NYUTENTTLKBN
+           MOVE    SPACE              TO   WRK-RYAKUSHO
+           MOVE    ZERO               TO   NYUINACT-IDX2
       *
            INITIALIZE                      NYUINACT-REC
            MOVE    NACCT-HOSPID       TO   NSRY-HOSPID
@@ -907,6 +995,8 @@
                               MOVE   TNS-NYUTENTTLKBN
                                                TO   WRK-NYUTENTTLKBN
                               MOVE   TNS-TEN   TO   WRK-KHNTEN
+                              MOVE   NYUINACT-IDX
+                                               TO   NYUINACT-IDX2
                               MOVE   1         TO   FLG-NYUKHN
                          END-IF
                      END-IF                  
@@ -917,6 +1007,31 @@
                                                      ORCMCPAREA
                                                      MCPDATA-REC
                END-PERFORM
+      *
+               IF  WRK-NYUTENTTLKBN  =  920  
+      *
+                 IF   NYUINACT-IDX2  NOT =  ZERO
+                     MOVE    SPACE         TO   NYURYAKUSHO-REC
+                     INITIALIZE                 NYURYAKUSHO-REC
+                     MOVE    NSRY-SRYCD(NYUINACT-IDX2) 
+                                         TO   NYURYAKUSHO-SRYCD
+                     MOVE    NACCT-SRYYM        TO  ORC-DBYMD(1:6)
+                     MOVE    "01"               TO  ORC-DBYMD(7:2)
+                     PERFORM  NYURYAKUSHO-READ-SEC
+                     IF       FLG-NYURYAKUSHO    =    ZERO
+                       MOVE     NYURYAKUSHO-RYAKUSHO
+                                                TO  WRK-RYAKUSHO
+                     END-IF                  
+                     MOVE    "DBCLOSE"               TO  MCP-FUNC
+                     MOVE    "NYUINRYAKUSHO-KEY"     TO  ORC-DBPATH
+                     CALL    "ORCMCPSUB"             USING
+                                                     MCPAREA
+                                                     ORCMCPAREA
+                                                     MCPDATA-REC
+                 END-IF
+      *
+               END-IF 
+      *
            END-IF
       *
       *    初期加算（及び長期減算）の点数取得
@@ -1046,6 +1161,7 @@
                              OR      RECE62-HKNCOMBI (IDX1)  =   ZERO 
       *
                          IF  WRK-DAY5(IDY)  =  RECE62-HKNCOMBI (IDX1)
+                         AND WRK-DAY1-NYUTENTTLKBN(IDY) = 903
                               IF   NACCT-ZAITEN    NOT =    ZERO  
                               AND  NACCT-DAY(IDY)  NOT =    ZERO  
                                    PERFORM   NYUINKHN-GET3-SEC
