@@ -566,6 +566,9 @@
       *        診察料のみの変更処理（他保険受診あり）
                WHEN    "H"
                    PERFORM 1012-TAHOKEN-HEN-SEC
+      *        診察料のみの変更処理（他保険受診ありで同日再診へ）
+               WHEN    "J"
+                   PERFORM 1010-SINSATU-HEN-SEC
       *        初診料を算定中かの判定
                WHEN    "C"
                    PERFORM 1011-SYOSIN-CHK-SEC
@@ -1857,7 +1860,8 @@
                    MOVE    1                   TO  FLG-DOUJITU
                END-IF
                IF      FLG-DOUJITU         =   1
-                   IF      SPA-TAKA-SRYKA-R    =   SPACE
+                   IF     (SPA-TAKA-SRYKA-R    =   SPACE ) OR
+                          (LNK-SC10S-SYORI     =   "J"   )
                        MOVE    "12"                TO  WRK-SRYKBN
                        MOVE    "D"                 TO  WRK-KBN
       *                診察コードをテーブルより決定
@@ -2750,6 +2754,10 @@
                INITIALIZE              SPA-COM-TBLREC (SPA-GMN-IDX)
                COMPUTE SPA-GMN-IDX     =   SPA-GMN-IDX
                                        -   1
+           ELSE
+      *        再編集処理
+               MOVE    SPA-GMN-IDX         TO  IDX
+               PERFORM 3101-INPUTCD-HEN-SEC
            END-IF
            MOVE    SPA-GMN-IDX         TO  IDX2
       *
@@ -2887,6 +2895,12 @@
                INITIALIZE              SPA-COM-TBLREC (SPA-GMN-IDX)
                COMPUTE SPA-GMN-IDX     =   SPA-GMN-IDX
                                        -   1
+           ELSE
+               MOVE    "1"                 TO  SPA-COM-KAIFLG
+                                                      (SPA-GMN-IDX)
+      *        再編集処理
+               MOVE    SPA-GMN-IDX         TO  IDX
+               PERFORM 3101-INPUTCD-HEN-SEC
            END-IF
            MOVE    SPA-GMN-IDX         TO  IDX2
       *
@@ -4088,7 +4102,8 @@
            END-IF
       *    同時他科受診があった時は、診察料の変更をおこなわない
       *    （中途終了時以外）
-           IF    ( LNK-SC10S-SYORI NOT =   "W"  AND "K")  AND
+           IF    ( LNK-SC10S-SYORI NOT =   "W"  AND "K"
+                                                AND "J" )  AND
                  ((SPA-LSTYMD          =   SPA-SRYYMD) OR
                   (SPA-RRK-LSTYMD      =   SPA-SRYYMD))
                IF      SPA-TAKA-SRYKA-R    NOT =   SPACE
@@ -4375,7 +4390,7 @@
                IF     (WRK-SRYCD(1:1)          =   "1"   ) AND
                       (WRK-SRYCD               =   SPA-COM-INPUTCD
                                                             (IDXS))
-                   MOVE    1               TO  FLG-ARI
+                   MOVE    1                   TO  FLG-ARI
                END-IF
            END-PERFORM
       *
