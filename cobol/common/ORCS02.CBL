@@ -406,7 +406,7 @@
            03  WK-NISSU-SKJ            PIC 9(02).
            03  WK-KNJFTNKIN-SKJ        PIC 9(07).
            03  WK-RYOYOHI-SKJ          PIC 9(07).
-           03  WK-SRYCD                PIC 9(09).
+           03  WK-SRYCD                PIC X(09).
       *    03  WK-TSUSAN-NISSU         PIC 9(04).
       *    03  WK-SEIKYUKIKAN-NISSU    PIC 9(04).
       *    ø©∆≤≤√ªª¬‡»Ú•∆°º•÷•Î

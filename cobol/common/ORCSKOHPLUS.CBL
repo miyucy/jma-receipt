@@ -279,6 +279,7 @@
                        DISPLAY "KOHPLUS SELECT ERR "
                        MOVE    3              TO  LNK-SKOHPLUS-RC
                    END-IF
+               END-IF
            ELSE
                DISPLAY "KOHPLUS SELECT ERR "
                MOVE    3              TO  LNK-SKOHPLUS-RC

@@ -167,8 +167,8 @@
            03  TBL-RMSAGAKU                PIC 9(05)   OCCURS  50.
       *
       * 入院料フラグ退避用テーブル
-       01  TABLE-NYUIN.                                                 XXX
-           03  TBL-NYUIN                   PIC 9(01)   OCCURS  31.      XXX
+       01  TABLE-NYUIN.                                                 
+           03  TBL-NYUIN                   PIC 9(01)   OCCURS  31.      
       *
       * 外泊退避用テーブル     
        01  TABLE-GAIHAKU.
@@ -184,8 +184,8 @@
        01  WRK-JOKUSOU-GENTEN              PIC 9(03).
       *
       * 診療会計剤回数退避用テーブル
-       01  TABLE-ZAIKAISU.                                              XXX
-           03  TBL-ZAIKAISU                PIC 9(03)   OCCURS  31.      XXX
+       01  TABLE-ZAIKAISU.                                              
+           03  TBL-ZAIKAISU                PIC 9(03)   OCCURS  31.      
       *
       * 外泊カウント領域     
        01  WRK-GAIHAKU-COUNT               PIC 9(02).
