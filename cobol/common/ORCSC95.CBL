@@ -864,6 +864,12 @@
                MOVE    SPACE               TO  SPA-FTNRATEMEI
            END-IF
       *
+           IF      LNK-SC95-PG         =   "K02"  OR  "K01"
+               CONTINUE
+           ELSE
+               MOVE    SPA-SRYKA           TO  SPA-GMN-SRYKA
+           END-IF
+      *
       *    患者情報セット
            PERFORM 110-K02SYOSIN-SEC
       *    初期編集時
@@ -1349,10 +1355,6 @@
                    END-PERFORM
                END-IF
            END-PERFORM
-      *TEST
-           DISPLAY "WRK-TAKA-SRYKA:" WRK-TAKA-SRYKA (1)
-                  ",SPA-TAKA-SRYKA-R:" SPA-TAKA-SRYKA-R
-      *TEST
       *
       *****受診歴なし
       *    IF      JYURRK-REC          =   SPACE
@@ -1446,9 +1448,6 @@
                    MOVE    1               TO  FLG-OK
                END-IF
            END-IF
-      *TEST
-           DISPLAY "SPA-SRYKA:" SPA-SRYKA
-                  ",SPA-NAI-RRK-SRYKA:" SPA-NAI-RRK-SRYKA(IDX)
       *
            IF      FLG-OK              =   1
       *        同日受診の他科編集
