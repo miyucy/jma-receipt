@@ -88,10 +88,7 @@
            03  FLG-SST             PIC 9(01).
            03  FLG-KINKI           PIC 9(01).
       *
-           03  FLG-NAIYAK          PIC X(01).
-           03  FLG-TONPUK          PIC X(01).
-           03  FLG-GAIYAK          PIC X(01).
-           03  FLG-ARI             PIC X(01).
+           03  FLG-ARI             PIC 9(01).
       *    セット処理有無
            03  FLG-SETSYORI        PIC 9(01).
            03  FLG-SET             PIC 9(01).
@@ -2144,6 +2141,7 @@
            ELSE
                MOVE    1                   TO  FLG-NYURYOKU
            END-IF
+           .
       *
        4101-KOUI-INPUTCD-CHOSA-EXT.
            EXIT.
@@ -4018,7 +4016,8 @@
            CALL   "ORCMCPSUB"   USING
                                 MCPAREA
                                 ORCMCPAREA
-                                MCPDATA-REC.
+                                MCPDATA-REC
+           .
       *
        900-PUT-WINDOW-EXT.
            EXIT.

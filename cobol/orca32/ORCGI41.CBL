@@ -630,11 +630,15 @@
                WHEN    "I4ID1"
       *            確認画面より
                    PERFORM 3003-JID1-SET-SEC
-                   MOVE    SPACE           TO  SPA-IIDCD
-                   IF      SPA-ERRCD       NOT =   SPACE
+                   IF     (SPA-ERRCD       NOT =   SPACE ) OR
+                          (SPA-IIDCD       NOT =   SPACE )
                        PERFORM 500-GMNHEN-SEC
-                       PERFORM 510-ERRSET-SEC
-                       MOVE    1               TO  FLG-END
+                       IF      SPA-ERRCD       NOT =   SPACE
+                           PERFORM 510-ERRSET-SEC
+                       END-IF
+                       IF      SPA-IIDCD       NOT =   SPACE
+                           PERFORM 520-JIDSET-SEC
+                       END-IF
                    END-IF
                    GO      TO      300-SCREEN-EXT
            END-EVALUATE
@@ -679,7 +683,7 @@
                WHEN     OTHER
                    MOVE    SPA-I40-SRYYMDW(1:6) TO  SPA-GMN-SRYYM
                    MOVE    SPA-I40-SRYYMD (1:6) TO  SPA-NAI-SRYYM
-                   MOVE    1                    TO  SPA-NYUGAIKBN
+                   MOVE    "1"                  TO  SPA-NYUGAIKBN
       *
                    MOVE    1                    TO  FLG-HENSYU
                    PERFORM 310-SPA-SET-SEC
@@ -709,7 +713,7 @@
            INITIALIZE                  SPA-I41
            MOVE    SPA-I40-SRYYMDW(1:6)    TO  SPA-GMN-SRYYM
            MOVE    SPA-I40-SRYYMD (1:6)    TO  SPA-NAI-SRYYM
-           MOVE    1                   TO  SPA-NYUGAIKBN
+           MOVE    "1"                 TO  SPA-NYUGAIKBN
       *
       *    室料差額テーブルセット
            PERFORM 3113-SAGAKU-HEN-SEC
@@ -734,6 +738,7 @@
       *
            EVALUATE    SPA-IIDCD
                WHEN    "0102"
+                   MOVE    SPACE           TO  SPA-IIDCD
       *            戻るの確認
                    IF      SPA-I4ID-FLG        =   "OK"
                        MOVE    1                  TO  SPA-GMN-CUR-41
@@ -744,6 +749,7 @@
                    END-IF
       *
                WHEN    "0103"
+                   MOVE    SPACE           TO  SPA-IIDCD
       *            明細選択の確認
                    IF      SPA-I4ID-FLG        =   "OK"
                        MOVE    1                  TO  SPA-GMN-CUR-41
@@ -756,6 +762,7 @@
                    END-IF
       *
                WHEN    "0104"
+                   MOVE    SPACE           TO  SPA-IIDCD
       *            剤変更の確認
                    IF      SPA-I4ID-FLG        =   "OK"
                        MOVE     1             TO  SPA-GMN-CUR-41
@@ -766,6 +773,7 @@
                    END-IF
       *
                WHEN    "0106"
+                   MOVE    SPACE           TO  SPA-IIDCD
       *            診療年月変更の確認
                    IF      SPA-I4ID-FLG        =   "OK"
                        IF      SPA-I4-SEL         =   1
@@ -780,6 +788,7 @@
                    END-IF
       *
                WHEN    "0107"
+                   MOVE    SPACE           TO  SPA-IIDCD
       *            入院科変更の確認
                    IF      SPA-I4ID-FLG        =   "OK"
                        PERFORM 41013-NYUINKA-CHANGE-SEC
@@ -787,6 +796,7 @@
                    MOVE    1                  TO  SPA-GMN-CUR-41
       *
                WHEN    "0108"
+                   MOVE    SPACE           TO  SPA-IIDCD
       *            診療年月変更の確認
                    IF      SPA-I4ID-FLG        =   "OK"
                        PERFORM 410181-SRYYM-CHANGE-SEC
@@ -798,6 +808,7 @@
                    END-IF
       *
                WHEN    "0110"
+                   MOVE    SPACE           TO  SPA-IIDCD
       *            最新入院履歴の変更の確認
                    IF      SPA-I4ID-FLG        =   "OK"
                        PERFORM 4701-KAKUTEI-SYORI-SEC
@@ -3624,11 +3635,6 @@
            MOVE   "JOIN"               TO  MCP-PUTTYPE.
            MOVE   "I44"                TO  MCP-WINDOW.
       *
-      *    MOVE    SPA-I4KYOUTU        TO  SPA-WORK.
-      *    MOVE    SPA-AREA            TO  SPA-COMMON.
-      *
-      *    MOVE    SPACE               TO  LINKAREA.
-      *
            PERFORM 900-PUT-WINDOW.
       *
            MOVE    1                   TO  FLG-END.
@@ -4170,11 +4176,12 @@
        410191-KAIKEI-SAKUSEI-EXT.
            EXIT.
       *
-      ***************************************************************** 021118
-      *    入院会計テーブル作成処理                                     021118
-      ***************************************************************** 021118
-       410191-NYUACCT-SAKUSEI-SEC   SECTION.                             021118
-      *                                                                 021118
+      *021118
+      *****************************************************************
+      *    入院会計テーブル作成処理                                    
+      *****************************************************************
+       410191-NYUACCT-SAKUSEI-SEC   SECTION.
+      *
            MOVE   SPACE                TO  IPN-NYUKAIKEI-SAKUSEI-FLG
            INITIALIZE      ORCSSYOKIKSNAREA
            MOVE    SPA-NAI-SRYYM       TO  WRK-NAI-SRYYM-41.
@@ -4678,15 +4685,16 @@
       *     END-IF
       *
            .
-      *                                                                 021118
-       410191-NYUACCT-SAKUSEI-EXT.                                       021118
-           EXIT.                                                        021118
       *
-      ***************************************************************** 021118
-      *    入院会計テーブル作成処理（特定入院料後の一般入院料）         021118
-      ***************************************************************** 021118
-       410191-IPNNYUACCT-SAKUSEI-SEC   SECTION.                             021118
-      *                                                                 021118
+       410191-NYUACCT-SAKUSEI-EXT.
+           EXIT.
+      *
+      *21118
+      *****************************************************************
+      *    入院会計テーブル作成処理（特定入院料後の一般入院料）
+      *****************************************************************
+       410191-IPNNYUACCT-SAKUSEI-SEC   SECTION.
+      *
       *     DISPLAY   "410191-NYUACCT-SAKUSEI-SEC"
            INITIALIZE      ORCSSYOKIKSNAREA
            MOVE    IPN-SANTEISTYMD(1:6)  TO WRK-NAI-SRYYM-41(1:6)
@@ -4818,10 +4826,10 @@
            MOVE   WRK-TAIHI-SRYKA  TO  SPA-SRYKA
       *
            .
-      *                                                                 021118
-       410191-IPNNYUACCT-SAKUSEI-EXT.                                       021118
-           EXIT.                                                        021118
       *
+       410191-IPNNYUACCT-SAKUSEI-EXT.
+           EXIT.
+      *021118
       *****************************************************************
       *    通算日数取得処理
       *****************************************************************
