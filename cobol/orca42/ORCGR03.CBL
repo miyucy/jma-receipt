@@ -48,6 +48,7 @@
       *  01.03.06    NACL-藤原    02.08.30  タイマー機能の追加
       *
       *  01.04.01    NACL-藤原    02/09/12  ディレクトリをサブプロへ
+      *  01.04.02    NACL-藤原    02/09/24  ２００２．１０改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -151,6 +152,7 @@
            03  WRK-CREYMD          PIC X(08).
            03  WRK-RIDMSG          PIC X(70).
            03  WRK-YM              PIC X(07). 
+           03  WRK-PATH            PIC X(64).
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).
                05  WRK-SMM         PIC 9(02).
@@ -563,17 +565,22 @@
                WHEN    "2"             ALSO    "4"             
                    MOVE    "T"             TO  SPA-DATAKBN23-VALUE
            END-EVALUATE
-      *        
-           MOVE    SPA-R01-SRYYM       TO  SPA-NAI-SRYYM
-           IF      SPA-R01-SRYYM       =   ZERO
+      *
+           IF      SPA-R01-FILEKBN     =   "1"        
+               MOVE    SPA-R01-SRYYM       TO  SPA-NAI-SRYYM
+               IF      SPA-R01-SRYYM       =   ZERO
+                   INITIALIZE                  SPA-GMN-SRYYM
+                                               SPA-NAI-SRYYMH
+               ELSE   
+                   MOVE    SPA-R01-SRYYM       TO  WRK-SYMD (1:6)
+                   MOVE    "01"                TO  WRK-SYMD (7:2) 
+                   PERFORM 5002-HIZUKE-HEN-SEC
+                   MOVE    WRK-HENYMDG(1:6)    TO  SPA-GMN-SRYYM
+                   MOVE    WRK-HENYMDG3(1:16)  TO  SPA-NAI-SRYYMH
+               END-IF
+           ELSE        
                INITIALIZE                  SPA-GMN-SRYYM
                                            SPA-NAI-SRYYMH
-           ELSE   
-               MOVE    SPA-R01-SRYYM       TO  WRK-SYMD (1:6)
-               MOVE    "01"                TO  WRK-SYMD (7:2) 
-               PERFORM 5002-HIZUKE-HEN-SEC
-               MOVE    WRK-HENYMDG(1:6)    TO  SPA-GMN-SRYYM
-               MOVE    WRK-HENYMDG3(1:16)  TO  SPA-NAI-SRYYMH
            END-IF    
       *
            MOVE    SPA-R01-SYOKBN      TO  SPA-GMN-SYOKBN
@@ -1100,9 +1107,14 @@
                        MOVE    "0002"              TO  SPA-ERRCD
                        GO  TO  450-TOUROKU-EXT
                    ELSE                    
-                       MOVE    SPA-RECE07-KEY TO   SPA-R01-RECE07-KEY
+                       MOVE    SPA-RECE07-KEY
+                                          TO  SPA-R01-RECE07-KEY
                        MOVE    SPA-RECE07-RECEKBN
-                                              TO  SPA-R01-RECE07-RECEKBN
+                                          TO  SPA-R01-RECE07-RECEKBN
+                       MOVE    SPA-RECE07-SRYYM
+                                          TO  SPA-R01-RECE07-SRYYM
+                       MOVE    SPA-RECE07-NYUGAIKBN
+                                          TO  SPA-R01-RECE07-NYUGAIKBN
                    END-IF    
            END-EVALUATE
       *
@@ -1143,9 +1155,6 @@
                    END-EVALUATE
                END-IF    
            END-IF    
-      *???
-           DISPLAY "SPA=" SPA-R01-RECEKBN "##" SPA-RIDCD "##" 
-      *???     
            .
        450-TOUROKU-EXT.
            EXIT.
@@ -1157,7 +1166,8 @@
       *
            INITIALIZE              SPA-RECE07-KEY
                                    SPA-RECE07-RECEKBN
-      *
+                                   SPA-RECE07-NYUGAIKBN
+                                   SPA-RECE07-SRYYM
       *
            INITIALIZE                  RECE07-REC
            IF      SPA-R01-RECEKBN     =   "0" OR  "1" OR  "2"
@@ -1172,14 +1182,25 @@
            END-IF            
            IF      SPA-R01-FILEKBN         =   "1"
                MOVE    SPA-R01-SRYYM       TO  RECE07-SRYYM
+               MOVE    "1"                 TO  RECE07-SYOKBN
+               MOVE    "2"                 TO  RECE07-NYUGAIKBN
+               MOVE    "RECEKANRI-KEY7"    TO  WRK-PATH
            ELSE
-               MOVE    ZERO                TO  RECE07-SRYYM
+      *****    MOVE    ZERO                TO  RECE07-SRYYM
+               MOVE    "2"                 TO  RECE07-SYOKBN
+               MOVE    "RECEKANRI-KEY2"    TO  WRK-PATH
            END-IF
            MOVE    RECE07-REC          TO  MCPDATA-REC
            PERFORM 900-RECE07-INV-SEC
+      *???
+           DISPLAY "RECE07=" FLG-RECE07 "##" RECE07-KEY "##" 
+                             WRK-PATH(1:20) "##"
+      *???                            
            IF      FLG-RECE07          =   ZERO
                MOVE    RECE07-KEY          TO  SPA-RECE07-KEY
                MOVE    RECE07-RECEKBN      TO  SPA-RECE07-RECEKBN
+               MOVE    RECE07-SRYYM        TO  SPA-RECE07-SRYYM
+               MOVE    RECE07-NYUGAIKBN    TO  SPA-RECE07-NYUGAIKBN
            END-IF
       *
            .
@@ -1333,6 +1354,7 @@
                                            TO  SHELLTBL-ARG6
                    MOVE    SYS-2005-PREFPRGID (1)
                                            TO  SHELLTBL-ARG7
+                   MOVE    SPA-NAI-SRYYM   TO  SHELLTBL-ARG8
                    MOVE    SHELLTBL        TO  MCPDATA-REC
                    MOVE    "SHELL"         TO  MCP-FUNC
                    MOVE    PATH-SHELL-SHELL
@@ -1424,12 +1446,11 @@
       *
            IF      SPA-GMN-IKKATU          =   "T"
                MOVE    "1"                 TO  SPA-R01-FILEKBN
+               MOVE    SPA-NAI-SRYYM       TO  SPA-R01-SRYYM
            ELSE
                MOVE    "2"                 TO  SPA-R01-FILEKBN
+               MOVE    ZERO                TO  SPA-R01-SRYYM
            END-IF
-      *
-           MOVE    SPA-NAI-SRYYM       TO  SPA-R01-SRYYM
-      *
       *
            MOVE    SPA-R01KYOUTU       TO  SPA-WORK       
       *
@@ -1489,9 +1510,13 @@
                                                TO  R99-MSG
                        ELSE                    
                            MOVE    SPA-RECE07-KEY
-                                              TO  SPA-R01-RECE07-KEY
+                                          TO  SPA-R01-RECE07-KEY
                            MOVE    SPA-RECE07-RECEKBN
-                                              TO  SPA-R01-RECE07-RECEKBN
+                                          TO  SPA-R01-RECE07-RECEKBN
+                           MOVE    SPA-RECE07-SRYYM
+                                          TO  SPA-R01-RECE07-SRYYM
+                           MOVE    SPA-RECE07-NYUGAIKBN
+                                          TO  SPA-R01-RECE07-NYUGAIKBN
                        END-IF
                    ELSE
                        STRING  JOB-YOBI    DELIMITED  BY  SPACE
@@ -1867,14 +1892,16 @@
        900-RECE07-INV-SEC         SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "RECEKANRI-KEY2"    TO  ORC-DBPATH
+      *****MOVE    "RECEKANRI-KEY2"    TO  ORC-DBPATH
+           MOVE    WRK-PATH            TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "RECEKANRI-KEY2"    TO  ORC-DBPATH
+      *****    MOVE    "RECEKANRI-KEY2"    TO  ORC-DBPATH
+               MOVE    WRK-PATH            TO  ORC-DBPATH
                CALL    "ORCMCPSUB"          USING
                                             MCPAREA
                                             ORCMCPAREA
@@ -1890,7 +1917,8 @@
            END-IF
       *
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "RECEKANRI-KEY2"    TO  ORC-DBPATH
+      *****MOVE    "RECEKANRI-KEY2"    TO  ORC-DBPATH
+           MOVE    WRK-PATH            TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
