@@ -657,7 +657,7 @@
            INITIALIZE                  SPA-I4-AREA.
            INITIALIZE                  SPA-SCR-REC-41.
       *
-           EVALUATE    SPA-MOTOPG(1:3)
+           EVALUATE    SPA-MOTOPG(1:4)
       *        業務選択より
                WHEN    "M01"
                    INITIALIZE                 SPA-I4KYOUTU
