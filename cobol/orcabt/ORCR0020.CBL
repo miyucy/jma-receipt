@@ -110,6 +110,7 @@
       *                                     種別・給付割合の編集を変更
       *  01.00.45    NACL-藤原    04/10/04  特例退職者＋老人のとき本人の
       *                                     み不明分とする
+      *  01.00.46    NACL-門脇    04/10/05  公費単独の在総診フラグセットの修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2360,9 +2361,9 @@
                  IF  RECE02-RECESYUBETU   =   "8888"
                      MOVE  SPACE       TO  RECE02-ZAITAKU
                  END-IF
-      ***        IF  RECE02-HKNNUM        =   SPACE 
-      ***            MOVE  SPACE       TO  RECE02-ZAITAKU
-      ***        END-IF
+                 IF  RECE02-HKNNUM        =   SPACE 
+                     MOVE  SPACE       TO  RECE02-ZAITAKU
+                 END-IF
       *
                END-IF
              END-IF
