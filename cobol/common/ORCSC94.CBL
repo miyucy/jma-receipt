@@ -91,6 +91,8 @@
                05  WRK-KEICOMS-Z   PIC ZZZZ9V99.
            03  WRK-GOKEI-X.
                05  WRK-GOKEI-Z     PIC ZZZZZZZZ.
+           03  WRK-KEI-X.
+               05  WRK-KEI-Z       PIC ZZZZZZZ.
       *
            03  WRK-SURYO-H         PIC X(09).
            03  WRK-KAISU-H         PIC X(04).
@@ -234,8 +236,8 @@
                WHEN    "0"
                    IF      SPA-COM-KEIFLG(IDX)     =   "1"
                        IF      SPA-COM-KISOTEN (IDX)   =   ZERO
-                           MOVE    SPA-COM-KEI(IDX)    TO  WRK-SURYO
-                           PERFORM 2001-SURYO-HEN-SEC
+                           MOVE    SPA-COM-KEI(IDX)    TO  WRK-KEI-Z
+                           MOVE    WRK-KEI-X           TO  WRK-SURYO-X
                        END-IF
                    END-IF
       *

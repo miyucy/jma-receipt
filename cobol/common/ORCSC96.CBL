@@ -134,7 +134,7 @@
                    MOVE    "撮影部位コードは入力できません"
                                        TO  SPA-ERRMSG
                WHEN    "0012"
-                   MOVE    "数量・回数等は数字入力です"
+                   MOVE    "数量・回数等の数字・桁数エラーです"
                                        TO  SPA-ERRMSG
                WHEN    "0013"
                    MOVE    "手技料を入力して下さい" 
@@ -835,6 +835,11 @@
                                        TO  SPA-ERRMSG
                    MOVE    "患者登録で保険を登録し直して下さい。"
                                        TO  SPA-ERRMSG(27:)
+               WHEN    "1029"
+                   MOVE    "訂正で継続確定済みの時、"
+                                       TO  SPA-ERRMSG(1:24)
+                   MOVE    "診療科の変更はできません"
+                                       TO  SPA-ERRMSG(25:)
                WHEN    "K001"
                    MOVE    "警告！時間外算定がありません"
                                        TO  SPA-ERRMSG

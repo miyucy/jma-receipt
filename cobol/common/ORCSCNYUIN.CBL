@@ -1869,7 +1869,11 @@
            MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
            MOVE    SPA-PTID            TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
-           MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
+           IF      SPA-OLD-SRYKA       =   SPACE
+               MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
+           ELSE
+               MOVE    SPA-OLD-SRYKA       TO  JYURRK-SRYKA
+           END-IF
            MOVE    SPA-SRYYMD          TO  JYURRK-SRYYMD
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
@@ -2133,6 +2137,8 @@
            MOVE    SPA-PTID            TO  SSANTEI-PTID
            MOVE    SPA-SRYYMD          TO  SSANTEI-SRYYMD
            MOVE    WRK-KAISU           TO  SSANTEI-KAISU
+      *    ©гне╡й
+           MOVE    SRY-SRYKA           TO  SSANTEI-SRYKA
            CALL    "ORCSSANTEI"        USING
                                        ORCSSANTEIAREA
                                        SPA-AREA
@@ -2156,7 +2162,12 @@
                    MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
                    MOVE    SPA-PTID            TO  JYURRK-PTID
                    MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
-                   MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
+      ***********  MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
+                   IF      SPA-OLD-SRYKA       =   SPACE
+                       MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
+                   ELSE
+                       MOVE    SPA-OLD-SRYKA       TO  JYURRK-SRYKA
+                   END-IF
                    MOVE    SPA-SRYYMD          TO  JYURRK-SRYYMD
                    MOVE    SPA-RENNUM          TO  JYURRK-RENNUM
                    MOVE    WRK-JYURRK-DOUJI-RENNUM
