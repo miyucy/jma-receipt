@@ -30,6 +30,7 @@
       *  01.00.01    ひさなが     02/06/06  日付表示を更新日が空白なら
       *                                     新規作成日表示に変更
       *
+      *  01.00.02    太田         04/02/03  MCPAREAの初期化を削除
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -435,7 +436,6 @@
                END-IF
            END-IF.
       *    カーソルクロース
-           INITIALIZE                  MCPAREA.
            MOVE    "DBCLOSE"           TO  MCP-FUNC.
            MOVE    "DBKANRI-KEY"       TO  ORC-DBPATH.
            CALL    "ORCMCPSUB"         USING
