@@ -128,6 +128,7 @@
                05  WRK-TENSU                   PIC S9(08).
       *
                05  WRK-ZAITEN                  PIC 9(08).
+               05  WRK-ZAITEN-G                PIC 9(08).
                05  WRK-SRYCDTOTAL              PIC 9(14).
                05  WRK-SURYOUTOTAL             PIC 9(07)V9(03).
                05  WRK-MEISAISU                PIC 9(07).
@@ -897,12 +898,20 @@
                    UNTIL      (IDX     >   10  )  OR
                               (TBL-SRYCD (IDX) =   SPACE )
       *        点数集計
-               IF      TBL-TENSIKIBETU (IDX)   =   5  OR  6
-                   CONTINUE
-               ELSE
-                   COMPUTE WRK-ZAITEN          =   WRK-ZAITEN
+               EVALUATE    TBL-TENSIKIBETU (IDX)
+      *            ％加算・減算
+                   WHEN    5
+                   WHEN    6
+                       CONTINUE
+      *            点数（マイナス）
+                   WHEN    8
+                       COMPUTE WRK-ZAITEN-G    =   WRK-ZAITEN-G
                                                +   TBL-TENSU (IDX)
-               END-IF
+      *            点数
+                   WHEN    OTHER
+                       COMPUTE WRK-ZAITEN      =   WRK-ZAITEN
+                                               +   TBL-TENSU (IDX)
+               END-EVALUATE
       *        各集計
                MOVE    TBL-SRYCD (IDX)     TO  WRK-SRYCD-9
                COMPUTE WRK-SRYCDTOTAL      =   WRK-SRYCDTOTAL
@@ -943,6 +952,7 @@
            COMPUTE WRK-ZAITEN          =   WRK-ZAITEN
                                        +   WRK-KASAN-ALL
                                        -   WRK-GENZAN-ALL
+                                       -   WRK-ZAITEN-G
       *
            .
        40091-NYUACT-KEISAN-EXT.
