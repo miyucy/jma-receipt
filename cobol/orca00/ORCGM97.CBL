@@ -252,8 +252,8 @@
                WHEN    "CLICKED"   ALSO    "B02"
                    PERFORM 410-JOBDEL-SEC
       *        ¾ðÊó
-               WHEN    "CLICKED"   ALSO    "B09"
-                   PERFORM 400-JYOUHOU-SEC
+      ***         WHEN    "CLICKED"   ALSO    "B09"
+      ***             PERFORM 400-JYOUHOU-SEC
       *        ¾õ¶·
                WHEN    "CLICKED"   ALSO    "B11"
                    PERFORM 400-JYOKYO-SET-SEC

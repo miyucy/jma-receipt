@@ -289,7 +289,7 @@
        300-END-SEC                 SECTION.
       *
       * オンラインリスタート用シェル起動
-           IF      CNT-ERR         =  ZERO
+           IF      FLG-RESTART         =  1
                MOVE    SPACE           TO  SHELLTBL
                INITIALIZE              ORCSMKPASSAREA
                MOVE    SHELL-NAME1     TO  MKPASS-IN-01
