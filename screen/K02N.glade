@@ -2839,7 +2839,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 04:56:12 GMT</last_modification_time>
       </signal>
-      <label></label>
+      <label>ÆþÂà±¡ÅÐÏ¿</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -2931,7 +2931,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 24 May 2001 05:50:44 GMT</last_modification_time>
       </signal>
-      <label>»»Äê</label>
+      <label>Æþ±¡²ñ·×</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
