@@ -7783,8 +7783,14 @@
            INITIALIZE              SYSKANRI-REC
            MOVE    "5000"          TO  SYS-KANRICD
            EVALUATE   SPA-GMN-I01-SYORIKBN-CD
+               WHEN   "01"
+                   MOVE   SPA-NAI-I01-NYUINYMD
+                                   TO  ORC-DBYMD
                WHEN   "08"
                    MOVE   SPA-NAI-I01-IDOYMD
+                                   TO  ORC-DBYMD
+               WHEN   "09"
+                   MOVE   SPA-NAI-I01-MAEIDOYMD
                                    TO  ORC-DBYMD
                WHEN   OTHER
                    MOVE    SPA-SYSYMD
@@ -9134,7 +9140,8 @@
       *
            INITIALIZE              SYSKANRI-REC
            MOVE    "5001"          TO  SYS-KANRICD
-           MOVE    SPA-SYSYMD      TO  ORC-DBYMD
+           MOVE    SPA-NAI-I01-MAEIDOYMD
+                                   TO  ORC-DBYMD
            MOVE    PTNYUINRRK-BTUNUM
                                    TO  SYS-KBNCD
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
@@ -9822,8 +9829,14 @@
            MOVE    PTNYUINRRK-BTUNUM
                                    TO  SYS-KBNCD
            EVALUATE   SPA-GMN-I01-SYORIKBN-CD
+               WHEN   "01"
+                   MOVE   SPA-NAI-I01-NYUINYMD
+                                   TO  ORC-DBYMD
                WHEN   "08"
                    MOVE   SPA-NAI-I01-IDOYMD
+                                   TO  ORC-DBYMD
+               WHEN   "09"
+                   MOVE   SPA-NAI-I01-MAEIDOYMD
                                    TO  ORC-DBYMD
                WHEN   OTHER
                    MOVE    SPA-SYSYMD
@@ -9859,8 +9872,14 @@
            MOVE    PTNYUINRRK-BRMNUM
                                    TO  SYS-KBNCD
            EVALUATE   SPA-GMN-I01-SYORIKBN-CD
+               WHEN   "01"
+                   MOVE   SPA-NAI-I01-NYUINYMD
+                                   TO  ORC-DBYMD
                WHEN   "08"
                    MOVE   SPA-NAI-I01-IDOYMD
+                                   TO  ORC-DBYMD
+               WHEN   "09"
+                   MOVE   SPA-NAI-I01-MAEIDOYMD
                                    TO  ORC-DBYMD
                WHEN   OTHER
                    MOVE    SPA-SYSYMD
