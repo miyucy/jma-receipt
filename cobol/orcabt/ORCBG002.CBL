@@ -59,13 +59,9 @@
       *
        FD  BG00201-FILE.
        01  BG00201-REC.
-           02  BG00201-ISAM-KEY.
-               03  BG00201-ISAM-KEY-BTUNUM     PIC X(02).
-               03  BG00201-ISAM-KEY-BRMNUM     PIC X(08).
-               03  BG00201-ISAM-KEY-SRYKA      PIC X(02).
-               03  BG00201-ISAM-KEY-PTNUM      PIC X(20).
-               03  BG00201-ISAM-KEY-SAKKBN     PIC X(01).
-               03  BG00201-ISAM-KEY-SRYYMD     PIC X(08).
+      *----(02.00.01)--UPD-START---
+           02  BG00201-ISAM-KEY                PIC X(41).
+      *----(02.00.01)--UPD-END-----
            02  BG00201-SYU-DATA-AREA.
            COPY    "CPSYUNOU.INC"  REPLACING   //SYU-//
                                    BY          //BG00201-SYU-//.
@@ -75,13 +71,9 @@
                                    BY          //BG00201-PTTEIKIRRK-//.
        FD  BG00202-FILE.
        01  BG00202-REC.
-           02  BG00202-ISAM-KEY.
-               03  BG00202-ISAM-KEY-BTUNUM     PIC X(02).
-               03  BG00202-ISAM-KEY-BRMNUM     PIC X(08).
-               03  BG00202-ISAM-KEY-SRYKA      PIC X(02).
-               03  BG00202-ISAM-KEY-PTNUM      PIC X(20).
-               03  BG00202-ISAM-KEY-SAKKBN     PIC X(01).
-               03  BG00202-ISAM-KEY-SRYYMD     PIC X(08).
+      *----(02.00.01)--UPD-START---
+           02  BG00202-ISAM-KEY                PIC X(41).
+      *----(02.00.01)--UPD-END-----
            02  BG00202-SYU-DATA-AREA.
            COPY    "CPSYUNOU.INC"  REPLACING   //SYU-//
                                    BY          //BG00202-SYU-//.
@@ -152,6 +144,25 @@
            03  WRK-PARA-HOSPID                     PIC X(24).
            03  WRK-PARA-SRYYM                      PIC X(06).
            03  WRK-PARA-SYORIKBN                   PIC X(01).
+      *----(02.00.01)--ADD-START---
+           03  WRK-PARA-JUNKBN                     PIC X(01).
+      *
+       01  ISAM-AREA.
+           03  ISAM-KEY.
+               05  ISAM-KEY-BTUNUM      PIC X(02).
+               05  ISAM-KEY-BRMNUM      PIC X(08).
+               05  ISAM-KEY-SRYKA       PIC X(02).
+               05  ISAM-KEY-PTNUM       PIC X(20).
+               05  ISAM-KEY-SAKKBN      PIC X(01).
+               05  ISAM-KEY-SRYYMD      PIC X(08).
+           03  ISAM-KEY2.
+               05  ISAM-KEY2-PTNUM      PIC X(20).
+               05  ISAM-KEY2-BTUNUM     PIC X(02).
+               05  ISAM-KEY2-BRMNUM     PIC X(08).
+               05  ISAM-KEY2-SRYKA      PIC X(02).
+               05  ISAM-KEY2-SAKKBN     PIC X(01).
+               05  ISAM-KEY2-SRYYMD     PIC X(08).
+      *----(02.00.01)--ADD-END-----
       *
       *    一時領域
        01  WRK-AREA.
@@ -338,6 +349,9 @@
                                        WRK-PARA-HOSPID
                                        WRK-PARA-SRYYM
                                        WRK-PARA-SYORIKBN
+      *----(02.00.01)--ADD-START---
+                                       WRK-PARA-JUNKBN
+      *----(02.00.01)--ADD-END-----
       *
       *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
@@ -580,10 +594,14 @@
            END-IF
       *
            INITIALIZE  BG00202-REC
+      *----(02.00.01)--ADD-START---
+           INITIALIZE  ISAM-AREA
+      *----(02.00.01)--ADD-END-----
       *
-           MOVE    SYU-BYOTONUM        TO  BG00202-ISAM-KEY-BTUNUM
-           MOVE    SYU-ROOMNUM         TO  BG00202-ISAM-KEY-BRMNUM
-           MOVE    SYU-SRYKA           TO  BG00202-ISAM-KEY-SRYKA
+      *----(02.00.01)--UPD-START---
+           MOVE    SYU-BYOTONUM        TO  ISAM-KEY-BTUNUM
+           MOVE    SYU-ROOMNUM         TO  ISAM-KEY-BRMNUM
+           MOVE    SYU-SRYKA           TO  ISAM-KEY-SRYKA
            MOVE    SYU-PTID            TO  WRK-SPTID-PTID
            PERFORM 1101-PTNUM-GET-SEC
            IF    ( WRK-SPTID-PTNUM     =   SPACE )
@@ -596,9 +614,24 @@
                GO  TO  1101-TEIKI-EDIT-EXT
            END-IF
       *
-           MOVE    WRK-SPTID-PTNUM     TO  BG00202-ISAM-KEY-PTNUM
-           MOVE    PTTEIKIRRK-SAKKBN   TO  BG00202-ISAM-KEY-SAKKBN
-           MOVE    SYU-SRYYMD          TO  BG00202-ISAM-KEY-SRYYMD
+           MOVE    WRK-SPTID-PTNUM     TO  ISAM-KEY-PTNUM
+           MOVE    PTTEIKIRRK-SAKKBN   TO  ISAM-KEY-SAKKBN
+           MOVE    SYU-SRYYMD          TO  ISAM-KEY-SRYYMD
+      *----(02.00.01)--UPD-END-----
+      *
+      *----(02.00.01)--ADD-START---
+           IF      WRK-PARA-JUNKBN     =   "1"
+               MOVE    ISAM-KEY-BTUNUM     TO  ISAM-KEY2-BTUNUM
+               MOVE    ISAM-KEY-BRMNUM     TO  ISAM-KEY2-BRMNUM
+               MOVE    ISAM-KEY-SRYKA      TO  ISAM-KEY2-SRYKA
+               MOVE    ISAM-KEY-PTNUM      TO  ISAM-KEY2-PTNUM
+               MOVE    ISAM-KEY-SAKKBN     TO  ISAM-KEY2-SAKKBN
+               MOVE    ISAM-KEY-SRYYMD     TO  ISAM-KEY2-SRYYMD
+               MOVE    ISAM-KEY2           TO  BG00202-ISAM-KEY
+           ELSE
+               MOVE    ISAM-KEY            TO  BG00202-ISAM-KEY
+           END-IF
+      *----(02.00.01)--ADD-END-----
       *
            MOVE    SYUNOU-REC          TO  BG00202-SYU-DATA-AREA
            MOVE    PTTEIKIRRK-REC      TO  BG00202-PTTEIKIRRK-DATA-AREA
@@ -718,37 +751,46 @@
                                            WRK-HCMG002-SEX
                                            WRK-HCMG002-BIRTHDAY
       *
-           IF    ( CNT-LINE        =   1 )
-            OR   ( KEY-BTUNUM  NOT =   BG00201-ISAM-KEY-BTUNUM )
+      *----(02.00.01)--UPD-START---
+           IF      WRK-PARA-JUNKBN     =   "1"
                PERFORM 2101-BODY-BTUNAME-EDIT-SEC
-           END-IF
-      *
-           IF    ( CNT-LINE        =   1 )
-            OR   ( KEY-BTUNUM  NOT =   BG00201-ISAM-KEY-BTUNUM )
-            OR   ( KEY-BRMNUM  NOT =   BG00201-ISAM-KEY-BRMNUM )
                PERFORM 2101-BODY-BRMNUM-EDIT-SEC
-           END-IF
-      *
-           IF    ( CNT-LINE        =   1 )
-            OR   ( KEY-BTUNUM  NOT =   BG00201-ISAM-KEY-BTUNUM )
-            OR   ( KEY-BRMNUM  NOT =   BG00201-ISAM-KEY-BRMNUM )
-            OR   ( KEY-SRYKA   NOT =   BG00201-ISAM-KEY-SRYKA )
                PERFORM 2101-BODY-SRYKA-EDIT-SEC
-           END-IF
-      *
-           IF    ( CNT-LINE        =   1 )
-            OR   ( KEY-BTUNUM  NOT =   BG00201-ISAM-KEY-BTUNUM )
-            OR   ( KEY-BRMNUM  NOT =   BG00201-ISAM-KEY-BRMNUM )
-            OR   ( KEY-SRYKA   NOT =   BG00201-ISAM-KEY-SRYKA )
-            OR   ( KEY-PTID    NOT =   SYU-PTID )
                PERFORM 2101-BODY-PTINF-EDIT-SEC
-           END-IF
+           ELSE
+               IF    ( CNT-LINE        =   1 )
+                OR   ( KEY-BTUNUM  NOT =   ISAM-KEY-BTUNUM )
+                   PERFORM 2101-BODY-BTUNAME-EDIT-SEC
+               END-IF
       *
-      *    キーを設定
-           MOVE    BG00201-ISAM-KEY-BTUNUM TO  KEY-BTUNUM
-           MOVE    BG00201-ISAM-KEY-BRMNUM TO  KEY-BRMNUM
-           MOVE    BG00201-ISAM-KEY-SRYKA  TO  KEY-SRYKA
-           MOVE    SYU-PTID                TO  KEY-PTID
+               IF    ( CNT-LINE        =   1 )
+                OR   ( KEY-BTUNUM  NOT =   ISAM-KEY-BTUNUM )
+                OR   ( KEY-BRMNUM  NOT =   ISAM-KEY-BRMNUM )
+                   PERFORM 2101-BODY-BRMNUM-EDIT-SEC
+               END-IF
+      *
+               IF    ( CNT-LINE        =   1 )
+                OR   ( KEY-BTUNUM  NOT =   ISAM-KEY-BTUNUM )
+                OR   ( KEY-BRMNUM  NOT =   ISAM-KEY-BRMNUM )
+                OR   ( KEY-SRYKA   NOT =   ISAM-KEY-SRYKA )
+                   PERFORM 2101-BODY-SRYKA-EDIT-SEC
+               END-IF
+      *
+               IF    ( CNT-LINE        =   1 )
+                OR   ( KEY-BTUNUM  NOT =   ISAM-KEY-BTUNUM )
+                OR   ( KEY-BRMNUM  NOT =   ISAM-KEY-BRMNUM )
+                OR   ( KEY-SRYKA   NOT =   ISAM-KEY-SRYKA )
+                OR   ( KEY-PTID    NOT =   SYU-PTID )
+                   PERFORM 2101-BODY-PTINF-EDIT-SEC
+               END-IF
+      *
+      *        キーを設定
+               MOVE    ISAM-KEY-BTUNUM TO  KEY-BTUNUM
+               MOVE    ISAM-KEY-BRMNUM TO  KEY-BRMNUM
+               MOVE    ISAM-KEY-SRYKA  TO  KEY-SRYKA
+               MOVE    SYU-PTID        TO  KEY-PTID
+           END-IF
+      *----(02.00.01)--UPD-END-----
       *
            MOVE    WRK-HCMG002-BTUNAME     TO  HCMG002-BTUNAME
                                                            (CNT-LINE)
@@ -806,8 +848,9 @@
       *    病棟情報
            INITIALIZE                      SYS-5001-REC
            MOVE    "5001"              TO  SYS-5001-KANRICD
-           MOVE    BG00201-ISAM-KEY-BTUNUM
-                                       TO  SYS-5001-KBNCD
+      *----(02.00.01)--UPD-START---
+           MOVE    ISAM-KEY-BTUNUM     TO  SYS-5001-KBNCD
+      *----(02.00.01)--UPD-END-----
            MOVE    SYU-SKYSTYMD        TO  ORC-DBYMD
            MOVE    SYS-5001-REC        TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
@@ -832,8 +875,10 @@
       *****************************************************************
        2101-BODY-BRMNUM-EDIT-SEC        SECTION.
       *
-           MOVE   BG00201-ISAM-KEY-BRMNUM ( 3 : )
+      *----(02.00.01)--UPD-START---
+           MOVE   ISAM-KEY-BRMNUM ( 3 : )
                                        TO  WRK-BRM-NUM-IN
+      *----(02.00.01)--UPD-END-----
            IF    ( WRK-BRM-NUM-IN (1 : 1)  =   SPACE )
                MOVE    SPACE           TO  WRK-STR1
                MOVE    1               TO  WRK-IDX1
@@ -892,8 +937,9 @@
       *    診療科情報
            INITIALIZE                      SYS-1005-REC
            MOVE    "1005"              TO  SYS-1005-KANRICD
-           MOVE    BG00201-ISAM-KEY-SRYKA
-                                       TO  SYS-1005-KBNCD
+      *----(02.00.01)--UPD-START---
+           MOVE    ISAM-KEY-SRYKA      TO  SYS-1005-KBNCD
+      *----(02.00.01)--UPD-END-----
            MOVE    SYU-SKYSTYMD        TO  ORC-DBYMD
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
@@ -935,8 +981,9 @@
            PERFORM 900-TBL-CLOSE-SEC
       *
       *    患者番号
-           MOVE    BG00201-ISAM-KEY-PTNUM
-                                       TO  WRK-HCMG002-PTNUM
+      *----(02.00.01)--UPD-START---
+           MOVE    ISAM-KEY-PTNUM      TO  WRK-HCMG002-PTNUM
+      *----(02.00.01)--UPD-END-----
       *
       *    氏名
            MOVE    PTINF-NAME          TO  WRK-HCMG002-NAME
@@ -1184,6 +1231,21 @@
                                        TO SYUNOU-REC
                MOVE    BG00201-PTTEIKIRRK-DATA-AREA
                                        TO PTTEIKIRRK-REC
+      *----(02.00.01)--ADD-START---
+               INITIALIZE                 ISAM-AREA
+      *
+               IF      WRK-PARA-JUNKBN    =   "1"
+                   MOVE    BG00201-ISAM-KEY   TO  ISAM-KEY2
+                   MOVE    ISAM-KEY2-PTNUM    TO  ISAM-KEY-PTNUM
+                   MOVE    ISAM-KEY2-BTUNUM   TO  ISAM-KEY-BTUNUM
+                   MOVE    ISAM-KEY2-BRMNUM   TO  ISAM-KEY-BRMNUM
+                   MOVE    ISAM-KEY2-SRYKA    TO  ISAM-KEY-SRYKA
+                   MOVE    ISAM-KEY2-SAKKBN   TO  ISAM-KEY-SAKKBN
+                   MOVE    ISAM-KEY2-SRYYMD   TO  ISAM-KEY-SRYYMD
+               ELSE
+                   MOVE    BG00201-ISAM-KEY   TO  ISAM-KEY
+               END-IF
+      *----(02.00.01)--ADD-END-----
            END-READ
            .
       *
