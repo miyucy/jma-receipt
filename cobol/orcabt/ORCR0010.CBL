@@ -1715,7 +1715,8 @@
                        STRING
                        "医療機関情報が取得できませんでした。診療年月＝"
                                                DELIMITED  BY  SIZE 
-                            SYS-2002-SRYYM     DELIMITED  BY  SIZE
+                            BTPARA-INFO-PARA(1:6)
+                                               DELIMITED  BY  SIZE
                                        INTO    WRK-RECEERR
                        END-STRING
                        PERFORM 500-ERR-HENSYU-SEC
@@ -1727,7 +1728,8 @@
                        INITIALIZE                      STS-AREA-DAY
                        INITIALIZE                      LNK-DAY7-AREA
                        MOVE    "71"                TO  LNK-DAY7-IRAI
-                       MOVE    SYS-2002-SRYYM      TO  LNK-DAY7-YM
+                       MOVE    BTPARA-INFO-PARA(1:6)
+                                                   TO  LNK-DAY7-YM
                        CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                            LNK-DAY7-AREA
                        MOVE    LNK-DAY7-KOYOMI     TO  WRK-EDYMD

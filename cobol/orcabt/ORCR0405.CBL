@@ -605,12 +605,13 @@
                INITIALIZE                  SYS-1005-REC
                MOVE    "1005"              TO  SYS-1005-KANRICD
                MOVE    ACCT-SRYKA          TO  SYS-1005-KBNCD
-               IF      WRK-PARA-SYOKBN     =   "1"
-                   MOVE    SYS-2001-SRYYM      TO  ORC-DBYMD(1:6)
-               ELSE
-                   MOVE    SYS-2002-SRYYM      TO  ORC-DBYMD(1:6)
-               END-IF
-               MOVE    "01"                TO  ORC-DBYMD(7:2)
+      *********IF      WRK-PARA-SYOKBN     =   "1"
+      *********    MOVE    SYS-2001-SRYYM      TO  ORC-DBYMD(1:6)
+      *********ELSE
+      *********    MOVE    SYS-2002-SRYYM      TO  ORC-DBYMD(1:6)
+      *********END-IF
+      *********MOVE    "01"                TO  ORC-DBYMD(7:2)
+               MOVE    WRK-STYMD           TO  ORC-DBYMD
                MOVE    SYS-1005-REC        TO  MCPDATA-REC
                PERFORM 910-SYSKANRI-INV-SEC
                MOVE    MCPDATA-REC         TO  SYS-1005-REC
@@ -634,11 +635,12 @@
       *     
            INITIALIZE                      WRK-RECE40-REC
            MOVE    SYS-1001-HOSPID     TO  WRK-RECE40-HOSPID
-           IF      WRK-PARA-SYOKBN     =   "1"
-               MOVE    SYS-2001-SRYYM      TO  WRK-RECE40-SRYYM
-           ELSE
-               MOVE    SYS-2002-SRYYM      TO  WRK-RECE40-SRYYM
-           END-IF
+      *****IF      WRK-PARA-SYOKBN     =   "1"
+      *****    MOVE    SYS-2001-SRYYM      TO  WRK-RECE40-SRYYM
+      *****ELSE
+      *****    MOVE    SYS-2002-SRYYM      TO  WRK-RECE40-SRYYM
+      *****END-IF
+           MOVE    WRK-STYMD (1:6)     TO  WRK-RECE40-SRYYM
            MOVE    ACCT-NYUGAIKBN      TO  WRK-RECE40-NYUGAIKBN
            MOVE    COMB-PTID           TO  WRK-RECE40-PTID
            IF      SYS-1001-HOSPSBT1   =   1
@@ -778,7 +780,8 @@
                        STRING
                        "医療機関情報が取得できませんでした。診療年月＝"
                                                DELIMITED  BY  SIZE 
-                            SYS-2002-SRYYM     DELIMITED  BY  SIZE
+                            BTPARA-INFO-PARA(1:6)
+                                               DELIMITED  BY  SIZE
                                        INTO    WRK-RECEERR
                        END-STRING
                        PERFORM 500-ERR-HENSYU-SEC
@@ -790,7 +793,8 @@
                        INITIALIZE                      STS-AREA-DAY
                        INITIALIZE                      LNK-DAY7-AREA
                        MOVE    "71"                TO  LNK-DAY7-IRAI
-                       MOVE    SYS-2002-SRYYM      TO  LNK-DAY7-YM
+                       MOVE    BTPARA-INFO-PARA(1:6)
+                                                   TO  LNK-DAY7-YM
                        CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                            LNK-DAY7-AREA
                        MOVE    LNK-DAY7-KOYOMI     TO  WRK-EDYMD
