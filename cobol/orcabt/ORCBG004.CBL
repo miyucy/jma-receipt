@@ -330,6 +330,7 @@
            END-IF
       *
            PERFORM UNTIL ( FLG-VIEWI001    =   1 )
+                     OR  ( FLG-END     NOT =   ZERO )
       *
                MOVE    SPACE       TO  HCMG004
       *
@@ -342,6 +343,9 @@
       *
       *            明細編集処理
                    PERFORM 210-BODY-EDIT-SEC
+                   IF    ( FLG-END     NOT =   ZERO )
+                       GO  TO  200-MAIN-EXT
+                   END-IF
       *
                END-PERFORM
       *
