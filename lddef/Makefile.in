@@ -51,8 +51,7 @@ LDFILE_sources = \
 	orca107.ld.in
 
 BDFILE_sources = \
-	orcabt.bd.in \
-	recept.bd.in 
+	orcabt.bd.in 
 
 LDFILE = $(LDFILE_sources:.ld.in=.ld)
 BDFILE = $(BDFILE_sources:.bd.in=.bd)

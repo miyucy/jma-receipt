@@ -49,7 +49,6 @@ ld	{
 };
 bd	{
         orcabt;
-        recept;
 #include	<./kentan.inc>
 };
 
