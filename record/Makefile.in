@@ -286,7 +286,8 @@ RECORD_files = \
 	G03.rec \
 	L03.rec \
 	W19.rec \
-	tbl_order.db \
+	S99.rec \
+	SID2.rec \
 
 
 DEF_files = \
@@ -434,6 +435,7 @@ DB_files = \
 	blob.db \
 	tbl_toukeimemo.db \
 	tbl_btpara.db \
+	tbl_order.db \
 
 all:   
 

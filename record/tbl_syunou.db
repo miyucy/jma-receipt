@@ -765,10 +765,10 @@ path	key31 	{
 		FROM tbl_syunou
 		WHERE  HOSPID      = :HOSPID
 		AND    PTID        = :PTID
-		AND    CREATEKBN     <> 3
-		AND    SRYYMD     >= :SKYSTYMD
-		AND    SRYYMD     <= :SKYEDYMD
-		ORDER   BY    SRYYMD,NYUGAIKBN,DENPNUM;
+		AND    CREATEKBN   <> '3'
+		AND    SRYYMD      >= :SKYSTYMD
+		AND    SRYYMD      <= :SKYEDYMD
+		ORDER   BY    SRYYMD,NYUGAIKBN,DENPNUM
 		;
 	};
 };
@@ -781,14 +781,14 @@ path	key32 	{
 		FROM tbl_syunou a,tbl_syumei b
 		WHERE  a.HOSPID      = :HOSPID
 		AND    a.PTID        = :PTID
-		AND    a.CREATEKBN     <> 3
+		AND    a.CREATEKBN   <> '3'
 		AND    a.HOSPID      = b.HOSPID
 		AND    a.NYUGAIKBN   = b.NYUGAIKBN
 		AND    a.PTID        = b.PTID
 		AND    a.DENPNUM     = b.DENPNUM
-		AND    b.NYUHEN_YMD   >= :SKYSTYMD
-		AND    b.NYUHEN_YMD   <= :SKYEDYMD
-		ORDER   BY    a.SRYYMD,a.NYUGAIKBN,a.DENPNUM;
+		AND    b.NYUHEN_YMD  >= :SKYSTYMD
+		AND    b.NYUHEN_YMD  <= :SKYEDYMD
+		ORDER  BY    a.SRYYMD,a.NYUGAIKBN,a.DENPNUM
 		;
 	};
 };

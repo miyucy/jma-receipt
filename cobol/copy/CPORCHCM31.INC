@@ -27,7 +27,23 @@
        01  ORCHCM31AREA.
       *
       *    開始診療日
-           03  ORCHCM31-STRSRYYMD       PIC  X(08). 
+           03  ORCHCM31-STRSRYYMD       PIC  X(08).
       *    終了診療日
-           03  ORCHCM31-ENDSRYYMD       PIC  X(08). 
+           03  ORCHCM31-ENDSRYYMD       PIC  X(08).
+      *    期間指定区分
+           03  ORCHCM31-KIKANKBN        PIC X(01).
+      *    期間終了日以後の支払い区分
+           03  ORCHCM31-SYORIKBN        PIC X(01).
+      *    請求内容の印字区分
+           03  ORCHCM31-DSPKBN          PIC X(01).
+      *    患者番号
+           03  ORCHCM31-PTID            PIC  9(10).
+      *
+      *
+           03  ORCHCM31-OT-AREA.
+      *        出力件数
+               05  ORCHCM31-OT-CNT      PIC  9(05).
+      *
+      *        リターンコード
+               05  ORCHCM31-RC          PIC S9(03).
       *

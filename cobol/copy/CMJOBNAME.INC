@@ -84,10 +84,14 @@
            03  FILLER               PIC X(40)   VALUE
                                                 "チェックマスタ一覧".
       *
+           03  FILLER               PIC X(08)   VALUE   "ORCBS01".
+           03  FILLER               PIC X(40)   VALUE
+                                                "支払証明書".
+      *
        01  MNAME-DATA-REC-R         REDEFINES   MNAME-DATA-REC.
-           03  MNAME-TBL-OCC        OCCURS      17  INDEXED TBL-IDX.
+           03  MNAME-TBL-OCC        OCCURS      18  INDEXED TBL-IDX.
                05  MNAME-SHELLID    PIC X(08).
                05  MNAME-JOBNAME    PIC X(40).
       *
-       01  MNAME-MAX                PIC 9(04)   VALUE   17.
+       01  MNAME-MAX                PIC 9(04)   VALUE   18.
       *

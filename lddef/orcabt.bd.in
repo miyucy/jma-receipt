@@ -163,5 +163,6 @@ bind	"ORCXPMNT1"	"OpenCOBOL";
 bind	"ORCXPMNT2"	"OpenCOBOL";
 bind	"ORCXPMNT3"	"OpenCOBOL";
 bind	"ORCBX01"	"OpenCOBOL";
+bind	"ORCBS01"	"OpenCOBOL";
 
 #include "orcadb.inc"

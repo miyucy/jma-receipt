@@ -87,4 +87,17 @@
       *·Ù¹ð²èÌÌ¤è¤ê
            05  SPA-SID1-AREA. 
                07  SPA-SID1-FLG          PIC  X(02).
+           05  SPA-S01-SHIHARAI-PARA.
+               07  SPA-S01-SHR-KIKANKBN  PIC  X(01).
+               07  SPA-S01-SHR-STYMD     PIC  X(08).
+               07  SPA-S01-SHR-EDYMD     PIC  X(08).
+               07  SPA-S01-SHR-SYORIKBN  PIC  X(01).
+               07  SPA-S01-SHR-DSPKBN    PIC  X(01).
+               07  SPA-S01-SHR-PRTFLG-G.
+                   09  SPA-S01-SHR-HCM31FLG
+                                         PIC  9(01).
+                   09  SPA-S01-SHR-HCM32FLG
+                                         PIC  9(01).
+               07  SPA-S01-SHR-PRTFLG-R  REDEFINES SPA-S01-SHR-PRTFLG-G.
+                   09  SPA-S01-SHR-PRTFLG    PIC  9(01)    OCCURS  2.
       *

@@ -6,13 +6,17 @@ S04	{
 		NAME	{
 			value	varchar(50);
 		};
-		KKN1	{
+		KIKANCOMBO	{
+			KIKANKBN	{
+				value	varchar(10);
+			};
+			count	int;
+			item	varchar(10)[2];
+		};
+		KKNKBN1	{
 			value	bool;
 		};
-		KKN2	{
-			value	bool;
-		};
-		KKN3	{
+		KKNKBN2	{
 			value	bool;
 		};
 		STRSRYYMD	{
@@ -20,12 +24,33 @@ S04	{
 		};
 		ENDSRYYMD	{
 			value	varchar(10);
-                        state	int;
+			state	int;
 		};
-		CHK1	{
+		LBLSYORIKBN	{
+			value	varchar(30);
+		};
+		SYORICOMBO	{
+			SYORIKBN	{
+				value	varchar(18);
+				state	int;
+			};
+			count	int;
+			item	varchar(18)[2];
+			state	int;
+		};
+		DSPCOMBO	{
+			DSPKBN	{
+				value	varchar(12);
+				state	int;
+			};
+			count	int;
+			item	varchar(12)[2];
+			state	int;
+		};
+		PRTKBN1	{
 			value	bool;
 		};
-		CHK2	{
+		PRTKBN2	{
 			value	bool;
 		};
 	};

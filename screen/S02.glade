@@ -689,7 +689,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 06:45:03 GMT</last_modification_time>
       </signal>
-      <label></label>
+      <label>情報削除</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -781,7 +781,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 06:46:00 GMT</last_modification_time>
       </signal>
-      <label></label>
+      <label>処理結果</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -873,7 +873,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 06:33:44 GMT</last_modification_time>
       </signal>
-      <label></label>
+      <label>再印刷</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1121,6 +1121,7 @@
       <xpad>0</xpad>
       <ypad>0</ypad>
     </widget>
+
     <widget>
       <class>GtkLabel</class>
       <name>label358</name>
@@ -1136,6 +1137,7 @@
       <xpad>0</xpad>
       <ypad>0</ypad>
     </widget>
+
     <widget>
       <class>GtkLabel</class>
       <name>label359</name>
