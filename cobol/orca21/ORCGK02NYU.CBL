@@ -12074,6 +12074,7 @@
                WHEN    "0118"
                WHEN    "0119"
                WHEN    "0107"
+               WHEN    "0180"
                    MOVE    "£Î£Ï"            TO  KID1-B01
            END-EVALUATE
       *
