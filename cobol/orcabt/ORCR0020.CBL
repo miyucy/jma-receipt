@@ -346,9 +346,6 @@
       *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
-      *    医療機関情報
-           COPY  "CPSK1001.INC".
-      *
       *    患者番号構成管理情報
            COPY  "CPSK1009.INC".
       *
