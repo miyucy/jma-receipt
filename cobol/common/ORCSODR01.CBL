@@ -52,6 +52,7 @@
                05  FLG-ITEM-CHK        PIC 9(01)   OCCURS  20.
            03  FLG-HIZUKE-ERR          PIC 9(01).
            03  FLG-WKPTNYUINRRK        PIC 9(01).
+           03  FLG-HKNCOMBI            PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -62,6 +63,8 @@
            03  CNT-SAGAKU              PIC 9(05).
            03  CNT-DR                  PIC 9(05).
            03  CNT-TOKNYUIN            PIC 9(05).
+           03  CNT-NYUINKA             PIC 9(05).
+           03  CNT-HKNCOMBI            PIC 9(05).
       *
       *    添字領域
        01  IDX-AREA.
@@ -88,6 +91,7 @@
            03  WRK-KEISANYMD           PIC X(08).
            03  WRK-HENYMDG             PIC X(10).
            03  WRK-NYUINCHU-TAIINYMD   PIC X(08).
+           03  WRK-COMBI-HKNCOMBI      PIC 9(04).
       *
        01  ITEM-AREA.
            03  ITEM-NYUKBN             PIC X(02).
@@ -107,6 +111,8 @@
                05  ITEM-DRCD           PIC X(05)   OCCURS  3.
            03  ITEM-SHONUM             PIC 9(03).
            03  ITEM-DOUJITSUKBN        PIC X(01).
+           03  ITEM-NYUINKA            PIC X(02).
+           03  ITEM-HKNCOMBI           PIC 9(04).
       *
        01  ERRCD-AREA.
            03  ERRCD-ITEM              PIC X(04).
@@ -218,6 +224,7 @@
       *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
+           COPY    "CPSK1005.INC".
            COPY    "CPSK1010.INC".
            COPY    "CPSK5001.INC".
            COPY    "CPSK5002.INC".
@@ -234,6 +241,10 @@
       *    患者マスタ
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
+      *
+      *    保険組み合わせ
+       01  HKNCOMBI-REC.
+           COPY    "CPHKNCOMBI.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -394,6 +405,10 @@
                    PERFORM 20011-DR-CHK-SEC
                WHEN    NCLAIMID-TOKNYUINID
                    PERFORM 20011-TOKNYUIN-CHK-SEC
+               WHEN    NCLAIMID-NYUINKAID
+                   PERFORM 20011-NYUINKA-CHK-SEC
+               WHEN    NCLAIMID-HKNCOMBIID
+                   PERFORM 20011-HKNCOMBI-CHK-SEC
                END-EVALUATE
       *
            END-PERFORM
@@ -709,6 +724,76 @@
        20011-TOKNYUIN-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    入院科チェック処理
+      *****************************************************************
+       20011-NYUINKA-CHK-SEC           SECTION.
+      *
+           COMPUTE CNT-NYUINKA  =   CNT-NYUINKA  +   1
+      *
+           IF    ( CNT-NYUINKA  =   1 )
+      *
+               MOVE    "1005"          TO  WRK-SYS-KANRICD
+               MOVE    LNK-ORDER-ITEM (IDXA)
+                                       TO  WRK-SYS-KBNCD
+               PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+               IF    ( FLG-SYSKANRI    =   ZERO )
+                   MOVE    MCPDATA-REC TO  SYS-1005-REC
+      *
+                   MOVE    LNK-ORDER-ITEM (IDXA)
+                                       TO  ITEM-NYUINKA
+      *
+               ELSE
+                   MOVE    "1019"      TO  ERRCD-ERRCD
+                   PERFORM 2100-ITEM-ERR-SET-SEC
+               END-IF
+      *
+           ELSE
+               PERFORM 2100-ITEM-UNPROCSTS-SET-SEC
+               MOVE    "1028"      TO  ERRCD-ERRCD
+               PERFORM 2100-ITEM-ERR-SET-SEC
+           END-IF
+      *
+           .
+       20011-NYUINKA-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険組合せチェック処理
+      *****************************************************************
+       20011-HKNCOMBI-CHK-SEC           SECTION.
+      *
+           COMPUTE CNT-HKNCOMBI  =   CNT-HKNCOMBI  +   1
+      *
+           IF    ( CNT-HKNCOMBI  =   1 )
+      *
+               MOVE    LNK-ORDER-ITEM (IDXA)
+                                       TO  WRK-COMBI-HKNCOMBI
+               PERFORM 900-HKNCOMBI-KEY-SEL-SEC
+               IF    ( FLG-HKNCOMBI        =   ZERO )
+                   IF    ( COMB-DELKBN NOT =   "1" )
+                     AND ( SODR-SRYYMD    >=  COMB-TEKSTYMD )
+                     AND ( SODR-SRYYMD    <=  COMB-TEKEDYMD )
+      *
+                       MOVE    LNK-ORDER-ITEM (IDXA)
+                                       TO  ITEM-HKNCOMBI
+                   ELSE
+                       MOVE    "1020"  TO  ERRCD-ERRCD
+                       PERFORM 2100-ITEM-ERR-SET-SEC
+                    END-IF
+               ELSE
+                       MOVE    "1020"  TO  ERRCD-ERRCD
+                       PERFORM 2100-ITEM-ERR-SET-SEC
+               END-IF
+      *
+           ELSE
+               PERFORM 2100-ITEM-UNPROCSTS-SET-SEC
+               MOVE    "1029"      TO  ERRCD-ERRCD
+               PERFORM 2100-ITEM-ERR-SET-SEC
+           END-IF
+      *
+           .
+       20011-HKNCOMBI-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    項目未処理状態設定処理
       *****************************************************************
        2100-ITEM-UNPROCSTS-SET-SEC        SECTION.
@@ -742,18 +827,28 @@
        2002-KANREN-CHK-SEC             SECTION.
       *
            IF    ( ERRCD-ORDER     =   SPACE )
+      *        入院区分チェック処理
+               PERFORM 20021-NYUKBN-CHK-SEC
+           END-IF
+      *
+           IF    ( ERRCD-ORDER     =   SPACE )
+      *        病棟チェック処理
+               PERFORM 20021-BTUNUM-CHK-SEC
+           END-IF
+      *
+           IF    ( ERRCD-ORDER     =   SPACE )
+      *        病室チェック処理
+               PERFORM 20021-BRMNUM-CHK-SEC
+           END-IF
+      *
+           IF    ( ERRCD-ORDER     =   SPACE )
       *        入院科チェック処理
-               PERFORM 20021-SRYKA-CHK-SEC
+               PERFORM 20021-NYUINKA-CHK-SEC
            END-IF
       *
            IF    ( ERRCD-ORDER     =   SPACE )
       *        保険組合せチェック処理
                PERFORM 20021-HKNCOMBI-CHK-SEC
-           END-IF
-      *
-           IF    ( ERRCD-ORDER     =   SPACE )
-      *        入院区分チェック処理
-               PERFORM 20021-NYUKBN-CHK-SEC
            END-IF
       *
            IF    ( ERRCD-ORDER     =   SPACE )
@@ -770,42 +865,69 @@
        2002-KANREN-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    入院区分チェック処理
+      *****************************************************************
+       20021-NYUKBN-CHK-SEC          SECTION.
+      *
+           EVALUATE    ITEM-NYUKBN
+           WHEN    SPACE
+               MOVE    "1001"          TO  ERRCD-ORDER
+           WHEN    "02"
+               IF    ( ITEM-TOKNYUIN-G =   SPACE )
+                   MOVE    "1014"      TO  ERRCD-ORDER
+               END-IF
+           END-EVALUATE
+      *
+           .
+       20021-NYUKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    病棟チェック処理
+      *****************************************************************
+       20021-BTUNUM-CHK-SEC          SECTION.
+      *
+           IF    ( ITEM-BTUNUM         =   SPACE )
+               MOVE    "1005"          TO  ERRCD-ORDER
+           END-IF
+      *
+           .
+       20021-BTUNUM-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    病室チェック処理
+      *****************************************************************
+       20021-BRMNUM-CHK-SEC          SECTION.
+      *
+           IF    ( ITEM-BRMNUM         =   SPACE )
+               MOVE    "1007"          TO  ERRCD-ORDER
+           END-IF
+      *
+           .
+       20021-BRMNUM-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    入院科チェック処理
       *****************************************************************
-       20021-SRYKA-CHK-SEC          SECTION.
+       20021-NYUINKA-CHK-SEC           SECTION.
       *
-           IF    ( SODR-SRYKA      =   SPACE )
+           IF    ( ITEM-NYUINKA    =   SPACE )
                MOVE    "1019"          TO  ERRCD-ORDER
            END-IF
       *
            .
-       20021-SRYKA-CHK-EXT.
+       20021-NYUINKA-CHK-EXT.
            EXIT.
       *****************************************************************
       *    保険組合せチェック処理
       *****************************************************************
        20021-HKNCOMBI-CHK-SEC          SECTION.
       *
-           IF    ( SODR-HKNCOMBI   =   SPACE )
+           IF    ( ITEM-HKNCOMBI   =   ZERO )
                MOVE    "1020"          TO  ERRCD-ORDER
            END-IF
       *
            .
        20021-HKNCOMBI-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    入院区分チェック処理
-      *****************************************************************
-       20021-NYUKBN-CHK-SEC            SECTION.
-      *
-           IF    ( ITEM-NYUKBN     =   "02" )
-               IF    ( ITEM-TOKNYUIN-G =   SPACE )
-                   MOVE    "1014"      TO  ERRCD-ORDER
-               END-IF
-           END-IF
-      *
-           .
-       20021-NYUKBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    継続区分チェック処理
@@ -1007,10 +1129,10 @@
            MOVE    ITEM-BRMNUM     TO  PTNYUINRRK-BRMNUM
       *
       *    入院科
-           MOVE    SODR-SRYKA      TO  PTNYUINRRK-NYUINKA
+           MOVE    ITEM-NYUINKA    TO  PTNYUINRRK-NYUINKA
       *
       *    保険組合せ番号
-           MOVE    SODR-HKNCOMBI   TO  PTNYUINRRK-HKNCOMBINUM
+           MOVE    ITEM-HKNCOMBI   TO  PTNYUINRRK-HKNCOMBINUM
       *
       *    入院日
            MOVE    SODR-SRYYMD     TO  PTNYUINRRK-NYUINYMD
@@ -1220,14 +1342,16 @@
            MOVE    ERRCD-ORDER         TO  ORDER-ERRCD-ORDER
       *
            IF    ( LNK-ORDER-ITEMID (IDXA)
-                                       =   NCLAIMID-ORDERID
-                                       OR  NCLAIMID-NYUKBNID
+                                       =   NCLAIMID-NYUKBNID
                                        OR  NCLAIMID-SYOKAIID
                                        OR  NCLAIMID-BTUNUMID
                                        OR  NCLAIMID-BRMNUMID
                                        OR  NCLAIMID-SAGAKUID
                                        OR  NCLAIMID-DRID
-                                       OR  NCLAIMID-TOKNYUINID )
+                                       OR  NCLAIMID-TOKNYUINID 
+                                       OR  NCLAIMID-NYUINKAID
+                                       OR  NCLAIMID-HKNCOMBIID
+                                           )
                CONTINUE
            ELSE
                MOVE    "3"             TO  ORDER-STATUS-ITEM
@@ -1609,6 +1733,35 @@
       *
            .
        900-ORDER-KEY3-FET-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険組合せ検索処理(KEY)
+      *****************************************************************
+       900-HKNCOMBI-KEY-SEL-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-HKNCOMBI
+      *
+           INITIALIZE                      HKNCOMBI-REC
+           MOVE    SODR-HOSPID         TO  COMB-HOSPID
+           MOVE    SODR-PTID           TO  COMB-PTID
+           MOVE    WRK-COMBI-HKNCOMBI  TO  COMB-HKNCOMBINUM
+           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+           MOVE    PATH-TBL-HKNCOMBI-KEY
+                                       TO  MCP-PATH
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
+           ELSE
+               INITIALIZE                  HKNCOMBI-REC
+               MOVE    1               TO  FLG-HKNCOMBI
+           END-IF
+      *
+           MOVE    PATH-TBL-HKNCOMBI-KEY
+                                       TO  MCP-PATH
+           PERFORM 910-DBCLOSE-SEC
+      *
+           .
+       900-HKNCOMBI-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理

@@ -106,7 +106,7 @@
                    07  SPA-GMN-SNTNYUIN            PIC X(60).
                05  SPA-GMN-ALLIDOLIST-INPUT-AREA.
                    07  SPA-GMN-SELNUM              PIC S9(3).
-                   07  SPA-GMN-IDOYMD              PIC X(10).
+                   07  SPA-GMN-UKEYMD              PIC X(10).
                05  SPA-GMN-ALLIDOLST-AREA.
                    07  SPA-GMN-ALLIDOLST-MAX       PIC  9(5).
                    07  SPA-GMN-ALLIDOLST-SEL       PIC  9(5).
@@ -205,6 +205,8 @@
                        09  SPA-NAI-STS-DR          PIC X(01)
                                                    OCCURS 3.
                        09  SPA-NAI-STS-TOKNYUIN    PIC X(01).
+                       09  SPA-NAI-STS-HKNCOMBI    PIC X(01).
+                       09  SPA-NAI-STS-NYUINKA     PIC X(01).
                    07  SPA-NAI-BTU-G.
                        09  SPA-NAI-BTU-KHNSRYCD    PIC X(09).
                        09  SPA-NAI-BTU-BTUTOK      PIC X(02).
@@ -218,7 +220,7 @@
                        09  SPA-NAI-TOKUTEI-NYUIN   PIC X(02).
                    07  SPA-NAI-KHNNYUIN            PIC X(60).
                05  SPA-NAI-ALLIDOLIST-INPUT-AREA.
-                   07  SPA-NAI-IDOYMD              PIC X(08).
+                   07  SPA-NAI-UKEYMD              PIC X(08).
                05  SPA-NAI-ALLIDOLST-AREA.
                    07  SPA-NAI-ALLIDOLST-OCC       OCCURS  50.
                        09  SPA-NAI-TALLKARTE-KEY   PIC X(36).
@@ -636,10 +638,10 @@
       *
            INITIALIZE                  SPA-I06
       *
-           MOVE    SPA-SYSYMD      TO  SPA-NAI-IDOYMD
-           MOVE    SPA-NAI-IDOYMD  TO  WRK-YMD
+           MOVE    SPA-SYSYMD      TO  SPA-NAI-UKEYMD
+           MOVE    SPA-NAI-UKEYMD  TO  WRK-YMD
            PERFORM 800-SEIWA-HEN-SEC
-           MOVE    WRK-HENYMDG     TO  SPA-GMN-IDOYMD
+           MOVE    WRK-HENYMDG     TO  SPA-GMN-UKEYMD
       *
            MOVE    SPA-SYSYMD      TO  SPA-GMN-KJNYMD
       *
@@ -1011,11 +1013,11 @@
       *
            END-PERFORM
       *
-           IF    ( ORCSHKN-IDX    >=   1 )
-            AND  ( ORCSHKN-IDX    <=   SPA-GMN-HKNCOMBI-MAX )
-               MOVE    SPA-GMN-HKNCOMBILST (ORCSHKN-IDX)
-                                       TO  SPA-GMN-HKNCOMBI-G
-           END-IF
+      *    IF    ( ORCSHKN-IDX    >=   1 )
+      *     AND  ( ORCSHKN-IDX    <=   SPA-GMN-HKNCOMBI-MAX )
+      *        MOVE    SPA-GMN-HKNCOMBILST (ORCSHKN-IDX)
+      *                                TO  SPA-GMN-HKNCOMBI-G
+      *    END-IF
       *
            . 
        3101-HKNCOMBILST-SET-EXT.
@@ -1427,8 +1429,8 @@
            EVALUATE    MCP-EVENT   ALSO    MCP-WIDGET
            WHEN    "ACTIVATE"      ALSO    "SELNUM"
                PERFORM 4100-SELNUM-CHK-SEC
-           WHEN    "ACTIVATE"      ALSO    "IDOYMD"
-               PERFORM 4100-IDOYMD-CHK-SEC
+           WHEN    "ACTIVATE"      ALSO    "UKEYMD"
+               PERFORM 4100-UKEYMD-CHK-SEC
            WHEN        ANY         ALSO    "ALLIDOLST"
                PERFORM 4101-ALLIDOLST-SEL-SEC
            WHEN    OTHER
@@ -1596,8 +1598,6 @@
                        PERFORM 800-SEIWA-HEN-SEC
                        MOVE    WRK-SYMD        TO  SPA-NAI-NYUINYMD
                        MOVE    WRK-HENYMDG     TO  SPA-GMN-NYUINYMD
-                       MOVE    ORDER-SRYKA     TO  SPA-GMN-NYUINKA
-                       MOVE    ORDER-HKNCOMBI  TO  SPA-GMN-HKNCOMBI
                        MOVE    ORDER-REC       TO  SPA-NAI-ORDER-DAT
                    END-IF
       *
@@ -1679,6 +1679,7 @@
            END-PERFORM
       *
            PERFORM 3101-HKNCOMBILST-SET-SEC
+           MOVE    SPA-GMN-HKNCOMBI    TO  WRK-CMB-CD
            PERFORM 4200-HKNCOMBILST-CHK-SEC
            IF    ( WRK-CMB-ITM NOT =   SPACE )
                MOVE    WRK-CMB-ITM     TO  SPA-GMN-HKNCOMBI-G
@@ -1686,6 +1687,7 @@
       *
            PERFORM 3101-TOKNYUINLST-SET-SEC
            IF    ( SPA-NAI-NYUKBN  =   "02" )
+               MOVE    ITEM-TOKNYUIN-G TO WRK-CMB-CD
                PERFORM 4201-TOKNYUINLST-CHK-SEC
                IF    ( WRK-CMB-ITM NOT =   SPACE )
                    MOVE    WRK-CMB-ITM TO  SPA-GMN-TOKNYUIN-G
@@ -1707,7 +1709,6 @@
            ELSE
                PERFORM 3101-ERRMESLST-SEC
            END-IF
-      *
            .
        41011-INPUT-NYUIN-HEN-EXT.
            EXIT.
@@ -1740,8 +1741,6 @@
                        PERFORM 800-SEIWA-HEN-SEC
                        MOVE    WRK-SYMD        TO  SPA-NAI-TAIINYMD
                        MOVE    WRK-HENYMDG     TO  SPA-GMN-TAIINYMD
-                       MOVE    ORDER-SRYKA     TO  SPA-GMN-NYUINKA
-                       MOVE    ORDER-HKNCOMBI  TO  SPA-GMN-HKNCOMBI
                        MOVE    ORDER-REC       TO  SPA-NAI-ORDER-DAT
                    END-IF
       *
@@ -1783,6 +1782,7 @@
            END-IF
       *
            PERFORM 3101-HKNCOMBILST-SET-SEC
+           MOVE    SPA-GMN-HKNCOMBI    TO  WRK-CMB-CD
            PERFORM 4200-HKNCOMBILST-CHK-SEC
            IF    ( WRK-CMB-ITM NOT =   SPACE )
                MOVE    WRK-CMB-ITM     TO  SPA-GMN-HKNCOMBI-G
@@ -1938,27 +1938,21 @@
                MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-SAGAKU
                MOVE    ORDER-ITEM          TO  ITEM-SAGAKU
            WHEN    NCLAIMID-DRID
-               COMPUTE CNT-DRCD    =   CNT-DRCD    +   1
-               EVALUATE    CNT-DRCD
-               WHEN    1
+               IF    ( CNT-DRCD    <   3 )
+                   COMPUTE CNT-DRCD    =   CNT-DRCD    +   1
                    MOVE    ORDER-STATUS-ITEM
-                                           TO  SPA-NAI-STS-DR(1)
-                   MOVE    ORDER-ITEM (2:)
-                                           TO  SPA-GMN-DR (1)
-               WHEN    2
-                   MOVE    ORDER-STATUS-ITEM
-                                           TO  SPA-NAI-STS-DR(2)
-                   MOVE    ORDER-ITEM (2:)
-                                           TO  SPA-GMN-DR (2)
-               WHEN    3
-                   MOVE    ORDER-STATUS-ITEM
-                                           TO  SPA-NAI-STS-DR(3)
-                   MOVE    ORDER-ITEM (2:)
-                                           TO  SPA-GMN-DR (3)
-               END-EVALUATE
+                                           TO  SPA-NAI-STS-DR(CNT-DRCD)
+                   MOVE    ORDER-ITEM (2:) TO  SPA-GMN-DR    (CNT-DRCD)
+               END-IF
            WHEN    NCLAIMID-TOKNYUINID
                MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-TOKNYUIN
                MOVE    ORDER-ITEM          TO  ITEM-TOKNYUIN-G
+           WHEN    NCLAIMID-NYUINKAID
+               MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-NYUINKA
+               MOVE    ORDER-ITEM          TO  SPA-GMN-NYUINKA
+           WHEN    NCLAIMID-HKNCOMBIID
+               MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-HKNCOMBI
+               MOVE    ORDER-ITEM          TO  SPA-GMN-HKNCOMBI
            END-EVALUATE
       *
            .
@@ -1973,6 +1967,12 @@
            WHEN    NCLAIMID-TAIINCDID
                MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-TAIINCD
                MOVE    ORDER-ITEM          TO  ITEM-TAIINCD
+           WHEN    NCLAIMID-NYUINKAID
+               MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-NYUINKA
+               MOVE    ORDER-ITEM          TO  SPA-GMN-NYUINKA
+           WHEN    NCLAIMID-HKNCOMBIID
+               MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-HKNCOMBI
+               MOVE    ORDER-ITEM          TO  SPA-GMN-HKNCOMBI
            END-EVALUATE
       *
            .
@@ -2144,16 +2144,16 @@
        4100-SELNUM-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    異動日チェック処理
+      *    受付日チェック処理
       *****************************************************************
-       4100-IDOYMD-CHK-SEC             SECTION.
+       4100-UKEYMD-CHK-SEC             SECTION.
       *
-           MOVE    I06-IDOYMD      TO  WRK-YMD
+           MOVE    I06-UKEYMD      TO  WRK-YMD
            PERFORM 800-SEIWA-HEN-SEC
            IF    ( FLG-HIZUKE-ERR  =   ZERO )
       *
-               MOVE    WRK-HENYMDG TO  SPA-GMN-IDOYMD
-               MOVE    WRK-SYMD    TO  SPA-NAI-IDOYMD
+               MOVE    WRK-HENYMDG TO  SPA-GMN-UKEYMD
+               MOVE    WRK-SYMD    TO  SPA-NAI-UKEYMD
       *
                PERFORM 220-CLEAR-SEC
       *
@@ -2167,7 +2167,7 @@
       *
       *
            .
-       4100-IDOYMD-CHK-EXT.
+       4100-UKEYMD-CHK-EXT.
            EXIT.
       *****************************************************************
       *    基本チェック処理
@@ -2915,7 +2915,7 @@
                                            SPA-NAI-KJNIDOLST-AREA
                                            SPA-GMN-COMBO-AREA
       *
-           MOVE    SPA-NAI-IDOYMD      TO  SPA-GMN-KJNYMD
+           MOVE    SPA-NAI-UKEYMD      TO  SPA-GMN-KJNYMD
       *
       *    コンボボックス初期処理
            PERFORM 3101-COMBO-SYOKI-SEC
@@ -2997,16 +2997,10 @@
            INITIALIZE                  LNK-ORDER-REC
       *
            MOVE    SPA-NAI-ORDER-DAT   TO  ORDER-REC
-           MOVE    SPA-GMN-HKNCOMBI    TO  ORDER-HKNCOMBI
-           MOVE    SPA-GMN-NYUINKA     TO  ORDER-SRYKA
       *
            PERFORM 2300-SODR-COMMON-SET-SEC
       *
            MOVE    ZERO                TO  IDX-ITM
-      *
-           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
-               PERFORM 2300-ORDERID-SET-SEC
-           END-IF
       *
            IF    ( CONST-ORDER-MAX     >   IDX-ITM )
                PERFORM 2300-NYUKBN-SET-SEC
@@ -3039,6 +3033,14 @@
                PERFORM 2300-TOKNYUIN-SET-SEC
            END-IF
       *
+           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+               PERFORM 2300-NYUINKA-SET-SEC
+           END-IF
+      *
+           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+               PERFORM 2300-HKNCOMBI-SET-SEC
+           END-IF
+      *
            MOVE   IDX-ITM          TO  LNK-ORDER-MAX
       *
            CALL   "ORCSODR01"      USING   SODR-AREA
@@ -3068,16 +3070,10 @@
            INITIALIZE                  LNK-ORDER-REC
       *
            MOVE    SPA-NAI-ORDER-DAT   TO  ORDER-REC
-           MOVE    SPA-GMN-HKNCOMBI    TO  ORDER-HKNCOMBI
-           MOVE    SPA-GMN-NYUINKA     TO  ORDER-SRYKA
       *
            PERFORM 2300-SODR-COMMON-SET-SEC
       *
            MOVE    ZERO                TO  IDX-ITM
-      *
-           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
-               PERFORM 2300-ORDERID-SET-SEC
-           END-IF
       *
            IF    ( CONST-ORDER-MAX     >   IDX-ITM )
                PERFORM 2300-TAIINCD-SET-SEC
@@ -3107,28 +3103,6 @@
       *
            .
        2121-TAIIN-TOUROKU-EXT.
-           EXIT.
-      *****************************************************************
-      *    入院・給食区分コード設定処理
-      *****************************************************************
-       2300-ORDERID-SET-SEC            SECTION.
-      *
-           PERFORM 2300-ORDER-COMMON-SET-SEC
-      *
-           MOVE    NCLAIMID-ORDERID
-                                   TO  LNK-ORDER-ITEMID (IDX-ITM)
-      *
-           MOVE    "0"             TO  LNK-ORDER-STATUS-ITEM (IDX-ITM)
-      *
-           EVALUATE    SPA-NAI-ORDERID
-           WHEN    "0101"
-               MOVE    "001"       TO  LNK-ORDER-ITEM   (IDX-ITM)
-           WHEN    "0102"
-               MOVE    "002"       TO  LNK-ORDER-ITEM   (IDX-ITM)
-           END-EVALUATE
-      *
-           .
-       2300-ORDERID-SET-EXT.
            EXIT.
       *****************************************************************
       *    入院区分設定処理
@@ -3259,7 +3233,7 @@
                MOVE    "5113"          TO  SYS-KANRICD
                MOVE    SPA-GMN-SAGAKU  TO  SYS-KBNCD
                MOVE    SPA-NAI-HIDOYMD TO  SYS-STYUKYMD
-                                             SYS-EDYUKYMD
+                                           SYS-EDYUKYMD
                PERFORM 900-SYSKANRI-KEY10-SEL-SEC
                MOVE    SYSKANRI-REC    TO  SYS-5113-REC
                MOVE    SYS-5113-BRM-SAGAKU-NM
@@ -3368,6 +3342,46 @@
       *
            .
        2300-TAIINCD-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院科設定処理
+      *****************************************************************
+       2300-NYUINKA-SET-SEC            SECTION.
+      *
+           PERFORM 2300-ORDER-COMMON-SET-SEC
+      *
+           MOVE    NCLAIMID-NYUINKAID   TO  LNK-ORDER-ITEMID (IDX-ITM)
+           IF    ( SPA-NAI-STS-NYUINKA  = "4" OR "-" )
+               MOVE    "4"         TO   LNK-ORDER-STATUS-ITEM (IDX-ITM)
+           ELSE
+               MOVE    "0"         TO   LNK-ORDER-STATUS-ITEM (IDX-ITM)
+           END-IF
+      *
+           MOVE    SPA-GMN-NYUINKA TO  LNK-ORDER-ITEM (IDX-ITM)
+      *
+           .
+       2300-NYUINKA-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険組合せ設定処理
+      *****************************************************************
+       2300-HKNCOMBI-SET-SEC           SECTION.
+      *
+           PERFORM 2300-ORDER-COMMON-SET-SEC
+      *
+           MOVE    NCLAIMID-HKNCOMBIID
+                                   TO  LNK-ORDER-ITEMID (IDX-ITM)
+           IF    ( SPA-NAI-STS-HKNCOMBI  = "4" OR "-" )
+               MOVE    "4"         TO   LNK-ORDER-STATUS-ITEM (IDX-ITM)
+           ELSE
+               MOVE    "0"         TO   LNK-ORDER-STATUS-ITEM (IDX-ITM)
+           END-IF
+      *
+           MOVE    SPA-GMN-HKNCOMBI
+                                   TO  LNK-ORDER-ITEM (IDX-ITM)
+      *
+           .
+       2300-HKNCOMBI-SET-EXT.
            EXIT.
       *****************************************************************
       *    共通項目設定処理
@@ -3484,7 +3498,7 @@
            MOVE    SPA-GMN-MAEIDOYMD   TO  I06-MAEIDOYMD
       *
            MOVE    SPA-GMN-SELNUM      TO  I06-SELNUM
-           MOVE    SPA-GMN-IDOYMD      TO  I06-IDOYMD
+           MOVE    SPA-GMN-UKEYMD      TO  I06-UKEYMD
       *
            MOVE    SPA-GMN-BRMNUM      TO  I06-BRMNUM
       *
@@ -3781,7 +3795,7 @@
            WHEN    01
                MOVE    "SELNUM"        TO  MCP-WIDGET
            WHEN    02
-               MOVE    "IDOYMD"        TO  MCP-WIDGET
+               MOVE    "UKEYMD"        TO  MCP-WIDGET
            WHEN    03
                MOVE    "BRMNUM"        TO  MCP-WIDGET
            WHEN    04
@@ -3826,7 +3840,7 @@
            EVALUATE    WRK-MCP-WIDGET
            WHEN    "SELNUM"
                MOVE    03              TO  SPA-GMN-CUR
-           WHEN    "IDOYMD"
+           WHEN    "UKEYMD"
                MOVE    03              TO  SPA-GMN-CUR
            WHEN    "BRMNUM"
                MOVE    04              TO  SPA-GMN-CUR
@@ -4340,7 +4354,7 @@
       *
            INITIALIZE                  ORDER-REC
            MOVE    SPA-HOSPID      TO  ORDER-HOSPID
-           MOVE    SPA-NAI-IDOYMD  TO  ORDER-SRYYMD
+           MOVE    SPA-NAI-UKEYMD  TO  ORDER-UKEYMD
            MOVE    ORDER-REC       TO  MCPDATA-REC
            MOVE    PATH-TBL-ORDER-KEY4 TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC

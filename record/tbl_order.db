@@ -100,10 +100,10 @@ path	key4 	{
 		SELECT *
 		FROM tbl_order
 		WHERE  HOSPID        = :HOSPID
-		AND    SRYYMD        = :SRYYMD
+		AND    UKEYMD        = :UKEYMD
 		AND    ITEMNUM       = 1
 		AND    STATUS_ORDER  <>    '3'
-		ORDER  BY  UKEYMD DESC,UKEHMS DESC,KARTE_KEY DESC,ORDERNUM DESC
+		ORDER  BY  SRYYMD  ,UKEHMS ,KARTE_KEY ,ORDERNUM
 		;
 	};
 };

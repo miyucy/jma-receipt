@@ -304,7 +304,7 @@
                     OR   ( FLG-END =   1 )
       *
                IF    ( LF04-SRYCDTBL (IDXA) 
-                                   =   NCLAIMID-NYUIN-DAT )
+                                   =   NCLAIMID-NYUINNM )
       *
                    COMPUTE WRK-ORDERNUM
                        =   WRK-ORDERNUM    +   1
@@ -368,7 +368,7 @@
                    UNTIL ( IDXB        >   CONST-SRYTBLC-MAX )
       *
                IF    ( LF04-TBLID (IDXA IDXB)
-                                   =   NCLAIMID-ORDERNM )
+                                   =   NCLAIMID-NYUIDONM )
       *
                        COMPUTE CNT-ORDER   =   CNT-ORDER   +   1
       *
@@ -512,7 +512,8 @@
                                        WRK-REMARKS
                                        WRK-STATUS-ITEM
       *
-               IF    ( LF04-TBLID (IDXA IDXB)  NOT =   SPACE )
+               IF    ( LF04-TBLID (IDXA IDXB)  NOT = SPACE )
+                AND  ( LF04-TBLID (IDXA IDXB)  NOT = NCLAIMID-NYUIDONM )
       *
                    PERFORM VARYING IDX-IJI FROM    1   BY  1
                            UNTIL ( IDX-IJI     >   NCLAIMID-ITEM-MAX )
@@ -646,6 +647,12 @@
       *    病室コードチェック
            PERFORM 20011-BRMNUM-CHK-SEC
       *
+      *    入院科チェック
+           PERFORM 20011-NYUINKA-CHK-SEC
+      *
+      *    保険組合せチェック
+           PERFORM 20011-HKNCOMBI-CHK-SEC
+      *
            .
        20011-ORCSODR01-ITM-CHK-EXT.
            EXIT.
@@ -654,6 +661,11 @@
       *****************************************************************
        20011-ORCSODR02-ITM-CHK-SEC     SECTION.
       *
+      *    入院科チェック
+           PERFORM 20011-NYUINKA-CHK-SEC
+      *
+      *    保険組合せチェック
+           PERFORM 20011-HKNCOMBI-CHK-SEC
       *
            .
        20011-ORCSODR02-ITM-CHK-EXT.
@@ -714,6 +726,44 @@
       *
            .
        20011-BRMNUM-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院科チェック処理
+      *****************************************************************
+       20011-NYUINKA-CHK-SEC           SECTION.
+      *
+      *    入院科チェック
+           MOVE    NCLAIMID-NYUINKANM  TO  WRK-TBLID
+           PERFORM 20011-ITEM-CNT-CHK-SEC
+           IF        ( CNT-TBLID   =   ZERO )
+               MOVE    NCLAIMID-NYUINKAID
+                                       TO  WRK-ITEMID
+               MOVE    SCL31N-SRYKA    TO  WRK-ITEM
+               MOVE    "4"             TO  WRK-STATUS-ITEM
+               PERFORM 20011-LNK-ORDER-HEN-SEC
+           END-IF
+      *
+           .
+       20011-NYUINKA-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険組合せチェック処理
+      *****************************************************************
+       20011-HKNCOMBI-CHK-SEC          SECTION.
+      *
+      *    保険組合せチェック
+           MOVE    NCLAIMID-HKNCOMBINM  TO  WRK-TBLID
+           PERFORM 20011-ITEM-CNT-CHK-SEC
+           IF        ( CNT-TBLID   =   ZERO )
+               MOVE    NCLAIMID-HKNCOMBIID
+                                       TO  WRK-ITEMID
+               MOVE    SCL31N-HKNCOMBI TO  WRK-ITEM
+               MOVE    "4"             TO  WRK-STATUS-ITEM
+               PERFORM 20011-LNK-ORDER-HEN-SEC
+           END-IF
+      *
+           .
+       20011-HKNCOMBI-CHK-EXT.
            EXIT.
       *****************************************************************
       *    項目出現回数チェック処理

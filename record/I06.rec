@@ -36,7 +36,7 @@ I06	{
 		SELNUM	{
 			value	number(3);
 		};
-		IDOYMD	{
+		UKEYMD	{
 			value	varchar(10);
 		};
 		BRMNUM	{

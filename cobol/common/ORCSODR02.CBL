@@ -62,10 +62,13 @@
            03  FLG-PTTEIKIRRK          PIC 9(01).
            03  FLG-SYUDAY              PIC 9(01).
            03  FLG-HIT                 PIC 9(01).
+           03  FLG-HKNCOMBI            PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
            03  CNT-TAIINCD             PIC 9(05).
+           03  CNT-NYUINKA             PIC 9(05).
+           03  CNT-HKNCOMBI            PIC 9(05).
       *
       *    添字領域
        01  IDX-AREA.
@@ -111,9 +114,12 @@
            03  WRK-SKYMONEY            PIC  S9(07).
            03  WRK-TAIINCD             PIC X(02).
            03  WRK-INF                 PIC 9(02).
+           03  WRK-COMBI-HKNCOMBI      PIC 9(04).
       *
        01  ITEM-AREA.
            03  ITEM-TAIINCD            PIC X(02).
+           03  ITEM-NYUINKA            PIC X(02).
+           03  ITEM-HKNCOMBI           PIC 9(04).
       *
        01  ERRCD-AREA.
            03  ERRCD-ITEM              PIC X(04).
@@ -155,6 +161,7 @@
       *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
+           COPY    "CPSK1005.INC".
            COPY    "CPSK0042.INC".
            COPY    "CPSK5013.INC".
       *
@@ -201,6 +208,10 @@
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
+      *
+      *    保険組み合わせ
+       01  HKNCOMBI-REC.
+           COPY    "CPHKNCOMBI.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -399,8 +410,11 @@
       *
                EVALUATE    LNK-ORDER-ITEMID (IDXA)
                WHEN    NCLAIMID-TAIINCDID
-      *
                    PERFORM 20011-TAIINCD-CHK-SEC
+               WHEN    NCLAIMID-NYUINKAID
+                   PERFORM 20011-NYUINKA-CHK-SEC
+               WHEN    NCLAIMID-HKNCOMBIID
+                   PERFORM 20011-HKNCOMBI-CHK-SEC
                END-EVALUATE
       *
            END-PERFORM
@@ -430,15 +444,13 @@
                    END-IF
       *
                    MOVE    ZERO            TO  FLG-HIT
-                   MOVE    SPACE           TO  WRK-TAIINCD
                    PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
-                             OR  ( FLG-HIT             =   1    )
+                             OR  ( ITEM-TAIINCD    NOT =   SPACE    )
       *
                        IF    ( LNK-ORDER-REMARKS (IDXA)
                                            =   SYS-5013-NAME )
                            MOVE    SYS-5013-KBNCD
-                                           TO  WRK-TAIINCD
-                           MOVE    1       TO  FLG-HIT
+                                           TO  ITEM-TAIINCD
                        END-IF
       *
                        MOVE    PATH-TBL-SYSKANRI-KEY2
@@ -458,7 +470,7 @@
                                        TO   MCP-PATH
                PERFORM 910-DBCLOSE-SEC
       *
-               IF    ( FLG-HIT                 =   1 )
+               IF    ( ITEM-TAIINCD            =   SPACE )
                    MOVE    "2001"  TO   ERRCD-ERRCD
                    PERFORM 2100-ITEM-WRN-SET-SEC
                END-IF
@@ -470,6 +482,86 @@
       *
            .
        20011-TAIINCD-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院科チェック処理
+      *****************************************************************
+       20011-NYUINKA-CHK-SEC           SECTION.
+      *
+           COMPUTE CNT-NYUINKA  =   CNT-NYUINKA  +   1
+      *
+           IF    ( CNT-NYUINKA  =   1 )
+      *
+               MOVE    "1005"          TO  WRK-SYS-KANRICD
+               MOVE    LNK-ORDER-ITEM (IDXA)
+                                       TO  WRK-SYS-KBNCD
+               PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+               IF    ( FLG-SYSKANRI    =   ZERO )
+                   MOVE    MCPDATA-REC TO  SYS-1005-REC
+      *
+                   MOVE    LNK-ORDER-ITEM (IDXA)
+                                       TO  ITEM-NYUINKA
+      *
+               ELSE
+                   MOVE    "2020"      TO  ERRCD-ERRCD
+                   PERFORM 2100-ITEM-ERR-SET-SEC
+               END-IF
+      *
+           ELSE
+               PERFORM 2100-ITEM-UNPROCSTS-SET-SEC
+               MOVE    "2021"      TO  ERRCD-ERRCD
+               PERFORM 2100-ITEM-ERR-SET-SEC
+           END-IF
+      *
+           .
+       20011-NYUINKA-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険組合せチェック処理
+      *****************************************************************
+       20011-HKNCOMBI-CHK-SEC           SECTION.
+      *
+           COMPUTE CNT-HKNCOMBI  =   CNT-HKNCOMBI  +   1
+      *
+           IF    ( CNT-HKNCOMBI  =   1 )
+      *
+               MOVE    LNK-ORDER-ITEM (IDXA)
+                                       TO  WRK-COMBI-HKNCOMBI
+               PERFORM 900-HKNCOMBI-KEY-SEL-SEC
+               IF    ( FLG-HKNCOMBI        =   ZERO )
+                   IF    ( COMB-DELKBN NOT =   "1" )
+                     AND ( SODR-SRYYMD    >=  COMB-TEKSTYMD )
+                     AND ( SODR-SRYYMD    <=  COMB-TEKEDYMD )
+      *
+                       MOVE    LNK-ORDER-ITEM (IDXA)
+                                       TO  ITEM-HKNCOMBI
+                   ELSE
+                       MOVE    "2022"  TO  ERRCD-ERRCD
+                       PERFORM 2100-ITEM-ERR-SET-SEC
+                    END-IF
+               ELSE
+                       MOVE    "2022"  TO  ERRCD-ERRCD
+                       PERFORM 2100-ITEM-ERR-SET-SEC
+               END-IF
+      *
+           ELSE
+               PERFORM 2100-ITEM-UNPROCSTS-SET-SEC
+               MOVE    "2023"      TO  ERRCD-ERRCD
+               PERFORM 2100-ITEM-ERR-SET-SEC
+           END-IF
+      *
+           .
+       20011-HKNCOMBI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    項目未処理状態設定処理
+      *****************************************************************
+       2100-ITEM-UNPROCSTS-SET-SEC        SECTION.
+      *
+           MOVE    "3"             TO  LNK-ORDER-STATUS-ITEM (IDXA)
+      *
+           .
+       2100-ITEM-UNPROCSTS-SET-EXT.
            EXIT.
       *****************************************************************
       *    項目チェックエラー設定処理
@@ -510,7 +602,7 @@
       *
            IF    ( ERRCD-ORDER     =   SPACE )
       *        入院科チェック処理
-               PERFORM 20021-SRYKA-CHK-SEC
+               PERFORM 20021-NYUINKA-CHK-SEC
            END-IF
       *
            IF    ( ERRCD-ORDER     =   SPACE )
@@ -560,22 +652,22 @@
       *****************************************************************
       *    入院科チェック処理
       *****************************************************************
-       20021-SRYKA-CHK-SEC          SECTION.
+       20021-NYUINKA-CHK-SEC          SECTION.
       *
-           IF    ( SODR-SRYKA      =   SPACE )
+           IF    ( ITEM-NYUINKA        =   SPACE )
                MOVE    "2020"          TO  ERRCD-ORDER
            END-IF
       *
            .
-       20021-SRYKA-CHK-EXT.
+       20021-NYUINKA-CHK-EXT.
            EXIT.
       *****************************************************************
       *    保険組合せチェック処理
       *****************************************************************
        20021-HKNCOMBI-CHK-SEC          SECTION.
       *
-           IF    ( SODR-HKNCOMBI   =   SPACE )
-               MOVE    "2021"          TO  ERRCD-ORDER
+           IF    ( ITEM-HKNCOMBI       =   ZERO )
+               MOVE    "2022"          TO  ERRCD-ORDER
            END-IF
       *
            .
@@ -1561,8 +1653,10 @@
            MOVE    ERRCD-ORDER         TO  ORDER-ERRCD-ORDER
       *
            IF    ( LNK-ORDER-ITEMID (IDXA)
-                                       =   NCLAIMID-ORDERID
-                                       OR  NCLAIMID-TAIINCDID )
+                                       =   NCLAIMID-TAIINCDID
+                                       OR  NCLAIMID-NYUINKAID
+                                       OR  NCLAIMID-HKNCOMBIID
+                                           )
                CONTINUE
            ELSE
                MOVE    "3"             TO  ORDER-STATUS-ITEM
@@ -2264,6 +2358,35 @@
       *
            .
        900-NYUINACCT-KEY17-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険組合せ検索処理(KEY)
+      *****************************************************************
+       900-HKNCOMBI-KEY-SEL-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-HKNCOMBI
+      *
+           INITIALIZE                      HKNCOMBI-REC
+           MOVE    SODR-HOSPID         TO  COMB-HOSPID
+           MOVE    SODR-PTID           TO  COMB-PTID
+           MOVE    WRK-COMBI-HKNCOMBI  TO  COMB-HKNCOMBINUM
+           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+           MOVE    PATH-TBL-HKNCOMBI-KEY
+                                       TO  MCP-PATH
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
+           ELSE
+               INITIALIZE                  HKNCOMBI-REC
+               MOVE    1               TO  FLG-HKNCOMBI
+           END-IF
+      *
+           MOVE    PATH-TBL-HKNCOMBI-KEY
+                                       TO  MCP-PATH
+           PERFORM 910-DBCLOSE-SEC
+      *
+           .
+       900-HKNCOMBI-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理

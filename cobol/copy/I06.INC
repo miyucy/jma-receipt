@@ -29,7 +29,7 @@
               03  I06-LBL-MAEIDOMEI            PIC X(12).
               03  I06-MAEIDOYMD                PIC X(10).
               03  I06-SELNUM                   PIC S9(3).
-              03  I06-IDOYMD.
+              03  I06-UKEYMD.
                 04  I06-VALUE                  PIC X(10).
               03  I06-BRMNUM-G.
                 04  I06-BRMNUM                 PIC X(6).
