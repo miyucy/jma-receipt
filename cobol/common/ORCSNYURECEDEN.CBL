@@ -646,12 +646,12 @@
                                           TO WRK-SYS5000-SHOKUCD(2 IDX)
                        END-IF
                    END-IF
-                   IF     SYS-5000-SHOKUCD(2)  NOT =  SPACE
-                       IF  SYS-5000-SHOKUKBN(2) =     "2"
-                           MOVE  SYS-5000-SHOKUCD(2)
-                                          TO WRK-SYS5000-SHOKUCD(3 IDX)
-                       END-IF
-                   END-IF
+      *             IF     SYS-5000-SHOKUCD(2)  NOT =  SPACE
+      *                 IF  SYS-5000-SHOKUKBN(2) =     "2"
+      *                     MOVE  SYS-5000-SHOKUCD(2)
+      *                                    TO WRK-SYS5000-SHOKUCD(3 IDX)
+      *                 END-IF
+      *             END-IF
                END-PERFORM
            END-IF
       *    システム管理クローズ
@@ -664,6 +664,39 @@
                  PERFORM  210-SYS-5000-GET-SEC
            END-IF
       *
+      *食堂加算取得（入院会計より）
+           MOVE    ZERO                    TO  KSN-IDX
+           INITIALIZE                          NYUINACCT-REC
+           MOVE    LNK-NYURECEDEN-HOSPID   TO  NACCT-HOSPID
+           MOVE    LNK-NYURECEDEN-PTID     TO  NACCT-PTID
+           MOVE    LNK-NYURECEDEN-SANTEIYM TO  NACCT-SRYYM
+           MOVE    "4"                     TO  NACCT-ZAISKBKBN
+           MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
+           PERFORM 910-NYUINACCT-SELECT-SEC
+           IF      FLG-NYUINACCT           =   ZERO
+               MOVE     "NYUINACCT-KEY17"  TO  ORC-DBPATH
+               PERFORM   910-NYUINACCT-READ-SEC
+               PERFORM   UNTIL   (FLG-NYUINACCT    =   1)
+                 IF   NACCT-SRYCDTOTAL     =   197000570
+      *            入院料加算の退避
+                   PERFORM    VARYING   IDX1   FROM   1   BY   1
+                              UNTIL     IDX1   >   31
+                       IF    (WRK-HKNCOMBI-DAY(IDX1) NOT = ZERO)
+                       AND   (WRK-GAIHAKU-KBN(IDX1)  =  ZERO  OR  4)
+                       AND   (NACCT-DAY(IDX1)    NOT =  ZERO)
+                           MOVE  SYS-5000-SHOKUCD(2)
+                                       TO WRK-SYS5000-SHOKUCD(3 IDX1)
+      
+                       END-IF
+                   END-PERFORM
+                   MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
+                   PERFORM 910-NYUINACCT-READ-SEC
+                 END-IF
+               END-PERFORM
+           END-IF
+      *    入院会計クローズ
+           MOVE    "NYUINACCT-KEY17"           TO  ORC-DBPATH
+           PERFORM   910-DB-CLOSE-SEC
       *
       *入院時の入院料加算取得（入院会計より）
            MOVE    ZERO                    TO  KSN-IDX
