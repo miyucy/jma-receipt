@@ -1,0 +1,2528 @@
+      *******************************************************************
+      * Project code name "ORCA"
+      * 日医標準レセプトソフト（JMA standard receipt software）
+      * Copyright(C) 2002 JMA (Japan Medical Association)
+      *
+      * This program is part of "JMA standard receipt software".
+      *
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this license along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
+      ********************************************************************
+       IDENTIFICATION          DIVISION.
+       PROGRAM-ID.             ORCR0640.
+      *****************************************************************
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : レセプト（入院）
+      *  コンポーネント名  : 
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  02/12/11    NaCl−門脇    新規作成
+      *****************************************************************
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *****************************************************************
+      *
+       ENVIRONMENT             DIVISION.
+       CONFIGURATION           SECTION.
+       INPUT-OUTPUT            SECTION.
+       FILE-CONTROL.
+           SELECT  RECE62-FILE     ASSIGN  RECE62PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  RECE62-KEY
+                                   FILE    STATUS  IS  STS-RECE62.
+           SELECT  RECE64-FILE     ASSIGN  RECE64PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  RECE64-KEY
+                                   FILE    STATUS  IS  STS-RECE64.
+           SELECT  RECE644-FILE    ASSIGN  RECE64PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  SEQUENTIAL
+                                   RECORD  KEY     IS  RECE644-KEY
+                                   FILE    STATUS  IS  STS-RECE64.
+           SELECT  RECE65-FILE     ASSIGN  RECE65PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  RECE65-KEY
+                                   FILE    STATUS  IS  STS-RECE65.
+           SELECT  RECE655-FILE    ASSIGN  RECE65PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  SEQUENTIAL
+                                   RECORD  KEY     IS  RECE655-KEY
+                                   FILE    STATUS  IS  STS-RECE65.
+      *    エラーファイル
+           SELECT  RECEERR-FILE    ASSIGN  RECEERR
+                                   FILE    STATUS  IS  STS-RECEERR.
+      *
+       DATA                    DIVISION.
+       FILE                    SECTION.
+      *
+       FD  RECE62-FILE.
+       01  RECE62-REC. 
+           COPY    "CPRCF062.INC".
+      *
+       FD  RECE64-FILE.
+       01  RECE64-REC. 
+           COPY    "CPRCF064.INC".
+      *
+       FD  RECE644-FILE.
+       01  RECE644-REC. 
+           COPY    "CPRCF064.INC"  REPLACING  //RECE64//
+                                   BY         //RECE644//.
+      *
+       FD  RECE65-FILE.
+       01  RECE65-REC. 
+           COPY    "CPRCF065.INC".
+      *
+       FD  RECE655-FILE.
+       01  RECE655-REC. 
+           COPY    "CPRCF065.INC"  REPLACING  //RECE65//
+                                   BY         //RECE655//.
+      *    エラーファイル
+       FD  RECEERR-FILE.
+       01  RECEERR-REC             PIC X(200). 
+      *
+       WORKING-STORAGE             SECTION.
+      *
+      *     レセプト明細ファイル 名称領域 
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01//
+                                   BY         //RECE62//.
+      *
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01//
+                                   BY         //RECE64//.
+      *
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01//
+                                   BY         //RECE65//.
+      *
+      *    エラーファイル 名称領域 
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01PARA//
+                                   BY         //RECEERR//.
+           03  FILLER              PIC X(04)   VALUE   ".dat".
+      *
+      *    フラグ領域
+       01  STS-AREA.
+           03  STS-RECE62                              PIC X(02).
+           03  STS-RECE64                              PIC X(02).
+           03  STS-RECE65                              PIC X(02).
+           03  STS-RECEERR                             PIC X(02).
+      *
+       01  FLG-AREA.
+           03  FLG-END                                 PIC 9(01).
+           03  FLG-SRYACCT                             PIC 9(01).
+           03  FLG-SRYACT                              PIC 9(01).
+           03  FLG-TENSU                               PIC 9(01).
+           03  FLG-SYUNOU                              PIC 9(01).
+           03  FLG-SYSKANRI                            PIC 9(01).
+           03  FLG-RECE62                              PIC 9(01).
+           03  FLG-KANJI                               PIC 9(01).
+           03  FLG-SP                                  PIC 9(01). 
+           03  FLG-PTCOM                               PIC 9(01).
+      *
+      *    カウント領域
+       01  CNT-AREA.
+           03  CNT-IN                                  PIC 9(06).
+           03  CNT-IN-COMMIT                           PIC 9(06).
+           03  CNT-OUT1                                PIC 9(06).
+           03  CNT-OUT2                                PIC 9(06).
+           03  CNT-TBL-OCC                             OCCURS  2.
+               05  CNT-OUT3                            PIC 9(06).
+      *
+      *    添字領域
+       01  IDX-AREA.
+           03  IDX                                     PIC 9(03).
+           03  IDX1                                    PIC 9(03).
+           03  IDX2                                    PIC 9(03).
+           03  IDX3                                    PIC 9(03).
+           03  IDX4                                    PIC 9(03). 
+           03  IDY                                     PIC 9(03).
+           03  IDZ                                     PIC 9(03).
+           03  IDW                                     PIC 9(03).
+           03  NUM-IDX                                 PIC 9(01).
+           03  HC-IDX                                  PIC 9(03).
+           03  KH-IDX                                  PIC 9(03).
+           03  BUN-IDX                                 PIC 9(03).
+           03  BUN-IDX2                                PIC 9(03).
+           03  BUN-IDX3                                PIC 9(03).
+           03  BUN-IDX4                                PIC 9(03).
+      *
+      *    パス名領域
+       01  WK-PATH                                     PIC X(20).
+      *
+      *    剤情報退避領域
+       01  WK-ZAIKAISU                                 PIC S9(07).
+       01  WK-ZAITEN                                   PIC S9(08).
+       01  WK-SYUTEN                                   PIC S9(08).
+       01  WK-KIZAITEN                                 PIC S9(08).
+       01  WK-YKZTEN                                   PIC S9(08).
+      *
+      *    点数テーブル検索用対象日領域
+       01  WK-TAIHI-AREA.
+           03  WK-TAIHI-DAY                            PIC 9(02).
+           03  WK-TAIHI-FLG                            PIC 9(01).
+           03  WK-TAIHI-SRYYMD.
+               05  WK-TAIHI-SRYYM                      PIC 9(06).
+               05  WK-TAIHI-SRYD                       PIC 9(02).
+      *
+       01  WRK-AREA-SAIKEI.
+           03  WRK-KOH-FTN                             PIC 9(09).
+           03  WRK-KOH-GAI                             PIC 9(09).
+           03  FTN-KOH-XXX                             PIC 9(09).       
+           03  FTN-KOH-YYY                             PIC 9(09).       
+           03  FLG-KOH                                 PIC 9(01).
+           03  WRK-FTNKEI                              PIC 9(09).
+      *
+      *    一時領域
+       01  WRK-AREA.
+           03  WRK-IN                                  PIC X(01).
+           03  WRK-PARA.
+               05  WRK-PARA-SRYYM                      PIC X(06).
+               05  WRK-PARA-TERMID                     PIC X(16).
+               05  WRK-PARA-SYSYMD                     PIC X(08).
+               05  WRK-PARA-JOBID                      PIC 9(07).
+               05  WRK-PARA-SHELLID                    PIC X(08).
+      *
+           03  WRK-ZENKAKU                             PIC X(80).
+           03  WRK-NUM                                 PIC X(80).
+           03  WRK-NUM-X                               PIC X(10). 
+           03  WRK-STIDX                               PIC 9(02).
+           03  WRK-EDIDX                               PIC 9(02).
+      *
+           03  WRK-RECEERR                             PIC X(200).
+      *
+           03  WRK-TOKKI                               PIC X(02).
+           03  TOKKI-IDX                               PIC 9(02). 
+      *
+      *    数字半角全角変換用     
+           03  WRK-CHAR-IDX                    PIC 9(02).
+           03  WRK-CHAR-HENKAN-AREA.
+               05  WRK-CHAR-X                  PIC X(20).
+               05  WRK-CHAR-N                  PIC X(40).
+               05  WRK-CHAR-CNT                PIC 9(02).
+               05  WRK-CHAR-N-CNT              PIC 9(02).
+      *     
+      *    単価編集用     
+           03  WRK-TANKA                       PIC 9(09)V9(02).
+           03  WRK-TANKA-R  REDEFINES  WRK-TANKA.
+               05  WRK-TANKA-S1                PIC 9(09).
+               05  WRK-TANKA-S2                PIC 9(02).
+           03  WRK-TANKA-X.
+               05  WRK-TANKA-Z1                PIC ZZZZZZZZ9.
+               05  WRK-TANKA-Z2                PIC X(01).
+               05  WRK-TANKA-Z3                PIC ZZ.
+      *
+      *
+      *    固定値
+       01  CONST-AREA.
+      *    フリーコメント
+           03  CONS-COMMENT    PIC X(09)   VALUE   "810000001".
+      *    薬剤料逓減（９０／１００）（内服薬）
+           03  CONS-YAKTEIGEN  PIC X(09)   VALUE   "630010002".
+      *    粉砕（コメント）
+           03  CONS-FUNSAI-COMMENT PIC X(09) VALUE "099209901".
+      *    採血（Ｂ−Ａ）
+           03  CONS-SAIKETSU1      PIC X(09) VALUE "160101210".
+      *    採血（Ｂ−Ｖ）
+           03  CONS-SAIKETSU2      PIC X(09) VALUE "160095710".
+      *    採血（Ｂ−Ｃ）
+           03  CONS-SAIKETSU3      PIC X(09) VALUE "160095810".
+      *    特記事項
+           03  CONS-TOKKI1         PIC X(14) VALUE "00000099990101".
+           03  CONS-TOKKI2         PIC X(14) VALUE "00000099990102".
+           03  CONS-TOKKI3         PIC X(14) VALUE "00000099990103".
+           03  CONS-TOKKI4         PIC X(14) VALUE "00000099990104".
+           03  CONS-TOKKI5         PIC X(14) VALUE "00000099990105".
+           03  CONS-TOKKI7         PIC X(14) VALUE "00000099990107".
+           03  CONS-TOKKI8         PIC X(14) VALUE "00000099990108".
+           03  CONS-TOKKI9         PIC X(14) VALUE "00000099990109".
+           03  CONS-TOKKI10        PIC X(14) VALUE "00000099990110".
+           03  CONS-TOKKI11        PIC X(14) VALUE "00000099990111".
+           03  CONS-TOKKI12        PIC X(14) VALUE "00000099990112".
+      *
+      *    酸素 
+           COPY    "CMSANSOTBL.INC".
+      *
+      *   日本語数字
+       01  TBL-SUJI-AREA.
+           03  FILLER          PIC X(20)   VALUE
+              "１２３４５６７８９０".
+       01  TBL-SUJI-R          REDEFINES   TBL-SUJI-AREA.
+           03  TBL-SUJI        PIC X(02)   OCCURS   10.
+       01  TBL-SUJI-AREA-X.
+           03  FILLER          PIC X(10)   VALUE
+              "1234567890".
+       01  TBL-SUJI-X-R        REDEFINES   TBL-SUJI-AREA-X.
+           03  TBL-SUJI-X      PIC X(01)   OCCURS   10.
+      *
+           COPY    "MCPAREA".
+      *
+           COPY    "COMMON-SPA".
+      *
+      *****************************************************************
+      *    ファイルレイアウト
+      *****************************************************************
+      *
+      *    ジョブ管理マスタ
+       01  JOBKANRI-REC.
+           COPY    "CPJOBKANRI.INC".
+      *
+      *    診療会計
+       01  SRYACCT-REC.
+           COPY    "CPSRYACCT.INC".
+      *
+      *    診療行為
+       01  SRYACT-REC.
+           COPY    "CPSRYACT.INC".
+      *
+      *    点数
+           COPY    "CPTENSU.INC".
+      *
+      *    収納
+       01  SYUNOU-REC.
+           COPY    "CPSYUNOU.INC".
+      *
+      *    システム管理
+           COPY    "CPSYSKANRI.INC".
+      *    
+           COPY    "CPSK1001.INC".
+      *    
+      *
+      *    患者コメント
+       01  PTCOM-REC.
+       COPY    "CPPTCOM.INC".
+      *
+      *****************************************************************
+      *    サブプロ用領域
+      *****************************************************************
+      *
+      *    半角チェックサブ
+      **** COPY    "CPORCSKANACHK.INC".
+      *
+      *   日付変換サブ
+           COPY    "CPORCSDAY.INC".
+           COPY    "CPORCSLNK.INC".
+      *    患者番号変換サブ
+           COPY    "CPORCSPTID.INC".
+      *    数値変換サブ
+           COPY    "CPORCSNUM.INC".
+      *    チェックディジット（モジュラス１１用）算出サブ
+           COPY    "CPORCCHKDGT11.INC".
+      *   ジョブ管理ＤＢ制御サブ
+           COPY    "CPORCSJOBKANRI.INC".
+      *
+      *    ＤＢ検索
+           COPY    "MCPDATA.INC".
+      *     
+           COPY    "CPORCMCP.INC".  
+      *
+      ****************************************************************
+       LINKAGE                 SECTION.
+       01  COMMAND-PARAM.
+           02  FILLER      PIC X(256).
+      ****************************************************************
+       PROCEDURE           DIVISION
+               USING
+           COMMAND-PARAM.
+      *
+      *****************************************************************
+      *    主処理
+      *****************************************************************
+       000-PROC-SEC                SECTION.
+      *
+           PERFORM 100-INIT-SEC
+      *
+           PERFORM 200-MAIN-SEC    UNTIL   FLG-END =   1 
+      *
+           PERFORM 300-TERM-SEC
+      *
+           STOP    RUN
+           .
+      *****************************************************************
+      *    初期　処理
+      *****************************************************************
+       100-INIT-SEC                SECTION.
+      *
+           INITIALIZE                  CNT-AREA
+           INITIALIZE                  SPA-AREA
+                                       WRK-AREA
+      *
+           MOVE    ZERO                TO  FLG-END
+      *
+           MOVE    COMMAND-PARAM       TO  WRK-PARA
+      *
+           PERFORM 100-DBOPEN-SEC
+      *
+      *    ステップ管理開始処理
+           MOVE    "STS"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           MOVE    "ORCR0640"      TO  JOB-PGID
+           MOVE    "診療区分別点数集計"
+                                   TO  JOB-SHELLMSG
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
+      *                             
+      *    医療機関情報
+           MOVE    SPACE            TO  SYSKANRI-REC
+           INITIALIZE                   SYSKANRI-REC
+           MOVE    "1001"           TO  SYS-KANRICD
+           MOVE    "*"              TO  SYS-KBNCD
+           PERFORM 960-KANRIMST-READ-SEC
+           IF      FLG-SYSKANRI     =   ZERO
+               MOVE    MCPDATA-REC   TO  SYS-1001-REC
+           ELSE    
+               MOVE    "医療機関情報が取得できませんでした。"
+                                     TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+               GO  TO  100-INIT-EXT
+           END-IF    
+      *
+           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
+      *
+          .
+       100-INIT-EXT.
+           EXIT.
+      * 
+      *****************************************************************
+      *    主処理
+      *****************************************************************
+       200-MAIN-SEC                SECTION.
+      *
+           PERFORM VARYING IDZ FROM    1   BY  1
+                   UNTIL   IDZ >       2
+                   OR      FLG-END     =   1
+      *
+               IF      IDZ             =   1               
+      *    レセプト処理
+                   MOVE    "RECE620"           TO  RECE62PARA-FILE-ID
+                   MOVE    WRK-PARA-TERMID     TO  RECE62PARA-TERMID
+                   MOVE    "RECE640"           TO  RECE64PARA-FILE-ID
+                   MOVE    WRK-PARA-TERMID     TO  RECE64PARA-TERMID
+                   MOVE    "RECE650"           TO  RECE65PARA-FILE-ID
+                   MOVE    WRK-PARA-TERMID     TO  RECE65PARA-TERMID
+               ELSE
+      *    請求書処理
+                   MOVE    "RECE62X"           TO  RECE62PARA-FILE-ID
+                   MOVE    WRK-PARA-TERMID     TO  RECE62PARA-TERMID
+               END-IF
+      *
+               PERFORM 200-HENSYU-SEC
+           END-PERFORM 
+      *
+           MOVE    1                   TO  FLG-END
+           .
+       200-MAIN-EXT.
+           EXIT.
+      * 
+      *****************************************************************
+      *    主処理
+      *****************************************************************
+       200-HENSYU-SEC                SECTION.
+      *
+           MOVE    ZERO                TO  FLG-RECE62
+      *
+           IF      IDZ             =   1               
+      *    レセプト処理
+               OPEN    OUTPUT              RECE644-FILE
+               CLOSE                       RECE644-FILE
+      *
+               OPEN    OUTPUT              RECE655-FILE
+               CLOSE                       RECE655-FILE
+      *
+               OPEN    OUTPUT              RECE64-FILE
+                                           RECE65-FILE
+           END-IF
+      *
+           OPEN    I-O                 RECE62-FILE
+      *
+           PERFORM    RECE62-READ-SEC
+      *
+           PERFORM                     UNTIL   FLG-RECE62  =   1
+               PERFORM     210-HENSYU-SEC
+      *
+               PERFORM     RECE62-READ-SEC
+      	       IF  CNT-IN-COMMIT   =   300
+      	           MOVE  ZERO          TO      CNT-IN-COMMIT
+                   PERFORM 900-DBCOMMIT-SEC
+                   PERFORM 900-DBSTART-SEC
+               END-IF
+           END-PERFORM
+      *
+           CLOSE   RECE62-FILE
+      *
+           IF      IDZ             =   1               
+      *    レセプト処理
+               CLOSE   RECE64-FILE
+                       RECE65-FILE
+           END-IF
+           .
+       200-HENSYU-EXT.
+           EXIT.
+      * 
+      *****************************************************************
+      *    編集処理
+      *****************************************************************
+       210-HENSYU-SEC                   SECTION.
+      *
+           INITIALIZE          WRK-AREA-SAIKEI
+      *
+           PERFORM    VARYING    IDX    FROM   1   BY   1
+                      UNTIL     (IDX      >   10)  OR
+                                (RECE62-SRYKA(IDX)   =   SPACE)
+               PERFORM    RECE64-HENSYU-SEC
+               PERFORM    FTN-SET-SEC
+           END-PERFORM
+           PERFORM     SAIKEI-KEISAN-SEC
+      *
+           PERFORM     RECE62-REWRITE-SEC
+           .
+       210-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト中間ファイルの作成（Ｆ００４）
+      *****************************************************************
+       RECE64-HENSYU-SEC                SECTION.
+      *
+           INITIALIZE                           SRYACCT-REC
+           MOVE    RECE62-HOSPID        TO      ACCT-HOSPID
+           MOVE    RECE62-NYUGAIKBN     TO      ACCT-NYUGAIKBN
+           MOVE    RECE62-PTID          TO      ACCT-PTID
+           MOVE    RECE62-SRYKA(IDX)    TO      ACCT-SRYKA
+           MOVE    RECE62-SRYYM         TO      ACCT-SRYYM
+           MOVE    SRYACCT-REC          TO      MCPDATA-REC
+           MOVE    "DBSELECT"           TO      MCP-FUNC
+           MOVE    "SRYACCT-KEY2"       TO      ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC               =       ZERO
+               MOVE    "SRYACCT-KEY2"   TO      ORC-DBPATH
+               PERFORM  SRYACCT-READ-SEC
+               PERFORM  UNTIL
+                  (FLG-SRYACCT        =    1)
+                   PERFORM VARYING IDX1    FROM    1   BY  1
+                           UNTIL   IDX1    >       10
+                           OR      RECE62-HKNCOMBI (IDX1)  =   ZERO 
+                       IF      ACCT-HKNCOMBI   =
+                                               RECE62-HKNCOMBI (IDX1)
+                           IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
+                                (ACCT-ZAIKAISU  NOT =    ZERO)
+                               PERFORM   RECE64-TENSOU-SEC
+                               PERFORM   RECE65-HENSYU-SEC
+                               PERFORM   RECE64-WRITE-SEC
+                           ELSE
+                               IF   ACCT-SRYKBN  =  "11"  OR  "12" 
+                                                          OR  "99" 
+                                 IF  ACCT-SRYCDTOTAL = CONS-TOKKI1 OR
+                                                       CONS-TOKKI2 OR
+                                                       CONS-TOKKI3 OR
+                                                       CONS-TOKKI4 OR
+                                                       CONS-TOKKI5 OR
+                                                       CONS-TOKKI7 OR
+                                                       CONS-TOKKI8 OR
+                                                       CONS-TOKKI9 OR
+                                                       CONS-TOKKI10 OR
+                                                       CONS-TOKKI11 OR
+                                                       CONS-TOKKI12
+                                      PERFORM   TOKKI-HENSYU-SEC
+                                 ELSE
+                                      PERFORM   RECE64-TENSOU-SEC
+                                      PERFORM   RECE65-HENSYU-SEC
+                                      PERFORM   RECE64-WRITE-SEC
+                                 END-IF
+                               END-IF
+                           END-IF
+                           MOVE    10                TO  IDX1
+                       END-IF
+                   END-PERFORM          
+                   MOVE     "SRYACCT-KEY2"   TO   ORC-DBPATH
+                   PERFORM   SRYACCT-READ-SEC
+               END-PERFORM
+           ELSE
+               DISPLAY   "SRYACCT SELECT ERR" 
+           END-IF
+      *
+           MOVE   "SRYACCT-KEY2"      TO  WK-PATH
+           PERFORM   CSR-CLOSE-SEC
+      *
+           .
+       RECE64-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    特記事項の編集
+      *****************************************************************
+       TOKKI-HENSYU-SEC                 SECTION.
+      *
+           MOVE     SPACE            TO      WRK-TOKKI
+      *
+           EVALUATE    ACCT-SRYCDTOTAL
+               WHEN    CONS-TOKKI1
+                   MOVE    "01"      TO      WRK-TOKKI
+               WHEN    CONS-TOKKI2
+                   MOVE    "02"      TO      WRK-TOKKI
+               WHEN    CONS-TOKKI3
+                   MOVE    "03"      TO      WRK-TOKKI
+               WHEN    CONS-TOKKI4
+                   MOVE    "04"      TO      WRK-TOKKI
+               WHEN    CONS-TOKKI5
+                   MOVE    "05"      TO      WRK-TOKKI
+               WHEN    CONS-TOKKI7
+                   MOVE    "07"      TO      WRK-TOKKI
+               WHEN    CONS-TOKKI8
+                   MOVE    "08"      TO      WRK-TOKKI
+               WHEN    CONS-TOKKI9
+                   MOVE    "09"      TO      WRK-TOKKI
+               WHEN    CONS-TOKKI10
+                   MOVE    "10"      TO      WRK-TOKKI
+               WHEN    CONS-TOKKI11
+                   MOVE    "11"      TO      WRK-TOKKI
+               WHEN    CONS-TOKKI12
+                   MOVE    "12"      TO      WRK-TOKKI
+           END-EVALUATE
+      *
+           PERFORM VARYING TOKKI-IDX  FROM    1   BY  1
+                   UNTIL ( TOKKI-IDX       >   5     )
+                   OR    ( RECE62-TOKKI(IDX)   =   SPACE )
+                   CONTINUE
+           END-PERFORM
+      *
+           MOVE    WRK-TOKKI         TO      RECE62-TOKKI(TOKKI-IDX)
+           .
+       TOKKI-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト中間ファイルの項目転送（Ｆ００４）
+      *****************************************************************
+       RECE64-TENSOU-SEC                SECTION.
+      *
+           MOVE    SPACE                TO      RECE64-REC
+           INITIALIZE                           RECE64-REC
+           MOVE    RECE62-HOSPID        TO      RECE64-HOSPID
+           MOVE    RECE62-SRYYM         TO      RECE64-SRYYM
+           MOVE    RECE62-NYUGAIKBN     TO      RECE64-NYUGAIKBN
+           MOVE    RECE62-PTID          TO      RECE64-PTID
+           MOVE    RECE62-RECEKA        TO      RECE64-RECEKA
+           MOVE    RECE62-TEISYUTUSAKI  TO      RECE64-TEISYUTUSAKI
+           MOVE    RECE62-RECESYUBETU   TO      RECE64-RECESYUBETU
+           MOVE    RECE62-HKNJANUM      TO      RECE64-HKNJANUM
+           MOVE    RECE62-HOJOKBN-KEY   TO      RECE64-HOJOKBN
+           MOVE    RECE62-TEKSTYMD      TO      RECE64-TEKSTYMD
+           MOVE    ZERO                 TO      RECE64-KOHBUNRI
+           MOVE    ACCT-SRYKBN          TO      RECE64-SRYKBN
+           MOVE    ACCT-ZAINUM          TO      RECE64-ZAINUM
+           MOVE    RECE62-PTNUM         TO      RECE64-PTNUM
+      *
+           MOVE    ACCT-SRYKA           TO      RECE64-SRYKA
+           MOVE    ACCT-HKNCOMBI        TO      RECE64-HKNCOMBI
+           MOVE    ACCT-JIHOKBN         TO      RECE64-JIHOKBN
+           MOVE    ACCT-ZAITEN          TO      RECE64-ZAITEN
+           MOVE    ACCT-SRYCDTOTAL      TO      RECE64-SRYCDTOTAL
+           MOVE    ACCT-SURYOUTOTAL     TO      RECE64-SURYOUTOTAL
+           MOVE    ACCT-MEISAISU        TO      RECE64-MEISAISU
+           MOVE    ACCT-ZAIKAISU        TO      RECE64-ZAIKAISU
+           MOVE    ACCT-SYUTEN1         TO      RECE64-SYUTEN1
+           MOVE    ACCT-SYUTEN2         TO      RECE64-SYUTEN2
+           MOVE    ACCT-YKZTEN          TO      RECE64-YKZTEN
+           MOVE    ACCT-KIZAITEN        TO      RECE64-KIZAITEN
+           MOVE    ACCT-DRCD            TO      RECE64-DRCD
+           MOVE    ACCT-ZAIREQFLG       TO      RECE64-ZAIREQFLG
+           MOVE    ACCT-TEIGENRATE      TO      RECE64-TEIGENRATE
+           MOVE        ZERO             TO      WK-TAIHI-DAY
+           MOVE        ZERO             TO      WK-TAIHI-FLG
+           PERFORM     VARYING   IDX3   FROM    1    BY   1
+                       UNTIL     IDX3   >       4
+               PERFORM     VARYING   IDX2   FROM    1    BY   1
+                           UNTIL     IDX2   >       31
+                   MOVE    ACCT-DAY(IDX3 IDX2)  TO
+                                            RECE64-KAISU (IDX3 IDX2)
+                   IF     (WK-TAIHI-FLG            =   ZERO)   AND
+                          (ACCT-DAY(1 IDX2)    NOT =   ZERO)
+                       MOVE     IDX2    TO      WK-TAIHI-DAY
+                       MOVE     1       TO      WK-TAIHI-FLG
+                   END-IF    
+               END-PERFORM
+           END-PERFORM
+           .
+       RECE64-TENSOU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト中間ファイルの作成（Ｆ００５）
+      *****************************************************************
+       RECE65-HENSYU-SEC               SECTION.
+      *
+           INITIALIZE                           SRYACT-REC
+           MOVE    ACCT-HOSPID          TO      SRY-HOSPID
+           MOVE    ACCT-NYUGAIKBN       TO      SRY-NYUGAIKBN
+           MOVE    ACCT-PTID            TO      SRY-PTID
+           MOVE    ACCT-SRYKA           TO      SRY-SRYKA
+           MOVE    ACCT-SRYYM           TO      SRY-SRYYM
+           MOVE    ACCT-ZAINUM          TO      SRY-ZAINUM
+           MOVE    SRYACT-REC           TO      MCPDATA-REC
+           MOVE    "DBSELECT"           TO      MCP-FUNC
+           MOVE    "SRYACT-KEY2"        TO      ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC               =       ZERO
+               MOVE    "SRYACT-KEY2"    TO      ORC-DBPATH
+               PERFORM  SRYACT-READ-SEC
+               PERFORM  UNTIL  FLG-SRYACT    =    1
+                   PERFORM   RECE65-TENSOU-SEC
+                   PERFORM   RECE62-HENSYU-SEC
+                   PERFORM   RECE65-WRITE-SEC
+                   MOVE     "SRYACT-KEY2"    TO   ORC-DBPATH
+                   PERFORM   SRYACT-READ-SEC
+               END-PERFORM
+           ELSE
+               DISPLAY   "SRYACT SELECT ERR" 
+           END-IF
+      *
+           MOVE   "SRYACT-KEY2"      TO  WK-PATH
+           PERFORM   CSR-CLOSE-SEC
+      *
+           .
+       RECE65-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト中間ファイルの項目転送（Ｆ００５）
+      *****************************************************************
+       RECE65-TENSOU-SEC                SECTION.
+      *
+           MOVE    SPACE                TO      RECE65-REC
+           INITIALIZE                           RECE65-REC
+           MOVE    RECE62-HOSPID        TO      RECE65-HOSPID
+           MOVE    RECE62-SRYYM         TO      RECE65-SRYYM
+           MOVE    RECE62-NYUGAIKBN     TO      RECE65-NYUGAIKBN
+           MOVE    RECE62-PTID          TO      RECE65-PTID
+           MOVE    RECE62-RECEKA        TO      RECE65-RECEKA
+           MOVE    RECE62-TEISYUTUSAKI  TO      RECE65-TEISYUTUSAKI
+           MOVE    RECE62-RECESYUBETU   TO      RECE65-RECESYUBETU
+           MOVE    RECE62-HKNJANUM      TO      RECE65-HKNJANUM
+           MOVE    RECE62-HOJOKBN-KEY   TO      RECE65-HOJOKBN
+           MOVE    RECE62-TEKSTYMD      TO      RECE65-TEKSTYMD
+           MOVE    ZERO                 TO      RECE65-KOHBUNRI
+           MOVE    SRY-ZAINUM           TO      RECE65-ZAINUM
+           MOVE    SRY-RENNUM           TO      RECE65-RENNUM
+           MOVE    RECE62-PTNUM         TO      RECE65-PTNUM
+      *
+           MOVE    SRY-SRYKA            TO      RECE65-SRYKA
+           MOVE    SRY-SRYKBN           TO      RECE65-SRYKBN
+           MOVE    SRY-SRYSYUKBN        TO      RECE65-SRYSYUKBN
+           MOVE    SRY-JIHIMONEYTOTAL   TO      RECE65-JIHIMONEY
+           MOVE    ZERO                 TO      IDX4
+           PERFORM     VARYING   IDX2   FROM    1    BY   1
+                       UNTIL    (IDX2      >    5)    OR
+                                (SRY-SRYCD(IDX2)  =   SPACE)
+             IF      SRY-SRYCD(IDX2)(1:1)     =   "0" OR  "1" OR  
+                                                  "6" OR  "7" OR
+                                                  "8"
+               ADD     1                  TO    IDX4    
+               MOVE    SRY-SRYCD(IDX2)    TO    RECE65-SRYCD(IDX4)
+               MOVE    SRY-SRYSURYO(IDX2) TO    RECE65-SRYSURYO(IDX4)
+               MOVE    SRY-SRYKAISU(IDX2) TO    RECE65-SRYKAISU(IDX4)
+               MOVE    SRY-MEISKYFLG(IDX2) TO   RECE65-MEISKYFLG(IDX4)
+               MOVE    SRY-AUTOKBN(IDX2)  TO    RECE65-AUTOKBN(IDX4)
+               MOVE    SRY-INPUTNUM(IDX2) TO    RECE65-INPUTNUM(IDX4)
+               PERFORM    TENSU-TBL-SEC
+               IF      TNS-SRYKBN         =     "80"
+                   IF  TNS-GAITENTTLKBN   =     130
+                       MOVE   "13"        TO    RECE64-SRYKBN
+                                                RECE65-SRYKBN
+                   END-IF
+               END-IF
+               MOVE    TNS-TANICD         TO    RECE65-TANICD(IDX4)
+               MOVE    TNS-TANIMOJISU     TO    RECE65-TANIMOJISU(IDX4)
+               MOVE    TNS-TANINAME       TO    RECE65-TANINAME(IDX4)
+               IF      TNS-TENSIKIBETU    =     1   OR   3
+                   MOVE  TNS-TENSIKIBETU  TO   RECE65-TENSIKIBETU(IDX4)
+                   MOVE  TNS-TEN          TO    RECE65-TEN(IDX4)
+               END-IF
+               IF      RECE62-NYUGAIKBN   =     "1"
+                   MOVE  TNS-NYUTENTTLKBN TO    RECE65-TENTTLKBN(IDX4)
+               ELSE
+                   MOVE  TNS-GAITENTTLKBN TO    RECE65-TENTTLKBN(IDX4)
+               END-IF
+               MOVE    TNS-YUKOKETA       TO    RECE65-YUKOKETA(IDX4)
+               IF      SRY-SRYCD    (IDX2)(1:1)     =   "8"
+               AND     SRY-INPUTNUM (IDX2)      NOT =   ZERO
+                   MOVE    SRY-HOSPID           TO  PTCOM-HOSPID
+                   MOVE    SRY-PTID             TO  PTCOM-PTID
+                   MOVE    SRY-ZAINUM           TO  PTCOM-ZAINUM
+                   MOVE    SRY-SRYCD (IDX2)     TO  PTCOM-SRYCD
+                   MOVE    SRY-INPUTNUM(IDX2)   TO  PTCOM-RENNUM
+                   PERFORM 950-PTCOM-READ-SEC
+                   MOVE    PTCOM-INPUTCOMENT   TO    RECE65-NAME(IDX4)
+               ELSE
+                   MOVE    TNS-NAME            TO    RECE65-NAME(IDX4)
+               END-IF
+      *
+      *        酸素のとき単価を編集
+               IF      SRY-SRYCD (IDX2) (1:1)  =   "7"
+                   SET     TBL-SANSO           TO  1
+                   SEARCH      TBL-SANSO-OCC   VARYING   TBL-SANSO
+                       AT  END
+                           MOVE    ZERO            TO  FLG-SANSO-OK
+                       WHEN    SRY-SRYCD (IDX2)    =   TBL-SANSO-SRYCD
+                                                            (TBL-SANSO)
+                           MOVE    1               TO  FLG-SANSO-OK
+                   END-SEARCH
+                   IF      FLG-SANSO-OK        =   "1"
+                       PERFORM RECE65-TENSOU-TANKA-HEN-SEC
+                       COMPUTE IDW =   RECE65-YUKOKETA(IDX4)  *  2 
+                                                   +   3                    
+                       MOVE    WRK-CHAR-N (1:WRK-CHAR-N-CNT)
+                                                   TO
+                                               RECE65-NAME(IDX4)(IDW:)   
+                       COMPUTE RECE65-YUKOKETA(IDX4)
+                                               =   RECE65-YUKOKETA(IDX4)
+                                                   +   1   
+                                                   +
+                                                  (WRK-CHAR-N-CNT  /  2)
+                   END-IF
+               END-IF        
+             END-IF  
+           END-PERFORM
+      *
+           .
+       RECE65-TENSOU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    酸素の単価編集処理
+      *****************************************************************
+       RECE65-TENSOU-TANKA-HEN-SEC     SECTION.
+      *
+           IF      TNS-TEN         =   ZERO
+               GO  TO  RECE65-TENSOU-TANKA-HEN-EXT  
+           END-IF
+      *
+           MOVE    SPACE           TO  WRK-TANKA-X
+      * 
+      *    数字表示用編集（半角）
+           MOVE    TNS-TEN         TO  WRK-TANKA
+           MOVE    WRK-TANKA-S1    TO  WRK-TANKA-Z1
+           MOVE    ZERO            TO  FLG-SP
+           PERFORM   VARYING   IDY   FROM    2   BY  -1
+                     UNTIL     IDY           =   ZERO
+             IF  WRK-TANKA-S2(IDY:1) NOT =   ZERO
+                 MOVE    1               TO  FLG-SP
+             END-IF
+             IF  FLG-SP                  =   1
+                 MOVE    WRK-TANKA-S2(IDY:1)
+                                         TO  WRK-TANKA-Z3(IDY:1)
+             END-IF
+           END-PERFORM
+           IF  WRK-TANKA-Z3          NOT =   SPACE
+               MOVE    "."               TO  WRK-TANKA-Z2
+           END-IF
+      *        
+           INITIALIZE                      WRK-CHAR-HENKAN-AREA
+           MOVE    WRK-TANKA-X         TO  WRK-CHAR-X
+           MOVE    12                  TO  WRK-CHAR-CNT
+           MOVE    1                   TO  WRK-CHAR-IDX
+           MOVE    ZERO                TO  WRK-CHAR-N-CNT
+      *     
+           PERFORM VARYING     IDW     FROM    1   BY  1
+                   UNTIL       IDW     >   WRK-CHAR-CNT
+               IF      WRK-CHAR-X (IDW:1)  =   SPACE
+                   CONTINUE
+               ELSE        
+                   IF    WRK-CHAR-X (IDW:1)  IS  NUMERIC
+                       IF      WRK-CHAR-X (IDW:1)  =   "0"
+                           MOVE    TBL-SUJI (10)
+                                       TO  WRK-CHAR-N (WRK-CHAR-IDX:)
+                       ELSE
+                           MOVE    WRK-CHAR-X (IDW:1)  TO  NUM-IDX
+                           MOVE    TBL-SUJI (NUM-IDX)
+                                       TO  WRK-CHAR-N (WRK-CHAR-IDX:)
+                       END-IF                    
+                   ELSE
+                       IF    WRK-CHAR-X (IDW:1)  =   "."
+                           MOVE    "．"   TO  WRK-CHAR-N (WRK-CHAR-IDX:)
+                       ELSE    
+                           MOVE    "  "   TO  WRK-CHAR-N (WRK-CHAR-IDX:)
+                       END-IF
+                   END-IF    
+                   ADD     2           TO  WRK-CHAR-IDX
+                                           WRK-CHAR-N-CNT
+               END-IF    
+           END-PERFORM
+      *
+           IF      WRK-CHAR-N-CNT      >   ZERO
+                   MOVE    "円"        TO  WRK-CHAR-N (WRK-CHAR-IDX:)
+                   ADD     2           TO  WRK-CHAR-N-CNT
+           END-IF                             
+      *
+           .
+       RECE65-TENSOU-TANKA-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト中間ファイルの項目転送２（Ｆ００２）
+      *****************************************************************
+       RECE62-HENSYU-SEC               SECTION.
+      *
+      *    公費の分離表示用インデックスの確定
+           MOVE          ZERO       TO     BUN-IDX
+           IF    (RECE62-HKNNUM          NOT =   SPACE)   OR
+                 (RECE62-RJNHKNNUM       NOT =   SPACE)
+           MOVE          1          TO     BUN-IDX
+           END-IF
+      *    インデックス２
+           MOVE          ZERO       TO     BUN-IDX2
+           IF  RECE62-TOTALTEN(2)       =      ZERO
+               CONTINUE
+           ELSE
+               IF (RECE62-TOTALTEN(2)   NOT =  ZERO)              AND
+                  (RECE62-TOTALTEN(1)   NOT =  RECE62-TOTALTEN(2))
+                   MOVE    ZERO             TO   HC-IDX
+                   PERFORM VARYING IDX1    FROM    1   BY  1
+                           UNTIL   IDX1    >       10
+                           OR      RECE62-HKNCOMBI (IDX1)   =   ZERO 
+                       IF      ACCT-HKNCOMBI   =
+                                                RECE62-HKNCOMBI (IDX1)
+                           MOVE    IDX1            TO  HC-IDX
+                           MOVE    10              TO  IDX1
+                       END-IF
+                   END-PERFORM          
+                   MOVE       ZERO              TO   KH-IDX
+                   PERFORM    VARYING   IDX2    FROM   1   BY   1
+                      UNTIL   (IDX2      >       4)     OR
+                              (RECE62-KOHNUMHC(HC-IDX IDX2)  =  SPACE)
+                      IF  (RECE62-KOHNUMHC(HC-IDX IDX2) =
+                                                   RECE62-KOHNUM(1)) OR
+                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
+                                                   RECE62-KOHNUM(1)) OR
+                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
+                                                   RECE62-KOHNUM(1)) OR
+                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
+                                                   RECE62-KOHNUM(1))
+                           MOVE      2       TO     BUN-IDX2
+                      END-IF
+                   END-PERFORM
+               END-IF
+           END-IF
+      *    インデックス３
+           MOVE          ZERO       TO     BUN-IDX3
+           IF  RECE62-TOTALTEN(3)       =      ZERO
+               CONTINUE
+           ELSE
+               IF (RECE62-TOTALTEN(3)   NOT =  ZERO)              AND
+                  (RECE62-TOTALTEN(1)   NOT =  RECE62-TOTALTEN(3))
+                   MOVE    ZERO                TO  HC-IDX
+                   PERFORM VARYING IDX1    FROM    1   BY  1
+                           UNTIL   IDX1    >       10
+                           OR      RECE62-HKNCOMBI (IDX1)   =   ZERO 
+                       IF      ACCT-HKNCOMBI   =
+                                                RECE62-HKNCOMBI (IDX1)
+                           MOVE    IDX1            TO  HC-IDX
+                           MOVE    10              TO  IDX1
+                       END-IF
+                   END-PERFORM          
+                   MOVE       ZERO              TO   KH-IDX
+                   PERFORM    VARYING   IDX2    FROM   1   BY   1
+                      UNTIL   (IDX2      >       4)     OR
+                              (RECE62-KOHNUMHC(HC-IDX IDX2)  =  SPACE)
+                      IF  (RECE62-KOHNUMHC(HC-IDX IDX2) =
+                                                   RECE62-KOHNUM(2)) OR
+                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
+                                                   RECE62-KOHNUM(2)) OR
+                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
+                                                   RECE62-KOHNUM(2)) OR
+                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
+                                                   RECE62-KOHNUM(2))
+                           MOVE      3       TO     BUN-IDX3
+                      END-IF
+                   END-PERFORM
+               END-IF
+           END-IF
+      *    インデックス４
+           MOVE          ZERO       TO     BUN-IDX4
+           IF  RECE62-TOTALTEN(4)       =      ZERO
+               CONTINUE
+           ELSE
+               IF (RECE62-TOTALTEN(4)   NOT =  ZERO)              AND
+                  (RECE62-TOTALTEN(1)   NOT =  RECE62-TOTALTEN(4))
+                   MOVE    ZERO                TO  HC-IDX
+                   PERFORM VARYING IDX1    FROM    1   BY  1
+                           UNTIL   IDX1    >       10
+                           OR      RECE62-HKNCOMBI (IDX1)   =   ZERO 
+                       IF      ACCT-HKNCOMBI   =
+                                                RECE62-HKNCOMBI (IDX1)
+                           MOVE    IDX1            TO  HC-IDX
+                           MOVE    10              TO  IDX1
+                       END-IF
+                   END-PERFORM          
+                   MOVE       ZERO              TO   KH-IDX
+                   PERFORM    VARYING   IDX2    FROM   1   BY   1
+                      UNTIL   (IDX2      >       4)     OR
+                              (RECE62-KOHNUMHC(HC-IDX IDX2)  =  SPACE)
+                      IF  (RECE62-KOHNUMHC(HC-IDX IDX2) =
+                                                   RECE62-KOHNUM(3)) OR
+                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
+                                                   RECE62-KOHNUM(3)) OR
+                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
+                                                   RECE62-KOHNUM(3)) OR
+                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
+                                                   RECE62-KOHNUM(3))
+                           MOVE      4       TO     BUN-IDX4
+                      END-IF
+                   END-PERFORM
+               END-IF
+           END-IF
+      *
+           PERFORM   VARYING  IDX3   FROM   1   BY   1
+                     UNTIL    (IDX3         >     5)        OR
+                              (SRY-SRYCD(IDX3)   =   SPACE)
+               IF    SRY-RENNUM     =     1
+                   IF  IDX3         =     1
+                       MOVE  ACCT-ZAIKAISU     TO   WK-ZAIKAISU
+                       MOVE  ACCT-ZAITEN       TO   WK-ZAITEN
+                       IF    SRY-SRYKBN     =  "40"  OR  "50"  OR
+                                               "60"  OR  "70"  OR
+                                               "80"  OR  "54"
+                                MOVE   ACCT-SYUTEN1   TO   WK-SYUTEN
+                                COMPUTE   WK-YKZTEN   =
+                                                      ACCT-KIZAITEN  +
+                                                      ACCT-YKZTEN
+                       END-IF
+                   ELSE
+                       IF   SRY-SRYKBN   =  "21"  OR  "22"  OR  "23" OR
+                                            "31"  OR  "32"  OR  "33" OR
+                                            "40"  OR  "50"  OR  "60" OR
+                                            "70"  OR  "80"  OR  "54"
+                           MOVE  ZERO          TO   WK-ZAIKAISU
+                           MOVE  ZERO          TO   WK-ZAITEN
+                           MOVE  ZERO          TO   WK-SYUTEN
+                           MOVE  ZERO          TO   WK-KIZAITEN
+                           MOVE  ZERO          TO   WK-YKZTEN
+                       END-IF
+                   END-IF
+               ELSE
+                     MOVE    ZERO     TO    WK-ZAIKAISU
+                     MOVE    ZERO     TO    WK-ZAITEN
+                     MOVE    ZERO     TO    WK-SYUTEN
+                     MOVE    ZERO     TO    WK-KIZAITEN
+                     MOVE    ZERO     TO    WK-YKZTEN
+               END-IF
+               IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
+                    (ACCT-ZAIKAISU  NOT =    ZERO)
+                     PERFORM   RECE-LEFT-SET-SEC
+               END-IF
+               IF    SRY-SRYKBN   =   "21"   OR   "22"   OR   "23"   OR
+                                      "31"   OR   "32"   OR   "33"   OR
+                                      "40"   OR   "50"   OR   "60"   OR
+                                      "70"   OR   "54"
+                     MOVE    6      TO    IDX3
+               END-IF
+           END-PERFORM
+      *
+           .                                           
+      *
+       RECE62-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト中間ファイルの項目転送２（Ｆ００２）
+      *****************************************************************
+       RECE-LEFT-SET-SEC               SECTION.
+      *
+           PERFORM     TENSU-TBL-SEC2
+           EVALUATE    SRY-SRYKBN
+      *    初診のレセ点数欄の編集
+               WHEN    "11"
+                   IF   TNS-CHUKSNTUBAN   =   "0"
+                        ADD   WK-ZAIKAISU  TO   RECE62-KAISU(1)
+                   END-IF
+                   IF   TNS-DATAKBN  =   2
+                     EVALUATE    TNS-TIMEKSNKBN
+                         WHEN    1
+                         WHEN    5
+                             MOVE  "1"     TO   RECE62-SHOSHINTIME
+                         WHEN    4
+                             MOVE  "2"     TO   RECE62-SHOSHINTIME
+                         WHEN    3
+                             MOVE  "3"     TO   RECE62-SHOSHINTIME
+                     END-EVALUATE
+                   END-IF
+                   IF    BUN-IDX        =   1
+                       COMPUTE    RECE62-TENSU(1 BUN-IDX)  =
+                                  RECE62-TENSU(1 BUN-IDX)  +
+                                 (TNS-TEN   *   ACCT-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX2       =   2
+                       COMPUTE    RECE62-TENSU(1 BUN-IDX2)  =
+                                  RECE62-TENSU(1 BUN-IDX2)  +
+                                 (TNS-TEN   *   ACCT-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX3       =   3
+                       COMPUTE    RECE62-TENSU(1 BUN-IDX3)  =
+                                  RECE62-TENSU(1 BUN-IDX3)  +
+                                 (TNS-TEN   *   ACCT-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX4       =   4
+                       COMPUTE    RECE62-TENSU(1 BUN-IDX4)  =
+                                  RECE62-TENSU(1 BUN-IDX4)  +
+                                 (TNS-TEN   *   ACCT-ZAIKAISU)
+                   END-IF
+      *    指導のレセ点数欄の編集
+               WHEN    "13"
+                   IF    BUN-IDX        =   1
+                       COMPUTE    RECE62-TENSU(2 BUN-IDX)  =
+                                  RECE62-TENSU(2 BUN-IDX)  +
+                                 (TNS-TEN   *   ACCT-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX2       =   2
+                       COMPUTE    RECE62-TENSU(2 BUN-IDX2)  =
+                                  RECE62-TENSU(2 BUN-IDX2)  +
+                                 (TNS-TEN   *   ACCT-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX3       =   3
+                       COMPUTE    RECE62-TENSU(2 BUN-IDX3)  =
+                                  RECE62-TENSU(2 BUN-IDX3)  +
+                                 (TNS-TEN   *   ACCT-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX4       =   4
+                       COMPUTE    RECE62-TENSU(2 BUN-IDX4)  =
+                                  RECE62-TENSU(2 BUN-IDX4)  +
+                                 (TNS-TEN   *   ACCT-ZAIKAISU)
+                   END-IF
+      *    在宅のレセ点数欄の編集
+               WHEN    "14"
+                   IF    BUN-IDX        =   1
+                       COMPUTE    RECE62-TENSU(3 BUN-IDX)  =
+                                  RECE62-TENSU(3 BUN-IDX)  +
+                                 (TNS-TEN   *   ACCT-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX2       =   2
+                       COMPUTE    RECE62-TENSU(3 BUN-IDX2)  =
+                                  RECE62-TENSU(3 BUN-IDX2)  +
+                                 (TNS-TEN   *   ACCT-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX3       =   3
+                       COMPUTE    RECE62-TENSU(3 BUN-IDX3)  =
+                                  RECE62-TENSU(3 BUN-IDX3)  +
+                                 (TNS-TEN   *   ACCT-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX4       =   4
+                       COMPUTE    RECE62-TENSU(3 BUN-IDX4)  =
+                                  RECE62-TENSU(3 BUN-IDX4)  +
+                                 (TNS-TEN   *   ACCT-ZAIKAISU)
+                   END-IF
+      *    投薬のレセ点数欄の編集
+               WHEN    "21"
+                   IF     SRY-SRYCD(IDX3) (1:1)   =    "6"  OR  "S"
+                     IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
+                       IF    BUN-IDX        =   1
+                           COMPUTE   RECE62-TENSU(4 BUN-IDX)  =
+                                     RECE62-TENSU(4 BUN-IDX)  -
+                                    (WK-ZAITEN   *   WK-ZAIKAISU)
+                       END-IF
+                       IF    BUN-IDX2       =   2
+                           COMPUTE   RECE62-TENSU(4 BUN-IDX2)  =
+                                     RECE62-TENSU(4 BUN-IDX2)  -
+                                    (WK-ZAITEN   *   WK-ZAIKAISU)
+                       END-IF
+                       IF    BUN-IDX3       =   3
+                           COMPUTE   RECE62-TENSU(4 BUN-IDX3)  =
+                                     RECE62-TENSU(4 BUN-IDX3)  -
+                                    (WK-ZAITEN   *   WK-ZAIKAISU)
+                       END-IF
+                       IF    BUN-IDX4       =   4
+                           COMPUTE   RECE62-TENSU(4 BUN-IDX4)  =
+                                     RECE62-TENSU(4 BUN-IDX4)  -
+                                    (WK-ZAITEN   *   WK-ZAIKAISU)
+                       END-IF
+                     ELSE
+                       ADD   WK-ZAIKAISU       TO   RECE62-KAISU(4)
+                       IF    BUN-IDX        =   1
+                           COMPUTE   RECE62-TENSU(4 BUN-IDX)  =
+                                     RECE62-TENSU(4 BUN-IDX)  +
+                                    (WK-ZAITEN   *   WK-ZAIKAISU)
+                       END-IF
+                       IF    BUN-IDX2       =   2
+                           COMPUTE   RECE62-TENSU(4 BUN-IDX2)  =
+                                     RECE62-TENSU(4 BUN-IDX2)  +
+                                    (WK-ZAITEN   *   WK-ZAIKAISU)
+                       END-IF
+                       IF    BUN-IDX3       =   3
+                           COMPUTE   RECE62-TENSU(4 BUN-IDX3)  =
+                                     RECE62-TENSU(4 BUN-IDX3)  +
+                                    (WK-ZAITEN   *   WK-ZAIKAISU)
+                       END-IF
+                       IF    BUN-IDX4       =   4
+                           COMPUTE   RECE62-TENSU(4 BUN-IDX4)  =
+                                     RECE62-TENSU(4 BUN-IDX4)  +
+                                    (WK-ZAITEN   *   WK-ZAIKAISU)
+                       END-IF
+                     END-IF
+                   ELSE
+                     IF      SRY-SRYCD(IDX3)     =   "820000047"
+                       ADD    WK-ZAIKAISU       TO   RECE62-KAISU(4)
+                       IF    BUN-IDX        =   1
+                           COMPUTE   RECE62-TENSU(4 BUN-IDX)  =
+                                     RECE62-TENSU(4 BUN-IDX)  +
+                                    (WK-ZAITEN   *   WK-ZAIKAISU)
+                       END-IF
+                       IF    BUN-IDX2       =   2
+                           COMPUTE   RECE62-TENSU(4 BUN-IDX2)  =
+                                     RECE62-TENSU(4 BUN-IDX2)  +
+                                    (WK-ZAITEN   *   WK-ZAIKAISU)
+                       END-IF
+                       IF    BUN-IDX3       =   3
+                           COMPUTE   RECE62-TENSU(4 BUN-IDX3)  =
+                                     RECE62-TENSU(4 BUN-IDX3)  +
+                                    (WK-ZAITEN   *   WK-ZAIKAISU)
+                       END-IF
+                       IF    BUN-IDX4       =   4
+                           COMPUTE   RECE62-TENSU(4 BUN-IDX4)  =
+                                     RECE62-TENSU(4 BUN-IDX4)  +
+                                    (WK-ZAITEN   *   WK-ZAIKAISU)
+                       END-IF
+                     ELSE
+                      IF   SRY-SRYCD(IDX3)     =    CONS-FUNSAI-COMMENT
+                        ADD   WK-ZAIKAISU       TO   RECE62-KAISU(4)
+                        IF    BUN-IDX        =   1
+                            COMPUTE   RECE62-TENSU(4 BUN-IDX)  =
+                                      RECE62-TENSU(4 BUN-IDX)  +
+                                     (WK-ZAITEN   *   WK-ZAIKAISU)
+                        END-IF
+                        IF    BUN-IDX2       =   2
+                            COMPUTE   RECE62-TENSU(4 BUN-IDX2)  =
+                                      RECE62-TENSU(4 BUN-IDX2)  +
+                                     (WK-ZAITEN   *   WK-ZAIKAISU)
+                        END-IF
+                        IF    BUN-IDX3       =   3
+                            COMPUTE   RECE62-TENSU(4 BUN-IDX3)  =
+                                      RECE62-TENSU(4 BUN-IDX3)  +
+                                     (WK-ZAITEN   *   WK-ZAIKAISU)
+                        END-IF
+                        IF    BUN-IDX4       =   4
+                            COMPUTE   RECE62-TENSU(4 BUN-IDX4)  =
+                                      RECE62-TENSU(4 BUN-IDX4)  +
+                                     (WK-ZAITEN   *   WK-ZAIKAISU)
+                        END-IF
+                      END-IF   
+                     END-IF
+                   END-IF
+               WHEN    "22"
+                   ADD    WK-ZAIKAISU    TO   RECE62-KAISU(5)
+                   IF    BUN-IDX        =   1
+                       COMPUTE   RECE62-TENSU(5 BUN-IDX)  =
+                                 RECE62-TENSU(5 BUN-IDX)  +
+                                (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX2       =   2
+                       COMPUTE   RECE62-TENSU(5 BUN-IDX2)  =
+                                 RECE62-TENSU(5 BUN-IDX2)  +
+                                (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX3       =   3
+                       COMPUTE   RECE62-TENSU(5 BUN-IDX3)  =
+                                 RECE62-TENSU(5 BUN-IDX3)  +
+                                (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX4       =   4
+                       COMPUTE   RECE62-TENSU(5 BUN-IDX4)  =
+                                 RECE62-TENSU(5 BUN-IDX4)  +
+                                (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
+               WHEN    "23"
+                   ADD    WK-ZAIKAISU    TO   RECE62-KAISU(6)
+                   IF    BUN-IDX        =   1
+                       COMPUTE   RECE62-TENSU(6 BUN-IDX)  =
+                                 RECE62-TENSU(6 BUN-IDX)  +
+                                (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX2       =   2
+                       COMPUTE   RECE62-TENSU(6 BUN-IDX2)  =
+                                 RECE62-TENSU(6 BUN-IDX2)  +
+                                (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX3       =   3
+                       COMPUTE   RECE62-TENSU(6 BUN-IDX3)  =
+                                 RECE62-TENSU(6 BUN-IDX3)  +
+                                (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX4       =   4
+                       COMPUTE   RECE62-TENSU(6 BUN-IDX4)  =
+                                 RECE62-TENSU(6 BUN-IDX4)  +
+                                (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
+      *    調剤のレセ点数欄の編集
+               WHEN    "24"
+                   ADD    WK-ZAIKAISU     TO    RECE62-KAISU(7)
+                   IF    BUN-IDX        =   1
+                       COMPUTE   RECE62-TENSU(7 BUN-IDX)  =
+                                 RECE62-TENSU(7 BUN-IDX)  +
+                                (TNS-TEN   *   ACCT-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX2       =   2
+                       COMPUTE   RECE62-TENSU(7 BUN-IDX2)  =
+                                 RECE62-TENSU(7 BUN-IDX2)  +
+                                (TNS-TEN   *   ACCT-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX3       =   3
+                       COMPUTE   RECE62-TENSU(7 BUN-IDX3)  =
+                                 RECE62-TENSU(7 BUN-IDX3)  +
+                                (TNS-TEN   *   ACCT-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX4       =   4
+                       COMPUTE   RECE62-TENSU(7 BUN-IDX4)  =
+                                 RECE62-TENSU(7 BUN-IDX4)  +
+                                (TNS-TEN   *   ACCT-ZAIKAISU)
+                   END-IF
+      *    麻毒のレセ点数欄の編集
+               WHEN    "26"
+                   ADD    WK-ZAIKAISU     TO   RECE62-KAISU(8)
+                   IF    BUN-IDX        =   1
+                       COMPUTE   RECE62-TENSU(8 BUN-IDX)  =
+                                 RECE62-TENSU(8 BUN-IDX)  +
+                                (TNS-TEN   *   ACCT-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX2       =   2
+                       COMPUTE   RECE62-TENSU(8 BUN-IDX2)  =
+                                 RECE62-TENSU(8 BUN-IDX2)  +
+                                (TNS-TEN   *   ACCT-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX3       =   3
+                       COMPUTE   RECE62-TENSU(8 BUN-IDX3)  =
+                                 RECE62-TENSU(8 BUN-IDX3)  +
+                                (TNS-TEN   *   ACCT-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX4       =   4
+                       COMPUTE   RECE62-TENSU(8 BUN-IDX4)  =
+                                 RECE62-TENSU(8 BUN-IDX4)  +
+                                (TNS-TEN   *   ACCT-ZAIKAISU)
+                   END-IF
+      *    調基のレセ点数欄の編集
+               WHEN    "27"
+                   IF    BUN-IDX        =   1
+                       COMPUTE   RECE62-TENSU(9 BUN-IDX)  =
+                                 RECE62-TENSU(9 BUN-IDX)  +
+                                (TNS-TEN   *   ACCT-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX2       =   2
+                       COMPUTE   RECE62-TENSU(9 BUN-IDX2)  =
+                                 RECE62-TENSU(9 BUN-IDX2)  +
+                                (TNS-TEN   *   ACCT-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX3       =   3
+                       COMPUTE   RECE62-TENSU(9 BUN-IDX3)  =
+                                 RECE62-TENSU(9 BUN-IDX3)  +
+                                (TNS-TEN   *   ACCT-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX4       =   4
+                       COMPUTE   RECE62-TENSU(9 BUN-IDX4)  =
+                                 RECE62-TENSU(9 BUN-IDX4)  +
+                                (TNS-TEN   *   ACCT-ZAIKAISU)
+                   END-IF
+      *    皮下筋肉内注射のレセ点数欄の編集
+               WHEN    "31"
+                   ADD    WK-ZAIKAISU     TO   RECE62-KAISU(10)
+                   IF    BUN-IDX        =   1
+                       COMPUTE   RECE62-TENSU(10 BUN-IDX)  =
+                                 RECE62-TENSU(10 BUN-IDX)  +
+                                (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX2       =   2
+                       COMPUTE   RECE62-TENSU(10 BUN-IDX2)  =
+                                 RECE62-TENSU(10 BUN-IDX2)  +
+                                (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX3       =   3
+                       COMPUTE   RECE62-TENSU(10 BUN-IDX3)  =
+                                 RECE62-TENSU(10 BUN-IDX3)  +
+                                (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX4       =   4
+                       COMPUTE   RECE62-TENSU(10 BUN-IDX4)  =
+                                 RECE62-TENSU(10 BUN-IDX4)  +
+                                (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
+      *    静脈内注射のレセ点数欄の編集
+               WHEN    "32"
+                   ADD    WK-ZAIKAISU     TO   RECE62-KAISU(11)
+                   IF    BUN-IDX        =   1
+                       COMPUTE   RECE62-TENSU(11 BUN-IDX)  =
+                                 RECE62-TENSU(11 BUN-IDX)  +
+                                (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX2       =   2
+                       COMPUTE   RECE62-TENSU(11 BUN-IDX2)  =
+                                 RECE62-TENSU(11 BUN-IDX2)  +
+                                (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX3       =   3
+                       COMPUTE   RECE62-TENSU(11 BUN-IDX3)  =
+                                 RECE62-TENSU(11 BUN-IDX3)  +
+                                (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX4       =   4
+                       COMPUTE   RECE62-TENSU(11 BUN-IDX4)  =
+                                 RECE62-TENSU(11 BUN-IDX4)  +
+                                (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
+      *    その他注射のレセ点数欄の編集
+               WHEN    "33"
+                   ADD    WK-ZAIKAISU     TO   RECE62-KAISU(12)
+                   IF    BUN-IDX        =   1
+                       COMPUTE   RECE62-TENSU(12 BUN-IDX)  =
+                                 RECE62-TENSU(12 BUN-IDX)  +
+                                (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX2       =   2
+                       COMPUTE   RECE62-TENSU(12 BUN-IDX2)  =
+                                 RECE62-TENSU(12 BUN-IDX2)  +
+                                (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX3       =   3
+                       COMPUTE   RECE62-TENSU(12 BUN-IDX3)  =
+                                 RECE62-TENSU(12 BUN-IDX3)  +
+                                (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX4       =   4
+                       COMPUTE   RECE62-TENSU(12 BUN-IDX4)  =
+                                 RECE62-TENSU(12 BUN-IDX4)  +
+                                (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
+      *    処置のレセ点数欄の編集
+               WHEN    "40"
+                   IF    WK-SYUTEN       NOT =   ZERO
+                       ADD    WK-ZAIKAISU    TO   RECE62-KAISU(13)
+                   END-IF
+                   IF    BUN-IDX        =   1
+                       COMPUTE   RECE62-TENSU(13 BUN-IDX)  =
+                                 RECE62-TENSU(13 BUN-IDX)  +
+                                (WK-SYUTEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX2       =   2
+                       COMPUTE   RECE62-TENSU(13 BUN-IDX2)  =
+                                 RECE62-TENSU(13 BUN-IDX2)  +
+                                (WK-SYUTEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX3       =   3
+                       COMPUTE   RECE62-TENSU(13 BUN-IDX3)  =
+                                 RECE62-TENSU(13 BUN-IDX3)  +
+                                (WK-SYUTEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX4       =   4
+                       COMPUTE   RECE62-TENSU(13 BUN-IDX4)  =
+                                 RECE62-TENSU(13 BUN-IDX4)  +
+                                (WK-SYUTEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX        =   1
+                       COMPUTE   RECE62-TENSU(14 BUN-IDX)  =
+                                 RECE62-TENSU(14 BUN-IDX)  +
+                                (WK-YKZTEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX2       =   2
+                       COMPUTE   RECE62-TENSU(14 BUN-IDX2)  =
+                                 RECE62-TENSU(14 BUN-IDX2)  +
+                                (WK-YKZTEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX3       =   3
+                       COMPUTE   RECE62-TENSU(14 BUN-IDX3)  =
+                                 RECE62-TENSU(14 BUN-IDX3)  +
+                                (WK-YKZTEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX4       =   4
+                       COMPUTE   RECE62-TENSU(14 BUN-IDX4)  =
+                                 RECE62-TENSU(14 BUN-IDX4)  +
+                                (WK-YKZTEN   *   WK-ZAIKAISU)
+                   END-IF
+      *    手術のレセ点数欄の編集
+               WHEN    "50"
+               WHEN    "54"
+                   IF    WK-SYUTEN       NOT =   ZERO
+                       ADD    WK-ZAIKAISU    TO   RECE62-KAISU(15)
+                   END-IF
+                   IF    BUN-IDX        =   1
+                       COMPUTE   RECE62-TENSU(15 BUN-IDX)  =
+                                 RECE62-TENSU(15 BUN-IDX)  +
+                                (WK-SYUTEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX2       =   2
+                       COMPUTE   RECE62-TENSU(15 BUN-IDX2)  =
+                                 RECE62-TENSU(15 BUN-IDX2)  +
+                                (WK-SYUTEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX3       =   3
+                       COMPUTE   RECE62-TENSU(15 BUN-IDX3)  =
+                                 RECE62-TENSU(15 BUN-IDX3)  +
+                                (WK-SYUTEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX4       =   4
+                       COMPUTE   RECE62-TENSU(15 BUN-IDX4)  =
+                                 RECE62-TENSU(15 BUN-IDX4)  +
+                                (WK-SYUTEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX        =   1
+                       COMPUTE   RECE62-TENSU(16 BUN-IDX)  =
+                                 RECE62-TENSU(16 BUN-IDX)  +
+                                (WK-YKZTEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX2       =   2
+                       COMPUTE   RECE62-TENSU(16 BUN-IDX2)  =
+                                 RECE62-TENSU(16 BUN-IDX2)  +
+                                (WK-YKZTEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX3       =   3
+                       COMPUTE   RECE62-TENSU(16 BUN-IDX3)  =
+                                 RECE62-TENSU(16 BUN-IDX3)  +
+                                (WK-YKZTEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX4       =   4
+                       COMPUTE   RECE62-TENSU(16 BUN-IDX4)  =
+                                 RECE62-TENSU(16 BUN-IDX4)  +
+                                (WK-YKZTEN   *   WK-ZAIKAISU)
+                   END-IF
+      *    検査のレセ点数欄の編集
+               WHEN    "60"
+                   IF    WK-SYUTEN       NOT =   ZERO
+                       ADD    WK-ZAIKAISU    TO   RECE62-KAISU(17)
+                   END-IF
+                   IF    BUN-IDX        =   1
+                       COMPUTE   RECE62-TENSU(17 BUN-IDX)  =
+                                 RECE62-TENSU(17 BUN-IDX)  +
+                                (WK-SYUTEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX2       =   2
+                       COMPUTE   RECE62-TENSU(17 BUN-IDX2)  =
+                                 RECE62-TENSU(17 BUN-IDX2)  +
+                                (WK-SYUTEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX3       =   3
+                       COMPUTE   RECE62-TENSU(17 BUN-IDX3)  =
+                                 RECE62-TENSU(17 BUN-IDX3)  +
+                                (WK-SYUTEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX4       =   4
+                       COMPUTE   RECE62-TENSU(17 BUN-IDX4)  =
+                                 RECE62-TENSU(17 BUN-IDX4)  +
+                                (WK-SYUTEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    TNS-KNSJISKBN    =   2
+                         COMPUTE   RECE62-KAISU(17)  =
+                                   RECE62-KAISU(17)  -  
+                                   WK-ZAIKAISU
+                   END-IF
+                   IF    TNS-SRYCD        =   CONS-SAIKETSU1  OR
+                                              CONS-SAIKETSU2  OR
+                                              CONS-SAIKETSU3
+                         IF   RECE62-KAISU(17)  NOT =  ZERO
+                              COMPUTE   RECE62-KAISU(17)  =
+                                        RECE62-KAISU(17)  -   
+                                        WK-ZAIKAISU
+                         END-IF
+                   END-IF
+                   IF    BUN-IDX        =   1
+                       COMPUTE   RECE62-TENSU(18 BUN-IDX)  =
+                                 RECE62-TENSU(18 BUN-IDX)  +
+                                (WK-YKZTEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX2       =   2
+                       COMPUTE   RECE62-TENSU(18 BUN-IDX2)  =
+                                 RECE62-TENSU(18 BUN-IDX2)  +
+                                (WK-YKZTEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX3       =   3
+                       COMPUTE   RECE62-TENSU(18 BUN-IDX3)  =
+                                 RECE62-TENSU(18 BUN-IDX3)  +
+                                (WK-YKZTEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX4       =   4
+                       COMPUTE   RECE62-TENSU(18 BUN-IDX4)  =
+                                 RECE62-TENSU(18 BUN-IDX4)  +
+                                (WK-YKZTEN   *   WK-ZAIKAISU)
+                   END-IF
+      *    画像診断のレセ点数欄の編集
+               WHEN    "70"
+                   IF    WK-SYUTEN       NOT =   ZERO
+                       ADD    WK-ZAIKAISU    TO   RECE62-KAISU(19)
+                   END-IF
+                   IF    BUN-IDX        =   1
+                       COMPUTE   RECE62-TENSU(19 BUN-IDX)  =
+                                 RECE62-TENSU(19 BUN-IDX)  +
+                                (WK-SYUTEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX2       =   2
+                       COMPUTE   RECE62-TENSU(19 BUN-IDX2)  =
+                                 RECE62-TENSU(19 BUN-IDX2)  +
+                                (WK-SYUTEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX3       =   3
+                       COMPUTE   RECE62-TENSU(19 BUN-IDX3)  =
+                                 RECE62-TENSU(19 BUN-IDX3)  +
+                                (WK-SYUTEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX4       =   4
+                       COMPUTE   RECE62-TENSU(19 BUN-IDX4)  =
+                                 RECE62-TENSU(19 BUN-IDX4)  +
+                                (WK-SYUTEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX        =   1
+                       COMPUTE   RECE62-TENSU(20 BUN-IDX)  =
+                                 RECE62-TENSU(20 BUN-IDX)  +
+                                (WK-YKZTEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX2       =   2
+                       COMPUTE   RECE62-TENSU(20 BUN-IDX2)  =
+                                 RECE62-TENSU(20 BUN-IDX2)  +
+                                (WK-YKZTEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX3       =   3
+                       COMPUTE   RECE62-TENSU(20 BUN-IDX3)  =
+                                 RECE62-TENSU(20 BUN-IDX3)  +
+                                (WK-YKZTEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX4       =   4
+                       COMPUTE   RECE62-TENSU(20 BUN-IDX4)  =
+                                 RECE62-TENSU(20 BUN-IDX4)  +
+                                (WK-YKZTEN   *   WK-ZAIKAISU)
+                   END-IF
+      *    その他のレセ点数欄の編集
+               WHEN    "80"
+                   IF    BUN-IDX        =   1
+                         IF    TNS-GAITENTTLKBN   =    130
+                           COMPUTE   RECE62-TENSU(2 BUN-IDX)  =
+                                     RECE62-TENSU(2 BUN-IDX)  +
+                                    (TNS-TEN   *   ACCT-ZAIKAISU)
+                         ELSE  
+                           COMPUTE   RECE62-TENSU(21 BUN-IDX)  =
+                                     RECE62-TENSU(21 BUN-IDX)  +
+                                    (WK-SYUTEN   *   ACCT-ZAIKAISU)
+                         END-IF
+                   END-IF
+                   IF    BUN-IDX2       =   2
+                         IF    TNS-GAITENTTLKBN   =    130
+                           COMPUTE   RECE62-TENSU(2 BUN-IDX)  =
+                                     RECE62-TENSU(2 BUN-IDX)  +
+                                    (TNS-TEN   *   ACCT-ZAIKAISU)
+                         ELSE  
+                           COMPUTE   RECE62-TENSU(21 BUN-IDX)  =
+                                     RECE62-TENSU(21 BUN-IDX)  +
+                                    (WK-SYUTEN   *   ACCT-ZAIKAISU)
+                         END-IF
+                   END-IF
+                   IF    BUN-IDX3       =   3
+                         IF    TNS-GAITENTTLKBN   =    130
+                           COMPUTE   RECE62-TENSU(2 BUN-IDX)  =
+                                     RECE62-TENSU(2 BUN-IDX)  +
+                                    (TNS-TEN   *   ACCT-ZAIKAISU)
+                         ELSE  
+                           COMPUTE   RECE62-TENSU(21 BUN-IDX)  =
+                                     RECE62-TENSU(21 BUN-IDX)  +
+                                    (WK-SYUTEN   *   ACCT-ZAIKAISU)
+                         END-IF
+                   END-IF
+                   IF    BUN-IDX4       =   4
+                         IF    TNS-GAITENTTLKBN   =    130
+                           COMPUTE   RECE62-TENSU(2 BUN-IDX)  =
+                                     RECE62-TENSU(2 BUN-IDX)  +
+                                    (TNS-TEN   *   ACCT-ZAIKAISU)
+                         ELSE
+                           COMPUTE   RECE62-TENSU(21 BUN-IDX)  =
+                                     RECE62-TENSU(21 BUN-IDX)  +
+                                    (WK-SYUTEN   *   ACCT-ZAIKAISU)
+                         END-IF
+                   END-IF
+                   IF    BUN-IDX        =   1
+                       COMPUTE   RECE62-TENSU(22 BUN-IDX)  =
+                                 RECE62-TENSU(22 BUN-IDX)  +
+                                (WK-YKZTEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX2       =   2
+                       COMPUTE   RECE62-TENSU(22 BUN-IDX2)  =
+                                 RECE62-TENSU(22 BUN-IDX2)  +
+                                (WK-YKZTEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX3       =   3
+                       COMPUTE   RECE62-TENSU(22 BUN-IDX3)  =
+                                 RECE62-TENSU(22 BUN-IDX3)  +
+                                (WK-YKZTEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX4       =   4
+                       COMPUTE   RECE62-TENSU(22 BUN-IDX4)  =
+                                 RECE62-TENSU(22 BUN-IDX4)  +
+                                (WK-YKZTEN   *   WK-ZAIKAISU)
+                   END-IF
+           END-EVALUATE
+           .
+      *
+       RECE-LEFT-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    点数テーブルの検索
+      *****************************************************************
+       TENSU-TBL-SEC               SECTION.
+      *
+           INITIALIZE                           TNS-TENSU-REC
+           MOVE    SRY-SRYCD(IDX2)      TO      TNS-SRYCD
+           MOVE    TNS-TENSU-REC        TO      MCPDATA-REC
+           MOVE    RECE65-SRYYM         TO      WK-TAIHI-SRYYM
+           MOVE    WK-TAIHI-DAY         TO      WK-TAIHI-SRYD
+           MOVE    WK-TAIHI-SRYYMD      TO      ORC-DBYMD
+           MOVE    "DBSELECT"           TO      MCP-FUNC
+           MOVE    "TENSU-KEY"          TO      ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC               =       ZERO
+               MOVE    "TENSU-KEY"      TO      ORC-DBPATH
+               PERFORM  TENSU-READ-SEC
+               IF       FLG-TENSU       =       1
+                   DISPLAY   "TENSU FETCH ERR"  
+               END-IF
+           ELSE
+               DISPLAY   "TENSU SELECT ERR" 
+           END-IF
+      *
+           MOVE   "TENSU-KEY"      TO  WK-PATH
+           PERFORM   CSR-CLOSE-SEC
+      *
+           .
+       TENSU-TBL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    点数テーブルの検索
+      *****************************************************************
+       TENSU-TBL-SEC2               SECTION.
+      *
+           INITIALIZE                           TNS-TENSU-REC
+           MOVE    SRY-SRYCD(IDX3)      TO      TNS-SRYCD
+           MOVE    TNS-TENSU-REC        TO      MCPDATA-REC
+           MOVE    RECE65-SRYYM         TO      WK-TAIHI-SRYYM
+           MOVE    WK-TAIHI-DAY         TO      WK-TAIHI-SRYD
+           MOVE    WK-TAIHI-SRYYMD      TO      ORC-DBYMD
+           MOVE    "DBSELECT"           TO      MCP-FUNC
+           MOVE    "TENSU-KEY"          TO      ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC               =       ZERO
+               MOVE    "TENSU-KEY"      TO      ORC-DBPATH
+               PERFORM  TENSU-READ-SEC
+               IF       FLG-TENSU       =       1
+                   DISPLAY   "TENSU FETCH ERR" 
+               END-IF
+           ELSE
+               DISPLAY   "TENSU SELECT ERR" 
+           END-IF
+      *
+           MOVE   "TENSU-KEY"      TO  WK-PATH
+           PERFORM   CSR-CLOSE-SEC
+      *
+           .
+       TENSU-TBL-EXT2.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト中間ファイルへの負担金セット（Ｆ００２）
+      *****************************************************************
+       FTN-SET-SEC                SECTION.
+      *
+           INITIALIZE                           SYUNOU-REC
+           MOVE    RECE62-HOSPID        TO      SYU-HOSPID
+           MOVE    RECE62-NYUGAIKBN     TO      SYU-NYUGAIKBN
+           MOVE    RECE62-PTID          TO      SYU-PTID
+           MOVE    RECE62-SRYKA(IDX)    TO      SYU-SRYKA
+           MOVE    SYUNOU-REC           TO      MCPDATA-REC
+           MOVE    "DBSELECT"           TO      MCP-FUNC
+           MOVE    "SYUNOU-KEY4"        TO      ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC               =       ZERO
+               MOVE    "SYUNOU-KEY4"    TO      ORC-DBPATH
+               PERFORM  SYUNOU-READ-SEC
+               PERFORM  UNTIL
+                  (FLG-SYUNOU             =    1)
+                   PERFORM VARYING IDX1    FROM    1   BY  1
+                           UNTIL   IDX1    >       10
+                           OR      RECE62-HKNCOMBI (IDX1)   =   ZERO 
+                       IF      SYU-HKNCOMBINUM   =
+                                                RECE62-HKNCOMBI (IDX1)
+                           IF   RECE62-SRYYM   =  SYU-SRYYMD(1:6)
+                               PERFORM   RECE62-HENSYU-SEC3
+                           END-IF
+                           MOVE    10              TO  IDX1
+                       END-IF
+                   END-PERFORM          
+                   MOVE     "SYUNOU-KEY4"   TO   ORC-DBPATH
+                   PERFORM   SYUNOU-READ-SEC
+               END-PERFORM
+           ELSE
+               DISPLAY   "SYUNOU SELECT ERR" 
+           END-IF
+      *
+           MOVE   "SYUNOU-KEY4"      TO  WK-PATH
+           PERFORM   CSR-CLOSE-SEC
+      *
+           .
+       FTN-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト中間ファイルの項目転送−負担金（Ｆ００２）
+      *****************************************************************
+       RECE62-HENSYU-SEC3               SECTION.
+      *
+           IF      RECE62-SRYYM      >=  "200210"
+             IF    RECE62-KOUREI  NOT =    SPACE
+                COMPUTE  WRK-FTNKEI = SYU-TOTAL-HKNTEN
+                                    * 10
+                                    * RECE62-KYURATE
+                                    / 100
+                COMPUTE  WRK-FTNKEI = WRK-FTNKEI +  5
+                COMPUTE  WRK-FTNKEI = WRK-FTNKEI / 10
+                COMPUTE  WRK-FTNKEI = WRK-FTNKEI * 10
+      *
+                IF   ( SYU-KOH-FTN         =   ZERO   )                 
+                AND  ( SYU-KOH-HKNNUM(1)   =   SPACE OR "027"  )        
+                AND  ( SYU-KOH-HKNNUM(2)   =   SPACE  )                 
+                AND  ( SYU-KOH-HKNNUM(3)   =   SPACE  )                 
+                AND  ( SYU-KOH-HKNNUM(4)   =   SPACE  )                 
+                    IF    RECE62-RJNHKNNUM    NOT =    SPACE            
+                      ADD    SYU-KOH1COMPFTN  TO   RECE62-FTNMONEY(1)   
+                                                   RECE62-RJNNYUFTN     
+                                                   WRK-KOH-GAI          
+                    ELSE                                                
+                      ADD    SYU-SYUCOMPFTN   TO   RECE62-FTNMONEY(1)   
+                                                   WRK-KOH-GAI          
+                    END-IF                                              
+                ELSE
+                  IF   ( SYU-KOH-HKNNUM(1)   =   "012" )                
+                  OR   ( SYU-KOH-HKNNUM(2)   =   "012" )                
+                  OR   ( SYU-KOH-HKNNUM(3)   =   "012" )                
+                  OR   ( SYU-KOH-HKNNUM(4)   =   "012" )                
+                      IF  FTN-KOH-XXX  >   15000
+                         MOVE   15000   TO   FTN-KOH-XXX
+                      END-IF
+                      COMPUTE  FTN-KOH-YYY  =  15000  -  FTN-KOH-XXX      
+                      IF  WRK-FTNKEI  >  FTN-KOH-YYY                      
+                        ADD    FTN-KOH-YYY  TO  RECE62-FTNMONEY(1)        
+                                                FTN-KOH-XXX               
+                        IF    RECE62-RJNHKNNUM    NOT =    SPACE          
+                          ADD  FTN-KOH-YYY  TO  RECE62-RJNNYUFTN          
+                        END-IF                                            
+                      ELSE                                                
+                        ADD    WRK-FTNKEI   TO  RECE62-FTNMONEY(1)        
+                                                FTN-KOH-XXX               
+                        IF    RECE62-RJNHKNNUM    NOT =    SPACE          
+                          ADD  WRK-FTNKEI   TO  RECE62-RJNNYUFTN          
+                        END-IF                                            
+                      END-IF
+                  ELSE
+                    IF   ( RECE62-TOKKI(1)     =   "02"  )
+                    OR   ( RECE62-TOKKI(2)     =   "02"  )
+                    OR   ( RECE62-TOKKI(3)     =   "02"  )
+                    OR   ( RECE62-TOKKI(4)     =   "02"  )
+                    OR   ( RECE62-TOKKI(5)     =   "02"  )
+                      IF  FTN-KOH-XXX  >  10000
+                         MOVE   10000   TO   FTN-KOH-XXX
+                      END-IF
+                      COMPUTE  FTN-KOH-YYY  =  10000  -  FTN-KOH-XXX      
+                      IF  WRK-FTNKEI  >  FTN-KOH-YYY                      
+                        ADD    FTN-KOH-YYY  TO  RECE62-FTNMONEY(1)        
+                                                FTN-KOH-XXX               
+                        IF    RECE62-RJNHKNNUM    NOT =    SPACE          
+                          ADD  FTN-KOH-YYY  TO  RECE62-RJNNYUFTN          
+                        END-IF                                            
+                      ELSE                                                
+                        ADD    WRK-FTNKEI   TO  RECE62-FTNMONEY(1)        
+                                                FTN-KOH-XXX               
+                        IF    RECE62-RJNHKNNUM    NOT =    SPACE          
+                          ADD  WRK-FTNKEI   TO  RECE62-RJNNYUFTN          
+                        END-IF                                            
+                      END-IF
+                    ELSE
+                      IF  FTN-KOH-XXX  >  40200
+                         MOVE   40200   TO   FTN-KOH-XXX
+                      END-IF
+                      COMPUTE  FTN-KOH-YYY  =  40200  -  FTN-KOH-XXX      
+                      IF  WRK-FTNKEI  >  FTN-KOH-YYY                      
+                        ADD    FTN-KOH-YYY  TO  RECE62-FTNMONEY(1)        
+                                                FTN-KOH-XXX               
+                        IF    RECE62-RJNHKNNUM    NOT =    SPACE          
+                          ADD  FTN-KOH-YYY  TO  RECE62-RJNNYUFTN          
+                        END-IF                                            
+                      ELSE                                                
+                        ADD    WRK-FTNKEI   TO  RECE62-FTNMONEY(1)        
+                                                FTN-KOH-XXX               
+                        IF    RECE62-RJNHKNNUM    NOT =    SPACE          
+                          ADD  WRK-FTNKEI   TO  RECE62-RJNNYUFTN          
+                        END-IF                                            
+                      END-IF
+                    END-IF
+                  END-IF                                              
+                END-IF                                                  
+      *
+                ADD   SYU-KOH-FTN   TO   WRK-KOH-FTN
+      *
+      **>    ELSE                                                       
+      **>       IF    RECE62-RJNHKNNUM    NOT =    SPACE                
+      **>         ADD    SYU-KOH1COMPFTN  TO   RECE62-RJNNYUFTN         
+      **>       END-IF                                                  
+             END-IF
+           ELSE
+             IF    RECE62-RJNHKNNUM    NOT =    SPACE
+                ADD    SYU-KOH1COMPFTN  TO   RECE62-FTNMONEY(1)
+                ADD    SYU-KOH1COMPFTN  TO   RECE62-RJNNYUFTN
+             END-IF
+           END-IF
+           MOVE    ZERO                TO  HC-IDX
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL   IDX1    >       10
+                   OR      RECE62-HKNCOMBI (IDX1)   =   ZERO 
+               IF      SYU-HKNCOMBINUM  =
+                                        RECE62-HKNCOMBI (IDX1)
+                   MOVE    IDX1            TO  HC-IDX
+                   MOVE    10              TO  IDX1
+               END-IF
+           END-PERFORM          
+      *
+           MOVE       ZERO              TO   KH-IDX
+           PERFORM    VARYING   IDX2    FROM   1   BY   1
+             UNTIL   (IDX2      >       4)                    OR
+                     (RECE62-KOHNUMHC(HC-IDX IDX2)  =  SPACE)
+                 IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(1)
+                      MOVE    2          TO        KH-IDX
+                      EVALUATE  TRUE
+                          WHEN  RECE62-KOHNUM(1)  =  SYU-KOH-HKNNUM(1)
+                                MOVE     1    TO   IDX3
+                          WHEN  RECE62-KOHNUM(1)  =  SYU-KOH-HKNNUM(2)
+                                MOVE     2    TO   IDX3
+                          WHEN  RECE62-KOHNUM(1)  =  SYU-KOH-HKNNUM(3)
+                                MOVE     3    TO   IDX3
+                          WHEN  RECE62-KOHNUM(1)  =  SYU-KOH-HKNNUM(4)
+                                MOVE     4    TO   IDX3
+                      END-EVALUATE
+                      ADD      1          TO   RECE62-KOHKENSU(1)
+      *               IF    SYU-KOH-HKNFTNMONEY(IDX3)   NOT =  ZERO
+                            ADD   SYU-KOH-COMPFTN(IDX3)  TO
+                                         RECE62-FTNMONEY(KH-IDX)
+      *               END-IF
+                      IF   RECE62-KOHNUM(1) =  "051"
+                      AND  FLG-KOH      NOT =   2
+                            MOVE     1   TO   FLG-KOH
+                      END-IF
+                      IF   RECE62-KOHNUM(1) =  "010"  OR  "021" 
+                            MOVE     2   TO   FLG-KOH
+                      END-IF 
+                 END-IF
+                 IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(2)
+                      MOVE    3          TO        KH-IDX
+                      EVALUATE  TRUE
+                          WHEN  RECE62-KOHNUM(2)  =  SYU-KOH-HKNNUM(1)
+                                MOVE     1    TO   IDX3
+                          WHEN  RECE62-KOHNUM(2)  =  SYU-KOH-HKNNUM(2)
+                                MOVE     2    TO   IDX3
+                          WHEN  RECE62-KOHNUM(2)  =  SYU-KOH-HKNNUM(3)
+                                MOVE     3    TO   IDX3
+                          WHEN  RECE62-KOHNUM(2)  =  SYU-KOH-HKNNUM(4)
+                                MOVE     4    TO   IDX3
+                      END-EVALUATE
+                      ADD      1          TO   RECE62-KOHKENSU(2)
+      *               IF    SYU-KOH-HKNFTNMONEY(IDX3)   NOT =  ZERO
+                            ADD   SYU-KOH-COMPFTN(IDX3)  TO
+                                         RECE62-FTNMONEY(KH-IDX)
+      *               END-IF
+                      IF   RECE62-KOHNUM(2) =  "051"
+                      AND  FLG-KOH      NOT =   2
+                            MOVE     1   TO   FLG-KOH
+                      END-IF
+                      IF   RECE62-KOHNUM(2) =  "010"  OR  "021" 
+                            MOVE     2   TO   FLG-KOH
+                      END-IF 
+                 END-IF
+                 IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(3)
+                      MOVE    4          TO        KH-IDX
+                      EVALUATE  TRUE
+                          WHEN  RECE62-KOHNUM(3)  =  SYU-KOH-HKNNUM(1)
+                                MOVE     1    TO   IDX3
+                          WHEN  RECE62-KOHNUM(3)  =  SYU-KOH-HKNNUM(2)
+                                MOVE     2    TO   IDX3
+                          WHEN  RECE62-KOHNUM(3)  =  SYU-KOH-HKNNUM(3)
+                                MOVE     3    TO   IDX3
+                          WHEN  RECE62-KOHNUM(3)  =  SYU-KOH-HKNNUM(4)
+                                MOVE     4    TO   IDX3
+                      END-EVALUATE
+                      ADD      1          TO   RECE62-KOHKENSU(3)
+      *               IF    SYU-KOH-HKNFTNMONEY(IDX3)   NOT =  ZERO
+                            ADD   SYU-KOH-COMPFTN(IDX3)  TO
+                                         RECE62-FTNMONEY(KH-IDX)
+      *               END-IF
+                      IF   RECE62-KOHNUM(3) =  "051"
+                      AND  FLG-KOH      NOT =   2
+                            MOVE     1   TO   FLG-KOH
+                      END-IF
+                      IF   RECE62-KOHNUM(3) =  "010"  OR  "021" 
+                            MOVE     2   TO   FLG-KOH
+                      END-IF 
+                 END-IF
+                 IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(4)
+                      MOVE    5          TO        KH-IDX
+                      EVALUATE  TRUE
+                          WHEN  RECE62-KOHNUM(4)  =  SYU-KOH-HKNNUM(1)
+                                MOVE     1    TO   IDX3
+                          WHEN  RECE62-KOHNUM(4)  =  SYU-KOH-HKNNUM(2)
+                                MOVE     2    TO   IDX3
+                          WHEN  RECE62-KOHNUM(4)  =  SYU-KOH-HKNNUM(3)
+                                MOVE     3    TO   IDX3
+                          WHEN  RECE62-KOHNUM(4)  =  SYU-KOH-HKNNUM(4)
+                                MOVE     4    TO   IDX3
+                      END-EVALUATE
+                      ADD      1          TO   RECE62-KOHKENSU(4)
+      *               IF    SYU-KOH-HKNFTNMONEY(IDX3)   NOT =  ZERO
+                            ADD   SYU-KOH-COMPFTN(IDX3)  TO
+                                         RECE62-FTNMONEY(KH-IDX)
+      *               END-IF
+                      IF   RECE62-KOHNUM(4) =  "051"
+                      AND  FLG-KOH      NOT =   2
+                            MOVE     1   TO   FLG-KOH
+                      END-IF
+                      IF   RECE62-KOHNUM(4) =  "010"  OR  "021" 
+                            MOVE     2   TO   FLG-KOH
+                      END-IF 
+                 END-IF
+           END-PERFORM
+           .
+       RECE62-HENSYU-EXT3.
+           EXIT.
+      *
+      *****************************************************************
+      *    在宅総合・在宅末期一部負担金再掲の計算処理
+      *****************************************************************
+       SAIKEI-KEISAN-SEC               SECTION.
+      *
+           IF   RECE62-KOUREI  =  SPACE
+                  MOVE     ZERO      TO     RECE62-KOUREI-SAIKEI
+           ELSE
+              IF   FTN-KOH-XXX   =   ZERO        
+                  MOVE     ZERO      TO     RECE62-KOUREI-SAIKEI
+              ELSE 
+                  IF  FLG-KOH     =   ZERO
+                     COMPUTE   RECE62-KOUREI-SAIKEI  =  
+                               FTN-KOH-XXX
+                     IF   FTN-KOH-XXX   =   WRK-KOH-FTN 
+                           MOVE  ZERO   TO   RECE62-KOUREI-SAIKEI
+                     END-IF
+                  ELSE
+                     IF  FLG-KOH  =   1
+                        COMPUTE   RECE62-KOUREI-SAIKEI  =  
+                                  FTN-KOH-XXX
+                     END-IF
+                     IF  FLG-KOH  =   2
+                        ADD   WRK-KOH-GAI   TO  RECE62-FTNMONEY(2)
+                        COMPUTE   RECE62-KOUREI-SAIKEI  =  
+                                  FTN-KOH-XXX
+                     END-IF
+                     IF   FTN-KOH-XXX   =   WRK-KOH-FTN 
+                           MOVE  ZERO   TO   RECE62-KOUREI-SAIKEI
+                     END-IF
+                  END-IF
+              END-IF
+           END-IF
+      *
+           .
+       SAIKEI-KEISAN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    データ出力処理（Ｆ００４）
+      *****************************************************************
+       RECE64-WRITE-SEC                SECTION.
+      *
+           IF      IDZ             =   1               
+      *    レセプト処理
+               WRITE   RECE64-REC
+      *
+               ADD     1                   TO  CNT-OUT1
+           END-IF
+      *
+           .
+       RECE64-WRITE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    データ出力処理（Ｆ００５）
+      *****************************************************************
+       RECE65-WRITE-SEC                SECTION.
+      *
+           IF      IDZ             =   1               
+      *    レセプト処理
+               WRITE   RECE65-REC
+      *
+               ADD     1                   TO  CNT-OUT2
+           END-IF 
+      *
+           .
+       RECE65-WRITE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    データ更新処理（Ｆ００２）
+      *****************************************************************
+       RECE62-REWRITE-SEC                SECTION.
+      *
+           REWRITE   RECE62-REC
+      *
+           ADD     1                   TO  CNT-OUT3 (IDZ)
+      *
+           .
+       RECE62-WRITE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    エラー出力処理
+      *****************************************************************
+       500-ERR-HENSYU-SEC                SECTION.
+      *
+           OPEN    INPUT   RECEERR-FILE
+           IF      STS-RECEERR         =   ZERO
+               CLOSE   RECEERR-FILE
+           ELSE
+               OPEN    OUTPUT              RECEERR-FILE
+      *
+               MOVE    WRK-RECEERR         TO  RECEERR-REC
+               WRITE   RECEERR-REC
+               CLOSE   RECEERR-FILE
+      *         
+      *        ジョブ管理開始処理
+               MOVE    "JBE"           TO  SJOBKANRI-MODE
+               INITIALIZE                  JOBKANRI-REC
+               MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+               MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+               MOVE    WRK-RECEERR     TO  JOB-YOBI
+               MOVE    "9999"          TO  JOB-ERRCD
+               CALL    "ORCSJOB"       USING
+                                       ORCSJOBKANRIAREA  
+                                       JOBKANRI-REC
+           END-IF
+      *                             
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       500-ERR-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    終了処理
+      *****************************************************************
+       300-TERM-SEC                SECTION.
+      *
+      *    ステップ管理終了処理
+           MOVE    "STE"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
+      *
+           PERFORM 900-DBDISCONNECT-SEC
+      *
+      **     DISPLAY "RECE62-IN  :" CNT-IN   
+      **     DISPLAY "RECE62-MOD :" CNT-OUT3  
+      **     DISPLAY "RECE64-OUT :" CNT-OUT1 
+      **     DISPLAY "RECE65-OUT :" CNT-OUT2  
+             DISPLAY "*** ORCR0640 END ***"
+      **     ACCEPT  WRK-IN FROM CONSOLE 
+           .
+       300-TERM-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    全角→数値半角変換処理
+      *****************************************************************
+       800-NUM-ZENKAKU-HENKAN-SEC    SECTION.
+      *
+           MOVE    ZERO                TO  WRK-STIDX
+                                           WRK-EDIDX 
+           MOVE    SPACE               TO  WRK-NUM
+      *
+      *    空白のときはゼロ 
+           IF      WRK-ZENKAKU          =       SPACE
+               MOVE    ZERO                TO  WRK-NUM
+               MOVE    10                  TO  IDY   
+           ELSE
+      *
+      *        文字の開始桁
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX         >   80
+                       OR      WRK-STIDX   >   ZERO
+                   IF      WRK-ZENKAKU (IDX:1)  NOT =   SPACE
+                       MOVE    IDX                 TO  WRK-STIDX
+                   END-IF     
+               END-PERFORM
+      *        文字の終了桁
+               PERFORM VARYING IDX FROM    80  BY  -1
+                       UNTIL   IDX         <   1
+                       OR      WRK-EDIDX   >   ZERO
+                   IF      WRK-ZENKAKU (IDX:1)  NOT =   SPACE
+                       MOVE    IDX                 TO  WRK-EDIDX
+                   END-IF     
+               END-PERFORM
+      *
+      *        全角数字のとき半角数字に変換（数字以外のときはゼロ）
+               IF      WRK-ZENKAKU (WRK-STIDX:1)   >=  X"A1"
+                   MOVE    ZERO                TO  IDX3
+                   PERFORM VARYING     IDX     FROM    WRK-STIDX  BY  2
+                           UNTIL       IDX     >       WRK-EDIDX
+                       IF      WRK-ZENKAKU (IDX:2)  >= "０"  AND
+                                                   <=  "９"
+                           ADD     1               TO  IDX3
+                           EVALUATE    WRK-ZENKAKU (IDX:2)
+                               WHEN    "０"
+                                   MOVE    "0"     TO  WRK-NUM (IDX3:1)
+                               WHEN    "１"
+                                   MOVE    "1"     TO  WRK-NUM (IDX3:1)
+                               WHEN    "２"
+                                   MOVE    "2"     TO  WRK-NUM (IDX3:1)
+                               WHEN    "３"
+                                   MOVE    "3"     TO  WRK-NUM (IDX3:1)
+                               WHEN    "４"
+                                   MOVE    "4"     TO  WRK-NUM (IDX3:1)
+                               WHEN    "５"
+                                   MOVE    "5"     TO  WRK-NUM (IDX3:1)
+                               WHEN    "６"
+                                   MOVE    "6"     TO  WRK-NUM (IDX3:1)
+                               WHEN    "７"
+                                   MOVE    "7"     TO  WRK-NUM (IDX3:1)
+                               WHEN    "８"
+                                   MOVE    "8"     TO  WRK-NUM (IDX3:1)
+                               WHEN    "９"
+                                   MOVE    "9"     TO  WRK-NUM (IDX3:1)
+                           END-EVALUATE
+                       ELSE
+                           MOVE    ZERO            TO  WRK-NUM
+                           MOVE    WRK-EDIDX       TO  IDX
+                           MOVE    10              TO  IDX3
+                       END-IF
+                   END-PERFORM
+                   MOVE    IDX3                TO  IDY     
+               ELSE
+      *        半角数字に変換（数字以外のときはゼロ）
+                   INSPECT WRK-ZENKAKU(WRK-STIDX:)  REPLACING   ALL " "
+                                                                BY  "0"
+                   IF      WRK-ZENKAKU(WRK-STIDX:)      NOT NUMERIC
+                       MOVE    ZERO                TO  WRK-NUM
+                       MOVE    10                  TO  IDY   
+                   ELSE
+                       COMPUTE IDY     =   WRK-EDIDX   -
+                                           WRK-STIDX   +   1
+                       MOVE    WRK-ZENKAKU (WRK-STIDX:IDY) TO  WRK-NUM
+                   END-IF     
+               END-IF
+           END-IF
+      *
+           COMPUTE IDX     =   11      -   IDY
+           MOVE    ZERO                TO  WRK-NUM-X
+           MOVE    WRK-NUM (1:IDY)     TO  WRK-NUM-X (IDX:)
+           MOVE    SPACE               TO  WRK-NUM
+           MOVE    WRK-NUM-X           TO  WRK-NUM (1:10)
+           MOVE    10                  TO  IDY
+       
+      *
+           .
+       800-NUM-ZENKAKU-HENKAN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療会計読込
+      *****************************************************************
+       SRYACCT-READ-SEC           SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SRYACCT-REC
+               MOVE    ZERO            TO  FLG-SRYACCT
+           ELSE
+               INITIALIZE                  SRYACCT-REC
+               MOVE    1               TO  FLG-SRYACCT
+           END-IF
+      *
+           .
+       SRYACCT-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療行為読込
+      *****************************************************************
+       SRYACT-READ-SEC           SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SRYACT-REC
+               MOVE    ZERO            TO  FLG-SRYACT
+           ELSE
+               INITIALIZE                  SRYACT-REC
+               MOVE    1               TO  FLG-SRYACT
+           END-IF
+      *
+           .
+       SRYACT-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    点数読込
+      *****************************************************************
+       TENSU-READ-SEC           SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  TNS-TENSU-REC
+               MOVE    ZERO            TO  FLG-TENSU
+           ELSE
+               INITIALIZE                  TNS-TENSU-REC
+               MOVE    1               TO  FLG-TENSU
+           END-IF
+      *
+           .
+       TENSU-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    収納読込
+      *****************************************************************
+       SYUNOU-READ-SEC           SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SYUNOU-REC
+               MOVE    ZERO            TO  FLG-SYUNOU
+           ELSE
+               INITIALIZE                  SYUNOU-REC
+               MOVE    1               TO  FLG-SYUNOU
+           END-IF
+      *
+           .
+       SYUNOU-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システム管理マスタ読込
+      *****************************************************************
+       960-KANRIMST-READ-SEC         SECTION.
+      * 
+           MOVE    SYSKANRI-REC    TO  MCPDATA-REC
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
+           MOVE    WRK-PARA-SRYYM  TO  ORC-DBYMD (1:6)
+           MOVE    "01"            TO  ORC-DBYMD (7:2) 
+           CALL    "ORCMCPSUB"     USING
+                                   MCPAREA
+                                   ORCMCPAREA
+                                   MCPDATA-REC
+           IF      MCP-RC          =   ZERO
+               MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
+               MOVE    "DBFETCH"       TO  MCP-FUNC
+               CALL    "ORCMCPSUB"     USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+               IF      MCP-RC          =   ZERO
+                   MOVE    ZERO            TO  FLG-SYSKANRI
+               ELSE
+                   MOVE    1               TO  FLG-SYSKANRI
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           .
+       960-KANRIMST-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者コメントマスタ読み込み
+      *****************************************************************
+       950-PTCOM-READ-SEC           SECTION.
+      *
+           MOVE    PTCOM-REC           TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTCOM-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "PTCOM-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  PTCOM-REC
+                   MOVE    ZERO                TO  FLG-PTCOM
+               ELSE
+                   MOVE    1                   TO  FLG-PTCOM
+                   INITIALIZE                  PTCOM-REC
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-PTCOM
+               INITIALIZE                  PTCOM-REC
+           END-IF
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PTCOM-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       950-PTCOM-READ-EXT.
+           EXIT.
+      *      
+      *****************************************************************
+      *    ＤＢ　オープン処理
+      *****************************************************************
+       100-DBOPEN-SEC                SECTION.
+      *
+           MOVE    "DBOPEN"            TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           MOVE    "DBSTART"           TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           .
+       100-DBOPEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢ　クローズ処理
+      *****************************************************************
+       900-DBDISCONNECT-SEC            SECTION.
+      *
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+           .
+       900-DBCLOSE-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    カーソルクローズ処理
+      *****************************************************************
+       CSR-CLOSE-SEC            SECTION.
+      *
+           INITIALIZE                  MCPAREA
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    WK-PATH             TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           .
+       CSR-CLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    中間ファイルＲＥＡＤ処理
+      *****************************************************************
+       RECE62-READ-SEC            SECTION.
+      *
+           READ    RECE62-FILE   NEXT
+               AT  END
+                   MOVE    1     TO    FLG-RECE62
+               NOT  AT  END
+                   ADD     1     TO    CNT-IN
+                   ADD     1     TO    CNT-IN-COMMIT
+           END-READ
+           .
+       RECE62-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢ　ＣＯＭＭＩＴ処理
+      *****************************************************************
+       900-DBCOMMIT-SEC            SECTION.
+      *
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
+           CALL    "MCPSUB"          USING
+                                        MCPAREA
+                                        MCPDATA-REC.
+      *
+           .
+       900-DBCOMMIT-EXT.
+           EXIT.
+      *      
+      *****************************************************************
+      *    ＤＢ　ＳＴＡＲＴ処理
+      *****************************************************************
+       900-DBSTART-SEC                SECTION.
+      *
+           MOVE    "DBSTART"           TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+           .
+       900-DBSTART-EXT.
+           EXIT.
+      *
