@@ -394,7 +394,7 @@
                            PERFORM 3001-SYOSIN-SENTEI-SEC
                            MOVE    1               TO  FLG-JYURRK-CHK
                        END-IF
-                    ELSE
+                   ELSE
                        IF      WRK-LST-SRYYMD2     =   SPACE
                            MOVE    JYURRK-SRYYMD   TO  WRK-LST-SRYYMD2
                        END-IF
@@ -456,7 +456,12 @@
       *
            IF      WRK-SYOSINYMD-RRK   NOT =   SPACE
       *        ø«Œ≈≤ §ŒΩÈø«Œ¡§¢§Í
-               MOVE    WRK-SYOSINYMD-RRK       TO  KARRK-SYOSINYMD2
+               IF      WRK-SYOSINYMD-RRK       <   WRK-SYOSINYMD2
+      *            ªªƒÍÕ˙ŒÚ§Œ§ﬂ§ŒæÏπÁ
+                   MOVE    WRK-SYOSINYMD2      TO  KARRK-SYOSINYMD2
+               ELSE
+                   MOVE    WRK-SYOSINYMD-RRK   TO  KARRK-SYOSINYMD2
+               END-IF
                IF      WRK-SYOSINYMD-RRK       <   KARRK-SYOSINYMD1
                    MOVE    WRK-SYOSINYMD-RRK   TO  KARRK-SYOSINYMD1
                END-IF
