@@ -3382,6 +3382,8 @@
                    MOVE    SPA-GMN-INPUTCD(IDX)
                                            TO  SPA-MAE-INPUTCD(IDX)
                END-IF
+      *        ∑Ÿπ…Ωº®§Ú§∑§ §§
+               MOVE    "1"                 TO  SPA-COM-KZMFLG(IDX)
            END-PERFORM
       *    ∆‚ ¨»Á…È≤ŸªÓ∏≥∏°∫∫æ Û
            INITIALIZE                  SPA-NAI-FUKATEN-AREA
@@ -7184,6 +7186,7 @@
       *
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
                   (SPA-KIDCD           =   "0180" )
+             OR   (FLG-INIT            =   1      )
                GO      TO      510-TBLHEN-EXT
            END-IF
       *
