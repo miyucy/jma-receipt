@@ -672,6 +672,7 @@
       *
            03  WK-HEN-SYUCOMPFTN       PIC 9(07).
            03  WK-HEN-KOH1COMPFTN      PIC 9(07).
+           03  WK-HEN-SAGAKU           PIC 9(07).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -815,6 +816,11 @@
                   MOVE    ZERO     TO  LNK-SYU-SHOKUJI(IDX)
                                        LNK-SYU-SHOKUJI-NISSU(IDX)
            END-PERFORM.              
+           PERFORM   VARYING   IDX   FROM   1    BY   1
+             UNTIL   IDX   >   3
+                  MOVE    ZERO     TO  LNK-SYU-SKJ-FTNGAKU(IDX)
+                                       LNK-SYU-SKJ-FTNDAY(IDX)
+           END-PERFORM.
       *
       *    システム管理１００１の取り込み
            PERFORM    SYS1001-READ-SEC.
@@ -10152,28 +10158,107 @@
       *
            END-IF.
       *
-      ***     IF   FLG-SYUHEN                 =   "1"
+           IF   FLG-SYUHEN                 =   "1"
       *
-      ***        IF   COMB-HKNNUM            NOT =   SPACE
-      ***        AND  LNK-SYU-SYUCOMPFTN     NOT =   WK-HEN-SYUCOMPFTN
+              IF   COMB-HKNNUM            NOT =   SPACE
+              AND  LNK-SYU-SYUCOMPFTN     NOT =   WK-HEN-SYUCOMPFTN
       *
-      ***           MOVE  WK-HEN-SYUCOMPFTN   TO  LNK-SYU-SYUCOMPFTN
-      ***           COMPUTE   LNK-SYU-SYUCOMPTOTAL   =
-      ***                     LNK-SYU-SYUCOMPFTN     +
-      ***                     LNK-SYU-SYUCOMPYKZFTN
+                 IF   COMB-KOH1-GAIJGNKBN     =     "1"
+                    IF   LNK-SYU-KOH1HKNFTNMONEY  >  WK-HEN-SYUCOMPFTN
+                       MOVE  LNK-SYU-KOH1HKNFTNMONEY
+                                                 TO  LNK-SYU-SYUCOMPFTN
+                       COMPUTE   LNK-SYU-SYUCOMPTOTAL   =
+                                 LNK-SYU-SYUCOMPFTN     +
+                                 LNK-SYU-SYUCOMPYKZFTN
+                       COMPUTE   WK-HEN-SAGAKU = LNK-SYU-SYUCOMPFTN
+                                               - WK-HEN-SYUCOMPFTN
+      ***
+                       MOVE      WK-HEN-SAGAKU
+                                         TO  LNK-SYU-SKJ-FTNGAKU(1)
+      ***
+                    ELSE
+                       MOVE  WK-HEN-SYUCOMPFTN   TO  LNK-SYU-SYUCOMPFTN
+                       COMPUTE   LNK-SYU-SYUCOMPTOTAL   =
+                                 LNK-SYU-SYUCOMPFTN     +
+                                 LNK-SYU-SYUCOMPYKZFTN
+                    END-IF
+                 ELSE
+                    IF   LNK-SYU-KOH1COMPFTN  >  WK-HEN-SYUCOMPFTN
+                       COMPUTE   LNK-SYU-SYUCOMPFTN   =
+                                 LNK-SYU-KOH1COMPFTN  +   5
+                       COMPUTE   WK-FTN               =
+                                 LNK-SYU-SYUCOMPFTN   /  10
+                       COMPUTE   LNK-SYU-SYUCOMPFTN   =
+                                 WK-FTN               *  10
+                       COMPUTE   LNK-SYU-SYUCOMPTOTAL   =
+                                 LNK-SYU-SYUCOMPFTN     +
+                                 LNK-SYU-SYUCOMPYKZFTN
+                       COMPUTE   WK-HEN-SAGAKU = LNK-SYU-SYUCOMPFTN
+                                               - WK-HEN-SYUCOMPFTN
+      ***
+                       MOVE      WK-HEN-SAGAKU
+                                         TO  LNK-SYU-SKJ-FTNGAKU(1)
+      ***
+                    ELSE
+                       MOVE  WK-HEN-SYUCOMPFTN   TO  LNK-SYU-SYUCOMPFTN
+                       COMPUTE   LNK-SYU-SYUCOMPTOTAL   =
+                                 LNK-SYU-SYUCOMPFTN     +
+                                 LNK-SYU-SYUCOMPYKZFTN
+                    END-IF
+                 END-IF
       *
-      ***        END-IF
-      ***        IF   COMB-KOH1HKNNUM            =   "027"
-      ***        AND  LNK-SYU-KOH1COMPFTN    NOT =   WK-HEN-KOH1COMPFTN
+              END-IF
       *
-      ***           MOVE  WK-HEN-KOH1COMPFTN  TO  LNK-SYU-KOH1COMPFTN
-      ***           COMPUTE   LNK-SYU-KOH1COMPTOTAL   =
-      ***                     LNK-SYU-KOH1COMPFTN     +
-      ***                     LNK-SYU-KOH1COMPYKZFTN
+              IF   COMB-KOH1HKNNUM            =   "027"
+              AND  LNK-SYU-KOH1COMPFTN    NOT =   WK-HEN-KOH1COMPFTN
       *
-      ***        END-IF
+                 IF   COMB-KOH2-GAIJGNKBN     =     "1"
+                    IF   LNK-SYU-KOH2HKNFTNMONEY  >  WK-HEN-KOH1COMPFTN
+                       MOVE  LNK-SYU-KOH2HKNFTNMONEY
+                                                 TO  LNK-SYU-KOH1COMPFTN
+                       COMPUTE   LNK-SYU-KOH1COMPTOTAL   =
+                                 LNK-SYU-KOH1COMPFTN     +
+                                 LNK-SYU-KOH1COMPYKZFTN
+                       COMPUTE   WK-HEN-SAGAKU = LNK-SYU-KOH1COMPFTN
+                                               - WK-HEN-KOH1COMPFTN
+      ***
+                       MOVE      WK-HEN-SAGAKU
+                                         TO  LNK-SYU-SKJ-FTNGAKU(1)
+      ***
+                    ELSE
+                       MOVE  WK-HEN-KOH1COMPFTN  TO  LNK-SYU-KOH1COMPFTN
+                       COMPUTE   LNK-SYU-KOH1COMPTOTAL   =
+                                 LNK-SYU-KOH1COMPFTN     +
+                                 LNK-SYU-KOH1COMPYKZFTN
+                    END-IF
+                 ELSE
+                    IF   LNK-SYU-KOH2COMPFTN  >  WK-HEN-KOH1COMPFTN
+                       COMPUTE   LNK-SYU-KOH1COMPFTN  =
+                                 LNK-SYU-KOH2COMPFTN  +   5
+                       COMPUTE   WK-FTN               =
+                                 LNK-SYU-KOH1COMPFTN  /  10
+                       COMPUTE   LNK-SYU-KOH1COMPFTN  =
+                                 WK-FTN               *  10
+                       COMPUTE   LNK-SYU-KOH1COMPTOTAL   =
+                                 LNK-SYU-KOH1COMPFTN     +
+                                 LNK-SYU-KOH1COMPYKZFTN
+                       COMPUTE   WK-HEN-SAGAKU = LNK-SYU-KOH1COMPFTN
+                                               - WK-HEN-KOH1COMPFTN
+      ***
+                       MOVE      WK-HEN-SAGAKU
+                                         TO  LNK-SYU-SKJ-FTNGAKU(1)
+      ***
+                    ELSE
+                       MOVE  WK-HEN-KOH1COMPFTN  TO  LNK-SYU-KOH1COMPFTN
+                       COMPUTE   LNK-SYU-KOH1COMPTOTAL   =
+                                 LNK-SYU-KOH1COMPFTN     +
+                                 LNK-SYU-KOH1COMPYKZFTN
+                    END-IF
+                 END-IF
       *
-      ***     END-IF.
+              END-IF
+      *
+           END-IF.
       *
        2307-FTNKIN-HIKAKU-EXT.
            EXIT.
