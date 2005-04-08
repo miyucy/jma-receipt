@@ -6770,12 +6770,10 @@
            CALL    "ORCSC10S"          USING
                                        ORCSC10SAREA
                                        SPA-AREA
-                                       SPA-SCR-REC
+                                       WRK-SCR-REC
                                        SPA-K02
            MOVE    SPA-WORK            TO  SPA-K01KYOUTU
       *
-           MOVE    WRK-SCR-REC         TO  SPA-SCR-REC
-           MOVE    WRK-GMN-IDX         TO  SPA-GMN-IDX
            IF      SPA-ERRCD       NOT =   SPACE
                MOVE    "1025"          TO  SPA-ERRCD
            END-IF
@@ -7186,13 +7184,13 @@
       *
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
                   (SPA-KIDCD           =   "0180" )
-             OR   (FLG-INIT            =   1      )
                GO      TO      510-TBLHEN-EXT
            END-IF
       *
       *    禁忌チェックを行う
            IF     (FLG-TOROKU          =   SPACE ) 
       ************(FLG-SYOKI           =   ZERO  )
+            AND   (FLG-INIT            =   ZERO   )
                PERFORM 51010-KNKCHK-SEC
                IF      FLG-KINKI           =   1
                    GO      TO      510-TBLHEN-EXT

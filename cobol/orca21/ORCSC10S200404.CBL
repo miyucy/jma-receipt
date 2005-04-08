@@ -592,6 +592,7 @@
       *        再診料→初診料の振替時チェック処理
                WHEN    "9"
                    PERFORM 900-SYOSIN-CHK-SEC
+      *
       *        中途終了選択時チェック処理
                WHEN    "W"
       *******      PERFORM 1000-WKSRYACT-HEN-SEC
@@ -616,9 +617,9 @@
                WHEN    "B"
                    PERFORM 1015-FUKU-SYORI-SEC
            END-EVALUATE
+      *
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
            MOVE    IDX2                TO  LNK-SC10S-IDX2
-      *
            .
        000-PROC-EXT.
       *
@@ -4210,7 +4211,11 @@
       *
       *    点数マスタ編集・基本チェック
            INITIALIZE                  ORCSC92AREA
-           MOVE    "1"                 TO  LNK-SC92-KBN
+           IF      SPA-COM-INPUTCD(1)(1:3) =   "113"
+               MOVE    "2"                 TO  LNK-SC92-KBN
+           ELSE
+               MOVE    "1"                 TO  LNK-SC92-KBN
+           END-IF
            MOVE    SPA-SYORIFLG        TO  LNK-SC92-SYORIFLG
            MOVE    "K02"               TO  LNK-SC92-PG
            MOVE    1                   TO  LNK-SC92-GMN-IDX
