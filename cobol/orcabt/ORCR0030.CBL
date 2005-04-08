@@ -1227,6 +1227,13 @@
                END-IF
            END-IF
       *
+           MOVE    ZERO    TO   WRK-FTN-SAGAKU
+      *
+           IF    RECE02-SRYYM           >=  "200404"
+           AND   RECE02-RJNHKNNUM    NOT =   SPACE
+               PERFORM    2116-FTN-SAGAKU-HENSYU-SEC
+           END-IF
+      *
            PERFORM    VARYING    IDX    FROM   1   BY   1
                       UNTIL     (IDX      >   20)  OR
                                 (RECE02-SRYKA(IDX)   =   SPACE)
@@ -4345,42 +4352,6 @@
       *****************************************************************
        2105-YKZFTN-SET-SEC                SECTION.
       *
-           MOVE       ZERO      TO       WRK-FTN-SAGAKU
-      *
-           IF    RECE02-SRYYM           >=  "200404"
-           AND   RECE02-RJNHKNNUM    NOT =   SPACE
-              INITIALIZE                           SYUNOU-REC
-              MOVE    RECE02-HOSPID        TO      SYU-HOSPID
-              MOVE    RECE02-NYUGAIKBN     TO      SYU-NYUGAIKBN
-              MOVE    RECE02-PTID          TO      SYU-PTID
-              MOVE    RECE02-SRYYM         TO      SYU-SRYYMD(1:6)
-              MOVE    "__"                 TO      SYU-SRYYMD(7:2)
-              MOVE    SYUNOU-REC           TO      MCPDATA-REC
-              MOVE    "DBSELECT"           TO      MCP-FUNC
-              MOVE    "SYUNOU-KEY14"       TO      ORC-DBPATH
-              CALL    "ORCMCPSUB"          USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
-              IF      MCP-RC               =       ZERO
-                  MOVE    "SYUNOU-KEY14"   TO      ORC-DBPATH
-                  PERFORM  900-SYUNOU-READ-SEC
-                  PERFORM  UNTIL
-                          (FLG-SYUNOU             =    1)
-      *
-                      ADD    SYU-SKJ-FTNGAKU(1)   TO   WRK-FTN-SAGAKU
-      *
-                      MOVE     "SYUNOU-KEY14"  TO   ORC-DBPATH
-                      PERFORM   900-SYUNOU-READ-SEC
-                  END-PERFORM
-              ELSE
-                  DISPLAY   "SYUNOU SELECT ERR"
-              END-IF
-      *
-              MOVE    "SYUNOU-KEY14"     TO  WK-PATH
-              PERFORM 900-CSR-CLOSE-SEC
-           END-IF
-      *
            INITIALIZE                           SYUNOU-REC
            MOVE    RECE02-HOSPID        TO      SYU-HOSPID
            MOVE    RECE02-NYUGAIKBN     TO      SYU-NYUGAIKBN
@@ -6026,6 +5997,46 @@
       *
            .
        2115-OCR3-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    œ∑øÕ§Œ…È√¥∫π≥€ ‘Ω∏
+      *****************************************************************
+       2116-FTN-SAGAKU-HENSYU-SEC                   SECTION.
+      *
+           INITIALIZE                           SYUNOU-REC
+           MOVE    RECE02-HOSPID        TO      SYU-HOSPID
+           MOVE    RECE02-NYUGAIKBN     TO      SYU-NYUGAIKBN
+           MOVE    RECE02-PTID          TO      SYU-PTID
+           MOVE    RECE02-SRYYM         TO      SYU-SRYYMD(1:6)
+           MOVE    "__"                 TO      SYU-SRYYMD(7:2)
+           MOVE    SYUNOU-REC           TO      MCPDATA-REC
+           MOVE    "DBSELECT"           TO      MCP-FUNC
+           MOVE    "SYUNOU-KEY14"       TO      ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC               =       ZERO
+               MOVE    "SYUNOU-KEY14"   TO      ORC-DBPATH
+               PERFORM  900-SYUNOU-READ-SEC
+               PERFORM  UNTIL
+                       (FLG-SYUNOU             =    1)
+      *
+                   ADD    SYU-SKJ-FTNGAKU(1)   TO   WRK-FTN-SAGAKU
+      *
+                   MOVE     "SYUNOU-KEY14"  TO   ORC-DBPATH
+                   PERFORM   900-SYUNOU-READ-SEC
+               END-PERFORM
+           ELSE
+               DISPLAY   "SYUNOU SELECT ERR"
+           END-IF
+      *
+           MOVE    "SYUNOU-KEY14"     TO  WK-PATH
+           PERFORM 900-CSR-CLOSE-SEC
+      *
+           .
+       2116-FTN-SAGAKU-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
