@@ -569,8 +569,9 @@
            END-PERFORM.
       *
       *    ÆÃ¼ì·×»»¡ÊºÆ·×»»¡Ë
-           IF     ( FLG-TOKUSYU     =   1 )
-           OR     ( FLG-KOUREISYA   =   1 )
+           IF     ( FLG-TOKUSYU           =    1 )
+           OR     ((FLG-KOUREISYA         =    1 ) AND
+                   (LNK-S02-TEIKI-KBN     =   "X"))
                 PERFORM     TOKUSYU-SANTEI-SEC
            END-IF.
       *

@@ -9727,6 +9727,7 @@
            PERFORM   23093-DAYDATA-OKIKAE-HENSYU-SEC.
       *
            IF   FLG-SYUHEN                 =   "1"
+           AND  LNK-S02-TEIKI-KBN          =   "X"
       *
               IF   COMB-HKNNUM            NOT =   SPACE
               AND  LNK-SYU-SYUCOMPFTN     NOT =   WK-HEN-SYUCOMPFTN
