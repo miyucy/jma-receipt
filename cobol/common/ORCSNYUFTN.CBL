@@ -192,6 +192,7 @@
            03  FLG-KYUFUGAI                PIC 9(01).
            03  FLG-SANTEI                  PIC 9(01).
            03  FLG-TOKUSYU                 PIC 9(01).
+           03  FLG-KOUREISYA               PIC 9(01).
       *
       * ¼¼ÎÁº¹³ÛÂàÈòÍÑ¥Æ¡¼¥Ö¥ë     
        01  TABLE-RMSAGAKU.
@@ -561,10 +562,15 @@
                 MOVE     SYUDAY-REC           TO  LNK-SYUDAY-REC(IDX)  
                 MOVE     WRK-ORCS02-REC       TO  LNK-ORCS02-REC 
       *
+                IF       LNK-S02-KOUREI-NYUIN-KBN   =     "1"
+                     MOVE      1       TO     FLG-KOUREISYA
+                END-IF
+      *
            END-PERFORM.
       *
       *    ÆÃ¼ì·×»»¡ÊºÆ·×»»¡Ë
-           IF      FLG-TOKUSYU   =   1
+           IF     ( FLG-TOKUSYU     =   1 )
+           OR     ( FLG-KOUREISYA   =   1 )
                 PERFORM     TOKUSYU-SANTEI-SEC
            END-IF.
       *
@@ -576,8 +582,6 @@
       *    ÆÃ¼ì·×»»¡ÊºÆ·×»»¡Ë
       ******************************************************************
        TOKUSYU-SANTEI-SEC                     SECTION.
-      *
-           MOVE       ZERO      TO     IDY2
       *
            PERFORM    VARYING   IDX    FROM   1   BY   1
                               UNTIL  (IDX            >    10)
@@ -603,6 +607,10 @@
                 MOVE     LNK-ORCS02-REC       TO  WRK-ORCS02-REC
                 MOVE     LNK-SYUNOU-REC(IDX)  TO  SYUNOU-REC
                 MOVE     LNK-SYUDAY-REC(IDX)  TO  SYUDAY-REC           
+      *
+                INITIALIZE    WRK-SYUNOU-REC-T
+                INITIALIZE    WRK-SYUDAY-REC-T
+                MOVE     ZERO      TO     IDY2
       *
                 PERFORM    VARYING   IDY    FROM   1   BY   1
                             UNTIL   (IDY                 >    10 )

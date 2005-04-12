@@ -62,6 +62,7 @@
            03  WRK-MEISAI                  PIC 9(07).
            03  WRK-RYOYO                   PIC 9(07).
            03  WRK-SENINFLG                PIC X(01).
+           03  WRK-ZAITAKU-KBN             PIC X(01).
            03  WRK-SONOTA-TBL.
               04  WRK-SONOTA-OCC           OCCURS  20.
                  05  WRK-SONOTA-SRYCD      PIC  X(09).
@@ -344,10 +345,16 @@
       *
       *    ÉéÃ´¶â·×»»
       *
+           MOVE     LNK-S01-KOUREI-ZAITAKU-KBN
+                                           TO  WRK-ZAITAKU-KBN.
+      *
            PERFORM    VARYING   IDX    FROM   1   BY   1
                               UNTIL  (IDX                 >    15 )
                                 OR   (LNK-SYU-SRYYMD(IDX) =  SPACE)
                                 OR   (LNK-S01-RC      NOT =  ZERO )
+      *
+                MOVE     WRK-ZAITAKU-KBN      TO
+                                      LNK-S01-KOUREI-ZAITAKU-KBN
       *
                 MOVE     LNK-ORCS01-REC       TO  WRK-ORCS01-REC
                 MOVE     IDX                  TO  WRK-S01-IDX
