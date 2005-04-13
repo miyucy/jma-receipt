@@ -672,7 +672,6 @@
       *
            03  WK-HEN-SYUCOMPFTN       PIC 9(07).
            03  WK-HEN-KOH1COMPFTN      PIC 9(07).
-           03  WK-HEN-SAGAKU           PIC 9(07).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -816,11 +815,6 @@
                   MOVE    ZERO     TO  LNK-SYU-SHOKUJI(IDX)
                                        LNK-SYU-SHOKUJI-NISSU(IDX)
            END-PERFORM.              
-           PERFORM   VARYING   IDX   FROM   1    BY   1
-             UNTIL   IDX   >   3
-                  MOVE    ZERO     TO  LNK-SYU-SKJ-FTNGAKU(IDX)
-                                       LNK-SYU-SKJ-FTNDAY(IDX)
-           END-PERFORM.
       *
       *    システム管理１００１の取り込み
            PERFORM    SYS1001-READ-SEC.
@@ -10170,12 +10164,6 @@
                        COMPUTE   LNK-SYU-SYUCOMPTOTAL   =
                                  LNK-SYU-SYUCOMPFTN     +
                                  LNK-SYU-SYUCOMPYKZFTN
-                       COMPUTE   WK-HEN-SAGAKU = LNK-SYU-SYUCOMPFTN
-                                               - WK-HEN-SYUCOMPFTN
-      ***
-                       MOVE      WK-HEN-SAGAKU
-                                         TO  LNK-SYU-SKJ-FTNGAKU(1)
-      ***
                     ELSE
                        MOVE  WK-HEN-SYUCOMPFTN   TO  LNK-SYU-SYUCOMPFTN
                        COMPUTE   LNK-SYU-SYUCOMPTOTAL   =
@@ -10193,12 +10181,6 @@
                        COMPUTE   LNK-SYU-SYUCOMPTOTAL   =
                                  LNK-SYU-SYUCOMPFTN     +
                                  LNK-SYU-SYUCOMPYKZFTN
-                       COMPUTE   WK-HEN-SAGAKU = LNK-SYU-SYUCOMPFTN
-                                               - WK-HEN-SYUCOMPFTN
-      ***
-                       MOVE      WK-HEN-SAGAKU
-                                         TO  LNK-SYU-SKJ-FTNGAKU(1)
-      ***
                     ELSE
                        MOVE  WK-HEN-SYUCOMPFTN   TO  LNK-SYU-SYUCOMPFTN
                        COMPUTE   LNK-SYU-SYUCOMPTOTAL   =
@@ -10219,12 +10201,6 @@
                        COMPUTE   LNK-SYU-KOH1COMPTOTAL   =
                                  LNK-SYU-KOH1COMPFTN     +
                                  LNK-SYU-KOH1COMPYKZFTN
-                       COMPUTE   WK-HEN-SAGAKU = LNK-SYU-KOH1COMPFTN
-                                               - WK-HEN-KOH1COMPFTN
-      ***
-                       MOVE      WK-HEN-SAGAKU
-                                         TO  LNK-SYU-SKJ-FTNGAKU(1)
-      ***
                     ELSE
                        MOVE  WK-HEN-KOH1COMPFTN  TO  LNK-SYU-KOH1COMPFTN
                        COMPUTE   LNK-SYU-KOH1COMPTOTAL   =
@@ -10242,12 +10218,6 @@
                        COMPUTE   LNK-SYU-KOH1COMPTOTAL   =
                                  LNK-SYU-KOH1COMPFTN     +
                                  LNK-SYU-KOH1COMPYKZFTN
-                       COMPUTE   WK-HEN-SAGAKU = LNK-SYU-KOH1COMPFTN
-                                               - WK-HEN-KOH1COMPFTN
-      ***
-                       MOVE      WK-HEN-SAGAKU
-                                         TO  LNK-SYU-SKJ-FTNGAKU(1)
-      ***
                     ELSE
                        MOVE  WK-HEN-KOH1COMPFTN  TO  LNK-SYU-KOH1COMPFTN
                        COMPUTE   LNK-SYU-KOH1COMPTOTAL   =
