@@ -44,6 +44,7 @@
       *                                     受診履歴更新修正
       *  01.00.15    NACL-多々納  04/07/XX  外来まとめ追加
       *                                     一括入力項目追加
+      *  01.00.16    NACL-多々納  05/04/14  レセプレビュー追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -180,6 +181,8 @@
            03  FLG-HEN2            PIC 9(01).
       *
            03  FLG-NAIBUN          PIC 9(01).
+      *
+           03  FLG-HKN-OK          PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -679,6 +682,12 @@
        01  LNK-K02SCR-REC.
            COPY    "CPK02SPASCR.INC"    REPLACING
                                         //SPA-// BY //LNK-SPA-//.
+      *    プレビュー用情報
+           COPY    "CPXC01LNK.INC".
+      *
+       01  WRK-PREV-AREA.
+           03  WRK-CONS-PRTKANRI-TBL-KEY
+                                   PIC X(08)   VALUE   "RECEPTX".
       *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
@@ -893,14 +902,16 @@
       *
                MOVE    SPA-MOTOPG          TO  WRK-MOTOPG
       *        元画面表示
-               IF      WRK-MOTOPG(1:3)     =   "Y01"  OR  "U01"
+               IF      WRK-MOTOPG          =   "Y01"  OR  "U01"
                                                       OR  "P97"
+                                                      OR  "XC01"
                    MOVE    LNK-COMMON      TO  SPA-KYOUTU
                    MOVE    LNK-SCRSPA      TO  SPA-J02
                    MOVE    SPA-WORK        TO  SPA-J01KYOUTU
                END-IF
       *        予約の時、そのまま画面表示へ
-               IF      WRK-MOTOPG(1:3)     =   "Y01"
+               IF      WRK-MOTOPG          =   "Y01"
+                                           OR  "XC01"
                    GO      TO      300-SCREEN-EXT
                END-IF
       *        外部より選択がある時
@@ -1304,6 +1315,16 @@
                    ELSE
                        MOVE    1                  TO  SPA-GMN-CUR
                    END-IF
+      *
+               WHEN    "0121"
+                   MOVE    SPACE           TO  SPA-JIDCD
+      *            プレビュー確認
+                   IF      SPA-JID1-FLG        =   "OK"
+                       PERFORM 4130-PREVIEW-CHK-SEC
+                   ELSE
+                       MOVE    1                  TO  SPA-GMN-CUR
+                   END-IF
+      *
            END-EVALUATE
            .
        3003-JID1-SET-EXT.
@@ -3031,6 +3052,9 @@
       *    収納更新
                WHEN    "CLICKED"       ALSO    "B09S"
                    PERFORM 490-SYUNOU-CHK-SEC
+      *    プレビュー
+               WHEN    "CLICKED"       ALSO    "B01S"
+                   PERFORM 4010-PREVIEW-SYORI-SEC
            END-EVALUATE
       *
            .
@@ -4984,6 +5008,7 @@
                    DISPLAY "J02 JYURRK UPD ERR:" MCP-RC
                            ",KEY:" JYURRK-KEY
                            ",UPDKEY:" JYURRK-UPKEY
+                   MOVE    "2001"              TO  SPA-ERRCD
                END-IF
       *
                MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
@@ -5123,6 +5148,7 @@
                    IF      MCP-RC          NOT =   ZERO
                        DISPLAY "J02 SRYACCT UPD ERR:" MCP-RC
                                ",KEY:" ACCT-KEY
+                       MOVE    "2000"              TO  SPA-ERRCD
                    END-IF
                END-IF
       *
@@ -5356,6 +5382,7 @@
                    IF      MCP-RC          NOT =   ZERO
                         DISPLAY "J02 JYURRK UPD ERR:" MCP-RC
                                ",KEY:" JYURRK-KEY
+                        MOVE    "2001"              TO  SPA-ERRCD
                    END-IF
                END-IF
       *
@@ -6295,8 +6322,9 @@
                                        ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
-                DISPLAY "K03 SRYACT DEL ERR:" MCP-RC
-                        ",KEY:" SRY-KEY
+               DISPLAY "K03 SRYACT DEL ERR:" MCP-RC
+                       ",KEY:" SRY-KEY
+               MOVE    "2004"              TO  SPA-ERRCD
            END-IF
       *    コメント
            INITIALIZE                  PTCOM-REC
@@ -6314,6 +6342,7 @@
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "J02  PTCOM  DEL ERR:" MCP-RC
                      ",KEY:" PTCOM-KEY
+               MOVE    "2004"              TO  SPA-ERRCD
            END-IF
       *
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
@@ -6326,6 +6355,7 @@
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "J02 SRYACCT DEL ERR:" MCP-RC
                         ",KEY:" ACCT-KEY
+               MOVE    "2004"              TO  SPA-ERRCD
            END-IF
       *
            .
@@ -6404,6 +6434,7 @@
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "J02 SRYACCT DEL ERR:" MCP-RC
                             ",KEY:" ACCT-KEY
+                   MOVE    "2004"              TO  SPA-ERRCD
                END-IF
            END-IF
       *
@@ -9660,6 +9691,9 @@
                WHEN    13
       *            カルテ３号紙印刷開始へ
                    PERFORM 41201-PRINT-SYORI-SEC
+               WHEN    14
+      *            プレビューへ
+                   PERFORM 4130-PREVIEW-SEC
                WHEN    OTHER
       *            登録
       *            患者が選択されてきた時は、元の画面へ
@@ -10503,6 +10537,167 @@
            .
        490-SYUNOU-CHK-EXT.
            EXIT.
+      *****************************************************************
+      *    プレビュー処理
+      *****************************************************************
+       4010-PREVIEW-SYORI-SEC          SECTION.
+      *
+           IF      SPA-GMN-BANGO   NOT =   ZERO
+               MOVE    "0009"          TO  SPA-ERRCD
+           END-IF
+      *
+      *    保険判定
+           MOVE    ZERO                TO  FLG-HKN-OK
+           IF     (SPA-GMN-PTNUM   NOT =   SPACE )  AND
+                  (SPA-GMN-PTID    NOT =   ZERO  )  AND
+                  (SPA-ERRCD           =   SPACE )
+               PERFORM VARYING     IDH     FROM   1   BY  1
+                       UNTIL       IDH     >   SPA-HKN-MAX
+                   IF      SPA-NAI-THKNNUM  (IDH)  =   "971"
+                                                   OR  "973"
+                                                   OR  "999"
+                       CONTINUE
+                   ELSE
+                       PERFORM 40101-HKNNUM-CHK-SEC
+                       IF      FLG-JYURRK      =   ZERO
+                           MOVE    1               TO  FLG-HKN-OK
+                           MOVE    SPA-HKN-MAX     TO  IDH
+                       END-IF
+                   END-IF
+               END-PERFORM
+               IF     (FLG-HKN-OK          =   ZERO )  AND
+                      (SPA-NYUGAIKBN       =  "1"   )  AND
+                      (SPA-GMN-NYUINYMD    NOT =   SPACE )
+                   MOVE    1               TO  FLG-HKN-OK
+               END-IF
+           END-IF
+           IF     (SPA-GMN-PTNUM   NOT =   SPACE )  AND
+                  (SPA-GMN-PTID    NOT =   ZERO  )  AND
+                  (SPA-ERRCD           =   SPACE )
+               IF      FLG-HKN-OK      =   ZERO
+                   MOVE    "0071"          TO  SPA-ERRCD
+               END-IF
+           END-IF
+           IF     (SPA-GMN-PTNUM   NOT =   SPACE )  AND
+                  (SPA-GMN-PTID    NOT =   ZERO  )  AND
+                  (SPA-ERRCD           =   SPACE )  AND
+                  (FLG-HKN-OK          =   1     )
+               IF      SPA-UPDFLG          =   "1"
+                   MOVE    "0121"              TO  SPA-JIDCD
+               ELSE
+                   PERFORM 4130-PREVIEW-SEC
+               END-IF
+           END-IF
+           .
+       4010-PREVIEW-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    プレビュー対象の保険処理
+      *****************************************************************
+       40101-HKNNUM-CHK-SEC          SECTION.
+      *
+           INITIALIZE                  JYURRK-REC
+           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
+           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
+           MOVE    SPA-GMN-THKNCOMBINUM(IDH)
+                                       TO  JYURRK-HKNCOMBINUM
+           MOVE    SPA-NAI-SRYYM       TO  JYURRK-SRYYMD(1:6)
+           MOVE    "01"                TO  JYURRK-SRYYMD(7:2)
+           MOVE    SPA-NAI-SRYYM       TO  JYURRK-UPSRYYMD(1:6)
+           MOVE    "31"                TO  JYURRK-UPSRYYMD(7:2)
+      *
+           MOVE    JYURRK-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "JYURRK-KEY17"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "JYURRK-KEY17"      TO  ORC-DBPATH
+               PERFORM 970-JYURRK-READ-SEC
+           ELSE
+               INITIALIZE                  JYURRK-REC
+               MOVE    1               TO  FLG-JYURRK
+           END-IF
+           MOVE    "JYURRK-KEY17"      TO  ORC-DBPATH
+           PERFORM 980-DBCLOSE-SEC
+           .
+       40101-HKNNUM-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    プレビュー処理
+      *****************************************************************
+       4130-PREVIEW-CHK-SEC          SECTION.
+      *
+           IF      SPA-UPDFLG          =   "1"
+               PERFORM 4901-SRYACCT-UPD-SEC
+               IF     (SPA-ERRCD      NOT  =   SPACE ) OR
+                      (FLG-END             =   1     )
+                   MOVE    14              TO  SPA-J025-SYORI
+               ELSE
+                   PERFORM 4130-PREVIEW-SEC
+               END-IF
+           END-IF
+           .
+       4130-PREVIEW-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    プレビュー処理
+      *****************************************************************
+       4130-PREVIEW-SEC          SECTION.
+      *
+           PERFORM 41301-PREVIEW-KICK-SEC
+      *
+           MOVE    SPACE               TO  LINKAREA
+           MOVE    SPA-KYOUTU          TO  LNK-COMMON
+           MOVE    SPA-J02             TO  LNK-SCRSPA
+      *
+      *    画面移行用のパラメタ変更
+           MOVE    "J02"               TO  SPA-MOTOPG
+           MOVE    "J02"               TO  SPA-MOTOPG3
+           MOVE    "XC01"              TO  SPA-SAKIPG
+      *
+           MOVE    WRK-CONS-PRTKANRI-TBL-KEY
+                                       TO  SPA-PRTKANRI-TBL-KEY
+           MOVE    SPA-GMN-PTID        TO  LNK-XC01-TBL-GROUP
+           MOVE    1                   TO  LNK-XC01-SHORI-RENNUM
+           MOVE    SPA-NAI-SRYYM(3:4)  TO  LNK-XC01-SHORI-RENNUM
+           MOVE    1                   TO  LNK-XC01-RENNUM
+           MOVE    1                   TO  LNK-XC01-ST-PAGE
+           MOVE    ALL "9"             TO  LNK-XC01-ED-PAGE
+           MOVE    "1"                 TO  LNK-XC01-MODE
+           MOVE    LNK-XC01-AREA       TO  SPA-WORK
+      *
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+      *
+           MOVE   "JOIN"               TO  MCP-PUTTYPE
+           MOVE   "XC01   "            TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       4130-PREVIEW-EXT.
+           EXIT.
+      *****************************************************************
+      *    プレビューバッチ起動処理
+      *****************************************************************
+       41301-PREVIEW-KICK-SEC    SECTION.
+      *
+           MOVE    ZERO                TO  WRK-RRK-HKNKBN
+           CALL    "ORCSRECEARGMK"     USING
+                                       SPA-GMN-PTID
+                                       SPA-NAI-SRYYM
+                                       SPA-NYUGAIKBN
+                                       WRK-RRK-HKNKBN
+                                       SPA-AREA
+      *
+           .
+       41301-PREVIEW-KICK-EXT.
+           EXIT.
       *
       *****************************************************************
       *    自画面編集処理
@@ -10726,6 +10921,12 @@
                    MOVE    "登録して下さい。"
                                        TO  WRK-ERRMSG(31:)
       *
+               WHEN    "0071"
+                   MOVE    "ブレビューできる診療登録がありません。"
+                                       TO  WRK-ERRMSG
+                   MOVE    "ブレビューはできません。"
+                                       TO  WRK-ERRMSG(39:)
+      *
                WHEN    "2000"
                    MOVE    "更新エラーです。"
                                        TO  WRK-ERRMSG
@@ -10737,6 +10938,9 @@
                                        TO  WRK-ERRMSG
                WHEN    "2003"
                    MOVE    "新規作成エラーです。"
+                                       TO  WRK-ERRMSG
+               WHEN    "2004"
+                   MOVE    "削除エラーです。"
                                        TO  WRK-ERRMSG
                WHEN    "1005"
                    MOVE    "受診履歴番号が存在しません"
@@ -10909,6 +11113,12 @@
                                        TO  WRK-JIDMSG
                    MOVE    "復元はできません。よろしいですか？"
                                        TO  WRK-JIDMSG(35:)
+      *
+               WHEN    "0121"
+                   MOVE    "ブレビューが押下されました。"
+                                       TO  WRK-JIDMSG
+                   MOVE    "現在までの修正分を登録します。"
+                                       TO  WRK-JIDMSG(29:)
       *
                WHEN    OTHER
                    MOVE    SPA-JIDCD
