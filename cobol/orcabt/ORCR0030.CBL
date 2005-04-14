@@ -495,6 +495,7 @@
            03  FTN-KOH-YYY                             PIC 9(09).       
            03  FLG-KOH                                 PIC 9(01).
            03  WRK-FTNKEI                              PIC 9(09).
+           03  WRK-FTNKEI-FTN                          PIC 9(09).
            03  WRK-GENDO                               PIC 9(09).
            03  WRK-KINGAKU                             PIC 9(09).
       *
@@ -4848,32 +4849,32 @@
       *****************************************************************
        210523-FTNMONEY-FTN-HENSYU-SEC               SECTION.
       *
-      *    ºßÁí¿Ç¡ÜÏ·¿ÍÊÝ¸±¡ÜÁ´¹ñ¸¶Çú¡¢Ï·¿ÍÊÝ¸±¡Ü¸¶Çú
+      *    Ï·¿ÍÊÝ¸±¡Ü¸¶Çú
            IF      RECE02-SRYYM      >=  "200404"
-              IF  (( RECE02-ZAITAKU            =    SPACE )  AND
+              IF   ( RECE02-ZAITAKU            =    SPACE )  AND
                    ( RECE02-RJNHKNNUM      NOT =    SPACE )  AND
-                   ( SYU-KOH-HKNNUM(IDX3)      =    "019" ))
-              OR  (( RECE02-ZAITAKU        NOT =    SPACE )  AND
-                   ( RECE02-RJNHKNNUM      NOT =    SPACE )  AND
-                   ( SYU-KOH-HKNNUM(IDX3)(1:1) =    "0"   ))
+                   ( SYU-KOH-HKNNUM(IDX3)      =    "019" )
       *
                     EVALUATE   IDX3
                       WHEN      2
-                           ADD   SYU-KOH-COMPFTN(IDX3 - 1)  TO
+                        COMPUTE  WRK-FTNKEI-FTN  =  SYU-TOTAL-HKNTEN
+                                                 *  10
+                                                 *  RECE02-KYURATE
+                                                 /  100
+                        ADD      WRK-FTNKEI-FTN  TO
                                          RECE02-FTNMONEY-FTN(KH-IDX)
+      *
                       WHEN      3
                       WHEN      4
-                        IF    (RECE02-ZAITAKU   NOT =    SPACE )
-                        AND   (SYU-KOH-HKNNUM(IDX3 - 1)
-                                                    =  "015" OR "016"
-                                                             OR "051")
-                           ADD   SYU-KOH-HKNFTNMONEY(IDX3 - 1)  TO
+                        MOVE    SYU-KOH-COMPFTN(IDX3 - 1)
+                                                 TO   WRK-FTNKEI-FTN
+                        ADD      WRK-FTNKEI-FTN  TO
                                          RECE02-FTNMONEY-FTN(KH-IDX)
-                        ELSE
-                           ADD   SYU-KOH-COMPFTN(IDX3 - 1)  TO
-                                         RECE02-FTNMONEY-FTN(KH-IDX)
-                        END-IF
                     END-EVALUATE
+      *
+                    IF    RECE02-FTNMONEY-FTN(KH-IDX)   >   12000
+                       MOVE   12000  TO  RECE02-FTNMONEY-FTN(KH-IDX)
+                    END-IF
       *
               END-IF
            END-IF
@@ -5320,6 +5321,23 @@
                    WHEN    "2"
                        MOVE    "1"   TO   RECE02-SHOKUJIFTNKBN
            END-EVALUATE
+      *
+      *    ºßÁí¿Ç¡ÜÏ·¿ÍÊÝ¸±¡ÜÁ´¹ñ¸øÈñ
+           IF      RECE02-SRYYM      >=  "200404"
+      *
+             PERFORM    VARYING   KOHFTN-IDX   FROM   1   BY   1
+                         UNTIL    KOHFTN-IDX     >    4
+      *
+               IF  ( RECE02-ZAITAKU              NOT =    SPACE )  AND
+                   ( RECE02-RJNHKNNUM            NOT =    SPACE )  AND
+                   ( RECE02-KOHNUM(KOHFTN-IDX)(1:1)  =    "0"   )
+                  MOVE   FTN-KOH-XXX  TO
+                                  RECE02-FTNMONEY-FTN(KOHFTN-IDX + 1)
+               END-IF
+      *
+             END-PERFORM
+      *
+           END-IF
       *
            .
        2111-ICHIBUFUTAN-OKIKAE-EXT.
