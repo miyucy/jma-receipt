@@ -10550,26 +10550,41 @@
            MOVE    ZERO                TO  FLG-HKN-OK
            IF     (SPA-GMN-PTNUM   NOT =   SPACE )  AND
                   (SPA-GMN-PTID    NOT =   ZERO  )  AND
-                  (SPA-ERRCD           =   SPACE )
-               PERFORM VARYING     IDH     FROM   1   BY  1
-                       UNTIL       IDH     >   SPA-HKN-MAX
-                   IF      SPA-NAI-THKNNUM  (IDH)  =   "971"
-                                                   OR  "973"
-                                                   OR  "999"
-                       CONTINUE
-                   ELSE
-                       PERFORM 40101-HKNNUM-CHK-SEC
-                       IF      FLG-JYURRK      =   ZERO
-                           MOVE    1               TO  FLG-HKN-OK
-                           MOVE    SPA-HKN-MAX     TO  IDH
+                  (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-GMN-HHKNCOMBI   NOT =    "9999" )
+               IF      SPA-GMN-HHKNCOMBI   =   "0000"
+                   PERFORM VARYING     IDH     FROM   1   BY  1
+                           UNTIL       IDH     >   SPA-HKN-MAX
+                         IF      SPA-NAI-THKNNUM(IDH)  =   "971"
+                                                    OR  "973"
+                                                    OR  "999"
+                           CONTINUE
+                       ELSE
+                           MOVE    SPA-GMN-THKNCOMBINUM(IDH)
+                                               TO  WRK-HKNCOMBI
+                           PERFORM 40101-HKNNUM-CHK-SEC
+                           IF      FLG-JYURRK      =   ZERO
+                               MOVE    1               TO  FLG-HKN-OK
+                               MOVE    SPA-HKN-MAX     TO  IDH
+                           END-IF
                        END-IF
+                   END-PERFORM
+               ELSE
+                   MOVE    SPA-GMN-HHKNCOMBI   TO  WRK-HKNCOMBI
+                   PERFORM 40101-HKNNUM-CHK-SEC
+                   IF      FLG-JYURRK      =   ZERO
+                       MOVE    1               TO  FLG-HKN-OK
                    END-IF
-               END-PERFORM
+               END-IF
                IF     (FLG-HKN-OK          =   ZERO )  AND
                       (SPA-NYUGAIKBN       =  "1"   )  AND
                       (SPA-GMN-NYUINYMD    NOT =   SPACE )
                    MOVE    1               TO  FLG-HKN-OK
                END-IF
+           END-IF
+           IF      SPA-GMN-HHKNCOMBI   =   "971"
+                                       OR  "973"
+               MOVE    "0072"          TO  SPA-ERRCD
            END-IF
            IF     (SPA-GMN-PTNUM   NOT =   SPACE )  AND
                   (SPA-GMN-PTID    NOT =   ZERO  )  AND
@@ -10600,8 +10615,7 @@
            MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
            MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
-           MOVE    SPA-GMN-THKNCOMBINUM(IDH)
-                                       TO  JYURRK-HKNCOMBINUM
+           MOVE    WRK-HKNCOMBI        TO  JYURRK-HKNCOMBINUM
            MOVE    SPA-NAI-SRYYM       TO  JYURRK-SRYYMD(1:6)
            MOVE    "01"                TO  JYURRK-SRYYMD(7:2)
            MOVE    SPA-NAI-SRYYM       TO  JYURRK-UPSRYYMD(1:6)
@@ -10926,6 +10940,9 @@
                                        TO  WRK-ERRMSG
                    MOVE    "ブレビューはできません。"
                                        TO  WRK-ERRMSG(39:)
+               WHEN    "0072"
+                   MOVE    "労災・自賠責はプレビューできません。"
+                                       TO  WRK-ERRMSG
       *
                WHEN    "2000"
                    MOVE    "更新エラーです。"
