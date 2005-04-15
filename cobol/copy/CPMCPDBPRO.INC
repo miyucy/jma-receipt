@@ -360,6 +360,7 @@
       *                                     SYUNOU-KEY41追加
       *  01.01.166   NACL-太田    05/02/18  PTTEIKIRRK-DEL3追加
       *  01.01.167   NACL-多々納  05/03/09  SRYACCT-KEY39追加
+      *  01.01.168   NACL-多々納  05/04/15  SRYACCT-KEY40追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1927,6 +1928,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SRYACCT-KEY39"
                    MOVE    PATH-TBL-SRYACCT-KEY39
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYACCT-KEY40"
+                   MOVE    PATH-TBL-SRYACCT-KEY40
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SRYACCT-ALL"
                    MOVE    PATH-TBL-SRYACCT-ALL
