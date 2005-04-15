@@ -10680,7 +10680,7 @@
            MOVE    SPA-NAI-SRYYM(3:4)  TO  LNK-XC01-SHORI-RENNUM
            MOVE    1                   TO  LNK-XC01-RENNUM
            MOVE    1                   TO  LNK-XC01-ST-PAGE
-           MOVE    ALL "9"             TO  LNK-XC01-ED-PAGE
+           MOVE    99999               TO  LNK-XC01-ED-PAGE
            MOVE    "1"                 TO  LNK-XC01-MODE
            MOVE    LNK-XC01-AREA       TO  SPA-WORK
       *
