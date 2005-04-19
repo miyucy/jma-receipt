@@ -373,6 +373,7 @@
            EVALUATE    MCP-FUNC
              WHEN     'DBOPEN'
              WHEN     'DBDISCONNECT'
+             WHEN     'DBCLOSE'
              WHEN     'DBCLOSECURSOR'
              WHEN     'DBSTART'
              WHEN     'DBCOMMIT'
@@ -385,6 +386,7 @@
            END-EVALUATE.
       *
            EVALUATE    MCP-FUNC
+             WHEN     'DBCLOSE'
              WHEN     'DBCLOSECURSOR'
                  CONTINUE
              WHEN      OTHER
