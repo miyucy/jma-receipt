@@ -383,7 +383,7 @@
                MOVE    SYS-1001-ROUPAYKBN  TO  SPA-ROUPAYKBN
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"      USING   MCPAREA
                                             ORCMCPAREA
@@ -758,7 +758,7 @@
            ELSE
                MOVE    1               TO  FLG-INPUTCD
            END-IF
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "INPUTCD-KEY2"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"      USING   MCPAREA
                                             ORCMCPAREA
@@ -786,7 +786,7 @@
       *
                ADD     1               TO  WRK-DSPSEQ
       *
-               MOVE    "DBCLOSE"       TO  MCP-FUNC
+               MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
                MOVE    "INPUTCD-KEY4"  TO  ORC-DBPATH
                CALL    "ORCMCPSUB"  USING   MCPAREA
                                             ORCMCPAREA
@@ -824,7 +824,7 @@
                MOVE    1               TO  FLG-TENSU
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "TESNSU-KEY"        TO  ORC-DBPATH
            CALL    "ORCMCPSUB"      USING   MCPAREA
                                             ORCMCPAREA

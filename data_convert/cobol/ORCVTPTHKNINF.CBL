@@ -428,7 +428,7 @@
                MOVE    SYS-1001-HOSPSBT    TO  SPA-HOSPSBT
                MOVE    SYS-1001-ROUPAYKBN  TO  SPA-ROUPAYKBN
            END-IF
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"      USING   MCPAREA
                                             ORCMCPAREA
@@ -465,7 +465,7 @@
            ELSE
                MOVE    MCPDATA-REC         TO  SYS-1009-REC
            END-IF
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"      USING   MCPAREA
                                             ORCMCPAREA
@@ -1352,7 +1352,7 @@
            ELSE
                MOVE    1               TO  FLG-PTNUM
            END-IF
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTNUM-KEY2"        TO  ORC-DBPATH
            CALL    "ORCMCPSUB"      USING   MCPAREA
                                             ORCMCPAREA

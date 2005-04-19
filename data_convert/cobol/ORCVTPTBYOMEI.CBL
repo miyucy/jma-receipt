@@ -489,7 +489,7 @@
                MOVE    SYS-1001-ROUPAYKBN  TO  SPA-ROUPAYKBN
            END-IF
       *
-           MOVE    "DBCLOSE"       TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
@@ -555,7 +555,7 @@
                                        TO  SPA-1009-KKCKSIATOKETA
            END-IF
       *
-           MOVE    "DBCLOSE"       TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
@@ -595,7 +595,7 @@
                MOVE    MCPDATA-REC     TO  SYS-1005-REC
            END-IF
       *
-           MOVE    "DBCLOSE"       TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
@@ -1374,7 +1374,7 @@
                PERFORM 26011-HKNCOMBI-SET-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSE"       TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "HKNCOMBI-KEY2"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
@@ -1486,7 +1486,7 @@
                PERFORM 940-PTBYOMEI-NEXT-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSE"       TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTBYOMEI-KEY13"    TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
