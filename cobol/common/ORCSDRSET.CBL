@@ -210,6 +210,12 @@
                MOVE    "SYSKANRI-KEY2"    TO  ORC-DBPATH
                PERFORM 900-SYSKANRI-READ-SEC
            END-PERFORM
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY2"    TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            MOVE    IDX                 TO  ORCSDR-DRCD-MAX
       *
@@ -361,6 +367,12 @@
            ELSE
                MOVE    1                   TO  ORCSDR-ERRCD
            END-IF
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            .
        200-DR-CHECK-EXT.

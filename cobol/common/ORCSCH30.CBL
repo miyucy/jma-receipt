@@ -363,6 +363,8 @@
                END-IF
            END-PERFORM
       *
+           MOVE    "JYURRK-KEY7"   TO  ORC-DBPATH
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        1001-RENNUM-SET-EXT.
@@ -420,12 +422,8 @@
                PERFORM 970-JYURRK-NEXT-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-ORC-DBPATH       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        10021-ONLY-SYORI-EXT.
@@ -434,6 +432,9 @@
       *    複数分編集処理
       *****************************************************************
        10022-FUKU-SYORI-SEC          SECTION.
+      *
+           MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
+           PERFORM 990-DBCLOSE-SEC
       *
       *    受診履歴検索
            MOVE    JYURRK-REC          TO  MCPDATA-REC
@@ -461,12 +462,8 @@
                PERFORM 970-JYURRK-NEXT-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-ORC-DBPATH       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        10022-FUKU-SYORI-EXT.
@@ -576,6 +573,8 @@
                MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
                PERFORM 900-SRYACT-READ-SEC
            END-PERFORM
+           MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+           PERFORM 990-DBCLOSE-SEC
       *
            IF      IDX-S               >   ZERO
       *        パラメタ編集
@@ -707,12 +706,8 @@
            ELSE
                MOVE    1                   TO  FLG-SRYACCT
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            MOVE    SPA-SRYYMD(7:2)     TO  IDX-ACT
            MOVE    ACCT-DAY (IDX-REN IDX-ACT)
@@ -817,6 +812,8 @@
                MOVE    "WKSRYACT-KEY2"     TO  ORC-DBPATH
                PERFORM 940-WKSRYACT-READ-SEC
            END-PERFORM
+           MOVE    "WKSRYACT-KEY2"     TO  ORC-DBPATH
+           PERFORM 990-DBCLOSE-SEC
       *
       *    剤終了時、編集へ
            IF      IDX-S           >   ZERO
@@ -944,12 +941,8 @@
                MOVE    1                   TO  FLG-TENSU
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        910-TENSU-READ-EXT.
@@ -1057,5 +1050,20 @@
       *
            .
        960-KANRIMST-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢクロース処理
+      *****************************************************************
+       990-DBCLOSE-SEC         SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       990-DBCLOSE-EXT.
            EXIT.
       *
