@@ -30,16 +30,6 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-門脇    04/10/01  自賠責特定器材等消費税対応
       *  01.00.02    NACL-門脇    04/11/25  福島県乳幼児特殊計算対応
-      *  01.00.03    NACL-門脇    05/07/19  収納項目追加に伴う修正
-      *  01.00.04    NACL-門脇    06/03/22  自立支援法対応
-      *  03.05.00    NACL-門脇    07/05/08  グループ診療対応
-      *  04.01.01    NACL-門脇    07/12/07  公害対応
-      *
-      *  04.06.01    NACL-門脇    13/02/18  労災レセ電対応
-      *                                     （新診療行為コード対応）
-      *
-      *  04.08.01    NACL-門脇    16/02/12  第三者行為対応
-      *  04.08.02    NACL-門脇    17/07/14  和歌山県地方公費対応
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -59,16 +49,10 @@
            03  IDX3                        PIC 9(03).
            03  IDY                         PIC 9(02).
            03  IDZ                         PIC 9(02).
-           03  IDZ2                        PIC 9(02).
       *
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-OK                      PIC 9(01).
-           03  FLG-TOKUSYU-SAI             PIC 9(01).
-      *
-      *    カウント領域
-       01  CNT-AREA.
-           03  CNT-KENSU                   PIC 9(03).
       *
       *    ワーク領域
        01  WRK-AREA.
@@ -76,7 +60,6 @@
            03  WRK-SYUTEN                  PIC 9(07).
            03  WRK-SINDAN                  PIC 9(07).
            03  WRK-MEISAI                  PIC 9(07).
-           03  WRK-KYUKYU                  PIC 9(07).
            03  WRK-RYOYO                   PIC 9(07).
            03  WRK-SENINFLG                PIC X(01).
            03  WRK-ZAITAKU-KBN             PIC X(01).
@@ -127,7 +110,6 @@
                  05  WRK-TOKUSYU-FTNMONEY        PIC 9(07).
                  05  WRK-TOKUSYU-COMPFTN         PIC 9(07).
                  05  WRK-TOKUSYU-ENTANI          PIC 9(07)V9(01).
-                 05  WRK-DISCOUNT-MONEY          PIC 9(07).
       *
                  05  WRK-GRP-SGKMONEY            PIC S9(07).
                  05  WRK-GRP-SYUHKNFTNMONEY      PIC S9(07).
@@ -168,7 +150,6 @@
                  05  WRK-GRP-TOKUSYU-FTNMONEY    PIC S9(07).
                  05  WRK-GRP-TOKUSYU-COMPFTN     PIC S9(07).
                  05  WRK-GRP-TOKUSYU-ENTANI      PIC S9(07)V9(01).
-                 05  WRK-GRP-DISCOUNT-MONEY      PIC S9(07).
       *
            03  WRK-RUI.
               04  WRK-RUI-SKYMONEY               PIC 9(07).
@@ -210,7 +191,6 @@
               04  WRK-RUI-TOKUSYU-FTNMONEY       PIC 9(07).
               04  WRK-RUI-TOKUSYU-COMPFTN        PIC 9(07).
               04  WRK-RUI-TOKUSYU-ENTANI         PIC 9(07)V9(01).
-              04  WRK-RUI-DISCOUNT-MONEY         PIC 9(07).
       *
            03  WRK-KEISAN                  PIC S9(07).
            03  WRK-KEISAN2                 PIC S9(07)V9(01).
@@ -247,7 +227,7 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-      ***  COPY    "CPORCMCP.INC".
+           COPY    "CPORCMCP.INC".
       *
       /
       ***
@@ -257,15 +237,11 @@
        01  LNK-SYUNOU-REC-T.
          02 LNK-SYUNOU-REC     OCCURS 15.
            COPY  "CPSYUNOU.INC"    REPLACING  //SYU-// BY //LNK-SYU-//.
-      *
-grpsys     COPY    "COMMON-SPA".
       /
        PROCEDURE           DIVISION  USING
                                      MCPAREA
                                      LNK-ORCS01-REC
-                                     LNK-SYUNOU-REC-T
-                                     SPA-AREA
-           .
+                                     LNK-SYUNOU-REC-T.
       ******************************************************************
       *        依頼制御処理
       ******************************************************************
@@ -276,9 +252,6 @@ grpsys     COPY    "COMMON-SPA".
       *
       *    合計レコードをもつレコードのフラグ等、引数のセット
       *
-           INITIALIZE                  FLG-AREA
-                                       CNT-AREA.
-      *
            MOVE       SPACE     TO     WRK-TAIHI-HKNCOMBINUM.
            MOVE       ZERO      TO     WRK-SYUTEN.
            MOVE       ZERO      TO     WRK-SINDAN.
@@ -286,7 +259,6 @@ grpsys     COPY    "COMMON-SPA".
            MOVE       ZERO      TO     WRK-RYOYO.
            MOVE       SPACE     TO     WRK-SENINFLG.
            INITIALIZE                  WRK-SONOTA-TBL.
-           MOVE       ZERO      TO     WRK-KYUKYU.
            MOVE       ZERO      TO     IDX3.
       *
            PERFORM    VARYING   IDX    FROM   1   BY   1
@@ -305,18 +277,13 @@ grpsys     COPY    "COMMON-SPA".
                     END-PERFORM
       *
                     IF     LNK-SYU-SYUHKNNUM(IDX)  =   "973"
+      *
                        MOVE   WRK-SYUTEN    TO    LNK-S01-SYUTEN(IDX)
                        MOVE   WRK-SINDAN    TO    LNK-S01-SINDAN(IDX)
                        MOVE   WRK-MEISAI    TO    LNK-S01-MEISAI(IDX)
                        MOVE   WRK-RYOYO     TO    LNK-S01-RYOYO(IDX)
                        MOVE   WRK-SONOTA-TBL  TO  LNK-S01-SONOTA(IDX)
-                       MOVE   WRK-KYUKYU    TO    LNK-S01-KYUKYU(IDX)
-                    END-IF
-                    IF     LNK-SYU-KOH1HKNNUM(IDX) =   "970"
-                       MOVE   WRK-SONOTA-TBL  TO  LNK-S01-SONOTA(IDX)
-                    END-IF
-                    IF     LNK-SYU-SYUHKNNUM(IDX)  =   "975"
-                       MOVE   WRK-SYUTEN    TO    LNK-S01-SYUTEN(IDX)
+      *
                     END-IF
       *
                     MOVE      WRK-SENINFLG  TO    LNK-S01-SENINFLG(IDX)
@@ -330,11 +297,11 @@ grpsys     COPY    "COMMON-SPA".
                           MOVE    ZERO    TO   WRK-RYOYO
                           MOVE    SPACE   TO   WRK-SENINFLG
                           INITIALIZE           WRK-SONOTA-TBL
-                          MOVE    ZERO    TO   WRK-KYUKYU
                           MOVE    ZERO    TO   IDX3
                     END-IF
       *
                     IF  LNK-SYU-SYUHKNNUM(IDX)  =   "973"
+      *
                       COMPUTE   WRK-SYUTEN  =  WRK-SYUTEN
                                             +  LNK-S01-SYUTEN(IDX)
                       COMPUTE   WRK-SINDAN  =  WRK-SINDAN
@@ -343,6 +310,7 @@ grpsys     COPY    "COMMON-SPA".
                                             +  LNK-S01-MEISAI(IDX)
                       COMPUTE   WRK-RYOYO   =  WRK-RYOYO
                                             +  LNK-S01-RYOYO(IDX)
+      *
                       PERFORM    VARYING   IDX2    FROM   1   BY   1
                         UNTIL  (IDX2                           >    20 )
                           OR   (LNK-S01-SONOTA-SRYCD(IDX IDX2) =  SPACE)
@@ -358,31 +326,7 @@ grpsys     COPY    "COMMON-SPA".
                                           TO   WRK-SONOTA-TANKA(IDX3)
                          END-IF
                       END-PERFORM
-                      COMPUTE   WRK-KYUKYU  =  WRK-KYUKYU
-                                            +  LNK-S01-KYUKYU(IDX)
-                    END-IF
       *
-                    IF  LNK-SYU-KOH1HKNNUM(IDX) =   "970"
-                      PERFORM    VARYING   IDX2    FROM   1   BY   1
-                        UNTIL  (IDX2                           >    20 )
-                          OR   (LNK-S01-SONOTA-SRYCD(IDX IDX2) =  SPACE)
-                         IF   IDX3  >= 20
-                            DISPLAY "TABLE OVER"
-                         ELSE
-                            ADD    1      TO   IDX3
-                            MOVE   LNK-S01-SONOTA-SRYCD(IDX IDX2)
-                                          TO   WRK-SONOTA-SRYCD(IDX3)
-                            MOVE   LNK-S01-SONOTA-ZAIKAISU(IDX IDX2)
-                                          TO   WRK-SONOTA-ZAIKAISU(IDX3)
-                            MOVE   LNK-S01-SONOTA-TANKA(IDX IDX2)
-                                          TO   WRK-SONOTA-TANKA(IDX3)
-                         END-IF
-                      END-PERFORM
-                    END-IF
-      *
-                    IF  LNK-SYU-SYUHKNNUM(IDX)  =   "975"
-                      COMPUTE   WRK-SYUTEN  =  WRK-SYUTEN
-                                            +  LNK-S01-SYUTEN(IDX)
                     END-IF
       *
                     IF      WRK-SENINFLG            =  SPACE
@@ -406,14 +350,11 @@ grpsys     COPY    "COMMON-SPA".
                                 OR   (LNK-SYU-SRYYMD(IDX) =  SPACE)
                                 OR   (LNK-S01-RC      NOT =  ZERO )
       *
-                ADD      1                    TO  CNT-KENSU
-      *
                 MOVE     WRK-ZAITAKU-KBN      TO
                                       LNK-S01-KOUREI-ZAITAKU-KBN
       *
                 MOVE     LNK-ORCS01-REC       TO  WRK-ORCS01-REC
                 MOVE     IDX                  TO  WRK-S01-IDX
-                MOVE     ZERO                 TO  WRK-S01-IDX2
                 MOVE     LNK-SYUNOU-REC(IDX)  TO  SYUNOU-REC
       *
                 MOVE     SPACE                TO  WRK-SYUNOU-REC-T
@@ -492,24 +433,12 @@ grpsys     COPY    "COMMON-SPA".
                                                    WRK-ORCS01-REC
                                                    SYUNOU-REC
                                                    WRK-SYUNOU-REC-T
-                                                   SPA-AREA
                 END-IF
       *
                 MOVE     SYUNOU-REC           TO  LNK-SYUNOU-REC(IDX)
                 MOVE     WRK-ORCS01-REC       TO  LNK-ORCS01-REC
       *
-                IF     LNK-S01-TOKUSYU-SAI-KBN  NOT =  SPACE
-                     MOVE      1       TO     FLG-TOKUSYU-SAI
-                END-IF
-      *
            END-PERFORM.
-      *
-      *    特殊計算（再計算）
-           IF       CNT-KENSU        >    1
-              IF    FLG-TOKUSYU-SAI  =    1
-                 PERFORM     100-TOKUSYU-SANTEI-SEC
-              END-IF
-           END-IF.
       *
       *    収納の項目再編集の為の差額算出
       *
@@ -699,25 +628,20 @@ grpsys     COPY    "COMMON-SPA".
                  ADD     LNK-SYU-SKYMONEY-TAX-SAI(IDX)
                                        TO   WRK-RUI-SKYMONEY-TAX-SAI
       *
-                 MOVE    LNK-SYU-JYO-HKNFTNMONEY(IDX)
+                 MOVE    LNK-SYU-SHOKUJI5(IDX)
                                        TO   WRK-TOKUSYU-FTNMONEY(IDX)
-                 ADD     LNK-SYU-JYO-HKNFTNMONEY(IDX)
+                 ADD     LNK-SYU-SHOKUJI5(IDX)
                                        TO   WRK-RUI-TOKUSYU-FTNMONEY
       *
-                 MOVE    LNK-SYU-JYO-COMPFTN(IDX)
+                 MOVE    LNK-SYU-SHOKUJI6(IDX)
                                        TO   WRK-TOKUSYU-COMPFTN(IDX)
-                 ADD     LNK-SYU-JYO-COMPFTN(IDX)
+                 ADD     LNK-SYU-SHOKUJI6(IDX)
                                        TO   WRK-RUI-TOKUSYU-COMPFTN
       *
-                 MOVE    LNK-SYU-JYO-COMPFTN-ENTANI(IDX)
+                 MOVE    LNK-SYU-SHOKUJI7(IDX)
                                        TO   WRK-TOKUSYU-ENTANI(IDX)
-                 ADD     LNK-SYU-JYO-COMPFTN-ENTANI(IDX)
+                 ADD     LNK-SYU-SHOKUJI7(IDX)
                                        TO   WRK-RUI-TOKUSYU-ENTANI
-      *
-                 MOVE    LNK-SYU-DISCOUNT-MONEY(IDX)
-                                       TO   WRK-DISCOUNT-MONEY(IDX)
-                 ADD     LNK-SYU-DISCOUNT-MONEY(IDX)
-                                       TO   WRK-RUI-DISCOUNT-MONEY
       *
       *
                  MOVE    LNK-SYU-HKNCOMBINUM(IDX)
@@ -932,29 +856,23 @@ grpsys     COPY    "COMMON-SPA".
                             WRK-SKYMONEY-TAX-SAI(IDX)      -
                             WRK-RUI-SKYMONEY-TAX-SAI
       *
-                   MOVE     LNK-SYU-JYO-HKNFTNMONEY(IDX)
+                   MOVE     LNK-SYU-SHOKUJI5(IDX)
                                        TO   WRK-TOKUSYU-FTNMONEY(IDX)
                    COMPUTE  WRK-GRP-TOKUSYU-FTNMONEY(IDX)  =
                             WRK-TOKUSYU-FTNMONEY(IDX)      -
                             WRK-RUI-TOKUSYU-FTNMONEY
       *
-                   MOVE     LNK-SYU-JYO-COMPFTN(IDX)
+                   MOVE     LNK-SYU-SHOKUJI6(IDX)
                                        TO   WRK-TOKUSYU-COMPFTN(IDX)
                    COMPUTE  WRK-GRP-TOKUSYU-COMPFTN(IDX)  =
                             WRK-TOKUSYU-COMPFTN(IDX)      -
                             WRK-RUI-TOKUSYU-COMPFTN
       *
-                   MOVE     LNK-SYU-JYO-COMPFTN-ENTANI(IDX)
+                   MOVE     LNK-SYU-SHOKUJI7(IDX)
                                        TO   WRK-TOKUSYU-ENTANI(IDX)
                    COMPUTE  WRK-GRP-TOKUSYU-ENTANI(IDX)  =
                             WRK-TOKUSYU-ENTANI(IDX)      -
                             WRK-RUI-TOKUSYU-ENTANI
-      *
-                   MOVE     LNK-SYU-DISCOUNT-MONEY(IDX)
-                                       TO   WRK-DISCOUNT-MONEY(IDX)
-                   COMPUTE  WRK-GRP-DISCOUNT-MONEY(IDX)  =
-                            WRK-DISCOUNT-MONEY(IDX)      -
-                            WRK-RUI-DISCOUNT-MONEY
       *
       *
                    MOVE      ZERO      TO      FLG-OK
@@ -1275,14 +1193,6 @@ grpsys     COPY    "COMMON-SPA".
                                     TO   WRK-TOKUSYU-ENTANI(IDZ)
                            END-IF
       *
-                           COMPUTE  WRK-KEISAN  =
-                                    WRK-DISCOUNT-MONEY(IDZ)  +
-                                    WRK-GRP-DISCOUNT-MONEY(IDX)
-                           IF       WRK-KEISAN  >=   0
-                              MOVE    WRK-KEISAN
-                                    TO   WRK-DISCOUNT-MONEY(IDZ)
-                           END-IF
-      *
       *
                            MOVE     1         TO   FLG-OK
                        END-IF
@@ -1379,13 +1289,11 @@ grpsys     COPY    "COMMON-SPA".
                 MOVE   WRK-SKYMONEY-TAX-SAI(IDX)
                                     TO   LNK-SYU-SKYMONEY-TAX-SAI(IDX)
                 MOVE   WRK-TOKUSYU-FTNMONEY(IDX)
-                                    TO   LNK-SYU-JYO-HKNFTNMONEY(IDX)
+                                    TO   LNK-SYU-SHOKUJI5(IDX)
                 MOVE   WRK-TOKUSYU-COMPFTN(IDX)
-                                    TO   LNK-SYU-JYO-COMPFTN(IDX)
+                                    TO   LNK-SYU-SHOKUJI6(IDX)
                 MOVE   WRK-TOKUSYU-ENTANI(IDX)
-                                    TO   LNK-SYU-JYO-COMPFTN-ENTANI(IDX)
-                MOVE   WRK-DISCOUNT-MONEY(IDX)
-                                    TO   LNK-SYU-DISCOUNT-MONEY(IDX)
+                                    TO   LNK-SYU-SHOKUJI7(IDX)
       *
       ****** ELSE
       *
@@ -1405,171 +1313,4 @@ grpsys     COPY    "COMMON-SPA".
        MAIN-EXT.
            EXIT PROGRAM
            STOP RUN.
-      *
-      ******************************************************************
-      *    特殊計算（再計算）
-      ******************************************************************
-       100-TOKUSYU-SANTEI-SEC                     SECTION.
-      *
-           PERFORM    VARYING   IDX    FROM   1   BY   1
-                              UNTIL  (IDX                 >    15 )
-                                OR   (LNK-SYU-SRYYMD(IDX) =  SPACE)
-                                OR   (LNK-S01-RC      NOT =  ZERO )
-      *
-                PERFORM  1001-TOKUSYU-SANTEI-HENSYU-SEC
-      *
-                MOVE     WRK-ZAITAKU-KBN      TO
-                                      LNK-S01-KOUREI-ZAITAKU-KBN
-      *
-                MOVE     LNK-ORCS01-REC       TO  WRK-ORCS01-REC
-                MOVE     IDX                  TO  WRK-S01-IDX
-                MOVE     IDZ2                 TO  WRK-S01-IDX2
-                MOVE     LNK-SYUNOU-REC(IDX)  TO  SYUNOU-REC
-      *
-                MOVE     SPACE                TO  WRK-SYUNOU-REC-T
-                INITIALIZE                        WRK-SYUNOU-REC-T
-      *
-                MOVE     ZERO      TO     IDZ
-                IF   SYU-SRYKA  =  "00"
-                  PERFORM  VARYING  IDY  FROM  1  BY  1
-                            UNTIL  (IDY                 >   15  )
-                             OR    (LNK-SYU-SRYYMD(IDY) =  SPACE)
-                    IF    IDY  =  IDX
-                      CONTINUE
-                    ELSE
-                      IF   WRK-S01-TTLARIFLG(IDY)  =    "1"
-                        IF   LNK-SYU-SRYKA(IDY)       =  "00"
-                            ADD   1      TO  IDZ
-                            MOVE  LNK-SYUNOU-REC(IDY)
-                                         TO  WRK-SYUNOU-REC(IDZ)
-                        END-IF
-                      ELSE
-      *                 当該収納が合計レコードで、
-      *                 合計レコードをもたないレコードを読む込む場合
-                        IF   LNK-SYU-SRYKA(IDY)   NOT =  "00"
-                            ADD   1      TO  IDZ
-                            MOVE  LNK-SYUNOU-REC(IDY)
-                                         TO  WRK-SYUNOU-REC(IDZ)
-                        END-IF
-                      END-IF
-                    END-IF
-                  END-PERFORM
-                ELSE
-                  PERFORM  VARYING  IDY  FROM  1  BY  1
-                            UNTIL  (IDY                 >   15  )
-                             OR    (LNK-SYU-SRYYMD(IDY) =  SPACE)
-                    IF    IDY  =  IDX
-                      CONTINUE
-                    ELSE
-                      IF  WRK-S01-TTLARIFLG(IDX)  =    "1"
-                          IF     LNK-SYU-SRYKA(IDY)   NOT =  "00"
-                              ADD   1      TO  IDZ
-                              MOVE  LNK-SYUNOU-REC(IDY)
-                                           TO  WRK-SYUNOU-REC(IDZ)
-                          END-IF
-                      ELSE
-                        IF   WRK-S01-TTLARIFLG(IDY)  =    "1"
-                          IF     WRK-S01-KAGRPFLG       =   "0"
-      *                     ＜複数科まとめ集計する場合＞
-      *                     当該収納が合計レコードをもたないレコードで、
-      *                     合計レコードをもつレコードを読む込む場合
-                            IF   LNK-SYU-SRYKA(IDY)       =  "00"
-                              ADD   1      TO  IDZ
-                              MOVE  LNK-SYUNOU-REC(IDY)
-                                           TO  WRK-SYUNOU-REC(IDZ)
-                            END-IF
-                          ELSE
-                            IF   LNK-SYU-SRYKA(IDY)   NOT =  "00"
-                              ADD   1      TO  IDZ
-                              MOVE  LNK-SYUNOU-REC(IDY)
-                                           TO  WRK-SYUNOU-REC(IDZ)
-                            END-IF
-                          END-IF
-                        ELSE
-                          IF     LNK-SYU-SRYKA(IDY)   NOT =  "00"
-                              ADD   1      TO  IDZ
-                              MOVE  LNK-SYUNOU-REC(IDY)
-                                           TO  WRK-SYUNOU-REC(IDZ)
-                          END-IF
-                        END-IF
-                      END-IF
-                    END-IF
-                  END-PERFORM
-                END-IF
-      *
-      *         複数科まとめ集計しない場合、合計レコードは処理しない
-                IF     WRK-S01-KAGRPFLG          =   "1"
-                AND    SYU-SRYKA                 =  "00"
-                    CONTINUE
-                ELSE
-                    CALL     "ORCS01"     USING    MCPAREA
-                                                   WRK-ORCS01-REC
-                                                   SYUNOU-REC
-                                                   WRK-SYUNOU-REC-T
-                                                   SPA-AREA
-                END-IF
-      *
-                MOVE     SYUNOU-REC           TO  LNK-SYUNOU-REC(IDX)
-                MOVE     WRK-ORCS01-REC       TO  LNK-ORCS01-REC
-      *
-           END-PERFORM
-      *
-           .
-      *
-       100-TOKUSYU-SANTEI-EXT.
-           EXIT.
-      *
-      ******************************************************************
-      *    特殊計算（再計算）チェック用ＩＤＸ編集
-      ******************************************************************
-       1001-TOKUSYU-SANTEI-HENSYU-SEC                     SECTION.
-      *
-           MOVE     ZERO      TO     IDZ2
-      *
-           IF       IDX   >   1
-             IF   SYU-SRYKA  =  "00"
-               PERFORM    VARYING   IDY    FROM   1   BY   1
-                           UNTIL    IDY      >    IDX - 1
-                 IF   WRK-S01-TTLARIFLG(IDY)  =    "1"
-                   IF   LNK-SYU-SRYKA(IDY)       =  "00"
-                          ADD   1      TO  IDZ2
-                   END-IF
-                 ELSE
-                   IF   LNK-SYU-SRYKA(IDY)   NOT =  "00"
-                          ADD   1      TO  IDZ2
-                   END-IF
-                 END-IF
-               END-PERFORM
-             ELSE
-               PERFORM    VARYING   IDY    FROM   1   BY   1
-                           UNTIL    IDY      >    IDX - 1
-                 IF   WRK-S01-TTLARIFLG(IDX)  =    "1"
-                   IF   LNK-SYU-SRYKA(IDY)      NOT =  "00"
-                          ADD   1      TO  IDZ2
-                   END-IF
-                 ELSE
-                   IF   WRK-S01-TTLARIFLG(IDY)   =   "1"
-                     IF   WRK-S01-KAGRPFLG       =   "0"
-                       IF   LNK-SYU-SRYKA(IDY)   =  "00"
-                          ADD   1      TO  IDZ2
-                       END-IF
-                     ELSE
-                       IF   LNK-SYU-SRYKA(IDY)  NOT =  "00"
-                          ADD   1      TO  IDZ2
-                       END-IF
-                     END-IF
-                   ELSE
-                     IF   LNK-SYU-SRYKA(IDY)    NOT =  "00"
-                          ADD   1      TO  IDZ2
-                     END-IF
-                   END-IF
-                 END-IF
-               END-PERFORM
-             END-IF
-           END-IF
-      *
-           .
-      *
-       1001-TOKUSYU-SANTEI-HENSYU-EXT.
-           EXIT.
       *
