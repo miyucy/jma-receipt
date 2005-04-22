@@ -265,6 +265,10 @@
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
+      *    診療会計附加情報マスタ−
+       01  SRYACCTPLUS-REC.
+           COPY    "CPSRYACCTPLUS.INC".
+      *
       *    患者コメント
        01  PTCOM-REC.
            COPY    "CPPTCOM.INC".
@@ -2456,6 +2460,32 @@
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
+      *    附加情報削除（入院）
+           INITIALIZE                  SRYACCTPLUS-REC
+           MOVE    SPA-HOSPID          TO  ACCTP-HOSPID
+           MOVE    "1"                 TO  ACCTP-NYUGAIKBN
+           MOVE    SPA-GMN-PTID        TO  ACCTP-PTID
+      *
+           MOVE    SRYACCTPLUS-REC     TO  MCPDATA-REC
+           MOVE    PATH-TBL-SRYACCTPLUS-DEL1
+                                       TO  MCP-PATH
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *    附加情報削除（外来）
+           INITIALIZE                  SRYACCTPLUS-REC
+           MOVE    SPA-HOSPID          TO  ACCTP-HOSPID
+           MOVE    "2"                 TO  ACCTP-NYUGAIKBN
+           MOVE    SPA-GMN-PTID        TO  ACCTP-PTID
+      *
+           MOVE    SRYACCTPLUS-REC     TO  MCPDATA-REC
+           MOVE    PATH-TBL-SRYACCTPLUS-DEL1
+                                       TO  MCP-PATH
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        49911-DB-DELETE-EXT.
@@ -3483,6 +3513,10 @@
                                                TO  SPA-ERRMSG
                WHEN    "0099"
                    MOVE    "日付変換エラーです。"
+                                               TO  SPA-ERRMSG
+               WHEN    "K010"
+                   MOVE
+                   "警告！地方公費単独の保険組合せがあります。"
                                                TO  SPA-ERRMSG
       *    更新前エラー
                WHEN    "0100"
