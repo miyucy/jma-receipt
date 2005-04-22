@@ -114,6 +114,7 @@ path	del1 	{
 		DELETE
 		FROM tbl_sryacctplus
 			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 		;
 	};
