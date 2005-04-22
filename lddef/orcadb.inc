@@ -89,6 +89,7 @@ db	{
 	tbl_receupd;
 	tbl_orderprt;
 	tbl_medyakko;
+	tbl_sryacctplus;
 };
 db	"shell"	{
 	shell;
