@@ -45,6 +45,7 @@
       *  01.00.15    NACL-多々納  04/07/XX  外来まとめ追加
       *                                     一括入力項目追加
       *  01.00.16    NACL-多々納  05/04/14  レセプレビュー追加
+      *  01.00.17    NACL-多々納  05/04/20  診療会計附加情報追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -605,6 +606,10 @@
        01  SYUTTL-REC.
            COPY    "CPSYUTOTAL.INC".
       *
+      *    診療会計附加情報マスタ−
+       01  SRYACCTPLUS-REC.
+           COPY    "CPSRYACCTPLUS.INC".
+      *
       *     パラメタテーブル
        01  PARA-REC.
            COPY    "CPPARA.INC".
@@ -693,6 +698,8 @@
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
+      *
+           COPY    "ORCA-DBPATH".
       *
       *****************************************************************
       *    連絡　領域
@@ -6358,6 +6365,27 @@
                MOVE    "2004"              TO  SPA-ERRCD
            END-IF
       *
+      *    附加情報削除
+           INITIALIZE                  SRYACCTPLUS-REC
+           MOVE    ACCT-HOSPID         TO  ACCTP-HOSPID
+           MOVE    ACCT-NYUGAIKBN      TO  ACCTP-NYUGAIKBN
+           MOVE    ACCT-PTID           TO  ACCTP-PTID
+           MOVE    ACCT-SRYKA          TO  ACCTP-SRYKA
+           MOVE    ACCT-SRYYM          TO  ACCTP-SRYYM
+           MOVE    ACCT-ZAINUM         TO  ACCTP-ZAINUM
+      *
+           MOVE    SRYACCTPLUS-REC     TO  MCPDATA-REC
+           MOVE    PATH-TBL-SRYACCTPLUS-DEL2
+                                       TO  MCP-PATH
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO
+               DISPLAY "J02  SRYACCTPLUS  DEL ERR:" MCP-RC
+                     ",KEY:" ACCTP-KEY
+           END-IF
+      *
            .
        420011-SRYACT-DEL-EXT.
            EXIT.
@@ -6468,11 +6496,20 @@
                PERFORM 4201-RIS-ZAIHENKOU-SEC
                IF      SPA-ERRCD       NOT =   SPACE
                    MOVE    1                   TO  SPA-GMN-CUR
-                   GO      TO      420-ZAIHENKOU-EXT
                END-IF
            END-IF
       *
-           MOVE    "0104"              TO  SPA-JIDCD
+      *    内服逓減の剤は対象外
+           IF     (SPA-NAI-ZAITENFLG (SPA-NAI-BANGO)
+                                       =   1    )  AND
+                  (SPA-NAI-SRYKBN  (SPA-NAI-BANGO)
+                                       =   "21" )
+               MOVE    "0027"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-GMN-CUR
+           END-IF
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    "0104"              TO  SPA-JIDCD
+           END-IF
       *
            .
        420-ZAIHENKOU-EXT.
@@ -10862,6 +10899,11 @@
                                        TO  WRK-ERRMSG
                    MOVE    "追加はできません。"
                                        TO  WRK-ERRMSG(23:)
+               WHEN    "0027"
+                   MOVE    "対象の剤は薬剤料逓減です。"
+                                       TO  WRK-ERRMSG
+                   MOVE    "剤変更はできません。"
+                                       TO  WRK-ERRMSG(27:)
                WHEN    "0030"
                    MOVE    "入外区分がありません。"
                                        TO  WRK-ERRMSG

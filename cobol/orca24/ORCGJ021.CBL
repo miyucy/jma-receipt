@@ -30,6 +30,7 @@
       * 01.00.01     NACL-多々納  03/11/10  レセプトコメント更新追加
       *                                     生保単独チェック追加
       * 01.00.02     NACL-多々納  04/10/20  変更期間追加
+      * 01.00.03     NACL-多々納  05/04/20  診療会計附加情報追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -56,6 +57,7 @@
            03  FLG-END             PIC 9(01).
            03  FLG-HKNCOMBI        PIC 9(01).
            03  FLG-SRYACCT         PIC 9(01).
+           03  FLG-SRYACCTPLUS     PIC 9(01).
            03  FLG-SANTEI          PIC 9(01).
            03  FLG-JYURRK          PIC 9(01).
            03  FLG-SYUNOU          PIC 9(01).
@@ -162,6 +164,10 @@
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
       *
+      *    診療会計附加情報マスタ−
+       01  SRYACCTPLUS-REC.
+           COPY    "CPSRYACCTPLUS.INC".
+      *
       *    算定履歴
        01  SANTEI-REC.
            COPY    "CPSANTEI.INC".
@@ -213,6 +219,8 @@
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
+      *
+           COPY    "ORCA-DBPATH".
       *
       *****************************************************************
       *    連絡　領域
@@ -1929,6 +1937,27 @@
                        ",KEY:"  ACCT-KEY
            END-IF
       *
+      *    附加情報削除
+           INITIALIZE                  SRYACCTPLUS-REC
+           MOVE    ACCT-HOSPID         TO  ACCTP-HOSPID
+           MOVE    ACCT-NYUGAIKBN      TO  ACCTP-NYUGAIKBN
+           MOVE    ACCT-PTID           TO  ACCTP-PTID
+           MOVE    ACCT-SRYKA          TO  ACCTP-SRYKA
+           MOVE    ACCT-SRYYM          TO  ACCTP-SRYYM
+           MOVE    ACCT-ZAINUM         TO  ACCTP-ZAINUM
+      *
+           MOVE    SRYACCTPLUS-REC     TO  MCPDATA-REC
+           MOVE    PATH-TBL-SRYACCTPLUS-DEL2
+                                       TO  MCP-PATH
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO
+               DISPLAY "J021 SRYACCTPLUS  DEL ERR:" MCP-RC
+                     ",KEY:" ACCTP-KEY
+           END-IF
+      *
            .
        30032114-SRYACCT-DELETE-EXT.
            EXIT.
@@ -2172,6 +2201,57 @@
            END-PERFORM
            MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
            PERFORM 990-DBCLOSE-SEC
+      *
+      *    附加情報追加
+           INITIALIZE                  SRYACCTPLUS-REC
+           MOVE    ACCT-HOSPID         TO  ACCTP-HOSPID
+           MOVE    ACCT-NYUGAIKBN      TO  ACCTP-NYUGAIKBN
+           MOVE    ACCT-PTID           TO  ACCTP-PTID
+           MOVE    ACCT-SRYKA          TO  ACCTP-SRYKA
+           MOVE    ACCT-SRYYM          TO  ACCTP-SRYYM
+           MOVE    HZN-ACCT-ZAINUM     TO  ACCTP-ZAINUM
+      *
+           MOVE    SRYACCTPLUS-REC     TO  MCPDATA-REC
+           MOVE    PATH-TBL-SRYACCTPLUS-KEY2
+                                       TO  MCP-PATH
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    PATH-TBL-SRYACCTPLUS-KEY2
+                                           TO  MCP-PATH
+               PERFORM 910-SRYACCTPLUS-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SRYACCTPLUS
+           END-IF
+           PERFORM UNTIL       FLG-SRYACCTPLUS       =   1
+      *
+               MOVE    ACCT-ZAINUM         TO  ACCTP-ZAINUM
+      *
+               MOVE    SMCNDATE-YMD        TO  ACCTP-CREYMD
+               MOVE    SMCNDATE-YMD        TO  ACCTP-UPYMD
+               MOVE    SMCNDATE-HMS        TO  ACCTP-UPHMS
+      *
+               MOVE    SRYACCTPLUS-REC     TO  MCPDATA-REC
+               MOVE    PATH-TBL-SRYACCTPLUS-KEY
+                                           TO  MCP-PATH
+               MOVE    "DBINSERT"          TO  MCP-FUNC
+               CALL    "MCPSUB"            USING
+                                           MCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO
+                   DISPLAY "J021 SRYACCTPLUS INS ERR:"   MCP-RC
+                           ",KEY:" ACCTP-KEY
+                   MOVE    "0011"              TO  SPA-ERRCD
+               END-IF
+      *
+               MOVE    PATH-TBL-SRYACCTPLUS-KEY2
+                                           TO  MCP-PATH
+               PERFORM 910-SRYACCTPLUS-READ-SEC
+           END-PERFORM
+           MOVE    PATH-TBL-SRYACCTPLUS-KEY2   TO  MCP-PATH
+           PERFORM 990-DBCLOSE-2-SEC
       *
            .
        30032112-SRYACCT-INS-EXT.
@@ -3315,6 +3395,40 @@
       *
            .
        990-DBCLOSE-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療会計附加マスター次読込
+      *****************************************************************
+       910-SRYACCTPLUS-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  SRYACCTPLUS-REC
+               MOVE    ZERO                TO  FLG-SRYACCTPLUS
+           ELSE
+               INITIALIZE                      SRYACCTPLUS-REC
+               MOVE    1                   TO  FLG-SRYACCTPLUS
+           END-IF
+      *
+           .
+       910-SRYACCTPLUS-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢクローズ処理
+      *****************************************************************
+       990-DBCLOSE-2-SEC         SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       990-DBCLOSE-2-EXT.
            EXIT.
       *
       *****************************************************************

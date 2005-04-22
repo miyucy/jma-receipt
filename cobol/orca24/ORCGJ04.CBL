@@ -35,6 +35,7 @@
       * 02.00.04     NACL-多々納  02/11/20  自賠責器材追加
       * 02.00.05     NACL-多々納  02/12/02  食事の追加
       * 02.00.06     NACL-多々納  02/12/18  診療種別の判定追加
+      * 02.00.07     NACL-多々納  05/04/20  診療会計附加情報追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -132,6 +133,7 @@
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-JYURRK          PIC 9(01).
            03  FLG-SYUNOU          PIC 9(01).
+           03  FLG-SRYACCTPLUS     PIC 9(01).
       *
            03  FLG-GMN             PIC 9(01).
            03  FLG-KANA            PIC 9(01).
@@ -217,6 +219,7 @@
       *
            03  IDX-ATO             PIC 9(04).
            03  IDZ                 PIC 9(04).
+           03  IDW                 PIC 9(04).
       *
            03  IDX-J98             PIC 9(04).
       *    一時領域
@@ -665,6 +668,10 @@
        01  WKSRYACTPLUS-REC.
            COPY    "CPWKSRYACTPLUS.INC".
       *
+      *    診療会計附加情報マスタ−
+       01  SRYACCTPLUS-REC.
+           COPY    "CPSRYACCTPLUS.INC".
+      *
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -722,6 +729,8 @@
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
+      *
+           COPY    "ORCA-DBPATH".
       *
       *****************************************************************
       *    連絡　領域
@@ -1485,6 +1494,12 @@
            MOVE    SRY-SRYSURYO(IDS)   TO  SPA-COM-SURYO     (IDX2)
            MOVE    SRY-SRYSURYO(IDS)   TO  SPA-COM-SURYO2    (IDX2)
            MOVE    SRY-AUTOKBN (IDS)   TO  SPA-COM-AUTOKBN   (IDX2)
+      *    内服逓減の判定
+           IF     (SRY-SRYKBN          =   "21" )  AND
+                  (SRY-SRYCD (IDS)     =   "820000047" ) AND
+                  (SRY-AUTOKBN(IDS)    =   "3"         )
+               MOVE    1               TO  SPA-NEIGEN-KBN
+           END-IF
       *
       *    約束セットの時、表示なしとする（但し、減は表示する）
            IF     (FLG-YAKUSOKU        =   1   )  AND
@@ -4787,6 +4802,14 @@
                GO      TO      4100-TOROKU-EXT
            END-IF
       *
+           IF      SPA-NEIGEN-KBN      =   1
+               IF      SPA-NEIGEN-FLG      =   ZERO
+                   MOVE    "K102"          TO  SPA-ERRCD
+                   MOVE    1               TO  SPA-NEIGEN-FLG
+                   GO      TO      4100-TOROKU-EXT
+               END-IF
+           END-IF
+      *
       ***  IF     (FLG-OK2             =   1   )  AND
       *           (WRK-ZAINUM          =   ZERO )
       *        剤変更なしとして、処理を終了する
@@ -5003,6 +5026,7 @@
            INITIALIZE                      WRK-WKSRY-AREA
       *    附加情報
            INITIALIZE                      WKSRYACTPLUS-REC
+           MOVE    ZERO                TO  IDW
            MOVE    ZERO                TO  FLG-NAIBUN
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -5132,21 +5156,20 @@
                                                    ORCSCZAICHKAREA
                MOVE    ORCSCZAICHK-ZAINUM  TO  WRK-ZAINUM
       *
-      *    同一剤なし
-           IF      WRK-ZAINUM          =   ZERO
-               MOVE    ZERO            TO  FLG-OK
-           ELSE
-               MOVE    1               TO  FLG-OK
-               IF      WRK-ZAINUM      =   SPA-ZAINUM
-      *            変更なし
-                   IF      SPA-SEL-RRKYMD      =   SPACE
-                       MOVE    2               TO  FLG-OK2
-                   ELSE
-                       MOVE    1               TO  FLG-OK2
+      *        同一剤なし
+               IF      WRK-ZAINUM          =   ZERO
+                   MOVE    ZERO            TO  FLG-OK
+               ELSE
+                   MOVE    1               TO  FLG-OK
+                   IF      WRK-ZAINUM      =   SPA-ZAINUM
+      *                変更なし
+                       IF      SPA-SEL-RRKYMD      =   SPACE
+                           MOVE    2               TO  FLG-OK2
+                       ELSE
+                           MOVE    1               TO  FLG-OK2
+                       END-IF
                    END-IF
                END-IF
-           END-IF
-      *
            END-IF
       *
            .
@@ -5159,36 +5182,73 @@
       *
       *    労災の円
            IF      SPA-HKNKBN          =   1
-               MOVE    SPA-COM-RSIKIN(IDX) TO  WKSRYP-RSIKINGAKU
+               IF      SPA-COM-RSIKIN(IDX) >   ZERO
+                   MOVE    SPA-COM-RSIKIN(IDX) TO  WKSRYP-RSIKINGAKU
+                   MOVE    "1"                 TO  WKSRYP-ADDKBN
+               END-IF
            ELSE
                MOVE    ZERO                TO  WKSRYP-RSIKINGAKU
            END-IF
       *    点数区分
-           IF     (SPA-COM-TENSIKIBETU(IDX)    =   7
+           IF     (SPA-COM-TENSIKIBETU(IDX)   =   7
                                                OR  8  )  AND
-                  (SPA-COM-KISOTEN (IDX)   =   SPA-COM-TENSU(IDX))
+                  (SPA-COM-KISOTEN (IDX)  =   SPA-COM-TENSU
+                                                 (SPA-GMN-MAX))
                MOVE    1                   TO  WKSRYP-PLUSKBN
+               MOVE    "1"                 TO  WKSRYP-ADDKBN
+           END-IF
+      *    手技毎の内容（診察・手術・画像診断・処置）
+           IF     (SPA-COM-SYUFLG(IDX)    =   1  )  AND
+                  (SPA-COM-SYUTEN-M(IDX)  NOT =  SPA-COM-SYUTEN1
+                                                       (SPA-GMN-MAX))
+               MOVE    "1"                 TO  WKSRYP-ADDKBN
+               ADD     1                   TO  IDW
+      *        開始手技コード
+               MOVE    SPA-COM-INPUTCD(IDX)   TO  WKSRYP-SRYCD (IDW)
+      *        手技点数
+               MOVE    SPA-COM-SYUTEN-M(IDX)  TO  WKSRYP-SYUTEN (IDW)
+      *        薬剤点数
+               MOVE    SPA-COM-YKZTEN-M(IDX)  TO  WKSRYP-YKZTEN (IDW)
+      *        その他器材点数（フィルム・酸素・窒素以外）
+               MOVE    SPA-COM-KIZTEN-M(IDX)  TO  WKSRYP-KIZAITEN (IDW)
+      *        フィルム点数
+               MOVE    SPA-COM-FIRTEN-M(IDX)  TO  WKSRYP-FIRTEN (IDW)
+           ELSE
+      *        フィルム点数のみ
+               IF      SPA-COM-FIRTEN-M(IDX)  NOT =  ZERO
+                   ADD     1                   TO  IDW
+                   MOVE    "1"                 TO  WKSRYP-ADDKBN
+      *            その他器材点数（フィルム・酸素・窒素以外）
+                   MOVE    SPA-COM-KIZTEN-M(IDX)
+                                               TO  WKSRYP-KIZAITEN (IDW)
+                   MOVE    SPA-COM-FIRTEN-M(IDX)
+                                               TO  WKSRYP-FIRTEN (IDW)
+               END-IF
+           END-IF
+      *    酸素点数
+           IF      SPA-COM-SANSOTEN(IDX)  NOT =   ZERO
+               MOVE    SPA-COM-SANSOTEN(IDX)   TO  WKSRYP-SANSOTEN
+               MOVE    "1"                 TO  WKSRYP-ADDKBN
+           END-IF
+      *    窒素点数
+           IF      SPA-COM-CHISOTEN(IDX)  NOT =   ZERO
+               MOVE    SPA-COM-CHISOTEN(IDX)  TO  WKSRYP-CHISOTEN
+               MOVE    "1"                 TO  WKSRYP-ADDKBN
            END-IF
       *    内分泌負荷試験用
-           IF     (SPA-COM-SRYKBN(IDX)     =   "60" )  AND
-                  (SPA-COM-DATAKBN(IDX)    =   "1"   )  AND
-                  (SPA-COM-HOUKNSKBN(IDX)  =   08    )
+           IF     (SPA-COM-SRYKBN(IDX)    =   "60" )  AND
+                  (SPA-COM-DATAKBN(IDX)   =   "1"   )  AND
+                  (SPA-COM-HOUKNSKBN(IDX) =   08    )
       *        当月算定フラグ
                MOVE    1                   TO  WKSRYP-MSANTEITFLG
       *        当月算定点数区分
-               IF      SPA-COM-TEN (IDX)   =   SPA-COM-KISOTEN(IDX)
+               IF      SPA-COM-TEN (IDX)  =   SPA-COM-KISOTEN(IDX)
                    MOVE    1               TO  WKSRYP-MSANTEITENKBN
                ELSE
                    MOVE    2               TO  WKSRYP-MSANTEITENKBN
                END-IF
       *        当月算定点数
-               MOVE    SPA-COM-KISOTEN(IDX)    TO WKSRYP-MSANTEITEN
-           END-IF
-      *
-      *    内服７種類逓減対象
-           IF     (SPA-COM-SRYKBN(IDX)     =   "21" )  AND
-                  (SPA-COM-INPUTCD(IDX)    =   "820000047")
-               MOVE    1                   TO  WKSRYP-TEI-NKBN
+               MOVE    SPA-COM-KISOTEN(IDX)   TO WKSRYP-MSANTEITEN
            END-IF
       *
            .
@@ -5663,6 +5723,14 @@
            MOVE    WRK-YKZTEN          TO  ACCT-YKZTEN
       *    器材点数
            MOVE    WRK-KIZAITEN        TO  ACCT-KIZAITEN
+      *!!
+      *    附加情報あり
+           IF      WKSRYP-ADDKBN       =   "1"
+      *        剤請求フラグ
+               MOVE    "1"                 TO  ACCT-ZAIREQFLG
+           ELSE
+               MOVE    SPACE               TO  ACCT-ZAIREQFLG
+           END-IF
       *
            MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
            MOVE    SMCNDATE-HMS        TO  ACCT-UPHMS
@@ -5678,6 +5746,10 @@
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "J04 SRYACCT UPD ERR:"  MCP-RC
            END-IF
+      *!!
+      *    診療会計附加情報処理 
+           PERFORM 45023-SRYACCTPLUS-SYORI-SEC
+      *!!
       *
       *    算定履歴追加
            PERFORM 450422-SANTEI-UPD-SEC
@@ -5696,6 +5768,160 @@
            .
       *
        4502-SINKAI-KOU-EXT.
+           EXIT.
+      *****************************************************************
+      *   診療会計附加情報処理
+      *****************************************************************
+       45023-SRYACCTPLUS-SYORI-SEC     SECTION.
+      *
+           MOVE    SPACE               TO  SRYACCTPLUS-REC
+           INITIALIZE                  SRYACCTPLUS-REC
+           MOVE    ACCT-HOSPID         TO  ACCTP-HOSPID
+           MOVE    ACCT-NYUGAIKBN      TO  ACCTP-NYUGAIKBN
+           MOVE    ACCT-PTID           TO  ACCTP-PTID
+           MOVE    ACCT-SRYKA          TO  ACCTP-SRYKA
+           MOVE    ACCT-SRYYM          TO  ACCTP-SRYYM
+           MOVE    ACCT-ZAINUM         TO  ACCTP-ZAINUM
+      *    内服逓減は剤変更しない
+           MOVE    1                   TO  ACCTP-RENNUM
+      *
+           MOVE    SRYACCTPLUS-REC     TO  MCPDATA-REC
+           MOVE    PATH-TBL-SRYACCTPLUS-KEY
+                                       TO  MCP-PATH
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    PATH-TBL-SRYACCTPLUS-KEY
+                                           TO  MCP-PATH
+               PERFORM 910-SRYACCTPLUS-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SRYACCTPLUS
+           END-IF
+           MOVE    PATH-TBL-SRYACCTPLUS-KEY    TO  MCP-PATH
+           PERFORM 990-DBCLOSE-2-SEC
+      *    診療会計附加情報あり
+           IF      WKSRYP-ADDKBN       =   "1"
+               PERFORM 450231-SRYACCTPLUS-ADD-SEC
+           ELSE
+      *        削除
+               IF      FLG-SRYACCTPLUS     =   ZERO
+                   PERFORM 450232-SRYACCTPLUS-DEL-SEC
+               END-IF
+           END-IF
+           .
+      *
+       45023-SRYACCTPLUS-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *   附加情報作成処理
+      *****************************************************************
+       450231-SRYACCTPLUS-ADD-SEC          SECTION.
+      *
+           IF      FLG-SRYACCTPLUS     =   1
+               MOVE    SPACE               TO  SRYACCTPLUS-REC
+               INITIALIZE                  SRYACCTPLUS-REC
+               MOVE    ACCT-HOSPID         TO  ACCTP-HOSPID
+               MOVE    ACCT-NYUGAIKBN      TO  ACCTP-NYUGAIKBN
+               MOVE    ACCT-PTID           TO  ACCTP-PTID
+               MOVE    ACCT-SRYKA          TO  ACCTP-SRYKA
+               MOVE    ACCT-SRYYM          TO  ACCTP-SRYYM
+               MOVE    ACCT-ZAINUM         TO  ACCTP-ZAINUM
+               MOVE    1                   TO  ACCTP-RENNUM
+           END-IF
+      *    点数区分
+           MOVE    WKSRYP-PLUSKBN      TO  ACCTP-PLUSKBN
+      *    労災の円
+           MOVE    WKSRYP-RSIKINGAKU   TO  ACCTP-RSIKINGAKU
+      *
+           PERFORM VARYING     IDW     FROM    1   BY  1
+                   UNTIL       IDW     >   5
+               MOVE    WKSRYP-SRYCD (IDW)
+                                           TO  ACCTP-SRYCD (IDW)
+               MOVE    WKSRYP-SYUTEN (IDW)
+                                           TO  ACCTP-SYUTEN (IDW)
+               MOVE    WKSRYP-YKZTEN (IDW)
+                                           TO  ACCTP-YKZTEN (IDW)
+               MOVE    WKSRYP-KIZAITEN (IDW)
+                                           TO  ACCTP-KIZAITEN (IDW)
+               MOVE    WKSRYP-FIRTEN (IDW)
+                                           TO  ACCTP-FIRTEN (IDW)
+           END-PERFORM
+      *    酸素点数
+           MOVE    WKSRYP-SANSOTEN     TO  ACCTP-SANSOTEN
+      *    窒素点数
+           MOVE    WKSRYP-CHISOTEN     TO  ACCTP-CHISOTEN
+      *    内服７種類逓減対象剤番号はないものとする
+           INITIALIZE                  ACCTP-GRP-ZAINUM-G
+      *
+           MOVE    SMCNDATE-YMD        TO  ACCTP-CREYMD
+           MOVE    SMCNDATE-YMD        TO  ACCTP-UPYMD
+      *
+           IF      FLG-SRYACCTPLUS     =   1
+      *        新規
+               MOVE    SMCNDATE-HMS        TO  ACCTP-UPHMS
+      *
+               MOVE    SRYACCTPLUS-REC     TO  MCPDATA-REC
+               MOVE    PATH-TBL-SRYACCTPLUS-KEY
+                                           TO  MCP-PATH
+               MOVE    "DBINSERT"          TO  MCP-FUNC
+               CALL    "MCPSUB"            USING
+                                           MCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO
+                  DISPLAY "J04 SRYACCTPLUS INS ERR:" ACCTP-KEY  "."
+                  DISPLAY "MCP-RC:" MCP-RC ":" 
+                  MOVE    "1032"          TO  SPA-ERRCD
+               END-IF
+           ELSE
+      *        更新
+               MOVE    SRYACCTPLUS-REC     TO  MCPDATA-REC
+               MOVE    PATH-TBL-SRYACCTPLUS-KEY
+                                           TO  MCP-PATH
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               CALL    "MCPSUB"            USING
+                                           MCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO
+                  DISPLAY "J04 SRYACCTPLUS UPD ERR:" ACCTP-KEY  "."
+                  DISPLAY "MCP-RC:" MCP-RC ":" 
+                  MOVE    "1032"          TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           .
+      *
+       450231-SRYACCTPLUS-ADD-EXT.
+           EXIT.
+      *****************************************************************
+      *   附加情報削除処理
+      *****************************************************************
+       450232-SRYACCTPLUS-DEL-SEC          SECTION.
+      *
+           INITIALIZE                  SRYACCTPLUS-REC
+           MOVE    ACCT-HOSPID         TO  ACCTP-HOSPID
+           MOVE    ACCT-NYUGAIKBN      TO  ACCTP-NYUGAIKBN
+           MOVE    ACCT-PTID           TO  ACCTP-PTID
+           MOVE    ACCT-SRYKA          TO  ACCTP-SRYKA
+           MOVE    ACCT-SRYYM          TO  ACCTP-SRYYM
+           MOVE    ACCT-ZAINUM         TO  ACCTP-ZAINUM
+      *
+           MOVE    SRYACCTPLUS-REC     TO  MCPDATA-REC
+           MOVE    PATH-TBL-SRYACCTPLUS-DEL2
+                                       TO  MCP-PATH
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO
+               DISPLAY "J04  SRYACCTPLUS  DEL ERR:" MCP-RC
+                     ",KEY:" ACCTP-KEY
+               MOVE    "1032"          TO  SPA-ERRCD
+           END-IF
+           .
+      *
+       450232-SRYACCTPLUS-DEL-EXT.
            EXIT.
       *****************************************************************
       *   算定履歴追加処理
@@ -7274,6 +7500,40 @@
       *
            .
        980-SYUNOU-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療会計附加マスター次読込
+      *****************************************************************
+       910-SRYACCTPLUS-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  SRYACCTPLUS-REC
+               MOVE    ZERO                TO  FLG-SRYACCTPLUS
+           ELSE
+               INITIALIZE                      SRYACCTPLUS-REC
+               MOVE    1                   TO  FLG-SRYACCTPLUS
+           END-IF
+      *
+           .
+       910-SRYACCTPLUS-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢクローズ処理
+      *****************************************************************
+       990-DBCLOSE-2-SEC         SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       990-DBCLOSE-2-EXT.
            EXIT.
       *
       *****************************************************************
