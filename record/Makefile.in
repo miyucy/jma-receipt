@@ -454,6 +454,7 @@ DB_files = \
 	tbl_receupd.db \
 	tbl_orderprt.db \
 	tbl_medyakko.db \
+	tbl_sryacctplus.db \
 
 all:   
 
