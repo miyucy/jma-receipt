@@ -1056,6 +1056,15 @@
                END-IF
                MOVE    1               TO  FLG-SYUGI
            END-IF
+      *    ΩË ˝Œ¡§œºÍµªŒ¡§«∫ﬁ ¨Œ•§»§π§Î
+           IF     (SPA-COM-SRYKBN (IDX)(1:1)   =   "2" )  AND
+                  (SPA-COM-INPUTCD(IDX)(1:1)   =   "1" )  AND
+                  (SPA-COM-DATAKBN(IDX)        =   "1"  )
+               IF      FLG-SYUGI           =   1
+                   MOVE    2               TO  FLG-SYORI
+               END-IF
+               MOVE    1               TO  FLG-SYUGI
+           END-IF
       *!!
       *
       *    ø«∂Ë°° —ππª˛
@@ -1391,7 +1400,7 @@
       *            ∆‚…Ù»Á…È≤ŸªÓ∏≥§Œ Ò≥Á°  ›Œ±°À
                    MOVE    1             TO  WRK-KENSA-MAX
                WHEN    OTHER
-                   MOVE    1             TO  WRK-KENSA-MAX
+                   MOVE    ZERO          TO  WRK-KENSA-MAX
            END-EVALUATE
       *
            MOVE    ZERO                TO  WRK-KENSA-CNT
@@ -1423,8 +1432,12 @@
                    END-IF
                END-IF
            END-PERFORM
-           IF      WRK-KENSA-MAX       <=  WRK-KENSA-CNT
-               MOVE    1                   TO  FLG-KENSA-ARI
+           IF      WRK-KENSA-MAX       =   ZERO
+               CONTINUE
+           ELSE
+               IF      WRK-KENSA-MAX       <=  WRK-KENSA-CNT
+                   MOVE    1                   TO  FLG-KENSA-ARI
+               END-IF
            END-IF
       *
            IF    ((WRK-KENSA-MAX       >   1             )  AND

@@ -95,6 +95,10 @@
            03  IDX2                    PIC 9(04).
            03  IDXS                    PIC 9(04).
            03  IDY                     PIC 9(04).
+           03  IDW                     PIC 9(04).
+           03  IDW2                    PIC 9(04).
+           03  IDW-END                 PIC 9(04).
+           03  IDW-STR                 PIC 9(04).
       *
            03  IDX-TEI                  PIC 9(04).
            03  IDX-1                    PIC 9(04).
@@ -986,6 +990,11 @@
                MOVE    LNK-WKSRY-INPUTCD (IDX IDY)
                                            TO  SPA-GMN-INPUTCD (IDX2)
            END-IF
+      *TEST
+           DISPLAY "LNK-WKSRY-INPUTCD:" LNK-WKSRY-INPUTCD(IDX IDY)
+               ",GMN:" SPA-GMN-INPUTCD (IDX2)
+               ",COM:" SPA-COM-INPUTCD (IDX2)
+      *TEST
            MOVE    SPA-GMN-INPUTCD (IDX2)  TO  SPA-MAE-INPUTCD (IDX2)
       *
       *    剤点数の設定（訂正前）
@@ -1003,8 +1012,14 @@
                    (SPA-GMN-INPUTCD (IDX2)(3:1)  NOT =   SPACE)
                MOVE    SPA-GMN-INPUTCD (IDX2)(1:1)
                                            TO  SPA-COM-TIMEFLG(IDX2)
-               MOVE    SPA-COM-TIMEFLG (IDX2)
+      *        入院で訂正の時、設定なし
+               IF     (SPA-NYUGAIKBN       =   "1"   )  AND
+                      (ORCSCWKSRY-SYORIFLG =   ZERO  )
+                   CONTINUE
+               ELSE
+                   MOVE    SPA-COM-TIMEFLG (IDX2)
                                            TO  SPA-NAI-TIMEFLG
+               END-IF
            END-IF
       *
       *    コメントの時、コメント内容編集
@@ -1066,6 +1081,9 @@
                                                TO  SPA-COM-JIHIMONEY
                                                                  (IDX2)
                END-IF
+      *        剤点数の設定（訂正前）
+               MOVE    SPA-COM-JIHIMONEY(IDX2)
+                                           TO  SPA-COM-MAE-TENSU (IDX2)
       *        自費の時、金額編集
            ELSE
                IF      SPA-COM-SRYKBN (IDX2)   =   "95"  OR  "96"
@@ -1077,6 +1095,9 @@
                    MOVE    LNK-WKSRY-JIHIMONEY(IDX IDY)
                                                TO  SPA-COM-JIHIMONEY
                                                                  (IDX2)
+      *            剤点数の設定（訂正前）
+                   MOVE    SPA-COM-JIHIMONEY(IDX2)
+                                           TO  SPA-COM-MAE-TENSU (IDX2)
                ELSE
                    MOVE    SPACE               TO  SPA-COM-KEIFLG(IDX2)
                END-IF
@@ -1110,27 +1131,35 @@
                                        =   "96"  OR  "95"))
                MOVE    1               TO  FLG-SYUBETU
            END-IF
-      *        訂正の時、再診料算定科を再診とする
-               IF     (LNK-WKSRY-SRYKBN    (IDX)       =   "12" AND
-                       LNK-WKSRY-SRYCD (IDX IDY)       =   "830000021")
-                   OR (LNK-WKSRY-SRYKBN    (IDX)       =   "11" AND
-                       LNK-WKSRY-SRYCD (IDX IDY)       =   "830000020")
-      *                訂正の時、ダミー診察の時
-                  OR ((LNK-WKSRY-SRYKBN    (IDX)       =   "11" OR
-                                                           "12"   ) AND
-                      (LNK-WKSRY-SRYCD (IDX IDY)       =   "820000003"
-                                                       OR  "820000004"
-                                                       OR  "820000005"
-                                                       OR  "820000006"))
+      *    訂正の時、再診料算定科を再診とする
+           IF     (LNK-WKSRY-SRYKBN    (IDX)       =   "12" AND
+                   LNK-WKSRY-SRYCD (IDX IDY)       =   "830000021")
+               OR (LNK-WKSRY-SRYKBN    (IDX)       =   "11" AND
+                   LNK-WKSRY-SRYCD (IDX IDY)       =   "830000020")
+      *             訂正の時、ダミー診察の時
+              OR ((LNK-WKSRY-SRYKBN    (IDX)       =   "11" OR
+                                                       "12"   ) AND
+                  (LNK-WKSRY-SRYCD (IDX IDY)       =   "820000003"
+                                                   OR  "820000004"
+                                                   OR  "820000005"
+                                                   OR  "820000006"))
+               MOVE    1                   TO  FLG-SYUBETU
+           END-IF
+           IF      LNK-WKSRY-SRYKBN    (IDX)       =   "13"
+      *        小児科外来診察料の加算のみ
+               PERFORM 310119-SYONIKA-CHK-SEC
+               IF      WRK-SYONIKA-KBN     =   "4"
                    MOVE    1                   TO  FLG-SYUBETU
                END-IF
-               IF      LNK-WKSRY-SRYKBN    (IDX)       =   "13"
-      *            小児科外来診察料の加算のみ
-                   PERFORM 310119-SYONIKA-CHK-SEC
-                   IF      WRK-SYONIKA-KBN     =   "4"
-                       MOVE    1                   TO  FLG-SYUBETU
-                   END-IF
-               END-IF
+           END-IF
+      *    最初が手技料以外の時
+           IF     (LNK-WKSRY-SRYKBN(IDX)   =   "11"
+                                           OR  "12"
+                                           OR  "13"  ) AND
+                  (LNK-WKSRY-SRYCD (IDX IDY)(1:1)
+                                       NOT =   "1" )
+               MOVE    1                   TO  FLG-SYUBETU
+           END-IF
       *
             IF      FLG-SYUBETU         =   1
                ADD     1                   TO  IDX2
@@ -1600,6 +1629,7 @@
            INITIALIZE                  WKSRYACT-REC
            MOVE    SPACE               TO  WKSRYACTPLUS-REC
            INITIALIZE                  WKSRYACTPLUS-REC
+           MOVE    ZERO                TO  IDW-STR
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN-MAX
                IF      SPA-GMN-INPUTCD(IDX)(1:1)   =   "."
@@ -1608,6 +1638,9 @@
                ELSE
       *
                    ADD     1                       TO  IDY
+                   IF      IDY                     =   1
+                       MOVE    IDX                     TO  IDW-STR
+                   END-IF
       *            入力コード
                    MOVE    SPA-GMN-INPUTCD(IDX)    TO  WKSRY-INPUTCD
                                                                  (IDY)
@@ -1718,11 +1751,6 @@
                    IF      SPA-COM-KEIFLG (IDX)   =   "1"  OR  "2"
                        ADD      SPA-COM-JIHIMONEY (IDX)
                                                   TO  WRK-KINGAK
-                   END-IF
-      *
-      *            各附加情報
-                   IF      FLG-SYORI           =   2
-                       PERFORM 30022-WKSRYACTPLUS-SEC
                    END-IF
       *
                    IF     (IDX                     <   SPA-GMN-MAX) AND
@@ -1946,6 +1974,10 @@
            IF      SPA-COM-SRYKA   (IDX)   =   SPACE
                MOVE    SPA-SRYKA           TO  WRK-SRYKA
            END-IF
+      *    各附加情報（１件目に附加する）
+           IF      WRK-RENNUM          =   ZERO
+               PERFORM 30022-WKSRYACTPLUS-SEC
+           END-IF
       *
            PERFORM 300211-WKSRYPARA-WRITE-SEC
       *
@@ -2005,6 +2037,29 @@
            MOVE    WKSRYACTPLUS-REC    TO  PARA-WKSRYACTPLUS-REC
            MOVE    PARA-WKSRYACT-REC   TO  PARA-DATA-REC
       *
+      *TEST
+           IF     WKSRYP-ADDKBN   =   "1"
+           DISPLAY "WKSRY-ZAINUM:" WKSRY-ZAINUM
+                   ",RENNUM:" WKSRY-RENNUM
+                ",WKSRYP-ADDKBN:" WKSRYP-ADDKBN
+                ",WKSRYP-RSIKINGAKU:" WKSRYP-RSIKINGAKU
+                ",WKSRYP-PLUSKBN:" WKSRYP-PLUSKBN
+                ",WKSRYP-SANSOTEN:" WKSRYP-SANSOTEN
+                ",WKSRYP-CHISOTEN:" WKSRYP-CHISOTEN
+                ",WKSRYP-MSANTEITENKBN:" WKSRYP-MSANTEITENKBN
+                ",WKSRYP-MSANTEITEN:" WKSRYP-MSANTEITEN
+           DISPLAY "1 SRYCD:" WKSRYP-SRYCD(1)
+                ",SYUTEN:" WKSRYP-SYUTEN(1)
+                ",YKZTEN:" WKSRYP-YKZTEN(1)
+                ",KIZAITEN:" WKSRYP-KIZAITEN(1)
+                ",FIRTEN:" WKSRYP-FIRTEN(1)
+           DISPLAY "2 SRYCD:" WKSRYP-SRYCD(2)
+                ",SYUTEN:" WKSRYP-SYUTEN(2)
+                ",YKZTEN:" WKSRYP-YKZTEN(2)
+                ",KIZAITEN:" WKSRYP-KIZAITEN(2)
+                ",FIRTEN:" WKSRYP-FIRTEN(2)
+           END-IF
+      *TEST
            WRITE   PARA-REC
            IF      STS-PARA        NOT =   ZERO
                DISPLAY "ORCSCWKSRY PARA WRITE ERR:"   STS-PARA    "."
@@ -2025,42 +2080,112 @@
       *****************************************************************
        30022-WKSRYACTPLUS-SEC          SECTION.
       *
+           MOVE    ZERO                TO  IDW
+           MOVE    ZERO                TO  IDW-END
+           MOVE    SPACE               TO  WKSRYACTPLUS-REC
+           INITIALIZE                  WKSRYACTPLUS-REC
+      *
+           PERFORM VARYING     IDW2    FROM    IDW-STR   BY  1
+                   UNTIL       IDW2    >   SPA-GMN-MAX
+               IF      SPA-COM-ZAIEND(IDW2)    =   "1"
+                   MOVE    IDW2                TO  IDW-END
+                   MOVE    SPA-GMN-MAX         TO  IDW2
+               END-IF
+           END-PERFORM
+           IF      IDW-END             =   ZERO
+               MOVE    SPA-GMN-MAX     TO  IDW-END
+           END-IF
+           PERFORM VARYING     IDW2    FROM    IDW-STR   BY  1
+                   UNTIL       IDW2    >   IDW-END
+               PERFORM 30022-WKSRYACTPLUS-HEN-SEC
+           END-PERFORM
+           .
+       30022-WKSRYACTPLUS-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    各附加情報編集処理
+      *****************************************************************
+       30022-WKSRYACTPLUS-HEN-SEC          SECTION.
+      *
       *    労災の円
            IF      SPA-HKNKBN          =   1
-               MOVE    SPA-COM-RSIKIN(IDX) TO  WKSRYP-RSIKINGAKU
+               IF      SPA-COM-RSIKIN(IDW2) >   ZERO
+                   MOVE    SPA-COM-RSIKIN(IDW2)    TO  WKSRYP-RSIKINGAKU
+                   MOVE    "1"              TO  WKSRYP-ADDKBN
+               END-IF
            ELSE
-               MOVE    ZERO                TO  WKSRYP-RSIKINGAKU
+               MOVE    ZERO                 TO  WKSRYP-RSIKINGAKU
            END-IF
       *    点数区分
-           IF     (SPA-COM-TENSIKIBETU(IDX)    =   7
+           IF     (SPA-COM-TENSIKIBETU(IDW2)   =   7
                                                OR  8  )  AND
-                  (SPA-COM-KISOTEN (IDX)   =   SPA-COM-TENSU(IDX))
+                  (SPA-COM-KISOTEN (IDW2)  =   SPA-COM-TENSU(IDW-END))
                MOVE    1                   TO  WKSRYP-PLUSKBN
+               MOVE    "1"                 TO  WKSRYP-ADDKBN
+           END-IF
+      *    手技毎の内容（診察・手術・画像診断・処置）
+           IF     (SPA-COM-SYUFLG(IDW2)    =   1  )  AND
+                  (SPA-COM-SYUTEN-M(IDW2)  NOT =  SPA-COM-SYUTEN1
+                                                       (IDW-END))
+               MOVE    "1"                 TO  WKSRYP-ADDKBN
+               ADD     1                   TO  IDW
+      *        開始手技コード
+               MOVE    SPA-COM-INPUTCD(IDW2)   TO  WKSRYP-SRYCD (IDW)
+      *        手技点数
+               MOVE    SPA-COM-SYUTEN-M(IDW2)  TO  WKSRYP-SYUTEN (IDW)
+      *        薬剤点数
+               MOVE    SPA-COM-YKZTEN-M(IDW2)  TO  WKSRYP-YKZTEN (IDW)
+      *        その他器材点数（フィルム・酸素・窒素以外）
+               MOVE    SPA-COM-KIZTEN-M(IDW2)  TO  WKSRYP-KIZAITEN (IDW)
+      *        フィルム点数
+               MOVE    SPA-COM-FIRTEN-M(IDW2)  TO  WKSRYP-FIRTEN (IDW)
+           ELSE
+      *        フィルム点数のみ
+               IF      SPA-COM-FIRTEN-M(IDW2)  NOT =  ZERO
+                   ADD     1                   TO  IDW
+                   MOVE    "1"                 TO  WKSRYP-ADDKBN
+      *            その他器材点数（フィルム・酸素・窒素以外）
+                   MOVE    SPA-COM-KIZTEN-M(IDW2)
+                                               TO  WKSRYP-KIZAITEN (IDW)
+                   MOVE    SPA-COM-FIRTEN-M(IDW2)
+                                               TO  WKSRYP-FIRTEN (IDW)
+               END-IF
+           END-IF
+      *    酸素点数
+           IF      SPA-COM-SANSOTEN(IDW2)  NOT =   ZERO
+               MOVE    SPA-COM-SANSOTEN(IDW2)   TO  WKSRYP-SANSOTEN
+               MOVE    "1"                 TO  WKSRYP-ADDKBN
+           END-IF
+      *    窒素点数
+           IF      SPA-COM-CHISOTEN(IDW2)  NOT =   ZERO
+               MOVE    SPA-COM-CHISOTEN(IDW2)  TO  WKSRYP-CHISOTEN
+               MOVE    "1"                 TO  WKSRYP-ADDKBN
            END-IF
       *    内分泌負荷試験用
-           IF     (SPA-COM-SRYKBN(IDX)     =   "60" )  AND
-                  (SPA-COM-DATAKBN(IDX)    =   "1"   )  AND
-                  (SPA-COM-HOUKNSKBN(IDX)  =   08    )
+           IF     (SPA-COM-SRYKBN(IDW2)    =   "60" )  AND
+                  (SPA-COM-DATAKBN(IDW2)   =   "1"   )  AND
+                  (SPA-COM-HOUKNSKBN(IDW2) =   08    )
       *        当月算定フラグ
                MOVE    1                   TO  WKSRYP-MSANTEITFLG
       *        当月算定点数区分
-               IF      SPA-COM-TEN (IDX)   =   SPA-COM-KISOTEN(IDX)
+               IF      SPA-COM-TEN (IDW2)  =   SPA-COM-KISOTEN(IDW2)
                    MOVE    1               TO  WKSRYP-MSANTEITENKBN
                ELSE
                    MOVE    2               TO  WKSRYP-MSANTEITENKBN
                END-IF
       *        当月算定点数
-               MOVE    SPA-COM-KISOTEN(IDX)    TO WKSRYP-MSANTEITEN
+               MOVE    SPA-COM-KISOTEN(IDW2)   TO WKSRYP-MSANTEITEN
            END-IF
       *
       *    内服７種類逓減対象
-           IF     (SPA-COM-SRYKBN(IDX)     =   "21" )  AND
-                  (SPA-COM-INPUTCD(IDX)    =   "820000047")
+           IF     (SPA-COM-SRYKBN(IDW2)    =   "21" )  AND
+                  (SPA-COM-INPUTCD(IDW2)   =   "820000047")
                MOVE    1                   TO  WKSRYP-TEI-NKBN
            END-IF
       *
            .
-       30022-WKSRYACTPLUS-EXT.
+       30022-WKSRYACTPLUS-HEN-EXT.
            EXIT.
       *****************************************************************
       *    ＳＰＡをパラメタファイルへ書込処理
@@ -2936,6 +3061,7 @@
                MOVE    1                   TO  WKSRYP-PLUSKBN
       *        内服７種類逓減対象
                MOVE    2                   TO  WKSRYP-TEI-NKBN
+               MOVE    "1"                 TO  WKSRYP-ADDKBN
            END-IF
       *
            .

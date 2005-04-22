@@ -1954,6 +1954,10 @@
                                                              (IDX-T)
       *    きざみ値計上限
            MOVE    TNS-KZMJGN          TO  SPA-COM-KZMJGN (IDX-T)
+           MOVE    TNS-KZMKGN          TO  SPA-COM-KZMKGN (IDX-T)
+           MOVE    TNS-KZM             TO  SPA-COM-KZM (IDX-T)
+           MOVE    TNS-KZMTEN          TO  SPA-COM-KZMTEN (IDX-T)
+           MOVE    TNS-KZMERR          TO  SPA-COM-KZMERR (IDX-T)
       *    検査等実施判定区分
            MOVE    TNS-HOUKATUTEIGENKBN    TO  SPA-COM-HOUKATUTEIGENKBN
                                                              (IDX-T)
@@ -1964,6 +1968,9 @@
            MOVE    TNS-AGEKSNTBL(4)    TO  SPA-COM-AGEKSNTBL (IDX-T 4)
       *    往診区分
            MOVE    TNS-OSINKBN         TO  SPA-COM-OSINKBN   (IDX-T)
+      *    告示識別区分
+           MOVE    TNS-KOKUJISKBKBN1   TO  SPA-COM-KOKUJISKBKBN1(IDX-T)
+           MOVE    TNS-KOKUJISKBKBN2   TO  SPA-COM-KOKUJISKBKBN2(IDX-T)
       *
       *    きざみ値計算識別判定
            IF     (SPA-COM-INPUTCD (IDX-T)(1:1)
@@ -2332,49 +2339,55 @@
       *    きざみ値判定
            EVALUATE    TRUE
       *            データ≦（下限値−きざみ値）
-               WHEN    WRK-SURYO       <=  (TNS-KZMKGN  -  TNS-KZM)
-                   IF      TNS-KZMERR          =   2  OR  3
+               WHEN    WRK-SURYO       <=  (SPA-COM-KZMKGN(IDX-T)
+                                        -   SPA-COM-KZM   (IDX-T) )
+                   IF      SPA-COM-KZMERR (IDX-T)  =   2  OR  3
                        MOVE    "0021"          TO  SPA-ERRCD
                    END-IF
       *
       *            下限値＜データ≦上限値
-               WHEN     (TNS-KZMKGN        <   WRK-SURYO )   AND
-                        (TNS-KZMJGN        >=  WRK-SURYO )
+               WHEN     (SPA-COM-KZMKGN (IDX-T)    <   WRK-SURYO )   AND
+                        (SPA-COM-KZMJGN (IDX-T)    >=  WRK-SURYO )
       *            点数計算式１
-                   COMPUTE WRK-KEI-TEN1    =  (WRK-SURYO -  TNS-KZMKGN)
+                   COMPUTE WRK-KEI-TEN1    =  (WRK-SURYO
+                                           -   SPA-COM-KZMKGN (IDX-T))
                                            /   TNS-KZM
                                            +   0.999
                    MOVE    WRK-KEI-TEN1    TO  WRK-KEI-TEN2
-                   COMPUTE WRK-KEI-TEN     =   TNS-TEN
+                   COMPUTE WRK-KEI-TEN     =   SPA-COM-TEN (IDX-T)
                                            + ( WRK-KEI-TEN2
-                                           *   TNS-KZMTEN )
+                                           *   SPA-COM-KZMTEN (IDX-T))
                    COMPUTE WRK-KEI-TEN2    =   WRK-KEI-TEN    +  0.5
       *
       *            上限値＜データ
-               WHEN    TNS-KZMJGN        <   WRK-SURYO
-                   IF      TNS-KZMERR        =   0  OR  2
+               WHEN    SPA-COM-KZMJGN (IDX-T)  <   WRK-SURYO
+                   IF      SPA-COM-KZMERR (IDX-T)  =   0  OR  2
       *            警告エラーとする
-                       MOVE    "K030"            TO  SPA-ERRCD
+                       MOVE    "K030"          TO  SPA-ERRCD
       *            点数計算式１
                        COMPUTE WRK-KEI-TEN1    =  (WRK-SURYO
-                                               -  TNS-KZMKGN)
-                                               /   TNS-KZM
+                                               -   SPA-COM-KZMKGN
+                                                               (IDX-T))
+                                               /   SPA-COM-KZM (IDX-T)
                                                +   0.999
                        MOVE    WRK-KEI-TEN1    TO  WRK-KEI-TEN2
-                       COMPUTE WRK-KEI-TEN     =   TNS-TEN
+                       COMPUTE WRK-KEI-TEN     =   SPA-COM-TEN (IDX-T)
                                                + ( WRK-KEI-TEN2
-                                               *   TNS-KZMTEN )
+                                               *   SPA-COM-KZMTEN
+                                                               (IDX-T))
                        COMPUTE WRK-KEI-TEN2    =   WRK-KEI-TEN    +  0.5
                    ELSE
       *            点数計算式２
-                       COMPUTE WRK-KEI-TEN1    =  (TNS-KZMJGN
-                                               -   TNS-KZMKGN)
-                                               /   TNS-KZM
+                       COMPUTE WRK-KEI-TEN1    =  (SPA-COM-KZMJGN(IDX-T)
+                                               -   SPA-COM-KZMKGN
+                                                                (IDX-T))
+                                               /   SPA-COM-KZM  (IDX-T)
                                                +   0.999
                        MOVE    WRK-KEI-TEN1    TO  WRK-KEI-TEN2
-                       COMPUTE WRK-KEI-TEN     =   TNS-TEN
+                       COMPUTE WRK-KEI-TEN     =   SPA-COM-TEN (IDX-T)
                                                + ( WRK-KEI-TEN2
-                                               *   TNS-KZMTEN )
+                                               *   SPA-COM-KZMTEN
+                                                               (IDX-T))
                        COMPUTE WRK-KEI-TEN2    =   WRK-KEI-TEN  +  0.5
                    END-IF
            END-EVALUATE

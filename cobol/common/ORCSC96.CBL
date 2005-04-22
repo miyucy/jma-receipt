@@ -278,6 +278,9 @@
                WHEN    "0047"
                    MOVE    "器材は入力できません"
                                        TO  SPA-ERRMSG
+               WHEN    "0147"
+                   MOVE    "薬剤は入力できません"
+                                       TO  SPA-ERRMSG
                WHEN    "0048"
                    MOVE    "約束セットの時、診療種別を入力して下さい"
                                        TO  SPA-ERRMSG
@@ -696,6 +699,11 @@
                                        TO  SPA-ERRMSG
                    MOVE    "算定できません。"
                                        TO  SPA-ERRMSG(39:)
+               WHEN    "8026"
+                   MOVE    "労災加算の倍率が違います。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "同じ倍率毎に剤を分けて下さい。"
+                                       TO  SPA-ERRMSG(27:)
                WHEN    "8050"
                    MOVE    "外来診察料算定時は電話再診の算定は"
                                        TO  SPA-ERRMSG
@@ -905,6 +913,16 @@
                                        TO  SPA-ERRMSG
                    MOVE    "手技毎に剤分離して下さい。"
                                        TO  SPA-ERRMSG(33:)
+               WHEN    "K501"
+                   MOVE    "警告！手術の手技が剤内に複数あります。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "手技毎に剤分離して下さい。"
+                                       TO  SPA-ERRMSG(39:)
+               WHEN    "K502"
+                   MOVE    "警告！手術の手技が２つあります。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "従たる手術の逓減を入力して下さい。"
+                                       TO  SPA-ERRMSG(39:)
            END-EVALUATE
            .
        100-KYOUTU-ERRMSG-EXT.
@@ -1340,6 +1358,9 @@
                WHEN    "1029"
                    MOVE    "コメントマスター更新エラー"
                                        TO  SPA-ERRMSG
+               WHEN    "1032"
+                   MOVE    "診療会計附加更新エラー"
+                                       TO  SPA-ERRMSG
                WHEN    "1030"
                    MOVE    "剤削除は入力できません"
                                        TO  SPA-ERRMSG
@@ -1349,6 +1370,11 @@
                WHEN    "K001"
                    MOVE    "警告！時間外算定がありません"
                                        TO  SPA-ERRMSG
+               WHEN    "K102"
+                   MOVE    "警告！内服逓減対象の剤です。更新後、"
+                                       TO  SPA-ERRMSG
+                   MOVE    "必ず訂正で逓減点数を変更して下さい。"
+                                       TO  SPA-ERRMSG(35:)
                WHEN    OTHER
                    MOVE    SPA-ERRCD
                                        TO  SPA-ERRMSG

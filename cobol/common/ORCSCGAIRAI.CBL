@@ -27,6 +27,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  01.00.01    NACL-Â¿¡¹Ç¼  05/04/22  ¥ì¥»ÅÅÂÐ±þ
       *****************************************************************
       *
       *
@@ -99,6 +100,8 @@
            03  FLG-SRYKA                 PIC 9(01).
       *    ÆâÊ¬ÈçÉé²Ù»î¸³
            03  FLG-NAIBUN                PIC 9(01).
+      *    ÆâÉþÄþ¸º¤¢¤ê
+           03  FLG-GEN-ARI               PIC 9(01).
       *    Åº»úÎÎ°è
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -121,6 +124,9 @@
            03  IDH3                PIC 9(04).
            03  IDXF                PIC 9(04).
            03  IDH-GAI             PIC 9(04).
+      *
+           03  IDW                 PIC 9(04).
+           03  IDW2                PIC 9(04).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -231,6 +237,15 @@
            03  WRK-HZN-HKNCOMBINUM     PIC X(04).
            03  WRK-HZN-HKNKBN          PIC X(01).
            03  WRK-HZN-SRYKA           PIC X(02).
+      *!!
+      *    ¿ÇÎÅ¹Ô°ÙÉí²Ã¾ðÊóÀßÄê¡Ê²ÊËè¡Ë
+           03  WRK-ACTP-AREA.
+               05  WRK-ACTP-ZAINUM-G       OCCURS   5.
+                   07  WRK-ACTP-SRYKA      PIC X(02).
+                   07  WRK-ACTP-MAX        PIC 9(04).
+                   07  WRK-ACTP-ZAINUM     PIC 9(08)   OCCURS   50.
+               05  IDX-GEN                 PIC 9(04).
+               05  IDX-GEN2                PIC 9(04).
       *
       *    ¿ÇÎÅ¹Ô°ÙÆâÍÆÈæ³ÓÍÑ¥Æ¡¼¥Ö¥ë
        01  TBL-AREA.
@@ -257,6 +272,12 @@
                05  WRK-TBL-ZAINUM          PIC 9(08).
            03  WRK-TBL-IDX                 PIC 9(04).
            03  FLG-ZAINUM                  PIC 9(01).
+      *
+      *    ¿ÇÎÅ²ñ·×Éí²Ã¾ðÊó¥Þ¥¹¥¿¡Ý¡ÊÆâÉþÄþ¸º¡Ë
+       01  TBL-SRYACCTPLUS-AREA.
+           02  TBL-SRYACCTPLUS-REC   OCCURS   5.
+           COPY    "CPSRYACCTPLUS.INC"  REPLACING
+                                     //ACCTP-// BY //TBL-ACCTP-//.
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -293,6 +314,9 @@
       *    ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡Ý
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
+      *    ¿ÇÎÅ²ñ·×Éí²Ã¾ðÊó¥Þ¥¹¥¿¡Ý
+       01  SRYACCTPLUS-REC.
+           COPY    "CPSRYACCTPLUS.INC".
       *
       *    ´µ¼Ô¥³¥á¥ó¥È
        01  PTCOM-REC.
@@ -397,6 +421,7 @@
       *
            COPY    "MCPAREA".
            COPY    "ORCA-SPA".
+           COPY    "ORCA-DBPATH".
       *
       *
       *****************************************************************
@@ -492,6 +517,8 @@
            IF      SPA-SYORIFLG        =   1
                MOVE    SPA-DENPNUM         TO  WRK-GRP-DENPNUM
            END-IF
+           INITIALIZE                  WRK-ACTP-AREA
+           INITIALIZE                  TBL-SRYACCTPLUS-AREA
       *
            PERFORM VARYING     IDH     FROM    1   BY  1
                    UNTIL      (IDH     >   15  )  OR
@@ -522,6 +549,8 @@
                    PERFORM 1004-DBKOUSIN-SYUTTL-SEC
                END-IF
            END-PERFORM
+      *    ÆâÉþ£·¼ïÎàÄþ¸º¤Î¿ÇÎÅ²ñ·×Éí²Ã¾ðÊóÄÉ²Ã
+           PERFORM 4504-SRYACCTPLUS-GENINS-SEC
       *
            IF      SPA-SYORIFLG        =   1
       *        ÄûÀµ¤Î»þ¡¢Á°²ó¤Îºï½üÊ¬¤òºï½ü¤¹¤ë
@@ -686,7 +715,7 @@
                    UNTIL      (FLG-PARA   =    1  )  OR
                               (SPA-ERRCD  NOT =   SPACE)
                IF      PARA-FILEMEI        =   "WKSRYACT"
-                 MOVE    PARA-DATA-REC    TO  WRK-WKSRYACT-REC
+                 MOVE    PARA-DATA-REC     TO  WRK-WKSRYACT-REC
                  IF     (WRK-WKSRY-SRYKA      =   WRK-SRYKA)  AND
                         (WRK-WKSRY-HKNCOMBI   =   WRK-HKNCOMBI) AND
                         (WRK-WKSRY-SRYCD (1)(1:1)
@@ -2062,6 +2091,26 @@
                         ",KEY:" ACCT-KEY
            END-IF
       *
+      *    Éí²Ã¾ðÊóºï½ü
+           INITIALIZE                  SRYACCTPLUS-REC
+           MOVE    ACCT-HOSPID         TO  ACCTP-HOSPID
+           MOVE    ACCT-NYUGAIKBN      TO  ACCTP-NYUGAIKBN
+           MOVE    ACCT-PTID           TO  ACCTP-PTID
+           MOVE    ACCT-SRYKA          TO  ACCTP-SRYKA
+           MOVE    ACCT-SRYYM          TO  ACCTP-SRYYM
+           MOVE    ACCT-ZAINUM         TO  ACCTP-ZAINUM
+      *
+           MOVE    SRYACCTPLUS-REC     TO  MCPDATA-REC
+           MOVE    PATH-TBL-SRYACCTPLUS-DEL2
+                                       TO  MCP-PATH
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO
+               DISPLAY "K03  SRYACCTPLUS  DEL ERR:" MCP-RC
+                     ",KEY:" ACCTP-KEY
+           END-IF
            .
        45001121-ZAINUM-DELETE-EXT.
            EXIT.
@@ -2472,6 +2521,14 @@
                PERFORM 4501-SRYACT-SYORI-SEC
            END-IF
       *
+      *!!
+      *    ¿ÇÎÅ²ñ·×Éí²Ã¾ðÊó½èÍý 
+           IF     (FLG-SINKI           =   1 )  AND
+                  (LNK-WKSRYP-ADDKBN(01)   =   "1"  )
+               PERFORM 4503-SRYACCTPLUS-SYORI-SEC
+           END-IF
+      *!!
+      *
       *    Êñ³ç¤Þ¤È¤á¤ÏÅÐÏ¿¤·¤Ê¤¤
            IF      SPA-HKNCOMBINUM     =   "9999"
                CONTINUE
@@ -2495,6 +2552,7 @@
            MOVE    ZERO                TO  WRK-MEISAISU
            MOVE    ZERO                TO  WRK-SRYCDKEI
            INITIALIZE                      WRK-WKSRY-AREA
+           MOVE    ZERO                TO  FLG-GEN-ARI
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   IDX-KOUI
       *        ºÞÅÀ¿ô·×
@@ -2530,6 +2588,11 @@
                        IF      LNK-WKSRY-SRYCD(IDX IDY)(1:1) =  "S"
                            ADD     1               TO  WRK-MEISAISU
                        END-IF
+                   END-IF
+      *            ÆâÉþÄþ¸º¤Î¸º¤ÎÍ­ÌµÈ½Äê
+                   IF     (LNK-WKSRY-SRYCD (IDX IDY)   =   "820000047")
+                      AND (LNK-WKSRY-SRYKBN (IDX)      =   "21"  )
+                       MOVE    1               TO  FLG-GEN-ARI
                    END-IF
                END-PERFORM
            END-PERFORM
@@ -2595,6 +2658,30 @@
                    GO      TO      4501-SRYACCT-SYORI-EXT
                END-IF
            END-IF
+      *!!
+      *    ÆâÉþÄþ¸º½èÍý
+           IF      FLG-GEN-ARI         =   1
+               PERFORM VARYING IDX-GEN2    FROM    1   BY  1
+                       UNTIL   IDX-GEN2    >   5
+                   IF      WRK-ACTP-SRYKA(IDX-GEN2)    =   SPACE
+                       MOVE    LNK-WKSRY-SRYKA(01)
+                                           TO  WRK-ACTP-SRYKA(IDX-GEN2)
+                   END-IF
+                   IF      WRK-ACTP-SRYKA(IDX-GEN2)
+                                           =   LNK-WKSRY-SRYKA(01)
+                       ADD     1           TO  WRK-ACTP-MAX (IDX-GEN2)
+                       MOVE    WRK-ACTP-MAX (IDX-GEN2) 
+                                           TO  IDX-GEN
+                       IF      IDX-GEN     >   50
+                           MOVE    50                  TO  IDX-GEN
+                       END-IF
+                   END-IF
+                   MOVE    WRK-ZAINUM      TO  WRK-ACTP-ZAINUM
+                                                     (IDX-GEN2 IDX-GEN)
+                   MOVE    5               TO  IDX-GEN2
+               END-PERFORM
+           END-IF
+      *!!
       *    ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡¼¹¹¿·ÍÑÆÉ¤ß¹þ¤ß
            INITIALIZE                          SRYACCT-REC
            MOVE    LNK-WKSRY-HOSPID (01)   TO  ACCT-HOSPID
@@ -2746,6 +2833,13 @@
            MOVE    WRK-YKZTEN          TO  ACCT-YKZTEN
       *    ´ïºàÅÀ¿ô
            MOVE    WRK-KIZAITEN        TO  ACCT-KIZAITEN
+      *!!
+      *    Éí²Ã¾ðÊó¤¢¤ê
+           IF      LNK-WKSRYP-ADDKBN(01)   =   "1"
+      *        ºÞÀÁµá¥Õ¥é¥°
+               MOVE    "1"                 TO  ACCT-ZAIREQFLG
+           END-IF
+      *!!
            .
       *
        45015-SRYACCT-SRY-EXT.
@@ -2777,7 +2871,6 @@
       *****************************************************************
        4501-SRYACT-SYORI-SEC          SECTION.
       *
-      *
            MOVE    ZERO                TO  WRK-MEIBAN
       *    ¿·µ¬Ê¬¤Î¤ß¡¢ºîÀ®¤¹¤ë
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -2798,6 +2891,7 @@
                MOVE    LNK-WKSRY-SRYKBN (IDX)  TO  SRY-SRYKBN
                MOVE    LNK-WKSRY-JIHIMONEYTOTAL (IDX)
                                                TO  SRY-JIHIMONEYTOTAL
+      *
                PERFORM VARYING IDX-SIN     FROM    1   BY  1
                        UNTIL   IDX-SIN     >   5
                    MOVE    LNK-WKSRY-SRYCD (IDX IDX-SIN)
@@ -2840,13 +2934,11 @@
                                             MCPAREA
                                             ORCMCPAREA
                                             MCPDATA-REC
-      *
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "K03 SRYACT INS ERR:" SRY-KEY  "."
                    DISPLAY "MCP-RC:" MCP-RC ":" 
                    MOVE    "0005"          TO  SPA-ERRCD
                END-IF
-      *
            END-PERFORM
            .
       *
@@ -3024,6 +3116,134 @@
       *
            .
        45021-SANTEI-UPD-EXT.
+           EXIT.
+      *
+      *!!
+      *****************************************************************
+      *    ¿ÇÎÅ²ñ·×Éí²Ã¾ðÊó½èÍý
+      *****************************************************************
+       4503-SRYACCTPLUS-SYORI-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  SRYACCTPLUS-REC
+           INITIALIZE                  SRYACCTPLUS-REC
+           MOVE    ACCT-HOSPID         TO  ACCTP-HOSPID
+           MOVE    ACCT-NYUGAIKBN      TO  ACCTP-NYUGAIKBN
+           MOVE    ACCT-PTID           TO  ACCTP-PTID
+           MOVE    ACCT-SRYKA          TO  ACCTP-SRYKA
+           MOVE    ACCT-SRYYM          TO  ACCTP-SRYYM
+           MOVE    ACCT-ZAINUM         TO  ACCTP-ZAINUM
+      *    Ï¢ÈÖ¹æ¡ÊÄÌ¾ï¤Ï£±·ï¤Î¤ß¡¢ÆâÉþÌô¤ÎÄþ¸º¤Î¾ì¹çÊ£¿ô¡Ë
+           MOVE    1                   TO  ACCTP-RENNUM
+      *    ÅÀ¿ô¶èÊ¬
+           MOVE    LNK-WKSRYP-PLUSKBN (1)
+                                       TO  ACCTP-PLUSKBN
+      *    Ï«ºÒ¤Î±ß
+           MOVE    LNK-WKSRYP-RSIKINGAKU(1)
+                                       TO  ACCTP-RSIKINGAKU
+      *
+           PERFORM VARYING     IDW     FROM    1   BY  1
+                   UNTIL       IDW     >   5
+               MOVE    LNK-WKSRYP-SRYCD (1 IDW)
+                                           TO  ACCTP-SRYCD (IDW)
+               MOVE    LNK-WKSRYP-SYUTEN (1 IDW)
+                                           TO  ACCTP-SYUTEN (IDW)
+               MOVE    LNK-WKSRYP-YKZTEN (1 IDW)
+                                           TO  ACCTP-YKZTEN (IDW)
+               MOVE    LNK-WKSRYP-KIZAITEN (1 IDW)
+                                           TO  ACCTP-KIZAITEN (IDW)
+               MOVE    LNK-WKSRYP-FIRTEN (1 IDW)
+                                           TO  ACCTP-FIRTEN (IDW)
+           END-PERFORM
+      *    »ÀÁÇÅÀ¿ô
+           MOVE    LNK-WKSRYP-SANSOTEN (1) TO  ACCTP-SANSOTEN
+      *    ÃâÁÇÅÀ¿ô
+           MOVE    LNK-WKSRYP-CHISOTEN (1) TO  ACCTP-CHISOTEN
+      *
+      *    ÆâÉþ£·¼ïÎàÄþ¸ºÂÐ¾ÝºÞÈÖ¹æ
+           IF      LNK-WKSRYP-TEI-NKBN (1) =   2
+               PERFORM VARYING     IDW     FROM    1   BY  1
+                       UNTIL       IDW     >   5
+                   IF      TBL-ACCTP-HOSPID (IDW)  =   SPACE
+                       MOVE    SRYACCTPLUS-REC
+                                           TO  TBL-SRYACCTPLUS-REC(IDW)
+                       MOVE    5           TO  IDW
+                   END-IF
+               END-PERFORM
+           ELSE
+               PERFORM 4503-SRYACCTPLUS-INS-SEC
+           END-IF
+      *
+           .
+       4503-SRYACCTPLUS-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    ÆâÉþ£·¼ïÎàÄþ¸º¿ÇÎÅ²ñ·×Éí²Ã¾ðÊóÄÉ²Ã½èÍý
+      *****************************************************************
+       4504-SRYACCTPLUS-GENINS-SEC              SECTION.
+      *
+           PERFORM VARYING     IDW     FROM    1   BY  1
+                   UNTIL      (IDW     >   5   )   OR
+                              (TBL-ACCTP-HOSPID (IDW)  =   SPACE)
+               MOVE    TBL-SRYACCTPLUS-REC(IDW)    TO  SRYACCTPLUS-REC
+               INITIALIZE                  ACCTP-GRP-ZAINUM-G
+               MOVE    ZERO                TO  IDW2
+               PERFORM VARYING     IDX-GEN2    FROM    1   BY  1
+                       UNTIL      (IDX-GEN2    >   5   )   OR
+                                  (WRK-ACTP-SRYKA(IDX-GEN2)
+                                              =   SPACE)
+                   IF      ACCTP-SRYKA        =    WRK-ACTP-SRYKA
+                                                          (IDX-GEN2)
+                       PERFORM VARYING IDX-GEN FROM    1   BY  1
+                               UNTIL   (IDX-GEN    >   50  )   OR
+                                       (WRK-ACTP-ZAINUM
+                                                  (IDX-GEN2 IDX-GEN)
+                                                       =  ZERO)
+                           ADD     1                   TO  IDW2
+                           IF      IDW2                >   15
+                               PERFORM 4503-SRYACCTPLUS-INS-SEC
+                               MOVE    1           TO  IDW2
+                               INITIALIZE          ACCTP-GRP-ZAINUM-G
+                               ADD     1           TO  ACCTP-RENNUM
+                           END-IF
+                           MOVE    WRK-ACTP-ZAINUM (IDX-GEN2 IDX-GEN)
+                                          TO  ACCTP-GRP-ZAINUM (IDW2)
+                       END-PERFORM
+                       IF      IDW2                >   ZERO
+                           PERFORM 4503-SRYACCTPLUS-INS-SEC
+                       END-IF
+                       MOVE    5              TO  IDX-GEN2
+                   END-IF
+               END-PERFORM
+           END-PERFORM
+      *
+           .
+       4504-SRYACCTPLUS-GENINS-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¿ÇÎÅ²ñ·×Éí²Ã¾ðÊóÄÉ²Ã½èÍý
+      *****************************************************************
+       4503-SRYACCTPLUS-INS-SEC              SECTION.
+      *
+           MOVE    SMCNDATE-YMD        TO  ACCTP-CREYMD
+           MOVE    SMCNDATE-YMD        TO  ACCTP-UPYMD
+           MOVE    SMCNDATE-HMS        TO  ACCTP-UPHMS
+      *
+           MOVE    SRYACCTPLUS-REC     TO  MCPDATA-REC
+           MOVE    PATH-TBL-SRYACCTPLUS-KEY
+                                       TO  MCP-PATH
+           MOVE    "DBINSERT"          TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           IF      MCP-RC          NOT =   ZERO
+              DISPLAY "K03 SRYACCTPLUS INS ERR:" ACCTP-KEY  "."
+              DISPLAY "MCP-RC:" MCP-RC ":" 
+              MOVE    "0005"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       4503-SRYACCTPLUS-INS-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3910,7 +4130,7 @@
                IF      FLG-SYUTTL          =   ZERO
                    MOVE    SYUTTL-REC          TO  MCPDATA-REC
                    MOVE    "DBDELETE"          TO  MCP-FUNC
-                   MOVE    "SYUTOTAL-KEY"        TO  ORC-DBPATH
+                   MOVE    "SYUTOTAL-KEY"      TO  ORC-DBPATH
                    CALL    "ORCMCPSUB"         USING
                                                MCPAREA
                                                ORCMCPAREA

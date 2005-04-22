@@ -16,12 +16,12 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION              DIVISION.
-       PROGRAM-ID.                 ORCSC10200404.
+       PROGRAM-ID.                 ORCSC10200504.
       *****************************************************************
       *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
       *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ¿ÇÎÅ¹Ô°ÙÆþÎÏ
       *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ¿ÇÎÅ¹Ô°Ù¥Á¥§¥Ã¥¯¡¢»»Äê¡Ê¿ÇÎÅ¡Ë
-      *                      £È£±£¶Ç¯£´·î²þÀµÂÐ±þ
+      *                      ¥ì¥»ÅÅÂÐ±þ¡Ê£È£±£·Ç¯¡©·î¤«¤é¡Ë
       *  ´ÉÍý¼Ô            : 
       *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
       *  04/03/09    NACL¡ÝÂ¿¡¹Ç¼  ¿·µ¬ºîÀ®
@@ -125,6 +125,7 @@
            03  IDX-T               PIC 9(04).
       *
            03  IDX-MAX             PIC 9(04).
+           03  IDX-STR             PIC 9(04).
       *
            03  IDX-ZAI             PIC 9(04).
            03  IDX-ZAI1            PIC 9(04).
@@ -194,10 +195,15 @@
            03  WRK-TENSUKEI-9      PIC 9(08).
            03  WRK-TENSUKEI-G      PIC 9(08).
            03  WRK-TENSUKEI-GEN    PIC 9(08).
-      *    ±ý¿Ç»þ¡¢½êÄêÅÀ¿ô²Ã»»Ê¬
-           03  WRK-TENSU-O1        PIC 9(08).
-      *    ±ý¿Ç»þ¡¢½êÄêÅÀ¿ô²Ã»»³°
-           03  WRK-TENSU-O2        PIC 9(08).
+      *
+           03  WRK-TENSU-KEISAN.
+      *        ±ý¿Ç»þ¡¢½êÄêÅÀ¿ô²Ã»»Ê¬
+               05  WRK-TENSU-O1        PIC 9(08)V99.
+      *        ±ý¿Ç»þ¡¢½êÄêÅÀ¿ô²Ã»»³°
+               05  WRK-TENSU-O2        PIC 9(08)V99.
+      *        ±ý¿Ç°Ê³°
+               05  WRK-TENSU-GAI       PIC 9(08)V99.
+               05  WRK-TENSU-KEI       PIC 9(08)V99.
       *
            03  WRK-TENSU1          PIC 9(08).
       *
@@ -270,11 +276,11 @@
            03  WRK-SYONIKA-KBN         PIC X(01).
       *!
       *    »ÀÁÇ·×»»ÍÑ
-           03  WRK-SANSO               PIC 9(08).
-           03  WRK-SANSOKIN            PIC 9(08)V99.
-           03  WRK-SANKEI              PIC 9(08).
-           03  WRK-SANTEN              PIC 9(08).
-           03  WRK-SANSOKIN-SUM        PIC 9(08)V99.
+      *    03  WRK-SANSO               PIC 9(08).
+      *    03  WRK-SANSOKIN            PIC 9(08)V99.
+      *    03  WRK-SANKEI              PIC 9(08).
+      *    03  WRK-SANTEN              PIC 9(08).
+      **** 03  WRK-SANSOKIN-SUM        PIC 9(08)V99.
            03  IDX-SANSO               PIC 9(04).
       *
       *    ÊÝÂ¸ÍÑ£Ó£Ð£Á
@@ -412,7 +418,6 @@
       *        ¿ÇÎÅ¥³¡¼¥É
                05  TBLG-SRYCD           PIC X(09).
       *
-      *
       *    Ï«ºÒ¿Ç»¡ÎÁ¥Æ¡¼¥Ö¥ë
        01  TBL-RSI-SINSATU-AREA.
       *    ½é¿ÇÎÁ
@@ -470,7 +475,7 @@
            COPY    "CPORCSNUM.INC".
       *
       *    ¿ÇÎÅ¹Ô°Ù»»ÄêÊÔ½¸¥Ñ¥é¥á¥¿
-           COPY    "CPORCSC90.INC".
+           COPY    "CPORCSC90TEN.INC".
       *
       *    ¿ÇÎÅ¹Ô°Ù»»ÄêÎò¥Á¥§¥Ã¥¯¥Ñ¥é¥á¥¿
            COPY    "CPORCSC91.INC".
@@ -1117,12 +1122,8 @@
                    INITIALIZE                  JYURRK-REC
                    MOVE    1               TO  FLG-JYURRK
                END-IF
-               MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
                MOVE    "JYURRK-KEY15"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+               PERFORM 900-DBCLOSE-SEC
                IF      FLG-JYURRK          =   ZERO
                    IF      JYURRK-SRYYMD       <   SPA-SRYYMD
                        MOVE    "8002"          TO  WRK-ERRCD
@@ -2224,6 +2225,7 @@
                            PERFORM 100112-COMMT1-SEC
                        END-IF
                END-EVALUATE
+      *
            END-IF
       *    £²²óÌÜ°Ê¹ß
       *    £Ë£°£²¤Î¤ß
@@ -2461,12 +2463,8 @@
                    MOVE    "SANTEI-KEY4"       TO  ORC-DBPATH
                    PERFORM 920-SANTEI-READ-SEC
                END-PERFORM
-               MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
                MOVE    "SANTEI-KEY4"       TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+               PERFORM 900-DBCLOSE-SEC
            END-PERFORM
            .
        10013-SANTEI-CNT-EXT.
@@ -2502,11 +2500,8 @@
            ELSE
                MOVE    1                   TO  FLG-SANTEI
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    WRK-DBPATH          TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
+           PERFORM 900-DBCLOSE-SEC
       *
            .
        100111-SANTEI-KEN-EXT.
@@ -2733,6 +2728,7 @@
       *
            MOVE    ZERO                TO  IDX-MAX
            MOVE    ZERO                TO  IDX-SYU
+           MOVE    1                   TO  IDX-STR
       *
            INITIALIZE                  WRK-AREA
            INITIALIZE                  ORCSC90AREA
@@ -2740,7 +2736,8 @@
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
                    UNTIL      (IDX-Z       >   200     )   OR
                               (SPA-ERRCD       NOT =   SPACE )  OR
-                              (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
+                             ((WRK-GMN-INPUTCD (IDX-Z) =   SPACE ) AND
+                              (WRK-COM-INPUTCD (IDX-Z) =   SPACE ))
       *
                ADD     1                   TO  IDX-MAX
       *
@@ -2748,7 +2745,8 @@
                MOVE    SPACE               TO  WRK-GMN-TENSU (IDX-Z)
                MOVE    SPACE               TO  WRK-GMN-KAISU (IDX-Z)
                MOVE    ZERO                TO  WRK-GMN-KEI   (IDX-Z)
-      *
+      *        ¼êµ»Ëè
+               INITIALIZE                   WRK-COM-PLUS-AREA(IDX-Z)
       *
                IF      WRK-GMN-INPUTCD(IDX-Z)(1:1)     =   "."  OR "*"
                    MOVE    WRK-GMN-INPUTCD(IDX-Z)(1:1) TO  WRK-MOJI
@@ -2773,39 +2771,19 @@
            END-PERFORM
       *
       *    ºÇ½ª¹Ô
-      *    ÌôºÞÅÀ¿ô·×»»
+      *    ³ä¹ç·×»»²Ã»»
+           IF      IDX-SYU             =   ZERO
+               MOVE    1                   TO  IDX-SYU
+           END-IF
+           PERFORM 1006-KASAN-SET-SEC
+      *    ¹ç·×ÅÀ¿ô·×»»¡¦ÊÔ½¸
            MOVE    "2"                 TO  LNK-SC90-KBN
-           MOVE    IDX-MAX             TO  LNK-SC90-IDX
-           CALL    "ORCSC90"           USING
+           MOVE    IDX-SYU             TO  LNK-SC90-IDX
+           MOVE    IDX-STR             TO  LNK-SC90-IDX-STR
+           MOVE    IDX-MAX             TO  LNK-SC90-IDX-END
+           CALL    "ORCSC90TEN"        USING
                                        ORCSC90AREA
                                        WRK-SCR-REC
-      *
-      *    ºàÎÁºÆ·×»»ÊÔ½¸
-           PERFORM 1007-KIZAI-TEN-SEC
-      *
-      *    ±ý¿ÇÎÁÊÔ½¸
-           IF      WRK-COM-SRYKBN (IDX-MAX)    =   "14"
-               MOVE    WRK-TENSU-O1        TO  LNK-SC90-TENSUKEI
-           END-IF
-      *    ³ä¹ç²Ã»»
-           PERFORM 1006-KASAN-SET-SEC
-      *
-           COMPUTE LNK-SC90-TENSUKEI   =   LNK-SC90-TENSUKEI
-                                       +   LNK-SC90-TENGAKEI
-                                       +   WRK-TENSU-O2
-      *    ³ÆÅÀ¿ôÊÔ½¸
-           MOVE    LNK-SC90-TENSUKEI   TO  WRK-COM-SYUTEN1 (IDX-MAX)
-           COMPUTE WRK-COM-YKZTEN (IDX-MAX)
-                                       =   LNK-SC90-ZAITEN
-                                       +   LNK-SC90-GAITEN
-      *    ´ïºàÅÀ¿ô
-           MOVE    LNK-SC90-KIZTEN     TO  WRK-COM-KIZAITEN (IDX-MAX)
-      *
-      *    ÅÀ¿ô·×¡¡·×»»
-           COMPUTE WRK-COM-TENSU (IDX-MAX) =   LNK-SC90-TENSUKEI
-                                           +   LNK-SC90-ZAITEN
-                                           +   LNK-SC90-GAITEN
-                                           +   LNK-SC90-KIZTEN
       *    ·×
            COMPUTE WRK-COM-KEI (IDX-MAX)   =   WRK-COM-TENSU  (IDX-MAX)
                                            *   LNK-ORCSC-KAISU
@@ -2828,19 +2806,47 @@
       *****************************************************************
        10021-KEISAN-SEC                  SECTION.
       *
-           MOVE    LNK-ORCSC-KAISU     TO  LNK-SC90-KAISU
-           MOVE    "1"                 TO  LNK-SC90-KBN
-           MOVE    IDX-Z               TO  LNK-SC90-IDX
-           CALL    "ORCSC90"           USING
-                                       ORCSC90AREA
-                                       WRK-SCR-REC
+           IF     (WRK-COM-INPUTCD(IDX-Z)(1:1) =   "1" ) AND
+                 ((WRK-COM-DATAKBN(IDX-Z)      =   "1" )  OR
+                  (WRK-COM-KOKUJISKBKBN1(IDX-Z)    =   1
+                                                   OR  3
+                                                   OR  5 ))
+      *        ÅÀ¿ô¤ò¸ÄÊÌ¤Ëµ­ºÜ
+               IF      IDX-SYU             >   ZERO
+      *            ³ä¹ç²Ã»»
+                   PERFORM 1006-KASAN-SET-SEC
+      *            ÅÀ¿ô·×»»
+                   PERFORM 1007-TENSU-SUM-SEC
+               END-IF
+               MOVE    IDX-Z               TO  IDX-SYU
+           END-IF
       *
-      *    ±ý¿ÇÎÁ¤Î»þ¡¢±ý¿Ç¶èÊ¬¤Ë¤è¤ê¡¢ÅÀ¿ô½¸·×¤òÊÑ¹¹¤¹¤ë
-           IF     (WRK-COM-INPUTCD (IDX-Z)(1:1)    =   "1"  ) AND
-                  (WRK-COM-SRYKBN      (IDX-Z)     =   "14" )  AND
-                  (WRK-COM-TENSIKIBETU (IDX-Z) NOT =   5    )  AND
-                  (WRK-COM-TUSOKUGAIKBN(IDX-Z) NOT =   "1"  )
-               EVALUATE    WRK-COM-OSINKBN (IDX-Z)
+      *    ¼êµ»ÅÀ¿ô·×»»
+           EVALUATE    WRK-MOJI
+               WHEN    "1"
+                   PERFORM 100211-SYUGITEN-KEI-SEC
+           END-EVALUATE
+      *    ²ó¿ô
+           MOVE    LNK-ORCSC-KAISU     TO  WRK-COM-KAISU (IDX-Z)
+      *
+           .
+       10021-KEISAN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¼êµ»ÅÀ¿ô·×»»½èÍý
+      *****************************************************************
+       100211-SYUGITEN-KEI-SEC              SECTION.
+      *
+           IF      WRK-COM-TENSIKIBETU (IDX-Z)     =   5
+                                                   OR  6
+               CONTINUE
+           ELSE
+      *        ±ý¿ÇÎÁ¤Î»þ¡¢±ý¿Ç¶èÊ¬¤Ë¤è¤ê¡¢ÅÀ¿ô½¸·×¤òÊÑ¹¹¤¹¤ë
+               IF     (WRK-COM-SRYKBN      (IDX-Z)     =   "14" )  AND
+                      (WRK-COM-TUSOKUGAIKBN(IDX-Z) NOT =   "1"  )  AND
+                      (WRK-COM-OSINKBN     (IDX-Z) NOT =   ZERO )
+                   EVALUATE    WRK-COM-OSINKBN (IDX-Z)
                    WHEN    1
                    WHEN    2
       *            ÆÃÊÌ±ý¿ÇÎÁ
@@ -2849,27 +2855,18 @@
                        ADD     WRK-COM-KISOTEN (IDX-Z) TO  WRK-TENSU-O1
                    WHEN    OTHER
                        ADD     WRK-COM-KISOTEN (IDX-Z) TO  WRK-TENSU-O2
-               END-EVALUATE
-           END-IF
-      *
-      *    ¼êµ»ÎÁÈ½Äê
-           IF      (WRK-MOJI                   =   "1"  )  AND
-                   (WRK-COM-DATAKBN (IDX-Z)    =   "1"  )
-               MOVE    IDX-Z               TO  IDX-SYU
-           END-IF
-      *
-      *    ³Æ¥Á¥§¥Ã¥¯½èÍý
-           EVALUATE    WRK-MOJI
-      *        ´ïºà
-               WHEN    "7"
-      *            »ÀÁÇ·×»»
-                   IF      WRK-COM-SANSOKBN (IDX-Z)    =   1
-                       PERFORM 100211-SANSO-KEI-SEC
+                   END-EVALUATE
+               ELSE
+      *        ÄÌÂ§²Ã»»ÂÐ¾Ý³°¶èÊ¬È½Äê
+                   IF      WRK-COM-TUSOKUGAIKBN(IDX-Z) =   "1"
+                       ADD     WRK-COM-KISOTEN (IDX-Z) TO  WRK-TENSU-GAI
+                   ELSE
+                       ADD     WRK-COM-KISOTEN(IDX-Z)  TO  WRK-TENSU-KEI
                    END-IF
-           END-EVALUATE
-      *
+               END-IF
+           END-IF
            .
-       10021-KEISAN-EXT.
+       100211-SYUGITEN-KEI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2879,24 +2876,32 @@
       *
            MOVE    ZERO                TO  WRK-TENSUKEI-G
            MOVE    ZERO                TO  WRK-TENSUKEI-GEN
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   200     )   OR
+           PERFORM VARYING     IDX     FROM    IDX-SYU BY  1
+                   UNTIL      (IDX         >=  IDX-Z       )   OR
                               (WRK-GMN-INPUTCD (IDX)   =   SPACE )
                IF     (WRK-COM-INPUTCD(IDX)(1:1)   =   "1" )  AND
                       (WRK-COM-TENSIKIBETU(IDX)    =   5   )
-                   MOVE    ZERO                TO  WRK-TENSUKEI
-                   COMPUTE WRK-TENSUKEI        =   LNK-SC90-TENSUKEI
+                   IF      WRK-COM-OSINKBN (IDX)   =   ZERO
+                       COMPUTE WRK-TENSUKEI    =   WRK-TENSU-KEI
                                                *   WRK-COM-KISOTEN(IDX)
                                                /   100
                                                +   0.5
-                   MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
+      *                ±ý¿Ç°Ê³°
+                       MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
+                   ELSE
+      *                ±ý¿Ç
+                       COMPUTE WRK-TENSUKEI    =   WRK-TENSU-O1
+                                               *   WRK-COM-KISOTEN(IDX)
+                                               /   100
+                                               +   0.5
+                       MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
+                   END-IF
                    ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-G
                END-IF
       *
                IF     (WRK-COM-INPUTCD(IDX)(1:1)   =   "1" )  AND
                       (WRK-COM-TENSIKIBETU(IDX)    =   6   )
-                   MOVE    ZERO                TO  WRK-TENSUKEI
-                   COMPUTE WRK-TENSUKEI        =   LNK-SC90-TENSUKEI
+                   COMPUTE WRK-TENSUKEI        =   WRK-TENSU-KEI
                                                *   WRK-COM-KISOTEN(IDX)
                                                /   100
                    MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
@@ -2904,7 +2909,10 @@
                END-IF
            END-PERFORM
       *
-           COMPUTE LNK-SC90-TENSUKEI   =   LNK-SC90-TENSUKEI
+           COMPUTE LNK-SC90-TENSU      =   WRK-TENSU-KEI
+                                       +   WRK-TENSU-GAI
+                                       +   WRK-TENSU-O1
+                                       +   WRK-TENSU-O2
                                        +   WRK-TENSUKEI-G
                                        -   WRK-TENSUKEI-GEN
       *
@@ -2913,84 +2921,23 @@
            EXIT.
       *
       *****************************************************************
-      *    »ÀÁÇ·×»»½èÍý
+      *    ¼êµ»Ëè¤Î·×»»½èÍý
       *****************************************************************
-       100211-SANSO-KEI-SEC            SECTION.
+       1007-TENSU-SUM-SEC            SECTION.
       *
-      *    »ÀÁÇÈ½Äê
-           MOVE    WRK-COM-INPUTCD (IDX-Z) TO  WRK-SRYCD
-           PERFORM 100115-SANSO-CHK-SEC
-           IF      FLG-SANSO-OK        =   1
-      *        »ÀÁÇ¶â³Û·×»»
-               COMPUTE WRK-SANSOKIN    =   WRK-COM-KISOTEN (IDX-Z)
-                                       *   WRK-COM-SURYO (IDX-Z)
-               ADD     WRK-SANSOKIN    TO  WRK-SANSOKIN-SUM
-           END-IF
+           MOVE    "1"                 TO  LNK-SC90-KBN
+           MOVE    IDX-SYU             TO  LNK-SC90-IDX
+           MOVE    IDX-STR             TO  LNK-SC90-IDX-STR
+           COMPUTE LNK-SC90-IDX-END    =   IDX-Z   -   1
+           CALL    "ORCSC90TEN"        USING
+                                       ORCSC90AREA
+                                       WRK-SCR-REC
       *
+           MOVE    IDX-Z               TO  IDX-STR
+           INITIALIZE                  WRK-TENSU-KEISAN
+           MOVE    ZERO                TO  LNK-SC90-TENSU
            .
-       100211-SANSO-KEI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ºàÎÁºÆ·×»»ÊÔ½¸½èÍý
-      *****************************************************************
-       1007-KIZAI-TEN-SEC                SECTION.
-      *
-      *    »ÀÁÇ¤ÎÅÀ¿ô¿ô·×»»
-           IF      WRK-SANSOKIN-SUM    NOT =   ZERO
-               PERFORM 10071-SANSO-KEISAN-SEC
-           END-IF
-      *
-           .
-       1007-KIZAI-TEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *     »ÀÁÇ¤ÎÅÀ¿ô¿ô·×»»½èÍý
-      *****************************************************************
-       10071-SANSO-KEISAN-SEC                SECTION.
-      *
-      *
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   IDX-MAX
-               EVALUATE    WRK-COM-INPUTCD (IDX)
-      *            »ÀÁÇÊäÀµÎ¨¼«Æ°²Ã»»
-                   WHEN    "770020070"
-      *                »ÀÁÇ¶â³Û¡Ü¡Ê»ÀÁÇ¶â³Û¡ßÊäÀµÎ¨¡¿£±£°£°¡Ë¡¡»Í¼Î¸ÞÆþ
-                       COMPUTE WRK-SYOKEIS     =   WRK-SANSOKIN-SUM
-                                               *   WRK-COM-KISOTEN (IDX)
-                                               /   100
-                       COMPUTE WRK-SANSOKIN    =   WRK-SANSOKIN-SUM
-                                               +   WRK-SYOKEIS
-               END-EVALUATE
-           END-PERFORM
-      *
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   IDX-MAX
-               EVALUATE    WRK-COM-INPUTCD (IDX)
-      *            ¹âµ¤°µ»ÀÁÇ·×»»
-                   WHEN    "770030070"
-      *                »ÀÁÇ¶â³Û¡Ü¡Ê»ÀÁÇ¶â³Û¡ßÊäÀµÎ¨¡¿£±£°£°¡Ë
-      *                                           ¡ßµ¤°µ¿ô¡¡»Í¼Î¸ÞÆþ
-                       COMPUTE WRK-SYOKEIS     =   WRK-SANSOKIN
-                                               *   WRK-COM-SURYO (IDX)
-                       MOVE    WRK-SYOKEIS     TO  WRK-SANSOKIN
-               END-EVALUATE
-           END-PERFORM
-      *    »ÀÁÇ¤ÎÅÀ¿ô¿ô·×»»
-      *    ¶â³Û·×¡¡»Í¼Î¸ÞÆþ
-           COMPUTE WRK-SYOKEI          =   WRK-SANSOKIN
-                                       +   0.5
-      *    ¶â³Û·×¡à£±£°¡¡»Í¼Î¸ÞÆþ
-           COMPUTE WRK-SYOKEIS2        =   WRK-SYOKEI
-                                       /   10
-                                       +   0.5
-           MOVE    WRK-SYOKEIS2        TO  WRK-SANTEN
-      *    »ÀÁÇ¤ÎÅÀ¿ô¤ò´ïºàÅÀ¿ô¤Ë²Ã»»
-           ADD     WRK-SANTEN          TO  LNK-SC90-KIZTEN
-      *
-           .
-       10071-SANSO-KEISAN-EXT.
+       1007-TENSU-SUM-EXT.
            EXIT.
       *****************************************************************
       *    Á´¿ÇÎÅ¹Ô°Ù¥Á¥§¥Ã¥¯½èÍý
@@ -4074,6 +4021,10 @@
                                            NOT =   "101"  )   AND
                        (WRK-COM-GAIKANRIKBN(IDX-Z)
                                                =   1   )
+      *             ¹ð¼¨¶èÊ¬£²¤¬²Ã»»°Ê³°
+                   AND (WRK-COM-DATAKBN (IDX-Z)    =   "1" )
+                   AND (WRK-COM-KOKUJISKBKBN2(IDX-Z)
+                                               =   1  OR  3  OR  5)
                    IF     (WRK-COM-SYUTEN2 (IDX-Z) >  ZERO )  AND
                           (WRK-COM-SYUTEN2 (IDX-Z)
                                                <   LNK-ORCSC-GAIRAI-TEN)
@@ -4102,13 +4053,16 @@
                    UNTIL      (IDX-Z       >   200      )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
-      *
                     IF     (WRK-COM-SRYKBN     (IDX-Z)
                                           NOT =   "95" AND "96") AND
                            (WRK-COM-INPUTCD(IDX-Z)(1:3)
                                            NOT =   "101"  )   AND
                            (WRK-COM-GAIKANRIKBN(IDX-Z)
                                                =   1   )
+      *                ¹ð¼¨¶èÊ¬£²¤¬²Ã»»°Ê³°
+                       AND (WRK-COM-DATAKBN (IDX-Z)    =   "1" )
+                       AND (WRK-COM-KOKUJISKBKBN2(IDX-Z)
+                                               =   1  OR  3  OR  5)
                        IF     (WRK-COM-SYUTEN2 (IDX-Z)
                                                >   ZERO   )  AND
                               (WRK-COM-SYUTEN2 (IDX-Z)
@@ -4143,8 +4097,8 @@
                    ELSE
                        MOVE    IDX-SYU2        TO  IDX-Z
                        PERFORM
-                           UNTIL   WRK-COM-SRYKBN (IDX-Z) NOT =  "12"
-                            OR     WRK-COM-ZAIEND (IDX-Z)     =  "1"
+                           UNTIL  (WRK-COM-SRYKBN (IDX-Z) NOT =  "12")
+                            OR    (WRK-COM-ZAIEND (IDX-Z)     =  "1" )
                            ADD     1               TO  IDX-Z
                        END-PERFORM
       *                ³°Íè´ÉÍý²Ã»»¥³¡¼¥ÉÄÉ²Ã½èÍý
@@ -4166,9 +4120,9 @@
                  AND  (LNK-ORCSC-GAIKANRIKBN-CHK   NOT =   "2" )
                        MOVE    IDX-SYU2        TO  IDX-Z
                        PERFORM
-                           UNTIL   WRK-COM-SRYKBN (IDX-Z)
-                                                         NOT =  "12"
-                            OR     WRK-COM-ZAIEND (IDX-Z)    =  "1"
+                           UNTIL  (WRK-COM-SRYKBN (IDX-Z)
+                                                         NOT =  "12")
+                            OR    (WRK-COM-ZAIEND (IDX-Z)    =  "1")
                            ADD     1               TO  IDX-Z
                        END-PERFORM
       *                ³°Íè´ÉÍý²Ã»»¥³¡¼¥ÉÄÉ²Ã½èÍý
@@ -4503,12 +4457,8 @@
                MOVE    1                   TO  FLG-TENSU
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 900-DBCLOSE-SEC
       *
            .
        910-TENSU-READ-EXT.
@@ -4556,5 +4506,16 @@
            .
        970-JYURRK-READ-EXT.
            EXIT.
+      *****************************************************************
+      *    £Ä£Â£Ã£Ì£Ï£Ó£Å½èÍý
+      *****************************************************************
+       900-DBCLOSE-SEC         SECTION.
       *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+           .
+       900-DBCLOSE-EXT.
+           EXIT.
       *

@@ -31,6 +31,7 @@
       *  01.00.02    NACL-多々納  03/04/01  翌月調剤料の算定修正
       *  01.00.03    NACL-多々納  03/05/12  剤チェックをサブへ
       *  01.00.04    NACL-多々納  04/11/11  調剤料算定判定の追加
+      *  01.00.05    NACL-多々納  05/04/22  レセ電対応
       *****************************************************************
       *
       *
@@ -119,6 +120,9 @@
            03  IDX-ATO             PIC 9(04).
            03  IDX-1               PIC 9(02).
            03  IDX-2               PIC 9(02).
+      *
+           03  IDW                 PIC 9(04).
+           03  IDW2                PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -253,6 +257,10 @@
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
+      *    診療会計附加情報マスタ−
+       01  SRYACCTPLUS-REC.
+           COPY    "CPSRYACCTPLUS.INC".
+      *
       *    患者コメント
        01  PTCOM-REC.
            COPY    "CPPTCOM.INC".
@@ -296,6 +304,10 @@
        01  WRK-WKSRYACT-REC.
            COPY    "CPWKSRYACT.INC"  REPLACING
                                     //WKSRY-// BY //WRK-WKSRY-//.
+      *    附加情報を追加
+           03  WRK-WKSRYACTPLUS-REC.
+           COPY    "CPWKSRYACTPLUS.INC"  REPLACING
+                                     //WKSRYP-// BY //WRK-WKSRYP-//.
       *
       *    受診履歴
        01  TBL-JYURRK-AREA.
@@ -644,6 +656,13 @@
            IF      FLG-SINKI           =   1
                PERFORM 4501-SRYACT-SYORI-SEC
            END-IF
+      *!!
+      *    診療会計附加情報処理 
+           IF     (FLG-SINKI           =   1 )  AND
+                  (LNK-WKSRYP-ADDKBN(01)   =   "1"  )
+               PERFORM 4503-SRYACCTPLUS-SYORI-SEC
+           END-IF
+      *!!
       *
       *    算定履歴更新処理
            PERFORM 4502-SANTEI-SYORI-SEC
@@ -1443,6 +1462,77 @@
            .
        45021-SANTEI-UPD-EXT.
            EXIT.
+      *!!
+      *****************************************************************
+      *    診療会計附加情報処理
+      *****************************************************************
+       4503-SRYACCTPLUS-SYORI-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  SRYACCTPLUS-REC
+           INITIALIZE                  SRYACCTPLUS-REC
+           MOVE    ACCT-HOSPID         TO  ACCTP-HOSPID
+           MOVE    ACCT-NYUGAIKBN      TO  ACCTP-NYUGAIKBN
+           MOVE    ACCT-PTID           TO  ACCTP-PTID
+           MOVE    ACCT-SRYKA          TO  ACCTP-SRYKA
+           MOVE    ACCT-SRYYM          TO  ACCTP-SRYYM
+           MOVE    ACCT-ZAINUM         TO  ACCTP-ZAINUM
+      *    連番号
+           MOVE    1                   TO  ACCTP-RENNUM
+      *    点数区分
+           MOVE    LNK-WKSRYP-PLUSKBN (1)
+                                       TO  ACCTP-PLUSKBN
+      *    労災の円
+           MOVE    LNK-WKSRYP-RSIKINGAKU(1)
+                                       TO  ACCTP-RSIKINGAKU
+      *
+           PERFORM VARYING     IDW     FROM    1   BY  1
+                   UNTIL       IDW     >   5
+               MOVE    LNK-WKSRYP-SRYCD (1 IDW)
+                                           TO  ACCTP-SRYCD (IDW)
+               MOVE    LNK-WKSRYP-SYUTEN (1 IDW)
+                                           TO  ACCTP-SYUTEN (IDW)
+               MOVE    LNK-WKSRYP-YKZTEN (1 IDW)
+                                           TO  ACCTP-YKZTEN (IDW)
+               MOVE    LNK-WKSRYP-KIZAITEN (1 IDW)
+                                           TO  ACCTP-KIZAITEN (IDW)
+               MOVE    LNK-WKSRYP-FIRTEN (1 IDW)
+                                           TO  ACCTP-FIRTEN (IDW)
+           END-PERFORM
+      *    酸素点数
+           MOVE    LNK-WKSRYP-SANSOTEN (1) TO  ACCTP-SANSOTEN
+      *    窒素点数
+           MOVE    LNK-WKSRYP-CHISOTEN (1) TO  ACCTP-CHISOTEN
+      *
+           PERFORM 4503-SRYACCTPLUS-INS-SEC
+           .
+       4503-SRYACCTPLUS-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療会計附加情報追加処理
+      *****************************************************************
+       4503-SRYACCTPLUS-INS-SEC              SECTION.
+      *
+           MOVE    SMCNDATE-YMD        TO  ACCTP-CREYMD
+           MOVE    SMCNDATE-YMD        TO  ACCTP-UPYMD
+           MOVE    SMCNDATE-HMS        TO  ACCTP-UPHMS
+      *
+           MOVE    SRYACCTPLUS-REC     TO  MCPDATA-REC
+           MOVE    PATH-TBL-SRYACCTPLUS-KEY
+                                       TO  MCP-PATH
+           MOVE    "DBINSERT"          TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           IF      MCP-RC          NOT =   ZERO
+              DISPLAY "K03 SRYACCTPLUS INS ERR:" ACCTP-KEY  "."
+              DISPLAY "MCP-RC:" MCP-RC ":" 
+              MOVE    "0005"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       4503-SRYACCTPLUS-INS-EXT.
+           EXIT.
       *
       *****************************************************************
       *    翌月分診療行為マスター更新処理
@@ -1480,6 +1570,13 @@
            IF      FLG-SINKI           =   1
                PERFORM 4501-SRYACT-SYORI-SEC
            END-IF
+      *!!
+      *    診療会計附加情報処理 
+           IF     (FLG-SINKI           =   1 )  AND
+                  (LNK-WKSRYP-ADDKBN(01)   =   "1"  )
+               PERFORM 4503-SRYACCTPLUS-SYORI-SEC
+           END-IF
+      *!!
       *
       *    算定履歴更新処理
            PERFORM 4502-SANTEI-SYORI-SEC
@@ -1517,7 +1614,6 @@
                    END-IF
                END-PERFORM
            END-PERFORM
-      *
       *
            .
        200-JYURRK-SYORI-EXT.
@@ -2080,6 +2176,27 @@
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "K03 SRYACCT DEL ERR:" MCP-RC
                         ",KEY:" ACCT-KEY
+           END-IF
+      *
+      *    附加情報削除
+           INITIALIZE                  SRYACCTPLUS-REC
+           MOVE    ACCT-HOSPID         TO  ACCTP-HOSPID
+           MOVE    ACCT-NYUGAIKBN      TO  ACCTP-NYUGAIKBN
+           MOVE    ACCT-PTID           TO  ACCTP-PTID
+           MOVE    ACCT-SRYKA          TO  ACCTP-SRYKA
+           MOVE    ACCT-SRYYM          TO  ACCTP-SRYYM
+           MOVE    ACCT-ZAINUM         TO  ACCTP-ZAINUM
+      *
+           MOVE    SRYACCTPLUS-REC     TO  MCPDATA-REC
+           MOVE    PATH-TBL-SRYACCTPLUS-DEL2
+                                       TO  MCP-PATH
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO
+               DISPLAY "K03  SRYACCTPLUS  DEL ERR:" MCP-RC
+                     ",KEY:" ACCTP-KEY
            END-IF
       *
            .

@@ -2258,7 +2258,8 @@
                                        *   WRK-SRYKAISUKEI
            MOVE    WRK-KEI-G           TO  WRK-KEI
       *    ¹ç·×ÅÀ¿ô½¸·×
-           IF      LNK-WKSRY-SRYCD (01 01)     =   "630010002"
+      *****IF      LNK-WKSRY-SRYCD (01 01)     =   "630010002"
+           IF      LNK-WKSRYP-PLUSKBN (01)     =   1
       *        ÌôºÞÎÁÄþ¸º¡¡¤ò¸º»»
                COMPUTE SPA-GMN-GOKEI       =   SPA-GMN-GOKEI
                                            -   WRK-KEI-G
