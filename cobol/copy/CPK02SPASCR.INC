@@ -102,7 +102,7 @@
                        09  SPA-COM-SYUTEN2       PIC 9(08).
       *                薬剤点数
                        09  SPA-COM-YKZTEN        PIC 9(08).
-      *                薬剤点数
+      *                器材点数
                        09  SPA-COM-KIZAITEN      PIC 9(08).
       *
                        09  SPA-COM-ZAINUM        PIC 9(08).
@@ -176,16 +176,23 @@
       *                剤合計点数（訂正前）
                        09  SPA-COM-MAE-TENSU     PIC 9(08).
       *        診療会計附加項目
-      *                労災の円
-                       09  SPA-COM-RSIKIN        PIC  9(08).
+                       09  SPA-COM-PLUS-AREA.
       *                手技毎
-                       09  SPA-COM-SYUFLG        PIC  9(01).
+                           11  SPA-COM-SYUFLG        PIC  9(01).
+      *                労災金額
+                           11  SPA-COM-RSIKIN        PIC  9(08).
       *                酸素点数
-                       09  SPA-COM-SANSOTEN      PIC  9(07).
+                           11  SPA-COM-SANSOTEN      PIC  9(08).
       *                窒素点数
-                       09  SPA-COM-CHISOTEN      PIC  9(07).
+                           11  SPA-COM-CHISOTEN      PIC  9(08).
       *                フィルム点数
-                       09  SPA-COM-FIRTEN        PIC  9(07).
+                           11  SPA-COM-FIRTEN-M      PIC  9(08).
+      *                手技毎の点数
+                           11  SPA-COM-SYUTEN-M      PIC  9(08).
+      *                薬剤点数
+                           11  SPA-COM-YKZTEN-M      PIC 9(08).
+      *                器材点数
+                           11  SPA-COM-KIZTEN-M      PIC 9(08).
       *        点数マスタ項目
       *                点数マスタの診療区分
                        09  SPA-COM-TNSSRYKBN     PIC X(02).
@@ -255,11 +262,23 @@
                        09  SPA-COM-NYUTENTTLKBN    PIC  9(03).
       *                往診区分
                        09  SPA-COM-OSINKBN         PIC  9(01).
+      *                告示区分１（点数記載用）
+                       09  SPA-COM-KOKUJISKBKBN1   PIC  9(01).
+      *                告示区分２（点数記載用）
+                       09  SPA-COM-KOKUJISKBKBN2   PIC  9(01).
       *    画像診断
       *                きざみ値計算識別
                        09  SPA-COM-KZMCOMPSIKIBETU     PIC 9(01).
+      *                きざみ値計算下限
+                       09  SPA-COM-KZMKGN              PIC  9(08).
       *                きざみ値計算上限
                        09  SPA-COM-KZMJGN              PIC  9(08).
+      *                きざみ値
+                       09  SPA-COM-KZM                 PIC  9(08).
+      *                きざみ値
+                       09  SPA-COM-KZMTEN              PIC  9(07)V99.
+      *                きざみ値
+                       09  SPA-COM-KZMERR              PIC  9(01).
       *                包括逓減区分
                        09  SPA-COM-HOUKATUTEIGENKBN    PIC  9(03).
       *                年齢加算

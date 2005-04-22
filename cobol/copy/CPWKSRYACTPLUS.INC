@@ -19,14 +19,18 @@
       *    ワーク診療行為マスタ付加  COPY (CPWKSRYACTPLUS.INC)
       *
       *-------------------------------------------------*
-      *01  WKSRYACTPLUS-REC.
+      *03  WKSRYACTPLUS-REC.
+      *作成区分（１：あり）
+           05  WKSRYP-ADDKBN             PIC  X(01).
       *点数区分（０：プラス、１：マイナス）
            05  WKSRYP-PLUSKBN            PIC  9(01).
       *労災の円
            05  WKSRYP-RSIKINGAKU         PIC  9(07).
-      *手技毎の内容（手術・画像診断・処置）
+      *手技毎の内容（診察・手術・画像診断・処置）
            05  WKSRYP-SYUGI-TBL-G.
-               07  WKSRYP-SYUGI-TBL      OCCURS   3.
+               07  WKSRYP-SYUGI-TBL      OCCURS   5.
+      *開始手技コード
+                   09  WKSRYP-SRYCD          PIC  X(09).
       *手技点数
                    09  WKSRYP-SYUTEN         PIC  9(07).
       *薬剤点数
@@ -51,8 +55,8 @@
       *内服７種類逓減対象（１：逓減明細剤、２：逓減剤）
            05  WKSRYP-TEI-NKBN           PIC  9(01).
       *内服７種類逓減点数剤
-           05  WKSRYP-TEI-ZAINUM         PIC  9(08).
+      *    05  WKSRYP-TEI-ZAINUM         PIC  9(08).
       *内服７種類逓減対象剤番号
-           05  WKSRYP-GRP-ZAINUM         PIC  9(08)
-                                         OCCURS   50.
+      *    05  WKSRYP-GRP-ZAINUM         PIC  9(08)
+      *                                  OCCURS   50.
       *
