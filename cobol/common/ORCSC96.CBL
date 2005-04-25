@@ -1083,6 +1083,9 @@
                WHEN    "1034"
                    MOVE    "保険組合せがありません。選択し直して下さい"
                                        TO  SPA-ERRMSG
+               WHEN    "K034"
+                   MOVE    "警告！地方公費のみの保険組合せです。"
+                                       TO  SPA-ERRMSG
                WHEN    "1036"
                    MOVE    "受診履歴の伝票番号がゼロです。"
                                        TO  SPA-ERRMSG

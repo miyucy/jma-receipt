@@ -200,6 +200,7 @@
       *----(01.00.15) LINE ADD END   ---------------------------------
            03  IDX2                PIC 9(04).
            03  IDX-H               PIC 9(04).
+           03  IDXH                PIC 9(04).
       *
            03  IDT                 PIC 9(04).
       *
@@ -388,6 +389,7 @@
                        09  WRK-NAI-TKOH2HKNNUM     PIC X(03).
                        09  WRK-NAI-TKOH3HKNNUM     PIC X(03).
                        09  WRK-NAI-TKOH4HKNNUM     PIC X(03).
+                   07  WRK-HKNCOMBI-MAX            PIC 9(04).
             05  WRK-SORT-KEY.
                 09  WRK-SRT-TEKISTYMD      PIC X(08).
                 09  WRK-SRT-HKNCOMBINUM    PIC X(04).
@@ -1695,7 +1697,6 @@
                PERFORM 990-PARA-READ-SEC
            END-PERFORM
       *
-      *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PARA-KEY2"         TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
@@ -1849,6 +1850,7 @@
                MOVE    1               TO  FLG-PARA
            END-IF
       *
+           MOVE    SPACE               TO  WRK-HKNCOMBI
            PERFORM
                UNTIL   FLG-PARA            =   1
       *
@@ -1909,6 +1911,12 @@
                                         ORCMCPAREA
                                         MCPDATA-REC
       *
+           IF      WRK-HKNCOMBI        =   SPACE
+               IF      SPA-NAI-RSIONLY     =   ZERO
+                   MOVE    1               TO  SPA-NAI-RSIONLY
+                   MOVE    "K120"          TO  SPA-ERRCD
+               END-IF
+           END-IF
            .
        31032-RSI-HKNCOMBI-HEN-EXT.
            EXIT.
@@ -2425,63 +2433,65 @@
            END-IF
       *
       *    Í¹ÊØÈÖ¹æ
-           PERFORM 4101-POST-CHK-SEC
-           IF     (SPA-ERRCD       NOT =   SPACE )  OR
-                  (SPA-FLG-END     NOT =   ZERO  )
-               GO      TO      4102-KIHON-CHK-EXT
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-FLG-END         =   ZERO  )
+               PERFORM 4101-POST-CHK-SEC
            END-IF
       *    ½»½ê
-           PERFORM 4101-ADRS-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-FLG-END         =   ZERO  )
+               PERFORM 4101-ADRS-CHK-SEC
            END-IF
       *    ÈÖÃÏÊý½ñ
-           PERFORM 4101-BANTI-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-FLG-END         =   ZERO  )
+               PERFORM 4101-BANTI-CHK-SEC
            END-IF
       *    À¤ÂÓ¼ç
-           PERFORM 4101-SETAINUSI-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-FLG-END         =   ZERO  )
+               PERFORM 4101-SETAINUSI-CHK-SEC
            END-IF
       *    Â³ÊÁ
-           PERFORM 4101-ZOKUGARA-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-FLG-END         =   ZERO  )
+               PERFORM 4101-ZOKUGARA-CHK-SEC
            END-IF
       *    ¸ºÌÈ»öÍ³
-           PERFORM 4101-DISCOUNTKBN-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-FLG-END         =   ZERO  )
+               PERFORM 4101-DISCOUNTKBN-CHK-SEC
            END-IF
       *    ³ä°úÎ¨
-           PERFORM 4101-DISCOUNT-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-FLG-END         =   ZERO  )
+               PERFORM 4101-DISCOUNT-CHK-SEC
            END-IF
       *    ¾õÂÖ£±¤«¤é£³
-           PERFORM 4101-CONDITIONH-SET-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-FLG-END         =   ZERO  )
+               PERFORM 4101-CONDITIONH-SET-SEC
            END-IF
       *    ¾õÂÖ£±¤«¤é£³
-           PERFORM 4101-CONDITIONH-SET-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-FLG-END         =   ZERO  )
+               PERFORM 4101-CONDITIONH-SET-SEC
            END-IF
       *    ¶Ø´÷Â¾
-           PERFORM 4101-COMMENT-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-FLG-END         =   ZERO  )
+               PERFORM 4101-COMMENT-CHK-SEC
            END-IF
       *    ÊÝ¸±ÁÈ¹ç¤»ÁªÂò
-           PERFORM 4101-SELNUM-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-FLG-END         =   ZERO  )
+               PERFORM 4101-SELNUM-CHK-SEC
            END-IF
       *    ¿ÇÎÅ²ÊÁªÂò
-           PERFORM 4101-SRYKA-CHK-SEC
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-FLG-END         =   ZERO  )
+               PERFORM 4101-SRYKA-CHK-SEC
+           END-IF
            .
       *
        4102-KIHON-CHK-EXT.
@@ -5389,12 +5399,19 @@
                   (SPA-FLG-END     NOT =   ZERO  )
                GO      TO      490-TOUROKU-EXT
            END-IF
+      *    ÊÝ¸±ÁÈ¹ç¤»¸øÈñÃ±ÆÈ¥Á¥§¥Ã¥¯
+           IF     (SPA-NAI-KOHONLY     =   ZERO ) AND
+                  (SPA-TAGU-FLG        =   ZERO )
+               PERFORM 4901-KOHONLY-CHK-SEC
+           END-IF
       *
       *    ¥«¥ë¥ÆÈ¯¹Ô¤¢¤ê¤Î»þ¡¢ÊÝ¸±ÁÈ¹ç¤»¤Î¥Á¥§¥Ã¥¯
-           IF      SPA-GMN-HAKKO       =   "1"
-               IF      SPA-NAI-KARUTE-HAKKO    =   "2"
-                   IF      SPA-GMN-SELNUM      =   ZERO
-                       PERFORM 4901-KARUTE-CHEK-SEC
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-GMN-HAKKO       =   "1"
+                   IF      SPA-NAI-KARUTE-HAKKO    =   "2"
+                       IF      SPA-GMN-SELNUM      =   ZERO
+                           PERFORM 4901-KARUTE-CHEK-SEC
+                       END-IF
                    END-IF
                END-IF
            END-IF
@@ -5402,6 +5419,70 @@
       *
            .
        490-TOUROKU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÊÝ¸±ÁÈ¹ç¤»¸øÈñÃ±ÆÈ¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       4901-KOHONLY-CHK-SEC             SECTION.
+      *
+           INITIALIZE                      PARA-REC
+           MOVE    "P02"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    "HKNCOMBI"          TO  PARA-FILEMEI
+      *
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PARA-KEY2"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "PARA-KEY2"         TO  ORC-DBPATH
+               PERFORM 990-PARA-READ-SEC
+           ELSE
+               INITIALIZE                  PARA-REC
+               MOVE    1               TO  FLG-PARA
+           END-IF
+      *
+           PERFORM
+               UNTIL   FLG-PARA        NOT =   ZERO
+               MOVE    PARA-DATA-REC       TO  HKNCOMBI-REC
+      *        ÃÏÊý¸øÈñÃ±ÆÈÈ½Äê
+               IF     (COMB-DELKBN         =   "1"       )  OR
+                      (SPA-SYSYMD          >   COMB-TEKEDYMD)
+                   CONTINUE
+               ELSE
+                   IF      (COMB-HKNNUM         =   SPACE )  AND
+                          (COMB-KOH1HKNNUM     >=  "100"  AND
+                                               <=  "899"  )  AND
+                         ((COMB-KOH2HKNNUM     =   SPACE  ) OR
+                          (COMB-KOH2HKNNUM     >=  "100"  AND
+                                               <=  "899"  )) AND
+                         ((COMB-KOH3HKNNUM     =   SPACE  ) OR
+                          (COMB-KOH3HKNNUM     >=  "100"  AND
+                                               <=  "899"  )) AND
+                         ((COMB-KOH4HKNNUM     =   SPACE  ) OR
+                          (COMB-KOH4HKNNUM     >=  "100"  AND
+                                               <=  "899"  ))
+                       MOVE    "K010"         TO  SPA-ERRCD
+                       MOVE    1              TO  SPA-NAI-KOHONLY
+                   END-IF
+               END-IF
+      *
+               MOVE    "PARA-KEY2"         TO  ORC-DBPATH
+               PERFORM 990-PARA-READ-SEC
+           END-PERFORM
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "PARA-KEY2"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           .
+       4901-KOHONLY-CHK-EXT.
            EXIT.
       *
       *****************************************************************

@@ -391,7 +391,9 @@
                    07  SPA-MAE-POST            PIC X(07).
                    07  SPA-MAE-DISCOUNTKBN     PIC X(02).
                    07  SPA-MAE-HONKZKKBN       PIC X(01).
-      *
+      *        地方公費単独チェック
+               05  SPA-NAI-KOHONLY             PIC 9(01).
+               05  SPA-NAI-RSIONLY             PIC 9(01).
       *
       *    保険・公費情報
            03  SPA-HKNKOH-AREA.

@@ -195,6 +195,9 @@
       *        訂正時点数変更チェック
                05  SPA-TEISEI-CHK              PIC 9(01).
                05  SPA-TEISEI-ERR              PIC 9(01).
+      *        地方公費のみチェック
+               05  SPA-NAI-KOHFLG              PIC 9(01).
+               05  SPA-NAI-KOHFLG-ERR          PIC 9(01).
       *!!
       *        内分泌負荷試験検査情報
                05  SPA-NAI-FUKATEN-AREA.
@@ -442,6 +445,8 @@
                    07  SPA-K97-HKN-LIST    OCCURS  15.
                        09  SPA-K97-THKNCOMBINUM   PIC X(04).
                        09  SPA-K97-THKNCOMBIMEI   PIC X(50).
+                       09  SPA-K97-TKOHONLY       PIC 9(01).
+                       09  SPA-K97-TKOHONLY-CHK   PIC 9(01).
                    07  SPA-K97-HKN-MAX            PIC 9(04).
       *
                05  SPA-GMN-DRCDLST-G.

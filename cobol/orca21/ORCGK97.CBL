@@ -239,7 +239,7 @@
            MOVE    1                   TO  SPA-GMN-CUR
       *
            .
-       3OO-SCREEN-EXT.
+       300-SCREEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -263,11 +263,37 @@
                                            TO  SPA-K97-THKNCOMBINUM(IDY)
                    MOVE    SPA-GMN-THKNCOMBIMEI(IDX)
                                            TO  SPA-K97-THKNCOMBIMEI(IDY)
+      *            地方公費のみ
+                   IF     (SPA-NAI-HKNNUM (IDX)    =   SPACE )  AND
+                          (SPA-NAI-KOH1HKNNUM(IDX) >=  "100" AND
+                                                   <=  "899"  ) AND
+                         ((SPA-NAI-KOH2HKNNUM(IDX) =   SPACE ) OR
+                          (SPA-NAI-KOH2HKNNUM(IDX) >=  "100" AND
+                                                   <=  "899" )) AND
+                         ((SPA-NAI-KOH3HKNNUM(IDX) =   SPACE ) OR
+                          (SPA-NAI-KOH3HKNNUM(IDX) >=  "100" AND
+                                                   <=  "899" )) AND
+                         ((SPA-NAI-KOH4HKNNUM(IDX) =   SPACE ) OR
+                          (SPA-NAI-KOH4HKNNUM(IDX) >=  "100" AND
+                                                   <=  "899"  ))
+                       MOVE    1           TO  SPA-K97-TKOHONLY (IDY)
+                   END-IF
                    MOVE    IDY             TO  SPA-K97-HKN-MAX
                END-IF
            END-PERFORM
       *
       *    ドクター編集
+           PERFORM 3101-DRCD-SPASET-SEC
+      *
+           .
+       310-SPA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ドクター編集処理
+      *****************************************************************
+       3101-DRCD-SPASET-SEC            SECTION.
+      *
            INITIALIZE                  ORCSDRSETAREA
            MOVE    "1"                 TO  ORCSDR-KBN
            MOVE    SPA-SRYYMD          TO  ORCSDR-SYSYMD
@@ -290,7 +316,7 @@
            END-IF
       *
            .
-       310-SPA-SET-EXT.
+       3101-DRCD-SPASET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -491,9 +517,13 @@
       *
            PERFORM 2202-SELNUM1-CHK-SEC
       *
-           PERFORM 2203-SELNUM2-CHK-SEC
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 2203-SELNUM2-CHK-SEC
+           END-IF
       *
-           PERFORM 2204-SELNUM3-CHK-SEC
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 2204-SELNUM3-CHK-SEC
+           END-IF
       *
            .
        220-INPUT-CHK-EXT.
@@ -617,6 +647,12 @@
                               (SPA-K97-SELNUM1 =   ZERO  )    OR
                               (SPA-ERRCD   NOT =   SPACE )
                IF      SPA-K97-SELNUM1     =   SPA-K97-THKNCOMBINUM(IDX)
+                   IF     (SPA-K97-TKOHONLY (IDX)  =   1  ) AND
+                          (SPA-K97-TKOHONLY-CHK(IDX)   =   ZERO )
+                       MOVE    "K001"          TO  SPA-ERRCD
+                       MOVE    1               TO  SPA-K97-TKOHONLY-CHK
+                                                                   (IDX)
+                   END-IF
                    MOVE    1               TO  FLG-CHK
                END-IF
            END-PERFORM
@@ -678,7 +714,8 @@
                IF     (SPA-K97-SELNUM2 NOT =   ZERO  )  AND
                       (SPA-K97-SELNUM2 NOT =   SPA-K97-SRYKA)
                    MOVE    SPA-K97-SELNUM2     TO  SPA-K97-SRYKA
-                   PERFORM 310-SPA-SET-SEC
+      *            ドクター編集
+                   PERFORM 3101-DRCD-SPASET-SEC
                    PERFORM 22031-UKETUKE-CHK-SEC
                END-IF
                IF      SPA-K97-SELNUM2     =   ZERO
@@ -967,6 +1004,9 @@
                                        TO  SPA-ERRMSG
                WHEN    "0003"
                    MOVE    "ドクターコードがありません。"
+                                       TO  SPA-ERRMSG
+               WHEN    "K001"
+                   MOVE    "警告！地方公費のみの保険組合せです。"
                                        TO  SPA-ERRMSG
            END-EVALUATE
       *

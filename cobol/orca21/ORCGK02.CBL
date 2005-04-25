@@ -3252,6 +3252,8 @@
       *
            MOVE    ZERO                TO  SPA-RJN-ERR
            MOVE    ZERO                TO  SPA-HKN-ERR
+           MOVE    ZERO                TO  SPA-NAI-KOHFLG-ERR
+           MOVE    ZERO                TO  SPA-NAI-KOHFLG
       *
       *    Ｈ１５．４以降の保険期間が違う時
            IF      AGECHK-HKNCHK       =   1
@@ -3282,6 +3284,22 @@
            MOVE    AGECHK-ROUJIN       TO  SPA-NAI-ROUJIN
            MOVE    AGECHK-ROUJIN2      TO  SPA-NAI-ROUJIN2
       *
+      *    地方公費のみの
+           IF     (SPA-HKNNUM          =   SPACE )  AND
+                  (SPA-KOH1HKNNUM      >=  "100"  AND
+                                       <=  "899"  )  AND
+                 ((SPA-KOH2HKNNUM      =   SPACE  ) OR
+                  (SPA-KOH2HKNNUM      >=  "100"  AND
+                                       <=  "899"  )) AND
+                 ((SPA-KOH3HKNNUM      =   SPACE  ) OR
+                  (SPA-KOH3HKNNUM      >=  "100"  AND
+                                       <=  "899"  )) AND
+                 ((SPA-KOH4HKNNUM      =   SPACE  ) OR
+                  (SPA-KOH4HKNNUM      >=  "100"  AND
+                                       <=  "899"  ))
+               MOVE    ZERO            TO  SPA-NAI-KOHFLG-ERR
+               MOVE    1               TO  SPA-NAI-KOHFLG
+           END-IF
            .
        3101-HKNCOMBI-HEN-EXT.
            EXIT.
@@ -4529,6 +4547,8 @@
                    MOVE    SGDAY-SDAY          TO  SPA-NAI-SRYYMD
                    MOVE    ZERO                TO  SPA-HKN-ERR
                    MOVE    ZERO                TO  SPA-RJN-ERR
+                   MOVE    ZERO                TO  SPA-NAI-KOHFLG-ERR
+                   MOVE    ZERO                TO  SPA-NAI-KOHFLG
                    GO      TO      41017-SRYYMD-SYORI-EXT
                END-IF
       *        変更のない時、以降の処理はそのまま
@@ -9346,6 +9366,8 @@
       *
            MOVE    ZERO                TO  SPA-RJN-ERR
            MOVE    ZERO                TO  SPA-HKN-ERR
+           MOVE    ZERO                TO  SPA-NAI-KOHFLG-ERR
+           MOVE    ZERO                TO  SPA-NAI-KOHFLG
            IF      SPA-MACHIPG         =   "U02"
                MOVE    "U02"               TO  WRK-SAKIPG
                PERFORM 210-BACK-SYORI-SEC
@@ -10886,6 +10908,14 @@
                MOVE    5                   TO  SPA-GMN-CUR
                GO      TO      41001-KIHON-CHK-EXT
            END-IF
+      *    地方公費のみの場合、警告
+           IF      SPA-NAI-KOHFLG      =   1
+               IF      SPA-NAI-KOHFLG-ERR  =   ZERO
+                   MOVE    "K034"              TO  SPA-ERRCD
+                   MOVE    5                   TO  SPA-GMN-CUR
+                   GO      TO      41001-KIHON-CHK-EXT
+               END-IF
+           END-IF
       *
       *    診療行為入力チェック
            PERFORM 41011-KOUI-ALLHEN-SEC
@@ -11796,6 +11826,16 @@
                MOVE    "K999"              TO  SPA-ERRCD
                MOVE    1                   TO  SPA-TEISEI-CHK
                MOVE    1                   TO  SPA-GMN-CUR
+           END-IF
+      *    地方公費のみの場合、警告
+           IF     (SPA-NAI-KOHFLG      =   1   )  AND
+                  (SPA-ERRCD           =   SPACE
+                                       OR   "K034")
+               IF      SPA-NAI-KOHFLG-ERR  =   ZERO
+                   MOVE    "K034"              TO  SPA-ERRCD
+                   MOVE    5                   TO  SPA-GMN-CUR
+                   MOVE    1                   TO  SPA-NAI-KOHFLG-ERR
+               END-IF
            END-IF
       *
            IF      SPA-ERRCD       NOT =   SPACE
