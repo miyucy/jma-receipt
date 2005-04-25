@@ -504,6 +504,14 @@
                   (COMB-KOH4HKNNUM     =   "019" ))
                MOVE    1               TO  FLG-OK2
            END-IF
+      *    ∑Î£≥£µ§Œ§ﬂ§Œª˛
+           IF     (COMB-HKNNUM         =   SPACE )  AND
+                 ((COMB-KOH1HKNNUM     =   "011" )  OR
+                  (COMB-KOH2HKNNUM     =   "011" )  OR
+                  (COMB-KOH3HKNNUM     =   "011" )  OR
+                  (COMB-KOH4HKNNUM     =   "011" ))
+               MOVE    1               TO  FLG-OK2
+           END-IF
       *    œ∑øÕ∏¯»Ò§«°¢ªŸ ß∂Ë ¨§¨§¢§Îª˛
            IF    ((COMB-KOH1HKNNUM     =   "027" )  AND
                   (COMB-KOH1PAYKBN     =   "01" OR "02" ))  OR
@@ -662,7 +670,7 @@
            END-IF
            MOVE    "PTRSIINF-KEY"     TO  ORC-DBPATH
            PERFORM 990-DBCLOSE-SEC
-      *        º´«Â¿’¥µº‘¿¡µ·∂Ë ¨
+      *    º´«Â¿’¥µº‘¿¡µ·∂Ë ¨
            IF     (FLG-PTRSIINF        =   ZERO )  AND
                   (PTRSI-HKNKBN        =   "4"  )
                EVALUATE    PTRSI-JIBAISEIKBN
