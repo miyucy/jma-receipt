@@ -171,7 +171,9 @@ W06	{
 		};
 		CHK34	{
 			value	bool;
-                        state   int;
+		};
+		CHK35	{
+			value	bool;
 		};
 		KANRIAUTHCOMBO	{
 			KANRIAUTHFLG	{

@@ -70,9 +70,8 @@
                   04  W06-CHK33.
                     05  W06-CHK33-VALUE   PIC X.
                     05  W06-CHK33-STATE   PIC S9(9)   BINARY.
-                  04  W06-CHK34.
-                    05  W06-CHK34-VALUE   PIC X.
-                    05  W06-CHK34-STATE   PIC S9(9)   BINARY.
+                  04  W06-CHK34           PIC X.
+                  04  W06-CHK35           PIC X.
                   04  W06-KANRIAUTHCOMBO.
                     05  W06-KANRIAUTHFLG.
                       06  W06-FLG-VALUE   PIC X(12).
