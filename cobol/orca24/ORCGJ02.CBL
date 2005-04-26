@@ -2505,17 +2505,21 @@
            ELSE
                MOVE    TNS-ROUTEKKBN       TO  SPA-NAI-ROUTEKKBN(IDX)
            END-IF
-      *    内服の逓減の時、マイナス
-           IF      SRY-SRYCD  (IDZ)    =   "630010002"
-               MOVE    1                   TO  SPA-NAI-ZAITENFLG (IDX)
-           END-IF
       *    点数識別が減額の時マイナス
            IF      TNS-TENSIKIBETU     =   7  OR  8
                IF      IDZ                 =   1
                    MOVE    1               TO  SPA-NAI-ZAITENFLG (IDX)
                END-IF
-           ELSE
-               MOVE    ZERO                TO  SPA-NAI-ZAITENFLG (IDX)
+           END-IF
+      *    内服の逓減の時、マイナス
+           IF      SRY-SRYCD  (IDZ)    =   "630010002"
+               MOVE    1                   TO  SPA-NAI-ZAITENFLG (IDX)
+           END-IF
+      *    内服の逓減の対象分
+           IF     (SRY-SRYCD  (IDZ)    =   "820000047" )  AND
+                  (SRY-SRYKBN          =   "21"        )  AND
+                  (SRY-AUTOKBN (IDZ)   =   "3"         )
+               MOVE    2                   TO  SPA-NAI-ZAITENFLG (IDX)
            END-IF
       *    算定履歴情報（剤内の最初に対象となるもの）
            IF     (TNS-SRYCD(1:1)      =   "1"  )  AND
@@ -6501,7 +6505,8 @@
       *
       *    内服逓減の剤は対象外
            IF     (SPA-NAI-ZAITENFLG (SPA-NAI-BANGO)
-                                       =   1    )  AND
+                                       =   1
+                                       OR  2       )  AND
                   (SPA-NAI-SRYKBN  (SPA-NAI-BANGO)
                                        =   "21" )
                MOVE    "0027"              TO  SPA-ERRCD
@@ -10900,10 +10905,10 @@
                    MOVE    "追加はできません。"
                                        TO  WRK-ERRMSG(23:)
                WHEN    "0027"
-                   MOVE    "対象の剤は薬剤料逓減です。"
+                   MOVE    "対象の剤は内服薬剤料逓減に関する剤です。"
                                        TO  WRK-ERRMSG
                    MOVE    "剤変更はできません。"
-                                       TO  WRK-ERRMSG(27:)
+                                       TO  WRK-ERRMSG(41:)
                WHEN    "0030"
                    MOVE    "入外区分がありません。"
                                        TO  WRK-ERRMSG

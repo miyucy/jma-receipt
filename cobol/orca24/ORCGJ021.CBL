@@ -125,6 +125,12 @@
       *
            03  WRK-JIDMSG          PIC X(80).
       *
+           03  WRK-GRP-ZAINUM-AREA.
+               05  WRK-GRP-ZAINUM      PIC 9(08)   OCCURS   50.
+               05  IDX-GEN             PIC 9(04).
+               05  IDX-GEN2            PIC 9(04).
+               05  IDX-STR             PIC 9(04).
+      *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-HENYMD.
@@ -167,6 +173,10 @@
       *    ¿ÇÎÅ²ñ·×Éí²Ã¾ðÊó¥Þ¥¹¥¿¡Ý
        01  SRYACCTPLUS-REC.
            COPY    "CPSRYACCTPLUS.INC".
+      *
+       01  HZN-SRYACCTPLUS-REC.
+           COPY    "CPSRYACCTPLUS.INC"   REPLACING
+                                   //ACCTP-// BY //HZN-ACCTP-//.
       *
       *    »»ÄêÍúÎò
        01  SANTEI-REC.
@@ -1653,8 +1663,18 @@
                MOVE    1               TO  FLG-JYURRK
            END-IF
       *
+           INITIALIZE                  WRK-GRP-ZAINUM-AREA
+           INITIALIZE                  HZN-SRYACCTPLUS-REC
            PERFORM UNTIL    (FLG-JYURRK    =   1  )  OR
                             (SPA-ERRCD     NOT =   SPACE )
+      *        ÆâÉþÄþ¸º¤ÎºÞ
+               IF      JYURRK-EDANUM       =   1
+                   IF      HZN-ACCTP-ZAINUM    NOT =   ZERO
+                       PERFORM 3003110-GRPZAINUM-SET-SEC
+                   END-IF
+                   INITIALIZE                  WRK-GRP-ZAINUM-AREA
+                   INITIALIZE                  HZN-SRYACCTPLUS-REC
+               END-IF
       *        ¿ÇÎÅ²ñ·×¹¹¿·
                PERFORM VARYING     IDJ     FROM    1   BY  1
                        UNTIL      (IDJ     >   15  )  OR
@@ -1698,6 +1718,10 @@
                MOVE    "JYURRK-KEY18"      TO  ORC-DBPATH
                PERFORM 970-JYURRK-READ-SEC
            END-PERFORM
+      *    ÆâÉþÄþ¸º¤ÎºÞ
+           IF      HZN-ACCTP-ZAINUM    NOT =   ZERO
+               PERFORM 3003110-GRPZAINUM-SET-SEC
+           END-IF
       *
            MOVE    "JYURRK-KEY18"      TO  ORC-DBPATH
            PERFORM 990-DBCLOSE-SEC
@@ -1846,6 +1870,11 @@
       *            Æ±°ìºÞ¤¢¤ê
                    PERFORM 30032113-SRYACCT-UPD-SEC
                END-IF
+           END-IF
+      *
+           IF      HZN-ACCT-ZAIREQFLG  =   "2"
+               ADD     1               TO  IDX-GEN
+               MOVE    WRK-ZAINUM      TO  WRK-GRP-ZAINUM(IDX-GEN)
            END-IF
       *
            .
@@ -2229,6 +2258,10 @@
       *
                MOVE    ACCT-ZAINUM         TO  ACCTP-ZAINUM
       *
+               IF      ACCTP-GRP-ZAINUM-G  NOT =   ZERO
+                   MOVE    SRYACCTPLUS-REC     TO  HZN-SRYACCTPLUS-REC
+               END-IF
+      *
                MOVE    SMCNDATE-YMD        TO  ACCTP-CREYMD
                MOVE    SMCNDATE-YMD        TO  ACCTP-UPYMD
                MOVE    SMCNDATE-HMS        TO  ACCTP-UPHMS
@@ -2478,6 +2511,71 @@
       *
            .
        3003131-SYUNOU-UPDATE-EXT.
+           EXIT.
+      *****************************************************************
+      *    ÆâÉþÄþ¸º¤ÎºÞ½èÍý
+      *****************************************************************
+       3003110-GRPZAINUM-SET-SEC          SECTION.
+      *
+      *    Éí²Ã¾ðÊóÄÉ²Ã
+           INITIALIZE                  SRYACCTPLUS-REC
+           MOVE    HZN-ACCTP-HOSPID    TO  ACCTP-HOSPID
+           MOVE    HZN-ACCTP-NYUGAIKBN TO  ACCTP-NYUGAIKBN
+           MOVE    HZN-ACCTP-PTID      TO  ACCTP-PTID
+           MOVE    HZN-ACCTP-SRYKA     TO  ACCTP-SRYKA
+           MOVE    HZN-ACCTP-SRYYM     TO  ACCTP-SRYYM
+           MOVE    HZN-ACCTP-ZAINUM    TO  ACCTP-ZAINUM
+      *
+           MOVE    SRYACCTPLUS-REC     TO  MCPDATA-REC
+           MOVE    PATH-TBL-SRYACCTPLUS-KEY2
+                                       TO  MCP-PATH
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    PATH-TBL-SRYACCTPLUS-KEY2
+                                           TO  MCP-PATH
+               PERFORM 910-SRYACCTPLUS-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SRYACCTPLUS
+           END-IF
+           MOVE    1                   TO  IDX-STR
+           PERFORM UNTIL       FLG-SRYACCTPLUS       =   1
+               INITIALIZE                  ACCTP-GRP-ZAINUM-G
+               MOVE    ZERO                TO  IDX-GEN
+               PERFORM VARYING     IDX-GEN2    FROM    IDX-STR BY  1
+                       UNTIL      (IDX-GEN2    >   50 )  OR
+                                  (WRK-GRP-ZAINUM(IDX-GEN2)  =  ZERO) OR
+                                  (IDX-GEN     >=  15  )
+                   ADD     1               TO  IDX-GEN
+                   MOVE    WRK-GRP-ZAINUM(IDX-GEN2)
+                                           TO  ACCTP-GRP-ZAINUM(IDX-GEN)
+               END-PERFORM
+               MOVE    IDX-GEN2            TO  IDX-STR
+      *
+               MOVE    SRYACCTPLUS-REC     TO  MCPDATA-REC
+               MOVE    PATH-TBL-SRYACCTPLUS-KEY
+                                           TO  MCP-PATH
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               CALL    "MCPSUB"            USING
+                                           MCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO
+                   DISPLAY "J021 SRYACCTPLUS UPD ERR:"   MCP-RC
+                           ",KEY:" ACCTP-KEY
+                   MOVE    "0011"              TO  SPA-ERRCD
+               END-IF
+      *
+               MOVE    PATH-TBL-SRYACCTPLUS-KEY2
+                                           TO  MCP-PATH
+               PERFORM 910-SRYACCTPLUS-READ-SEC
+           END-PERFORM
+           MOVE    PATH-TBL-SRYACCTPLUS-KEY2   TO  MCP-PATH
+           PERFORM 990-DBCLOSE-2-SEC
+      *
+           .
+       3003110-GRPZAINUM-SET-EXT.
            EXIT.
       *
       *****************************************************************

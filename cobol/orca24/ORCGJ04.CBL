@@ -178,6 +178,7 @@
       *
            03  FLG-NAIFUTAN        PIC 9(01).
            03  FLG-NAIBUN          PIC 9(01).
+           03  FLG-GEN             PIC 9(01).
       *
       *    ≈∫ª˙ŒŒ∞Ë
        01  IDX-AREA.
@@ -322,6 +323,8 @@
            03  WRK-ZAIKAISU        PIC 9(03).
            03  WRK-GOKEI-9         PIC 9(10).
            03  WRK-SRYCD-9         PIC 9(09).
+      *
+           03  WRK-EN              PIC 9(08).
       *
            03  WRK-TANINAME        PIC X(04).
       *
@@ -4984,11 +4987,17 @@
            MOVE    ZERO                TO  WRK-RENNUM
            INITIALIZE                  SRYACT-REC
       *
+           MOVE    ZERO                TO  FLG-GEN
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX         >   SPA-GMN-MAX
                IF      SPA-GMN-INPUTCD (IDX)(1:1)  =   "."
                    CONTINUE
                ELSE
+      *            ∏∫§¨§¢§Îª˛°¢§Ω§Œº°§Ë§Í
+                  IF     (SPA-NEIGEN-KBN           =   1  )  AND
+                         (SPA-COM-INPUTCD (IDX)    =   "820000047" )
+                       MOVE    1                   TO  FLG-GEN
+                   END-IF
                    ADD     1               TO  IDS
       *            ø«Œ≈π‘∞Ÿ∆‚Õ∆ ‘Ω∏
                    PERFORM 45101-SINKOUI-HEN-SEC
@@ -5180,6 +5189,16 @@
       *****************************************************************
        450112-WKSRYACTPLUS-SEC          SECTION.
       *
+      *    œ´∫“ ›∏±§œ±ﬂ§»≈¿øÙ§À ¨§±§Î
+           IF     (SPA-COM-TENSIKIBETU (IDX)   =   1  )  AND
+                  (SPA-COM-RSIKBN      (IDX)   =   1  )  AND
+                  (SPA-COM-INPUTCD (IDX)(1:1)  =   "1")
+      *        ±ﬂ
+               COMPUTE WRK-EN          =   SPA-COM-TEN (IDX)
+                                       *   SPA-COM-KAISU (IDX)
+      *        œ´∫“§Œ±ﬂ
+               MOVE    WRK-EN          TO  SPA-COM-RSIKIN(IDX)
+           END-IF
       *    œ´∫“§Œ±ﬂ
            IF      SPA-HKNKBN          =   1
                IF      SPA-COM-RSIKIN(IDX) >   ZERO
@@ -5729,7 +5748,11 @@
       *        ∫ﬁ¿¡µ·•’•È•∞
                MOVE    "1"                 TO  ACCT-ZAIREQFLG
            ELSE
-               MOVE    SPACE               TO  ACCT-ZAIREQFLG
+               IF      FLG-GEN             =   1
+                   MOVE    "2"                 TO  ACCT-ZAIREQFLG
+               ELSE
+                   MOVE    SPACE               TO  ACCT-ZAIREQFLG
+               END-IF
            END-IF
       *
            MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
