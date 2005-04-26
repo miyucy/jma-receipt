@@ -83,10 +83,12 @@
            03  FLG-SANTEI          PIC 9(01).
            03  FLG-PARA            PIC 9(01).
            03  FLG-SYUTTL          PIC 9(01).
+           03  FLG-SRYACCTPLUS     PIC 9(01).
       *
            03  FLG-OK              PIC 9(01).
            03  FLG-CHK             PIC 9(01).
            03  FLG-ERR             PIC 9(01).
+           03  FLG-ERR2            PIC 9(01).
            03  FLG-ARI             PIC 9(01).
            03  FLG-SINKI           PIC 9(01).
       *
@@ -127,6 +129,10 @@
       *
            03  IDW                 PIC 9(04).
            03  IDW2                PIC 9(04).
+      *
+           03  IDX-GEN4            PIC 9(04).
+           03  IDX-GEN5            PIC 9(04).
+           03  IDX-GEN6            PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -2647,10 +2653,16 @@
                END-PERFORM
            END-PERFORM
       *
-      *
            CALL    "ORCSCZAICHK"       USING   SPA-AREA
                                                ORCSCZAICHKAREA
            MOVE    ORCSCZAICHK-ZAINUM  TO  WRK-ZAINUM
+      *    内服逓減の剤チェック
+           IF     (WRK-ZAINUM      NOT =   ZERO )  AND
+                  (LNK-WKSRY-SRYKBN    (1) =   "21" )  AND
+                  (LNK-WKSRYP-TEI-NKBN (1) =   2    )
+               PERFORM 45015-TEIGEN-CHK-SEC
+           END-IF
+      *
            IF      WRK-ZAINUM          =   ZERO
       *        剤番号取得処理
                PERFORM 45013-ZAINUM-SET-SEC
@@ -2759,6 +2771,91 @@
            EXIT.
       *
       *****************************************************************
+      *   内服逓減剤内容判定処理
+      *****************************************************************
+       45015-TEIGEN-CHK-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  SRYACCTPLUS-REC
+           INITIALIZE                  SRYACCTPLUS-REC
+           MOVE    LNK-WKSRY-HOSPID (01)   TO  ACCTP-HOSPID
+           MOVE    LNK-WKSRY-NYUGAIKBN(01) TO  ACCTP-NYUGAIKBN
+           MOVE    LNK-WKSRY-PTID   (01)   TO  ACCTP-PTID
+           MOVE    LNK-WKSRY-SRYKA  (01)   TO  ACCTP-SRYKA
+           MOVE    LNK-WKSRY-SRYYMD (01)(1:6)
+                                           TO  ACCTP-SRYYM
+           MOVE    WRK-ZAINUM              TO  ACCTP-ZAINUM
+      *
+           MOVE    SRYACCTPLUS-REC     TO  MCPDATA-REC
+           MOVE    PATH-TBL-SRYACCTPLUS-KEY2
+                                       TO  MCP-PATH
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    PATH-TBL-SRYACCTPLUS-KEY2
+                                           TO  MCP-PATH
+               PERFORM 910-SRYACCTPLUS-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SRYACCTPLUS
+           END-IF
+           MOVE    ZERO                TO  FLG-ERR
+           PERFORM UNTIL  (FLG-SRYACCTPLUS =   1 )  OR
+                          (FLG-ERR         =   1 )
+               PERFORM VARYING IDX-GEN4    FROM    1   BY  1
+                       UNTIL  (IDX-GEN4    >   5   )  OR
+                              (ACCTP-GRP-ZAINUM(IDX-GEN4)  =   ZERO) OR
+                              (FLG-ERR         =   1 )
+      *TEST
+             DISPLAY "ACCTP-GRP-ZAINUM:" ACCTP-GRP-ZAINUM(IDX-GEN4)
+      *TEST
+                   MOVE    ZERO                TO  FLG-ERR2
+                   PERFORM VARYING IDX-GEN5    FROM    1   BY  1
+                           UNTIL  (IDX-GEN5    >   5   )  OR
+                                  (WRK-ACTP-SRYKA(IDX-GEN5)
+                                               =   SPACE  )  OR
+                                  (FLG-ERR2    =   1      )
+                       IF      LNK-WKSRY-SRYKA(01)
+                                           =   WRK-ACTP-SRYKA(IDX-GEN5)
+                           PERFORM VARYING IDX-GEN6    FROM    1   BY  1
+                                   UNTIL  (IDX-GEN6    >   50  )  OR
+                                          (WRK-ACTP-ZAINUM
+                                                    (IDX-GEN5 IDX-GEN6)
+                                                       =   ZERO   ) OR
+                                          (FLG-ERR2    =   1      )
+      *TEST
+             DISPLAY "WRK-ACTP-ZAINUM:" WRK-ACTP-ZAINUM
+                                             (IDX-GEN5 IDX-GEN6)
+                    ",SRYKA:" WRK-ACTP-SRYKA(IDX-GEN5)
+      *TEST
+                               IF      WRK-ACTP-ZAINUM
+                                                     (IDX-GEN5 IDX-GEN6)
+                                           =   ACCTP-GRP-ZAINUM
+                                                         (IDX-GEN4)
+                                   MOVE    1           TO  FLG-ERR2
+                               END-IF
+                           END-PERFORM
+                       END-IF
+                   END-PERFORM
+                   IF      FLG-ERR2            =   ZERO
+                       MOVE    1               TO  FLG-ERR
+                   END-IF
+               END-PERFORM
+               MOVE    PATH-TBL-SRYACCTPLUS-KEY2
+                                           TO  MCP-PATH
+               PERFORM 910-SRYACCTPLUS-READ-SEC
+           END-PERFORM
+           MOVE    PATH-TBL-SRYACCTPLUS-KEY2  TO  MCP-PATH
+           PERFORM 990-DBCLOSE-2-SEC
+      *    診療会計附加情報の逓減剤内容が違う時、新規
+           IF      FLG-ERR             =   1
+               MOVE    ZERO            TO  WRK-ZAINUM
+           END-IF
+      *
+       45015-TEIGEN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *   剤番号取得処理
       *****************************************************************
        45013-ZAINUM-SET-SEC          SECTION.
@@ -2838,6 +2935,10 @@
            IF      LNK-WKSRYP-ADDKBN(01)   =   "1"
       *        剤請求フラグ
                MOVE    "1"                 TO  ACCT-ZAIREQFLG
+           END-IF
+      *    内服逓減対象剤
+           IF      LNK-WKSRYP-TEI-NKBN (1) =   1
+               MOVE    "2"                 TO  ACCT-ZAIREQFLG
            END-IF
       *!!
            .
@@ -4696,6 +4797,41 @@
            .
        990-DBCLOSE-EXT.
            EXIT.
+      *****************************************************************
+      *    診療会計附加マスター次読込
+      *****************************************************************
+       910-SRYACCTPLUS-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  SRYACCTPLUS-REC
+               MOVE    ZERO                TO  FLG-SRYACCTPLUS
+           ELSE
+               INITIALIZE                      SRYACCTPLUS-REC
+               MOVE    1                   TO  FLG-SRYACCTPLUS
+           END-IF
+      *
+           .
+       910-SRYACCTPLUS-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢクローズ処理
+      *****************************************************************
+       990-DBCLOSE-2-SEC         SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       990-DBCLOSE-2-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    パラメタデータ順読み
