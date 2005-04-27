@@ -2806,9 +2806,6 @@
                        UNTIL  (IDX-GEN4    >   5   )  OR
                               (ACCTP-GRP-ZAINUM(IDX-GEN4)  =   ZERO) OR
                               (FLG-ERR         =   1 )
-      *TEST
-             DISPLAY "ACCTP-GRP-ZAINUM:" ACCTP-GRP-ZAINUM(IDX-GEN4)
-      *TEST
                    MOVE    ZERO                TO  FLG-ERR2
                    PERFORM VARYING IDX-GEN5    FROM    1   BY  1
                            UNTIL  (IDX-GEN5    >   5   )  OR
@@ -2823,11 +2820,6 @@
                                                     (IDX-GEN5 IDX-GEN6)
                                                        =   ZERO   ) OR
                                           (FLG-ERR2    =   1      )
-      *TEST
-             DISPLAY "WRK-ACTP-ZAINUM:" WRK-ACTP-ZAINUM
-                                             (IDX-GEN5 IDX-GEN6)
-                    ",SRYKA:" WRK-ACTP-SRYKA(IDX-GEN5)
-      *TEST
                                IF      WRK-ACTP-ZAINUM
                                                      (IDX-GEN5 IDX-GEN6)
                                            =   ACCTP-GRP-ZAINUM
@@ -2852,6 +2844,7 @@
                MOVE    ZERO            TO  WRK-ZAINUM
            END-IF
       *
+           .
        45015-TEIGEN-CHK-EXT.
            EXIT.
       *
