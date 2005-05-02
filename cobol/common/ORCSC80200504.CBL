@@ -1198,7 +1198,6 @@
            MOVE    WRK-COM-KEI  (IDX-MAX)  TO  LNK-ORCSC-ZAIKEI
            MOVE    WRK-COM-TENSU(IDX-MAX)  TO  LNK-ORCSC-ZAITEN
       *
-      *
            .
        1002-TENSU-KEI-EXT.
            EXIT.
@@ -1222,6 +1221,7 @@
                                            /   10
       *
            ADD     WRK-COM-KISOTEN (IDX-Z) TO  WRK-SUM-TENGAKEI
+           MOVE    WRK-SUM-TENGAKEI        TO  LNK-SC90-TENSU
       *    ²ó¿ô
            MOVE    LNK-ORCSC-KAISU         TO  WRK-COM-KAISU (IDX-Z)
       *
