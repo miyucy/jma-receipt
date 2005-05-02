@@ -29,8 +29,6 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL−多々納 02/10/18  入院追加
       *  01.00.02    NACL-多々納  03/06/17  回数編集修正
-      *  04.05.00    NACL-多々納  09/10/XX  多剤投与・換算値入力他対応
-      *  04.06.00    NACL-多々納  11/02/14  用法コメント対応
       *****************************************************************
       *
       *
@@ -69,27 +67,23 @@
       *
       *    一時領域
        01  WRK-AREA.
-           03  WRK-SURYO           PIC 9(05)V9(05).
+           03  WRK-SURYO           PIC 9(05)V9(03).
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
                05  WRK-SURYO-S1    PIC 9(05).
-               05  WRK-SURYO-S2    PIC 9(05).
-      *
-           03  WRK-TENSU           PIC S9(08).
+               05  WRK-SURYO-S2    PIC 9(03).
       *
            03  WRK-SURYO-X.
                05  WRK-SURYO-Z1    PIC ZZZZZ.
                05  WRK-SURYO-Z1-9  REDEFINES   WRK-SURYO-Z1
                                    PIC ZZZZ9.
                05  WRK-SURYO-Z2    PIC X(01).
-               05  WRK-SURYO-Z3    PIC ZZZZZ.
+               05  WRK-SURYO-Z3    PIC ZZZ.
            03  WRK-TENSU-X.
                05  WRK-TENSU-Z     PIC ZZZZZZZZ.
-           03  WRK-TENSU-X-R       REDEFINES   WRK-TENSU-X.
-               05  WRK-TENSU-Z2    PIC --------.
            03  WRK-TENSUS-X.
                05  WRK-TENSUS-Z    PIC ZZZZ9.99.
            03  WRK-KAISU-X.
-               05  WRK-KAISU-Z     PIC ZZZ.
+               05  WRK-KAISU-Z     PIC ZZZZ.
            03  WRK-BUNGSU-X.
                05  WRK-BUNGSU-Z    PIC ZZZZZZZZ.
            03  WRK-KEICOM-X.
@@ -102,14 +96,14 @@
                05  WRK-KEI-Z       PIC ZZZZZZZ.
       *
       *!!  03  WRK-SURYO-H         PIC X(09).
-           03  WRK-SURYO-H         PIC X(11).
-           03  WRK-KAISU-H         PIC X(03).
+           03  WRK-SURYO-H         PIC X(10).
+           03  WRK-KAISU-H         PIC X(04).
            03  WRK-BUNGSU-H        PIC X(09).
            03  WRK-KAKERU          PIC X(01).
-           03  WRK-ATAI            PIC X(44).
+           03  WRK-ATAI            PIC X(20).
       *
-           03  WRK-HEN-INPUTCD         PIC X(54).
-           03  WRK-HEN-INPUTCDW        PIC X(54).
+           03  WRK-HEN-INPUTCD         PIC X(22).
+           03  WRK-HEN-INPUTCDW        PIC X(22).
            03  WRK-JIKAN               PIC X(01).
       *    入力コード変換用
            03  WRK-IDX-FT              PIC 9(04).
@@ -121,9 +115,6 @@
       *
            03  WRK-IDX             PIC 9(04).
            03  WRK-MEISYO-X        PIC X(22).
-      *
-      *    入力コード項目桁数
-       01  CONS-INPUT              PIC 9(02)   VALUE   54.
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
@@ -158,7 +149,7 @@
            INITIALIZE                  IDX-AREA
       *
       *    対象行チェック
-           IF      LNK-SC94-IDX    >=   1  AND  <=  SPA-MAX-LINE
+           IF      LNK-SC94-IDX    >=   1  AND  <=  200
                CONTINUE
            ELSE
                GO      TO     000-PROC-EXT
@@ -198,9 +189,8 @@
       *
       *    自費の時、０とする
            IF      SPA-COM-SRYKBN (IDX)    =   "95"  OR  "96"
-               IF     (SPA-COM-INPUTCD(IDX)(1:1)   =   "6" OR "7" ) OR
+               IF     (SPA-COM-INPUTCD(IDX)(1:1)   =   "6" OR "7") OR
                       (WRK-MOJI                    =   "8" OR "7" )
-               OR     (SPA-COM-INPUTCD(IDX)(1:1)   =   "1" )
                    CONTINUE
                ELSE
                    MOVE    "0"                 TO  WRK-MOJI
@@ -232,35 +222,17 @@
            MOVE    SPACE               TO  WRK-KAKERU
            MOVE    SPACE               TO  WRK-ATAI
            MOVE    SPACE               TO  WRK-BUNGSU-X
+           MOVE    SPACE               TO  WRK-ATAI
       *
            EVALUATE    WRK-MOJI
       *            手技料
                WHEN    "1"
-                   IF     (SPA-COM-SURYO  (IDX)     >  1  )  OR
-      *            数量ゼロフラグ
-                         ((SPA-SURYOZERO-FLG       =   1  )  AND
-                           (SPA-COM-SURYO (IDX)    =   0  )  AND
-                           (SPA-COM-KZMCOMPSIKIBETU (IDX)
-                                               NOT =   0 ))
-      *            数量１入力
-                   OR    ((SPA-COM-SURFLG (IDX)    =   "1"  )  AND
-                          (SPA-COM-SURYO  (IDX)    =   1    ))
+                   IF      SPA-COM-SURYO  (IDX)     >  1
                        MOVE    SPA-COM-SURYO  (IDX)    TO  WRK-SURYO
                        PERFORM 2001-SURYO-HEN-SEC
                    END-IF
       *            医薬品     数量・回数
                WHEN    "6"
-                   MOVE    SPA-COM-SURYO  (IDX)    TO  WRK-SURYO
-      *            換算値
-                   IF      SPA-COM-KANSURYO (IDX)    >   ZERO
-                       MOVE    SPA-COM-KANSURYO (IDX)    TO  WRK-SURYO
-                   END-IF
-                   PERFORM 2001-SURYO-HEN-SEC
-      *            点数ゼロで金額はなし
-                   IF     (SPA-COM-TEN         (IDX)   =   ZERO ) AND
-                          (SPA-COM-TENSIKIBETU (IDX)   =   1    )
-                       MOVE    SPACE               TO  WRK-SURYO-X
-                   END-IF
       *            特定器材   数量・回数
                WHEN    "7"
                    MOVE    SPA-COM-SURYO  (IDX)    TO  WRK-SURYO
@@ -280,61 +252,14 @@
                        IF      SPA-COM-KISOTEN (IDX)   =   ZERO
                            MOVE    SPA-COM-KEI(IDX)    TO  WRK-KEI-Z
                            MOVE    WRK-KEI-X           TO  WRK-SURYO-X
-      *                    自賠責金額入力
-                           IF      SPA-COM-SRYSYUKBN(IDX)  =   "809"
-                               MOVE    SPA-COM-JIHIMONEY(IDX)
-                                                       TO  WRK-KEI-Z
-                               MOVE    WRK-KEI-X       TO  WRK-SURYO-X
-                           END-IF
                        END-IF
                    END-IF
-                   IF     (SPA-COM-INPUTCD(IDX)(1:3)   =   "095" OR
-                                                           "096") AND
-                          (SPA-COM-SURYO  (IDX)    NOT =   1    )
+                   IF     (SPA-COM-KEIFLG(IDX)     =   "2"  ) AND
+                          (SPA-COM-SURYO  (IDX)    >   1    )
                        MOVE    SPA-COM-SURYO  (IDX)    TO  WRK-SURYO
                        PERFORM 2001-SURYO-HEN-SEC
                    END-IF
-      *            用量割合再編集
-                   IF     (SPA-COM-INPUTCD(IDX)(1:7)   =  "0992000") AND
-                          (SPA-COM-SURYO  (IDX)    NOT =  ZERO     )
-                       MOVE    SPA-COM-SURYO  (IDX)    TO  WRK-SURYO
-                       PERFORM 2001-SURYO-HEN-SEC
-                   END-IF
-      *            用法コメント
-                   IF    (SPA-COM-INPUTCD(IDX)(1:3)    =   "001"  )  AND
-                         (SPA-COM-YCOMKBN(IDX)         =   1      )  AND
-                         (SPA-COM-INPUTCHI-G(IDX)  NOT =   SPACE  )
-                      MOVE    SPACE                TO  WRK-ATAI
-                      STRING 
-                          SPA-COM-ATAI1   (IDX)   DELIMITED   BY  SPACE
-                          " "                     DELIMITED   BY  SIZE
-                          SPA-COM-ATAI2   (IDX)   DELIMITED   BY  SPACE
-                          " "                     DELIMITED   BY  SIZE
-                          SPA-COM-ATAI3   (IDX)   DELIMITED   BY  SPACE
-                          " "                     DELIMITED   BY  SIZE
-                          SPA-COM-ATAI4   (IDX)   DELIMITED   BY  SPACE
-                          " "                     DELIMITED   BY  SIZE
-                          SPA-COM-ATAI5   (IDX)   DELIMITED   BY  SPACE
-                          INTO                 WRK-ATAI
-                       END-STRING
-                   END-IF
-      *H30.4
-                   IF    (SPA-COM-INPUTCD(IDX)(1:7)   =   "0992081")
-                    AND  (SPA-COM-INPUTCHI-G(IDX)  NOT =   SPACE  )
-                      MOVE    SPACE                TO  WRK-ATAI
-                      STRING 
-                          SPA-COM-ATAI1   (IDX)   DELIMITED   BY  SPACE
-                          " "                     DELIMITED   BY  SIZE
-                          SPA-COM-ATAI2   (IDX)   DELIMITED   BY  SPACE
-                          " "                     DELIMITED   BY  SIZE
-                          SPA-COM-ATAI3   (IDX)   DELIMITED   BY  SPACE
-                          " "                     DELIMITED   BY  SIZE
-                          SPA-COM-ATAI4   (IDX)   DELIMITED   BY  SPACE
-                          " "                     DELIMITED   BY  SIZE
-                          SPA-COM-ATAI5   (IDX)   DELIMITED   BY  SPACE
-                          INTO                 WRK-ATAI
-                       END-STRING
-                   END-IF
+      *
       *            コメント
                WHEN    "8"
                    IF      SPA-COM-INPUTCHI-G (IDX)    NOT =   SPACE
@@ -352,10 +277,7 @@
                    END-IF
       *        約束セット
                WHEN    "S"
-                   IF      SPA-COM-SURYO  (IDX)    =   ZERO
-                       MOVE    1               TO  SPA-COM-SURYO (IDX)
-                   END-IF
-                   IF      SPA-COM-SURYO  (IDX)  NOT =  1
+                   IF      SPA-COM-SURYO  (IDX)     >  1
                        MOVE    SPA-COM-SURYO  (IDX)    TO  WRK-SURYO
                        PERFORM 2001-SURYO-HEN-SEC
                    END-IF
@@ -383,7 +305,7 @@
                MOVE    SPACE               TO  WRK-KAISU-H
            ELSE
                PERFORM VARYING     IDK1    FROM    1   BY  1
-                       UNTIL       IDK1    >   3
+                       UNTIL       IDK1    >   4
                    IF      WRK-KAISU-X (IDK1:1)    NOT =   SPACE
                        ADD     1           TO  IDK2
                        MOVE    WRK-KAISU-X (IDK1:1)
@@ -403,39 +325,20 @@
            END-PERFORM
            MOVE    ZERO                TO  IDK2
            PERFORM VARYING     IDK1    FROM    1   BY  1
-                   UNTIL       IDK1    >   11
+                   UNTIL       IDK1    >   9
                IF      WRK-SURYO-X (IDK1:1)    NOT =   SPACE
                    ADD     1           TO  IDK2
                    MOVE    WRK-SURYO-X (IDK1:1)
                                        TO  WRK-SURYO-H (IDK2:1)
                END-IF
            END-PERFORM
-      *
+      *TEST
       *    自動発生なし
            IF     (SPA-COM-AUTOFLG2(IDX)   =   "1"  )  AND
                   (IDK2                    >   ZERO )
                ADD     1                   TO  IDK2
                MOVE    "@"                 TO  WRK-SURYO-H (IDK2:1)
            END-IF
-      *ver.4.5
-      *    換算値入力
-           IF     (SPA-COM-KANSURYO (IDX)  >   ZERO )  AND
-                  (IDK2                    >   ZERO )
-               ADD     1                   TO  IDK2
-               MOVE    "A"                 TO  WRK-SURYO-H (IDK2:1)
-           END-IF
-      *    換算値
-           IF     (SPA-COM-INPUTNAIF (IDX) =   "1"  )
-      *    AND    (IDK2                    >   ZERO )
-               ADD     1                   TO  IDK2
-               MOVE    "I"                 TO  WRK-SURYO-H (IDK2:1)
-           END-IF
-      *    コメント
-           IF     (SPA-COM-INPUTCONT (IDX) =   "1"  )
-               ADD     1                   TO  IDK2
-               MOVE    "C"                 TO  WRK-SURYO-H (IDK2:1)
-           END-IF
-      *ver.4.5
       *
       *    入力値再編集
       *     文字列調査の開始位置　取得
@@ -473,22 +376,7 @@
                        WRK-KAISU-H             DELIMITED   BY  SPACE
                        INTO                    SPA-GMN-INPUTCD(IDX)
                END-STRING
-      *!!!!
-      *    継続コメント
-               IF      WRK-SURYO-H         NOT =   SPACE
-                 MOVE    SPACE               TO  SPA-GMN-INPUTCD(IDX)
-                 STRING  WRK-HEN-INPUTCD         DELIMITED   BY  SPACE
-                         " "                     DELIMITED   BY  SIZE
-                         WRK-SURYO-H             DELIMITED   BY  SPACE
-                         " "                     DELIMITED   BY  SIZE
-                         WRK-ATAI                DELIMITED   BY  "  "
-                         WRK-KAKERU              DELIMITED   BY  SPACE
-                         WRK-KAISU-H             DELIMITED   BY  SPACE
-                         INTO                    SPA-GMN-INPUTCD(IDX)
-                 END-STRING
-               END-IF
            END-IF
-      *
            IF      WRK-JIKAN       NOT =   SPACE
                MOVE    SPACE               TO  WRK-HEN-INPUTCD
                STRING  WRK-JIKAN               DELIMITED   BY  SPACE
@@ -507,7 +395,7 @@
                MOVE    3                   TO  WRK-IDX-FT
            END-IF
            PERFORM VARYING     IDX2    FROM    WRK-IDX-FT BY  1
-                   UNTIL      (IDX2        >   CONS-INPUT   )  OR
+                   UNTIL      (IDX2        >   22      )  OR
                               (SPA-GMN-INPUTCD(IDX)(IDX2:1)
                                            =   SPACE OR  "*" )
                ADD     1               TO  IDX-ICD
@@ -529,23 +417,12 @@
       *    数量
            IF     (WRK-MOJI            =   "6" OR  "7"  OR  "S" ) OR
                  ((WRK-MOJI            =   "1" )   AND
-                  (SPA-COM-TANICD (IDX)    NOT =   ZERO
-                                               AND SPACE ))
-              OR ((SPA-COM-INPUTCD(IDX)(1:3)   =   "095" OR
-                                                   "096") AND
-                  ((SPA-COM-SURYO  (IDX)   NOT =   1   )  OR
-                   (SPA-COM-YKZKBN (IDX)   NOT =   ZERO)))
+                  (SPA-COM-SURYO(IDX)  >   1           ))
       *        薬剤・器材、診療療行為・約束セットの時、数量＝１は空白
                MOVE    SPA-COM-SURYO (IDX)
                                            TO  WRK-SURYO
                PERFORM 2001-SURYO-HEN-SEC
                MOVE    WRK-SURYO-X         TO  SPA-GMN-SURYO (IDX)
-      *        薬剤点数ゼロで金額はなし
-               IF     (WRK-MOJI                    =   "6" ) AND
-                      (SPA-COM-TEN         (IDX)   =   ZERO ) AND
-                      (SPA-COM-TENSIKIBETU (IDX)   =   1    )
-                   MOVE    SPACE               TO  SPA-GMN-SURYO (IDX)
-               END-IF
            ELSE
                MOVE    SPACE               TO  SPA-GMN-SURYO (IDX)
            END-IF
@@ -555,29 +432,14 @@
                   (SPA-COM-KAIFLG (IDX)    =   "1" )  OR
                   (WRK-MOJI                =   "S" )  OR
                   (SPA-COM-SRYSYUKBN(IDX)  =   "950"  OR "960" )
-      *H26.10
-              OR  (SPA-COM-SRYSYUKBN(IDX)  =   "961"          )
-      *
       *        点数
-               IF      SPA-COM-PLUSKBN (IDX)   =   1
-                   COMPUTE WRK-TENSU           =   SPA-COM-TENSU(IDX)
-                                               *   -1
-                   MOVE    WRK-TENSU               TO  WRK-TENSU-Z2
-               ELSE
-                   MOVE    SPA-COM-TENSU(IDX)      TO  WRK-TENSU-Z
-               END-IF
+               MOVE    SPA-COM-TENSU(IDX)      TO  WRK-TENSU-Z
                MOVE    WRK-TENSU-X             TO  SPA-GMN-TENSU(IDX)
       *        回数
                MOVE    SPA-COM-KAISU (IDX)     TO  WRK-KAISU-Z
                MOVE    WRK-KAISU-Z             TO  SPA-GMN-KAISU(IDX)
       *        計
-               IF      SPA-COM-PLUSKBN (IDX)   =   1
-                   COMPUTE WRK-TENSU           =   SPA-COM-KEI (IDX)
-                                               *   -1
-                   MOVE    WRK-TENSU               TO  SPA-GMN-KEI(IDX)
-               ELSE
-                   MOVE    SPA-COM-KEI   (IDX)     TO  SPA-GMN-KEI(IDX)
-               END-IF
+               MOVE    SPA-COM-KEI   (IDX)     TO  SPA-GMN-KEI  (IDX)
            ELSE
                MOVE    SPACE                   TO  SPA-GMN-TENSU(IDX)
                MOVE    SPACE                   TO  SPA-GMN-KAISU(IDX)
@@ -613,7 +475,7 @@
            END-IF
       *
            MOVE    ZERO                TO  FLG-SP
-           PERFORM VARYING     IDM     FROM    5  BY  -1
+           PERFORM VARYING     IDM     FROM    3  BY  -1
                    UNTIL       IDM     <   1
                IF      WRK-SURYO-S2(IDM:1) NOT =   ZERO
                    MOVE    1               TO  FLG-SP
@@ -648,7 +510,7 @@
            END-IF
            MOVE    ZERO                TO  WRK-CD-MCNT
            PERFORM VARYING     IDX2    FROM    WRK-IDX-FT  BY  1
-                   UNTIL      (IDX2        >   CONS-INPUT )   OR
+                   UNTIL      (IDX2        >   22  )   OR
                               (SPA-GMN-INPUTCD(IDX)(IDX2:1)
                                            =   SPACE   OR  "*" )
                MOVE    IDX2                TO  WRK-CD-MCNT
@@ -690,7 +552,7 @@
       *    入力表示桁数のセット
            MOVE    ZERO                TO  WRK-CD-MCNT
            PERFORM VARYING     IDX2    FROM    WRK-IDX-FT  BY  1
-                   UNTIL      (IDX2        >   CONS-INPUT )   OR
+                   UNTIL      (IDX2        >   22  )   OR
                               (SPA-GMN-INPUTCD(IDX)(IDX2:1)
                                            =   SPACE   OR  "*" )
       *         MOVE    IDX2                TO  WRK-CD-MCNT
@@ -734,7 +596,7 @@
            MOVE    ZERO                TO  IDK2
            MOVE    SPACE               TO  WRK-KAISU-H 
            PERFORM VARYING     IDK1    FROM    1   BY  1
-                   UNTIL       IDK1    >   3
+                   UNTIL       IDK1    >   4
                IF      WRK-KAISU-X (IDK1:1)    NOT =   SPACE
                    ADD     1           TO  IDK2
                    MOVE    WRK-KAISU-X (IDK1:1)
@@ -771,7 +633,7 @@
            MOVE    SPACE               TO  WRK-MEISYO-X
            MOVE    ZERO                TO  WRK-IDX
            PERFORM VARYING     IDX2    FROM    1   BY  1
-                   UNTIL       IDX2        >   CONS-INPUT
+                   UNTIL       IDX2        >   22
                EVALUATE    SPA-GMN-INPUTCD(IDX)(IDX2:1)
                    WHEN    "/"
                        MOVE    IDX2            TO  WRK-IDX
@@ -818,30 +680,16 @@
            MOVE    SPACE               TO  SPA-GMN-SURYO (IDX)
       *
       *    点数・回数編集
-      *        点数
-           IF      SPA-COM-PLUSKBN (IDX)   =   1
-               COMPUTE WRK-TENSU           =   SPA-COM-TENSU(IDX)
-                                               *   -1
-               MOVE    WRK-TENSU               TO  WRK-TENSU-Z2
-           ELSE
-               MOVE    SPA-COM-TENSU(IDX)      TO  WRK-TENSU-Z
-           END-IF
-      **** MOVE    SPA-COM-TENSU(IDX)      TO  WRK-TENSU-Z
+           MOVE    SPA-COM-TENSU(IDX)      TO  WRK-TENSU-Z
            MOVE    WRK-TENSU-X             TO  SPA-GMN-TENSU(IDX)
       *    回数
            MOVE    SPA-COM-KAISU (IDX)     TO  WRK-KAISU-Z
            MOVE    WRK-KAISU-Z             TO  SPA-GMN-KAISU(IDX)
       *    計
-           IF      SPA-COM-PLUSKBN (IDX)   =   1
-               COMPUTE WRK-TENSU           =   SPA-COM-KEI (IDX)
-                                           *   -1
-               MOVE    WRK-TENSU               TO  SPA-GMN-KEI(IDX)
-           ELSE
-               MOVE    SPA-COM-KEI (IDX)       TO  SPA-GMN-KEI(IDX)
-           END-IF
+           MOVE    SPA-COM-KEI   (IDX)     TO  SPA-GMN-KEI  (IDX)
       *    名称へ日のセット
            PERFORM 3003-NYUIN-MEISYO-SEC
            .
-       3001-GMNINPUT-GMN-EXT.
+       3001-COM-GMNINPUT-EXT.
            EXIT.
       *
