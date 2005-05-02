@@ -285,6 +285,13 @@
       *    ドクター編集
            PERFORM 3101-DRCD-SPASET-SEC
       *
+           IF      SPA-K97-SRYKA       =   SPACE  OR  ZERO
+               MOVE    SPA-GMN-SRYKA       TO  SPA-K97-SRYKA
+           ELSE
+               MOVE    SPA-K97-SRYKA       TO  SPA-K97-SELNUM2
+               PERFORM 22031-UKETUKE-CHK-SEC
+           END-IF
+      *
            .
        310-SPA-SET-EXT.
            EXIT.
@@ -308,12 +315,6 @@
                                        ORCSDRSETAREA
            MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN-DRCDLST-G
            MOVE    ORCSDR-DRCD-MAX     TO  SPA-DRCD-MAX
-           IF      SPA-K97-SRYKA       =   SPACE  OR  ZERO
-               MOVE    SPA-GMN-SRYKA       TO  SPA-K97-SRYKA
-           ELSE
-               MOVE    SPA-K97-SRYKA       TO  SPA-K97-SELNUM2
-               PERFORM 22031-UKETUKE-CHK-SEC
-           END-IF
       *
            .
        3101-DRCD-SPASET-EXT.
@@ -622,7 +623,7 @@
       *****************************************************************
       *    保険組合せチェック処理
       *****************************************************************
-       2202-SELNUM1-CHK-SEC                SECTION.
+       2202-SELNUM1-CHK-SEC            SECTION.
       *
            IF      SPA-K97-SELNUM1     =   SPACE
                MOVE   ZERO             TO  SPA-K97-SELNUM1
@@ -780,6 +781,15 @@
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
+      *    主科の時、受付は反映しない
+           IF     (SPA-K97-SRYKA       =   SPA-GMN-SRYKA ) AND
+                  (WRK-DRCD            =   SPA-DRCD )
+               MOVE    SPACE               TO  WRK-DRCD
+           END-IF
+           IF     (SPA-K97-SRYKA       =   SPA-GMN-SRYKA ) AND
+                  (WRK-HKNCOMBI        =   SPA-GMN-HKNCOMBINUM)
+               MOVE    SPACE               TO  WRK-HKNCOMBI
+           END-IF
       *
            MOVE    SPACE               TO  SPA-K97-SELNUM3
            IF      WRK-DRCD            =   SPACE
@@ -811,9 +821,15 @@
                END-IF
            END-IF
       *
+      *    保険組合せ
            IF      WRK-HKNCOMBI    NOT =   SPACE
                MOVE    WRK-HKNCOMBI        TO  SPA-K97-SELNUM1
                PERFORM 2202-SELNUM1-CHK-SEC
+               IF      SPA-ERRCD       NOT =   SPACE
+                   MOVE    SPACE               TO  SPA-ERRCD
+                   MOVE    3                   TO  SPA-K97-CUR
+                   MOVE    SPA-K97-HKNCOMBI    TO  SPA-K97-SELNUM1
+               END-IF
            END-IF
       *
            .
