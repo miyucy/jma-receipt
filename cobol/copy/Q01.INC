@@ -109,6 +109,15 @@
                     07  Q01-CMB-UTAGAIKBN-COUNT
                                                PIC S9(9)   BINARY.
                     07  Q01-CMB-UTAGAIKBN-ITEM PIC X(20)   OCCURS  3.
+                  06  Q01-CMB-TENKIKBN.
+                    07  Q01-TENKIKBN          PIC X(20).
+                    07  Q01-CMB-TENKIKBN-COUNT
+                                               PIC S9(9)   BINARY.
+                    07  Q01-CMB-TENKIKBN-ITEM PIC X(20)    OCCURS  10.
+                  06  Q01-STTENKIYMD           PIC X(10).
+                  06  Q01-STTENKIYMD-STATE     PIC S9(9)   BINARY.
+                  06  Q01-EDTENKIYMD           PIC X(10).
+                  06  Q01-EDTENKIYMD-STATE     PIC S9(9)   BINARY.
                   06  Q01-CMB-BYOBUN.
                     07  Q01-BYOBUN             PIC X(24).
                     07  Q01-BYOBUN-STATE       PIC S9(9)   BINARY.

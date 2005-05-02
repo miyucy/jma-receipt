@@ -207,6 +207,14 @@
                                13                          PIC X(01).
                                13  SPA-GMN-Q01-UTAGAIKBNMEI
                                                            PIC X(18).
+      *                    Å¾µ¢¶èÊ¬
+                           11  SPA-GMN-Q01-TENKIKBN-G.
+                               13  SPA-GMN-Q01-TENKIKBN    PIC X(01).
+                               13                          PIC X(01).
+                               13  SPA-GMN-Q01-TENKIKBNMEI PIC X(18).
+      *                    Å¾µ¢Æü
+                           11  SPA-GMN-Q01-STTENKIYMD      PIC X(10).
+                           11  SPA-GMN-Q01-EDTENKIYMD      PIC X(10).
       *                    ÉÂÌ¾Ê¬Îà¶èÊ¬Ì¾¾Î
                            11  SPA-GMN-Q01-UBYOMEI-G.
                                13  SPA-GMN-Q01-UBYOMEI PIC X(03).
@@ -321,6 +329,8 @@
                            11  SPA-NAI-Q01-HOKEN-DMY   PIC X(01).
       *                ÉÂÌ¾¡¡¿ÇÎÅ¹Ô°Ù
                        09  SPA-NAI-Q01-BYOMEI-AREA.
+                           11  SPA-NAI-Q01-STTENKIYMD  PIC X(08).
+                           11  SPA-NAI-Q01-EDTENKIYMD  PIC X(08).
                            11  SPA-NAI-Q01-BYOMEI-OLD  PIC X(80)
                                                        OCCURS  5.
                            11  SPA-NAI-Q01-SRYCD       PIC X(09)
@@ -400,6 +410,12 @@
                                13  SPA-GMN-Q01-UTAGAIKBNL  PIC X(1).
                                13                          PIC X(1).
                                13  SPA-GMN-Q01-UTAGAIKBNMEIL PIC X(18).
+                       09  SPA-GMN-Q01-TENKIKBNLST-G.
+                           11  SPA-GMN-Q01-TENKIKBNLST-MAX PIC 9(05).
+                           11  SPA-GMN-Q01-TENKIKBNLST      OCCURS 10.
+                               13  SPA-GMN-Q01-TENKIKBNL    PIC X(1).
+                               13                           PIC X(1).
+                               13  SPA-GMN-Q01-TENKIKBNMEIL PIC X(18).
                        09  SPA-GMN-Q01-UBYOMEILST-G.
                            11  SPA-GMN-Q01-UBYOMEILST-MAX  PIC 9(05).
                            11  SPA-GMN-Q01-UBYOMEILST      OCCURS 100.
@@ -700,6 +716,9 @@
                    07  SPA-Q01-BYOMEI-AREA.
       *
                        09  SPA-Q01-UTAGAIKBN           PIC X(01).
+                       09  SPA-Q01-TENKIKBN            PIC X(01).
+                       09  SPA-Q01-STTENKIYMD          PIC X(08).
+                       09  SPA-Q01-EDTENKIYMD          PIC X(08).
                        09  SPA-Q01-BYOMEI-JKN          PIC X(01).
       *
                        09  SPA-Q01-BYOMEI-G.

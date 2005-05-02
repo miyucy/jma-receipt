@@ -78,6 +78,8 @@
            03  WRK-EDBIRTHDAY                      PIC X(08).
            03  WRK-STLASTYMD                       PIC X(08).
            03  WRK-EDLASTYMD                       PIC X(08).
+           03  WRK-STTENKIYMD                      PIC X(08).
+           03  WRK-EDTENKIYMD                      PIC X(08).
            03  WRK-EDPTNUM                         PIC X(20).
            03  WRK-SQL-PNT                         PIC 9(05).
            03  WRK-SQL                             PIC X(20000).
@@ -227,6 +229,20 @@
            ELSE
                MOVE    SPA-Q01-EDPTNUM
                                    TO  WRK-EDPTNUM
+           END-IF
+      *
+           IF      ( SPA-Q01-STTENKIYMD =   SPACE )
+               MOVE    ALL "0"     TO  WRK-STTENKIYMD
+           ELSE
+               MOVE    SPA-Q01-STTENKIYMD
+                                   TO  WRK-STTENKIYMD
+           END-IF
+      *
+           IF      ( SPA-Q01-EDTENKIYMD =   SPACE )
+               MOVE    ALL "9"     TO  WRK-EDTENKIYMD
+           ELSE
+               MOVE    SPA-Q01-EDTENKIYMD
+                                   TO  WRK-EDTENKIYMD
            END-IF
       *
            .
@@ -682,6 +698,10 @@
                PERFORM 10011-UTAGAIFLG-SQL-EDIT-SEC
            END-IF
       *
+           IF    ( SPA-Q01-TENKIKBN   NOT =   SPACE )
+               PERFORM 10011-TENKIKBN-SQL-EDIT-SEC
+           END-IF
+      *
            MOVE    ZERO    TO      CNT-JYOKEN
            PERFORM VARYING IDX1    FROM    1   BY  1
                UNTIL   (   IDX1    >   5 )
@@ -776,6 +796,10 @@
       *
                    IF    ( SPA-Q01-UTAGAIKBN   NOT =   SPACE )
                        PERFORM 10011-UTAGAIFLG-SQL-EDIT-SEC
+                   END-IF
+      *
+                   IF    ( SPA-Q01-TENKIKBN    NOT =   SPACE )
+                       PERFORM 10011-TENKIKBN-SQL-EDIT-SEC
                    END-IF
       *
                    MOVE    1               TO  CNT-JYOKEN
@@ -2160,6 +2184,63 @@
       *
            .
        10011-UTAGAIFLG-SQL-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ÉÂÌ¾Å¾µ¢¶èÊ¬ÊÔ½¸½èÍý
+      *****************************************************************
+       10011-TENKIKBN-SQL-EDIT-SEC     SECTION.
+      *
+           MOVE    1                   TO  CNT-JYOKEN
+      *
+      *
+           IF    ( SPA-Q01-TENKIKBN    =   "0" )
+      *
+               PERFORM 900-SQL-JYOKEN-EDIT2-SEC
+      *
+               STRING  WRK-SQL-TBL-NAME    DELIMITED BY SPACE
+                       ".TENKIKBN = ' '"   DELIMITED BY SIZE
+               INTO    WRK-SQL
+               WITH    POINTER WRK-SQL-PNT
+               END-STRING
+      *
+               PERFORM 900-SQL-JYOKEN-EDIT3-SEC
+      *
+      *
+           ELSE
+      *
+               PERFORM 900-SQL-JYOKEN-EDIT2-SEC
+      *
+               STRING  WRK-SQL-TBL-NAME    DELIMITED BY SPACE
+                       ".TENKIKBN = '"     DELIMITED BY SIZE
+                       SPA-Q01-TENKIKBN    DELIMITED BY SIZE
+                       "'"                 DELIMITED BY SIZE
+               INTO    WRK-SQL
+               WITH    POINTER WRK-SQL-PNT
+               END-STRING
+      *
+               PERFORM 900-SQL-JYOKEN-EDIT3-SEC
+      *
+               PERFORM 900-SQL-JYOKEN-EDIT2-SEC
+      *
+               STRING  "("                 DELIMITED BY SIZE
+                       WRK-SQL-TBL-NAME    DELIMITED BY SPACE
+                       ".TENKIYMD >= '"    DELIMITED BY SIZE
+                       WRK-STTENKIYMD      DELIMITED BY SIZE
+                       "') AND ("          DELIMITED BY SIZE
+                       WRK-SQL-TBL-NAME    DELIMITED BY SPACE
+                       ".TENKIYMD  <= '"   DELIMITED BY SIZE
+                       WRK-EDTENKIYMD      DELIMITED BY SIZE
+                       "')"                DELIMITED BY SIZE
+               INTO    WRK-SQL
+               WITH    POINTER WRK-SQL-PNT
+               END-STRING
+      *
+               PERFORM 900-SQL-JYOKEN-EDIT3-SEC
+      *
+           END-IF
+      *
+           .
+       10011-TENKIKBN-SQL-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    ÊÂ¤ÙÂØ¤¨½çÊÔ½¸½èÍý

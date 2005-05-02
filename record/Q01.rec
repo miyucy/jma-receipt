@@ -346,6 +346,21 @@ Q01	{
 					count	int;
 					item	varchar(20)[3];
 				};
+				CMB_TENKIKBN	{
+					TENKIKBN	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[10];
+				};
+				STTENKIYMD	{
+					value	varchar(10);
+					state	int;
+				};
+				EDTENKIYMD	{
+					value	varchar(10);
+					state	int;
+				};
 				CMB_BYOBUN	{
 					BYOBUN	{
 						value	varchar(24);

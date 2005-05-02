@@ -567,6 +567,9 @@
       *    疑い病名区分コンボ初期処理
            PERFORM 3101-UTAGAIKBN-CMB-SYOKI-SEC
       *
+      *    転帰区分コンボ初期処理
+           PERFORM 3101-TENKIKBN-CMB-SYOKI-SEC
+      *
       *    病名検索コンボ初期処理
            PERFORM 3101-BYOMEI-CMB-SYOKI-SEC
       *
@@ -1074,6 +1077,33 @@
       *
            .
        3101-UTAGAIKBN-CMB-SYOKI-EXT.
+           EXIT.
+      *****************************************************************
+      *    転帰コンボ初期処理
+      *****************************************************************
+       3101-TENKIKBN-CMB-SYOKI-SEC     SECTION.
+      *
+           INITIALIZE                      SPA-GMN-Q01-TENKIKBNLST-G
+      *
+           MOVE    5                   TO  SPA-GMN-Q01-TENKIKBNLST-MAX
+      *
+           MOVE    "0"                 TO  SPA-GMN-Q01-TENKIKBNL (1)
+           MOVE    "未入力分のみ"      TO  SPA-GMN-Q01-TENKIKBNMEIL (1)
+      *
+           MOVE    "1"                 TO  SPA-GMN-Q01-TENKIKBNL (2)
+           MOVE    "治ゆ"              TO  SPA-GMN-Q01-TENKIKBNMEIL (2)
+      *
+           MOVE    "2"                 TO  SPA-GMN-Q01-TENKIKBNL (3)
+           MOVE    "死亡"              TO  SPA-GMN-Q01-TENKIKBNMEIL (3)
+      *
+           MOVE    "3"                 TO  SPA-GMN-Q01-TENKIKBNL (4)
+           MOVE    "中止"              TO  SPA-GMN-Q01-TENKIKBNMEIL (4)
+      *
+           MOVE    "8"                 TO  SPA-GMN-Q01-TENKIKBNL (5)
+           MOVE    "移行"              TO  SPA-GMN-Q01-TENKIKBNMEIL (5)
+      *
+           .
+       3101-TENKIKBN-CMB-SYOKI-EXT.
            EXIT.
       *****************************************************************
       *    病名検索コンボ初期処理
@@ -1588,15 +1618,12 @@
       *    疑い病名区分
            MOVE    Q01-UTAGAIKBN       TO  SPA-GMN-Q01-UTAGAIKBN-G
       *
-           MOVE    SPA-GMN-Q01-UTAGAIKBNLST-MAX
-                                       TO  Q01-CMB-UTAGAIKBN-COUNT
-           PERFORM VARYING IDXB    FROM    1   BY  1
-                   UNTIL ( IDXB    >       SPA-GMN-Q01-UTAGAIKBNLST-MAX)
+      *    転帰区分
+           MOVE    Q01-TENKIKBN        TO  SPA-GMN-Q01-TENKIKBN-G
       *
-               MOVE    SPA-GMN-Q01-UTAGAIKBNLST (IDXB)
-                                   TO   Q01-CMB-UTAGAIKBN-ITEM (IDXB)
-      *
-           END-PERFORM
+      *    転帰日
+           MOVE    Q01-STTENKIYMD      TO  SPA-GMN-Q01-STTENKIYMD
+           MOVE    Q01-EDTENKIYMD      TO  SPA-GMN-Q01-EDTENKIYMD
       *
            PERFORM VARYING IDXB    FROM    1   BY  1
                    UNTIL   IDXB    >       5
@@ -1874,6 +1901,24 @@
       *
       *    疑い病名チェック
            PERFORM 4119-UTAGAIKBN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4101-BYOSRY-INPUT-CHK-EXT
+           END-IF
+      *
+      *    転帰区分チェック
+           PERFORM 4119-TENKIKBN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4101-BYOSRY-INPUT-CHK-EXT
+           END-IF
+      *
+      *    開始転帰日チェック
+           PERFORM 4119-STTENKIYMD-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4101-BYOSRY-INPUT-CHK-EXT
+           END-IF
+      *
+      *    終了転帰日チェック
+           PERFORM 4119-EDTENKIYMD-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4101-BYOSRY-INPUT-CHK-EXT
            END-IF
@@ -3223,6 +3268,108 @@
       *
            .
        4119-UTAGAIKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    転帰病名区分チェック処理
+      *****************************************************************
+       4119-TENKIKBN-CHK-SEC           SECTION.
+      *
+           IF    ( SPA-GMN-Q01-TENKIKBN-G =   SPACE )
+      *
+               MOVE    SPACE       TO  SPA-GMN-Q01-STTENKIYMD
+                                       SPA-NAI-Q01-STTENKIYMD
+                                       SPA-GMN-Q01-EDTENKIYMD
+                                       SPA-NAI-Q01-EDTENKIYMD
+      *
+               GO  TO  4119-TENKIKBN-CHK-EXT
+           END-IF
+      *
+           MOVE    ZERO            TO  FLG-CHK
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   SPA-GMN-Q01-TENKIKBNLST-MAX )
+      *
+               IF    ( SPA-GMN-Q01-TENKIKBN
+                                   =   SPA-GMN-Q01-TENKIKBNL (IDX0))
+                   MOVE    SPA-GMN-Q01-TENKIKBNLST (IDX0)
+                                       TO  SPA-GMN-Q01-TENKIKBN-G
+                   MOVE    1           TO  FLG-CHK
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF  ( FLG-CHK           =   ZERO )
+               MOVE    "0120"          TO  SPA-ERRCD
+               MOVE    320             TO  SPA-GMN-Q01-CUR
+           END-IF
+      *
+           IF  ( SPA-GMN-Q01-TENKIKBN  =   "1"
+                                        OR "2"
+                                        OR "3"
+                                        OR "8"
+                                               )
+               CONTINUE
+           ELSE
+      *
+               MOVE    SPACE       TO  SPA-GMN-Q01-STTENKIYMD
+                                       SPA-NAI-Q01-STTENKIYMD
+                                       SPA-GMN-Q01-EDTENKIYMD
+                                       SPA-NAI-Q01-EDTENKIYMD
+      *
+           END-IF
+      *
+           .
+       4119-TENKIKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    開始転帰日チェック
+      *****************************************************************
+       4119-STTENKIYMD-CHK-SEC         SECTION.
+      *
+           MOVE    SPACE               TO  SPA-NAI-Q01-STTENKIYMD
+      *
+      *    日付妥当性チェック＆編集処理
+           IF    ( SPA-GMN-Q01-STTENKIYMD  NOT =   SPACE )
+               MOVE    SPA-GMN-Q01-STTENKIYMD
+                                       TO  WRK-YMD
+               PERFORM 5002-HIZUKE-CHK-SEC
+               IF  ( SPA-ERRCD         =   SPACE )
+                   MOVE    WRK-SYMD    TO  SPA-NAI-Q01-STTENKIYMD
+                   MOVE    WRK-HENYMDG TO  SPA-GMN-Q01-STTENKIYMD
+               ELSE
+                   MOVE    "0121"          TO  SPA-ERRCD
+                   MOVE    321             TO  SPA-GMN-Q01-CUR
+                   GO  TO  4119-STTENKIYMD-CHK-EXT
+               END-IF
+           END-IF
+      *
+           .
+       4119-STTENKIYMD-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    終了転帰日チェック
+      *****************************************************************
+       4119-EDTENKIYMD-CHK-SEC         SECTION.
+      *
+           MOVE    SPACE               TO  SPA-NAI-Q01-EDTENKIYMD
+      *
+      *    日付妥当性チェック＆編集処理
+           IF    ( SPA-GMN-Q01-EDTENKIYMD  NOT =   SPACE )
+               MOVE    SPA-GMN-Q01-EDTENKIYMD
+                                       TO  WRK-YMD
+               PERFORM 5002-HIZUKE-CHK-SEC
+               IF  ( SPA-ERRCD         =   SPACE )
+                   MOVE    WRK-SYMD    TO  SPA-NAI-Q01-EDTENKIYMD
+                   MOVE    WRK-HENYMDG TO  SPA-GMN-Q01-EDTENKIYMD
+               ELSE
+                   MOVE    "0122"          TO  SPA-ERRCD
+                   MOVE    322             TO  SPA-GMN-Q01-CUR
+                   GO  TO  4119-EDTENKIYMD-CHK-EXT
+               END-IF
+           END-IF
+      *
+           .
+       4119-EDTENKIYMD-CHK-EXT.
            EXIT.
       *****************************************************************
       *    病名コードチェック処理
@@ -4726,6 +4873,11 @@
       *    病名　診療行為
            MOVE    SPA-GMN-Q01-UTAGAIKBN   TO  SPA-Q01-UTAGAIKBN
       *
+           MOVE    SPA-GMN-Q01-TENKIKBN    TO  SPA-Q01-TENKIKBN
+      *
+           MOVE    SPA-NAI-Q01-STTENKIYMD  TO  SPA-Q01-STTENKIYMD
+           MOVE    SPA-NAI-Q01-EDTENKIYMD  TO  SPA-Q01-EDTENKIYMD
+      *
            IF    ( SPA-GMN-Q01-RDBYOMEI-AND    =   "T" )
                MOVE    "1"                 TO  SPA-Q01-BYOMEI-JKN
            ELSE
@@ -4956,6 +5108,7 @@
       *    該当（４）
            IF  ( SPA-Q01-BYOMEI-G          NOT =   SPACE )
             OR ( SPA-Q01-UTAGAIKBN         NOT =   SPACE )
+            OR ( SPA-Q01-TENKIKBN          NOT =   SPACE )
       *
                MOVE    "1"                 TO  SPA-Q01-GTBL(4)
       *
@@ -5336,6 +5489,34 @@
       *    疑い病名
            MOVE    SPA-GMN-Q01-UTAGAIKBN-G TO  Q01-UTAGAIKBN
       *
+           MOVE    SPA-GMN-Q01-UTAGAIKBNLST-MAX
+                                       TO  Q01-CMB-UTAGAIKBN-COUNT
+           PERFORM VARYING IDXB    FROM    1   BY  1
+                   UNTIL ( IDXB    >       SPA-GMN-Q01-UTAGAIKBNLST-MAX)
+      *
+               MOVE    SPA-GMN-Q01-UTAGAIKBNLST (IDXB)
+                                   TO   Q01-CMB-UTAGAIKBN-ITEM (IDXB)
+      *
+           END-PERFORM
+      *
+      *    転帰区分
+           MOVE    SPA-GMN-Q01-TENKIKBN-G TO  Q01-TENKIKBN
+      *
+           MOVE    SPA-GMN-Q01-TENKIKBNLST-MAX
+                                       TO  Q01-CMB-TENKIKBN-COUNT
+           PERFORM VARYING IDXB    FROM    1   BY  1
+                   UNTIL ( IDXB    >   SPA-GMN-Q01-TENKIKBNLST-MAX )
+      *
+               MOVE    SPA-GMN-Q01-TENKIKBNLST (IDXB)
+                                       TO  Q01-CMB-TENKIKBN-ITEM (IDXB)
+      *
+           END-PERFORM
+      *
+      *    転帰日
+           MOVE    SPA-GMN-Q01-STTENKIYMD  TO  Q01-STTENKIYMD
+      *
+           MOVE    SPA-GMN-Q01-EDTENKIYMD  TO  Q01-EDTENKIYMD
+      *
       *    病名検索
            MOVE    SPA-GMN-Q01-BYOMEISEL   TO  Q01-BYOMEISEL
       *
@@ -5412,8 +5593,6 @@
       *
            END-PERFORM
       *
-           PERFORM 5001-MAPCUR-SEC
-      *
       *    検索条件AND/OR切り替えラジオボタン
            MOVE    SPA-GMN-Q01-RDKOHNUM-AND    TO  Q01-RDKOHNUM-AND
            MOVE    SPA-GMN-Q01-RDKOHNUM-OR     TO  Q01-RDKOHNUM-OR
@@ -5423,6 +5602,24 @@
       *
            MOVE    SPA-GMN-Q01-RDSRYACT-AND    TO  Q01-RDSRYACT-AND
            MOVE    SPA-GMN-Q01-RDSRYACT-OR     TO  Q01-RDSRYACT-OR
+      *
+           MOVE    WIDGET-NORMAL               TO  Q01-STTENKIYMD-STATE
+                                                   Q01-EDTENKIYMD-STATE
+      *
+           IF  ( SPA-GMN-Q01-TENKIKBN  =   "1"
+                                        OR "2"
+                                        OR "3"
+                                        OR "8"
+                                               )
+               CONTINUE
+           ELSE
+      *
+               MOVE    WIDGET-INSENSITIVE      TO  Q01-STTENKIYMD-STATE
+                                                   Q01-EDTENKIYMD-STATE
+      *
+           END-IF
+      *
+           PERFORM 5001-MAPCUR-SEC
       *
            .
        500-GMNHEN-EXT.
@@ -5642,6 +5839,12 @@
                MOVE  "SRYCD5"      TO  MCP-WIDGET
            WHEN   319
                MOVE  "UTAGAIKBN"   TO  MCP-WIDGET
+           WHEN   320
+               MOVE  "TENKIKBN"    TO  MCP-WIDGET
+           WHEN   321
+               MOVE  "STTENKIYMD"  TO  MCP-WIDGET
+           WHEN   322
+               MOVE  "EDTENKIYMD"  TO  MCP-WIDGET
       *
       *    並び順タブ
            WHEN   401
@@ -5838,6 +6041,12 @@
            WHEN   "BYOMEISEL"
                MOVE  319           TO  SPA-GMN-Q01-CUR
            WHEN   "UTAGAIKBN"
+               MOVE  320           TO  SPA-GMN-Q01-CUR
+           WHEN   "TENKIKBN"
+               MOVE  321           TO  SPA-GMN-Q01-CUR
+           WHEN   "STTENKIYMD"
+               MOVE  322           TO  SPA-GMN-Q01-CUR
+           WHEN   "EDTENKIYMD"
                MOVE  303           TO  SPA-GMN-Q01-CUR
            WHEN   "BYOMEICD1"
                MOVE  304           TO  SPA-GMN-Q01-CUR
@@ -5894,6 +6103,20 @@
                IF    ( SPA-GMN-Q01-UBYOMEI-STATE
                                    =   WIDGET-INSENSITIVE )
                    COMPUTE SPA-GMN-Q01-CUR =   302
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-CUR =   321 )
+               IF    ( Q01-STTENKIYMD-STATE
+                                   =   WIDGET-INSENSITIVE )
+                   COMPUTE SPA-GMN-Q01-CUR =   322
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-CUR =   322 )
+               IF    ( Q01-EDTENKIYMD-STATE
+                                   =   WIDGET-INSENSITIVE )
+                   COMPUTE SPA-GMN-Q01-CUR =   303
                END-IF
            END-IF
       *
@@ -5991,6 +6214,15 @@
                                        TO  SPA-ERRMSG
            WHEN    "0119"
                MOVE    "疑い病名区分入力エラー"
+                                       TO  SPA-ERRMSG
+           WHEN    "0120"
+               MOVE    "転帰区分入力エラー"
+                                       TO  SPA-ERRMSG
+           WHEN    "0121"
+               MOVE    "開始転帰日入力エラー"
+                                       TO  SPA-ERRMSG
+           WHEN    "0122"
+               MOVE    "終了転帰日入力エラー"
                                        TO  SPA-ERRMSG
            WHEN    "1001"
                MOVE    "開始診療年月日＞終了診療年月日となっています"
