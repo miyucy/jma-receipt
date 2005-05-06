@@ -1631,21 +1631,26 @@
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "JYURRK-KEY27"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    PATH-TBL-JYURRK-KEY30
+                                       TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "JYURRK-KEY27"     TO  ORC-DBPATH
-               PERFORM 900-JYURRK-READ-SEC
+               MOVE    PATH-TBL-JYURRK-KEY30
+                                           TO  MCP-PATH
+               PERFORM 990-JYURRK-READ2-SEC
            ELSE
                INITIALIZE                  JYURRK-REC
                MOVE    1               TO  FLG-JYURRK
            END-IF
       *    カーソルクロース
-           MOVE    "JYURRK-KEY27"      TO  ORC-DBPATH
-           PERFORM 990-DBCLOSE-SEC
+           MOVE    PATH-TBL-JYURRK-KEY30
+                                       TO  MCP-PATH
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            IF      FLG-JYURRK          =   ZERO
                MOVE    JYURRK-DRCD         TO  WRK-JRK-DRCD
@@ -4895,6 +4900,27 @@
       *
            .
        990-DBCLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    受診履歴マスター読込
+      *****************************************************************
+       990-JYURRK-READ2-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  JYURRK-REC
+               MOVE    ZERO            TO  FLG-JYURRK
+           ELSE
+               INITIALIZE                  JYURRK-REC
+               MOVE    1               TO  FLG-JYURRK
+           END-IF
+      *
+           .
+       990-JYURRK-READ2-EXT.
            EXIT.
       *
       *
