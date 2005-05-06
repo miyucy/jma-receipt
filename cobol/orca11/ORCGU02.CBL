@@ -2394,8 +2394,8 @@
                    MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN-DRCDLST-G
                    MOVE    ORCSDR-DRCD-MAX     TO  SPA-DRCD-MAX
                END-IF
-               MOVE    SPA-GMN-SRYKA       TO  SPA-MAE-SRYKA
            END-IF
+           MOVE    SPA-GMN-SRYKA       TO  SPA-MAE-SRYKA
       *    ドクター、保険組合せ編集
            PERFORM 4101161-DRCD-HKNCOMBI-SEC
            .
