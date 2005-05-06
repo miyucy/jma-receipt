@@ -702,3 +702,18 @@ path	key29	{
 	};
 };
 
+path	key30	{
+	DBSELECT	{
+		DECLARE tbl_jyurrk_key30_csr CURSOR FOR
+		SELECT *
+		FROM tbl_jyurrk
+			WHERE HOSPID      =   :HOSPID
+			AND   PTID        =    :PTID
+			AND   SRYKA       =   :SRYKA
+			AND   HKNCOMBINUM <>  '9999'
+			ORDER   BY        SRYYMD DESC,
+			                  DENPNUM DESC
+		;
+	};
+};
+
