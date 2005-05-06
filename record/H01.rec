@@ -1610,5 +1610,8 @@ H01	{
 		ZAITAKU	{
 			value	varchar(14);
 		};
+		HONKZKKBN	{
+			value	varchar(4);
+		};
 	};
 };

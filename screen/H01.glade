@@ -5,13 +5,9 @@
   <name>H01</name>
   <program_name>H01</program_name>
   <directory></directory>
-  <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
-  <language>C</language>
   <gnome_support>True</gnome_support>
   <gtkpanda_support>False</gtkpanda_support>
-  <gettext_support>True</gettext_support>
-  <output_main_file>False</output_main_file>
 </project>
 
 <widget>
@@ -29,7 +25,7 @@
     <handler>set_focus</handler>
     <last_modification_time>Fri, 05 Jan 2001 11:20:35 GMT</last_modification_time>
   </signal>
-  <signal>    
+  <signal>
     <name>delete_event</name>
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
@@ -373,7 +369,7 @@
       <text_visible>True</text_visible>
       <text_max_length>7</text_max_length>
       <text>H13.11</text>
-      <use_xim>False</use_xim>
+      <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
 
@@ -401,7 +397,7 @@
       <text_visible>True</text_visible>
       <text_max_length>2</text_max_length>
       <text></text>
-      <use_xim>False</use_xim>
+      <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
 
@@ -5453,7 +5449,6 @@
       <format>ZZ</format>
     </widget>
 
-
     <widget>
       <class>GtkNumberEntry</class>
       <name>SHORYOYOHI1</name>
@@ -10158,7 +10153,6 @@
       <format>ZZ</format>
     </widget>
 
-
     <widget>
       <class>GtkNumberEntry</class>
       <name>NSHORYOYOHI1</name>
@@ -10513,7 +10507,7 @@
       <label></label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
-      <xalign>0.0</xalign>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -10529,7 +10523,7 @@
       <label></label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
-      <xalign>0.0</xalign>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -10545,7 +10539,7 @@
       <label></label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
-      <xalign>0.0</xalign>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -10705,7 +10699,7 @@
       <label></label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
-      <xalign>0.0</xalign>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -10721,7 +10715,7 @@
       <label></label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
-      <xalign>0.0</xalign>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -10737,7 +10731,7 @@
       <label></label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
-      <xalign>0.0</xalign>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -10842,6 +10836,8 @@
 	<text_visible>True</text_visible>
 	<text_max_length>14</text_max_length>
 	<text></text>
+	<input_mode>XIM</input_mode>
+	<xim_enabled>False</xim_enabled>
       </widget>
     </widget>
 
@@ -10869,7 +10865,7 @@
       <text_visible>True</text_visible>
       <text_max_length>7</text_max_length>
       <text>H13.11</text>
-      <use_xim>False</use_xim>
+      <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
 
@@ -10897,7 +10893,7 @@
       <text_visible>True</text_visible>
       <text_max_length>7</text_max_length>
       <text>H13.11</text>
-      <use_xim>False</use_xim>
+      <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
 
@@ -10909,38 +10905,6 @@
       <width>54</width>
       <height>18</height>
       <label>ÀÁµáÇ¯·î</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label570</name>
-      <x>10</x>
-      <y>47</y>
-      <width>54</width>
-      <height>18</height>
-      <label>Ç¯Îð</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label561</name>
-      <x>100</x>
-      <y>47</y>
-      <width>54</width>
-      <height>18</height>
-      <label>µëÉÕ³ä¹ç</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -11013,54 +10977,6 @@
       <y>65</y>
       <width>1010</width>
       <height>0</height>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>SRYKANAME</name>
-      <x>120</x>
-      <y>23</y>
-      <width>150</width>
-      <height>20</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>NAME</name>
-      <x>275</x>
-      <y>23</y>
-      <width>180</width>
-      <height>20</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>TEISEIKBNNM</name>
-      <x>880</x>
-      <y>45</y>
-      <width>120</width>
-      <height>20</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
     </widget>
 
     <widget>
@@ -11238,15 +11154,14 @@
       <xpad>0</xpad>
       <ypad>0</ypad>
     </widget>
-    
+
     <widget>
       <class>GtkNumberEntry</class>
       <name>AGE</name>
-      <x>60</x>
+      <x>43</x>
       <y>45</y>
       <width>30</width>
       <height>20</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>
@@ -11262,15 +11177,14 @@
       <editable>False</editable>
       <format>ZZZ</format>
     </widget>
-    
+
     <widget>
       <class>GtkNumberEntry</class>
       <name>KYURATE</name>
-      <x>160</x>
+      <x>135</x>
       <y>45</y>
       <width>30</width>
       <height>20</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>
@@ -11289,8 +11203,40 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>ZAITAKU</name>
-      <x>210</x>
+      <name>SRYKANAME</name>
+      <x>120</x>
+      <y>23</y>
+      <width>150</width>
+      <height>20</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>NAME</name>
+      <x>275</x>
+      <y>23</y>
+      <width>180</width>
+      <height>20</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>TEISEIKBNNM</name>
+      <x>880</x>
       <y>45</y>
       <width>120</width>
       <height>20</height>
@@ -11302,7 +11248,70 @@
       <xpad>0</xpad>
       <ypad>0</ypad>
     </widget>
-    
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label570</name>
+      <x>5</x>
+      <y>47</y>
+      <width>40</width>
+      <height>18</height>
+      <label>Ç¯Îð</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label561</name>
+      <x>75</x>
+      <y>47</y>
+      <width>60</width>
+      <height>18</height>
+      <label>µëÉÕ³ä¹ç</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>HONKZKKBN</name>
+      <x>170</x>
+      <y>45</y>
+      <width>50</width>
+      <height>20</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>ZAITAKU</name>
+      <x>232</x>
+      <y>45</y>
+      <width>120</width>
+      <height>20</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
   </widget>
 </widget>
 
