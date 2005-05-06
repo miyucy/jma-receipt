@@ -9241,6 +9241,9 @@
       *    保険組合せ
            MOVE    SPA-NAI-RRK-HKNCOMBI(SPA-NAI-DOSELNUM)
                                        TO  SPA-OLD-HKNCOMBI
+      *    ドクター
+           MOVE    SPA-NAI-RRK-DRCD (SPA-NAI-DOSELNUM)
+                                       TO  SPA-DRCD
       *    複数診療科・保険
            INITIALIZE                  SPA-TEI-AREA
            IF      SPA-NAI-GRP-DENPNUM(SPA-NAI-DOSELNUM)
