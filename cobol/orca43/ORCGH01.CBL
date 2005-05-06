@@ -46,6 +46,8 @@
       *                                     科コードの入力の修正
       *  01.02.04    NACL-藤原    03/07/05  患者氏名での検索を追加
       *  01.02.05    NACL-藤原    04/01/26  排他制御処理追加
+      *  ver.2.6.0
+      *  01.03.01    NACL-藤原    05/04/11  本人家族区分の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1176,7 +1178,14 @@
       *
            IF      RECE10-ZAITAKU  =   "1"
                MOVE    "在宅寝たきり等"    TO  SPA-H01GMN-ZAITAKU
-           END-IF             
+           END-IF
+      *
+           EVALUATE    RECE10-HONKZKKBN
+               WHEN    "1"
+                   MOVE    "本人"          TO  SPA-H01GMN-HONKZKKBN
+               WHEN    "2"
+                   MOVE    "家族"          TO  SPA-H01GMN-HONKZKKBN
+           END-EVALUATE             
       *
            MOVE    "1"                 TO  SPA-HENFLG
       *         
@@ -2028,6 +2037,8 @@
            MOVE    SPA-H01GMN-AGE     TO  H01-AGE
            MOVE    SPA-H01GMN-KYURATE TO  H01-KYURATE     
            MOVE    SPA-H01GMN-ZAITAKU TO  H01-ZAITAKU 
+           MOVE    SPA-H01GMN-HONKZKKBN
+                                      TO  H01-HONKZKKBN
       *
            PERFORM 5001-MAPCUR-SEC
       *
