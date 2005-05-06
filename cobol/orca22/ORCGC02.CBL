@@ -154,6 +154,11 @@
       *  00.08.16    NACL-藤原    04/11/01  病名入力時修飾語コードのみで
       *                                     構成されていても病名とする
       *  01.08.17    NACL-藤原    05/02/10  訂正日指定対応
+      *  ver.2.6.0
+      *  01.08.18    NACL-藤原    05/04/20  移行病名警告メッセージの表示、
+      *                                     廃止年月日警告メッセージ表示、
+      *                                     診療科、表示対象年月の初期表示
+      *                                     をシス管の設定より行う
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -881,8 +886,15 @@
                         PERFORM 41016-SRYKA-CHK-SEC
                        MOVE    1                  TO  SPA-GMN-C02-CUR
                    ELSE
-                       PERFORM 330-SPASET-JYURRK-HENSYU-SEC
-                       IF      SPA-GMN-C02-SRYKA-MAX =   1
+                       IF    ( SPA-C02-1042-SRYKA-DSPKBN
+                                                       =   "1" )
+                       AND   ( SPA-GMN-C02-SRYKA-MAX   >   1   )
+                           MOVE    SPA-GMN-C02-SRYKALST (1)
+                                               TO  SPA-GMN-C02-SRYKA-G
+                       ELSE
+                           PERFORM 330-SPASET-JYURRK-HENSYU-SEC
+                       END-IF
+                       IF      SPA-GMN-C02-SRYKA-MAX   =   1
                            MOVE    1               TO  SPA-GMN-C02-CUR
                        ELSE      
                            MOVE    27              TO  SPA-GMN-C02-CUR
@@ -1062,13 +1074,53 @@
            IF      FLG-SYSKANRI     =   ZERO
                MOVE    MCPDATA-REC      TO  SYS-1042-REC
            ELSE    
-               MOVE    SPACE            TO  SYS-1042-REC
+               INITIALIZE                   SYS-1042-REC
            END-IF
            IF      SYS-1042-MSG1-DSPKBN =   SPACE
                MOVE    ZERO             TO  SYS-1042-MSG1-DSPKBN
            END-IF
            MOVE    SYS-1042-MSG1-DSPKBN
                                        TO  SPA-C02-1042-MSG1-DSPKBN
+           IF      SYS-1042-MSG2-DSPKBN =   SPACE
+               MOVE    ZERO             TO  SYS-1042-MSG2-DSPKBN
+           END-IF
+           MOVE    SYS-1042-MSG2-DSPKBN
+                                       TO  SPA-C02-1042-MSG2-DSPKBN
+           IF      SYS-1042-MSG3-DSPKBN =   SPACE
+               MOVE    ZERO             TO  SYS-1042-MSG3-DSPKBN
+           END-IF
+           MOVE    SYS-1042-MSG3-DSPKBN
+                                       TO  SPA-C02-1042-MSG3-DSPKBN
+      *
+      *    旧総合病院の場合は全科表示はなしとする
+           IF      SYS-1042-SRYKA-DSPKBN =   SPACE
+               MOVE    ZERO             TO  SYS-1042-SRYKA-DSPKBN
+           END-IF
+           MOVE    SYS-1042-SRYKA-DSPKBN
+                                       TO  SPA-C02-1042-SRYKA-DSPKBN
+           IF    ( SPA-C02-1001-HOSPSBT1
+                                       =   "1" )
+           AND   ( SPA-C02-1042-SRYKA-DSPKBN
+                                       =   "1" )
+               MOVE    ZERO             TO  SPA-C02-1042-SRYKA-DSPKBN
+           END-IF
+      *
+           IF      SYS-1042-SYOKBN-DSPKBN =   SPACE
+               MOVE    ZERO             TO  SYS-1042-SYOKBN-DSPKBN
+           END-IF
+           MOVE    SYS-1042-SYOKBN-DSPKBN
+                                       TO  SPA-C02-1042-SYOKBN-DSPKBN
+           EVALUATE    SPA-C02-1042-SYOKBN-DSPKBN
+               WHEN    ZERO
+                   MOVE    SPA-GMN-C02-SYOKBNLST (1)
+                                           TO  SPA-GMN-C02-SYOKBN-G
+               WHEN    "1"
+                   MOVE    SPA-GMN-C02-SYOKBNLST (2)
+                                           TO  SPA-GMN-C02-SYOKBN-G
+               WHEN    "2"
+                   MOVE    SPA-GMN-C02-SYOKBNLST (3)
+                                           TO  SPA-GMN-C02-SYOKBN-G
+           END-EVALUATE
       *
       *    診療科編集
            PERFORM 3104-SRYKA-SPA-SEC
@@ -1995,8 +2047,17 @@
                                        SPA-PTBYOMEI-REC
       *
            MOVE    SPA-NAI-C02-SYSYMD  TO  SPA-NAI-C02-SRYYMD
-           MOVE    SPA-GMN-C02-SYOKBNLST (1)
-                                       TO  SPA-GMN-C02-SYOKBN-G
+           EVALUATE    SPA-C02-1042-SYOKBN-DSPKBN
+               WHEN    ZERO
+                   MOVE    SPA-GMN-C02-SYOKBNLST (1)
+                                           TO  SPA-GMN-C02-SYOKBN-G
+               WHEN    "1"
+                   MOVE    SPA-GMN-C02-SYOKBNLST (2)
+                                           TO  SPA-GMN-C02-SYOKBN-G
+               WHEN    "2"
+                   MOVE    SPA-GMN-C02-SYOKBNLST (3)
+                                           TO  SPA-GMN-C02-SYOKBN-G
+           END-EVALUATE
            MOVE    SPA-GMN-C02-HNYUGAIKBNLST (1)
                                        TO  SPA-GMN-C02-HNYUGAIKBN-G
       *
@@ -2080,8 +2141,19 @@
                IF      SPA-GMN-C02-SRYKA-MAX   =   1
                    MOVE    1                   TO  SPA-GMN-C02-CUR
                ELSE      
-                   PERFORM 330-SPASET-JYURRK-HENSYU-SEC
-                   MOVE    27                  TO  SPA-GMN-C02-CUR
+                   IF    ( SPA-C02-1042-SRYKA-DSPKBN
+                                                   =   "1" )
+                   AND   ( SPA-GMN-C02-SRYKA-MAX   >   1   )
+                       MOVE    SPA-GMN-C02-SRYKALST (1)
+                                           TO  SPA-GMN-C02-SRYKA-G
+                   ELSE
+                       PERFORM 330-SPASET-JYURRK-HENSYU-SEC
+                   END-IF
+                   IF      SPA-GMN-C02-SRYKA-MAX   =   1
+                       MOVE    1               TO  SPA-GMN-C02-CUR
+                   ELSE      
+                       MOVE    27              TO  SPA-GMN-C02-CUR
+                   END-IF
                END-IF 
       *
                IF      SPA-GMN-C02-SRYKA   NOT =   ZERO
@@ -3722,16 +3794,9 @@
                IF      FLG-BYOMEI      NOT =   ZERO
                    MOVE    "0054"              TO  SPA-ERRCD
                ELSE
-                   IF      BYO-IKOSAKICD       =   SPACE
-                       IF      BYO-HAISIYMD        =   ALL "9" OR  SPACE
-                           CONTINUE
-                       ELSE
-                           MOVE    BYO-HAISIYMD    TO  WRK-SYMD
-                           PERFORM 5002-HIZUKE-HEN-SEC
-                           MOVE    LNK-DAY2-EDTYMD3
-                                                   TO  WRK-HAISIYMDH
-                       END-IF        
-                   ELSE
+                   IF    ( BYO-IKOSAKICD   NOT =   SPACE )
+                   AND   ( SPA-C02-1042-MSG2-DSPKBN
+                                               =   ZERO  )
                        MOVE    BYO-IKOSAKICD   TO  BYO-BYOMEICD
                        MOVE    ZERO            TO  FLG-BYOMEI
                        PERFORM 900-BYOMEI-READ-SEC
@@ -3749,7 +3814,16 @@
                            MOVE    IDZ         TO  SPA-C02-IKOSAKI-INDEX                    
                            MOVE    "0103"      TO  SPA-CIDCD2
                            GO  TO  4102-BYOMEICD-CHK-EXT
-                       END-IF    
+                       END-IF
+                   ELSE    
+                       IF      BYO-HAISIYMD        =   ALL "9" OR  SPACE
+                           CONTINUE
+                       ELSE
+                           MOVE    BYO-HAISIYMD    TO  WRK-SYMD
+                           PERFORM 5002-HIZUKE-HEN-SEC
+                           MOVE    LNK-DAY2-EDTYMD3
+                                                   TO  WRK-HAISIYMDH
+                       END-IF        
                    END-IF        
                END-IF
              WHEN    OTHER       
@@ -3774,8 +3848,10 @@
                                                        TO  BYO-BYOMEICD
                            MOVE    ZERO                TO  FLG-BYOMEI
                            PERFORM 900-BYOMEI-READ-SEC
-                           IF      FLG-BYOMEI          =   ZERO
-                           AND     BYO-IKOSAKICD   NOT =   SPACE
+                           IF    ( FLG-BYOMEI          =   ZERO  )
+                           AND   ( BYO-IKOSAKICD   NOT =   SPACE )
+                           AND   ( SPA-C02-1042-MSG2-DSPKBN
+                                                       =   ZERO  )
                                MOVE    USBYO-BYOMEICD (IDX3) 
                                            TO  SPA-C02-IKOMOTO-BYOMEICD
                                MOVE    BYO-BYOMEI 
@@ -3885,7 +3961,9 @@
            END-IF
       *
       *    廃止病名のとき
-           IF      WRK-HAISIYMDH       =   SPACE
+           IF    ( WRK-HAISIYMDH       =   SPACE )
+           OR    ( SPA-C02-1042-MSG3-DSPKBN
+                                       =   "1"   )
                CONTINUE
            ELSE
                MOVE    "0075"              TO  SPA-ERRCD
@@ -4780,7 +4858,9 @@
                    PERFORM 5002-HIZUKE-HEN-SEC
                    MOVE    LNK-DAY2-EDTYMD3    TO  WRK-HAISIYMDH
                END-IF        
-               IF      LNK-BYO-IKOSAKICD   NOT =   SPACE
+               IF    ( LNK-BYO-IKOSAKICD   NOT =   SPACE )
+               AND   ( SPA-C02-1042-MSG2-DSPKBN
+                                               =   ZERO  )
                    MOVE    LNK-BYO-IKOSAKICD-INDEX
                                                TO  IDX
                    MOVE    SPA-NAI-C02-BYOMEICD (IDX) 
@@ -4843,6 +4923,8 @@
       *    廃止病名警告
            IF    ( SPA-CIDCD2          =   SPACE )
            AND   ( WRK-HAISIYMDH   NOT =   SPACE )
+           AND   ( SPA-C02-1042-MSG3-DSPKBN
+                                       =   ZERO  )
                MOVE    "0075"          TO  SPA-ERRCD
            END-IF    
            .
@@ -4994,8 +5076,17 @@
                PERFORM 5001-SYOKBN-HENSYU-SEC
                MOVE    WRK-KBNMEI          TO  SPA-GMN-C02-SYOKBNMEI
                IF      WRK-KBNMEI          =   SPACE  
-                   MOVE    SPA-GMN-C02-SYOKBNLST (1)
+                   EVALUATE    SPA-C02-1042-SYOKBN-DSPKBN
+                       WHEN    ZERO
+                           MOVE    SPA-GMN-C02-SYOKBNLST (1)
                                                TO  SPA-GMN-C02-SYOKBN-G
+                       WHEN    "1"
+                           MOVE    SPA-GMN-C02-SYOKBNLST (2)
+                                               TO  SPA-GMN-C02-SYOKBN-G
+                       WHEN    "2"
+                           MOVE    SPA-GMN-C02-SYOKBNLST (3)
+                                               TO  SPA-GMN-C02-SYOKBN-G
+                   END-EVALUATE
                END-IF
       *****END-IF
       *
@@ -5216,8 +5307,17 @@
                                            SPA-GMN-C02-MAX
                                            SPA-GMN-C02-SRYKA-G
                                            SPA-PTBYOMEI-REC
-               MOVE    SPA-GMN-C02-SYOKBNLST (1)
-                                       TO  SPA-GMN-C02-SYOKBN-G   
+               EVALUATE    SPA-C02-1042-SYOKBN-DSPKBN
+                   WHEN    ZERO
+                       MOVE    SPA-GMN-C02-SYOKBNLST (1)
+                                               TO  SPA-GMN-C02-SYOKBN-G
+                   WHEN    "1"
+                       MOVE    SPA-GMN-C02-SYOKBNLST (2)
+                                               TO  SPA-GMN-C02-SYOKBN-G
+                   WHEN    "2"
+                       MOVE    SPA-GMN-C02-SYOKBNLST (3)
+                                               TO  SPA-GMN-C02-SYOKBN-G
+               END-EVALUATE
                MOVE    SPA-GMN-C02-HNYUGAIKBNLST (1)
                                        TO  SPA-GMN-C02-HNYUGAIKBN-G   
       *
@@ -6460,8 +6560,17 @@
            PERFORM 5001-SYOKBN-HENSYU-SEC
            MOVE    WRK-KBNMEI          TO  SPA-GMN-C02-SYOKBNMEI
            IF      WRK-KBNMEI          =   SPACE  
-               MOVE    SPA-GMN-C02-SYOKBNLST (1)
+               EVALUATE    SPA-C02-1042-SYOKBN-DSPKBN
+                   WHEN    ZERO
+                       MOVE    SPA-GMN-C02-SYOKBNLST (1)
                                            TO  SPA-GMN-C02-SYOKBN-G
+                   WHEN    "1"
+                       MOVE    SPA-GMN-C02-SYOKBNLST (2)
+                                           TO  SPA-GMN-C02-SYOKBN-G
+                   WHEN    "2"
+                       MOVE    SPA-GMN-C02-SYOKBNLST (3)
+                                           TO  SPA-GMN-C02-SYOKBN-G
+               END-EVALUATE
            END-IF
       *
       *    病名一覧

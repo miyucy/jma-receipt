@@ -44,6 +44,10 @@
       *  01.04.01    NACL-藤原    03/12/17  前・次頁対応
       *                                     移行先の確認画面追加
       *  01.04.02    NACL-藤原    04/07/07  部分検索・後方検索ボタン追加
+      *  ver.2.6.0
+      *  01.04.03    NACL-藤原    05/04/20  移行病名警告メッセージの表示、
+      *                                     廃止年月日警告メッセージ表示
+      *                                     をシス管の設定より行う
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1087,8 +1091,10 @@
            MOVE    SPA-GMN-TBYOMEI (SPA-NAI-SELNO1)   TO
                               SPA-GMN-TBYOMEI1   (SPA-GMN-BYOMEICD-MAX)
       *
-           IF      SPA-NAI-TIKOSAKICD (SPA-NAI-SELNO1)
-                               NOT =   SPACE
+           IF    ( SPA-NAI-TIKOSAKICD (SPA-NAI-SELNO1)
+                               NOT =   SPACE )
+           AND   ( SPA-C02-1042-MSG2-DSPKBN
+                                   =   ZERO  )
                MOVE    SPA-NAI-TIKOSAKICD (SPA-NAI-SELNO1)
                                        TO  BYO-BYOMEICD
                PERFORM 900-BYOMEI-INV-SEC
@@ -1107,8 +1113,10 @@
                END-IF
            END-IF
       *
-           IF      SPA-GMN-THAISIYMD (SPA-NAI-SELNO1)
-                                   =   SPACE
+           IF    ( SPA-GMN-THAISIYMD (SPA-NAI-SELNO1)
+                                   =   SPACE     )
+           OR    ( SPA-C02-1042-MSG3-DSPKBN
+                                       =   "1"   )
                MOVE    SPACE           TO  WRK-HAISIYMDH
            ELSE    
                MOVE    SPA-NAI-THAISIYMDH (SPA-NAI-SELNO1)

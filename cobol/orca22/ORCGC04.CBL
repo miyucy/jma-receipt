@@ -37,6 +37,10 @@
       *  01.02.01    NACL-藤原    03/08/28  登録数の制限をなくす
       *                                     病名種別の追加
       *  01.02.02    NACL-藤原    04/02/25  分類毎の表示の前次頁の処理
+      *  ver.2.6.0
+      *  01.02.03    NACL-藤原    05/04/20  移行病名警告メッセージの表示、
+      *                                     廃止年月日警告メッセージ表示
+      *                                     をシス管の設定より行う
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -867,7 +871,9 @@
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
-               IF      WRK-HAISIYMDH       =   SPACE
+               IF    ( WRK-HAISIYMDH       =   SPACE )
+               OR    ( SPA-C02-1042-MSG3-DSPKBN
+                                           =   "1"   )
                    CONTINUE
                ELSE
                    MOVE    "0075"              TO  SPA-ERRCD
@@ -894,16 +900,9 @@
                    MOVE    ZERO            TO  FLG-BYOMEI
                    PERFORM 900-BYOMEI-READ-SEC
                    IF      FLG-BYOMEI          =   ZERO
-                       IF      BYO-IKOSAKICD   =   SPACE
-                           IF      BYO-HAISIYMD    =   ALL "9" OR  SPACE
-                               CONTINUE
-                           ELSE
-                               MOVE    BYO-HAISIYMD    TO  WRK-SYMD
-                               PERFORM 5002-HIZUKE-HEN-SEC
-                               MOVE    LNK-DAY2-EDTYMD3
-                                                       TO  WRK-HAISIYMDH
-                           END-IF
-                       ELSE        
+                       IF    ( BYO-IKOSAKICD   NOT =   SPACE )
+                       AND   ( SPA-C02-1042-MSG2-DSPKBN
+                                                   =   ZERO  )
                            MOVE     USBYO-BYOMEICD (IDX1)
                                            TO  SPA-C04-IKOMOTO-BYOMEICD
                            MOVE    BYO-BYOMEI 
@@ -923,12 +922,21 @@
                                MOVE    "0104"          TO
                                                SPA-CIDCD2
                                GO  TO  4100211-HAISIYMD-CHECK-EXT
-                            END-IF
-                        END-IF
-                    END-IF
-                    MOVE    21                  TO  IDX1
-                END-IF    
-            END-PERFORM        
+                           END-IF
+                       ELSE        
+                           IF      BYO-HAISIYMD    =   ALL "9" OR  SPACE
+                               CONTINUE
+                           ELSE
+                               MOVE    BYO-HAISIYMD    TO  WRK-SYMD
+                               PERFORM 5002-HIZUKE-HEN-SEC
+                               MOVE    LNK-DAY2-EDTYMD3
+                                                       TO  WRK-HAISIYMDH
+                           END-IF
+                       END-IF
+                   END-IF
+                   MOVE    21                  TO  IDX1
+               END-IF    
+           END-PERFORM        
            .
         4100211-HAISIYMD-CHECK-EXT.
            EXIT.         

@@ -319,6 +319,34 @@ W07	{
 					count	int;
 					item	varchar(12)[2];
 				};
+				MSG2_DSPKBN_COMBO	{
+					MSG2_DSPKBN	{
+						value	varchar(12);
+					};
+					count	int;
+					item	varchar(12)[2];
+				};
+				MSG3_DSPKBN_COMBO	{
+					MSG3_DSPKBN	{
+						value	varchar(12);
+					};
+					count	int;
+					item	varchar(12)[2];
+				};
+				SRYKA_DSPKBN_COMBO	{
+					SRYKA_DSPKBN	{
+						value	varchar(22);
+					};
+					count	int;
+					item	varchar(22)[2];
+				};
+				SYOKBN_DSPKBN_COMBO	{
+					SYOKBN_DSPKBN	{
+						value	varchar(12);
+					};
+					count	int;
+					item	varchar(12)[3];
+				};
 			};
 			TAGNAME5    {
 			  	state   int;

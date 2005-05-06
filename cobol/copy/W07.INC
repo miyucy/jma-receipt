@@ -185,5 +185,25 @@
                       07  W07-VALUE   PIC X(12).
                     06  W07-MSG1-DSPKBN-COUNT   PIC S9(9)   BINARY.
                     06  W07-MSG1-DSPKBN-ITEM    PIC X(12)   OCCURS  2.
+                  05  W07-MSG2-DSPKBN-COMBO.
+                    06  W07-MSG2-DSPKBN.
+                      07  W07-VALUE   PIC X(12).
+                    06  W07-MSG2-DSPKBN-COUNT   PIC S9(9)   BINARY.
+                    06  W07-MSG2-DSPKBN-ITEM    PIC X(12)   OCCURS  2.
+                  05  W07-MSG3-DSPKBN-COMBO.
+                    06  W07-MSG3-DSPKBN.
+                      07  W07-VALUE   PIC X(12).
+                    06  W07-MSG3-DSPKBN-COUNT   PIC S9(9)   BINARY.
+                    06  W07-MSG3-DSPKBN-ITEM    PIC X(12)   OCCURS  2.
+                  05  W07-SRYKA-DSPKBN-COMBO.
+                    06  W07-SRYKA-DSPKBN.
+                      07  W07-VALUE   PIC X(22).
+                    06  W07-SRYKA-DSPKBN-COUNT   PIC S9(9)   BINARY.
+                    06  W07-SRYKA-DSPKBN-ITEM    PIC X(22)   OCCURS  2.
+                  05  W07-SYOKBN-DSPKBN-COMBO.
+                    06  W07-SYOKBN-DSPKBN.
+                      07  W07-VALUE   PIC X(12).
+                    06  W07-SYOKBN-DSPKBN-COUNT   PIC S9(9)   BINARY.
+                    06  W07-SYOKBN-DSPKBN-ITEM    PIC X(12)   OCCURS  3.
                 04  W07-TAGNAME5.
                   05  W07-TAGNAME5-STATE   PIC S9(9)   BINARY.

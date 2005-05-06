@@ -72,6 +72,10 @@
       *                                     更できるようにする
       *  00.02.05    NACL-藤原    05/02/22  コード入力時に予約コードの
       *                                     とき、編集病名にする
+      *  ver.2.6.0
+      *  00.02.06    NACL-藤原    05/04/20  移行病名警告メッセージの表示、
+      *                                     廃止年月日警告メッセージ表示
+      *                                     をシス管の設定より行う
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1222,17 +1226,9 @@
                    IF      FLG-BYOMEI          =   ZERO
                        IF    ( BYO-BYOMEICD (1:1)  NOT =   "Z"    )
                        AND   ( USBYO-BYOMEIHENFLG      =   SPACE  )
-                           IF      BYO-IKOSAKICD       =   SPACE
-                             IF      BYO-HAISIYMD        =   ALL "9"
-                                                         OR  SPACE
-                               CONTINUE
-                             ELSE
-                               MOVE    BYO-HAISIYMD    TO  WRK-SYMD
-                               PERFORM 5002-HIZUKE-HEN-SEC
-                               MOVE    LNK-DAY2-EDTYMD3
-                                                       TO  WRK-HAISIYMDH
-                             END-IF        
-                           ELSE
+                           IF    ( BYO-IKOSAKICD       NOT =   SPACE )
+                           AND   ( SPA-C02-1042-MSG2-DSPKBN
+                                                           =   ZERO  )
                              MOVE    BYO-IKOSAKICD   TO  BYO-BYOMEICD
                              MOVE    ZERO            TO  FLG-BYOMEI
                              PERFORM 900-BYOMEI-READ-SEC
@@ -1251,6 +1247,16 @@
                                                SPA-C03-IKOSAKI-INDEX 
                                MOVE    "0101"          TO  SPA-CIDCD2
                              END-IF    
+                           ELSE
+                             IF      BYO-HAISIYMD        =   ALL "9"
+                                                         OR  SPACE
+                               CONTINUE
+                             ELSE
+                               MOVE    BYO-HAISIYMD    TO  WRK-SYMD
+                               PERFORM 5002-HIZUKE-HEN-SEC
+                               MOVE    LNK-DAY2-EDTYMD3
+                                                       TO  WRK-HAISIYMDH
+                             END-IF        
                            END-IF
                        END-IF
                    END-IF
@@ -1259,7 +1265,9 @@
       *
                IF      SPA-CIDCD2          =   SPACE
                    PERFORM 4101111-BYOMEI-SELECT-HENSYU-SEC              
-                   IF      WRK-HAISIYMDH       =   SPACE
+                   IF    ( WRK-HAISIYMDH       =   SPACE )
+                   OR    ( SPA-C02-1042-MSG3-DSPKBN
+                                               =   "1"   )
                        CONTINUE
                    ELSE
                        MOVE    "0075"              TO  SPA-ERRCD
@@ -1565,19 +1573,11 @@
                    IF      FLG-BYOMEI       NOT =   ZERO
                        MOVE    "1000"           TO  SPA-ERRCD
                    ELSE
-                       IF      BYO-IKOSAKICD       =   SPACE
-                           IF      BYO-HAISIYMD        =   ALL "9"
-                                                       OR  SPACE
-                               CONTINUE
-                           ELSE
-                               MOVE    BYO-HAISIYMD    TO  WRK-SYMD
-                               PERFORM 5002-HIZUKE-HEN-SEC
-                               MOVE    LNK-DAY2-EDTYMD3
-                                                       TO  WRK-HAISIYMDH
-                           END-IF        
-                       ELSE
+                       IF    ( BYO-IKOSAKICD   NOT =   SPACE )
+                       AND   ( SPA-C02-1042-MSG2-DSPKBN
+                                                   =   ZERO  )
                            MOVE    BYO-IKOSAKICD   TO  BYO-BYOMEICD
-                           MOVE    ZERO                  TO  FLG-BYOMEI
+                           MOVE    ZERO            TO  FLG-BYOMEI
                            PERFORM 900-BYOMEI-READ-SEC
                            IF      FLG-BYOMEI          =   ZERO
                                MOVE    SPA-GMN-BYOMEICD (IDZ)
@@ -1595,7 +1595,17 @@
                                MOVE    "0103"          TO  SPA-CIDCD2
                                GO  TO  4102-BYOMEI-CHK-EXT
                            END-IF    
-                       END-IF        
+                       ELSE
+                           IF      BYO-HAISIYMD        =   ALL "9"
+                                                       OR  SPACE
+                               CONTINUE
+                           ELSE
+                               MOVE    BYO-HAISIYMD    TO  WRK-SYMD
+                               PERFORM 5002-HIZUKE-HEN-SEC
+                               MOVE    LNK-DAY2-EDTYMD3
+                                                       TO  WRK-HAISIYMDH
+                           END-IF        
+                      END-IF        
                    END-IF
                WHEN    OTHER
                    MOVE    "■■■"         TO  SPA-NAI-BYOMEI   (IDZ)
@@ -1652,7 +1662,9 @@
                END-IF
            END-IF      
       *
-           IF      WRK-HAISIYMDH       =   SPACE
+           IF    ( WRK-HAISIYMDH       =   SPACE )
+           OR    ( SPA-C02-1042-MSG3-DSPKBN
+                                       =   "1"   )
                CONTINUE
            ELSE
                MOVE    "0075"              TO  SPA-ERRCD
@@ -2223,8 +2235,22 @@
                    MOVE    ZERO         TO  IDZ
                    PERFORM VARYING IDX FROM    1   BY  1
                            UNTIL   IDX >   LNK-BYO-BYOMEI-MAX
-                       IF      LNK-BYO-TIKOSAKICD (IDX)
-                                                   =   SPACE
+                       IF    ( LNK-BYO-TIKOSAKICD (IDX)
+                                               NOT =   SPACE )
+                       AND   ( SPA-C02-1042-MSG2-DSPKBN
+                                                   =   ZERO  )
+                           MOVE    SPA-NAI-BYOMEICD (IDX)
+                                           TO  SPA-C03-IKOMOTO-BYOMEICD
+                           MOVE    SPA-NAI-BYOMEI   (IDX)
+                                           TO  SPA-C03-IKOMOTO-BYOMEI
+                           MOVE    LNK-BYO-TIKOSAKICD (IDX)
+                                           TO  SPA-C03-IKOSAKI-BYOMEICD
+                           MOVE    LNK-BYO-IKOSAKICD-BYOMEI
+                                           TO  SPA-C03-IKOSAKI-BYOMEI
+                           MOVE    IDX
+                                           TO  SPA-C03-IKOSAKI-INDEX                    
+                           MOVE    "0105"  TO  SPA-CIDCD2
+                       ELSE
                            IF      LNK-BYO-THAISIYMD (IDX)
                                                        =   ALL "9"
                                                        OR  SPACE  
@@ -2236,18 +2262,6 @@
                                MOVE    LNK-DAY2-EDTYMD3
                                                    TO  WRK-HAISIYMDH
                            END-IF        
-                       ELSE                            
-                           MOVE    SPA-NAI-BYOMEICD (IDX)
-                                           TO  SPA-C03-IKOMOTO-BYOMEICD
-                           MOVE    SPA-NAI-BYOMEI   (IDX)
-                                           TO  SPA-C03-IKOMOTO-BYOMEI
-                           MOVE    LNK-BYO-TIKOSAKICD (IDX)
-                                           TO  SPA-C03-IKOSAKI-BYOMEICD
-                           MOVE    LNK-BYO-IKOSAKICD-BYOMEI
-                                           TO  SPA-C03-IKOSAKI-BYOMEI
-                           MOVE    IDX
-                                           TO  SPA-C03-IKOSAKI-INDEX                    
-                           MOVE    "0105"      TO  SPA-CIDCD2
                        END-IF
                    END-PERFORM
                END-IF
@@ -2255,8 +2269,10 @@
       *        廃止病名のとき（移行先がない場合）
                IF    ( SPA-CIDCD2          =   SPACE )
                AND   ( WRK-HAISIYMDH   NOT =   SPACE )
+               AND   ( SPA-C02-1042-MSG3-DSPKBN
+                                           =   ZERO  )
                    MOVE    "0075"          TO  SPA-ERRCD
-               END-IF    
+               END-IF
            END-IF
       *
            MOVE    12                   TO  SPA-GMN-CUR
