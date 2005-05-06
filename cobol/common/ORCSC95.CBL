@@ -1714,6 +1714,8 @@
                               AND (SPA-DOUJI-RENNUM    =
                                                SPA-NAI-DOUJI-RENNUM
                                                                (IDX))
+                              AND (SPA-SRYYMD      =   SPA-NAI-RRKYMD
+                                                               (IDX))
                                MOVE     IDX            TO  IDX-J1
                            END-IF
                        END-IF
@@ -2064,6 +2066,9 @@
            PERFORM
                    UNTIL      (FLG-SYSKANRI    =   1 )  OR
                               (FLG-DRCDOK      =   1 )
+      *            訂正でドクターなしの場合
+                        OR   ((LNK-SC95-KBN        =   "4"  ) AND
+                              (SPA-DRCD            =   SPACE ))
                MOVE    MCPDATA-REC             TO  SYS-1010-REC
                IF      SYS-1010-KBNCD(1:1)     =   "1"
       *            ドクターの指定がない時、最初のドクターとする
@@ -2106,8 +2111,13 @@
                                         ORCMCPAREA
                                         MCPDATA-REC
       *
+      *    訂正でドクターなしの場合
+           IF    ((LNK-SC95-KBN        =   "4"  ) AND
+                  (SPA-DRCD            =   SPACE ))  OR
+                  (SPA-DRCD        NOT =   SPACE  )
+               CONTINUE
+           ELSE
       *    対象の科のドクターがなかった時、科指定なしか最初
-           IF      SPA-DRCD            =   SPACE
                IF      WRK-DRCD            =   SPACE
                    MOVE    WRK-DRCD2       TO  SPA-DRCD
                    MOVE    SPA-DRCD(2:4)   TO  SPA-DRCD-NAME
@@ -2398,18 +2408,11 @@
            END-IF
       *
            MOVE    ZERO            TO  SPA-JIKANCHK-ERR
-      *TEST
-           DISPLAY "C95 LNK-SC95-KBN:" LNK-SC95-KBN
-                  ",SPA-JIKANTOKU-CHK :" SPA-JIKANTOKU-CHK 
-      *TEST
       *    患者決定時、時間チェック
            IF     (LNK-SC95-KBN        =   "2" ) AND
                   (SPA-JIKANTOKU-CHK   =   "1" )
                PERFORM 1109-TIMEI-CHK-SEC
            END-IF
-      *TEST
-           DISPLAY "C95 SPA-JIKANCHK-ERR:" SPA-JIKANCHK-ERR
-      *TEST
       *
       *    初診日、最終診察日
            MOVE    SPACE               TO  SPA-SYOYMD 
@@ -2763,9 +2766,6 @@
                    MOVE    "1"             TO  SPA-JIKANCHK-ERR
                END-IF
            END-IF
-      *TEST
-           DISPLAY "C95 SPA-JIKANCHK-ERR:" SPA-JIKANCHK-ERR
-      *TEST
            .
        1109-TIMEI-CHK-EXT.
            EXIT.
