@@ -76,6 +76,8 @@
       *                                     印刷済のチェック表示対応 
       *  01.06.02    NACL-藤原    05/01/13  受診日指定
       *  01.06.03    NACL-藤原    05/01/30  訂正日指定
+      *  01.06.03    NACL-藤原    05/01/30  「印刷する」場合だけ印刷済の
+      *                                     チェック表示を行う
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1218,6 +1220,7 @@
                IF    ( SPA-GMN-SYOKBN  =   "F"  )
                AND   ( SPA-GMN-PRTKBN  =   "1"  )
                AND   ( SPA-GMN-PREFKBN =   "1"  )
+               AND   ( SPA-RID1-FLG    =   "OK" )
                    PERFORM VARYING IDX FROM    1   BY  1
                            UNTIL   IDX >       WRK-CONS-LINE-MAX
                        IF      SPA-NAI-PRTJYUNI(1 IDX)   =   SPACE
