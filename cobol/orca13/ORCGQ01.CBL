@@ -1085,7 +1085,7 @@
       *
            INITIALIZE                      SPA-GMN-Q01-TENKIKBNLST-G
       *
-           MOVE    5                   TO  SPA-GMN-Q01-TENKIKBNLST-MAX
+           MOVE    6                   TO  SPA-GMN-Q01-TENKIKBNLST-MAX
       *
            MOVE    "0"                 TO  SPA-GMN-Q01-TENKIKBNL (1)
            MOVE    "未入力分のみ"      TO  SPA-GMN-Q01-TENKIKBNMEIL (1)
@@ -1101,6 +1101,9 @@
       *
            MOVE    "8"                 TO  SPA-GMN-Q01-TENKIKBNL (5)
            MOVE    "移行"              TO  SPA-GMN-Q01-TENKIKBNMEIL (5)
+      *
+           MOVE    "9"                 TO  SPA-GMN-Q01-TENKIKBNL (6)
+           MOVE    "転帰すべて"        TO  SPA-GMN-Q01-TENKIKBNMEIL (6)
       *
            .
        3101-TENKIKBN-CMB-SYOKI-EXT.
@@ -3307,6 +3310,7 @@
                                         OR "2"
                                         OR "3"
                                         OR "8"
+                                        OR "9"
                                                )
                CONTINUE
            ELSE
@@ -5610,6 +5614,7 @@
                                         OR "2"
                                         OR "3"
                                         OR "8"
+                                        OR "9"
                                                )
                CONTINUE
            ELSE

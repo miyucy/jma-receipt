@@ -2192,10 +2192,10 @@
       *
            MOVE    1                   TO  CNT-JYOKEN
       *
+           PERFORM 900-SQL-JYOKEN-EDIT2-SEC
       *
-           IF    ( SPA-Q01-TENKIKBN    =   "0" )
-      *
-               PERFORM 900-SQL-JYOKEN-EDIT2-SEC
+           EVALUATE    SPA-Q01-TENKIKBN
+           WHEN    "0"
       *
                STRING  WRK-SQL-TBL-NAME    DELIMITED BY SPACE
                        ".TENKIKBN = ' '"   DELIMITED BY SIZE
@@ -2203,12 +2203,15 @@
                WITH    POINTER WRK-SQL-PNT
                END-STRING
       *
-               PERFORM 900-SQL-JYOKEN-EDIT3-SEC
+           WHEN    "9"
       *
+               STRING  WRK-SQL-TBL-NAME    DELIMITED BY SPACE
+                       ".TENKIKBN <> ' '"  DELIMITED BY SIZE
+               INTO    WRK-SQL
+               WITH    POINTER WRK-SQL-PNT
+               END-STRING
       *
-           ELSE
-      *
-               PERFORM 900-SQL-JYOKEN-EDIT2-SEC
+           WHEN    OTHER
       *
                STRING  WRK-SQL-TBL-NAME    DELIMITED BY SPACE
                        ".TENKIKBN = '"     DELIMITED BY SIZE
@@ -2218,7 +2221,16 @@
                WITH    POINTER WRK-SQL-PNT
                END-STRING
       *
-               PERFORM 900-SQL-JYOKEN-EDIT3-SEC
+           END-EVALUATE
+      *
+           PERFORM 900-SQL-JYOKEN-EDIT3-SEC
+      *
+           IF    ( SPA-Q01-TENKIKBN    =   "1"
+                                        OR "2"
+                                        OR "3"
+                                        OR "8"
+                                        OR "9"
+                                               )
       *
                PERFORM 900-SQL-JYOKEN-EDIT2-SEC
       *
