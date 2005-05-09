@@ -5192,6 +5192,24 @@
       *****************************************************************
        4901-TAB3-CHK-SEC               SECTION.
       *
+      *    ＜転帰日＞
+      *    1.開始転帰日≠空白かつ
+      *      終了転帰日≠空白のとき、
+      *      開始転帰日≦終了転帰日であること
+           IF      ( SPA-GMN-Q01-STTENKIYMD
+                                       NOT =   SPACE  )
+            AND    ( SPA-GMN-Q01-EDTENKIYMD
+                                       NOT =   SPACE  )
+               IF  ( SPA-NAI-Q01-STTENKIYMD
+                                          <=  SPA-NAI-Q01-EDTENKIYMD )
+                   CONTINUE
+               ELSE
+                   MOVE    "1009"      TO   SPA-ERRCD
+                   MOVE    321         TO   SPA-GMN-Q01-CUR
+                   GO  TO  4901-TAB3-CHK-EXT
+               END-IF
+           END-IF
+      *
            .
        4901-TAB3-CHK-EXT.
            EXIT.
@@ -6252,6 +6270,9 @@
                                        TO  SPA-ERRMSG
            WHEN    "1008"
                MOVE    "開始最終受診日＞終了最終受診日となっています"
+                                       TO  SPA-ERRMSG
+           WHEN    "1009"
+               MOVE    "開始転帰日＞終了転帰日となっています"
                                        TO  SPA-ERRMSG
            END-EVALUATE
       *
