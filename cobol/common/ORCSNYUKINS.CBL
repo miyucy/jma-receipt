@@ -23,7 +23,6 @@
       *  コンポーネント名  : まとめ入金サブ（未収まとめ入金画面用）
       *  管理者            : 
       *  作成日付    作業者        記述
-      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -58,9 +57,6 @@
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    日報キー取得サブ
-           COPY "CPORCSDAILYKEY.INC".
-      *
       *    共通領域
            COPY    "MCPAREA".
       *
@@ -79,6 +75,7 @@
       *
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
+           COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -98,11 +95,6 @@
       *    主　　処理
       *****************************************************************
        000-PROC-SEC                 SECTION.
-      *
-      *    マシン日付取得
-           INITIALIZE                  ORCSMCNDATEAREA
-           CALL    "ORCSMCNDATE"       USING
-                                       ORCSMCNDATEAREA
       *
            MOVE    ZERO                TO  LNK-SCNYUKINS-RC
       *
@@ -132,7 +124,7 @@
       *
       *    患者マスター検索
            INITIALIZE                      PTINF-REC
-           MOVE    LNK-SCNYUKINS-HOSPNUM   TO  PTINF-HOSPNUM
+           MOVE    LNK-SCNYUKINS-HOSPID    TO  PTINF-HOSPID
            MOVE    LNK-SCNYUKINS-PTID      TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
            IF      FLG-PTINF           NOT =   ZERO
@@ -150,14 +142,23 @@
       *****************************************************************
        200-MAIN-SEC            SECTION.
       *
+      *    マシン日付取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
       *    収納更新
            PERFORM    VARYING  IDX   FROM  1  BY  1
              UNTIL    (IDX        >   LNK-SCNYUKINS-MAX )   OR
-                      (IDX        >   500)                     OR
+                      (IDX        >   400)                     OR
                       (LNK-SCNYUKINS-RC   NOT =    ZERO)
                        PERFORM   300-SYUNOU-UPD-SEC
                        PERFORM   310-SYUMEI-INS-SEC
            END-PERFORM
+      *
+      *    収納クローズ
+           MOVE    WRK-SYUNOU-DBPATH   TO  ORC-DBPATH
+           PERFORM   910-DB-CLOSE-SEC
       *
            .
        200-MAIN-EXT.
@@ -169,20 +170,18 @@
        300-SYUNOU-UPD-SEC                SECTION.
       *
            INITIALIZE                          SYUNOU-REC
-           MOVE    LNK-SCNYUKINS-HOSPNUM   TO  SYU-HOSPNUM
+           MOVE    LNK-SCNYUKINS-HOSPID    TO  SYU-HOSPID
            MOVE    LNK-SCNYUKINS-PTID      TO  SYU-PTID
            MOVE    LNK-SCNYUKINS-NYUGAIKBN(IDX)
                                            TO  SYU-NYUGAIKBN
            MOVE    LNK-SCNYUKINS-DENPNUM(IDX)
                                            TO  SYU-DENPNUM
-           MOVE    "tbl_syunou"        TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "SYUNOU-KEY"            TO  ORC-DBPATH
            PERFORM 910-SYUNOU-SELECT-SEC
            IF      FLG-SYUNOU              NOT =   ZERO
                MOVE    11                  TO  LNK-SCNYUKINS-RC
            ELSE
-               MOVE    "tbl_syunou"        TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
                PERFORM 910-SYUNOU-READ-SEC
                IF   FLG-SYUNOU             NOT =   ZERO
                    MOVE   11                  TO  LNK-SCNYUKINS-RC
@@ -193,37 +192,24 @@
                        ADD     1              TO  SYU-NYUKIN-KAISU
                    END-IF
                    IF      SYU-DENPJTIKBN   NOT =   "3"
-                     EVALUATE      TRUE
-                     WHEN  ( SYU-SKYMONEY    =   ZERO )
-                         MOVE    SPACE       TO  SYU-DENPJTIKBN
-                     WHEN  ( SYU-SKYMONEY    >   SYU-NYUKIN-TOTAL )
+                     IF      SYU-SKYMONEY        >   SYU-NYUKIN-TOTAL
                          MOVE   "2"          TO  SYU-DENPJTIKBN
-                     WHEN  OTHER
+                     ELSE
                          MOVE   "1"          TO  SYU-DENPJTIKBN
-                     END-EVALUATE
+                     END-IF
                   END-IF
       *
-                   MOVE    SMCNDATE-YMD    TO  SYU-UPYMD
-                   MOVE    SMCNDATE-HMS    TO  SYU-UPHMS
-                   MOVE    SPA-OPID        TO  SYU-OPID
-      *
-                   MOVE    SYU-SKYMONEY
-                                   TO  LNK-SCNYUKINS-SKYMONEY (IDX)
-                   MOVE    SYU-NYUKIN-TOTAL
-                                   TO  LNK-SCNYUKINS-NYUKIN-TOTAL (IDX)
-                   MOVE    SYU-DENPJTIKBN
-                                   TO  LNK-SCNYUKINS-DENPJTIKBN (IDX)
-                   MOVE    SYU-CREATEKBN
-                                   TO  LNK-SCNYUKINS-CREATEKBN (IDX)
+                  MOVE    SMCNDATE-YMD       TO  SYU-UPYMD
+                  MOVE    SMCNDATE-HMS       TO  SYU-UPHMS
       *
       *           収納更新
                   MOVE    SYUNOU-REC          TO  MCPDATA-REC
                   MOVE    "DBUPDATE"          TO  MCP-FUNC
-                  MOVE    "tbl_syunou"        TO  MCP-TABLE
-                  MOVE    "key"               TO  MCP-PATHNAME
-grpsys            CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                      MCPDATA-REC
-                                                      SPA-AREA
+                  MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+                  CALL    "ORCMCPSUB"         USING
+                                              MCPAREA
+                                              ORCMCPAREA
+                                       MCPDATA-REC
                    IF      MCP-RC              NOT =   ZERO
                        DISPLAY "ORCSNYUKINS SYUNOU UPD ERR:"
                                 MCP-RC  "."
@@ -233,8 +219,7 @@ grpsys            CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
       *    収納クローズ
-           MOVE    "tbl_syunou"        TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "SYUNOU-KEY"         TO  ORC-DBPATH
            PERFORM    910-DB-CLOSE-SEC
       *
            .
@@ -248,20 +233,19 @@ grpsys            CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    新規作成の収納明細マスタに必要な伝票番号枝番取得
            INITIALIZE                      SYUMEI-REC
-           MOVE    SYU-HOSPNUM         TO  SMEI-HOSPNUM
+           MOVE    SYU-HOSPID          TO  SMEI-HOSPID
            MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
            MOVE    SYU-PTID            TO  SMEI-PTID
            MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_syumei"        TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           MOVE    "SYUMEI-KEY2"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =    ZERO
-                 MOVE    "tbl_syumei"  TO  MCP-TABLE
-                 MOVE    "key2"        TO  MCP-PATHNAME
+                 MOVE    "SYUMEI-KEY2"      TO  ORC-DBPATH
                  PERFORM 910-SYUMEI-READ-SEC
            ELSE
                  MOVE    1                    TO  FLG-SYUMEI
@@ -271,20 +255,18 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            ELSE
                  PERFORM   VARYING  IDX1  FROM   1  BY   1
                      UNTIL (FLG-SYUMEI   =      1 )
-                            MOVE    "tbl_syumei"   TO  MCP-TABLE
-                            MOVE    "key2"         TO  MCP-PATHNAME
+                            MOVE      "SYUMEI-KEY2"  TO  ORC-DBPATH
                             PERFORM   910-SYUMEI-READ-SEC
                  END-PERFORM
-           END-IF
       *    収納明細クローズ
-           MOVE    "tbl_syumei"   TO  MCP-TABLE
-           MOVE    "key2"         TO  MCP-PATHNAME
+           MOVE     "SYUMEI-KEY2"    TO  ORC-DBPATH
            PERFORM   910-DB-CLOSE-SEC
+           END-IF
       *
       *収納明細作成処理
            MOVE    SPACE               TO  SYUMEI-REC
            INITIALIZE                      SYUMEI-REC
-           MOVE    SYU-HOSPNUM         TO  SMEI-HOSPNUM
+           MOVE    SYU-HOSPID          TO  SMEI-HOSPID
            MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
            MOVE    SYU-PTID            TO  SMEI-PTID
       *伝票番号
@@ -308,7 +290,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *請求金額
            MOVE    ZERO                TO  SMEI-SKYMONEY
       *入返金区分
-           IF  LNK-SCNYUKINS-NYUKIN-MONEY(IDX)  >=  ZERO
+           IF  LNK-SCNYUKINS-NYUKIN-MONEY(IDX)  >  ZERO
                MOVE    "1"             TO  SMEI-NYUHEN-KBN
            ELSE
                MOVE    "2"             TO  SMEI-NYUHEN-KBN
@@ -317,26 +299,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    LNK-SCNYUKINS-NYUKIN-MONEY(IDX)
                                        TO  SMEI-NYUHEN-MONEY
       *入返金日
-           IF    ( LNK-SCNYUKINS-NYUKIN-YMD2 (IDX)
-                                       NOT =   SPACE )
-               MOVE    LNK-SCNYUKINS-NYUKIN-YMD2 (IDX)
+           MOVE    LNK-SCNYUKINS-NYUKIN-YMD
                                        TO  SMEI-NYUHEN-YMD
-           ELSE
-               MOVE    LNK-SCNYUKINS-NYUKIN-YMD
-                                       TO  SMEI-NYUHEN-YMD
-           END-IF
       *入金方法
            IF  LNK-SCNYUKINS-NYUKIN-MONEY(IDX)  >  ZERO
-               IF    ( LNK-SCNYUKINS-NYUKIN-HOHO2 (IDX)
-                                       NOT =   SPACE )
-                   MOVE    LNK-SCNYUKINS-NYUKIN-HOHO2 (IDX)
+               MOVE    LNK-SCNYUKINS-NYUKIN-HOHO
                                        TO  SMEI-NYUKIN-HOHO
-               ELSE
-                   MOVE    LNK-SCNYUKINS-NYUKIN-HOHO
-                                       TO  SMEI-NYUKIN-HOHO
-               END-IF
            ELSE
                MOVE    "00"            TO  SMEI-NYUKIN-HOHO
+               MOVE    SPACE           TO  SMEI-NYUHEN-KBN
            END-IF
       *状態区分
            IF  LNK-SCNYUKINS-NYUKIN-MONEY(IDX)  >  ZERO
@@ -347,33 +318,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SMCNDATE-YMD        TO  SMEI-CREYMD
                                            SMEI-UPYMD
-           MOVE    SMCNDATE-HMS        TO  SMEI-CREHMS
-                                           SMEI-UPHMS
-      *
-           MOVE    SMEI-CREYMD         TO  SDAILYKEY-CREYMD
-           MOVE    SMEI-CREHMS         TO  SDAILYKEY-CREHMS
-           MOVE    SMEI-NYUHEN-YMD     TO  SDAILYKEY-BASEYMD
-      *
-           IF    ( LNK-SCNYUKINS-NYUKIN-HMS2 (IDX)
-                                       NOT =   SPACE )
-               MOVE    SMEI-NYUHEN-YMD TO  SDAILYKEY-CREYMD
-               MOVE    LNK-SCNYUKINS-NYUKIN-HMS2 (IDX)
-                                       TO  SDAILYKEY-CREHMS
-               MOVE    "FORCE"         TO  SDAILYKEY-BASEYMD
-           END-IF
-      *
-           PERFORM 800-DAILYKEY-SEC
-           MOVE    SDAILYKEY-DAILYKEY  TO  SMEI-DAILYKEY
-      *
-           MOVE    SPA-OPID            TO  SMEI-OPID
+           MOVE    SMCNDATE-HMS        TO  SMEI-UPHMS
       *
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "tbl_syumei"        TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           MOVE    "SYUMEI-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              NOT =   ZERO
                    DISPLAY "ORCSNYUKINS SYUMEI INS ERR:"  MCP-RC  "."
                    MOVE    12          TO  LNK-SCNYUKINS-RC
@@ -383,36 +336,24 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    日報キー取得サブ
-      *****************************************************************
-       800-DAILYKEY-SEC         SECTION.
-      *
-           CALL    "ORCSDAILYKEY"   USING   SDAILYKEYAREA
-                                            SPA-AREA
-      *
-           .
-      *
-       800-DAILYKEY-EXT.
-           EXIT.
-      *****************************************************************
       *    患者マスター読込
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_ptinf"         TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           MOVE    "PTINF-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "tbl_ptinf"         TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+               MOVE    "PTINF-KEY"         TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC        TO  PTINF-REC
                    MOVE    ZERO               TO  FLG-PTINF
@@ -425,8 +366,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    1              TO  FLG-PTINF
            END-IF
       *
-           MOVE    "tbl_ptinf"         TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "PTINF-KEY"        TO  ORC-DBPATH
            PERFORM   910-DB-CLOSE-SEC
       *
            .
@@ -440,9 +380,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-SYUNOU
            ELSE
@@ -459,9 +400,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-SYUNOU-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  SYUNOU-REC
                MOVE    ZERO                TO  FLG-SYUNOU
@@ -480,9 +422,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-SYUMEI-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  SYUMEI-REC
                MOVE    ZERO                TO  FLG-SYUMEI
@@ -501,9 +444,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DB-CLOSE-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
       *
