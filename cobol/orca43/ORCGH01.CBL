@@ -1180,11 +1180,22 @@
                MOVE    "在宅寝たきり等"    TO  SPA-H01GMN-ZAITAKU
            END-IF
       *
-           EVALUATE    RECE10-HONKZKKBN
+           EVALUATE    RECE10-RECESYUBETU (4:1)
                WHEN    "1"
-                   MOVE    "本人"          TO  SPA-H01GMN-HONKZKKBN
                WHEN    "2"
+                   MOVE    "本人"          TO  SPA-H01GMN-HONKZKKBN
+               WHEN    "3"
+               WHEN    "4"
+                   MOVE    "三歳"          TO  SPA-H01GMN-HONKZKKBN
+               WHEN    "5"
+               WHEN    "6"
                    MOVE    "家族"          TO  SPA-H01GMN-HONKZKKBN
+               WHEN    "7"
+               WHEN    "8"
+                   MOVE    "高９"          TO  SPA-H01GMN-HONKZKKBN
+               WHEN    "9"
+               WHEN    "0"
+                   MOVE    "高８"          TO  SPA-H01GMN-HONKZKKBN
            END-EVALUATE             
       *
            MOVE    "1"                 TO  SPA-HENFLG
