@@ -96,6 +96,11 @@
       *****************************************************************
        000-PROC-SEC                 SECTION.
       *
+      *    マシン日付取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
            MOVE    ZERO                TO  LNK-SCNYUKINS-RC
       *
            INITIALIZE                  FLG-AREA
@@ -193,6 +198,10 @@
                          MOVE   "1"          TO  SYU-DENPJTIKBN
                      END-IF
                   END-IF
+      *
+                   MOVE    SMCNDATE-YMD    TO  SYU-UPYMD
+                   MOVE    SMCNDATE-HMS    TO  SYU-UPHMS
+      *
       *           収納更新
                   MOVE    SYUNOU-REC          TO  MCPDATA-REC
                   MOVE    "DBUPDATE"          TO  MCP-FUNC
