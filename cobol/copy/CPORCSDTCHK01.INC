@@ -33,5 +33,6 @@
                05  SDTCHK01-O-MAX              PIC 9(05).
                05  SDTCHK01-O-OCC              OCCURS 100.
                    07  SDTCHK01-O-ERRFLG       PIC 9(01).
+                   07  SDTCHK01-O-SRYKA        PIC X(02).
                    07  SDTCHK01-O-SRYYMD       PIC X(08).
                    07  SDTCHK01-O-BYOMEI       PIC X(160).

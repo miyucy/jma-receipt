@@ -1023,6 +1023,13 @@ COPYS = \
         M01SCR-SPA \
         CPSRYACCTPLUS.INC \
         CPORCSC90TEN.INC \
+        CPDCACCT.INC \
+        CPDCSRY.INC \
+        CPDTCHK005.INC \
+        CPDTCHK006.INC \
+        CPORCSDTCHK02.INC \
+
+
 
 DBPATH = \
 	ORCA-DBPATH

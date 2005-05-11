@@ -15,18 +15,11 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-        02  W60.
-      *     02  W60-FIXED1.
-              03  W60-B03-STATE PIC S9(9)   BINARY.
-              03  W60-CMB-BYOSRYKAKBN.
-                04  W60-BYOSRYKAKBN        PIC X(10).
-                04  W60-BYOSRYKAKBN-COUNT  PIC S9(9)   BINARY.
-                04  W60-BYOSRYKAKBN-ITEM   PIC X(10)   OCCURS  2.
-              03  W60-MTRX             PIC X(02)
-                                       OCCURS 5.
-              03  W60-CHKMTRX          PIC X(01)
-                                       OCCURS 5.
-              03  W60-CMB-PRTSRTKBN.
-                04  W60-PRTSRTKBN          PIC X(22).
-                04  W60-PRTSRTKBN-COUNT    PIC S9(9)   BINARY.
-                04  W60-PRTSRTKBN-ITEM     PIC X(22)   OCCURS  2.
+       01  SDTCHK02AREA.
+           03  SDTCHK02-IN.
+               05  SDTCHK02-HOSPID             PIC X(24).
+               05  SDTCHK02-PTID               PIC 9(10).
+           03  SDTCHK02-OT.
+               05  SDTCHK02-O-MAX              PIC 9(05).
+               05  SDTCHK02-O-HKNCOMBIMEI      PIC X(50)
+                                               OCCURS  100.

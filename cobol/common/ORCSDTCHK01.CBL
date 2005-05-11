@@ -81,6 +81,7 @@
                05  TBYOMEI-BYOMEI          PIC X(160).
                05  TBYOMEI-KEY.
                    07  TBYOMEI-ERRFLG      PIC 9(01).
+                   04  TBYOMEI-SRYKA       PIC X(02).
                    07  TBYOMEI-SRYYMD      PIC X(08).
       *
        01  CONST-AREA.
@@ -111,10 +112,12 @@
        LINKAGE                     SECTION.
       *
            COPY    "CPORCSDTCHK01.INC".
+           COPY    "CPSK1101.INC".
       *
       *
        PROCEDURE                    DIVISION    USING
-       SDTCHK01AREA.
+       SDTCHK01AREA
+       SYS-1101-REC.
       *
       *****************************************************************
       *    主　　処理
@@ -384,6 +387,7 @@
                     OR   ( TBYOMEI-IDX1    >   ZERO    )
       *
                IF    ( TBYOMEI-BYOMEI (IDX1)   =   QDTCHK-BYOMEI )
+                AND  ( TBYOMEI-SRYKA  (IDX1)   =   QDTCHK-SRYKA )
                    MOVE    IDX1    TO  TBYOMEI-IDX1
                END-IF
       *
@@ -398,6 +402,7 @@
                    =   TBYOMEI-MAX     +   1
       *
                MOVE    QDTCHK-BYOMEI   TO  TBYOMEI-BYOMEI (TBYOMEI-MAX)
+               MOVE    QDTCHK-SRYKA    TO  TBYOMEI-SRYKA  (TBYOMEI-MAX)
                MOVE    "00000000"      TO  TBYOMEI-SRYYMD (TBYOMEI-MAX)
       *
                MOVE    TBYOMEI-MAX     TO  TBYOMEI-IDX1
@@ -454,6 +459,8 @@
       *
                MOVE    TBYOMEI-ERRFLG (IDX0)
                                        TO  SDTCHK01-O-ERRFLG (IDX0)
+               MOVE    TBYOMEI-SRYKA  (IDX0)
+                                       TO  SDTCHK01-O-SRYKA  (IDX0)
                MOVE    TBYOMEI-SRYYMD (IDX0)
                                        TO  SDTCHK01-O-SRYYMD (IDX0)
                MOVE    TBYOMEI-BYOMEI (IDX0)
@@ -520,7 +527,11 @@
       *
            MOVE    SDTCHK01-HOSPID     TO  QDTCHK-SELHOSPID
            MOVE    SDTCHK01-PTID       TO  QDTCHK-SELPTID
-           MOVE    SDTCHK01-SRYKA      TO  QDTCHK-SELSRYKA
+           IF    ( SYS-1101-BYOSRYKAKBN    =   "1" OR SPACE )
+               MOVE    SDTCHK01-SRYKA  TO  QDTCHK-SELSRYKA
+           ELSE
+               MOVE    "%"             TO  QDTCHK-SELSRYKA
+           END-IF
            MOVE    SDTCHK01-CHKKBN     TO  QDTCHK-SELCHKKBN
            MOVE    SDTCHK01-SRYCD      TO  QDTCHK-SELSRYCD
            MOVE    SDTCHK01-KJNYMD     TO  QDTCHK-SELYUKOSTYMD

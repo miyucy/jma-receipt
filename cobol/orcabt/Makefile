@@ -1,5 +1,4 @@
-SRCS = \
-       ORCBD001.CBL \
+SRCS = ORCBD001.CBL \
        ORCBD002.CBL \
        ORCBM001.CBL \
        ORCBM002.CBL \
@@ -199,7 +198,10 @@ SRCS = \
        ORCBT110.CBL \
        ORCBT120.CBL \
        ORCBT130.CBL \
-
+       ORCDTCHK000.CBL \
+       ORCDTCHK004.CBL \
+       ORCDTCHK005.CBL \
+       ORCDTCHK006.CBL \
 
 EXEC_SRCS =  ORCXSMST1.CBL
 

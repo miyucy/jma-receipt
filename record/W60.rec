@@ -3,6 +3,13 @@ W60	{
 		B03	{
 			state	int;
 		};
+		CMB_BYOSRYKAKBN	{
+			BYOSRYKAKBN	{
+				value	varchar(10);
+			};
+			count	int;
+			item	varchar(10)[2];
+		};
 		MTRX01	{
 			value	varchar(2);
 		};
