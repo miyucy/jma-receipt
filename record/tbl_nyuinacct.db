@@ -567,3 +567,17 @@ path	key26	{
 		;
 	};
 };
+
+path	key27 	{
+	DBSELECT	{
+		DECLARE tbl_nyuinacct_key27_csr CURSOR FOR
+		SELECT *
+		FROM tbl_nyuinacct
+			WHERE   HOSPID    =   :HOSPID
+			AND   SRYYM       =   :SRYYM
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+                        AND   ZAISKBKBN   =   :ZAISKBKBN
+		;
+	};
+};
+
