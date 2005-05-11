@@ -724,3 +724,20 @@ path	key40		{
 	};
 };
 
+
+path	key41		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptnyuinrrk_key41_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptnyuinrrk
+			WHERE	HOSPID      =   :HOSPID
+			AND     PTID        =   :PTID
+			AND	TENNYUYMD	<=	:TENNYUYMD
+			AND	TENSTUYMD	>=	:TENSTUYMD
+			AND	JTIKBN		<>	'5'
+			AND	JTIKBN		<>	'6'
+			ORDER BY NYUINYMD ,TAIINYMD ,RRKNUM ,RRKEDANUM
+		;
+	};
+};
+
