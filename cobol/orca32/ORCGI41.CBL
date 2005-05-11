@@ -44,6 +44,7 @@
       *  02.00.01    NACL-多々納  04.08.31  食事加算の削除追加
       *  02.00.02    NACL-太田    04.09.09  前月ボタン押下時フリーズする
       *                                     不具合の修正
+      *  02.00.03    NACL-多々納  05.05.11  北海道療養担当手当て追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -903,6 +904,8 @@
                MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
                PERFORM 900-KANRIMST-READ-SEC
            END-PERFORM
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           PERFORM 910-DB-CLOSE-SEC
            .
       *
        3005-NYUINKA-HEN-EXT.
@@ -930,7 +933,7 @@
            MOVE    ALL "9"             TO  SYS-5113-EDYUKYMD.
       *    システム管理検索
            MOVE    SYS-5113-REC        TO  MCPDATA-REC.
-           MOVE    SPA-NAI-SRYYM    TO  ORC-DBYMD(1:6).
+           MOVE    SPA-NAI-SRYYM       TO  ORC-DBYMD(1:6).
            MOVE    "01"                TO  ORC-DBYMD(7:2).
            MOVE    "DBSELECT"          TO  MCP-FUNC.
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH.
@@ -962,7 +965,10 @@
                MOVE    "SYSKANRI-KEY2"         TO  ORC-DBPATH
                PERFORM 900-KANRIMST-READ-SEC
            END-PERFORM.
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           PERFORM 910-DB-CLOSE-SEC
       *
+           .
        3113-SAGAKU-HEN-EXT.
            EXIT.
       *
@@ -1061,6 +1067,8 @@
                INITIALIZE                  SYS-5000-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF.
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           PERFORM 910-DB-CLOSE-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC             TO  SYS-5000-REC
                PERFORM VARYING     IDX     FROM    1   BY  1
@@ -1174,6 +1182,9 @@
                MOVE    1               TO  FLG-PTNYUINRRK
            END-IF.
       *
+           MOVE    "PTNYUINRRK-KEY3"   TO  WRK-DBPATH.
+           PERFORM 900-TBL-CLOSE-SEC.
+      *
            IF      FLG-PTNYUINRRK      =   ZERO
                IF      PTNYUINRRK-NYUINYMD NOT =   SPACE
                    INITIALIZE                  ORCSTUSANAREA
@@ -1208,9 +1219,6 @@
                MOVE    "0011"              TO  SPA-ERRCD
                GO      TO      3103-PTNYUINRRK-HEN-EXT
            END-IF.
-      *
-           MOVE    "PTNYUINRRK-KEY3"   TO  WRK-DBPATH.
-           PERFORM 900-TBL-CLOSE-SEC.
       *
       *    入院日数の表示
            INITIALIZE                  PTNYUINRRK-REC.
@@ -1472,6 +1480,9 @@
                PERFORM 900-NYUINACCT-READ-SEC
            END-PERFORM
       *
+           MOVE    "NYUINACCT-KEY16"   TO  ORC-DBPATH
+           PERFORM 910-DB-CLOSE-SEC.
+      *
            .
        31011-NYUINACCT-HENSYU-EXT.
            EXIT.
@@ -1557,6 +1568,8 @@
                PERFORM 970-PTNYUINRRK-READ-SEC
            END-PERFORM
       *
+           PERFORM 900-TBL-CLOSE-SEC
+      *
            .
        31010-PTNYUINRRK-CHK-EXT.
            EXIT.
@@ -1636,6 +1649,8 @@
                MOVE    "NYUINACT-KEY2"     TO  ORC-DBPATH
                PERFORM 930-NYUINACT-RAED-SEC
            END-PERFORM.
+           MOVE    "NYUINACT-KEY2"     TO  ORC-DBPATH
+           PERFORM 910-DB-CLOSE-SEC.
       *
       *    点数
            MOVE    SPA-NAI-ZAITEN-41 (IDX) TO  WRK-TENSU
@@ -1851,6 +1866,8 @@
                MOVE    "SRYACT-KEY7"       TO  ORC-DBPATH
                PERFORM 930-SRYACT-RAED-SEC
            END-PERFORM
+           MOVE    "SRYACT-KEY7"       TO  ORC-DBPATH
+           PERFORM 910-DB-CLOSE-SEC.
            .
       *
        310121-SRYACT-CHK-EXT.
@@ -1886,6 +1903,8 @@
                INITIALIZE                  SRYACCT-REC
                MOVE    1               TO  FLG-SRYACCT
            END-IF
+           MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
+           PERFORM 910-DB-CLOSE-SEC.
       *
            IF     (FLG-SRYACCT         =   1   )  OR
                   (ACCT-ZAIKAISU       =   ZERO)
@@ -2054,6 +2073,15 @@
                        END-PERFORM
       *            外泊日の加算を表示しない
                    WHEN     "6"
+                       PERFORM VARYING IDK     FROM    1   BY  1
+                               UNTIL   IDK     >   31
+                           IF      SPA-CHK-GAIHAKU (IDK)   NOT =   SPACE
+                               MOVE    SPACE       TO  SPA-GMN-TDAY-41
+                                                           (IDG IDK)
+                           END-IF
+                       END-PERFORM
+      *            外泊日の療養担当手当を表示しない
+                   WHEN     "7"
                        PERFORM VARYING IDK     FROM    1   BY  1
                                UNTIL   IDK     >   31
                            IF      SPA-CHK-GAIHAKU (IDK)   NOT =   SPACE
@@ -3071,6 +3099,31 @@
                            END-IF
                        END-IF
                    END-IF
+      *        北海道療養担当手当て
+               WHEN    "7"
+      *            入院基本料算定なし
+                   IF      SPA-CHK-NYUIN (IDX-D)   =   SPACE
+                       MOVE    "0033"             TO  SPA-ERRCD
+                   END-IF
+                   IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
+                                                   OR  1
+                       CONTINUE
+                   ELSE
+                       IF      SPA-ERRCD       =   SPACE
+                           MOVE    "0034"         TO  SPA-ERRCD
+                       END-IF
+                   END-IF
+      *            外泊中でないこと
+                   IF      SPA-GMN-DAY-41 (IDX-D)  =   SPA-NAI-DAY-41
+                                                   (SPA-NAI-BANGO IDX-D)
+                       CONTINUE
+                   ELSE
+                       IF      SPA-CHK-GAIHAKU (IDX-D) NOT =   SPACE 
+                           IF      SPA-ERRCD       =   SPACE
+                               MOVE    "0048"         TO  SPA-ERRCD
+                           END-IF
+                        END-IF
+                   END-IF
            END-EVALUATE
       *
            .
@@ -3563,6 +3616,8 @@
            ELSE
                INITIALIZE                  SYS-1006-REC
            END-IF.
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           PERFORM 910-DB-CLOSE-SEC.
       *
       *    入院基本料の施設規準判定
            MOVE    SPA-NAI-SRYYM       TO  WRK-SRYYMD(1:6).
@@ -4280,6 +4335,8 @@
                INITIALIZE                  PTNYUINRRK-REC
                MOVE    1               TO  FLG-PTNYUINRRK
            END-IF
+           MOVE    "PTNYUINRRK-KEY9"   TO  ORC-DBPATH
+           PERFORM 910-DB-CLOSE-SEC.
       *
       *    通算日数を求める（通算日数取得サブを使用）
            PERFORM 4801-TSUSAN-SANTEI-GET-SEC
@@ -4800,6 +4857,8 @@
                INITIALIZE                  PTNYUINRRK-REC
                MOVE    1               TO  FLG-PTNYUINRRK
            END-IF
+           MOVE    "PTNYUINRRK-KEY9"   TO  ORC-DBPATH
+           PERFORM 910-DB-CLOSE-SEC.
       *
       *    通算日数を求める（通算日数取得サブを使用）
            PERFORM 4801-TSUSAN-SANTEI-GET-SEC
@@ -5844,7 +5903,8 @@
       *
       *    入院会計マスターを編集
            PERFORM VARYING    IDX      FROM    1   BY  1
-                   UNTIL      IDX      >   SPA-NAI-MAX-41
+                   UNTIL     (IDX      >   SPA-NAI-MAX-41)
+                          OR (SPA-ERRCD    NOT =   SPACE )
                INITIALIZE                          NYUINACCT-REC
                MOVE    SPA-HOSPID              TO  NACCT-HOSPID
                MOVE    SPA-NAI-TNYUGAIKBN(IDX) TO  NACCT-NYUGAIKBN
@@ -5868,6 +5928,9 @@
                    INITIALIZE                      NYUINACCT-REC
                    MOVE    1                   TO  FLG-NYUINACCT
                END-IF
+               MOVE    "NYUINACCT-KEY"         TO  ORC-DBPATH
+               PERFORM 910-DB-CLOSE-SEC
+      *
                IF      FLG-NYUINACCT        =   ZERO
       *            入院会計マスターを変更する
                    PERFORM 4901-NYUINACCT-KOUSIN-SEC
@@ -5887,11 +5950,11 @@
                         DISPLAY "I41 NYUINACCT UPD ERR:" MCP-RC
                                            ",KEY:" ACCT-KEY
                         MOVE    "2000"         TO  SPA-ERRCD
-                        GO  TO  4901-NYUINACCT-UPD-EXT
                    END-IF
                ELSE
                    DISPLAY "I41 NYUINACCT READ ERR:" NACCT-KEY
-                   GO  TO  4901-NYUINACCT-UPD-EXT
+                   MOVE    "2000"         TO  SPA-ERRCD
+      **********   GO  TO  4901-NYUINACCT-UPD-EXT
                END-IF
       *
       *        一括修正の時、以降の入院診療会計を更新する
@@ -5951,6 +6014,8 @@
                    PERFORM 970-PTNYUINRRK-READ-SEC
                END-IF
            END-PERFORM
+           MOVE    WRK-DBPATH          TO  ORC-DBPATH
+           PERFORM 910-DB-CLOSE-SEC
       *
            MOVE    SPA-NAI-TBANGO (IDX)    TO  IDG
            MOVE    SPA-GMN-TSRYCD (IDG)    TO  WRK-SRYCD
@@ -6047,6 +6112,7 @@
            END-IF
       *
            PERFORM UNTIL       FLG-NYUINACT    =   1
+                         OR   (SPA-ERRCD   NOT =   SPACE )
                INITIALIZE                      NYUINACCT-REC
                MOVE    NSRY-HOSPID         TO  NACCT-HOSPID
                MOVE    NSRY-NYUGAIKBN      TO  NACCT-NYUGAIKBN
@@ -6070,6 +6136,9 @@
                    INITIALIZE                      NYUINACCT-REC
                    MOVE    1                   TO  FLG-NYUINACCT
                END-IF
+               MOVE    "NYUINACCT-KEY"     TO  ORC-DBPATH
+               PERFORM 910-DB-CLOSE-SEC
+      *
                IF      FLG-NYUINACCT        =   ZERO
       *            入院会計マスターを変更する
                    IF      NACCT-SRYYM      =   WRK-TAIINYMD(1:6)
@@ -6104,17 +6173,19 @@
                         DISPLAY "I41 NYUINACCT UPD ERR02:" MCP-RC
                                                ",KEY:" NACCT-KEY
                         MOVE    "2000"          TO  SPA-ERRCD
-                        GO  TO  490111-NYUINACCT-UPD3-EXT
                    END-IF
                ELSE
       *             DISPLAY "I41 NYUINACCT READ ERR02:" NACCT-KEY
-                   GO  TO  490111-NYUINACCT-UPD3-EXT
+                    MOVE    "2000"          TO  SPA-ERRCD
+      ************ GO  TO  490111-NYUINACCT-UPD3-EXT
                END-IF
       *
                MOVE    "NYUINACT-KEY7"     TO  ORC-DBPATH
                PERFORM 930-NYUINACT-RAED-SEC
            END-PERFORM.
       *
+           MOVE    "NYUINACT-KEY7"     TO  ORC-DBPATH
+           PERFORM 910-DB-CLOSE-SEC.
       *
        490111-NYUINACCT-UPD3-EXT.
            EXIT.
@@ -6390,8 +6461,16 @@
                WHEN    "0047"
                    MOVE    "入院期間外のため設定はできません。"
                                        TO  WRK-ERRMSG
+               WHEN    "0048"
+                   MOVE    "この日は外泊されている日ですから"
+                                       TO  WRK-ERRMSG
+                   MOVE    "療養担当手当の設定はできません。"
+                                       TO  WRK-ERRMSG(33:)
                WHEN    "1005"
                    MOVE    "受診履歴番号が存在しません。"
+                                       TO  WRK-ERRMSG
+               WHEN    "2000"
+                   MOVE    "ＤＢ更新エラー。"
                                        TO  WRK-ERRMSG
                WHEN    "9999"
                    MOVE    "他端末で使用中です。"

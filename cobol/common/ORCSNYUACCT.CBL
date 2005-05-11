@@ -33,6 +33,7 @@
       * 01.00.04     NACL-Â¿¡¹Ç¼  03/01/28  ¼¡·îÊ¬ºîÀ®ÄÉ²Ã
       * 01.00.05     NACL-Â¿¡¹Ç¼  03/03/12  ÁªÄêÎÅÍÜÈñÄÉ²Ã
       * 01.00.06     NACL-Â¿¡¹Ç¼  04/08/01  Æþ±¡¼è¾Ã½¤Àµ
+      * 01.00.09     NACL-Â¿¡¹Ç¼  05/05/11  ËÌ³¤Æ»ÎÅÍÜÃ´Åö¼êÅöÄÉ²Ã
       *****************************************************************
       *
       *
@@ -54,6 +55,7 @@
            03  FLG-NYUINACT        PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
+           03  FLG-SYSKANRI        PIC 9(01).
       *
            03  FLG-OK              PIC 9(01).
            03  FLG-SINKI           PIC 9(01).
@@ -67,6 +69,9 @@
       *    ¼è¾Ã
            03  FLG-DELETE              PIC 9(01).
            03  FLG-DELETE-OK           PIC 9(01).
+      *
+           03  FLG-RYOYOU              PIC 9(01).
+      *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -165,6 +170,9 @@
       *
            03  WRK-SRYKBN              PIC X(02).
            03  WRK-SRYSYUKBN           PIC X(03).
+      *    ÎÅÍÜÃ´Åö¼êÅö¤Æ
+           03  WRK-RYO-STYMD           PIC X(08).
+           03  WRK-RYO-EDYMD           PIC X(08).
       *
        01  TBL-NYUIN-AREA.
            03  TBL-NYUIN-OCC           OCCURS   10.
@@ -213,6 +221,9 @@
       *    ´µ¼Ô¥Þ¥¹¥¿¡Ý
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
+      *
+      *    ¥·¥¹¥Æ¥à´ÉÍý¡Ê¼«Æ°»»Äê¾ðÊó¡¦¥Á¥§¥Ã¥¯µ¡Ç½¡Ë
+           COPY    "CPSK1007.INC".
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
@@ -609,6 +620,9 @@
                MOVE    "2"                 TO  WRK-ACT-ZAISKBKBN
                MOVE    ZERO                TO  WRK-ACT-DAY
                PERFORM 400-NYUACT-SYORI-SEC
+      *
+      *        ËÌ³¤Æ»ÎÅÍÜÃ´Åö¼êÅö¤Æ
+               PERFORM 2001-RYOYOU-TEATE-SEC
            END-IF
       *
       *    ¼¼ÎÁº¹³Û¿ÇÎÅ¥³¡¼¥É
@@ -689,6 +703,107 @@
       *
            .
        220-SONOTA-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    ËÌ³¤Æ»ÎÅÍÜÃ´Åö¼êÅö¤ÆºîÀ®½èÍý
+      *****************************************************************
+       2001-RYOYOU-TEATE-SEC            SECTION.
+      *
+      *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷¡Ê»ÜÀß´ð½à¡Ë
+           MOVE    SPACE               TO  SYS-1007-REC
+           INITIALIZE                  SYS-1007-REC
+           MOVE    "1007"              TO  SYS-1007-KANRICD
+           MOVE    "*"                 TO  SYS-1007-KBNCD
+           MOVE    SYS-1007-REC        TO  MCPDATA-REC
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    WRK-STYMD           TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO                TO  FLG-SYSKANRI
+                   MOVE    MCPDATA-REC         TO  SYS-1007-REC
+               ELSE
+                   MOVE    1                   TO  FLG-SYSKANRI
+               END-IF
+           ELSE
+               MOVE    SPACE               TO  SYS-1007-REC
+               INITIALIZE                  SYS-1007-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           IF      FLG-SYSKANRI        =   ZERO
+      *        ÎÅÍÜÃ´Åö¼êÅö
+               MOVE    SYS-1007-SANTEI (5:1)   TO  FLG-RYOYOU
+           ELSE
+               MOVE    ZERO                    TO  FLG-RYOYOU
+           END-IF
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           MOVE    SPACE               TO  WRK-RYO-STYMD
+           MOVE    SPACE               TO  WRK-RYO-EDYMD
+           IF     (WRK-STYMD(5:4)      >=  "1101"  AND
+                                       <=  "1231")  OR
+                  (WRK-STYMD(5:4)      >=  "0101"  AND
+                                       <=  "0430")
+               MOVE    WRK-STYMD           TO  WRK-RYO-STYMD
+           END-IF
+           IF     (WRK-EDYMD(5:4)      >=  "1101"  AND
+                                       <=  "1231")  OR
+                  (WRK-EDYMD(5:4)      >=  "0101"  AND
+                                       <=  "0430")
+               MOVE    WRK-EDYMD           TO  WRK-RYO-EDYMD
+           END-IF
+      *    ³«»Ï¤Î¤ßÂÐ¾Ý
+           IF     (WRK-RYO-STYMD   NOT =   SPACE )  AND
+                  (WRK-RYO-EDYMD       =   SPACE )
+      *        ³«»ÏÆü¤Î·îËö»»Äê
+               INITIALIZE                      STS-AREA-DAY
+               INITIALIZE                      LNK-DAY7-AREA
+               MOVE    "71"                TO  LNK-DAY7-IRAI
+               MOVE    WRK-RYO-STYMD       TO  LNK-DAY7-YM
+               CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY7-AREA
+               IF      STS-DAY-RC1         =   ZERO
+                   MOVE    LNK-DAY7-KOYOMI     TO  WRK-RYO-EDYMD
+               END-IF
+           END-IF
+      *    ½ªÎ»¤Î¤ßÂÐ¾Ý
+           IF     (WRK-RYO-STYMD       =   SPACE )  AND
+                  (WRK-RYO-EDYMD   NOT =   SPACE )
+      *        ½ªÎ»·î¤Î£±Æü
+               MOVE    WRK-RYO-EDYMD       TO  WRK-RYO-STYMD
+               MOVE    "01"                TO  WRK-RYO-STYMD(7:2)
+           END-IF
+      *
+           IF     (FLG-RYOYOU          =   1       )  AND
+                  (WRK-RYO-STYMD   NOT =   SPACE   )  AND
+                  (WRK-RYO-EDYMD   NOT =   SPACE   )
+               INITIALIZE                  TBL-NYUIN-AREA
+               MOVE    "099999917"         TO  TBL-SRYCD (1)
+               MOVE    WRK-RYO-STYMD       TO  WRK-KHN-STYMD
+               MOVE    WRK-RYO-EDYMD       TO  WRK-KHN-EDYMD
+               MOVE    "7"                 TO  WRK-ACT-ZAISKBKBN
+               MOVE    1                   TO  WRK-ACT-DAY
+               PERFORM 400-NYUACT-SYORI-SEC
+           END-IF
+           .
+       2001-RYOYOU-TEATE-EXT.
            EXIT.
       *
       *****************************************************************
