@@ -64,6 +64,7 @@
       *                                     »ÈÍÑ²Ã»»¤òÌôºÞÅù¤Ø
       *  01.00.23    NACL-ÌçÏÆ    05/01/27  ¹ø¡¦¶»Éô¸ÇÄêÂÓ²Ã»»¡¢ÁÏ³°¸ÇÄê´ï
       *                                     »ÈÍÑ²Ã»»¤Îµ»½Ñ¡¦ÌôºÞÅù¤ÎÁªÂòÂÐ±þ
+      *  01.00.24    NACL-¾®Æ¦Âô  05/05/11  ÎÅÍÜÃ´Åö¼êÅö¡ÊËÌ³¤Æ»¡ËÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -1952,6 +1953,20 @@
                            (TBL-GAIHAKU(SYU-IDX)   =  ZERO  OR  4)
                            ADD   NACCT-ZAITEN   TO
                                              SYU-HKNTEN(11)
+                                             SDAY-HKNTEN(SYU-IDX)      
+                       END-IF
+                   END-PERFORM
+               END-IF
+      *
+      *        ÎÅÍÜÃ´Åö¼êÅö¡ÊËÌ³¤Æ»¡Ë¤Î½¸·×
+               IF   NACCT-ZAISKBKBN      =   "7"
+                   PERFORM   VARYING  SYU-IDX  FROM  1  BY  1
+                             UNTIL    SYU-IDX  >   31
+                       IF  (SYU-DAY(SYU-IDX)       =   "1")    AND
+                           (NACCT-DAY(SYU-IDX) NOT =  ZERO)    AND
+                           (TBL-GAIHAKU(SYU-IDX)   =  ZERO  OR  4)
+                           ADD   NACCT-ZAITEN    TO
+                                             SYU-HKNTEN(10)
                                              SDAY-HKNTEN(SYU-IDX)      
                        END-IF
                    END-PERFORM
