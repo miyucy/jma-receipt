@@ -133,14 +133,6 @@
       *
            PERFORM 100-DBOPEN-SEC
       *
-      *    データチェック診療会計テーブル削除
-           MOVE    PATH-TBL-DCACCT-DEL1    TO  MCP-PATH
-           PERFORM 910-DBTRUNCATE-SEC
-      *
-      *    データチェック診療行為一時テーブル作成
-           MOVE    PATH-TBL-DCSRY-DEL1     TO  MCP-PATH
-           PERFORM 910-DBTRUNCATE-SEC
-      *
            .
        100-INIT-EXT.
            EXIT.
@@ -236,20 +228,6 @@
            .
       *
        800-MCNDATE-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＤＢＴＲＵＮＣＡＴＥ処理
-      *****************************************************************
-       910-DBTRUNCATE-SEC              SECTION.
-      *
-           MOVE    "DBTRUNCATE"        TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
-      *
-           .
-      *
-       910-DBTRUNCATE-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ　オープン処理
