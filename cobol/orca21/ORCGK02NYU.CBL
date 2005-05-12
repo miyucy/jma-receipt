@@ -5254,8 +5254,9 @@
       *    保険適用区分が保険適用外のもの（ユーザー登録の自費分）
            IF      SPA-COM-HKNTEKKBN(SPA-GMN-IDX)  =   2
       *        数量を金額とする
-               MOVE    1               TO  SPA-COM-SURYO(SPA-GMN-IDX)
                IF      SPA-COM-KISOTEN (SPA-GMN-IDX)  =   ZERO
+                   MOVE    1               TO  SPA-COM-SURYO
+                                                          (SPA-GMN-IDX)
                    MOVE    WRK-SURYO       TO  SPA-COM-KEI(SPA-GMN-IDX)
                    MOVE    WRK-SURYO       TO  SPA-COM-JIHIMONEY
                                                           (SPA-GMN-IDX)
@@ -5265,10 +5266,10 @@
                ELSE
                    MOVE    "2"             TO  SPA-COM-KEIFLG
                                                           (SPA-GMN-IDX)
-      *            定額の時、数量入力エラー
-                   IF      WRK-SURYO       NOT =   ZERO
-                       MOVE    "1002"          TO  SPA-ERRCD
-                   END-IF
+      *!!!         定額の時、数量入力エラー
+      *            IF      WRK-SURYO       NOT =   ZERO
+      *                MOVE    "1002"          TO  SPA-ERRCD
+      *!!!         END-IF
                END-IF
            ELSE
                MOVE    SPACE               TO  SPA-COM-KEIFLG

@@ -6629,11 +6629,12 @@
                MOVE    SPA-COM-TIMEFLG(SPA-GMN-IDX)
                                            TO  SPA-NAI-TIMEFLG
            END-IF
-      *    保険適用区分が保険適用外のもの（ユーザー登録の自費分）
+      *!!  保険適用区分が保険適用外のもの（ユーザー登録の自費分）
            IF      SPA-COM-HKNTEKKBN(SPA-GMN-IDX)  =   2
       *        数量を金額とする
-               MOVE    1               TO  SPA-COM-SURYO(SPA-GMN-IDX)
                IF      SPA-COM-KISOTEN (SPA-GMN-IDX)  =   ZERO
+                   MOVE    1               TO  SPA-COM-SURYO
+                                                          (SPA-GMN-IDX)
                    MOVE    WRK-SURYO       TO  SPA-COM-KEI(SPA-GMN-IDX)
                    MOVE    WRK-SURYO       TO  SPA-COM-JIHIMONEY
                                                           (SPA-GMN-IDX)
@@ -6643,10 +6644,11 @@
                ELSE
                    MOVE    "2"             TO  SPA-COM-KEIFLG
                                                           (SPA-GMN-IDX)
+      *!!         すべての自費コードに数量可能とする（自費で判定）
       *            定額の時、数量入力エラー
-                   IF      WRK-SURYO       NOT =   ZERO
-                       MOVE    "1002"          TO  SPA-ERRCD
-                   END-IF
+      *            IF      WRK-SURYO       NOT =   ZERO
+      *                MOVE    "1002"          TO  SPA-ERRCD
+      *!!          END-IF
                END-IF
            ELSE
                MOVE    SPACE               TO  SPA-COM-KEIFLG
@@ -6968,7 +6970,6 @@
                                                           (SPA-GMN-IDX)
                MOVE    LNK-SC97-JIKAN      TO  SPA-COM-TIMEFLG
                                                           (SPA-GMN-IDX)
-               GO      TO      41011211-JIKANGAI-CHK-EXT
            ELSE
                MOVE    "0089"              TO  SPA-ERRCD
            END-IF
@@ -6982,7 +6983,7 @@
        4101122-KOMOKU-HENSYU-SEC      SECTION.
       *
       *    数量
-            MOVE    SPACE              TO  SPA-COM-AUTOFLG2(SPA-GMN-IDX)
+           MOVE    SPACE               TO  SPA-COM-AUTOFLG2(SPA-GMN-IDX)
            IF      WRK-SUR-MCNT        =   ZERO
                MOVE    1               TO  SPA-COM-SURYO(SPA-GMN-IDX)
                MOVE    SPACE           TO  SPA-COM-SURFLG(SPA-GMN-IDX)
