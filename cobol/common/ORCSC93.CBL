@@ -1279,6 +1279,7 @@
                    END-EVALUATE
            END-EVALUATE
       *
+           .
        5101-SRYKBN-0-HEN-EXT.
            EXIT.
       *
