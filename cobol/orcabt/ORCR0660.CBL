@@ -57,6 +57,7 @@
       *  01.02.01    NACL-藤原    04/10/07  中止処理の追加
       *  01.02.02    NACL-門脇    04/12/09  脳血管疾患急性発症終了日対応
       *  01.02.03    NACL-門脇    05/01/18  酸素計算式コメント対応
+      *  01.02.04    NACL-門脇    05/05/10  脳血管疾患急性発症病名記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -259,6 +260,8 @@
            03  FLG-NYU-RENZOKU     PIC 9(01).
            03  FLG-SRYACT          PIC 9(01).
            03  FLG-SANTEI          PIC 9(01).
+           03  FLG-KYUSEI-OK       PIC 9(01).
+           03  FLG-PTCOM           PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -279,6 +282,8 @@
            03  IDX3                PIC 9(02).
            03  IDX4                PIC 9(04).
            03  IDX5                PIC 9(04).
+           03  IDX12               PIC 9(04).
+           03  IDX13               PIC 9(04).
            03  DAY-IDX             PIC 9(04).
            03  DAY-IDX2            PIC 9(02).
            03  IDY                 PIC 9(04).
@@ -334,6 +339,10 @@
            03  WRK-KEISAN3           PIC 9(09)V9(03).
            03  WRK-KEISAN-TAIHI      PIC X(09).
       *
+           03  WRK-KYUSEI-NYUGAIKBN  PIC X(01).
+           03  WRK-KYUSEI-SRYKA      PIC X(02).
+           03  WRK-KYUSEI-ZAINUM     PIC 9(08).
+      *
        01  WRK-RECE64-REC. 
            COPY    "CPRCF064.INC"  REPLACING   //RECE64//
                                    BY          //WRK-RECE64//.
@@ -346,6 +355,11 @@
          02 WRK-RECE65XX-TBL       OCCURS 50.
            COPY    "CPRCF065.INC"  REPLACING   //RECE65//
                                    BY          //WRK-RECE65XX//.
+      *
+       01  WRK-FREE-AREA.
+           03  WRK-FREEINF                     OCCURS 49.         
+               05  WK-FREE-YUKOKETA          PIC  9(02).
+               05  WK-FREE-NAME              PIC  X(200).
       *
        01  WRK-FREE-AREA2.                                              
            03  WRK-FREEINF2                    OCCURS 50.               
@@ -541,6 +555,14 @@
       *    算定履歴
        01  SANTEI-REC.
            COPY    "CPSANTEI.INC".
+      *
+      *    保険組み合わせ
+       01  HKNCOMBI-REC.
+           COPY    "CPHKNCOMBI.INC".
+      *
+      *    患者コメント
+       01  PTCOM-REC.
+           COPY    "CPPTCOM.INC".
       *
       *****************************************************************
       *    サブプロ用領域
@@ -1381,6 +1403,7 @@
       *
            IF      FLG-KYUSEI-COMMENT    =      1
            AND     FLG-KYUSEI-COMMENT2   =      ZERO
+               PERFORM    20011-KYUSEIHASSYO-KENSAKU-SEC
                PERFORM    20011-KYUSEIHASSYO-COMMENT-SEC
            END-IF
       *
@@ -1389,9 +1412,267 @@
            EXIT.
       *
       *****************************************************************
+      *    脳血管疾患急性発症日の検索
+      *****************************************************************
+       20011-KYUSEIHASSYO-KENSAKU-SEC          SECTION.
+      *
+           MOVE    ZERO                  TO  FLG-KYUSEI-OK
+           MOVE    SPACE                 TO  WRK-KYUSEI-NYUGAIKBN
+           MOVE    SPACE                 TO  WRK-KYUSEI-SRYKA
+           MOVE    ZERO                  TO  WRK-KYUSEI-ZAINUM
+      *
+           MOVE    ZERO                  TO  IDZ
+           INITIALIZE                        WRK-FREE-AREA
+      *
+           INITIALIZE                        SRYACT-REC
+           MOVE    RECE62-HOSPID         TO  SRY-HOSPID
+           MOVE    RECE62-PTID           TO  SRY-PTID
+           MOVE    WRK-KYUSEIYMD(1:6)    TO  SRY-SRYYM
+           MOVE    CONS-KYUSEI           TO  SRY-SRYCD (1)
+           MOVE    CONS-KYUSEI           TO  SRY-SRYCD (2)
+           MOVE    CONS-KYUSEI           TO  SRY-SRYCD (3)
+           MOVE    CONS-KYUSEI           TO  SRY-SRYCD (4)
+           MOVE    CONS-KYUSEI           TO  SRY-SRYCD (5)
+           MOVE    SRYACT-REC            TO  MCPDATA-REC
+           MOVE    "DBSELECT"            TO  MCP-FUNC
+           MOVE    "SRYACT-KEY12"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"           USING
+                                         MCPAREA
+                                         ORCMCPAREA
+                                         MCPDATA-REC
+           IF      MCP-RC               =       ZERO
+               MOVE    "SRYACT-KEY12"    TO  ORC-DBPATH
+               PERFORM  900-SRYACT-READ-SEC
+               PERFORM  UNTIL   FLG-SRYACT     =   1
+                         OR     FLG-KYUSEI-OK  =   1
+                 INITIALIZE                     SRYACCT-REC
+                 MOVE    SRY-HOSPID       TO    ACCT-HOSPID
+                 MOVE    SRY-NYUGAIKBN    TO    ACCT-NYUGAIKBN
+                 MOVE    SRY-PTID         TO    ACCT-PTID
+                 MOVE    SRY-SRYKA        TO    ACCT-SRYKA
+                 MOVE    SRY-SRYYM        TO    ACCT-SRYYM
+                 MOVE    SRY-ZAINUM       TO    ACCT-ZAINUM
+                 MOVE    SRYACCT-REC      TO    MCPDATA-REC
+                 MOVE    "DBSELECT"       TO    MCP-FUNC
+                 MOVE    "SRYACCT-KEY31"  TO    ORC-DBPATH
+                 CALL    "ORCMCPSUB"      USING
+                                          MCPAREA
+                                          ORCMCPAREA
+                                          MCPDATA-REC
+                 IF     MCP-RC            =  ZERO
+                    MOVE    "DBFETCH"        TO   MCP-FUNC
+                    MOVE    "SRYACCT-KEY31"  TO   ORC-DBPATH
+                    CALL    "ORCMCPSUB"           USING
+                                                  MCPAREA
+                                                  ORCMCPAREA
+                                                  MCPDATA-REC
+                    IF      MCP-RC        =       ZERO
+                        MOVE    MCPDATA-REC  TO  SRYACCT-REC
+      *
+                        MOVE    WRK-KYUSEIYMD(7:2)  TO  DAY-IDX2
+                        IF   ACCT-DAY(1 DAY-IDX2)  NOT =  ZERO
+      *                   保険組合せマスタの検索
+                          INITIALIZE                 HKNCOMBI-REC
+                          MOVE    ACCT-HOSPID    TO  COMB-HOSPID
+                          MOVE    ACCT-PTID      TO  COMB-PTID
+                          MOVE    ACCT-HKNCOMBI  TO  COMB-HKNCOMBINUM
+                          MOVE    HKNCOMBI-REC   TO  MCPDATA-REC
+                          MOVE    "DBSELECT"     TO  MCP-FUNC
+                          MOVE    "HKNCOMBI-KEY" TO  ORC-DBPATH
+                          CALL    "ORCMCPSUB"    USING   MCPAREA
+                                                         ORCMCPAREA
+                                                         MCPDATA-REC
+                          IF      MCP-RC         =       ZERO
+                             MOVE  "DBFETCH"       TO   MCP-FUNC
+                             MOVE  "HKNCOMBI-KEY"  TO   ORC-DBPATH
+                             CALL  "ORCMCPSUB"     USING  MCPAREA
+                                                          ORCMCPAREA
+                                                          MCPDATA-REC
+                             IF      MCP-RC        =       ZERO
+                               MOVE   MCPDATA-REC  TO   HKNCOMBI-REC
+                               IF   COMB-HKNNUM = "971" OR "973"
+                                   CONTINUE
+                               ELSE
+                                   MOVE   1   TO  FLG-KYUSEI-OK
+                                   MOVE   ACCT-NYUGAIKBN
+                                              TO  WRK-KYUSEI-NYUGAIKBN
+                                   MOVE   ACCT-SRYKA
+                                              TO  WRK-KYUSEI-SRYKA
+                                   MOVE   ACCT-ZAINUM
+                                              TO  WRK-KYUSEI-ZAINUM
+                               END-IF
+                             END-IF
+                          END-IF
+                          INITIALIZE                   MCPAREA
+                          MOVE    "DBCLOSECURSOR"  TO  MCP-FUNC
+                          MOVE    "HKNCOMBI-KEY"   TO  ORC-DBPATH
+                          CALL    "ORCMCPSUB"      USING   MCPAREA
+                                                           ORCMCPAREA
+                                                           MCPDATA-REC
+      *
+                        END-IF
+                    END-IF
+                 END-IF
+                 INITIALIZE                     MCPAREA
+                 MOVE    "DBCLOSECURSOR"   TO   MCP-FUNC
+                 MOVE    "SRYACCT-KEY31"   TO   ORC-DBPATH
+                 CALL    "ORCMCPSUB"       USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+      *
+                 MOVE     "SRYACT-KEY12"   TO   ORC-DBPATH
+                 PERFORM   900-SRYACT-READ-SEC
+               END-PERFORM
+           END-IF
+           INITIALIZE                        MCPAREA
+           MOVE    "DBCLOSECURSOR"   TO      MCP-FUNC
+           MOVE    "SRYACT-KEY12"    TO      ORC-DBPATH
+           CALL    "ORCMCPSUB"       USING
+                                     MCPAREA
+                                     ORCMCPAREA
+                                     MCPDATA-REC
+      ***
+           IF      WRK-KYUSEI-ZAINUM    NOT =    ZERO
+              INITIALIZE                           SRYACT-REC
+              MOVE    RECE62-HOSPID          TO    SRY-HOSPID
+              MOVE    WRK-KYUSEI-NYUGAIKBN   TO    SRY-NYUGAIKBN
+              MOVE    RECE62-PTID            TO    SRY-PTID
+              MOVE    WRK-KYUSEI-SRYKA       TO    SRY-SRYKA
+              MOVE    WRK-KYUSEIYMD(1:6)     TO    SRY-SRYYM
+              MOVE    WRK-KYUSEI-ZAINUM      TO    SRY-ZAINUM
+              MOVE    SRYACT-REC             TO    MCPDATA-REC
+              MOVE    "DBSELECT"             TO    MCP-FUNC
+              MOVE    "SRYACT-KEY2"          TO    ORC-DBPATH
+              CALL    "ORCMCPSUB"            USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
+              IF     MCP-RC            =  ZERO
+                 MOVE    "SRYACT-KEY2"       TO    ORC-DBPATH
+                 PERFORM  900-SRYACT-READ-SEC
+                 PERFORM  UNTIL   FLG-SRYACT     =   1
+                   PERFORM  VARYING  IDX12  FROM  1  BY  1
+                             UNTIL  (IDX12             >    5   )  OR
+                                    (SRY-SRYCD(IDX12)  =   SPACE)
+                      IF   (SRY-SRYCD(IDX12)(1:1)     =   "8"  )  OR
+                           (SRY-SRYCD(IDX12)(1:3)     =   "008")
+                       IF   SRY-INPUTNUM(IDX12)   NOT =   ZERO
+                         INITIALIZE                      PTCOM-REC
+                         MOVE    SRY-HOSPID          TO  PTCOM-HOSPID
+                         MOVE    SRY-PTID            TO  PTCOM-PTID
+                         MOVE    SRY-ZAINUM          TO  PTCOM-ZAINUM
+                         MOVE    SRY-SRYCD(IDX12)    TO  PTCOM-SRYCD
+                         MOVE    SRY-INPUTNUM(IDX12) TO  PTCOM-RENNUM
+                         PERFORM 900-PTCOM-READ-SEC
+                         ADD     1     TO    IDZ
+                         MOVE    PTCOM-INPUTCOMENT
+                                                TO  WK-FREE-NAME(IDZ)
+                         PERFORM   VARYING   IDX13   FROM   200   BY  -1
+                                    UNTIL    IDX13    <    1
+                           IF  WK-FREE-NAME(IDZ)(IDX13:1)  NOT =  SPACE
+                             COMPUTE  WK-FREE-YUKOKETA(IDZ)  =
+                                      IDX13    /    2
+                             MOVE     1     TO      IDX13
+                           END-IF
+                         END-PERFORM
+                       END-IF
+                      END-IF
+                   END-PERFORM
+                   MOVE     "SRYACT-KEY2"    TO    ORC-DBPATH
+                   PERFORM   900-SRYACT-READ-SEC
+                 END-PERFORM
+              END-IF
+              INITIALIZE                     MCPAREA
+              MOVE    "DBCLOSECURSOR"   TO   MCP-FUNC
+              MOVE    "SRYACT-KEY2"     TO   ORC-DBPATH
+              CALL    "ORCMCPSUB"       USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           END-IF
+      *
+           .
+       20011-KYUSEIHASSYO-KENSAKU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    脳血管疾患急性発症日のコメント編集
       *****************************************************************
        20011-KYUSEIHASSYO-COMMENT-SEC          SECTION.
+      *
+      *    ＲＥＣＥ０５ファイルの内容をテーブルに退避
+           MOVE    ZERO        TO  IDX-RECE65
+           MOVE    SPACE       TO  WRK-RECE65XX-REC
+           INITIALIZE              WRK-RECE65XX-REC
+      *
+           ADD     1           TO  IDX-RECE65
+           MOVE    "810000001" TO  WRK-RECE65XX-SRYCD(IDX-RECE65 1)
+           MOVE    ZERO        TO  WRK-RECE65XX-SRYSURYO(IDX-RECE65 1)
+           MOVE    9           TO  WRK-RECE65XX-YUKOKETA(IDX-RECE65 1)
+           MOVE    "発症　　　月　　日"
+                               TO  WRK-RECE65XX-NAME(IDX-RECE65 1)
+           MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
+           MOVE    TBL-DAY(DAY-IDX2)
+                               TO  WRK-RECE65XX-NAME(IDX-RECE65 1)(7:4)
+           MOVE    WRK-KYUSEIYMD(7:2)   TO  DAY-IDX2
+           MOVE    TBL-DAY(DAY-IDX2)
+                               TO  WRK-RECE65XX-NAME(IDX-RECE65 1)(13:4)
+      *
+           PERFORM   VARYING    IDX12   FROM    1   BY  1
+                      UNTIL   ( IDX12               >   49    )
+                       OR     ( WK-FREE-NAME(IDX12) =   SPACE )
+                ADD    1       TO  IDX-RECE65
+                MOVE   "810000001"
+                               TO  WRK-RECE65XX-SRYCD(IDX-RECE65 1)
+                MOVE   ZERO    TO  WRK-RECE65XX-SRYSURYO(IDX-RECE65 1)
+                MOVE   WK-FREE-YUKOKETA(IDX12)
+                               TO  WRK-RECE65XX-YUKOKETA(IDX-RECE65 1)
+                MOVE   WK-FREE-NAME(IDX12)
+                               TO  WRK-RECE65XX-NAME(IDX-RECE65 1)
+           END-PERFORM
+      *
+      *    科・日付の編集を含んだ内容で中間ファイルの再作成
+           MOVE       ZERO             TO      FLG-WRKRECE65
+           MOVE       ZERO             TO      IDX
+           MOVE       ZERO             TO      IDX-RECE65
+           MOVE       ZERO             TO      WRK-RENNUM
+           MOVE       ZERO             TO      WRK-CNT-MEISAI
+           PERFORM    UNTIL     FLG-WRKRECE65  =    1
+                INITIALIZE                       RECE659-REC
+                MOVE    RECE62-HOSPID        TO  RECE659-HOSPID
+                MOVE    RECE62-SRYYM         TO  RECE659-SRYYM
+                MOVE    RECE62-NYUGAIKBN     TO  RECE659-NYUGAIKBN
+                MOVE    RECE62-PTID          TO  RECE659-PTID
+                MOVE    RECE62-RECEKA        TO  RECE659-RECEKA
+                MOVE    RECE62-TEISYUTUSAKI  TO  RECE659-TEISYUTUSAKI
+                MOVE    RECE62-RECESYUBETU   TO  RECE659-RECESYUBETU
+                MOVE    RECE62-HKNJANUM-KEY  TO  RECE659-HKNJANUM
+                MOVE    RECE62-HOJOKBN-KEY   TO  RECE659-HOJOKBN
+                MOVE    RECE62-TEKSTYMD      TO  RECE659-TEKSTYMD
+                MOVE    99999998             TO  RECE659-ZAINUM
+                MOVE    WRK-KOHBUNRI-JIDO    TO  RECE659-KOHBUNRI
+                MOVE    "99"                 TO  RECE659-SRYKBN
+                ADD     1                    TO  WRK-RENNUM
+                MOVE    WRK-RENNUM           TO  RECE659-RENNUM
+                PERFORM  VARYING   IDX   FROM   1   BY   1
+                          UNTIL   (IDX             >    5)   OR
+                                  (FLG-WRKRECE65   =    1)
+                   ADD         1             TO    IDX-RECE65
+                   IF  WRK-RECE65XX-SRYCD(IDX-RECE65 1) = SPACE
+                       MOVE    1             TO    FLG-WRKRECE65
+                   ELSE
+                       MOVE  WRK-RECE65XX-SRYACT-TBL (IDX-RECE65 1)
+                                        TO   RECE659-SRYACT-TBL (IDX)
+                       ADD   1          TO   WRK-CNT-MEISAI
+                   END-IF
+                END-PERFORM
+                IF   RECE659-SRYCD(1)  NOT =  SPACE
+                   WRITE   RECE659-REC
+                   ADD     1            TO   CNT-RECE659
+                END-IF
+           END-PERFORM
+      *
       *
            INITIALIZE                      RECE649-REC
            MOVE    RECE62-HOSPID       TO  RECE649-HOSPID
@@ -1408,41 +1689,10 @@
            MOVE    WRK-KOHBUNRI-JIDO   TO  RECE649-KOHBUNRI
            MOVE    "99"                TO  RECE649-SRYKBN
       *
-           MOVE    1                   TO  RECE649-MEISAISU
+           MOVE    WRK-CNT-MEISAI      TO  RECE649-MEISAISU
       *
            WRITE   RECE649-REC
            ADD     1                   TO  CNT-RECE649
-      *
-           INITIALIZE                      RECE659-REC
-           MOVE    RECE62-HOSPID       TO  RECE659-HOSPID
-           MOVE    RECE62-SRYYM        TO  RECE659-SRYYM
-           MOVE    RECE62-NYUGAIKBN    TO  RECE659-NYUGAIKBN
-           MOVE    RECE62-PTID         TO  RECE659-PTID
-           MOVE    RECE62-RECEKA       TO  RECE659-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI TO  RECE659-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU  TO  RECE659-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY TO  RECE659-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY  TO  RECE659-HOJOKBN
-           MOVE    RECE62-TEKSTYMD     TO  RECE659-TEKSTYMD
-           MOVE    99999998            TO  RECE659-ZAINUM
-           MOVE    WRK-KOHBUNRI-JIDO   TO  RECE659-KOHBUNRI
-           MOVE    "99"                TO  RECE659-SRYKBN
-      *    コメントの挿入
-           MOVE    SPACE                TO  WRK-RECE65XX-REC
-           INITIALIZE                       WRK-RECE65XX-REC
-           MOVE    "810000001"          TO  WRK-RECE65XX-SRYCD(1 1)
-           MOVE     ZERO                TO  WRK-RECE65XX-SRYSURYO(1 1)
-           MOVE     9                   TO  WRK-RECE65XX-YUKOKETA(1 1)
-           MOVE    "発症　　　月　　日" TO  WRK-RECE65XX-NAME(1 1)
-           MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
-           MOVE    TBL-DAY(DAY-IDX2)    TO  WRK-RECE65XX-NAME(1 1)(7:4)
-           MOVE    WRK-KYUSEIYMD(7:2)   TO  DAY-IDX2
-           MOVE    TBL-DAY(DAY-IDX2)    TO  WRK-RECE65XX-NAME(1 1)(13:4)
-      *
-           MOVE    WRK-RECE65XX-SRYACT-TBL(1 1)
-                                        TO  RECE659-SRYACT-TBL(1)
-           WRITE   RECE659-REC
-           ADD     1                    TO  CNT-RECE659
       *
            .
        20011-KYUSEIHASSYO-COMMENT-EXT.
@@ -3783,6 +4033,48 @@
       *
            .
        900-SANTEI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者コメントマスタ読み込み
+      *****************************************************************
+       900-PTCOM-READ-SEC           SECTION.
+      *
+           MOVE     PTCOM-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTCOM-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "PTCOM-KEY"         TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  PTCOM-REC
+                   MOVE    ZERO                TO  FLG-PTCOM
+               ELSE
+                   MOVE    1                   TO  FLG-PTCOM
+                   INITIALIZE                      PTCOM-REC
+               END-IF
+           ELSE
+               MOVE    1                       TO  FLG-PTCOM
+               INITIALIZE                          PTCOM-REC
+           END-IF
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "PTCOM-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       900-PTCOM-READ-EXT.
            EXIT.
       *
       *****************************************************************
