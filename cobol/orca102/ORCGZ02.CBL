@@ -468,6 +468,12 @@
       *        初期設定
                MOVE    SPA-GMN-HKNTEKKBNLST (01)
                                            TO  SPA-GMN-HKNTEKKBN-G
+      *        自費コードは、２とする
+               IF      SPA-Z01-SRYCD(1:3)  =   "095"
+                                           OR  "096"
+                   MOVE    SPA-GMN-HKNTEKKBNLST (03)
+                                           TO  SPA-GMN-HKNTEKKBN-G
+               END-IF
       *        部位はその他とする
                MOVE    SPA-GMN-BUIKBNLST (8)
                                            TO  SPA-GMN-BUIKBN-G
