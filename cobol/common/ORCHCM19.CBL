@@ -45,6 +45,8 @@
       * 01.00.11     NACL-多々納  04/03/08  在宅の対象判定修正
       * 01.00.12     NACL-多々納  04/05/27  ２０行目の余白に編集追加
       * 01.00.13     NACL-多々納  04/07/20  複数科・保険同時入力に対応
+      * 01.00.14     NACL-多々納  05/05/11  備考コメント追加
+      *                                     備考欄を４２文字へ変更
       *****************************************************************
       *
       *
@@ -266,6 +268,19 @@
       *    免除判定領域
        01  WRK-MENJYO-ARAE.
            03  WRK-MENJYO-FLG          PIC 9(01).
+      *
+      *---(01.00.14) LINE ADD START -----------------------------------
+      *    コメント備考
+       01  WRK-BIKOU-AREA.
+           03  WRK-BIKOU-G.
+               05  WRK-BIKOU-NAME      PIC X(172)
+                                       OCCURS   9.
+           03  WRK-BIKOU-G2            REDEFINES
+                                       WRK-BIKOU-G.
+               05  WRK-BIKOU-NAME2     PIC X(86)
+                                       OCCURS   18.
+           03  IDX-BIKOU                   PIC 9(04).
+      *---(01.00.14) LINE ADD END   -----------------------------------
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -755,6 +770,10 @@
            MOVE    ZERO                TO  IDX
            MOVE    ZERO                TO  IDX-Z
            MOVE    ZERO                TO  FLG-MAYAKU
+      *
+      *---(01.00.14) LINE ADD START -----------------------------------
+           INITIALIZE                  WRK-BIKOU-AREA
+      *---(01.00.14) LINE ADD END   -----------------------------------
       *
            .
        200211-SYOHOU-INIT-EXT.
@@ -1468,6 +1487,12 @@
            IF      FLG-MAYAKU          =   1
                PERFORM 31020-MAYAKU-HEN-SEC
            END-IF
+      *---(01.00.14) LINE ADD START -----------------------------------
+      *    備考欄コメント編集
+           IF      IDX-BIKOU           >   ZERO
+               PERFORM 3009-COMMENT-HEN-SEC
+           END-IF
+      *---(01.00.14) LINE ADD END   -----------------------------------
       *
            .
        300-HCM19-HEN-EXT.
@@ -1505,6 +1530,27 @@
            .
        31020-MAYAKU-HEN-EXT.
            EXIT.
+      *
+      *---(01.00.14) LINE ADD START -----------------------------------
+      *****************************************************************
+      *    備考欄コメント編集処理
+      *****************************************************************
+       3009-COMMENT-HEN-SEC      SECTION.
+      *
+           PERFORM VARYING     IDX-BIKOU   FROM    1   BY  1
+                   UNTIL      (IDX-BIKOU   >   18  )  OR
+                              (IDX-B   >=  9   )
+               IF      WRK-BIKOU-NAME2(IDX-BIKOU)  NOT =   SPACE
+                   ADD     1                   TO  IDX-B
+                   MOVE    WRK-BIKOU-NAME2(IDX-BIKOU)
+                                               TO  HCM19-BIKOH (IDX-B)
+               END-IF
+           END-PERFORM
+      *
+           .
+       3009-COMMENT-HEN-EXT.
+           EXIT.
+      *---(01.00.14) LINE ADD START -----------------------------------
       *
       *****************************************************************
       *        麻薬編集編集処理
@@ -1691,6 +1737,13 @@
                    MOVE    1                   TO  FLG-SYOHOU
                END-IF
       *
+      *---(01.00.14) LINE ADD START -----------------------------------
+      *        コメント（備考）（院内・院外共通）
+               IF      SRY-SRYKBN          =   "98"
+                   PERFORM 20030-SRYKBN-98-HEN-SEC
+               END-IF
+      *---(01.00.14) LINE ADD END   -----------------------------------
+      *
                MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
                PERFORM 900-SRYACT-READ-SEC
            END-PERFORM
@@ -1712,6 +1765,49 @@
            .
        2002-SRYACT-SYORI-EXT.
            EXIT.
+      *
+      *---(01.00.14) LINE ADD START -----------------------------------
+      *****************************************************************
+      *    コメント（備考）（院内・院外共通）編集処理
+      *****************************************************************
+       20030-SRYKBN-98-HEN-SEC         SECTION.
+      *
+      *    診療会計より、点数チェック
+           PERFORM 20021-SRYACCT-SYORI-SEC
+      *
+           IF      WRK-KAISU           >   ZERO
+               PERFORM VARYING     IDXA    FROM    1   BY  1
+                       UNTIL      (IDXA    >   5   )  OR
+                                  (SRY-SRYCD (IDXA)   =   SPACE)
+                   MOVE    SRY-SRYCD (IDXA)    TO  TNS-SRYCD
+                   PERFORM 910-TENSU-READ-SEC
+      *            用法
+                   IF      SRY-SRYCD (IDXA)(1:3)   =   "001"
+                       MOVE    SPACE           TO  WRK-TNS-NAME
+                       STRING  "【"             DELIMITED   BY  SIZE
+                               TNS-NAME         DELIMITED   BY  "    "
+                               "】"             DELIMITED   BY  SIZE
+                          INTO                 WRK-TNS-NAME
+                       END-STRING
+                   ELSE
+      *                その他
+                       IF      SRY-INPUTNUM (IDXA)     =   ZERO
+                           MOVE    TNS-NAME        TO  WRK-TNS-NAME
+                       ELSE
+                           PERFORM 31032-PTCOM-SET-SEC
+                       END-IF
+                   END-IF
+                   ADD     1                   TO  IDX-BIKOU
+                   IF      IDX-BIKOU           <=  9
+                       MOVE    WRK-TNS-NAME        TO  WRK-BIKOU-NAME
+                                                           (IDX-BIKOU)
+                   END-IF
+               END-PERFORM
+           END-IF
+           .
+       20030-SRYKBN-98-HEN-EXT.
+           EXIT.
+      *---(01.00.14) LINE ADD END   -----------------------------------
       *
       *****************************************************************
       *    剤毎の編集処理
@@ -2198,6 +2294,7 @@
                                            OR  "22"
                                            OR  "23"
                                            OR  "14"
+                                           OR  "98"
                    MOVE    WRK-SRYKA           TO  WKSRY-SRYKA
                    MOVE    WRK-HKNCOMBINUM     TO  WKSRY-HKNCOMBI
                    ADD     1                   TO  LNK-WKSRYACT-MAX
@@ -2210,6 +2307,12 @@
                MOVE    "WKSRYACT-KEY2"     TO  ORC-DBPATH
                PERFORM 940-WKSRYACT-READ-SEC
            END-PERFORM
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "WKSRYACT-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
       *    診療科・保険組合せ毎に処方せんを印刷する
            MOVE    ZERO                TO  FLG-WKSRYEND
@@ -2288,6 +2391,9 @@
            MOVE    ZERO                TO  FLG-OK2
            MOVE    ZERO                TO  WRK-YKZTEN
            MOVE    ZERO                TO  WRK-KIZAITEN
+      *---(01.00.14) LINE ADD START -----------------------------------
+           INITIALIZE                  WRK-BIKOU-AREA
+      *---(01.00.14) LINE ADD END   -----------------------------------
            .
        20031-WKSYOHOU-INIT-EXT.
            EXIT.
@@ -2322,7 +2428,15 @@
                MOVE    WKSRY-ZAITENKEI     TO  WRK-ZAITENKEI
            END-IF
       *
-           PERFORM 20031-WKSRYACT-HEN-SEC
+      *---(01.00.14) LINE ADD START -----------------------------------
+      **** PERFORM 20031-WKSRYACT-HEN-SEC
+      *    コメント（備考）（院内・院外共通）
+           IF      WKSRY-SRYKBN        =   "98"
+               PERFORM 20033-WKSRYKBN-98-HEN-SEC
+           ELSE
+               PERFORM 20031-WKSRYACT-HEN-SEC
+           END-IF
+      *---(01.00.14) LINE ADD END   -----------------------------------
       *
            .
        20032-WKSRYACT-CHK-EXT.
@@ -2353,7 +2467,8 @@
       *            内容編集
                    PERFORM 3103-SRYACT-HEN-SEC
       *
-                   IF     (WKSRY-SRYCD (IDXA)(1:1) =    "8") AND
+                   IF    ((WKSRY-SRYCD (IDXA)(1:1) =    "8")   OR
+                          (WKSRY-SRYCD (IDXA)(1:3) =    "008")) AND
                           (WKSRY-INPUTCOMENT (IDXA)
                                                NOT =   SPACE)
                        MOVE    WKSRY-INPUTCOMENT (IDXA)
@@ -2369,6 +2484,43 @@
       *
            .
        20031-WKSRYACT-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    中途終了剤毎の編集処理
+      *****************************************************************
+       20033-WKSRYKBN-98-HEN-SEC         SECTION.
+      *
+           PERFORM VARYING     IDXA    FROM    1   BY  1
+                   UNTIL      (IDXA    >   5   )  OR
+                              (WKSRY-SRYCD (IDXA) =   SPACE)
+               MOVE    WKSRY-SRYCD (IDXA)  TO  TNS-SRYCD
+               PERFORM 910-TENSU-READ-SEC
+               IF    ((WKSRY-SRYCD (IDXA)(1:1) =    "8"  ) OR
+                      (WKSRY-SRYCD (IDXA)(1:3) =    "008")) AND
+                      (WKSRY-INPUTCOMENT (IDXA)
+                                           NOT =   SPACE)
+                   MOVE    WKSRY-INPUTCOMENT (IDXA)
+                                           TO  WRK-TNS-NAME
+               ELSE
+                   MOVE    TNS-NAME        TO  WRK-TNS-NAME
+               END-IF
+               IF      WKSRY-SRYCD (IDXA)(1:3) =   "001"
+                   MOVE    SPACE           TO  WRK-TNS-NAME
+                   STRING  "【"            DELIMITED   BY  SIZE
+                           TNS-NAME        DELIMITED   BY  "    "
+                           "】"            DELIMITED   BY  SIZE
+                      INTO                 WRK-TNS-NAME
+                   END-STRING
+               END-IF
+               ADD     1                   TO  IDX-BIKOU
+               IF      IDX-BIKOU           <=  9
+                   MOVE    WRK-TNS-NAME        TO  WRK-BIKOU-NAME
+                                                           (IDX-BIKOU)
+               END-IF
+           END-PERFORM
+      *
+           .
+       20033-WKSRYKBN-98-HEN-EXT.
            EXIT.
       *****************************************************************
       *    中途終了剤毎の編集処理
@@ -2706,6 +2858,7 @@
       *
            MOVE    ZERO                TO  TNS-YUKOSTYMD
            MOVE    ALL "9"             TO  TNS-YUKOEDYMD
+           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
       *
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -2859,11 +3012,12 @@
                INITIALIZE                  PTCOM-REC
            END-IF
       *
-      *    MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-      *    MOVE    "PTCOM-KEY"         TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "PTCOM-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        950-PTCOM-READ-EXT.
