@@ -955,10 +955,10 @@
                    MOVE    "ＤＯ選択エラーです"
                                        TO  SPA-ERRMSG
                WHEN    "1001"
-                   MOVE    "金額入力エラーです"
+                   MOVE    "処理エラーです"
                                        TO  SPA-ERRMSG
                WHEN    "1002"
-                   MOVE    "金額は入力できません"
+                   MOVE    "数量・金額は入力できません"
                                        TO  SPA-ERRMSG
                WHEN    "1003"
                    MOVE    "該当の患者が存在しません。" 
@@ -1084,7 +1084,7 @@
                    MOVE    "保険組合せがありません。選択し直して下さい"
                                        TO  SPA-ERRMSG
                WHEN    "K034"
-                   MOVE    "警告！地方公費のみの保険組合せです。"
+                   MOVE    "警告！！地方公費のみの保険組合せです。"
                                        TO  SPA-ERRMSG
                WHEN    "1036"
                    MOVE    "受診履歴の伝票番号がゼロです。"
@@ -1181,7 +1181,7 @@
                                        TO  SPA-ERRMSG(37:)
                WHEN    "K008"
       ***********  MOVE    "警告！７５歳に到達しました。"
-                   MOVE    "警告！老人年齢に到達しました。"
+                   MOVE    "警告！！老人年齢に到達しました。"
                                        TO  SPA-ERRMSG
                    MOVE    "老人公費を入力して下さい。"
                                        TO  SPA-ERRMSG(31:)
@@ -1261,10 +1261,10 @@
       *
            EVALUATE    SPA-ERRCD
                WHEN    "1001"
-                   MOVE    "金額入力エラーです"
+                   MOVE    "処理エラーです"
                                        TO  SPA-ERRMSG
                WHEN    "1002"
-                   MOVE    "金額は入力できません"
+                   MOVE    "数量・金額は入力できません"
                                        TO  SPA-ERRMSG
                WHEN    "5001"
                    MOVE    "セットコード入力エラー"
@@ -1324,10 +1324,10 @@
       *
            EVALUATE    SPA-ERRCD
                WHEN    "1001"
-                   MOVE    "数字入力エラーです"
+                   MOVE    "処理エラーです"
                                        TO  SPA-ERRMSG
                WHEN    "1002"
-                   MOVE    "金額は入力できません"
+                   MOVE    "数量・金額は入力できません"
                                        TO  SPA-ERRMSG
                WHEN    "1020"
                    MOVE    "診区は変更できません"
@@ -1371,13 +1371,13 @@
                    MOVE    "明細がありません。変更できません。"
                                        TO  SPA-ERRMSG
                WHEN    "K001"
-                   MOVE    "警告！時間外算定がありません"
+                   MOVE    "警告！！時間外算定がありません"
                                        TO  SPA-ERRMSG
                WHEN    "K102"
-                   MOVE    "警告！内服逓減対象の剤です。更新後、"
+                   MOVE    "警告！！内服逓減対象の剤です。更新後、"
                                        TO  SPA-ERRMSG
                    MOVE    "必ず訂正で逓減点数を変更して下さい。"
-                                       TO  SPA-ERRMSG(35:)
+                                       TO  SPA-ERRMSG(37:)
                WHEN    OTHER
                    MOVE    SPA-ERRCD
                                        TO  SPA-ERRMSG

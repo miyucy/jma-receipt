@@ -547,6 +547,18 @@
                PERFORM 100121-KYSEI-CHK-SEC
            END-IF
       *
+      *    ¼«ÇåÀÕÌÀºÙÎÁ¡¦¿ÇÃÇÎÁ¤Î»þ¡¢¿ôÎÌ¤Ï£±¤Ç¤¢¤ë¤³¤È
+           IF     (WRK-COM-INPUTCD(IDX-Z)(1:5) =   "09591"  OR
+                                                   "09592"  OR
+                                                   "09593"  OR
+                                                   "09594"  )  AND
+                  (WRK-COM-KISOTEN (IDX-Z)     >   ZERO     )
+               IF      WRK-COM-SURYO(IDX-Z)    >   1
+                   MOVE    "1002"             TO  WRK-ERRCD
+                   MOVE    "1"                TO  WRK-COM-CUR (IDX-Z)
+               END-IF
+           END-IF
+      *
            .
        10012-CHK2-EXT.
            EXIT.

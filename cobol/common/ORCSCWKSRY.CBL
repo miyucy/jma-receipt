@@ -666,7 +666,8 @@
                                                    =  SPA-COM-SRYKBN
                                                        (IDX-1) )  AND
                                       (SPA-COM-SRYKBN (IDX-1 + 1)
-                                                   =   "99"   ) AND
+                                                   =   "99"
+                                                   OR  "98"   ) AND
                                       (SPA-COM-SRYSYUKBN (IDX-1 + 1)
                                                    =   SPACE   ))
                                    CONTINUE

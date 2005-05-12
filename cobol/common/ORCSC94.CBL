@@ -254,7 +254,8 @@
                            MOVE    WRK-KEI-X           TO  WRK-SURYO-X
                        END-IF
                    END-IF
-                   IF     (SPA-COM-KEIFLG(IDX)     =   "2"  ) AND
+                   IF     (SPA-COM-INPUTCD(IDX)(1:3)   =   "095" OR
+                                                           "096") AND
                           (SPA-COM-SURYO  (IDX)    >   1    )
                        MOVE    SPA-COM-SURYO  (IDX)    TO  WRK-SURYO
                        PERFORM 2001-SURYO-HEN-SEC
@@ -418,6 +419,9 @@
            IF     (WRK-MOJI            =   "6" OR  "7"  OR  "S" ) OR
                  ((WRK-MOJI            =   "1" )   AND
                   (SPA-COM-SURYO(IDX)  >   1           ))
+              OR ((SPA-COM-INPUTCD(IDX)(1:3)   =   "095" OR
+                                                   "096") AND
+                  (SPA-COM-SURYO  (IDX)    >   1    ))
       *        挑恨ˇ达亨、壳闻闻乖百ˇ腆芦セットの箕、眶翁♂１は鄂球
                MOVE    SPA-COM-SURYO (IDX)
                                            TO  WRK-SURYO
