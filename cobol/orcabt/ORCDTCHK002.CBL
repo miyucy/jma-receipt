@@ -1467,6 +1467,12 @@
       *            データチェック処理
                    PERFORM 20011-DATA-CHK-SEC
       *
+      *            禁忌チェック項目退避処理
+                   PERFORM 20012-CHK-KINKI-TAIHI-SEC
+      *
+      *            禁忌データチェック処理
+                   PERFORM 20012-KINKI-CHK-SEC
+      *
       *            処理経過編集処理
                    PERFORM 20011-SYORI-KEIKA-HEN-SEC
                END-IF
@@ -2805,10 +2811,9 @@
                PERFORM 200111-PTBYOMEI-CHK-SEC
            END-IF
       *
-      *    併用禁忌の薬剤・併用算定の診療行為チェック処理
-           IF    ( ORCBSD01-CHKKBN(10) NOT =   ZERO  )
-              OR ( ORCBSD01-CHKKBN(11) NOT =   ZERO  )
-               PERFORM 200111-HEIYOU-CHK-SEC
+      *    併用算定の診療行為チェック処理
+           IF    ( ORCBSD01-CHKKBN(11) NOT =   ZERO  )
+               PERFORM 200111-HEI-SRY-CHK-SEC
            END-IF
       *
       *    実日数チェック処理
@@ -4402,22 +4407,12 @@
        200112-SRY-BYO-ERRMES-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    併用禁忌の薬剤・併用算定の診療行為チェック処理
+      *    併用算定の診療行為チェック処理
       *****************************************************************
-       200111-HEIYOU-CHK-SEC           SECTION.
-      *
-           IF    ( ORCBSD01-CHKKBN(10) =   ZERO  )
-               MOVE    1               TO  FLG-CHKEND (10)
-           END-IF
+       200111-HEI-SRY-CHK-SEC          SECTION.
       *
            IF    ( ORCBSD01-CHKKBN(11) =   ZERO  )
                MOVE    1               TO  FLG-CHKEND (11)
-           END-IF
-      *
-      *    併用禁忌の薬剤チェック処理
-           IF    ( FLG-CHKEND (10)     =   ZERO )
-            AND  ( FLG-YKZHEI          =   1 )
-                   PERFORM 200112-HEI-YKZ-CHK-SEC
            END-IF
       *
       *    併用算定の診療行為チェック処理
@@ -4427,7 +4422,7 @@
            END-IF
       *
            .
-       200111-HEIYOU-CHK-EXT.
+       200111-HEI-SRY-CHK-EXT.
            EXIT.
       *****************************************************************
       *    併用禁忌の薬剤チェック処理
@@ -5753,6 +5748,169 @@
        200111-NISSU-HEN-EXT.
            EXIT.
       *****************************************************************
+      *    禁忌チェック項目情報退避処理
+      *****************************************************************
+       20012-CHK-KINKI-TAIHI-SEC       SECTION.
+      *
+      *    退避エリア初期処理
+           PERFORM 200121-TAIHI-AREA-INIT-SEC
+      *
+      *    診療情報退避処理
+           PERFORM 200121-SRYINF-TAIHI-SEC
+      *
+           .
+       20012-CHK-KINKI-TAIHI-EXT.
+           EXIT.
+      *****************************************************************
+      *    退避エリア初期処理
+      *****************************************************************
+       200121-TAIHI-AREA-INIT-SEC      SECTION.
+      *
+           INITIALIZE                  TSRYCD-AREA
+                                       PTACCT-AREA
+                                       PTSRY-AREA
+                                       PTZAI-AREA
+      *
+           PERFORM 200111-TSRYKA-AREA-INIT-SEC
+      *
+           .
+       200121-TAIHI-AREA-INIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療情報情報退避処理
+      *****************************************************************
+       200121-SRYINF-TAIHI-SEC         SECTION.
+      *
+           PERFORM 200121-DCACCT-TAIHI-SEC
+      *
+           PERFORM 200111-DCSRY-TAIHI-SEC
+      *
+           INITIALIZE                  KEY-AREA
+      *
+           PERFORM VARYING IDX-ZAI FROM    1   BY  1
+                   UNTIL ( IDX-ZAI >   PTZAI-MAX )
+      *
+               PERFORM VARYING IDX-ACCT    FROM    1   BY  1
+                       UNTIL ( IDX-ACCT    >   PTACCT-MAX )
+                   IF    ( PTZAI-ZAINUM (IDX-ZAI)
+                                       =   PTACCT-ZAINUM (IDX-ACCT))
+                    AND  ( PTZAI-ACCTKBN(IDX-ZAI)
+                                       =   PTACCT-ACCTKBN(IDX-ACCT))
+                       MOVE    PTACCT-OCC (IDX-ACCT)
+                                       TO  DCACCT-REC
+                       PERFORM 2001211-SRYINF-TAIHI-SEC
+                   END-IF
+               END-PERFORM
+      *
+           END-PERFORM
+      *
+           .
+       200121-SRYINF-TAIHI-EXT.
+           EXIT.
+      *****************************************************************
+      *    会計情報情報退避処理
+      *****************************************************************
+       200121-DCACCT-TAIHI-SEC         SECTION.
+      *
+           PERFORM 910-DCACCT-START-SEC
+      *
+           PERFORM UNTIL ( FLG-DCACCT NOT =   ZERO )
+                    OR   ( PTACCT-MAX    >=   CONST-PTACCT-MAX )
+      *
+               COMPUTE PTACCT-MAX  =   PTACCT-MAX   +   1
+      *
+               MOVE    DCACCT-REC  TO  PTACCT-OCC (PTACCT-MAX)
+      *
+               PERFORM 200111-PTZAI-TAIHI-SEC
+      *
+               PERFORM 910-DCACCT-READ-SEC
+      *
+           END-PERFORM
+      *
+           .
+       200121-DCACCT-TAIHI-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療情報情報退避処理
+      *****************************************************************
+       2001211-SRYINF-TAIHI-SEC        SECTION.
+      *
+           INITIALIZE                  FLG-STATUS-G
+           MOVE    DCACCT-STATUS   TO  WRK-STATUS
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   16 )
+               DIVIDE  WRK-STATUS  BY  2   GIVING  WRK-STATUS
+                       REMAINDER   FLG-STATUS (IDX0)
+           END-PERFORM
+      *
+           MOVE    ZERO        TO  IDX-TSRYKA
+           MOVE    ZERO        TO  FLG-TSRYKA-OVER
+           PERFORM 200111-TSRYKA-SRYKA-HEN-SEC
+      *
+           PERFORM VARYING IDX-SRY FROM    1   BY  1
+                   UNTIL ( IDX-SRY     >   PTSRY-MAX )
+      *
+               IF    ( DCACCT-ZAINUM   =   PTSRY-ZAINUM (IDX-SRY) )
+                AND  ( DCACCT-ACCTKBN  =   PTSRY-ACCTKBN(IDX-SRY) )
+      *
+                   MOVE    PTSRY-OCC (IDX-SRY)
+                                       TO  DCSRY-REC
+      *
+                   IF    ( DCSRY-SRYCD (1:1)  =    "6" )
+      *
+                       IF    ( FLG-TSRYKA-OVER =   ZERO )
+                        AND  ( IDX-TSRYKA      >   ZERO )
+      *                    診療科退避ワーク診療行為コード編集処理
+                           PERFORM 200111-TSRYKA-SRYCD-HEN-SEC
+                       END-IF
+      *
+      *                診療行為コード退避ワーク編集処理
+                       PERFORM 200111-TSRYCD-HEN-SEC
+      *
+                   END-IF
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       2001211-SRYINF-TAIHI-EXT.
+           EXIT.
+      *****************************************************************
+      *    禁忌チェック処理
+      *****************************************************************
+       20012-KINKI-CHK-SEC             SECTION.
+      *
+      *    データチェック初期処理
+           PERFORM 20011-DATA-CHK-INIT-SEC
+      *
+      *    併用禁忌の薬剤チェック処理
+           IF    ( ORCBSD01-CHKKBN(10) NOT =   ZERO  )
+               PERFORM 200121-HEI-YKZ-CHK-SEC
+           END-IF
+      *
+           .
+       20012-KINKI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    併用禁忌の薬剤チェック処理
+      *****************************************************************
+       200121-HEI-YKZ-CHK-SEC          SECTION.
+      *
+           IF    ( ORCBSD01-CHKKBN(10) =   ZERO  )
+               MOVE    1               TO  FLG-CHKEND (10)
+           END-IF
+      *
+      *    併用禁忌の薬剤チェック処理
+           IF    ( FLG-CHKEND (10)     =   ZERO )
+            AND  ( FLG-YKZHEI          =   1 )
+               PERFORM 200112-HEI-YKZ-CHK-SEC
+           END-IF
+      *
+           .
+       200121-HEI-YKZ-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    エラーメッセージ編集処理（メッセージに付加する情報なし）
       *****************************************************************
        210-ERRMES-HEN-SEC              SECTION.
@@ -6677,6 +6835,10 @@
                                MOVE   ZERO    TO   FLG-LOOP-END
                            END-IF
       *
+                           IF    ( DCACCT-SRYKBN   =   "95" OR "96" )
+                               MOVE   ZERO    TO   FLG-LOOP-END
+                           END-IF
+      *
                            IF    ( DCACCT-HKNCOMBI =   9999 )
                                MOVE   ZERO    TO   FLG-LOOP-END
                            END-IF
@@ -6718,6 +6880,77 @@
            .
       *
        9001-TAISYO-HKN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    データチェック診療会計START処理（禁忌チェック）
+      *****************************************************************
+       910-DCACCT-START-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-DCACCT
+      *
+           INITIALIZE                  DCACCT-KEY
+           MOVE    DTCHK003-PTID       TO  DCACCT-PTID
+      *
+           START   DCACCT-FILE
+               KEY IS  >=   DCACCT-KEY
+           INVALID
+               MOVE    1               TO  FLG-DCACCT
+           NOT INVALID
+               PERFORM 910-DCACCT-READ-SEC
+           END-START
+      *
+           .
+       910-DCACCT-START-EXT.
+           EXIT.
+      *****************************************************************
+      *    データチェック診療会計読込処理（禁忌チェック）
+      *****************************************************************
+       910-DCACCT-READ-SEC             SECTION.
+      *
+           MOVE    ZERO                TO  FLG-LOOP-END
+      *
+           PERFORM UNTIL ( FLG-DCACCT      NOT =   ZERO )
+                    OR   ( FLG-LOOP-END    NOT =   ZERO )
+      *
+               READ    DCACCT-FILE     NEXT
+               AT  END
+                       MOVE    1           TO  FLG-DCACCT
+               NOT AT  END
+      *
+                   IF    ( DTCHK003-PTID   NOT =   DCACCT-PTID )
+                       MOVE    1           TO  FLG-DCACCT
+                   ELSE
+                       INITIALIZE                  FLG-STATUS-G
+                       MOVE    DCACCT-STATUS   TO  WRK-STATUS
+      *
+                       PERFORM VARYING IDX0    FROM    1   BY  1
+                               UNTIL ( IDX0    >   16 )
+                           DIVIDE  WRK-STATUS  BY 2 GIVING  WRK-STATUS
+                                   REMAINDER   FLG-STATUS (IDX0)
+                       END-PERFORM
+      *
+                       MOVE    1               TO  FLG-LOOP-END
+      *
+                       IF    ( FLG-STS-HKNCOMBI    =   ZERO )
+      *
+                           IF    ( DCACCT-ZAIKAISU =   ZERO )
+                               MOVE   ZERO    TO   FLG-LOOP-END
+                           END-IF
+      *
+                           IF    ( DCACCT-ACCTRENNUM   NOT =   1 )
+                               MOVE   ZERO    TO   FLG-LOOP-END
+                           END-IF
+                       ELSE
+                               MOVE   ZERO    TO   FLG-LOOP-END
+                       END-IF
+                   END-IF
+               END-READ
+      *
+           END-PERFORM
+      *
+           .
+      *
+       910-DCACCT-READ-EXT.
            EXIT.
       *****************************************************************
       *    データチェック診療行為START処理
