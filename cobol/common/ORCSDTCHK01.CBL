@@ -81,7 +81,7 @@
                05  TBYOMEI-BYOMEI          PIC X(160).
                05  TBYOMEI-KEY.
                    07  TBYOMEI-ERRFLG      PIC 9(01).
-                   04  TBYOMEI-SRYKA       PIC X(02).
+                   07  TBYOMEI-SRYKA       PIC X(02).
                    07  TBYOMEI-SRYYMD      PIC X(08).
       *
        01  CONST-AREA.
