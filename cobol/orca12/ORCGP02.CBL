@@ -2572,9 +2572,10 @@
       **** IF      SPA-MACHIPG         =   "U02"  OR  "K02" OR "Q02"
            IF      SPA-HZN-MOTOPG(1:3) =   "U02"  OR  "K02" OR "Q02"
                                                   OR  "I01"
-               IF     (SPA-HZN-PTNUM       =   SPACE  )  AND
-                      (SPA-P02-UKEID       =   ZERO   )
-                   CONTINUE
+               IF     (SPA-HZN-PTNUM       =   SPACE  )
+      *!!!     AND    (SPA-P02-UKEID       =   ZERO   )
+                   MOVE    SPACE               TO  SPA-PTNUM
+                   MOVE    ZERO                TO  SPA-PTID
                ELSE
       *
                    MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
@@ -3518,6 +3519,11 @@
                    MOVE
                    "警告！地方公費単独の保険組合せがあります。"
                                                TO  SPA-ERRMSG
+               WHEN    "K120"
+                   MOVE    "警告！労災・自賠責の患者情報が未登録です。"
+                                               TO  SPA-ERRMSG
+                   MOVE    "登録して下さい。"
+                                               TO  SPA-ERRMSG(37:)
       *    更新前エラー
                WHEN    "0100"
                    MOVE    "カナ氏名は必ず入力して下さい"
