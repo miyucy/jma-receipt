@@ -103,6 +103,7 @@
               03 WRK-JIBAI-SINDAN          PIC 9(09).
               03 WRK-JIBAI-MEISAI          PIC 9(09).
               03 WRK-JIBAI-RYOYO           PIC 9(09).
+              03 WRK-JIBAI-RYOYO-NACCT     PIC 9(09).
               03 WRK-JIBAI-SONOTA.
                 04  WRK-JIBAI-SONOTA-OCC          OCCURS  50.
                   05  WRK-JIBAI-SONOTA-SRYCD      PIC  X(09).
@@ -1671,6 +1672,11 @@
            MOVE    LNK-SYUNOU-REC(IDX) TO  SYUNOU-REC
            MOVE    LNK-SYUDAY-REC(IDX) TO  SYUDAY-REC                  
       *
+      *    入院労災会計作成サブより入院料・外泊を取得
+      *
+           INITIALIZE   TABLE-GAIHAKU
+           PERFORM      ROSAI-JIBAI-NYUINRYO-SEC
+      *
       *入院料関係の取得
       *
            MOVE    SPACE               TO  HKNTEKGAI-NYUIN
@@ -1701,10 +1707,6 @@
       *
            MOVE     "NYUINACT-KEY9"    TO  WK-PATH
            PERFORM   CSR-CLOSE-SEC
-      *
-      *    入院労災会計作成サブより入院料・外泊を取得
-      *
-           PERFORM      ROSAI-JIBAI-NYUINRYO-SEC
       *
            MOVE    SYUNOU-REC          TO  LNK-SYUNOU-REC(IDX)
            MOVE    SYUDAY-REC          TO  LNK-SYUDAY-REC(IDX)         
@@ -2069,6 +2071,27 @@
       **************************************************************
        NYUINACCT-GET2-SEC           SECTION.
       *
+           IF    (NACCT-ZAITEN               NOT = ZERO  )  AND
+                 (NACCT-SRYYM(1:6)    =   SYU-SRYYMD(1:6))
+      *
+      *        療養担当手当（北海道）の集計
+               IF   NACCT-ZAISKBKBN      =   "7"
+                   PERFORM   VARYING  SYU-IDX  FROM  1  BY  1
+                             UNTIL    SYU-IDX  >   31
+                       IF  (SYU-DAY(SYU-IDX)       =   "1")    AND
+                           (NACCT-DAY(SYU-IDX) NOT =  ZERO)    AND
+                           (TBL-GAIHAKU(SYU-IDX)   =  ZERO  OR  4)
+                           ADD   NACCT-ZAITEN    TO   SYU-HKNTEN(10)
+                           IF    SYU-SYUHKNNUM   =    "973"
+                              ADD  NACCT-ZAITEN
+                                    TO   WRK-JIBAI-RYOYO-NACCT(IDX)
+                           END-IF
+                       END-IF
+                   END-PERFORM
+               END-IF
+      *
+           END-IF
+      *
            PERFORM   NYUINACCT-GET-ETC-SEC
       *
            MOVE    "NYUINACCT-KEY9"         TO  ORC-DBPATH
@@ -2209,6 +2232,9 @@
                                                  TO  SYU-HKNTEN(11)
                      ADD   LNK-SROUNYUIN-ZAITEN-ACCTETC(SYU-IDX)
                                                  TO  SYU-HKNTEN(11)
+      *
+                     MOVE  LNK-SROUNYUIN-GAIHAKU(SYU-IDX)
+                                          TO   TBL-GAIHAKU(SYU-IDX)
       *
                 END-IF
       *
@@ -3658,6 +3684,9 @@
              MOVE      WRK-MEISAI      TO    WRK-JIBAI-MEISAI(IDX)
       *
              MOVE      WRK-RYOYOTEATE  TO    WRK-JIBAI-RYOYO(IDX)
+             COMPUTE   WRK-JIBAI-RYOYO(IDX)
+                                  =  WRK-JIBAI-RYOYO(IDX)
+                                  +  WRK-JIBAI-RYOYO-NACCT(IDX)
       *
            END-IF
       *
