@@ -873,49 +873,50 @@
        3101-U01SPASET-SEC              SECTION.
       *
            MOVE    LNK-KYOUTU          TO  WRK-SPA-KYOUTU
-      *    受付、患者検索より
+           IF      WRK-MOTOPG(1:3)     =   "P97"
+               MOVE    SPACE               TO  WRK-SPA-SRYKA
+           END-IF
+      *
+      *    受付、氏名検索より
            IF      WRK-SPA-PTNUM       =   SPA-GMN-C02-PTNUM
                CONTINUE
            ELSE
                IF      WRK-SPA-PTNUM       NOT =   SPACE
                    MOVE    WRK-SPA-PTNUM       TO  C02-PTNUM
                    PERFORM 41015-PTNUM-CHK-SEC
-                   MOVE    27              TO  SPA-GMN-C02-CUR
-                   IF      WRK-SPA-SRYKA       NOT =   SPACE
-                        MOVE    WRK-SPA-SRYKA      TO  C02-SRYKA
-                        PERFORM 41016-SRYKA-CHK-SEC
-                       MOVE    1                  TO  SPA-GMN-C02-CUR
-                   ELSE
-                       IF    ( SPA-C02-1042-SRYKA-DSPKBN
-                                                       =   "1" )
-                       AND   ( SPA-GMN-C02-SRYKA-MAX   >   1   )
-                           MOVE    SPA-GMN-C02-SRYKALST (1)
-                                               TO  SPA-GMN-C02-SRYKA-G
-                       ELSE
-                           PERFORM 330-SPASET-JYURRK-HENSYU-SEC
-                       END-IF
-                       IF      SPA-GMN-C02-SRYKA-MAX   =   1
-                           MOVE    1               TO  SPA-GMN-C02-CUR
-                       ELSE      
-                           MOVE    27              TO  SPA-GMN-C02-CUR
-                       END-IF
-                       IF      SPA-GMN-C02-SRYKA NOT =   SPACE 
-      *                    病名一覧
-                           MOVE    1               TO  SPA-GMN-C02-PAGE
-      *
-                           MOVE    "PTBYOMEI-KEY16" TO  WRK-DBPATH
-                           INITIALIZE                  PTBYOMEI-REC
-                           MOVE    SPA-HOSPID      TO  PTBYO-HOSPID
-                           MOVE    SPA-NAI-C02-PTID
-                                                   TO  PTBYO-PTID
+                   IF    ( WRK-SPA-SRYKA   NOT =   SPACE )
+                   AND   ( SPA-C02-1042-SRYKA-DSPKBN
+                                           NOT =   "1"   )
+                       IF    ( WRK-SPA-SRYKA
+                                           NOT =   SPA-GMN-C02-SRYKA )
+      *****************AND   ( SPA-C02-1042-SRYKA-DSPKBN
+      *****************                    NOT =   "1"               )
+                           MOVE    WRK-SPA-SRYKA
+                                               TO  SPA-GMN-C02-SRYKA
                            MOVE    SPA-GMN-C02-SRYKA
-                                                   TO  PTBYO-SRYKA
+                                               TO  WRK-KBN
+                           PERFORM 5001-SRYKA-HENSYU-SEC
+                           MOVE    WRK-KBNMEI  TO  SPA-GMN-C02-SRYKAMEI
+                           MOVE    SPA-GMN-C02-SRYKA-G
+                                               TO  SPA-GMN-C02-BSRYKA-G
+      *                    病名一覧
+                           MOVE    1           TO  SPA-GMN-C02-PAGE
+      *
+                           MOVE    "PTBYOMEI-KEY16"
+                                               TO  WRK-DBPATH
+                           INITIALIZE              PTBYOMEI-REC
+                           MOVE    SPA-HOSPID  TO  PTBYO-HOSPID
+                           MOVE    SPA-NAI-C02-PTID
+                                               TO  PTBYO-PTID
+                           MOVE    SPA-GMN-C02-SRYKA
+                                               TO  PTBYO-SRYKA
                            PERFORM 310-SPASET-PTBYO-HENSYU-SEC
-                       ELSE
-                           MOVE    27              TO  SPA-GMN-C02-CUR
+                           PERFORM 310-SPASET-HKNCOMBI-HENSYU-SEC
                        END-IF
-                   END-IF
+                       MOVE    1           TO  SPA-GMN-C02-CUR
+                   END-IF    
                END-IF
+      *********MOVE    1               TO  SPA-GMN-C02-CUR
            END-IF    
            .
        3101-U01SPASET-EXT.
@@ -1137,8 +1138,12 @@
                    MOVE    27              TO  SPA-GMN-C02-CUR
                    MOVE    SPACE           TO  SPA-ERRCD
                ELSE
-                   IF      SPA-SRYKA   NOT =   SPACE
-                       IF      SPA-SRYKA   NOT =   SPA-GMN-C02-SRYKA    
+                   IF    ( SPA-SRYKA   NOT =   SPACE )
+                   AND   ( SPA-C02-1042-SRYKA-DSPKBN
+                                       NOT =   "1"   )
+                       IF    ( SPA-SRYKA   NOT =   SPA-GMN-C02-SRYKA )
+      *****************AND   ( SPA-C02-1042-SRYKA-DSPKBN
+      *****************                    NOT =   "1"               )
                            MOVE    SPA-SRYKA   TO  SPA-GMN-C02-SRYKA
                            MOVE    SPA-GMN-C02-SRYKA
                                                TO  WRK-KBN
@@ -1160,8 +1165,9 @@
                            PERFORM 310-SPASET-PTBYO-HENSYU-SEC
                            PERFORM 310-SPASET-HKNCOMBI-HENSYU-SEC
                        END-IF
+                       MOVE    1               TO  SPA-GMN-C02-CUR
                    END-IF    
-                   MOVE    1               TO  SPA-GMN-C02-CUR
+      *************MOVE    1               TO  SPA-GMN-C02-CUR
                END-IF
            ELSE    
                MOVE    26              TO  SPA-GMN-C02-CUR
@@ -2141,18 +2147,14 @@
                IF      SPA-GMN-C02-SRYKA-MAX   =   1
                    MOVE    1                   TO  SPA-GMN-C02-CUR
                ELSE      
-                   IF    ( SPA-C02-1042-SRYKA-DSPKBN
-                                                   =   "1" )
-                   AND   ( SPA-GMN-C02-SRYKA-MAX   >   1   )
-                       MOVE    SPA-GMN-C02-SRYKALST (1)
-                                           TO  SPA-GMN-C02-SRYKA-G
-                   ELSE
+                   IF      SPA-C02-1042-SRYKA-DSPKBN
+                                               =   ZERO
                        PERFORM 330-SPASET-JYURRK-HENSYU-SEC
-                   END-IF
-                   IF      SPA-GMN-C02-SRYKA-MAX   =   1
-                       MOVE    1               TO  SPA-GMN-C02-CUR
-                   ELSE      
                        MOVE    27              TO  SPA-GMN-C02-CUR
+                   ELSE
+                       MOVE    SPA-GMN-C02-SRYKALST (1)
+                                               TO  SPA-GMN-C02-SRYKA-G
+                       MOVE    1               TO  SPA-GMN-C02-CUR
                    END-IF
                END-IF 
       *
