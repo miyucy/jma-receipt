@@ -62,6 +62,8 @@
       *                                     有無区分
       *                                     診療科初期表示区分
       *                                     表示対象期間初期表示区分
+      *                                     同一病名警告メッセージ表示
+      *                                     有無区分
       *                                     の追加
       *****************************************************************
       *
@@ -362,18 +364,30 @@
                                13                          PIC X(01).
                                13  SPA-GMN-MSG3-DSPKBNMEIL PIC X(10).
       *
+                       09  SPA-GMN-MSG4-DSPKBN-G.
+                           11  SPA-GMN-MSG4-DSPKBN         PIC X(01).
+                           11  SPA-GMN-MSG4-DSPKBN-F1      PIC X(01).
+                           11  SPA-GMN-MSG4-DSPKBNMEI      PIC X(10).
+      *
+                       09  SPA-GMN-MSG4-DSPKBNLST-G.
+                           11  SPA-GMN-MSG4-DSPKBN-MAX     PIC 9(03).
+                           11  SPA-GMN-MSG4-DSPKBNLST      OCCURS  2.
+                               13  SPA-GMN-MSG4-DSPKBNL    PIC X(01).
+                               13                          PIC X(01).
+                               13  SPA-GMN-MSG4-DSPKBNMEIL PIC X(10).
+      *
                        09  SPA-GMN-SRYKA-DSPKBN-G.
                            11  SPA-GMN-SRYKA-DSPKBN        PIC X(01).
                            11  SPA-GMN-SRYKA-DSPKBN-F1     PIC X(01).
-                           11  SPA-GMN-SRYKA-DSPKBNMEI     PIC X(20).
+                           11  SPA-GMN-SRYKA-DSPKBNMEI     PIC X(38).
       *
                        09  SPA-GMN-SRYKA-DSPKBNLST-G.
                            11  SPA-GMN-SRYKA-DSPKBN-MAX    PIC 9(02).
-                           11  SPA-GMN-SRYKA-DSPKBNLST     OCCURS  2.
+                           11  SPA-GMN-SRYKA-DSPKBNLST     OCCURS  3.
                                13  SPA-GMN-SRYKA-DSPKBNL   PIC X(01).
                                13                          PIC X(01).
                                13  SPA-GMN-SRYKA-DSPKBNMEIL
-                                                           PIC X(20).
+                                                           PIC X(38).
       *
                        09  SPA-GMN-SYOKBN-DSPKBN-G.
                            11  SPA-GMN-SYOKBN-DSPKBN       PIC X(01).
@@ -850,10 +864,16 @@
            MOVE    "1 表示しない"      TO  SPA-GMN-MSG3-DSPKBNLST(2)
            MOVE    2                   TO  SPA-GMN-MSG3-DSPKBN-MAX
       *
-           MOVE    "0 標準（最終受診科）"
+           MOVE    "0 表示しない"      TO  SPA-GMN-MSG4-DSPKBNLST(1)
+           MOVE    "1 表示する"        TO  SPA-GMN-MSG4-DSPKBNLST(2)
+           MOVE    2                   TO  SPA-GMN-MSG4-DSPKBN-MAX
+      *
+           MOVE    "0 標準（最終受診科、遷移時は選択診療科）"
                                        TO  SPA-GMN-SRYKA-DSPKBNLST(1)
            MOVE    "1 全科"            TO  SPA-GMN-SRYKA-DSPKBNLST(2)
-           MOVE    2                   TO  SPA-GMN-SRYKA-DSPKBN-MAX
+           MOVE    "2 全科（遷移時は選択診療科）"
+                                       TO  SPA-GMN-SRYKA-DSPKBNLST(3)
+           MOVE    3                   TO  SPA-GMN-SRYKA-DSPKBN-MAX
       *
            MOVE    "0 当月"            TO  SPA-GMN-SYOKBN-DSPKBNLST(1)
            MOVE    "1 前月"            TO  SPA-GMN-SYOKBN-DSPKBNLST(2)
@@ -1621,6 +1641,27 @@
                                        TO  SPA-GMN-MSG3-DSPKBN-G
            END-IF
       *
+      *    同一病名警告メッセージ表示有無
+           MOVE    SYS-1042-MSG4-DSPKBN
+                                       TO  SPA-GMN-MSG4-DSPKBN
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-GMN-MSG4-DSPKBN-MAX
+               IF      SPA-GMN-MSG4-DSPKBN
+                                       =   SPA-GMN-MSG4-DSPKBNL (IDY)
+                   MOVE    SPA-GMN-MSG4-DSPKBNLST(IDY)
+                                       TO  SPA-GMN-MSG4-DSPKBN-G
+                   MOVE    1           TO  FLG-OK
+                   MOVE    SPA-GMN-MSG4-DSPKBN-MAX
+                                       TO  IDY
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-MSG4-DSPKBNLST (1)
+                                       TO  SPA-GMN-MSG4-DSPKBN-G
+           END-IF
+      *
       *    診療科初期表示区分
            MOVE    SYS-1042-SRYKA-DSPKBN
                                        TO  SPA-GMN-SRYKA-DSPKBN
@@ -1785,6 +1826,7 @@
            MOVE    W07-MSG1-DSPKBN     TO  SPA-GMN-MSG1-DSPKBN-G
            MOVE    W07-MSG2-DSPKBN     TO  SPA-GMN-MSG2-DSPKBN-G
            MOVE    W07-MSG3-DSPKBN     TO  SPA-GMN-MSG3-DSPKBN-G
+           MOVE    W07-MSG4-DSPKBN     TO  SPA-GMN-MSG4-DSPKBN-G
            MOVE    W07-SRYKA-DSPKBN    TO  SPA-GMN-SRYKA-DSPKBN-G
            MOVE    W07-SYOKBN-DSPKBN   TO  SPA-GMN-SYOKBN-DSPKBN-G
       *
@@ -1918,6 +1960,10 @@
       *            廃止年月日警告メッセージ表示有無チェック
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4111-MSG3-DSPKBN-CHK-SEC
+                   END-IF
+      *            同一病名警告メッセージ表示有無チェック
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4111-MSG4-DSPKBN-CHK-SEC
                    END-IF
       *            診療科初期表示区分チェック
                    IF      SPA-ERRCD           =   SPACE
@@ -2921,6 +2967,29 @@
        4111-MSG3-DSPKBN-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    同一病名警告メッセージ表示有無チェック処理（病名機能情報）
+      *****************************************************************
+       4111-MSG4-DSPKBN-CHK-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-MSG4-DSPKBN-MAX
+               IF      SPA-GMN-MSG4-DSPKBN
+                                       =   SPA-GMN-MSG4-DSPKBNL (IDX)
+                   MOVE    SPA-GMN-MSG4-DSPKBNLST(IDX)
+                                          TO  SPA-GMN-MSG4-DSPKBN-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    73              TO  SPA-GMN-CUR
+               MOVE    "0052"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       4111-MSG4-DSPKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    診療科初期表示区分チェック処理（病名機能情報）
       *****************************************************************
        4111-SRYKA-DSPKBN-CHK-SEC       SECTION.
@@ -2936,7 +3005,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    73              TO  SPA-GMN-CUR
+               MOVE    74              TO  SPA-GMN-CUR
                MOVE    "0050"          TO  SPA-ERRCD
            END-IF
       *
@@ -2959,7 +3028,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    74              TO  SPA-GMN-CUR
+               MOVE    75              TO  SPA-GMN-CUR
                MOVE    "0051"          TO  SPA-ERRCD
            END-IF
       *
@@ -3653,6 +3722,7 @@
            MOVE    SPA-GMN-MSG1-DSPKBN     TO  SYS-1042-MSG1-DSPKBN
            MOVE    SPA-GMN-MSG2-DSPKBN     TO  SYS-1042-MSG2-DSPKBN
            MOVE    SPA-GMN-MSG3-DSPKBN     TO  SYS-1042-MSG3-DSPKBN
+           MOVE    SPA-GMN-MSG4-DSPKBN     TO  SYS-1042-MSG4-DSPKBN
            MOVE    SPA-GMN-SRYKA-DSPKBN    TO  SYS-1042-SRYKA-DSPKBN
            MOVE    SPA-GMN-SYOKBN-DSPKBN   TO  SYS-1042-SYOKBN-DSPKBN
       *
@@ -4071,6 +4141,16 @@
            MOVE    SPA-GMN-MSG3-DSPKBN-MAX
                                        TO  W07-MSG3-DSPKBN-COUNT
       *
+      *    同一病名警告メッセージ表示有無区分（病名機能情報）
+           MOVE    SPA-GMN-MSG4-DSPKBN-G   TO  W07-MSG4-DSPKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-MSG4-DSPKBN-MAX
+               MOVE    SPA-GMN-MSG4-DSPKBNLST (IDX)
+                                       TO  W07-MSG4-DSPKBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-MSG4-DSPKBN-MAX
+                                       TO  W07-MSG4-DSPKBN-COUNT
+      *
       *    診療科初期表示区分（病名機能情報）
            MOVE    SPA-GMN-SRYKA-DSPKBN-G   TO  W07-SRYKA-DSPKBN
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -4298,6 +4378,10 @@
                WHEN    "0051"
                    MOVE    "表示対象期間初期表示区分がありません。"
                                                        TO  SPA-ERRMSG
+               WHEN    "0052"
+                   MOVE
+                   "同一病名警告メッセージ表示有無区分がありません。"
+                                                       TO  SPA-ERRMSG
       *
                WHEN    "0035"
                    MOVE    "請求書発行方法区分がありません。"
@@ -4511,8 +4595,10 @@
                WHEN    72
                    MOVE  "MSG3_DSPKBN"     TO   MCP-WIDGET
                WHEN    73
-                   MOVE  "SRYKA_DSPKBN"    TO   MCP-WIDGET
+                   MOVE  "MSG4_DSPKBN"     TO   MCP-WIDGET
                WHEN    74
+                   MOVE  "SRYKA_DSPKBN"    TO   MCP-WIDGET
+               WHEN    75
                    MOVE  "SYOKBN_DSPKBN"   TO   MCP-WIDGET
       *
                WHEN    99
@@ -4672,8 +4758,10 @@
                    MOVE    72              TO  SPA-GMN-CUR
                WHEN    "MSG3_DSPKBN"
                    MOVE    73              TO  SPA-GMN-CUR
-               WHEN    "SRYKA_DSPKBN"
+               WHEN    "MSG4_DSPKBN"
                    MOVE    74              TO  SPA-GMN-CUR
+               WHEN    "SRYKA_DSPKBN"
+                   MOVE    75              TO  SPA-GMN-CUR
                WHEN    "SYOKBN_DSPKBN"
                    MOVE    99              TO  SPA-GMN-CUR
            END-EVALUATE
