@@ -544,6 +544,8 @@
       *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
+           COPY    "CPSK1001.INC".
+      *
            COPY    "CPSK1005.INC".
       *
            COPY    "CPSK0041.INC".
@@ -1476,6 +1478,72 @@
       *
       *    入外区分
            MOVE    SPA-NYUGAIKBN       TO  SPA-GMN-NYUGAIKBN
+      *
+      *    入外区分・病床数
+           PERFORM 3009-NYUGAIKBN-HEN-SEC
+      *    診療科一覧編集
+           PERFORM 3005-SRYKA-HEN-SEC
+      *
+      *    診療種別
+           PERFORM 3006-SRYKBN-HEN-SEC
+      *
+           IF     (SPA-PTID            =   ZERO )  AND
+                  (SPA-GMN-PTID        =   ZERO )
+               MOVE    00              TO  SPA-GMN-CUR
+           ELSE
+               MOVE    1                   TO  SPA-GMN-CUR
+               PERFORM 3000-PTID-INIT-SEC
+           END-IF
+           .
+       310-SPA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入外区分・病床数処理
+      *****************************************************************
+       3009-NYUGAIKBN-HEN-SEC                  SECTION.
+      *
+           INITIALIZE                  SYS-1001-REC
+           MOVE    "1001"              TO  SYS-1001-KANRICD
+           MOVE    "*"                 TO  SYS-1001-KBNCD
+           MOVE    SYS-1001-REC        TO  MCPDATA-REC
+      *    システム管理検索
+           MOVE    SPA-NAI-SRYYM       TO  ORC-DBYMD(1:6)
+           MOVE    "01"                TO  ORC-DBYMD(7:2)
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 900-KANRIMST-READ-SEC
+           ELSE
+               INITIALIZE                  SYS-1001-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1001-REC
+      *        病院種別
+               MOVE    SYS-1001-HOSPSBT    TO  SPA-HOSPSBT
+               IF      SPA-BEDKBN          =   ZERO
+                   CONTINUE
+               ELSE
+      *        病床数
+                   MOVE    SYS-1001-BEDSU          TO  SPA-BEDSU
+      *        病床数（一般）
+                   IF     (SYS-1001-BEDSUIPN(1:4)  =   SPACE )  OR
+                          (SYS-1001-BEDSUIPN(1:4)  NOT NUMERIC)
+                       MOVE    ZERO                TO  SPA-BEDSUIPN
+                   ELSE
+                       MOVE    SYS-1001-BEDSUIPN   TO  SPA-BEDSUIPN
+                   END-IF
+               END-IF
+           END-IF
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           PERFORM 980-DBCLOSE-SEC
+      *
            IF      SPA-BEDSU           >   ZERO
                MOVE    "1 入院"            TO  SPA-GMN-NYUGAIKBN-LST (1)
                MOVE    "2 外来"            TO  SPA-GMN-NYUGAIKBN-LST (2)
@@ -1492,22 +1560,8 @@
                                            TO  SPA-GMN-NYUGAIKBN-G
                END-IF
            END-PERFORM
-      *
-      *    診療科一覧編集
-           PERFORM 3005-SRYKA-HEN-SEC
-      *
-      *    診療種別
-           PERFORM 3006-SRYKBN-HEN-SEC
-      *
-           IF     (SPA-PTID            =   ZERO )  AND
-                  (SPA-GMN-PTID        =   ZERO )
-               MOVE    00              TO  SPA-GMN-CUR
-           ELSE
-               MOVE    1                   TO  SPA-GMN-CUR
-               PERFORM 3000-PTID-INIT-SEC
-           END-IF
            .
-       310-SPA-SET-EXT.
+       3009-NYUGAIKBN-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3646,6 +3700,8 @@
            INITIALIZE                  SPA-GMN-INPUT
            INITIALIZE                  SPA-GMN-NYUIN-AREA
       *
+      *    入外区分・病床数
+           PERFORM 3009-NYUGAIKBN-HEN-SEC
       *    診療科一覧編集
            PERFORM 3005-SRYKA-HEN-SEC
       *
@@ -7120,6 +7176,8 @@
            INITIALIZE                  SPA-GMN-INPUT
            INITIALIZE                  SPA-GMN-NYUIN-AREA
       *
+      *    入外区分・病床数
+           PERFORM 3009-NYUGAIKBN-HEN-SEC
       *    診療科一覧編集
            PERFORM 3005-SRYKA-HEN-SEC
       *
@@ -7353,6 +7411,8 @@
            INITIALIZE                  SPA-GMN-INPUT
            INITIALIZE                  SPA-GMN-NYUIN-AREA
       *
+      *    入外区分・病床数
+           PERFORM 3009-NYUGAIKBN-HEN-SEC
       *    診療科一覧編集
            PERFORM 3005-SRYKA-HEN-SEC
       *
