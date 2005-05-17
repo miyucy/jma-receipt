@@ -509,6 +509,22 @@
                MOVE    SYS-1001-SYOHOKBN       TO  SPA-SYOHOKBN
       ******** 病床数
       *********MOVE    SYS-1001-BEDSU          TO  SPA-BEDSU
+      *        病院種別
+               MOVE    SYS-1001-HOSPSBT        TO  SPA-HOSPSBT
+               IF      SPA-BEDKBN              =   ZERO
+                   CONTINUE
+               ELSE
+      *        病床数
+                   MOVE    SYS-1001-BEDSU          TO  SPA-BEDSU
+      *        病床数（一般）
+                   IF     (SYS-1001-BEDSUIPN(1:4)  =   SPACE )  OR
+                          (SYS-1001-BEDSUIPN(1:4)  NOT NUMERIC)
+                       MOVE    ZERO                TO  SPA-BEDSUIPN
+                   ELSE
+                       MOVE    SYS-1001-BEDSUIPN   TO  SPA-BEDSUIPN
+                   END-IF
+               END-IF
+      *
       *        薬剤情報発行フラグ
                MOVE    SYS-1001-YAKUJYOPRTFLG  TO  SPA-YAKJYOPRTFLG
                IF      SYS-1001-YAKUJYOPRTFLG  =   SPACE
@@ -890,6 +906,17 @@
                MOVE    "0"                     TO  SPA-SYOHOKBN
       *        病床数
       *********MOVE    SYS-1001-BEDSU          TO  SPA-BEDSU
+      *        病院種別
+               MOVE    SYS-1001-HOSPSBT        TO  SPA-HOSPSBT
+      *        病床数
+               MOVE    SYS-1001-BEDSU          TO  SPA-BEDSU
+      *        病床数（一般）
+               IF     (SYS-1001-BEDSUIPN(1:4)  =   SPACE )  OR
+                      (SYS-1001-BEDSUIPN(1:4)  NOT NUMERIC)
+                   MOVE    ZERO                TO  SPA-BEDSUIPN
+               ELSE
+                   MOVE    SYS-1001-BEDSUIPN   TO  SPA-BEDSUIPN
+               END-IF
       *        薬剤情報発行フラグ
                MOVE    SYS-1001-YAKUJYOPRTFLG  TO  SPA-YAKJYOPRTFLG
                IF      SYS-1001-YAKUJYOPRTFLG  =   SPACE
@@ -1193,6 +1220,7 @@
                   (SPA-SYSYMD          =   SPA-SRYYMD ) AND
                   (SPA-SYORIFLG        =   ZERO       )
              AND  (LNK-SC95-PG    NOT  =   "K01"    )
+             AND  (FLG-UKETUKE-ARI     =   ZERO     )
                PERFORM 10014-UKETUKE-CHK-SEC
            END-IF
       *
@@ -1557,6 +1585,13 @@
                    END-IF
                END-IF
                IF      FLG-UKETUKE-ARI     =   1
+                 IF      LNK-SC95-PG         =   "K10"
+      *            中途終了からはドクターのみ
+                   IF       SPA-GMN-SRYKA       =   UKE-SRYKA
+                       MOVE    UKE-DRCD            TO  SPA-DRCD
+                       MOVE    1                   TO  FLG-UKETUKE
+                   END-IF
+                 ELSE
                    IF     (SPA-GMN-SRYKA   NOT =   SPACE  )  AND
                           (SPA-GMN-SRYKA       =   UKE-SRYKA )
                        MOVE    UKE-SRYKA           TO  SPA-SRYKA
@@ -1579,6 +1614,7 @@
                        END-IF
                        MOVE    1                   TO  FLG-UKETUKE
                    END-IF
+                END-IF
                END-IF
                IF      FLG-UKETUKE         =   ZERO
                    MOVE    "UKETUKE-KEY2"      TO  ORC-DBPATH
@@ -3555,6 +3591,52 @@
            CLOSE                       PARA-FILE
       *
            MOVE    WRK-GOK-TENSU       TO  LNK-SC95-GOK-TENSU
+      *    システム管理検索（医療機関情報）
+           MOVE    SPACE               TO  SYS-1001-REC
+           INITIALIZE                  SYS-1001-REC
+           MOVE    "1001"              TO  SYS-1001-KANRICD
+           MOVE    "*"                 TO  SYS-1001-KBNCD
+           MOVE    SYS-1001-REC        TO  MCPDATA-REC
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 900-KANRIMST-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYS-1001-REC
+               INITIALIZE                  SYS-1001-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1001-REC
+      *        病院種別
+               MOVE    SYS-1001-HOSPSBT    TO  SPA-HOSPSBT
+               IF      SPA-BEDKBN          =   ZERO
+                   CONTINUE
+               ELSE
+      *        病床数
+                   MOVE    SYS-1001-BEDSU          TO  SPA-BEDSU
+      *        病床数（一般）
+                   IF     (SYS-1001-BEDSUIPN(1:4)  =   SPACE )  OR
+                          (SYS-1001-BEDSUIPN(1:4)  NOT NUMERIC)
+                       MOVE    ZERO                TO  SPA-BEDSUIPN
+                   ELSE
+                       MOVE    SYS-1001-BEDSUIPN   TO  SPA-BEDSUIPN
+                   END-IF
+               END-IF
+           END-IF
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
       *    小児科外来診療科編集
            MOVE    SPACE               TO  SYS-1006-REC

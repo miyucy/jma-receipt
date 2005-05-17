@@ -219,9 +219,9 @@
            MOVE    SPACE               TO  WRK-SYOSINYMD1
            MOVE    SPACE               TO  WRK-SYOSINYMD2
       *
-           EVALUATE    SPA-HOSPSBT
-      *        ÉÂ±¡
-               WHEN    1
+      **** EVALUATE    SPA-HOSPSBT
+      *    ÉÂ±¡
+      ****     WHEN    1
       *            Ï·¿Í
                    MOVE    "111700110"         TO  WRK-SRYCD
                    PERFORM 2001-SANTEI-CHK-SEC
@@ -229,14 +229,14 @@
                    MOVE    "111000110"         TO  WRK-SRYCD
                    PERFORM 2001-SANTEI-CHK-SEC
       *        ¿ÇÎÅ½ê
-               WHEN    2
+      ******** WHEN    2
       *            Ï·¿Í
                    MOVE    "111700210"         TO  WRK-SRYCD
                    PERFORM 2001-SANTEI-CHK-SEC
       *            Ï·¿Í³°
                    MOVE    "111003610"         TO  WRK-SRYCD
                    PERFORM 2001-SANTEI-CHK-SEC
-           END-EVALUATE
+      *****END-EVALUATE
       *    ¾®»ù²Ê¿Ç»¡ÎÁ
       *    ¡¡¡¡±¡³°½èÊý   ½é¿Ç
            MOVE    "113003510"         TO  WRK-SRYCD
