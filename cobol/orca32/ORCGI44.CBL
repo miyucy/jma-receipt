@@ -673,6 +673,9 @@
            INITIALIZE                      SPA-I44
            INITIALIZE                      SPA-SCR-REC
       *
+      *    システム管理検索
+           PERFORM 3100-SYSKANRI-HEN-SEC
+      *
            MOVE    ZERO                TO  IDX2
       *
            MOVE    "2"                 TO  FLG-TOROKU.
@@ -704,6 +707,58 @@
            PERFORM 410112-KOUI-SPACHK-SEC.
       *
        3011-I48-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   システム管理検索処理
+      *****************************************************************
+       3100-SYSKANRI-HEN-SEC               SECTION.
+      *
+      *    システム管理検索（医療機関情報）
+           MOVE    SPACE               TO  SYS-1001-REC
+           INITIALIZE                  SYS-1001-REC
+           MOVE    "1001"              TO  SYS-1001-KANRICD
+           MOVE    "*"                 TO  SYS-1001-KBNCD
+           MOVE    SYS-1001-REC        TO  MCPDATA-REC
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    SPA-I40-SRYYMD(1:6) TO  ORC-DBYMD(1:6)
+           MOVE    "01"                TO  ORC-DBYMD(7:2)
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 900-KANRIMST-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYS-1001-REC
+               INITIALIZE                  SYS-1001-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1001-REC
+      *        病院種別
+               MOVE    SYS-1001-HOSPSBT    TO  SPA-HOSPSBT
+      *        病床数
+               MOVE    SYS-1001-BEDSU          TO  SPA-BEDSU
+      *        病床数（一般）
+               IF     (SYS-1001-BEDSUIPN(1:4)  =   SPACE )  OR
+                      (SYS-1001-BEDSUIPN(1:4)  NOT NUMERIC)
+                   MOVE    ZERO                TO  SPA-BEDSUIPN
+               ELSE
+                   MOVE    SYS-1001-BEDSUIPN   TO  SPA-BEDSUIPN
+               END-IF
+           END-IF
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           .
+       3100-SYSKANRI-HEN-EXT.
            EXIT.
       *
       *****************************************************************
