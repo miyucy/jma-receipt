@@ -223,6 +223,8 @@
            03  CNT-TAISYO                              PIC 9(06).
            03  CNT-STR                                 PIC 9(06).
            03  CNT-GAIHAKU-ERR                         PIC 9(06).
+           03  CNT-CHIHOU                              PIC 9(06).
+           03  CNT-UNCHIHOU                            PIC 9(06).
       *
       *    システム領域
        01  SYS-AREA.
@@ -906,6 +908,7 @@
                                                ORCBSD01-CHKKBN-G
                                                ORCBSD01-JIHIPROCKBN
                                                ORCBSD01-INGAIPROCKBN
+                                               ORCBSD01-PRTPTLSTKBN
       *
            PERFORM 900-DBSTART-SEC
       *
@@ -5406,12 +5409,65 @@
                            MOVE    1       TO  FLG-CHKEND (14)
                        END-IF
                    END-IF
+      *
+      *            地方公費単独チェック
+                   IF    ( FLG-CHKEND (14)     =   ZERO )
+                       IF    ( LNK-COMB-HKNNUM (IDX17) =   SPACE )
+                           PERFORM 2001111-CHIHOU-KOH-CHK-SEC
+                       END-IF
+                   END-IF
+      *
                END-IF
       *
            END-PERFORM
       *
            .
        200111-ACCT-HKNCOMBI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    地方公費単独組合せチェック
+      *****************************************************************
+       2001111-CHIHOU-KOH-CHK-SEC      SECTION.
+      *
+           MOVE    ZERO            TO  CNT-CHIHOU
+                                       CNT-UNCHIHOU
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   4 )
+      *
+               IF    ( LNK-COMB-KOHHKNNUM (IDX17 IDX0) NOT =   SPACE )
+                   IF    ( LNK-COMB-KOHHKNNUM (IDX17 IDX0)
+                                          >=   "100" )
+                    AND  ( LNK-COMB-KOHHKNNUM (IDX17 IDX0)
+                                          <=   "899" )
+                       COMPUTE CNT-CHIHOU      =   CNT-CHIHOU      +   1
+                   ELSE
+                       COMPUTE CNT-UNCHIHOU    =   CNT-UNCHIHOU    +   1
+                   END-IF
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( CNT-CHIHOU      >   ZERO )
+            AND  ( CNT-UNCHIHOU    =   ZERO )
+               MOVE    SDTCHK02-O-HKNCOMBIMEI (IDX17)
+                                       TO  WRK-MAE-INPUT
+               PERFORM 800-ZENKAKU-HEN-SEC
+               MOVE    SPACE           TO  WRK-ERRMES-PLUS
+               STRING  WRK-ACCTNAME    DELIMITED   BY  SPACE
+                       WRK-OUT-INPUT   DELIMITED   BY  SPACE
+               INTO    WRK-ERRMES-PLUS
+               END-STRING
+      *
+               MOVE    "140003"    TO  WRK-ERRCD
+               PERFORM 215-ERRMES-HEN-SEC
+               IF    ( ORCBSD01-CHKKBN (14)    =   "1" )
+                   MOVE    1       TO  FLG-CHKEND (14)
+               END-IF
+           END-IF
+      *
+           .
+       2001111-CHIHOU-KOH-CHK-EXT.
            EXIT.
       *****************************************************************
       *    その他必須チェック処理
