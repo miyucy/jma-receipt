@@ -43,7 +43,8 @@
                                         PIC  X(1).
                05  SYS-1101-PRTSRTKBN   PIC  X(1).
                05  SYS-1101-BYOSRYKAKBN PIC  X(1).
-               05                       PIC  X(493).
+               05  SYS-1101-PRTPTLSTKBN PIC  X(1).
+               05                       PIC  X(491).
       
       *Ã¼Ëö£É£Ä
            03  SYS-1101-TERMID          PIC  X(16).

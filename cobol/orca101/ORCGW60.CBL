@@ -62,6 +62,10 @@
                    07  SPA-GMN-PRTSRTKBN       PIC X(01).
                    07                          PIC X(01).
                    07  SPA-GMN-PRTSRTKBNMEI    PIC X(20).
+               05  SPA-GMN-PRTPTLSTKBN-G.
+                   07  SPA-GMN-PRTPTLSTKBN     PIC X(01).
+                   07                          PIC X(01).
+                   07  SPA-GMN-PRTPTLSTKBNMEI  PIC X(20).
            03  SPA-GMN-CMB-AREA.
                05  SPA-GMN-BYOSRYKAKBNLST-G.
                    07  SPA-GMN-BYOSRYKAKBN-MAX     PIC 9(03).
@@ -75,6 +79,12 @@
                        09  SPA-GMN-PRTSRTKBNL      PIC X(01).
                        09                          PIC X(01).
                        09  SPA-GMN-PRTSRTKBNMEIL   PIC X(20).
+               05  SPA-GMN-PRTPTLSTKBNLST-G.
+                   07  SPA-GMN-PRTPTLSTKBN-MAX     PIC 9(03).
+                   07  SPA-GMN-PRTPTLSTKBNLST      OCCURS   2.
+                       09  SPA-GMN-PRTPTLSTKBNL    PIC X(01).
+                       09                          PIC X(01).
+                       09  SPA-GMN-PRTPTLSTKBNMEIL PIC X(20).
       *
       *    フラグエリア
        01  FLG-AREA.
@@ -322,6 +332,9 @@
                MOVE    SYS-1101-PRTSRTKBN
                                        TO  SPA-GMN-PRTSRTKBN
       *
+               MOVE    SYS-1101-PRTPTLSTKBN
+                                       TO  SPA-GMN-PRTPTLSTKBN
+      *
            END-IF
       *
            MOVE    SPA-GMN-BYOSRYKAKBN TO  WRK-CMB-CD
@@ -342,6 +355,15 @@
                MOVE    WRK-CMB-ITM TO  SPA-GMN-PRTSRTKBN-G
            END-IF
       *
+           MOVE    SPA-GMN-PRTPTLSTKBN TO  WRK-CMB-CD
+           PERFORM 4200-PRTPTLSTKBNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    SPA-GMN-PRTPTLSTKBNLST (1)
+                                   TO  SPA-GMN-PRTPTLSTKBN-G
+           ELSE
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-PRTPTLSTKBN-G
+           END-IF
+      *
            MOVE    1               TO  SPA-GMN-CUR
       *
            .
@@ -358,6 +380,9 @@
       *
       *    帳票出力順コンボ設定処理
            PERFORM 3101-PRTSRTKBNLST-SEC
+      *
+      *    患者別チェックリスト設定処理
+           PERFORM 3101-PRTPTLSTKBNLST-SEC
       *
            .
        3101-COMBO-SYOKI-EXT.
@@ -397,6 +422,24 @@
       *
            . 
        3101-PRTSRTKBNLST-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者別チェックリスト設定処理
+      *****************************************************************
+       3101-PRTPTLSTKBNLST-SEC           SECTION.
+      *
+           INITIALIZE                  SPA-GMN-PRTPTLSTKBNLST-G
+      *
+           MOVE    2               TO  SPA-GMN-PRTPTLSTKBN-MAX
+      *
+           MOVE    "1"             TO  SPA-GMN-PRTPTLSTKBNL    (1)
+           MOVE    "作成しない"    TO  SPA-GMN-PRTPTLSTKBNMEIL (1)
+      *
+           MOVE    "2"             TO  SPA-GMN-PRTPTLSTKBNL    (2)
+           MOVE    "作成する"      TO  SPA-GMN-PRTPTLSTKBNMEIL (2)
+      *
+           . 
+       3101-PRTPTLSTKBNLST-EXT.
            EXIT.
       *****************************************************************
       *    確認画面（ＣＩＤ１）ＯＫ処理
@@ -544,6 +587,7 @@
       *
            MOVE    W60-BYOSRYKAKBN TO  SPA-GMN-BYOSRYKAKBN-G
            MOVE    W60-PRTSRTKBN   TO  SPA-GMN-PRTSRTKBN-G
+           MOVE    W60-PRTPTLSTKBN TO  SPA-GMN-PRTPTLSTKBN-G
       *
            .
       *
@@ -561,6 +605,11 @@
            END-IF
       *
            PERFORM 4101-PRTSRTKBN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4101-PRTPTLSTKBN-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -604,6 +653,24 @@
            .
       *
        4101-PRTSRTKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者別チェックリスト区分チェック処理
+      *****************************************************************
+       4101-PRTPTLSTKBN-CHK-SEC        SECTION.
+      *
+           MOVE    SPA-GMN-PRTPTLSTKBN TO  WRK-CMB-CD
+           PERFORM 4200-PRTPTLSTKBNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    SPA-GMN-PRTPTLSTKBNLST (1)
+                                   TO  SPA-GMN-PRTPTLSTKBN-G
+           ELSE
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-PRTPTLSTKBN-G
+           END-IF
+      *
+           .
+      *
+       4101-PRTPTLSTKBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    診療科別チェック区分コンボチェック処理
@@ -652,6 +719,30 @@
       *
            .
        4200-PRTSRTKBNLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者別チェックリスト区分コンボチェック処理
+      *****************************************************************
+       4200-PRTPTLSTKBNLST-CHK-SEC     SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB         >   SPA-GMN-PRTPTLSTKBN-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-PRTPTLSTKBNL (IDX-CMB)
+                                   =   WRK-CMB-CD )
+      *
+                   MOVE    SPA-GMN-PRTPTLSTKBNLST (IDX-CMB)
+                                   TO  WRK-CMB-ITM
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       4200-PRTPTLSTKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    戻る　処理
@@ -781,6 +872,8 @@
       *
            MOVE    SPA-GMN-PRTSRTKBN   TO   SYS-1101-PRTSRTKBN
       *
+           MOVE    SPA-GMN-PRTPTLSTKBN TO   SYS-1101-PRTPTLSTKBN
+      *
            MOVE    SYS-1101-REC            TO  SYSKANRI-REC
       *
            IF    ( SPA-W01-SELNUM          >   ZERO )
@@ -899,6 +992,18 @@
       *
            END-PERFORM
       *
+           MOVE    SPA-GMN-PRTPTLSTKBN-G   TO  W60-PRTPTLSTKBN
+      *
+           MOVE    SPA-GMN-PRTPTLSTKBN-MAX
+                                       TO  W60-PRTPTLSTKBN-COUNT
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0        >   SPA-GMN-PRTPTLSTKBN-MAX )
+      *
+               MOVE    SPA-GMN-PRTPTLSTKBNLST (IDX0)
+                                       TO  W60-PRTPTLSTKBN-ITEM (IDX0)
+      *
+           END-PERFORM
+      *
       *
       *    項目状態編集
            PERFORM 500-GMNHEN-STATE-EDIT-SEC
@@ -955,6 +1060,8 @@
                MOVE    "CHKMTRX05"     TO  MCP-WIDGET
            WHEN    007
                MOVE    "PRTSRTKBN"     TO  MCP-WIDGET
+           WHEN    008
+               MOVE    "PRTPTLSTKBN"   TO  MCP-WIDGET
            WHEN    212
                MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
@@ -982,6 +1089,8 @@
            WHEN    "CHKMTRX05"
                MOVE    07              TO  SPA-GMN-CUR
            WHEN    "PRTSRTKBN"
+               MOVE    08              TO  SPA-GMN-CUR
+           WHEN    "PRTPTLSTKBN"
                MOVE    212             TO  SPA-GMN-CUR
            END-EVALUATE
       *
