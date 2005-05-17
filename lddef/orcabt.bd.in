@@ -163,6 +163,7 @@ bind	"ORCDTCHK000"	"OpenCOBOL";
 bind	"ORCDTCHK004"	"OpenCOBOL";
 bind	"ORCDTCHK005"	"OpenCOBOL";
 bind	"ORCDTCHK006"	"OpenCOBOL";
+bind	"ORCDTCHK007"	"OpenCOBOL";
 bind	"ORCXPMNT1"	"OpenCOBOL";
 bind	"ORCXPMNT2"	"OpenCOBOL";
 bind	"ORCXPMNT3"	"OpenCOBOL";
