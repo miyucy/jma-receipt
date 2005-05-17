@@ -288,6 +288,11 @@
            05 PIC  X(30)   VALUE   "ります                        ".
            05 PIC  X(30)   VALUE   "                              ".
       *
+           05 PIC  X(06)   VALUE   "140003".
+           05 PIC  X(30)   VALUE   "地方公費のみの保険組合せです  ".
+           05 PIC  X(30)   VALUE   "                              ".
+           05 PIC  X(30)   VALUE   "                              ".
+      *
       *    ** 990xxx その他必須チェック
       *                            +---------+---------+---------+.
            05 PIC  X(06)   VALUE   "990001".
@@ -311,7 +316,7 @@
            05 PIC  X(30)   VALUE   "                              ".
       *
          03  ERRMES-RED    REDEFINES   ERRMES-VAL.
-           05 ERRMES-OCC   OCCURS  50.
+           05 ERRMES-OCC   OCCURS  51.
               07  ERRMES-CD            PIC X(06).
               07  ERRMES-MESSAGE       PIC X(90).
-         03  ERRMES-MAX                PIC 9(05)   VALUE   50.
+         03  ERRMES-MAX                PIC 9(05)   VALUE   51.
