@@ -386,6 +386,17 @@
                    UNTIL ( IDX1            >   TBYOMEI-MAX )
                     OR   ( TBYOMEI-IDX1    >   ZERO    )
       *
+               IF    ( SYS-1101-BYOSRYKAKBN    =   "1" OR SPACE )
+                   IF    ( TBYOMEI-BYOMEI (IDX1)   =   QDTCHK-BYOMEI )
+                    AND  ( TBYOMEI-SRYKA  (IDX1)   =   QDTCHK-SRYKA )
+                       MOVE    IDX1    TO  TBYOMEI-IDX1
+                   END-IF
+               ELSE
+                   IF    ( TBYOMEI-BYOMEI (IDX1)   =   QDTCHK-BYOMEI )
+                       MOVE    IDX1    TO  TBYOMEI-IDX1
+                   END-IF
+               END-IF
+      *
                IF    ( TBYOMEI-BYOMEI (IDX1)   =   QDTCHK-BYOMEI )
                 AND  ( TBYOMEI-SRYKA  (IDX1)   =   QDTCHK-SRYKA )
                    MOVE    IDX1    TO  TBYOMEI-IDX1
