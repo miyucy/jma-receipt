@@ -2218,7 +2218,7 @@
            INITIALIZE                      SYS-1101-REC
            MOVE    "1101"              TO  SYS-1101-KANRICD
            MOVE    "*"                 TO  SYS-1101-KBNCD
-           MOVE    ORCBSD01-SRYYM      TO  ORC-DBYMD
+           MOVE    SPA-NAI-D01-SRYYM   TO  ORC-DBYMD
            MOVE    "01"                TO  ORC-DBYMD (7:2)
            MOVE    SYS-1101-REC        TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
