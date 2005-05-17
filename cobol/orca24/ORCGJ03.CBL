@@ -592,7 +592,7 @@
            PERFORM 3101-SRYKA-HEN-SEC
       *    入外区分
            INITIALIZE                  SPA-GMN-NYUGAIKBN-COMB
-           IF      SPA-BEDSU           >   ZERO
+           IF      SPA-BEDFLG          >   ZERO
                MOVE    "1 入院"            TO  SPA-GMN-NYUGAIKBN-LST (1)
                MOVE    "2 外来"            TO  SPA-GMN-NYUGAIKBN-LST (2)
                MOVE    2                   TO  SPA-NYUGAI-MAX
