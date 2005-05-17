@@ -30,3 +30,4 @@
                05  ORCBSD01-CHKKBN     PIC  X(01)  OCCURS 50.
            03  ORCBSD01-JIHIPROCKBN    PIC  X(01).
            03  ORCBSD01-INGAIPROCKBN   PIC  X(01).
+           03  ORCBSD01-PRTPTLSTKBN    PIC  X(01).

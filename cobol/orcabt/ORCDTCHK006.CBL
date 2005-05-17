@@ -277,6 +277,7 @@
                                                ORCBSD01-CHKKBN-G
                                                ORCBSD01-JIHIPROCKBN
                                                ORCBSD01-INGAIPROCKBN
+                                               ORCBSD01-PRTPTLSTKBN
       *
            PERFORM 900-DBSTART-SEC
       *

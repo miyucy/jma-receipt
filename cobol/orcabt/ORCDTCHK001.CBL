@@ -197,6 +197,7 @@
                                                ORCBSD01-CHKKBN-G
                                                ORCBSD01-JIHIPROCKBN
                                                ORCBSD01-INGAIPROCKBN
+                                               ORCBSD01-PRTPTLSTKBN
       *
            PERFORM 900-DBSTART-SEC
       *
@@ -377,7 +378,6 @@
                    IF    ( ORCBSD01-NYUGAIKBN
                                            =   DCACCT-NYUGAIKBN )
                        MOVE    1   TO  FLG-LOOP-END
-                       DISPLAY "DCACCT-ACCTKBN:" DCACCT-ACCTKBN
                    END-IF
       *
                END-READ

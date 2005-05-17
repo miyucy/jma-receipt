@@ -130,6 +130,7 @@
                                                ORCBSD01-CHKKBN-G
                                                ORCBSD01-JIHIPROCKBN
                                                ORCBSD01-INGAIPROCKBN
+                                               ORCBSD01-PRTPTLSTKBN
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -193,6 +194,18 @@
                                                COMMAND-PARAM
                    PERFORM 800-MCNDATE-SEC
                    DISPLAY SMCNDATE-HMS "ED:ORCDTCHK002"
+           END-IF
+      *
+           IF    ( DTCHK-RC            =   ZERO )
+               IF  ( ORCBSD01-PRTPTLSTKBN  =   "2" )
+                   PERFORM 800-MCNDATE-SEC
+                   DISPLAY SMCNDATE-HMS "ST:ORCDTCHK007"
+                   CALL    "ORCDTCHK007"       USING
+                                               DTCHK-RC
+                                               COMMAND-PARAM
+                   PERFORM 800-MCNDATE-SEC
+                   DISPLAY SMCNDATE-HMS "ED:ORCDTCHK007"
+               END-IF
            END-IF
       *
            IF    ( DTCHK-RC            =   ZERO )
