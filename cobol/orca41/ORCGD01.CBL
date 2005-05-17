@@ -243,6 +243,7 @@
       *****************************************************************
       *
       *    ¥·¥¹¥Æ¥à´ÉÍý
+           COPY    "CPSK1101.INC".
            COPY    "CPSK1031.INC".
            COPY    "CPSK3003.INC".
       *
@@ -623,6 +624,8 @@
       *****************************************************************
        490-PRINT-SEC                       SECTION.
       *
+           PERFORM 900-SYS1101-SEL-SEC
+      *
       *    £Ê£Ï£Â£É£Ä¡Ê£³£°£°£³¡Ëºï½ü½èÍý
            MOVE    ZERO                TO  FLG-SYSKANRI
            INITIALIZE                      SYS-3003-REC
@@ -705,11 +708,13 @@
            MOVE    SPACE               TO  LNK-PRTKANRI-AREA
            INITIALIZE                      LNK-PRTKANRI-AREA
       *
-           COMPUTE WRK-PRTKANRI-RENNUM
-               =   WRK-PRTKANRI-RENNUM     +   1
+      *    COMPUTE WRK-PRTKANRI-RENNUM
+      *        =   WRK-PRTKANRI-RENNUM     +   1
       *
-           MOVE    WRK-PRTKANRI-RENNUM
-                                   TO  LNK-PRTKANRI-RENNUM
+      *    MOVE    WRK-PRTKANRI-RENNUM
+      *                            TO  LNK-PRTKANRI-RENNUM
+           MOVE    ZERO            TO  LNK-PRTKANRI-RENNUM
+      *
            MOVE    CONST-PRTKANRI-TBL-KEY
                                    TO  LNK-PRTKANRI-TBL-KEY
            MOVE    CONST-PRTKANRI-TBL-GROUP
@@ -753,6 +758,13 @@
            ELSE
                MOVE    SPA-GMN-D01-INGAIPROCKBN
                                    TO  ORCBSD01-INGAIPROCKBN
+           END-IF
+      *
+           IF    ( SYS-1101-PRTPTLSTKBN        =   SPACE )
+               MOVE    "1"         TO  ORCBSD01-PRTPTLSTKBN
+           ELSE
+               MOVE    SYS-1101-PRTPTLSTKBN
+                                   TO  ORCBSD01-PRTPTLSTKBN
            END-IF
       *
            MOVE    SPACE           TO  SHELLTBL
@@ -802,6 +814,8 @@
       *
            MOVE    ORCBSD01-INGAIPROCKBN   TO  SHELLTBL-ARG20
       *
+           MOVE    ORCBSD01-PRTPTLSTKBN    TO  SHELLTBL-ARG21
+      *
            MOVE    SHELLTBL                TO  MCPDATA-REC
            MOVE    "SHELL"                 TO  MCP-FUNC
            MOVE    PATH-SHELL-SHELL
@@ -831,7 +845,7 @@
                                            TO  LNK-PRTKANRI-TBL-KEY
                MOVE    CONST-PRTKANRI-TBL-GROUP
                                            TO  LNK-PRTKANRI-TBL-GROUP
-               MOVE    ZERO                TO  LNK-PRTKANRI-RENNUM
+               MOVE    1                   TO  LNK-PRTKANRI-RENNUM
                MOVE    ZERO                TO  LNK-PRTKANRI-SHORI-RENNUM
                MOVE    SPA-NAI-D01-SRYYM   TO  LNK-PRTKANRI-SRYYM
                MOVE    SPA-SYSYMD          TO  LNK-PRTKANRI-SKYYMD
@@ -2195,6 +2209,32 @@
            .
       *
        800-MCNDATE-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¥Ç¡¼¥¿¥Á¥§¥Ã¥¯µ¡Ç½¾ðÊó£²¸¡º÷½èÍý
+      *****************************************************************
+       900-SYS1101-SEL-SEC             SECTION.
+      *
+           INITIALIZE                      SYS-1101-REC
+           MOVE    "1101"              TO  SYS-1101-KANRICD
+           MOVE    "*"                 TO  SYS-1101-KBNCD
+           MOVE    ORCBSD01-SRYYM      TO  ORC-DBYMD
+           MOVE    "01"                TO  ORC-DBYMD (7:2)
+           MOVE    SYS-1101-REC        TO  MCPDATA-REC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYS-1101-REC
+           ELSE
+               INITIALIZE                  SYS-1101-REC
+           END-IF
+      *
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           PERFORM 910-DBCLOSE-SEC
+      *
+           .
+      *
+       900-SYS1101-SEL-EXT.
            EXIT.
       *****************************************************************
       *    £Ä£Â¸¡º÷½èÍý
