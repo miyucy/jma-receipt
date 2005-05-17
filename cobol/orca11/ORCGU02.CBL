@@ -2204,15 +2204,17 @@
                    INITIALIZE                  HKNNUM-REC
                    MOVE    SPA-HOSPID          TO  HKN-HOSPID
                    MOVE    PTKOH-KOHNUM        TO  HKN-HKNNUM
+                   MOVE    PTKOH-TEKSTYMD      TO  HKN-TEKSTYMD
+                   MOVE    PTKOH-TEKEDYMD      TO  HKN-TEKEDYMD
                    MOVE    HKNNUM-REC          TO  MCPDATA-REC
                    MOVE    "DBSELECT"          TO  MCP-FUNC
-                   MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
+                   MOVE    "HKNNUM-KEY5"       TO  ORC-DBPATH
                    CALL    "ORCMCPSUB"          USING
                                                 MCPAREA
                                                 ORCMCPAREA
                                                 MCPDATA-REC
                    IF      MCP-RC              =   ZERO
-                       MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
+                       MOVE    "HKNNUM-KEY5"       TO  ORC-DBPATH
                        PERFORM 900-HKNNUM-READ-SEC
                    ELSE
                         MOVE    1                  TO  FLG-HKNNUM
@@ -2220,20 +2222,24 @@
       *
                    PERFORM UNTIL       FLG-HKNNUM      =   1
                        IF      HKN-HKNKOHSBTKBN  =   "3"
+                         IF      HKN-TEKSTYMD    <   "20021001"
                            IF     (SPA-HOSPSBT     =   HKN-PAYKBN (1:1))
                            AND    (SPA-ROUPAYKBN   =   HKN-PAYKBN (2:1))
                                PERFORM 4101153-HOKI-HENSYU-SEC
                            END-IF
+                         ELSE
+                             PERFORM 4101153-HOKI-HENSYU-SEC
+                         END-IF
                        ELSE
                            PERFORM 4101153-HOKI-HENSYU-SEC
                        END-IF
                        IF      FLG-HKNNUM           =   ZERO
-                           MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
+                           MOVE    "HKNNUM-KEY5"       TO  ORC-DBPATH
                            PERFORM 900-HKNNUM-READ-SEC
                        END-IF 
                    END-PERFORM
       *    カーソルクロース
-                   MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
+                   MOVE    "HKNNUM-KEY5"       TO  ORC-DBPATH
                    PERFORM 990-DBCLOSE-SEC
                END-IF
       *
