@@ -297,7 +297,8 @@
       *----(01.02.07)--ADD-START---
       *test
            DISPLAY "SPA-BEDSU:" SPA-BEDSU
-           IF        SPA-BEDSU     >   ZERO
+                    ",SPA-BEDFLG:" SPA-BEDFLG
+           IF        SPA-BEDFLG     >   ZERO
                PERFORM 450-M01N-SYORI-SEC
                GO  TO  3OO-SCREEN-EXT
            END-IF
