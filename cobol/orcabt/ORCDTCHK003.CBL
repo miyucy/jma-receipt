@@ -60,7 +60,9 @@
       *
        WORKING-STORAGE                 SECTION.
       *
-           COPY    "HCM401.INC".
+           COPY    "HCM401V01.INC"
+                                   REPLACING  //HCM401V01//
+                                   BY         //HCM401//.
       *
       *    エラーファイルファイル名称領域 
            COPY    "CPCOMMONDAT6.INC"
@@ -109,8 +111,20 @@
                05                                      PIC X(02).
            03  WRK-ZZZZ9                               PIC ZZZZ9.
            03  WRK-ZZ9                                 PIC ZZ9.
+           03  WRK-Z9                                  PIC Z9.
+           03  WRK-HMS.
+               05  WRK-HH                              PIC 9(02).
+               05  WRK-MM                              PIC 9(02).
+               05  WRK-DD                              PIC 9(02).
+           03  WRK-ZHMS.
+               05  WRK-ZHH                             PIC Z9.
+               05  WRK-ZMM                             PIC Z9.
+               05  WRK-ZDD                             PIC Z9.
            03  WRK-NENREI                              PIC 9(03).
            03  WRK-DTCHKERR                            PIC X(200).
+           03  WRK-SAKYMD-G.
+               05  WRK-SAKYMD                          PIC X(22).
+               05  WRK-SAKHM                           PIC X(08).
       *
            03  WRK-YMDS1.
                05  WRK-YYS1                            PIC 9(04).
@@ -148,6 +162,9 @@
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
+      *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
       *
       *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
@@ -227,6 +244,7 @@
                                                ORCBSD01-CHKKBN-G
                                                ORCBSD01-JIHIPROCKBN
                                                ORCBSD01-INGAIPROCKBN
+                                               ORCBSD01-PRTPTLSTKBN
       *
            PERFORM 900-DBSTART-SEC
       *
@@ -280,6 +298,8 @@
            INTO    WRK-SPRT-TITLE
            END-STRING
       *
+           PERFORM 800-MCNDATE-SEC
+      *
            .
        1001-INIT-VAL-SET-EXT.
            EXIT.
@@ -332,9 +352,7 @@
       *
            INITIALIZE                      HCM401
       *
-           MOVE    WRK-SRYYMD-G        TO  HCM401-SINRYOU-G
-           MOVE    WRK-SRYYMD-Y        TO  HCM401-SINRYOU-Y
-           MOVE    WRK-SRYYMD-M        TO  HCM401-SINRYOU-M
+           MOVE    WRK-SRYYMD (1:16)   TO  HCM401-SRYYM
       *
            MOVE    WRK-NYUGAIMES       TO  HCM401-NYUGAIKBN
       *
@@ -342,6 +360,29 @@
            MOVE    WRK-ZZ9             TO  WRK-MAE-INPUT
            PERFORM 800-ZENKAKU-HEN-SEC
            MOVE    WRK-OUT-INPUT       TO  HCM401-PAGE
+      *
+           MOVE    SPACE               TO  WRK-SAKYMD-G
+      *
+           MOVE    SMCNDATE-YMD        TO  WRK-SYMD
+           PERFORM 800-SEIWA-HEN-SEC
+           MOVE    WRK-EDTYMD3         TO  WRK-SAKYMD
+      *
+           MOVE    SMCNDATE-HMS        TO  WRK-HMS
+           MOVE    WRK-HH              TO  WRK-ZHH
+           MOVE    WRK-MM              TO  WRK-ZMM
+           MOVE    WRK-DD              TO  WRK-ZDD
+           MOVE    WRK-ZHMS            TO  WRK-MAE-INPUT
+           PERFORM 800-ZENKAKU-HEN-SEC
+           MOVE    WRK-OUT-INPUT       TO  WRK-SAKHM
+      *
+           STRING  WRK-SAKYMD          DELIMITED   BY  SIZE
+                   "　"                DELIMITED   BY  SIZE
+                   WRK-SAKHM (1:4)     DELIMITED   BY  SIZE
+                   "時"                DELIMITED   BY  SIZE
+                   WRK-SAKHM (5:4)     DELIMITED   BY  SIZE
+                   "分"                DELIMITED   BY  SIZE
+           INTO    HCM401-SAKYMD
+           END-STRING
       *
            .
        210-HEAD-HEN-EXT.
@@ -424,7 +465,7 @@
       *
            INITIALIZE                  ORCSPRTAREA
            MOVE    "INS"               TO  SPRT-MODE
-           MOVE    LNK-PRTKANRI-RENNUM TO  SPRT-RENNUM
+           MOVE    1                   TO  SPRT-RENNUM
            MOVE    LNK-PRTKANRI-TBL-KEY
                                        TO  SPRT-TBL-KEY
            MOVE    LNK-PRTKANRI-TBL-GROUP
@@ -437,7 +478,7 @@
                                        TO  SPRT-SHORI-RENNUM
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
-           MOVE   "HCM401.red"         TO  SPRT-PRTID
+           MOVE   "HCM401V01.red"      TO  SPRT-PRTID
            MOVE    WRK-SPRT-TITLE      TO  SPRT-TITLE
            MOVE    HCM401              TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
@@ -560,6 +601,17 @@
       *
            .
        800-SEIWA-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    マシン日付取得サブ
+      *****************************************************************
+       800-MCNDATE-SEC         SECTION.
+      *
+           CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
+      *
+           .
+      *
+       800-MCNDATE-EXT.
            EXIT.
       *****************************************************************
       *    チェック結果ファイル読込処理
