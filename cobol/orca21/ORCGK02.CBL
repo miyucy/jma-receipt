@@ -1569,7 +1569,7 @@
                                         ORCMCPAREA
                                         MCPDATA-REC
       *    入院業務を表示する
-           IF      (SPA-BEDSU          >   ZERO )  AND
+           IF      (SPA-BEDFLG         >   ZERO )  AND
                    (WRK-GYOUMU-KBN     =   "0211")
                INITIALIZE              SPA-KYOTUKEY
                INITIALIZE              SPA-K02
@@ -4336,7 +4336,7 @@
       *    Ｎのとき、入院へ
            IF     (SPA-GMN-PTNUM(1:1)  =   "N" OR "n")  AND
                   (SPA-GMN-PTNUM(2:)   =   SPACE     )  AND
-                  (SPA-BEDSU           >   ZERO)
+                  (SPA-BEDFLG          >   ZERO)
                MOVE    SPACE               TO  WRK-PUTTYPE
                PERFORM 450-K02N-SYORI-SEC
                GO      TO      41010-PTNUM-SYORI-EXT
