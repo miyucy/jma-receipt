@@ -398,7 +398,7 @@
            MOVE    SPA-GMN-KNYUGAIKBN-LIST (01)
                                        TO  SPA-GMN-KNYUGAIKBN-G
       *
-           IF      SPA-BEDSU           =   ZERO
+           IF      SPA-BEDFLG          =   ZERO
                MOVE    1                   TO  SPA-NYUGAI-MAX
            ELSE
                MOVE    3                   TO  SPA-NYUGAI-MAX
