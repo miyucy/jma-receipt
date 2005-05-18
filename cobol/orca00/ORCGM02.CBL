@@ -255,6 +255,22 @@
        310-SPASET-SEC              SECTION.
       *
            MOVE    1               TO  SPA-GMN-CUR
+      *    °åÎÅµ¡´Ø£É£ÄÊÔ½¸
+           MOVE    SPACE               TO  SYS-1001-REC
+           INITIALIZE                  SYS-1001-REC
+           MOVE    "1001"              TO  SYS-1001-KANRICD
+           MOVE    "*"                 TO  SYS-1001-KBNCD
+           MOVE    SYS-1001-REC        TO  MCPDATA-REC
+           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           MOVE    "SYSKANRI-KEY"      TO  WRK-PATH
+           PERFORM 800-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    SYSKANRI-REC        TO  SYS-1001-REC
+      *        ÉÂ±¡¼ïÊÌ
+               MOVE    SYS-1001-HOSPSBT    TO  SPA-HOSPSBT
+           ELSE
+               INITIALIZE                  SYS-1001-REC
+           END-IF
            .
        31O-SPASET-EXT.
            EXIT.
@@ -263,6 +279,7 @@
       *    ¥¹¥Ñ½é´üÊÔ½¸½èÍý
       *****************************************************************
        320-SYS-1010-SPASET-SEC              SECTION.
+      *
       *
       *    ¿¦°÷¾ðÊó
            MOVE    SPACE               TO  SYS-1010-REC
