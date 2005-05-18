@@ -49,6 +49,10 @@
            03  SPA-P02-WIDGET             PIC X(20).
       *    ≈‘∆ª…‹∏©∂Ë ¨
            03  SPA-NAI-PREFNUM            PIC 9(02).
+      *    …¬±°ºÔ Ã
+           03  SPA-NAI-HOSPSBT           PIC 9(01).
+      *    œ∑øÕªŸ ß∂Ë ¨
+           03  SPA-NAI-ROUPAYKBN         PIC X(01).
       *    ∆˛Œœ∏ƒΩÍ
            03  SPA-MCP-WIDGET             PIC X(64).
       *
