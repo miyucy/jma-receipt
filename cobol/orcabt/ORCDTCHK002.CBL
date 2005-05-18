@@ -5854,7 +5854,9 @@
                                        =   PTACCT-ACCTKBN(IDX-ACCT))
                        MOVE    PTACCT-OCC (IDX-ACCT)
                                        TO  DCACCT-REC
-                       PERFORM 2001211-SRYINF-TAIHI-SEC
+                       IF ( DCACCT-ACCTRENNUM  =   1 )
+                           PERFORM 2001211-SRYINF-TAIHI-SEC
+                       END-IF
                    END-IF
                END-PERFORM
       *
@@ -6993,9 +6995,6 @@
                                MOVE   ZERO    TO   FLG-LOOP-END
                            END-IF
       *
-                           IF    ( DCACCT-ACCTRENNUM   NOT =   1 )
-                               MOVE   ZERO    TO   FLG-LOOP-END
-                           END-IF
                        ELSE
                                MOVE   ZERO    TO   FLG-LOOP-END
                        END-IF
