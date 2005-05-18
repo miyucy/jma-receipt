@@ -324,6 +324,10 @@
            03  WRK-IDXH                PIC 9(04).
            03  WRK-CNT-HKN             PIC 9(04).
            03  WRK-CNT-HKN2            PIC 9(04).
+      *    …¬±°ºÔ Ã
+           03  WRK-HOSPSBT             PIC 9(01).
+      *    œ∑øÕªŸ ß∂Ë ¨
+           03  WRK-ROUPAYKBN           PIC X(01).
       *
       *    ∏¯»Ò£”£œ£“£‘Õ—° £”£–£¡§»∆±§∏ŒŒ∞Ë°À
        01  WRK-KOUHI-AREA.
@@ -1545,8 +1549,8 @@
                                            TO  WRK-PAYKBN
            IF     (WRK-HKNNUM          =   "027"  )  AND
                   (WRK-PAYKBN          =   ZERO  OR  SPACE )
-               MOVE    SPA-HOSPSBT         TO  WRK-PAYKBN(1:1)
-               MOVE    SPA-ROUPAYKBN       TO  WRK-PAYKBN(2:1)
+               MOVE    SPA-NAI-HOSPSBT         TO  WRK-PAYKBN(1:1)
+               MOVE    SPA-NAI-ROUPAYKBN       TO  WRK-PAYKBN(2:1)
            END-IF
            PERFORM 31012-HKNNUM-SET-SEC
            IF     (SPA-GMN-KOHNUM (IDY)        =   "027" )  AND
@@ -4900,10 +4904,16 @@
       *****************************************************************
        4503-HKNCOMBI-SYORI-SEC          SECTION.
       *
+           MOVE    SPA-HOSPSBT         TO  WRK-HOSPSBT
+           MOVE    SPA-ROUPAYKBN       TO  WRK-ROUPAYKBN
+           MOVE    SPA-NAI-HOSPSBT     TO  SPA-HOSPSBT
+           MOVE    SPA-NAI-ROUPAYKBN   TO  SPA-ROUPAYKBN
       *     ›∏±¡»πÁ§ª∫Ó¿Æ
            MOVE    SPA-P02KYOUTU       TO  SPA-WORK
            MOVE    SPA-GMN-PTID        TO  SPA-PTID
            CALL    "ORCGP02W2"         USING    SPA-AREA
+           MOVE    WRK-HOSPSBT         TO  SPA-HOSPSBT
+           MOVE    WRK-ROUPAYKBN       TO  SPA-ROUPAYKBN
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4503-HKNCOMBI-SYORI-EXT
            END-IF

@@ -1237,8 +1237,8 @@
            MOVE    PTKOH-PAYKBN        TO  WRK-PAYKBN
            IF     (WRK-HKNNUM          =   "027"  )  AND
                   (WRK-PAYKBN          =   ZERO  OR  SPACE )
-               MOVE    SPA-HOSPSBT         TO  WRK-PAYKBN(1:1)
-               MOVE    SPA-ROUPAYKBN       TO  WRK-PAYKBN(2:1)
+               MOVE    SPA-NAI-HOSPSBT     TO  WRK-PAYKBN(1:1)
+               MOVE    SPA-NAI-ROUPAYKBN   TO  WRK-PAYKBN(2:1)
            END-IF
            PERFORM 1002211-HKNNUM-SET-SEC
            IF     (PTKOH-KOHNUM        =   "027" )  AND

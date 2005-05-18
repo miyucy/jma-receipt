@@ -475,7 +475,6 @@
            INITIALIZE                  SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
            MOVE    "*"                 TO  SYS-1001-KBNCD
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -501,6 +500,45 @@
                MOVE    MCPDATA-REC         TO  SYS-1001-REC
       *        ≈‘∆ª…‹∏©∂Ë ¨
                MOVE    SYS-1001-PREFNUM    TO  SPA-NAI-PREFNUM
+      *        …¬±°ºÔ Ã
+               MOVE    SYS-1001-HOSPSBT    TO  SPA-HOSPSBT
+               MOVE    SYS-1001-ROUPAYKBN  TO  SPA-ROUPAYKBN
+      *        œ∑øÕ∏¯»Ò§ŒªŸ ß∂Ë ¨Õ—
+               MOVE    SYS-1001-HOSPSBT    TO  SPA-NAI-HOSPSBT
+               MOVE    SYS-1001-ROUPAYKBN  TO  SPA-NAI-ROUPAYKBN
+           END-IF
+      *
+      *    œ∑øÕ∏¯»Ò§ŒªŸ ß∂Ë ¨§Œ…¬±°ºÔ ÃºË∆¿°  ø¿Æ£±£¥«Ø£π∑ÓÀˆ°À
+           MOVE    SPACE               TO  SYS-1001-REC
+           INITIALIZE                  SYS-1001-REC
+           MOVE    "1001"              TO  SYS-1001-KANRICD
+           MOVE    "*"                 TO  SYS-1001-KBNCD
+           MOVE    SYS-1001-REC        TO  MCPDATA-REC
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    "20020930"          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"              USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
+               PERFORM 900-SYSTEM-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1001-REC
+      *        …¬±°ºÔ Ã
+               MOVE    SYS-1001-HOSPSBT    TO  SPA-NAI-HOSPSBT
+               MOVE    SYS-1001-ROUPAYKBN  TO  SPA-NAI-ROUPAYKBN
            END-IF
       *
       *    ∏∫Ã»ªˆÕ≥æ Û
@@ -2247,8 +2285,8 @@
            MOVE    PTKOH-TEKEDYMD      TO  WRK-TEKEDYMD
            IF     (WRK-HKNNUM          =   "027") AND
                   (WRK-PAYKBN          =   ZERO OR SPACE)
-               MOVE    SPA-HOSPSBT         TO  WRK-PAYKBN(1:1)
-               MOVE    SPA-ROUPAYKBN       TO  WRK-PAYKBN(2:1)
+               MOVE    SPA-NAI-HOSPSBT         TO  WRK-PAYKBN(1:1)
+               MOVE    SPA-NAI-ROUPAYKBN       TO  WRK-PAYKBN(2:1)
            END-IF
            PERFORM 1002211-HKNNUM-SET-SEC
            IF     (PTKOH-KOHNUM        =   "027" )  AND
