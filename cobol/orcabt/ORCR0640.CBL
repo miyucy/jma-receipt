@@ -4536,7 +4536,7 @@
                MOVE    NSRY-INPUTNUM(IDX2) TO  RECE65-INPUTNUM(IDX4)
                MOVE    NSRY-SRYCD(IDX2)    TO  WRK-SRYCD
                IF      NACCT-ZAISKBKBN      =       "7"
-                  MOVE     "199000510"     TO  WRK-SRYCD
+                  MOVE     199000510       TO  WRK-SRYCD
                END-IF
                MOVE    RECE65-SRYYM        TO  WK-TAIHI-SRYYM
                MOVE    WK-TAIHI-DAY        TO  WK-TAIHI-SRYD
@@ -4594,7 +4594,7 @@
                END-IF
                MOVE    NSRY-SRYCD(IDX2)  TO  WRK-SRYCD
                IF      NACCT-ZAISKBKBN      =       "7"
-                  MOVE     "199000510"   TO  WRK-SRYCD
+                  MOVE     199000510     TO  WRK-SRYCD
                END-IF
                COMPUTE   RECE64-RUIKEITOTAL  =
                          RECE64-RUIKEITOTAL  +
