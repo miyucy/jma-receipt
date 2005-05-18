@@ -671,7 +671,7 @@
                       IF   WRK-DAY1(IDY)   NOT =    ZERO    
                                MOVE    1      TO    FLG-SHOSAISIN
                       END-IF
-                      PERFORM   2201-RECE82-TENSOU11-SEC
+                      PERFORM   2202-RECE82-TENSOU11-SEC
                  END-IF
       *
            END-PERFORM
@@ -701,21 +701,21 @@
                                                FLG-KYUKYU
                         IF   ACCT-SRYKBN  =  "11"  OR
                                              "13"  OR  "14"
-                            PERFORM   2201-SHOSAISIN-HANTEI-SEC
+                            PERFORM   2203-SHOSAISIN-HANTEI-SEC
                         END-IF
                         IF   ACCT-SRYKBN  =  "11"   
-                            PERFORM   2201-KYUKYU-HANTEI-SEC
+                            PERFORM   2204-KYUKYU-HANTEI-SEC
                         END-IF
-                        PERFORM   2201-RECE82-TENSOU12-SEC
+                        PERFORM   2205-RECE82-TENSOU12-SEC
                    END-IF
                    IF   (ACCT-ZAITEN    =        ZERO)    AND
                         (ACCT-ZAIKAISU  NOT =    ZERO)
                         MOVE    ZERO     TO    FLG-SHOSAISIN
                                                FLG-KYUKYU
                         IF   ACCT-SRYKBN  =  "11"  OR  "99" 
-                            PERFORM   2201-SHOSAISIN-HANTEI-SEC
+                            PERFORM   2203-SHOSAISIN-HANTEI-SEC
                         END-IF
-                        PERFORM   2201-RECE82-TENSOU12-SEC
+                        PERFORM   2205-RECE82-TENSOU12-SEC
                    END-IF
                    MOVE     "SRYACCT-KEY22"  TO   ORC-DBPATH
                    PERFORM   900-SRYACCT-READ-SEC
@@ -782,20 +782,20 @@
       *****************************************************************
       *    レセプト中間ファイルの項目転送（Ｆ００２）
       *****************************************************************
-       2201-RECE82-TENSOU11-SEC                 SECTION.
+       2202-RECE82-TENSOU11-SEC                 SECTION.
       *
            IF   FLG-SHOSAISIN        =       1
                        MOVE    "1"   TO   TBL-JNISSU-DAY(IDY)
            END-IF
            .
-       2201-RECE82-TENSOU11-EXT.
+       2202-RECE82-TENSOU11-EXT.
            EXIT.
       *
       *****************************************************************
       *    診療会計テーブルの内容から診療行為テーブルを読み込み、
       *    診療実日数のカウントを行える剤であるかの判定
       *****************************************************************
-       2201-SHOSAISIN-HANTEI-SEC                 SECTION.
+       2203-SHOSAISIN-HANTEI-SEC                 SECTION.
       *
            INITIALIZE                           SRYACT-REC
            MOVE    ACCT-HOSPID          TO      SRY-HOSPID
@@ -855,14 +855,14 @@
       *
            .
       *
-       2201-SHOSAISIN-HANTEI-EXT.
+       2203-SHOSAISIN-HANTEI-EXT.
            EXIT.
       *
       *****************************************************************
       *    診療会計テーブルの内容から診療行為テーブルを読み込み、
       *    救急管理加算があるかの判定
       *****************************************************************
-       2201-KYUKYU-HANTEI-SEC                 SECTION.
+       2204-KYUKYU-HANTEI-SEC                 SECTION.
       *
            INITIALIZE                           SRYACT-REC
            MOVE    ACCT-HOSPID          TO      SRY-HOSPID
@@ -904,13 +904,13 @@
                                            MCPDATA-REC
            .
       *
-       2201-KYUKYU-HANTEI-EXT.
+       2204-KYUKYU-HANTEI-EXT.
            EXIT.
       *
       *****************************************************************
       *    レセプト中間ファイルの項目転送（Ｆ００２）
       *****************************************************************
-       2201-RECE82-TENSOU12-SEC                 SECTION.
+       2205-RECE82-TENSOU12-SEC                 SECTION.
       *
            IF   FLG-SHOSAISIN        =       1
               PERFORM    VARYING   IDY   FROM   1    BY   1
@@ -932,7 +932,7 @@
               END-PERFORM
            END-IF
            .
-       2201-RECE82-TENSOU12-EXT.
+       2205-RECE82-TENSOU12-EXT.
            EXIT.
       *
       *****************************************************************
@@ -963,7 +963,7 @@
       *
               END-PERFORM
       *
-              PERFORM   2301-RYAKUSYO-HENSYU-SEC
+              PERFORM   2302-RYAKUSYO-HENSYU-SEC
       *
            END-IF
       *
@@ -1080,7 +1080,7 @@
       *****************************************************************
       *    略称の編集
       *****************************************************************
-       2301-RYAKUSYO-HENSYU-SEC                SECTION.
+       2302-RYAKUSYO-HENSYU-SEC                SECTION.
       *
            PERFORM  VARYING  IDY2    FROM    1   BY  1
                       UNTIL  (IDY2    >   20)
@@ -1092,7 +1092,7 @@
            END-PERFORM
       *
            .
-       2301-RYAKUSYO-HENSYU-EXT.
+       2302-RYAKUSYO-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1232,10 +1232,10 @@
                        MOVE    ZERO     TO    WRK-TEN
                                               WRK-KIN
                                               WRK-KIN2
-                       PERFORM   2601-ENDATE-HANTEI-SEC
+                       PERFORM   2602-ENDATE-HANTEI-SEC
                        IF    RECE82-HKNKBN   =   "4"
                          IF   ACCT-SRYKBN  =  "80"
-                             PERFORM   2601-SINDAN-HANTEI-SEC
+                             PERFORM   2603-SINDAN-HANTEI-SEC
                          END-IF
       *
                          IF  WRK-TENTEK-FLG2  =   ZERO
@@ -1254,11 +1254,11 @@
                            IF  ACCT-DAY(1 IDY)   NOT =  ZERO
                                 MOVE  ACCT-DAY(1 IDY)  
                                        TO  WRK-ZAIKAISU-JI
-                                PERFORM  2601-SYUGITEN-HANTEI-SEC
+                                PERFORM  2604-SYUGITEN-HANTEI-SEC
                            END-IF
                          END-PERFORM
                        END-IF
-                       PERFORM   2601-RECE82-TENSOU9-SEC
+                       PERFORM   2605-RECE82-TENSOU9-SEC
                    END-IF
                    MOVE     "SRYACCT-KEY22"  TO   ORC-DBPATH
                    PERFORM   900-SRYACCT-READ-SEC
@@ -1363,7 +1363,7 @@
       *    診療会計テーブルの内容から診療行為テーブルを読み込み、
       *    円建て項目等であるかの判定
       *****************************************************************
-       2601-ENDATE-HANTEI-SEC                 SECTION.
+       2602-ENDATE-HANTEI-SEC                 SECTION.
       *
            INITIALIZE                           SRYACT-REC
            MOVE    ACCT-HOSPID          TO      SRY-HOSPID
@@ -1489,14 +1489,14 @@
                                            MCPDATA-REC
            .
       *
-       2601-ENDATE-HANTEI-EXT.
+       2602-ENDATE-HANTEI-EXT.
            EXIT.
       *
       *****************************************************************
       *    診療会計テーブルの内容から診療行為テーブルを読み込み、
       *    自賠責の診断書料・明細書料であるかの判定
       *****************************************************************
-       2601-SINDAN-HANTEI-SEC                 SECTION.
+       2603-SINDAN-HANTEI-SEC                 SECTION.
       *
            INITIALIZE                           SRYACT-REC
            MOVE    ACCT-HOSPID          TO      SRY-HOSPID
@@ -1607,14 +1607,14 @@
                                            MCPDATA-REC
            .
       *
-       2601-SINDAN-HANTEI-EXT.
+       2603-SINDAN-HANTEI-EXT.
            EXIT.
       *
       *****************************************************************
       *    診療会計テーブルの内容から診療行為テーブルを読み込み、
       *    日単位の手技点・薬剤点等をセット
       *****************************************************************
-       2601-SYUGITEN-HANTEI-SEC                 SECTION.
+       2604-SYUGITEN-HANTEI-SEC                 SECTION.
       *
            INITIALIZE                           SRYACT-REC
            MOVE    ACCT-HOSPID          TO      SRY-HOSPID
@@ -1784,13 +1784,13 @@
                                            MCPDATA-REC
            .
       *
-       2601-SYUGITEN-HANTEI-EXT.
+       2604-SYUGITEN-HANTEI-EXT.
            EXIT.
       *
       *****************************************************************
       *    レセプト中間ファイルの項目転送（Ｆ００２）
       *****************************************************************
-       2601-RECE82-TENSOU9-SEC                 SECTION.
+       2605-RECE82-TENSOU9-SEC                 SECTION.
       *
            IF        ACCT-SRYKBN   =    "90" OR "92" OR "95"  
                                              OR "96" OR "97"
@@ -1810,7 +1810,7 @@
                      MOVE  1        TO   WRK-TENTEK-FLG
                  END-IF
                  IF        ACCT-SRYKBN     =    "33"
-                     PERFORM   26011-TENTEK-SYUTEN-SEC
+                     PERFORM   26051-TENTEK-SYUTEN-SEC
                      COMPUTE   TOTALTEN-ACCT =  
                                TOTALTEN-ACCT +
                                WRK-TENTEK-SYUTEN
@@ -1844,13 +1844,13 @@
                END-IF
            END-IF
            .
-       2601-RECE82-TENSOU9-EXT.
+       2605-RECE82-TENSOU9-EXT.
            EXIT.
       *
       *****************************************************************
       *    点滴注射の手技点数算定
       *****************************************************************
-       26011-TENTEK-SYUTEN-SEC                    SECTION.
+       26051-TENTEK-SYUTEN-SEC                    SECTION.
       *
       *診療行為テーブルから診療種別区分の取得
            INITIALIZE                      SRYACT-REC
@@ -1895,7 +1895,7 @@
                                            MCPDATA-REC
       *
            .
-       26011-TENTEK-SYUTEN-EXT.
+       26051-TENTEK-SYUTEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2057,6 +2057,32 @@
            EXIT.
       *
       *****************************************************************
+      *    終了処理
+      *****************************************************************
+       300-TERM-SEC                SECTION.
+      *
+           CLOSE   RECE82-FILE
+      *
+      *    ステップ管理終了処理
+           MOVE    "STE"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
+      *
+           PERFORM 900-DBDISCONNECT-SEC
+      *
+           DISPLAY "RECE820 IN  :" CNT-IN
+           DISPLAY "        MOD :" CNT-MOD
+           DISPLAY "*** ORCR0830 END ***"
+           .
+       300-TERM-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC                SECTION.
@@ -2137,32 +2163,6 @@
            END-IF
            .
        500-CANCEL-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    終了処理
-      *****************************************************************
-       300-TERM-SEC                SECTION.
-      *
-           CLOSE   RECE82-FILE
-      *
-      *    ステップ管理終了処理
-           MOVE    "STE"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA  
-                                   JOBKANRI-REC
-      *
-           PERFORM 900-DBDISCONNECT-SEC
-      *
-           DISPLAY "RECE820 IN  :" CNT-IN
-           DISPLAY "        MOD :" CNT-MOD
-           DISPLAY "*** ORCR0830 END ***"
-           .
-       300-TERM-EXT.
            EXIT.
       *
       *****************************************************************
