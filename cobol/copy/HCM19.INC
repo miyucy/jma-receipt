@@ -25,6 +25,8 @@
             02  HCM19-FTNJA2N   PIC X(20).
             02  HCM19-JKYSNUM2  PIC X(14).
             02  HCM19-JKYSNUM2N PIC X(20).
-            02  HCM19-NAIYO PIC X(86)   OCCURS  20 TIMES.
+            02  HCM19-NAIYO
+                    PIC X(86)   OCCURS  20 TIMES.
             02  HCM19-MENJYO    PIC X(6).
-            02  HCM19-BIKOH PIC X(74)   OCCURS  9 TIMES.
+            02  HCM19-BIKOH
+                    PIC X(86)   OCCURS  9 TIMES.
