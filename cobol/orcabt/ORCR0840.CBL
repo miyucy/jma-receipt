@@ -61,6 +61,7 @@
       *  01.02.07    NACL-門脇    05/02/28  （サ）記載対応
       *  01.02.08    NACL-門脇    05/03/03  特記事項の編集修正
       *  01.02.09    NACL-門脇    05/03/03  食事に関する編集修正
+      *  01.02.10    NACL-門脇    05/05/16  療養担当手当（北海道）対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1168,11 +1169,6 @@
       *****************************************************************
        230-RECE84-HENSYU2-SEC                SECTION.
       *
-           MOVE       ZERO       TO       WRK-TEN
-                                          WRK-MEISAI-CNT
-                                          WRK-SRYCDTOTAL
-                                          WRK-SURYOUTOTAL
-      *
            INITIALIZE                            NYUINACCT-REC
            MOVE    RECE82-HOSPID         TO      NACCT-HOSPID
            MOVE    RECE82-NYUGAIKBN      TO      NACCT-NYUGAIKBN
@@ -1258,7 +1254,7 @@
                PERFORM  900-NYUINACCT-READ-SEC
                PERFORM  UNTIL  (FLG-NYUINACCT  =    "1") 
       *
-                 IF     NACCT-ZAISKBKBN    =     "4"  OR  "6"
+                 IF     NACCT-ZAISKBKBN    =     "4"  OR  "6"  OR "7"
       *
                       INITIALIZE          WRK-DAY-TABLE2
                                           WRK-SKJ-TABLE
@@ -1267,6 +1263,11 @@
                                                 CNT-DAY24
                       MOVE     ZERO       TO    FLG-DAY21
                                                 FLG-DAY24
+      *
+                      MOVE     ZERO       TO    WRK-TEN
+                                                WRK-MEISAI-CNT
+                                                WRK-SRYCDTOTAL
+                                                WRK-SURYOUTOTAL
       *
                       PERFORM  VARYING  IDY    FROM    1   BY  1
                                   UNTIL   IDY     >       31
@@ -1997,6 +1998,14 @@
       *
            MOVE    NACCT-SRYKBN         TO      RECE84-SRYKBN
            MOVE    NACCT-ZAISKBKBN      TO      RECE84-ZAISKBKBN
+           IF      NACCT-ZAISKBKBN      =       "7"
+              IF   RECE82-HKNKBN        =       "4"
+                MOVE     "40"           TO      RECE84-SRYKBN
+              ELSE
+                MOVE     "80"           TO      RECE84-SRYKBN
+              END-IF
+              MOVE      SPACE           TO      RECE84-ZAISKBKBN
+           END-IF
            MOVE    RECE82-PTNUM         TO      RECE84-PTNUM
       *
            MOVE    NACCT-SRYKA          TO      RECE84-SRYKA
@@ -2004,6 +2013,9 @@
            MOVE    SPACE                TO      RECE84-JIHOKBN
            MOVE    NACCT-ZAITEN         TO      RECE84-ZAITEN
            MOVE    NACCT-SRYCDTOTAL     TO      RECE84-SRYCDTOTAL
+           IF      NACCT-ZAISKBKBN      =       "7"
+                MOVE    199000510       TO      RECE84-SRYCDTOTAL
+           END-IF
            MOVE    NACCT-SURYOUTOTAL    TO      RECE84-SURYOUTOTAL
            MOVE    NACCT-MEISAISU       TO      RECE84-MEISAISU
            MOVE    CNT-DAY21            TO      RECE84-ZAIKAISU
@@ -2297,6 +2309,9 @@
                PERFORM  900-NYUINACT-READ-SEC
                PERFORM  UNTIL  (FLG-NYUINACT  =    "1")
                    PERFORM   23011-RECE85-TENSOU2-SEC
+                   IF      NACCT-ZAISKBKBN      =       "7"
+                      PERFORM   23012-RECE82-HENSYU2-SEC
+                   END-IF
                    PERFORM   900-RECE85-WRITE-SEC
                    MOVE          "NYUINACT-KEY9"  TO   ORC-DBPATH
                    PERFORM        900-NYUINACT-READ-SEC
@@ -3186,6 +3201,14 @@
            MOVE    NSRY-SRYKA           TO      RECE85-SRYKA
            MOVE    NSRY-SRYKBN          TO      RECE85-SRYKBN
            MOVE    NSRY-SRYSYUKBN       TO      RECE85-SRYSYUKBN
+           IF      NACCT-ZAISKBKBN      =       "7"
+              IF    RECE82-HKNKBN       =       "4"
+                 MOVE     "40"          TO      RECE85-SRYKBN
+              ELSE
+                 MOVE     "80"          TO      RECE85-SRYKBN
+              END-IF
+              MOVE       "800"          TO      RECE85-SRYSYUKBN
+           END-IF
            MOVE    NSRY-JIHIMONEYTOTAL  TO      RECE85-JIHIMONEY
       *
            MOVE    ZERO                 TO      IDX4
@@ -3196,12 +3219,18 @@
                                                   "8"
                ADD     1                   TO  IDX4    
                MOVE    NSRY-SRYCD(IDX2)    TO  RECE85-SRYCD(IDX4)
+               IF      NACCT-ZAISKBKBN      =       "7"
+                  MOVE     "199000510"     TO  RECE85-SRYCD(IDX4)
+               END-IF
                MOVE    NSRY-SRYSURYO(IDX2) TO  RECE85-SRYSURYO(IDX4)
                MOVE    NSRY-SRYKAISU(IDX2) TO  RECE85-SRYKAISU(IDX4)
                MOVE    SPACE               TO  RECE85-MEISKYFLG(IDX4)
                MOVE    NSRY-AUTOKBN(IDX2)  TO  RECE85-AUTOKBN(IDX4)
                MOVE    NSRY-INPUTNUM(IDX2) TO  RECE85-INPUTNUM(IDX4)
                MOVE    NSRY-SRYCD(IDX2)    TO  WRK-SRYCD
+               IF      NACCT-ZAISKBKBN      =       "7"
+                  MOVE     "199000510"     TO  WRK-SRYCD
+               END-IF
                MOVE    RECE85-SRYYM        TO  WK-TAIHI-SRYYM
                MOVE    WK-TAIHI-DAY        TO  WK-TAIHI-SRYD
                PERFORM    900-TENSU-TBL-SEC
@@ -3210,6 +3239,11 @@
                MOVE    TNS-TANINAME        TO  RECE85-TANINAME(IDX4)
                MOVE    TNS-TENSIKIBETU     TO  RECE85-TENSIKIBETU(IDX4)
                MOVE    TNS-TEN             TO  RECE85-TEN(IDX4)
+               IF    RECE82-HKNKBN    =  "4"
+               AND   NACCT-ZAISKBKBN  =  "7"
+                   MOVE  1                 TO  RECE85-TENSIKIBETU(IDX4)  
+                   MOVE  120               TO  RECE85-TEN(IDX4)
+               END-IF
                MOVE    TNS-NYUTENTTLKBN   TO    RECE85-TENTTLKBN(IDX4)
                MOVE    TNS-YUKOKETA       TO    RECE85-YUKOKETA(IDX4)
                MOVE    TNS-DATAKBN        TO    RECE85-DATAKBN (IDX4)
@@ -3239,13 +3273,52 @@
                ELSE
                    MOVE    TNS-NAME              TO  RECE85-NAME(IDX4)
                END-IF
-               MOVE     "1"                      TO  RECE85-SIKFLG(IDX4)
+               IF    RECE82-HKNKBN    =  "4"
+               AND   NACCT-ZAISKBKBN  =  "7"
+      *
+                 MOVE     1                 TO    WRK-MEISAI-CNT
+                 MOVE     TNS-TEN           TO    WRK-TEN
+                 MOVE     1                 TO    WRK-SURYOUTOTAL
+                 MOVE     199000510         TO    WRK-SRYCDTOTAL
+      *
+                 MOVE     "2"               TO    RECE85-SIKFLG(IDX4)
+               ELSE
+                 MOVE     "1"               TO    RECE85-SIKFLG(IDX4)
+               END-IF
+      *
+               MOVE    NSRY-SRYCD(IDX2)  TO  WRK-SRYCD
+               IF      NACCT-ZAISKBKBN      =       "7"
+                  MOVE     "199000510"   TO  WRK-SRYCD
+               END-IF
+               COMPUTE   RECE84-RUIKEITOTAL  =
+                         RECE84-RUIKEITOTAL  +
+                        (WRK-SRYCD  *  NSRY-SRYSURYO(IDX2))
       *
              END-IF  
            END-PERFORM
       *
            .
        23011-RECE85-TENSOU2-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト中間ファイルの項目転送（療養担当手当）
+      *****************************************************************
+       23012-RECE82-HENSYU2-SEC                SECTION.
+      *
+      *    その他のレセ点数欄の編集
+           IF    RECE82-HKNKBN       =       "4"
+                 COMPUTE    RECE82-KINGAKU3(3)  =
+                            RECE82-KINGAKU3(3)  +
+                           (120            *   CNT-DAY21)
+           ELSE
+                 COMPUTE    RECE82-TENSU(21)  =
+                            RECE82-TENSU(21)  +
+                           (NACCT-ZAITEN   *   CNT-DAY21)
+           END-IF
+      *
+           .
+       23012-RECE82-HENSYU2-EXT.
            EXIT.
       *
       *****************************************************************

@@ -54,6 +54,7 @@
       *                                     ÂÐ±þ
       *  01.01.03    NACL-Æ£¸¶    04/11/01  µ­ºÜ¤Ê¤·¤Î¸øÈñ¤Î½èÍý
       *  01.01.04    NACL-ÌçÏÆ    05/03/03  ¿©»ö¤Ë´Ø¤¹¤ëÊÔ½¸½¤Àµ
+      *  01.01.05    NACL-ÌçÏÆ    05/05/16  ÎÅÍÜÃ´Åö¼êÅö¡ÊËÌ³¤Æ»¡ËÂÐ±þ
       *****************************************************************
       *
       *
@@ -191,6 +192,8 @@
                05  WRK-DAY5                            PIC 9(04).
                05  WRK-DAY6                            PIC 9(04).
                05  WRK-DAY6-ZAITEN                     PIC 9(08).
+               05  WRK-DAY7                            PIC 9(04).
+               05  WRK-DAY7-ZAITEN                     PIC 9(08).
                05  WRK-ACCT90                          PIC 9(08).
       *
       *    °ì»þÎÎ°è
@@ -896,7 +899,7 @@
       *
                  IF     NACCT-ZAISKBKBN    =    "1"  OR  "2"  OR  
                                                 "4"  OR  "5"  OR
-                                                "6"   
+                                                "6"  OR  "7"
                        PERFORM    2001111-NYUIN-DAY-TAIHI-SEC
                  END-IF
       *
@@ -1058,6 +1061,11 @@
                     ELSE                                                
                       ADD    NACCT-ZAITEN   TO  WRK-DAY6-ZAITEN(IDY)
                     END-IF
+               END-IF 
+      *
+               IF     NACCT-ZAISKBKBN    =    "7"  
+                    MOVE   NACCT-DAY(IDY)   TO  WRK-DAY7(IDY) 
+                    ADD    NACCT-ZAITEN     TO  WRK-DAY7-ZAITEN(IDY)
                END-IF 
       *
              END-IF
@@ -2931,6 +2939,33 @@
                                            ORCMCPAREA
                                            MCPDATA-REC
       *
+      *    ÎÅÍÜÃ´Åö¼êÅö½¸·×
+      *
+           PERFORM  VARYING  IDY    FROM    1   BY  1
+                     UNTIL   IDY     >     31
+      *
+             IF   WRK-DAY1(IDY)   NOT =   ZERO
+      *
+                PERFORM  VARYING  IDX1    FROM    1   BY  1
+                          UNTIL   IDX1     >     10
+                           OR     RECE62-HKNCOMBI (IDX1)  =   ZERO
+      *
+                   IF   WRK-DAY5(IDY)  =  RECE62-HKNCOMBI (IDX1)
+                      IF  (WRK-DAY7(IDY)          NOT =  ZERO)
+                      AND (WRK-DAY7-ZAITEN(IDY)   NOT =  ZERO)
+                      AND (WRK-DAY2(IDY)              =  ZERO  OR  4)
+                           PERFORM 500-KUMIAWASE-HANBETU-SEC
+                           PERFORM 2001153-RECE62-TENSOU9-RYOYO-SEC
+                      END-IF
+                      MOVE    10    TO     IDX1
+                   END-IF
+      *
+                END-PERFORM
+      *
+             END-IF
+      *
+           END-PERFORM
+      *
            .
        200115-RECE62-HENSYU9-EXT.
            EXIT.
@@ -3213,6 +3248,69 @@
       *
            .
        20011521-TENTEK-SYUTEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÎÅÍÜÃ´Åö¼êÅöÅ¾Á÷
+      *****************************************************************
+       2001153-RECE62-TENSOU9-RYOYO-SEC               SECTION.
+      *
+           IF    (RECE62-HKNNUM          NOT =   SPACE)   OR
+                 (RECE62-RJNHKNNUM       NOT =   SPACE)
+      *
+                 COMPUTE  TBL-TOTALTEN-ACCT(1) =
+                          TBL-TOTALTEN-ACCT(1) +
+                          WRK-DAY7-ZAITEN(IDY)
+                 COMPUTE  TBL-TOTALTEN2-ACCT(1) =
+                          TBL-TOTALTEN2-ACCT(1) +
+                          WRK-DAY7-ZAITEN(IDY)
+      *
+           END-IF
+      *
+           MOVE       IDX1              TO   HC-IDX
+      *
+           MOVE       ZERO              TO   KH-IDX
+           PERFORM    VARYING   IDX2    FROM   1   BY   1
+                       UNTIL   (IDX2      >       4)
+               MOVE        ZERO          TO        KH-IDX
+               IF     RECE62-KOHNUMHC(HC-IDX IDX2)  NOT =  SPACE
+      *
+                 IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(1)
+                 AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(1)
+                      MOVE    2          TO        KH-IDX
+                 END-IF
+                 IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(2)
+                 AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(2)
+                      MOVE    3          TO        KH-IDX
+                 END-IF
+                 IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(3)
+                 AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(3)
+                      MOVE    4          TO        KH-IDX
+                 END-IF
+                 IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(4)
+                 AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(4)
+                      MOVE    5          TO        KH-IDX
+                 END-IF
+      *
+                 IF   KH-IDX             NOT =    ZERO
+                     IF     FLG-FUKUSHI =   1
+                     AND    RECE62-KOHNUM(KH-IDX - 1)(1:1)
+                                             >=  "1" AND <=  "8"
+                        CONTINUE
+                     ELSE
+                        COMPUTE  TBL-TOTALTEN-ACCT(KH-IDX) =
+                                 TBL-TOTALTEN-ACCT(KH-IDX) +
+                                 WRK-DAY7-ZAITEN(IDY)
+                     END-IF
+                     COMPUTE  TBL-TOTALTEN2-ACCT(KH-IDX) =
+                              TBL-TOTALTEN2-ACCT(KH-IDX) +
+                              WRK-DAY7-ZAITEN(IDY)
+                 END-IF
+               END-IF
+           END-PERFORM
+      *
+           .
+       2001153-RECE62-TENSOU9-RYOYO-EXT.
            EXIT.
       *
       *****************************************************************

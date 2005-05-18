@@ -39,6 +39,7 @@
       *  01.01.04    NACL-ÌçÏÆ    05/01/27  ¹ø¡¦¶»Éô¸ÇÄêÂÓ²Ã»»¡¢ÁÏ³°¸ÇÄê´ï
       *                                     »ÈÍÑ²Ã»»¤Îµ»½Ñ¡¦ÌôºÞÅù¤ÎÁªÂòÂÐ±þ
       *  01.01.05    NACL-ÌçÏÆ    05/03/03  ¿©»ö¤Ë´Ø¤¹¤ëÊÔ½¸½¤Àµ
+      *  01.01.06    NACL-ÌçÏÆ    05/05/16  ÎÅÍÜÃ´Åö¼êÅö¡ÊËÌ³¤Æ»¡ËÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -136,6 +137,8 @@
                05  WRK-DAY4                            PIC 9(04).
                05  WRK-DAY41                           PIC 9(04).
                05  WRK-DAY5                            PIC 9(04).
+               05  WRK-DAY7                            PIC 9(04).
+               05  WRK-DAY7-ZAITEN                     PIC 9(08).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -642,7 +645,8 @@
                PERFORM  UNTIL  (FLG-NYUINACCT  =    "1")
       *
                  IF     NACCT-ZAISKBKBN    =    "1"  OR  "2"  OR
-                                                "4"  OR  "5"
+                                                "4"  OR  "5"  OR
+                                                "7"
                        PERFORM    2201-NYUIN-DAY-TAIHI-SEC
                  END-IF
       *
@@ -761,6 +765,11 @@
       *
                IF     NACCT-ZAISKBKBN    =    "5"  
                     MOVE   NACCT-DAY(IDY)   TO  WRK-DAY5(IDY) 
+               END-IF 
+      *
+               IF     NACCT-ZAISKBKBN    =    "7"  
+                    MOVE   NACCT-DAY(IDY)   TO  WRK-DAY7(IDY) 
+                    ADD    NACCT-ZAITEN     TO  WRK-DAY7-ZAITEN(IDY)
                END-IF 
       *
              END-IF
@@ -1262,6 +1271,28 @@
                                            MCPAREA
                                            ORCMCPAREA
                                            MCPDATA-REC
+      *
+      *    ÎÅÍÜÃ´Åö¼êÅö½¸·×
+      *
+           PERFORM  VARYING  IDY    FROM    1   BY  1
+                     UNTIL   IDY     >     31
+      *
+              IF   WRK-DAY1(IDY)  NOT =  ZERO
+              AND  WRK-DAY5(IDY)      =  RECE82-HKNCOMBI
+                  IF  (WRK-DAY7(IDY)          NOT =  ZERO)
+                  AND (WRK-DAY7-ZAITEN(IDY)   NOT =  ZERO)
+                  AND (WRK-DAY2(IDY)              =  ZERO  OR  4)
+                     IF    RECE82-HKNKBN   =   "4"
+                        COMPUTE  TOTALKIN2-ACCT =  TOTALKIN2-ACCT
+                                                +  120
+                     ELSE
+                        COMPUTE  TOTALTEN-ACCT  =  TOTALTEN-ACCT
+                                                +  WRK-DAY7-ZAITEN(IDY)
+                     END-IF
+                  END-IF
+              END-IF
+      *
+           END-PERFORM
       *
            .
        260-RECE82-HENSYU9-EXT.

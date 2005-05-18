@@ -130,6 +130,7 @@
       *  01.03.02    NACL-小豆沢  05/03/24  老人理学療法摘要欄対応
       *  01.03.03    NACL-門脇    05/04/08  負担金額（一部負担額）編集
       *                                     修正
+      *  01.03.04    NACL-門脇    05/05/16  療養担当手当（北海道）対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3387,7 +3388,8 @@
                PERFORM  UNTIL  (FLG-NYUINACCT  =    "1") 
       *
                  IF     NACCT-ZAISKBKBN    =    "1"  OR  "2"  OR
-                                                "4"  OR  "6"
+                                                "4"  OR  "6"  OR
+                                                "7"
       *
                    MOVE     ZERO       TO    CNT-ZAIREN
       *
@@ -4378,6 +4380,10 @@
            MOVE    ZERO                 TO      RECE64-KOHBUNRI
            MOVE    NACCT-SRYKBN         TO      RECE64-SRYKBN
            MOVE    NACCT-ZAISKBKBN      TO      RECE64-ZAISKBKBN
+           IF      NACCT-ZAISKBKBN      =       "7"
+                MOVE     "80"           TO      RECE64-SRYKBN
+                MOVE    SPACE           TO      RECE64-ZAISKBKBN
+           END-IF
       *
            MOVE    ZERO                 TO      WRK-ZAINUM-CNT
            IF      NACCT-ZAISKBKBN      =  "1"
@@ -4406,6 +4412,9 @@
            MOVE    CNT-DAY21            TO      RECE64-ZAIKAISU
            MOVE    NACCT-SYUTEN1        TO      RECE64-SYUTEN1
            MOVE    NACCT-SRYCDTOTAL     TO      RECE64-SRYCDTOTAL
+           IF      NACCT-ZAISKBKBN      =       "7"
+                MOVE    199000510       TO      RECE64-SRYCDTOTAL
+           END-IF
            MOVE    NACCT-SURYOUTOTAL    TO      RECE64-SURYOUTOTAL
            MOVE    NACCT-SYUTEN2        TO      RECE64-SYUTEN2
            MOVE    NACCT-YKZTEN         TO      RECE64-YKZTEN
@@ -4454,6 +4463,9 @@
                PERFORM  900-NYUINACT-READ-SEC
                PERFORM  UNTIL  (FLG-NYUINACT  =    "1")
                    PERFORM   2102061-RECE65-TENSOU2-SEC
+                   IF      NACCT-ZAISKBKBN      =       "7"
+                      PERFORM   2102062-RECE62-HENSYU2-SEC
+                   END-IF
                    PERFORM   RECE65-WRITE-SEC
                    MOVE          "NYUINACT-KEY9"  TO   ORC-DBPATH
                    PERFORM        900-NYUINACT-READ-SEC
@@ -4500,6 +4512,10 @@
            MOVE    NSRY-SRYKA           TO      RECE65-SRYKA
            MOVE    NSRY-SRYKBN          TO      RECE65-SRYKBN
            MOVE    NSRY-SRYSYUKBN       TO      RECE65-SRYSYUKBN
+           IF      NACCT-ZAISKBKBN      =       "7"
+                MOVE     "80"           TO      RECE65-SRYKBN
+                MOVE     "800"          TO      RECE65-SRYSYUKBN
+           END-IF
            MOVE    NSRY-JIHIMONEYTOTAL  TO      RECE65-JIHIMONEY
       *
            MOVE    ZERO                 TO      IDX4
@@ -4510,12 +4526,18 @@
                                                   "8"
                ADD     1                   TO  IDX4    
                MOVE    NSRY-SRYCD(IDX2)    TO  RECE65-SRYCD(IDX4)
+               IF      NACCT-ZAISKBKBN      =       "7"
+                  MOVE     "199000510"     TO  RECE65-SRYCD(IDX4)
+               END-IF
                MOVE    NSRY-SRYSURYO(IDX2) TO  RECE65-SRYSURYO(IDX4)
                MOVE    NSRY-SRYKAISU(IDX2) TO  RECE65-SRYKAISU(IDX4)
                MOVE    SPACE               TO  RECE65-MEISKYFLG(IDX4)
                MOVE    NSRY-AUTOKBN(IDX2)  TO  RECE65-AUTOKBN(IDX4)
                MOVE    NSRY-INPUTNUM(IDX2) TO  RECE65-INPUTNUM(IDX4)
                MOVE    NSRY-SRYCD(IDX2)    TO  WRK-SRYCD
+               IF      NACCT-ZAISKBKBN      =       "7"
+                  MOVE     "199000510"     TO  WRK-SRYCD
+               END-IF
                MOVE    RECE65-SRYYM        TO  WK-TAIHI-SRYYM
                MOVE    WK-TAIHI-DAY        TO  WK-TAIHI-SRYD
                PERFORM    900-TENSU-TBL-SEC
@@ -4570,12 +4592,125 @@
                    END-IF
       *
                END-IF
-      *
+               MOVE    NSRY-SRYCD(IDX2)  TO  WRK-SRYCD
+               IF      NACCT-ZAISKBKBN      =       "7"
+                  MOVE     "199000510"   TO  WRK-SRYCD
+               END-IF
+               COMPUTE   RECE64-RUIKEITOTAL  =
+                         RECE64-RUIKEITOTAL  +
+                        (WRK-SRYCD  *  NSRY-SRYSURYO(IDX2))
              END-IF  
            END-PERFORM
       *
            .
        2102061-RECE65-TENSOU2-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト中間ファイルの項目転送（療養担当手当）
+      *****************************************************************
+       2102062-RECE62-HENSYU2-SEC                SECTION.
+      *
+      *    公費の分離表示用インデックスの確定
+           MOVE          ZERO       TO     BUN-IDX
+           IF    (RECE62-HKNNUM          NOT =   SPACE)   OR
+                 (RECE62-RJNHKNNUM       NOT =   SPACE)
+           MOVE          1          TO     BUN-IDX
+           END-IF
+      *    インデックス２
+           MOVE          ZERO       TO     BUN-IDX2
+           IF  RECE62-HENTOTALTEN(2)       =      ZERO
+               CONTINUE
+           ELSE
+               IF (RECE62-HENTOTALTEN(2)   NOT =  ZERO)              AND
+                  (RECE62-HENTOTALTEN(1)   NOT =  RECE62-HENTOTALTEN(2))
+                   MOVE       IDX1              TO   HC-IDX
+                   PERFORM    VARYING   IDX2    FROM   1   BY   1
+                      UNTIL   (IDX2      >       4)
+                    IF     RECE62-KOHNUMHC(HC-IDX IDX2) NOT =  SPACE
+                      IF   RECE62-KOHNUMHC(HC-IDX IDX2) =
+                                                   RECE62-KOHNUM(1)
+                      AND  RECE62-KOHIDHC(HC-IDX IDX2)  =
+                                                   RECE62-KOHID(1)
+                           IF      RECE62-RECESKYKBN (1)       =   SPACE
+                               MOVE      2       TO     BUN-IDX2
+                           END-IF
+                      END-IF
+                    END-IF
+                   END-PERFORM
+               END-IF
+           END-IF
+      *    インデックス３
+           MOVE          ZERO       TO     BUN-IDX3
+           IF  RECE62-HENTOTALTEN(3)       =      ZERO
+               CONTINUE
+           ELSE
+               IF (RECE62-HENTOTALTEN(3)   NOT =  ZERO)              AND
+                  (RECE62-HENTOTALTEN(1)   NOT =  RECE62-HENTOTALTEN(3))
+                   MOVE       IDX1              TO   HC-IDX
+                   PERFORM    VARYING   IDX2    FROM   1   BY   1
+                      UNTIL   (IDX2      >       4)
+                    IF     RECE62-KOHNUMHC(HC-IDX IDX2) NOT =  SPACE
+                      IF   RECE62-KOHNUMHC(HC-IDX IDX2) =
+                                                   RECE62-KOHNUM(2)
+                      AND  RECE62-KOHIDHC(HC-IDX IDX2)  =
+                                                   RECE62-KOHID(2)
+                           IF      RECE62-RECESKYKBN (2)       =   SPACE
+                               MOVE      3       TO     BUN-IDX3
+                           END-IF
+                      END-IF
+                    END-IF
+                   END-PERFORM
+               END-IF
+           END-IF
+      *    インデックス４
+           MOVE          ZERO       TO     BUN-IDX4
+           IF  RECE62-HENTOTALTEN(4)       =      ZERO
+               CONTINUE
+           ELSE
+               IF (RECE62-HENTOTALTEN(4)   NOT =  ZERO)              AND
+                  (RECE62-HENTOTALTEN(1)   NOT =  RECE62-HENTOTALTEN(4))
+                   MOVE       IDX1              TO   HC-IDX
+                   PERFORM    VARYING   IDX2    FROM   1   BY   1
+                      UNTIL   (IDX2      >       4)
+                    IF     RECE62-KOHNUMHC(HC-IDX IDX2) NOT =  SPACE
+                      IF   RECE62-KOHNUMHC(HC-IDX IDX2) =
+                                                   RECE62-KOHNUM(3)
+                      AND  RECE62-KOHIDHC(HC-IDX IDX2)  =
+                                                   RECE62-KOHID(3)
+                           IF      RECE62-RECESKYKBN (3)       =   SPACE
+                               MOVE      4       TO     BUN-IDX4
+                           END-IF
+                      END-IF
+                    END-IF
+                   END-PERFORM
+               END-IF
+           END-IF
+      *
+      *    その他のレセ点数欄の編集
+           IF    BUN-IDX        =   1
+                   COMPUTE   RECE62-TENSU(21 BUN-IDX)  =
+                             RECE62-TENSU(21 BUN-IDX)  +
+                            (NACCT-ZAITEN   *   CNT-DAY21)
+           END-IF
+           IF    BUN-IDX2       =   2
+                   COMPUTE   RECE62-TENSU(21 BUN-IDX2)  =
+                             RECE62-TENSU(21 BUN-IDX2)  +
+                            (NACCT-ZAITEN   *   CNT-DAY21)
+           END-IF
+           IF    BUN-IDX3       =   3
+                   COMPUTE   RECE62-TENSU(21 BUN-IDX3)  =
+                             RECE62-TENSU(21 BUN-IDX3)  +
+                            (NACCT-ZAITEN   *   CNT-DAY21)
+           END-IF
+           IF    BUN-IDX4       =   4
+                   COMPUTE   RECE62-TENSU(21 BUN-IDX4)  =
+                             RECE62-TENSU(21 BUN-IDX4)  +
+                            (NACCT-ZAITEN   *   CNT-DAY21)
+           END-IF
+      *
+           .
+       2102062-RECE62-HENSYU2-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5662,6 +5797,10 @@
            MOVE    TNS-KOUHYOJYUNNUM  
                                        TO  RECE65-KOUHYOJYUNNUM(1)
            MOVE    TNS-NAME            TO  RECE65-NAME(1)
+      *
+           MOVE    RECE65-SRYCD(1)     TO  WRK-SRYCD
+           COMPUTE   RECE64-RUIKEITOTAL  =
+                     RECE64-RUIKEITOTAL  +  WRK-SRYCD
       *
            .
        210217-RECE65-TENSOU2-MIJ-EXT.
