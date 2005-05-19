@@ -557,26 +557,38 @@
        01  TGENZAN-AREA.
            03  TGENZAN-VAL.
                05  TGENZAN-INNAI-G.
+                   07  TGENZAN-INNAI-SRYCD         PIC X(09).
                    07  TGENZAN-INNAI-SRY-DAY       PIC 9(01)
+                                                   OCCURS  31.
+                   07  TGENZAN-INNAI-NSRY-DAY      PIC 9(01)
                                                    OCCURS  31.
                    07  TGENZAN-INNAI-ERR-CNT       PIC 9(02).
                    07  TGENZAN-INNAI-ERR-DAY       PIC 9(01)
                                                    OCCURS  31.
                05  TGENZAN-ANZEN-G.
+                   07  TGENZAN-ANZEN-SRYCD         PIC X(09).
                    07  TGENZAN-ANZEN-SRY-DAY       PIC 9(01)
+                                                   OCCURS  31.
+                   07  TGENZAN-ANZEN-NSRY-DAY      PIC 9(01)
                                                    OCCURS  31.
                    07  TGENZAN-ANZEN-ERR-CNT       PIC 9(02).
                    07  TGENZAN-ANZEN-ERR-DAY       PIC 9(01)
                                                    OCCURS  31.
                05  TGENZAN-JOKUSO-G.
+                   07  TGENZAN-JOKUSO-SRYCD        PIC X(09).
                    07  TGENZAN-JOKUSO-SRY-DAY      PIC 9(01)
+                                                   OCCURS  31.
+                   07  TGENZAN-JOKUSO-NSRY-DAY     PIC 9(01)
                                                    OCCURS  31.
                    07  TGENZAN-JOKUSO-ERR-CNT      PIC 9(02).
                    07  TGENZAN-JOKUSO-ERR-DAY      PIC 9(01)
                                                    OCCURS  31.
            03  TGENZAN-R   REDEFINES   TGENZAN-VAL.
                05  TGENZAN-OCC                     OCCURS  3.
+                   07  TGENZAN-SRYCD               PIC X(09).
                    07  TGENZAN-SRY-DAY             PIC 9(01)
+                                                   OCCURS  31.
+                   07  TGENZAN-NSRY-DAY            PIC 9(01)
                                                    OCCURS  31.
                    07  TGENZAN-ERR-CNT             PIC 9(02).
                    07  TGENZAN-ERR-DAY-G.
@@ -713,23 +725,7 @@
                                                    VALUE   "1 111".
            03  CONST-NBHOUKTCD                     PIC X(09)
                                                    VALUE   "099600801".
-           03  CONST-GENZAN-G.
-               05  CONST-GENZAN-VAL.
-                   07  CONST-GENZAN-INNAI-SRYCD    PIC X(09).
-                   07  CONST-GENZAN-INNAI-DAY      PIC 9(01)
-                                                   OCCURS  31.
-                   07  CONST-GENZAN-ANZEN-SRYCD    PIC X(09).
-                   07  CONST-GENZAN-ANZEN-DAY      PIC 9(01)
-                                                   OCCURS  31.
-                   07  CONST-GENZAN-JOKUSO-SRYCD   PIC X(09).
-                   07  CONST-GENZAN-JOKUSO-DAY     PIC 9(01)
-                                                   OCCURS  31.
-               05  CONST-GENZAN-R  REDEFINES   CONST-GENZAN-VAL.
-                   07  CONST-GENZAN-OCC            OCCURS  3.
-                       09  CONST-GENZAN-SRYCD      PIC X(09).
-                       09  CONST-GENZAN-DAY        PIC 9(01)
-                                                   OCCURS  31.
-           03  CONST-GENZAN-MAX                    PIC 9(05)
+           03  CONST-GENZAN-MAX                    PIC 9(03)
                                                    VALUE   3.
       *
       *    エラーメッセージ
@@ -802,7 +798,7 @@
            COPY    "CPSK2005.INC".
       *
       *    入院基本情報
-           COPY    "CPSK5000.INC".
+      *    COPY    "CPSK5000.INC".
       *
       *    患者病名
        01  PTBYOMEI-REC.
@@ -959,9 +955,6 @@
       *
       *    レセプト編集区分取得処理
            PERFORM 1001-SYS2005-GET-SEC
-      *
-      *    減算情報取得処理
-           PERFORM 1001-GENZAN-GET-SEC
       *
            OPEN    INPUT               DCACCT-FILE
                                        DCSRY-FILE
@@ -1352,85 +1345,6 @@
       *
            .
        1001-SYS2005-GET-EXT.
-           EXIT.
-      *****************************************************************
-      *    減算情報取得処理
-      *****************************************************************
-       1001-GENZAN-GET-SEC             SECTION.
-      *
-           INITIALIZE                  CONST-GENZAN-G.
-      *
-           MOVE    "190080570"         TO  CONST-GENZAN-INNAI-SRYCD
-           MOVE    "190111690"         TO  CONST-GENZAN-ANZEN-SRYCD
-           MOVE    "190111790"         TO  CONST-GENZAN-JOKUSO-SRYCD
-      *
-           MOVE    ZERO                TO  FLG-SYSKANRI
-      *
-           INITIALIZE                      SYS-5000-REC
-           MOVE    "5000"              TO  SYS-5000-KANRICD
-           MOVE    "*%"                TO  SYS-5000-KBNCD
-           MOVE    SYS-5000-REC        TO  MCPDATA-REC
-           MOVE    PATH-TBL-SYSKANRI-KEY4  TO  MCP-PATH
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  SYS-5000-REC
-           ELSE
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-      *
-           PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
-      *
-      *
-               IF    ( ORCBSD01-SRYYM  >=  SYS-5000-STYUKYMD (1:6))
-                AND  ( ORCBSD01-SRYYM  <=  SYS-5000-EDYUKYMD (1:6))
-      *
-                   MOVE    01          TO  WRK-STIDX
-                   MOVE    31          TO  WRK-EDIDX
-      *
-                   IF    ( ORCBSD01-SRYYM  =    SYS-5000-STYUKYMD (1:6))
-                       MOVE    SYS-5000-STYUKYMD (7:2)
-                                       TO  WRK-STIDX
-                   END-IF
-      *
-                   IF    ( ORCBSD01-SRYYM  =    SYS-5000-EDYUKYMD (1:6))
-                       MOVE    SYS-5000-EDYUKYMD (7:2)
-                                       TO   WRK-EDIDX
-                   END-IF
-      *
-                   PERFORM VARYING IDX0    FROM    WRK-STIDX   BY  1
-                           UNTIL ( IDX0        >   WRK-EDIDX )
-                       IF    ( SYS-5000-GENKBN (2) =   "2" )
-                           MOVE    1   TO   CONST-GENZAN-INNAI-DAY
-                                                                  (IDX0)
-                       END-IF
-                       IF    ( SYS-5000-GENKBN (3) =   "2" )
-                           MOVE    1   TO   CONST-GENZAN-ANZEN-DAY
-                                                                  (IDX0)
-                       END-IF
-                       IF    ( SYS-5000-GENKBN (4) =   "2" )
-                           MOVE    1   TO   CONST-GENZAN-JOKUSO-DAY
-                                                                  (IDX0)
-                       END-IF
-                   END-PERFORM
-      *
-               END-IF
-      *
-               MOVE    PATH-TBL-SYSKANRI-KEY4  TO  MCP-PATH
-               PERFORM 910-DBFETCH-SEC
-               IF    ( MCP-RC          =   ZERO )
-                   MOVE    MCPDATA-REC TO  SYS-5000-REC
-               ELSE
-                   MOVE    1           TO  FLG-SYSKANRI
-               END-IF
-      *
-           END-PERFORM
-      *
-           MOVE    PATH-TBL-SYSKANRI-KEY4  TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
-      *
-      *
-           .
-       1001-GENZAN-GET-EXT.
            EXIT.
       *****************************************************************
       *    主処理
@@ -2267,6 +2181,10 @@
       *****************************************************************
        200111-TGENZAN-SRY-HEN-SEC      SECTION.
       *
+           MOVE    "190080570"         TO  TGENZAN-INNAI-SRYCD
+           MOVE    "190111690"         TO  TGENZAN-ANZEN-SRYCD
+           MOVE    "190111790"         TO  TGENZAN-JOKUSO-SRYCD
+      *
            EVALUATE    DCSRY-SRYCD
       *
       *    院内感染防止対策未実施減算
@@ -2275,7 +2193,11 @@
                PERFORM VARYING IDX0    FROM    1   BY  1
                        UNTIL ( IDX0    >   31 )
                    IF    ( PTZAI-DAY (IDX-ZAI IDX0)   >   ZERO )
-                       MOVE    1       TO  TGENZAN-INNAI-SRY-DAY (IDX0)
+                       IF    ( DCACCT-ACCTKBN  =   "1" )
+                           MOVE    1   TO  TGENZAN-INNAI-SRY-DAY (IDX0)
+                       ELSE
+                           MOVE    1   TO  TGENZAN-INNAI-NSRY-DAY(IDX0)
+                       END-IF
                    END-IF
                END-PERFORM
       *
@@ -2285,7 +2207,11 @@
                PERFORM VARYING IDX0    FROM    1   BY  1
                        UNTIL ( IDX0    >   31 )
                    IF    ( PTZAI-DAY (IDX-ZAI IDX0)   >   ZERO )
-                       MOVE    1       TO  TGENZAN-ANZEN-SRY-DAY (IDX0)
+                       IF    ( DCACCT-ACCTKBN  =   "1" )
+                           MOVE    1   TO  TGENZAN-ANZEN-SRY-DAY (IDX0)
+                       ELSE
+                           MOVE    1   TO  TGENZAN-ANZEN-NSRY-DAY(IDX0)
+                       END-IF
                    END-IF
                END-PERFORM
       *
@@ -2295,7 +2221,11 @@
                PERFORM VARYING IDX0    FROM    1   BY  1
                        UNTIL ( IDX0    >   31 )
                    IF    ( PTZAI-DAY (IDX-ZAI IDX0)   >   ZERO )
-                       MOVE    1       TO  TGENZAN-JOKUSO-SRY-DAY (IDX0)
+                       IF    ( DCACCT-ACCTKBN  =   "1" )
+                           MOVE    1   TO  TGENZAN-JOKUSO-SRY-DAY (IDX0)
+                       ELSE
+                           MOVE    1   TO  TGENZAN-JOKUSO-NSRY-DAY(IDX0)
+                       END-IF
                    END-IF
                END-PERFORM
            END-EVALUATE
@@ -5501,8 +5431,8 @@
                PERFORM VARYING IDX0    FROM    1   BY  1
                        UNTIL ( IDX0    >   31 )
       *
-                   IF    ( CONST-GENZAN-DAY (IDX21 IDX0)    =   1 )
-                    AND  ( TGENZAN-SRY-DAY  (IDX21 IDX0)    =   1 )
+                   IF    ( TGENZAN-SRY-DAY  (IDX21 IDX0)    =   1 )
+                    AND  ( TGENZAN-NSRY-DAY (IDX21 IDX0)    =   1 )
       *
                        COMPUTE TGENZAN-ERR-CNT (IDX21)
                            =   TGENZAN-ERR-CNT (IDX21)     +   1
@@ -5515,7 +5445,7 @@
       *
                IF    ( TGENZAN-ERR-CNT (IDX21) >   ZERO )
       *
-                   MOVE    CONST-GENZAN-SRYCD (IDX21)
+                   MOVE    TGENZAN-SRYCD (IDX21)
                                                TO  WRK-SRYCD
                    MOVE    WRK-KJNYMD          TO  WRK-TNS-YMD
                    PERFORM 900-TENSU-KEY-SEL-SEC
