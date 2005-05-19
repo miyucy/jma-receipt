@@ -98,4 +98,6 @@
            03  ORCSTEN-ERRCD           PIC 9(01).
       *更新フラグ（１：変更あり）
            03  ORCSTEN-HENFLG          PIC 9(01).
+      *更新フラグ２（１：削除エラー）
+           03  ORCSTEN-HENFLG2         PIC 9(01).
       *
