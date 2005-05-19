@@ -2311,7 +2311,7 @@
       *                手術はないものとする
                        MOVE    ZERO            TO  TBL-IVH-SYU-DAY(IDY)
                    END-IF
-                   IF      TBL-CHUSYA-2 (IDY)  >   ZERO
+                   IF      TBL-IVH-CHUSYA-2 (IDY)  >   ZERO
                        MOVE    TBL-IVH-CHUSYA-2 (IDY)
                                                TO  TBL-IVH-CHUSYA (IDY)
                        MOVE    TBL-IVH-SEIBUTU-2(IDY)

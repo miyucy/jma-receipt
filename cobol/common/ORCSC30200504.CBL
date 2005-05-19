@@ -2268,7 +2268,7 @@
       *                手術はないものとする
                        MOVE    ZERO            TO  TBL-IVH-SYU-DAY(IDY)
                    END-IF
-                   IF      TBL-CHUSYA-2 (IDY)  >   ZERO
+                   IF      TBL-IVH-CHUSYA-2 (IDY)  >   ZERO
                        MOVE    TBL-IVH-CHUSYA-2 (IDY)
                                                TO  TBL-IVH-CHUSYA (IDY)
                        MOVE    TBL-IVH-SEIBUTU-2(IDY)
@@ -2294,7 +2294,7 @@
                       (TBL-IVH-SRYCD  (IDY)    =   SPACE )  AND
                       (TBL-IVH-DAY    (IDY)    >   ZERO )  AND
                       (TBL-IVH-SYU-DAY(IDY)    =   ZERO )
-      *           点滴がない時
+      *            点滴がない時
                    IF    ((TBL-TEN-IDX   (IDY)     >   ZERO  )  OR
                           (TBL-TEN-SRYCD (IDY)     =   SPACE )) AND
                           (TBL-TEN-SRYCD2(IDY)     =   SPACE )
