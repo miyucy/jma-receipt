@@ -209,6 +209,10 @@
                05  TBL-MADOKU          PIC 9(01).
                05  TBL-MADOKU-IDX      PIC 9(04).
                05  TBL-MADOKU-ARI      PIC X(09).
+      *        手術以外液量
+               05  TBL-CHUSYA-2        PIC 9(09)V99.
+               05  TBL-SEIBUTU-2       PIC 9(01).
+               05  TBL-MADOKU-2        PIC 9(01).
       *
       *   中心静脈
        01  TBL-IVH-NISUU-AREA.
@@ -220,6 +224,8 @@
                05  TBL-IVH-CHUIDX          PIC 9(04).
       *
                05  TBL-IVHA-SRYCD          PIC X(09).
+      *        手術有無
+               05  TBL-IVH-SYU-DAY         PIC 9(01).
       *
       *        生物学的製剤
                05  TBL-IVH-SEIBUTU         PIC 9(01).
@@ -231,6 +237,10 @@
                05  TBL-IVH2-SEIBUTU        PIC 9(01).
       *        麻毒加算
                05  TBL-IVH2-MADOKU         PIC 9(01).
+      *    手術以外液量
+               05  TBL-IVH-CHUSYA-2        PIC 9(09)V99.
+               05  TBL-IVH-SEIBUTU-2       PIC 9(01).
+               05  TBL-IVH-MADOKU-2        PIC 9(01).
       *
        01  WRK-SONOTA.
            03  WRK-ERRCD           PIC X(04). 
@@ -426,6 +436,8 @@
                        CONTINUE
                    WHEN    "."
                        IF      WRK-GMN-INPUTCD(IDX-Z)  =   ".350"
+                                                       OR  ".332"
+                                                       OR  ".352"
                            IF     SPA-NYUGAIKBN        =   "2"
                                MOVE    "9024"          TO  WRK-ERRCD
                                MOVE    "1"             TO  WRK-COM-CUR
@@ -1302,7 +1314,6 @@
            .
        300-AUTO-SYORI-EXT.
            EXIT.
-      *
       *****************************************************************
       *    入院の時、点滴手技料自動発生処理
       *****************************************************************
@@ -1319,13 +1330,14 @@
                               (WRK-COM-INPUTCD(IDX)  =   SPACE ))
       *        点滴の時のみ
                IF      WRK-COM-SRYSYUKBN (IDX)     =   "330"
-                                                   OR  "333"
+                                                   OR  "332"
                    MOVE    1                   TO  FLG-OK
                    PERFORM VARYING     IDY     FROM    1   BY  1
                            UNTIL       IDY     >   31
                        IF      WRK-COM-NYUINDAY (IDX IDY)  >   ZERO
                            MOVE    WRK-COM-NYUINDAY(IDX IDY)
                                                    TO  TBL-DAY(IDY)
+                        IF      WRK-COM-SRYSYUKBN (IDX)     =   "330"
       *                    液量集計
                            IF      WRK-COM-INPUTCD(IDX)(1:1)   =   "6"
                                COMPUTE TBL-CHUSYA (IDY)
@@ -1343,6 +1355,26 @@
                                                                    (IDY)
                                END-IF
                            END-IF
+                        ELSE
+      *                 手術以外
+      *                    液量集計
+                           IF      WRK-COM-INPUTCD(IDX)(1:1)   =   "6"
+                               COMPUTE TBL-CHUSYA-2 (IDY)
+                                               = (WRK-COM-CSYYOURYO(IDX)
+                                               *   WRK-COM-SURYO  (IDX))
+                                               +   TBL-CHUSYA-2 (IDY)
+      *                        生物学的製剤区分
+                               IF      WRK-COM-SEIBUTUKBN(IDX)   =   1
+                                   MOVE    1           TO  TBL-SEIBUTU-2
+                                                                   (IDY)
+                               END-IF
+      *                        麻毒
+                               IF      WRK-COM-MADOKUKBN(IDX)  =   1
+                                   MOVE    1           TO  TBL-MADOKU-2
+                                                                   (IDY)
+                               END-IF
+                           END-IF
+                        END-IF
       *                    手技
                            IF     (WRK-COM-INPUTCD(IDX)(1:1)  =   "1")
                            AND    (WRK-COM-DATAKBN(IDX)       =   "1")
@@ -1364,13 +1396,14 @@
       *
       *        中心静脈の薬剤
                IF      WRK-COM-SRYSYUKBN (IDX)     =   "350"
-                                                   OR  "353"
+                                                   OR  "352"
                    MOVE    1                   TO  FLG-OK
                    PERFORM VARYING     IDY     FROM    1   BY  1
                            UNTIL       IDY     >   31
                        IF      WRK-COM-NYUINDAY (IDX IDY)  >   ZERO
                            MOVE    WRK-COM-NYUINDAY(IDX IDY)
                                                    TO  TBL-IVH-DAY(IDY)
+                         IF      WRK-COM-SRYSYUKBN (IDX)     =   "350"
       *                    液量集計
                            IF      WRK-COM-INPUTCD(IDX)(1:1)   =   "6"
                                COMPUTE TBL-IVH-CHUSYA (IDY)
@@ -1391,6 +1424,28 @@
                                                                    (IDY)
                                END-IF
                            END-IF
+                         ELSE
+      *                    手術以外
+                           IF      WRK-COM-INPUTCD(IDX)(1:1)   =   "6"
+                               COMPUTE TBL-IVH-CHUSYA-2 (IDY)
+                                               =   WRK-COM-SURYO  (IDX)
+                                               +   TBL-IVH-CHUSYA-2(IDY)
+                               IF      TBL-IVH-CHUIDX (IDY)    =   ZERO
+                                   MOVE    IDX       TO  TBL-IVH-CHUIDX
+                                                                 (IDY)
+                               END-IF
+      *                        生物学的製剤区分
+                               IF      WRK-COM-SEIBUTUKBN(IDX)   =   1
+                                   MOVE    1       TO  TBL-IVH-SEIBUTU-2
+                                                                   (IDY)
+                               END-IF
+      *                        麻毒
+                               IF      WRK-COM-MADOKUKBN(IDX)  =   1
+                                   MOVE    1       TO  TBL-IVH-MADOKU-2
+                                                                   (IDY)
+                               END-IF
+                           END-IF
+                         END-IF
                        END-IF
                    END-PERFORM
                END-IF
@@ -1448,6 +1503,14 @@
            END-IF
       *
            MOVE    ZERO                TO  IDXS
+      *
+      *    手術に関係ない点滴の編集
+           IF     (FLG-OK              =   ZERO  )  OR
+                  (SPA-ERRCD       NOT =   SPACE )
+               CONTINUE
+           ELSE
+               PERFORM 3007-TENTEKI-HEN-SEC
+           END-IF
       *
       *    中心静脈発生チェック
            IF     (FLG-OK              =   ZERO  )  OR
@@ -1777,7 +1840,7 @@
                                   (SRY-SRYCD(IDX2)     =   SPACE )
                    IF     (SRY-SRYCD (IDX2)(1:1)   =   "6" )  AND
                           (SRY-SRYSYUKBN           =   "330"
-                                                   OR  "333"
+                                                   OR  "332"
                                                    OR  "350"
                                                    OR  "353" )
       *                点数マスタより、液量取得
@@ -1858,7 +1921,11 @@
                    UNTIL       IDY     >   31
                IF     (ACCT-DAY (1 IDY)    >   ZERO )  AND
                       (TBL-DAY  (IDY)      >   ZERO )
+                 IF      WRK-SRYSYUKBN       =   "330"
                    ADD     WRK-GOK-RYOU    TO  TBL-CHUSYA (IDY)
+                 ELSE
+                   ADD     WRK-GOK-RYOU    TO  TBL-CHUSYA-2 (IDY)
+                 END-IF
                END-IF
                IF      ACCT-DAY (1 IDY)    >   ZERO
                    IF      WRK-TEN-SRYCD   NOT =   SPACE
@@ -1886,14 +1953,22 @@
                    END-IF
       *            生物学的製剤区分
                    IF      FLG-SEIBUTU         =   1
+                     IF      WRK-SRYSYUKBN       =   "330"
                        MOVE    1               TO  TBL-SEIBUTU (IDY)
+                     ELSE
+                       MOVE    1               TO  TBL-SEIBUTU-2(IDY)
+                     END-IF
                    END-IF
                    IF      WRK-TEN-SRYCD2  NOT =   SPACE
                        MOVE    WRK-TEN-SRYCD2  TO  TBL-SEIBUTU-ARI(IDY)
                    END-IF
       *            麻毒
                    IF      FLG-MADOKU          =   1
+                     IF      WRK-SRYSYUKBN       =   "330"
                        MOVE    1               TO  TBL-MADOKU (IDY)
+                     ELSE
+                       MOVE    1               TO  TBL-MADOKU-2(IDY)
+                     END-IF
                    END-IF
                    IF      WRK-TEN-SRYCD3  NOT =   SPACE
                        MOVE    WRK-TEN-SRYCD3  TO  TBL-MADOKU-ARI(IDY)
@@ -1903,7 +1978,6 @@
            .
        300111-TENTEKI-TBL-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *     中心静脈の日別の液量集計処理
@@ -1964,11 +2038,11 @@
                END-IF
       *        手技料点数がないものは対象外
                IF      ACCT-SYUTEN1        =   ZERO
-                   MOVE    ZERO               TO  FLG-ZAIARI
+                   MOVE    ZERO                TO  FLG-ZAIARI
                END-IF
       *        包括まとめは対象外
                IF      ACCT-HKNCOMBI           =   "9999"
-                   MOVE    ZERO               TO  FLG-ZAIARI
+                   MOVE    ZERO                TO  FLG-ZAIARI
                END-IF
       *        輸血の判定
                IF      FLG-ZAIARI          =   1
@@ -2088,7 +2162,7 @@
                END-IF
       *        包括まとめは対象外
                IF      ACCT-HKNCOMBI           =   "9999"
-                   MOVE    ZERO               TO  FLG-ZAIARI
+                   MOVE    ZERO                TO  FLG-ZAIARI
                END-IF
                IF      FLG-ZAIARI         =   1
       *            診療行為より液量集計
@@ -2182,6 +2256,76 @@
            EXIT.
       *
       *****************************************************************
+      *    手術に関係ない点滴の編集処理
+      *****************************************************************
+       3007-TENTEKI-HEN-SEC         SECTION.
+      *
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL       IDY     >   31
+      *        手術日をＩＶＨ用に編集
+               MOVE    TBL-SYU-DAY(IDY)    TO  TBL-IVH-SYU-DAY(IDY)
+               IF      TBL-SYU-DAY   (IDY)     =   ZERO
+      *            手術がない時
+                   COMPUTE TBL-CHUSYA (IDY)    =   TBL-CHUSYA (IDY)
+                                               +   TBL-CHUSYA-2 (IDY)
+                   IF      TBL-SEIBUTU-2(IDY)  =   1
+                       MOVE    TBL-SEIBUTU-2(IDY)  TO  TBL-SEIBUTU(IDY)
+                   END-IF
+                   IF      TBL-MADOKU-2(IDY)   =   1
+                       MOVE    TBL-MADOKU-2(IDY)   TO  TBL-MADOKU (IDY)
+                   END-IF
+               ELSE
+      *            手術があり、手術外の点滴がある時
+                   IF     (TBL-CHUSYA   (IDY)  >   ZERO ) AND
+                          (TBL-CHUSYA-2 (IDY)  =   ZERO )
+                       CONTINUE
+                   ELSE
+      *                手術はないものとする
+                       MOVE    ZERO                TO  TBL-SYU-DAY(IDY)
+                   END-IF
+                   IF      TBL-CHUSYA-2 (IDY)  >   ZERO
+                       MOVE    TBL-CHUSYA-2 (IDY)  TO  TBL-CHUSYA (IDY)
+                       MOVE    TBL-SEIBUTU-2(IDY)  TO  TBL-SEIBUTU(IDY)
+                       MOVE    TBL-MADOKU-2(IDY)   TO  TBL-MADOKU (IDY)
+                   END-IF
+               END-IF
+      *        中心静脈
+               IF      TBL-IVH-SYU-DAY (IDY)   =   ZERO
+      *            手術がない時
+                   COMPUTE TBL-IVH-CHUSYA(IDY) =   TBL-IVH-CHUSYA (IDY)
+                                               +   TBL-IVH-CHUSYA-2(IDY)
+                   IF      TBL-IVH-SEIBUTU-2(IDY)  =   1
+                       MOVE    TBL-IVH-SEIBUTU-2(IDY)
+                                               TO  TBL-IVH-SEIBUTU(IDY)
+                   END-IF
+                   IF      TBL-IVH-MADOKU-2(IDY)   =   1
+                       MOVE    TBL-IVH-MADOKU-2(IDY)
+                                               TO  TBL-IVH-MADOKU (IDY)
+                   END-IF
+               ELSE
+      *            手術があり、手術外の点滴がある時
+                   IF     (TBL-IVH-CHUSYA   (IDY)  >   ZERO ) AND
+                          (TBL-IVH-CHUSYA-2 (IDY)  =   ZERO )
+                       CONTINUE
+                   ELSE
+      *                手術はないものとする
+                       MOVE    ZERO            TO  TBL-IVH-SYU-DAY(IDY)
+                   END-IF
+                   IF      TBL-CHUSYA-2 (IDY)  >   ZERO
+                       MOVE    TBL-IVH-CHUSYA-2 (IDY)
+                                               TO  TBL-IVH-CHUSYA (IDY)
+                       MOVE    TBL-IVH-SEIBUTU-2(IDY)
+                                               TO  TBL-IVH-SEIBUTU(IDY)
+                       MOVE    TBL-IVH-MADOKU-2(IDY)
+                                               TO  TBL-IVH-MADOKU (IDY)
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           .
+       3007-TENTEKI-HEN-EXT.
+           EXIT.
+      *****************************************************************
       *    中心静脈発生チェック処理
       *****************************************************************
        3004-IVH-AUTO-SEC         SECTION.
@@ -2191,8 +2335,8 @@
       *        中心静脈の薬剤があり、手術がない時
                IF     (TBL-IVH-CHUSYA (IDY)    >   ZERO )  AND
                       (TBL-IVH-SRYCD  (IDY)    =   SPACE )  AND
-                      (TBL-IVH-DAY   (IDY)     >   ZERO )  AND
-                      (TBL-SYU-DAY   (IDY)     =   ZERO )
+                      (TBL-IVH-DAY    (IDY)    >   ZERO )  AND
+                      (TBL-IVH-SYU-DAY(IDY)    =   ZERO )
       *           点滴がない時
                    IF    ((TBL-TEN-IDX   (IDY)     >   ZERO  )  OR
                           (TBL-TEN-SRYCD (IDY)     =   SPACE )) AND
@@ -2213,7 +2357,7 @@
                    END-IF
                END-IF
       *        手術が存在する時、点滴手技は算定できない
-               IF     (TBL-SYU-DAY (IDY)       >   ZERO )  AND
+               IF     (TBL-IVH-SYU-DAY (IDY)   >   ZERO )  AND
                       (TBL-IVH-SRYCD (IDY) NOT =   SPACE)
                    IF      TBL-IVH-IDX (IDY)   >   ZERO
       *                手技料エラー
@@ -2224,7 +2368,7 @@
                    END-IF
                END-IF
       *        手術が存在する時、点滴手技は算定できない
-               IF     (TBL-SYU-IDX (IDY)       >   ZERO )  AND
+               IF     (TBL-SYU-IDX (IDY)   >   ZERO )  AND
                       (TBL-IVH-SRYCD (IDY) NOT =   SPACE)
                    IF      TBL-SYU-IDX (IDY)   >   ZERO
       *                手技料エラー
