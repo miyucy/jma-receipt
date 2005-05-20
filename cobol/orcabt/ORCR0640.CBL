@@ -1858,8 +1858,9 @@
                                                  "6" OR  "7" OR
                                                  "8"
       *
-             IF  (  SRY-SRYSYUKBN            = "330" OR "331"      
-                                                     OR "350"     )
+             IF  (  SRY-SRYSYUKBN            = "330" OR "331"  OR      
+                                               "332" OR "350"  OR
+                                               "352" )
              AND (( SRY-SRYCD(IDX2)(1:3)     = "059"             ) OR  
                   ( SRY-SRYCD(IDX2)(1:1)     = "7"               ) OR  
                   ( SRY-SRYCD(IDX2)          = CONS-ZANHAIKI     ) OR  
