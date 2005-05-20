@@ -50,6 +50,7 @@
       *  01.02.06    NACL-藤原    05/03/07  包括対象検査のまとめの修正
       *  01.02.07    NACL-藤原    05/04/18  包括対象検査がまとまらない
       *                                     場合の編集の修正
+      *  01.02.08    NACL-門脇    05/05/20  入院点滴種別追加に伴う修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2401,7 +2402,15 @@
       *         AND ( TBL-ZAI-IDX(IDY)        =   1     )
                 AND ((TBL-ZAI-SRYCD(IDY)(1:1) =  "8"   ) OR
                      (TBL-ZAI-SRYCD(IDY)(1:3) =  "008" ))
-                         MOVE   8             TO  RECE86-TENTEKIKBN
+                         MOVE   8              TO  RECE86-TENTEKIKBN
+                         MOVE   RECE84-ZAINUM  TO  RECE86-TENTEKIBAN
+                END-IF
+      *
+                IF  ( WRK-SRYSYUKBN           =  "332"  )
+      *         AND ( TBL-ZAI-IDX(IDY)        =   1     )
+                AND ((TBL-ZAI-SRYCD(IDY)(1:1) =  "8"   ) OR
+                     (TBL-ZAI-SRYCD(IDY)(1:3) =  "008" ))
+                         MOVE   9              TO  RECE86-TENTEKIKBN
                          MOVE   RECE84-ZAINUM  TO  RECE86-TENTEKIBAN
                 END-IF
       *
@@ -2409,7 +2418,15 @@
       *         AND ( TBL-ZAI-IDX(IDY)        =   1     )
                 AND ((TBL-ZAI-SRYCD(IDY)(1:1) =  "8"   ) OR
                      (TBL-ZAI-SRYCD(IDY)(1:3) =  "008" ))
-                         MOVE   9              TO  RECE86-TENTEKIKBN
+                         MOVE   10             TO  RECE86-TENTEKIKBN
+                         MOVE   RECE84-ZAINUM  TO  RECE86-TENTEKIBAN
+                END-IF
+      *
+                IF  ( WRK-SRYSYUKBN           =  "352"  )
+      *         AND ( TBL-ZAI-IDX(IDY)        =   1     )
+                AND ((TBL-ZAI-SRYCD(IDY)(1:1) =  "8"   ) OR
+                     (TBL-ZAI-SRYCD(IDY)(1:3) =  "008" ))
+                         MOVE   11             TO  RECE86-TENTEKIKBN
                          MOVE   RECE84-ZAINUM  TO  RECE86-TENTEKIBAN
                 END-IF
       *
