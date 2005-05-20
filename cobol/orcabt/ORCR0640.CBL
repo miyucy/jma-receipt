@@ -315,6 +315,7 @@
            03  IDY3                                    PIC 9(03).
            03  IDZ                                     PIC 9(03).
            03  IDW                                     PIC 9(03).
+           03  IDW2                                    PIC 9(03).
            03  ID1                                     PIC 9(03).
            03  ID2                                     PIC 9(03).
            03  NUM-IDX                                 PIC 9(01).
@@ -1987,15 +1988,6 @@
                     END-IF
                   END-IF                                                
                ELSE                                                     
-                  IF      TNS-TANIMOJISU  =  ZERO
-                     PERFORM   VARYING   IDW   FROM   24   BY  -1
-                                UNTIL    IDW    <      1
-                        IF   TNS-TANINAME(IDW:1)  NOT =   SPACE
-                            COMPUTE  TNS-TANIMOJISU   =   IDW   /   2
-                            MOVE    1     TO    IDW
-                        END-IF
-                     END-PERFORM
-                  END-IF
                   MOVE    SRY-SRYSURYO(IDX2)                            
                                           TO    WRK-SRYSURYO            
                   MOVE    TNS-TANICD      TO    RECE65-TANICD(IDX4)
@@ -6165,15 +6157,6 @@
                       MOVE   WRK-TANIMOJISU TO  RECE65-TANIMOJISU(IDX4)
                       MOVE   WRK-TANINAME   TO  RECE65-TANINAME(IDX4)
                   ELSE
-                      IF      TNS-TANIMOJISU  =  ZERO
-                         PERFORM   VARYING   IDW   FROM   24   BY  -1
-                                    UNTIL    IDW    <      1
-                          IF   TNS-TANINAME(IDW:1)  NOT =   SPACE
-                              COMPUTE  TNS-TANIMOJISU   =   IDW   /   2
-                              MOVE    1     TO    IDW
-                          END-IF
-                         END-PERFORM
-                      END-IF
                       MOVE  TNS-TANICD      TO  RECE65-TANICD(IDX4)
                                                 WRK-TANICD
                       MOVE  TNS-TANIMOJISU  TO  RECE65-TANIMOJISU(IDX4)
@@ -8366,6 +8349,16 @@
       *    点数マスタ退避ワーク編集処理
       *****************************************************************
        9001-TTNS-HEN-SEC               SECTION.
+      *
+           IF      TNS-TANIMOJISU  =  ZERO
+               PERFORM   VARYING   IDW2   FROM   24   BY  -1
+                          UNTIL    IDW2    <      1
+                  IF   TNS-TANINAME(IDW2:1)  NOT =   SPACE
+                      COMPUTE  TNS-TANIMOJISU   =   IDW2   /   2
+                      MOVE    1     TO    IDW2
+                  END-IF
+               END-PERFORM
+           END-IF
       *
            IF    ( TTNS-CONST-MAX  >   TTNS-MAX )
                COMPUTE TTNS-MAX    =   TTNS-MAX    +   1
