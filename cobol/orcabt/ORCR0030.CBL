@@ -6192,7 +6192,8 @@
       *****************************************************************
        9001-TTNS-HEN-SEC               SECTION.
       *
-           IF      TNS-TANIMOJISU  =  ZERO
+           IF      TNS-TANIMOJISU    =   ZERO
+           AND     TNS-TANINAME  NOT =   SPACE
                PERFORM   VARYING   IDW2   FROM   24   BY  -1
                           UNTIL    IDW2    <      1
                   IF   TNS-TANINAME(IDW2:1)  NOT =   SPACE
