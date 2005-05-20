@@ -1,4 +1,6 @@
 CSRCS = \
+	orcfiledel.c \
+	orcfileio.c \
 	cobabort.c \
 	kanaconv.c
 

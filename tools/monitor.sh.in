@@ -59,7 +59,7 @@ COB_LIBRARY_PATH=/usr/lib:/usr/lib/panda
 # site-libの取り込み
 COB_LIBRARY_PATH=$COB_LIBRARY_PATH:"$SITELIBDIR"
 # orca lib
-COB_LIBRARY_PATH=$COB_LIBRARY_PATH:"$ORCA_DIR"/cobol/common:"$ORCA_DIR"/cobol/orcabt:"$ORCA_DIR"/cobol/claim
+COB_LIBRARY_PATH=$COB_LIBRARY_PATH:"$ORCA_DIR"/cobol/common:"$ORCA_DIR"/cobol/orcabt:"$ORCA_DIR"/cobol/claim:"$ORCA_DIR"/cobol/cutils
 
 
 
@@ -166,7 +166,7 @@ $WFC -dir $DIRECTORY -lddir $LDDEF -bddir $LDDEF -base $ORCA_DIR >/dev/null &
 for i in $ALWAYS_LD; do
     LDNUM=`echo $i|sed -e "s/[^0-9]//g"`
     ORCA_PORT=`expr $START_PORT + $LDNUM`
-    $APS -nocheck -dir $DIRECTORY -lddir $LDDEF -record $RECORD -base $ORCA_DIR $i -port $ORCA_PORT >/dev/null&
+    $APS -nocheck -dir $DIRECTORY -lddir $LDDEF -record $RECORD -base $ORCA_DIR $i -port $ORCA_PORT &
 done
 
 for i in $LD; do
