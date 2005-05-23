@@ -27,6 +27,10 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  00.00.01    NACL-藤原    05/05/17  レセプト特記事項編集情報に
+      *                                     「2 老人医療受給がない場合」
+      *                                      を追加
+      *  00.00.02    NACL-藤原    05/05/20  削除ボタンをＦ４に変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -473,9 +477,13 @@
            MOVE    2               TO  SPA-GMN-JKYSNUMKBN-MAX
       *
            MOVE    "1"             TO  SPA-GMN-RJNKBNL           (1)
-           MOVE    "老人医療（法別番号２７）を受給している場合のみ対象"
+           MOVE    "老人医療（法別番号２７）の受給がある場合のみ対象"
                                    TO  SPA-GMN-RJNKBNMEIL        (1)
-           MOVE    1               TO  SPA-GMN-RJNKBN-MAX 
+           MOVE    "2"             TO  SPA-GMN-RJNKBNL           (2)
+           MOVE
+                   "老人医療（法別番号２７）の受給がない場合のみ対象"
+                                   TO  SPA-GMN-RJNKBNMEIL        (2)
+           MOVE    2               TO  SPA-GMN-RJNKBN-MAX 
       *
            MOVE    "1"             TO  SPA-GMN-RECEDEN-KORECKBNL (1)
            MOVE    "記録しない"    TO  SPA-GMN-RECEDEN-KORECKBNMEIL
@@ -556,7 +564,17 @@
                MOVE    SYS-2006-RJNKBN     TO  SPA-NAI-TRJNKBN   (IDX)
                                                WRK-KBN
                PERFORM 5001-RJNKBN-HENSYU-SEC
-               MOVE    WRK-KBNMEI (1:8)    TO  SPA-GMN-TRJNKBN   (IDX)
+      *********MOVE    WRK-KBNMEI (1:8)    TO  SPA-GMN-TRJNKBN   (IDX)
+               EVALUATE    SYS-2006-RJNKBN
+                   WHEN    "1"
+                       MOVE    "受給がある"
+                                           TO  SPA-GMN-TRJNKBN   (IDX)
+                   WHEN    "2"
+                       MOVE    "受給がない"
+                                           TO  SPA-GMN-TRJNKBN   (IDX)
+                   WHEN    OTHER
+                       MOVE    SPACE       TO  SPA-GMN-TRJNKBN   (IDX)
+               END-EVALUATE
       *
                MOVE    SYS-2006-ZAITAKU    TO  SPA-NAI-TZAITAKU  (IDX)
                                                WRK-KBN
@@ -609,7 +627,7 @@
                WHEN    "CLICKED"       ALSO    "B02"
                    PERFORM 420-CLEAR-SEC
       *        削除
-               WHEN    "CLICKED"       ALSO    "B08"
+               WHEN    "CLICKED"       ALSO    "B04"
                    PERFORM 420-SAKUJO-GID-SEC
       *        登録
                WHEN    "CLICKED"       ALSO    "B12"
@@ -2486,7 +2504,8 @@
       *
            EVALUATE    SPA-WIDCD
                WHEN    "2001"
-                   MOVE    "選択された病名を削除します。よろしいですか"
+                   MOVE
+                       "選択されたデータを削除します。よろしいですか"
                                                 TO  WID1-ID1MSG
                WHEN    "2002"
                    MOVE    "データを登録します。よろしいですか"
