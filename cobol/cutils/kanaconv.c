@@ -104,40 +104,6 @@ StringC2Cobol(
 	}
 }
 
-void
-tokatakana (char *org_str,
-			char *new_str)
-{
-	unsigned char c;
-	
-	while(c = *org_str++){
-		if ( ((c)&0xff) == 0xa4) {
-			*new_str++ = ++c;
-			*new_str++ = *org_str++;
-		} else {
-			*new_str++ = c;			
-		}
-	}
-	*new_str++ = 0;
-}
-
-void
-tohiragana (char *org_str,
-			char *new_str)
-{
-	unsigned char c;
-	
-	while(c = *org_str++){
-		if ( ((c)&0xff) == 0xa5) {
-			*new_str++ = --c;
-			*new_str++ = *org_str++;
-		} else {
-			*new_str++ = c;			
-		}
-	}
-	*new_str++ = 0;
-}
-
 int 
 search_ascii_zenkaku(unsigned char d0, unsigned char d1)
 {
@@ -222,7 +188,15 @@ zenkakuconv(int syori_flg,
 		}
 		if ( ISZENKAKU(c1)){
 			if ( ISJIS208(c0) ){
-				*new->body++ = c0;
+				if ( (syori_flg == TOKATAKANA )
+					 && ( (c0)&0xff) == 0xa4 ) {
+					*new->body++ = ++c0;
+				} else if ( (syori_flg == TOHIRAGANA )
+							&& ( (c0)&0xff) == 0xa5 ) {
+					*new->body++ = --c0;
+				} else {
+					*new->body++ = c0;
+				}
 				*new->body++ = c1;
 			} else { /* GAIJI*/
 				*new->body++ = henkan_funou[0];
@@ -358,13 +332,13 @@ kanaconv (char *args)
 	org->body = p;
 	org->len = str_len;
 	org->ptr = 0;
-
 	StringCobol2C(org->body, str_len);
-	p += str_len;
 
+	p += str_len;
 	new->body = p;
 	new->len = len;
 	new->ptr = 0;
+	StringCobol2C(new->body, str_len);
 	
 	*ret_val = tozenkaku(syori_flg, org, new);
 	StringC2Cobol(org->body, str_len);

@@ -1,7 +1,9 @@
 #define	New(s)				(s *)malloc(sizeof(s))
 
-#define TOZENKAKU 1
-#define TOHANKAKU 2
+#define TOZENKAKU  1
+#define TOHANKAKU  2
+#define TOKATAKANA 3
+#define TOHIRAGANA 4
 
 struct COBString {
 	size_t len;
