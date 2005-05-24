@@ -3294,22 +3294,6 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <name>label282</name>
-	  <x>40</x>
-	  <y>246</y>
-	  <width>240</width>
-	  <height>24</height>
-	  <label>同一病名警告メッセージの表示</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
 	  <name>label279</name>
 	  <x>40</x>
 	  <y>296</y>
@@ -3578,6 +3562,24 @@
 	    <input_mode>ASCII</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label282</name>
+	  <x>40</x>
+	  <y>246</y>
+	  <width>240</width>
+	  <height>36</height>
+	  <label>他診療科の同一病名警告メッセージ
+の表示
+</label>
+	  <justify>GTK_JUSTIFY_RIGHT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
 	</widget>
       </widget>
 
