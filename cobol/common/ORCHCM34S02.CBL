@@ -154,6 +154,10 @@
                05  WRK-RSI-JOUSUKBN            PIC X(01)
                                                OCCURS  31.
            03  WRK-KEISAN                      PIC 9(08).
+           03  WRK-SRYCD-G.
+               05  WRK-SRYCD                   PIC  X(09).
+               05  WRK-SRYCD-9                 REDEFINES WRK-SRYCD
+                                               PIC  9(09).
       *
       *    ∆˛±°Œ¡
        01  WNYUINRYO-AREA.
@@ -265,6 +269,20 @@
       *            ø«Œ≈≤ÛøÙ•∆°º•÷•Î
                    07  WNYUINKSN-DAY-TBL.
                        09  WNYUINKSN-DAY       PIC  9(03)  OCCURS  31.
+      *
+      *    Œ≈Õ‹√¥≈ˆºÍ≈ˆ
+       01  WRYYTAN-AREA.
+      *    ø«Œ≈∂Ë ¨
+           03  WRYYTAN-SRYKBN                  PIC X(02).
+      *    ∫ﬁ≈¿øÙ
+           03  WRYYTAN-ZAITEN                  PIC 9(08).
+      *    ∫ﬁ≤ÛøÙ
+           03  WRYYTAN-ZAIKAISU                PIC 9(07).
+      *    ø«Œ≈•≥°º•…
+           03  WRYYTAN-SRYCD                   PIC X(09).
+      *    ø«Œ≈≤ÛøÙ•∆°º•÷•Î
+           03  WRYYTAN-DAY-TBL.
+               05  WRYYTAN-DAY                 PIC 9(03)   OCCURS  31.
       *
       *    •Ω°º•»Õ—ŒŒ∞Ë
        01  SRT-AREA.
@@ -424,6 +442,7 @@
                                            WBRMSAGAKU-AREA
                                            WSYOKUJI-AREA
                                            WNYUINKSN-AREA
+                                           WRYYTAN-AREA
       *
            INITIALIZE                      HCM34S01-HENKYAKU-AREA
            MOVE    ZERO                TO  HCM34S01-RC
@@ -671,6 +690,9 @@
       *
       *    ∆˛±°Œ¡≤√ªª ‘Ω∏ΩËÕ˝
            PERFORM 2001-NYUINKSN-HEN-SEC
+      *
+      *    Œ≈Õ‹√¥≈ˆ»Ò ‘Ω∏ΩËÕ˝
+           PERFORM 2001-RYYTAN-HEN-SEC
       *
       *    ∫ﬁ£”£œ£“£‘ΩËÕ˝
            PERFORM 2001-ZAISORT-SEC
@@ -1988,6 +2010,58 @@
        2001111-KSN-KHNINF-SET-EXT.
            EXIT.
       *****************************************************************
+      *    Œ≈Õ‹√¥≈ˆºÍ≈ˆ ‘Ω∏ΩËÕ˝
+      *****************************************************************
+       2001-RYYTAN-HEN-SEC             SECTION.
+      *
+           MOVE    "7"                 TO  WRK-NACCT-ZAISKBKBN
+           PERFORM 1001-NYUINACCT-KEY17-SEL-SEC
+      *
+           MOVE    "NYUINACCT-KEY17"       TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+           IF    ( FLG-NYUINACCT       NOT =   ZERO )
+               GO  TO  2001-RYYTAN-HEN-EXT
+           END-IF
+      *
+           MOVE    "199000510"         TO  WRK-TNS-SRYCD
+           MOVE    HCM34S01-SANTEIYM   TO  WRK-DBYMD
+           MOVE    "01"                TO  WRK-DBYMD (7:2)
+           PERFORM 900-TENSU-KEY-SEL-SEC
+           IF    ( FLG-TENSU       =   ZERO )
+               PERFORM 20011-RYYTAN-HEN-SEC
+           END-IF
+      *
+           .
+       2001-RYYTAN-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    Œ≈Õ‹√¥≈ˆºÍ≈ˆ ‘Ω∏ΩËÕ˝
+      *****************************************************************
+       20011-RYYTAN-HEN-SEC            SECTION.
+      *
+           MOVE    "80"            TO  WRYYTAN-SRYKBN
+           MOVE    TNS-TEN         TO  WRYYTAN-ZAITEN
+           MOVE    TNS-SRYCD       TO  WRYYTAN-SRYCD
+      *
+           PERFORM VARYING IDXD    FROM    1   BY  1
+                   UNTIL ( IDXD    >   31 )
+      *
+               IF    ( NACCT-DAY (IDXD)        >   ZERO )
+                AND  ( FLG-NYUINDAY  (IDXD)    =   1  )
+                AND  ( FLG-NYUINRYODAY (IDXD)  =   1 )
+                AND  ( FLG-GAIHAKUDAY(IDXD)    =   ZERO OR 4 )
+                   MOVE    1       TO  WRYYTAN-DAY (IDXD)
+                   COMPUTE WRYYTAN-ZAIKAISU
+                       =   WRYYTAN-ZAIKAISU    +   1
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       20011-RYYTAN-HEN-EXT.
+           EXIT.
+      *****************************************************************
       *    ∫ﬁ£”£œ£“£‘ΩËÕ˝
       *****************************************************************
        2001-ZAISORT-SEC                SECTION.
@@ -2027,6 +2101,9 @@
       *
       *    ººŒ¡∫π≥€£”£œ£“£‘∫Ó∂»ŒŒ∞Ë ‘Ω∏ΩËÕ˝
            PERFORM 200111-BRMSAGAKU-SRT-SET-SEC
+      *
+      *    Œ≈Õ‹√¥≈ˆºÍ≈ˆ£”£œ£“£‘∫Ó∂»ŒŒ∞Ë ‘Ω∏ΩËÕ˝
+           PERFORM 200111-RYYTAN-SRT-SET-SEC
       *
            .
        20011-SORTAREA-HEN-EXT.
@@ -2258,6 +2335,40 @@
        200111-BRMSAGAKU-SRT-SET-EXT.
            EXIT.
       *****************************************************************
+      *    Œ≈Õ‹√¥≈ˆºÍ≈ˆ£”£œ£“£‘∫Ó∂»ŒŒ∞Ë ‘Ω∏ΩËÕ˝
+      *****************************************************************
+       200111-RYYTAN-SRT-SET-SEC       SECTION.
+      *
+           IF    ( SRT-MAX     <   CONST-SRT-MAX )
+      *
+               COMPUTE SRT-MAX =   SRT-MAX +   1
+      *
+               MOVE    WRYYTAN-SRYKBN      TO  SRT-SRYKBN   (SRT-MAX)
+      *
+               MOVE    ZERO                TO  SRT-PRIORITY (SRT-MAX)
+      *
+               MOVE    ZERO                TO  SRT-PRIORITY2(SRT-MAX)
+      *
+               MOVE    WRYYTAN-ZAITEN      TO  SRT-ZAITEN   (SRT-MAX)
+      *
+               MOVE    WRYYTAN-ZAIKAISU    TO  SRT-ZAIKAISU (SRT-MAX)
+      *
+               MOVE    "7"                 TO  SRT-ZAISKBKBN(SRT-MAX)
+               MOVE    WRYYTAN-SRYCD
+                                           TO  SRT-SRYCD (SRT-MAX 1)
+      *
+               PERFORM VARYING IDXD    FROM    1   BY  1
+                       UNTIL ( IDXD    >   31 )
+                   MOVE    WRYYTAN-DAY (IDXD)
+                                           TO  SRT-DAY (SRT-MAX IDXD)
+               END-PERFORM
+      *
+           END-IF
+      *
+           .
+       200111-RYYTAN-SRT-SET-EXT.
+           EXIT.
+      *****************************************************************
       *    £”£œ£“£‘∫Ó∂»ŒŒ∞Ë£”£œ£“£‘ΩËÕ˝
       *****************************************************************
        20011-SORTAREA-SORT-SEC         SECTION.
@@ -2310,11 +2421,33 @@
                                                               (IDXE)
                    MOVE    SRT-ZAISKBKBN(IDXB) TO  HCM34S01-ZAISKBKBN
                                                               (IDXE)
+                   MOVE    SRT-PRIORITY (IDXB) TO  HCM34S01-PRIORITY
+                                                              (IDXE)
+                   MOVE    SRT-PRIORITY2(IDXB) TO  HCM34S01-PRIORITY2
+                                                              (IDXE)
                    PERFORM VARYING IDXC    FROM    1   BY  1
                            UNTIL ( IDXC    >   20 )
                        MOVE    SRT-SRYCD(IDXB IDXC)
                                                TO  HCM34S01-SRYCD
                                                            (IDXE IDXC)
+      *
+                       MOVE    SRT-SRYCD(IDXB IDXC)
+                                               TO  WRK-SRYCD
+                       IF    ( WRK-SRYCD   NOT =   SPACE )
+                           COMPUTE HCM34S01-MEISAISU (IDXE)
+                               =   HCM34S01-MEISAISU (IDXE)    +   1
+                           COMPUTE HCM34S01-SURYOUTOTAL (IDXE)
+                               =   HCM34S01-SURYOUTOTAL (IDXE) +   1
+                           IF    ( WRK-SRYCD   IS  NUMERIC )
+                               COMPUTE HCM34S01-SRYCDTOTAL (IDXE)
+                                   =   HCM34S01-SRYCDTOTAL (IDXE)
+                                   +   WRK-SRYCD-9
+                               COMPUTE HCM34S01-RUIKEITOTAL(IDXE)
+                                   =   HCM34S01-RUIKEITOTAL(IDXE)
+                                   +   WRK-SRYCD-9 
+                           END-IF
+                       END-IF
+      *
                    END-PERFORM
       *
                    PERFORM VARYING IDXD    FROM    1   BY  1

@@ -51,12 +51,25 @@
                05  HCM34S01-HENKYAKU-TBL       OCCURS  100.
       *入院基本料診療区分
                    07  HCM34S01-SRYKBN         PIC  X(02).
+      *診療種別
+                   07  HCM34S01-SRYSYUKBN      PIC  X(03).
       *剤識別区分
                    07  HCM34S01-ZAISKBKBN      PIC  X(01).
+      *並び優先順位
+                   07  HCM34S01-PRIORITY       PIC  9(03).
+                   07  HCM34S01-PRIORITY2      PIC  9(03).
       *剤点数
                    07  HCM34S01-ZAITEN         PIC  9(08).
       *剤回数
                    07  HCM34S01-ZAIKAISU       PIC  9(07).
+      *明細数
+                   07  HCM34S01-MEISAISU       PIC  9(07).
+      *診療コード合計
+                   07  HCM34S01-SRYCDTOTAL     PIC  9(14).
+      *数量合計
+                   07  HCM34S01-SURYOUTOTAL    PIC  9(07)V9(03).
+      *累計合計
+                   07  HCM34S01-RUIKEITOTAL    PIC  9(15)V9(03).
       *診療コード
                    07  HCM34S01-SRYCD          PIC  X(09)
                                                OCCURS  20.

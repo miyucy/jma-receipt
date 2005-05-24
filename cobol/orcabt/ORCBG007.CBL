@@ -216,6 +216,8 @@
       *
            COPY    "CPSHELLTBL.INC".
       *
+      *    点数マスタ退避ワーク
+           COPY    "CPTTNS.INC".
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -327,6 +329,7 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
            INITIALIZE                  KEY-AREA
+           INITIALIZE                  TTNS-AREA
            INITIALIZE                  ERR-EDIT-AREA
       *
            PERFORM 100-DBOPEN-SEC
@@ -1070,6 +1073,8 @@
            CALL    "ORCHCM34"          USING
                                        SPA-AREA
                                        ORCHCM34AREA
+                                       TTNS-AREA
+                                       TTNS-CONST-MAX
            IF    ( ORCHCM34-RC     NOT =   ZERO )
                INITIALIZE              ERR-EDIT-AREA
                MOVE    SPA-PTID        TO  ERR-PTID
