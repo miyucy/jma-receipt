@@ -877,6 +877,9 @@
       *    戻る
            WHEN    "CLICKED"       ALSO    "B01"
                PERFORM 210-BACK
+      *    クリア
+           WHEN    "CLICKED"       ALSO    "B02"
+               PERFORM 310-SPA-SET-SEC
       *    前回患者
            WHEN    "CLICKED"       ALSO    "B03"
                MOVE   "CHANGE"             TO  MCP-PUTTYPE
