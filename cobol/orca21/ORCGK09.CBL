@@ -1269,14 +1269,24 @@
            PERFORM
                    UNTIL   FLG-SRYACT      =   1
       *
+               MOVE    ZERO                TO  FLG-OK
       *        初再診を対象外とする
                IF      SRY-SRYKBN          =   "11"  OR  "12"
-                   CONTINUE
+      *            労災の再診時療養指導管理料は対象
+                   IF     (SRY-SRYCD (01)      =   "101120030" )  OR
+                          (SRY-SRYCD (02)      =   "101120030" )  OR
+                          (SRY-SRYCD (03)      =   "101120030" )  OR
+                          (SRY-SRYCD (04)      =   "101120030" )  OR
+                          (SRY-SRYCD (05)      =   "101120030" )
+                       MOVE    1               TO  FLG-OK
+                   END-IF
                ELSE
+                   MOVE    1                   TO  FLG-OK
+               END-IF
+               IF      FLG-OK                  =   1
                    MOVE    ZERO                TO  WRK-DOKAISU
       *            診療会計検索編集
                    PERFORM 41012-SRYACT-HEN-SEC
-      *
       *
                    IF      IDY                 >   ZERO
                        ADD     1               TO  IDX-KOUI
@@ -2072,11 +2082,11 @@
            PERFORM
                    UNTIL   FLG-SRYACT      =   1
       *
-      *        初再診を対象外とする
-               IF      SRY-SRYKBN          =   "11"  OR  "12"
-                   CONTINUE
-               ELSE
-      *
+      ***      初再診を対象外とする
+      *        IF      SRY-SRYKBN          =   "11"  OR  "12"
+      *            CONTINUE
+      ****     ELSE
+      *        すべてを対象とする
                    MOVE    WRK-DOKAI (IDX-R)   TO  WRK-DOKAISU
       *            診療会計検索編集
                    PERFORM 41012-SRYACT-HEN-SEC
@@ -2091,7 +2101,7 @@
                    MOVE    WKSRYACT-REC        TO  PARA-DATA-REC
       *
                    WRITE                       PARA-REC
-               END-IF
+      *********END-IF
       *
                MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
                PERFORM 930-SRYACT-READ-SEC
