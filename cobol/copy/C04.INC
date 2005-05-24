@@ -19,13 +19,13 @@
               03  C04-SELNUM2.
                 04  C04-VALUE   PIC S9(5).
               03  C04-INPUTCD-G.
-                04  C04-INPUTCD PIC X(11)    OCCURS  6.
+                04  C04-INPUTCD PIC X(10)    OCCURS  6.
               03  C04-BYOMEI.
-                04  C04-VALUE   PIC X(401).
+                04  C04-VALUE   PIC X(400).
               03  C04-BUNRUICD.
                 04  C04-VALUE   PIC S9(3).
               03  C04-KENBYOMEI.
-                04  C04-VALUE   PIC X(51).
+                04  C04-VALUE   PIC X(50).
               03  C04-SCR-ACTLST.
                 04  C04-BUNRUILST.
                   05  C04-BUNRUI-COUNT   PIC S9(9)   BINARY.

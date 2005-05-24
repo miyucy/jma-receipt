@@ -4,31 +4,31 @@ C04	{
 			value	number(5);
 		};
 		INPUTCD1	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		INPUTCD2	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		INPUTCD3	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		INPUTCD4	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		INPUTCD5	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		INPUTCD6	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		BYOMEI	{
-			value	varchar(401);
+			value	varchar(400);
 		};
 		BUNRUICD	{
 			value	number(3);
 		};
 		KENBYOMEI	{
-			value	varchar(51);
+			value	varchar(50);
 		};
 		SCR_ACTLST	{
 			BUNRUILST	{

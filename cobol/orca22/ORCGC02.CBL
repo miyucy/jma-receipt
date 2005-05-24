@@ -777,6 +777,8 @@
                        MOVE    "1"                 TO  SPA-C02-UPDFLG
                        MOVE    1                   TO  SPA-GMN-C02-CUR
                    END-IF
+                   MOVE    SPACE           TO  SPA-CIDCD
+                                               SPA-CID1-FLG
                    GO      TO      300-SCREEN-EXT
                END-IF
       *
@@ -787,6 +789,7 @@
                        MOVE    1               TO  SPA-GMN-C02-CUR
                    END-IF
                    MOVE    SPACE           TO  SPA-CIDCD
+                                               SPA-CID1-FLG
                    INITIALIZE              SPA-C02-KEIKOKU-FLG-AREA
                    GO      TO      300-SCREEN-EXT
                END-IF
@@ -795,6 +798,7 @@
                    IF      SPA-CID1-FLG    =   "OK"
                        IF      SPA-C02-KEIKOKU-FLG2
                                                =   1
+                           MOVE    SPACE               TO  SPA-CID1-FLG
                            MOVE    "0102"              TO  SPA-CIDCD
                            GO      TO      300-SCREEN-EXT
                        ELSE 
@@ -804,6 +808,7 @@
                        MOVE    1               TO  SPA-GMN-C02-CUR
                    END-IF
                    MOVE    SPACE           TO  SPA-CIDCD
+                                               SPA-CID1-FLG
                    INITIALIZE              SPA-C02-KEIKOKU-FLG-AREA
                    GO      TO      300-SCREEN-EXT
                END-IF
@@ -8206,8 +8211,7 @@
                                        TO  WRK-CIDMSG
                WHEN    "0103"
                    STRING
-                       WRK-ERR-BYOMEI          DELIMITED   BY  SPACE
-                       "は"                    DELIMITED   BY  SIZE 
+                       "この病名は"            DELIMITED   BY  SIZE 
                        WRK-ERR-SRYKA           DELIMITED   BY  SPACE
                        "に"                    DELIMITED   BY  SIZE 
                        WRK-ERR-SRYYMD          DELIMITED   BY  SPACE
@@ -8224,6 +8228,10 @@
            MOVE    SPACE               TO  CID1
            MOVE    SPA-CIDCD           TO  CID1-ID1CODE
            MOVE    WRK-CIDMSG          TO  CID1-ID1MSG
+           EVALUATE    SPA-CIDCD
+               WHEN    "0103"
+                   MOVE    WRK-ERR-BYOMEI  TO  CID1-BYOMEI
+           END-EVALUATE 
            MOVE    "B12"               TO  MCP-WIDGET
       *
            MOVE    "C02"               TO  SPA-MOTOPG

@@ -22,6 +22,8 @@
         02  CID1.
       *D      02  CID1-FIXED1.
               03  CID1-ID1CODE.
-                04  CID1-VALUE  PIC X(11).
+                04  CID1-VALUE  PIC X(10).
               03  CID1-ID1MSG.
-                04  CID1-VALUE  PIC X(71).
+                04  CID1-VALUE  PIC X(80).
+              03  CID1-BYOMEI.
+                04  CID1-VALUE  PIC X(80).

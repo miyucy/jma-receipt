@@ -17,12 +17,12 @@
       ********************************************************************
         02  CID2.
               03  CID2-BYOMEICD1.
-                04  CID2-VALUE  PIC X(11).
+                04  CID2-VALUE  PIC X(10).
               03  CID2-BYOMEI1.
-                04  CID2-VALUE  PIC X(71).
+                04  CID2-VALUE  PIC X(70).
               03  CID2-BYOMEICD2.
-                04  CID2-VALUE  PIC X(11).
+                04  CID2-VALUE  PIC X(10).
               03  CID2-BYOMEI2.
-                04  CID2-VALUE  PIC X(71).
+                04  CID2-VALUE  PIC X(70).
               03  CID2-MSG.
-                04  CID2-VALUE  PIC X(81).
+                04  CID2-VALUE  PIC X(80).
