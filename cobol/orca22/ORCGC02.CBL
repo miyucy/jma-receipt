@@ -159,6 +159,7 @@
       *                                     廃止年月日警告メッセージ表示、
       *                                     診療科、表示対象年月の初期表示
       *                                     をシス管の設定より行う
+      *  01.08.19    NACL-藤原    05/05/14  同一病名のチェックを修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -328,8 +329,11 @@
            03  WRK-TEKSTYMD        PIC 9(08).
            03  WRK-TEKEDYMD        PIC 9(08).
       *
+           03  WRK-TENKIYMD        PIC X(08).
+      *
            03  WRK-ERR-BYOMEI      PIC X(80).
            03  WRK-ERR-SRYYMD      PIC X(22).
+           03  WRK-ERR-SRYKA       PIC X(20).
       *
       *    傷病名編集フラグ（疑い）
            03  WRK-HENFLG1         PIC X(01).
@@ -351,7 +355,10 @@
       *     
            03  WRK-BYOMEICD        PIC X(07).
       *                             
-           03  WRK-DBPATH          PIC X(64).
+           03  WRK-DBPATH.
+               05  FILLER          PIC S9(9)   BINARY.
+               05  FILLER          PIC S9(9)   BINARY.
+               05  FILLER          PIC S9(9)   BINARY.
       *
            03  WRK-BYOMEI-OLD      PIC X(480).
       * 
@@ -412,6 +419,8 @@
       *
       *    病名システム予約コードテーブル
            COPY    "CMBYOMEICD.INC".
+      *
+           COPY    "ORCA-DBPATH".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -676,6 +685,13 @@
                    PERFORM 510-ERRSET-SEC
                    GO  TO  100-INIT-EXT
                END-IF
+               IF      SPA-CIDCD       NOT =   SPACE
+                   EVALUATE    SPA-CIDCD
+                       WHEN    "0102"
+                           PERFORM 520-CIDSET-SEC
+                           GO  TO  100-INIT-EXT
+                   END-EVALUATE
+               END-IF
            END-IF
       *
            MOVE    SPACE               TO  LINKAREA
@@ -765,13 +781,30 @@
                END-IF
       *
                IF      SPA-CIDCD       =   "0102"
-      ********     MOVE    SPACE           TO  SPA-CIDCD
                    IF      SPA-CID1-FLG    =   "OK"
                        PERFORM 4502-TOUROKU-SYORI-SEC
                    ELSE
                        MOVE    1               TO  SPA-GMN-C02-CUR
                    END-IF
                    MOVE    SPACE           TO  SPA-CIDCD
+                   INITIALIZE              SPA-C02-KEIKOKU-FLG-AREA
+                   GO      TO      300-SCREEN-EXT
+               END-IF
+      *
+               IF      SPA-CIDCD       =   "0103"
+                   IF      SPA-CID1-FLG    =   "OK"
+                       IF      SPA-C02-KEIKOKU-FLG2
+                                               =   1
+                           MOVE    "0102"              TO  SPA-CIDCD
+                           GO      TO      300-SCREEN-EXT
+                       ELSE 
+                           PERFORM 4502-TOUROKU-SYORI-SEC
+                       END-IF
+                   ELSE
+                       MOVE    1               TO  SPA-GMN-C02-CUR
+                   END-IF
+                   MOVE    SPACE           TO  SPA-CIDCD
+                   INITIALIZE              SPA-C02-KEIKOKU-FLG-AREA
                    GO      TO      300-SCREEN-EXT
                END-IF
            END-IF              
@@ -846,7 +879,8 @@
                    IF      SPA-CID4-FLG        =   "OK"
                        PERFORM 440-SAKUJYO-SEC
       *                病名一覧
-                       MOVE    "PTBYOMEI-KEY16" TO  WRK-DBPATH
+                       MOVE    PATH-TBL-PTBYOMEI-KEY16
+                                               TO  WRK-DBPATH
                        INITIALIZE                  PTBYOMEI-REC
                        MOVE    SPA-HOSPID      TO  PTBYO-HOSPID
                        MOVE    SPA-NAI-C02-PTID
@@ -902,7 +936,7 @@
       *                    病名一覧
                            MOVE    1           TO  SPA-GMN-C02-PAGE
       *
-                           MOVE    "PTBYOMEI-KEY16"
+                           MOVE    PATH-TBL-PTBYOMEI-KEY16
                                                TO  WRK-DBPATH
                            INITIALIZE              PTBYOMEI-REC
                            MOVE    SPA-HOSPID  TO  PTBYO-HOSPID
@@ -1092,6 +1126,11 @@
            END-IF
            MOVE    SYS-1042-MSG3-DSPKBN
                                        TO  SPA-C02-1042-MSG3-DSPKBN
+           IF      SYS-1042-MSG4-DSPKBN =   SPACE
+               MOVE    ZERO             TO  SYS-1042-MSG4-DSPKBN
+           END-IF
+           MOVE    SYS-1042-MSG4-DSPKBN
+                                       TO  SPA-C02-1042-MSG4-DSPKBN
       *
       *    旧総合病院の場合は全科表示はなしとする
            IF      SYS-1042-SRYKA-DSPKBN =   SPACE
@@ -1154,7 +1193,7 @@
       *                    病名一覧
                            MOVE    1           TO  SPA-GMN-C02-PAGE
       *
-                           MOVE    "PTBYOMEI-KEY16"
+                           MOVE    PATH-TBL-PTBYOMEI-KEY16
                                                TO  WRK-DBPATH
                            INITIALIZE              PTBYOMEI-REC
                            MOVE    SPA-HOSPID  TO  PTBYO-HOSPID
@@ -1258,8 +1297,8 @@
       *    全科目指定のとき
            IF      SPA-GMN-C02-SRYKA   =   ZERO
                EVALUATE    WRK-DBPATH
-                   WHEN    "PTBYOMEI-KEY16"
-                       MOVE    "PTBYOMEI-KEY17"    TO  WRK-DBPATH
+                   WHEN    PATH-TBL-PTBYOMEI-KEY16
+                       MOVE    PATH-TBL-PTBYOMEI-KEY17 TO  WRK-DBPATH
                END-EVALUATE
            END-IF
       *
@@ -1288,24 +1327,23 @@
                END-EVALUATE
       *
                EVALUATE    WRK-DBPATH
-                   WHEN    "PTBYOMEI-KEY16"
-                       MOVE    "PTBYOMEI-KEY22"   TO  WRK-DBPATH
+                   WHEN    PATH-TBL-PTBYOMEI-KEY16
+                       MOVE    PATH-TBL-PTBYOMEI-KEY22 TO  WRK-DBPATH
                    WHEN    "PTBYOMEI-KEY17"
-                       MOVE    "PTBYOMEI-KEY23"   TO  WRK-DBPATH
+                       MOVE    PATH-TBL-PTBYOMEI-KEY23 TO  WRK-DBPATH
                END-EVALUATE
            END-IF
       *
            MOVE    PTBYO-SRYYMD        TO  WRK-SYSYMD
       *
-           MOVE    PTBYOMEI-REC       TO  MCPDATA-REC
+           MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-DBPATH          TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    WRK-DBPATH          TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                           MCPAREA
+                                           MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    WRK-DBPATH          TO  ORC-DBPATH
+               MOVE    WRK-DBPATH          TO  MCP-PATH
                PERFORM 900-PTBYO-READ-SEC
            ELSE
                INITIALIZE                  PTBYOMEI-REC
@@ -1316,16 +1354,15 @@
                          ( FLG-PTBYOMEI    =   1                )
                PERFORM 3101-PTBYO-SPA-SEC
       *
-               MOVE    WRK-DBPATH      TO  ORC-DBPATH
+               MOVE    WRK-DBPATH      TO  MCP-PATH
                PERFORM 900-PTBYO-READ-SEC
            END-PERFORM
       *    カーソルクロース
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-DBPATH          TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    WRK-DBPATH          TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                           MCPAREA
+                                           MCPDATA-REC
       *
            IF    ( IDX                 >=  WRK-CONS-C02-MAX )  AND
                  ( FLG-PTBYOMEI        =   ZERO             )
@@ -1861,7 +1898,8 @@
       *
            MOVE    ZERO                TO  SPA-GMN-C02-MAX
       *    検索処理
-           MOVE    "PTBYOMEI-KEY16"    TO  WRK-DBPATH
+           MOVE    PATH-TBL-PTBYOMEI-KEY16
+                                       TO  WRK-DBPATH
            INITIALIZE                  PTBYOMEI-REC
            MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
            MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
@@ -2167,7 +2205,8 @@
       *            病名一覧
                    MOVE    1                   TO  SPA-GMN-C02-PAGE
       *
-                   MOVE    "PTBYOMEI-KEY16"    TO  WRK-DBPATH
+                   MOVE    PATH-TBL-PTBYOMEI-KEY16
+                                               TO  WRK-DBPATH
                    INITIALIZE                      PTBYOMEI-REC
                    MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
                    MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
@@ -2213,7 +2252,8 @@
       *        病名一覧
                MOVE    1                   TO  SPA-GMN-C02-PAGE
       *
-               MOVE    "PTBYOMEI-KEY16"    TO  WRK-DBPATH
+               MOVE    PATH-TBL-PTBYOMEI-KEY16
+                                           TO  WRK-DBPATH
                INITIALIZE                  PTBYOMEI-REC
                MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
                MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
@@ -2346,6 +2386,10 @@
       *    簡単修正処理
       *****************************************************************
        410113-KANTAN-SYUSEI-SEC         SECTION.
+      *
+           MOVE    SPACE           TO  WRK-ERR-BYOMEI
+                                       WRK-ERR-SRYYMD
+                                       WRK-ERR-SRYKA
       *
            INITIALIZE                   WRK-KANTAN-HENSYU-AREA
       *
@@ -2667,6 +2711,7 @@
       *
       *    転帰・保険適用と開始日のチェック
            IF    ( WRK-HENSYU-DATA-O (1)   NOT =   SPACE         )
+           OR    ( WRK-HENSYU-DATA-O (6)   NOT =   SPACE         )
            OR    ( WRK-HENSYU-DATA-O (7)   NOT =   SPACE AND "-" )
                PERFORM VARYING IDXX    FROM    1   BY  1
                        UNTIL   IDXX    >       5
@@ -2724,7 +2769,8 @@
       *
            MOVE    ZERO                TO  SPA-GMN-C02-MAX
       *    検索処理
-           MOVE    "PTBYOMEI-KEY16"    TO  WRK-DBPATH
+           MOVE    PATH-TBL-PTBYOMEI-KEY16
+                                       TO  WRK-DBPATH
            INITIALIZE                  PTBYOMEI-REC
            MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
            MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
@@ -2738,6 +2784,21 @@
       *    簡単修正転帰・保険適用チェック処理
       *****************************************************************
        4101132-KANTAN-SYUSEI-DABURI-CHK-SEC         SECTION.
+      *
+      *    転記日のセット
+           MOVE    SPA-NAI-C02-TTENKIYMD (IDX)
+                                   TO  WRK-TENKIYMD
+           IF      WRK-HENSYU-DATA-O (1)
+                                   =   SPACE
+               CONTINUE
+           ELSE
+               IF      WRK-HENSYU-DATA-O (1)
+                                       =   "-"
+                   MOVE    SPACE                   TO  WRK-TENKIYMD
+               ELSE
+                   MOVE    WRK-HENSYU-DATA-O (2)   TO  WRK-TENKIYMD
+               END-IF
+           END-IF
       *
       *    転帰と開始日のチェック
            IF      WRK-HENSYU-DATA-O (1)
@@ -2776,28 +2837,32 @@
                                        TO  PTBYO-BYOMEI
            MOVE    SPA-NAI-C02-TNYUGAIKBN (IDX)
                                        TO  PTBYO-NYUGAIKBN
-           IF      WRK-HENSYU-DATA-O (6)   NOT =   SPACE 
+           IF      WRK-HENSYU-DATA-O (6)   =   SPACE
+               CONTINUE
+           ELSE 
                IF      WRK-HENSYU-DATA-O (6)   =   "-"
-                   MOVE    SPACE                   TO  PTBYO-NYUGAIKBN
+                   MOVE    SPACE               TO  PTBYO-NYUGAIKBN
                ELSE
-                   MOVE    WRK-HENSYU-DATA-O (6)   TO  PTBYO-NYUGAIKBN
+                   MOVE    WRK-HENSYU-DATA-O (6)
+                                               TO  PTBYO-NYUGAIKBN
                END-IF
            END-IF     
            IF      PTBYO-NYUGAIKBN     =   SPACE 
-               MOVE    "PTBYOMEI-KEY13"    TO  WRK-DBPATH
+               MOVE    PATH-TBL-PTBYOMEI-KEY13
+                                           TO  WRK-DBPATH
            ELSE
-               MOVE    "PTBYOMEI-KEY21"    TO  WRK-DBPATH
+               MOVE    PATH-TBL-PTBYOMEI-KEY21
+                                           TO  WRK-DBPATH
            END-IF    
       *
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-DBPATH          TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    WRK-DBPATH          TO  MCP-PATH
+           CALL    "MCPSUB"            USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    WRK-DBPATH          TO  ORC-DBPATH
+               MOVE    WRK-DBPATH          TO  MCP-PATH
                PERFORM 900-PTBYO-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-PTBYOMEI
@@ -2810,39 +2875,46 @@
                AND     SPA-NAI-C02-TRENNUM (IDX)   =   PTBYO-RENNUM
                    CONTINUE
                ELSE
-                   IF      WRK-HENSYU-DATA-O (2)   NOT =   SPACE
-                       IF      SPA-NAI-C02-TSRYYMD (IDX)
-                                               <   PTBYO-SRYYMD
-                           IF      WRK-HENSYU-DATA-O (2)   =   "-"
+                   EVALUATE    TRUE
+                       WHEN    SPA-NAI-C02-TSRYYMD (IDX)
+                                           <   PTBYO-SRYYMD
+                           IF      WRK-TENKIYMD    =   SPACE
                                MOVE    "0038"          TO  SPA-ERRCD
                            ELSE
-                               IF     WRK-HENSYU-DATA-O (2)
-                                                   >   PTBYO-SRYYMD
-                                   MOVE    "0038"          TO  SPA-ERRCD
+                               IF     WRK-TENKIYMD >   PTBYO-SRYYMD
+                                   MOVE    "0038"      TO  SPA-ERRCD
                                END-IF
                            END-IF
-                       END-IF
-                   END-IF    
+                       WHEN    SPA-NAI-C02-TSRYYMD (IDX)
+                                           >   PTBYO-SRYYMD
+                           IF      PTBYO-TENKIYMD  =   SPACE
+                               MOVE    "0038"      TO  SPA-ERRCD
+                           ELSE
+                               IF      SPA-NAI-C02-TSRYYMD (IDX)
+                                               <   PTBYO-TENKIYMD
+                                   MOVE    "0038"      TO  SPA-ERRCD
+                               END-IF
+                           END-IF
+                   END-EVALUATE
                END-IF
       *
-               MOVE    WRK-DBPATH          TO  ORC-DBPATH
+               IF      SPA-ERRCD           =   "0038"
+                   MOVE    PTBYO-SRYYMD        TO  WRK-SYMD
+                   PERFORM 5002-HIZUKE-HEN-SEC
+                   MOVE    LNK-DAY2-EDTYMD3    TO  WRK-ERR-SRYYMD
+                   MOVE    SPA-GMN-C02-TBYOMEI (IDX)
+                                               TO  WRK-ERR-BYOMEI
+               END-IF
+      *
+               MOVE    WRK-DBPATH          TO  MCP-PATH
                PERFORM 900-PTBYO-READ-SEC
            END-PERFORM
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-DBPATH          TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-      *
-           IF      SPA-ERRCD           =   "0038"
-               MOVE    PTBYO-SRYYMD        TO  WRK-SYMD
-               PERFORM 5002-HIZUKE-HEN-SEC
-               MOVE    LNK-DAY2-EDTYMD3    TO  WRK-ERR-SRYYMD
-               MOVE    SPA-GMN-C02-TBYOMEI (IDX)
-                                           TO  WRK-ERR-BYOMEI
-           END-IF
+           MOVE    WRK-DBPATH          TO  MCP-PATH
+           CALL    "MCPSUB"             USING
+                                        MCPAREA
+                                        MCPDATA-REC
            .
        4101132-KANTAN-SYUSEI-DABURI-CHK-EXT.
            EXIT.
@@ -2861,7 +2933,8 @@
                                        TO  PTBYO-SRYYMD
            MOVE    SPA-NAI-C02-TRENNUM (IDX)
                                        TO  PTBYO-RENNUM 
-           MOVE    "PTBYOMEI-KEY"      TO  WRK-DBPATH
+           MOVE    PATH-TBL-PTBYOMEI-KEY
+                                       TO  WRK-DBPATH
            PERFORM 900-PTBYO-INV-SEC
            IF      FLG-PTBYOMEI        =   1
                MOVE    "1003"              TO  SPA-ERRCD
@@ -3008,7 +3081,8 @@
            MOVE    SPA-NAI-C02-SRYYMD  TO  PTBYO-SRYYMD
            MOVE    SPA-NAI-C02-RENNUM  TO  PTBYO-RENNUM
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
-           MOVE    "PTBYOMEI-KEY"      TO  WRK-DBPATH
+           MOVE    PATH-TBL-PTBYOMEI-KEY
+                                       TO  WRK-DBPATH
            PERFORM 900-PTBYO-INV-SEC
       *
            MOVE    PTBYOMEI-REC        TO  SPA-PTBYOMEI-REC
@@ -5095,7 +5169,8 @@
       *    病名一覧
            MOVE    1                   TO  SPA-GMN-C02-PAGE
       *
-           MOVE    "PTBYOMEI-KEY16"     TO  WRK-DBPATH
+           MOVE    PATH-TBL-PTBYOMEI-KEY16
+                                       TO  WRK-DBPATH
            INITIALIZE                  PTBYOMEI-REC
            MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
            MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
@@ -5127,7 +5202,8 @@
       *    病名一覧
            MOVE    1                   TO  SPA-GMN-C02-PAGE
       *
-           MOVE    "PTBYOMEI-KEY16"     TO  WRK-DBPATH
+           MOVE    PATH-TBL-PTBYOMEI-KEY16
+                                       TO  WRK-DBPATH
            INITIALIZE                  PTBYOMEI-REC
            MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
            MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
@@ -5368,7 +5444,8 @@
                                        SPA-NAI-C02-SELNO
            MOVE    ZERO                TO  SPA-GMN-C02-MAX
       *    検索処理
-           MOVE    "PTBYOMEI-KEY16"     TO  WRK-DBPATH
+           MOVE    PATH-TBL-PTBYOMEI-KEY16
+                                       TO  WRK-DBPATH
            INITIALIZE                  PTBYOMEI-REC
            MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
            MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
@@ -5395,7 +5472,8 @@
                                        SPA-NAI-C02-SELNO
            MOVE    ZERO                TO  SPA-GMN-C02-MAX
       *    検索処理
-           MOVE    "PTBYOMEI-KEY16"     TO  WRK-DBPATH
+           MOVE    PATH-TBL-PTBYOMEI-KEY16
+                                       TO  WRK-DBPATH
            INITIALIZE                  PTBYOMEI-REC
            MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
            MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
@@ -5654,6 +5732,7 @@
       *    病名重複チェック（画面・ＤＢ）
            MOVE    SPACE           TO  WRK-ERR-BYOMEI
                                        WRK-ERR-SRYYMD
+                                       WRK-ERR-SRYKA
            PERFORM VARYING IDXX    FROM    1   BY  1
                    UNTIL   IDXX    >       6
                    OR      SPA-ERRCD           NOT =   SPACE
@@ -5668,29 +5747,7 @@
       *
       *    警告チェック
            IF      SPA-ERRCD            =   SPACE
-      *        主病名の存在チェック（警告）
-               IF      SPA-GMN-C02-SYUBYOFLG       =   SPACE
-                   IF      SPA-C02-2005-SYUBYOHENFLG   =   ZERO
-                       CONTINUE
-                   ELSE
-                       IF      SPA-C02-1042-MSG1-DSPKBN    =   ZERO
-                           INITIALIZE                  PTBYOMEI-REC
-                           MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
-                           MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
-                           MOVE    SPA-GMN-C02-BSRYKA  TO  PTBYO-SRYKA
-                           MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
-                           IF      SPA-C02-1001-HOSPSBT1   =   "1"
-                               MOVE    "PTBYOMEI-KEY14"    TO WRK-DBPATH
-                           ELSE
-                               MOVE    "PTBYOMEI-KEY15"    TO WRK-DBPATH
-                           END-IF
-                           PERFORM 900-PTBYO-INV-SEC
-                           IF      FLG-PTBYOMEI        =   1
-                               MOVE    "0102"            TO  SPA-CIDCD
-                           END-IF
-                       END-IF
-                   END-IF    
-               END-IF
+               PERFORM 4504-KEIKOKU-CHK-SEC
            END-IF
       *
       *    登録処理
@@ -5700,6 +5757,141 @@
            END-IF
            .
        450-TOUROKU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    警告チェック処理
+      *****************************************************************
+       4504-KEIKOKU-CHK-SEC                SECTION.
+      * 
+           MOVE    SPACE           TO  WRK-ERR-BYOMEI
+                                       WRK-ERR-SRYYMD
+                                       WRK-ERR-SRYKA
+      * 
+           INITIALIZE                  SPA-C02-KEIKOKU-FLG-AREA
+      *
+      *    他診療科の同一病名の警告チェック
+           IF      SPA-C02-1042-MSG4-DSPKBN
+                                           =   1
+               PERFORM VARYING IDXX    FROM    1   BY  1
+                       UNTIL   IDXX    >       6
+                       OR      SPA-CIDCD           NOT =   SPACE
+                       OR      WRK-PTBYO-BYOMEI (IDXX) =   SPACE
+                   INITIALIZE                      PTBYOMEI-REC
+                   MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+                   MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
+                   MOVE    SPA-GMN-C02-BSRYKA  TO  PTBYO-SRYKA
+                   MOVE    WRK-PTBYO-BYOMEI (IDXX)
+                                               TO  PTBYO-BYOMEI
+                   MOVE    WRK-PTBYO-NYUGAIKBN (IDXX)
+                                               TO  PTBYO-NYUGAIKBN
+                   IF      PTBYO-NYUGAIKBN     =   SPACE
+                       MOVE    PATH-TBL-PTBYOMEI-KEY27 TO  WRK-DBPATH
+                   ELSE
+                       MOVE    PATH-TBL-PTBYOMEI-KEY28 TO  WRK-DBPATH
+                   END-IF
+      *
+                   MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
+                   MOVE    "DBSELECT"          TO  MCP-FUNC
+                   MOVE    WRK-DBPATH          TO  MCP-PATH
+                   CALL    "MCPSUB"            USING
+                                               MCPAREA
+                                               MCPDATA-REC
+                   IF      MCP-RC              =   ZERO
+                       MOVE    WRK-DBPATH          TO  MCP-PATH
+                       PERFORM 900-PTBYO-READ-SEC
+                   ELSE
+                       MOVE    1                   TO  FLG-PTBYOMEI
+                   END-IF
+      *
+                   PERFORM             UNTIL   FLG-PTBYOMEI    =   1
+                                       OR      SPA-ERRCD   NOT =   SPACE
+                       EVALUATE    TRUE
+                           WHEN    SPA-NAI-C02-SRYYMD  =   PTBYO-SRYYMD
+                               MOVE    1       TO  SPA-C02-KEIKOKU-FLG1
+                           WHEN    SPA-NAI-C02-SRYYMD  <   PTBYO-SRYYMD
+                               IF      SPA-NAI-C02-TENKIYMD    =   SPACE
+                                   MOVE    1          TO
+                                                  SPA-C02-KEIKOKU-FLG1
+                               ELSE
+                                   IF     SPA-NAI-C02-TENKIYMD
+                                                   >   PTBYO-SRYYMD
+                                       MOVE    1          TO
+                                                   SPA-C02-KEIKOKU-FLG1
+                                   END-IF
+                               END-IF
+                           WHEN    SPA-NAI-C02-SRYYMD  >   PTBYO-SRYYMD
+                               IF      PTBYO-TENKIYMD  =   SPACE
+                                   MOVE    1          TO
+                                                   SPA-C02-KEIKOKU-FLG1
+                               ELSE
+                                   IF      SPA-NAI-C02-SRYYMD
+                                                   <   PTBYO-TENKIYMD
+                                       MOVE    1          TO
+                                                   SPA-C02-KEIKOKU-FLG1
+                                   END-IF
+                               END-IF
+                       END-EVALUATE
+                       IF      SPA-C02-KEIKOKU-FLG1    =   1
+                           MOVE    "0103"              TO  SPA-CIDCD
+                           MOVE    PTBYO-SRYYMD        TO  WRK-SYMD
+                           PERFORM 5002-HIZUKE-HEN-SEC
+                           MOVE    LNK-DAY2-EDTYMD3    TO
+                                                       WRK-ERR-SRYYMD
+                           MOVE    PTBYO-SRYKA         TO  WRK-KBN
+                           PERFORM 5001-SRYKA-HENSYU-SEC
+                           MOVE    WRK-KBNMEI          TO  WRK-ERR-SRYKA
+                       END-IF
+      *
+                       MOVE    WRK-DBPATH          TO MCP-PATH
+                       PERFORM 900-PTBYO-READ-SEC
+                   END-PERFORM
+      *
+                   MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+                   MOVE    WRK-DBPATH          TO  MCP-PATH
+                   CALL    "MCPSUB"            USING
+                                               MCPAREA
+                                               MCPDATA-REC
+      *
+                   IF      SPA-C02-KEIKOKU-FLG1    =   1
+                       MOVE    WRK-PTBYO-BYOMEI (IDXX)
+                                              TO  WRK-ERR-BYOMEI
+                       MOVE    6              TO  IDXX                  
+                   END-IF
+               END-PERFORM
+           END-IF
+      *         
+      *    主病名の存在チェック（警告）
+           IF      SPA-GMN-C02-SYUBYOFLG       =   SPACE
+               IF      SPA-C02-2005-SYUBYOHENFLG   =   ZERO
+                   CONTINUE
+               ELSE
+                   IF      SPA-C02-1042-MSG1-DSPKBN    =   ZERO
+                       INITIALIZE                  PTBYOMEI-REC
+                       MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+                       MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
+                       MOVE    SPA-GMN-C02-BSRYKA  TO  PTBYO-SRYKA
+                       MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
+                       IF      SPA-C02-1001-HOSPSBT1   =   "1"
+                           MOVE    PATH-TBL-PTBYOMEI-KEY14
+                                                       TO WRK-DBPATH
+                       ELSE
+                           MOVE    PATH-TBL-PTBYOMEI-KEY15
+                                                       TO WRK-DBPATH
+                       END-IF
+                       PERFORM 900-PTBYO-INV-SEC
+                       IF      FLG-PTBYOMEI        =   1
+                           MOVE    1                   TO
+                                                   SPA-C02-KEIKOKU-FLG2
+                           IF      SPA-CIDCD           =   SPACE
+                               MOVE    "0102"            TO  SPA-CIDCD
+                           END-IF
+                       END-IF
+                   END-IF
+               END-IF    
+           END-IF
+           .
+       4504-KEIKOKU-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -6019,20 +6211,19 @@
            MOVE    WRK-PTBYO-NYUGAIKBN (IDXX)
                                        TO  PTBYO-NYUGAIKBN
            IF      PTBYO-NYUGAIKBN     =   SPACE
-               MOVE    "PTBYOMEI-KEY13"    TO  WRK-DBPATH
+               MOVE    PATH-TBL-PTBYOMEI-KEY13 TO  WRK-DBPATH
            ELSE
-               MOVE    "PTBYOMEI-KEY21"    TO  WRK-DBPATH
+               MOVE    PATH-TBL-PTBYOMEI-KEY21 TO  WRK-DBPATH
            END-IF
       *
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-DBPATH          TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    WRK-DBPATH          TO  MCP-PATH
+           CALL    "MCPSUB"             USING
+                                        MCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    WRK-DBPATH          TO  ORC-DBPATH
+               MOVE    WRK-DBPATH          TO  MCP-PATH
                PERFORM 900-PTBYO-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-PTBYOMEI
@@ -6053,18 +6244,16 @@
                                MOVE    "0038"          TO  SPA-ERRCD
                            ELSE
                                IF     SPA-NAI-C02-TENKIYMD
-                                                   >   PTBYO-TENKIYMD
+                                                   >   PTBYO-SRYYMD
                                    MOVE    "0038"          TO  SPA-ERRCD
                                END-IF
                            END-IF
                        WHEN    SPA-NAI-C02-SRYYMD  >   PTBYO-SRYYMD
                            IF      PTBYO-TENKIYMD  =   SPACE
-                               IF    ( SPA-NAI-C02-TENKIYMD
-                                               NOT =   SPACE          )
-                               AND   ( SPA-NAI-C02-TENKIYMD
-                                                   <=  PTBYO-TENKIYMD )
-                                   CONTINUE
-                               ELSE
+                               MOVE    "0038"      TO  SPA-ERRCD
+                           ELSE
+                               IF      SPA-NAI-C02-SRYYMD
+                                                   <   PTBYO-TENKIYMD
                                    MOVE    "0038"      TO  SPA-ERRCD
                                END-IF
                            END-IF
@@ -6077,16 +6266,15 @@
                    END-IF
                END-IF
       *
-               MOVE    WRK-DBPATH          TO  ORC-DBPATH
+               MOVE    WRK-DBPATH          TO  MCP-PATH
                PERFORM 900-PTBYO-READ-SEC
            END-PERFORM
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-DBPATH          TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    WRK-DBPATH          TO  MCP-PATH
+           CALL    "MCPSUB"             USING
+                                        MCPAREA
+                                        MCPDATA-REC
            .                   
        4502-DABURI-CHK-EXT.
            EXIT.
@@ -6171,7 +6359,8 @@
       *
            MOVE    ZERO                TO  SPA-GMN-C02-MAX
       *    検索処理
-           MOVE    "PTBYOMEI-KEY16"    TO  WRK-DBPATH
+           MOVE    PATH-TBL-PTBYOMEI-KEY16
+                                       TO  WRK-DBPATH
            INITIALIZE                  PTBYOMEI-REC
            MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
            MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
@@ -6202,7 +6391,8 @@
                    MOVE    SPA-GMN-C02-BSRYKA  TO  PTBYO-SRYKA
                    MOVE    SPA-NAI-C02-SRYYMD  TO  PTBYO-SRYYMD
                    MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
-                   MOVE    "PTBYOMEI-KEY7"     TO  WRK-DBPATH
+                   MOVE    PATH-TBL-PTBYOMEI-KEY7
+                                               TO  WRK-DBPATH
                    PERFORM 900-PTBYO-INV-SEC
                    IF      FLG-PTBYOMEI        =   ZERO
                        MOVE    PTBYO-RENNUM    TO  WRK-RENNUM
@@ -6254,7 +6444,8 @@
                        MOVE    SPA-GMN-C02-BSRYKA  TO  PTBYO-SRYKA
                        MOVE    SPA-NAI-C02-SRYYMD  TO  PTBYO-SRYYMD
                        MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
-                       MOVE    "PTBYOMEI-KEY7"     TO  WRK-DBPATH
+                       MOVE    PATH-TBL-PTBYOMEI-KEY7
+                                                   TO  WRK-DBPATH
                        PERFORM 900-PTBYO-INV-SEC
                        IF      FLG-PTBYOMEI        =   ZERO
                            MOVE    PTBYO-RENNUM    TO  WRK-RENNUM
@@ -6281,7 +6472,8 @@
                        MOVE    SPA-GMN-C02-BSRYKA  TO  PTBYO-SRYKA
                        MOVE    SPA-NAI-C02-SRYYMD  TO  PTBYO-SRYYMD
                        MOVE    SPA-NAI-C02-RENNUM  TO  PTBYO-RENNUM 
-                       MOVE    "PTBYOMEI-KEY"      TO  WRK-DBPATH
+                       MOVE    PATH-TBL-PTBYOMEI-KEY
+                                                   TO  WRK-DBPATH
                        PERFORM 900-PTBYO-INV-SEC
                        IF      FLG-PTBYOMEI        =   1
                            MOVE    "1003"          TO  SPA-ERRCD
@@ -6578,7 +6770,8 @@
       *    病名一覧
            MOVE    1                   TO  SPA-GMN-C02-PAGE
       *
-           MOVE    "PTBYOMEI-KEY16"     TO  WRK-DBPATH
+           MOVE    PATH-TBL-PTBYOMEI-KEY16
+                                       TO  WRK-DBPATH
            INITIALIZE                  PTBYOMEI-REC
            MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
            MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
@@ -6614,7 +6807,8 @@
       *    病名一覧
            MOVE    1                   TO  SPA-GMN-C02-PAGE
       *
-           MOVE    "PTBYOMEI-KEY16"    TO  WRK-DBPATH
+           MOVE    PATH-TBL-PTBYOMEI-KEY16
+                                       TO  WRK-DBPATH
            INITIALIZE                  PTBYOMEI-REC
            MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
            MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
@@ -8010,6 +8204,17 @@
                WHEN    "0102"
                    MOVE    "主病名がありません。更新しますか？"
                                        TO  WRK-CIDMSG
+               WHEN    "0103"
+                   STRING
+                       WRK-ERR-BYOMEI          DELIMITED   BY  SPACE
+                       "は"                    DELIMITED   BY  SIZE 
+                       WRK-ERR-SRYKA           DELIMITED   BY  SPACE
+                       "に"                    DELIMITED   BY  SIZE 
+                       WRK-ERR-SRYYMD          DELIMITED   BY  SPACE
+                       "に登録してあります。更新しますか？"
+                                               DELIMITED   BY  SIZE 
+                                               INTO    WRK-CIDMSG
+                   END-STRING
                WHEN    OTHER
                    MOVE    SPA-ERRCD   TO  WRK-CIDMSG
            END-EVALUATE
@@ -8122,13 +8327,12 @@
       *
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-DBPATH          TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    WRK-DBPATH          TO  MCP-PATH
+           CALL    "MCPSUB"             USING
+                                        MCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    WRK-DBPATH          TO  ORC-DBPATH
+               MOVE    WRK-DBPATH          TO  MCP-PATH
                PERFORM 900-PTBYO-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-PTBYOMEI
@@ -8136,11 +8340,10 @@
            END-IF
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-DBPATH          TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    WRK-DBPATH          TO  MCP-PATH
+           CALL    "MCPSUB"             USING
+                                        MCPAREA
+                                        MCPDATA-REC
       *
            .
        900-PTBYO-INV-EXT.
@@ -8152,10 +8355,9 @@
        900-PTBYO-READ-SEC           SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           CALL    "MCPSUB"             USING
+                                        MCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PTBYOMEI-REC
                MOVE    ZERO            TO  FLG-PTBYOMEI
@@ -8522,11 +8724,10 @@
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *
-           MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE   "PUTWINDOW"       TO  MCP-FUNC
+           CALL    "MCPSUB"             USING
+                                        MCPAREA
+                                        MCPDATA-REC
       *
            .
        900-PUT-WINDOW-EXT.
