@@ -45,4 +45,4 @@
             02  HCM03V02-MIDASHI    PIC X(10).
             02  HCM03V02-RSIMIDASI  PIC X(16).
             02  HCM03V02-RSIBUN PIC X(18).
-            02  HCM03V02-RSITEN PIC X(2).
+            02  HCM03V02-RSIEN  PIC X(2).

@@ -221,7 +221,7 @@
         <embed object="string" length="18"/>
       </appinfo>
     </element>
-    <element name="RSITEN" occurs="1">
+    <element name="RSIEN" occurs="1">
       <appinfo>
         <embed object="string" length="2"/>
       </appinfo>
@@ -7260,7 +7260,7 @@
         <rectangle val="8.1465,14.5764;8.5,14.9264"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#RSITEN#</string>
+        <string>#RSIEN#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="0"/>
