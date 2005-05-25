@@ -28,6 +28,8 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-小豆沢  04/01/29  保険適用外の記載と消費税対応
+      *  01.00.02    NACL-小豆沢  05/05/25  労災・自賠責の患者請求分は明細を
+      *                                     表示するように変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -616,8 +618,11 @@
                MOVE    WRK-ZHENSYU24       TO  HCN03-HKNRYO(IDX1)
            END-PERFORM
       *
-      *    労災・自賠の時、点数表示なし
-           IF  COMB-HKNNUM     =    "971" OR "973"
+      *    労災・自賠で患者請求が無い場合、点数表示なし
+           IF    ( COMB-HKNNUM             =    "971"  AND
+                   SYS-4001-RSIIRYOKBN     =    "1" )  OR
+                 ( COMB-HKNNUM             =    "973"  AND
+                   SYU-PTFTNRATE           =    ZERO )
                PERFORM VARYING     IDX1    FROM  1   BY  1
                        UNTIL       IDX1    >     11
                    MOVE    SPACE           TO  HCN03-HKNRYO(IDX1)

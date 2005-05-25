@@ -34,6 +34,8 @@
       *  01.00.04    NACL-ÂÀÅÄ    03.08.26  Ï«ºÒ¼«ÇåÀÕÊÔ½¸½¤Àµ
       *  01.00.05    NACL-ÂÀÅÄ    03.10.10  ¿©»öÉéÃ´ÊÔ½¸½¤Àµ
       *  01.00.06    NACL-ÂÀÅÄ    03.10.21  ¶â³ÛÊÔ½¸ÎÎ°è¤ò³ÈÄ¥
+      *  01.00.07    NACL-¾®Æ¦Âô  05.05.25  Ï«ºÒ¡¦¼«ÇåÀÕ¤Î´µ¼ÔÀÁµáÊ¬¤ÏÌÀºÙ¤ò
+      *                                     É½¼¨¤¹¤ë¤è¤¦¤ËÊÑ¹¹
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -620,8 +622,11 @@
                MOVE    WRK-ZHENSYU24       TO  HCN03-HKNRYO(IDX1)
            END-PERFORM
       *
-      *    Ï«ºÒ¡¦¼«Çå¤Î»þ¡¢ÅÀ¿ôÉ½¼¨¤Ê¤·
-           IF  COMB-HKNNUM     =    "971" OR "973"
+      *    Ï«ºÒ¡¦¼«Çå¤Ç´µ¼ÔÀÁµá¤¬Ìµ¤¤¾ì¹ç¡¢ÅÀ¿ôÉ½¼¨¤Ê¤·
+           IF    ( COMB-HKNNUM             =    "971"  AND
+                   SYS-4001-RSIIRYOKBN     =    "1" )  OR
+                 ( COMB-HKNNUM             =    "973"  AND
+                   SYU-PTFTNRATE           =    ZERO )
                PERFORM VARYING     IDX1    FROM  1   BY  1
                        UNTIL       IDX1    >     11
                    MOVE    SPACE           TO  HCN03-HKNRYO(IDX1)

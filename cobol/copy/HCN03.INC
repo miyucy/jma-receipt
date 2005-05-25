@@ -34,3 +34,6 @@
             02  HCN03-LBL-N-MISYU-EN    PIC X(2).
             02  HCN03-NYU-MISYUKIN  PIC X(24).
             02  HCN03-MIDASHI   PIC X(10).
+            02  HCN03-RSIMIDASI PIC X(16).
+            02  HCN03-RSIBUN    PIC X(24).
+            02  HCN03-RSIEN PIC X(2).

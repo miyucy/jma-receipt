@@ -43,3 +43,6 @@
             02  HCM03V02-IRYOMEI    PIC X(40).
             02  HCM03V02-IRYOTEL    PIC X(15).
             02  HCM03V02-MIDASHI    PIC X(10).
+            02  HCM03V02-RSIMIDASI  PIC X(16).
+            02  HCM03V02-RSIBUN PIC X(18).
+            02  HCM03V02-RSITEN PIC X(2).

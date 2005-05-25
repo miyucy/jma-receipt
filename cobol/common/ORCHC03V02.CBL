@@ -31,6 +31,8 @@
       *  01.00.02    NACL-太田    04/03/17  （再）の文字の編集を削除
       *  01.00.03    NACL-多々納  04/07/15  複数科・保険組合せ対応
       *  01.00.04    NACL-多々納  05/01/11  前回未収額の複数科・保険対応
+      *  01.00.05    NACL-小豆沢  05/05/25  労災・自賠責の患者請求分は明細を
+      *                                     表示するように変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -863,8 +865,11 @@
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-Z72-G           TO  HC03-GOKTEN
       *
-      *    労災・自賠の時、点数表示なし
-           IF    ( COMB-HKNNUM             =    "971"  OR  "973" )
+      *    労災・自賠で患者請求が無い場合、点数表示なし
+           IF    ( COMB-HKNNUM             =    "971"  AND
+                   SYS-4001-RSIIRYOKBN     =    "1" )  OR
+                 ( COMB-HKNNUM             =    "973"  AND
+                   SYU-PTFTNRATE           =    ZERO )
                MOVE    SPACE               TO  HC03-HKNRYO1
                MOVE    SPACE               TO  HC03-HKNRYO2
                MOVE    SPACE               TO  HC03-HKNRYO3

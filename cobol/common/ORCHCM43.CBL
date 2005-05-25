@@ -27,6 +27,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-小豆沢  05.05.25  労災・自賠責の患者請求分は明細を
+      *                                     表示するように変更(HCM43->HCM43V01)
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -40,7 +42,8 @@
        WORKING-STORAGE             SECTION.
       *
       *    帳票
-           COPY    "HCM43.INC".
+           COPY    "HCM43V01.INC"    REPLACING  //HCM43V01//
+                                  BY         //HCM43//.
       *
       *    フラグ領域
        01  STS-AREA.
@@ -577,8 +580,11 @@
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-Z72-G           TO  HCM43-GOKTEN
       *
-      *    労災・自賠の時、点数表示なし
-           IF    ( COMB-HKNNUM             =    "971"  OR  "973" )
+      *    労災・自賠で患者請求が無い場合、点数表示なし
+           IF    ( COMB-HKNNUM             =    "971"  AND
+                   SYS-4001-RSIIRYOKBN     =    "1" )  OR
+                 ( COMB-HKNNUM             =    "973"  AND
+                   SYU-PTFTNRATE           =    ZERO )
                MOVE    SPACE               TO  HCM43-HKNRYO1
                MOVE    SPACE               TO  HCM43-HKNRYO2
                MOVE    SPACE               TO  HCM43-HKNRYO3
@@ -749,7 +755,7 @@
        400-PRINT-SEC                SECTION.
       *
            MOVE    SPA-PTID            TO  SPRT-PTID
-           MOVE    "HCM43.red"         TO  SPRT-PRTID
+           MOVE    "HCM43V01.red"      TO  SPRT-PRTID
            MOVE    HCM43               TO  SPRT-PRTDATA
            MOVE    "1"                 TO  SPRT-SITEKBN
            CALL    "ORCSPRT"           USING
