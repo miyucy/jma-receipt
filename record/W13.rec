@@ -104,5 +104,12 @@ W13	{
 				select	bool[50];
 			};
 		};
+		RSIPRT_COMBO	{
+			RSIPRT	{
+				value	varchar(10);
+			};
+			count	int;
+			item	varchar(10)[02];
+		};
 	};
 };

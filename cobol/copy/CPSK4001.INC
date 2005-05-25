@@ -54,8 +54,10 @@
                05  SYS-4001-TAXKBN-KZI  PIC  X(01).
       *极清勒盖年掠裁换霹艰胺
                05  SYS-4001-KOTEIKBN    PIC  X(01).
+      *汐阂】极清懒滇今淡很惰尸
+               05  SYS-4001-RSIPRTKBN   PIC  X(01).
       *徒洒
-           03                           PIC  X(412).
+           03                           PIC  X(411).
       *眉琐ＩＤ
            03  SYS-4001-TERMID          PIC  X(16).
       *オペ〖レ〖タＩＤ

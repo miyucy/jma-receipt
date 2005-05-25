@@ -102,6 +102,12 @@
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-KOTEIKBNMEI
                                               PIC X(08).
+                       09  SPA-GMN-RSIPRT-G.
+                           11  SPA-GMN-RSIPRT
+                                              PIC X(01).
+                           11  SPA-GMN-F1     PIC X(01).
+                           11  SPA-GMN-RSIPRTMEI
+                                              PIC X(08).
                        09  SPA-GMN-LBLKIZAILST
                                               PIC X(60).
                    07  SPA-GMN-KOUMOKU1.
@@ -155,6 +161,12 @@
                        09  SPA-GMN-KOTEIKBNMEIL
                                                PIC X(08).
                    07  SPA-GMN-KOTEIKBN-MAX    PIC 9(02).
+      *                                        
+                   07  SPA-GMN-RSIPRTLST OCCURS  2.
+                       09  SPA-GMN-RSIPRTL    PIC X(01).
+                       09  SPA-GMN-F1L        PIC X(01).
+                       09  SPA-GMN-RSIPRTMEIL PIC X(08).
+                   07  SPA-GMN-RSIPRT-MAX     PIC 9(02).
       *
                    07  SPA-GMN-KIZAITBL.
                        09  SPA-GMN-KIZAITBL-NEXT   PIC 9(01).
@@ -165,7 +177,7 @@
                                                    PIC 9(01).
                            11  SPA-GMN-TSRYCD      PIC X(09).
                            11  SPA-GMN-TSRYCDNAME  PIC X(60).
-      *
+      *                                        
                    07  SPA-GMN-TBL.            
                        09  SPA-GMN-TBL-G      OCCURS  40.
                            11  SPA-GMN-TSONSHOUKBN.
@@ -623,6 +635,11 @@
                                             TO  SPA-GMN-KOTEIKBN-G
            END-IF
       *
+           IF    ( SPA-GMN-RSIPRT-G   =   SPACE )
+               MOVE    SPA-GMN-RSIPRTLST(1)
+                                            TO  SPA-GMN-RSIPRT-G
+           END-IF
+      *
            MOVE    ZERO                TO  SPA-NAI-KIZAITBL-FLG
       *
            MOVE    1                   TO  SPA-GMN-CUR
@@ -666,6 +683,10 @@
            MOVE    SYS-4001-KOTEIKBN   TO  WRK-CMB-CD
            PERFORM 4200-KOTEIKBNLST-CHK-SEC
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-KOTEIKBN-G
+      *
+           MOVE    SYS-4001-RSIPRTKBN  TO  WRK-CMB-CD
+           PERFORM 4200-RSIPRTLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-RSIPRT-G
       *
            .
        3001-RSIKHN-HEN-EXT.
@@ -964,6 +985,12 @@
            MOVE    "2"                 TO  SPA-GMN-KOTEIKBNL      (2)
            MOVE    "ÌôºÞÅùÅÀ"          TO  SPA-GMN-KOTEIKBNMEIL   (2)
            MOVE    2                   TO  SPA-GMN-KOTEIKBN-MAX 
+      *     
+           MOVE    "1"                 TO  SPA-GMN-RSIPRTL      (1)
+           MOVE    "µ­ºÜ¤Ê¤·"          TO  SPA-GMN-RSIPRTMEIL   (1)
+           MOVE    "2"                 TO  SPA-GMN-RSIPRTL      (2)
+           MOVE    "µ­ºÜ¤¢¤ê"          TO  SPA-GMN-RSIPRTMEIL   (2)
+           MOVE    2                   TO  SPA-GMN-RSIPRT-MAX 
       *
            . 
        3101-COMBO-SET-EXT.
@@ -1055,6 +1082,7 @@
            MOVE    W13-SKJKBN          TO  SPA-GMN-SKJKBN-G
            MOVE    W13-KIZAITAXKBN     TO  SPA-GMN-KIZAITAXKBN-G
            MOVE    W13-KOTEIKBN        TO  SPA-GMN-KOTEIKBN-G
+           MOVE    W13-RSIPRT          TO  SPA-GMN-RSIPRT-G
       *    Â»½ý¶èÊ¬
            MOVE    W13-SONSHOUKBN1     TO  SPA-GMN-SONSHOUKBN1
            MOVE    W13-SONSHOUKBN2     TO  SPA-GMN-SONSHOUKBN2
@@ -1105,6 +1133,11 @@
            END-IF
       *
            PERFORM 4101-KOTEIKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4101-RSIPRT-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -1305,6 +1338,29 @@
       *
            .
        4101-KOTEIKBN-CHK-EXT.
+           EXIT.
+      *     
+      *****************************************************************
+      *    Ï«ºÒÀÁµá½ñ°õ»ú¥Á¥§¥Ã¥¯
+      *****************************************************************
+       4101-RSIPRT-CHK-SEC        SECTION.
+      *
+           IF    ( SPA-GMN-RSIPRT     =   SPACE )
+               MOVE    SPA-GMN-RSIPRTLST (1)
+                                       TO  SPA-GMN-RSIPRT-G
+           ELSE
+               MOVE    SPA-GMN-RSIPRT    TO  WRK-CMB-CD
+               PERFORM 4200-RSIPRTLST-CHK-SEC
+               IF    ( WRK-CMB-ITM         =   SPACE )
+                   MOVE    SPA-GMN-RSIPRTLST (1)
+                                       TO  SPA-GMN-RSIPRT-G
+               ELSE
+                   MOVE    WRK-CMB-ITM TO  SPA-GMN-RSIPRT-G
+               END-IF
+           END-IF
+      *
+           .
+       4101-RSIPRT-CHK-EXT.
            EXIT.
       *     
       *****************************************************************
@@ -1620,6 +1676,27 @@
        4200-KOTEIKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    Ï«ºÒÀÁµá½ñ¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       4200-RSIPRTLST-CHK-SEC         SECTION.
+      *
+           INITIALIZE                      WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL ( IDY >       SPA-GMN-RSIPRT-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( WRK-CMB-CD      =   SPA-GMN-RSIPRTL (IDY) )
+                   MOVE    SPA-GMN-RSIPRTLST (IDY)
+                                       TO  WRK-CMB-ITM
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       4200-RSIPRTLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    ¹ÔÁªÂò½èÍý
       *****************************************************************
        41015-LIST1SEL-SEC       SECTION.
@@ -1912,6 +1989,7 @@
            MOVE    SPA-GMN-SKJKBN          TO  SYS-4001-SKJKBN
            MOVE    SPA-GMN-KIZAITAXKBN     TO  SYS-4001-TAXKBN-KZI
            MOVE    SPA-GMN-KOTEIKBN        TO  SYS-4001-KOTEIKBN
+           MOVE    SPA-GMN-RSIPRT          TO  SYS-4001-RSIPRTKBN
            MOVE    SYS-4001-REC            TO  SYSKANRI-REC
       *     
            IF      FLG-SYSKANRI            =   ZERO
@@ -2219,6 +2297,7 @@
            MOVE    SPA-GMN-SKJKBN-G         TO  W13-SKJKBN
            MOVE    SPA-GMN-KIZAITAXKBN-G    TO  W13-KIZAITAXKBN
            MOVE    SPA-GMN-KOTEIKBN-G       TO  W13-KOTEIKBN
+           MOVE    SPA-GMN-RSIPRT-G         TO  W13-RSIPRT
       *     
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       SPA-GMN-RSIIRYOKBN-MAX
@@ -2266,6 +2345,14 @@
            END-PERFORM
            MOVE    SPA-GMN-KOTEIKBN-MAX
                                        TO  W13-KOTEIKBN-COUNT
+      *
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-RSIPRT-MAX
+               MOVE    SPA-GMN-RSIPRTLST (IDY)
+                                       TO  W13-RSIPRTLST (IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-RSIPRT-MAX
+                                       TO  W13-RSIPRT-COUNT
       *
            MOVE    SPA-GMN-SONSHOUKBN1   TO  W13-SONSHOUKBN1
       *
@@ -2497,6 +2584,8 @@
                     MOVE  "KIZAITAXKBN"    TO   MCP-WIDGET
                 WHEN    13
                     MOVE  "KOTEIKBN"       TO   MCP-WIDGET
+                WHEN    14
+                    MOVE  "RSIPRT"         TO   MCP-WIDGET
                 WHEN    99
                     MOVE  "B12"            TO   MCP-WIDGET
             END-EVALUATE
@@ -2525,6 +2614,8 @@
                WHEN    "KIZAITAXKBN"
                    MOVE    13              TO  SPA-GMN-CUR
                WHEN    "KOTEIKBN"
+                   MOVE    14              TO  SPA-GMN-CUR
+               WHEN    "RSIPRT"
                    MOVE    5               TO  SPA-GMN-CUR
                WHEN    "SONSHOUKBN1"
                    IF      SPA-GMN-SONSHOUKBN1     =   SPACE

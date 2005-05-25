@@ -84,3 +84,7 @@
                     06  W13-TSRYCDNAME      PIC X(60).
                   05  W13-KIZAILIST-SELECT
                           PIC X       OCCURS  50 TIMES.
+              03  W13-RSIPRT-COMBO.
+                04  W13-RSIPRT           PIC X(10).
+                04  W13-RSIPRT-COUNT   PIC S9(9)   BINARY.
+                04  W13-RSIPRTLST      PIC X(10)   OCCURS  2 TIMES.
