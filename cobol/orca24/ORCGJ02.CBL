@@ -4190,6 +4190,13 @@
       *
            MOVE    11                  TO  SPA-GMN-CUR
       *
+      *    ºÞÌ¤ÁªÂò¤Î»þ¥¨¥é¡¼
+           IF      SPA-GMN-BANGO       =   ZERO
+               MOVE    1                   TO  SPA-GMN-CUR
+               MOVE    "0013"              TO  SPA-ERRCD
+               GO      TO      41019-IKKATU-CHK-EXT
+           END-IF
+      *
            MOVE    J02-IKKATU          TO  SPA-GMN-IKKATU
       *
            INITIALIZE                      WRK-DAY-AREA
