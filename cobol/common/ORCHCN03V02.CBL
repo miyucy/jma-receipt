@@ -660,6 +660,25 @@
                END-EVALUATE
            END-IF
       *
+      *    Ï«ºÒ¡¦¼«Çå¤Î¿Ç»¡ÎÁÅù¤Îµ­ºÜ
+           IF   SYU-RSI-TOTAL     NOT =   ZERO
+               EVALUATE    COMB-HKNNUM
+                   WHEN    "971"
+                       MOVE  "¡ÊÆâÏ«ºÒ¿Ç»¡Åù¡Ë"  TO HCN03-RSIMIDASI
+                   WHEN    "973"
+                       MOVE  "¡ÊÆâ¼«Çå¿Ç»¡Åù¡Ë"  TO HCN03-RSIMIDASI
+               END-EVALUATE
+               MOVE    SYU-RSI-TOTAL          TO  WRK-KINGAKU-Z
+               MOVE    WRK-KINGAKU-Z          TO  WRK-ZHENSYU12
+               PERFORM 800-HENKAN-SEC
+               MOVE    WRK-ZHENSYU24          TO  HCN03-RSIBUN
+               MOVE    "±ß"                   TO  HCN03-RSIEN
+           ELSE
+               MOVE    SPACE                  TO  HCN03-RSIMIDASI
+               MOVE    SPACE                  TO  HCN03-RSIBUN
+               MOVE    SPACE                  TO  HCN03-RSIEN
+           END-IF
+      *
       *    ÊÝ¸±Å¬ÍÑ³°Ê¬
            COMPUTE WRK-GOKTEN
                =   SYU-TGMONEY (12)
