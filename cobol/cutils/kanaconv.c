@@ -15,8 +15,6 @@
 #define ISG3(c)         	(((c)&0xff) == 0x8f)
 #define ISSPACEONLY(c)     	(((c)&0xff) == 0x20)
 
-const unsigned char henkan_funou[] = { 0xa2, 0xa3 };
-
 /* 0x8E0xA1 - 0x8E0xDF */
 const unsigned char kana_table[][2] = 
 {
@@ -67,6 +65,8 @@ const unsigned char ascii_table[][2] =
 	"\241\303",	"\241\321", "\241\301"
 };
 
+const unsigned char henkan_funou[] = { 0xa2, 0xa3 };
+
 void
 StringCobol2C(
 	char	*str,
@@ -87,19 +87,19 @@ StringCobol2C(
 
 void
 StringC2Cobol(
-	char	*p,
+	char	*str,
 	size_t	size)
 {
 	int i;
 	int fEnd;
 
 	fEnd = 0;
-	for	( i = 0 ; i < size ; i ++, p ++ ) {
-		if		(  *p  ==  0  )	{
+	for	( i = 0 ; i < size ; i ++, str ++ ) {
+		if		(  *str  ==  0  )	{
 			fEnd = 1;
 		}
 		if		(  fEnd  ) {
-			*p = ' ';
+			*str = ' ';
 		}
 	}
 }
@@ -109,187 +109,246 @@ search_ascii_zenkaku(unsigned char d0, unsigned char d1)
 {
 	int i;
 	unsigned char c0, c1;
-	
-	i = 0;
-	while ( c0 = ascii_table[i][0], c1 = ascii_table[i][1]){
-		if ( d0 == c0 && d1 == c1){
+
+	for (i=0; c0 = ascii_table[i][0], c1 = ascii_table[i][1] ;i++){
+		if ( (d0 == c0) && (d1 == c1) ){
 			return (0x20+i);
 		}
-		i++;
 	}
 	return 0;
 }
 
-extern void
-tohankaku (int    syori_flg,
-		   size_t size,
-		   char   *org_str,
-		   char   *new_str)
-{
-	int ret = 0, i;
-	size_t new_len = 0;
-	unsigned char c, d0, d1;
 
-	while ( d0 = *org_str++ ){
-		d1 = *org_str;
-		if (c = search_ascii_zenkaku(d0, d1)) {
-			*new_str++ = c;
-			org_str++;
+int
+asciiconv(int conv_flg,
+		  unsigned char inputChar,
+		  ConvertChar *cchar)
+{
+	int advanced_bytes;
+
+	advanced_bytes = 1;
+	cchar->in_type = ASCII;
+
+	if ( isgraph(inputChar) || ISSPACEONLY(inputChar) ) {
+		if (conv_flg & ZENKAKU){
+			cchar->out_type = SONOTA;
+			cchar->out_len = 2;
+			cchar->out_char[0] = ascii_table[(inputChar - 0x20)][0];
+			cchar->out_char[1] = ascii_table[(inputChar - 0x20)][1];
 		} else {
-			*new_str++ = d0;
-		}
-	}
-	*new_str++ = 0;
-}
-
-int
-hankakukanaconv(unsigned char c1,
-				struct COBString *org,
-				struct COBString *new )
-{
-	new->ptr += 2;
-	if ( new->ptr > new->len) {
-		return -1;
-	}
-	*new->body++ = (char )kana_table[(c1 - 0xa1)][0];
-	*new->body++ = (char )kana_table[(c1 - 0xa1)][1];
-	if ( *(org->body) != '\0' ){
-		if (MAYBEDAKU(c1) && ISDAKU(*(org->body+1))) {
-			new->body[-1]++;     org->body += 2; 
-		}
-		if (MAYBEHANDAKU(c1) && ISHANDAKU(*(org->body+1))) {
-			new->body[-1] += 2;  org->body += 2; 
-		}
-	}
-
-	return 0;
-}
-
-int
-zenkakuconv(int syori_flg,
-			unsigned char c0,
-			unsigned char c1,
-			struct COBString *new )
-{
-	unsigned char c;
-	
-	if (    (syori_flg == TOHANKAKU) 
-		 && (c0 == 0xa3)
-		 && (c = search_ascii_zenkaku(c0, c1)) ) {
-		new->ptr++;
-		if ( new->ptr > new->len) {
-			return -1;
-		}
-		*new->body++ = c;
-	} else {
-		new->ptr += 2;
-		if ( new->ptr > new->len) {
-			return -1;
-		}
-		if ( ISZENKAKU(c1)){
-			if ( ISJIS208(c0) ){
-				if ( (syori_flg == TOKATAKANA )
-					 && ( (c0)&0xff) == 0xa4 ) {
-					*new->body++ = ++c0;
-				} else if ( (syori_flg == TOHIRAGANA )
-							&& ( (c0)&0xff) == 0xa5 ) {
-					*new->body++ = --c0;
-				} else {
-					*new->body++ = c0;
-				}
-				*new->body++ = c1;
-			} else { /* GAIJI*/
-				*new->body++ = henkan_funou[0];
-				*new->body++ = henkan_funou[1];
+			cchar->out_len = 1;
+			cchar->out_char[0] = inputChar;
+			cchar->out_type = KIGOU;
+			if ( isdigit(cchar->out_char[0]) ){
+				cchar->out_type = NUMBER;
+			} else if ( isalpha(cchar->out_char[0]) ){
+				cchar->out_type = ALPHA;
 			}
-		} else { /* invalid char */ 
-			*new->body++ = henkan_funou[0];
-			*new->body++ = henkan_funou[1];
 		}
-	}
-	return 0;
-}
-
-int
-g3conv(unsigned char c0,
-	   unsigned char c1,
-	   unsigned char c2,
-	   struct COBString *new )
-{
-	new->ptr += 2;
-	if ( new->ptr > new->len) {
-		return -1;
-	}
-	*new->body++ = henkan_funou[0];
-	*new->body++ = henkan_funou[1];
-
-	return 0;
-}
-
-int
-asciiconv(int syori_flg,
-		  unsigned char c0,
-		  struct COBString *new )
-{
-	if ( isgraph(c0) || ISSPACEONLY(c0) ) {
-		if (syori_flg == TOZENKAKU){
-			new->ptr += 2;
-			if ( new->ptr > new->len) {
-				return -1;
-			}
-			*new->body++ = ascii_table[(c0 - 0x20)][0];
-			*new->body++ = ascii_table[(c0 - 0x20)][1];
-		} else {
-			new->ptr++;
-			if ( new->ptr > new->len) {
-				return -1;
-			}
-			*new->body++ = c0;
-		}
-	} else if ( ISLF(c0) ){
-		new->ptr++;
-		if ( new->ptr > new->len) {
-			return -1;
-		}
-		*new->body++ = c0;
+	} else if ( ISLF(inputChar) ){
+		cchar->out_type = KIGOU;
+		cchar->out_len = 1;
+		cchar->out_char[0] = inputChar;
 	} else {
 		/* do nothing */
+		cchar->in_type = UNKNOWN;
+		cchar->out_type = UNKNOWN;
+		cchar->out_len = 0;
 	}
-	
-	return 0;
+	return advanced_bytes;
 }
 
-extern int
-tozenkaku (int    syori_flg,
-		   struct COBString *org,
-		   struct COBString *new )
+int
+hankakukanaconv(int conv_flg,
+				unsigned char c0,
+				unsigned char c1,
+				unsigned char c2,
+				unsigned char c3,
+				ConvertChar *cchar)
 {
-	int ret = 0;
-	size_t new_len = 0;
-	char *org_str, *new_str;
-	unsigned char c0, c1, c2;
+	int advanced_bytes;
 
-	org_str = org->body;
-	new_str = new->body;
-
-	while( (c0 = *org->body++) && (ret >= 0)){
-		if ( ISHANKAKUKANA(c0) ){
-			c1 = *org->body++;
-			ret = hankakukanaconv(c1, org, new);
-		} else if ( ISZENKAKU(c0) ) {
-			c1 = *org->body++;
-			ret = zenkakuconv(syori_flg, c0, c1, new );
-		} else if ( ISG3(c0) ) { 
-			c1 = *org->body++;	c2 = *org->body++;
-			ret = g3conv(c0, c1, c2, new);
-		} else {
-			ret = asciiconv(syori_flg, c0, new);
+	advanced_bytes = 2;
+	cchar->out_len   = 2;
+	cchar->in_type = HKANA;
+	cchar->out_type = KATAKANA;
+	cchar->out_char[0] = (char )kana_table[(c1 - 0xa1)][0];
+	cchar->out_char[1] = (char )kana_table[(c1 - 0xa1)][1];
+	if ( c2 != '\0' ){
+		if (MAYBEDAKU(c1) && ISDAKU(c3)) {
+			cchar->out_char[1] += 1;
+			advanced_bytes += 2;
+		}
+		if (MAYBEHANDAKU(c1) && ISHANDAKU(c3)) {
+			cchar->out_char[1] += 2;
+			advanced_bytes += 2;
 		}
 	}
-	*new->body++ = 0;
-	org->body = org_str;
-	new->body = new_str;
-	return ret;
+	return advanced_bytes;
+}
+
+void
+gaiji(ConvertChar *cchar)
+{
+	cchar->out_len   = 2;
+	cchar->in_type = GAIJI;
+	cchar->out_type = SONOTA;
+	cchar->out_char[0] = henkan_funou[0];
+	cchar->out_char[1] = henkan_funou[1];
+}
+
+
+int 
+zenkakuconv(int conv_flg,
+			unsigned char c0,
+			unsigned char c1,
+			ConvertChar *cchar)
+{
+	unsigned char c;
+	int advanced_bytes;
+
+	if ( ISZENKAKU(c1)){
+		advanced_bytes = 2;	
+		cchar->in_type = ZENKAKU;
+		if ( ISJIS208(c0) ){
+			if ( (conv_flg & ASCII) 
+				 && (c0 == 0xa3)
+				 && (c = search_ascii_zenkaku(c0, c1)) ) {
+				cchar->out_type = KIGOU;
+				cchar->out_len   = 1;
+				cchar->out_char[0] = c;
+				if ( isdigit(cchar->out_char[0]) ){
+					cchar->out_type = NUMBER;
+				} else if ( isalpha(cchar->out_char[0]) ){
+					cchar->out_type = ALPHA;
+				}
+			} else {
+				cchar->out_type = SONOTA;
+				cchar->out_len   = 2;
+				cchar->out_char[0] = c0;				
+				cchar->out_char[1] = c1;
+				if ( ((cchar->out_char[0])&0xff) == 0xa4 ){
+					cchar->in_type  = HIRAGANA;
+					cchar->out_type = HIRAGANA;
+				}
+				if ( ((cchar->out_char[0])&0xff) == 0xa5 ){
+					cchar->in_type  = KATAKANA;
+					cchar->out_type = KATAKANA;
+				}
+			}
+			
+		} else { /* GAIJI*/
+			gaiji(cchar);
+		}
+	} else { /* invalid char */ 
+		advanced_bytes = 1;	
+		cchar->in_type = UNKNOWN;
+		cchar->out_type = UNKNOWN;
+		cchar->out_len = 0;
+	}
+
+	return advanced_bytes;
+}
+
+int
+g3conv(int conv_flg,
+	   unsigned char c0,
+	   unsigned char c1,
+	   unsigned char c2,
+	   ConvertChar *cchar)
+{
+	int advanced_bytes;
+	
+	if ( ISZENKAKU(c1) && ISZENKAKU(c2)){
+		advanced_bytes = 3;
+		gaiji(cchar);
+	} else {
+		advanced_bytes = 1;
+		cchar->in_type = UNKNOWN;
+		cchar->out_type = UNKNOWN;
+		cchar->out_len = 0;
+	}
+	
+	return advanced_bytes;
+}
+
+void
+tokatakana(ConvertChar *cchar)
+{
+	if ( cchar->out_type == HIRAGANA ){
+		cchar->out_type = KATAKANA;
+		cchar->out_char[0]++;
+	}
+}
+
+void
+tohiragana(ConvertChar *cchar)
+{
+	if ( cchar->out_type == KATAKANA ) {
+		cchar->out_type = HIRAGANA;
+		cchar->out_char[0]--;
+	}
+}
+
+int
+_kanaconv (int conv_flg,
+		  size_t max_len,
+		  char *inchar,
+		  char *ouchar)
+{
+	int advanced_bytes;
+	ConvertChar ochar, *cchar;
+	unsigned char c0, c1, c2, c3;
+	char *p;
+	int i, ret;
+	size_t current_len = 0;
+	
+	cchar = &ochar;
+	p = ouchar;
+	ret = 0;
+	
+	while (*inchar) {
+		c0 = *inchar;     c1 = *(inchar+1);
+		c2 = *(inchar+2); c3 = *(inchar+3);
+
+		if        ( ISHANKAKUKANA(c0) ) {
+			advanced_bytes = hankakukanaconv(conv_flg, c0, c1, c2, c3, cchar);
+		} else if ( ISZENKAKU(c0) ) {
+			advanced_bytes = zenkakuconv(conv_flg, c0, c1, cchar);
+		} else if ( ISG3(c0)) {
+			advanced_bytes = g3conv(conv_flg, c0, c1, c2, cchar);
+		} else {   /* ASCII */
+			advanced_bytes = asciiconv(conv_flg, c0, cchar);
+		}
+
+		if        ( conv_flg & KATAKANA ) {
+			tokatakana(cchar);
+		} else if ( conv_flg & HIRAGANA ) {
+			tohiragana(cchar);
+		}
+
+		if ( max_len < (current_len + cchar->out_len)) {
+			break;
+		}
+		current_len += cchar->out_len;
+
+		if (conv_flg) {
+			inchar += advanced_bytes;
+			if ( ( cchar->out_type & conv_flg ) 
+				|| ( conv_flg & ZENKAKU ) ) {
+				for (i = 0; i < cchar->out_len; i++){
+					*p++ = cchar->out_char[i];
+				}
+			} 
+		} else {
+			for (i = 0; i < advanced_bytes; i++){
+				*p++ = *inchar++;
+			}
+		}
+	}
+	*p++ = '\0';
+
+	return current_len;
 }
 
 /*
@@ -297,7 +356,7 @@ tozenkaku (int    syori_flg,
    arg {
        int len,
        int ret_val,
-       int syori_flg,
+       int conv_flg,
        int str_len,
        char org_str[str_len],
        char new_str[str_len]
@@ -306,15 +365,11 @@ tozenkaku (int    syori_flg,
 extern int
 kanaconv (char *args)
 {
-	int len, str_len, syori_flg;
+	int len, str_len, conv_flg;
 	int *ret_val;
 	char *org_str, *new_str;
 	char *p;
-	struct COBString *org, *new;
 
-	org = New(struct COBString);
-	new = New(struct COBString);
-	
 	p = args;
 
 	len = *(int *)(p);
@@ -323,25 +378,25 @@ kanaconv (char *args)
 	ret_val = (int *)(p);
 	p += sizeof(int);
 
-	syori_flg = *(int *)(p);
+	conv_flg = *(int *)(p);
 	p += sizeof(int);
 	
 	str_len = *(int *)(p);
 	p += sizeof(int);
 
-	org->body = p;
-	org->len = str_len;
-	org->ptr = 0;
-	StringCobol2C(org->body, str_len);
+	org_str = p;
+	StringCobol2C(org_str, str_len);
 
 	p += str_len;
-	new->body = p;
-	new->len = len;
-	new->ptr = 0;
-	StringCobol2C(new->body, str_len);
-	
-	*ret_val = tozenkaku(syori_flg, org, new);
-	StringC2Cobol(org->body, str_len);
-	StringC2Cobol(new->body, str_len);
+	new_str = p;
+	StringCobol2C(new_str, str_len);
+
+	if ( str_len < len){
+		len = str_len;
+	}
+	*ret_val = _kanaconv(conv_flg, len, org_str, new_str);
+	StringC2Cobol(org_str, str_len);
+	StringC2Cobol(new_str, str_len);
+
 	return *ret_val;
 }
