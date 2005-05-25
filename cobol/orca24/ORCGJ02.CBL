@@ -3902,12 +3902,12 @@
       *
            MOVE    2                   TO  SPA-GMN-CUR
       *
-      *    IF      WRK-MAP-INDEX       >   ZERO  AND  <  32
-      *        MOVE    WRK-MAP-INDEX       TO  SPA-IDXZ
-      *    END-IF
-      *
-      *    PERFORM   VARYING   IDX     FROM    1   BY  1
-      *              UNTIL     IDX         >   31
+      *    剤未選択の時エラー
+           IF      SPA-GMN-BANGO       =   ZERO
+               MOVE    1                   TO  SPA-GMN-CUR
+               MOVE    "0013"              TO  SPA-ERRCD
+               GO      TO      41012-DAY-CHK-EXT
+           END-IF
       *    誕生日以前はエラー
            IF      SPA-BIRTHDAY(1:6)   =   SPA-NAI-SRYYM
                IF      SPA-DAY-IDX        <   SPA-BIRTHDAY(7:2)
