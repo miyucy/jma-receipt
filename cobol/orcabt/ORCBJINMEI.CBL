@@ -89,7 +89,7 @@
            03  WRK-PARA-JOBID                      PIC 9(07).
            03  WRK-PARA-SHELLID                    PIC X(08).
            03  WRK-PARA-HOSPID                     PIC X(24).
-           03  WRK-PARA-SRYYM                      PIC X(06).
+      *     03  WRK-PARA-SRYYM                      PIC X(06).
       *
       *    一時領域
        01  WRK-AREA.
@@ -195,7 +195,7 @@
                                        WRK-PARA-JOBID
                                        WRK-PARA-SHELLID
                                        WRK-PARA-HOSPID
-                                       WRK-PARA-SRYYM
+      *                                 WRK-PARA-SRYYM
            END-UNSTRING
       *
       *    ステップ管理開始処理
@@ -249,6 +249,10 @@
       *****************************************************************
        2001-JINMEI-INS-SEC          SECTION.
       *
+           MOVE        SPACE        TO   WRK-KANA-SEI
+                                         WRK-KANA-MEI
+                                         WRK-KANJI-SEI
+                                         WRK-KANJI-MEI
            UNSTRING    PTINF-KANANAME  DELIMITED  BY  "　"
                        INTO            WRK-KANA-SEI
                                        WRK-KANA-MEI
@@ -268,28 +272,52 @@
                CONTINUE
            ELSE
                IF    WRK-KANA-SEI   NOT =  WRK-KANJI-SEI
-                   INITIALIZE   JINMEI-REC
+                   MOVE    ZERO            TO      FLG-JINMEI
+                   INITIALIZE                      JINMEI-REC
                    MOVE   WRK-KANA-SEI   TO  JINMEI-KANA
                    MOVE   WRK-KANJI-SEI  TO  JINMEI-KANJI
-                   MOVE   JINMEI-REC     TO  MCPDATA-REC
-                   MOVE   "DBINSERT"     TO  MCP-FUNC
-                   MOVE   "JINMEI-KEY"   TO  ORC-DBPATH
-                   CALL   "ORCMCPSUB"    USING
-                                         MCPAREA
-                                         ORCMCPAREA
-                                         MCPDATA-REC
+                   MOVE    "JINMEI-KEY"    TO      ORC-DBPATH
+                   PERFORM   910-JINMEI-SELECT-SEC
+                   IF      FLG-JINMEI      =       ZERO
+                       MOVE    "JINMEI-KEY"   TO      ORC-DBPATH
+                       PERFORM  910-JINMEI-READ-SEC
+                       IF    FLG-JINMEI   NOT =   ZERO
+                           INITIALIZE   JINMEI-REC
+                           MOVE   WRK-KANA-SEI   TO  JINMEI-KANA
+                           MOVE   WRK-KANJI-SEI  TO  JINMEI-KANJI
+                           MOVE   JINMEI-REC     TO  MCPDATA-REC
+                           MOVE   "DBINSERT"     TO  MCP-FUNC
+                           MOVE   "JINMEI-KEY"   TO  ORC-DBPATH
+                           CALL   "ORCMCPSUB"    USING
+                                                 MCPAREA
+                                                 ORCMCPAREA
+                                                 MCPDATA-REC
+                       END-IF
+                   END-IF
                END-IF
                IF    WRK-KANA-MEI   NOT =  WRK-KANJI-MEI
-                   INITIALIZE   JINMEI-REC
+                   MOVE    ZERO            TO      FLG-JINMEI
+                   INITIALIZE                      JINMEI-REC
                    MOVE   WRK-KANA-MEI   TO  JINMEI-KANA
                    MOVE   WRK-KANJI-MEI  TO  JINMEI-KANJI
-                   MOVE   JINMEI-REC     TO  MCPDATA-REC
-                   MOVE   "DBINSERT"     TO  MCP-FUNC
-                   MOVE   "JINMEI-KEY"   TO  ORC-DBPATH
-                   CALL   "ORCMCPSUB"    USING
-                                         MCPAREA
-                                         ORCMCPAREA
-                                         MCPDATA-REC
+                   MOVE    "JINMEI-KEY"    TO      ORC-DBPATH
+                   PERFORM   910-JINMEI-SELECT-SEC
+                   IF      FLG-JINMEI      =       ZERO
+                       MOVE    "JINMEI-KEY"   TO      ORC-DBPATH
+                       PERFORM  910-JINMEI-READ-SEC
+                       IF    FLG-JINMEI   NOT =   ZERO
+                           INITIALIZE   JINMEI-REC
+                           MOVE   WRK-KANA-MEI   TO  JINMEI-KANA
+                           MOVE   WRK-KANJI-MEI  TO  JINMEI-KANJI
+                           MOVE   JINMEI-REC     TO  MCPDATA-REC
+                           MOVE   "DBINSERT"     TO  MCP-FUNC
+                           MOVE   "JINMEI-KEY"   TO  ORC-DBPATH
+                           CALL   "ORCMCPSUB"    USING
+                                                 MCPAREA
+                                                 ORCMCPAREA
+                                                 MCPDATA-REC
+                       END-IF
+                   END-IF
                END-IF
            END-IF
            .
@@ -455,7 +483,51 @@
                INITIALIZE                  PTINF-REC
                MOVE    1               TO  FLG-PTINF
            END-IF
+           DISPLAY "FLG-PTINF = "  FLG-PTINF
       *
            .
        910-PTINF-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    人名マスター検索
+      *****************************************************************
+       910-JINMEI-SELECT-SEC        SECTION.
+      *
+           MOVE    JINMEI-REC           TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO            TO  FLG-JINMEI
+           ELSE
+               MOVE    1               TO  FLG-JINMEI
+           END-IF
+      *
+           .
+       910-JINMEI-SELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    人名マスター読込
+      *****************************************************************
+       910-JINMEI-READ-SEC        SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  JINMEI-REC
+               MOVE    ZERO            TO  FLG-JINMEI
+           ELSE
+               INITIALIZE                  JINMEI-REC
+               MOVE    1               TO  FLG-JINMEI
+           END-IF
+      *
+           .
+       910-JINMEI-READ-EXT.
            EXIT.
