@@ -455,6 +455,17 @@ DB_files = \
 	tbl_orderprt.db \
 	tbl_medyakko.db \
 	tbl_sryacctplus.db \
+	tbl_jyurrk_prv.db \
+	tbl_ptcom_prv.db \
+	tbl_ptinf_prv.db \
+	tbl_santei_prv.db \
+	tbl_sryacct_prv.db \
+	tbl_sryacctplus_prv.db \
+	tbl_sryact_prv.db \
+	tbl_srykarrk_prv.db \
+	tbl_syumei_prv.db \
+	tbl_syunou_prv.db \
+	tbl_syutotal_prv.db \
 
 all:   
 
