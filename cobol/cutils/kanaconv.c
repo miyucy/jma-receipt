@@ -130,7 +130,7 @@ asciiconv(int char_type,
 	int advanced_bytes;
 
 	advanced_bytes = 1;
-	cchar->in_type = ASCII;
+	cchar->in_type = KIGOU;
 
 	if ( isgraph(inputChar) || ISSPACEONLY(inputChar) ) {
 		if (char_type & ZENKAKU){
@@ -143,8 +143,10 @@ asciiconv(int char_type,
 			cchar->out_char[0] = inputChar;
 			cchar->out_type = KIGOU;
 			if ( isdigit(cchar->out_char[0]) ){
+				cchar->in_type = NUMBER;
 				cchar->out_type = NUMBER;
 			} else if ( isalpha(cchar->out_char[0]) ){
+				cchar->in_type  = ALPHA;
 				cchar->out_type = ALPHA;
 			}
 		}
@@ -331,7 +333,6 @@ _kanaconv (int conv_flg,
 		} else if ( (conv_flg == 3) && (char_type & HIRAGANA) ) {
 			tohiragana(cchar);
 		}
-
 		intype = intype | cchar->in_type;
 
 		if (conv_flg) {
