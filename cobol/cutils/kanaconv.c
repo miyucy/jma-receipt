@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <ctype.h>
 #include <stdlib.h>
 
@@ -8,6 +9,8 @@
 #define ISHANKAKUKANA(c)	(((c)&0xff) == 0x8e)
 #define ISDAKU(c)			(((c)&0xff) == 0xde)
 #define ISHANDAKU(c)		(((c)&0xff) == 0xdf)
+#define ISHIRAGANA(c)		(((c)&0xff) == 0xa4)
+#define ISKATAKANA(c)		(((c)&0xff) == 0xa5)
 #define MAYBEDAKU(c)		((c)-0xb6u < 15 || (c)-0xcau < 5)
 #define MAYBEHANDAKU(c)		((c)-0xcau < 5)
 #define ISHANKAKU(c)		(((c)&0xff) <= 0x7e)
@@ -120,7 +123,7 @@ search_ascii_zenkaku(unsigned char d0, unsigned char d1)
 
 
 int
-asciiconv(int conv_flg,
+asciiconv(int char_type,
 		  unsigned char inputChar,
 		  ConvertChar *cchar)
 {
@@ -130,8 +133,8 @@ asciiconv(int conv_flg,
 	cchar->in_type = ASCII;
 
 	if ( isgraph(inputChar) || ISSPACEONLY(inputChar) ) {
-		if (conv_flg & ZENKAKU){
-			cchar->out_type = SONOTA;
+		if (char_type & ZENKAKU){
+			cchar->out_type = OTHER;
 			cchar->out_len = 2;
 			cchar->out_char[0] = ascii_table[(inputChar - 0x20)][0];
 			cchar->out_char[1] = ascii_table[(inputChar - 0x20)][1];
@@ -159,7 +162,7 @@ asciiconv(int conv_flg,
 }
 
 int
-hankakukanaconv(int conv_flg,
+hankakukanaconv(int char_type,
 				unsigned char c0,
 				unsigned char c1,
 				unsigned char c2,
@@ -192,14 +195,14 @@ gaiji(ConvertChar *cchar)
 {
 	cchar->out_len   = 2;
 	cchar->in_type = GAIJI;
-	cchar->out_type = SONOTA;
+	cchar->out_type = OTHER;
 	cchar->out_char[0] = henkan_funou[0];
 	cchar->out_char[1] = henkan_funou[1];
 }
 
 
 int 
-zenkakuconv(int conv_flg,
+zenkakuconv(int char_type,
 			unsigned char c0,
 			unsigned char c1,
 			ConvertChar *cchar)
@@ -211,7 +214,7 @@ zenkakuconv(int conv_flg,
 		advanced_bytes = 2;	
 		cchar->in_type = ZENKAKU;
 		if ( ISJIS208(c0) ){
-			if ( (conv_flg & ASCII) 
+			if ( (char_type & ASCII) 
 				 && (c0 == 0xa3)
 				 && (c = search_ascii_zenkaku(c0, c1)) ) {
 				cchar->out_type = KIGOU;
@@ -223,15 +226,15 @@ zenkakuconv(int conv_flg,
 					cchar->out_type = ALPHA;
 				}
 			} else {
-				cchar->out_type = SONOTA;
+				cchar->out_type = OTHER;
 				cchar->out_len   = 2;
 				cchar->out_char[0] = c0;				
 				cchar->out_char[1] = c1;
-				if ( ((cchar->out_char[0])&0xff) == 0xa4 ){
+				if ( ISHIRAGANA(cchar->out_char[0]) ){
 					cchar->in_type  = HIRAGANA;
 					cchar->out_type = HIRAGANA;
 				}
-				if ( ((cchar->out_char[0])&0xff) == 0xa5 ){
+				if ( ISKATAKANA(cchar->out_char[0]) ){
 					cchar->in_type  = KATAKANA;
 					cchar->out_type = KATAKANA;
 				}
@@ -251,7 +254,7 @@ zenkakuconv(int conv_flg,
 }
 
 int
-g3conv(int conv_flg,
+g3conv(int char_type,
 	   unsigned char c0,
 	   unsigned char c1,
 	   unsigned char c2,
@@ -292,50 +295,52 @@ tohiragana(ConvertChar *cchar)
 
 int
 _kanaconv (int conv_flg,
-		  size_t max_len,
-		  char *inchar,
-		  char *ouchar)
+		   int char_type,
+		   size_t max_len,
+		   char *inchar,
+		   char *ouchar)
 {
 	int advanced_bytes;
 	ConvertChar ochar, *cchar;
 	unsigned char c0, c1, c2, c3;
 	char *p;
 	int i, ret;
+	int intype = 0;
 	size_t current_len = 0;
 	
 	cchar = &ochar;
 	p = ouchar;
 	ret = 0;
-	
+
 	while (*inchar) {
 		c0 = *inchar;     c1 = *(inchar+1);
 		c2 = *(inchar+2); c3 = *(inchar+3);
 
 		if        ( ISHANKAKUKANA(c0) ) {
-			advanced_bytes = hankakukanaconv(conv_flg, c0, c1, c2, c3, cchar);
+			advanced_bytes = hankakukanaconv(char_type, c0, c1, c2, c3, cchar);
 		} else if ( ISZENKAKU(c0) ) {
-			advanced_bytes = zenkakuconv(conv_flg, c0, c1, cchar);
+			advanced_bytes = zenkakuconv(char_type, c0, c1, cchar);
 		} else if ( ISG3(c0)) {
-			advanced_bytes = g3conv(conv_flg, c0, c1, c2, cchar);
+			advanced_bytes = g3conv(char_type, c0, c1, c2, cchar);
 		} else {   /* ASCII */
-			advanced_bytes = asciiconv(conv_flg, c0, cchar);
+			advanced_bytes = asciiconv(char_type, c0, cchar);
 		}
 
-		if        ( conv_flg & KATAKANA ) {
+		if        ( char_type & KATAKANA ) {
 			tokatakana(cchar);
-		} else if ( conv_flg & HIRAGANA ) {
+		} else if ( char_type & HIRAGANA ) {
 			tohiragana(cchar);
 		}
 
-		if ( max_len < (current_len + cchar->out_len)) {
-			break;
-		}
-		current_len += cchar->out_len;
+		intype = intype | cchar->in_type;
 
 		if (conv_flg) {
 			inchar += advanced_bytes;
-			if ( ( cchar->out_type & conv_flg ) 
-				|| ( conv_flg & ZENKAKU ) ) {
+			if ( ( cchar->out_type & char_type ) || (char_type == 0) ){
+				if ( max_len < (current_len + cchar->out_len)) {
+					break;
+				}
+				current_len += cchar->out_len;
 				for (i = 0; i < cchar->out_len; i++){
 					*p++ = cchar->out_char[i];
 				}
@@ -347,8 +352,8 @@ _kanaconv (int conv_flg,
 		}
 	}
 	*p++ = '\0';
-
-	return current_len;
+	
+	return ( (intype | char_type) != char_type );
 }
 
 /*
@@ -357,6 +362,7 @@ _kanaconv (int conv_flg,
        int len,
        int ret_val,
        int conv_flg,
+       int char_type,
        int str_len,
        char org_str[str_len],
        char new_str[str_len]
@@ -365,7 +371,7 @@ _kanaconv (int conv_flg,
 extern int
 kanaconv (char *args)
 {
-	int len, str_len, conv_flg;
+	int len, str_len, conv_flg, char_type;
 	int *ret_val;
 	char *org_str, *new_str;
 	char *p;
@@ -373,17 +379,20 @@ kanaconv (char *args)
 	p = args;
 
 	len = *(int *)(p);
+
 	p += sizeof(int);
-	
 	ret_val = (int *)(p);
-	p += sizeof(int);
 
+	p += sizeof(int);
 	conv_flg = *(int *)(p);
-	p += sizeof(int);
-	
-	str_len = *(int *)(p);
-	p += sizeof(int);
 
+	p += sizeof(int);
+	char_type = *(int *)(p);
+
+	p += sizeof(int);
+	str_len = *(int *)(p);
+
+	p += sizeof(int);
 	org_str = p;
 	StringCobol2C(org_str, str_len);
 
@@ -394,7 +403,7 @@ kanaconv (char *args)
 	if ( str_len < len){
 		len = str_len;
 	}
-	*ret_val = _kanaconv(conv_flg, len, org_str, new_str);
+	*ret_val = _kanaconv(conv_flg, char_type, len, org_str, new_str);
 	StringC2Cobol(org_str, str_len);
 	StringC2Cobol(new_str, str_len);
 
