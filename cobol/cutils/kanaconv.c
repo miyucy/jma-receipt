@@ -204,7 +204,8 @@ gaiji(ConvertChar *cchar)
 
 
 int 
-zenkakuconv(int char_type,
+zenkakuconv(int conv_flg,
+			int char_type,
 			unsigned char c0,
 			unsigned char c1,
 			ConvertChar *cchar)
@@ -216,7 +217,7 @@ zenkakuconv(int char_type,
 		advanced_bytes = 2;	
 		cchar->in_type = ZENKAKU;
 		if ( ISJIS208(c0) ){
-			if ( (char_type & ASCII) 
+			if ( (conv_flg) && (char_type & ASCII) 
 				 && (c0 == 0xa3)
 				 && (c = search_ascii_zenkaku(c0, c1)) ) {
 				cchar->out_type = KIGOU;
@@ -321,7 +322,7 @@ _kanaconv (int conv_flg,
 		if        ( ISHANKAKUKANA(c0) ) {
 			advanced_bytes = hankakukanaconv(char_type, c0, c1, c2, c3, cchar);
 		} else if ( ISZENKAKU(c0) ) {
-			advanced_bytes = zenkakuconv(char_type, c0, c1, cchar);
+			advanced_bytes = zenkakuconv(conv_flg, char_type, c0, c1, cchar);
 		} else if ( ISG3(c0)) {
 			advanced_bytes = g3conv(char_type, c0, c1, c2, cchar);
 		} else {   /* ASCII */
@@ -335,7 +336,7 @@ _kanaconv (int conv_flg,
 		}
 		intype = intype | cchar->in_type;
 
-		if (conv_flg) {
+		if (conv_flg) { 
 			inchar += advanced_bytes;
 			if ( ( cchar->out_type & char_type ) || (char_type == 0) ){
 				if ( max_len < (current_len + cchar->out_len)) {
@@ -347,10 +348,15 @@ _kanaconv (int conv_flg,
 				}
 			} 
 		} else {
-			for (i = 0; i < advanced_bytes; i++){
-				*p++ = *inchar++;
+			inchar += advanced_bytes;
+			if ( max_len < (current_len + cchar->out_len)) {
+				break;
 			}
-		}
+			current_len += cchar->out_len;
+			for (i = 0; i < cchar->out_len; i++){
+				*p++ = cchar->out_char[i];
+			}
+		} 
 	}
 	*p++ = '\0';
 
