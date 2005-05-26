@@ -294,6 +294,8 @@
                                                  MCPDATA-REC
                        END-IF
                    END-IF
+                   MOVE     "JINMEI-KEY"          TO  ORC-DBPATH
+                   PERFORM   900-TBL-CLOSE-SEC
                END-IF
                IF    WRK-KANA-MEI   NOT =  WRK-KANJI-MEI
                    MOVE    ZERO            TO      FLG-JINMEI
@@ -318,6 +320,8 @@
                                                  MCPDATA-REC
                        END-IF
                    END-IF
+                   MOVE     "JINMEI-KEY"          TO  ORC-DBPATH
+                   PERFORM   900-TBL-CLOSE-SEC
                END-IF
            END-IF
            .
