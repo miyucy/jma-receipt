@@ -326,9 +326,9 @@ _kanaconv (int conv_flg,
 			advanced_bytes = asciiconv(char_type, c0, cchar);
 		}
 
-		if        ( char_type & KATAKANA ) {
+		if        ( (conv_flg == 2) && (char_type & KATAKANA) ) {
 			tokatakana(cchar);
-		} else if ( char_type & HIRAGANA ) {
+		} else if ( (conv_flg == 3) && (char_type & HIRAGANA) ) {
 			tohiragana(cchar);
 		}
 
