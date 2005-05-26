@@ -90,6 +90,17 @@ db	{
 	tbl_orderprt;
 	tbl_medyakko;
 	tbl_sryacctplus;
+	tbl_jyurrk_prv;
+	tbl_sryacct_prv;
+	tbl_syumei_prv;
+	tbl_ptcom_prv;
+	tbl_sryacctplus_prv;
+	tbl_syunou_prv;
+	tbl_ptinf_prv;
+	tbl_sryact_prv;
+	tbl_syutotal_prv;
+	tbl_santei_prv;
+	tbl_srykarrk_prv;
 };
 db	"shell"	{
 	shell;
