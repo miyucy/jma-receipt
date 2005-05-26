@@ -1,4 +1,4 @@
-tbl_santei {
+tbl_santei_prv {
 	HOSPID			    char(24);
 	PTID				number(10,0);
 	SRYYM				char(6);
@@ -56,9 +56,9 @@ primary	{
 
 path	key 	{
 	DBSELECT	{
-		DECLARE tbl_santei_key_csr CURSOR FOR
+		DECLARE tbl_santei_prv_key_csr CURSOR FOR
 		SELECT *
-		FROM tbl_santei
+		FROM tbl_santei_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
@@ -72,25 +72,22 @@ path	key 	{
 
 path	key2 	{
 	DBSELECT	{
-		DECLARE tbl_santei_key2_csr CURSOR FOR
+		DECLARE tbl_santei_prv_key2_csr CURSOR FOR
 		SELECT *
-		FROM tbl_santei
+		FROM tbl_santei_prv
 			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
-			AND   SRYYM       =   :SRYYM
-			ORDER   BY      SRYCD,
-                                        NYUGAIKBN,
-                                        SRYKA,
-                                        HKNCOMBINUM
+			ORDER   BY      CREYMD DESC
 		;
 	};
 };
 
 path	key3 	{
 	DBSELECT	{
-		DECLARE tbl_santei_key3_csr CURSOR FOR
+		DECLARE tbl_santei_prv_key3_csr CURSOR FOR
 		SELECT *
-		FROM tbl_santei
+		FROM tbl_santei_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
@@ -105,16 +102,16 @@ path	key3 	{
 
 path	all 	{
 	DBSELECT	{
-		DECLARE tbl_santei_all_csr CURSOR FOR
+		DECLARE tbl_santei_prv_all_csr CURSOR FOR
 		SELECT *
-		FROM tbl_santei
+		FROM tbl_santei_prv
  		;
 	};
 };
 path	del1 	{
 	DBDELETE	{
 		DELETE
-		FROM tbl_santei
+		FROM tbl_santei_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 		;
@@ -122,9 +119,9 @@ path	del1 	{
 };
 path	key4 	{
 	DBSELECT	{
-		DECLARE tbl_santei_key4_csr CURSOR FOR
+		DECLARE tbl_santei_prv_key4_csr CURSOR FOR
 		SELECT *
-		FROM tbl_santei
+		FROM tbl_santei_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
@@ -139,9 +136,9 @@ path	key4 	{
 };
 path	key5 	{
 	DBSELECT	{
-		DECLARE tbl_santei_key5_csr CURSOR FOR
+		DECLARE tbl_santei_prv_key5_csr CURSOR FOR
 		SELECT *
-		FROM tbl_santei
+		FROM tbl_santei_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
@@ -155,9 +152,9 @@ path	key5 	{
 
 path	key6 	{
 	DBSELECT	{
-		DECLARE tbl_santei_key6_csr CURSOR FOR
+		DECLARE tbl_santei_prv_key6_csr CURSOR FOR
 		SELECT *
-		FROM tbl_santei
+		FROM tbl_santei_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
@@ -168,9 +165,9 @@ path	key6 	{
 
 path	key7 	{
 	DBSELECT	{
-		DECLARE tbl_santei_key7_csr CURSOR FOR
+		DECLARE tbl_santei_prv_key7_csr CURSOR FOR
 		SELECT *
-		FROM tbl_santei
+		FROM tbl_santei_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
@@ -184,9 +181,9 @@ path	key7 	{
 
 path	key8 	{
 	DBSELECT	{
-		DECLARE tbl_santei_key8_csr CURSOR FOR
+		DECLARE tbl_santei_prv_key8_csr CURSOR FOR
 		SELECT *
-		FROM tbl_santei
+		FROM tbl_santei_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   SRYCD       =   :SRYCD
@@ -202,9 +199,9 @@ path	key8 	{
 
 path	all2	{
 	DBSELECT	{
-		DECLARE tbl_santei_all2_csr CURSOR FOR
+		DECLARE tbl_santei_prv_all2_csr CURSOR FOR
 		SELECT *
-		FROM tbl_santei
+		FROM tbl_santei_prv
 			WHERE   SRYYM    =   :SRYYM
 		;
 	};
@@ -212,9 +209,9 @@ path	all2	{
 
 path	key9 	{
 	DBSELECT	{
-		DECLARE tbl_santei_key9_csr CURSOR FOR
+		DECLARE tbl_santei_prv_key9_csr CURSOR FOR
 		SELECT *
-		FROM tbl_santei
+		FROM tbl_santei_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
@@ -226,15 +223,12 @@ path	key9 	{
 	};
 };
 
-#take prv add
-path	key10 	{
-	DBSELECT	{
-		DECLARE tbl_santei_key10_csr CURSOR FOR
-		SELECT *
-		FROM tbl_santei
+path	delprv 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_santei_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
-			AND   SRYYM       =   :SRYYM
 		;
 	};
 };

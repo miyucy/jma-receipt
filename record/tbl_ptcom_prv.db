@@ -1,4 +1,4 @@
-tbl_ptcom {
+tbl_ptcom_prv {
 	HOSPID				char(24);
 	PTID				number(10);
 	ZAINUM  			number(8);
@@ -23,9 +23,9 @@ primary	{
 
 path	key 	{
 	DBSELECT	{
-		DECLARE tbl_ptcom_key_csr CURSOR FOR
+		DECLARE tbl_ptcom_prv_key_csr CURSOR FOR
 		SELECT *
-		FROM tbl_ptcom
+		FROM tbl_ptcom_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   ZAINUM      =   :ZAINUM
@@ -37,9 +37,9 @@ path	key 	{
 
 path	key2 	{
 	DBSELECT	{
-		DECLARE tbl_ptcom_key2_csr CURSOR FOR
+		DECLARE tbl_ptcom_prv_key2_csr CURSOR FOR
 		SELECT *
-		FROM tbl_ptcom
+		FROM tbl_ptcom_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   ZAINUM      =   :ZAINUM
@@ -51,7 +51,7 @@ path	key2 	{
 path	del11 	{
 	DBDELETE	{
 		DELETE
-		FROM tbl_ptcom
+		FROM tbl_ptcom_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   ZAINUM      =   :ZAINUM
@@ -60,31 +60,39 @@ path	del11 	{
 };
 path	all 	{
 	DBSELECT	{
-		DECLARE tbl_ptcom_all_csr CURSOR FOR
+		DECLARE tbl_ptcom_prv_all_csr CURSOR FOR
 		SELECT *
-		FROM tbl_ptcom
+		FROM tbl_ptcom_prv
  		;
 	};
 };
 path	del12 	{
 	DBDELETE	{
 		DELETE
-		FROM tbl_ptcom
+		FROM tbl_ptcom_prv
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+		;
+	};
+};
+path	delprv 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_ptcom_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 		;
 	};
 };
 
-path	key3	{
+path	key3 	{
 	DBSELECT	{
-		DECLARE tbl_ptcom_key3_csr CURSOR FOR
+		DECLARE tbl_ptcom_prv_key3_csr CURSOR FOR
 		SELECT *
-		FROM tbl_ptcom
+		FROM tbl_ptcom_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
-			AND   ZAINUM      =   :ZAINUM
-			AND   RENNUM      =   :RENNUM
+			ORDER BY ZAINUM
 		;
 	};
 };

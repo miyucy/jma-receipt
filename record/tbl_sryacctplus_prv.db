@@ -1,4 +1,4 @@
-tbl_sryacctplus {
+tbl_sryacctplus_prv {
 	HOSPID				char(24);
 	NYUGAIKBN			char(1);
 	PTID				number(10,0);
@@ -63,9 +63,9 @@ primary	{
 
 path	key 	{
 	DBSELECT	{
-		DECLARE tbl_sryacctplus_key_csr CURSOR FOR
+		DECLARE tbl_sryacctplus_prv_key_csr CURSOR FOR
 		SELECT *
-		FROM tbl_sryacctplus
+		FROM tbl_sryacctplus_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
@@ -79,9 +79,9 @@ path	key 	{
 
 path	key2 	{
 	DBSELECT	{
-		DECLARE tbl_sryacctplus_key2_csr CURSOR FOR
+		DECLARE tbl_sryacctplus_prv_key2_csr CURSOR FOR
 		SELECT *
-		FROM tbl_sryacctplus
+		FROM tbl_sryacctplus_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
@@ -95,9 +95,9 @@ path	key2 	{
 
 path	all 	{
 	DBSELECT	{
-		DECLARE tbl_sryacctplus_all_csr CURSOR FOR
+		DECLARE tbl_sryacctplus_prv_all_csr CURSOR FOR
 		SELECT *
-		FROM tbl_sryacctplus
+		FROM tbl_sryacctplus_prv
 			ORDER   BY      HOSPID,
                                         NYUGAIKBN,
                                         PTID,
@@ -112,7 +112,7 @@ path	all 	{
 path	del1 	{
 	DBDELETE	{
 		DELETE
-		FROM tbl_sryacctplus
+		FROM tbl_sryacctplus_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
@@ -123,7 +123,7 @@ path	del1 	{
 path	del2 	{
 	DBDELETE	{
 		DELETE
-		FROM tbl_sryacctplus
+		FROM tbl_sryacctplus_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
@@ -136,21 +136,9 @@ path	del2 	{
 
 path	key3 	{
 	DBSELECT	{
-		DECLARE tbl_sryacctplus_key3_csr CURSOR FOR
+		DECLARE tbl_sryacctplus_prv_key3_csr CURSOR FOR
 		SELECT *
-		FROM tbl_sryacctplus
-			WHERE   HOSPID    =   :HOSPID
-			AND   NYUGAIKBN   =   :NYUGAIKBN
-			AND   PTID        =   :PTID
-			AND   SRYYM       =   :SRYYM
-		;
-	};
-};
-
-path	del3 	{
-	DBDELETE	{
-		DELETE
-		FROM tbl_sryacctplus
+		FROM tbl_sryacctplus_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID

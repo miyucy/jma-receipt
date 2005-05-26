@@ -653,3 +653,14 @@ path	upd1	{
 		;
 	};
 };
+path    del3    {
+        DBDELETE        {
+                DELETE
+                FROM tbl_receprt
+                    WHERE   PRTID        =   :PRTID
+                    AND     RECEYM       =   :RECEYM
+                    AND     PTNUM        =   :PTNUM
+                ;
+        };
+};
+

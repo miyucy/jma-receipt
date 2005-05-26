@@ -1,4 +1,4 @@
-tbl_jyurrk {
+tbl_jyurrk_prv {
 	HOSPID				char(24);
 	PTID 				number(10);
 	NYUGAIKBN			char(1);
@@ -65,9 +65,9 @@ primary	{
 
 path	key 	{
 	DBSELECT	{
-		DECLARE tbl_jyurrk_key_csr CURSOR FOR
+		DECLARE tbl_jyurrk_prv_key_csr CURSOR FOR
 		SELECT *
-		FROM tbl_jyurrk
+		FROM tbl_jyurrk_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
@@ -83,9 +83,9 @@ path	key 	{
 
 path	key2 	{
 	DBSELECT	{
-		DECLARE tbl_jyurrk_key2_csr CURSOR FOR
+		DECLARE tbl_jyurrk_prv_key2_csr CURSOR FOR
 		SELECT *
-		FROM tbl_jyurrk
+		FROM tbl_jyurrk_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
@@ -103,9 +103,9 @@ path	key2 	{
 
 path	key3 	{
 	DBSELECT	{
-		DECLARE tbl_jyurrk_key3_csr CURSOR FOR
+		DECLARE tbl_jyurrk_prv_key3_csr CURSOR FOR
 		SELECT *
-		FROM tbl_jyurrk
+		FROM tbl_jyurrk_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
@@ -120,9 +120,9 @@ path	key3 	{
 
 path	key4 	{
 	DBSELECT	{
-		DECLARE tbl_jyurrk_key4_csr CURSOR FOR
+		DECLARE tbl_jyurrk_prv_key4_csr CURSOR FOR
 		SELECT *
-		FROM tbl_jyurrk
+		FROM tbl_jyurrk_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
@@ -137,9 +137,9 @@ path	key4 	{
 
 path	key5 	{
 	DBSELECT	{
-		DECLARE tbl_jyurrk_key5_csr CURSOR FOR
+		DECLARE tbl_jyurrk_prv_key5_csr CURSOR FOR
 		SELECT *
-		FROM tbl_jyurrk
+		FROM tbl_jyurrk_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
@@ -155,9 +155,9 @@ path	key5 	{
 
 path	key6 	{
 	DBSELECT	{
-		DECLARE tbl_jyurrk_key6_csr CURSOR FOR
+		DECLARE tbl_jyurrk_prv_key6_csr CURSOR FOR
 		SELECT *
-		FROM tbl_jyurrk
+		FROM tbl_jyurrk_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
@@ -173,9 +173,9 @@ path	key6 	{
 
 path	key7 	{
 	DBSELECT	{
-		DECLARE tbl_jyurrk_key7_csr CURSOR FOR
+		DECLARE tbl_jyurrk_prv_key7_csr CURSOR FOR
 		SELECT *
-		FROM tbl_jyurrk
+		FROM tbl_jyurrk_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
@@ -189,7 +189,7 @@ path	key7 	{
 };
 path	upd1	{ 	
 	DBUPDATE	{
-		UPDATE	tbl_jyurrk 
+		UPDATE	tbl_jyurrk_prv 
 				SET	
                    HOSPID              = :HOSPID,
                    PTID                = :PTID,
@@ -252,9 +252,12 @@ path	upd1	{
 
 path	all 	{
 	DBSELECT	{
-		DECLARE tbl_jyurrk_all_csr CURSOR FOR
+		DECLARE tbl_jyurrk_prv_all_csr CURSOR FOR
 		SELECT *
-		FROM tbl_jyurrk
+		FROM tbl_jyurrk_prv
+                        WHERE   HOSPID    =   :HOSPID
+                        AND   PTID        =   :PTID
+                        AND   NYUGAIKBN   =   :NYUGAIKBN
  		;
 	};
 };
@@ -262,7 +265,7 @@ path	all 	{
 path	del1 	{
 	DBDELETE	{
 		DELETE
-		FROM tbl_jyurrk
+		FROM tbl_jyurrk_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 		;
@@ -271,9 +274,9 @@ path	del1 	{
 
 path	key8 	{
 	DBSELECT	{
-		DECLARE tbl_jyurrk_key8_csr CURSOR FOR
+		DECLARE tbl_jyurrk_prv_key8_csr CURSOR FOR
 		SELECT *
-		FROM tbl_jyurrk
+		FROM tbl_jyurrk_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			ORDER   BY        SRYYMD  DESC,
@@ -287,9 +290,9 @@ path	key8 	{
 
 path	key9 	{
 	DBSELECT	{
-		DECLARE tbl_jyurrk_key9_csr CURSOR FOR
+		DECLARE tbl_jyurrk_prv_key9_csr CURSOR FOR
 		SELECT *
-		FROM tbl_jyurrk
+		FROM tbl_jyurrk_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
@@ -304,15 +307,15 @@ path	key9 	{
 };
 path	key10 	{
 	DBSELECT	{
-		DECLARE tbl_jyurrk_key10_csr CURSOR FOR
+		DECLARE tbl_jyurrk_prv_key10_csr CURSOR FOR
 		SELECT *
-		FROM tbl_jyurrk
+		FROM tbl_jyurrk_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   HKNCOMBINUM <>  '9999'
 			AND   SRYYMD      =
                            (SELECT MAX(SRYYMD)
-                                   FROM tbl_jyurrk 
+                                   FROM tbl_jyurrk_prv 
                                	WHERE   HOSPID    =   :HOSPID
 		        	AND   PTID        =   :PTID
 		        	AND   HKNCOMBINUM <>  '9999'
@@ -325,9 +328,9 @@ path	key10 	{
 	};
 };path	key11 	{
 	DBSELECT	{
-		DECLARE tbl_jyurrk_key11_csr CURSOR FOR
+		DECLARE tbl_jyurrk_prv_key11_csr CURSOR FOR
 		SELECT *
-		FROM tbl_jyurrk
+		FROM tbl_jyurrk_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
@@ -335,7 +338,7 @@ path	key10 	{
 			AND   HKNCOMBINUM <>  '9999'
 			AND   SRYYMD      =
                            (SELECT MAX(SRYYMD)
-                                   FROM tbl_jyurrk 
+                                   FROM tbl_jyurrk_prv 
                                	WHERE   HOSPID    =   :HOSPID
 		        	AND   PTID        =   :PTID
               			AND   SRYKA       =   :SRYKA
@@ -350,9 +353,9 @@ path	key10 	{
 
 path	key12	{
 	DBSELECT	{
-		DECLARE tbl_jyurrk_key12_csr CURSOR FOR
+		DECLARE tbl_jyurrk_prv_key12_csr CURSOR FOR
 		SELECT *
-		FROM tbl_jyurrk
+		FROM tbl_jyurrk_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
@@ -368,9 +371,9 @@ path	key12	{
 };
 path	key13	{
 	DBSELECT	{
-		DECLARE tbl_jyurrk_key13_csr CURSOR FOR
+		DECLARE tbl_jyurrk_prv_key13_csr CURSOR FOR
 		SELECT *
-		FROM tbl_jyurrk
+		FROM tbl_jyurrk_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
@@ -386,9 +389,9 @@ path	key13	{
 };
 path	key14	{
 	DBSELECT	{
-		DECLARE tbl_jyurrk_key14_csr CURSOR FOR
+		DECLARE tbl_jyurrk_prv_key14_csr CURSOR FOR
 		SELECT *
-		FROM tbl_jyurrk
+		FROM tbl_jyurrk_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
@@ -403,9 +406,9 @@ path	key14	{
 };
 path	key15	{
 	DBSELECT	{
-		DECLARE tbl_jyurrk_key15_csr CURSOR FOR
+		DECLARE tbl_jyurrk_prv_key15_csr CURSOR FOR
 		SELECT *
-		FROM tbl_jyurrk
+		FROM tbl_jyurrk_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
@@ -420,9 +423,9 @@ path	key15	{
 };
 path	key16	{
 	DBSELECT	{
-		DECLARE tbl_jyurrk_key16_csr CURSOR FOR
+		DECLARE tbl_jyurrk_prv_key16_csr CURSOR FOR
 		SELECT *
-		FROM tbl_jyurrk
+		FROM tbl_jyurrk_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
@@ -436,9 +439,9 @@ path	key16	{
 	};
 };path	key17	{
 	DBSELECT	{
-		DECLARE tbl_jyurrk_key17_csr CURSOR FOR
+		DECLARE tbl_jyurrk_prv_key17_csr CURSOR FOR
 		SELECT *
-		FROM tbl_jyurrk
+		FROM tbl_jyurrk_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
@@ -454,9 +457,9 @@ path	key16	{
 };
 path	key18	{
 	DBSELECT	{
-		DECLARE tbl_jyurrk_key18_csr CURSOR FOR
+		DECLARE tbl_jyurrk_prv_key18_csr CURSOR FOR
 		SELECT *
-		FROM tbl_jyurrk
+		FROM tbl_jyurrk_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
@@ -473,9 +476,9 @@ path	key18	{
 };
 path	key19	{
 	DBSELECT	{
-		DECLARE tbl_jyurrk_key19_csr CURSOR FOR
+		DECLARE tbl_jyurrk_prv_key19_csr CURSOR FOR
 		SELECT *
-		FROM tbl_jyurrk
+		FROM tbl_jyurrk_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
@@ -490,9 +493,9 @@ path	key19	{
 };
 path	key20	{
 	DBSELECT	{
-		DECLARE tbl_jyurrk_key20_csr CURSOR FOR
+		DECLARE tbl_jyurrk_prv_key20_csr CURSOR FOR
 		SELECT *
-		FROM tbl_jyurrk
+		FROM tbl_jyurrk_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
@@ -523,9 +526,9 @@ path	key20	{
 
 path	key21	{
 	DBSELECT	{
-		DECLARE tbl_jyurrk_key21_csr CURSOR FOR
+		DECLARE tbl_jyurrk_prv_key21_csr CURSOR FOR
 		SELECT *
-		FROM tbl_jyurrk
+		FROM tbl_jyurrk_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
                         AND  (SRYYMD      >=  :SRYYMD
@@ -540,9 +543,9 @@ path	key21	{
 };
 path	key22	{
 	DBSELECT	{
-		DECLARE tbl_jyurrk_key22_csr CURSOR FOR
+		DECLARE tbl_jyurrk_prv_key22_csr CURSOR FOR
 		SELECT *
-		FROM tbl_jyurrk
+		FROM tbl_jyurrk_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
@@ -556,9 +559,9 @@ path	key22	{
 };
 path	key23	{
 	DBSELECT	{
-		DECLARE tbl_jyurrk_key23_csr CURSOR FOR
+		DECLARE tbl_jyurrk_prv_key23_csr CURSOR FOR
 		SELECT *
-		FROM tbl_jyurrk
+		FROM tbl_jyurrk_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   HKNCOMBINUM =   :HKNCOMBINUM
@@ -568,9 +571,9 @@ path	key23	{
 };
 path	key24	{
 	DBSELECT	{
-		DECLARE tbl_jyurrk_key24_csr CURSOR FOR
+		DECLARE tbl_jyurrk_prv_key24_csr CURSOR FOR
 		SELECT *
-		FROM tbl_jyurrk
+		FROM tbl_jyurrk_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
@@ -599,9 +602,9 @@ path	key24	{
 
 path	all2 	{
 	DBSELECT	{
-		DECLARE tbl_jyurrk_all2_csr CURSOR FOR
+		DECLARE tbl_jyurrk_prv_all2_csr CURSOR FOR
 		SELECT *
-		FROM tbl_jyurrk
+		FROM tbl_jyurrk_prv
 			WHERE   SRYYMD    LIKE   :SRYYMD
 		;
 	};
@@ -609,9 +612,9 @@ path	all2 	{
 
 path	key25 	{
 	DBSELECT	{
-		DECLARE tbl_jyurrk_key25_csr CURSOR FOR
+		DECLARE tbl_jyurrk_prv_key25_csr CURSOR FOR
 		SELECT *
-		FROM tbl_jyurrk
+		FROM tbl_jyurrk_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
@@ -624,9 +627,9 @@ path	key25 	{
 };
 path	key26 	{
 	DBSELECT	{
-		DECLARE tbl_jyurrk_key26_csr CURSOR FOR
+		DECLARE tbl_jyurrk_prv_key26_csr CURSOR FOR
 		SELECT *
-		FROM tbl_jyurrk
+		FROM tbl_jyurrk_prv
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
@@ -640,8 +643,8 @@ path	key26 	{
 #sitekey
 path	st_key1 	{
 	DBSELECT	{
-		DECLARE tbl_jyurrk_st_key1_csr CURSOR FOR
-		SELECT a.* FROM tbl_jyurrk a,tbl_ptinf b
+		DECLARE tbl_jyurrk_prv_st_key1_csr CURSOR FOR
+		SELECT a.* FROM tbl_jyurrk_prv a,tbl_ptinf b
 		WHERE    a.HOSPID  =  :HOSPID
 		AND   a.NYUGAIKBN  =  :NYUGAIKBN
 		AND   (a.SRYYMD    >= :SRYYMD
@@ -660,9 +663,9 @@ path	st_key1 	{
 
 path	key27 	{
 	DBSELECT	{
-		DECLARE tbl_jyurrk_key27_csr CURSOR FOR
+		DECLARE tbl_jyurrk_prv_key27_csr CURSOR FOR
 		SELECT distinct hospid,ptid,nyugaikbn,sryka,substring(sryymd,1,6) as sryymd,hknkbn
-		FROM tbl_jyurrk
+		FROM tbl_jyurrk_prv
 			WHERE HOSPID      =    :HOSPID
 			AND   PTID        =    :PTID
 			AND   SRYYMD      LIKE :SRYYMD
@@ -672,9 +675,9 @@ path	key27 	{
 
 path	key28 	{
 	DBSELECT	{
-		DECLARE tbl_jyurrk_key28_csr CURSOR FOR
+		DECLARE tbl_jyurrk_prv_key28_csr CURSOR FOR
 		SELECT distinct hospid,ptid,nyugaikbn,sryka,substring(sryymd,1,6) as sryymd,hknkbn
-		FROM tbl_jyurrk
+		FROM tbl_jyurrk_prv
 			WHERE HOSPID      =    :HOSPID
 			AND   PTID        =    :PTID
 			AND   NYUGAIKBN   =    :NYUGAIKBN
@@ -686,9 +689,9 @@ path	key28 	{
 
 path	key29	{
 	DBSELECT	{
-		DECLARE tbl_jyurrk_key29_csr CURSOR FOR
+		DECLARE tbl_jyurrk_prv_key29_csr CURSOR FOR
 		SELECT *
-		FROM tbl_jyurrk
+		FROM tbl_jyurrk_prv
 			WHERE HOSPID      =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   SRYYMD      =   :SRYYMD
@@ -702,42 +705,24 @@ path	key29	{
 	};
 };
 
-path	key30	{
+path	key30 	{
 	DBSELECT	{
-		DECLARE tbl_jyurrk_key30_csr CURSOR FOR
+		DECLARE tbl_jyurrk_prv_key30_csr CURSOR FOR
 		SELECT *
-		FROM tbl_jyurrk
-			WHERE HOSPID      =   :HOSPID
-			AND   PTID        =    :PTID
-			AND   SRYKA       =   :SRYKA
-			AND   HKNCOMBINUM <>  '9999'
-			ORDER   BY        SRYYMD DESC,
-			                  DENPNUM DESC
-		;
-	};
-};
-path    del2    {
-        DBDELETE        {
-                DELETE
-                FROM tbl_jyurrk
+		FROM tbl_jyurrk_prv
                         WHERE   HOSPID    =   :HOSPID
                         AND   PTID        =   :PTID
                         AND   NYUGAIKBN   =   :NYUGAIKBN
-                        AND   SRYYMD      LIKE :SRYYMD
-                ;
-        };
+ 		;
+	};
 };
 
-path    key31   {
-        DBSELECT        {
-                DECLARE tbl_jyurrk_key31_csr CURSOR FOR
-                SELECT *
-                FROM tbl_jyurrk
-                        WHERE HOSPID      =    :HOSPID
-                        AND   PTID        =    :PTID
+path	delprv 	{
+	DBDELETE	{
+		DELETE  FROM tbl_jyurrk_prv
+                        WHERE   HOSPID    =   :HOSPID
+                        AND   PTID        =   :PTID
                         AND   NYUGAIKBN   =   :NYUGAIKBN
-                        AND   SRYYMD      LIKE :SRYYMD
-                ;
-        };
+ 		;
+	};
 };
-
