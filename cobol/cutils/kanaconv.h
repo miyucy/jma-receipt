@@ -2,7 +2,6 @@
  orca
 */
 
-#define HKANA        1
 #define HIRAGANA     2
 #define KATAKANA     4
 #define OTHER        8
@@ -13,6 +12,7 @@
 #define ASCII      112
 #define GAIJI      128
 #define UNKNOWN    128
+#define HKANA      128
 
 typedef struct {
 	size_t  out_len;

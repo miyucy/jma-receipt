@@ -352,7 +352,10 @@ _kanaconv (int conv_flg,
 		}
 	}
 	*p++ = '\0';
-	
+
+	if ( char_type == 0){
+		return ( intype > (GAIJI|HKANA|UNKNOWN));
+	}
 	return ( (intype | char_type) != char_type );
 }
 
