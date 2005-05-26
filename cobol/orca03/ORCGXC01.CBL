@@ -31,6 +31,7 @@
       *  03/10/27    NACL−藤原   前頁追加
       *  04/02/13    NACL−太田   コラムリスト位置修正
       *  02/05/00    NACL−竹田   データ格納方法変更
+      *  02/06/00    NACL−竹田   リアルタイムプレビュー対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -311,6 +312,11 @@
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
+           COPY    "CPRCF008.INC".
+      *
+       01  PRTKANRI-REC.
+           COPY    "CPPRTKANRI.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -448,6 +454,7 @@
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
                MOVE    SPA-WORK            TO  LNK-XC01-AREA
                MOVE    LNK-XC01-AREA       TO  SPA-XC01-LN-AREA
+           DISPLAY "take XC01 LINK ptid = " LNK-XC01-TBL-GROUP
                MOVE    SPA-MOTOPG          TO  SPA-MOTOPG2
                PERFORM 310-SPASET-SEC
                GO  TO  300-SCREEN-EXT
@@ -927,9 +934,105 @@
                END-IF    
            END-PERFORM
       *
+    5 *  10        20        30        40        50
+----+-*--+----+----+----+----+----+----+----+----+----+----+----+----+
+      *    リアルタイムプレビュー時は、中間ファイル削除
+           IF      SPA-PRTKANRI-TBL-KEY    =  "RECEPTX"
+               PERFORM 2101-FILE-DEL-SEC         
+           END-IF    
            PERFORM 210-BACK-SYORI-SEC         
            .
        210-BACK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ファイル削除　処理
+      *****************************************************************
+       2101-FILE-DEL-SEC               SECTION.
+      *
+      *    psファイルクリア
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-MAX
+               IF    SPA-NAI-FILENAME (IDX)
+                                       NOT =   SPACE
+                   MOVE    ZERO            TO  IF-RESULT
+                   MOVE    SPA-NAI-FILENAME (IDX)
+                                           TO  IF-FILENAME
+                   CALL    "orcfiledel"    USING
+                                           ORCSFDELAREA
+               END-IF    
+           END-PERFORM
+    5 *  10        20        30        40        50
+----+-*--+----+----+----+----+----+----+----+----+----+----+----+----+
+           MOVE    SPACE               TO  WRK-PTNUM
+           MOVE    SPA-GMN-PTNUM(1)    TO  WRK-PTNUM
+           PERFORM VARYING IDX FROM    20  BY  -1
+                   UNTIL   IDX <       1
+               IF      WRK-PTNUM (IDX:1)   NOT =   SPACE
+                   MOVE    1               TO  IDX
+               ELSE
+                   MOVE    "Z"             TO  WRK-PTNUM (IDX:1)
+               END-IF
+           END-PERFORM
+      *
+           MOVE    "HC06"              TO  RECE08-PRTID
+           MOVE    "999999"            TO  RECE08-RECEYM
+           MOVE    WRK-PTNUM           TO  RECE08-PTNUM
+           MOVE    RECE08-REC          TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    PATH-TBL-RECEPRT-DEL3
+                                       TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              NOT  =   ZERO
+               DISPLAY "XC01 RECEPRT DELETE ERR [" MCP-RC "]" 
+           END-IF
+      *
+           MOVE    "RECEPTX"           TO  PRTDATA-TBL-KEY
+           MOVE    SPA-NAI-TBL-GROUP (1)
+                                       TO  PRTDATA-TBL-GROUP
+           MOVE    PRTDATA-REC         TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    PATH-TBL-PRTDATA-DEL11 
+                                       TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              NOT  =   ZERO
+               DISPLAY "XC01 PRTDATA DELETE ERR [" MCP-RC "]" 
+           END-IF
+      *
+           MOVE    "RECEPTX"           TO  PRTKANRI-TBL-KEY
+           MOVE    SPA-NAI-TBL-GROUP (1)
+                                       TO  PRTKANRI-TBL-GROUP
+           MOVE    PRTKANRI-REC        TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    PATH-TBL-PRTKANRI-DEL11 
+                                       TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              NOT  =   ZERO
+               DISPLAY "XC01 PRTKANRI DELETE ERR [" MCP-RC "]" 
+           END-IF
+      *
+           MOVE    "RECEPTX"           TO  PRVKANRI-TBL-KEY
+           MOVE    SPA-NAI-TBL-GROUP (1)
+                                       TO  PRVKANRI-TBL-GROUP
+           MOVE    PRVKANRI-REC        TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    PATH-TBL-PRVKANRI-DEL13 
+                                       TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              NOT  =   ZERO
+               DISPLAY "XC01 PRVKANRI DELETE ERR [" MCP-RC "]" 
+           END-IF
+      *
+           .
+       2101-FILE-DEL-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1425,22 +1528,25 @@
        2011-PRVKANRI-HEN-SEC        SECTION.
       *
       *    検索
+           DISPLAY "take tbl_group = " SPA-XC01-LN-TBL-GROUP
            INITIALIZE                  PRVKANRI-REC
            MOVE    SPA-PRTKANRI-TBL-KEY
                                        TO  PRVKANRI-TBL-KEY
-           MOVE    LNK-XC01-TBL-GROUP  TO  PRVKANRI-TBL-GROUP
-           MOVE    LNK-XC01-SHORI-RENNUM
+           MOVE    SPA-XC01-LN-TBL-GROUP
+                                       TO  PRVKANRI-TBL-GROUP
+           MOVE    SPA-XC01-LN-SHORI-RENNUM
                                        TO  PRVKANRI-SHORI-RENNUM
-           MOVE    LNK-XC01-RENNUM     TO  PRVKANRI-RENNUM
-           MOVE    LNK-XC01-ST-PAGE    TO  PRVKANRIXX-STPAGE
-           MOVE    LNK-XC01-ED-PAGE    TO  PRVKANRIXX-EDPAGE
+           MOVE    SPA-XC01-LN-RENNUM  TO  PRVKANRI-RENNUM
+           MOVE    SPA-XC01-LN-ST-PAGE TO  PRVKANRIXX-STPAGE
+           MOVE    SPA-XC01-LN-ED-PAGE TO  PRVKANRIXX-EDPAGE
            MOVE    PRVKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           IF      LNK-XC01-SHORI-RENNUM   NOT =   ZERO
+           IF      SPA-XC01-LN-SHORI-RENNUM
+                                       NOT =   ZERO
                MOVE    PATH-TBL-PRVKANRI-KEY3
                                            TO  WRK-MCP-PATH
            ELSE
-               IF     LNK-XC01-RENNUM    NOT =   ZERO
+               IF     SPA-XC01-LN-RENNUM   NOT =   ZERO
                    MOVE    PATH-TBL-PRVKANRI-KEY7
                                                TO  WRK-MCP-PATH
                ELSE
@@ -1519,8 +1625,6 @@
            MOVE    1                   TO  FLG-GMN-INIT
       *
       *     SPA-NAI-MAKEOK-FLG (IDX)
-           DISPLAY "take spa-gmn-max = "  SPA-GMN-MAX
-           DISPLAY "take filename(1) = "   SPA-NAI-FILENAME (1)
       *    既にＳＰＡに存在するかチェック
            MOVE    ZERO                TO  FLG-CHK
            PERFORM VARYING IDZ FROM    1   BY  1
@@ -2203,7 +2307,6 @@
       *     
            MOVE    SPA-GMN-SELNUM      TO  XC01-SELNUM
            MOVE    SPA-GMN-OBJECT      TO  XC01-PSAREA
-           DISPLAY "take object = "  SPA-GMN-OBJECT 
            DISPLAY "take filenm = "  SPA-GMN-FILENAME
       *    MOVE   "BLOBIMPORT"         TO  MCP-FUNC
       *    MOVE    PATH-BLOB-PRIMARY   TO  MCP-PATH
