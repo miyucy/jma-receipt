@@ -928,7 +928,8 @@
            END-IF
       *
       *    Ï«ºÒ¡¦¼«Çå¤Î¿Ç»¡ÎÁÅù¤Îµ­ºÜ
-           IF   SYU-RSI-TOTAL     NOT =   ZERO
+           IF   (SYU-RSI-TOTAL     NOT =   ZERO) AND
+                (SYS-4001-RSIPRTKBN    =   "2")
                EVALUATE    COMB-HKNNUM
                    WHEN    "971"
                        MOVE  "¡ÊÆâÏ«ºÒ¿Ç»¡Åù¡Ë"  TO HC03-RSIMIDASI
