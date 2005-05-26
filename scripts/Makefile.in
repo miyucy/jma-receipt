@@ -57,6 +57,7 @@ shell_sources = \
 	allways/orcbi201.sh.in \
 	allways/chkmst.sh.in \
 	allways/orcbs01.sh.in \
+	monthly/receipt_prv.sh.in \
 
 ruby_scripts = \
 	daily/print-data.rb \

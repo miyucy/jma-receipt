@@ -1,0 +1,31 @@
+#!/bin/sh
+
+if test -z "$JMARECEIPT_ENV" ; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
+. $JMARECEIPT_ENV
+
+#-------------------------------------------#
+#    リアルタイムプレビュー処理
+#-------------------------------------------#
+##      エラーファイル削除
+	echo $#
+	echo "echo " $4
+        if  [ -e $4 ]; then
+            rm  $4
+        fi
+        
+        
+	    echo 'start orcrmain' `date` > /home/orca/recemain.log
+	    $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCRRECEMAIN -parameter $1,$2,$3,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15},${16},${17},${18},${19},${20},${21},${22},${23},${24},${25},${26},${27},${28},${29},${30}   >> /home/orca/recemain.log
+	    echo 'end orcrmain' `date` >> /home/orca/recemain.log
+	
+#------> ${26} = PTID
+        rm  /var/tmp/RECE*${26}*
+#
+#
+            exit 
