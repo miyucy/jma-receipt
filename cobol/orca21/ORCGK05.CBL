@@ -2515,7 +2515,8 @@
            INITIALIZE                  ORCSC97AREA
            MOVE    SPA-GMN-IDX         TO  LNK-SC97-GMN-IDX
       *    時間外特例区分
-           MOVE    SPA-JIKANTOKU       TO  LNK-SC97-JIKANTOKU
+      *****MOVE    SPA-JIKANTOKU       TO  LNK-SC97-JIKANTOKU
+           MOVE    1                   TO  LNK-SC97-JIKANTOKU
            MOVE    SPA-GMN-INPUTCD (SPA-GMN-IDX)
                                        TO  LNK-SC97-INPUTCD
            CALL    "ORCSC97"           USING
@@ -2569,7 +2570,8 @@
            INITIALIZE                  ORCSC97AREA
            MOVE    SPA-GMN-IDX         TO  LNK-SC97-GMN-IDX
       *    時間外特例区分
-           MOVE    SPA-JIKANTOKU       TO  LNK-SC97-JIKANTOKU
+      *****MOVE    SPA-JIKANTOKU       TO  LNK-SC97-JIKANTOKU
+           MOVE    1                   TO  LNK-SC97-JIKANTOKU
            MOVE    SPA-GMN-INPUTCD (SPA-GMN-IDX)
                                        TO  LNK-SC97-INPUTCD
            CALL    "ORCSC97"           USING
@@ -4312,6 +4314,8 @@
            MOVE    SPA-NAI-ROUJIN      TO  LNK-ORCSC-ROUJIN 
            MOVE    SPA-NENREI          TO  LNK-ORCSC-NENREI 
            MOVE    FLG-TOROKU          TO  LNK-ORCSC-TOROKU
+      *    時間外特例区分
+           MOVE    SPA-JIKANTOKU       TO  LNK-ORCSC-JIKANTOKU
       *
            EVALUATE    WRK-COM-SRYKBN (01)
       *        診療
