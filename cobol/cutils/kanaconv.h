@@ -27,7 +27,7 @@ void StringCobol2C(char	*str, size_t size);
 void StringC2Cobol(char	*str,  size_t size);
 
 int kanaconv (char *args);
-int _kanaconv (int conv_flg, int char_type, size_t max_len, size_t *ret_len, char *inchar, char *ouchar);
+int kana_euc_convert (int conv_flg, int char_type, size_t max_len, size_t *ret_len, char *inchar, char *ouchar);
 
 
 

@@ -300,12 +300,12 @@ tohiragana(ConvertChar *cchar)
 }
 
 int
-_kanaconv (int conv_flg,
-		   int char_type,
-		   size_t max_len,
-		   size_t *ret_len,
-		   char *inchar,
-		   char *ouchar)
+kana_euc_convert (int conv_flg,
+				  int char_type,
+				  size_t max_len,
+				  size_t *ret_len,
+				  char *inchar,
+				  char *ouchar)
 {
 	int advanced_bytes;
 	ConvertChar ochar, *cchar;
@@ -364,8 +364,6 @@ _kanaconv (int conv_flg,
 	}
 	*p++ = '\0';
 	*ret_len = current_len;
-	
-	printf("%d\n", *ret_len);
 	
 	if ( char_type == 0){
 		return ( intype > (GAIJI|HKANA|UNKNOWN));
@@ -426,7 +424,8 @@ kanaconv (char *args)
 	if ( str_len < len){
 		len = str_len;
 	}
-	*ret_val = _kanaconv(conv_flg, char_type, len, ret_len, org_str, new_str);
+	*ret_val = kana_euc_convert(conv_flg, char_type, len, ret_len,
+							 org_str, new_str);
 
 	StringC2Cobol(org_str, str_len);
 	StringC2Cobol(new_str, str_len);
