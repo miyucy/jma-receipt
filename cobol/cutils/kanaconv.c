@@ -220,7 +220,7 @@ zenkakuconv(int conv_flg,
 		cchar->in_type = ZENKAKU;
 		if ( ISJIS208(c0) ){
 			if ( (conv_flg) && (char_type & ASCII) 
-				 && (c0 == 0xa3)
+				 && ( (c0 == 0xa1) || (c0 == 0xa3) )
 				 && (c = search_ascii_zenkaku(c0, c1)) ) {
 				cchar->out_type = KIGOU;
 				cchar->out_len   = 1;
@@ -339,19 +339,10 @@ kana_euc_convert (int conv_flg,
 		} else if ( (conv_flg == 3) && (char_type & HIRAGANA) ) {
 			tohiragana(cchar);
 		}
-		if (conv_flg) { 
-			inchar += advanced_bytes;
-			if ( ( cchar->out_type & char_type ) || (char_type == 0) ){
-				if ( max_len < (current_len + cchar->out_len)) {
-					break;
-				}
-				current_len += cchar->out_len;
-				for (i = 0; i < cchar->out_len; i++){
-					*p++ = cchar->out_char[i];
-				}
-			} 
+		inchar += advanced_bytes;
+		if ( (conv_flg) && (!(cchar->out_type & char_type)) ) {
+			ret = 1;
 		} else {
-			inchar += advanced_bytes;
 			if ( max_len < (current_len + cchar->out_len)) {
 				break;
 			}
@@ -359,16 +350,21 @@ kana_euc_convert (int conv_flg,
 			for (i = 0; i < cchar->out_len; i++){
 				*p++ = cchar->out_char[i];
 			}
-		} 
+		}
 		intype = intype | cchar->in_type;
 	}
 	*p++ = '\0';
 	*ret_len = current_len;
-	
-	if ( char_type == 0){
-		return ( intype > (GAIJI|HKANA|UNKNOWN));
+
+	if ( conv_flg == 0 ) {
+		if ( (intype | char_type) != char_type ){
+			ret = 1;
+		}
 	}
-	return ( (intype | char_type) != char_type );
+	if ( intype >= GAIJI ) {
+		ret = 2;
+	}
+	return ret;
 }
 
 /*
