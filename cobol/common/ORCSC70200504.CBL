@@ -1622,8 +1622,6 @@
                PERFORM 1003-JIDOU-CHK-SEC
                PERFORM 1002-JIDOUSET-SEC
                IF      FLG-ADD             =   1
-                   MOVE    "Z"             TO  WRK-COM-AUTOKBN
-                                                         (IDX-S + 1)
                    IF      WRK-COM-INPUTCD (IDX-SAT + 1)
                                                =   "170002110"
                        COMPUTE IDX-SAT         =   IDX-SAT    +   1
@@ -1941,7 +1939,7 @@
       *    AUTKBN¥¯¥ê¥¢
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
                    UNTIL       IDX-Z       >   IDX-MAX
-               IF      WRK-COM-AUTOKBN(IDX-Z)  =   "K"  OR  "Z"
+               IF      WRK-COM-AUTOKBN(IDX-Z)  =   "K"
                    MOVE    SPACE           TO  WRK-COM-AUTOKBN(IDX-Z)
                END-IF
            END-PERFORM
@@ -1961,7 +1959,6 @@
                IF      FLG-SINDAN          =   1
       *        £ØÀþ»£±ÆÎÁ
                    IF      WRK-COM-AUTOKBN(IDX-Z)  =   "K"
-                                                   OR  "Z"
                        IF      IDX-SYU             >   ZERO
       *                    ¼êµ»ÎÁ¤Î·×»»
                            PERFORM 10021-TENSUKEI-SEC
@@ -2030,7 +2027,6 @@
       *****************************************************************
        1002121-XSEN-KEI-SEC             SECTION.
       *
-      *
            EVALUATE    WRK-COM-TNSSRYSYUKBN(IDX-Z)(1:2)
                WHEN    "72"
       *            »£±ÆÎÁÊÔ½¸
@@ -2047,8 +2043,11 @@
                    ADD     WRK-COM-KISOTEN (IDX-Z) TO  WRK-TENSUKEI2
       *        ¤½¤ÎÂ¾
                 WHEN    OTHER
-                    ADD     WRK-COM-KISOTEN(IDX-Z)
+                   ADD     WRK-COM-KISOTEN(IDX-Z)
                                                    TO  WRK-TENSUKEI3
+                   IF    WRK-COM-DATAKBN (IDX-Z)   =   "1"
+                       MOVE    IDX-Z               TO  IDX-SYU
+                   END-IF
            END-EVALUATE
       *
            .
@@ -2827,6 +2826,18 @@
                    MOVE    ZERO                TO  FLG-KAKUI-ARI
                END-IF
            END-PERFORM
+      *    ²èÁü¿ÇÃÇ´ÉÍý²Ã»»ÄÉ²Ã
+           PERFORM 3001-GAZOUKSN-SET-SEC
+      *
+           .
+      *
+       300-AUTO-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ²èÁü¿ÇÃÇ´ÉÍý²Ã»»ÄÉ²Ã½èÍý
+      *****************************************************************
+       3001-GAZOUKSN-SET-SEC             SECTION.
       *
            MOVE    ZERO                TO  IDXS
       *
@@ -2865,6 +2876,8 @@
                IF     (FLG-ERR             =   ZERO )  AND
                       (FLG-ENKALL          =   ZERO )  AND
                       (FLG-ENK2            =   ZERO )
+      *        ¥·¥¹¥Æ¥à´ÉÍý¤Î¶èÊ¬È½Äê
+                 AND  (SPA-GAZOUKSN1       =   1   )
       *            ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£²¡Ê³Ë°å³Ø¡Ë
                    MOVE    "170025610"         TO  WRK-SRYCD
                    MOVE    SPACE               TO  WRK-SRYCD-2
@@ -2900,6 +2913,8 @@
                IF     (FLG-ERR             =   ZERO )  AND
                       (FLG-ENKALL          =   ZERO )  AND
                       (FLG-ENK3            =   ZERO )
+      *            ¥·¥¹¥Æ¥à´ÉÍý¤Î¶èÊ¬È½Äê
+                 AND  (SPA-GAZOUKSN1       =   1   )
       *            ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£²¡Ê¥³¥ó¥Ô¥å¡¼¥¿ÃÇÁØ¿ÇÃÇ¡Ë
                    MOVE    "170025710"         TO  WRK-SRYCD
                    MOVE    SPACE               TO  WRK-SRYCD-2
@@ -2921,7 +2936,7 @@
       *
            .
       *
-       300-AUTO-SYORI-EXT.
+       3001-GAZOUKSN-SET-EXT.
            EXIT.
       *
       *****************************************************************

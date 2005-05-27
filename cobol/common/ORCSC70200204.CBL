@@ -3193,6 +3193,18 @@
                    MOVE    ZERO                TO  FLG-KAKUI-ARI
                END-IF
            END-PERFORM
+      *    ²èÁü¿ÇÃÇ´ÉÍý²Ã»»ÄÉ²Ã
+           PERFORM 3001-GAZOUKSN-SET-SEC
+      *
+           .
+      *
+       300-AUTO-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ²èÁü¿ÇÃÇ´ÉÍý²Ã»»ÄÉ²Ã½èÍý
+      *****************************************************************
+       3001-GAZOUKSN-SET-SEC             SECTION.
       *
            MOVE    ZERO                TO  IDXS
       *
@@ -3231,6 +3243,8 @@
                IF     (FLG-ERR             =   ZERO )  AND
                       (FLG-ENKALL          =   ZERO )  AND
                       (FLG-ENK2            =   ZERO )
+      *            ¥·¥¹¥Æ¥à´ÉÍý¤Î¶èÊ¬È½Äê
+                 AND  (SPA-GAZOUKSN1       =   1   )
       *            ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£²¡Ê³Ë°å³Ø¡Ë
                    MOVE    "170025610"         TO  WRK-SRYCD
                    MOVE    SPACE               TO  WRK-SRYCD-2
@@ -3266,6 +3280,8 @@
                IF     (FLG-ERR             =   ZERO )  AND
                       (FLG-ENKALL          =   ZERO )  AND
                       (FLG-ENK3            =   ZERO )
+      *          ¥·¥¹¥Æ¥à´ÉÍý¤Î¶èÊ¬È½Äê
+                 AND  (SPA-GAZOUKSN1       =   1   )
       *            ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£²¡Ê¥³¥ó¥Ô¥å¡¼¥¿ÃÇÁØ¿ÇÃÇ¡Ë
                    MOVE    "170025710"         TO  WRK-SRYCD
                    MOVE    SPACE               TO  WRK-SRYCD-2
@@ -3287,7 +3303,7 @@
       *
            .
       *
-       300-AUTO-SYORI-EXT.
+       3001-GAZOUKSN-SET-EXT.
            EXIT.
       *
       *****************************************************************
