@@ -620,24 +620,21 @@
                        END-IF
                    WHEN    "7"
       *!               在宅は可能
-                       IF      WRK-COM-SRYKBN (IDX-Z)  =   "14"
-                           PERFORM 10017-KIZAI-CHK-SEC
-                       ELSE
+                     IF    WRK-COM-SRYKBN (IDX-Z)  =   "14"
+                       PERFORM 10017-KIZAI-CHK-SEC
+                     ELSE
+                       IF      WRK-COM-DATAKBN (IDX-Z) =   "3"
+      *                    フィルムの時エラー
                            MOVE    "0047"      TO  WRK-ERRCD
                            MOVE    "1"         TO  WRK-COM-CUR (IDX-Z)
                        END-IF
-      *****************IF      WRK-COM-DATAKBN (IDX-Z) =   "3"
-      *                    フィルムの時エラー
-      *                    MOVE    "0047"      TO  WRK-ERRCD
-      *                    MOVE    "1"         TO  WRK-COM-CUR (IDX-Z)
-      *                END-IF
       *
       *                酸素・窒素はエラー
-      *                IF      WRK-COM-TOKUKIZAISBT1 (IDX-Z) =   2
-      *                    MOVE    "0039"      TO  WRK-ERRCD
-      *                    MOVE    "1"         TO  WRK-COM-CUR  (IDX-Z)
-      *                END-IF
-      ************** END-IF
+                       IF      WRK-COM-TOKUKIZAISBT1 (IDX-Z) =   2
+                           MOVE    "0039"      TO  WRK-ERRCD
+                           MOVE    "1"         TO  WRK-COM-CUR  (IDX-Z)
+                       END-IF
+                     END-IF
                END-EVALUATE
       *
       *        初診、再診、指導、在宅の時、回数は１のみ
