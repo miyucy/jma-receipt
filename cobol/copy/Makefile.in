@@ -1033,6 +1033,7 @@ COPYS = \
 	HCM43V01.INC \
         HCM31V01.INC \
         HCM32V01.INC \
+        CPORCXKANACONV.INC \
 
 
 DBPATH = \
