@@ -95,6 +95,7 @@
       *                                     月途中に保険者は変わらずに
       *                                     保険が変更になった場合は１枚
       *                                     にする
+      *  02.06.00    NACL-竹田    05/05/30  realtime preview 処理追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -240,6 +241,8 @@
                05  WRK-PARA-RECEKBN                    PIC  X(01).
                05  WRK-PARA-JOBID                      PIC  9(07).
                05  WRK-PARA-SHELLID                    PIC  X(08).
+               05  WRK-PARA-PTID                       PIC  X(10).
+               05  WRK-PARA-SRYYM-O                    PIC  X(06).
       *
            03  WRK-CONTKBN             PIC X(01).
       *
@@ -507,22 +510,24 @@
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
       *
+           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *    ＤＢオープン処理
-           PERFORM 100-DBOPEN-SEC
+               PERFORM 100-DBOPEN-SEC
       *
       *    ステップ管理開始処理
-           MOVE    "STS"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
-           MOVE    "ORCR0010"      TO  JOB-PGID
-           MOVE    "対象患者抽出"  TO  JOB-SHELLMSG
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA  
-                                   JOBKANRI-REC
+               MOVE    "STS"           TO  SJOBKANRI-MODE
+               INITIALIZE                  JOBKANRI-REC
+               MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+               MOVE    WRK-PARA-SHELLID
+                                       TO  JOB-SHELLID
+               MOVE    "ORCR0010"      TO  JOB-PGID
+               MOVE    "対象患者抽出"  TO  JOB-SHELLMSG
+               CALL    "ORCSJOB"       USING
+                                       ORCSJOBKANRIAREA  
+                                       JOBKANRI-REC
       *    処理中止設定処理
-           PERFORM 500-CANCEL-HENSYU-SEC
+               PERFORM 500-CANCEL-HENSYU-SEC
+           END-IF
       *
            IF      FLG-END           =   ZERO
       *        医療機関ＩＤ編集
@@ -661,6 +666,7 @@
                    MOVE    ZERO                TO  SYS-2005-RJNGNBKKBN
                END-IF
       *
+             IF        WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        パラメタＤＢ読み込み
                INITIALIZE                  BTPARA-REC
                MOVE    WRK-PARA-SHELLID
@@ -674,6 +680,7 @@
                                            TO  WRK-RECEERR
                    PERFORM 500-ERR-HENSYU-SEC
                END-IF
+             END-IF
            END-IF
       *
       *    ファイルＯＰＥＮ処理
@@ -1722,6 +1729,12 @@
       *****************************************************************
        2002-KOBETU-SYORI-SEC               SECTION.
       *
+           IF      WRK-PARA-SHELLID        =   "RECEPTX"
+                   PERFORM 20021-KOBETU-REAL-SEC
+                   MOVE    "1"   TO  PTINF-TSTPTNUMKBN
+                   GO  TO    2002-KOBETU-SYORI-EXT
+           END-IF
+      *
            EVALUATE    BTPARA-INFO-KBN
                WHEN    "01"
       *            レセプト指示（個別指示）コード読み込み
@@ -1862,6 +1875,97 @@
            .
       *
        2002-KOBETU-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    個別編集処理
+      *****************************************************************
+       20021-KOBETU-REAL-SEC              SECTION.
+      *
+      *
+           MOVE    WRK-PARA-PTID    TO  SYS-2002-PTID
+           MOVE    WRK-PARA-SRYYM-O TO  SYS-2002-SRYYM
+           MOVE    "2"              TO  SYS-2002-NYUGAIKBN
+           DISPLAY "SYS PTID=" SYS-2002-PTID
+      *
+      *    該当診療年月の医療機関情報取得
+           MOVE  ZERO           TO  FLG-SET
+           MOVE  SYS-2002-SRYYM TO  WRK-SYS-SRYYMD(1:6)
+           MOVE  "01"           TO  WRK-SYS-SRYYMD(7:2)
+           PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
+                    UNTIL  ( SYSKAN-IDX              >  10   )
+                     OR    ( TBL-SYS1001(SYSKAN-IDX) = SPACE )
+                     OR    ( FLG-SET                 =   1   )
+                MOVE  TBL-SYS1001(SYSKAN-IDX)  TO  SYS-1001-REC
+                IF   ( SYS-1001-STYUKYMD  <=  WRK-SYS-SRYYMD    )
+                AND  ( WRK-SYS-SRYYMD     <=  SYS-1001-EDYUKYMD )
+                    MOVE     1       TO    FLG-SET
+                END-IF
+           END-PERFORM
+           IF     FLG-SET              =   ZERO
+               STRING   "医療機関情報が取得できませんでした。診療年月＝"
+                                           DELIMITED  BY  SIZE
+                        SYS-2002-SRYYM     DELIMITED  BY  SIZE
+                                       INTO    WRK-RECEERR
+               END-STRING
+               PERFORM 500-ERR-HENSYU-SEC
+               GO       TO      20021-KOBETU-REAL-EXT
+           END-IF
+      *
+      *    患者情報取得
+           MOVE    SYS-1001-HOSPID     TO  PTINF-HOSPID
+           MOVE    SYS-2002-PTID       TO  PTINF-PTID
+           PERFORM 900-PTINF-READ-SEC
+           MOVE    "1"                 TO  PTINF-TSTPTNUMKBN
+      *
+      *    診療年月編集
+           MOVE    SYS-2002-SRYYM      TO  WRK-STYMD (1:6)
+           MOVE    "01"                TO  WRK-STYMD (7:2)
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY7-AREA
+           MOVE    "71"                TO  LNK-DAY7-IRAI
+           MOVE    SYS-2002-SRYYM      TO  LNK-DAY7-YM
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY7-AREA
+           MOVE    LNK-DAY7-KOYOMI     TO  WRK-EDYMD
+      *
+      *
+           IF      FLG-END             =   ZERO
+      *        診療会計読み込み
+               INITIALIZE                  SRYACCT-REC
+               MOVE    SYS-1001-HOSPID     TO  ACCT-HOSPID
+               MOVE    SYS-2002-PTID       TO  ACCT-PTID
+               MOVE    SYS-2002-SRYYM      TO  ACCT-SRYYM
+               MOVE    SYS-2002-NYUGAIKBN  TO  ACCT-NYUGAIKBN
+               MOVE    SRYACCT-REC         TO  MCPDATA-REC
+               MOVE    "DBSELECT"          TO  MCP-FUNC
+               MOVE    "SRYACCT-KEY37"     TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "SRYACCT-KEY37"     TO  ORC-DBPATH
+                   PERFORM 900-SRYACCT-READ-SEC
+               ELSE
+                   INITIALIZE                  SRYACCT-REC
+                   MOVE    1                   TO  FLG-SRYACCT
+               END-IF
+      *
+               PERFORM UNTIL       FLG-SRYACCT     =   1
+                       OR          FLG-END         =   1
+                   PERFORM 20011-HENSYU-SEC
+               END-PERFORM
+      *        カーソルクロース
+               MOVE    "SRYACCT-KEY37"     TO  ORC-DBPATH
+               PERFORM 900-DBCLOSE-SEC
+      *
+      *        MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+      *        PERFORM 900-SYSKANRI-READ-SEC
+           END-IF
+      *
+           .
+       20021-KOBETU-REAL-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2118,6 +2222,7 @@
                WRITE   RECEERR-REC
                CLOSE   RECEERR-FILE
       *         
+             IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ジョブ管理終了処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
@@ -2129,6 +2234,7 @@
                CALL    "ORCSJOB"       USING
                                        ORCSJOBKANRIAREA  
                                        JOBKANRI-REC
+             END-IF
            END-IF
       *                             
            MOVE    1                   TO  FLG-END
@@ -2200,17 +2306,19 @@
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
       *
+           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *    ステップ管理終了処理
-           MOVE    "STE"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA  
-                                   JOBKANRI-REC
+               MOVE    "STE"           TO  SJOBKANRI-MODE
+               INITIALIZE                  JOBKANRI-REC
+               MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+               MOVE    WRK-PARA-SHELLID
+                                       TO  JOB-SHELLID
+               CALL    "ORCSJOB"       USING
+                                       ORCSJOBKANRIAREA  
+                                       JOBKANRI-REC
       *
-           PERFORM 900-DBDISCONNECT-SEC
+               PERFORM 900-DBDISCONNECT-SEC
+           END-IF
       *     
            DISPLAY "RECE01  CNT-OUT :" CNT-OUT1
            DISPLAY "RECE01X CNT-OUT :" CNT-OUT2
