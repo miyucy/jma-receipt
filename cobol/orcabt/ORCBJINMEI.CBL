@@ -79,7 +79,7 @@
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
-           03  IDX0                        PIC 9(05).
+           03  IDX                         PIC 9(05).
            03  IDX1                        PIC 9(05).
            03  IDX2                        PIC 9(05).
       *
@@ -253,19 +253,35 @@
                                          WRK-KANA-MEI
                                          WRK-KANJI-SEI
                                          WRK-KANJI-MEI
-           UNSTRING    PTINF-KANANAME  DELIMITED  BY  "¡¡"
-                       INTO            WRK-KANA-SEI
-                                       WRK-KANA-MEI
-           END-UNSTRING
-           UNSTRING    PTINF-NAME      DELIMITED  BY  "¡¡"
-                       INTO            WRK-KANJI-SEI
-                                       WRK-KANJI-MEI
-           END-UNSTRING
+           PERFORM   VARYING   IDX   FROM  1  BY  2
+             UNTIL  (IDX       >     100)   OR
+                    (PTINF-KANANAME(IDX:2)  = "¡¡")
+               CONTINUE
+           END-PERFORM
+           IF    PTINF-KANANAME(IDX:2)  = "¡¡"
+               COMPUTE   IDX1   =   IDX   -   1
+               MOVE   PTINF-KANANAME(1:IDX1)  TO  WRK-KANA-SEI
+               COMPUTE   IDX2   =   IDX   +   2
+               MOVE   PTINF-KANANAME(IDX2:100)  TO  WRK-KANA-MEI
+           END-IF
       *
-           DISPLAY "WRK-KANA-SEI = " WRK-KANA-SEI
-           DISPLAY "WRK-KANA-MEI = " WRK-KANA-MEI
-           DISPLAY "WRK-KANJI-SEI = " WRK-KANJI-SEI
-           DISPLAY "WRK-KANJI-MEI = " WRK-KANJI-MEI
+           PERFORM   VARYING   IDX   FROM  1  BY  2
+             UNTIL  (IDX       >     100)   OR
+                    (PTINF-NAME(IDX:2)  = "¡¡")
+               CONTINUE
+           END-PERFORM
+           IF    PTINF-NAME(IDX:2)  = "¡¡"
+               COMPUTE   IDX1   =   IDX   -   1
+               MOVE   PTINF-NAME(1:IDX1)  TO  WRK-KANJI-SEI
+               COMPUTE   IDX2   =   IDX   +   2
+               MOVE   PTINF-NAME(IDX2:100)  TO  WRK-KANJI-MEI
+           END-IF
+      *
+           DISPLAY "PTINF-PTID = " PTINF-PTID 
+      *     DISPLAY "WRK-KANA-SEI = " WRK-KANA-SEI
+      *     DISPLAY "WRK-KANA-MEI = " WRK-KANA-MEI
+      *     DISPLAY "WRK-KANJI-SEI = " WRK-KANJI-SEI
+      *     DISPLAY "WRK-KANJI-MEI = " WRK-KANJI-MEI
       *
            IF     (WRK-KANA-MEI   =  SPACE)  OR
                   (WRK-KANJI-MEI   =  SPACE)
