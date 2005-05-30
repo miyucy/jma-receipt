@@ -45,7 +45,8 @@
        WORKING-STORAGE             SECTION.
       *
       *    Ä¢É¼
-           COPY    "HCM32.INC".
+           COPY    "HCM32V01.INC"  REPLACING   //HCM32V01//
+                                   BY          //HCM32//.
       *
       *    ¥Õ¥é¥°ÎÎ°è
        01  STS-AREA.
@@ -557,7 +558,11 @@
            MOVE    WRK-HENYMDG         TO  HCM32-HAKKOYMD
       *
       *    °åÎÅµ¡´Ø½»½ê
-           MOVE    SYS-1002-ADRS       TO  HCM32-HOSPADRS
+           IF    ( SYS-1002-ADRS (61:) =   SPACE )
+               MOVE    SYS-1002-ADRS   TO  HCM32-HOSPADRS
+           ELSE
+               MOVE    SYS-1002-ADRS   TO  HCM32-HOSPADRS2
+           END-IF
       *
       *    °åÎÅµ¡´ØÌ¾
            MOVE    SYS-1001-HOSPNAME   TO  HCM32-HOSPNAME
@@ -649,7 +654,7 @@
       *****************************************************************
        250-PRINT-SEC                   SECTION.
       *
-           MOVE    "HCM32.red"         TO  SPRT-PRTID
+           MOVE    "HCM32V01.red"      TO  SPRT-PRTID
            MOVE    HCM32               TO  SPRT-PRTDATA
            MOVE    "1"                 TO  SPRT-SITEKBN
            CALL    "ORCSPRT"           USING

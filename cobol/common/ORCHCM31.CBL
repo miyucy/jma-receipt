@@ -46,7 +46,8 @@
        WORKING-STORAGE             SECTION.
       *
       *    Ä¢É¼
-           COPY    "HCM31.INC".
+           COPY    "HCM31V01.INC"  REPLACING   //HCM31V01//
+                                   BY          //HCM31//.
       *
       *    ¥Õ¥é¥°ÎÎ°è
        01  STS-AREA.
@@ -560,7 +561,11 @@
            MOVE    WRK-Z3              TO  HCM31-PAGE
       *
       *    °åÎÅµ¡´Ø½»½ê
-           MOVE    SYS-1002-ADRS       TO  HCM31-HOSPADRS
+           IF    ( SYS-1002-ADRS (61:) =   SPACE )
+               MOVE    SYS-1002-ADRS       TO  HCM31-HOSPADRS
+           ELSE
+               MOVE    SYS-1002-ADRS       TO  HCM31-HOSPADRS2
+           END-IF
       *
       *    °åÎÅµ¡´ØÌ¾
            MOVE    SYS-1001-HOSPNAME   TO  HCM31-HOSPNAME
@@ -650,7 +655,7 @@
       *****************************************************************
        250-PRINT-SEC                   SECTION.
       *
-           MOVE    "HCM31.red"         TO  SPRT-PRTID
+           MOVE    "HCM31V01.red"      TO  SPRT-PRTID
            MOVE    HCM31               TO  SPRT-PRTDATA
            MOVE    "1"                 TO  SPRT-SITEKBN
            CALL    "ORCSPRT"           USING
