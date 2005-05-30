@@ -287,3 +287,18 @@ path	key14	{
 		;
 	};
 };
+path	key15	{
+	DBSELECT	{
+		DECLARE tbl_ptinf_key15_csr CURSOR FOR
+		SELECT distinct a.*,b.ptnum
+		FROM tbl_ptnyuinrrk c,tbl_ptinf a,tbl_ptnum b
+			WHERE     c.HOSPID     =   :HOSPID
+               AND    c.TAIINYMD  >=  :UPYMD
+               AND    a.HOSPID    =   :HOSPID
+               AND    a.PTID      =   c.PTID
+               AND    b.HOSPID    =   :HOSPID
+               AND    b.PTID      =   c.PTID
+			ORDER BY  b.PTNUM
+		;
+	};
+};
