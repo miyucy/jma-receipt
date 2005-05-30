@@ -161,6 +161,7 @@
       *
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
+           COPY    "ORCA-DBPATH".
       *
            COPY    "COMMON-SPA".
       *
@@ -363,6 +364,23 @@
            MOVE    LNK-PRTKANRI-PRTNM  TO  SPRT-PRTNM
            MOVE    "1"                 TO  SPRT-SITEKBN
       *
+           IF      WRK-PARA-NYUGAIKBN  =   "1"
+      *        入院
+               PERFORM 2001-NYUIN-SYORI-SEC
+           ELSE
+      *        外来
+               PERFORM 2002-GAIRAI-SYORI-SEC
+           END-IF
+      *
+             .
+       200-MAIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    外来処理
+      *****************************************************************
+       2002-GAIRAI-SYORI-SEC                 SECTION.
+      *
       *    全患者を対象とする
            INITIALIZE                      PTINF-REC
            MOVE    SPA-HOSPID          TO  PTINF-HOSPID
@@ -372,14 +390,10 @@
            MOVE    "31"                TO  PTINF-CREYMD(7:2)
       *
            MOVE    PTINF-REC           TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTINF-KEY10"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    PATH-TBL-PTINF-KEY10    TO  MCP-PATH
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "PTINF-KEY10"       TO  ORC-DBPATH
+               MOVE    PATH-TBL-PTINF-KEY10    TO  MCP-PATH
                PERFORM 900-PTINF-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-PTINF
@@ -400,17 +414,69 @@
                MOVE    WRK-PARA-NYUGAIKBN  TO  ORCHC33-NYUGAIKBN
       *        一括パラメタ
                MOVE    ORCSPRTAREA         TO  ORCHC33-PRTAREA
-               IF      WRK-PARA-NYUGAIKBN  =   "2"
-      *            外来
-                   CALL    "ORCHC33"           USING
-                                               SPA-AREA
-                                               ORCHC33AREA
+      *        外来
+               CALL    "ORCHC33"           USING
+                                           SPA-AREA
+                                           ORCHC33AREA
+               IF      ORCHC33-RC          =   ZERO
+                   ADD     ORCHC33-PAGE        TO  CNT-PAGE
                ELSE
-      *            入院
-                   CALL    "ORCHCN33"          USING
-                                               SPA-AREA
-                                               ORCHC33AREA
+                   PERFORM 500-ERR-HENSYU-SEC
                END-IF
+      *
+               MOVE    PATH-TBL-PTINF-KEY10    TO  MCP-PATH
+               PERFORM 900-PTINF-READ-SEC
+           END-PERFORM
+           MOVE    PATH-TBL-PTINF-KEY10    TO  MCP-PATH
+           PERFORM 990-DBCLOSE-SEC
+      *
+             .
+       2002-GAIRAI-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院処理
+      *****************************************************************
+       2001-NYUIN-SYORI-SEC                 SECTION.
+      *
+      *    全患者を対象とする
+           INITIALIZE                      PTINF-REC
+           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+           MOVE    WRK-PARA-SRYYM      TO  PTINF-UPYMD(1:6)
+           MOVE    "01"                TO  PTINF-UPYMD(7:2)
+           MOVE    WRK-PARA-SRYYM-END  TO  PTINF-CREYMD(1:6)
+           MOVE    "31"                TO  PTINF-CREYMD(7:2)
+      *
+           MOVE    PTINF-REC           TO  MCPDATA-REC
+           MOVE    PATH-TBL-PTINF-KEY15
+                                       TO  MCP-PATH
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    PATH-TBL-PTINF-KEY15    TO  MCP-PATH
+               PERFORM 900-PTINF-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-PTINF
+           END-IF
+           PERFORM
+                   UNTIL     (FLG-PTINF    =   1  )  OR
+                             (FLG-END      =   1  )
+      *
+               INITIALIZE                  ORCHC33AREA
+               MOVE    "2"                 TO  ORCHC33-KBN
+               MOVE    PTINF-PTID          TO  ORCHC33-PTID
+               MOVE    PTINF-NAME          TO  ORCHC33-NAME
+               MOVE    PTINF-BIRTHDAY      TO  ORCHC33-BIRTHDAY
+               MOVE    PTINF-SEX           TO  ORCHC33-SEX
+               MOVE    WRK-PARA-SRYKA      TO  ORCHC33-SRYKA
+               MOVE    WRK-PARA-SRYYM      TO  ORCHC33-SRYYM
+               MOVE    WRK-PARA-SRYYM-END  TO  ORCHC33-SRYYM-END
+               MOVE    WRK-PARA-NYUGAIKBN  TO  ORCHC33-NYUGAIKBN
+      *        一括パラメタ
+               MOVE    ORCSPRTAREA         TO  ORCHC33-PRTAREA
+      *        入院
+               CALL    "ORCHCN33"          USING
+                                           SPA-AREA
+                                           ORCHC33AREA
       *
                IF      ORCHC33-RC          =   ZERO
                    ADD     ORCHC33-PAGE        TO  CNT-PAGE
@@ -418,18 +484,14 @@
                    PERFORM 500-ERR-HENSYU-SEC
                END-IF
       *
-               MOVE    "PTINF-KEY10"       TO  ORC-DBPATH
+               MOVE    PATH-TBL-PTINF-KEY15    TO  MCP-PATH
                PERFORM 900-PTINF-READ-SEC
            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "PTINF-KEY10"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    PATH-TBL-PTINF-KEY15    TO  MCP-PATH
+           PERFORM 990-DBCLOSE-SEC
       *
              .
-       200-MAIN-EXT.
+       2001-NYUIN-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -540,11 +602,7 @@
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PTINF-REC
                MOVE    ZERO            TO  FLG-PTINF
@@ -554,6 +612,47 @@
       *
            .
        900-PTINF-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    テーブル検索処理
+      *****************************************************************
+       910-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ読み込み処理
+      *****************************************************************
+       920-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       920-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢクロース処理
+      *****************************************************************
+       990-DBCLOSE-SEC           SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       990-DBCLOSE-EXT.
            EXIT.
       *
       *****************************************************************
