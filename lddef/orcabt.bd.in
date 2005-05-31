@@ -172,5 +172,6 @@ bind	"ORCBS01"	"OpenCOBOL";
 bind	"ORCBT110"	"OpenCOBOL";
 bind	"ORCBT120"	"OpenCOBOL";
 bind	"ORCBT130"	"OpenCOBOL";
+bind	"ORCRRECEMAIN"	"OpenCOBOL";
 
 #include "orcadb.inc"
