@@ -10812,6 +10812,7 @@
       *
            MOVE    ZERO                TO  WRK-RRK-HKNKBN
            CALL    "ORCSRECEARGMK"     USING
+                                       "0"
                                        SPA-GMN-PTID
                                        SPA-NAI-SRYYM
                                        SPA-NYUGAIKBN
