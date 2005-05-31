@@ -141,6 +141,7 @@
       *  01.06.08    NACL-藤原    05/05/20  レセプト特記事項編集情報によ
       *                                     る記載外公費の給付割合、特記
       *                                     事項の編集を追加
+      *  01.06.09    NACL-門脇    05/05/26  手術・麻酔の記載順変更対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -308,6 +309,7 @@
            03  SYSKAN-IDY          PIC 9(03).
            03  IDW1                PIC 9(04). 
            03  IDW2                PIC 9(04). 
+           03  IDW3                PIC 9(04). 
       *
       *    レセプト特記事項編集情報退避用領域
        01  TBL-SYS2006-T-ALL.
@@ -443,6 +445,8 @@
                                        PIC  X(01).
       *
            03  WRK-HKNNUM              PIC X(03).
+      *
+           03  WRK-SRYSYUKBN           PIC X(03).
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMDG         PIC X(22).
@@ -1217,6 +1221,7 @@
                                                FLG-HIKAKIN 
                MOVE    ZERO                TO  WRK-RECE05
                                                IDY                           
+               MOVE    SPACE               TO  WRK-SRYSYUKBN
       *         
                PERFORM 2002-TBLZAIW-TAIHI-SEC
       *
@@ -1458,6 +1463,8 @@
                            MOVE    1             TO  WRK-RECE05
                          END-IF
                        END-IF
+      *
+                       MOVE    RECE05-SRYSYUKBN  TO  WRK-SRYSYUKBN
       *                                                         
                        MOVE    WRK-ZAIWMAX (IDY) TO  IDZ
                        MOVE    RECE05-SRYACTINF (IDX)
@@ -2528,6 +2535,7 @@
                                                        FLG-HIKAKIN 
                        MOVE    ZERO                TO  WRK-RECE05
                                                        IDY
+                       MOVE    SPACE               TO  WRK-SRYSYUKBN
       *                                             
                        MOVE    SPACE               TO  RECE04-REC
                        INITIALIZE                      RECE04-REC
@@ -2589,6 +2597,7 @@
                                                    FLG-HIKAKIN 
                    MOVE    ZERO                TO  WRK-RECE05
                                                    IDY
+                   MOVE    SPACE               TO  WRK-SRYSYUKBN
       *                                             
                    MOVE    SPACE               TO  RECE04-REC
                    INITIALIZE                      RECE04-REC
@@ -3452,6 +3461,22 @@
                END-IF
       *
                MOVE    RECE04-SAFLG          TO  RECE06-SAFLG
+      *
+               IF      RECE04-SRYKBN    =    "50" OR "54"
+                   MOVE   WRK-SRYSYUKBN  TO  RECE06-SRYSYUKBN
+                   PERFORM   VARYING   IDW3   FROM    1   BY  1
+                              UNTIL    IDW3   >      31
+      *
+                       IF    RECE04-KAISU(1 IDW3)    NOT =   ZERO
+                          MOVE   IDW3    TO  RECE06-DAY
+                          MOVE    31     TO  IDW3
+                       END-IF
+      *
+                   END-PERFORM
+               ELSE
+                   MOVE   SPACE          TO  RECE06-SRYSYUKBN
+                   MOVE   ZERO           TO  RECE06-DAY
+               END-IF
       *
                WRITE   RECE06-REC
       *         

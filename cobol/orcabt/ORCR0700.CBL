@@ -34,6 +34,7 @@
       *  01.01.01    NACL-藤原    04/10/07  中止処理の追加
       *  01.01.02    NACL-門脇    05/01/06  自費レセプトの出力条件修正
       *  01.01.03    NACL-門脇    05/02/28  （サ）記載対応
+      *  01.01.04    NACL-門脇    05/05/26  手術・麻酔の記載順変更対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -308,6 +309,10 @@
                MOVE   RECE66-CDKBN-KOUBAN  TO  RECE661-CDKBN-KOUBAN
                MOVE   RECE66-KOUHYOJUNNUM  TO  RECE661-KOUHYOJUNNUM
            END-IF
+      *
+           MOVE   RECE66-SRYSYUKBN   TO   RECE661-SRYSYUKBN
+           MOVE   RECE66-DAY         TO   RECE661-DAY
+      *
            IF     RECE66-RECESYUBETU  =  8888
               IF     RECE66-ZAITEN  NOT =  ZERO
                   PERFORM     RECE661-WRITE-SEC

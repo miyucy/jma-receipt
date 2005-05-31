@@ -30,6 +30,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  中止処理追加
       *  01.00.01    NACL-藤原    04/10/13  中止処理の追加
+      *  01.00.02    NACL-門脇    05/05/26  手術・麻酔の記載順変更対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -305,6 +306,10 @@
                MOVE   RECE86-CDKBN-KOUBAN  TO  RECE87-CDKBN-KOUBAN
                MOVE   RECE86-KOUHYOJUNNUM  TO  RECE87-KOUHYOJUNNUM
            END-IF
+      *
+           MOVE   RECE86-SRYSYUKBN   TO   RECE87-SRYSYUKBN
+           MOVE   RECE86-DAY         TO   RECE87-DAY
+      *
            IF     RECE86-SRYKBN  NOT =  "95" AND "96"
                PERFORM     2101-RECE87-WRITE-SEC
            END-IF

@@ -51,6 +51,7 @@
       *  01.02.07    NACL-Æ£¸¶    05/04/18  Êñ³çÂÐ¾Ý¸¡ºº¤¬¤Þ¤È¤Þ¤é¤Ê¤¤
       *                                     ¾ì¹ç¤ÎÊÔ½¸¤Î½¤Àµ
       *  01.02.08    NACL-ÌçÏÆ    05/05/20  Æþ±¡ÅÀÅ©¼ïÊÌÄÉ²Ã¤ËÈ¼¤¦½¤Àµ
+      *  01.02.09    NACL-ÌçÏÆ    05/05/26  ¼ê½Ñ¡¦Ëã¿ì¤Îµ­ºÜ½çÊÑ¹¹ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -185,6 +186,8 @@
            03  IDX2                PIC 9(04).
            03  IDX3                PIC 9(04).
       *
+           03  IDW3                PIC 9(04).
+      *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
            03  WRK-PARA.
@@ -210,7 +213,6 @@
            03  WRK-NAME            PIC  X(200).
       *
            03  WRK-RECE85          PIC 9(01).
-           03  WRK-RECE85-TENTEKI  PIC 9(01).
       *
       *    ¿ô»úÈ¾³ÑÁ´³ÑÊÑ´¹ÍÑ     
            03  WRK-NUM                         PIC 9(01).
@@ -776,7 +778,6 @@
                                                FLG-COMMENT3
                                                FLG-HIKAKIN 
                MOVE    ZERO                TO  WRK-RECE85
-                                               WRK-RECE85-TENTEKI
                                                IDY                           
                MOVE    SPACE               TO  WRK-SRYSYUKBN
       *         
@@ -1028,11 +1029,8 @@
                            MOVE    1             TO  WRK-RECE85
                          END-IF
                        END-IF
-                       IF      WRK-RECE85-TENTEKI  =   ZERO
-                           MOVE    RECE85-SRYSYUKBN
-                                                 TO  WRK-SRYSYUKBN
-                           MOVE    1             TO  WRK-RECE85-TENTEKI
-                       END-IF
+      *
+                       MOVE    RECE85-SRYSYUKBN  TO  WRK-SRYSYUKBN
       *                                                         
                        MOVE    WRK-ZAIWMAX (IDY) TO  IDZ
                        MOVE    RECE85-SRYACTINF (IDX)
@@ -1803,7 +1801,6 @@
                                                        FLG-COMMENT3
                                                        FLG-HIKAKIN 
                        MOVE    ZERO                TO  WRK-RECE85
-                                                      WRK-RECE85-TENTEKI
                                                        IDY
                        MOVE    SPACE               TO  WRK-SRYSYUKBN
       *                                             
@@ -1866,7 +1863,6 @@
                                                    FLG-COMMENT3
                                                    FLG-HIKAKIN 
                    MOVE    ZERO                TO  WRK-RECE85
-                                                   WRK-RECE85-TENTEKI
                                                    IDY
                    MOVE    SPACE               TO  WRK-SRYSYUKBN
       *                                             
@@ -2475,6 +2471,22 @@
                                              TO  RECE86-KNSJISKBN
                ELSE
                        MOVE   ZERO           TO  RECE86-KNSJISKBN
+               END-IF
+      *
+               IF      RECE84-SRYKBN    =    "50" OR "54"
+                   MOVE   WRK-SRYSYUKBN  TO  RECE86-SRYSYUKBN
+                   PERFORM   VARYING   IDW3   FROM    1   BY  1
+                              UNTIL    IDW3   >      31
+      *
+                       IF    RECE84-KAISU(1 IDW3)    NOT =   ZERO
+                          MOVE   IDW3    TO  RECE86-DAY
+                          MOVE    31     TO  IDW3
+                       END-IF
+      *
+                   END-PERFORM
+               ELSE
+                   MOVE   SPACE          TO  RECE86-SRYSYUKBN
+                   MOVE   ZERO           TO  RECE86-DAY
                END-IF
       *
                WRITE   RECE86-REC

@@ -35,6 +35,7 @@
       *  01.00.04    NACL-門脇    03.03.06  初再診のコメント編集対応
       *  中止処理追加
       *  01.01.01    NACL-藤原    04/10/13  中止処理の追加
+      *  01.01.02    NACL-門脇    05/05/26  手術・麻酔の記載順変更対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -332,6 +333,10 @@
       ***          MOVE    RECE46-KOUHYOJUNNUM  TO  RECE47-KOUHYOJUNNUM
       ***      END-IF  
       ***  END-IF
+      *
+           MOVE   RECE46-SRYSYUKBN   TO   RECE47-SRYSYUKBN
+           MOVE   RECE46-DAY         TO   RECE47-DAY
+      *
       *****IF     RECE46-SRYKBN  NOT =  "11" AND "95" AND "96"
            IF     RECE46-SRYKBN  NOT =  "95" AND "96"
                PERFORM     2101-RECE47-WRITE-SEC

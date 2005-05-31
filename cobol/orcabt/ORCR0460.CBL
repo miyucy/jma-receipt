@@ -76,6 +76,7 @@
       *  01.02.06    NACL-Æ£¸¶    05/03/07  Êñ³çÂÐ¾Ý¸¡ºº¤Î¤Þ¤È¤á¤Î½¤Àµ
       *  01.02.07    NACL-Æ£¸¶    05/04/18  Êñ³çÂÐ¾Ý¸¡ºº¤¬¤Þ¤È¤Þ¤é¤Ê¤¤
       *                                     ¾ì¹ç¤ÎÊÔ½¸¤Î½¤Àµ
+      *  01.02.08    NACL-ÌçÏÆ    05/05/26  ¼ê½Ñ¡¦Ëã¿ì¤Îµ­ºÜ½çÊÑ¹¹ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -221,6 +222,8 @@
            03  WRK-YKZ-INDEX       PIC 9(04).
            03  WRK-KIZ-INDEX       PIC 9(04).
       *
+           03  IDW3                PIC 9(04).
+      *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
            03  WRK-PARA.
@@ -317,6 +320,8 @@
            03  WRK-WIDX2                       PIC 9(03).
       *     
            03  WRK-Z9                          PIC ZZZ9.
+      *
+           03  WRK-SRYSYUKBN                   PIC X(03).
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMDG         PIC X(22).
@@ -823,6 +828,7 @@
                                                FLG-HIKAKIN 
                MOVE    ZERO                TO  WRK-RECE45
                                                IDY                           
+               MOVE    SPACE               TO  WRK-SRYSYUKBN
       *
                PERFORM 2002-TBLZAIW-TAIHI-SEC
       *
@@ -1092,6 +1098,8 @@
                            MOVE    1             TO  WRK-RECE45
                          END-IF
                        END-IF
+      *
+                       MOVE    RECE45-SRYSYUKBN  TO  WRK-SRYSYUKBN
       *                                                         
                        MOVE    WRK-ZAIWMAX (IDY) TO  IDZ
                        MOVE    RECE45-SRYACTINF (IDX)
@@ -1999,6 +2007,7 @@
                                                        FLG-HIKAKIN 
                        MOVE    ZERO                TO  WRK-RECE45
                                                        IDY
+                       MOVE    SPACE               TO  WRK-SRYSYUKBN
       *                                             
                        MOVE    SPACE               TO  RECE44-REC
                        INITIALIZE                      RECE44-REC
@@ -2059,6 +2068,7 @@
                                                    FLG-HIKAKIN 
                    MOVE    ZERO                TO  WRK-RECE45
                                                    IDY
+                   MOVE    SPACE               TO  WRK-SRYSYUKBN
       *                                             
                    MOVE    SPACE               TO  RECE44-REC
                    INITIALIZE                      RECE44-REC
@@ -2567,6 +2577,22 @@
                                              TO  RECE46-KNSJISKBN
                ELSE
                        MOVE   ZERO           TO  RECE46-KNSJISKBN
+               END-IF
+      *
+               IF      RECE44-SRYKBN    =    "50" OR "54"
+                   MOVE   WRK-SRYSYUKBN  TO  RECE46-SRYSYUKBN
+                   PERFORM   VARYING   IDW3   FROM    1   BY  1
+                              UNTIL    IDW3   >      31
+      *
+                       IF    RECE44-KAISU(1 IDW3)    NOT =   ZERO
+                          MOVE   IDW3    TO  RECE46-DAY
+                          MOVE    31     TO  IDW3
+                       END-IF
+      *
+                   END-PERFORM
+               ELSE
+                   MOVE   SPACE          TO  RECE46-SRYSYUKBN
+                   MOVE   ZERO           TO  RECE46-DAY
                END-IF
       *
                WRITE   RECE46-REC

@@ -22,6 +22,7 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-門脇    03.03.03  剤番号桁修正
+      *  01.00.02    NACL-門脇    05.05.25  診療種別区分、診療日の追加
       ************************************************************
       *01  RECE46-REC.
            03  RECE46-KEY.
@@ -69,3 +70,7 @@
            03  RECE46-CDKBN-KBNNUM-EDA    PIC  9(02).
            03  RECE46-CDKBN-KOUBAN        PIC  9(02).
            03  RECE46-KOUHYOJUNNUM        PIC  9(09).
+      *診療種別区分
+           03  RECE46-SRYSYUKBN           PIC  X(03).
+      *診療日
+           03  RECE46-DAY                 PIC  9(02).

@@ -77,6 +77,7 @@
       *  01.02.09    NACL-藤原    05/05/25  レセプト特記事項編集情報によ
       *                                     る記載外公費の給付割合、特記
       *                                     事項の編集を追加
+      *  01.02.10    NACL-門脇    05/05/26  手術・麻酔の記載順変更対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -234,6 +235,7 @@
            03  SYSKAN-IDY          PIC 9(03).
            03  IDW1                PIC 9(04). 
            03  IDW2                PIC 9(04). 
+           03  IDW3                PIC 9(04).
       *
       *    レセプト特記事項編集情報退避用領域
        01  TBL-SYS2006-T-ALL.
@@ -280,7 +282,6 @@
            03  WRK-NAME            PIC  X(200).
       *
            03  WRK-RECE65          PIC 9(01).
-           03  WRK-RECE65-TENTEKI  PIC 9(01).
       *
       *    数字半角全角変換用     
            03  WRK-NUM                         PIC 9(01).
@@ -1036,7 +1037,6 @@
                                                FLG-COMMENT3
                                                FLG-HIKAKIN 
                MOVE    ZERO                TO  WRK-RECE65
-                                               WRK-RECE65-TENTEKI
                                                IDY                           
                MOVE    SPACE               TO  WRK-SRYSYUKBN
       *         
@@ -1272,11 +1272,8 @@
                            MOVE    1             TO  WRK-RECE65
                          END-IF
                        END-IF
-                       IF      WRK-RECE65-TENTEKI  =   ZERO
-                           MOVE    RECE65-SRYSYUKBN
-                                                 TO  WRK-SRYSYUKBN
-                           MOVE    1             TO  WRK-RECE65-TENTEKI
-                       END-IF
+      *
+                       MOVE    RECE65-SRYSYUKBN  TO  WRK-SRYSYUKBN
       *                                                         
                        MOVE    WRK-ZAIWMAX (IDY) TO  IDZ
                        MOVE    RECE65-SRYACTINF (IDX)
@@ -2076,7 +2073,6 @@
                                                        FLG-COMMENT3
                                                        FLG-HIKAKIN 
                        MOVE    ZERO                TO  WRK-RECE65
-                                                      WRK-RECE65-TENTEKI
                                                        IDY
                        MOVE    SPACE               TO  WRK-SRYSYUKBN
       *                                             
@@ -2139,7 +2135,6 @@
                                                    FLG-COMMENT3
                                                    FLG-HIKAKIN 
                    MOVE    ZERO                TO  WRK-RECE65
-                                                   WRK-RECE65-TENTEKI
                                                    IDY
                    MOVE    SPACE               TO  WRK-SRYSYUKBN
       *                                             
@@ -3098,6 +3093,22 @@
                END-IF
       *
                MOVE    RECE64-SAFLG          TO  RECE66-SAFLG
+      *
+               IF      RECE64-SRYKBN    =    "50" OR "54"
+                   MOVE   WRK-SRYSYUKBN  TO  RECE66-SRYSYUKBN
+                   PERFORM   VARYING   IDW3   FROM    1   BY  1
+                              UNTIL    IDW3   >      31
+      *
+                       IF    RECE64-KAISU(1 IDW3)    NOT =   ZERO
+                          MOVE   IDW3    TO  RECE66-DAY
+                          MOVE    31     TO  IDW3
+                       END-IF
+      *
+                   END-PERFORM
+               ELSE
+                   MOVE   SPACE          TO  RECE66-SRYSYUKBN
+                   MOVE   ZERO           TO  RECE66-DAY
+               END-IF
       *
                WRITE   RECE66-REC
       *         
