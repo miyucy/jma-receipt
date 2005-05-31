@@ -367,6 +367,7 @@
       *    Ì¤ÆþÎÏÈ½Äê
            IF      SPA-GMN-HKNJANUM    =   SPACE
                MOVE    SPACE               TO  SPA-HKNJA-AREA
+               INITIALIZE                      SPA-HKNJA-AREA
                GO      TO      100-HKNJANUM-CHK-EXT
            END-IF
       *
