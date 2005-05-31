@@ -466,22 +466,24 @@
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
       *
+           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *    ＤＢオープン処理
-           PERFORM 100-DBOPEN-SEC
+               PERFORM 100-DBOPEN-SEC
       *
       *    ステップ管理開始処理
-           MOVE    "STS"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
-           MOVE    "ORCR0020"      TO  JOB-PGID
-           MOVE    "保険情報編集"  TO  JOB-SHELLMSG
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA  
-                                   JOBKANRI-REC
+               MOVE    "STS"           TO  SJOBKANRI-MODE
+               INITIALIZE                  JOBKANRI-REC
+               MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+               MOVE    WRK-PARA-SHELLID
+                                       TO  JOB-SHELLID
+               MOVE    "ORCR0020"      TO  JOB-PGID
+               MOVE    "保険情報編集"  TO  JOB-SHELLMSG
+               CALL    "ORCSJOB"       USING
+                                       ORCSJOBKANRIAREA  
+                                       JOBKANRI-REC
       *    処理中止設定処理
-           PERFORM 500-CANCEL-HENSYU-SEC
+               PERFORM 500-CANCEL-HENSYU-SEC
+           END-IF
       *
           .
        100-INIT-EXT.
@@ -507,7 +509,12 @@
       *    請求書処理
                    MOVE    "RECE01X"           TO  RECE01PARA-FILE-ID
                    MOVE    "RECE02X"           TO  RECE02PARA-FILE-ID
-                   MOVE    WRK-CONS-TERMID     TO  RECE02PARA-TERMID
+      *-->         MOVE    WRK-CONS-TERMID     TO  RECE02PARA-TERMID
+                   IF      WRK-PARA-SHELLID    =   "RECEPTX"
+                     MOVE    WRK-PARA-TERMID   TO  RECE02PARA-TERMID
+                   ELSE
+                     MOVE    WRK-CONS-TERMID   TO  RECE02PARA-TERMID
+                   END-IF
                END-IF
                MOVE    WRK-PARA-TERMID     TO  RECE01PARA-TERMID
                MOVE    WRK-PARA-TERMID     TO  RECE09PARA-TERMID
@@ -2427,6 +2434,7 @@
                WRITE   RECEERR-REC
                CLOSE   RECEERR-FILE
       *         
+             IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
@@ -2438,6 +2446,7 @@
                CALL    "ORCSJOB"       USING
                                        ORCSJOBKANRIAREA  
                                        JOBKANRI-REC
+             END-IF
            END-IF
       *                             
            MOVE    1                   TO  FLG-END
@@ -2507,17 +2516,19 @@
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
       *
+           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *    ステップ管理終了処理
-           MOVE    "STE"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA  
-                                   JOBKANRI-REC
+               MOVE    "STE"           TO  SJOBKANRI-MODE
+               INITIALIZE                  JOBKANRI-REC
+               MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+               MOVE    WRK-PARA-SHELLID
+                                       TO  JOB-SHELLID
+               CALL    "ORCSJOB"       USING
+                                       ORCSJOBKANRIAREA  
+                                       JOBKANRI-REC
       *
-           PERFORM 900-DBDISCONNECT-SEC
+               PERFORM 900-DBDISCONNECT-SEC
+           END-IF
       *
            DISPLAY "RECE01  CNT-IN  :" CNT-IN  (1) 
            DISPLAY "RECE02  CNT-OUT :" CNT-OUT (1) 
