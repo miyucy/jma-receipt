@@ -477,6 +477,7 @@
            CALL    "ORCR0030"          USING
 	                               WRK-PARA2
       *
+           PERFORM 900-DBDISCONNECT-SEC
            CALL "timeofday" USING LNK-TIMEOFDAY.
            DISPLAY "orcr0035 START"
                    " "  LNK-TIMEOFDAY(1:20).
@@ -508,7 +509,7 @@
            CALL    "ORCR0055"          USING
 	                               WRK-PARA2
       *
-           PERFORM 900-DBDISCONNECT-SEC
+      *    PERFORM 900-DBDISCONNECT-SEC
       *
            CALL "timeofday" USING LNK-TIMEOFDAY.
            DISPLAY "orcr0090 START"

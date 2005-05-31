@@ -94,6 +94,7 @@
       *                                     るレセプト編集
       *  01.02.12    NACL-門脇    05/04/05  レセプト特記事項"12器治"対応
       *                                     （平成１７年４月以降）
+      *  02.06.00    NACL-竹田    05/05/31  プレビュー処理追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -935,7 +936,12 @@
            MOVE    WRK-PARA-TERMID     TO  RECE01PARA-TERMID
       *
            MOVE    "RECE02X"           TO  RECE02XPARA-FILE-ID
-           MOVE    WRK-CONS-TERMID     TO  RECE02XPARA-TERMID
+      *->  MOVE    WRK-CONS-TERMID     TO  RECE02XPARA-TERMID
+           IF      WRK-PARA-SHELLID    =   "RECEPTX"
+               MOVE    WRK-PARA-TERMID TO  RECE02XPARA-TERMID
+           ELSE
+               MOVE    WRK-CONS-TERMID TO  RECE02XPARA-TERMID
+           END-IF
       *
            MOVE    "RECE031"           TO  RECE031PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE031PARA-TERMID
@@ -5031,6 +5037,7 @@
       *
       *    レセプト帳票管理ファイル出力
            IF      FLG-ERR              =   ZERO
+           AND     WRK-PARA-SHELLID NOT =  "RECEPTX"
                PERFORM 3903-RECE07-WRITE-SEC
            END-IF
       *
@@ -5055,7 +5062,12 @@
       *
            INITIALIZE                  RECE08-REC
            MOVE    "HC06"              TO  RECE08-PRTID
-           MOVE    WRK-PARA-SRYYM      TO  RECE08-RECEYM
+      *->  MOVE    WRK-PARA-SRYYM      TO  RECE08-RECEYM
+           IF      WRK-PARA-SHELLID    =   "RECEPTX"
+                   MOVE    ALL "9"         TO  RECE08-RECEYM
+           ELSE
+                   MOVE    WRK-PARA-SRYYM  TO  RECE08-RECEYM
+           END-IF
            MOVE    WRK-PARA-CREYMD     TO  RECE08-CREYMD
            MOVE    WRK-PARA-CREHMS (1:6)
                                        TO  RECE08-CREHMS
