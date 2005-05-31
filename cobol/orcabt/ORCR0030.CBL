@@ -955,22 +955,24 @@
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
       *
+           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *    ＤＢオープン処理
-           PERFORM 100-DBOPEN-SEC
+               PERFORM 100-DBOPEN-SEC
       *
       *    ステップ管理開始処理
-           MOVE    "STS"               TO  SJOBKANRI-MODE
-           INITIALIZE                      JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
-           MOVE    "ORCR0030"          TO  JOB-PGID
-           MOVE    "診療区分別点数集計"
-                                       TO  JOB-SHELLMSG
-           CALL    "ORCSJOB"           USING
-                                       ORCSJOBKANRIAREA  
-                                       JOBKANRI-REC
+               MOVE    "STS"               TO  SJOBKANRI-MODE
+               INITIALIZE                      JOBKANRI-REC
+               MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
+               MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
+               MOVE    "ORCR0030"          TO  JOB-PGID
+               MOVE    "診療区分別点数集計"
+                                           TO  JOB-SHELLMSG
+               CALL    "ORCSJOB"           USING
+                                           ORCSJOBKANRIAREA  
+                                           JOBKANRI-REC
       *    処理中止設定処理
-           PERFORM 500-CANCEL-HENSYU-SEC
+               PERFORM 500-CANCEL-HENSYU-SEC
+           END-IF
       *
            IF   WRK-PARA-SRYYM    NOT =  ZERO
       *       医療機関情報
@@ -1133,7 +1135,12 @@
                    MOVE    "RECE02X"           TO  RECE01PARA-FILE-ID
                    MOVE    WRK-CONS-TERMID     TO  RECE01PARA-TERMID
                    MOVE    "RECE090"           TO  RECE09PARA-FILE-ID
-                   MOVE    WRK-PARA-TERMID     TO  RECE09PARA-TERMID
+      *-->         MOVE    WRK-PARA-TERMID     TO  RECE09PARA-TERMID
+                   IF      WRK-PARA-SHELLID    =   "RECEPTX"
+                       MOVE    WRK-PARA-TERMID     TO  RECE09PARA-TERMID
+                   ELSE
+                       MOVE    WRK-CONS-TERMID     TO  RECE01PARA-TERMID
+                   END-IF
                END-IF
       *
                PERFORM 200-HENSYU-SEC
@@ -6704,6 +6711,7 @@
                WRITE   RECEERR-REC
                CLOSE   RECEERR-FILE
       *         
+             IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
@@ -6715,6 +6723,7 @@
                CALL    "ORCSJOB"       USING
                                        ORCSJOBKANRIAREA  
                                        JOBKANRI-REC
+             END-IF
            END-IF
       *                             
            MOVE    1                   TO  FLG-END
@@ -6777,17 +6786,19 @@
       *****************************************************************
        300-TERM-SEC                SECTION.
       *
+           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *    ステップ管理終了処理
-           MOVE    "STE"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA  
-                                   JOBKANRI-REC
+               MOVE    "STE"           TO  SJOBKANRI-MODE
+               INITIALIZE                  JOBKANRI-REC
+               MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+               MOVE    WRK-PARA-SHELLID
+                                       TO  JOB-SHELLID
+               CALL    "ORCSJOB"       USING
+                                       ORCSJOBKANRIAREA  
+                                       JOBKANRI-REC
       *
-           PERFORM 900-DBDISCONNECT-SEC
+               PERFORM 900-DBDISCONNECT-SEC
+           END-IF
       *
            DISPLAY "RECE02  CNT-IN  :" CNT-IN  (1) 
            DISPLAY "RECE04  CNT-OUT :" CNT-OUT1  
