@@ -1952,6 +1952,9 @@
                                                LNK-DAY7-AREA
            MOVE    LNK-DAY7-KOYOMI     TO  WRK-EDYMD
       *
+      *    ´µ¼ÔÇ¯Îð·×»»
+           PERFORM 500-AGECHK-SEC
+      *
       *
            IF      FLG-END             =   ZERO
       *        ¿ÇÎÅ²ñ·×ÆÉ¤ß¹þ¤ß
