@@ -470,6 +470,8 @@
                        09 SRT-SRYACCT-YKZHKTKBN    PIC 9(01).
                        09 SRT-SRYACCT-YKZINGAIKBN  PIC 9(01).
                        09 SRT-SRYACCT-KNSJISKBN    PIC 9(01).
+                       09 SRT-SRYACCT-OPE-SRYSYUKBN PIC  X(03).
+                       09 SRT-SRYACCT-OPE-DAY       PIC  9(02).
                        09 SRT-SRYACCT-CDKBN-SYO-G.
                            11 SRT-SRYACCT-CDKBN-SYO
                                                    PIC 9(01).
@@ -2707,6 +2709,21 @@
       *
                        IF    ( ACCT-SRYKBN =   "60" )
                            PERFORM 200111-KNSJISKBN-HEN-SEC
+                       END-IF
+      *
+                       IF    ( ACCT-SRYKBN =   "50" OR "54" )
+                           MOVE    WRK-SRYSYUKBN
+                                       TO  SRT-SRYACCT-OPE-SRYSYUKBN
+                                                              (SRT-IDX1)
+                           PERFORM VARYING IDX0    FROM    1   BY  1
+                                   UNTIL ( IDX0    >   31 )
+                                    OR   ( SRT-SRYACCT-OPE-DAY(SRT-IDX1)
+                                               NOT =   ZERO )
+                               IF    ( ACCT-DAY (1 IDX0)   >   ZERO )
+                                   MOVE    IDX0
+                                       TO  SRT-SRYACCT-OPE-DAY(SRT-IDX1)
+                               END-IF
+                           END-PERFORM
                        END-IF
       *
                        MOVE   TNS-HOUKNSKBN
