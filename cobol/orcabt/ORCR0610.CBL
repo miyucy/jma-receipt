@@ -54,6 +54,7 @@
       *                                     奉庞面に瘦副荚は恃わらずに
       *                                     瘦副が恃构になった眷圭は１绥
       *                                     にする
+      *  02.03.05    NACL-嚏掀    05/06/01  墓袋光驰闻蛙レセ淡很冉年纳裁
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1029,6 +1030,28 @@
                    END-IF
                ELSE
                    MOVE    1                      TO  IDX1
+                   IF   COMB-KOHHKNNUM (IDX)  =  "972"
+      *                墓袋光驰闻蛙レセ淡很冉年
+                       MOVE    ZERO        TO  FLG-KOHRECEDSP
+                       INITIALIZE          ORCSFTNJGNCHKAREA
+                       MOVE    COMB-HOSPID TO  LNK-FTNJGNCHK-HOSPID
+                       MOVE    COMB-PTID   TO  LNK-FTNJGNCHK-PTID
+                       MOVE    "1"         TO  LNK-FTNJGNCHK-NYUGAIKBN
+      *                壳闻钳奉
+                       MOVE    WRK-SRYYMD(1:6) TO  LNK-FTNJGNCHK-SRYYM
+      *                给锐戎规
+                       MOVE    COMB-KOHHKNNUM (IDX)
+                                               TO  LNK-FTNJGNCHK-KOHNUM
+      *                给锐ＩＤ
+                       MOVE    COMB-KOHID (IDX)
+                                               TO  LNK-FTNJGNCHK-KOHID
+      *
+                       CALL    "ORCSFTNJGNCHK"     USING
+                                                   ORCSFTNJGNCHKAREA
+                       IF     LNK-FTNJGNCHK-RC   =   1
+                           MOVE       1        TO    FLG-KOHRECEDSP
+                       END-IF
+                   END-IF
                END-IF       
       *
                IF     IDX1                =   1
@@ -1368,6 +1391,28 @@
                    END-IF
                ELSE
                    MOVE    1                      TO  IDX1
+                   IF   COMB-KOHHKNNUM (IDX)  =  "972"
+      *                墓袋光驰闻蛙レセ淡很冉年
+                       MOVE    ZERO        TO  FLG-KOHRECEDSP
+                       INITIALIZE          ORCSFTNJGNCHKAREA
+                       MOVE    COMB-HOSPID TO  LNK-FTNJGNCHK-HOSPID
+                       MOVE    COMB-PTID   TO  LNK-FTNJGNCHK-PTID
+                       MOVE    "1"         TO  LNK-FTNJGNCHK-NYUGAIKBN
+      *                壳闻钳奉
+                       MOVE    WRK-SRYYMD(1:6) TO  LNK-FTNJGNCHK-SRYYM
+      *                给锐戎规
+                       MOVE    COMB-KOHHKNNUM (IDX)
+                                               TO  LNK-FTNJGNCHK-KOHNUM
+      *                给锐ＩＤ
+                       MOVE    COMB-KOHID (IDX)
+                                               TO  LNK-FTNJGNCHK-KOHID
+      *
+                       CALL    "ORCSFTNJGNCHK"     USING
+                                                   ORCSFTNJGNCHKAREA
+                       IF     LNK-FTNJGNCHK-RC   =   1
+                           MOVE       1        TO    FLG-KOHRECEDSP
+                       END-IF
+                   END-IF
                END-IF       
       *
                IF     IDX1                =   1

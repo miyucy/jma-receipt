@@ -96,6 +96,7 @@
       *                                     保険が変更になった場合は１枚
       *                                     にする
       *  02.06.00    NACL-竹田    05/05/30  realtime preview 処理追加
+      *  02.06.01    NACL-門脇    05/06/01  長期高額療養レセ記載判定追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1056,6 +1057,28 @@
                    END-IF
                ELSE
                    MOVE    1                      TO  IDX1
+                   IF   COMB-KOHHKNNUM (IDX)  =  "972"
+      *                長期高額療養レセ記載判定
+                       MOVE    ZERO        TO  FLG-KOHRECEDSP
+                       INITIALIZE          ORCSFTNJGNCHKAREA
+                       MOVE    COMB-HOSPID TO  LNK-FTNJGNCHK-HOSPID
+                       MOVE    COMB-PTID   TO  LNK-FTNJGNCHK-PTID
+                       MOVE    "2"         TO  LNK-FTNJGNCHK-NYUGAIKBN
+      *                診療年月
+                       MOVE    WRK-SRYYMD(1:6) TO  LNK-FTNJGNCHK-SRYYM
+      *                公費番号
+                       MOVE    COMB-KOHHKNNUM (IDX)
+                                               TO  LNK-FTNJGNCHK-KOHNUM
+      *                公費ＩＤ
+                       MOVE    COMB-KOHID (IDX)
+                                               TO  LNK-FTNJGNCHK-KOHID
+      *
+                       CALL    "ORCSFTNJGNCHK"     USING
+                                                   ORCSFTNJGNCHKAREA
+                       IF     LNK-FTNJGNCHK-RC   =   1
+                           MOVE       1        TO    FLG-KOHRECEDSP
+                       END-IF
+                   END-IF
                END-IF
       *
                IF     IDX1                =   1

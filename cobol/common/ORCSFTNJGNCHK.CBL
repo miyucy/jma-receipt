@@ -28,6 +28,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-門脇    04/11/15  公費月上限額取得修正
       *  01.00.02    NACL-門脇    04/11/30  入院対応
+      *  01.00.03    NACL-門脇    05/06/01  長期高額療養レセ記載判定追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -189,11 +190,14 @@
       *    保険番号マスタからレセプト表示区分と負担上限額の取得
            PERFORM    210-HKNNUM-GET-SEC
       *
-           IF    HKN-RECEJGNDSPKBN    =   "1"
+           IF   FLG-HKNNUM     =    ZERO
+             IF    HKN-RECEJGNDSPKBN    =   "1"
+             OR    HKN-HKNNUM           =   "972"
       *        患者公費負担マスタから負担上限額の取得
                PERFORM    210-PTKOHFTN-GET-SEC
       *        保険の上限額と収納の負担額を比較判定
                PERFORM    210-HANTEI-SEC
+             END-IF
            END-IF
            .
        200-MAIN-EXT.
