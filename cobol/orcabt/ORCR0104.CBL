@@ -1295,17 +1295,19 @@
       *
       *    パラメタＤＢ読み込み
            INITIALIZE                      BTPARA-REC
-           MOVE    WRK-PARA-SHELLID    TO  BTPARA-SHELLID
-           MOVE    WRK-PARA-JOBID      TO  BTPARA-JOBID
-           MOVE    PATH-TBL-BTPARA-KEY5
-                                       TO  MCP-PATH
-           PERFORM 900-BTPARA-READ-SEC
-           IF      FLG-BTPARA          =   1
-               MOVE
+           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+               MOVE    WRK-PARA-SHELLID    TO  BTPARA-SHELLID
+               MOVE    WRK-PARA-JOBID      TO  BTPARA-JOBID
+               MOVE    PATH-TBL-BTPARA-KEY5
+                                           TO  MCP-PATH
+               PERFORM 900-BTPARA-READ-SEC
+               IF      FLG-BTPARA          =   1
+                   MOVE
                    "パラメタ情報が取得できませんでした。"
                                            TO  WRK-RECEERR
-               PERFORM 500-ERR-HENSYU-SEC
-               MOVE    2                    TO  SPA-STS
+                   PERFORM 500-ERR-HENSYU-SEC
+                   MOVE    2               TO  SPA-STS
+               END-IF
            END-IF
            .
        120-HOSPINF-GET-EXT.
