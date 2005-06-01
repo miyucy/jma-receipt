@@ -776,7 +776,7 @@
                INITIALIZE                      STS-AREA-DAY
                INITIALIZE                      LNK-DAY7-AREA
                MOVE    "71"                TO  LNK-DAY7-IRAI
-               MOVE    WRK-RYO-STYMD       TO  LNK-DAY7-YM
+               MOVE    WRK-RYO-STYMD(1:6)  TO  LNK-DAY7-YM
                CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                    LNK-DAY7-AREA
                IF      STS-DAY-RC1         =   ZERO
