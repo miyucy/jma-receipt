@@ -63,3 +63,12 @@ path	key3 	{
 	};
 };
 
+path	all 	{
+	DBSELECT	{
+		DECLARE view_bd003_all_csr CURSOR FOR
+		SELECT *
+		FROM view_bd003
+		;
+	};
+};
+

@@ -726,3 +726,13 @@ path	delprv 	{
  		;
 	};
 };
+
+path	all3 	{
+	DBSELECT	{
+		DECLARE tbl_jyurrk_prv_all3_csr CURSOR FOR
+		SELECT *
+		FROM tbl_jyurrk_prv
+ 		;
+	};
+};
+

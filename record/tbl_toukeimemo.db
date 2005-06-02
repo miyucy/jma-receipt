@@ -54,3 +54,13 @@ path	del1		{
 		;
 	};
 };
+
+path	all		{ 	
+	DBSELECT	{
+		DECLARE tbl_toukeimemo_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_toukeimemo
+		;
+	};
+};
+

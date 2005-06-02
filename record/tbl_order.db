@@ -159,3 +159,12 @@ path	key7 	{
 		;
 	};
 };
+
+
+path	all 	{
+	DBSELECT	{
+		DECLARE tbl_order_all_csr CURSOR FOR
+		SELECT *
+		;
+	};
+};

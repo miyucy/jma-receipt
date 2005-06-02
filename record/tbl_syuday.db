@@ -739,3 +739,12 @@ path	del5 	{
 	};
 };
 
+path	all 	{
+	DBSELECT	{
+		DECLARE tbl_syuday_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syuday
+		;
+	};
+};
+
