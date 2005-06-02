@@ -680,14 +680,14 @@
       *****************************************************************
        10010-SRYKBN-CHK-SEC             SECTION.
       *
-           EVALUATE    WRK-GMN-INPUTCD(IDX-Z)(2:3)
-               WHEN    "610"
-                   IF      SPA-NYUGAIKBN   =   "1"
-                       MOVE    "9028"          TO  WRK-ERRCD
-                       MOVE    "1"             TO  WRK-COM-CUR
-                                                             (IDX-Z)
-                   END-IF
-           END-EVALUATE
+      *?   EVALUATE    WRK-GMN-INPUTCD(IDX-Z)(2:3)
+      *        WHEN    "610"
+      *            IF      SPA-NYUGAIKBN   =   "1"
+      *                MOVE    "9028"          TO  WRK-ERRCD
+      *                MOVE    "1"             TO  WRK-COM-CUR
+      *                                                      (IDX-Z)
+      *            END-IF
+      *?   END-EVALUATE
            .
        10010-SRYKBN-CHK-EXT.
            EXIT.
@@ -1365,9 +1365,12 @@
        100114-JYUFUKUCHEK-SEC                  SECTION.
       *
       *    入院か包括外の時
-           IF     (SPA-NYUGAIKBN       =   "1"   )  OR
+      *?   IF     (SPA-NYUGAIKBN       =   "1"   )  OR
+      *           (WRK-COM-SRYSYUKBN (IDX-Z)
+      *?                               =   "610" )
+           IF     (SPA-NYUGAIKBN       =   "1"   )  AND
                   (WRK-COM-SRYSYUKBN (IDX-Z)
-                                       =   "610" )
+                                   NOT =   "610" )
                PERFORM VARYING     IDX1    FROM    1   BY  1
                        UNTIL       IDX1    >=  IDX-Z
                    IF      WRK-COM-INPUTCD(IDX1)
@@ -2609,12 +2612,18 @@
                                  (WRK-GMN-INPUTCD (IDK) =   SPACE ))  OR
                                 ( WRK-COM-INPUTCD (IDK)(1:1)
                                                     NOT =   "1"    )
-                            MOVE    1               TO  FLG-KSN-END
-                            IF      IDX-T           =   ZERO
-                                MOVE    IDK             TO  IDX-T
-                            ELSE
-                                ADD     1               TO  IDX-T
-                            END-IF
+      *できない******       コメントの時は対象外
+      *                     IF     (WRK-COM-INPUTCD (IDK)(1:1) =  "8")
+      *                        OR  (WRK-COM-INPUTCD (IDK)(1:3) =  "008")
+      *                         CONTINUE
+      **************        ELSE
+                                MOVE    1               TO  FLG-KSN-END
+                                IF      IDX-T           =   ZERO
+                                    MOVE    IDK             TO  IDX-T
+                                ELSE
+                                    ADD     1               TO  IDX-T
+                                END-IF
+      ****************      END-IF
                          END-IF
                        END-PERFORM
       *            コメント（各加算の次）
