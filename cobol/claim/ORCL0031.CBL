@@ -41,6 +41,8 @@
       *  01.00.11    NACL-多々納  04/11/09  入院追加
       *  01.00.12    NACL-藤原    05/03/10  病名コードの取り込み
       *                                     未コード化傷病名コードの場合
+      *  01.00.13    NACL-藤原    05/05/25  疑いフラグ、主病名フラグによ
+      *                                     る病名の更新
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -117,6 +119,13 @@
            03  FLG-HKN-CHK         PIC 9(01). 
       *
            03  FLG-NYUINIDOU       PIC 9(01). 
+      *
+      *    キー領域
+       01  KEY-AREA                    VALUE   LOW-VALUE.
+           03  KEY-NEW.
+               05  KEY-N-SRYKA     PIC X(02).
+           03  KEY-OLD.
+               05  KEY-O-SRYKA     PIC X(02).
       *
       *    添字領域
        01  IDX-AREA.
@@ -196,6 +205,9 @@
                05  WRK-TENKIMM         PIC 9(02).
                05  WRK-TENKIDD         PIC 9(02).
            03  WRK-TENKI               PIC X(01).
+           03  WRK-SYUBYOFLG           PIC X(01).
+           03  WRK-UTAGAIFLG           PIC X(01).
+           03  WRK-UTAGAIFLG-KETASU    PIC 9(02).
       *
            03  WRK-BYOMEI-TBL. 
                05  WRK-BYOMEI-G    OCCURS  7.
@@ -235,7 +247,10 @@
                05  WRK-SYSMM       PIC 9(02).
                05  WRK-SYSDD       PIC 9(02).
       *                             
-           03  WRK-DBPATH          PIC X(64).
+           03  WRK-DBPATH.
+               05  FILLER              PIC S9(9)   BINARY.
+               05  FILLER              PIC S9(9)   BINARY.
+               05  FILLER              PIC S9(9)   BINARY.
       *
       *    コメント入力値編集
            03  WRK-INPUTCHI-G.
@@ -270,6 +285,16 @@
        01  WRK-PTBYOMEI-REC.
            COPY    "CPPTBYOMEI.INC"  REPLACING  //PTBYO//
                                      BY         //WRK-PTBYO//.
+      *
+      *    診療科別更新対象病名情報
+       01  WRK-PTBYOMEI-DOUKI-REC.
+           COPY    "CPPTBYOMEI.INC"  REPLACING  //PTBYO//
+                                     BY         //WRK-PTBYO-DOUKI//.
+      *
+      *    病名情報退避
+       01  WRK-PTBYOMEI-TAIHI-REC.
+           COPY    "CPPTBYOMEI.INC"  REPLACING  //PTBYO//
+                                     BY         //WRK-PTBYO-TAIHI//.
       *
       *    対象外レセ電コード
            COPY    "CPJIDO.INC".
@@ -306,6 +331,8 @@
       *    急性
            03  WRK-CONS-KYUSEI-MOJISU
                                    PIC 9(02)   VALUE   4. 
+      *
+           COPY    "ORCA-DBPATH".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -657,6 +684,7 @@
            END-PERFORM
       *
            DISPLAY "TBL-MAX = " TBL-MAX
+      *      
            IF      FLG-END             =   ZERO
                IF      TBL-MAX         >   ZERO
                    PERFORM 2004-WKSRYACT-OUT-SEC
@@ -2251,16 +2279,7 @@
                IF    ( FLG-BYOMEI-CHK      =   ZERO  )
                AND   ( WRK-RECECD (2)      =   SPACE ) 
                    MOVE    4                   TO  FLG-BYOMEI-CHK
-                   STRING  "＊"                DELIMITED   BY  SIZE
-                           WRK-TBYOMEI (1)     DELIMITED   BY  SPACE   
-                           WRK-TBYOMEI (2)     DELIMITED   BY  SPACE   
-                           WRK-TBYOMEI (3)     DELIMITED   BY  SPACE   
-                           WRK-TBYOMEI (4)     DELIMITED   BY  SPACE   
-                           WRK-TBYOMEI (5)     DELIMITED   BY  SPACE   
-                           WRK-TBYOMEI (6)     DELIMITED   BY  SPACE
-                                               INTO    WRK-BYOMEI
-                   END-STRING
-               END-IF
+                END-IF
            END-IF 
       *
       *    単独使用禁止の病名チェック
@@ -2273,33 +2292,42 @@
                        MOVE    1                   TO  WRK-TANDOKUKBN
                    END-IF
                END-PERFORM
-      *        マスタから病名を組み立てる
-               MOVE    SPACE                   TO  WRK-BYOMEI
-               IF      WRK-TANDOKUKBN          =   1
-                   STRING  WRK-TBYOMEI (1)     DELIMITED   BY  SPACE
-                           WRK-TBYOMEI (2)     DELIMITED   BY  SPACE   
-                           WRK-TBYOMEI (3)     DELIMITED   BY  SPACE   
-                           WRK-TBYOMEI (4)     DELIMITED   BY  SPACE   
-                           WRK-TBYOMEI (5)     DELIMITED   BY  SPACE   
-                           WRK-TBYOMEI (6)     DELIMITED   BY  SPACE
-                                               INTO    WRK-BYOMEI
-                   END-STRING
-               ELSE
-                   STRING  "＊"                DELIMITED   BY  SIZE
-                           WRK-TBYOMEI (1)     DELIMITED   BY  SPACE   
-                           WRK-TBYOMEI (2)     DELIMITED   BY  SPACE   
-                           WRK-TBYOMEI (3)     DELIMITED   BY  SPACE   
-                           WRK-TBYOMEI (4)     DELIMITED   BY  SPACE   
-                           WRK-TBYOMEI (5)     DELIMITED   BY  SPACE   
-                           WRK-TBYOMEI (6)     DELIMITED   BY  SPACE
-                                               INTO    WRK-BYOMEI
-                   END-STRING
-               END-IF
       *
                IF      WRK-TANDOKUKBN      =   ZERO
                    MOVE    2                   TO  FLG-BYOMEI-CHK
                END-IF
-           END-IF           
+           END-IF
+      *           
+      *    マスタから病名を組み立てる
+           MOVE    SPACE                   TO  WRK-BYOMEI
+           IF      FLG-BYOMEI-CHK          =   2
+               STRING  "＊"                DELIMITED   BY  SIZE
+                       WRK-TBYOMEI (1)     DELIMITED   BY  SPACE   
+                       WRK-TBYOMEI (2)     DELIMITED   BY  SPACE   
+                       WRK-TBYOMEI (3)     DELIMITED   BY  SPACE   
+                       WRK-TBYOMEI (4)     DELIMITED   BY  SPACE   
+                       WRK-TBYOMEI (5)     DELIMITED   BY  SPACE   
+                       WRK-TBYOMEI (6)     DELIMITED   BY  SPACE
+                                           INTO    WRK-BYOMEI
+               END-STRING
+               INITIALIZE                      WRK-TBYOMEICD (1)
+                                               WRK-TBYOMEICD (2)
+                                               WRK-TBYOMEICD (3)
+                                               WRK-TBYOMEICD (4) 
+                                               WRK-TBYOMEICD (5)
+                                               WRK-TBYOMEICD (6)
+                                               WRK-TBYOMEICD (7)
+               MOVE    WRK-CONS-BYOMEICD   TO  WRK-TBYOMEICD (1) 
+           ELSE
+               STRING  WRK-TBYOMEI (1)     DELIMITED   BY  SPACE
+                       WRK-TBYOMEI (2)     DELIMITED   BY  SPACE   
+                       WRK-TBYOMEI (3)     DELIMITED   BY  SPACE   
+                       WRK-TBYOMEI (4)     DELIMITED   BY  SPACE   
+                       WRK-TBYOMEI (5)     DELIMITED   BY  SPACE   
+                       WRK-TBYOMEI (6)     DELIMITED   BY  SPACE
+                                           INTO    WRK-BYOMEI
+               END-STRING
+           END-IF
            .
        200611-BYOMEICD-CHK-EXT.
            EXIT.
@@ -2348,53 +2376,123 @@
                END-IF
            END-IF
       *
+           MOVE    SPACE               TO  WRK-SYUBYOFLG
+                                           WRK-UTAGAIFLG
+      *    疑いフラグ・主病名フラグ
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >       4
+               IF    ( LF04-SNDBNRTBL-BNRTBL1 (IDX IDY)
+                                       =   "MML0012"       )
+               AND   ( LF04-SNDBNRTBL-BNRNAME1 (IDX IDY)
+                                       =   "mainDiagnosis" )
+                   MOVE    "1"             TO WRK-SYUBYOFLG
+               END-IF
+               IF    ( LF04-SNDBNRTBL-BNRTBL1 (IDX IDY)
+                                       =   "MML0015"            )
+               AND   ( LF04-SNDBNRTBL-BNRNAME1 (IDX IDY)
+                                       =   "suspectedDiagnosis" )
+                   MOVE    "1"             TO  WRK-UTAGAIFLG
+               END-IF
+           END-PERFORM
+      *
       *    更新処理
-           INITIALIZE                      FLG-PTBYOMEI-UMU
-                                           WRK-PTBYOMEI-REC
-                                           WRK-PTBYOMEI-SRYKA-REC  
+           INITIALIZE                  FLG-PTBYOMEI-UMU
+                                       WRK-PTBYOMEI-REC
+                                       WRK-PTBYOMEI-SRYKA-REC
+                                       WRK-PTBYOMEI-DOUKI-REC
+                                       WRK-UTAGAIFLG-KETASU  
+      *
+      *    「の疑い」を検索
+           PERFORM VARYING IDY FROM    1  BY  2
+                   UNTIL   IDY >       75
+               IF      WRK-BYOMEI1 (IDY:6)  =   "の疑い"
+                   MOVE    IDY              TO  WRK-UTAGAIFLG-KETASU
+                   MOVE    80               TO  IDY
+               END-IF
+           END-PERFORM
       *
       *    患者病名マスタ検索（同一開始日・病名）
            INITIALIZE                      PTBYOMEI-REC
            MOVE    WRK-HOSPID          TO  PTBYO-HOSPID
            MOVE    WRK-PTID            TO  PTBYO-PTID
            MOVE    WRK-BYOYMD          TO  PTBYO-SRYYMD
-           MOVE    WRK-BYOMEI1         TO  PTBYO-BYOMEI
+           IF      WRK-UTAGAIFLG-KETASU    =   ZERO
+               MOVE    WRK-BYOMEI1 (1:80)  TO  PTBYO-BYOMEI
+               STRING  WRK-BYOMEI1 (1:80)  DELIMITED BY  SPACE
+                       "の疑い"            DELIMITED BY  SIZE  
+                                           INTO    PTBYO-XXBYOMEI
+               END-STRING
+           ELSE
+               IF      WRK-UTAGAIFLG-KETASU    =   1
+                   MOVE    WRK-BYOMEI1 (1:80)  TO  PTBYO-BYOMEI
+                                                   PTBYO-XXBYOMEI
+               ELSE
+                   MOVE    WRK-BYOMEI1 (1:80)  TO  PTBYO-BYOMEI
+                   STRING  WRK-BYOMEI1 (1:WRK-UTAGAIFLG-KETASU - 1)
+                                               DELIMITED BY  SIZE
+                           WRK-BYOMEI1 (WRK-UTAGAIFLG-KETASU + 6:)
+                                               DELIMITED BY  SPACE
+                                               INTO    PTBYO-XXBYOMEI
+                   END-STRING
+               END-IF
+           END-IF
       *
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTBYOMEI-KEY20"    TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    PATH-TBL-PTBYOMEI-KEY29
+                                       TO  MCP-PATH
+           CALL    "MCPSUB"        USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "PTBYOMEI-KEY20"    TO  ORC-DBPATH
+               MOVE    PATH-TBL-PTBYOMEI-KEY29
+                                       TO  MCP-PATH
                PERFORM 900-PTBYO-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-PTBYOMEI
            END-IF
            PERFORM             UNTIL   FLG-PTBYOMEI        =   1
+      *        最小診療科の病名情報を取得
                IF      WRK-PTBYO-SRYKA     =   SPACE
                    MOVE    PTBYOMEI-REC        TO  WRK-PTBYOMEI-REC
                END-IF
+      *        最小診療科で同一病名があれば病名情報を取得
+               IF    ( PTBYO-SRYKA         =   WRK-PTBYO-SRYKA    )
+               AND   ( PTBYO-BYOMEI        =   WRK-BYOMEI1 (1:80) )
+                   MOVE    PTBYOMEI-REC        TO  WRK-PTBYOMEI-REC
+               END-IF
+      *        同一診療科の病名情報を取得
                IF      PTBYO-SRYKA         =   WRK-SRYKA
-                   MOVE    PTBYOMEI-REC    TO  WRK-PTBYOMEI-SRYKA-REC
-                   IF      FLG-PTBYOMEI-UMU    =   ZERO
-                       MOVE    1                   TO  FLG-PTBYOMEI-UMU
+                   IF      FLG-PTBYOMEI-UMU    >   2
+                       CONTINUE
+                   ELSE 
+                       MOVE    PTBYOMEI-REC    TO
+                                               WRK-PTBYOMEI-SRYKA-REC
+                       IF      FLG-PTBYOMEI-UMU    =   ZERO
+                           MOVE    1               TO  FLG-PTBYOMEI-UMU
+                       END-IF
+                       IF      PTBYO-BYOMEI        =   WRK-BYOMEI1(1:80)
+                           IF      FLG-PTBYOMEI-UMU    =   2
+                               MOVE    4           TO  FLG-PTBYOMEI-UMU
+                           ELSE
+                               MOVE    3           TO  FLG-PTBYOMEI-UMU
+                           END-IF
+                       END-IF
                    END-IF
                ELSE
                    MOVE    2                   TO  FLG-PTBYOMEI-UMU
                END-IF
       *
-               MOVE    "PTBYOMEI-KEY20"    TO  ORC-DBPATH
+               MOVE    PATH-TBL-PTBYOMEI-KEY29
+                                       TO  MCP-PATH
                PERFORM 900-PTBYO-READ-SEC
            END-PERFORM
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "PTBYOMEI-KEY20"    TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    PATH-TBL-PTBYOMEI-KEY29
+                                       TO  MCP-PATH
+           CALL    "MCPSUB"        USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
       *
            IF      FLG-PTBYOMEI-UMU     =   ZERO
@@ -2478,7 +2576,8 @@
            MOVE    WRK-SRYKA           TO  PTBYO-SRYKA
            MOVE    WRK-BYOYMD          TO  PTBYO-SRYYMD
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
-           MOVE    "PTBYOMEI-KEY7"     TO  WRK-DBPATH
+           MOVE    PATH-TBL-PTBYOMEI-KEY7
+                                       TO  WRK-DBPATH
            PERFORM 900-PTBYO-INV-SEC
            IF      FLG-PTBYOMEI        =   ZERO
                MOVE    PTBYO-RENNUM    TO  WRK-PTBYO-RENNUM
@@ -2490,7 +2589,6 @@
            MOVE    WRK-PTID            TO  PTBYO-PTID
            MOVE    WRK-SRYKA           TO  PTBYO-SRYKA
            MOVE    WRK-BYOYMD          TO  PTBYO-SRYYMD
-           ADD     1                   TO  WRK-PTBYO-RENNUM
            MOVE    WRK-PTBYO-RENNUM    TO  PTBYO-RENNUM
            PERFORM 20061231-PTBYOMEI-HENSYU-SEC
            IF      WRK-TENKIYMD    NOT =   SPACE
@@ -2520,21 +2618,8 @@
        20061231-PTBYOMEI-HENSYU-SEC                 SECTION.
       *
       *    疑いフラグ・主病名フラグ
-           PERFORM VARYING IDY FROM    1   BY  1
-                   UNTIL   IDY >       4
-               IF    ( LF04-SNDBNRTBL-BNRTBL1 (IDX IDY)
-                                       =   "MML0012"       )
-               AND   ( LF04-SNDBNRTBL-BNRNAME1 (IDX IDY)
-                                       =   "mainDiagnosis" )
-                   MOVE    "1"             TO  PTBYO-SYUBYOFLG
-               END-IF
-               IF    ( LF04-SNDBNRTBL-BNRTBL1 (IDX IDY)
-                                       =   "MML0015"            )
-               AND   ( LF04-SNDBNRTBL-BNRNAME1 (IDX IDY)
-                                       =   "suspectedDiagnosis" )
-                   MOVE    "1"             TO  PTBYO-UTAGAIFLG
-               END-IF
-           END-PERFORM
+           MOVE    WRK-UTAGAIFLG   TO  PTBYO-UTAGAIFLG
+           MOVE    WRK-SYUBYOFLG   TO  PTBYO-SYUBYOFLG
       *
       *    疾患コードがエラー又は未コード化傷病名コード以外のとき
            IF      FLG-BYOMEI-CHK      NOT =   1   AND 5
@@ -2584,10 +2669,10 @@
       *
       *        病名
       *****    MOVE    LF04-SND-SPINAME1 (IDX)    TO  PTBYO-BYOMEI
-               MOVE    WRK-BYOMEI1                TO  PTBYO-BYOMEI
+               MOVE    WRK-BYOMEI1 (1:80)         TO  PTBYO-BYOMEI
       *
       *        病名文字数
-               PERFORM VARYING     IDY     FROM    160 BY  -1
+               PERFORM VARYING     IDY     FROM    80 BY  -1
                        UNTIL       IDY     <   1
                    IF      PTBYO-BYOMEI(IDY:1)     NOT =   SPACE
                        COMPUTE PTBYO-BYOMEIMOJI    =   IDY /   2
@@ -2743,9 +2828,11 @@
       *        病名文字数
                MOVE    LNK-BYO-BYOMEIMOJI  TO  PTBYO-BYOMEIMOJI
       *        病名
-               IF    ( LNK-BYO-BYOMEICD-ERR    =   1  )
-               OR    ( LNK-BYO-TANDOKUKBN-ERR  =   1  )
-      *            単独病名・修飾語コードのみのとき
+      *********IF    ( LNK-BYO-BYOMEICD-ERR    =   1  )
+      *********OR    ( LNK-BYO-TANDOKUKBN-ERR  =   1  )
+      *********単独病名・修飾語コードのみのとき
+               IF      LNK-BYO-TANDOKUKBN-ERR  =   1
+      *        単独病名のみのとき
                    STRING  "＊"                DELIMITED   BY  SIZE
                            LNK-BYO-BYOMEI      DELIMITED   BY  SPACE
                                                INTO    PTBYO-BYOMEI
@@ -2776,14 +2863,208 @@
       *****************************************************************
        2006124-KOUSIN-02-SEC           SECTION.
       *
-           IF      WRK-TENKIYMD    =   SPACE
-               GO  TO  2006124-KOUSIN-02-EXT
-           END-IF
-      *
       *    転帰日
            MOVE    WRK-TENKIYMD        TO  PTBYO-TENKIYMD
       *    転帰区分
            MOVE    WRK-TENKI           TO  PTBYO-TENKIKBN
+      *
+      *    主病名フラグ
+           MOVE    WRK-SYUBYOFLG       TO  PTBYO-SYUBYOFLG
+      *
+      *    疑いフラグ
+           EVALUATE    PTBYO-UTAGAIFLG ALSO    WRK-UTAGAIFLG
+               WHEN    SPACE           ALSO    "1"
+               WHEN    "1"             ALSO    "1"
+                   MOVE    "1"             TO  PTBYO-UTAGAIFLG
+               WHEN    "2"             ALSO    "1"
+               WHEN    "3"             ALSO    "1"
+                   MOVE    "3"             TO  PTBYO-UTAGAIFLG
+               WHEN    SPACE           ALSO    SPACE
+               WHEN    "1"             ALSO    SPACE
+                   MOVE    SPACE           TO  PTBYO-UTAGAIFLG
+               WHEN    "2"             ALSO    SPACE
+               WHEN    "3"             ALSO    SPACE
+                   MOVE    "2"             TO  PTBYO-UTAGAIFLG
+           END-EVALUATE
+      *
+      *    病名
+           MOVE    WRK-BYOMEI1 (1:80)  TO  PTBYO-BYOMEI
+      *
+           INITIALIZE                      PTBYO-BYOMEICD-G
+                                           PTBYO-KHNBUICD-G
+      *
+      *    疾患コードがエラー又は未コード化傷病名コード以外のとき
+           IF      FLG-BYOMEI-CHK      NOT =   1   AND 5
+               MOVE    ZERO                TO  IDZ
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       6
+                       OR      WRK-TBYOMEICD (IDY) =   SPACE
+      *            病名コード
+                   MOVE    WRK-TBYOMEICD (IDY) 
+                                           TO  PTBYO-BYOMEICD (IDY)
+      *            病名コード数
+                   ADD     1                   TO  PTBYO-BYOMEICDSU
+      *            基本病名コード・基本部位コード
+                   IF      PTBYO-BYOMEICD (IDY)(1:1)
+                                               NOT =   "Z" 
+                       MOVE    PTBYO-BYOMEICD (IDY)
+                                           TO  PTBYO-KHNBYOMEICD
+                   ELSE
+                       IF      PTBYO-BYOMEICD (IDY) (1:4)
+                                               =   "ZZZ1"
+                           ADD     1       TO  IDZ
+                           IF      IDZ         <   4
+                               MOVE    PTBYO-BYOMEICD (IDY)
+                                               TO  PTBYO-KHNBUICD(IDZ)
+                           END-IF
+                       END-IF
+                   END-IF
+               END-PERFORM
+      *
+      *        病名文字数
+               PERFORM VARYING     IDY     FROM    80 BY  -1
+                       UNTIL       IDY     <   1
+                   IF      PTBYO-BYOMEI(IDY:1)     NOT =   SPACE
+                       COMPUTE PTBYO-BYOMEIMOJI    =   IDY /   2
+                       MOVE    1                   TO  IDY
+                   END-IF
+               END-PERFORM
+      *
+      *        病名編集フラグ（コードがエラーのとき、病名が長いとき）
+               IF    ( FLG-BYOMEI-CHK  NOT =   ZERO  )
+               OR    ( WRK-BYOMEI2     NOT =   SPACE )    
+                   MOVE    "1"                 TO  PTBYO-BYOMEIHENFLG
+               END-IF
+      *
+      *        レセ電エラーフラグ（編集病名のとき）
+               IF      PTBYO-BYOMEIHENFLG          =   "1"
+                   EVALUATE    PTBYO-SYUBYOFLG       
+                       WHEN    "1"
+                           IF      PTBYO-BYOMEIMOJI        >   17
+                               MOVE    "1" TO  PTBYO-RECEDENFLG       
+                           END-IF
+                       WHEN    SPACE
+                           IF      PTBYO-BYOMEIMOJI        >   20
+                               MOVE    "1" TO  PTBYO-RECEDENFLG       
+                           END-IF
+                   END-EVALUATE
+               END-IF
+      *
+      *        レセ電エラーフラグ（疑いフラグが設定されているとき）
+               IF    ( PTBYO-RECEDENFLG        =   SPACE ) 
+               AND   ( PTBYO-UTAGAIFLG     NOT =   SPACE )
+                   MOVE    SPACE               TO  WRK-HENFLG1
+                                                   WRK-HENFLG2
+      *     
+      *            病名文字数を計算
+                   COMPUTE WRK-MOJISU      =   PTBYO-BYOMEIMOJI       
+                                           *   2
+                   IF      PTBYO-UTAGAIFLG         =   "1" OR  "3"
+                       IF      WRK-MOJISU      <   8
+                           MOVE    1               TO  IDZ
+                       ELSE    
+                           COMPUTE IDZ     =   WRK-MOJISU    -   7
+                       END-IF    
+                       PERFORM VARYING IDY FROM    IDZ BY  2
+                               UNTIL   IDY >       WRK-MOJISU
+                           IF      PTBYO-BYOMEI        (IDY:2) =   "疑"
+                               MOVE    "1"              TO  WRK-HENFLG1
+                               MOVE    WRK-MOJISU       TO  IDY
+                           END-IF
+                       END-PERFORM
+                   END-IF                
+                   IF      PTBYO-UTAGAIFLG         =   "2" OR  "3"
+                       PERFORM VARYING IDY FROM    1   BY  2
+                               UNTIL   IDY >       WRK-MOJISU
+                           IF      PTBYO-BYOMEI        (IDY:4) =  "急性"
+                               MOVE    "1"              TO  WRK-HENFLG2
+                               MOVE    WRK-MOJISU       TO  IDY
+                           END-IF
+                       END-PERFORM
+                   END-IF
+      *
+      *            疑いフラグがセットされているとき
+                   IF    ( PTBYO-UTAGAIFLG     =   "1" OR  "3" )
+                   AND   ( WRK-HENFLG1         =   SPACE       )                         
+                       COMPUTE WRK-MOJISU          =      
+                                WRK-MOJISU +   WRK-CONS-UTAGAI-MOJISU
+                       IF      PTBYO-BYOMEICD (21) NOT =   SPACE             
+                           EVALUATE    PTBYO-SYUBYOFLG       
+                               WHEN    "1"
+                                   IF      WRK-MOJISU      >   17
+                                       MOVE    "1"     TO
+                                                       PTBYO-RECEDENFLG       
+                                   END-IF
+                               WHEN    SPACE
+                                   IF      WRK-MOJISU      >   20
+                                       MOVE    "1"     TO
+                                                       PTBYO-RECEDENFLG       
+                                   END-IF
+                           END-EVALUATE
+                       END-IF
+                   END-IF    
+                   IF    ( PTBYO-UTAGAIFLG     =   "2" OR  "3" )
+                   AND   ( WRK-HENFLG2         =   SPACE       )                         
+                       COMPUTE WRK-MOJISU          =      
+                                WRK-MOJISU +   WRK-CONS-KYUSEI-MOJISU
+                       IF      PTBYO-BYOMEICD (21) NOT =   SPACE             
+                           EVALUATE    PTBYO-SYUBYOFLG       
+                               WHEN    "1"
+                                   IF      WRK-MOJISU      >   17
+                                       MOVE    "1"     TO
+                                                       PTBYO-RECEDENFLG       
+                                   END-IF
+                               WHEN    SPACE
+                                   IF      WRK-MOJISU      >   20
+                                       MOVE    "1"     TO
+                                                       PTBYO-RECEDENFLG       
+                                   END-IF
+                           END-EVALUATE
+                       END-IF
+                   END-IF
+               END-IF    
+           ELSE
+      *        疾患コードがエラー又は未コード化傷病名コードのとき
+      *        病名からコード検索
+               INITIALIZE                  ORCSBYOMEIAREA
+               MOVE    "1"                 TO  LNK-BYO-SYORI
+               MOVE    PTBYO-SRYYMD        TO  LNK-BYO-SRYYMD-IN
+               MOVE    PTBYO-UTAGAIFLG     TO  LNK-BYO-UTAGAIFLG-IN
+               MOVE    PTBYO-BYOMEI        TO  LNK-BYO-BYOMEI
+               MOVE    PTBYO-SYUBYOFLG     TO  LNK-BYO-SYUBYOFLG 
+               CALL    "ORCSBYOMEI"        USING    ORCSBYOMEIAREA
+      *        病名コード
+               PERFORM VARYING IDX4    FROM    1   BY  1
+                       UNTIL   IDX4    >       LNK-BYO-BYOMEI-MAX
+                   MOVE    LNK-BYO-TBYOMEICD (IDX4)
+                                       TO  PTBYO-BYOMEICD  (IDX4)
+               END-PERFORM
+      *        病名コード数
+               MOVE    LNK-BYO-BYOMEICDSU  TO  PTBYO-BYOMEICDSU
+      *        基本病名コード
+               MOVE    LNK-BYO-KHNBYOMEICD TO  PTBYO-KHNBYOMEICD
+      *        基本部位コード
+               MOVE    LNK-BYO-KHNBUICD (1)
+                                           TO  PTBYO-KHNBUICD (1)
+               MOVE    LNK-BYO-KHNBUICD (2)
+                                           TO  PTBYO-KHNBUICD (2)
+               MOVE    LNK-BYO-KHNBUICD (3)
+                                           TO  PTBYO-KHNBUICD (3)
+      *        レセ電エラーフラグ
+               MOVE    LNK-BYO-RECEDENFLG  TO  PTBYO-RECEDENFLG
+      *        病名文字数
+               MOVE    LNK-BYO-BYOMEIMOJI  TO  PTBYO-BYOMEIMOJI
+      *        病名編集フラグ
+               IF    ( LNK-BYO-BYOMEICD-ERR    =   1  )
+               OR    ( LNK-BYO-TANDOKUKBN-ERR  =   1  )
+               OR    ( LNK-BYO-BYOMEIMOJI      >   80 )
+      *            単独病名・修飾語コードのみ・病名が長いとき
+                   MOVE    "1"                 TO  PTBYO-BYOMEIHENFLG
+               ELSE
+                   MOVE    LNK-BYO-BYOMEIHENFLG
+                                               TO  PTBYO-BYOMEIHENFLG
+               END-IF
+           END-IF
       *
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -2804,56 +3085,79 @@
       *****************************************************************
        2006125-KOUSIN-03-SEC           SECTION.
       *
-           IF      WRK-TENKIYMD    =   SPACE
-               GO  TO  2006125-KOUSIN-03-EXT
-           END-IF
-      *
       *    患者病名マスタ検索（同一開始日・病名）
            INITIALIZE                      PTBYOMEI-REC
            MOVE    WRK-HOSPID          TO  PTBYO-HOSPID
            MOVE    WRK-PTID            TO  PTBYO-PTID
            MOVE    WRK-BYOYMD          TO  PTBYO-SRYYMD
-           MOVE    WRK-BYOMEI1         TO  PTBYO-BYOMEI
+           IF      WRK-UTAGAIFLG-KETASU    =   ZERO
+               MOVE    WRK-BYOMEI1 (1:80)  TO  PTBYO-BYOMEI
+               STRING  WRK-BYOMEI1 (1:80)  DELIMITED BY  SPACE
+                       "の疑い"            DELIMITED BY  SIZE  
+                                           INTO    PTBYO-XXBYOMEI
+               END-STRING
+           ELSE
+               MOVE    WRK-BYOMEI1 (1:80)  TO  PTBYO-BYOMEI
+               STRING  WRK-BYOMEI1 (1:WRK-UTAGAIFLG-KETASU - 1)
+                                           DELIMITED BY  SIZE
+                       WRK-BYOMEI1 (WRK-UTAGAIFLG-KETASU + 6:)
+                                           DELIMITED BY  SPACE
+                                           INTO    PTBYO-XXBYOMEI
+               END-STRING
+           END-IF
       *
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTBYOMEI-KEY20"    TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    PATH-TBL-PTBYOMEI-KEY29
+                                       TO  MCP-PATH
+           CALL    "MCPSUB"        USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "PTBYOMEI-KEY20"    TO  ORC-DBPATH
+               MOVE    PATH-TBL-PTBYOMEI-KEY29
+                                           TO  MCP-PATH
                PERFORM 900-PTBYO-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-PTBYOMEI
            END-IF
-           PERFORM         UNTIL   FLG-PTBYOMEI    =   1 
-      *        転帰日
-               MOVE    WRK-TENKIYMD        TO  PTBYO-TENKIYMD
-      *        転帰区分
-               MOVE    WRK-TENKI           TO  PTBYO-TENKIKBN
       *
-               MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
-               MOVE    "DBUPDATE"          TO  MCP-FUNC
-               MOVE    "PTBYOMEI-KEY"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
-               IF      MCP-RC      NOT =   ZERO 
-                   DISPLAY "UPD PTBYOMEI-KEY =>" PTBYO-KEY  "."
-               END-IF
+           PERFORM         UNTIL   FLG-PTBYOMEI    =   1
+               MOVE    PTBYO-SRYKA         TO  KEY-N-SRYKA
+               INITIALIZE                  WRK-PTBYOMEI-DOUKI-REC
       *
-               MOVE    "PTBYOMEI-KEY20"    TO  ORC-DBPATH
-               PERFORM 900-PTBYO-READ-SEC
+               PERFORM         UNTIL   FLG-PTBYOMEI    =   1
+                               OR      PTBYO-SRYKA NOT =   KEY-N-SRYKA    
+      *
+                   IF      WRK-PTBYO-DOUKI-RENNUM
+                                               =   ZERO
+                       MOVE    PTBYOMEI-REC    TO WRK-PTBYOMEI-DOUKI-REC
+                   END-IF 
+                   IF      WRK-BYOMEI1 (1:80)  =   PTBYO-BYOMEI
+                       MOVE    PTBYOMEI-REC    TO WRK-PTBYOMEI-DOUKI-REC
+                   END-IF 
+      *
+                   MOVE    PATH-TBL-PTBYOMEI-KEY29
+                                               TO  MCP-PATH
+                   PERFORM 900-PTBYO-READ-SEC
+               END-PERFORM
+      *
+      *        対象病名の更新
+               MOVE    PTBYOMEI-REC        TO  WRK-PTBYOMEI-TAIHI-REC
+      *
+               MOVE    WRK-PTBYOMEI-DOUKI-REC
+                                           TO  PTBYOMEI-REC
+               PERFORM 2006124-KOUSIN-02-SEC
+      *
+               MOVE    WRK-PTBYOMEI-TAIHI-REC
+                                           TO  PTBYOMEI-REC 
            END-PERFORM
+      *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "PTBYOMEI-KEY20"    TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    PATH-TBL-PTBYOMEI-KEY29
+                                       TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
        2006125-KOUSIN-03-EXT.
            EXIT.
@@ -2874,17 +3178,15 @@
       *
            MOVE    BYOMEI-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "BYOMEI-KEY"           TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
+           MOVE    PATH-TBL-BYOMEI-KEY TO  MCP-PATH
+           CALL    "MCPSUB"            USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "BYOMEI-KEY"        TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
+               MOVE    PATH-TBL-BYOMEI-KEY TO  MCP-PATH
+               CALL    "MCPSUB"            USING
                                            MCPAREA
-                                           ORCMCPAREA
                                            MCPDATA-REC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  BYOMEI-REC
@@ -2899,10 +3201,9 @@
            END-IF
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "BYOMEI-KEY"           TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
+           MOVE    PATH-TBL-BYOMEI-KEY TO  MCP-PATH
+           CALL    "MCPSUB"            USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
       *
            .
@@ -2980,13 +3281,12 @@
       *
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-DBPATH          TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
+           MOVE    WRK-DBPATH          TO  MCP-PATH
+           CALL    "MCPSUB"            USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    WRK-DBPATH          TO  ORC-DBPATH
+               MOVE    WRK-DBPATH          TO  MCP-PATH
                PERFORM 900-PTBYO-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-PTBYOMEI
@@ -2994,10 +3294,9 @@
            END-IF
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-DBPATH          TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
+           MOVE    WRK-DBPATH          TO  MCP-PATH
+           CALL    "MCPSUB"            USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
       *
            .
@@ -3010,10 +3309,9 @@
        900-PTBYO-READ-SEC           SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "MCPSUB"        USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PTBYOMEI-REC
                MOVE    ZERO            TO  FLG-PTBYOMEI
