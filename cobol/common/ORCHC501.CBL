@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-多々納  05/06/03  備考コメント追加
       *****************************************************************
       *
       *
@@ -87,6 +88,7 @@
            03  IDXM                PIC 9(02).
       *
            03  KETA                PIC 9(04).
+           03  IDX-B2              PIC 9(04).
       *
       *    システム領域
        01  SYS-AREA.
@@ -175,6 +177,14 @@
       *
            03  WRK-BRMNUM              PIC 9(06).
            03  WRK-Z6                  PIC ZZZZZ9.
+      *---(01.00.01) LINE ADD START -----------------------------------
+      *    コメント備考
+       01  WRK-BIKOU-COMMENT-AREA.
+           03  WRK-BIKOU-G.
+               05  WRK-BIKOU-NAME      PIC X(110)
+                                       OCCURS   3.
+           03  IDX-BIKOU                   PIC 9(04).
+      *---(01.00.01) LINE ADD END   -----------------------------------
       *
       *    処方箋見出し名称
        01  WRK-SIJISEN-AREA.
@@ -522,6 +532,8 @@
       *    見出し共通編集
            PERFORM 2001-HEAD-HENSYU-SEC
            MOVE    SPACE               TO  WRK-DRCD
+      *    備考コメント編集
+           PERFORM 2009-BIKOU-COMMENT-SEC
       *
            PERFORM VARYING     IDX-H   FROM    1   BY  1
                    UNTIL       IDX-H   >   3
@@ -652,6 +664,12 @@
            INITIALIZE                  LNK-ORDERPRT-MAX
       *
            PERFORM UNTIL    FLG-ORDERPRT   =   1
+      *---(01.00.01) LINE ADD START -----------------------------------
+      *      コメントは対象外
+             IF      ORDERPRT-SRYKBN     =   "98"
+                 CONTINUE
+             ELSE
+      *---(01.00.01) LINE ADD END   -----------------------------------
       *        剤毎に編集する
                IF     (LNK-ORDERPRT-MAX    >   ZERO  )  AND
                       (ORDERPRT-RENNUM     =   1     )
@@ -665,6 +683,9 @@
                    MOVE    ORDERPRT-DRCD   TO  WRK-DRCD
                    PERFORM 2002-DRCD-HENSYU-SEC
                END-IF
+      *---(01.00.01) LINE ADD START -----------------------------------
+             END-IF
+      *---(01.00.01) LINE ADD END   -----------------------------------
       *
                MOVE    PATH-TBL-ORDERPRT-KEY1  TO  MCP-PATH
                PERFORM 900-ORDERPRT-READ-SEC
@@ -992,6 +1013,111 @@
            .
        20022-PRINT-HEN-EXT.
            EXIT.
+      *---(01.00.01) LINE ADD START -----------------------------------
+      *****************************************************************
+      *    備考コメント編集処理
+      *****************************************************************
+       2009-BIKOU-COMMENT-SEC          SECTION.
+      *
+           INITIALIZE                  WRK-BIKOU-COMMENT-AREA
+      *    入院帳票オーダー検索
+           INITIALIZE                  ORDERPRT-REC
+           MOVE    SPA-HOSPID          TO  ORDERPRT-HOSPID
+           MOVE    SPA-PTID            TO  ORDERPRT-PTID
+           MOVE    ORCHC501-PTNUM      TO  ORDERPRT-PTNUM
+           MOVE    SPA-NYUGAIKBN       TO  ORDERPRT-NYUGAIKBN
+           MOVE    ORCHC501-SRYKA      TO  ORDERPRT-SRYKA
+           MOVE    ORCHC501-HKNCOMBI   TO  ORDERPRT-HKNCOMBI
+      *    システム日付
+           MOVE    ORCHC501-SYSYMD     TO  ORDERPRT-SYSYMD
+      *    発行日
+           MOVE    ORCHC501-PRINTYMD   TO  ORDERPRT-PRINTYMD
+      *    発行時間
+           MOVE    ORCHC501-PRINTHMS   TO  ORDERPRT-PRINTHMS
+      *    帳票区分
+           MOVE    "1"                 TO  ORDERPRT-PRTKBN
+      *    診療区分
+           MOVE    "98"                TO  ORDERPRT-SRYKBN
+      *
+           MOVE    ORDERPRT-REC        TO  MCPDATA-REC
+           MOVE    PATH-TBL-ORDERPRT-KEY2
+                                       TO  MCP-PATH
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               PERFORM 900-ORDERPRT-READ-SEC
+           END-IF
+           INITIALIZE                  LNK-ORDERPRT-AREA
+           INITIALIZE                  LNK-ORDERPRT-MAX
+      *
+           PERFORM UNTIL    FLG-ORDERPRT   =   1
+      *        剤毎に編集する
+               IF     (LNK-ORDERPRT-MAX    >   ZERO  )  AND
+                      (ORDERPRT-RENNUM     =   1     )
+                   PERFORM 20091-COMMENT-HENSYU-SEC
+               END-IF
+               ADD     1               TO  LNK-ORDERPRT-MAX
+               MOVE    ORDERPRT-REC    TO  LNK-ORDERPRT-REC
+                                              (LNK-ORDERPRT-MAX)
+               MOVE    PATH-TBL-ORDERPRT-KEY2  TO  MCP-PATH
+               PERFORM 900-ORDERPRT-READ-SEC
+           END-PERFORM
+           MOVE    PATH-TBL-ORDERPRT-KEY2  TO  MCP-PATH
+           PERFORM 990-DBCLOSE-SEC
+      *    剤毎に編集する
+           IF      LNK-ORDERPRT-MAX    >   ZERO
+               PERFORM 20091-COMMENT-HENSYU-SEC
+           END-IF
+           .
+       2009-BIKOU-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    備考コメント編集処理
+      *****************************************************************
+       20091-COMMENT-HENSYU-SEC          SECTION.
+      *
+      *    最初の日で点数マスタを検索する
+           MOVE    ORCHC501-SRYYMD     TO  WRK-SRYYMD
+           PERFORM VARYING     IDX2    FROM    1   BY  1
+                   UNTIL       IDX2    >   31
+               IF      LNK-ORDERPRT-DAY (1 IDX2)  >   ZERO
+                   MOVE    IDX2            TO  WRK-SRYYMD(7:2)
+                   MOVE    31              TO  IDX2
+               END-IF
+           END-PERFORM
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   LNK-ORDERPRT-MAX )  OR
+                              (IDX-BIKOU   >=  3    )
+               MOVE    LNK-ORDERPRT-SRYCD(IDX) TO  WRK-SRYCD
+               PERFORM 910-TENSU-READ-SEC
+      *        用法
+               IF      WRK-SRYCD (1:3)     =   "001"
+                   MOVE    SPACE           TO  WRK-TNS-NAME
+                   STRING     "【"             DELIMITED   BY  SIZE
+                              TNS-NAME         DELIMITED   BY  "    "
+                              "】"             DELIMITED   BY  SIZE
+                          INTO                 WRK-TNS-NAME
+                   END-STRING
+               ELSE
+      *            その他
+                   IF      LNK-ORDERPRT-INPUTCOMENT (IDX)  =   SPACE
+                       MOVE    TNS-NAME        TO  WRK-TNS-NAME
+                   ELSE
+                       MOVE    LNK-ORDERPRT-INPUTCOMENT(IDX)
+                                               TO  WRK-TNS-NAME
+                   END-IF
+               END-IF
+               ADD     1                   TO  IDX-BIKOU
+               MOVE    WRK-TNS-NAME        TO  WRK-BIKOU-NAME(IDX-BIKOU)
+           END-PERFORM
+      *
+           INITIALIZE                  LNK-ORDERPRT-AREA
+           INITIALIZE                  LNK-ORDERPRT-MAX
+           .
+       20091-COMMENT-HENSYU-EXT.
+           EXIT.
+      *---(01.00.01) LINE ADD END   -----------------------------------
       *****************************************************************
       *    帳票印刷処理
       *****************************************************************
@@ -1040,10 +1166,24 @@
        3003-PRINT-SYORI-SEC          SECTION.
       *
            MOVE    SPACE               TO  WRK-BIKOH-AREA
+           MOVE    ZERO                TO  IDX-B
+      *
            IF      IDX-H               =   2
       *       麻薬編集
               PERFORM 2003-MAYAKU-HEN-SEC
            END-IF
+      *---(01.00.01) LINE ADD START -----------------------------------
+      *    備考コメント
+           IF      IDX-BIKOU           >   ZERO
+               PERFORM VARYING     IDX-B2  FROM    1   BY  1
+                       UNTIL      (IDX-B2  >   IDX-BIKOU )  OR
+                                  (IDX-B   >=  3    )
+                   ADD     1               TO  IDX-B
+                   MOVE    WRK-BIKOU-NAME (IDX-B2)
+                                           TO  WRK-BIKOH  (IDX-B)
+               END-PERFORM
+           END-IF
+      *---(01.00.01) LINE ADD END   -----------------------------------
       *
            MOVE    WRK-PAGE-MAX        TO  IDX-PAGE
            MOVE    WRK-LINE-MAX        TO  IDX-LINE
@@ -1095,8 +1235,6 @@
       *        麻薬編集編集処理
       *****************************************************************
        2003-MAYAKU-HEN-SEC      SECTION.
-      *
-           MOVE    ZERO                TO  IDX-B
       *
       *    麻薬施用者免許
            ADD     1                   TO  IDX-B

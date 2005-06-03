@@ -28,6 +28,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL−多々納 05/05/18  処方せんコメント追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -78,6 +79,8 @@
            03  FLG-MAYAKU-NASI     PIC 9(01).
            03  FLG-CHK             PIC 9(01).
            03  FLG-OK              PIC 9(01).
+           03  FLG-COMMENT         PIC 9(01).
+           03  FLG-SYOHOU-ARI      PIC 9(01).
       *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
@@ -99,6 +102,7 @@
            03  WRK-PRTKBN              PIC  X(01).
            03  WRK-ORDERNUM            PIC  9(02).
            03  WRK-RENNUM              PIC  9(02).
+           03  WRK-HZN-PRTKBN          PIC  X(01).
       *
            03  WRK-ORDERNUM-1          PIC  9(02).
            03  WRK-ORDERNUM-2          PIC  9(02).
@@ -217,6 +221,12 @@
                WHEN    "2"
                    PERFORM 200-PARA-SYORI-SEC
            END-EVALUATE
+      *    コメントのみの場合、削除
+           IF      FLG-COMMENT         =   1
+               IF      FLG-SYOHOU-ARI      =   ZERO
+                   PERFORM 300-COMMENT-DELETE-SEC
+               END-IF
+           END-IF
            .
       *
            EXIT PROGRAM
@@ -317,6 +327,11 @@
                                            OR  "80" )
                MOVE     3                  TO  FLG-SYORI
            END-IF
+      *    処方せんコメント
+           IF      (LNK-ORDERPRT-SYOHOU    =   1   )  AND
+                   (LNK-WKSRY-SRYSYUKBN(1) =   "980")
+               MOVE     4                  TO  FLG-SYORI
+           END-IF
       *    自動発生分は対象外
            IF      LNK-WKSRY-AUTOKBN (1 1) =   "3" 
                MOVE    ZERO                TO  FLG-SYORI
@@ -342,6 +357,9 @@
                    WHEN    3
       *                指示箋
                        PERFORM 10033-SIJISEN-SYORI-SEC
+                   WHEN    4
+      *                コメント
+                       PERFORM 10034-COMMENT-SYORI-SEC
                END-EVALUATE
            END-IF
            .
@@ -527,6 +545,7 @@
                                MOVE    "1"             TO  WRK-PRTKBN
                            END-IF
                            PERFORM 10030-ORDERPRT-HEN-SEC
+                           MOVE    1               TO  FLG-SYOHOU-ARI
                        END-IF
                    END-PERFORM
                END-PERFORM
@@ -560,6 +579,7 @@
                        IF       FLG-OK             =   1
                            MOVE    "2"             TO  WRK-PRTKBN
                            PERFORM 10030-ORDERPRT-HEN-SEC
+                           MOVE    1               TO  FLG-SYOHOU-ARI
                        END-IF
                    END-PERFORM
                END-PERFORM
@@ -870,6 +890,29 @@
            EXIT.
       *
       *****************************************************************
+      *   コメント作成処理
+      *****************************************************************
+       10034-COMMENT-SYORI-SEC          SECTION.
+      *
+      *    枝番（剤毎に１からの連番）
+           MOVE    ZERO                TO  WRK-RENNUM
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   LNK-WKSRYACT-MAX 
+               PERFORM VARYING     IDY     FROM    1   BY  1
+                       UNTIL     ( IDY     >   5   )  OR
+                                 ((LNK-WKSRY-SRYCD  (IDX IDY) =  SPACE)
+                            AND   (LNK-WKSRY-INPUTCD(IDX IDY) =  SPACE))
+                   MOVE    "1"             TO  WRK-PRTKBN
+                   PERFORM 10030-ORDERPRT-HEN-SEC
+                   MOVE    1               TO  FLG-COMMENT
+               END-PERFORM
+           END-PERFORM
+      *
+           .
+       10034-COMMENT-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    パラメタより作成処理
       *****************************************************************
        200-PARA-SYORI-SEC          SECTION.
@@ -919,6 +962,42 @@
       *
            .
        200-PARA-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    コメントのみの削除処理
+      *****************************************************************
+       300-COMMENT-DELETE-SEC         SECTION.
+      *    入院帳票オーダー検索
+           INITIALIZE                  ORDERPRT-REC
+           MOVE    SPA-HOSPID          TO  ORDERPRT-HOSPID
+           MOVE    SPA-PTID            TO  ORDERPRT-PTID
+           MOVE    SPA-PTNUM           TO  ORDERPRT-PTNUM
+           MOVE    SPA-NYUGAIKBN       TO  ORDERPRT-NYUGAIKBN
+           MOVE    SPA-SRYKA           TO  ORDERPRT-SRYKA
+           MOVE    SPA-HKNCOMBINUM     TO  ORDERPRT-HKNCOMBI
+      *    システム日付
+           MOVE    SPA-SYSYMD          TO  ORDERPRT-SYSYMD
+      *    発行日
+           MOVE    SMCNDATE-YMD        TO  ORDERPRT-PRINTYMD
+      *    発行時間
+           MOVE    SMCNDATE-HMS        TO  ORDERPRT-PRINTHMS
+      *    帳票区分
+           MOVE    "1"                 TO  ORDERPRT-PRTKBN
+      *
+           MOVE    ORDERPRT-REC        TO  MCPDATA-REC
+           MOVE    PATH-TBL-ORDERPRT-DEL1
+                                       TO  MCP-PATH
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO
+               DISPLAY "ORCSORCERPRT DEL ERR:"  MCP-RC
+                       ",KEY:" ORDERPRT-KEY
+           END-IF
+           .
+       300-COMMENT-DELETEI-EXT.
            EXIT.
       *
       *****************************************************************
