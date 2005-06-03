@@ -1375,6 +1375,10 @@
                        UNTIL       IDX1    >=  IDX-Z
                    IF      WRK-COM-INPUTCD(IDX1)
                                            =   WRK-COM-INPUTCD(IDX-Z)
+      *             検体検査コメントの判定
+                     AND  (WRK-COM-KENTAICOMMENT(IDX-Z)    =   ZERO  )
+                     AND  (WRK-COM-KENGRP(IDX1)
+                                           =   WRK-COM-KENGRP(IDX-Z))
                        MOVE    "0064"          TO  WRK-ERRCD
                        MOVE    "1"             TO  WRK-COM-CUR(IDX-Z)
                    END-IF
@@ -1516,8 +1520,10 @@
        1003-HOUKNS-HEN-SEC                  SECTION.
       *
       *    ％加算・減算は集計しない
-           IF      WRK-COM-TENSIKIBETU (IDX-Z) =   5
-                                               OR  6
+           IF     (WRK-COM-TENSIKIBETU (IDX-Z) =   5
+                                               OR  6    )  OR
+      *        検体検査コメントの判定
+                  (WRK-COM-KENTAICOMMENT(IDX-Z)    =   1)
                CONTINUE
            ELSE
                EVALUATE    WRK-COM-HOUKNSKBN(IDX-Z)

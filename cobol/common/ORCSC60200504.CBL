@@ -1364,10 +1364,10 @@
       *****************************************************************
        100114-JYUFUKUCHEK-SEC                  SECTION.
       *
-      *?   入院か包括外の時
-      *    IF     (SPA-NYUGAIKBN       =   "1"   )  OR
+      *    入院か包括外の時
+      *!!  IF     (SPA-NYUGAIKBN       =   "1"   )  OR
       *           (WRK-COM-SRYSYUKBN (IDX-Z)
-      *?                               =   "610" )
+      *!!                              =   "610" )
            IF     (SPA-NYUGAIKBN       =   "1"   )  AND
                   (WRK-COM-SRYSYUKBN (IDX-Z)
                                    NOT =   "610" )
@@ -1375,6 +1375,10 @@
                        UNTIL       IDX1    >=  IDX-Z
                    IF      WRK-COM-INPUTCD(IDX1)
                                            =   WRK-COM-INPUTCD(IDX-Z)
+      *             検体検査コメントの判定
+                     AND  (WRK-COM-KENTAICOMMENT(IDX-Z)    =   ZERO  )
+                     AND  (WRK-COM-KENGRP(IDX1)
+                                           =   WRK-COM-KENGRP(IDX-Z))
                        MOVE    "0064"          TO  WRK-ERRCD
                        MOVE    "1"             TO  WRK-COM-CUR(IDX-Z)
                    END-IF
@@ -1490,8 +1494,10 @@
        1003-HOUKNS-HEN-SEC                  SECTION.
       *
       *    ％加算・減算は集計しない
-           IF      WRK-COM-TENSIKIBETU (IDX-Z) =   5
-                                               OR  6
+           IF     (WRK-COM-TENSIKIBETU (IDX-Z) =   5
+                                               OR  6 )  OR
+      *        検体検査コメントの判定
+                  (WRK-COM-KENTAICOMMENT(IDX-Z)    =   1)
                CONTINUE
            ELSE
                EVALUATE    WRK-COM-HOUKNSKBN(IDX-Z)
@@ -1975,6 +1981,8 @@
                AND    (WRK-COM-TEIGENKBN (IDX-Z)   NOT =   1    )
       *        包括対象以外
                AND    (WRK-COM-SRYSYUKBN (IDX-Z)   NOT =   "610")
+      *        検体検査コメントの判定
+               AND    (WRK-COM-KENTAICOMMENT(IDX-Z)    =   ZERO  )
                    PERFORM VARYING     IDX-Z2  FROM    1   BY  1
                            UNTIL      (IDX-Z2      >   200     )   OR
                                       (SPA-ERRCD   NOT =   SPACE )  OR
@@ -1988,6 +1996,9 @@
                               (WRK-COM-INPUTCD(IDX-Z)
                                                =   WRK-COM-INPUTCD
                                                         (IDX-Z2))
+      *                 検体検査コメントの判定
+                         AND  (WRK-COM-KENGRP(IDX-Z)
+                                             =   WRK-COM-KENGRP(IDX-Z2))
                            IF      WRK-COM-HOUKNSKBN(IDX-Z)  =   ZERO
                                MOVE    "0064"          TO  SPA-ERRCD
                                MOVE    "1"             TO  WRK-COM-CUR

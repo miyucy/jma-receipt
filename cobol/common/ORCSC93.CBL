@@ -49,6 +49,7 @@
       *                                     処置加算料追加(403)
       * 01.00.20     NACL-多々納  05/01/12  初診時ブラッシング料対応
       * 01.00.20     NACL-多々納  05/01/13  歯科薬剤の外用薬対応
+      * 01.00.21     NACL-多々納  05/06/XX  検体検査コメント対応
       *****************************************************************
       *
       *
@@ -228,6 +229,12 @@
                        MOVE    SPACE       TO  SPA-COM-SRYSYUKBN (IDX)
                    END-IF
                END-IF
+      *        検体検査コメントの判定
+               IF      SPA-COM-KENTAICOMMENT (IDX) =   1
+                   MOVE    ZERO            TO  SPA-COM-HOUKNSKBN(IDX)
+               END-IF
+      *        同一検査判定コード
+               MOVE    SPACE               TO  SPA-COM-KENGRP (IDX)
       *
                IF      (SPA-GMN-INPUTCD(IDX) =   SPACE )   AND
                        (SPA-COM-INPUTCD(IDX) =   SPACE )
@@ -904,7 +911,8 @@
                     COMPUTE IDX-1          =   IDX    -   1
                 END-IF
       *    包括対象外は対象としない
-               IF     SPA-COM-SRYSYUKBN(IDX)  =   "610"
+               IF    (SPA-COM-SRYSYUKBN(IDX)  =   "610" )
+                OR   (SPA-COM-KENTAICOMMENT (IDX) =   1)
                    CONTINUE
                ELSE
       *
@@ -918,9 +926,30 @@
                                                                  (IDX))
                    CONTINUE
                ELSE
+      *            検体検査コメントの判定
+                   IF      SPA-COM-KENTAICOMMENT (IDX-1) =   1
+      *                検査等実施判断グループ判定
+                       IF      SPA-COM-KNSJISGRPKBN (IDX)    =  03
+                                                             OR 04
+                           MOVE    SPA-COM-HOUKNSKBN(IDX)
+                                                   TO  SPA-COM-HOUKNSKBN
+                                                               (IDX-1)
+      *                    同一検査判定コード
+                           MOVE    SPA-COM-INPUTCD(IDX-1)
+                                                   TO  SPA-COM-KENGRP
+                                                               (IDX)
+                       END-IF
+                   END-IF
       *            包括対象検査なし
                    IF      SPA-COM-HOUKNSKBN(IDX)   =   ZERO
                        MOVE    2                    TO  FLG-SYORI
+      *                検体検査コメントの判定
+                       IF    ( SPA-COM-KENTAICOMMENT (IDX-1) =   1)
+      *                検査等実施判断グループ判定
+                          AND (SPA-COM-KNSJISGRPKBN (IDX)    =  03
+                                                             OR 04)
+                           MOVE    1                TO  FLG-SYORI
+                       END-IF
                    ELSE
       **************** MOVE    1                    TO  FLG-KENSA-ARI
       *                包括対象検査変更時
@@ -929,7 +958,27 @@
                                                              (IDX-1)
                            MOVE    2                    TO  FLG-SYORI
                        END-IF
+      *                前が検体検査コメント
+                       IF     (SPA-COM-KENTAICOMMENT (IDX-1) =   1)
+                         AND  (IDX-1             >   1   )
+                           IF      SPA-COM-HOUKNSKBN(IDX)
+                                                 =   SPA-COM-HOUKNSKBN
+                                                           (IDX-1 - 1)
+                               MOVE    ZERO      TO  FLG-SYORI
+                               MOVE    SPA-COM-SRYSYUKBN (IDX-1 - 1)
+                                                 TO  SPA-COM-SRYSYUKBN
+                                                             (IDX)
+                               MOVE    SPA-COM-SRYSYUKBN (IDX-1 - 1)
+                                                 TO  SPA-COM-SRYSYUKBN
+                                                             (IDX-1)
+                               MOVE    SPACE     TO  SPA-COM-ZAIEND
+                                                         (IDX-1 - 1)
+                               MOVE    SPACE     TO  SPA-COM-ZAIEND
+                                                         (IDX-1)
+                           END-IF
+                       END-IF
                    END-IF
+      *
       *            包括対象外の剤終了時、診療種別を検査にする
                    IF    (SPA-COM-SRYSYUKBN(IDX)  =   "610" ) AND
                          (FLG-SYORI               =   2     )
@@ -959,8 +1008,14 @@
       *    会計照時、剤変更時、診療区分変更エラー
            IF      LNK-SC93-PG         =   "J04"
                IF      FLG-SYORI           =   2
-                   MOVE    "1020"          TO  SPA-ERRCD
-                   MOVE    "1"             TO  SPA-COM-CUR(IDX)
+      *            検体検査コメントの判定
+                   IF     (SPA-COM-KENTAICOMMENT (IDX) =   1) AND
+                          (IDX                 <   SPA-GMN-MAX)
+                       CONTINUE
+                   ELSE
+                       MOVE    "1020"          TO  SPA-ERRCD
+                       MOVE    "1"             TO  SPA-COM-CUR(IDX)
+                   END-IF
                END-IF
            END-IF
       *
@@ -1553,8 +1608,9 @@
                                                            "340" )  AND
                            (IDX                    >   1 )  AND
                            (SPA-GMN-INPUTCD(IDX - 1)(1:4)
-                                                   =   ".330" OR
-                                                       ".340" )
+                                                   =   ".330" 
+                                                   OR  ".332"
+                                                   OR  ".340" )
       *                年齢加算以外
                        IF      SPA-COM-INPUTCD(IDX)    =   "130009470"
                            MOVE    ZERO                TO  FLG-ARI

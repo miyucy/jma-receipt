@@ -2707,7 +2707,9 @@
       *        包括対象以外
                AND    (SPA-COM-SRYSYUKBN (IDX-Z)   NOT =   "610")
       *        包括分
-               AND     (SPA-COM-HOUKNSKBN(IDX-Z)   NOT =   ZERO )
+               AND    (SPA-COM-HOUKNSKBN(IDX-Z)   NOT =   ZERO )
+      *        検体検査コメント以外
+               AND    (SPA-COM-KENTAICOMMENT (IDX-Z)  =   ZERO )
                    PERFORM VARYING     IDX-Z2  FROM    IDX-Z   BY  1
                            UNTIL       IDX-Z2      >   200
                        IF     (IDX-Z2      NOT =   IDX-Z )  AND
@@ -2716,6 +2718,9 @@
                               (SPA-COM-INPUTCD(IDX-Z)
                                                =   SPA-COM-INPUTCD
                                                         (IDX-Z2))
+      *                 検体検査コメントの判定
+                         AND  (WRK-COM-KENGRP(IDX-Z)
+                                             =   WRK-COM-KENGRP(IDX-Z2))
                            MOVE    SPACE           TO  SPA-GMN-INPUTCD
                                                         (IDX-Z2)
                        END-IF

@@ -1846,8 +1846,8 @@
                MOVE    TNS-NAME      TO  SPA-GMN-MEISYO   (IDX-T)
       *        薬剤服用コメントの時、再編集
                IF      SPA-COM-INPUTCD (IDX-T)(1:3)    =   "001"
-                    PERFORM 3001-FUKIYO-MEISYO-SEC
-                    MOVE    WRK-MEISYO    TO  SPA-GMN-MEISYO (IDX-T)
+                   PERFORM 3001-FUKIYO-MEISYO-SEC
+                   MOVE    WRK-MEISYO    TO  SPA-GMN-MEISYO (IDX-T)
                END-IF
            END-IF
       *    入力値のある時、再編集
@@ -1925,6 +1925,8 @@
            MOVE    TNS-CDKBN-KBNNUM    TO  SPA-COM-CDKBN-KBNNUM (IDX-T)
       *    検査用　包括対象検査
            MOVE    TNS-HOUKNSKBN       TO  SPA-COM-HOUKNSKBN (IDX-T)
+      *    検査用　検体検査コメント
+           MOVE    TNS-KENTAICOMMENT   TO  SPA-COM-KENTAICOMMENT (IDX-T)
       *    算定履歴区分
            MOVE    TNS-SANTEIRRKKBN    TO  SPA-COM-SANTEIRRKKBN (IDX-T)
       *    指導管理料
