@@ -691,6 +691,13 @@
                MOVE    1                   TO  FLG-JYURRK
                INITIALIZE                      JYURRK-REC
            END-IF
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      JYURRK-GRP-DENPNUM  =   ZERO
       *         √±∆» ¨
                 PERFORM 20021-ONLY-SYORI-SEC
@@ -1206,6 +1213,12 @@
                    INITIALIZE                      PTRSIINF-REC
                    MOVE    1                   TO  FLG-PTRSIINF
                END-IF
+               MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+               MOVE    "PTRSIINF-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
                IF      FLG-PTRSIINF        =   ZERO
                    MOVE    SPACE               TO  WRK-HEN-KIGONUM
                    MOVE    SPACE               TO  WRK-HKNJA-G
