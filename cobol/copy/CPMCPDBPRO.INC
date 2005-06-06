@@ -362,6 +362,27 @@
       *  01.01.167   NACL-多々納  05/03/09  SRYACCT-KEY39追加
       *  01.01.168   NACL-多々納  05/04/15  SRYACCT-KEY40追加
       *  01.01.169   NACL-門脇    05/05/10  SRYACT-KEY12追加
+      *  01.01.170   NACL-太田    05/06/02  BTPARA-ALL追加
+      *                                     CHKSND-ALL追加
+      *                                     JYURRK-PRV-ALL3追加
+      *                                     MEDYAKKO-ALL追加
+      *                                     ORDER-ALL追加
+      *                                     ORDERPRT-ALL追加
+      *                                     PRVKANRI-ALL追加
+      *                                     PTCOM-PRV-ALL追加
+      *                                     RECEUPD-ALL追加
+      *                                     SANTEI-PRV-ALL追加
+      *                                     SRYACCT-PRV-ALL追加
+      *                                     SRYACCTPLUS-ALL追加
+      *                                     SRYACT-PRV-ALL追加
+      *                                     SRYKARRK-PRV-ALL追加
+      *                                     SYUDAY-ALL追加
+      *                                     SYUMEI-PRV-ALL追加
+      *                                     SYUNOU-PRV-ALL追加
+      *                                     SYUTOTAL-PRV-ALL追加
+      *                                     TOUKEIMEMO-ALL追加
+      *                                     Q002-ALL追加
+      *                                     BD003-ALL追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -3382,9 +3403,15 @@
                WHEN    ANY             ALSO   "BD003-KEY3"
                    MOVE    PATH-VIEW-BD003-KEY3
                                        TO  WRK-PATH
+               WHEN    ANY             ALSO   "BD003-ALL"
+                   MOVE    PATH-VIEW-BD003-ALL
+                                       TO  WRK-PATH
       *
                WHEN    ANY             ALSO   "SYUDAY-KEY"
                    MOVE    PATH-TBL-SYUDAY-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SYUDAY-ALL"
+                   MOVE    PATH-TBL-SYUDAY-ALL
                                        TO  WRK-PATH
       *----(01.01.123)-ADD-START---
                WHEN    ANY             ALSO   "PGKANRI-KEY"
@@ -3448,6 +3475,81 @@
                                        TO  WRK-PATH
       *---- (HELP) LINE ADD END      ------------------------------
       *
+               WHEN    ANY             ALSO   "BTPARA-ALL"
+                   MOVE    PATH-TBL-BTPARA-ALL
+                                       TO  WRK-PATH
+      *
+               WHEN    ANY             ALSO   "CHKSND-ALL"
+                   MOVE    PATH-TBL-CHKSND-ALL
+                                       TO  WRK-PATH
+      *
+               WHEN    ANY             ALSO   "JYURRK-PRV-ALL3"
+                   MOVE    PATH-TBL-JYURRK-PRV-ALL3
+                                       TO  WRK-PATH
+      *
+               WHEN    ANY             ALSO   "MEDYAKKO-ALL"
+                   MOVE    PATH-TBL-MEDYAKKO-ALL
+                                       TO  WRK-PATH
+      *
+               WHEN    ANY             ALSO   "ORDER-ALL"
+                   MOVE    PATH-TBL-ORDER-ALL
+                                       TO  WRK-PATH
+      *
+               WHEN    ANY             ALSO   "ORDERPRT-ALL"
+                   MOVE    PATH-TBL-ORDERPRT-ALL
+                                       TO  WRK-PATH
+      *
+               WHEN    ANY             ALSO   "PRVKANRI-ALL"
+                   MOVE    PATH-TBL-PRVKANRI-ALL
+                                       TO  WRK-PATH
+      *
+               WHEN    ANY             ALSO   "PTCOM-PRV-ALL"
+                   MOVE    PATH-TBL-PTCOM-PRV-ALL
+                                       TO  WRK-PATH
+      *
+               WHEN    ANY             ALSO   "RECEUPD-ALL"
+                   MOVE    PATH-TBL-RECEUPD-ALL
+                                       TO  WRK-PATH
+      *
+               WHEN    ANY             ALSO   "SANTEI-PRV-ALL"
+                   MOVE    PATH-TBL-SANTEI-PRV-ALL
+                                       TO  WRK-PATH
+      *
+               WHEN    ANY             ALSO   "SRYACCT-PRV-ALL"
+                   MOVE    PATH-TBL-SRYACCT-PRV-ALL
+                                       TO  WRK-PATH
+      *
+               WHEN    ANY             ALSO   "SRYACCTPLUS-ALL"
+                   MOVE    PATH-TBL-SRYACCTPLUS-ALL
+                                       TO  WRK-PATH
+      *
+               WHEN    ANY             ALSO   "SRYACT-PRV-ALL"
+                   MOVE    PATH-TBL-SRYACT-PRV-ALL
+                                       TO  WRK-PATH
+      *
+               WHEN    ANY             ALSO   "SRYKARRK-PRV-ALL"
+                   MOVE    PATH-TBL-SRYKARRK-PRV-ALL
+                                       TO  WRK-PATH
+      *
+               WHEN    ANY             ALSO   "SYUMEI-PRV-ALL"
+                   MOVE    PATH-TBL-SYUMEI-PRV-ALL
+                                       TO  WRK-PATH
+      *
+               WHEN    ANY             ALSO   "SYUNOU-PRV-ALL"
+                   MOVE    PATH-TBL-SYUNOU-PRV-ALL
+                                       TO  WRK-PATH
+      *
+               WHEN    ANY             ALSO   "SYUTOTAL-PRV-ALL"
+                   MOVE    PATH-TBL-SYUTOTAL-PRV-ALL
+                                       TO  WRK-PATH
+      *
+               WHEN    ANY             ALSO   "TOUKEIMEMO-ALL"
+                   MOVE    PATH-TBL-TOUKEIMEMO-ALL
+                                       TO  WRK-PATH
+      *
+               WHEN    ANY             ALSO   "Q002-ALL"
+                   MOVE    PATH-VIEW-Q002-ALL
+                                       TO  WRK-PATH
       *
                WHEN    OTHER
                    MOVE    -9          TO  MCP-RC
