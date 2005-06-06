@@ -10,8 +10,8 @@ E02	{
 				rowattr int;
 				item	{
 					value1	char(25);
-				}	[600];
-				select	bool[600];
+				}	[900];
+				select	bool[900];
 			};
 		};
 		scrolledwindow2	{
@@ -21,8 +21,8 @@ E02	{
 				rowattr int;
 				item	{
 					value1	char(25);
-				}	[600];
-				select	bool[600];
+				}	[900];
+				select	bool[900];
 			};
 		};
 		CHKMSG000	{

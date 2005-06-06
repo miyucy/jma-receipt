@@ -96,7 +96,7 @@
                        09  SPA-GMN-CHKBTN01   PIC X(01).
                        09  SPA-GMN-CHKMSG02   PIC X(06).
       *修正/*終了*03.06.05*********************************************
-                       09  SPA-GNM-TBL2       OCCURS  90.
+                       09  SPA-GNM-TBL2       OCCURS  200.
                            11  SPA-GMN-MSG-A  PIC X(20).
                            11  SPA-GMN-BTN-A  PIC X(01).
                            11  SPA-GMN-TBL-A  PIC X(20).
@@ -113,6 +113,8 @@
            03  FLG-END             PIC 9(01).
            03  FLG-SEL             PIC X(01).
            03  FLG-RUN             PIC 9(01).
+           03  FLG-ROW1            PIC 9(01).
+           03  FLG-ROW2            PIC 9(01).
       *
       *    エンドステータス領域
        01  STS-AREA.
@@ -122,9 +124,14 @@
       *
       *    添字領域
        01  IDX-AREA.
+           03  IDX0                PIC 9(05).
            03  IDX1                PIC 9(03).
            03  IDX2                PIC 9(03).
            03  IDX3                PIC 9(03).
+      *
+       01  WRK-ROW.
+           03  WRK-ROW1            PIC S9(9)   BINARY.
+           03  WRK-ROW2            PIC S9(9)   BINARY.
       *
       *    メッセージ領域
        01  T-MESSAGE-AREA.
@@ -148,7 +155,7 @@
       *
       *    作業テーブル名称領域
        01  WK-TBL.
-           03  WK-TBLSET       OCCURS  90.
+           03  WK-TBLSET       OCCURS  200.
                05  WK-TBL-MSG-C      PIC X(20).
                05  WK-TBL-NAME-C     PIC X(20).
                05  WK-TBL-BTN-C      PIC X(01).
@@ -164,6 +171,8 @@
       *
       *    フィアルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
+      *
+           COPY  "CPSTGTSCM.INC".
       *
       *
       *****************************************************************
@@ -211,6 +220,9 @@
            MOVE    SPACE           TO  SPA-ERRCD.
            MOVE    ZERO            TO  FLG-END.
       *
+           MOVE    ZERO            TO  FLG-ROW1
+                                       FLG-ROW2
+      *
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
@@ -257,18 +269,18 @@
                    UNTIL   IDX1  >   SPA-GMN-MAX-A
                IF  E01-SELECT1 (IDX1)   =   "T"
                    MOVE    "A"              TO  FLG-SEL
-                   MOVE    91               TO  IDX1
+                   MOVE    201               TO  IDX1
                END-IF
            END-PERFORM.
            PERFORM VARYING IDX1  FROM  1  BY 1
                    UNTIL   IDX1  >   SPA-GMN-MAX-B
                IF  E01-SELECT2 (IDX1)   =   "T"
                    MOVE    "D"              TO  FLG-SEL
-                   MOVE    91               TO  IDX1
+                   MOVE    201               TO  IDX1
                END-IF
            END-PERFORM.
       *
-           MOVE    SPACE               TO  LINKAREA.
+           INITIALIZE                      LINKAREA.
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU.
            MOVE    SPA-E01-AREA        TO  LNK-SCRSPA.
            MOVE    SPACE               TO  MCP-PUTTYPE.
@@ -286,164 +298,29 @@
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
-           INITIALIZE              SPA-E01.
-      *
       *    他のＬＤより
            IF  LINKAREA   NOT =   SPACE
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
                MOVE    LNK-SCRSPA          TO  SPA-E01-AREA
            END-IF.
       *
+           INITIALIZE              SPA-E01.
+      *
            MOVE    1                       TO  SPA-GMN-CUR.
+      *
       *    テーブル名称セット
-           MOVE    SPACE                   TO  SPA-GMN-TBLG.
-           MOVE    SPACE                   TO  WK-TBL.
-           MOVE    "SYSKANRI            "  TO  WK-TBL-MSG-C(01).
-           MOVE    "tbl_syskanri.db     "  TO  WK-TBL-NAME-C(01).
-           MOVE    "BYOMEI              "  TO  WK-TBL-MSG-C(02).
-           MOVE    "tbl_byomei.db       "  TO  WK-TBL-NAME-C(02).
-           MOVE    "CHK                 "  TO  WK-TBL-MSG-C(03).
-           MOVE    "tbl_chk.db          "  TO  WK-TBL-NAME-C(03).
-           MOVE    "INPUTCD             "  TO  WK-TBL-MSG-C(04).
-           MOVE    "tbl_inputcd.db      "  TO  WK-TBL-NAME-C(04).
-           MOVE    "HKNCOMBI            "  TO  WK-TBL-MSG-C(05).
-           MOVE    "tbl_hkncombi.db     "  TO  WK-TBL-NAME-C(05).
-           MOVE    "HKNNUM              "  TO  WK-TBL-MSG-C(06).
-           MOVE    "tbl_hknnum.db       "  TO  WK-TBL-NAME-C(06).
-           MOVE    "INPUTSET            "  TO  WK-TBL-MSG-C(07).
-           MOVE    "tbl_inputset.db     "  TO  WK-TBL-NAME-C(07).
-           MOVE    "ADRS                "  TO  WK-TBL-MSG-C(08).
-           MOVE    "tbl_adrs.db         "  TO  WK-TBL-NAME-C(08).
-           MOVE    "JYURRK              "  TO  WK-TBL-MSG-C(09).
-           MOVE    "tbl_jyurrk.db       "  TO  WK-TBL-NAME-C(09).
-           MOVE    "SRYKARRK            "  TO  WK-TBL-MSG-C(10).
-           MOVE    "tbl_srykarrk.db     "  TO  WK-TBL-NAME-C(10).
-           MOVE    "PTBYOMEI            "  TO  WK-TBL-MSG-C(11).
-           MOVE    "tbl_ptbyomei.db     "  TO  WK-TBL-NAME-C(11).
-           MOVE    "PTCOM               "  TO  WK-TBL-MSG-C(12).
-           MOVE    "tbl_ptcom.db        "  TO  WK-TBL-NAME-C(12).
-           MOVE    "PTNUM               "  TO  WK-TBL-MSG-C(13).
-           MOVE    "tbl_ptnum.db        "  TO  WK-TBL-NAME-C(13).
-           MOVE    "PTHKNINF            "  TO  WK-TBL-MSG-C(14).
-           MOVE    "tbl_pthkninf.db     "  TO  WK-TBL-NAME-C(14).
-           MOVE    "PTKOHINF            "  TO  WK-TBL-MSG-C(15).
-           MOVE    "tbl_ptkohinf.db     "  TO  WK-TBL-NAME-C(15).
-           MOVE    "PTINF               "  TO  WK-TBL-MSG-C(16).
-           MOVE    "tbl_ptinf.db        "  TO  WK-TBL-NAME-C(16).
-           MOVE    "KYUSEIRRK           "  TO  WK-TBL-MSG-C(17).
-           MOVE    "tbl_kyuseirrk.db    "  TO  WK-TBL-NAME-C(17).
-           MOVE    "SRYACCT             "  TO  WK-TBL-MSG-C(18).
-           MOVE    "tbl_sryacct.db      "  TO  WK-TBL-NAME-C(18).
-           MOVE    "SRYACT              "  TO  WK-TBL-MSG-C(19).
-           MOVE    "tbl_sryact.db       "  TO  WK-TBL-NAME-C(19).
-           MOVE    "SYUMEI              "  TO  WK-TBL-MSG-C(20).
-           MOVE    "tbl_syumei.db       "  TO  WK-TBL-NAME-C(20).
-           MOVE    "SYUNOU              "  TO  WK-TBL-MSG-C(21).
-           MOVE    "tbl_syunou.db       "  TO  WK-TBL-NAME-C(21).
-           MOVE    "TSYRRK              "  TO  WK-TBL-MSG-C(22).
-           MOVE    "tbl_tsyrrk.db       "  TO  WK-TBL-NAME-C(22).
-           MOVE    "TENSU               "  TO  WK-TBL-MSG-C(23).
-           MOVE    "tbl_tensu.db        "  TO  WK-TBL-NAME-C(23).
-           MOVE    "UKETUKE             "  TO  WK-TBL-MSG-C(24).
-           MOVE    "tbl_uketuke.db      "  TO  WK-TBL-NAME-C(24).
-           MOVE    "YYK                 "  TO  WK-TBL-MSG-C(25).
-           MOVE    "tbl_yyk.db          "  TO  WK-TBL-NAME-C(25).
-           MOVE    "SYKRRK              "  TO  WK-TBL-MSG-C(26).
-           MOVE    "tbl_sykrrk.db       "  TO  WK-TBL-NAME-C(26).
-           MOVE    "TNKRRK              "  TO  WK-TBL-MSG-C(27).
-           MOVE    "tbl_tnkrrk.db       "  TO  WK-TBL-NAME-C(27).
-           MOVE    "SANTEI              "  TO  WK-TBL-MSG-C(28).
-           MOVE    "tbl_santei.db       "  TO  WK-TBL-NAME-C(28).
-           MOVE    "RECEPRT             "  TO  WK-TBL-MSG-C(29).
-           MOVE    "tbl_receprt.db      "  TO  WK-TBL-NAME-C(29).
-           MOVE    "SEIKYU              "  TO  WK-TBL-MSG-C(30).
-           MOVE    "tbl_seikyu.db       "  TO  WK-TBL-NAME-C(30).
-           MOVE    "TENSUPLUS           "  TO  WK-TBL-MSG-C(31).
-           MOVE    "tbl_tensuplus.db    "  TO  WK-TBL-NAME-C(31).
-           MOVE    "HKNJAINF            "  TO  WK-TBL-MSG-C(32).
-           MOVE    "tbl_hknjainf.db     "  TO  WK-TBL-NAME-C(32).
-           MOVE    "SRYCDCHG            "  TO  WK-TBL-MSG-C(33).
-           MOVE    "tbl_srycdchg.db     "  TO  WK-TBL-NAME-C(33).
-           MOVE    "USERBYOMEI          "  TO  WK-TBL-MSG-C(34).
-           MOVE    "tbl_userbyomei.db   "  TO  WK-TBL-NAME-C(34).
-           MOVE    "JOBKANRI            "  TO  WK-TBL-MSG-C(35).
-           MOVE    "tbl_jobkanri.db     "  TO  WK-TBL-NAME-C(35).
-           MOVE    "EXAMPLE             "  TO  WK-TBL-MSG-C(36).
-           MOVE    "tbl_example.db      "  TO  WK-TBL-NAME-C(36).
-           MOVE    "RECECOM             "  TO  WK-TBL-MSG-C(37).
-           MOVE    "tbl_rececom.db      "  TO  WK-TBL-NAME-C(37).
-           MOVE    "DBKANRI             "  TO  WK-TBL-MSG-C(38).
-           MOVE    "tbl_dbkanri.db      "  TO  WK-TBL-NAME-C(38).
-           MOVE    "RECEKANRI           "  TO  WK-TBL-MSG-C(39).
-           MOVE    "tbl_recekanri.db    "  TO  WK-TBL-NAME-C(39).
-           MOVE    "PTRSIINF            "  TO  WK-TBL-MSG-C(40).
-           MOVE    "tbl_ptrsiinf.db     "  TO  WK-TBL-NAME-C(40).
-           MOVE    "PRTKANRI            "  TO  WK-TBL-MSG-C(41).
-           MOVE    "tbl_prtkanri.db     "  TO  WK-TBL-NAME-C(41).
-           MOVE    "PRTDATA             "  TO  WK-TBL-MSG-C(42).
-           MOVE    "tbl_prtdata.db      "  TO  WK-TBL-NAME-C(42).
-           MOVE    "INTERACT            "  TO  WK-TBL-MSG-C(43).
-           MOVE    "tbl_interact.db     "  TO  WK-TBL-NAME-C(43).
-           MOVE    "SSKIJYO             "  TO  WK-TBL-MSG-C(44).
-           MOVE    "tbl_sskijyo.db      "  TO  WK-TBL-NAME-C(44).
-           MOVE    "JINMEI              "  TO  WK-TBL-MSG-C(45).
-           MOVE    "tbl_jinmei.db       "  TO  WK-TBL-NAME-C(45).
-           MOVE    "MONTHLYNUM          "  TO  WK-TBL-MSG-C(46).
-           MOVE    "tbl_monthlynum.db   "  TO  WK-TBL-NAME-C(46).
-      *修正/*開始*03.05.12*********************************************
-           MOVE    "KENSASORT           "  TO  WK-TBL-MSG-C(47).
-           MOVE    "tbl_kensasort.db    "  TO  WK-TBL-NAME-C(47).
-           MOVE    "KOHSKY              "  TO  WK-TBL-MSG-C(48).
-           MOVE    "tbl_kohsky.db       "  TO  WK-TBL-NAME-C(48).
-           MOVE    "LDMAP               "  TO  WK-TBL-MSG-C(49).
-           MOVE    "tbl_ldmap.db        "  TO  WK-TBL-NAME-C(49).
-           MOVE    "LOCK                "  TO  WK-TBL-MSG-C(50).
-           MOVE    "tbl_lock.db         "  TO  WK-TBL-NAME-C(50).
-           MOVE    "PTKOHFTN            "  TO  WK-TBL-MSG-C(51).
-           MOVE    "tbl_ptkohftn.db     "  TO  WK-TBL-NAME-C(51).
-           MOVE    "YAKUJYO             "  TO  WK-TBL-MSG-C(52).
-           MOVE    "tbl_yakujyo.db      "  TO  WK-TBL-NAME-C(52).
-           MOVE    "BD001               "  TO  WK-TBL-MSG-C(53).
-           MOVE    "view_bd001.db       "  TO  WK-TBL-NAME-C(53).
-           MOVE    "BD002               "  TO  WK-TBL-MSG-C(54).
-           MOVE    "view_bd002.db       "  TO  WK-TBL-NAME-C(54).
-           MOVE    "I001                "  TO  WK-TBL-MSG-C(55).
-           MOVE    "view_I001.db        "  TO  WK-TBL-NAME-C(55).
-           MOVE    "Q001                "  TO  WK-TBL-MSG-C(56).
-           MOVE    "view_Q001.db        "  TO  WK-TBL-NAME-C(56).
-           IF  SPA-BEDSU   >   ZERO
-               MOVE    "NYUINACCT           "  TO  WK-TBL-MSG-C(57)
-               MOVE    "tbl_nyuinacct.db    "  TO  WK-TBL-NAME-C(57)
-               MOVE    "NYUINACT            "  TO  WK-TBL-MSG-C(58)
-               MOVE    "tbl_nyuinact.db     "  TO  WK-TBL-NAME-C(58)
-               MOVE    "NYUINKHN            "  TO  WK-TBL-MSG-C(59)
-               MOVE    "tbl_nyuinkhn.db     "  TO  WK-TBL-NAME-C(59)
-               MOVE    "NYUINRYAKUSHO       "  TO  WK-TBL-MSG-C(60)
-               MOVE    "tbl_nyuinryakusho.db"  TO  WK-TBL-NAME-C(60)
-               MOVE    "NYUKSNCHK           "  TO  WK-TBL-MSG-C(61)
-               MOVE    "tbl_nyuksnchk.db    "  TO  WK-TBL-NAME-C(61)
-               MOVE    "PTNYUINRRK          "  TO  WK-TBL-MSG-C(62)
-               MOVE    "tbl_ptnyuinrrk.db   "  TO  WK-TBL-NAME-C(62)
-               MOVE    "PTTAINFUKA          "  TO  WK-TBL-MSG-C(63)
-               MOVE    "tbl_pttainfuka.db   "  TO  WK-TBL-NAME-C(63)
-               MOVE    "PTTEIKIRRK          "  TO  WK-TBL-MSG-C(64)
-               MOVE    "tbl_ptteikirrk.db   "  TO  WK-TBL-NAME-C(64)
-               MOVE    "SENTEICDCHG         "  TO  WK-TBL-MSG-C(65)
-               MOVE    "tbl_senteicdchg.db  "  TO  WK-TBL-NAME-C(65)
-               MOVE    "TEIKIKANRI          "  TO  WK-TBL-MSG-C(66)
-               MOVE    "tbl_teikikanri.db   "  TO  WK-TBL-NAME-C(66)
-               MOVE    "TEIKIPRT            "  TO  WK-TBL-MSG-C(67)
-               MOVE    "tbl_teikiprt.db     "  TO  WK-TBL-NAME-C(67)
-               MOVE    "TEIKIRRK            "  TO  WK-TBL-MSG-C(68)
-               MOVE    "tbl_teikirrk.db     "  TO  WK-TBL-NAME-C(68)
-           END-IF.
-      *修正/*終了*03.05.12*********************************************
-      *一時作業テーブルのため次のテーブルはコンバートの対象外とする
-      *     MOVE    "WKSRYACT            "  TO  WK-TBL-MSG-C(**).
-      *     MOVE    "tbl_wksryact.db     "  TO  WK-TBL-NAME-C(**).
-      *     MOVE    "PARA                "  TO  WK-TBL-MSG-C(**).
-      *     MOVE    "tbl_para.db         "  TO  WK-TBL-NAME-C(**).
-      ************************************************************
+           INITIALIZE                          SPA-GMN-TBLG
+                                               WK-TBL
+      *
+           CALL    "ORCSTGTSCM"            USING   STGTSCM-AREA
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   STGTSCM-MAX )
+      *
+               MOVE    STGTSCM-ID   (IDX0) TO  WK-TBL-NAME-C(IDX0)
+               MOVE    STGTSCM-NAME (IDX0) TO  WK-TBL-MSG-C(IDX0)
+      *
+           END-PERFORM
       *
            PERFORM 310-SPASET-SEC.
       *
@@ -464,6 +341,10 @@
            MOVE    1                   TO  SPA-GMN-CUR.
       *
            MOVE    1                   TO  SPA-GMN-PAGE.
+      *
+           MOVE    1                   TO  FLG-ROW1
+                                           FLG-ROW2
+           .
       *
        310-SPASET-EXT.
            EXIT.
@@ -505,7 +386,7 @@
                                MOVE    "E02"             TO  SPA-SAKIPG
                                INITIALIZE                SPA-KYOTUKEY
                                INITIALIZE                SPA-WORK
-                               MOVE    SPACE             TO  LINKAREA
+                               INITIALIZE                LINKAREA
                                MOVE    SPA-KYOUTU        TO  LNK-KYOUTU
                                MOVE   "CHANGE"           TO  MCP-PUTTYPE
                                MOVE   "E02"              TO  MCP-WINDOW
@@ -559,7 +440,7 @@
            MOVE    SPACE               TO  SPA-MOTOPG2.
            MOVE    "E01"               TO  SPA-MOTOPG.
       *
-           MOVE    SPACE               TO  LINKAREA. 
+           INITIALIZE                      LINKAREA. 
            INITIALIZE                  SPA-KYOTUKEY.
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU.
       *
@@ -585,7 +466,7 @@
                GO  TO  500-SET-SCREEN-EXT
            END-IF.
       *
-           MOVE    SPACE           TO  LINKAREA.
+           INITIALIZE                  LINKAREA.
            MOVE    "CURRENT"       TO  MCP-PUTTYPE.
            MOVE    "E01"           TO  MCP-WINDOW.
       *
@@ -600,7 +481,27 @@
        500-GMNHEN-SEC              SECTION.
       *
       *     MOVE    SPACE                 TO  E01.
+      *
+           MOVE    E01-ROW1        TO     WRK-ROW1
+           MOVE    E01-ROW2        TO     WRK-ROW2
+      *
            INITIALIZE              E01.
+      *
+           IF    ( FLG-ROW1        =      1 )
+               MOVE    ZERO            TO  E01-ROW1
+               MOVE    ZERO            TO  E01-ROWATTR1
+           ELSE
+               MOVE    WRK-ROW1        TO  E01-ROW1
+               MOVE    ZERO            TO  E01-ROWATTR1
+           END-IF
+      *
+           IF    ( FLG-ROW2        =      1 )
+               MOVE    ZERO            TO  E01-ROW2
+               MOVE    ZERO            TO  E01-ROWATTR2
+           ELSE
+               MOVE    WRK-ROW2        TO  E01-ROW2
+               MOVE    ZERO            TO  E01-ROWATTR2
+           END-IF
       *
            PERFORM VARYING IDX1  FROM  1  BY 1
                    UNTIL   IDX1  >    SPA-GMN-MAX-A
@@ -730,7 +631,7 @@
            INITIALIZE                  SPA-KYOTUKEY.
            INITIALIZE                  SPA-WORK.
            MOVE    "ORCBSE1"           TO  SPA-JOB-SHELLID.
-           MOVE    SPACE               TO  LINKAREA.
+           INITIALIZE                      LINKAREA.
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU.
            MOVE    SPA-E01-AREA        TO  LNK-SCRSPA.
            MOVE   "CHANGE"             TO  MCP-PUTTYPE.
@@ -788,7 +689,7 @@
                COMPUTE  IDX3 = SPA-GMN-MAX-A + 1
       *
                PERFORM VARYING IDX1  FROM  IDX3  BY 1
-                       UNTIL   IDX1  >   90
+                       UNTIL   IDX1  >   200
                    MOVE    SPACE            TO  SPA-GMN-MSG-A (IDX1)
                    MOVE    SPACE            TO  SPA-GMN-TBL-A (IDX1)
                    MOVE    "F"              TO  SPA-GMN-BTN-A (IDX1)
@@ -827,7 +728,7 @@
                COMPUTE  IDX3 = SPA-GMN-MAX-B + 1
       *
                PERFORM VARYING IDX1  FROM  IDX3  BY 1
-                       UNTIL   IDX1  >   90
+                       UNTIL   IDX1  >   200
                    MOVE    SPACE            TO  SPA-GMN-MSG-B (IDX1)
                    MOVE    SPACE            TO  SPA-GMN-TBL-B (IDX1)
                    MOVE    "F"              TO  SPA-GMN-BTN-B (IDX1)
@@ -859,6 +760,9 @@
                MOVE    "F"             TO  SPA-GMN-BTN-A (IDX1)
            END-PERFORM.
       *
+           MOVE    1                      TO  FLG-ROW1
+                                              FLG-ROW2
+      *
            MOVE    ZERO                   TO  SPA-GMN-MAX-A.
            MOVE    SPACE                  TO  FLG-SEL.
       *
@@ -876,6 +780,9 @@
                MOVE    SPACE            TO  SPA-GMN-TBL-B (IDX1)
                MOVE    "F"              TO  SPA-GMN-BTN-B (IDX1)
            END-PERFORM.
+      *
+           MOVE    1                      TO  FLG-ROW1
+                                              FLG-ROW2
       *
            MOVE    ZERO             TO  SPA-GMN-MAX-B.
            MOVE    SPACE            TO  FLG-SEL.
@@ -950,7 +857,7 @@
        T-000-SETTABLE-SEC                SECTION.
       *
            PERFORM VARYING IDX1  FROM  1  BY 1
-                   UNTIL   IDX1  >    90
+                   UNTIL   IDX1  >    200
                IF  WK-TBL-MSG-C (IDX1)   NOT =   SPACE
                    MOVE    "F"               TO  WK-TBL-BTN-C (IDX1)
                END-IF
@@ -960,10 +867,10 @@
                PERFORM VARYING IDX1  FROM  1  BY 1
                        UNTIL   IDX1  >   SPA-GMN-MAX-B
                    PERFORM VARYING IDX2  FROM  1  BY 1
-                           UNTIL   IDX2  >   90
+                           UNTIL   IDX2  >   200
                        IF  SPA-GMN-MSG-B (IDX1)  =  WK-TBL-MSG-C (IDX2)
                            MOVE    "T"       TO  WK-TBL-BTN-C (IDX2)
-                           MOVE    91        TO  IDX2
+                           MOVE    201        TO  IDX2
                        END-IF
                    END-PERFORM
                END-PERFORM
@@ -972,7 +879,7 @@
            MOVE    ZERO             TO  IDX3.
       *
            PERFORM VARYING IDX1  FROM  1  BY 1
-                   UNTIL   IDX1  >   90
+                   UNTIL   IDX1  >   200
                EVALUATE    WK-TBL-BTN-C (IDX1)
                    WHEN    "T"
                        MOVE    "F"       TO  WK-TBL-BTN-C (IDX1)
@@ -989,7 +896,7 @@
            COMPUTE  IDX3 = SPA-GMN-MAX-A + 1.
       *
            PERFORM VARYING IDX1  FROM  IDX3  BY 1
-                   UNTIL   IDX1  >   90
+                   UNTIL   IDX1  >   200
                MOVE    SPACE            TO  SPA-GMN-MSG-A (IDX1)
                MOVE    SPACE            TO  SPA-GMN-TBL-A (IDX1)
                MOVE    "F"              TO  SPA-GMN-BTN-A (IDX1)
@@ -1044,7 +951,7 @@
       *修正/*開始*03.06.05*********************************************
                READ    EIE00-FILE
                  AT   END
-                   MOVE    91              TO  IDX1
+                   MOVE    201              TO  IDX1
                  NOT  AT  END
                    IF  (EIE00-REC(3:6)   =   "する  ")  OR
                        (EIE00-REC(3:6)   =   "しない")
@@ -1058,10 +965,10 @@
                    END-IF
                END-READ
       *修正/*終了*03.06.05*********************************************
-               PERFORM UNTIL   IDX1  >    90
+               PERFORM UNTIL   IDX1  >    200
                    READ    EIE00-FILE
                      AT   END
-                       MOVE    91       TO  IDX1
+                       MOVE    201       TO  IDX1
                      NOT  AT  END
                        MOVE    EIE00-REC(1:20)  TO  SPA-GMN-MSG-B (IDX1)
                        MOVE    EIE00-REC(26:20) TO  SPA-GMN-TBL-B (IDX1)

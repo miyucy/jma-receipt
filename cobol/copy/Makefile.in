@@ -1034,6 +1034,9 @@ COPYS = \
         HCM31V01.INC \
         HCM32V01.INC \
         CPORCXKANACONV.INC \
+        CPSTGTSCM.INC \
+        CPTGTSCM.INC \
+
 
 
 DBPATH = \

@@ -83,7 +83,7 @@
        01  EIE02PARA-NAME.
            03  FILLER               PIC  X(07) VALUE
                "record/".
-           03  EIE02-FILE-ID        PIC  X(23).
+           03  EIE02-FILE-ID        PIC  X(33).
       *
       *    データチェック シェル領域 
            COPY    "CPCOMMONSHELL5.INC".
@@ -112,6 +112,8 @@
            03  FLG-END             PIC 9(01).
            03  FLG-FIL             PIC 9(01).
            03  FLG-SEL             PIC X(01).
+           03  FLG-ROW1            PIC 9(01).
+           03  FLG-ROW2            PIC 9(01).
       *
       *    エンドステータス領域
        01  STS-AREA.
@@ -164,6 +166,10 @@
            03  WK-SEW04                    PIC  X(128).
            03  WK-SEW05                    PIC  9(05).
       *
+       01  WRK-ROW.
+           03  WRK-ROW1            PIC S9(9)   BINARY.
+           03  WRK-ROW2            PIC S9(9)   BINARY.
+      *
       *    作業テーブル名称領域
        01  WK-TBL1.
       *修正/*開始*03.06.05*********************************************
@@ -172,14 +178,14 @@
            03  WK-TBL-CHKPTMUM             PIC X(05).
            03  WK-TBL-SYSYMD               PIC X(08).
       *修正/*終了*03.06.05*********************************************
-           03  WK-TBLSET1               OCCURS  90.
+           03  WK-TBLSET1               OCCURS  200.
                05  WK-TBL-MSG              PIC X(20).
                05  WK-TBL-KBN1             PIC X(01).
                05  WK-TBL-KBN2             PIC X(01).
                05  WK-TBL-NAME             PIC X(20).
        01  WK-TBL2-S.
            03  WK-TBL2-1.
-               05  WK-TBLSET0           OCCURS  600.
+               05  WK-TBLSET0           OCCURS  900.
                    07  WK-TBL-BTN-A        PIC X(001).
                    07  WK-TBL-MSG-A        PIC X(128).
                    07  WK-TBL-BTN-B        PIC X(001).
@@ -188,7 +194,7 @@
            03  WK-TBL-MSG-KBN              PIC X(01).
       *修正/*終了*03.06.05*********************************************
            03  WK-TBL2-2.
-               05  WK-TBLSET2           OCCURS  600.
+               05  WK-TBLSET2           OCCURS  900.
                    07  WK-TBL-MSG-C.
                        09  WK-TBL-MSG-C1   PIC X(01).
                        09  WK-TBL-MSG-C2   PIC X(29).
@@ -274,6 +280,9 @@
       *
            MOVE    SPACE           TO  SPA-ERRCD.
            MOVE    ZERO            TO  FLG-END.
+      *
+           MOVE    ZERO            TO  FLG-ROW1
+                                       FLG-ROW2
       *
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
@@ -378,14 +387,14 @@
                    UNTIL   IDX9  >   SPA-GMN-MAX-A
                IF  E02-SELECT1 (IDX9)  =  "T"
                    MOVE    "A"              TO  FLG-SEL
-                   MOVE    601              TO  IDX9
+                   MOVE    901              TO  IDX9
                END-IF
            END-PERFORM.
            PERFORM VARYING IDX9  FROM  1  BY 1
                    UNTIL   IDX9  >   SPA-GMN-MAX-B
                IF  E02-SELECT2 (IDX9)  =  "T"
                    MOVE    "D"              TO  FLG-SEL
-                   MOVE    601              TO  IDX9
+                   MOVE    901              TO  IDX9
                END-IF
            END-PERFORM.
       *
@@ -443,6 +452,10 @@
       *
            MOVE    1                   TO  SPA-GMN-PAGE.
       *
+           MOVE    1                   TO  FLG-ROW1
+                                           FLG-ROW2
+           .
+      *
        310-SPASET-EXT.
            EXIT.
       *
@@ -493,11 +506,17 @@
                        PERFORM T-000-WRITCHEK-SEC
                        MOVE    SPACE               TO    SPA-ERRCD
                        PERFORM VARYING IDX1  FROM  1  BY 1
-                               UNTIL   IDX1  >    90
+                               UNTIL   IDX1  >    200
+                           DISPLAY " WK-TBL-MSG (" IDX1 ") = "
+                                     WK-TBL-MSG (IDX1)
+                                   " WK-TBL-KBN1(" IDX1 ") = "
+                                     WK-TBL-KBN1(IDX1)
+                                   " WK-TBL-KBN2(" IDX1 ") = "
+                                     WK-TBL-KBN2(IDX1)
                            IF  (WK-TBL-KBN1 (IDX1)     = "*")  AND
                                (WK-TBL-KBN2 (IDX1) NOT = "*")
                                MOVE    "0002"          TO  SPA-ERRCD
-                               MOVE    91              TO  IDX1
+      *                        MOVE    201              TO  IDX1
                            END-IF
                        END-PERFORM
                        IF  SPA-ERRCD  NOT = SPACE
@@ -596,7 +615,26 @@
        500-GMNHEN-SEC              SECTION.
       *
       *     MOVE    SPACE               TO  E02.
+           MOVE    E02-ROW1        TO     WRK-ROW1
+           MOVE    E02-ROW2        TO     WRK-ROW2
+      *
            INITIALIZE              E02.
+      *
+           IF    ( FLG-ROW1        =      1 )
+               MOVE    ZERO            TO  E02-ROW1
+               MOVE    ZERO            TO  E02-ROWATTR1
+           ELSE
+               MOVE    WRK-ROW1        TO  E02-ROW1
+               MOVE    ZERO            TO  E02-ROWATTR1
+           END-IF
+      *
+           IF    ( FLG-ROW2        =      1 )
+               MOVE    ZERO            TO  E02-ROW2
+               MOVE    ZERO            TO  E02-ROWATTR2
+           ELSE
+               MOVE    WRK-ROW2        TO  E02-ROW2
+               MOVE    ZERO            TO  E02-ROWATTR2
+           END-IF
       *
            MOVE    SPA-GMN-TBLNM       TO  E02-CHKMSG000.
            MOVE    SPA-GMN-SRYYM       TO  E02-SRYYM.
@@ -883,7 +921,7 @@
                COMPUTE  IDX8 = SPA-GMN-MAX-A + 1
       *
                PERFORM VARYING IDX9  FROM  IDX8  BY 1
-                       UNTIL   IDX9  >   600
+                       UNTIL   IDX9  >   900
                    MOVE    SPACE              TO  WK-TBL-MSG-A (IDX9)
                    MOVE    "F"                TO  WK-TBL-BTN-A (IDX9)
                END-PERFORM
@@ -920,7 +958,7 @@
                COMPUTE  IDX8 = SPA-GMN-MAX-B + 1
       *
                PERFORM VARYING IDX9  FROM  IDX8  BY 1
-                       UNTIL   IDX9  >   600
+                       UNTIL   IDX9  >   900
                    MOVE    SPACE            TO  WK-TBL-MSG-B (IDX9)
                    MOVE    "F"              TO  WK-TBL-BTN-B (IDX9)
                END-PERFORM
@@ -948,6 +986,9 @@
                MOVE    "F"        TO  WK-TBL-BTN-A (IDX9)
            END-PERFORM.
       *
+           MOVE    1                      TO  FLG-ROW1
+                                              FLG-ROW2
+      *
            MOVE    ZERO             TO  SPA-GMN-MAX-A.
            MOVE    SPACE            TO  FLG-SEL.
       *
@@ -964,6 +1005,9 @@
                MOVE    SPACE            TO  WK-TBL-MSG-B (IDX9)
                MOVE    "F"              TO  WK-TBL-BTN-B (IDX9)
            END-PERFORM.
+      *
+           MOVE    1                      TO  FLG-ROW1
+                                              FLG-ROW2
       *
            MOVE    ZERO             TO  SPA-GMN-MAX-B.
            MOVE    SPACE            TO  FLG-SEL.
@@ -1109,10 +1153,10 @@
                PERFORM VARYING IDX9  FROM  1  BY 1
                        UNTIL   IDX9  >   SPA-GMN-MAX-B
                    PERFORM VARYING IDX7  FROM  1  BY 1
-                           UNTIL   IDX7  >   600
+                           UNTIL   IDX7  >   900
                        IF  WK-TBL-MSG-B (IDX9)   =   WK-TBL-MSG-C (IDX7)
                            MOVE    "T"         TO  WK-TBL-BTN-C (IDX7)
-                           MOVE    601         TO  IDX7
+                           MOVE    901         TO  IDX7
                        END-IF
                    END-PERFORM
                END-PERFORM
@@ -1122,7 +1166,7 @@
            MOVE    ZERO             TO  SPA-GMN-MAX-A.
       *
            PERFORM VARYING IDX9  FROM  1  BY 1
-                   UNTIL   IDX9  >   600
+                   UNTIL   IDX9  >   900
                EVALUATE    WK-TBL-BTN-C (IDX9)
                    WHEN    "T"
                        MOVE    "F"         TO  WK-TBL-BTN-C (IDX9)
@@ -1137,7 +1181,7 @@
            COMPUTE  IDX8 = SPA-GMN-MAX-A + 1.
       *
            PERFORM VARYING IDX9  FROM  IDX8  BY 1
-                   UNTIL   IDX9  >   600
+                   UNTIL   IDX9  >   900
                MOVE    SPACE            TO  WK-TBL-MSG-A (IDX9)
                MOVE    "F"              TO  WK-TBL-BTN-A (IDX9)
            END-PERFORM.
@@ -1161,7 +1205,7 @@
       *修正/*開始*03.06.05*********************************************
                READ    EIE00-FILE
                  AT   END
-                   MOVE    91              TO  IDX1
+                   MOVE    201              TO  IDX1
                  NOT  AT  END
                    IF  (EIE00-REC(3:6)   =   "する  ")  OR
                        (EIE00-REC(3:6)   =   "しない")
@@ -1174,10 +1218,10 @@
                    END-IF
                END-READ
       *修正/*終了*03.06.05*********************************************
-               PERFORM UNTIL   IDX1  >    90
+               PERFORM UNTIL   IDX1  >    200
                    READ    EIE00-FILE
                      AT   END
-                       MOVE    91    TO  IDX1
+                       MOVE    201    TO  IDX1
                      NOT  AT  END
                        PERFORM T-000-READCHEK1-SEC
                    END-READ
@@ -1224,10 +1268,10 @@
                END-IF
       *
                PERFORM VARYING IDX1  FROM  1  BY 1
-                       UNTIL   IDX1  >     600
+                       UNTIL   IDX1  >     900
                    IF  WK-TBL-MSG-C (IDX1)(1:5)   =   "PTNUM"
                        MOVE    WK-TBL-MSG-C5 (IDX1)  TO  WK-TBL-CHKPTMUM
-                       MOVE    601                   TO  IDX1
+                       MOVE    901                   TO  IDX1
                    END-IF
                END-PERFORM
            END-IF.
@@ -1295,10 +1339,10 @@
                    MOVE    EIE01-REC(8:128)         TO  SPA-GMN-FILE-ID
                    MOVE    EIE01-REC(137:64)        TO  SPA-GMN-FILE-KEY
                    PERFORM VARYING IDX1  FROM  1  BY 1
-                           UNTIL   IDX1  >   600
+                           UNTIL   IDX1  >   900
                        READ    EIE01-FILE
                          AT   END
-                           MOVE    601          TO  IDX1
+                           MOVE    901          TO  IDX1
                          NOT  AT  END
                            IF  EIE01-REC(1:8)  NOT =  "SRYYM***"  AND
       *修正/*開始*03.06.05*********************************************
@@ -1333,7 +1377,7 @@
       *修正/*終了*03.06.05*********************************************
       *
            PERFORM VARYING IDX1  FROM  1  BY 1
-                   UNTIL   IDX1  >    90
+                   UNTIL   IDX1  >    200
                IF  WK-TBL-MSG (IDX1)   NOT =   SPACE
                    MOVE    SPACE                   TO  EIE00-REC
                    MOVE    WK-TBL-MSG (IDX1)       TO  EIE00-REC(1:20)
@@ -1383,13 +1427,13 @@
                (SPA-GMN-FILE-KEY(1:10) = "PTTEIKIRRK")
       *修正/*終了*03.05.12*********************************************
                PERFORM VARYING IDX1  FROM  1  BY 1
-                       UNTIL   IDX1  >     600
+                       UNTIL   IDX1  >     900
                    IF  WK-TBL-MSG-C (IDX1)(1:5)   =   "SRYYM"
                        MOVE    SPACE                 TO  EIE01-REC
                        MOVE    WK-TBL-MSG-C (IDX1)   TO  EIE01-REC
                        MOVE    "SRYYM***"            TO  EIE01-REC(1:8)
                        WRITE   EIE01-REC
-                       MOVE    601                   TO  IDX1
+                       MOVE    901                   TO  IDX1
                    END-IF
                END-PERFORM
            END-IF.
@@ -1398,13 +1442,13 @@
            IF  (WK-TBL-CHKBTN01  = "T")      AND
                (WK-TBL-MSG-KBN   = "T")
                PERFORM VARYING IDX1  FROM  1  BY 1
-                       UNTIL   IDX1  >     600
+                       UNTIL   IDX1  >     900
                    IF  WK-TBL-MSG-C (IDX1)(1:6)   =   "HOSPID"
                        MOVE    SPACE                 TO  EIE01-REC
                        MOVE    WK-TBL-MSG-C (IDX1)   TO  EIE01-REC
                        MOVE    "HOSPID**"            TO  EIE01-REC(1:8)
                        WRITE   EIE01-REC
-                       MOVE    601                   TO  IDX1
+                       MOVE    901                   TO  IDX1
                    END-IF
                END-PERFORM
            END-IF.
@@ -1434,19 +1478,19 @@
            MOVE    ZERO                  TO  IDX2.
       *
            PERFORM VARYING IDX1  FROM  IDX3  BY 1
-                   UNTIL   IDX1  >    90
+                   UNTIL   IDX1  >    200
                IF  WK-TBL-KBN1 (IDX1)   =   "*"
                    MOVE    IDX1                  TO  IDX2
-                   MOVE    91                    TO  IDX1
+                   MOVE    201                    TO  IDX1
                END-IF
            END-PERFORM.
       *
            IF  IDX2   =   ZERO
                PERFORM VARYING IDX1  FROM  1  BY 1
-                       UNTIL   IDX1  >    90
+                       UNTIL   IDX1  >    200
                    IF  WK-TBL-KBN1 (IDX1)   =   "*"
                        MOVE    IDX1                  TO  IDX2
-                       MOVE    91                    TO  IDX1
+                       MOVE    201                    TO  IDX1
                    END-IF
                END-PERFORM
            END-IF.
@@ -1466,7 +1510,11 @@
                    ".SLT"                DELIMITED  BY    SIZE
                                          INTO       EIE01PARA-FILE.
            INITIALIZE                    ORCSMKPASSAREA.
-           MOVE    WK-TBL-NAME (IDX2)    TO  EIE02-FILE-ID.
+           MOVE    SPACE                 TO  EIE02-FILE-ID.
+           STRING  WK-TBL-NAME (IDX2)    DELIMITED  BY  SPACE
+                   ".db"                 DELIMITED  BY  SIZE
+           INTO    EIE02-FILE-ID
+           END-STRING
            MOVE    EIE02PARA-NAME        TO  MKPASS-IN-01.
            CALL    "ORCSMKPASS"          USING   ORCSMKPASSAREA.
            MOVE    MKPASS-OT-01          TO  EIE02PARA.
@@ -1479,6 +1527,10 @@
            STRING  WK-TBL-MSG (IDX2)     DELIMITED  BY    SPACE
                    "-ALL"                DELIMITED  BY    SIZE
                                          INTO       SPA-GMN-FILE-KEY.
+      *
+           IF    ( WK-TBL-MSG (IDX2)     =   "JYURRK-PRV" )
+               MOVE    "JYURRK-PRV-ALL3" TO  SPA-GMN-FILE-KEY
+           END-IF
       *
            MOVE    1                     TO  IDX4.
            MOVE    1                     TO  IDY1.

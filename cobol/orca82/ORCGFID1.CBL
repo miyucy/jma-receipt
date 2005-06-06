@@ -49,13 +49,14 @@
                05  SPA-GMN-PAGE               PIC 9(02).
                05  SPA-GMN-MAX-A              PIC 9(03).
                05  SPA-GMN-MAX-B              PIC 9(03).
-               05  SPA-GMN-CUR                PIC 9(02).
+               05  SPA-GMN-CUR                PIC 9(03).
                05  SPA-GMN-KBN                PIC X(02).
                05  SPA-GMN-RUN                PIC 9(01).
                05  SPA-GMN-AREA.
                    07  SPA-GMN-FILE-ID        PIC X(128).
                    07  SPA-GMN-TBLG.
-                       09  SPA-GNM-TBL2       OCCURS  90.
+                       09  SPA-GNM-TBL2       OCCURS  120.
+                           11  SPA-GMN-NO     PIC 9(03).
                            11  SPA-GMN-MSG    PIC X(30).
                            11  SPA-GMN-BTN    PIC X(01).
                05  SPA-NAI-AREA.

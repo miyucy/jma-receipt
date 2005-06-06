@@ -15,11 +15,16 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-        02  F01.
-            03  F01-FIXED6.
-              04  F01-FILENAME.
-                05  F01-VALUE   PIC X(129).
-              04  F01-CHKBTN    OCCURS  120  TIMES.
-                05  F01-VALUE1  PIC X.
-              04  F01-CHKMSG    OCCURS  120  TIMES.
-                05  F01-VALUE2  PIC X(30).
+      *****************************************************************
+      *    データ出力対象スキーマ一覧  COPY (CPSTGTSCM.INC)           *
+      *****************************************************************
+      *****************************************************************
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *****************************************************************
+       01  STGTSCM-AREA.
+           03  STGTSCM-OCC  OCCURS 200.
+               05  STGTSCM-NO      PIC 9(03).
+               05  STGTSCM-ID      PIC X(20).
+               05  STGTSCM-NAME    PIC X(20).
+           03  STGTSCM-MAX         PIC 9(05).

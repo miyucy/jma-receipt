@@ -7,8 +7,8 @@ E01	{
 				rowattr int;
 				item	{
 					value1	char(25);
-				}	[90];
-				select	bool[90];
+				}	[200];
+				select	bool[200];
 			};
 		};
 		scrolledwindow2	{
@@ -18,8 +18,8 @@ E01	{
 				rowattr int;
 				item	{
 					value1	char(25);
-				}	[90];
-				select	bool[90];
+				}	[200];
+				select	bool[200];
 			};
 		};
 		CHKBTN01	{

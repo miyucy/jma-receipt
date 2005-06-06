@@ -3,274 +3,364 @@ F01	{
 		FILENAME	{
 			value	varchar(129);
 		};
-		CHKBTN1	{
+		CHKBTN001	{
 			value	bool;
         	};
-		CHKBTN2	{
+		CHKBTN002	{
 			value	bool;
 		};
-		CHKBTN3	{
+		CHKBTN003	{
 			value	bool;
 		};
-		CHKBTN4	{
+		CHKBTN004	{
 			value	bool;
 		};
-		CHKBTN5	{
+		CHKBTN005	{
 			value	bool;
 		};
-		CHKBTN6	{
+		CHKBTN006	{
 			value	bool;
 		};
-		CHKBTN7	{
+		CHKBTN007	{
 			value	bool;
 		};
-		CHKBTN8	{
+		CHKBTN008	{
 			value	bool;
 		};
-		CHKBTN9	{
+		CHKBTN009	{
 			value	bool;
 		};
-		CHKBTN10	{
+		CHKBTN010	{
 			value	bool;
 		};
-		CHKBTN11	{
+		CHKBTN011	{
 			value	bool;
 		};
-		CHKBTN12	{
+		CHKBTN012	{
 			value	bool;
 		};
-		CHKBTN13	{
+		CHKBTN013	{
 			value	bool;
 		};
-		CHKBTN14	{
+		CHKBTN014	{
 			value	bool;
 		};
-		CHKBTN15	{
+		CHKBTN015	{
 			value	bool;
 		};
-		CHKBTN16	{
+		CHKBTN016	{
 			value	bool;
 		};
-		CHKBTN17	{
+		CHKBTN017	{
 			value	bool;
 		};
-		CHKBTN18	{
+		CHKBTN018	{
 			value	bool;
 		};
-		CHKBTN19	{
+		CHKBTN019	{
 			value	bool;
 		};
-		CHKBTN20	{
+		CHKBTN020	{
 			value	bool;
 		};
-		CHKBTN21	{
+		CHKBTN021	{
 			value	bool;
 		};
-		CHKBTN22	{
+		CHKBTN022	{
 			value	bool;
 		};
-		CHKBTN23	{
+		CHKBTN023	{
 			value	bool;
 		};
-		CHKBTN24	{
+		CHKBTN024	{
 			value	bool;
 		};
-		CHKBTN25	{
+		CHKBTN025	{
 			value	bool;
 		};
-		CHKBTN26	{
+		CHKBTN026	{
 			value	bool;
 		};
-		CHKBTN27	{
+		CHKBTN027	{
 			value	bool;
 		};
-		CHKBTN28	{
+		CHKBTN028	{
 			value	bool;
 		};
-		CHKBTN29	{
+		CHKBTN029	{
 			value	bool;
 		};
-		CHKBTN30	{
+		CHKBTN030	{
 			value	bool;
 		};
-		CHKBTN31	{
+		CHKBTN031	{
 			value	bool;
 		};
-		CHKBTN32	{
+		CHKBTN032	{
 			value	bool;
 		};
-		CHKBTN33	{
+		CHKBTN033	{
 			value	bool;
 		};
-		CHKBTN34	{
+		CHKBTN034	{
 			value	bool;
 		};
-		CHKBTN35	{
+		CHKBTN035	{
 			value	bool;
 		};
-		CHKBTN36	{
+		CHKBTN036	{
 			value	bool;
 		};
-		CHKBTN37	{
+		CHKBTN037	{
 			value	bool;
 		};
-		CHKBTN38	{
+		CHKBTN038	{
 			value	bool;
 		};
-		CHKBTN39	{
+		CHKBTN039	{
 			value	bool;
 		};
-		CHKBTN40	{
+		CHKBTN040	{
 			value	bool;
 		};
-		CHKBTN41	{
+		CHKBTN041	{
 			value	bool;
 		};
-		CHKBTN42	{
+		CHKBTN042	{
 			value	bool;
 		};
-		CHKBTN43	{
+		CHKBTN043	{
 			value	bool;
 		};
-		CHKBTN44	{
+		CHKBTN044	{
 			value	bool;
 		};
-		CHKBTN45	{
+		CHKBTN045	{
 			value	bool;
 		};
-		CHKBTN46	{
+		CHKBTN046	{
 			value	bool;
 		};
-		CHKBTN47	{
+		CHKBTN047	{
 			value	bool;
 		};
-		CHKBTN48	{
+		CHKBTN048	{
 			value	bool;
 		};
-		CHKBTN49	{
+		CHKBTN049	{
 			value	bool;
 		};
-		CHKBTN50	{
+		CHKBTN050	{
 			value	bool;
 		};
-		CHKBTN51	{
+		CHKBTN051	{
 			value	bool;
 		};
-		CHKBTN52	{
+		CHKBTN052	{
 			value	bool;
 		};
-		CHKBTN53	{
+		CHKBTN053	{
 			value	bool;
 		};
-		CHKBTN54	{
+		CHKBTN054	{
 			value	bool;
 		};
-		CHKBTN55	{
+		CHKBTN055	{
 			value	bool;
 		};
-		CHKBTN56	{
+		CHKBTN056	{
 			value	bool;
 		};
-		CHKBTN57	{
+		CHKBTN057	{
 			value	bool;
 		};
-		CHKBTN58	{
+		CHKBTN058	{
 			value	bool;
 		};
-		CHKBTN59	{
+		CHKBTN059	{
 			value	bool;
 		};
-		CHKBTN60	{
+		CHKBTN060	{
 			value	bool;
 		};
-		CHKBTN61	{
+		CHKBTN061	{
 			value	bool;
 		};
-		CHKBTN62	{
+		CHKBTN062	{
 			value	bool;
 		};
-		CHKBTN63	{
+		CHKBTN063	{
 			value	bool;
 		};
-		CHKBTN64	{
+		CHKBTN064	{
 			value	bool;
 		};
-		CHKBTN65	{
+		CHKBTN065	{
 			value	bool;
 		};
-		CHKBTN66	{
+		CHKBTN066	{
 			value	bool;
 		};
-		CHKBTN67	{
+		CHKBTN067	{
 			value	bool;
 		};
-		CHKBTN68	{
+		CHKBTN068	{
 			value	bool;
 		};
-		CHKBTN69	{
+		CHKBTN069	{
 			value	bool;
 		};
-		CHKBTN70	{
+		CHKBTN070	{
 			value	bool;
 		};
-		CHKBTN71	{
+		CHKBTN071	{
 			value	bool;
 		};
-		CHKBTN72	{
+		CHKBTN072	{
 			value	bool;
 		};
-		CHKBTN73	{
+		CHKBTN073	{
 			value	bool;
 		};
-		CHKBTN74	{
+		CHKBTN074	{
 			value	bool;
 		};
-		CHKBTN75	{
+		CHKBTN075	{
 			value	bool;
 		};
-		CHKBTN76	{
+		CHKBTN076	{
 			value	bool;
 		};
-		CHKBTN77	{
+		CHKBTN077	{
 			value	bool;
 		};
-		CHKBTN78	{
+		CHKBTN078	{
 			value	bool;
 		};
-		CHKBTN79	{
+		CHKBTN079	{
 			value	bool;
 		};
-		CHKBTN80	{
+		CHKBTN080	{
 			value	bool;
 		};
-		CHKBTN81	{
+		CHKBTN081	{
 			value	bool;
 		};
-		CHKBTN82	{
+		CHKBTN082	{
 			value	bool;
 		};
-		CHKBTN83	{
+		CHKBTN083	{
 			value	bool;
 		};
-		CHKBTN84	{
+		CHKBTN084	{
 			value	bool;
 		};
-		CHKBTN85	{
+		CHKBTN085	{
 			value	bool;
 		};
-		CHKBTN86	{
+		CHKBTN086	{
 			value	bool;
 		};
-		CHKBTN87	{
+		CHKBTN087	{
 			value	bool;
 		};
-		CHKBTN88	{
+		CHKBTN088	{
 			value	bool;
 		};
-		CHKBTN89	{
+		CHKBTN089	{
 			value	bool;
 		};
-		CHKBTN90	{
+		CHKBTN090	{
+			value	bool;
+		};
+		CHKBTN091	{
+			value	bool;
+		};
+		CHKBTN092	{
+			value	bool;
+		};
+		CHKBTN093	{
+			value	bool;
+		};
+		CHKBTN094	{
+			value	bool;
+		};
+		CHKBTN095	{
+			value	bool;
+		};
+		CHKBTN096	{
+			value	bool;
+		};
+		CHKBTN097	{
+			value	bool;
+		};
+		CHKBTN098	{
+			value	bool;
+		};
+		CHKBTN099	{
+			value	bool;
+		};
+		CHKBTN100	{
+			value	bool;
+		};
+		CHKBTN101	{
+			value	bool;
+		};
+		CHKBTN102	{
+			value	bool;
+		};
+		CHKBTN103	{
+			value	bool;
+		};
+		CHKBTN104	{
+			value	bool;
+		};
+		CHKBTN105	{
+			value	bool;
+		};
+		CHKBTN106	{
+			value	bool;
+		};
+		CHKBTN107	{
+			value	bool;
+		};
+		CHKBTN108	{
+			value	bool;
+		};
+		CHKBTN109	{
+			value	bool;
+		};
+		CHKBTN110	{
+			value	bool;
+		};
+		CHKBTN111	{
+			value	bool;
+		};
+		CHKBTN112	{
+			value	bool;
+		};
+		CHKBTN113	{
+			value	bool;
+		};
+		CHKBTN114	{
+			value	bool;
+		};
+		CHKBTN115	{
+			value	bool;
+		};
+		CHKBTN116	{
+			value	bool;
+		};
+		CHKBTN117	{
+			value	bool;
+		};
+		CHKBTN118	{
+			value	bool;
+		};
+		CHKBTN119	{
+			value	bool;
+		};
+		CHKBTN120	{
 			value	bool;
 		};
 		CHKMSG01	{
@@ -541,6 +631,96 @@ F01	{
 			value	char(30);
 		};
 		CHKMSG90	{
+			value	char(30);
+		};
+		CHKMSG91	{
+			value	char(30);
+		};
+		CHKMSG92	{
+			value	char(30);
+		};
+		CHKMSG93	{
+			value	char(30);
+		};
+		CHKMSG94	{
+			value	char(30);
+		};
+		CHKMSG95	{
+			value	char(30);
+		};
+		CHKMSG96	{
+			value	char(30);
+		};
+		CHKMSG97	{
+			value	char(30);
+		};
+		CHKMSG98	{
+			value	char(30);
+		};
+		CHKMSG99	{
+			value	char(30);
+		};
+		CHKMSG100	{
+			value	char(30);
+		};
+		CHKMSG101	{
+			value	char(30);
+		};
+		CHKMSG102	{
+			value	char(30);
+		};
+		CHKMSG103	{
+			value	char(30);
+		};
+		CHKMSG104	{
+			value	char(30);
+		};
+		CHKMSG105	{
+			value	char(30);
+		};
+		CHKMSG106	{
+			value	char(30);
+		};
+		CHKMSG107	{
+			value	char(30);
+		};
+		CHKMSG108	{
+			value	char(30);
+		};
+		CHKMSG109	{
+			value	char(30);
+		};
+		CHKMSG110	{
+			value	char(30);
+		};
+		CHKMSG111	{
+			value	char(30);
+		};
+		CHKMSG112	{
+			value	char(30);
+		};
+		CHKMSG113	{
+			value	char(30);
+		};
+		CHKMSG114	{
+			value	char(30);
+		};
+		CHKMSG115	{
+			value	char(30);
+		};
+		CHKMSG116	{
+			value	char(30);
+		};
+		CHKMSG117	{
+			value	char(30);
+		};
+		CHKMSG118	{
+			value	char(30);
+		};
+		CHKMSG119	{
+			value	char(30);
+		};
+		CHKMSG120	{
 			value	char(30);
 		};
 	};

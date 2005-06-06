@@ -138,13 +138,13 @@
            03  WK-TBL-CHKPTMUM         PIC X(05).
            03  WK-TBL-SYSYMD           PIC X(08).
       *修正/*終了*03.06.05*********************************************
-           03  WK-TBLSET       OCCURS  90.
+           03  WK-TBLSET       OCCURS  200.
                05  WK-TBL-MSG          PIC X(20).
                05  WK-TBL-KBN1         PIC X(01).
                05  WK-TBL-KBN2         PIC X(01).
                05  WK-TBL-NAME         PIC X(20).
        01  WK-TBL2.
-           03  WK-TBLRET       OCCURS  600.
+           03  WK-TBLRET       OCCURS  900.
                05  WK-TBL-RMSG.
                    07  WK-TBL-RMSG-1   PIC X(01).
                    07  WK-TBL-RMSG-2   PIC X(29).
@@ -271,7 +271,7 @@
       *修正/*開始*03.06.05*********************************************
                READ    EIE00-FILE
                  AT   END
-                   MOVE    91              TO  IDX1
+                   MOVE    201              TO  IDX1
                  NOT  AT  END
                    IF  (EIE00-REC(3:6)   =   "する  ")  OR
                        (EIE00-REC(3:6)   =   "しない")
@@ -288,10 +288,10 @@
                    END-IF
                END-READ
       *修正/*終了*03.06.05*********************************************
-               PERFORM UNTIL   IDX1  >    90
+               PERFORM UNTIL   IDX1  >    200
                    READ  EIE00-FILE
                      AT   END
-                       MOVE    91       TO  IDX1
+                       MOVE    201       TO  IDX1
                      NOT  AT  END
                        MOVE    EIE00-REC(1:20)   TO  WK-TBL-MSG (IDX1)
                        MOVE    EIE00-REC(22:1)   TO  WK-TBL-KBN1 (IDX1)
@@ -347,7 +347,7 @@
        T-000-CSVSAKUS-SEC              SECTION.
       *
            PERFORM VARYING IDX2  FROM  1  BY 1
-                   UNTIL   IDX2  >    90
+                   UNTIL   IDX2  >    201
                IF  (WK-TBL-KBN1 (IDX2)    =   "*")  AND
                    (WK-TBL-KBN2 (IDX2)    =   "*")
                        PERFORM T-001-CSVWRITE-SEC
@@ -436,7 +436,7 @@
                        MOVE    1                   TO  IDX4
                        PERFORM T-001-TBLCNVAT-01-SEC
                                VARYING IDX1  FROM  1  BY 1
-                               UNTIL   IDX1  >   600
+                               UNTIL   IDX1  >   900
                        PERFORM T-001-WRITWRIT-01-SEC
                        PERFORM T-001-TBLFETCH-01-SEC
                    END-PERFORM
@@ -524,7 +524,7 @@
        T-001-TBLCNVAT-01-SEC             SECTION.
       *
            IF  WK-TBL-RMSG (IDX1)   =   SPACE
-               MOVE    601                         TO  IDX1
+               MOVE    901                         TO  IDX1
            ELSE
                PERFORM T-001-TBLCNVAT-02-SEC
            END-IF.
