@@ -142,6 +142,7 @@
       *                                     る記載外公費の給付割合、特記
       *                                     事項の編集を追加
       *  01.06.09    NACL-門脇    05/05/26  手術・麻酔の記載順変更対応
+      *  01.06.10    NACL-門脇    05/06/06  ワーク項目桁数修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -472,7 +473,7 @@
            03  WRK-KAKSU-OCC               OCCURS  4.
                05  WRK-KAISU               PIC 9(03).  
            03  WRK-KAISU1                  PIC 9(02).
-           03  WRK-KAISU2                  PIC 9(02).
+           03  WRK-KAISU2                  PIC 9(03).
        01  WRK-HOUKNSKBN                   PIC 9(01).
        01  WRK-KOHBUNRI                    PIC 9(01).
        01  WRK-KENSA-SU                    PIC 9(03).

@@ -52,6 +52,7 @@
       *                                     場合の編集の修正
       *  01.02.08    NACL-門脇    05/05/20  入院点滴種別追加に伴う修正
       *  01.02.09    NACL-門脇    05/05/26  手術・麻酔の記載順変更対応
+      *  01.02.10    NACL-門脇    05/06/06  ワーク項目桁数修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -296,7 +297,7 @@
            03  WRK-KAKSU-OCC               OCCURS  4.
                05  WRK-KAISU               PIC 9(03).  
            03  WRK-KAISU1                  PIC 9(02).
-           03  WRK-KAISU2                  PIC 9(02).
+           03  WRK-KAISU2                  PIC 9(03).
        01  WRK-HOUKNSKBN                   PIC 9(01).
        01  WRK-KENSA-SU                    PIC 9(03).
       *
