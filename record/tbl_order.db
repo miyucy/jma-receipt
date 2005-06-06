@@ -165,6 +165,7 @@ path	all 	{
 	DBSELECT	{
 		DECLARE tbl_order_all_csr CURSOR FOR
 		SELECT *
+		FROM tbl_order
 		;
 	};
 };
