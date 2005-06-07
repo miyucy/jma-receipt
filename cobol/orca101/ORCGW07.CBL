@@ -65,6 +65,8 @@
       *                                     同一病名警告メッセージ表示
       *                                     有無区分
       *                                     の追加
+      *  02.01.19    NACL-多々納  05/06/06  中途終了展開時の自動発生
+      *                                     薬剤情報提供料チェック追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -101,7 +103,7 @@
                            11  SPA-GMN-DATA-G.
                                13  SPA-GMN-DATA        PIC X(01).
                                13  SPA-GMN-F1          PIC X(01).
-                               13  SPA-GMN-DATAMEI     PIC X(10).
+                               13  SPA-GMN-DATAMEI     PIC X(20).
       *
       *                自動算定科
                        09  SPA-GMN-SRYKACD             PIC X(02).
@@ -125,6 +127,12 @@
       *
       *                相互作用チェック期間
                        09  SPA-GMN-INTERACT-KIKAN      PIC 9(02).
+      *
+      *                中途終了展開時の自動発生
+                       09  SPA-GMN-CHUTOTENKAI-G.
+                           11  SPA-GMN-CHUTOTENKAI       PIC X(01).
+                           11  SPA-GMN-CHUTO             PIC X(01).
+                           11  SPA-GMN-CHUTOTENKAIMEI    PIC X(10).
       *
       *                外来管理加算チェック
                        09  SPA-GMN-GAIKANRIKBN-G.
@@ -199,6 +207,14 @@
                            11  SPA-GMN-CLEARCHK-MEI        PIC X(20).
                        09  SPA-GMN-CLEARCHK-COMB.
                            11  SPA-GMN-CLEARCHK-LIST       PIC X(20)
+                                                           OCCURS  2.
+      *                薬剤情報提供料チェック
+                       09  SPA-GMN-YAKJYOCHK-G.
+                           11  SPA-GMN-YAKJYOCHK           PIC X(01).
+                           11  SPA-GMN-YAKJYOCHK-F1        PIC X(01).
+                           11  SPA-GMN-YAKJYOCHK-MEI       PIC X(20).
+                       09  SPA-GMN-YAKJYOCHK-COMB.
+                           11  SPA-GMN-YAKJYOCHK-LIST      PIC X(20)
                                                            OCCURS  2.
       *
                    07  SPA-GMN-PAGE2-AREA.
@@ -407,6 +423,12 @@
                        09  SPA-GMN-F1L        PIC X(01).
                        09  SPA-GMN-DATAMEIL   PIC X(10).
                    07  SPA-GMN-DATA-MAX       PIC 9(02).
+      *
+                   07  SPA-GMN-DATALST2       OCCURS  3.
+                       09  SPA-GMN-DATAL2     PIC X(01).
+                       09  SPA-GMN-F1L2       PIC X(01).
+                       09  SPA-GMN-DATAMEIL2  PIC X(20).
+                   07  SPA-GMN-DATA-MAX2      PIC 9(02).
       *
                05  SPA-NAIB-AREA.
                    07  SPA-NAI-STYUKYMD       PIC 9(08).
@@ -630,24 +652,24 @@
            ELSE
       *        初期画面セット
                PERFORM 300-SCREEN-SEC
-               IF      FLG-END             =   1
-                   GO  TO  100-INIT-EXT
-               END-IF
       *        画面編集
-               PERFORM 500-GMNHEN-SEC
-               PERFORM 510-GSRAUTH-SEC
+               IF      FLG-END             =   ZERO
+                   PERFORM 500-GMNHEN-SEC
+                   PERFORM 510-GSRAUTH-SEC
+               END-IF
                IF      SPA-ERRCD       NOT =   SPACE
                    PERFORM 510-ERRSET-SEC
-                   GO  TO  100-INIT-EXT
                END-IF
            END-IF
       *
-           MOVE    SPACE                TO  LINKAREA
+           IF      FLG-END             =   ZERO
+               MOVE    SPACE                TO  LINKAREA
       *
-           MOVE    SPACE                TO  MCP-PUTTYPE
-           MOVE    "W07"                TO  MCP-WINDOW
-           PERFORM 900-PUT-WINDOW
-           MOVE    1                    TO  FLG-END
+               MOVE    SPACE                TO  MCP-PUTTYPE
+               MOVE    "W07"                TO  MCP-WINDOW
+               PERFORM 900-PUT-WINDOW
+               MOVE    1                    TO  FLG-END
+           END-IF
            .
        100-INIT-EXT.
            EXIT.
@@ -745,6 +767,16 @@
            MOVE    "1"                 TO  SPA-GMN-DATAL(2)
            MOVE    "算定する"          TO  SPA-GMN-DATAMEIL(2)
            MOVE    2                   TO  SPA-GMN-DATA-MAX
+      *    薬剤情報提供料
+           MOVE    "0"                 TO  SPA-GMN-DATAL2(1)
+           MOVE    "算定しない"        TO  SPA-GMN-DATAMEIL2(1)
+           MOVE    "1"                 TO  SPA-GMN-DATAL2(2)
+           MOVE    "算定する（月１回）"
+                                       TO  SPA-GMN-DATAMEIL2(2)
+           MOVE    "2"                 TO  SPA-GMN-DATAL2(3)
+           MOVE    "算定する（毎回）" 
+                                       TO  SPA-GMN-DATAMEIL2(3)
+           MOVE    3                   TO  SPA-GMN-DATA-MAX2
       *
            MOVE    "0 チェックなし"    TO  SPA-GMN-GAIKANRIKBN-LIST(1)
            MOVE    "1 チェックあり"    TO  SPA-GMN-GAIKANRIKBN-LIST(2)
@@ -781,6 +813,11 @@
                                        TO  SPA-GMN-CLEARCHK-LIST(1)
            MOVE    "1 チェックする"
                                        TO  SPA-GMN-CLEARCHK-LIST(2)
+      *    薬剤情報提供料チェック
+           MOVE    "0 チェックしない"
+                                       TO  SPA-GMN-YAKJYOCHK-LIST(1)
+           MOVE    "1 チェックする"
+                                       TO  SPA-GMN-YAKJYOCHK-LIST(2)
       *
            MOVE    "0 すべての病名"    TO  SPA-GMN-BYOMEIKBN-LIST(1)
            MOVE    "1 継続病名のみ"    TO  SPA-GMN-BYOMEIKBN-LIST(2)
@@ -921,15 +958,29 @@
                        UNTIL   IDX >       6
                    MOVE    SYS-1007-SANTEI(IDX:1)
                                                TO  SPA-GMN-DATA(IDX)
-                   PERFORM VARYING IDY     FROM    1   BY  1
-                           UNTIL   IDY     >   SPA-GMN-DATA-MAX
-                       IF      SPA-GMN-DATA(IDX)
-                                           =   SPA-GMN-DATAL(IDY)
-                           MOVE    SPA-GMN-DATALST(IDY)
+                   IF      IDX             =   2   OR  3  OR  4
+      *            薬剤情報提供料
+                       PERFORM VARYING IDY     FROM    1   BY  1
+                               UNTIL   IDY     >   SPA-GMN-DATA-MAX2
+                           IF      SPA-GMN-DATA(IDX)
+                                               =   SPA-GMN-DATAL2(IDY)
+                               MOVE    SPA-GMN-DATALST2(IDY)
                                                TO SPA-GMN-DATA-G(IDX)
-                           MOVE    SPA-GMN-DATA-MAX   TO  IDY
-                       END-IF
-                   END-PERFORM
+                               MOVE    SPA-GMN-DATA-MAX2   TO  IDY
+                           END-IF
+                       END-PERFORM
+                   ELSE
+      *            薬剤情報提供料以外
+                       PERFORM VARYING IDY     FROM    1   BY  1
+                               UNTIL   IDY     >   SPA-GMN-DATA-MAX
+                           IF      SPA-GMN-DATA(IDX)
+                                               =   SPA-GMN-DATAL(IDY)
+                               MOVE    SPA-GMN-DATALST(IDY)
+                                               TO SPA-GMN-DATA-G(IDX)
+                               MOVE    SPA-GMN-DATA-MAX   TO  IDY
+                           END-IF
+                       END-PERFORM
+                   END-IF
                END-PERFORM
            END-IF
       *
@@ -988,6 +1039,9 @@
       *        クリア確認
                MOVE    SYS-1008-CLEARCHK-FLG
                                        TO  SPA-GMN-CLEARCHK
+      *        薬剤情報提供料チェック
+               MOVE    SYS-1008-YAKJYOCHK-FLG
+                                       TO  SPA-GMN-YAKJYOCHK
       *        最終受診日からの期間
                IF      SYS-1008-LAST-KIKAN-X =   SPACE
                    MOVE    ZERO            TO  SYS-1008-LAST-KIKAN
@@ -1001,6 +1055,9 @@
       *        画像診断管理加算１
                MOVE    SYS-1008-GAZOUKSN1-FLG
                                        TO  SPA-GMN-GAZOUKSN1
+      *        中途終了展開時の自動発生
+               MOVE    SYS-1008-CHUTOTENKAI-FLG
+                                       TO  SPA-GMN-CHUTOTENKAI
       *
       *        時間外加算チェック
                MOVE    SYS-1008-JIKANTOKU-CHK
@@ -1073,11 +1130,21 @@
       *    初期設定
            PERFORM VARYING IDX    FROM     1   BY  1
                    UNTIL   IDX    >   7
-               IF     SPA-GMN-DATA (IDX)   =   "0"  OR  "1"
-                   CONTINUE
-               ELSE
-                   MOVE    SPA-GMN-DATALST(01)
+               IF      IDX             =   2   OR  3  OR  4
+                   IF     SPA-GMN-DATA (IDX)   =   "0"  OR  "1"
+                                                        OR  "2"
+                       CONTINUE
+                   ELSE
+                       MOVE    SPA-GMN-DATALST2(01)
                                        TO  SPA-GMN-DATA-G(IDX)
+                   END-IF
+               ELSE
+                   IF     SPA-GMN-DATA (IDX)   =   "0"  OR  "1"
+                       CONTINUE
+                   ELSE
+                       MOVE    SPA-GMN-DATALST(01)
+                                       TO  SPA-GMN-DATA-G(IDX)
+                   END-IF
                END-IF
            END-PERFORM
       *
@@ -1124,7 +1191,7 @@
                MOVE    SPA-GMN-DATALST(01) TO SPA-GMN-JIKANTOKU-NYU-G
            END-IF
       *
-      *    画像診断管理加算１
+      *    画像診断管理加算
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING IDY         FROM    1   BY  1
                    UNTIL   IDY         >   SPA-GMN-DATA-MAX
@@ -1139,6 +1206,23 @@
       *    初期値は’１’とする
            IF      FLG-OK              =   ZERO
                MOVE    SPA-GMN-DATALST(02) TO SPA-GMN-GAZOUKSN1-G
+           END-IF
+      *
+      *    中途終了展開時の自動発生
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-GMN-DATA-MAX
+               IF      SPA-GMN-CHUTOTENKAI
+                                       =   SPA-GMN-DATAL(IDY)
+                   MOVE    SPA-GMN-DATALST(IDY)
+                                           TO SPA-GMN-CHUTOTENKAI-G
+                   MOVE    1                   TO  FLG-OK
+                   MOVE    SPA-GMN-DATA-MAX    TO  IDY
+               END-IF
+           END-PERFORM
+      *    初期値は’１’とする
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-DATALST(02) TO SPA-GMN-CHUTOTENKAI-G
            END-IF
       *
       *    包括まとめ
@@ -1217,6 +1301,21 @@
                 WHEN    OTHER
                     MOVE    SPA-GMN-CLEARCHK-LIST(1)
                                                TO  SPA-GMN-CLEARCHK-G
+            END-EVALUATE
+      *    薬剤情報提供料チェック
+           IF      SPA-GMN-YAKJYOCHK  =   SPACE
+               MOVE    "1"            TO  SPA-GMN-YAKJYOCHK
+           END-IF
+           EVALUATE    SPA-GMN-YAKJYOCHK
+                WHEN    "0"
+                    MOVE    SPA-GMN-YAKJYOCHK-LIST(1)
+                                               TO  SPA-GMN-YAKJYOCHK-G
+                WHEN    "1"
+                    MOVE    SPA-GMN-YAKJYOCHK-LIST(2)
+                                               TO  SPA-GMN-YAKJYOCHK-G
+                WHEN    OTHER
+                    MOVE    SPA-GMN-YAKJYOCHK-LIST(2)
+                                               TO  SPA-GMN-YAKJYOCHK-G
             END-EVALUATE
       *
       *     診療科コードセット
@@ -1764,15 +1863,24 @@
        4101-GMN-SPA-SET-SEC        SECTION.
       *
       *    自動算定情報
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   7
-               MOVE    W07-DATA (IDX)      TO  SPA-GMN-DATA-G (IDX)
-           END-PERFORM
+      *    PERFORM VARYING     IDX     FROM    1   BY  1
+      *            UNTIL       IDX     >   7
+      *        MOVE    W07-DATA (IDX)      TO  SPA-GMN-DATA-G (IDX)
+      *    END-PERFORM
+           MOVE    W07-DATA01          TO  SPA-GMN-DATA-G (01)
+           MOVE    W07-DATA02          TO  SPA-GMN-DATA-G (02)
+           MOVE    W07-DATA03          TO  SPA-GMN-DATA-G (03)
+           MOVE    W07-DATA04          TO  SPA-GMN-DATA-G (04)
+           MOVE    W07-DATA05          TO  SPA-GMN-DATA-G (05)
+           MOVE    W07-DATA06          TO  SPA-GMN-DATA-G (06)
+           MOVE    W07-DATA07          TO  SPA-GMN-DATA-G (07)
       *    入院初診料自動算定
            MOVE    W07-NYUSYOSIN       TO  SPA-GMN-NYUSYOSIN-G
       *    時間外加算特例乳幼児
            MOVE    W07-JIKANTOKUNYU    TO  SPA-GMN-JIKANTOKU-NYU-G
            MOVE    W07-GAZOUKSN1       TO  SPA-GMN-GAZOUKSN1-G
+      *    中途終了展開時の自動発生
+           MOVE    W07-CHUTOTENKAI     TO  SPA-GMN-CHUTOTENKAI-G
       *
            MOVE    W07-LASTKIKAN       TO  SPA-GMN-LAST-KIKAN
       *
@@ -1801,6 +1909,7 @@
            MOVE    W07-SURYOZERO       TO  SPA-GMN-SURYOZERO-G
            MOVE    W07-CHOKICHK        TO  SPA-GMN-CHOKICHK-G
            MOVE    W07-CLEARCHK        TO  SPA-GMN-CLEARCHK-G
+           MOVE    W07-YAKJYOCHK       TO  SPA-GMN-YAKJYOCHK-G
       *
            MOVE    W07-HOUKATU         TO  SPA-GMN-HOUKATU-G
       *
@@ -1865,6 +1974,10 @@
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4100-KIKAN-CHK2-SEC
                    END-IF
+      *            中途終了展開時の自動発生
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4103-CHUTOTENKAI-CHK-SEC
+                   END-IF
       *            外来管理加算チェック
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4101-GAIKANRIKBN-CHK2-SEC
@@ -1892,6 +2005,10 @@
       *            クリア確認チェック
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4103-CLERACHK-CHK-SEC
+                   END-IF
+      *            薬剤情報提供料チェック
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4103-YAKJYOCHK-CHK-SEC
                    END-IF
       *            包括入力チェック
                    IF      SPA-ERRCD           =   SPACE
@@ -1989,14 +2106,30 @@
                    OR         (SPA-ERRCD   NOT =   SPACE )
                MOVE    ZERO                TO  FLG-OK
       *
-               PERFORM VARYING     IDY     FROM    1   BY  1
-                       UNTIL       IDY     >   SPA-GMN-DATA-MAX
-                   IF      SPA-GMN-DATA (IDX)  =   SPA-GMN-DATAL(IDY)
-                       MOVE    SPA-GMN-DATALST (IDY)
+               IF      IDX                 =   2
+                                           OR  3
+                                           OR  4
+      *            薬剤情報提供料
+                   PERFORM VARYING     IDY     FROM    1   BY  1
+                           UNTIL       IDY     >   SPA-GMN-DATA-MAX2
+                       IF      SPA-GMN-DATA (IDX)
+                                               =   SPA-GMN-DATAL2(IDY)
+                           MOVE    SPA-GMN-DATALST2 (IDY)
                                                TO  SPA-GMN-DATA-G(IDX)
-                       MOVE    1               TO  FLG-OK
-                   END-IF
-               END-PERFORM
+                           MOVE    1               TO  FLG-OK
+                       END-IF
+                   END-PERFORM
+               ELSE
+                   PERFORM VARYING     IDY     FROM    1   BY  1
+                           UNTIL       IDY     >   SPA-GMN-DATA-MAX
+                       IF      SPA-GMN-DATA (IDX)
+                                               =   SPA-GMN-DATAL(IDY)
+                           MOVE    SPA-GMN-DATALST (IDY)
+                                               TO  SPA-GMN-DATA-G(IDX)
+                           MOVE    1               TO  FLG-OK
+                       END-IF
+                   END-PERFORM
+               END-IF
       *
                IF      FLG-OK             =   ZERO
                    EVALUATE    IDX
@@ -2080,6 +2213,30 @@
       *
           .
        4103-GAZOUKSN1-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    中途終了展開時の自動発生チェック処理
+      *****************************************************************
+       4103-CHUTOTENKAI-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+      *
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL       IDY     >   SPA-GMN-DATA-MAX
+               IF      SPA-GMN-CHUTOTENKAI  =   SPA-GMN-DATAL(IDY)
+                   MOVE    SPA-GMN-DATALST (IDY)
+                                           TO  SPA-GMN-CHUTOTENKAI-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-OK              =   ZERO
+               MOVE    "0019"              TO  SPA-ERRCD
+               MOVE    68                  TO  SPA-GMN-CUR
+           END-IF
+      *
+          .
+       4103-CHUTOTENKAI-CHK-EXT.
            EXIT.
       *
       *
@@ -2269,6 +2426,30 @@
       *
           .
        4103-CLERACHK-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    薬剤情報提供料チェック処理
+      *****************************************************************
+       4103-YAKJYOCHK-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   2
+               IF      SPA-GMN-YAKJYOCHK
+                                      =   SPA-GMN-YAKJYOCHK-LIST(IDX)
+                                                                (1:1)
+                   MOVE    SPA-GMN-YAKJYOCHK-LIST(IDX)
+                                          TO  SPA-GMN-YAKJYOCHK-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    69              TO  SPA-GMN-CUR
+               MOVE    "0037"          TO  SPA-ERRCD
+           END-IF
+      *
+          .
+       4103-YAKJYOCHK-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3411,8 +3592,10 @@
            MOVE    SPA-GMN-SURYOZERO       TO  SYS-1008-SURYOZERO-FLG
       *    入院調基チェック
            MOVE    SPA-GMN-CHOKICHK        TO  SYS-1008-CHOKICHK-FLG
-      *    入院調基チェック
+      *    クリア確認チェック
            MOVE    SPA-GMN-CLEARCHK        TO  SYS-1008-CLEARCHK-FLG
+      *    薬剤情報提供料チェック
+           MOVE    SPA-GMN-YAKJYOCHK       TO  SYS-1008-YAKJYOCHK-FLG
       *
       *    時間外加算特例乳幼児
            MOVE    SPA-GMN-JIKANTOKU-NYU   TO
@@ -3421,6 +3604,8 @@
            MOVE    SPA-GMN-GAZOUKSN1       TO  SYS-1008-GAZOUKSN1-FLG
       *    最終来院日からの期間
            MOVE    SPA-GMN-LAST-KIKAN      TO  SYS-1008-LAST-KIKAN
+      *    中途終了展開時の自動発生
+           MOVE    SPA-GMN-CHUTOTENKAI     TO  SYS-1008-CHUTOTENKAI-FLG
       *
       *    時間外加算乳幼児チェック
            MOVE    SPA-GMN-JIKANTOKU-CHK   TO
@@ -3779,8 +3964,8 @@
            PERFORM 4100-DATA-CHK-SEC
       *
            IF      SPA-ERRCD            =   SPACE
-               IF      SPA-GMN-DATA (3)     =   "1"
-               AND     SPA-GMN-DATA (4)     =   "1"
+               IF     (SPA-GMN-DATA (3)     =   "1"  OR  "2" )
+               AND    (SPA-GMN-DATA (4)     =   "1"  OR  "2" )
                    MOVE    "0005"               TO  SPA-ERRCD
                    MOVE    4                    TO  SPA-GMN-CUR
                END-IF
@@ -3866,16 +4051,71 @@
            MOVE    SPA-GMN-STYUKYMD    TO  W07-YUKOSTYMD
            MOVE    SPA-GMN-EDYUKYMD    TO  W07-YUKOEDYMD
       *
-           PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   IDX     >       7 
-               MOVE    SPA-GMN-DATA-G(IDX)     TO  W07-DATA(IDX)
-               PERFORM VARYING IDY     FROM    1   BY  1
-                       UNTIL   IDY     >       2
-                   MOVE    SPA-GMN-DATALST(IDY)
-                                       TO  W07-DATALST(IDX IDY)
-               END-PERFORM
-               MOVE    SPA-GMN-DATA-MAX    TO  W07-COUNT(IDX)
+      **** PERFORM VARYING IDX     FROM    1   BY  1
+      *            UNTIL   IDX     >       7 
+      *        MOVE    SPA-GMN-DATA-G(IDX)     TO  W07-DATA(IDX)
+      *        PERFORM VARYING IDY     FROM    1   BY  1
+      *                UNTIL   IDY     >       2
+      *            MOVE    SPA-GMN-DATALST(IDY)
+      *                                TO  W07-DATALST(IDX IDY)
+      *        END-PERFORM
+      *        MOVE    SPA-GMN-DATA-MAX    TO  W07-COUNT(IDX)
+      **** END-PERFORM
+           MOVE    SPA-GMN-DATA-G(01)      TO  W07-DATA01
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-DATA-MAX
+               MOVE    SPA-GMN-DATALST(IDY)
+                                       TO  W07-DATA01-ITEM(IDY)
            END-PERFORM
+           MOVE    SPA-GMN-DATA-MAX    TO  W07-DATA01-COUNT
+      *
+           MOVE    SPA-GMN-DATA-G(02)      TO  W07-DATA02
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-DATA-MAX2
+               MOVE    SPA-GMN-DATALST2(IDY)
+                                       TO  W07-DATA02-ITEM(IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-DATA-MAX2   TO  W07-DATA02-COUNT
+      *
+           MOVE    SPA-GMN-DATA-G(03)      TO  W07-DATA03
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-DATA-MAX2
+               MOVE    SPA-GMN-DATALST2(IDY)
+                                       TO  W07-DATA03-ITEM(IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-DATA-MAX2   TO  W07-DATA03-COUNT
+      *
+           MOVE    SPA-GMN-DATA-G(04)      TO  W07-DATA04
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-DATA-MAX2
+               MOVE    SPA-GMN-DATALST2(IDY)
+                                       TO  W07-DATA04-ITEM(IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-DATA-MAX2   TO  W07-DATA04-COUNT
+      *
+           MOVE    SPA-GMN-DATA-G(05)      TO  W07-DATA05
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-DATA-MAX
+               MOVE    SPA-GMN-DATALST(IDY)
+                                       TO  W07-DATA05-ITEM(IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-DATA-MAX    TO  W07-DATA05-COUNT
+      *
+           MOVE    SPA-GMN-DATA-G(06)      TO  W07-DATA06
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-DATA-MAX
+               MOVE    SPA-GMN-DATALST(IDY)
+                                       TO  W07-DATA06-ITEM(IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-DATA-MAX    TO  W07-DATA06-COUNT
+      *
+           MOVE    SPA-GMN-DATA-G(07)      TO  W07-DATA07
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-DATA-MAX
+               MOVE    SPA-GMN-DATALST(IDY)
+                                       TO  W07-DATA07-ITEM(IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-DATA-MAX    TO  W07-DATA07-COUNT
       *
            MOVE    SPA-GMN-SRYKACD     TO  W07-SRYKACD
            MOVE    SPA-GMN-SRYKAMEI    TO  W07-SRYKAMEI
@@ -3905,6 +4145,15 @@
                                        TO  W07-GAZOUKSN1-ITEM(IDY)
            END-PERFORM
            MOVE    SPA-GMN-DATA-MAX    TO  W07-GAZOUKSN1-COUNT
+      *
+      *    中途終了展開時の自動発生
+           MOVE    SPA-GMN-CHUTOTENKAI-G   TO  W07-CHUTOTENKAI
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-DATA-MAX
+               MOVE    SPA-GMN-DATALST(IDY)
+                                       TO  W07-CHUTOTENKAI-ITEM(IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-DATA-MAX    TO  W07-CHUTOTENKAI-COUNT
       *
            MOVE  SPA-GMN-LAST-KIKAN    TO  W07-LASTKIKAN
       *
@@ -3945,7 +4194,7 @@
            END-PERFORM
            MOVE    2                   TO  W07-CHOKICHK-COUNT
       *
-      *    入院調基チェック
+      *    クリア確認チェック
            MOVE    SPA-GMN-CLEARCHK-G  TO  W07-CLEARCHK
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   2
@@ -3953,6 +4202,14 @@
                                        TO  W07-CLEARCHK-ITEM(IDX)
            END-PERFORM
            MOVE    2                   TO  W07-CLEARCHK-COUNT
+      *    薬剤情報提供料チェック
+           MOVE    SPA-GMN-YAKJYOCHK-G  TO  W07-YAKJYOCHK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   2
+               MOVE    SPA-GMN-YAKJYOCHK-LIST (IDX)
+                                       TO  W07-YAKJYOCHK-ITEM(IDX)
+           END-PERFORM
+           MOVE    2                   TO  W07-YAKJYOCHK-COUNT
       *
       *    包括入力
            MOVE    SPA-GMN-HOUKATU-G       TO  W07-HOUKATU
@@ -4308,10 +4565,11 @@
                    MOVE    "時間外加算特例乳幼児チェックエラー"
                                                        TO  SPA-ERRMSG
                WHEN    "0018"
-                   MOVE    "画像診断管理加算１（写真診断）"
+                   MOVE    "画像診断管理加算チェックエラー"
                                                        TO  SPA-ERRMSG
-                   MOVE    "チェックエラー"
-                                                   TO  SPA-ERRMSG(33:)
+               WHEN    "0019"
+                   MOVE    "中途終了展開時の自動発生チェックエラー"
+                                                    TO  SPA-ERRMSG
                WHEN    "0030"
                    MOVE    "時間外加算（乳幼児）チェックエラー"
                                                        TO  SPA-ERRMSG
@@ -4330,6 +4588,9 @@
                                                TO  SPA-ERRMSG(39:)
                WHEN    "0034"
                    MOVE    "診療行為クリア確認チェックエラー"
+                                                       TO  SPA-ERRMSG
+               WHEN    "0037"
+                   MOVE    "薬剤情報提供料チェックエラー"
                                                        TO  SPA-ERRMSG
       *
                WHEN    "0020"
@@ -4525,6 +4786,10 @@
                    MOVE  "LASTKIKAN"       TO   MCP-WIDGET
                WHEN    67
                    MOVE  "CLEARCHK"        TO   MCP-WIDGET
+               WHEN    68
+                   MOVE  "CHUTOTENKAI"     TO   MCP-WIDGET
+               WHEN    69
+                   MOVE  "YAKJYOCHK"       TO   MCP-WIDGET
       *        時間外加算チェック
                WHEN    50
                    MOVE  "JIKANTOKU_CHK"   TO   MCP-WIDGET
@@ -4663,6 +4928,9 @@
                WHEN    "GAZOUKSN1"
                    MOVE    19              TO  SPA-GMN-CUR
                WHEN    "LASTKIKAN"
+      ************ MOVE    10              TO  SPA-GMN-CUR
+                   MOVE    68              TO  SPA-GMN-CUR
+               WHEN    "CHUTOTENKAI"
                    MOVE    10              TO  SPA-GMN-CUR
       *
                WHEN    "KIKAN"
@@ -4677,6 +4945,9 @@
       ************ MOVE    16              TO  SPA-GMN-CUR
                    MOVE    50              TO  SPA-GMN-CUR
                WHEN    "CLEARCHK"
+      ************ MOVE    16              TO  SPA-GMN-CUR
+                   MOVE    69              TO  SPA-GMN-CUR
+               WHEN    "YAKJYOCHK"
                    MOVE    16              TO  SPA-GMN-CUR
       *        時間外加算チェック
                WHEN    "JIKANTOKU_CHK"
@@ -4720,8 +4991,8 @@
       ************ MOVE    16              TO  SPA-GMN-CUR
                    MOVE    67              TO  SPA-GMN-CUR
       *
-               WHEN    "CLEARCHK"
-                   MOVE    17              TO  SPA-GMN-CUR
+      ******   WHEN    "CLEARCHK"
+      *******      MOVE    17              TO  SPA-GMN-CUR
                WHEN    "HOUKATU"
                    MOVE    99              TO  SPA-GMN-CUR
       *        患者登録情報
