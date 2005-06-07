@@ -21,24 +21,24 @@ W07	{
 				};
 				DATA02_COMBO	{
 					DATA02	{
-						value	varchar(12);
+						value	varchar(22);
 					};
 					count	int;
-					item	varchar(12)[2];
+					item	varchar(22)[3];
 				};
 				DATA03_COMBO	{
 					DATA03	{
-						value	varchar(12);
+						value	varchar(22);
 					};
 					count	int;
-					item	varchar(12)[2];
+					item	varchar(22)[3];
 				};
 				DATA04_COMBO	{
 					DATA04	{
-						value	varchar(12);
+						value	varchar(22);
 					};
 					count	int;
-					item	varchar(12)[2];
+					item	varchar(22)[3];
 				};
 				DATA05_COMBO	{
 					DATA05	{
@@ -203,6 +203,20 @@ W07	{
 				};
 				CLEARCHK_COMBO	{
 					CLEARCHK	{
+						value	varchar(22);
+					};
+					count	int;
+					item	varchar(22)[2];
+				};
+				CHUTOTENKAI_COMB	{
+					CHUTOTENKAI	{
+						value	varchar(12);
+					};
+					count	int;
+					item	varchar(12)[2];
+				};
+				YAKJYOCHK_COMB	{
+					YAKJYOCHK	{
 						value	varchar(22);
 					};
 					count	int;
