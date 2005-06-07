@@ -237,6 +237,8 @@
            03  FLG-INIT              PIC 9(01).
            03  FLG-MAE-TENSU         PIC 9(01).
       *
+           03  FLG-K10TEN            PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -1736,8 +1738,10 @@
                MOVE    SPACE               TO  SPA-ERRCD
            END-IF
       *
+           MOVE    1                   TO  FLG-K10TEN
       *    画面用スパ編集処理
            PERFORM                 310-SPA-GMNSET-SEC
+           MOVE    ZERO                TO  FLG-K10TEN
       *
       *
            .
@@ -2573,7 +2577,14 @@
       *    初診料自動発生
            IF      (SPA-NYU-SYOSIN     =   "1" )  AND
                    (SPA-SYORIFLG       =   ZERO)
-               PERFORM 330-SYOSIN-SET-SEC
+      *        中途終了展開時の自動発生
+               IF     (SPA-CHUTOTENKAI-FLG     =   "0" ) AND
+                      (SPA-WKSRY-KARTE-FLG     =   1   ) AND
+                      (FLG-K10TEN              =   1   )
+                   CONTINUE
+               ELSE
+                   PERFORM 330-SYOSIN-SET-SEC
+               END-IF
            END-IF
       *
       *    時間外区分

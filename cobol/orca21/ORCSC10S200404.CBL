@@ -289,6 +289,7 @@
                05  WRK-DRCD1               PIC X(01).
                05  WRK-DRCD2               PIC X(04).
            03  WRK-DRCD-MEI                PIC X(80).
+           03  WRK-HEN-SRYKA               PIC X(02).
       *
       *    診察料テーブル
        01  TBL-SINSATU-AREA.
@@ -615,6 +616,8 @@
       *        複数料（＄）、保険組合せ（＃）対応
                WHEN    "A"
                WHEN    "B"
+      *        指導料発生なし
+               WHEN    "D"
                    PERFORM 1015-FUKU-SYORI-SEC
            END-EVALUATE
       *
@@ -2848,6 +2851,9 @@
                WHEN    "A"
       *            複数科入力
                    PERFORM 33012112-SIDOU-FUKU-SEC
+               WHEN    "D"
+      *            中途終了展開時自動算定なし
+                   CONTINUE
                WHEN    OTHER
                    PERFORM 33012113-SIDOU-INS-SEC
            END-EVALUATE
@@ -4371,7 +4377,7 @@
       *    初診料算定で、既に当日受診がある時は対象
            IF     (LNK-SC10S-SYORI     =   "W"  )  AND
                   (FLG-SYOSIN2         =   1    )
-      *             初診料以外の時、自動発生あり
+      *        初診料以外の時、自動発生あり
                IF      SPA-SRYYMD      NOT =   SPA-LSTYMD
                    MOVE    FLG-SYOSIN2         TO  SPA-SYOSIN
                    GO      TO      1010-SINSATU-HEN-EXT
@@ -4382,6 +4388,12 @@
       *    中途終了で電話再診の時
            IF     (LNK-SC10S-SYORI     =   "W"  )  AND
                   (WRK-KBN3            =   "T"  OR  "S" )
+               GO      TO      1010-SINSATU-HEN-EXT
+           END-IF
+      *    中途終了で算定しない時
+           IF     (LNK-SC10S-SYORI     =   "W"  )  AND
+                  (SPA-CHUTOTENKAI-FLG =   "0"  )  AND
+                  (SPA-WKSRY-KARTE-FLG     =   1   )
                GO      TO      1010-SINSATU-HEN-EXT
            END-IF
       *
@@ -4822,11 +4834,10 @@
                MOVE    WRK-DRCD            TO  SPA-COM-DRCD    (IDX-A)
            END-IF
       *
-           IF     (FLG-OK              =   1    )  OR
-                  (SPA-ERRCD       NOT =   SPACE)  OR
-                  (LNK-SC10S-SYORI NOT =   "A"  )
-               CONTINUE
-           ELSE
+           IF     (FLG-OK              =   ZERO )  AND
+                  (SPA-ERRCD           =   SPACE)  AND
+                  (LNK-SC10S-SYORI     =   "A"
+                                       OR  "D"   )
                PERFORM 101511-SRYKA-INS-SEC
            END-IF
       *
@@ -4841,6 +4852,7 @@
       *    他科にて算定済み
            MOVE    ZERO                TO  FLG-CHK
            MOVE    ZERO                TO  FLG-SRYKBN
+           MOVE    SPACE               TO  WRK-HEN-SRYKA
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >=  IDX-A    )  OR
                               (FLG-CHK     =   1   )
@@ -4861,6 +4873,19 @@
                      ((SPA-COM-INPUTCD (IDX)(1:1)  =   "1" )  OR
                       (SPA-COM-INPUTCD (IDX)(1:3)  =   "099"))
                    MOVE    2               TO  FLG-SRYKBN
+               END-IF
+      *
+               IF     (SPA-COM-SRYKA   (IDX)   =   SPA-SRYKA ) AND
+                      (SPA-COM-SRYKBN  (IDX)   =   "11"      ) AND
+                      (SPA-COM-INPUTCD (IDX)   =   "830000020")
+                   MOVE    1                   TO  FLG-SRYKBN
+                   MOVE    SPA-COM-ATAI1(IDX)  TO  WRK-HEN-SRYKA
+               END-IF
+               IF     (SPA-COM-SRYKA   (IDX)   =   SPA-SRYKA ) AND
+                      (SPA-COM-SRYKBN  (IDX)   =   "12"      ) AND
+                      (SPA-COM-INPUTCD (IDX)   =   "830000021")
+                   MOVE    2                   TO  FLG-SRYKBN
+                   MOVE    SPA-COM-ATAI1(IDX)  TO  WRK-HEN-SRYKA
                END-IF
            END-PERFORM
       *
@@ -4995,14 +5020,17 @@
            ELSE
                MOVE    "0007"              TO  SPA-ERRCD
            END-IF
+           IF      WRK-HEN-SRYKA       =   SPACE
+               MOVE    SPA-SRYKA       TO  WRK-HEN-SRYKA
+           END-IF
            IF      SPA-ERRCD       =   SPACE
                INITIALIZE                  SPA-GMN-TBLREC  (IDX-A)
                INITIALIZE                  SPA-COM-TBLREC  (IDX-A)
                MOVE    WRK-SRYCD       TO  SPA-GMN-INPUTCD (IDX-A)
-               MOVE    SPA-SRYKA       TO  SPA-GMN-INPUTCD (IDX-A)
+               MOVE    WRK-HEN-SRYKA   TO  SPA-GMN-INPUTCD (IDX-A)
                                                            (11:2)
                MOVE    WRK-SRYCD       TO  SPA-COM-INPUTCD (IDX-A)
-               MOVE    SPA-SRYKA       TO  SPA-COM-ATAI1   (IDX-A)
+               MOVE    WRK-HEN-SRYKA   TO  SPA-COM-ATAI1   (IDX-A)
                PERFORM 10151121-INPUCD-HENSYU-SEC
                MOVE    WRK-SRYKA       TO  SPA-COM-SRYKA   (IDX-A)
            END-IF
@@ -5192,11 +5220,10 @@
                MOVE    WRK-HKNCOMBI        TO  SPA-COM-HKNCOMBI(IDX-A)
            END-IF
       *
-           IF     (FLG-OK              =   1  )  OR
-                  (SPA-ERRCD       NOT =   SPACE)  OR
-                  (LNK-SC10S-SYORI NOT =   "A"  )
-               CONTINUE
-           ELSE
+           IF     (FLG-OK              =   ZERO )  AND
+                  (SPA-ERRCD           =   SPACE)  AND
+                  (LNK-SC10S-SYORI     =   "A"
+                                       OR  "D"   )
                PERFORM 101521-HKNCOMBI-HEN-SEC
            END-IF
       *
