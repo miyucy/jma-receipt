@@ -653,6 +653,20 @@
                    MOVE    SYS-1008-CLEARCHK-FLG
                                            TO  SPA-CLEARCHK-FLG
                END-IF
+      *        中途終了展開時の自動発生
+               IF      SYS-1008-CHUTOTENKAI-FLG   =   SPACE
+                   MOVE    "1"             TO  SPA-CHUTOTENKAI-FLG
+               ELSE
+                   MOVE    SYS-1008-CHUTOTENKAI-FLG
+                                           TO  SPA-CHUTOTENKAI-FLG
+               END-IF
+      *        薬剤情報提供料チェック
+               IF      SYS-1008-YAKJYOCHK-FLG   =   SPACE
+                   MOVE    "1"             TO  SPA-YAKJYOCHK-FLG
+               ELSE
+                   MOVE    SYS-1008-YAKJYOCHK-FLG
+                                           TO  SPA-YAKJYOCHK-FLG
+               END-IF
            ELSE
                MOVE    ZERO                TO  SPA-INTERACT-KIKAN
                MOVE    "1"                 TO  SPA-GAIKANRIKBN-CHK
@@ -669,6 +683,8 @@
                MOVE    ZERO                TO  SPA-JIKANCHK-TIME-G
                MOVE    ZERO                TO  SPA-JIKANTOKU-CHK
                MOVE    ZERO                TO  SPA-CLEARCHK-FLG
+               MOVE    "1"                 TO  SPA-CHUTOTENKAI-FLG
+               MOVE    "1"                 TO  SPA-YAKJYOCHK-FLG
            END-IF
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
@@ -1014,6 +1030,20 @@
                    MOVE    SYS-1008-CLEARCHK-FLG
                                            TO  SPA-CLEARCHK-FLG
                END-IF
+      *        中途終了展開時の自動発生
+               IF      SYS-1008-CHUTOTENKAI-FLG   =   SPACE
+                   MOVE    "1"             TO  SPA-CHUTOTENKAI-FLG
+               ELSE
+                   MOVE    SYS-1008-CHUTOTENKAI-FLG
+                                           TO  SPA-CHUTOTENKAI-FLG
+               END-IF
+      *        薬剤情報提供料チェック
+               IF      SYS-1008-YAKJYOCHK-FLG   =   SPACE
+                   MOVE    "1"             TO  SPA-YAKJYOCHK-FLG
+               ELSE
+                   MOVE    SYS-1008-YAKJYOCHK-FLG
+                                           TO  SPA-YAKJYOCHK-FLG
+               END-IF
            ELSE
                MOVE    ZERO                TO  SPA-INTERACT-KIKAN
       *
@@ -1026,6 +1056,8 @@
                MOVE    ZERO                TO  SPA-JIKANTOKU-NYU
                MOVE    "1"                 TO  SPA-GAZOUKSN1
                MOVE    ZERO                TO  SPA-CLEARCHK-FLG
+               MOVE    "1"                 TO  SPA-CHUTOTENKAI-FLG
+               MOVE    "1"                 TO  SPA-YAKJYOCHK-FLG
            END-IF
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
@@ -2876,6 +2908,7 @@
       *
       *    外来
            MOVE    SPACE               TO  WRK-TENKIYMD
+           MOVE    SPACE               TO  WRK-CHIYUYMD
            MOVE    ZERO                TO  FLG-TENKI
            MOVE    ZERO                TO  FLG-CHIYU
       *----(01.00.01) LINE UPD START ----------------------------------
@@ -2917,6 +2950,8 @@
                            IF      PTBYO-TENKIYMD  >=  WRK-CHIYUYMD
                                MOVE    PTBYO-TENKIYMD  TO  WRK-CHIYUYMD
                            END-IF
+                         ELSE
+                           MOVE    1           TO  FLG-TENKI
                          END-IF
       *----(01.00.01) LINE ADD END   ----------------------------------
       *                継続
@@ -3052,6 +3087,8 @@
                                    MOVE    PTBYO-TENKIYMD
                                                        TO  WRK-CHIYUYMD
                                END-IF
+                           ELSE
+                               MOVE    1               TO  FLG-TENKI
                            END-IF
       *                継続
                        WHEN    " "
@@ -3289,7 +3326,7 @@
       *            特定疾患の有無
                    IF      PTBYO-MANSEIKBN     =   05
                        IF     (PTBYO-TENKIKBN      =   SPACE )  OR
-                              (PTBYO-TENKIYMD      >   SPA-SRYYMD)
+                              (PTBYO-TENKIYMD      >=  SPA-SRYYMD)
                            PERFORM 110111-MANSEIKBN-SET-SEC
                            IF      SPA-SRYKA       =   PTBYO-SRYKA
                                MOVE    1               TO  SPA-TOKUTEI
@@ -3299,7 +3336,7 @@
       *            皮膚科特定疾患の有無
                    IF      PTBYO-MANSEIKBN     =   03  OR  04
                        IF     (PTBYO-TENKIKBN      =   SPACE )  OR
-                              (PTBYO-TENKIYMD      >   SPA-SRYYMD)
+                              (PTBYO-TENKIYMD      >=  SPA-SRYYMD)
                            PERFORM 110111-MANSEIKBN-SET-SEC
                            IF      SPA-SRYKA       =   PTBYO-SRYKA
                                IF      SPA-TOKUTEI-F       =   03
@@ -4576,6 +4613,8 @@
            MOVE    ZERO               TO  FLG-WKSYORI
       *    対象の保険組合せの保存
            MOVE    ZERO                TO  SPA-WKSRY-HKNCOMBI
+      *    ＣＬＡＩＭ展開
+           MOVE    ZERO                TO  SPA-WKSRY-KARTE-FLG
       *
            MOVE    SPACE               TO  WRK-SRYYYMM
            MOVE    SPACE               TO  WKSRYACT-REC
@@ -4642,6 +4681,8 @@
                    MOVE    1                   TO  FLG-WKSYORI
       *            対象の保険組合せの保存
                    MOVE    WKSRY-HKNCOMBI      TO  SPA-WKSRY-HKNCOMBI
+      *            ＣＬＡＩＭ展開
+                   MOVE    WKSRY-KARTE-FLG     TO  SPA-WKSRY-KARTE-FLG
       *
       *            更新中フラグ
                    MOVE    1                   TO  WKSRY-MOD-FLG

@@ -565,6 +565,11 @@
                IF      ORCSCWKSRY-K09TUIKA =   1
       *            コメント追加
                    MOVE    "A"                 TO  LNK-SC10S-SYORI
+      *            中途終了展開時の自動発生
+                   IF     (SPA-CHUTOTENKAI-FLG     =   "0" ) AND
+                          (SPA-WKSRY-KARTE-FLG     =   1   )
+                       MOVE    "D"                 TO  LNK-SC10S-SYORI
+                   END-IF
                    MOVE    IDX-HZN             TO  LNK-SC10S-STRIDX
                ELSE
       *            コメント変更
@@ -2040,29 +2045,6 @@
            MOVE    WKSRYACTPLUS-REC    TO  PARA-WKSRYACTPLUS-REC
            MOVE    PARA-WKSRYACT-REC   TO  PARA-DATA-REC
       *
-      *TEST
-           IF     WKSRYP-ADDKBN   =   "1"
-           DISPLAY "WKSRY-ZAINUM:" WKSRY-ZAINUM
-                   ",RENNUM:" WKSRY-RENNUM
-                ",WKSRYP-ADDKBN:" WKSRYP-ADDKBN
-                ",WKSRYP-RSIKINGAKU:" WKSRYP-RSIKINGAKU
-                ",WKSRYP-PLUSKBN:" WKSRYP-PLUSKBN
-                ",WKSRYP-SANSOTEN:" WKSRYP-SANSOTEN
-                ",WKSRYP-CHISOTEN:" WKSRYP-CHISOTEN
-                ",WKSRYP-MSANTEITENKBN:" WKSRYP-MSANTEITENKBN
-                ",WKSRYP-MSANTEITEN:" WKSRYP-MSANTEITEN
-           DISPLAY "1 SRYCD:" WKSRYP-SRYCD(1)
-                ",SYUTEN:" WKSRYP-SYUTEN(1)
-                ",YKZTEN:" WKSRYP-YKZTEN(1)
-                ",KIZAITEN:" WKSRYP-KIZAITEN(1)
-                ",FIRTEN:" WKSRYP-FIRTEN(1)
-           DISPLAY "2 SRYCD:" WKSRYP-SRYCD(2)
-                ",SYUTEN:" WKSRYP-SYUTEN(2)
-                ",YKZTEN:" WKSRYP-YKZTEN(2)
-                ",KIZAITEN:" WKSRYP-KIZAITEN(2)
-                ",FIRTEN:" WKSRYP-FIRTEN(2)
-           END-IF
-      *TEST
            WRITE   PARA-REC
            IF      STS-PARA        NOT =   ZERO
                DISPLAY "ORCSCWKSRY PARA WRITE ERR:"   STS-PARA    "."
