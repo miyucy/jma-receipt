@@ -9,12 +9,48 @@
               03  W07-NOTEBOOK1.
                 04  W07-PAGENO  PIC S9(9)   BINARY.
                 04  W07-TAG1.
-                    05  W07-DATA-TBL      OCCURS  7.
-                      06  W07-DATA-COMBO.
-                          07  W07-DATA.
-                              08  W07-VALUE   PIC X(12).
-                      06  W07-COUNT       PIC S9(9)   BINARY.
-                      06  W07-DATALST     PIC X(12)   OCCURS  2.
+                  05  W07-DATA01-COMBO.
+                    06  W07-DATA01.
+                      07  W07-VALUE   PIC X(12).
+                    06  W07-DATA01-COUNT   PIC S9(9)   BINARY.
+                    06  W07-DATA01-ITEM
+                            PIC X(12)   OCCURS  2 TIMES.
+                  05  W07-DATA02-COMBO.
+                    06  W07-DATA02.
+                      07  W07-VALUE   PIC X(22).
+                    06  W07-DATA02-COUNT   PIC S9(9)   BINARY.
+                    06  W07-DATA02-ITEM
+                            PIC X(22)   OCCURS  3 TIMES.
+                  05  W07-DATA03-COMBO.
+                    06  W07-DATA03.
+                      07  W07-VALUE   PIC X(22).
+                    06  W07-DATA03-COUNT   PIC S9(9)   BINARY.
+                    06  W07-DATA03-ITEM
+                            PIC X(22)   OCCURS  3 TIMES.
+                  05  W07-DATA04-COMBO.
+                    06  W07-DATA04.
+                      07  W07-VALUE   PIC X(22).
+                    06  W07-DATA04-COUNT   PIC S9(9)   BINARY.
+                    06  W07-DATA04-ITEM
+                            PIC X(22)   OCCURS  3 TIMES.
+                  05  W07-DATA05-COMBO.
+                    06  W07-DATA05.
+                      07  W07-VALUE   PIC X(12).
+                    06  W07-DATA05-COUNT   PIC S9(9)   BINARY.
+                    06  W07-DATA05-ITEM
+                            PIC X(12)   OCCURS  2 TIMES.
+                  05  W07-DATA06-COMBO.
+                    06  W07-DATA06.
+                      07  W07-VALUE   PIC X(12).
+                    06  W07-DATA06-COUNT   PIC S9(9)   BINARY.
+                    06  W07-DATA06-ITEM
+                            PIC X(12)   OCCURS  2 TIMES.
+                  05  W07-DATA07-COMBO.
+                    06  W07-DATA07.
+                      07  W07-VALUE   PIC X(12).
+                    06  W07-DATA07-COUNT   PIC S9(9)   BINARY.
+                    06  W07-DATA07-ITEM
+                            PIC X(12)   OCCURS  2 TIMES.
                   05  W07-SRYKACD-G.
                     06  W07-SRYKACD-STATE   PIC S9(9)   BINARY.
                     06  W07-SRYKACD         PIC X(2).
@@ -103,6 +139,18 @@
                       07  W07-VALUE   PIC X(22).
                     06  W07-CLEARCHK-COUNT   PIC S9(9)   BINARY.
                     06  W07-CLEARCHK-ITEM
+                            PIC X(22)   OCCURS  2 TIMES.
+                  05  W07-CHUTOTENKAI-COMB.
+                    06  W07-CHUTOTENKAI.
+                      07  W07-VALUE   PIC X(12).
+                    06  W07-CHUTOTENKAI-COUNT   PIC S9(9)   BINARY.
+                    06  W07-CHUTOTENKAI-ITEM
+                            PIC X(12)   OCCURS  2 TIMES.
+                  05  W07-YAKJYOCHK-COMB.
+                    06  W07-YAKJYOCHK.
+                      07  W07-VALUE   PIC X(22).
+                    06  W07-YAKJYOCHK-COUNT   PIC S9(9)   BINARY.
+                    06  W07-YAKJYOCHK-ITEM
                             PIC X(22)   OCCURS  2 TIMES.
                 04  W07-TAGNAME1.
                   05  W07-TAGNAME1-STATE   PIC S9(9)   BINARY.

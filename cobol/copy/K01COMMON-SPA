@@ -50,6 +50,13 @@
       *時間外特例医療機関
                05  SPA-JIKANTOKU           PIC  9(01).
       *
+      *病院種別
+               05  SPA-NAI-HOSPSBT         PIC 9(01).
+      *病床数
+               05  SPA-NAI-BEDSU           PIC 9(04).
+      *病床数（一般）
+               05  SPA-NAI-BEDSUIPN        PIC 9(04).
+      *
       *調剤技術基本料有無
                05  SPA-CHOKI-FLG           PIC  9(01).
       *薬剤情報提供料有無(一般）
@@ -91,6 +98,10 @@
                05  SPA-KAGRPFLG            PIC X(01).
       *患者取消確認チェック
                05  SPA-CLEARCHK-FLG        PIC X(01).
+      *薬剤情報提供料チェック
+               05  SPA-YAKJYOCHK-FLG       PIC X(01).
+      *中途終了展開時の自動発生
+               05  SPA-CHUTOTENKAI-FLG     PIC X(01).
       *
            03  SPA-K01SET-AREA.
       *処理フラグ（０：通常、１：訂正）
@@ -200,6 +211,8 @@
                05  SPA-DOUJI-RENNUM        PIC  9(01).
       *中途終了分の保険組合せ
                05  SPA-WKSRY-HKNCOMBI      PIC  9(04).
+      *ＣＬＡＩＭ展開
+               05  SPA-WKSRY-KARTE-FLG     PIC  9(01).
       *老人保険変更なし
                05  SPA-RJN-ERR             PIC  9(01).
       *保険変更なし

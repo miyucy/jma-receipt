@@ -32,6 +32,8 @@
       *                                     画像診断管理加算１（写真診断）追加
       *  01.00.06    NACL-多々納  04/07/05  最終受診日から初診の期間追加
       *  01.00.07    NACL-多々納  04/12/06  患者取消確認追加
+      *  01.00.08    NACL-多々納  05/06/06  中途終了展開時の自動発生
+      *                                     薬剤情報提供料チェック追加
       *****************************************************************
        01  SYS-1008-REC.
            03  SYS-1008-KEY.
@@ -55,9 +57,11 @@
            03  SYS-1008-JIKANTOKU-NYU-FLG  PIC X(01).
       *画像診断管理加算１（写真診断）
            03  SYS-1008-GAZOUKSN1-FLG      PIC X(01).
+      *中途終了展開時の自動発生
+           03  SYS-1008-CHUTOTENKAI-FLG    PIC X(01).
       *予備
       *****03  FILLER                   PIC X(04).
-           03  FILLER                   PIC X(02).
+           03  FILLER                   PIC X(01).
       *外来カーソル移動
            03  SYS-1008-GAI-CURSOR-SET-1   PIC X(01).
       *入院初診料自動発生
@@ -88,12 +92,15 @@
                05  SYS-1008-LAST-KIKAN       PIC 9(02).
       *診療行為患者取消確認チェック
            03  SYS-1008-CLEARCHK-FLG   PIC X(01).
+      *薬剤情報提供料チェック
+           03  SYS-1008-YAKJYOCHK-FLG   PIC X(01).
       *予備
       *****03  FILLER                   PIC X(489).
       *****03  FILLER                   PIC X(486).
       **** 03  FILLER                   PIC X(453).
       *****03  FILLER                   PIC X(451).
-           03  FILLER                   PIC X(450).
+      *****03  FILLER                   PIC X(450).
+           03  FILLER                   PIC X(449).
       *端末ＩＤ
            03  SYS-1008-TERMID          PIC  X(16).
       *オペーレータＩＤ
