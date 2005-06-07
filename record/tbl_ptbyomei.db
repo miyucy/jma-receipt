@@ -481,7 +481,7 @@ path	key24	{
 			AND   SRYYMD      <=  :SRYYMD
                         AND   MANSEIKBN  <>   :MANSEIKBN
 			AND  (TENKIKBN    =   :TENKIKBN  OR
-                              TENKIYMD    >   :SRYYMD)
+                              TENKIYMD    >=  :SRYYMD)
 			ORDER BY SRYYMD,RENNUM 
 		;
 	};
