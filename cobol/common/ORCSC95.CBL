@@ -4952,13 +4952,8 @@
            PERFORM
                UNTIL   FLG-WKSRYACT    =   1
                IF      SPA-SRYYMD          =   WKSRY-SRYYMD
-                   IF     (LNK-SC95-PG     NOT =   "K10" ) AND
-                          (WKSRY-MOD-FLG       =   1   )  AND
-                          (LNK-SC95-KBN        =   "7"
-                                               OR  "K" )
+                   IF      WKSRY-MOD-FLG       =   1
                        MOVE    9                   TO  WKSRY-MOD-FLG
-                   ELSE
-                       MOVE    ZERO                TO  WKSRY-MOD-FLG
                    END-IF
                ELSE
                    MOVE    ZERO                TO  WKSRY-MOD-FLG
