@@ -7883,6 +7883,9 @@
       *****************************************************************
        410141-TEISEI-SET-SEC           SECTION.
       *
+           MOVE    ZERO            TO  FLG-MOD-FLG
+           PERFORM 4900-WKSRYACT-CLEAR-SEC
+      *
       *    ø«Œ≈∆¸…’
            MOVE    SPA-GMN-RRKYMD (SPA-NAI-DOSELNUM)
                                        TO  SPA-SRYYMDW

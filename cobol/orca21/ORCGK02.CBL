@@ -9196,6 +9196,9 @@
       *****************************************************************
        410141-TEISEI-SET-SEC           SECTION.
       *
+           MOVE    ZERO            TO  FLG-MOD-FLG
+           PERFORM 4900-WKSRYACT-CLEAR-SEC
+      *
       *    診療日付
            MOVE    SPA-GMN-RRKYMD (SPA-NAI-DOSELNUM)
                                        TO  SPA-SRYYMDW
@@ -9553,6 +9556,7 @@
       *
            IF      SPA-GMN-PTID    NOT =   ZERO
       *        ワーク診療行為クリア
+               MOVE    ZERO            TO  FLG-MOD-FLG
                PERFORM 4900-WKSRYACT-CLEAR-SEC
            END-IF
       *
@@ -13180,6 +13184,7 @@
        990-LOCK-OUT-SEC         SECTION.
       *
       *    ワーク診療行為クリア
+           MOVE    ZERO            TO  FLG-MOD-FLG
            PERFORM 4900-WKSRYACT-CLEAR-SEC
       *
       *    排他制御解除処理
