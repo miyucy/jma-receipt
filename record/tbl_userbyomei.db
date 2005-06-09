@@ -202,3 +202,16 @@ path	key10	{
 	};
 };
 
+path	key11	{ 	
+	DBSELECT	{
+		DECLARE tbl_userbyomei_key11_csr CURSOR FOR
+		SELECT *
+		FROM tbl_userbyomei
+			WHERE HOSPID          =   :HOSPID
+			AND   CDSYU           <>  'C'
+			AND   BYOMEIINPUTCD   LIKE :BYOMEIINPUTCD 
+		;
+	};
+};
+
+
