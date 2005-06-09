@@ -27,13 +27,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.00.01    NACL-多々納  05/11/17  MONFUNC 対応
-      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
-      *  04.03.00    NACL-多々納  08/06/XX  ドクター表示件数変更
-      *  04.03.00    NACL-多々納  08/10/09  ユーザプログラム対応
-      *  04.07.00    NACL-多々納  12/01/12  クライアント印刷対応
-      *  04.08.00    NACL-多々納  14/08/11  クライアント印刷変更
-      *  05.00.00    NACL-多々納  17/10/06  帳票API対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -73,8 +66,6 @@
            03  FLG-CHUSYA-CHK      PIC 9(01).
            03  FLG-SIJISEN-CHK     PIC 9(01).
            03  FLG-CHK             PIC 9(01).
-      *    クライアント印刷有
-           03  FLG-CLIENT-OK           PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -128,14 +119,11 @@
       *    患者入院履歴ワーク
        01  HZN-PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC"  REPLACING
-                               //PTNYUINRRK-// BY //HZN-PTNRRK-//.
+                               //PTNYUINRRK-// BY //HZN-PTNYUINRRK-//.
       *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
-      *
-      *    マシン日付取得サブ
-           COPY    "CPORCSMCNDATE.INC".
       *
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
@@ -162,11 +150,11 @@
       *    入院指示箋発行サブ
            COPY    "CPORCHC503.INC".
       *
-      *    クライアント印刷制御
-           COPY    "CPORCSPRTCTRL.INC".
-      *
       *    ＤＢ検索
+      *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
+           COPY    "CPORCMCP.INC".
+           COPY    "ORCA-DBPATH".
       *
       *****************************************************************
       *    連絡　領域
@@ -179,34 +167,32 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA21SCRAREA.INC".
-      *!!!     COPY    "K01.INC".
-      *!!!     COPY    "K02.INC".
-      *!!!     COPY    "K02N.INC".
-      *!!!     COPY    "K021.INC".
-      *!!!     COPY    "K023.INC".
-      *!!!     COPY    "K03.INC".
-      *!!!     COPY    "K04.INC".
-      *!!!     COPY    "K05.INC".
-      *!!!     COPY    "K051.INC".
-      *!!!     COPY    "K052.INC".
-      *!!!     COPY    "K06.INC".
-      *!!!     COPY    "K061.INC".
-      *!!!     COPY    "K062.INC".
-      *!!!     COPY    "K07.INC".
-      *!!!     COPY    "K08.INC".
-      *!!!     COPY    "K081.INC".
-      *!!!     COPY    "K09.INC".
-      *!!!     COPY    "K10.INC".
-      *!!!     COPY    "K97.INC".
-      *!!!     COPY    "K98.INC".
-      *!!!     COPY    "K99.INC".
-      *!!!     COPY    "K03X.INC".
-      *!!!     COPY    "KERR.INC".
-      *!!!     COPY    "KERR2.INC".
-      *!!!     COPY    "KID1.INC".
-      *!!!     COPY    "KID2.INC".
-      *!!!     COPY    "KHELP.INC".
+           COPY    "K01.INC".
+           COPY    "K02.INC".
+           COPY    "K02N.INC".
+           COPY    "K021.INC".
+           COPY    "K022.INC".
+           COPY    "K023.INC".
+           COPY    "K03.INC".
+           COPY    "K04.INC".
+           COPY    "K05.INC".
+           COPY    "K051.INC".
+           COPY    "K052.INC".
+           COPY    "K06.INC".
+           COPY    "K07.INC".
+           COPY    "K08.INC".
+           COPY    "K081.INC".
+           COPY    "K09.INC".
+           COPY    "K10.INC".
+           COPY    "K97.INC".
+           COPY    "K98.INC".
+           COPY    "K99.INC".
+           COPY    "K03X.INC".
+           COPY    "KERR.INC".
+           COPY    "KERR2.INC".
+           COPY    "KID1.INC".
+           COPY    "KID2.INC".
+           COPY    "KHELP.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -244,11 +230,6 @@
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF
-      *
-      *    クライアント印刷
-      *    IF      FLG-CLIENT-OK       =   1
-      *        PERFORM 600-CLIENT-DMY-SEC
-      *    END-IF
       *
            MOVE    SPA-K081        TO  SPA-ETCKYOUTU-AREA
            MOVE    SPA-K01KYOUTU   TO  SPA-WORK
@@ -334,33 +315,23 @@
       *
            INITIALIZE                  SPA-K081GMN-AREA
       *
-      *
            MOVE    SPACE               TO  SYS-5007-REC
            INITIALIZE                      SYS-5007-REC
            MOVE    "5007"              TO  SYS-5007-KANRICD
            MOVE    SPA-SRYYMD          TO  SYS-5007-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-5007-EDYUKYMD
       *
-           MOVE    SPA-HOSPNUM         TO  SYS-5007-HOSPNUM
            MOVE    SYS-5007-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
+           MOVE    PATH-TBL-SYSKANRI-KEY2
+                                       TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 920-DBFETCH-SEC
            END-IF
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-5007-REC
                MOVE    ZERO                TO  FLG-SYSKANRI
            ELSE
-               MOVE    1                   TO  FLG-SYSKANRI
-               INITIALIZE                      SYS-5007-REC
-           END-IF
-      *
-           IF      SPA-NAI-SIJISENKBN  NOT =   "1"
-      *        指示せん発行なし
                MOVE    1                   TO  FLG-SYSKANRI
                INITIALIZE                      SYS-5007-REC
            END-IF
@@ -405,8 +376,7 @@
                            END-IF
                        END-PERFORM
                END-EVALUATE
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
+               MOVE    PATH-TBL-SYSKANRI-KEY2  TO  MCP-PATH
                PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  SYS-5007-REC
@@ -415,8 +385,7 @@
                    MOVE    1                   TO  FLG-SYSKANRI
                END-IF
            END-PERFORM
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
+           MOVE    PATH-TBL-SYSKANRI-KEY2  TO  MCP-PATH
            PERFORM 990-DBCLOSE-SEC
       *
       *    入院処方箋
@@ -474,15 +443,14 @@
            MOVE    SPACE               TO  PTNYUINRRK-REC
            INITIALIZE                  PTNYUINRRK-REC
            INITIALIZE                  HZN-PTNYUINRRK-REC
-           MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
+           MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
            MOVE    SPA-PTID            TO  PTNYUINRRK-PTID
       *
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key36"             TO  MCP-PATHNAME
+           MOVE    PATH-TBL-PTNYUINRRK-KEY36
+                                       TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "key36"             TO  MCP-PATHNAME
                PERFORM 910-PTNYUINRRK-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-PTNYUINRRK
@@ -501,27 +469,27 @@
                    END-IF
                END-IF
       *
-               MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-               MOVE    "key36"             TO  MCP-PATHNAME
+               MOVE    PATH-TBL-PTNYUINRRK-KEY36
+                                           TO  MCP-PATH
                PERFORM 910-PTNYUINRRK-READ-SEC
            END-PERFORM
-           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key36"             TO  MCP-PATHNAME
+           MOVE    PATH-TBL-PTNYUINRRK-KEY36
+                                       TO  MCP-PATH
            PERFORM 990-DBCLOSE-SEC
       *
            MOVE    ZERO                TO  SPA-K081-DRCD-MAX
            INITIALIZE                  SPA-K081GMN-DRCDLST-G
            IF      FLG-OK              =   1
-               IF      HZN-PTNRRK-DRCD1    NOT =   SPACE
-                   MOVE    HZN-PTNRRK-DRCD1(2:4)   TO  WRK-DRCD
+               IF      HZN-PTNYUINRRK-DRCD1    NOT =   SPACE
+                   MOVE    HZN-PTNYUINRRK-DRCD1(2:4)   TO  WRK-DRCD
                    PERFORM 3105-DRCD-ADD-SEC
                END-IF
-               IF      HZN-PTNRRK-DRCD2    NOT =   SPACE
-                   MOVE    HZN-PTNRRK-DRCD2(2:4)   TO  WRK-DRCD
+               IF      HZN-PTNYUINRRK-DRCD2    NOT =   SPACE
+                   MOVE    HZN-PTNYUINRRK-DRCD2(2:4)   TO  WRK-DRCD
                    PERFORM 3105-DRCD-ADD-SEC
                END-IF
-               IF      HZN-PTNRRK-DRCD3    NOT =   SPACE
-                   MOVE    HZN-PTNRRK-DRCD3(2:4)   TO  WRK-DRCD
+               IF      HZN-PTNYUINRRK-DRCD3    NOT =   SPACE
+                   MOVE    HZN-PTNYUINRRK-DRCD3(2:4)   TO  WRK-DRCD
                    PERFORM 3105-DRCD-ADD-SEC
                END-IF
            END-IF
@@ -534,7 +502,7 @@
                                        ORCSDRSETAREA
            PERFORM VARYING     IDX     FROM   1   BY  1
                    UNTIL      (IDX     >   ORCSDR-DRCD-MAX )  OR
-                              (SPA-K081-DRCD-MAX  >=   99  )
+                              (SPA-K081-DRCD-MAX  >=   20  )
                MOVE    ZERO                TO  FLG-CHK
                PERFORM VARYING     IDZ     FROM   1   BY  1
                        UNTIL      (IDZ     >   SPA-K081-DRCD-MAX )  OR
@@ -552,183 +520,8 @@
                END-IF
            END-PERFORM
            MOVE    SPA-K081GMN-DRCDLST(1)  TO  SPA-K081GMN-DRCD-G
-      *
-      *    ユーザプログラム起動初期処理
-           IF      SPA-ETC-MOTOPG      =   "K02N"
-      *v4.8
-      *        IF      SPA-MW              =   SPA-GINBEE
-      *            INITIALIZE                  SPA-K081GMN-USERPG-AREA
-      *        ELSE
-                   PERFORM 3101-USERPG-SET-SEC
-      **       END-IF
-           ELSE
-               INITIALIZE                  SPA-K081GMN-USERPG-AREA
-           END-IF
            .
        310-SPA-SET-EXT.
-           EXIT.
-      *****************************************************************
-      *    指示せん発行初期処理
-      *****************************************************************
-       3101-SPA-HENSYU-SEC              SECTION.
-      *
-           MOVE    SPACE               TO  SYS-5007-REC
-           INITIALIZE                      SYS-5007-REC
-           MOVE    "5007"              TO  SYS-5007-KANRICD
-           MOVE    SPA-SRYYMD          TO  SYS-5007-STYUKYMD
-           MOVE    SPA-SRYYMD          TO  SYS-5007-EDYUKYMD
-      *
-           MOVE    SPA-HOSPNUM         TO  SYS-5007-HOSPNUM
-           MOVE    SYS-5007-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
-           END-IF
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-5007-REC
-               MOVE    ZERO                TO  FLG-SYSKANRI
-           ELSE
-               MOVE    1                   TO  FLG-SYSKANRI
-               INITIALIZE                      SYS-5007-REC
-           END-IF
-           PERFORM
-                   UNTIL       FLG-SYSKANRI    =   1
-               MOVE    MCPDATA-REC         TO  SYS-5007-REC
-               EVALUATE    SYS-5007-KBNCD
-                   WHEN    "01"
-      *                入院処方箋
-                       PERFORM VARYING IDX     FROM    1   BY  1
-                               UNTIL   IDX     >   4
-                           MOVE    SYS-5007-SIJISEN-HEAD(IDX)
-                                           TO  SPA-K081GMN-CHK1(IDX)
-                           IF      SYS-5007-SIJISEN-PRT (IDX)   >   ZERO
-                               MOVE    1       TO  SPA-K081GMN-CHK1FLG
-                                                                (IDX)
-                               MOVE    1           TO  FLG-SYOHOU-ARI
-                           END-IF
-                       END-PERFORM
-                   WHEN    "03"
-      *                注射処方箋
-                       PERFORM VARYING IDX     FROM    1   BY  1
-                               UNTIL   IDX     >   4
-                           MOVE    SYS-5007-SIJISEN-HEAD(IDX)
-                                           TO  SPA-K081GMN-CHK2(IDX)
-                           IF      SYS-5007-SIJISEN-PRT (IDX)   >   ZERO
-                               MOVE    1       TO  SPA-K081GMN-CHK2FLG
-                                                                (IDX)
-                               MOVE    1           TO  FLG-CHUSYA-ARI
-                           END-IF
-                       END-PERFORM
-                   WHEN    "05"
-      *                指示箋
-                       PERFORM VARYING IDX     FROM    1   BY  1
-                               UNTIL   IDX     >   4
-                           MOVE    SYS-5007-SIJISEN-HEAD(IDX)
-                                           TO  SPA-K081GMN-CHK3(IDX)
-                           IF      SYS-5007-SIJISEN-PRT (IDX)   >   ZERO
-                               MOVE    1       TO  SPA-K081GMN-CHK3FLG
-                                                                (IDX)
-                               MOVE    1           TO  FLG-SIJISEN-ARI
-                           END-IF
-                       END-PERFORM
-               END-EVALUATE
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC         TO  SYS-5007-REC
-                   MOVE    ZERO                TO  FLG-SYSKANRI
-               ELSE
-                   MOVE    1                   TO  FLG-SYSKANRI
-               END-IF
-           END-PERFORM
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-      *    入院処方箋
-           MOVE    "0 発行しない"      TO  SPA-K081GMN-SYOHOU-LST(1)
-           MOVE    "1 発行する"        TO  SPA-K081GMN-SYOHOU-LST(2)
-           MOVE    2                   TO  SPA-K081-SYOHOU-MAX
-           IF      FLG-SYOHOU-ARI      =   ZERO
-               MOVE    1                   TO  SPA-K081-SYOHOU-MAX
-           END-IF
-           IF     (FLG-SYOHOU-ARI      =   1   )  AND
-                  (SPA-NAI-SYOHOU      =   1   )
-               MOVE    SPA-K081GMN-SYOHOU-LST(2)
-                                       TO  SPA-K081GMN-SYOHOU-G
-           ELSE
-               MOVE    SPA-K081GMN-SYOHOU-LST(1)
-                                       TO  SPA-K081GMN-SYOHOU-G
-           END-IF
-           PERFORM 3102-SYOHOU-CHK-SEC
-      *    注射処方箋
-           MOVE    "0 発行しない"      TO  SPA-K081GMN-CHUSYA-LST(1)
-           MOVE    "1 発行する"        TO  SPA-K081GMN-CHUSYA-LST(2)
-           MOVE    2                   TO  SPA-K081-CHUSYA-MAX
-           IF      FLG-CHUSYA-ARI      =   ZERO
-               MOVE    1                   TO  SPA-K081-CHUSYA-MAX
-           END-IF
-           IF     (FLG-CHUSYA-ARI      =   1   )  AND
-                  (SPA-NAI-CHUSYA      =   1   )
-               MOVE    SPA-K081GMN-CHUSYA-LST(2)
-                                       TO  SPA-K081GMN-CHUSYA-G
-           ELSE
-               MOVE    SPA-K081GMN-CHUSYA-LST(1)
-                                       TO  SPA-K081GMN-CHUSYA-G
-           END-IF
-           PERFORM 3103-CHUSYA-CHK-SEC
-      *    指示箋
-           MOVE    "0 発行しない"      TO  SPA-K081GMN-SIJISEN-LST(1)
-           MOVE    "1 発行する"        TO  SPA-K081GMN-SIJISEN-LST(2)
-           MOVE    2                   TO  SPA-K081-SIJISEN-MAX
-           IF      FLG-SIJISEN-ARI     =   ZERO
-               MOVE    1                   TO  SPA-K081-SIJISEN-MAX
-           END-IF
-           IF     (FLG-SIJISEN-ARI     =   1   )  AND
-                  (SPA-NAI-SIJISEN     =   1   )
-               MOVE    SPA-K081GMN-SIJISEN-LST(2)
-                                       TO  SPA-K081GMN-SIJISEN-G
-           ELSE
-               MOVE    SPA-K081GMN-SIJISEN-LST(1)
-                                       TO  SPA-K081GMN-SIJISEN-G
-           END-IF
-           PERFORM 3104-SIJISEN-CHK-SEC
-      *
-           .
-       3101-SPA-HENSYU-EXT.
-           EXIT.
-      *****************************************************************
-      *     ユーザプログラム起動初期処理
-      *****************************************************************
-       3101-USERPG-SET-SEC              SECTION.
-      *
-           MOVE    "0 Ｕ・Ｐ指示なし"      TO  SPA-K081GMN-USERPG-LIST
-                                                                  (1)
-           IF      SPA-K081NAI-GYOUMU-ARI  =   "1"
-      *        実行するプログラムがある時
-               MOVE    "1 Ｕ・Ｐ指示あり"  TO  SPA-K081GMN-USERPG-LIST
-                                                                  (2)
-               MOVE    2                   TO  SPA-K081GMN-USERPG-MAX
-               IF      SPA-K081NAI-GYOUMU-FLG  =   "1"
-                   MOVE    SPA-K081GMN-USERPG-LIST (2)
-                                               TO  SPA-K081GMN-USERPG-G
-               ELSE
-                   MOVE    SPA-K081GMN-USERPG-LIST (1)
-                                               TO  SPA-K081GMN-USERPG-G
-               END-IF
-           ELSE
-      *        実行するプログラムがない時
-               MOVE    1                   TO  SPA-K081GMN-USERPG-MAX
-               MOVE    SPA-K081GMN-USERPG-LIST(1)
-                                               TO  SPA-K081GMN-USERPG-G
-           END-IF
-           .
-       3101-USERPG-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -738,25 +531,32 @@
       *
            MOVE    SPACE               TO  SYS-1010-REC
            INITIALIZE                  SYS-1010-REC
-           MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
            MOVE    "1010"              TO  SYS-1010-KANRICD
            MOVE    "1"                 TO  SYS-1010-KBNCD(1:1)
            MOVE    WRK-DRCD            TO  SYS-1010-KBNCD(2:4)
-           MOVE    SPA-SRYYMD          TO  SYS-1010-STYUKYMD
-           MOVE    SPA-SRYYMD          TO  SYS-1010-EDYUKYMD
       *
       *    システム管理検索
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "key10"             TO  MCP-PATHNAME
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
                PERFORM 900-SYSKANRI-READ-SEC
            ELSE
                INITIALIZE                  SYS-1010-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1010-REC
@@ -767,9 +567,6 @@
                                                 (SPA-K081-DRCD-MAX)
            END-IF
       *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
            .
        3105-DRCD-ADD-EXT.
            EXIT.
@@ -941,8 +738,6 @@
            MOVE    K081-SIJISEN        TO  SPA-K081GMN-SIJISEN-G
            MOVE    K081-DRCD           TO  SPA-K081GMN-DRCD-G
       *
-           MOVE    K081-USERPG         TO  SPA-K081GMN-USERPG-G
-      *
            .
        4101-GMN-SPA-SET-EXT.
            EXIT.
@@ -965,10 +760,6 @@
       *    ドクター
            IF      SPA-ERRCD           =   SPACE
                PERFORM 4103-DRCD-CHK-SEC
-           END-IF
-      *    ユーザプログラム
-           IF      SPA-ERRCD           =   SPACE
-               PERFORM 4103-USERPG-CHK-SEC
            END-IF
       *
            .
@@ -1146,35 +937,6 @@
            EXIT.
       *
       *****************************************************************
-      *    ユーザプログラム処理
-      *****************************************************************
-       4103-USERPG-CHK-SEC           SECTION.
-      *
-           MOVE    ZERO                TO  FLG-OK
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-K081GMN-USERPG-MAX
-               IF      SPA-K081GMN-USERPG  =   SPA-K081GMN-USERPG-LIST
-                                                         (IDX)(1:1)
-                   MOVE    SPA-K081GMN-USERPG-LIST(IDX)
-                                           TO  SPA-K081GMN-USERPG-G
-                   MOVE    1               TO  FLG-OK
-               END-IF
-           END-PERFORM
-           IF      FLG-OK              =   ZERO
-               IF     (SPA-K081NAI-GYOUMU-ARI  =   "1"   )  AND
-                      (SPA-K081NAI-GYOUMU-FLG  =   "1"   )
-                   MOVE    SPA-K081GMN-USERPG-LIST (2)
-                                           TO  SPA-K081GMN-USERPG-G
-               ELSE
-                   MOVE    SPA-K081GMN-USERPG-LIST (1)
-                                           TO  SPA-K081GMN-USERPG-G
-               END-IF
-           END-IF
-           .
-       4103-USERPG-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    チェック選択処理
       *****************************************************************
        420-CHK-CHK-SEC           SECTION.
@@ -1325,17 +1087,6 @@
                PERFORM 459001-PRTNUM-HEN-SEC
            END-IF
            IF      SPA-ERRCD           =   SPACE
-      *
-               IF    ( SPA-CLIENT-PRT-FLG  =   2 )
-                 OR  ( SPA-PRTCONF         =   "1" )
-      *            クライアント印刷制御情報取得処理
-                   PERFORM 4901-CLIENT-PRT-SEC
-               END-IF
-      *
-               INITIALIZE              ORCSMCNDATEAREA
-               CALL    "ORCSMCNDATE"   USING
-                                       ORCSMCNDATEAREA
-      *
                IF       SPA-K081GMN-SYOHOU     =   "1"
                    PERFORM 4401-HC501-PRINT-SEC
                END-IF
@@ -1344,13 +1095,6 @@
                END-IF
                IF       SPA-K081GMN-SIJISEN     =   "1"
                    PERFORM 4403-HC503-PRINT-SEC
-               END-IF
-      *
-               IF      (SPA-CLIENT-PRT-FLG =   1  )
-      *            印刷ダミー処理
-                   MOVE    "99"                TO  SPA-PRT-FLG
-                   CALL    "ORCHCDUMMY"    USING   SPA-AREA
-                   MOVE    SPACE               TO  SPA-PRT-FLG
                END-IF
            END-IF
       *
@@ -1421,8 +1165,6 @@
            MOVE    SPA-SRYYMD          TO  ORCHC501-SRYYMD
            MOVE    SPA-SYSYMD          TO  ORCHC501-SYSYMD
            MOVE    SPA-SRYKA           TO  ORCHC501-SRYKA
-           MOVE    SMCNDATE-YMD        TO  ORCHC501-PRINTYMD
-           MOVE    SMCNDATE-HMS        TO  ORCHC501-PRINTHMS
            IF      SPA-K081GMN-DRCD    NOT =   SPACE
                MOVE    "1"                 TO  ORCHC501-DRCD(1:1)
                MOVE    SPA-K081GMN-DRCD    TO  ORCHC501-DRCD(2:4)
@@ -1433,12 +1175,6 @@
                    MOVE    1               TO  ORCHC501-CHKPRT(IDX)
                END-IF
            END-PERFORM
-      *
-           IF      FLG-CLIENT-OK       =   1
-               MOVE    "01"                TO  SPA-PRT-FLG
-               MOVE    2                   TO  SPA-CLIENT-TEMP-FLG
-           END-IF
-      *
            CALL    WRK-SYOHOU-PG       USING
                                        SPA-AREA
                                        ORCHC501AREA
@@ -1456,8 +1192,6 @@
            MOVE    SPA-SRYYMD          TO  ORCHC502-SRYYMD
            MOVE    SPA-SYSYMD          TO  ORCHC502-SYSYMD
            MOVE    SPA-SRYKA           TO  ORCHC502-SRYKA
-           MOVE    SMCNDATE-YMD        TO  ORCHC502-PRINTYMD
-           MOVE    SMCNDATE-HMS        TO  ORCHC502-PRINTHMS
            IF      SPA-K081GMN-DRCD    NOT =   SPACE
                MOVE    "1"                 TO  ORCHC502-DRCD(1:1)
                MOVE    SPA-K081GMN-DRCD    TO  ORCHC502-DRCD(2:4)
@@ -1468,12 +1202,6 @@
                    MOVE    1               TO  ORCHC502-CHKPRT(IDX)
                END-IF
            END-PERFORM
-      *
-           IF      FLG-CLIENT-OK       =   1
-               MOVE    "02"                TO  SPA-PRT-FLG
-               MOVE    2                   TO  SPA-CLIENT-TEMP-FLG
-           END-IF
-      *
            CALL    WRK-CHUSYA-PG       USING
                                        SPA-AREA
                                        ORCHC502AREA
@@ -1491,8 +1219,6 @@
            MOVE    SPA-SRYYMD          TO  ORCHC503-SRYYMD
            MOVE    SPA-SYSYMD          TO  ORCHC503-SYSYMD
            MOVE    SPA-SRYKA           TO  ORCHC503-SRYKA
-           MOVE    SMCNDATE-YMD        TO  ORCHC503-PRINTYMD
-           MOVE    SMCNDATE-HMS        TO  ORCHC503-PRINTHMS
            IF      SPA-K081GMN-DRCD    NOT =   SPACE
                MOVE    "1"                 TO  ORCHC503-DRCD(1:1)
                MOVE    SPA-K081GMN-DRCD    TO  ORCHC503-DRCD(2:4)
@@ -1503,59 +1229,12 @@
                    MOVE    1               TO  ORCHC503-CHKPRT(IDX)
                END-IF
            END-PERFORM
-      *
-           IF      FLG-CLIENT-OK       =   1
-               MOVE    "03"                TO  SPA-PRT-FLG
-               MOVE    2                   TO  SPA-CLIENT-TEMP-FLG
-           END-IF
-      *
            CALL    WRK-SIJISEN-PG      USING
                                        SPA-AREA
                                        ORCHC503AREA
            .
        4403-HC503-PRINT-EXT.
            EXIT.
-      *****************************************************************
-      *    クライアント印刷前　処理
-      *****************************************************************
-       4901-CLIENT-PRT-SEC         SECTION.
-      *
-      * 再印刷なし
-      *    印刷制御情報取得サブ
-           CALL    "ORCSONPRTSET"      USING   SPA-AREA
-      *
-      *    INITIALIZE                  KDMY01
-      *    MOVE    SPACE               TO  KDMY01-PANDAPRINT1
-      *    クライアント印刷制御情報取得サブ
-           INITIALIZE                  ORCSPRTCTRLAREA
-      ***  MOVE    "入院処方箋"        TO  ORCSPRTCTRL-TITLE-I(01)
-      *    MOVE    "注射処方箋"        TO  ORCSPRTCTRL-TITLE-I(02)
-      ***  MOVE    "入院指示箋"        TO  ORCSPRTCTRL-TITLE-I(03)
-           CALL    "ORCSPRTCTRL"       USING   SPA-AREA
-                                               ORCSPRTCTRLAREA
-                                               MCPAREA
-      **** MOVE    ORCSPRTCTRL-OUT     TO  KDMY01-PANDAPRINT1
-      *
-           MOVE    1                   TO  FLG-CLIENT-OK
-           .
-       4901-CLIENT-PRT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    クライアント印刷画面処理
-      *****************************************************************
-      *600-CLIENT-DMY-SEC              SECTION.
-      *
-      *    MOVE    MCP-WINDOW          TO  SPA-SAKIPG
-      *    MOVE    MCP-PUTTYPE         TO  SPA-PUTTYPE
-      *
-      *    MOVE    "_KDMY01"           TO  MCP-WINDOW
-      *    MOVE    "NEW"               TO  MCP-PUTTYPE
-      *
-      *    PERFORM 900-PUT-WINDOW
-      *    .
-      *600-CLIENT-DMY-EXT.
-      *    EXIT.
       *
       *****************************************************************
       *    元の画面へ
@@ -1611,7 +1290,6 @@
       *
            MOVE    SPACE               TO  K081
       *
-           INITIALIZE                      K081
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   SPA-K081-SYOHOU-MAX
                MOVE    SPA-K081GMN-SYOHOU-LST (IDX)
@@ -1707,22 +1385,6 @@
                    MOVE    "black"         TO  K081-CHK3-STYLE (IDX)
                END-IF
            END-PERFORM
-      *
-           PERFORM   VARYING   IDX     FROM    1   BY  1
-                     UNTIL     IDX         >   SPA-K081GMN-USERPG-MAX
-               MOVE    SPA-K081GMN-USERPG-LIST (IDX)
-                                           TO  K081-USERPG-ITEM (IDX)
-           END-PERFORM
-           MOVE    SPA-K081GMN-USERPG-MAX  TO  K081-USERPG-COUNT
-           MOVE    SPA-K081GMN-USERPG-G    TO  K081-USERPG
-      *v4.8
-      *    ginbee対応
-      *    IF      SPA-MW              =   SPA-GINBEE
-      *        MOVE    WIDGET-INSENSITIVE  TO  K081-USERPG-STATE
-      *    ELSE
-               MOVE    WIDGET-NORMAL       TO  K081-USERPG-STATE
-      **   END-IF
-      *
       *
            PERFORM 5001-MAPCUR-SEC
            .
@@ -1821,8 +1483,6 @@
       *
                WHEN    "DRCD"
                    MOVE    99          TO  SPA-K081GMN-CUR
-               WHEN    "USERPG"
-                   MOVE    99          TO  SPA-K081GMN-CUR
            END-EVALUATE
       *
            IF      SPA-K081GMN-CUR     >=  11  AND  <=  14
@@ -1890,21 +1550,6 @@
                WHEN    "0004"
                    MOVE    "ドクター入力エラー"
                                                TO  SPA-ERRMSG
-               WHEN    "1202"
-                   MOVE    "入院処方箋プログラムがありません。"
-                                       TO  SPA-ERRMSG
-                   MOVE    "システム管理を確認して下さい。"
-                                       TO  SPA-ERRMSG(35:)
-               WHEN    "1203"
-                   MOVE    "注射処方箋プログラムがありません。"
-                                       TO  SPA-ERRMSG
-                   MOVE    "システム管理を確認して下さい。"
-                                       TO  SPA-ERRMSG(35:)
-               WHEN    "1204"
-                   MOVE    "指示箋プログラムがありません。"
-                                       TO  SPA-ERRMSG
-                   MOVE    "システム管理を確認して下さい。"
-                                       TO  SPA-ERRMSG(31:)
                WHEN    OTHER
                    MOVE    SPA-ERRCD
                                                TO  SPA-ERRMSG
@@ -1944,7 +1589,6 @@
       *****************************************************************
        910-PTNYUINRRK-READ-SEC         SECTION.
       *
-           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  PTNYUINRRK-REC
@@ -1963,9 +1607,11 @@
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-      *
-           PERFORM 920-DBFETCH-SEC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
@@ -1981,9 +1627,9 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        910-DBSELECT-EXT.
@@ -1994,9 +1640,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
@@ -2009,13 +1655,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        990-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        990-DBCLOSE-EXT.
            EXIT.
+      *
       *
       *****************************************************************
       *    ＰＵＴ　処理
@@ -2023,9 +1670,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           CALL   "ORCMCPSUB"   USING
+                                MCPAREA
+                                ORCMCPAREA
+                                MCPDATA-REC.
       *
            .
        900-PUT-WINDOW-EXT.

@@ -31,11 +31,6 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者        日付      内容
       * 01.00.01     NACL-多々納  04/12/16   カルテ３号紙（入院）追加
-      * 01.00.02     NACL-太田    05/10/24   MONFUNC 対応
-      * 01.00.03     NACL-多々納  06/04/10   診療費明細書追加
-      * 04.00.00     NACL-多々納  08/01/25   標準の旧処方せん名対応
-      * 04.03.00     NACL-多々納  08/09/04   入院お薬手帳等対応
-      * 04.04.00     NACL-多々納  09/01/21   予約票対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -54,7 +49,6 @@
        01  FLG-AREA.
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-OK              PIC 9(01).
-           03  FLG-ORG             PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -63,7 +57,6 @@
       *
       *    ワーク領域
        01  WRK-AREA.
-           03  WRK-ERRMSG          PIC X(100).
            03  WRK-SRYYMD          PIC X(08).
            03  WRK-NYUGAIKBN       PIC X(01).
       *
@@ -76,9 +69,6 @@
       *****************************************************************
       *
            COPY    "MCPAREA".
-      *
-      *    ファイル探索サブ
-           COPY    "CPORCSACCESS.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -98,7 +88,7 @@
       *
            COPY    "MCPDATA.INC".
       * 
-      *    COPY    "CPORCMCP.INC".  
+           COPY    "CPORCMCP.INC".  
       *
       *****************************************************************
       *    連絡　領域
@@ -169,7 +159,6 @@
       *
            MOVE    SPACE               TO  ORCSPRTNM-PRTPG
            MOVE    SPACE               TO  WRK-PRTPG
-           MOVE    ZERO                TO  FLG-ORG
       *
       *    職員毎のプログラム名取得
            MOVE    ORCSPRTNM-KBNCD     TO  WRK-KBNCD
@@ -182,12 +171,6 @@
                PERFORM 1001-PGNAME-SET-SEC
            END-IF
       *
-      *    処方せん標準で Ｈ１４．１０以前のＰＧ名
-           IF     (FLG-ORG             =   1  )
-              AND (WRK-PRTPG           =   "ORCHC19")
-               MOVE    SPACE               TO  WRK-PRTPG
-           END-IF
-      *
            IF      WRK-PRTPG           =   SPACE
       *        標準のプログラム名とする
                PERFORM 11011-HYOJUN-PRTPG-SEC
@@ -195,30 +178,7 @@
                    MOVE    10                 TO  ORCSPRTNM-RC
                END-IF
            ELSE
-      *
-               INITIALIZE              SACCESS-AREA
-               MOVE    "X"             TO  SACCESS-MODE
-               STRING  WRK-PRTPG           DELIMITED   BY  SPACE
-                       ".so"               DELIMITED   BY  SIZE
-               INTO    SACCESS-IN-FILENAME
-               END-STRING
-               CALL    "ORCSACCESS"    USING
-                                       SACCESS-AREA
-               IF    ( SACCESS-RC      =   ZERO )
-                   MOVE    WRK-PRTPG   TO  ORCSPRTNM-PRTPG
-               ELSE
-      *
-                   MOVE    "orcnop"    TO  ORCSPRTNM-PRTPG
-      *
-                   MOVE   SPACE            TO  WRK-ERRMSG
-                   STRING "Couldn't find module:"  DELIMITED   BY  SIZE
-                          SACCESS-IN-FILENAME      DELIMITED   BY  SPACE
-                          LOW-VALUE                DELIMITED   BY  SIZE
-                   INTO   WRK-ERRMSG
-                   END-STRING
-                   CALL    "coblog"    USING   WRK-ERRMSG
-      *
-               END-IF
+               MOVE    WRK-PRTPG           TO  ORCSPRTNM-PRTPG
            END-IF
       *
            .
@@ -254,15 +214,6 @@
       *            指示箋
                    WHEN    "00000007"
                        MOVE    "ORCHC503"      TO  ORCSPRTNM-PRTPG
-      *            診療費明細書
-                   WHEN    "00000008"
-                       MOVE    "ORCHCN04"      TO  ORCSPRTNM-PRTPG
-      *            薬剤情報
-                   WHEN    "00000009"
-                       MOVE    "ORCHCN30"      TO  ORCSPRTNM-PRTPG
-      *            お薬手帳
-                   WHEN    "00000010"
-                       MOVE    "ORCHCN62"      TO  ORCSPRTNM-PRTPG
                END-EVALUATE
            ELSE
       *        外来
@@ -282,21 +233,6 @@
       *            カルテ（３号紙）
                    WHEN    "00000005"
                        MOVE    "ORCHC33"       TO  ORCSPRTNM-PRTPG
-      *            診療費明細書
-                   WHEN    "00000008"
-                       MOVE    "ORCHC04"       TO  ORCSPRTNM-PRTPG
-      *            お薬手帳
-                   WHEN    "00000009"
-                       MOVE    "ORCHC62"       TO  ORCSPRTNM-PRTPG
-      *            予約票
-                   WHEN    "00000010"
-                       MOVE    "ORCHC67"       TO  ORCSPRTNM-PRTPG
-      *            予約一覧
-                   WHEN    "00000011"
-                       MOVE    "ORCHC14"       TO  ORCSPRTNM-PRTPG
-      *            予約患者一覧
-                   WHEN    "00000012"
-                       MOVE    "ORCHC15"       TO  ORCSPRTNM-PRTPG
                END-EVALUATE
            END-IF
       *
@@ -330,20 +266,17 @@
            INITIALIZE                      SYS-1032-REC
            MOVE    "1032"              TO  SYS-1032-KANRICD
            MOVE    WRK-KBNCD           TO  SYS-1032-KBNCD
-           MOVE    WRK-SRYYMD          TO  SYS-1032-STYUKYMD
-                                           SYS-1032-EDYUKYMD
       *
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1032-HOSPNUM
            MOVE    SYS-1032-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    WRK-SRYYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"  TO  MCP-TABLE
-               MOVE    "key10"         TO  MCP-PATHNAME
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
                PERFORM 900-SYSKANRI-READ-SEC
            ELSE
                INITIALIZE                  SYS-1032-REC
@@ -351,24 +284,21 @@ grpsys                            SPA-AREA
            END-IF
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1032-REC
-                                               SYSKANRI-REC
       *        独自開発分
                IF      SYS-1032-ORCACSTCHK     =   "T"
                    MOVE    SYS-1032-ORCACSTNM  TO  WRK-PRTPG
-                   MOVE    ZERO                TO  FLG-ORG
                ELSE
       *        ＯＲＣＡ標準分
                    MOVE    SYS-1032-ORCAORGNM  TO  WRK-PRTPG
-                   MOVE    1                   TO  FLG-ORG
                END-IF
            END-IF
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        10011-1032-SET-EXT.
@@ -383,20 +313,17 @@ grpsys                            SPA-AREA
            INITIALIZE                      SYS-1035-REC
            MOVE    "1035"              TO  SYS-1035-KANRICD
            MOVE    WRK-KBNCD           TO  SYS-1035-KBNCD
-           MOVE    WRK-SRYYMD          TO  SYS-1035-STYUKYMD
-                                           SYS-1035-EDYUKYMD
       *
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1035-HOSPNUM
            MOVE    SYS-1035-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    WRK-SRYYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"  TO  MCP-TABLE
-               MOVE    "key10"         TO  MCP-PATHNAME
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
                PERFORM 900-SYSKANRI-READ-SEC
            ELSE
                INITIALIZE                  SYS-1035-REC
@@ -404,24 +331,21 @@ grpsys                            SPA-AREA
            END-IF
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1035-REC
-                                               SYSKANRI-REC
       *        独自開発分
                IF      SYS-1035-ORCACSTCHK     =   "T"
                    MOVE    SYS-1035-ORCACSTNM  TO  WRK-PRTPG
-                   MOVE    ZERO                TO  FLG-ORG
                ELSE
       *        ＯＲＣＡ標準分
                    MOVE    SYS-1035-ORCAORGNM  TO  WRK-PRTPG
-                   MOVE    1                   TO  FLG-ORG
                END-IF
            END-IF
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        10011-1032-SET-EXT.
@@ -480,20 +404,17 @@ grpsys                            SPA-AREA
            INITIALIZE                      SYS-1031-REC
            MOVE    "1031"              TO  SYS-1031-KANRICD
            MOVE    WRK-KBNCD           TO  SYS-1031-KBNCD
-           MOVE    WRK-SRYYMD          TO  SYS-1031-STYUKYMD
-                                           SYS-1031-EDYUKYMD
       *
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1031-HOSPNUM
            MOVE    SYS-1031-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    WRK-SRYYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"  TO  MCP-TABLE
-               MOVE    "key10"         TO  MCP-PATHNAME
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
                PERFORM 900-SYSKANRI-READ-SEC
            ELSE
                INITIALIZE                  SYS-1031-REC
@@ -506,11 +427,11 @@ grpsys                            SPA-AREA
            END-IF
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        20011-1031-SET-EXT.
@@ -525,20 +446,17 @@ grpsys                            SPA-AREA
            INITIALIZE                      SYS-1034-REC
            MOVE    "1034"              TO  SYS-1034-KANRICD
            MOVE    WRK-KBNCD           TO  SYS-1034-KBNCD
-           MOVE    WRK-SRYYMD          TO  SYS-1034-STYUKYMD
-                                           SYS-1034-EDYUKYMD
       *
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1034-HOSPNUM
            MOVE    SYS-1034-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    WRK-SRYYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key10"             TO  MCP-PATHNAME
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
                PERFORM 900-SYSKANRI-READ-SEC
            ELSE
                INITIALIZE                  SYS-1034-REC
@@ -551,11 +469,11 @@ grpsys                            SPA-AREA
            END-IF
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        20012-1034-SET-EXT.
@@ -567,9 +485,10 @@ grpsys                            SPA-AREA
        900-SYSKANRI-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-SYSKANRI
            ELSE
