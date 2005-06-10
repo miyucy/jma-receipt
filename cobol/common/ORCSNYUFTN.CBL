@@ -159,18 +159,6 @@
       *
        01  WRK-HANBETU-DATA                PIC X(70).                   
       *
-       01  WRK-KOSEI-TABLE.
-           03  WRK-KOSEI-TBL    OCCURS    2.
-              05 WRK-KOSEI-YYMM            PIC X(06).
-              05 WRK-KOSEI-NISUU           PIC 9(02).
-              05 WRK-KOSEI-DAY             PIC X(01)   OCCURS   31.
-      *
-       01  WRK-IKUSEI-TABLE.
-           03  WRK-IKUSEI-TBL   OCCURS    2.
-              05 WRK-IKUSEI-YYMM           PIC X(06).
-              05 WRK-IKUSEI-NISUU          PIC 9(02).
-              05 WRK-IKUSEI-DAY            PIC X(01)   OCCURS   31.
-      *
       *    入院点数算定用ワークエリア
        01  WRK-NYUIN-TENSU-AREA.
            03  WRK-KHNTEN                  PIC  9(08). 
@@ -469,8 +457,6 @@
                          WRK-DAY-TABLE
                          WRK-HANBETU-TABLE
                          WRK-HANBETU2-TABLE
-                         WRK-KOSEI-TABLE
-                         WRK-IKUSEI-TABLE
                          WRK-JIBAI-TABLE
                          WRK-SYOSIN-TABLE
                          FLG-AREA.
@@ -697,8 +683,6 @@
            PERFORM    KAISHISYURYO-SYORI-SEC.
       *
            PERFORM    HKNNUM-SYUTOKU-SYORI-SEC.
-      *
-           PERFORM    KOHFTN-DAY-SYORI-SEC.
       *
            PERFORM    NARABIKAE-SYORI-SEC.
       *
@@ -1089,13 +1073,6 @@
       ******************************************************************
        HKNNUM-SYUTOKU-SYORI-SEC        SECTION.
       *
-           MOVE  WRK-SKYYM(1)    TO     WRK-KOSEI-YYMM(1)
-                                        WRK-IKUSEI-YYMM(1)
-      *
-           MOVE  WRK-SKYYM(2)    TO     WRK-KOSEI-YYMM(2)
-                                        WRK-IKUSEI-YYMM(2)
-      *
-      *
            PERFORM    VARYING   IDX    FROM   1   BY   1
                               UNTIL  (IDX            >    10)
                                 OR   (WRK-HANBETU-SKYYM(IDX) =  SPACE)
@@ -1166,145 +1143,48 @@
               IF  WRK-HANBETU-KOH1HKNNUM(IDX) = SPACE OR "027"
                   CONTINUE
               ELSE
-      **          IF  WRK-HANBETU-KOH1HKNNUM(IDX)  =  "051"
-      **             MOVE   1   TO  WRK-HANBETU-YUSENBAN(IDX)
-      **          ELSE
                      MOVE  WRK-HANBETU-KOH1HKNNUM(IDX)
                                 TO  WRK-HANBETU-YUSENBAN(IDX)
-      **          END-IF
               END-IF
       *
               IF  WRK-HANBETU-KOH2HKNNUM(IDX) = SPACE 
                   CONTINUE
               ELSE
-      **          IF  WRK-HANBETU-KOH2HKNNUM(IDX)  =  "051"
-      **             MOVE   1   TO  WRK-HANBETU-YUSENBAN(IDX)
-      **          ELSE
                     IF (WRK-HANBETU-YUSENBAN(IDX) 
                                        > WRK-HANBETU-KOH2HKNNUM(IDX))
                     OR (WRK-HANBETU-KOH1HKNNUM(IDX)  =  "027"       )
                      MOVE  WRK-HANBETU-KOH2HKNNUM(IDX)
                                       TO WRK-HANBETU-YUSENBAN(IDX)
                     END-IF
-      **          END-IF
               END-IF
       *
               IF  WRK-HANBETU-KOH3HKNNUM(IDX) = SPACE 
                   CONTINUE
               ELSE
-      **          IF  WRK-HANBETU-KOH3HKNNUM(IDX)  =  "051"
-      **             MOVE   1   TO  WRK-HANBETU-YUSENBAN(IDX)
-      **          ELSE
                     IF  WRK-HANBETU-YUSENBAN(IDX) 
                                        > WRK-HANBETU-KOH3HKNNUM(IDX)
                      MOVE  WRK-HANBETU-KOH3HKNNUM(IDX)
                                       TO WRK-HANBETU-YUSENBAN(IDX)
                     END-IF
-      **          END-IF
               END-IF
       *
               IF  WRK-HANBETU-KOH4HKNNUM(IDX) = SPACE 
                   CONTINUE
               ELSE
-      **          IF  WRK-HANBETU-KOH4HKNNUM(IDX)  =  "051"
-      **             MOVE   1   TO  WRK-HANBETU-YUSENBAN(IDX)
-      **          ELSE
                     IF  WRK-HANBETU-YUSENBAN(IDX) 
                                        > WRK-HANBETU-KOH4HKNNUM(IDX)
                      MOVE  WRK-HANBETU-KOH4HKNNUM(IDX)
                                       TO WRK-HANBETU-YUSENBAN(IDX)
                     END-IF
-      **          END-IF
               END-IF
       *
               IF  WRK-HANBETU-YUSENBAN(IDX)  =   ZERO
                      MOVE   999       TO  WRK-HANBETU-YUSENBAN(IDX)
               END-IF
       *
-              IF    WRK-HANBETU-KOH1HKNNUM(IDX)  =  "015"
-              OR    WRK-HANBETU-KOH2HKNNUM(IDX)  =  "015"
-              OR    WRK-HANBETU-KOH3HKNNUM(IDX)  =  "015"
-              OR    WRK-HANBETU-KOH4HKNNUM(IDX)  =  "015"
-                  IF  WRK-HANBETU-SKYYM(IDX)  =   WRK-KOSEI-YYMM(1)
-                    PERFORM  VARYING  KOHFTN-IDX  FROM   1   BY   1
-                               UNTIL  KOHFTN-IDX   >    31
-                      IF  WRK-HANBETU-DAY(IDX KOHFTN-IDX)  NOT =  SPACE
-                          MOVE   WRK-HANBETU-DAY(IDX KOHFTN-IDX)
-                                       TO  WRK-KOSEI-DAY(1 KOHFTN-IDX)
-                      END-IF
-                    END-PERFORM
-                  END-IF
-                  IF  WRK-HANBETU-SKYYM(IDX)  =   WRK-KOSEI-YYMM(2)
-                    PERFORM  VARYING  KOHFTN-IDX  FROM   1   BY   1
-                               UNTIL  KOHFTN-IDX   >    31
-                      IF  WRK-HANBETU-DAY(IDX KOHFTN-IDX)  NOT =  SPACE
-                          MOVE   WRK-HANBETU-DAY(IDX KOHFTN-IDX)
-                                       TO  WRK-KOSEI-DAY(2 KOHFTN-IDX)
-                      END-IF
-                    END-PERFORM
-                  END-IF
-              END-IF
-      *
-              IF    WRK-HANBETU-KOH1HKNNUM(IDX)  =  "016"
-              OR    WRK-HANBETU-KOH2HKNNUM(IDX)  =  "016"
-              OR    WRK-HANBETU-KOH3HKNNUM(IDX)  =  "016"
-              OR    WRK-HANBETU-KOH4HKNNUM(IDX)  =  "016"
-                  IF  WRK-HANBETU-SKYYM(IDX)  =   WRK-IKUSEI-YYMM(1)
-                    PERFORM  VARYING  KOHFTN-IDX  FROM   1   BY   1
-                               UNTIL  KOHFTN-IDX   >    31
-                      IF  WRK-HANBETU-DAY(IDX KOHFTN-IDX)  NOT =  SPACE
-                          MOVE   WRK-HANBETU-DAY(IDX KOHFTN-IDX)
-                                       TO  WRK-IKUSEI-DAY(1 KOHFTN-IDX)
-                      END-IF
-                    END-PERFORM
-                  END-IF
-                  IF  WRK-HANBETU-SKYYM(IDX)  =   WRK-IKUSEI-YYMM(2)
-                    PERFORM  VARYING  KOHFTN-IDX  FROM   1   BY   1
-                               UNTIL  KOHFTN-IDX   >    31
-                      IF  WRK-HANBETU-DAY(IDX KOHFTN-IDX)  NOT =  SPACE
-                          MOVE   WRK-HANBETU-DAY(IDX KOHFTN-IDX)
-                                       TO  WRK-IKUSEI-DAY(2 KOHFTN-IDX)
-                      END-IF
-                    END-PERFORM
-                  END-IF
-              END-IF
-      *
            END-PERFORM.
       *
        HKNNUM-SYUTOKU-SYORI-EXT.
-           EXIT.
-      *
-      ******************************************************************
-      *    公費（更正・育成）の請求年月・入院日数引数へセット          *
-      ******************************************************************
-       KOHFTN-DAY-SYORI-SEC        SECTION.
-      *
-           PERFORM  VARYING  KOHFTN-IDX  FROM   1   BY   1
-                     UNTIL   KOHFTN-IDX   >     2
-              PERFORM  VARYING  KOHFTN-IDX2  FROM   1   BY   1
-                        UNTIL   KOHFTN-IDX2   >    31
-                 IF   WRK-KOSEI-DAY(KOHFTN-IDX KOHFTN-IDX2) NOT = SPACE
-                     ADD     1   TO    WRK-KOSEI-NISUU(KOHFTN-IDX)
-                 END-IF
-                 IF   WRK-IKUSEI-DAY(KOHFTN-IDX KOHFTN-IDX2) NOT = SPACE
-                     ADD     1   TO    WRK-IKUSEI-NISUU(KOHFTN-IDX)
-                 END-IF
-              END-PERFORM
-           END-PERFORM
-      *
-           PERFORM  VARYING  KOHFTN-IDX  FROM   1   BY   1
-                     UNTIL   KOHFTN-IDX   >     2
-                 MOVE  WRK-KOSEI-YYMM(KOHFTN-IDX)  
-                                 TO  LNK-S02-KOSEI-YYMM(KOHFTN-IDX)
-                 MOVE  WRK-KOSEI-NISUU(KOHFTN-IDX)  
-                                 TO  LNK-S02-KOSEI-NISUU(KOHFTN-IDX)
-                 MOVE  WRK-IKUSEI-YYMM(KOHFTN-IDX)  
-                                 TO  LNK-S02-IKUSEI-YYMM(KOHFTN-IDX)
-                 MOVE  WRK-IKUSEI-NISUU(KOHFTN-IDX)  
-                                 TO  LNK-S02-IKUSEI-NISUU(KOHFTN-IDX)
-           END-PERFORM.
-      *
-       KOHFTN-DAY-SYORI-EXT.
            EXIT.
       *
       ******************************************************************
@@ -1345,30 +1225,6 @@
                               UNTIL  (IDX            >    10)
                                 OR   (WRK-HANBETU-SKYYM(IDX) =  SPACE)
       *
-      *       保険組合せマスタの検索
-      *       INITIALIZE                           HKNCOMBI-REC
-      *       MOVE    LNK-S02-HOSPID       TO      COMB-HOSPID
-      *       MOVE    LNK-S02-PTID         TO      COMB-PTID
-      *       MOVE    WRK-HANBETU-HKNCOMBINUM(IDX)
-      *                                    TO      COMB-HKNCOMBINUM
-      *       MOVE    HKNCOMBI-REC         TO      MCPDATA-REC
-      *       MOVE    "DBSELECT"           TO      MCP-FUNC
-      *       MOVE    "HKNCOMBI-KEY"       TO      ORC-DBPATH
-      *       CALL    "ORCMCPSUB"          USING   MCPAREA
-      *                                            ORCMCPAREA
-      *                                            MCPDATA-REC
-      *
-      *       IF      MCP-RC               =       ZERO
-      *          MOVE    "HKNCOMBI-KEY"   TO      ORC-DBPATH 
-      *          PERFORM   HKNCOMBI-READ-SEC
-      *       END-IF
-      *
-      *       MOVE    "DBCLOSECURSOR"      TO      MCP-FUNC
-      *       MOVE    "HKNCOMBI-KEY"       TO      ORC-DBPATH
-      *       CALL    "ORCMCPSUB"           USING   MCPAREA
-      *                                             ORCMCPAREA
-      *                                             MCPDATA-REC
-      *
               MOVE LNK-S02-HOSPID     TO LNK-SYU-HOSPID(IDX)
               MOVE LNK-S02-NYUGAIKBN  TO LNK-SYU-NYUGAIKBN(IDX)
               MOVE LNK-S02-PTID       TO LNK-SYU-PTID(IDX)
@@ -1396,22 +1252,16 @@
                                       TO LNK-SYU-SKYEDYMD(IDX)(7:2)
               MOVE WRK-HANBETU-HKNCOMBINUM(IDX)
                                       TO LNK-SYU-HKNCOMBINUM(IDX)
-      *       MOVE COMB-HKNNUM        TO LNK-SYU-SYUHKNNUM(IDX)
               MOVE WRK-HANBETU-SYUHKNNUM(IDX)
                                       TO LNK-SYU-SYUHKNNUM(IDX)
-      *       MOVE COMB-KOH1HKNNUM    TO LNK-SYU-KOH1HKNNUM(IDX)
               MOVE WRK-HANBETU-KOH1HKNNUM(IDX)
                                       TO LNK-SYU-KOH1HKNNUM(IDX)
-      *       MOVE COMB-KOH2HKNNUM    TO LNK-SYU-KOH2HKNNUM(IDX)
               MOVE WRK-HANBETU-KOH2HKNNUM(IDX)
                                       TO LNK-SYU-KOH2HKNNUM(IDX)
-      *       MOVE COMB-KOH3HKNNUM    TO LNK-SYU-KOH3HKNNUM(IDX)
               MOVE WRK-HANBETU-KOH3HKNNUM(IDX)
                                       TO LNK-SYU-KOH3HKNNUM(IDX)
-      *       MOVE COMB-KOH4HKNNUM    TO LNK-SYU-KOH4HKNNUM(IDX)
               MOVE WRK-HANBETU-KOH4HKNNUM(IDX)
                                       TO LNK-SYU-KOH4HKNNUM(IDX)
-      *       MOVE COMB-NYU-KFTNRATE  TO LNK-SYU-PTFTNRATE(IDX)
               MOVE WRK-HANBETU-PTFTNRATE(IDX)
                                       TO LNK-SYU-PTFTNRATE(IDX)
               PERFORM    VARYING   IDY    FROM   1   BY   1
