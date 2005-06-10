@@ -33,6 +33,7 @@
       *  01.00.02    NACL-ÌçÏÆ    04.08.04  Æ±°ìÊÝ¸±ÈÖ¹æÂÐ±þ
       *  Ãæ»ß½èÍýÄÉ²Ã
       *  01.01.01    NACL-Æ£¸¶    04/10/07  Ãæ»ß½èÍý¤ÎÄÉ²Ã
+      *  01.01.02    NACL-ÌçÏÆ    05/06/02  ¸øÈñÊ¬Î¥¶èÊ¬ÊÔ½¸½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -353,8 +354,20 @@
                 MOVE    BUN-IDX     TO        KH-IDX
            END-IF
       *
-           IF    RECE64-KOHBUNRI     =      ZERO
-               MOVE    KH-IDX          TO        RECE64-KOHBUNRI
+           IF    RECE62-HENTOTALTEN(1)   NOT  =  ZERO
+              IF    KH-IDX      NOT =   ZERO
+                     MOVE    KH-IDX      TO     RECE64-KOHBUNRI
+              END-IF
+           ELSE
+              IF    KH-IDX      NOT =   ZERO
+                IF    RECE64-KOHBUNRI     =      ZERO
+                     MOVE    KH-IDX      TO     RECE64-KOHBUNRI
+                ELSE
+                  IF  RECE62-HENTOTALTEN(2)  >  RECE62-HENTOTALTEN(3)
+                     MOVE    KH-IDX      TO     RECE64-KOHBUNRI
+                  END-IF
+                END-IF
+              END-IF
            END-IF
            .
        KOHBUNRI-SET-EXT.
@@ -399,10 +412,27 @@
                   (WK-ZAINUM            NOT =  RECE65-ZAINUM)    OR
                   (WK-ZAIREN            NOT =  RECE65-ZAIREN)    OR
                   (FLG-RECE65           =      1)
-                   IF    RECE65-KOHBUNRI     =      ZERO
-                      MOVE   KH-IDX        TO     RECE65-KOHBUNRI
-                      PERFORM      RECE65-REWRITE-SEC
+      *
+                   IF    RECE62-HENTOTALTEN(1)   NOT  =  ZERO
+                     IF    KH-IDX      NOT =   ZERO
+                            MOVE   KH-IDX        TO     RECE65-KOHBUNRI
+                            PERFORM      RECE65-REWRITE-SEC
+                     END-IF
+                   ELSE
+                     IF    KH-IDX      NOT =   ZERO
+                       IF    RECE65-KOHBUNRI     =      ZERO
+                            MOVE   KH-IDX        TO     RECE65-KOHBUNRI
+                            PERFORM      RECE65-REWRITE-SEC
+                       ELSE
+                         IF  RECE62-HENTOTALTEN(2)  >
+                                                  RECE62-HENTOTALTEN(3)
+                            MOVE   KH-IDX        TO     RECE65-KOHBUNRI
+                            PERFORM      RECE65-REWRITE-SEC
+                         END-IF
+                       END-IF
+                     END-IF
                    END-IF
+      *
                    PERFORM      900-RECE65-NEXT-SEC
            END-PERFORM
       *
