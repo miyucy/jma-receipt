@@ -49,16 +49,6 @@
            03  LNK-S02-NYUIN-TSUSAN-NISSU  PIC  9(04).
       *システム日付
            03  LNK-S02-SYSYMD              PIC  X(08).
-      *公費（更正）の請求年月・入院日数
-           03  LNK-S02-KOSEI-AREA.
-              05  LNK-S02-KOSEI-OCC        OCCURS   2.
-                07  LNK-S02-KOSEI-YYMM     PIC  X(06).
-                07  LNK-S02-KOSEI-NISUU    PIC  9(02).
-      *公費（育成）の請求年月・入院日数
-           03  LNK-S02-IKUSEI-AREA.
-              05  LNK-S02-IKUSEI-OCC       OCCURS   2.
-                07  LNK-S02-IKUSEI-YYMM    PIC  X(06).
-                07  LNK-S02-IKUSEI-NISUU   PIC  9(02).
       *
       *初診料算定フラグ（地方公費用）
            03  LNK-S02-SYOSINFLG           PIC  X(01).
