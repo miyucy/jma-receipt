@@ -39,8 +39,6 @@
       *  02.00.05    NACL-多々納  03/07/10  入院調剤料算定なし追加
       *  02.00.06    NACL-多々納  04/03/10  改正対応
       *  02.00.07    NACL-多々納  04/06/XX  複数科・保険対応
-      *  02.00.08    NACL-多々納  05/12/14  MONFUNC 対応 他
-      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -113,7 +111,6 @@
       *
            03  FLG-SYOHOU-ERR           PIC 9(01).
            03  FLG-TOKUTEI              PIC 9(01).
-           03  FLG-SRYACCT-ARI     PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -146,8 +143,6 @@
            03  IDX-CHOKI           PIC 9(04).
            03  IDT                 PIC 9(04).
       *
-           03  IDX-GEN             PIC 9(04).
-      *
       *    一時領域
        01  WRK-AREA.
            03  WRK-SRYCD           PIC X(09).
@@ -160,17 +155,27 @@
            03  WRK-ERRCD3          PIC X(04). 
            03  WRK-ERRCD6          PIC X(04). 
       *
-           03  WRK-SYOKEIS         PIC 9(08)V9(8).
-           03  WRK-SYOKEIS2        PIC 9(08)V9(8).
+           03  WRK-SYOKEIS         PIC 9(08)V99.
+           03  WRK-SYOKEIS2        PIC 9(08)V9(4).
            03  WRK-SYOKEI          PIC 9(08).
       *
-      *    03  WRK-TENSUKEI        PIC 9(08).
+           03  WRK-ZAIKEI          PIC 9(08)V99.
+           03  WRK-GAIKEI          PIC 9(08)V99.
+           03  WRK-GAITEN          PIC 9(08).
+           03  WRK-KIZKEI          PIC 9(08).
+           03  WRK-KIZTEN          PIC 9(08).
+           03  WRK-FIRTEN          PIC 9(08).
+           03  WRK-MAISU           PIC 9(08).
+           03  WRK-KEIMAI          PIC 9(08).
+           03  WRK-TENSUKEI        PIC 9(08).
            03  WRK-KAISU           PIC 9(04).
       *
            03  WRK-TEI-CNT         PIC 9(04).
       *
            03  WRK-IDX             PIC 9(04).
       *
+           03  WRK-TENSU-X.
+               05  WRK-TENSU-Z     PIC ZZZZZZZZ.
            03  WRK-KAISU-X.
                05  WRK-KAISU-Z     PIC ZZZZ.
            03  WRK-KAISU-H         PIC X(04).
@@ -186,20 +191,9 @@
                05  WRK-SANTEN-9        PIC 9(08)V99.
                05  WRK-TENKEI          PIC 9(08).
                05  WRK-ZAITEN          PIC 9(08).
-               05  WRK-ZAITEN-G        PIC 9(08)V9(8).
+               05  WRK-ZAITEN-G        PIC 9(08)V9(4).
       *
                05  WRK-CHK-SRYSYUKBN   PIC X(03).
-      *    保険毎の逓減計算
-           03  WRK-HKNKEI-G.
-               05  WRK-CNT-HKN         PIC 9(03).
-               05  WRK-SANTEN-G        PIC 9(08).
-               05  WRK-SANTEN-GEN      PIC 9(08).
-               05  WRK-SANTENSU        PIC 9(08).
-               05  WRK-SANTEN-KEI      PIC 9(08).
-               05  WRK-HKNKEI-TBL      OCCURS   5.
-                   07  WRK-HKNKEI-COMBI    PIC X(04).
-                   07  WRK-HKNKEI-KEIKEI   PIC 9(08).
-      *
       *    年齢判定用
            03  WRK-KGNAGE          PIC 9(03).
            03  WRK-JGNAGE          PIC 9(03).
@@ -303,7 +297,7 @@
       *
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
-      **** COPY    "CPORCMCP.INC".
+           COPY    "CPORCMCP.INC".
       *
       *    診療行為用共通パラメタ
            COPY    "K01COMMON-SPA".
@@ -388,7 +382,7 @@
            INITIALIZE                  WRK-AREA
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   SPA-MAX-LINE      ) OR
+                   UNTIL      (IDX-Z       >   200     )   OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
       *
                ADD     1                   TO  IDX-MAX
@@ -433,11 +427,6 @@
       *****************************************************************
        10010-SRYKBN-CHK-SEC             SECTION.
       *
-           IF      LNK-ORCSC-PG        =   "K05"
-      *        セット登録のチェックなし
-               CONTINUE
-           ELSE
-      *
            EVALUATE    WRK-GMN-INPUTCD(IDX-Z)(2:3)
                WHEN    "213"
                WHEN    "223"
@@ -473,8 +462,6 @@
                                                              (IDX-Z)
                    END-IF
            END-EVALUATE
-      *
-           END-IF
            .
        10010-SRYKBN-CHK-EXT.
            EXIT.
@@ -544,7 +531,7 @@
            MOVE    ZERO                TO  FLG-ARI
            MOVE    ZERO                TO  IDX-T
            PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL      (IDX1        >   SPA-MAX-LINE     ) OR
+                   UNTIL      (IDX1        >   200     )   OR
                               (FLG-ARI                 =   1    ) OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE )
                IF       WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD
@@ -579,7 +566,6 @@
                MOVE    SPACE               TO  WRK-COM-CHKFLG (IDX-S)
            END-IF
            MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC92-SYORIFLG
-           MOVE    LNK-ORCSC-PG        TO  LNK-SC92-PG
            MOVE    IDX-S               TO  LNK-SC92-GMN-IDX
            MOVE    WRK-SRYCD           TO  LNK-SC92-SRYCD
            MOVE    LNK-ORCSC-NENREI    TO  LNK-SC92-NENREI
@@ -633,7 +619,7 @@
            INITIALIZE                  ORCSC90AREA
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   SPA-MAX-LINE  )   OR
+                   UNTIL      (IDX-Z       >   200     )   OR
                               (SPA-ERRCD       NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
       *
@@ -813,7 +799,7 @@
            ELSE
                MOVE    ZERO                TO  IDX-CHOKI
                PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL      (IDX     >   SPA-MAX-LINE   )  OR
+                       UNTIL      (IDX     >   200  )  OR
                                  ((WRK-GMN-INPUTCD(IDX) =   SPACE) AND
                                   (WRK-COM-INPUTCD(IDX) =   SPACE))
       *            調基の判定
@@ -867,7 +853,7 @@
       *    科毎
            INITIALIZE                  TBL-SRYKA-AREA
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   SPA-MAX-LINE   )  OR
+                   UNTIL      (IDX     >   200  )  OR
                               (WRK-GMN-INPUTCD(IDX) =   SPACE)
                IF     (WRK-COM-SRYKBN(IDX)(1:1)    =   "2" )  OR
                       (WRK-COM-SRYSYUKBN(IDX)      =   "820")
@@ -968,10 +954,8 @@
            INITIALIZE                  TBL-NYUINDAY-AREA
            MOVE    SPACE               TO  WRK-HENSYU-MEISYO
       *
-           INITIALIZE                  WRK-HKNKEI-G
-      *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   SPA-MAX-LINE   )  OR
+                   UNTIL      (IDX     >   200  )  OR
                               (WRK-GMN-INPUTCD(IDX) =   SPACE)
       *
            IF      WRK-COM-SRYKA (IDX)     =   WRK-SRYKA
@@ -1030,12 +1014,6 @@
                        IF      WRK-NAI-HKNCOMBI    =   SPACE
                            MOVE    WRK-COM-HKNCOMBI (IDX)
                                                    TO  WRK-NAI-HKNCOMBI
-                       END-IF
-                       IF      WRK-CNT-HKN         =   ZERO
-                           MOVE    1               TO  WRK-CNT-HKN
-                           MOVE    WRK-COM-HKNCOMBI (IDX)
-                                                   TO  WRK-HKNKEI-COMBI
-                                                      (WRK-CNT-HKN)
                        END-IF
                    WHEN    "212"
                    WHEN    "292"
@@ -1140,22 +1118,22 @@
             END-IF
            END-PERFORM
       *
-      *    入力分のチェック
-           PERFORM 3003-CHEK-SYORI-SEC
+      *    院外分
+           PERFORM 3001-INGAI-SYORI-SEC
+      *    院内分
+           IF      SPA-NYUGAIKBN       =   "1"
+      *        入院
+               PERFORM 30021-NYUIN-INNAI-SYORI-SEC
+           ELSE
+      *        外来
+               PERFORM 3002-INNAI-SYORI-SEC
+           END-IF
+      *
            IF     (LNK-ORCSC-KIDCD     NOT =   SPACE )  OR
                   (SPA-ERRCD           NOT =   SPACE )
                MOVE    SPA-K01KYOUTU       TO  SPA-WORK
            ELSE
-      *        院外分
-               PERFORM 3001-INGAI-SYORI-SEC
-      *        院内分
-               IF      SPA-NYUGAIKBN       =   "1"
-      *            入院
-                   PERFORM 30021-NYUIN-INNAI-SYORI-SEC
-               ELSE
-      *            外来
-                   PERFORM 3002-INNAI-SYORI-SEC
-               END-IF
+               PERFORM 3003-CHEK-SYORI-SEC
            END-IF
       *
            IF      LNK-ORCSC-PG        =   "K02"
@@ -1171,30 +1149,6 @@
       *   入力内容のチェック処理
       *****************************************************************
        3003-CHEK-SYORI-SEC              SECTION.
-      *
-           MOVE    ZERO                TO  FLG-SYOHOSENN
-      *    処方箋算定
-           IF    ((FLG-NAIYAK2         =   1    )  OR
-                  (FLG-TONPUK2         =   1    )  OR
-                  (FLG-GAIYAK2         =   1    ))  OR
-                  (IDX-SYOHOU      NOT =   ZERO )
-               MOVE    1               TO  FLG-SYOHOSENN
-           END-IF
-      *
-           MOVE    ZERO                TO  FLG-SYOHORYO
-      *    処方箋算定
-           IF    ((FLG-NAIYAK2         =   1    )  OR
-                  (FLG-TONPUK2         =   1    )  OR
-                  (FLG-GAIYAK2         =   1    ))  OR
-                  (IDX-SYOHOU      NOT =   ZERO )
-               MOVE    ZERO                TO  FLG-SYOHORYO
-           ELSE
-               IF     (FLG-NAIYAK          =   1    )  OR
-                      (FLG-TONPUK          =   1    )  OR
-                      (FLG-GAIYAK          =   1    )
-                   MOVE    1               TO  FLG-SYOHORYO
-               END-IF
-           END-IF
       *
       *    特定疾患処方管理加算処方箋料がある時、処方箋料があること
            IF      FLG-TOKUSYO1        =   1
@@ -1281,7 +1235,7 @@
            MOVE    ZERO                TO  FLG-YAKUZAI-ARI
       *
            PERFORM VARYING     IDX3    FROM    IDX   BY  1
-                   UNTIL      (IDX3    >   SPA-MAX-LINE  )  OR
+                   UNTIL      (IDX3    >   200  )  OR
                               (WRK-GMN-INPUTCD(IDX3) =   SPACE)  OR
                               (FLG-YAKUZAI-ARI       =   1    )
                IF      WRK-COM-INPUTCD(IDX3)(1:1)  =   "6"
@@ -1289,7 +1243,7 @@
                ELSE
                    IF      WRK-COM-ZAIEND (IDX3) =   "1"
                        MOVE    IDX3           TO  IDX
-                       MOVE    SPA-MAX-LINE   TO  IDX3
+                       MOVE    300            TO  IDX3
                    END-IF
                END-IF
            END-PERFORM
@@ -1306,20 +1260,6 @@
       *   処方内容チェク処理
       *****************************************************************
        3000-SYOHOU-CHK-SEC              SECTION.
-      *
-      *    複数保険判定（内服のみ）
-           IF      WRK-CHK-SRYSYUKBN   =   "211"
-                                       OR  "291"
-               IF      WRK-HKNKEI-COMBI (WRK-CNT-HKN)
-                                       =   WRK-COM-HKNCOMBI (IDX)
-                   CONTINUE
-               ELSE
-                   ADD     1               TO  WRK-CNT-HKN
-                   MOVE    WRK-COM-HKNCOMBI (IDX)
-                                           TO  WRK-HKNKEI-COMBI
-                                                      (WRK-CNT-HKN)
-               END-IF
-           END-IF
       *
            EVALUATE    WRK-CHK-SRYSYUKBN
                WHEN    "211"
@@ -1413,8 +1353,6 @@
                IF      WRK-CHK-SRYSYUKBN   =   "211"
                                            OR  "291"
                    ADD     WRK-COM-KEI (IDX)   TO  WRK-KEIKEI
-                   ADD     WRK-COM-KEI (IDX)   TO  WRK-HKNKEI-KEIKEI
-                                                       (WRK-CNT-HKN)
                ELSE
                    ADD     WRK-COM-KEI (IDX)   TO  WRK-KEIKEI2
                END-IF
@@ -1432,7 +1370,7 @@
                                            "232"  OR
                                            "292"     ) AND
                   (WRK-COM-KOUHATUKBN (IDX)
-                                       =   1     )
+                                    NOT =   ZERO  )
                MOVE    1                   TO  FLG-KOUHATU
            END-IF
       *
@@ -1855,20 +1793,20 @@
                END-IF
            END-IF
       *
-      ***  薬剤料逓減
-      **** IF      WRK-ZAICNT          >=  7
-      *        MOVE    "630010002"         TO  WRK-SRYCD
-      *        MOVE    SPACE               TO  WRK-SRYCD2
-      *        PERFORM 3002-KASAN-SYORI-SEC
-      *        IF      FLG-ERR             =   ZERO
-      *            MOVE    "210"           TO  LNK-ORCSC-SRYSYUKBN
-      *                                                  (02 IDXS)
-      *            MOVE    "21"            TO  LNK-ORCSC-SRYKBN
-      *                                                  (02 IDXS)
-      *            MOVE    WRK-NAI-HKNCOMBI    TO  LNK-ORCSC-HKNCOMBI
-      *                                                  (02 IDXS)
-      *        END-IF
-      *****END-IF
+      *    薬剤料逓減
+           IF      WRK-ZAICNT          >=  7
+               MOVE    "630010002"         TO  WRK-SRYCD
+               MOVE    SPACE               TO  WRK-SRYCD2
+               PERFORM 3002-KASAN-SYORI-SEC
+               IF      FLG-ERR             =   ZERO
+                   MOVE    "210"           TO  LNK-ORCSC-SRYSYUKBN
+                                                         (02 IDXS)
+                   MOVE    "21"            TO  LNK-ORCSC-SRYKBN
+                                                         (02 IDXS)
+                   MOVE    WRK-NAI-HKNCOMBI    TO  LNK-ORCSC-HKNCOMBI
+                                                         (02 IDXS)
+               END-IF
+           END-IF
       *
       *    院外処方が有れば自動加算をしない
            IF     (FLG-NAIYAK2         =   1    )  OR
@@ -2127,7 +2065,7 @@
       *
            MOVE    ZERO                TO  WRK-TEI-CNT
            PERFORM VARYING     IDT     FROM    1   BY  1
-                   UNTIL      (IDT     >   SPA-MAX-LINE )  OR
+                   UNTIL      (IDT     >   200 )  OR
                               (LNK-ORCSC-TEI-SRYCD(IDT)
                                            =   SPACE )
                IF      WRK-SRYCD       =   LNK-ORCSC-TEI-SRYCD(IDT)
@@ -2138,7 +2076,7 @@
       *
            MOVE    SPACE               TO  SRYACT-REC
            INITIALIZE                      SRYACT-REC
-           MOVE    SPA-HOSPNUM         TO  SRY-HOSPNUM
+           MOVE    SPA-HOSPID          TO  SRY-HOSPID
            MOVE    "2"                 TO  SRY-NYUGAIKBN
            MOVE    SPA-PTID            TO  SRY-PTID
            MOVE    SPA-SRYYMD(1:6)     TO  SRY-SRYYM
@@ -2149,12 +2087,14 @@
            MOVE    WRK-SRYCD           TO  SRY-SRYCD(5)
       *
            MOVE    SRYACT-REC          TO  MCPDATA-REC
-           MOVE    "tbl_sryact"        TO  MCP-TABLE
-           MOVE    "key7"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SRYACT-KEY7"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_sryact"        TO  MCP-TABLE
-               MOVE    "key7"              TO  MCP-PATHNAME
+               MOVE    "SRYACT-KEY7"       TO  ORC-DBPATH
                PERFORM 900-SRYACT-NEXT-SEC
            ELSE
                MOVE    1                   TO  FLG-SRYACT
@@ -2164,7 +2104,7 @@
       *        診療会計マスタ読み込み
                MOVE    SPACE               TO  SRYACCT-REC
                INITIALIZE                      SRYACCT-REC
-               MOVE    SRY-HOSPNUM         TO  ACCT-HOSPNUM
+               MOVE    SRY-HOSPID          TO  ACCT-HOSPID
                MOVE    SRY-NYUGAIKBN       TO  ACCT-NYUGAIKBN
                MOVE    SRY-PTID            TO  ACCT-PTID
                MOVE    SRY-SRYKA           TO  ACCT-SRYKA
@@ -2173,20 +2113,25 @@
                MOVE    SRY-ZAINUM          TO  ACCT-ZAINUM
       *
                MOVE    SRYACCT-REC         TO  MCPDATA-REC
-               MOVE    "tbl_sryacct"       TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 910-DBSELECT-SEC
+               MOVE    "DBSELECT"          TO  MCP-FUNC
+               MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC              =   ZERO
-                   MOVE    "tbl_sryacct"       TO  MCP-TABLE
-                   MOVE    "key"               TO  MCP-PATHNAME
-                   PERFORM 940-SRYACCT-READ-SEC
+                   MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
+                   PERFORM 940-SINACCT-READ-SEC
                ELSE
                    MOVE    1                   TO  FLG-SRYACCT
                    INITIALIZE                      SRYACCT-REC
                END-IF
-               MOVE    "tbl_sryacct"       TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 990-DBCLOSE-SEC
+               MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+               MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
                PERFORM VARYING     IDX2    FROM    1   BY  1
                        UNTIL      (IDX2        >   IDN1  )  OR
                                   (FLG-SYOHOU-ERR  =   1 )
@@ -2205,13 +2150,15 @@
                    END-IF
                END-PERFORM
       *
-               MOVE    "tbl_sryact"        TO  MCP-TABLE
-               MOVE    "key7"              TO  MCP-PATHNAME
+               MOVE    "SRYACT-KEY7"       TO  ORC-DBPATH
                PERFORM 900-SRYACT-NEXT-SEC
            END-PERFORM
-           MOVE    "tbl_sryact"        TO  MCP-TABLE
-           MOVE    "key7"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "SRYACT-KEY7"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        300241-SRYACT-CHK-EXT.
@@ -2338,7 +2285,7 @@
       *
            MOVE    ZERO                TO  FLG-ZAI
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   SPA-MAX-LINE   )  OR
+                   UNTIL      (IDX     >   200  )  OR
                              ((WRK-GMN-INPUTCD(IDX) =   SPACE)  AND
                               (WRK-COM-INPUTCD(IDX) =   SPACE ))
                        OR    ( SPA-ERRCD       NOT  =   SPACE )
@@ -2401,47 +2348,10 @@
       *
            MOVE    ZERO                TO  WRK-GMN-MAX
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   SPA-MAX-LINE   )  OR
+                   UNTIL      (IDX     >   200  )  OR
                              ((WRK-GMN-INPUTCD(IDX) =   SPACE ) AND
                               (WRK-COM-INPUTCD(IDX) =   SPACE ))
                ADD     1               TO  WRK-GMN-MAX
-           END-PERFORM
-      *
-      *    薬剤料逓減
-           MOVE    ZERO                TO  WRK-SANTEN-G
-           COMPUTE WRK-SANTEN-KEI      =   WRK-KEIKEI
-                                       -   WRK-SANTEN
-      *
-           PERFORM VARYING IDX-GEN     FROM    1   BY  1
-                   UNTIL   IDX-GEN     >   WRK-CNT-HKN
-               IF      IDX-GEN         =   WRK-CNT-HKN
-                   COMPUTE WRK-SANTENSU    =   WRK-SANTEN-KEI
-                                           -   WRK-SANTEN-G
-               ELSE
-                   COMPUTE WRK-SANTEN-9    =   WRK-HKNKEI-KEIKEI
-                                                       (IDX-GEN)
-                                           *   90
-                                           /   100.00
-                                           +   0.5
-                   MOVE    WRK-SANTEN-9    TO  WRK-SANTEN-GEN
-                   COMPUTE WRK-SANTENSU    =   WRK-HKNKEI-KEIKEI
-                                                       (IDX-GEN)
-                                           -   WRK-SANTEN-GEN
-                   ADD     WRK-SANTENSU    TO  WRK-SANTEN-G
-               END-IF
-      *
-               MOVE    "630010002"         TO  WRK-SRYCD
-               MOVE    SPACE               TO  WRK-SRYCD2
-               PERFORM 3002-KASAN-SYORI-SEC
-               IF      FLG-ERR             =   ZERO
-                   MOVE    "210"           TO  LNK-ORCSC-SRYSYUKBN
-                                                         (02 IDXS)
-                   MOVE    "21"            TO  LNK-ORCSC-SRYKBN
-                                                         (02 IDXS)
-                   MOVE    WRK-HKNKEI-COMBI (IDX-GEN)
-                                           TO  LNK-ORCSC-HKNCOMBI
-                                                         (02 IDXS)
-               END-IF
            END-PERFORM
       *
            .
@@ -2491,7 +2401,7 @@
                GO      TO      30011-GENTUIKA-EXT
            END-IF
       *
-           IF     (IDX-S               =   SPA-MAX-LINE )  OR
+           IF     (IDX-S               =   200)  OR
                   (WRK-COM-SRYKBN (IDX-S + 1)(1:1) NOT =   "2")
                MOVE    "21"                TO  WRK-COM-SRYKBN(IDX-S)
                MOVE    "21"                TO  WRK-GMN-SRYKBN(IDX-S)
@@ -2600,7 +2510,6 @@
                        IF     (WRK-SRYCD           =   "120001710") AND
                               (SPA-CHOKICHK-FLG    =   "1"     )   AND
                               (SPA-CHOKI-ARI       =   SPACE   )
-                       AND    (SPA-CHOZAI-CHK      =   ZERO    )
                            PERFORM 300211-CHOZAI-CHK-SEC
                        END-IF
                    END-IF
@@ -2616,74 +2525,18 @@
       *****************************************************************
        300211-CHOZAI-CHK-SEC           SECTION.
       *
-           IF      SPA-CHOKI-ARI       =   SPACE
-      *        入院の調剤料のチェック
-               MOVE    "120001110"         TO  WRK-SRYCD
-               PERFORM 3002110-SRYACT-CHOZAI-SEC
-               IF      FLG-SRYACCT-ARI     =   1
-                   MOVE    "1"             TO  SPA-CHOKI-ARI
-               END-IF
-           END-IF
-      *
-           IF      SPA-CHOKI-ARI       =   SPACE
-               MOVE    "120001810"         TO  WRK-SRYCD
-               PERFORM 3001-SANTEI-CHK-SEC
-               IF      FLG-ERR             =   1
-                   IF      SPA-CHOZAI-CHK      =   ZERO
-                       MOVE    1               TO  SPA-CHOZAI-CHK
-                       MOVE    "K017"          TO  SPA-ERRCD
-                   END-IF
+           MOVE    "120001810"         TO  WRK-SRYCD
+           PERFORM 3001-SANTEI-CHK-SEC
+           IF      FLG-ERR             =   1
+               IF      SPA-CHOZAI-CHK      =   ZERO
+                   MOVE    1               TO  SPA-CHOZAI-CHK
+                   MOVE    "K017"          TO  SPA-ERRCD
                END-IF
            END-IF
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
       *
            .
        300211-CHOZAI-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    入院調剤料算定判定処理
-      *****************************************************************
-       3002110-SRYACT-CHOZAI-SEC     SECTION.
-      *
-           MOVE    SPACE               TO  SRYACCT-REC
-           INITIALIZE                      SRYACCT-REC
-           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
-           MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
-           MOVE    SPA-PTID            TO  ACCT-PTID
-           MOVE    SPA-SRYYMD(1:6)     TO  ACCT-SRYYM
-           MOVE    "24"                TO  ACCT-SRYKBN
-      *
-           MOVE    SRYACCT-REC         TO  MCPDATA-REC
-           MOVE    "tbl_sryacct"       TO  MCP-TABLE
-           MOVE    "key14"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_sryacct"       TO  MCP-TABLE
-               MOVE    "key14"             TO  MCP-PATHNAME
-               PERFORM 940-SRYACCT-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-SRYACCT
-           END-IF
-           PERFORM UNTIL       (FLG-SRYACCT         =   1       )
-      *
-               IF     (ACCT-HKNCOMBI     =   "9999" ) OR
-                      (ACCT-ZAIKAISU     =   ZERO   )
-                   CONTINUE
-               ELSE
-                   MOVE    1               TO  FLG-SRYACCT-ARI
-               END-IF
-               MOVE    "tbl_sryacct"       TO  MCP-TABLE
-               MOVE    "key14"             TO  MCP-PATHNAME
-               PERFORM 940-SRYACCT-READ-SEC
-           END-PERFORM
-      *
-           MOVE    "tbl_sryacct"       TO  MCP-TABLE
-           MOVE    "key14"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           .
-       3002110-SRYACT-CHOZAI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2816,7 +2669,7 @@
            MOVE    ZERO                TO  FLG-ERR
       *    今回入力にないこと
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   SPA-MAX-LINE   )  OR
+                   UNTIL      (IDX     >   200  )  OR
                               (FLG-ERR              =   1    )   OR
                               (WRK-COM-INPUTCD(IDX) =   SPACE  AND
                                WRK-GMN-INPUTCD(IDX) =   SPACE)
@@ -2872,7 +2725,7 @@
       *
       *    今回入力にないこと
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   SPA-MAX-LINE   )  OR
+                   UNTIL      (IDX     >   200  )  OR
                               (FLG-ERR              =   1    )   OR
                               (WRK-COM-INPUTCD(IDX) =   SPACE  AND
                                WRK-GMN-INPUTCD(IDX) =   SPACE)
@@ -2900,7 +2753,6 @@
                END-EVALUATE
              END-IF
            END-PERFORM
-           MOVE    ZERO                TO  FLG-ALL
            IF      FLG-ERR             =   1
                GO      TO      3002-KASAN-SYORI-EXT
            END-IF
@@ -2971,11 +2823,9 @@
                MOVE    TNS-TEN         TO  LNK-ORCSC-TENSU
                                                    (02 IDXS)
                IF      WRK-SRYCD       =   "630010002"
-      *********    COMPUTE LNK-ORCSC-TENSU (02 IDXS)
-      *                                    =   WRK-KEIKEI
-      *********                            -   WRK-SANTEN
-                   MOVE    WRK-SANTENSU    TO  LNK-ORCSC-TENSU
-                                                   (02 IDXS)
+                   COMPUTE LNK-ORCSC-TENSU (02 IDXS)
+                                           =   WRK-KEIKEI
+                                           -   WRK-SANTEN
                END-IF
                MOVE    WRK-SRYKA       TO  LNK-ORCSC-SRYKA
                                                          (02 IDXS)
@@ -3000,11 +2850,10 @@
       *
            COMPUTE LNK-SC92-GMN-IDX    =   WRK-GMN-MAX
                                        +   1
-           IF      LNK-SC92-GMN-IDX    >   SPA-MAX-LINE 
-               MOVE    SPA-MAX-LINE        TO  LNK-SC92-GMN-IDX
+           IF      LNK-SC92-GMN-IDX    >   200
+               MOVE    200                 TO  LNK-SC92-GMN-IDX
            END-IF
            MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC92-SYORIFLG
-           MOVE    LNK-ORCSC-PG        TO  LNK-SC92-PG
            MOVE    WRK-SRYCD           TO  LNK-SC92-SRYCD
            MOVE    LNK-ORCSC-NENREI    TO  LNK-SC92-NENREI
            MOVE    LNK-ORCSC-ROUJIN    TO  LNK-SC92-ROUJIN
@@ -3093,7 +2942,7 @@
       *
       *    今回入力にないこと
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   SPA-MAX-LINE   )  OR
+                   UNTIL      (IDX     >   200  )  OR
                               (FLG-ERR              =   1    )   OR
                               (WRK-COM-INPUTCD(IDX) =   SPACE  AND
                                WRK-GMN-INPUTCD(IDX) =   SPACE)
@@ -3132,7 +2981,7 @@
       *
       *    今回入力にないこと
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   SPA-MAX-LINE   )  OR
+                   UNTIL      (IDX     >   200  )  OR
                               (FLG-ERR              =   1    )   OR
                               (WRK-COM-INPUTCD(IDX) =   SPACE  AND
                                WRK-GMN-INPUTCD(IDX) =   SPACE)
@@ -3290,31 +3139,35 @@
       *    継続分の時、算定
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                  JYURRK-REC
-           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
+           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
            MOVE    SPA-PTID            TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
            MOVE    SPA-SRYYMD          TO  JYURRK-SRYYMD
            IF      SPA-NYUGAIKBN       =   "1"
                MOVE    1                   TO  JYURRK-RENNUM
-               MOVE    "key5"              TO  WRK-ORC-DBPATH
+               MOVE    "JYURRK-KEY5"       TO  WRK-ORC-DBPATH
            ELSE
       *        継続の時、算定分の編集
                IF     (LNK-ORCSC-CONTKBN    =   "1"  OR  "2" )
                    MOVE    LNK-ORCSC-DOUJI-RENNUM  TO  JYURRK-RENNUM
-                   MOVE    "key5"              TO  WRK-ORC-DBPATH
+                   MOVE    "JYURRK-KEY5"       TO  WRK-ORC-DBPATH
                ELSE
-                   MOVE    "key4"              TO  WRK-ORC-DBPATH
+                   MOVE    "JYURRK-KEY4"       TO  WRK-ORC-DBPATH
                END-IF
            END-IF
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
-           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-           MOVE    WRK-ORC-DBPATH      TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+      **** MOVE    "JYURRK-KEY5"       TO  ORC-DBPATH
+           MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-               MOVE    WRK-ORC-DBPATH      TO  MCP-PATHNAME
+      ******** MOVE    "JYURRK-KEY5"       TO  ORC-DBPATH
+               MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
                PERFORM 970-JYURRK-READ-SEC
            ELSE
                INITIALIZE                  JYURRK-REC
@@ -3352,7 +3205,7 @@
       *            診療会計マスタ読み込み
                    MOVE    SPACE               TO  SRYACCT-REC
                    INITIALIZE                      SRYACCT-REC
-                   MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
+                   MOVE    SPA-HOSPID          TO  ACCT-HOSPID
                    MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
                    MOVE    SPA-PTID            TO  ACCT-PTID
                    MOVE    SPA-SRYKA           TO  ACCT-SRYKA
@@ -3360,13 +3213,15 @@
                    MOVE    JYURRK-ZAINUM(IDX)  TO  ACCT-ZAINUM
       *
                    MOVE    SRYACCT-REC         TO  MCPDATA-REC
-                   MOVE    "tbl_sryacct"       TO  MCP-TABLE
-                   MOVE    "key5"              TO  MCP-PATHNAME
-                   PERFORM 910-DBSELECT-SEC
+                   MOVE    "DBSELECT"          TO  MCP-FUNC
+                   MOVE    "SRYACCT-KEY5"      TO  ORC-DBPATH
+                   CALL    "ORCMCPSUB"          USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
                    IF      MCP-RC              =   ZERO
-                       MOVE    "tbl_sryacct"       TO  MCP-TABLE
-                       MOVE    "key5"              TO  MCP-PATHNAME
-                       PERFORM 940-SRYACCT-READ-SEC
+                       MOVE    "SRYACCT-KEY5"      TO  ORC-DBPATH
+                       PERFORM 940-SINACCT-READ-SEC
                    ELSE
                        MOVE    1                   TO  FLG-SRYACCT
                    END-IF
@@ -3374,10 +3229,9 @@
       *
                       COMPUTE IDX-Y3              =   JYURRK-RENNUM
                                                   +   1
-      *ver.4.8
-      *               IF      IDX-Y3              >   4
-      *                    MOVE    4               TO  IDX-Y3
-      *****           END-IF
+                      IF      IDX-Y3              >   4
+                           MOVE    4               TO  IDX-Y3
+                      END-IF
                       MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
                       IF      (ACCT-DAY (IDX-Y3 IDX-Y2)
                                                    >   ZERO  ) AND
@@ -3387,26 +3241,34 @@
                            PERFORM 300011-YAKFTN-SRYACT-SEC
                        END-IF
       *
-                       MOVE    "tbl_sryacct"       TO  MCP-TABLE
-                       MOVE    "key5"              TO  MCP-PATHNAME
-                       PERFORM 940-SRYACCT-READ-SEC
+                       MOVE    "SRYACCT-KEY5"      TO  ORC-DBPATH
+                       PERFORM 940-SINACCT-READ-SEC
                    END-PERFORM
-                   MOVE    "tbl_sryacct"       TO  MCP-TABLE
-                   MOVE    "key5"              TO  MCP-PATHNAME
-                   PERFORM 990-DBCLOSE-SEC
+                   MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+                   MOVE    "SRYACCT-KEY5"      TO  ORC-DBPATH
+                   CALL    "ORCMCPSUB"          USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
                END-PERFORM
       *
-               MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-               MOVE    WRK-ORC-DBPATH      TO  MCP-PATHNAME
+      ******** END-IF
+      *
+      ******** MOVE    "JYURRK-KEY5"       TO  ORC-DBPATH
+               MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
                PERFORM 970-JYURRK-READ-SEC
            END-PERFORM
-           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-           MOVE    WRK-ORC-DBPATH      TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        30010-JYURRK-SYORI-EXT.
            EXIT.
+      *
       *
       *****************************************************************
       *    診療行為マスター編集処理
@@ -3416,7 +3278,7 @@
       *    診療会計マスターから診療行為マスターを検索する
            MOVE    SPACE               TO  SRYACT-REC
            INITIALIZE                      SRYACT-REC
-           MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
+           MOVE    ACCT-HOSPID         TO  SRY-HOSPID
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
            MOVE    ACCT-PTID           TO  SRY-PTID
            MOVE    ACCT-SRYKA          TO  SRY-SRYKA
@@ -3424,12 +3286,14 @@
            MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
       *
            MOVE    SRYACT-REC          TO  MCPDATA-REC
-           MOVE    "tbl_sryact"        TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_sryact"        TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
+               MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
                PERFORM 900-SRYACT-NEXT-SEC
            ELSE
                MOVE    1                   TO  FLG-SRYACT
@@ -3463,14 +3327,16 @@
                    END-IF
                END-PERFORM
       *
-               MOVE    "tbl_sryact"        TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
+               MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
                PERFORM 900-SRYACT-NEXT-SEC
            END-PERFORM
       *
-           MOVE    "tbl_sryact"        TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        300011-YAKFTN-SRYACT-EXT.
@@ -3481,18 +3347,24 @@
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
-           MOVE    SPA-SRYYMD          TO  TNS-YUKOSTYMD
-           MOVE    SPA-SRYYMD          TO  TNS-YUKOEDYMD
+           MOVE    ZERO                TO  TNS-YUKOSTYMD
+           MOVE    ALL "9"             TO  TNS-YUKOEDYMD
       *
-           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-           MOVE    "tbl_tensu"         TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_tensu"         TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
                    MOVE    ZERO                TO  FLG-TENSU
@@ -3504,9 +3376,13 @@
                INITIALIZE                  TNS-TENSU-REC
                MOVE    1                   TO  FLG-TENSU
            END-IF
-           MOVE    "tbl_tensu"         TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        910-TENSU-READ-EXT.
@@ -3517,7 +3393,11 @@
       *****************************************************************
        900-SRYACT-NEXT-SEC         SECTION.
       *
-           PERFORM 920-DBFETCH-SEC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  SRYACT-REC
                MOVE    ZERO                TO  FLG-SRYACT
@@ -3533,9 +3413,13 @@
       *****************************************************************
       *    診療会計マスタ読み込み
       *****************************************************************
-       940-SRYACCT-READ-SEC         SECTION.
+       940-SINACCT-READ-SEC         SECTION.
       *
-           PERFORM 920-DBFETCH-SEC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  SRYACCT-REC
                MOVE    ZERO                TO  FLG-SRYACCT
@@ -3545,14 +3429,18 @@
            END-IF
       *
            .
-       940-SRYACCT-READ-EXT.
+       940-SINACCT-READ-EXT.
            EXIT.
       *****************************************************************
       *    受診履歴マスター読込
       *****************************************************************
        970-JYURRK-READ-SEC         SECTION.
       *
-           PERFORM 920-DBFETCH-SEC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  JYURRK-REC
                MOVE    ZERO            TO  FLG-JYURRK
@@ -3563,46 +3451,5 @@
       *
            .
        970-JYURRK-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    テーブル検索処理
-      *****************************************************************
-       910-DBSELECT-SEC                SECTION.
-      *
-           MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-       910-DBSELECT-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＤＢ読み込み処理
-      *****************************************************************
-       920-DBFETCH-SEC                 SECTION.
-      *
-           MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-      *
-       920-DBFETCH-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ＤＢクロース処理
-      *****************************************************************
-       990-DBCLOSE-SEC           SECTION.
-      *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-       990-DBCLOSE-EXT.
            EXIT.
       *
