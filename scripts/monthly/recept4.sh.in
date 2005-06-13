@@ -30,10 +30,13 @@ fi
     if  [ -e ${16} ]; then
         rm ${16}
     fi
+        echo "arg13 = [" ${13} "]"  >/home/orca/recept4.log
+        echo "arg18 = [" ${18} "]" >>/home/orca/recept4.log
+        echo "hostname =  [" `hostname`  "]" >>/home/orca/recept4.log
 
 #   レセ電ファイル作成
 
-    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM500 -parameter $1,$2,$3,$rennum,$5,$6,$7,$8,$9,${10},${11},${12},${14},${15},${19}
+    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM500 -parameter $1,$2,$3,$rennum,$5,$6,$7,$8,$9,${10},${11},${12},${14},${15},${19} >> /home/orca/recept4.log
     if  [ -e ${16} ]; then
         exit 
     fi
@@ -41,7 +44,7 @@ fi
 #   症状詳記作成
 
     rennum=$(expr $rennum + 1) 
-    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM510 -parameter $1,$2,$3,$rennum,$5,$6,$7,$8,$9,${10},${11},${12},${14},${15},${19}
+    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM510 -parameter $1,$2,$3,$rennum,$5,$6,$7,$8,$9,${10},${11},${12},${14},${15},${19} >> /home/orca/recept4.log
         
         
     if  [ -e ${16} ]; then
@@ -51,8 +54,13 @@ fi
 #   漢字コード変換（ＥＵＣからシフトＪＩＳ）	
     nkf -s /var/tmp/RECE300.dat > ${13}RECEIPTC.UKE
 
+    if  [ -e ${13}RECEIPTC.UKE ]; then
+        echo "--- RECEIPTC.UKE exist ---" >>/home/orca/recept4.log
+    fi
+    FDDHOST=`echo ${18}|tr \[\] "  "`
+    echo "FDDHOST = " $FDDHOST
     if  [ ${17} -eq '1' ]; then
-	$FDW -host ${18} -command fd-write.sh ${13}RECEIPTC.UKE RECEIPTC.UKE
+	$FDW -host $FDDHOST -command fd-write.sh ${13}RECEIPTC.UKE RECEIPTC.UKE
 	RC=$?
 	if  [ $RC -ne '0' ]; then
 	    ERRCD='0000'$RC
@@ -62,7 +70,7 @@ fi
     fi
 
     if  [ ${17} -eq '2' ]; then
-	$FDW -host ${18} -command mo-write.sh ${13}RECEIPTC.UKE RECEIPTC.UKE
+	$FDW -host $FDDHOST -command mo-write.sh ${13}RECEIPTC.UKE RECEIPTC.UKE
 	RC=$?
 	if  [ $RC -ne '0' ]; then
 	    ERRCD='0000'$RC
@@ -71,6 +79,6 @@ fi
 	fi
     fi
 
-    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${14}${15}
+    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${14}${15} >> /home/orca/recept4.log
 
     exit 
