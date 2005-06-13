@@ -62,20 +62,21 @@ fi
             cp  /var/tmp/toukei11.dat /tmp/$7 
         fi
 #
+    FDDHOST=`echo ${18}|tr \[\] "  "`
          case ${16} in
-                  1) 	$FDW -host ${18} -command fd-write.sh /tmp/$7 $7
+                  1) 	$FDW -host $FDDHOST -command fd-write.sh /tmp/$7 $7
 			RC=$?
                         ;;
-                  2) 	$FDW -host ${18} -command mo-write.sh /tmp/$7 $7
+                  2) 	$FDW -host $FDDHOST -command mo-write.sh /tmp/$7 $7
 			RC=$?
                         ;;
-                  3) 	$FDW -host ${18} -command user1-write.sh /tmp/$7 $7
+                  3) 	$FDW -host $FDDHOST -command user1-write.sh /tmp/$7 $7
 			RC=$?
                         ;;
-                  4) 	$FDW -host ${18} -command user2-write.sh /tmp/$7 $7
+                  4) 	$FDW -host $FDDHOST -command user2-write.sh /tmp/$7 $7
 			RC=$?
                         ;;
-                  5) 	$FDW -host ${18} -command user3-write.sh /tmp/$7 $7
+                  5) 	$FDW -host $FDDHOST -command user3-write.sh /tmp/$7 $7
 			RC=$?
                         ;;
          esac
