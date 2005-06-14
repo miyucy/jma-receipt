@@ -89,6 +89,7 @@
       *  01.01.04    NACL-門脇    05/05/06  公費一部負担金と食事負担を
       *                                     別々に比較し、それぞれ値の小さ
       *                                     いものを患者負担とする
+      *  01.01.05    NACL-門脇    05/06/09  低所得情報編集修正
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -158,6 +159,10 @@
            03  WK-DAYTAIHI-FTNMONEY    PIC 9(07).
            03  WK-DAYTAIHI-COMPFTN     PIC 9(07).
            03  WK-DAYTAIHI-COMPFTNWK   PIC 9(07).
+      *
+           03  WK-TEISYOTOKU-YMD.
+               05  WK-TEISYOTOKU-YM    PIC 9(06).
+               05  WK-TEISYOTOKU-DD    PIC 9(02).
       *
       *    保険区分（空白：医保　１：労災・自賠）
            03  WK-HKNKBN               PIC X(01).
@@ -1690,6 +1695,9 @@
            MOVE    SPACE                TO      WRK-SKJGNSTYMD-S
            MOVE    SPACE                TO      WRK-SKJGNSTYMD-E
       *
+           MOVE    LNK-SYU-SRYYMD       TO      WK-TEISYOTOKU-YMD.
+           MOVE    01                   TO      WK-TEISYOTOKU-DD.
+      *
            INITIALIZE                           TNKRRK-REC.
            MOVE    LNK-SYU-HOSPID       TO      TNKRRK-HOSPID.
            MOVE    LNK-SYU-PTID         TO      TNKRRK-PTID.
@@ -1703,9 +1711,9 @@
                MOVE    "TNKRRK-KEY2"    TO      ORC-DBPATH
                PERFORM  TNKRRK-READ-SEC
                PERFORM  UNTIL
-                          (FLG-TNKRRK     =    1)    OR
-                         ((TNKRRK-STYMD     <=   LNK-SYU-SRYYMD  )  AND
-                          (LNK-SYU-SRYYMD   <=   TNKRRK-EDYMD))
+                       (FLG-TNKRRK         =                   1) OR
+                      ((TNKRRK-STYMD      <=   WK-TEISYOTOKU-YMD) AND
+                       (WK-TEISYOTOKU-YMD <=   TNKRRK-EDYMD     ))
                    PERFORM   TNKRRK-READ-SEC
                END-PERFORM
            ELSE
@@ -1732,9 +1740,9 @@
                MOVE    "TSYRRK-KEY2"    TO      ORC-DBPATH
                PERFORM  TSYRRK-READ-SEC
                PERFORM  UNTIL
-                       (FLG-TSYRRK      =    1)    OR
-                      ((TSYRRK-NINSTYMD   <=   LNK-SYU-SRYYMD  )  AND
-                       (LNK-SYU-SRYYMD    <=   TSYRRK-NINEDYMD))
+                       (FLG-TSYRRK         =                   1) OR
+                      ((TSYRRK-NINSTYMD   <=   WK-TEISYOTOKU-YMD) AND
+                       (WK-TEISYOTOKU-YMD <=   TSYRRK-NINEDYMD  ))
                    PERFORM   TSYRRK-READ-SEC
                END-PERFORM
            ELSE
@@ -6003,7 +6011,8 @@
                     IF    WRK-SKJGNSTYMD-S   NOT  =   SPACE
                        MOVE   LNK-SYU-SRYYMD(1:6) 
                                          TO  WRK-SKJGNSTYYMM2
-                       MOVE   IDY        TO  WRK-SKJGNSTDD2
+      *****************MOVE   IDY        TO  WRK-SKJGNSTDD2
+                       MOVE   01         TO  WRK-SKJGNSTDD2
                        IF   WRK-SKJGNSTYMD-S  <=  WRK-SKJGNSTYMD2
                        AND  WRK-SKJGNSTYMD-E  >=  WRK-SKJGNSTYMD2 
       *                   標準負担額（低２・９０日超）
