@@ -176,6 +176,8 @@
                05  WRK-SAGAKU-X1   PIC X(02).
            03  WRK-NYUINNISSU.
                05  WRK-NYUINNISSU-Z PIC ZZZZZZ.
+           03  WRK-TSUSANNISSU.
+               05  WRK-TSUSANNISSU-Z PIC ZZZZZZ.
       *    ºÞ²ó¿ôÅù²èÌÌÊÔ½¸ÍÑ
            03  WRK-IDG             PIC 9(04).
       *
@@ -1249,8 +1251,10 @@
                MOVE    SPA-SYSYMD      TO  STUSAN-KJNYMD
                CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
                MOVE    STUSAN-NISSU01  TO  SPA-GMN-NYUINNISSU
+               MOVE    STUSAN-NISSU03  TO  SPA-GMN-TSUSANNISSU
            ELSE
                MOVE    ZERO            TO  SPA-GMN-NYUINNISSU
+               MOVE    ZERO            TO  SPA-GMN-TSUSANNISSU
            END-IF.
       *
            MOVE    "PTNYUINRRK-KEY11"  TO  WRK-DBPATH.
@@ -2201,6 +2205,7 @@
            MOVE    SPA-GMN-NYUINBI     TO  I41-NYUINBI.
            MOVE    SPA-GMN-TAINBI      TO  I41-TAINBI.
            MOVE    SPA-GMN-NYUINNISSU  TO  I41-NYUINNISSU.
+           MOVE    SPA-GMN-TSUSANNISSU TO  I41-TSUSANNISSU.
       *    Æþ±¡²Ê
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   SPA-GMN-SRYKA-MAX-41

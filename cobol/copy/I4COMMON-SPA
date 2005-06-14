@@ -58,6 +58,7 @@
                    07  SPA-GMN-NYUINBI         PIC X(09).
                    07  SPA-GMN-TAINBI          PIC X(09).
                    07  SPA-GMN-NYUINNISSU      PIC S9(06).
+                   07  SPA-GMN-TSUSANNISSU     PIC S9(06).
                    07  SPA-NAI-NYUINBI         PIC X(08).
                    07  SPA-NAI-TAINBI          PIC X(08).
       *

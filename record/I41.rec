@@ -220,5 +220,8 @@ I41	{
 				select	bool[30];
 			};
 		};
+		TSUSANNISSU	{
+			value	number(6);
+		};
 	};
 };
