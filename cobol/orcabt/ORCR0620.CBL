@@ -1115,9 +1115,9 @@
                    MOVE     SPACE   TO       RECE62-TEISYOTOKU
                WHEN    0             ALSO     1
                    MOVE     "2"     TO       RECE62-TEISYOTOKU
-                   IF  (TSYRRK-SKJGNSTYMD     NOT =  SPACE       )
-                   AND (TSYRRK-SKJGNSTYMD(1:6)   <=  RECE61-SRYYM)
-                   AND (TSYRRK-NINEDYMD  (1:6)   >=  RECE61-SRYYM)
+                   IF  (TSYRRK-SKJGNSTYMD     NOT =  SPACE        )
+                   AND (TSYRRK-SKJGNSTYMD   <=  WRK-TEISYOTOKU-YMD)
+                   AND (TSYRRK-NINEDYMD     >=  WRK-TEISYOTOKU-YMD)
                       MOVE  "3"     TO       RECE62-TEISYOTOKU
                    END-IF                                     
                WHEN    0             ALSO     0
