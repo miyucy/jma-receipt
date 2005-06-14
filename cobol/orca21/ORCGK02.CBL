@@ -3049,6 +3049,7 @@
       *
            CLOSE                       PARA-FILE
       *
+      *
            .
        3002-PARA-SET-EXT.
            EXIT.
@@ -8775,7 +8776,7 @@
       *    初診フラグ（初診で、履歴の無い時、’１’）
            IF      (SPA-SYOSIN         =   1   )  AND
                    (SPA-GMN-MAX1       =   ZERO)  AND
-                   (SPA-GMN-SYOSINYMD  =   SPACE)
+                   (SPA-SYOYMD         =   SPACE)
                MOVE    1                   TO  LNK-ORCSC-SYOSIN
            ELSE
                MOVE    ZERO                TO  LNK-ORCSC-SYOSIN
