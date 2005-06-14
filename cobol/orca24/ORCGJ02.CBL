@@ -10786,7 +10786,6 @@
                                        TO  SPA-PRTKANRI-TBL-KEY
            MOVE    SPA-GMN-PTID        TO  LNK-XC01-TBL-GROUP
            MOVE    1                   TO  LNK-XC01-SHORI-RENNUM
-           MOVE    SPA-NAI-SRYYM(3:4)  TO  LNK-XC01-SHORI-RENNUM
            MOVE    1                   TO  LNK-XC01-RENNUM
            MOVE    1                   TO  LNK-XC01-ST-PAGE
            MOVE    99999               TO  LNK-XC01-ED-PAGE

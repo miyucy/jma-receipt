@@ -27,7 +27,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.00.01    NACL-XXXX     xx.xx.xx  
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -84,51 +83,61 @@
       *
        01  WRK-AREA.
            03  WRK-PARA.
-	       05  WRK-PARA-A1.
-                 07  WRK-PARA-A1-1                     PIC  X(06).
-                 07  WRK-PARA-A1-2                     PIC  X(16).
-                 07  WRK-PARA-A1-3                     PIC  X(08).
+               05  WRK-PARA-A1.
+                   07  WRK-PARA-A1-1                   PIC  X(06).
+                   07  WRK-PARA-A1-2                   PIC  X(16).
+                   07  WRK-PARA-A1-3                   PIC  X(08).
                05  WRK-PARA-A2                         PIC  X(01).
                05  WRK-PARA-A3                         PIC  X(01).
+               05  WRK-PARA-A4                         PIC  X(100).
                05  WRK-PARA-A5                         PIC  9(07).
-               05  WRK-PARA-A6                         PIC  X(07).
-               05  WRK-PARA-A7                         PIC  X(06).
+               05  WRK-PARA-A6                         PIC  X(08).
+               05  WRK-PARA-A7                         PIC  X(15).
                05  WRK-PARA-A8                         PIC  X(06).
                05  WRK-PARA-A9                         PIC  X(08).
                05  WRK-PARA-A10                        PIC  X(08).
                05  WRK-PARA-A11                        PIC  X(02).
+      *
                05  WRK-PARA-A12                        PIC  X(02).
                05  WRK-PARA-A13                        PIC  X(02).
                05  WRK-PARA-A14                        PIC  X(02).
-               05  WRK-PARA-A15                        PIC  X(08).
-               05  WRK-PARA-A16                        PIC  X(08).
-               05  WRK-PARA-A17                        PIC  X(08).
+      *
+               05  WRK-PARA-A15                        PIC  X(16).
+               05  WRK-PARA-A16                        PIC  X(16).
+               05  WRK-PARA-A17                        PIC  9(04).
                05  WRK-PARA-A18                        PIC  X(08).
-               05  WRK-PARA-A19                        PIC  X(08).
-               05  WRK-PARA-A20                        PIC  X(08).
-               05  WRK-PARA-A21                        PIC  X(08).
+               05  WRK-PARA-A19                        PIC  X(14).
+               05  WRK-PARA-A20                        PIC  9(04).
+               05  WRK-PARA-A21                        PIC  X(06).
                05  WRK-PARA-A22                        PIC  X(08).
-               05  WRK-PARA-A23                        PIC  X(64).
-               05  WRK-PARA-A24                        PIC  X(08).
-               05  WRK-PARA-A25                        PIC  X(08).
-               05  WRK-PARA-A26                        PIC  X(10).
+               05  WRK-PARA-A23                        PIC  X(20).
+               05  WRK-PARA-A24                        PIC  9(04).
+               05  WRK-PARA-A25                        PIC  X(64).
+               05  WRK-PARA-A26                        PIC  X(16).
+               05  WRK-PARA-A27                        PIC  X(16).
+               05  WRK-PARA-A28                        PIC  X(16).
+               05  WRK-PARA-A29                        PIC  X(16).
+      *
+               05  WRK-PARA-PTID                       PIC  9(10).
                05  WRK-PARA-NYUGAIKBN                  PIC  X(01).
                05  WRK-PARA-HKNKBN                     PIC  X(01).
                05  WRK-PARA-SHORI-KBN                  PIC  X(01).
                05  WRK-PARA-HOSPID                     PIC  X(24).
+      *
+      *
            03  WRK-PARA0.
-	       05  WRK-PARA0-A1.
-                 07  WRK-PARA0-A1-1                    PIC  X(06).
-                 07  WRK-PARA0-A1-2                    PIC  X(16).
-                 07  WRK-PARA0-A1-3                    PIC  X(08).
+               05  WRK-PARA0-A1.
+                   07  WRK-PARA0-A1-1                  PIC  X(06).
+                   07  WRK-PARA0-A1-2                  PIC  X(16).
+                   07  WRK-PARA0-A1-3                  PIC  X(08).
                05  WRK-PARA0-A2                        PIC  X(01).
                05  WRK-PARA0-A3                        PIC  X(01).
                05  WRK-PARA0-A5                        PIC  9(07).
                05  WRK-PARA0-A6                        PIC  X(08).
-               05  WRK-PARA0-A7                        PIC  X(10).
+               05  WRK-PARA0-A7                        PIC  9(10).
                05  WRK-PARA0-A8                        PIC  X(06).
            03  WRK-PARA1.
-	       05  WRK-PARA1-A1.
+           05  WRK-PARA1-A1.
                  07  WRK-PARA1-A1-1                     PIC  X(06).
                  07  WRK-PARA1-A1-2                     PIC  X(16).
                  07  WRK-PARA1-A1-3                     PIC  X(08).
@@ -136,7 +145,7 @@
                05  WRK-PARA1-A5                         PIC  9(07).
                05  WRK-PARA1-A6                         PIC  X(08).
            03  WRK-PARA2.
-	       05  WRK-PARA2-A1.
+           05  WRK-PARA2-A1.
                  07  WRK-PARA2-A1-1                     PIC  X(06).
                  07  WRK-PARA2-A1-2                     PIC  X(16).
                  07  WRK-PARA2-A1-3                     PIC  X(08).
@@ -146,12 +155,12 @@
            03  WRK-PARA3.
                05  WRK-PARA3-A9                        PIC  X(08).
                05  WRK-PARA3-A10                       PIC  X(08).
-	       05  WRK-PARA3-A1.
+           05  WRK-PARA3-A1.
                  07  WRK-PARA3-A1-1                    PIC  X(06).
                  07  WRK-PARA3-A1-2                    PIC  X(16).
                  07  WRK-PARA3-A1-3                    PIC  X(08).
+               05  WRK-PARA3-A2                        PIC  X(01).
                05  WRK-PARA3-A3                        PIC  X(01).
-               05  WRK-PARA3-A4                        PIC  X(01).
                05  WRK-PARA3-A8                        PIC  X(06).
                05  WRK-PARA3-A5                        PIC  9(07).
                05  WRK-PARA3-A6                        PIC  X(08).
@@ -159,70 +168,30 @@
            03  WRK-ARG                 PIC X(512).
       *
            03  WRK-PTID-X.
-               05  WRK-PTID            PIC 9(10).
-           03  WRK-CONTKBN             PIC X(01).
-           03  WRK-ZAINUM              PIC 9(08).
-      *
-           03  WRK-RECEERR             PIC X(200). 
-      *
-           03  WRK-HKNNUM              PIC 9(03). 
-      *
-           03  WRK-PATH                PIC X(64).
+               05  WRK-PTID            PIC 9(16).
       *
            03  WRK-SRYYMD.
                05  WRK-SRYYM           PIC X(06).
-               05  WRK-SRYDD           PIC X(02).  
-           03  WRK-SYOKBN              PIC X(01).
+               05  WRK-SRYDD           PIC X(02).
+      *  
+           03  WRK-ZAINUM              PIC 9(08).
       *
-           03  WRK-STYMD               PIC X(08).
-           03  WRK-EDYMD               PIC X(08).
-      *
-           03  WRK-ERR-AREA.
-               05  WRK-UPDKBN          PIC X(01).
-               05  WRK-TEISEIKBN       PIC X(01).
-               05  WRK-ROUSAIKBN       PIC X(01).
-               05  WRK-ERR-DAY         PIC 9(02).
-               05  WRK-ERR-HKNCOMBINUM PIC 9(04).
-               05  WRK-ERR-ERRKBN      PIC X(01).
-               05  WRK-ERR-TEKSTYMD    PIC 9(08).
-               05  WRK-ERR-TEKEDYMD    PIC 9(08).
-      * 
-           03  WRK-YMD.
-               05  WRK-YY              PIC 9(04).
-               05  WRK-MM              PIC 9(02).
-               05  WRK-DD              PIC 9(02).
-      * 
-           03  WRK-PREFKBN             PIC X(01).
-           03  WRK-PREFNUM             PIC X(02).
-           03  WRK-SYMD.
-               05  WRK-SYY         PIC 9(04).
-               05  WRK-SMM         PIC 9(02).
-               05  WRK-SDD         PIC 9(02).
-      *
-           03  WRK-1033-TABLE.
-               05  WRK-1033-TBL    OCCURS  5.
-                   07  WRK-1033-HKNJANUM-G.
-                       09  WRK-1033-HKNJANUM
-                                   PIC X(08) OCCURS  20.
-                   07  WRK-1033-STYUKYMD
-                                   PIC X(08).
-                   07  WRK-1033-EDYUKYMD 
-                                   PIC X(08).
-      *
-           03  WRK-SYS-SRYYMD      PIC X(08).
-      *
-      *
-       01  WRK-CONS-AREA.
-      *    労災保険番号 
-           03  WRK-CONS-ROUSAI-HKNNUM  PIC X(03)   VALUE   "971". 
-      *    自賠責保険番号 
-           03  WRK-CONS-JIBAI-HKNNUM   PIC X(03)   VALUE   "973".       
-      *     
+      *    帳票出力用パラメタ  
            03  WRK-CONS-ARG.       
-             05  WRK-CONS-ARG1         PIC X(04)   VALUE   "HC06".
-             05  WRK-CONS-ARG2         PIC X(29)   VALUE
-                 "99999920050309000000011116205".
-      *          "20050320050308102410011116205".
+               05  WRK-CONS-ARG-PRTID  PIC X(04)   VALUE   "HC06".
+               05  WRK-CONS-ARG-SRYYM  PIC X(06)   VALUE   "999999".
+               05  WRK-CONS-ARG-CREYMD PIC X(08).
+               05  WRK-CONS-ARG-CREHMS PIC X(06).
+               05  WRK-CONS-ARG-PREFKBN
+                                       PIC X(01)   VALUE   "0".
+               05  WRK-CONS-ARG-TEISYUTUSAKI
+                                       PIC X(01)   VALUE   "0".
+               05  WRK-CONS-ARG-RECESYUBETU
+                                       PIC X(04)   VALUE   "0000".
+               05  WRK-CONS-ARG-NYUGAIKBN
+                                       PIC X(01).
+               05  WRK-CONS-ARG-PRTJYUN
+                                       PIC X(02)   VALUE   "05".
       *
            COPY    "MCPAREA".
       *
@@ -314,7 +283,7 @@
       ****************************************************************
        LINKAGE                 SECTION.
        01  COMMAND-PARAM.
-           02  FILLER      PIC X(256).
+           02  FILLER      PIC X(1000).
       ****************************************************************
        PROCEDURE           DIVISION
                USING
@@ -340,86 +309,74 @@
                                        WRK-AREA
                                        FLG-AREA
       *
-      *
       *    ＤＢオープン処理
            PERFORM 100-DBOPEN-SEC
       *
-      *    MOVE    COMMAND-PARAM       TO  WRK-PARA
            UNSTRING    COMMAND-PARAM   DELIMITED BY ","
-	                               INTO  WRK-PARA-A1
-	                                     WRK-PARA-A2
-	                                     WRK-PARA-A3
-	                                     WRK-PARA-A5
-	                                     WRK-PARA-A6
-	                                     WRK-PARA-A7
-	                                     WRK-PARA-A8
-	                                     WRK-PARA-A9
-	                                     WRK-PARA-A10
-	                                     WRK-PARA-A11
-	                                     WRK-PARA-A12
-	                                     WRK-PARA-A13
-	                                     WRK-PARA-A14
-	                                     WRK-PARA-A15
-	                                     WRK-PARA-A16
-	                                     WRK-PARA-A17
-	                                     WRK-PARA-A18
-	                                     WRK-PARA-A19
-	                                     WRK-PARA-A20
-	                                     WRK-PARA-A21
-	                                     WRK-PARA-A22
-	                                     WRK-PARA-A23
-	                                     WRK-PARA-A24
-	                                     WRK-PARA-A25
-	                                     WRK-PARA-A26
-	                                     WRK-PARA-NYUGAIKBN
-	                                     WRK-PARA-HKNKBN
-                                             WRK-PARA-SHORI-KBN
-                                             WRK-PARA-HOSPID
+                                   INTO  WRK-PARA-A1
+                                         WRK-PARA-A2
+                                         WRK-PARA-A3
+                                         WRK-PARA-A5
+                                         WRK-PARA-A6
+                                         WRK-PARA-A7
+                                         WRK-PARA-A8
+                                         WRK-PARA-A9
+                                         WRK-PARA-A10
+                                         WRK-PARA-A11
+                                         WRK-PARA-A15
+                                         WRK-PARA-A16
+                                         WRK-PARA-A17
+                                         WRK-PARA-A18
+                                         WRK-PARA-A19
+                                         WRK-PARA-A20
+                                         WRK-PARA-A21
+                                         WRK-PARA-A22
+                                         WRK-PARA-A23
+                                         WRK-PARA-A24
+                                         WRK-PARA-A25
+                                         WRK-PARA-A26
+                                         WRK-PARA-A27
+                                         WRK-PARA-A28
+                                         WRK-PARA-A29
+                                         WRK-PARA-PTID
+                                         WRK-PARA-NYUGAIKBN
+                                         WRK-PARA-HKNKBN
+                                         WRK-PARA-SHORI-KBN
+                                         WRK-PARA-HOSPID
            END-UNSTRING
       *
       *
-	   DISPLAY "take A1 = " WRK-PARA-A1
-	   DISPLAY "take A2 = " WRK-PARA-A2
-	   DISPLAY "take A3 = " WRK-PARA-A3
-	   DISPLAY "take A5 = " WRK-PARA-A5
-	   DISPLAY "take A6 = " WRK-PARA-A6
-	   DISPLAY "take A7 = " WRK-PARA-A7
-	   DISPLAY "take A8 = " WRK-PARA-A8
-	   DISPLAY "take A9 = " WRK-PARA-A9
-	   DISPLAY "take A10= " WRK-PARA-A10
-	   DISPLAY "take A11= " WRK-PARA-A11
-	   DISPLAY "take A12= " WRK-PARA-A12
-	   DISPLAY "take A13= " WRK-PARA-A13
-	   DISPLAY "take A14= " WRK-PARA-A14
+           MOVE     WRK-PARA-A1    TO  WRK-PARA0-A1
+           MOVE     WRK-PARA-A2    TO  WRK-PARA0-A2
+           MOVE     WRK-PARA-A3    TO  WRK-PARA0-A3
+           MOVE     WRK-PARA-A5    TO  WRK-PARA0-A5
+           MOVE     WRK-PARA-A6    TO  WRK-PARA0-A6
+           MOVE     WRK-PARA-PTID  TO  WRK-PARA0-A7
+           MOVE     WRK-PARA-A8    TO  WRK-PARA0-A8
       *
-	   MOVE     WRK-PARA-A1 TO WRK-PARA0-A1
-	   MOVE     WRK-PARA-A2 TO WRK-PARA0-A2
-	   MOVE     WRK-PARA-A3 TO WRK-PARA0-A3
-	   MOVE     WRK-PARA-A5 TO WRK-PARA0-A5
-	   MOVE     WRK-PARA-A6 TO WRK-PARA0-A6
-	   MOVE     WRK-PARA-A26 TO WRK-PARA0-A7
-	   MOVE     WRK-PARA-A19 TO WRK-PARA0-A8
+           MOVE     WRK-PARA-A1    TO  WRK-PARA1-A1
+           MOVE     WRK-PARA-A3    TO  WRK-PARA1-A3
+           MOVE     WRK-PARA-A5    TO  WRK-PARA1-A5
+           MOVE     WRK-PARA-A6    TO  WRK-PARA1-A6
       *
-	   MOVE     WRK-PARA-A1 TO WRK-PARA1-A1
-	   MOVE     WRK-PARA-A3 TO WRK-PARA1-A3
-	   MOVE     WRK-PARA-A5 TO WRK-PARA1-A5
-	   MOVE     WRK-PARA-A6 TO WRK-PARA1-A6
+           MOVE     WRK-PARA-A1    TO  WRK-PARA2-A1
+           MOVE     WRK-PARA-A5    TO  WRK-PARA2-A5
+           MOVE     WRK-PARA-A6    TO  WRK-PARA2-A6
       *
-	   MOVE     WRK-PARA-A1 TO WRK-PARA2-A1
-	   MOVE     WRK-PARA-A5 TO WRK-PARA2-A5
-	   MOVE     WRK-PARA-A6 TO WRK-PARA2-A6
+           MOVE     WRK-PARA-A1    TO  WRK-PARA3-A1
+           MOVE     WRK-PARA-A2    TO  WRK-PARA0-A2
+           MOVE     WRK-PARA-A3    TO  WRK-PARA3-A3
+           MOVE     WRK-PARA-A5    TO  WRK-PARA3-A5
+           MOVE     WRK-PARA-A6    TO  WRK-PARA3-A6
+           MOVE     WRK-PARA-A8    TO  WRK-PARA3-A8
+           MOVE     WRK-PARA-A9    TO  WRK-PARA3-A9
+           MOVE     WRK-PARA-A10   TO  WRK-PARA3-A10
       *
-	   MOVE     WRK-PARA-A1 TO WRK-PARA3-A1
-	   MOVE     WRK-PARA-A9 TO WRK-PARA3-A9
-      *    MOVE     WRK-PARA-A10
-      *                         TO WRK-PARA3-A10
-	   MOVE     ZERO        
-                                TO WRK-PARA3-A10
-	   MOVE     WRK-PARA-A3 TO WRK-PARA3-A3
-	   MOVE     WRK-PARA-A5 TO WRK-PARA3-A5
-	   MOVE     WRK-PARA-A6 TO WRK-PARA3-A6
-	   MOVE     WRK-PARA-A8 TO WRK-PARA3-A8
-      *
+      *    作成日・時間の設定
+           MOVE    WRK-PARA-A9     TO WRK-CONS-ARG-CREYMD
+           MOVE    WRK-PARA-A10    TO WRK-CONS-ARG-CREHMS
+           MOVE    WRK-PARA-NYUGAIKBN
+                                   TO  WRK-CONS-ARG-NYUGAIKBN 
            .
        100-INIT-EXT.
            EXIT.
@@ -429,13 +386,12 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *  10        20        30        40        50        60
-----+-*--+----+----+----+----+----+----+----+----+----+----+----+----+
-           IF      WRK-PARA-NYUGAIKBN  =  "1"
-                   PERFORM 2001-IHO-NYUIN-SEC
-           ELSE
-                   PERFORM 2001-IHO-SEC
-           END-IF
+           EVALUATE    WRK-PARA-NYUGAIKBN
+               WHEN    "1"
+                   PERFORM 2002-IHO-NYUIN-SEC
+               WHEN    "2"
+                   PERFORM 2001-IHO-GAIRAI-SEC
+           END-EVALUATE
       *
            .
        200-MAIN-EXT.
@@ -444,99 +400,88 @@
       *****************************************************************
       *    医保処理
       *****************************************************************
-       2001-IHO-SEC                SECTION.
+       2001-IHO-GAIRAI-SEC                SECTION.
       *
-      *  10        20        30        40        50        60
-----+-*--+----+----+----+----+----+----+----+----+----+----+----+----+
            IF      WRK-PARA-SHORI-KBN  NOT  =  ZERO
-                   PERFORM 20011-REAL-DB-MAKE-SEC
+               PERFORM 20011-REAL-DB-MAKE-SEC
            END-IF
-      *    作成日・時間の設定
-           ACCEPT  SYS-YMD         FROM    DATE
-           MOVE    SYS-MM       TO WSYS-MM
-           MOVE    SYS-DD       TO WSYS-DD
-           COMPUTE WSYS-YY      =  SYS-YY + 2000
-           MOVE    WSYS-YMD     TO WRK-CONS-ARG2(7:8)
-           ACCEPT  SYS-TIME            FROM    TIME
-           MOVE    SYS-TIME     TO WRK-CONS-ARG2(15:6)
-                                   WRK-PARA3-A10
-	   DISPLAY "orcr0010 start = [" WRK-PARA0 "]"
-           CALL "timeofday" USING LNK-TIMEOFDAY.
-           DISPLAY "orcr0010 START"
-                   " "  LNK-TIMEOFDAY(1:20).
+      *
+       DISPLAY "orcr0010 start = [" WRK-PARA0 "]"
+      **     CALL "timeofday" USING LNK-TIMEOFDAY.
+      **   DISPLAY "orcr0010 START"
+      **           " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0010"          USING
-	                               WRK-PARA0
-           CALL "timeofday" USING LNK-TIMEOFDAY.
-           DISPLAY "orcr0020 START"
-                   " "  LNK-TIMEOFDAY(1:20).
+                                   WRK-PARA0
+      **     CALL "timeofday" USING LNK-TIMEOFDAY.
+       DISPLAY "orcr0020 start = [" WRK-PARA1 "]"
+      **   DISPLAY "orcr0020 START"
+      **           " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0020"          USING
-	                               WRK-PARA1
-           CALL "timeofday" USING LNK-TIMEOFDAY.
-           DISPLAY "orcr0030 START"
-                   " "  LNK-TIMEOFDAY(1:20).
+                                   WRK-PARA1
+      **     CALL "timeofday" USING LNK-TIMEOFDAY.
+      **   DISPLAY "orcr0030 START"
+      **           " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0030"          USING
-	                               WRK-PARA2
-      *
-           PERFORM 900-DBDISCONNECT-SEC
-           CALL "timeofday" USING LNK-TIMEOFDAY.
-           DISPLAY "orcr0035 START"
-                   " "  LNK-TIMEOFDAY(1:20).
+                                   WRK-PARA2
+      **     CALL "timeofday" USING LNK-TIMEOFDAY.
+      **   DISPLAY "orcr0035 START"
+      **           " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0035"          USING
-	                               WRK-PARA2
+                                   WRK-PARA2
       *
-           CALL "timeofday" USING LNK-TIMEOFDAY.
-           DISPLAY "orcr0038 START"
-                   " "  LNK-TIMEOFDAY(1:20).
+      **     CALL "timeofday" USING LNK-TIMEOFDAY.
+      **   DISPLAY "orcr0038 START"
+      **           " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0038"          USING
-	                               WRK-PARA2
+                                   WRK-PARA2
       *
-           CALL "timeofday" USING LNK-TIMEOFDAY.
-           DISPLAY "orcr0040 START"
-                   " "  LNK-TIMEOFDAY(1:20).
+      **     CALL "timeofday" USING LNK-TIMEOFDAY.
+      **   DISPLAY "orcr0040 START"
+      **           " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0040"          USING
-	                               WRK-PARA2
+                                   WRK-PARA2
       *
       *
-           CALL "timeofday" USING LNK-TIMEOFDAY.
-           DISPLAY "orcr0050 START"
-                   " "  LNK-TIMEOFDAY(1:20).
+      **     CALL "timeofday" USING LNK-TIMEOFDAY.
+      **   DISPLAY "orcr0050 START"
+      **           " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0050"          USING
-	                               WRK-PARA2
+                                   WRK-PARA2
       *
-           CALL "timeofday" USING LNK-TIMEOFDAY.
-           DISPLAY "orcr0055 START"
-                   " "  LNK-TIMEOFDAY(1:20).
+      **     CALL "timeofday" USING LNK-TIMEOFDAY.
+      **   DISPLAY "orcr0055 START"
+      **           " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0055"          USING
-	                               WRK-PARA2
+                                   WRK-PARA2
       *
       *    PERFORM 900-DBDISCONNECT-SEC
       *
-           CALL "timeofday" USING LNK-TIMEOFDAY.
-           DISPLAY "orcr0090 START"
-                   " "  LNK-TIMEOFDAY(1:20).
+      **     CALL "timeofday" USING LNK-TIMEOFDAY.
+      **   DISPLAY "orcr0090 START"
+      **           " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0090"          USING
-	                               WRK-PARA2
+                                   WRK-PARA2
       *
-           CALL "timeofday" USING LNK-TIMEOFDAY.
-           DISPLAY "orcr0091 START"
-                   " "  LNK-TIMEOFDAY(1:20).
+      **     CALL "timeofday" USING LNK-TIMEOFDAY.
+      **   DISPLAY "orcr0091 START"
+      **           " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0091"          USING
-	                               WRK-PARA2
+                                   WRK-PARA2
       *
-           CALL "timeofday" USING LNK-TIMEOFDAY.
-           DISPLAY "orcr0104 START"
-                   " "  LNK-TIMEOFDAY(1:20).
+           PERFORM 900-DBDISCONNECT-SEC
+      *
+      **     CALL "timeofday" USING LNK-TIMEOFDAY.
+      **   DISPLAY "orcr0104 START"
+      **           " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0104"          USING
-	                               WRK-PARA3
+                                   WRK-PARA3
       *
       *
            MOVE     SPACE       TO WRK-ARG
-      *    STRING  WRK-PARA-A26 DELIMITED   BY  SPACE
-           STRING   "1"         DELIMITED   BY  SIZE 
-                    ","         DELIMITED   BY  SIZE
+           STRING   "1,"        DELIMITED   BY  SIZE 
                     WRK-PARA-A5 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
-                    WRK-PARA-A5 DELIMITED   BY  SPACE
+                    WRK-PARA-A6 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
                     WRK-PARA-A1 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
@@ -544,38 +489,37 @@
                                 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
                     "0,"        DELIMITED   BY  SIZE
-                    "Z,05,"     DELIMITED   BY  SIZE
+                    "Z,01,"     DELIMITED   BY  SIZE
                                 INTO    WRK-ARG
-           CALL "timeofday" USING LNK-TIMEOFDAY.
-           DISPLAY "orcr0101 START"
-                   " "  LNK-TIMEOFDAY(1:20).
+           END-STRING
+      **     CALL "timeofday" USING LNK-TIMEOFDAY.
+      **   DISPLAY "orcr0101 START"
+      **           " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0101"          USING
-	                               WRK-ARG
+                                   WRK-ARG
       *
       *
            MOVE     SPACE       TO WRK-ARG
            STRING   WRK-PARA-A5 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
-                    WRK-PARA-A5 DELIMITED   BY  SPACE
+                    WRK-PARA-A6 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
                     WRK-PARA-A1 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
                     WRK-CONS-ARG
                                 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
-                    WRK-PARA-A2 DELIMITED   BY  SPACE
+                    "2"         DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
-                    WRK-PARA-A25  DELIMITED BY  SPACE
+                    WRK-PARA-A15  DELIMITED BY  SPACE
                     ","         DELIMITED   BY  SIZE
-                    WRK-PARA-A25  DELIMITED BY  SPACE
+                    WRK-PARA-A16  DELIMITED BY  SPACE
                     ","         DELIMITED   BY  SIZE
-                    WRK-PARA-A15 DELIMITED   BY  SPACE
+                    WRK-PARA-A17 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
-                    WRK-PARA-A16 DELIMITED   BY  SPACE
+                    WRK-PARA-A18 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
-                    WRK-PARA-A26 DELIMITED   BY  SIZE
-                    ","         DELIMITED   BY  SIZE
-                    WRK-PARA-A19 DELIMITED   BY  SPACE
+                    WRK-PARA-A19 DELIMITED   BY  SIZE
                     ","         DELIMITED   BY  SIZE
                     WRK-PARA-A20 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
@@ -585,29 +529,28 @@
                     ","         DELIMITED   BY  SIZE
                     WRK-PARA-A23 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
-      *  konoiti termid st 
-                    WRK-PARA-A23 DELIMITED   BY  SPACE
-                    ","         DELIMITED   BY  SIZE
-      * 
                     WRK-PARA-A24 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
-                    WRK-PARA-A25  DELIMITED BY  SPACE
+                    WRK-PARA-A25 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
-                    WRK-PARA-A25  DELIMITED BY  SPACE
+                    WRK-PARA-A26 DELIMITED   BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A27  DELIMITED BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A28  DELIMITED BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A29  DELIMITED BY  SPACE
                     ","         DELIMITED   BY  SIZE
                     "3"         DELIMITED   BY  SIZE
-                    ","         DELIMITED   BY  SIZE
-                    "3"         DELIMITED   BY  SIZE
-                    ","         DELIMITED   BY  SIZE
                                 INTO    WRK-ARG
-           CALL "timeofday" USING LNK-TIMEOFDAY.
-           DISPLAY "orcr0102 START"
-                   " "  LNK-TIMEOFDAY(1:20).
+      **     CALL "timeofday" USING LNK-TIMEOFDAY.
+      **     DISPLAY "orcr0102 START"
+      **             " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0102"          USING
-	                               WRK-ARG
-           CALL "timeofday" USING LNK-TIMEOFDAY.
-           DISPLAY "orcr0102 END  "
-                   " "  LNK-TIMEOFDAY(1:20).
+                                   WRK-ARG
+      **     CALL "timeofday" USING LNK-TIMEOFDAY.
+      **     DISPLAY "orcr0102 END  "
+      **             " "  LNK-TIMEOFDAY(1:20).
       *
            IF      WRK-PARA-SHORI-KBN  NOT  =  ZERO
       *    ＤＢオープン処理(もう少し整理)
@@ -616,25 +559,15 @@
                    PERFORM 900-DBCOMMIT-SEC
            END-IF
            .
-       2001-IHO-EXT.
+       2001-IHO-GAIRAI-EXT.
            EXIT.
       *
       *****************************************************************
       *    医保処理
       *****************************************************************
-       2001-IHO-NYUIN-SEC          SECTION.
+       2002-IHO-NYUIN-SEC          SECTION.
            DISPLAY "take nyuuin st  "
-      *    作成日・時間の設定
-           ACCEPT  SYS-YMD         FROM    DATE
-           MOVE    SYS-MM       TO WSYS-MM
-           MOVE    SYS-DD       TO WSYS-DD
-           COMPUTE WSYS-YY      =  SYS-YY + 2000
-           MOVE    WSYS-YMD     TO WRK-CONS-ARG2(7:8)
-           ACCEPT  SYS-TIME            FROM    TIME
-           MOVE    SYS-TIME     TO WRK-CONS-ARG2(15:6)
-                                   WRK-PARA3-A10
-           MOVE    "1"          TO WRK-CONS-ARG2(27:1)
-	   DISPLAY "orcr0600 start = [" WRK-PARA0 "]"
+       DISPLAY "orcr0600 start = [" WRK-PARA0 "]"
            CALL "timeofday" USING LNK-TIMEOFDAY.
            DISPLAY "orcr0600 START"
                    " "  LNK-TIMEOFDAY(1:20).
@@ -646,7 +579,7 @@
            DISPLAY "orcr0610 START"
                    " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0610"          USING
-	                               WRK-PARA0
+                                   WRK-PARA0
       *                               WRK-PARA1
       *
            PERFORM 900-DBDISCONNECT-SEC
@@ -655,7 +588,7 @@
            DISPLAY "orcr0620 START"
                    " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0620"          USING
-	                               WRK-PARA2
+                                   WRK-PARA2
       *
       *    PERFORM 900-DBDISCONNECT-SEC
       *
@@ -663,65 +596,65 @@
            DISPLAY "orcr0630 START"
                    " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0630"          USING
-	                               WRK-PARA2
+                                   WRK-PARA2
       *
            CALL "timeofday" USING LNK-TIMEOFDAY.
            DISPLAY "orcr0640 START"
                    " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0640"          USING
-	                               WRK-PARA2
+                                   WRK-PARA2
       *
            CALL "timeofday" USING LNK-TIMEOFDAY.
            DISPLAY "orcr0650 START"
                    " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0650"          USING
-	                               WRK-PARA2
+                                   WRK-PARA2
       *
            CALL "timeofday" USING LNK-TIMEOFDAY.
            DISPLAY "orcr0655 START"
                    " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0655"          USING
-	                               WRK-PARA2
+                                   WRK-PARA2
       *
            CALL "timeofday" USING LNK-TIMEOFDAY.
            DISPLAY "orcr0660 START"
                    " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0660"          USING
-	                               WRK-PARA2
+                                   WRK-PARA2
       *
            CALL "timeofday" USING LNK-TIMEOFDAY.
            DISPLAY "orcr0670 START"
                    " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0670"          USING
-	                               WRK-PARA2
+                                   WRK-PARA2
       *
            CALL "timeofday" USING LNK-TIMEOFDAY.
            DISPLAY "orcr0680 START"
                    " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0680"          USING
-	                               WRK-PARA2
+                                   WRK-PARA2
       *
            CALL "timeofday" USING LNK-TIMEOFDAY.
            DISPLAY "orcr0690 START"
                    " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0690"          USING
-	                               WRK-PARA2
+                                   WRK-PARA2
       *
            CALL "timeofday" USING LNK-TIMEOFDAY.
            DISPLAY "orcr0700 START"
                    " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0700"          USING
-	                               WRK-PARA2
+                                   WRK-PARA2
       *
            CALL "timeofday" USING LNK-TIMEOFDAY.
            DISPLAY "orcr0710 START"
                    " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0710"          USING
-	                               WRK-PARA3
+                                   WRK-PARA3
       *
       *
            MOVE     SPACE       TO WRK-ARG
-      *    STRING  WRK-PARA-A26 DELIMITED   BY  SPACE
+      *    STRING  WRK-PARA-A29 DELIMITED   BY  SPACE
            STRING   "1"         DELIMITED   BY  SIZE 
                     ","         DELIMITED   BY  SIZE
                     WRK-PARA-A5 DELIMITED   BY  SPACE
@@ -734,13 +667,13 @@
                                 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
                     "0,"        DELIMITED   BY  SIZE
-                    "Z,05,"     DELIMITED   BY  SIZE
+                    "Z,01,"     DELIMITED   BY  SIZE
                                 INTO    WRK-ARG
            CALL "timeofday" USING LNK-TIMEOFDAY.
            DISPLAY "orcr0101 START"
                    " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0101"          USING
-	                               WRK-ARG
+                                   WRK-ARG
       *
       *
            MOVE     SPACE       TO WRK-ARG
@@ -763,7 +696,7 @@
                     ","         DELIMITED   BY  SIZE
                     WRK-PARA-A16 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
-                    WRK-PARA-A26 DELIMITED   BY  SIZE
+                    WRK-PARA-A29 DELIMITED   BY  SIZE
                     ","         DELIMITED   BY  SIZE
                     WRK-PARA-A19 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
@@ -794,12 +727,12 @@
            DISPLAY "orcr0102 START"
                    " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0102"          USING
-	                               WRK-ARG
+                                   WRK-ARG
            CALL "timeofday" USING LNK-TIMEOFDAY.
            DISPLAY "orcr0102 END  "
                    " "  LNK-TIMEOFDAY(1:20).
            .
-       2001-IHO-NYUIN-EXT.
+       2002-IHO-NYUIN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -968,7 +901,7 @@
                    " "  LNK-TIMEOFDAY(1:20)
            MOVE    WRK-PARA-HOSPID      TO      JYURRK-HOSPID
            MOVE    WRK-PARA-NYUGAIKBN   TO      JYURRK-NYUGAIKBN
-           MOVE    WRK-PARA-A26         TO      WRK-PTID-X
+           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      JYURRK-PTID
            MOVE    WRK-PARA-A8          TO      WRK-SRYYM
            MOVE    "% "                 TO      WRK-SRYDD
@@ -991,7 +924,7 @@
                    " "  LNK-TIMEOFDAY(1:20)
            MOVE    WRK-PARA-HOSPID      TO      ACCT-HOSPID
            MOVE    WRK-PARA-NYUGAIKBN   TO      ACCT-NYUGAIKBN
-           MOVE    WRK-PARA-A26         TO      WRK-PTID-X
+           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      ACCT-PTID
            MOVE    WRK-PARA-A8          TO      ACCT-SRYYM
            MOVE    SRYACCT-REC          TO      MCPDATA-REC
@@ -1021,7 +954,7 @@
        200111-REAL-SRYACY-DB-DELETE1-SEC   SECTION.
            MOVE    WRK-PARA-HOSPID      TO      SRY-HOSPID
            MOVE    WRK-PARA-NYUGAIKBN   TO      SRY-NYUGAIKBN
-           MOVE    WRK-PARA-A26         TO      WRK-PTID-X
+           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      SRY-PTID
            MOVE    WRK-PARA-A8          TO      SRY-SRYYM
            MOVE    SRYACT-REC           TO      MCPDATA-REC
@@ -1043,7 +976,7 @@
        200111-REAL-SRYACY-DB-DELETE2-SEC   SECTION.
            MOVE    WRK-PARA-HOSPID      TO      SRY-HOSPID
            MOVE    WRK-PARA-NYUGAIKBN   TO      SRY-NYUGAIKBN
-           MOVE    WRK-PARA-A26         TO      WRK-PTID-X
+           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      SRY-PTID
            MOVE    WRK-PARA-A8          TO      SRY-SRYYM
            MOVE    SRYACT-REC           TO      MCPDATA-REC
@@ -1099,7 +1032,7 @@
       *収納マスタ
       **   MOVE    WRK-PARA-HOSPID      TO      SYU-HOSPID
       **   MOVE    WRK-PARA-NYUGAIKBN   TO      SYU-NYUGAIKBN
-      **   MOVE    WRK-PARA-A26         TO      WRK-PTID-X
+      **   MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
       **   MOVE    WRK-PTID             TO      SYU-PTID
       **   MOVE    SYUNOU-REC           TO      MCPDATA-REC
       **   MOVE    "DBSELECT"           TO      MCP-FUNC
@@ -1131,7 +1064,7 @@
       *収納明細マスタ
       **   MOVE    WRK-PARA-HOSPID      TO      SMEI-HOSPID
       **   MOVE    WRK-PARA-NYUGAIKBN   TO      SMEI-NYUGAIKBN
-      **   MOVE    WRK-PARA-A26         TO      WRK-PTID-X
+      **   MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
       **   MOVE    WRK-PTID             TO      SMEI-PTID
       **   MOVE    SYUMEI-REC           TO      MCPDATA-REC
       **   MOVE    "DBSELECT"           TO      MCP-FUNC
@@ -1164,7 +1097,7 @@
       *収納トータルマスタ
       **   MOVE    WRK-PARA-HOSPID      TO      SYUTTL-HOSPID
       **   MOVE    WRK-PARA-NYUGAIKBN   TO      SYUTTL-NYUGAIKBN
-      **   MOVE    WRK-PARA-A26         TO      WRK-PTID-X
+      **   MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
       **   MOVE    WRK-PTID             TO      SYUTTL-PTID
       **   MOVE    SYUTTL-REC           TO      MCPDATA-REC
       **   MOVE    "DBSELECT"           TO      MCP-FUNC
@@ -1196,7 +1129,7 @@
       *会計マスタ
            MOVE    WRK-PARA-HOSPID      TO      ACCT-HOSPID
            MOVE    WRK-PARA-NYUGAIKBN   TO      ACCT-NYUGAIKBN
-           MOVE    WRK-PARA-A26         TO      WRK-PTID-X
+           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      ACCT-PTID
            MOVE    SRYACCT-REC          TO      MCPDATA-REC
            MOVE    "DBSELECT"           TO      MCP-FUNC
@@ -1236,7 +1169,7 @@
       *診療行為マスタ
            MOVE    WRK-PARA-HOSPID      TO      SRY-HOSPID
            MOVE    WRK-PARA-NYUGAIKBN   TO      SRY-NYUGAIKBN
-           MOVE    WRK-PARA-A26         TO      WRK-PTID-X
+           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      SRY-PTID
            MOVE    SRYACT-REC           TO      MCPDATA-REC
            MOVE    "DBSELECT"           TO      MCP-FUNC
@@ -1279,7 +1212,7 @@
       *算定履歴マスタ
            MOVE    WRK-PARA-HOSPID      TO      SANTEI-HOSPID
            MOVE    WRK-PARA-NYUGAIKBN   TO      SANTEI-NYUGAIKBN
-           MOVE    WRK-PARA-A26         TO      WRK-PTID-X
+           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      SANTEI-PTID
            MOVE    SANTEI-REC           TO      MCPDATA-REC
            MOVE    "DBSELECT"           TO      MCP-FUNC
@@ -1321,7 +1254,7 @@
       *受診履歴マスタ
            MOVE    WRK-PARA-HOSPID      TO      JYURRK-HOSPID
            MOVE    WRK-PARA-NYUGAIKBN   TO      JYURRK-NYUGAIKBN
-           MOVE    WRK-PARA-A26         TO      WRK-PTID-X
+           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      JYURRK-PTID
            MOVE    JYURRK-REC           TO      MCPDATA-REC
            MOVE    "DBSELECT"           TO      MCP-FUNC
@@ -1360,7 +1293,7 @@
       *--------------------------------------------------
       *診療科履歴マスタ
            MOVE    WRK-PARA-HOSPID      TO      KARRK-HOSPID
-           MOVE    WRK-PARA-A26         TO      WRK-PTID-X
+           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      KARRK-PTID
            MOVE    SRYKARRK-REC         TO      MCPDATA-REC
            MOVE    "DBSELECT"           TO      MCP-FUNC
@@ -1409,7 +1342,7 @@
       *--------------------------------------------------
       *患者コメントマスタ
            MOVE    WRK-PARA-HOSPID      TO      PTCOM-HOSPID
-           MOVE    WRK-PARA-A26         TO      WRK-PTID-X
+           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      PTCOM-PTID
            MOVE    PTCOM-REC            TO      MCPDATA-REC
            MOVE    "DBSELECT"           TO      MCP-FUNC
@@ -1697,7 +1630,7 @@
       *収納マスタ
            MOVE    WRK-PARA-HOSPID      TO      SYU-HOSPID
            MOVE    WRK-PARA-NYUGAIKBN   TO      SYU-NYUGAIKBN
-           MOVE    WRK-PARA-A26         TO      WRK-PTID-X
+           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      SYU-PTID
            MOVE    SYUNOU-REC           TO      MCPDATA-REC
            DISPLAY "take tmp db delete syunou st = " SYU-PTID "," 
@@ -1711,7 +1644,7 @@
       *収納明細マスタ
            MOVE    WRK-PARA-HOSPID      TO      SMEI-HOSPID
            MOVE    WRK-PARA-NYUGAIKBN   TO      SMEI-NYUGAIKBN
-           MOVE    WRK-PARA-A26         TO      WRK-PTID-X
+           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      SMEI-PTID
            MOVE    SYUMEI-REC           TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
@@ -1723,7 +1656,7 @@
       *収納トータルマスタ
            MOVE    WRK-PARA-HOSPID      TO      SYUTTL-HOSPID
            MOVE    WRK-PARA-NYUGAIKBN   TO      SYUTTL-NYUGAIKBN
-           MOVE    WRK-PARA-A26         TO      WRK-PTID-X
+           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      SYUTTL-PTID
            MOVE    SYUTTL-REC           TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
@@ -1735,7 +1668,7 @@
       *会計マスタ
            MOVE    WRK-PARA-HOSPID      TO      ACCT-HOSPID
            MOVE    WRK-PARA-NYUGAIKBN   TO      ACCT-NYUGAIKBN
-           MOVE    WRK-PARA-A26         TO      WRK-PTID-X
+           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      ACCT-PTID
            MOVE    SRYACCT-REC          TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
@@ -1747,7 +1680,7 @@
       *診療行為マスタ
            MOVE    WRK-PARA-HOSPID      TO      SRY-HOSPID
            MOVE    WRK-PARA-NYUGAIKBN   TO      SRY-NYUGAIKBN
-           MOVE    WRK-PARA-A26         TO      WRK-PTID-X
+           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      SRY-PTID
            MOVE    SRYACT-REC           TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
@@ -1759,7 +1692,7 @@
       *算定履歴マスタ
            MOVE    WRK-PARA-HOSPID      TO      SANTEI-HOSPID
            MOVE    WRK-PARA-NYUGAIKBN   TO      SANTEI-NYUGAIKBN
-           MOVE    WRK-PARA-A26         TO      WRK-PTID-X
+           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      SANTEI-PTID
            MOVE    SANTEI-REC           TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
@@ -1771,7 +1704,7 @@
       *受診履歴マスタ
            MOVE    WRK-PARA-HOSPID      TO      JYURRK-HOSPID
            MOVE    WRK-PARA-NYUGAIKBN   TO      JYURRK-NYUGAIKBN
-           MOVE    WRK-PARA-A26         TO      WRK-PTID-X
+           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      JYURRK-PTID
            MOVE    JYURRK-REC           TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
@@ -1782,7 +1715,7 @@
       *
       *診療科履歴マスタ
            MOVE    WRK-PARA-HOSPID      TO      KARRK-HOSPID
-           MOVE    WRK-PARA-A26         TO      WRK-PTID-X
+           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      KARRK-PTID
            MOVE    SRYKARRK-REC         TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
@@ -1793,7 +1726,7 @@
       *
       *患者コメントマスタ
            MOVE    WRK-PARA-HOSPID      TO      PTCOM-HOSPID
-           MOVE    WRK-PARA-A26         TO      WRK-PTID-X
+           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      PTCOM-PTID
            MOVE    PTCOM-REC            TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
@@ -1804,7 +1737,7 @@
       *
       *患者マスタ
            MOVE    WRK-PARA-HOSPID      TO      PTINF-HOSPID
-           MOVE    WRK-PARA-A26         TO      WRK-PTID-X
+           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      PTINF-PTID
            MOVE    PTINF-REC            TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
@@ -1815,7 +1748,7 @@
       *診療行為付加情報マスタ
            MOVE    WRK-PARA-HOSPID      TO      ACCTP-HOSPID
            MOVE    WRK-PARA-NYUGAIKBN   TO      ACCTP-NYUGAIKBN
-           MOVE    WRK-PARA-A26         TO      WRK-PTID-X
+           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      ACCTP-PTID
            MOVE    SRYACCTPLUS-REC      TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
