@@ -84,6 +84,7 @@
            03  FLG-TENSU           PIC 9(01).
            03  FLG-HKNCOMBI        PIC 9(01).
            03  FLG-UKETUKE         PIC 9(01).
+           03  FLG-PTNYUINRRK        PIC 9(01).
       *
            03  FLG-SINKI           PIC 9(01).
            03  FLG-SYORI           PIC 9(01).
@@ -184,6 +185,8 @@
       *    ÊÝ¸±ÁÈ¹ç¤»ÊÝÂ¸
            03  WRK-HZN-HKNCOMBINUM     PIC X(04).
            03  WRK-HZN-HKNKBN          PIC X(01).
+      *
+           03  WRK-SRYKA               PIC X(02).
       *
       *    ¿ÇÎÅ¹Ô°ÙÆâÍÆÈæ³ÓÍÑ¥Æ¡¼¥Ö¥ë
        01  TBL-AREA.
@@ -288,6 +291,10 @@
       *    ÅÀ¿ô¥Þ¥¹¥¿¡Ý
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
+      *
+      *    ´µ¼ÔÆþ±¡ÍúÎò
+       01  PTNYUINRRK-REC.
+           COPY    "CPPTNYUINRRK.INC".
       *
       *    ¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¥ï¡¼¥¯
        01  LNK-WKSRYACT-AREA.
@@ -2397,52 +2404,12 @@
        500-SRYKARRK-UPD-SEC              SECTION.
       *
       *    Âà±¡Æü¤¬¤¢¤ë»þ¡¢ºÇ½ª¼õ¿ÇÆü¤òÊÔ½¸¤¹¤ë
-           MOVE    SPACE               TO  SRYKARRK-REC
-           INITIALIZE                      SRYKARRK-REC
-           MOVE    SPA-HOSPID          TO  KARRK-HOSPID
-           MOVE    SPA-PTID            TO  KARRK-PTID
-           MOVE    SPA-SRYKA           TO  KARRK-SRYKA
-      *
-           MOVE    SRYKARRK-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SRYKARRK-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "SRYKARRK-KEY"      TO  ORC-DBPATH
-               PERFORM 975-SRYKARRK-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-SRYKARRK
-           END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "SRYKARRK-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      FLG-SRYKARRK        =   ZERO
-      *        ¹¹¿·
-               IF      KARRK-LASTYMD       <   ORCSCNYUIN-TAIINYMD
-                   MOVE    ORCSCNYUIN-TAIINYMD TO  KARRK-LASTYMD
-      *
-                   MOVE    SMCNDATE-YMD        TO  KARRK-UPYMD
-                   MOVE    SMCNDATE-HMS        TO  KARRK-UPHMS
-      *
-                   MOVE    SRYKARRK-REC        TO  MCPDATA-REC
-                   MOVE    "DBUPDATE"          TO  MCP-FUNC
-                   MOVE    "SRYKARRK-KEY"      TO  ORC-DBPATH
-                   CALL    "ORCMCPSUB"          USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC
-                   IF      MCP-RC          NOT =   ZERO
-                       DISPLAY "ORCSCNYUIN SRYKARRK UPD ERR:"  MCP-RC
-                               ",KEY:" KARRK-KEY  ";"
-                   END-IF
-               END-IF
-           END-IF
+           INITIALIZE                  ORCSKARRKAREA
+           MOVE    ORCSCNYUIN-YMD(1:6) TO  SKARRK-SRYYM
+           MOVE    ORCSCNYUIN-TAIINYMD TO  SKARRK-LASTYMD
+           CALL    "ORCSKARRK"         USING
+                                       ORCSKARRKAREA
+                                       SPA-AREA
            .
        500-SRYKARRK-UPD-EXT.
            EXIT.
@@ -2581,6 +2548,42 @@
       *    Âà±¡½èÍý¡Ê¿ÇÎÅ²ñ·×ºï½ü¡Ë½èÍý
       *****************************************************************
        200-TAIIN-SYORI-SEC             SECTION.
+      *    Æþ±¡ÍúÎòÈ½Äê
+           MOVE    SPACE               TO  PTNYUINRRK-REC
+           INITIALIZE                  PTNYUINRRK-REC
+           MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
+           MOVE    SPA-PTID            TO  PTNYUINRRK-PTID
+      *
+           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    PATH-TBL-PTNYUINRRK-KEY33
+                                       TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    PATH-TBL-PTNYUINRRK-KEY33  TO  MCP-PATH
+               PERFORM 910-PTNYUINRRK-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-PTNYUINRRK
+               INITIALIZE                  PTNYUINRRK-REC
+           END-IF
+           MOVE    SPACE               TO  WRK-SRYKA
+           PERFORM
+                   UNTIL      (FLG-PTNYUINRRK      =   1 )  OR
+                              (WRK-SRYKA       NOT =   SPACE)
+      *        Âà±¡ÂÐ¾Ý½èÍý
+               IF     (ORCSCNYUIN-TAIINYMD NOT =   SPACE 
+                                           AND     "99999999" ) AND
+                      (PTNYUINRRK-TAIINYMD     =   ORCSCNYUIN-TAIINYMD)
+                   MOVE    PTNYUINRRK-NYUINKA  TO  WRK-SRYKA
+               END-IF
+      *
+               MOVE    PATH-TBL-PTNYUINRRK-KEY33  TO  MCP-PATH
+               PERFORM 910-PTNYUINRRK-READ-SEC
+           END-PERFORM
+           MOVE    PATH-TBL-PTNYUINRRK-KEY33  TO  MCP-PATH
+           PERFORM 990-DBCLOSE-SEC
       *
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                      JYURRK-REC
@@ -2632,6 +2635,8 @@
                                         ORCMCPAREA
                                         MCPDATA-REC
       *
+           MOVE    WRK-SRYKA           TO  SPA-SRYKA
+      *
            IF      ORCSCNYUIN-TAIINYMD =   SPACE OR  ALL "9"
       *        Æþ±¡¼è¾Ã¤Î»þ¡¢¿ÇÎÅ²ÊÍúÎò¤Î½¤Àµ
                INITIALIZE                  ORCSKARRKAREA
@@ -2666,6 +2671,8 @@
            CALL    "ORCSCHOZAI"        USING
                                        SPA-AREA
                                        ORCSCHOZAIAREA
+      *
+           MOVE    ZERO                TO  SPA-SRYKA
       *
            .
        200-TAIIN-SYORI-EXT.
@@ -2984,6 +2991,27 @@
       *
            .
        940-WKSRYACT-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Æþ±¡ÍúÎò¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *****************************************************************
+       910-PTNYUINRRK-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
+               MOVE    ZERO            TO  FLG-PTNYUINRRK
+           ELSE
+               INITIALIZE                  PTNYUINRRK-REC
+               MOVE    1               TO  FLG-PTNYUINRRK
+           END-IF
+      *
+           .
+       910-PTNYUINRRK-READ-EXT.
            EXIT.
       *
       *****************************************************************

@@ -452,6 +452,10 @@
            END-IF
       *
       *    最終受診日
+           IF     (SKARRK-LASTYMD  NOT =   SPACE ) AND
+                  (SKARRK-LASTYMD      >   WRK-LST-SRYYMD)
+               MOVE    SKARRK-LASTYMD  TO  WRK-LST-SRYYMD
+           END-IF
            MOVE    WRK-LST-SRYYMD      TO  KARRK-LASTYMD
       *
            IF      WRK-SYOSINYMD-RRK   NOT =   SPACE
