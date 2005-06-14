@@ -1481,7 +1481,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>NYUINBI</name>
-      <x>240</x>
+      <x>305</x>
       <y>60</y>
       <width>70</width>
       <height>24</height>
@@ -1558,7 +1558,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>TAINBI</name>
-      <x>377</x>
+      <x>448</x>
       <y>60</y>
       <width>70</width>
       <height>24</height>
@@ -2515,38 +2515,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label131</name>
-      <x>190</x>
-      <y>60</y>
-      <width>43</width>
-      <height>24</height>
-      <label>ェ情ゥ</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label133</name>
-      <x>328</x>
-      <y>60</y>
-      <width>45</width>
-      <height>24</height>
-      <label>轉情ゥ</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label132</name>
       <x>372</x>
       <y>88</y>
@@ -2656,6 +2624,38 @@
       <width>36</width>
       <height>24</height>
       <label>ゥ醒</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label131</name>
+      <x>242</x>
+      <y>60</y>
+      <width>43</width>
+      <height>24</height>
+      <label>ェ情ゥ</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label133</name>
+      <x>386</x>
+      <y>60</y>
+      <width>45</width>
+      <height>24</height>
+      <label>轉情ゥ</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
