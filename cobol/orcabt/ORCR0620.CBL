@@ -80,6 +80,7 @@
       *  01.01.08    NACL-藤原    05/05/17  神奈川県の障害(180､280)は
       *                                     国保で負担者番号が空白の場合
       *                                     公費カウントしない
+      *  01.01.09    NACL-門脇    05/06/09  低所得フラグ編集修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -315,6 +316,10 @@
            03  RJN-RATE-KBN              PIC X(01).
       *
            03  WRK-RECESKYKBN            PIC X(01).
+      *
+           03  WRK-TEISYOTOKU-YMD.
+               05  WRK-TEISYOTOKU-YM     PIC 9(06).
+               05  WRK-TEISYOTOKU-DD     PIC 9(02).
       *
       *    病棟区分テーブル                                             
        01  WRK-BYOTOKBN-TABLE.                                          
@@ -1048,6 +1053,9 @@
                END-IF
            END-IF              
       *
+           MOVE    RECE61-SRYYM        TO  WRK-TEISYOTOKU-YM
+           MOVE    01                  TO  WRK-TEISYOTOKU-DD
+      *
       *    年金履歴より
            INITIALIZE                      TNKRRK-REC
            MOVE    RECE61-HOSPID       TO  TNKRRK-HOSPID
@@ -1063,8 +1071,8 @@
                PERFORM TNKRRK-READ-SEC
                PERFORM  UNTIL  
                      ( FLG-TNKRRK          =   1                ) OR
-                    (( TNKRRK-STYMD(1:6)  <=  RECE61-SRYYM   AND
-                       RECE61-SRYYM       <=  TNKRRK-EDYMD(1:6) ))  
+                    (( TNKRRK-STYMD       <=  WRK-TEISYOTOKU-YMD  AND
+                       WRK-TEISYOTOKU-YMD <=  TNKRRK-EDYMD      ))  
       *
                       MOVE    "TNKRRK-KEY3"      TO  ORC-DBPATH
                       PERFORM TNKRRK-READ-SEC
@@ -1089,9 +1097,9 @@
                MOVE    "TSYRRK-KEY3"      TO  ORC-DBPATH
                PERFORM TSYRRK-READ-SEC
                PERFORM  UNTIL  
-                   ( FLG-TSYRRK          =   1                ) OR
-                  (( TSYRRK-NINSTYMD(1:6) <= RECE61-SRYYM   AND
-                     RECE61-SRYYM         <= TSYRRK-NINEDYMD(1:6) ))  
+                   ( FLG-TSYRRK           =   1                ) OR
+                  (( TSYRRK-NINSTYMD     <= WRK-TEISYOTOKU-YMD   AND
+                     WRK-TEISYOTOKU-YMD  <= TSYRRK-NINEDYMD    ))  
       *
                       MOVE    "TSYRRK-KEY3"      TO  ORC-DBPATH
                       PERFORM TSYRRK-READ-SEC
