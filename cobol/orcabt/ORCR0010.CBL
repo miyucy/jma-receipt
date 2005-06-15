@@ -1400,20 +1400,22 @@
                        PERFORM 20011-RECE01-WRITE-SEC
                    END-IF
                WHEN    "2"
-                   IF      SYS-1001-HOSPSBT1   =   1
-                       MOVE    SYS-1005-RECESRYKA
-                                               TO WRK-RECE01-RECEKA
-                   ELSE
-                       MOVE    SPACE           TO WRK-RECE01-RECEKA
-                   END-IF
-                   MOVE    WRK-RECE01-KEY      TO  RECE01X-KEY 
-                   PERFORM 900-RECE01X-READ-SEC
-                   IF      FLG-RECE01X         =   ZERO
-                       MOVE    RECE01X-REC         TO  WRK-RECE01-REC 
-                       PERFORM 20011-RECE01-REWRITE-SEC
-                   ELSE
-                       PERFORM 20011-RECE01-WRITE-SEC
-                   END-IF
+                   IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+                       IF      SYS-1001-HOSPSBT1   =   1
+                           MOVE    SYS-1005-RECESRYKA
+                                                   TO WRK-RECE01-RECEKA
+                       ELSE
+                           MOVE    SPACE           TO WRK-RECE01-RECEKA
+                       END-IF
+                       MOVE    WRK-RECE01-KEY      TO  RECE01X-KEY 
+                       PERFORM 900-RECE01X-READ-SEC
+                       IF      FLG-RECE01X         =   ZERO
+                           MOVE    RECE01X-REC     TO  WRK-RECE01-REC 
+                           PERFORM 20011-RECE01-REWRITE-SEC
+                       ELSE
+                           PERFORM 20011-RECE01-WRITE-SEC
+                       END-IF
+                   END-IF    
            END-EVALUATE
            .
        20011-FILE-HENSYU-EXT.
