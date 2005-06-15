@@ -3319,7 +3319,7 @@
            IF     (LNK-ORCSC-SYORIFLG  =   ZERO )  AND
                   (SPA-NYUGAIKBN       =   "2"  )
                IF     (LNK-ORCSC-CHK-IDX   >   ZERO       )  AND
-                      (LNK-ORCSC-LSTYMD    =   SPA-SRYYMD )  AND
+      *???????????    (LNK-ORCSC-LSTYMD    =   SPA-SRYYMD )  AND
       *               同日再診有無
                       (LNK-ORCSC-RRK-LSTYMD    NOT =   SPACE )
       *            労災には同日再診はないのでチェックなし
