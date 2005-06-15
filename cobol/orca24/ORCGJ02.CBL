@@ -917,6 +917,7 @@
                    MOVE    LNK-COMMON      TO  SPA-KYOUTU
                    MOVE    LNK-SCRSPA      TO  SPA-J02
                    MOVE    SPA-WORK        TO  SPA-J01KYOUTU
+                   MOVE    ZERO            TO  SPA-J025-SYORI
                END-IF
       *        予約の時、そのまま画面表示へ
                IF      WRK-MOTOPG          =   "Y01"
