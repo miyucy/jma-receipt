@@ -231,7 +231,7 @@
            MOVE    SYS-1001-STYUKYMD
                                    TO  SYS-1001-EDYUKYMD
            MOVE    SYS-1001-REC    TO  MCPDATA-REC
-           MOVE    PATH-TBL-SYSKANRI-KEY
+           MOVE    PATH-TBL-SYSKANRI-KEY10
                                    TO  WRK-DBPATH
            PERFORM 900-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI    =   ZERO
@@ -247,7 +247,7 @@
            MOVE    SPA-SYSYMD      TO  SYS-2005-STYUKYMD
                                        SYS-2005-EDYUKYMD
            MOVE    SYS-2005-REC    TO  MCPDATA-REC
-           MOVE    PATH-TBL-SYSKANRI-KEY
+           MOVE    PATH-TBL-SYSKANRI-KEY10
                                    TO  WRK-DBPATH
            PERFORM 900-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI    =   ZERO
@@ -263,7 +263,7 @@
                                        NOT =  "S"
                MOVE  "NOPG"                TO  SYS-2005-PREFPRGID (2)
            END-IF
-      *
+      *                
       *    出力先プリンタ名割り当て情報の取得
            MOVE    SPACE           TO  SYS-1031-REC
            INITIALIZE                  SYS-1031-REC
@@ -272,7 +272,7 @@
            MOVE    SPA-SYSYMD      TO  SYS-1031-STYUKYMD
                                        SYS-1031-EDYUKYMD
            MOVE    SYS-1031-REC    TO  MCPDATA-REC
-           MOVE    PATH-TBL-SYSKANRI-KEY
+           MOVE    PATH-TBL-SYSKANRI-KEY10
                                    TO  WRK-DBPATH
            PERFORM 900-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI    =   ZERO

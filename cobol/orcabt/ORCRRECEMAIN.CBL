@@ -469,6 +469,11 @@
            CALL    "ORCR0091"          USING
                                    WRK-PARA2
       *
+           IF      WRK-PARA-A7 NOT =   "NOPG"
+               CALL    WRK-PARA-A7     USING
+                                       WRK-PARA2
+           END-IF
+      *
            PERFORM 900-DBDISCONNECT-SEC
       *
       **     CALL "timeofday" USING LNK-TIMEOFDAY.
@@ -476,6 +481,16 @@
       **           " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0104"          USING
                                    WRK-PARA3
+      *
+           IF      WRK-PARA-A11    =   "06"
+               CALL    "ORCRCP060"     USING
+                                       WRK-PARA3
+           END-IF
+      *
+           IF      WRK-PARA-A11    =   "40"
+               CALL    "ORCRCP400"     USING
+                                       WRK-PARA3
+           END-IF
       *
       *
            MOVE     SPACE       TO WRK-ARG

@@ -81,8 +81,10 @@
       *                                     編集修正
       *  01.01.21    NACL-藤原    05/03/18  レセプト特記事項編集情報によ
       *                                     るレセプト編集
-      *  01.01.22    NACL-門脇    05/04/05  レセプト特記事項"12器治"対応
+      *
+      *  02.06.01    NACL-門脇    05/04/05  レセプト特記事項"12器治"対応
       *                                     （平成１７年４月以降）
+      *  02.06.02    NACL-竹田    05/05/31  プレビュー処理追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -838,7 +840,11 @@
       *
            PERFORM 300-END-SEC
       *
-           STOP    RUN
+           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+               STOP    RUN
+           ELSE
+               EXIT    PROGRAM
+           END-IF 
            .
       *****************************************************************
       *    初期　処理
@@ -857,18 +863,21 @@
       *
            PERFORM 100-DBOPEN-SEC
       *
-      *    ステップ管理開始処理
-           MOVE    "STS"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
-           MOVE    "ORCRCP060"     TO  JOB-PGID
-           MOVE    "印刷データ編集（山形）"
-                                   TO  JOB-SHELLMSG
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA  
-                                   JOBKANRI-REC
+      *
+           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+      *        ステップ管理開始処理
+               MOVE    "STS"           TO  SJOBKANRI-MODE
+               INITIALIZE                  JOBKANRI-REC
+               MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+               MOVE    WRK-PARA-SHELLID
+                                       TO  JOB-SHELLID
+               MOVE    "ORCRCP060"     TO  JOB-PGID
+               MOVE    "印刷データ編集（山形）"
+                                       TO  JOB-SHELLMSG
+               CALL    "ORCSJOB"       USING
+                                       ORCSJOBKANRIAREA  
+                                       JOBKANRI-REC
+           END-IF
       *
       *    ファイルＯＰＥＮ処理
            PERFORM 110-FILE-OPEN-SEC
@@ -894,7 +903,12 @@
            MOVE    WRK-PARA-TERMID     TO  RECE01PARA-TERMID
       *
            MOVE    "RECE02X"           TO  RECE02XPARA-FILE-ID
-           MOVE    WRK-CONS-TERMID     TO  RECE02XPARA-TERMID
+      *->  MOVE    WRK-CONS-TERMID     TO  RECE02XPARA-TERMID
+           IF      WRK-PARA-SHELLID    =   "RECEPTX"
+               MOVE    WRK-PARA-TERMID TO  RECE02XPARA-TERMID
+           ELSE
+               MOVE    WRK-CONS-TERMID TO  RECE02XPARA-TERMID
+           END-IF
       *
            MOVE    "RECE031"           TO  RECE031PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE031PARA-TERMID
@@ -1241,21 +1255,22 @@
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
-           .
       *
       *    パラメタＤＢ読み込み
            INITIALIZE                      BTPARA-REC
-           MOVE    WRK-PARA-SHELLID    TO  BTPARA-SHELLID
-           MOVE    WRK-PARA-JOBID      TO  BTPARA-JOBID
-           MOVE    PATH-TBL-BTPARA-KEY5
-                                       TO  MCP-PATH
-           PERFORM 900-BTPARA-READ-SEC
-           IF      FLG-BTPARA          =   1
-               MOVE
+           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+               MOVE    WRK-PARA-SHELLID    TO  BTPARA-SHELLID
+               MOVE    WRK-PARA-JOBID      TO  BTPARA-JOBID
+               MOVE    PATH-TBL-BTPARA-KEY5
+                                           TO  MCP-PATH
+               PERFORM 900-BTPARA-READ-SEC
+               IF      FLG-BTPARA          =   1
+                   MOVE
                    "パラメタ情報が取得できませんでした。"
                                            TO  WRK-RECEERR
-               PERFORM 500-ERR-HENSYU-SEC
-               MOVE    2                    TO  SPA-STS
+                   PERFORM 500-ERR-HENSYU-SEC
+                   MOVE    2               TO  SPA-STS
+               END-IF
            END-IF
            .
        120-HOSPINF-GET-EXT.
@@ -5042,7 +5057,8 @@
            PERFORM 3901-RECE08-INSERT-SEC
       *
       *    レセプト帳票管理ファイル出力
-           IF      FLG-ERR              =   ZERO
+           IF    ( FLG-ERR              =   ZERO     )
+           AND   ( WRK-PARA-SHELLID NOT =  "RECEPTX" )
                PERFORM 3903-RECE07-WRITE-SEC
            END-IF
       *
@@ -5066,7 +5082,12 @@
       *
            INITIALIZE                  RECE08-REC
            MOVE    "HC06"              TO  RECE08-PRTID
-           MOVE    WRK-PARA-SRYYM      TO  RECE08-RECEYM
+      *->  MOVE    WRK-PARA-SRYYM      TO  RECE08-RECEYM
+           IF      WRK-PARA-SHELLID    =   "RECEPTX"
+                   MOVE    ALL "9"         TO  RECE08-RECEYM
+           ELSE
+                   MOVE    WRK-PARA-SRYYM  TO  RECE08-RECEYM
+           END-IF
            MOVE    WRK-PARA-CREYMD     TO  RECE08-CREYMD
            MOVE    WRK-PARA-CREHMS (1:6)
                                        TO  RECE08-CREHMS
@@ -5541,17 +5562,19 @@
                WRITE   RECEERR-REC
                CLOSE   RECEERR-FILE
       *         
-      *        ジョブ管理開始処理
-               MOVE    "JBE"           TO  SJOBKANRI-MODE
-               INITIALIZE                  JOBKANRI-REC
-               MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-               MOVE    WRK-PARA-SHELLID
-                                       TO  JOB-SHELLID
-               MOVE    WRK-RECEERR     TO  JOB-YOBI
-               MOVE    "9999"          TO  JOB-ERRCD
-               CALL    "ORCSJOB"       USING
-                                       ORCSJOBKANRIAREA  
-                                       JOBKANRI-REC
+               IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+      *            ジョブ管理終了処理
+                   MOVE    "JBE"           TO  SJOBKANRI-MODE
+                   INITIALIZE                  JOBKANRI-REC
+                   MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+                   MOVE    WRK-PARA-SHELLID
+                                           TO  JOB-SHELLID
+                   MOVE    WRK-RECEERR     TO  JOB-YOBI
+                   MOVE    "9999"          TO  JOB-ERRCD
+                   CALL    "ORCSJOB"       USING
+                                           ORCSJOBKANRIAREA  
+                                           JOBKANRI-REC
+               END-IF
            END-IF
       *                             
            MOVE    1                   TO  FLG-END
@@ -5578,16 +5601,18 @@
            DISPLAY "        PAGE    :"  CNT-OUT
            DISPLAY "*** ORCRCP060 END ***"
       *
-      *    ステップ管理終了処理
-           MOVE    "STE"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
-           MOVE    CNT-OUT         TO  JOB-UPDCNT
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA  
-                                   JOBKANRI-REC
+           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+      *        ステップ管理終了処理
+               MOVE    "STE"           TO  SJOBKANRI-MODE
+               INITIALIZE                  JOBKANRI-REC
+               MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+               MOVE    WRK-PARA-SHELLID
+                                       TO  JOB-SHELLID
+              MOVE    CNT-OUT          TO  JOB-UPDCNT
+              CALL    "ORCSJOB"        USING
+                                       ORCSJOBKANRIAREA  
+                                       JOBKANRI-REC
+           END-IF
       *
            PERFORM 900-DBDISCONNECT-SEC
       *

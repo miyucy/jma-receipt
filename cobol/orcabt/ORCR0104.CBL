@@ -5045,8 +5045,8 @@
            PERFORM 3901-RECE08-INSERT-SEC
       *
       *    レセプト帳票管理ファイル出力
-           IF      FLG-ERR              =   ZERO
-           AND     WRK-PARA-SHELLID NOT =  "RECEPTX"
+           IF    ( FLG-ERR              =   ZERO     )
+           AND   ( WRK-PARA-SHELLID NOT =  "RECEPTX" )
                PERFORM 3903-RECE07-WRITE-SEC
            END-IF
       *
@@ -5865,7 +5865,8 @@
                MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
                MOVE    WRK-PARA-SHELLID
                                        TO  JOB-SHELLID
-               CALL    "ORCSJOB"       USING
+              MOVE    CNT-OUT          TO  JOB-UPDCNT
+              CALL    "ORCSJOB"        USING
                                        ORCSJOBKANRIAREA  
                                        JOBKANRI-REC
            END-IF
