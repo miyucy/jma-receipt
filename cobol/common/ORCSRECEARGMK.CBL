@@ -60,24 +60,6 @@
            03  FLG-END             PIC 9(01).
            03  FLG-JOBKANRI        PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
-      *    カウント領域
-       01  CNT-AREA.
-           03  CNT-IN              PIC 9(06).
-      *
-       01  INDEX-AREA.
-           03  IDX                 PIC 9(03). 
-      *
-      *    システム領域
-       01  SYS-AREA.
-           03  SYS-YMD.
-               05  SYS-YY          PIC 9(02).
-               05  SYS-MM          PIC 9(02).
-               05  SYS-DD          PIC 9(02).
-           03  SYS-TIME.
-               05  SYS-THH         PIC 9(02).
-               05  SYS-TMM         PIC 9(02).
-               05  SYS-TSS         PIC 9(02).
-               05  SYS-TDD         PIC 9(02).
       *
        01  WRK-AREA.
            03  WRK-SYSYMD.
@@ -213,8 +195,7 @@
       *???
            DISPLAY "ORCSRECEARGMK ST =" LINK-NYUGAIKBN
       *???     
-           INITIALIZE                  CNT-AREA
-                                       WRK-AREA
+           INITIALIZE                  WRK-AREA
                                        FLG-AREA
                                        LINK-ERRCD
       *    作成日・時間の設定

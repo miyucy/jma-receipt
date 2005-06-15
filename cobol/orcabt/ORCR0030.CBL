@@ -1138,20 +1138,17 @@
                    MOVE    WRK-PARA-TERMID     TO  RECE04PARA-TERMID
                    MOVE    "RECE050"           TO  RECE05PARA-FILE-ID
                    MOVE    WRK-PARA-TERMID     TO  RECE05PARA-TERMID
-                   MOVE    "RECE090"           TO  RECE09PARA-FILE-ID
-                   MOVE    WRK-PARA-TERMID     TO  RECE09PARA-TERMID
                ELSE
       *    ÀÁµá½ñ½èÍý
                    MOVE    "RECE02X"           TO  RECE01PARA-FILE-ID
-                   MOVE    WRK-CONS-TERMID     TO  RECE01PARA-TERMID
-                   MOVE    "RECE090"           TO  RECE09PARA-FILE-ID
-      *-->         MOVE    WRK-PARA-TERMID     TO  RECE09PARA-TERMID
                    IF      WRK-PARA-SHELLID    =   "RECEPTX"
-                       MOVE    WRK-PARA-TERMID     TO  RECE09PARA-TERMID
+                       MOVE    WRK-PARA-TERMID     TO  RECE01PARA-TERMID
                    ELSE
                        MOVE    WRK-CONS-TERMID     TO  RECE01PARA-TERMID
                    END-IF
                END-IF
+               MOVE    "RECE090"           TO  RECE09PARA-FILE-ID
+               MOVE    WRK-PARA-TERMID     TO  RECE09PARA-TERMID
       *
                PERFORM 200-HENSYU-SEC
            END-PERFORM 

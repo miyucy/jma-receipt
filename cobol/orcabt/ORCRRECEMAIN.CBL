@@ -52,33 +52,6 @@
            03  FLG-SRYKARRK                            PIC 9(01).
            03  FLG-PTCOM                               PIC 9(01).
       *
-      *    カウント領域
-       01  CNT-AREA.
-           03  CNT-IN                                  PIC 9(06).
-           03  CNT-OUT1                                PIC 9(06).
-           03  CNT-OUT2                                PIC 9(06).
-      *
-       01  INDEX-AREA.
-           03  IDX                                     PIC 9(03). 
-           03  IDX1                                    PIC 9(03). 
-           03  IDX2                                    PIC 9(03). 
-           03  IDX3                                    PIC 9(03). 
-           03  IDY                                     PIC 9(03). 
-           03  IDZ                                     PIC 9(03).
-           03  TBL-MAX                                 PIC 9(03).
-           03  SYSKAN-IDX                              PIC 9(03).
-      *
-       01  KEY-AREA                            VALUE   LOW-VALUE.
-           03  KEY-NEW.
-               05  KEY-N-PTID                          PIC 9(10).
-               05  KEY-N-HKNCOMBI                      PIC 9(04).
-               05  KEY-N-SRYKA                         PIC X(02).
-           03  KEY-OLD.
-               05  KEY-O-PTID                          PIC 9(10).
-               05  KEY-O-HKNCOMBI                      PIC 9(04).
-               05  KEY-O-SRYKA                         PIC X(02).
-      
-      *
       *    一時領域
       *
        01  WRK-AREA.
@@ -124,7 +97,6 @@
                05  WRK-PARA-SHORI-KBN                  PIC  X(01).
                05  WRK-PARA-HOSPID                     PIC  X(24).
       *
-      *
            03  WRK-PARA0.
                05  WRK-PARA0-A1.
                    07  WRK-PARA0-A1-1                  PIC  X(06).
@@ -136,29 +108,30 @@
                05  WRK-PARA0-A6                        PIC  X(08).
                05  WRK-PARA0-A7                        PIC  9(10).
                05  WRK-PARA0-A8                        PIC  X(06).
+      *
            03  WRK-PARA1.
-           05  WRK-PARA1-A1.
-                 07  WRK-PARA1-A1-1                     PIC  X(06).
-                 07  WRK-PARA1-A1-2                     PIC  X(16).
-                 07  WRK-PARA1-A1-3                     PIC  X(08).
-               05  WRK-PARA1-A3                         PIC  X(01).
-               05  WRK-PARA1-A5                         PIC  9(07).
-               05  WRK-PARA1-A6                         PIC  X(08).
+               05  WRK-PARA1-A1.
+                   07  WRK-PARA1-A1-1                  PIC  X(06).
+                   07  WRK-PARA1-A1-2                  PIC  X(16).
+                   07  WRK-PARA1-A1-3                  PIC  X(08).
+               05  WRK-PARA1-A3                        PIC  X(01).
+               05  WRK-PARA1-A5                        PIC  9(07).
+               05  WRK-PARA1-A6                        PIC  X(08).
            03  WRK-PARA2.
-           05  WRK-PARA2-A1.
-                 07  WRK-PARA2-A1-1                     PIC  X(06).
-                 07  WRK-PARA2-A1-2                     PIC  X(16).
-                 07  WRK-PARA2-A1-3                     PIC  X(08).
-               05  WRK-PARA2-A5                         PIC  9(07).
-               05  WRK-PARA2-A6                         PIC  X(08).
+               05  WRK-PARA2-A1.
+                   07  WRK-PARA2-A1-1                  PIC  X(06).
+                   07  WRK-PARA2-A1-2                  PIC  X(16).
+                   07  WRK-PARA2-A1-3                  PIC  X(08).
+               05  WRK-PARA2-A5                        PIC  9(07).
+               05  WRK-PARA2-A6                        PIC  X(08).
       *
            03  WRK-PARA3.
                05  WRK-PARA3-A9                        PIC  X(08).
                05  WRK-PARA3-A10                       PIC  X(08).
-           05  WRK-PARA3-A1.
-                 07  WRK-PARA3-A1-1                    PIC  X(06).
-                 07  WRK-PARA3-A1-2                    PIC  X(16).
-                 07  WRK-PARA3-A1-3                    PIC  X(08).
+               05  WRK-PARA3-A1.
+                   07  WRK-PARA3-A1-1                  PIC  X(06).
+                   07  WRK-PARA3-A1-2                  PIC  X(16).
+                   07  WRK-PARA3-A1-3                  PIC  X(08).
                05  WRK-PARA3-A2                        PIC  X(01).
                05  WRK-PARA3-A3                        PIC  X(01).
                05  WRK-PARA3-A8                        PIC  X(06).
@@ -198,17 +171,6 @@
       *
            COPY    "ORCA-DBPATH".
       *
-      *    システム領域
-       01  SYS-AREA.
-           03  SYS-YMD.
-               05  SYS-YY          PIC 9(02).
-               05  SYS-MM          PIC 9(02).
-               05  SYS-DD          PIC 9(02).
-           03  WSYS-YMD.
-               05  WSYS-YY         PIC 9(04).
-               05  WSYS-MM         PIC 9(02).
-               05  WSYS-DD         PIC 9(02).
-           03  SYS-TIME            PIC X(06).
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -306,8 +268,7 @@
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-           INITIALIZE                  CNT-AREA
-                                       WRK-AREA
+           INITIALIZE                  WRK-AREA
                                        FLG-AREA
       *
       *    ＤＢオープン処理
@@ -374,8 +335,8 @@
            MOVE     WRK-PARA-A10   TO  WRK-PARA3-A10
       *
       *    作成日・時間の設定
-           MOVE    WRK-PARA-A9     TO WRK-CONS-ARG-CREYMD
-           MOVE    WRK-PARA-A10    TO WRK-CONS-ARG-CREHMS
+           MOVE    WRK-PARA-A9     TO  WRK-CONS-ARG-CREYMD
+           MOVE    WRK-PARA-A10    TO  WRK-CONS-ARG-CREHMS
            MOVE    WRK-PARA-NYUGAIKBN
                                    TO  WRK-CONS-ARG-NYUGAIKBN 
            .
@@ -582,100 +543,106 @@
       *    医保処理
       *****************************************************************
        2002-IHO-NYUIN-SEC          SECTION.
+      *
            DISPLAY "take nyuuin st  "
-       DISPLAY "orcr0600 start = [" WRK-PARA0 "]"
-           CALL "timeofday" USING LNK-TIMEOFDAY.
-           DISPLAY "orcr0600 START"
-                   " "  LNK-TIMEOFDAY(1:20).
+      **   DISPLAY "orcr0600 start = [" WRK-PARA0 "]"
+      **   CALL "timeofday" USING LNK-TIMEOFDAY.
+      **   DISPLAY "orcr0600 START"
+      **           " "  LNK-TIMEOFDAY(1:20).
       *---> 仮収納作成は、非常に時間がかかるため当面コメントアウト
       *    CALL    "ORCR0600"          USING
       *                                WRK-PARA0
       *
-           CALL "timeofday" USING LNK-TIMEOFDAY.
-           DISPLAY "orcr0610 START"
-                   " "  LNK-TIMEOFDAY(1:20).
+      **   DISPLAY "orcr0610 start = [" WRK-PARA0 "]"
            CALL    "ORCR0610"          USING
                                    WRK-PARA0
-      *                               WRK-PARA1
       *
-           PERFORM 900-DBDISCONNECT-SEC
-      *
-           CALL "timeofday" USING LNK-TIMEOFDAY.
-           DISPLAY "orcr0620 START"
-                   " "  LNK-TIMEOFDAY(1:20).
+           DISPLAY "orcr0620 start = [" WRK-PARA1 "]"
+      **     CALL "timeofday" USING LNK-TIMEOFDAY.
+      **   DISPLAY "orcr0620 START"
+      **           " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0620"          USING
-                                   WRK-PARA2
+                                   WRK-PARA1
       *
-      *    PERFORM 900-DBDISCONNECT-SEC
-      *
-           CALL "timeofday" USING LNK-TIMEOFDAY.
-           DISPLAY "orcr0630 START"
-                   " "  LNK-TIMEOFDAY(1:20).
+      **   CALL "timeofday" USING LNK-TIMEOFDAY.
+      **   DISPLAY "orcr0630 START"
+      **           " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0630"          USING
                                    WRK-PARA2
       *
-           CALL "timeofday" USING LNK-TIMEOFDAY.
-           DISPLAY "orcr0640 START"
-                   " "  LNK-TIMEOFDAY(1:20).
+      **   CALL "timeofday" USING LNK-TIMEOFDAY.
+      **   DISPLAY "orcr0640 START"
+      **           " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0640"          USING
                                    WRK-PARA2
       *
-           CALL "timeofday" USING LNK-TIMEOFDAY.
-           DISPLAY "orcr0650 START"
-                   " "  LNK-TIMEOFDAY(1:20).
+      **   CALL "timeofday" USING LNK-TIMEOFDAY.
+      **   DISPLAY "orcr0650 START"
+      **           " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0650"          USING
                                    WRK-PARA2
       *
-           CALL "timeofday" USING LNK-TIMEOFDAY.
-           DISPLAY "orcr0655 START"
-                   " "  LNK-TIMEOFDAY(1:20).
+      **   CALL "timeofday" USING LNK-TIMEOFDAY.
+      **   DISPLAY "orcr0655 START"
+      **           " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0655"          USING
                                    WRK-PARA2
       *
-           CALL "timeofday" USING LNK-TIMEOFDAY.
-           DISPLAY "orcr0660 START"
-                   " "  LNK-TIMEOFDAY(1:20).
+      **   CALL "timeofday" USING LNK-TIMEOFDAY.
+      **   DISPLAY "orcr0660 START"
+      **           " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0660"          USING
                                    WRK-PARA2
       *
-           CALL "timeofday" USING LNK-TIMEOFDAY.
-           DISPLAY "orcr0670 START"
-                   " "  LNK-TIMEOFDAY(1:20).
+      **   CALL "timeofday" USING LNK-TIMEOFDAY.
+      **   DISPLAY "orcr0670 START"
+      **           " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0670"          USING
                                    WRK-PARA2
       *
-           CALL "timeofday" USING LNK-TIMEOFDAY.
-           DISPLAY "orcr0680 START"
-                   " "  LNK-TIMEOFDAY(1:20).
+      **   CALL "timeofday" USING LNK-TIMEOFDAY.
+      **   DISPLAY "orcr0680 START"
+      **           " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0680"          USING
                                    WRK-PARA2
       *
-           CALL "timeofday" USING LNK-TIMEOFDAY.
-           DISPLAY "orcr0690 START"
-                   " "  LNK-TIMEOFDAY(1:20).
+      **   CALL "timeofday" USING LNK-TIMEOFDAY.
+      **   DISPLAY "orcr0690 START"
+      **           " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0690"          USING
                                    WRK-PARA2
       *
-           CALL "timeofday" USING LNK-TIMEOFDAY.
-           DISPLAY "orcr0700 START"
-                   " "  LNK-TIMEOFDAY(1:20).
+      **   CALL "timeofday" USING LNK-TIMEOFDAY.
+      **   DISPLAY "orcr0700 START"
+      **           " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0700"          USING
                                    WRK-PARA2
       *
-           CALL "timeofday" USING LNK-TIMEOFDAY.
-           DISPLAY "orcr0710 START"
-                   " "  LNK-TIMEOFDAY(1:20).
+           IF      WRK-PARA-A7 NOT =   "NOPG"
+               CALL    WRK-PARA-A7     USING
+                                       WRK-PARA2
+           END-IF
+      *
+           PERFORM 900-DBDISCONNECT-SEC
+      *
+      **   CALL "timeofday" USING LNK-TIMEOFDAY.
+      **   DISPLAY "orcr0710 START"
+      **           " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0710"          USING
                                    WRK-PARA3
       *
       *
+           IF      WRK-PARA-A11    =   "40"
+               CALL    "ORCRCP401"     USING
+                                       WRK-PARA3
+           END-IF
+      *
+      *
            MOVE     SPACE       TO WRK-ARG
-      *    STRING  WRK-PARA-A29 DELIMITED   BY  SPACE
-           STRING   "1"         DELIMITED   BY  SIZE 
-                    ","         DELIMITED   BY  SIZE
+           STRING   "1,"        DELIMITED   BY  SIZE 
                     WRK-PARA-A5 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
-                    WRK-PARA-A5 DELIMITED   BY  SPACE
+                    WRK-PARA-A6 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
                     WRK-PARA-A1 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
@@ -685,9 +652,10 @@
                     "0,"        DELIMITED   BY  SIZE
                     "Z,01,"     DELIMITED   BY  SIZE
                                 INTO    WRK-ARG
-           CALL "timeofday" USING LNK-TIMEOFDAY.
-           DISPLAY "orcr0101 START"
-                   " "  LNK-TIMEOFDAY(1:20).
+           END-STRING
+      **   CALL "timeofday" USING LNK-TIMEOFDAY.
+      **   DISPLAY "orcr0101 START"
+      **           " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0101"          USING
                                    WRK-ARG
       *
@@ -695,26 +663,24 @@
            MOVE     SPACE       TO WRK-ARG
            STRING   WRK-PARA-A5 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
-                    WRK-PARA-A5 DELIMITED   BY  SPACE
+                    WRK-PARA-A6 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
                     WRK-PARA-A1 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
                     WRK-CONS-ARG
                                 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
-                    WRK-PARA-A2 DELIMITED   BY  SPACE
+                    "2"         DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
-                    WRK-PARA-A25  DELIMITED BY  SPACE
+                    WRK-PARA-A15  DELIMITED BY  SPACE
                     ","         DELIMITED   BY  SIZE
-                    WRK-PARA-A25  DELIMITED BY  SPACE
+                    WRK-PARA-A16  DELIMITED BY  SPACE
                     ","         DELIMITED   BY  SIZE
-                    WRK-PARA-A15 DELIMITED   BY  SPACE
+                    WRK-PARA-A17 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
-                    WRK-PARA-A16 DELIMITED   BY  SPACE
+                    WRK-PARA-A18 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
-                    WRK-PARA-A29 DELIMITED   BY  SIZE
-                    ","         DELIMITED   BY  SIZE
-                    WRK-PARA-A19 DELIMITED   BY  SPACE
+                    WRK-PARA-A19 DELIMITED   BY  SIZE
                     ","         DELIMITED   BY  SIZE
                     WRK-PARA-A20 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
@@ -724,29 +690,29 @@
                     ","         DELIMITED   BY  SIZE
                     WRK-PARA-A23 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
-      *  konoiti termid st 
-                    WRK-PARA-A23 DELIMITED   BY  SPACE
-                    ","         DELIMITED   BY  SIZE
-      * 
                     WRK-PARA-A24 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
-                    WRK-PARA-A25  DELIMITED BY  SPACE
+                    WRK-PARA-A25 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
-                    WRK-PARA-A25  DELIMITED BY  SPACE
+                    WRK-PARA-A26 DELIMITED   BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A27  DELIMITED BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A28  DELIMITED BY  SPACE
+                    ","         DELIMITED   BY  SIZE
+                    WRK-PARA-A29  DELIMITED BY  SPACE
                     ","         DELIMITED   BY  SIZE
                     "3"         DELIMITED   BY  SIZE
-                    ","         DELIMITED   BY  SIZE
-                    "3"         DELIMITED   BY  SIZE
-                    ","         DELIMITED   BY  SIZE
                                 INTO    WRK-ARG
-           CALL "timeofday" USING LNK-TIMEOFDAY.
-           DISPLAY "orcr0102 START"
-                   " "  LNK-TIMEOFDAY(1:20).
+      **     CALL "timeofday" USING LNK-TIMEOFDAY.
+      **     DISPLAY "orcr0102 START"
+      **             " "  LNK-TIMEOFDAY(1:20).
            CALL    "ORCR0102"          USING
                                    WRK-ARG
-           CALL "timeofday" USING LNK-TIMEOFDAY.
-           DISPLAY "orcr0102 END  "
-                   " "  LNK-TIMEOFDAY(1:20).
+      **     CALL "timeofday" USING LNK-TIMEOFDAY.
+      **     DISPLAY "orcr0102 END  "
+      **             " "  LNK-TIMEOFDAY(1:20).
+      *
            .
        2002-IHO-NYUIN-EXT.
            EXIT.
