@@ -176,6 +176,7 @@
       *  
            03  WRK-ZAINUM              PIC 9(08).
       *
+        01  WRK-CONS-AREA.
       *    帳票出力用パラメタ  
            03  WRK-CONS-ARG.       
                05  WRK-CONS-ARG-PRTID  PIC X(04)   VALUE   "HC06".
