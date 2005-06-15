@@ -62,6 +62,12 @@
            05 PIC  X(30)   VALUE   "レセ電算データの場合、保険情報".
            05 PIC  X(30)   VALUE   "の記号・番号の文字数の和が１９".
            05 PIC  X(30)   VALUE   "文字を超えています            ".
+      *                            +---------+---------+---------+.
+           05 PIC  X(06)   VALUE   "020005".
+           05 PIC  X(30)   VALUE   "保険情報の番号が未入力です。  ".
+           05 PIC  X(30)   VALUE   "                              ".
+           05 PIC  X(30)   VALUE   "                              ".
+      *                            +---------+---------+---------+.
       *
       *    ** 030xxx 公費負担者番号・受給者番号抜け
       *                            +---------+---------+---------+.
@@ -170,6 +176,11 @@
            05 PIC  X(06)   VALUE   "060002".
            05 PIC  X(30)   VALUE   "初診算定日以前より継続中の病名".
            05 PIC  X(30)   VALUE   "が存在します                  ".
+           05 PIC  X(30)   VALUE   "                              ".
+      *
+           05 PIC  X(06)   VALUE   "060003".
+           05 PIC  X(30)   VALUE   "初診料が算定可能か確認してくだ".
+           05 PIC  X(30)   VALUE   "さい                          ".
            05 PIC  X(30)   VALUE   "                              ".
       *
       *    ** 070xxx 疑い病名
@@ -316,7 +327,7 @@
            05 PIC  X(30)   VALUE   "                              ".
       *
          03  ERRMES-RED    REDEFINES   ERRMES-VAL.
-           05 ERRMES-OCC   OCCURS  51.
+           05 ERRMES-OCC   OCCURS  53.
               07  ERRMES-CD            PIC X(06).
               07  ERRMES-MESSAGE       PIC X(90).
-         03  ERRMES-MAX                PIC 9(05)   VALUE   51.
+         03  ERRMES-MAX                PIC 9(05)   VALUE   53.

@@ -122,6 +122,8 @@
       *
            COPY    "CPSK1101.INC".
       *
+           COPY    "CPSK2005.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -335,6 +337,10 @@
                MOVE    SYS-1101-PRTPTLSTKBN
                                        TO  SPA-GMN-PRTPTLSTKBN
       *
+           END-IF
+      *
+           IF    ( SPA-GMN-BYOSRYKAKBN     =   SPACE )
+               MOVE    "2"             TO  SPA-GMN-BYOSRYKAKBN
            END-IF
       *
            MOVE    SPA-GMN-BYOSRYKAKBN TO  WRK-CMB-CD

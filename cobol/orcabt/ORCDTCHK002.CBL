@@ -164,6 +164,9 @@
            03  FLG-PTBYO-DAY-G.
                05  FLG-PTBYO-DAY                       PIC 9(01)
                                                        OCCURS  31.
+           03  FLG-SAISIN-ERR-DAY-G.
+               05  FLG-SAISIN-ERR-DAY                  PIC 9(01)
+                                                       OCCURS  31.
            03  FLG-PTBYO-TAISYO                        PIC 9(01).
            03  FLG-PTBYO-ERR                           PIC 9(01).
            03  FLG-PTBYO-MOJI                          PIC 9(01).
@@ -180,7 +183,6 @@
            03  FLG-SEIHO                               PIC 9(01).
            03  FLG-RJN                                 PIC 9(01).
            03  FLG-PROC                                PIC 9(01).
-           03  FLG-PTBYO-HKN                           PIC 9(01).
            03  FLG-THEIYOU-SET                         PIC 9(01).
            03  FLG-RECEDEN-CHK                         PIC 9(01).
            03  FLG-SANTEI                              PIC 9(01).
@@ -264,6 +266,8 @@
            03  IDX26                                   PIC 9(05). 
            03  IDX27                                   PIC 9(05). 
            03  IDX28                                   PIC 9(05). 
+           03  IDX29                                   PIC 9(05). 
+           03  IDX30                                   PIC 9(05). 
            03  IDXA                                    PIC 9(05). 
            03  IDXE                                    PIC 9(05). 
            03  IDX-TSRYKA                              PIC 9(05).
@@ -277,7 +281,6 @@
            03  IDX-SRY                                 PIC 9(05).
            03  IDX-ZAI                                 PIC 9(05).
            03  IDX-MAX                                 PIC 9(05).
-           03  IDX-SHOSIN                              PIC 9(05).
       *
        01  WRK-AREA.
            03  WRK-SYMD                                PIC X(08).
@@ -351,8 +354,6 @@
            03  WRK-TKAISU-SRYCD                        PIC X(09).
            03  WRK-MAX                                 PIC 9(05).
            03  WRK-KIGONUM-STR                         PIC X(50).
-           03  WRK-STIDX                               PIC  9(02).
-           03  WRK-EDIDX                               PIC  9(02).
            03  WRK-NISSU-AREA.
                05  WRK-NISSU-DAY-G.
                    07  WRK-NISSU-DAY                   PIC 9(01)
@@ -385,10 +386,21 @@
            03  WRK-SNT-NBFUKATEN                       PIC 9(10).
            03  WRK-STATUS                              PIC 9(05).
            03  WRK-ACCTNAME                            PIC X(20).
-           03  WRK-MCP-PATH.
-                05  WRK-MCP-BLOCKS                     PIC S9(9) BINARY.
-                05  WRK-MCP-RNAME                      PIC S9(9) BINARY.
-                05  WRK-MCP-PNAME                      PIC S9(9) BINARY.
+           03  WRK-TENKIYMD                            PIC X(08).
+           03  WRK-MAE-SRYYM-G.
+               05  WRK-MAE-SRYYM                       PIC X(06).
+               05  WRK-MAE-SRYYM-DAY                   PIC 9(01)
+                                                       OCCURS  31.
+           03  WRK-KON-SRYYM-G.
+               05  WRK-KON-SRYYM                       PIC X(06).
+               05  WRK-KON-SRYYM-DAY                   PIC 9(01)
+                                                       OCCURS  31.
+           03  WRK-SYOSINYMD-G.
+               05  WRK-SYOSINYMD-MAX                   PIC 9(03).
+               05  WRK-SYOSINYMD-OCC                   OCCURS  50.
+                   07  WRK-SYOSINYMD.
+                       09  WRK-SYOSIN-YM               PIC X(06).
+                       09  WRK-SYOSIN-DD               PIC 9(02).
       *
        01  KEY-AREA.
            03  KEY-HKNCOMBI                            PIC 9(04).
@@ -434,17 +446,24 @@
        01  TSRYKA-AREA.
            03  TSRYKA-MAX                              PIC 9(05).
            03  TSRYKA-OCC                              OCCURS 30.
+               05  TSRYKA-PTBYO-CNT1                   PIC 9(05).
+               05  TSRYKA-PTBYO-CNT2                   PIC 9(05).
                05  TSRYKA-SRYKA                        PIC X(02).
-               05  TSRYKA-SHOSIN-DAY                   PIC 9(01)
+               05  TSRYKA-SYOSIN-DAY                   PIC 9(01)
                                                        OCCURS 31.
-               05  TSRYKA-SHOSIN-HKN-YMD-G.
-                   07  TSRYKA-SHOSIN-IHO-YMD           PIC X(08).
-                   07  TSRYKA-SHOSIN-RSI-YMD           PIC X(08).
-                   07  TSRYKA-SHOSIN-JBI-YMD           PIC X(08).
-               05  TSRYKA-SHOSIN-HKN-YMD-R
-                                   REDEFINES   TSRYKA-SHOSIN-HKN-YMD-G.
-                   07  TSRYKA-SHOSIN-HKN-YMD           PIC X(08)
-                                                       OCCURS  3.
+               05  TSRYKA-SYOSIN-YMD                   PIC X(08).
+               05  TSRYKA-SAISIN-DAY-G.
+                   07  TSRYKA-SAISIN-DAY               PIC 9(01)
+                                                       OCCURS  31.
+               05  TSRYKA-SYOSAIYMD-MAX                PIC 9(03).
+               05  TSRYKA-SYOSAIYMD-OCC                OCCURS  50.
+                   07  TSRYKA-TIYU-CHUSHI              PIC 9(01).
+                   07  TSRYKA-BYO-KAISHI               PIC 9(01).
+                   07  TSRYKA-BYO-KEIZOKU              PIC 9(01).
+                   07  TSRYKA-SYOSAIYMD-SYOSINYMD      PIC X(08).
+                   07  TSRYKA-SYOSAIYMD-SAISINYMD.
+                       09  TSRYKA-SYOSAIYMD-SAISIN-YM  PIC X(06).
+                       09  TSRYKA-SYOSAIYMD-SAISIN-DD  PIC 9(02).
                05  TSRYKA-SRYCD-MAX                    PIC 9(05).
                05  TSRYKA-SRYCD-OCC                    OCCURS 2000.
                    07  TSRYKA-SRYCD                    PIC X(09).
@@ -1275,7 +1294,7 @@
        1001-SYS1040-GET-EXT.
            EXIT.
       *****************************************************************
-      *    レセプト編集区分取得処理
+      *    データチェック２機能情報
       *****************************************************************
        1001-SYS1101-GET-SEC            SECTION.
       *
@@ -1907,7 +1926,9 @@
       *                    診療科退避ワーク診療行為コード編集処理
                            PERFORM 200111-TSRYKA-SRYCD-HEN-SEC
       *                    診療科退避ワーク初診日編集処理
-                           PERFORM 200111-TSRYKA-SHOSIN-HEN-SEC
+                           PERFORM 200111-TSRYKA-SYOSIN-HEN-SEC
+      *                    診療科退避ワーク再診日編集処理
+                           PERFORM 200111-TSRYKA-SAISIN-HEN-SEC
                        END-IF
       *
       *                診療行為コード退避ワーク編集処理
@@ -2064,7 +2085,7 @@
       *****************************************************************
       *    診療科退避ワーク初診日編集処理
       *****************************************************************
-       200111-TSRYKA-SHOSIN-HEN-SEC    SECTION.
+       200111-TSRYKA-SYOSIN-HEN-SEC    SECTION.
       *
            IF    ( TNS-JITUDAY     =   2 )
             AND  ( TNS-DAYCNT      =   1 )
@@ -2074,36 +2095,24 @@
       *
                    IF    ( PTZAI-DAY (IDX-ZAI IDX2)   >   ZERO )
       *
-                       MOVE    1   TO  TSRYKA-SHOSIN-DAY
+                       MOVE    1   TO  TSRYKA-SYOSIN-DAY
                                                  (IDX-TSRYKA IDX2)
       *
                        MOVE    ORCBSD01-SRYYM  TO  WRK-SYOSIN-CHK-YMD
                        MOVE    IDX2            TO  WRK-SYOSIN-CHK-DD
       *
-                       MOVE    ZERO        TO  IDX-SHOSIN
-      *
-                       EVALUATE    COMB-HKNNUM
-                       WHEN    "971"
-                           MOVE    2       TO  IDX-SHOSIN
-                       WHEN    "973"
-                           MOVE    3       TO  IDX-SHOSIN
-                       WHEN    OTHER
-                           MOVE    1       TO  IDX-SHOSIN
-                       END-EVALUATE
-      *
-                       IF    ( TSRYKA-SHOSIN-HKN-YMD 
-                                                 (IDX-TSRYKA IDX-SHOSIN)
+                       IF    ( TSRYKA-SYOSIN-YMD (IDX-TSRYKA)
                                            =   SPACE )
                                MOVE    WRK-SYOSIN-CHK-YMD
-                                           TO  TSRYKA-SHOSIN-HKN-YMD 
-                                                 (IDX-TSRYKA IDX-SHOSIN)
+                                           TO  TSRYKA-SYOSIN-YMD 
+                                                 (IDX-TSRYKA)
                        ELSE
-                           IF    ( TSRYKA-SHOSIN-HKN-YMD
-                                                 (IDX-TSRYKA IDX-SHOSIN)
+                           IF    ( TSRYKA-SYOSIN-YMD
+                                                 (IDX-TSRYKA)
                                            <   WRK-SYOSIN-CHK-YMD )
                                MOVE    WRK-SYOSIN-CHK-YMD
-                                           TO  TSRYKA-SHOSIN-HKN-YMD 
-                                                 (IDX-TSRYKA IDX-SHOSIN)
+                                           TO  TSRYKA-SYOSIN-YMD 
+                                                 (IDX-TSRYKA)
                            END-IF
                        END-IF
       *
@@ -2113,7 +2122,34 @@
            END-IF
       *
            .
-       200111-TSRYKA-SHOSIN-HEN-EXT.
+       200111-TSRYKA-SYOSIN-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療科退避ワーク再診編集処理
+      *****************************************************************
+       200111-TSRYKA-SAISIN-HEN-SEC    SECTION.
+      *
+           IF    ( TNS-JITUDAY     =   2 )
+            AND  ( TNS-DAYCNT      =   2 )
+      *
+               PERFORM VARYING IDX2    FROM    1   BY  1
+                       UNTIL ( IDX2    >   31 )
+      *
+                   IF    ( PTZAI-DAY (IDX-ZAI IDX2)   >   ZERO )
+      *
+                       MOVE    ORCBSD01-SRYYM  TO  WRK-SYOSIN-CHK-YMD
+                       MOVE    IDX2            TO  WRK-SYOSIN-CHK-DD
+      *
+                       MOVE    1       TO  TSRYKA-SAISIN-DAY
+                                           (IDX-TSRYKA IDX2)
+      *
+                   END-IF
+      *
+               END-PERFORM
+           END-IF
+      *
+           .
+       200111-TSRYKA-SAISIN-HEN-EXT.
            EXIT.
       *****************************************************************
       *    診療行為コード退避ワーク編集処理
@@ -2789,7 +2825,7 @@
            IF    ( FLG-PTINF       NOT =   ZERO )
                MOVE    "000001"    TO  WRK-ERRCD
                PERFORM 210-ERRMES-HEN-SEC
-               MOVE    1           TO  FLG-CHKEND (13)
+               MOVE    ALL "1"     TO  FLG-CHKEND-G
            END-IF
       *
            .
@@ -2873,6 +2909,19 @@
       *
                MOVE    PTHKN-HKNNUM    TO  SRH-HKNNUM
                MOVE    "020001"        TO  WRK-ERRCD
+               PERFORM 211-ERRMES-HEN-SEC
+      *
+               IF    ( ORCBSD01-CHKKBN (2) =   "1" )
+                   MOVE    1           TO  FLG-CHKEND (2)
+                   GO  TO  200111-KIGONUM-CHK-EXT
+               END-IF
+      *
+           END-IF
+      *
+           IF    ( WRK-PTHKN-NUM       =   SPACE )
+      *
+               MOVE    PTHKN-HKNNUM    TO  SRH-HKNNUM
+               MOVE    "020005"        TO  WRK-ERRCD
                PERFORM 211-ERRMES-HEN-SEC
       *
                IF    ( ORCBSD01-CHKKBN (2) =   "1" )
@@ -3207,13 +3256,8 @@
       *    患者病名情報チェック初期処理
            PERFORM 200111-PTBYOMEI-CHK-INIT-SEC
       *
-           IF    ( SYS-1101-BYOSRYKAKBN    =   "1" OR SPACE )
+           IF    ( TSRYKA-MAX          >   ZERO )
                PERFORM 2001111-PTBYOMEI-CHK-SEC
-           ELSE
-      *        全科の場合対象となるデータがある場合のみチェック
-               IF    ( TSRYKA-MAX          >   ZERO )
-                   PERFORM 2001112-PTBYOMEI-CHK-SEC
-               END-IF
            END-IF
       *
       *    薬剤と病名チェック処理
@@ -3232,57 +3276,47 @@
        200111-PTBYOMEI-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    患者病名情報チェック処理（診療科毎）
+      *    患者病名情報チェック処理
       *****************************************************************
        2001111-PTBYOMEI-CHK-SEC        SECTION.
       *
+           INITIALIZE              FLG-PTBYO-DAY-G
+                                   WRK-SYOSINYMD-G
+      *
+      *    初診算定日取得処理
+           PERFORM 2001121-SYOSIN-SANTEI-SEC
+      *
+      *    初再診期間編集処理
            PERFORM VARYING IDX4    FROM    1   BY  1
                    UNTIL ( IDX4    >   TSRYKA-MAX )
       *
-               INITIALIZE              FLG-PTBYO-DAY-G
-      *
-      *        患者病名情報チェック処理
-               PERFORM 200112-PTBYOMEI-CHK-SEC
-      *
-      *        患者病名登録チェック
-               IF    ( FLG-CHKEND (5)      =   ZERO )
-                   MOVE    TSRYKA-SRYKA (IDX4)
-                                       TO  WRK-SRYKA
-                   PERFORM 2001121-PTBYO-TOUROKU-CHK-SEC
-               END-IF
-      *
-      *        診療開始日チェック（２）処理
-               IF    ( FLG-CHKEND (6)      =   ZERO )
-                   PERFORM 200112-PTBYO-SRYYMD-CHK-SEC
-               END-IF
-      *
-               IF    ( FLG-CHKEND (5) =   1 )
-                AND  ( FLG-CHKEND (6) =   1 )
-                AND  ( FLG-CHKEND (7) =   1 )
-                AND  ( FLG-CHKEND (8) =   1 )
-                AND  ( FLG-CHKEND (9) =   1 )
-                    MOVE    TSRYKA-MAX TO  IDX4
-               END-IF
+               PERFORM 200112-SYOSAISIN-KKN-SEC
       *
            END-PERFORM
-      *
-           .
-       2001111-PTBYOMEI-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    患者病名情報チェック処理（全科）
-      *****************************************************************
-       2001112-PTBYOMEI-CHK-SEC        SECTION.
-      *
-           INITIALIZE              FLG-PTBYO-DAY-G
       *
       *    患者病名情報チェック処理
            PERFORM 200112-PTBYOMEI-CHK-SEC
       *
       *    患者病名登録チェック
            IF    ( FLG-CHKEND (5)      =   ZERO )
-               MOVE    SPACE       TO  WRK-SRYKA
-               PERFORM 2001121-PTBYO-TOUROKU-CHK-SEC
+      *
+               IF    ( SYS-1101-BYOSRYKAKBN    =   "1" )
+      *
+                   PERFORM VARYING IDX4    FROM    1   BY  1
+                           UNTIL ( IDX4    >   TSRYKA-MAX )
+                       MOVE    TSRYKA-PTBYO-CNT1 (IDX4)
+                                       TO  CNT-PTBYOMEI1
+                       MOVE    TSRYKA-PTBYO-CNT2 (IDX4)
+                                       TO  CNT-PTBYOMEI2
+                       MOVE    TSRYKA-SRYKA (IDX4)
+                                       TO  WRK-SRYKA
+                       PERFORM 2001121-PTBYO-TOUROKU-CHK-SEC
+                   END-PERFORM
+      *
+               ELSE
+                       MOVE    SPACE       TO  WRK-SRYKA
+                       PERFORM 2001121-PTBYO-TOUROKU-CHK-SEC
+               END-IF
            END-IF
       *
            PERFORM VARYING IDX4    FROM    1   BY  1
@@ -3294,10 +3328,15 @@
                    PERFORM 200112-PTBYO-SRYYMD-CHK-SEC
                END-IF
       *
+      *        診療開始日チェック（３）処理
+               IF    ( FLG-CHKEND (6)  =   ZERO )
+                   PERFORM 200112-PTBYO-SAISIN-CHK-SEC
+               END-IF
+      *
            END-PERFORM
       *
            .
-       2001112-PTBYOMEI-CHK-EXT.
+       2001111-PTBYOMEI-CHK-EXT.
            EXIT.
       *****************************************************************
       *    患者病名情報チェック初期処理
@@ -3350,37 +3389,36 @@
            PERFORM UNTIL ( FLG-PTBYOMEI    NOT =   ZERO )
                     OR   ( FLG-CHK-END     NOT =   ZERO )
       *
-               COMPUTE CNT-PTBYOMEI1
-                   =   CNT-PTBYOMEI1   +   1
+               IF    ( SYS-1101-BYOSRYKAKBN    =   "1" )
+                   PERFORM VARYING IDX4    FROM    1   BY  1
+                           UNTIL ( IDX4    >   TSRYKA-MAX )
       *
-      *        患者病名対象チェック
-               PERFORM 2001121-PTBYO-TAISYO-CHK-SEC
+                       IF    ( PTBYO-SRYKA =   TSRYKA-SRYKA (IDX4) )
+                           PERFORM 2001121-PTBYOMEI-CHK-SEC
+                           MOVE    TSRYKA-MAX  TO  IDX4
+                       END-IF
       *
-               IF    ( FLG-PTBYO-TAISYO    =   1 )
+                   END-PERFORM
+               ELSE
+                           PERFORM 2001121-PTBYOMEI-CHK-SEC
+               END-IF
       *
-                   COMPUTE CNT-PTBYOMEI2
-                       =   CNT-PTBYOMEI2   +   1
+               IF    ( PTBYO-NYUGAIKBN =   SPACE )
+                OR   ( PTBYO-NYUGAIKBN =   ORCBSD01-NYUGAIKBN )
       *
-      *            患者病名エラーメッセージ付加情報編集
-                   PERFORM 2001121-PTBYOMES-PLUS-SEC
-      *
-      *            患者病名チェック
-                   IF    ( FLG-CHKEND (5)  =   ZERO )
-                       PERFORM 2001121-PTBYO-CHK-SEC
-                   END-IF
+                   PERFORM 2001121-PTBYO-DAY-HEN-SEC
       *
       *            診療開始日チェック（１）
                    IF    ( FLG-CHKEND (6)  =   ZERO )
                        PERFORM 2001121-PTBYO-SRYYMD-CHK-SEC
                    END-IF
+               END-IF
       *
-      *            疑い病名チェック
-                   IF    ( FLG-CHKEND (7)  =   ZERO )
-                       PERFORM 2001121-PTBYO-UTAGAI-CHK-SEC
-                   END-IF
-      *
-                   PERFORM 2001121-PTBYO-DAY-HEN-SEC
-      *
+               IF    ( PTBYO-SRYYMD (1:6) <=  ORCBSD01-SRYYM )
+                   PERFORM VARYING IDX4    FROM    1   BY  1
+                           UNTIL ( IDX4    >   TSRYKA-MAX )
+                       PERFORM 2001121-SAISIN-DAY-HEN-SEC
+                   END-PERFORM
                END-IF
       *
                IF    ( FLG-CHKEND (5) =   1 )
@@ -3391,16 +3429,62 @@
                    MOVE    1           TO  FLG-CHK-END
                END-IF
       *
-               MOVE    WRK-MCP-PATH    TO  MCP-PATH
+               MOVE    PATH-TBL-PTBYOMEI-KEY6
+                                       TO  MCP-PATH
                PERFORM 900-PTBYOMEI-FETCH-SEC
       *
            END-PERFORM
       *
-           MOVE    WRK-MCP-PATH    TO  MCP-PATH
+           MOVE    PATH-TBL-PTBYOMEI-KEY6
+                                       TO  MCP-PATH
            PERFORM 910-DBCLOSE-SEC
       *
            .
        200112-PTBYOMEI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者病名情報チェック処理
+      *****************************************************************
+       2001121-PTBYOMEI-CHK-SEC        SECTION.
+      *
+           IF    ( SYS-1101-BYOSRYKAKBN    =   "1" )
+               COMPUTE TSRYKA-PTBYO-CNT1 (IDX4)
+                   =   TSRYKA-PTBYO-CNT1 (IDX4)    +   1
+           ELSE
+               COMPUTE CNT-PTBYOMEI1
+                   =   CNT-PTBYOMEI1   +   1
+           END-IF
+      *
+      *    患者病名対象チェック
+           PERFORM 2001121-PTBYO-TAISYO-CHK-SEC
+      *
+           IF    ( FLG-PTBYO-TAISYO    =   1 )
+      *
+               IF    ( SYS-1101-BYOSRYKAKBN    =   "1" )
+                   COMPUTE TSRYKA-PTBYO-CNT2 (IDX4)
+                       =   TSRYKA-PTBYO-CNT2 (IDX4)    +   1
+               ELSE
+                   COMPUTE CNT-PTBYOMEI2
+                       =   CNT-PTBYOMEI2   +   1
+               END-IF
+      *
+      *        患者病名エラーメッセージ付加情報編集
+               PERFORM 2001121-PTBYOMES-PLUS-SEC
+      *
+      *        患者病名チェック
+               IF    ( FLG-CHKEND (5)  =   ZERO )
+                   PERFORM 2001121-PTBYO-CHK-SEC
+               END-IF
+      *
+      *        疑い病名チェック
+               IF    ( FLG-CHKEND (7)  =   ZERO )
+                   PERFORM 2001121-PTBYO-UTAGAI-CHK-SEC
+               END-IF
+      *
+           END-IF
+      *
+           .
+       2001121-PTBYOMEI-CHK-EXT.
            EXIT.
       *****************************************************************
       *    患者病名エラーメッセージ付加情報編集
@@ -3732,74 +3816,32 @@
       *****************************************************************
        2001121-PTBYO-SRYYMD-CHK-SEC    SECTION.
       *
-           PERFORM VARYING IDX24   FROM    1   BY  1
-                   UNTIL ( IDX24   >   3 )
-                    OR   ( FLG-CHKEND (6)  NOT =   ZERO )
-      *
-               IF    ( SYS-1101-BYOSRYKAKBN    =   "1" OR SPACE )
-      *
-                   MOVE    TSRYKA-SHOSIN-HKN-YMD (IDX4 IDX24)
-                                   TO  WRK-SYOSIN-CHK-YMD
-      *
+           MOVE    SPACE   TO  WRK-SYOSIN-CHK-YMD
+           PERFORM VARYING IDX4    FROM    1   BY  1
+                   UNTIL ( IDX4    >   TSRYKA-MAX )
+               IF    ( WRK-SYOSIN-CHK-YMD  =   SPACE )
+                   MOVE    TSRYKA-SYOSIN-YMD(IDX4)
+                               TO  WRK-SYOSIN-CHK-YMD
                ELSE
-                   MOVE    SPACE   TO  WRK-SYOSIN-CHK-YMD
-                   PERFORM VARYING IDX4    FROM    1   BY  1
-                           UNTIL ( IDX4    >   TSRYKA-MAX )
-                       IF    ( WRK-SYOSIN-CHK-YMD  =   SPACE )
-                               MOVE    TSRYKA-SHOSIN-HKN-YMD(IDX4 IDX24)
-                                       TO  WRK-SYOSIN-CHK-YMD
-                       ELSE
-                           IF    ( TSRYKA-SHOSIN-HKN-YMD (IDX4 IDX24)
-                                           NOT =   SPACE )
-                            AND  ( TSRYKA-SHOSIN-HKN-YMD (IDX4 IDX24)
-                                               >   WRK-SYOSIN-CHK-YMD )
-                               MOVE    TSRYKA-SHOSIN-HKN-YMD(IDX4 IDX24)
-                                       TO  WRK-SYOSIN-CHK-YMD
-                           END-IF
-                       END-IF
-                   END-PERFORM
-      *
+                   IF    ( TSRYKA-SYOSIN-YMD (IDX4)
+                                   NOT =   SPACE )
+                    AND  ( TSRYKA-SYOSIN-YMD (IDX4)
+                                       >   WRK-SYOSIN-CHK-YMD )
+                       MOVE    TSRYKA-SYOSIN-YMD(IDX4)
+                               TO  WRK-SYOSIN-CHK-YMD
+                   END-IF
                END-IF
-      *
-      *        労災自賠をチェック
-               IF    ( IDX24               =   2 OR 3 )
-                   PERFORM 2001121-PTBYO-RSI-JBI-CHK-SEC
-               END-IF
-      *
-               IF    ( IDX24               =   1 )
-                OR  (( IDX24               =   2 OR 3 )
-                 AND ( FLG-PTBYO-HKN       =   IDX24 ))
-                       PERFORM 20011211-PTBYO-SRYYMD-CHK-SEC
-               END-IF
-      *
            END-PERFORM
       *
-           .
-      *
-       2001121-PTBYO-SRYYMD-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    診療開始日チェック（１）処理
-      *****************************************************************
-       20011211-PTBYO-SRYYMD-CHK-SEC   SECTION.
-      *
-           IF    ( WRK-SYOSIN-CHK-YMD  =   SPACE )
-               GO  TO  20011211-PTBYO-SRYYMD-CHK-EXT
-           END-IF
-      *
            MOVE    ZERO                TO  FLG-PTBYO-ERR
-           IF    ( PTBYO-SRYYMD        <   WRK-SYOSIN-CHK-YMD )
+      *
+           IF    ( WRK-SYOSIN-CHK-YMD  NOT =   SPACE )
+            AND  ( PTBYO-SRYYMD            <   WRK-SYOSIN-CHK-YMD )
                IF    ( PTBYO-TENKIKBN      =   SPACE )
-                   IF    ( PTBYO-NYUGAIKBN =   SPACE )
-                    OR   ( PTBYO-NYUGAIKBN =   ORCBSD01-NYUGAIKBN )
                            MOVE    1   TO  FLG-PTBYO-ERR
-                   END-IF
                ELSE
                    IF    ( PTBYO-TENKIYMD  >=  WRK-SYOSIN-CHK-YMD )
-                       IF    ( PTBYO-NYUGAIKBN =   SPACE )
-                        OR   ( PTBYO-NYUGAIKBN =   ORCBSD01-NYUGAIKBN )
                            MOVE    1   TO  FLG-PTBYO-ERR
-                       END-IF
                    END-IF
                END-IF
            END-IF
@@ -3816,36 +3858,8 @@
            END-IF
       *
            .
-       20011211-PTBYO-SRYYMD-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    病名労災自賠責チェック処理
-      *****************************************************************
-       2001121-PTBYO-RSI-JBI-CHK-SEC   SECTION.
       *
-           MOVE    ZERO                TO  FLG-PTBYO-HKN
-      *
-           IF    ( PTBYO-HKNCOMBI      NOT =   ZERO )
-               PERFORM VARYING IDX25   FROM    1   BY  1
-                       UNTIL ( IDX25           >   SDTCHK02-O-MAX )
-                        OR   ( FLG-PTBYO-HKN
-                                           NOT =   ZERO )
-                   IF    ( PTBYO-HKNCOMBI  =   LNK-COMB-HKNCOMBINUM
-                                                                (IDX25))
-                       EVALUATE    LNK-COMB-HKNNUM (IDX25)
-                       WHEN    "971"
-                           MOVE    2   TO  FLG-PTBYO-HKN
-                       WHEN    "973"
-                           MOVE    3   TO  FLG-PTBYO-HKN
-                       WHEN    OTHER
-                           MOVE    1   TO  FLG-PTBYO-HKN
-                       END-EVALUATE
-                   END-IF
-               END-PERFORM
-           END-IF
-      *
-           .
-       2001121-PTBYO-RSI-JBI-CHK-EXT.
+       2001121-PTBYO-SRYYMD-CHK-EXT.
            EXIT.
       *****************************************************************
       *    疑い病名チェック処理
@@ -3886,6 +3900,57 @@
        2001121-PTBYO-DAY-HEN-EXT.
            EXIT.
       *****************************************************************
+      *    再診料算定日設定処理
+      *****************************************************************
+       2001121-SAISIN-DAY-HEN-SEC      SECTION.
+      *
+           MOVE    "99999999"          TO  WRK-TENKIYMD
+      *
+           IF    ( PTBYO-TENKIYMD      NOT =   SPACE )
+               IF    ( PTBYO-TENKIKBN  =   "3" )
+                   MOVE    PTBYO-TENKIYMD  TO  WRK-SYMD
+                   MOVE    "2"             TO  WRK-ZOGENPTN
+                   MOVE     1              TO  WRK-ZOGEN
+                   PERFORM 800-CALENDAR-SEC
+                   MOVE    "1"             TO  WRK-ZOGENPTN
+                   MOVE     -1             TO  WRK-ZOGEN
+                   PERFORM 800-CALENDAR-SEC
+                   MOVE    WRK-SYMD        TO  WRK-TENKIYMD
+               ELSE
+                   MOVE    PTBYO-TENKIYMD  TO  WRK-TENKIYMD
+               END-IF
+           END-IF
+      *
+           MOVE    TSRYKA-SYOSAIYMD-MAX (IDX4) TO  WRK-MAX
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   WRK-MAX )
+      *
+               IF    ( PTBYO-SRYYMD    <  TSRYKA-SYOSAIYMD-SAISINYMD
+                                                         (IDX4 IDX0))
+                AND  ( WRK-TENKIYMD    >= TSRYKA-SYOSAIYMD-SYOSINYMD
+                                                            (IDX4 IDX0))
+                   IF    ( WRK-TENKIYMD
+                                       <  TSRYKA-SYOSAIYMD-SAISINYMD
+                                                            (IDX4 IDX0))
+                       IF    ( PTBYO-TENKIKBN  =   "1"  OR "3" )
+                           MOVE  1  TO TSRYKA-TIYU-CHUSHI(IDX4 IDX0)
+                       END-IF
+                   ELSE
+                           MOVE  1  TO TSRYKA-BYO-KEIZOKU(IDX4 IDX0)
+                   END-IF
+               END-IF
+      *
+               IF    ( PTBYO-SRYYMD    =   TSRYKA-SYOSAIYMD-SAISINYMD
+                                                            (IDX4 IDX0))
+                           MOVE  1  TO TSRYKA-BYO-KAISHI (IDX4 IDX0)
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       2001121-SAISIN-DAY-HEN-EXT.
+           EXIT.
+      *****************************************************************
       *    患者病名登録チェック
       *****************************************************************
        2001121-PTBYO-TOUROKU-CHK-SEC    SECTION.
@@ -3920,6 +3985,60 @@
        2001121-PTBYO-TOUROKU-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    初再診期間編集処理
+      *****************************************************************
+       200112-SYOSAISIN-KKN-SEC        SECTION.
+      *
+           PERFORM VARYING IDX-DAY FROM    1   BY  1
+                   UNTIL ( IDX-DAY >   31 )
+      *
+               IF    ( TSRYKA-SAISIN-DAY (IDX4 IDX-DAY)
+                                           =   1   )
+      *
+                   COMPUTE TSRYKA-SYOSAIYMD-MAX (IDX4)
+                       =   TSRYKA-SYOSAIYMD-MAX (IDX4)  +   1
+      *
+                   MOVE    TSRYKA-SYOSAIYMD-MAX (IDX4)
+                                   TO  WRK-MAX
+      *
+                   MOVE    ORCBSD01-SRYYM
+                                   TO  TSRYKA-SYOSAIYMD-SAISIN-YM
+                                            (IDX4  WRK-MAX)
+      *
+                   MOVE    IDX-DAY TO  TSRYKA-SYOSAIYMD-SAISIN-DD
+                                            (IDX4  WRK-MAX)
+      *
+                   PERFORM VARYING IDX0    FROM    1   BY  1
+                           UNTIL ( IDX0    >   WRK-MAX )
+                            OR   ( TSRYKA-SYOSAIYMD-SYOSINYMD
+                                            (IDX4  WRK-MAX)
+                                       NOT =   SPACE )
+      *
+                       IF    ( WRK-SYOSINYMD (IDX0)
+                                      <=   TSRYKA-SYOSAIYMD-SAISINYMD
+                                            (IDX4  WRK-MAX))
+                           MOVE    WRK-SYOSINYMD (IDX0)
+                                       TO  TSRYKA-SYOSAIYMD-SYOSINYMD
+                                            (IDX4  WRK-MAX)
+                       END-IF
+      *
+                   END-PERFORM
+      *
+                   IF    ( TSRYKA-SYOSAIYMD-SYOSINYMD
+                                            (IDX4  WRK-MAX)
+                                       =   SPACE )
+                       MOVE    ZERO    TO  TSRYKA-SYOSAIYMD-SYOSINYMD
+                                            (IDX4  WRK-MAX)
+                   END-IF
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       200112-SYOSAISIN-KKN-EXT.
+           EXIT.
+      *****************************************************************
       *    診療開始日チェック（２）処理
       *****************************************************************
        200112-PTBYO-SRYYMD-CHK-SEC     SECTION.
@@ -3928,7 +4047,7 @@
                    UNTIL ( IDX0           >   31 )
                     OR   ( FLG-CHKEND (6) =   1 )
       *
-               IF    ( TSRYKA-SHOSIN-DAY (IDX4 IDX0)
+               IF    ( TSRYKA-SYOSIN-DAY (IDX4 IDX0)
                                            =   1 )
                    IF    ( FLG-PTBYO-DAY (IDX0)
                                            =   ZERO )
@@ -3958,6 +4077,137 @@
       *
            .
        200112-PTBYO-SRYYMD-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療開始日チェック（３）処理
+      *****************************************************************
+       200112-PTBYO-SAISIN-CHK-SEC     SECTION.
+      *
+           INITIALIZE              FLG-SAISIN-ERR-DAY-G
+      *
+           MOVE    TSRYKA-SYOSAIYMD-MAX (IDX4) TO  WRK-MAX
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   WRK-MAX )
+      *
+               IF    ( TSRYKA-SYOSAIYMD-SAISINYMD (IDX4 IDX0)
+                                   NOT =   ZERO )
+                AND  ( TSRYKA-TIYU-CHUSHI (IDX4 IDX0)  =   1 )
+                AND  ( TSRYKA-BYO-KAISHI  (IDX4 IDX0)  =   1 )
+                AND  ( TSRYKA-BYO-KEIZOKU (IDX4 IDX0)  =   ZERO )
+                   MOVE    TSRYKA-SYOSAIYMD-SAISINYMD (IDX4 IDX0)
+                                   TO  WRK-YMD
+                   IF    ( WRK-DD          >=  1 )
+                    AND  ( WRK-DD          <=  31 )
+                       MOVE    1      TO  FLG-SAISIN-ERR-DAY (WRK-DD)
+                   END-IF
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( FLG-SAISIN-ERR-DAY-G  NOT = ZERO )
+      *
+               INITIALIZE  WRK-NISSU-AREA
+               MOVE    FLG-SAISIN-ERR-DAY-G
+                                   TO  WRK-NISSU-DAY-G
+      *
+               PERFORM 200111-NISSU-HEN-SEC
+      *
+               MOVE    TSRYKA-SRYKA (IDX4)
+                                   TO  SRH-1005-SRYKA
+               MOVE    WRK-NISSU-MES
+                                   TO  WRK-ERRMES-PLUS
+               MOVE    "060003"    TO  WRK-ERRCD
+               PERFORM 213-ERRMES-HEN-SEC
+      *
+               IF    ( ORCBSD01-CHKKBN (6) =   "1" )
+                   MOVE    1       TO  FLG-CHKEND (6)
+               END-IF
+           END-IF
+      *
+           .
+       200112-PTBYO-SAISIN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    初診算定日チェック処理
+      *****************************************************************
+       2001121-SYOSIN-SANTEI-SEC       SECTION.
+      *
+           INITIALIZE                  WRK-MAE-SRYYM-G
+                                       WRK-KON-SRYYM-G
+      *
+           PERFORM 900-SANTEI-KEY11-SEL-SEC
+      *
+           PERFORM UNTIL ( FLG-SANTEI     NOT  =   ZERO )
+      *
+               PERFORM VARYING IDX-DAY    FROM     1   BY  1
+                       UNTIL ( IDX-DAY    >    31 )
+                        OR   ( FLG-SANTEI NOT  =   ZERO )
+      *
+                   IF    ( SANTEI-DAY (IDX-DAY)    >   ZERO )
+                       IF    ( SANTEI-SRYYM    =   ORCBSD01-SRYYM )
+                           MOVE    SANTEI-SRYYM    TO  WRK-KON-SRYYM
+                           MOVE    1       TO  WRK-KON-SRYYM-DAY
+                                                            (IDX-DAY)
+                       ELSE
+                           IF    ( WRK-MAE-SRYYM   =   SPACE )
+                               MOVE    SANTEI-SRYYM
+                                           TO  WRK-MAE-SRYYM
+                               MOVE    1   TO  WRK-MAE-SRYYM-DAY
+                                                            (IDX-DAY)
+                           ELSE
+                               IF    ( SANTEI-SRYYM    = WRK-MAE-SRYYM )
+                                   MOVE    1   TO  WRK-MAE-SRYYM-DAY
+                                                            (IDX-DAY)
+                               ELSE
+                                   MOVE    1   TO  FLG-SANTEI
+                               END-IF
+                           END-IF
+                       END-IF
+                   END-IF
+      *
+               END-PERFORM
+      *
+               IF    ( FLG-SANTEI      =   ZERO )
+                   PERFORM 900-SANTEI-KEY11-FET-SEC
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( WRK-KON-SRYYM   NOT =   SPACE )
+               PERFORM VARYING IDX-DAY    FROM     31  BY  -1
+                       UNTIL ( IDX-DAY    <    1 )
+      *
+                   IF ( WRK-KON-SRYYM-DAY (IDX-DAY)
+                                       =  1 )
+                       COMPUTE WRK-SYOSINYMD-MAX
+                           =   WRK-SYOSINYMD-MAX   +   1
+                       MOVE    WRK-KON-SRYYM   TO  WRK-SYOSIN-YM
+                                                    (WRK-SYOSINYMD-MAX)
+                       MOVE    IDX-DAY         TO  WRK-SYOSIN-DD
+                                                    (WRK-SYOSINYMD-MAX)
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+           IF    ( WRK-MAE-SRYYM   NOT =   SPACE )
+               PERFORM VARYING IDX-DAY     FROM     31  BY  -1
+                       UNTIL ( IDX-DAY     <    1 )
+      *
+                   IF ( WRK-MAE-SRYYM-DAY (IDX-DAY)
+                                       =  1 )
+                       COMPUTE WRK-SYOSINYMD-MAX
+                           =   WRK-SYOSINYMD-MAX   +   1
+                       MOVE    WRK-MAE-SRYYM   TO  WRK-SYOSIN-YM
+                                                    (WRK-SYOSINYMD-MAX)
+                       MOVE    IDX-DAY         TO  WRK-SYOSIN-DD
+                                                    (WRK-SYOSINYMD-MAX)
+                       MOVE    1               TO  IDX-DAY
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+           .
+       2001121-SYOSIN-SANTEI-EXT.
            EXIT.
       *****************************************************************
       *    薬剤と病名チェック処理
@@ -6155,11 +6405,13 @@
       *
            IF    ( SYS-1101-PRTSRTKBN  =   SPACE   OR  "1" )
                MOVE    DTCHK004-PTNUM      TO  DTCHK004-R1-PTNUM
+               MOVE    DTCHK004-PTID       TO  DTCHK004-R1-PTID
                MOVE    DTCHK004-ERRCD      TO  DTCHK004-R1-ERRCD
                MOVE    DTCHK004-ERRCD-SEQ  TO  DTCHK004-R1-ERRCD-SEQ
            ELSE
                MOVE    PTINF-KANANAME      TO  DTCHK004-R2-KANANAME
                MOVE    DTCHK004-PTNUM      TO  DTCHK004-R2-PTNUM
+               MOVE    DTCHK004-PTID       TO  DTCHK004-R2-PTID
                MOVE    DTCHK004-ERRCD      TO  DTCHK004-R2-ERRCD
                MOVE    DTCHK004-ERRCD-SEQ  TO  DTCHK004-R2-ERRCD-SEQ
            END-IF
@@ -6983,27 +7235,16 @@
       *
            MOVE    ZERO                TO  FLG-PTBYOMEI
            INITIALIZE                      PTBYOMEI-REC
-                                           WRK-MCP-PATH
       *
-           IF    ( SYS-1101-BYOSRYKAKBN    =   "1" OR SPACE )
-               MOVE    DTCHK003-HOSPID     TO  PTBYO-HOSPID
-               MOVE    DTCHK003-PTID       TO  PTBYO-PTID
-               MOVE    TSRYKA-SRYKA (IDX4) TO  PTBYO-SRYKA
-               MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
-               MOVE    PATH-TBL-PTBYOMEI-KEY18
-                                           TO  WRK-MCP-PATH
-           ELSE
-               MOVE    DTCHK003-HOSPID     TO  PTBYO-HOSPID
-               MOVE    DTCHK003-PTID       TO  PTBYO-PTID
-               MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
-               MOVE    PATH-TBL-PTBYOMEI-KEY6
-                                           TO  WRK-MCP-PATH
-           END-IF
-      *
-           MOVE    WRK-MCP-PATH        TO  MCP-PATH
+           MOVE    DTCHK003-HOSPID     TO  PTBYO-HOSPID
+           MOVE    DTCHK003-PTID       TO  PTBYO-PTID
+           MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
+           MOVE    PATH-TBL-PTBYOMEI-KEY6
+                                       TO  MCP-PATH
            PERFORM 911-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
-               MOVE    WRK-MCP-PATH    TO  MCP-PATH
+               MOVE    PATH-TBL-PTBYOMEI-KEY6
+                                       TO  MCP-PATH
                PERFORM 900-PTBYOMEI-FETCH-SEC
            ELSE
                MOVE    1               TO  FLG-PTBYOMEI
@@ -7243,6 +7484,49 @@
            .
       *
        900-SANTEI-KEY9-FET-EXT.
+           EXIT.
+      *****************************************************************
+      *    算定履歴検索処理(KEY11)
+      *****************************************************************
+       900-SANTEI-KEY11-SEL-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SANTEI
+      *
+           INITIALIZE                      SANTEI-REC
+           MOVE    DTCHK003-HOSPID     TO  SANTEI-HOSPID
+           MOVE    DTCHK003-PTID       TO  SANTEI-PTID
+           MOVE    ORCBSD01-SRYYM      TO  SANTEI-SRYYM
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    PATH-TBL-SANTEI-KEY11   TO  MCP-PATH
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SANTEI-REC
+           ELSE
+               INITIALIZE                  SANTEI-REC
+               MOVE    1               TO  FLG-SANTEI
+           END-IF
+      *
+           .
+      *
+       900-SANTEI-KEY11-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    算定履歴読込処理(KEY11)
+      *****************************************************************
+       900-SANTEI-KEY11-FET-SEC         SECTION.
+      *
+           MOVE    PATH-TBL-SANTEI-KEY11   TO  MCP-PATH
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SANTEI-REC
+           ELSE
+               INITIALIZE                  SANTEI-REC
+               MOVE    1               TO  FLG-SANTEI
+           END-IF
+      *
+           .
+      *
+       900-SANTEI-KEY11-FET-EXT.
            EXIT.
       *****************************************************************
       *    患者保険情報検索処理

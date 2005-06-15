@@ -27,15 +27,17 @@
            03  DTCHK004-KEY                PIC X(100).
            03  DTCHK004-KEY-R1        REDEFINES    DTCHK004-KEY.
                05  DTCHK004-R1-PTNUM       PIC X(20).
+               05  DTCHK004-R1-PTID        PIC 9(10).
                05  DTCHK004-R1-ERRCD       PIC X(06).
                05  DTCHK004-R1-ERRCD-SEQ   PIC 9(05).
-               05  DTCHK004-R1-DUMMY       PIC X(69).
+               05  DTCHK004-R1-DUMMY       PIC X(59).
            03  DTCHK004-KEY-R2        REDEFINES    DTCHK004-KEY.
                05  DTCHK004-R2-KANANAME    PIC X(50).
                05  DTCHK004-R2-PTNUM       PIC X(20).
+               05  DTCHK004-R2-PTID        PIC 9(10).
                05  DTCHK004-R2-ERRCD       PIC X(06).
                05  DTCHK004-R2-ERRCD-SEQ   PIC 9(05).
-               05  DTCHK004-R2-DUMMY       PIC X(19).
+               05  DTCHK004-R2-DUMMY       PIC X(09).
       *
       *¥µº‘»÷πÊ
            03  DTCHK004-PTNUM         PIC X(20).
