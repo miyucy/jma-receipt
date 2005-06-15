@@ -238,3 +238,27 @@ path	key10 	{
 		;
 	};
 };
+
+path	key11 	{
+	DBSELECT	{
+		DECLARE tbl_santei_key11_csr CURSOR FOR
+		SELECT *
+		FROM tbl_santei
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   SRYYM      <=   :SRYYM
+			AND   MSANTEICNT  >   :MSANTEICNT
+			AND   SRYCD       IN ('111700110',
+			                      '111000110',
+			                      '111700210',
+			                      '111003610',
+			                      '113003510',
+			                      '113003710',
+			                      '099110001',
+			                      '101110010'
+			                                 )
+			ORDER   BY      SRYYM DESC
+		;
+	};
+};
+
