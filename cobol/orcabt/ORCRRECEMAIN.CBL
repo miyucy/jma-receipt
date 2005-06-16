@@ -141,7 +141,7 @@
            03  WRK-ARG                 PIC X(512).
       *
            03  WRK-PTID-X.
-               05  WRK-PTID            PIC 9(16).
+               05  WRK-PTID            PIC 9(10).
       *
            03  WRK-SRYYMD.
                05  WRK-SRYYM           PIC X(06).
