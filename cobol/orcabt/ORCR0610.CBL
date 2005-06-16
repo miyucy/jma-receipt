@@ -2131,7 +2131,7 @@
       *
            MOVE    WRK-PARA-PTID    TO  SYS-2002-PTID
            MOVE    WRK-PARA-SRYYM-O TO  SYS-2002-SRYYM
-           MOVE    "2"              TO  SYS-2002-NYUGAIKBN
+           MOVE    "1"              TO  SYS-2002-NYUGAIKBN
            DISPLAY "SYS PTID=" SYS-2002-PTID
       *
       *    該当診療年月の医療機関情報取得
@@ -2384,7 +2384,7 @@
            MOVE    KEY-NEW             TO  KEY-OLD
       *
            PERFORM             UNTIL   FLG-SRYACCT     =   1
-                               OR      FLG-END         =   1      
+                               OR      FLG-END         =   1
                MOVE    ACCT-HKNCOMBI       TO  KEY-N-HKNCOMBI
                MOVE    ACCT-PTID           TO  KEY-N-PTID 
                MOVE    ACCT-SRYKA          TO  KEY-N-SRYKA
