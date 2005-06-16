@@ -921,7 +921,10 @@
                END-IF
       *        予約の時、そのまま画面表示へ
                IF      WRK-MOTOPG          =   "Y01"
-                                           OR  "XC01"
+                   GO      TO      300-SCREEN-EXT
+               END-IF
+      *        プレビューから
+               IF      WRK-MOTOPG          =   "XC01"
                    GO      TO      300-SCREEN-EXT
                END-IF
       *        外部より選択がある時
@@ -9802,6 +9805,9 @@
       *            カルテ３号紙印刷開始へ
                    PERFORM 41201-PRINT-SYORI-SEC
                WHEN    14
+      *            受診履歴編集
+                   PERFORM 3103-JYURRK-HEN-SEC
+                   MOVE    1                   TO  SPA-GMN-PAGE
       *            プレビューへ
                    PERFORM 4130-PREVIEW-SEC
                WHEN    OTHER
