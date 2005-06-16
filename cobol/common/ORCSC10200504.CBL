@@ -274,6 +274,8 @@
            03  FLG-NENREI-OK           PIC 9(01).
       *    小児科外来診察料加算判定
            03  WRK-SYONIKA-KBN         PIC X(01).
+      *
+           03  WRK-INPUTCD             PIC X(22).
       *!
       *    酸素計算用
       *    03  WRK-SANSO               PIC 9(08).
@@ -1352,6 +1354,26 @@
                    END-IF
                END-IF
            END-IF
+      *!!TEST
+      *    画面に時間外区分がない時、追加する
+           IF      (SPA-NYUGAIKBN      =   "2"  )  AND
+                   (WRK-COM-DATAKBN (IDX-Z) =   "1" )
+               IF     (WRK-GMN-INPUTCD (IDX-Z)(1:1)
+                                           =   WRK-COM-TIMEFLG(IDX-Z))
+                 AND  (WRK-GMN-INPUTCD (IDX-Z)(2:1) =   SPACE )
+                 AND  (WRK-GMN-INPUTCD (IDX-Z)(3:)  NOT =   SPACE)
+                   CONTINUE
+               ELSE
+                   MOVE    WRK-GMN-INPUTCD(IDX-Z)  TO  WRK-INPUTCD
+                   MOVE    SPACE           TO  WRK-GMN-INPUTCD(IDX-Z)
+                   MOVE    WRK-COM-TIMEFLG(IDX-Z)
+                                           TO  WRK-GMN-INPUTCD(IDX-Z)
+                                                              (1:1)
+                   MOVE    WRK-INPUTCD     TO  WRK-GMN-INPUTCD(IDX-Z)
+                                                              (3:1)
+               END-IF
+           END-IF
+      *!!TEST
       *    診察の時、他の時間加算もする（外来のみ）
            IF       SPA-NYUGAIKBN      =   "2"
                MOVE    WRK-COM-TIMEFLG(IDX-Z)

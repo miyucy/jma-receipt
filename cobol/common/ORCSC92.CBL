@@ -567,6 +567,7 @@
            IF      LNK-SC92-KBN    NOT =   "6"
                IF     (TNS-SANTEIRRKKBN    =   ZERO   )  OR
                       (SPA-HKNCOMBINUM     =   "9999" )
+                   OR (LNK-SC92-PG     NOT =   "K02"  )
                    CONTINUE
                ELSE
                    PERFORM 2001-SANTEI-CHK-SEC
@@ -672,9 +673,10 @@
            MOVE    SPA-GMN-INPUTCD(IDX-T)(WRK-CD-MCNT:)
                                        TO  WRK-NAIYOU
            MOVE    LNK-SC92-SRYCD      TO  SPA-GMN-INPUTCD (IDX-T)
-                                                   (1:9)
+                                                   (WRK-IDX-FT:9)
+           COMPUTE IDY                 =   WRK-IDX-FT   +  9
            MOVE    WRK-NAIYOU          TO  SPA-GMN-INPUTCD (IDX-T)
-                                                   (10:)
+                                                   (IDY:)
       *
            .
        2002-SRYCDCHG-HEN-EXT.
