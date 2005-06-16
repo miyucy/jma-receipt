@@ -8178,6 +8178,8 @@
       *
            INITIALIZE              SPA-SCR-REC
       *
+           MOVE    SPA-K02N-JIKANKBN   TO  SPA-NAI-TIMEFLG
+      *
            MOVE    1               TO  SPA-GMN-CUR
            MOVE    1               TO  SPA-GMN-PAGE
       *

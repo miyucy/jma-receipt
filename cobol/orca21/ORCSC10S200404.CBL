@@ -192,6 +192,7 @@
            03  WRK-SRYCD               PIC X(09).
       *
            03  WRK-IDX-IN              PIC 9(04).
+           03  WRK-IDX-FT              PIC 9(04).
       *    »»Äê²ó¿ô
            03  WRK-SANTEI-CNT          PIC 9(04).
       *    Ç¯ÎðÈ½ÄêÍÑ
@@ -2449,6 +2450,7 @@
       *        ½é´ü»»Äê
                MOVE    "1"                 TO  LNK-SC92-KBN
                MOVE    SPA-GMN-IDX         TO  LNK-SC92-GMN-IDX
+               MOVE    ZERO                TO  FLG-JIKAN
            ELSE
       *        ±¡³°±¡ÆâÊÑ¹¹
                MOVE    SPACE               TO  LNK-SC92-KBN
@@ -2575,11 +2577,22 @@
            ELSE
                MOVE    SPACE               TO  LNK-SC92-KBN
                MOVE    WRK-IDX-IN          TO  LNK-SC92-GMN-IDX
+               MOVE    SPA-COM-TIMEFLG(WRK-IDX-IN)
+                                           TO  FLG-JIKAN
                INITIALIZE                      SPA-COM-TBLREC
                                                         (WRK-IDX-IN)
                MOVE    WRK-SRYCD           TO  SPA-COM-INPUTCD
                                                         (WRK-IDX-IN)
-               MOVE    WRK-SRYCD           TO  SPA-GMN-INPUTCD
+               IF      FLG-JIKAN           >   ZERO
+                   MOVE    FLG-JIKAN           TO  SPA-GMN-INPUTCD
+                                                    (WRK-IDX-IN)(1:1)
+                   MOVE    WRK-SRYCD           TO  SPA-GMN-INPUTCD
+                                                    (WRK-IDX-IN)(3:)
+               ELSE
+                   MOVE    WRK-SRYCD           TO  SPA-GMN-INPUTCD
+                                                        (WRK-IDX-IN)
+               END-IF
+               MOVE    FLG-JIKAN           TO  SPA-COM-TIMEFLG
                                                         (WRK-IDX-IN)
            END-IF
            MOVE    "K02"               TO  LNK-SC92-PG
