@@ -118,6 +118,7 @@
        01  WRK-AREA.
            03  WRK-ERRCD               PIC X(04).
            03  WRK-ERRCD1              PIC X(04).
+           03  WRK-ERRCD2              PIC X(04).
            03  WRK-STDD                PIC 9(02).
            03  WRK-EDDD                PIC 9(02).
            03  WRK-SRYDD               PIC 9(02).
@@ -384,6 +385,7 @@
       *
            MOVE    ZERO               TO  FLG-SET
            MOVE    SPACE              TO  WRK-ERRCD1
+           MOVE    SPACE              TO  WRK-ERRCD2
            MOVE    ORCSCWKSRY-STRIDX  TO  IDX2
       *
            MOVE    ZERO               TO  FLG-SYORIFLG
@@ -590,6 +592,9 @@
                    MOVE    "9100"          TO  WRK-ERRCD1
                    MOVE    SPACE           TO  SPA-ERRCD
                ELSE
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       MOVE    SPA-ERRCD       TO  WRK-ERRCD2
+                   END-IF
                    IF      IDX2            <   SPA-GMN-MAX
                        MOVE    SPA-GMN-MAX         TO  IDX2
                    END-IF
@@ -818,6 +823,7 @@
            ELSE
                MOVE    WRK-ERRCD           TO  ORCSCWKSRY-ERRCD
            END-IF
+           MOVE    WRK-ERRCD2          TO  ORCSCWKSRY-ERRCD2
       *
            .
        1002-SAIHEN-SYORI-EXT.
@@ -947,6 +953,7 @@
                MOVE    "1"                 TO  SPA-COM-SURFLG  (IDX2)
                MOVE    SPACE               TO  SPA-COM-AUTOKBN (IDX2)
            END-IF
+      *
            IF      FLG-AUTO-OK         =   1
                MOVE    SPACE               TO  SPA-COM-AUTOKBN (IDX2)
            END-IF
