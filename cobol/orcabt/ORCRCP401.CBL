@@ -36,6 +36,7 @@
       *  02.06.01    NACL-ÌçÏÆ    05/04/05  ¥ì¥»¥×¥ÈÆÃµ­»ö¹à"12´ï¼£"ÂÐ±þ
       *                                     ¡ÊÊ¿À®£±£·Ç¯£´·î°Ê¹ß¡Ë
       *  02.06.02    NACL-ÃÝÅÄ    05/05/30  realtime preview ½èÍýÄÉ²Ã
+      *  02.06.03    NACL-¾®Æ¦Âô  05/06/17  realtime preview Ê¡²¬µëÉÕ³°ÅÀ¿ô
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1859,66 +1860,67 @@
        300-KYUFUGAI-HENSYU-SEC         SECTION.
       *
            MOVE    ZERO                TO  WRK-KYUFUGAITEN
+           MOVE    RECE62-KYUFUGAITEN  TO  WRK-KYUFUGAITEN
       *
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL   IDX1    >       10
-                   OR      RECE62-HKNCOMBI (IDX1)  =   ZERO
-               IF      RECE62-KOHNUMHC (IDX1 1)
-                                       NOT =   SPACE
+      **     PERFORM VARYING IDX1    FROM    1   BY  1
+      **             UNTIL   IDX1    >       10
+      **             OR      RECE62-HKNCOMBI (IDX1)  =   ZERO
+      **         IF      RECE62-KOHNUMHC (IDX1 1)
+      **                                 NOT =   SPACE
       *            
-                   INITIALIZE                  ORCSKOHPLUS-AREA
-                   MOVE    RECE62-HOSPID   TO  LNK-SKOHPLUS-HOSPID
-                   MOVE    SYS-1001-PREFNUM
-                                           TO  LNK-SKOHPLUS-PREFNUM
-                   MOVE    RECE62-PTID     TO  LNK-SKOHPLUS-PTID
-                   MOVE    RECE62-HKNCOMBI (IDX1)
-                                           TO  LNK-SKOHPLUS-HKNCOMBI
-                   MOVE    RECE62-SRYYM    TO  LNK-SKOHPLUS-SRYYMD(1:6)
-                   MOVE    "01"            TO  LNK-SKOHPLUS-SRYYMD(7:2)
-                   CALL    "ORCSKOHPLUS"   USING
-                                           ORCSKOHPLUS-AREA
+      **             INITIALIZE                  ORCSKOHPLUS-AREA
+      **             MOVE    RECE62-HOSPID   TO  LNK-SKOHPLUS-HOSPID
+      **             MOVE    SYS-1001-PREFNUM
+      **                                     TO  LNK-SKOHPLUS-PREFNUM
+      **             MOVE    RECE62-PTID     TO  LNK-SKOHPLUS-PTID
+      **             MOVE    RECE62-HKNCOMBI (IDX1)
+      **                                     TO  LNK-SKOHPLUS-HKNCOMBI
+      **             MOVE    RECE62-SRYYM    TO  LNK-SKOHPLUS-SRYYMD(1:6)
+      **             MOVE    "01"            TO  LNK-SKOHPLUS-SRYYMD(7:2)
+      **             CALL    "ORCSKOHPLUS"   USING
+      **                                     ORCSKOHPLUS-AREA
       *           
-                   IF    ( LNK-SKOHPLUS-RC     =   ZERO )
-                   AND   ( LNK-SKOHPLUS-FTNKBN =   "1"  )
-                       IF   RECE62-SRYKA (1)  NOT =  SPACE
-                           INITIALIZE                  SYUNOU-REC
-                           MOVE    RECE62-HOSPID   TO  SYU-HOSPID
-                           MOVE    RECE62-NYUGAIKBN
-                                                   TO  SYU-NYUGAIKBN
-                           MOVE    RECE62-PTID     TO  SYU-PTID
-                           MOVE    RECE62-SRYYM    TO  SYU-SRYYMD(1:6)
-                           MOVE    "__"            TO  SYU-SRYYMD(7:2)
-                           MOVE    RECE62-HKNCOMBI (IDX1)
-                                                   TO  SYU-HKNCOMBINUM
-                           MOVE    SYUNOU-REC      TO  MCPDATA-REC
-                           MOVE    "DBSELECT"      TO  MCP-FUNC
-                           MOVE    "SYUNOU-KEY19"  TO  ORC-DBPATH
-                           CALL    "ORCMCPSUB"     USING
-                                                   MCPAREA
-                                                   ORCMCPAREA
-                                                   MCPDATA-REC
-                           IF      MCP-RC          =   ZERO
-                               MOVE    "SYUNOU-KEY19"  TO  ORC-DBPATH
-                               PERFORM 900-SYUNOU-READ-SEC
-                               PERFORM UNTIL   FLG-SYUNOU  =    1
-                                   ADD     SYU-KYUFUGAI-GOKEI-TEN
-                                                   TO  WRK-KYUFUGAITEN
-                                   MOVE    "SYUNOU-KEY19"
-                                                   TO  ORC-DBPATH
-                                   PERFORM 900-SYUNOU-READ-SEC
-                               END-PERFORM          
-                           END-IF
+      **             IF    ( LNK-SKOHPLUS-RC     =   ZERO )
+      **             AND   ( LNK-SKOHPLUS-FTNKBN =   "1"  )
+      **                 IF   RECE62-SRYKA (1)  NOT =  SPACE
+      **                     INITIALIZE                  SYUNOU-REC
+      **                     MOVE    RECE62-HOSPID   TO  SYU-HOSPID
+      **                     MOVE    RECE62-NYUGAIKBN
+      **                                             TO  SYU-NYUGAIKBN
+      **                     MOVE    RECE62-PTID     TO  SYU-PTID
+      **                     MOVE    RECE62-SRYYM    TO  SYU-SRYYMD(1:6)
+      **                     MOVE    "__"            TO  SYU-SRYYMD(7:2)
+      **                     MOVE    RECE62-HKNCOMBI (IDX1)
+      **                                             TO  SYU-HKNCOMBINUM
+      **                     MOVE    SYUNOU-REC      TO  MCPDATA-REC
+      **                     MOVE    "DBSELECT"      TO  MCP-FUNC
+      **                     MOVE    "SYUNOU-KEY19"  TO  ORC-DBPATH
+      **                     CALL    "ORCMCPSUB"     USING
+      **                                             MCPAREA
+      **                                             ORCMCPAREA
+      **                                             MCPDATA-REC
+      **                     IF      MCP-RC          =   ZERO
+      **                         MOVE    "SYUNOU-KEY19"  TO  ORC-DBPATH
+      **                         PERFORM 900-SYUNOU-READ-SEC
+      **                         PERFORM UNTIL   FLG-SYUNOU  =    1
+      **                             ADD     SYU-KYUFUGAI-GOKEI-TEN
+      **                                             TO  WRK-KYUFUGAITEN
+      **                             MOVE    "SYUNOU-KEY19"
+      **                                             TO  ORC-DBPATH
+      **                             PERFORM 900-SYUNOU-READ-SEC
+      **                         END-PERFORM          
+      **                     END-IF
       *
-                           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-                           MOVE    "SYUNOU-KEY19"  TO  ORC-DBPATH
-                           CALL    "ORCMCPSUB"     USING
-                                                   MCPAREA
-                                                   ORCMCPAREA
-                                                   MCPDATA-REC
-                       END-IF
-                   END-IF
-               END-IF
-           END-PERFORM
+      **                     MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+      **                     MOVE    "SYUNOU-KEY19"  TO  ORC-DBPATH
+      **                     CALL    "ORCMCPSUB"     USING
+      **                                             MCPAREA
+      **                                             ORCMCPAREA
+      **                                             MCPDATA-REC
+      **                 END-IF
+      **             END-IF
+      **         END-IF
+      **     END-PERFORM
       *
            .
        300-KYUFUGAI-HENSYU-EXT.
