@@ -10,6 +10,13 @@ W60	{
 			count	int;
 			item	varchar(10)[2];
 		};
+		CMB_UTAGAIKKNKBN	{
+			UTAGAIKKNKBN	{
+				value	varchar(10);
+			};
+			count	int;
+			item	varchar(10)[2];
+		};
 		MTRX01	{
 			value	varchar(2);
 		};

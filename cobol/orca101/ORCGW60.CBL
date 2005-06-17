@@ -55,6 +55,10 @@
                    07  SPA-GMN-BYOSRYKAKBN     PIC X(01).
                    07                          PIC X(01).
                    07  SPA-GMN-BYOSRYKAKBNMEI  PIC X(08).
+               05  SPA-GMN-UTAGAIKKNKBN-G.
+                   07  SPA-GMN-UTAGAIKKNKBN    PIC X(01).
+                   07                          PIC X(01).
+                   07  SPA-GMN-UTAGAIKKNKBNMEI PIC X(08).
                05  SPA-GMN-CHKMTRX-G.
                    07  SPA-GMN-CHKMTRX         PIC X(01)
                                                OCCURS  5.
@@ -73,6 +77,12 @@
                        09  SPA-GMN-BYOSRYKAKBNL    PIC X(01).
                        09                          PIC X(01).
                        09  SPA-GMN-BYOSRYKAKBNMEIL PIC X(08).
+               05  SPA-GMN-UTAGAIKKNKBNLST-G.
+                   07  SPA-GMN-UTAGAIKKNKBN-MAX    PIC 9(03).
+                   07  SPA-GMN-UTAGAIKKNKBNLST     OCCURS   2.
+                       09  SPA-GMN-UTAGAIKKNKBNL   PIC X(01).
+                       09                          PIC X(01).
+                       09  SPA-GMN-UTAGAIKKNKBNMEIL PIC X(08).
                05  SPA-GMN-PRTSRTKBNLST-G.
                    07  SPA-GMN-PRTSRTKBN-MAX       PIC 9(03).
                    07  SPA-GMN-PRTSRTKBNLST        OCCURS   2.
@@ -331,6 +341,17 @@
                MOVE    SYS-1101-BYOSRYKAKBN
                                        TO  SPA-GMN-BYOSRYKAKBN
       *
+               IF    ( SYS-1101-UTAGAIKKN-X  IS NUMERIC )
+      *
+                   EVALUATE    SYS-1101-UTAGAIKKN
+                   WHEN    1
+                       MOVE    "1"     TO  SPA-GMN-UTAGAIKKNKBN
+                   WHEN    2
+                       MOVE    "2"     TO  SPA-GMN-UTAGAIKKNKBN
+                   END-EVALUATE
+      *
+               END-IF
+      *
                MOVE    SYS-1101-PRTSRTKBN
                                        TO  SPA-GMN-PRTSRTKBN
       *
@@ -339,17 +360,22 @@
       *
            END-IF
       *
-           IF    ( SPA-GMN-BYOSRYKAKBN     =   SPACE )
-               MOVE    "2"             TO  SPA-GMN-BYOSRYKAKBN
-           END-IF
-      *
            MOVE    SPA-GMN-BYOSRYKAKBN TO  WRK-CMB-CD
            PERFORM 4200-BYOSRYKAKBNLST-CHK-SEC
            IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-BYOSRYKAKBNLST (1)
+               MOVE    SPA-GMN-BYOSRYKAKBNLST (2)
                                    TO  SPA-GMN-BYOSRYKAKBN-G
            ELSE
                MOVE    WRK-CMB-ITM TO  SPA-GMN-BYOSRYKAKBN-G
+           END-IF
+      *
+           MOVE    SPA-GMN-UTAGAIKKNKBN TO  WRK-CMB-CD
+           PERFORM 4200-UTAGAIKKNKBNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    SPA-GMN-UTAGAIKKNKBNLST (2)
+                                   TO  SPA-GMN-UTAGAIKKNKBN-G
+           ELSE
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-UTAGAIKKNKBN-G
            END-IF
       *
            MOVE    SPA-GMN-PRTSRTKBN   TO  WRK-CMB-CD
@@ -384,6 +410,9 @@
       *    診療科別チェックコンボ設定処理
            PERFORM 3101-BYOSRYKAKBNLST-SEC
       *
+      *    疑い病名期間チェックコンボ設定処理
+           PERFORM 3101-UTAGAIKKNKBNLST-SEC
+      *
       *    帳票出力順コンボ設定処理
            PERFORM 3101-PRTSRTKBNLST-SEC
       *
@@ -408,8 +437,32 @@
            MOVE    "2"             TO  SPA-GMN-BYOSRYKAKBNL    (2)
            MOVE    "しない"        TO  SPA-GMN-BYOSRYKAKBNMEIL (2)
       *
+           MOVE    SPA-GMN-BYOSRYKAKBNLST  (2)
+                                   TO  SPA-GMN-BYOSRYKAKBN-G
+      *
            . 
        3101-BYOSRYKAKBNLST-EXT.
+           EXIT.
+      *****************************************************************
+      *    疑い病名期間チェックコンボ設定処理
+      *****************************************************************
+       3101-UTAGAIKKNKBNLST-SEC           SECTION.
+      *
+           INITIALIZE                  SPA-GMN-UTAGAIKKNKBNLST-G
+      *
+           MOVE    2               TO  SPA-GMN-UTAGAIKKNKBN-MAX
+      *
+           MOVE    "1"             TO  SPA-GMN-UTAGAIKKNKBNL    (1)
+           MOVE    "１ヶ月"        TO  SPA-GMN-UTAGAIKKNKBNMEIL (1)
+      *
+           MOVE    "2"             TO  SPA-GMN-UTAGAIKKNKBNL    (2)
+           MOVE    "２ヶ月"        TO  SPA-GMN-UTAGAIKKNKBNMEIL (2)
+      *
+           MOVE    SPA-GMN-UTAGAIKKNKBNLST  (2)
+                                   TO  SPA-GMN-UTAGAIKKNKBN-G
+      *
+           . 
+       3101-UTAGAIKKNKBNLST-EXT.
            EXIT.
       *****************************************************************
       *    帳票出力順コンボ設定処理
@@ -425,6 +478,9 @@
       *
            MOVE    "2"             TO  SPA-GMN-PRTSRTKBNL    (2)
            MOVE    "カナ氏名順"    TO  SPA-GMN-PRTSRTKBNMEIL (2)
+      *
+           MOVE    SPA-GMN-PRTSRTKBNLST  (1)
+                                   TO  SPA-GMN-PRTSRTKBN-G
       *
            . 
        3101-PRTSRTKBNLST-EXT.
@@ -443,6 +499,9 @@
       *
            MOVE    "2"             TO  SPA-GMN-PRTPTLSTKBNL    (2)
            MOVE    "作成する"      TO  SPA-GMN-PRTPTLSTKBNMEIL (2)
+      *
+           MOVE    SPA-GMN-PRTPTLSTKBNLST  (1)
+                                   TO  SPA-GMN-PRTPTLSTKBN-G
       *
            . 
        3101-PRTPTLSTKBNLST-EXT.
@@ -591,9 +650,10 @@
       *****************************************************************
        4101-GMN-SPA-SET-SEC            SECTION.
       *
-           MOVE    W60-BYOSRYKAKBN TO  SPA-GMN-BYOSRYKAKBN-G
-           MOVE    W60-PRTSRTKBN   TO  SPA-GMN-PRTSRTKBN-G
-           MOVE    W60-PRTPTLSTKBN TO  SPA-GMN-PRTPTLSTKBN-G
+           MOVE    W60-BYOSRYKAKBN     TO  SPA-GMN-BYOSRYKAKBN-G
+           MOVE    W60-UTAGAIKKNKBN    TO  SPA-GMN-UTAGAIKKNKBN-G
+           MOVE    W60-PRTSRTKBN       TO  SPA-GMN-PRTSRTKBN-G
+           MOVE    W60-PRTPTLSTKBN     TO  SPA-GMN-PRTPTLSTKBN-G
       *
            .
       *
@@ -606,6 +666,11 @@
        4102-KIHON-CHK-SEC              SECTION.
       *
            PERFORM 4101-BYOSRYKAKBN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4101-UTAGAIKKNKBN-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -632,7 +697,7 @@
            MOVE    SPA-GMN-BYOSRYKAKBN TO  WRK-CMB-CD
            PERFORM 4200-BYOSRYKAKBNLST-CHK-SEC
            IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-BYOSRYKAKBNLST (1)
+               MOVE    SPA-GMN-BYOSRYKAKBNLST (2)
                                    TO  SPA-GMN-BYOSRYKAKBN-G
            ELSE
                MOVE    WRK-CMB-ITM TO  SPA-GMN-BYOSRYKAKBN-G
@@ -641,6 +706,24 @@
            .
       *
        4101-BYOSRYKAKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    疑い期間区分チェック処理
+      *****************************************************************
+       4101-UTAGAIKKNKBN-CHK-SEC       SECTION.
+      *
+           MOVE    SPA-GMN-UTAGAIKKNKBN TO  WRK-CMB-CD
+           PERFORM 4200-UTAGAIKKNKBNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    SPA-GMN-UTAGAIKKNKBNLST (2)
+                                   TO  SPA-GMN-UTAGAIKKNKBN-G
+           ELSE
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-UTAGAIKKNKBN-G
+           END-IF
+      *
+           .
+      *
+       4101-UTAGAIKKNKBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    帳票出力順区分チェック処理
@@ -701,6 +784,30 @@
       *
            .
        4200-BYOSRYKAKBNLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    疑い期間区分コンボチェック処理
+      *****************************************************************
+       4200-UTAGAIKKNKBNLST-CHK-SEC    SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB     >   SPA-GMN-UTAGAIKKNKBN-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-UTAGAIKKNKBNL (IDX-CMB)
+                                   =   WRK-CMB-CD )
+      *
+                   MOVE    SPA-GMN-UTAGAIKKNKBNLST (IDX-CMB)
+                                   TO  WRK-CMB-ITM
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       4200-UTAGAIKKNKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    帳票出力順区分コンボチェック処理
@@ -781,6 +888,9 @@
                                    TO  SPA-GMN-CHKMTRX (IDX-MTRX)
       *
            END-PERFORM
+      *
+      *    コンボボックス初期処理
+           PERFORM 3101-COMBO-SYOKI-SEC
       *
            MOVE    1               TO  SPA-GMN-CUR
       *
@@ -874,7 +984,14 @@
       *
            END-PERFORM
       *
-           MOVE    SPA-GMN-BYOSRYKAKBN TO   SYS-1101-BYOSRYKAKBN
+           MOVE    SPA-GMN-BYOSRYKAKBN TO  SYS-1101-BYOSRYKAKBN
+      *
+           EVALUATE    SPA-GMN-UTAGAIKKNKBN
+           WHEN    "1"
+               MOVE    1               TO  SYS-1101-UTAGAIKKN
+           WHEN    "2"
+               MOVE    2               TO  SYS-1101-UTAGAIKKN
+           END-EVALUATE
       *
            MOVE    SPA-GMN-PRTSRTKBN   TO   SYS-1101-PRTSRTKBN
       *
@@ -923,7 +1040,7 @@
       *
            IF    ( SPA-GMN-CHKMTRX-G   =   SPACE )
                MOVE    "0101"      TO  SPA-ERRCD
-               MOVE    2           TO  SPA-GMN-CUR
+               MOVE    3           TO  SPA-GMN-CUR
            END-IF
       *
            .
@@ -983,6 +1100,18 @@
       *
                MOVE    SPA-GMN-BYOSRYKAKBNLST (IDX0)
                                        TO  W60-BYOSRYKAKBN-ITEM (IDX0)
+      *
+           END-PERFORM
+      *
+           MOVE    SPA-GMN-UTAGAIKKNKBN-G   TO  W60-UTAGAIKKNKBN
+      *
+           MOVE    SPA-GMN-UTAGAIKKNKBN-MAX
+                                           TO  W60-UTAGAIKKNKBN-COUNT
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0        >   SPA-GMN-UTAGAIKKNKBN-MAX )
+      *
+               MOVE    SPA-GMN-UTAGAIKKNKBNLST (IDX0)
+                                       TO  W60-UTAGAIKKNKBN-ITEM (IDX0)
       *
            END-PERFORM
       *
@@ -1055,18 +1184,20 @@
            WHEN    001
                MOVE    "BYOSRYKAKBN"   TO  MCP-WIDGET
            WHEN    002
-               MOVE    "CHKMTRX01"     TO  MCP-WIDGET
+               MOVE    "UTAGAIKKNKBN"  TO  MCP-WIDGET
            WHEN    003
-               MOVE    "CHKMTRX02"     TO  MCP-WIDGET
+               MOVE    "CHKMTRX01"     TO  MCP-WIDGET
            WHEN    004
-               MOVE    "CHKMTRX03"     TO  MCP-WIDGET
+               MOVE    "CHKMTRX02"     TO  MCP-WIDGET
            WHEN    005
-               MOVE    "CHKMTRX04"     TO  MCP-WIDGET
+               MOVE    "CHKMTRX03"     TO  MCP-WIDGET
            WHEN    006
-               MOVE    "CHKMTRX05"     TO  MCP-WIDGET
+               MOVE    "CHKMTRX04"     TO  MCP-WIDGET
            WHEN    007
-               MOVE    "PRTSRTKBN"     TO  MCP-WIDGET
+               MOVE    "CHKMTRX05"     TO  MCP-WIDGET
            WHEN    008
+               MOVE    "PRTSRTKBN"     TO  MCP-WIDGET
+           WHEN    009
                MOVE    "PRTPTLSTKBN"   TO  MCP-WIDGET
            WHEN    212
                MOVE    "B12"           TO  MCP-WIDGET
@@ -1083,19 +1214,21 @@
       *
            EVALUATE    WRK-MCP-WIDGET
            WHEN    "BYOSRYKAKBN"
-               MOVE    07              TO  SPA-GMN-CUR
-           WHEN    "CHKMTRX01"
-               MOVE    03              TO  SPA-GMN-CUR
-           WHEN    "CHKMTRX02"
-               MOVE    04              TO  SPA-GMN-CUR
-           WHEN    "CHKMTRX03"
-               MOVE    05              TO  SPA-GMN-CUR
-           WHEN    "CHKMTRX04"
-               MOVE    06              TO  SPA-GMN-CUR
-           WHEN    "CHKMTRX05"
-               MOVE    07              TO  SPA-GMN-CUR
-           WHEN    "PRTSRTKBN"
+               MOVE    02              TO  SPA-GMN-CUR
+           WHEN    "UTAGAIKKNKBN"
                MOVE    08              TO  SPA-GMN-CUR
+           WHEN    "CHKMTRX01"
+               MOVE    04              TO  SPA-GMN-CUR
+           WHEN    "CHKMTRX02"
+               MOVE    05              TO  SPA-GMN-CUR
+           WHEN    "CHKMTRX03"
+               MOVE    06              TO  SPA-GMN-CUR
+           WHEN    "CHKMTRX04"
+               MOVE    07              TO  SPA-GMN-CUR
+           WHEN    "CHKMTRX05"
+               MOVE    08              TO  SPA-GMN-CUR
+           WHEN    "PRTSRTKBN"
+               MOVE    09              TO  SPA-GMN-CUR
            WHEN    "PRTPTLSTKBN"
                MOVE    212             TO  SPA-GMN-CUR
            END-EVALUATE

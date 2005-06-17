@@ -2904,19 +2904,19 @@
            INSPECT WRK-PTHKN-KIGO      REPLACING   ALL "¡¡"    BY  "  "
            INSPECT WRK-PTHKN-NUM       REPLACING   ALL "¡¡"    BY  "  "
       *
-           IF    ( WRK-PTHKN-KIGO      =   SPACE )
-            AND  ( WRK-PTHKN-NUM       =   SPACE )
+      *    IF    ( WRK-PTHKN-KIGO      =   SPACE )
+      *     AND  ( WRK-PTHKN-NUM       =   SPACE )
       *
-               MOVE    PTHKN-HKNNUM    TO  SRH-HKNNUM
-               MOVE    "020001"        TO  WRK-ERRCD
-               PERFORM 211-ERRMES-HEN-SEC
+      *        MOVE    PTHKN-HKNNUM    TO  SRH-HKNNUM
+      *        MOVE    "020001"        TO  WRK-ERRCD
+      *        PERFORM 211-ERRMES-HEN-SEC
       *
-               IF    ( ORCBSD01-CHKKBN (2) =   "1" )
-                   MOVE    1           TO  FLG-CHKEND (2)
-                   GO  TO  200111-KIGONUM-CHK-EXT
-               END-IF
+      *        IF    ( ORCBSD01-CHKKBN (2) =   "1" )
+      *            MOVE    1           TO  FLG-CHKEND (2)
+      *            GO  TO  200111-KIGONUM-CHK-EXT
+      *        END-IF
       *
-           END-IF
+      *    END-IF
       *
            IF    ( WRK-PTHKN-NUM       =   SPACE )
       *
@@ -3367,7 +3367,12 @@
            MOVE    SPACE               TO  WRK-UTAIGAI-CHK-YM
            MOVE    WRK-KJNYMD          TO  WRK-SYMD
            MOVE    "2"                 TO  WRK-ZOGENPTN
-           MOVE    -2                  TO  WRK-ZOGEN
+           IF    ( SYS-1101-UTAGAIKKN-X    IS  NUMERIC )
+               COMPUTE WRK-ZOGEN
+                   =   SYS-1101-UTAGAIKKN  *   -1
+           ELSE
+               MOVE    -2              TO  WRK-ZOGEN
+           END-IF
            PERFORM 800-CALENDAR-SEC
            MOVE    WRK-SYMD (1:6)      TO  WRK-UTAIGAI-CHK-YM
       *

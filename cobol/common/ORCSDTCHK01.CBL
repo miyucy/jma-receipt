@@ -44,6 +44,7 @@
            03  FLG-MATCH                   PIC 9(01).
            03  FLG-TAISYO                  PIC 9(01).
            03  FLG-HIT                     PIC 9(01).
+           03  FLG-LOOP-END                PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -54,6 +55,9 @@
       *
       *    一時領域
        01  WRK-AREA.
+           03  WRK-SYMD                    PIC X(08).
+           03  WRK-ZOGENPTN                PIC X(01).
+           03  WRK-ZOGEN                   PIC S9(05).
            03  WRK-MCP-PATH.
                05  WRK-MCP-BLOCKS          PIC S9(9)   BINARY.
                05  WRK-MCP-RNAME           PIC S9(9)   BINARY.
@@ -101,6 +105,10 @@
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
+      *
+      *    日付変換サブ
+           COPY    "CPORCSDAY.INC".
+           COPY    "CPORCSLNK.INC".
       *
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
@@ -181,6 +189,9 @@
            END-IF
       *
            PERFORM 900-QDTCHK-KEY-SEL-SEC
+           IF    ( FLG-QDTCHK      =   ZERO )
+               PERFORM 900-QDTCHK-KEY-FET-SEC
+           END-IF
       *
            PERFORM UNTIL ( FLG-QDTCHK      NOT =   ZERO )
                     OR   ( FLG-CHKMST-BYOMEI   =   1    )
@@ -373,6 +384,24 @@
                END-IF
            END-IF
       *
+      *    レセプト表示期間を過ぎていないかチェック
+           IF    ( QDTCHK-REZEMM       >   ZERO )
+      *
+               MOVE    QDTCHK-SRYYMD   TO  WRK-SYMD
+      *
+               IF    ( QDTCHK-REZEMM   >   1 )
+                   MOVE    "2"     TO  WRK-ZOGENPTN
+                   COMPUTE WRK-ZOGEN   =   QDTCHK-REZEMM
+                                       -   1
+                   PERFORM 800-CALENDAR-SEC
+               END-IF
+      *
+               IF    ( SDTCHK01-KJNYMD(1:6)    >   WRK-SYMD(1:6))
+                   MOVE    ZERO    TO  FLG-TAISYO
+               END-IF
+      *
+           END-IF
+      *
            .
        2001-TAISYO-CHK-EXT.
            EXIT.
@@ -415,11 +444,12 @@
       *
            END-IF
       *
-      *    適用期間が正しい場合、入外区分の誤りとして
-      *    2"を、適用期間が誤っている場合は適用期間の誤りとして
-      *    "1"を設定
+      *    入外区分の誤りは"2"を設定、
+      *    適用期間が誤っている場合は適用期間の誤りとして"1"を設定
            IF    ( QDTCHK-TENKIKBN      =   SPACE )
                IF    ( QDTCHK-SRYYMD (1:6) <=   SDTCHK01-KJNYMD(1:6))
+                AND (( QDTCHK-NYUGAIKBN NOT =   SPACE )
+                 AND ( QDTCHK-NYUGAIKBN NOT =   SDTCHK01-NYUGAIKBN ))
                        MOVE    2   TO  TBYOMEI-ERRFLG (TBYOMEI-IDX1)
                ELSE
                    IF    ( TBYOMEI-ERRFLG (TBYOMEI-IDX1)  <=   1 )
@@ -431,6 +461,8 @@
                                            <=  SDTCHK01-KJNYMD(1:6))
                 AND  ( QDTCHK-TENKIYMD (1:6)
                                            >=  SDTCHK01-KJNYMD(1:6))
+                AND (( QDTCHK-NYUGAIKBN NOT =   SPACE )
+                 AND ( QDTCHK-NYUGAIKBN NOT =   SDTCHK01-NYUGAIKBN ))
                        MOVE    2   TO  TBYOMEI-ERRFLG (TBYOMEI-IDX1)
                ELSE
                    IF    ( TBYOMEI-ERRFLG (TBYOMEI-IDX1)  <=   1 )
@@ -523,6 +555,24 @@
        800-STRLEN-EXT.
            EXIT.
       *****************************************************************
+      *    カレンダー処理
+      *****************************************************************
+       800-CALENDAR-SEC               SECTION.
+      *
+           INITIALIZE                  STS-AREA-DAY
+           INITIALIZE                  LNK-DAY6-AREA
+           MOVE    "61"                TO  LNK-DAY6-IRAI
+           MOVE    WRK-SYMD            TO  LNK-DAY6-KIJUN
+           MOVE    WRK-ZOGENPTN        TO  LNK-DAY6-ZOGENPTN
+           MOVE    WRK-ZOGEN           TO  LNK-DAY6-ZOGEN
+           CALL  "ORCSDAY"             USING   STS-AREA-DAY
+                                               LNK-DAY6-AREA
+           MOVE    LNK-DAY6-KEISAN     TO  WRK-SYMD
+      *
+           .
+       800-CALENDAR-EXT.
+           EXIT.
+      *****************************************************************
       *    データチェッククエリ検索処理(KEY)
       *****************************************************************
        900-QDTCHK-KEY-SEL-SEC          SECTION.
@@ -546,7 +596,7 @@
       *
            MOVE    QDTCHK-REC          TO  MCPDATA-REC
            MOVE    WRK-MCP-PATH        TO  MCP-PATH
-           PERFORM 910-DBSELECT-SEC
+           PERFORM 911-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO  QDTCHK-REC
            ELSE
@@ -562,14 +612,27 @@
       *****************************************************************
        900-QDTCHK-KEY-FET-SEC          SECTION.
       *
-           MOVE    WRK-MCP-PATH        TO  MCP-PATH
-           PERFORM 910-DBFETCH-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC     TO  QDTCHK-REC
-           ELSE
-               INITIALIZE                  QDTCHK-REC
-               MOVE    1               TO  FLG-QDTCHK
-           END-IF
+           MOVE    ZERO                TO  FLG-LOOP-END
+      *
+           PERFORM UNTIL ( FLG-QDTCHK      NOT =   ZERO )
+                    OR   ( FLG-LOOP-END    NOT =   ZERO )
+      *
+               MOVE    WRK-MCP-PATH        TO  MCP-PATH
+               PERFORM 910-DBFETCH-SEC
+               IF    ( MCP-RC          =   ZERO )
+                   MOVE    MCPDATA-REC     TO  QDTCHK-REC
+               ELSE
+                   INITIALIZE                  QDTCHK-REC
+                   MOVE    1               TO  FLG-QDTCHK
+               END-IF
+      *
+               MOVE    1               TO  FLG-LOOP-END
+      *
+               IF    ( QDTCHK-REZEFLG  =   "1" )
+                   MOVE    ZERO        TO  FLG-LOOP-END
+               END-IF
+      *
+           END-PERFORM
       *
            .
        900-QDTCHK-KEY-FET-EXT.

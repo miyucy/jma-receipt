@@ -184,11 +184,11 @@
            03  CONST-CHKKBN-MAX            PIC 9(03)   VALUE   14.
            03  CONST-CHKMSG-VAL.
                05                          PIC X(40)   VALUE
-               "保険者番号抜け".
+               "保険者番号".
                05                          PIC X(40)   VALUE
-               "被保険者記号・番号抜け".
+               "被保険者記号・番号".
                05                          PIC X(40)   VALUE
-               "公費負担者番号・受給者番号抜け".
+               "公費負担者番号・受給者番号".
                05                          PIC X(40)   VALUE
                "保険適応年齢".
                05                          PIC X(40)   VALUE

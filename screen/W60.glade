@@ -313,7 +313,7 @@
       <class>GtkPandaEntry</class>
       <name>VTTL1</name>
       <x>35</x>
-      <y>190</y>
+      <y>250</y>
       <width>130</width>
       <height>60</height>
       <signal>
@@ -340,7 +340,7 @@
       <class>GtkPandaEntry</class>
       <name>MTRXTTL</name>
       <x>35</x>
-      <y>130</y>
+      <y>190</y>
       <width>185</width>
       <height>60</height>
       <signal>
@@ -367,7 +367,7 @@
       <class>GtkPandaEntry</class>
       <name>VTTL2</name>
       <x>35</x>
-      <y>250</y>
+      <y>310</y>
       <width>130</width>
       <height>30</height>
       <signal>
@@ -394,7 +394,7 @@
       <class>GtkPandaEntry</class>
       <name>MTRXNIL3</name>
       <x>220</x>
-      <y>220</y>
+      <y>280</y>
       <width>65</width>
       <height>30</height>
       <sensitive>False</sensitive>
@@ -422,7 +422,7 @@
       <class>GtkPandaEntry</class>
       <name>MTRXNIL4</name>
       <x>220</x>
-      <y>250</y>
+      <y>310</y>
       <width>65</width>
       <height>30</height>
       <sensitive>False</sensitive>
@@ -450,7 +450,7 @@
       <class>GtkPandaEntry</class>
       <name>HTTL1</name>
       <x>220</x>
-      <y>130</y>
+      <y>190</y>
       <width>130</width>
       <height>30</height>
       <signal>
@@ -477,7 +477,7 @@
       <class>GtkPandaEntry</class>
       <name>HTTL2</name>
       <x>350</x>
-      <y>130</y>
+      <y>190</y>
       <width>125</width>
       <height>30</height>
       <signal>
@@ -504,7 +504,7 @@
       <class>GtkPandaEntry</class>
       <name>HTTL1CD</name>
       <x>220</x>
-      <y>160</y>
+      <y>220</y>
       <width>65</width>
       <height>30</height>
       <signal>
@@ -531,7 +531,7 @@
       <class>GtkPandaEntry</class>
       <name>HTTL1NM</name>
       <x>285</x>
-      <y>160</y>
+      <y>220</y>
       <width>65</width>
       <height>30</height>
       <signal>
@@ -558,7 +558,7 @@
       <class>GtkPandaEntry</class>
       <name>HTTL2NM</name>
       <x>350</x>
-      <y>160</y>
+      <y>220</y>
       <width>125</width>
       <height>30</height>
       <signal>
@@ -585,7 +585,7 @@
       <class>GtkPandaEntry</class>
       <name>MTRXNIL1</name>
       <x>285</x>
-      <y>190</y>
+      <y>250</y>
       <width>65</width>
       <height>30</height>
       <sensitive>False</sensitive>
@@ -613,7 +613,7 @@
       <class>GtkPandaEntry</class>
       <name>MTRXNIL2</name>
       <x>350</x>
-      <y>190</y>
+      <y>250</y>
       <width>125</width>
       <height>30</height>
       <sensitive>False</sensitive>
@@ -641,7 +641,7 @@
       <class>GtkPandaEntry</class>
       <name>MTRX01</name>
       <x>220</x>
-      <y>190</y>
+      <y>250</y>
       <width>65</width>
       <height>30</height>
       <signal>
@@ -668,7 +668,7 @@
       <class>GtkPandaEntry</class>
       <name>MTRX02</name>
       <x>285</x>
-      <y>220</y>
+      <y>280</y>
       <width>65</width>
       <height>30</height>
       <signal>
@@ -695,7 +695,7 @@
       <class>GtkPandaEntry</class>
       <name>MTRX04</name>
       <x>285</x>
-      <y>250</y>
+      <y>310</y>
       <width>65</width>
       <height>30</height>
       <signal>
@@ -722,7 +722,7 @@
       <class>GtkPandaEntry</class>
       <name>MTRX03</name>
       <x>350</x>
-      <y>220</y>
+      <y>280</y>
       <width>125</width>
       <height>30</height>
       <signal>
@@ -749,7 +749,7 @@
       <class>GtkPandaEntry</class>
       <name>MTRX05</name>
       <x>350</x>
-      <y>250</y>
+      <y>310</y>
       <width>125</width>
       <height>30</height>
       <signal>
@@ -776,7 +776,7 @@
       <class>GtkPandaEntry</class>
       <name>VTTL1CD</name>
       <x>165</x>
-      <y>190</y>
+      <y>250</y>
       <width>55</width>
       <height>30</height>
       <signal>
@@ -803,7 +803,7 @@
       <class>GtkPandaEntry</class>
       <name>VTTL2NM</name>
       <x>165</x>
-      <y>250</y>
+      <y>310</y>
       <width>55</width>
       <height>30</height>
       <signal>
@@ -830,7 +830,7 @@
       <class>GtkPandaEntry</class>
       <name>VTTL1NM</name>
       <x>165</x>
-      <y>220</y>
+      <y>280</y>
       <width>55</width>
       <height>30</height>
       <signal>
@@ -857,7 +857,7 @@
       <class>GtkLabel</class>
       <name>label302</name>
       <x>35</x>
-      <y>285</y>
+      <y>345</y>
       <width>120</width>
       <height>25</height>
       <label>マスタ準拠傷病名</label>
@@ -873,7 +873,7 @@
       <class>GtkLabel</class>
       <name>label304</name>
       <x>155</x>
-      <y>285</y>
+      <y>345</y>
       <width>110</width>
       <height>25</height>
       <label>（≠0000999）／</label>
@@ -889,7 +889,7 @@
       <class>GtkLabel</class>
       <name>label303</name>
       <x>270</x>
-      <y>285</y>
+      <y>345</y>
       <width>120</width>
       <height>25</height>
       <label>未コード化傷病名</label>
@@ -905,7 +905,7 @@
       <class>GtkLabel</class>
       <name>label305</name>
       <x>390</x>
-      <y>285</y>
+      <y>345</y>
       <width>110</width>
       <height>25</height>
       <label>（＝0000999）</label>
@@ -918,10 +918,233 @@
     </widget>
 
     <widget>
+      <class>GtkCheckButton</class>
+      <name>CHKMTRX04</name>
+      <x>285</x>
+      <y>310</y>
+      <width>65</width>
+      <height>30</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+    </widget>
+
+    <widget>
+      <class>GtkCheckButton</class>
+      <name>CHKMTRX05</name>
+      <x>350</x>
+      <y>310</y>
+      <width>125</width>
+      <height>30</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+    </widget>
+
+    <widget>
+      <class>GtkCheckButton</class>
+      <name>CHKMTRX03</name>
+      <x>350</x>
+      <y>280</y>
+      <width>125</width>
+      <height>30</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+    </widget>
+
+    <widget>
+      <class>GtkCheckButton</class>
+      <name>CHKMTRX02</name>
+      <x>285</x>
+      <y>280</y>
+      <width>65</width>
+      <height>30</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+    </widget>
+
+    <widget>
+      <class>GtkCheckButton</class>
+      <name>CHKMTRX01</name>
+      <x>220</x>
+      <y>250</y>
+      <width>65</width>
+      <height>30</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label301</name>
+      <x>35</x>
+      <y>160</y>
+      <width>304</width>
+      <height>25</height>
+      <label>＜薬剤と病名、診療行為と病名のチェック＞</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkPandaCombo</class>
+      <name>CMB_PRTPTLSTKBN</name>
+      <x>180</x>
+      <y>445</y>
+      <width>165</width>
+      <height>25</height>
+      <value_in_list>False</value_in_list>
+      <ok_if_empty>True</ok_if_empty>
+      <case_sensitive>False</case_sensitive>
+      <use_arrows>True</use_arrows>
+      <use_arrows_always>False</use_arrows_always>
+      <items></items>
+
+      <widget>
+	<class>GtkPandaEntry</class>
+	<child_name>GtkPandaCombo:entry</child_name>
+	<name>PRTPTLSTKBN</name>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>activate</name>
+	  <handler>send_event</handler>
+	  <data>ACTIVATE</data>
+	  <last_modification_time>Tue, 15 Feb 2005 08:06:25 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>changed</name>
+	  <handler>entry_changed</handler>
+	  <data>CHANGED</data>
+	  <last_modification_time>Tue, 15 Feb 2005 08:06:35 GMT</last_modification_time>
+	</signal>
+	<editable>True</editable>
+	<text_visible>True</text_visible>
+	<text_max_length>22</text_max_length>
+	<text></text>
+	<input_mode>XIM</input_mode>
+	<xim_enabled>False</xim_enabled>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label312</name>
+      <x>35</x>
+      <y>445</y>
+      <width>145</width>
+      <height>25</height>
+      <label>患者別チェックリスト</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label309</name>
+      <x>35</x>
+      <y>415</y>
+      <width>55</width>
+      <height>25</height>
+      <label>印刷順</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkPandaCombo</class>
+      <name>CMB_PRTSRTKBN</name>
+      <x>180</x>
+      <y>415</y>
+      <width>160</width>
+      <height>25</height>
+      <value_in_list>False</value_in_list>
+      <ok_if_empty>True</ok_if_empty>
+      <case_sensitive>False</case_sensitive>
+      <use_arrows>True</use_arrows>
+      <use_arrows_always>False</use_arrows_always>
+      <items></items>
+
+      <widget>
+	<class>GtkPandaEntry</class>
+	<child_name>GtkPandaCombo:entry</child_name>
+	<name>PRTSRTKBN</name>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>activate</name>
+	  <handler>send_event</handler>
+	  <data>ACTIVATE</data>
+	  <last_modification_time>Tue, 15 Feb 2005 08:06:25 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>changed</name>
+	  <handler>entry_changed</handler>
+	  <data>CHANGED</data>
+	  <last_modification_time>Tue, 15 Feb 2005 08:06:35 GMT</last_modification_time>
+	</signal>
+	<editable>True</editable>
+	<text_visible>True</text_visible>
+	<text_max_length>22</text_max_length>
+	<text></text>
+	<input_mode>XIM</input_mode>
+	<xim_enabled>False</xim_enabled>
+      </widget>
+    </widget>
+
+    <widget>
       <class>GtkLabel</class>
       <name>label308</name>
       <x>35</x>
-      <y>320</y>
+      <y>385</y>
       <width>240</width>
       <height>25</height>
       <label>＜レセプトデータチェックリスト＞</label>
@@ -935,41 +1158,9 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label301</name>
-      <x>35</x>
-      <y>105</y>
-      <width>304</width>
-      <height>25</height>
-      <label>＜薬剤と病名、診療行為と病名のチェック＞</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label310</name>
-      <x>35</x>
-      <y>45</y>
-      <width>95</width>
-      <height>25</height>
-      <label>＜患者病名＞</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label307</name>
       <x>480</x>
-      <y>255</y>
+      <y>315</y>
       <width>145</width>
       <height>25</height>
       <label>×：チェックしない</label>
@@ -985,7 +1176,7 @@
       <class>GtkLabel</class>
       <name>label306</name>
       <x>480</x>
-      <y>230</y>
+      <y>290</y>
       <width>145</width>
       <height>25</height>
       <label>○：チェックする</label>
@@ -999,12 +1190,12 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label311</name>
+      <name>label310</name>
       <x>35</x>
-      <y>70</y>
-      <width>135</width>
+      <y>60</y>
+      <width>95</width>
       <height>25</height>
-      <label>診療科別のチェック</label>
+      <label>＜患者病名＞</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>
@@ -1014,10 +1205,26 @@
     </widget>
 
     <widget>
+      <class>GtkLabel</class>
+      <name>label313</name>
+      <x>35</x>
+      <y>120</y>
+      <width>150</width>
+      <height>25</height>
+      <label>疑い病名チェック期間</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>True</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
       <class>GtkPandaCombo</class>
       <name>CMB_BYOSRYKAKBN</name>
-      <x>175</x>
-      <y>70</y>
+      <x>185</x>
+      <y>90</y>
       <width>95</width>
       <height>25</height>
       <value_in_list>False</value_in_list>
@@ -1054,124 +1261,13 @@
     </widget>
 
     <widget>
-      <class>GtkCheckButton</class>
-      <name>CHKMTRX01</name>
-      <x>220</x>
-      <y>190</y>
-      <width>65</width>
-      <height>30</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHKMTRX02</name>
-      <x>285</x>
-      <y>220</y>
-      <width>65</width>
-      <height>30</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHKMTRX03</name>
-      <x>350</x>
-      <y>220</y>
-      <width>125</width>
-      <height>30</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHKMTRX04</name>
-      <x>285</x>
-      <y>250</y>
-      <width>65</width>
-      <height>30</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHKMTRX05</name>
-      <x>350</x>
-      <y>250</y>
-      <width>125</width>
-      <height>30</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
       <class>GtkLabel</class>
-      <name>label309</name>
+      <name>label311</name>
       <x>35</x>
-      <y>345</y>
-      <width>55</width>
+      <y>90</y>
+      <width>135</width>
       <height>25</height>
-      <label>印刷順</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label312</name>
-      <x>35</x>
-      <y>375</y>
-      <width>145</width>
-      <height>25</height>
-      <label>患者別チェックリスト</label>
+      <label>診療科別のチェック</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>
@@ -1182,10 +1278,10 @@
 
     <widget>
       <class>GtkPandaCombo</class>
-      <name>CMB_PRTSRTKBN</name>
-      <x>180</x>
-      <y>345</y>
-      <width>165</width>
+      <name>CMB_UTAGAIKKNKBN</name>
+      <x>185</x>
+      <y>120</y>
+      <width>95</width>
       <height>25</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
@@ -1197,7 +1293,7 @@
       <widget>
 	<class>GtkPandaEntry</class>
 	<child_name>GtkPandaCombo:entry</child_name>
-	<name>PRTSRTKBN</name>
+	<name>UTAGAIKKNKBN</name>
 	<can_focus>True</can_focus>
 	<signal>
 	  <name>activate</name>
@@ -1213,47 +1309,7 @@
 	</signal>
 	<editable>True</editable>
 	<text_visible>True</text_visible>
-	<text_max_length>22</text_max_length>
-	<text></text>
-	<input_mode>XIM</input_mode>
-	<xim_enabled>False</xim_enabled>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkPandaCombo</class>
-      <name>CMB_PRTPTLSTKBN</name>
-      <x>180</x>
-      <y>375</y>
-      <width>165</width>
-      <height>25</height>
-      <value_in_list>False</value_in_list>
-      <ok_if_empty>True</ok_if_empty>
-      <case_sensitive>False</case_sensitive>
-      <use_arrows>True</use_arrows>
-      <use_arrows_always>False</use_arrows_always>
-      <items></items>
-
-      <widget>
-	<class>GtkPandaEntry</class>
-	<child_name>GtkPandaCombo:entry</child_name>
-	<name>PRTPTLSTKBN</name>
-	<can_focus>True</can_focus>
-	<signal>
-	  <name>activate</name>
-	  <handler>send_event</handler>
-	  <data>ACTIVATE</data>
-	  <last_modification_time>Tue, 15 Feb 2005 08:06:25 GMT</last_modification_time>
-	</signal>
-	<signal>
-	  <name>changed</name>
-	  <handler>entry_changed</handler>
-	  <data>CHANGED</data>
-	  <last_modification_time>Tue, 15 Feb 2005 08:06:35 GMT</last_modification_time>
-	</signal>
-	<editable>True</editable>
-	<text_visible>True</text_visible>
-	<text_max_length>22</text_max_length>
+	<text_max_length>10</text_max_length>
 	<text></text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
