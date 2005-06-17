@@ -430,10 +430,10 @@
            CALL    "ORCR0091"          USING
                                    WRK-PARA2
       *
-           IF      WRK-PARA-A7 NOT =   "NOPG"
-               CALL    WRK-PARA-A7     USING
-                                       WRK-PARA2
-           END-IF
+      ***  IF      WRK-PARA-A7 NOT =   "NOPG"
+      ***      CALL    WRK-PARA-A7     USING
+      ***                              WRK-PARA2
+      ***  END-IF
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
@@ -545,13 +545,12 @@
        2002-IHO-NYUIN-SEC          SECTION.
       *
            DISPLAY "take nyuuin st  "
-      **   DISPLAY "orcr0600 start = [" WRK-PARA0 "]"
+           DISPLAY "orcr0600 start = [" WRK-PARA0 "]"
       **   CALL "timeofday" USING LNK-TIMEOFDAY.
       **   DISPLAY "orcr0600 START"
       **           " "  LNK-TIMEOFDAY(1:20).
-      *---> 仮収納作成は、非常に時間がかかるため当面コメントアウト
-      *    CALL    "ORCR0600"          USING
-      *                                WRK-PARA0
+           CALL    "ORCR0600"          USING
+                                       WRK-PARA0
       *
       **   DISPLAY "orcr0610 start = [" WRK-PARA0 "]"
            CALL    "ORCR0610"          USING
@@ -618,10 +617,10 @@
            CALL    "ORCR0700"          USING
                                    WRK-PARA2
       *
-           IF      WRK-PARA-A7 NOT =   "NOPG"
-               CALL    WRK-PARA-A7     USING
-                                       WRK-PARA2
-           END-IF
+      ***  IF      WRK-PARA-A7 NOT =   "NOPG"
+      ***      CALL    WRK-PARA-A7     USING
+      ***                              WRK-PARA2
+      ***  END-IF
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
