@@ -1147,10 +1147,12 @@
                PERFORM 45001-JYURRK-SYORI3-SEC
            END-IF
       *    ¿ÇÎÅ²ÊÍúÎòºîÀ®
-           IF    ( SPA-ERRCD           =   SPACE ) AND
-                 ( WRK-SRYKA-REN       =   1 )
-               PERFORM 1003-SRYKARRK-SAKUSEI-SEC
-           END-IF
+      *---> take mod start
+      *    IF    ( SPA-ERRCD           =   SPACE ) AND
+      *          ( WRK-SRYKA-REN       =   1 )
+      *        PERFORM 1003-SRYKARRK-SAKUSEI-SEC
+      *    END-IF
+      *---> take mod end  
       *
            .
        1001-DBKOUSIN-SYORI-EXT.
