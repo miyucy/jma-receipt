@@ -521,6 +521,7 @@
                MOVE    SPACE               TO  WRK-COM-CHKFLG (IDX-S)
            END-IF
            MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC92-SYORIFLG
+           MOVE    LNK-ORCSC-PG        TO  LNK-SC92-PG
            MOVE    IDX-S               TO  LNK-SC92-GMN-IDX
            MOVE    WRK-SRYCD           TO  LNK-SC92-SRYCD
            MOVE    LNK-ORCSC-NENREI    TO  LNK-SC92-NENREI
@@ -918,7 +919,7 @@
                IF      (FLG-NAIFUKU            =   1  )  AND
                        (WRK-COM-ZAIEND (IDX)   =   "1")
                    MOVE    WRK-ZAITEN-G        TO  WRK-ZAITEN
-                   IF      WRK-ZAITEN          <   205
+                   IF      WRK-ZAITEN-G        <=  205
                        IF      WRK-ZAITEN          =   ZERO
                            CONTINUE
                        ELSE
@@ -2057,6 +2058,7 @@
                MOVE    200                 TO  LNK-SC92-GMN-IDX
            END-IF
            MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC92-SYORIFLG
+           MOVE    LNK-ORCSC-PG        TO  LNK-SC92-PG
            MOVE    WRK-SRYCD           TO  LNK-SC92-SRYCD
            MOVE    LNK-ORCSC-NENREI    TO  LNK-SC92-NENREI
            MOVE    LNK-ORCSC-ROUJIN    TO  LNK-SC92-ROUJIN

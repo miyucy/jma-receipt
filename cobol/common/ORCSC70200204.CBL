@@ -3430,6 +3430,7 @@
            INITIALIZE                  ORCSC92AREA
            MOVE    "3"                 TO  LNK-SC92-KBN
            MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC92-SYORIFLG
+           MOVE    LNK-ORCSC-PG        TO  LNK-SC92-PG
            MOVE    WRK-IDX             TO  LNK-SC92-GMN-IDX
            MOVE    WRK-SRYCD           TO  LNK-SC92-SRYCD
            MOVE    LNK-ORCSC-NENREI    TO  LNK-SC92-NENREI

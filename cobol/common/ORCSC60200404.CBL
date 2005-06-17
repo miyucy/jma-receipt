@@ -2666,6 +2666,7 @@
                MOVE    SPACE               TO  WRK-COM-CHKFLG (IDX-T)
            END-IF
            MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC92-SYORIFLG
+           MOVE    LNK-ORCSC-PG        TO  LNK-SC92-PG
            MOVE    IDX-T               TO  LNK-SC92-GMN-IDX
            MOVE    WRK-SRYCD           TO  LNK-SC92-SRYCD
            MOVE    LNK-ORCSC-NENREI    TO  LNK-SC92-NENREI
@@ -3386,6 +3387,7 @@
                MOVE    200                 TO  LNK-SC92-GMN-IDX
            END-IF
            MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC92-SYORIFLG
+           MOVE    LNK-ORCSC-PG        TO  LNK-SC92-PG
            MOVE    WRK-SRYCD           TO  LNK-SC92-SRYCD
            MOVE    LNK-ORCSC-NENREI    TO  LNK-SC92-NENREI
            MOVE    LNK-ORCSC-ROUJIN    TO  LNK-SC92-ROUJIN
