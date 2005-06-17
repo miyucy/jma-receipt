@@ -339,6 +339,7 @@
            03  NYUINACT-IDX                            PIC 9(03).
            03  KOHFTN-IDX                              PIC 9(03).
            03  SYSKAN-IDX                              PIC 9(03).
+           03  KOHIDX                                  PIC 9(03).
       *     
            03  IDA                 PIC 9(04).
            03  IDB                 PIC 9(04).
@@ -870,6 +871,9 @@
            COPY    "CPORCSJGNGET.INC".
       *    ¹âÎð¼Ô¤Î°ìÉôÉéÃ´¶â³Ûµ­ºÜ¤Ë´Ø¤¹¤ë¥Á¥§¥Ã¥¯¥µ¥Ö
            COPY    "CPORCSKOREIFTNCHK.INC".
+      *
+      *    ¸øÈñÉÕ²Ã¾ðÊó¼èÆÀ¥µ¥Ö
+           COPY    "CPORCSKOHPLUS.INC".
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
@@ -1457,6 +1461,29 @@
                    PERFORM     2108-OCR2-HENSYU-SEC
                    PERFORM     2109-OCR3-HENSYU-SEC
                END-IF
+           END-IF
+      *
+      *    Ê¡²¬¸©ÃÏÊý¸øÈñ¤ÎÈ½Äê
+           DISPLAY   "RECE62-PREFNUM = " RECE62-PREFNUM
+           IF      RECE62-PREFNUM     =   40
+               MOVE    ZERO               TO  KOHIDX
+               PERFORM   VARYING   IDX  FROM    1   BY  1
+                         UNTIL   ( IDX                >    4    )
+                         OR      ( RECE62-KOHID(IDX)  =   SPACE )
+      *            Ê¡²¬¸©ÃÏÊý¸øÈñ
+                   EVALUATE    RECE62-KOHNUM (IDX)  (1:1)
+                       WHEN    "1" THRU    "2"
+                           IF      RECE62-KOHHBTNUM (IDX) =   "41"
+                               CONTINUE
+                           ELSE 
+                               MOVE     IDX         TO  KOHIDX
+                           END-IF
+                   END-EVALUATE
+               END-PERFORM
+      *        Ê¡²¬ÃÏÊý¸øÈñ¤¬¤¢¤ë¾ì¹çµëÉÕ³°ÅÀ¿ô¤òÊÔ½¸
+               IF      KOHIDX          >   ZERO
+                   PERFORM 300-KYUFUGAI-HENSYU-SEC
+               END-IF 
            END-IF
       *
            PERFORM     RECE62-REWRITE-SEC
@@ -8282,6 +8309,77 @@
       *
            .
        800-NUM-ZENKAKU-HENKAN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÃÏÊý¸øÈñ¤ÎµëÉÕ³°ÅÀ¿ô¤ÎÊÔ½¸
+      *****************************************************************
+       300-KYUFUGAI-HENSYU-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  RECE62-KYUFUGAITEN
+      *
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL   IDX1    >       10
+                   OR      RECE62-HKNCOMBI (IDX1)  =   ZERO
+               IF      RECE62-KOHNUMHC (IDX1 1)
+                                       NOT =   SPACE
+      *            
+                   INITIALIZE                  ORCSKOHPLUS-AREA
+                   MOVE    RECE62-HOSPID   TO  LNK-SKOHPLUS-HOSPID
+                   MOVE    SYS-1001-PREFNUM
+                                           TO  LNK-SKOHPLUS-PREFNUM
+                   MOVE    RECE62-PTID     TO  LNK-SKOHPLUS-PTID
+                   MOVE    RECE62-HKNCOMBI (IDX1)
+                                           TO  LNK-SKOHPLUS-HKNCOMBI
+                   MOVE    RECE62-SRYYM    TO  LNK-SKOHPLUS-SRYYMD(1:6)
+                   MOVE    "01"            TO  LNK-SKOHPLUS-SRYYMD(7:2)
+                   CALL    "ORCSKOHPLUS"   USING
+                                           ORCSKOHPLUS-AREA
+      *           
+                   IF    ( LNK-SKOHPLUS-RC     =   ZERO )
+                   AND   ( LNK-SKOHPLUS-FTNKBN =   "1"  )
+                       IF   RECE62-SRYKA (1)  NOT =  SPACE
+                           INITIALIZE                  SYUNOU-REC
+                           MOVE    RECE62-HOSPID   TO  SYU-HOSPID
+                           MOVE    RECE62-NYUGAIKBN
+                                                   TO  SYU-NYUGAIKBN
+                           MOVE    RECE62-PTID     TO  SYU-PTID
+                           MOVE    RECE62-SRYYM    TO  SYU-SRYYMD(1:6)
+                           MOVE    "__"            TO  SYU-SRYYMD(7:2)
+                           MOVE    RECE62-HKNCOMBI (IDX1)
+                                                   TO  SYU-HKNCOMBINUM
+                           MOVE    SYUNOU-REC      TO  MCPDATA-REC
+                           MOVE    "DBSELECT"      TO  MCP-FUNC
+                           MOVE    "SYUNOU-KEY19"  TO  ORC-DBPATH
+                           CALL    "ORCMCPSUB"     USING
+                                                   MCPAREA
+                                                   ORCMCPAREA
+                                                   MCPDATA-REC
+                           IF      MCP-RC          =   ZERO
+                               MOVE    "SYUNOU-KEY19"  TO  ORC-DBPATH
+                               PERFORM 900-SYUNOU-READ-SEC
+                               PERFORM UNTIL   FLG-SYUNOU  =    1
+                                   ADD     SYU-KYUFUGAI-GOKEI-TEN
+                                                TO  RECE62-KYUFUGAITEN
+                                   MOVE    "SYUNOU-KEY19"
+                                                   TO  ORC-DBPATH
+                                   PERFORM 900-SYUNOU-READ-SEC
+                               END-PERFORM          
+                           END-IF
+      *
+                           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+                           MOVE    "SYUNOU-KEY19"  TO  ORC-DBPATH
+                           CALL    "ORCMCPSUB"     USING
+                                                   MCPAREA
+                                                   ORCMCPAREA
+                                                   MCPDATA-REC
+                       END-IF
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           .
+       300-KYUFUGAI-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
