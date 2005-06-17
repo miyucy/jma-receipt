@@ -611,6 +611,7 @@
       *
            03  WRK-ERRCD1              PIC X(04).
            03  WRK-ERRCD2              PIC X(04).
+           03  WRK-ERRCD3              PIC X(04).
       *
       *    コラムリスト位置
            03  WRK-K02-ROW             PIC S9(09).
@@ -1979,6 +1980,7 @@
            MOVE    SPA-GMN-MAX         TO  SPA-GMN-IDX
            MOVE    SPA-GMN-MAX         TO  IDX-STR2
            MOVE    SPACE               TO  WRK-ERRCD1
+           MOVE    SPACE               TO  WRK-ERRCD3
       *    再表示編集処理
            IF      LNK-WKSRYACT-MAX    >   ZERO
                MOVE    3               TO  FLG-K09TUIKA
@@ -1992,10 +1994,15 @@
                    UNTIL   (IDX        >   200 )  OR
                           ((SPA-GMN-INPUTCD(IDX)   =   SPACE ) AND
                            (SPA-COM-INPUTCD(IDX)   =   SPACE ))
-      *
                IF      SPA-COM-CUR (IDX)   =   SPACE
                    MOVE    SPA-GMN-INPUTCD(IDX)
                                            TO  SPA-MAE-INPUTCD(IDX)
+               END-IF
+      *        複数科
+               IF     (WRK-ERRCD3      NOT =   SPACE )  AND
+                      (SPA-GMN-INPUTCD(IDX)(1:1)   =   "#"
+                                                   OR  "$" )
+                   MOVE    SPACE           TO  SPA-MAE-INPUTCD(IDX)
                END-IF
            END-PERFORM
       *    警告フラグクリア
@@ -2014,6 +2021,9 @@
            MOVE    SPACE               TO  SPA-ERRCD
            MOVE    SPACE               TO  SPA-KIDCD
       *
+           IF      WRK-ERRCD3      NOT =   SPACE
+               MOVE    WRK-ERRCD3          TO  SPA-ERRCD
+           END-IF
            IF      WRK-ERRCD1      NOT =   SPACE
                MOVE    WRK-ERRCD1          TO  SPA-ERRCD
            END-IF
@@ -3575,6 +3585,9 @@
       *
            IF      ORCSCWKSRY-ERRCD    NOT =   SPACE
                MOVE    ORCSCWKSRY-ERRCD    TO  WRK-ERRCD1
+           END-IF
+           IF      ORCSCWKSRY-ERRCD2   NOT =   SPACE
+               MOVE    ORCSCWKSRY-ERRCD2   TO  WRK-ERRCD3
            END-IF
       *
            .
