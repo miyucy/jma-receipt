@@ -49,7 +49,7 @@
       *                                     処置加算料追加(403)
       * 01.00.20     NACL-多々納  05/01/12  初診時ブラッシング料対応
       * 01.00.20     NACL-多々納  05/01/13  歯科薬剤の外用薬対応
-      * 01.00.21     NACL-多々納  05/06/XX  検体検査コメント対応
+      * 01.00.21     NACL-多々納  05/06/03  検体検査コメント対応
       *****************************************************************
       *
       *
@@ -929,8 +929,8 @@
       *            検体検査コメントの判定
                    IF      SPA-COM-KENTAICOMMENT (IDX-1) =   1
       *                検査等実施判断グループ判定
-                       IF      SPA-COM-KNSJISGRPKBN (IDX)    =  03
-                                                             OR 04
+                       IF      SPA-COM-KNSJISGRPKBN (IDX)  >=  01
+                                                       AND <=  07
                            MOVE    SPA-COM-HOUKNSKBN(IDX)
                                                    TO  SPA-COM-HOUKNSKBN
                                                                (IDX-1)
@@ -938,6 +938,11 @@
                            MOVE    SPA-COM-INPUTCD(IDX-1)
                                                    TO  SPA-COM-KENGRP
                                                                (IDX)
+                           MOVE    SPACE           TO  SPA-COM-ZAIEND
+                                                         (IDX-1)
+                           IF      FLG-SYORI       =   2
+                               MOVE    1               TO  FLG-SYORI
+                           END-IF
                        END-IF
                    END-IF
       *            包括対象検査なし
@@ -946,8 +951,8 @@
       *                検体検査コメントの判定
                        IF    ( SPA-COM-KENTAICOMMENT (IDX-1) =   1)
       *                検査等実施判断グループ判定
-                          AND (SPA-COM-KNSJISGRPKBN (IDX)    =  03
-                                                             OR 04)
+                          AND (SPA-COM-KNSJISGRPKBN (IDX)  >=  01
+                                                       AND <=  07 )
                            MOVE    1                TO  FLG-SYORI
                        END-IF
                    ELSE
@@ -972,9 +977,7 @@
                                                  TO  SPA-COM-SRYSYUKBN
                                                              (IDX-1)
                                MOVE    SPACE     TO  SPA-COM-ZAIEND
-                                                         (IDX-1 - 1)
-                               MOVE    SPACE     TO  SPA-COM-ZAIEND
-                                                         (IDX-1)
+                                                             (IDX-1)
                            END-IF
                        END-IF
                    END-IF
@@ -1023,8 +1026,6 @@
            IF      FLG-ZAI             =   1
                IF     (IDX             >   1   )  AND
                      ((SPA-GMN-INPUTCD(IDX - 1)(1:1)   NOT =   ".") OR
-      *?              (SPA-GMN-SRYKBN (IDX - 1)
-      *?                               NOT =   SPA-GMN-SRYKBN(IDX)))
                       (SPA-COM-SRYKBN (IDX - 1)
                                        NOT =   SPA-COM-SRYKBN(IDX)))
                    MOVE    2               TO  FLG-SYORI
@@ -1502,6 +1503,8 @@
                                                    =   "1"  )  AND
                        (SPA-COM-DATAKBN (IDX-KEN)  =   "1"  )
                    AND (SPA-COM-SET (IDX-KEN)  NOT =   "1"  )
+                   AND (SPA-COM-KENTAICOMMENT (IDX-KEN)
+                                                   =   0     )
                    MOVE    ZERO                TO  FLG-KEN-ERR
                    IF      (SPA-COM-KAIFLG (IDX-KEN)   =   "1" )  AND
                            (SPA-COM-KAISU  (IDX-KEN)   >   1   )
