@@ -1014,7 +1014,8 @@
                    INITIALIZE                  SPA-J01KYOUTU
       *
                    MOVE    SPA-MOTOPG          TO  SPA-J02-MOTOPG
-                   IF      SPA-PTID            =   ZERO
+                   IF     (SPA-PTID            =   ZERO  )  OR
+                          (SPA-PTNUM           =   SPACE )
                        MOVE    "0"                 TO  SPA-J02-MOTOFLG
                    ELSE
                        MOVE    "1"                 TO  SPA-J02-MOTOFLG
@@ -1031,7 +1032,8 @@
                    MOVE    SPA-BIRTHDAYW       TO  SPA-GMN-BIRTHDAYW
                    MOVE    SPA-BIRTHDAY        TO  SPA-GMN-BIRTHDAY
       *
-                   IF      SPA-PTID            =   ZERO
+                   IF     (SPA-PTID            =   ZERO  )  OR
+                          (SPA-PTNUM           =   SPACE )
                        MOVE    SPACE               TO  SPA-GMN-SRYKA
                        MOVE    SPACE               TO  SPA-J01-SRYKA
                        MOVE    SPACE               TO  SPA-J01-SRYKAMEI
@@ -1051,7 +1053,8 @@
                    INITIALIZE                  SPA-J01KYOUTU
       *            受付より
                    MOVE    SPA-MOTOPG          TO  SPA-J02-MOTOPG
-                   IF      SPA-PTID            =   ZERO
+                   IF     (SPA-PTID            =   ZERO  )  OR
+                          (SPA-PTNUM           =   SPACE )
                        MOVE    "0"                 TO  SPA-J02-MOTOFLG
                    ELSE
                        MOVE    "1"                 TO  SPA-J02-MOTOFLG
@@ -1061,7 +1064,8 @@
                    MOVE    SPA-SYSYMDWH        TO  SPA-J02-SRYYMDW
                    MOVE    SPA-SYSYMD          TO  SPA-J02-SRYYMD
                    MOVE    "2"                 TO  SPA-NYUGAIKBN
-                   IF      SPA-PTID            =   ZERO
+                   IF     (SPA-PTID            =   ZERO  )  OR
+                          (SPA-PTNUM           =   SPACE )
                        MOVE    ZERO                TO  SPA-GMN-CUR
                        PERFORM 3005-SRYKA-HEN-SEC
                    ELSE
