@@ -19,7 +19,7 @@ W10	{
 		EDYUKYMD	{
 			value	varchar(9);
 		};
-		notebook	{
+		not1	{
 			pageno	int;
 			fixed	{
 				PROGNAME	{

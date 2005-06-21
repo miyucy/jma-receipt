@@ -9,7 +9,7 @@ W02	{
 		EDYUKYMD	{
 			value	varchar(9);
 		};
-		notebook3	{
+		not3	{
 			pageno	int;
 			fixed23	{
 				HOSPNAME	{

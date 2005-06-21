@@ -19,7 +19,7 @@ W04	{
 		PTNUMKSIKBN	{
 			value	varchar(1);
 		};
-		notebook1	{
+		not1	{
 			pageno	int;
 			fixed5	{
 				JIYKSIKBN	{

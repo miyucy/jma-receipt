@@ -349,7 +349,7 @@
 
     <widget>
       <class>GtkNotebook</class>
-      <name>notebook3</name>
+      <name>not3</name>
       <x>16</x>
       <y>48</y>
       <width>950</width>

@@ -6,7 +6,7 @@ Q01	{
 		EDSRYYMD	{
 			value	varchar(10);
 		};
-		notebook3	{
+		not3	{
 			pageno	int;
 			fixed16	{
 				STBIRTHDAY	{

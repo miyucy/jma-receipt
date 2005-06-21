@@ -9,7 +9,7 @@ W07	{
 		YUKOEDYMD	{
 			value	varchar(9);
 		};
-		notebook1	{
+		not1	{
 			pageno	int;
 			TAG1	{
 				DATA01_COMBO	{

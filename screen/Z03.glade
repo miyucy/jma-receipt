@@ -44,7 +44,7 @@
 
     <widget>
       <class>GtkNotebook</class>
-      <name>notebook1</name>
+      <name>not1</name>
       <x>8</x>
       <y>40</y>
       <width>992</width>

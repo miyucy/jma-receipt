@@ -1,6 +1,6 @@
 Z03	{
 	fixed8	{
-		notebook1	{
+		not1	{
 			pageno	int;
 			fixed9	{
 				KANANAME	{
