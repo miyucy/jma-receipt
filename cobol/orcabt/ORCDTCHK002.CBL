@@ -386,7 +386,6 @@
                05  WRK-SYOSIN-CHK-YY                   PIC 9(04).
                05  WRK-SYOSIN-CHK-MM                   PIC 9(02).
                05  WRK-SYOSIN-CHK-DD                   PIC 9(02).
-           03  WRK-DAY-Z                               PIC Z9.
            03  WRK-TNS-NBFUKATEN                       PIC 9(10).
            03  WRK-SNT-NBFUKATEN                       PIC 9(10).
            03  WRK-STATUS                              PIC 9(05).
@@ -846,6 +845,7 @@
       *    保険算定用年齢・割合計算サブ
            COPY    "CPORCSAGECHK.INC".
       *
+           COPY    "CPORCXKANACONV.INC".
       *    半角チェック
            COPY    "CPORCSKANACHK.INC".
       *
@@ -6912,23 +6912,17 @@
                GO  TO  800-KANA-CHK-EXT
            END-IF
       *
-           MOVE    SPACE               TO  ORCSKANACHKAREA
-           INITIALIZE                      ORCSKANACHKAREA
-           MOVE    "1"                 TO  KANACHK-SYORI
-           MOVE    WRK-KANACHK-MAE-INPUT
-                                       TO  KANACHK-MAE-INPUT
-           CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
-           IF      ( KANACHK-RC    NOT =   ZERO )
-               MOVE    9               TO  FLG-KANACHK
-               GO  TO  800-KANA-CHK-EXT
-           END-IF
-      *
-      *    全角文字の場合、間に半角スペースがなかったかチェック
-           IF    ( KANACHK-SYUBETU     =   2  )
-            AND  ( KANACHK-RC2         =   8  )
-               MOVE    9               TO  FLG-KANACHK
+           INITIALIZE                  ORCXKANACONVAREA
+           MOVE 300                TO  KANACONV-LEN
+           MOVE 1000               TO  KANACONV-STLEN
+           MOVE 0                  TO  KANACONV-CONV-FLAG
+           MOVE 15                 TO  KANACONV-CHAR-TYPE
+           MOVE WRK-KANACHK-MAE-INPUT  TO  KANACONV-INDATA
+           CALL "kanaconv"             USING ORCXKANACONVAREA
+           IF    ( KANACONV-RETURN =   ZERO )
+               MOVE    2           TO  FLG-KANACHK
            ELSE
-               MOVE    KANACHK-SYUBETU TO  FLG-KANACHK
+               MOVE    9           TO  FLG-KANACHK
            END-IF
       *
            .
@@ -6940,15 +6934,19 @@
        800-ZENKAKU-HEN-SEC         SECTION.
       *
            MOVE    SPACE           TO  WRK-OUT-INPUT
+           MOVE    ZERO            TO  WRK-OUT-MAX
       *
-           INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "2"             TO  KANACHK-SYORI
-           MOVE  WRK-MAE-INPUT     TO  KANACHK-MAE-INPUT
-           CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
-           IF    ( KANACHK-RC      =   ZERO )
-               MOVE    KANACHK-OUT-INPUT
-                                   TO  WRK-OUT-INPUT
-               MOVE    KANACHK-MAX TO  WRK-OUT-MAX
+           INITIALIZE                  ORCXKANACONVAREA
+           MOVE 300                TO  KANACONV-LEN
+           MOVE 1000               TO  KANACONV-STLEN
+           MOVE 1                  TO  KANACONV-CONV-FLAG
+           MOVE 15                 TO  KANACONV-CHAR-TYPE
+           MOVE WRK-MAE-INPUT      TO  KANACONV-INDATA
+           CALL "kanaconv"             USING ORCXKANACONVAREA
+           IF    ( KANACONV-RETURN =   ZERO )
+               MOVE    KANACONV-OUTDATA
+                                       TO  WRK-OUT-INPUT
+               MOVE    KANACONV-MAXLEN TO  WRK-OUT-MAX
            END-IF
       *
            .
