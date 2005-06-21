@@ -3075,17 +3075,20 @@
       *
            IF    ( PTKOH-FTNJANUM      NOT =   SPACE )
                MOVE    PTKOH-FTNJANUM  TO  WRK-KANACHK-MAE-INPUT
-               PERFORM 800-KANA-CHK-SEC
+               PERFORM 800-HANKAKU-CHK-SEC
                IF  ( FLG-KANACHK       =   9 )
+                   PERFORM 800-KANA-CHK-SEC
+                   IF  ( FLG-KANACHK       =   9 )
       *
-                   MOVE    PTKOH-KOHNUM    TO  SRH-KOHNUM
-                   MOVE    PTKOH-PAYKBN    TO  SRH-PAYKBN
-                   MOVE    "030003"        TO  WRK-ERRCD
-                   PERFORM 212-ERRMES-HEN-SEC
+                       MOVE    PTKOH-KOHNUM    TO  SRH-KOHNUM
+                       MOVE    PTKOH-PAYKBN    TO  SRH-PAYKBN
+                       MOVE    "030003"        TO  WRK-ERRCD
+                       PERFORM 212-ERRMES-HEN-SEC
       *
-                   IF    ( ORCBSD01-CHKKBN (3) =   "1" )
-                       MOVE    1           TO  FLG-CHKEND (3)
-                       GO  TO  200111-FTNJKYNUM-CHK-EXT
+                       IF    ( ORCBSD01-CHKKBN (3) =   "1" )
+                           MOVE    1           TO  FLG-CHKEND (3)
+                           GO  TO  200111-FTNJKYNUM-CHK-EXT
+                       END-IF
                    END-IF
                END-IF
            END-IF
@@ -3093,17 +3096,20 @@
            IF    ( PTKOH-JKYSNUM       NOT =   SPACE )
             AND  ( PTKOH-KOHNUM        NOT =   "012" )
                MOVE    PTKOH-JKYSNUM   TO  WRK-KANACHK-MAE-INPUT
-               PERFORM 800-KANA-CHK-SEC
+               PERFORM 800-HANKAKU-CHK-SEC
                IF  ( FLG-KANACHK       =   9 )
+                   PERFORM 800-KANA-CHK-SEC
+                   IF  ( FLG-KANACHK       =   9 )
       *
-                   MOVE    PTKOH-KOHNUM    TO  SRH-KOHNUM
-                   MOVE    PTKOH-PAYKBN    TO  SRH-PAYKBN
-                   MOVE    "030004"        TO  WRK-ERRCD
-                   PERFORM 212-ERRMES-HEN-SEC
+                       MOVE    PTKOH-KOHNUM    TO  SRH-KOHNUM
+                       MOVE    PTKOH-PAYKBN    TO  SRH-PAYKBN
+                       MOVE    "030004"        TO  WRK-ERRCD
+                       PERFORM 212-ERRMES-HEN-SEC
       *
-                   IF    ( ORCBSD01-CHKKBN (3) =   "1" )
-                       MOVE    1           TO  FLG-CHKEND (3)
-                       GO  TO  200111-FTNJKYNUM-CHK-EXT
+                       IF    ( ORCBSD01-CHKKBN (3) =   "1" )
+                           MOVE    1           TO  FLG-CHKEND (3)
+                           GO  TO  200111-FTNJKYNUM-CHK-EXT
+                       END-IF
                    END-IF
                END-IF
            END-IF
@@ -6927,6 +6933,31 @@
       *
            .
        800-KANA-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    半角ェック
+      *****************************************************************
+       800-HANKAKU-CHK-SEC             SECTION.
+      *
+           MOVE    ZERO                TO  FLG-KANACHK
+      *
+           IF  ( WRK-KANACHK-MAE-INPUT =   SPACE )
+               GO  TO  800-HANKAKU-CHK-EXT
+           END-IF
+      *
+           INITIALIZE                  ORCXKANACONVAREA
+           MOVE 300                TO  KANACONV-LEN
+           MOVE 1000               TO  KANACONV-STLEN
+           MOVE 0                  TO  KANACONV-CONV-FLAG
+           MOVE 112                TO  KANACONV-CHAR-TYPE
+           MOVE WRK-KANACHK-MAE-INPUT  TO  KANACONV-INDATA
+           CALL "kanaconv"             USING ORCXKANACONVAREA
+           IF    ( KANACONV-RETURN NOT =   ZERO )
+               MOVE    9           TO  FLG-KANACHK
+           END-IF
+      *
+           .
+       800-HANKAKU-CHK-EXT.
            EXIT.
       *****************************************************************
       *    全角変換処理
