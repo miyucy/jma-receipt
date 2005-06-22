@@ -1332,7 +1332,8 @@
                WHEN    "CLICKED"       ALSO    "N04"
                WHEN    "CLICKED"       ALSO    "N05"
                WHEN    "CLICKED"       ALSO    "N06"
-                   PERFORM 440-TAG-CHANGE-SEC
+      ************* PERFORM 440-TAG-CHANGE-SEC
+                    CONTINUE
            END-EVALUATE
       *
            .
