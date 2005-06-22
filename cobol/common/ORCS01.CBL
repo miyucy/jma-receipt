@@ -155,6 +155,7 @@
       *  01.02.03    NACL-ÌçÏÆ    05/04/13  ÀÅ²¬¸©ÃÏÊý¸øÈñÂÐ±þ
       *  01.02.04    NACL-ÌçÏÆ    05/05/06  °ñ¾ë¸©ÃÏÊý¸øÈñÂÐ±þ
       *  01.02.05    NACL-ÌçÏÆ    05/06/09  Äã½êÆÀ¾ðÊóÊÔ½¸½¤Àµ
+      *  01.02.06    NACL-ÌçÏÆ    05/06/30  ¹¹À¸¡¦°éÀ®¤¬Ä¹´ü¤ÈÊ»ÍÑ¤Î¾ì¹ç¤ÎÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -3698,6 +3699,14 @@
                             END-IF
                           END-IF
                         END-IF
+                        IF  ( COMB-KOH1HKNNUM  = "015" OR "016") AND
+                            ((COMB-KOH2HKNNUM  = "972") OR
+                             (COMB-KOH3HKNNUM  = "972") OR
+                             (COMB-KOH4HKNNUM  = "972"))
+                           IF   MAX-KIN-KOHI1-M   >     10000
+                              MOVE    10000   TO    MAX-KIN-KOHI1-M
+                           END-IF
+                        END-IF
                       WHEN  2
                         MOVE   WK-GAIJGNGAK        TO   MAX-KIN-KOHI2-M
                         MOVE     "1"   TO    COMB-KOH2-GAIJGNKBN
@@ -3722,6 +3731,14 @@
                                MOVE   SPACE    TO   FLG-CHIHOU(2)
                             END-IF
                           END-IF
+                        END-IF
+                        IF  ( COMB-KOH2HKNNUM  = "015" OR "016") AND
+                            ((COMB-KOH1HKNNUM  = "972") OR
+                             (COMB-KOH3HKNNUM  = "972") OR
+                             (COMB-KOH4HKNNUM  = "972"))
+                           IF   MAX-KIN-KOHI2-M   >     10000
+                              MOVE    10000   TO    MAX-KIN-KOHI2-M
+                           END-IF
                         END-IF
                       WHEN  3
                         MOVE   WK-GAIJGNGAK        TO   MAX-KIN-KOHI3-M
@@ -3748,6 +3765,14 @@
                             END-IF
                           END-IF
                         END-IF
+                        IF  ( COMB-KOH3HKNNUM  = "015" OR "016") AND
+                            ((COMB-KOH1HKNNUM  = "972") OR
+                             (COMB-KOH2HKNNUM  = "972") OR
+                             (COMB-KOH4HKNNUM  = "972"))
+                           IF   MAX-KIN-KOHI3-M   >     10000
+                              MOVE    10000   TO    MAX-KIN-KOHI3-M
+                           END-IF
+                        END-IF
                       WHEN  4
                         MOVE   WK-GAIJGNGAK        TO   MAX-KIN-KOHI4-M
                         MOVE     "1"   TO    COMB-KOH4-GAIJGNKBN
@@ -3772,6 +3797,14 @@
                                MOVE   SPACE    TO   FLG-CHIHOU(4)
                             END-IF
                           END-IF
+                        END-IF
+                        IF  ( COMB-KOH4HKNNUM  = "015" OR "016") AND
+                            ((COMB-KOH1HKNNUM  = "972") OR
+                             (COMB-KOH2HKNNUM  = "972") OR
+                             (COMB-KOH3HKNNUM  = "972"))
+                           IF   MAX-KIN-KOHI4-M   >     10000
+                              MOVE    10000   TO    MAX-KIN-KOHI4-M
+                           END-IF
                         END-IF
                    END-EVALUATE
                 END-IF
