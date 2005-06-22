@@ -1036,6 +1036,11 @@ COPYS = \
         CPORCXKANACONV.INC \
         CPSTGTSCM.INC \
         CPTGTSCM.INC \
+        HCM23V04.INC \
+        HCN23V04.INC \
+        HCM25.INC \
+        HCM26.INC \
+        HCN25.INC \
 
 
 
