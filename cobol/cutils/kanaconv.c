@@ -5,7 +5,7 @@
 #include "kanaconv.h"
 
 #define ISZENKAKU(c)    	(((c) >= 0xa1) && ((c) <= 0xfe))
-#define ISJIS208(c)     	(((c) >= 0xa1) && ((c) <= 0xf4))
+#define ISJIS208(c)     	((((c) >= 0xa1) && ((c) <= 0xa8)) || (((c) >= 0xb0) && ((c) <= 0xf4)))
 #define ISHANKAKUKANA(c)	(((c)&0xff) == 0x8e)
 #define ISDAKU(c)			(((c)&0xff) == 0xde)
 #define ISHANDAKU(c)		(((c)&0xff) == 0xdf)
