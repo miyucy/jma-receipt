@@ -1012,6 +1012,12 @@
       *            患者未設定
                    IF      SPA-GMN-PTNUM   NOT =   SPACE
                        PERFORM 3002-GMNSET-SEC
+                   ELSE
+      *                受付で未登録受付一覧は対象
+                       IF     (SPA-P02-GAMEN   =   "P020") AND
+                              (MCP-WIDGET      =   "BM1" )
+                           PERFORM 3002-GMNSET-SEC
+                       END-IF
                    END-IF
            END-EVALUATE
       *
