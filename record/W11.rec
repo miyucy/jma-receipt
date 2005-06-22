@@ -1,9 +1,9 @@
 W11	{
-	fixed2	{
+	fi2	{
 		B03	{
 			state	int;
 		};
-		note3	{
+		n3	{
 			pageno	int;
 			fi23	{
 				USERKBNCOMBO	{
@@ -37,9 +37,9 @@ W11	{
 					state   int;
 					value	number(3);
 				};
-				note4	{
+				n4	{
 					pageno	int;
-					fixed3	{
+					fi3	{
 						DSPNAME01	{
 							value	varchar(30);
 						};

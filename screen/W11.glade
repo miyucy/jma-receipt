@@ -40,7 +40,7 @@
 
   <widget>
     <class>GtkFixed</class>
-    <name>fixed2</name>
+    <name>fi2</name>
 
     <widget>
       <class>GtkButton</class>
@@ -277,7 +277,7 @@
 
     <widget>
       <class>GtkNotebook</class>
-      <name>note3</name>
+      <name>n3</name>
       <x>15</x>
       <y>72</y>
       <width>995</width>
@@ -400,7 +400,7 @@
 
 	<widget>
 	  <class>GtkNotebook</class>
-	  <name>note4</name>
+	  <name>n4</name>
 	  <x>212</x>
 	  <y>12</y>
 	  <width>770</width>
@@ -421,7 +421,7 @@
 
 	  <widget>
 	    <class>GtkFixed</class>
-	    <name>fixed3</name>
+	    <name>fi3</name>
 
 	    <widget>
 	      <class>GtkPandaEntry</class>
