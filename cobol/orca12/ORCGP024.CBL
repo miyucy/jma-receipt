@@ -1403,6 +1403,8 @@
            MOVE    P02-P024-FTNSELNUM  TO  SPA-GMN24-FTNSELNUM
       *    変更がある時、現在の更新分をパラメタへ
            IF      SPA-GMN24-FTNSELNUM NOT =   SPA-MAE24-FTNSELNUM
+             OR  ((SPA-MAE24-FTNSELNUM NOT =   SPACE   )  AND
+                  (SPA-GMN24-FTNSELNUM     =   SPA-MAE24-FTNSELNUM))
                PERFORM 410131-KOHFTN-PARA-SEC
                IF      SPA-ERRCD       NOT =   SPACE
                    GO      TO      41013-FTNSELNUM-EXT
@@ -2574,7 +2576,9 @@
        410112-SE-WAFORMAT-YMDEDIT-SEC             SECTION.
       *
            IF      WRK-SYMD            =   ALL "9"
-               MOVE    WRK-SYMD            TO  WRK-HENYMD
+      ******** MOVE    WRK-SYMD            TO  WRK-HENYMD
+               MOVE    SPACE               TO  WRK-HENYMD
+               MOVE    ALL "9"             TO  WRK-HENYMD(1:7)
                GO      TO      410112-SE-WAFORMAT-YMDEDIT-EXT
            END-IF
       *
