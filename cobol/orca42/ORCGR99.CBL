@@ -41,6 +41,8 @@
       *  中止処理追加
       *  01.04.01    NACL-藤原    04/09/28 中止ボタンを追加
       *  01.04.02    NACL-藤原    04/09/28 印刷中止機能を追加
+      *
+      *  02.06.01    NACL-藤原    05/06/22 自賠責レセプトの様式追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -588,7 +590,7 @@
                IF      SPA-R01-RECEKBN     =   "3"
                    MOVE    "HC21"              TO  RECE07-PRTID
                END-IF
-               IF      SPA-R01-RECEKBN     =   "4"
+               IF      SPA-R01-RECEKBN     =   "4" OR  "5"
                    MOVE    "HC23"              TO  RECE07-PRTID
                END-IF
            END-IF            

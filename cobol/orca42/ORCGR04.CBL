@@ -46,6 +46,8 @@
       *  01.06.01    NACL-藤原    04/09/28 中止ボタンを追加
       *  01.06.02    NACL-藤原    05/01/13  受診日指定
       *  01.06.03    NACL-藤原    05/02/10  訂正日指定
+      *
+      *  02.06.01    NACL-藤原    05/06/22 自賠責レセプトの様式追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -106,7 +108,7 @@
                05  SPA-GMN-PAGE                    PIC 9(02).
                05  SPA-GMN-CUR                     PIC 9(02).
                05  SPA-GMN-AREA.
-                   07  SPA-GMN-FILEKBN             PIC X(48).
+                   07  SPA-GMN-FILEKBN             PIC X(50).
                    07  SPA-GMN-CREYMD              PIC X(22).
                    07  SPA-GMN-PAGEH               PIC 9(04).
                    07  SPA-GMN-KENSUH              PIC 9(04).
@@ -201,7 +203,7 @@
                05  WRK-WDD         PIC 9(02).
            03  WRK-NYUGAIKBN       PIC X(06).
            03  WRK-RECEERR         PIC X(200).
-           03  WRK-RECEKBN         PIC X(08).
+           03  WRK-RECEKBN         PIC X(18).
            03  WRK-PREFKBN         PIC X(01).
            03  WRK-TEISYUTUSAKI    PIC X(01).
            03  WRK-HENFLG          PIC 9(01).
@@ -470,7 +472,11 @@
                WHEN    "3"
                    MOVE    "労災"        TO  WRK-RECEKBN
                WHEN    "4"
-                   MOVE    "自賠責"      TO  WRK-RECEKBN
+                   MOVE    "自賠責（新様式）"
+                                         TO  WRK-RECEKBN
+               WHEN    "5"
+                   MOVE    "自賠責（従来様式）"
+                                         TO  WRK-RECEKBN
            END-EVALUATE  
            EVALUATE    SPA-R01-RECE07-NYUGAIKBN
                WHEN    "1"
@@ -643,6 +649,7 @@
       *************        MOVE    "T"   TO  SPA-GMN-TCHK-VALUE  (IDX)
                        END-IF
                    WHEN    "4"
+                   WHEN    "5"
                        IF      SYS-2003-TEISYUTUSAKI =   "4"
                            ADD     1             TO  IDX  
       *************        MOVE    SYS-2003-KBNCD (1:2)    TO 
@@ -692,6 +699,7 @@
                    WHEN    "3"
                        MOVE    "3"             TO  RECE07-TEISYUTUSAKI
                    WHEN    "4"
+                   WHEN    "5"
                        MOVE    "4"             TO  RECE07-TEISYUTUSAKI
                END-EVALUATE        
                MOVE    SPA-NAI-SYUBETU (IDX 1)
@@ -716,6 +724,7 @@
                WHEN    "3"
                    MOVE    "3"             TO  RECE07-TEISYUTUSAKI
                WHEN    "4"
+               WHEN    "5"
                    MOVE    "4"             TO  RECE07-TEISYUTUSAKI
            END-EVALUATE        
            MOVE    "0000"              TO  RECE07-RECESYUBETU
@@ -1253,6 +1262,7 @@
                                    END-IF         
                            END-EVALUATE
                        WHEN    "4"
+                       WHEN    "5"
                            EVALUATE    IDX
                                WHEN    1
                                WHEN    25
@@ -1356,6 +1366,7 @@
                WHEN    "3"
                    MOVE    "3"              TO  WRK-TEISYUTUSAKI
                WHEN    "4"
+               WHEN    "5"
                    MOVE    "4"              TO  WRK-TEISYUTUSAKI
            END-EVALUATE        
            MOVE    "0"              TO  WRK-PREFKBN
@@ -1369,6 +1380,7 @@
                        WHEN    "3"
                            MOVE    "3"     TO  WRK-TEISYUTUSAKI
                        WHEN    "4"
+                       WHEN    "5"
                            MOVE    "4"     TO  WRK-TEISYUTUSAKI
                    END-EVALUATE        
                    MOVE    "0"             TO  WRK-PREFKBN
@@ -1437,6 +1449,7 @@
                    WHEN    "3"
                        MOVE    3           TO  LNK-PRTKANRI-PRIORITY
                    WHEN    "4"
+                   WHEN    "5"
                        MOVE    5           TO  LNK-PRTKANRI-PRIORITY
                END-EVALUATE
            ELSE
@@ -1444,6 +1457,7 @@
                    WHEN    "3"
                        MOVE    4           TO  LNK-PRTKANRI-PRIORITY
                    WHEN    "4"
+                   WHEN    "5"
                        MOVE    6           TO  LNK-PRTKANRI-PRIORITY
                END-EVALUATE
            END-IF

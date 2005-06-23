@@ -83,6 +83,8 @@
       *  01.05.02    NACL-藤原    04/12/20 受診日指定
       *                                    ファンクションキーの変更
       *  01.05.03    NACL-藤原    05/01/30 訂正日指定
+      *
+      *  02.06.01    NACL-藤原    05/06/22 自賠責レセプトの様式追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -126,7 +128,7 @@
                05  SPA-GMN-PAGE                    PIC 9(02).
                05  SPA-GMN-CUR                     PIC 9(02).
                05  SPA-GMN-AREA.
-                   07  SPA-GMN-SYOKBN              PIC X(20).
+                   07  SPA-GMN-SYOKBN              PIC X(28).
                    07  SPA-GMN-LABEL               PIC X(10).
                    07  SPA-GMN-LABEL1              PIC X(12).
                    07  SPA-GMN-LABEL2              PIC X(14).
@@ -287,7 +289,7 @@
              05  WRK-SHELL-SRYYM   PIC X(06).
              05  WRK-SHELL-TERMID  PIC X(16).
              05  WRK-SHELL-SYSYMD  PIC X(08).  
-           03  WRK-RECEKBN         PIC X(06).
+           03  WRK-RECEKBN         PIC X(18).
            03  WRK-NYUGAIKBN       PIC X(10).
       * 
            03  WRK-PREFNUM         PIC 9(02).
@@ -608,7 +610,11 @@
                WHEN    "3"
                    MOVE    "労　災"    TO  WRK-RECEKBN
                WHEN    "4"
-                   MOVE    "自賠責"    TO  WRK-RECEKBN
+                   MOVE    "自賠責（新様式）"
+                                       TO  WRK-RECEKBN
+               WHEN    "5"
+                   MOVE    "自賠責（従来様式）" 
+                                       TO  WRK-RECEKBN
            END-EVALUATE
            EVALUATE    SPA-R01-NYUGAIKBN
                WHEN    "1"
@@ -1327,6 +1333,7 @@
                            MOVE    1           TO  FLG-CHK
                        END-IF
                    WHEN    "4"
+                   WHEN    "5"
                        IF      COMB-HKNNUM =   WRK-CONS-JIBAISEKI-HKNNUM
                            MOVE    1           TO  FLG-CHK
                        END-IF
@@ -1406,6 +1413,7 @@
                                    MOVE    1           TO  FLG-CHK
                                END-IF
                            WHEN    "4"
+                           WHEN    "5"
                                IF      COMB-HKNNUM =
                                                WRK-CONS-JIBAISEKI-HKNNUM
                                    MOVE    1           TO  FLG-CHK
@@ -1681,7 +1689,7 @@
                    IF      SPA-R01-RECEKBN     =   "3"
                        MOVE    "HC21"              TO  RECE07-PRTID
                    END-IF
-                   IF      SPA-R01-RECEKBN     =   "4"
+                   IF      SPA-R01-RECEKBN     =   "4" OR  "5"
                        MOVE    "HC23"              TO  RECE07-PRTID
                    END-IF
                END-IF            
@@ -1936,8 +1944,13 @@
                    IF      SYS-2001-RECEKBN    =   SPA-R01-RECEKBN
                        CONTINUE
                    ELSE     
-                       MOVE    "0012"                 TO  SPA-ERRCD
-                       GO  TO  480-ZENKAI-HYOUJI-EXT
+                       IF    ( SYS-2001-RECEKBN    =   "4" OR  "5" )
+                       AND   ( SPA-R01-RECEKBN     =   "4" OR  "5" )
+                           CONTINUE
+                       ELSE     
+                           MOVE    "0012"                 TO  SPA-ERRCD
+                           GO  TO  480-ZENKAI-HYOUJI-EXT
+                       END-IF
                    END-IF 
                    IF      SYS-2001-NYUGAIKBN  =
                                            SPA-R01-NYUGAIKBN
@@ -2092,6 +2105,7 @@
                        WHEN    "3"
                            MOVE    "1"            TO  PTINF-HKNKBN
                        WHEN    "4"
+                       WHEN    "5"
                            MOVE    "2"            TO  PTINF-HKNKBN
                    END-EVALUATE
                    IF      SPA-GMN-SYORI       =   "2"
@@ -2208,7 +2222,7 @@
                IF      SPA-R01-RECEKBN     =   "3"
                    MOVE    "HC21"              TO  RECE07-PRTID
                END-IF
-               IF      SPA-R01-RECEKBN     =   "4"
+               IF      SPA-R01-RECEKBN     =   "4" OR  "5"
                    MOVE    "HC23"              TO  RECE07-PRTID
                END-IF
            END-IF            
@@ -2510,6 +2524,13 @@
                        MOVE    "recept11.sh"   TO  WRK-SHELL-SHELL
                    ELSE
                        MOVE    "recept8.sh"    TO  WRK-SHELL-SHELL
+                   END-IF
+               WHEN    "5"
+                   IF      SPA-GMN-NYUGAIKBN   =   "1"
+                       MOVE    "recept13.sh"   TO  WRK-SHELL-SHELL
+                   ELSE
+                       MOVE    "recept12.sh"
+                                               TO  WRK-SHELL-SHELL
                    END-IF
            END-EVALUATE        
       *    ファイルデイレクトリ位置指定

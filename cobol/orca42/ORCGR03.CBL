@@ -73,6 +73,8 @@
       *  01.05.01    NACL-藤原    04/09/28 中止ボタンを追加
       *  01.05.02    NACL-藤原    04/12/20 再印刷選択時の処理結果表示中止
       *  01.05.03    NACL-藤原    05/01/13 受診日指定
+      *
+      *  02.06.01    NACL-藤原    05/06/22 自賠責レセプトの様式追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -143,8 +145,10 @@
                        09  SPA-DATAKBN21-VALUE     PIC X(01).
                        09  SPA-DATAKBN22-VALUE     PIC X(01).
                        09  SPA-DATAKBN23-VALUE     PIC X(01).
+                       09  SPA-DATAKBN24-VALUE     PIC X(01).
                        09  SPA-DATAKBN31-VALUE     PIC X(01).
-      *
+                       09  SPA-DATAKBN32-VALUE     PIC X(01).
+     *
                05  SPA-NAIB-R03-AREA.
                    07  SPA-NAI-SRYYM               PIC 9(06).
                    07  SPA-NAI-SRYYMH              PIC X(16).
@@ -487,7 +491,9 @@
            MOVE    "F"                 TO  SPA-DATAKBN21-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN22-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN23-VALUE
+           MOVE    "F"                 TO  SPA-DATAKBN24-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN31-VALUE
+           MOVE    "F"                 TO  SPA-DATAKBN32-VALUE
       *
       *        レセプト指示コード
            INITIALIZE                  SYS-2001-REC
@@ -516,17 +522,19 @@
                        MOVE    "T"             TO  SPA-DATAKBN3-VALUE
                    WHEN    "1"             ALSO    "3"             
                        MOVE    "T"             TO  SPA-DATAKBN11-VALUE
-      *************WHEN    "1"             ALSO    "7"             
                    WHEN    "1"             ALSO    "4"             
                        MOVE    "T"             TO  SPA-DATAKBN31-VALUE
+                   WHEN    "1"             ALSO    "5"             
+                       MOVE    "T"             TO  SPA-DATAKBN32-VALUE
                    WHEN    "2"             ALSO    " "             
                    WHEN    "2"             ALSO    "0"             
                        MOVE    "T"             TO  SPA-DATAKBN21-VALUE
                    WHEN    "2"             ALSO    "3"             
                        MOVE    "T"             TO  SPA-DATAKBN22-VALUE
-      *************WHEN    "2"             ALSO    "7"             
                    WHEN    "2"             ALSO    "4"             
                        MOVE    "T"             TO  SPA-DATAKBN23-VALUE
+                   WHEN    "2"             ALSO    "5"             
+                       MOVE    "T"             TO  SPA-DATAKBN24-VALUE
                END-EVALUATE
                IF      SYS-2001-SYOKBN     =   "1"
                    MOVE    SYS-2001-SRYYM      TO  SPA-NAI-SRYYM
@@ -677,7 +685,9 @@
            MOVE    "F"                 TO  SPA-DATAKBN21-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN22-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN23-VALUE
+           MOVE    "F"                 TO  SPA-DATAKBN24-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN31-VALUE
+           MOVE    "F"                 TO  SPA-DATAKBN32-VALUE
       *
            EVALUATE    SPA-R01-FILEKBN ALSO    SPA-R01-RECEKBN
                WHEN    "1"             ALSO    " "             
@@ -691,6 +701,8 @@
                    MOVE    "T"             TO  SPA-DATAKBN11-VALUE
                WHEN    "1"             ALSO    "4"             
                    MOVE    "T"             TO  SPA-DATAKBN31-VALUE
+               WHEN    "1"             ALSO    "5"             
+                   MOVE    "T"             TO  SPA-DATAKBN32-VALUE
                WHEN    "2"             ALSO    " "             
                WHEN    "2"             ALSO    "0"             
                    MOVE    "T"             TO  SPA-DATAKBN21-VALUE
@@ -698,6 +710,8 @@
                    MOVE    "T"             TO  SPA-DATAKBN22-VALUE
                WHEN    "2"             ALSO    "4"             
                    MOVE    "T"             TO  SPA-DATAKBN23-VALUE
+               WHEN    "2"             ALSO    "5"             
+                   MOVE    "T"             TO  SPA-DATAKBN24-VALUE
            END-EVALUATE
       *
            IF      SPA-R01-FILEKBN     =   "1"        
@@ -780,7 +794,9 @@
                    MOVE    "F"                 TO  SPA-DATAKBN21-VALUE
                    MOVE    "F"                 TO  SPA-DATAKBN22-VALUE
                    MOVE    "F"                 TO  SPA-DATAKBN23-VALUE
+                   MOVE    "F"                 TO  SPA-DATAKBN24-VALUE
                    MOVE    "F"                 TO  SPA-DATAKBN31-VALUE
+                   MOVE    "F"                 TO  SPA-DATAKBN32-VALUE
                    IF      SPA-GMN-IKKATU      =   "T"
                        MOVE    "F"             TO  SPA-GMN-IKKATU
                        MOVE    "T"             TO  SPA-GMN-KOBETU
@@ -821,8 +837,14 @@
                WHEN    "CLICKED"       ALSO    "DATAKBN23"
                    PERFORM 400-DATAKBN23-SEC
       *    帳票区分３
+               WHEN    "CLICKED"       ALSO    "DATAKBN24"
+                   PERFORM 400-DATAKBN24-SEC
+      *    帳票区分３
                WHEN    "CLICKED"       ALSO    "DATAKBN31"
                    PERFORM 400-DATAKBN31-SEC
+      *    帳票区分３
+               WHEN    "CLICKED"       ALSO    "DATAKBN32"
+                   PERFORM 400-DATAKBN32-SEC
       *    一括作成
                WHEN    "CLICKED"       ALSO    "IKKATU"
                    PERFORM 400-IKKATU-SEC
@@ -1074,6 +1096,21 @@
            EXIT.
       *
       *****************************************************************
+      *    帳票区分３選択処理
+      *****************************************************************
+       400-DATAKBN32-SEC          SECTION.
+      *
+           MOVE    R03-DATAKBN32 TO  SPA-DATAKBN32-VALUE
+      *
+           MOVE    "T"           TO  SPA-GMN-IKKATU
+           MOVE    "F"           TO  SPA-GMN-KOBETU
+      *
+           MOVE    2             TO  SPA-GMN-CUR     
+           .
+       400-DATAKBN32-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    帳票区分１選択処理
       *****************************************************************
        400-DATAKBN21-SEC          SECTION.
@@ -1120,6 +1157,21 @@
            EXIT.
       *
       *****************************************************************
+      *    帳票区分３選択処理
+      *****************************************************************
+       400-DATAKBN24-SEC          SECTION.
+      *
+           MOVE    R03-DATAKBN24 TO  SPA-DATAKBN24-VALUE
+      *
+           MOVE    "F"           TO  SPA-GMN-IKKATU
+           MOVE    "T"           TO  SPA-GMN-KOBETU
+      *
+           MOVE    7             TO  SPA-GMN-CUR     
+           .
+       400-DATAKBN24-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    一括作成選択処理
       *****************************************************************
        400-IKKATU-SEC          SECTION.
@@ -1133,7 +1185,9 @@
            MOVE    "F"                 TO  SPA-DATAKBN21-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN22-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN23-VALUE
+           MOVE    "F"                 TO  SPA-DATAKBN24-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN31-VALUE
+           MOVE    "F"                 TO  SPA-DATAKBN32-VALUE
       *
            MOVE    2                   TO  SPA-GMN-CUR     
            .
@@ -1154,7 +1208,9 @@
            MOVE    "T"                 TO  SPA-DATAKBN21-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN22-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN23-VALUE
+           MOVE    "F"                 TO  SPA-DATAKBN24-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN31-VALUE
+           MOVE    "F"                 TO  SPA-DATAKBN32-VALUE
       *
            MOVE    7                   TO  SPA-GMN-CUR     
            .
@@ -1298,14 +1354,6 @@
                MOVE    "0003"              TO  SPA-ERRCD
                GO  TO  450-TOUROKU-EXT
            END-IF
-      *
-      *    入院のときの労災・自賠責チェック     
-      *****IF      SPA-GMN-NYUGAIKBN          =   "1"
-      *         IF      SPA-R01-RECEKBN            =   "4" OR  "3" 
-      *             MOVE    "0008"              TO  SPA-ERRCD
-      *             GO  TO  450-TOUROKU-EXT
-      *         END-IF    
-      *****END-IF
       *   
       *    再印刷のときのチェック
            EVALUATE    SPA-GMN-SYOKBN     
@@ -1334,7 +1382,7 @@
            END-EVALUATE
       *
       *    ガイドメッセージセット
-           IF      SPA-R01-RECEKBN       =   "4"
+           IF      SPA-R01-RECEKBN     =   "4" OR  "5"    
                EVALUATE    SPA-GMN-SYOKBN    ALSO    SPA-R01-FILEKBN
                    WHEN    "T"               ALSO    "1" 
                        MOVE    "1009"              TO  SPA-RIDCD
@@ -1425,7 +1473,7 @@
                IF      SPA-R01-RECEKBN     =   "3"
                    MOVE    "HC21"              TO  RECE07-PRTID
                END-IF
-               IF      SPA-R01-RECEKBN     =   "4"
+               IF      SPA-R01-RECEKBN     =   "4" OR  "5"
                    MOVE    "HC23"              TO  RECE07-PRTID
                END-IF
            END-IF            
@@ -1679,6 +1727,14 @@
                                MOVE    "recept8.sh"
                                                    TO  WRK-SHELL-SHELL
                            END-IF
+                       WHEN    "5"
+                           IF      SPA-GMN-NYUGAIKBN   =   "1"
+                               MOVE    "recept13.sh"
+                                                   TO  WRK-SHELL-SHELL
+                           ELSE
+                               MOVE    "recept12.sh"
+                                                   TO  WRK-SHELL-SHELL
+                           END-IF
                    END-EVALUATE        
       *            ファイルデイレクトリ位置指定
                    INITIALIZE              ORCSMKPASSAREA
@@ -1767,11 +1823,6 @@
                END-IF        
            END-IF
       *
-      *    画面移行用のパラメタ変更
-      *****PERFORM 45011-PARA-HENSYU-SEC
-      *
-      *****MOVE    SPA-R01KYOUTU       TO  SPA-WORK       
-      *
            MOVE   "JOIN"              TO  MCP-PUTTYPE
            MOVE   SPA-SAKIPG           TO  MCP-WINDOW
       *
@@ -1788,9 +1839,6 @@
       *****************************************************************
        45011-PARA-HENSYU-SEC            SECTION.       
       *    
-      *****MOVE    SPACE               TO  SPA-R01KYOUTU
-      *****INITIALIZE    SPA-R01KYOUTU
-      *
            MOVE    SPA-GMN-SYOKBN      TO  SPA-R01-SYOKBN
       *
            MOVE    "0"                 TO  SPA-R01-RECEKBN
@@ -1805,12 +1853,16 @@
                    MOVE    "3"                 TO  SPA-R01-RECEKBN
                WHEN    SPA-DATAKBN31-VALUE =   "T"
                    MOVE    "4"                 TO  SPA-R01-RECEKBN
+               WHEN    SPA-DATAKBN32-VALUE =   "T"
+                   MOVE    "5"                 TO  SPA-R01-RECEKBN
                WHEN    SPA-DATAKBN21-VALUE  =   "T"
                    MOVE    "0"                 TO  SPA-R01-RECEKBN
                WHEN    SPA-DATAKBN22-VALUE  =   "T"
                    MOVE    "3"                 TO  SPA-R01-RECEKBN
                WHEN    SPA-DATAKBN23-VALUE  =   "T"
                    MOVE    "4"                 TO  SPA-R01-RECEKBN
+               WHEN    SPA-DATAKBN24-VALUE  =   "T"
+                   MOVE    "5"                 TO  SPA-R01-RECEKBN
            END-EVALUATE
       *
            IF      SPA-GMN-IKKATU          =   "T"
@@ -2125,9 +2177,11 @@
            MOVE    SPA-DATAKBN3-VALUE     TO  R03-DATAKBN3
            MOVE    SPA-DATAKBN11-VALUE    TO  R03-DATAKBN11
            MOVE    SPA-DATAKBN31-VALUE    TO  R03-DATAKBN31
+           MOVE    SPA-DATAKBN32-VALUE    TO  R03-DATAKBN32
            MOVE    SPA-DATAKBN21-VALUE    TO  R03-DATAKBN21
            MOVE    SPA-DATAKBN22-VALUE    TO  R03-DATAKBN22
            MOVE    SPA-DATAKBN23-VALUE    TO  R03-DATAKBN23
+           MOVE    SPA-DATAKBN24-VALUE    TO  R03-DATAKBN24
       *
            MOVE    SPA-GMN-NYUGAIKBN-G    TO  R03-NYUGAIKBN
            PERFORM VARYING IDX FROM    1       BY  1

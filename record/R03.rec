@@ -4,40 +4,13 @@ R03	{
 			state	int;
 		};
 		SRYYM	{
-			value	varchar(8);
+			value	varchar(7);
 		};
 		SYOKBN	{
 			value	bool;
 			label	varchar(20);
 		};
-		DATAKBN2	{
-			value	bool;
-		};
-		DATAKBN3	{
-			value	bool;
-		};
-		DATAKBN22	{
-			value	bool;
-		};
-		DATAKBN23	{
-			value	bool;
-		};
-		DATAKBN1	{
-			value	bool;
-		};
-		DATAKBN21	{
-			value	bool;
-		};
 		IKKATU	{
-			value	bool;
-		};
-		KOBETU	{
-			value	bool;
-		};
-		DATAKBN31	{
-			value	bool;
-		};
-		DATAKBN11	{
 			value	bool;
 		};
 		NYUGAIKBNCOMBO	{
@@ -46,6 +19,39 @@ R03	{
 			};
 			count	int;
 			item	varchar(8)[2];
+		};
+		KOBETU	{
+			value	bool;
+		};
+		DATAKBN1	{
+			value	bool;
+		};
+		DATAKBN2	{
+			value	bool;
+		};
+		DATAKBN3	{
+			value	bool;
+		};
+		DATAKBN32	{
+			value	bool;
+		};
+		DATAKBN11	{
+			value	bool;
+		};
+		DATAKBN31	{
+			value	bool;
+		};
+		DATAKBN21	{
+			value	bool;
+		};
+		DATAKBN22	{
+			value	bool;
+		};
+		DATAKBN23	{
+			value	bool;
+		};
+		DATAKBN24	{
+			value	bool;
 		};
 	};
 };

@@ -459,7 +459,7 @@
 	<last_modification_time>Mon, 25 Dec 2000 08:24:01 GMT</last_modification_time>
       </signal>
       <editable>True</editable>
-      <format>Z9</format>
+      <format>ZZ9</format>
     </widget>
 
     <widget>

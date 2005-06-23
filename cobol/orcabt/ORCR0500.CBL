@@ -65,6 +65,11 @@
       *
       *  中止処理追加
       *  01.05.01    NACL-藤原    04/12/01  印刷中止処理の追加
+      *
+      *  02.06.01    NACL-藤原    05/06/22 自賠責レセプトの様式追加
+      *                                     HCM25.red
+      *                                     HCM26.red
+      *                                     HCN25.red
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -217,13 +222,18 @@
            COPY    "HCM23V01.INC".
            COPY    "HCM23V02.INC".
            COPY    "HCM23V03.INC".
+           COPY    "HCM23V04.INC".
            COPY    "HCM29.INC".
            COPY    "HCM29V01.INC".
+           COPY    "HCM25.INC".
+           COPY    "HCM26.INC".
       *
            COPY    "HCN23.INC".
            COPY    "HCN23V01.INC".
            COPY    "HCN23V02.INC".
            COPY    "HCN23V03.INC".
+           COPY    "HCN23V04.INC".
+           COPY    "HCN25.INC".
       *
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
@@ -522,34 +532,7 @@
        2001-RECEPRT-PRINT-SEC          SECTION.
       * 
            MOVE    SPACE               TO  PRT-REC 
-      *****EVALUATE    RECE08-RECESYUBETU  ALSO    RECE08-PRTID  
-      *        短期給付             
-      *        WHEN    "7071"              ALSO    "HC21"
-      *        WHEN    "7072"              ALSO    "HC21"
-      *        WHEN    "0000"              ALSO    "HC21"
-      *            MOVE    "HC22"          TO  PRT-PRTID   
-      *        WHEN    "7073"              ALSO    "HC21" 
-      *            MOVE    "HC24"          TO  PRT-PRTID   
-      *        傷病年金             
-      *        WHEN    "7091"              ALSO    "HC21"
-      *        WHEN    "7092"              ALSO    "HC21"
-      *            MOVE    "HC21"          TO  PRT-PRTID   
-      *        WHEN    "7093"              ALSO    "HC21"
-      *            MOVE    "HC24"          TO  PRT-PRTID
-      *        アフターケア             
-      *        WHEN    "7021"              ALSO    "HC21"
-      *            MOVE    "HC18"          TO  PRT-PRTID   
-      *        WHEN    "7023"              ALSO    "HC21"
-      *            MOVE    "HC20"          TO  PRT-PRTID   
-      *        自賠責             
-      *        WHEN    "7001"              ALSO    "HC23"
-      *        WHEN    "0000"              ALSO    "HC23"
-      *            MOVE    "HC23"          TO  PRT-PRTID   
-      *        WHEN    "7002"              ALSO    "HC23"
-      *            MOVE    "HC29"          TO  PRT-PRTID   
-      *****END-EVALUATE
            MOVE    RECE08-FORMID       TO  PRT-PRTID
-      *****MOVE    SYS-1031-PRTNM(4)   TO  PRT-PRTNM 
            MOVE    WRK-PARA-PRTNM      TO  PRT-PRTNM
            MOVE    "1"                 TO  PRT-SITEKBN
            MOVE    WRK-PARA-PRTKBN     TO  PRT-PRTKBN
@@ -567,7 +550,6 @@
       *
       *    通し番号印刷のときのみ編集
            IF      SYS-2005-RENNUMHENKBN   =   "1"
-      *********ADD     1                   TO  WRK-RENNUM
                IF      WRK-PARA-SYOKBN     =   "1"
                    MOVE    WRK-RENNUM          TO  WRK-HEN-RENNUM1
                ELSE
@@ -671,6 +653,10 @@
                        MOVE    RECE08-PRTDATA      TO  HCM23V03
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM23V03-RENNUM
                        MOVE    HCM23V03            TO  RECE08-PRTDATA
+                   WHEN    "HCM23V04.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM23V04
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM23V04-RENNUM
+                       MOVE    HCM23V04            TO  RECE08-PRTDATA
                    WHEN    "HCM29.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCM29
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM29-RENNUM
@@ -679,6 +665,14 @@
                        MOVE    RECE08-PRTDATA      TO  HCM29V01
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM29V01-RENNUM
                        MOVE    HCM29V01            TO  RECE08-PRTDATA
+                   WHEN    "HCM25.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM25
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM25-RENNUM
+                       MOVE    HCM25               TO  RECE08-PRTDATA
+                   WHEN    "HCM26.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM26
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM26-RENNUM
+                       MOVE    HCM26               TO  RECE08-PRTDATA
                    WHEN    "HCN21.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCN21
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN21-RENNUM
@@ -727,6 +721,14 @@
                        MOVE    RECE08-PRTDATA      TO  HCN23V03
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN23V03-RENNUM
                        MOVE    HCN23V03            TO  RECE08-PRTDATA
+                   WHEN    "HCN23V04.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCN23V04
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCN23V04-RENNUM
+                       MOVE    HCN23V04            TO  RECE08-PRTDATA
+                   WHEN    "HCN25.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCN25
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCN25-RENNUM
+                       MOVE    HCN25               TO  RECE08-PRTDATA
                END-EVALUATE
            END-IF            
            MOVE    RECE08-PRTDATA      TO  PRT-PRTDATA
@@ -808,9 +810,15 @@
                WHEN    "HCM23V01.red"  ALSO    ANY
                WHEN    "HCM23V02.red"  ALSO    ANY
                WHEN    "HCM23V03.red"  ALSO    ANY
+               WHEN    "HCM23V04.red"  ALSO    ANY
                WHEN    "HCM29.red"     ALSO    "2"
                WHEN    "HCM29V01.red"  ALSO    "2"
-                   MOVE    "自賠責レセプト（入院外）"  TO  SPRT-TITLE
+                   MOVE    "自賠責（新様式）レセプト（入院外）"
+                                                       TO  SPRT-TITLE
+               WHEN    "HCM25.red"     ALSO    "2"
+               WHEN    "HCM26.red"     ALSO    "2"
+                   MOVE    "自賠責（従来様式）レセプト（入院外）"
+                                                       TO  SPRT-TITLE
                WHEN    "HCN21.red"     ALSO    ANY
                WHEN    "HCN21V01.red"  ALSO    ANY
                WHEN    "HCN21V02.red"  ALSO    ANY
@@ -827,9 +835,15 @@
                WHEN    "HCN23V01.red"  ALSO    ANY
                WHEN    "HCN23V02.red"  ALSO    ANY
                WHEN    "HCN23V03.red"  ALSO    ANY
+               WHEN    "HCN23V04.red"  ALSO    ANY
                WHEN    "HCM29.red"     ALSO    "1"
                WHEN    "HCM29V01.red"  ALSO    "1"
-                   MOVE    "自賠責レセプト（入院）"    TO  SPRT-TITLE
+                   MOVE    "自賠責（新様式）レセプト（入院）"
+                                                       TO  SPRT-TITLE
+               WHEN    "HCN25.red"     ALSO    "1"
+               WHEN    "HCM26.red"     ALSO    "1"
+                   MOVE    "自賠責（従来様式）レセプト（入院）"
+                                                       TO  SPRT-TITLE
            END-EVALUATE
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
            MOVE    LNK-PRTKANRI-OPID   TO  SPRT-OPID

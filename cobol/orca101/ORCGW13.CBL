@@ -38,6 +38,7 @@
       *  01.00.06    NACL-Æ£¸¶    05.01.25  ¸ÇÄêÂÓ²Ã»»Åù¼è°·ÄÉ²Ã
       *  01.00.07    NACL-¾®Æ¦Âô  05.05.25  ÀÁµá½ñ·óÎÎ¼ý½ñ¤Î±ß·ú¤Æµ­ºÜ¶èÊ¬
       *                                     ¤òÄÉ²Ã
+      *  02.06.01    NACL-Æ£¸¶    05/06/22  ¼«ÇåÀÕ²Ã»»Î¨¡Ê£³·å¡ËÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -81,7 +82,7 @@
                            11  SPA-GMN-TENKBNMEI
                                               PIC X(18).
                        09  SPA-GMN-RSIIRYOCDN PIC X(40). 
-                       09  SPA-GMN-KSNRATE    PIC 9(02).
+                       09  SPA-GMN-KSNRATE    PIC 9(03).
                        09  SPA-GMN-TAXKBN-G.
                            11  SPA-GMN-TAXKBN PIC X(01).
                            11  SPA-GMN-F1     PIC X(01).
@@ -668,7 +669,14 @@
            IF      SYS-4001-KSNRATE (1:2)  NOT NUMERIC
                MOVE    ZERO                TO  SYS-4001-KSNRATE
            END-IF                    
-           MOVE    SYS-4001-KSNRATE    TO  SPA-GMN-KSNRATE
+           IF      SYS-4001-KSNRATE1 (1:3) NOT NUMERIC
+               MOVE    ZERO                TO  SYS-4001-KSNRATE1
+           END-IF                    
+           IF      SYS-4001-KSNRATE1   =   ZERO
+               COMPUTE SYS-4001-KSNRATE1   =   100 +   
+                                               SYS-4001-KSNRATE
+           END-IF
+           MOVE    SYS-4001-KSNRATE1   TO  SPA-GMN-KSNRATE
       *         
            MOVE    SYS-4001-TAXKBN     TO  WRK-CMB-CD
            PERFORM 4200-TAXKBNLST-CHK-SEC
@@ -1986,7 +1994,7 @@
            MOVE    SPA-GMN-RSIIRYOKBN      TO  SYS-4001-RSIIRYOKBN
            MOVE    SPA-GMN-TENKBN          TO  SYS-4001-TENKBN
            MOVE    SPA-GMN-RSIIRYOCDN      TO  SYS-4001-RSIIRYOCDN
-           MOVE    SPA-GMN-KSNRATE         TO  SYS-4001-KSNRATE
+           MOVE    SPA-GMN-KSNRATE         TO  SYS-4001-KSNRATE1
            MOVE    SPA-GMN-TAXKBN          TO  SYS-4001-TAXKBN
            MOVE    SPA-GMN-SKJKBN          TO  SYS-4001-SKJKBN
            MOVE    SPA-GMN-KIZAITAXKBN     TO  SYS-4001-TAXKBN-KZI

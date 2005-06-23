@@ -50,7 +50,7 @@
                 04  W13-TENKBN-COUNT   PIC S9(9)   BINARY.
                 04  W13-TENKBNLST      PIC X(20)   OCCURS  2 TIMES.
               03  W13-KSNRATE.
-                04  W13-VALUE   PIC S9(2).
+                04  W13-VALUE   PIC S9(3).
               03  W13-RSIIRYOKBN-COMBO.
                 04  W13-RSIIRYOKBN       PIC X(20).
                 04  W13-RSIIRYOKBN-COUNT PIC S9(9)   BINARY.
