@@ -91,7 +91,8 @@
       *                                     いものを患者負担とする
       *  01.01.05    NACL-門脇    05/06/09  低所得情報編集修正
       *  01.01.06    NACL-門脇    05/06/16  京都４１老人対応
-      *  01.01.07    NACL-門脇    05/06/30  更生・育成が長期と併用の場合の対応
+      *  01.01.07    NACL-門脇    05/06/21  更生・育成が長期と併用の場合の対応
+      *  01.01.08    NACL-門脇    05/06/22  兵庫県地方公費対応
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -1967,8 +1968,12 @@
       *
            MOVE     SPACE     TO    WK-NYUJGNKBN.
       *
-           IF  ( WK-1001-PREFNUM   =  01  OR  26  OR  27  OR 34  ) AND
-               ( HKN-HKNNUM        = "141"                       )
+           IF (( WK-1001-PREFNUM   =  01  OR  26  OR  27  OR 34  ) AND
+               ( HKN-HKNNUM        = "141"                       ))
+           OR (( WK-1001-PREFNUM   =  28                         ) AND
+               ( HKN-HKNNUM        = "241" OR "180" OR "182" OR
+                                     "143" OR "185" OR "127"     ) AND
+               ( LNK-SYU-SRYYMD(1:6)   >=   "200507"             ))
               EVALUATE   FLG-SANSHOU2
                   WHEN   "1"
                       IF   HKN-HON-NYUMJGNGAK  NOT = ZERO
@@ -2701,8 +2706,12 @@
       ******************************************************************
        2103-KOH1-KAISU-SEC           SECTION.
       *
-           IF  ( WK-1001-PREFNUM   =  01  OR  26  OR  27  OR 34  ) AND
-               ( COMB-KOH1HKNNUM   = "141"                       )
+           IF (( WK-1001-PREFNUM   =  01  OR  26  OR  27  OR 34  ) AND
+               ( COMB-KOH1HKNNUM   = "141"                       ))
+           OR (( WK-1001-PREFNUM   =  28                         ) AND
+               ( COMB-KOH1HKNNUM   = "241" OR "180" OR "182" OR
+                                     "143" OR "185" OR "127"     ) AND
+               ( LNK-SYU-SRYYMD(1:6)   >=   "200507"             ))
               EVALUATE   FLG-SANSHOU2
                   WHEN   "1"
                       MOVE  HKN-HON-NYUMJGNCNT TO  MAX-KAI-KOHI1-M
@@ -2775,8 +2784,12 @@
       ******************************************************************
        2104-KOH2-KAISU-SEC           SECTION.
       *
-           IF  ( WK-1001-PREFNUM   =  01  OR  26  OR  27  OR 34  ) AND
-               ( COMB-KOH2HKNNUM   = "141"                       )
+           IF (( WK-1001-PREFNUM   =  01  OR  26  OR  27  OR 34  ) AND
+               ( COMB-KOH2HKNNUM   = "141"                       ))
+           OR (( WK-1001-PREFNUM   =  28                         ) AND
+               ( COMB-KOH2HKNNUM   = "241" OR "180" OR "182" OR
+                                     "143" OR "185" OR "127"     ) AND
+               ( LNK-SYU-SRYYMD(1:6)   >=   "200507"             ))
               EVALUATE   FLG-SANSHOU2
                   WHEN   "1"
                       MOVE  HKN-HON-NYUMJGNCNT TO  MAX-KAI-KOHI2-M
@@ -2844,8 +2857,12 @@
       ******************************************************************
        2105-KOH3-KAISU-SEC           SECTION.
       *
-           IF  ( WK-1001-PREFNUM   =  01  OR  26  OR  27  OR 34  ) AND
-               ( COMB-KOH3HKNNUM   = "141"                       )
+           IF (( WK-1001-PREFNUM   =  01  OR  26  OR  27  OR 34  ) AND
+               ( COMB-KOH3HKNNUM   = "141"                       ))
+           OR (( WK-1001-PREFNUM   =  28                         ) AND
+               ( COMB-KOH3HKNNUM   = "241" OR "180" OR "182" OR
+                                     "143" OR "185" OR "127"     ) AND
+               ( LNK-SYU-SRYYMD(1:6)   >=   "200507"             ))
               EVALUATE   FLG-SANSHOU2
                   WHEN   "1"
                       MOVE  HKN-HON-NYUMJGNCNT TO  MAX-KAI-KOHI3-M
@@ -2913,8 +2930,12 @@
       ******************************************************************
        2106-KOH4-KAISU-SEC           SECTION.
       *
-           IF  ( WK-1001-PREFNUM   =  01  OR  26  OR  27  OR 34  ) AND
-               ( COMB-KOH4HKNNUM   = "141"                       )
+           IF (( WK-1001-PREFNUM   =  01  OR  26  OR  27  OR 34  ) AND
+               ( COMB-KOH4HKNNUM   = "141"                       ))
+           OR (( WK-1001-PREFNUM   =  28                         ) AND
+               ( COMB-KOH4HKNNUM   = "241" OR "180" OR "182" OR
+                                     "143" OR "185" OR "127"     ) AND
+               ( LNK-SYU-SRYYMD(1:6)   >=   "200507"             ))
               EVALUATE   FLG-SANSHOU2
                   WHEN   "1"
                       MOVE  HKN-HON-NYUMJGNCNT TO  MAX-KAI-KOHI4-M
@@ -6582,8 +6603,13 @@
            MOVE       SPACE               TO   WK-NYUSKJRYYKBN.
            MOVE       ZERO                TO   WK-NYUSKJJYOGAK.
       *
-           IF  ( WK-1001-PREFNUM   =  01  OR  26  OR  27  OR 34  ) AND
-               ( COMB-KOHHKNNUM(KOH-IDX)  = "141"                )
+           IF (( WK-1001-PREFNUM   =  01  OR  26  OR  27  OR 34  ) AND
+               ( COMB-KOHHKNNUM(KOH-IDX)  = "141"                ))
+           OR (( WK-1001-PREFNUM   =  28                         ) AND
+               ( COMB-KOHHKNNUM(KOH-IDX)   = "241" OR "180" OR
+                                             "182" OR "143" OR
+                                             "185" OR "127"      ) AND
+               ( LNK-SYU-SRYYMD(1:6)      >= "200507"            ))
              EVALUATE   FLG-SANSHOU2
                WHEN   "1"
                    MOVE    HKN-HON-NYUKFTNRATE  TO   WK-NYUKFTNRATE
