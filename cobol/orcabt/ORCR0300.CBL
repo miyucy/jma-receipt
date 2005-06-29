@@ -154,6 +154,7 @@
       *  01.02.20    NACL-藤原    05/05/09  改定通信医１６０３９号
       *                                     「主」の記録についてより
       *                                    「0000998」を「0000999」に変更
+      *  01.02.21    NACL-藤原    05/06/27  症状詳記の編集方法の訂正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4175,6 +4176,7 @@
                    END-IF
                END-PERFORM
       *                 
+               MOVE    "RECECOM-KEY1"      TO  ORC-DBPATH
                PERFORM 900-RECECOM-READ-SEC
            END-PERFORM
       *
