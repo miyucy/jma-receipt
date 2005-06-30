@@ -339,6 +339,7 @@
            MOVE    WRK-PARA-A10    TO  WRK-CONS-ARG-CREHMS
            MOVE    WRK-PARA-NYUGAIKBN
                                    TO  WRK-CONS-ARG-NYUGAIKBN 
+      *
            .
        100-INIT-EXT.
            EXIT.
@@ -348,12 +349,23 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
+           IF      WRK-PARA-SHORI-KBN  NOT  =  ZERO
+               PERFORM 20011-REAL-DB-MAKE-SEC
+           END-IF
+      *
            EVALUATE    WRK-PARA-NYUGAIKBN
                WHEN    "1"
                    PERFORM 2002-IHO-NYUIN-SEC
                WHEN    "2"
                    PERFORM 2001-IHO-GAIRAI-SEC
            END-EVALUATE
+      *
+           IF      WRK-PARA-SHORI-KBN  NOT  =  ZERO
+      *    ＤＢオープン処理(もう少し整理)
+                   PERFORM 100-DBOPEN-SEC
+                   PERFORM 20011-TMPDB-DELETE-SEC
+                   PERFORM 900-DBCOMMIT-SEC
+           END-IF
       *
            .
        200-MAIN-EXT.
@@ -363,10 +375,6 @@
       *    医保処理
       *****************************************************************
        2001-IHO-GAIRAI-SEC                SECTION.
-      *
-           IF      WRK-PARA-SHORI-KBN  NOT  =  ZERO
-               PERFORM 20011-REAL-DB-MAKE-SEC
-           END-IF
       *
        DISPLAY "orcr0010 start = [" WRK-PARA0 "]"
       **     CALL "timeofday" USING LNK-TIMEOFDAY.
@@ -528,13 +536,6 @@
       **     CALL "timeofday" USING LNK-TIMEOFDAY.
       **     DISPLAY "orcr0102 END  "
       **             " "  LNK-TIMEOFDAY(1:20).
-      *
-           IF      WRK-PARA-SHORI-KBN  NOT  =  ZERO
-      *    ＤＢオープン処理(もう少し整理)
-                   PERFORM 100-DBOPEN-SEC
-                   PERFORM 20011-TMPDB-DELETE-SEC
-                   PERFORM 900-DBCOMMIT-SEC
-           END-IF
            .
        2001-IHO-GAIRAI-EXT.
            EXIT.
