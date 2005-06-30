@@ -462,8 +462,14 @@
                       OR   ( SYU-KOH-HKNNUM(2) =   "972" )
                       OR   ( SYU-KOH-HKNNUM(3) =   "972" )
                       OR   ( SYU-KOH-HKNNUM(4) =   "972" )
-                        MOVE    10000     TO   WRK-KINGAKU
-                        PERFORM   2201-ICHIBUFTN-KOH-SET-SEC
+                        IF      LNK-KOREIFTNCHK-TEISYOTOKU
+                                                   NOT =  SPACE
+                          MOVE     8000     TO   WRK-KINGAKU
+                          PERFORM   2201-ICHIBUFTN-KOH-SET-SEC
+                        ELSE
+                          MOVE    10000     TO   WRK-KINGAKU
+                          PERFORM   2201-ICHIBUFTN-KOH-SET-SEC
+                        END-IF
                       ELSE
                         IF   (  LNK-KOREIFTNCHK-TEISYOTOKU
                                                    NOT =  SPACE  )

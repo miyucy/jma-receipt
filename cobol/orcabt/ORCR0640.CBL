@@ -138,7 +138,10 @@
       *  02.06.05    NACL-ÌçÏÆ    05/05/31  ¥ì¥»µ­ºÜ¥Õ¥é¥°¡¢£°±ßµ­ºÜ¥Õ¥é¥°
       *                                     ¤ÎÊÔ½¸½¤Àµ
       *  02.06.06    NACL-ÃÝÅÄ    05/05/30  realtime preview ½èÍýÄÉ²Ã
-      *  02.06.03    NACL-¾®Æ¦Âô  05/06/17  realtime preview Ê¡²¬µëÉÕ³°ÅÀ¿ô
+      *  02.06.07    NACL-¾®Æ¦Âô  05/06/17  realtime preview Ê¡²¬µëÉÕ³°ÅÀ¿ô
+      *  02.06.08    NACL-ÌçÏÆ    05/06/27  ¹âÎð¼Ô¤Ç¡¢¼çÊÝ¸±¡ÜÃÏÊý¸øÈñ
+      *                                     ¡Ê¥ì¥»µ­ºÜ¤Ê¤·¡Ë¤Î°ìÉôÉéÃ´³Ûµ­ºÜ
+      *                                     ½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -7552,6 +7555,55 @@
                      END-IF
                   END-IF
               END-IF
+           END-IF
+      *
+           IF      RECE62-SRYYM      >=  "200210"
+             IF    RECE62-KOUREI  NOT =    SPACE
+                IF   RECE62-KOHNUM(1) =  SPACE
+                AND  RECE62-KOHNUM(2) =  SPACE
+                AND  RECE62-KOHNUM(3) =  SPACE
+                AND  RECE62-KOHNUM(4) =  SPACE
+      *
+                   IF     RECE62-TEISYOTOKU  NOT =  SPACE
+                      EVALUATE   RECE62-TEISYOTOKU
+                          WHEN  "1"
+                            IF     RECE62-FTNMONEY(1)  >  15000
+                               MOVE  15000   TO   RECE62-FTNMONEY(1)
+                            END-IF
+                          WHEN  "2"
+                          WHEN  "3"
+                            IF     RECE62-FTNMONEY(1)  >  24600
+                               MOVE  24600   TO   RECE62-FTNMONEY(1)
+                            END-IF
+                      END-EVALUATE
+                   ELSE
+                      IF   RECE62-KYURATE   =   20
+                         COMPUTE   WRK-CHIHOU-KIN       =
+                                   RECE62-TOTALTEN(1)   *   10
+                         IF   WRK-CHIHOU-KIN  >  361500
+                              COMPUTE  WRK-KINGAKU2 =
+                             (( WRK-CHIHOU-KIN -  361500 ) * 0.01 )
+                                                           + 0.5
+                              COMPUTE  WRK-KINGAKU  =   72300
+                                                    +   WRK-KINGAKU2
+                         ELSE
+                              MOVE   72300   TO   WRK-KINGAKU
+                         END-IF
+                         IF     RECE62-FTNMONEY(1)  >  WRK-KINGAKU
+                               MOVE  WRK-KINGAKU
+                                             TO   RECE62-FTNMONEY(1)
+                         END-IF
+                      ELSE
+                         IF     RECE62-FTNMONEY(1)  >  40200
+                               MOVE  40200   TO   RECE62-FTNMONEY(1)
+                         END-IF
+                      END-IF
+                   END-IF
+      *
+                   MOVE  ZERO   TO   RECE62-KOUREI-SAIKEI
+      *
+                END-IF
+             END-IF
            END-IF
       *
            .

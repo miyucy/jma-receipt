@@ -211,6 +211,9 @@
       *  02.06.05    NACL-ÌçÏÆ    05/06/10  ÉéÃ´¶â³Û¡Ê°ìÉôÉéÃ´³Û¡ËÊÔ½¸
       *                                     ½¤Àµ
       *  02.06.06    NACL-ÃÝÅÄ    05/05/30  realtime preview ½èÍýÄÉ²Ã
+      *  02.06.07    NACL-ÌçÏÆ    05/06/27  ¹âÎð¼Ô¡ÜºßÁí¿Ç¤Ç¡¢¼çÊÝ¸±¡ÜÃÏÊý¸øÈñ
+      *                                     ¡Ê¥ì¥»µ­ºÜ¤Ê¤·¡Ë¤Î°ìÉôÉéÃ´³Ûµ­ºÜ
+      *                                     ½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4765,8 +4768,13 @@
       ***           OR   ( RECE02-TOKKI(3)     =   "02"  )
       ***           OR   ( RECE02-TOKKI(4)     =   "02"  )
       ***           OR   ( RECE02-TOKKI(5)     =   "02"  )
-                      MOVE    10000    TO   WRK-KINGAKU
-                      PERFORM   2105211-ICHIBUFTN-KOH-SET-SEC
+                      IF      RECE02-TEISYOTOKU  NOT =  SPACE
+                         MOVE     8000    TO   WRK-KINGAKU
+                         PERFORM   2105211-ICHIBUFTN-KOH-SET-SEC
+                      ELSE
+                         MOVE    10000    TO   WRK-KINGAKU
+                         PERFORM   2105211-ICHIBUFTN-KOH-SET-SEC
+                      END-IF
                     ELSE
                       IF   (  RECE02-TEISYOTOKU  NOT =  SPACE  )
                       AND  (  FLG-ZENKOH-ARI         =  ZERO   )
@@ -5113,6 +5121,35 @@
                      END-IF
                   END-IF
               END-IF
+           END-IF
+      *
+           IF      RECE02-SRYYM      >=  "200210"
+             IF    RECE02-ZAITAKU      NOT =    SPACE
+                IF   RECE02-KOHNUM(1) =  SPACE
+                AND  RECE02-KOHNUM(2) =  SPACE
+                AND  RECE02-KOHNUM(3) =  SPACE
+                AND  RECE02-KOHNUM(4) =  SPACE
+      *
+                  IF    RECE02-TEISYOTOKU   NOT =  SPACE
+                      IF     RECE02-FTNMONEY(1)  >  8000
+                            MOVE  8000   TO   RECE02-FTNMONEY(1)
+                      END-IF
+                  ELSE
+                      IF   RECE02-KYURATE   =   20
+                         IF  RECE02-FTNMONEY(1)  >  40200
+                            MOVE  40200  TO   RECE02-FTNMONEY(1)
+                         END-IF
+                      ELSE
+                         IF  RECE02-FTNMONEY(1)  >  12000
+                            MOVE  12000  TO   RECE02-FTNMONEY(1)
+                         END-IF
+                      END-IF
+                  END-IF
+      *
+                  MOVE  ZERO   TO   RECE02-ZAITAKU-SAIKEI
+      *
+                END-IF
+             END-IF
            END-IF
       *
            .
