@@ -157,6 +157,7 @@
       *  01.02.05    NACL-門脇    05/06/09  低所得情報編集修正
       *  01.02.06    NACL-門脇    05/06/21  更生・育成が長期と併用の場合の対応
       *  01.02.07    NACL-門脇    05/06/22  兵庫県地方公費対応
+      *  01.02.08    NACL-門脇    05/06/27  加算率３桁対応
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -8176,14 +8177,20 @@
                    PERFORM   SYSKANRI-READ-SEC
                    IF    MCP-RC             =     ZERO
       *
-                     IF    SYS-4001-KSNRATE(1:2)   =    SPACE
+                     IF    SYS-4001-KSNRATE1(1:3)   =  SPACE
+                        IF    SYS-4001-KSNRATE(1:2)   =    SPACE
                             MOVE     100        TO   WK-4001-KSNRATE9
                             COMPUTE  WK-4001-KSNRATE   =
                                            WK-4001-KSNRATE9  /  100
-                     ELSE
+                        ELSE
                             COMPUTE  WK-4001-KSNRATE9  =
                                            SYS-4001-KSNRATE  +  100
                             COMPUTE  WK-4001-KSNRATE   =
+                                           WK-4001-KSNRATE9  /  100
+                        END-IF
+                     ELSE
+                       MOVE SYS-4001-KSNRATE1   TO   WK-4001-KSNRATE9
+                       COMPUTE  WK-4001-KSNRATE   =
                                            WK-4001-KSNRATE9  /  100
                      END-IF
                      MOVE   SYS-4001-TAXKBN     TO   WK-4001-TAXKBN

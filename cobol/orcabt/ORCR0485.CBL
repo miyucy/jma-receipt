@@ -47,6 +47,7 @@
       *
       *  01.01.01    NACL-Æ£¸¶    05/01/21  ¼õ¿ÇÆü»ØÄêÂÐ±þ
       *  01.01.02    NACL-Æ£¸¶    05/02/10  ÄûÀµÆü»ØÄêÂÐ±þ
+      *  01.01.03    NACL-ÌçÏÆ    05/06/27  ²Ã»»Î¨£³·åÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -142,7 +143,8 @@
       *****                        BY         //HC23//.
       *****COPY    "HCM23V01.INC"  REPLACING  //HCM23V01//
       *****COPY    "HCM23V02.INC"  REPLACING  //HCM23V02//
-           COPY    "HCM23V03.INC"  REPLACING  //HCM23V03//
+      *****COPY    "HCM23V03.INC"  REPLACING  //HCM23V03//
+           COPY    "HCM23V04.INC"  REPLACING  //HCM23V04//
                                    BY         //HC23//.
       *
       *    ¼«ÇåÀÕ¡ÊÂ³»æ¡Ë     
@@ -1089,6 +1091,12 @@
                    MOVE    "¡û"        TO  HC23-TENKI(5)
            END-EVALUATE    
       *    ²Ã»»Î¨
+           IF      RECE41-KSNRATE(1:1)  =  "1"
+               CONTINUE
+           ELSE
+             MOVE  RECE41-KSNRATE(1:1) TO  HC23-SEIKYU-SEISU(1)
+                                           HC23-SEIKYU-SEISU(2)
+           END-IF
            MOVE    RECE41-KSNRATE(2:2) TO  HC23-SEIKYU(1)
                                            HC23-SEIKYU(2)
       *    ÀÁµá³Û£Á
@@ -2100,7 +2108,8 @@
       *************MOVE    "HCM23.red"         TO  RECE08-FORMID
       *************MOVE    "HCM23V01.red"      TO  RECE08-FORMID
       *************MOVE    "HCM23V02.red"      TO  RECE08-FORMID
-                   MOVE    "HCM23V03.red"      TO  RECE08-FORMID
+      *************MOVE    "HCM23V03.red"      TO  RECE08-FORMID
+                   MOVE    "HCM23V04.red"      TO  RECE08-FORMID
                ELSE
                    MOVE    HC29                TO  RECE08-PRTDATA
       *************MOVE    "HC29"              TO  RECE08-FORMID

@@ -1195,10 +1195,14 @@
       *****************************************************************
        4102-KSNRATE-CHK-SEC       SECTION.
       *
+           IF     SPA-GMN-KSNRATE   <    100
+                MOVE    8           TO    SPA-GMN-CUR
+                MOVE    "0005"      TO    SPA-ERRCD
+           END-IF
+      *
            .
        4102-KSNRATE-CHK-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *    指定医療機関コード（漢字）チェック
@@ -2477,6 +2481,9 @@
                                                          TO  SPA-ERRMSG
                WHEN    "0004"
                    MOVE    "全角入力して下さい"        TO  SPA-ERRMSG
+               WHEN    "0005"
+                   MOVE    "加算率は１００％以上で入力して下さい"
+                                                         TO  SPA-ERRMSG
                WHEN    "0007"
                    MOVE    "数字で入力して下さい"        TO  SPA-ERRMSG
                WHEN    "0010"

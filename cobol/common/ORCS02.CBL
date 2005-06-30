@@ -93,6 +93,7 @@
       *  01.01.06    NACL-門脇    05/06/16  京都４１老人対応
       *  01.01.07    NACL-門脇    05/06/21  更生・育成が長期と併用の場合の対応
       *  01.01.08    NACL-門脇    05/06/22  兵庫県地方公費対応
+      *  01.01.09    NACL-門脇    05/06/27  加算率３桁対応
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -204,6 +205,7 @@
       *****労災・自賠責
       *    自賠責（加算率）
            03  WK-4001-KSNRATE         PIC 9(2).
+           03  WK-4001-KSNRATE1        PIC 9(3).
       *    自賠責文書料消費税
            03  WK-4001-TAXKBN          PIC X(1).
       *    点数単価区分
@@ -767,6 +769,7 @@
       *
       *    システム管理マスタ（４００１）から点数単価等の取得
            MOVE     ZERO      TO    WK-4001-KSNRATE.
+           MOVE     ZERO      TO    WK-4001-KSNRATE1.
            MOVE     SPACE     TO    WK-4001-TAXKBN.
            MOVE     SPACE     TO    WK-4001-TENKBN.
            MOVE     SPACE     TO    WK-4001-SKJKBN.
@@ -786,6 +789,7 @@
                    MOVE     "SYSKANRI-KEY"  TO    ORC-DBPATH
                    PERFORM   SYSKANRI-READ-SEC
                    MOVE   SYS-4001-KSNRATE  TO    WK-4001-KSNRATE
+                   MOVE   SYS-4001-KSNRATE1 TO    WK-4001-KSNRATE1
                    MOVE   SYS-4001-TAXKBN   TO    WK-4001-TAXKBN
                    MOVE   SYS-4001-TENKBN   TO    WK-4001-TENKBN
                    MOVE   SYS-4001-SKJKBN   TO    WK-4001-SKJKBN
@@ -6454,14 +6458,19 @@
                         END-IF
                END-IF
              WHEN   "1"
-               IF    WK-4001-KSNRATE(1:2)   =    SPACE
+               IF    WK-4001-KSNRATE1(1:3)   =  SPACE
+                  IF    WK-4001-KSNRATE(1:2)   =    SPACE
                       MOVE     100        TO   WK-KSNRATE9
                       COMPUTE  WK-KSNRATE   =  WK-KSNRATE9  /  100
-               ELSE
+                  ELSE
                       COMPUTE  WK-KSNRATE9  =  WK-4001-KSNRATE
                                             +  100 
                       COMPUTE  WK-KSNRATE   =  WK-KSNRATE9  /  100
-               END-IF  
+                  END-IF  
+               ELSE
+                 MOVE WK-4001-KSNRATE1    TO   WK-KSNRATE9
+                 COMPUTE  WK-KSNRATE   =  WK-KSNRATE9  /  100
+               END-IF
                IF     LNK-SYU-SYUHKNNUM       =  "971" OR "973"
                  IF   LNK-SYU-PTFTNRATE       =   100
                    MOVE     100      TO   HKN-HON-NYUKFTNRATE

@@ -52,6 +52,7 @@
       *  01.01.04    NACL-ÌçÏÆ    05.01.26  ¥·¥¹¥Æ¥à´ÉÍý£´£°£°£±¤Ë´Ø¤¹¤ë½¤Àµ
       *  01.01.05    NACL-ÌçÏÆ    05.01.27  ¹ø¡¦¶»Éô¸ÇÄêÂÓ²Ã»»¡¢ÁÏ³°¸ÇÄê´ï
       *                                     »ÈÍÑ²Ã»»¤Îµ»½Ñ¡¦ÌôºÞÅù¤ÎÁªÂòÂÐ±þ
+      *  01.01.06    NACL-ÌçÏÆ    05.06.27  ²Ã»»Î¨£³·åÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -516,12 +517,16 @@
                       WHEN  "2"
                           MOVE     12.0    TO    WRK-TANKA
                   END-EVALUATE
-                  IF      SYS-4001-KSNRATE(1:2)  =  SPACE                  
-                      MOVE   100           TO    WRK-KSNRATE               
-                  ELSE                                                     
-                      COMPUTE WRK-KSNRATE  =  SYS-4001-KSNRATE             
-                                           +  100                          
-                  END-IF                                                   
+                  IF    SYS-4001-KSNRATE1(1:3)   =  SPACE
+                    IF   SYS-4001-KSNRATE(1:2)   =  SPACE
+                      MOVE   100           TO    WRK-KSNRATE
+                    ELSE
+                      COMPUTE WRK-KSNRATE  =  SYS-4001-KSNRATE
+                                           +  100
+                    END-IF
+                  ELSE
+                    MOVE SYS-4001-KSNRATE1 TO    WRK-KSNRATE
+                  END-IF
                   MOVE   SYS-4001-TAXKBN   TO    WRK-TAXKBN                
                   MOVE   SYS-4001-KOTEIKBN TO    WRK-KOTEIKBN
               ELSE
@@ -2390,11 +2395,15 @@
                        WHEN  "2"
                            MOVE     12.0    TO    WRK-TANKA
                    END-EVALUATE
-                   IF      SYS-4001-KSNRATE(1:2)  =  SPACE
+                   IF    SYS-4001-KSNRATE1(1:3)   =  SPACE
+                     IF   SYS-4001-KSNRATE(1:2)   =  SPACE
                        MOVE   100           TO    WRK-KSNRATE
-                   ELSE
+                     ELSE
                        COMPUTE WRK-KSNRATE  =  SYS-4001-KSNRATE
                                             +  100
+                     END-IF
+                   ELSE
+                     MOVE SYS-4001-KSNRATE1 TO    WRK-KSNRATE
                    END-IF
                    MOVE   SYS-4001-TAXKBN   TO    WRK-TAXKBN
                    MOVE   SYS-4001-KOTEIKBN TO    WRK-KOTEIKBN

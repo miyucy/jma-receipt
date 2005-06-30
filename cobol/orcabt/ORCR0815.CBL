@@ -40,6 +40,7 @@
       *  01.01.02    NACL-門脇    05/01/07  自賠責担当医コード、自賠責保
       *                                     険会社名の編集
       *  01.01.03    NACL-門脇    05/01/26  システム管理４００１に関する修正
+      *  01.01.04    NACL-門脇    05/06/27  加算率３桁対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -449,12 +450,16 @@
               PERFORM 910-SYSKANRI-INV-SEC
               IF      FLG-SYSKANRI        =   ZERO
                   MOVE    MCPDATA-REC         TO  SYS-4001-REC
-                  IF      SYS-4001-KSNRATE(1:2)  =  SPACE                  
-                      MOVE   100           TO    WRK-KSNRATE               
-                  ELSE                                                     
-                      COMPUTE WRK-KSNRATE  =  SYS-4001-KSNRATE             
-                                           +  100                          
-                  END-IF                                                   
+                  IF    SYS-4001-KSNRATE1(1:3)   =  SPACE
+                    IF   SYS-4001-KSNRATE(1:2)   =  SPACE
+                      MOVE   100           TO    WRK-KSNRATE
+                    ELSE
+                      COMPUTE WRK-KSNRATE  =  SYS-4001-KSNRATE
+                                           +  100
+                    END-IF
+                  ELSE
+                    MOVE SYS-4001-KSNRATE1 TO    WRK-KSNRATE
+                  END-IF
               ELSE
                   MOVE    "労災自賠医療機関情報が取得できませんでした"     
                                               TO  WRK-RECEERR
@@ -1270,11 +1275,15 @@
                 IF   ( SYS-4001-STYUKYMD  <=  WRK-SYS-SRYYMD    )
                 AND  ( WRK-SYS-SRYYMD     <=  SYS-4001-EDYUKYMD )
                     MOVE     1       TO    FLG-SET
-                    IF      SYS-4001-KSNRATE(1:2)  =  SPACE
-                       MOVE   100           TO    WRK-KSNRATE
+                    IF    SYS-4001-KSNRATE1(1:3)   =  SPACE
+                      IF   SYS-4001-KSNRATE(1:2)   =  SPACE
+                        MOVE   100           TO    WRK-KSNRATE
+                      ELSE
+                        COMPUTE WRK-KSNRATE  =  SYS-4001-KSNRATE
+                                             +  100
+                      END-IF
                     ELSE
-                       COMPUTE WRK-KSNRATE  =  SYS-4001-KSNRATE
-                                            +  100
+                      MOVE SYS-4001-KSNRATE1 TO    WRK-KSNRATE
                     END-IF
                 END-IF
       *
