@@ -58,7 +58,7 @@
       *    パラメタファイル名
        01  FILE-NAME2.
            03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-           03  FILLER              PIC X(07)   VALUE   "K01PARA".
+           03  FILLER              PIC X(10)   VALUE   "PRVK01PARA".
            03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
            03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
@@ -1401,7 +1401,7 @@
       * take mod ed
       *
                IF      MCP-RC          NOT =   ZERO
-                   DISPLAY "K03 SRYACT INS ERR:" SRY-KEY  "."
+                   DISPLAY "K03 SRYACTPRV INS ERR:" SRY-KEY  "."
                    DISPLAY "MCP-RC:" MCP-RC ":" 
                    MOVE    "0005"          TO  SPA-ERRCD
                END-IF
@@ -2368,7 +2368,7 @@
            MOVE    "DBDELETE"          TO  MCP-FUNC
       * take mod st
       *    MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
-           MOVE    PATH-TBL-SRYACT-PRV-KEY2
+           MOVE    PATH-TBL-SRYACT-PRV-DEL11
                                        TO  MCP-PATH
       *    CALL    "ORCMCPSUB"         USING
       *                                MCPAREA
@@ -2392,7 +2392,7 @@
            MOVE    "DBDELETE"          TO  MCP-FUNC
       * take mod st
       *    MOVE    "PTCOM-KEY2"        TO  ORC-DBPATH
-           MOVE    PATH-TBL-PTCOM-PRV-KEY2
+           MOVE    PATH-TBL-PTCOM-PRV-DEL11
                                        TO  MCP-PATH
       *    CALL    "ORCMCPSUB"         USING
       *                                MCPAREA
@@ -2442,7 +2442,7 @@
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
-               DISPLAY "K03  SRYACCTPLUS  DEL ERR:" MCP-RC
+               DISPLAY "K03  SRYACCTPLUSPRV  DEL ERR:" MCP-RC
                      ",KEY:" ACCTP-KEY
            END-IF
       * take mod ed
