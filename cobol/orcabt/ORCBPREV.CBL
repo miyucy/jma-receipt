@@ -454,6 +454,9 @@
 ----+-*--+----+----+----+----+----+----+----+----+----+----+----+----+
       *
       *        ºÇ¿·°Ê³°¤ÎÄ¢É¼´ÉÍý£Ä£Â¤òºï½ü
+           IF      WRK-PRT-TBL-KEY     =   "RECEPTX"
+                   GO    TO            900-PRV-RRKDEL-EXT
+           END-IF
            MOVE    SPACE               TO  PRVKANRI-REC
            INITIALIZE                  PRVKANRI-REC
            MOVE    WRK-PRT-TBL-KEY     TO  PRVKANRI-TBL-KEY
