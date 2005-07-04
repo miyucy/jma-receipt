@@ -2053,7 +2053,7 @@
       <name>SURYO01</name>
       <x>530</x>
       <y>108</y>
-      <width>278</width>
+      <width>274</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2068,7 +2068,7 @@
       <name>SURYO02</name>
       <x>530</x>
       <y>132</y>
-      <width>278</width>
+      <width>274</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2083,7 +2083,7 @@
       <name>SURYO03</name>
       <x>530</x>
       <y>156</y>
-      <width>278</width>
+      <width>274</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2098,7 +2098,7 @@
       <name>SURYO04</name>
       <x>530</x>
       <y>180</y>
-      <width>278</width>
+      <width>274</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2113,7 +2113,7 @@
       <name>SURYO05</name>
       <x>530</x>
       <y>204</y>
-      <width>278</width>
+      <width>274</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2128,7 +2128,7 @@
       <name>SURYO06</name>
       <x>530</x>
       <y>228</y>
-      <width>278</width>
+      <width>274</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2143,7 +2143,7 @@
       <name>SURYO07</name>
       <x>530</x>
       <y>252</y>
-      <width>278</width>
+      <width>274</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2158,7 +2158,7 @@
       <name>SURYO08</name>
       <x>530</x>
       <y>276</y>
-      <width>278</width>
+      <width>274</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2173,7 +2173,7 @@
       <name>SURYO09</name>
       <x>530</x>
       <y>300</y>
-      <width>278</width>
+      <width>274</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2188,7 +2188,7 @@
       <name>SURYO10</name>
       <x>530</x>
       <y>324</y>
-      <width>278</width>
+      <width>274</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2203,7 +2203,7 @@
       <name>SURYO11</name>
       <x>530</x>
       <y>348</y>
-      <width>278</width>
+      <width>274</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2218,7 +2218,7 @@
       <name>SURYO12</name>
       <x>530</x>
       <y>372</y>
-      <width>278</width>
+      <width>274</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2233,7 +2233,7 @@
       <name>SURYO13</name>
       <x>530</x>
       <y>396</y>
-      <width>278</width>
+      <width>274</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2248,7 +2248,7 @@
       <name>SURYO14</name>
       <x>530</x>
       <y>420</y>
-      <width>278</width>
+      <width>274</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2263,7 +2263,7 @@
       <name>SURYO15</name>
       <x>530</x>
       <y>444</y>
-      <width>278</width>
+      <width>274</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2278,7 +2278,7 @@
       <name>SURYO16</name>
       <x>530</x>
       <y>468</y>
-      <width>278</width>
+      <width>274</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2293,7 +2293,7 @@
       <name>SURYO17</name>
       <x>530</x>
       <y>492</y>
-      <width>278</width>
+      <width>274</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2308,7 +2308,7 @@
       <name>SURYO18</name>
       <x>530</x>
       <y>516</y>
-      <width>278</width>
+      <width>274</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2323,7 +2323,7 @@
       <name>SURYO19</name>
       <x>530</x>
       <y>540</y>
-      <width>278</width>
+      <width>274</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2338,7 +2338,7 @@
       <name>SURYO20</name>
       <x>530</x>
       <y>564</y>
-      <width>278</width>
+      <width>274</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2924,22 +2924,6 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label158</name>
-      <x>772</x>
-      <y>88</y>
-      <width>36</width>
-      <height>20</height>
-      <label>·×</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkButton</class>
       <name>B12CS</name>
       <x>916</x>
@@ -3147,170 +3131,6 @@
     </widget>
 
     <widget>
-      <class>GtkScrolledWindow</class>
-      <name>scrolledwindow1</name>
-      <x>809</x>
-      <y>104</y>
-      <width>210</width>
-      <height>340</height>
-      <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
-      <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
-      <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
-      <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
-
-      <widget>
-	<class>GtkPandaCList</class>
-	<name>RRKLIST</name>
-	<can_focus>True</can_focus>
-	<signal>
-	  <name>select_row</name>
-	  <handler>clist_send_event</handler>
-	  <after>True</after>
-	  <data>SELECT</data>
-	  <last_modification_time>Thu, 30 Aug 2001 09:03:53 GMT</last_modification_time>
-	</signal>
-	<signal>
-	  <name>select_row</name>
-	  <handler>selection_changed</handler>
-	  <data>SELECT</data>
-	  <last_modification_time>Fri, 31 Aug 2001 02:23:03 GMT</last_modification_time>
-	</signal>
-	<signal>
-	  <name>unselect_row</name>
-	  <handler>selection_changed</handler>
-	  <data>SELECT</data>
-	  <last_modification_time>Fri, 31 Aug 2001 02:23:14 GMT</last_modification_time>
-	</signal>
-	<columns>4</columns>
-	<column_widths>27,90,13,28</column_widths>
-	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
-	<show_titles>True</show_titles>
-	<shadow_type>GTK_SHADOW_IN</shadow_type>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
-	  <name>label160</name>
-	  <label>ÈÖ¹æ</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
-	  <name>label161</name>
-	  <label>¿ÇÎÅÆü</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
-	  <name>label164</name>
-	  <label>²Ê</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
-	  <name>label165</name>
-	  <label>ÊÝ¸±</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkScrolledWindow</class>
-      <name>scrolledwindow2</name>
-      <x>812</x>
-      <y>476</y>
-      <width>207</width>
-      <height>183</height>
-      <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
-      <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
-      <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
-      <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
-
-      <widget>
-	<class>GtkPandaCList</class>
-	<name>BYOMEILST</name>
-	<can_focus>True</can_focus>
-	<signal>
-	  <name>select_row</name>
-	  <handler>clist_send_event</handler>
-	  <after>True</after>
-	  <data>SELECT</data>
-	  <last_modification_time>Thu, 30 Aug 2001 09:03:53 GMT</last_modification_time>
-	</signal>
-	<signal>
-	  <name>select_row</name>
-	  <handler>selection_changed</handler>
-	  <data>SELECT</data>
-	  <last_modification_time>Fri, 31 Aug 2001 02:23:03 GMT</last_modification_time>
-	</signal>
-	<signal>
-	  <name>unselect_row</name>
-	  <handler>selection_changed</handler>
-	  <data>SELECT</data>
-	  <last_modification_time>Fri, 31 Aug 2001 02:23:14 GMT</last_modification_time>
-	</signal>
-	<columns>2</columns>
-	<column_widths>16,154</column_widths>
-	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
-	<show_titles>True</show_titles>
-	<shadow_type>GTK_SHADOW_IN</shadow_type>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
-	  <name>label166</name>
-	  <label>²Ê</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
-	  <name>label167</name>
-	  <label>ÉÂ    Ì¾</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-      </widget>
-    </widget>
-
-    <widget>
       <class>GtkLabel</class>
       <name>label159</name>
       <x>608</x>
@@ -3416,6 +3236,186 @@
       <width>96</width>
       <height>24</height>
       <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkScrolledWindow</class>
+      <name>scrolledwindow1</name>
+      <x>806</x>
+      <y>104</y>
+      <width>216</width>
+      <height>340</height>
+      <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
+      <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
+      <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
+      <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
+
+      <widget>
+	<class>GtkPandaCList</class>
+	<name>RRKLIST</name>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>select_row</name>
+	  <handler>clist_send_event</handler>
+	  <after>True</after>
+	  <data>SELECT</data>
+	  <last_modification_time>Thu, 30 Aug 2001 09:03:53 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>select_row</name>
+	  <handler>selection_changed</handler>
+	  <data>SELECT</data>
+	  <last_modification_time>Fri, 31 Aug 2001 02:23:03 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>unselect_row</name>
+	  <handler>selection_changed</handler>
+	  <data>SELECT</data>
+	  <last_modification_time>Fri, 31 Aug 2001 02:23:14 GMT</last_modification_time>
+	</signal>
+	<columns>4</columns>
+	<column_widths>27,90,14,27</column_widths>
+	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
+	<show_titles>True</show_titles>
+	<shadow_type>GTK_SHADOW_IN</shadow_type>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>label160</name>
+	  <label>ÈÖ¹æ</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>label161</name>
+	  <label>¿ÇÎÅÆü</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>label164</name>
+	  <label>²Ê</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>label165</name>
+	  <label>ÊÝ¸±</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkScrolledWindow</class>
+      <name>scrolledwindow2</name>
+      <x>806</x>
+      <y>476</y>
+      <width>216</width>
+      <height>183</height>
+      <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
+      <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
+      <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
+      <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
+
+      <widget>
+	<class>GtkPandaCList</class>
+	<name>BYOMEILST</name>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>select_row</name>
+	  <handler>clist_send_event</handler>
+	  <after>True</after>
+	  <data>SELECT</data>
+	  <last_modification_time>Thu, 30 Aug 2001 09:03:53 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>select_row</name>
+	  <handler>selection_changed</handler>
+	  <data>SELECT</data>
+	  <last_modification_time>Fri, 31 Aug 2001 02:23:03 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>unselect_row</name>
+	  <handler>selection_changed</handler>
+	  <data>SELECT</data>
+	  <last_modification_time>Fri, 31 Aug 2001 02:23:14 GMT</last_modification_time>
+	</signal>
+	<columns>2</columns>
+	<column_widths>16,154</column_widths>
+	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
+	<show_titles>True</show_titles>
+	<shadow_type>GTK_SHADOW_IN</shadow_type>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>label166</name>
+	  <label>²Ê</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>label167</name>
+	  <label>ÉÂ    Ì¾</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label158</name>
+      <x>770</x>
+      <y>88</y>
+      <width>36</width>
+      <height>20</height>
+      <label>·×</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
