@@ -747,7 +747,7 @@
     <widget>
       <class>GtkNumberEntry</class>
       <name>SELNUM01</name>
-      <x>96</x>
+      <x>180</x>
       <y>688</y>
       <width>32</width>
       <height>24</height>
@@ -771,7 +771,7 @@
     <widget>
       <class>GtkNumberEntry</class>
       <name>SELNUM02</name>
-      <x>128</x>
+      <x>212</x>
       <y>688</y>
       <width>32</width>
       <height>24</height>
@@ -795,7 +795,7 @@
     <widget>
       <class>GtkNumberEntry</class>
       <name>SELNUM03</name>
-      <x>160</x>
+      <x>244</x>
       <y>688</y>
       <width>32</width>
       <height>24</height>
@@ -819,7 +819,7 @@
     <widget>
       <class>GtkNumberEntry</class>
       <name>SELNUM04</name>
-      <x>192</x>
+      <x>276</x>
       <y>688</y>
       <width>32</width>
       <height>24</height>
@@ -843,7 +843,7 @@
     <widget>
       <class>GtkNumberEntry</class>
       <name>SELNUM05</name>
-      <x>224</x>
+      <x>308</x>
       <y>688</y>
       <width>32</width>
       <height>24</height>
@@ -867,7 +867,7 @@
     <widget>
       <class>GtkNumberEntry</class>
       <name>SELNUM06</name>
-      <x>256</x>
+      <x>340</x>
       <y>688</y>
       <width>32</width>
       <height>24</height>
@@ -891,7 +891,7 @@
     <widget>
       <class>GtkNumberEntry</class>
       <name>SELNUM07</name>
-      <x>288</x>
+      <x>372</x>
       <y>688</y>
       <width>32</width>
       <height>24</height>
@@ -915,7 +915,7 @@
     <widget>
       <class>GtkNumberEntry</class>
       <name>SELNUM08</name>
-      <x>320</x>
+      <x>404</x>
       <y>688</y>
       <width>32</width>
       <height>24</height>
@@ -939,7 +939,7 @@
     <widget>
       <class>GtkNumberEntry</class>
       <name>SELNUM09</name>
-      <x>352</x>
+      <x>436</x>
       <y>688</y>
       <width>32</width>
       <height>24</height>
@@ -963,7 +963,7 @@
     <widget>
       <class>GtkNumberEntry</class>
       <name>SELNUM10</name>
-      <x>384</x>
+      <x>468</x>
       <y>688</y>
       <width>32</width>
       <height>24</height>
@@ -1195,22 +1195,6 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label30</name>
-      <x>12</x>
-      <y>692</y>
-      <width>84</width>
-      <height>20</height>
-      <label>削除剤番号</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkScrolledWindow</class>
       <name>scrolledwindow1</name>
       <x>8</x>
@@ -1360,10 +1344,49 @@
 
     <widget>
       <class>GtkLabel</class>
+      <name>label30</name>
+      <x>96</x>
+      <y>692</y>
+      <width>84</width>
+      <height>20</height>
+      <label>削除剤番号</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B01S</name>
+      <x>8</x>
+      <y>696</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>GDK_SHIFT_MASK</modifiers>
+	<key>GDK_F1</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Mon, 25 Dec 2000 04:55:00 GMT</last_modification_time>
+      </signal>
+      <label>プレビュー</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
       <name>MSGDATA</name>
-      <x>424</x>
+      <x>506</x>
       <y>688</y>
-      <width>428</width>
+      <width>346</width>
       <height>24</height>
       <label></label>
       <justify>GTK_JUSTIFY_CENTER</justify>
