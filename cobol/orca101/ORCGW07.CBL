@@ -67,6 +67,7 @@
       *                                     の追加
       *  02.01.19    NACL-多々納  05/06/06  中途終了展開時の自動発生
       *                                     薬剤情報提供料チェック追加
+      *  02.01.20    NACL-多々納  05/07/06  訂正時の自動発生追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -133,6 +134,16 @@
                            11  SPA-GMN-CHUTOTENKAI       PIC X(01).
                            11  SPA-GMN-CHUTO             PIC X(01).
                            11  SPA-GMN-CHUTOTENKAIMEI    PIC X(10).
+      *                訂正時の自動発生
+                       09  SPA-GMN-TEISEIAUTO-G.
+                           11  SPA-GMN-TEISEIAUTO       PIC X(01).
+                           11  SPA-GMN-TEISEI           PIC X(01).
+                           11  SPA-GMN-TEISEIAUTOMEI    PIC X(10).
+      *                訂正時の自動発生（特定疾患）
+                       09  SPA-GMN-TEISEITOKU-G.
+                           11  SPA-GMN-TEISEITOKU       PIC X(01).
+                           11  SPA-GMN-TEISEIH1         PIC X(01).
+                           11  SPA-GMN-TEISEITOKUMEI    PIC X(10).
       *
       *                外来管理加算チェック
                        09  SPA-GMN-GAIKANRIKBN-G.
@@ -1058,6 +1069,12 @@
       *        中途終了展開時の自動発生
                MOVE    SYS-1008-CHUTOTENKAI-FLG
                                        TO  SPA-GMN-CHUTOTENKAI
+      *        訂正時の自動発生
+               MOVE    SYS-1008-TEISEIAUTO-FLG
+                                       TO  SPA-GMN-TEISEIAUTO
+      *        訂正時の自動発生（特定疾患処方管理）
+               MOVE    SYS-1008-TEISEITOKU-FLG
+                                       TO  SPA-GMN-TEISEITOKU
       *
       *        時間外加算チェック
                MOVE    SYS-1008-JIKANTOKU-CHK
@@ -1223,6 +1240,38 @@
       *    初期値は’１’とする
            IF      FLG-OK              =   ZERO
                MOVE    SPA-GMN-DATALST(02) TO SPA-GMN-CHUTOTENKAI-G
+           END-IF
+      *    訂正時の自動発生
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-GMN-DATA-MAX
+               IF      SPA-GMN-TEISEIAUTO
+                                       =   SPA-GMN-DATAL(IDY)
+                   MOVE    SPA-GMN-DATALST(IDY)
+                                           TO SPA-GMN-TEISEIAUTO-G
+                   MOVE    1                   TO  FLG-OK
+                   MOVE    SPA-GMN-DATA-MAX    TO  IDY
+               END-IF
+           END-PERFORM
+      *    初期値は’１’とする
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-DATALST(02) TO SPA-GMN-TEISEIAUTO-G
+           END-IF
+      *    訂正時の自動発生（特定疾患処方管理）
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-GMN-DATA-MAX
+               IF      SPA-GMN-TEISEITOKU
+                                       =   SPA-GMN-DATAL(IDY)
+                   MOVE    SPA-GMN-DATALST(IDY)
+                                           TO SPA-GMN-TEISEITOKU-G
+                   MOVE    1                   TO  FLG-OK
+                   MOVE    SPA-GMN-DATA-MAX    TO  IDY
+               END-IF
+           END-PERFORM
+      *    初期値は’０’とする
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-DATALST(01) TO SPA-GMN-TEISEITOKU-G
            END-IF
       *
       *    包括まとめ
@@ -1881,6 +1930,10 @@
            MOVE    W07-GAZOUKSN1       TO  SPA-GMN-GAZOUKSN1-G
       *    中途終了展開時の自動発生
            MOVE    W07-CHUTOTENKAI     TO  SPA-GMN-CHUTOTENKAI-G
+      *    訂正時の自動発生
+           MOVE    W07-TEISEI          TO  SPA-GMN-TEISEIAUTO-G
+      *    訂正時の自動発生
+           MOVE    W07-TEISEITOKU      TO  SPA-GMN-TEISEITOKU-G
       *
            MOVE    W07-LASTKIKAN       TO  SPA-GMN-LAST-KIKAN
       *
@@ -1977,6 +2030,14 @@
       *            中途終了展開時の自動発生
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4103-CHUTOTENKAI-CHK-SEC
+                   END-IF
+      *            訂正時の自動発生
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4103-TEISEIAUTO-CHK-SEC
+                   END-IF
+      *            訂正時の自動発生（特定疾患処方管理）
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4103-TEISEITOKU-CHK-SEC
                    END-IF
       *            外来管理加算チェック
                    IF      SPA-ERRCD           =   SPACE
@@ -2238,7 +2299,54 @@
           .
        4103-CHUTOTENKAI-CHK-EXT.
            EXIT.
+      *****************************************************************
+      *    訂正時の自動発生チェック処理
+      *****************************************************************
+       4103-TEISEIAUTO-CHK-SEC       SECTION.
       *
+           MOVE    ZERO                TO  FLG-OK
+      *
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL       IDY     >   SPA-GMN-DATA-MAX
+               IF      SPA-GMN-TEISEIAUTO  =   SPA-GMN-DATAL(IDY)
+                   MOVE    SPA-GMN-DATALST (IDY)
+                                           TO  SPA-GMN-TEISEIAUTO-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-OK              =   ZERO
+               MOVE    "0080"              TO  SPA-ERRCD
+               MOVE    80                  TO  SPA-GMN-CUR
+           END-IF
+      *
+          .
+       4103-TEISEIAUTO-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    訂正時の自動発生（特定疾患処方管理）チェック処理
+      *****************************************************************
+       4103-TEISEITOKU-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+      *
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL       IDY     >   SPA-GMN-DATA-MAX
+               IF      SPA-GMN-TEISEITOKU  =   SPA-GMN-DATAL(IDY)
+                   MOVE    SPA-GMN-DATALST (IDY)
+                                           TO  SPA-GMN-TEISEITOKU-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-OK              =   ZERO
+               MOVE    "0081"              TO  SPA-ERRCD
+               MOVE    81                  TO  SPA-GMN-CUR
+           END-IF
+      *
+          .
+       4103-TEISEITOKU-CHK-EXT.
+           EXIT.
       *
       *****************************************************************
       *    時間外加算特例乳幼児算定チェック処理
@@ -3606,6 +3714,10 @@
            MOVE    SPA-GMN-LAST-KIKAN      TO  SYS-1008-LAST-KIKAN
       *    中途終了展開時の自動発生
            MOVE    SPA-GMN-CHUTOTENKAI     TO  SYS-1008-CHUTOTENKAI-FLG
+      *    訂正時の自動発生
+           MOVE    SPA-GMN-TEISEIAUTO      TO  SYS-1008-TEISEIAUTO-FLG
+      *    訂正時の自動発生（特定疾患処方管理）
+           MOVE    SPA-GMN-TEISEITOKU      TO  SYS-1008-TEISEITOKU-FLG
       *
       *    時間外加算乳幼児チェック
            MOVE    SPA-GMN-JIKANTOKU-CHK   TO
@@ -4155,6 +4267,24 @@
            END-PERFORM
            MOVE    SPA-GMN-DATA-MAX    TO  W07-CHUTOTENKAI-COUNT
       *
+      *    訂正時の自動発生
+           MOVE    SPA-GMN-TEISEIAUTO-G    TO  W07-TEISEI
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-DATA-MAX
+               MOVE    SPA-GMN-DATALST(IDY)
+                                       TO  W07-TEISEI-ITEM(IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-DATA-MAX    TO  W07-TEISEI-COUNT
+      *
+      *    訂正時の自動発生（特定疾患処方管理）
+           MOVE    SPA-GMN-TEISEITOKU-G    TO  W07-TEISEITOKU
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-DATA-MAX
+               MOVE    SPA-GMN-DATALST(IDY)
+                                       TO  W07-TEISEITOKU-ITEM(IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-DATA-MAX    TO  W07-TEISEITOKU-COUNT
+      *
            MOVE  SPA-GMN-LAST-KIKAN    TO  W07-LASTKIKAN
       *
            MOVE  SPA-GMN-INTERACT-KIKAN    TO  W07-KIKAN
@@ -4570,6 +4700,14 @@
                WHEN    "0019"
                    MOVE    "中途終了展開時の自動発生チェックエラー"
                                                     TO  SPA-ERRMSG
+               WHEN    "0080"
+                   MOVE    "訂正時の自動発生チェックエラー"
+                                                    TO  SPA-ERRMSG
+               WHEN    "0081"
+                   MOVE    "訂正時の自動発生（特定疾患処方管理）"
+                                                    TO  SPA-ERRMSG
+                   MOVE    "チェックエラー"
+                                                    TO  SPA-ERRMSG(37:)
                WHEN    "0030"
                    MOVE    "時間外加算（乳幼児）チェックエラー"
                                                        TO  SPA-ERRMSG
@@ -4790,6 +4928,10 @@
                    MOVE  "CHUTOTENKAI"     TO   MCP-WIDGET
                WHEN    69
                    MOVE  "YAKJYOCHK"       TO   MCP-WIDGET
+               WHEN    80
+                   MOVE  "TEISEI"          TO   MCP-WIDGET
+               WHEN    81
+                   MOVE  "TEISEITOKU"      TO   MCP-WIDGET
       *        時間外加算チェック
                WHEN    50
                    MOVE  "JIKANTOKU_CHK"   TO   MCP-WIDGET
@@ -4873,6 +5015,7 @@
            EVALUATE    SPA-GMN-CUR
                WHEN    2   THRU    19
                WHEN    50  THRU    69
+               WHEN    80  THRU    89
                    MOVE    0               TO  W07-PAGENO
                    MOVE    0               TO  SPA-GMN-PAGENO
                WHEN    20  THRU    29
@@ -4931,6 +5074,10 @@
       ************ MOVE    10              TO  SPA-GMN-CUR
                    MOVE    68              TO  SPA-GMN-CUR
                WHEN    "CHUTOTENKAI"
+                   MOVE    80              TO  SPA-GMN-CUR
+               WHEN    "TEISEI"
+                   MOVE    81              TO  SPA-GMN-CUR
+               WHEN    "TEISEITOKU"
                    MOVE    10              TO  SPA-GMN-CUR
       *
                WHEN    "KIKAN"
