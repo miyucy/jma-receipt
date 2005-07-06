@@ -139,6 +139,8 @@
            03  FLG-GAI             PIC 9(01).
       *    Æ±ÆüºÆ¿Ç
            03  FLG-DOUJITU         PIC 9(01).
+      *    Æ±ÆüºÆ¿ÇÍ­Ìµ
+           03  FLG-DOUJITU-ARI     PIC 9(01).
       *    £Ä£Õ£Í£Í£Ù¿Ç»¡ÎÁ
            03  FLG-DUMMY           PIC 9(01).
       *    ÅÅÏÃºÆ¿Ç¤¢¤ê
@@ -160,6 +162,8 @@
            03  FLG-TOKUTEI          PIC 9(02).
       *
            03  FLG-FUKU-ARI         PIC 9(01).
+      *
+           03  FLG-SANTEI-OK        PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -716,6 +720,25 @@
       *    ¿·µ¬¤Î»þ¡¢¼õ¿Ç¤Ê¤·
            IF      SPA-SYOYMD          =   SPACE
                GO      TO      1000-SINSATU-KAISU-EXT
+           END-IF
+      *test
+      *    Ê¿À®£±£µÇ¯£¹·î£±Æü¤«¤éÄþ¸ºÇÑ»ß¤Î°Ù¡¢ÅöÆü¤Ë¿ÇÎÅ¤¬¤¢¤ë»þ¤Î¤ß
+           IF      SPA-SRYYMD          >=  "20030901"
+               MOVE    ZERO                TO  FLG-DOUJITU-ARI
+               PERFORM VARYING     IDX2    FROM    1   BY  1
+                       UNTIL       IDX2    >   SPA-GMN-MAX1
+                   IF      SPA-NAI-RRKYMD(IDX2)    =   SPA-SRYYMD
+                       MOVE    1               TO  FLG-DOUJITU-ARI
+                       MOVE    SPA-GMN-MAX1    TO  IDX2
+                   ELSE
+                       IF      SPA-NAI-RRKYMD(IDX2)    <   SPA-SRYYMD
+                           MOVE    SPA-GMN-MAX1    TO  IDX2
+                       END-IF
+                   END-IF
+               END-PERFORM
+               IF      FLG-DOUJITU-ARI     =   ZERO
+                   GO      TO      1000-SINSATU-KAISU-EXT
+               END-IF
            END-IF
       *
       *    £±£µºÐ¤Ë¤Ê¤ëÇ¯·îÆü¤ò·×»»
@@ -2677,11 +2700,11 @@
            MOVE    ZERO                TO  FLG-TOUG-SANTEI
            MOVE    SPACE               TO  WRK-SANTEI-YM
       *
-           MOVE    WRK-SRYCD           TO  TNS-SRYCD
-           PERFORM 910-TENSU-READ-SEC
-           IF      FLG-TENSU           =   1
-               GO      TO      33051-JYURRK-MAECHK-EXT
-           END-IF
+      *!   MOVE    WRK-SRYCD           TO  TNS-SRYCD
+      *    PERFORM 910-TENSU-READ-SEC
+      *    IF      FLG-TENSU           =   1
+      *        GO      TO      33051-JYURRK-MAECHK-EXT
+      *!   END-IF
       *
       *    ÊÝ¸±Ëè¤Î¥³¡¼¥É¤ÎÈ½Äê
            PERFORM 1000-SANTEI-CHK-SEC
@@ -2692,20 +2715,20 @@
            MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
-           EVALUATE    TNS-SANTEIRRKKBN
-               WHEN    1
-                   MOVE    ZERO                TO  SANTEI-NYUGAIKBN
-                   MOVE    ZERO                TO  SANTEI-SRYKA
-               WHEN    2
-                   MOVE    SPA-NYUGAIKBN       TO  SANTEI-NYUGAIKBN
-                   MOVE    ZERO                TO  SANTEI-SRYKA
-               WHEN    3
-                   MOVE    ZERO                TO  SANTEI-NYUGAIKBN
-                   MOVE    SPA-SRYKA           TO  SANTEI-SRYKA
-               WHEN    4
-                   MOVE    SPA-NYUGAIKBN       TO  SANTEI-NYUGAIKBN
-                   MOVE    SPA-SRYKA           TO  SANTEI-SRYKA
-           END-EVALUATE
+      *!!  EVALUATE    TNS-SANTEIRRKKBN
+      *        WHEN    1
+      *            MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+      *            MOVE    ZERO                TO  SANTEI-SRYKA
+      *        WHEN    2
+      *            MOVE    SPA-NYUGAIKBN       TO  SANTEI-NYUGAIKBN
+      *            MOVE    ZERO                TO  SANTEI-SRYKA
+      *        WHEN    3
+      *            MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+      *            MOVE    SPA-SRYKA           TO  SANTEI-SRYKA
+      *        WHEN    4
+      *            MOVE    SPA-NYUGAIKBN       TO  SANTEI-NYUGAIKBN
+      *            MOVE    SPA-SRYKA           TO  SANTEI-SRYKA
+      *!!  END-EVALUATE
       *
            IF     (FLG-HKNSAN          =   1   )  AND
                   (SPA-HKNKBN      NOT =   ZERO)
@@ -2713,16 +2736,17 @@
            ELSE
                MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
            END-IF
+           MOVE    SPA-SRYYMD(1:6)     TO  SANTEI-SRYYM
       *
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+           MOVE    "SANTEI-KEY8"       TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+               MOVE    "SANTEI-KEY8"       TO  ORC-DBPATH
                PERFORM 920-SANTEI-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-SANTEI
@@ -2732,8 +2756,11 @@
            PERFORM
                UNTIL       FLG-SANTEI      =   1
       *
+               PERFORM 200511-SANTEI-CHK-SEC
+      *
                IF     (SANTEI-MSANTEICNT   >   ZERO )  AND
                       (SANTEI-SRYYM        <=  SPA-SRYYMD(1:6))
+                 AND  (FLG-SANTEI-OK       =   1    )
                    ADD     1                   TO  WRK-SANTEI-CNT
       *            Åö·î»»ÄêºÑ¤ß
                    IF      SANTEI-SRYYM        =   SPA-SRYYMD(1:6)
@@ -2769,13 +2796,13 @@
                END-IF
       *
                IF     FLG-SANTEI           =   ZERO
-                  MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+                  MOVE    "SANTEI-KEY8"       TO  ORC-DBPATH
                   PERFORM 920-SANTEI-READ-SEC
                END-IF
            END-PERFORM
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+           MOVE    "SANTEI-KEY8"       TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
@@ -2785,6 +2812,38 @@
        33051-JYURRK-MAECHK-EXT.
            EXIT.
       *----(01.00.02) LINE ADD END   ----------------------------------
+      *
+      *****************************************************************
+      *    ÂÐ¾Ý¤Î»»ÄêÍúÎòÈ½Äê½èÍý
+      *****************************************************************
+       200511-SANTEI-CHK-SEC                SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SANTEI-OK
+      *
+           EVALUATE    TRUE
+      *        »»ÄêÍúÎò¶èÊ¬¡á£±
+               WHEN   (SANTEI-NYUGAIKBN    =   ZERO )  AND
+                      (SANTEI-SRYKA        =   ZERO )
+                   MOVE    1                   TO  FLG-SANTEI-OK
+      *        »»ÄêÍúÎò¶èÊ¬¡á£²
+               WHEN   (SANTEI-NYUGAIKBN    =   SPA-NYUGAIKBN) AND
+                      (SANTEI-SRYKA        =   ZERO )
+                   MOVE    1                   TO  FLG-SANTEI-OK
+      *
+      *        »»ÄêÍúÎò¶èÊ¬¡á£³
+               WHEN   (SANTEI-NYUGAIKBN    =   ZERO )  AND
+                      (SANTEI-SRYKA        =   SPA-SRYKA )
+                   MOVE    1                   TO  FLG-SANTEI-OK
+      *
+      *        »»ÄêÍúÎò¶èÊ¬¡á£´
+               WHEN   (SANTEI-NYUGAIKBN    =   SPA-NYUGAIKBN) AND
+                      (SANTEI-SRYKA        =   SPA-SRYKA )
+                   MOVE    1                   TO  FLG-SANTEI-OK
+           END-EVALUATE
+      *
+           .
+       200511-SANTEI-CHK-EXT.
+           EXIT.
       *
       *
       *****************************************************************

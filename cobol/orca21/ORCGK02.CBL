@@ -272,6 +272,8 @@
            03  FLG-INIT              PIC 9(01).
            03  FLG-MAE-TENSU         PIC 9(01).
       *
+           03  FLG-TOUGETU            PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -1638,6 +1640,12 @@
            MOVE    SPA-NAI-SRYYMD      TO  SPA-SRYYMD
       *
            MOVE    SPA-GMN-SRYKA       TO  SPA-SRYKA
+      *    ドクター
+           IF     (SPA-DRCD-NAME       NOT =   SPACE )  AND
+                  (SPA-DRCD-NAME(1:4)  NOT =   SPA-DRCD(2:4))
+               MOVE    "1"                 TO  SPA-DRCD(1:1)
+               MOVE    SPA-DRCD-NAME(1:4)  TO  SPA-DRCD(2:4)
+           END-IF
       *
       *    排他制御処理
            PERFORM 990-LOCK-IN-SEC
@@ -3678,7 +3686,7 @@
                                        ORCMCPAREA
                                        MCPDATA-REC
       *    入院中の時、エラーとする
-           IF      FLG-NYUIN           =   "1"
+           IF      FLG-NYUIN           =   1
                MOVE    "0121"          TO  SPA-KIDCD
                MOVE    ZERO            TO  SPA-GMN-CUR
            ELSE
@@ -3694,11 +3702,37 @@
       *****************************************************************
        320-SPA-CHKSET-SEC              SECTION.
       *
-      *    当月診療行為チェック用編集、当月累計点数計算
-           PERFORM 3201-TOUCHKSET-SEC
+           MOVE    ZERO                TO  SPA-ZAITENTOTAL
+           MOVE    SPACE               TO  SPA-ACCT2-SRYCD
+           MOVE    ZERO                TO  SPA-ACCT2-ZAINUM
+           MOVE    ZERO                TO  SPA-ACCT2-CSYYOURYO
+      *
+           MOVE    ZERO                TO  FLG-TOUGETU
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-MAX1
+               IF     SPA-NAI-RRKYMD (IDX)(1:6)
+                                       =   SPA-SRYYMD(1:6)
+                   MOVE    1               TO  FLG-TOUGETU
+                   MOVE    SPA-GMN-MAX1    TO  IDX
+               ELSE
+                   IF     SPA-NAI-RRKYMD (IDX)(1:6)
+                                           <   SPA-SRYYMD(1:6)
+                       MOVE    SPA-GMN-MAX1    TO  IDX
+                   END-IF
+               END-IF
+           END-PERFORM
+           IF     (FLG-TOUGETU         =   1   ) OR
+                  (SPA-SYORIFLG        =   1   )
+      *        当月診療行為チェック用編集、当月累計点数計算
+               PERFORM 3201-TOUCHKSET-SEC
+           END-IF
       *
       *    禁忌薬剤チェック用編集
-           PERFORM 3202-KNKYAKSET-SEC
+           IF      SPA-INTERACT-KIKAN  =   ZERO
+               INITIALIZE                  SPA-KNKYAK-AREA
+           ELSE
+               PERFORM 3202-KNKYAKSET-SEC
+           END-IF
       *
            .
        320-SPA-CHKSET-EXT.
@@ -3708,11 +3742,6 @@
       *    チェック用月内診療行為セット処理
       *****************************************************************
        3201-TOUCHKSET-SEC              SECTION.
-      *
-           MOVE    ZERO                TO  SPA-ZAITENTOTAL
-           MOVE    SPACE               TO  SPA-ACCT2-SRYCD
-           MOVE    ZERO                TO  SPA-ACCT2-ZAINUM
-           MOVE    ZERO                TO  SPA-ACCT2-CSYYOURYO
       *
            MOVE    ZERO                TO  IDX
            MOVE    ZERO                TO  IDX-SIN
@@ -3756,14 +3785,14 @@
                                             +  (ACCT-ZAITEN
                                             *   ACCT-ZAIKAISU )
                END-IF
-      *
-      *        検査で回数があるもの
-               IF     (ACCT-ZAIKAISU   NOT =   ZERO  )  AND
-                      (ACCT-SRYKBN         =   "60"  )
-                   MOVE    1               TO  FLG-ACCTSYORI
+      *病理診断料のみで使用する為、入力時へ
+      *TET     検査で回数があるもの
+      *        IF     (ACCT-ZAIKAISU   NOT =   ZERO  )  AND
+      *               (ACCT-SRYKBN         =   "60"  )
+      *            MOVE    1               TO  FLG-ACCTSYORI
       *            診療行為マスター編集
-                   PERFORM 3201-SRYACT-HEN-SEC
-               END-IF
+      *            PERFORM 3201-SRYACT-HEN-SEC
+      *TES     END-IF
       *（注射のためにチェックしていたが、現在していないのではずす）
       *復活
       *        当日算定分
@@ -3850,7 +3879,7 @@
            .
        3201-SRYACT-HEN-EXT.
            EXIT.
-      *
+      *DEL
       *****************************************************************
       *    診療行為チェック用編集１処理（検査）
       *****************************************************************
@@ -3878,7 +3907,7 @@
            .
        32011-SRYACT-HEN1-EXT.
            EXIT.
-      *
+      *DEL
       *****************************************************************
       *    診療行為チェック用編集２処理（点滴）
       *****************************************************************
@@ -3925,11 +3954,6 @@
        3202-KNKYAKSET-SEC              SECTION.
       *
       *    相互作用チェック期間
-           IF      SPA-INTERACT-KIKAN  =   ZERO
-               INITIALIZE                  SPA-KNKYAK-AREA
-               GO      TO      3202-KNKYAKSET-EXT
-           END-IF
-      *
            INITIALIZE                  SPA-KNKYAK-AREA
            MOVE    ZERO                TO  IDX
       *    対象年月−１月を求める
@@ -4394,23 +4418,21 @@
                GO  TO                  41010-PTNUM-SYORI-EXT
            END-IF
       *    患者番号決定
-           MOVE    SPTNUM-PTID         TO  SPTID-PTID
-           MOVE    SPTNUM-PTNUM        TO  SPTID-PTNUM
-           MOVE    SPTID-PTID          TO  SPA-PTID
-           MOVE    SPTID-PTID          TO  SPA-GMN-PTID
-           MOVE    SPTID-PTNUM         TO  SPA-PTNUM
-           MOVE    SPTID-PTNUM         TO  SPA-GMN-PTNUM
+           MOVE    SPTNUM-PTID         TO  SPA-PTID
+           MOVE    SPTNUM-PTNUM        TO  SPA-PTNUM
+           MOVE    SPA-PTID            TO  SPA-GMN-PTID
+           MOVE    SPA-PTNUM           TO  SPA-GMN-PTNUM
       *
-      *    患者マスター存在チェック
-           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
-           MOVE    SPA-GMN-PTID        TO  PTINF-PTID
-           PERFORM 900-PTINF-READ-SEC
-           IF      FLG-PTINF       NOT =   ZERO
-               MOVE    SPTID-PTID          TO  SPA-GMN-PTID
-               MOVE    SPTID-PTNUM         TO  SPA-GMN-PTNUM
-               MOVE    "1003"              TO  SPA-ERRCD
-               GO      TO      41010-PTNUM-SYORI-EXT
-           END-IF
+      *?   患者マスター存在チェック
+      *    MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+      *    MOVE    SPA-GMN-PTID        TO  PTINF-PTID
+      *    PERFORM 900-PTINF-READ-SEC
+      *    IF      FLG-PTINF       NOT =   ZERO
+      *        MOVE    SPTID-PTID          TO  SPA-GMN-PTID
+      *        MOVE    SPTID-PTNUM         TO  SPA-GMN-PTNUM
+      *        MOVE    "1003"              TO  SPA-ERRCD
+      *        GO      TO      41010-PTNUM-SYORI-EXT
+      *?   END-IF
       *
       *    排他制御処理
            PERFORM 990-LOCK-IN-SEC
@@ -4435,16 +4457,14 @@
       *        院外処方区分
                MOVE    SPA-SYOHOKBN        TO  SPA-INGAIKBN
            ELSE
-      *
-           MOVE    "1"                 TO  LNK-SC95-KBN
-           MOVE    "K02"               TO  LNK-SC95-PG
-           CALL    "ORCSC95"           USING
-                                       MCPAREA
-                                       ORCSC95AREA
-                                       SPA-AREA
-                                       SPA-K01KYOUTU
-                                       SPA-K02
-      *
+               MOVE    "1"                 TO  LNK-SC95-KBN
+               MOVE    "K02"               TO  LNK-SC95-PG
+               CALL    "ORCSC95"           USING
+                                           MCPAREA
+                                           ORCSC95AREA
+                                           SPA-AREA
+                                           SPA-K01KYOUTU
+                                           SPA-K02
            END-IF
       *
            MOVE    "2"                 TO  LNK-SC95-KBN
@@ -4461,9 +4481,11 @@
                                        SPA-AREA
                                        SPA-K01KYOUTU
                                        SPA-K02
-      ***  IF      SPA-ERRCD       NOT =   SPACE
-      *         GO      TO      41010-PTNUM-SYORI-EXT
-      **** END-IF
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    SPTNUM-PTID         TO  SPA-GMN-PTID
+               MOVE    SPTNUM-PTNUM        TO  SPA-GMN-PTNUM
+               GO      TO      41010-PTNUM-SYORI-EXT
+           END-IF
       *    スパ共通編集処理
            PERFORM                 310-SPA-SET-SEC
            IF      SPA-ERRCD       NOT =   SPACE
@@ -9034,6 +9056,7 @@
                                        ORCSC00AREA
                                        SPA-SCR-REC
                                        SPA-AREA
+               MOVE    LNK-NAIACCT-AREA    TO  SPA-NAIACCT-AREA
                MOVE    LNK-ORCSC-CHK-IDX   TO  SPA-CHK-IDX
                MOVE    LNK-ORCSC-KIDCD     TO  SPA-KIDCD
       *
@@ -9346,6 +9369,10 @@
            END-IF
       *
       *    当月診療行為チェック用編集、当月累計点数計算
+           MOVE    ZERO                TO  SPA-ZAITENTOTAL
+           MOVE    SPACE               TO  SPA-ACCT2-SRYCD
+           MOVE    ZERO                TO  SPA-ACCT2-ZAINUM
+           MOVE    ZERO                TO  SPA-ACCT2-CSYYOURYO
            PERFORM 3201-TOUCHKSET-SEC
       *    点滴の変更
            IF      LNK-SC95-TENTEKI    =   1

@@ -2746,10 +2746,20 @@
        320-SPA-CHKSET-SEC              SECTION.
       *
       *    当月診療行為チェック用編集、当月累計点数計算
-           PERFORM 3201-TOUCHKSET-SEC
+           MOVE    ZERO                TO  SPA-ZAITENTOTAL
+           MOVE    SPACE               TO  SPA-ACCT2-SRYCD
+           MOVE    ZERO                TO  SPA-ACCT2-ZAINUM
+           MOVE    ZERO                TO  SPA-ACCT2-CSYYOURYO
+           MOVE    SPACE               TO  SPA-CHOKI-ARI
+      *****PERFORM 3201-TOUCHKSET-SEC
       *
-      *    禁忌薬剤チェック用編集
-           PERFORM 3202-KNKYAKSET-SEC
+      *    相互作用チェック期間
+           IF      SPA-INTERACT-KIKAN  =   ZERO
+               INITIALIZE                  SPA-KNKYAK-AREA
+           ELSE
+      *        禁忌薬剤チェック用編集
+               PERFORM 3202-KNKYAKSET-SEC
+           END-IF
       *
            .
        320-SPA-CHKSET-EXT.
@@ -2971,12 +2981,6 @@
       *    禁忌薬剤チェック用編集処理
       *****************************************************************
        3202-KNKYAKSET-SEC              SECTION.
-      *
-      *    相互作用チェック期間
-           IF      SPA-INTERACT-KIKAN  =   ZERO
-               INITIALIZE                  SPA-KNKYAK-AREA
-               GO      TO      3202-KNKYAKSET-EXT
-           END-IF
       *
            MOVE    ZERO                TO  IDX
       *    対象年月−１月を求める
@@ -7728,6 +7732,7 @@
                                        ORCSC00AREA
                                        SPA-SCR-REC
                                        SPA-AREA
+               MOVE    LNK-NAIACCT-AREA    TO  SPA-NAIACCT-AREA
                MOVE    LNK-ORCSC-CHK-IDX   TO  SPA-CHK-IDX
                MOVE    LNK-ORCSC-KIDCD     TO  SPA-KIDCD
            END-IF
@@ -9720,7 +9725,13 @@
                                                               (IDX-S)
                    MOVE    LNK-ORCSC-TENSU (IDX IDY)
                                            TO  WRK-KSN-TENSU  (IDX-S)
-                   MOVE    "3"             TO  WRK-KSN-AUTOKBN(IDX-S)
+      ************ MOVE    "3"             TO  WRK-KSN-AUTOKBN(IDX-S)
+                   IF      LNK-ORCSC-AUTOKBN(IDX IDY)  =   SPACE
+                       MOVE    "3"         TO  WRK-KSN-AUTOKBN  (IDX-S)
+                   ELSE
+                       MOVE    LNK-ORCSC-AUTOKBN(IDX IDY)
+                                           TO  WRK-KSN-AUTOKBN  (IDX-S)
+                   END-IF
       *
                    IF      LNK-ORCSC-SRYCD-KS(IDX IDY)   =   SPACE
                        MOVE    "1"         TO  WRK-KSN-ZAIEND (IDX-S)
@@ -9746,8 +9757,12 @@
                        MOVE    LNK-ORCSC-TENSU-KS (IDX IDY)
                                            TO  WRK-KSN-TENSU  (IDX-S)
                        MOVE    "1"         TO  WRK-KSN-ZAIEND (IDX-S)
-                       MOVE    "3"         TO  WRK-KSN-AUTOKBN
-                                                            (IDX-S)
+                       IF      LNK-ORCSC-AUTOKBN(IDX IDY)  =   SPACE
+                           MOVE    "3"     TO  WRK-KSN-AUTOKBN  (IDX-S)
+                       ELSE
+                           MOVE    LNK-ORCSC-AUTOKBN(IDX IDY)
+                                           TO  WRK-KSN-AUTOKBN  (IDX-S)
+                       END-IF
                      END-IF
                    END-IF
       *            回数

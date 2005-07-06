@@ -1389,9 +1389,12 @@
                    UNTIL      (IDX         >   5   )   OR
                               (SRY-SRYCD (IDX)     =   SPACE )
       *        登録時の自動算定分は対象外（点滴以外）
-               IF     (SRY-AUTOKBN (IDX)   =   "3" ) AND
+               IF     (SRY-AUTOKBN (IDX)   =   "4"  OR
+                                               "5"  OR
+                                               "6" ) OR
+                     ((SRY-AUTOKBN (IDX)   =   "3" ) AND
                       (SRY-SRYSYUKBN   NOT =   "330" AND
-                                               "340" )
+                                               "340" ))
                    CONTINUE
                ELSE
                    ADD     1                   TO  IDY
