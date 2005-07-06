@@ -90,6 +90,7 @@
       *    ¿Ç»¡ÎÁ
            03  FLG-SINSATU          PIC 9(01).
            03  FLG-JYURRK-END       PIC 9(01).
+           03  FLG-SRYACCT-ARI     PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -1736,19 +1737,79 @@
       *****************************************************************
        300211-CHOZAI-CHK-SEC           SECTION.
       *
-           MOVE    "120001810"         TO  WRK-SRYCD
-           PERFORM 3001-SANTEI-CHK-SEC
-           IF      FLG-ERR             =   1
-               IF      SPA-CHOZAI-CHK      =   ZERO
-                   MOVE    1               TO  SPA-CHOZAI-CHK
-                   MOVE    "K017"          TO  SPA-ERRCD
+           IF      SPA-CHOKI-ARI       =   SPACE
+      *        Æþ±¡¤ÎÄ´ºÞÎÁ¤Î¥Á¥§¥Ã¥¯
+               MOVE    "120001110"         TO  WRK-SRYCD
+               PERFORM 3002110-SRYACT-CHOZAI-SEC
+               IF      FLG-SRYACCT-ARI     =   1
+                   MOVE    "1"             TO  SPA-CHOKI-ARI
                END-IF
            END-IF
       *
+           IF      SPA-CHOKI-ARI       =   SPACE
+               MOVE    "120001810"         TO  WRK-SRYCD
+               PERFORM 3001-SANTEI-CHK-SEC
+               IF      FLG-ERR             =   1
+                   IF      SPA-CHOZAI-CHK      =   ZERO
+                       MOVE    1               TO  SPA-CHOZAI-CHK
+                       MOVE    "K017"          TO  SPA-ERRCD
+                   END-IF
+               END-IF
+           END-IF
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+      *
       *
            .
        300211-CHOZAI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Æþ±¡Ä´ºÞÎÁ»»ÄêÈ½Äê½èÍý
+      *****************************************************************
+       3002110-SRYACT-CHOZAI-SEC     SECTION.
+      *
+           MOVE    SPACE               TO  SRYACCT-REC
+           INITIALIZE                      SRYACCT-REC
+           MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+           MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
+           MOVE    SPA-PTID            TO  ACCT-PTID
+           MOVE    SPA-SRYYMD(1:6)     TO  ACCT-SRYYM
+           MOVE    "24"                TO  ACCT-SRYKBN
+      *
+           MOVE    SRYACCT-REC         TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+               PERFORM 940-SRYACCT-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SRYACCT
+           END-IF
+           PERFORM UNTIL       (FLG-SRYACCT         =   1       )
+      *
+               IF     (ACCT-HKNCOMBI     =   "9999" ) OR
+                      (ACCT-ZAIKAISU     =   ZERO   )
+                   CONTINUE
+               ELSE
+                   MOVE    1               TO  FLG-SRYACCT-ARI
+               END-IF
+               MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+               PERFORM 940-SRYACCT-READ-SEC
+           END-PERFORM
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       3002110-SRYACT-CHOZAI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2411,7 +2472,7 @@
                                                 MCPDATA-REC
                    IF      MCP-RC              =   ZERO
                        MOVE    "SRYACCT-KEY5"      TO  ORC-DBPATH
-                       PERFORM 940-SINACCT-READ-SEC
+                       PERFORM 940-SRYACCT-READ-SEC
                    ELSE
                        MOVE    1                   TO  FLG-SRYACCT
                    END-IF
@@ -2432,7 +2493,7 @@
                        END-IF
       *
                        MOVE    "SRYACCT-KEY5"      TO  ORC-DBPATH
-                       PERFORM 940-SINACCT-READ-SEC
+                       PERFORM 940-SRYACCT-READ-SEC
                    END-PERFORM
                    MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
                    MOVE    "SRYACCT-KEY5"      TO  ORC-DBPATH
@@ -2603,7 +2664,7 @@
       *****************************************************************
       *    ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿ÆÉ¤ß¹þ¤ß
       *****************************************************************
-       940-SINACCT-READ-SEC         SECTION.
+       940-SRYACCT-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
            CALL    "ORCMCPSUB"          USING
@@ -2619,7 +2680,7 @@
            END-IF
       *
            .
-       940-SINACCT-READ-EXT.
+       940-SRYACCT-READ-EXT.
            EXIT.
       *****************************************************************
       *    ¼õ¿ÇÍúÎò¥Þ¥¹¥¿¡¼ÆÉ¹þ

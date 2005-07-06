@@ -231,12 +231,12 @@
            MOVE    WRK-SC90-FIRTEN     TO  LNK-COM-FIRTEN-M (IDX-SYU)
            ADD     WRK-SC90-FIRTEN     TO  LNK-SC90-FIRTEN
       *TEST
-           DISPLAY "C90 IDX-SYU:" IDX-SYU
-                    ",SRYCD:" LNK-COM-INPUTCD(IDX-SYU)
-                    ",SYUTEN-M:" LNK-COM-SYUTEN-M(IDX-SYU)
-                    ",YKZTEN-M:" LNK-COM-YKZTEN-M(IDX-SYU)
-                    ",KIZTEN-M:" LNK-COM-KIZTEN-M(IDX-SYU)
-                    ",FIRTEN-M:" LNK-COM-FIRTEN-M(IDX-SYU)
+      *    DISPLAY "C90 IDX-SYU:" IDX-SYU
+      *             ",SRYCD:" LNK-COM-INPUTCD(IDX-SYU)
+      *             ",SYUTEN-M:" LNK-COM-SYUTEN-M(IDX-SYU)
+      *             ",YKZTEN-M:" LNK-COM-YKZTEN-M(IDX-SYU)
+      *             ",KIZTEN-M:" LNK-COM-KIZTEN-M(IDX-SYU)
+      *             ",FIRTEN-M:" LNK-COM-FIRTEN-M(IDX-SYU)
       *TEST
            .
        100-MEISAI-SET-EXT.

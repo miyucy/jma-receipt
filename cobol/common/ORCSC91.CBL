@@ -119,13 +119,13 @@
       *    03  FILLER                  PIC X(09)   VALUE   "114701710".
       *
       *     薬剤情報提供料
-           03  FILLER                  PIC X(04)   VALUE   "002".
+           03  FILLER                  PIC X(04)   VALUE   "0020".
            03  FILLER                  PIC X(09)   VALUE   "120002370".
       *     薬剤情報提供料（老人手帳記載なし）
-           03  FILLER                  PIC X(04)   VALUE   "002".
+           03  FILLER                  PIC X(04)   VALUE   "0021".
            03  FILLER                  PIC X(09)   VALUE   "113701410".
       *     薬剤情報提供料（老人手帳記載あり）
-           03  FILLER                  PIC X(04)   VALUE   "002".
+           03  FILLER                  PIC X(04)   VALUE   "0021".
            03  FILLER                  PIC X(09)   VALUE   "113701310".
       *
       *     特定疾患処方管理加算処方箋料
@@ -205,6 +205,9 @@
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
       *
+      *    診療行為用共通パラメタ
+           COPY    "K01COMMON-SPA".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -259,6 +262,9 @@
                GO      TO      000-PROC-EXT
            END-IF
       *
+      *    K02,K02NYUの場合のみとする（薬剤情報提供料チェックの為）
+           MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+      *
       *    訂正の時、前回算定時の算定回数
            IF      LNK-SC91-SYORIFLG   =   1
                MOVE    LNK-SC91-SRYCD      TO  WRK-SRYCD
@@ -272,9 +278,12 @@
                WHEN    "2"
                WHEN    "3"
                WHEN    "4"
+      *            同時算定コード存在のチェック
+                   PERFORM 1001-CODECHK-SEC
       *            算定歴　回数チェック
                    PERFORM 100-SANTEI-CHK-SEC
-                   IF      LNK-SC91-ERRCD  =   SPACE
+                   IF     (LNK-SC91-ERRCD  =   SPACE ) AND
+                          (WRK-CODE    NOT =   SPACE )
       *                同時算定歴チェック
                        PERFORM 200-DOUJI-CHK-SEC
                    END-IF
@@ -395,6 +404,18 @@
                    IF       TNS-JGNCNTERR      =   9
                        MOVE    "K004"              TO  LNK-SC91-ERRCD
                    END-IF
+               END-IF
+           END-IF
+      *    薬剤情報提供料はチェック判定
+           IF      WRK-CODE            =   "002"
+               IF      (SPA-YAKJYOCHK-FLG   =   "0"   ) OR
+                      ((WRK-CHK             =   "0")  AND
+                       (SPA-YAKJYO-1        =   2  ))   OR
+                      ((WRK-CHK             =   "1" )  AND
+                      ((SPA-YAKJYO-2        =   2 ) OR
+                       (SPA-YAKJYO-3        =   2 )) )
+                   MOVE    LNK-SC91-ERRCD      TO  LNK-SC91-ERRCD2
+                   MOVE    SPACE               TO  LNK-SC91-ERRCD
                END-IF
            END-IF
       *
@@ -781,20 +802,29 @@
            EXIT.
       *
       *****************************************************************
-      *    同時算定歴チェック処理
+      *    同時算定コード存在のチェック処理
       *****************************************************************
-       200-DOUJI-CHK-SEC      SECTION.
+       1001-CODECHK-SEC      SECTION.
       *
-      *    同時算定コード存在のチェック
            SET     TBL-IDX            TO  1
            SEARCH      TBL-DOUJI-OCC    VARYING   TBL-IDX
                    AT  END
                        MOVE    SPACE           TO  WRK-CODE
-                       GO      TO      200-DOUJI-CHK-EXT
+                       MOVE    SPACE           TO  WRK-CHK
                    WHEN    LNK-SC91-SRYCD      =   TBL-SRYCD (TBL-IDX)
                        MOVE    TBL-CODE   (TBL-IDX)    TO  WRK-CODE
                        MOVE    TBL-CHK    (TBL-IDX)    TO  WRK-CHK
            END-SEARCH
+      *
+           .
+       1001-CODECHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    同時算定歴チェック処理
+      *****************************************************************
+       200-DOUJI-CHK-SEC      SECTION.
+      *
       *
            MOVE    SPACE               TO  WRK-CHK-SRYCD
            MOVE    SPACE               TO  WRK-CHK-NAME
@@ -879,6 +909,18 @@
       *        上限回数エラー処理＝９の時、回数エラーは警告とする
                IF       WRK-JGNCNTERR      =   9
                    MOVE    "K004"              TO  LNK-SC91-ERRCD
+               END-IF
+           END-IF
+      *    薬剤情報提供料はチェック判定
+           IF      WRK-CODE            =   "002"
+               IF      (SPA-YAKJYOCHK-FLG   =   "0"   ) OR
+                      ((WRK-CHK             =   "0")  AND
+                       (SPA-YAKJYO-1        =   2  ))   OR
+                      ((WRK-CHK             =   "1" )  AND
+                      ((SPA-YAKJYO-2        =   2 ) OR
+                       (SPA-YAKJYO-3        =   2 )) )
+                   MOVE    LNK-SC91-ERRCD      TO  LNK-SC91-ERRCD2
+                   MOVE    SPACE               TO  LNK-SC91-ERRCD
                END-IF
            END-IF
       *

@@ -376,6 +376,8 @@
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
       *
+           COPY    "ORCA-DBPATH".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -448,10 +450,10 @@
                    END-IF
       *            受診履歴情報セット
                    PERFORM 1001-SPA-JYUSIN-SEC
-      *            特定疾患の有無検索
-                   PERFORM 11011-TOKUTEI-SYORI-SEC
       *            病名編集
       *!!!         PERFORM 11012-BYOMEI-HENSYU-SEC
+      *            特定疾患の有無検索
+                   PERFORM 11011-TOKUTEI-SYORI-SEC
       *            中途終了分編集
                    PERFORM 200-WKSRYACT-SYORI-SEC
       *        中途終了分追加
@@ -667,6 +669,26 @@
                    MOVE    SYS-1008-YAKJYOCHK-FLG
                                            TO  SPA-YAKJYOCHK-FLG
                END-IF
+      *        訂正時の自動発生
+               IF      SYS-1008-TEISEIAUTO-FLG   =   SPACE
+                   MOVE    "1"             TO  SPA-TEISEI-FLG
+               ELSE
+                   MOVE    SYS-1008-TEISEIAUTO-FLG
+                                           TO  SPA-TEISEI-FLG
+               END-IF
+      *        訂正時の自動発生（特定疾患処方管理）
+               IF      SYS-1008-TEISEITOKU-FLG   =   SPACE
+                   MOVE    "0"             TO  SPA-TEISEITOKU-FLG
+               ELSE
+                   MOVE    SYS-1008-TEISEITOKU-FLG
+                                           TO  SPA-TEISEITOKU-FLG
+               END-IF
+      *        平成１７年４月以降有効とする
+               IF      SPA-SRYYMD          <   "20050401"
+                   MOVE    "1"             TO  SPA-YAKJYOCHK-FLG
+                   MOVE    "1"             TO  SPA-TEISEI-FLG
+                   MOVE    "0"             TO  SPA-TEISEITOKU-FLG
+               END-IF
            ELSE
                MOVE    ZERO                TO  SPA-INTERACT-KIKAN
                MOVE    "1"                 TO  SPA-GAIKANRIKBN-CHK
@@ -685,6 +707,8 @@
                MOVE    ZERO                TO  SPA-CLEARCHK-FLG
                MOVE    "1"                 TO  SPA-CHUTOTENKAI-FLG
                MOVE    "1"                 TO  SPA-YAKJYOCHK-FLG
+               MOVE    "1"                 TO  SPA-TEISEI-FLG
+               MOVE    "0"                 TO  SPA-TEISEITOKU-FLG
            END-IF
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
@@ -825,6 +849,19 @@
                MOVE    SYS-1007-SANTEI (5:1)   TO  SPA-RYOYOU-FLG
       *        特定薬剤治療管理料有無
                MOVE    SYS-1007-SANTEI (6:1)   TO  SPA-TOKUTEI-FLG
+      *        平成１７年４月以降有効とする
+               IF      SPA-SRYYMD          <   "20050401"
+      *            薬剤情報提供料
+                   IF      SPA-YAKJYO-1    =   2
+                       MOVE    1               TO  SPA-YAKJYO-1
+                   END-IF
+                   IF      SPA-YAKJYO-2    =   2
+                       MOVE    1               TO  SPA-YAKJYO-2
+                   END-IF
+                   IF      SPA-YAKJYO-3    =   2
+                       MOVE    1               TO  SPA-YAKJYO-3
+                   END-IF
+               END-IF
            END-IF
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
@@ -1044,6 +1081,26 @@
                    MOVE    SYS-1008-YAKJYOCHK-FLG
                                            TO  SPA-YAKJYOCHK-FLG
                END-IF
+      *        訂正時の自動発生
+               IF      SYS-1008-TEISEIAUTO-FLG   =   SPACE
+                   MOVE    "1"             TO  SPA-TEISEI-FLG
+               ELSE
+                   MOVE    SYS-1008-TEISEIAUTO-FLG
+                                           TO  SPA-TEISEI-FLG
+               END-IF
+      *        訂正時の自動発生（特定疾患処方管理）
+               IF      SYS-1008-TEISEITOKU-FLG   =   SPACE
+                   MOVE    "0"             TO  SPA-TEISEITOKU-FLG
+               ELSE
+                   MOVE    SYS-1008-TEISEITOKU-FLG
+                                           TO  SPA-TEISEITOKU-FLG
+               END-IF
+      *        平成１７年４月以降有効とする
+               IF      SPA-SRYYMD          <   "20050401"
+                   MOVE    "1"             TO  SPA-YAKJYOCHK-FLG
+                   MOVE    "1"             TO  SPA-TEISEI-FLG
+                   MOVE    "0"             TO  SPA-TEISEITOKU-FLG
+               END-IF
            ELSE
                MOVE    ZERO                TO  SPA-INTERACT-KIKAN
       *
@@ -1058,6 +1115,8 @@
                MOVE    ZERO                TO  SPA-CLEARCHK-FLG
                MOVE    "1"                 TO  SPA-CHUTOTENKAI-FLG
                MOVE    "1"                 TO  SPA-YAKJYOCHK-FLG
+               MOVE    "1"                 TO  SPA-TEISEI-FLG
+               MOVE    "0"                 TO  SPA-TEISEITOKU-FLG
            END-IF
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
@@ -1264,12 +1323,10 @@
            END-IF
       *    受診履歴情報セット
            PERFORM 1001-SPA-JYUSIN-SEC
-      *
-      *    特定疾患の有無検索
-           PERFORM 11011-TOKUTEI-SYORI-SEC
-      *
       *    病名編集
            PERFORM 11012-BYOMEI-HENSYU-SEC
+      *    特定疾患の有無検索
+           PERFORM 11011-TOKUTEI-SYORI-SEC
       *
       *    中途終了分処理
            PERFORM 200-WKSRYACT-SYORI-SEC
@@ -2379,7 +2436,7 @@
       *
       *    老人でＨ１４．１０の保険変更がない時
            IF      AGECHK-RJNCHK       =   1
-               MOVE    "1027"              TO  SPA-ERRCD
+      *********MOVE    "1027"              TO  SPA-ERRCD
                MOVE    1                   TO  SPA-RJN-ERR
            END-IF
       *
@@ -2899,14 +2956,24 @@
            IF      SPA-RRK-LSTSRYKA    NOT =   SPACE
                MOVE    SPA-RRK-LSTSRYKA    TO  SPA-LSTSRYKA
            END-IF
-      *
-      *    入院時
+      *    初診日、最終診察日編集
            IF      SPA-NYUGAIKBN       =   "1"
+      *        入院時
                PERFORM 11011-NYU-SYOYMD-SET-SEC
-               GO      TO      1101-HKN-SYOYMD-SET-EXT
+           ELSE
+      *        外来
+               PERFORM 11012-GAI-SYOYMD-SET-SEC
            END-IF
       *
-      *    外来
+           .
+       1101-HKN-SYOYMD-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    外来初診日、最終診察日編集処理
+      *****************************************************************
+       11012-GAI-SYOYMD-SET-SEC             SECTION.
+      *
            MOVE    SPACE               TO  WRK-TENKIYMD
            MOVE    SPACE               TO  WRK-CHIYUYMD
            MOVE    ZERO                TO  FLG-TENKI
@@ -3031,14 +3098,22 @@
       *
       *    初診料算定日が診療日の時、再診とする
            IF      SPA-SYOSIN          =   1
-               IF      SPA-SYOYMD          =   SPA-SRYYMD
-                   OR  SPA-SRYYMD          =   SPA-LSTYMD
+               IF     (SPA-SYOYMD          =   SPA-SRYYMD )
+                   OR (SPA-SRYYMD          =   SPA-LSTYMD )
                    MOVE    ZERO            TO  SPA-SYOSIN
                END-IF
            END-IF
       *
+      *    初診算定日が診療日以降の時、直帰の初診算定日
+           IF     (SPA-SYOYMD      NOT =   SPACE )  AND
+                  (SPA-SYOYMD          >   SPA-SRYYMD)
+               PERFORM 3009-SYOSIN-SYORI-SEC
+           ELSE
+               MOVE    SPACE           TO  SPA-SYOYMD-OLD
+           END-IF
+      *
            .
-       1101-HKN-SYOYMD-SET-EXT.
+       11012-GAI-SYOYMD-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3238,7 +3313,7 @@
       *    未収金額編集処理
       *****************************************************************
        49011-MISYU-HEN-SEC             SECTION.
-      *
+           MOVE    ZERO                TO  SPA-MISYUMONEY
       *    収納テーブル読み込み
            MOVE    SPACE               TO  SYUNOU-REC
            INITIALIZE                  SYUNOU-REC
@@ -3247,37 +3322,59 @@
            MOVE    SPA-PTID            TO  SYU-PTID
       *
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYUNOU-KEY13"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    PATH-TBL-SYUNOU-KEY42   TO  MCP-PATH
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "SYUNOU-KEY13"      TO  ORC-DBPATH
-               PERFORM 980-SYUNOU-READ-SEC
+               MOVE    MCPDATA-REC     TO  SYUNOU-REC
+               COMPUTE SPA-MISYUMONEY  =   SYU-SKYMONEY
+                                       -   SYU-NYUKIN-TOTAL
            ELSE
                MOVE    SPACE               TO  SYUNOU-REC
                INITIALIZE                  SYUNOU-REC
                MOVE    1               TO  FLG-SYUNOU
            END-IF
-           MOVE    ZERO                TO  SPA-MISYUMONEY
-           PERFORM
-               UNTIL     FLG-SYUNOU    =   1
-               COMPUTE WRK-MISYU       =   SYU-SKYMONEY
-                                       -   SYU-NYUKIN-TOTAL
-               ADD     WRK-MISYU           TO  SPA-MISYUMONEY
+           MOVE    PATH-TBL-SYUNOU-KEY42   TO  MCP-PATH
+           PERFORM 990-DBCLOSE-SEC
       *
-               MOVE    "SYUNOU-KEY13"      TO  ORC-DBPATH
-               PERFORM 980-SYUNOU-READ-SEC
-           END-PERFORM
+      *    収納テーブル読み込み
+      *    MOVE    SPACE               TO  SYUNOU-REC
+      *    INITIALIZE                  SYUNOU-REC
+      *    MOVE    SPA-HOSPID          TO  SYU-HOSPID
+      *    MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
+      *    MOVE    SPA-PTID            TO  SYU-PTID
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "SYUNOU-KEY13"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+      *    MOVE    SYUNOU-REC          TO  MCPDATA-REC
+      *    MOVE    "DBSELECT"          TO  MCP-FUNC
+      *    MOVE    "SYUNOU-KEY13"      TO  ORC-DBPATH
+      *    CALL    "ORCMCPSUB"          USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      *                                 MCPDATA-REC
+      *    IF      MCP-RC              =   ZERO
+      *        MOVE    "SYUNOU-KEY13"      TO  ORC-DBPATH
+      *        PERFORM 980-SYUNOU-READ-SEC
+      *    ELSE
+      *        MOVE    SPACE               TO  SYUNOU-REC
+      *        INITIALIZE                  SYUNOU-REC
+      *        MOVE    1               TO  FLG-SYUNOU
+      *    END-IF
+      *    MOVE    ZERO                TO  SPA-MISYUMONEY
+      *    PERFORM
+      *        UNTIL     FLG-SYUNOU    =   1
+      *        COMPUTE WRK-MISYU       =   SYU-SKYMONEY
+      *                                -   SYU-NYUKIN-TOTAL
+      *        ADD     WRK-MISYU           TO  SPA-MISYUMONEY
+      *
+      *        MOVE    "SYUNOU-KEY13"      TO  ORC-DBPATH
+      *        PERFORM 980-SYUNOU-READ-SEC
+      *    END-PERFORM
+      *
+      *    MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+      *    MOVE    "SYUNOU-KEY13"      TO  ORC-DBPATH
+      *    CALL    "ORCMCPSUB"          USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      ***                               MCPDATA-REC
            .
        49011-MISYU-HEN-EXT.
            EXIT.
@@ -3285,14 +3382,31 @@
       *****************************************************************
       *    特定疾患の有無検索編集処理
       *****************************************************************
-       11011-TOKUTEI-SYORI-SEC             SECTION.
+       11011-TOKUTEI-SYORI-SEC         SECTION.
       *
            MOVE    ZERO                TO  SPA-TOKUTEI
            MOVE    ZERO                TO  SPA-TOKUTEI-F
            MOVE    ZERO                TO  SPA-TOKUTEIFLG
            MOVE    ZERO                TO  SPA-CHOKITOFLG
-      *    特定疾患科
-           INITIALIZE                   SPA-TOKUTEI-AREA-G
+      *    特定疾患科テーブルより設定
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   10  )   OR
+                              (SPA-TOKU-SRYKA (IDX)    =   SPACE)
+               IF      SPA-TOKU-SRYKA (IDX)    =   SPA-SRYKA
+                   IF      SPA-TOKU-FLG(IDX)   =   05
+      *                特定疾患の有無
+                       MOVE    1                   TO  SPA-TOKUTEI
+                   ELSE
+      *                皮膚科特定疾患の有無
+                       MOVE    SPA-TOKU-FLG(IDX)   TO  SPA-TOKUTEI-F
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+      *TEST
+      *以下削除
+           GO     TO    11011-TOKUTEI-SYORI-EXT
+      *****INITIALIZE                   SPA-TOKUTEI-AREA-G
       *
       *    特定疾患の有無検索
            MOVE    SPACE               TO  PTBYOMEI-REC
@@ -3406,6 +3520,8 @@
       *    病名内容
            INITIALIZE                  SPA-GMN-BYOMEITBL
            INITIALIZE                  WRK-BYOMEI-AREA
+      *    特定疾患科
+           INITIALIZE                  SPA-TOKUTEI-AREA-G
       *
       *    特定疾患の有無検索
            MOVE    SPACE               TO  PTBYOMEI-REC
@@ -3455,6 +3571,20 @@
                                    INTO    WRK-BYOMEI-HEN
                    END-STRING
                    MOVE    WRK-BYOMEI-HEN  TO  WRK-BYOMEI (IDX-B)
+               END-IF
+      *
+      *        特定疾患の有無
+               IF     (PTBYO-SRYYMD        <=   SPA-SRYYMD )
+      *            疑い病名は対象外とする
+                 AND  (PTBYO-UTAGAIFLG  NOT =   "1"  AND  "3" )
+                   IF      PTBYO-MANSEIKBN     =   05
+                                               OR  03
+                                               OR  04
+                       IF     (PTBYO-TENKIKBN      =   SPACE )  OR
+                              (PTBYO-TENKIYMD      >=  SPA-SRYYMD)
+                           PERFORM 110111-MANSEIKBN-SET-SEC
+                        END-IF
+                   END-IF
                END-IF
       *
                MOVE    "PTBYOMEI-KEY25"    TO  ORC-DBPATH
@@ -3560,11 +3690,10 @@
       *    保険組合せ名称編集
            PERFORM 10013-HKNCOMBI-SEC
       *
-      *    特定疾患の有無検索
-           PERFORM 11011-TOKUTEI-SYORI-SEC
-      *
       *    病名編集
       *!!  PERFORM 11012-BYOMEI-HENSYU-SEC
+      *    特定疾患の有無検索
+           PERFORM 11011-TOKUTEI-SYORI-SEC
       *
            PERFORM 200-WKSRYACT-SYORI-SEC
            .
@@ -3729,11 +3858,11 @@
       *    患者情報の再セット
            PERFORM 1001-SPA-JYUSIN-SEC
       *
-      *    特定疾患の有無検索
-           PERFORM 11011-TOKUTEI-SYORI-SEC
-      *
       *    病名編集
            PERFORM 11012-BYOMEI-HENSYU-SEC
+      *
+      *    特定疾患の有無検索
+           PERFORM 11011-TOKUTEI-SYORI-SEC
       *
       *    訂正日の初診算定日
            PERFORM 3009-SYOSIN-SYORI-SEC
@@ -3794,9 +3923,9 @@
       *    初診料の算定履歴のチェック
            MOVE    SPACE               TO  WRK-SYOSINYMD1
       *
-           EVALUATE    SPA-HOSPSBT
+      *    EVALUATE    SPA-HOSPSBT
       *        病院
-               WHEN    1
+      *******  WHEN    1
       *            老人
                    MOVE    "111700110"         TO  WRK-SRYCD
                    PERFORM 30091-SANTEI-CHK-SEC
@@ -3812,7 +3941,7 @@
                        MOVE    WRK-YMD         TO  WRK-SYOSINYMD1
                    END-IF
       *        診療所
-               WHEN    2
+      *******  WHEN    2
       *            老人
                    MOVE    "111700210"         TO  WRK-SRYCD
                    PERFORM 30091-SANTEI-CHK-SEC
@@ -3827,7 +3956,7 @@
                           (WRK-YMD             >   WRK-SYOSINYMD1)
                        MOVE    WRK-YMD         TO  WRK-SYOSINYMD1
                    END-IF
-           END-EVALUATE
+      *****END-EVALUATE
       *    小児科診察料
       *    　　院外処方   初診
            MOVE    "113003510"         TO  WRK-SRYCD
@@ -5459,4 +5588,51 @@
        990-PARA-NEXT-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    テーブル検索処理
+      *****************************************************************
+       910-DBSELECT-SEC                SECTION.
+      *
+           MOVE    ZERO            TO  MCP-RC
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           IF    ( MCP-RC          =   ZERO )
+               PERFORM 920-DBFETCH-SEC
+           END-IF
+      *
+           .
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ読み込み処理
+      *****************************************************************
+       920-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       920-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢクロース処理
+      *****************************************************************
+       990-DBCLOSE-SEC           SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       990-DBCLOSE-EXT.
+           EXIT.
       *

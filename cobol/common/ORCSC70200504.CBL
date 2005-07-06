@@ -2741,6 +2741,11 @@
            IF      LNK-ORCSC-PG        =   "K02"
                MOVE    SPA-WORK            TO  SPA-K01KYOUTU
            END-IF
+      *    訂正で自動発生なしの場合
+           IF     (LNK-ORCSC-SYORIFLG  =   1  )  AND
+                  (SPA-TEISEI-FLG      =   "0")
+               GO      TO      300-AUTO-SYORI-EXT
+           END-IF
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
@@ -3032,6 +3037,9 @@
                                                         (08 IDXS)
                MOVE    "70"            TO  LNK-ORCSC-SRYKBN
                                                         (08 IDXS)
+      *        自動発生分としない
+               MOVE    "4"             TO  LNK-ORCSC-AUTOKBN
+                                                         (08 IDXS)
       *        入院回数
                IF      WRK-NYU-DAY     >   ZERO
                     MOVE    "*/"           TO  LNK-ORCSC-INPUTCD

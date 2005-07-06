@@ -464,6 +464,8 @@
                    IF      FLG-ZENKAI          =   1
                        IF      LNK-WKSRY-AUTOKBN(IDX IDY)    =   "2" OR
                                                                  "3"
+                                                             OR  "4"
+                                                             OR  "6"
                            MOVE    1               TO  FLG-HEN-CHK
       *                    残量廃棄は対象とする
                            IF      LNK-WKSRY-SRYCD(IDX IDY)
@@ -482,11 +484,37 @@
                        MOVE    1               TO  FLG-HEN-CHK
                    END-IF
                    IF     (FLG-SYORIFLG                  =   1  ) AND
-                          (LNK-WKSRY-AUTOKBN(IDX IDY)    =  "3" )
+                          (LNK-WKSRY-AUTOKBN(IDX IDY)    =  "3"
+                                                         OR "6" )
       *                訂正自動作成で算定回数を超えている時対象とする
                        PERFORM 10023-AUTOCHK-SEC
                        IF      FLG-AUTO-OK         =   1
                            MOVE    ZERO            TO  FLG-HEN-CHK
+                       END-IF
+                   END-IF
+      *            登録時自動発生分は編集しない
+                   IF     (FLG-SYORIFLG                  =   1  ) AND
+                          (LNK-WKSRY-AUTOKBN(IDX IDY)    =  "4"
+                                                         OR "6" )
+      *                訂正時の自動発生しない
+                       IF     (SPA-TEISEI-FLG            =  "1")
+                         AND  (FLG-AUTO-OK               =   ZERO)
+                           MOVE    1               TO  FLG-HEN-CHK
+                       ELSE
+                           MOVE    ZERO            TO  FLG-HEN-CHK
+                           MOVE    1               TO  FLG-AUTO-OK
+                       END-IF
+                   END-IF
+      *            特定疾患処方管理加算編集判定
+                   IF     (FLG-SYORIFLG                  =   1  ) AND
+                          (LNK-WKSRY-AUTOKBN(IDX IDY)    =  "5")
+      *                訂正時の自動発生しない
+                       IF     (SPA-TEISEITOKU-FLG        =  "1")
+                         AND  (FLG-AUTO-OK               =   ZERO)
+                           MOVE    1               TO  FLG-HEN-CHK
+                       ELSE
+                           MOVE    ZERO            TO  FLG-HEN-CHK
+                           MOVE    1               TO  FLG-AUTO-OK
                        END-IF
                    END-IF
                    IF      FLG-HEN-CHK         =   ZERO
@@ -953,6 +981,11 @@
                MOVE    "1"                 TO  SPA-COM-SURFLG  (IDX2)
                MOVE    SPACE               TO  SPA-COM-AUTOKBN (IDX2)
            END-IF
+      *    訂正時登録時の区分
+           IF      ORCSCWKSRY-SYORIFLG =   ZERO
+               MOVE    SPA-COM-AUTOKBN (IDX2)
+                                       TO  SPA-COM-MAE-AUTOKBN  (IDX2)
+           END-IF
       *
            IF      FLG-AUTO-OK         =   1
                MOVE    SPACE               TO  SPA-COM-AUTOKBN (IDX2)
@@ -1172,6 +1205,14 @@
                MOVE    1                   TO  FLG-SYUBETU
            END-IF
       *
+      *    自動発生の展開分
+           IF      FLG-SYUBETU         =   1
+               IF     (FLG-AUTO-OK         =   1 ) AND
+                      (LNK-WKSRY-SRYKBN (IDX)  NOT =   "70" )
+                   MOVE    ZERO            TO  FLG-SYUBETU
+               END-IF
+           END-IF
+      *
             IF      FLG-SYUBETU         =   1
                ADD     1                   TO  IDX2
                MOVE    "."                 TO  SPA-GMN-INPUTCD
@@ -1296,10 +1337,24 @@
                                                 SPA-AREA
                                                 TNS-TENSU-REC
            IF      LNK-SC91-ERRCD      =   "K004"
+              OR  (LNK-SC91-ERRCD2     =   "K004"  )
                MOVE    1               TO  FLG-AUTO-OK
                MOVE    SPACE           TO  LNK-SC91-ERRCD
            END-IF
       *
+      *    薬剤情報で毎回回の算定
+           IF     (SPA-YAKJYO-1        =   2 )  AND
+                  (FLG-AUTO-OK         =   1 )  AND
+                  (LNK-WKSRY-SRYCD  (IDX IDY)   =   "120002370")
+               MOVE    ZERO            TO  FLG-AUTO-OK
+           END-IF
+           IF    ((SPA-YAKJYO-2        =   2 )  OR
+                  (SPA-YAKJYO-3        =   2 )) AND
+                  (FLG-AUTO-OK         =   1 )  AND
+                  (LNK-WKSRY-SRYCD  (IDX IDY)   =   "113701410"
+                                                OR  "113701310")
+               MOVE    ZERO            TO  FLG-AUTO-OK
+           END-IF
            .
        10023-AUTOCHK-EXT.
            EXIT.
@@ -1689,6 +1744,15 @@
       *            自動算定区分
                    MOVE    SPA-COM-AUTOKBN (IDX)    TO  WKSRY-AUTOKBN
                                                                  (IDY)
+      *            訂正で前回がある時
+                   IF     (SPA-COM-AUTOKBN (IDX)    =   SPACE )  AND
+                          (SPA-COM-MAE-AUTOKBN(IDX) =   "4"
+                                                    OR  "5"
+                                                    OR  "6"   )
+                      MOVE    SPA-COM-MAE-AUTOKBN(IDX)
+                                                   TO  WKSRY-AUTOKBN
+                                                                 (IDY)
+                   END-IF
       *            数量の入力がある時
                    IF     (SPA-COM-AUTOKBN (IDX)    =   SPACE )  AND
                           (SPA-COM-SURFLG  (IDX)    =   "1"   )

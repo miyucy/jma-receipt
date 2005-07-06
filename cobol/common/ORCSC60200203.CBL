@@ -50,6 +50,8 @@
            03  FLG-END             PIC 9(01).
            03  FLG-SANTEI          PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
+           03  FLG-SRYACT          PIC 9(01).
+           03  FLG-SRYACCT         PIC 9(01).
       *
            03  FLG-ERR             PIC 9(01).
            03  FLG-SP              PIC 9(01).
@@ -352,6 +354,14 @@
       *    算定履歴
        01  SANTEI-REC.
            COPY    "CPSANTEI.INC".
+      *
+      *    診療行為マスタ−
+       01  SRYACT-REC.
+           COPY    "CPSRYACT.INC".
+      *
+      *    診療会計マスタ−
+       01  SRYACCT-REC.
+           COPY    "CPSRYACCT.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -1345,15 +1355,15 @@
       *
            MOVE    ZERO                TO  FLG-OK
       *
-      *    同月内の検査区分番号のチェック
-           PERFORM VARYING IDX-ACT     FROM    1   BY  1
-                   UNTIL  (IDX-ACT     >   200  )  OR
-                          (LNK-ACCT-SRYCD (IDX-ACT)    =   SPACE )
-               IF      LNK-ACCT-CDKBN (IDX-ACT)    =   "D100" OR
-                                                       "D101"
-                   MOVE    1               TO  FLG-OK
-               END-IF
-           END-PERFORM
+      *T   同月内の検査区分番号のチェック
+      *    PERFORM VARYING IDX-ACT     FROM    1   BY  1
+      *            UNTIL  (IDX-ACT     >   200  )  OR
+      *                   (LNK-ACCT-SRYCD (IDX-ACT)    =   SPACE )
+      *        IF      LNK-ACCT-CDKBN (IDX-ACT)    =   "D100" OR
+      *                                                "D101"
+      *            MOVE    1               TO  FLG-OK
+      *        END-IF
+      *T   END-PERFORM
       *
       *    今回入力の検査区分番号のチェック
            PERFORM VARYING IDX-ACT     FROM    1   BY  1
@@ -1365,6 +1375,21 @@
                    MOVE    1               TO  FLG-OK
                END-IF
            END-PERFORM
+      *
+      *    同月内の検査区分番号のチェック
+           IF      FLG-OK              =   ZERO
+               IF      LNK-ACCT-SRYCD (01) =   SPACE
+                   PERFORM 10060-SINDAN-ACCT-HEN-SEC
+               END-IF
+               PERFORM VARYING IDX-ACT     FROM    1   BY  1
+                       UNTIL  (IDX-ACT     >   200  )  OR
+                              (LNK-ACCT-SRYCD (IDX-ACT)    =   SPACE )
+                   IF      LNK-ACCT-CDKBN (IDX-ACT)    =   "D100" OR
+                                                           "D101"
+                       MOVE    1               TO  FLG-OK
+                   END-IF
+               END-PERFORM
+           END-IF
       *
            IF      FLG-OK              =   ZERO
                MOVE    "0026"          TO  SPA-ERRCD
@@ -1414,11 +1439,135 @@
            IF      LNK-SC91-CNT        >   ZERO
       *        算定あり
                MOVE    "0018"              TO  SPA-ERRCD
-               MOVE    "1"                 TO  WRK-COM-CUR (IDX-Z)
+      ******** MOVE    "1"                 TO  WRK-COM-CUR (IDX-Z)
            END-IF
            .
        1007-SINDAN-CHK-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *     同月内の検査区分番号のチェック処理
+      *****************************************************************
+       10060-SINDAN-ACCT-HEN-SEC           SECTION.
+      *
+           INITIALIZE                  LNK-NAIACCT-AREA
+           MOVE    ZERO                TO  IDX-ACT
+      *
+           MOVE    SPACE               TO  SRYACCT-REC
+           INITIALIZE                      SRYACCT-REC
+           MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+           MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
+           MOVE    SPA-PTID            TO  ACCT-PTID
+           MOVE    SPA-SRYYMD(1:6)     TO  ACCT-SRYYM
+           MOVE    "60"                TO  ACCT-SRYKBN
+      *
+           MOVE    SRYACCT-REC         TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+               PERFORM 940-SRYACCT-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SRYACCT
+           END-IF
+           PERFORM UNTIL       (FLG-SRYACCT         =   1       )
+      *
+               IF     (ACCT-HKNCOMBI     =   "9999" ) OR
+                      (ACCT-ZAIKAISU     =   ZERO   )
+                   CONTINUE
+               ELSE
+      *            診療行為マスター編集
+                   PERFORM 100601-SRYACT-HEN-SEC
+               END-IF
+               MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+               PERFORM 940-SRYACCT-READ-SEC
+           END-PERFORM
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           IF      IDX-ACT             =   ZERO
+               MOVE    "999999999"     TO  LNK-ACCT-SRYCD (1)
+           END-IF
+      *
+           .
+       10060-SINDAN-ACCT-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療行為マスター編集処理
+      *****************************************************************
+       100601-SRYACT-HEN-SEC            SECTION.
+      *
+      *    診療会計マスターから診療行為マスターを検索する
+           MOVE    SPACE               TO  SRYACT-REC
+           INITIALIZE                      SRYACT-REC
+           MOVE    ACCT-HOSPID         TO  SRY-HOSPID
+           MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
+           MOVE    ACCT-PTID           TO  SRY-PTID
+           MOVE    ACCT-SRYKA          TO  SRY-SRYKA
+           MOVE    ACCT-SRYYM          TO  SRY-SRYYM
+           MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
+      *
+           MOVE    SRYACT-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+               PERFORM 900-SRYACT-NEXT-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SRYACT
+           END-IF
+           PERFORM UNTIL      FLG-SRYACT   =   1
+               PERFORM VARYING     IDX2    FROM    1   BY  1
+                       UNTIL      (IDX2        >   5   )  OR
+                                  (SRY-SRYCD(IDX2)     =   SPACE )
+                   IF      SRY-SRYCD (IDX2)(1:1)   =   "1"
+      *                点数マスタより、区分番号編集
+                       MOVE    SRY-SRYCD (IDX2)    TO  TNS-SRYCD
+                       PERFORM 910-TENSU-READ-SEC
+                       ADD     1                   TO  IDX-ACT
+                       IF      IDX-ACT             >   200
+                           MOVE    200             TO  IDX-ACT
+                       END-IF
+                       MOVE    ACCT-SRYKBN         TO  LNK-ACCT-SRYKBN
+                                                      (IDX-ACT)
+                       MOVE    SRY-SRYCD (IDX2)    TO  LNK-ACCT-SRYCD
+                                                       (IDX-ACT)
+                       MOVE    TNS-CDKBN-KBN   TO  LNK-ACCT-CDKBN-KBN
+                                                          (IDX-ACT)
+                       MOVE    TNS-CDKBN-KBNNUM
+                                               TO  LNK-ACCT-CDKBN-KBNNUM
+                                                          (IDX-ACT)
+                   END-IF
+               END-PERFORM
+      *
+               MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+               PERFORM 900-SRYACT-NEXT-SEC
+           END-PERFORM
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "SRYACCT-KEY2"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       100601-SRYACT-HEN-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *     重複算定不可チェック処理
@@ -2041,6 +2190,50 @@
       *
            .
        920-SANTEI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療行為マスター読込
+      *****************************************************************
+       900-SRYACT-NEXT-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  SRYACT-REC
+               MOVE    ZERO                TO  FLG-SRYACT
+           ELSE
+               INITIALIZE                      SRYACT-REC
+               MOVE    1                   TO  FLG-SRYACT
+           END-IF
+      *
+           .
+       900-SRYACT-NEXT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療会計マスタ読み込み
+      *****************************************************************
+       940-SRYACCT-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  SRYACCT-REC
+               MOVE    ZERO                TO  FLG-SRYACCT
+           ELSE
+               INITIALIZE                      SRYACCT-REC
+               MOVE    1                   TO  FLG-SRYACCT
+           END-IF
+      *
+           .
+       940-SINACCT-READ-EXT.
            EXIT.
       *
       *

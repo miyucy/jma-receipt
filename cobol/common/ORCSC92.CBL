@@ -274,10 +274,15 @@
       *    ÆâÊ¬ÈçÉé²Ù»î¸³¹¹¿·¥Ñ¥é¥á¥¿
            COPY    "CPORCSSANFUKA.INC".
       *
+      *    ¿ÇÎÅ¹Ô°ÙÍÑ¶¦ÄÌ¥Ñ¥é¥á¥¿
+           COPY    "K01COMMON-SPA".
+      *
       *    £Ä£Â¸¡º÷
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
+      *
+           COPY    "ORCA-SPA".
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -312,6 +317,13 @@
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-INPUT-SET-AREA
+      *
+           IF      LNK-SC92-PG         =   "K02"
+               MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+           ELSE
+               INITIALIZE                      SPA-K01KYOUTU
+           END-IF
+      *
       *
            MOVE    SPACE               TO  LNK-SC92-ERRAREA
            MOVE    LNK-SC92-GMN-IDX    TO  IDX-T
@@ -470,6 +482,7 @@
            IF      SPA-COM-CHKFLG (IDX-T)  =   SPACE
                IF     (LNK-SC92-ERRCD3     =   SPACE ) AND
                       (LNK-SC92-SRYCD(1:1) =   "1"   )
+                  AND (LNK-SC92-PG         =   "K02" )
                    PERFORM 2005-HEIYOU-CHK-SEC
                END-IF
            END-IF
@@ -624,12 +637,8 @@
            END-PERFORM
       *
       *    ¥«¡¼¥½¥ë¥¯¥í¡¼¥¹
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            IF      IDX                 =   ZERO
                IF      TNS-ROUTEKKBN   =   1
@@ -847,12 +856,8 @@
            END-IF
       *
       *    ¥«¡¼¥½¥ë¥¯¥í¡¼¥¹
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            MOVE    ZERO                TO  FLG-SST
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -1062,12 +1067,8 @@
                PERFORM 950-CHK-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "CHK-KEY3"          TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
       *    ËýÀ­áÖÄË¼À´µ´ÉÍýÎÁ¤Î¥Á¥§¥Ã¥¯
            IF     (LNK-SC92-ERRCD6 NOT =   SPACE      )  AND
@@ -1121,12 +1122,8 @@
                MOVE    "SANTEI-KEY2"       TO  ORC-DBPATH
                PERFORM 920-SANTEI-READ-SEC
            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SANTEI-KEY2"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        200512-SANTEI-SELECT-EXT.
@@ -1514,9 +1511,8 @@
                                        OR  "140040310"
                                        OR  "140002210"
                                        OR  "140002310")
-               PERFORM 200541-NYUIN-CHK-SEC
-           ELSE
-               GO      TO      20054-NETAKIRI-CHK-EXT
+              AND (SPA-K02N-NYUINFLG    =   1         )
+              PERFORM 200541-NYUIN-CHK-SEC
            END-IF
       *
            .
@@ -1594,12 +1590,8 @@
                PERFORM 910-PTNYUINRRK-READ-SEC
       *
            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTNYUINRRK-KEY2"   TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
       *    ½é²ó»»ÄêÆü¤ÎÊÑ¹¹
            IF      WRK-SANTEI-CNT      >   ZERO
@@ -1623,72 +1615,15 @@
       *    ½é¿ÇÎÁ¤Î»»ÄêÍúÎò¤Î¥Á¥§¥Ã¥¯
            MOVE    SPACE               TO  WRK-SYOSINYMD1
       *
-           EVALUATE    SPA-HOSPSBT
-      *        ÉÂ±¡
-               WHEN    1
-      *            Ï·¿Í
-                   MOVE    "111700110"         TO  WRK-SRYCD
-                   PERFORM 2005332-SANTEI-CHK-SEC
-                   IF     (WRK-SYOSINYMD1      =   SPACE  )  OR
-                          (WRK-YMD             >   WRK-SYOSINYMD1)
-                       MOVE    WRK-YMD         TO  WRK-SYOSINYMD1
-                   END-IF
-      *            Ï·¿Í³°
-                   MOVE    "111000110"         TO  WRK-SRYCD
-                   PERFORM 2005332-SANTEI-CHK-SEC
-                   IF     (WRK-SYOSINYMD1      =   SPACE  )  OR
-                          (WRK-YMD             >   WRK-SYOSINYMD1)
-                       MOVE    WRK-YMD         TO  WRK-SYOSINYMD1
-                   END-IF
-      *        ¿ÇÎÅ½ê
-               WHEN    2
-      *            Ï·¿Í
-                   MOVE    "111700210"         TO  WRK-SRYCD
-                   PERFORM 2005332-SANTEI-CHK-SEC
-                   IF     (WRK-SYOSINYMD1      =   SPACE  )  OR
-                          (WRK-YMD             >   WRK-SYOSINYMD1)
-                       MOVE    WRK-YMD         TO  WRK-SYOSINYMD1
-                   END-IF
-      *            Ï·¿Í³°
-                   MOVE    "111003610"         TO  WRK-SRYCD
-                   PERFORM 2005332-SANTEI-CHK-SEC
-                   IF     (WRK-SYOSINYMD1      =   SPACE  )  OR
-                          (WRK-YMD             >   WRK-SYOSINYMD1)
-                       MOVE    WRK-YMD         TO  WRK-SYOSINYMD1
-                   END-IF
-           END-EVALUATE
-      *    ¾®»ù²Ê¿Ç»¡ÎÁ
-      *    ¡¡¡¡±¡³°½èÊý   ½é¿Ç
-           MOVE    "113003510"         TO  WRK-SRYCD
-           PERFORM 2005332-SANTEI-CHK-SEC
-           IF     (WRK-SYOSINYMD1      =   SPACE  )  OR
-                  (WRK-YMD             >   WRK-SYOSINYMD1)
-               MOVE    WRK-YMD         TO  WRK-SYOSINYMD1
+           IF      LNK-SC92-SYORIFLG   =   1
+               MOVE    SPA-SYOYMD-OLD      TO  WRK-SYOSINYMD1
+           ELSE
+               IF      SPA-SYOYMD-OLD      =   SPACE
+                   MOVE    SPA-SYOYMD          TO  WRK-SYOSINYMD1
+               ELSE
+                   MOVE    SPA-SYOYMD-OLD      TO  WRK-SYOSINYMD1
+               END-IF
            END-IF
-      *    ¡¡¡¡±¡Æâ½èÊý   ½é¿Ç
-           MOVE    "113003710"         TO  WRK-SRYCD
-           PERFORM 2005332-SANTEI-CHK-SEC
-           IF     (WRK-SYOSINYMD1      =   SPACE  )  OR
-                  (WRK-YMD             >   WRK-SYOSINYMD1)
-               MOVE    WRK-YMD         TO  WRK-SYOSINYMD1
-           END-IF
-      *
-      *    ²¾¤Î½é¿ÇÎÁ
-           MOVE    "099110001"         TO  WRK-SRYCD
-           PERFORM 2005332-SANTEI-CHK-SEC
-           IF     (WRK-SYOSINYMD1      =   SPACE  )  OR
-                  (WRK-YMD             >   WRK-SYOSINYMD1)
-               MOVE    WRK-YMD         TO  WRK-SYOSINYMD1
-           END-IF
-      *
-      *    Ï«ºÒ½é¿ÇÎÁ
-           MOVE    "101110010"         TO  WRK-SRYCD
-           PERFORM 2005332-SANTEI-CHK-SEC
-           IF     (WRK-SYOSINYMD1      =   SPACE  )  OR
-                  (WRK-YMD             >   WRK-SYOSINYMD1)
-               MOVE    WRK-YMD         TO  WRK-SYOSINYMD1
-           END-IF
-      *
            .
       *
        200531-SYOSIN-SANTEI-EXT.
@@ -1703,6 +1638,18 @@
       *
       *D   MOVE    WRK-SRYCD           TO  TNS-SRYCD
       *D   PERFORM 910-TENSU-READ-SEC
+      *    ÊÝ¸±Ëè¤Î¥³¡¼¥É¤ÎÈ½Äê
+           SET     TBL-SAN             TO  1
+           SEARCH  TBL-SANTEI-OCC      VARYING   TBL-SAN
+               AT  END
+                   MOVE    ZERO            TO  FLG-HKNSAN
+                   MOVE    SPACE           TO  WRK-RSI-KBN
+               WHEN    WRK-SRYCD           =   TBL-SANTEI-SRYCD
+                                                          (TBL-SAN)
+                   MOVE    1               TO  FLG-HKNSAN
+                   MOVE    TBL-RSI-KBN    (TBL-SAN)
+                                           TO  WRK-RSI-KBN
+           END-SEARCH
       *
            INITIALIZE                  HZN-SANTEI-REC
       *    »»ÄêÍúÎò¸¡º÷
@@ -1711,6 +1658,12 @@
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
            MOVE    SPA-SRYYMD(1:6)     TO  SANTEI-SRYYM
+           IF     (FLG-HKNSAN          =   1   )  AND
+                  (SPA-HKNKBN      NOT =   ZERO)
+               MOVE    SPA-HKNCOMBINUM     TO  SANTEI-HKNCOMBINUM
+           ELSE
+               MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+           END-IF
       *
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -1745,12 +1698,8 @@
                END-IF
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SANTEI-KEY8"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            MOVE    HZN-SANTEI-REC          TO  SANTEI-REC
            IF      SANTEI-MSANTEICNT   >   ZERO
@@ -2251,12 +2200,8 @@
                INITIALIZE                  SYS-1005-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
            MOVE    SPACE               TO  WRK-SRYKAMEI
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC           TO  SYS-1005-REC
@@ -2437,12 +2382,8 @@
                MOVE    1                   TO  FLG-TENSUPLUS
                INITIALIZE                      TENSUPLUS-REC
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "TENSUPLUS-KEY"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
       *    ºÎ·ìÎÁ¶èÊ¬
            MOVE    TNSP-SAIKETUKBN     TO  SPA-COM-SAIKETUKBN (IDX-T)
@@ -2516,12 +2457,8 @@
                MOVE    1                   TO  FLG-INPUTCD
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "INPUTCD-KEY4"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-INPUTCD         =   ZERO
                MOVE    ICD-INPUTCD     TO  SPA-COM-ICD-INPUTCD(IDX-T)
@@ -2677,12 +2614,8 @@
                MOVE    1                   TO  FLG-TENSU
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
            .
        910-TENSU-READ-EXT.
            EXIT.
@@ -2722,12 +2655,8 @@
                MOVE    1                   TO  FLG-TENSU
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "TENSU-KEY22"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        911-TENSU-READ22-EXT.
@@ -2863,5 +2792,65 @@
            .
        910-PTNYUINRRK-READ-EXT.
            EXIT.
+      *
       *****************************************************************
+      *    ¥¯¥í¡¼¥¹½èÍý
+      *****************************************************************
+       990-DBCLOSE-SEC                 SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           .
+       990-DBCLOSE-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
+      *****************************************************************
+       910-DBSELECT-SEC                SECTION.
+      *
+           MOVE    ZERO            TO  MCP-RC
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           IF    ( MCP-RC          =   ZERO )
+               PERFORM 920-DBFETCH-SEC
+           END-IF
+      *
+           .
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ä£ÂÆÉ¤ß¹þ¤ß½èÍý
+      *****************************************************************
+       920-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       920-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    £Ä£Â¥¯¥í¡¼¥¹½èÍý
+      *****************************************************************
+       9901-DBCLOSE-SEC           SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       9901-DBCLOSE-EXT.
+           EXIT.
       *

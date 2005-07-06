@@ -62,6 +62,7 @@
            03  FLG-SRYACT          PIC 9(01).
            03  FLG-SRYACCT         PIC 9(01).
       *
+           03  FLG-SRYACCT-ARI     PIC 9(01).
            03  FLG-ERR             PIC 9(01).
            03  FLG-CHK             PIC 9(01).
            03  FLG-SP              PIC 9(01).
@@ -77,7 +78,7 @@
            03  FLG-TONPUK2         PIC 9(01).
            03  FLG-GAIYAK2         PIC 9(01).
       *
-           03  FLG-YAKJYO         PIC 9(01).
+      **** 03  FLG-YAKJYO         PIC 9(01).
            03  FLG-ADD            PIC 9(01).
       *
            03  FLG-TOKUSYO1         PIC 9(01).
@@ -579,6 +580,7 @@
            ELSE
                MOVE    SPACE               TO  WRK-COM-CHKFLG (IDX-S)
            END-IF
+           MOVE    LNK-ORCSC-PG        TO  LNK-SC92-PG
            MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC92-SYORIFLG
            MOVE    IDX-S               TO  LNK-SC92-GMN-IDX
            MOVE    WRK-SRYCD           TO  LNK-SC92-SRYCD
@@ -906,7 +908,9 @@
            INITIALIZE                  TBL-SRYKA-AREA
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   200  )  OR
-                              (WRK-GMN-INPUTCD(IDX) =   SPACE)
+                             ((WRK-GMN-INPUTCD(IDX) =   SPACE) AND
+                              (WRK-COM-INPUTCD(IDX) =   SPACE))
+      *
                IF     (WRK-COM-SRYKBN(IDX)(1:1)    =   "2" )  OR
                       (WRK-COM-SRYSYUKBN(IDX)      =   "820")
                    IF      WRK-COM-SRYKA (IDX)     =   SPACE
@@ -1008,7 +1012,8 @@
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   200  )  OR
-                              (WRK-GMN-INPUTCD(IDX) =   SPACE)
+                             ((WRK-GMN-INPUTCD(IDX) =   SPACE) AND
+                              (WRK-COM-INPUTCD(IDX) =   SPACE))
       *
            IF      WRK-COM-SRYKA (IDX)     =   WRK-SRYKA
                MOVE    WRK-COM-SRYSYUKBN (IDX) TO  WRK-CHK-SRYSYUKBN
@@ -1376,7 +1381,7 @@
            IF      (FLG-NAIFUKU            =   1  )  AND
                    (WRK-COM-ZAIEND (IDX)   =   "1")
                MOVE    WRK-ZAITEN-G        TO  WRK-ZAITEN
-               IF      WRK-ZAITEN          <   205
+               IF      WRK-ZAITEN-G        <=  205
                    IF      WRK-ZAITEN-G        =   ZERO
                        CONTINUE
                    ELSE
@@ -1586,17 +1591,35 @@
       *
       *    主科の時のみ行う
       *****IF     (IDX-KA          NOT =   1  )  OR
+      *TEST
       *    新規の時のみ行う
-           IF     (LNK-ORCSC-SYORIFLG  =   1  )  OR
+      *!   IF     (LNK-ORCSC-SYORIFLG  =   1  )  OR
       *    処方せん料算定時の時のみ行う
-                  (FLG-SYOHO-CHK       =   ZERO) OR
+           IF     (FLG-SYOHO-CHK       =   ZERO) OR
                   (FLG-SYOHOSENN       =   ZERO)
                GO      TO      3001-INGAI-SYORI-EXT
            END-IF
+      *TEST
+      *    訂正で自動発生なしの場合
+           IF     (LNK-ORCSC-SYORIFLG  =   1  )  AND
+                  (SPA-TEISEITOKU-FLG  =   "0")
+               CONTINUE
+           ELSE
+      *        特定疾患処方管理加算の処理
+               PERFORM 3003-INGAI-TOKUTEI-SEC
+           END-IF
+      *
+           .
+       3001-INGAI-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   特定疾患処方管理加算の処理
+      *****************************************************************
+       3003-INGAI-TOKUTEI-SEC            SECTION.
       *
       *    特定疾患処方管理加算のチェック
            IF     (FLG-SYOHOSENN       =   1  )  AND
-      **********  (LNK-ORCSC-TOKUTEI   =   1  )
                   (FLG-TOKUTEI         =   1  )
       *     長期投薬加算、特定疾患処方管理加算の入力が無い時
             AND   (FLG-TOKUSYO1            =   ZERO)
@@ -1609,7 +1632,7 @@
                    IF     (LNK-ORCSC-KIDCD NOT =   SPACE )  OR
                          ((SPA-TOKUTEIFLG          =  9  ) AND
                           (SPA-CHOKITOFLG          =  9  ))
-                       GO      TO      3001-INGAI-SYORI-EXT
+                       GO      TO      3003-INGAI-TOKUTEI-EXT
                    END-IF
                END-IF
       *        長期投薬加算発生
@@ -1624,11 +1647,14 @@
                        MOVE    "80"            TO  LNK-ORCSC-SRYKBN
                                                          (02 IDXS)
       *                自動発生分としない
-                       MOVE    "1"             TO  LNK-ORCSC-AUTOKBN
+      *T               MOVE    "1"             TO  LNK-ORCSC-AUTOKBN
+      *TEST
+                       MOVE    "5"             TO  LNK-ORCSC-AUTOKBN
+      *TEST
                                                          (02 IDXS)
                    END-IF
                    MOVE    1                   TO  FLG-TOKUSYO1
-                   GO      TO      3001-INGAI-SYORI-EXT
+                   GO      TO      3003-INGAI-TOKUTEI-EXT
                END-IF
       *        特定疾患処方管理
                IF      SPA-TOKUTEIFLG          =   2
@@ -1641,7 +1667,10 @@
                        MOVE    "80"            TO  LNK-ORCSC-SRYKBN
                                                          (02 IDXS)
       *                自動発生分としない
-                       MOVE    "1"             TO  LNK-ORCSC-AUTOKBN
+      *T               MOVE    "1"             TO  LNK-ORCSC-AUTOKBN
+      *TEST
+                       MOVE    "5"             TO  LNK-ORCSC-AUTOKBN
+      *TEST
                                                          (02 IDXS)
                    END-IF
                    MOVE    1                   TO  FLG-TOKUSYO1
@@ -1650,7 +1679,7 @@
            END-IF
       *
            .
-       3001-INGAI-SYORI-EXT.
+       3003-INGAI-TOKUTEI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1941,6 +1970,42 @@
                END-IF
            END-IF
       *
+      *TEST
+      *    訂正で自動発生なしの場合
+           IF     (LNK-ORCSC-SYORIFLG  =   1  )  AND
+                  (SPA-TEISEI-FLG      =   "0")
+               CONTINUE
+           ELSE
+      *        薬剤情報提供料、調基
+               PERFORM 30021-INNAI-AUTO1-SEC
+           END-IF
+      *
+      *    訂正で自動発生なしの場合
+           IF     (LNK-ORCSC-SYORIFLG  =   1  )  AND
+                  (SPA-TEISEITOKU-FLG  =   "0")
+               CONTINUE
+           ELSE
+      *        特定疾患処方管理加算
+               PERFORM 30021-INNAI-TOKUTEI-SEC
+           END-IF
+           .
+       3002-INNAI-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    薬剤情報提供料、調基算定処理
+      *****************************************************************
+       30021-INNAI-AUTO1-SEC     SECTION.
+      *
+      *    薬剤情報提供料
+           IF     (FLG-NAIYAK          =   1    )  OR
+                  (FLG-TONPUK          =   1    )  OR
+                  (FLG-GAIYAK          =   1    )
+               IF     (FLG-YAKUJYO         =   ZERO )
+                   PERFORM 30022-INNAI-YAKUJYOUCHK-SEC
+               END-IF
+           END-IF
+      *
       *    調剤技術基本料（入院外）
            IF     (FLG-NAIYAK          =   1    )  OR
                   (FLG-TONPUK          =   1    )  OR
@@ -1962,6 +2027,8 @@
                                                          (02 IDXS)
                        MOVE    "27"            TO  LNK-ORCSC-SRYKBN
                                                          (02 IDXS)
+                       MOVE    "4"             TO  LNK-ORCSC-AUTOKBN
+                                                         (02 IDXS)
                        MOVE    1               TO  FLG-CHOKI
                    ELSE
                        INITIALIZE             LNK-ORCSC-KASN-TBL2
@@ -1971,46 +2038,16 @@
                END-IF
              END-IF
            END-IF
-      *
-      *----(01.00.02) LINE ADD START ----------------------------------
-      *    薬剤情報提供料
-           IF     (FLG-NAIYAK          =   1    )  OR
-                  (FLG-TONPUK          =   1    )  OR
-                  (FLG-GAIYAK          =   1    )
-               IF     (FLG-YAKUJYO         =   ZERO )
-                   PERFORM 30022-INNAI-YAKUJYOUCHK-SEC
-               END-IF
-           END-IF
-      *
-      *    他科受診の時、メッセージを追加
-      *    IF     (FLG-NAIYAK          =   1    )  OR
-      *           (FLG-TONPUK          =   1    )  OR
-      *           (FLG-GAIYAK          =   1    )
-      *        IF      LNK-ORCSC-FUKU-SRYKA      =   1
-      *            MOVE    "099999901"         TO  WRK-SRYCD
-      *            MOVE    SPACE               TO  WRK-SRYCD2
-      *            PERFORM 3002-KASAN-SYORI-SEC
-      *            IF      FLG-ERR             =   ZERO
-      *                MOVE    "990"           TO  LNK-ORCSC-SRYSYUKBN
-      *                                                      (02 IDXS)
-      *                MOVE    "99"            TO  LNK-ORCSC-SRYKBN
-      *                                                     (02 IDXS)
-      *            END-IF
-      *        END-IF
-      *****END-IF
-      *    主科の時のみ行う
-      *    IF      IDX-KA          NOT =   1
-      *        GO      TO      3002-INNAI-SYORI-EXT
-      *    END-IF
-      *
-      *    新規の時のみ行う
-           IF      LNK-ORCSC-SYORIFLG  =   1
-               GO      TO      3002-INNAI-SYORI-EXT
-           END-IF
+           .
+       30021-INNAI-AUTO1-EXT.
+           EXIT.
+      *****************************************************************
+      *    特定疾患処方管理加算算定処理
+      *****************************************************************
+       30021-INNAI-TOKUTEI-SEC     SECTION.
       *
       *    特定疾患処方管理加算のチェック
            IF     (FLG-SYOHORYO            =   1  )  AND
-      **********  (LNK-ORCSC-TOKUTEI   =   1  )
                   (FLG-TOKUTEI         =   1  )
       *     長期投薬加算、特定疾患処方管理加算の入力が無い時
             AND   (FLG-TOKUSYO2            =   ZERO)
@@ -2023,7 +2060,7 @@
                    IF     (LNK-ORCSC-KIDCD NOT =   SPACE )  OR
                          ((SPA-TOKUTEIFLG          =  9  ) AND
                           (SPA-CHOKITOFLG          =  9  ))
-                       GO      TO      3002-INNAI-SYORI-EXT
+                       GO      TO      30021-INNAI-TOKUTEI-EXT
                    END-IF
                END-IF
       *        長期投薬加算発生
@@ -2041,11 +2078,14 @@
                                                TO  LNK-ORCSC-HKNCOMBI
                                                          (02 IDXS)
       *                自動発生分としない
-                       MOVE    "1"             TO  LNK-ORCSC-AUTOKBN
+      *T               MOVE    "1"             TO  LNK-ORCSC-AUTOKBN
+      *TEST
+                       MOVE    "5"             TO  LNK-ORCSC-AUTOKBN
+      *TEST
                                                          (02 IDXS)
                    END-IF
                    MOVE    1                   TO  FLG-TOKUSYO2
-                   GO      TO      3002-INNAI-SYORI-EXT
+                   GO      TO      30021-INNAI-TOKUTEI-EXT
                END-IF
       *        特定疾患処方管理
                IF      SPA-TOKUTEIFLG          =   2
@@ -2058,7 +2098,10 @@
                        MOVE    "25"            TO  LNK-ORCSC-SRYKBN
                                                          (02 IDXS)
       *                自動発生分としない
-                       MOVE    "1"             TO  LNK-ORCSC-AUTOKBN
+      *T               MOVE    "1"             TO  LNK-ORCSC-AUTOKBN
+      *TEST
+                       MOVE    "5"             TO  LNK-ORCSC-AUTOKBN
+      *TEST
                                                          (02 IDXS)
                    END-IF
                    MOVE    1                   TO  FLG-TOKUSYO2
@@ -2066,7 +2109,7 @@
       *
            END-IF
            .
-       3002-INNAI-SYORI-EXT.
+       30021-INNAI-TOKUTEI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2173,7 +2216,7 @@
                                            MCPDATA-REC
                IF      MCP-RC              =   ZERO
                    MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
-                   PERFORM 940-SINACCT-READ-SEC
+                   PERFORM 940-SRYACCT-READ-SEC
                ELSE
                    MOVE    1                   TO  FLG-SRYACCT
                    INITIALIZE                      SRYACCT-REC
@@ -2225,25 +2268,28 @@
       *    老人区分判定
            IF      LNK-ORCSC-ROUJIN    =   0
                IF      LNK-ORCSC-YAKJYO-1      =    1
+                                               OR   2
                     MOVE    "120002370"         TO  WRK-SRYCD
                     MOVE    SPACE               TO  WRK-SRYCD2
                END-IF
            ELSE
-      *        老人の時、手帳記載あり、なしの両方の算定チェック
-               MOVE    "113701310"         TO  WRK-SRYCD
-               PERFORM 3003-YAKJYO-CHK-SEC
-               IF      FLG-YAKJYO          =   ZERO
-                   MOVE    "113701410"         TO  WRK-SRYCD
-                   PERFORM 3003-YAKJYO-CHK-SEC
-               END-IF
+      *******  老人の時、手帳記載あり、なしの両方の算定チェック
+      *        MOVE    "113701310"         TO  WRK-SRYCD
+      *        PERFORM 3003-YAKJYO-CHK-SEC
+      *        IF      FLG-YAKJYO          =   ZERO
+      *            MOVE    "113701410"         TO  WRK-SRYCD
+      *            PERFORM 3003-YAKJYO-CHK-SEC
+      ******** END-IF
                MOVE    SPACE               TO  WRK-SRYCD
                MOVE    SPACE               TO  WRK-SRYCD2
-               IF      FLG-YAKJYO          =   ZERO
+               IF      FLG-YAKUJYO         =   ZERO
                    IF      LNK-ORCSC-YAKJYO-2  =    1
+                                               OR   2
                        MOVE    "113701310"         TO  WRK-SRYCD
                        MOVE    "113701410"         TO  WRK-SRYCD2
                    END-IF
                    IF      LNK-ORCSC-YAKJYO-3  =   1
+                                               OR   2
                        MOVE    "113701410"         TO  WRK-SRYCD
                        MOVE    "113701310"         TO  WRK-SRYCD2
                    END-IF
@@ -2253,11 +2299,15 @@
                GO      TO      30022-INNAI-YAKUJYOUCHK-EXT
            END-IF
            MOVE    1                   TO  FLG-ALL
-           PERFORM 3002-KASAN-SYORI-SEC
+           PERFORM 3003-YAKJYO-CHK-SEC
+      *****PERFORM 3002-KASAN-SYORI-SEC
            IF      FLG-ERR             =   ZERO
                MOVE    "130"           TO  LNK-ORCSC-SRYSYUKBN(02 IDXS)
                MOVE    "13"            TO  LNK-ORCSC-SRYKBN   (02 IDXS)
-               MOVE    1                   TO  FLG-YAKUJYO
+               MOVE    1               TO  FLG-YAKUJYO
+      *        自動発生分としない
+               MOVE    "6"             TO  LNK-ORCSC-AUTOKBN
+                                                         (02 IDXS)
            END-IF
            .
        30022-INNAI-YAKUJYOUCHK-EXT.
@@ -2526,6 +2576,11 @@
                                                          (02 IDXS)
                END-IF
            END-IF
+      *    訂正で自動発生なしの場合
+           IF     (LNK-ORCSC-SYORIFLG  =   1  )  AND
+                  (SPA-TEISEI-FLG      =   "0")
+               GO      TO      30021-NYUIN-INNAI-SYORI-EXT
+           END-IF
       *
       *    調剤技術基本料（入院）
            IF     (FLG-NAIYAK          =   1    )  OR
@@ -2552,6 +2607,8 @@
                                                          (02 IDXS)
                            MOVE    "27"        TO  LNK-ORCSC-SRYKBN
                                                          (02 IDXS)
+                           MOVE    "4"         TO  LNK-ORCSC-AUTOKBN
+                                                         (02 IDXS)
                        ELSE
                            INITIALIZE             LNK-ORCSC-KASN-TBL2
                                                          (02 IDXS)
@@ -2562,6 +2619,7 @@
                        IF     (WRK-SRYCD           =   "120001710") AND
                               (SPA-CHOKICHK-FLG    =   "1"     )   AND
                               (SPA-CHOKI-ARI       =   SPACE   )
+                       AND    (SPA-CHOZAI-CHK      =   ZERO    )
                            PERFORM 300211-CHOZAI-CHK-SEC
                        END-IF
                    END-IF
@@ -2577,18 +2635,78 @@
       *****************************************************************
        300211-CHOZAI-CHK-SEC           SECTION.
       *
-           MOVE    "120001810"         TO  WRK-SRYCD
-           PERFORM 3001-SANTEI-CHK-SEC
-           IF      FLG-ERR             =   1
-               IF      SPA-CHOZAI-CHK      =   ZERO
-                   MOVE    1               TO  SPA-CHOZAI-CHK
-                   MOVE    "K017"          TO  SPA-ERRCD
+           IF      SPA-CHOKI-ARI       =   SPACE
+      *        入院の調剤料のチェック
+               MOVE    "120001110"         TO  WRK-SRYCD
+               PERFORM 3002110-SRYACT-CHOZAI-SEC
+               IF      FLG-SRYACCT-ARI     =   1
+                   MOVE    "1"             TO  SPA-CHOKI-ARI
+               END-IF
+           END-IF
+      *
+           IF      SPA-CHOKI-ARI       =   SPACE
+               MOVE    "120001810"         TO  WRK-SRYCD
+               PERFORM 3001-SANTEI-CHK-SEC
+               IF      FLG-ERR             =   1
+                   IF      SPA-CHOZAI-CHK      =   ZERO
+                       MOVE    1               TO  SPA-CHOZAI-CHK
+                       MOVE    "K017"          TO  SPA-ERRCD
+                   END-IF
                END-IF
            END-IF
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
       *
            .
        300211-CHOZAI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院調剤料算定判定処理
+      *****************************************************************
+       3002110-SRYACT-CHOZAI-SEC     SECTION.
+      *
+           MOVE    SPACE               TO  SRYACCT-REC
+           INITIALIZE                      SRYACCT-REC
+           MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+           MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
+           MOVE    SPA-PTID            TO  ACCT-PTID
+           MOVE    SPA-SRYYMD(1:6)     TO  ACCT-SRYYM
+           MOVE    "24"                TO  ACCT-SRYKBN
+      *
+           MOVE    SRYACCT-REC         TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+               PERFORM 940-SRYACCT-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SRYACCT
+           END-IF
+           PERFORM UNTIL       (FLG-SRYACCT         =   1       )
+      *
+               IF     (ACCT-HKNCOMBI     =   "9999" ) OR
+                      (ACCT-ZAIKAISU     =   ZERO   )
+                   CONTINUE
+               ELSE
+                   MOVE    1               TO  FLG-SRYACCT-ARI
+               END-IF
+               MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+               PERFORM 940-SRYACCT-READ-SEC
+           END-PERFORM
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       3002110-SRYACT-CHOZAI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2741,18 +2859,18 @@
            END-IF
       *
       *
-           MOVE    WRK-SRYCD           TO  TNS-SRYCD
-           PERFORM 910-TENSU-READ-SEC
-           IF      FLG-TENSU       NOT =   ZERO
-               MOVE    "0001"              TO  SPA-ERRCD
-               MOVE    1                   TO  FLG-ERR
-               GO      TO      300211-NYUKASAN-SYORI-EXT
-           END-IF
+      *    MOVE    WRK-SRYCD           TO  TNS-SRYCD
+      *    PERFORM 910-TENSU-READ-SEC
+      *    IF      FLG-TENSU       NOT =   ZERO
+      *        MOVE    "0001"              TO  SPA-ERRCD
+      *        MOVE    1                   TO  FLG-ERR
+      *        GO      TO      300211-NYUKASAN-SYORI-EXT
+      *    END-IF
       *
       *        算定履歴チェック処理
-           IF      TNS-SANTEIRRKKBN    NOT =   ZERO
+      **** IF      TNS-SANTEIRRKKBN    NOT =   ZERO
                PERFORM 3001-SANTEI-CHK-SEC
-           END-IF
+      **** END-IF
            IF      FLG-ERR             =   ZERO
                ADD     1               TO  IDXS
                MOVE    WRK-SRYCD       TO  LNK-ORCSC-SRYCD
@@ -2785,8 +2903,8 @@
                    (FLG-ALL                =   1        )  OR
                    (SPA-NYUGAIKBN          =   "1"      )
                IF     (WRK-COM-INPUTCD(IDX)    =   WRK-SRYCD )  OR
-                      (WRK-SRYCD2          NOT =   SPACE   AND
-                       WRK-COM-INPUTCD(IDX)    =   WRK-SRYCD2)
+                     ((WRK-SRYCD2          NOT =   SPACE )  AND
+                      (WRK-COM-INPUTCD(IDX)    =   WRK-SRYCD2))
                    MOVE    1                   TO  FLG-ERR
                END-IF
       *        処方箋料のチェック
@@ -2856,18 +2974,18 @@
                GO      TO      3002-KASAN-SYORI-EXT
            END-IF
       *
-           MOVE    WRK-SRYCD           TO  TNS-SRYCD
-           PERFORM 910-TENSU-READ-SEC
-           IF      FLG-TENSU       NOT =   ZERO
-               MOVE    "0001"              TO  SPA-ERRCD
-               MOVE    1                   TO  FLG-ERR
-               GO      TO      3002-KASAN-SYORI-EXT
-           END-IF
+      ***  MOVE    WRK-SRYCD           TO  TNS-SRYCD
+      *    PERFORM 910-TENSU-READ-SEC
+      *    IF      FLG-TENSU       NOT =   ZERO
+      *        MOVE    "0001"              TO  SPA-ERRCD
+      *        MOVE    1                   TO  FLG-ERR
+      *        GO      TO      3002-KASAN-SYORI-EXT
+      **** END-IF
       *
       *    算定履歴チェック処理
-           IF      TNS-SANTEIRRKKBN    NOT =   ZERO
+      **** IF      TNS-SANTEIRRKKBN    NOT =   ZERO
                PERFORM 3001-SANTEI-CHK-SEC
-           END-IF
+     ***** END-IF
            IF      FLG-ERR             =   ZERO
                ADD     1               TO  IDXS
                MOVE    WRK-SRYCD       TO  LNK-ORCSC-SRYCD
@@ -2905,6 +3023,7 @@
            IF      LNK-SC92-GMN-IDX    >   200
                MOVE    200                 TO  LNK-SC92-GMN-IDX
            END-IF
+           MOVE    LNK-ORCSC-PG        TO  LNK-SC92-PG
            MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC92-SYORIFLG
            MOVE    WRK-SRYCD           TO  LNK-SC92-SRYCD
            MOVE    LNK-ORCSC-NENREI    TO  LNK-SC92-NENREI
@@ -2917,7 +3036,6 @@
                                        ORCSC92AREA
                                        HOZ-SCR-REC
                                        SPA-AREA
-      *
       *    エラーの時、追加なし
            IF     (SPA-ERRCD           NOT =   SPACE )  OR
                   (LNK-SC92-ERRAREA    NOT =   SPACE )
@@ -3024,12 +3142,12 @@
            EXIT.
       *
       *****************************************************************
-      *    加算料算定チェック（薬剤情報提供料　老人）処理
+      *    加算料算定チェック（薬剤情報提供料）処理
       *****************************************************************
        3003-YAKJYO-CHK-SEC         SECTION.
       *
            MOVE    ZERO                TO  FLG-ERR
-           MOVE    ZERO                TO  FLG-YAKJYO
+           MOVE    ZERO                TO  FLG-YAKUJYO
       *
       *    今回入力にないこと
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -3037,28 +3155,57 @@
                               (FLG-ERR              =   1    )   OR
                               (WRK-COM-INPUTCD(IDX) =   SPACE  AND
                                WRK-GMN-INPUTCD(IDX) =   SPACE)
-               IF      WRK-COM-INPUTCD(IDX)    =   WRK-SRYCD
-                   MOVE    1                   TO  FLG-YAKJYO
+               IF     (WRK-COM-INPUTCD(IDX)    =   WRK-SRYCD )  OR
+                     ((WRK-SRYCD2          NOT =   SPACE  )  AND
+                       (WRK-COM-INPUTCD(IDX)   =   WRK-SRYCD2))
+                   MOVE    1                   TO  FLG-YAKUJYO
+     ************* MOVE    WRK-COM-MAE-AUTOKBN(IDX)
+     ************                          TO   WRK-COM-AUTOKBN(IDX)
                END-IF
            END-PERFORM
-           IF      FLG-YAKJYO          =   1
+           IF      FLG-YAKUJYO         =   1
+               MOVE    1                   TO  FLG-ERR
                GO      TO      3003-YAKJYO-CHK-EXT
            END-IF
       *
-      *
-           MOVE    WRK-SRYCD           TO  TNS-SRYCD
-           PERFORM 910-TENSU-READ-SEC
-           IF      FLG-TENSU       NOT =   ZERO
-               MOVE    1                   TO  FLG-YAKJYO
-               GO      TO      3003-YAKJYO-CHK-EXT
-           END-IF
+      *    MOVE    WRK-SRYCD           TO  TNS-SRYCD
+      *    PERFORM 910-TENSU-READ-SEC
+      *    IF      FLG-TENSU       NOT =   ZERO
+      *        MOVE    1                   TO  FLG-YAKJYO
+      *        GO      TO      3003-YAKJYO-CHK-EXT
+      *    END-IF
       *
       *        算定履歴チェック処理
-           IF      TNS-SANTEIRRKKBN    NOT =   ZERO
+      **** IF      TNS-SANTEIRRKKBN    NOT =   ZERO
                PERFORM 3001-SANTEI-CHK-SEC
+      *****END-IF
+           MOVE    ZERO            TO  FLG-ERR
+           IF     (LNK-SC91-ERRCD      =   SPACE )  AND
+                  (LNK-SC91-ERRCD2     =   SPACE )
+               MOVE    ZERO            TO  FLG-ERR
+           ELSE
+               IF     (LNK-ORCSC-ROUJIN    =   0    )  AND
+                      (LNK-ORCSC-YAKJYO-1  =   1    )
+                   MOVE    1                   TO  FLG-ERR
+               END-IF
+               IF     (LNK-ORCSC-ROUJIN    =   1    )  AND
+                     ((LNK-ORCSC-YAKJYO-2  =   1    )  OR
+                      (LNK-ORCSC-YAKJYO-3  =   1    ))
+                   MOVE    1                   TO  FLG-ERR
+               END-IF
            END-IF
-           IF      FLG-ERR         NOT =   ZERO
-               MOVE    1                   TO  FLG-YAKJYO
+           IF      FLG-ERR             =   ZERO
+               ADD     1               TO  IDXS
+               MOVE    WRK-SRYCD       TO  LNK-ORCSC-SRYCD
+                                                   (02 IDXS)
+               MOVE    TNS-TEN         TO  LNK-ORCSC-TENSU
+                                                   (02 IDXS)
+               MOVE    WRK-SRYKA       TO  LNK-ORCSC-SRYKA
+                                                         (02 IDXS)
+               MOVE    WRK-HKNCOMBI    TO  LNK-ORCSC-HKNCOMBI
+                                                         (02 IDXS)
+      *        年齢加算処理
+               PERFORM 3002-NENREI-KASAN-SEC
            END-IF
       *
            .
@@ -3273,7 +3420,7 @@
                                                 MCPDATA-REC
                    IF      MCP-RC              =   ZERO
                        MOVE    "SRYACCT-KEY5"      TO  ORC-DBPATH
-                       PERFORM 940-SINACCT-READ-SEC
+                       PERFORM 940-SRYACCT-READ-SEC
                    ELSE
                        MOVE    1                   TO  FLG-SRYACCT
                    END-IF
@@ -3294,7 +3441,7 @@
                        END-IF
       *
                        MOVE    "SRYACCT-KEY5"      TO  ORC-DBPATH
-                       PERFORM 940-SINACCT-READ-SEC
+                       PERFORM 940-SRYACCT-READ-SEC
                    END-PERFORM
                    MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
                    MOVE    "SRYACCT-KEY5"      TO  ORC-DBPATH
@@ -3465,7 +3612,7 @@
       *****************************************************************
       *    診療会計マスタ読み込み
       *****************************************************************
-       940-SINACCT-READ-SEC         SECTION.
+       940-SRYACCT-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
            CALL    "ORCMCPSUB"          USING
@@ -3481,7 +3628,7 @@
            END-IF
       *
            .
-       940-SINACCT-READ-EXT.
+       940-SRYACCT-READ-EXT.
            EXIT.
       *****************************************************************
       *    受診履歴マスター読込

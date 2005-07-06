@@ -1142,6 +1142,21 @@
                WHEN    "1201"
                    MOVE    "入院帳票が印刷エラーです。"
                                        TO  SPA-ERRMSG
+               WHEN    "1202"
+                   MOVE    "入院処方箋プログラムがありません。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "システム管理を確認して下さい。"
+                                       TO  SPA-ERRMSG(35:)
+               WHEN    "1203"
+                   MOVE    "注射処方箋プログラムがありません。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "システム管理を確認して下さい。"
+                                       TO  SPA-ERRMSG(35:)
+               WHEN    "1204"
+                   MOVE    "指示箋プログラムがありません。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "システム管理を確認して下さい。"
+                                       TO  SPA-ERRMSG(31:)
       *!
                WHEN    "K001"
                    MOVE    "警告！時間外算定がありません"
