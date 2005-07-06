@@ -1818,12 +1818,19 @@
            MOVE    SMCNDATE-HMS        TO  ACCT-UPHMS
       *
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
+      * take mod st
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+      *    MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
+           MOVE    PATH-TBL-SRYACCT-PRV-KEY
+                                       TO  MCP-PATH
+      *    CALL    "ORCMCPSUB"         USING
+      *                                MCPAREA
+      *                                ORCMCPAREA
+      *                                MCPDATA-REC
+           CALL    "MCPSUB"            USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
+      * take mod ed
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "SYRACCT INS ERR:" MCP-RC
                        ",KEY:" ACCT-KEY
@@ -1915,11 +1922,18 @@
       *
            MOVE    SRYACT-REC          TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "SRYACT-KEY"        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
+      * take mod st
+      *    MOVE    "SRYACT-KEY"        TO  ORC-DBPATH
+           MOVE    PATH-TBL-SRYACCT-PRV-KEY
+                                       TO  MCP-PATH
+      *    CALL    "ORCMCPSUB"          USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      *                                 MCPDATA-REC
+           CALL    "MCPSUB"             USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC
+      * take mod ed
       *
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "CHOZAI SRYACT INS ERR:" SRY-KEY  "."
