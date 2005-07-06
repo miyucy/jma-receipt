@@ -42,14 +42,14 @@
             02  HCM25-SYOSHINKBN
                     PIC X(2)    OCCURS  4 TIMES.
             02  HCM25-KHNTEN
-                    PIC X(6)    OCCURS  38 TIMES.
+                    PIC X(7)    OCCURS  37 TIMES.
             02  HCM25-KAISU
-                    PIC X(3)    OCCURS  38 TIMES.
+                    PIC X(3)    OCCURS  37 TIMES.
             02  HCM25-TENSU
-                    PIC X(6)    OCCURS  38 TIMES.
+                    PIC X(7)    OCCURS  38 TIMES.
             02  HCM25-KINGAKU
-                    PIC X(6)    OCCURS  38 TIMES.
-            02  HCM25-TANKA PIC X(3).
+                    PIC X(7)    OCCURS  38 TIMES.
+            02  HCM25-TANKA PIC X(4).
             02  HCM25-TENSUG    PIC X(7).
             02  HCM25-KINGAKUG  PIC X(7).
             02  HCM25-SRYKBN
@@ -58,10 +58,10 @@
                     PIC X(52)   OCCURS  29 TIMES.
             02  HCM25-SHINDANSYOSUU PIC X(3).
             02  HCM25-FTNWARIAI PIC X(3).
-            02  HCM25-FTNNISSU  PIC X(4).
+            02  HCM25-FTNNISSU  PIC X(3).
             02  HCM25-MEISAISYOSUU  PIC X(3).
             02  HCM25-SEIKYU
-                    PIC X(7)    OCCURS  8 TIMES.
+                    PIC X(10)   OCCURS  8 TIMES.
             02  HCM25-SEIKYUG   PIC X(10).
             02  HCM25-SEIKYUGAKUTOTAL   PIC X(10).
             02  HCM25-TSUIN-G           OCCURS  3 TIMES.

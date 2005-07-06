@@ -42,13 +42,13 @@
             02  HCN25-SYOSHINKBN
                     PIC X(2)    OCCURS  4 TIMES.
             02  HCN25-KHNTEN
-                    PIC X(6)    OCCURS  29 TIMES.
+                    PIC X(7)    OCCURS  28 TIMES.
             02  HCN25-KAISU
-                    PIC X(3)    OCCURS  29 TIMES.
+                    PIC X(3)    OCCURS  28 TIMES.
             02  HCN25-TENSU
-                    PIC X(6)    OCCURS  29 TIMES.
+                    PIC X(7)    OCCURS  29 TIMES.
             02  HCN25-KINGAKU
-                    PIC X(6)    OCCURS  29 TIMES.
+                    PIC X(7)    OCCURS  29 TIMES.
             02  HCN25-NYUYMD.
               03  HCN25-NYUY  PIC X(2).
               03  HCN25-NYUM  PIC X(2).
@@ -59,7 +59,7 @@
             02  HCN25-NYUINSYUBETU
                     PIC X(10)   OCCURS  9 TIMES.
             02  HCN25-NYUKHNTEN
-                    PIC X(6)    OCCURS  9 TIMES.
+                    PIC X(7)    OCCURS  9 TIMES.
             02  HCN25-NYUKHNTENN
                     PIC X(10)   OCCURS  9 TIMES.
             02  HCN25-KAKERU
@@ -69,41 +69,44 @@
             02  HCN25-NICHI
                     PIC X(4)    OCCURS  5 TIMES.
             02  HCN25-NYUTENSU
-                    PIC X(6)    OCCURS  11 TIMES.
+                    PIC X(7)    OCCURS  11 TIMES.
             02  HCN25-NYUTENSUN-G       OCCURS  11 TIMES.
               03  HCN25-NYUKOUTENN
                       PIC X(2)    OCCURS  6 TIMES.
             02  HCN25-NYUKINGAKU
-                    PIC X(6)    OCCURS  11 TIMES.
+                    PIC X(7)    OCCURS  11 TIMES.
             02  HCN25-NYUKINGAKUN-G     OCCURS  11 TIMES.
               03  HCN25-NYUYKZTENSUN
                       PIC X(2)    OCCURS  6 TIMES.
-            02  HCN25-TANKA PIC X(3).
+            02  HCN25-TANKA PIC X(4).
             02  HCN25-TENSUG    PIC X(7).
             02  HCN25-KINGAKUG  PIC X(7).
             02  HCN25-SRYKBN
                     PIC X(2)    OCCURS  27 TIMES.
             02  HCN25-TEKIYO
                     PIC X(52)   OCCURS  27 TIMES.
-            02  HCN25-KIJYUN    PIC X(30).
+            02  HCN25-KIJYUN
+                    PIC X(4)    OCCURS  5 TIMES.
+            02  HCN25-SYOKBN
+                    PIC X(2)    OCCURS  4 TIMES.
             02  HCN25-SYOKHNTEN
-                    PIC X(6)    OCCURS  4 TIMES.
+                    PIC X(7)    OCCURS  4 TIMES.
             02  HCN25-SYOKAKERU PIC X(4).
             02  HCN25-SYOKAISU
                     PIC X(3)    OCCURS  4 TIMES.
             02  HCN25-SYONICHI  PIC X(4).
             02  HCN25-BIKOU
                     PIC X(24)   OCCURS  3 TIMES.
-            02  HCN25-SYONISSU  PIC X(4).
-            02  HCN25-SYOKINGAKU    PIC X(7).
+            02  HCN25-SYONISSU  PIC X(3).
+            02  HCN25-SYOKINGAKU    PIC X(10).
             02  HCN25-SHINDANSYOSUU PIC X(3).
             02  HCN25-FTNWARIAI PIC X(3).
-            02  HCN25-FTNNISSU  PIC X(4).
+            02  HCN25-FTNNISSU  PIC X(3).
             02  HCN25-MEISAISYOSUU  PIC X(3).
             02  HCN25-SONOTANIN PIC X(2).
             02  HCN25-SONOTAKAISU   PIC X(2).
             02  HCN25-SEIKYU
-                    PIC X(7)    OCCURS  9 TIMES.
+                    PIC X(10)   OCCURS  9 TIMES.
             02  HCN25-SEIKYUG   PIC X(10).
             02  HCN25-SEIKYUGAKUTOTAL   PIC X(10).
             02  HCN25-SEIKYUYMD.
