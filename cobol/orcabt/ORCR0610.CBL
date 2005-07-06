@@ -54,6 +54,9 @@
       *                                     月途中に保険者は変わらずに
       *                                     保険が変更になった場合は１枚
       *                                     にする
+      *  01.03.05    NACL-藤原    05/07/05  前期高齢者のとき、月途中に
+      *                                     給付割合が変更になった場合は
+      *                                     それぞれにレセプトを作成する
       *
       *  02.06.00    NACL-竹田    05/05/30  realtime preview 処理追加
       *  02.06.01    NACL-門脇    05/06/01  長期高額療養レセ記載判定追加
@@ -1706,6 +1709,25 @@
                    ELSE    
                        MOVE    PTHKN-HOJOKBN   TO  WRK-RECE61-HOJOKBN
                    END-IF
+               WHEN    "060" 
+                   IF     (WRK-NENREI  >=   70)  AND
+                          (WRK-NENREI  <=   74)
+                       EVALUATE   PTHKN-HOJOKBN
+                           WHEN   "1"
+                           WHEN   "4"
+                           WHEN   "2"
+                           WHEN   "5"
+                               MOVE    PTHKN-HOJOKBN   TO
+                                               WRK-RECE61-HOJOKBN
+                       END-EVALUATE
+                   END-IF     
+               WHEN    OTHER 
+                   EVALUATE   PTHKN-HOJOKBN
+                       WHEN   "9"
+                       WHEN   "8"
+                           MOVE    PTHKN-HOJOKBN   TO
+                                               WRK-RECE61-HOJOKBN
+                   END-EVALUATE             
            END-EVALUATE             
            MOVE    SPACE               TO WRK-RECE61-RECEKA
       *
