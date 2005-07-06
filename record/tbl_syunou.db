@@ -982,3 +982,19 @@ path	key41 	{
 		;
 	};
 };
+
+path	key42 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_key42_csr CURSOR FOR
+		SELECT SUM(SKYMONEY) AS SKYMONEY,
+		       SUM(NYUKIN_TOTAL) AS NYUKIN_TOTAL
+		FROM tbl_syunou
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   PTID        =   :PTID
+			AND   CREATEKBN   <>  '3'
+			AND   SKYMONEY    <>  NYUKIN_TOTAL
+		;
+	};
+};
+

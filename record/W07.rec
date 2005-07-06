@@ -222,6 +222,20 @@ W07	{
 					count	int;
 					item	varchar(22)[2];
 				};
+				TEISEI_COMB	{
+					TEISEI	{
+						value	varchar(12);
+					};
+					count	int;
+					item	varchar(12)[2];
+				};
+				TEISEITOKU_COMB	{
+					TEISEITOKU	{
+						value	varchar(12);
+					};
+					count	int;
+					item	varchar(12)[2];
+				};
 			};
 			TAGNAME1    {
 			    state   int;
