@@ -62,4 +62,6 @@
            03  LNK-SC91-ERRCD          PIC X(04).
       *    エラー診療メッセージ
            03  LNK-SC91-ERRMSG         PIC X(100).
+      *    エラーコード２
+           03  LNK-SC91-ERRCD2         PIC X(04).
       *
