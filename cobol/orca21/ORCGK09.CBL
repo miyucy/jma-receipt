@@ -176,6 +176,8 @@
            03  FLG-CHK             PIC 9(01).
       *
            03  FLG-KAI             PIC 9(01).
+           03  FLG-DOALL           PIC 9(01).
+           03  FLG-WRITE           PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -266,6 +268,8 @@
       *
       *    診療行為名称
            03  WRK-SRYSYUMEI       PIC X(40).
+      *
+           03  WRK-SRYSYUMEI-H     PIC X(400).
       *
            03  WRK-MEISYO          PIC X(40).
       *    数量表示用
@@ -1006,6 +1010,9 @@
                MOVE    "1"                 TO  WRK-DO(IDX-D2)
                MOVE    "-"                 TO  WRK-SEL(IDX-D2)
                MOVE    SPA-NAI-MAX2(2:3)   TO  WRK-DO(IDX-D2 + 1)
+               MOVE    1                   TO  FLG-DOALL
+           ELSE
+               MOVE    ZERO                TO  FLG-DOALL
            END-IF
       *
            PERFORM VARYING     IDX-D2      FROM    1   BY  1
@@ -1389,10 +1396,10 @@
                    UNTIL      (IDX         >   5   )   OR
                               (SRY-SRYCD (IDX)     =   SPACE )
       *        登録時の自動算定分は対象外（点滴以外）
-               IF     (SRY-AUTOKBN (IDX)   =   "4"  OR
-                                               "5"  OR
-                                               "6" ) OR
-                     ((SRY-AUTOKBN (IDX)   =   "3" ) AND
+      ******** IF     (SRY-AUTOKBN (IDX)   =   "4"  OR
+      *                                        "5"  OR
+      *******                                  "6" ) OR
+               IF    ((SRY-AUTOKBN (IDX)   =   "3" ) AND
                       (SRY-SRYSYUKBN   NOT =   "330" AND
                                                "340" ))
                    CONTINUE
@@ -1405,6 +1412,13 @@
       *            自動発生の中心静脈注射のみ選択可能とする
                    IF     (SRY-AUTOKBN (IDX)   =   "3" )  AND
                           (SRY-SRYSYUKBN       =   "340")
+                       MOVE    SPACE           TO  WKSRY-AUTOKBN (IDY)
+                   END-IF
+      *            自動発生選択可能とする
+                   IF     (FLG-WRITE           =   1   )  AND
+                          (SRY-AUTOKBN (IDX)   =   "4"
+                                               OR  "5"
+                                               OR  "6"  )
                        MOVE    SPACE           TO  WKSRY-AUTOKBN (IDY)
                    END-IF
                    MOVE    SRY-INPUTNUM (IDX)  TO  WKSRY-INPUTNUM (IDY)
@@ -1587,6 +1601,16 @@
                MOVE    LNK-WKSRY-SRYSYUKBN (IDX)
                                        TO  SPA-GMN-TMEISYO (IDG)(2:3)
                MOVE    WRK-SRYSYUMEI   TO  SPA-GMN-TMEISYO (IDG)(7:)
+           END-IF
+      *    自動発生分
+           IF      LNK-WKSRY-AUTOKBN(IDX 1)    =   "4"
+                                               OR  "5"
+                                               OR  "6"
+               MOVE    SPACE           TO  WRK-SRYSYUMEI-H
+               MOVE    "◎"            TO  WRK-SRYSYUMEI-H
+               MOVE    SPA-GMN-TMEISYO (IDG)
+                                       TO  WRK-SRYSYUMEI-H(3:)
+               MOVE    WRK-SRYSYUMEI-H TO  SPA-GMN-TMEISYO (IDG)
            END-IF
       *
            INSPECT SPA-GMN-TMEISYO  (IDG)   REPLACING
@@ -2047,6 +2071,8 @@
       *****************************************************************
        42011-PARA-HEN-SEC           SECTION.
       *
+           MOVE    1                   TO  FLG-WRITE
+      *
       *     ワーク診療行為のレイアウトへ編集後、画面用編集へ
            MOVE    SPACE               TO  LNK-WKSRYACT-AREA
            MOVE    ZERO                TO  IDX-KOUI
@@ -2089,6 +2115,13 @@
       *        IF      SRY-SRYKBN          =   "11"  OR  "12"
       *            CONTINUE
       ****     ELSE
+      *        ”＊”の時、自動発生分は対象外
+               IF     (FLG-DOALL           =   1  )  AND
+                      (SRY-AUTOKBN (1)     =   "4"
+                                           OR  "5"
+                                           OR  "6" )
+                   CONTINUE
+               ELSE
       *        すべてを対象とする
                    MOVE    WRK-DOKAI (IDX-R)   TO  WRK-DOKAISU
       *            診療会計検索編集
@@ -2104,7 +2137,7 @@
                    MOVE    WKSRYACT-REC        TO  PARA-DATA-REC
       *
                    WRITE                       PARA-REC
-      *********END-IF
+               END-IF
       *
                MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
                PERFORM 930-SRYACT-READ-SEC
