@@ -493,9 +493,9 @@
                        END-IF
                    END-IF
       *            登録時自動発生分は編集しない
-                   IF     (FLG-SYORIFLG                  =   1  ) AND
-                          (LNK-WKSRY-AUTOKBN(IDX IDY)    =  "4"
-                                                         OR "6" )
+                   IF     (FLG-SYORIFLG                =   1  ) AND
+                          (LNK-WKSRY-AUTOKBN(IDX IDY)  =  "4"
+                                                       OR "6" )
       *                訂正時の自動発生しない
                        IF     (SPA-TEISEI-FLG            =  "1")
                          AND  (FLG-AUTO-OK               =   ZERO)
@@ -1012,7 +1012,7 @@
                    MOVE    1               TO  SPA-COM-KAISU2(IDX2)
                END-IF
       *        数量の再計算
-               IF     (SPA-COM-SURYO2  (IDX2)  >   ZERO )
+               IF     (SPA-COM-SURYO2  (IDX2)  >   1    )
                    COMPUTE SPA-COM-SURYO2  (IDX2)
                                        =   SPA-COM-SURYO2  (IDX2)
                                        /   SPA-COM-KAISU2(IDX2)
