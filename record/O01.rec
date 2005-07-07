@@ -3,6 +3,9 @@ O01	{
 		SRYYM	{
 			value	varchar(7);
 		};
+		DENPPRTYMD	{
+			value	varchar(10);
+		};
 		IKKATU	{
 			value	bool;
 		};

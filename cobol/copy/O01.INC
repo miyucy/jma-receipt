@@ -20,16 +20,13 @@
       *     02  O01-FIXED17.
               03  O01-SRYYM.
                 04  O01-VALUE   PIC X(7).
+              03  O01-DENPPRTYMD.
+                04  O01-VALUE   PIC X(10).
               03  O01-IKKATU.
                 04  O01-VALUE   PIC X.
               03  O01-KOBETU.
                 04  O01-VALUE   PIC X.
-              03  O01-CHK-KIKAN01.
-                04  O01-VALUE   PIC X.
-              03  O01-CHK-KIKAN02.
-                04  O01-VALUE   PIC X.
-              03  O01-CHK-KIKAN03.
-                04  O01-VALUE   PIC X.
+              03  O01-CHK-KIKAN PIC X  OCCURS 3.
               03  O01-KIKAN01.
                 04  O01-VALUE   PIC X(20).
               03  O01-KIKAN02.

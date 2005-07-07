@@ -33,6 +33,7 @@
                05  TEIKI1P-KIKAN-ST        PIC  X(08).
                05  TEIKI1P-KIKAN-ED        PIC  X(08).
                05  TEIKI1P-KIKAN-KBN       PIC  X(01).
+           03  TEIKI1P-DENPPRTYMD          PIC  X(08).
            03  TEIKI1P-JOBID               PIC  9(07).
            03  TEIKI1P-SHELLID             PIC  X(08).
            03  TEIKI1P-HOSPID              PIC  X(24).

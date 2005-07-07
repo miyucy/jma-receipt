@@ -329,6 +329,7 @@
                                                TEIKI1P-KIKAN-OCC (1)
                                                TEIKI1P-KIKAN-OCC (2)
                                                TEIKI1P-KIKAN-OCC (3)
+                                               TEIKI1P-DENPPRTYMD
                                                TEIKI1P-JOBID
                                                TEIKI1P-SHELLID
                                                TEIKI1P-HOSPID
@@ -720,6 +721,8 @@
       *
            MOVE    LNK-SYUNOU-REC (IDX1)
                                        TO  SYUNOU-REC
+      *
+           MOVE    TEIKI1P-DENPPRTYMD  TO  SYU-DENPPRTYMD
       *
            MOVE    WRK-SEIKYUSTYMD     TO  SYU-SKYSTYMD
            MOVE    WRK-SEIKYUEDYMD     TO  SYU-SKYEDYMD

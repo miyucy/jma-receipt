@@ -73,7 +73,18 @@
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
-      <label></label>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F2</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Wed, 06 Jul 2005 07:31:00 GMT</last_modification_time>
+      </signal>
+      <label>•Ø•Í•¢</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -316,7 +327,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYYM</name>
-      <x>340</x>
+      <x>344</x>
       <y>104</y>
       <width>104</width>
       <height>24</height>
@@ -551,22 +562,6 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label01</name>
-      <x>264</x>
-      <y>108</y>
-      <width>54</width>
-      <height>18</height>
-      <label>¿¡µ·«Ø∑Ó</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkHSeparator</class>
       <name>hseparator1</name>
       <x>176</x>
@@ -609,6 +604,66 @@
       <y>200</y>
       <width>1</width>
       <height>170</height>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label01</name>
+      <x>264</x>
+      <y>104</y>
+      <width>72</width>
+      <height>24</height>
+      <label>¿¡µ·«Ø∑Ó</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>DENPPRTYMD</name>
+      <x>344</x>
+      <y>144</y>
+      <width>104</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Wed, 21 Aug 2002 09:23:38 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Wed, 21 Aug 2002 09:24:21 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>10</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label2</name>
+      <x>264</x>
+      <y>144</y>
+      <width>76</width>
+      <height>24</height>
+      <label>≈¡…º»Øπ‘∆¸</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>

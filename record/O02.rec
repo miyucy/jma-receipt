@@ -1,5 +1,8 @@
 O02	{
 	fixed6	{
+		DENPPRTYMD	{
+			value	varchar(10);
+		};
 		RENNUM	{
 			value	number(3);
 		};

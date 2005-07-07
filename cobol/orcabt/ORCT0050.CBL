@@ -138,6 +138,7 @@
                                                TEIKI1P-KIKAN-OCC (1)
                                                TEIKI1P-KIKAN-OCC (2)
                                                TEIKI1P-KIKAN-OCC (3)
+                                               TEIKI1P-DENPPRTYMD
                                                TEIKI1P-JOBID
                                                TEIKI1P-SHELLID
                                                TEIKI1P-HOSPID
