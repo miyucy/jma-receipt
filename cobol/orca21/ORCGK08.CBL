@@ -839,6 +839,8 @@
            MOVE    LNK-SCRSPA      TO  SPA-K08
            MOVE    SPA-WORK        TO  SPA-K01KYOUTU
       *
+           MOVE    SPACE           TO  LINKAREA
+      *
            .
        3015-XC01-SET-EXT.
            EXIT.
