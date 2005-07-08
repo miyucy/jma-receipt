@@ -85,6 +85,8 @@
       *  02.06.03    NACL-竹田    05/05/30  realtime preview 処理追加
       *  02.06.04    NACL-小豆沢  05/06/20  転室時の入院レセ病棟区分の表示
       *                                     修正
+      *  02.06.05    NACL-藤原    05/07/05  補助区分からの給付割合の編集
+      *                                     を修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1418,10 +1420,10 @@
                                    (WRK-NENREI  <=   74)
                                  EVALUATE   COMB-HOJOKBN
                                      WHEN   "1"
-                                     WHEN   "4"
+                                     WHEN   "5"
                                        MOVE   "9"   TO   WK-HONKZKKBN
                                      WHEN   "2"
-                                     WHEN   "5"
+                                     WHEN   "6"
                                        MOVE   "8"   TO   WK-HONKZKKBN
                                  END-EVALUATE
                                END-IF     
