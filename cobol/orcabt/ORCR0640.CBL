@@ -142,6 +142,8 @@
       *  02.06.08    NACL-門脇    05/06/27  高齢者で、主保険＋地方公費
       *                                     （レセ記載なし）の一部負担額記載
       *                                     修正
+      *  02.06.09    NACL-門脇    05/07/07  更生・育成の日割計算時の
+      *                                     一部負担額記載修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -7482,6 +7484,8 @@
            MOVE   RECE62-KOHID(KOHFTN-IDX)
                                       TO  LNK-ORCSJGNGET-KOHID
            MOVE   RECE62-SRYYM        TO  LNK-ORCSJGNGET-SRYYM
+           MOVE   RECE62-SRYYM        TO  LNK-ORCSJGNGET-SKYEDYMD(1:6)
+           MOVE   "31"                TO  LNK-ORCSJGNGET-SKYEDYMD(7:2)
       *
            CALL    "ORCSJGNGET"       USING
                                       LNK-ORCSJGNGET-REC
