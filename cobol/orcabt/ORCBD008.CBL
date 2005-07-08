@@ -34,12 +34,31 @@
        CONFIGURATION               SECTION.
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
+      *
+      *    収納ファイル
+           SELECT  BD00801-FILE   ASSIGN   BD00801PARA
+                                  ORGANIZATION    IS  INDEXED
+                                  ACCESS  MODE    IS  DYNAMIC
+                                  RECORD  KEY     IS  BD00801-ISAM-KEY
+                                  FILE    STATUS  IS  STS-BD00801.
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
+      *
+      *    収納ファイル
+       FD  BD00801-FILE.
+       01  BD00801-REC.
+           02  BD00801-ISAM-KEY.
+               03  BD00801-ISAM-PTNUM      PIC X(20).
+               03  BD00801-ISAM-PTID       PIC 9(10).
+               03  BD00801-ISAM-DENPNUM    PIC 9(07).
+               03  BD00801-ISAM-NYUGAIKBN  PIC X(01).
+           02  BD00801-SYU-DAT.
+           COPY    "CPSYUNOU.INC"  REPLACING  //SYU-//
+                                   BY         //BD00801-//.
       *
       *    エラーファイル
        FD  RECEERR-FILE.
@@ -48,6 +67,11 @@
        WORKING-STORAGE             SECTION.
       *    シェル用領域
            COPY    "CPCOMMONSHELL.INC".
+      *
+      *    収納ファイル
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01//
+                                   BY         //BD00801//.
       *
       *    エラーファイル 名称領域 
            COPY    "CPCOMMONDAT2.INC"
@@ -60,6 +84,7 @@
       *    スパ領域
        01  STS-AREA.
            03  STS-RECEERR         PIC X(02).
+           03  STS-BD00801         PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -68,7 +93,9 @@
            03  FLG-INPUT           PIC 9(01).
            03  FLG-HKNCOMBI        PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
+           03  FLG-PTNUM           PIC 9(01).
            03  FLG-PTHKNINF        PIC 9(01).
+           03  FLG-SYUNOU          PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -90,7 +117,10 @@
       *
       *    一時領域
        01  WRK-AREA.
-           03  WRK-PATH            PIC X(64).
+           03  WRK-PATH.
+               05  WRK-MCP-BLOCKS  PIC S9(9)   BINARY.
+               05  WRK-MCP-RNAME   PIC S9(9)   BINARY.
+               05  WRK-MCP-PNAME   PIC S9(9)   BINARY.
            03  WRK-RECEERR         PIC X(200).
       *
            03  WRK-SYORIYMDWH      PIC X(22).
@@ -137,9 +167,6 @@
       *    自賠責保険番号
            03  WRK-CONS-JIBAI-HKNNUM   PIC X(03)   VALUE   "973".
       *
-           COPY    "CPSHELLTBL.INC".
-           COPY    "ORCA-DBPATH".
-      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -160,8 +187,8 @@
            COPY    "CPSK1031.INC".
       *
       *    収納マスタ
-       01  BD002-REC.
-           COPY    "CPBD002.INC".
+       01  SYU-REC.
+           COPY    "CPSYUNOU.INC".
       *
       *    患者保険マスタ
        01  PTHKNINF-REC.
@@ -170,6 +197,10 @@
       *    患者マスタ
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
+      *
+      *    患者番号マスタ
+       01  PTNUM-REC.
+           COPY    "CPPTNUM.INC".
       *
       *    保険組み合わせ
        01  HKNCOMBI-REC.
@@ -189,6 +220,9 @@
       *    サブプロ用　領域
       *****************************************************************
       *
+      *    ファイル削除パラメタ
+           COPY    "CPORCSFDEL.INC".
+      *
       *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
@@ -206,6 +240,7 @@
       *
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
+           COPY    "ORCA-DBPATH".
       *
            COPY    "COMMON-SPA".
       *
@@ -261,15 +296,20 @@
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
       *
-           IF      ORCBD008-SYORIKBN   =   "1"
-               MOVE    "ORCBD006"      TO  JOB-PGID
-               MOVE    "日計表（伝票発行日）"
-                                   TO  JOB-SHELLMSG
-           ELSE
-               MOVE    "ORCBD007"      TO  JOB-PGID
-               MOVE    "日計表（診療年月日）"
-                                   TO  JOB-SHELLMSG
-           END-IF
+           EVALUATE    ORCBD008-SYORIKBN
+           WHEN        "1"
+               MOVE    "ORCBD006"              TO  JOB-PGID
+               MOVE    "日計表（伝票発行日）"  TO  JOB-SHELLMSG
+           WHEN        "2"
+               MOVE    "ORCBD007"              TO  JOB-PGID
+               MOVE    "日計表（診療年月日）"  TO  JOB-SHELLMSG
+           WHEN        "3"
+               MOVE    "ORCBD002"              TO  JOB-PGID
+               MOVE    "日計表（伝票発行日）"  TO  JOB-SHELLMSG
+           WHEN        "4"
+               MOVE    "ORCBD003"              TO  JOB-PGID
+               MOVE    "日計表（診療年月日）"  TO  JOB-SHELLMSG
+           END-EVALUATE
       *
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
@@ -279,8 +319,16 @@
            MOVE    LNK-PRTKANRI-TERMID
                                    TO  RECEERR-TERMID
       *
+           MOVE    "BD00801"       TO  BD00801PARA-FILE-ID
+           MOVE    LNK-PRTKANRI-TERMID
+                                   TO  BD00801PARA-TERMID
+      *
       *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC
+      *
+      *    収納ファイル編集処理
+           PERFORM 120-BD00801-HEN-SEC
+      *
            .
        100-INIT-EXT.
            EXIT.
@@ -325,11 +373,49 @@
            EXIT.
       *
       *****************************************************************
+      *    収納ファイル編集処理
+      *****************************************************************
+       120-BD00801-HEN-SEC             SECTION.
+      *
+           OPEN    OUTPUT  BD00801-FILE
+      *
+           PERFORM 900-DBSELECT-SEC
+      *
+           PERFORM UNTIL ( FLG-SYUNOU  NOT =   ZERO )
+      *
+               INITIALIZE                  PTNUM-REC
+               MOVE    SYU-HOSPID    TO  PTNUM-HOSPID
+               MOVE    SYU-PTID      TO  PTNUM-PTID
+               PERFORM 900-PTNUM-READ-SEC
+      *
+               MOVE    PTNUM-PTNUM   TO  BD00801-ISAM-PTNUM
+               MOVE    SYU-PTID      TO  BD00801-ISAM-PTID
+               MOVE    SYU-DENPNUM   TO  BD00801-ISAM-DENPNUM
+               MOVE    SYU-NYUGAIKBN TO  BD00801-ISAM-NYUGAIKBN
+      *
+               MOVE    SYU-REC       TO  BD00801-SYU-DAT
+      *
+               WRITE   BD00801-REC
+      *
+               PERFORM 900-DBFETCH-SEC
+      *
+           END-PERFORM
+      *
+           PERFORM 900-DBCLOSE-SEC
+      *
+           CLOSE   BD00801-FILE
+      *
+           .
+       120-BD00801-HEN-EXT.
+           EXIT.
+      *****************************************************************
       *    主　　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-           PERFORM 900-DBSELECT-SEC
+           OPEN    INPUT  BD00801-FILE
+      *
+           PERFORM 900-BD00801-READ-SEC
       *
            PERFORM UNTIL   FLG-END     =   1
       *        帳票編集<見出し>処理
@@ -344,7 +430,7 @@
                PERFORM 390-PRINT-OUT-SEC
            END-PERFORM
       *
-           PERFORM 900-DBCLOSE-SEC
+           CLOSE   BD00801-FILE
            .
        200-MAIN-EXT.
            EXIT.
@@ -359,7 +445,7 @@
       *
            INITIALIZE                  HCM41
       *
-           IF      ORCBD008-SYORIKBN   =   "1"
+           IF      ORCBD008-SYORIKBN   =   "1" OR "3"
                MOVE    "伝票発行日"    TO  HCM41-MIDASI
            ELSE
                MOVE    "診療年月日"    TO  HCM41-MIDASI
@@ -368,10 +454,12 @@
            MOVE    WRK-SYORIYMDWH  TO  HCM41-SRYYMD
            MOVE    WRK-SYSYMDWH    TO  HCM41-SYSYMD
       *
-           IF      ORCBD008-NYUGAIKBN  =   "1"
-               MOVE    "（入院）"      TO  HCM41-NYUGAIKBN
-           ELSE
-               MOVE    "（外来）"      TO  HCM41-NYUGAIKBN
+           IF    ( ORCBD008-SYORIKBN   =   "1"  OR "2" )
+               IF      ORCBD008-NYUGAIKBN  =   "1"
+                   MOVE    "（入院）"  TO  HCM41-NYUGAIKBN
+               ELSE
+                   MOVE    "（外来）"  TO  HCM41-NYUGAIKBN
+               END-IF
            END-IF
       *
            MOVE    CNT-PAGE        TO  WRK-PAGE
@@ -392,9 +480,26 @@
                    OR      CNT-LINE    =   30
       *    患者情報読み込み
                INITIALIZE                  PTINF-REC
-               MOVE    BD002-HOSPID    TO  PTINF-HOSPID
-               MOVE    BD002-PTID      TO  PTINF-PTID
+               MOVE    SYU-HOSPID    TO  PTINF-HOSPID
+               MOVE    SYU-PTID      TO  PTINF-PTID
                PERFORM 900-PTINF-READ-SEC
+               IF    ( FLG-PTINF               =   ZERO )
+                AND  ( PTINF-TSTPTNUMKBN   NOT =   "1" )
+                   PERFORM 3201-BODY-HEN-SEC
+               END-IF
+      *
+               PERFORM 900-BD00801-READ-SEC
+      *
+           END-PERFORM
+      *
+           .
+       320-BODY-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    帳票編集<明細行>処理
+      *****************************************************************
+       3201-BODY-HEN-SEC            SECTION.
       *
                ADD     1               TO  CNT-LINE
       *    連番
@@ -402,28 +507,29 @@
                MOVE    WRK-RENNUM      TO  WRK-RENNUM-X
                MOVE    WRK-RENNUM-X    TO  HCM41-RENNUM(CNT-LINE)
       *    患者番号
-               MOVE    BD002-PTNUM     TO  HCM41-PTNUM(CNT-LINE)
+               MOVE    BD00801-ISAM-PTNUM
+                                       TO  HCM41-PTNUM(CNT-LINE)
       *    氏名
                MOVE    PTINF-NAME      TO  HCM41-NAME(CNT-LINE)
       *    保険点数
-               MOVE    ZERO            TO  BD002-TOTAL-HKNTEN
-               EVALUATE    BD002-SYUHKNNUM
+               MOVE    ZERO            TO  SYU-TOTAL-HKNTEN
+               EVALUATE    SYU-SYUHKNNUM
                    WHEN    WRK-CONS-JIBAI-HKNNUM
                    WHEN    WRK-CONS-ROUSAI-HKNNUM
                        CONTINUE
                    WHEN    OTHER
                        PERFORM VARYING IDZ FROM    1   BY  1
                                UNTIL   IDZ >       11
-                           ADD     BD002-HKNTEN (IDZ)
-                                               TO  BD002-TOTAL-HKNTEN
+                           ADD     SYU-HKNTEN (IDZ)
+                                               TO  SYU-TOTAL-HKNTEN
                        END-PERFORM
-                       MOVE    BD002-TOTAL-HKNTEN
+                       MOVE    SYU-TOTAL-HKNTEN
                                            TO  WRK-Z8
                        MOVE    WRK-Z8      TO  HCM41-HKNTEN (CNT-LINE)
                END-EVALUATE
       *    保険別金額（社保本人〜自賠責）
                MOVE    ZERO                TO  IDX
-               EVALUATE    BD002-SYUHKNNUM
+               EVALUATE    SYU-SYUHKNNUM
                    WHEN    SPACE
                        MOVE    6                   TO  IDX
                    WHEN    WRK-CONS-JIBAI-HKNNUM
@@ -434,16 +540,16 @@
       ***              MOVE    7                   TO  IDX
                    WHEN    "060"
                    WHEN    "067"
-                       IF      BD002-KOH1HKNNUM      =   "027"
+                       IF      SYU-KOH1HKNNUM      =   "027"
                            MOVE    5                   TO  IDX
                        ELSE
                            MOVE    4                   TO  IDX
                        END-IF
                    WHEN    OTHER
-                       IF  BD002-SYUHKNNUM(1:2) = "98"
+                       IF  SYU-SYUHKNNUM(1:2) = "98"
                            MOVE    7                   TO  IDX
                        ELSE
-                         IF      BD002-KOH1HKNNUM      =   "027"
+                         IF      SYU-KOH1HKNNUM      =   "027"
                            MOVE    3                   TO  IDX
                          ELSE
                            PERFORM 3201-PTHKNINF-HENSYU-SEC
@@ -463,32 +569,32 @@
                    IF      IDX             =   7
                        MOVE    ZERO            TO  WRK-JIHI
                    ELSE
-                       COMPUTE WRK-JIHI    =   BD002-TOTAL-TGMONEY
-                                           +   BD002-TOTAL-TGMONEY-TAX
-                                           +   BD002-JIHI-TOTAL
-                                           +   BD002-JIHI-TOTAL-TAX
-                                           +   BD002-JIHI-TAX
-                                           +   BD002-RMSAGAKU
-                                       +   BD002-SKYMONEY-SKJ-JIHI-KEI
+                       COMPUTE WRK-JIHI    =   SYU-TOTAL-TGMONEY
+                                           +   SYU-TOTAL-TGMONEY-TAX
+                                           +   SYU-JIHI-TOTAL
+                                           +   SYU-JIHI-TOTAL-TAX
+                                           +   SYU-JIHI-TAX
+                                           +   SYU-RMSAGAKU
+                                       +   SYU-SKYMONEY-SKJ-JIHI-KEI
                    END-IF
                    IF    IDX  =  8  OR  9
-                       COMPUTE WRK-MONEY   =   BD002-RSIJIBAI-SKYMONEY
+                       COMPUTE WRK-MONEY   =   SYU-RSIJIBAI-SKYMONEY
                                            -   WRK-JIHI
                    ELSE
-                       COMPUTE WRK-MONEY   =   BD002-SKYMONEY
+                       COMPUTE WRK-MONEY   =   SYU-SKYMONEY
                                            -   WRK-JIHI                  
                        IF   WRK-JIHI  NOT =  ZERO
-                         IF  ((BD002-DISCOUNT-TEIRITU  NOT =  SPACE) AND
-                              (BD002-DISCOUNT-RATE     NOT =  ZERO ))
-                         OR  ( BD002-CHOSEI            NOT =  ZERO  )
+                         IF  ((SYU-DISCOUNT-TEIRITU  NOT =  SPACE) AND
+                              (SYU-DISCOUNT-RATE     NOT =  ZERO ))
+                         OR  ( SYU-CHOSEI            NOT =  ZERO  )
                             CONTINUE
                          ELSE
-                            COMPUTE WRK-MONEY  =  BD002-HKNTEKMONEY
-                                               +  BD002-RJN-FTN
-                                               +  BD002-KOH-FTN
-                                               +  BD002-YKZ-FTN
-                                               +  BD002-SKYMONEY-SKJ-KEI
-                            COMPUTE WRK-JIHI   =  BD002-SKYMONEY
+                            COMPUTE WRK-MONEY  =  SYU-HKNTEKMONEY
+                                               +  SYU-RJN-FTN
+                                               +  SYU-KOH-FTN
+                                               +  SYU-YKZ-FTN
+                                               +  SYU-SKYMONEY-SKJ-KEI
+                            COMPUTE WRK-JIHI   =  SYU-SKYMONEY
                                                -  WRK-MONEY
                          END-IF
                        END-IF
@@ -513,13 +619,13 @@
                    END-IF
                END-IF
       *
-               ADD     BD002-TOTAL-HKNTEN  TO  SUM-HKNTEN (1)
-               ADD     BD002-SKYMONEY      TO  SUM-MONEY  (1)
+               ADD     SYU-TOTAL-HKNTEN  TO  SUM-HKNTEN (1)
+               ADD     SYU-SKYMONEY      TO  SUM-MONEY  (1)
                ADD     1                   TO  SUM-KENSU  (1)
                IF      IDX                 >   ZERO
                    COMPUTE IDY     =   IDX     +   1
                    IF      IDX     <   8
-                       ADD     BD002-TOTAL-HKNTEN
+                       ADD     SYU-TOTAL-HKNTEN
                                                TO  SUM-HKNTEN (IDY)
                    END-IF
                    ADD     WRK-MONEY       TO  SUM-MONEY(IDY)
@@ -527,13 +633,9 @@
                    ADD     WRK-JIHI        TO  SUM-MONEY(8)
                END-IF
       *
-               PERFORM 900-DBFETCH-SEC
-           END-PERFORM
-      *
            .
-       320-BODY-HEN-EXT.
+       3201-BODY-HEN-EXT.
            EXIT.
-      *
       *****************************************************************
       *    保険組合せ表示処理
       *****************************************************************
@@ -541,16 +643,16 @@
       *
       *   保険組合せ読み出し
            INITIALIZE                  HKNCOMBI-REC
-           MOVE    BD002-HOSPID    TO  COMB-HOSPID
-           MOVE    BD002-PTID      TO  COMB-PTID
-           MOVE    BD002-HKNCOMBINUM
+           MOVE    SYU-HOSPID    TO  COMB-HOSPID
+           MOVE    SYU-PTID      TO  COMB-PTID
+           MOVE    SYU-HKNCOMBINUM
                                    TO  COMB-HKNCOMBINUM
            PERFORM 900-HKNCOMBI-READ-SEC
            IF      FLG-HKNCOMBI        =   ZERO
       *    患者保険情報読み込み
                INITIALIZE                  PTHKNINF-REC
-               MOVE    BD002-HOSPID    TO  PTHKN-HOSPID
-               MOVE    BD002-PTID      TO  PTHKN-PTID
+               MOVE    SYU-HOSPID    TO  PTHKN-HOSPID
+               MOVE    SYU-PTID      TO  PTHKN-PTID
                MOVE    COMB-HKNID      TO  PTHKN-HKNID
                PERFORM 900-PTHKNINF-READ-SEC
            END-IF
@@ -608,7 +710,7 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                    TO  SPRT-PRIORITY
            MOVE    "HCM41.red"     TO  SPRT-PRTID
-           IF      ORCBD008-SYORIKBN   =   "1"
+           IF      ORCBD008-SYORIKBN   =   "1" OR "3"
                MOVE    "日計表（伝票発行日）"
                                        TO  SPRT-TITLE
            ELSE
@@ -675,6 +777,12 @@
       *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
+      *
+      *    ファイル削除
+           MOVE    ZERO            TO  IF-RESULT
+           MOVE    BD00801PARA     TO  IF-FILENAME
+           CALL    "orcfiledel"    USING
+                                       ORCSFDELAREA
       *     
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
@@ -717,29 +825,41 @@
       *****************************************************************
        900-DBSELECT-SEC            SECTION.
       *
-           INITIALIZE                  BD002-REC
-           MOVE    WRK-PARA-HOSPID TO  BD002-HOSPID
-           IF      ORCBD008-SYORIKBN   =   "1"
-               MOVE    ORCBD008-SYORIYMD
-                                       TO  BD002-DENPPRTYMD
-               MOVE    "BD002-KEY"     TO  WRK-PATH
-           ELSE
-               MOVE    ORCBD008-SYORIYMD
-                                       TO BD002-SRYYMD
-               MOVE    "BD002-KEY2"    TO  WRK-PATH
-           END-IF
+           MOVE    ZERO            TO  FLG-SYUNOU
       *
-           MOVE    BD002-REC       TO  MCPDATA-REC
+           INITIALIZE                  SYU-REC
+                                       WRK-PATH
+      *
+           MOVE    WRK-PARA-HOSPID TO  SYU-HOSPID
+           EVALUATE    ORCBD008-SYORIKBN
+           WHEN    "1"
+               MOVE    ORCBD008-NYUGAIKBN      TO  SYU-NYUGAIKBN
+               MOVE    ORCBD008-SYORIYMD       TO  SYU-DENPPRTYMD
+               MOVE    PATH-TBL-SYUNOU-KEY43   TO  WRK-PATH
+           WHEN    "2"
+               MOVE    ORCBD008-NYUGAIKBN      TO  SYU-NYUGAIKBN
+               MOVE    ORCBD008-SYORIYMD       TO  SYU-SRYYMD
+               MOVE    PATH-TBL-SYUNOU-KEY44   TO  WRK-PATH
+           WHEN    "3"
+               MOVE    ORCBD008-SYORIYMD       TO  SYU-DENPPRTYMD
+               MOVE    PATH-TBL-SYUNOU-KEY43   TO  WRK-PATH
+               MOVE    "%"                     TO  SYU-NYUGAIKBN
+           WHEN    OTHER
+               MOVE    ORCBD008-SYORIYMD       TO  SYU-SRYYMD
+               MOVE    PATH-TBL-SYUNOU-KEY44   TO  WRK-PATH
+               MOVE    "%"                     TO  SYU-NYUGAIKBN
+           END-EVALUATE
+      *
+           MOVE    SYU-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    WRK-PATH        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    WRK-PATH        TO  MCP-PATH
+           CALL    "MCPSUB"            USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          =   ZERO
                PERFORM 900-DBFETCH-SEC
            ELSE
-               MOVE    1               TO  FLG-END
+               MOVE    1           TO  FLG-SYUNOU
            END-IF
            .
        900-DBSELECT-EXT.
@@ -751,20 +871,19 @@
        900-DBFETCH-SEC             SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           MOVE    WRK-PATH        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    WRK-PATH        TO  MCP-PATH
+           CALL    "MCPSUB"            USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          =   ZERO
-               MOVE    ZERO            TO  FLG-END
-               MOVE    MCPDATA-REC     TO  BD002-REC
-               IF      BD002-NYUGAIKBN NOT =   ORCBD008-NYUGAIKBN
-                   GO  TO  900-DBFETCH-SEC
-               END-IF
+      *
+               MOVE    ZERO            TO  FLG-SYUNOU
+               MOVE    MCPDATA-REC     TO  SYU-REC
+      *
            ELSE
-               MOVE    1               TO  FLG-END
-           END-IF  
+               MOVE    1               TO  FLG-SYUNOU
+           END-IF
+      *
            .
        900-DBFETCH-EXT.
            EXIT.
@@ -775,10 +894,9 @@
        900-DBCLOSE-SEC             SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           MOVE    WRK-PATH        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    WRK-PATH        TO  MCP-PATH
+           CALL    "MCPSUB"            USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            .
        900-DBCLOSE-EXT.
@@ -825,6 +943,22 @@
            EXIT.
       *
       *****************************************************************
+      *    収納ファイル読込処理
+      *****************************************************************
+       900-BD00801-READ-SEC            SECTION.
+      *
+           READ    BD00801-FILE        NEXT
+           AT  END
+               MOVE    1               TO  FLG-END
+           NOT AT  END
+               MOVE    ZERO            TO  FLG-END
+               MOVE    BD00801-SYU-DAT TO  SYU-REC
+           END-READ
+      *
+           .
+       900-BD00801-READ-EXT.
+           EXIT.
+      *****************************************************************
       *    患者マスター読込処理
       *****************************************************************
        900-PTINF-READ-SEC          SECTION.
@@ -864,6 +998,47 @@
       *
            .
        900-PTINF-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者番号マスター読込処理
+      *****************************************************************
+       900-PTNUM-READ-SEC          SECTION.
+      *
+           MOVE    PTNUM-REC       TO  MCPDATA-REC
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           MOVE    "PTNUM-KEY"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          =   ZERO
+               MOVE    "DBFETCH"       TO  MCP-FUNC
+               MOVE    "PTNUM-KEY"     TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC          =   ZERO
+                   MOVE    MCPDATA-REC     TO  PTNUM-REC
+                   MOVE    ZERO            TO  FLG-PTNUM
+               ELSE
+                   MOVE    1               TO  FLG-PTNUM
+                   INITIALIZE                  PTNUM-REC
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-PTNUM
+               INITIALIZE                  PTNUM-REC
+           END-IF
+      *
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           MOVE    "PTNUM-KEY"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       900-PTNUM-READ-EXT.
            EXIT.
       *
       *
