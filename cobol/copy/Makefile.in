@@ -1041,6 +1041,8 @@ COPYS = \
         HCM25.INC \
         HCM26.INC \
         HCN25.INC \
+        HCM03V03.INC \
+        HCN03V03.INC \
 
 
 
