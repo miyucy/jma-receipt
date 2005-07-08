@@ -1097,12 +1097,6 @@
                             LNK-SYU-JIHI-TOTAL            +
                             LNK-SYU-JIHI-TOTAL-TAX        +
                             LNK-SYU-JIHI-TAX
-      *
-      **         COMPUTE    LNK-SYU-RSI-TOTAL =   
-      **                                    LNK-SYU-RSISHOSHIN-MONEY +  
-      **                                    LNK-SYU-RSISAISHIN-MONEY +  
-      **                                    LNK-SYU-RSISDO-MONEY     +  
-      **                                    LNK-SYU-RSIETC-MONEY        
            END-IF.
       *    ¡ãÈóÏ«ºÒ»ØÄê¡Ê£±£°£°¡ó¡Ë¡ä
            IF   (WK-HKNKBN               =    "1"  ) AND
@@ -1143,43 +1137,9 @@
                  COMPUTE  LNK-SYU-RSISAISHIN-MONEY  =
                          (LNK-SYU-RSISAISHIN-MONEY  *  WK-KSNRATE)
                                                     +  0.5
-      *          COMPUTE  LNK-SYU-RSISDO-MONEY      =
-      *                   LNK-SYU-RSISDO-MONEY      *  WK-KSNRATE
       *
       *          ¼«ÇåÀÕ¤½¤ÎÂ¾¥³¡¼¥É¾ðÊó¤ÎÊÔ½¸¡Ê£°£¹£µ£¹£±¡¥£¹£²¡¥£¹£³¡Ë
                  PERFORM   500-JIBAI-SONOTA-HENSYU-SEC
-      *
-      ***        IF   WK-4001-TAXKBN   =   "2"
-      ***          IF    WK-TAX1001-KBN  =  "1"
-      ***            COMPUTE  LNK-SYU-RSI-TAX-SAI       =               
-      ***                     LNK-SYU-RSI-TAX-SAI       +               
-      ***                   ((LNK-S02-SINDAN  *  0.05)  +  0.5)         
-      ***            COMPUTE  LNK-SYU-RSI-TAX-SAI       =               
-      ***                     LNK-SYU-RSI-TAX-SAI       +               
-      ***                   ((LNK-S02-MEISAI  *  0.05)  +  0.5)         
-      *
-      ***            COMPUTE  LNK-SYU-RSIETC-MONEY      =
-      ***                     LNK-SYU-RSIETC-MONEY      +
-      ***                   ((LNK-S02-SINDAN  *  0.05)  +  0.5)
-      ***            COMPUTE  LNK-SYU-RSIETC-MONEY      =
-      ***                     LNK-SYU-RSIETC-MONEY      +
-      ***                   ((LNK-S02-MEISAI  *  0.05)  +  0.5)
-      ***          ELSE
-      ***            COMPUTE  LNK-SYU-RSI-TAX-SAI       =               
-      ***                     LNK-SYU-RSI-TAX-SAI       +               
-      ***                    (LNK-S02-SINDAN  *  0.05)                  
-      ***            COMPUTE  LNK-SYU-RSI-TAX-SAI       =               
-      ***                     LNK-SYU-RSI-TAX-SAI       +               
-      ***                    (LNK-S02-MEISAI  *  0.05)                  
-      *
-      ***            COMPUTE  LNK-SYU-RSIETC-MONEY      =
-      ***                     LNK-SYU-RSIETC-MONEY      +
-      ***                    (LNK-S02-SINDAN  *  0.05)
-      ***            COMPUTE  LNK-SYU-RSIETC-MONEY      =
-      ***                     LNK-SYU-RSIETC-MONEY      +
-      ***                     (LNK-S02-MEISAI  *  0.05)
-      ***          END-IF
-      ***        END-IF
       *
                  COMPUTE    LNK-SYU-SKYMONEY  =   
                             LNK-SYU-SKYMONEY         +
@@ -1208,43 +1168,9 @@
                  COMPUTE  LNK-SYU-RSISAISHIN-MONEY  =
                          (LNK-SYU-RSISAISHIN-MONEY  *  WK-KSNRATE)
                                                     +  0.5
-      *          COMPUTE  LNK-SYU-RSISDO-MONEY      =
-      *                   LNK-SYU-RSISDO-MONEY      *  WK-KSNRATE
       *
       *          ¼«ÇåÀÕ¤½¤ÎÂ¾¥³¡¼¥É¾ðÊó¤ÎÊÔ½¸¡Ê£°£¹£µ£¹£±¡¥£¹£²¡¥£¹£³¡Ë
                  PERFORM   500-JIBAI-SONOTA-HENSYU-SEC
-      *
-      ***        IF   WK-4001-TAXKBN   =   "2"
-      ***          IF    WK-TAX1001-KBN  =  "1"
-      ***            COMPUTE  LNK-SYU-RSI-TAX-SAI       =               
-      ***                     LNK-SYU-RSI-TAX-SAI       +               
-      ***                   ((LNK-S02-SINDAN  *  0.05)  +  0.5)         
-      ***            COMPUTE  LNK-SYU-RSI-TAX-SAI       =               
-      ***                     LNK-SYU-RSI-TAX-SAI       +               
-      ***                   ((LNK-S02-MEISAI  *  0.05)  +  0.5)         
-      *
-      ***            COMPUTE  LNK-SYU-RSIETC-MONEY      =
-      ***                     LNK-SYU-RSIETC-MONEY      +
-      ***                   ((LNK-S02-SINDAN  *  0.05)  +  0.5)
-      ***            COMPUTE  LNK-SYU-RSIETC-MONEY      =
-      ***                     LNK-SYU-RSIETC-MONEY      +
-      ***                   ((LNK-S02-MEISAI  *  0.05)  +  0.5)
-      ***          ELSE
-      ***            COMPUTE  LNK-SYU-RSI-TAX-SAI       =               
-      ***                     LNK-SYU-RSI-TAX-SAI       +               
-      ***                    (LNK-S02-SINDAN  *  0.05)                  
-      ***            COMPUTE  LNK-SYU-RSI-TAX-SAI       =               
-      ***                     LNK-SYU-RSI-TAX-SAI       +               
-      ***                    (LNK-S02-MEISAI  *  0.05)                  
-      *
-      ***            COMPUTE  LNK-SYU-RSIETC-MONEY      =
-      ***                     LNK-SYU-RSIETC-MONEY      +
-      ***                    (LNK-S02-SINDAN  *  0.05)
-      ***            COMPUTE  LNK-SYU-RSIETC-MONEY      =
-      ***                     LNK-SYU-RSIETC-MONEY      +
-      ***                    (LNK-S02-MEISAI  *  0.05)
-      ***          END-IF
-      ***        END-IF
       *
                  MOVE    ZERO      TO       LNK-SYU-SKYMONEY
                  COMPUTE    LNK-SYU-SKYMONEY  =
@@ -1256,12 +1182,6 @@
                             LNK-SYU-JIHI-TOTAL            +
                             LNK-SYU-JIHI-TOTAL-TAX        +
                             LNK-SYU-JIHI-TAX
-      *
-      **         COMPUTE    LNK-SYU-RSI-TOTAL =   
-      **                                    LNK-SYU-RSISHOSHIN-MONEY +  
-      **                                    LNK-SYU-RSISAISHIN-MONEY +  
-      **                                    LNK-SYU-RSISDO-MONEY     +  
-      **                                    LNK-SYU-RSIETC-MONEY        
            END-IF.
       *
            IF   (WK-HKNKBN               =    "1"  ) AND                
@@ -9020,8 +8940,6 @@
               (COMB-KOH3HKNNUM              =    SPACE)    AND
               (COMB-KOH4HKNNUM              =    SPACE)
                MOVE     ZERO           TO  FLG-HIKAKU
-      ***>     COMPUTE  WK-KEISAN9  =  LNK-SYU-SYUCOMPFTN  +
-      ***>                             LNK-SYU-SYUSKJ-FTN
                MOVE   LNK-SYU-SYUCOMPFTN      TO   WK-KEISAN9
                MOVE   LNK-SYU-SYUSKJ-FTN      TO   WK-KEISAN9-SKJ
                MOVE   LNK-SYU-SYUCOMPFTN      TO   WK-KNJFTNKIN
@@ -9033,8 +8951,6 @@
               (COMB-KOH3HKNNUM              =     SPACE)   AND
               (COMB-KOH4HKNNUM              =     SPACE)
                MOVE      1             TO  FLG-HIKAKU
-      ***>     COMPUTE  WK-KEISAN9  =  LNK-SYU-KOH1COMPFTN  +
-      ***>                             LNK-SYU-KOH1SKJ-FTN
                MOVE   LNK-SYU-KOH1COMPFTN     TO   WK-KEISAN9
                MOVE   LNK-SYU-KOH1SKJ-FTN     TO   WK-KEISAN9-SKJ
                MOVE   LNK-SYU-KOH1COMPFTN     TO   WK-KNJFTNKIN
@@ -9046,10 +8962,6 @@
               (COMB-KOH3HKNNUM              =     SPACE)   AND
               (COMB-KOH4HKNNUM              =     SPACE)
       *
-      ***>     COMPUTE  WK-KEISAN1  =  LNK-SYU-KOH1COMPFTN  +
-      ***>                             LNK-SYU-KOH1SKJ-FTN
-      ***>     COMPUTE  WK-KEISAN2  =  LNK-SYU-KOH2COMPFTN  +
-      ***>                             LNK-SYU-KOH2SKJ-FTN
                MOVE   LNK-SYU-KOH1COMPFTN     TO   WK-KEISAN1
                MOVE   LNK-SYU-KOH1SKJ-FTN     TO   WK-KEISAN1-SKJ
                MOVE   LNK-SYU-KOH2COMPFTN     TO   WK-KEISAN2
@@ -9058,12 +8970,10 @@
                    MOVE      1                     TO  FLG-HIKAKU
                    MOVE    WK-KEISAN1              TO  WK-KEISAN9
                    MOVE    LNK-SYU-KOH1COMPFTN     TO  WK-KNJFTNKIN
-      ***>         MOVE    LNK-SYU-KOH1SKJ-FTN     TO  WK-KNJFTNKIN-SKJ
                ELSE
                    MOVE      2                     TO  FLG-HIKAKU
                    MOVE    WK-KEISAN2              TO  WK-KEISAN9
                    MOVE    LNK-SYU-KOH2COMPFTN     TO  WK-KNJFTNKIN
-      ***>         MOVE    LNK-SYU-KOH2SKJ-FTN     TO  WK-KNJFTNKIN-SKJ
                END-IF
                IF    WK-KEISAN1-SKJ  <  WK-KEISAN2-SKJ
                    MOVE    WK-KEISAN1-SKJ          TO  WK-KEISAN9-SKJ
@@ -9079,12 +8989,6 @@
               (COMB-KOH3HKNNUM              NOT = SPACE)   AND
               (COMB-KOH4HKNNUM              =     SPACE)
       *
-      ***>     COMPUTE  WK-KEISAN1  =  LNK-SYU-KOH1COMPFTN  +
-      ***>                             LNK-SYU-KOH1SKJ-FTN
-      ***>     COMPUTE  WK-KEISAN2  =  LNK-SYU-KOH2COMPFTN  +
-      ***>                             LNK-SYU-KOH2SKJ-FTN
-      ***>     COMPUTE  WK-KEISAN3  =  LNK-SYU-KOH3COMPFTN  +
-      ***>                             LNK-SYU-KOH3SKJ-FTN
                MOVE   LNK-SYU-KOH1COMPFTN     TO   WK-KEISAN1
                MOVE   LNK-SYU-KOH1SKJ-FTN     TO   WK-KEISAN1-SKJ
                MOVE   LNK-SYU-KOH2COMPFTN     TO   WK-KEISAN2
@@ -9096,24 +9000,20 @@
                       MOVE      1                  TO  FLG-HIKAKU
                       MOVE    WK-KEISAN1           TO  WK-KEISAN9
                       MOVE    LNK-SYU-KOH1COMPFTN  TO  WK-KNJFTNKIN
-      ***>            MOVE    LNK-SYU-KOH1SKJ-FTN  TO  WK-KNJFTNKIN-SKJ
                    ELSE
                       MOVE      3                  TO  FLG-HIKAKU
                       MOVE    WK-KEISAN3           TO  WK-KEISAN9
                       MOVE    LNK-SYU-KOH3COMPFTN  TO  WK-KNJFTNKIN
-      ***>            MOVE    LNK-SYU-KOH3SKJ-FTN  TO  WK-KNJFTNKIN-SKJ 
                    END-IF
                ELSE
                    IF    WK-KEISAN2  <  WK-KEISAN3
                       MOVE      2                  TO  FLG-HIKAKU
                       MOVE    WK-KEISAN2           TO  WK-KEISAN9
                       MOVE    LNK-SYU-KOH2COMPFTN  TO  WK-KNJFTNKIN
-      ***>            MOVE    LNK-SYU-KOH2SKJ-FTN  TO  WK-KNJFTNKIN-SKJ 
                    ELSE
                       MOVE      3                  TO  FLG-HIKAKU
                       MOVE    WK-KEISAN3           TO  WK-KEISAN9
                       MOVE    LNK-SYU-KOH3COMPFTN  TO  WK-KNJFTNKIN
-      ***>            MOVE    LNK-SYU-KOH3SKJ-FTN  TO  WK-KNJFTNKIN-SKJ 
                    END-IF
                END-IF
                IF    WK-KEISAN1-SKJ  <  WK-KEISAN2-SKJ
@@ -9140,14 +9040,6 @@
               (COMB-KOH3HKNNUM              NOT = SPACE)   AND
               (COMB-KOH4HKNNUM              NOT = SPACE)
       *
-      ***>     COMPUTE  WK-KEISAN1  =  LNK-SYU-KOH1COMPFTN  +
-      ***>                             LNK-SYU-KOH1SKJ-FTN
-      ***>     COMPUTE  WK-KEISAN2  =  LNK-SYU-KOH2COMPFTN  +
-      ***>                             LNK-SYU-KOH2SKJ-FTN
-      ***>     COMPUTE  WK-KEISAN3  =  LNK-SYU-KOH3COMPFTN  +
-      ***>                             LNK-SYU-KOH3SKJ-FTN
-      ***>     COMPUTE  WK-KEISAN4  =  LNK-SYU-KOH4COMPFTN  +
-      ***>                             LNK-SYU-KOH4SKJ-FTN
                MOVE   LNK-SYU-KOH1COMPFTN     TO   WK-KEISAN1
                MOVE   LNK-SYU-KOH1SKJ-FTN     TO   WK-KEISAN1-SKJ
                MOVE   LNK-SYU-KOH2COMPFTN     TO   WK-KEISAN2
@@ -9162,24 +9054,20 @@
                         MOVE      1                 TO  FLG-HIKAKU
                         MOVE    WK-KEISAN1          TO  WK-KEISAN9
                         MOVE    LNK-SYU-KOH1COMPFTN TO  WK-KNJFTNKIN
-      ***>              MOVE    LNK-SYU-KOH1SKJ-FTN TO  WK-KNJFTNKIN-SKJ 
                       ELSE
                         MOVE      4                 TO  FLG-HIKAKU
                         MOVE    WK-KEISAN4          TO  WK-KEISAN9
                         MOVE    LNK-SYU-KOH4COMPFTN TO  WK-KNJFTNKIN
-      ***>              MOVE    LNK-SYU-KOH4SKJ-FTN TO  WK-KNJFTNKIN-SKJ 
                       END-IF
                    ELSE
                       IF    WK-KEISAN3  <  WK-KEISAN4
                         MOVE      3                 TO  FLG-HIKAKU
                         MOVE    WK-KEISAN3          TO  WK-KEISAN9
                         MOVE    LNK-SYU-KOH3COMPFTN TO  WK-KNJFTNKIN
-      ***>              MOVE    LNK-SYU-KOH3SKJ-FTN TO  WK-KNJFTNKIN-SKJ 
                       ELSE
                         MOVE      4                 TO  FLG-HIKAKU
                         MOVE    WK-KEISAN4          TO  WK-KEISAN9
                         MOVE    LNK-SYU-KOH4COMPFTN TO  WK-KNJFTNKIN
-      ***>              MOVE    LNK-SYU-KOH4SKJ-FTN TO  WK-KNJFTNKIN-SKJ 
                       END-IF
                    END-IF
                ELSE
@@ -9188,24 +9076,20 @@
                         MOVE      2                 TO  FLG-HIKAKU
                         MOVE    WK-KEISAN2          TO  WK-KEISAN9
                         MOVE    LNK-SYU-KOH2COMPFTN TO  WK-KNJFTNKIN
-     ***>               MOVE    LNK-SYU-KOH2SKJ-FTN TO  WK-KNJFTNKIN-SKJ 
                       ELSE
                         MOVE      4                 TO  FLG-HIKAKU
                         MOVE    WK-KEISAN4          TO  WK-KEISAN9
                         MOVE    LNK-SYU-KOH4COMPFTN TO  WK-KNJFTNKIN
-     ***>               MOVE    LNK-SYU-KOH4SKJ-FTN TO  WK-KNJFTNKIN-SKJ 
                       END-IF
                    ELSE
                       IF    WK-KEISAN3  <  WK-KEISAN4
                         MOVE      3                 TO  FLG-HIKAKU
                         MOVE    WK-KEISAN3          TO  WK-KEISAN9
                         MOVE    LNK-SYU-KOH3COMPFTN TO  WK-KNJFTNKIN
-     ***>               MOVE    LNK-SYU-KOH3SKJ-FTN TO  WK-KNJFTNKIN-SKJ 
                       ELSE
                         MOVE      4                 TO  FLG-HIKAKU
                         MOVE    WK-KEISAN4          TO  WK-KEISAN9
                         MOVE    LNK-SYU-KOH4COMPFTN TO  WK-KNJFTNKIN
-     ***>               MOVE    LNK-SYU-KOH4SKJ-FTN TO  WK-KNJFTNKIN-SKJ 
                       END-IF
                    END-IF
                END-IF
@@ -9251,14 +9135,11 @@
            IF   COMB-KOH1HKNNUM        NOT   =   "027" 
            AND  COMB-HKNNUM            NOT   =   SPACE 
       *
-      ***>     COMPUTE  WK-KEISAN   =  LNK-SYU-SYUCOMPFTN  +
-      ***>                             LNK-SYU-SYUSKJ-FTN
                MOVE   LNK-SYU-SYUCOMPFTN      TO   WK-KEISAN
                MOVE   LNK-SYU-SYUSKJ-FTN      TO   WK-KEISAN-SKJ
                IF   WK-KEISAN  <  WK-KEISAN9
                    MOVE    ZERO                 TO   FLG-HIKAKU
                    MOVE    LNK-SYU-SYUCOMPFTN   TO   WK-KNJFTNKIN
-      ***>         MOVE    LNK-SYU-SYUSKJ-FTN   TO   WK-KNJFTNKIN-SKJ 
                END-IF
                IF   WK-KEISAN-SKJ  <  WK-KEISAN9-SKJ
                    MOVE    LNK-SYU-SYUSKJ-FTN   TO   WK-KNJFTNKIN-SKJ 
@@ -9547,7 +9428,6 @@
       *    ¥ì¥»µ­ºÜ¶â³ÛÂàÈòÍÑ¥¨¥ê¥¢¤«¤é¼ýÇ¼¹àÌÜ¤ØÊÔ½¸
       *
            IF    WK-KOH-COMPFTN(1)  =  ALL"9"                           
-      ****             CONTINUE                                         
                 IF   WK-TAIHI-RECEFTNDSPKBN(1) = SPACE
                 AND  COMB-KOH1HKNNUM       NOT = "027"
                     COMPUTE  LNK-SYU-KOH1COMPFTN  =
@@ -9565,7 +9445,6 @@
                           LNK-SYU-KOH1COMPFTN     
            END-IF.                                                      
            IF    WK-DAY-KOH-COMPFTN(1)  =  ALL"9"
-      ****             CONTINUE                                         
                 IF   WK-TAIHI-RECEFTNDSPKBN(1) = SPACE
                 AND  COMB-KOH1HKNNUM       NOT = "027"
                     COMPUTE  LNK-SYU-KOH1COMPFTN  =
@@ -9593,13 +9472,9 @@
                     COMPUTE  LNK-SYU-KOH1COMPTOTAL   =
                              LNK-SYU-KOH1COMPFTN
                 END-IF
-      ****      MOVE  WK-DAY-KOH-COMPFTN(1)  TO   LNK-SYU-KOH1COMPFTN
-      ****      COMPUTE   LNK-SYU-KOH1COMPTOTAL   =
-      ****                LNK-SYU-KOH1COMPFTN
            END-IF.                   
       *
            IF    WK-KOH-COMPFTN(2)  =  ALL"9"                           
-      ****             CONTINUE                                         
                 IF   WK-TAIHI-RECEFTNDSPKBN(2) = SPACE
                     COMPUTE  LNK-SYU-KOH2COMPFTN  =
                                     LNK-SYU-KOH2COMPFTN     +   5
@@ -9616,7 +9491,6 @@
                           LNK-SYU-KOH2COMPFTN     
            END-IF.                                                      
            IF    WK-DAY-KOH-COMPFTN(2)  =  ALL"9"
-      ****             CONTINUE                                         
                 IF   WK-TAIHI-RECEFTNDSPKBN(2) = SPACE
                     COMPUTE  LNK-SYU-KOH2COMPFTN  =
                                     LNK-SYU-KOH2COMPFTN     +   5
@@ -9643,13 +9517,9 @@
                     COMPUTE  LNK-SYU-KOH2COMPTOTAL   =
                              LNK-SYU-KOH2COMPFTN
                 END-IF
-      ****      MOVE  WK-DAY-KOH-COMPFTN(2)  TO   LNK-SYU-KOH2COMPFTN
-      ****      COMPUTE   LNK-SYU-KOH2COMPTOTAL   =
-      ****                LNK-SYU-KOH2COMPFTN
            END-IF.                   
       *
            IF    WK-KOH-COMPFTN(3)  =  ALL"9"                           
-      ****             CONTINUE                                         
                 IF   WK-TAIHI-RECEFTNDSPKBN(3) = SPACE
                     COMPUTE  LNK-SYU-KOH3COMPFTN  =
                                     LNK-SYU-KOH3COMPFTN     +   5
@@ -9666,7 +9536,6 @@
                           LNK-SYU-KOH3COMPFTN     
            END-IF.                                                      
            IF    WK-DAY-KOH-COMPFTN(3)  =  ALL"9"
-      ****             CONTINUE                                         
                 IF   WK-TAIHI-RECEFTNDSPKBN(3) = SPACE
                     COMPUTE  LNK-SYU-KOH3COMPFTN  =
                                     LNK-SYU-KOH3COMPFTN     +   5
@@ -9693,13 +9562,9 @@
                     COMPUTE  LNK-SYU-KOH3COMPTOTAL   =
                              LNK-SYU-KOH3COMPFTN
                 END-IF
-      ****      MOVE  WK-DAY-KOH-COMPFTN(3)  TO   LNK-SYU-KOH3COMPFTN
-      ****      COMPUTE   LNK-SYU-KOH3COMPTOTAL   =
-      ****                LNK-SYU-KOH3COMPFTN
            END-IF.                   
       *
            IF    WK-KOH-COMPFTN(4)  =  ALL"9"                           
-      ****             CONTINUE                                         
                 IF   WK-TAIHI-RECEFTNDSPKBN(4) = SPACE
                     COMPUTE  LNK-SYU-KOH4COMPFTN  =
                                     LNK-SYU-KOH4COMPFTN     +   5
@@ -9716,7 +9581,6 @@
                           LNK-SYU-KOH4COMPFTN     
            END-IF.                                                      
            IF    WK-DAY-KOH-COMPFTN(4)  =  ALL"9"
-      ****             CONTINUE                                         
                 IF   WK-TAIHI-RECEFTNDSPKBN(4) = SPACE
                     COMPUTE  LNK-SYU-KOH4COMPFTN  =
                                     LNK-SYU-KOH4COMPFTN     +   5
@@ -9743,9 +9607,6 @@
                     COMPUTE  LNK-SYU-KOH4COMPTOTAL   =
                              LNK-SYU-KOH4COMPFTN
                 END-IF
-      ****      MOVE  WK-DAY-KOH-COMPFTN(4)  TO   LNK-SYU-KOH4COMPFTN
-      ****      COMPUTE   LNK-SYU-KOH4COMPTOTAL   =
-      ****                LNK-SYU-KOH4COMPFTN
            END-IF.                   
       *
       *    ÆÃ¼ì·×»»ÍÑ¶â³ÛÂàÈòÊÔ½¸
@@ -9920,9 +9781,6 @@
               (COMB-KOH2HKNNUM              =    SPACE)    AND
               (COMB-KOH3HKNNUM              =    SPACE)    AND
               (COMB-KOH4HKNNUM              =    SPACE)
-      ***>     COMPUTE  WK-KEISAN9-ENTANI
-      ***>                          =  LNK-SYU-SYUCOMPFTN-ENTANI  +
-      ***>                             LNK-SYU-SYUSKJ-FTN
                MOVE   LNK-SYU-SYUCOMPFTN-ENTANI
                                             TO   WK-KEISAN9-ENTANI
                MOVE   LNK-SYU-SYUCOMPFTN-ENTANI
@@ -9933,9 +9791,6 @@
               (COMB-KOH2HKNNUM              =     SPACE)   AND
               (COMB-KOH3HKNNUM              =     SPACE)   AND
               (COMB-KOH4HKNNUM              =     SPACE)
-      ***>     COMPUTE  WK-KEISAN9-ENTANI
-      ***>                          =  LNK-SYU-KOH1COMPFTN-ENTANI +
-      ***>                             LNK-SYU-KOH1SKJ-FTN
                MOVE   LNK-SYU-KOH1COMPFTN-ENTANI
                                             TO   WK-KEISAN9-ENTANI
                MOVE   LNK-SYU-KOH1COMPFTN-ENTANI
@@ -9947,12 +9802,6 @@
               (COMB-KOH3HKNNUM              =     SPACE)   AND
               (COMB-KOH4HKNNUM              =     SPACE)
       *
-      ***>     COMPUTE  WK-KEISAN1-ENTANI
-      ***>                          =  LNK-SYU-KOH1COMPFTN-ENTANI +
-      ***>                             LNK-SYU-KOH1SKJ-FTN
-      ***>     COMPUTE  WK-KEISAN2-ENTANI
-      ***>                          =  LNK-SYU-KOH2COMPFTN-ENTANI +
-      ***>                             LNK-SYU-KOH2SKJ-FTN
                MOVE   LNK-SYU-KOH1COMPFTN-ENTANI
                                             TO   WK-KEISAN1-ENTANI
                MOVE   LNK-SYU-KOH2COMPFTN-ENTANI
@@ -9973,15 +9822,6 @@
               (COMB-KOH3HKNNUM              NOT = SPACE)   AND
               (COMB-KOH4HKNNUM              =     SPACE)
       *
-      ***>     COMPUTE  WK-KEISAN1-ENTANI
-      ***>                          =  LNK-SYU-KOH1COMPFTN-ENTANI  +
-      ***>                             LNK-SYU-KOH1SKJ-FTN
-      ***>     COMPUTE  WK-KEISAN2-ENTANI
-      ***>                          =  LNK-SYU-KOH2COMPFTN-ENTANI  +
-      ***>                             LNK-SYU-KOH2SKJ-FTN
-      ***>     COMPUTE  WK-KEISAN3-ENTANI
-      ***>                          =  LNK-SYU-KOH3COMPFTN-ENTANI  +
-      ***>                             LNK-SYU-KOH3SKJ-FTN
                MOVE   LNK-SYU-KOH1COMPFTN-ENTANI
                                             TO   WK-KEISAN1-ENTANI
                MOVE   LNK-SYU-KOH2COMPFTN-ENTANI
@@ -10016,18 +9856,6 @@
               (COMB-KOH3HKNNUM              NOT = SPACE)   AND
               (COMB-KOH4HKNNUM              NOT = SPACE)
       *
-      ***>     COMPUTE  WK-KEISAN1-ENTANI
-      ***>                          =  LNK-SYU-KOH1COMPFTN-ENTANI  +
-      ***>                             LNK-SYU-KOH1SKJ-FTN
-      ***>     COMPUTE  WK-KEISAN2-ENTANI
-      ***>                          =  LNK-SYU-KOH2COMPFTN-ENTANI  +
-      ***>                             LNK-SYU-KOH2SKJ-FTN
-      ***>     COMPUTE  WK-KEISAN3-ENTANI
-      ***>                          =  LNK-SYU-KOH3COMPFTN-ENTANI  +
-      ***>                             LNK-SYU-KOH3SKJ-FTN
-      ***>     COMPUTE  WK-KEISAN4-ENTANI
-      ***>                          =  LNK-SYU-KOH4COMPFTN-ENTANI  +
-      ***>                             LNK-SYU-KOH4SKJ-FTN
                MOVE   LNK-SYU-KOH1COMPFTN-ENTANI
                                             TO   WK-KEISAN1-ENTANI
                MOVE   LNK-SYU-KOH2COMPFTN-ENTANI
@@ -10086,9 +9914,6 @@
            IF   COMB-KOH1HKNNUM        NOT   =   "027" 
            AND  COMB-HKNNUM            NOT   =   SPACE 
       *
-      ***>     COMPUTE  WK-KEISAN-ENTANI
-      ***>                          =  LNK-SYU-SYUCOMPFTN-ENTANI  +
-      ***>                             LNK-SYU-SYUSKJ-FTN
                MOVE   LNK-SYU-SYUCOMPFTN-ENTANI
                                             TO   WK-KEISAN-ENTANI
                IF   WK-KEISAN-ENTANI  <  WK-KEISAN9-ENTANI
@@ -10408,43 +10233,23 @@
       *
        SYUNOU-READ-100.
       *
-      **>  IF  LNK-S02-KOUREI-NYUIN-KBN   =   "1"
-               MOVE    "DBFETCH"           TO  MCP-FUNC.
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC.
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC     TO  SYU-SYUNOU-REC
-                   IF     (LNK-S02-SAIKEISAN-KBN    =   "1")    AND
-                          (LNK-S02-SAIKEISAN-DENPYO =   SYU-DENPNUM)
-                           GO    TO    SYUNOU-READ-100
-                   ELSE
-                           MOVE    ZERO    TO  FLG-SYUNOU
-                   END-IF
+           MOVE    "DBFETCH"           TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SYU-SYUNOU-REC
+               IF     (LNK-S02-SAIKEISAN-KBN    =   "1")    AND
+                      (LNK-S02-SAIKEISAN-DENPYO =   SYU-DENPNUM)
+                       GO    TO    SYUNOU-READ-100
                ELSE
-                   INITIALIZE                  SYU-SYUNOU-REC
-                   MOVE    1               TO  FLG-SYUNOU
-               END-IF.
-      **>  ELSE
-      **>      MOVE    "DBFETCH"           TO  MCP-FUNC
-      **>      CALL    "ORCMCPSUB"          USING
-      **>                                   MCPAREA
-      **>                                   ORCMCPAREA
-      **>                                   MCPDATA-REC
-      **>      IF      MCP-RC              =   ZERO
-      **>          MOVE    MCPDATA-REC     TO  SYU-SYUNOU-REC
-      **>          IF     (LNK-S02-SAIKEISAN-KBN    =   "1")    AND
-      **>                 (LNK-S02-SAIKEISAN-DENPYO <=   SYU-DENPNUM)
-      **>                  GO    TO    SYUNOU-READ-100
-      **>          ELSE
-      **>                  MOVE    ZERO    TO  FLG-SYUNOU
-      **>          END-IF
-      **>      ELSE
-      **>          INITIALIZE                  SYU-SYUNOU-REC
-      **>          MOVE    1               TO  FLG-SYUNOU
-      **>      END-IF
-      **>  END-IF.
+                       MOVE    ZERO    TO  FLG-SYUNOU
+               END-IF
+           ELSE
+               INITIALIZE                  SYU-SYUNOU-REC
+               MOVE    1               TO  FLG-SYUNOU
+           END-IF.
       *
        SYUNOU-READ-EXT.
            EXIT.

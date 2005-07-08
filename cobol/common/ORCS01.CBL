@@ -205,7 +205,6 @@
            03  FLG-INGAI               PIC X(01).
        01  FLG-AREA.
            03  FLG-SYUNOU              PIC 9(01).
-           03  FLG-SYUTOTAL            PIC 9(01).
            03  FLG-TNKRRK              PIC 9(01).
            03  FLG-TSYRRK              PIC 9(01).
            03  FLG-HKNNUM              PIC 9(01).
@@ -235,7 +234,6 @@
            03  FLG-ADDKBN              PIC 9(01). 
       *
            03  FLG-LOCALRJN            PIC 9(01).
-           03  FLG-SYUTOTAL-SET        PIC 9(01).
            03  FLG-NOCOUNT             PIC 9(01).
            03  FLG-GRPNYURYOKU         PIC 9(01).
            03  FLG-GENMEN              PIC 9(01).
@@ -286,9 +284,6 @@
       *    Ê¡²¬¸©ÃÏÊý¸øÈñÉéÃ´¶èÊ¬¡¦¼çÊÝ¸±¤ÎÉéÃ´³ä¹ç
            03  WK-KOH-FTNKBN           PIC X(1).
            03  WK-KOH-FTNRATE          PIC 9(3).
-      *
-           03  WK-GRP-DENPNUM          PIC 9(7).
-           03  WK-TAIHI-DENPNUM        PIC 9(7).
       *
            03  WK-TAIHI-DENPNUMXX-OCC.
                05  WK-TAIHI-DENPNUMXX  PIC 9(7)    OCCURS   4.
@@ -691,10 +686,6 @@
       *    ¼ýÇ¼¥Þ¥¹¥¿¡¼
        01  SYU-SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
-      *
-      *    ¼ýÇ¼¹ç·×¥Þ¥¹¥¿
-       01  SYUTTL-REC.
-           COPY    "CPSYUTOTAL.INC".
       *
       *    Äã½êÆÀ¼ÔÍúÎò
        01  TSYRRK-REC.
@@ -1210,11 +1201,6 @@
                                             LNK-SYU-JIHI-TOTAL  +
                                             LNK-SYU-JIHI-TOTAL-TAX  +
                                             LNK-SYU-JIHI-TAX
-      *
-      **   COMPUTE    LNK-SYU-RSI-TOTAL =   LNK-SYU-RSISHOSHIN-MONEY +  
-      **                                    LNK-SYU-RSISAISHIN-MONEY +  
-      **                                    LNK-SYU-RSISDO-MONEY     +  
-      **                                    LNK-SYU-RSIETC-MONEY        
            END-IF.
       *
       *    ¡ãÈóÏ«ºÒ»ØÄê¡Ê£±£°£°¡ó¡Ë¡ä                                   
@@ -1255,43 +1241,9 @@
                  COMPUTE  LNK-SYU-RSISAISHIN-MONEY  =
                          (LNK-SYU-RSISAISHIN-MONEY  *  WK-4001-KSNRATE)
                                                     +  0.5
-      *          COMPUTE  LNK-SYU-RSISDO-MONEY      =
-      *                   LNK-SYU-RSISDO-MONEY      *  WK-4001-KSNRATE
       *
       *          ¼«ÇåÀÕ¤½¤ÎÂ¾¥³¡¼¥É¾ðÊó¤ÎÊÔ½¸¡Ê£°£¹£µ£¹£±¡¥£¹£²¡¥£¹£³¡Ë
                  PERFORM   500-JIBAI-SONOTA-HENSYU-SEC
-      *
-      ***        IF   WK-4001-TAXKBN   =   "2"                               
-      ***          IF    WK-TAX1001-KBN  =  "1"
-      ***            COMPUTE  LNK-SYU-RSI-TAX-SAI       =               
-      ***                     LNK-SYU-RSI-TAX-SAI       +               
-      ***                   ((LNK-S01-SINDAN(IDY)  *  0.05)  +  0.5)    
-      ***            COMPUTE  LNK-SYU-RSI-TAX-SAI       =               
-      ***                     LNK-SYU-RSI-TAX-SAI       +               
-      ***                   ((LNK-S01-MEISAI(IDY)  *  0.05)  +  0.5)    
-      *
-      ***            COMPUTE  LNK-SYU-RSIETC-MONEY      =               
-      ***                     LNK-SYU-RSIETC-MONEY      +               
-      ***                   ((LNK-S01-SINDAN(IDY)  *  0.05)  +  0.5)    
-      ***            COMPUTE  LNK-SYU-RSIETC-MONEY      =               
-      ***                     LNK-SYU-RSIETC-MONEY      +               
-      ***                   ((LNK-S01-MEISAI(IDY)  *  0.05)  +  0.5)    
-      ***          ELSE
-      ***            COMPUTE  LNK-SYU-RSI-TAX-SAI       =               
-      ***                     LNK-SYU-RSI-TAX-SAI       +               
-      ***                    (LNK-S01-SINDAN(IDY)  *  0.05)             
-      ***            COMPUTE  LNK-SYU-RSI-TAX-SAI       =               
-      ***                     LNK-SYU-RSI-TAX-SAI       +               
-      ***                    (LNK-S01-MEISAI(IDY)  *  0.05)             
-      *
-      ***            COMPUTE  LNK-SYU-RSIETC-MONEY      =               
-      ***                     LNK-SYU-RSIETC-MONEY      +               
-      ***                    (LNK-S01-SINDAN(IDY)  *  0.05)             
-      ***            COMPUTE  LNK-SYU-RSIETC-MONEY      =               
-      ***                     LNK-SYU-RSIETC-MONEY      +               
-      ***                    (LNK-S01-MEISAI(IDY)  *  0.05)             
-      ***          END-IF
-      ***        END-IF                                                 
       *
                  COMPUTE    LNK-SYU-SKYMONEY  =   LNK-SYU-SKYMONEY  +
                                             LNK-SYU-RSISHOSHIN-MONEY +
@@ -1319,43 +1271,9 @@
                  COMPUTE  LNK-SYU-RSISAISHIN-MONEY  =
                          (LNK-SYU-RSISAISHIN-MONEY  *  WK-4001-KSNRATE)
                                                     +  0.5
-      *          COMPUTE  LNK-SYU-RSISDO-MONEY      =
-      *                   LNK-SYU-RSISDO-MONEY      *  WK-4001-KSNRATE
       *
       *          ¼«ÇåÀÕ¤½¤ÎÂ¾¥³¡¼¥É¾ðÊó¤ÎÊÔ½¸¡Ê£°£¹£µ£¹£±¡¥£¹£²¡¥£¹£³¡Ë
                  PERFORM   500-JIBAI-SONOTA-HENSYU-SEC
-      *
-      ***        IF   WK-4001-TAXKBN   =   "2"                               
-      ***          IF    WK-TAX1001-KBN  =  "1"
-      ***            COMPUTE  LNK-SYU-RSI-TAX-SAI       =               
-      ***                     LNK-SYU-RSI-TAX-SAI       +               
-      ***                   ((LNK-S01-SINDAN(IDY)  *  0.05)  +  0.5)    
-      ***            COMPUTE  LNK-SYU-RSI-TAX-SAI       =               
-      ***                     LNK-SYU-RSI-TAX-SAI       +               
-      ***                   ((LNK-S01-MEISAI(IDY)  *  0.05)  +  0.5)    
-      *
-      ***            COMPUTE  LNK-SYU-RSIETC-MONEY      =               
-      ***                     LNK-SYU-RSIETC-MONEY      +               
-      ***                   ((LNK-S01-SINDAN(IDY)  *  0.05)  +  0.5)    
-      ***            COMPUTE  LNK-SYU-RSIETC-MONEY      =               
-      ***                     LNK-SYU-RSIETC-MONEY      +               
-      ***                   ((LNK-S01-MEISAI(IDY)  *  0.05)  +  0.5)    
-      ***          ELSE
-      ***            COMPUTE  LNK-SYU-RSI-TAX-SAI       =               
-      ***                     LNK-SYU-RSI-TAX-SAI       +               
-      ***                    (LNK-S01-SINDAN(IDY)  *  0.05)             
-      ***            COMPUTE  LNK-SYU-RSI-TAX-SAI       =               
-      ***                     LNK-SYU-RSI-TAX-SAI       +               
-      ***                    (LNK-S01-MEISAI(IDY)  *  0.05)             
-      *
-      ***            COMPUTE  LNK-SYU-RSIETC-MONEY      =               
-      ***                     LNK-SYU-RSIETC-MONEY      +               
-      ***                    (LNK-S01-SINDAN(IDY)  *  0.05)             
-      ***            COMPUTE  LNK-SYU-RSIETC-MONEY      =               
-      ***                     LNK-SYU-RSIETC-MONEY      +               
-      ***                    (LNK-S01-MEISAI(IDY)  *  0.05)             
-      ***          END-IF
-      ***        END-IF                                                 
       *
                  MOVE    ZERO      TO       LNK-SYU-SKYMONEY
            COMPUTE    LNK-SYU-SKYMONEY  =   LNK-SYU-SKYMONEY    +
@@ -1364,11 +1282,6 @@
                                             LNK-SYU-JIHI-TOTAL  +
                                             LNK-SYU-JIHI-TOTAL-TAX  +
                                             LNK-SYU-JIHI-TAX
-      *
-      **   COMPUTE    LNK-SYU-RSI-TOTAL =   LNK-SYU-RSISHOSHIN-MONEY +  
-      **                                    LNK-SYU-RSISAISHIN-MONEY +  
-      **                                    LNK-SYU-RSISDO-MONEY     +  
-      **                                    LNK-SYU-RSIETC-MONEY        
            END-IF.
       *
            IF   (WK-HKNKBN               =    "1"  ) AND                
@@ -2795,28 +2708,16 @@
       *
            INITIALIZE       WK-SYUHEN-TAIHI-AREA.
       *
-      *    °åÎÅµ¡´Ø¤Ç¤ÎÏ·¿ÍÊÝ¸±ÉéÃ´¼ïÊÌ¤ò¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿¤è¤ê¼èÆÀ
-      **>  IF    (COMB-KOH1-HKNKOHSBTKBN   =   "3")   OR
-      **>        (COMB-KOH2-HKNKOHSBTKBN   =   "3")   OR
-      **>        (COMB-KOH3-HKNKOHSBTKBN   =   "3")   OR
-      **>        (COMB-KOH4-HKNKOHSBTKBN   =   "3")
-      **>      PERFORM    SYS1001-READ-SEC
-      **>  END-IF.
-      *
-      *    °åÎÅµ¡´Ø¤¬¿ÇÎÅ½ê¤Î¾ì¹ç¡¢³ºÅö´µ¼Ô¤Î³ºÅö·î¤Ë±¡³°½èÊý¤¬£±ÅÙ¤Ç¤â
-      *    ¤¢¤Ã¤¿¤«¸¡º÷¤¹¤ë
-      **>  IF     WK-1001-HOSPSBT      =     "2"
-             IF ((COMB-KOH1HKNNUM       NOT =  SPACE )  AND
-                 (COMB-KOH1-GAIJGNKBN       =   "1"  ))
-             OR ((COMB-KOH2HKNNUM       NOT =  SPACE )  AND
-                 (COMB-KOH2-GAIJGNKBN       =   "1"  ))
-             OR ((COMB-KOH3HKNNUM       NOT =  SPACE )  AND
-                 (COMB-KOH3-GAIJGNKBN       =   "1"  ))
-             OR ((COMB-KOH4HKNNUM       NOT =  SPACE )  AND
-                 (COMB-KOH4-GAIJGNKBN       =   "1"  ))
+           IF ((COMB-KOH1HKNNUM       NOT =  SPACE )  AND
+               (COMB-KOH1-GAIJGNKBN       =   "1"  ))
+           OR ((COMB-KOH2HKNNUM       NOT =  SPACE )  AND
+               (COMB-KOH2-GAIJGNKBN       =   "1"  ))
+           OR ((COMB-KOH3HKNNUM       NOT =  SPACE )  AND
+               (COMB-KOH3-GAIJGNKBN       =   "1"  ))
+           OR ((COMB-KOH4HKNNUM       NOT =  SPACE )  AND
+               (COMB-KOH4-GAIJGNKBN       =   "1"  ))
                PERFORM    2102-SHOHOUSEN-HANTEI-SEC
-             END-IF.
-      **>  END-IF.
+           END-IF.
       *
       *    *¸øÈñ£±¤Î¾å¸Â²ó¿ô¡Ê¶â³Û¡Ë¼è¹þ¤ß
            IF (COMB-KOH1HKNNUM           NOT =  SPACE)    AND
@@ -4060,7 +3961,6 @@
       ******************************************************************
        220-SYUNOU-SEC           SECTION.
       *
-           MOVE     ZERO        TO    WK-TAIHI-DENPNUM.
            INITIALIZE                 WK-TAIHI-DENPNUMXX-OCC.
            MOVE     ZERO        TO    FLG-GRPNYURYOKU.
       *
@@ -4088,16 +3988,7 @@
                    PERFORM  SYUNOU-READ-SEC
                    PERFORM  UNTIL  (FLG-SYUNOU   =    "1")
                      IF   SYU-DENPJTIKBN  NOT =  "3"
-      ****              IF   WK-TAIHI-DENPNUM  NOT =  ZERO
-      ****              AND  SYU-FUKU-DENPNUM  NOT =  ZERO
-      ****              AND  WK-TAIHI-DENPNUM   =   SYU-FUKU-DENPNUM
-      ****                CONTINUE
-      ****              ELSE
-      ****                PERFORM        2201-SYUTOTAL-FIND-SEC
-      ****                IF   FLG-SYUTOTAL-SET  =  ZERO
                              PERFORM     2202-SYUNOU-COUNT-SEC
-      ****                END-IF
-      ****              END-IF
                      END-IF
                      MOVE     "SYUNOU-KEY26"   TO   ORC-DBPATH
                      PERFORM   SYUNOU-READ-SEC
@@ -4138,100 +4029,6 @@
            END-IF.
       *
        220-SYUNOU-EXT.
-           EXIT.
-      *
-      ******************************************************************
-      *    ¼ýÇ¼¹ç·×¥Þ¥¹¥¿¤¬¤¢¤ë¤«
-      ******************************************************************
-       2201-SYUTOTAL-FIND-SEC           SECTION.
-      *
-           MOVE     ZERO       TO     FLG-SYUTOTAL-SET.
-      *
-           IF  ( LNK-S01-KAGRPFLG            =   "1"   )
-           OR  ((LNK-S01-TTLARIFLG(IDY)      =   "1"  )  AND
-                (LNK-SYU-SRYKA           NOT =   "00" ))
-      *
-             CONTINUE
-      *
-           ELSE
-      *
-             IF   SYU-FUKU-DENPNUM    NOT =   ZERO
-             AND  SYU-GRP-DENPNUM     NOT =   ZERO
-      *
-               MOVE    SYU-GRP-DENPNUM    TO      WK-GRP-DENPNUM
-      *
-               INITIALIZE                         SYUTTL-REC
-               MOVE    SYU-HOSPID         TO      SYUTTL-HOSPID
-               MOVE    SYU-NYUGAIKBN      TO      SYUTTL-NYUGAIKBN
-               MOVE    SYU-PTID           TO      SYUTTL-PTID
-               MOVE    SYU-FUKU-DENPNUM   TO      SYUTTL-DENPNUM
-               MOVE    SYUTTL-REC         TO      MCPDATA-REC
-               MOVE    "DBSELECT"         TO      MCP-FUNC
-               MOVE    "SYUTOTAL-KEY"     TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING   MCPAREA
-                                                   ORCMCPAREA
-                                                   MCPDATA-REC
-               IF      MCP-RC             =       ZERO
-                       MOVE      "SYUTOTAL-KEY"   TO   ORC-DBPATH
-                       PERFORM    SYUTOTAL-READ-SEC
-                       IF   FLG-SYUTOTAL   =    ZERO
-                            PERFORM        22011-SYUNOU-HENKAN-SEC
-                            PERFORM        2202-SYUNOU-COUNT-SEC
-                            MOVE  SYUTTL-DENPNUM    TO  WK-TAIHI-DENPNUM
-                            MOVE     1              TO  FLG-SYUTOTAL-SET
-                       ELSE
-                           MOVE    12             TO   LNK-S01-RC
-                       END-IF
-                ELSE
-                       MOVE    12                 TO   LNK-S01-RC
-                END-IF
-      *
-                MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
-                MOVE    "SYUTOTAL-KEY"          TO  ORC-DBPATH
-                CALL    "ORCMCPSUB"              USING
-                                                 MCPAREA
-                                                 ORCMCPAREA
-                                                 MCPDATA-REC
-      *
-             END-IF
-      *
-           END-IF.
-      *
-       2201-SYUTOTAL-FIND-EXT.
-           EXIT.
-      *
-      ******************************************************************
-      *    ¼ýÇ¼¹ç·×¥Þ¥¹¥¿¤ÎÆâÍÆ¤ò¼ýÇ¼¥Þ¥¹¥¿¤Ø
-      ******************************************************************
-       22011-SYUNOU-HENKAN-SEC           SECTION.
-      *
-           INITIALIZE                             SYU-SYUNOU-REC.
-      *£Ë£Å£Ù
-           MOVE     SYUTTL-KEY                TO  SYU-KEY.
-      *¿ÇÎÅÆü
-           MOVE     SYUTTL-SRYYMD             TO  SYU-SRYYMD.
-      *ÊÝ¸±ÁÈ¹ç¤»ÈÖ¹æ
-           MOVE     SYUTTL-HKNCOMBINUM        TO  SYU-HKNCOMBINUM.
-      *¼çÊÝ¸±¡ÝÉéÃ´¾ðÊó
-           MOVE     SYUTTL-SYUHKNNUM          TO  SYU-SYUHKNNUM.
-           MOVE     SYUTTL-SYUHKNFTNMONEY     TO  SYU-SYUHKNFTNMONEY.
-           MOVE     SYUTTL-SYUCOMPFTN         TO  SYU-SYUCOMPFTN.
-           MOVE     SYUTTL-SYUCOMPFTN-ENTANI  TO  SYU-SYUCOMPFTN-ENTANI.
-           MOVE     SYUTTL-SYUCOMPYKZFTN      TO  SYU-SYUCOMPYKZFTN.
-           MOVE     SYUTTL-SYUCOMPTOTAL       TO  SYU-SYUCOMPTOTAL.
-           MOVE     SYUTTL-SYUYKZFTNKBN       TO  SYU-SYUYKZFTNKBN.
-      *¸øÈñ¡ÝÉéÃ´¾ðÊó
-           MOVE     SYUTTL-KOH-AREA           TO  SYU-KOH-AREA.
-      *ÀÁµáÆâÍÆ
-           MOVE     SYUTTL-SKY-NAIYOU         TO  SYU-SKY-NAIYOU.
-      *¸øÈñ°ìÉôÉéÃ´¶â
-           MOVE     SYUTTL-KOH-FTN            TO  SYU-KOH-FTN.
-      *¸øÈñ°ìÉôÉéÃ´¶â¡Ê±ßÃ±°Ì¡Ë
-           MOVE     SYUTTL-KOH-FTN-ENTANI     TO  SYU-KOH-FTN-ENTANI.
-      *¤Þ¤È¤áÆþÎÏÅÁÉ¼ÈÖ¹æ
-           MOVE     WK-GRP-DENPNUM            TO  SYU-GRP-DENPNUM.
-      *
-       22011-SYUNOU-HENKAN-EXT.
            EXIT.
       *
       ******************************************************************
@@ -8270,12 +8067,6 @@
                               COMPUTE  WK-ZENGAKU-YAK
                                                   = WK-ZENGAKU 
                                                   - LNK-S01-SYUTEN(IDY)
-      ***                     COMPUTE  WK-ZENGAKU-SYU = WK-ZENGAKU-SYU  
-      ***                                             * 11.5            
-      ***                     COMPUTE  WK-ZENGAKU-SYU = WK-ZENGAKU-SYU  
-      ***                                             * WK-4001-KSNRATE 
-      ***                     COMPUTE  WK-ZENGAKU-YAK = WK-ZENGAKU-YAK  
-      ***                                             * 11.5            
                               COMPUTE  WK-ZENGAKU-SYU =                 
                                (WK-ZENGAKU-SYU * 11.5 * WK-4001-KSNRATE)
                                                       + 0.5             
@@ -8291,12 +8082,6 @@
                               COMPUTE  WK-ZENGAKU-YAK
                                                   = WK-ZENGAKU 
                                                   - LNK-S01-SYUTEN(IDY)
-      ***                     COMPUTE  WK-ZENGAKU-SYU = WK-ZENGAKU-SYU  
-      ***                                             * 12.0            
-      ***                     COMPUTE  WK-ZENGAKU-SYU = WK-ZENGAKU-SYU  
-      ***                                             * WK-4001-KSNRATE 
-      ***                     COMPUTE  WK-ZENGAKU-YAK = WK-ZENGAKU-YAK  
-      ***                                             * 12.0            
                               COMPUTE  WK-ZENGAKU-SYU =                 
                                (WK-ZENGAKU-SYU * 12.0 * WK-4001-KSNRATE)
                                                       + 0.5             
@@ -8579,7 +8364,6 @@
                                         TO  LNK-SYU-KOH-COMPFTN(1)
                      END-IF
                    END-IF
-      *********    CONTINUE
                ELSE
                    COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX)  =
                              LNK-SYU-KOH-COMPFTN(KOH-IDX)  +  5
@@ -8737,6 +8521,7 @@
       *
       *        ÆÃ¼ì·×»»¡Ê¸ÂÅÙ¤òÄ¶¤¨¤¿¾ì¹ç¡¢´µ¼ÔÉéÃ´È¯À¸¡ÊÁ´³Û¡Ë¡Ë
       *********¡ÊÊ¡Åç¸©¡Ë
+      *********¡Êºë¶Ì¸©¡Ë
                IF ((WK-1001-PREFNUM             =  07      ) AND
                    (LNK-SYU-KOH-HKNNUM(KOH-IDX) = "245"    ) AND
                    (LNK-SYU-SRYYMD(1:6)        >= "200412" ))
@@ -9282,7 +9067,6 @@
                     COMPUTE   WK-FTN  =
                               LNK-SYU-KOH-COMPFTN(KOH-IDX)  +
                               WK-KOH-YAKFTN-T(KOH-IDX)
-      *             IF        WK-FTN    >  995
                     IF        WK-FTN    >  1000
                         MOVE  1000   TO   LNK-SYU-KOH-COMPFTN(KOH-IDX)
                         MOVE  ZERO   TO   WK-KOH-YAKFTN-T(KOH-IDX)
@@ -9352,7 +9136,6 @@
                                         TO  LNK-SYU-KOH-COMPFTN(1)
                      END-IF
                    END-IF
-      *********    CONTINUE
                ELSE
                    COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX) =
                              LNK-SYU-KOH-COMPFTN(KOH-IDX)  +  5
@@ -10463,7 +10246,6 @@
       *    ¥ì¥»µ­ºÜ¶â³ÛÂàÈòÍÑ¥¨¥ê¥¢¤«¤é¼ýÇ¼¹àÌÜ¤ØÊÔ½¸
       *
            IF    WK-KOH-COMPFTN(1)  =  ALL"9"                           
-      ****             CONTINUE                                         
                 IF   WK-TAIHI-RECEFTNDSPKBN(1) = SPACE
                 AND  COMB-KOH1HKNNUM       NOT = "027"
                     COMPUTE  LNK-SYU-KOH1COMPFTN  =
@@ -10484,7 +10266,6 @@
            END-IF.                                                      
       *
            IF    WK-KOH-COMPFTN(2)  =  ALL"9"                           
-      ****             CONTINUE                                         
                 IF   WK-TAIHI-RECEFTNDSPKBN(2) = SPACE
                     COMPUTE  LNK-SYU-KOH2COMPFTN  =
                                     LNK-SYU-KOH2COMPFTN     +   5
@@ -10504,7 +10285,6 @@
            END-IF.                                                      
       *
            IF    WK-KOH-COMPFTN(3)  =  ALL"9"                           
-      ****             CONTINUE                                         
                 IF   WK-TAIHI-RECEFTNDSPKBN(3) = SPACE
                     COMPUTE  LNK-SYU-KOH3COMPFTN  =
                                     LNK-SYU-KOH3COMPFTN     +   5
@@ -10524,7 +10304,6 @@
            END-IF.                                                      
       *
            IF    WK-KOH-COMPFTN(4)  =  ALL"9"                           
-      ****             CONTINUE                                         
                 IF   WK-TAIHI-RECEFTNDSPKBN(4) = SPACE
                     COMPUTE  LNK-SYU-KOH4COMPFTN  =
                                     LNK-SYU-KOH4COMPFTN     +   5
@@ -12003,26 +11782,6 @@
            END-IF.
       *
        SYUNOU-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    ¼ýÇ¼¹ç·×¥Þ¥¹¥¿ÆÉ¹þ
-      *****************************************************************
-       SYUTOTAL-READ-SEC          SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  SYUTTL-REC
-               MOVE    ZERO            TO  FLG-SYUTOTAL
-           ELSE
-               INITIALIZE                  SYUTTL-REC
-               MOVE    1               TO  FLG-SYUTOTAL
-           END-IF.
-      *
-       SYUTOTAL-READ-EXT.
            EXIT.
       *****************************************************************
       *    ´µ¼Ô¾ðÊóÆÉ¹þ
