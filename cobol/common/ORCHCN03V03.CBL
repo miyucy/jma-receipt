@@ -1135,7 +1135,7 @@
                        WHEN    "9"
                            MOVE    SYS-1013-JIHINAME  TO
                                                       HCN03-JIHIMSG (9)
-                       WHEN    "10"
+                       WHEN    "0"
                            MOVE    SYS-1013-JIHINAME  TO
                                                       HCN03-JIHIMSG(10)
                    END-EVALUATE
