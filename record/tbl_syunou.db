@@ -998,3 +998,30 @@ path	key42 	{
 	};
 };
 
+path	key43 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_key43_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syunou
+			WHERE HOSPID      =    :HOSPID
+			AND   NYUGAIKBN   LIKE :NYUGAIKBN
+			AND   DENPPRTYMD  =    :DENPPRTYMD
+			AND   CREATEKBN   <>   '3'
+			AND   DENPJTIKBN  <>   '3'
+		;
+	};
+};
+
+path	key44 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_key44_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syunou
+			WHERE HOSPID      =   :HOSPID
+			AND   NYUGAIKBN   LIKE :NYUGAIKBN
+			AND   SRYYMD      =   :SRYYMD
+			AND   CREATEKBN   <>  '3'
+			AND   DENPJTIKBN  <>  '3'
+		;
+	};
+};
