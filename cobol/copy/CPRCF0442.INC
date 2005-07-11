@@ -28,21 +28,11 @@
       *                                     導料算定時の点滴注射の追加
       *  01.01.02    NACL-門脇    04.08.17  レセプト科追加
       *  01.01.03    NACL-門脇    05.07.05  診療種別区分追加
-      *  01.01.04    NACL-門脇    05.11.11  コメントデータ追加
-      *  02.09.01    NACL-門脇    05.04.17  ２００６年４月改正対応
-      *  03.05.01    NACL-門脇    07/05/28  グループ診療対応
-      *
-      *  04.05.01    NACL-藤原    09/07/14  小数点以下５桁対応
-      *  04.05.02    NACL-門脇    12/04/10  改正対応項目追加
-      *
-      *  04.07.01    NACL-門脇    13/01/21  労災レセ電対応
-      *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
-      *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       ************************************************************
       *01  RECE442-REC.
            03  RECE442-KEY.
       *医療機関ＩＤ
-               05  RECE442-HOSPNUM         PIC  9(02).
+               05  RECE442-HOSPID          PIC  X(24).
       *診療年月
                05  RECE442-SRYYM           PIC  9(06).
       *入外区分
@@ -64,34 +54,23 @@
       *診療コード計
                05  RECE442-SRYCDTOTAL      PIC  9(14).
       *数量計
-               05  RECE442-SURYOUTOTAL     PIC  9(07)V9(05).
+               05  RECE442-SURYOUTOTAL     PIC  9(07)V9(03).
       *診療コード＊数量の累計
-               05  RECE442-RUIKEITOTAL     PIC  9(13)V9(05).
+               05  RECE442-RUIKEITOTAL     PIC  9(15)V9(03).
       *明細数
                05  RECE442-MEISAISU        PIC  9(04).
+      *コメント剤連番
+               05  RECE442-COMRENNUM       PIC  9(05).
       *在宅患者訪問点滴注射管理指導料算定時の点滴注射
                05  RECE442-FLG-HOUTEN-COMMENT
                                            PIC  X(01).
-      *自保区分
-               05  RECE442-JIHOKBN         PIC  X(01).
-      *コメント剤連番
-               05  RECE442-COMRENNUM       PIC  9(05).
       *剤回数
            03  RECE442-ZAIKAISU            PIC  9(04).
       *日数回数テーブル
            03  RECE442-DAY-AREA.
-      *        診療回数テーブル（1:合計、2-9:１回〜９回）
-               05  RECE442-DAY-TBL         OCCURS  10.
+      *        診療回数テーブル（1:合計,2:１回,3:２回, 4:３回以上）
+               05  RECE442-DAY-TBL         OCCURS  4.
                    07  RECE442-KAISUINF    OCCURS  31.
                        09  RECE442-KAISU   PIC  9(03).
       *データ
-           03  RECE442-REC1                PIC  X(2000).
-      *コメントデータ
-           03  RECE442-COM-AREA.
-               05  RECE442-COM             PIC  X(200)    OCCURS  10.
-      *初診（同日複数診療科）算定科
-           03  RECE442-SYODOU-SRYKA-AREA.
-               05  RECE442-SYODOU-SRYKA    PIC  X(02)     OCCURS  10.
-      *再診（同一日２科目）算定科
-           03  RECE442-SAIDOU-SRYKA-AREA.
-               05  RECE442-SAIDOU-SRYKA    PIC  X(02)     OCCURS  10.
+           03  RECE442-REC1                PIC  X(600).
