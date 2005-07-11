@@ -858,7 +858,7 @@
       *
            CLOSE                       SPASCR-FILE
            .
-       1003-J02SPA-SET-EXT.
+       1003-J02SPA-OUT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2221,11 +2221,12 @@
            END-PERFORM
            PERFORM VARYING     IDX-N   FROM    1   BY  1
                    UNTIL      (IDX-N       >   15  )  OR
-                              (IDX-RRK     >=  135 )  OR
-                              (JYURRK-ZAINUM (IDX-N)  =   ZERO )
-               ADD     1               TO  IDX-RRK
-               MOVE    JYURRK-ZAINUM (IDX-N)   TO  SPA-RRK-ZAINUM
+                              (IDX-RRK     >=  135 )
+               IF      JYURRK-ZAINUM (IDX-N)   NOT =   ZERO
+                   ADD     1               TO  IDX-RRK
+                   MOVE    JYURRK-ZAINUM (IDX-N)   TO  SPA-RRK-ZAINUM
                                                          (IDX IDX-RRK)
+               END-IF
            END-PERFORM
       *
            .
@@ -7056,11 +7057,11 @@
       *****************************************************************
        430-FREEMSG-SEC              SECTION.
       *
-      *    患者選択チェック
-           IF      SPA-GMN-PTID        =   ZERO
-               MOVE    "0019"          TO  SPA-ERRCD
-               GO      TO      430-FREEMSG-EXT
-           END-IF
+      **** 患者選択チェック
+      *    IF      SPA-GMN-PTID        =   ZERO
+      *        MOVE    "0019"          TO  SPA-ERRCD
+      *        GO      TO      430-FREEMSG-EXT
+      **** END-IF
       *    剤修正のチェック
            IF      SPA-GMN-BANGO   NOT =   ZERO
                MOVE    "0009"          TO  SPA-ERRCD
@@ -7913,7 +7914,6 @@
                        IF      WRK-DAY-S           =   ZERO
       *                    剤削除
                            MOVE    ZERO            TO  SPA-RRK-ZAINUM
-      ***************************************    (IDX-RRK WRK-IDR-MAX)
                                                  (IDX-RRK2 WRK-IDR)
                            MOVE    SPACE           TO  SPA-RRK-SRYKBN
                                                  (IDX-RRK2 WRK-IDR)
