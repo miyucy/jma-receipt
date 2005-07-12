@@ -449,12 +449,19 @@
                    MOVE    WRK-NYULST-SRYYMD   TO  WRK-LST-SRYYMD
                    MOVE    WRK-NYULST-SRYYMD2  TO  WRK-LST-SRYYMD2
                END-IF
+           ELSE
+      *        入院の最終履歴日を編集する
+               IF     (WRK-NYULST-SRYYMD   NOT =   SPACE ) AND
+                      (WRK-LST-SRYYMD      <   WRK-NYULST-SRYYMD)
+                   MOVE    WRK-NYULST-SRYYMD   TO  WRK-LST-SRYYMD
+               END-IF
            END-IF
       *
-      *    最終受診日
-           IF     (SKARRK-LASTYMD  NOT =   SPACE ) AND
-                  (SKARRK-LASTYMD      >   WRK-LST-SRYYMD)
-               MOVE    SKARRK-LASTYMD  TO  WRK-LST-SRYYMD
+      *    最終受診日（退院日）
+           IF      SKARRK-LASTYMD  NOT =   SPACE
+               IF      SKARRK-LASTYMD      >=  WRK-NYULST-SRYYMD
+                   MOVE    SKARRK-LASTYMD  TO  WRK-LST-SRYYMD
+               END-IF
            END-IF
            MOVE    WRK-LST-SRYYMD      TO  KARRK-LASTYMD
       *
