@@ -88,6 +88,9 @@
            03  FLG-FIRUMU          PIC 9(01).
            03  FLG-CHK             PIC 9(01).
       *
+           03  FLG-AUTO-ARI        PIC 9(01).
+           03  FLG-AUTO-NASI       PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
@@ -390,6 +393,9 @@
       *
            MOVE    ZERO               TO  FLG-SYORIFLG
            MOVE    ZERO               TO  FLG-ZENKAI
+      *
+           MOVE    ZERO               TO  FLG-AUTO-ARI
+           MOVE    ZERO               TO  FLG-AUTO-NASI
       *    ワーク診療行為からの時は、訂正と同様に編集する
            IF      LNK-WKSRY-TERMID (1)    =   "WKSRYACT"
                MOVE    1               TO  FLG-SYORIFLG
@@ -483,6 +489,14 @@
                    IF      LNK-WKSRY-AUTOKBN(IDX IDY)    =   "3"
                        MOVE    1               TO  FLG-HEN-CHK
                    END-IF
+      *            前回処方展開
+                   IF     (ORCSCWKSRY-SYORIFLG =   1 ) AND
+                          (LNK-WKSRY-AUTOKBN(IDX IDY)  =   "3"
+                                                       OR  "4"
+                                                       OR  "5"
+                                                       OR  "6" )
+                       MOVE    1               TO  FLG-HEN-CHK
+                   END-IF
                    IF     (FLG-SYORIFLG                  =   1  ) AND
                           (LNK-WKSRY-AUTOKBN(IDX IDY)    =  "3"
                                                          OR "6" )
@@ -493,7 +507,7 @@
                        END-IF
                    END-IF
       *            登録時自動発生分は編集しない
-                   IF     (FLG-SYORIFLG                =   1  ) AND
+                   IF     (ORCSCWKSRY-SYORIFLG         =   ZERO ) AND
                           (LNK-WKSRY-AUTOKBN(IDX IDY)  =  "4"
                                                        OR "6" )
       *                訂正時の自動発生しない
@@ -506,7 +520,7 @@
                        END-IF
                    END-IF
       *            特定疾患処方管理加算編集判定
-                   IF     (FLG-SYORIFLG                  =   1  ) AND
+                   IF     (ORCSCWKSRY-SYORIFLG         =   ZERO ) AND
                           (LNK-WKSRY-AUTOKBN(IDX IDY)    =  "5")
       *                訂正時の自動発生しない
                        IF     (SPA-TEISEITOKU-FLG        =  "1")
@@ -517,6 +531,22 @@
                            MOVE    1               TO  FLG-AUTO-OK
                        END-IF
                    END-IF
+      *            自動発生の有無判定
+                   IF      ORCSCWKSRY-SYORIFLG     =   ZERO
+                       IF     (LNK-WKSRY-AUTOKBN(IDX IDY)  =  "4"
+                                                           OR "5"
+                                                           OR "6" )
+                           MOVE    1               TO  FLG-AUTO-ARI
+                       END-IF
+                       IF     (LNK-WKSRY-AUTOKBN(IDX IDY)  =  "3" ) AND
+                              (LNK-WKSRY-SRYKBN (IDX)      =  "13"
+                                                           OR "27"
+                                                           OR "60"
+                                                           OR "70")
+                           MOVE    1               TO  FLG-AUTO-NASI
+                       END-IF
+                   END-IF
+      *
                    IF      FLG-HEN-CHK         =   ZERO
                        PERFORM 10020-SPA-HEN-SEC
                    END-IF
@@ -587,6 +617,13 @@
                    END-IF
                END-IF
            END-PERFORM
+      *
+      *    訂正時の算定有無登録の判定
+           IF      FLG-AUTO-ARI        =   ZERO
+               IF      FLG-AUTO-NASI       =   1
+                   MOVE    "1"             TO  SPA-TEISEI-FLG
+               END-IF
+           END-IF
       *
       *    中途終了追加場合
            IF      FLG-FUKU        NOT =   ZERO
