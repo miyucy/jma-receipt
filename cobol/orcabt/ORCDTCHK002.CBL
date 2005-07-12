@@ -352,6 +352,7 @@
            03  WRK-HKNCOMBI                            PIC 9(04).
            03  WRK-ACCTKBN                             PIC X(01).
            03  WRK-HKNCOMBIMEI                         PIC X(50).
+           03  WRK-HKNCOMBINUM                         PIC X(50).
            03  WRK-HKNCOMBI-DAY-G.
                05  WRK-HKNCOMBI-DAY                    PIC 9(03)
                                                        OCCURS  31.
@@ -412,16 +413,24 @@
       *    ÊÝ¸±£É£ÄÂàÈò¥ï¡¼¥¯
        01  THKNID-AREA.
            03  THKNID-MAX                              PIC 9(05).
+           03  THKNID-IDX                              PIC 9(05).
            03  THKNID-OCC                              OCCURS 20.
                05  THKNID-HKNID                        PIC 9(10).
+               05  THKNID-HKNID-DAY-G.
+                   07  THKNID-HKNID-DAY                PIC 9(01)
+                                                       OCCURS  31.
       *
       *    ¸øÈñ£É£ÄÂàÈò¥ï¡¼¥¯
        01  TKOHID-AREA.
            03  TKOHID-RJNFLG                           PIC 9(01).
            03  TKOHID-SEIHOFLG                         PIC 9(01).
            03  TKOHID-MAX                              PIC 9(05).
+           03  TKOHID-IDX                              PIC 9(05).
            03  TKOHID-OCC                              OCCURS 20.
                05  TKOHID-KOHID                        PIC 9(10).
+               05  TKOHID-KOHID-DAY-G.
+                   07  TKOHID-KOHID-DAY                PIC 9(01)
+                                                       OCCURS  31.
       *
       *    ÊÝ¸±ÁÈ¹ç¤»ÂàÈò¥ï¡¼¥¯
       *    ¡ÊTHKNCOMBI-MAX¤Ï´µ¼Ô»áÌ¾¤Î¥Á¥§¥Ã¥¯ÂÐ¾Ý¤ÎÈ½Äê¤Ë¤â»ÈÍÑ¡Ë
@@ -432,6 +441,9 @@
                05  THKNCOMBI-ACCTKBN                   PIC X(01).
                05  THKNCOMBI-STYMD                     PIC X(08).
                05  THKNCOMBI-EDYMD                     PIC X(08).
+               05  THKNCOMBI-DAY-G.
+                   07  THKNCOMBI-DAY                   PIC 9(01)
+                                                       OCCURS  31.
       *
        01  TNACCT-KKN-AREA.
            03  TNACCT-KKN-DAY                          PIC 9(03)
@@ -1780,11 +1792,28 @@
       *
            END-PERFORM
       *
+           MOVE    ZERO                TO  THKNID-IDX
+      *
            IF    ( IDX0                    >   THKNID-MAX )
                IF    ( CONST-THKNID-MAX    >   THKNID-MAX )
                    COMPUTE THKNID-MAX  =   THKNID-MAX  +   1
                    MOVE    COMB-HKNID  TO  THKNID-HKNID (THKNID-MAX)
+                   MOVE    THKNID-MAX  TO  THKNID-IDX
                END-IF
+           ELSE
+                   MOVE    IDX0        TO  THKNID-IDX
+           END-IF
+      *
+           IF    ( THKNID-IDX          >   ZERO )
+               PERFORM VARYING     IDX-DAY FROM    1   BY  1
+                       UNTIL     ( IDX-DAY >   31 )
+      *
+                   IF    ( PTZAI-DAY (IDX-ZAI  IDX-DAY)  >   ZERO )
+                       MOVE    1       TO  THKNID-HKNID-DAY
+                                                 (THKNID-IDX IDX-DAY)
+                   END-IF
+      *
+               END-PERFORM
            END-IF
       *
            .
@@ -1824,6 +1853,8 @@
       *
            END-PERFORM
       *
+           MOVE    ZERO                TO  TKOHID-IDX
+      *
            IF    ( IDX0                    >   TKOHID-MAX )
                IF    ( CONST-TKOHID-MAX    >   TKOHID-MAX)
       *
@@ -1839,7 +1870,23 @@
                        MOVE    1       TO  TKOHID-SEIHOFLG
                    END-EVALUATE
       *
+                   MOVE    TKOHID-MAX  TO  TKOHID-IDX
+      *
                END-IF
+           ELSE
+                   MOVE    IDX0        TO  TKOHID-IDX
+           END-IF
+      *
+           IF    ( TKOHID-IDX          >   ZERO )
+               PERFORM VARYING     IDX-DAY FROM    1   BY  1
+                       UNTIL     ( IDX-DAY >   31 )
+      *
+                   IF    ( PTZAI-DAY (IDX-ZAI  IDX-DAY)  >   ZERO )
+                       MOVE    1       TO  TKOHID-KOHID-DAY
+                                                 (TKOHID-IDX IDX-DAY)
+                   END-IF
+      *
+               END-PERFORM
            END-IF
       *
            .
@@ -1894,6 +1941,16 @@
                IF    ( THKNCOMBI-EDYMD (IDXA)  <   DCACCT-SRYYMD )
                    MOVE    DCACCT-SRYYMD   TO  THKNCOMBI-EDYMD (IDXA)
                END-IF
+      *
+               PERFORM VARYING     IDX-DAY FROM    1   BY  1
+                       UNTIL     ( IDX-DAY >   31 )
+      *
+                   IF    ( PTZAI-DAY (IDX-ZAI  IDX-DAY)  >   ZERO )
+                       MOVE    1       TO  THKNCOMBI-DAY
+                                                 (IDXA IDX-DAY)
+                   END-IF
+      *
+               END-PERFORM
       *
            END-IF
       *
@@ -5615,11 +5672,16 @@
       *
                IF    ( IDX17   >   SDTCHK02-O-MAX )
                    MOVE    THKNCOMBI-HKNCOMBI (IDX16)
-                                       TO  WRK-MAE-INPUT
+                                           TO  WRK-MAE-INPUT
                    PERFORM 800-ZENKAKU-HEN-SEC
+                   MOVE    WRK-OUT-INPUT   TO  WRK-HKNCOMBIMEI
+                   MOVE    THKNCOMBI-DAY-G (IDX16)
+                                       TO  WRK-NISSU-DAY-G
+                   PERFORM 200111-NISSU-HEN-SEC
                    MOVE    SPACE       TO  WRK-ERRMES-PLUS
                    STRING  WRK-ACCTNAME    DELIMITED   BY  SPACE
-                           WRK-OUT-INPUT   DELIMITED   BY  SPACE
+                           WRK-HKNCOMBIMEI DELIMITED   BY  SPACE
+                           WRK-NISSU-MES   DELIMITED   BY  SPACE
                    INTO    WRK-ERRMES-PLUS
                    END-STRING
       *
@@ -5635,12 +5697,24 @@
                                        <=  LNK-COMB-TEKEDYMD (IDX17))
                        CONTINUE
                    ELSE
-                       MOVE    SDTCHK02-O-HKNCOMBIMEI (IDX17)
-                                       TO  WRK-MAE-INPUT
+                       MOVE    LNK-COMB-HKNCOMBINUM   (IDX17)
+                                               TO  WRK-MAE-INPUT
                        PERFORM 800-ZENKAKU-HEN-SEC
+                       MOVE    WRK-OUT-INPUT   TO  WRK-HKNCOMBINUM
+                       MOVE    SDTCHK02-O-HKNCOMBIMEI (IDX17)
+                                               TO  WRK-MAE-INPUT
+                       PERFORM 800-ZENKAKU-HEN-SEC
+                       MOVE    WRK-OUT-INPUT   TO  WRK-HKNCOMBIMEI
+                       MOVE    THKNCOMBI-DAY-G (IDX16)
+                                       TO  WRK-NISSU-DAY-G
+                       PERFORM 200111-NISSU-HEN-SEC
                        MOVE    SPACE       TO  WRK-ERRMES-PLUS
                        STRING  WRK-ACCTNAME    DELIMITED   BY  SPACE
-                               WRK-OUT-INPUT   DELIMITED   BY  SPACE
+                               WRK-HKNCOMBINUM DELIMITED   BY  SPACE
+                               "¡Ê"            DELIMITED   BY  SIZE
+                               WRK-HKNCOMBIMEI DELIMITED   BY  SPACE
+                               "¡Ë"            DELIMITED   BY  SIZE
+                               WRK-NISSU-MES   DELIMITED   BY  SPACE
                        INTO    WRK-ERRMES-PLUS
                        END-STRING
       *
@@ -5694,9 +5768,14 @@
                MOVE    SDTCHK02-O-HKNCOMBIMEI (IDX17)
                                        TO  WRK-MAE-INPUT
                PERFORM 800-ZENKAKU-HEN-SEC
+               MOVE    WRK-OUT-INPUT   TO  WRK-HKNCOMBIMEI
+               MOVE    THKNCOMBI-DAY-G (IDX16)
+                                       TO  WRK-NISSU-DAY-G
+               PERFORM 200111-NISSU-HEN-SEC
                MOVE    SPACE           TO  WRK-ERRMES-PLUS
                STRING  WRK-ACCTNAME    DELIMITED   BY  SPACE
-                       WRK-OUT-INPUT   DELIMITED   BY  SPACE
+                       WRK-HKNCOMBIMEI DELIMITED   BY  SPACE
+                       WRK-NISSU-MES   DELIMITED   BY  SPACE
                INTO    WRK-ERRMES-PLUS
                END-STRING
       *
