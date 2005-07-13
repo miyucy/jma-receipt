@@ -427,6 +427,12 @@
                05  WRK-HAS-DD         PIC 9(02).
       *
            03  WRK-ORC-DBPATH          PIC X(64).
+      *
+           03  WRK-MCP-PATH.
+               04  WRK-MCP-BLOCKS  PIC S9(9)   BINARY.
+               04  WRK-MCP-RNAME   PIC S9(9)   BINARY.
+               04  WRK-MCP-PNAME   PIC S9(9)   BINARY.
+      *
       *    ¥¯¥ê¥¢ÍÑÊÝÂ¸
            03  WRK-NYUGAIKBN-G         PIC X(10).
            03  WRK-SRYKBN-G            PIC X(19).
@@ -1772,17 +1778,18 @@
       *
            INITIALIZE                  SPA-GMN-SRYKBN-COMB
            MOVE    "00 Á´ÂÎ"           TO  SPA-GMN-SRYKBN-LST (01)
-           MOVE    "10 ¿Ç»¡"           TO  SPA-GMN-SRYKBN-LST (02)
-           MOVE    "20 ÅêÌô"           TO  SPA-GMN-SRYKBN-LST (03)
-           MOVE    "30 Ãí¼Í"           TO  SPA-GMN-SRYKBN-LST (04)
-           MOVE    "40 ½èÃÖ"           TO  SPA-GMN-SRYKBN-LST (05)
-           MOVE    "50 ¼ê½Ñ"           TO  SPA-GMN-SRYKBN-LST (06)
-           MOVE    "60 ¸¡ºº"           TO  SPA-GMN-SRYKBN-LST (07)
-           MOVE    "70 ²èÁü¿ÇÃÇ"       TO  SPA-GMN-SRYKBN-LST (08)
-           MOVE    "80 Íý³Ø¡¦¤½¤ÎÂ¾"   TO  SPA-GMN-SRYKBN-LST (09)
-           MOVE    "90 ¼«Èñ¡¦¤½¤ÎÂ¾"   TO  SPA-GMN-SRYKBN-LST (10)
+           MOVE    "01 Á´ÂÎ¡Ê¿Ç¶è½ç¡Ë" TO  SPA-GMN-SRYKBN-LST (02)
+           MOVE    "10 ¿Ç»¡"           TO  SPA-GMN-SRYKBN-LST (03)
+           MOVE    "20 ÅêÌô"           TO  SPA-GMN-SRYKBN-LST (04)
+           MOVE    "30 Ãí¼Í"           TO  SPA-GMN-SRYKBN-LST (05)
+           MOVE    "40 ½èÃÖ"           TO  SPA-GMN-SRYKBN-LST (06)
+           MOVE    "50 ¼ê½Ñ"           TO  SPA-GMN-SRYKBN-LST (07)
+           MOVE    "60 ¸¡ºº"           TO  SPA-GMN-SRYKBN-LST (08)
+           MOVE    "70 ²èÁü¿ÇÃÇ"       TO  SPA-GMN-SRYKBN-LST (09)
+           MOVE    "80 Íý³Ø¡¦¤½¤ÎÂ¾"   TO  SPA-GMN-SRYKBN-LST (10)
+           MOVE    "90 ¼«Èñ¡¦¤½¤ÎÂ¾"   TO  SPA-GMN-SRYKBN-LST (11)
       *
-           MOVE    10                  TO  SPA-SRYKBN-MAX
+           MOVE    11                  TO  SPA-SRYKBN-MAX
       *
            IF      SPA-GMN-SRYKBN-MAE  =   SPACE
                MOVE    SPA-GMN-SRYKBN-LST (01)
@@ -6795,23 +6802,26 @@
            MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
            MOVE    SPA-GMN-PTID        TO  ACCT-PTID
            MOVE    SPA-NAI-SRYYM       TO  ACCT-SRYYM
+      *
            IF      SPA-J01-SRYKA       =   ZERO
-               MOVE    "SRYACCT-KEY19"     TO  WRK-ORC-DBPATH
+      ******** MOVE    "SRYACCT-KEY19"     TO  WRK-ORC-DBPATH
+               MOVE    PATH-TBL-SRYACCT-KEY19  TO  WRK-MCP-PATH
+               IF      SPA-GMN-SRYKBN      =   "01"
+      *            ¿ÇÎÅ¶èÊ¬½ç
+                   MOVE    PATH-TBL-SRYACCT-KEY41  TO  WRK-MCP-PATH
+               END-IF
            ELSE
                MOVE    SPA-J01-SRYKA       TO  ACCT-SRYKA
-               MOVE    "SRYACCT-KEY18"     TO  WRK-ORC-DBPATH
+      ******** MOVE    "SRYACCT-KEY18"     TO  WRK-ORC-DBPATH
+               MOVE    PATH-TBL-SRYACCT-KEY18  TO  WRK-MCP-PATH
            END-IF
       *
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    WRK-MCP-PATH        TO  MCP-PATH
+           PERFORM 991-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
-               PERFORM 900-SRYACCT-READ-SEC
+               MOVE    WRK-MCP-PATH        TO  MCP-PATH
+               PERFORM 990-SRYACCT-READ2-SEC
            ELSE
                INITIALIZE                  SRYACCT-REC
                MOVE    1               TO  FLG-SRYACCT
@@ -6829,7 +6839,8 @@
                ELSE
                   MOVE    1                    TO  FLG-ACCT-ERR
                END-IF
-               IF     (SPA-GMN-SRYKBN      =   ZERO            )  OR
+               IF     (SPA-GMN-SRYKBN      =   ZERO
+                                           OR  "01"            )  OR
                       (SPA-GMN-SRYKBN  NOT =   ZERO    AND
                        SPA-GMN-SRYKBN(1:1) =   ACCT-SRYKBN(1:1) )
                   CONTINUE
@@ -6861,12 +6872,12 @@
                    END-IF
                END-IF
       *
-               MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
-               PERFORM 900-SRYACCT-READ-SEC
+               MOVE    WRK-MCP-PATH        TO  MCP-PATH
+               PERFORM 990-SRYACCT-READ2-SEC
            END-PERFORM
       *
-           MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
-           PERFORM 980-DBCLOSE-SEC
+           MOVE    WRK-MCP-PATH        TO  MCP-PATH
+           PERFORM 993-DBCLOSE-SEC
       *    ºÇÂç¥Ú¡¼¥¸¿ô
            IF      SPA-SRYACCT-MAX     =   ZERO
                MOVE    1               TO  SPA-MAX-PAGE
@@ -11765,6 +11776,54 @@
       *
            .
        980-DBCLOSE-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡¼¼¡ÆÉ¹þ
+      *****************************************************************
+       990-SRYACCT-READ2-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  SRYACCT-REC
+               MOVE    ZERO                TO  FLG-SRYACCT
+           ELSE
+               INITIALIZE                      SRYACCT-REC
+               MOVE    1                   TO  FLG-SRYACCT
+           END-IF
+      *
+           .
+       990-SRYACCT-READ2-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ä£Â£Ó£Å£Ì£Å£Ã£Ô½èÍý
+      *****************************************************************
+       991-DBSELECT-SEC         SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       991-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ä£Â¥¯¥í¡¼¥¹½èÍý
+      *****************************************************************
+       993-DBCLOSE-SEC         SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       993-DBCLOSE-EXT.
            EXIT.
       *
       *****************************************************************
