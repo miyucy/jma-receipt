@@ -736,3 +736,13 @@ path	all3 	{
 	};
 };
 
+path	key31 	{
+	DBSELECT	{
+		DECLARE tbl_jyurrk_prv_key31_csr CURSOR FOR
+		SELECT *
+		FROM tbl_jyurrk_prv
+                        WHERE   HOSPID    =   :HOSPID
+                        AND   PTID        =   :PTID
+ 		;
+	};
+};
