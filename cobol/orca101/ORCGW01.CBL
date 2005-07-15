@@ -69,6 +69,7 @@
       *  01.05.20    NACL-藤原    04/11/15  病名機能情報を追加
       *  01.05.21    NACL-多々納  05/02/08  入院指示せん設定を追加
       *  01.05.20    NACL-藤原    05/03/15  レセプト特記事項編集情報を追加
+      *  01.05.22    NACL-小豆沢  05/07/15  自費１０項目対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -1471,8 +1472,8 @@
                        MOVE    "0009"          TO  SPA-ERRCD
                        GO  TO  4105-KBNCD-CHK-EXT
                    END-IF
-                   IF      SPA-GMN-KBNCD (2:1)     <   "1"     OR
-                           SPA-GMN-KBNCD (2:1)     >   "5" 
+                   IF      SPA-GMN-KBNCD (2:1)     <   "0"     OR
+                           SPA-GMN-KBNCD (2:1)     >   "9" 
                        MOVE    "0010"          TO  SPA-ERRCD
                        GO  TO  4105-KBNCD-CHK-EXT
                    END-IF
@@ -2141,7 +2142,7 @@
                    MOVE    "１桁目は１から２を入力して下さい"
                                                       TO  SPA-ERRMSG
                WHEN    "0010"
-                   MOVE    "２桁目は１から５を入力して下さい"
+                   MOVE    "２桁目は０から９を入力して下さい"
                                                       TO  SPA-ERRMSG
                WHEN    "0011"
                    MOVE    "職員コードは５桁で入力して下さい"
