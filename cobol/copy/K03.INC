@@ -58,6 +58,16 @@
                 04  K03-VALUE   PIC X(10).
               03  K03-JIHI2.
                 04  K03-VALUE   PIC X(10).
+              03  K03-JIHI6.
+                04  K03-VALUE   PIC X(10).
+              03  K03-JIHI7.
+                04  K03-VALUE   PIC X(10).
+              03  K03-JIHI8.
+                04  K03-VALUE   PIC X(10).
+              03  K03-JIHI9.
+                04  K03-VALUE   PIC X(10).
+              03  K03-JIHI10.
+                04  K03-VALUE   PIC X(10).
               03  K03-RJNFTN.
                 04  K03-VALUE   PIC X(10).
               03  K03-CHOSEI-G.
@@ -124,12 +134,32 @@
                 04  K03-VALUE   PIC X(10).
               03  K03-JIHITAX5.
                 04  K03-VALUE   PIC X(10).
+              03  K03-JIHITAX6.
+                04  K03-VALUE   PIC X(10).
+              03  K03-JIHITAX7.
+                04  K03-VALUE   PIC X(10).
+              03  K03-JIHITAX8.
+                04  K03-VALUE   PIC X(10).
+              03  K03-JIHITAX9.
+                04  K03-VALUE   PIC X(10).
+              03  K03-JIHITAX10.
+                04  K03-VALUE   PIC X(10).
               03  K03-NYUKIN-G.
                 04  K03-NYUKIN-STATE   PIC S9(9)   BINARY.
                 04  K03-NYUKIN   PIC X(10).
               03  K03-JIHIMSG4.
                 04  K03-VALUE   PIC X(8).
               03  K03-JIHIMSG5.
+                04  K03-VALUE   PIC X(8).
+              03  K03-JIHIMSG6.
+                04  K03-VALUE   PIC X(8).
+              03  K03-JIHIMSG7.
+                04  K03-VALUE   PIC X(8).
+              03  K03-JIHIMSG8.
+                04  K03-VALUE   PIC X(8).
+              03  K03-JIHIMSG9.
+                04  K03-VALUE   PIC X(8).
+              03  K03-JIHIMSG10.
                 04  K03-VALUE   PIC X(8).
               03  K03-CHOUKAKIN.
                 04  K03-VALUE   PIC X(10).

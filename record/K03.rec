@@ -88,6 +88,21 @@ K03	{
 		JIHI2	{
 			value	varchar(10);
 		};
+		JIHI6	{
+			value	varchar(10);
+		};
+		JIHI7	{
+			value	varchar(10);
+		};
+		JIHI8	{
+			value	varchar(10);
+		};
+		JIHI9	{
+			value	varchar(10);
+		};
+		JIHI10	{
+			value	varchar(10);
+		};
 		RJNFTN	{
 			value	varchar(10);
 		};
@@ -186,6 +201,21 @@ K03	{
 		JIHITAX5	{
 			value	varchar(10);
 		};
+		JIHITAX6	{
+			value	varchar(10);
+		};
+		JIHITAX7	{
+			value	varchar(10);
+		};
+		JIHITAX8	{
+			value	varchar(10);
+		};
+		JIHITAX9	{
+			value	varchar(10);
+		};
+		JIHITAX10	{
+			value	varchar(10);
+		};
 		NYUKIN	{
 	           	state	int;
 			value	varchar(10);
@@ -194,6 +224,21 @@ K03	{
 			value	varchar(8);
 		};
 		JIHIMSG5	{
+			value	varchar(8);
+		};
+		JIHIMSG6	{
+			value	varchar(8);
+		};
+		JIHIMSG7	{
+			value	varchar(8);
+		};
+		JIHIMSG8	{
+			value	varchar(8);
+		};
+		JIHIMSG9	{
+			value	varchar(8);
+		};
+		JIHIMSG10	{
 			value	varchar(8);
 		};
 		CHOUKAKIN	{

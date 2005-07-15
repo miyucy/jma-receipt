@@ -75,19 +75,29 @@
               03  S03N-HKNTEKMONEY
                                 PIC S9(10).
               03  S03N-HKNTEKGAI PIC S9(10).
-              03  S03N-JIHIMSG-G OCCURS  5.
+              03  S03N-JIHIMSG-G OCCURS 10.
                 04  S03N-JIHIMSG PIC X(12).
               03  S03N-JIHI1     PIC S9(10).
               03  S03N-JIHI2     PIC S9(10).
               03  S03N-JIHI3     PIC S9(10).
               03  S03N-JIHI4     PIC S9(10).
               03  S03N-JIHI5     PIC S9(10).
+              03  S03N-JIHI6     PIC S9(10).
+              03  S03N-JIHI7     PIC S9(10).
+              03  S03N-JIHI8     PIC S9(10).
+              03  S03N-JIHI9     PIC S9(10).
+              03  S03N-JIHI10    PIC S9(10).
               03  S03N-JIHITOTAL PIC S9(10).
               03  S03N-JIHI1TAX  PIC S9(10).
               03  S03N-JIHI2TAX  PIC S9(10).
               03  S03N-JIHI3TAX  PIC S9(10).
               03  S03N-JIHI4TAX  PIC S9(10).
               03  S03N-JIHI5TAX  PIC S9(10).
+              03  S03N-JIHI6TAX  PIC S9(10).
+              03  S03N-JIHI7TAX  PIC S9(10).
+              03  S03N-JIHI8TAX  PIC S9(10).
+              03  S03N-JIHI9TAX  PIC S9(10).
+              03  S03N-JIHI10TAX PIC S9(10).
               03  S03N-JIHITAXTOTAL
                                  PIC S9(10).
               03  S03N-JIHITAX   PIC S9(10).
