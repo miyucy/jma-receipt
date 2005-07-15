@@ -38,6 +38,9 @@
       *  01.01.11    NACL-藤原    04.06.15  印刷順の追加（個別作成時のみ）
       *  01.01.12    NACL-藤原    04.11.01  公費レセプト請求区分・主保険
       *                                     情報の追加
+      *
+      *  ver.2.6.0 
+      *  02.06.01    NACL-藤原    05.07.13  保険組合せの追加 
       ************************************************************
       *01  RECE01-REC.
            03  RECE01-KEY.
@@ -99,7 +102,18 @@
       *保険組合せ番号領域
            03 RECE01-HKNCOMBI-AREA.
                05  RECE01-HKNCOMBI-TBL    OCCURS  10.
+      *保険組合せ番号
                    07  RECE01-HKNCOMBI-O  PIC  9(04).
+      *主保険番号
+                   07  RECE01-HKNNUMHC    PIC  X(03).
+      *組合せ公費保険番号情報
+                   07  RECE01-KOHNUMHCINF OCCURS  4.
+      *組合せ公費保険番号
+                       09  RECE01-KOHNUMHC
+                                          PIC  X(03).
+      *組合せ公費保険ＩＤ
+                       09  RECE01-KOHIDHC PIC  9(10).
+      *
       *診療科情報
            03 RECE01-SRYKAINF.
                05  RECE01-SRYKA           PIC  X(02)  OCCURS  20.
@@ -111,7 +125,7 @@
       *適用終了年月日
                    07  RECE01-TEKEDYMDX   PIC  X(08). 
       *レセプト記載外公費番号
-           03  RECE01-ETC-HKNNUM          PIC  X(03).
+      *****03  RECE01-ETC-HKNNUM          PIC  X(03).
       *患者情報
            03  RECE01-PTINF.
       *患者番号  

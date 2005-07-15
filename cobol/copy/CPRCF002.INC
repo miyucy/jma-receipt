@@ -58,7 +58,12 @@
       *                                     公費一部負担金０円記載フラグの追加
       *  01.03.02    NACL-門脇    05.03.11  負担金額情報に項目追加
       *                                     レセプト記載外公費情報に項目追加
-      *  01.00.20    NACL-藤原    05.03.14  レセプト特記事項編集情報の追加
+      *  01.03.03    NACL-藤原    05.03.14  レセプト特記事項編集情報の追加
+      *
+      *  ver.2.6.0 
+      *  02.06.01    NACL-藤原    05.07.13  老人保険−支払区分
+      *                                     本人−外来−内容
+      *                                     保険組合せ公費フラグの追加
       ************************************************************
       *01  RECE02-REC.
            03  RECE02-KEY.
@@ -140,6 +145,8 @@
                05  RECE02-RJNFTNJANUM     PIC  X(08).
       *老人保険−受給者番号
                05  RECE02-RJNJKYSNUM      PIC  X(07).
+      *老人保険−支払区分
+               05  RECE02-RJNPAYKBN       PIC  X(02).
       *
       *公費情報
            03  RECE02-KOHINF-AREA.
@@ -161,6 +168,24 @@
                    07  RECE02-KOHKENSU    PIC  9(03).
       *公費−レセプト請求区分
                    07  RECE02-RECESKYKBN  PIC  X(01).
+      *公費−本人−外来−回−負担割合
+                   07 RECE02-HON-GAIKFTNRATE
+                                          PIC  9(03).
+      *公費−本人−外来−日−上限額
+                   07 RECE02-HON-GAIDJGNGAK
+                                          PIC  9(06).
+      *公費−本人−外来−日−上限回数
+                   07 RECE02-HON-GAIDJGNCNT
+                                          PIC  9(02).
+      *公費−本人−外来−月−院内−上限額
+                   07 RECE02-HON-GAIMNAIJGNGAK
+                                          PIC  9(06).
+      *公費−本人−外来−月−院外−上限額
+                   07 RECE02-HON-GAIMGAIJGNGAK
+                                          PIC  9(06).
+      *公費−本人−外来−月−上限回数
+                   07 RECE02-HON-GAIMJGNCNT
+                                          PIC  9(02).
       *
       *保険組合せ番号情報
            03  RECE02-HKNCOMBIINF-AREA.
@@ -176,6 +201,8 @@
                                           PIC  X(03).
       *組合せ公費保険ＩＤ
                        09  RECE02-KOHIDHC PIC  9(10).
+      *保険組合せ公費フラグ（１：全国公費あり）
+                   07  RECE02-HKNCOMBIFLG PIC  9(01).
       *
       *特記事項情報
            03  RECE02-TOKKIINF            OCCURS  5.

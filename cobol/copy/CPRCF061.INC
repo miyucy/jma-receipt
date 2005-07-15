@@ -25,6 +25,9 @@
       *  01.00.04    NACL-藤原    04.06.15  印刷順の追加（個別作成時のみ）
       *  01.00.05    NACL-藤原    04.10.31  患者情報・県番号の追加
       *  01.00.06    NACL-藤原    04.11.01  公費レセプト請求区分の追加
+      *
+      *  ver.2.6.0 
+      *  02.06.01    NACL-藤原    05.07.13  保険組合せ・主保険情報の追加 
       ********************************************************************
       *01  RECE61-REC.
            03  RECE61-KEY.
@@ -61,12 +64,43 @@
                    07 RECE61-KOHPAYKBN-O  PIC  X(02).
       *   公費レセプト請求区分（空白：レセ記載のみ、４：記載なし）
                    07 RECE61-RECESKYKBN-O PIC  X(01).
-      *主保険ＩＤ
-           03  RECE61-HKNID               PIC  9(10).
+      *
+      *主保険情報
+           03  RECE61-HKN.
+      *主保険−保険ＩＤ
+               05  RECE61-HKNID           PIC  9(10).
+      *主保険−法別番号
+               05  RECE61-HKNHBTNUM       PIC  X(02).
+      *主保険−保険者番号
+               05  RECE61-HKN-HKNJANUM    PIC  X(08).
+      *主保険−本人家族区分
+               05  RECE61-HKN-HONKZKKBN   PIC  X(01).
+      *主保険−補助区分
+               05  RECE61-HKN-HOJOKBN     PIC  X(01).
+      *主保険−継続区分
+               05  RECE61-CONTKBN         PIC  X(01).
+      *主保険−記号
+               05  RECE61-KIGO            PIC  X(80).
+      *主保険−番号
+               05  RECE61-NUM             PIC  X(80).
+      *主保険−証明書番号
+               05  RECE61-CERTNUM         PIC  X(03).
+      *
       *保険組合せ番号領域
            03 RECE61-HKNCOMBI-AREA.
                05  RECE61-HKNCOMBI-TBL    OCCURS  10.
+      *保険組合せ番号
                    07  RECE61-HKNCOMBI-O  PIC  9(04).
+      *主保険番号
+                   07  RECE61-HKNNUMHC    PIC  X(03).
+      *組合せ公費保険番号情報
+                   07  RECE61-KOHNUMHCINF OCCURS  4.
+      *組合せ公費保険番号
+                       09  RECE61-KOHNUMHC
+                                          PIC  X(03).
+      *組合せ公費保険ＩＤ
+                       09  RECE61-KOHIDHC PIC  9(10).
+      *
       *診療科情報
            03 RECE61-SRYKAINF.
                05  RECE61-SRYKA           PIC  X(02)  OCCURS  20.
@@ -78,9 +112,9 @@
       *適用終了年月日
                    07  RECE61-TEKEDYMDX   PIC  X(08). 
       *継続区分
-           03  RECE61-CONTKBN             PIC  X(01).
+      *****03  RECE61-CONTKBN             PIC  X(01).
       *レセプト記載外公費番号
-           03  RECE61-ETC-HKNNUM          PIC  X(03).
+      *****03  RECE61-ETC-HKNNUM          PIC  X(03).
       *診療回数テーブル
            03  RECE61-DAY-AREA.
                05  RECE61-DAY             PIC  9(03)

@@ -60,6 +60,13 @@
       *
       *  02.06.00    NACL-竹田    05/05/30  realtime preview 処理追加
       *  02.06.01    NACL-門脇    05/06/01  長期高額療養レセ記載判定追加
+      *  02.06.02    NACL-藤原    05/07/12  国保で本人・家族の変更があった
+      *                                     場合、給付割合の変更がないとき
+      *                                     は１枚にまとめる
+      *  02.06.03    NACL-藤原    05/07/12  診療会計テーブルの読み込みを
+      *                                     グループ化に変更
+      *                                     SRYACCT-KEY29 -> SRYACCT-KEY36
+      *                                     SRYACCT-KEY30 -> SRYACCT-KEY37
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -702,13 +709,13 @@
                MOVE    "1"                 TO  ACCT-NYUGAIKBN
                MOVE    SRYACCT-REC         TO  MCPDATA-REC
                MOVE    "DBSELECT"          TO  MCP-FUNC
-               MOVE    "SRYACCT-KEY29"     TO  ORC-DBPATH
+               MOVE    "SRYACCT-KEY36"     TO  ORC-DBPATH
                CALL    "ORCMCPSUB"          USING
                                             MCPAREA
                                             ORCMCPAREA
                                             MCPDATA-REC
                IF      MCP-RC              =   ZERO
-                   MOVE    "SRYACCT-KEY29"     TO  ORC-DBPATH
+                   MOVE    "SRYACCT-KEY36"     TO  ORC-DBPATH
                    PERFORM 900-SRYACCT-READ-SEC
                ELSE
                    INITIALIZE                  SRYACCT-REC
@@ -720,7 +727,7 @@
                    PERFORM 20011-IKKATU-HENSYU-SEC
                END-PERFORM
       *        カーソルクロース
-               MOVE    "SRYACCT-KEY29"     TO  ORC-DBPATH
+               MOVE    "SRYACCT-KEY36"     TO  ORC-DBPATH
                PERFORM 900-DBCLOSE-SEC
            END-IF 
       *
@@ -781,7 +788,7 @@
                PERFORM         UNTIL   FLG-SRYACCT     =   1 
                                OR      FLG-END         =   1
                                OR      KEY-N-PTID  NOT =   KEY-O-PTID
-                   MOVE    "SRYACCT-KEY29"         TO  ORC-DBPATH
+                   MOVE    "SRYACCT-KEY36"         TO  ORC-DBPATH
                    PERFORM 900-SRYACCT-READ-SEC
                END-PERFORM
            ELSE
@@ -836,11 +843,11 @@
                            PERFORM     UNTIL   FLG-SRYACCT =   1 
                                        OR      FLG-END     =   1
                                        OR      KEY-NEW NOT =   KEY-OLD
-                               MOVE    "SRYACCT-KEY29" TO  ORC-DBPATH
+                               MOVE    "SRYACCT-KEY36" TO  ORC-DBPATH
                                PERFORM 900-SRYACCT-READ-SEC
                            END-PERFORM
                        ELSE
-                           MOVE    "SRYACCT-KEY29"     TO  ORC-DBPATH
+                           MOVE    "SRYACCT-KEY36"     TO  ORC-DBPATH
                            PERFORM 900-SRYACCT-READ-SEC
                        END-IF
                    END-PERFORM    
@@ -1674,8 +1681,8 @@
                                    MOVE    "0" TO  WRK-RECE61-HONKZKKBN
                              END-EVALUATE
                        WHEN    "060" 
-                           IF     (WRK-NENREI  >=   70)  AND
-                                  (WRK-NENREI  <=   74)
+      *****                IF     (WRK-NENREI  >=   70)  AND
+      *****                       (WRK-NENREI  <=   74)
                                EVALUATE   PTHKN-HOJOKBN
                                    WHEN   "1"
                                    WHEN   "5"
@@ -1685,8 +1692,12 @@
                                    WHEN   "6"
                                        MOVE    "0"
                                                TO  WRK-RECE61-HONKZKKBN
+                                   WHEN   "0"
+                                   WHEN   "4"
+                                       MOVE    "0"
+                                               TO  WRK-RECE61-HONKZKKBN
                               END-EVALUATE
-                          END-IF     
+      *****               END-IF     
                       WHEN    OTHER 
                           EVALUATE   PTHKN-HOJOKBN
                              WHEN   "9"
@@ -1710,8 +1721,8 @@
                        MOVE    PTHKN-HOJOKBN   TO  WRK-RECE61-HOJOKBN
                    END-IF
                WHEN    "060" 
-                   IF     (WRK-NENREI  >=   70)  AND
-                          (WRK-NENREI  <=   74)
+      *****        IF     (WRK-NENREI  >=   70)  AND
+      *****               (WRK-NENREI  <=   74)
                        EVALUATE   PTHKN-HOJOKBN
                            WHEN   "0"
                            WHEN   "4"
@@ -1726,7 +1737,7 @@
                                MOVE    "2"             TO
                                                WRK-RECE61-HOJOKBN
                        END-EVALUATE
-                   END-IF     
+      *****        END-IF     
                WHEN    OTHER 
                    EVALUATE   PTHKN-HOJOKBN
                        WHEN   "9"
@@ -1779,6 +1790,15 @@
       *
            PERFORM 20012-KOHID-HENSYU-SEC
            MOVE    COMB-HKNCOMBINUM   TO  WRK-RECE61-HKNCOMBI-O (1)
+           MOVE    COMB-HKNNUM        TO  WRK-RECE61-HKNNUMHC   (1)
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL   IDX1    >       4
+               MOVE    COMB-KOHHKNNUM (IDX1)   TO
+                                           WRK-RECE61-KOHNUMHC (1 IDX1)
+               MOVE    COMB-KOHID     (IDX1)   TO
+                                           WRK-RECE61-KOHIDHC  (1 IDX1)
+           END-PERFORM
+      *
            IF      WRK-DBKBN          =   "2"
                CONTINUE
            ELSE              
@@ -1796,8 +1816,17 @@
            END-IF
            MOVE    PTHKN-TEKSTYMD     TO  WRK-RECE61-TEKSTYMDX  (1)
            MOVE    PTHKN-TEKEDYMD     TO  WRK-RECE61-TEKEDYMDX  (1)
-           MOVE    PTHKN-CONTKBN      TO  WRK-RECE61-CONTKBN
+      *    
+      *    主保険情報
            MOVE    PTHKN-HKNID        TO  WRK-RECE61-HKNID
+           MOVE    PTHKN-CONTKBN      TO  WRK-RECE61-CONTKBN
+           MOVE    PTHKN-HKNJANUM     TO  WRK-RECE61-HKN-HKNJANUM
+           MOVE    PTHKN-HONKZKKBN    TO  WRK-RECE61-HKN-HONKZKKBN
+           MOVE    PTHKN-HOJOKBN      TO  WRK-RECE61-HKN-HOJOKBN
+           MOVE    PTHKN-KIGO         TO  WRK-RECE61-KIGO
+           MOVE    PTHKN-NUM          TO  WRK-RECE61-NUM
+           MOVE    SPACE              TO  WRK-RECE61-CERTNUM
+      *
            MOVE    WRK-TEISEIKBN      TO  WRK-RECE61-TEISEIKBN
            IF      WRK-TEISEIKBN      =   "1"
                MOVE    WRK-ERR-ERRKBN     TO  WRK-RECE61-ERR-ERRKBN
@@ -1877,6 +1906,15 @@
                IF      WRK-RECE61-HKNCOMBI-O  (IDX)   =   ZERO
                    MOVE    COMB-HKNCOMBINUM    TO
                                        WRK-RECE61-HKNCOMBI-O (IDX)
+                   MOVE    COMB-HKNNUM         TO
+                                       WRK-RECE61-HKNNUMHC   (IDX)
+                   PERFORM VARYING IDX1    FROM    1   BY  1
+                           UNTIL   IDX1    >       4
+                       MOVE    COMB-KOHHKNNUM (IDX1)   TO
+                                       WRK-RECE61-KOHNUMHC (IDX IDX1)
+                       MOVE    COMB-KOHID     (IDX1)   TO
+                                       WRK-RECE61-KOHIDHC  (IDX IDX1)
+                   END-PERFORM
                    MOVE    10                   TO  IDX
                ELSE
                    IF      COMB-HKNCOMBINUM    =
@@ -1885,6 +1923,7 @@
                    END-IF
                END-IF
            END-PERFORM
+      *
            IF      WRK-DBKBN               =   "2"
                CONTINUE
            ELSE
@@ -1924,7 +1963,14 @@
                END-IF        
            END-PERFORM
            IF      FLG-LASTHKNID       =   1
-                   MOVE    PTHKN-HKNID     TO  WRK-RECE61-HKNID
+               MOVE    PTHKN-HKNID         TO  WRK-RECE61-HKNID
+               MOVE    PTHKN-HKNJANUM      TO  WRK-RECE61-HKN-HKNJANUM
+               MOVE    PTHKN-HONKZKKBN     TO  WRK-RECE61-HKN-HONKZKKBN
+               MOVE    PTHKN-HOJOKBN       TO  WRK-RECE61-HKN-HOJOKBN
+               MOVE    PTHKN-CONTKBN       TO  WRK-RECE61-CONTKBN
+               MOVE    PTHKN-KIGO          TO  WRK-RECE61-KIGO
+               MOVE    PTHKN-NUM           TO  WRK-RECE61-NUM
+               MOVE    SPACE               TO  WRK-RECE61-CERTNUM
            END-IF
       *
            IF      WRK-DBKBN          =   "2"
@@ -2216,13 +2262,13 @@
            MOVE    SYS-2002-NYUGAIKBN  TO  ACCT-NYUGAIKBN
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
+           MOVE    "SRYACCT-KEY37"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
+               MOVE    "SRYACCT-KEY37"     TO  ORC-DBPATH
                PERFORM 900-SRYACCT-READ-SEC
            ELSE
                INITIALIZE                  SRYACCT-REC
@@ -2234,7 +2280,7 @@
                PERFORM 20011-HENSYU-SEC
            END-PERFORM
       *        カーソルクロース
-           MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
+           MOVE    "SRYACCT-KEY37"     TO  ORC-DBPATH
            PERFORM 900-DBCLOSE-SEC
       *
       *    入院会計読み込み
@@ -2342,13 +2388,13 @@
                MOVE    SYS-2002-NYUGAIKBN  TO  ACCT-NYUGAIKBN
                MOVE    SRYACCT-REC         TO  MCPDATA-REC
                MOVE    "DBSELECT"          TO  MCP-FUNC
-               MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
+               MOVE    "SRYACCT-KEY37"     TO  ORC-DBPATH
                CALL    "ORCMCPSUB"          USING
                                             MCPAREA
                                             ORCMCPAREA
                                             MCPDATA-REC
                IF      MCP-RC              =   ZERO
-                   MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
+                   MOVE    "SRYACCT-KEY37"     TO  ORC-DBPATH
                    PERFORM 900-SRYACCT-READ-SEC
                ELSE
                    INITIALIZE                  SRYACCT-REC
@@ -2360,7 +2406,7 @@
                    PERFORM 20011-HENSYU-SEC
                END-PERFORM
       *        カーソルクロース
-               MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
+               MOVE    "SRYACCT-KEY37"     TO  ORC-DBPATH
                PERFORM 900-DBCLOSE-SEC
            END-IF 
       *
@@ -2450,19 +2496,6 @@
                PERFORM         UNTIL   FLG-SRYACCT     =   1 
                                OR      FLG-END         =   1      
                                OR      KEY-NEW     NOT =   KEY-OLD
-      *************社保・国保の読み飛ばし
-      *            EVALUATE    WRK-PARA-RECEKBN
-      *                WHEN    "0"
-      *                    PERFORM 20011-FILE-SYORI-SEC 
-      *                WHEN    "1"
-      *                    IF      COMB-HKNNUM NOT =   "060" AND "067"
-      *                        PERFORM 20011-FILE-SYORI-SEC 
-      *                    END-IF
-      *                WHEN    "2"
-      *                    IF      COMB-HKNNUM     =   "060" OR  "067"
-      *                        PERFORM 20011-FILE-SYORI-SEC 
-      *                    END-IF
-      *************END-EVALUATE
                    PERFORM 20011-FILE-SYORI-SEC 
       *
                    IF      WRK-UPDKBN          =   SPACE                   
@@ -2471,11 +2504,11 @@
                        PERFORM     UNTIL   FLG-SRYACCT     =   1 
                                    OR      FLG-END         =   1      
                                    OR      KEY-NEW     NOT =   KEY-OLD
-                           MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
+                           MOVE    "SRYACCT-KEY37"     TO  ORC-DBPATH
                            PERFORM 900-SRYACCT-READ-SEC
                         END-PERFORM
                    ELSE
-                       MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
+                       MOVE    "SRYACCT-KEY37"     TO  ORC-DBPATH
                        PERFORM 900-SRYACCT-READ-SEC
                    END-IF
                END-PERFORM    

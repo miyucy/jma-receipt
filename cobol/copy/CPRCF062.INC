@@ -51,6 +51,11 @@
       *                                     レセプト記載外公費情報に項目追加
       *  01.00.20    NACL-藤原    05.03.24  レセプト特記事項編集情報の追加
       *  01.00.21    NACL-小豆沢  05.06.17  福岡公費の給付外点数の追加
+      *
+      *  ver.2.6.0 
+      *  02.06.01    NACL-藤原    05.07.13  老人保険−支払区分
+      *                                     本人−入院−内容
+      *                                     保険組合せ公費フラグの追加
       ************************************************************
       *01  RECE62-REC.
            03  RECE62-KEY.
@@ -134,6 +139,8 @@
                05  RECE62-RJNFTNJANUM     PIC  X(08).
       *老人保険−受給者番号
                05  RECE62-RJNJKYSNUM      PIC  X(07).
+      *老人保険−支払区分
+               05  RECE62-RJNPAYKBN       PIC  X(02).
       *
       *公費情報
            03  RECE62-KOHINF-AREA.
@@ -155,6 +162,18 @@
                    07  RECE62-KOHKENSU    PIC  9(03).
       *公費−レセプト請求区分
                    07  RECE62-RECESKYKBN  PIC  X(01).
+      *公費−本人−入院−日−上限額
+                   07  RECE62-HON-NYUDJGNGAK
+                                          PIC  9(06).
+      *公費−本人−入院−日−上限回数
+                   07  RECE62-HON-NYUDGJNCNT
+                                          PIC  9(02).
+      *公費−本人−入院−月−上限額
+                   07  RECE62-HON-NYUMJGNGAK
+                                          PIC  9(06).
+      *公費−本人−入院−月−上限回数
+                   07  RECE62-HON-NYUMJGNCNT
+                                          PIC  9(02).
       *
       *保険組合せ番号情報
            03  RECE62-HKNCOMBIINF-AREA.
@@ -170,6 +189,8 @@
                                           PIC  X(03).
       *組合せ公費保険ＩＤ
                        09  RECE62-KOHIDHC PIC  9(10).
+      *保険組合せ公費フラグ（１：全国公費あり）
+                   07  RECE62-HKNCOMBIFLG PIC  9(01).
       *
       *診療区分別点数情報
            03  RECE62-SRYKBNINF           OCCURS  30.

@@ -101,6 +101,9 @@
       *
       *  02.06.00    NACL-竹田    05/05/30  realtime preview 処理追加
       *  02.06.01    NACL-門脇    05/06/01  長期高額療養レセ記載判定追加
+      *  02.06.02    NACL-藤原    05/07/12  国保で本人・家族の変更があった
+      *                                     場合、給付割合の変更がないとき
+      *                                     は１枚にまとめる
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1339,8 +1342,8 @@
                                    MOVE    "0" TO  WRK-RECE01-HONKZKKBN
                              END-EVALUATE
                        WHEN    "060" 
-                           IF     (WRK-NENREI  >=   70)  AND
-                                  (WRK-NENREI  <=   74)
+      *****                IF     (WRK-NENREI  >=   70)  AND
+      *****                       (WRK-NENREI  <=   74)
                                EVALUATE   PTHKN-HOJOKBN
                                    WHEN   "1"
                                    WHEN   "4"
@@ -1350,8 +1353,12 @@
                                    WHEN   "5"
                                        MOVE    "0"
                                                TO  WRK-RECE01-HONKZKKBN
+                                   WHEN   "3"
+                                   WHEN   "6"
+                                       MOVE    "0"
+                                               TO  WRK-RECE01-HONKZKKBN
                               END-EVALUATE
-                          END-IF     
+      *****               END-IF     
                       WHEN    OTHER 
                           EVALUATE   PTHKN-HOJOKBN
                              WHEN   "9"
@@ -1377,8 +1384,8 @@
                                                WRK-RECE01-HOJOKBN
                    END-IF
                WHEN    "060" 
-                   IF     (WRK-NENREI  >=   70)  AND
-                          (WRK-NENREI  <=   74)
+      *****        IF     (WRK-NENREI  >=   70)  AND
+      *****               (WRK-NENREI  <=   74)
                        EVALUATE   PTHKN-HOJOKBN
                            WHEN   "1"
                            WHEN   "4"
@@ -1392,15 +1399,15 @@
                            WHEN   "6"
                                MOVE    "3"             TO
                                                WRK-RECE01-HOJOKBN
-                      END-EVALUATE
-                  END-IF     
-              WHEN    OTHER 
-                  EVALUATE   PTHKN-HOJOKBN
-                     WHEN   "9"
-                     WHEN   "8"
-                               MOVE    PTHKN-HOJOKBN   TO
+                       END-EVALUATE
+      *****        END-IF     
+               WHEN    OTHER 
+                   EVALUATE   PTHKN-HOJOKBN
+                      WHEN   "9"
+                      WHEN   "8"
+                          MOVE    PTHKN-HOJOKBN   TO
                                                WRK-RECE01-HOJOKBN
-                  END-EVALUATE
+                   END-EVALUATE
            END-EVALUATE             
       *
       *    レセのとき地方公費のみの場合は出力しない
@@ -1457,6 +1464,15 @@
            PERFORM 20012-KOHID-HENSYU-SEC
       *
            MOVE    COMB-HKNCOMBINUM   TO  WRK-RECE01-HKNCOMBI-O (1)
+           MOVE    COMB-HKNNUM        TO  WRK-RECE01-HKNNUMHC   (1)
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL   IDX1    >       4
+               MOVE    COMB-KOHHKNNUM (IDX1)   TO
+                                           WRK-RECE01-KOHNUMHC (1 IDX1)
+               MOVE    COMB-KOHID     (IDX1)   TO
+                                           WRK-RECE01-KOHIDHC  (1 IDX1)
+           END-PERFORM
+      *
            MOVE    ACCT-SRYKA         TO  WRK-RECE01-SRYKA (1)
       *****IF      COMB-HKNID          NOT =   ZERO
                MOVE    PTHKN-TEKSTYMD     TO  WRK-RECE01-TEKSTYMDX (1)
@@ -1553,6 +1569,15 @@
                IF      WRK-RECE01-HKNCOMBI-O  (IDX)   =   ZERO
                    MOVE    COMB-HKNCOMBINUM    TO
                                        WRK-RECE01-HKNCOMBI-O (IDX)
+                   MOVE    COMB-HKNNUM         TO
+                                       WRK-RECE01-HKNNUMHC   (IDX)
+                   PERFORM VARYING IDX1    FROM    1   BY  1
+                           UNTIL   IDX1    >       4
+                       MOVE    COMB-KOHHKNNUM (IDX1)   TO
+                                       WRK-RECE01-KOHNUMHC (IDX IDX1)
+                       MOVE    COMB-KOHID     (IDX1)   TO
+                                       WRK-RECE01-KOHIDHC  (IDX IDX1)
+                   END-PERFORM
                    MOVE    10                   TO  IDX
                ELSE
                    IF      COMB-HKNCOMBINUM    =
