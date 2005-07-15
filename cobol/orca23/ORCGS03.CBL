@@ -52,7 +52,6 @@
       *  01.01.18    NACL-森脇    03.12.11  処理区分表示修正
       *  01.01.19    NACL-太田    04.02.09  コラムリスト編集修正
       *  01.01.20    NACL-太田    04.07.12  コラムリストに入金方法を追加
-      *  01.01.21    NACL-小豆沢  05.07.15  自費１０項目の対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -112,7 +111,7 @@
                        09  SPA-GMN-KOHFTN          PIC 9(07).
                        09  SPA-GMN-JIHI-G          OCCURS  2.
                            11  SPA-GMN-JIHI        PIC 9(07)
-                                                   OCCURS 10.
+                                                   OCCURS  5.
                            11  SPA-GMN-JIHIKEI     PIC 9(07).
                        09  SPA-GMN-JIHIZEI         PIC 9(07).
                        09  SPA-GMN-HKNGAI          PIC 9(07).
@@ -156,7 +155,7 @@
                            11                      PIC X(01).
                            11  SPA-GMN-SKYPRTMEIL  PIC X(22).
                    07  SPA-GMN-JIHIMSG             PIC X(8)
-                                                   OCCURS  10.
+                                                   OCCURS   5.
                    07  SPA-GMN-RSISHOSHIN          PIC 9(10).
                    07  SPA-GMN-RSISAISHIN          PIC 9(10).
                    07  SPA-GMN-RSISDO              PIC 9(10).
@@ -250,7 +249,7 @@
       *
        01  CONST-AREA.
            03  CONST-SMEILIST-MAX         PIC 9(03)   VALUE   50.
-           03  CONST-JIHI-MAX          PIC 9(03)   VALUE   10.
+           03  CONST-JIHI-MAX          PIC 9(03)   VALUE   5.
            03  CONST-PROC-NO-G.
                05  CONST-PROC-NYUKIN   PIC X(02)   VALUE   "05".
                05  CONST-PROC-RRKSYU   PIC X(02)   VALUE   "08".
@@ -803,7 +802,7 @@
       *
       *    その他自費
            PERFORM VARYING IDX0 FROM    1   BY  1
-                   UNTIL ( IDX0 >   10 )
+                   UNTIL ( IDX0 >   5 )
       *
                MOVE    SYU-JIHI-TAXNASI (IDX0)
                                        TO  SPA-GMN-JIHI (1 IDX0)
@@ -998,16 +997,11 @@
                IF    ( SPA-S01-NYUGAIKBN   =   SYS-1013-KBNCD(1:1) )
                    MOVE   SYS-1013-KBNCD(2:1)
                                            TO  WRK-JIHI-IDX-X
-                   IF    ( WRK-JIHI-IDX-X >=   "1" ) AND
-                         ( WRK-JIHI-IDX-X <=   "9" )
+                   IF    ( WRK-JIHI-IDX-X >=   "1" )
+                    OR   ( WRK-JIHI-IDX-X <=   "5" )
                        MOVE    SYS-1013-JIHINAME
                                            TO  SPA-GMN-JIHIMSG
                                                     (WRK-JIHI-IDX)
-                   ELSE
-                       IF   SYS-1013-KBNCD(2:1)  =   "0"
-                           MOVE    SYS-1013-JIHINAME
-                                           TO  SPA-GMN-JIHIMSG (10)
-                       END-IF
                    END-IF
                END-IF
       *
@@ -1207,22 +1201,12 @@
            MOVE    SPA-GMN-JIHI (1 3)  TO  S03-JIHI3
            MOVE    SPA-GMN-JIHI (1 4)  TO  S03-JIHI4
            MOVE    SPA-GMN-JIHI (1 5)  TO  S03-JIHI5
-           MOVE    SPA-GMN-JIHI (1 6)  TO  S03-JIHI6
-           MOVE    SPA-GMN-JIHI (1 7)  TO  S03-JIHI7
-           MOVE    SPA-GMN-JIHI (1 8)  TO  S03-JIHI8
-           MOVE    SPA-GMN-JIHI (1 9)  TO  S03-JIHI9
-           MOVE    SPA-GMN-JIHI (1 10) TO  S03-JIHI10
            MOVE    SPA-GMN-JIHIKEI(1)  TO  S03-JIHITOTAL
            MOVE    SPA-GMN-JIHI (2 1)  TO  S03-JIHI1TAX
            MOVE    SPA-GMN-JIHI (2 2)  TO  S03-JIHI2TAX
            MOVE    SPA-GMN-JIHI (2 3)  TO  S03-JIHI3TAX
            MOVE    SPA-GMN-JIHI (2 4)  TO  S03-JIHI4TAX
            MOVE    SPA-GMN-JIHI (2 5)  TO  S03-JIHI5TAX
-           MOVE    SPA-GMN-JIHI (2 6)  TO  S03-JIHI6TAX
-           MOVE    SPA-GMN-JIHI (2 7)  TO  S03-JIHI7TAX
-           MOVE    SPA-GMN-JIHI (2 8)  TO  S03-JIHI8TAX
-           MOVE    SPA-GMN-JIHI (2 9)  TO  S03-JIHI9TAX
-           MOVE    SPA-GMN-JIHI (2 10) TO  S03-JIHI10TAX
            MOVE    SPA-GMN-JIHIKEI(2)  TO  S03-JIHITAXTOTAL
            MOVE    SPA-GMN-JIHIZEI     TO  S03-JIHITAX
            MOVE    SPA-GMN-TGMONEY (01) TO  S03-SSUTGMONEY

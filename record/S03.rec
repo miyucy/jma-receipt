@@ -141,21 +141,6 @@ S03	{
 		JIHIMSG5	{
 			value	varchar(8);
 		};
-		JIHIMSG6	{
-			value	varchar(8);
-		};
-		JIHIMSG7	{
-			value	varchar(8);
-		};
-		JIHIMSG8	{
-			value	varchar(8);
-		};
-		JIHIMSG9	{
-			value	varchar(8);
-		};
-		JIHIMSG10	{
-			value	varchar(8);
-		};
 		JIHI1	{
 			value	number(10);
 		};
@@ -170,21 +155,6 @@ S03	{
 		};
 		JIHI5	{
 			value	number(10);
-		};
-		JIHI6	{
-			value	varchar(10);
-		};
-		JIHI7	{
-			value	varchar(10);
-		};
-		JIHI8	{
-			value	varchar(10);
-		};
-		JIHI9	{
-			value	varchar(10);
-		};
-		JIHI10	{
-			value	varchar(10);
 		};
 		JIHITOTAL	{
 			value	number(10);
@@ -203,21 +173,6 @@ S03	{
 		};
 		JIHI5TAX	{
 			value	number(10);
-		};
-		JIHI6TAX	{
-			value	varchar(10);
-		};
-		JIHI7TAX	{
-			value	varchar(10);
-		};
-		JIHI8TAX	{
-			value	varchar(10);
-		};
-		JIHI9TAX	{
-			value	varchar(10);
-		};
-		JIHI10TAX	{
-			value	varchar(10);
 		};
 		JIHITAXTOTAL	{
 			value	number(10);
