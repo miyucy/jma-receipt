@@ -96,6 +96,7 @@
       *  01.01.09    NACL-ÌçÏÆ    05/06/27  ²Ã»»Î¨£³·åÂÐ±þ
       *  01.01.10    NACL-ÌçÏÆ    05/07/08  Ê¡°æ¸©ÃÏÊý¸øÈñÂÐ±þ
       *  01.01.11    NACL-ÌçÏÆ    05/07/12  ½©ÅÄ¸©ÃÏÊý¸øÈñÂÐ±þ
+      *  01.01.12    NACL-¾®Æ¦Âô  05/07/15  ¼«Èñ£±£°¹àÌÜÂÐ±þ
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -923,12 +924,22 @@
                                             LNK-SYU-JIHI-TAXNASI(2)  +
                                             LNK-SYU-JIHI-TAXNASI(3)  +
                                             LNK-SYU-JIHI-TAXNASI(4)  +
-                                            LNK-SYU-JIHI-TAXNASI(5)).
-           COMPUTE   LNK-SYU-JIHI-TOTAL-TAX = (LNK-SYU-JIHI-TAXARI(1) +
-                                               LNK-SYU-JIHI-TAXARI(2) +
-                                               LNK-SYU-JIHI-TAXARI(3) +
-                                               LNK-SYU-JIHI-TAXARI(4) +
-                                               LNK-SYU-JIHI-TAXARI(5)).
+                                            LNK-SYU-JIHI-TAXNASI(5)  +
+                                            LNK-SYU-JIHI-TAXNASI(6)  +
+                                            LNK-SYU-JIHI-TAXNASI(7)  +
+                                            LNK-SYU-JIHI-TAXNASI(8)  +
+                                            LNK-SYU-JIHI-TAXNASI(9)  +
+                                            LNK-SYU-JIHI-TAXNASI(10)).
+           COMPUTE  LNK-SYU-JIHI-TOTAL-TAX = (LNK-SYU-JIHI-TAXARI(1) +
+                                              LNK-SYU-JIHI-TAXARI(2) +
+                                              LNK-SYU-JIHI-TAXARI(3) +
+                                              LNK-SYU-JIHI-TAXARI(4) +
+                                              LNK-SYU-JIHI-TAXARI(5) +
+                                              LNK-SYU-JIHI-TAXARI(6) +
+                                              LNK-SYU-JIHI-TAXARI(7) +
+                                              LNK-SYU-JIHI-TAXARI(8) +
+                                              LNK-SYU-JIHI-TAXARI(9) +
+                                              LNK-SYU-JIHI-TAXARI(10)).
       *
            IF  ( COMB-SYU-HKNKOHSBTKBN  =  "8" ) AND
                ( COMB-HOJOKBN           =  "1" )

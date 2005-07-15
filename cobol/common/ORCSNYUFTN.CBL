@@ -66,6 +66,7 @@
       *                                     »ÈÍÑ²Ã»»¤Îµ»½Ñ¡¦ÌôºÞÅù¤ÎÁªÂòÂÐ±þ
       *  01.00.24    NACL-¾®Æ¦Âô  05/05/11  ÎÅÍÜÃ´Åö¼êÅö¡ÊËÌ³¤Æ»¡ËÂÐ±þ
       *  01.00.25    NACL-ÌçÏÆ    05/05/31  ¼¼ÎÁº¹³Û¤Î·×»»½¤Àµ
+      *  01.00.26    NACL-¾®Æ¦Âô  05/07/15  ¼«Èñ£±£°¹àÌÜÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -249,7 +250,7 @@
       *
       * ¼«ÈñÂàÈòÍÑ¥Æ¡¼¥Ö¥ë
        01  JIHI-TABLE.
-           03  JIHI-TBL                    OCCURS 5.
+           03  JIHI-TBL                    OCCURS 10.
                05  TBL-JIHI-TAXNASI        PIC 9(08).
                05  TBL-JIHI-TAXARI         PIC 9(08).
       *
@@ -3562,7 +3563,7 @@
            EVALUATE    SRY-SRYKBN
                WHEN    "95"
                    PERFORM     VARYING    IDZ    FROM    1     BY    1
-                                 UNTIL   (IDZ         >   5    )   OR
+                                 UNTIL   (IDZ         >   5   )   OR
                                          (SRY-SRYCD(IDZ)  =   SPACE)
                        IF    SRY-SRYCD (IDZ) (1:3)   =   "095"
                                                      OR  "096"
@@ -3603,6 +3604,31 @@
                                        WHEN    5
                                           COMPUTE  TBL-JIHI-TAXNASI(5)
                                                =   TBL-JIHI-TAXNASI(5)
+                                               +  (SRY-JIHIMONEY(IDZ)
+                                                   *  SINRYO-COUNT) 
+                                       WHEN    6
+                                          COMPUTE  TBL-JIHI-TAXNASI(6)
+                                               =   TBL-JIHI-TAXNASI(6)
+                                               +  (SRY-JIHIMONEY(IDZ)
+                                                   *  SINRYO-COUNT) 
+                                       WHEN    7
+                                          COMPUTE  TBL-JIHI-TAXNASI(7)
+                                               =   TBL-JIHI-TAXNASI(7)
+                                               +  (SRY-JIHIMONEY(IDZ)
+                                                   *  SINRYO-COUNT) 
+                                       WHEN    8
+                                          COMPUTE  TBL-JIHI-TAXNASI(8)
+                                               =   TBL-JIHI-TAXNASI(8)
+                                               +  (SRY-JIHIMONEY(IDZ)
+                                                   *  SINRYO-COUNT) 
+                                       WHEN    9
+                                          COMPUTE  TBL-JIHI-TAXNASI(9)
+                                               =   TBL-JIHI-TAXNASI(9)
+                                               +  (SRY-JIHIMONEY(IDZ)
+                                                   *  SINRYO-COUNT) 
+                                       WHEN    10
+                                          COMPUTE  TBL-JIHI-TAXNASI(10)
+                                               =   TBL-JIHI-TAXNASI(10)
                                                +  (SRY-JIHIMONEY(IDZ)
                                                    *  SINRYO-COUNT) 
                                    END-EVALUATE
@@ -3771,7 +3797,7 @@
                    END-PERFORM
                WHEN    "96"
                    PERFORM     VARYING    IDZ    FROM   1    BY   1
-                                 UNTIL   (IDZ        >   5    )   OR
+                                 UNTIL   (IDZ        >   5   )   OR
                                          (SRY-SRYCD(IDZ)  =   SPACE)
                        IF    SRY-SRYCD (IDZ) (1:3)   =   "095"
                                                      OR  "096"
@@ -3812,6 +3838,31 @@
                                        WHEN    5
                                           COMPUTE  TBL-JIHI-TAXARI(5)
                                                =   TBL-JIHI-TAXARI(5)
+                                               +  (SRY-JIHIMONEY(IDZ)
+                                                   *  SINRYO-COUNT) 
+                                       WHEN    6
+                                          COMPUTE  TBL-JIHI-TAXARI(6)
+                                               =   TBL-JIHI-TAXARI(6)
+                                               +  (SRY-JIHIMONEY(IDZ)
+                                                   *  SINRYO-COUNT) 
+                                       WHEN    7
+                                          COMPUTE  TBL-JIHI-TAXARI(7)
+                                               =   TBL-JIHI-TAXARI(7)
+                                               +  (SRY-JIHIMONEY(IDZ)
+                                                   *  SINRYO-COUNT) 
+                                       WHEN    8
+                                          COMPUTE  TBL-JIHI-TAXARI(8)
+                                               =   TBL-JIHI-TAXARI(8)
+                                               +  (SRY-JIHIMONEY(IDZ)
+                                                   *  SINRYO-COUNT) 
+                                       WHEN    9
+                                          COMPUTE  TBL-JIHI-TAXARI(9)
+                                               =   TBL-JIHI-TAXARI(9)
+                                               +  (SRY-JIHIMONEY(IDZ)
+                                                   *  SINRYO-COUNT) 
+                                       WHEN    10
+                                          COMPUTE  TBL-JIHI-TAXARI(10)
+                                               =   TBL-JIHI-TAXARI(10)
                                                +  (SRY-JIHIMONEY(IDZ)
                                                    *  SINRYO-COUNT) 
                                    END-EVALUATE
@@ -4003,9 +4054,9 @@
       *    ADD    NYUIN-TGMONEY                TO  SYU-TGMONEY(12)
       *    ADD    NYUIN-TGMONEY-TAX            TO  SYU-TGMONEY-TAX(12)
       *
-      *  ¼«Èñ£±¤«¤é£µ
+      *  ¼«Èñ£±¤«¤é£±£°
            PERFORM     VARYING   IDZ    FROM    1    BY    1
-                         UNTIL   IDZ    >       5
+                         UNTIL   IDZ    >       10
                   MOVE TBL-JIHI-TAXNASI(IDZ) TO SYU-JIHI-TAXNASI(IDZ)
                   MOVE TBL-JIHI-TAXARI(IDZ)  TO SYU-JIHI-TAXARI(IDZ)
                   ADD  TBL-JIHI-TAXNASI(IDZ) TO SYU-JIHI-TOTAL

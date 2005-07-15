@@ -33,6 +33,7 @@
       *                                     »ÈÍÑ²Ã»»¤òÌôºÞÅù¤Ø
       *  01.00.04    NACL-ÌçÏÆ    05/01/27  ¹ø¡¦¶»Éô¸ÇÄêÂÓ²Ã»»¡¢ÁÏ³°¸ÇÄê´ï
       *                                     »ÈÍÑ²Ã»»¤Îµ»½Ñ¡¦ÌôºÞÅù¤ÎÁªÂòÂÐ±þ
+      *  01.00.05    NACL-¾®Æ¦Âô  05/07/15  ¼«Èñ£±£°¹àÌÜÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -119,7 +120,7 @@
                  05  TBL-TGMONEY           PIC  9(08).
                  05  TBL-TGMONEY-TAX       PIC  9(08).
        01  JIHI-TABLE.
-           03  JIHI-TBL                    OCCURS  5.
+           03  JIHI-TBL                    OCCURS 10.
                  05  TBL-JIHI-TAXNASI      PIC  9(08).
                  05  TBL-JIHI-TAXARI       PIC  9(08).
       *
@@ -422,7 +423,7 @@
                MOVE       SPACE   TO  LNK-SYU-SKY-NAIYOU(IDY)
                INITIALIZE             LNK-SYU-SKY-NAIYOU(IDY)
                PERFORM  VARYING  IDX3  FROM    1    BY    1
-                         UNTIL   IDX3    >     5
+                         UNTIL   IDX3    >     10
                    MOVE    ZERO   TO  LNK-SYU-JIHI-TAXNASI(IDY IDX3)
                    MOVE    ZERO   TO  LNK-SYU-JIHI-TAXARI (IDY IDX3)
                END-PERFORM
@@ -1401,7 +1402,7 @@
            EVALUATE    SRY-SRYKBN
                WHEN    "95"
                    PERFORM     VARYING    IDX3    FROM    1     BY    1
-                                 UNTIL   (IDX3         >   5    )   OR
+                                 UNTIL   (IDX3         >   5   )   OR
        	                                 (SRY-SRYCD(IDX3)  =   SPACE)
                        IF    SRY-SRYCD (IDX3) (1:3)   =   "095"
                                                       OR  "096"
@@ -1440,6 +1441,31 @@
                                        WHEN    5
                                           COMPUTE  TBL-JIHI-TAXNASI(5)
                                                =   TBL-JIHI-TAXNASI(5)
+                                               +  (SRY-JIHIMONEY(IDX3)
+                                                 * TBL-ZAIKAISU(IDX1)) 
+                                       WHEN    6
+                                          COMPUTE  TBL-JIHI-TAXNASI(6)
+                                               =   TBL-JIHI-TAXNASI(6)
+                                               +  (SRY-JIHIMONEY(IDX3)
+                                                 * TBL-ZAIKAISU(IDX1)) 
+                                       WHEN    7
+                                          COMPUTE  TBL-JIHI-TAXNASI(7)
+                                               =   TBL-JIHI-TAXNASI(7)
+                                               +  (SRY-JIHIMONEY(IDX3)
+                                                 * TBL-ZAIKAISU(IDX1)) 
+                                       WHEN    8
+                                          COMPUTE  TBL-JIHI-TAXNASI(8)
+                                               =   TBL-JIHI-TAXNASI(8)
+                                               +  (SRY-JIHIMONEY(IDX3)
+                                                 * TBL-ZAIKAISU(IDX1)) 
+                                       WHEN    9
+                                          COMPUTE  TBL-JIHI-TAXNASI(9)
+                                               =   TBL-JIHI-TAXNASI(9)
+                                               +  (SRY-JIHIMONEY(IDX3)
+                                                 * TBL-ZAIKAISU(IDX1)) 
+                                       WHEN    10
+                                          COMPUTE  TBL-JIHI-TAXNASI(10)
+                                               =   TBL-JIHI-TAXNASI(10)
                                                +  (SRY-JIHIMONEY(IDX3)
                                                  * TBL-ZAIKAISU(IDX1)) 
                                    END-EVALUATE
@@ -1635,6 +1661,31 @@
                                        WHEN    5
                                           COMPUTE  TBL-JIHI-TAXARI(5)
                                                =   TBL-JIHI-TAXARI(5)
+                                               +  (SRY-JIHIMONEY(IDX3)
+                                                 * TBL-ZAIKAISU(IDX1)) 
+                                       WHEN    6
+                                          COMPUTE  TBL-JIHI-TAXARI(6)
+                                               =   TBL-JIHI-TAXARI(6)
+                                               +  (SRY-JIHIMONEY(IDX3)
+                                                 * TBL-ZAIKAISU(IDX1)) 
+                                       WHEN    7
+                                          COMPUTE  TBL-JIHI-TAXARI(7)
+                                               =   TBL-JIHI-TAXARI(7)
+                                               +  (SRY-JIHIMONEY(IDX3)
+                                                 * TBL-ZAIKAISU(IDX1)) 
+                                       WHEN    8
+                                          COMPUTE  TBL-JIHI-TAXARI(8)
+                                               =   TBL-JIHI-TAXARI(8)
+                                               +  (SRY-JIHIMONEY(IDX3)
+                                                 * TBL-ZAIKAISU(IDX1)) 
+                                       WHEN    9
+                                          COMPUTE  TBL-JIHI-TAXARI(9)
+                                               =   TBL-JIHI-TAXARI(9)
+                                               +  (SRY-JIHIMONEY(IDX3)
+                                                 * TBL-ZAIKAISU(IDX1)) 
+                                       WHEN    10
+                                          COMPUTE  TBL-JIHI-TAXARI(10)
+                                               =   TBL-JIHI-TAXARI(10)
                                                +  (SRY-JIHIMONEY(IDX3)
                                                  * TBL-ZAIKAISU(IDX1)) 
                                    END-EVALUATE
@@ -2083,7 +2134,7 @@
                              TO    LNK-SYU-TGMONEY-TAX(IDY IDX3)
            END-PERFORM
            PERFORM   VARYING   IDX3     FROM    1   BY  1
-                      UNTIL    IDX3      >      5
+                      UNTIL    IDX3      >      10
                MOVE      WRK-SYU-JIHI-TAXNASI(IDX3)
                              TO    LNK-SYU-JIHI-TAXNASI(IDY IDX3)
                MOVE      WRK-SYU-JIHI-TAXARI(IDX3)
