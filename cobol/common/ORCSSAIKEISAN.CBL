@@ -1975,9 +1975,9 @@
                                  TO  LNK-SYU-TGMONEY-TAX(IDY IDX3)
            END-PERFORM
       *
-      *  ¼«Èñ£±¤«¤é£µ
+      *  ¼«Èñ£±¤«¤é£±£°
            PERFORM     VARYING   IDX3    FROM    1    BY    1
-                         UNTIL   IDX3    >     5
+                         UNTIL   IDX3    >     10
               MOVE   TBL-JIHI-TAXNASI(IDX3)
                                  TO  LNK-SYU-JIHI-TAXNASI(IDY IDX3)
               MOVE   TBL-JIHI-TAXARI(IDX3)
@@ -2065,7 +2065,7 @@
                          LNK-SYU-TGMONEY-TAX(IDY IDX3)
            END-PERFORM
            PERFORM   VARYING   IDX3     FROM    1   BY  1
-                      UNTIL    IDX3      >      5
+                      UNTIL    IDX3      >      10
                COMPUTE   WRK-SYU-JIHI-TAXNASI(IDX3) =
                          WRK-SYU-JIHI-TAXNASI(IDX3) +
                          LNK-SYU-JIHI-TAXNASI(IDY IDX3)
