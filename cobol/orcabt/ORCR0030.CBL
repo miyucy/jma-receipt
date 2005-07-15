@@ -6206,39 +6206,39 @@
       *****************************************************************
       *    保険組合せマスタ読込
       *****************************************************************
-       900-HKNCOMBI-INV-SEC         SECTION.
+      *900-HKNCOMBI-INV-SEC         SECTION.
       *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-               IF      MCP-RC              =   ZERO
-                   MOVE    ZERO                TO  FLG-HKNCOMBI
-                   MOVE    MCPDATA-REC         TO  HKNCOMBI-REC
-                   IF      COMB-DELKBN         =   "1"
-                       MOVE    1               TO  FLG-HKNCOMBI
-                   END-IF
-               ELSE
-                   MOVE    1                   TO  FLG-HKNCOMBI
-                   INITIALIZE                      HKNCOMBI-REC
-               END-IF
-           ELSE
-               MOVE    1                       TO  FLG-HKNCOMBI
-               INITIALIZE                          HKNCOMBI-REC
-           END-IF
+      *    MOVE    "DBSELECT"          TO  MCP-FUNC
+      *    MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+      *    CALL    "ORCMCPSUB"          USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      *                                 MCPDATA-REC
+      *    IF      MCP-RC              =   ZERO
+      *        MOVE    "DBFETCH"           TO  MCP-FUNC
+      *        MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+      *        CALL    "ORCMCPSUB"          USING
+      *                                     MCPAREA
+      *                                     ORCMCPAREA
+      *                                     MCPDATA-REC
+      *        IF      MCP-RC              =   ZERO
+      *            MOVE    ZERO                TO  FLG-HKNCOMBI
+      *            MOVE    MCPDATA-REC         TO  HKNCOMBI-REC
+      *            IF      COMB-DELKBN         =   "1"
+      *                MOVE    1               TO  FLG-HKNCOMBI
+      *            END-IF
+      *        ELSE
+      *            MOVE    1                   TO  FLG-HKNCOMBI
+      *            INITIALIZE                      HKNCOMBI-REC
+      *        END-IF
+      *    ELSE
+      *        MOVE    1                       TO  FLG-HKNCOMBI
+      *        INITIALIZE                          HKNCOMBI-REC
+      *    END-IF
       *
-           .
-       900-HKNCOMBI-INV-EXT.
-           EXIT.
+      *    .
+      *900-HKNCOMBI-INV-EXT.
+      *    EXIT.
       *
       *****************************************************************
       *    システム管理マスタ読込
