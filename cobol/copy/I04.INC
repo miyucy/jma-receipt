@@ -110,6 +110,16 @@
                 04  I04-VALUE   PIC X(12).
               03  I04-JIHIMSG5.
                 04  I04-VALUE   PIC X(12).
+              03  I04-JIHIMSG6.
+                04  I04-VALUE   PIC X(12).
+              03  I04-JIHIMSG7.
+                04  I04-VALUE   PIC X(12).
+              03  I04-JIHIMSG8.
+                04  I04-VALUE   PIC X(12).
+              03  I04-JIHIMSG9.
+                04  I04-VALUE   PIC X(12).
+              03  I04-JIHIMSG10.
+                04  I04-VALUE   PIC X(12).
               03  I04-JIHI1.
                 04  I04-VALUE   PIC X(10).
               03  I04-JIHI2.
@@ -119,6 +129,16 @@
               03  I04-JIHI4.
                 04  I04-VALUE   PIC X(10).
               03  I04-JIHI5.
+                04  I04-VALUE   PIC X(10).
+              03  I04-JIHI6.
+                04  I04-VALUE   PIC X(10).
+              03  I04-JIHI7.
+                04  I04-VALUE   PIC X(10).
+              03  I04-JIHI8.
+                04  I04-VALUE   PIC X(10).
+              03  I04-JIHI9.
+                04  I04-VALUE   PIC X(10).
+              03  I04-JIHI10.
                 04  I04-VALUE   PIC X(10).
               03  I04-JIHIGOK.
                 04  I04-VALUE   PIC X(10).
@@ -131,6 +151,16 @@
               03  I04-JIHITAX4.
                 04  I04-VALUE   PIC X(10).
               03  I04-JIHITAX5.
+                04  I04-VALUE   PIC X(10).
+              03  I04-JIHITAX6.
+                04  I04-VALUE   PIC X(10).
+              03  I04-JIHITAX7.
+                04  I04-VALUE   PIC X(10).
+              03  I04-JIHITAX8.
+                04  I04-VALUE   PIC X(10).
+              03  I04-JIHITAX9.
+                04  I04-VALUE   PIC X(10).
+              03  I04-JIHITAX10.
                 04  I04-VALUE   PIC X(10).
               03  I04-JIHITAXGOK.
                 04  I04-VALUE   PIC X(10).

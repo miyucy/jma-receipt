@@ -127,6 +127,21 @@ I04	{
 		JIHIMSG5	{
 			value	varchar(12);
 		};
+		JIHIMSG6	{
+			value	varchar(12);
+		};
+		JIHIMSG7	{
+			value	varchar(12);
+		};
+		JIHIMSG8	{
+			value	varchar(12);
+		};
+		JIHIMSG9	{
+			value	varchar(12);
+		};
+		JIHIMSG10	{
+			value	varchar(12);
+		};
 		JIHI1	{
 			value	varchar(10);
 		};
@@ -140,6 +155,21 @@ I04	{
 			value	varchar(10);
 		};
 		JIHI5	{
+			value	varchar(10);
+		};
+		JIHI6	{
+			value	varchar(10);
+		};
+		JIHI7	{
+			value	varchar(10);
+		};
+		JIHI8	{
+			value	varchar(10);
+		};
+		JIHI9	{
+			value	varchar(10);
+		};
+		JIHI10	{
 			value	varchar(10);
 		};
 		JIHIGOK	{
@@ -158,6 +188,21 @@ I04	{
 			value	varchar(10);
 		};
 		JIHITAX5	{
+			value	varchar(10);
+		};
+		JIHITAX6	{
+			value	varchar(10);
+		};
+		JIHITAX7	{
+			value	varchar(10);
+		};
+		JIHITAX8	{
+			value	varchar(10);
+		};
+		JIHITAX9	{
+			value	varchar(10);
+		};
+		JIHITAX10	{
 			value	varchar(10);
 		};
 		JIHITAXGOK	{
