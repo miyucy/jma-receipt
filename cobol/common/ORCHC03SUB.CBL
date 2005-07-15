@@ -24,6 +24,7 @@
       *  管理者            : 
       *  作成日付    作業者        記述
       *  04/07/16    NACL−多々納   新規作成
+      *  05/07/14    NACL−小豆沢   自費１０項目対応
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
@@ -612,7 +613,7 @@
                                                TO  SYU-TGMONEY-TAX(IDS1)
            END-PERFORM
            PERFORM VARYING     IDS1    FROM    1   BY  1
-                   UNTIL       IDS1    >   5
+                   UNTIL       IDS1    >   10
                ADD    WRK-SYU-JIHI-TAXNASI (IDS1)
                                            TO  SYU-JIHI-TAXNASI(IDS1)
                ADD    WRK-SYU-JIHI-TAXARI (IDS1)
