@@ -21,6 +21,9 @@
       ************************************************************
       *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  01.00.01    NACL-¾®Æ¦Âô   05/07/13  ¼«Èñ¹àÌÜ¤ÎÄÉ²Ã
+      *                                      ¸ºÌÈ¶â³Û¤ÎÄÉ²Ã
+      *                                      ÊÑÂ§½õÀ®¹àÌÜ¤ÎÄÉ²Ã
       ************************************************************
       *01  SYUTTL-REC.
            03  SYUTTL-KEY.
@@ -234,7 +237,7 @@
                   09  SYUTTL-TOTAL-TGMONEY-TAX   PIC  9(07).
       *ÊÝ¸±Å¬ÍÑ³°¶â³Û¡Ý¾ÃÈñÀÇ¡ÊºÆ·Ç¡Ë
            03  SYUTTL-TGMONEY-TAX-SAI         PIC  9(07).
-      *¼«Èñ£±¤«¤é£µ
+      *¼«Èñ£±¤«¤é£±£°
            03  SYUTTL-JIHI-NAIYOU.
                05  SYUTTL-JIHI-1              PIC  9(07). 
                05  SYUTTL-JIHI-1-TAX          PIC  9(07). 
@@ -246,9 +249,19 @@
                05  SYUTTL-JIHI-4-TAX          PIC  9(07). 
                05  SYUTTL-JIHI-5              PIC  9(07). 
                05  SYUTTL-JIHI-5-TAX          PIC  9(07). 
+               05  SYUTTL-JIHI-6              PIC  9(07). 
+               05  SYUTTL-JIHI-6-TAX          PIC  9(07). 
+               05  SYUTTL-JIHI-7              PIC  9(07). 
+               05  SYUTTL-JIHI-7-TAX          PIC  9(07). 
+               05  SYUTTL-JIHI-8              PIC  9(07). 
+               05  SYUTTL-JIHI-8-TAX          PIC  9(07). 
+               05  SYUTTL-JIHI-9              PIC  9(07). 
+               05  SYUTTL-JIHI-9-TAX          PIC  9(07). 
+               05  SYUTTL-JIHI-10             PIC  9(07). 
+               05  SYUTTL-JIHI-10-TAX         PIC  9(07). 
            03  SYUTTL-JIHI-NAIYOU-R           REDEFINES
                                               SYUTTL-JIHI-NAIYOU.
-               05  SYUTTL-JIHI-TBL            OCCURS   5.
+               05  SYUTTL-JIHI-TBL            OCCURS  10.
                  07  SYUTTL-JIHI-TAXNASI        PIC  9(07).
                  07  SYUTTL-JIHI-TAXARI         PIC  9(07).
       *¼«Èñ¾®·×¡Ê¾ÃÈñÀÇ¤Ê¤·¡Ë
@@ -279,6 +292,8 @@
            03  SYUTTL-DISCOUNT-TEIRITU    PIC  X(01).
       *³ä°úÎ¨
            03  SYUTTL-DISCOUNT-RATE       PIC  9(07).
+      *¸ºÌÈ¶â³Û
+           03  SYUTTL-DISCOUNT-MONEY      PIC  9(07).
       *Ï«ºÒÊÝ¸±¡Ý½é¿ÇÎÁ
            03  SYUTTL-RSISHOSHIN-MONEY    PIC  9(07).
       *Ï«ºÒÊÝ¸±¡ÝºÆ¿ÇÎÁ

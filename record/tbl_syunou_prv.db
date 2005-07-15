@@ -113,6 +113,16 @@ tbl_syunou_prv {
 	JIHI_4_TAX 			number(7,0);
 	JIHI_5  			number(7,0);
 	JIHI_5_TAX 			number(7,0);
+	JIHI_6  			number(7,0);
+	JIHI_6_TAX 			number(7,0);
+	JIHI_7  			number(7,0);
+	JIHI_7_TAX 			number(7,0);
+	JIHI_8  			number(7,0);
+	JIHI_8_TAX 			number(7,0);
+	JIHI_9  			number(7,0);
+	JIHI_9_TAX 			number(7,0);
+	JIHI_10  			number(7,0);
+	JIHI_10_TAX 			number(7,0);
 	JIHI_TOTAL  		number(7,0);
 	JIHI_TOTAL_TAX 		number(7,0);
 	JIHI_TAX  			number(7,0);
@@ -133,6 +143,7 @@ tbl_syunou_prv {
 	DISCOUNT_RATEKBN		char(2);
 	DISCOUNT_TEIRITU		char(1);
 	DISCOUNT_RATE			number(7,0);
+	DISCOUNT_MONEY			number(7,0);
         RSISHOSHIN_MONEY		number(7,0);
         RSISAISHIN_MONEY		number(7,0);
         RSISDO_MONEY	    		number(7,0);
@@ -250,6 +261,9 @@ tbl_syunou_prv {
 	DAYINFFLG			char(1);
         NYUIN_RRKNUM                    number(3,0);
 	ACCT_UPDKBN			char(1);
+	JYO_HKNFTNMONEY                 number(7,0);
+	JYO_COMPFTN                     number(7,0);
+	JYO_COMPFTN_ENTANI              number(8,1);
 	TERMID  			varchar(16);
 	OPID    			varchar(16);
 	CREYMD  			char(8);
@@ -259,7 +273,7 @@ tbl_syunou_prv {
 	UPSRYYMD				char(8),virtual;
 };
 primary	{
-	HOSPID,NYUGAIKBN,PTID,DENPNUM;
+	HOSPID,NYUGAIKBN,PTID,DENPNUM,CREYMD;
 };
 
 path	key 	{

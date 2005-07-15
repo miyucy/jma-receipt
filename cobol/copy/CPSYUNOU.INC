@@ -20,6 +20,9 @@
       *  01.00.01    NACL-小豆沢   04/07/04  まとめ入力差額追加
       *                                      まとめ入力伝票番号追加
       *                                      まとめ入力連番追加
+      *  01.00.02    NACL-小豆沢   05/07/13  自費項目の追加
+      *                                      減免金額の追加
+      *                                      変則助成項目の追加
       ************************************************************
       ************************************************************
       *  コピー句修正履歴
@@ -246,7 +249,7 @@
                   09  SYU-TOTAL-TGMONEY-TAX   PIC  9(07).
       *保険適用外金額−消費税（再掲）
            03  SYU-TGMONEY-TAX-SAI         PIC  9(07).
-      *自費１から５
+      *自費１から１０
            03  SYU-JIHI-NAIYOU.
                05  SYU-JIHI-1              PIC  9(07). 
                05  SYU-JIHI-1-TAX          PIC  9(07). 
@@ -258,8 +261,18 @@
                05  SYU-JIHI-4-TAX          PIC  9(07). 
                05  SYU-JIHI-5              PIC  9(07). 
                05  SYU-JIHI-5-TAX          PIC  9(07). 
+               05  SYU-JIHI-6              PIC  9(07). 
+               05  SYU-JIHI-6-TAX          PIC  9(07). 
+               05  SYU-JIHI-7              PIC  9(07). 
+               05  SYU-JIHI-7-TAX          PIC  9(07). 
+               05  SYU-JIHI-8              PIC  9(07). 
+               05  SYU-JIHI-8-TAX          PIC  9(07). 
+               05  SYU-JIHI-9              PIC  9(07). 
+               05  SYU-JIHI-9-TAX          PIC  9(07). 
+               05  SYU-JIHI-10             PIC  9(07). 
+               05  SYU-JIHI-10-TAX         PIC  9(07). 
            03  SYU-JIHI-NAIYOU-R           REDEFINES  SYU-JIHI-NAIYOU.
-               05  SYU-JIHI-TBL            OCCURS   5.
+               05  SYU-JIHI-TBL            OCCURS   10.
                  07  SYU-JIHI-TAXNASI        PIC  9(07).
                  07  SYU-JIHI-TAXARI         PIC  9(07).
       *自費小計（消費税なし）
@@ -302,6 +315,8 @@
            03  SYU-DISCOUNT-TEIRITU    PIC  X(01).
       *割引率
            03  SYU-DISCOUNT-RATE       PIC  9(07).
+      *減免金額
+           03  SYU-DISCOUNT-MONEY      PIC  9(07).
       *労災保険−初診料
            03  SYU-RSISHOSHIN-MONEY    PIC  9(07).
       *労災保険−再診料
@@ -495,6 +510,12 @@
            03  SYU-NYUIN-RRKNUM        PIC  9(03).
       *会計変更区分
            03  SYU-ACCT-UPDKBN         PIC  X(01).
+      *変則助成−患者負担金額
+           03  SYU-JYO-HKNFTNMONEY     PIC  9(07).
+      *変則助成−計算負担金
+           03  SYU-JYO-COMPFTN         PIC  9(07).
+      *変則助成−計算負担金（円単位記録用）
+           03  SYU-JYO-COMPFTN-ENTANI  PIC  9(07)V9(01).
       *端末ＩＤ
            03  SYU-TERMID              PIC  X(16).
       *オペーレータＩＤ
