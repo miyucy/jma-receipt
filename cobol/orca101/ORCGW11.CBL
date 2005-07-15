@@ -50,6 +50,8 @@
       * 02.00.08     NACL-森脇    04/11/05  支払証明書プログラム選択
       * 02.00.09     NACL-多々納  04/12/15  カルテ３号紙（続紙）、入院追加他
       * 02.00.10     NACL-多々納  05/02/16  入院指示せん追加
+      * 02.00.11     NACL-小豆沢  05/07/14  自費１０項目の請求書兼領収書を
+      *                                     選択できるよう変更
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -143,7 +145,7 @@
       *
                        09  SPA-GMN-ORGPGNM03LST-G.
                            11  SPA-GMN-ORGPGNM03MEIL  PIC X(20)
-                                                   OCCURS  2.
+                                                   OCCURS  3.
                            11  SPA-GMN-ORGPGNM03-MAX
                                                    PIC 9(04).
       *----(02.00.03)--UPD-END-----
@@ -169,7 +171,7 @@
       *
                        09  SPA-GMN-ORGPGNM03NLST-G.
                            11  SPA-GMN-ORGPGNM03NMEIL PIC X(20)
-                                                   OCCURS  2.
+                                                   OCCURS  3.
                            11  SPA-GMN-ORGPGNM03N-MAX
                                                    PIC 9(04).
       *
@@ -655,12 +657,14 @@
       *    請求書兼領収書コンボ（外来）
            MOVE    "ORCHC03"           TO  SPA-GMN-ORGPGNM03MEIL(1)
            MOVE    "ORCHC03V02"        TO  SPA-GMN-ORGPGNM03MEIL(2)
-           MOVE    2                   TO  SPA-GMN-ORGPGNM03-MAX
+           MOVE    "ORCHC03V03"        TO  SPA-GMN-ORGPGNM03MEIL(3)
+           MOVE    3                   TO  SPA-GMN-ORGPGNM03-MAX
       *
       *    請求書兼領収書コンボ（入院）
            MOVE    "ORCHCN03"          TO  SPA-GMN-ORGPGNM03NMEIL(1)
            MOVE    "ORCHCN03V02"       TO  SPA-GMN-ORGPGNM03NMEIL(2)
-           MOVE    2                   TO  SPA-GMN-ORGPGNM03N-MAX
+           MOVE    "ORCHCN03V03"       TO  SPA-GMN-ORGPGNM03NMEIL(3)
+           MOVE    3                   TO  SPA-GMN-ORGPGNM03N-MAX
       *
            INITIALIZE                      SPA-GMN-USERLSTSCROLLE
            INITIALIZE                      SPA-NAI-TBL
