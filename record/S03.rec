@@ -204,19 +204,19 @@ S03	{
 		JIHI5TAX	{
 			value	number(10);
 		};
-		JIHITAX6	{
+		JIHI6TAX	{
 			value	varchar(10);
 		};
-		JIHITAX7	{
+		JIHI7TAX	{
 			value	varchar(10);
 		};
-		JIHITAX8	{
+		JIHI8TAX	{
 			value	varchar(10);
 		};
-		JIHITAX9	{
+		JIHI9TAX	{
 			value	varchar(10);
 		};
-		JIHITAX10	{
+		JIHI10TAX	{
 			value	varchar(10);
 		};
 		JIHITAXTOTAL	{
