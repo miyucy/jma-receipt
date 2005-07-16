@@ -238,6 +238,11 @@
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
+      *    前回のデータが残っている場合は削除
+           CALL    "ORCSPRVDBDEL"      USING
+                                       SPA-HOSPID
+                                       SPA-NYUGAIKBN
+                                       SPA-PTID
       *
            PERFORM 100-PRV-DBMAKE-SEC
       *
