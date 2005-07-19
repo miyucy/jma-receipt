@@ -103,6 +103,7 @@
       *  01.00.51    NACL-¾®Æ¦Âô  04.03.16  £±£µºÐÌ¤Ëþ¤Î´µ¼Ô¤ÏÁªÄêÆþ±¡ÂÐ¾Ý³°
       *  01.00.52    NACL-ÂÀÅÄ    04.08.02  Äê´üÀÁµáÃæ¤ÏÂà±¡ÅÐÏ¿¤ÏÉÔ²Ä¤È¤¹¤ë
       *  01.00.53    NACL-ÂÀÅÄ    04.10.14  Âà±¡»öÍ³ÄÉ²Ã
+      *  01.00.54    NACL-¾®Æ¦Âô  05.07.19  ¼«Èñ£±£°¹àÌÜÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -12515,6 +12516,41 @@
                        =   TTLSYU-JIHI-5
                        +   LNK-SYU-JIHI-5 (IDX11)
       *
+                   COMPUTE SUMSYU-JIHI-6   (WRK-SYU-SUM-IDX)
+                       =   SUMSYU-JIHI-6   (WRK-SYU-SUM-IDX)
+                       +   LNK-SYU-JIHI-6 (IDX11)
+                   COMPUTE TTLSYU-JIHI-6
+                       =   TTLSYU-JIHI-6
+                       +   LNK-SYU-JIHI-6 (IDX11)
+      *
+                   COMPUTE SUMSYU-JIHI-7   (WRK-SYU-SUM-IDX)
+                       =   SUMSYU-JIHI-7   (WRK-SYU-SUM-IDX)
+                       +   LNK-SYU-JIHI-7 (IDX11)
+                   COMPUTE TTLSYU-JIHI-7
+                       =   TTLSYU-JIHI-7
+                       +   LNK-SYU-JIHI-7 (IDX11)
+      *
+                   COMPUTE SUMSYU-JIHI-8   (WRK-SYU-SUM-IDX)
+                       =   SUMSYU-JIHI-8   (WRK-SYU-SUM-IDX)
+                       +   LNK-SYU-JIHI-8 (IDX11)
+                   COMPUTE TTLSYU-JIHI-8
+                       =   TTLSYU-JIHI-8
+                       +   LNK-SYU-JIHI-8 (IDX11)
+      *
+                   COMPUTE SUMSYU-JIHI-9   (WRK-SYU-SUM-IDX)
+                       =   SUMSYU-JIHI-9   (WRK-SYU-SUM-IDX)
+                       +   LNK-SYU-JIHI-9 (IDX11)
+                   COMPUTE TTLSYU-JIHI-9
+                       =   TTLSYU-JIHI-9
+                       +   LNK-SYU-JIHI-9 (IDX11)
+      *
+                   COMPUTE SUMSYU-JIHI-10  (WRK-SYU-SUM-IDX)
+                       =   SUMSYU-JIHI-10  (WRK-SYU-SUM-IDX)
+                       +   LNK-SYU-JIHI-10 (IDX11)
+                   COMPUTE TTLSYU-JIHI-10
+                       =   TTLSYU-JIHI-10
+                       +   LNK-SYU-JIHI-5 (IDX11)
+      *
       *            ¼«Èñ·×
                    COMPUTE SUMSYU-JIHI-TOTAL   (WRK-SYU-SUM-IDX)
                        =   SUMSYU-JIHI-TOTAL   (WRK-SYU-SUM-IDX)
@@ -12558,6 +12594,41 @@
                    COMPUTE TTLSYU-JIHI-5-TAX
                        =   TTLSYU-JIHI-5-TAX
                        +   LNK-SYU-JIHI-5-TAX  (IDX11)
+      *
+                   COMPUTE SUMSYU-JIHI-6-TAX    (WRK-SYU-SUM-IDX)
+                       =   SUMSYU-JIHI-6-TAX    (WRK-SYU-SUM-IDX)
+                       +   LNK-SYU-JIHI-6-TAX  (IDX11)
+                   COMPUTE TTLSYU-JIHI-6-TAX
+                       =   TTLSYU-JIHI-6-TAX
+                       +   LNK-SYU-JIHI-6-TAX  (IDX11)
+      *
+                   COMPUTE SUMSYU-JIHI-7-TAX    (WRK-SYU-SUM-IDX)
+                       =   SUMSYU-JIHI-7-TAX    (WRK-SYU-SUM-IDX)
+                       +   LNK-SYU-JIHI-7-TAX  (IDX11)
+                   COMPUTE TTLSYU-JIHI-7-TAX
+                       =   TTLSYU-JIHI-7-TAX
+                       +   LNK-SYU-JIHI-7-TAX  (IDX11)
+      *
+                   COMPUTE SUMSYU-JIHI-8-TAX    (WRK-SYU-SUM-IDX)
+                       =   SUMSYU-JIHI-8-TAX    (WRK-SYU-SUM-IDX)
+                       +   LNK-SYU-JIHI-8-TAX  (IDX11)
+                   COMPUTE TTLSYU-JIHI-8-TAX
+                       =   TTLSYU-JIHI-8-TAX
+                       +   LNK-SYU-JIHI-8-TAX  (IDX11)
+      *
+                   COMPUTE SUMSYU-JIHI-9-TAX    (WRK-SYU-SUM-IDX)
+                       =   SUMSYU-JIHI-9-TAX    (WRK-SYU-SUM-IDX)
+                       +   LNK-SYU-JIHI-9-TAX  (IDX11)
+                   COMPUTE TTLSYU-JIHI-9-TAX
+                       =   TTLSYU-JIHI-9-TAX
+                       +   LNK-SYU-JIHI-9-TAX  (IDX11)
+      *
+                   COMPUTE SUMSYU-JIHI-10-TAX    (WRK-SYU-SUM-IDX)
+                       =   SUMSYU-JIHI-10-TAX    (WRK-SYU-SUM-IDX)
+                       +   LNK-SYU-JIHI-10-TAX  (IDX11)
+                   COMPUTE TTLSYU-JIHI-10-TAX
+                       =   TTLSYU-JIHI-10-TAX
+                       +   LNK-SYU-JIHI-10-TAX  (IDX11)
       *
       *            ¼«Èñ·×¡Ê¾ÃÈñÀÇ¤¢¤ê¡Ë
                    COMPUTE SUMSYU-JIHI-TOTAL-TAX (WRK-SYU-SUM-IDX)

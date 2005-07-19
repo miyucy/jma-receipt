@@ -599,6 +599,16 @@
                            13  SPA-GMN-I04-JIHI4         PIC 9(07).
       *                    ¼«Èñ£µ
                            13  SPA-GMN-I04-JIHI5         PIC 9(07).
+      *                    ¼«Èñ£¶
+                           13  SPA-GMN-I04-JIHI6         PIC 9(07).
+      *                    ¼«Èñ£·
+                           13  SPA-GMN-I04-JIHI7         PIC 9(07).
+      *                    ¼«Èñ£¸
+                           13  SPA-GMN-I04-JIHI8         PIC 9(07).
+      *                    ¼«Èñ£¹
+                           13  SPA-GMN-I04-JIHI9         PIC 9(07).
+      *                    ¼«Èñ£±£°
+                           13  SPA-GMN-I04-JIHI10        PIC 9(07).
       *                    ¼«Èñ·×
                            13  SPA-GMN-I04-JIHIKEI       PIC 9(07).
       *                    ¼«Èñ¾ÃÈñÀÇ¤¢¤ê£±
@@ -611,6 +621,16 @@
                            13  SPA-GMN-I04-JIHITAX4      PIC 9(07).
       *                    ¼«Èñ¾ÃÈñÀÇ¤¢¤ê£µ
                            13  SPA-GMN-I04-JIHITAX5      PIC 9(07).
+      *                    ¼«Èñ¾ÃÈñÀÇ¤¢¤ê£¶
+                           13  SPA-GMN-I04-JIHITAX6      PIC 9(07).
+      *                    ¼«Èñ¾ÃÈñÀÇ¤¢¤ê£·
+                           13  SPA-GMN-I04-JIHITAX7      PIC 9(07).
+      *                    ¼«Èñ¾ÃÈñÀÇ¤¢¤ê£¸
+                           13  SPA-GMN-I04-JIHITAX8      PIC 9(07).
+      *                    ¼«Èñ¾ÃÈñÀÇ¤¢¤ê£¹
+                           13  SPA-GMN-I04-JIHITAX9      PIC 9(07).
+      *                    ¼«Èñ¾ÃÈñÀÇ¤¢¤ê£±£°
+                           13  SPA-GMN-I04-JIHITAX10     PIC 9(07).
       *                    ¼«Èñ¾ÃÈñÀÇ¤¢¤ê·×
                            13  SPA-GMN-I04-JIHITAXKEI    PIC 9(07).
       *                    ¼«Èñ¾ÃÈñÀÇ
@@ -639,7 +659,7 @@
                            13  SPA-GMN-I04-ROUETC        PIC S9(07).
       *                    ¼«ÈñÌ¾¾Î
                            13  SPA-GMN-I04-JIHIMSG       PIC X(20)
-                                                         OCCURS   5.
+                                                         OCCURS  10.
       *                    ¼¼ÎÁº¹³Û
                            13  SPA-GMN-I04-RMSAGAKU      PIC S9(07).
       *                    Ä´À°¶â
