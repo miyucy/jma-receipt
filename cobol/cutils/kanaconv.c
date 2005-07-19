@@ -219,7 +219,7 @@ zenkakuconv(int conv_flg,
 		advanced_bytes = 2;	
 		cchar->in_type = ZENKAKU;
 		if ( ISJIS208(c0) ){
-			if ( (conv_flg) && (!char_type & ZENKAKU) && (char_type & ASCII) 
+			if ( (conv_flg) && (char_type & ASCII) 
 				 && ( (c0 == 0xa1) || (c0 == 0xa3) )
 				 && (c = search_ascii_zenkaku(c0, c1)) ) {
 				cchar->out_type = KIGOU;
