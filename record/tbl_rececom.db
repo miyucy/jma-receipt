@@ -6,7 +6,7 @@ tbl_rececom {
 	SRYYM				char(6);
 	HKNCOMBI       		number(4);
         SRYDD                           char(2);
-	COMMENT        		varchar(800);
+	COMMENT        		varchar(1600);
 	TERMID  			varchar(16);
 	OPID    			varchar(16);
 	CREYMD  			char(8);
