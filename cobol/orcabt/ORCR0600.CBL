@@ -37,6 +37,7 @@
       *  01.01.02    NACL-ÌçÏÆ    05/01/28  ¥À¥ß¡¼¼ýÇ¼ºï½ü½èÍý¤Î½¤Àµ
       *
       *  02.06.01    NACL-ÃÝÅÄ    05/05/30  realtime preview ½èÍýÄÉ²Ã
+      *  02.06.02    NACL-ÌçÏÆ    05/07/19  ¥À¥ß¡¼¼ýÇ¼ºï½ü½èÍý¤Î½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -409,45 +410,45 @@
       *
       *    °ì³ç¥À¥ß¡¼¼ýÇ¼ºï½ü½èÍý
       *
-           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+      ***  IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *
       ***    ÅÁÉ¼ÈÖ¹æ£¹£°£°£°£°£°£°¡Á£¹£°£¹£¹£¹£¹£¹ºï½ü¡Ê°ÊÁ°Ê¬¡Ë
-             INITIALIZE                      SYUNOU-REC
-             MOVE    SYUNOU-REC          TO  MCPDATA-REC
-             MOVE    "SYUNOU-DEL5"       TO  ORC-DBPATH
-             MOVE    "DBDELETE"          TO  MCP-FUNC
-             CALL    "ORCMCPSUB"             USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
-             IF      MCP-RC          NOT =   ZERO
-                 MOVE  "²¾¼ýÇ¼¥Ç¡¼¥¿ºï½ü½èÍý¤Ë¼ºÇÔ¤·¤Þ¤·¤¿"
-                                 TO  WRK-RECEERR
-                 PERFORM 500-ERR-HENSYU-SEC
-             END-IF
+      ***    INITIALIZE                      SYUNOU-REC
+      ***    MOVE    SYUNOU-REC          TO  MCPDATA-REC
+      ***    MOVE    "SYUNOU-DEL5"       TO  ORC-DBPATH
+      ***    MOVE    "DBDELETE"          TO  MCP-FUNC
+      ***    CALL    "ORCMCPSUB"             USING
+      ***                                    MCPAREA
+      ***                                    ORCMCPAREA
+      ***                                    MCPDATA-REC
+      ***    IF      MCP-RC          NOT =   ZERO
+      ***        MOVE  "²¾¼ýÇ¼¥Ç¡¼¥¿ºï½ü½èÍý¤Ë¼ºÇÔ¤·¤Þ¤·¤¿"
+      ***                        TO  WRK-RECEERR
+      ***        PERFORM 500-ERR-HENSYU-SEC
+      ***    END-IF
       *
       *      °ì³ç¥À¥ß¡¼ÆüÊÌ¼ýÇ¼ºï½ü½èÍý
       *
-             IF   FLG-ERR         =   1
-                CONTINUE
-             ELSE
+      ***    IF   FLG-ERR         =   1
+      ***       CONTINUE
+      ***    ELSE
       ***       ÅÁÉ¼ÈÖ¹æ£¹£°£°£°£°£°£°¡Á£¹£°£¹£¹£¹£¹£¹ºï½ü¡Ê°ÊÁ°Ê¬¡Ë
-                INITIALIZE                      SYUDAY-REC
-                MOVE    SYUDAY-REC          TO  MCPDATA-REC
-                MOVE    "SYUDAY-DEL4"       TO  ORC-DBPATH
-                MOVE    "DBDELETE"          TO  MCP-FUNC
-                CALL    "ORCMCPSUB"             USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC
-                IF      MCP-RC          NOT =   ZERO
-                    MOVE  "²¾ÆüÊÌ¼ýÇ¼¥Ç¡¼¥¿ºï½ü½èÍý¤Ë¼ºÇÔ¤·¤Þ¤·¤¿"
-                                    TO  WRK-RECEERR
-                    PERFORM 500-ERR-HENSYU-SEC
-                END-IF
-             END-IF
+      ***       INITIALIZE                      SYUDAY-REC
+      ***       MOVE    SYUDAY-REC          TO  MCPDATA-REC
+      ***       MOVE    "SYUDAY-DEL4"       TO  ORC-DBPATH
+      ***       MOVE    "DBDELETE"          TO  MCP-FUNC
+      ***       CALL    "ORCMCPSUB"             USING
+      ***                                       MCPAREA
+      ***                                       ORCMCPAREA
+      ***                                       MCPDATA-REC
+      ***       IF      MCP-RC          NOT =   ZERO
+      ***           MOVE  "²¾ÆüÊÌ¼ýÇ¼¥Ç¡¼¥¿ºï½ü½èÍý¤Ë¼ºÇÔ¤·¤Þ¤·¤¿"
+      ***                           TO  WRK-RECEERR
+      ***           PERFORM 500-ERR-HENSYU-SEC
+      ***       END-IF
+      ***    END-IF
       *
-           END-IF
+      ***  END-IF
       *
       *    ¥À¥ß¡¼¼ýÇ¼ºï½ü½èÍý
       *    ¥À¥ß¡¼ÆüÊÌ¼ýÇ¼ºï½ü½èÍý
