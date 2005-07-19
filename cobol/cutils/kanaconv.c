@@ -133,7 +133,7 @@ asciiconv(int conv_flg,
 	advanced_bytes = 1;
 	cchar->in_type = KIGOU;
 
-	if ( isgraph(inputChar) || ISSPACEONLY(inputChar) ) {
+	if ( isgraph(inputChar) ) {
 		if ( (conv_flg) && (char_type & ZENKAKU) ){
 			cchar->out_type = OTHER;
 			cchar->out_len = 2;
@@ -151,8 +151,15 @@ asciiconv(int conv_flg,
 				cchar->out_type = ALPHA;
 			}
 		}
+	} else if ( ISSPACEONLY(inputChar) ) {
+		cchar->in_type = SPLF;
+		cchar->out_type = SPLF;
+		cchar->out_len = 2;
+		cchar->out_char[0] = 0xa1;
+		cchar->out_char[1] = 0xa1;
 	} else if ( ISLF(inputChar) ){
-		cchar->out_type = KIGOU;
+		cchar->in_type = SPLF;
+		cchar->out_type = SPLF;
 		cchar->out_len = 1;
 		cchar->out_char[0] = inputChar;
 	} else {

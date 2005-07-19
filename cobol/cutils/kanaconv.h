@@ -2,6 +2,7 @@
  orca
 */
 
+#define SPLF         1
 #define HIRAGANA     2
 #define KATAKANA     4
 #define OTHER        8
