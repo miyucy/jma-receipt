@@ -65,6 +65,8 @@
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
+           03  IDX2                PIC 9(04).
+           03  IDX-S               PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -223,22 +225,20 @@
       *
       *        初期画面編集
                PERFORM 300-SCREEN-SEC
-               IF      FLG-END         =   1
-                   GO      TO      100-INIT-EXT
+               IF      FLG-END         =   ZERO
+      *            画面編集
+                   PERFORM 500-GMNHEN-SEC
                END-IF
-      *
-      *        画面編集
-               PERFORM 500-GMNHEN-SEC
            END-IF
       *
-           MOVE    SPACE               TO  LINKAREA
+           IF      FLG-END         =   ZERO
+               MOVE    SPACE               TO  LINKAREA
+               MOVE   "NEW"                TO  MCP-PUTTYPE
+               MOVE   "J024"               TO  MCP-WINDOW
+               PERFORM 900-PUT-WINDOW
       *
-           MOVE   "NEW"                TO  MCP-PUTTYPE.
-           MOVE   "J024"               TO  MCP-WINDOW.
-      *
-           PERFORM 900-PUT-WINDOW
-      *
-           MOVE    1                   TO  FLG-END
+               MOVE    1                   TO  FLG-END
+           END-IF
            .
       *
        100-INIT-EXT.
@@ -254,13 +254,11 @@
       *            確認画面より
                WHEN    "JID1"
                    PERFORM 3003-JID1-SET-SEC
-                   MOVE    SPACE           TO  SPA-JIDCD
-                   GO      TO      300-SCREEN-EXT
+                   MOVE    SPACE               TO  SPA-JIDCD
+               WHEN    OTHER
+                   PERFORM                     310-SPA-SET-SEC
+                   MOVE    1                   TO  SPA-J024-CUR
            END-EVALUATE
-      *
-           PERFORM                     310-SPA-SET-SEC
-      *
-           MOVE    1                   TO  SPA-J024-CUR
       *
            .
        300-SCREEN-EXT.
@@ -290,8 +288,9 @@
       *****************************************************************
        310-SPA-SET-SEC                  SECTION.
       *
-           INITIALIZE                  SPA-J024-AREA
+            INITIALIZE                  SPA-J024-AREA
       *
+            MOVE    1                  TO  SPA-J024-PAGE
       *     文例編集
             PERFORM 3101-BUNREI-HEN-SEC
       *
@@ -329,12 +328,30 @@
                INITIALIZE                  EXAMPLE-REC
            END-IF
            MOVE    ZERO                TO  IDX
+           MOVE    ZERO                TO  IDX2
+           MOVE    ZERO                TO  SPA-J024-NEXT
+           IF      SPA-J024-PAGE       =   ZERO
+               MOVE    1                   TO  SPA-J024-PAGE
+           END-IF
+           COMPUTE IDX-S               =  (SPA-J024-PAGE  -  1 )
+                                       *   100
+                                       +   1
            PERFORM
-                   UNTIL       FLG-EXAMPLE        =   1
-               ADD     1                   TO  IDX
-               MOVE    IDX                 TO  SPA-J024-BUNREIMAX
-               MOVE    EXAMPLE-RENNUM      TO  SPA-J024-TRENNUM  (IDX)
-               MOVE    EXAMPLE-COMMENT     TO  SPA-J024-TCOMMENT (IDX)
+                   UNTIL      (FLG-EXAMPLE        =   1 )
+                           OR (SPA-J024-NEXT      =   1 )
+               ADD     1                   TO  IDX2
+               IF      IDX2                >=  IDX-S
+                   ADD     1                   TO  IDX
+                   IF      IDX                 >   100
+                       MOVE    1               TO  SPA-J024-NEXT
+                   ELSE
+                       MOVE    IDX             TO  SPA-J024-BUNREIMAX
+                       MOVE    EXAMPLE-RENNUM  TO  SPA-J024-TRENNUM
+                                                                  (IDX)
+                       MOVE    EXAMPLE-COMMENT TO  SPA-J024-TCOMMENT
+                                                                  (IDX)
+                   END-IF
+               END-IF
       *
                MOVE    "EXAMPLE-KEY1"      TO  ORC-DBPATH
                PERFORM 930-EXAMPLE-READ-SEC
@@ -432,6 +449,12 @@
                WHEN    "CLICKED"       ALSO    "B12"
                    MOVE    2               TO  FLG-OK
                    PERFORM 212-TOUROKU-SEC
+      *        前頁
+               WHEN    "CLICKED"       ALSO    "B06"
+                   PERFORM 290-BACK-PAGE-SEC
+      *        次月頁
+               WHEN    "CLICKED"       ALSO    "B07"
+                   PERFORM 291-NEXT-PAGE-SEC
            END-EVALUATE
       *
            .
@@ -633,6 +656,42 @@
            EXIT.
       *
       *****************************************************************
+      *    前頁処理
+      *****************************************************************
+       290-BACK-PAGE-SEC               SECTION.
+      *
+           IF      SPA-J024-PAGE       >   1
+               COMPUTE SPA-J024-PAGE       =   SPA-J024-PAGE
+                                           -   1
+      *        文例編集
+               PERFORM 3101-BUNREI-HEN-SEC
+           ELSE
+               MOVE    "0010"              TO  SPA-ERRCD
+           END-IF
+           .
+      *
+       290-BACK-PAGE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    次頁処理
+      *****************************************************************
+       291-NEXT-PAGE-SEC               SECTION.
+      *
+           IF      SPA-J024-NEXT       =   1
+               COMPUTE SPA-J024-PAGE       =   SPA-J024-PAGE
+                                           +   1
+      *        文例編集
+               PERFORM 3101-BUNREI-HEN-SEC
+           ELSE
+               MOVE    "0009"              TO  SPA-ERRCD
+           END-IF
+           .
+      *
+       291-NEXT-PAGE-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
@@ -694,6 +753,12 @@
                                        TO  SPA-ERRMSG
                WHEN    "0003"
                    MOVE    "選択番号を選択して下さい"
+                                       TO  SPA-ERRMSG
+               WHEN    "0009"
+                   MOVE    "次頁はありません。"
+                                       TO  SPA-ERRMSG
+               WHEN    "0010"
+                   MOVE    "前頁はありません。"
                                        TO  SPA-ERRMSG
            END-EVALUATE
       *

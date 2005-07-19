@@ -964,10 +964,10 @@
            MOVE    "JYURRK-KEY18"      TO  ORC-DBPATH
            PERFORM 990-DBCLOSE-SEC
       *    Æþ±¡¤Î»þ¡¢¿ÇÎÅ²ñ·×¤«¤éÈ½Äê
-           MOVE    ZERO                TO  SPA-J021-NAI-ACCT
-           IF      SPA-NYUGAIKBN       =   "1"
-               PERFORM 40013-SRYACCT-CHK-SEC
-           END-IF
+      **** MOVE    ZERO                TO  SPA-J021-NAI-ACCT
+      *    IF      SPA-NYUGAIKBN       =   "1"
+      *        PERFORM 40013-SRYACCT-CHK-SEC
+      *****END-IF
       *
            MOVE    WRK-STDAY           TO  SPA-J021-STDAY
            MOVE    WRK-ENDAY           TO  SPA-J021-ENDAY
@@ -1608,8 +1608,8 @@
            PERFORM 300311-JYURRK-UPD-SEC
       *
            IF     (SPA-ERRCD           =   SPACE ) AND
-                  (SPA-NYUGAIKBN       =   "1"   )  AND
-                  (SPA-J021-NAI-ACCT   =   1     )
+                  (SPA-NYUGAIKBN       =   "1"   )
+      *****   AND (SPA-J021-NAI-ACCT   =   1     )
       *        Æþ±¡Ä´ºÞÎÁ¤Î¤ß¤Î¿ÇÎÅ²ñ·×¡Ê¼õ¿ÇÍúÎò¤Ê¤·¡Ë
                PERFORM 300315-SRYACCT-UPD-SEC
            END-IF

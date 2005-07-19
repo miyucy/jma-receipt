@@ -30,6 +30,7 @@
       * 01.00.01     NACL-多々納  02/08/06  アフターケア対応追加
       * 01.00.02     NACL-多々納  02/08/18  自賠責追加
       * 01.00.03     NACL-多々納  03/03/06  入外区分追加
+      * 01.00.04     NACL-多々納  05/07/11  複写機能追加・共通化
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -63,35 +64,64 @@
            03  FLG-EXAMPLE         PIC 9(01).
            03  FLG-JYURRK          PIC 9(01).
            03  FLG-PTRSIINF        PIC 9(01).
+           03  FLG-PTNYUINRRK      PIC 9(01).
+           03  FLG-NYUINACCT       PIC 9(01).
+           03  FLG-SYSKANRI        PIC 9(01).
       *
            03  FLG-HKNCOMBICHK     PIC 9(01).
            03  FLG-OK              PIC 9(01).
+           03  FLG-COPY-END        PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDH                 PIC 9(04).
+           03  IDX1                PIC 9(04).
+           03  IDX2                PIC 9(04).
+           03  IDX-D1              PIC 9(04).
+           03  IDX-D2              PIC 9(04).
+           03  IDX-D3              PIC 9(04).
+           03  IDX-Z               PIC 9(04).
+           03  IDX-S               PIC 9(04).
+           03  IDX-S2              PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD            PIC X(08).
            03  WRK-HKNCOMBI        PIC 9(04).
            03  WRK-HKNCOMBIMEI     PIC X(100).
+           03  WRK-HKNCOMBIMEI-H   PIC X(100).
            03  WRK-HKNKBN-MEI      PIC X(02).
       *
            03  WRK-SRYKA           PIC X(02).
            03  WRK-SRYKAMEI        PIC X(20).
+      *    保険組合せ再設定
+           03  WRK-HKN-IDX         PIC 9(04).
+           03  WRK-HKN-IDX1        PIC 9(04).
+      *
+           03  WRK-SELNUM-CHK-G.
+               05  WRK-SELNUM-CHK  PIC 9(03)   OCCURS  100.
+           03  WRK-HEN-SELNUM      PIC X(40).
+           03  WRK-HEN-SELNUM-2    PIC X(40).
       *
            03  WRK-SELNUM          PIC 9(03).
            03  WRK-SELNUM2         PIC 9(03).
+      *
+           03  WRK-SELNUM-X        PIC X(03).
+           03  WRK-J023-SELNUM-X   PIC X(40).
       *
            03  WRK-ZZZ             PIC ZZZ.
            03  WRK-ZZ              PIC ZZ.
       *
            03  WRK-DBPATH          PIC X(20).
+           03  WRK-MCP-WIDGET      PIC X(64).
       *
            03  WRK-JIDMSG          PIC X(80).
+      *
+           03  WRK-COPYYM.
+               05  WRK-COPYYY          PIC 9(04).
+               05  WRK-COPYMM          PIC 9(02).
       *
       *    コラムリスト位置
            03  WRK-J023-RECE-ROW       PIC S9(09).
@@ -106,6 +136,15 @@
                    07  WRK-J023-FLG             PIC X(01).
                    07  WRK-J023-RSI-HKNKBN      PIC X(01).
                 05  WRK-J023-HKNMAX              PIC 9(04).
+      *    一括削除編集
+           03  WRK-SELNUM-G.
+               05  WRK-SEL-OCC         OCCURS   100.
+                   07  WRK-TSELNUM-X    PIC X(03).
+                   07  WRK-TSELNUM      PIC 9(03).
+                   07  WRK-TSELH        PIC X(01).
+           03  WRK-SELNUM-AREA.
+               05  WRK-SELNUM-OCC    OCCURS   100.
+                   07  WRK-SEL         PIC 9(01).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -122,6 +161,8 @@
       *    ファイルレイアウト
       *****************************************************************
       *
+      *    システム管理マスタ
+           COPY    "CPSK1001.INC".
       *    保険組み合わせ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
@@ -129,6 +170,10 @@
       *    レセプトコメント
        01  RECECOM-REC.
            COPY    "CPRECECOM.INC".
+      *    保存用レセプトコメント
+       01  HZN-RECECOM-REC.
+           COPY    "CPRECECOM.INC"  REPLACING
+                                     //RECECOM-// BY //HZN-RECECOM-//.
       *
       *    雛形
        01  EXAMPLE-REC.
@@ -142,6 +187,12 @@
        01  PTRSIINF-REC.
            COPY    "CPPTRSIINF.INC".
       *
+      *    入院会計マスタ−
+       01  NYUINACCT-REC.
+           COPY    "CPNYUINACCT.INC".
+      *    患者入院履歴
+       01  PTNYUINRRK-REC.
+           COPY    "CPPTNYUINRRK.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -155,6 +206,11 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
+      *
+           COPY    "CPORCXKANACONV.INC".
+      *
+      *    画面日付変換サブ
+           COPY    "CPORCSGDAY.INC".
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
@@ -213,7 +269,7 @@
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
       *
-           MOVE    SPA-COMMON      TO  SPA-AREA.
+           MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-FREE        TO  SPA-J02
            MOVE    SPA-WORK        TO  SPA-J01KYOUTU
       *
@@ -257,22 +313,21 @@
       *
       *        初期画面編集
                PERFORM 300-SCREEN-SEC
-               IF      FLG-END         =   1
-                   GO      TO      100-INIT-EXT
-               END-IF
-      *
       *        画面編集
-               PERFORM 500-GMNHEN-SEC
+               IF      FLG-END         =   ZERO
+                   PERFORM 500-GMNHEN-SEC
+               END-IF
            END-IF
       *
-           MOVE    SPACE               TO  LINKAREA
+           IF      FLG-END         =   ZERO
+               MOVE    SPACE               TO  LINKAREA
+               MOVE   "NEW"                TO  MCP-PUTTYPE
+               MOVE   "J023"               TO  MCP-WINDOW
       *
-           MOVE   "NEW"                TO  MCP-PUTTYPE.
-           MOVE   "J023"               TO  MCP-WINDOW.
+               PERFORM 900-PUT-WINDOW
       *
-           PERFORM 900-PUT-WINDOW
-      *
-           MOVE    1                   TO  FLG-END
+               MOVE    1                   TO  FLG-END
+           END-IF
            .
       *
        100-INIT-EXT.
@@ -283,27 +338,24 @@
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
-      *
            EVALUATE    SPA-MOTOPG(1:4)
       *            文例画面より
                WHEN    "J024"
                    IF      SPA-J024-SELNUM     NOT =   ZERO
                        MOVE    1                   TO  SPA-J023-CUR
                        MOVE    SPACE               TO  SPA-JIDCD
-                       GO      TO      300-SCREEN-EXT
+                   ELSE
+                       MOVE    1                   TO  SPA-J023-CUR
                    END-IF
-                   MOVE    1                   TO  SPA-J023-CUR
-                   GO      TO      300-SCREEN-EXT
       *            確認画面より
                WHEN    "JID1"
                    PERFORM 3003-JID1-SET-SEC
-                   MOVE    SPACE           TO  SPA-JIDCD
-                   GO      TO      300-SCREEN-EXT
+                   MOVE    SPACE               TO  SPA-JIDCD
+      *            初期画面表示
+               WHEN    OTHER
+                   PERFORM                     310-SPA-SET-SEC
+                   MOVE    1                   TO  SPA-J023-CUR
            END-EVALUATE
-      *
-           PERFORM                     310-SPA-SET-SEC
-      *
-           MOVE    1                   TO  SPA-J023-CUR
       *
            .
        300-SCREEN-EXT.
@@ -317,6 +369,8 @@
            EVALUATE    SPA-JIDCD
                WHEN    "0101"
                WHEN    "0105"
+               WHEN    "0201"
+               WHEN    "0205"
       *            コメント登録の確認
                    IF      SPA-JID1-FLG        =   "OK"
                        PERFORM 2121-TOUROKU-SYORI-SEC
@@ -348,7 +402,7 @@
       *****************************************************************
       *    画面編集処理
       *****************************************************************
-       310-SPA-SET-SEC                  SECTION.
+       310-SPA-SET-SEC                 SECTION.
       *
            MOVE    1                   TO  FLG-GMN-INIT
       *
@@ -356,7 +410,9 @@
       *
            MOVE    SPA-NAI-SRYYM       TO  SPA-J023-SRYYMS
            MOVE    SPA-GMN-SRYYM       TO  SPA-J023-SRYYM
+           MOVE    SPA-GMN-NYUGAIKBN   TO  SPA-J023-NYUGAIKBN
            IF      SPA-GMN-PTID        =   ZERO
+      *        文例登録のみ
                MOVE    2               TO  SPA-J023-SYORI
                GO      TO      310-SPA-SET-EXT
            END-IF
@@ -367,8 +423,13 @@
       *     診療科
             PERFORM 3102-SRYKA-HEN-SEC
       *
+      *     入院判定
+            PERFORM 3105-NYUGAI-HEN-SEC
+      *
       *     コメント編集編集
-            PERFORM 3103-RECECOM-HEN-SEC
+           MOVE    ZERO                TO  SPA-J023-NEXT
+           MOVE    1                   TO  SPA-J023-PAGE
+           PERFORM 3103-RECECOM-HEN-SEC
       *
       *     コメント初期編集
       ******PERFORM 314-RECECOM-SYOKI-SEC
@@ -479,12 +540,9 @@
                    INITIALIZE                      PTRSIINF-REC
                    MOVE    1                   TO  FLG-PTRSIINF
                END-IF
-               MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
                MOVE    "PTRSIINF-KEY"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+               PERFORM 990-DBCLOSE-SEC
+      *
                MOVE    SPACE               TO  WRK-HKNKBN-MEI
                EVALUATE    PTRSI-HKNKBN
                    WHEN    "1"
@@ -558,25 +616,85 @@
            EXIT.
       *
       *****************************************************************
+      *    入院判定編集処理
+      *****************************************************************
+       3105-NYUGAI-HEN-SEC        SECTION.
+      *
+           IF     (SPA-BEDKBN          =   ZERO ) OR
+                  (SPA-J023-SRYYMS     =   SPA-GMN-SRYYM)
+               CONTINUE
+           ELSE
+               INITIALIZE                  SYS-1001-REC
+               MOVE    "1001"              TO  SYS-1001-KANRICD
+               MOVE    "*"                 TO  SYS-1001-KBNCD
+               MOVE    SYS-1001-REC        TO  MCPDATA-REC
+      *        システム管理検索
+               MOVE    SPA-J023-SRYYMS     TO  ORC-DBYMD(1:6)
+               MOVE    "01"                TO  ORC-DBYMD(7:2)
+               MOVE    "DBSELECT"          TO  MCP-FUNC
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+                   PERFORM 900-SYSKANRI-READ-SEC
+               ELSE
+                   INITIALIZE                  SYS-1001-REC
+                   MOVE    1               TO  FLG-SYSKANRI
+               END-IF
+               IF      FLG-SYSKANRI        =   ZERO
+                   MOVE    MCPDATA-REC         TO  SYS-1001-REC
+      *            病床数
+                   MOVE    SYS-1001-BEDSU          TO  SPA-BEDSU
+               END-IF
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 990-DBCLOSE-SEC
+           END-IF
+      *
+           IF      SPA-BEDSU           >   ZERO
+               MOVE    "1 入院"            TO  SPA-J023-NYUGAIKBN-LST(1)
+               MOVE    "2 外来"            TO  SPA-J023-NYUGAIKBN-LST(2)
+               MOVE    2                   TO  SPA-J023-NYUGAI-MAX
+           ELSE
+               MOVE    "2 外来"            TO  SPA-J023-NYUGAIKBN-LST(1)
+               MOVE    1                   TO  SPA-J023-NYUGAI-MAX
+           END-IF
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-J023-NYUGAI-MAX
+               IF      SPA-J023-NYUGAIKBN  =   SPA-J023-NYUGAIKBN-LST
+                                                           (IDX)(1:1)
+                   MOVE    SPA-J023-NYUGAIKBN-LST (IDX)
+                                           TO  SPA-J023-NYUGAIKBN-G
+               END-IF
+           END-PERFORM
+      *
+           .
+       3105-NYUGAI-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    コメント編集処理
       *****************************************************************
         3103-RECECOM-HEN-SEC        SECTION.
       *
+           MOVE    1                   TO  FLG-GMN-INIT
            INITIALIZE                  SPA-J023-RECECOMLIST-G
       *
            MOVE    SPACE               TO  RECECOM-REC
            INITIALIZE                  RECECOM-REC
            MOVE    SPA-HOSPID          TO  RECECOM-HOSPID
            MOVE    SPA-GMN-PTID        TO  RECECOM-PTID
-           MOVE    SPA-GMN-NYUGAIKBN   TO  RECECOM-NYUGAIKBN
+           MOVE    SPA-J023-NYUGAIKBN  TO  RECECOM-NYUGAIKBN
       *
            MOVE    RECECOM-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "RECECOM-KEY2"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "RECECOM-KEY2"     TO  ORC-DBPATH
                PERFORM 920-RECECOM-READ-SEC
@@ -584,55 +702,97 @@
                MOVE    1               TO  FLG-RECECOM
                INITIALIZE                  RECECOM-REC
            END-IF
+           MOVE    ZERO                TO  SPA-J023-NEXT
            MOVE    ZERO                TO  IDX
+           MOVE    ZERO                TO  IDX-S2
+           IF      SPA-J023-PAGE       =   ZERO
+               MOVE    1               TO  SPA-J023-PAGE
+           END-IF
+           COMPUTE IDX-S               =  (SPA-J023-PAGE  -  1 )
+                                       *   100
+                                       +   1
            PERFORM
-                   UNTIL      (FLG-RECECOM        =   1  )
-                           OR (IDX                >=  100)
-               ADD     1                   TO  IDX
-               MOVE    IDX                 TO  SPA-J023-RECE-MAX
-               MOVE    IDX                 TO  SPA-J023-TRENNUM (IDX)
-               MOVE    RECECOM-SRYKA       TO  SPA-J023-NSRYKA  (IDX)
-               MOVE    RECECOM-SRYYM       TO  SPA-J023-NSRYYM  (IDX)
-               MOVE    RECECOM-HKNCOMBI    TO  SPA-J023-NHKNCOMBI(IDX)
-               MOVE    RECECOM-COMMENT     TO  SPA-J023-TCOMMENT(IDX)
-      *        診療年月
-               MOVE    RECECOM-SRYYM       TO  WRK-SYMD(1:6)
-               MOVE    "01"                TO  WRK-SYMD(7:2)
-               PERFORM 800-SEIWA-HEN-SEC
-               MOVE    WRK-HENYMDG (1:6)   TO  SPA-J023-TSRYYM (IDX)
-      *        診療科
-               MOVE    RECECOM-SRYKA       TO  WRK-SRYKA
-               PERFORM 810-SRYKA-SET-SEC
-               MOVE    WRK-SRYKAMEI        TO  SPA-J023-TSRYKA (IDX)
-      *        保険組合せ番号
-               MOVE    RECECOM-HKNCOMBI    TO  WRK-HKNCOMBI
-               PERFORM 820-HKNCOMBI-SET-SEC
-               MOVE    WRK-HKNCOMBIMEI     TO  SPA-J023-THKNCOMBI(IDX)
-      *        診療日
-               IF      RECECOM-SRYDD       =   ZERO
-                   MOVE    SPACE               TO  SPA-J023-TSRYDD (IDX)
-               ELSE
-                   MOVE    RECECOM-SRYDD       TO  SPA-J023-TSRYDD (IDX)
+                   UNTIL       FLG-RECECOM        =   1
+               ADD     1               TO  IDX-S2
+               IF      IDX-S2          >=  IDX-S
+                   ADD     1                   TO  IDX
+                   IF      IDX                 >   100
+                       MOVE    1               TO  SPA-J023-NEXT
+                       MOVE    1               TO  FLG-RECECOM
+                   ELSE
+                       PERFORM 31031-RECECOM-SPAHEN-SEC
+                   END-IF
                END-IF
       *
-               MOVE    "RECECOM-KEY2"      TO  ORC-DBPATH
-               PERFORM 920-RECECOM-READ-SEC
+               IF      FLG-RECECOM         =   ZERO
+                   MOVE    "RECECOM-KEY2"      TO  ORC-DBPATH
+                   PERFORM 920-RECECOM-READ-SEC
+               END-IF
            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "RECECOM-KEY2"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            MOVE    SPACE               TO  SPA-J023-COMMENT
-           MOVE    ZERO                TO  SPA-J023-SELNUM
            MOVE    ZERO                TO  SPA-J023-BUNNUM
            MOVE    SPACE               TO  SPA-J023-HKNCOMBI-G
            MOVE    ZERO                TO  SPA-J023-JYURRKNUM
+           INITIALIZE                      SPA-J023-COPY-AREA
+           INITIALIZE                      SPA-J023-SELNUM-X
+           INITIALIZE                      SPA-J023-SELNUM-G
       *
            .
        3103-RECECOM-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    コメント編集処理
+      *****************************************************************
+       31031-RECECOM-SPAHEN-SEC             SECTION.
+      *
+           MOVE    IDX                 TO  SPA-J023-RECE-MAX
+           MOVE    IDX                 TO  SPA-J023-TRENNUM (IDX)
+           MOVE    RECECOM-SRYKA       TO  SPA-J023-NSRYKA  (IDX)
+           MOVE    RECECOM-SRYYM       TO  SPA-J023-NSRYYM  (IDX)
+           MOVE    RECECOM-HKNCOMBI    TO  SPA-J023-NHKNCOMBI(IDX)
+           MOVE    RECECOM-COMMENT     TO  SPA-J023-TCOMMENT(IDX)
+      *    診療年月
+           MOVE    RECECOM-SRYYM       TO  WRK-SYMD(1:6)
+           MOVE    "01"                TO  WRK-SYMD(7:2)
+           PERFORM 800-SEIWA-HEN-SEC
+           MOVE    WRK-HENYMDG (1:6)   TO  SPA-J023-TSRYYM (IDX)
+      *    診療科
+           MOVE    RECECOM-SRYKA       TO  WRK-SRYKA
+           PERFORM 810-SRYKA-SET-SEC
+           MOVE    WRK-SRYKAMEI        TO  SPA-J023-TSRYKA (IDX)
+      *    保険組合せ番号
+           MOVE    RECECOM-HKNCOMBI    TO  WRK-HKNCOMBI
+           PERFORM 820-HKNCOMBI-SET-SEC
+           IF      FLG-HKNCOMBI        =   ZERO
+               IF     (RECECOM-SRYYM       >=  COMB-TEKSTYMD(1:6)) AND
+                      (RECECOM-SRYYM       <=  COMB-TEKEDYMD(1:6))
+                   CONTINUE
+               ELSE
+                   MOVE    WRK-HKNCOMBIMEI TO  WRK-HKNCOMBIMEI-H
+                   MOVE    SPACE           TO  WRK-HKNCOMBIMEI
+                   STRING  WRK-HKNCOMBI        DELIMITED  BY  SIZE
+                           "（"                DELIMITED  BY  SIZE
+                           WRK-HKNCOMBIMEI-H   DELIMITED  BY  "  "
+                           "）"                DELIMITED  BY  SIZE
+                           INTO                WRK-HKNCOMBIMEI
+                   END-STRING
+               END-IF
+           END-IF
+           PERFORM 830-HKNCOMBIMEI-CHK-SEC
+           MOVE    WRK-HKNCOMBIMEI     TO  SPA-J023-THKNCOMBI(IDX)
+      *    診療日
+           IF      RECECOM-SRYDD       =   ZERO
+               MOVE    SPACE               TO  SPA-J023-TSRYDD (IDX)
+           ELSE
+               MOVE    RECECOM-SRYDD       TO  SPA-J023-TSRYDD (IDX)
+           END-IF
+      *
+           .
+       31031-RECECOM-SPAHEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -640,8 +800,40 @@
       *****************************************************************
        314-SYOKI-SEC             SECTION.
       *
+           MOVE    ZERO                TO  WRK-HKN-IDX
+           MOVE    ZERO                TO  WRK-HKN-IDX1
+      *    保険組合せの再編集
+           PERFORM 314-SYOKI-HEN-SEC
+      *
            INITIALIZE                  SPA-J023-JYURRK-LIST
            MOVE    ZERO                TO  SPA-J023-JYURRKNUM
+      *    初期編集
+           MOVE    SPA-J023-SRYKA-LIST(01)
+                                       TO  SPA-J023-SRYKA-G
+      *    保険組合せの初期表示
+           IF      WRK-HKN-IDX         =   ZERO
+               MOVE    WRK-HKN-IDX1        TO  WRK-HKN-IDX
+           END-IF
+           IF      WRK-HKN-IDX         =   ZERO
+               MOVE    1                   TO  WRK-HKN-IDX
+           END-IF
+           MOVE    SPA-J023-HKN-LIST (WRK-HKN-IDX)
+                                       TO  SPA-J023-HKNCOMBI-G
+      *    労災保険区分がアフターケアの時、履歴日を表示する
+           MOVE    SPA-J023-RSI-THKNKBN (WRK-HKN-IDX)
+                                       TO  SPA-J023-RSI-HKNKBN
+           IF      SPA-J023-RSI-HKNKBN =   "3"
+               PERFORM 31401-AFTER-JYURRK-SEC
+           END-IF
+      *
+           .
+       314-SYOKI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険組合せの再編集処理
+      *****************************************************************
+       314-SYOKI-HEN-SEC             SECTION.
       *
       *    保険組合せの再編集
            INITIALIZE                  WRK-J023-HKNCOMB-COMB
@@ -661,7 +853,7 @@
            INITIALIZE                  JYURRK-REC
            MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
            MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
-           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
+           MOVE    SPA-J023-NYUGAIKBN  TO  JYURRK-NYUGAIKBN
            MOVE    SPA-J023-SRYYMS     TO  JYURRK-SRYYMD(1:6)
            MOVE    "01"                TO  JYURRK-SRYYMD(7:2)
            MOVE    SPA-J023-SRYYMS     TO  JYURRK-UPSRYYMD(1:6)
@@ -699,19 +891,24 @@
                MOVE    "JYURRK-KEY13"    TO  ORC-DBPATH
                PERFORM 970-JYURRK-READ-SEC
            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "JYURRK-KEY13"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
+      *
+      *    入院の時、入院の保険組合せ編集
+           IF      SPA-J023-NYUGAIKBN   =   "1"
+               PERFORM 3141-NYUINACCT-SYOKI-SEC
+           END-IF
       *
       *    受診のあった保険組合せのみ表示する
            INITIALIZE                  SPA-J023-HKNCOMB-COMB
            MOVE    ZERO                TO  SPA-J023-HKNMAX
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >    WRK-J023-HKNMAX
-               IF      WRK-J023-FLG  (IDX)  =   "1"
+      *        診療年月がシステム年月以前の時のみ、受診履歴の判定
+               IF     (SPA-J023-SRYYMS     <   SPA-SYSYMD(1:6) ) AND
+                      (WRK-J023-FLG (IDX)  =   SPACE           )
+                   CONTINUE
+               ELSE
                    ADD     1                TO  SPA-J023-HKNMAX
                    MOVE    WRK-J023-THKNCOMBINUM(IDX)
                                       TO  SPA-J023-THKNCOMBINUM
@@ -723,22 +920,75 @@
                                       TO  SPA-J023-RSI-THKNKBN
                                                 (SPA-J023-HKNMAX)
                END-IF
+               IF      WRK-J023-FLG  (IDX)  =   "2"
+      *            入院の保険組合せを初期表示
+                   IF      WRK-HKN-IDX      =   ZERO
+                       MOVE    SPA-J023-HKNMAX  TO  WRK-HKN-IDX
+                   END-IF
+               END-IF
+               IF      WRK-J023-FLG  (IDX)  =   "1"
+      *            保険組合せを初期表示
+                   IF      WRK-HKN-IDX1     =   ZERO
+                       MOVE    SPA-J023-HKNMAX  TO  WRK-HKN-IDX1
+                   END-IF
+               END-IF
            END-PERFORM
       *
-      *    初期編集
-           MOVE    SPA-J023-SRYKA-LIST(01)
-                                       TO  SPA-J023-SRYKA-G
-           MOVE    SPA-J023-HKN-LIST (01)
-                                       TO  SPA-J023-HKNCOMBI-G
-      *    労災保険区分がアフターケアの時、履歴日を表示する
-           MOVE    SPA-J023-RSI-THKNKBN (01)
-                                       TO  SPA-J023-RSI-HKNKBN
-           IF      SPA-J023-RSI-HKNKBN =   "3"
-               PERFORM 31401-AFTER-JYURRK-SEC
+           .
+       314-SYOKI-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院の保険組合せ編集処理
+      *****************************************************************
+       3141-NYUINACCT-SYOKI-SEC          SECTION.
+      *    入院の保険組合せ編集
+      *    入院会計を検索する  医療機関、患者ＩＤ、年月
+           INITIALIZE                  NYUINACCT-REC.
+           MOVE    SPA-HOSPID          TO  NACCT-HOSPID
+           MOVE    SPA-GMN-PTID        TO  NACCT-PTID
+           MOVE    SPA-J023-SRYYMS     TO  NACCT-SRYYM
+      *    保険レコード
+           MOVE    "5"                 TO  NACCT-ZAISKBKBN
+      *
+           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "NYUINACCT-KEY17"   TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "NYUINACCT-KEY17"   TO  ORC-DBPATH
+               PERFORM 980-NYUINACCT-READ-SEC
+           ELSE
+               INITIALIZE                  NYUINACCT-REC
+               MOVE    1               TO  FLG-NYUINACCT
            END-IF
       *
+           PERFORM UNTIL    FLG-NYUINACCT     =   1
+               PERFORM VARYING     IDX1    FROM    1   BY  1
+                       UNTIL       IDX1    >   31
+                   MOVE    ZERO                TO  WRK-HKNCOMBI
+                   MOVE    NACCT-DAY (IDX1)    TO  WRK-HKNCOMBI
+                   PERFORM VARYING     IDX     FROM    1   BY  1
+                           UNTIL       IDX     >   WRK-J023-HKNMAX
+                       IF      WRK-J023-THKNCOMBINUM(IDX)
+                                                   =   WRK-HKNCOMBI
+                           MOVE    "2"             TO  WRK-J023-FLG(IDX)
+                           MOVE    WRK-J023-HKNMAX TO  IDX
+                       END-IF
+                   END-PERFORM
+               END-PERFORM
+      *
+               MOVE    "NYUINACCT-KEY17"   TO  ORC-DBPATH
+               PERFORM 980-NYUINACCT-READ-SEC
+           END-PERFORM.
+           MOVE    "NYUINACCT-KEY17"   TO  ORC-DBPATH
+           PERFORM 990-DBCLOSE-SEC
+      *
            .
-       314-SYOKI-EXT.
+       3141-NYUINACCT-SYOKI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -750,7 +1000,7 @@
            INITIALIZE                  JYURRK-REC
            MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
            MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
-           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
+           MOVE    SPA-J023-NYUGAIKBN  TO  JYURRK-NYUGAIKBN
            MOVE    SPA-J023-SRYKA      TO  JYURRK-SRYKA
            MOVE    SPA-J023-SRYYMS     TO  JYURRK-SRYYMD(1:6)
            MOVE    "01"                TO  JYURRK-SRYYMD(7:2)
@@ -803,12 +1053,8 @@
                MOVE    WRK-DBPATH          TO  ORC-DBPATH
                PERFORM 970-JYURRK-READ-SEC
            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    WRK-DBPATH          TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            MOVE    ZERO                TO  SPA-J023-RRKMAX
            PERFORM VARYING     IDY     FROM    1   BY  1
@@ -901,7 +1147,7 @@
            INITIALIZE                  JYURRK-REC
            MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
            MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
-           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
+           MOVE    SPA-J023-NYUGAIKBN  TO  JYURRK-NYUGAIKBN
            MOVE    SPA-J023-SRYYMS     TO  JYURRK-SRYYMD(1:6)
            MOVE    "01"                TO  JYURRK-SRYYMD(7:2)
            MOVE    SPA-J023-SRYYMS     TO  JYURRK-UPSRYYMD(1:6)
@@ -933,12 +1179,8 @@
                PERFORM 970-JYURRK-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "JYURRK-KEY13"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        3141-JYURRK-CHK-EXT.
@@ -992,20 +1234,40 @@
                MOVE    1               TO  FLG-HKNCOMBI
                INITIALIZE                  HKNCOMBI-REC
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
            IF      FLG-HKNCOMBI        =   ZERO
                PERFORM 31011-HKNCOMBI-HEN-SEC
            ELSE
                MOVE    SPACE               TO  WRK-HKNCOMBIMEI
+               MOVE    WRK-HKNCOMBI        TO  WRK-HKNCOMBIMEI
            END-IF
       *
            .
        820-HKNCOMBI-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    コメントチェック処理
+      *****************************************************************
+       830-HKNCOMBIMEI-CHK-SEC                   SECTION.
+      *
+           INITIALIZE                  ORCXKANACONVAREA
+           MOVE    50                  TO  KANACONV-LEN
+           MOVE    1000                TO  KANACONV-STLEN
+           MOVE    0                   TO  KANACONV-CONV-FLAG
+           MOVE    0                   TO  KANACONV-CHAR-TYPE
+           MOVE    WRK-HKNCOMBIMEI     TO  KANACONV-INDATA
+           CALL    "kanaconv"          USING ORCXKANACONVAREA
+           IF     (KANACONV-RETURN     =   ZERO )
+               MOVE    KANACONV-OUTDATA
+                                       TO  WRK-HKNCOMBIMEI
+           ELSE
+               MOVE    KANACONV-OUTDATA
+                                       TO  WRK-HKNCOMBIMEI
+           END-IF
+           .
+      *
+       830-COMMENT-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1074,6 +1336,15 @@
            MOVE    SPA-J023-HKNMAX     TO  J023-HKNCOMBI-COUNT
            MOVE    SPA-J023-HKNCOMBI-G TO  J023-HKNCOMBI
       *
+      *    入外区分
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-J023-NYUGAI-MAX
+               MOVE    SPA-J023-NYUGAIKBN-LST(IDX)
+                                           TO  J023-NYUGAIKBN-ITEM (IDX)
+           END-PERFORM
+           MOVE    SPA-J023-NYUGAI-MAX     TO  J023-NYUGAIKBN-COUNT
+           MOVE    SPA-J023-NYUGAIKBN-G    TO  J023-NYUGAIKBN
+      *
            EVALUATE    SPA-J023-SYORI
                WHEN    0
                    MOVE    SPACE               TO  J023-MIDASI
@@ -1085,7 +1356,9 @@
                    MOVE    "＜文　例＞"        TO  J023-MIDASI
                    MOVE    "red"               TO  J023-MIDASI-STYLE
            END-EVALUATE
-      *
+      *    複写
+           MOVE    SPA-J023-COPYYM     TO  J023-COPYSRYYM
+           MOVE    SPA-J023-COPYTUKI   TO  J023-COPYTUKI
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-J023-RECE-MAX
@@ -1102,15 +1375,19 @@
                END-IF
                MOVE    SPA-J023-TCOMMENT(IDX)  TO  J023-TCOMMENT (IDX)
       *
-               IF      SPA-J023-SELNUM     =   SPA-J023-TRENNUM (IDX)
-                   MOVE    "T"             TO  J023-RECE-SELECT (IDX)
-               ELSE
-                   MOVE    "F"             TO  J023-RECE-SELECT (IDX)
-               END-IF
+               MOVE    "F"             TO  J023-RECE-SELECT (IDX)
+               PERFORM VARYING     IDX2    FROM    1   BY  1
+                       UNTIL       IDX2    >   SPA-J023-SELNUM-MAX
+                   IF      SPA-J023-SELNUM (IDX2)
+                                           =   SPA-J023-TRENNUM (IDX)
+                       MOVE    "T"         TO  J023-RECE-SELECT (IDX)
+                       MOVE    SPA-J023-SELNUM-MAX TO  IDX2
+                   END-IF
+               END-PERFORM
            END-PERFORM
            MOVE    SPA-J023-RECE-MAX   TO  J023-RECE-COUNT
       *
-           MOVE    SPA-J023-SELNUM     TO  J023-SELNUM
+           MOVE    SPA-J023-SELNUM-X   TO  J023-SELNUM
            MOVE    SPA-J023-BUNNUM     TO  J023-BUNNUM
       *
       *
@@ -1142,6 +1419,9 @@
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
+           IF      SPA-J023-CUR        =   ZERO
+               PERFORM 50011-INPUT-CUR-SEC
+           END-IF
       *
            EVALUATE    SPA-J023-CUR
                WHEN    1
@@ -1162,6 +1442,32 @@
                    MOVE    "B05"               TO  MCP-WIDGET
                WHEN    9
                    MOVE    "JYURRKNUM"         TO  MCP-WIDGET
+               WHEN    10
+                   MOVE    "COPYSRYYM"         TO  MCP-WIDGET
+               WHEN    11
+                   MOVE    "COPYTUKI"          TO  MCP-WIDGET
+               WHEN    12
+                   MOVE    "NYUGAIKBN"         TO  MCP-WIDGET
+               WHEN    13
+                   MOVE    "B03"               TO  MCP-WIDGET
+           END-EVALUATE
+      *
+           .
+       5001-MAPCUR-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力個所のセット処理
+      *****************************************************************
+       50011-INPUT-CUR-SEC          SECTION.
+      *
+           EVALUATE    WRK-MCP-WIDGET
+               WHEN    "COPYSRYYM"
+                   MOVE    11          TO  SPA-J023-CUR
+               WHEN    "COPYTUKI"
+                   MOVE    6           TO  SPA-J023-CUR
+               WHEN    OTHER
+                   MOVE    6           TO  SPA-J023-CUR
            END-EVALUATE
       *
            .
@@ -1190,7 +1496,7 @@
                WHEN    "CLICKED"       ALSO    "B05"
                    PERFORM 250-COPY-SEC
       *        文例選択画面へ
-               WHEN    "CLICKED"       ALSO    "B07"
+               WHEN    "CLICKED"       ALSO    "B09"
                    PERFORM 250-BUNREI-J024-SEC
       *        文例登録
                WHEN    "CLICKED"       ALSO    "B08"
@@ -1201,6 +1507,18 @@
       *        登録
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 212-TOUROKU-SEC
+      *        前月 
+               WHEN    "CLICKED"       ALSO    "B06"
+                   PERFORM 270-BACK-MONTH-SEC
+      *        次月 
+               WHEN    "CLICKED"       ALSO    "B07"
+                   PERFORM 280-NEXT-MONTH-SEC
+      *        前頁
+               WHEN    "CLICKED"       ALSO    "B06S"
+                   PERFORM 290-BACK-PAGE-SEC
+      *        次月頁
+               WHEN    "CLICKED"       ALSO    "B07S"
+                   PERFORM 291-NEXT-PAGE-SEC
            END-EVALUATE
       *
            .
@@ -1218,6 +1536,9 @@
       *        保険組合せ
                WHEN    "ACTIVATE"      ALSO    "HKNCOMBI"
                    PERFORM 410-HKNCOMBI-SEC
+      *        入外区分
+               WHEN    "ACTIVATE"      ALSO    "NYUGAIKBN"
+                   PERFORM 410-NYUGAIKBN-SEC
       *        選択番号
                WHEN    "ACTIVATE"      ALSO    "SELNUM"
                    PERFORM 420-SELNUM-SEC
@@ -1232,7 +1553,10 @@
                    PERFORM 450-JYURRKNUM-SEC
       *        受診履歴選択
                WHEN    ANY             ALSO    "JYURRKLIST"
-                   PERFORM 460-RECELIST-SEC
+                   PERFORM 460-JYURRKLIST-SEC
+      *        その他
+               WHEN    OTHER
+                   PERFORM 490-ENTRY-SYORI-SEC
            END-EVALUATE
       *
            .
@@ -1352,23 +1676,58 @@
            EXIT.
       *
       *****************************************************************
+      *    入外区分処理
+      *****************************************************************
+       410-NYUGAIKBN-SEC                 SECTION.
+      *
+           MOVE    12                  TO  SPA-J023-CUR
+      *
+           MOVE    J023-NYUGAIKBN      TO  SPA-J023-NYUGAIKBN-G
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-J023-NYUGAI-MAX
+               IF      SPA-J023-NYUGAIKBN  =   SPA-J023-NYUGAIKBN-LST
+                                                           (IDX)(1:1)
+                   MOVE    SPA-J023-NYUGAIKBN-LST (IDX)
+                                           TO  SPA-J023-NYUGAIKBN-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    "0002"              TO  SPA-ERRCD
+               GO      TO      410-NYUGAIKBN-EXT
+           END-IF
+      *
+      *    保険組合せ
+           PERFORM 3101-HKNCOMBI-HEN-SEC
+      *
+      *    初期編集
+           PERFORM 314-SYOKI-SEC
+      *
+           .
+       410-NYUGAIKBN-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    選択番号処理
       *****************************************************************
        420-SELNUM-SEC                 SECTION.
       *
            MOVE    4                   TO  SPA-J023-CUR
       *
-           MOVE    J023-SELNUM         TO  SPA-J023-SELNUM
+           MOVE    J023-SELNUM         TO  SPA-J023-SELNUM-X
       *
-           IF      SPA-J023-SELNUM     =   ZERO
-               GO      TO      420-SELNUM-EXT
-           END-IF
-           IF      SPA-J023-SELNUM     >   SPA-J023-RECE-MAX
-               MOVE    "0002"              TO  SPA-ERRCD
+           IF      SPA-J023-SELNUM-X   =   SPACE
+               INITIALIZE                      SPA-J023-SELNUM-G
                GO      TO      420-SELNUM-EXT
            END-IF
       *
-           EVALUATE    SPA-J023-SYORI
+           PERFORM 4201-SELNUM-CHK-SEC
+      *
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-J023-SELNUM-MAX =   1     )
+               EVALUATE    SPA-J023-SYORI
       *        変更処理
                WHEN    1
                    PERFORM 2101-HENKOU-SYORI-SEC
@@ -1378,44 +1737,233 @@
       *
                WHEN    OTHER
                    MOVE    8                   TO  SPA-J023-CUR
-           END-EVALUATE
-      *
+               END-EVALUATE
+           ELSE
+               IF      SPA-J023-SELNUM-MAX >   1
+                   MOVE    13                  TO  SPA-J023-CUR
+               END-IF
+           END-IF
            .
        420-SELNUM-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    選択番号処理
+      *****************************************************************
+       4201-SELNUM-CHK-SEC                 SECTION.
+      *
+           INITIALIZE                      WRK-SELNUM-G
+           MOVE    ZERO                TO  IDX-D1
+           MOVE    ZERO                TO  IDX-D3
+           MOVE    1                   TO  IDX-D2
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   40  )   OR
+                              (SPA-ERRCD   NOT =   SPACE )
+               EVALUATE    SPA-J023-SELNUM-X(IDX:1)
+                   WHEN    ","
+                   WHEN    "."
+                       IF      IDX-D1          >   ZERO
+                           ADD     1               TO  IDX-D2
+                           MOVE    ZERO            TO  IDX-D1
+                           MOVE    ZERO            TO  IDX-D3
+                       END-IF
+                   WHEN    "0"  THRU  "9" 
+                       ADD     1               TO  IDX-D1
+                       IF      IDX-D1          >   3
+                           MOVE    "0003"          TO  SPA-ERRCD
+                       ELSE
+                           MOVE    SPA-J023-SELNUM-X(IDX:1)
+                                               TO  WRK-TSELNUM-X(IDX-D2)
+                                                            (IDX-D1:1)
+                       END-IF
+                   WHEN    "-"
+                       MOVE    "-"             TO  WRK-TSELH(IDX-D2)
+                       IF      IDX-D1          >   ZERO
+                           ADD     1               TO  IDX-D2
+                           MOVE    ZERO            TO  IDX-D1
+                           MOVE    ZERO            TO  IDX-D3
+                       END-IF
+                   WHEN    SPACE
+                       CONTINUE
+                   WHEN    OTHER
+                       MOVE    "0003"          TO  SPA-ERRCD
+               END-EVALUATE
+           END-PERFORM
+      *
+           PERFORM VARYING     IDX-D2      FROM    1   BY  1
+                   UNTIL      (IDX-D2      >   100  )  OR
+                              (WRK-TSELNUM-X(IDX-D2)    =   SPACE  )  OR
+                              (SPA-ERRCD   NOT =   SPACE  )
+               INITIALIZE                      ORCSNUMAREA
+               MOVE    WRK-TSELNUM-X (IDX-D2)  TO  SNUM-INX
+               CALL    "ORCSNUM"           USING
+                                           ORCSNUMAREA
+               IF     (SNUM-RC         NOT =   ZERO  )   OR
+                      (SNUM-MINKBN     NOT =   SPACE )   OR
+                      (SNUM-SYOKBN     NOT =   SPACE )
+                   MOVE    "0003"              TO  SPA-ERRCD
+               ELSE
+                   MOVE    SNUM-OUTNUM         TO  WRK-TSELNUM(IDX-D2)
+                   IF      WRK-TSELNUM (IDX-D2) >=  01  AND
+                                               <=  SPA-J023-RECE-MAX
+                       CONTINUE
+                   ELSE
+                       MOVE    "0003"          TO  SPA-ERRCD
+                   END-IF
+      *
+                   IF     (IDX-D2          >   1   )  AND
+                          (WRK-TSELH(IDX-D2 - 1 )   =   "-" )
+                       IF      WRK-TSELNUM (IDX-D2 - 1)  >
+                                                   WRK-TSELNUM(IDX-D2)
+                           MOVE    "0003"              TO  SPA-ERRCD
+                       END-IF
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           INITIALIZE                      SPA-J023-SELNUM-G
+           INITIALIZE                      WRK-SELNUM-AREA
+           MOVE    ZERO                TO  IDX
+           PERFORM VARYING     IDX-D2      FROM    1   BY  1
+                   UNTIL      (IDX-D2      >   100  )  OR
+                              (WRK-TSELNUM-X(IDX-D2)
+                                               =   SPACE  )  OR
+                              (SPA-ERRCD   NOT =   SPACE  )
+               IF     (IDX-D2                  >   1   )  AND
+                      (WRK-TSELH (IDX-D2 - 1)   =   "-" )
+                   COMPUTE IDX-Z           =   WRK-TSELNUM(IDX-D2 - 1)
+                                           +   1
+                   PERFORM VARYING     IDX2    FROM    IDX-Z  BY  1
+                           UNTIL       IDX2    >=  WRK-TSELNUM(IDX-D2)
+                       MOVE    1               TO  WRK-SEL (IDX2)
+                   END-PERFORM
+               END-IF
+               MOVE    WRK-TSELNUM(IDX-D2)     TO  IDX2
+               MOVE    1                       TO  WRK-SEL (IDX2)
+           END-PERFORM
+           MOVE    ZERO                TO  IDX
+           PERFORM VARYING     IDX-D2  FROM    1   BY  1
+                   UNTIL      (IDX-D2  >   100  )  OR
+                              (SPA-ERRCD   NOT =   SPACE )
+               IF      WRK-SEL (IDX-D2)    =   1
+                   ADD     1               TO  IDX
+                   IF      IDX             >   12
+                       MOVE    "0038"          TO  SPA-ERRCD
+                   ELSE
+                       MOVE    IDX-D2          TO  SPA-J023-SELNUM(IDX)
+                       MOVE    IDX             TO  SPA-J023-SELNUM-MAX
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           .
+       4201-SELNUM-CHK-EXT.
+           EXIT.
       *****************************************************************
       *    明細選択処理
       *****************************************************************
        440-RECELIST-SEC                 SECTION.
       *
            MOVE    ZERO                TO  WRK-SELNUM
-           MOVE    ZERO                TO  WRK-SELNUM2
+           MOVE    ZERO                TO  WRK-SELNUM-CHK-G
+           MOVE    ZERO                TO  IDX2
       *
            PERFORM VARYING     IDX     FROM   1   BY  1
                    UNTIL       IDX     >   SPA-J023-RECE-MAX
-              IF      J023-RECE-SELECT (IDX)   =  "T"
-                  IF      SPA-J023-TRENNUM  (IDX)  =   SPA-J023-SELNUM
-                      MOVE    SPA-J023-TRENNUM  (IDX)  TO  WRK-SELNUM
-                  ELSE
-                      MOVE    SPA-J023-TRENNUM  (IDX)  TO  WRK-SELNUM2
-                  END-IF
+               IF      J023-RECE-SELECT (IDX)   =  "T"
+                   ADD     1               TO  IDX2
+                   MOVE    SPA-J023-TRENNUM  (IDX)
+                                           TO  WRK-SELNUM-CHK (IDX2)
               END-IF
            END-PERFORM
       *
-           IF      WRK-SELNUM2     NOT =   ZERO
-               MOVE    WRK-SELNUM2         TO  SPA-J023-SELNUM
-           ELSE
-               MOVE    WRK-SELNUM          TO  SPA-J023-SELNUM
+           MOVE    SPACE               TO  WRK-HEN-SELNUM
+           PERFORM VARYING     IDX     FROM   1   BY  1
+                   UNTIL      (IDX     >   100 )  OR
+                              (WRK-SELNUM-CHK (IDX)   =   ZERO) OR
+                              (SPA-ERRCD   NOT =   SPACE )
+               IF      SPA-J023-SYORI      =   1  OR  3
+      *            変更・コピー処理の時、番号置換え
+                   IF      SPA-J023-SELNUM (1) =   WRK-SELNUM-CHK (IDX)
+                       CONTINUE
+                   ELSE
+                       MOVE    WRK-SELNUM-CHK (IDX)    TO  WRK-SELNUM
+                       PERFORM 4401-SELNUM-CHK-HEN-SEC
+                   END-IF
+               ELSE
+                   MOVE    WRK-SELNUM-CHK (IDX)    TO  WRK-SELNUM
+                   PERFORM 4401-SELNUM-CHK-HEN-SEC
+               END-IF
+           END-PERFORM
+      *
+           MOVE    WRK-HEN-SELNUM      TO  SPA-J023-SELNUM-X
+      *
+           IF     (SPA-J023-SELNUM-X   NOT =   SPACE )
+               PERFORM 4201-SELNUM-CHK-SEC
            END-IF
       *
-           MOVE    SPA-J023-SELNUM     TO  J023-SELNUM
-           PERFORM 420-SELNUM-SEC
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-J023-SELNUM-MAX =   1     )
+               EVALUATE    SPA-J023-SYORI
+      *        変更処理
+               WHEN    1
+                   PERFORM 2101-HENKOU-SYORI-SEC
+      *        コピー処理
+               WHEN    3
+                   PERFORM 2501-COPY-SYORI-SEC
+               WHEN    OTHER
+                   MOVE    8                   TO  SPA-J023-CUR
+               END-EVALUATE
+           ELSE
+               MOVE    13                  TO  SPA-J023-CUR
+           END-IF
       *
            .
        440-RECELIST-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    選択番号編集処理
+      *****************************************************************
+       4401-SELNUM-CHK-HEN-SEC             SECTION.
+      *
+           MOVE    WRK-SELNUM          TO  WRK-ZZZ
+           MOVE    SPACE               TO  WRK-SELNUM-X
+           MOVE    ZERO                TO  IDX-D1
+           PERFORM VARYING     IDX-D2  FROM    1   BY  1
+                   UNTIL       IDX-D2  >   3
+               IF      WRK-ZZZ(IDX-D2:1)    NOT =   SPACE
+                   ADD     1                    TO  IDX-D1
+                   MOVE    WRK-ZZZ(IDX-D2:1) TO  WRK-SELNUM-X(IDX-D1:1)
+               END-IF
+           END-PERFORM
+           COMPUTE IDX-D2              =   40  -  IDX-D1
+           IF      WRK-HEN-SELNUM (IDX-D2:)    NOT =   SPACE
+               MOVE    "0037"              TO  SPA-ERRCD
+               MOVE    SPACE               TO  WRK-SELNUM-X
+           END-IF
+      *
+           MOVE    WRK-HEN-SELNUM      TO  WRK-HEN-SELNUM-2
+           MOVE    SPACE               TO  WRK-HEN-SELNUM
+           IF      WRK-HEN-SELNUM-2    =   SPACE
+               STRING  WRK-SELNUM-X        DELIMITED   BY  SPACE
+                       INTO                WRK-HEN-SELNUM
+               END-STRING
+           ELSE
+               IF      WRK-SELNUM-X        =   SPACE
+                   MOVE    WRK-HEN-SELNUM-2    TO  WRK-HEN-SELNUM
+               ELSE
+                   STRING  WRK-HEN-SELNUM-2    DELIMITED   BY  SPACE
+                           ","                 DELIMITED   BY  SIZE
+                           WRK-SELNUM-X        DELIMITED   BY  SPACE
+                           INTO                WRK-HEN-SELNUM
+                   END-STRING
+               END-IF
+           END-IF
+      *
+           .
+       4401-SELNUM-CHK-HEN-EXT.
+           EXIT.
       *****************************************************************
       *    文例番号処理
       *****************************************************************
@@ -1441,14 +1989,14 @@
            MOVE    J023-JYURRKNUM      TO  SPA-J023-JYURRKNUM
       *
            IF      SPA-J023-JYURRKNUM  =   ZERO
-               GO      TO      450-JYURRKNUM-EXT
+               CONTINUE
+           ELSE
+               IF      SPA-J023-JYURRKNUM  >   SPA-J023-RRKMAX
+                   MOVE    "0015"              TO  SPA-ERRCD
+               ELSE
+                   MOVE    6                   TO  SPA-J023-CUR
+               END-IF
            END-IF
-           IF      SPA-J023-JYURRKNUM  >   SPA-J023-RRKMAX
-               MOVE    "0015"              TO  SPA-ERRCD
-               GO      TO      450-JYURRKNUM-EXT
-           END-IF
-      *
-           MOVE    6                   TO  SPA-J023-CUR
       *
            .
        450-JYURRKNUM-EXT.
@@ -1458,7 +2006,7 @@
       *****************************************************************
       *    明細選択処理
       *****************************************************************
-       460-RECELIST-SEC                 SECTION.
+       460-JYURRKLIST-SEC                 SECTION.
       *
            MOVE    ZERO                TO  WRK-SELNUM
            MOVE    ZERO                TO  WRK-SELNUM2
@@ -1485,7 +2033,103 @@
            PERFORM 450-JYURRKNUM-SEC
       *
            .
-       460-RECELIST-EXT.
+       460-JYURRKLIST-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    その他処理
+      *****************************************************************
+       490-ENTRY-SYORI-SEC                   SECTION.
+      *
+      *    入力個所のセット
+           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
+           MOVE    ZERO                TO  SPA-J023-CUR
+      *
+      *    入力チェック処理
+           PERFORM 4901-INPUT-CHK-SEC
+           .
+       490-ENTRY-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    基本チェックと別画面処理
+      *****************************************************************
+       4901-INPUT-CHK-SEC          SECTION.
+      *
+      *    入力個所のセット
+           MOVE    J023-COMMENT        TO  SPA-J023-COMMENT
+           MOVE    J023-COPYSRYYM      TO  SPA-J023-COPYYM
+           MOVE    J023-COPYTUKI       TO  SPA-J023-COPYTUKI
+      *
+      *    コメント
+           PERFORM 800-COMMENT-CHK-SEC
+      *    複写年月
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-J023-COPYYM     =   SPACE
+                   MOVE    SPACE           TO  SPA-J023-NAI-COPYYM
+               ELSE
+                   PERFORM 49011-COPYYM-CHK-SEC
+               END-IF
+           END-IF
+      *    複写月数
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 49012-COPYTUKI-CHK-SEC
+           END-IF
+      *
+           .
+       4901-INPUT-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    複写年月チェック処理
+      *****************************************************************
+       49011-COPYYM-CHK-SEC                   SECTION.
+      *
+           INITIALIZE                      ORCSGDAYAREA
+           MOVE    SPA-J023-COPYYM     TO  SGDAY-INDAY
+           MOVE    "1"                 TO  SGDAY-INTYPE
+           CALL    "ORCSGDAY"          USING
+                                       ORCSGDAYAREA
+           IF      SGDAY-RC            =   ZERO
+               MOVE    SGDAY-OTDAY(1:6)    TO  SPA-J023-COPYYM
+               MOVE    SGDAY-SDAY(1:6)     TO  SPA-J023-NAI-COPYYM
+           ELSE
+               MOVE    "0030"              TO  SPA-ERRCD
+               MOVE    10                  TO  SPA-J023-CUR
+           END-IF
+      *
+           IF      SPA-J023-RSI-HKNKBN =   "3"
+               MOVE    "0033"              TO  SPA-ERRCD
+               MOVE    10                  TO  SPA-J023-CUR
+           END-IF
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-J023-NAI-COPYYM <=  SPA-J023-SRYYMS
+                   MOVE    "0034"              TO  SPA-ERRCD
+                   MOVE    10                  TO  SPA-J023-CUR
+               END-IF
+           END-IF
+           .
+       49011-COPYYM-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    複写月数チェック処理
+      *****************************************************************
+       49012-COPYTUKI-CHK-SEC                   SECTION.
+      *
+           IF      SPA-J023-COPYTUKI   >   12
+               MOVE    "0031"              TO  SPA-ERRCD
+               MOVE    11                  TO  SPA-J023-CUR
+           ELSE
+               IF      SPA-J023-COPYTUKI   >   ZERO
+                   IF      SPA-J023-NAI-COPYYM     =   SPACE
+                       MOVE    "0032"              TO  SPA-ERRCD
+                       MOVE    10                  TO  SPA-J023-CUR
+                   END-IF
+               END-IF
+           END-IF
+           .
+       49012-COPYTUKI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1509,43 +2153,55 @@
                MOVE    "0011"              TO  SPA-ERRCD
                GO      TO      212-TOUROKU-EXT
            END-IF
-      *
-           MOVE    J023-COMMENT        TO  SPA-J023-COMMENT
-      *
-           IF      SPA-J023-HKNCOMBINUM    =   SPACE  AND
-                   SPA-J023-HKNMAX         =   ZERO
-               MOVE    "0006"              TO  SPA-ERRCD
-               GO      TO      212-TOUROKU-EXT
+      *    入力チェック処理
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4901-INPUT-CHK-SEC
            END-IF
-           IF      SPA-J023-HKNCOMBINUM    =   SPACE
-               MOVE    "0002"              TO  SPA-ERRCD
-               GO      TO      212-TOUROKU-EXT
+      *
+           IF     (SPA-J023-HKNCOMBINUM    =   SPACE ) AND
+                  (SPA-J023-HKNMAX         =   ZERO  )
+               MOVE    "0006"              TO  SPA-ERRCD
+           END-IF
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-J023-HKNCOMBINUM    =   SPACE
+                   MOVE    "0002"              TO  SPA-ERRCD
+               END-IF
            END-IF
       *    アフターケアの時、受診日を選択すること
-           IF      SPA-J023-RSI-HKNKBN     =   "3"
-               IF      SPA-J023-JYURRKNUM  =   ZERO
-                   MOVE    "0014"              TO  SPA-ERRCD
-                   MOVE    9                   TO  SPA-J023-CUR
-                   GO      TO      212-TOUROKU-EXT
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-J023-RSI-HKNKBN     =   "3"
+                   IF      SPA-J023-JYURRKNUM  =   ZERO
+                       MOVE    "0014"              TO  SPA-ERRCD
+                       MOVE    9                   TO  SPA-J023-CUR
+                   END-IF
                END-IF
            END-IF
       *
-           IF      SPA-J023-COMMENT    =   SPACE
-               MOVE    "0007"              TO  SPA-ERRCD
-               GO      TO      212-TOUROKU-EXT
-           END-IF
-           PERFORM 800-COMMENT-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      212-TOUROKU-EXT
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-J023-COMMENT    =   SPACE
+                   MOVE    "0007"              TO  SPA-ERRCD
+               END-IF
            END-IF
       *
-           PERFORM 2130-HKNCOMBI-CHK-SEC
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 2130-HKNCOMBI-CHK-SEC
+           END-IF
       *
-           PERFORM 2120-RECECOM-SEL-SEC
-           IF      FLG-RECECOM         =   ZERO
-               MOVE    "0105"              TO  SPA-JIDCD
-           ELSE
-               MOVE    "0101"              TO  SPA-JIDCD
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 2120-RECECOM-SEL-SEC
+               IF      FLG-RECECOM         =   ZERO
+                   MOVE    "0105"              TO  SPA-JIDCD
+               ELSE
+                   MOVE    "0101"              TO  SPA-JIDCD
+               END-IF
+      *        複写月
+               IF      SPA-J023-COPYYM     NOT =   SPACE
+                   IF      FLG-RECECOM         =   ZERO
+                       MOVE    "0205"              TO  SPA-JIDCD
+                   ELSE
+                       MOVE    "0201"              TO  SPA-JIDCD
+                   END-IF
+               END-IF
            END-IF
       *
            .
@@ -1556,7 +2212,6 @@
       *    受診のチェック処理
       *****************************************************************
        2130-HKNCOMBI-CHK-SEC          SECTION.
-      *
       *
       *    受診歴を検索する  医療機関、患者ＩＤ
            INITIALIZE                  JYURRK-REC
@@ -1603,15 +2258,14 @@
                MOVE    "JYURRK-KEY13"    TO  ORC-DBPATH
                PERFORM 970-JYURRK-READ-SEC
            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "JYURRK-KEY13"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-OK              =   ZERO
-               MOVE    "0012"          TO  SPA-ERRCD
+               IF     (SPA-J023-SRYYMS     <   SPA-SYSYMD(1:6)) OR
+                      (SPA-J023-RSI-HKNKBN =   "3"           )
+                   MOVE    "0012"          TO  SPA-ERRCD
+               END-IF
            END-IF
       *
            .
@@ -1672,12 +2326,8 @@
                MOVE    1               TO  FLG-RECECOM
                INITIALIZE                  RECECOM-REC
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "RECECOM-KEY"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        2120-RECECOM-SEL-EXT.
@@ -1750,6 +2400,13 @@
                    MOVE    "0020"              TO  SPA-ERRCD
                END-IF
            END-IF
+      *    複写処理
+           IF     (SPA-ERRCD           =   SPACE ) AND
+                  (SPA-J023-COPYYM NOT =   SPACE )  AND
+                  (SPA-J023-RSI-HKNKBN NOT =   "3")
+               PERFORM 21213-COPY-RECECOME-SEC
+           END-IF
+      *
       *    レセプト作成管理マスタ更新
            IF      SPA-ERRCD           =   SPACE
                PERFORM 21212-RECEUPD-UPDATE-SEC
@@ -1772,6 +2429,122 @@
       *
            .
        2121-TOUROKU-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    レセコメント複写処理
+      *****************************************************************
+       21213-COPY-RECECOME-SEC           SECTION.
+      *
+           MOVE    RECECOM-REC         TO  HZN-RECECOM-REC
+      *
+           MOVE    RECECOM-HKNCOMBI    TO  WRK-HKNCOMBI
+           PERFORM 820-HKNCOMBI-SET-SEC
+      *
+           MOVE    SPA-J023-NAI-COPYYM TO  WRK-COPYYM
+           IF      SPA-J023-COPYTUKI   =   ZERO
+               MOVE    1                   TO  SPA-J023-COPYTUKI
+           END-IF
+           IF     (WRK-COPYYM          >=  COMB-TEKSTYMD(1:6)) AND
+                  (WRK-COPYYM          <=  COMB-TEKEDYMD(1:6))
+               MOVE    ZERO                TO  FLG-COPY-END
+           ELSE
+               MOVE    1                   TO  FLG-COPY-END
+           END-IF
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-J023-COPYTUKI )  OR
+                              (FLG-COPY-END   =   1    )   OR
+                              (SPA-ERRCD  NOT =   SPACE)
+      *        複写
+               PERFORM 212131-RECECOME-COPY-SEC
+      *
+               COMPUTE WRK-COPYMM      =   WRK-COPYMM
+                                       +   1
+               IF      WRK-COPYMM      >   12
+                   COMPUTE WRK-COPYYY      =   WRK-COPYYY
+                                           +   1
+                   MOVE    1               TO  WRK-COPYMM
+               END-IF
+      *        保険組合せの有効期間外は複写なし
+               IF     (WRK-COPYYM          >=  COMB-TEKSTYMD(1:6)) AND
+                      (WRK-COPYYM          <=  COMB-TEKEDYMD(1:6))
+                   MOVE    ZERO                TO  FLG-COPY-END
+               ELSE
+                   MOVE    1                   TO  FLG-COPY-END
+               END-IF
+           END-PERFORM
+      *
+           .
+       21213-COPY-RECECOME-EXT.
+           EXIT.
+      *****************************************************************
+      *    レセコメント複写処理
+      *****************************************************************
+       212131-RECECOME-COPY-SEC           SECTION.
+      *
+           MOVE    HZN-RECECOM-REC     TO  RECECOM-REC
+           MOVE    WRK-COPYYM          TO  RECECOM-SRYYM
+      *
+           MOVE    RECECOM-REC         TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "RECECOM-KEY"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "RECECOM-KEY"      TO  ORC-DBPATH
+               PERFORM 920-RECECOM-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-RECECOM
+               INITIALIZE                  RECECOM-REC
+           END-IF
+           MOVE    "RECECOM-KEY"       TO  ORC-DBPATH
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-RECECOM         =   ZERO
+      *        更新
+               MOVE    SPA-J023-COMMENT    TO  RECECOM-COMMENT
+      *
+               MOVE    SMCNDATE-YMD        TO  RECECOM-UPYMD
+               MOVE    SMCNDATE-HMS        TO  RECECOM-UPHMS
+      *
+               MOVE    RECECOM-REC         TO  MCPDATA-REC
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    "RECECOM-KEY"       TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO
+                   DISPLAY "J023 RECECOM UPD ERR:" MCP-RC
+                           ",KEY:"   RECECOM-KEY    "."
+                   MOVE    "0020"              TO  SPA-ERRCD
+               END-IF
+           ELSE
+      *        追加
+               MOVE    HZN-RECECOM-REC     TO  RECECOM-REC
+               MOVE    WRK-COPYYM          TO  RECECOM-SRYYM
+      *
+               MOVE    SMCNDATE-YMD        TO  RECECOM-CREYMD
+               MOVE    SMCNDATE-YMD        TO  RECECOM-UPYMD
+               MOVE    SMCNDATE-HMS        TO  RECECOM-UPHMS
+      *
+               MOVE    RECECOM-REC         TO  MCPDATA-REC
+               MOVE    "DBINSERT"          TO  MCP-FUNC
+               MOVE    "RECECOM-KEY"       TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO
+                   DISPLAY "J023 RECECOM INS ERR:" MCP-RC
+                           ",KEY:"   RECECOM-KEY    "."
+                   MOVE    "0020"              TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           .
+       212131-RECECOME-COPY-EXT.
            EXIT.
       *****************************************************************
       *    レセプト作成管理マスタ更新処理
@@ -1838,12 +2611,12 @@
       *****************************************************************
       *    コメントチェック処理
       *****************************************************************
-       800-COMMENT-CHK-SEC                   SECTION.
+       800-COMMENT-CHK-SEC             SECTION.
       *
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
       *    出力桁数（全角の最大桁数の指定（省略可））
-           MOVE    400                 TO  KANACHK-MAX-CNT
+           MOVE    800                 TO  KANACHK-MAX-CNT
            MOVE    SPA-J023-COMMENT    TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
@@ -1857,6 +2630,22 @@
            ELSE
                MOVE    KANACHK-OUT-INPUT   TO  SPA-J023-COMMENT
            END-IF
+      *
+      ***  INITIALIZE                  ORCXKANACONVAREA
+      *    MOVE    800                 TO  KANACONV-LEN
+      *    MOVE    1000                TO  KANACONV-STLEN
+      *    MOVE    1                   TO  KANACONV-CONV-FLAG
+      *    MOVE    15                  TO  KANACONV-CHAR-TYPE
+      *    MOVE    SPA-J023-COMMENT    TO  KANACONV-INDATA
+      *    CALL    "kanaconv"          USING ORCXKANACONVAREA
+      *    IF     (KANACONV-RETURN     =   ZERO )
+      *        MOVE    KANACONV-OUTDATA
+      *                                TO  SPA-J023-COMMENT
+      *    ELSE
+      *        MOVE    KANACONV-OUTDATA
+      *                                TO  SPA-J023-COMMENT
+      *        MOVE    "0013"          TO  SPA-ERRCD
+      *****END-IF
            .
       *
        800-COMMENT-CHK-EXT.
@@ -1920,12 +2709,8 @@
                MOVE    1               TO  FLG-EXAMPLE
                INITIALIZE                  EXAMPLE-REC
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "EXAMPLE-KEY"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        28001-EXAMPLE-CHK-EXT.
@@ -1962,12 +2747,8 @@
                    MOVE    1               TO  FLG-EXAMPLE
                    INITIALIZE                  EXAMPLE-REC
                END-IF
-               MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
                MOVE    "EXAMPLE-KEY2"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+               PERFORM 990-DBCLOSE-SEC
       *
                MOVE    EXAMPLE-RENNUM      TO  SPA-J023-BUNNUM
                IF      SPA-J023-BUNNUM     =   999
@@ -2026,7 +2807,8 @@
            END-IF
       *
            MOVE    SPACE               TO  SPA-J023-COMMENT
-           MOVE    ZERO                TO  SPA-J023-SELNUM
+           MOVE    SPACE               TO  SPA-J023-SELNUM-X
+           MOVE    ZERO                TO  SPA-J023-SELNUM-G
            MOVE    ZERO                TO  SPA-J023-BUNNUM
            MOVE    1                   TO  SPA-J023-CUR
       *
@@ -2044,13 +2826,15 @@
                GO      TO      240-COMMENT-DEL-EXT
            END-IF
       *
-           IF      SPA-J023-SELNUM     =   ZERO    OR
-                                       >   SPA-J023-RECE-MAX
-               MOVE    "0003"              TO  SPA-ERRCD
-               GO      TO      240-COMMENT-DEL-EXT
+           IF      SPA-J023-SELNUM-MAX =   ZERO
+               MOVE    4               TO  SPA-J023-CUR
+           ELSE
+               IF      SPA-J023-SELNUM(1)  =   ZERO
+                   MOVE    "0003"              TO  SPA-ERRCD
+               ELSE
+                   MOVE    "0104"              TO  SPA-JIDCD
+               END-IF
            END-IF
-      *
-           MOVE    "0104"              TO  SPA-JIDCD
            .
        240-COMMENT-DEL-EXT.
            EXIT.
@@ -2060,7 +2844,30 @@
       *****************************************************************
        2401-COMMENT-DELSYORI-SEC                   SECTION.
       *
-           MOVE    SPA-J023-SELNUM     TO  IDX
+           PERFORM VARYING     IDX2    FROM    1   BY  1
+                   UNTIL       IDX2    >   SPA-J023-SELNUM-MAX
+               IF      SPA-J023-SELNUM (IDX2)  NOT =   ZERO
+                   PERFORM 24011-COMMENT-DELETE-SEC
+               END-IF
+           END-PERFORM
+      *
+      *    レセプト作成管理マスタ更新
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 21212-RECEUPD-UPDATE-SEC
+           END-IF
+      *
+      *    再表示
+           PERFORM                     310-SPA-SET-SEC
+           .
+       2401-COMMENT-DELSYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    コメント削除処理
+      *****************************************************************
+       24011-COMMENT-DELETE-SEC                   SECTION.
+      *
+           MOVE    SPA-J023-SELNUM (IDX2)  TO  IDX
       *
            MOVE    SPACE               TO  RECECOM-REC
            INITIALIZE                  RECECOM-REC
@@ -2091,16 +2898,8 @@
                            ",KEY:"   RECECOM-KEY    "."
            END-IF
       *
-      *    レセプト作成管理マスタ更新
-           IF      SPA-ERRCD           =   SPACE
-               PERFORM 21212-RECEUPD-UPDATE-SEC
-           END-IF
-      *
-      *    再表示
-           PERFORM                     310-SPA-SET-SEC
-      *
            .
-       2401-COMMENT-DELSYORI-EXT.
+       24011-COMMENT-DELETE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2113,15 +2912,16 @@
                GO      TO      210-HENKOU-EXT
            END-IF
       *
-           IF      SPA-J023-SELNUM     >   SPA-J023-RECE-MAX
-               MOVE    "0003"              TO  SPA-ERRCD
+           IF     SPA-J023-SELNUM-MAX  >   1
+               MOVE    "0036"              TO  SPA-ERRCD
                GO      TO      210-HENKOU-EXT
            END-IF
       *
            MOVE    1                   TO  SPA-J023-SYORI
-           IF      SPA-J023-SELNUM     =   ZERO
+           IF      SPA-J023-SELNUM-MAX =   ZERO
                MOVE    4               TO  SPA-J023-CUR
            ELSE
+               MOVE    SPA-J023-SELNUM(1)  TO  WRK-SELNUM
                PERFORM 2101-HENKOU-SYORI-SEC
            END-IF
       *
@@ -2134,9 +2934,9 @@
       *****************************************************************
        2101-HENKOU-SYORI-SEC                   SECTION.
       *
-           MOVE    SPA-J023-TSRYYM  (SPA-J023-SELNUM)
+           MOVE    SPA-J023-TSRYYM  (WRK-SELNUM)
                                        TO  SPA-J023-SRYYM
-           MOVE    SPA-J023-NSRYYM  (SPA-J023-SELNUM)
+           MOVE    SPA-J023-NSRYYM  (WRK-SELNUM)
                                        TO  SPA-J023-SRYYMS
       *
       *    保険組合せ
@@ -2148,17 +2948,18 @@
       *    初期編集
            PERFORM 314-SYOKI-SEC
       *
-           MOVE    SPA-J023-NSRYKA  (SPA-J023-SELNUM)
+           MOVE    SPA-J023-NSRYKA  (WRK-SELNUM)
                                        TO  J023-SRYKA
            PERFORM 400-SRYKA-SEC
-           MOVE    SPA-J023-NHKNCOMBI  (SPA-J023-SELNUM)
+           MOVE    SPA-J023-NHKNCOMBI  (WRK-SELNUM)
                                        TO  J023-HKNCOMBI
            PERFORM 410-HKNCOMBI-SEC
-           MOVE    SPA-J023-TCOMMENT(SPA-J023-SELNUM)
-                                       TO  SPA-J023-COMMENT
+      *
+      *    選択行からレセコメント検索編集
+           PERFORM 2103-RECECOM-HEN-SEC
       *
       *    アフターケアの時診療日を選択させる
-           IF       SPA-J023-TSRYDD (SPA-J023-SELNUM)  =   "00" OR
+           IF       SPA-J023-TSRYDD (WRK-SELNUM)       =   "00" OR
                                                            SPACE
                CONTINUE
            ELSE
@@ -2166,7 +2967,7 @@
                        UNTIL       IDX     >   SPA-J023-RRKMAX
                    IF      SPA-J023-JYURRKYMD (IDX)(7:2)
                                            =   SPA-J023-TSRYDD
-                                                  (SPA-J023-SELNUM)
+                                                  (WRK-SELNUM)
                        MOVE    IDX             TO  SPA-J023-JYURRKNUM
                        MOVE    SPA-J023-RRKMAX
                                                TO  IDX
@@ -2180,6 +2981,51 @@
            EXIT.
       *
       *****************************************************************
+      *    レセプトコメント編集処理
+      *****************************************************************
+       2103-RECECOM-HEN-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  RECECOM-REC
+           INITIALIZE                  RECECOM-REC
+           MOVE    SPA-HOSPID          TO  RECECOM-HOSPID
+           MOVE    SPA-GMN-PTID        TO  RECECOM-PTID
+           MOVE    SPA-J023-NYUGAIKBN  TO  RECECOM-NYUGAIKBN
+           MOVE    SPA-J023-NSRYYM  (WRK-SELNUM)
+                                       TO  RECECOM-SRYYM
+           MOVE    SPA-J023-NSRYKA  (WRK-SELNUM)
+                                       TO  RECECOM-SRYKA
+           MOVE    SPA-J023-NHKNCOMBI(WRK-SELNUM)
+                                       TO  RECECOM-HKNCOMBI
+           IF      SPA-J023-TSRYDD  (WRK-SELNUM)   =   SPACE
+               MOVE    ZERO            TO  RECECOM-SRYDD
+           ELSE
+               MOVE    SPA-J023-TSRYDD  (WRK-SELNUM)
+                                       TO  RECECOM-SRYDD
+           END-IF
+      *
+           MOVE    RECECOM-REC         TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "RECECOM-KEY"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "RECECOM-KEY"      TO  ORC-DBPATH
+               PERFORM 920-RECECOM-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-RECECOM
+               INITIALIZE                  RECECOM-REC
+           END-IF
+           MOVE    "RECECOM-KEY"       TO  ORC-DBPATH
+           PERFORM 990-DBCLOSE-SEC
+      *
+           MOVE    RECECOM-COMMENT     TO  SPA-J023-COMMENT
+           .
+       2103-RECECOM-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    コピー　処理
       *****************************************************************
        250-COPY-SEC                   SECTION.
@@ -2189,15 +3035,16 @@
                GO      TO      250-COPY-EXT
            END-IF
       *
-           IF      SPA-J023-SELNUM     >   SPA-J023-RECE-MAX
-               MOVE    "0003"              TO  SPA-ERRCD
+           IF     SPA-J023-SELNUM-MAX  >   1
+               MOVE    "0036"              TO  SPA-ERRCD
                GO      TO      250-COPY-EXT
            END-IF
       *
            MOVE    3                   TO  SPA-J023-SYORI
-           IF      SPA-J023-SELNUM     =   ZERO
+           IF     SPA-J023-SELNUM-MAX  =   ZERO
                MOVE    4               TO  SPA-J023-CUR
            ELSE
+               MOVE    SPA-J023-SELNUM(1)  TO  WRK-SELNUM
                PERFORM 2501-COPY-SYORI-SEC
            END-IF
       *
@@ -2210,12 +3057,131 @@
       *****************************************************************
        2501-COPY-SYORI-SEC                   SECTION.
       *
-           MOVE    SPA-J023-TCOMMENT(SPA-J023-SELNUM)
-                                       TO  SPA-J023-COMMENT
+           IF      WRK-SELNUM          =   ZERO
+               MOVE   1                TO  WRK-SELNUM
+           END-IF
+      *    選択行からレセコメント検索編集
+           PERFORM 2103-RECECOM-HEN-SEC
+      **** MOVE    SPA-J023-TCOMMENT(WRK-SELNUM)
+      ****                             TO  SPA-J023-COMMENT
       *
            MOVE    1                   TO  SPA-J023-CUR
            .
        2501-COPY-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    前月分処理
+      *****************************************************************
+       270-BACK-MONTH-SEC               SECTION.
+      *
+           IF      SPA-GMN-PTID        =   ZERO
+               MOVE    "0011"              TO  SPA-ERRCD
+               GO      TO      270-BACK-MONTH-EXT
+           END-IF
+      *
+           INITIALIZE                     STS-AREA-DAY
+           INITIALIZE                     LNK-DAY6-AREA
+           MOVE    "61"                   TO  LNK-DAY6-IRAI
+           MOVE    SPA-J023-SRYYMS        TO  LNK-DAY6-KIJUN (1:6)
+           MOVE    "01"                   TO  LNK-DAY6-KIJUN (7:2)
+           MOVE    "2"                    TO  LNK-DAY6-ZOGENPTN
+           MOVE    -1                     TO  LNK-DAY6-ZOGEN
+           CALL    "ORCSDAY"              USING   STS-AREA-DAY
+                                                  LNK-DAY6-AREA
+           MOVE    LNK-DAY6-KEISAN(1:6)   TO  SPA-J023-SRYYMS
+      *
+           MOVE    SPA-J023-SRYYMS        TO  WRK-SYMD (1:6)
+           MOVE    "01"                   TO  WRK-SYMD (7:2)  
+           PERFORM 800-SEIWA-HEN-SEC
+           MOVE    WRK-HENYMDG (1:6)      TO  SPA-J023-SRYYM
+      *
+      *     保険組合せ
+            PERFORM 3101-HKNCOMBI-HEN-SEC
+      *
+      *     入院判定
+            PERFORM 3105-NYUGAI-HEN-SEC
+      *
+      *     初期編集
+            PERFORM 314-SYOKI-SEC
+      *
+           .
+      *
+       270-BACK-MONTH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    次月分処理
+      *****************************************************************
+       280-NEXT-MONTH-SEC               SECTION.
+      *
+           IF      SPA-GMN-PTID        =   ZERO
+               MOVE    "0011"              TO  SPA-ERRCD
+               GO      TO      280-NEXT-MONTH-EXT
+           END-IF
+      * 
+      *     次月診療年月         
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY6-AREA
+           MOVE    "61"                TO  LNK-DAY6-IRAI
+           MOVE    SPA-J023-SRYYMS     TO  LNK-DAY6-KIJUN (1:6)
+           MOVE    "01"                TO  LNK-DAY6-KIJUN (7:2)  
+           MOVE    "2"                 TO  LNK-DAY6-ZOGENPTN
+           MOVE    1                   TO  LNK-DAY6-ZOGEN
+           CALL    "ORCSDAY"           USING
+                                           STS-AREA-DAY
+                                           LNK-DAY6-AREA
+           MOVE    LNK-DAY6-KEISAN(1:6)
+                                       TO  SPA-J023-SRYYMS
+      * 
+           MOVE    SPA-J023-SRYYMS     TO  WRK-SYMD (1:6)
+           MOVE    "01"                TO  WRK-SYMD (7:2)
+           PERFORM 800-SEIWA-HEN-SEC
+           MOVE    WRK-HENYMDG (1:6)   TO  SPA-J023-SRYYM
+      *
+      *     保険組合せ
+            PERFORM 3101-HKNCOMBI-HEN-SEC
+      *
+      *     入院判定
+            PERFORM 3105-NYUGAI-HEN-SEC
+      *
+      *     初期編集
+            PERFORM 314-SYOKI-SEC
+           .
+      *
+       280-NEXT-MONTH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    前頁処理
+      *****************************************************************
+       290-BACK-PAGE-SEC               SECTION.
+      *
+           IF      SPA-J023-PAGE       >   1
+               COMPUTE SPA-J023-PAGE       =   SPA-J023-PAGE
+                                           -   1
+      *        コメント編集編集
+               PERFORM 3103-RECECOM-HEN-SEC
+            END-IF
+           .
+      *
+       290-BACK-PAGE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    次頁処理
+      *****************************************************************
+       291-NEXT-PAGE-SEC               SECTION.
+      *
+           IF      SPA-J023-NEXT       =   1
+               COMPUTE SPA-J023-PAGE       =   SPA-J023-PAGE
+                                           +   1
+      *        コメント編集編集
+               PERFORM 3103-RECECOM-HEN-SEC
+            END-IF
+           .
+      *
+       291-NEXT-PAGE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2281,6 +3247,11 @@
                WHEN    "0003"
                    MOVE    "選択番号が有りません"
                                        TO  SPA-ERRMSG
+               WHEN    "0036"
+                   MOVE    "選択番号が複数選択されています。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "削除のみ可能です。"
+                                       TO  SPA-ERRMSG(31:)
                WHEN    "0004"
                    MOVE    "文例登録番号エラー"
                                        TO  SPA-ERRMSG
@@ -2312,6 +3283,33 @@
                                        TO  SPA-ERRMSG
                WHEN    "0015"
                    MOVE    "アフターケア診療日選択番号がありません"
+                                       TO  SPA-ERRMSG
+               WHEN    "0030"
+                   MOVE    "複写開始年月暦日エラー"
+                                       TO  SPA-ERRMSG
+               WHEN    "0031"
+                   MOVE    "複写月数は１２までです。"
+                                       TO  SPA-ERRMSG
+               WHEN    "0032"
+                   MOVE    "複写開始年月が未入力です。"
+                                       TO  SPA-ERRMSG
+               WHEN    "0032"
+                   MOVE    "複写開始年月が未入力です。"
+                                       TO  SPA-ERRMSG
+               WHEN    "0033"
+                   MOVE    "アフターケアは複写できません。"
+                                       TO  SPA-ERRMSG
+               WHEN    "0034"
+                   MOVE    "複写開始年月＞診療年月で入力して下さい。"
+                                       TO  SPA-ERRMSG
+               WHEN    "0035"
+                   MOVE    "複数選択は削除のみ有効です。"
+                                       TO  SPA-ERRMSG
+               WHEN    "0037"
+                   MOVE    "これ以上選択できません。削除して下さい。"
+                                       TO  SPA-ERRMSG
+               WHEN    "0038"
+                   MOVE    "複数選択は１２行までです。削除して下さい。"
                                        TO  SPA-ERRMSG
                WHEN    "0020"
                    MOVE    "更新エラーです。"
@@ -2372,6 +3370,16 @@
                                        TO  WRK-JIDMSG
                    MOVE    "よろしいですか？"
                                        TO  WRK-JIDMSG(37:)
+               WHEN    "0201"
+                   MOVE    "診療年月のレセプトコメントの登録と、"
+                                       TO  WRK-JIDMSG
+                   MOVE    "複写月数分のコメントの複写をします。"
+                                       TO  WRK-JIDMSG(37:)
+               WHEN    "0205"
+                   MOVE    "選択されているコメントの変更と、"
+                                       TO  WRK-JIDMSG
+                   MOVE    "複写月数分のコメントの複写をします。"
+                                       TO  WRK-JIDMSG(33:)
                WHEN    OTHER
                    MOVE    SPA-ERRCD
                                        TO  WRK-JIDMSG
@@ -2396,6 +3404,26 @@
       *
            .
        520-JIDSET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システム管理マスタ読み込み処理
+      *****************************************************************
+       900-SYSKANRI-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO            TO  FLG-SYSKANRI
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           .
+       900-SYSKANRI-READ-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2505,6 +3533,41 @@
       *
            .
        993-PTRSIINF-NEXT-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院会計読み込み
+      *****************************************************************
+       980-NYUINACCT-READ-SEC        SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  NYUINACCT-REC
+               MOVE    ZERO            TO  FLG-NYUINACCT
+           ELSE
+               INITIALIZE                  NYUINACCT-REC
+               MOVE    1               TO  FLG-NYUINACCT
+           END-IF
+      *
+           .
+       980-NYUINACCT-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＣＬＯＳＥ処理
+      *****************************************************************
+       990-DBCLOSE-SEC             SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           .
+       990-DBCLOSE-EXT.
            EXIT.
       *
       *****************************************************************
