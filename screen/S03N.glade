@@ -2198,38 +2198,6 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label562</name>
-      <x>584</x>
-      <y>224</y>
-      <width>96</width>
-      <height>24</height>
-      <label>给锐办婶砷么</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label357</name>
-      <x>584</x>
-      <y>280</y>
-      <width>96</width>
-      <height>24</height>
-      <label>办婶砷么垛纷</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkHSeparator</class>
       <name>hseparator1</name>
       <x>592</x>
@@ -2245,54 +2213,6 @@
       <y>256</y>
       <width>212</width>
       <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label686</name>
-      <x>584</x>
-      <y>136</y>
-      <width>96</width>
-      <height>24</height>
-      <label>咯祸闻蛙锐</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label685</name>
-      <x>584</x>
-      <y>160</y>
-      <width>96</width>
-      <height>24</height>
-      <label>咯祸砷么驰</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label561</name>
-      <x>584</x>
-      <y>192</y>
-      <width>96</width>
-      <height>24</height>
-      <label>戏客办婶砷么</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
     </widget>
 
     <widget>
@@ -2623,6 +2543,86 @@
       <width>80</width>
       <height>24</height>
       <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label686</name>
+      <x>584</x>
+      <y>136</y>
+      <width>96</width>
+      <height>24</height>
+      <label>咯祸闻蛙锐</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label685</name>
+      <x>584</x>
+      <y>164</y>
+      <width>96</width>
+      <height>24</height>
+      <label>咯祸砷么驰</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label561</name>
+      <x>584</x>
+      <y>192</y>
+      <width>96</width>
+      <height>24</height>
+      <label>戏客办婶砷么</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label562</name>
+      <x>584</x>
+      <y>221</y>
+      <width>96</width>
+      <height>24</height>
+      <label>给锐办婶砷么</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label357</name>
+      <x>584</x>
+      <y>280</y>
+      <width>96</width>
+      <height>24</height>
+      <label>办婶砷么垛纷</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
