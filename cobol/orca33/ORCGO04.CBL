@@ -27,6 +27,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  01.00.01    NACL-¾®Æ¦Âô  05.07.19  ¼«Èñ£±£°¹àÌÜÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -153,7 +154,7 @@
        01  CONST-AREA.
            03  CONST-SMEILIST-MAX      PIC 9(03)   VALUE   50.
            03  CONST-SKYLIST-MAX       PIC 9(03)   VALUE   50.
-           03  CONST-JIHI-MAX          PIC 9(03)   VALUE   5.
+           03  CONST-JIHI-MAX          PIC 9(03)   VALUE   10.
            03  CONST-PROC-NO-G.
       *        05  CONST-PROC-NYUKIN   PIC X(02)   VALUE   "1".
       *        05  CONST-PROC-RRKSYU   PIC X(02)   VALUE   "2".
@@ -649,7 +650,7 @@
       *
       *    ¤½¤ÎÂ¾¼«Èñ
            PERFORM VARYING IDX0 FROM    1   BY  1
-                   UNTIL ( IDX0 >   5 )
+                   UNTIL ( IDX0 >   10)
       *
                MOVE    SYU-JIHI-TAXNASI (IDX0)
                                        TO  SPA-GMN-O04-JIHI (1 IDX0)
@@ -1023,10 +1024,15 @@
                    MOVE   SYS-1013-KBNCD(2:1)
                                            TO  WRK-JIHI-IDX-X
                    IF    ( WRK-JIHI-IDX-X >=   "1" )
-                    OR   ( WRK-JIHI-IDX-X <=   "5" )
+                    AND  ( WRK-JIHI-IDX-X <=   "9" )
                        MOVE    SYS-1013-JIHINAME
                                            TO  SPA-GMN-O04-JIHIMSG
                                                     (WRK-JIHI-IDX)
+                   ELSE
+                       IF  WRK-JIHI-IDX-X  =   "0"
+                           MOVE    SYS-1013-JIHINAME
+                                           TO  SPA-GMN-O04-JIHIMSG(10)
+                       END-IF
                    END-IF
                END-IF
       *
@@ -1248,12 +1254,22 @@
            MOVE    SPA-GMN-O04-JIHI (1 3)  TO  O04-JIHI3
            MOVE    SPA-GMN-O04-JIHI (1 4)  TO  O04-JIHI4
            MOVE    SPA-GMN-O04-JIHI (1 5)  TO  O04-JIHI5
+           MOVE    SPA-GMN-O04-JIHI (1 6)  TO  O04-JIHI6
+           MOVE    SPA-GMN-O04-JIHI (1 7)  TO  O04-JIHI7
+           MOVE    SPA-GMN-O04-JIHI (1 8)  TO  O04-JIHI8
+           MOVE    SPA-GMN-O04-JIHI (1 9)  TO  O04-JIHI9
+           MOVE    SPA-GMN-O04-JIHI (1 10) TO  O04-JIHI10
            MOVE    SPA-GMN-O04-JIHIKEI(1)  TO  O04-JIHITOTAL
            MOVE    SPA-GMN-O04-JIHI (2 1)  TO  O04-JIHI1TAX
            MOVE    SPA-GMN-O04-JIHI (2 2)  TO  O04-JIHI2TAX
            MOVE    SPA-GMN-O04-JIHI (2 3)  TO  O04-JIHI3TAX
            MOVE    SPA-GMN-O04-JIHI (2 4)  TO  O04-JIHI4TAX
            MOVE    SPA-GMN-O04-JIHI (2 5)  TO  O04-JIHI5TAX
+           MOVE    SPA-GMN-O04-JIHI (2 6)  TO  O04-JIHI6TAX
+           MOVE    SPA-GMN-O04-JIHI (2 7)  TO  O04-JIHI7TAX
+           MOVE    SPA-GMN-O04-JIHI (2 8)  TO  O04-JIHI8TAX
+           MOVE    SPA-GMN-O04-JIHI (2 9)  TO  O04-JIHI9TAX
+           MOVE    SPA-GMN-O04-JIHI (2 10) TO  O04-JIHI10TAX
            MOVE    SPA-GMN-O04-JIHIKEI(2)  TO  O04-JIHITAXTOTAL
            MOVE    SPA-GMN-O04-JIHIZEI     TO  O04-JIHITAX
            MOVE    SPA-GMN-O04-TGMONEY (01) TO  O04-SSUTGMONEY
