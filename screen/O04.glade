@@ -1067,7 +1067,7 @@
       <class>GtkNumberEntry</class>
       <name>FTNTOTAL</name>
       <x>704</x>
-      <y>248</y>
+      <y>243</y>
       <width>88</width>
       <height>24</height>
       <editable>False</editable>
@@ -1775,15 +1775,6 @@
 
     <widget>
       <class>GtkHSeparator</class>
-      <name>hseparator7</name>
-      <x>644</x>
-      <y>280</y>
-      <width>174</width>
-      <height>8</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
       <name>hseparator4</name>
       <x>8</x>
       <y>536</y>
@@ -2338,22 +2329,6 @@
 	  <ypad>0</ypad>
 	</widget>
       </widget>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label357</name>
-      <x>608</x>
-      <y>248</y>
-      <width>92</width>
-      <height>24</height>
-      <label>∞Ï…Ù…È√¥∂‚∑◊</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
     </widget>
 
     <widget>
@@ -2935,6 +2910,31 @@
       <width>88</width>
       <height>24</height>
       <label>ø©ªˆŒ≈Õ‹»Ò</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator7</name>
+      <x>600</x>
+      <y>277</y>
+      <width>197</width>
+      <height>8</height>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label357</name>
+      <x>608</x>
+      <y>243</y>
+      <width>92</width>
+      <height>24</height>
+      <label>∞Ï…Ù…È√¥∂‚∑◊</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
