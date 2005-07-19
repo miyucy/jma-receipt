@@ -68,19 +68,29 @@
               03  O04-HKNTEKMONEY
                                 PIC S9(8).
               03  O04-HKNTEKGAI PIC S9(8).
-              03  O04-JIHIMSG-G OCCURS  5.
+              03  O04-JIHIMSG-G OCCURS  10.
                 04  O04-JIHIMSG PIC X(14).
               03  O04-JIHI1     PIC S9(8).
               03  O04-JIHI2     PIC S9(8).
               03  O04-JIHI3     PIC S9(8).
               03  O04-JIHI4     PIC S9(8).
               03  O04-JIHI5     PIC S9(8).
+              03  O04-JIHI6     PIC S9(8).
+              03  O04-JIHI7     PIC S9(8).
+              03  O04-JIHI8     PIC S9(8).
+              03  O04-JIHI9     PIC S9(8).
+              03  O04-JIHI10    PIC S9(8).
               03  O04-JIHITOTAL PIC S9(8).
               03  O04-JIHI1TAX  PIC S9(8).
               03  O04-JIHI2TAX  PIC S9(8).
               03  O04-JIHI3TAX  PIC S9(8).
               03  O04-JIHI4TAX  PIC S9(8).
               03  O04-JIHI5TAX  PIC S9(8).
+              03  O04-JIHI6TAX  PIC S9(8).
+              03  O04-JIHI7TAX  PIC S9(8).
+              03  O04-JIHI8TAX  PIC S9(8).
+              03  O04-JIHI9TAX  PIC S9(8).
+              03  O04-JIHI10TAX PIC S9(8).
               03  O04-JIHITAXTOTAL
                                 PIC S9(8).
               03  O04-JIHITAX   PIC S9(8).

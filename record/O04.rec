@@ -135,6 +135,21 @@ O04	{
 		JIHIMSG5	{
 			value	varchar(14);
 		};
+		JIHIMSG6	{
+			value	varchar(14);
+		};
+		JIHIMSG7	{
+			value	varchar(14);
+		};
+		JIHIMSG8	{
+			value	varchar(14);
+		};
+		JIHIMSG9	{
+			value	varchar(14);
+		};
+		JIHIMSG10	{
+			value	varchar(14);
+		};
 		JIHI1	{
 			value	number(8);
 		};
@@ -148,6 +163,21 @@ O04	{
 			value	number(8);
 		};
 		JIHI5	{
+			value	number(8);
+		};
+		JIHI6	{
+			value	number(8);
+		};
+		JIHI7	{
+			value	number(8);
+		};
+		JIHI8	{
+			value	number(8);
+		};
+		JIHI9	{
+			value	number(8);
+		};
+		JIHI10	{
 			value	number(8);
 		};
 		JIHITOTAL	{
@@ -166,6 +196,21 @@ O04	{
 			value	number(8);
 		};
 		JIHI5TAX	{
+			value	number(8);
+		};
+		JIHI6TAX	{
+			value	number(8);
+		};
+		JIHI7TAX	{
+			value	number(8);
+		};
+		JIHI8TAX	{
+			value	number(8);
+		};
+		JIHI9TAX	{
+			value	number(8);
+		};
+		JIHI10TAX	{
 			value	number(8);
 		};
 		JIHITAXTOTAL	{
