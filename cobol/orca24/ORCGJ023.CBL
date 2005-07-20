@@ -1572,14 +1572,12 @@
       *
            MOVE    J023-COMMENT        TO  SPA-J023-COMMENT
            PERFORM 800-COMMENT-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      209-COMMENT-EXT
-           END-IF
-      *
-           IF      SPA-GMN-PTID        =   ZERO
-               MOVE    7                   TO  SPA-J023-CUR
-           ELSE
-               MOVE    6                   TO  SPA-J023-CUR
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-GMN-PTID        =   ZERO
+                   MOVE    7                   TO  SPA-J023-CUR
+               ELSE
+                   MOVE    6                   TO  SPA-J023-CUR
+               END-IF
            END-IF
       *
            .
@@ -1903,7 +1901,9 @@
       *
            MOVE    WRK-HEN-SELNUM      TO  SPA-J023-SELNUM-X
       *
-           IF     (SPA-J023-SELNUM-X   NOT =   SPACE )
+           IF      SPA-J023-SELNUM-X   =   SPACE
+               INITIALIZE                  SPA-J023-SELNUM-G
+           ELSE
                PERFORM 4201-SELNUM-CHK-SEC
            END-IF
       *
