@@ -151,12 +151,19 @@ asciiconv(int conv_flg,
 				cchar->out_type = ALPHA;
 			}
 		}
-	} else if ( ISSPACEONLY(inputChar) ) {
-		cchar->in_type = SPLF;
-		cchar->out_type = SPLF;
-		cchar->out_len = 2;
-		cchar->out_char[0] = 0xa1;
-		cchar->out_char[1] = 0xa1;
+	} else if ( ISSPACEONLY(inputChar) ){
+		if ( (conv_flg) && (char_type & ZENKAKU) ){
+			cchar->in_type = SPLF;
+			cchar->out_type = SPLF;
+			cchar->out_len = 2;
+			cchar->out_char[0] = 0xa1;
+			cchar->out_char[1] = 0xa1;
+		} else {
+			cchar->out_len = 1;
+			cchar->out_char[0] = inputChar;
+			cchar->out_type = SPLF;
+			cchar->out_char[0] = inputChar;
+		}
 	} else if ( ISLF(inputChar) ){
 		cchar->in_type = SPLF;
 		cchar->out_type = SPLF;
