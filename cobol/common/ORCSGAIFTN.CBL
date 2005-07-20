@@ -30,6 +30,7 @@
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  01.00.01    NACL-ÌçÏÆ    04/10/01  ¼«ÇåÀÕÆÃÄê´ïºàÅù¾ÃÈñÀÇÂÐ±þ
       *  01.00.02    NACL-ÌçÏÆ    04/11/25  Ê¡Åç¸©ÆýÍÄ»ùÆÃ¼ì·×»»ÂÐ±þ
+      *  01.00.03    NACL-ÌçÏÆ    05/07/19  ¼ýÇ¼¹àÌÜÄÉ²Ã¤ËÈ¼¤¦½¤Àµ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -110,6 +111,7 @@
                  05  WRK-TOKUSYU-FTNMONEY        PIC 9(07).
                  05  WRK-TOKUSYU-COMPFTN         PIC 9(07).
                  05  WRK-TOKUSYU-ENTANI          PIC 9(07)V9(01).
+                 05  WRK-DISCOUNT-MONEY          PIC 9(07).
       *
                  05  WRK-GRP-SGKMONEY            PIC S9(07).
                  05  WRK-GRP-SYUHKNFTNMONEY      PIC S9(07).
@@ -150,6 +152,7 @@
                  05  WRK-GRP-TOKUSYU-FTNMONEY    PIC S9(07).
                  05  WRK-GRP-TOKUSYU-COMPFTN     PIC S9(07).
                  05  WRK-GRP-TOKUSYU-ENTANI      PIC S9(07)V9(01).
+                 05  WRK-GRP-DISCOUNT-MONEY      PIC S9(07).
       *
            03  WRK-RUI.
               04  WRK-RUI-SKYMONEY               PIC 9(07).
@@ -191,6 +194,7 @@
               04  WRK-RUI-TOKUSYU-FTNMONEY       PIC 9(07).
               04  WRK-RUI-TOKUSYU-COMPFTN        PIC 9(07).
               04  WRK-RUI-TOKUSYU-ENTANI         PIC 9(07)V9(01).
+              04  WRK-RUI-DISCOUNT-MONEY         PIC 9(07).
       *
            03  WRK-KEISAN                  PIC S9(07).
            03  WRK-KEISAN2                 PIC S9(07)V9(01).
@@ -628,20 +632,25 @@
                  ADD     LNK-SYU-SKYMONEY-TAX-SAI(IDX)
                                        TO   WRK-RUI-SKYMONEY-TAX-SAI
       *
-                 MOVE    LNK-SYU-SHOKUJI5(IDX)
+                 MOVE    LNK-SYU-JYO-HKNFTNMONEY(IDX)
                                        TO   WRK-TOKUSYU-FTNMONEY(IDX)
-                 ADD     LNK-SYU-SHOKUJI5(IDX)
+                 ADD     LNK-SYU-JYO-HKNFTNMONEY(IDX)
                                        TO   WRK-RUI-TOKUSYU-FTNMONEY
       *
-                 MOVE    LNK-SYU-SHOKUJI6(IDX)
+                 MOVE    LNK-SYU-JYO-COMPFTN(IDX)
                                        TO   WRK-TOKUSYU-COMPFTN(IDX)
-                 ADD     LNK-SYU-SHOKUJI6(IDX)
+                 ADD     LNK-SYU-JYO-COMPFTN(IDX)
                                        TO   WRK-RUI-TOKUSYU-COMPFTN
       *
-                 MOVE    LNK-SYU-SHOKUJI7(IDX)
+                 MOVE    LNK-SYU-JYO-COMPFTN-ENTANI(IDX)
                                        TO   WRK-TOKUSYU-ENTANI(IDX)
-                 ADD     LNK-SYU-SHOKUJI7(IDX)
+                 ADD     LNK-SYU-JYO-COMPFTN-ENTANI(IDX)
                                        TO   WRK-RUI-TOKUSYU-ENTANI
+      *
+                 MOVE    LNK-SYU-DISCOUNT-MONEY(IDX)
+                                       TO   WRK-DISCOUNT-MONEY(IDX)
+                 ADD     LNK-SYU-DISCOUNT-MONEY(IDX)
+                                       TO   WRK-RUI-DISCOUNT-MONEY
       *
       *
                  MOVE    LNK-SYU-HKNCOMBINUM(IDX)
@@ -856,23 +865,29 @@
                             WRK-SKYMONEY-TAX-SAI(IDX)      -
                             WRK-RUI-SKYMONEY-TAX-SAI
       *
-                   MOVE     LNK-SYU-SHOKUJI5(IDX)
+                   MOVE     LNK-SYU-JYO-HKNFTNMONEY(IDX)
                                        TO   WRK-TOKUSYU-FTNMONEY(IDX)
                    COMPUTE  WRK-GRP-TOKUSYU-FTNMONEY(IDX)  =
                             WRK-TOKUSYU-FTNMONEY(IDX)      -
                             WRK-RUI-TOKUSYU-FTNMONEY
       *
-                   MOVE     LNK-SYU-SHOKUJI6(IDX)
+                   MOVE     LNK-SYU-JYO-COMPFTN(IDX)
                                        TO   WRK-TOKUSYU-COMPFTN(IDX)
                    COMPUTE  WRK-GRP-TOKUSYU-COMPFTN(IDX)  =
                             WRK-TOKUSYU-COMPFTN(IDX)      -
                             WRK-RUI-TOKUSYU-COMPFTN
       *
-                   MOVE     LNK-SYU-SHOKUJI7(IDX)
+                   MOVE     LNK-SYU-JYO-COMPFTN-ENTANI(IDX)
                                        TO   WRK-TOKUSYU-ENTANI(IDX)
                    COMPUTE  WRK-GRP-TOKUSYU-ENTANI(IDX)  =
                             WRK-TOKUSYU-ENTANI(IDX)      -
                             WRK-RUI-TOKUSYU-ENTANI
+      *
+                   MOVE     LNK-SYU-DISCOUNT-MONEY(IDX)
+                                       TO   WRK-DISCOUNT-MONEY(IDX)
+                   COMPUTE  WRK-GRP-DISCOUNT-MONEY(IDX)  =
+                            WRK-DISCOUNT-MONEY(IDX)      -
+                            WRK-RUI-DISCOUNT-MONEY
       *
       *
                    MOVE      ZERO      TO      FLG-OK
@@ -1193,6 +1208,14 @@
                                     TO   WRK-TOKUSYU-ENTANI(IDZ)
                            END-IF
       *
+                           COMPUTE  WRK-KEISAN  =
+                                    WRK-DISCOUNT-MONEY(IDZ)  +
+                                    WRK-GRP-DISCOUNT-MONEY(IDX)
+                           IF       WRK-KEISAN  >=   0
+                              MOVE    WRK-KEISAN
+                                    TO   WRK-DISCOUNT-MONEY(IDZ)
+                           END-IF
+      *
       *
                            MOVE     1         TO   FLG-OK
                        END-IF
@@ -1289,11 +1312,13 @@
                 MOVE   WRK-SKYMONEY-TAX-SAI(IDX)
                                     TO   LNK-SYU-SKYMONEY-TAX-SAI(IDX)
                 MOVE   WRK-TOKUSYU-FTNMONEY(IDX)
-                                    TO   LNK-SYU-SHOKUJI5(IDX)
+                                    TO   LNK-SYU-JYO-HKNFTNMONEY(IDX)
                 MOVE   WRK-TOKUSYU-COMPFTN(IDX)
-                                    TO   LNK-SYU-SHOKUJI6(IDX)
+                                    TO   LNK-SYU-JYO-COMPFTN(IDX)
                 MOVE   WRK-TOKUSYU-ENTANI(IDX)
-                                    TO   LNK-SYU-SHOKUJI7(IDX)
+                                    TO   LNK-SYU-JYO-COMPFTN-ENTANI(IDX)
+                MOVE   WRK-DISCOUNT-MONEY(IDX)
+                                    TO   LNK-SYU-DISCOUNT-MONEY(IDX)
       *
       ****** ELSE
       *

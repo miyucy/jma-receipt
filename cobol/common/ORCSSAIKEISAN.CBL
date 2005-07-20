@@ -34,6 +34,7 @@
       *  01.00.04    NACL-ÌçÏÆ    05/01/27  ¹ø¡¦¶»Éô¸ÇÄêÂÓ²Ã»»¡¢ÁÏ³°¸ÇÄê´ï
       *                                     »ÈÍÑ²Ã»»¤Îµ»½Ñ¡¦ÌôºÞÅù¤ÎÁªÂòÂÐ±þ
       *  01.00.05    NACL-¾®Æ¦Âô  05/07/15  ¼«Èñ£±£°¹àÌÜÂÐ±þ
+      *  01.00.06    NACL-ÌçÏÆ    05/07/19  ¼ýÇ¼¹àÌÜÄÉ²Ã¤ËÈ¼¤¦½¤Àµ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -979,6 +980,9 @@
                                       TO  LNK-SYU-DISCOUNT-TEIRITU(IDY)
       *³ä°úÎ¨
            MOVE     SYUTTL-DISCOUNT-RATE  TO  LNK-SYU-DISCOUNT-RATE(IDY)
+      *¸ºÌÈ¶â³Û
+           MOVE     SYUTTL-DISCOUNT-MONEY
+                                      TO  LNK-SYU-DISCOUNT-MONEY(IDY)
       *Ï«ºÒÊÝ¸±¡Ý½é¿ÇÎÁ
            MOVE     SYUTTL-RSISHOSHIN-MONEY
                                       TO  LNK-SYU-RSISHOSHIN-MONEY(IDY)
@@ -2320,6 +2324,8 @@
                                            TO  SYUTTL-DISCOUNT-TEIRITU
       *³ä°úÎ¨
            MOVE    LNK-SYU-DISCOUNT-RATE(IDY)  TO  SYUTTL-DISCOUNT-RATE
+      *¸ºÌÈ¶â³Û
+           MOVE    LNK-SYU-DISCOUNT-MONEY(IDY) TO  SYUTTL-DISCOUNT-MONEY
       *Ï«ºÒÊÝ¸±¡Ý½é¿ÇÎÁ
            MOVE    LNK-SYU-RSISHOSHIN-MONEY(IDY)
                                            TO  SYUTTL-RSISHOSHIN-MONEY
