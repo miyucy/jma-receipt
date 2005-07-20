@@ -1835,15 +1835,6 @@
     </widget>
 
     <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator5</name>
-      <x>24</x>
-      <y>480</y>
-      <width>280</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
       <class>GtkLabel</class>
       <name>label563</name>
       <x>0</x>
@@ -2017,15 +2008,6 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator7</name>
-      <x>816</x>
-      <y>264</y>
-      <width>194</width>
-      <height>24</height>
     </widget>
 
     <widget>
@@ -2469,19 +2451,37 @@
 
     <widget>
       <class>GtkHSeparator</class>
-      <name>hseparator3</name>
+      <name>hseparator6</name>
       <x>312</x>
-      <y>480</y>
-      <width>300</width>
+      <y>444</y>
+      <width>265</width>
       <height>16</height>
     </widget>
 
     <widget>
       <class>GtkHSeparator</class>
-      <name>hseparator6</name>
+      <name>hseparator3</name>
       <x>312</x>
-      <y>444</y>
-      <width>300</width>
+      <y>480</y>
+      <width>265</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator7</name>
+      <x>816</x>
+      <y>264</y>
+      <width>188</width>
+      <height>24</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator5</name>
+      <x>24</x>
+      <y>480</y>
+      <width>270</width>
       <height>16</height>
     </widget>
   </widget>
