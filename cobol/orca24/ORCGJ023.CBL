@@ -1702,6 +1702,11 @@
       *    保険組合せ
            PERFORM 3101-HKNCOMBI-HEN-SEC
       *
+      *     コメント編集編集
+           MOVE    ZERO                TO  SPA-J023-NEXT
+           MOVE    1                   TO  SPA-J023-PAGE
+           PERFORM 3103-RECECOM-HEN-SEC
+      *
       *    初期編集
            PERFORM 314-SYOKI-SEC
       *
@@ -2217,7 +2222,7 @@
            INITIALIZE                  JYURRK-REC
            MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
            MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
-           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
+           MOVE    SPA-J023-NYUGAIKBN  TO  JYURRK-NYUGAIKBN
            MOVE    SPA-J023-SRYYMS     TO  JYURRK-SRYYMD(1:6)
            MOVE    "01"                TO  JYURRK-SRYYMD(7:2)
            MOVE    SPA-J023-SRYYMS     TO  JYURRK-UPSRYYMD(1:6)
@@ -2260,6 +2265,12 @@
            END-PERFORM
            MOVE    "JYURRK-KEY13"      TO  ORC-DBPATH
            PERFORM 990-DBCLOSE-SEC
+           IF      FLG-OK              =   ZERO
+      *    入院の時、入院の保険組合せ
+               IF      SPA-J023-NYUGAIKBN   =   "1"
+                   PERFORM 21301-NYUINACCT-CHK-SEC
+               END-IF
+           END-IF
       *
            IF      FLG-OK              =   ZERO
                IF     (SPA-J023-SRYYMS     <   SPA-SYSYMD(1:6)) OR
@@ -2270,6 +2281,56 @@
       *
            .
        2130-HKNCOMBI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院の保険組合せチェック処理
+      *****************************************************************
+       21301-NYUINACCT-CHK-SEC        SECTION.
+           INITIALIZE                  NYUINACCT-REC.
+           MOVE    SPA-HOSPID          TO  NACCT-HOSPID
+           MOVE    SPA-GMN-PTID        TO  NACCT-PTID
+           MOVE    SPA-J023-SRYYMS     TO  NACCT-SRYYM
+      *    保険レコード
+           MOVE    "5"                 TO  NACCT-ZAISKBKBN
+      *
+           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "NYUINACCT-KEY17"   TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "NYUINACCT-KEY17"   TO  ORC-DBPATH
+               PERFORM 980-NYUINACCT-READ-SEC
+           ELSE
+               INITIALIZE                  NYUINACCT-REC
+               MOVE    1               TO  FLG-NYUINACCT
+           END-IF
+      *
+           PERFORM UNTIL   (FLG-NYUINACCT     =   1 )  OR
+                           (FLG-OK            =   1 )
+               PERFORM VARYING     IDX1    FROM    1   BY  1
+                       UNTIL      (IDX1    >   31   )  OR
+                                  (FLG-OK      =   1 )
+                   MOVE    ZERO                TO  WRK-HKNCOMBI
+                   MOVE    NACCT-DAY (IDX1)    TO  WRK-HKNCOMBI
+                   IF      SPA-J023-HKNCOMBINUM
+                                               =   WRK-HKNCOMBI
+                       MOVE    1                   TO  FLG-OK
+                   END-IF
+               END-PERFORM
+      *
+               MOVE    "NYUINACCT-KEY17"   TO  ORC-DBPATH
+               PERFORM 980-NYUINACCT-READ-SEC
+           END-PERFORM.
+           MOVE    "NYUINACCT-KEY17"   TO  ORC-DBPATH
+           PERFORM 990-DBCLOSE-SEC
+      *
+      *
+           .
+       21301-NYUINACCT-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2300,7 +2361,7 @@
            INITIALIZE                  RECECOM-REC
            MOVE    SPA-HOSPID          TO  RECECOM-HOSPID
            MOVE    SPA-GMN-PTID        TO  RECECOM-PTID
-           MOVE    SPA-GMN-NYUGAIKBN   TO  RECECOM-NYUGAIKBN
+           MOVE    SPA-J023-NYUGAIKBN  TO  RECECOM-NYUGAIKBN
            MOVE    SPA-J023-SRYKA      TO  RECECOM-SRYKA
            MOVE    SPA-J023-SRYYMS     TO  RECECOM-SRYYM
            MOVE    SPA-J023-HKNCOMBINUM
@@ -2369,7 +2430,7 @@
                INITIALIZE                  RECECOM-REC
                MOVE    SPA-HOSPID          TO  RECECOM-HOSPID
                MOVE    SPA-GMN-PTID        TO  RECECOM-PTID
-               MOVE    SPA-GMN-NYUGAIKBN   TO  RECECOM-NYUGAIKBN
+               MOVE    SPA-J023-NYUGAIKBN  TO  RECECOM-NYUGAIKBN
                MOVE    SPA-J023-SRYKA      TO  RECECOM-SRYKA
                MOVE    SPA-J023-SRYYMS     TO  RECECOM-SRYYM
                MOVE    SPA-J023-HKNCOMBINUM
@@ -2873,7 +2934,7 @@
            INITIALIZE                  RECECOM-REC
            MOVE    SPA-HOSPID          TO  RECECOM-HOSPID
            MOVE    SPA-GMN-PTID        TO  RECECOM-PTID
-           MOVE    SPA-GMN-NYUGAIKBN   TO  RECECOM-NYUGAIKBN
+           MOVE    SPA-J023-NYUGAIKBN  TO  RECECOM-NYUGAIKBN
            MOVE    SPA-J023-NSRYKA (IDX)
                                       TO  RECECOM-SRYKA
            MOVE    SPA-J023-NSRYYM (IDX)
