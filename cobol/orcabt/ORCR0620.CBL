@@ -489,6 +489,8 @@
                                        SPA-AREA
                                        WRK-AREA
                                        FLG-AREA 
+                                       WRK-HKNNUM-AREA
+                                       TABLE-HKNNUM-AREA  
       *
            MOVE    COMMAND-PARAM       TO  WRK-PARA
       *
