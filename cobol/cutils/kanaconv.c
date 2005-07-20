@@ -141,8 +141,6 @@ asciiconv(int conv_flg,
 		} else {
 			cchar->out_len = 1;
 			cchar->out_char[0] = inputChar;
-			printf("are?\n");
-			
 			cchar->out_type = KIGOU;
 			if ( isdigit(cchar->out_char[0]) ){
 				cchar->in_type = NUMBER;
@@ -366,14 +364,10 @@ kana_euc_convert (int conv_flg,
 				*p++ = cchar->out_char[i];
 			}
 		}
-		printf("charintype %d\n", cchar->in_type);
 		intype = intype | cchar->in_type;
 	}
 	*p++ = '\0';
 	*ret_len = current_len;
-
-	printf("intype %d\n", intype);
-	printf("char_type %d\n", char_type);
 	
 	if ( conv_flg == 0 ) {
 		if ( (intype | char_type) != char_type ){
