@@ -37,6 +37,8 @@
       *                                     （平成１７年４月以降）
       *  02.06.02    NACL-竹田    05/05/30  realtime preview 処理追加
       *  02.06.03    NACL-小豆沢  05/06/17  realtime preview 福岡給付外点数
+      *  02.06.04    NACL-藤原    05/07/20  レセコメントのコメントの長さ
+      *                                     変更による対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -512,9 +514,9 @@
       *    レセプトコメント編集
            03  WRK-COMMENT-G.
                05  WRK-COMMENT                 PIC X(50)
-                                               OCCURS  8.
-           03  WRK-COMM                        PIC X(400).
-           03  WRK-COMM1                       PIC X(400).
+                                               OCCURS  16.
+           03  WRK-COMM                        PIC X(800).
+           03  WRK-COMM1                       PIC X(800).
            03  WRK-COL                         PIC 9(03). 
            03  WRK-RECECOM         PIC 9(01).
            03  WRK-RECEHEN         PIC 9(01).
@@ -4986,7 +4988,7 @@
                                                FOR ALL WRK-CONS-RETURN
                    IF      WRK-COL         >   ZERO
                        PERFORM VARYING IDX FROM    1   BY  1
-                               UNTIL   IDX >       400
+                               UNTIL   IDX >       800
                            IF      WRK-COMM(IDX:1) =   WRK-CONS-RETURN
                                COMPUTE IDY1     =   IDX     -   1
                                COMPUTE IDY2     =   IDX     +   1   
@@ -4994,7 +4996,7 @@
                                                 TO  WRK-COMMENT-G
                                MOVE    WRK-COMM (IDY2:)
                                                 TO  WRK-COMM1
-                               MOVE    400      TO  IDX
+                               MOVE    800      TO  IDX
                            END-IF
                        END-PERFORM                                                                                  
                    ELSE
@@ -5018,7 +5020,7 @@
                      END-IF
       *                 
                      PERFORM VARYING IDW FROM    1   BY  1
-                             UNTIL   IDW >       8
+                             UNTIL   IDW >       16
                            OR      WRK-COMMENT (IDW)   =   SPACE
                        IF      WRK-LINETEK      >=
                                                 WRK-TEKIYOU-LINE

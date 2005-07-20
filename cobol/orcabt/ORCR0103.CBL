@@ -82,6 +82,8 @@
       *  01.03.06    NACL-ÌçÏÆ    05/02/14  ¹âÎð¼Ô°ìÉôÉéÃ´³Ûµ­ºÜ½¤Àµ
       *  01.03.07    NACL-ÌçÏÆ    05/03/17  ¸øÈñÀÁµá¡¦ÀÁµá´ÉÍý¤ÎÉéÃ´¶â³Û
       *                                     ÊÔ½¸½¤Àµ
+      *  02.06.01    NACL-Æ£¸¶    05/07/20  ¥ì¥»¥³¥á¥ó¥È¤Î¥³¥á¥ó¥È¤ÎÄ¹¤µ
+      *                                     ÊÑ¹¹¤Ë¤è¤ëÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -486,9 +488,9 @@
       *    ¥ì¥»¥×¥È¥³¥á¥ó¥ÈÊÔ½¸
            03  WRK-COMMENT-G.
                05  WRK-COMMENT                 PIC X(50)
-                                               OCCURS  8.
-           03  WRK-COMM                        PIC X(400).
-           03  WRK-COMM1                       PIC X(400).
+                                               OCCURS  16.
+           03  WRK-COMM                        PIC X(800).
+           03  WRK-COMM1                       PIC X(800).
            03  WRK-COL                         PIC 9(03). 
            03  WRK-RECECOM         PIC 9(01).
            03  WRK-RECEHEN         PIC 9(01).
@@ -3362,7 +3364,7 @@
                                                FOR ALL WRK-CONS-RETURN
                    IF      WRK-COL         >   ZERO
                        PERFORM VARYING IDX FROM    1   BY  1
-                               UNTIL   IDX >       400
+                               UNTIL   IDX >       800
                            IF      WRK-COMM(IDX:1) =   WRK-CONS-RETURN
                                COMPUTE IDY1     =   IDX     -   1
                                COMPUTE IDY2     =   IDX     +   1   
@@ -3370,7 +3372,7 @@
                                                 TO  WRK-COMMENT-G
                                MOVE    WRK-COMM (IDY2:)
                                                 TO  WRK-COMM1
-                               MOVE    400      TO  IDX
+                               MOVE    800      TO  IDX
                            END-IF
                        END-PERFORM                                                                                  
                    ELSE
@@ -3394,8 +3396,8 @@
                      END-IF
       *                 
                      PERFORM VARYING IDW FROM    1   BY  1
-                             UNTIL   IDW >       8
-                           OR      WRK-COMMENT (IDW)   =   SPACE
+                             UNTIL   IDW >       16
+                             OR      WRK-COMMENT (IDW)   =   SPACE
                        IF      WRK-LINETEK      >=
                                                 WRK-TEKIYOU-LINE
                            PERFORM 34120-PAGE-SEC
