@@ -1043,7 +1043,7 @@ COPYS = \
         HCN25.INC \
         HCM03V03.INC \
         HCN03V03.INC \
-
+        HCM43V02.INC \
 
 
 DBPATH = \
