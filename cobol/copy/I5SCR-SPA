@@ -69,28 +69,60 @@
                            13  SPA-GMN-I51-ROUFTN        PIC 9(07).
       *                    ¸øÈñ°ìÉôÉéÃ´¶â
                            13  SPA-GMN-I51-KOHFTN        PIC 9(07).
-      *                    ¼«Èñ£±
-                           13  SPA-GMN-I51-JIHI1         PIC 9(07).
-      *                    ¼«Èñ£²
-                           13  SPA-GMN-I51-JIHI2         PIC 9(07).
-      *                    ¼«Èñ£³
-                           13  SPA-GMN-I51-JIHI3         PIC 9(07).
-      *                    ¼«Èñ£´
-                           13  SPA-GMN-I51-JIHI4         PIC 9(07).
-      *                    ¼«Èñ£µ
-                           13  SPA-GMN-I51-JIHI5         PIC 9(07).
+      *
+                           13  SPA-GMN-I51-JIHI-G.
+      *                        ¼«Èñ£±
+                               15  SPA-GMN-I51-JIHI1     PIC 9(07).
+      *                        ¼«Èñ£²
+                               15  SPA-GMN-I51-JIHI2     PIC 9(07).
+      *                        ¼«Èñ£³
+                               15  SPA-GMN-I51-JIHI3     PIC 9(07).
+      *                        ¼«Èñ£´
+                               15  SPA-GMN-I51-JIHI4     PIC 9(07).
+      *                        ¼«Èñ£µ
+                               15  SPA-GMN-I51-JIHI5     PIC 9(07).
+      *                        ¼«Èñ£¶
+                               15  SPA-GMN-I51-JIHI6     PIC 9(07).
+      *                        ¼«Èñ£·
+                               15  SPA-GMN-I51-JIHI7     PIC 9(07).
+      *                        ¼«Èñ£¸
+                               15  SPA-GMN-I51-JIHI8     PIC 9(07).
+      *                        ¼«Èñ£¹
+                               15  SPA-GMN-I51-JIHI9     PIC 9(07).
+      *                        ¼«Èñ£±£°
+                               15  SPA-GMN-I51-JIHI10    PIC 9(07).
+                           13  SPA-GMN-I51-JIHI-R
+                                   REDEFINES SPA-GMN-I51-JIHI-G.
+                               15  SPA-GMN-I51-JIHI      PIC 9(07)
+                                                         OCCURS  10.
       *                    ¼«Èñ·×
                            13  SPA-GMN-I51-JIHIKEI       PIC 9(07).
-      *                    ¼«Èñ¾ÃÈñÀÇ¤¢¤ê£±
-                           13  SPA-GMN-I51-JIHITAX1      PIC 9(07).
-      *                    ¼«Èñ¾ÃÈñÀÇ¤¢¤ê£²
-                           13  SPA-GMN-I51-JIHITAX2      PIC 9(07).
-      *                    ¼«Èñ¾ÃÈñÀÇ¤¢¤ê£³
-                           13  SPA-GMN-I51-JIHITAX3      PIC 9(07).
-      *                    ¼«Èñ¾ÃÈñÀÇ¤¢¤ê£´
-                           13  SPA-GMN-I51-JIHITAX4      PIC 9(07).
-      *                    ¼«Èñ¾ÃÈñÀÇ¤¢¤ê£µ
-                           13  SPA-GMN-I51-JIHITAX5      PIC 9(07).
+      *
+                           13  SPA-GMN-I51-JIHITAX-G.
+      *                        ¼«Èñ¾ÃÈñÀÇ¤¢¤ê£±
+                               15  SPA-GMN-I51-JIHITAX1  PIC 9(07).
+      *                        ¼«Èñ¾ÃÈñÀÇ¤¢¤ê£²
+                               15  SPA-GMN-I51-JIHITAX2  PIC 9(07).
+      *                        ¼«Èñ¾ÃÈñÀÇ¤¢¤ê£³
+                               15  SPA-GMN-I51-JIHITAX3  PIC 9(07).
+      *                        ¼«Èñ¾ÃÈñÀÇ¤¢¤ê£´
+                               15  SPA-GMN-I51-JIHITAX4  PIC 9(07).
+      *                        ¼«Èñ¾ÃÈñÀÇ¤¢¤ê£µ
+                               15  SPA-GMN-I51-JIHITAX5  PIC 9(07).
+      *                        ¼«Èñ¾ÃÈñÀÇ¤¢¤ê£¶
+                               15  SPA-GMN-I51-JIHITAX6  PIC 9(07).
+      *                        ¼«Èñ¾ÃÈñÀÇ¤¢¤ê£·
+                               15  SPA-GMN-I51-JIHITAX7  PIC 9(07).
+      *                        ¼«Èñ¾ÃÈñÀÇ¤¢¤ê£¸
+                               15  SPA-GMN-I51-JIHITAX8  PIC 9(07).
+      *                        ¼«Èñ¾ÃÈñÀÇ¤¢¤ê£¹
+                               15  SPA-GMN-I51-JIHITAX9  PIC 9(07).
+      *                        ¼«Èñ¾ÃÈñÀÇ¤¢¤ê£±£°
+                               15  SPA-GMN-I51-JIHITAX10 PIC 9(07).
+                           13  SPA-GMN-I51-JIHITAX-R
+                                   REDEFINES SPA-GMN-I51-JIHITAX-G.
+                               15  SPA-GMN-I51-JIHITAX   PIC 9(07)
+                                                         OCCURS  10.
       *                    ¼«Èñ¾ÃÈñÀÇ¤¢¤ê·×
                            13  SPA-GMN-I51-JIHITAXKEI    PIC 9(07).
       *                    ¼«Èñ¾ÃÈñÀÇ
@@ -114,7 +146,7 @@
                            13  SPA-GMN-I51-ROUETC        PIC S9(07).
       *                    ¼«ÈñÌ¾¾Î
                            13  SPA-GMN-I51-JIHIMSG       PIC X(20)
-                                                         OCCURS   5.
+                                                         OCCURS   10.
       *                    ¼¼ÎÁº¹³Û
                            13  SPA-GMN-I51-RMSAGAKU      PIC S9(07).
       *                Á°²óÌ¤¼ý³Û¡Ê³°Íè¡Ë

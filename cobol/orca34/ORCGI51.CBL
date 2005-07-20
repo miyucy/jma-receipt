@@ -105,6 +105,7 @@
            03  IDX12               PIC 9(05).
            03  IDX15               PIC 9(05).
            03  IDX-LST             PIC 9(05).
+           03  IDX-JIHI            PIC 9(05).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -176,6 +177,8 @@
            03  WRK-SANTEISTYMD             PIC X(08).
            03  WRK-SANTEIEDYMD             PIC X(08).
       *
+       01  CONST-AREA.
+           03  CONST-JIHI-MAX      PIC 9(05)   VALUE 10.
       *
       *    ¥¹¥ÑÎÎ°è ¥ï¡¼¥¯
            COPY    "COMMON-SPA"      REPLACING
@@ -674,35 +677,26 @@
            MOVE    WRK-Z9              TO  I51-NYUTGMONEY
       *
       *    ¼«Èñ
-           MOVE    SPA-GMN-I51-JIHI1   TO  WRK-Z9
-           MOVE    WRK-Z9              TO  I51-JIHI1
-           MOVE    SPA-GMN-I51-JIHI2   TO  WRK-Z9
-           MOVE    WRK-Z9              TO  I51-JIHI2
-           MOVE    SPA-GMN-I51-JIHI3   TO  WRK-Z9
-           MOVE    WRK-Z9              TO  I51-JIHI3
-           MOVE    SPA-GMN-I51-JIHI4   TO  WRK-Z9
-           MOVE    WRK-Z9              TO  I51-JIHI4
-           MOVE    SPA-GMN-I51-JIHI5   TO  WRK-Z9
-           MOVE    WRK-Z9              TO  I51-JIHI5
+           PERFORM VARYING IDX-JIHI    FROM    1   BY  1
+                   UNTIL ( IDX-JIHI    >   CONST-JIHI-MAX )
+      *
+               MOVE    SPA-GMN-I51-JIHI(IDX-JIHI) 
+                                       TO  WRK-Z9
+               MOVE    WRK-Z9          TO  I51-JIHITAXNASI(IDX-JIHI) 
+      *
+               MOVE    SPA-GMN-I51-JIHITAX (IDX-JIHI) 
+                                       TO  WRK-Z9
+               MOVE    WRK-Z9          TO  I51-JIHITAXARI (IDX-JIHI) 
+      *
+               MOVE    SPA-GMN-I51-JIHIMSG(IDX-JIHI) 
+                                       TO  I51-JIHIMSG (IDX-JIHI)
+      *
+           END-PERFORM
+      *
       *    ¼«Èñ·×
            MOVE    SPA-GMN-I51-JIHIKEI TO  WRK-Z9
            MOVE    WRK-Z9              TO  I51-JIHIGOK
       *    ¼«Èñ¡Ê¾ÃÈñÀÇ¤¢¤ê¡Ë
-           MOVE    SPA-GMN-I51-JIHITAX1
-                                       TO  WRK-Z9
-           MOVE    WRK-Z9              TO  I51-JIHITAX1
-           MOVE    SPA-GMN-I51-JIHITAX2
-                                       TO  WRK-Z9
-           MOVE    WRK-Z9              TO  I51-JIHITAX2
-           MOVE    SPA-GMN-I51-JIHITAX3
-                                       TO  WRK-Z9
-           MOVE    WRK-Z9              TO  I51-JIHITAX3
-           MOVE    SPA-GMN-I51-JIHITAX4
-                                       TO  WRK-Z9
-           MOVE    WRK-Z9              TO  I51-JIHITAX4
-           MOVE    SPA-GMN-I51-JIHITAX5
-                                       TO  WRK-Z9
-           MOVE    WRK-Z9              TO  I51-JIHITAX5
       *    ¼«Èñ·×
            MOVE    SPA-GMN-I51-JIHITAXKEI  TO  WRK-Z9
            MOVE    WRK-Z9              TO  I51-JIHITAXGOK
@@ -748,18 +742,6 @@
            MOVE    SPA-GMN-I51-SEIGOK  TO  WRK-Z99
            MOVE    WRK-Z99             TO  I51-GOKSKY
       *
-      *
-      *    ¼«ÈñÌ¾¾Î
-           MOVE    SPA-GMN-I51-JIHIMSG(1)
-                                       TO  I51-JIHIMSG1
-           MOVE    SPA-GMN-I51-JIHIMSG(2)
-                                       TO  I51-JIHIMSG2
-           MOVE    SPA-GMN-I51-JIHIMSG(3)
-                                       TO  I51-JIHIMSG3
-           MOVE    SPA-GMN-I51-JIHIMSG(4)
-                                       TO  I51-JIHIMSG4
-           MOVE    SPA-GMN-I51-JIHIMSG(5)
-                                       TO  I51-JIHIMSG5
       *
       *    Ï«ºÒ½é¿Ç
            MOVE    SPA-GMN-I51-ROUSYOSIN
@@ -2306,19 +2288,15 @@
            MOVE    WKSYU-RJN-FTN           TO  SPA-GMN-I51-ROUFTN
            MOVE    WKSYU-KOH-FTN           TO  SPA-GMN-I51-KOHFTN
       *    ¼«Èñ£±
-           MOVE    WKSYU-JIHI-1            TO  SPA-GMN-I51-JIHI1
-           MOVE    WKSYU-JIHI-2            TO  SPA-GMN-I51-JIHI2
-           MOVE    WKSYU-JIHI-3            TO  SPA-GMN-I51-JIHI3
-           MOVE    WKSYU-JIHI-4            TO  SPA-GMN-I51-JIHI4
-           MOVE    WKSYU-JIHI-5            TO  SPA-GMN-I51-JIHI5
+           PERFORM VARYING IDX-JIHI    FROM    1   BY  1
+                   UNTIL ( IDX-JIHI    >   CONST-JIHI-MAX )
+               MOVE    WKSYU-JIHI-TAXNASI (IDX-JIHI)
+                                   TO  SPA-GMN-I51-JIHI    (IDX-JIHI)
+               MOVE    WKSYU-JIHI-TAXARI  (IDX-JIHI)
+                                   TO  SPA-GMN-I51-JIHITAX (IDX-JIHI)
+           END-PERFORM
       *    ¼«Èñ·×
            MOVE    WKSYU-JIHI-TOTAL        TO  SPA-GMN-I51-JIHIKEI
-      *    ¼«Èñ¡Ê¾ÃÈñÀÇ¤¢¤ê¡Ë
-           MOVE    WKSYU-JIHI-1-TAX        TO  SPA-GMN-I51-JIHITAX1
-           MOVE    WKSYU-JIHI-2-TAX        TO  SPA-GMN-I51-JIHITAX2
-           MOVE    WKSYU-JIHI-3-TAX        TO  SPA-GMN-I51-JIHITAX3
-           MOVE    WKSYU-JIHI-4-TAX        TO  SPA-GMN-I51-JIHITAX4
-           MOVE    WKSYU-JIHI-5-TAX        TO  SPA-GMN-I51-JIHITAX5
       *    ¼«Èñ·×¡Ê¾ÃÈñÀÇ¤¢¤ê¡Ë
            MOVE    WKSYU-JIHI-TOTAL-TAX    TO  SPA-GMN-I51-JIHITAXKEI
       *    ¼«Èñ¾ÃÈñÀÇ
@@ -2403,6 +2381,21 @@
                        WHEN    "5"
                            MOVE    SYS-1013-JIHINAME
                                            TO  SPA-GMN-I51-JIHIMSG (5)
+                       WHEN    "6"
+                           MOVE    SYS-1013-JIHINAME
+                                           TO  SPA-GMN-I51-JIHIMSG (6)
+                       WHEN    "7"
+                           MOVE    SYS-1013-JIHINAME
+                                           TO  SPA-GMN-I51-JIHIMSG (7)
+                       WHEN    "8"
+                           MOVE    SYS-1013-JIHINAME
+                                           TO  SPA-GMN-I51-JIHIMSG (8)
+                       WHEN    "9"
+                           MOVE    SYS-1013-JIHINAME
+                                           TO  SPA-GMN-I51-JIHIMSG (9)
+                       WHEN    "0"
+                           MOVE    SYS-1013-JIHINAME
+                                           TO  SPA-GMN-I51-JIHIMSG (10)
                    END-EVALUATE
                END-IF
       *
