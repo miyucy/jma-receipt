@@ -988,19 +988,17 @@
            MOVE    SYU-RJN-FTN         TO  SPA-GMN-ROUFTN
            MOVE    SYU-KOH-FTN         TO  SPA-GMN-KOHFTN
       *    ¼«Èñ£±
-           MOVE    SYU-JIHI-1          TO  SPA-GMN-JIHI1
-           MOVE    SYU-JIHI-2          TO  SPA-GMN-JIHI2
-           MOVE    SYU-JIHI-3          TO  SPA-GMN-JIHI3
-           MOVE    SYU-JIHI-4          TO  SPA-GMN-JIHI4
-           MOVE    SYU-JIHI-5          TO  SPA-GMN-JIHI5
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   10
+               MOVE    SYU-JIHI-TAXNASI(IDX)   TO  SPA-GMN-JIHI(IDX)
+           END-PERFORM
       *    ¼«Èñ·×
            MOVE    SYU-JIHI-TOTAL      TO  SPA-GMN-JIHIKEI
       *    ¼«Èñ¡Ê¾ÃÈñÀÇ¤¢¤ê¡Ë
-           MOVE    SYU-JIHI-1-TAX      TO  SPA-GMN-JIHITAX1
-           MOVE    SYU-JIHI-2-TAX      TO  SPA-GMN-JIHITAX2
-           MOVE    SYU-JIHI-3-TAX      TO  SPA-GMN-JIHITAX3
-           MOVE    SYU-JIHI-4-TAX      TO  SPA-GMN-JIHITAX4
-           MOVE    SYU-JIHI-5-TAX      TO  SPA-GMN-JIHITAX5
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   10
+               MOVE    SYU-JIHI-TAXARI(IDX)    TO  SPA-GMN-JIHITAX(IDX)
+           END-PERFORM
       *    ¼«Èñ·×¡Ê¾ÃÈñÀÇ¤¢¤ê¡Ë
            MOVE    SYU-JIHI-TOTAL-TAX  TO  SPA-GMN-JIHITAXKEI
       *    ¼«Èñ¾ÃÈñÀÇ
@@ -1601,6 +1599,21 @@
                        WHEN    "5"
                            MOVE    SYS-1013-JIHINAME
                                                TO  SPA-GMN-JIHIMSG (5)
+                       WHEN    "6"
+                           MOVE    SYS-1013-JIHINAME
+                                               TO  SPA-GMN-JIHIMSG (6)
+                       WHEN    "7"
+                           MOVE    SYS-1013-JIHINAME
+                                               TO  SPA-GMN-JIHIMSG (7)
+                       WHEN    "8"
+                           MOVE    SYS-1013-JIHINAME
+                                               TO  SPA-GMN-JIHIMSG (8)
+                       WHEN    "9"
+                           MOVE    SYS-1013-JIHINAME
+                                               TO  SPA-GMN-JIHIMSG (9)
+                       WHEN    "0"
+                           MOVE    SYS-1013-JIHINAME
+                                               TO  SPA-GMN-JIHIMSG (10)
                    END-EVALUATE
                END-IF
       *
@@ -2282,30 +2295,50 @@
            MOVE    WRK-Z9              TO  K03-ETCTGMONEY
       *
       *    ¼«Èñ
-           MOVE    SPA-GMN-JIHI1       TO  WRK-Z9
+           MOVE    SPA-GMN-JIHI (1)    TO  WRK-Z9
            MOVE    WRK-Z9              TO  K03-JIHI1
-           MOVE    SPA-GMN-JIHI2       TO  WRK-Z9
+           MOVE    SPA-GMN-JIHI (2)    TO  WRK-Z9
            MOVE    WRK-Z9              TO  K03-JIHI2
-           MOVE    SPA-GMN-JIHI3       TO  WRK-Z9
+           MOVE    SPA-GMN-JIHI (3)    TO  WRK-Z9
            MOVE    WRK-Z9              TO  K03-JIHI3
-           MOVE    SPA-GMN-JIHI4       TO  WRK-Z9
+           MOVE    SPA-GMN-JIHI (4)    TO  WRK-Z9
            MOVE    WRK-Z9              TO  K03-JIHI4
-           MOVE    SPA-GMN-JIHI5       TO  WRK-Z9
+           MOVE    SPA-GMN-JIHI (5)    TO  WRK-Z9
            MOVE    WRK-Z9              TO  K03-JIHI5
+           MOVE    SPA-GMN-JIHI (6)    TO  WRK-Z9
+           MOVE    WRK-Z9              TO  K03-JIHI6
+           MOVE    SPA-GMN-JIHI (7)    TO  WRK-Z9
+           MOVE    WRK-Z9              TO  K03-JIHI7
+           MOVE    SPA-GMN-JIHI (8)    TO  WRK-Z9
+           MOVE    WRK-Z9              TO  K03-JIHI8
+           MOVE    SPA-GMN-JIHI (9)    TO  WRK-Z9
+           MOVE    WRK-Z9              TO  K03-JIHI9
+           MOVE    SPA-GMN-JIHI (10)   TO  WRK-Z9
+           MOVE    WRK-Z9              TO  K03-JIHI10
       *    ¼«Èñ·×
            MOVE    SPA-GMN-JIHIKEI     TO  WRK-Z9
            MOVE    WRK-Z9              TO  K03-JIHIGOK
       *    ¼«Èñ¡Ê¾ÃÈñÀÇ¤¢¤ê¡Ë
-           MOVE    SPA-GMN-JIHITAX1    TO  WRK-Z9
+           MOVE    SPA-GMN-JIHITAX(1)  TO  WRK-Z9
            MOVE    WRK-Z9              TO  K03-JIHITAX1
-           MOVE    SPA-GMN-JIHITAX2    TO  WRK-Z9
+           MOVE    SPA-GMN-JIHITAX(2)  TO  WRK-Z9
            MOVE    WRK-Z9              TO  K03-JIHITAX2
-           MOVE    SPA-GMN-JIHITAX3    TO  WRK-Z9
+           MOVE    SPA-GMN-JIHITAX(3)  TO  WRK-Z9
            MOVE    WRK-Z9              TO  K03-JIHITAX3
-           MOVE    SPA-GMN-JIHITAX4    TO  WRK-Z9
+           MOVE    SPA-GMN-JIHITAX(4)  TO  WRK-Z9
            MOVE    WRK-Z9              TO  K03-JIHITAX4
-           MOVE    SPA-GMN-JIHITAX5    TO  WRK-Z9
+           MOVE    SPA-GMN-JIHITAX(5)  TO  WRK-Z9
            MOVE    WRK-Z9              TO  K03-JIHITAX5
+           MOVE    SPA-GMN-JIHITAX(6)  TO  WRK-Z9
+           MOVE    WRK-Z9              TO  K03-JIHITAX6
+           MOVE    SPA-GMN-JIHITAX(7)  TO  WRK-Z9
+           MOVE    WRK-Z9              TO  K03-JIHITAX7
+           MOVE    SPA-GMN-JIHITAX(8)  TO  WRK-Z9
+           MOVE    WRK-Z9              TO  K03-JIHITAX8
+           MOVE    SPA-GMN-JIHITAX(9)  TO  WRK-Z9
+           MOVE    WRK-Z9              TO  K03-JIHITAX9
+           MOVE    SPA-GMN-JIHITAX(10) TO  WRK-Z9
+           MOVE    WRK-Z9              TO  K03-JIHITAX10
       *    ¼«Èñ·×
            MOVE    SPA-GMN-JIHITAXKEI  TO  WRK-Z9
            MOVE    WRK-Z9              TO  K03-JIHITAXGOK
@@ -2397,6 +2430,11 @@
            MOVE    SPA-GMN-JIHIMSG(3)  TO  K03-JIHIMSG3
            MOVE    SPA-GMN-JIHIMSG(4)  TO  K03-JIHIMSG4
            MOVE    SPA-GMN-JIHIMSG(5)  TO  K03-JIHIMSG5
+           MOVE    SPA-GMN-JIHIMSG(6)  TO  K03-JIHIMSG6
+           MOVE    SPA-GMN-JIHIMSG(7)  TO  K03-JIHIMSG7
+           MOVE    SPA-GMN-JIHIMSG(8)  TO  K03-JIHIMSG8
+           MOVE    SPA-GMN-JIHIMSG(9)  TO  K03-JIHIMSG9
+           MOVE    SPA-GMN-JIHIMSG(10) TO  K03-JIHIMSG10
       *
       *    ¥É¥¯¥¿¡¼
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -2519,6 +2557,11 @@
            MOVE    ALL "*"              TO  K03-JIHI3
            MOVE    ALL "*"              TO  K03-JIHI4
            MOVE    ALL "*"              TO  K03-JIHI5
+           MOVE    ALL "*"              TO  K03-JIHI6
+           MOVE    ALL "*"              TO  K03-JIHI7
+           MOVE    ALL "*"              TO  K03-JIHI8
+           MOVE    ALL "*"              TO  K03-JIHI9
+           MOVE    ALL "*"              TO  K03-JIHI10
       *    ¼«Èñ·×
            MOVE    ALL "*"              TO  K03-JIHIGOK
       *    ¼«Èñ¡Ê¾ÃÈñÀÇ¤¢¤ê¡Ë
@@ -2527,6 +2570,11 @@
            MOVE    ALL "*"              TO  K03-JIHITAX3
            MOVE    ALL "*"              TO  K03-JIHITAX4
            MOVE    ALL "*"              TO  K03-JIHITAX5
+           MOVE    ALL "*"              TO  K03-JIHITAX6
+           MOVE    ALL "*"              TO  K03-JIHITAX7
+           MOVE    ALL "*"              TO  K03-JIHITAX8
+           MOVE    ALL "*"              TO  K03-JIHITAX9
+           MOVE    ALL "*"              TO  K03-JIHITAX10
       *    ¼«Èñ·×
            MOVE    ALL "*"              TO  K03-JIHITAXGOK
       *    ¼«ÈñÀÇ

@@ -2755,6 +2755,16 @@
                        ADD     SPA-COM-KEI (IDX)    TO  SYU-JIHI-4
                    WHEN    5
                        ADD     SPA-COM-KEI (IDX)    TO  SYU-JIHI-5
+                   WHEN    6
+                       ADD     SPA-COM-KEI (IDX)    TO  SYU-JIHI-6
+                   WHEN    7
+                       ADD     SPA-COM-KEI (IDX)    TO  SYU-JIHI-7
+                   WHEN    8
+                       ADD     SPA-COM-KEI (IDX)    TO  SYU-JIHI-8
+                   WHEN    9
+                       ADD     SPA-COM-KEI (IDX)    TO  SYU-JIHI-9
+                   WHEN    10
+                       ADD     SPA-COM-KEI (IDX)    TO  SYU-JIHI-10
                END-EVALUATE
       *        æ√»Ò¿«§¢§Í
                WHEN    "960"
@@ -2769,6 +2779,16 @@
                        ADD     SPA-COM-KEI (IDX)    TO  SYU-JIHI-4-TAX
                    WHEN    5
                        ADD     SPA-COM-KEI (IDX)    TO  SYU-JIHI-5-TAX
+                   WHEN    6
+                       ADD     SPA-COM-KEI (IDX)    TO  SYU-JIHI-6-TAX
+                   WHEN    7
+                       ADD     SPA-COM-KEI (IDX)    TO  SYU-JIHI-7-TAX
+                   WHEN    8
+                       ADD     SPA-COM-KEI (IDX)    TO  SYU-JIHI-8-TAX
+                   WHEN    9
+                       ADD     SPA-COM-KEI (IDX)    TO  SYU-JIHI-9-TAX
+                   WHEN    10
+                       ADD     SPA-COM-KEI (IDX)    TO  SYU-JIHI-10-TAX
                END-EVALUATE
            END-EVALUATE
       *

@@ -41,17 +41,13 @@
                    07  SPA-GMN-HKNTEKI           PIC 9(10).
                    07  SPA-GMN-ROUFTN            PIC 9(07).
                    07  SPA-GMN-KOHFTN            PIC 9(07).
-                   07  SPA-GMN-JIHI1             PIC 9(07).
-                   07  SPA-GMN-JIHI2             PIC 9(07).
-                   07  SPA-GMN-JIHI3             PIC 9(07).
-                   07  SPA-GMN-JIHI4             PIC 9(07).
-                   07  SPA-GMN-JIHI5             PIC 9(07).
+                   07  SPA-GMN-JIHI-G.
+                       09  SPA-GMN-JIHI              PIC 9(07)
+                                                     OCCURS  10.
+                   07  SPA-GMN-JIHITAX-G.
+                       09  SPA-GMN-JIHITAX           PIC 9(07)
+                                                     OCCURS  10.
                    07  SPA-GMN-JIHIKEI           PIC 9(07).
-                   07  SPA-GMN-JIHITAX1          PIC 9(07).
-                   07  SPA-GMN-JIHITAX2          PIC 9(07).
-                   07  SPA-GMN-JIHITAX3          PIC 9(07).
-                   07  SPA-GMN-JIHITAX4          PIC 9(07).
-                   07  SPA-GMN-JIHITAX5          PIC 9(07).
                    07  SPA-GMN-JIHITAXKEI        PIC 9(07).
                    07  SPA-GMN-JIHIZEI           PIC 9(07).
                    07  SPA-GMN-HKNGAI            PIC 9(07).
@@ -123,7 +119,7 @@
                    07  SPA-YAKJYOFLG-MAX          PIC 9(04).
       *
                    07  SPA-GMN-JIHIMSG           PIC X(20)
-                                                 OCCURS   5.
+                                                 OCCURS   10.
       *            入金の取扱い
                    07  SPA-GMN-NYUKINKBN-G.
                        09  SPA-GMN-NYUKINKBN       PIC X(01).
