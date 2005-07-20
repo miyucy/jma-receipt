@@ -132,7 +132,6 @@ asciiconv(int conv_flg,
 
 	advanced_bytes = 1;
 	cchar->in_type = KIGOU;
-
 	if ( isgraph(inputChar) ) {
 		if ( (conv_flg) && (char_type & ZENKAKU) ){
 			cchar->out_type = OTHER;
@@ -142,6 +141,8 @@ asciiconv(int conv_flg,
 		} else {
 			cchar->out_len = 1;
 			cchar->out_char[0] = inputChar;
+			printf("are?\n");
+			
 			cchar->out_type = KIGOU;
 			if ( isdigit(cchar->out_char[0]) ){
 				cchar->in_type = NUMBER;
@@ -159,9 +160,9 @@ asciiconv(int conv_flg,
 			cchar->out_char[0] = 0xa1;
 			cchar->out_char[1] = 0xa1;
 		} else {
-			cchar->out_len = 1;
-			cchar->out_char[0] = inputChar;
+			cchar->in_type = SPLF;
 			cchar->out_type = SPLF;
+			cchar->out_len = 1;
 			cchar->out_char[0] = inputChar;
 		}
 	} else if ( ISLF(inputChar) ){
@@ -365,11 +366,15 @@ kana_euc_convert (int conv_flg,
 				*p++ = cchar->out_char[i];
 			}
 		}
+		printf("charintype %d\n", cchar->in_type);
 		intype = intype | cchar->in_type;
 	}
 	*p++ = '\0';
 	*ret_len = current_len;
 
+	printf("intype %d\n", intype);
+	printf("char_type %d\n", char_type);
+	
 	if ( conv_flg == 0 ) {
 		if ( (intype | char_type) != char_type ){
 			ret = 1;
