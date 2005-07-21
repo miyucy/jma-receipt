@@ -246,6 +246,7 @@ FORM_files = \
               HCN25.red \
               HCM03V03.red \
               HCN03V03.red \
+              HCM43V02.red \
 
 all:   
 
