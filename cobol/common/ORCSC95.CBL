@@ -2303,6 +2303,7 @@
                                        SPA-AREA
                                        ORCSHKNSETAREA
       *
+           MOVE    ORCSHKN-HKN-MAX     TO  SPA-HKN-MAX
            PERFORM VARYING     IDX     FROM   1   BY  1
                    UNTIL      (IDX     >   ORCSHKN-HKN-MAX )
                            OR (IDX     >   15   )
@@ -2341,9 +2342,9 @@
                MOVE    ORCSHKN-NAI-RSI-HKNKBN (IDX)
                                            TO  SPA-NAI-RSI-HKNKBN
                                                                (IDX)
+               MOVE    IDX                 TO  SPA-HKN-MAX
            END-PERFORM
       *
-           MOVE    ORCSHKN-HKN-MAX     TO  SPA-HKN-MAX
            IF      SPA-HKN-MAX         =   ZERO
                GO      TO      10013-HKNCOMBI-EXT
            END-IF
