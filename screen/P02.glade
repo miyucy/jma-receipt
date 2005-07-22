@@ -199,7 +199,7 @@
 
       <widget>
 	<class>GtkFixed</class>
-	<name>FIXPAGE1</name>
+	<name>FP1</name>
 
 	<widget>
 	  <class>GtkButton</class>
@@ -941,7 +941,7 @@
 
       <widget>
 	<class>GtkFixed</class>
-	<name>FIXPAGE2</name>
+	<name>FP2</name>
 
 	<widget>
 	  <class>GtkPandaEntry</class>
@@ -3871,7 +3871,7 @@
 
       <widget>
 	<class>GtkFixed</class>
-	<name>FIXPAGE3</name>
+	<name>FP3</name>
 
 	<widget>
 	  <class>GtkPandaEntry</class>
@@ -5571,7 +5571,7 @@
 
       <widget>
 	<class>GtkFixed</class>
-	<name>FIXPAGE4</name>
+	<name>FP4</name>
 
 	<widget>
 	  <class>GtkPandaEntry</class>
@@ -6558,7 +6558,7 @@
 
       <widget>
 	<class>GtkFixed</class>
-	<name>FIXPAGE6</name>
+	<name>FP6</name>
 
 	<widget>
 	  <class>GtkPandaEntry</class>
@@ -7138,7 +7138,7 @@
 
       <widget>
 	<class>GtkFixed</class>
-	<name>FIXPAGE7</name>
+	<name>FP7</name>
 
 	<widget>
 	  <class>GtkPandaEntry</class>
@@ -8353,7 +8353,7 @@
 
       <widget>
 	<class>GtkFixed</class>
-	<name>FIXPAGE8</name>
+	<name>FP8</name>
 
 	<widget>
 	  <class>GtkPandaEntry</class>

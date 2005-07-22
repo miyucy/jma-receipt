@@ -26,7 +26,7 @@ P02	{
 		};
 		nb2	{
 			pageno	int;
-			FIXPAGE1	{
+			FP1	{
 				sc61	{
 					P020_UKETUKE_LIST	{
 						count	int;
@@ -102,7 +102,7 @@ P02	{
 					};
 				};
 			};
-			FIXPAGE2	{
+			FP2	{
 				P02_KANANAME	{
 					value	varchar(50);
 				};
@@ -395,7 +395,7 @@ P02	{
 					value	varchar(16);
 				};
 			};
-			FIXPAGE3	{
+			FP3	{
 				P027_SELNUM	{
 					value	varchar(4);
 				};
@@ -640,7 +640,7 @@ P02	{
 					label	varchar(20);
 				};
 			};
-			FIXPAGE4	{
+			FP4	{
 				P021_FAX	{
 					value	varchar(15);
 				};
@@ -705,7 +705,7 @@ P02	{
 					value	varchar(15);
 				};
 			};
-			FIXPAGE6	{
+			FP6	{
 				P023_SELNUM	{
 					value	varchar(4);
 				};
@@ -752,7 +752,7 @@ P02	{
 					value	bool;
 				};
 			};
-			FIXPAGE7	{
+			FP7	{
 				P024_TSRSELNUM	{
 					value	varchar(4);
 				};
@@ -852,7 +852,7 @@ P02	{
 					value	varchar(40);
 				};
 			};
-			FIXPAGE8	{
+			FP8	{
 				P025_SELNUM1	{
 					value	varchar(4);
 				};
