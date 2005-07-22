@@ -961,10 +961,10 @@ R02	{
 		};
 		PREFKBN_COMBO	{
 			PREFKBN	{
-				value	varchar(6);
+				value	varchar(20);
 			};
 			count	int;
-			item	varchar(6)[3];
+			item	varchar(20)[4];
 		};
 		PRTKBN_COMBO	{
 			PRTKBN	{

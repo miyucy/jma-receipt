@@ -78,6 +78,9 @@
       *  01.06.03    NACL-藤原    05/01/30  訂正日指定
       *  01.06.03    NACL-藤原    05/01/30  「印刷する」場合だけ印刷済の
       *                                     チェック表示を行う
+      *
+      *  02.06.01    NACL-藤原    05/07/13  国保の県内県外の印刷順の指定
+      *                                     「４」の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -151,11 +154,11 @@
                    07  SPA-GMN-PREFKBN-G.
                        09  SPA-GMN-PREFKBN         PIC X(01).
                        09  SPA-GMN-F1              PIC X(01).
-                       09  SPA-GMN-PREFKBNMEI      PIC X(04).
-                   07  SPA-GMN-PREFKBNLST          OCCURS  3.
+                       09  SPA-GMN-PREFKBNMEI      PIC X(18).
+                   07  SPA-GMN-PREFKBNLST          OCCURS  4.
                        09  SPA-GMN-PREFKBNL        PIC X(01).
                        09  SPA-GMN-F1L             PIC X(01).
-                       09  SPA-GMN-PREFKBNMEIL     PIC X(04).
+                       09  SPA-GMN-PREFKBNMEIL     PIC X(18).
       *----(01.00.01) LINE ADD END   --------------------------------
                    07  SPA-GMN-PRTKBN-G.
                        09  SPA-GMN-PRTKBN          PIC X(01).
@@ -643,11 +646,13 @@
                                          TO  SPA-GMN-PRTJYUN-G
       *    県内・県外
            MOVE    "1"                   TO  SPA-GMN-PREFKBNL    (1)
-           MOVE    "全部"                TO  SPA-GMN-PREFKBNMEIL (1)
+           MOVE    "全部（県内分先頭）"  TO  SPA-GMN-PREFKBNMEIL (1)
            MOVE    "2"                   TO  SPA-GMN-PREFKBNL    (2)
            MOVE    "県内"                TO  SPA-GMN-PREFKBNMEIL (2)
            MOVE    "3"                   TO  SPA-GMN-PREFKBNL    (3)
            MOVE    "県外"                TO  SPA-GMN-PREFKBNMEIL (3)
+           MOVE    "4"                   TO  SPA-GMN-PREFKBNL    (4)
+           MOVE    "全部（順不同）"      TO  SPA-GMN-PREFKBNMEIL (4)
       *
            MOVE    SPA-GMN-PREFKBNLST(01)
                                          TO  SPA-GMN-PREFKBN-G
@@ -1217,10 +1222,10 @@
       *
       *    印刷済フラグの設定
            IF      SPA-R99-CANCEL  =   SPACE
-               IF    ( SPA-GMN-SYOKBN  =   "F"  )
-               AND   ( SPA-GMN-PRTKBN  =   "1"  )
-               AND   ( SPA-GMN-PREFKBN =   "1"  )
-               AND   ( SPA-RID1-FLG    =   "OK" )
+               IF    ( SPA-GMN-SYOKBN  =   "F"         )
+               AND   ( SPA-GMN-PRTKBN  =   "1"         )
+               AND   ( SPA-GMN-PREFKBN =   "1" OR  "4" )
+               AND   ( SPA-RID1-FLG    =   "OK"        )
                    PERFORM VARYING IDX FROM    1   BY  1
                            UNTIL   IDX >       WRK-CONS-LINE-MAX
                        IF      SPA-NAI-PRTJYUNI(1 IDX)   =   SPACE
@@ -1695,11 +1700,11 @@
            ELSE    
                MOVE    ZERO                 TO  WRK-HENFLG
                PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       3
+                       UNTIL   IDX >       4
                        OR      SPA-GMN-PREFKBNLST  (IDX)   =   SPACE
                    IF      SPA-GMN-PREFKBN =   SPA-GMN-PREFKBNL (IDX)
                        MOVE    1                   TO  WRK-HENFLG
-                       MOVE    3                   TO  IDX
+                       MOVE    4                   TO  IDX
                    END-IF
                END-PERFORM
                IF      WRK-HENFLG          =   ZERO     
@@ -2080,31 +2085,48 @@
                MOVE    "0"              TO  WRK-PREFKBN
                PERFORM 4501-PRTJYUN-PRINT-SEC
       *
-      *        国保（県内分）出力
+      *        国保（県内・県外混在）出力
                IF    ( SPA-ERRCD        =   SPACE )
-                   IF      SPA-GMN-PREFKBN  =   "1" OR  "2"
+                   IF      SPA-GMN-PREFKBN  =   "4"
                        IF      SPA-GMN-PRTJYUN     =   "01"    OR  "02"
                            MOVE    2                TO  IDW
                        ELSE
                            MOVE    1                TO  IDW
                        END-IF        
                        MOVE    "2"              TO  WRK-TEISYUTUSAKI
-                       MOVE    "1"              TO  WRK-PREFKBN
+                       MOVE    "%"              TO  WRK-PREFKBN
                        PERFORM 4501-PRTJYUN-PRINT-SEC
-                   END-IF
-               END-IF
+                   ELSE
       *
-      *        国保（県外分）出力
-               IF    ( SPA-ERRCD        =   SPACE )
-                   IF      SPA-GMN-PREFKBN  =   "1" OR  "3"
-                       IF      SPA-GMN-PRTJYUN     =   "01"    OR  "02"
-                           MOVE    2                TO  IDW
-                       ELSE
-                           MOVE    1                TO  IDW
-                       END-IF        
-                       MOVE    "2"              TO  WRK-TEISYUTUSAKI
-                       MOVE    "2"              TO  WRK-PREFKBN
-                       PERFORM 4501-PRTJYUN-PRINT-SEC
+      *                国保（県内分）出力
+                       IF    ( SPA-ERRCD        =   SPACE )
+                           IF      SPA-GMN-PREFKBN  =   "1" OR  "2"
+                               IF      SPA-GMN-PRTJYUN     =   "01"
+                                                           OR  "02"
+                                   MOVE    2                TO  IDW
+                               ELSE
+                                   MOVE    1                TO  IDW
+                               END-IF        
+                               MOVE    "2"          TO  WRK-TEISYUTUSAKI
+                               MOVE    "1"          TO  WRK-PREFKBN
+                               PERFORM 4501-PRTJYUN-PRINT-SEC
+                           END-IF
+                       END-IF
+      *
+      *                国保（県外分）出力
+                       IF    ( SPA-ERRCD        =   SPACE )
+                           IF      SPA-GMN-PREFKBN  =   "1" OR  "3"
+                               IF      SPA-GMN-PRTJYUN     =   "01"
+                                                           OR  "02"
+                                   MOVE    2                TO  IDW
+                               ELSE
+                                   MOVE    1                TO  IDW
+                               END-IF        
+                               MOVE    "2"          TO  WRK-TEISYUTUSAKI
+                               MOVE    "2"          TO  WRK-PREFKBN
+                               PERFORM 4501-PRTJYUN-PRINT-SEC
+                           END-IF
+                       END-IF
                    END-IF
                END-IF
       *
@@ -2404,6 +2426,7 @@
            MOVE    WRK-RECE09-EDDATA   TO  SHELLTBL-ARG9
            MOVE    WRK-RECE08-PRTJYUN  TO  SHELLTBL-ARG10
            MOVE    SPA-GMN-PRTKBN  TO  SHELLTBL-ARG24
+           MOVE    SPA-GMN-PREFKBN TO  SHELLTBL-ARG28
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    PATH-SHELL-SHELL
@@ -2486,6 +2509,7 @@
            MOVE    WRK-RECE09-EDDATA   TO  SHELLTBL-ARG9
            MOVE    WRK-RECE08-PRTJYUN  TO  SHELLTBL-ARG10
            MOVE    SPA-GMN-PRTKBN  TO  SHELLTBL-ARG24
+           MOVE    SPA-GMN-PREFKBN TO  SHELLTBL-ARG28
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    PATH-SHELL-SHELL
@@ -2766,7 +2790,7 @@
       *
            MOVE    SPA-GMN-PREFKBN-G   TO  R02-PREFKBN
            PERFORM VARYING IDX FROM    1       BY  1
-                   UNTIL       IDX             >   3
+                   UNTIL       IDX             >   4
                    OR          SPA-GMN-PREFKBNL    (IDX)   =   SPACE 
                MOVE    SPA-GMN-PREFKBNLST(IDX) TO  R02-PREFKBNLST (IDX)
                MOVE    IDX                     TO  R02-PREFKBN-COUNT

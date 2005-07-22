@@ -42,9 +42,9 @@
                 05  R02-PRTJYUNLST  PIC X(27)   OCCURS  5 TIMES.
               04  R02-PREFKBN-COMBO.
                 05  R02-PREFKBN.
-                  06  R02-VALUE   PIC X(6).
+                  06  R02-VALUE   PIC X(20).
                 05  R02-PREFKBN-COUNT   PIC S9(9)   BINARY.
-                05  R02-PREFKBNLST  PIC X(6)   OCCURS  3 TIMES.
+                05  R02-PREFKBNLST  PIC X(20)   OCCURS  4 TIMES.
               04  R02-PRTKBN-COMBO.
                 05  R02-PRTKBN.
                   06  R02-VALUE   PIC X(14).

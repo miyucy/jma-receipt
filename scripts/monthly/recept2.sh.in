@@ -32,6 +32,7 @@ fi
 #        $25 社保（続紙）プリンタ名
 #        $26 国保（続紙）プリンタ名
 #        $27 印刷区分 1:印刷のみ 2:印刷＆ｐｓ 3:ｐｓのみ 
+#        $28 県内県外区分
 #-------------------------------------------#
 ##      エラーファイル削除
 	echo $#
@@ -52,7 +53,7 @@ fi
            if  [ -e $6 ]; then
                exit
            else
-	           $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0101 -parameter ${24},$1,$2,$3,$7,$8,$9,${10},
+	           $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0101 -parameter ${24},${28},$1,$2,$3,$7,$8,$9,${10},
            fi
         else 
            if  [ -e $6 ]; then

@@ -54,6 +54,8 @@
       *  01.03.01    NACL-藤原    04/12/01  印刷中止処理の追加
       *
       *  02.06.01    NACL-竹田    05/05/30  realtime preview 処理追加
+      *  02.06.02    NACL-藤原    05/07/13  国保の県内県外の印刷順の指定
+      *                                     「４」の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -135,12 +137,16 @@
                 05  WRK-PARA-SHELLID           PIC X(08).
                 05  WRK-PARA-JOBID             PIC 9(07).
                 05  WRK-PARA-PRTKBN            PIC X(01).
+                05  WRK-PARA-PREFKBN           PIC X(01).
       *
            03  WRK-RECE08-PRTRENNUM    PIC 9(06).
       *
            03  WRK-RECEERR             PIC X(200). 
       *
-           03  WRK-PATH                PIC X(64). 
+           03  WRK-PATH. 
+               05  FILLER          PIC S9(9)   BINARY.
+               05  FILLER          PIC S9(9)   BINARY.
+               05  FILLER          PIC S9(9)   BINARY.
       *
            COPY    "CPSHELLTBL.INC".
       *     
@@ -217,6 +223,7 @@
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO  WRK-PARA-PRTKBN
+                                             WRK-PARA-PREFKBN
                                              WRK-PARA-JOBID
                                              WRK-PARA-SHELLID
                                              WRK-PARA1
@@ -269,6 +276,19 @@
       *
            MOVE    WRK-PARA-RECE09-STDATA       TO  RECE08-STKANANAME
            MOVE    WRK-PARA-RECE09-EDDATA       TO  RECE08-EDKANANAME
+      *
+      *    出力内容による頁設定
+           EVALUATE    WRK-PARA-PRTKBN
+               WHEN    "1"
+                   MOVE    1                    TO  RECE08-STRENNUM
+                   MOVE    99                   TO  RECE08-EDRENNUM
+               WHEN    "2"
+                   MOVE    1                    TO  RECE08-STRENNUM
+                   MOVE    1                    TO  RECE08-EDRENNUM
+               WHEN    "3"
+                   MOVE    2                    TO  RECE08-STRENNUM
+                   MOVE    99                   TO  RECE08-EDRENNUM
+           END-EVALUATE
            PERFORM 900-RECEPRT-SELECT-SEC
       *
            .
@@ -448,97 +468,128 @@
       *
       *    個別作成時の入力順印刷
            IF      WRK-PARA-RECE09-PRTJYUN      =   "05"
-               MOVE    "RECEPRT-KEY30"         TO  WRK-PATH
+               MOVE    PATH-TBL-RECEPRT-KEY30       TO  WRK-PATH
            ELSE
+             IF      WRK-PARA-PREFKBN           =   "4"
+               IF      WRK-PARA-RECE09-RECESYUBETU  =   "9999"  
+                   IF      WRK-PARA-RECE09-PRTJYUN      =   "03"
+                       MOVE    PATH-TBL-RECEPRT-KEY35   TO  WRK-PATH
+                   ELSE
+                       MOVE    PATH-TBL-RECEPRT-KEY36   TO  WRK-PATH
+                   END-IF
+               ELSE 
+                   IF      WRK-PARA-RECE09-RECESYUBETU  =   ZERO
+                                                        OR  "8888"
+                       IF      WRK-PARA-RECE09-PRTJYUN  =   "01"  OR
+                                                            "03" 
+                           MOVE    PATH-TBL-RECEPRT-KEY33   TO  WRK-PATH
+                       ELSE
+                           MOVE    PATH-TBL-RECEPRT-KEY34   TO  WRK-PATH
+                       END-IF
+                   ELSE 
+                       IF      WRK-PARA-RECE09-PRTJYUN =   "01"
+                           MOVE    PATH-TBL-RECEPRT-KEY31  TO  WRK-PATH
+                       ELSE
+                           MOVE    PATH-TBL-RECEPRT-KEY32  TO  WRK-PATH
+                       END-IF
+                   END-IF
+               END-IF
+             ELSE
       *        レセプト種別別と医保・国保別でＫＥＹを変える
                EVALUATE    WRK-PARA-PRTKBN
                  WHEN    "1"
                    IF      WRK-PARA-RECE09-RECESYUBETU  =   "9999"  
                        IF      WRK-PARA-RECE09-PRTJYUN      =   "03"
-      *********            MOVE    "RECEPRT-KEY7"          TO  WRK-PATH
-                           MOVE    "RECEPRT-KEY16"         TO  WRK-PATH
+                           MOVE    PATH-TBL-RECEPRT-KEY16   TO  WRK-PATH
                        ELSE
-      *********            MOVE    "RECEPRT-KEY8"          TO  WRK-PATH
-                           MOVE    "RECEPRT-KEY17"         TO  WRK-PATH
+                           MOVE    PATH-TBL-RECEPRT-KEY17   TO  WRK-PATH
                        END-IF
                    ELSE 
                        IF      WRK-PARA-RECE09-RECESYUBETU  =   ZERO
                                                             OR  "8888"
                            IF      WRK-PARA-RECE09-PRTJYUN  =   "01"  OR
                                                                 "03" 
-      *********                MOVE    "RECEPRT-KEY5"      TO  WRK-PATH
-                               MOVE    "RECEPRT-KEY14"     TO  WRK-PATH
+                               MOVE    PATH-TBL-RECEPRT-KEY14
+                                                            TO  WRK-PATH
                            ELSE
-      *********                MOVE    "RECEPRT-KEY6"      TO  WRK-PATH
-                               MOVE    "RECEPRT-KEY15"     TO  WRK-PATH
+                               MOVE    PATH-TBL-RECEPRT-KEY15
+                                                            TO  WRK-PATH
                            END-IF
                        ELSE 
                            IF      WRK-PARA-RECE09-PRTJYUN =   "01"
-      *********                MOVE    "RECEPRT-KEY"       TO  WRK-PATH
-                               MOVE    "RECEPRT-KEY10"     TO  WRK-PATH
+                               MOVE    PATH-TBL-RECEPRT-KEY10
+                                                           TO  WRK-PATH
                            ELSE
-      *********                MOVE    "RECEPRT-KEY2"      TO  WRK-PATH
-                               MOVE    "RECEPRT-KEY11"     TO  WRK-PATH
+                               MOVE    PATH-TBL-RECEPRT-KEY11
+                                                           TO  WRK-PATH
                            END-IF
                        END-IF
                    END-IF
                  WHEN    "2"
                    IF      WRK-PARA-RECE09-RECESYUBETU  =   "9999"  
                        IF      WRK-PARA-RECE09-PRTJYUN      =   "03"
-                           MOVE    "RECEPRT-KEY22"         TO  WRK-PATH
+                           MOVE    PATH-TBL-RECEPRT-KEY22   TO  WRK-PATH
                        ELSE
-                           MOVE    "RECEPRT-KEY23"         TO  WRK-PATH
+                           MOVE    PATH-TBL-RECEPRT-KEY23   TO  WRK-PATH
                        END-IF
                    ELSE 
                        IF      WRK-PARA-RECE09-RECESYUBETU  =   ZERO
                                                             OR  "8888"
                            IF      WRK-PARA-RECE09-PRTJYUN  =   "01"  OR
                                                                 "03" 
-                               MOVE    "RECEPRT-KEY20"     TO  WRK-PATH
+                               MOVE    PATH-TBL-RECEPRT-KEY20
+                                                            TO  WRK-PATH
                            ELSE
-                               MOVE    "RECEPRT-KEY21"     TO  WRK-PATH
+                               MOVE    PATH-TBL-RECEPRT-KEY21
+                                                            TO  WRK-PATH
                            END-IF
                        ELSE 
                            IF      WRK-PARA-RECE09-PRTJYUN =   "01"
-                               MOVE    "RECEPRT-KEY18"     TO  WRK-PATH
+                               MOVE    PATH-TBL-RECEPRT-KEY18
+                                                           TO  WRK-PATH
                            ELSE
-                               MOVE    "RECEPRT-KEY19"     TO  WRK-PATH
+                               MOVE    PATH-TBL-RECEPRT-KEY19
+                                                           TO  WRK-PATH
                            END-IF
                        END-IF
                    END-IF
                  WHEN    "3"
                    IF      WRK-PARA-RECE09-RECESYUBETU  =   "9999"  
                        IF      WRK-PARA-RECE09-PRTJYUN      =   "03"
-                           MOVE    "RECEPRT-KEY28"         TO  WRK-PATH
+                           MOVE    PATH-TBL-RECEPRT-KEY28   TO  WRK-PATH
                        ELSE
-                           MOVE    "RECEPRT-KEY29"         TO  WRK-PATH
+                           MOVE    PATH-TBL-RECEPRT-KEY29   TO  WRK-PATH
                        END-IF
                    ELSE 
                        IF      WRK-PARA-RECE09-RECESYUBETU  =   ZERO
                                                             OR  "8888"
                            IF      WRK-PARA-RECE09-PRTJYUN  =   "01"  OR
                                                                 "03" 
-                               MOVE    "RECEPRT-KEY26"     TO  WRK-PATH
+                               MOVE    PATH-TBL-RECEPRT-KEY26
+                                                           TO  WRK-PATH
                            ELSE
-                               MOVE    "RECEPRT-KEY27"     TO  WRK-PATH
+                               MOVE    PATH-TBL-RECEPRT-KEY27
+                                                           TO  WRK-PATH
                            END-IF
                        ELSE 
                            IF      WRK-PARA-RECE09-PRTJYUN =   "01"
-                               MOVE    "RECEPRT-KEY24"     TO  WRK-PATH
+                               MOVE    PATH-TBL-RECEPRT-KEY24
+                                                           TO  WRK-PATH
                            ELSE
-                               MOVE    "RECEPRT-KEY25"     TO  WRK-PATH
+                               MOVE    PATH-TBL-RECEPRT-KEY25
+                                                           TO  WRK-PATH
                            END-IF
                        END-IF
                    END-IF
                END-EVALUATE
+             END-IF
            END-IF            
       *
-           MOVE    WRK-PATH            TO  ORC-DBPATH
+           MOVE    WRK-PATH            TO  MCP-PATH
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
       *
       *    エラーチェック
@@ -556,12 +607,11 @@
       *****************************************************************
        900-RECEPRT-FET-SEC            SECTION.
       *
-           MOVE    WRK-PATH            TO  ORC-DBPATH
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    WRK-PATH            TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *                                  
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  RECE08-REC    
@@ -580,12 +630,11 @@
       *****************************************************************
        900-RECEPRT-CLS-SEC            SECTION.
       *
-           MOVE    WRK-PATH            TO  ORC-DBPATH
+           MOVE    WRK-PATH            TO  MCP-PATH
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
        900-RECEPRT-CLS-EXT.
            EXIT.
@@ -595,17 +644,15 @@
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    "DBOPEN"            TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
-           MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    "DBSTART"           TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -615,17 +662,15 @@
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
-           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        900-DBDISCONNECT-EXT.
