@@ -58,6 +58,8 @@
            03  IDX-END             PIC 9(04).
            03  IDX-SYU             PIC 9(04).
       *
+           03  IDX7                PIC 9(04).
+      *
       *    ∞Ïª˛ŒŒ∞Ë
        01  WRK-AREA.
            03  WRK-SURYO           PIC 9(05)V9(03).
@@ -79,6 +81,7 @@
       *    •’•£•Î•‡
            03  WRK-FIRKEI          PIC 9(08)V999.
            03  WRK-NYU-FIRKEI      PIC 9(08)V999.
+           03  WRK-NYU-FIRTEN      PIC 9(08)V999.
            03  WRK-FIRTEN-G        PIC 9(08).
            03  WRK-FIRTEN          PIC 9(08).
       *    √‚¡«
@@ -230,14 +233,6 @@
       *    •’•£•Î•‡≈¿øÙ
            MOVE    WRK-SC90-FIRTEN     TO  LNK-COM-FIRTEN-M (IDX-SYU)
            ADD     WRK-SC90-FIRTEN     TO  LNK-SC90-FIRTEN
-      *TEST
-      *    DISPLAY "C90 IDX-SYU:" IDX-SYU
-      *             ",SRYCD:" LNK-COM-INPUTCD(IDX-SYU)
-      *             ",SYUTEN-M:" LNK-COM-SYUTEN-M(IDX-SYU)
-      *             ",YKZTEN-M:" LNK-COM-YKZTEN-M(IDX-SYU)
-      *             ",KIZTEN-M:" LNK-COM-KIZTEN-M(IDX-SYU)
-      *             ",FIRTEN-M:" LNK-COM-FIRTEN-M(IDX-SYU)
-      *TEST
            .
        100-MEISAI-SET-EXT.
            EXIT.
@@ -302,7 +297,8 @@
                IF      LNK-COM-TOKUKIZAIAGEKSNKBN (IDX)
                                            =   1
       *            ∆˝Õƒª˘≤√ªª ¨
-                   ADD     WRK-SYOKEI          TO  WRK-NYU-FIRKEI
+                   PERFORM 10031-FIRUMU-KASAN-SEC
+      ************ ADD     WRK-SYOKEI          TO  WRK-NYU-FIRKEI
                ELSE
       *            •’•£•Î•‡≈¿øÙ≤√ªª
                    ADD     WRK-SYOKEI          TO  WRK-FIRKEI
@@ -430,34 +426,38 @@
            EXIT.
       *
       *****************************************************************
+      *    ≤Ë¡¸ø«√«∆˝Õƒª˘≤√ªª•’•£•Î•‡≈¿øÙ∑◊ªªΩËÕ˝
+      *****************************************************************
+       10031-FIRUMU-KASAN-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  WRK-TENSUKEIS
+           COMPUTE IDX7                =   IDX   +   1
+           IF      LNK-COM-INPUTCD(IDX7)
+                                       =   "799990070"
+      *        ƒæ≤º§À∆˝Õƒª˘≤√ªª§¨§¢§Îª˛
+               COMPUTE WRK-TENSUKEIS       =   WRK-SYOKEI
+                                           *   LNK-COM-KISOTEN (IDX7)
+                                           /   100
+               COMPUTE WRK-NYU-FIRTEN      =   WRK-SYOKEI
+                                           +   WRK-TENSUKEIS
+           ELSE
+               MOVE    WRK-SYOKEI          TO  WRK-NYU-FIRTEN
+           END-IF
+      *
+           ADD     WRK-NYU-FIRTEN          TO  WRK-NYU-FIRKEI
+      *
+           .
+       10031-FIRUMU-KASAN-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    •’•£•Î•‡≈¿øÙ∑◊ªªΩËÕ˝
       *****************************************************************
        1007-FIRUMU-KEI-SEC           SECTION.
       *
-      *    ≤Ë¡¸ø«√«∞ ≥∞§Œ•’•£•Î•‡∑◊ªª
-           MOVE    ZERO                TO  WRK-TENSUKEI-9
-           IF      LNK-COM-SRYKBN (01) =   "70"
-               PERFORM VARYING     IDX     FROM    IDX-STR  BY  1
-                       UNTIL  (IDX     >   IDX-END     )  OR
-                             ((LNK-COM-INPUTCD(IDX)    =   SPACE ) AND
-                              (LNK-GMN-INPUTCD(IDX)    =   SPACE ))
-                   IF      LNK-COM-INPUTCD(IDX)    =   "799990070"
-      *            ∆˝Õƒª˘≤√ªª
-                       COMPUTE WRK-TENSUKEIS   =   WRK-NYU-FIRKEI
-                                               *   LNK-COM-KISOTEN (IDX)
-                                               /   100
-                                               +   0.5
-                       MOVE    WRK-TENSUKEIS       TO  WRK-TENSUKEI-9
-                       MOVE    IDX-END             TO  IDX
-                   END-IF
-               END-PERFORM
-           END-IF
-      *
            IF      WRK-NYU-FIRKEI      >   ZERO
-               COMPUTE WRK-TENSUKEI-9      =   WRK-NYU-FIRKEI
-                                           +   WRK-TENSUKEI-9
                COMPUTE WRK-FIRKEI          =   WRK-FIRKEI
-                                           +   WRK-TENSUKEI-9
+                                           +   WRK-NYU-FIRKEI
            END-IF
       *
            IF      WRK-FIRKEI        >   ZERO
@@ -524,7 +524,7 @@
                                        +   LNK-SC90-SANTEN
                                        +   LNK-SC90-CHITEN
       *    •’•£•Î•‡
-           IF      LNK-COM-SRYKBN (IDX)    =   "70"
+           IF      LNK-COM-SRYKBN (01)    =   "70"
       *        •’•£•Î•‡Œ¡§ÚºÍµªŒ¡£≤§ÿ
                MOVE    LNK-SC90-FIRTEN     TO  LNK-COM-SYUTEN2(IDX-MAX)
       *        •’•£•Î•‡Œ¡§ÚºÍµªŒ¡§ÿ≤√ªª
