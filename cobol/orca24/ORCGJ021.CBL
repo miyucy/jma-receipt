@@ -2999,11 +2999,43 @@
                   (SPA-ERRCD           =   SPACE )  AND
                  ((HZN-RECECOM-SRYKA(1)    =   ZERO )  OR
                   (HZN-RECECOM-SRYKA(1)    =   SPA-J01-SRYKA))
-               PERFORM 3003151-RECECOM-UPDATE-SEC
+               PERFORM 3003150-ATO-RECECOM-SEC
+               IF      FLG-RECECOM         =   1
+                   PERFORM 3003151-RECECOM-UPDATE-SEC
+               END-IF
            END-IF
       *
            .
        300315-RECECOM-UPD-EXT.
+           EXIT.
+      *****************************************************************
+      *    レセプトコメント変更処理
+      *****************************************************************
+       3003150-ATO-RECECOM-SEC           SECTION.
+      *
+      *    変更後の判定
+           MOVE    HZN-RECECOM-REC(1)  TO  RECECOM-REC
+           MOVE    SPA-J021-ATO-HKNCOMBI
+                                       TO  RECECOM-HKNCOMBI
+      *
+           MOVE    RECECOM-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "RECECOM-KEY"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "RECECOM-KEY"       TO  ORC-DBPATH
+               PERFORM 920-RECECOM-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-RECECOM
+           END-IF
+           MOVE    "RECECOM-KEY"       TO  ORC-DBPATH
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       3003150-ATO-RECECOM-EXT.
            EXIT.
       *****************************************************************
       *    レセプトコメント変更処理
