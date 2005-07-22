@@ -774,10 +774,8 @@
                ELSE
                    MOVE    WRK-HKNCOMBIMEI TO  WRK-HKNCOMBIMEI-H
                    MOVE    SPACE           TO  WRK-HKNCOMBIMEI
-                   STRING  WRK-HKNCOMBI        DELIMITED  BY  SIZE
-                           "（"                DELIMITED  BY  SIZE
+                   STRING  "※"                DELIMITED  BY  SIZE
                            WRK-HKNCOMBIMEI-H   DELIMITED  BY  "  "
-                           "）"                DELIMITED  BY  SIZE
                            INTO                WRK-HKNCOMBIMEI
                    END-STRING
                END-IF
@@ -1237,7 +1235,12 @@
            MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
            PERFORM 990-DBCLOSE-SEC
            IF      FLG-HKNCOMBI        =   ZERO
-               PERFORM 31011-HKNCOMBI-HEN-SEC
+               IF      COMB-DELKBN             =   SPACE
+                   PERFORM 31011-HKNCOMBI-HEN-SEC
+               ELSE
+                   MOVE    1                   TO  FLG-HKNCOMBI
+                   MOVE    WRK-HKNCOMBI        TO  WRK-HKNCOMBIMEI
+               END-IF
            ELSE
                MOVE    SPACE               TO  WRK-HKNCOMBIMEI
                MOVE    WRK-HKNCOMBI        TO  WRK-HKNCOMBIMEI
@@ -1350,6 +1353,7 @@
                    MOVE    SPACE               TO  J023-MIDASI
                    MOVE    SPACE               TO  J023-MIDASI-STYLE
                WHEN    1
+               WHEN    5
                    MOVE    "＜変　更＞"        TO  J023-MIDASI
                    MOVE    "red"               TO  J023-MIDASI-STYLE
                WHEN    2
@@ -1733,6 +1737,7 @@
                EVALUATE    SPA-J023-SYORI
       *        変更処理
                WHEN    1
+               WHEN    5
                    PERFORM 2101-HENKOU-SYORI-SEC
       *        コピー処理
                WHEN    3
@@ -1886,6 +1891,7 @@
                               (WRK-SELNUM-CHK (IDX)   =   ZERO) OR
                               (SPA-ERRCD   NOT =   SPACE )
                IF      SPA-J023-SYORI      =   1  OR  3
+                                                  OR  5
       *            変更・コピー処理の時、番号置換え
                    IF      SPA-J023-SELNUM (1) =   WRK-SELNUM-CHK (IDX)
                        CONTINUE
@@ -1912,6 +1918,7 @@
                EVALUATE    SPA-J023-SYORI
       *        変更処理
                WHEN    1
+               WHEN    5
                    PERFORM 2101-HENKOU-SYORI-SEC
       *        コピー処理
                WHEN    3
@@ -2154,13 +2161,12 @@
       *****************************************************************
        212-TOUROKU-SEC                   SECTION.
       *
+      *    入力チェック処理
+           PERFORM 4901-INPUT-CHK-SEC
+      *
            IF      SPA-GMN-PTID        =   ZERO
                MOVE    "0011"              TO  SPA-ERRCD
                GO      TO      212-TOUROKU-EXT
-           END-IF
-      *    入力チェック処理
-           IF      SPA-ERRCD           =   SPACE
-               PERFORM 4901-INPUT-CHK-SEC
            END-IF
       *
            IF     (SPA-J023-HKNCOMBINUM    =   SPACE ) AND
@@ -2185,6 +2191,7 @@
            IF      SPA-ERRCD           =   SPACE
                IF      SPA-J023-COMMENT    =   SPACE
                    MOVE    "0007"              TO  SPA-ERRCD
+                   MOVE    1                   TO  SPA-J023-CUR
                END-IF
            END-IF
       *
@@ -2197,7 +2204,11 @@
                IF      FLG-RECECOM         =   ZERO
                    MOVE    "0105"              TO  SPA-JIDCD
                ELSE
-                   MOVE    "0101"              TO  SPA-JIDCD
+                   IF      SPA-J023-SYORI      =   5
+                       MOVE    "0105"              TO  SPA-JIDCD
+                   ELSE
+                       MOVE    "0101"              TO  SPA-JIDCD
+                   END-IF
                END-IF
       *        複写月
                IF      SPA-J023-COPYYM     NOT =   SPACE
@@ -2356,7 +2367,6 @@
       *****************************************************************
        2120-RECECOM-SEL-SEC          SECTION.
       *
-      *
            MOVE    SPACE               TO  RECECOM-REC
            INITIALIZE                  RECECOM-REC
            MOVE    SPA-HOSPID          TO  RECECOM-HOSPID
@@ -2461,6 +2471,15 @@
                    MOVE    "0020"              TO  SPA-ERRCD
                END-IF
            END-IF
+      *    変更前の保険組合せが無効の時、削除
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-J023-SYORI      =   5     )  AND
+                  (SPA-J023-SELNUM (1) NOT =   ZERO) AND
+                  (SPA-J023-NHKNCOMBI(1)
+                                   NOT =   SPA-J023-HKNCOMBINUM)
+               MOVE    1               TO  IDX2
+               PERFORM 24011-COMMENT-DELETE-SEC
+           END-IF
       *    複写処理
            IF     (SPA-ERRCD           =   SPACE ) AND
                   (SPA-J023-COPYYM NOT =   SPACE )  AND
@@ -2478,15 +2497,6 @@
                PERFORM                     310-SPA-SET-SEC
                MOVE    1                   TO  SPA-J023-CUR
            END-IF
-      *    コメント編集編集
-      *    PERFORM 3103-RECECOM-HEN-SEC
-      *
-      *    MOVE    SPA-NAI-SRYYM       TO  SPA-J023-SRYYMS
-      *    MOVE    SPA-GMN-SRYYM       TO  SPA-J023-SRYYM
-      *
-      *    MOVE    SPACE              TO  SPA-J023-COMMENT
-      *    MOVE    ZERO               TO  SPA-J023-SYORI
-      *    MOVE    1                  TO  SPA-J023-CUR
       *
            .
        2121-TOUROKU-SYORI-EXT.
@@ -2721,6 +2731,7 @@
       *
            IF      SPA-J023-COMMENT    =   SPACE
                MOVE    "0007"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-J023-CUR
                GO      TO      280-BUNREI-ADD-EXT
            END-IF
            PERFORM 800-COMMENT-CHK-SEC
@@ -3015,6 +3026,11 @@
            MOVE    SPA-J023-NHKNCOMBI  (WRK-SELNUM)
                                        TO  J023-HKNCOMBI
            PERFORM 410-HKNCOMBI-SEC
+           IF      SPA-ERRCD           =   "0002"
+               MOVE    "0039"              TO  SPA-ERRCD
+               MOVE    3                   TO  SPA-J023-CUR
+               MOVE    5                   TO  SPA-J023-SYORI
+           END-IF
       *
       *    選択行からレセコメント検索編集
            PERFORM 2103-RECECOM-HEN-SEC
@@ -3036,7 +3052,9 @@
                END-PERFORM
            END-IF
       *
-           MOVE    1                   TO  SPA-J023-CUR
+           IF      SPA-ERRCD          =   SPACE
+               MOVE    1                   TO  SPA-J023-CUR
+           END-IF
            .
        2101-HENKOU-SYORI-EXT.
            EXIT.
@@ -3372,6 +3390,11 @@
                WHEN    "0038"
                    MOVE    "複数選択は１２行までです。削除して下さい。"
                                        TO  SPA-ERRMSG
+               WHEN    "0039"
+                   MOVE    "保険組合せでの受診履歴がありません。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "保険組合せを選択し直して下さい。"
+                                       TO  SPA-ERRMSG(37:)
                WHEN    "0020"
                    MOVE    "更新エラーです。"
                                        TO  SPA-ERRMSG
