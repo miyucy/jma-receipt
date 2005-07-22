@@ -527,6 +527,8 @@
            MOVE    SYUTTL-DISCOUNT-TEIRITU
                                        TO  SYU-DISCOUNT-TEIRITU
            MOVE    SYUTTL-DISCOUNT-RATE   TO  SYU-DISCOUNT-RATE
+      *¸ºÌÈ¶â³Û
+           MOVE    SYU-DISCOUNT-MONEY  TO  SYUTTL-DISCOUNT-MONEY
       *Ï«ºÒÊÝ¸±
            MOVE    SYUTTL-RSISHOSHIN-MONEY
                                        TO  SYU-RSISHOSHIN-MONEY
