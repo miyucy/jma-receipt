@@ -1641,6 +1641,8 @@
            IF     (SPA-J021-DAY1       =   SPA-J021-STDAY )  AND
                   (SPA-J021-DAY2       =   SPA-J021-ENDAY )  AND
                   (SPA-ERRCD           =   SPACE )
+      *        外来時のみとする
+             AND  (SPA-NYUGAIKBN       =   "2"   )
       *        レセプトコメント
                PERFORM 300315-RECECOM-UPD-SEC
            END-IF
