@@ -1174,15 +1174,13 @@
                    IF       FLG-HKNNUM     =   ZERO
                        MOVE   HKN-HBTNUM           TO
                                            RECE62-KOHHBTNUM      (IDX2)
-                       MOVE   HKN-HON-GAIDJGNGAK   TO
+                       MOVE   HKN-HON-NYUDJGNGAK   TO
                                            RECE62-HON-NYUDJGNGAK (IDX2)
-                       MOVE   HKN-HON-GAIDJGNCNT   TO
+                       MOVE   HKN-HON-NYUDGJNCNT   TO
                                            RECE62-HON-NYUDGJNCNT (IDX2)
-                       MOVE   HKN-HON-GAIMNAIJGNGAK
-                                                   TO
+                       MOVE   HKN-HON-NYUMJGNGAK   TO
                                            RECE62-HON-NYUMJGNGAK (IDX2)
-                       MOVE   HKN-HON-GAIMGAIJGNGAK
-                                                   TO
+                       MOVE   HKN-HON-NYUMJGNCNT   TO
                                            RECE62-HON-NYUMJGNCNT (IDX2)
                    END-IF
       *            
