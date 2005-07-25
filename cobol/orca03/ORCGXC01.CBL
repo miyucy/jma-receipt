@@ -565,6 +565,18 @@
                    PERFORM 210-BACK
       *     ¾õÂÖ
                WHEN    "CLICKED"       ALSO    "B02"
+                 IF     SPA-PRTKANRI-TBL-KEY        =  "RECEPTX"
+                        INITIALIZE                  SPA-NAI-TBL
+      *                 PERFORM VARYING IDZ FROM    1   BY  1
+      *                 UNTIL   IDZ >       SPA-GMN-MAX
+      *                 MOVE SPACE      TO  SPA-NAI-TBL-KEY      (IDZ)
+      *                 MOVE ZERO       TO  SPA-NAI-RENNUM       (IDZ)
+      *                 MOVE SPACE      TO  SPA-NAI-TBL-GROUP    (IDZ)
+      *                 MOVE ZERO       TO  SPA-NAI-SHORI-RENNUM (IDZ)
+      *                 MOVE ZERO       TO  SPA-NAI-PAGE         (IDZ)
+      *                 END-PERFORM
+                        MOVE    ZERO            TO  SPA-GMN-MAX
+                 END-IF
                    PERFORM 2011-PRVKANRI-HEN-SEC
       *     ÄûÀµ
                WHEN    "CLICKED"       ALSO    "B04"
