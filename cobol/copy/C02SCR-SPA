@@ -420,18 +420,30 @@
       *    レセコメント入力画面用
            03  SPA-C07-AREA.
                05  SPA-C07-CUR            PIC 9(02).
-               05  SPA-C07-COMMENT        PIC X(400).
+               05  SPA-C07-PAGE           PIC 9(03).
+               05  SPA-C07-NEXT           PIC 9(01).
+               05  SPA-C07-COMMENT        PIC X(800).
                05  SPA-C07-SRYYM          PIC X(06).
                05  SPA-C07-SRYYMS         PIC X(06).
+      *
+               05  SPA-C07-NYUGAIKBN-G.
+                   07  SPA-C07-NYUGAIKBN      PIC X(01).
+                   07  SPA-C07-NYUGAI1        PIC X(01).
+                   07  SPA-C07-NYUGAIKBNMEI   PIC X(08).
+               05  SPA-C07-NYUGAIKBN-COMB.
+                   07  SPA-C07-NYUGAIKBN-LST  PIC X(10)
+                                                    OCCURS  2.
+                   07  SPA-C07-NYUGAI-MAX     PIC 9(04).
+      *
                05  SPA-C07-HKNCOMBI-G.
                    07  SPA-C07-HKNCOMBINUM     PIC X(04).
                    07  SPA-C07-HKNCOMBY1       PIC X(01).
-                   07  SPA-C07-HKNCOMBIMEI     PIC X(35).
+                   07  SPA-C07-HKNCOMBIMEI     PIC X(50).
                05  SPA-C07-HKNCOMB-COMB.
                    07  SPA-C07-HKN-LIST    OCCURS  30.
                        09  SPA-C07-THKNCOMBINUM    PIC X(04).
                        09  SPA-C07-THKNCOMBY1      PIC X(01).
-                       09  SPA-C07-THKNCOMBIMEI    PIC X(35).
+                       09  SPA-C07-THKNCOMBIMEI    PIC X(50).
                    07  SPA-C07-HKNMAX              PIC 9(04).
       *            労災保険区分
                    07  SPA-C07-RSI-THKNKBN-OCC  OCCURS  30.
@@ -448,43 +460,41 @@
                05  SPA-C07-JYURRKNUM           PIC 9(02).
       *
                05  SPA-C07-SRYKA-G.
-                   07  SPA-C07-SRYKA           PIC X(02).
-                   07  SPA-C07-SRYKAH          PIC X(01).
-                   07  SPA-C07-SRYKAMEI        PIC X(12).
+                   07  SPA-C07-SRYKA         PIC X(02).
+                   07  SPA-C07-SRYKAH        PIC X(01).
+                   07  SPA-C07-SRYKAMEI      PIC X(12).
                05  SPA-C07-SRYKA-AREA.
                    07  SPA-C07-SRYKA-LIST      OCCURS  41.
                        09  SPA-C07-SRYKAL      PIC X(02).
                        09  SPA-C07-F1L         PIC X(01).
                        09  SPA-C07-SRYKAMEIL   PIC X(12).
                    07  SPA-C07-SRYKAMAX        PIC 9(04).
-               05  SPA-C07-NYUGAIKBN-G.
-                   07  SPA-C07-NYUGAIKBN       PIC X(01).
-                   07  SPA-C07-NYUGAIKBNH      PIC X(01).
-                   07  SPA-C07-NYUGAIKBNMEI    PIC X(06).
-               05  SPA-C07-NYUGAIKBN-AREA.
-                   07  SPA-C07-NYUGAIKBN-LIST  OCCURS  2.
-                       09  SPA-C07-NYUGAIKBNL  PIC X(01).
-                       09  SPA-C07-F2L         PIC X(01).
-                       09  SPA-C07-NYUGAIKBNMEIL
-                                               PIC X(06).
-                   07  SPA-C07-NYUGAIKBNMAX    PIC 9(04).
       *
                05  SPA-C07-RECECOMLIST-G.
                    07  SPA-C07-RECECOM-LIST      OCCURS  100.
                        09  SPA-C07-TRENNUM       PIC 9(03).
                        09  SPA-C07-TSRYYM        PIC X(06).
                        09  SPA-C07-TSRYKA        PIC X(06).
-                       09  SPA-C07-THKNCOMBI     PIC X(20).
+                       09  SPA-C07-THKNCOMBI     PIC X(50).
                        09  SPA-C07-TSRYDD        PIC X(02).
-                       09  SPA-C07-TCOMMENT      PIC X(400).
+                       09  SPA-C07-TCOMMENT      PIC X(100).
       *
                        09  SPA-C07-NSRYKA        PIC X(02).
                        09  SPA-C07-NSRYYM        PIC X(06).
                        09  SPA-C07-NHKNCOMBI     PIC X(04).
                    07  SPA-C07-RECE-MAX          PIC 9(04).
-               05  SPA-C07-SELNUM       PIC 9(03).
+               05  SPA-C07-SELNUM-X     PIC X(40).
                05  SPA-C07-BUNNUM       PIC 9(03).
                05  SPA-C07-SYORI        PIC 9(01).
+               05  SPA-C07-SELNUM-G.
+                   07  SPA-C07-SELNUM       PIC 9(03)
+                                             OCCURS  12.
+                   07  SPA-C07-SELNUM-MAX   PIC 9(04).
+      *        複写
+               05  SPA-C07-COPY-AREA.
+                   07  SPA-C07-COPYYM         PIC X(06).
+                   07  SPA-C07-NAI-COPYYM     PIC X(06).
+                   07  SPA-C07-COPYTUKI       PIC 9(02).
       *
       *    文例入力画面用
            03  SPA-C08-AREA.
@@ -492,10 +502,14 @@
                05  SPA-C08-BUNNREI-G.
                    07  SPA-C08-BUNNREI-LIST      OCCURS  100.
                        09  SPA-C08-TRENNUM       PIC 9(03).
-                       09  SPA-C08-TCOMMENT      PIC X(400).
+                       09  SPA-C08-TCOMMENT      PIC X(100).
                    07  SPA-C08-BUNREIMAX         PIC 9(04).
                05  SPA-C08-SELNUM       PIC 9(03).
                05  SPA-C08-TBL          PIC 9(03).
+      *
+               05  SPA-C08-PAGE         PIC 9(03).
+               05  SPA-C08-NEXT         PIC 9(01).
+      *
       *              
       *    簡単修正画面
            03  SPA-C10.

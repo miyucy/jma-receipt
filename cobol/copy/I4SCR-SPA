@@ -165,62 +165,97 @@
                05  SPA-GMN-MAX-41                    PIC 9(04).
       *
       *    レセコメント画面（Ｉ４３）
+      *
+      *    レセコメント入力画面用
            03  SPA-I43-AREA.
-               05  SPA-I43-CUR                      PIC 9(02).
-               05  SPA-I43-SRYYM                    PIC X(06).
-               05  SPA-I43-SRYYMS                   PIC X(06).
-               05  SPA-I43-COMMENT                  PIC X(400).
+               05  SPA-I43-CUR            PIC 9(02).
+               05  SPA-I43-PAGE           PIC 9(03).
+               05  SPA-I43-NEXT           PIC 9(01).
+               05  SPA-I43-COMMENT        PIC X(800).
+               05  SPA-I43-SRYYM          PIC X(06).
+               05  SPA-I43-SRYYMS         PIC X(06).
+      *
+               05  SPA-I43-NYUGAIKBN-G.
+                   07  SPA-I43-NYUGAIKBN      PIC X(01).
+                   07  SPA-I43-NYUGAI1        PIC X(01).
+                   07  SPA-I43-NYUGAIKBNMEI   PIC X(08).
+               05  SPA-I43-NYUGAIKBN-COMB.
+                   07  SPA-I43-NYUGAIKBN-LST  PIC X(10)
+                                                    OCCURS  2.
+                   07  SPA-I43-NYUGAI-MAX     PIC 9(04).
+      *
                05  SPA-I43-HKNCOMBI-G.
-                   07  SPA-I43-HKNCOMBINUM          PIC X(04).
-                   07  SPA-I43-HKNCOMBY1            PIC X(01).
-                   07  SPA-I43-HKNCOMBIMEI          PIC X(50).
+                   07  SPA-I43-HKNCOMBINUM     PIC X(04).
+                   07  SPA-I43-HKNCOMBY1       PIC X(01).
+                   07  SPA-I43-HKNCOMBIMEI     PIC X(50).
                05  SPA-I43-HKNCOMB-COMB.
-                   07  SPA-I43-HKN-LIST             OCCURS  30.
-                       09  SPA-I43-THKNCOMBINUM     PIC X(04).
-                       09  SPA-I43-THKNCOMBY1       PIC X(01).
-                       09  SPA-I43-THKNCOMBIMEI     PIC X(50).
-                   07  SPA-I43-HKNMAX               PIC 9(04).
+                   07  SPA-I43-HKN-LIST    OCCURS  30.
+                       09  SPA-I43-THKNCOMBINUM    PIC X(04).
+                       09  SPA-I43-THKNCOMBY1      PIC X(01).
+                       09  SPA-I43-THKNCOMBIMEI    PIC X(50).
+                   07  SPA-I43-HKNMAX              PIC 9(04).
+      *            労災保険区分
+                   07  SPA-I43-RSI-THKNKBN-OCC  OCCURS  30.
+                       09  SPA-I43-RSI-THKNKBN     PIC X(01).
+               05  SPA-I43-RSI-HKNKBN         PIC X(01).
+      *
+      *        受診日一覧（アフターケア）
+               05  SPA-I43-JYURRK-LIST.
+                   07  SPA-I43-JYURRK-OCC  OCCURS  10.
+                       09  SPA-I43-TRRKNUM         PIC 9(02).
+                       09  SPA-I43-JYURRKYMDW      PIC X(09).
+                       09  SPA-I43-JYURRKYMD       PIC X(08).
+                   07  SPA-I43-RRKMAX              PIC 9(04).
+               05  SPA-I43-JYURRKNUM           PIC 9(02).
       *
                05  SPA-I43-SRYKA-G.
-                   07  SPA-I43-SRYKA               PIC X(02).
-                   07  SPA-I43-SRYKAH              PIC X(01).
-                   07  SPA-I43-SRYKAMEI            PIC X(12).
+                   07  SPA-I43-SRYKA         PIC X(02).
+                   07  SPA-I43-SRYKAH        PIC X(01).
+                   07  SPA-I43-SRYKAMEI      PIC X(12).
                05  SPA-I43-SRYKA-AREA.
-                   07  SPA-I43-SRYKA-LIST          OCCURS  41.
-                       09  SPA-I43-SRYKAL          PIC X(02).
-                       09  SPA-I43-F1L             PIC X(01).
-                       09  SPA-I43-SRYKAMEIL       PIC X(12).
-                   07  SPA-I43-SRYKAMAX            PIC 9(04).
+                   07  SPA-I43-SRYKA-LIST      OCCURS  41.
+                       09  SPA-I43-SRYKAL      PIC X(02).
+                       09  SPA-I43-F1L         PIC X(01).
+                       09  SPA-I43-SRYKAMEIL   PIC X(12).
+                   07  SPA-I43-SRYKAMAX        PIC 9(04).
       *
                05  SPA-I43-RECECOMLIST-G.
-                   07  SPA-I43-RECECOM-LIST         OCCURS  100.
-                       09  SPA-I43-TRENNUM          PIC 9(03).
-                       09  SPA-I43-TSRYYM           PIC X(06).
-                       09  SPA-I43-TSRYKA           PIC X(10).
-                       09  SPA-I43-THKNCOMBI        PIC X(50).
-                       09  SPA-I43-TSRYDD           PIC X(02).
-                       09  SPA-I43-TCOMMENT         PIC X(400).
+                   07  SPA-I43-RECECOM-LIST      OCCURS  100.
+                       09  SPA-I43-TRENNUM       PIC 9(03).
+                       09  SPA-I43-TSRYYM        PIC X(06).
+                       09  SPA-I43-TSRYKA        PIC X(06).
+                       09  SPA-I43-THKNCOMBI     PIC X(50).
+                       09  SPA-I43-TSRYDD        PIC X(02).
+                       09  SPA-I43-TCOMMENT      PIC X(100).
       *
-                       09  SPA-I43-NSRYKA           PIC X(02).
-                       09  SPA-I43-NSRYYM           PIC X(06).
-                       09  SPA-I43-NHKNCOMBI        PIC X(04).
-                   07  SPA-I43-RECE-MAX             PIC 9(04).
-               05  SPA-I43-SELNUM               PIC 9(03).
-               05  SPA-I43-BUNNUM               PIC 9(03).
-               05  SPA-I43-SYORI                PIC 9(01).
-      *        入院保険
-               05  SPA-I43-HKNCOMB-COMB-NYU.
-                   07  SPA-I43-HKN-NYU-LIST         OCCURS  30.
-                       09  SPA-I43-HKNCOMBI-NYU     PIC 9(04).
+                       09  SPA-I43-NSRYKA        PIC X(02).
+                       09  SPA-I43-NSRYYM        PIC X(06).
+                       09  SPA-I43-NHKNCOMBI     PIC X(04).
+                   07  SPA-I43-RECE-MAX          PIC 9(04).
+               05  SPA-I43-SELNUM-X     PIC X(40).
+               05  SPA-I43-BUNNUM       PIC 9(03).
+               05  SPA-I43-SYORI        PIC 9(01).
+               05  SPA-I43-SELNUM-G.
+                   07  SPA-I43-SELNUM       PIC 9(03)
+                                             OCCURS  12.
+                   07  SPA-I43-SELNUM-MAX   PIC 9(04).
+      *        複写
+               05  SPA-I43-COPY-AREA.
+                   07  SPA-I43-COPYYM         PIC X(06).
+                   07  SPA-I43-NAI-COPYYM     PIC X(06).
+                   07  SPA-I43-COPYTUKI       PIC 9(02).
       *
-      *    文例入力画面（Ｉ４５）
+      *    文例入力画面用
            03  SPA-I45-AREA.
-               05  SPA-I45-CUR                    PIC 9(02).
+               05  SPA-I45-CUR            PIC 9(02).
                05  SPA-I45-BUNNREI-G.
-                   07  SPA-I45-BUNNREI-LIST       OCCURS  100.
-                       09  SPA-I45-TRENNUM        PIC 9(03).
-                       09  SPA-I45-TCOMMENT       PIC X(400).
-                   07  SPA-I45-BUNREIMAX          PIC 9(04).
-               05  SPA-I45-SELNUM             PIC 9(03).
-               05  SPA-I45-TBL                PIC 9(03).
+                   07  SPA-I45-BUNNREI-LIST      OCCURS  100.
+                       09  SPA-I45-TRENNUM       PIC 9(03).
+                       09  SPA-I45-TCOMMENT      PIC X(100).
+                   07  SPA-I45-BUNREIMAX         PIC 9(04).
+               05  SPA-I45-SELNUM       PIC 9(03).
+               05  SPA-I45-TBL          PIC 9(03).
+      *
+               05  SPA-I45-PAGE         PIC 9(03).
+               05  SPA-I45-NEXT         PIC 9(01).
       *
