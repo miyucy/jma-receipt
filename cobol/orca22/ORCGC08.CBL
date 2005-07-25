@@ -65,6 +65,8 @@
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
+           03  IDX2                PIC 9(04).
+           03  IDX-S               PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -82,8 +84,11 @@
       *
            03  WRK-CIDMSG          PIC X(80).
       *
-           03  WRK-COMMENT         PIC X(400).
-      *
+           03  WRK-COMMENT         PIC X(1000).
+      *    コラムリスト位置
+           03  WRK-C08-BUNREI-ROW     PIC S9(09).
+           03  FLG-GMN-INIT            PIC  9(01).
+     *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-HENYMD.
@@ -120,6 +125,8 @@
            COPY    "CPORCSLNK.INC".
       *    数字変換領域
            COPY    "CPORCSNUM.INC".
+      *
+           COPY    "CPORCXKANACONV.INC".
       *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
@@ -166,12 +173,12 @@
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  STS-AREA
-      *    INITIALIZE                  CNT-AREA
-      *    INITIALIZE                  WRK-AREA
+           INITIALIZE                  WRK-AREA
+           INITIALIZE                  IDX-AREA
       *
-           MOVE    SPA-COMMON      TO  SPA-AREA
-           MOVE    SPA-WORK        TO  SPA-C01KYOUTU
+           MOVE    SPA-COMMON      TO  SPA-AREA.
            MOVE    SPA-FREE        TO  SPA-C02FREE
+           MOVE    SPA-WORK        TO  SPA-C01KYOUTU
       *
            MOVE    SPACE           TO  SPA-ERRCD
            MOVE    ZERO            TO  FLG-END
@@ -192,9 +199,9 @@
                PERFORM 500-SET-SCREEN
            END-IF
       *
-           MOVE    SPA-C01KYOUTU   TO  SPA-WORK
-           MOVE    SPA-AREA        TO  SPA-COMMON
-           MOVE    SPA-C02FREE     TO  SPA-FREE
+           MOVE    SPA-C01KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-C02FREE         TO  SPA-FREE
       *
            .
            EXIT    PROGRAM
@@ -206,6 +213,11 @@
        100-INIT-SEC                SECTION.
       *
       *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  STS-AREA
+      *    INITIALIZE                  CNT-AREA
+      *    INITIALIZE                  WRK-AREA
+      *
       *    エラー画面より
            IF      SPA-MOTOPG          =   "CERR"
                MOVE    SPACE               TO  SPA-MOTOPG
@@ -214,22 +226,20 @@
       *
       *        初期画面編集
                PERFORM 300-SCREEN-SEC
-               IF      FLG-END         =   1
-                   GO      TO      100-INIT-EXT
+               IF      FLG-END         =   ZERO
+      *            画面編集
+                   PERFORM 500-GMNHEN-SEC
                END-IF
-      *
-      *        画面編集
-               PERFORM 500-GMNHEN-SEC
            END-IF
       *
-           MOVE    SPACE               TO  LINKAREA
+           IF      FLG-END         =   ZERO
+               MOVE    SPACE               TO  LINKAREA
+               MOVE   "NEW"                TO  MCP-PUTTYPE
+               MOVE   "C08"               TO  MCP-WINDOW
+               PERFORM 900-PUT-WINDOW
       *
-           MOVE   "NEW"                TO  MCP-PUTTYPE.
-           MOVE   "C08"               TO  MCP-WINDOW.
-      *
-           PERFORM 900-PUT-WINDOW
-      *
-           MOVE    1                   TO  FLG-END
+               MOVE    1                   TO  FLG-END
+           END-IF
            .
       *
        100-INIT-EXT.
@@ -245,13 +255,11 @@
       *            確認画面より
                WHEN    "CID1"
                    PERFORM 3003-CID1-SET-SEC
-                   MOVE    SPACE           TO  SPA-CIDCD
-                   GO      TO      300-SCREEN-EXT
+                   MOVE    SPACE               TO  SPA-CIDCD
+               WHEN    OTHER
+                   PERFORM                     310-SPA-SET-SEC
+                   MOVE    1                   TO  SPA-C08-CUR
            END-EVALUATE
-      *
-           PERFORM                     310-SPA-SET-SEC
-      *
-           MOVE    1                   TO  SPA-C08-CUR
       *
            .
        300-SCREEN-EXT.
@@ -281,8 +289,9 @@
       *****************************************************************
        310-SPA-SET-SEC                  SECTION.
       *
-           INITIALIZE                  SPA-C08-AREA
+            INITIALIZE                  SPA-C08-AREA
       *
+            MOVE    1                  TO  SPA-C08-PAGE
       *     文例編集
             PERFORM 3101-BUNREI-HEN-SEC
       *
@@ -294,6 +303,8 @@
       *    文例編集処理
       *****************************************************************
        3101-BUNREI-HEN-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-GMN-INIT
       *
            INITIALIZE                  SPA-C08-BUNNREI-G
            MOVE    ZERO                TO  SPA-C08-BUNREIMAX
@@ -318,16 +329,40 @@
                INITIALIZE                  EXAMPLE-REC
            END-IF
            MOVE    ZERO                TO  IDX
+           MOVE    ZERO                TO  IDX2
+           MOVE    ZERO                TO  SPA-C08-NEXT
+           IF      SPA-C08-PAGE       =   ZERO
+               MOVE    1                   TO  SPA-C08-PAGE
+           END-IF
+           COMPUTE IDX-S               =  (SPA-C08-PAGE  -  1 )
+                                       *   100
+                                       +   1
            PERFORM
-                   UNTIL       FLG-EXAMPLE        =   1
-               ADD     1                   TO  IDX
-               MOVE    IDX                 TO  SPA-C08-BUNREIMAX
-               MOVE    EXAMPLE-RENNUM      TO  SPA-C08-TRENNUM  (IDX)
-               MOVE    EXAMPLE-COMMENT     TO  SPA-C08-TCOMMENT (IDX)
+                   UNTIL      (FLG-EXAMPLE        =   1 )
+                           OR (SPA-C08-NEXT      =   1 )
+               ADD     1                   TO  IDX2
+               IF      IDX2                >=  IDX-S
+                   ADD     1                   TO  IDX
+                   IF      IDX                 >   100
+                       MOVE    1               TO  SPA-C08-NEXT
+                   ELSE
+                       MOVE    IDX             TO  SPA-C08-BUNREIMAX
+                       MOVE    EXAMPLE-RENNUM  TO  SPA-C08-TRENNUM
+                                                                  (IDX)
+                       MOVE    EXAMPLE-COMMENT TO  SPA-C08-TCOMMENT
+                                                                  (IDX)
+                   END-IF
+               END-IF
       *
                MOVE    "EXAMPLE-KEY1"      TO  ORC-DBPATH
                PERFORM 930-EXAMPLE-READ-SEC
            END-PERFORM
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "EXAMPLE-KEY1"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            MOVE    ZERO                TO  SPA-C08-SELNUM
       *
@@ -340,7 +375,22 @@
       *****************************************************************
        500-GMNHEN-SEC                  SECTION.
       *
+      *    コラムリスト位置保存
+           IF      FLG-GMN-INIT        =   1
+               MOVE    ZERO                TO  WRK-C08-BUNREI-ROW
+           ELSE
+               MOVE    C08-BUNREI-ROW     TO  WRK-C08-BUNREI-ROW
+           END-IF
+      *
+      *
            MOVE    SPACE               TO  C08
+      *
+      *    コラムリストの位置指定
+           MOVE    ZERO                TO  C08-BUNREI-ROW
+           MOVE    ZERO                TO  C08-BUNREI-ROWATTR
+           IF      WRK-C08-BUNREI-ROW NOT =   ZERO
+               MOVE    WRK-C08-BUNREI-ROW TO  C08-BUNREI-ROW
+           END-IF
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-C08-BUNREIMAX
@@ -355,7 +405,6 @@
                END-IF
            END-PERFORM
            MOVE    SPA-C08-BUNREIMAX  TO  C08-BUNREI-COUNT
-           MOVE    ZERO               TO  C08-BUNREI-ROW
       *
            MOVE    SPA-C08-SELNUM     TO  C08-SELNUM
       *
@@ -401,6 +450,12 @@
                WHEN    "CLICKED"       ALSO    "B12"
                    MOVE    2               TO  FLG-OK
                    PERFORM 212-TOUROKU-SEC
+      *        前頁
+               WHEN    "CLICKED"       ALSO    "B06"
+                   PERFORM 290-BACK-PAGE-SEC
+      *        次月頁
+               WHEN    "CLICKED"       ALSO    "B07"
+                   PERFORM 291-NEXT-PAGE-SEC
            END-EVALUATE
       *
            .
@@ -525,15 +580,30 @@
                MOVE    1               TO  FLG-EXAMPLE
                INITIALIZE                  EXAMPLE-REC
            END-IF
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "EXAMPLE-KEY"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      FLG-EXAMPLE         =   ZERO
                IF      FLG-OK              =   1
       *            コメント追加
-                   MOVE    SPA-C07-COMMENT    TO  WRK-COMMENT
-                   MOVE    SPACE               TO  SPA-C07-COMMENT
-                   STRING  WRK-COMMENT         DELIMITED   BY  SPACE
+                   MOVE    SPACE               TO  WRK-COMMENT
+                   STRING  SPA-C07-COMMENT     DELIMITED   BY  SPACE
                            EXAMPLE-COMMENT     DELIMITED   BY  SPACE
-                           INTO                SPA-C07-COMMENT
+                           INTO                WRK-COMMENT
                    END-STRING
+      *
+                  INITIALIZE                  ORCXKANACONVAREA
+                  MOVE    800                 TO  KANACONV-LEN
+                  MOVE    1000                TO  KANACONV-STLEN
+                  MOVE    0                   TO  KANACONV-CONV-FLAG
+                  MOVE    0                   TO  KANACONV-CHAR-TYPE
+                  MOVE    WRK-COMMENT         TO  KANACONV-INDATA
+                  CALL    "kanaconv"          USING ORCXKANACONVAREA
+                  MOVE    KANACONV-OUTDATA
+                                              TO  SPA-C07-COMMENT
                ELSE
       *            コメント置換え
                    MOVE    EXAMPLE-COMMENT     TO  SPA-C07-COMMENT
@@ -556,10 +626,10 @@
       *
            IF      SPA-C08-TBL        =   ZERO
                MOVE    "0003"              TO  SPA-ERRCD
-               GO      TO      240-COMMENT-DEL-EXT
+           ELSE
+               MOVE    "0104"              TO  SPA-CIDCD
            END-IF
       *
-           MOVE    "0104"              TO  SPA-CIDCD
            .
        240-COMMENT-DEL-EXT.
            EXIT.
@@ -596,15 +666,52 @@
            EXIT.
       *
       *****************************************************************
+      *    前頁処理
+      *****************************************************************
+       290-BACK-PAGE-SEC               SECTION.
+      *
+           IF      SPA-C08-PAGE       >   1
+               COMPUTE SPA-C08-PAGE       =   SPA-C08-PAGE
+                                           -   1
+      *        文例編集
+               PERFORM 3101-BUNREI-HEN-SEC
+           ELSE
+               MOVE    "0010"              TO  SPA-ERRCD
+           END-IF
+           .
+      *
+       290-BACK-PAGE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    次頁処理
+      *****************************************************************
+       291-NEXT-PAGE-SEC               SECTION.
+      *
+           IF      SPA-C08-NEXT       =   1
+               COMPUTE SPA-C08-PAGE       =   SPA-C08-PAGE
+                                           +   1
+      *        文例編集
+               PERFORM 3101-BUNREI-HEN-SEC
+           ELSE
+               MOVE    "0009"              TO  SPA-ERRCD
+           END-IF
+           .
+      *
+       291-NEXT-PAGE-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
       *
-           MOVE    "C07"              TO  SPA-SAKIPG
-           MOVE    "C08"              TO  SPA-MOTOPG
+           MOVE    "C07"               TO  SPA-SAKIPG
+           MOVE    "C08"               TO  SPA-MOTOPG
       *
-           MOVE    "JOIN"             TO  MCP-PUTTYPE
-           MOVE   "C07"               TO  MCP-WINDOW
+      *****MOVE   "BACK"               TO  MCP-PUTTYPE
+           MOVE    "JOIN"              TO  MCP-PUTTYPE
+           MOVE    "C07"               TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *
@@ -627,7 +734,7 @@
            END-IF
       *
            IF      SPA-CIDCD       NOT =   SPACE
-               PERFORM 520-CIDSET-SEC
+               PERFORM 520-JIDSET-SEC
                GO      TO      500-SET-SCREEN-EXT
            END-IF
       *
@@ -657,6 +764,12 @@
                WHEN    "0003"
                    MOVE    "選択番号を選択して下さい"
                                        TO  SPA-ERRMSG
+               WHEN    "0009"
+                   MOVE    "次頁はありません。"
+                                       TO  SPA-ERRMSG
+               WHEN    "0010"
+                   MOVE    "前頁はありません。"
+                                       TO  SPA-ERRMSG
            END-EVALUATE
       *
            MOVE    SPACE               TO  CERR
@@ -680,7 +793,7 @@
       *****************************************************************
       *    エラーメッセージ表示理
       *****************************************************************
-       520-CIDSET-SEC              SECTION.
+       520-JIDSET-SEC              SECTION.
       *
            EVALUATE    SPA-CIDCD
                WHEN    "0104"
@@ -700,7 +813,7 @@
            MOVE    WRK-CIDMSG          TO  CID1-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET
       *
-           MOVE    "C08"              TO  SPA-MOTOPG
+           MOVE    "C08"               TO  SPA-MOTOPG
            MOVE    "CID1"              TO  SPA-SAKIPG
       *
            MOVE    "NEW"               TO  MCP-PUTTYPE.
@@ -711,7 +824,7 @@
            MOVE    1                   TO  FLG-END
       *
            .
-       520-CIDSET-EXT.
+       520-JIDSET-EXT.
            EXIT.
       *
       *****************************************************************
