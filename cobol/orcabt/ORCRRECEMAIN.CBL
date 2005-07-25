@@ -21,6 +21,7 @@
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : レセプト
       *  コンポーネント名  : 月次業務　明細書主プロ
+      *                    : プレビュー用
       *  管理者            : 
       *  作成日付    作業者        記述
       *  00/12/01    NACL−竹田　　新規作成
@@ -51,6 +52,7 @@
            03  FLG-SANTEI                              PIC 9(01).
            03  FLG-SRYKARRK                            PIC 9(01).
            03  FLG-PTCOM                               PIC 9(01).
+           03  FLG-PRVKANRI                            PIC 9(01).
       *
       *    一時領域
       *
@@ -233,6 +235,8 @@
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
+      *    プレビュー管理マスタ
+           COPY    "CPPRVKANRI.INC".
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
@@ -443,7 +447,10 @@
       ***                              WRK-PARA2
       ***  END-IF
       *
+           PERFORM 20010-PRVDATA-DEL-SEC
            PERFORM 900-DBDISCONNECT-SEC
+      *    前回分削除(存在すれば)
+           PERFORM 200101-PRVDATA-DEL-SEC
       *
       **     CALL "timeofday" USING LNK-TIMEOFDAY.
       **   DISPLAY "orcr0104 START"
@@ -623,8 +630,11 @@
       ***                              WRK-PARA2
       ***  END-IF
       *
+           PERFORM 20010-PRVDATA-DEL-SEC
+      *
            PERFORM 900-DBDISCONNECT-SEC
       *
+           PERFORM 200101-PRVDATA-DEL-SEC
       **   CALL "timeofday" USING LNK-TIMEOFDAY.
       **   DISPLAY "orcr0710 START"
       **           " "  LNK-TIMEOFDAY(1:20).
@@ -715,6 +725,64 @@
       *
            .
        2002-IHO-NYUIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    前回分削除(存在すれば)
+      *****************************************************************
+       20010-PRVDATA-DEL-SEC         SECTION.
+      *
+           INITIALIZE                  PRVKANRI-REC
+           MOVE    "RECEPTX"           TO  PRVKANRI-TBL-KEY
+           MOVE    WRK-PARA-PTID       TO  WRK-PTID-X
+           MOVE    WRK-PTID            TO  PRVKANRI-TBL-GROUP
+           MOVE    PRVKANRI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    PATH-TBL-PRVKANRI-KEY8
+                                       TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC             =   ZERO
+               MOVE    PATH-TBL-PRVKANRI-KEY8
+                                       TO  MCP-PATH
+               PERFORM 900-PRVKANRI-FET-SEC
+               MOVE    PATH-TBL-PRVKANRI-KEY8
+                                       TO  MCP-PATH
+               PERFORM 900-DBCLOSE-SEC
+           ELSE
+               MOVE    1               TO  FLG-PRVKANRI
+           END-IF
+      *
+           .
+       20010-PRVDATA-DEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    前回分削除(存在すれば)
+      *****************************************************************
+       200101-PRVDATA-DEL-SEC        SECTION.
+      *
+           IF      FLG-PRVKANRI         =   ZERO
+               DISPLAY "RECEMAIN PRV EXIST !!"
+               DISPLAY "PAGE = [" PRVKANRI-PAGE "]"
+      *        MOVE    PRVKANRI-PAGE   TO  MAX-PAGE-CNT
+               PERFORM 100-DBOPEN-SEC
+               MOVE    WRK-PARA-A8     TO  WRK-SRYYM
+      *
+               CALL    "ORCSPRVPSDEL"   USING
+                                        WRK-PARA-HOSPID
+                                        WRK-PTID
+                                        WRK-SRYYM
+      *
+      *
+               PERFORM 900-DBCOMMIT-SEC
+           ELSE
+               DISPLAY "RECEMAIM PRV NO DATA !!"
+           END-IF
+      *
+           .
+       20010-PRVDATA-DEL-EXT.
            EXIT.
       *
       *****************************************************************
@@ -883,7 +951,7 @@
                    " "  LNK-TIMEOFDAY(1:20)
            MOVE    WRK-PARA-HOSPID      TO      JYURRK-HOSPID
            MOVE    WRK-PARA-NYUGAIKBN   TO      JYURRK-NYUGAIKBN
-           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
+           MOVE    WRK-PARA-PTID        TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      JYURRK-PTID
            MOVE    WRK-PARA-A8          TO      WRK-SRYYM
            MOVE    "% "                 TO      WRK-SRYDD
@@ -1744,6 +1812,26 @@
            EXIT.
       *
       *****************************************************************
+      *     印刷管理ＤＢ読み込み
+      *****************************************************************
+       900-PRVKANRI-FET-SEC            SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  PRVKANRI-REC
+               MOVE    ZERO                TO  FLG-PRVKANRI
+           ELSE
+               MOVE    1                   TO  FLG-PRVKANRI
+           END-IF
+           .
+       900-PRVKANRI-FET-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
@@ -1755,6 +1843,7 @@
                                        MCPDATA-REC.
            DISPLAY "DBOPEN RC= " MCP-RC
       *
+           MOVE    LOW-VALUE           TO  MCP-PATH.
            MOVE    "DBSTART"           TO  MCP-FUNC.
            CALL    "MCPSUB"            USING
                                        MCPAREA
@@ -1801,3 +1890,16 @@
            .
        900-DBDISCONNECT-EXT.
            EXIT.
+      *****************************************************************
+      *    ＤＢＣＬＯＳＥ処理
+      *****************************************************************
+       900-DBCLOSE-SEC                 SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                           MCPAREA
+                                           MCPDATA-REC
+           .
+       900-DBCLOSE-EXT.
+           EXIT.
+      *
