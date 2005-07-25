@@ -104,6 +104,7 @@
                05  WRK-SELNUM-CHK  PIC 9(03)   OCCURS  100.
            03  WRK-HEN-SELNUM      PIC X(40).
            03  WRK-HEN-SELNUM-2    PIC X(40).
+           03  WRK-HEN-SELNUM-HZN  PIC X(40).
       *
            03  WRK-SELNUM          PIC 9(03).
            03  WRK-SELNUM2         PIC 9(03).
@@ -117,6 +118,7 @@
            03  WRK-DBPATH          PIC X(20).
            03  WRK-MCP-WIDGET      PIC X(64).
       *
+           03  WRK-ERRCD           PIC X(04).
            03  WRK-JIDMSG          PIC X(80).
       *
            03  WRK-COPYYM.
@@ -414,8 +416,19 @@
            IF      SPA-GMN-PTID        =   ZERO
       *        文例登録のみ
                MOVE    2               TO  SPA-J023-SYORI
-               GO      TO      310-SPA-SET-EXT
+           ELSE
+      *        患者情報初期編集
+               PERFORM 3100-SPA-INIT-HEN-SEC
            END-IF
+      *
+           .
+       310-SPA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者情報初期編集処理
+      *****************************************************************
+       3100-SPA-INIT-HEN-SEC        SECTION.
       *
       *     保険組合せ
             PERFORM 3101-HKNCOMBI-HEN-SEC
@@ -431,15 +444,11 @@
            MOVE    1                   TO  SPA-J023-PAGE
            PERFORM 3103-RECECOM-HEN-SEC
       *
-      *     コメント初期編集
-      ******PERFORM 314-RECECOM-SYOKI-SEC
-      *
       *     初期編集
             PERFORM 314-SYOKI-SEC
       *
-      *
            .
-       310-SPA-SET-EXT.
+       3100-SPA-INIT-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -775,7 +784,7 @@
                    MOVE    WRK-HKNCOMBIMEI TO  WRK-HKNCOMBIMEI-H
                    MOVE    SPACE           TO  WRK-HKNCOMBIMEI
                    STRING  "※"                DELIMITED  BY  SIZE
-                           WRK-HKNCOMBIMEI-H   DELIMITED  BY  "  "
+                           WRK-HKNCOMBIMEI-H   DELIMITED  BY  SIZE
                            INTO                WRK-HKNCOMBIMEI
                    END-STRING
                END-IF
@@ -1608,24 +1617,25 @@
            END-PERFORM
            IF      FLG-OK              =   ZERO
                MOVE    "0001"              TO  SPA-ERRCD
-               GO      TO      400-SRYKA-EXT
            ELSE
                MOVE    3                   TO  SPA-J023-CUR
            END-IF
       *
+           IF      SPA-ERRCD           =   SPACE
       *    労災保険区分がアフターケアの時、履歴日を表示する
-           IF      SPA-J023-RSI-HKNKBN =   "3"
+             IF      SPA-J023-RSI-HKNKBN =   "3"
                PERFORM 31401-AFTER-JYURRK-SEC
                IF      SPA-J023-RRKMAX     =   ZERO
                    MOVE    "0012"              TO  SPA-ERRCD
-                   GO      TO      400-SRYKA-EXT
+               ELSE
+                   MOVE    9                   TO  SPA-J023-CUR
                END-IF
-               MOVE    9                   TO  SPA-J023-CUR
-           ELSE
+             ELSE
                INITIALIZE                  SPA-J023-JYURRK-LIST
                MOVE    ZERO                TO  SPA-J023-RRKMAX
                MOVE    ZERO                TO  SPA-J023-JYURRKNUM
                MOVE    3                   TO  SPA-J023-CUR
+             END-IF
            END-IF
       *
            .
@@ -1655,22 +1665,23 @@
            END-PERFORM
            IF      FLG-OK              =   ZERO
                MOVE    "0002"              TO  SPA-ERRCD
-               GO      TO      410-HKNCOMBI-EXT
-           END-IF
+           ELSE
       *
       *    労災保険区分がアフターケアの時、履歴日を表示する
            IF      SPA-J023-RSI-HKNKBN =   "3"
                PERFORM 31401-AFTER-JYURRK-SEC
                IF      SPA-J023-RRKMAX     =   ZERO
                    MOVE    "0012"              TO  SPA-ERRCD
-                   GO      TO      410-HKNCOMBI-EXT
+               ELSE
+                   MOVE    9                   TO  SPA-J023-CUR
                END-IF
-               MOVE    9                   TO  SPA-J023-CUR
            ELSE
                INITIALIZE                  SPA-J023-JYURRK-LIST
                MOVE    ZERO                TO  SPA-J023-RRKMAX
                MOVE    ZERO                TO  SPA-J023-JYURRKNUM
                MOVE    6                   TO  SPA-J023-CUR
+           END-IF
+      *
            END-IF
       *
            .
@@ -1698,19 +1709,16 @@
            END-PERFORM
            IF      FLG-OK              =   ZERO
                MOVE    "0002"              TO  SPA-ERRCD
-               GO      TO      410-NYUGAIKBN-EXT
+           ELSE
+      *        保険組合せ
+               PERFORM 3101-HKNCOMBI-HEN-SEC
+      *         コメント編集編集
+               MOVE    ZERO                TO  SPA-J023-NEXT
+               MOVE    1                   TO  SPA-J023-PAGE
+               PERFORM 3103-RECECOM-HEN-SEC
+      *        初期編集
+               PERFORM 314-SYOKI-SEC
            END-IF
-      *
-      *    保険組合せ
-           PERFORM 3101-HKNCOMBI-HEN-SEC
-      *
-      *     コメント編集編集
-           MOVE    ZERO                TO  SPA-J023-NEXT
-           MOVE    1                   TO  SPA-J023-PAGE
-           PERFORM 3103-RECECOM-HEN-SEC
-      *
-      *    初期編集
-           PERFORM 314-SYOKI-SEC
       *
            .
        410-NYUGAIKBN-EXT.
@@ -1727,10 +1735,9 @@
       *
            IF      SPA-J023-SELNUM-X   =   SPACE
                INITIALIZE                      SPA-J023-SELNUM-G
-               GO      TO      420-SELNUM-EXT
+           ELSE
+               PERFORM 4201-SELNUM-CHK-SEC
            END-IF
-      *
-           PERFORM 4201-SELNUM-CHK-SEC
       *
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (SPA-J023-SELNUM-MAX =   1     )
@@ -1747,7 +1754,8 @@
                    MOVE    8                   TO  SPA-J023-CUR
                END-EVALUATE
            ELSE
-               IF      SPA-J023-SELNUM-MAX >   1
+               IF     (SPA-J023-SELNUM-MAX >   1 ) AND
+                      (SPA-ERRCD           =   SPACE )
                    MOVE    13                  TO  SPA-J023-CUR
                END-IF
            END-IF
@@ -1886,6 +1894,7 @@
            END-PERFORM
       *
            MOVE    SPACE               TO  WRK-HEN-SELNUM
+           MOVE    ZERO                TO  IDX2
            PERFORM VARYING     IDX     FROM   1   BY  1
                    UNTIL      (IDX     >   100 )  OR
                               (WRK-SELNUM-CHK (IDX)   =   ZERO) OR
@@ -1900,8 +1909,13 @@
                        PERFORM 4401-SELNUM-CHK-HEN-SEC
                    END-IF
                ELSE
-                   MOVE    WRK-SELNUM-CHK (IDX)    TO  WRK-SELNUM
-                   PERFORM 4401-SELNUM-CHK-HEN-SEC
+                   ADD     1                   TO  IDX2
+                   IF      IDX2                >   12
+                       MOVE    "0038"              TO  SPA-ERRCD
+                   ELSE
+                       MOVE    WRK-SELNUM-CHK (IDX)    TO  WRK-SELNUM
+                       PERFORM 4401-SELNUM-CHK-HEN-SEC
+                   END-IF
                END-IF
            END-PERFORM
       *
@@ -1910,7 +1924,12 @@
            IF      SPA-J023-SELNUM-X   =   SPACE
                INITIALIZE                  SPA-J023-SELNUM-G
            ELSE
+               MOVE    SPA-ERRCD           TO  WRK-ERRCD
+               MOVE    SPACE               TO  SPA-ERRCD
                PERFORM 4201-SELNUM-CHK-SEC
+               IF      WRK-ERRCD       NOT =   SPACE
+                   MOVE    WRK-ERRCD           TO  SPA-ERRCD
+               END-IF
            END-IF
       *
            IF     (SPA-ERRCD           =   SPACE )  AND
@@ -2732,21 +2751,19 @@
            IF      SPA-J023-COMMENT    =   SPACE
                MOVE    "0007"              TO  SPA-ERRCD
                MOVE    1                   TO  SPA-J023-CUR
-               GO      TO      280-BUNREI-ADD-EXT
-           END-IF
-           PERFORM 800-COMMENT-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      280-BUNREI-ADD-EXT
-           END-IF
-      *
-           IF      SPA-J023-BUNNUM     =   ZERO
-               MOVE    "0102"              TO  SPA-JIDCD
            ELSE
-               PERFORM 28001-EXAMPLE-CHK-SEC
-               IF      FLG-EXAMPLE         =   ZERO
-                   MOVE    "0103"              TO  SPA-JIDCD
+               PERFORM 800-COMMENT-CHK-SEC
+           END-IF
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-J023-BUNNUM     =   ZERO
+                   MOVE    "0102"              TO  SPA-JIDCD
                ELSE
-                   MOVE    "0106"              TO  SPA-JIDCD
+                   PERFORM 28001-EXAMPLE-CHK-SEC
+                   IF      FLG-EXAMPLE         =   ZERO
+                       MOVE    "0103"              TO  SPA-JIDCD
+                   ELSE
+                       MOVE    "0106"              TO  SPA-JIDCD
+                   END-IF
                END-IF
            END-IF
       *
@@ -2850,6 +2867,7 @@
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "J023 EXAMPLE UPD ERR:" MCP-RC
                            ",KEY:"   EXAMPLE-KEY    "."
+                   MOVE    "0020"          TO  SPA-ERRCD
                END-IF
            ELSE
       *        追加
@@ -2875,6 +2893,7 @@
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "J023 EXAMPLE INS ERR:" MCP-RC
                            ",KEY:"   EXAMPLE-KEY    "."
+                   MOVE    "0020"          TO  SPA-ERRCD
                END-IF
            END-IF
       *
@@ -2895,8 +2914,7 @@
       *
            IF      SPA-GMN-PTID        =   ZERO
                MOVE    "0011"              TO  SPA-ERRCD
-               GO      TO      240-COMMENT-DEL-EXT
-           END-IF
+           ELSE
       *
            IF      SPA-J023-SELNUM-MAX =   ZERO
                MOVE    4               TO  SPA-J023-CUR
@@ -2906,6 +2924,8 @@
                ELSE
                    MOVE    "0104"              TO  SPA-JIDCD
                END-IF
+           END-IF
+      *
            END-IF
            .
        240-COMMENT-DEL-EXT.
@@ -2968,6 +2988,7 @@
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "J023 RECECOM DEL ERR:" MCP-RC 
                            ",KEY:"   RECECOM-KEY    "."
+               MOVE    "0021"          TO  SPA-ERRCD
            END-IF
       *
            .
@@ -3343,9 +3364,10 @@
                    MOVE    "コメント内容が未入力です。入力して下さい"
                                        TO  SPA-ERRMSG
                WHEN    "0010"
-                   MOVE
-                   "文例が９９９件あります。これ以上追加できません"
+                   MOVE    "文例の最大登録番号が９９９です。"
                                        TO  SPA-ERRMSG
+                   MOVE    "これ以上自動追加できません。"
+                                       TO  SPA-ERRMSG(33:)
                WHEN    "0011"
                    MOVE
                    "患者が選択されてません。文例の処理しかできません"
@@ -3397,6 +3419,9 @@
                                        TO  SPA-ERRMSG(37:)
                WHEN    "0020"
                    MOVE    "更新エラーです。"
+                                       TO  SPA-ERRMSG
+               WHEN    "0021"
+                   MOVE    "削除エラーです。"
                                        TO  SPA-ERRMSG
            END-EVALUATE
       *
