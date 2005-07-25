@@ -5,19 +5,16 @@
   <name>C08</name>
   <program_name>C08</program_name>
   <directory></directory>
-  <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
-  <language>C</language>
   <gnome_support>True</gnome_support>
   <gtkpanda_support>True</gtkpanda_support>
-  <gettext_support>True</gettext_support>
 </project>
 
 <widget>
   <class>GtkWindow</class>
   <name>C08</name>
   <width>620</width>
-  <height>500</height>
+  <height>519</height>
   <signal>
     <name>map_event</name>
     <handler>map_event</handler>
@@ -28,12 +25,12 @@
     <handler>set_focus</handler>
     <last_modification_time>Thu, 21 Dec 2000 08:12:31 GMT</last_modification_time>
   </signal>
-  <signal>    
+  <signal>
     <name>delete_event</name>
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(C08)病名登録−文例入力</title>
+  <title>(C08)患者病名−文例入力</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>True</modal>
@@ -55,8 +52,8 @@
     <widget>
       <class>GtkButton</class>
       <name>B01</name>
-      <x>8</x>
-      <y>472</y>
+      <x>12</x>
+      <y>492</y>
       <width>62</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -77,32 +74,9 @@
 
     <widget>
       <class>GtkButton</class>
-      <name>B11</name>
-      <x>440</x>
-      <y>472</y>
-      <width>90</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <accelerator>
-	<modifiers>0</modifiers>
-	<key>GDK_F11</key>
-	<signal>clicked</signal>
-      </accelerator>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 21 Dec 2000 08:28:32 GMT</last_modification_time>
-      </signal>
-      <label>F11 追加</label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-    
-    <widget>
-      <class>GtkButton</class>
       <name>B12</name>
       <x>528</x>
-      <y>472</y>
+      <y>492</y>
       <width>90</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -121,12 +95,11 @@
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
-
     <widget>
       <class>GtkNumberEntry</class>
       <name>SELNUM</name>
       <x>80</x>
-      <y>440</y>
+      <y>460</y>
       <width>62</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -150,7 +123,7 @@
       <class>GtkButton</class>
       <name>B04</name>
       <x>136</x>
-      <y>472</y>
+      <y>492</y>
       <width>96</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -170,10 +143,33 @@
     </widget>
 
     <widget>
+      <class>GtkButton</class>
+      <name>B11</name>
+      <x>436</x>
+      <y>492</y>
+      <width>90</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F11</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Thu, 21 Dec 2000 08:28:32 GMT</last_modification_time>
+      </signal>
+      <label>F11 追加</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
       <class>GtkLabel</class>
       <name>label1</name>
       <x>8</x>
-      <y>440</y>
+      <y>460</y>
       <width>80</width>
       <height>24</height>
       <label>選択番号</label>
@@ -186,12 +182,58 @@
     </widget>
 
     <widget>
+      <class>GtkButton</class>
+      <name>B06</name>
+      <x>244</x>
+      <y>492</y>
+      <width>64</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F6</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Thu, 21 Dec 2000 08:23:49 GMT</last_modification_time>
+      </signal>
+      <label>F6 前頁</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B07</name>
+      <x>308</x>
+      <y>492</y>
+      <width>64</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F7</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Thu, 21 Dec 2000 08:23:49 GMT</last_modification_time>
+      </signal>
+      <label>F7 次頁</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
       <class>GtkScrolledWindow</class>
       <name>scrolledwindow1</name>
       <x>8</x>
       <y>8</y>
       <width>608</width>
-      <height>424</height>
+      <height>448</height>
       <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
       <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
       <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
