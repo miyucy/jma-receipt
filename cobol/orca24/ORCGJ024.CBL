@@ -84,7 +84,7 @@
       *
            03  WRK-JIDMSG          PIC X(80).
       *
-           03  WRK-COMMENT         PIC X(400).
+           03  WRK-COMMENT         PIC X(1000).
       *    コラムリスト位置
            03  WRK-J024-BUNREI-ROW     PIC S9(09).
            03  FLG-GMN-INIT            PIC  9(01).
@@ -125,6 +125,8 @@
            COPY    "CPORCSLNK.INC".
       *    数字変換領域
            COPY    "CPORCSNUM.INC".
+      *
+           COPY    "CPORCXKANACONV.INC".
       *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
@@ -588,12 +590,21 @@
            IF      FLG-EXAMPLE         =   ZERO
                IF      FLG-OK              =   1
       *            コメント追加
-                   MOVE    SPA-J023-COMMENT    TO  WRK-COMMENT
-                   MOVE    SPACE               TO  SPA-J023-COMMENT
-                   STRING  WRK-COMMENT         DELIMITED   BY  SPACE
+                   MOVE    SPACE               TO  WRK-COMMENT
+                   STRING  SPA-J023-COMMENT    DELIMITED   BY  SPACE
                            EXAMPLE-COMMENT     DELIMITED   BY  SPACE
-                           INTO                SPA-J023-COMMENT
+                           INTO                WRK-COMMENT
                    END-STRING
+      *
+                  INITIALIZE                  ORCXKANACONVAREA
+                  MOVE    800                 TO  KANACONV-LEN
+                  MOVE    1000                TO  KANACONV-STLEN
+                  MOVE    0                   TO  KANACONV-CONV-FLAG
+                  MOVE    0                   TO  KANACONV-CHAR-TYPE
+                  MOVE    WRK-COMMENT         TO  KANACONV-INDATA
+                  CALL    "kanaconv"          USING ORCXKANACONVAREA
+                  MOVE    KANACONV-OUTDATA
+                                              TO  SPA-J023-COMMENT
                ELSE
       *            コメント置換え
                    MOVE    EXAMPLE-COMMENT     TO  SPA-J023-COMMENT

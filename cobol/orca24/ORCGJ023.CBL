@@ -94,6 +94,7 @@
            03  WRK-HKNCOMBIMEI-H   PIC X(100).
            03  WRK-HKNKBN-MEI      PIC X(02).
       *
+           03  WRK-NYUGAIKBN       PIC X(01).
            03  WRK-SRYKA           PIC X(02).
            03  WRK-SRYKAMEI        PIC X(20).
       *    保険組合せ再設定
@@ -355,6 +356,7 @@
                    MOVE    SPACE               TO  SPA-JIDCD
       *            初期画面表示
                WHEN    OTHER
+                   MOVE    SPACE               TO  SPA-JIDCD
                    PERFORM                     310-SPA-SET-SEC
                    MOVE    1                   TO  SPA-J023-CUR
            END-EVALUATE
@@ -412,7 +414,11 @@
       *
            MOVE    SPA-NAI-SRYYM       TO  SPA-J023-SRYYMS
            MOVE    SPA-GMN-SRYYM       TO  SPA-J023-SRYYM
-           MOVE    SPA-GMN-NYUGAIKBN   TO  SPA-J023-NYUGAIKBN
+           IF      WRK-NYUGAIKBN       =   SPACE
+               MOVE    SPA-GMN-NYUGAIKBN   TO  SPA-J023-NYUGAIKBN
+           ELSE
+               MOVE    WRK-NYUGAIKBN       TO  SPA-J023-NYUGAIKBN
+           END-IF
            IF      SPA-GMN-PTID        =   ZERO
       *        文例登録のみ
                MOVE    2               TO  SPA-J023-SYORI
@@ -2513,6 +2519,7 @@
       *
       *    再表示
            IF      SPA-ERRCD           =   SPACE
+               MOVE    SPA-J023-NYUGAIKBN  TO  WRK-NYUGAIKBN
                PERFORM                     310-SPA-SET-SEC
                MOVE    1                   TO  SPA-J023-CUR
            END-IF
@@ -2702,6 +2709,21 @@
       *    コメントチェック処理
       *****************************************************************
        800-COMMENT-CHK-SEC             SECTION.
+      *
+           INITIALIZE                  ORCXKANACONVAREA
+           MOVE    800                 TO  KANACONV-LEN
+           MOVE    1000                TO  KANACONV-STLEN
+           MOVE    0                   TO  KANACONV-CONV-FLAG
+           MOVE    0                   TO  KANACONV-CHAR-TYPE
+           MOVE    SPA-J023-COMMENT    TO  KANACONV-INDATA
+           CALL    "kanaconv"          USING ORCXKANACONVAREA
+           IF     (KANACONV-RETURN     =   ZERO )
+               MOVE    KANACONV-OUTDATA
+                                       TO  SPA-J023-COMMENT
+           ELSE
+               MOVE    KANACONV-OUTDATA
+                                       TO  SPA-J023-COMMENT
+           END-IF
       *
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
@@ -2949,6 +2971,7 @@
            END-IF
       *
       *    再表示
+           MOVE    SPA-J023-NYUGAIKBN  TO  WRK-NYUGAIKBN
            PERFORM                     310-SPA-SET-SEC
            .
        2401-COMMENT-DELSYORI-EXT.
