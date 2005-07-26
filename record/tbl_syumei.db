@@ -17,9 +17,11 @@ tbl_syumei {
 	NYUHEN_YMD			char(8);
 	NYUKIN_HOHO			char(2);
 	JOUTAIKBN			char(1);
+	DAILYKEY			char(12);
 	TERMID  			varchar(16);
 	OPID    			varchar(16);
 	CREYMD  			char(8);
+	CREHMS				char(6);
 	UPYMD    			char(8);
 	UPHMS				char(6);
 #--

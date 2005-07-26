@@ -42,8 +42,12 @@
                05  SYS-1039-SKYPRTGKBN  PIC  X(01).
       *ÀÁµá½ñ·óÎÎ¼ý½ñÈ¯¹Ô¶èÊ¬¡ÊÆþ±¡¡Ë
                05  SYS-1039-SKYPRTNKBN  PIC  X(01).
+      *Åý·×»þ´Ö
+               05  SYS-1039-STIME.
+                   07  SYS-1039-STIME-HH   PIC  X(02).
+                   07  SYS-1039-STIME-MM   PIC  X(02).
       *Í½È÷
-               05                       PIC  X(497).
+               05                       PIC  X(493).
       *Ã¼Ëö£É£Ä
            03  SYS-1039-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

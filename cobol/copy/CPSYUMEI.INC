@@ -60,12 +60,16 @@
            03  SMEI-NYUKIN-HOHO         PIC  X(02).
       *状態区分
            03  SMEI-JOUTAIKBN           PIC  X(01).
+      *日報キー
+           03  SMEI-DAILYKEY            PIC  X(12).
       *端末ＩＤ
            03  SMEI-TERMID              PIC  X(16).
       *オペーレータＩＤ
            03  SMEI-OPID                PIC  X(16).
       *作成年月日
            03  SMEI-CREYMD              PIC  X(08).
+      *作成時間
+           03  SMEI-CREHMS              PIC  X(06).
       *更新年月日
            03  SMEI-UPYMD               PIC  X(08).
       *更新時間
