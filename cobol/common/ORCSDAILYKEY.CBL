@@ -126,9 +126,14 @@
                                                SYS-EDYUKYMD
                PERFORM 900-SYSKANRI-KEY10-SEL-SEC
                IF    ( FLG-SYSKANRI    =   ZERO )
-                   MOVE    SYS-1039-STIME  TO  WRK-DAILYKEY-HM
+                   IF    ( SYS-1039-STIME  IS  NUMERIC )
+                       MOVE    SYS-1039-STIME
+                                           TO  WRK-DAILYKEY-HM
+                   ELSE
+                       MOVE    "0000"      TO  WRK-DAILYKEY-HM
+                   END-IF
                ELSE
-                   MOVE    "0000"          TO  WRK-DAILYKEY-HM
+                       MOVE    "0000"      TO  WRK-DAILYKEY-HM
                END-IF
            END-IF
       *
