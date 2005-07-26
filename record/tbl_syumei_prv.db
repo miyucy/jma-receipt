@@ -28,7 +28,7 @@ tbl_syumei_prv {
 	UPNYUHEN_YMD			char(8),virtual;
 };
 primary	{
-	HOSPID,NYUGAIKBN,PTID,DENPNUM,DENPEDANUM;
+	HOSPID,NYUGAIKBN,PTID,DENPNUM,DENPEDANUM,CREYMD ;
 };
 
 path	key 	{
