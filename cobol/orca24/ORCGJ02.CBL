@@ -683,6 +683,9 @@
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
+      *    日報キー取得サブ
+           COPY    "CPORCSDAILYKEY.INC".
+      *
       *    保険組合せセット領域
            COPY    "CPORCSHKNSET.INC".
       *
@@ -2078,6 +2081,9 @@
                                                        (IDX2)  )  AND
                               (JYURRK-SRYKA        =   SPA-RRK-SRYKA
                                                        (IDX2)  )
+                          AND (JYURRK-HKNCOMBINUM  =
+                                                   SPA-GMN-RRKHKNCOMBI
+                                                         (IDX2) )
                            MOVE    IDX2            TO  IDX-S
                            MOVE    SPA-RRK-MAX     TO  IDX2
                        END-IF
@@ -5045,7 +5051,8 @@
            MOVE    SPA-NAI-HENSRYYMD(7:2)
                                        TO  IDX-D2
            PERFORM
-               UNTIL    FLG-JYURRK         =   1
+               UNTIL   (FLG-JYURRK         =   1  )
+                    OR (SPA-ERRCD      NOT =   SPACE )
       *        対象の診療会計を更新する
       *        診療会計更新
                MOVE    1               TO  FLG-SYORI
@@ -5142,6 +5149,8 @@
       *    受診履歴編集
            PERFORM 3103-JYURRK-HEN-SEC
       *
+           IF      SPA-ERRCD           =   SPACE
+      *
       *    保存用パラメタ作成
            PERFORM 4201-SRYACCT-PARA-SEC
            MOVE    1                   TO  SPA-GMN-PAGE
@@ -5164,10 +5173,11 @@
            ELSE
                MOVE    1               TO  SPA-GMN-CUR
            END-IF
+      *
+           END-IF
            .
        410161-HENSRYYMD-UPDSYORI-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *    受診日変更診療会計変更処理
@@ -9431,6 +9441,13 @@
            MOVE    SMCNDATE-YMD        TO  SMEI-CREYMD
            MOVE    SMCNDATE-YMD        TO  SMEI-UPYMD
            MOVE    SMCNDATE-HMS        TO  SMEI-UPHMS
+           MOVE    SMCNDATE-HMS        TO  SMEI-CREHMS
+      *
+           MOVE    SMEI-CREYMD         TO  SDAILYKEY-CREYMD
+           MOVE    SMEI-CREHMS         TO  SDAILYKEY-CREHMS
+           MOVE    SMEI-NYUHEN-YMD     TO  SDAILYKEY-BASEYMD
+           PERFORM 800-DAILYKEY-SEC
+           MOVE    SDAILYKEY-DAILYKEY  TO  SMEI-DAILYKEY
       *
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -10842,6 +10859,17 @@
       *
            .
        41301-PREVIEW-KICK-EXT.
+           EXIT.
+      *****************************************************************
+      *    日報キー取得サブ
+      *****************************************************************
+       800-DAILYKEY-SEC         SECTION.
+      *
+           CALL    "ORCSDAILYKEY"   USING   SDAILYKEYAREA
+      *
+           .
+      *
+       800-DAILYKEY-EXT.
            EXIT.
       *
       *****************************************************************
