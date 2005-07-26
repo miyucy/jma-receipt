@@ -770,7 +770,7 @@
         <point val="12.8,8"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.795,7.995;20.005,8.005"/>
+        <rectangle val="12.8,8;20,8"/>
       </attribute>
       <attribute name="conn_endpoints">
         <point val="12.8,8"/>
@@ -780,7 +780,7 @@
         <int val="1"/>
       </attribute>
       <attribute name="line_width">
-        <real val="0.01"/>
+        <real val="0"/>
       </attribute>
     </object>
     <object type="Standard - Line" version="0" id="O27">
@@ -1837,7 +1837,7 @@
         <point val="1.8,25"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.8,24.731;2.89939,25.081"/>
+        <rectangle val="1.8,24.731;2.89938,25.081"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
