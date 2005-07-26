@@ -292,6 +292,9 @@
       *    画面日付変換サブ
            COPY    "CPORCSGDAY.INC".
       *
+      *    日報キー取得サブ
+           COPY "CPORCSDAILYKEY.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
@@ -2447,7 +2450,14 @@
                PERFORM 800-MCNDATE-SEC
                MOVE    SMCNDATE-YMD        TO  SMEI-CREYMD
                                                SMEI-UPYMD
-               MOVE    SMCNDATE-HMS        TO  SMEI-UPHMS
+               MOVE    SMCNDATE-HMS        TO  SMEI-CREHMS
+                                               SMEI-UPHMS
+      *
+               MOVE    SMEI-CREYMD         TO  SDAILYKEY-CREYMD
+               MOVE    SMEI-CREHMS         TO  SDAILYKEY-CREHMS
+               MOVE    SMEI-NYUHEN-YMD     TO  SDAILYKEY-BASEYMD
+               PERFORM 800-DAILYKEY-SEC
+               MOVE    SDAILYKEY-DAILYKEY  TO  SMEI-DAILYKEY
       *
                MOVE    SYUMEI-REC          TO  MCPDATA-REC
                MOVE    "SYUMEI-KEY"        TO  ORC-DBPATH
@@ -2766,6 +2776,17 @@
       *
            .
        800-SEIWA-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    日報キー取得サブ
+      *****************************************************************
+       800-DAILYKEY-SEC         SECTION.
+      *
+           CALL    "ORCSDAILYKEY"   USING   SDAILYKEYAREA
+      *
+           .
+      *
+       800-DAILYKEY-EXT.
            EXIT.
       *****************************************************************
       *    マシン日付取得サブ

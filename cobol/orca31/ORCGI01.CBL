@@ -658,6 +658,9 @@
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
+      *    日報キー取得サブ
+           COPY "CPORCSDAILYKEY.INC".
+      *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
@@ -7805,7 +7808,14 @@
            PERFORM 800-MCNDATE-SEC
            MOVE    SMCNDATE-YMD        TO  SMEI-CREYMD
                                            SMEI-UPYMD
-           MOVE    SMCNDATE-HMS        TO  SMEI-UPHMS
+           MOVE    SMCNDATE-HMS        TO  SMEI-CREHMS
+                                           SMEI-UPHMS
+      *
+           MOVE    SMEI-CREYMD         TO  SDAILYKEY-CREYMD
+           MOVE    SMEI-CREHMS         TO  SDAILYKEY-CREHMS
+           MOVE    SMEI-NYUHEN-YMD     TO  SDAILYKEY-BASEYMD
+           PERFORM 800-DAILYKEY-SEC
+           MOVE    SDAILYKEY-DAILYKEY  TO  SMEI-DAILYKEY
       *
       *    収納明細追加
            MOVE    "SYUMEI-KEY"        TO  WRK-DBPATH
@@ -14135,6 +14145,17 @@
       *
            .
        800-ORCSDNTCHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    日報キー取得サブ
+      *****************************************************************
+       800-DAILYKEY-SEC         SECTION.
+      *
+           CALL    "ORCSDAILYKEY"   USING   SDAILYKEYAREA
+      *
+           .
+      *
+       800-DAILYKEY-EXT.
            EXIT.
       *****************************************************************
       *    マシン日付取得サブ

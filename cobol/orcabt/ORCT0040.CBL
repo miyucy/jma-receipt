@@ -330,6 +330,9 @@
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
       *
+      *    日報キー取得サブ
+           COPY "CPORCSDAILYKEY.INC".
+      *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
@@ -610,7 +613,14 @@
            PERFORM 800-MCNDATE-SEC
            MOVE    SMCNDATE-YMD        TO  SMEI-CREYMD
                                            SMEI-UPYMD
-           MOVE    SMCNDATE-HMS        TO  SMEI-UPHMS
+           MOVE    SMCNDATE-HMS        TO  SMEI-CREHMS
+                                           SMEI-UPHMS
+      *
+           MOVE    SMEI-CREYMD         TO  SDAILYKEY-CREYMD
+           MOVE    SMEI-CREHMS         TO  SDAILYKEY-CREHMS
+           MOVE    SMEI-NYUHEN-YMD     TO  SDAILYKEY-BASEYMD
+           PERFORM 800-DAILYKEY-SEC
+           MOVE    SDAILYKEY-DAILYKEY  TO  SMEI-DAILYKEY
       *
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "SYUMEI-KEY"        TO  ORC-DBPATH
@@ -971,7 +981,14 @@
            PERFORM 800-MCNDATE-SEC
            MOVE    SMCNDATE-YMD        TO  SMEI-CREYMD
                                            SMEI-UPYMD
-           MOVE    SMCNDATE-HMS        TO  SMEI-UPHMS
+           MOVE    SMCNDATE-HMS        TO  SMEI-CREHMS
+                                           SMEI-UPHMS
+      *
+           MOVE    SMEI-CREYMD         TO  SDAILYKEY-CREYMD
+           MOVE    SMEI-CREHMS         TO  SDAILYKEY-CREHMS
+           MOVE    SMEI-NYUHEN-YMD     TO  SDAILYKEY-BASEYMD
+           PERFORM 800-DAILYKEY-SEC
+           MOVE    SDAILYKEY-DAILYKEY  TO  SMEI-DAILYKEY
       *
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "SYUMEI-KEY"        TO  ORC-DBPATH
@@ -1426,9 +1443,16 @@
            END-IF
       *
            PERFORM 800-MCNDATE-SEC
-           MOVE    SMCNDATE-YMD    TO  SMEI-CREYMD
-                                       SMEI-UPYMD
-           MOVE    SMCNDATE-HMS    TO  SMEI-UPHMS
+           MOVE    SMCNDATE-YMD        TO  SMEI-CREYMD
+                                           SMEI-UPYMD
+           MOVE    SMCNDATE-HMS        TO  SMEI-CREHMS
+                                           SMEI-UPHMS
+      *
+           MOVE    SMEI-CREYMD         TO  SDAILYKEY-CREYMD
+           MOVE    SMEI-CREHMS         TO  SDAILYKEY-CREHMS
+           MOVE    SMEI-NYUHEN-YMD     TO  SDAILYKEY-BASEYMD
+           PERFORM 800-DAILYKEY-SEC
+           MOVE    SDAILYKEY-DAILYKEY  TO  SMEI-DAILYKEY
       *
            MOVE    SYUMEI-REC      TO  MCPDATA-REC
            MOVE    "SYUMEI-KEY"    TO  ORC-DBPATH
@@ -1854,6 +1878,17 @@
       *
            .
        800-ERRMSG-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    日報キー取得サブ
+      *****************************************************************
+       800-DAILYKEY-SEC         SECTION.
+      *
+           CALL    "ORCSDAILYKEY"   USING   SDAILYKEYAREA
+      *
+           .
+      *
+       800-DAILYKEY-EXT.
            EXIT.
       *****************************************************************
       *    マシン日付取得サブ

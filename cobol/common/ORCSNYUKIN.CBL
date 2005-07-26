@@ -59,6 +59,9 @@
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
+      *    日報キー取得サブ
+           COPY "CPORCSDAILYKEY.INC".
+      *
       *    共通領域
            COPY    "MCPAREA".
       *
@@ -400,7 +403,14 @@
       *
            MOVE    SMCNDATE-YMD        TO  SMEI-CREYMD
                                            SMEI-UPYMD
-           MOVE    SMCNDATE-HMS        TO  SMEI-UPHMS
+           MOVE    SMCNDATE-HMS        TO  SMEI-CREHMS
+                                           SMEI-UPHMS
+      *
+           MOVE    SMEI-CREYMD         TO  SDAILYKEY-CREYMD
+           MOVE    SMEI-CREHMS         TO  SDAILYKEY-CREHMS
+           MOVE    SMEI-NYUHEN-YMD     TO  SDAILYKEY-BASEYMD
+           PERFORM 800-DAILYKEY-SEC
+           MOVE    SDAILYKEY-DAILYKEY  TO  SMEI-DAILYKEY
       *
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -417,6 +427,17 @@
        310-SYUMEI-INS-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    日報キー取得サブ
+      *****************************************************************
+       800-DAILYKEY-SEC         SECTION.
+      *
+           CALL    "ORCSDAILYKEY"   USING   SDAILYKEYAREA
+      *
+           .
+      *
+       800-DAILYKEY-EXT.
+           EXIT.
       *****************************************************************
       *    システム管理マスター読込
       *****************************************************************

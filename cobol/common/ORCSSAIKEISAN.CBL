@@ -225,6 +225,9 @@
       *    福岡県地方公費給付対象外点数取得サブ
            COPY    "CPORCSSYU40.INC".
       *
+      *    日報キー取得サブ
+           COPY "CPORCSDAILYKEY.INC".
+      *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
@@ -2224,9 +2227,16 @@
            MOVE    "3"                  TO  SMEI-JOUTAIKBN
       *
            PERFORM 800-MCNDATE-SEC
-           MOVE    SMCNDATE-YMD         TO  SMEI-CREYMD
-                                            SMEI-UPYMD
-           MOVE    SMCNDATE-HMS         TO  SMEI-UPHMS
+           MOVE    SMCNDATE-YMD        TO  SMEI-CREYMD
+                                           SMEI-UPYMD
+           MOVE    SMCNDATE-HMS        TO  SMEI-CREHMS
+                                           SMEI-UPHMS
+      *
+           MOVE    SMEI-CREYMD         TO  SDAILYKEY-CREYMD
+           MOVE    SMEI-CREHMS         TO  SDAILYKEY-CREHMS
+           MOVE    SMEI-NYUHEN-YMD     TO  SDAILYKEY-BASEYMD
+           PERFORM 800-DAILYKEY-SEC
+           MOVE    SDAILYKEY-DAILYKEY  TO  SMEI-DAILYKEY
       *
            MOVE    SYUMEI-REC           TO  MCPDATA-REC
            MOVE    "DBINSERT"           TO  MCP-FUNC
@@ -2374,6 +2384,17 @@
        4406-GOKEI-OKIKAE-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    日報キー取得サブ
+      *****************************************************************
+       800-DAILYKEY-SEC         SECTION.
+      *
+           CALL    "ORCSDAILYKEY"   USING   SDAILYKEYAREA
+      *
+           .
+      *
+       800-DAILYKEY-EXT.
+           EXIT.
       *****************************************************************
       *    マシン日付取得サブ
       *****************************************************************
