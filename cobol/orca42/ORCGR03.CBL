@@ -1780,7 +1780,6 @@
                                                TO  SHELLTBL-ARG13
                    END-IF
                    MOVE    "00"            TO  SHELLTBL-ARG14
-                   MOVE    SPA-R01-RECEKBN TO  SHELLTBL-ARG15
                    MOVE    SHELLTBL        TO  MCPDATA-REC
                    MOVE    "SHELL"         TO  MCP-FUNC
                    MOVE    PATH-SHELL-SHELL
