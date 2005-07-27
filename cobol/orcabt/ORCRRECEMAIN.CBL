@@ -470,7 +470,8 @@
       *
       *
            MOVE     SPACE       TO WRK-ARG
-           STRING   "1,"        DELIMITED   BY  SIZE 
+           STRING   "1,"        DELIMITED   BY  SIZE
+                    "1,"        DELIMITED   BY  SIZE
                     WRK-PARA-A5 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
                     WRK-PARA-A6 DELIMITED   BY  SPACE
@@ -649,7 +650,8 @@
       *
       *
            MOVE     SPACE       TO WRK-ARG
-           STRING   "1,"        DELIMITED   BY  SIZE 
+           STRING   "1,"        DELIMITED   BY  SIZE
+                    "1,"        DELIMITED   BY  SIZE 
                     WRK-PARA-A5 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
                     WRK-PARA-A6 DELIMITED   BY  SPACE
