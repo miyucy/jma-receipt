@@ -69,12 +69,14 @@
                    07  TOUKEI01-TTEKEDYMD  PIC  X(08). 
       *            ºÁ ›∏±°›∑—¬≥∂Ë ¨
                    07  TOUKEI01-TCONTKBN   PIC  X(01).
+      *            ºÁ ›∏±°› ‰Ωı∂Ë ¨
+                   07  TOUKEI01-THOJOKBN   PIC X(01).
+      *            ºÁ ›∏±°›À‹øÕ≤»¬≤∂Ë ¨
+                   07  TOUKEI01-THONKZKKBN PIC  X(01).
       *        ºÁ ›∏±°›À° Ã»÷πÊ
                05  TOUKEI01-HKNHBTNUM      PIC  X(02).
       *        ºÁ ›∏±°›∏¯»ÒºÔ Ã∂Ë ¨
                05  TOUKEI01-HKNKOHSBTKBN   PIC X(01).
-      *        ºÁ ›∏±°› ‰Ωı∂Ë ¨
-               05  TOUKEI01-HKN-HOJOKBN    PIC X(01).
       *
       *    œ∑øÕ ›∑Úæ Û
            03  TOUKEI01-RJNHKN.

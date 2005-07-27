@@ -209,6 +209,10 @@
                05  WRK-HKN-TEKEDYMD    PIC  X(08). 
       *        ºÁ ›∏±°›∑—¬≥∂Ë ¨
                05  WRK-HKN-CONTKBN     PIC  X(01).
+      *        ºÁ ›∏±°› ‰Ωı∂Ë ¨
+               05  WRK-HKN-HOJOKBN     PIC X(01).
+      *        ºÁ ›∏±°›À‹øÕ≤»¬≤∂Ë ¨
+               05  WRK-HKN-HONKZKKBN   PIC  X(01).
       * 
       *    •Ô°º•Ø∏¯»Òæ Û
            03  WRK-KOHI-AREA.
@@ -625,15 +629,6 @@
            MOVE    TOUKEI02-HKNJANUM   TO  WRK-DATA
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    À‹øÕ≤»¬≤∂Ë ¨
-           MOVE    TOUKEI02-HONKZKKBN  TO  WRK-DATA
-           MOVE    1                   TO  WRK-NAGASA
-           PERFORM 5004-MOJI-HENSYU-SEC  
-      *     ‰Ωı∂Ë ¨
-           MOVE    TOUKEI01-HKN-HOJOKBN
-                                       TO  WRK-DATA
-           MOVE    1                   TO  WRK-NAGASA
-           PERFORM 5004-MOJI-HENSYU-SEC
       *
       *     ›∏±æ ÛºË∆¿
            INITIALIZE                  WRK-HKN-AREA
@@ -645,6 +640,14 @@
                    MOVE    5                       TO  IDX1
                END-IF
            END-PERFORM
+      *    À‹øÕ≤»¬≤∂Ë ¨
+           MOVE    WRK-HKN-HONKZKKBN   TO  WRK-DATA
+           MOVE    1                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC  
+      *     ‰Ωı∂Ë ¨
+           MOVE    WRK-HKN-HOJOKBN     TO  WRK-DATA
+           MOVE    1                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
       *    ∑—¬≥∂Ë ¨     
            MOVE    WRK-HKN-CONTKBN     TO  WRK-DATA
            MOVE    1                   TO  WRK-NAGASA

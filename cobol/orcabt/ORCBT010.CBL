@@ -44,6 +44,14 @@
       *  01.00.05    NACL-藤原    05/01/30  入院対応
       *  01.00.06    NACL-藤原    05/04/05  県番号によるレセプト種別の設定
       *                                     を中止
+      *
+      *  02.06.01    NACL-藤原    05/07/26  老人又は前期高齢者のとき、
+      *                                     月途中に保険者は変わらずに
+      *                                     保険が変更になった場合は１枚
+      *                                     にする
+      *                                     ただし、給付割合が変更になっ
+      *                                     た場合はそれぞれにレセプトを
+      *                                     作成する
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -174,6 +182,7 @@
            03  FLG-KOH                         PIC 9(01).
            03  FLG-CONTKBN                     PIC 9(01).
            03  FLG-SET                         PIC 9(01).
+           03  FLG-LASTHKNID                   PIC 9(01). 
       *
       *    カウント領域
        01  CNT-AREA.
@@ -307,6 +316,21 @@
       *
       *    点数マスタ退避ワーク
            COPY    "CPTTNS.INC".
+      * 
+      *    保険番号マスタ退避ワーク
+       01  WRK-HKNNUM-AREA.
+           03  WRK-HKNNUM-IDX                  PIC 9(05).
+           03  WRK-HKNNUM-MAX                  PIC 9(05).
+           03  WRK-CHK-HKNNUM                  PIC X(03).
+           03  WRK-CHK-PAYKBN                  PIC X(02).
+           03  WRK-CHK-TEKSTYMD                PIC X(08).
+           03  WRK-CHK-TEKEDYMD                PIC X(08).
+       01  TABLE-HKNNUM-AREA.
+         02  TBL-HKNNUM-REC                    OCCURS  2000.
+           COPY    "CPHKNNUM.INC"  REPLACING   //HKN-//
+                                   BY          //TBL-HKN-//.        
+       01  TBL-HKNNUM-CONST-MAX                PIC 9(05)
+                                               VALUE   2000.
       *
        01  WRK-CONS-AREA.
       *    
@@ -482,6 +506,8 @@
                                        FLG-AREA
                                        WRK-TOUKEI01-TABLE
                                        TTNS-AREA
+                                       WRK-HKNNUM-AREA
+                                       TABLE-HKNNUM-AREA  
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA-TERMID
@@ -1179,25 +1205,111 @@
            MOVE    WRK-PARA-NYUGAIKBN  TO  TOUKEI01-NYUGAIKBN
            MOVE    COMB-PTID           TO  TOUKEI01-PTID
            MOVE    COMB-HKNNUM         TO  TOUKEI01-HKNNUM
+           MOVE    PTHKN-HONKZKKBN     TO  TOUKEI01-HONKZKKBN
            IF      COMB-HKNNUM         =   SPACE
                MOVE    ZERO                TO  TOUKEI01-KOHID
            ELSE
                IF      COMB-KOH1HKNNUM     =   "027"
                    MOVE    COMB-KOH1ID         TO  TOUKEI01-KOHID
+                   MOVE    "0"                 TO  TOUKEI01-HONKZKKBN
                ELSE
                    MOVE    ZERO                TO  TOUKEI01-KOHID
+                   EVALUATE    PTHKN-HKNNUM
+                       WHEN    "002" 
+                           EVALUATE   PTHKN-HOJOKBN
+                               WHEN   "A"
+                               WHEN   "B"
+                               WHEN   "C"
+                               WHEN   "9"
+                                   MOVE    "0" TO  TOUKEI01-HONKZKKBN
+                               WHEN   "D"
+                               WHEN   "E"
+                               WHEN   "F"
+                               WHEN   "8"
+                                   MOVE    "0" TO  TOUKEI01-HONKZKKBN
+                           END-EVALUATE
+                       WHEN    "031"  THRU    "034"  
+                           EVALUATE   PTHKN-HOJOKBN
+                               WHEN   "B"
+                               WHEN   "9"   
+                                   MOVE    "0" TO  TOUKEI01-HONKZKKBN
+                               WHEN   "E"
+                               WHEN   "8"
+                                   MOVE    "0" TO  TOUKEI01-HONKZKKBN
+                             END-EVALUATE
+                       WHEN    "060" 
+                           EVALUATE   PTHKN-HOJOKBN
+                               WHEN   "1"
+                               WHEN   "4"
+                                   MOVE    "0" TO  TOUKEI01-HONKZKKBN
+                               WHEN   "2"
+                               WHEN   "5"
+                                   MOVE    "0" TO  TOUKEI01-HONKZKKBN
+                               WHEN   "3"
+                               WHEN   "6"
+                                   MOVE    "0" TO  TOUKEI01-HONKZKKBN
+                              END-EVALUATE
+                      WHEN    OTHER 
+                          EVALUATE   PTHKN-HOJOKBN
+                             WHEN   "9"
+                                 MOVE    "0" TO  TOUKEI01-HONKZKKBN
+                             WHEN   "8"
+                                 MOVE    "0" TO  TOUKEI01-HONKZKKBN
+                         END-EVALUATE
+                   END-EVALUATE
                END-IF 
            END-IF
+      *
            MOVE    PTHKN-HKNJANUM      TO  TOUKEI01-HKNJANUM
-           MOVE    PTHKN-HONKZKKBN     TO  TOUKEI01-HONKZKKBN 
            EVALUATE    PTHKN-HKNNUM
                WHEN    "002"
                WHEN    "031"   THRU    "034"
                    IF      PTHKN-HOJOKBN   =   SPACE
                        CONTINUE
                    ELSE    
-                       MOVE    PTHKN-HOJOKBN   TO  TOUKEI01-HOJOKBN
+                       MOVE    PTHKN-HOJOKBN   TO
+                                               TOUKEI01-HOJOKBN
                    END-IF
+               WHEN    "060"
+                   EVALUATE    WRK-PARA-NYUGAIKBN
+                       WHEN    "1"
+                           EVALUATE   PTHKN-HOJOKBN
+                               WHEN   "0"
+                               WHEN   "4"
+                                   MOVE    "0"             TO
+                                                   TOUKEI01-HOJOKBN
+                               WHEN   "1"
+                               WHEN   "5"
+                                   MOVE    "1"             TO
+                                                   TOUKEI01-HOJOKBN
+                               WHEN   "2"
+                               WHEN   "6"
+                                   MOVE    "2"             TO
+                                                   TOUKEI01-HOJOKBN
+                           END-EVALUATE
+                       WHEN    "2"
+                           EVALUATE   PTHKN-HOJOKBN
+                               WHEN   "1"
+                               WHEN   "4"
+                                   MOVE    "1"             TO
+                                                   TOUKEI01-HOJOKBN
+                               WHEN   "2"
+                               WHEN   "5"
+                                   MOVE    "2"             TO
+                                                   TOUKEI01-HOJOKBN
+                               WHEN   "3"
+                               WHEN   "6"
+                                   MOVE    "3"             TO
+                                                   TOUKEI01-HOJOKBN
+                           END-EVALUATE
+                   END-EVALUATE
+               WHEN    OTHER 
+                   EVALUATE   PTHKN-HOJOKBN
+                      WHEN   "9"
+                      WHEN   "8"
+                          MOVE    PTHKN-HOJOKBN   TO
+                                               TOUKEI01-HOJOKBN
+                   END-EVALUATE
            END-EVALUATE             
       *
            PERFORM VARYING IDXX    FROM    1   BY  1
@@ -1283,6 +1395,8 @@
                    MOVE    PTHKN-CONTKBN   TO  TOUKEI01-TCONTKBN   (1)
                    MOVE    PTHKN-HIHKNJANAME
                                            TO  TOUKEI01-THIHKNJANAME(1)
+                   MOVE    PTHKN-HOJOKBN   TO  TOUKEI01-THOJOKBN   (1)
+                   MOVE    PTHKN-HONKZKKBN TO  TOUKEI01-THONKZKKBN (1)
       *            法別番号
                    INITIALIZE                      HKNNUM-REC
                    MOVE    WRK-PARA-HOSPID     TO  HKN-HOSPID
@@ -1291,13 +1405,12 @@
                    MOVE    WRK-SYMD            TO  HKN-TEKSTYMD
                                                    HKN-TEKEDYMD
                    MOVE    HKNNUM-REC          TO  MCPDATA-REC
-                   PERFORM 900-HKNNUM-INV-SEC
+                   PERFORM 900-HKNNUM-CHK-SEC
                    IF      FLG-HKNNUM          =   ZERO
                        MOVE    HKN-HBTNUM      TO  TOUKEI01-HKNHBTNUM
                        MOVE    HKN-HKNKOHSBTKBN
                                                TO  TOUKEI01-HKNKOHSBTKBN
                    END-IF
-                   MOVE    PTHKN-HOJOKBN       TO  TOUKEI01-HKN-HOJOKBN
                END-EVALUATE
            END-IF    
       *
@@ -1324,7 +1437,7 @@
                    MOVE    WRK-SYMD        TO  HKN-TEKSTYMD
                                                HKN-TEKEDYMD
                    MOVE    HKNNUM-REC      TO  MCPDATA-REC
-                   PERFORM 900-HKNNUM-INV-SEC
+                   PERFORM 900-HKNNUM-CHK-SEC
                    IF      FLG-HKNNUM      =   ZERO
                        MOVE   HKN-HBTNUM       TO TOUKEI01-RJNHBTNUM
                    END-IF
@@ -1415,32 +1528,50 @@
                WHEN    WRK-CONS-JIBAI-HKNNUM
                  CONTINUE
                WHEN    OTHER
+                 MOVE    1                       TO  FLG-LASTHKNID
                  PERFORM VARYING IDX FROM    1   BY  1
-                         UNTIL   IDX >       10
-                   IF      TOUKEI01-TTEKSTYMD (IDX)  =   SPACE
-                       MOVE    PTHKN-HKNID TO  TOUKEI01-HKNID
-                       MOVE    PTHKN-HKNID TO  TOUKEI01-THKNID    (IDX)
-                       MOVE    PTHKN-TEKSTYMD
+                         UNTIL   IDX >       5
+                     IF    ( TOUKEI01-TTEKSTYMD (IDX)
+                                       =   PTHKN-TEKSTYMD )
+                     AND   ( TOUKEI01-TTEKEDYMD (IDX)
+                                       =   PTHKN-TEKEDYMD )
+                         MOVE    5              TO  IDX
+                     ELSE
+                         IF      TOUKEI01-TTEKSTYMD (IDX)  =   SPACE
+                             MOVE    PTHKN-HKNID
+                                           TO  TOUKEI01-THKNID    (IDX)
+                             MOVE    PTHKN-TEKSTYMD
                                            TO  TOUKEI01-TTEKSTYMD (IDX)
-                       MOVE    PTHKN-TEKEDYMD
+                             MOVE    PTHKN-TEKEDYMD
                                            TO  TOUKEI01-TTEKEDYMD (IDX)
-                       MOVE    PTHKN-SKKGETYMD
+                             MOVE    PTHKN-SKKGETYMD
                                            TO  TOUKEI01-TSKKGETYMD(IDX)
-                       MOVE    PTHKN-KIGO  TO  TOUKEI01-TKIGO     (IDX)
-                       MOVE    PTHKN-NUM   TO  TOUKEI01-TNUM      (IDX)
-                       MOVE    PTHKN-CONTKBN
+                             MOVE    PTHKN-KIGO
+                                           TO  TOUKEI01-TKIGO     (IDX)
+                             MOVE    PTHKN-NUM
+                                           TO  TOUKEI01-TNUM      (IDX)
+                             MOVE    PTHKN-CONTKBN
                                            TO  TOUKEI01-TCONTKBN  (IDX)
-                       MOVE    PTHKN-HIHKNJANAME
+                             MOVE    PTHKN-HIHKNJANAME
                                            TO
                                            TOUKEI01-THIHKNJANAME  (IDX)
-                       MOVE    10          TO  IDX
-                   ELSE
-                       IF      TOUKEI01-TTEKSTYMD(IDX)
-                                           =   PTHKN-TEKSTYMD
-                           MOVE    10          TO  IDX
-                       END-IF    
-                   END-IF    
-               END-PERFORM
+                             MOVE    PTHKN-HOJOKBN
+                                           TO  TOUKEI01-THOJOKBN  (IDX)
+                             MOVE    PTHKN-HONKZKKBN
+                                           TO  TOUKEI01-THONKZKKBN(IDX)
+                             MOVE    5     TO  IDX
+                         ELSE
+                             IF      TOUKEI01-TTEKSTYMD (IDX)
+                                                   >=  PTHKN-TEKSTYMD
+                                 MOVE    ZERO   TO  FLG-LASTHKNID
+                             END-IF    
+                         END-IF
+                     END-IF    
+                 END-PERFORM
+      *    
+                 IF      FLG-LASTHKNID       =   1
+                     MOVE    PTHKN-HKNID         TO  TOUKEI01-HKNID
+                 END-IF
              END-EVALUATE
            END-IF
       *    
@@ -1559,7 +1690,7 @@
                MOVE    WRK-SYMD        TO  HKN-TEKSTYMD
                                            HKN-TEKEDYMD
                MOVE    HKNNUM-REC      TO  MCPDATA-REC
-               PERFORM 900-HKNNUM-INV-SEC
+               PERFORM 900-HKNNUM-CHK-SEC
                IF      FLG-HKNNUM      =   ZERO
                     MOVE   HKN-HBTNUM      TO  TOUKEI01-TKOHHBTNUM (IDY)
                END-IF
@@ -1799,7 +1930,7 @@
              END-IF
            END-IF
       *
-           MOVE    TOUKEI01-HONKZKKBN  TO  WK-HONKZKKBN
+      *****MOVE    TOUKEI01-HONKZKKBN  TO  WK-HONKZKKBN
       *
            MOVE    ZERO                TO  WK-KOHI-CNT
            PERFORM VARYING IDX FROM    1   BY  1
@@ -1811,6 +1942,19 @@
            END-PERFORM
       *
            IF  TOUKEI01-HKNNUM     NOT =   SPACE
+      *
+      *        主保険最新情報
+               MOVE    1               TO  IDY
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       5
+                       OR      TOUKEI01-TTEKSTYMD (IDX)  =   SPACE
+                   IF      TOUKEI01-TTEKSTYMD (IDX)
+                                           >   TOUKEI01-TTEKSTYMD (IDY)
+                       MOVE    IDX             TO  IDY
+                   END-IF
+               END-PERFORM
+               MOVE    TOUKEI01-THONKZKKBN (IDY)   TO  WK-HONKZKKBN
+      *
                IF      WRK-PARA-SRYYM      >=  "200210"
       *            ３歳未満の場合、ＷＫ−ＨＯＮＫＺＫＫＢＮに"３"をセット
                    IF      TOUKEI01-AGE         <     3
@@ -1820,9 +1964,9 @@
       *            １割、２割負担の高齢者の場合ＷＫ−ＨＯＮＫＺＫＫＢＮに
       *            "９"または"８"をセット
       *            老人保険の場合はＷＫ−ＲＪＮにセットする	
-                   EVALUATE    COMB-HKNNUM
+                   EVALUATE    TOUKEI01-HKNNUM
                        WHEN    "002" 
-                           EVALUATE   COMB-HOJOKBN
+                           EVALUATE   TOUKEI01-THOJOKBN (IDY)
                                WHEN   "A"
                                WHEN   "B"
                                WHEN   "C"
@@ -1835,7 +1979,7 @@
                                    MOVE   "8"   TO   WK-HONKZKKBN
                            END-EVALUATE
                        WHEN    "031"  THRU    "034"  
-                           EVALUATE   COMB-HOJOKBN
+                           EVALUATE   TOUKEI01-THOJOKBN (IDY)
                                WHEN   "B"
                                WHEN   "9"   
                                    MOVE   "9"   TO   WK-HONKZKKBN
@@ -1846,7 +1990,7 @@
                        WHEN    "060" 
                            IF  (TOUKEI01-AGE  >=   70)  AND
                                (TOUKEI01-AGE  <=   74)
-                               EVALUATE   COMB-HOJOKBN
+                               EVALUATE   TOUKEI01-THOJOKBN (IDY)
                                    WHEN   "1"
                                    WHEN   "4"
                                        MOVE   "9"   TO   WK-HONKZKKBN
@@ -1856,7 +2000,7 @@
                                END-EVALUATE
                            END-IF     
                        WHEN    OTHER 
-                           EVALUATE   COMB-HOJOKBN
+                           EVALUATE   TOUKEI01-THOJOKBN (IDY)
                                WHEN   "9"
                                    MOVE   "9"   TO   WK-HONKZKKBN
                                WHEN   "8"
@@ -1864,7 +2008,7 @@
                            END-EVALUATE
                    END-EVALUATE
                    IF      TOUKEI01-RJNHKNNUM      =    "027"
-                       EVALUATE   COMB-KOH1PAYKBN
+                       EVALUATE   TOUKEI01-RJNPAYKBN
                            WHEN   "01"
                                MOVE   "9"   TO   WK-RJN                     
                            WHEN   "02"
@@ -1875,7 +2019,7 @@
            END-IF
       *
            IF    ( WK-RJN          NOT =   SPACE )     
-           AND   ( TOUKEI01-HONKZKKBN  =   "1"   )     
+           AND   ( WK-HONKZKKBN        =   "1"   )     
                IF      TOUKEI01-HKNNUM =   "063"   OR  "072"   OR
                                            "073"   OR  "074"   OR
                                            "075"
@@ -1883,12 +2027,13 @@
                END-IF
            END-IF    
       *
-      *      DISPLAY "HONKZKKBN : " WK-HONKZKKBN 
-      *      DISPLAY "NYUGAIKBN : " TOUKEI01-NYUGAIKBN 
-      *      DISPLAY "IHO       : " WK-IHO 
-      *      DISPLAY "KOKUHO    : " WK-KOKUHO 
-      *      DISPLAY "RJN       : " WK-RJN 
-      *      DISPLAY "KOHI-CNT  : " WK-KOHI-CNT 
+      *     DISPLAY "PTNUM     : " TOUKEI01-PTNUM 
+      *     DISPLAY "HONKZKKBN : " WK-HONKZKKBN 
+      *     DISPLAY "NYUGAIKBN : " TOUKEI01-NYUGAIKBN 
+      *     DISPLAY "IHO       : " WK-IHO 
+      *     DISPLAY "KOKUHO    : " WK-KOKUHO 
+      *     DISPLAY "RJN       : " WK-RJN 
+      *     DISPLAY "KOHI-CNT  : " WK-KOHI-CNT 
       *
       *    平成１４年９月まで
            IF      WRK-PARA-SRYYM     <=      "200209"
@@ -2405,6 +2550,8 @@
                    MOVE    1430            TO    TOUKEI01-RECESYUBETU
              END-EVALUATE
            END-IF
+      *
+      *    DISPLAY "TOUKEI01-RECESYUBETU=" TOUKEI01-RECESYUBETU
            .
         20021-RECESYUBETU-SET-EXT.
            EXIT.
@@ -3083,6 +3230,78 @@
       *
            .
        900-PTKOHINF-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険番号マスタ検索処理
+      *****************************************************************
+       900-HKNNUM-CHK-SEC              SECTION.
+      *
+           MOVE    ZERO                TO  FLG-HKNNUM
+           MOVE    HKN-HKNNUM          TO  WRK-CHK-HKNNUM
+           MOVE    HKN-PAYKBN          TO  WRK-CHK-PAYKBN
+           MOVE    HKN-TEKSTYMD        TO  WRK-CHK-TEKSTYMD
+           MOVE    HKN-TEKEDYMD        TO  WRK-CHK-TEKEDYMD
+      *
+           INITIALIZE                      HKNNUM-REC
+      *
+      *    保険番号マスタ退避ワークチェック
+      *
+           PERFORM VARYING WRK-HKNNUM-IDX    FROM    1   BY  1
+                   UNTIL   WRK-HKNNUM-IDX    >   WRK-HKNNUM-MAX
+                   OR      HKN-HKNNUM        NOT =   SPACE
+               IF    ( WRK-CHK-HKNNUM  =
+                                       TBL-HKN-HKNNUM (WRK-HKNNUM-IDX) )
+               IF    ( WRK-CHK-PAYKBN  =
+                                       TBL-HKN-PAYKBN (WRK-HKNNUM-IDX) )
+               AND   ( TBL-HKN-TEKSTYMD (WRK-HKNNUM-IDX)
+                                       <=  WRK-CHK-TEKSTYMD            )
+               AND   ( TBL-HKN-TEKEDYMD(WRK-HKNNUM-IDX)
+                                       >=  WRK-CHK-TEKEDYMD            )
+                   MOVE    TBL-HKNNUM-REC (WRK-HKNNUM-IDX)
+                                       TO  HKNNUM-REC
+               END-IF
+           END-PERFORM
+      *
+      *    退避ワークに存在しない場合はＤＢを検索
+           IF      HKN-HKNNUM          =   SPACE
+               INITIALIZE                      HKNNUM-REC
+               MOVE    WRK-PARA-HOSPID     TO  HKN-HOSPID
+               MOVE    WRK-CHK-HKNNUM      TO  HKN-HKNNUM
+               MOVE    WRK-CHK-PAYKBN      TO  HKN-PAYKBN
+               MOVE    WRK-CHK-TEKSTYMD    TO  HKN-TEKSTYMD
+               MOVE    WRK-CHK-TEKEDYMD    TO  HKN-TEKEDYMD
+               MOVE    HKNNUM-REC          TO  MCPDATA-REC
+               MOVE    "DBSELECT"          TO  MCP-FUNC
+               MOVE    "HKNNUM-KEY"        TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "HKNNUM-KEY"        TO  ORC-DBPATH
+                   PERFORM 900-HKNNUM-READ-SEC
+               ELSE
+                   MOVE    1                   TO  FLG-HKNNUM
+               END-IF
+      *
+               IF      FLG-HKNNUM          =   ZERO
+      *            退避ワークに編集
+                   IF      TBL-HKNNUM-CONST-MAX
+                                               >   WRK-HKNNUM-MAX
+                       COMPUTE WRK-HKNNUM-MAX
+                                       =   WRK-HKNNUM-MAX  +   1
+                       MOVE    HKNNUM-REC      TO
+                                   TBL-HKNNUM-REC (WRK-HKNNUM-MAX)
+                   END-IF
+               END-IF
+      *
+               MOVE    "HKNNUM-KEY"        TO  ORC-DBPATH
+               PERFORM 900-DBCLOSE-SEC
+           END-IF
+      *
+           .
+      *
+       900-HKNNUM-CHK-EXT.
            EXIT.
       *
       *****************************************************************
