@@ -1,0 +1,65 @@
+tbl_hours {
+	SRYYMD				char(8);
+	TIME				char(4);
+	ID					char(12);
+	HOURSKBN			char(1);
+	TERMID   			varchar(32);
+	OPID     			varchar(16);
+	CREYMD   			char(8);
+	UPYMD    			char(8);
+	UPHMS				char(6);
+	STSRYYMD			char(8),virtual;
+	EDSRYYMD			char(8),virtual;
+};
+
+primary	{
+	SRYYMD,TIME;
+};
+
+path	key 	{
+	DBSELECT	{
+		DECLARE tbl_hours_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_hours
+			WHERE SRYYMD      =   :SRYYMD
+			AND   TIME        =   :TIME
+		;
+	};
+};
+
+path	key2 	{
+	DBSELECT	{
+		DECLARE tbl_hours_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_hours
+			WHERE SRYYMD      >=   :SRYYMD
+			ORDER BY   ID     DESC
+		;
+	};
+};
+
+path	key3 	{
+	DBSELECT	{
+		DECLARE tbl_hours_key3_csr CURSOR FOR
+		SELECT *
+		FROM tbl_hours
+			WHERE SRYYMD      >=   :STSRYYMD
+			 AND  SRYYMD      <=   :EDSRYYMD
+			 AND  ID          <     ID
+			ORDER BY   ID     DESC
+		;
+	};
+};
+
+path	key4 	{
+	DBSELECT	{
+		DECLARE tbl_hours_key4_csr CURSOR FOR
+		SELECT *
+		FROM tbl_hours
+			WHERE SRYYMD      >=   :SRYYMD
+			 AND  HOURSKBN     =   '1'
+			ORDER BY   ID      DESC
+		;
+	};
+};
+

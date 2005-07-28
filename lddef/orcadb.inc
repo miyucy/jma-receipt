@@ -101,6 +101,7 @@ db	{
 	tbl_syutotal_prv;
 	tbl_santei_prv;
 	tbl_srykarrk_prv;
+	tbl_hours;
 };
 db	"shell"	{
 	shell;
