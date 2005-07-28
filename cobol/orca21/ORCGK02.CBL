@@ -6991,6 +6991,9 @@
            ELSE
       *        診察料以外は時間外加算が算定できること
                IF      TNS-TIMEKSNKBN      =   ZERO
+      *TEST
+               AND     TNS-SRYKBN      NOT =   "40"
+      *TEST
                    MOVE    "0030"              TO  SPA-ERRCD
                    GO      TO      41011211-JIKANGAI-CHK-EXT
                END-IF
