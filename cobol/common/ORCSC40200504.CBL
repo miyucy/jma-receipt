@@ -74,11 +74,15 @@
            03  FLG-RSI             PIC 9(01).
            03  FLG-ROU-ARI         PIC 9(01).
            03  FLG-ROUSAI          PIC 9(01).
+           03  FLG-ROUSAI-KSN      PIC 9(01).
+           03  FLG-ROUSAI-KSN2     PIC 9(01).
       *    自動加算あり
            03  FLG-KASAN-ARI       PIC 9(01).
            03  FLG-LAST            PIC 9(01).
       *
            03  FLG-SYUGI           PIC 9(01).
+      *
+           03  FLG-OK              PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -140,8 +144,8 @@
            03  WRK-GOK-TENGAKEI    PIC 9(09).
            03  WRK-TENSU-KEISAN.
                05  WRK-SUM-TENSUKEI    PIC 9(09).
-               05  WRK-SUM-TENGAKEI    PIC 9(09).
                05  WRK-RSI-TENSUKEI    PIC 9(09).
+               05  WRK-SUM-TENGAKEI    PIC 9(09).
       *
            03  WRK-SYOKEIS         PIC 9(08)V9999.
            03  WRK-SYOKEIS2        PIC 9(08)V99.
@@ -385,6 +389,12 @@
       *****************************************************************
        10011-CHK-SEC                  SECTION.
       *
+      *    腰部固定帯加算は通則加算対象外とする
+           IF      WRK-COM-INPUTCD (IDX-Z) =   "140037490"
+                                           OR  "140040110"
+               MOVE    "1"                 TO  WRK-COM-TUSOKUGAIKBN
+                                                              (IDX-Z)
+           END-IF
       *    各チェック処理
            EVALUATE    WRK-MOJI
                WHEN    "1"
@@ -1023,7 +1033,8 @@
                ELSE
                    IF     (WRK-COM-INPUTCD (IDX1)(1:1) =  "1" ) AND
                           (WRK-COM-DATAKBN (IDX1)      =  "2" ) AND
-                          (WRK-COM-TIMEKSNKBN (IDX1)   =   ZERO )
+                          (WRK-COM-TIMEKSNKBN (IDX1)   =   ZERO ) AND
+                          (WRK-COM-TUSOKUGAIKBN(IDX1)  NOT =  "1" )
                       MOVE    IDX1             TO  IDX-T
                    END-IF
                    IF     (WRK-COM-INPUTCD (IDX1)(1:1) =  "1" ) AND
@@ -1066,9 +1077,7 @@
                    (SPA-SRYYMD             =   SPA-SYSYMD) AND
                    (SPA-HKNCOMBINUM    NOT =   "9999") AND
                    (LNK-ORCSC-SINSATU-ARI  =   ZERO )  AND
-                   (SPA-GAI-JIKANKBN   NOT =   ZERO )  AND
-                   (WRK-COM-TIMEKSNKBN(IDX-ZS)
-                                       NOT =   ZERO )
+                   (SPA-GAI-JIKANKBN   NOT =   ZERO )
                PERFORM 10019-JIKANKASAN-CHK-SEC
            END-IF
       *    時間加算
@@ -1192,7 +1201,18 @@
       *        次の手技の前とする
                    IF     (WRK-COM-INPUTCD (IDX1)(1:1) =   "1" )  AND
                           (WRK-COM-DATAKBN (IDX1)  =   "2"  )
+      *               通則外加算の前
+                      AND (WRK-COM-TUSOKUGAIKBN(IDX1)  NOT =  "1" )
                         MOVE    IDX1           TO  IDX-T
+                   END-IF
+      *            労災
+                   IF     (SPA-HKNKBN          =   1   )
+                       IF    ((WRK-COM-INPUTCD (IDX1)(1:1) =   "1") OR
+                              (WRK-COM-INPUTCD (IDX1)  =   "099509901"))
+      *               通則外加算の前
+                          AND (WRK-COM-TUSOKUGAIKBN(IDX1)  NOT =  "1" )
+                            MOVE    IDX1           TO  IDX-T
+                       END-IF
                    END-IF
                END-IF
            END-PERFORM
@@ -1523,7 +1543,17 @@
       *    セット用合計点数
            MOVE    WRK-COM-KEI  (IDX-MAX)  TO  LNK-ORCSC-ZAIKEI
            MOVE    WRK-COM-TENSU(IDX-MAX)  TO  LNK-ORCSC-ZAITEN
-      *
+      * 
+           IF     (WRK-ERRCD       NOT =   SPACE ) AND
+                  (SPA-ERRCD           =   SPACE )
+               MOVE    WRK-ERRCD           TO  SPA-ERRCD
+           END-IF
+      *    １剤１手技判定
+           IF     (SPA-ERRCD           =   SPACE)   AND
+                  (IDX-SYU             >   ZERO )
+               PERFORM 1009-SYUGI-CHEK-SEC
+               MOVE    WRK-ERRCD           TO  SPA-ERRCD
+           END-IF
            .
        1002-TENSU-KEI-EXT.
            EXIT.
@@ -1599,6 +1629,8 @@
       *
            MOVE    IDX-Z               TO  HZN-IDX
            PERFORM 1006-KASAN-SET-SEC
+           MOVE    WRK-SUM-TENSUKEI    TO  LNK-SC90-TENSU
+      *
       *    手技料の合計を編集する
            MOVE    LNK-SC90-TENSU      TO  WRK-COM-SYUTEN2 (IDX-SYU)
       *    労災の外来管理加算読み替え処理
@@ -1611,16 +1643,21 @@
                                            TO  LNK-SC90-TENSU
                END-IF
            END-IF
-      *    労災の時、合計に時間外加算計算
-           IF     (SPA-HKNKBN          =   1 ) AND
-                  (FLG-LAST            =   1 )
-               PERFORM 10062-RSI-JIKAN-SEC
+      *
+      *    終了時の通則外加算集計
+           IF      FLG-LAST            =   1
+               IF      SPA-HKNKBN          =   1
+      *            労災の時、合計に時間外加算計算
+                   PERFORM 10062-RSI-JIKAN-SEC
+               END-IF
+      *
+               COMPUTE LNK-SC90-TENSUKEI   =   LNK-SC90-TENSUKEI
+                                           +   WRK-SUM-TENGAKEI
            END-IF
       *
            .
        100212-TENSUKEI-EXT.
            EXIT.
-      *
       *****************************************************************
       *    手技毎の計算処理
       *****************************************************************
@@ -1636,7 +1673,7 @@
                                        WRK-SCR-REC
       *
            MOVE    IDX-Z               TO  IDX-STR
-           INITIALIZE                  WRK-TENSU-KEISAN
+           MOVE    ZERO                TO  WRK-SUM-TENSUKEI
            MOVE    ZERO                TO  LNK-SC90-TENSU
       *
            .
@@ -1716,9 +1753,16 @@
                                        +   WRK-TENSUKEI-G
       *
            IF      SPA-HKNKBN          =   1
-      *        労災の時間加算
+      *        労災の加算
                PERFORM 10061-RSI-KSAN-SEC
-           ELSE
+           END-IF
+      *
+      *    時間外加算自動発生（労災の加算後の点数での判定）
+           IF      (WRK-COM-TIMEKSNKBN(IDX-SYU)     =   ZERO )  AND
+                   (WRK-SUM-TENSUKEI       >=   150  )
+               PERFORM 10063-JIKANGAI-AUTO-SEC
+           END-IF
+           IF      SPA-HKNKBN      NOT =   1
       *        時間外加算
                PERFORM 10060-JIKANGAI-KASAN-SEC
            END-IF
@@ -1751,9 +1795,8 @@
                    ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-G
                END-IF
            END-PERFORM
-           COMPUTE LNK-SC90-TENSU      =   WRK-SUM-TENSUKEI
+           COMPUTE WRK-SUM-TENSUKEI    =   WRK-SUM-TENSUKEI
                                        +   WRK-TENSUKEI-G
-                                       +   WRK-SUM-TENGAKEI
       *
            .
        10060-JIKANGAI-KASAN-EXT.
@@ -1764,8 +1807,7 @@
       *****************************************************************
        10061-RSI-KSAN-SEC                SECTION.
       *
-           COMPUTE LNK-SC90-TENSU      =   WRK-SUM-TENSUKEI
-                                       +   WRK-SUM-TENGAKEI
+           MOVE    ZERO                TO  FLG-ROUSAI-KSN2
       *    労災の加算
            MOVE    ZERO                TO  WRK-TENSUKEI-G
            PERFORM VARYING     IDX     FROM    IDX-SYU BY  1
@@ -1773,20 +1815,52 @@
                IF     (WRK-COM-INPUTCD(IDX)(1:3)   =   "101")  AND
                       (WRK-COM-TENSIKIBETU(IDX)    =   5   )
                    MOVE    ZERO                TO  WRK-TENSUKEI
-                   COMPUTE WRK-TENSUKEI        =   LNK-SC90-TENSU
+                   COMPUTE WRK-TENSUKEI        =   WRK-SUM-TENSUKEI
                                                *   WRK-COM-KISOTEN(IDX)
                                                /   100.00
                                                +   0.9
                    MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
                    ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-G
+                   IF      WRK-SUM-TENSUKEI    <   150
+                       MOVE    1                   TO  FLG-ROUSAI-KSN2
+                   END-IF
+                   MOVE    1                   TO  FLG-ROUSAI-KSN
                END-IF
            END-PERFORM
       *
-           COMPUTE LNK-SC90-TENSU      =   LNK-SC90-TENSU
+           COMPUTE WRK-SUM-TENSUKEI    =   WRK-SUM-TENSUKEI
                                        +   WRK-TENSUKEI-G
       *
            .
        10061-RSI-KSAN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    時間外加算自動発生処理
+      *****************************************************************
+       10063-JIKANGAI-AUTO-SEC                SECTION.
+      *
+           MOVE    ZERO                TO  FLG-ADD
+           MOVE    IDX-SYU             TO  IDX-ZS
+           PERFORM 10012-JIKANKASAN-SET-SEC
+           IF      FLG-ADD             =   1
+               ADD     1               TO  HZN-IDX
+               IF      FLG-LAST            =   1
+                   MOVE    ZERO            TO  IDX-MAX
+                   PERFORM VARYING     IDX1    FROM    1   BY  1
+                           UNTIL      (IDX1        >   200     )   OR
+                                     ((WRK-GMN-INPUTCD (IDX1)
+                                                   =   SPACE  ) AND
+                                      (WRK-COM-INPUTCD (IDX1)
+                                                   =   SPACE ))
+                       ADD     1               TO  IDX-MAX
+                   END-PERFORM
+                   MOVE    IDX-MAX         TO  IDX-Z
+                   ADD     1               TO  IDX-Z
+               END-IF
+           END-IF
+           .
+       10063-JIKANGAI-AUTO-EXT.
            EXIT.
       *
       *****************************************************************

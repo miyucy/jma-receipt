@@ -91,6 +91,8 @@
            03  FLG-AUTO-ARI        PIC 9(01).
            03  FLG-AUTO-NASI       PIC 9(01).
       *
+           03  FLG-TIME            PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
@@ -116,6 +118,8 @@
       *
            03  IDX-HZN                 PIC 9(04).
            03  IDX-STR                 PIC 9(04).
+      *
+           03  IDT                     PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -1971,22 +1975,23 @@
            IF     (SPA-GMN-INPUTCD(IDX)(1:1)       NUMERIC   ) AND
                   (SPA-GMN-INPUTCD(IDX)(2:1)       =   SPACE ) AND
                   (SPA-GMN-INPUTCD(IDX)(3:1)   NOT =   SPACE )
-               EVALUATE    SPA-GMN-INPUTCD (IDX)(1:1)
-                   WHEN    "1"
-                       MOVE    "A"      TO  WKSRY-AUTOKBN  (IDY)
-                   WHEN    "2"
-                       MOVE    "B"      TO  WKSRY-AUTOKBN  (IDY)
-                   WHEN    "3"
-                       MOVE    "C"      TO  WKSRY-AUTOKBN  (IDY)
-                   WHEN    "4"
-                       MOVE    "D"      TO  WKSRY-AUTOKBN  (IDY)
-                   WHEN    "5"
-                       MOVE    "E"      TO  WKSRY-AUTOKBN  (IDY)
-                   WHEN    "6"
-                       MOVE    "F"      TO  WKSRY-AUTOKBN  (IDY)
-                   WHEN    "7"
-                       MOVE    "G"      TO  WKSRY-AUTOKBN  (IDY)
-               END-EVALUATE
+               PERFORM 20021-JIKANGAI-CHK-SEC
+      ***      EVALUATE    SPA-GMN-INPUTCD (IDX)(1:1)
+      *            WHEN    "1"
+      *                MOVE    "A"      TO  WKSRY-AUTOKBN  (IDY)
+      *            WHEN    "2"
+      *                MOVE    "B"      TO  WKSRY-AUTOKBN  (IDY)
+      *            WHEN    "3"
+      *                MOVE    "C"      TO  WKSRY-AUTOKBN  (IDY)
+      *            WHEN    "4"
+      *                MOVE    "D"      TO  WKSRY-AUTOKBN  (IDY)
+      *            WHEN    "5"
+      *                MOVE    "E"      TO  WKSRY-AUTOKBN  (IDY)
+      *            WHEN    "6"
+      *                MOVE    "F"      TO  WKSRY-AUTOKBN  (IDY)
+      *            WHEN    "7"
+      *                MOVE    "G"      TO  WKSRY-AUTOKBN  (IDY)
+      ****     END-EVALUATE
       *
            ELSE
                IF     (SPA-NYUGAIKBN           =   "1" ) AND
@@ -2013,6 +2018,48 @@
            END-IF
            .
        20021-JIKANGAI-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     時間外区分チェック処理
+      *****************************************************************
+       20021-JIKANGAI-CHK-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-TIME
+           PERFORM VARYING     IDT     FROM    IDX   BY  1
+                   UNTIL      (IDT     >   SPA-GMN-MAX )  OR
+                              (FLG-TIME    =   1       )
+      *        自動発生の時間外加算
+               IF     (SPA-COM-DATAKBN(IDT)    =   "2" )  AND
+                      (SPA-COM-AUTOKBN(IDT)    =   "2" )  AND
+                      (SPA-COM-TIMEKSNKBN(IDT) NOT =   ZERO )
+                   MOVE    1               TO  FLG-TIME
+               END-IF
+               IF      SPA-COM-ZAIEND (IDT)    =   "1"
+                   MOVE    SPA-GMN-MAX         TO  IDT
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-TIME             =   1
+               EVALUATE    SPA-GMN-INPUTCD (IDX)(1:1)
+                   WHEN    "1"
+                       MOVE    "A"      TO  WKSRY-AUTOKBN  (IDY)
+                   WHEN    "2"
+                       MOVE    "B"      TO  WKSRY-AUTOKBN  (IDY)
+                   WHEN    "3"
+                       MOVE    "C"      TO  WKSRY-AUTOKBN  (IDY)
+                   WHEN    "4"
+                       MOVE    "D"      TO  WKSRY-AUTOKBN  (IDY)
+                   WHEN    "5"
+                       MOVE    "E"      TO  WKSRY-AUTOKBN  (IDY)
+                   WHEN    "6"
+                       MOVE    "F"      TO  WKSRY-AUTOKBN  (IDY)
+                   WHEN    "7"
+                       MOVE    "G"      TO  WKSRY-AUTOKBN  (IDY)
+               END-EVALUATE
+           END-IF
+           .
+       20021-JIKANGAI-CHK-EXT.
            EXIT.
       *
       *****************************************************************

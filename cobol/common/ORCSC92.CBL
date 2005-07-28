@@ -731,6 +731,12 @@
                                                        "101120060" ))
                        MOVE     SPACE              TO  SPA-ERRCD
                    END-IF
+      *TEST
+      *            処置の時
+                   IF      TNS-SRYKBN      =   "40"
+                       MOVE     SPACE              TO  SPA-ERRCD
+                   END-IF
+      *TEST
                END-IF
            END-IF
       *
