@@ -328,7 +328,7 @@
 
     <widget>
       <class>GtkNotebook</class>
-      <name>not1</name>
+      <name>n1</name>
       <x>16</x>
       <y>56</y>
       <width>976</width>
@@ -344,7 +344,7 @@
 
       <widget>
 	<class>GtkFixed</class>
-	<name>TAG1</name>
+	<name>TG1</name>
 
 	<widget>
 	  <class>GtkPandaEntry</class>

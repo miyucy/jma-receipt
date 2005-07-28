@@ -9,9 +9,9 @@ W07	{
 		YUKOEDYMD	{
 			value	varchar(9);
 		};
-		not1	{
+		n1	{
 			pageno	int;
-			TAG1	{
+			TG1	{
 				DATA01_COMBO	{
 					DATA01	{
 						value	varchar(12);
