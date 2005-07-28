@@ -68,6 +68,7 @@
       *  02.01.19    NACL-多々納  05/06/06  中途終了展開時の自動発生
       *                                     薬剤情報提供料チェック追加
       *  02.01.20    NACL-多々納  05/07/06  訂正時の自動発生追加
+      *  02.01.21    NACL-太田    05/07/26  収納明細登録時刻入力欄追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -331,6 +332,9 @@
                            11  SPA-GMN-SYUSKYPRTN          PIC X(01).
                            11  SPA-GMN-SYUSKYPRTN-F1       PIC X(01).
                            11  SPA-GMN-SYUSKYPRTNMEI       PIC X(22).
+                       09  SPA-GMN-SYUSTIME.
+                           11   SPA-GMN-SYUSTIME-HH        PIC 9(02).
+                           11   SPA-GMN-SYUSTIME-MM        PIC 9(02).
       *
                        09  SPA-GMN-SYUNYKNKNRKBNLST-G.
                            11  SPA-GMN-SYUNYKNKNRKBN-MAX   PIC 9(03).
@@ -1613,6 +1617,13 @@
            MOVE    SYS-1039-SKYPRTNKBN TO  SPA-GMN-SYUSKYPRTN
            PERFORM 3101-SYUSKYPRTN-SYOKI-SEC
       *
+           IF    ( SYS-1039-STIME          IS  NUMERIC )
+               MOVE    SYS-1039-STIME-HH   TO  SPA-GMN-SYUSTIME-HH
+               MOVE    SYS-1039-STIME-MM   TO  SPA-GMN-SYUSTIME-MM
+           ELSE
+               MOVE    ZERO                TO  SPA-GMN-SYUSTIME-HH
+                                               SPA-GMN-SYUSTIME-MM
+           END-IF
       *
            MOVE    40                 TO  SPA-GMN-CUR
       *
@@ -1983,6 +1994,8 @@
            MOVE    W07-SYUNYKNKNRKBN   TO  SPA-GMN-SYUNYKNKNRKBN-G
            MOVE    W07-SYUSKYPRTG      TO  SPA-GMN-SYUSKYPRTG-G
            MOVE    W07-SYUSKYPRTN      TO  SPA-GMN-SYUSKYPRTN-G
+           MOVE    W07-SYUSTIME-HH     TO  SPA-GMN-SYUSTIME-HH
+           MOVE    W07-SYUSTIME-MM     TO  SPA-GMN-SYUSTIME-MM
       *
       *    病名機能情報
            MOVE    W07-MSG1-DSPKBN     TO  SPA-GMN-MSG1-DSPKBN-G
@@ -2125,6 +2138,14 @@
       *            入金管理区分チェック
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4109-SYUNYKNKNRKBN-CHK-SEC
+                   END-IF
+      *            時刻チェック（時）
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4110-SYUSTIME-HH-CHK-SEC
+                   END-IF
+      *            時刻チェック（分）
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4110-SYUSTIME-MM-CHK-SEC
                    END-IF
                WHEN    "1042"
       *            主病名確認メッセージ表示有無チェック
@@ -3134,7 +3155,7 @@
            END-PERFORM
            IF      FLG-OK              =   ZERO
                MOVE    42              TO  SPA-GMN-CUR
-               MOVE    "0025"          TO  SPA-ERRCD
+               MOVE    "3002"          TO  SPA-ERRCD
            END-IF
       *
            .
@@ -3157,7 +3178,7 @@
            END-PERFORM
            IF      FLG-OK              =   ZERO
                MOVE    40              TO  SPA-GMN-CUR
-               MOVE    "0026"          TO  SPA-ERRCD
+               MOVE    "3001"          TO  SPA-ERRCD
            END-IF
       *
            .
@@ -3180,11 +3201,37 @@
            END-PERFORM
            IF      FLG-OK              =   ZERO
                MOVE    41              TO  SPA-GMN-CUR
-               MOVE    "0026"          TO  SPA-ERRCD
+               MOVE    "3001"          TO  SPA-ERRCD
            END-IF
       *
            .
        4110-SYUSKYPRTN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    時刻チェック（時）
+      *****************************************************************
+       4110-SYUSTIME-HH-CHK-SEC        SECTION.
+      *
+           IF    ( SPA-GMN-SYUSTIME-HH     >=  24 )
+               MOVE    "3003"          TO  SPA-ERRCD
+               MOVE    43              TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       4110-SYUSTIME-HH-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    時刻チェック（分）
+      *****************************************************************
+       4110-SYUSTIME-MM-CHK-SEC        SECTION.
+      *
+           IF    ( SPA-GMN-SYUSTIME-MM     >=  60 )
+               MOVE    "3003"          TO  SPA-ERRCD
+               MOVE    44              TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       4110-SYUSTIME-MM-CHK-EXT.
            EXIT.
       *****************************************************************
       *    主病名確認メッセージ表示有無チェック処理（病名機能情報）
@@ -3388,7 +3435,7 @@
                                            MCPDATA-REC
       *
            IF      MCP-RC              NOT =   ZERO 
-               MOVE    "1002"              TO  SPA-ERRCD
+               MOVE    "9001"              TO  SPA-ERRCD
                DISPLAY "SYSKANRI-KEY =>" SYS-1007-KEY 
                        ",MCP-RC:" MCP-RC 
                GO  TO  4032-DEL-1007-EXT
@@ -3420,7 +3467,7 @@
                                            MCPDATA-REC
       *
            IF      MCP-RC              NOT =   ZERO 
-               MOVE    "1002"              TO  SPA-ERRCD
+               MOVE    "9001"              TO  SPA-ERRCD
                DISPLAY "SYSKANRI-KEY =>" SYS-1008-KEY 
                        ",MCP-RC:" MCP-RC 
                GO  TO  4032-DEL-1008-EXT
@@ -3452,7 +3499,7 @@
                                            MCPDATA-REC
       *
            IF      MCP-RC              NOT =   ZERO 
-               MOVE    "1002"                  TO  SPA-ERRCD
+               MOVE    "9001"                  TO  SPA-ERRCD
                DISPLAY "SYSKANRI-KEY =>" SYS-1017-KEY
                        ",MCP-RC:" MCP-RC 
                GO  TO  4032-DEL-1017-EXT
@@ -3483,7 +3530,7 @@
                                            MCPDATA-REC
       *
            IF      MCP-RC              NOT =   ZERO 
-               MOVE    "1002"              TO  SPA-ERRCD
+               MOVE    "9001"              TO  SPA-ERRCD
                DISPLAY "SYSKANRI-KEY =>" SYS-1038-KEY 
                        ",MCP-RC:" MCP-RC 
                GO  TO  4032-DEL-1038-EXT
@@ -3514,7 +3561,7 @@
                                            MCPDATA-REC
       *
            IF      MCP-RC              NOT =   ZERO 
-               MOVE    "1002"              TO  SPA-ERRCD
+               MOVE    "9001"              TO  SPA-ERRCD
                DISPLAY "SYSKANRI-KEY =>" SYS-1039-KEY 
                        ",MCP-RC:" MCP-RC 
                GO  TO  4032-DEL-1039-EXT
@@ -3545,7 +3592,7 @@
                                            MCPDATA-REC
       *
            IF      MCP-RC              NOT =   ZERO 
-               MOVE    "1002"              TO  SPA-ERRCD
+               MOVE    "9001"              TO  SPA-ERRCD
                DISPLAY "SYSKANRI-KEY =>" SYS-1042-KEY 
                        ",MCP-RC:" MCP-RC 
                GO  TO  4032-DEL-1042-EXT
@@ -3652,7 +3699,7 @@
                                                ORCMCPAREA
                                                MCPDATA-REC
            IF      MCP-RC              NOT =   ZERO 
-               MOVE    "1003"                  TO  SPA-ERRCD
+               MOVE    "9002"                  TO  SPA-ERRCD
                DISPLAY "SYSKANRI-KEY =>" SYS-1017-KEY
                        ",MCP-RC:" MCP-RC 
                GO  TO  490-KOUSHIN-1007-EXT
@@ -3770,7 +3817,7 @@
                                                ORCMCPAREA
                                                MCPDATA-REC
            IF      MCP-RC              NOT =   ZERO 
-               MOVE    "1003"                  TO  SPA-ERRCD
+               MOVE    "9002"                  TO  SPA-ERRCD
                DISPLAY "W07 SYSKANRI-KEY =>" SYS-1008-KEY
                        ",MCP-RC:" MCP-RC 
                GO  TO  490-KOUSHIN-1008-EXT
@@ -3842,7 +3889,7 @@
                                                ORCMCPAREA
                                                MCPDATA-REC
            IF      MCP-RC              NOT =   ZERO
-               MOVE    "1003"                  TO  SPA-ERRCD
+               MOVE    "9002"                  TO  SPA-ERRCD
                DISPLAY "W07 ERR:" MCP-RC
                         ",SYS-1017-KEY:" SYS-1017-KEY
                         ",MCP-FUNC:" MCP-FUNC
@@ -3912,7 +3959,7 @@
                                                ORCMCPAREA
                                                MCPDATA-REC
            IF      MCP-RC              NOT =   ZERO
-               MOVE    "1003"                  TO  SPA-ERRCD
+               MOVE    "9002"                  TO  SPA-ERRCD
                DISPLAY "W07 ERR:" MCP-RC
                         ",SYS-1038-KEY:" SYS-1038-KEY
                         ",MCP-FUNC:" MCP-FUNC
@@ -3950,6 +3997,7 @@
            MOVE    SPA-GMN-SYUNYKNKNRKBN   TO  SYS-1039-NYKNKNRKBN
            MOVE    SPA-GMN-SYUSKYPRTG      TO  SYS-1039-SKYPRTGKBN
            MOVE    SPA-GMN-SYUSKYPRTN      TO  SYS-1039-SKYPRTNKBN
+           MOVE    SPA-GMN-SYUSTIME        TO  SYS-1039-STIME
       *
            MOVE    SYS-1039-REC            TO  SYSKANRI-REC
       *
@@ -3981,7 +4029,7 @@
                                                ORCMCPAREA
                                                MCPDATA-REC
            IF      MCP-RC              NOT =   ZERO
-               MOVE    "1003"                  TO  SPA-ERRCD
+               MOVE    "9002"                  TO  SPA-ERRCD
                DISPLAY "W07 ERR:" MCP-RC
                         ",SYS-1039-KEY:" SYS-1039-KEY
                         ",MCP-FUNC:" MCP-FUNC
@@ -4053,7 +4101,7 @@
                                                ORCMCPAREA
                                                MCPDATA-REC
            IF      MCP-RC              NOT =   ZERO
-               MOVE    "1003"                  TO  SPA-ERRCD
+               MOVE    "9002"                  TO  SPA-ERRCD
                DISPLAY "W07 ERR:" MCP-RC
                         ",SYS-1042-KEY:" SYS-1042-KEY
                         ",MCP-FUNC:" MCP-FUNC
@@ -4498,6 +4546,10 @@
            MOVE    SPA-GMN-SYUSKYPRTN-MAX
                                        TO  W07-SYUSKYPRTN-COUNT
       *
+      *    過去日分の登録時刻
+           MOVE    SPA-GMN-SYUSTIME-HH TO  W07-SYUSTIME-HH
+           MOVE    SPA-GMN-SYUSTIME-MM TO  W07-SYUSTIME-MM
+      *
       *    主病名確認メッセージ表示有無区分（病名機能情報）
            MOVE    SPA-GMN-MSG1-DSPKBN-G   TO  W07-MSG1-DSPKBN
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -4752,11 +4804,14 @@
                WHEN    "0024"
                    MOVE    "入金管理区分がありません。"
                                                        TO  SPA-ERRMSG
-               WHEN    "0025"
+               WHEN    "3001"
+                   MOVE    "請求書兼領収書発行区分がありません。"
+                                                       TO  SPA-ERRMSG
+               WHEN    "3002"
                    MOVE    "入金管理区分がありません。"
                                                        TO  SPA-ERRMSG
-               WHEN    "0026"
-                   MOVE    "請求書兼領収書発行区分がありません。"
+               WHEN    "3003"
+                   MOVE    "登録時刻入力エラー"
                                                        TO  SPA-ERRMSG
       *
                WHEN    "0027"
@@ -4790,11 +4845,9 @@
                                                        TO  SPA-ERRMSG
                WHEN    "0099"
                    MOVE    "未入力の項目があります"    TO  SPA-ERRMSG
-               WHEN    "1001"
-                   MOVE    "更新ができませんでした"    TO  SPA-ERRMSG
-               WHEN    "1002"
+               WHEN    "9001"
                    MOVE    "削除ができませんでした"    TO  SPA-ERRMSG
-               WHEN    "1003"
+               WHEN    "9002"
                    MOVE    "更新ができませんでした"    TO  SPA-ERRMSG
                WHEN    OTHER
                    MOVE    SPA-ERRCD       TO  SPA-ERRMSG
@@ -4994,6 +5047,10 @@
                    MOVE  "SYUSKYPRTN"      TO   MCP-WIDGET
                WHEN    42
                    MOVE  "SYUNYKNKNRKBN"   TO   MCP-WIDGET
+               WHEN    43
+                   MOVE  "SYUSTIME_HH"     TO   MCP-WIDGET
+               WHEN    44
+                   MOVE  "SYUSTIME_MM"     TO   MCP-WIDGET
       *
                WHEN    70
                    MOVE  "MSG1_DSPKBN"     TO   MCP-WIDGET
@@ -5168,6 +5225,10 @@
                WHEN    "SYUSKYPRTN"
                    MOVE    42              TO  SPA-GMN-CUR
                WHEN    "SYUNYKNKNRKBN"
+                   MOVE    43              TO  SPA-GMN-CUR
+               WHEN    "SYUSTIME_HH"
+                   MOVE    44              TO  SPA-GMN-CUR
+               WHEN    "SYUSTIME_MM"
                    MOVE    99              TO  SPA-GMN-CUR
       *
                WHEN    "MSG1_DSPKBN"

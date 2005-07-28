@@ -237,6 +237,8 @@
                       07  W07-VALUE   PIC X(24).
                     06  W07-SYUSKYPRTN-COUNT      PIC S9(9)   BINARY.
                     06  W07-SYUSKYPRTN-ITEM       PIC X(24)   OCCURS  2.
+                  05  W07-SYUSTIME-HH             PIC S9(02).
+                  05  W07-SYUSTIME-MM             PIC S9(02).
                 04  W07-TAGNAME4.
                   05  W07-TAGNAME4-STATE   PIC S9(9)   BINARY.
                 04  W07-TAG5.

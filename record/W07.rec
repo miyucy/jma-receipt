@@ -335,6 +335,12 @@ W07	{
 					count	int;
 					item	varchar(24)[2];
 				};
+				SYUSTIME_HH	{
+					value	number(2);
+				};
+				SYUSTIME_MM	{
+					value	number(2);
+				};
 			};
 			TAGNAME4    {
 			  	state   int;

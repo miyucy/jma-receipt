@@ -1045,6 +1045,7 @@ COPYS = \
         HCN03V03.INC \
         HCM43V02.INC \
         CPORCSDAILYKEY.INC \
+	CPSK3005.INC \
 
 
 DBPATH = \
