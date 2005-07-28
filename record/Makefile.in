@@ -301,6 +301,7 @@ RECORD_files = \
 	K081.rec \
 	I06.rec \
 	W61.rec \
+	L04.rec \
 
 DEF_files = \
 	HC01.def \
@@ -466,6 +467,7 @@ DB_files = \
 	tbl_syumei_prv.db \
 	tbl_syunou_prv.db \
 	tbl_syutotal_prv.db \
+	tbl_hours.db \
 
 all:   
 

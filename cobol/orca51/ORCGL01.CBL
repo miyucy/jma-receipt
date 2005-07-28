@@ -260,6 +260,7 @@
            COPY    "L01.INC".
            COPY    "L02.INC".
            COPY    "L03.INC".
+           COPY    "L04.INC".
            COPY    "L99.INC".
            COPY    "LERR.INC".
            COPY    "LID1.INC".
@@ -368,6 +369,8 @@
            END-IF
       *
            EVALUATE    SPA-MOTOPG
+           WHEN    "L04"
+               GO  TO  300-SCREEN-EXT
            WHEN    "L03"
                PERFORM 350-L03-SET-SEC
                GO  TO  300-SCREEN-EXT
@@ -631,6 +634,9 @@
       *    次頁
            WHEN    "CLICKED"       ALSO    "B07"
                PERFORM 470-ATOGMN-SEC
+      *    締め処理
+           WHEN    "CLICKED"       ALSO    "B08"
+               PERFORM 480-L04-SENI-SEC
       *    情報削除
            WHEN    "CLICKED"       ALSO    "B11"
                PERFORM 490-JYOUHOU-DEL-SEC
@@ -1679,6 +1685,44 @@
       *
            .
        480-L03-SENI-EXT.
+           EXIT.
+      *****************************************************************
+      *    締め処理画面遷移処理
+      *****************************************************************
+       480-L04-SENI-SEC                SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
+           MOVE    SPA-L01KYOUTU   TO  SPA-WORK
+           MOVE    SPA-AREA        TO  SPA-COMMON
+           MOVE    SPA-L01FREE     TO  SPA-FREE
+      *
+           MOVE    "LINK"          TO  MCP-STATUS
+           MOVE    SPACE           TO  MCP-EVENT
+      *
+           CALL    "ORCGL04"           USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-FREE        TO  SPA-L01FREE
+           MOVE    SPA-WORK        TO  SPA-L01KYOUTU
+      *
+           MOVE    "L01"           TO  SPA-MOTOPG
+           MOVE    "L04"           TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"           TO  MCP-PUTTYPE
+           MOVE    "L04"           TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1               TO  FLG-END
+      *
+           .
+       480-L04-SENI-EXT.
            EXIT.
       *****************************************************************
       *    再印刷画面へ

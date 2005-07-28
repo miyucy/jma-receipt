@@ -60,7 +60,7 @@
       *
       *----(00.00.03)--UPD-START---
       *     COPY    "HCM07.INC".
-           COPY    "HCM07V01.INC"  REPLACING   //HCM07V01//
+           COPY    "HCM07V02.INC"  REPLACING   //HCM07V02//
                                    BY          //HCM07//.
       *----(00.00.03)--UPD-END-----
       *
@@ -121,6 +121,22 @@
                05  WRK-SMM         PIC 9(02).
                05  WRK-SDD         PIC 9(02).
            03  WRK-HENYMDG         PIC X(22).
+           03  WRK-MAE-INPUT       PIC X(300).
+           03  WRK-OUT-INPUT       PIC X(300).
+           03  WRK-OUT-MAX         PIC 9(05).
+           03  WRK-KIKAN-G.
+               05  WRK-KIKANSTYMD  PIC X(22).
+               05  WRK-KIKANSTTIME.
+                   07  WRK-KIKANSTTIME-HH
+                                   PIC X(04).
+                   07  WRK-KIKANSTTIME-MM
+                                   PIC X(04).
+               05  WRK-KIKANEDYMD  PIC X(12).
+               05  WRK-KIKANEDTIME.
+                   07  WRK-KIKANEDTIME-HH
+                                   PIC X(04).
+                   07  WRK-KIKANEDTIME-MM
+                                   PIC X(04).
       *
       *----(00.00.02)--UPD-START---
            03  WRK-Z9              PIC ---,---,--9.
@@ -152,6 +168,12 @@
                05  WRK-GSEIKYU     PIC S9(08).
                05  WRK-GRYOSYU     PIC S9(08).
                05  WRK-GMISYU      PIC S9(08).
+           03  WRK-STDAILYKEY.
+               05  WRK-STDAILYKEY-YMD  PIC X(08).
+               05  WRK-STDAILYKEY-TIME PIC X(04).
+           03  WRK-EDDAILYKEY.
+               05  WRK-EDDAILYKEY-YMD  PIC X(08).
+               05  WRK-EDDAILYKEY-TIME PIC X(04).
       *
        01  KEY-AREA.
            03  KEY-NEW-TBL.
@@ -179,6 +201,9 @@
       *
       *    診療科目情報情報
            COPY    "CPSK1005.INC".
+      *
+      *    締め時刻情報
+           COPY    "CPSK3005.INC".
       *
       *    出力先プリンタ名割り当て情報
            COPY    "CPSK1031.INC".
@@ -227,6 +252,9 @@
       *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
+      *
+      *    文字列変換
+           COPY    "CPORCXKANACONV.INC".
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -322,27 +350,55 @@
            MOVE    LNK-PRTKANRI-SKYYMD
                                    TO  WRK-SYSYMD
       *
-      *    対象年月日編集
-           MOVE    WRK-PARA-DENPPRTYMD
-                                   TO  WRK-SYMD
-           PERFORM 31012-SEIWA-HEN-SEC
-           MOVE    WRK-HENYMDG     TO  WRK-SYORIYMD(1:22)
-           MOVE    "分"            TO  WRK-SYORIYMD(23:2)
+           IF    ( WRK-PARA-DENPPRTYMD =   SPACE )
       *
-      *    医療機関ＩＤ編集
-           MOVE    SPACE           TO  SYS-1001-REC
-           INITIALIZE                  SYS-1001-REC
-           MOVE    "1001"          TO  SYS-1001-KANRICD
-           MOVE    "*"             TO  SYS-1001-KBNCD
-           MOVE    SYS-1001-REC    TO  MCPDATA-REC
-           PERFORM 800-SYSKANRI-READ-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC     TO  SYS-1001-REC
-               MOVE    SYS-1001-HOSPID TO  WRK-PARA-HOSPID
+      *        締め時刻情報
+               INITIALIZE                  SYS-3005-REC
+               MOVE    "3005"          TO  SYS-3005-KANRICD
+               MOVE    "*"             TO  SYS-3005-KBNCD
+               MOVE    SYS-3005-REC    TO  MCPDATA-REC
+               PERFORM 800-SYSKANRI-READ-SEC
+               IF    ( FLG-SYSKANRI        =   ZERO )
+                   MOVE    MCPDATA-REC TO  SYS-3005-REC
+      *
+                   MOVE    SYS-3005-STSRYYMD   TO  WRK-STDAILYKEY-YMD
+                   MOVE    SYS-3005-STTIME     TO  WRK-STDAILYKEY-TIME
+                   MOVE    SYS-3005-EDSRYYMD   TO  WRK-EDDAILYKEY-YMD
+                   MOVE    SYS-3005-EDTIME     TO  WRK-EDDAILYKEY-TIME
+      *
+                   MOVE    SYS-3005-STSRYYMD   TO  WRK-SYMD
+                   PERFORM 31012-SEIWA-HEN-SEC
+                   MOVE    WRK-HENYMDG         TO  WRK-KIKANSTYMD
+      *
+                   MOVE    SYS-3005-STTIME     TO  WRK-MAE-INPUT
+                   PERFORM 800-ZENKAKU-HEN-SEC
+                   MOVE    WRK-OUT-INPUT       TO  WRK-KIKANSTTIME
+      *
+                   MOVE    SYS-3005-EDSRYYMD   TO  WRK-SYMD
+                   PERFORM 31012-SEIWA-HEN-SEC
+                   MOVE    WRK-HENYMDG (11:)   TO  WRK-KIKANEDYMD
+      *
+                   MOVE    SYS-3005-EDTIME     TO  WRK-MAE-INPUT
+                   PERFORM 800-ZENKAKU-HEN-SEC
+                   MOVE    WRK-OUT-INPUT       TO  WRK-KIKANEDTIME
+      *
+               ELSE
+                   MOVE    "締め処理にて対象期間を登録してください"
+                                           TO  WRK-RECEERR
+                   PERFORM 500-ERR-HENSYU-SEC
+               END-IF
            ELSE
-               MOVE    "医療機関ＩＤが取得できませんでした。"
-                                       TO  WRK-RECEERR
-               PERFORM 500-ERR-HENSYU-SEC
+      *
+               MOVE    WRK-PARA-DENPPRTYMD TO  WRK-STDAILYKEY-YMD
+                                               WRK-EDDAILYKEY-YMD
+               MOVE    ALL "0"             TO  WRK-STDAILYKEY-TIME
+               MOVE    ALL "9"             TO  WRK-EDDAILYKEY-TIME
+      *
+      *        対象年月日編集
+               MOVE    WRK-PARA-DENPPRTYMD TO  WRK-SYMD
+               PERFORM 31012-SEIWA-HEN-SEC
+               MOVE    WRK-HENYMDG     TO  WRK-SYORIYMD(1:22)
+               MOVE    "分"            TO  WRK-SYORIYMD(23:2)
            END-IF
       *
       *----(00.00.03)--ADD-START---
@@ -428,7 +484,36 @@
       *
            MOVE    SPACE           TO  HCM07
       *
-           MOVE    WRK-SYORIYMD    TO  HCM07-SYORIYMD
+           IF    ( WRK-PARA-DENPPRTYMD =   SPACE )
+               IF    ( SYS-3005-STSRYYMD   =   SYS-3005-EDSRYYMD )
+                   STRING "期間："             DELIMITED   BY  SIZE
+                          WRK-KIKANSTYMD       DELIMITED   BY  SIZE
+                          WRK-KIKANSTTIME-HH   DELIMITED   BY  SIZE
+                          "："                 DELIMITED   BY  SIZE
+                          WRK-KIKANSTTIME-MM   DELIMITED   BY  SIZE
+                          "〜"                 DELIMITED   BY  SIZE
+                          WRK-KIKANEDTIME-HH   DELIMITED   BY  SIZE
+                          "："                 DELIMITED   BY  SIZE
+                          WRK-KIKANEDTIME-MM   DELIMITED   BY  SIZE
+                   INTO   HCM07-KIKAN
+                   END-STRING
+               ELSE
+                   STRING "期間："             DELIMITED   BY  SIZE
+                          WRK-KIKANSTYMD       DELIMITED   BY  SIZE
+                          WRK-KIKANSTTIME-HH   DELIMITED   BY  SIZE
+                          "："                 DELIMITED   BY  SIZE
+                          WRK-KIKANSTTIME-MM   DELIMITED   BY  SIZE
+                          "〜"                 DELIMITED   BY  SIZE
+                          WRK-KIKANEDYMD       DELIMITED   BY  SIZE
+                          WRK-KIKANEDTIME-HH   DELIMITED   BY  SIZE
+                          "："                 DELIMITED   BY  SIZE
+                          WRK-KIKANEDTIME-MM   DELIMITED   BY  SIZE
+                   INTO   HCM07-KIKAN
+                   END-STRING
+               END-IF
+           ELSE
+               MOVE    WRK-SYORIYMD    TO  HCM07-SYORIYMD
+           END-IF
       *
            MOVE    WRK-SRYKA       TO  HCM07-SRYKA
       *
@@ -607,7 +692,7 @@
                    OR    ( WRK-DENPNUM-X(CNT-DENP) =   ZERO )
                    MOVE    SMEI-DENPNUM    TO  WRK-DENPNUM-X(CNT-DENP)
       *            診療月日
-                   IF      SYU-SRYYMD      <   WRK-PARA-DENPPRTYMD
+                   IF      SYU-SRYYMD      <   WRK-EDDAILYKEY-YMD
       *                診療月日編集
                        MOVE    SYU-SRYYMD          TO  WRK-SYMD
                        PERFORM 31012-SEIWA-HEN-SEC
@@ -821,7 +906,7 @@
                                    TO  SPRT-PRIORITY
       *----(00.00.03)--UPD-START---
       *     MOVE   "HCM07.red"      TO  SPRT-PRTID
-           MOVE   "HCM07V01.red"   TO  SPRT-PRTID
+           MOVE   "HCM07V02.red"   TO  SPRT-PRTID
       *----(00.00.03)--UPD-END-----
            MOVE    "収納一覧表"    TO  SPRT-TITLE
            MOVE    HCM07           TO  SPRT-PRTDATA
@@ -897,6 +982,30 @@
            EXIT.
       *
       *****************************************************************
+      *    全角変換処理
+      *****************************************************************
+       800-ZENKAKU-HEN-SEC         SECTION.
+      *
+           MOVE    SPACE           TO  WRK-OUT-INPUT
+           MOVE    ZERO            TO  WRK-OUT-MAX
+      *
+           INITIALIZE                  ORCXKANACONVAREA
+           MOVE 300                TO  KANACONV-LEN
+           MOVE 1000               TO  KANACONV-STLEN
+           MOVE 1                  TO  KANACONV-CONV-FLAG
+           MOVE 15                 TO  KANACONV-CHAR-TYPE
+           MOVE WRK-MAE-INPUT      TO  KANACONV-INDATA
+           CALL "kanaconv"             USING ORCXKANACONVAREA
+           IF    ( KANACONV-RETURN =   ZERO )
+               MOVE    KANACONV-OUTDATA
+                                       TO  WRK-OUT-INPUT
+               MOVE    KANACONV-MAXLEN TO  WRK-OUT-MAX
+           END-IF
+      *
+           .
+       800-ZENKAKU-HEN-EXT.
+           EXIT.
+      *****************************************************************
       *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
@@ -922,17 +1031,16 @@
       *****************************************************************
        900-DBSELECT-SEC            SECTION.
       *
-           INITIALIZE                  SMEI-REC
-           MOVE    WRK-PARA-HOSPID TO  SMEI-HOSPID
-           MOVE    "2"             TO  SMEI-NYUGAIKBN
-           MOVE    WRK-PARA-DENPPRTYMD
-                                   TO  SMEI-NYUHEN-YMD
-           MOVE    SMEI-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "SYUMEI-KEY4"   TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           INITIALIZE                          SMEI-REC
+           MOVE    WRK-PARA-HOSPID         TO  SMEI-HOSPID
+           MOVE    "2"                     TO  SMEI-NYUGAIKBN
+           MOVE    WRK-STDAILYKEY          TO  SMEI-STDAILYKEY
+           MOVE    WRK-EDDAILYKEY          TO  SMEI-EDDAILYKEY
+           MOVE    SMEI-REC                TO  MCPDATA-REC
+           MOVE    PATH-TBL-SYUMEI-KEY10   TO  MCP-PATH
+           MOVE    "DBSELECT"              TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                PERFORM 900-DBFETCH-SEC
@@ -952,11 +1060,10 @@
       *****************************************************************
        900-DBFETCH-SEC             SECTION.
       *
+           MOVE    PATH-TBL-SYUMEI-KEY10   TO  MCP-PATH
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           MOVE    "SYUMEI-KEY4"   TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MCPSUB"            USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-SMEI
@@ -974,11 +1081,10 @@
       *****************************************************************
        900-DBCLOSE-SEC             SECTION.
       *
+           MOVE    PATH-TBL-SYUMEI-KEY10   TO  MCP-PATH
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           MOVE    "SYUMEI-KEY4"   TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MCPSUB"            USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            .
        900-DBCLOSE-EXT.

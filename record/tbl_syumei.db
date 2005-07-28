@@ -25,7 +25,11 @@ tbl_syumei {
 	UPYMD    			char(8);
 	UPHMS				char(6);
 #--
-	UPNYUHEN_YMD			char(8),virtual;
+	UPNYUHEN_YMD		char(8),virtual;
+	STDAILYKEY			char(12),virtual;
+	EDDAILYKEY			char(12),virtual;
+	STCREYMD			char(8),virtual;
+	EDCREYMD			char(8),virtual;
 };
 primary	{
 	HOSPID,NYUGAIKBN,PTID,DENPNUM,DENPEDANUM;
@@ -202,4 +206,52 @@ path	st_key3 	{
 		AND   b.TSTPTNUMKBN <> '1'
 		;
 	};
+};
+
+path	key8 	{
+	DBSELECT	{
+		DECLARE tbl_syumei_key8_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syumei
+			WHERE   HOSPID        =  :HOSPID
+			AND   NYUGAIKBN       =  :NYUGAIKBN
+			AND   DAILYKEY        >= :STDAILYKEY
+			AND   DAILYKEY        <= :EDDAILYKEY
+			ORDER BY   DENPNUM
+		;
+	};
+};
+
+path	key9 	{
+	DBSELECT	{
+		DECLARE tbl_syumei_key9_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syumei
+			WHERE   HOSPID        =  :HOSPID
+			AND   NYUGAIKBN       =  :NYUGAIKBN
+			AND   CREYMD         >=  :STCREYMD
+			AND   CREYMD         <=  :EDCREYMD
+			ORDER BY   DENPNUM
+		;
+	};
+};
+
+path	key10 	{
+	DBSELECT	{
+		DECLARE tbl_syumei_key10_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syumei a,tbl_ptnum b,tbl_ptinf c
+			WHERE   a.HOSPID        =  :HOSPID
+			AND     a.NYUGAIKBN     =  :NYUGAIKBN
+			AND     a.DAILYKEY     >= :STDAILYKEY
+			AND     a.DAILYKEY     <= :EDDAILYKEY
+			AND     a.HOSPID        =  b.HOSPID
+			AND     a.PTID          =  b.PTID
+			AND     a.HOSPID        =  c.HOSPID
+			AND     a.PTID          =  c.PTID
+			AND     c.TSTPTNUMKBN  <> '1'
+			ORDER   BY a.SRYKA,b.PTNUM,a.DENPNUM,a.DENPEDANUM
+		;
+	};
+
 };

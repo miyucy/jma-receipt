@@ -163,6 +163,7 @@
            COPY    "L01.INC".
            COPY    "L02.INC".
            COPY    "L03.INC".
+           COPY    "L04.INC".
            COPY    "L99.INC".
            COPY    "LERR.INC".
            COPY    "LID1.INC".

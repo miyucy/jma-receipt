@@ -77,3 +77,11 @@
       *
       *診療年月日（検索用）
            03  SMEI-UPNYUHEN-YMD        PIC  X(08).
+      *開始日報キー
+           03  SMEI-STDAILYKEY          PIC  X(12).
+      *終了日報キー
+           03  SMEI-EDDAILYKEY          PIC  X(12).
+      *開始作成年月日
+           03  SMEI-STCREYMD            PIC  X(8).
+      *終了作成年月日
+           03  SMEI-EDCREYMD            PIC  X(8).
