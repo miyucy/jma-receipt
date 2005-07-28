@@ -5280,11 +5280,6 @@
       <width>40</width>
       <height>32</height>
       <can_focus>True</can_focus>
-      <accelerator>
-	<modifiers>0</modifiers>
-	<key>GDK_F8</key>
-	<signal>clicked</signal>
-      </accelerator>
       <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
@@ -5335,11 +5330,6 @@
       <width>40</width>
       <height>32</height>
       <can_focus>True</can_focus>
-      <accelerator>
-	<modifiers>0</modifiers>
-	<key>GDK_F8</key>
-	<signal>clicked</signal>
-      </accelerator>
       <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
@@ -5358,11 +5348,6 @@
       <width>40</width>
       <height>32</height>
       <can_focus>True</can_focus>
-      <accelerator>
-	<modifiers>0</modifiers>
-	<key>GDK_F8</key>
-	<signal>clicked</signal>
-      </accelerator>
       <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
@@ -5381,11 +5366,6 @@
       <width>40</width>
       <height>32</height>
       <can_focus>True</can_focus>
-      <accelerator>
-	<modifiers>0</modifiers>
-	<key>GDK_F8</key>
-	<signal>clicked</signal>
-      </accelerator>
       <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
@@ -5404,11 +5384,6 @@
       <width>40</width>
       <height>32</height>
       <can_focus>True</can_focus>
-      <accelerator>
-	<modifiers>0</modifiers>
-	<key>GDK_F8</key>
-	<signal>clicked</signal>
-      </accelerator>
       <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
@@ -5427,11 +5402,6 @@
       <width>40</width>
       <height>32</height>
       <can_focus>True</can_focus>
-      <accelerator>
-	<modifiers>0</modifiers>
-	<key>GDK_F8</key>
-	<signal>clicked</signal>
-      </accelerator>
       <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
@@ -5450,11 +5420,6 @@
       <width>40</width>
       <height>32</height>
       <can_focus>True</can_focus>
-      <accelerator>
-	<modifiers>0</modifiers>
-	<key>GDK_F8</key>
-	<signal>clicked</signal>
-      </accelerator>
       <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
@@ -5473,11 +5438,6 @@
       <width>40</width>
       <height>32</height>
       <can_focus>True</can_focus>
-      <accelerator>
-	<modifiers>0</modifiers>
-	<key>GDK_F8</key>
-	<signal>clicked</signal>
-      </accelerator>
       <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
@@ -5496,11 +5456,6 @@
       <width>40</width>
       <height>32</height>
       <can_focus>True</can_focus>
-      <accelerator>
-	<modifiers>0</modifiers>
-	<key>GDK_F8</key>
-	<signal>clicked</signal>
-      </accelerator>
       <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
@@ -5519,11 +5474,6 @@
       <width>40</width>
       <height>32</height>
       <can_focus>True</can_focus>
-      <accelerator>
-	<modifiers>0</modifiers>
-	<key>GDK_F8</key>
-	<signal>clicked</signal>
-      </accelerator>
       <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
