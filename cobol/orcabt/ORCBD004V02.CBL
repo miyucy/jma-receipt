@@ -320,7 +320,7 @@
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
            MOVE    "ORCBD004V02"   TO  JOB-PGID
-           MOVE    "収納一覧表（期間指定対応）"
+           MOVE    "収納一覧表（期間指定対応版）"
                                    TO  JOB-SHELLMSG
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
@@ -884,7 +884,7 @@
       *     MOVE   "HCM07.red"      TO  SPRT-PRTID
            MOVE   "HCM07V02.red"   TO  SPRT-PRTID
       *----(00.00.03)--UPD-END-----
-           MOVE    "収納一覧表（期間指定対応）" 
+           MOVE    "収納一覧表（期間指定対応版）" 
                                    TO  SPRT-TITLE
            MOVE    HCM07           TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID
