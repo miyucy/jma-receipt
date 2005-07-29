@@ -398,7 +398,7 @@
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
-           MOVE    "ORCBD004"      TO  JOB-PGID
+           MOVE    "ORCBD005"      TO  JOB-PGID
            MOVE    "収納一覧表（入院）"
                                    TO  JOB-SHELLMSG
            CALL    "ORCSJOB"           USING
