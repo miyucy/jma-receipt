@@ -323,5 +323,9 @@ K03	{
 		NYUKINMSG	{
 			value	varchar(50);
 		};
+		NYUMISYU	{
+		    style   varchar(20);
+			value	varchar(40);
+		};
 	};
 };
