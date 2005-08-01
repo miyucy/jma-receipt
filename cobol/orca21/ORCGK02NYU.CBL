@@ -7918,6 +7918,15 @@
            MOVE    SPA-SRYYMDW         TO  SPA-GMN-SRYYMD
       *    入院が存在するかのチェック
            PERFORM 410101-NYUINRRK-CHK-SEC
+           IF      SPA-NYUGAIKBN       =   "2"
+      *        入院期間外
+               MOVE    "1"                 TO  SPA-NYUGAIKBN
+               MOVE    "9032"              TO  WRK-ERRCD
+               MOVE    "9032"              TO  SPA-ERRCD
+               MOVE    SPACE               TO  SPA-KIDCD
+           ELSE
+               MOVE    SPACE               TO  WRK-ERRCD
+           END-IF
       *
       *    診療科
            MOVE    SPA-NAI-RRK-SRYKA(SPA-NAI-DOSELNUM)
@@ -7979,6 +7988,10 @@
       *    画面用スパ編集処理
            MOVE    1                   TO  FLG-TEISEI
            PERFORM 310-SPA-GMNSET-SEC
+      *
+           IF      WRK-ERRCD       NOT =   SPACE
+               MOVE    WRK-ERRCD           TO  SPA-ERRCD
+           END-IF
       *
       *    ＤＯ編集へ戻す
            MOVE    "F"                 TO  SPA-GMN-TEISEI
