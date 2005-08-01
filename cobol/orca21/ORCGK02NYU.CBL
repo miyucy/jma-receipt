@@ -9386,6 +9386,12 @@
                    MOVE    "1009"              TO  SPA-ERRCD
                    GO      TO      41001-KIHON-CHK-EXT
                END-IF
+               IF     (SPA-K02N-NYUINKIKAN     =   SPACE ) AND
+                      (SPA-GMN-MAX             >   ZERO  )
+                   MOVE    1                   TO  SPA-GMN-CUR
+                   MOVE    "9033"              TO  SPA-ERRCD
+                   GO      TO      41001-KIHON-CHK-EXT
+               END-IF
            ELSE
       *
                INITIALIZE                      ORCSGDAYAREA
