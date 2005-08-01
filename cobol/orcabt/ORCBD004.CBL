@@ -692,7 +692,7 @@
                    OR    ( WRK-DENPNUM-X(CNT-DENP) =   ZERO )
                    MOVE    SMEI-DENPNUM    TO  WRK-DENPNUM-X(CNT-DENP)
       *            ¿ÇÎÅ·îÆü
-                   IF      SYU-SRYYMD      <   WRK-EDDAILYKEY-YMD
+                   IF      SYU-SRYYMD      NOT =   WRK-EDDAILYKEY-YMD
       *                ¿ÇÎÅ·îÆüÊÔ½¸
                        MOVE    SYU-SRYYMD          TO  WRK-SYMD
                        PERFORM 31012-SEIWA-HEN-SEC
