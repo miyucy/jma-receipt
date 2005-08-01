@@ -1116,6 +1116,7 @@
            END-IF
       *
            UNSTRING    SPA-GMN-SELNUM (2:)     DELIMITED   BY  ","
+                                                           OR  "."
            INTO        WRK-MUL-NUM (1)
                        WRK-MUL-NUM (2)
                        WRK-MUL-NUM (3)
