@@ -157,6 +157,10 @@
            03  IDX-3               PIC 9(02).
       *
            03  IDS1               PIC 9(04).
+      *
+           03  IDH1               PIC 9(04).
+           03  IDH2               PIC 9(04).
+      *
       *    一時領域
        01  WRK-AREA.
            03  WRK-SYSYMD.
@@ -178,10 +182,15 @@
       *
       *****03  WRK-Z9              PIC Z,ZZZ,ZZZ.
            03  WRK-Z99             PIC --,---,--9.
-           03  WRK-Z9              PIC --,---,---.
+           03  WRK-Z9-G.
+               05  WRK-Z9              PIC --,---,---.
            03  WRK-Z92             PIC --,---,---.
            03  WRK-Z9-1            PIC --,---,--9.
            03  WRK-Z9-2            PIC --,---,--9.
+      *
+           03  WRK-HEN             PIC X(10).
+           03  WRK-HEN-1           PIC X(10).
+           03  WRK-HEN-2           PIC X(10).
       *
            03  WRK-KIN             PIC 9(07).
       *    診療行為計算用
@@ -258,6 +267,8 @@
            03  WRK-HZN-NYUKIN          PIC S9(07).
       *前調整金
            03  WRK-MAE-CHOSEI          PIC S9(07).
+      *入院未収額
+           03  WRK-NYUIN-MISYU         PIC S9(07).
       *
       *    処方せんＰＧ名
            03  WRK-SYOHOU-PG           PIC X(20).
@@ -891,6 +902,11 @@
            END-IF
       *    入金額設定
            PERFORM  3108-SYUNOU-SYOKI-SEC
+      *    入院未収額設定
+           IF      (SPA-K02N-NYUINYMD  NOT =   SPACE )  OR
+                   (SPA-K02N-TAIINYMD  NOT =   SPACE )
+               PERFORM  3109-NYUIN-MISYU-SEC
+           END-IF
       *
       *    初期表示を合計とする
            MOVE    SPA-GMN-SRYKA       TO  SPA-GOK-SRYKA
@@ -1077,18 +1093,25 @@
                                                     (SPA-SYUNOU-IDX)
                                            -   SPA-TMAE-CHOSEI
                                                     (SPA-SYUNOU-IDX)
-               MOVE    WRK-SKYMONEY        TO  WRK-Z9-1
+               MOVE    WRK-SKYMONEY        TO  WRK-Z9
+               PERFORM 31091-KINHENSYU-SEC
+               MOVE    WRK-HEN             TO  WRK-HEN-1
                COMPUTE WRK-SKYMONEY2       =   SYU-SKYMONEY
                                            -   SYU-CHOSEI
-               MOVE    WRK-SKYMONEY2       TO  WRK-Z9-2
+               MOVE    WRK-SKYMONEY2       TO  WRK-Z9
+               PERFORM 31091-KINHENSYU-SEC
+               MOVE    WRK-HEN             TO  WRK-HEN-2
                STRING  "訂正前請求額："    DELIMITED  BY  SIZE
-                       WRK-Z9-1            DELIMITED  BY  SIZE
+                       WRK-HEN-1           DELIMITED  BY  SPACE
                        "　今回請求額："    DELIMITED  BY  SIZE
-                       WRK-Z9-2            DELIMITED  BY  SIZE
+                       WRK-HEN-2           DELIMITED  BY  SPACE
                                        INTO    SPA-GMN-FUKUZENMDS2
                END-STRING
                IF      WRK-SKYMONEY    =   WRK-SKYMONEY2
                    MOVE    SPACE               TO  SPA-GMN-FUKUZENMDS2
+               ELSE
+                   INSPECT SPA-GMN-FUKUZENMDS2   REPLACING
+                                               ALL "  "  BY  "　"
                END-IF
            ELSE
                MOVE    SPACE               TO  SPA-GMN-FUKUZENMDS2
@@ -1226,12 +1249,8 @@
                MOVE    1               TO  FLG-SYUNOU
                INITIALIZE              SYUNOU-REC
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *    請求金額
            MOVE    SYU-SKYMONEY        TO  SPA-MAE-SKYMONEY (IDX)
       *    入金合計額
@@ -1624,12 +1643,8 @@
                END-IF
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        3102-JIHIMSG-HEN-EXT.
@@ -1946,12 +1961,8 @@
                INITIALIZE                  SYS-1038-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-1038-REC
       *        入金管理区分
@@ -2044,18 +2055,86 @@
                MOVE    "SYSKANRI-KEY2"      TO  ORC-DBPATH
                PERFORM 960-KANRIMST-READ-SEC
            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *    初期表示
            MOVE    SPA-GMN-NYUKINHOU-LIST (1)
                                        TO  SPA-GMN-NYUKINHOU-G
       *
            .
        3103-NYUKINHOU-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院未収額設定処理
+      *****************************************************************
+       3109-NYUIN-MISYU-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  WRK-NYUIN-MISYU
+      *    入院分未収集計
+           INITIALIZE                      SYUNOU-REC
+           MOVE    SPA-HOSPID          TO  SYU-HOSPID
+           MOVE    "1"                 TO  SYU-NYUGAIKBN
+           MOVE    SPA-PTID            TO  SYU-PTID
+           MOVE    SYUNOU-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYUNOU-KEY2"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYUNOU-KEY2"       TO  ORC-DBPATH
+               PERFORM 980-SYUNOU-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYUNOU
+               INITIALIZE              SYUNOU-REC
+           END-IF
+           PERFORM UNTIL     FLG-SYUNOU    NOT =  ZERO
+               IF      SYU-DENPPRTYMD    <=  SPA-SRYYMD
+                   IF      SYU-SKYMONEY  >   SYU-NYUKIN-TOTAL
+                       COMPUTE WRK-NYUIN-MISYU =   WRK-NYUIN-MISYU
+                                               +  (SYU-SKYMONEY
+                                               -   SYU-NYUKIN-TOTAL)
+                    END-IF
+               END-IF
+               MOVE    "SYUNOU-KEY2"       TO  ORC-DBPATH
+               PERFORM 980-SYUNOU-READ-SEC
+           END-PERFORM
+      *
+           MOVE    "SYUNOU-KEY2"       TO  ORC-DBPATH
+           PERFORM 990-DBCLOSE-SEC
+      *
+           MOVE    SPACE               TO  SPA-GMN-NYUMISYU
+           IF      WRK-NYUIN-MISYU NOT =   ZERO
+               MOVE    WRK-NYUIN-MISYU     TO  WRK-Z9
+               PERFORM 31091-KINHENSYU-SEC
+               STRING  "前回未収額（入院）：" 
+                                           DELIMITED  BY  SIZE
+                       WRK-HEN             DELIMITED  BY  SPACE
+                                       INTO    SPA-GMN-NYUMISYU
+               END-STRING
+           END-IF
+           .
+       3109-NYUIN-MISYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    金額計算処理
+      *****************************************************************
+       31091-KINHENSYU-SEC           SECTION.
+      *
+           MOVE    SPACE             TO  WRK-HEN
+           MOVE    ZERO              TO  IDH1
+           PERFORM VARYING     IDH2  FROM    1   BY  1
+                   UNTIL       IDH2  >   10
+               IF      WRK-Z9-G(IDH2:1)  NOT =   SPACE
+                   ADD     1             TO  IDH1
+                   MOVE    WRK-Z9-G(IDH2:1)  TO  WRK-HEN(IDH1:1)
+               END-IF
+           END-PERFORM
+           .
+       31091-KINHENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2489,6 +2568,14 @@
            END-PERFORM
            MOVE    SPA-NYUKINHOU-MAX       TO  K03-NYUKINHOU-COUNT
            MOVE    SPA-GMN-NYUKINHOU-G     TO  K03-NYUKINHOU
+      *
+      *    入院の前回までの未収額
+           IF      SPA-GMN-NYUMISYU    =   SPACE
+               MOVE    SPACE               TO  K03-NYUMISYU
+           ELSE
+               MOVE    "red"               TO  K03-NYUMISYU-STYLE
+               MOVE    SPA-GMN-NYUMISYU    TO  K03-NYUMISYU-VALUE
+           END-IF
       *
       *    対象なしの場合
            IF      SPA-NAI-FLG         =   1
@@ -4591,12 +4678,8 @@
                MOVE    1                   TO  FLG-SYSKANRI
            END-IF
       *    カーソルクロース
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-SYSKANRI        =   1
                CONTINUE
@@ -4696,12 +4779,8 @@
            END-PERFORM
       *
       *    カーソルクロース
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
       *    フィアルデイレクトリ位置指定
            INITIALIZE                  ORCSMKPASSAREA
@@ -5101,12 +5180,8 @@
                MOVE    1              TO  FLG-PTINF
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTINF-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        940-PTINF-READ-EXT.
@@ -5141,12 +5216,8 @@
                MOVE    1              TO  FLG-PTCOM
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTCOM-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
            .
        950-PTCOM-READ-EXT.
            EXIT.
@@ -5268,12 +5339,8 @@
                MOVE    1                   TO  FLG-TENSU
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        910-TENSU-READ-EXT.
@@ -5322,7 +5389,19 @@
        980-SYUNOU-READ-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    ＤＢＣＬＯＳＥ処理
+      *****************************************************************
+       990-DBCLOSE-SEC                  SECTION.
       *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           .
+       990-DBCLOSE-EXT.
+           EXIT.
       *
       *****************************************************************
       *    パラメタデータ順読み

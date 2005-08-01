@@ -181,6 +181,9 @@
       *            （１：まとめ継続、２：まとめ確定）
                    07  SPA-GMN-SYORI             PIC 9(01).
       *
+      *            入院未収金合計
+                   07  SPA-GMN-NYUMISYU          PIC X(40).
+      *
                05  SPA-NAI-AREA.
                    07  SPA-NAI-SEIKYU            PIC S9(07).
                    07  SPA-KON-SKYMONEY          PIC S9(07).

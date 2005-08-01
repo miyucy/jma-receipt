@@ -1222,12 +1222,8 @@
                PERFORM 970-JYURRK-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "JYURRK-KEY5"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
       *    ºÇÂç·ï¿ô
            MOVE    IDG                 TO  SPA-GMN-MAX2
@@ -1306,12 +1302,8 @@
                PERFORM 930-SRYACT-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            IF      IDX-KOUI        >   ZERO
       *        ºÞËè¤Ë½èÍý¤ò¹Ô¤¦
@@ -2143,12 +2135,8 @@
                PERFORM 930-SRYACT-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        42011-PARA-HEN-EXT.
@@ -2479,12 +2467,8 @@
                MOVE    1                   TO  FLG-TENSU
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        910-TENSU-READ-EXT.
@@ -2544,12 +2528,8 @@
                INITIALIZE                  SRYACCT-REC
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        940-SRYACCT-READ-EXT.
@@ -2587,12 +2567,8 @@
                INITIALIZE                  PTCOM-REC
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTCOM-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        950-PTCOM-READ-EXT.
@@ -2681,15 +2657,25 @@
                MOVE    1                   TO  FLG-INPUTCD
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "INPUTCD-KEY"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        930-INPUTCD-NEXT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    £Ä£Â£Ã£Ì£Ï£Ó£Å½èÍý
+      *****************************************************************
+       990-DBCLOSE-SEC                  SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           .
+       990-DBCLOSE-EXT.
            EXIT.
       *
       *****************************************************************
