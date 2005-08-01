@@ -842,6 +842,12 @@
                WHEN    "9031"
                    MOVE    "入院患者初回加算は既に算定済みです。"
                                        TO  SPA-ERRMSG
+               WHEN    "9032"
+                   MOVE
+                   "入院期間外の診療日です。内容の展開ができませんので"
+                                       TO  SPA-ERRMSG
+                   MOVE    "会計照会で変更して下さい。"
+                                       TO  SPA-ERRMSG(51:)
                WHEN    "9100"
                    MOVE    "診療内容が２００行を超えます。"
                                        TO  SPA-ERRMSG
