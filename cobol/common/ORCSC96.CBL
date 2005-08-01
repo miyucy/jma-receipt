@@ -848,6 +848,11 @@
                                        TO  SPA-ERRMSG
                    MOVE    "会計照会で変更して下さい。"
                                        TO  SPA-ERRMSG(51:)
+               WHEN    "9033"
+                   MOVE    "入院期間外の診療日です。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "診療内容の登録はできません。"
+                                       TO  SPA-ERRMSG(25:)
                WHEN    "9100"
                    MOVE    "診療内容が２００行を超えます。"
                                        TO  SPA-ERRMSG
