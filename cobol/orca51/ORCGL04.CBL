@@ -410,11 +410,14 @@
                                        WRK-FROMYMD
                                        WRK-FROMTIME
       *
-           IF    ( SPA-GMN-L04-VIEW-MODE   =   ZERO )
+           EVALUATE    SPA-GMN-L04-VIEW-MODE
+           WHEN    ZERO
                MOVE    PATH-TBL-HOURS-KEY2 TO  WRK-MCP-PATH
-           ELSE
+           WHEN    1
                MOVE    PATH-TBL-HOURS-KEY4 TO  WRK-MCP-PATH
-           END-IF
+           WHEN    2
+               MOVE    PATH-TBL-HOURS-KEY4 TO  WRK-MCP-PATH
+           END-EVALUATE
       *
            INITIALIZE                  HOURS-REC
       *
@@ -448,6 +451,12 @@
       *
                    PERFORM 3101-VIEW-FROM-SET-SEC
       *
+               END-IF
+      *
+               IF    ( SPA-GMN-L04-VIEW-MODE   =   2 )
+                   IF    ( IDX-TERM            >=  1 )
+                       MOVE    1   TO  FLG-HOURS
+                   END-IF
                END-IF
       *
            END-PERFORM
@@ -1111,7 +1120,7 @@
       *        MOVE    WRK-CMB-ITM     TO  SPA-GMN-L04-HOURSKBN-G
       *    END-IF
       *
-           MOVE    1                   TO  SPA-GMN-L04-VIEW-MODE
+           MOVE    2                   TO  SPA-GMN-L04-VIEW-MODE
       *
            MOVE    212                 TO  SPA-GMN-L04-CUR
       *
@@ -1421,11 +1430,16 @@
       *
            IF    ( SPA-GMN-L04-PROCKBN =   CONST-SIME
                                        OR  CONST-SIME-KARI )
-               IF    ( SPA-GMN-L04-VIEW-MODE    =  ZERO )
+               EVALUATE    SPA-GMN-L04-VIEW-MODE
+               WHEN    ZERO
                    MOVE    1           TO  SPA-GMN-L04-VIEW-MODE
-               ELSE
+               WHEN    1
+                   MOVE    2           TO  SPA-GMN-L04-VIEW-MODE
+               WHEN    2
                    MOVE    ZERO        TO  SPA-GMN-L04-VIEW-MODE
-               END-IF
+               WHEN    OTHER
+                   MOVE    ZERO        TO  SPA-GMN-L04-VIEW-MODE
+               END-EVALUATE
       *
                PERFORM 3101-VIEW-AREA-SET-SEC
       *
@@ -1897,11 +1911,14 @@
       *
            IF    ( SPA-GMN-L04-PROCKBN     =   CONST-SIME
                                            OR  CONST-SIME-KARI )
-               IF    ( SPA-GMN-L04-VIEW-MODE   =   ZERO )
+               EVALUATE    SPA-GMN-L04-VIEW-MODE
+               WHEN    2
                    MOVE    "本締めのみ"    TO  L04-B04-LABEL
-               ELSE
+               WHEN    ZERO
                    MOVE    "全て表示"      TO  L04-B04-LABEL
-               END-IF
+               WHEN    1
+                   MOVE    "前回本締め"    TO  L04-B04-LABEL
+               END-EVALUATE
            END-IF
       *
            IF    ( SPA-GMN-L04-PROCKBN     =   CONST-DEL )
