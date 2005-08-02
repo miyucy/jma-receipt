@@ -2680,7 +2680,6 @@
            PERFORM 510-TBLHEN-SEC
            MOVE    SPACE           TO  FLG-TOROKU
       *
-      *
            .
        3001010-SAISIN-HEN-EXT.
            EXIT.
@@ -5536,20 +5535,23 @@
                   (SPA-KIDCD       NOT =   SPACE )
                GO      TO      410112-KOUI-SPACHK-EXT
            END-IF
-      *    他画面遷移時
-           IF      FLG-HENKOU          =   1
-               GO      TO      410112-KOUI-SPACHK-EXT
-           END-IF
-      *
       *    点数計算・剤別チェック処理
            MOVE    SPACE           TO  FLG-TOROKU
            PERFORM 510-TBLHEN-SEC
+      *
            IF     (SPA-KIDCD       =   SPACE  )  AND
                   (SPA-ERRCD       =   SPACE
                                    OR  "0021" )  AND
                   (FLG-END         =   ZERO   )
       *        診療コード入力
                PERFORM 410119-SAIINPUT-SEC
+           END-IF
+      *
+      *    他画面遷移時
+           IF      FLG-HENKOU          =   1
+               MOVE    SPACE           TO  SPA-KIDCD
+               MOVE    SPACE           TO  SPA-ERRCD
+               MOVE    ZERO            TO  FLG-END
            END-IF
       *
            .
@@ -6990,10 +6992,8 @@
                CONTINUE
            ELSE
       *        診察料以外は時間外加算が算定できること
-               IF      TNS-TIMEKSNKBN      =   ZERO
-      *TEST
-               AND     TNS-SRYKBN      NOT =   "40"
-      *TEST
+               IF     (TNS-TIMEKSNKBN      =   ZERO )
+               AND    (TNS-SRYKBN      NOT =   "40" )
                    MOVE    "0030"              TO  SPA-ERRCD
                    GO      TO      41011211-JIKANGAI-CHK-EXT
                END-IF

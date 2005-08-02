@@ -4457,10 +4457,6 @@
                   (SPA-KIDCD       NOT =   SPACE )
                GO      TO      410112-KOUI-SPACHK-EXT
            END-IF
-      *    他画面遷移時
-           IF      FLG-HENKOU          =   1
-               GO      TO      410112-KOUI-SPACHK-EXT
-           END-IF
       *
       *    点数計算・剤別チェック処理
            MOVE    SPACE           TO  FLG-TOROKU
@@ -4471,6 +4467,12 @@
                   (FLG-END         =   ZERO   )
       *        診療コード入力
                PERFORM 410119-SAIINPUT-SEC
+           END-IF
+      *    他画面遷移時
+           IF      FLG-HENKOU          =   1
+               MOVE    SPACE           TO  SPA-KIDCD
+               MOVE    SPACE           TO  SPA-ERRCD
+               MOVE    ZERO            TO  FLG-END
            END-IF
       *
            .
