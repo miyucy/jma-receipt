@@ -324,7 +324,7 @@
                05  WRK-EDNUM       PIC X(05).
                05  WRK-HENSYU-DATA-G.
                    07  WRK-HENSYU-DATA-O
-                                   PIC X(10)   OCCURS  7.
+                                   PIC X(10)   OCCURS  8.
       *
            03  WRK-STR             PIC 9(05).
       *
@@ -401,6 +401,12 @@
                05  WRK-HMM         PIC 9(02).
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-HDD         PIC 9(02).
+      *
+      *    複写用患者病名マスタ−
+       01  WRK-PTBYOMEI-COPY-REC.
+           COPY    "CPPTBYOMEI.INC"
+                                   REPLACING   //PTBYO-//
+                                   BY          //WRK-PTBYO-COPY-//.
       *
       *    患者病名マスタ−（レセ電エラーフラグチェック用）
        01  WRK-PTBYOMEI-CHK-AREA.
@@ -1843,7 +1849,7 @@
       *****************************************************************
        320-C10SPASET-SEC          SECTION.
       *
-           IF      SPA-CIDCD           =   SPACE
+           IF      SPA-CID1-FLG        =   SPACE
                MOVE    1                   TO  SPA-GMN-C02-CUR
                GO  TO  320-C10SPASET-EXT
            END-IF
@@ -1852,7 +1858,7 @@
                                            SPA-CIDCD
       *     
            PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   IDX     >       7
+                   UNTIL   IDX     >       8
                MOVE    SPA-C01-HENSYU-DATA-O (IDX)
                                        TO  WRK-HENSYU-DATA-O (IDX)
            END-PERFORM
@@ -1878,7 +1884,11 @@
                    PERFORM VARYING IDX     FROM
                                            WRK-STNUM-O (IDXX)  BY  1
                            UNTIL   IDX     >   WRK-EDNUM-O (IDXX)
-                       PERFORM 4101131-KANTAN-SYUSEI-KOUSIN-SEC
+                       IF      WRK-HENSYU-DATA-O (8)   =   SPACE
+                           PERFORM 4101131-KANTAN-SYUSEI-KOUSIN-SEC
+                       ELSE
+                           PERFORM 3201-BYOMEI-COPY-KOUSIN-SEC
+                       END-IF
                        IF      SPA-ERRCD   NOT =   SPACE
                            GO  TO  320-C10SPASET-EXT
                        END-IF
@@ -1915,6 +1925,173 @@
            .
        320-C10SPASET-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    病名複写更新処理
+      *****************************************************************
+       3201-BYOMEI-COPY-KOUSIN-SEC         SECTION.
+      *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
+           INITIALIZE                      PTBYO-KEY
+           MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+           MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
+           MOVE    SPA-NAI-C02-TSRYKA  (IDX)
+                                       TO  PTBYO-SRYKA
+           MOVE    SPA-NAI-C02-TSRYYMD (IDX)
+                                       TO  PTBYO-SRYYMD
+           MOVE    SPA-NAI-C02-TRENNUM (IDX)
+                                       TO  PTBYO-RENNUM 
+           MOVE    PATH-TBL-PTBYOMEI-KEY
+                                       TO  WRK-DBPATH
+           PERFORM 900-PTBYO-INV-SEC
+           IF      FLG-PTBYOMEI        =   1
+               MOVE    "1003"              TO  SPA-ERRCD
+               DISPLAY "INV PTBYOMEI-KEY =>" PTBYO-KEY 
+               GO  TO  3201-BYOMEI-COPY-KOUSIN-EXT
+           ELSE
+               MOVE    PTBYOMEI-REC        TO  WRK-PTBYOMEI-COPY-REC
+           END-IF
+      *
+      *    転帰区分・転帰日
+           INITIALIZE                  WRK-PTBYO-COPY-TENKIYMD
+                                       WRK-PTBYO-COPY-TENKIKBN
+      *
+      *    開始日
+           MOVE    WRK-HENSYU-DATA-O (8)
+                                   TO  WRK-PTBYO-COPY-SRYYMD
+      *
+      *    疑いフラグ
+           EVALUATE    WRK-HENSYU-DATA-O (3)
+               WHEN    SPACE               
+                   CONTINUE
+               WHEN    "-"               
+                   MOVE    SPACE   TO  WRK-PTBYO-COPY-UTAGAIFLG
+               WHEN    OTHER
+                   MOVE    WRK-HENSYU-DATA-O (3)
+                                   TO  WRK-PTBYO-COPY-UTAGAIFLG
+           END-EVALUATE      
+      *
+      *    主病名フラグ
+           EVALUATE    WRK-HENSYU-DATA-O (4)
+               WHEN    SPACE               
+                   CONTINUE
+               WHEN    "-"               
+                   MOVE    SPACE   TO  WRK-PTBYO-COPY-SYUBYOFLG
+               WHEN    OTHER
+                   MOVE    WRK-HENSYU-DATA-O (4)
+                                   TO  WRK-PTBYO-COPY-SYUBYOFLG
+           END-EVALUATE      
+      *
+      *    疾患区分
+           EVALUATE    WRK-HENSYU-DATA-O (5)
+               WHEN    SPACE               
+                   CONTINUE
+               WHEN    "-"               
+                   MOVE    ZERO    TO  WRK-PTBYO-COPY-MANSEIKBN
+               WHEN    OTHER
+                   MOVE    WRK-HENSYU-DATA-O (5)
+                                   TO  WRK-PTBYO-COPY-MANSEIKBN
+           END-EVALUATE      
+      *
+      *    入外区分
+           EVALUATE    WRK-HENSYU-DATA-O (6)
+               WHEN    SPACE               
+                   CONTINUE
+               WHEN    "-"               
+                   MOVE    SPACE   TO  WRK-PTBYO-COPY-NYUGAIKBN
+               WHEN    OTHER
+                   MOVE    WRK-HENSYU-DATA-O (6)
+                                   TO  WRK-PTBYO-COPY-NYUGAIKBN
+           END-EVALUATE      
+      *
+      *    保険適用
+           EVALUATE    WRK-HENSYU-DATA-O (7)
+               WHEN    SPACE               
+                   CONTINUE
+               WHEN    "-"               
+                   MOVE    ZERO    TO  WRK-PTBYO-COPY-HKNCOMBI
+               WHEN    OTHER
+                   MOVE    WRK-HENSYU-DATA-O (7)
+                                   TO  WRK-PTBYO-COPY-HKNCOMBI
+           END-EVALUATE      
+      *
+      *    レセ電エラーフラグ
+           INITIALIZE                  WRK-PTBYOMEI-CHK-AREA
+           IF      WRK-PTBYO-COPY-BYOMEIHENFLG
+                                       =   SPACE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       WRK-CONS-BYOMEICD-MAX
+                       OR      WRK-PTBYO-COPY-BYOMEICD (IDY)
+                                           =   SPACE
+                   MOVE    WRK-PTBYO-COPY-BYOMEICD (IDY)
+                                               TO  BYO-BYOMEICD
+                   PERFORM 900-BYOMEI-READ-SEC
+                   IF      FLG-BYOMEI          =   ZERO
+                       IF    ( WRK-HAISIYMD-CHK
+                                               =   ZERO                )
+                       AND   ( BYO-HAISIYMD
+                                         NOT   =   ZERO    AND ALL "9" )
+                           MOVE    BYO-HAISIYMD    TO  WRK-HAISIYMD-CHK
+                       END-IF
+                   END-IF    
+               END-PERFORM
+           END-IF
+           MOVE    WRK-PTBYOMEI-COPY-REC
+                                       TO  WRK-PTBYOMEI-CHK-REC
+           PERFORM 5001-RECEDENFLG-HENSYU-SEC
+           MOVE    WRK-PTBYO-CHK-RECEDENFLG
+                                       TO  WRK-PTBYO-COPY-RECEDENFLG
+      *
+      *    連番取得
+           MOVE    ZERO                TO  WRK-RENNUM
+      *
+           INITIALIZE                  PTBYOMEI-REC
+           MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+           MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
+           MOVE    WRK-PTBYO-COPY-SRYKA
+                                       TO  PTBYO-SRYKA
+           MOVE    WRK-PTBYO-COPY-SRYYMD
+                                       TO  PTBYO-SRYYMD
+           MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
+           MOVE    PATH-TBL-PTBYOMEI-KEY7
+                                       TO  WRK-DBPATH
+           PERFORM 900-PTBYO-INV-SEC
+           IF      FLG-PTBYOMEI        =   ZERO
+               MOVE    PTBYO-RENNUM        TO  WRK-RENNUM
+           END-IF
+           ADD     1                   TO  WRK-RENNUM
+           MOVE    WRK-RENNUM          TO  WRK-PTBYO-COPY-RENNUM
+      *
+           MOVE    SMCNDATE-YMD        TO  WRK-PTBYO-COPY-CREYMD
+           MOVE    SMCNDATE-YMD        TO  WRK-PTBYO-COPY-UPYMD
+           MOVE    SMCNDATE-HMS        TO  WRK-PTBYO-COPY-UPHMS
+      *
+           MOVE    "DBINSERT"          TO  MCP-FUNC
+      *
+      *???
+           DISPLAY "PTBYO=" WRK-PTBYO-COPY-KEY "#" MCP-FUNC "#"
+      *???                
+           MOVE    WRK-PTBYOMEI-COPY-REC
+                                      TO  MCPDATA-REC
+           MOVE    "PTBYOMEI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO 
+               MOVE    "1001"              TO  SPA-ERRCD
+               DISPLAY MCP-FUNC "PTBYOMEI-KEY =>" WRK-PTBYO-COPY-KEY
+           ELSE
+               PERFORM 450221-RECEUPD-UPDATE-SEC
+           END-IF
+           .
+       3201-BYOMEI-COPY-KOUSIN-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    最終受診診療科情報 編集処理
@@ -2946,7 +3123,7 @@
            IF      FLG-PTBYOMEI        =   1
                MOVE    "1003"              TO  SPA-ERRCD
                DISPLAY "INV PTBYOMEI-KEY =>" PTBYO-KEY 
-               GO  TO  410113-KANTAN-SYUSEI-EXT
+               GO  TO  4101131-KANTAN-SYUSEI-KOUSIN-EXT
            END-IF
       *
       *    転帰区分・転帰日
@@ -3056,9 +3233,11 @@
            IF      MCP-RC          NOT =   ZERO 
                MOVE    "1001"              TO  SPA-ERRCD
                DISPLAY MCP-FUNC "PTBYOMEI-KEY =>"  PTBYO-KEY 
+           ELSE
+               PERFORM 450221-RECEUPD-UPDATE-SEC
            END-IF
            .
-       410113-KANTAN-SYUSEI-EXT.
+       4101131-KANTAN-SYUSEI-KOUSIN-EXT.
            EXIT.
       *
       *
@@ -5812,7 +5991,7 @@
                    END-IF
       *
                    PERFORM             UNTIL   FLG-PTBYOMEI    =   1
-                                       OR      SPA-ERRCD   NOT =   SPACE
+                                       OR      SPA-CIDCD   NOT =   SPACE
                        EVALUATE    TRUE
                            WHEN    SPA-NAI-C02-SRYYMD  =   PTBYO-SRYYMD
                                MOVE    1       TO  SPA-C02-KEIKOKU-FLG1

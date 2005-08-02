@@ -1,11 +1,11 @@
             02  C10.
-              03  C10-TENKIYMD.
-                04  C10-VALUE   PIC X(10).
               03  C10-TENKICOMBO.
                 04  C10-TENKIKBN.
                   05  C10-VALUE   PIC X(8).
                 04  C10-TENKIKBN-COUNT   PIC S9(9)   BINARY.
                 04  C10-TENKIKBN-ITEM    PIC X(8)    OCCURS  5 TIMES.
+              03  C10-TENKIYMD.
+                04  C10-VALUE   PIC X(10).
               03  C10-UTAGAIFLGCOMBO.
                 04  C10-UTAGAIFLG.
                   05  C10-VALUE   PIC X(14).
@@ -31,3 +31,5 @@
                   05  C10-VALUE   PIC X(14).
                 04  C10-SYUBYOFLG-COUNT   PIC S9(9)   BINARY.
                 04  C10-SYUBYOFLG-ITEM    PIC X(14)   OCCURS  2 TIMES.
+              03  C10-SRYYMD.
+                04  C10-VALUE   PIC X(10).

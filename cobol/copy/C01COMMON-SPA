@@ -37,16 +37,17 @@
                07  SPA-C01-STNUM-O         PIC 9(05)   OCCURS  5.
                07  SPA-C01-EDNUM-O         PIC 9(05)   OCCURS  5.
            05  SPA-C01-HENSYU-DATA-G.
-               07  SPA-C01-HENSYU-DATA-O   PIC X(10)   OCCURS  7.
+               07  SPA-C01-HENSYU-DATA-O   PIC X(10)   OCCURS  8.
       *
       *戻り先
            05  SPA-C01-MOTOPG              PIC  X(08).
       *
       *警告メッセージ
-           05  SPA-CIDCD                   PIC  X(04).
-           05  SPA-CIDCD2                  PIC  X(04).
-           05  SPA-CIDCD3                  PIC  X(04).
-           05  SPA-CIDCD4                  PIC  X(04).
+           05  SPA-CIDCD-AREA. 
+               07  SPA-CIDCD               PIC  X(04).
+               07  SPA-CIDCD2              PIC  X(04).
+               07  SPA-CIDCD3              PIC  X(04).
+               07  SPA-CIDCD4              PIC  X(04).
       *警告画面より
            05  SPA-CID1-AREA. 
                07  SPA-CID1-FLG            PIC  X(02).
