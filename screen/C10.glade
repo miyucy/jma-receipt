@@ -14,9 +14,9 @@
   <class>GtkWindow</class>
   <name>C10</name>
   <x>545</x>
-  <y>435</y>
+  <y>390</y>
   <width>470</width>
-  <height>300</height>
+  <height>350</height>
   <signal>
     <name>map_event</name>
     <handler>map_event</handler>
@@ -32,7 +32,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(C10)病名登録−簡単修正</title>
+  <title>(C10)病名登録−簡単修正・病名複写</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>True</modal>
@@ -48,7 +48,7 @@
       <class>GtkButton</class>
       <name>B01</name>
       <x>8</x>
-      <y>270</y>
+      <y>320</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -71,7 +71,7 @@
       <class>GtkButton</class>
       <name>B12</name>
       <x>380</x>
-      <y>270</y>
+      <y>320</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -114,7 +114,7 @@
       <text_visible>True</text_visible>
       <text_max_length>10</text_max_length>
       <text></text>
-      <input_mode>XIM</input_mode>
+      <input_mode>ASCII</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
 
@@ -243,6 +243,162 @@
     </widget>
 
     <widget>
+      <class>GtkLabel</class>
+      <name>label488</name>
+      <x>50</x>
+      <y>20</y>
+      <width>46</width>
+      <height>18</height>
+      <label>転帰  </label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkPandaCombo</class>
+      <name>SYUBYOFLGCOMBO</name>
+      <x>120</x>
+      <y>100</y>
+      <width>130</width>
+      <height>24</height>
+      <value_in_list>False</value_in_list>
+      <ok_if_empty>True</ok_if_empty>
+      <case_sensitive>False</case_sensitive>
+      <use_arrows>True</use_arrows>
+      <use_arrows_always>False</use_arrows_always>
+      <items>1 疑い
+</items>
+
+      <widget>
+	<class>GtkPandaEntry</class>
+	<child_name>GtkPandaCombo:entry</child_name>
+	<name>SYUBYOFLG</name>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>activate</name>
+	  <handler>send_event</handler>
+	  <data>ACTIVATE</data>
+	  <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>changed</name>
+	  <handler>entry_changed</handler>
+	  <data>CHANGED</data>
+	  <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
+	</signal>
+	<editable>True</editable>
+	<text_visible>True</text_visible>
+	<text_max_length>14</text_max_length>
+	<text>1 主病名である</text>
+	<input_mode>XIM</input_mode>
+	<xim_enabled>False</xim_enabled>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label482</name>
+      <x>50</x>
+      <y>100</y>
+      <width>46</width>
+      <height>18</height>
+      <label>主病名</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label481</name>
+      <x>50</x>
+      <y>60</y>
+      <width>50</width>
+      <height>18</height>
+      <label>疑い      </label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B10</name>
+      <x>272</x>
+      <y>320</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F10</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:42:11 GMT</last_modification_time>
+      </signal>
+      <label>F10:複写</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label501</name>
+      <x>220</x>
+      <y>24</y>
+      <width>50</width>
+      <height>18</height>
+      <label>転帰日  </label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>SRYYMD</name>
+      <x>120</x>
+      <y>260</y>
+      <width>85</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:15:38 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:15:52 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>10</text_max_length>
+      <text></text>
+      <input_mode>ASCII</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
       <class>GtkPandaCombo</class>
       <name>HKNCOMBICOMBO</name>
       <x>120</x>
@@ -327,44 +483,28 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label501</name>
-      <x>220</x>
-      <y>24</y>
-      <width>50</width>
-      <height>18</height>
-      <label>転帰日  </label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label488</name>
-      <x>50</x>
-      <y>20</y>
-      <width>46</width>
-      <height>18</height>
-      <label>転帰  </label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label489</name>
       <x>50</x>
       <y>220</y>
       <width>54</width>
       <height>18</height>
       <label>保険適用</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label503</name>
+      <x>60</x>
+      <y>280</y>
+      <width>60</width>
+      <height>18</height>
+      <label>（複写）  </label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>
@@ -390,47 +530,6 @@
     </widget>
 
     <widget>
-      <class>GtkPandaCombo</class>
-      <name>SYUBYOFLGCOMBO</name>
-      <x>120</x>
-      <y>100</y>
-      <width>130</width>
-      <height>24</height>
-      <value_in_list>False</value_in_list>
-      <ok_if_empty>True</ok_if_empty>
-      <case_sensitive>False</case_sensitive>
-      <use_arrows>True</use_arrows>
-      <use_arrows_always>False</use_arrows_always>
-      <items>1 疑い
-</items>
-
-      <widget>
-	<class>GtkPandaEntry</class>
-	<child_name>GtkPandaCombo:entry</child_name>
-	<name>SYUBYOFLG</name>
-	<can_focus>True</can_focus>
-	<signal>
-	  <name>activate</name>
-	  <handler>send_event</handler>
-	  <data>ACTIVATE</data>
-	  <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
-	</signal>
-	<signal>
-	  <name>changed</name>
-	  <handler>entry_changed</handler>
-	  <data>CHANGED</data>
-	  <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
-	</signal>
-	<editable>True</editable>
-	<text_visible>True</text_visible>
-	<text_max_length>14</text_max_length>
-	<text>1 主病名である</text>
-	<input_mode>XIM</input_mode>
-	<xim_enabled>False</xim_enabled>
-      </widget>
-    </widget>
-
-    <widget>
       <class>GtkLabel</class>
       <name>label484</name>
       <x>50</x>
@@ -448,28 +547,12 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label482</name>
+      <name>label502</name>
       <x>50</x>
-      <y>100</y>
-      <width>46</width>
+      <y>260</y>
+      <width>54</width>
       <height>18</height>
-      <label>主病名</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label481</name>
-      <x>50</x>
-      <y>60</y>
-      <width>50</width>
-      <height>18</height>
-      <label>疑い      </label>
+      <label>開始日  </label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>

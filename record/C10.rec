@@ -1,14 +1,14 @@
 C10	{
 	fixed6	{
-		TENKIYMD	{
-			value	varchar(10);
-		};
 		TENKICOMBO	{
 			TENKIKBN	{
 				value	varchar(8);
 			};
 			count	int;
 			item	varchar(8)[5];
+		};
+		TENKIYMD	{
+			value	varchar(10);
 		};
 		UTAGAIFLGCOMBO	{
 			UTAGAIFLG	{
@@ -44,6 +44,9 @@ C10	{
 			};
 			count	int;
 			item	varchar(14)[2];
+		};
+		SRYYMD	{
+			value	varchar(10);
 		};
 	};
 };
