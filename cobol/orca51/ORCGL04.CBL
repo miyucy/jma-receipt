@@ -2025,6 +2025,9 @@
                    MOVE    212     TO  SPA-GMN-L04-CUR
                END-IF
            WHEN    CONST-REPRINT
+               IF    ( SPA-GMN-L04-CUR     = 10 )
+                   MOVE    212     TO  SPA-GMN-L04-CUR
+               END-IF
            WHEN    CONST-DEL
                IF    ( SPA-GMN-L04-CUR     = 2 OR 3 OR 4 OR 5 )
                    MOVE    6       TO  SPA-GMN-L04-CUR

@@ -1801,7 +1801,7 @@
       <y>305</y>
       <width>80</width>
       <height>25</height>
-      <can_focus>True</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -1826,7 +1826,7 @@
       <y>305</y>
       <width>60</width>
       <height>25</height>
-      <can_focus>True</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -1867,7 +1867,7 @@
       <y>305</y>
       <width>80</width>
       <height>25</height>
-      <can_focus>True</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -1892,7 +1892,7 @@
       <y>305</y>
       <width>60</width>
       <height>25</height>
-      <can_focus>True</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -1917,7 +1917,7 @@
       <y>280</y>
       <width>80</width>
       <height>25</height>
-      <can_focus>True</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -1942,7 +1942,7 @@
       <y>280</y>
       <width>60</width>
       <height>25</height>
-      <can_focus>True</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -1983,7 +1983,7 @@
       <y>255</y>
       <width>80</width>
       <height>25</height>
-      <can_focus>True</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2008,7 +2008,7 @@
       <y>255</y>
       <width>60</width>
       <height>25</height>
-      <can_focus>True</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2033,7 +2033,7 @@
       <y>230</y>
       <width>80</width>
       <height>25</height>
-      <can_focus>True</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2058,7 +2058,7 @@
       <y>230</y>
       <width>60</width>
       <height>25</height>
-      <can_focus>True</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2083,7 +2083,7 @@
       <y>205</y>
       <width>80</width>
       <height>25</height>
-      <can_focus>True</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2108,7 +2108,7 @@
       <y>205</y>
       <width>60</width>
       <height>25</height>
-      <can_focus>True</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2133,7 +2133,7 @@
       <y>180</y>
       <width>80</width>
       <height>25</height>
-      <can_focus>True</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2158,7 +2158,7 @@
       <y>155</y>
       <width>80</width>
       <height>25</height>
-      <can_focus>True</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2183,7 +2183,7 @@
       <y>130</y>
       <width>80</width>
       <height>25</height>
-      <can_focus>True</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2208,7 +2208,7 @@
       <y>105</y>
       <width>80</width>
       <height>25</height>
-      <can_focus>True</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2233,7 +2233,7 @@
       <y>80</y>
       <width>80</width>
       <height>25</height>
-      <can_focus>True</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2258,7 +2258,7 @@
       <y>280</y>
       <width>80</width>
       <height>25</height>
-      <can_focus>True</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2331,7 +2331,7 @@
       <y>180</y>
       <width>60</width>
       <height>25</height>
-      <can_focus>True</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2356,7 +2356,7 @@
       <y>155</y>
       <width>60</width>
       <height>25</height>
-      <can_focus>True</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2381,7 +2381,7 @@
       <y>130</y>
       <width>60</width>
       <height>25</height>
-      <can_focus>True</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2406,7 +2406,7 @@
       <y>105</y>
       <width>60</width>
       <height>25</height>
-      <can_focus>True</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2431,7 +2431,7 @@
       <y>80</y>
       <width>60</width>
       <height>25</height>
-      <can_focus>True</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2536,7 +2536,7 @@
       <y>255</y>
       <width>80</width>
       <height>25</height>
-      <can_focus>True</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2561,7 +2561,7 @@
       <y>280</y>
       <width>60</width>
       <height>25</height>
-      <can_focus>True</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2586,7 +2586,7 @@
       <y>255</y>
       <width>60</width>
       <height>25</height>
-      <can_focus>True</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2611,7 +2611,7 @@
       <y>230</y>
       <width>80</width>
       <height>25</height>
-      <can_focus>True</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2636,7 +2636,7 @@
       <y>230</y>
       <width>60</width>
       <height>25</height>
-      <can_focus>True</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2661,7 +2661,7 @@
       <y>205</y>
       <width>80</width>
       <height>25</height>
-      <can_focus>True</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2686,7 +2686,7 @@
       <y>205</y>
       <width>60</width>
       <height>25</height>
-      <can_focus>True</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2711,7 +2711,7 @@
       <y>180</y>
       <width>80</width>
       <height>25</height>
-      <can_focus>True</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2736,7 +2736,7 @@
       <y>155</y>
       <width>80</width>
       <height>25</height>
-      <can_focus>True</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2761,7 +2761,7 @@
       <y>130</y>
       <width>80</width>
       <height>25</height>
-      <can_focus>True</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2786,7 +2786,7 @@
       <y>105</y>
       <width>80</width>
       <height>25</height>
-      <can_focus>True</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2811,7 +2811,7 @@
       <y>80</y>
       <width>80</width>
       <height>25</height>
-      <can_focus>True</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2836,7 +2836,7 @@
       <y>180</y>
       <width>60</width>
       <height>25</height>
-      <can_focus>True</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2861,7 +2861,7 @@
       <y>155</y>
       <width>60</width>
       <height>25</height>
-      <can_focus>True</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2886,7 +2886,7 @@
       <y>130</y>
       <width>60</width>
       <height>25</height>
-      <can_focus>True</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2911,7 +2911,7 @@
       <y>105</y>
       <width>60</width>
       <height>25</height>
-      <can_focus>True</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2936,7 +2936,7 @@
       <y>80</y>
       <width>60</width>
       <height>25</height>
-      <can_focus>True</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
