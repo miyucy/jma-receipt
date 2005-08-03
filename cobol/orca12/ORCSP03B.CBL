@@ -371,12 +371,10 @@
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    SPA-GMN-FTNJANUM (IDX-K)
                                        TO  KANACHK-MAE-INPUT
+           MOVE    8                   TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
-           IF      KANACHK-RC2         =   7
-               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-FTNJANUM (IDX-K)
-               MOVE    ZERO                TO  KANACHK-RC2
-           END-IF
+           MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-FTNJANUM (IDX-K)
       *    全角の時、すべてのチェックをはずす
            IF     (KANACHK-RC          =   ZERO  )  AND
                   (KANACHK-SYUBETU     =   2     )
@@ -936,18 +934,17 @@
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    SPA-GMN-JKYSNUM (IDX-K)
                                        TO  KANACHK-MAE-INPUT
+           MOVE    20                  TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
-           IF      KANACHK-RC2         =   7
-               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-JKYSNUM (IDX-K)
-           END-IF
+           MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-JKYSNUM (IDX-K)
            IF      KANACHK-RC      NOT =   ZERO
       *        半角・全角混在エラー
                MOVE    "0075"              TO  SPA-ERRCD
                MOVE    22                  TO  SPA-GMN-CUR
                GO      TO          1001-JKYSNUM-CHK-EXT
            END-IF
-           IF      KANACHK-RC2     NOT =   ZERO
+           IF      KANACHK-RC2         =   8
       *        入力文字エラー
                MOVE    "0076"         TO  SPA-ERRCD
                MOVE    22                  TO  SPA-GMN-CUR

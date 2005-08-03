@@ -5955,9 +5955,6 @@
                   (KANACHK-SYUBETU     =   1     )
                MOVE    1                   TO  FLG-ERR
                MOVE    KANACHK-MAE-INPUT   TO  WRK-ATO-INPUT
-      *        IF      KANACHK-RC2         =   7
-      *            MOVE    KANACHK-OUT-INPUT   TO  WRK-ATO-INPUT
-      *        END-IF
            ELSE
                MOVE    ZERO                TO  FLG-ERR
                MOVE    KANACHK-OUT-INPUT   TO  WRK-ATO-INPUT

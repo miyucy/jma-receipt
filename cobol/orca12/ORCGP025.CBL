@@ -700,6 +700,8 @@
                                            TO  LNK-KYU-NICKNAME(IDX)
                        MOVE    SPA-TERMID  TO  LNK-KYU-TERMID  (IDX)
                        MOVE    SPA-OPID    TO  LNK-KYU-OPID    (IDX)
+                       MOVE    SPA-GMN25-KYU-CREYMD  (IDX)
+                                           TO  LNK-KYU-CREYMD (IDX)
                    END-IF
                END-IF
            END-PERFORM
@@ -1071,15 +1073,13 @@
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    WRK-MAE-INPUT       TO  KANACHK-MAE-INPUT
+           MOVE    50                  TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
            IF     (KANACHK-RC      NOT =   ZERO  )  OR
                   (KANACHK-SYUBETU     =   1     )
                MOVE    "2530"              TO  SPA-ERRCD
-               MOVE    WRK-MAE-INPUT       TO  WRK-ATO-INPUT
-               IF      KANACHK-RC2         =   7
-                   MOVE    KANACHK-OUT-INPUT   TO  WRK-ATO-INPUT
-               END-IF
+               MOVE    KANACHK-MAE-INPUT   TO  WRK-ATO-INPUT
            ELSE
                MOVE    KANACHK-OUT-INPUT   TO  WRK-ATO-INPUT
            END-IF

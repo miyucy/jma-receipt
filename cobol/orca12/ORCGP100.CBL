@@ -394,7 +394,9 @@
            INITIALIZE  WRK-HENKAN-AREA
            MOVE    SPA-GMN-P100-KANJINAME (IDX1)
                                        TO  WRK-MAE-INPUT
+           MOVE    50                  TO  WRK-MAX
            PERFORM 890-HALF-ZEN-SEC
+           MOVE    WRK-ATO-INPUT       TO  SPA-GMN-P100-KANJINAME (IDX1)
            IF      SPA-ERRCD           =   SPACE
                MOVE    WRK-ATO-INPUT   TO  SPA-GMN-P100-KANJINAME (IDX1)
            ELSE
@@ -546,7 +548,10 @@
                INITIALIZE  WRK-HENKAN-AREA
                MOVE    SPA-GMN-P100-KANJINAME (IDX1)
                                TO  WRK-MAE-INPUT
+               MOVE    50                  TO  WRK-MAX
                PERFORM 890-HALF-ZEN-SEC
+               MOVE    WRK-ATO-INPUT
+                                   TO  SPA-GMN-P100-KANJINAME (IDX1)
                IF  ( SPA-ERRCD     NOT =   SPACE )
                    GO  TO  490-KANJINAME-SET-EXT
                END-IF
@@ -788,20 +793,21 @@
       *****************************************************************
        890-HALF-ZEN-SEC         SECTION.
       *
-           IF  ( WRK-MAE-INPUT  =      SPACE )
-               MOVE    SPACE    TO     WRK-ATO-INPUT
-               GO  TO  890-HALF-ZEN-EXT
-           END-IF
+      *    IF  ( WRK-MAE-INPUT  =      SPACE )
+      *        MOVE    SPACE    TO     WRK-ATO-INPUT
+      *        GO  TO  890-HALF-ZEN-EXT
+      *    END-IF
       *
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    WRK-MAE-INPUT       TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
+           MOVE    WRK-MAX             TO  KANACHK-MAX-CNT
            IF     (KANACHK-RC      NOT =   ZERO  )  OR
                   (KANACHK-SYUBETU     =   1     )
                MOVE    "0002"              TO  SPA-ERRCD
-               MOVE    WRK-MAE-INPUT       TO  WRK-ATO-INPUT
+               MOVE    KANACHK-MAE-INPUT   TO  WRK-ATO-INPUT
            ELSE
                MOVE    KANACHK-OUT-INPUT   TO  WRK-ATO-INPUT
            END-IF

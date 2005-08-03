@@ -1467,13 +1467,12 @@
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    SPA-GMN2D-COMMENT   TO  KANACHK-MAE-INPUT
+           MOVE    100                 TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
            IF     (KANACHK-RC      NOT =   ZERO  )  OR
                   (KANACHK-SYUBETU     =   1     )
-               IF      KANACHK-RC2         =   7
-                   MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN2D-COMMENT
-               END-IF
+               MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN2D-COMMENT
                MOVE    "0031"              TO  SPA-ERRCD
                MOVE    02                  TO  SPA-GMN2D-CUR
            ELSE
@@ -1498,6 +1497,7 @@
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    SPA-GMN2D-KOHNUM1   TO  KANACHK-MAE-INPUT
+           MOVE    14                  TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
            IF     (KANACHK-RC          =   ZERO  )  AND
@@ -1530,6 +1530,7 @@
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    SPA-GMN2D-KOHNUM2   TO  KANACHK-MAE-INPUT
+           MOVE    9                   TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
            IF     (KANACHK-RC          =   ZERO  )  AND
@@ -1794,15 +1795,14 @@
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    SPA-GMN2D-JIGYOUNAME
                                        TO  KANACHK-MAE-INPUT
+           MOVE    100                 TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
            IF     (KANACHK-RC      NOT =   ZERO  )  OR
                   (KANACHK-SYUBETU     =   1     )
                MOVE    "0029"              TO  SPA-ERRCD
                MOVE    11                  TO  SPA-GMN2D-CUR
-               IF      KANACHK-RC2         =   7
-                   MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN2D-JIGYOUNAME
-               END-IF
+               MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN2D-JIGYOUNAME
            ELSE
                MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN2D-JIGYOUNAME
            END-IF
@@ -1873,15 +1873,14 @@
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    SPA-GMN2D-CITYNAME
                                        TO  KANACHK-MAE-INPUT
+           MOVE    20                  TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
            IF     (KANACHK-RC      NOT =   ZERO  )  OR
                   (KANACHK-SYUBETU     =   1     )
                MOVE    "0036"              TO  SPA-ERRCD
                MOVE    14                  TO  SPA-GMN2D-CUR
-               IF      KANACHK-RC2         =   7
-                   MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN2D-CITYNAME
-               END-IF
+               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN2D-CITYNAME
            ELSE
                MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN2D-CITYNAME
            END-IF
@@ -2047,16 +2046,14 @@
                MOVE    "1"                 TO  KANACHK-SYORI
                MOVE    SPA-GMN2D-HOKENNAME
                                            TO  KANACHK-MAE-INPUT
+               MOVE    80                  TO  KANACHK-MAX-CNT
                CALL    "ORCSKANACHK"       USING
                                            ORCSKANACHKAREA
                IF     (KANACHK-RC      NOT =   ZERO  )  OR
                       (KANACHK-SYUBETU     =   1     )
                    MOVE    "0038"              TO  SPA-ERRCD
                    MOVE    27                  TO  SPA-GMN2D-CUR
-                   IF      KANACHK-RC2         =   7
-                       MOVE    KANACHK-OUT-INPUT
-                                               TO  SPA-GMN2D-HOKENNAME
-                   END-IF
+                   MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN2D-HOKENNAME
                ELSE
                    MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN2D-HOKENNAME
                END-IF

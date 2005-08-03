@@ -375,11 +375,10 @@
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    SPA-GMN-HKNJANUM    TO  KANACHK-MAE-INPUT
+           MOVE    7                   TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
-           IF      KANACHK-RC2         =   7
-               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-HKNJANUM
-           END-IF
+           MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-HKNJANUM
       *    半角で間に空白がないこと
            IF     (KANACHK-RC      NOT =   ZERO  )  OR
                   (KANACHK-RC2     NOT =   ZERO  )  OR
@@ -415,12 +414,12 @@
                INITIALIZE                  HKNJAINF-REC
                MOVE    1               TO  FLG-HKNJAINF
            END-IF
-           MOVE    "DBCLOSECURSOR"       TO  MCP-FUNC
-           MOVE    "HKNJAINF-KEY"        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "HKNJAINF-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            MOVE    SPACE               TO  WRK-HKNJA-HKNNUM
       *    保険者番号あり
@@ -1222,6 +1221,7 @@
       *    記号全角チェック
            IF      SPA-GMN-KIGO    NOT =   SPACE
                MOVE    SPA-GMN-KIGO        TO  WRK-MAE-INPUT
+               MOVE    40                  TO  WRK-MAX
                PERFORM 890-HALF-ZEN-SEC
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN-KIGO
                IF      FLG-ERR             =   1
@@ -1241,6 +1241,7 @@
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (SPA-GMN-NUM     NOT =   SPACE )
                MOVE    SPA-GMN-NUM         TO  WRK-MAE-INPUT
+               MOVE    40                  TO  WRK-MAX
                PERFORM 890-HALF-ZEN-SEC
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN-NUM
                IF      FLG-ERR             =   1
@@ -1493,6 +1494,7 @@
       *    記号全角チェック
            IF      SPA-GMN-HIHKNJANAME    NOT =   SPACE
                MOVE    SPA-GMN-HIHKNJANAME TO  WRK-MAE-INPUT
+               MOVE    50                  TO  WRK-MAX
                PERFORM 890-HALF-ZEN-SEC
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN-HIHKNJANAME
                IF      FLG-ERR         NOT =   ZERO
@@ -2451,15 +2453,13 @@
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    WRK-MAE-INPUT       TO  KANACHK-MAE-INPUT
+           MOVE    WRK-MAX             TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
            IF     (KANACHK-RC      NOT =   ZERO  )  OR
                   (KANACHK-SYUBETU     =   1     )
                MOVE    1                   TO  FLG-ERR
                MOVE    KANACHK-MAE-INPUT       TO  WRK-ATO-INPUT
-               IF      KANACHK-RC2         =   7
-                   MOVE    KANACHK-OUT-INPUT       TO  WRK-ATO-INPUT
-               END-IF
                IF      KANACHK-SYUBETU     =   1
                    MOVE    2                   TO  FLG-ERR
                END-IF

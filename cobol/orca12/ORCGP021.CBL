@@ -98,6 +98,7 @@
        01  WRK-HENKAN-AREA.
            03  WRK-MAE-INPUT       PIC X(400).
            03  WRK-ATO-INPUT       PIC X(400).
+           03  WRK-MAX             PIC 9(04).
       *
            03  WRK-MAE-POST        PIC X(07).
       **** 03  WRK-POST            PIC X(07).
@@ -710,6 +711,7 @@
       *
       *    半角空白を全角空白へ
            MOVE    SPA-GMN21-RENRAKU-NAME   TO  WRK-MAE-INPUT
+           MOVE    50                       TO  WRK-MAX
            PERFORM 890-HALF-ZEN-SEC
            MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-RENRAKU-NAME
            IF      FLG-ERR             =   ZERO
@@ -730,6 +732,7 @@
       *
       *    半角空白を全角空白へ
            MOVE    SPA-GMN21-JOB       TO  WRK-MAE-INPUT
+           MOVE    20                  TO  WRK-MAX
            PERFORM 890-HALF-ZEN-SEC
            MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-JOB
            .
@@ -744,6 +747,7 @@
       *
       *    半角空白を全角空白へ
            MOVE    SPA-GMN21-RENRAKU-ZOKUGARA   TO  WRK-MAE-INPUT
+           MOVE    30                  TO  WRK-MAX
            PERFORM 890-HALF-ZEN-SEC
            MOVE    WRK-ATO-INPUT   TO  SPA-GMN21-RENRAKU-ZOKUGARA
            IF      FLG-ERR             =   ZERO
@@ -793,6 +797,7 @@
       *
       *    半角空白を全角空白へ
            MOVE    SPA-GMN21-RENRAKU-ADRS   TO  WRK-MAE-INPUT
+           MOVE    100                 TO  WRK-MAX
            PERFORM 890-HALF-ZEN-SEC
            MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-RENRAKU-ADRS
            IF      FLG-ERR             =   ZERO
@@ -812,6 +817,7 @@
       *
       *    半角空白を全角空白へ
            MOVE    SPA-GMN21-RENRAKU-BANTI TO  WRK-MAE-INPUT
+           MOVE    100                 TO  WRK-MAX
            PERFORM 890-HALF-ZEN-SEC
            MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-RENRAKU-BANTI
            IF      FLG-ERR             =   ZERO
@@ -832,6 +838,7 @@
       *
       *    半角空白を全角空白へ
            MOVE    SPA-GMN21-OFFICE-NAME   TO  WRK-MAE-INPUT
+           MOVE    50                  TO  WRK-MAX
            PERFORM 890-HALF-ZEN-SEC
            MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-OFFICE-NAME
            IF      FLG-ERR             =   ZERO
@@ -881,6 +888,7 @@
       *
       *    半角空白を全角空白へ
            MOVE    SPA-GMN21-OFFICE-ADRS   TO  WRK-MAE-INPUT
+           MOVE    100                 TO  WRK-MAX
            PERFORM 890-HALF-ZEN-SEC
            MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-OFFICE-ADRS
            IF      FLG-ERR             =   ZERO
@@ -900,6 +908,7 @@
       *
       *    半角空白を全角空白へ
            MOVE    SPA-GMN21-OFFICE-BANTI  TO  WRK-MAE-INPUT
+           MOVE    100                 TO  WRK-MAX
            PERFORM 890-HALF-ZEN-SEC
            MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-OFFICE-BANTI
            IF      FLG-ERR             =   ZERO
@@ -920,6 +929,7 @@
       *
       *    半角空白を全角空白へ
            MOVE    SPA-GMN21-KISEI-NAME    TO  WRK-MAE-INPUT
+           MOVE    50                  TO  WRK-MAX
            PERFORM 890-HALF-ZEN-SEC
            MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-KISEI-NAME
            IF      FLG-ERR             =   ZERO
@@ -969,6 +979,7 @@
       *
       *    半角空白を全角空白へ
            MOVE    SPA-GMN21-KISEI-ADRS    TO  WRK-MAE-INPUT
+           MOVE    100                 TO  WRK-MAX
            PERFORM 890-HALF-ZEN-SEC
            MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-KISEI-ADRS
            IF      FLG-ERR             =   ZERO
@@ -988,6 +999,7 @@
       *
       *    半角空白を全角空白へ
            MOVE    SPA-GMN21-KISEI-BANTI   TO  WRK-MAE-INPUT
+           MOVE    100                 TO  WRK-MAX
            PERFORM 890-HALF-ZEN-SEC
            MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-KISEI-BANTI
            IF      FLG-ERR             =   ZERO
@@ -1160,15 +1172,13 @@
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    WRK-MAE-INPUT       TO  KANACHK-MAE-INPUT
+           MOVE    WRK-MAX             TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
            IF     (KANACHK-RC      NOT =   ZERO  )  OR
                   (KANACHK-SYUBETU     =   1     )
                MOVE    1                   TO  FLG-ERR
-               MOVE    WRK-MAE-INPUT       TO  WRK-ATO-INPUT
-               IF      KANACHK-RC2         =   7
-                   MOVE    KANACHK-OUT-INPUT   TO  WRK-ATO-INPUT
-               END-IF
+               MOVE    KANACHK-MAE-INPUT   TO  WRK-ATO-INPUT
            ELSE
                MOVE    ZERO                TO  FLG-ERR
                MOVE    KANACHK-OUT-INPUT   TO  WRK-ATO-INPUT
