@@ -2053,12 +2053,15 @@
            EVALUATE    SPA-GMN-L04-PROCKBN
            WHEN    CONST-SIME
            WHEN    CONST-SIME-KARI
-           WHEN    CONST-INS
                IF    ( SPA-GMN-L04-CUR     = 2 OR 3 OR 4 OR 5 OR 6)
                    MOVE    7       TO  SPA-GMN-L04-CUR
                END-IF
                IF    ( SPA-GMN-L04-CUR     = 10 )
                    MOVE    212     TO  SPA-GMN-L04-CUR
+               END-IF
+           WHEN    CONST-INS
+               IF    ( SPA-GMN-L04-CUR     = 2 OR 3 OR 4 OR 5 OR 6)
+                   MOVE    7       TO  SPA-GMN-L04-CUR
                END-IF
            WHEN    CONST-SELTERM
                IF    ( SPA-GMN-L04-CUR     = 10 )
