@@ -1743,7 +1743,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>MESSTSRYYMD</name>
-      <x>130</x>
+      <x>140</x>
       <y>30</y>
       <width>80</width>
       <height>25</height>
@@ -1770,7 +1770,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>MESEDSRYYMD</name>
-      <x>295</x>
+      <x>305</x>
       <y>30</y>
       <width>80</width>
       <height>25</height>
@@ -1801,7 +1801,6 @@
       <y>305</y>
       <width>80</width>
       <height>25</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -1826,7 +1825,6 @@
       <y>305</y>
       <width>60</width>
       <height>25</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -1867,7 +1865,6 @@
       <y>305</y>
       <width>80</width>
       <height>25</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -1892,7 +1889,6 @@
       <y>305</y>
       <width>60</width>
       <height>25</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -1917,7 +1913,6 @@
       <y>280</y>
       <width>80</width>
       <height>25</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -1942,7 +1937,6 @@
       <y>280</y>
       <width>60</width>
       <height>25</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -1983,7 +1977,6 @@
       <y>255</y>
       <width>80</width>
       <height>25</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2008,7 +2001,6 @@
       <y>255</y>
       <width>60</width>
       <height>25</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2033,7 +2025,6 @@
       <y>230</y>
       <width>80</width>
       <height>25</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2058,7 +2049,6 @@
       <y>230</y>
       <width>60</width>
       <height>25</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2083,7 +2073,6 @@
       <y>205</y>
       <width>80</width>
       <height>25</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2108,7 +2097,6 @@
       <y>205</y>
       <width>60</width>
       <height>25</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2133,7 +2121,6 @@
       <y>180</y>
       <width>80</width>
       <height>25</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2158,7 +2145,6 @@
       <y>155</y>
       <width>80</width>
       <height>25</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2183,7 +2169,6 @@
       <y>130</y>
       <width>80</width>
       <height>25</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2208,7 +2193,6 @@
       <y>105</y>
       <width>80</width>
       <height>25</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2233,7 +2217,6 @@
       <y>80</y>
       <width>80</width>
       <height>25</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2258,7 +2241,6 @@
       <y>280</y>
       <width>80</width>
       <height>25</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2331,7 +2313,6 @@
       <y>180</y>
       <width>60</width>
       <height>25</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2356,7 +2337,6 @@
       <y>155</y>
       <width>60</width>
       <height>25</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2381,7 +2361,6 @@
       <y>130</y>
       <width>60</width>
       <height>25</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2406,7 +2385,6 @@
       <y>105</y>
       <width>60</width>
       <height>25</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2431,7 +2409,6 @@
       <y>80</y>
       <width>60</width>
       <height>25</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2536,7 +2513,6 @@
       <y>255</y>
       <width>80</width>
       <height>25</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2561,7 +2537,6 @@
       <y>280</y>
       <width>60</width>
       <height>25</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2586,7 +2561,6 @@
       <y>255</y>
       <width>60</width>
       <height>25</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2611,7 +2585,6 @@
       <y>230</y>
       <width>80</width>
       <height>25</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2636,7 +2609,6 @@
       <y>230</y>
       <width>60</width>
       <height>25</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2661,7 +2633,6 @@
       <y>205</y>
       <width>80</width>
       <height>25</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2686,7 +2657,6 @@
       <y>205</y>
       <width>60</width>
       <height>25</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2711,7 +2681,6 @@
       <y>180</y>
       <width>80</width>
       <height>25</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2736,7 +2705,6 @@
       <y>155</y>
       <width>80</width>
       <height>25</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2761,7 +2729,6 @@
       <y>130</y>
       <width>80</width>
       <height>25</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2786,7 +2753,6 @@
       <y>105</y>
       <width>80</width>
       <height>25</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2811,7 +2777,6 @@
       <y>80</y>
       <width>80</width>
       <height>25</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2836,7 +2801,6 @@
       <y>180</y>
       <width>60</width>
       <height>25</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2861,7 +2825,6 @@
       <y>155</y>
       <width>60</width>
       <height>25</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2886,7 +2849,6 @@
       <y>130</y>
       <width>60</width>
       <height>25</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2911,7 +2873,6 @@
       <y>105</y>
       <width>60</width>
       <height>25</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -2936,7 +2897,6 @@
       <y>80</y>
       <width>60</width>
       <height>25</height>
-      <can_focus>False</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
@@ -3117,7 +3077,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>MESSTTIME</name>
-      <x>210</x>
+      <x>220</x>
       <y>30</y>
       <width>60</width>
       <height>25</height>
@@ -3144,7 +3104,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>MESEDTIME</name>
-      <x>375</x>
+      <x>385</x>
       <y>30</y>
       <width>60</width>
       <height>25</height>
@@ -3270,7 +3230,7 @@
       <name>MESPROC</name>
       <x>70</x>
       <y>30</y>
-      <width>60</width>
+      <width>70</width>
       <height>25</height>
       <signal>
 	<name>changed</name>
@@ -3287,7 +3247,7 @@
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>10</text_max_length>
-      <text>ËÜÄù¤á</text>
+      <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
@@ -3322,49 +3282,6 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label18</name>
-      <x>270</x>
-      <y>30</y>
-      <width>25</width>
-      <height>25</height>
-      <label>¡Á</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkVSeparator</class>
-      <name>vseparator1</name>
-      <x>440</x>
-      <y>15</y>
-      <width>0</width>
-      <height>50</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator2</name>
-      <x>5</x>
-      <y>15</y>
-      <width>435</width>
-      <height>0</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator1</name>
-      <x>5</x>
-      <y>65</y>
-      <width>435</width>
-      <height>0</height>
     </widget>
 
     <widget>
@@ -3453,6 +3370,49 @@
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label18</name>
+      <x>280</x>
+      <y>30</y>
+      <width>25</width>
+      <height>25</height>
+      <label>¡Á</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkVSeparator</class>
+      <name>vseparator1</name>
+      <x>450</x>
+      <y>15</y>
+      <width>0</width>
+      <height>50</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator2</name>
+      <x>5</x>
+      <y>15</y>
+      <width>445</width>
+      <height>0</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator1</name>
+      <x>5</x>
+      <y>65</y>
+      <width>445</width>
+      <height>0</height>
     </widget>
   </widget>
 </widget>

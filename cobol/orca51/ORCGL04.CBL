@@ -112,10 +112,11 @@
        01  CONST-AREA.
            03  CONST-TERM-MAX              PIC 9(03)   VALUE   10.
            03  CONST-GOBACK-DAYS           PIC S9(03)  VALUE   -10.
+           03  CONST-GOBACK-MONTH          PIC S9(03)  VALUE   -1.
            03  CONST-PROCKBN-G.
                05  CONST-SIME              PIC X(01)   VALUE   "1".
                05  CONST-SIME-KARI         PIC X(01)   VALUE   "2".
-               05  CONST-REPRINT           PIC X(01)   VALUE   "3".
+               05  CONST-SELTERM           PIC X(01)   VALUE   "3".
                05  CONST-INS               PIC X(01)   VALUE   "4".
                05  CONST-DEL               PIC X(01)   VALUE   "5".
       *
@@ -316,8 +317,8 @@
                    MOVE    "本締め"    TO  SPA-GMN-L04-MESPROC
                WHEN    CONST-SIME-KARI
                    MOVE    "仮締め"    TO  SPA-GMN-L04-MESPROC
-               WHEN    CONST-REPRINT
-                   MOVE    "再印刷"    TO  SPA-GMN-L04-MESPROC
+               WHEN    CONST-SELTERM
+                   MOVE    "期間指定"    TO  SPA-GMN-L04-MESPROC
                END-EVALUATE
       *
                MOVE    SYS-3005-STSRYYMD   TO  WRK-SYMD
@@ -369,7 +370,7 @@
            MOVE    "仮締め"        TO  SPA-GMN-L04-PROCKBNMEIL(2)
       *
            MOVE    "3"             TO  SPA-GMN-L04-PROCKBNL   (3)
-           MOVE    "再印刷"        TO  SPA-GMN-L04-PROCKBNMEIL(3)
+           MOVE    "期間指定"      TO  SPA-GMN-L04-PROCKBNMEIL(3)
       *
            MOVE    "4"             TO  SPA-GMN-L04-PROCKBNL   (4)
            MOVE    "追加"          TO  SPA-GMN-L04-PROCKBNMEIL(4)
@@ -411,6 +412,7 @@
                                        WRK-FROMTIME
       *
            EVALUATE    SPA-GMN-L04-VIEW-MODE
+           WHEN    3
            WHEN    ZERO
                MOVE    PATH-TBL-HOURS-KEY2 TO  WRK-MCP-PATH
            WHEN    1
@@ -421,8 +423,8 @@
       *
            INITIALIZE                  HOURS-REC
       *
-           MOVE    "1"                 TO  WRK-ZOGENPTN
-           MOVE    CONST-GOBACK-DAYS   TO  WRK-ZOGEN
+           MOVE    "2"                 TO  WRK-ZOGENPTN
+           MOVE    CONST-GOBACK-MONTH  TO  WRK-ZOGEN
            MOVE    SMCNDATE-YMD        TO  WRK-SYMD
            PERFORM 800-CALENDAR-SEC
            MOVE    WRK-SYMD            TO  HOURS-SRYYMD
@@ -445,13 +447,9 @@
                                    TO  SPA-GMN-L04-TIME   (IDX-TERM 2)
                MOVE    HOURS-HOURSKBN
                                    TO  SPA-NAI-L04-HOURSKBN(IDX-TERM)
+               MOVE    HOURS-ID    TO  SPA-NAI-L04-ID      (IDX-TERM)
       *
                PERFORM 900-HOURS-FET-SEC
-               IF    ( FLG-HOURS       =   ZERO )
-      *
-                   PERFORM 3101-VIEW-FROM-SET-SEC
-      *
-               END-IF
       *
                IF    ( SPA-GMN-L04-VIEW-MODE   =   2 )
                    IF    ( IDX-TERM            >=  1 )
@@ -462,6 +460,42 @@
            END-PERFORM
       *
            MOVE    IDX-TERM         TO  SPA-GMN-L04-TERM-MAX
+      *
+           MOVE    WRK-MCP-PATH     TO  MCP-PATH
+           PERFORM 910-DBCLOSE-SEC
+      *
+      *
+           INITIALIZE                  HOURS-REC
+      *
+           MOVE    "2"                 TO  WRK-ZOGENPTN
+           MOVE    CONST-GOBACK-MONTH  TO  WRK-ZOGEN
+           MOVE    SMCNDATE-YMD        TO  WRK-SYMD
+           PERFORM 800-CALENDAR-SEC
+           MOVE    WRK-SYMD            TO  HOURS-SRYYMD
+           IF    ( SPA-GMN-L04-VIEW-MODE   =   3 )
+               MOVE    PATH-TBL-HOURS-KEY2 TO  WRK-MCP-PATH
+           ELSE
+               MOVE    PATH-TBL-HOURS-KEY4 TO  WRK-MCP-PATH
+           END-IF
+      *
+           PERFORM 900-HOURS-SEL-SEC
+      *
+           MOVE    1                   TO  IDX-TERM
+      *
+           PERFORM UNTIL ( IDX-TERM        >   SPA-GMN-L04-TERM-MAX )
+                    OR   ( FLG-HOURS   NOT =   ZERO )
+      *
+      *
+               IF    ( HOURS-ID   <    SPA-NAI-L04-ID (IDX-TERM))
+      *
+                   PERFORM 3101-VIEW-FROM-SET-SEC
+                   COMPUTE IDX-TERM    =   IDX-TERM    +   1
+               ELSE
+                   PERFORM 900-HOURS-FET-SEC
+               END-IF
+      *
+      *
+           END-PERFORM
       *
            MOVE    WRK-MCP-PATH     TO  MCP-PATH
            PERFORM 910-DBCLOSE-SEC
@@ -704,7 +738,7 @@
                MOVE    L04-EDSRYYMD    TO  SPA-GMN-L04-EDSRYYMD
                MOVE    L04-EDHR        TO  SPA-GMN-L04-EDHR
                MOVE    L04-EDMIN       TO  SPA-GMN-L04-EDMIN
-           WHEN    CONST-REPRINT
+           WHEN    CONST-SELTERM
                MOVE    L04-STSRYYMD    TO  SPA-GMN-L04-STSRYYMD
                MOVE    L04-STHR        TO  SPA-GMN-L04-STHR
                MOVE    L04-STMIN       TO  SPA-GMN-L04-STMIN
@@ -734,8 +768,8 @@
            WHEN    CONST-SIME
            WHEN    CONST-SIME-KARI
                PERFORM 4102-SIME-KIHON-CHK-SEC
-           WHEN    CONST-REPRINT
-               PERFORM 4102-REPRINT-KIHON-CHK-SEC
+           WHEN    CONST-SELTERM
+               PERFORM 4102-SELTERM-KIHON-CHK-SEC
            WHEN    CONST-INS
                PERFORM 4102-INS-KIHON-CHK-SEC
            WHEN    CONST-DEL
@@ -767,9 +801,9 @@
        4102-SIME-KIHON-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    再印刷基本チェック処理
+      *    期間指定基本チェック処理
       *****************************************************************
-       4102-REPRINT-KIHON-CHK-SEC      SECTION.
+       4102-SELTERM-KIHON-CHK-SEC      SECTION.
       *
            IF    ( SPA-ERRCD       =   SPACE )
                PERFORM 4101-STNO-CHK-SEC
@@ -804,7 +838,7 @@
            END-IF
            .
       *
-       4102-REPRINT-KIHON-CHK-EXT.
+       4102-SELTERM-KIHON-CHK-EXT.
            EXIT.
       *****************************************************************
       *    追加基本チェック処理
@@ -877,8 +911,8 @@
            WHEN    CONST-SIME
            WHEN    CONST-SIME-KARI
                PERFORM 41011-SIME-SYOKI-SEC
-           WHEN    CONST-REPRINT
-               PERFORM 41011-REPRINT-SYOKI-SEC
+           WHEN    CONST-SELTERM
+               PERFORM 41011-SELTERM-SYOKI-SEC
            WHEN    CONST-INS
                PERFORM 41011-INS-SYOKI-SEC
            WHEN    CONST-DEL
@@ -895,7 +929,7 @@
       *****************************************************************
        4100-CHK-FROM-CHK-SEC       SECTION.
       *
-           IF    ( SPA-GMN-L04-PROCKBN =   CONST-REPRINT )
+           IF    ( SPA-GMN-L04-PROCKBN =   CONST-SELTERM )
                CONTINUE
            ELSE
                GO  TO  4100-CHK-FROM-CHK-EXT
@@ -925,7 +959,7 @@
       *****************************************************************
        4100-CHK-TO-CHK-SEC         SECTION.
       *
-           IF    ( SPA-GMN-L04-PROCKBN =   CONST-REPRINT
+           IF    ( SPA-GMN-L04-PROCKBN =   CONST-SELTERM
                                         OR CONST-DEL )
                CONTINUE
            ELSE
@@ -949,7 +983,7 @@
            MOVE    ZERO            TO  SPA-GMN-L04-CUR
            MOVE    ZERO            TO  SPA-GMN-L04-TERM-STSEL
       *
-           IF    ( SPA-GMN-L04-PROCKBN =   CONST-REPRINT )
+           IF    ( SPA-GMN-L04-PROCKBN =   CONST-SELTERM )
                CONTINUE
            ELSE
                GO  TO  4100-STNO-CHK-EXT
@@ -1005,7 +1039,7 @@
            MOVE    ZERO            TO  SPA-GMN-L04-CUR
            MOVE    ZERO            TO  SPA-GMN-L04-TERM-EDSEL
       *
-           IF    ( SPA-GMN-L04-PROCKBN =   CONST-REPRINT
+           IF    ( SPA-GMN-L04-PROCKBN =   CONST-SELTERM
                                         OR CONST-DEL )
                CONTINUE
            ELSE
@@ -1128,14 +1162,16 @@
        41011-SIME-SYOKI-EXT.
            EXIT.
       *****************************************************************
-      *    再印刷初期処理
+      *    期間指定初期処理
       *****************************************************************
-       41011-REPRINT-SYOKI-SEC         SECTION.
+       41011-SELTERM-SYOKI-SEC         SECTION.
+      *
+           MOVE    3                   TO  SPA-GMN-L04-VIEW-MODE
       *
            MOVE    2                   TO  SPA-GMN-L04-CUR
       *
            .
-       41011-REPRINT-SYOKI-EXT.
+       41011-SELTERM-SYOKI-EXT.
            EXIT.
       *****************************************************************
       *    追加初期処理
@@ -1432,11 +1468,11 @@
                                        OR  CONST-SIME-KARI )
                EVALUATE    SPA-GMN-L04-VIEW-MODE
                WHEN    ZERO
-                   MOVE    1           TO  SPA-GMN-L04-VIEW-MODE
-               WHEN    1
                    MOVE    2           TO  SPA-GMN-L04-VIEW-MODE
-               WHEN    2
+               WHEN    1
                    MOVE    ZERO        TO  SPA-GMN-L04-VIEW-MODE
+               WHEN    2
+                   MOVE    1           TO  SPA-GMN-L04-VIEW-MODE
                WHEN    OTHER
                    MOVE    ZERO        TO  SPA-GMN-L04-VIEW-MODE
                END-EVALUATE
@@ -1463,8 +1499,8 @@
            WHEN    CONST-SIME
            WHEN    CONST-SIME-KARI
                PERFORM 212-TOUROKU-SIME-CHK-SEC
-           WHEN    CONST-REPRINT
-               PERFORM 212-TOUROKU-REPRINT-CHK-SEC
+           WHEN    CONST-SELTERM
+               PERFORM 212-TOUROKU-SELTERM-CHK-SEC
            WHEN    CONST-INS
                PERFORM 212-TOUROKU-INS-CHK-SEC
            WHEN    CONST-DEL
@@ -1530,21 +1566,21 @@
        212-TOUROKU-SIME-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    登録時再印刷処理チェック処理
+      *    登録時期間指定処理チェック処理
       *****************************************************************
-       212-TOUROKU-REPRINT-CHK-SEC     SECTION.
+       212-TOUROKU-SELTERM-CHK-SEC     SECTION.
       *
            IF    ( SPA-NAI-L04-STSRYYMD    >   SPA-NAI-L04-EDSRYYMD )
                MOVE    "1010"      TO  SPA-ERRCD
                MOVE    3           TO  SPA-GMN-L04-CUR
-               GO  TO  212-TOUROKU-REPRINT-CHK-EXT
+               GO  TO  212-TOUROKU-SELTERM-CHK-EXT
            END-IF
       *
            IF    ( SPA-NAI-L04-STSRYYMD    =   SPA-NAI-L04-EDSRYYMD )
                IF    ( SPA-GMN-L04-STTIME  >   SPA-GMN-L04-EDTIME )
                    MOVE    "1011"  TO  SPA-ERRCD
                    MOVE    4       TO  SPA-GMN-L04-CUR
-                   GO  TO  212-TOUROKU-REPRINT-CHK-EXT
+                   GO  TO  212-TOUROKU-SELTERM-CHK-EXT
                END-IF
            END-IF
       *
@@ -1555,19 +1591,19 @@
            IF    ( SPA-NAI-L04-STSRYYMD    <   WRK-SYMD )
                MOVE    "1012"          TO  SPA-ERRCD
                MOVE    3               TO  SPA-GMN-L04-CUR
-               GO  TO  212-TOUROKU-REPRINT-CHK-EXT
+               GO  TO  212-TOUROKU-SELTERM-CHK-EXT
            END-IF
       *
            PERFORM 2121-SYS3005-UPD-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  212-TOUROKU-REPRINT-CHK-EXT
+               GO  TO  212-TOUROKU-SELTERM-CHK-EXT
            END-IF
       *
            MOVE    "CHANGE"    TO  MCP-PUTTYPE
            PERFORM 210-BACK
       *
            .
-       212-TOUROKU-REPRINT-CHK-EXT.
+       212-TOUROKU-SELTERM-CHK-EXT.
            EXIT.
       *****************************************************************
       *    登録時追加処理チェック処理
@@ -1835,7 +1871,7 @@
                    END-IF
                END-IF
       *
-               IF    ( SPA-GMN-L04-PROCKBN         =   CONST-REPRINT )
+               IF    ( SPA-GMN-L04-PROCKBN         =   CONST-SELTERM )
                    IF    ( SPA-GMN-L04-TERM-STSEL  =   IDX-TERM )
                        IF    ( SPA-NAI-L04-SRYYMD (IDX-TERM 1)
                                            =   SPA-NAI-L04-STSRYYMD )
@@ -1866,7 +1902,7 @@
       *
            IF    ( SPA-GMN-L04-PROCKBN     =   CONST-SIME
                                            OR  CONST-SIME-KARI
-                                           OR  CONST-REPRINT  )
+                                           OR  CONST-SELTERM  )
       *
                MOVE    "期間"              TO  L04-LBL-KIKAN1
                MOVE    "〜"                TO  L04-LBL-KIKAN2
@@ -1885,7 +1921,7 @@
       *
            MOVE    SPA-GMN-L04-HOURSKBN-G  TO  L04-HOURSKBN
       *
-           IF    ( SPA-GMN-L04-PROCKBN     =   CONST-REPRINT )
+           IF    ( SPA-GMN-L04-PROCKBN     =   CONST-SELTERM )
                IF    ( SPA-GMN-L04-TERM-EDSEL  >   ZERO )
                    MOVE    SPA-GMN-L04-TERM-EDSEL  TO  IDX-TERM
                    IF    ( SPA-NAI-L04-SRYYMD (IDX-TERM 2)
@@ -1912,12 +1948,12 @@
            IF    ( SPA-GMN-L04-PROCKBN     =   CONST-SIME
                                            OR  CONST-SIME-KARI )
                EVALUATE    SPA-GMN-L04-VIEW-MODE
+               WHEN    1
+                   MOVE    "全て表示"      TO  L04-B04-LABEL
+               WHEN    ZERO
+                   MOVE    "前回本締め"    TO  L04-B04-LABEL
                WHEN    2
                    MOVE    "本締めのみ"    TO  L04-B04-LABEL
-               WHEN    ZERO
-                   MOVE    "全て表示"      TO  L04-B04-LABEL
-               WHEN    1
-                   MOVE    "前回本締め"    TO  L04-B04-LABEL
                END-EVALUATE
            END-IF
       *
@@ -2024,7 +2060,7 @@
                IF    ( SPA-GMN-L04-CUR     = 10 )
                    MOVE    212     TO  SPA-GMN-L04-CUR
                END-IF
-           WHEN    CONST-REPRINT
+           WHEN    CONST-SELTERM
                IF    ( SPA-GMN-L04-CUR     = 10 )
                    MOVE    212     TO  SPA-GMN-L04-CUR
                END-IF

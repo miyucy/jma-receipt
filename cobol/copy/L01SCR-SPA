@@ -147,6 +147,7 @@
                    07  SPA-NAI-L04-TERM-G.
                        09  SPA-NAI-L04-TERM-OCC        OCCURS  10.
                            11  SPA-NAI-L04-HOURSKBN    PIC X(01).
+                           11  SPA-NAI-L04-ID          PIC X(12).
                            11  SPA-NAI-L04-HOURS-OCC   OCCURS  2.
                                13  SPA-NAI-L04-SRYYMD  PIC X(08).
                05  SPA-NAI-L04-INPUT-AREA.
