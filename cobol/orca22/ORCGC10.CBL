@@ -507,6 +507,7 @@
            .
        200-GMNSENI-EXT.
            EXIT.
+      *
       *****************************************************************
       *    会話処理
       *****************************************************************
@@ -531,6 +532,11 @@
            PERFORM 4101-GMN-SPA-SET-SEC
       *    基本チェック処理
            PERFORM 4102-KIHON-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      410-INPUT-CHK-EXT
+           END-IF
+      *    関連チェック処理
+           PERFORM 4103-KANREN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      410-INPUT-CHK-EXT
            END-IF
@@ -616,6 +622,10 @@
                   MOVE    "0018"               TO  SPA-ERRCD
                END-IF
            END-IF    
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    3                   TO  SPA-GMN-C10-CUR
+           END-IF
            .
        4101-UTAGAI-CHK-EXT.
            EXIT.
@@ -636,6 +646,10 @@
                    MOVE    "0019"               TO  SPA-ERRCD
                END-IF
            END-IF        
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    4                   TO  SPA-GMN-C10-CUR
+           END-IF
            .
        4102-SYUBYOFLG-CHK-EXT.
            EXIT.
@@ -657,6 +671,10 @@
                   MOVE    "0021"               TO  SPA-ERRCD
                END-IF
            END-IF    
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    5                   TO  SPA-GMN-C10-CUR
+           END-IF
            .
        4103-MANSEI-CHK-EXT.
            EXIT.
@@ -678,6 +696,10 @@
                    MOVE    "0022"               TO  SPA-ERRCD
                END-IF
            END-IF
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    6                   TO  SPA-GMN-C10-CUR
+           END-IF
            .
        4104-NYUGAIKBN-CHK-EXT.
            EXIT.
@@ -697,6 +719,10 @@
                IF      WRK-KBNMEI      =   SPACE
                    MOVE    "0009"               TO  SPA-ERRCD
                END-IF
+           END-IF
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    7                   TO  SPA-GMN-C10-CUR
            END-IF
       *
            .
@@ -721,15 +747,18 @@
                IF      SPA-GMN-C10-TENKIKBNMEI
                                            =   SPACE
                    MOVE    "0024"              TO  SPA-ERRCD
-                   GO  TO  4106-TENKIKBN-CHK-EXT
                END-IF
            END-IF
       *     
-           IF    ( SPA-GMN-C10-TENKIKBN NOT =   SPACE   AND "-" )
-           AND   ( SPA-GMN-C10-TENKIYMD     =   SPACE           )
-               MOVE    SPA-NAI-C02-SYSYMD   TO  SPA-NAI-C10-TENKIYMD
-               MOVE    SPA-GMN-C02-SYSYMD   TO  SPA-GMN-C10-TENKIYMD
-           END-IF    
+           IF      SPA-ERRCD           =   SPACE
+               IF    ( SPA-GMN-C10-TENKIKBN NOT =   SPACE   AND "-" )
+               AND   ( SPA-GMN-C10-TENKIYMD     =   SPACE           )
+                   MOVE    SPA-NAI-C02-SYSYMD   TO  SPA-NAI-C10-TENKIYMD
+                   MOVE    SPA-GMN-C02-SYSYMD   TO  SPA-GMN-C10-TENKIYMD
+               END-IF
+           ELSE    
+               MOVE    1                   TO  SPA-GMN-C10-CUR
+           END-IF
            .
        4106-TENKIKBN-CHK-EXT.
            EXIT.
@@ -740,6 +769,7 @@
        4107-TENKIYMD-CHK-SEC            SECTION.
       *     
            MOVE    SPACE              TO  SPA-NAI-C10-TENKIYMD
+      *
            IF      SPA-GMN-C10-TENKIYMD
                                       =   SPACE
                IF      SPA-GMN-C10-TENKIKBN   NOT =   SPACE   AND "-"
@@ -793,13 +823,8 @@
                END-IF
            END-IF    
       *
-           IF      SPA-ERRCD           =   SPACE    
-      *        開始日と転帰日のチェック
-               IF    ( SPA-NAI-C10-TENKIYMD
-                                           NOT =   SPACE )
-               AND   ( SPA-NAI-C10-SRYYMD  NOT =   SPACE )
-                   MOVE    "0006"                  TO  SPA-ERRCD
-               END-IF
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    2                   TO  SPA-GMN-C10-CUR
            END-IF
            .
        4107-TENKIYMD-CHK-EXT.
@@ -858,13 +883,23 @@
                END-IF
            END-IF
       *
-           IF      SPA-ERRCD           =   SPACE    
-      *        開始日と転帰日のチェック
-               IF    ( SPA-NAI-C10-TENKIYMD
-                                           NOT =   SPACE )
-               AND   ( SPA-NAI-C10-SRYYMD  NOT =   SPACE )
-                   MOVE    "0006"                  TO  SPA-ERRCD
-               END-IF
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    8                   TO  SPA-GMN-C10-CUR
+           END-IF
+           .
+       4108-SRYYMD-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    関連チェック処理
+      *****************************************************************
+       4103-KANREN-CHK-SEC        SECTION.
+      *
+      *    開始日と転帰日のチェック
+           IF    ( SPA-NAI-C10-TENKIYMD
+                                       NOT =   SPACE )
+           AND   ( SPA-NAI-C10-SRYYMD  NOT =   SPACE )
+               MOVE    "0006"                  TO  SPA-ERRCD
            END-IF
       *
            PERFORM VARYING IDX     FROM    1   BY  1
@@ -968,7 +1003,7 @@
                                        END-IF     
                                      END-IF
                                      IF      SPA-ERRCD     =   "0007"   
-                                       MOVE    SPA-GMN-C02-TBYOMEI (IDX)
+                                       MOVE    WRK-CHK-BYOMEI
                                                            TO
                                                        WRK-ERR-BYOMEI
                                      END-IF
@@ -979,8 +1014,12 @@
                    END-IF
                END-PERFORM
            END-IF
+      *
+           IF      SPA-ERRCD   NOT =   SPACE
+               MOVE    8               TO  SPA-GMN-C10-CUR
+           END-IF       
            .
-       4108-SRYYMD-CHK-EXT.
+       4103-KANREN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -998,6 +1037,7 @@
            AND   ( SPA-GMN-C10-HKNCOMBI    =   SPACE )
            AND   ( SPA-NAI-C10-SRYYMD      =   SPACE )
                MOVE    "0001"                  TO  SPA-ERRCD
+               MOVE    1                       TO  SPA-GMN-C10-CUR
                GO  TO  4101-KAKUTEI-CHK-EXT
            END-IF
       *
@@ -1033,6 +1073,7 @@
                                UNTIL   IDX     >   WRK-EDNUM-O (IDXX)
                            PERFORM 41011-KANTAN-SYUSEI-DABURI-CHK-SEC
                            IF      SPA-ERRCD   NOT =   SPACE
+                               MOVE    1           TO  SPA-GMN-C10-CUR
                                GO  TO  4101-KAKUTEI-CHK-EXT
                            END-IF
                        END-PERFORM
@@ -1049,7 +1090,8 @@
                                        <=   WRK-TEKEDYMD
                        CONTINUE
                    ELSE    
-                       MOVE    "0005"     TO  SPA-ERRCD
+                       MOVE    "0005"      TO  SPA-ERRCD
+                       MOVE    8           TO  SPA-GMN-C10-CUR
                        GO  TO  41012-COPY-DABURI-CHK-EXT
                    END-IF
                END-IF
@@ -1062,6 +1104,7 @@
                                UNTIL   IDX     >   WRK-EDNUM-O (IDXX)
                            PERFORM 41012-COPY-DABURI-CHK-SEC
                            IF      SPA-ERRCD   NOT =   SPACE
+                               MOVE    8           TO  SPA-GMN-C10-CUR
                                GO  TO  4101-KAKUTEI-CHK-EXT
                            END-IF
                        END-PERFORM
@@ -1218,19 +1261,6 @@
       *    病名複写機能時の転帰・保険適用チェック処理
       *****************************************************************
        41012-COPY-DABURI-CHK-SEC         SECTION.
-      * 
-      *    転帰と開始日のチェック
-           IF      SPA-NAI-C02-TTENKIYMD (IDX)
-                                       >    WRK-HENSYU-DATA-O (8)
-               MOVE    "0004"              TO  SPA-ERRCD
-               MOVE    SPA-NAI-C02-TSRYYMD (IDX)
-                                           TO  WRK-SYMD
-               PERFORM 5002-HIZUKE-HEN-SEC
-               MOVE    LNK-DAY2-EDTYMD3    TO  WRK-ERR-SRYYMD
-               MOVE    SPA-GMN-C02-TBYOMEI (IDX)
-                                           TO  WRK-ERR-BYOMEI
-               GO  TO  41012-COPY-DABURI-CHK-EXT
-           END-IF
       *
       *    マスタとのチェック
            INITIALIZE                  PTBYOMEI-REC
@@ -1437,11 +1467,15 @@
        450-COPY-SEC                    SECTION.
       *
            IF     SPA-GMN-C10-SRYYMD   =   SPACE
-               MOVE    SPA-GMN-C02-SYSYMD  TO  SPA-GMN-C10-SRYYMD
-               PERFORM 4108-SRYYMD-CHK-SEC
-               IF      SPA-ERRCD       NOT =   SPACE    
-                   MOVE    8                   TO  SPA-GMN-C10-CUR
-               END-IF
+               MOVE    SPA-GMN-C02-SYSYMD  TO  C10-SRYYMD
+               MOVE    "B10"               TO  WRK-MCP-WIDGET
+               MOVE    ZERO                TO  SPA-GMN-C10-CUR
+      *
+               MOVE    ZERO                TO  FLG-TOUROKU
+      *        入力チェック処理
+               PERFORM 410-INPUT-CHK-SEC
+           ELSE
+               MOVE    99                  TO  SPA-GMN-C10-CUR
            END-IF
       *
            .
@@ -1860,6 +1894,7 @@
                WHEN    "HKNCOMBI"
                    MOVE    8                   TO  SPA-GMN-C10-CUR
                WHEN    "SRYYMD"
+               WHEN    "B10"
                    IF      SPA-GMN-C10-SRYYMD  =   SPACE
                        MOVE    99          TO  SPA-GMN-C10-CUR
                    ELSE
@@ -1897,16 +1932,6 @@
                        "の"                    DELIMITED   BY  SIZE 
                        WRK-ERR-BYOMEI          DELIMITED   BY  SPACE
                        "が転帰済でありません"
-                                               DELIMITED   BY  SIZE  
-                                               INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "0004"
-                   STRING
-                       "開始日が"              DELIMITED   BY  SIZE 
-                       WRK-ERR-SRYYMD          DELIMITED   BY  SPACE
-                       "の"                    DELIMITED   BY  SIZE 
-                       WRK-ERR-BYOMEI          DELIMITED   BY  SPACE
-                       "の転帰日が入力した開始日より大きいです"
                                                DELIMITED   BY  SIZE  
                                                INTO    SPA-ERRMSG
                    END-STRING
