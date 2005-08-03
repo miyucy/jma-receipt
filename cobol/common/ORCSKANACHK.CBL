@@ -26,6 +26,7 @@
       *  作成日付    作業者        記述
       *  01.00.01    NACL-多々納  02/08/09  入力・出力領域をX(1000)へ
       *  01.00.02    NACL-多々納  04/09/30  全角エラー追加
+      *  01.00.03    NACL-多々納  05/08/10  kanaconv 使用へ変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -274,6 +275,8 @@
       *    サブプロ用　領域
       *****************************************************************
       *
+           COPY    "CPORCXKANACONV.INC".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -308,19 +311,21 @@
            IF      IDX-MAX             =   ZERO
                MOVE    ZERO                TO  KANACHK-MAX
                MOVE    SPACE               TO  KANACHK-OUT-INPUT
-               GO      TO      000-PROC-EXT
            END-IF
-      *    全角の内容判定
-           PERFORM 1000-KOUMOKU-CHK-SEC
       *
-           EVALUATE    KANACHK-SYORI
-               WHEN    "1"
+           IF      IDX-MAX             >   ZERO
+      *        全角の内容判定
+               PERFORM 1000-KOUMOKU-CHK-SEC
+      *
+               EVALUATE    KANACHK-SYORI
+                   WHEN    "1"
       *            全角判定処理
                    PERFORM 100-ZENKAKU-CHECK-SEC
-               WHEN    "2"
+                   WHEN    "2"
       *            全角置換処理
                    PERFORM 200-ZENKAKU-HENKAN-SEC
-           END-EVALUATE
+               END-EVALUATE
+           END-IF
       *
            .
        000-PROC-EXT.
@@ -332,42 +337,28 @@
       *****************************************************************
        1000-KOUMOKU-CHK-SEC           SECTION.
       *
-      *    全角のチェック
-           MOVE    IDX-MAX             TO  IDX-MAX2
-           MOVE    SPACE               TO  WRK-MEISYO
-           MOVE    1                   TO  IDY
-           MOVE    1                   TO  IDX
-           MOVE    ZERO                TO  FLG-KANJI-ERR
-           PERFORM
-                   UNTIL       IDX         >   IDX-MAX
-      *        全角判定
-               IF      KANACHK-MAE-INPUT (IDX:1)
-                                           >=  X"A1"
-                   IF      IDX             <   1000
-                       COMPUTE IDX3        =   IDX     +  1
-                       IF      KANACHK-MAE-INPUT (IDX3:1) >=  X"A1"
-                           MOVE    KANACHK-MAE-INPUT (IDX:2)
-                                                   TO  WRK-MEISYO(IDY:2)
-                           ADD     2               TO  IDX
-                           ADD     2               TO  IDY
-                       ELSE
-                           ADD     1               TO  IDX
-                           MOVE    1               TO  FLG-KANJI-ERR
-                           COMPUTE IDX-MAX2        =   IDX-MAX2  -  1
-                       END-IF
-                   ELSE
-                       MOVE    1               TO  FLG-KANJI-ERR
-                   END-IF
-               ELSE
-                   MOVE    KANACHK-MAE-INPUT (IDX:1)
-                                               TO  WRK-MEISYO(IDY:1)
-                   ADD     1                   TO  IDX
-                   ADD     1                   TO  IDY
-               END-IF
-           END-PERFORM
-           MOVE    WRK-MEISYO          TO  KANACHK-MAE-INPUT
-           MOVE    WRK-MEISYO          TO  KANACHK-OUT-INPUT
-           MOVE    IDX-MAX2            TO  IDX-MAX
+           INITIALIZE                  ORCXKANACONVAREA
+           MOVE    KANACHK-MAX-CNT     TO  KANACONV-LEN
+           IF      KANACHK-MAX-CNT     =   ZERO
+               MOVE    IDX-MAX             TO  KANACONV-LEN
+           END-IF
+           MOVE    1000                TO  KANACONV-STLEN
+           MOVE    0                   TO  KANACONV-CONV-FLAG
+           MOVE    0                   TO  KANACONV-CHAR-TYPE
+           MOVE    KANACHK-MAE-INPUT   TO  KANACONV-INDATA
+           CALL    "kanaconv"          USING ORCXKANACONVAREA
+      *
+           MOVE    KANACONV-OUTDATA    TO  KANACHK-MAE-INPUT
+           MOVE    KANACONV-OUTDATA    TO  KANACHK-OUT-INPUT
+           IF      KANACONV-MAXLEN     =   IDX-MAX
+               MOVE    ZERO                TO  KANACHK-RC2
+           ELSE
+               MOVE    7                   TO  KANACHK-RC2
+           END-IF
+           MOVE    KANACONV-MAXLEN     TO  IDX-MAX
+           IF      KANACHK-MAX-CNT     =   ZERO
+               MOVE    100                 TO  KANACHK-MAX-CNT
+           END-IF
       *
            .
        1000-KOUMOKU-CHK-EXT.
@@ -381,73 +372,57 @@
            MOVE    ZERO                TO  FLG-KANJI
            MOVE    ZERO                TO  FLG-KANA
            MOVE    ZERO                TO  FLG-KUHAKU
-           PERFORM VARYING     IDX     FROM    1  BY  1
-                   UNTIL       IDX     >   IDX-MAX
-               IF     (KANACHK-MAE-INPUT (IDX:1)
-                                           =   SPACE   )  OR
-                      (KANACHK-MAE-INPUT (IDX:1)
-                                           =   X"0A"   )
-                   IF      KANACHK-MAE-INPUT (IDX:1)
-                                               =   SPACE
-                       MOVE    1               TO  FLG-KUHAKU
-                   END-IF
+      *
+           INITIALIZE                  ORCXKANACONVAREA
+           MOVE    KANACHK-MAX-CNT     TO  KANACONV-LEN
+           MOVE    1000                TO  KANACONV-STLEN
+           MOVE    0                   TO  KANACONV-CONV-FLAG
+           MOVE    15                  TO  KANACONV-CHAR-TYPE
+           MOVE    KANACHK-MAE-INPUT   TO  KANACONV-INDATA
+           CALL    "kanaconv"          USING ORCXKANACONVAREA
+           IF      KANACONV-RETURN     =   ZERO
+      *        全角のみ
+               MOVE    1                   TO  FLG-KANJI
+               INITIALIZE                  ORCXKANACONVAREA
+               MOVE    KANACHK-MAX-CNT     TO  KANACONV-LEN
+               MOVE    1000                TO  KANACONV-STLEN
+               MOVE    1                   TO  KANACONV-CONV-FLAG
+               MOVE    15                  TO  KANACONV-CHAR-TYPE
+               MOVE    KANACHK-MAE-INPUT   TO  KANACONV-INDATA
+               CALL    "kanaconv"          USING
+                                           ORCXKANACONVAREA
+               IF      KANACONV-MAXLEN     =   IDX-MAX
+                   CONTINUE
                ELSE
-                   IF     (KANACHK-MAE-INPUT (IDX:1)
-                                          >=  X"A1"  )
-                       MOVE    1               TO  FLG-KANJI
-                   ELSE
-                       MOVE    KANACHK-MAE-INPUT (IDX:1)
-                                                   TO  WRK-MOJI
-                       PERFORM 2001-MOJI-CHK-SEC
-      *                英数字以外の入力あり
-                       IF      WRK-ZENMOJI         =   SPACE
-                           MOVE    1               TO  FLG-KANA2
-                       END-IF
-                       MOVE    1               TO  FLG-KANA
-                   END-IF
+      *            半角空白の置換えあり
+                   MOVE    8                   TO  KANACHK-RC2
                END-IF
-           END-PERFORM
-      *    全角・半角混在
-           IF     (FLG-KANJI           =   1  )  AND
-                  (FLG-KANA            =   1  )
-               IF      FLG-KANA2           =   1
-                   MOVE    9                   TO  KANACHK-RC2
-               END-IF
-               MOVE    1                   TO  KANACHK-RC
-      *        全角エラー文字あり
-               IF      FLG-KANJI-ERR   NOT =   ZERO
-                   MOVE    7               TO  KANACHK-RC2
-               END-IF
-               GO      TO      100-ZENKAKU-CHECK-EXT
-           END-IF
-      *    半角の時、以下の処理なし
-           IF      FLG-KANJI           =   ZERO
-               MOVE    1                   TO  KANACHK-SYUBETU
-               MOVE    IDX-MAX             TO  KANACHK-MAX
-               MOVE    KANACHK-MAE-INPUT   TO  KANACHK-OUT-INPUT
-               IF      FLG-KANA2           =   1
-      *            英数字以外の項目あり
-                   MOVE    9                   TO  KANACHK-RC2
-               ELSE
-      *            間に空白あり
+               MOVE    KANACONV-OUTDATA    TO  KANACHK-OUT-INPUT
+               MOVE    2                   TO  KANACHK-SYUBETU
+               MOVE    KANACONV-MAXLEN     TO  KANACHK-MAX
+           ELSE
+      *        半角のみの判定
+               MOVE    1                   TO  FLG-KANJI
+               INITIALIZE                  ORCXKANACONVAREA
+               MOVE    KANACHK-MAX-CNT     TO  KANACONV-LEN
+               MOVE    1000                TO  KANACONV-STLEN
+               MOVE    0                   TO  KANACONV-CONV-FLAG
+               MOVE    48                  TO  KANACONV-CHAR-TYPE
+               MOVE    KANACHK-MAE-INPUT   TO  KANACONV-INDATA
+               CALL    "kanaconv"          USING
+                                           ORCXKANACONVAREA
+               IF      KANACONV-RETURN     =   ZERO
+                   MOVE    1                   TO  KANACHK-SYUBETU
+                   MOVE    KANACONV-MAXLEN     TO  KANACHK-MAX
+                   MOVE    KANACONV-MAXLEN     TO  IDX-MAX
+      *            間に空白があるかの判定
+                   PERFORM 1001-KUHAKU-CHK-SEC
                    IF      FLG-KUHAKU          =   1
                        MOVE    8                   TO  KANACHK-RC2
                    END-IF
-               END-IF
-      *        全角エラー文字あり
-               IF      FLG-KANJI-ERR   NOT =   ZERO
-                   MOVE    7               TO  KANACHK-RC2
-               END-IF
-           ELSE
-      *        全角処理
-               PERFORM 1020-ZENKAKU-SYORI-SEC
-      *        間に空白あり
-               IF      FLG-KUHAKU          =   1
-                   MOVE    8                   TO  KANACHK-RC2
-               END-IF
-      *        全角エラー文字あり
-               IF      FLG-KANJI-ERR   NOT =   ZERO
-                   MOVE    7               TO  KANACHK-RC2
+               ELSE
+      *            混在エラー
+                   MOVE    1                   TO  KANACHK-RC
                END-IF
            END-IF
       *
@@ -456,49 +431,21 @@
            EXIT.
       *
       *****************************************************************
-      *    全角処理
+      *    間に半角空白があるかの判定処理
       *****************************************************************
-       1020-ZENKAKU-SYORI-SEC           SECTION.
+       1001-KUHAKU-CHK-SEC           SECTION.
       *
-           MOVE    2                   TO  KANACHK-SYUBETU
-      *
-           IF      KANACHK-MAX-CNT     >   ZERO
-               MOVE    KANACHK-MAX-CNT     TO  WRK-MAX-CNT
-           ELSE
-               MOVE    1000                TO  WRK-MAX-CNT
-           END-IF
-      *
-           MOVE    SPACE               TO  WRK-MEISYO
-           MOVE    1                   TO  IDY
-           MOVE    1                   TO  IDX
-           PERFORM
-                   UNTIL      (IDX     >   IDX-MAX     )
-                         OR   (IDY     >=  WRK-MAX-CNT )
-               EVALUATE    KANACHK-MAE-INPUT (IDX:1)
-      *            半角空白を全角のへ
-                   WHEN    SPACE
-                       MOVE    "　"            TO  WRK-MEISYO(IDY:2)
-                       ADD     1               TO  IDX
-                       ADD     2               TO  IDY
-      *            改行
-                   WHEN    X"0A"
-                       MOVE    KANACHK-MAE-INPUT (IDX:1)
-                                               TO  WRK-MEISYO(IDY:1)
-                       ADD     1               TO  IDX
-                       ADD     1               TO  IDY
-                   WHEN    OTHER
-                       MOVE    KANACHK-MAE-INPUT (IDX:2)
-                                               TO  WRK-MEISYO(IDY:2)
-                       ADD     2               TO  IDX
-                       ADD     2               TO  IDY
-               END-EVALUATE
+           MOVE    ZERO                TO  FLG-KUHAKU
+           PERFORM VARYING     IDX     FROM    1  BY  1
+                   UNTIL       IDX     >   IDX-MAX
+               IF      KANACHK-MAE-INPUT (IDX:1)
+                                               =   SPACE
+                   MOVE    1               TO  FLG-KUHAKU
+               END-IF
            END-PERFORM
-      *    最大桁数
-           COMPUTE KANACHK-MAX         =   IDY  -   1
-           MOVE    WRK-MEISYO          TO  KANACHK-OUT-INPUT
       *
            .
-       1020-ZENKAKU-SYORI-EXT.
+       1001-KUHAKU-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -508,79 +455,23 @@
       *
            MOVE    2                   TO  KANACHK-SYUBETU
       *
-           MOVE    SPACE               TO  WRK-MEISYO
-           MOVE    1                   TO  IDY
-           MOVE    1                   TO  IDX
-           MOVE    ZERO                TO  FLG-ERR
-           PERFORM
-                   UNTIL      (IDX         >   IDX-MAX  )  OR
-                              (FLG-ERR     =   1    )
-      *        全角判定
-               IF      KANACHK-MAE-INPUT (IDX:1)
-                                           >=  X"A1"
-                   MOVE    KANACHK-MAE-INPUT (IDX:2)
-                                           TO  WRK-MEISYO(IDY:2)
-                   ADD     2               TO  IDX
-                   ADD     2               TO  IDY
-               ELSE
-                   EVALUATE    KANACHK-MAE-INPUT (IDX:1)
-                       WHEN    SPACE
-      *                    半角空白を全角のへ
-                           MOVE    "　"            TO  WRK-MEISYO(IDY:2)
-                           ADD     1               TO  IDX
-                           ADD     2               TO  IDY
-                       WHEN    X"0A" 
-      *                    改行はそのまま
-                           MOVE    KANACHK-MAE-INPUT (IDX:1)
-                                                   TO  WRK-MEISYO(IDY:1)
-                           ADD     1               TO  IDX
-                           ADD     1               TO  IDY
-                       WHEN    OTHER
-      *                    英数字変換チェック
-                           MOVE    KANACHK-MAE-INPUT (IDX:1)
-                                                   TO  WRK-MOJI
-                           PERFORM 2001-MOJI-CHK-SEC
-                           IF      WRK-ZENMOJI         =   SPACE
-      *                        変換エラー
-                               MOVE    1               TO  FLG-ERR
-                           ELSE
-                               MOVE    WRK-ZENMOJI     TO  WRK-MEISYO
-                                                           (IDY:2)
-                               ADD     1               TO  IDX
-                               ADD     2               TO  IDY
-                           END-IF
-                   END-EVALUATE
-               END-IF
-           END-PERFORM
-      *
-           IF      FLG-ERR         NOT =   ZERO
+           INITIALIZE                  ORCXKANACONVAREA
+           MOVE    KANACHK-MAX-CNT     TO  KANACONV-LEN
+           MOVE    1000                TO  KANACONV-STLEN
+           MOVE    1                   TO  KANACONV-CONV-FLAG
+           MOVE    15                  TO  KANACONV-CHAR-TYPE
+           MOVE    KANACHK-MAE-INPUT   TO  KANACONV-INDATA
+           CALL    "kanaconv"          USING
+                                       ORCXKANACONVAREA
+           IF      KANACONV-RETURN     =   ZERO
+               MOVE    2                   TO  KANACHK-SYUBETU
+               MOVE    KANACONV-OUTDATA    TO  KANACHK-OUT-INPUT
+               MOVE    KANACONV-MAXLEN     TO  KANACHK-MAX
+           ELSE
                MOVE    2                   TO  KANACHK-RC
-               GO      TO      200-ZENKAKU-HENKAN-EXT
            END-IF
-      *
-      *    最大桁数
-           COMPUTE KANACHK-MAX         =   IDY  -   1
-           MOVE    WRK-MEISYO          TO  KANACHK-OUT-INPUT
       *
            .
        200-ZENKAKU-HENKAN-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    全角処理
-      *****************************************************************
-       2001-MOJI-CHK-SEC           SECTION.
-      *
-           SET     TBL-IDX             TO  1
-           SEARCH      TBL-HENKAN-OCC  VARYING   TBL-IDX
-                   AT  END
-                       MOVE    SPACE           TO  WRK-ZENMOJI
-                   WHEN    WRK-MOJI        =   TBL-HALF (TBL-IDX)
-                       MOVE    TBL-ZEN (TBL-IDX)
-                                                TO  WRK-ZENMOJI
-           END-SEARCH
-           .
-       2001-MOJI-CHK-EXT.
-           EXIT.
-      *
       *
