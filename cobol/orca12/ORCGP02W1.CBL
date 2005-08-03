@@ -329,6 +329,9 @@
       *    œ∑øÕªŸ ß∂Ë ¨
            03  WRK-ROUPAYKBN           PIC X(01).
       *
+      *    ¡¥≥—•¡•ß•√•Ø∑ÂøÙ
+           03  WRK-LEN                 PIC 9(04).
+      *
       *    ∏¯»Ò£”£œ£“£‘Õ—° £”£–£¡§»∆±§∏ŒŒ∞Ë°À
        01  WRK-KOUHI-AREA.
       *    ∏¯»Òæ Û
@@ -623,6 +626,8 @@
       *
       *    ¡¥≥—•¡•ß•√•Ø•—•È•·•ø
            COPY    "CPORCSKANACHK.INC".
+      *
+           COPY    "CPORCXKANACONV.INC".
       *
       *    £ƒ£¬∏°∫˜
            COPY    "MCPDATA.INC".
@@ -2729,6 +2734,7 @@
       *
       *    »æ≥—∂ı«Ú§Ú¡¥≥—∂ı«Ú§ÿ
            MOVE    SPA-GMN-KANANAME    TO  WRK-MAE-INPUT
+           MOVE    50                  TO  WRK-LEN
            PERFORM 890-HALF-ZEN-SEC
            MOVE    WRK-ATO-INPUT       TO  SPA-GMN-KANANAME
            IF      FLG-ERR             =   1
@@ -2764,6 +2770,7 @@
            IF      SPA-GMN-NAME    NOT =   SPACE
       *        »æ≥—∂ı«Ú§Ú¡¥≥—∂ı«Ú§ÿ
                MOVE    SPA-GMN-NAME        TO  WRK-MAE-INPUT
+               MOVE    50                  TO  WRK-LEN
                PERFORM 890-HALF-ZEN-SEC
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN-NAME
                IF      FLG-ERR             =   1
@@ -2959,6 +2966,7 @@
            IF      SPA-GMN-NICKNAME    NOT =   SPACE
       *        »æ≥—∂ı«Ú§Ú¡¥≥—∂ı«Ú§ÿ
                MOVE    SPA-GMN-NICKNAME    TO  WRK-MAE-INPUT
+               MOVE    50                  TO  WRK-LEN
                PERFORM 890-HALF-ZEN-SEC
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN-NICKNAME
                IF      FLG-ERR             =   1
@@ -3180,6 +3188,7 @@
            IF      SPA-GMN-EDITADRS-NAME   NOT =   SPACE
       *        »æ≥—∂ı«Ú§Ú¡¥≥—∂ı«Ú§ÿ
                MOVE    SPA-GMN-EDITADRS-NAME   TO  WRK-MAE-INPUT
+               MOVE    100                 TO  WRK-LEN
                PERFORM 890-HALF-ZEN-SEC
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN-EDITADRS-NAME
                IF      FLG-ERR             =   1
@@ -3198,6 +3207,7 @@
            IF      SPA-GMN-BANTI   NOT =   SPACE
       *        »æ≥—∂ı«Ú§Ú¡¥≥—∂ı«Ú§ÿ
                MOVE    SPA-GMN-BANTI       TO  WRK-MAE-INPUT
+               MOVE    100                 TO  WRK-LEN
                PERFORM 890-HALF-ZEN-SEC
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN-BANTI
                IF      FLG-ERR             =   1
@@ -3217,6 +3227,7 @@
            IF      SPA-GMN-SETAINUSI   NOT =   SPACE
       *        »æ≥—∂ı«Ú§Ú¡¥≥—∂ı«Ú§ÿ
                MOVE    SPA-GMN-SETAINUSI   TO  WRK-MAE-INPUT
+               MOVE    50                  TO  WRK-LEN
                PERFORM 890-HALF-ZEN-SEC
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN-SETAINUSI
                IF      FLG-ERR             =   1
@@ -3236,6 +3247,7 @@
            IF      SPA-GMN-ZOKUGARA    NOT =   SPACE
       *        »æ≥—∂ı«Ú§Ú¡¥≥—∂ı«Ú§ÿ
                MOVE    SPA-GMN-ZOKUGARA    TO  WRK-MAE-INPUT
+               MOVE    30                  TO  WRK-LEN
                PERFORM 890-HALF-ZEN-SEC
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN-ZOKUGARA
                IF      FLG-ERR             =   1
@@ -3386,6 +3398,7 @@
       *
            IF      SPA-GMN-TABOO-1     NOT =   SPACE
                MOVE    SPA-GMN-TABOO-1     TO  WRK-MAE-INPUT
+               MOVE    100                 TO  WRK-LEN
                PERFORM 890-HALF-ZEN-SEC
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN-TABOO-1
                IF      FLG-ERR             =   1
@@ -3396,6 +3409,7 @@
            IF     (SPA-GMN-TABOO-2     NOT =   SPACE ) AND
                   (SPA-ERRCD               =   SPACE )
                MOVE    SPA-GMN-TABOO-2     TO  WRK-MAE-INPUT
+               MOVE    100                 TO  WRK-LEN
                PERFORM 890-HALF-ZEN-SEC
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN-TABOO-2
                IF      FLG-ERR             =   1
@@ -3406,6 +3420,7 @@
            IF     (SPA-GMN-ALLERGY-1     NOT =   SPACE ) AND
                   (SPA-ERRCD               =   SPACE )
                MOVE    SPA-GMN-ALLERGY-1   TO  WRK-MAE-INPUT
+               MOVE    100                 TO  WRK-LEN
                PERFORM 890-HALF-ZEN-SEC
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN-ALLERGY-1
                IF      FLG-ERR             =   1
@@ -3416,6 +3431,7 @@
            IF     (SPA-GMN-ALLERGY-2     NOT =   SPACE ) AND
                   (SPA-ERRCD               =   SPACE )
                MOVE    SPA-GMN-ALLERGY-2   TO  WRK-MAE-INPUT
+               MOVE    100                 TO  WRK-LEN
                PERFORM 890-HALF-ZEN-SEC
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN-ALLERGY-2
                IF      FLG-ERR             =   1
@@ -3426,6 +3442,7 @@
            IF     (SPA-GMN-KANSENSYO-1 NOT =   SPACE ) AND
                   (SPA-ERRCD               =   SPACE )
                MOVE    SPA-GMN-KANSENSYO-1 TO  WRK-MAE-INPUT
+               MOVE    100                 TO  WRK-LEN
                PERFORM 890-HALF-ZEN-SEC
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN-KANSENSYO-1
                IF      FLG-ERR             =   1
@@ -3436,6 +3453,7 @@
            IF     (SPA-GMN-KANSENSYO-2 NOT =   SPACE ) AND
                   (SPA-ERRCD               =   SPACE )
                MOVE    SPA-GMN-KANSENSYO-2 TO  WRK-MAE-INPUT
+               MOVE    100                 TO  WRK-LEN
                PERFORM 890-HALF-ZEN-SEC
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN-KANSENSYO-2
                IF      FLG-ERR             =   1
@@ -3447,18 +3465,16 @@
            IF     (SPA-GMN-COMMENT-1   NOT =   SPACE ) AND
                   (SPA-ERRCD               =   SPACE )
                MOVE    SPA-GMN-COMMENT-1   TO  WRK-MAE-INPUT
+               MOVE    100                 TO  WRK-LEN
                PERFORM 890-HALF-ZEN-SEC
-               IF      KANACHK-RC2         =   7
-                   MOVE    WRK-ATO-INPUT       TO  SPA-GMN-COMMENT-1
-               END-IF
+               MOVE    WRK-ATO-INPUT       TO  SPA-GMN-COMMENT-1
            END-IF
            IF     (SPA-GMN-COMMENT-2   NOT =   SPACE ) AND
                   (SPA-ERRCD               =   SPACE )
                MOVE    SPA-GMN-COMMENT-2   TO  WRK-MAE-INPUT
+               MOVE    100                 TO  WRK-LEN
                PERFORM 890-HALF-ZEN-SEC
-               IF      KANACHK-RC2         =   7
-                   MOVE    WRK-ATO-INPUT       TO  SPA-GMN-COMMENT-2
-               END-IF
+               MOVE    WRK-ATO-INPUT       TO  SPA-GMN-COMMENT-2
            END-IF
            .
        4101-COMMENT-CHK-EXT.
@@ -5932,15 +5948,16 @@
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    WRK-MAE-INPUT       TO  KANACHK-MAE-INPUT
+           MOVE    WRK-LEN             TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
            IF     (KANACHK-RC      NOT =   ZERO  )  OR
                   (KANACHK-SYUBETU     =   1     )
                MOVE    1                   TO  FLG-ERR
-               MOVE    WRK-MAE-INPUT       TO  WRK-ATO-INPUT
-               IF      KANACHK-RC2         =   7
-                   MOVE    KANACHK-OUT-INPUT   TO  WRK-ATO-INPUT
-               END-IF
+               MOVE    KANACHK-MAE-INPUT   TO  WRK-ATO-INPUT
+      *        IF      KANACHK-RC2         =   7
+      *            MOVE    KANACHK-OUT-INPUT   TO  WRK-ATO-INPUT
+      *        END-IF
            ELSE
                MOVE    ZERO                TO  FLG-ERR
                MOVE    KANACHK-OUT-INPUT   TO  WRK-ATO-INPUT
