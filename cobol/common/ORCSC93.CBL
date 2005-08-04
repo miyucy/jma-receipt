@@ -993,11 +993,14 @@
       *
       *    Á°¹Ô¤¬µÞÀ­È¯À¸¤Î»þ½ªÎ»¤È¤¹¤ë
            IF     (SPA-COM-INPUTCD(IDX)    =   "099800101"
-                                           OR  "099800102" )
+                                           OR  "099800102"
+      *        ºßÁí¿Ç»»Äê½ªÎ»
+                                           OR  "099140001" )
                MOVE    1               TO  FLG-HASSYO
            ELSE
                IF      FLG-HASSYO          =   1
-                   IF     (SPA-COM-SRYKBN(IDX) =   "80" ) AND
+                   IF     (SPA-COM-SRYKBN(IDX)
+                                       =   SPA-COM-SRYKBN(IDX - 1)) AND
                           (SPA-COM-INPUTCD(IDX)(1:1)
                                                =   "8"  )
                        CONTINUE
@@ -1322,6 +1325,16 @@
                            MOVE    "80"            TO  SPA-COM-SRYKBN
                                                                   (IDX)
                            MOVE    "810"           TO  SPA-COM-SRYSYUKBN
+                                                                  (IDX)
+      *                    £±ºÞ£±ÌÀºÙ¤È¤¹¤ë
+                           MOVE    "1"             TO  SPA-COM-ZAIEND
+                                                                  (IDX)
+                           MOVE    1               TO  FLG-ZAI
+      *                ºßÁí¿Ç½ªÎ»
+                       WHEN    "099140001"
+                           MOVE    "14"            TO  SPA-COM-SRYKBN
+                                                                  (IDX)
+                           MOVE    "140"           TO  SPA-COM-SRYSYUKBN
                                                                   (IDX)
       *                    £±ºÞ£±ÌÀºÙ¤È¤¹¤ë
                            MOVE    "1"             TO  SPA-COM-ZAIEND
