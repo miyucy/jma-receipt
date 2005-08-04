@@ -9589,6 +9589,12 @@
                   (SPA-KIDCD       NOT =   SPACE )
                GO      TO      4100-TOROKU-EXT
            END-IF
+      *    新規で明細がない時、エラー
+           IF     (SPA-GMN-MAX         =   ZERO )  AND
+                  (SPA-SYORIFLG        =   ZERO )
+               MOVE    "9301"          TO  SPA-ERRCD
+               GO      TO      4100-TOROKU-EXT
+           END-IF
       *
       *    禁忌更新前のチェック
            PERFORM 41001-YAKKNK-CHK-SEC

@@ -1627,9 +1627,12 @@
                GO      TO      1002-NETAKIRI-CHK-EXT
            END-IF
       *
-      *    MOVE    ZERO                TO  FLG-TOUG-SANTEI
-      *    MOVE    ZERO                TO  SPA-NETAKIRI-ARI
-      *    MOVE    ZERO                TO  SPA-NETAKIRI-ARI2
+      **** MOVE    ZERO                TO  FLG-TOUG-SANTEI
+      **** MOVE    ZERO                TO  SPA-NETAKIRI-ARI
+           MOVE    ZERO                TO  SPA-NETAKIRI-ARI4
+      *    寝たきり老人在宅総合診療科算定終了
+           MOVE    "099140001"         TO  WRK-SRYCD
+           PERFORM 100191-KYUSEI-SANTEI-SEC
       *
            MOVE    ZERO                TO  WRK-SANTEI-CNT
       *    院外処方あり
@@ -1640,6 +1643,9 @@
                MOVE    1                   TO  SPA-NETAKIRI-ARI2
            ELSE
                MOVE    WRK-SANTEI-YM       TO  WRK-SANTEI-ARI
+               IF      WRK-SANTEI-YM   NOT =   SPACE
+                   MOVE    1               TO  SPA-NETAKIRI-ARI4
+               END-IF
       *        院外処方なし
                MOVE    "114701710"         TO  WRK-SRYCD
                PERFORM 33051-JYURRK-MAECHK-SEC
@@ -1647,17 +1653,34 @@
                IF      FLG-TOUG-SANTEI     >=  1
                    MOVE    2                   TO  SPA-NETAKIRI-ARI2
                END-IF
+               IF      WRK-SANTEI-YM   NOT =   SPACE
+                   MOVE    1               TO  SPA-NETAKIRI-ARI4
+               END-IF
                MOVE    WRK-SANTEI-YM       TO  WRK-SANTEI-NASI
            END-IF
-      *
       *    当月算定回数
            MOVE    WRK-SANTEI-CNT      TO  WRK-NETAKIRI-CNT
+      *
+      *    終了日により自動発生変更
+           IF      WRK-YMD         NOT =   SPACE
+               IF     (WRK-SANTEI-NASI NOT =   SPACE )  AND
+                      (WRK-YMD(1:6)        >=  WRK-SANTEI-NASI)
+                   MOVE    SPACE           TO  WRK-SANTEI-NASI
+               END-IF
+               IF     (WRK-SANTEI-ARI  NOT =   SPACE )  AND
+                      (WRK-YMD(1:6)        >=  WRK-SANTEI-ARI)
+                   MOVE    SPACE           TO  WRK-SANTEI-ARI
+               END-IF
+           END-IF
       *
       *    ２４時間連帯加算
            MOVE    SPACE               TO  WRK-24KSAN-SRYCD
            IF     (WRK-SANTEI-NASI     NOT =   SPACE )  OR
                   (WRK-SANTEI-ARI      NOT =   SPACE )
                PERFORM 10021-24KASAN-SET-SEC
+           ELSE
+               MOVE    ZERO            TO  SPA-NETAKIRI-ARI4
+               MOVE    ZERO            TO  WRK-NETAKIRI-CNT
            END-IF
       *
            .
