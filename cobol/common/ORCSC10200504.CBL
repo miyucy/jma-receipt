@@ -2727,11 +2727,20 @@
                        MOVE    "0138"          TO  WRK-ERRCD
                        MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
                    END-IF
-               WHEN    "099110001"
+               WHEN    "099120001"
       *            ºÆ¿Ç  ½é¿ÇÎÁ¤¬»»ÄêºÑ¤ß¤Ç¤¢¤ë¤³¤È
                    IF     (LNK-ORCSC-SYORIFLG  =   ZERO       )  AND
                           (LNK-ORCSC-LSTYMD    =   SPACE      )
                        MOVE    "0139"          TO  WRK-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+                   END-IF
+               WHEN    "099140001"
+      *            ¿²¤¿¤­¤êÏ·¿ÍºßÂð¿Ç»¡ÎÁ¤Î»»Äê½ªÎ»
+                   IF     (LNK-ORCSC-SYORIFLG  =   ZERO      )  AND
+                          (SPA-NETAKIRI-ARI    =   ZERO      )  AND
+                          (SPA-NETAKIRI-ARI2   =   ZERO      )  AND
+                          (SPA-NETAKIRI-ARI4   =   ZERO      )
+                       MOVE    "0142"          TO  WRK-ERRCD
                        MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
                    END-IF
            END-EVALUATE

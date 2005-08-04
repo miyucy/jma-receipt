@@ -553,6 +553,12 @@
                                        TO  SPA-ERRMSG
                    MOVE    "対象外とします。"
                                        TO  SPA-ERRMSG(33:)
+               WHEN    "0142"
+                   MOVE
+                   "寝たきり老人在宅総合診察料の算定がありません。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "算定終了は算定できません。"
+                                       TO  SPA-ERRMSG(47:)
                WHEN    "7007"
                    MOVE    "自動算定で２００行を超えます。"
                                        TO  SPA-ERRMSG
@@ -888,6 +894,9 @@
                                                 TO  SPA-ERRMSG
                    MOVE    "患者登録はできません。"
                                                 TO  SPA-ERRMSG(33:)
+               WHEN    "9301"
+                   MOVE    "明細がありません。登録できません。"
+                                                TO  SPA-ERRMSG
       *
                WHEN    "K140"
                    MOVE    "警告！手術が算定されています。"
