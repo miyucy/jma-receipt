@@ -114,11 +114,10 @@
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    SPTNUM-PTNUM        TO  KANACHK-MAE-INPUT
+           MOVE    20                  TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
-           IF      KANACHK-RC2         =   7
-               MOVE    KANACHK-OUT-INPUT   TO  SPTNUM-PTNUM
-           END-IF
+           MOVE    KANACHK-MAE-INPUT   TO  SPTNUM-PTNUM
            IF      KANACHK-RC      NOT =   ZERO
       *        混在エラー
                MOVE    99              TO  SPTNUM-RC
