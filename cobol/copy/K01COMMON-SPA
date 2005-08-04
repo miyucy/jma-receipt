@@ -273,6 +273,8 @@
                05  SPA-NETAKIRI-ARI2       PIC  9(01).
       *        当日自動算定済み
                05  SPA-NETAKIRI-ARI3       PIC  9(01).
+      *        算定済み
+               05  SPA-NETAKIRI-ARI4       PIC  9(01).
       *
       *在宅末期医療総合診察料あり
                05  SPA-ZAIMATU-ARI         PIC  9(01).
