@@ -486,8 +486,11 @@
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    SPA-Z99GMN-INPUTCD(SPA-Z99GMN-IDX)
                                        TO  KANACHK-MAE-INPUT
+           MOVE    20                  TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  SPA-Z99GMN-INPUTCD
+                                               (SPA-Z99GMN-IDX)
            IF      KANACHK-RC      NOT =   ZERO
       *        全角半角混在エラー
                MOVE    "0007"          TO  SPA-ERRCD
@@ -520,6 +523,11 @@
                        IF      SPA-Z99GMN-INPUTCD(SPA-Z99GMN-IDX)(1:1)
                                                    =   "S"   OR  "P"
                            MOVE    "0008"      TO  SPA-ERRCD
+                       END-IF
+      *                #,$チェック
+                       IF      SPA-Z99GMN-INPUTCD(SPA-Z99GMN-IDX)(1:1)
+                                                   =   "#"   OR  "$"
+                           MOVE    "0010"      TO  SPA-ERRCD
                        END-IF
                    END-IF
                END-IF

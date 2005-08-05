@@ -1963,8 +1963,10 @@
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    SPA-Z98-GMN-INPUT   TO  KANACHK-MAE-INPUT
+           MOVE    22                  TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  SPA-Z98-GMN-INPUT
            IF      KANACHK-RC      NOT =   ZERO
       *        Á´³ÑÈ¾³Ñº®ºß¥¨¥é¡¼
                MOVE    "0001"          TO  SPA-ERRCD

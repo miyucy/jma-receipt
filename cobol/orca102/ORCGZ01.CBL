@@ -443,15 +443,17 @@
       *    全角入力の時、４文字まで
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
-           MOVE    Z01-SRYCD(1:8)      TO  KANACHK-MAE-INPUT
+           MOVE    Z01-SRYCD           TO  KANACHK-MAE-INPUT
+           MOVE    9                   TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
-           IF     (KANACHK-RC          =   ZERO )  AND
-                  (KANACHK-SYUBETU     =   2    )
-               MOVE  Z01-SRYCD(1:8)        TO  SPA-Z01GMN-SRYCD
-           ELSE
-               MOVE  Z01-SRYCD             TO  SPA-Z01GMN-SRYCD
-           END-IF
+           MOVE    KANACHK-MAE-INPUT   TO  SPA-Z01GMN-SRYCD
+      **** IF     (KANACHK-RC          =   ZERO )  AND
+      *           (KANACHK-SYUBETU     =   2    )
+      *        MOVE  Z01-SRYCD(1:8)        TO  SPA-Z01GMN-SRYCD
+      *    ELSE
+      *        MOVE  Z01-SRYCD             TO  SPA-Z01GMN-SRYCD
+      *****END-IF
       *
       *    "//" 入力の時、検索画面へ
            IF      SPA-Z01GMN-SRYCD(1:2)   =  "//"
@@ -542,6 +544,8 @@
                MOVE    "TENSU-KEY4"        TO  ORC-DBPATH
                PERFORM 910-TENSU-NEXT-SEC
            END-PERFORM
+           MOVE    "TENSU-KEY4"        TO  ORC-DBPATH
+           PERFORM 990-DBLOSEC-SEC
       *
       *    カーソル位置の指定
            EVALUATE    SPA-Z01NAI-COUNT
@@ -583,8 +587,10 @@
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    SPA-Z01GMN-SRYCD    TO  KANACHK-MAE-INPUT
+           MOVE    9                   TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  SPA-Z01GMN-SRYCD
            IF      KANACHK-RC      NOT =   ZERO
       *        全角半角混在エラー
                MOVE    "0003"              TO  SPA-ERRCD
@@ -1177,12 +1183,8 @@
                PERFORM                     920-INPUTCD-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "INPUTCD-KEY4"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBLOSEC-SEC
       *
       *    老人一般コード変換マスタ読み込み 
            INITIALIZE                  SPA-Z90-AREA
@@ -1595,12 +1597,8 @@
                MOVE    1                   TO  FLG-TENSU
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBLOSEC-SEC
       *
            .
       *
@@ -1668,6 +1666,19 @@
       *
            .
        930-SRYCDCHG-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *   ＤＢクローズ処理
+      *****************************************************************
+       990-DBLOSEC-SEC                 SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           .
+       990-DBLOSEC-EXT.
            EXIT.
       *****************************************************************
       *   和暦年月日→西暦年月日（機能１２）

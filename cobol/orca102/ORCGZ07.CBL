@@ -730,8 +730,10 @@
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    SPA-GMN-SRYCD-G     TO  KANACHK-MAE-INPUT
+           MOVE    20                  TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-SRYCD-G
            IF      KANACHK-RC      NOT =   ZERO
       *        Á´³ÑÈ¾³Ñº®ºß¥¨¥é¡¼
                MOVE    "0005"              TO  SPA-ERRCD
@@ -958,8 +960,10 @@
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    SPA-GMN-INPUTCD (IDX)
                                        TO  KANACHK-MAE-INPUT
+           MOVE    20                  TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-INPUTCD (IDX)
            IF      KANACHK-RC      NOT =   ZERO
       *        Á´³ÑÈ¾³Ñº®ºß¥¨¥é¡¼
                MOVE    "0005"              TO  SPA-ERRCD
@@ -985,6 +989,11 @@
                        IF      SPA-GMN-INPUTCD(IDX)(1:1)
                                                    =   "S"   OR  "P"
                            MOVE    "0010"          TO  SPA-ERRCD
+                       END-IF
+      *                #,$¥Á¥§¥Ã¥¯
+                       IF      SPA-GMN-INPUTCD(IDX)(1:1)
+                                                   =   "#"   OR  "$"
+                           MOVE    "0011"          TO  SPA-ERRCD
                        END-IF
                    END-IF
                END-IF

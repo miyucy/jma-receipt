@@ -241,6 +241,7 @@
       *
            03  WRK-MAE-INPUT       PIC X(400).
            03  WRK-OUT-INPUT       PIC X(400).
+           03  WRK-LEN             PIC 9(04).
       *
            03  WRK-MCP-WIDGET      PIC X(64).
       *
@@ -1611,16 +1612,14 @@
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    WRK-MAE-INPUT       TO  KANACHK-MAE-INPUT
+           MOVE    WRK-LEN             TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
            IF     (KANACHK-RC      NOT =   ZERO  )  OR
                   (KANACHK-SYUBETU     =   1     )
       *        Á´³ÑÈ¾³Ñº®ºß¥¨¥é¡¼
-               MOVE    WRK-MAE-INPUT       TO  WRK-OUT-INPUT 
+               MOVE    KANACHK-MAE-INPUT   TO  WRK-OUT-INPUT 
                MOVE    1                   TO  FLG-ERR
-               IF      KANACHK-RC2         =   7
-                   MOVE    KANACHK-OUT-INPUT   TO  WRK-OUT-INPUT
-               END-IF
            ELSE
                MOVE    ZERO                TO  FLG-ERR
                MOVE    KANACHK-OUT-INPUT   TO  WRK-OUT-INPUT 
@@ -1682,6 +1681,7 @@
        503-KANANAME-CHK-SEC                  SECTION.
       *
            MOVE    SPA-GMN-KANANAME    TO  WRK-MAE-INPUT
+           MOVE    100                 TO  WRK-LEN
            PERFORM 400-ZENCHK-SEC
            MOVE    WRK-OUT-INPUT       TO  SPA-GMN-KANANAME
            IF      FLG-ERR             =   1
@@ -1699,6 +1699,7 @@
        503-NAME-CHK-SEC                  SECTION.
       *
            MOVE    SPA-GMN-NAME        TO  WRK-MAE-INPUT
+           MOVE    100                 TO  WRK-LEN
            PERFORM 400-ZENCHK-SEC
            MOVE    WRK-OUT-INPUT       TO  SPA-GMN-NAME
            IF      FLG-ERR             =   1
@@ -1716,6 +1717,7 @@
        503-FORMALNAME-CHK-SEC                  SECTION.
       *
            MOVE    SPA-GMN-FORMALNAME  TO  WRK-MAE-INPUT
+           MOVE    200                 TO  WRK-LEN
            PERFORM 400-ZENCHK-SEC
            MOVE    WRK-OUT-INPUT       TO  SPA-GMN-FORMALNAME
            IF      FLG-ERR             =   1
@@ -1732,6 +1734,7 @@
        503-SHONAME-CHK-SEC                  SECTION.
       *
            MOVE    SPA-GMN-SHONAME    TO  WRK-MAE-INPUT
+           MOVE    100                 TO  WRK-LEN
            PERFORM 400-ZENCHK-SEC
            MOVE    WRK-OUT-INPUT       TO  SPA-GMN-SHONAME
            IF      FLG-ERR             =   1

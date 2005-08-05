@@ -160,6 +160,7 @@
       *
            03  WRK-MAE-INPUT       PIC X(400).
            03  WRK-ATO-INPUT       PIC X(400).
+           03  WRK-LEN             PIC 9(04).
       *
            03  WRK-MCP-WIDGET      PIC X(64).
       *
@@ -742,7 +743,9 @@
        503-KANANAME-CHK-SEC          SECTION.
       *
            MOVE    SPA-GMN-KANANAME    TO  WRK-MAE-INPUT
+           MOVE    100                 TO  WRK-LEN
            PERFORM 400-ZENCHK-SEC
+           MOVE    WRK-ATO-INPUT       TO  SPA-GMN-KANANAME
            IF      FLG-ERR             =   ZERO
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN-KANANAME
            ELSE
@@ -759,7 +762,9 @@
        504-NAME-CHK-SEC          SECTION.
       *
            MOVE    SPA-GMN-NAME        TO  WRK-MAE-INPUT
+           MOVE    100                 TO  WRK-LEN
            PERFORM 400-ZENCHK-SEC
+           MOVE    WRK-ATO-INPUT       TO  SPA-GMN-NAME
            IF      FLG-ERR             =   ZERO
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN-NAME
            ELSE
@@ -776,7 +781,9 @@
        505-FORMALNAME-CHK-SEC          SECTION.
       *
            MOVE    SPA-GMN-FORMALNAME  TO  WRK-MAE-INPUT
+           MOVE    200                 TO  WRK-LEN
            PERFORM 400-ZENCHK-SEC
+           MOVE    WRK-ATO-INPUT       TO  SPA-GMN-FORMALNAME
            IF      FLG-ERR             =   ZERO
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN-FORMALNAME
            ELSE
@@ -1416,6 +1423,7 @@
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    WRK-MAE-INPUT       TO  KANACHK-MAE-INPUT
+           MOVE    WRK-LEN             TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
            IF     (KANACHK-RC      NOT =   ZERO  )  OR
