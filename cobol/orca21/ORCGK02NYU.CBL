@@ -524,6 +524,7 @@
                05  WRK-MEIHHZN             PIC X(02).
                05  WRK-MEISYOHZN           PIC X(78).
            03  IDX-MEI                 PIC 9(04).
+           03  WRK-LEN                 PIC 9(04).
       *    禁忌期間
            03  WRK-KIKAN               PIC 9(02).
       *    入力値の入力判定用
@@ -3457,6 +3458,7 @@
       *
       *    該当患者なし
            IF      SPTNUM-RC           =   10  OR  99
+               MOVE    SPTNUM-PTNUM        TO  SPA-GMN-PTNUM
                MOVE    "1003"              TO  SPA-ERRCD
                GO  TO                  41010-PTNUM-SYORI-EXT
            END-IF
@@ -7169,22 +7171,23 @@
       *    フリーコメントは１桁目から
            IF      SPA-COM-INPUTCD(SPA-GMN-IDX)   =   "810000001"
                MOVE    1                   TO  IDX-STR
+               MOVE    80                  TO  WRK-LEN
            ELSE
                MOVE    3                   TO  IDX-STR
+               MOVE    78                  TO  WRK-LEN
            END-IF
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    SPA-GMN-MEISYO-G (SPA-GMN-IDX)(IDX-STR:)
                                        TO  KANACHK-MAE-INPUT
+           MOVE    WRK-LEN             TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
            IF     (KANACHK-RC      NOT =   ZERO  )  OR
                   (KANACHK-SYUBETU     =   1     )
-               IF      KANACHK-RC2         =   7
-                   MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-MEISYO-G
+               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-MEISYO-G
                                                        (SPA-GMN-IDX)
                                                             (IDX-STR:)
-               END-IF
                MOVE    "0080"          TO  SPA-ERRCD
                MOVE    "1"             TO  SPA-COM-CUR (SPA-GMN-IDX)
                MOVE    2               TO  SPA-GMN-CUR

@@ -2124,8 +2124,10 @@
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    SPA-K98-GMN-INPUT   TO  KANACHK-MAE-INPUT
+           MOVE    22                  TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  SPA-K98-GMN-INPUT
            IF      KANACHK-RC2         =   7
                MOVE    KANACHK-OUT-INPUT   TO  SPA-K98-GMN-INPUT
            END-IF

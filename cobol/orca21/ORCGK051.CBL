@@ -460,12 +460,18 @@
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    SPA-GMN-K051-INPUTCD (IDX)
                                        TO  KANACHK-MAE-INPUT
+           MOVE    20                  TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-K051-INPUTCD (IDX)
            IF      KANACHK-RC      NOT =   ZERO
       *        全角半角混在エラー
                MOVE    "0005"          TO  SPA-ERRCD
            ELSE
+      *        間に空白がある時
+               IF      KANACHK-RC2         =   8
+                   MOVE    "0010"              TO  SPA-ERRCD
+               END-IF
                MOVE    KANACHK-MAX     TO  WRK-CNT
       *        全角
                IF      KANACHK-SYUBETU     =   2
@@ -487,6 +493,11 @@
                        IF      SPA-GMN-K051-INPUTCD (IDX) (1:1)
                                                    =   "S"   OR  "P"
                            MOVE    "0007"      TO  SPA-ERRCD
+                       END-IF
+      *                複数科・保険チェック
+                       IF      SPA-GMN-K051-INPUTCD (IDX) (1:1)
+                                                   =   "#"   OR  "$"
+                           MOVE    "0008"      TO  SPA-ERRCD
                        END-IF
                    END-IF
                END-IF
@@ -714,6 +725,9 @@
                WHEN    "0008"
                    MOVE
                    "入力コードには使用できない記号があります。"
+                                                 TO  SPA-ERRMSG
+               WHEN    "0010"
+                   MOVE    "文字の間に空白は入力できません。"
                                                  TO  SPA-ERRMSG
            END-EVALUATE
       *

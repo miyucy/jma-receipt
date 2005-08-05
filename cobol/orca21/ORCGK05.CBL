@@ -495,6 +495,8 @@
            03  IDH2                PIC 9(04).
            03  IDX-D               PIC 9(04).
       *
+           03  WRK-LEN             PIC 9(04).
+      *
            03  WRK-SANTEI-SYORI    PIC X(01).
       *
            03  WRK-SETCOD          PIC X(07).
@@ -2351,11 +2353,10 @@
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "1"                 TO  KANACHK-SYORI
                MOVE    SPA-GMN-DSPNAME     TO  KANACHK-MAE-INPUT
+               MOVE    80                  TO  KANACHK-MAX-CNT
                CALL    "ORCSKANACHK"       USING
                                            ORCSKANACHKAREA
-               IF      KANACHK-RC2         =   7
-                   MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-DSPNAME
-               END-IF
+               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-DSPNAME
            END-IF
       *
            .
@@ -4651,23 +4652,24 @@
       *    フリーコメントは１桁目から
            IF      SPA-COM-INPUTCD(SPA-GMN-IDX)   =   "810000001"
                MOVE    1                   TO  IDX-STR
+               MOVE    80                  TO  WRK-LEN
            ELSE
                MOVE    3                   TO  IDX-STR
+               MOVE    78                  TO  WRK-LEN
            END-IF
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    SPA-GMN-MEISYO-G (SPA-GMN-IDX)(IDX-STR:)
                                        TO  KANACHK-MAE-INPUT
+           MOVE    WRK-LEN             TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
            IF     (KANACHK-RC      NOT =   ZERO  )  OR
                   (KANACHK-SYUBETU     =   1     )
                MOVE    "0080"          TO  SPA-ERRCD
-               IF      KANACHK-RC2         =   7
-                   MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-MEISYO-G
+               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-MEISYO-G
                                                        (SPA-GMN-IDX)
                                                             (IDX-STR:)
-               END-IF
                MOVE    "1"             TO  SPA-COM-CUR (SPA-GMN-IDX)
                MOVE    4               TO  SPA-GMN5-CUR
            ELSE

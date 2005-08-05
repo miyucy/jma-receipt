@@ -783,6 +783,8 @@
                        MOVE    SPA-K023-INPUTCD (IDX-1 IDX-2)
                                                    TO  WRK-INPUTCD
                        PERFORM 41020-INPUTCD-CHK-SEC
+                       MOVE    WRK-INPUTCD         TO  SPA-K023-INPUTCD
+                                                          (IDX-1 IDX-2)
                        IF      SPA-ERRCD           =   SPACE
                            MOVE    WRK-CDSYU       TO  SPA-K023-CDSYU
                                                        (IDX-1 IDX-2)
@@ -820,13 +822,14 @@
            MOVE    WRK-INPUTCD         TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  WRK-INPUTCD
            IF      KANACHK-RC      NOT =   ZERO
       *        全角半角混在エラー
                MOVE    "0005"          TO  SPA-ERRCD
            ELSE
                MOVE    KANACHK-MAX     TO  WRK-CNT
       *        間に空白がある時、エラー
-               IF      KANACHK-RC2     NOT =   ZERO
+               IF      KANACHK-RC2         =   8
                    MOVE    "0010"          TO  SPA-ERRCD
                    GO      TO      41020-INPUTCD-CHK-EXT
                END-IF
@@ -851,9 +854,12 @@
                            MOVE    "0007"      TO  SPA-ERRCD
                        END-IF
                    END-IF
+      *            複数科・保険チェック
+                   IF      WRK-INPUTCD (1:1)   =   "#"   OR  "$"
+                       MOVE    "0008"      TO  SPA-ERRCD
+                   END-IF
                END-IF
            END-IF
-      *
       *
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      41020-INPUTCD-CHK-EXT
@@ -1001,6 +1007,8 @@
            MOVE    SPA-K023-IDX        TO  IDX-1
            MOVE    2                   TO  IDX-2
            PERFORM 41020-INPUTCD-CHK-SEC
+           MOVE    WRK-INPUTCD         TO  SPA-K023-INPUTCD
+                                                   (SPA-K023-IDX 2)
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO     41011-INPUTCD2-SYORI-EXT
            END-IF
@@ -1052,6 +1060,8 @@
            MOVE    SPA-K023-IDX        TO  IDX-1
            MOVE    3                   TO  IDX-2
            PERFORM 41020-INPUTCD-CHK-SEC
+           MOVE    WRK-INPUTCD         TO  SPA-K023-INPUTCD
+                                                 (SPA-K023-IDX 3)
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO     41011-INPUTCD3-SYORI-EXT
            END-IF

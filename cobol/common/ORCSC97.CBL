@@ -57,6 +57,8 @@
            03  FLG-HI              PIC 9(01).
            03  FLG-ALLSUJI         PIC 9(01).
       *
+           03  FLG-ZENKAKU         PIC 9(01).
+      *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -83,6 +85,9 @@
            03  WRK-INPUTCD3        PIC X(22).
       *
            03  WRK-CHK-FLG         PIC X(01).
+      *
+           03  WRK-KOUMOKU         PIC X(20).
+           03  WRK-LEN             PIC 9(04).
       *
            03  WRK-STR             PIC 9(02).
            03  WRK-END             PIC 9(02).
@@ -150,6 +155,8 @@
       *
       *    ¿ô»úÊÑ´¹ÎÎ°è
            COPY    "CPORCSNUM.INC".
+      *    Á´³Ñ¡¦È¾³Ñ¥Á¥§¥Ã¥¯
+           COPY    "CPORCXKANACONV.INC".
       *
       *    £Ä£Â¸¡º÷
       *01  MCPDATA-REC                 PIC X(5000).
@@ -217,6 +224,16 @@
       *    Á´³Ñ¡¢È¾³ÑÊÑ¹¹ÊÔ½¸½èÍý
       *****************************************************************
        100-INPUTCD-SYORI-SEC            SECTION.
+      *
+      *    È¾³Ñ¥«¥Ê¤ÎÁ´³ÑÊÑ´¹
+           INITIALIZE                  ORCXKANACONVAREA
+           MOVE    22                  TO  KANACONV-LEN
+           MOVE    1000                TO  KANACONV-STLEN
+           MOVE    0                   TO  KANACONV-CONV-FLAG
+           MOVE    0                   TO  KANACONV-CHAR-TYPE
+           MOVE    LNK-SC97-INPUTCD    TO  KANACONV-INDATA
+           CALL    "kanaconv"          USING ORCXKANACONVAREA
+           MOVE    KANACONV-OUTDATA    TO  LNK-SC97-INPUTCD
       *
       *    '_'¤ò¤Ê¤¯¤¹
            INSPECT LNK-SC97-INPUTCD
@@ -295,8 +312,17 @@
            MOVE    ZERO                TO  IDH2
            PERFORM
                    UNTIL       IDH1    >   22
-             IF      LNK-SC97-INPUTCD(IDH1:1)
-                                          >=  X"A1"
+      *      Á´³ÑÈ½Äê
+             IF      IDH1             =    22
+                 MOVE    ZERO              TO  FLG-ZENKAKU
+             ELSE
+                 MOVE    LNK-SC97-INPUTCD(IDH1:2) TO  WRK-KOUMOKU
+                 MOVE    2                        TO  WRK-LEN
+                 PERFORM 1009-KANACONV-SEC
+             END-IF
+             IF      FLG-ZENKAKU         =   1
+      *****  IF      LNK-SC97-INPUTCD(IDH1:1)
+      *****                               >=  X"A1"
                EVALUATE    LNK-SC97-INPUTCD(IDH1:2)
                    WHEN    "¡Ý"
                        ADD     1           TO  IDH2
@@ -397,6 +423,30 @@
       *
            .
        100-MAE-HANKAKU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Á´³ÑÈ½Äê½èÍý
+      *****************************************************************
+       1009-KANACONV-SEC               SECTION.
+      *
+           MOVE    ZERO                TO  FLG-ZENKAKU
+           IF      WRK-KOUMOKU     NOT =   SPACE
+      *        È¾³Ñ¥«¥Ê¤ÎÁ´³ÑÊÑ´¹
+               INITIALIZE                  ORCXKANACONVAREA
+               MOVE    WRK-LEN             TO  KANACONV-LEN
+               MOVE    1000                TO  KANACONV-STLEN
+               MOVE    0                   TO  KANACONV-CONV-FLAG
+               MOVE    15                  TO  KANACONV-CHAR-TYPE
+               MOVE    WRK-KOUMOKU         TO  KANACONV-INDATA
+               CALL    "kanaconv"          USING ORCXKANACONVAREA
+               IF      KANACONV-RETURN     =   ZERO
+      *            Á´³Ñ
+                   MOVE    1                   TO  FLG-ZENKAKU
+               END-IF
+           END-IF
+           .
+       1009-KANACONV-EXT.
            EXIT.
       *
       *****************************************************************
@@ -683,7 +733,11 @@
        2001-JIKANGAI-CHK-SEC       SECTION.
       *
       *    £±·å¤¬¿ô»ú¤Ç£²·åÌÜ¤¬¶õÇò¤ÎÈ½Äê¤òÁ´³Ñ¥Á¥§¥Ã¥¯
-           IF     (LNK-SC97-INPUTCD(1:1)   >=  X"A1"  )  AND
+      *****IF     (LNK-SC97-INPUTCD(1:1)   >=  X"A1"  )  AND
+           MOVE    LNK-SC97-INPUTCD(1:2)   TO  WRK-KOUMOKU
+           MOVE    2                       TO  WRK-LEN
+           PERFORM 1009-KANACONV-SEC
+           IF     (FLG-ZENKAKU         =   1          )  AND
                   (LNK-SC97-INPUTCD(3:1)   =   " "    )  AND
                   (LNK-SC97-INPUTCD(4:)    NOT =   SPACE)
                MOVE    LNK-SC97-INPUTCD    TO  WRK-HENKAN-MAE
@@ -774,9 +828,16 @@
                ADD     1                   TO  WRK-CD-MCNT
                MOVE    WRK-INPUTCD(IDX:1)
                                            TO  WRK-CD (WRK-CD-MCNT:1)
-      *
-               IF      WRK-INPUTCD (IDX:1)
-                                      >=  X"A1"
+               IF      IDX                 =   22
+                   MOVE    1               TO  FLG-SUJI
+               ELSE
+                   MOVE    WRK-INPUTCD(IDX:2)  TO  WRK-KOUMOKU
+                   MOVE    2                   TO  WRK-LEN
+                   PERFORM 1009-KANACONV-SEC
+               END-IF
+               IF      FLG-ZENKAKU         =   1
+      ******** IF      WRK-INPUTCD (IDX:1)
+      **********                      >=  X"A1"
       *            Á´³Ñ¤Î»þ¡¢£²·åÊÔ½¸
                    MOVE    1               TO  FLG-KANJI
                    ADD     1               TO  IDX
@@ -784,20 +845,22 @@
                    MOVE    WRK-INPUTCD(IDX:1)
                                            TO  WRK-CD (WRK-CD-MCNT:1)
                ELSE
-                   IF     (WRK-INPUTCD (IDX:1)
-                                          IS  ALPHABETIC )  OR
-                          (WRK-INPUTCD (IDX:1)
-                                          IS  NUMERIC    )  OR
-                          (WRK-INPUTCD (IDX:1)
-                                          =   "."  OR  "/" ) OR
-                          (WRK-INPUTCD (IDX:1)
-                                          >   SPACE  AND  <= "z")
-                       MOVE    1              TO  FLG-SUJI
-                   ELSE
-                       MOVE    1              TO  FLG-KANA
-                   END-IF
+                   MOVE    1               TO  FLG-SUJI
                END-IF
-             END-IF
+      ***********  IF     (WRK-INPUTCD (IDX:1)
+      *                                   IS  ALPHABETIC )  OR
+      *                   (WRK-INPUTCD (IDX:1)
+      *                                   IS  NUMERIC    )  OR
+      *                   (WRK-INPUTCD (IDX:1)
+      *                                   =   "."  OR  "/" ) OR
+      *                   (WRK-INPUTCD (IDX:1)
+      *                                   >   SPACE  AND  <= "z")
+      *                MOVE    1              TO  FLG-SUJI
+      *            ELSE
+      *                MOVE    1              TO  FLG-KANA
+      *            END-IF
+      *        END-IF
+      *******END-IF
            END-PERFORM
       *
       *    ¥³¡¼¥ÉÊÑ¹¹¤ÎÍ­Ìµ
@@ -824,9 +887,9 @@
            END-IF
       *
       *    È¾³Ñ¥«¥Ê¤ÏÆþÎÏÉÔ²Ä
-           IF      FLG-KANA            =   1
-               MOVE    "0005"          TO  SPA-ERRCD
-           END-IF
+      **** IF      FLG-KANA            =   1
+      *        MOVE    "0005"          TO  SPA-ERRCD
+      **** END-IF
       *    È¾³Ñ¡¢Á´³Ñº®ºß¤ÏÆþÎÏÉÔ²Ä
            IF     (FLG-KANJI           =   1  )  AND
                   (FLG-SUJI            =   1  )
@@ -848,8 +911,12 @@
            MOVE    ZERO                TO  FLG-ALLSUJI
            PERFORM
                    UNTIL       IDH1    >   WRK-END
-             IF      WRK-HENKAN-MAE(IDH1:1)
-                                          >=  X"A1"
+      *      Á´³ÑÈ½Äê
+             MOVE    WRK-HENKAN-MAE(IDH1:2) TO  WRK-KOUMOKU
+             PERFORM 1009-KANACONV-SEC
+             IF      FLG-ZENKAKU         =   1
+      ****** IF      WRK-HENKAN-MAE(IDH1:1)
+      *******                             >=  X"A1"
                EVALUATE    WRK-HENKAN-MAE(IDH1:2)
                    WHEN    "£°"
                        ADD     1           TO  IDH2
