@@ -407,7 +407,7 @@
                MOVE    KANACHK-MAX-CNT     TO  KANACONV-LEN
                MOVE    1000                TO  KANACONV-STLEN
                MOVE    0                   TO  KANACONV-CONV-FLAG
-               MOVE    48                  TO  KANACONV-CHAR-TYPE
+               MOVE    112                 TO  KANACONV-CHAR-TYPE
                MOVE    KANACHK-MAE-INPUT   TO  KANACONV-INDATA
                CALL    "kanaconv"          USING
                                            ORCXKANACONVAREA
