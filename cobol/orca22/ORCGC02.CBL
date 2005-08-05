@@ -2699,11 +2699,13 @@
                            END-IF
                        ELSE
                            MOVE    "0012"          TO  SPA-ERRCD
-                           GO  TO  410113-KANTAN-SYUSEI-EXT
                        END-IF
                    END-IF
                END-IF
              END-PERFORM
+             IF      SPA-ERRCD     NOT =   SPACE    
+                 GO  TO  410113-KANTAN-SYUSEI-EXT
+             END-IF
            END-IF
       *   
            IF    ( WRK-HENSYU-DATA-G   =   SPACE )

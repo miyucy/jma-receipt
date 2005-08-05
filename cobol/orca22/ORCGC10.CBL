@@ -965,12 +965,14 @@
                                    UNTIL   IDXY    >       5
                                    OR      SPA-ERRCD
                                                NOT =   SPACE
-                               PERFORM VARYING IDXZ    FROM    IDX BY  1
+                             IF      WRK-STNUM-O (IDXY)    >   ZERO
+                               PERFORM VARYING IDXZ    FROM
+                                           WRK-STNUM-O (IDXY)  BY  1
                                        UNTIL   IDXZ    >
                                                        WRK-EDNUM-O(IDXY)
                                        OR      SPA-ERRCD
                                                    NOT =   SPACE
-                                   IF      IDXZ            >   IDX
+                                   IF      IDXZ        NOT =   IDX
                                      IF    ( SPA-NAI-C02-TSRYKA  (IDXZ)
                                                    =   WRK-CHK-SRYKA  )
                                      AND   ( SPA-GMN-C02-TBYOMEI (IDXZ) 
@@ -1009,6 +1011,7 @@
                                      END-IF
                                    END-IF
                                END-PERFORM
+                             END-IF
                            END-PERFORM
                        END-PERFORM
                    END-IF
