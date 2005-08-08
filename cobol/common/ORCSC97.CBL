@@ -936,8 +936,12 @@
            PERFORM
                    UNTIL       IDH1    >   WRK-END
       *      Á´³ÑÈ½Äê
-             MOVE    WRK-HENKAN-MAE(IDH1:2) TO  WRK-KOUMOKU
-             PERFORM 1009-KANACONV-SEC
+             IF      IDH1              =   WRK-END
+                 MOVE    ZERO              TO  FLG-ZENKAKU
+             ELSE
+                 MOVE    WRK-HENKAN-MAE(IDH1:2)    TO  WRK-KOUMOKU
+                 PERFORM 1009-KANACONV-SEC
+             END-IF
              IF      FLG-ZENKAKU         =   1
       ****** IF      WRK-HENKAN-MAE(IDH1:1)
       *******                             >=  X"A1"
