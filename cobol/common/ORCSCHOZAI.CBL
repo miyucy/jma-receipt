@@ -271,14 +271,21 @@
       *    Æþ±¡¡¦³°Çñ¤ÎÊÔ½¸
            PERFORM 200-GAIHAKU-HEN-SEC
       *
-      *    ÅêÌô¤ÎÆü¿ôÊÔ½¸
-           PERFORM 100-TOUYAKU-HEN-SEC
+           EVALUATE    ORCSCHO-KBN
+      *        ÄÌ¾ï
+               WHEN    "1"
+      *            ÅêÌô¤ÎÆü¿ôÊÔ½¸
+                   PERFORM 100-TOUYAKU-HEN-SEC
       *
-      *    Æþ±¡Ä´ºÞÎÁ¤ÈËãÆÇ¤Î³ÎÄê
-           PERFORM 300-CHOZAI-HEN-SEC
+      *            Æþ±¡Ä´ºÞÎÁ¤ÈËãÆÇ¤Î³ÎÄê
+                   PERFORM 300-CHOZAI-HEN-SEC
       *
-      *    Æþ±¡Ä´ºÞÎÁ¤ÈËãÆÇ¤Î¹¹¿·
-           PERFORM 400-SANTEI-SYORI-SEC
+      *            Æþ±¡Ä´ºÞÎÁ¤ÈËãÆÇ¤Î¹¹¿·
+                   PERFORM 400-SANTEI-SYORI-SEC
+      *        Âà±¡½èÍý
+               WHEN    "2"
+                   PERFORM 500-TAIIN-SYORI-SEC
+           END-EVALUATE
       *
            .
        000-PROC-EXT.
@@ -427,12 +434,8 @@
                PERFORM 930-SRYACCT-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        10011-SRYACCT-21HEN-EXT.
@@ -553,12 +556,8 @@
                PERFORM 930-SRYACCT-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        10012-SRYACCT-HEN-EXT.
@@ -625,12 +624,8 @@
                PERFORM 920-SRYACT-NEXT-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        600111-SRYACT-HEN-EXT.
@@ -677,12 +672,8 @@
                MOVE    "NYUINACCT-KEY17"    TO  ORC-DBPATH
                PERFORM 930-NYUINACCT-READ-SEC
            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "NYUINACCT-KEY17"   TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
       *    Æþ±¡ÍúÎòÈ½Äê
            MOVE    SPACE               TO  PTNYUINRRK-REC
@@ -780,12 +771,8 @@
                MOVE    "PTNYUINRRK-KEY33"  TO  ORC-DBPATH
                PERFORM 910-PTNYUINRRK-READ-SEC
            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTNYUINRRK-KEY33"  TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        200-GAIHAKU-HEN-EXT.
@@ -841,12 +828,8 @@
                PERFORM 930-SRYACCT-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
       *    ËãÆÇÎÁ
            MOVE    ZERO                TO  IDX1
@@ -892,12 +875,8 @@
                PERFORM 930-SRYACCT-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        300-CHOZAI-HEN-EXT.
@@ -1207,12 +1186,8 @@
                    DISPLAY "ORCSCHOZAII SRYACCT READ ERR:" ACCT-KEY
                END-IF
       *
-               MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
                MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+               PERFORM 990-DBCLOSE-SEC
            END-PERFORM
       *
       *    Åö·îÆþ±¡Ä´ºÞÎÁ¤ÎºÞ¤¬¤Ê¤¤»þ¡¢ºîÀ®¤¹¤ë
@@ -1271,12 +1246,8 @@
                MOVE    "SRYACCT-KEY11"     TO  ORC-DBPATH
                PERFORM 930-SRYACCT-READ-SEC
            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SRYACCT-KEY11"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
            IF      FLG-CHK             =   ZERO
                MOVE    1               TO  FLG-SRYACCT-DEL
            END-IF
@@ -1399,12 +1370,8 @@
                PERFORM 970-JYURRK-NEXT-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "JYURRK-KEY20"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        40052-SRYACCT-DEL-EXT.
@@ -1498,12 +1465,8 @@
                    DISPLAY "ORCSCHOZAI SRYACCT READ ERR:" ACCT-KEY
                END-IF
       *
-               MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
                MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+               PERFORM 990-DBCLOSE-SEC
            END-PERFORM
       *
       *    Åö·îÆþ±¡ËãÆÇ¤ÎºÞ¤¬¤Ê¤¤»þ¡¢ºîÀ®¤¹¤ë
@@ -1739,6 +1702,104 @@
        40053-SRYACT-INS-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    Âà±¡½èÍý
+      *****************************************************************
+       500-TAIIN-SYORI-SEC         SECTION.
+      *
+      *    Ä´ºÞÎÁ¡ÊÆþ±¡¡Ë
+           MOVE    "24"                TO  WRK-SRYKBN
+           PERFORM 5001-TAIIN-DEL-SEC
+      *    ËãÆÇÎÁ¡ÊÆþ±¡¡Ë
+           MOVE    "26"                TO  WRK-SRYKBN
+           PERFORM 5001-TAIIN-DEL-SEC
+           .
+      *
+       500-TAIIN-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Âà±¡ºï½ü½èÍý
+      *****************************************************************
+       5001-TAIIN-DEL-SEC         SECTION.
+      *
+           INITIALIZE                      SRYACCT-REC
+           MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+           MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
+           MOVE    ORCSCHO-PTID        TO  ACCT-PTID
+           MOVE    ORCSCHO-SRYYM       TO  ACCT-SRYYM
+           MOVE    WRK-SRYKBN          TO  ACCT-SRYKBN
+      *
+           MOVE    SRYACCT-REC         TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+               PERFORM 930-SRYACCT-READ-SEC
+           ELSE
+               INITIALIZE                  SRYACCT-REC
+               MOVE    1               TO  FLG-SRYACCT
+           END-IF
+           PERFORM UNTIL   FLG-SRYACCT     NOT =   ZERO
+      *
+      *        ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡¼¤òÊÑ¹¹¤¹¤ë
+               PERFORM 50011-DAY-DEL-SEC
+      *        ²ó¿ô¤¬¤Ê¤¤»þºï½ü
+               MOVE    ZERO                TO  FLG-SRYACCT-DEL
+               IF      ACCT-ZAIKAISU       =   ZERO
+                   PERFORM 40052-SRYACCT-DEL-SEC
+               ELSE
+      *
+                   MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  ACCT-UPHMS
+      *
+                   MOVE    SRYACCT-REC         TO  MCPDATA-REC
+                   MOVE    "DBUPDATE"          TO  MCP-FUNC
+                   MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
+                   CALL    "ORCMCPSUB"          USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
+                   IF      MCP-RC          NOT =   ZERO
+                        DISPLAY "ORCSCHOZAI SRYACCT UPD ERR:" MCP-RC
+                                ",KEY:" ACCT-KEY
+                        MOVE    1               TO  ORCSCHO-ERRCD
+                   END-IF
+               END-IF
+      *
+               MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+               PERFORM 930-SRYACCT-READ-SEC
+           END-PERFORM
+      *
+           MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+           PERFORM 990-DBCLOSE-SEC
+           .
+      *
+       5001-TAIIN-DEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    Âà±¡Æü°Ê¹ßºï½ü½èÍý
+      *****************************************************************
+       50011-DAY-DEL-SEC         SECTION.
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   31
+               IF      TBL-NYU-DAY (IDX)       =   ZERO
+                   MOVE    ZERO                TO  ACCT-DAY (1 IDX)
+                   MOVE    ZERO                TO  ACCT-DAY (2 IDX)
+                   MOVE    ZERO                TO  ACCT-DAY (3 IDX)
+                   MOVE    ZERO                TO  ACCT-DAY (4 IDX)
+               END-IF
+           END-PERFORM
+      *    ¹ç·×²ó¿ôÀßÄê
+           PERFORM 40051-DAY-UPD-SEC
+           .
+       50011-DAY-DEL-EXT.
+           EXIT.
       *
       *****************************************************************
       *    ÅÀ¿ô¥Þ¥¹¥¿¡¼ÆÉ¹þ
@@ -1777,12 +1838,8 @@
                MOVE    1                   TO  FLG-TENSU
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        910-TENSU-READ-EXT.
@@ -1882,12 +1939,8 @@
                MOVE    1              TO  FLG-PTINF
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTINF-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        940-PTINF-READ-EXT.
@@ -1936,4 +1989,18 @@
        970-JYURRK-NEXT-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    £Ä£Â¥¯¥í¡¼¥¹½èÍý
+      *****************************************************************
+       990-DBCLOSE-SEC               SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       990-DBCLOSE-EXT.
+           EXIT.
       *
