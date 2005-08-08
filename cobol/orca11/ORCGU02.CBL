@@ -1491,6 +1491,7 @@
                                        ORCSKANACHKAREA
            IF     (KANACHK-RC      NOT =   ZERO  )  OR
                   (KANACHK-SYUBETU     =   1     )
+               MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-NAME
                MOVE    "0003"              TO  SPA-ERRCD
                GO      TO      41021-KNJKEN-HEN-EXT
            ELSE
