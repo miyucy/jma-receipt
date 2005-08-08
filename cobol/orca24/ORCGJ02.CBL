@@ -3229,6 +3229,7 @@
            MOVE    SPA-GMN-PTNUM       TO  SPTNUM-PTNUM
            CALL    "ORCSPTNUM"         USING   ORCSPTNUMAREA
                                                SPA-AREA
+           MOVE    SPTNUM-PTNUM        TO  SPA-GMN-PTNUM
            EVALUATE    SPTNUM-RC
                WHEN    00
                    MOVE    SPTNUM-PTNUM        TO  SPTID-PTNUM
