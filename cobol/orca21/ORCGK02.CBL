@@ -3023,10 +3023,10 @@
            IF      STS-PARA           =  ZERO
                PERFORM 980-PARA-READ-SEC
            ELSE
-               MOVE    1               TO  FLG-PARA 
+               MOVE    2               TO  FLG-PARA 
            END-IF
            PERFORM
-               UNTIL   FLG-PARA            =   1
+               UNTIL   FLG-PARA        NOT =   ZERO
                IF      PARA-FILEMEI        =   "WKSRYACT"
                    IF      PARA-DATA-REC   NOT =   SPACE
                        ADD     1                   TO  LNK-WKSRYACT-MAX
@@ -3065,7 +3065,9 @@
                PERFORM 980-PARA-READ-SEC
            END-PERFORM
       *
-           CLOSE                       PARA-FILE
+           IF      FLG-PARA            =   1
+               CLOSE                       PARA-FILE
+           END-IF
       *
            .
        3002-PARA-SET-EXT.

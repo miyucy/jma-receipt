@@ -1360,6 +1360,9 @@
            END-IF
       *
       *    ©гне╡й
+           IF      SPA-GMN-SRYKA       =   SPACE
+               MOVE    SPA-GMN-SRYKAL(01)  TO  SPA-GMN-SRYKA
+           END-IF
            PERFORM VARYING     IDX     FROM    1  BY  1
                    UNTIL       IDX     >   SPA-SRYKA-MAX
                IF      SPA-GMN-SRYKA       =   SPA-GMN-SRYKAL(IDX)

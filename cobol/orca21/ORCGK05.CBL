@@ -1029,10 +1029,10 @@
            IF      STS-PARA           =  ZERO
                PERFORM 980-PARA-READ-SEC
            ELSE
-               MOVE    1               TO  FLG-PARA 
+               MOVE    2               TO  FLG-PARA 
            END-IF
            PERFORM
-               UNTIL   FLG-PARA        =   1
+               UNTIL   FLG-PARA        NOT =   ZERO
                IF      PARA-FILEMEI    =   "WKSRYACT"
                    MOVE    PARA-DATA-REC    TO  LNK-WKSRYACT-REC
                                                        (PARA-EDANUM)
@@ -1046,7 +1046,9 @@
                PERFORM 980-PARA-READ-SEC
            END-PERFORM
       *
-           CLOSE                       PARA-FILE
+           IF      FLG-PARA            =   1
+               CLOSE                       PARA-FILE
+           END-IF
       *
            MOVE    SPACE           TO  SPA-KIDCD
       *
