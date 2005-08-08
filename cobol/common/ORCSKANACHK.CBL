@@ -402,12 +402,11 @@
                MOVE    KANACONV-MAXLEN     TO  KANACHK-MAX
            ELSE
       *        半角のみの判定
-               MOVE    1                   TO  FLG-KANJI
                INITIALIZE                  ORCXKANACONVAREA
                MOVE    KANACHK-MAX-CNT     TO  KANACONV-LEN
                MOVE    1000                TO  KANACONV-STLEN
                MOVE    0                   TO  KANACONV-CONV-FLAG
-               MOVE    112                 TO  KANACONV-CHAR-TYPE
+               MOVE    113                 TO  KANACONV-CHAR-TYPE
                MOVE    KANACHK-MAE-INPUT   TO  KANACONV-INDATA
                CALL    "kanaconv"          USING
                                            ORCXKANACONVAREA
@@ -417,9 +416,6 @@
                    MOVE    KANACONV-MAXLEN     TO  IDX-MAX
       *            間に空白があるかの判定
                    PERFORM 1001-KUHAKU-CHK-SEC
-                   IF      FLG-KUHAKU          =   1
-                       MOVE    8                   TO  KANACHK-RC2
-                   END-IF
                ELSE
       *            混在エラー
                    MOVE    1                   TO  KANACHK-RC
@@ -435,14 +431,17 @@
       *****************************************************************
        1001-KUHAKU-CHK-SEC           SECTION.
       *
-           MOVE    ZERO                TO  FLG-KUHAKU
-           PERFORM VARYING     IDX     FROM    1  BY  1
-                   UNTIL       IDX     >   IDX-MAX
-               IF      KANACHK-MAE-INPUT (IDX:1)
-                                               =   SPACE
-                   MOVE    1               TO  FLG-KUHAKU
-               END-IF
-           END-PERFORM
+           INITIALIZE                  ORCXKANACONVAREA
+           MOVE    KANACHK-MAX-CNT     TO  KANACONV-LEN
+           MOVE    1000                TO  KANACONV-STLEN
+           MOVE    0                   TO  KANACONV-CONV-FLAG
+           MOVE    112                 TO  KANACONV-CHAR-TYPE
+           MOVE    KANACHK-MAE-INPUT   TO  KANACONV-INDATA
+           CALL    "kanaconv"          USING
+                                       ORCXKANACONVAREA
+           IF      KANACONV-RETURN NOT =   ZERO
+               MOVE    8                   TO  KANACHK-RC2
+           END-IF
       *
            .
        1001-KUHAKU-CHK-EXT.

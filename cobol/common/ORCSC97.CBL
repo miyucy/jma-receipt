@@ -58,6 +58,8 @@
            03  FLG-ALLSUJI         PIC 9(01).
       *
            03  FLG-ZENKAKU         PIC 9(01).
+           03  FLG-HANKAKU         PIC 9(01).
+           03  FLG-ERR             PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -431,6 +433,8 @@
        1009-KANACONV-SEC               SECTION.
       *
            MOVE    ZERO                TO  FLG-ZENKAKU
+           MOVE    ZERO                TO  FLG-HANKAKU
+           MOVE    ZERO                TO  FLG-ERR
            IF      WRK-KOUMOKU     NOT =   SPACE
       *        È¾³Ñ¥«¥Ê¤ÎÁ´³ÑÊÑ´¹
                INITIALIZE                  ORCXKANACONVAREA
@@ -443,6 +447,21 @@
                IF      KANACONV-RETURN     =   ZERO
       *            Á´³Ñ
                    MOVE    1                   TO  FLG-ZENKAKU
+               ELSE
+      *            È¾³Ñ¤Î¤ß¤ÎÈ½Äê
+                   INITIALIZE                  ORCXKANACONVAREA
+                   MOVE    WRK-LEN             TO  KANACONV-LEN
+                   MOVE    1000                TO  KANACONV-STLEN
+                   MOVE    0                   TO  KANACONV-CONV-FLAG
+                   MOVE    112                 TO  KANACONV-CHAR-TYPE
+                   MOVE    WRK-KOUMOKU         TO  KANACONV-INDATA
+                   CALL    "kanaconv"          USING
+                                               ORCXKANACONVAREA
+                   IF      KANACONV-RETURN     =   ZERO
+                       MOVE    1                   TO  FLG-HANKAKU
+                   ELSE
+                       MOVE    1                   TO  FLG-ERR
+                   END-IF
                END-IF
            END-IF
            .
@@ -828,26 +847,17 @@
                ADD     1                   TO  WRK-CD-MCNT
                MOVE    WRK-INPUTCD(IDX:1)
                                            TO  WRK-CD (WRK-CD-MCNT:1)
-               IF      IDX                 =   22
-                   MOVE    1               TO  FLG-SUJI
-               ELSE
-                   MOVE    WRK-INPUTCD(IDX:2)  TO  WRK-KOUMOKU
-                   MOVE    2                   TO  WRK-LEN
-                   PERFORM 1009-KANACONV-SEC
-               END-IF
-               IF      FLG-ZENKAKU         =   1
+             END-IF
       ******** IF      WRK-INPUTCD (IDX:1)
       **********                      >=  X"A1"
       *            Á´³Ñ¤Î»þ¡¢£²·åÊÔ½¸
-                   MOVE    1               TO  FLG-KANJI
-                   ADD     1               TO  IDX
-                   ADD     1               TO  WRK-CD-MCNT
-                   MOVE    WRK-INPUTCD(IDX:1)
-                                           TO  WRK-CD (WRK-CD-MCNT:1)
-               ELSE
-                   MOVE    1               TO  FLG-SUJI
-               END-IF
-      ***********  IF     (WRK-INPUTCD (IDX:1)
+      *            MOVE    1               TO  FLG-KANJI
+      *            ADD     1               TO  IDX
+      *            ADD     1               TO  WRK-CD-MCNT
+      *            MOVE    WRK-INPUTCD(IDX:1)
+      *                                    TO  WRK-CD (WRK-CD-MCNT:1)
+      *        ELSE
+      *            IF     (WRK-INPUTCD (IDX:1)
       *                                   IS  ALPHABETIC )  OR
       *                   (WRK-INPUTCD (IDX:1)
       *                                   IS  NUMERIC    )  OR
@@ -862,6 +872,20 @@
       *        END-IF
       *******END-IF
            END-PERFORM
+      *
+      *    º®ºß¥¨¥é¡¼
+           MOVE    WRK-CD              TO  WRK-KOUMOKU
+           MOVE    WRK-CD-MCNT         TO  WRK-LEN
+           PERFORM 1009-KANACONV-SEC
+           IF      FLG-ERR             =   1
+               MOVE    "0005"          TO  SPA-ERRCD
+           END-IF
+           IF      FLG-ZENKAKU         =   1
+               MOVE    1               TO  FLG-KANJI
+           END-IF
+           IF      FLG-HANKAKU         =   1
+               MOVE    1               TO  FLG-SUJI
+           END-IF
       *
       *    ¥³¡¼¥ÉÊÑ¹¹¤ÎÍ­Ìµ
            MOVE    LNK-SC97-GMN-IDX    TO  GMN-IDX
@@ -891,10 +915,10 @@
       *        MOVE    "0005"          TO  SPA-ERRCD
       **** END-IF
       *    È¾³Ñ¡¢Á´³Ñº®ºß¤ÏÆþÎÏÉÔ²Ä
-           IF     (FLG-KANJI           =   1  )  AND
-                  (FLG-SUJI            =   1  )
-               MOVE    "0005"          TO  SPA-ERRCD
-           END-IF
+      *    IF     (FLG-KANJI           =   1  )  AND
+      *           (FLG-SUJI            =   1  )
+      *        MOVE    "0005"          TO  SPA-ERRCD
+      *****END-IF
            MOVE    WRK-CD-MCNT         TO  LNK-SC97-INCDCNT
            .
        2020-INPUTCD-CHOSA-EXT.
