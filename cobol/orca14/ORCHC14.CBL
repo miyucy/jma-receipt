@@ -293,12 +293,8 @@
                PERFORM 900-YOYAKU-READ-SEC
            END-PERFORM
       *    ¥«¡¼¥½¥ë¥¯¥í¡¼¥¹
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            IF      IDX             >   ZERO
       *        Ä¢É¼°õºþ³«»Ï½èÍý
@@ -443,12 +439,8 @@
                INITIALIZE                  SYS-1005-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
       *    ¿ÇÎÅÆü
            MOVE    SPA-Y01-YYKYMDS     TO  WRK-SYMD
@@ -524,6 +516,8 @@
                 MOVE    1              TO  FLG-SYSKANRI
            END-IF
            MOVE    SYS-1010-NAME       TO  HC14-DRNAME (IDX)
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           PERFORM 990-DBCLOSE-SEC
       *
       *    ¿ÇÎÅ²Ê
            MOVE    SPACE               TO  SYS-1005-REC
@@ -547,6 +541,8 @@
                 MOVE    1              TO  FLG-SYSKANRI
            END-IF
            MOVE    SYS-1005-SRYKANAME2     TO  HC14-SRYKA  (IDX)
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           PERFORM 990-DBCLOSE-SEC
       *
       *    ¿ÇÎÅÆâÍÆ¤ò¥»¥Ã¥È
            MOVE    SPACE               TO  SYS-1012-REC
@@ -570,6 +566,8 @@
                 MOVE    1              TO  FLG-SYSKANRI
            END-IF
            MOVE    SYS-1012-SRYNAIYODSP    TO  HC14-SRYNAIYO  (IDX)
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           PERFORM 990-DBCLOSE-SEC
       *
       *    Í½Ìó³ÎÇ§Ï¢Íí¥³¡¼¥É
            MOVE    SPACE               TO  SYS-0051-REC
@@ -593,6 +591,8 @@
                 MOVE    1              TO  FLG-SYSKANRI
            END-IF
            MOVE    SYS-0051-YYKKAKNAME    TO  HC14-RENRAKU  (IDX)
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           PERFORM 990-DBCLOSE-SEC
       *    Íè±¡ºÑ¤ß
            IF      YYK-RAIINZUMI       =   "1"
                MOVE    "ºÑ"            TO  HC14-RAIIN  (IDX)
@@ -690,6 +690,21 @@
            .
       *
        900-YOYAKU-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    £Ä£Â¥¯¥í¡¼¥¹½èÍý
+      *****************************************************************
+       990-DBCLOSE-SEC         SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       990-DBCLOSE-EXT.
            EXIT.
       *
       *****************************************************************

@@ -397,12 +397,8 @@
                PERFORM 900-SYSKANRI-READ-SEC
            END-PERFORM
       *    カーソルクロース
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *    全体
            ADD     1                   TO  SPA-SINRYO-MAX
            MOVE    "00"                TO  SPA-GMN-SINRYOLST
@@ -456,12 +452,8 @@
            END-PERFORM
       *
       *    カーソルクロース
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            ADD     1                   TO  SPA-DRCD-MAX
            MOVE    "9999"              TO  SPA-GMN-DRNAMELST
@@ -585,13 +577,8 @@
                PERFORM 900-YOYAKU-READ-SEC
            END-PERFORM
       *    カーソルクロース
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
       *
            PERFORM 3001-TBL-SORT-SEC
@@ -683,6 +670,8 @@
                MOVE    MCPDATA-REC         TO  SYS-1005-REC
                MOVE    SYS-1005-SRYKANAME2 TO  SPA-GMN-TSRYKA(IDX)
            END-IF
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           PERFORM 990-DBCLOSE-SEC
       *
       *    予約確認連絡コード
            MOVE    SPACE               TO  SYS-0051-REC
@@ -707,6 +696,8 @@
                MOVE    MCPDATA-REC         TO  SYS-0051-REC
                MOVE    SYS-0051-YYKKAKNAME TO  SPA-GMN-TRENRAKU(IDX)
            END-IF
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           PERFORM 990-DBCLOSE-SEC
            .
        3101-YOYAKU-HEN-EXT.
            EXIT.
@@ -1136,6 +1127,21 @@
       *
            .
        900-SYSKANRI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢクロース処理
+      *****************************************************************
+       990-DBCLOSE-SEC         SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       990-DBCLOSE-EXT.
            EXIT.
       *
       *****************************************************************

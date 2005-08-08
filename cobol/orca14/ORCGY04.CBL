@@ -363,12 +363,8 @@
                PERFORM 900-SYSKANRI-READ-SEC
            END-PERFORM
       *    カーソルクロース
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *    全体
            ADD     1                   TO  SPA-SINRYO-MAX
            MOVE    "00"                TO  SPA-GMN-SINRYOLST
@@ -423,12 +419,8 @@
            END-PERFORM
       *
       *    カーソルクロース
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            ADD     1                   TO  WRK-DRNCD-MAX
            MOVE    "9999"              TO  SPA-GMN-DRNAMELST
@@ -539,14 +531,10 @@
                    MOVE    WRK-PATH            TO  ORC-DBPATH
                    PERFORM 900-YOYAKU-READ-SEC
                END-PERFORM
-      *
-      *    カーソルクロース
-               MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+      *        カーソルクロース
                MOVE    WRK-PATH            TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+               PERFORM 990-DBCLOSE-SEC
+      *
       *        日付を＋１する
                INITIALIZE                      STS-AREA-DAY
                INITIALIZE                      LNK-DAY6-AREA
@@ -633,12 +621,8 @@
                                        TO  SPA-NAI-TSINRYO(IDX IDY)
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
            .
        41002-SRYNAIYO-SET-EXT.
            EXIT.
@@ -1205,6 +1189,21 @@
       *
            .
        900-SYSKANRIT-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢクロース処理
+      *****************************************************************
+       990-DBCLOSE-SEC         SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       990-DBCLOSE-EXT.
            EXIT.
       *
       *****************************************************************

@@ -660,12 +660,8 @@
                PERFORM 900-SYSKANRIT-READ-SEC
            END-PERFORM
       *    カーソルクロース
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            MOVE    SPA-GMN-SRYNAIYOLST (01)
                                        TO  SPA-GMN-SRYNAIYO
@@ -727,12 +723,8 @@
                PERFORM 900-SYSKANRIT-READ-SEC
            END-PERFORM
       *    カーソルクロース
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            MOVE    SPA-GMN-DRCDLST (01)
                                        TO  SPA-GMN-DRNAME
@@ -774,12 +766,8 @@
                PERFORM 900-SYSKANRIT-READ-SEC
            END-PERFORM
       *    カーソルクロース
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
            MOVE    SPA-GMN-SRYKALST (1)    TO  SPA-GMN-SRYKA-G
       *
       *    予約確認連絡コード
@@ -820,12 +808,8 @@
            END-PERFORM
       *
       *    カーソルクロース
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
            MOVE    SPA-GMN-KAKRENLST (1)
                                        TO  SPA-GMN-KAKREN-G
       *
@@ -1026,12 +1010,8 @@
                        PERFORM 900-YOYAKU-READ-SEC
                    END-PERFORM
       *    カーソルクロース
-                   MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
                    MOVE    "YYK-KEY3"          TO  ORC-DBPATH
-                   CALL    "ORCMCPSUB"          USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC
+                   PERFORM 990-DBCLOSE-SEC
       *
                END-IF
            END-PERFORM
@@ -1448,6 +1428,8 @@
                INITIALIZE                  SYS-1010-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           PERFORM 990-DBCLOSE-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1010-REC
                MOVE    SPACE               TO  SPA-GMN-D1
@@ -1592,6 +1574,7 @@
                                        ORCSKANACHKAREA
            IF     (KANACHK-RC      NOT =   ZERO  )  OR
                   (KANACHK-SYUBETU     =   1     )
+               MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-YYKNAME
                MOVE    "0017"          TO  SPA-ERRCD
                GO      TO      41014-YYKNAME-EXT
            ELSE
@@ -1674,12 +1657,8 @@
                PERFORM 910-PTINF-READ-SEC
            END-PERFORM
       *    カーソルクロース
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTINF-KEY2"        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
       *    かな検索
            IF      IDZ                 =   ZERO
@@ -1709,14 +1688,10 @@
                    MOVE    "PTINF-KEY3"        TO  ORC-DBPATH
                    PERFORM 910-PTINF-READ-SEC
                END-PERFORM
+      *        カーソルクロース
+               MOVE    "PTINF-KEY3"        TO  ORC-DBPATH
+               PERFORM 990-DBCLOSE-SEC
             END-IF
-      *    カーソルクロース
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "PTINF-KEY3"        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
       *
            .
        410141-KNJKEN-HEN-EXT.
@@ -2227,13 +2202,8 @@
                PERFORM 900-YOYAKU-READ-SEC
            END-PERFORM
       *    カーソルクロース
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      *
+           PERFORM 990-DBCLOSE-SEC
       *
            MOVE    IDX             TO  SPA-GMN-MAX
       *
@@ -2297,12 +2267,8 @@
                MOVE    SYS-1005-SRYKANAME3 TO  SPA-GMN-TKAMEI  (IDX)
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
            .
        41002-SRYKAMEI-SET-EXT.
            EXIT.
@@ -3097,6 +3063,9 @@
            ELSE
                 MOVE    1              TO  FLG-YYK
            END-IF
+           MOVE    "YYK-KEY7"          TO  ORC-DBPATH
+           PERFORM 990-DBCLOSE-SEC
+      *
            IF      FLG-YYK             =   ZERO
                MOVE    YYK-YYKID           TO  WRK-YYKID
                IF      WRK-YYKID           =   99
@@ -3142,7 +3111,6 @@
            IF      MCP-RC          NOT  =  ZERO
                MOVE    "1011"           TO  SPA-ERRCD
                DISPLAY "Y01 YYK MEI INS ERR:" MCP-RC "."
-               GO      TO      4901-YYKADD-EXT
            END-IF
            .
        4901-YYKADD-EXT.
@@ -3920,12 +3888,8 @@
                 MOVE    1              TO  FLG-YYK
            END-IF
       *    カーソルクロース
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "YYK-KEY"           TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        910-YOYAKU-INV-EXT.
@@ -3983,12 +3947,8 @@
                INITIALIZE                  PTINF-REC
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTINF-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        920-PTINF-READ-EXT.
@@ -4012,6 +3972,21 @@
       *
            .
        900-SYSKANRIT-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢクロース処理
+      *****************************************************************
+       990-DBCLOSE-SEC         SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       990-DBCLOSE-EXT.
            EXIT.
       *
       *****************************************************************
