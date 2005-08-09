@@ -3246,6 +3246,7 @@
                    MOVE    SPTNUM-PTNUM        TO  SPA-GMN-PTNUM
       *            »áÌ¾¸¡º÷¤Ø
                    MOVE    SPACE               TO  LINKAREA
+                   MOVE    SPA-J01KYOUTU       TO  SPA-WORK
                    MOVE    SPA-KYOUTU          TO  LNK-COMMON
                    MOVE    SPA-J02             TO  LNK-SCRSPA
       *
