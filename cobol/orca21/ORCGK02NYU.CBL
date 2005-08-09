@@ -237,6 +237,8 @@
            03  FLG-INIT              PIC 9(01).
            03  FLG-MAE-TENSU         PIC 9(01).
       *
+           03  FLG-WKSRYACT-ARI       PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -1928,6 +1930,18 @@
                    ELSE
                        MOVE    1               TO  SPA-GMN-CUR
                    END-IF
+      *        中途終了データのクリア
+               WHEN    "0127"
+                   MOVE    SPACE               TO  SPA-KIDCD
+                   IF      SPA-KID1-FLG        =   "OK"
+      *                ワーク診療行為削除
+                       PERFORM 2202-CLEAR-WKSRYACT-SEC
+                   ELSE
+      *                ワーク診療行為解除
+                       MOVE    ZERO            TO  FLG-MOD-FLG
+                       PERFORM 4900-WKSRYACT-CLEAR-SEC
+                       MOVE    1               TO  SPA-GMN-CUR
+                   END-IF
       *
       *        保険変更時、中途終了あり
                WHEN    "0118"
@@ -2843,12 +2857,8 @@
                PERFORM 940-SRYACCT-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SRYACCT-KEY7"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DB-CLOSE-SEC
            .
        3201-TOUCHKSET-EXT.
            EXIT.
@@ -2902,12 +2912,8 @@
                PERFORM 900-SRYACT-NEXT-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DB-CLOSE-SEC
       *
            .
        3201-SRYACT-HEN-EXT.
@@ -3141,12 +3147,8 @@
                PERFORM 900-SRYACT-NEXT-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DB-CLOSE-SEC
       *
            .
        32021-KNK-KOUISET-EXT.
@@ -3653,12 +3655,8 @@
                MOVE    "PTNYUINRRK-KEY34"   TO  ORC-DBPATH
                PERFORM 910-PTNYUINRRK-READ-SEC
            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTNYUINRRK-KEY34"  TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           PERFORM 990-DB-CLOSE-SEC
            IF      FLG-OK              =   ZERO
                IF     (HZN-PTNYUINRRK-NYUINYMD     =   SPACE )  OR
                       (HZN-PTNYUINRRK-TAIINYMD NOT =   SPACE   AND
@@ -8185,7 +8183,9 @@
        220-CLEAR-SEC             SECTION.
       *
       *    確認メッセージ
-           MOVE    "0116"              TO  SPA-KIDCD
+           IF      SPA-GMN-PTID    NOT =   ZERO
+               MOVE    "0116"              TO  SPA-KIDCD
+           END-IF
       *
            .
        220-CLEAR-EXT.
@@ -8196,10 +8196,10 @@
       *****************************************************************
        220-CLEAR-SYORI-SEC            SECTION.
       *
-           IF      SPA-GMN-PTID    NOT =   ZERO
+      *****IF      SPA-GMN-PTID    NOT =   ZERO
       *        ワーク診療行為クリア
-               PERFORM 4900-WKSRYACT-CLEAR-SEC
-           END-IF
+      *        PERFORM 4900-WKSRYACT-CLEAR-SEC
+      *****END-IF
       *
            INITIALIZE              SPA-SCR-REC
       *
@@ -8208,8 +8208,112 @@
            MOVE    1               TO  SPA-GMN-CUR
            MOVE    1               TO  SPA-GMN-PAGE
       *
+           IF      SPA-SYORIFLG        =   ZERO
+               PERFORM 2201-WKSRYACT-CHK-SEC
+           ELSE
+               MOVE    ZERO            TO  FLG-WKSRYACT-ARI
+           END-IF
+           IF      FLG-WKSRYACT-ARI    =   ZERO
+               CONTINUE
+           ELSE
+               MOVE    "0127"              TO  SPA-KIDCD
+           END-IF
+      *
            .
        220-CLEAR-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    中途終了展開中の判定処理
+      *****************************************************************
+       2201-WKSRYACT-CHK-SEC            SECTION.
+      *
+           INITIALIZE                  WKSRYACT-REC
+           MOVE    SPA-HOSPID          TO  WKSRY-HOSPID
+           MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
+           MOVE    SPA-PTID            TO  WKSRY-PTID
+           MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
+           MOVE    SPA-SRYYMD          TO  WKSRY-SRYYMD
+      *
+           MOVE    WKSRYACT-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "WKSRYACT-KEY7"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "WKSRYACT-KEY7"     TO  ORC-DBPATH
+               PERFORM 970-WKSRYACT-READ-SEC
+           ELSE
+               INITIALIZE                  WKSRYACT-REC
+               MOVE    1               TO  FLG-WKSRYACT
+           END-IF
+           MOVE    ZERO                TO  FLG-WKSRYACT-ARI
+           PERFORM
+               UNTIL  (FLG-WKSRYACT        =   1   )  OR
+                      (FLG-WKSRYACT-ARI    =   1   )
+               IF      WKSRY-MOD-FLG   NOT =   ZERO
+                   MOVE    1               TO  FLG-WKSRYACT-ARI
+               END-IF
+      *
+               MOVE    "WKSRYACT-KEY7"     TO  ORC-DBPATH
+               PERFORM 970-WKSRYACT-READ-SEC
+           END-PERFORM
+           MOVE    "WKSRYACT-KEY7"     TO  ORC-DBPATH
+           PERFORM 990-DB-CLOSE-SEC
+           .
+       2201-WKSRYACT-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    中途終了展開中の削除処理
+      *****************************************************************
+       2202-CLEAR-WKSRYACT-SEC            SECTION.
+      *
+      *    展開中の削除
+           INITIALIZE                  WKSRYACT-REC
+           MOVE    SPA-HOSPID          TO  WKSRY-HOSPID
+           MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
+           MOVE    SPA-PTID            TO  WKSRY-PTID
+           MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
+           MOVE    SPA-SRYYMD          TO  WKSRY-SRYYMD
+      *
+           MOVE    WKSRYACT-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "WKSRYACT-KEY7"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "WKSRYACT-KEY7"     TO  ORC-DBPATH
+               PERFORM 970-WKSRYACT-READ-SEC
+           ELSE
+               INITIALIZE                  WKSRYACT-REC
+               MOVE    1               TO  FLG-WKSRYACT
+           END-IF
+           PERFORM
+               UNTIL   FLG-WKSRYACT    =   1
+               IF      WKSRY-MOD-FLG       NOT =   ZERO
+                   MOVE    WKSRYACT-REC        TO  MCPDATA-REC
+                   MOVE    "DBDELETE"          TO  MCP-FUNC
+                   MOVE    "WKSRYACT-KEY"      TO  ORC-DBPATH
+                   CALL    "ORCMCPSUB"         USING
+                                               MCPAREA
+                                               ORCMCPAREA
+                                               MCPDATA-REC
+               END-IF
+      *
+               MOVE    "WKSRYACT-KEY7"     TO  ORC-DBPATH
+               PERFORM 970-WKSRYACT-READ-SEC
+           END-PERFORM
+      *
+           MOVE    "WKSRYACT-KEY7"     TO  ORC-DBPATH
+           PERFORM 990-DB-CLOSE-SEC
+      *
+           .
+       2202-CLEAR-WKSRYACT-EXT.
            EXIT.
       *****************************************************************
       *    ワーク診療行為クリア処理
@@ -8267,12 +8371,8 @@
                MOVE    "WKSRYACT-KEY6"     TO  ORC-DBPATH
                PERFORM 970-WKSRYACT-READ-SEC
            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "WKSRYACT-KEY6"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DB-CLOSE-SEC
       *
            .
        4900-WKSRYACT-CLEAR-EXT.
@@ -9884,12 +9984,8 @@
            ELSE
                INITIALIZE                  SYS-5007-REC
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           PERFORM 990-DB-CLOSE-SEC
       *
            IF      SYS-5007-SIJISENKBN =   "1"
                MOVE    1               TO  SPA-NAI-SIJISENKBN
@@ -11221,6 +11317,13 @@
                                        TO  WRK-KIDMSG
                    MOVE    "よろしいですか？"
                                        TO  WRK-KIDMSG(29:)
+               WHEN    "0127"
+                   STRING  "ＯＫで展開中の中途終了データを削除します。"
+                                           DELIMITED   BY  SIZE
+                           "よろしいですか？"
+                                           DELIMITED   BY  SIZE
+                                   INTO    WRK-KIDMSG
+                   END-STRING
                WHEN    "0118"
                    MOVE    "この保険の中途終了データが存在します。"
                                        TO  WRK-KIDMSG
@@ -11266,6 +11369,7 @@
                WHEN    "0119"
                WHEN    "0107"
                WHEN    "0180"
+               WHEN    "0127"
                    MOVE    "ＮＯ"            TO  KID1-B01
            END-EVALUATE
       *
@@ -11399,12 +11503,8 @@
                MOVE    1                   TO  FLG-TENSU
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DB-CLOSE-SEC
       *
            .
        910-TENSU-READ-EXT.
@@ -11459,12 +11559,8 @@
                    MOVE    1               TO  FLG-TENSU
                END-IF
            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "TENSU-KEY4"        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DB-CLOSE-SEC
            .
        919-TENSU-READ2-EXT.
            EXIT.
@@ -11533,12 +11629,8 @@
                MOVE    1                   TO  FLG-INPUTCD
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DB-CLOSE-SEC
       *
            .
        920-INPUTCD-NEXT-EXT.
@@ -11683,12 +11775,8 @@
                INITIALIZE                  PTINF-REC
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTINF-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DB-CLOSE-SEC
       *
            .
        900-PTINF-READ-EXT.
