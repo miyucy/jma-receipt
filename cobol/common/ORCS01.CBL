@@ -2794,6 +2794,13 @@
                           PERFORM   2103-KOH1-KAISU-SEC
                    END-IF
                END-IF
+      *
+               MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
+               MOVE    "HKNNUM-KEY2"        TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"           USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
            ELSE
       *
                IF  ((LNK-S01-KOUREI-ZAITAKU-KBN =       "1")  OR
@@ -2835,13 +2842,6 @@
       *
            END-IF.
       *
-           MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC.
-           MOVE    "HKNNUM-KEY2"        TO  ORC-DBPATH.
-           CALL    "ORCMCPSUB"           USING
-                                         MCPAREA
-                                         ORCMCPAREA
-                                         MCPDATA-REC.
-      *
       *    *公費２の上限回数（金額）取込み
            IF (COMB-KOH2HKNNUM           NOT = SPACE)    AND
               (COMB-KOH2-GAIJGNKBN       =     "1")
@@ -2869,6 +2869,13 @@
                           PERFORM   2104-KOH2-KAISU-SEC
                    END-IF
                END-IF
+      *
+               MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
+               MOVE    "HKNNUM-KEY2"        TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"           USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
            ELSE
       *
                IF  ((LNK-S01-KOUREI-ZAITAKU-KBN =       "1")  OR
@@ -2910,13 +2917,6 @@
       *
            END-IF.
       *
-           MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC.
-           MOVE    "HKNNUM-KEY2"        TO  ORC-DBPATH.
-           CALL    "ORCMCPSUB"           USING
-                                         MCPAREA
-                                         ORCMCPAREA
-                                         MCPDATA-REC.
-      *
       *    *公費３の上限回数（金額）取込み
            IF (COMB-KOH3HKNNUM           NOT = SPACE)    AND
               (COMB-KOH3-GAIJGNKBN       =     "1")
@@ -2944,6 +2944,13 @@
                           PERFORM   2105-KOH3-KAISU-SEC
                    END-IF
                END-IF
+      *
+               MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
+               MOVE    "HKNNUM-KEY2"        TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"           USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
            ELSE
       *
                IF  ((LNK-S01-KOUREI-ZAITAKU-KBN =       "1")  OR
@@ -2985,13 +2992,6 @@
       *
            END-IF.
       *
-           MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC.
-           MOVE    "HKNNUM-KEY2"        TO  ORC-DBPATH.
-           CALL    "ORCMCPSUB"           USING
-                                         MCPAREA
-                                         ORCMCPAREA
-                                         MCPDATA-REC.
-      *
       *    *公費４の上限回数（金額）取込み
            IF (COMB-KOH4HKNNUM           NOT = SPACE)    AND
               (COMB-KOH4-GAIJGNKBN       =     "1")
@@ -3019,6 +3019,13 @@
                           PERFORM   2106-KOH4-KAISU-SEC
                    END-IF
                END-IF
+      *
+               MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
+               MOVE    "HKNNUM-KEY2"        TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"           USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
            ELSE
       *
                IF  ((LNK-S01-KOUREI-ZAITAKU-KBN =       "1")  OR
@@ -3059,13 +3066,6 @@
                END-IF
       *
            END-IF.
-      *
-           MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC.
-           MOVE    "HKNNUM-KEY2"        TO  ORC-DBPATH.
-           CALL    "ORCMCPSUB"           USING
-                                         MCPAREA
-                                         ORCMCPAREA
-                                         MCPDATA-REC.
       *
       *    患者公費負担（金額）取り込み
            IF    LNK-SYU-SRYYMD(1:6)   <   "200304"

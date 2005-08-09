@@ -2246,6 +2246,13 @@
                         PERFORM   2103-KOH1-KAISU-SEC
                  END-IF
                END-IF
+      *
+               MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
+               MOVE    "HKNNUM-KEY2"        TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"           USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
            ELSE
       *
                IF  (LNK-S02-KOUREI-NYUIN-KBN  =   "1" )
@@ -2285,13 +2292,6 @@
       *
            END-IF.
       *
-           MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC.
-           MOVE    "HKNNUM-KEY2"        TO  ORC-DBPATH.
-           CALL    "ORCMCPSUB"           USING
-                                         MCPAREA
-                                         ORCMCPAREA
-                                         MCPDATA-REC.
-      *
       *    *¸øÈñ£²¤Î¾å¸Â¶â³Û¼è¹þ¤ß
            IF (COMB-KOH2HKNNUM           NOT = SPACE)    AND
               (COMB-KOH2-NYUJGNKBN       =     "1")
@@ -2319,6 +2319,13 @@
                         PERFORM   2104-KOH2-KAISU-SEC
                  END-IF
                END-IF
+      *
+               MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
+               MOVE    "HKNNUM-KEY2"        TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"           USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
            ELSE
       *
                IF  (LNK-S02-KOUREI-NYUIN-KBN  =   "1" )
@@ -2358,13 +2365,6 @@
       *
            END-IF.
       *
-           MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC.
-           MOVE    "HKNNUM-KEY2"        TO  ORC-DBPATH.
-           CALL    "ORCMCPSUB"           USING
-                                         MCPAREA
-                                         ORCMCPAREA
-                                         MCPDATA-REC.
-      *
       *    *¸øÈñ£³¤Î¾å¸Â¶â³Û¼è¹þ¤ß
            IF (COMB-KOH3HKNNUM           NOT = SPACE)    AND
               (COMB-KOH3-NYUJGNKBN       =     "1")
@@ -2392,6 +2392,13 @@
                         PERFORM   2105-KOH3-KAISU-SEC
                  END-IF
                END-IF
+      *
+               MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
+               MOVE    "HKNNUM-KEY2"        TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"           USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
            ELSE
       *
                IF  (LNK-S02-KOUREI-NYUIN-KBN  =   "1" )
@@ -2431,13 +2438,6 @@
       *
            END-IF.
       *
-           MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC.
-           MOVE    "HKNNUM-KEY2"        TO  ORC-DBPATH.
-           CALL    "ORCMCPSUB"           USING
-                                         MCPAREA
-                                         ORCMCPAREA
-                                         MCPDATA-REC.
-      *
       *    *¸øÈñ£´¤Î¾å¸Â¶â³Û¼è¹þ¤ß
            IF (COMB-KOH4HKNNUM           NOT = SPACE)    AND
               (COMB-KOH4-NYUJGNKBN       =     "1")
@@ -2465,6 +2465,13 @@
                         PERFORM   2106-KOH4-KAISU-SEC
                  END-IF
                END-IF
+      *
+               MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
+               MOVE    "HKNNUM-KEY2"        TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"           USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
            ELSE
       *
                IF  (LNK-S02-KOUREI-NYUIN-KBN  =   "1" )
@@ -2503,13 +2510,6 @@
                END-IF
       *
            END-IF.
-      *
-           MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC.
-           MOVE    "HKNNUM-KEY2"        TO  ORC-DBPATH.
-           CALL    "ORCMCPSUB"           USING
-                                         MCPAREA
-                                         ORCMCPAREA
-                                         MCPDATA-REC.
       *
       *    ´µ¼Ô¸øÈñÉéÃ´¡Ê¶â³Û¡Ë¼è¤ê¹þ¤ß
            IF    LNK-SYU-SRYYMD(1:6)   <   "200304"
