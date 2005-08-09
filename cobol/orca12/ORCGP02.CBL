@@ -107,6 +107,7 @@
       *
            03  FLG-HAKKOU          PIC 9(01).
       *
+           03  FLG-BACK            PIC 9(01).
            03  FLG-CLAIM           PIC 9(01).
            03  FLG-CLAIM-OK        PIC 9(01).
       *
@@ -711,6 +712,7 @@
            MOVE    SPA-GMN-PTNUM       TO  SPTNUM-PTNUM
            CALL    "ORCSPTNUM"         USING   ORCSPTNUMAREA
                                                SPA-AREA
+           MOVE    SPTNUM-PTNUM        TO  SPA-GMN-PTNUM
            EVALUATE    SPTNUM-RC
                WHEN    00
       *            ´µ¼Ô¤¢¤ê
@@ -2580,10 +2582,30 @@
            END-IF
       *
       **** IF      SPA-MACHIPG         =   "U02"  OR  "K02" OR "Q02"
-           IF      SPA-HZN-MOTOPG(1:3) =   "U02"  OR  "K02" OR "Q02"
-                                                  OR  "I01"
+           MOVE    0                   TO  FLG-BACK
+           IF      SPA-HZN-MOTOPG(1:3) =   "U02"
+               IF       SPA-HZN-PTNUM       =   SPACE
+                   IF     (SPA-P02-UKEID    NOT =  ZERO )  AND
+                          (SPA-P02-SYORI        =   1   )
+                       MOVE    1               TO  FLG-BACK
+                   END-IF
+               ELSE
+                   MOVE    1               TO  FLG-BACK
+               END-IF
+           END-IF
+           IF      SPA-HZN-MOTOPG(1:3) =   "K02" OR "Q02"
+                                                 OR  "I01"
                IF     (SPA-HZN-PTNUM       =   SPACE  )
+                   MOVE    0               TO  FLG-BACK
+               ELSE
+                   MOVE    1               TO  FLG-BACK
+               END-IF
+           END-IF
+      *****IF      SPA-HZN-MOTOPG(1:3) =   "U02"  OR  "K02" OR "Q02"
+      *                                           OR  "I01"
+      *        IF     (SPA-HZN-PTNUM       =   SPACE  )
       *!!!     AND    (SPA-P02-UKEID       =   ZERO   )
+           IF      FLG-BACK            =   ZERO
                    MOVE    SPACE               TO  SPA-PTNUM
                    MOVE    ZERO                TO  SPA-PTID
                ELSE
@@ -2600,7 +2622,7 @@
                    END-IF
                    MOVE    ZERO                TO  SPA-KEI-FLG
                    GO      TO      49021-KOUSIN-AFTER-EXT
-               END-IF
+      *********END-IF
            END-IF
            MOVE    ZERO                TO  SPA-KEI-FLG
       *
