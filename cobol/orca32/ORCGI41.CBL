@@ -2422,6 +2422,7 @@
            MOVE    SPA-GMN-PTNUM       TO  SPTNUM-PTNUM.
            CALL    "ORCSPTNUM"         USING   ORCSPTNUMAREA
                                                SPA-AREA.
+           MOVE    SPTNUM-PTNUM        TO  SPA-GMN-PTNUM
            EVALUATE    SPTNUM-RC
                WHEN    00
                    MOVE    SPTNUM-PTNUM        TO  SPTID-PTNUM
@@ -2442,6 +2443,7 @@
                    MOVE    SPTNUM-PTNUM        TO  SPA-GMN-PTNUM
       *            »áÌ¾¸¡º÷¤Ø
                    MOVE    SPACE               TO  LINKAREA
+                   MOVE    SPA-I4KYOUTU        TO  SPA-WORK
                    MOVE    SPA-KYOUTU          TO  LNK-COMMON
                    MOVE    SPA-I41             TO  LNK-SCRSPA
       *

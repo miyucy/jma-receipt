@@ -107,6 +107,9 @@
            03  FLG-INS             PIC 9(01).
            03  FLG-MEI             PIC 9(01).
       *
+           03  FLG-ZENKAKU         PIC 9(01).
+           03  FLG-HANKAKU         PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDS                 PIC 9(04).
@@ -338,6 +341,10 @@
            03  WRK-ATAI-X.
                05  WRK-ATAI-9          PIC 9(15).
       *
+           03  WRK-KOUMOKU         PIC X(20).
+           03  WRK-LEN             PIC 9(04).
+      *
+      *
       *    禁忌チェック用テーブル
       *01  WRK-KNKCHK-AREA.
       *    03  WRK-KNK-TBL                  OCCURS   30.
@@ -456,6 +463,8 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
+      *    全角・半角チェック
+           COPY    "CPORCXKANACONV.INC".
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
@@ -1983,6 +1992,16 @@
        41011-MAE-HANKAKU-SEC            SECTION.
       *
            MOVE    ZERO                TO  WRK-JODOU
+      *    半角カナの全角変換
+           INITIALIZE                  ORCXKANACONVAREA
+           MOVE    22                  TO  KANACONV-LEN
+           MOVE    1000                TO  KANACONV-STLEN
+           MOVE    0                   TO  KANACONV-CONV-FLAG
+           MOVE    0                   TO  KANACONV-CHAR-TYPE
+           MOVE    WRK-HENKAN          TO  KANACONV-INDATA
+           CALL    "kanaconv"          USING ORCXKANACONVAREA
+           MOVE    KANACONV-OUTDATA    TO  WRK-HENKAN
+      *
       *    '_'をなくす
            INSPECT WRK-HENKAN
                    TALLYING    WRK-JODOU  FOR  ALL "_"
@@ -1995,8 +2014,17 @@
            MOVE    ZERO                TO  IDH2
            PERFORM
                    UNTIL       IDH1    >   22
-             IF      WRK-HENKAN(IDH1:1)
-                                          >=  X"A1"
+      *      全角判定
+             IF      IDH1             =    22
+                 MOVE    ZERO              TO  FLG-ZENKAKU
+             ELSE
+                 MOVE    WRK-HENKAN(IDH1:2)    TO  WRK-KOUMOKU
+                 MOVE    2                     TO  WRK-LEN
+                 PERFORM 1009-KANACONV-SEC
+             END-IF
+             IF      FLG-ZENKAKU         =   1
+      *******IF      WRK-HENKAN(IDH1:1)
+      *******                             >=  X"A1"
                EVALUATE    WRK-HENKAN(IDH1:2)
                    WHEN    "−"
                        ADD     1           TO  IDH2
@@ -2093,6 +2121,48 @@
            EXIT.
       *
       *****************************************************************
+      *    全角判定処理
+      *****************************************************************
+       1009-KANACONV-SEC               SECTION.
+      *
+           MOVE    ZERO                TO  FLG-ZENKAKU
+           MOVE    ZERO                TO  FLG-HANKAKU
+           MOVE    ZERO                TO  FLG-ERR
+           IF      WRK-KOUMOKU     NOT =   SPACE
+      *        半角カナの全角変換
+               INITIALIZE                  ORCXKANACONVAREA
+               MOVE    WRK-LEN             TO  KANACONV-LEN
+               MOVE    1000                TO  KANACONV-STLEN
+               MOVE    0                   TO  KANACONV-CONV-FLAG
+               MOVE    15                  TO  KANACONV-CHAR-TYPE
+               MOVE    WRK-KOUMOKU         TO  KANACONV-INDATA
+               CALL    "kanaconv"          USING ORCXKANACONVAREA
+               IF      KANACONV-RETURN     =   ZERO
+      *            全角
+                   MOVE    1                   TO  FLG-ZENKAKU
+               ELSE
+      *            半角のみの判定
+                   INITIALIZE                  ORCXKANACONVAREA
+                   MOVE    WRK-LEN             TO  KANACONV-LEN
+                   MOVE    1000                TO  KANACONV-STLEN
+                   MOVE    0                   TO  KANACONV-CONV-FLAG
+                   MOVE    112                 TO  KANACONV-CHAR-TYPE
+                   MOVE    WRK-KOUMOKU         TO  KANACONV-INDATA
+                   CALL    "kanaconv"          USING
+                                               ORCXKANACONVAREA
+                   IF      KANACONV-RETURN     =   ZERO
+                       MOVE    1                   TO  FLG-HANKAKU
+                   ELSE
+                       MOVE    1                   TO  FLG-ERR
+                   END-IF
+               END-IF
+           END-IF
+           .
+       1009-KANACONV-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
       *    全角、半角変更編集処理
       *****************************************************************
        41011-KOUI-INPUTCD-SYORI-SEC     SECTION.
@@ -2159,29 +2229,40 @@
       *
                ADD     1                   TO  WRK-CD-MCNT
                MOVE    WRK-INPUTCD(IDX:1)  TO  WRK-CD (WRK-CD-MCNT:1)
-      *
-               IF      WRK-INPUTCD (IDX:1)     >=  X"A1"
-                   MOVE    1               TO  FLG-KANJI
-               ELSE
-                   IF     (WRK-INPUTCD (IDX:1)
-                                          IS  ALPHABETIC)  OR
-                          (WRK-INPUTCD (IDX:1)
-                                          IS  NUMERIC   )  OR
-                          (WRK-INPUTCD (IDX:1)
-                                          =   "."  OR  "/" )
-                       MOVE    1              TO  FLG-SUJI
-                   ELSE
-                       MOVE    1              TO  FLG-KANA
-                   END-IF
-               END-IF
+      **********
+      *        IF      WRK-INPUTCD (IDX:1)     >=  X"A1"
+      *            MOVE    1               TO  FLG-KANJI
+      *        ELSE
+      *            IF     (WRK-INPUTCD (IDX:1)
+      *                                   IS  ALPHABETIC)  OR
+      *                   (WRK-INPUTCD (IDX:1)
+      *                                   IS  NUMERIC   )  OR
+      *                   (WRK-INPUTCD (IDX:1)
+      *                                   =   "."  OR  "/" )
+      *                MOVE    1              TO  FLG-SUJI
+      *            ELSE
+      *                MOVE    1              TO  FLG-KANA
+      *            END-IF
+      ******** END-IF
              END-IF
            END-PERFORM.
       *
-      *    半角カナは入力不可
-           IF      FLG-KANA            =   1
-               MOVE    "0005"          TO  SPA-ERRCD
-               GO      TO      4101-KOUI-INPUTCD-CHOSA-EXT
-           END-IF.
+      *    混在エラー
+           MOVE    WRK-CD              TO  WRK-KOUMOKU
+           MOVE    WRK-CD-MCNT         TO  WRK-LEN
+           PERFORM 1009-KANACONV-SEC
+           IF      FLG-ZENKAKU         =   1
+               MOVE    1               TO  FLG-KANJI
+           END-IF
+           IF      FLG-HANKAKU         =   1
+               MOVE    1               TO  FLG-SUJI
+           END-IF
+      *
+      **** 半角カナは入力不可
+      *    IF      FLG-KANA            =   1
+      *        MOVE    "0005"          TO  SPA-ERRCD
+      *        GO      TO      4101-KOUI-INPUTCD-CHOSA-EXT
+      **** END-IF.
       *    半角、全角混在は入力不可
            IF     (FLG-KANJI           =   1)  AND
                   (FLG-SUJI            =   1)
@@ -2210,8 +2291,17 @@
            MOVE    WRK-STR             TO  IDH1.
            MOVE    ZERO                TO  IDH2.
            PERFORM   UNTIL       IDH1    >   WRK-END
-             IF      WRK-HENKAN-MAE(IDH1:1)
-                                          >=  X"A1"
+      *      全角判定
+             IF      IDH1             =    WRK-END
+                 MOVE    ZERO              TO  FLG-ZENKAKU
+             ELSE
+                 MOVE    WRK-HENKAN-MAE(IDH1:2)    TO  WRK-KOUMOKU
+                 MOVE    2                     TO  WRK-LEN
+                 PERFORM 1009-KANACONV-SEC
+             END-IF
+             IF      FLG-ZENKAKU         =   1
+      *******IF      WRK-HENKAN-MAE(IDH1:1)
+      *******                             >=  X"A1"
                EVALUATE    WRK-HENKAN-MAE(IDH1:2)
                    WHEN    "０"
                        ADD     1           TO  IDH2

@@ -2727,10 +2727,8 @@
            IF     (KANACHK-RC      NOT =   ZERO  )  OR
                   (KANACHK-SYUBETU     =   1     )
       *        全角以外エラー
-               MOVE    "0013"          TO  SPA-ERRCD
-               IF      KANACHK-RC2         =   7
-                   MOVE    KANACHK-OUT-INPUT   TO  SPA-I43-COMMENT
-               END-IF
+               MOVE    "0013"              TO  SPA-ERRCD
+               MOVE    KANACHK-OUT-INPUT   TO  SPA-I43-COMMENT
            ELSE
                MOVE    KANACHK-OUT-INPUT   TO  SPA-I43-COMMENT
            END-IF

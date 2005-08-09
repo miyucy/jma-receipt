@@ -964,7 +964,8 @@
            MOVE    "1"                 TO  KANACHK-SYORI.
            MOVE    SPA-I48-GMN-INPUT   TO  KANACHK-MAE-INPUT.
            CALL    "ORCSKANACHK"       USING
-                                       ORCSKANACHKAREA.
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  SPA-I48-GMN-INPUT
            IF      KANACHK-RC      NOT =   ZERO
       *        Á´³ÑÈ¾³Ñº®ºß¥¨¥é¡¼
                MOVE    "0001"          TO  SPA-ERRCD
