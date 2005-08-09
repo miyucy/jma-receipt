@@ -3851,6 +3851,10 @@
            IF      SPA-HKNCOMBINUM NOT =   "9999"
                PERFORM 3009-RECEUPD-UPDATE-SEC
            END-IF
+           IF      SPA-ERRCD           =   SPACE
+      *        ワーク診療行為マスタ−が存在した時、削除する
+               PERFORM 45002-WKSRYACT-DEL-SEC
+           END-IF
       *
            .
        300-DELETE-SYORI-EXT.
