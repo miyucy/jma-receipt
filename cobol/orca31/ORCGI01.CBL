@@ -212,6 +212,7 @@
                05  WRK-SDD                 PIC 9(02).
            03  WRK-HENYMDG                 PIC X(09).
            03  WRK-KANACHK-MAE-INPUT       PIC X(400).
+           03  WRK-KANACHK-OUT-INPUT       PIC X(400).
       *    パス名領域
            03  WRK-DBPATH                  PIC X(20).
            03  WRK-CALC-YMD1.
@@ -2036,6 +2037,7 @@
            MOVE    SPA-GMN-I01-PTNUM   TO  SPTNUM-PTNUM
            CALL    "ORCSPTNUM"         USING   ORCSPTNUMAREA
                                                SPA-AREA
+           MOVE    SPTNUM-PTNUM        TO  SPA-GMN-I01-PTNUM
            EVALUATE    SPTNUM-RC
                WHEN    00
                    MOVE    SPTNUM-PTNUM        TO  SPA-GMN-I01-PTNUM
@@ -3614,7 +3616,9 @@
                                        TO  WRK-KJNYMD
                PERFORM 4101-JYURRK-SEL-SEC
       *
-               PERFORM 410-INPUT-CHK-SEC
+               IF    ( SPA-NAI-I01-NYURRK-FLG   = ZERO )
+                   PERFORM 4102-KIHON-CHK-SEC
+               END-IF
       *
       *    照会
            WHEN    "10"
@@ -4009,6 +4013,8 @@
                                    TO  WRK-KANACHK-MAE-INPUT
       *
            PERFORM     800-ENRTRY-CHK-SEC
+           MOVE    WRK-KANACHK-OUT-INPUT
+                                   TO  SPA-GMN-I01-BRMNUM
            IF  ( FLG-ENTRYCHK      NOT =   1 )
                MOVE    SPACE           TO  SPA-GMN-I01-BTUNAME
                MOVE    "0003"          TO  SPA-ERRCD
@@ -14120,6 +14126,8 @@
            MOVE    WRK-KANACHK-MAE-INPUT
                                    TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT
+                                   TO  WRK-KANACHK-OUT-INPUT
            IF      ( KANACHK-RC    NOT =   ZERO )
                MOVE    1           TO  FLG-ENTRYCHK
                GO  TO  800-ENRTRY-CHK-EXT
