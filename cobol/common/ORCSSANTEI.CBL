@@ -351,6 +351,8 @@
                MOVE    WRK-DBPATH          TO  ORC-DBPATH
                PERFORM 920-SANTEI-READ-SEC
            END-PERFORM
+           MOVE    WRK-DBPATH          TO  ORC-DBPATH
+           PERFORM 900-SUB-DBCLOSE-SEC
       *
            IF      WRK-YMD3            =   SPACE
       *        他の履歴が無い時
@@ -393,6 +395,8 @@
                MOVE    WRK-DBPATH          TO  ORC-DBPATH
                PERFORM 920-SANTEI-READ-SEC
            END-PERFORM
+           MOVE    WRK-DBPATH          TO  ORC-DBPATH
+           PERFORM 900-SUB-DBCLOSE-SEC
            .
        10010-MAE-SANTEI-HEN-EXT.
            EXIT.
@@ -470,6 +474,8 @@
            ELSE
                MOVE    1                   TO  FLG-SANTEI
            END-IF
+           MOVE    WRK-DBPATH          TO  ORC-DBPATH
+           PERFORM 900-SUB-DBCLOSE-SEC
            .
       *
        1001-SANTEI-KEN-EXT.
@@ -652,6 +658,8 @@
                    PERFORM 920-SANTEI-READ-SEC
                END-IF
            END-PERFORM
+           MOVE    "SANTEI-KEY8"       TO  ORC-DBPATH
+           PERFORM 900-SUB-DBCLOSE-SEC
            .
       *
        100912-SANTEI-CHK-EXT.
@@ -1564,12 +1572,8 @@
                MOVE    1                   TO  FLG-TENSU
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 900-SUB-DBCLOSE-SEC
       *
            .
        910-TENSU-READ-EXT.
@@ -1635,6 +1639,21 @@
       *
            .
        900-SANTEI-READ2-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢクロース処理
+      *****************************************************************
+       900-SUB-DBCLOSE-SEC         SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       900-SUB-DBCLOSE-EXT.
            EXIT.
       *
       *****************************************************************
