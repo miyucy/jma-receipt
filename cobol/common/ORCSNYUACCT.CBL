@@ -1800,6 +1800,12 @@
            ELSE
                MOVE    1                   TO  FLG-NYUINACT
            END-IF
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "NYUINACT-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      FLG-NYUINACT       =    ZERO
                MOVE    NYUINACT-REC        TO  MCPDATA-REC
                MOVE    "DBDELETE"          TO  MCP-FUNC
