@@ -1950,6 +1950,7 @@
            MOVE    SPA-GMN-O04-PTNUM   TO  SPTNUM-PTNUM
            CALL    "ORCSPTNUM"         USING   ORCSPTNUMAREA
                                                SPA-AREA
+           MOVE    SPTNUM-PTNUM        TO  SPA-GMN-O04-PTNUM
            EVALUATE    SPTNUM-RC
            WHEN    00
                MOVE    SPTNUM-PTNUM        TO  SPA-GMN-O04-PTNUM

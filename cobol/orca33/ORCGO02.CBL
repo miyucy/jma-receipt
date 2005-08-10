@@ -332,6 +332,7 @@
           COPY    "CPORCSGDAY.INC".
       *----(01.00.04) LINE ADD END   ----------------------------------
       *   患者番号変換サブ
+           COPY    "CPORCSPTNUM.INC".
            COPY    "CPORCSPTID.INC".
       *
       *   ジョブ管理ＤＢ制御サブ
@@ -812,17 +813,17 @@
            MOVE    SPACE               TO  SPA-GMN-NAME
            MOVE    ZERO                TO  SPA-NAI-PTID 
       *
-           INITIALIZE                  ORCSPTIDAREA
-           MOVE    SPA-HOSPID          TO  SPTID-HOSPID
-           MOVE    SPA-GMN-PTNUM       TO  SPTID-PTNUM
-           CALL    "ORCSPTID"          USING   ORCSPTIDAREA
-                                               SPA-1009-TBL
-           IF    ( SPTID-RC        NOT =   ZERO )
+           INITIALIZE                  ORCSPTNUMAREA
+           MOVE    SPA-GMN-PTNUM       TO  SPTNUM-PTNUM
+           CALL    "ORCSPTNUM"         USING   ORCSPTNUMAREA
+                                               SPA-AREA
+           MOVE    SPTNUM-PTNUM        TO  SPA-GMN-PTNUM
+           IF    ( SPTNUM-RC       NOT =   ZERO )
                MOVE    "0003"          TO  SPA-ERRCD
                GO  TO                  4103-PTNUM-CHK-EXT
            END-IF
-           MOVE    SPTID-PTNUM         TO  SPA-GMN-PTNUM
-           MOVE    SPTID-PTID          TO  SPA-NAI-PTID
+      *
+           MOVE    SPTNUM-PTID          TO  SPA-NAI-PTID
       *
       *    患者マスター存在チェック
            MOVE    SPA-HOSPID          TO  PTINF-HOSPID
