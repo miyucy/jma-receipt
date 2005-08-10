@@ -1070,6 +1070,8 @@
                MOVE    SPA-GMN-PTNUM       TO  SPTNUM-PTNUM
                CALL    "ORCSPTNUM"         USING   ORCSPTNUMAREA
                                                    SPA-AREA
+               MOVE    SPTNUM-PTNUM    TO  SPA-GMN-PTNUM
+      *
                IF      SPTNUM-RC           =   ZERO 
                    MOVE    SPTNUM-PTNUM        TO  SPA-GMN-PTNUM
                    MOVE    SPTNUM-PTID         TO  SPA-NAI-PTID
@@ -1109,6 +1111,7 @@
            MOVE    "1"                 TO  KANACHK-SYORI 
            MOVE    SPA-GMN-NAME        TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-NAME
            IF      KANACHK-RC          =   ZERO
            AND     KANACHK-SYUBETU     =   "2"
                MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-NAME
@@ -1203,6 +1206,7 @@
            MOVE    "1"                 TO  KANACHK-SYORI 
            MOVE    SPA-GMN-ADRS        TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-ADRS
            IF      KANACHK-RC          =   ZERO
            AND     KANACHK-SYUBETU     =   "2"
                MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-ADRS
