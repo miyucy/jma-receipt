@@ -98,6 +98,7 @@
                05  WRK-SDD                 PIC 9(02).
            03  WRK-HENYMDG                 PIC X(09).
            03  WRK-KANACHK-MAE-INPUT       PIC X(400).
+           03  WRK-KANACHK-OUT-INPUT       PIC X(400).
       *    ¥Ñ¥¹Ì¾ÎÎ°è
            03  WRK-DBPATH                  PIC X(20).
            03  WRK-COMBO.
@@ -825,6 +826,8 @@
                                    TO  WRK-KANACHK-MAE-INPUT
       *
            PERFORM     800-ENRTRY-CHK-SEC
+           MOVE    WRK-KANACHK-OUT-INPUT
+                                   TO  SPA-GMN-I03-COMMENT
            IF  ( FLG-ENTRYCHK          =   1 )
                MOVE    "0002"          TO  SPA-ERRCD
                MOVE    2               TO  SPA-GMN-I03-CUR
@@ -947,6 +950,8 @@
                                    TO  WRK-KANACHK-MAE-INPUT
       *
            PERFORM     800-ENRTRY-CHK-SEC
+           MOVE    WRK-KANACHK-OUT-INPUT
+                                   TO  SPA-GMN-I03-BYOMEI (IDX1)
            IF  ( FLG-ENTRYCHK          =   1 )
                MOVE    "0002"          TO  SPA-ERRCD
                COMPUTE SPA-GMN-I03-CUR =   IDX1    +   6
@@ -971,6 +976,8 @@
                                    TO  WRK-KANACHK-MAE-INPUT
       *
            PERFORM     800-ENRTRY-CHK-SEC
+           MOVE    WRK-KANACHK-OUT-INPUT
+                                   TO  SPA-GMN-I03-KHNRYO
            IF  ( FLG-ENTRYCHK          =   1 )
                MOVE    "0002"          TO  SPA-ERRCD
                MOVE    12              TO  SPA-GMN-I03-CUR
@@ -2312,8 +2319,9 @@
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"             TO  KANACHK-SYORI
            MOVE    WRK-KANACHK-MAE-INPUT
-                                   TO  KANACHK-MAE-INPUT
+                                       TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT   TO  WRK-KANACHK-OUT-INPUT
            IF      ( KANACHK-RC    NOT =   ZERO )
                MOVE    1           TO  FLG-ENTRYCHK
                GO  TO  800-ENRTRY-CHK-EXT
