@@ -1053,6 +1053,8 @@
            MOVE    SPA-GMN-I51-PTNUM   TO  SPTNUM-PTNUM
            CALL    "ORCSPTNUM"         USING   ORCSPTNUMAREA
                                                SPA-AREA
+           MOVE    SPTNUM-PTNUM        TO  SPA-GMN-I51-PTNUM
+      *
            EVALUATE    SPTNUM-RC
                WHEN    00
                    MOVE    SPTNUM-PTNUM    TO  SPA-GMN-I51-PTNUM
