@@ -585,12 +585,8 @@
                MOVE    1               TO  FLG-HKNJAINF
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "HKNJAINF-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 900-DBCLOSE-SEC
       *
       *    帳票編集処理
            PERFORM 2002-HC01-HEN-SEC
@@ -798,6 +794,8 @@
                    INITIALIZE                      PTRSIINF-REC
                    MOVE    1                   TO  FLG-PTRSIINF
                END-IF
+               MOVE    "PTRSIINF-KEY"     TO  ORC-DBPATH
+               PERFORM 900-DBCLOSE-SEC
                IF      FLG-PTRSIINF        =   ZERO
       *            保険者番号へ記号（労災区分名）
                    MOVE    WRK-HEN-KIGONUM     TO  HC01-HPTNUM
@@ -881,10 +879,11 @@
       *
              END-IF
       *
-      *
                MOVE    "PTBYOMEI-KEY2"     TO  ORC-DBPATH
                PERFORM 950-PTBYOMEI-READ-SEC
            END-PERFORM
+           MOVE    "PTBYOMEI-KEY2"     TO  ORC-DBPATH
+           PERFORM 900-DBCLOSE-SEC
       *
            IF      WRK-PRT-CNT     =   1
       *            カルテ印刷
@@ -1147,12 +1146,8 @@
            ELSE
                MOVE    1               TO  FLG-PTINF
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTINF-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 900-DBCLOSE-SEC
       *
            .
        900-PTINF-READ-EXT.
@@ -1186,12 +1181,8 @@
                MOVE    1               TO  FLG-HKNCOMBI
            END-IF
      *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 900-DBCLOSE-SEC
       *
            .
        910-HKNCOMBI-READ-EXT.
@@ -1225,12 +1216,8 @@
                MOVE    1               TO  FLG-PTHKNINF
            END-IF
      *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTHKNINF-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 900-DBCLOSE-SEC
       *
            .
        920-PTHKNINF-READ-EXT.
@@ -1265,12 +1252,8 @@
                MOVE    1               TO  FLG-HKNNUM
            END-IF
      *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "HKNNUM-KEY"        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 900-DBCLOSE-SEC
       *
            .
        930-HKNNUM-READ-EXT.
@@ -1305,12 +1288,8 @@
                MOVE    1               TO  FLG-PTKOHINF
            END-IF
      *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTKOHINF-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 900-DBCLOSE-SEC
       *
            .
        940-PTKOHINF-READ-EXT.
@@ -1365,12 +1344,8 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 900-DBCLOSE-SEC
       *
            .
        800-SYSKANRI-READ-EXT.
@@ -1419,6 +1394,18 @@
        993-PTRSIINF-NEXT-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    ＤＢクロース処理
+      *****************************************************************
+       900-DBCLOSE-SEC                 SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           .
+       900-DBCLOSE-EXT.
       *
       *****************************************************************
       *    終了　　処理

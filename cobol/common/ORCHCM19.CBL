@@ -692,12 +692,6 @@
                INITIALIZE                      JYURRK-REC
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
            IF      JYURRK-GRP-DENPNUM  =   ZERO
       *         Ã±ÆÈÊ¬
                 PERFORM 20021-ONLY-SYORI-SEC
@@ -714,6 +708,12 @@
       *****************************************************************
        20022-FUKU-SYORI-SEC          SECTION.
       *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *    ¼õ¿ÇÍúÎò¸¡º÷
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
