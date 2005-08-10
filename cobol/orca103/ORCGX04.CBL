@@ -1054,6 +1054,10 @@
                GO  TO  4101-SELNUM-CHK-EXT
            END-IF
       *
+           MOVE    SPA-GMN-SELNUM      TO  WRK-MAE-INPUT
+           PERFORM 800-KANA-CHK-SEC
+           MOVE    WRK-OUT-INPUT       TO  SPA-GMN-SELNUM
+      *
            IF    ( SPA-GMN-SELNUM (1:1)    =   "." )
                PERFORM 41011-MULTI-SEL-CHK-SEC
                IF    ( SPA-ERRCD   NOT =   SPACE )
@@ -1221,6 +1225,10 @@
            INITIALIZE                  XSUB01-LNK
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >       CONST-BYOCD-MAX )
+      *
+               MOVE    SPA-GMN-BYOCD (IDX0)    TO  WRK-MAE-INPUT
+               PERFORM 800-KANA-CHK-SEC
+               MOVE    WRK-OUT-INPUT           TO  SPA-GMN-BYOCD (IDX0)
       *
                MOVE    SPA-GMN-BYOCD (IDX0)
                                    TO  XSUB01-BYOCD (IDX0)

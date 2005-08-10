@@ -998,6 +998,8 @@
            IF    ( SPA-X03-GMN-SELNAME NOT =   SPACE )
                MOVE    SPA-X03-GMN-SELNAME TO  WRK-KANACHK-MAE-INPUT
                PERFORM 800-ENRTRY-CHK-SEC
+               MOVE    WRK-KANACHK-OUT-INPUT
+                                           TO  SPA-X03-GMN-SELNAME
                IF    ( FLG-ENTRYCHK    NOT =   2 )
                    MOVE    "0003"          TO  SPA-ERRCD
                    MOVE    2               TO  SPA-X03-GMN-CUR
@@ -2144,13 +2146,13 @@
            MOVE    WRK-KANACHK-MAE-INPUT
                                        TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT   TO  WRK-KANACHK-OUT-INPUT
            IF      ( KANACHK-RC    NOT =   ZERO )
                MOVE    9               TO  FLG-ENTRYCHK
                GO  TO  800-ENRTRY-CHK-EXT
            END-IF
       *
            MOVE    KANACHK-SYUBETU     TO  FLG-ENTRYCHK
-           MOVE    KANACHK-OUT-INPUT   TO  WRK-KANACHK-OUT-INPUT
       *
            .
        800-ENRTRY-CHK-EXT.

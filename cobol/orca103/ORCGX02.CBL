@@ -759,40 +759,18 @@
                COMPUTE IDZ
                    =   IDX
                    +  (SPA-GMN-PAGE - 1 )  *   WRK-CONS-LINE-MAX
+      *
+               MOVE    X02-TEKCD (IDX)         TO  SPA-GMN-TTEKCD
+                                                                 (IDZ)
+      *
       *        全角入力の時、１０文字まで
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "1"                     TO  KANACHK-SYORI
-               MOVE    X02-TEKCD (IDX)(1:8)    TO  KANACHK-MAE-INPUT
+               MOVE    SPA-GMN-TTEKCD (IDX)    TO  KANACHK-MAE-INPUT
                CALL    "ORCSKANACHK"       USING
                                            ORCSKANACHKAREA
-               IF     (KANACHK-RC          =   ZERO )  AND
-                      (KANACHK-SYUBETU     =   2    )
-                   MOVE    1                   TO  FLG-ZENKAKU
-               ELSE
-                   MOVE    ZERO                TO  FLG-ZENKAKU
-               END-IF
-               EVALUATE    SPA-GMN-CHKKBN
-                   WHEN    "1"
-                   WHEN    "2" 
-                       IF      FLG-ZENKAKU     =   ZERO
-                           MOVE    X02-TEKCD (IDX)
-                                                   TO  SPA-GMN-TTEKCD
+               MOVE    KANACHK-OUT-INPUT       TO  SPA-GMN-TTEKCD
                                                                  (IDZ)
-                       ELSE
-                           MOVE    X02-TEKCD (IDX)(1:20)
-                                                   TO  SPA-GMN-TTEKCD
-                                                                 (IDZ)
-                       END-IF
-                   WHEN    OTHER
-                       IF      FLG-ZENKAKU     =   ZERO
-                           MOVE    X02-TEKCD (IDX) TO  SPA-GMN-TTEKCD
-                                                                 (IDZ)
-                       ELSE
-                           MOVE    X02-TEKCD (IDX)(1:20)
-                                                   TO  SPA-GMN-TTEKCD
-                                                                 (IDZ)
-                       END-IF
-               END-EVALUATE
            END-PERFORM
       *
            .

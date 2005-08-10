@@ -646,6 +646,7 @@
            MOVE    SPA-GMN-STSRYCD     TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-STSRYCD
            IF    ( KANACHK-RC      NOT =   ZERO )
       *        Á´³ÑÈ¾³Ñº®ºß¥¨¥é¡¼
                MOVE    "0001"          TO  SPA-ERRCD
@@ -755,9 +756,10 @@
       *    Á´³Ñ¥Á¥§¥Ã¥¯
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
-           MOVE    SPA-GMN-STSRYCD     TO  KANACHK-MAE-INPUT
+           MOVE    SPA-GMN-EDSRYCD     TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-EDSRYCD
            IF    ( KANACHK-RC      NOT =   ZERO )
       *        Á´³ÑÈ¾³Ñº®ºß¥¨¥é¡¼
                MOVE    "0002"          TO  SPA-ERRCD

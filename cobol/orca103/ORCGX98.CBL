@@ -2209,6 +2209,7 @@
            MOVE    SPA-X98-GMN-INPUT   TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT   TO  SPA-X98-GMN-INPUT
            IF      KANACHK-RC2         =   7
                MOVE    KANACHK-OUT-INPUT   TO  SPA-X98-GMN-INPUT
            END-IF
