@@ -215,6 +215,7 @@
       *                                     （レセ記載なし）の一部負担額記載
       *                                     修正
       *  02.06.08    NACL-藤原    05/07/13  本人−外来−内容の追加
+      *  02.06.09    NACL-藤原    05/08/05  記載外公費−負担者番号の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -5383,6 +5384,9 @@
                            ADD     1       TO  IDZX
                            MOVE    WRK-RECE02-KOHNUM (IDX)
                                            TO  RECE02-ETC-KOHNUM (IDZX)
+                           MOVE    WRK-RECE02-KOHFTNJANUM (IDX)
+                                           TO  RECE02-ETC-KOHFTNJANUM
+                                                                 (IDZX)
                            MOVE    WRK-RECE02-JNISSU   (IDXX)
                                            TO  RECE02-ETC-JNISSU (IDZX)
                            MOVE    WRK-RECE02-TOTALTEN (IDXX)

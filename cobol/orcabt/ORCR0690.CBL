@@ -81,6 +81,10 @@
       *  02.06.05    NACL-門脇    05/05/26  手術・麻酔の記載順変更対応
       *  02.06.06    NACL-門脇    05/06/06  ワーク項目桁数修正
       *  02.06.07    NACL-竹田    05/05/30  realtime preview 処理追加
+      *  02.06.08    NACL-藤原    05/07/28  レセプト特記事項編集情報によ
+      *                                     るレセプト請求しない地方公費の
+      *                                     編集を追加
+      *                                     条件に負担者番号を追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -260,6 +264,8 @@
                                        PIC  X(01).
                    07  TBL-SYS2006-ZAITAKU
                                        PIC  X(01).
+                   07  TBL-SYS2006-FTNJANUM
+                                       PIC  X(01).
       *
       *    一時領域
        01  WRK-AREA.
@@ -372,8 +378,11 @@
                                        PIC  X(01).
                    07  WRK-SYS2006-ZAITAKU
                                        PIC  X(01).
+                   07  WRK-SYS2006-FTNJANUM
+                                       PIC  X(01).
       *
            03  WRK-HKNNUM              PIC X(03).
+           03  WRK-FTNJANUM            PIC X(08).
       *
       *    剤・診療行為テーブル
        01  TBL-ZAI-AREA.
@@ -929,6 +938,9 @@
                                                           (SYSKAN-IDY)
                        MOVE    SYS-2006-ZAITAKU
                                           TO  TBL-SYS2006-ZAITAKU
+                                                          (SYSKAN-IDY)
+                       MOVE    SYS-2006-FTNJANUMKBN-JYOKEN
+                                          TO  TBL-SYS2006-FTNJANUM
                                                           (SYSKAN-IDY)
                        MOVE    1             TO  FLG-SYS-2006
       *
@@ -2160,6 +2172,9 @@
       *****************************************************************
        2008-SYS2006-HENSYU-SEC          SECTION.
       *
+           INITIALIZE                   WRK-FTNJANUM
+                                        FLG-CHK-SYOKBN 
+      *
       *    給付割合
            IF    ( RECE62-KOHNUM (1)   NOT =   SPACE )
            OR    ( RECE62-ETC-KOHNUM (1)
@@ -2230,6 +2245,8 @@
       *
                    IF      RECE62-KOHNUM (IDY)
                                            =   WRK-2006-HKNNUM
+                       MOVE    RECE62-KOHFTNJANUM (IDY)
+                                                   TO  WRK-FTNJANUM
                        PERFORM 200811-SYS2006-CHECK-SEC
                    END-IF    
                END-PERFORM
@@ -2272,6 +2289,7 @@
       *
            MOVE    ZERO                TO  FLG-2006-CHK
            INITIALIZE                      SYS-2006-REC
+                                           WRK-FTNJANUM
       *
            PERFORM VARYING IDW1    FROM    1   BY  1
                    UNTIL ( IDW1    >       4             )
@@ -2283,6 +2301,8 @@
       *
                    IF      RECE62-KOHNUM (IDW1)
                                            =   WRK-2006-HKNNUM
+                       MOVE    RECE62-KOHFTNJANUM (IDW1)
+                                               TO  WRK-FTNJANUM
                        EVALUATE    FLG-CHK-SYOKBN
                            WHEN    1
                                IF      WRK-2006-KYURATE
@@ -2327,6 +2347,8 @@
                                                    >   ZERO            )
                            AND   ( RECE62-ETC-KOHNUM (IDW1)
                                                    =   WRK-2006-HKNNUM )
+                               MOVE    RECE62-ETC-KOHFTNJANUM (IDW1)
+                                                       TO  WRK-FTNJANUM
                                PERFORM 200811-SYS2006-CHECK-SEC
                            END-IF
                        END-PERFORM
@@ -2349,6 +2371,8 @@
                                                    >   ZERO            )
                        AND   ( RECE62-ETC-KOHNUM (IDW1)
                                                    =   WRK-2006-HKNNUM )
+                           MOVE    RECE62-ETC-KOHFTNJANUM (IDW1)
+                                                   TO  WRK-FTNJANUM
                            PERFORM 200811-SYS2006-CHECK-SEC
                        END-IF
                    END-PERFORM
@@ -2402,6 +2426,28 @@
                GO  TO  200811-SYS2006-CHECK-EXT
            END-IF
       *
+           EVALUATE    WRK-2006-FTNJANUMKBN-JYOKEN
+               WHEN    "1"
+                   IF      WRK-FTNJANUM    NOT =   SPACE
+                       CONTINUE
+                   ELSE
+                       GO  TO  200811-SYS2006-CHECK-EXT
+                   END-IF
+               WHEN    "2"
+                   IF      WRK-FTNJANUM        =   SPACE
+                       CONTINUE
+                   ELSE
+                       GO  TO  200811-SYS2006-CHECK-EXT
+                   END-IF
+               WHEN    "3"
+                   IF      WRK-FTNJANUM        =
+                                           WRK-2006-FTNJANUM-JYOKEN
+                       CONTINUE
+                   ELSE
+                       GO  TO  200811-SYS2006-CHECK-EXT
+                   END-IF
+           END-EVALUATE
+      *
            MOVE    1                  TO  FLG-2006-CHK
            MOVE    WRK-2006-REC       TO  SYS-2006-REC
            .
@@ -2415,6 +2461,7 @@
       *
            MOVE    ZERO                TO  FLG-2006-CHK
            INITIALIZE                      SYS-2006-REC
+                                           WRK-FTNJANUM
       *
       *    保険番号設定時の対象の保険チェック
            MOVE    ZERO                TO  FLG-HKNNUM-OK
@@ -2426,6 +2473,8 @@
                        OR    ( FLG-HKNNUM-OK       =   1     )
                    IF      RECE62-KOHNUM(IDW2) =   WRK-2006-HKNNUM
                        MOVE    1                   TO  FLG-HKNNUM-OK
+                       MOVE    RECE62-KOHFTNJANUM (IDW2)
+                                                   TO  WRK-FTNJANUM
                    END-IF
                END-PERFORM
       ******** 原爆のときはレセプト記載外公費情報も検索
@@ -2440,9 +2489,27 @@
                        IF      RECE62-ETC-KOHNUM (IDW2)
                                                =   WRK-2006-HKNNUM
                            MOVE    1               TO  FLG-HKNNUM-OK
+                           MOVE    RECE62-ETC-KOHFTNJANUM (IDW2)
+                                                   TO  WRK-FTNJANUM
                        END-IF
                    END-PERFORM
                END-IF
+      *        レセプト請求しない地方公費情報も検索
+               IF      FLG-HKNNUM-OK           =   ZERO
+                   PERFORM VARYING IDW2    FROM    1   BY  1
+                           UNTIL ( IDW2    >       4                 )
+                           OR    ( RECE62-KOHSKY-KOHNUM(IDW2)
+                                                           =   SPACE )
+                           OR    ( FLG-HKNNUM-OK           =   1     )
+                       IF      RECE62-KOHSKY-KOHNUM (IDW2)
+                                               =   WRK-2006-HKNNUM
+                           MOVE    1               TO  FLG-HKNNUM-OK
+                           MOVE    RECE62-KOHSKY-KOHFTNJANUM (IDW2)
+                                                   TO  WRK-FTNJANUM
+                       END-IF
+                   END-PERFORM
+               END-IF
+      *
                IF      FLG-HKNNUM-OK   =   ZERO
                    ADD     1                   TO  IDW1
                ELSE

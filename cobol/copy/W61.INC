@@ -1,4 +1,22 @@
           02  W61.
+              03  W61-SCROLLEDWINDOW28.
+                04  W61-TOKKILST.
+                  05  W61-COUNT   PIC S9(9)   BINARY.
+                  05  W61-ROW PIC S9(9)   BINARY.
+                  05  W61-ITEM            OCCURS  100 TIMES.
+                    06  W61-TRENNUM       PIC X(3).
+                    06  W61-THKNNUM       PIC X(3).
+                    06  W61-TSEIDONAME    PIC X(50).
+                    06  W61-TTEISYUTUSAKI PIC X(10).
+                    06  W61-THKNJANUM     PIC X(8).
+                    06  W61-TFTNJANUMKBN-JYOKEN
+                                          PIC X(10).
+                    06  W61-TRJNKBN       PIC X(10).
+                    06  W61-TZAITAKU      PIC X(10).
+                    06  W61-TSTYUKYMD     PIC X(9).
+                    06  W61-TEDYUKYMD     PIC X(9).
+                  05  W61-SELECT
+                          PIC X       OCCURS  100 TIMES.
               03  W61-SELNUM.
                 04  W61-VALUE   PIC S9(3).
               03  W61-STYUKYMD.
@@ -13,21 +31,29 @@
                 04  W61-TEISYUTUSAKI         PIC X(12).
                 04  W61-TEISYUTUSAKI-COUNT   PIC S9(9)   BINARY.
                 04  W61-TEISYUTUSAKI-ITEM
-                                          PIC X(12)   OCCURS  2 TIMES.
+                                          PIC X(12)   OCCURS  5 TIMES.
               03  W61-HKNJANUM.
                 04  W61-VALUE   PIC X(8).
               03  W61-HKNJANAME.
                 04  W61-VALUE   PIC X(100).
+              03  W61-FTNJANUMKBN-JYOKEN-COMBO.
+                04  W61-FTNJANUMKBN-JYOKEN.
+                  05  W61-VALUE   PIC X(32).
+                04  W61-FTNJANUMKBN-JYOKEN-COUNT   PIC S9(9)   BINARY.
+                04  W61-FTNJANUMKBN-JYOKEN-ITEM
+                        PIC X(32)   OCCURS  5 TIMES.
+              03  W61-FTNJANUM-JYOKEN.
+                04  W61-VALUE   PIC X(8).
               03  W61-ZAITAKU-COMBO.
                 04  W61-ZAITAKU         PIC X(44).
                 04  W61-ZAITAKU-COUNT   PIC S9(9)   BINARY.
                 04  W61-ZAITAKU-ITEM
-                        PIC X(44)   OCCURS  2 TIMES.
+                        PIC X(44)   OCCURS  5 TIMES.
               03  W61-RJNKBN-COMBO.
                 04  W61-RJNKBN         PIC X(52).
                 04  W61-RJNKBN-COUNT   PIC S9(9)   BINARY.
                 04  W61-RJNKBN-ITEM
-                        PIC X(52)   OCCURS  2 TIMES.
+                        PIC X(52)   OCCURS  5 TIMES.
               03  W61-TOKKI.
                 04  W61-VALUE   PIC X(12).
               03  W61-KYURATE.
@@ -54,7 +80,7 @@
                 04  W61-RECEDEN-KORECKBN         PIC X(12).
                 04  W61-RECEDEN-KORECKBN-COUNT   PIC S9(9)   BINARY.
                 04  W61-RECEDEN-KORECKBN-ITEM
-                        PIC X(12)   OCCURS  2 TIMES.
+                        PIC X(12)   OCCURS  5 TIMES.
               03  W61-RECEDEN-FTNJANUMKBN-COMBO.
                 04  W61-RECEDEN-FTNJANUMKBN         PIC X(25).
                 04  W61-RECEDEN-FTNJANUMKBN-COUNT   PIC S9(9)   BINARY.
@@ -67,19 +93,3 @@
                 04  W61-RECEDEN-JKYSNUMKBN-ITEM
                         PIC X(25)   OCCURS  5 TIMES.
               03  W61-RECEDEN-JKYSNUM   PIC X(7).
-              03  W61-SCROLLEDWINDOW28.
-                04  W61-TOKKILST.
-                  05  W61-COUNT   PIC S9(9)   BINARY.
-                  05  W61-ROW PIC S9(9)   BINARY.
-                  05  W61-ITEM            OCCURS  100 TIMES.
-                    06  W61-TRENNUM       PIC X(3).
-                    06  W61-THKNNUM       PIC X(3).
-                    06  W61-TSEIDONAME    PIC X(50).
-                    06  W61-TTEISYUTUSAKI PIC X(10).
-                    06  W61-THKNJANUM     PIC X(8).
-                    06  W61-TRJNKBN       PIC X(10).
-                    06  W61-TZAITAKU      PIC X(10).
-                    06  W61-TSTYUKYMD     PIC X(9).
-                    06  W61-TEDYUKYMD     PIC X(9).
-                  05  W61-SELECT
-                          PIC X       OCCURS  100 TIMES.

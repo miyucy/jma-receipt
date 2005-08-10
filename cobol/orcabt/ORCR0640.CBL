@@ -145,6 +145,7 @@
       *  02.06.09    NACL-門脇    05/07/07  更生・育成の日割計算時の
       *                                     一部負担額記載修正
       *  02.06.10    NACL-藤原    05/07/13  本人−入院−内容の追加
+      *  02.06.11    NACL-藤原    05/08/05  記載外公費−負担者番号の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -7751,6 +7752,9 @@
                            ADD     1       TO  IDZX
                            MOVE    WRK-RECE62-KOHNUM (IDX)
                                            TO  RECE62-ETC-KOHNUM (IDZX)
+                           MOVE    WRK-RECE62-KOHFTNJANUM (IDX)
+                                           TO  RECE62-ETC-KOHFTNJANUM
+                                                                 (IDZX)
                            MOVE    WRK-RECE62-JNISSU   (IDXX)
                                            TO  RECE62-ETC-JNISSU (IDZX)
                            MOVE    WRK-RECE62-TOTALTEN (IDXX)

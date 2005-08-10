@@ -30,7 +30,9 @@
       *  00.00.01    NACL-藤原    05/05/17  レセプト特記事項編集情報に
       *                                     「2 老人医療受給がない場合」
       *                                      を追加
-      *  00.00.02    NACL-藤原    05/05/20  削除ボタンをＦ４に変更
+      *
+      *  02.06.01    NACL-藤原    05/05/20  削除ボタンをＦ４に変更
+      *  02.06.02    NACL-藤原    05/08/03  条件に負担者番号を追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -58,20 +60,30 @@
                05  SPA-GMN-CUR         PIC 9(03).
       *
                05  SPA-GMN-AREA.
-                   07  SPA-GMN-TEISYUTUSAKILST     OCCURS  2.
+                   07  SPA-GMN-TEISYUTUSAKILST     OCCURS  5.
                        09  SPA-GMN-TEISYUTUSAKIL   PIC X(01).
                        09  SPA-GMN-F1L             PIC X(01).
                        09  SPA-GMN-TEISYUTUSAKIMEIL
                                                    PIC X(10).
                    07  SPA-GMN-TEISYUTUSAKI-MAX    PIC 9(01).
       *
-                   07  SPA-GMN-ZAITAKULST          OCCURS  2.
+                   07  SPA-GMN-FTNJANUMKBN-JYOKENLST
+                                                   OCCURS  5.
+                       09  SPA-GMN-FTNJANUMKBN-JYOKENL
+                                                   PIC X(01).
+                       09  SPA-GMN-F1L             PIC X(01).
+                       09  SPA-GMN-FTNJANUMKBN-JYOKENMEIL
+                                                   PIC X(30).
+                   07  SPA-GMN-FTNJANUMKBN-JYOKEN-MAX
+                                                   PIC 9(01).
+      *
+                   07  SPA-GMN-ZAITAKULST          OCCURS  5.
                        09  SPA-GMN-ZAITAKUL        PIC X(01).
                        09  SPA-GMN-F1L             PIC X(01).
                        09  SPA-GMN-ZAITAKUMEIL     PIC X(42).
                    07  SPA-GMN-ZAITAKU-MAX         PIC 9(01).
       *
-                   07  SPA-GMN-RJNKBNLST           OCCURS  2.
+                   07  SPA-GMN-RJNKBNLST           OCCURS  5.
                        09  SPA-GMN-RJNKBNL         PIC X(01).
                        09  SPA-GMN-F1L             PIC X(01).
                        09  SPA-GMN-RJNKBNMEIL      PIC X(50).
@@ -89,7 +101,7 @@
                        09  SPA-GMN-JKYSNUMKBNMEIL  PIC X(22).
                    07  SPA-GMN-JKYSNUMKBN-MAX      PIC 9(01).
       *
-                   07  SPA-GMN-RECEDEN-KORECKBNLST OCCURS  2.
+                   07  SPA-GMN-RECEDEN-KORECKBNLST OCCURS  5.
                        09  SPA-GMN-RECEDEN-KORECKBNL
                                                    PIC X(01).
                        09  SPA-GMN-F1L             PIC X(01).
@@ -106,6 +118,8 @@
                            11  SPA-GMN-TTEISYUTUSAKI
                                                    PIC X(10).
                            11  SPA-GMN-THKNJANUM   PIC X(08).
+                           11  SPA-GMN-TFTNJANUMKBN-JYOKEN
+                                                   PIC X(10).
                            11  SPA-GMN-TRJNKBN     PIC X(10).
                            11  SPA-GMN-TZAITAKU    PIC X(10).
                            11  SPA-GMN-TSTYUKYMD   PIC X(09).
@@ -124,6 +138,12 @@
                                13  SPA-GMN-F1      PIC X(01).
                                13  SPA-GMN-TEISYUTUSAKIMEI
                                                    PIC X(10).
+                           11  SPA-GMN-FTNJANUMKBN-JYOKEN-G.
+                               13  SPA-GMN-FTNJANUMKBN-JYOKEN
+                                                   PIC X(01).
+                               13  SPA-GMN-F1      PIC X(01).
+                               13  SPA-GMN-FTNJANUMKBN-JYOKENMEI
+                                                   PIC X(30).
                            11  SPA-GMN-ZAITAKU-G.
                                13  SPA-GMN-ZAITAKU
                                                    PIC X(01).
@@ -165,6 +185,8 @@
                                13  SPA-GMN-F1      PIC X(01).
                                13  SPA-GMN-RECEDEN-JKYSNUMKBNMEI
                                                    PIC X(22).
+                           11  SPA-GMN-FTNJANUM-JYOKEN
+                                                   PIC X(08).
                            11  SPA-GMN-HKNJANUM    PIC X(08).
                            11  SPA-GMN-HKNJANAME   PIC X(100).
                            11  SPA-GMN-TOKKI       PIC X(12).
@@ -192,8 +214,10 @@
                            11  SPA-NAI-TKBNCD      PIC X(03).
                            11  SPA-NAI-TRJNKBN     PIC X(01).
                            11  SPA-NAI-TZAITAKU    PIC X(01).
+                           11  SPA-NAI-TFTNJANUMKBN-JYOKEN
+                                                   PIC X(01).
       *
-              05  SPA-NAI-SELNUM                    PIC 9(03).
+              05  SPA-NAI-SELNUM                   PIC 9(03).
       *
       *    コンスタント値
            COPY    "ENUM-VALUE".
@@ -462,12 +486,26 @@
                                    TO  SPA-GMN-ZAITAKUMEIL       (1)
            MOVE    1               TO  SPA-GMN-ZAITAKU-MAX
       *
+           MOVE    "1"             TO  SPA-GMN-FTNJANUMKBN-JYOKENL   (1)
+           MOVE    "記載がある場合のみ対象"
+                                   TO  SPA-GMN-FTNJANUMKBN-JYOKENMEIL(1)
+           MOVE    "2"             TO  SPA-GMN-FTNJANUMKBN-JYOKENL   (2)
+           MOVE    "記載がない場合のみ対象"
+                                   TO  SPA-GMN-FTNJANUMKBN-JYOKENMEIL(2)
+           MOVE    "3"             TO  SPA-GMN-FTNJANUMKBN-JYOKENL   (3)
+           MOVE    "固定の負担者番号の場合のみ対象"
+                                   TO  SPA-GMN-FTNJANUMKBN-JYOKENMEIL(3)
+           MOVE    3               TO  SPA-GMN-FTNJANUMKBN-JYOKEN-MAX
+      *
            MOVE    "01"            TO  SPA-GMN-FTNJANUMKBNL      (1)
            MOVE    "記録しない"    TO  SPA-GMN-FTNJANUMKBNMEIL   (1)
            MOVE    "02"            TO  SPA-GMN-FTNJANUMKBNL      (2)
            MOVE    "固定の文字列を記載する"
                                    TO  SPA-GMN-FTNJANUMKBNMEIL   (2)
-           MOVE    2               TO  SPA-GMN-FTNJANUMKBN-MAX
+           MOVE    "03"            TO  SPA-GMN-FTNJANUMKBNL      (3)
+           MOVE    "前にゼロづめにして記載する"
+                                   TO  SPA-GMN-FTNJANUMKBNMEIL   (3)
+           MOVE    3               TO  SPA-GMN-FTNJANUMKBN-MAX
       *
            MOVE    "01"            TO  SPA-GMN-JKYSNUMKBNL       (1)
            MOVE    "記録しない"    TO  SPA-GMN-JKYSNUMKBNMEIL    (1)
@@ -561,10 +599,25 @@
                MOVE    WRK-KBNMEI          TO  SPA-GMN-TTEISYUTUSAKI
                                                                  (IDX)
       *
+               MOVE    SYS-2006-FTNJANUMKBN-JYOKEN
+                                           TO
+                                       SPA-NAI-TFTNJANUMKBN-JYOKEN (IDX)
+               EVALUATE    SYS-2006-FTNJANUMKBN-JYOKEN
+                   WHEN    "1"
+                       MOVE    "記載がある"    TO
+                                       SPA-GMN-TFTNJANUMKBN-JYOKEN (IDX)
+                   WHEN    "2"
+                       MOVE    "記載がない"    TO
+                                       SPA-GMN-TFTNJANUMKBN-JYOKEN (IDX)
+                   WHEN    "3"
+                       MOVE    "固定"          TO
+                                       SPA-GMN-TFTNJANUMKBN-JYOKEN (IDX)
+                   WHEN    OTHER
+                       MOVE    SPACE           TO
+                                       SPA-GMN-TFTNJANUMKBN-JYOKEN (IDX)
+               END-EVALUATE
+      *
                MOVE    SYS-2006-RJNKBN     TO  SPA-NAI-TRJNKBN   (IDX)
-                                               WRK-KBN
-               PERFORM 5001-RJNKBN-HENSYU-SEC
-      *********MOVE    WRK-KBNMEI (1:8)    TO  SPA-GMN-TRJNKBN   (IDX)
                EVALUATE    SYS-2006-RJNKBN
                    WHEN    "1"
                        MOVE    "受給がある"
@@ -729,6 +782,9 @@
            MOVE    W61-STYUKYMD        TO  SPA-GMN-STYUKYMD
            MOVE    W61-TEISYUTUSAKI    TO  SPA-GMN-TEISYUTUSAKI-G
            MOVE    W61-HKNJANUM        TO  SPA-GMN-HKNJANUM
+           MOVE    W61-FTNJANUMKBN-JYOKEN
+                                       TO  SPA-GMN-FTNJANUMKBN-JYOKEN-G
+           MOVE    W61-FTNJANUM-JYOKEN TO  SPA-GMN-FTNJANUM-JYOKEN
            MOVE    W61-ZAITAKU         TO  SPA-GMN-ZAITAKU-G
            MOVE    W61-RJNKBN          TO  SPA-GMN-RJNKBN-G
            MOVE    W61-KYURATE         TO  SPA-GMN-KYURATE 
@@ -786,6 +842,16 @@
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
+      *    負担者番号
+           PERFORM 41021-FTNJANUMKBN-JYOKEN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *    負担者番号内容
+           PERFORM 41021-FTNJANUM-JYOKEN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
       *    老人区分
            PERFORM 41021-RJNKBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
@@ -813,7 +879,7 @@
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
-      *    負担者番号
+      *    負担者番号記載内容
            PERFORM 41021-FTNJANUM-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
@@ -957,6 +1023,17 @@
                                                WRK-KBN
                PERFORM 5001-TEISYUTUSAKI-HENSYU-SEC
                MOVE    WRK-KBNMEI          TO  SPA-GMN-TEISYUTUSAKIMEI
+      *
+               MOVE    SYS-2006-FTNJANUMKBN-JYOKEN
+                                           TO
+                                           SPA-GMN-FTNJANUMKBN-JYOKEN
+                                           WRK-KBN
+               PERFORM 5001-FTNJANUMKBN-JYOKEN-HENSYU-SEC
+               MOVE    WRK-KBNMEI          TO
+                                           SPA-GMN-FTNJANUMKBN-JYOKENMEI
+      *
+               MOVE    SYS-2006-FTNJANUM-JYOKEN
+                                           TO  SPA-GMN-FTNJANUM-JYOKEN
       *
                MOVE    SYS-2006-RJNKBN     TO  SPA-GMN-RJNKBN
                                                WRK-KBN
@@ -1259,6 +1336,61 @@
            EXIT.
       *
       *****************************************************************
+      *    負担者番号区分入力処理
+      *****************************************************************
+       41021-FTNJANUMKBN-JYOKEN-CHK-SEC      SECTION.
+      *
+           IF      SPA-GMN-FTNJANUMKBN-JYOKEN
+                                       =   SPACE
+               MOVE    SPACE           TO  SPA-GMN-FTNJANUMKBN-JYOKEN-G
+                                           SPA-GMN-FTNJANUM-JYOKEN
+           ELSE
+               MOVE    SPA-GMN-FTNJANUMKBN-JYOKEN
+                                           TO  WRK-KBN
+               PERFORM 5001-FTNJANUMKBN-JYOKEN-HENSYU-SEC
+               IF      WRK-KBNMEI          =   SPACE
+                   MOVE    "0024"              TO  SPA-ERRCD
+               ELSE
+                   MOVE    WRK-KBNMEI          TO
+                                           SPA-GMN-FTNJANUMKBN-JYOKENMEI
+                   IF      SPA-GMN-FTNJANUMKBN-JYOKEN =   "1" OR  "2"
+                       MOVE    SPACE           TO
+                                               SPA-GMN-FTNJANUM-JYOKEN
+                   END-IF
+                   IF      SPA-GMN-HKNNUM      =   SPACE
+                       MOVE    "0014"              TO  SPA-ERRCD
+                   END-IF
+               END-IF
+           END-IF 
+      *
+           IF      SPA-ERRCD           =   SPACE
+               IF    ( WRK-MCP-WIDGET      =   "FTNJANUMKBN_JYOKEN"    )
+               AND   ( SPA-GMN-FTNJANUMKBN-JYOKEN
+                                           =   SPACE   OR  "1" OR  "2" )
+                   MOVE    7                   TO  SPA-GMN-CUR
+               END-IF
+           ELSE
+               MOVE    15                  TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       41021-FTNJANUMKBN-JYOKEN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    負担者番号記載入力処理
+      *****************************************************************
+       41021-FTNJANUM-JYOKEN-CHK-SEC      SECTION.
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    16                   TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       41021-FTNJANUM-JYOKEN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    老人保険入力処理
       *****************************************************************
        41021-RJNKBN-CHK-SEC      SECTION.
@@ -1384,7 +1516,7 @@
                ELSE
                    MOVE    WRK-KBNMEI          TO
                                                SPA-GMN-FTNJANUMKBNMEI
-                   IF      SPA-GMN-FTNJANUMKBN =   "01"
+                   IF      SPA-GMN-FTNJANUMKBN =   "01"    OR  "03"
                        MOVE    SPACE               TO  SPA-GMN-FTNJANUM
                    END-IF
                    IF      SPA-GMN-HKNNUM      =   SPACE
@@ -1394,8 +1526,9 @@
            END-IF 
       *
            IF      SPA-ERRCD           =   SPACE
-               IF    ( WRK-MCP-WIDGET      =   "FTNJANUMKBN"    )
-               AND   ( SPA-GMN-FTNJANUMKBN =   SPACE   OR  "01" )
+               IF    ( WRK-MCP-WIDGET      =   "FTNJANUMKBN"          )
+               AND   ( SPA-GMN-FTNJANUMKBN =   SPACE   OR  "01"    OR
+                                               "03"                   )
                    MOVE    13                  TO  SPA-GMN-CUR
                END-IF
            ELSE
@@ -1594,7 +1727,8 @@
                ELSE
                    MOVE    WRK-KBNMEI      TO
                                        SPA-GMN-RECEDEN-FTNJANUMKBNMEI
-                   IF      SPA-GMN-RECEDEN-FTNJANUMKBN =   "01"
+                   IF      SPA-GMN-RECEDEN-FTNJANUMKBN =   "01"    OR
+                                                           "03"
                        MOVE    SPACE       TO  SPA-GMN-RECEDEN-FTNJANUM
                    END-IF
                    IF      SPA-GMN-HKNNUM  =   SPACE
@@ -1604,9 +1738,10 @@
            END-IF 
       *
            IF      SPA-ERRCD           =   SPACE
-               IF    ( WRK-MCP-WIDGET      =   "RECEDEN_FTNJANUMKBN" )
+               IF    ( WRK-MCP-WIDGET      =   "RECEDEN_FTNJANUMKBN"  )
                AND   ( SPA-GMN-RECEDEN-FTNJANUMKBN
-                                           =   SPACE   OR  "01"      )
+                                           =   SPACE   OR  "01"    OR
+                                               "03"                   )
                    MOVE    105                 TO  SPA-GMN-CUR
                END-IF
            ELSE
@@ -1707,6 +1842,24 @@
                                        =   SPACE )
                MOVE    "0103"              TO  SPA-ERRCD
                MOVE    9                   TO  SPA-GMN-CUR
+           END-IF
+      *
+      *    負担者番号（条件）と負担者番号のチェック
+           IF    ( SPA-ERRCD           =   SPACE )
+               IF      SPA-GMN-FTNJANUM-JYOKEN
+                                           =   SPACE
+                   IF      SPA-GMN-FTNJANUMKBN-JYOKEN  =   "3"
+                       MOVE    "0025"          TO  SPA-ERRCD
+                       MOVE    16              TO  SPA-GMN-CUR
+                   END-IF
+               ELSE
+                   IF      SPA-GMN-FTNJANUMKBN-JYOKEN  =   "3"
+                       CONTINUE
+                   ELSE
+                       MOVE    "0025"          TO  SPA-ERRCD
+                       MOVE    16              TO  SPA-GMN-CUR
+                   END-IF
+               END-IF
            END-IF
       *
       *    負担者番号記載区分と負担者番号のチェック
@@ -1813,6 +1966,9 @@
                                            =   SPA-GMN-RJNKBN       )
                    AND   ( SPA-NAI-TZAITAKU      (IDX)
                                            =   SPA-GMN-ZAITAKU      )
+                   AND   ( SPA-NAI-TFTNJANUMKBN-JYOKEN (IDX)
+                                           =
+                                           SPA-GMN-FTNJANUMKBN-JYOKEN )
                        IF      SPA-NAI-SELNUM  NOT =   IDX 
                            IF    ( SPA-NAI-EDYUKYMD
                                            <   SPA-NAI-TSTYUKYMD (IDX) )
@@ -1997,6 +2153,11 @@
                MOVE    SPA-GMN-TEISYUTUSAKI
                                            TO  SYS-2006-TEISYUTUSAKI
                MOVE    SPA-GMN-HKNJANUM    TO  SYS-2006-HKNJANUM
+               MOVE    SPA-GMN-FTNJANUMKBN-JYOKEN
+                                           TO
+                                           SYS-2006-FTNJANUMKBN-JYOKEN
+               MOVE    SPA-GMN-FTNJANUM-JYOKEN
+                                           TO  SYS-2006-FTNJANUM-JYOKEN
                MOVE    SPA-GMN-RJNKBN      TO  SYS-2006-RJNKBN 
                MOVE    SPA-GMN-ZAITAKU     TO  SYS-2006-ZAITAKU
                MOVE    SPA-GMN-TOKKI       TO  SYS-2006-TOKKI
@@ -2123,6 +2284,9 @@
                                                TO
                                                W61-TTEISYUTUSAKI  (IDX)
                MOVE    SPA-GMN-THKNJANUM (IDX) TO  W61-THKNJANUM  (IDX)
+               MOVE    SPA-GMN-TFTNJANUMKBN-JYOKEN (IDX)
+                                               TO
+                                           W61-TFTNJANUMKBN-JYOKEN(IDX)
                MOVE    SPA-GMN-TRJNKBN   (IDX) TO  W61-TRJNKBN    (IDX)
                MOVE    SPA-GMN-TZAITAKU  (IDX) TO  W61-TZAITAKU   (IDX)
                MOVE    SPA-GMN-TSTYUKYMD (IDX) TO  W61-TSTYUKYMD  (IDX)
@@ -2148,6 +2312,10 @@
            MOVE    SPA-GMN-TEISYUTUSAKI-G
                                        TO  W61-TEISYUTUSAKI
            MOVE    SPA-GMN-HKNJANUM    TO  W61-HKNJANUM 
+           MOVE    SPA-GMN-FTNJANUMKBN-JYOKEN-G
+                                       TO  W61-FTNJANUMKBN-JYOKEN
+           MOVE    SPA-GMN-FTNJANUM-JYOKEN
+                                       TO  W61-FTNJANUM-JYOKEN
            MOVE    SPA-GMN-HKNJANAME   TO  W61-HKNJANAME
            MOVE    SPA-GMN-RJNKBN-G    TO  W61-RJNKBN 
            MOVE    SPA-GMN-ZAITAKU-G   TO  W61-ZAITAKU
@@ -2181,6 +2349,15 @@
            END-PERFORM
            MOVE    SPA-GMN-TEISYUTUSAKI-MAX
                                    TO  W61-TEISYUTUSAKI-COUNT
+      *
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >   SPA-GMN-FTNJANUMKBN-JYOKEN-MAX
+                MOVE   SPA-GMN-FTNJANUMKBN-JYOKENLST (IDX)
+                                       TO
+                                       W61-FTNJANUMKBN-JYOKEN-ITEM (IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-FTNJANUMKBN-JYOKEN-MAX
+                                   TO  W61-FTNJANUMKBN-JYOKEN-COUNT
       *
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       SPA-GMN-RJNKBN-MAX
@@ -2257,6 +2434,12 @@
                     MOVE  "TEISYUTUSAKI"   TO  MCP-WIDGET   
              WHEN    6
                     MOVE  "HKNJANUM"       TO  MCP-WIDGET   
+             WHEN    15
+                    MOVE  "FTNJANUMKBN_JYOKEN"
+                                           TO  MCP-WIDGET   
+             WHEN    16
+                    MOVE  "FTNJANUM_JYOKEN"
+                                           TO  MCP-WIDGET   
              WHEN    7
                     MOVE  "RJNKBN"         TO  MCP-WIDGET   
              WHEN    8
@@ -2320,6 +2503,10 @@
                WHEN    "TEISYUTUSAKI"
                    MOVE    6           TO  SPA-GMN-CUR
                WHEN    "HKNJANUM"
+                   MOVE    15          TO  SPA-GMN-CUR
+               WHEN    "FTNJANUMKBN_JYOKEN"
+                   MOVE    16          TO  SPA-GMN-CUR
+               WHEN    "FTNJANUM_JYOKEN"
                    MOVE    7           TO  SPA-GMN-CUR
                WHEN    "RJNKBN"
                    MOVE    8           TO  SPA-GMN-CUR
@@ -2337,6 +2524,7 @@
                    MOVE    14          TO  SPA-GMN-CUR
                WHEN    "JKYSNUM"
                    MOVE    100         TO  SPA-GMN-CUR
+      *
                WHEN    "RECEDEN_TOKKI"
                    MOVE    101         TO  SPA-GMN-CUR
                WHEN    "RECEDEN_KYURATE"
@@ -2434,6 +2622,12 @@
                                            TO  SPA-ERRMSG
                WHEN    "0023"
                    MOVE    "レセプト電算・受給者番号入力エラー"
+                                           TO  SPA-ERRMSG
+               WHEN    "0024"
+                   MOVE    "負担者番号入力エラー"
+                                           TO  SPA-ERRMSG
+               WHEN    "0025"
+                   MOVE    "負担者番号固定値入力エラー"
                                            TO  SPA-ERRMSG
       *
                WHEN    "0101"
@@ -2551,6 +2745,31 @@
       *
            .
        5001-TEISYUTUSAKI-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    負担者番号編集処理
+      *****************************************************************
+       5001-FTNJANUMKBN-JYOKEN-HENSYU-SEC  SECTION.
+      * 
+           MOVE    SPACE               TO  WRK-KBNMEI
+      *     
+           IF      WRK-KBN             =   SPACE   
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDY FROM   1   BY  1
+                       UNTIL   IDY >      SPA-GMN-FTNJANUMKBN-JYOKEN-MAX
+                   IF      WRK-KBN =   SPA-GMN-FTNJANUMKBN-JYOKENL (IDY)
+                       MOVE    SPA-GMN-FTNJANUMKBN-JYOKENMEIL (IDY)
+                                              TO  WRK-KBNMEI
+                       MOVE    SPA-GMN-FTNJANUMKBN-JYOKEN-MAX
+                                              TO  IDY
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+           .
+       5001-FTNJANUMKBN-JYOKEN-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************

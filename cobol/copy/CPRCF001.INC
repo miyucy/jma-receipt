@@ -40,7 +40,8 @@
       *                                     情報の追加
       *
       *  ver.2.6.0 
-      *  02.06.01    NACL-藤原    05.07.13  保険組合せの追加 
+      *  02.06.01    NACL-藤原    05.07.13  保険組合せの追加
+      *  02.06.02    NACL-藤原    05.07.28  レセプト請求しない公費の追加
       ************************************************************
       *01  RECE01-REC.
            03  RECE01-KEY.
@@ -124,8 +125,16 @@
                    07  RECE01-TEKSTYMDX   PIC  X(08). 
       *適用終了年月日
                    07  RECE01-TEKEDYMDX   PIC  X(08). 
-      *レセプト記載外公費番号
-      *****03  RECE01-ETC-HKNNUM          PIC  X(03).
+      *
+      *レセプト請求しない公費領域
+           03 RECE01-KOHSKY-KOHI-AREA.
+               05  RECE01-KOHSKY-KOHI-TBL OCCURS  4.
+      *    公費ＩＤ
+                   07  RECE01-KOHSKY-KOHID-O
+                                          PIC  9(10).
+      *    公費保険番号
+                   07  RECE01-KOHSKY-KOHHKNNUM-O
+                                          PIC  X(03).
       *患者情報
            03  RECE01-PTINF.
       *患者番号  

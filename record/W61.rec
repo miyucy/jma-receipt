@@ -1,5 +1,24 @@
 W61	{
 	fixed6	{
+		scrolledwindow28	{
+			TOKKILST	{
+				count	int;
+				row	int;
+				item	{
+					value0	varchar(3);
+					value1	varchar(3);
+					value2	varchar(50);
+					value3	varchar(10);
+					value4	varchar(8);
+					value5	varchar(10);
+					value6	varchar(10);
+					value7	varchar(10);
+					value8	varchar(9);
+					value9	varchar(9);
+				}	[100];
+				select	bool[100];
+			};
+		};
 		SELNUM	{
 			value	number(3);
 		};
@@ -20,7 +39,7 @@ W61	{
 				value	varchar(12);
 			};
 			count	int;
-			item	varchar(12)[2];
+			item	varchar(12)[5];
 		};
 		HKNJANUM	{
 			value	varchar(8);
@@ -28,19 +47,29 @@ W61	{
 		HKNJANAME	{
 			value	varchar(100);
 		};
+		FTNJANUMKBN_JYOKEN_COMBO	{
+			FTNJANUMKBN_JYOKEN	{
+				value	varchar(32);
+			};
+			count	int;
+			item	varchar(32)[5];
+		};
+		FTNJANUM_JYOKEN	{
+			value	varchar(8);
+		};
 		ZAITAKU_COMBO	{
 			ZAITAKU	{
 				value	varchar(44);
 			};
 			count	int;
-			item	varchar(44)[2];
+			item	varchar(44)[5];
 		};
 		RJNKBN_COMBO	{
 			RJNKBN	{
 				value	varchar(52);
 			};
 			count	int;
-			item	varchar(52)[2];
+			item	varchar(52)[5];
 		};
 		TOKKI	{
 			value	varchar(12);
@@ -79,7 +108,7 @@ W61	{
 				value	varchar(12);
 			};
 			count	int;
-			item	varchar(12)[2];
+			item	varchar(12)[5];
 		};
 		RECEDEN_FTNJANUMKBN_COMBO	{
 			RECEDEN_FTNJANUMKBN	{
@@ -100,24 +129,6 @@ W61	{
 		};
 		RECEDEN_JKYSNUM	{
 			value	varchar(7);
-		};
-		scrolledwindow28	{
-			TOKKILST	{
-				count	int;
-				row	int;
-				item	{
-					value0	varchar(3);
-					value1	varchar(3);
-					value2	varchar(50);
-					value3	varchar(10);
-					value4	varchar(8);
-					value5	varchar(10);
-					value6	varchar(10);
-					value7	varchar(9);
-					value8	varchar(9);
-				}	[100];
-				select	bool[100];
-			};
 		};
 	};
 };

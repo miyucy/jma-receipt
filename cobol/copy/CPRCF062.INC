@@ -56,6 +56,8 @@
       *  02.06.01    NACL-疲付    05.07.13  戏客瘦副≥毁失惰尸
       *                                     塑客≥掐薄≥柒推
       *                                     瘦副寥圭せ给锐フラグの纳裁
+      *  02.06.02    NACL-疲付    05.07.28  レセプト懒滇しない给锐の纳裁
+      *  02.06.03    NACL-疲付    05.08.05  淡很嘲给锐≥砷么荚戎规の纳裁
       ************************************************************
       *01  RECE62-REC.
            03  RECE62-KEY.
@@ -331,6 +333,9 @@
                05  RECE62-ETC-KOHINF      OCCURS  4.
       *淡很嘲给锐≥瘦副戎规
                    07  RECE62-ETC-KOHNUM  PIC  X(03).
+      *淡很嘲给锐≥砷么荚戎规
+                   07  RECE62-ETC-KOHFTNJANUM
+                                          PIC  X(08).
       *淡很嘲给锐≥悸泣眶
                    07  RECE62-ETC-JNISSU  PIC  9(02).
       *淡很嘲给锐≥圭纷爬眶
@@ -354,6 +359,19 @@
       *淡很嘲给锐≥筛洁砷么驰
                    07  RECE62-ETC-SHOKUJIFTN
                                           PIC  9(09).
+      *
+      *レセプト懒滇しない给锐挝拌
+           03 RECE62-KOHSKY-KOHI-AREA.
+               05  RECE62-KOHSKY-KOHI-TBL OCCURS  4.
+      *    给锐ＩＤ
+                   07  RECE62-KOHSKY-KOHID
+                                          PIC  9(10).
+      *    给锐瘦副戎规
+                   07  RECE62-KOHSKY-KOHNUM
+                                          PIC  X(03).
+      *    给锐砷么荚戎规
+                   07  RECE62-KOHSKY-KOHFTNJANUM
+                                          PIC  X(08).
       *你疥评フラグ
            03  RECE62-TEISYOTOKU          PIC  X(01).
       *光勿荚フラグ

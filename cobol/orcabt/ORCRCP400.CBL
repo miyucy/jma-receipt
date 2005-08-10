@@ -78,6 +78,8 @@
       *  02.06.02    NACL-竹田    05/05/31  プレビュー処理追加
       *  02.06.03    NACL-藤原    05/07/20  レセコメントのコメントの長さ
       *                                     変更による対応
+      *  02.06.04    NACL-藤原    05/07/28  レセプト特記事項編集情報の
+      *                                     負担者番号に条件を追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2712,6 +2714,118 @@
                    END-IF
                END-IF                    
            END-IF    
+      *
+      *    レセプト特記事項編集情報
+      *    公負１
+           EVALUATE    RECE02-2006-FTNJANUMKBN  (IDA)
+               WHEN    SPACE
+                   CONTINUE
+               WHEN    "01"
+                   MOVE    SPACE           TO  HC06-KOHFTNJANUM1
+                                               HC06-KOHFTNJANUM1N
+               WHEN    "02"
+                   INITIALIZE              ORCSKANACHKAREA
+                   MOVE    "1"             TO  KANACHK-SYORI 
+                   MOVE    RECE02-2006-FTNJANUM (IDA)
+                                           TO  KANACHK-MAE-INPUT
+                   CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                   IF      KANACHK-SYUBETU =   "1"
+                       MOVE    RECE02-2006-FTNJANUM (IDA)
+                                               TO  HC06-KOHFTNJANUM1 
+                       MOVE    SPACE           TO  HC06-KOHFTNJANUM1N
+                   END-IF
+               WHEN    "03"
+                   INITIALIZE              ORCSKANACHKAREA
+                   MOVE    "1"             TO  KANACHK-SYORI 
+                   MOVE    RECE02-KOHFTNJANUM (IDA)
+                                           TO  KANACHK-MAE-INPUT
+                   CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                   IF      KANACHK-SYUBETU =   "1"
+                       INITIALIZE                   ORCSNUMAREA
+                       MOVE    RECE02-KOHFTNJANUM (IDA) (1:KANACHK-MAX)
+                                                TO  SNUM-INX
+                       CALL    "ORCSNUM"        USING   ORCSNUMAREA
+                       IF      SNUM-RC          =   ZERO
+                           MOVE   SNUM-OUTEDT (8:8)
+                                               TO  HC06-KOHFTNJANUM1 
+                           MOVE    SPACE       TO  HC06-KOHFTNJANUM1N
+                       END-IF
+                   END-IF
+           END-EVALUATE
+      *    公受１
+           EVALUATE    RECE02-2006-JKYSNUMKBN  (IDA)
+               WHEN    SPACE
+                   CONTINUE
+               WHEN    "01"
+                   MOVE    SPACE           TO  HC06-KOHJKYSNUM1
+                                               HC06-KOHJKYSNUM1N
+               WHEN    OTHER
+                   INITIALIZE              ORCSKANACHKAREA
+                   MOVE    "1"             TO  KANACHK-SYORI 
+                   MOVE    RECE02-2006-JKYSNUM (IDA)
+                                           TO  KANACHK-MAE-INPUT
+                   CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                   IF      KANACHK-SYUBETU =   "1"
+                       MOVE    RECE02-2006-JKYSNUM (IDA)
+                                               TO  HC06-KOHJKYSNUM1
+                       MOVE    SPACE           TO  HC06-KOHJKYSNUM1N
+                   END-IF
+           END-EVALUATE
+      *    公負２
+           EVALUATE    RECE02-2006-FTNJANUMKBN  (IDB)
+               WHEN    SPACE
+                   CONTINUE
+               WHEN    "01"
+                   MOVE    SPACE           TO  HC06-KOHFTNJANUM2
+                                               HC06-KOHFTNJANUM2N
+               WHEN    "02"
+                   INITIALIZE              ORCSKANACHKAREA
+                   MOVE    "1"             TO  KANACHK-SYORI 
+                   MOVE    RECE02-2006-FTNJANUM (IDB)
+                                           TO  KANACHK-MAE-INPUT
+                   CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                   IF      KANACHK-SYUBETU =   "1"
+                       MOVE    RECE02-2006-FTNJANUM (IDB)
+                                               TO  HC06-KOHFTNJANUM2
+                       MOVE    SPACE           TO  HC06-KOHFTNJANUM2N
+                   END-IF
+               WHEN    "03"
+                   INITIALIZE              ORCSKANACHKAREA
+                   MOVE    "1"             TO  KANACHK-SYORI 
+                   MOVE    RECE02-KOHFTNJANUM (IDB)
+                                           TO  KANACHK-MAE-INPUT
+                   CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                   IF      KANACHK-SYUBETU =   "1"
+                       INITIALIZE                   ORCSNUMAREA
+                       MOVE    RECE02-KOHFTNJANUM (IDB) (1:KANACHK-MAX)
+                                                TO  SNUM-INX
+                       CALL    "ORCSNUM"        USING   ORCSNUMAREA
+                       IF      SNUM-RC          =   ZERO
+                           MOVE   SNUM-OUTEDT (8:8)
+                                               TO  HC06-KOHFTNJANUM2
+                           MOVE    SPACE       TO  HC06-KOHFTNJANUM2N
+                       END-IF
+                   END-IF
+           END-EVALUATE
+      *    公受２
+           EVALUATE    RECE02-2006-JKYSNUMKBN  (IDB)
+               WHEN    SPACE
+                   CONTINUE
+               WHEN    "01"
+                   MOVE    SPACE           TO  HC06-KOHJKYSNUM2
+                                               HC06-KOHJKYSNUM2N
+               WHEN    OTHER
+                   INITIALIZE              ORCSKANACHKAREA
+                   MOVE    "1"             TO  KANACHK-SYORI 
+                   MOVE    RECE02-2006-JKYSNUM (IDB)
+                                           TO  KANACHK-MAE-INPUT
+                   CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                   IF      KANACHK-SYUBETU =   "1"
+                       MOVE    RECE02-2006-JKYSNUM (IDB)
+                                               TO  HC06-KOHJKYSNUM2
+                       MOVE    SPACE           TO  HC06-KOHJKYSNUM2N
+                   END-IF
+           END-EVALUATE
       *        県単用項目
            IF      FLG-RECE11              =   ZERO
                IF      RECE11-KOHINF (IDA) NOT =   SPACE

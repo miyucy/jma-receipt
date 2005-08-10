@@ -73,6 +73,8 @@
       *  02.06.01    NACL-藤原    05/06/27  症状詳記の編集方法の訂正
       *  02.06.02    NACL-藤原    05/07/20  レセコメントのコメントの長さ
       *                                     変更による対応
+      *  02.06.03    NACL-藤原    05/07/28  レセプト特記事項編集情報の
+      *                                     負担者番号に条件を追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1964,7 +1966,7 @@
                    CONTINUE
                WHEN    "01"
                    MOVE    SPACE           TO  WRK-DATA
-               WHEN    OTHER
+               WHEN    "02"
                    INITIALIZE              ORCSKANACHKAREA
                    MOVE    "1"             TO  KANACHK-SYORI 
                    MOVE    RECE62-2006-RECEDEN-FTNJANUM (IDY)
@@ -1973,6 +1975,22 @@
                    IF      KANACHK-SYUBETU =   "1"
                        MOVE    RECE62-2006-RECEDEN-FTNJANUM (IDY)
                                                TO  WRK-DATA
+                   END-IF
+               WHEN    "03"
+                   INITIALIZE              ORCSKANACHKAREA
+                   MOVE    "1"             TO  KANACHK-SYORI 
+                   MOVE    RECE62-KOHFTNJANUM (IDY)
+                                           TO  KANACHK-MAE-INPUT
+                   CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                   IF      KANACHK-SYUBETU =   "1"
+                       INITIALIZE                   ORCSNUMAREA
+                       MOVE    RECE62-KOHFTNJANUM (IDY) (1:KANACHK-MAX)
+                                                TO  SNUM-INX
+                       CALL    "ORCSNUM"        USING   ORCSNUMAREA
+                       IF      SNUM-RC          =   ZERO
+                           MOVE   SNUM-OUTEDT (8:8)
+                                               TO  WRK-DATA
+                       END-IF
                    END-IF
            END-EVALUATE
            MOVE    8                   TO  WRK-NAGASA

@@ -64,6 +64,8 @@
       *  02.06.01    NACL-藤原    05.07.13  老人保険−支払区分
       *                                     本人−外来−内容
       *                                     保険組合せ公費フラグの追加
+      *  02.06.02    NACL-藤原    05.07.28  レセプト請求しない公費の追加
+      *  02.06.03    NACL-藤原    05.08.05  記載外公費−負担者番号の追加
       ************************************************************
       *01  RECE02-REC.
            03  RECE02-KEY.
@@ -293,6 +295,9 @@
                05  RECE02-ETC-KOHINF      OCCURS  4.
       *記載外公費−保険番号
                    07  RECE02-ETC-KOHNUM  PIC  X(03).
+      *記載外公費−負担者番号
+                   07  RECE02-ETC-KOHFTNJANUM
+                                          PIC  X(08).
       *記載外公費−実日数
                    07  RECE02-ETC-JNISSU  PIC  9(02).
       *記載外公費−合計点数
@@ -309,8 +314,19 @@
                                           PIC  9(09).
       *記載外公費−薬剤一部負担金情報
                    07  RECE02-ETC-YKZFTN  PIC  9(05).
-      *補足区分（未使用）
-           03  RECE02-HOSOKUKBN           PIC  X(01).
+      *
+      *レセプト請求しない公費領域
+           03 RECE02-KOHSKY-KOHI-AREA.
+               05  RECE02-KOHSKY-KOHI-TBL OCCURS  4.
+      *    公費ＩＤ
+                   07  RECE02-KOHSKY-KOHID
+                                          PIC  9(10).
+      *    公費保険番号
+                   07  RECE02-KOHSKY-KOHNUM
+                                          PIC  X(03).
+      *    公費負担者番号
+                   07  RECE02-KOHSKY-KOHFTNJANUM
+                                          PIC  X(08).
       *初診時間区分
            03  RECE02-SHOSHINTIME         PIC  X(01).
       *再診摘要印刷区分

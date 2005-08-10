@@ -34,20 +34,25 @@
                05  SYS-2006-STYUKYMD    PIC  X(08).
       *有効終了年月日
                05  SYS-2006-EDYUKYMD    PIC  X(08).
-      *保険番号
+      *条件：保険番号
            03  SYS-2006-HKNNUM          PIC  X(03).
-      *審査支払機関
+      *条件：審査支払機関
            03  SYS-2006-TEISYUTUSAKI    PIC  X(01).
-      *保険者番号
+      *条件：保険者番号
            03  SYS-2006-HKNJANUM        PIC  X(08).
-      *老人区分
+      *条件：老人区分
            03  SYS-2006-RJNKBN          PIC  X(01).
-      *在総診区分
+      *条件：在総診区分
            03  SYS-2006-ZAITAKU         PIC  X(01).
       *特記事項
            03  SYS-2006-TOKKI           PIC  X(24).
-      *摘要欄記載（未使用）
-           03  SYS-2006-TEKIYO          PIC  X(100).
+      *条件：負担者番号
+           03  SYS-2006-FTNJANUMKBN-JYOKEN
+                                        PIC  X(01).
+      *条件：負担者番号内容
+           03  SYS-2006-FTNJANUM-JYOKEN PIC  X(08).
+      *予備
+           03  FILLER                   PIC  X(91).
       *給付割合
            03  SYS-2006-KYURATE         PIC  9(03).
       *予備
@@ -60,30 +65,25 @@
            03  SYS-2006-RECEDEN-KORECKBN
                                         PIC  X(01).
       *予備
-           03  FILLER                   PIC  X(02).
-      *レセ電：老人減免区分（未使用）
-           03  SYS-2006-RECEDEN-RJNGENMENKBN
-                                        PIC  X(01).
-      *レセ電：摘要欄記載（未使用）
-           03  SYS-2006-RECEDEN-TEKIYO  PIC  X(152).
-      *負担者番号記載区分
+           03  FILLER                   PIC  X(155).
+      *負担者番号編集区分
            03  SYS-2006-FTNJANUMKBN     PIC  X(02).
-      *負担者番号
+      *負担者番号編集内容
            03  SYS-2006-FTNJANUM        PIC  X(08).
-      *受給者番号記載区分
+      *受給者番号編集区分
            03  SYS-2006-JKYSNUMKBN      PIC  X(02).
-      *受給者番号
+      *受給者番号編集内容
            03  SYS-2006-JKYSNUM         PIC  X(07).
-      *レセ電：負担者番号記載区分
+      *レセ電：負担者番号編集区分
            03  SYS-2006-RECEDEN-FTNJANUMKBN
                                         PIC  X(02).
-      *レセ電：負担者番号
+      *レセ電：負担者番号編集内容
            03  SYS-2006-RECEDEN-FTNJANUM
                                         PIC  X(08).
-      *レセ電：受給者番号記載区分
+      *レセ電：受給者番号編集区分
            03  SYS-2006-RECEDEN-JKYSNUMKBN
                                         PIC  X(02).
-      *レセ電：受給者番号
+      *レセ電：受給者番号編集内容
            03  SYS-2006-RECEDEN-JKYSNUM PIC  X(07).
       *予備
            03  FILLER                   PIC  X(158).

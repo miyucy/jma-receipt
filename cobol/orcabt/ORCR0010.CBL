@@ -104,6 +104,9 @@
       *  02.06.02    NACL-藤原    05/07/12  国保で本人・家族の変更があった
       *                                     場合、給付割合の変更がないとき
       *                                     は１枚にまとめる
+      *  02.06.03    NACL-藤原    05/07/28  レセプト特記事項編集情報のため
+      *                                     のレセプト請求しない地方公費の
+      *                                     を追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -376,6 +379,11 @@
        01  WRK-RECE01-REC. 
            COPY    "CPRCF001.INC"  REPLACING  //RECE01//
                                    BY         //WRK-RECE01//.
+      *     
+      * 
+       01  WRK-KOHSKY-RECE01-REC. 
+           COPY    "CPRCF001.INC"  REPLACING  //RECE01//
+                                   BY         //WRK-KOHSKY-RECE01//.
       *
        01  WRK-RECE07-REC. 
            COPY    "CPRCF007.INC"  REPLACING  //RECE07//
@@ -1123,6 +1131,15 @@
            END-PERFORM
       *****END-IF           
       *
+           INITIALIZE                      WRK-KOHSKY-RECE01-REC
+      * 
+      *    医療費請求書
+           IF      FLG-KOH             =   1  
+               MOVE    "2"             TO  WRK-SYOKBN
+               PERFORM 20011-FILE-HENSYU-SEC
+               MOVE    WRK-RECE01-REC      TO  WRK-KOHSKY-RECE01-REC
+           END-IF   
+      *
       *    レセプト明細書
            MOVE    "1"                 TO  WRK-SYOKBN
       *****IF      WRK-CONTKBN-KEY     NOT =   SPACE
@@ -1138,12 +1155,6 @@
       *        社保（継続）＋生保以外のとき
                PERFORM 20011-FILE-HENSYU-SEC
       *****END-IF   
-      *
-      *    医療費請求書
-           IF      FLG-KOH             =   1  
-               MOVE    "2"             TO  WRK-SYOKBN
-               PERFORM 20011-FILE-HENSYU-SEC
-           END-IF   
            .
        20011-FILE-SYORI-EXT.
            EXIT. 
@@ -1543,6 +1554,23 @@
                MOVE    WRK-PRTSEQ              TO  WRK-RECE01-PRTSEQ
            END-IF
       *
+      *レセプト請求しない地方公費情報
+           IF    ( WRK-SYOKBN          =   "1"  )
+           AND   ( FLG-KOH             =   1    )
+           AND   ( WRK-KOHSKY-RECE01-KOHID-O (1)
+                                       >   ZERO )
+               INITIALIZE              WRK-RECE01-KOHSKY-KOHI-AREA
+               PERFORM VARYING IDX1    FROM    1   BY  1
+                       UNTIL   IDX1    >       4
+                   MOVE    WRK-KOHSKY-RECE01-KOHID-O     (IDX1)
+                                       TO  WRK-RECE01-KOHSKY-KOHID-O
+                                                               (IDX1)
+                   MOVE    WRK-KOHSKY-RECE01-KOHHKNNUM-O (IDX1)
+                                       TO  WRK-RECE01-KOHSKY-KOHHKNNUM-O
+                                                               (IDX1)
+               END-PERFORM
+           END-IF    
+      *
            EVALUATE    WRK-SYOKBN
                WHEN    "1"
                    MOVE    WRK-RECE01-REC      TO  RECE01-REC
@@ -1646,6 +1674,23 @@
                END-IF            
                MOVE    "1"                 TO  WRK-RECE01-TEISEIKBN     
            END-IF          
+      *
+      *レセプト請求しない地方公費情報
+           IF    ( WRK-SYOKBN          =   "1"  )
+           AND   ( FLG-KOH             =   1    )
+           AND   ( WRK-KOHSKY-RECE01-KOHID-O (1)
+                                       >   ZERO )
+               INITIALIZE              WRK-RECE01-KOHSKY-KOHI-AREA
+               PERFORM VARYING IDX1    FROM    1   BY  1
+                       UNTIL   IDX1    >       4
+                   MOVE    WRK-KOHSKY-RECE01-KOHID-O     (IDX1)
+                                       TO  WRK-RECE01-KOHSKY-KOHID-O
+                                                               (IDX1)
+                   MOVE    WRK-KOHSKY-RECE01-KOHHKNNUM-O (IDX1)
+                                       TO  WRK-RECE01-KOHSKY-KOHHKNNUM-O
+                                                               (IDX1)
+               END-PERFORM
+           END-IF    
       *
            EVALUATE    WRK-SYOKBN
                WHEN    "1"

@@ -88,6 +88,9 @@
       *  02.06.05    NACL-藤原    05/07/05  補助区分からの給付割合の編集
       *                                     を修正
       *                                     本人−入院−内容の追加
+      *  02.06.06    NACL-藤原    05/07/28  レセプト特記事項編集情報のため
+      *                                     のレセプト請求しない地方公費の
+      *                                     を追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1134,6 +1137,37 @@
       *    印刷順
            IF      IDZ                 =   1
                MOVE    RECE61-PRTSEQ       TO  RECE62-PRTSEQ
+           END-IF
+      *
+      *    レセプト請求しない地方公費情報
+           IF      IDZ                 =   1
+               PERFORM VARYING IDX     FROM    1   BY  1
+                       UNTIL   IDX     >       4
+                   MOVE    RECE61-KOHSKY-KOHID-O     (IDX)
+                                       TO  RECE62-KOHSKY-KOHID  (IDX)
+                   MOVE    RECE61-KOHSKY-KOHHKNNUM-O (IDX)
+                                       TO  RECE62-KOHSKY-KOHNUM (IDX)
+      *
+                   INITIALIZE                          PTKOHINF-REC
+                   MOVE    RECE62-HOSPID           TO  PTKOH-HOSPID
+                   MOVE    RECE62-PTID             TO  PTKOH-PTID
+                   MOVE    RECE62-KOHSKY-KOHID  (IDX)
+                                                   TO  PTKOH-KOHID
+                   MOVE    PTKOHINF-REC            TO  MCPDATA-REC
+                   MOVE    "DBSELECT"              TO  MCP-FUNC
+                   MOVE    "PTKOHINF-KEY"          TO  ORC-DBPATH
+                   CALL    "ORCMCPSUB"             USING   MCPAREA
+                                                           ORCMCPAREA
+                                                           MCPDATA-REC
+                   IF      MCP-RC                  =   ZERO
+                       MOVE    "PTKOHINF-KEY"      TO  ORC-DBPATH
+                       PERFORM PTKOHINF-READ-SEC
+                       IF      FLG-PTKOHINF           =   ZERO
+                           MOVE    PTKOH-FTNJANUM       TO
+                                       RECE62-KOHSKY-KOHFTNJANUM (IDX)
+                       END-IF
+                   END-IF    
+               END-PERFORM
            END-IF
       *
            PERFORM     220-DATA-WRITE-SEC

@@ -67,6 +67,9 @@
       *                                     グループ化に変更
       *                                     SRYACCT-KEY29 -> SRYACCT-KEY36
       *                                     SRYACCT-KEY30 -> SRYACCT-KEY37
+      *  02.06.04    NACL-藤原    05/07/28  レセプト特記事項編集情報のため
+      *                                     のレセプト請求しない地方公費の
+      *                                     を追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -353,6 +356,11 @@
        01  WRK-RECE61-REC. 
            COPY    "CPRCF061.INC"  REPLACING  //RECE61//
                                    BY         //WRK-RECE61//.
+      *     
+      * 
+       01  WRK-KOHSKY-RECE61-REC. 
+           COPY    "CPRCF061.INC"  REPLACING  //RECE61//
+                                   BY         //WRK-KOHSKY-RECE61//.
       *
       *    社保（継続）のとき 
        01  WRK-CONTKBN-REC. 
@@ -1106,6 +1114,15 @@
                END-IF  
           END-PERFORM
       *
+           INITIALIZE                      WRK-KOHSKY-RECE61-REC
+      * 
+      *    医療費請求書
+           IF      FLG-KOH             =   1  
+               MOVE    "2"             TO  WRK-SYOKBN
+               PERFORM 20011-FILE-HENSYU-SEC
+               MOVE    WRK-RECE61-REC      TO  WRK-KOHSKY-RECE61-REC
+           END-IF   
+      *
       *    レセプト明細書
            MOVE    "1"                 TO  WRK-SYOKBN
       *****IF      WRK-CONTKBN-KEY     NOT =   SPACE
@@ -1121,12 +1138,6 @@
       *        社保（継続）＋生保以外のとき
                PERFORM 20011-FILE-HENSYU-SEC
       *****END-IF   
-      *
-      *    医療費請求書
-           IF      FLG-KOH             =   1  
-               MOVE    "2"             TO  WRK-SYOKBN
-               PERFORM 20011-FILE-HENSYU-SEC
-           END-IF   
            .
        20011-FILE-SYORI-EXT.
            EXIT. 
@@ -1467,6 +1478,15 @@
                END-IF  
            END-PERFORM
       *
+           INITIALIZE                      WRK-KOHSKY-RECE61-REC
+      * 
+      *    医療費請求書
+           IF      FLG-KOH             =   1  
+               MOVE    "2"             TO  WRK-SYOKBN
+               PERFORM 20011-FILE-HENSYU-SEC
+               MOVE    WRK-RECE61-REC      TO  WRK-KOHSKY-RECE61-REC
+           END-IF   
+      *
       *    レセプト明細書
            MOVE    "1"                 TO  WRK-SYOKBN
       *****IF      WRK-CONTKBN-KEY     NOT =   SPACE
@@ -1482,12 +1502,6 @@
       *        社保（継続）＋生保以外のとき
                PERFORM 20011-FILE-HENSYU-SEC
       *****END-IF   
-      *
-      *    医療費請求書
-           IF      FLG-KOH             =   1  
-               MOVE    "2"             TO  WRK-SYOKBN
-               PERFORM 20011-FILE-HENSYU-SEC
-           END-IF   
            .
        200122-NYUINACCT-HENSYU-EXT.
            EXIT. 
@@ -1880,6 +1894,23 @@
                MOVE    WRK-PRTSEQ              TO  WRK-RECE61-PRTSEQ
            END-IF 
       *
+      *レセプト請求しない地方公費情報
+           IF    ( WRK-SYOKBN          =   "1"  )
+           AND   ( FLG-KOH             =   1    )
+           AND   ( WRK-KOHSKY-RECE61-KOHID-O (1)
+                                       >   ZERO )
+               INITIALIZE              WRK-RECE61-KOHSKY-KOHI-AREA
+               PERFORM VARYING IDX1    FROM    1   BY  1
+                       UNTIL   IDX1    >       4
+                   MOVE    WRK-KOHSKY-RECE61-KOHID-O     (IDX1)
+                                       TO  WRK-RECE61-KOHSKY-KOHID-O
+                                                               (IDX1)
+                   MOVE    WRK-KOHSKY-RECE61-KOHHKNNUM-O (IDX1)
+                                       TO  WRK-RECE61-KOHSKY-KOHHKNNUM-O
+                                                               (IDX1)
+               END-PERFORM
+           END-IF    
+      *
            EVALUATE    WRK-SYOKBN
                WHEN    "1"
                    MOVE    WRK-RECE61-REC      TO  RECE61-REC
@@ -1998,6 +2029,23 @@
                MOVE    "1"                 TO  WRK-RECE61-TEISEIKBN     
            END-IF    
       *
+      *レセプト請求しない地方公費情報
+           IF    ( WRK-SYOKBN          =   "1"  )
+           AND   ( FLG-KOH             =   1    )
+           AND   ( WRK-KOHSKY-RECE61-KOHID-O (1)
+                                       >   ZERO )
+               INITIALIZE              WRK-RECE61-KOHSKY-KOHI-AREA
+               PERFORM VARYING IDX1    FROM    1   BY  1
+                       UNTIL   IDX1    >       4
+                   MOVE    WRK-KOHSKY-RECE61-KOHID-O     (IDX1)
+                                       TO  WRK-RECE61-KOHSKY-KOHID-O
+                                                               (IDX1)
+                   MOVE    WRK-KOHSKY-RECE61-KOHHKNNUM-O (IDX1)
+                                       TO  WRK-RECE61-KOHSKY-KOHHKNNUM-O
+                                                               (IDX1)
+               END-PERFORM
+           END-IF    
+      *
            EVALUATE    WRK-SYOKBN
                WHEN    "1"
                    MOVE    WRK-RECE61-REC      TO  RECE61-REC
@@ -2006,9 +2054,9 @@
                    MOVE    WRK-RECE61-REC      TO  RECE61X-REC
                    REWRITE RECE61X-REC
            END-EVALUATE
-076800     .
-076900 20011-RECE61-REWRITE-EXT.
-077000     EXIT.
+           .
+       20011-RECE61-REWRITE-EXT.
+           EXIT.
       * 
       *****************************************************************
       *    公費個別処理
