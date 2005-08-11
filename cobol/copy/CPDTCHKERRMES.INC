@@ -68,6 +68,15 @@
            05 PIC  X(30)   VALUE   "                              ".
            05 PIC  X(30)   VALUE   "                              ".
       *                            +---------+---------+---------+.
+           05 PIC  X(06)   VALUE   "020006".
+           05 PIC  X(30)   VALUE   "保険情報の記号に外字が入力され".
+           05 PIC  X(30)   VALUE   "ています                      ".
+           05 PIC  X(30)   VALUE   "                              ".
+      *                            +---------+---------+---------+.
+           05 PIC  X(06)   VALUE   "020007".
+           05 PIC  X(30)   VALUE   "保険情報の番号に外字が入力され".
+           05 PIC  X(30)   VALUE   "ています                      ".
+           05 PIC  X(30)   VALUE   "                              ".
       *
       *    ** 030xxx 公費負担者番号・受給者番号抜け
       *                            +---------+---------+---------+.
@@ -89,6 +98,16 @@
            05 PIC  X(06)   VALUE   "030004".
            05 PIC  X(30)   VALUE   "公費情報の受給者番号に全角文字".
            05 PIC  X(30)   VALUE   "と半角文字が混在しています    ".
+           05 PIC  X(30)   VALUE   "                              ".
+      *                            +---------+---------+---------+.
+           05 PIC  X(06)   VALUE   "030005".
+           05 PIC  X(30)   VALUE   "公費情報の負担者番号に外字が入".
+           05 PIC  X(30)   VALUE   "力されています                ".
+           05 PIC  X(30)   VALUE   "                              ".
+      *                            +---------+---------+---------+.
+           05 PIC  X(06)   VALUE   "030006".
+           05 PIC  X(30)   VALUE   "公費情報の受給者番号に外字が入".
+           05 PIC  X(30)   VALUE   "力されています                ".
            05 PIC  X(30)   VALUE   "                              ".
       *
       *    ** 040xxx 保険適応年齢
@@ -286,6 +305,16 @@
            05 PIC  X(30)   VALUE   "カナ氏名が未入力です          ".
            05 PIC  X(30)   VALUE   "                              ".
            05 PIC  X(30)   VALUE   "                              ".
+      *                            +---------+---------+---------+.
+           05 PIC  X(06)   VALUE   "130005".
+           05 PIC  X(30)   VALUE   "漢字氏名に外字が入力されていま".
+           05 PIC  X(30)   VALUE   "す                            ".
+           05 PIC  X(30)   VALUE   "                              ".
+      *                            +---------+---------+---------+.
+           05 PIC  X(06)   VALUE   "130006".
+           05 PIC  X(30)   VALUE   "カナ氏名に外字が入力されていま".
+           05 PIC  X(30)   VALUE   "す                            ".
+           05 PIC  X(30)   VALUE   "                              ".
       *
       *    ** 140xxx 保険組合せ有効期間
       *                            +---------+---------+---------+.
@@ -327,7 +356,7 @@
            05 PIC  X(30)   VALUE   "                              ".
       *
          03  ERRMES-RED    REDEFINES   ERRMES-VAL.
-           05 ERRMES-OCC   OCCURS  53.
+           05 ERRMES-OCC   OCCURS  59.
               07  ERRMES-CD            PIC X(06).
               07  ERRMES-MESSAGE       PIC X(90).
-         03  ERRMES-MAX                PIC 9(05)   VALUE   53.
+         03  ERRMES-MAX                PIC 9(05)   VALUE   59.

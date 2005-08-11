@@ -160,7 +160,7 @@
            03  FLG-TSRYKA-OVER                         PIC 9(01).
            03  FLG-TKAISU-OVER                         PIC 9(01).
            03  FLG-SHOSAISIN                           PIC 9(01).
-           03  FLG-KANACHK                             PIC 9(01).
+           03  FLG-KANACHK                             PIC S9(09).
            03  FLG-PTBYO-DAY-G.
                05  FLG-PTBYO-DAY                       PIC 9(01)
                                                        OCCURS  31.
@@ -769,6 +769,10 @@
            COPY    "COMMON-SPA".
       *
            COPY    "CPTTNS.INC".
+      *
+       01  ERRPTINF-REC.
+           COPY    "CPPTINF.INC"           REPLACING  //PTINF-//
+                                           BY         //ERRPTINF-//.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -2993,10 +2997,14 @@
            IF    ( PTHKN-KIGO          NOT =   SPACE )
                MOVE    PTHKN-KIGO      TO  WRK-KANACHK-MAE-INPUT
                PERFORM 800-KANA-CHK-SEC
-               IF  ( FLG-KANACHK       NOT =   2 )
+               IF  ( FLG-KANACHK       NOT =   ZERO )
       *
                    MOVE    PTHKN-HKNNUM    TO  SRH-HKNNUM
-                   MOVE    "020002"        TO  WRK-ERRCD
+                   IF    ( FLG-KANACHK =   2 )
+                       MOVE    "020006"    TO  WRK-ERRCD
+                   ELSE
+                       MOVE    "020002"    TO  WRK-ERRCD
+                   END-IF
                    PERFORM 211-ERRMES-HEN-SEC
       *
                    IF    ( ORCBSD01-CHKKBN (2) =   "1" )
@@ -3009,10 +3017,15 @@
            IF    ( PTHKN-NUM           NOT =   SPACE )
                MOVE    PTHKN-NUM       TO  WRK-KANACHK-MAE-INPUT
                PERFORM 800-KANA-CHK-SEC
-               IF  ( FLG-KANACHK       NOT =   2 )
+               IF  ( FLG-KANACHK       NOT =   ZERO )
       *
                    MOVE    PTHKN-HKNNUM    TO  SRH-HKNNUM
-                   MOVE    "020003"        TO  WRK-ERRCD
+                   IF    ( FLG-KANACHK =   2 )
+                       MOVE    "020007"    TO  WRK-ERRCD
+                   ELSE
+                       MOVE    "020003"    TO  WRK-ERRCD
+                   END-IF
+      *
                    PERFORM 211-ERRMES-HEN-SEC
       *
                    IF    ( ORCBSD01-CHKKBN (2) =   "1" )
@@ -3133,13 +3146,17 @@
            IF    ( PTKOH-FTNJANUM      NOT =   SPACE )
                MOVE    PTKOH-FTNJANUM  TO  WRK-KANACHK-MAE-INPUT
                PERFORM 800-HANKAKU-CHK-SEC
-               IF  ( FLG-KANACHK       =   9 )
+               IF  ( FLG-KANACHK       NOT =   ZERO )
                    PERFORM 800-KANA-CHK-SEC
-                   IF  ( FLG-KANACHK       =   9 )
+                   IF  ( FLG-KANACHK   NOT =   ZERO )
       *
                        MOVE    PTKOH-KOHNUM    TO  SRH-KOHNUM
                        MOVE    PTKOH-PAYKBN    TO  SRH-PAYKBN
-                       MOVE    "030003"        TO  WRK-ERRCD
+                       IF  ( FLG-KANACHK   =   2 )
+                           MOVE    "030005"    TO  WRK-ERRCD
+                       ELSE
+                           MOVE    "030003"    TO  WRK-ERRCD
+                       END-IF
                        PERFORM 212-ERRMES-HEN-SEC
       *
                        IF    ( ORCBSD01-CHKKBN (3) =   "1" )
@@ -3154,13 +3171,17 @@
             AND  ( PTKOH-KOHNUM        NOT =   "012" )
                MOVE    PTKOH-JKYSNUM   TO  WRK-KANACHK-MAE-INPUT
                PERFORM 800-HANKAKU-CHK-SEC
-               IF  ( FLG-KANACHK       =   9 )
+               IF  ( FLG-KANACHK       NOT =   ZERO )
                    PERFORM 800-KANA-CHK-SEC
-                   IF  ( FLG-KANACHK       =   9 )
+                   IF  ( FLG-KANACHK   NOT =   ZERO )
       *
                        MOVE    PTKOH-KOHNUM    TO  SRH-KOHNUM
                        MOVE    PTKOH-PAYKBN    TO  SRH-PAYKBN
-                       MOVE    "030004"        TO  WRK-ERRCD
+                       IF  ( FLG-KANACHK   =   2 )
+                           MOVE    "030006"    TO  WRK-ERRCD
+                       ELSE
+                           MOVE    "030004"    TO  WRK-ERRCD
+                       END-IF
                        PERFORM 212-ERRMES-HEN-SEC
       *
                        IF    ( ORCBSD01-CHKKBN (3) =   "1" )
@@ -3586,7 +3607,7 @@
            ELSE
                MOVE    PTBYO-BYOMEI    TO  WRK-KANACHK-MAE-INPUT
                PERFORM 800-KANA-CHK-SEC
-               IF    ( FLG-KANACHK NOT =   2 )
+               IF    ( FLG-KANACHK NOT =   ZERO )
                    MOVE    2           TO  FLG-PTBYO-MOJI
                END-IF
            END-IF
@@ -3682,7 +3703,7 @@
            IF    ( PTBYO-CHARTBYOMEI   NOT =   SPACE )
                MOVE    PTBYO-CHARTBYOMEI   TO  WRK-KANACHK-MAE-INPUT
                PERFORM 800-KANA-CHK-SEC
-               IF    ( FLG-KANACHK NOT =   2 )
+               IF    ( FLG-KANACHK     NOT =   ZERO )
                    MOVE    PTBYO-SRYKA         TO  SRH-1005-SRYKA
                    MOVE    WRK-PTBYOMES-PLUS   TO  WRK-ERRMES-PLUS
                    MOVE    "050009"            TO  WRK-ERRCD
@@ -3782,7 +3803,7 @@
                MOVE    WRK-HEN-PTBYOMEI
                                        TO  WRK-KANACHK-MAE-INPUT
                PERFORM 800-KANA-CHK-SEC
-               IF  ( FLG-KANACHK       =  2  )
+               IF  ( FLG-KANACHK       =  ZERO  )
                    MOVE    SPACE               TO  WRK-ERRMES-PLUS
                    STRING  WRK-HEN-PTBYOMEI (1:10)
                                                DELIMITED   BY  SIZE
@@ -5569,9 +5590,13 @@
            IF    ( PTINF-NAME          NOT =   SPACE )
                MOVE    PTINF-NAME      TO  WRK-KANACHK-MAE-INPUT
                PERFORM 800-KANA-CHK-SEC
-               IF  ( FLG-KANACHK   NOT =   2 )
+               IF  ( FLG-KANACHK   NOT =   ZERO )
       *
-                   MOVE    "130001"        TO  WRK-ERRCD
+                   IF    ( FLG-KANACHK =   2 )
+                       MOVE    "130005"    TO  WRK-ERRCD
+                   ELSE
+                       MOVE    "130001"    TO  WRK-ERRCD
+                   END-IF
                    PERFORM 210-ERRMES-HEN-SEC
                END-IF
       *
@@ -5608,9 +5633,13 @@
            IF    ( PTINF-KANANAME          NOT =   SPACE )
                MOVE    PTINF-KANANAME      TO  WRK-KANACHK-MAE-INPUT
                PERFORM 800-KANA-CHK-SEC
-               IF  ( FLG-KANACHK   NOT =   2 )
+               IF  ( FLG-KANACHK   NOT =   ZERO )
       *
-                   MOVE    "130002"    TO  WRK-ERRCD
+                   IF    ( FLG-KANACHK =   2 )
+                       MOVE    "130006"    TO  WRK-ERRCD
+                   ELSE
+                       MOVE    "130002"    TO  WRK-ERRCD
+                   END-IF
                    PERFORM 210-ERRMES-HEN-SEC
                END-IF
       *
@@ -6540,8 +6569,8 @@
            MOVE    CNT-CHKERR          TO  DTCHK004-ERRCD-SEQ
       *
            MOVE    DTCHK003-PTID       TO  DTCHK004-PTID
-           MOVE    PTINF-NAME          TO  DTCHK004-NAME
-           MOVE    PTINF-BIRTHDAY      TO  DTCHK004-BIRTHDAY
+           MOVE    ERRPTINF-NAME       TO  DTCHK004-NAME
+           MOVE    ERRPTINF-BIRTHDAY   TO  DTCHK004-BIRTHDAY
       *
            IF    ( SYS-1101-PRTSRTKBN  =   SPACE   OR  "1" )
                MOVE    DTCHK004-PTNUM      TO  DTCHK004-R1-PTNUM
@@ -6549,7 +6578,7 @@
                MOVE    DTCHK004-ERRCD      TO  DTCHK004-R1-ERRCD
                MOVE    DTCHK004-ERRCD-SEQ  TO  DTCHK004-R1-ERRCD-SEQ
            ELSE
-               MOVE    PTINF-KANANAME      TO  DTCHK004-R2-KANANAME
+               MOVE    ERRPTINF-KANANAME   TO  DTCHK004-R2-KANANAME
                MOVE    DTCHK004-PTNUM      TO  DTCHK004-R2-PTNUM
                MOVE    DTCHK004-PTID       TO  DTCHK004-R2-PTID
                MOVE    DTCHK004-ERRCD      TO  DTCHK004-R2-ERRCD
@@ -6998,17 +7027,14 @@
            END-IF
       *
            INITIALIZE                  ORCXKANACONVAREA
-           MOVE 300                TO  KANACONV-LEN
-           MOVE 1000               TO  KANACONV-STLEN
-           MOVE 0                  TO  KANACONV-CONV-FLAG
-           MOVE 15                 TO  KANACONV-CHAR-TYPE
-           MOVE WRK-KANACHK-MAE-INPUT  TO  KANACONV-INDATA
-           CALL "kanaconv"             USING ORCXKANACONVAREA
-           IF    ( KANACONV-RETURN =   ZERO )
-               MOVE    2           TO  FLG-KANACHK
-           ELSE
-               MOVE    9           TO  FLG-KANACHK
-           END-IF
+           MOVE    300                 TO  KANACONV-LEN
+           MOVE    1000                TO  KANACONV-STLEN
+           MOVE    0                   TO  KANACONV-CONV-FLAG
+           MOVE    14                  TO  KANACONV-CHAR-TYPE
+           MOVE    WRK-KANACHK-MAE-INPUT
+                                       TO  KANACONV-INDATA
+           CALL    "kanaconv"          USING ORCXKANACONVAREA
+           MOVE    KANACONV-RETURN     TO  FLG-KANACHK
       *
            .
        800-KANA-CHK-EXT.
@@ -7025,15 +7051,14 @@
            END-IF
       *
            INITIALIZE                  ORCXKANACONVAREA
-           MOVE 300                TO  KANACONV-LEN
-           MOVE 1000               TO  KANACONV-STLEN
-           MOVE 0                  TO  KANACONV-CONV-FLAG
-           MOVE 112                TO  KANACONV-CHAR-TYPE
-           MOVE WRK-KANACHK-MAE-INPUT  TO  KANACONV-INDATA
-           CALL "kanaconv"             USING ORCXKANACONVAREA
-           IF    ( KANACONV-RETURN NOT =   ZERO )
-               MOVE    9           TO  FLG-KANACHK
-           END-IF
+           MOVE    300                 TO  KANACONV-LEN
+           MOVE    1000                TO  KANACONV-STLEN
+           MOVE    0                   TO  KANACONV-CONV-FLAG
+           MOVE    112                 TO  KANACONV-CHAR-TYPE
+           MOVE    WRK-KANACHK-MAE-INPUT
+                                       TO  KANACONV-INDATA
+           CALL    "kanaconv"          USING ORCXKANACONVAREA
+           MOVE    KANACONV-RETURN     TO  FLG-KANACHK
       *
            .
        800-HANKAKU-CHK-EXT.
@@ -7597,6 +7622,16 @@
                MOVE    1               TO  FLG-PTINF
                INITIALIZE                  PTINF-REC
            END-IF
+      *
+           MOVE    PTINF-REC           TO  ERRPTINF-REC
+      *
+           MOVE    ERRPTINF-KANANAME   TO  WRK-KANACHK-MAE-INPUT
+           PERFORM 800-KANA-CHK-SEC
+           MOVE    KANACONV-OUTDATA    TO  ERRPTINF-KANANAME
+      *
+           MOVE    ERRPTINF-NAME       TO  WRK-KANACHK-MAE-INPUT
+           PERFORM 800-KANA-CHK-SEC
+           MOVE    KANACONV-OUTDATA    TO  ERRPTINF-NAME
       *
            MOVE    PATH-TBL-PTINF-KEY  TO  MCP-PATH
            PERFORM 910-DBCLOSE-SEC
