@@ -108,6 +108,7 @@
       *                                     変更による対応
       *  02.06.04    NACL-藤原    05/07/28  レセプト特記事項編集情報の
       *                                     負担者番号に条件を追加
+      *  02.06.05    NACL-門脇    05/08/12  公費単独実日数０記載修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3038,8 +3039,9 @@
                   MOVE    WRK-JINISSU2    TO  HC06-JINISSU
                END-IF
                IF      RECE62-TOTALTEN (IDX2)     >   ZERO
-                  IF  RECE62-JNISSU (IDX1)
-                                      NOT  =   RECE62-JNISSU (IDX2)
+                  IF  (RECE62-JNISSU (IDX1)
+                                      NOT  =   RECE62-JNISSU (IDX2))
+                  OR  (RECE62-TOTALTEN (IDX1)     =   ZERO)
                       MOVE    RECE62-JNISSU (IDX2)
                                               TO  WRK-JINISSU2Z
                       MOVE    WRK-JINISSU2    TO  HC06-JINISSU1
