@@ -1441,6 +1441,13 @@
                        MOVE    1                   TO  SPA-NAI-JIDFLG
                                                               (IDX-NAI)
                    END-IF
+      *            削除できるかの判定（減）対象外
+                   IF     (LNK-WKSRY-AUTOKBN (IDX IDZ)   =   "3" ) AND
+                          (LNK-WKSRY-INPUTCD (IDX IDZ)
+                                                   =   "820000047")
+                       MOVE    ZERO                TO  SPA-NAI-JIDFLG
+                                                              (IDX-NAI)
+                   END-IF
       *            訂正で自動発生なしの時、削除なし
                    IF     (LNK-WKSRY-AUTOKBN (IDX IDZ)   =   "4"
                                                          OR  "6" ) AND
