@@ -944,6 +944,7 @@
                    UNTIL      (IDX-KA      >   10   )  OR
                               (TBL-SRYKA (IDX-KA)  =   SPACE)  OR
                               (LNK-ORCSC-KIDCD NOT =   SPACE)
+                          OR  (SPA-ERRCD       NOT =   SPACE)
                MOVE    TBL-SRYKA (IDX-KA)      TO  WRK-SRYKA
                MOVE    TBL-HKNCOMBI(IDX-KA)    TO  WRK-HKNCOMBI
       *
@@ -1175,22 +1176,22 @@
             END-IF
            END-PERFORM
       *
-      *    院外分
-           PERFORM 3001-INGAI-SYORI-SEC
-      *    院内分
-           IF      SPA-NYUGAIKBN       =   "1"
-      *        入院
-               PERFORM 30021-NYUIN-INNAI-SYORI-SEC
-           ELSE
-      *        外来
-               PERFORM 3002-INNAI-SYORI-SEC
-           END-IF
-      *
+      *    入力分のチェック
+           PERFORM 3003-CHEK-SYORI-SEC
            IF     (LNK-ORCSC-KIDCD     NOT =   SPACE )  OR
                   (SPA-ERRCD           NOT =   SPACE )
                MOVE    SPA-K01KYOUTU       TO  SPA-WORK
            ELSE
-               PERFORM 3003-CHEK-SYORI-SEC
+      *        院外分
+               PERFORM 3001-INGAI-SYORI-SEC
+      *        院内分
+               IF      SPA-NYUGAIKBN       =   "1"
+      *            入院
+                   PERFORM 30021-NYUIN-INNAI-SYORI-SEC
+               ELSE
+      *            外来
+                   PERFORM 3002-INNAI-SYORI-SEC
+               END-IF
            END-IF
       *
            IF      LNK-ORCSC-PG        =   "K02"
@@ -1206,6 +1207,30 @@
       *   入力内容のチェック処理
       *****************************************************************
        3003-CHEK-SYORI-SEC              SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYOHOSENN
+      *    処方箋算定
+           IF    ((FLG-NAIYAK2         =   1    )  OR
+                  (FLG-TONPUK2         =   1    )  OR
+                  (FLG-GAIYAK2         =   1    ))   AND
+                  (IDX-SYOHOU      NOT =   ZERO )
+               MOVE    1               TO  FLG-SYOHOSENN
+           END-IF
+      *
+           MOVE    ZERO                TO  FLG-SYOHORYO
+      *    処方箋算定
+           IF    ((FLG-NAIYAK2         =   1    )  OR
+                  (FLG-TONPUK2         =   1    )  OR
+                  (FLG-GAIYAK2         =   1    ))   AND
+                  (IDX-SYOHOU      NOT =   ZERO )
+               MOVE    ZERO                TO  FLG-SYOHORYO
+           ELSE
+               IF     (FLG-NAIYAK          =   1    )  OR
+                      (FLG-TONPUK          =   1    )  OR
+                      (FLG-GAIYAK          =   1    )
+                   MOVE    1               TO  FLG-SYOHORYO
+               END-IF
+           END-IF
       *
       *    特定疾患処方管理加算処方箋料がある時、処方箋料があること
            IF      FLG-TOKUSYO1        =   1
@@ -1251,8 +1276,8 @@
                    MOVE    "1"                 TO  WRK-COM-CUR (IDX-T2)
                ELSE
       *            長期投薬があること
-                  IF      FLG-CHOUKI          =   ZERO
-                      IF     (WRK-COM-KZMFLG (IDX-T2)  =   SPACE) AND
+                   IF      FLG-CHOUKI          =   ZERO
+                       IF    (WRK-COM-KZMFLG (IDX-T2)  =   SPACE) AND
                              (LNK-ORCSC-KEI-IDX        =   ZERO )
                            MOVE    "K021"          TO  SPA-ERRCD
                            MOVE    "1"             TO  WRK-COM-CUR
@@ -2524,7 +2549,6 @@
       *
       *    自動追加分（入力時に追加）
            MOVE    "3"                 TO  WRK-COM-AUTOKBN (IDX-S)
-      *
       *
            .
        30011-GENTUIKA-EXT.
