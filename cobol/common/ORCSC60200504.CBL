@@ -1514,6 +1514,7 @@
       *DD          WHEN    01   THRU   08
       *∆‚ ¨»Á…È≤ŸªÓ∏≥§œ Ò≥Á∑◊ªª≥∞
                    WHEN    01   THRU   07
+                   WHEN    09   THRU   10
                        MOVE    WRK-COM-HOUKNSKBN(IDX-Z)    TO  IDX
                        ADD     1               TO  WRK-HOUKNS-CNT (IDX)
                        ADD     WRK-COM-KISOTEN(IDX-Z)
@@ -1665,6 +1666,32 @@
                                MOVE    "099600701"     TO  WRK-SRYCD
                            WHEN    3   THRU  9999
                                MOVE    "099600702"     TO  WRK-SRYCD
+                       END-EVALUATE
+                       IF      WRK-SRYCD           =   SPACE
+                           ADD     WRK-HOUKNS-TENSU (IDX)
+                                                   TO  WRK-TENSUKEI
+                       ELSE
+                           PERFORM 10041-HOUKNS-ADD-SEC
+                       END-IF
+                   WHEN    9
+      *            •¶•§•Î•ππ≥¬Œ≤¡
+                       MOVE    SPACE           TO  WRK-SRYCD
+                       EVALUATE    WRK-HOUKNS-CNT(IDX)
+                           WHEN    8   THRU  9999
+                               MOVE    "099600901"     TO  WRK-SRYCD
+                       END-EVALUATE
+                       IF      WRK-SRYCD           =   SPACE
+                           ADD     WRK-HOUKNS-TENSU (IDX)
+                                                   TO  WRK-TENSUKEI
+                       ELSE
+                           PERFORM 10041-HOUKNS-ADD-SEC
+                       END-IF
+                   WHEN    10
+      *            •∞•Ì•÷•Í•Û•Ø•È•π Ã•¶•§•Î•ππ≥¬Œ≤¡
+                       MOVE    SPACE           TO  WRK-SRYCD
+                       EVALUATE    WRK-HOUKNS-CNT(IDX)
+                           WHEN    2   THRU  9999
+                               MOVE    "099601001"     TO  WRK-SRYCD
                        END-EVALUATE
                        IF      WRK-SRYCD           =   SPACE
                            ADD     WRK-HOUKNS-TENSU (IDX)
