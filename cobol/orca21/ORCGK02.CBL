@@ -275,7 +275,6 @@
            03  FLG-TOUGETU            PIC 9(01).
       *
            03  FLG-WKSRYACT-ARI       PIC 9(01).
-           03  FLG-NO                 PIC 9(01).
       *    Åº»úÎÎ°è
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -9128,7 +9127,7 @@
                        UNTIL      (IDX         >   200   )   OR
                                  ((MAE-GMN-INPUTCD (IDX) =   SPACE )
                               AND (MAE-COM-INPUTCD (IDX) =   SPACE ))
-      *        ÌôºÞ¥Á¥§¥Ã¥¯
+      *            ¡Ê¸º¡Ëºï½ü
                    IF     (MAE-COM-SRYKBN (IDX)    =   "21" )  AND
                           (MAE-COM-AUTOKBN(IDX)    =   "3" )
                        CONTINUE
