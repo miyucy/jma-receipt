@@ -53,6 +53,7 @@
       *  01.02.08    NACL-ÌçÏÆ    05/05/20  Æþ±¡ÅÀÅ©¼ïÊÌÄÉ²Ã¤ËÈ¼¤¦½¤Àµ
       *  01.02.09    NACL-ÌçÏÆ    05/05/26  ¼ê½Ñ¡¦Ëã¿ì¤Îµ­ºÜ½çÊÑ¹¹ÂÐ±þ
       *  01.02.10    NACL-ÌçÏÆ    05/06/06  ¥ï¡¼¥¯¹àÌÜ·å¿ô½¤Àµ
+      *  01.02.11    NACL-Æ£¸¶    05/08/17  Êñ³çÂÐ¾Ý¸¡ºº¥Õ¥é¥°¤Î¿·Àß¤ËÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -297,7 +298,7 @@
        01  WRK-KENSA-MATOME-MAX            PIC 9(03).
        01  WRK-KENSA-MATOME-TABLE.
            03  WRK-KENSA-MATOME            OCCURS  101.
-               05  WRK-HOUKNSKBN           PIC 9(01).
+               05  WRK-HOUKNSKBN           PIC 9(02).
                05  WRK-SRYSYUKBN-K         PIC X(03).
                05  WRK-KAISU-G.
                    07  WRK-KAKSU-OCC       OCCURS  4.
@@ -321,7 +322,7 @@
        01  WRK-MIN-KAISU-TABLE.
            03  WRK-MIN-KAISU-G             OCCURS  31.
                05  WRK-MIN-KAISU           PIC 9(03).
-               05  WRK-MIN-HOUKNSKBN       PIC 9(01).
+               05  WRK-MIN-HOUKNSKBN       PIC 9(02).
                05  WRK-MIN-SRYSYUKBN       PIC X(03).
        01  WRK-RECE84-FLG-TABLE.
            03  WRK-RECE84-FLG              PIC 9(01)
@@ -331,7 +332,7 @@
                                                   OCCURS  100.
        01  WRK-RECE84-TABLE.
            03  WRK-RECE84-TBL              OCCURS  100.
-               05  WRK-RECE84-HOUKNSKBN           PIC 9(01).
+               05  WRK-RECE84-HOUKNSKBN           PIC 9(02).
                05  WRK-RECE84-SRYSYUKBN           PIC X(03).
                05  WRK-RECE84-REC                 PIC X(600).
                05  WRK-RECE84-SRYCD               PIC 9(09).
@@ -380,9 +381,13 @@
                 "¼«¸Ê¹³ÂÎ¸¡ºº".                        
                 05  FILLER                 PIC X(50)   VALUE
                 "ÆâÊ¬ÈçÉé²Ù»î¸³".                        
+                05  FILLER                 PIC X(50)   VALUE
+                "¥¦¥¤¥ë¥¹¹³ÂÎ²Á".                        
+                05  FILLER                 PIC X(50)   VALUE
+                "¥¦¥¤¥ë¥¹¹³ÂÎ²ÁÀºÌ©Â¬Äê".                        
             03  WRK-CONS-KENSACOMMENT-R    REDEFINES
                                            WRK-CONS-KENSACOMMENT-G.
-                05  WRK-CONS-KENSACOMMENT  PIC X(50)   OCCURS  8.
+                05  WRK-CONS-KENSACOMMENT  PIC X(50)   OCCURS  10.
       *          
        01  TBL-ZAIW-AREA.
       *    ºÞ¤ÎÀèÆ¬¤Î¿ÇÎÅ¥³¡¼¥É

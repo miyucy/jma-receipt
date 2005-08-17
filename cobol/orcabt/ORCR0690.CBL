@@ -85,6 +85,7 @@
       *                                     るレセプト請求しない地方公費の
       *                                     編集を追加
       *                                     条件に負担者番号を追加
+      *  02.06.09    NACL-藤原    05/08/17  包括対象検査フラグの新設に対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -395,7 +396,7 @@
        01  WRK-KENSA-MATOME-MAX            PIC 9(03).
        01  WRK-KENSA-MATOME-TABLE.
            03  WRK-KENSA-MATOME            OCCURS  101.
-               05  WRK-HOUKNSKBN           PIC 9(01).
+               05  WRK-HOUKNSKBN           PIC 9(02).
                05  WRK-KOHBUNRI            PIC 9(01).
                05  WRK-SRYSYUKBN-K         PIC X(03).
                05  WRK-KAISU-G.
@@ -420,7 +421,7 @@
        01  WRK-MIN-KAISU-TABLE.
            03  WRK-MIN-KAISU-G             OCCURS  31.
                05  WRK-MIN-KAISU           PIC 9(03).
-               05  WRK-MIN-HOUKNSKBN       PIC 9(01).
+               05  WRK-MIN-HOUKNSKBN       PIC 9(02).
                05  WRK-MIN-KOHBUNRI        PIC 9(01).
                05  WRK-MIN-SRYSYUKBN       PIC X(03).
        01  WRK-RECE64-FLG-TABLE.
@@ -431,7 +432,7 @@
                                                   OCCURS  100.
        01  WRK-RECE64-TABLE.
            03  WRK-RECE64-TBL              OCCURS  100.
-               05  WRK-RECE64-HOUKNSKBN           PIC 9(01).
+               05  WRK-RECE64-HOUKNSKBN           PIC 9(02).
                05  WRK-RECE64-KOHBUNRI            PIC 9(01).
                05  WRK-RECE64-SRYSYUKBN           PIC X(03).
                05  WRK-RECE64-REC                 PIC X(600).
@@ -481,9 +482,13 @@
                 "自己抗体検査".                        
                 05  FILLER                 PIC X(50)   VALUE
                 "内分泌負荷試験".                        
+                05  FILLER                 PIC X(50)   VALUE
+                "ウイルス抗体価".                        
+                05  FILLER                 PIC X(50)   VALUE
+                "ウイルス抗体価精密測定".                        
             03  WRK-CONS-KENSACOMMENT-R    REDEFINES
                                            WRK-CONS-KENSACOMMENT-G.
-                05  WRK-CONS-KENSACOMMENT  PIC X(50)   OCCURS  8.
+                05  WRK-CONS-KENSACOMMENT  PIC X(50)   OCCURS  10.
       *          
       *剤の先頭の診療コード情報
        01  WRK-ZAIW-AREA.
