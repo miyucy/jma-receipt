@@ -766,7 +766,7 @@
       *        全角入力の時、１０文字まで
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "1"                     TO  KANACHK-SYORI
-               MOVE    SPA-GMN-TTEKCD (IDX)    TO  KANACHK-MAE-INPUT
+               MOVE    SPA-GMN-TTEKCD (IDZ)    TO  KANACHK-MAE-INPUT
                CALL    "ORCSKANACHK"       USING
                                            ORCSKANACHKAREA
                MOVE    KANACHK-OUT-INPUT       TO  SPA-GMN-TTEKCD
