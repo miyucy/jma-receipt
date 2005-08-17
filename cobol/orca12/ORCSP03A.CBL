@@ -375,7 +375,7 @@
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    SPA-GMN-HKNJANUM    TO  KANACHK-MAE-INPUT
-           MOVE    7                   TO  KANACHK-MAX-CNT
+           MOVE    8                   TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
            MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-HKNJANUM
