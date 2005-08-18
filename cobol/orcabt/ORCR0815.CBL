@@ -41,6 +41,7 @@
       *                                     ¸±²ñ¼ÒÌ¾¤ÎÊÔ½¸
       *  01.01.03    NACL-ÌçÏÆ    05/01/26  ¥·¥¹¥Æ¥à´ÉÍý£´£°£°£±¤Ë´Ø¤¹¤ë½¤Àµ
       *  01.01.04    NACL-ÌçÏÆ    05/06/27  ²Ã»»Î¨£³·åÂÐ±þ
+      *  01.01.05    NACL-ÌçÏÆ    05/08/18  Å¾µ¢»öÍ³ÊÔ½¸½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1091,6 +1092,10 @@
            END-EVALUATE
       *
            MOVE   PTRSI-TENKI          TO  WRK-RECE82-TENKI
+           IF    (PTRSI-TENKI  = "1" OR "5" OR "7" OR "9"   )
+           AND   (WRK-RECE82-SRYYM  <   PTRSI-RYOEDYMD(1:6) )
+                  MOVE   "3"           TO  WRK-RECE82-TENKI
+           END-IF
            MOVE   PTRSI-SHOBYOYMD      TO  WRK-RECE82-SHOBYOYMD
            MOVE   PTRSI-SISIKBN        TO  WRK-RECE82-SISIKBN
       **>  MOVE   PTRSI-RYOSTYMD       TO  WRK-RECE82-RYOSTYMD

@@ -53,6 +53,7 @@
       *  01.01.05    NACL-門脇    05.01.27  腰・胸部固定帯加算、創外固定器
       *                                     使用加算の技術・薬剤等の選択対応
       *  01.01.06    NACL-門脇    05.06.27  加算率３桁対応
+      *  01.01.07    NACL-門脇    05.08.18  転帰事由編集修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -726,6 +727,10 @@
                         END-EVALUATE
       *
                         MOVE   PTRSI-TENKI      TO  RECE41-TENKI
+                        IF    (PTRSI-TENKI  = "1" OR "5" OR "7" OR "9")
+                        AND   (RECE41-SRYYM   <   PTRSI-RYOEDYMD(1:6) )
+                                MOVE   "3"      TO  RECE41-TENKI
+                        END-IF
                         MOVE   PTRSI-SHOBYOYMD  TO  RECE41-SHOBYOYMD
                         MOVE   PTRSI-SISIKBN    TO  RECE41-SISIKBN
                         MOVE   PTRSI-RYOSTYMD   TO  RECE41-RYOSTYMD
