@@ -77,10 +77,10 @@
                 04  J02-VALUE   PIC X(30).
               03  J02-HHKNCOMBICOMB.
                 04  J02-HHKNCOMBI.
-                  05  J02-VALUE   PIC X(55).
+                  05  J02-VALUE   PIC X(65).
                 04  J02-HHKNCOMBI-COUNT   PIC S9(9)   BINARY.
                 04  J02-HHKNCOMBI-ITEM
-                        PIC X(55)   OCCURS  20 TIMES.
+                        PIC X(65)   OCCURS  20 TIMES.
               03  J02-IKKATU.
                 04  J02-VALUE   PIC X(20).
               03  J02-NYUINMSG1.

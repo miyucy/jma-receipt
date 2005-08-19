@@ -22,10 +22,10 @@
                 04  J023-VALUE  PIC X(7).
               03  J023-HKNCOMBICOMB.
                 04  J023-HKNCOMBI.
-                  05  J023-VALUE  PIC X(55).
+                  05  J023-VALUE  PIC X(65).
                 04  J023-HKNCOMBI-COUNT  PIC S9(9)   BINARY.
                 04  J023-HKNCOMBI-ITEM
-                        PIC X(55)   OCCURS  30 TIMES.
+                        PIC X(65)   OCCURS  30 TIMES.
               03  J023-SRYKACOMB.
                 04  J023-SRYKA.
                   05  J023-VALUE  PIC X(20).
