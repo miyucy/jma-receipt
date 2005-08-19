@@ -261,6 +261,8 @@
            03  FILLER              PIC X(35)   VALUE
                "1042 病名機能情報".
            03  FILLER              PIC X(35)   VALUE
+               "1043 会計照会機能情報".
+           03  FILLER              PIC X(35)   VALUE
                "1100 データチェック機能情報".
            03  FILLER              PIC X(35)   VALUE
                "1101 データチェック機能情報２".
@@ -282,11 +284,11 @@
                "4001 労災自賠医療機関情報".
       *
        01  TBL-KANRICD-AREAR           REDEFINES   TBL-KANRICD-AREA.
-           03  TBL-KANRICD-TBL         OCCURS   34.
+           03  TBL-KANRICD-TBL         OCCURS   35.
                05  TBL-KANRICD             PIC X(04).
                05  TBL-FILLER              PIC X(01).
                05  TBL-KANRICDMEI          PIC X(30).
-       01  TBL-KANRICD-MAX                 PIC 9(04)   VALUE   34.
+       01  TBL-KANRICD-MAX                 PIC 9(04)   VALUE   35.
       *
       *外来のみ
        01  TBL-KANRICD-G-AREA.
@@ -1723,6 +1725,7 @@
                WHEN    "1038"
                WHEN    "1039"
                WHEN    "1042"
+               WHEN    "1043"
                    MOVE    "W07"               TO  SPA-SAKIPG
       *---- (01.02.04) LINE ADD START --------------------------------
                WHEN    "3001"
