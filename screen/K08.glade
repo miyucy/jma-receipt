@@ -105,9 +105,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>HKNKUMI</name>
-      <x>492</x>
+      <x>488</x>
       <y>8</y>
-      <width>260</width>
+      <width>330</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -120,7 +120,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>RATE</name>
-      <x>756</x>
+      <x>820</x>
       <y>8</y>
       <width>48</width>
       <height>24</height>
@@ -226,7 +226,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKA</name>
-      <x>656</x>
+      <x>680</x>
       <y>36</y>
       <width>147</width>
       <height>24</height>
@@ -378,22 +378,6 @@
       <width>136</width>
       <height>16</height>
       <label>合計点数</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>SYORIMEI</name>
-      <x>856</x>
-      <y>24</y>
-      <width>116</width>
-      <height>24</height>
-      <label></label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -1387,6 +1371,22 @@
       <x>506</x>
       <y>688</y>
       <width>346</width>
+      <height>24</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>SYORIMEI</name>
+      <x>876</x>
+      <y>28</y>
+      <width>116</width>
       <height>24</height>
       <label></label>
       <justify>GTK_JUSTIFY_CENTER</justify>

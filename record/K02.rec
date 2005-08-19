@@ -312,10 +312,10 @@ K02	{
 		};
 		HKNCOMBICOMB	{
 			HKNCOMBI	{
-				value	varchar(50);
+				value	varchar(65);
 			};
 			count	int;
-			item	varchar(50)[15];
+			item	varchar(65)[15];
 		};
 		CONTKBN	{
 		    style   varchar(20);

@@ -246,10 +246,10 @@ K03	{
 		};
 		HKNCOMBI_COMB	{
 			HKNCOMBI	{
-				value	varchar(60);
+				value	varchar(65);
 			};
 			count	int;
-			item	varchar(60)[15];
+			item	varchar(65)[15];
 		};
 		SRYKA_COMB	{
 			SRYKA	{
