@@ -163,7 +163,7 @@
                    07  SPA-GMN-HKN-TBL.
                        09  SPA-GMN-HKN-TBLO    OCCURS  100.
                            11  SPA-GMN-THKNCOMBINUM    PIC X(04).
-                           11  SPA-GMN-THKNCOMBIMEI    PIC X(40).
+                           11  SPA-GMN-THKNCOMBIMEI    PIC X(60).
                            11  SPA-GMN-TTEKSTYMD       PIC X(09).
                            11  SPA-GMN-TTEKEDYMD       PIC X(09).
                            11  SPA-GMN-TFTNRATE        PIC X(04).
@@ -448,6 +448,9 @@
       *
       *    保険組合せセット領域
            COPY    "CPORCSHKNSET.INC".
+      *
+      *    全角チェックパラメタ
+           COPY    "CPORCSKANACHK.INC".
       *
       *    排他制御サブパラメタ
            COPY    "CPORCSLOCK.INC".
@@ -1391,6 +1394,29 @@
                                        TO  SPA-GMN-THKNCOMBINUM (IDX)
                MOVE    ORCSHKN-GMN-HKNCOMBIMEI (IDX)
                                        TO  SPA-GMN-THKNCOMBIMEI (IDX)
+      *TEST
+      *    受給者番号編集
+               IF      ORCSHKN-NAI-HKNJANUM (IDX) NOT =   SPACE
+                   MOVE    SPACE       TO  SPA-GMN-THKNCOMBIMEI (IDX)
+                   MOVE    SPACE       TO  WRK-HKNCOMBI
+                   STRING  ORCSHKN-GMN-HKNCOMBIMEI (IDX)
+                                               DELIMITED BY  "  "
+                       " ("                    DELIMITED  BY  SIZE
+                       ORCSHKN-NAI-HKNJANUM (IDX)
+                                               DELIMITED  BY  SPACE
+                       ")"                     DELIMITED  BY  SIZE
+                         INTO             WRK-HKNCOMBI
+                   END-STRING
+                   INITIALIZE                  ORCSKANACHKAREA
+                   MOVE    "1"                 TO  KANACHK-SYORI
+                   MOVE    WRK-HKNCOMBI        TO  KANACHK-MAE-INPUT
+                   MOVE    60                  TO  KANACHK-MAX-CNT
+                   CALL    "ORCSKANACHK"       USING
+                                               ORCSKANACHKAREA
+                   MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-THKNCOMBIMEI
+                                                            (IDX)
+               END-IF
+      *TEST
       *
                MOVE    ORCSHKN-NAI-HKNNUM (IDX)
                                        TO  SPA-NAI-HKNNUM  (IDX)

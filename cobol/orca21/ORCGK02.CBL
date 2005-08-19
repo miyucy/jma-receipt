@@ -3233,7 +3233,9 @@
                                        TO  SPA-GMN-FTNRATE
       *    ¶¦ÄÌ£Ó£Ð£Á¤Ø
            MOVE    SPA-GMN-HKNCOMBINUM TO  SPA-HKNCOMBINUM
-           MOVE    SPA-GMN-HKNCOMBIMEI TO  SPA-HKNCOMBIMEI
+           MOVE    SPA-NAI-THKNCOMBIMEI(IDX)
+                                       TO  SPA-HKNCOMBIMEI
+           MOVE    SPA-GMN-HKNCOMBIMEI TO  SPA-HKNCOMBIMEI-60
            MOVE    SPA-NAI-TFTNRATE    (IDX)
                                        TO  SPA-FTNRATE
            MOVE    SPA-GMN-TFTNRATEMEI (IDX)
@@ -12265,7 +12267,6 @@
            MOVE    SPA-GMN-KANANAME    TO  K02-KANANAME
            MOVE    SPA-GMN-NAME        TO  K02-NAME
            MOVE    SPA-GMN-SEX         TO  K02-SEX
-      **** MOVE    SPA-GMN-HKNCOMBIMEI(1:28)
            MOVE    SPA-GMN-HKNCOMBI-G
                                        TO  K02-HKNCOMBI
            MOVE    SPA-GMN-FTNRATEMEI  TO  K02-RATE
@@ -12276,7 +12277,6 @@
                MOVE    SPA-GMN-SRYYMD      TO  K02-SRYYMD
            END-IF
            MOVE    SPA-GMN-BIRTHDAY    TO  K02-BIRTHDAY
-      *****MOVE    SPA-GMN-SRYKAMEI    TO  K02-SRYKA
       *    Ç¯Îð
            MOVE    SPA-NENREI-HEN      TO  K02-NENREI
       *

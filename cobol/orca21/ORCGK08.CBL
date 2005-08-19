@@ -1142,7 +1142,7 @@
            MOVE    LNK-WKSRYACT-AREA   TO  HZN-WKSRYACT-AREA
            IF      SPA-TBL-HKNCOMBI(1) =   SPACE
                MOVE    SPA-HKNCOMBINUM     TO  SPA-TBL-HKNCOMBI(1)
-               MOVE    SPA-HKNCOMBIMEI     TO  SPA-TBL-HKNCOMBIMEI(1)
+               MOVE    SPA-HKNCOMBIMEI-60  TO  SPA-TBL-HKNCOMBIMEI(1)
                MOVE    SPA-SRYKA           TO  SPA-TBL-SRYKA (1 1)
                MOVE    SPA-DRCD            TO  SPA-TBL-DRCD  (1 1)
            END-IF
@@ -5218,7 +5218,7 @@
            MOVE    SPA-KANANAME        TO  K08-KANANAME
            MOVE    SPA-NAME            TO  K08-NAME
            MOVE    SPA-SEX             TO  K08-SEX
-           MOVE    SPA-HKNCOMBIMEI
+           MOVE    SPA-HKNCOMBIMEI-60
                                        TO  K08-HKNKUMI
            MOVE    SPA-FTNRATEMEI      TO  K08-RATE
            MOVE    SPA-SRYYMDW         TO  K08-SRYYMD

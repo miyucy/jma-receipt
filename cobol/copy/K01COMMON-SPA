@@ -132,6 +132,8 @@
                05  SPA-RSI-HASSYOYMD       PIC  X(08).
       *労災  アフターケアフラグ
       *********05  SPA-RSI-HKNKBN          PIC  X(01).
+      *保険名称（保険者番号編集）
+               05  SPA-HKNCOMBIMEI-60       PIC X(60).
       *
       *初診算定日
                05  SPA-SYOYMD              PIC  X(08).
@@ -348,7 +350,7 @@
                05  SPA-TBL-HKNCOMBI-AREA.
                    07  SPA-TBL-HKNCOMBI-OCC     OCCURS   15.
                        09  SPA-TBL-HKNCOMBI     PIC X(04).
-                       09  SPA-TBL-HKNCOMBIMEI  PIC X(50).
+                       09  SPA-TBL-HKNCOMBIMEI  PIC X(60).
                        09  SPA-TBL-FTNRATEMEI   PIC X(05).
                        09  SPA-TBL-FTNRATE      PIC 9(03).
       *                複数科
@@ -391,10 +393,10 @@
                05  SPA-K021-SAKI            PIC  X(03).
       *
       *入力コード入力画面より（Ｋ０５１）
-               05  SPA-K051-TBL.
-                   07  SPA-K051-TBL-G       OCCURS  5.
-                       09  SPA-K051-INPUTCD    PIC X(20).
-                       09  SPA-K051-CDSYU      PIC X(01).
+      *        05  SPA-K051-TBL.
+      *            07  SPA-K051-TBL-G       OCCURS  5.
+      *                09  SPA-K051-INPUTCD    PIC X(20).
+      *                09  SPA-K051-CDSYU      PIC X(01).
       *
       *ＤＯ画面より（Ｋ０９）
                05  SPA-K09-SELOK            PIC  9(01).

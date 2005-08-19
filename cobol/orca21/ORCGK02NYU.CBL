@@ -2453,7 +2453,9 @@
                                        TO  SPA-GMN-FTNRATE
       *    ¶¦ÄÌ£Ó£Ð£Á¤Ø
            MOVE    SPA-GMN-HKNCOMBINUM TO  SPA-HKNCOMBINUM
-           MOVE    SPA-GMN-HKNCOMBIMEI TO  SPA-HKNCOMBIMEI
+           MOVE    SPA-NAI-THKNCOMBIMEI(IDX)
+                                       TO  SPA-HKNCOMBIMEI
+           MOVE    SPA-GMN-HKNCOMBIMEI TO  SPA-HKNCOMBIMEI-60
            MOVE    SPA-NAI-TFTNRATE    (IDX)
                                        TO  SPA-FTNRATE
            MOVE    SPA-GMN-TFTNRATEMEI (IDX)

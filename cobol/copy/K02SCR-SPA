@@ -59,7 +59,7 @@
                    07  SPA-GMN-HKNCOMBI-G.
                        09  SPA-GMN-HKNCOMBINUM     PIC X(04).
                        09  SPA-GMN-HKNCOMBY1       PIC X(01).
-                       09  SPA-GMN-HKNCOMBIMEI     PIC X(50).
+                       09  SPA-GMN-HKNCOMBIMEI     PIC X(60).
       *
       *            ±¡Æâ±¡³°¶èÊ¬
                    07  SPA-GMN-INGAI             PIC X(01).
@@ -140,7 +140,7 @@
                    07  SPA-MAE-HKNCOMBI-G.
                        09  SPA-MAE-HKNCOMBINUM     PIC X(04).
                        09  SPA-MAE-HKNCOMBY1       PIC X(01).
-                       09  SPA-MAE-HKNCOMBIMEI     PIC X(50).
+                       09  SPA-MAE-HKNCOMBIMEI     PIC X(60).
                    07  SPA-MAE-HKNKBN              PIC 9(01).
                    07  SPA-MAE-ROUJIN              PIC 9(01).
       *            ÊÝÂ¸¿ÇÎÅ²Ê
@@ -236,11 +236,12 @@
                        09  SPA-GMN-HKN-LIST    OCCURS  15.
                            11  SPA-GMN-THKNCOMBINUM    PIC X(04).
                            11  SPA-GMN-THKNCOMBY1      PIC X(01).
-                           11  SPA-GMN-THKNCOMBIMEI    PIC X(50).
+                           11  SPA-GMN-THKNCOMBIMEI    PIC X(60).
       *
                        09  SPA-NAI-HKNCOMBI    OCCURS  15.
                            11  SPA-GMN-TFTNRATEMEI  PIC  X(05).
                            11  SPA-NAI-TFTNRATE     PIC  9(03).
+                           11  SPA-NAI-THKNCOMBIMEI PIC  X(50).
       *
                            11  SPA-NAI-HKNID       PIC  9(10).
                            11  SPA-NAI-HKNNUM      PIC  X(03).
@@ -300,6 +301,11 @@
                        09  SPA-GMN-K051-INPUTCD    PIC X(20).
                        09  SPA-GMN-K051-CDSYU      PIC X(01).
                05  SPA-K051-CUR             PIC 9(01).
+      *ÆþÎÏ¥³¡¼¥ÉÆþÎÏ²èÌÌ¤è¤ê¡Ê£Ë£°£µ£±¡Ë
+               05  SPA-K051-TBL.
+                   07  SPA-K051-TBL-G       OCCURS  5.
+                       09  SPA-K051-INPUTCD    PIC X(20).
+                       09  SPA-K051-CDSYU      PIC X(01).
       *
       *    £Ë£°£·²èÌÌÍÑ¡Ê¼õ¿ÇÍúÎò¡Ë
            03  SPA-K07-AREA.

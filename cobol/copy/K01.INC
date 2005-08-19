@@ -61,7 +61,7 @@
                   05  K01-HKNKUM-ROWATTR PIC S9(9)   BINARY.
                   05  K01-ITEM        OCCURS  100 TIMES.
                     06  K01-THKNCOMBINUM  PIC X(5).
-                    06  K01-THKNCOMBIMEI  PIC X(50).
+                    06  K01-THKNCOMBIMEI  PIC X(60).
                     06  K01-TTEKSTYMD     PIC X(10).
                     06  K01-TTEKEDYMD     PIC X(10).
                     06  K01-TFTNRATE      PIC X(5).

@@ -2249,6 +2249,31 @@
                                        TO  SPA-GMN-THKNCOMBINUM (IDX)
                MOVE    ORCSHKN-GMN-HKNCOMBIMEI (IDX)
                                        TO  SPA-GMN-THKNCOMBIMEI (IDX)
+               MOVE    ORCSHKN-GMN-HKNCOMBIMEI (IDX)
+                                       TO  SPA-NAI-THKNCOMBIMEI (IDX)
+      *TEST
+      *    受給者番号編集
+               IF      ORCSHKN-NAI-HKNJANUM (IDX) NOT =   SPACE
+                   MOVE    SPACE       TO  SPA-GMN-THKNCOMBIMEI (IDX)
+                   MOVE    SPACE       TO  WRK-HKNCOMBI
+                   STRING  ORCSHKN-GMN-HKNCOMBIMEI (IDX)
+                                               DELIMITED BY  "  "
+                       " ("                    DELIMITED  BY  SIZE
+                       ORCSHKN-NAI-HKNJANUM (IDX)
+                                               DELIMITED  BY  SPACE
+                       ")"                     DELIMITED  BY  SIZE
+                         INTO             WRK-HKNCOMBI
+                   END-STRING
+                   INITIALIZE                  ORCSKANACHKAREA
+                   MOVE    "1"                 TO  KANACHK-SYORI
+                   MOVE    WRK-HKNCOMBI        TO  KANACHK-MAE-INPUT
+                   MOVE    60                  TO  KANACHK-MAX-CNT
+                   CALL    "ORCSKANACHK"       USING
+                                               ORCSKANACHKAREA
+                   MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-THKNCOMBIMEI
+                                                            (IDX)
+               END-IF
+      *TEST
       *
                MOVE    ORCSHKN-NAI-HKNID (IDX)
                                        TO  SPA-NAI-HKNID  (IDX)

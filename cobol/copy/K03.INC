@@ -165,10 +165,10 @@
                 04  K03-VALUE   PIC X(10).
               03  K03-HKNCOMBI-COMB.
                 04  K03-HKNCOMBI.
-                  05  K03-VALUE   PIC X(60).
+                  05  K03-VALUE   PIC X(65).
                 04  K03-HKNCOMBI-COUNT   PIC S9(9)   BINARY.
                 04  K03-HKNCOMBI-ITEM
-                        PIC X(60)   OCCURS  15 TIMES.
+                        PIC X(65)   OCCURS  15 TIMES.
               03  K03-SRYKA-COMB.
                 04  K03-SRYKA.
                   05  K03-VALUE   PIC X(20).
