@@ -153,6 +153,9 @@
       *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *
+      *    全角チェックパラメタ
+           COPY    "CPORCSKANACHK.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
@@ -577,6 +580,14 @@
                    MOVE    PTRSI-JIBAISEIKBN   TO  WRK-JIBAISEKIKBN
                END-IF
            END-IF
+      *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    WRK-HKNCOMBI        TO  KANACHK-MAE-INPUT
+           MOVE    50                  TO  KANACHK-MAX-CNT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  WRK-HKNCOMBI
            .
        1101-HKNCOMBIMEI-HEN-EXT.
            EXIT.
