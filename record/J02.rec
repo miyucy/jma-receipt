@@ -219,10 +219,10 @@ J02	{
 		};
 		HHKNCOMBICOMB	{
 			HHKNCOMBI	{
-				value	varchar(55);
+				value	varchar(65);
 			};
 			count	int;
-			item	varchar(55)[20];
+			item	varchar(65)[20];
 		};
 		IKKATU	{
 			value	varchar(20);

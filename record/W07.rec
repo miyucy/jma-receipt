@@ -392,6 +392,18 @@ W07	{
 			TAGNAME5    {
 			  	state   int;
 			};
+			TAG6	{
+				SRYKBN_FLG_COMB	{
+					SRYKBN_FLG	{
+						value	varchar(12);
+					};
+					count	int;
+					item	varchar(12)[2];
+				};
+			};
+			TAGNAME6    {
+			  	state   int;
+			};
 		};
 	};
 };

@@ -56,10 +56,10 @@ J03	{
 		};
 		HHKNCOMBI_COMB	{
 			HHKNCOMBI	{
-				value	varchar(55);
+				value	varchar(65);
 			};
 			count	int;
-			item	varchar(55)[20];
+			item	varchar(65)[20];
 		};
 		MIDASI	{
 		        style   varchar(20);
