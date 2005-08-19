@@ -28,6 +28,7 @@
       *  01.01.04   NACL-門脇     05.01.07  自賠責担当医コード、自賠責保
       *                                     険会社名の追加
       *  01.01.05   NACL-門脇     05.01.26  ４００１情報の追加
+      *  01.01.06   NACL-門脇     05.08.02  自賠責従来様式用項目追加
       ************************************************************
       *01  RECE41-REC.
            03  RECE41-KEY.
@@ -128,10 +129,15 @@
                05  RECE41-TENSU           PIC  9(08).
       *明細点数（薬剤等）
                05  RECE41-TENSU-YAK       PIC  9(08).
+      **明細金額（自賠責：従来様式用）
+               05  RECE41-KINGAKU-JYU     PIC  9(09).
       *合計点数
            03  RECE41-TOTALTEN            PIC  9(08).
       *合計点数（薬剤等）
            03  RECE41-TOTALTEN-YAK        PIC  9(08).
+      **合計金額（自賠責：従来様式用）
+           03  RECE41-TOTALKIN-JYU        PIC  9(09).
+      *
       *合計金額
            03  RECE41-TOTALKIN            PIC  9(09).
       *合計金額（薬剤等）
@@ -145,6 +151,7 @@
                05  RECE41-SYOSAIYMD2      PIC  X(08).
       *明細金額
                05  RECE41-KINGAKU2        PIC  9(09).
+      *
       *合計金額
            03  RECE41-TOTALKIN2           PIC  9(09).
       *合計金額（その他）
@@ -156,6 +163,8 @@
       *明細書料
            03  RECE41-MEISAI-TUU          PIC  9(02).
            03  RECE41-MEISAI-KIN          PIC  9(09).
+      **その他欄金額（自賠責：従来様式用）
+           03  RECE41-SONOTAKIN-JYU       PIC  9(09).
       *
       *食事療養費情報
            03  RECE41-SHOKUJIINF.

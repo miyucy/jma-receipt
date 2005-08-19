@@ -24,6 +24,7 @@
       *  01.01.01   NACL-門脇     05.01.07  自賠責担当医コード、自賠責保
       *                                     険会社名の追加
       *  01.01.02   NACL-門脇     05.01.26  ４００１情報の追加
+      *  01.01.03   NACL-門脇     05.08.02  自賠責従来様式用項目追加
       ************************************************************
       *01  RECE82-REC.
            03  RECE82-KEY.
@@ -117,6 +118,8 @@
                05  RECE82-TENSU           PIC  9(08).
       *明細点数（薬剤等）
                05  RECE82-TENSU-YAK       PIC  9(08).
+      **明細金額（自賠責：従来様式用）
+               05  RECE82-KINGAKU-JYU     PIC  9(09).
       *
       *入院年月日
            03  RECE82-NYUINYMD            PIC  X(08).
@@ -144,10 +147,14 @@
                05  RECE82-NYUKHNNISSU     PIC  9(02).
       *合計点数
                05  RECE82-NYUKHNKEI       PIC  9(08).
+      **合計金額（自賠責：従来様式用）
+               05  RECE82-NYUKHNKIN-JYU   PIC  9(09).
       *入院基本料情報２
            03  RECE82-NYUKHNINF2.
       *合計点数２
                05  RECE82-NYUKHNKEI2      PIC S9(08).
+      **合計金額２（自賠責：従来様式用）
+               05  RECE82-NYUKHNKIN2-JYU  PIC S9(09).
       *
       *特定入院基本料情報
            03  RECE82-NYUTOKINF           OCCURS  10.
@@ -159,18 +166,26 @@
                05  RECE82-NYUTOKNISSU     PIC  9(02).
       *合計点数
                05  RECE82-NYUTOKKEI       PIC  9(08).
+      **合計金額（自賠責：従来様式用）
+               05  RECE82-NYUTOKKIN-JYU   PIC  9(09).
       *特定入院基本料情報２
            03  RECE82-NYUTOKINF2.
       *合計点数２
                05  RECE82-NYUTOKKEI2      PIC S9(08).
+      **合計金額２（自賠責：従来様式用）
+               05  RECE82-NYUTOKKIN2-JYU  PIC S9(09).
       *
       *入院基本料点数計
            03  RECE82-NYUTOTALTEN         PIC  9(08).
+      **入院基本料金額計（自賠責：従来様式用）
+           03  RECE82-NYUTOTALKIN-JYU     PIC  9(09).
       *
       *合計点数
            03  RECE82-TOTALTEN            PIC  9(08).
       *合計点数（薬剤等）
            03  RECE82-TOTALTEN-YAK        PIC  9(08).
+      **合計金額（自賠責：従来様式用）
+           03  RECE82-TOTALKIN-JYU        PIC  9(09).
       *
       *診療区分別金額情報
            03  RECE82-SRYKBNINF2          OCCURS  5.
@@ -211,6 +226,10 @@
       *明細書料
            03  RECE82-MEISAI-TUU          PIC  9(02).
            03  RECE82-MEISAI-KIN          PIC  9(09).
+      **入院室料加算金額（自賠責：従来様式用）
+           03  RECE82-SITURYO-JYU         PIC  9(09).
+      **その他欄金額（自賠責：従来様式用）
+           03  RECE82-SONOTAKIN-JYU       PIC  9(09).
       *
       *合計金額（イ又はＡ）
            03  RECE82-TOTALKIN            PIC  9(09).

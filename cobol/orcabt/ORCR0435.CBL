@@ -32,6 +32,7 @@
       *  01.00.02    NACL-門脇    04.06.07  コピー句０４５変更に伴う修正
       *  中止処理追加
       *  01.01.01    NACL-藤原    04/10/13  中止処理の追加
+      *  01.01.02    NACL-門脇    05/07/15  自賠責従来様式対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -416,7 +417,7 @@
                INITIALIZE                        RECE441-REC
       *
                EVALUATE      RECE44-SRYKBN
-                   WHEN      "11"
+                   WHEN      "80"
                       IF  ( RECE41-KYUKYU-PRTKBN    =      1         )
                       AND ( RECE44-SRYCDTOTAL(6:9)  =   CONS-KYUKYU1
                                                    OR   CONS-KYUKYU2 )        

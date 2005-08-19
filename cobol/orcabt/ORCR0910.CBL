@@ -54,6 +54,7 @@
       *  01.02.09    NACL-門脇    05/05/26  手術・麻酔の記載順変更対応
       *  01.02.10    NACL-門脇    05/06/06  ワーク項目桁数修正
       *  01.02.11    NACL-藤原    05/08/17  包括対象検査フラグの新設に対応
+      *  01.02.12    NACL-門脇    05/08/18  自賠責従来様式対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -197,6 +198,7 @@
                05  WRK-PARA-SRYYM              PIC  X(06).
                05  WRK-PARA-TERMID             PIC  X(16).
                05  WRK-PARA-SYSYMD             PIC  X(08).
+               05  WRK-PARA-RECEKBN            PIC  X(01).
                05  WRK-PARA-JOBID              PIC  9(07).
                05  WRK-PARA-SHELLID            PIC  X(08).
       *
@@ -849,7 +851,14 @@
       *        検査のとき回数を編集する
                IF      WRK-KENSA-KAISU        >   ZERO
                    IF      RECE82-HKNKBN          =   "4"
+                     EVALUATE  WRK-PARA-RECEKBN
+                      WHEN      "4"
+      *****************（新様式）
                        MOVE    WRK-KENSA-KAISU    TO  RECE82-KAISU  (18)
+                      WHEN      "5"
+      *****************（従来様式）
+                       MOVE    WRK-KENSA-KAISU    TO  RECE82-KAISU  (21)
+                     END-EVALUATE
                    ELSE
                        MOVE    WRK-KENSA-KAISU    TO  RECE82-KAISU  (17)
                    END-IF

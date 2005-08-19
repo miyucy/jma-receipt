@@ -21,6 +21,7 @@
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-門脇    05.07.28  剤番号追加
       ************************************************************
       *01  RECE871-REC.
            03  RECE871-KEY.
@@ -38,18 +39,20 @@
                05  RECE871-HKNID           PIC  9(10).
       *適用開始年月日
                05  RECE871-TEKSTYMD        PIC  X(08).
+      *診療区分
+               05  RECE871-SRYKBN          PIC  X(02).
       *
                05  RECE871-NYUTENTTLKBN    PIC  9(03).
       *診療コード（剤の先頭の診療コード）
                05  RECE871-SRYCD1          PIC  X(09).
+      *剤番号
+               05  RECE871-ZAINUM          PIC  9(08).
       *連番号
                05  RECE871-LINENUM         PIC  9(05).
       *患者番号
            03  RECE871-PTNUM               PIC  X(20).
       *診療科
            03  RECE871-SRYKA               PIC  X(02).
-      *診療区分
-           03  RECE871-SRYKBN              PIC  X(02).
       *適要欄情報
            03  RECE871-TEKIYO-INF.
       *剤区切（＊）

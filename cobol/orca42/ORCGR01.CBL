@@ -2526,7 +2526,8 @@
                        MOVE    "recept8.sh"    TO  WRK-SHELL-SHELL
                    END-IF
                WHEN    "5"
-                   IF      SPA-GMN-NYUGAIKBN   =   "1"
+      *************IF      SPA-GMN-NYUGAIKBN   =   "1"
+                   IF      SPA-R01-NYUGAIKBN   =   "1"
                        MOVE    "recept13.sh"   TO  WRK-SHELL-SHELL
                    ELSE
                        MOVE    "recept12.sh"

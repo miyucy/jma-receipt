@@ -32,6 +32,7 @@
       *  01.00.02    NACL-門脇    04.04.26  ユーザーコメント追加対応
       *  中止処理追加
       *  01.01.01    NACL-藤原    04/10/13  中止処理の追加
+      *  01.01.02    NACL-門脇    05/07/15  自賠責従来様式対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -419,9 +420,12 @@
                                            TO
                                         WRK-ZAI1-NAME(WRK-TNSKAI-ST1:)
                MOVE    RECE41-KEY        TO  RECE46-KEY
+               MOVE    SPACE             TO  RECE46-SRYKBN
                MOVE    ZERO              TO  RECE46-GAITENTTLKBN
                MOVE    SPACE             TO  RECE46-SRYCD1
-               MOVE    ZERO              TO  RECE46-ZAINUM
+               MOVE    99999996          TO  RECE46-ZAINUM
+               MOVE    RECE41-PTNUM      TO  RECE46-PTNUM
+               MOVE    SPACE             TO  RECE46-SRYKA
                PERFORM 450-RECE47-OUT-SEC                         
            END-IF
       *
@@ -437,9 +441,12 @@
                                            TO
                                         WRK-ZAI1-NAME(WRK-TNSKAI-ST1:)
                MOVE    RECE41-KEY        TO  RECE46-KEY
+               MOVE    SPACE             TO  RECE46-SRYKBN
                MOVE    ZERO              TO  RECE46-GAITENTTLKBN
                MOVE    SPACE             TO  RECE46-SRYCD1
-               MOVE    ZERO              TO  RECE46-ZAINUM
+               MOVE    99999997          TO  RECE46-ZAINUM
+               MOVE    RECE41-PTNUM      TO  RECE46-PTNUM
+               MOVE    SPACE             TO  RECE46-SRYKA
                PERFORM 450-RECE47-OUT-SEC                       
            END-IF
       *
@@ -691,7 +698,7 @@
            MOVE    WRK-LINENUM       TO  RECE47-LINENUM
            MOVE    RECE46-PTNUM      TO  RECE47-PTNUM
            MOVE    RECE46-SRYKA      TO  RECE47-SRYKA
-           MOVE    RECE46-SRYKBN     TO  RECE47-SRYKBN
+      **** MOVE    RECE46-SRYKBN     TO  RECE47-SRYKBN
       *
            WRITE   RECE47-REC
            IF      STS-RECE47          NOT =   ZERO

@@ -31,6 +31,7 @@
       *  01.00.01    NACL-門脇    04.04.26  ユーザーコメント追加対応
       *  中止処理追加
       *  01.01.01    NACL-藤原    04/10/13  中止処理の追加
+      *  01.01.02    NACL-門脇    05/07/15  自賠責従来様式対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -645,7 +646,7 @@
            MOVE    WRK-LINENUM       TO  RECE87-LINENUM
            MOVE    RECE86-PTNUM      TO  RECE87-PTNUM
            MOVE    RECE86-SRYKA      TO  RECE87-SRYKA
-           MOVE    RECE86-SRYKBN     TO  RECE87-SRYKBN
+      **** MOVE    RECE86-SRYKBN     TO  RECE87-SRYKBN
       *
            WRITE   RECE87-REC
            IF      STS-RECE87          NOT =   ZERO

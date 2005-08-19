@@ -23,6 +23,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-門脇    03.03.03  剤番号桁修正
       *  01.00.02    NACL-門脇    05.05.25  診療種別区分、診療日の追加
+      *  01.00.03    NACL-門脇    05.07.28  剤の先頭の診療コード等の追加
       ************************************************************
       *01  RECE47-REC.
            03  RECE47-KEY.
@@ -56,6 +57,10 @@
                05  RECE47-CDKBN-KBNNUM-EDA    PIC  9(02).
                05  RECE47-CDKBN-KOUBAN        PIC  9(02).
                05  RECE47-KOUHYOJUNNUM        PIC  9(09).
+      *
+               05  RECE47-GAITENTTLKBN    PIC  9(03).
+      *診療コード（剤の先頭の診療コード）
+               05  RECE47-SRYCD1          PIC  X(09).
       *剤点数
                05  RECE47-ZAITEN          PIC  9(08).
       *剤番号

@@ -22,6 +22,7 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-門脇    03.03.03  剤番号桁修正
+      *  01.00.02    NACL-門脇    05.07.28  剤ラストフラグの追加
       ************************************************************
       *01  RECE461-REC.
            03  RECE461-KEY.
@@ -39,6 +40,8 @@
                05  RECE461-HKNID           PIC  9(10).
       *適用開始年月日
                05  RECE461-TEKSTYMD        PIC  X(08).
+      *診療区分
+               05  RECE461-SRYKBN          PIC  X(02).
       *
                05  RECE461-GAITENTTLKBN    PIC  9(03).
       *診療コード（剤の先頭の診療コード）
@@ -51,10 +54,10 @@
            03  RECE461-PTNUM               PIC  X(20).
       *診療科
            03  RECE461-SRYKA               PIC  X(02).
-      *診療区分
-           03  RECE461-SRYKBN              PIC  X(02).
       *剤回数
            03  RECE461-ZAIKAISU            PIC  9(04).
+      *剤ラストフラグ
+           03  RECE461-ZAILAST             PIC  9(01).
       *診療行為情報
            03  RECE461-SRYACTINF.
       *診療コード

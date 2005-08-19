@@ -30,6 +30,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  中止処理追加
       *  01.00.01    NACL-藤原    04/10/13  中止処理の追加
+      *  01.00.02    NACL-門脇    05/07/15  自賠責従来様式対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -140,6 +141,7 @@
            03  FLG-SP              PIC 9(01).
            03  FLG-NOPRT           PIC 9(01).
            03  FLG-HENSYU          PIC 9(01).
+           03  FLG-OK              PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -164,6 +166,7 @@
                05  WRK-PARA-SRYYM              PIC  X(06).
                05  WRK-PARA-TERMID             PIC  X(16).
                05  WRK-PARA-SYSYMD             PIC  X(08).
+               05  WRK-PARA-RECEKBN            PIC  X(01).
                05  WRK-PARA-JOBID              PIC  9(07).
                05  WRK-PARA-SHELLID            PIC  X(08).
       *
@@ -187,6 +190,9 @@
       *     
            03  WRK-SRYKBN                      PIC X(02).
            03  WRK-Z9                          PIC ZZZ9.
+      *
+           03  WRK-SRYCD1                      PIC X(09).
+           03  WRK-NYUTENTTLKBN                PIC 9(03).
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMDG         PIC X(22).
@@ -540,6 +546,9 @@
       *    剤　明細テーブルチェック
            INITIALIZE                    TBL-ZAI-AREA
            MOVE    ZERO              TO  WRK-TBLMAX
+           MOVE    ZERO              TO  FLG-OK
+           MOVE    SPACE             TO  WRK-SRYCD1
+           MOVE    ZERO              TO  WRK-NYUTENTTLKBN
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL   IDX1    >       WRK-ZAIWMAX   
@@ -567,13 +576,17 @@
       * 
            MOVE    ZERO          TO  FLG-NOPRT
       *
-           EVALUATE    RECE84-SRYKBN
+           IF      WRK-PARA-RECEKBN   NOT =  "5"
+      *
+             EVALUATE    RECE84-SRYKBN
                WHEN    "11"
                    IF  TBL-ZAIW-SRYCD (WRK-WIDX1)
                                              =   CONS-SYOSHIN
                        MOVE    1                 TO  FLG-NOPRT
                    END-IF
-           END-EVALUATE            
+             END-EVALUATE
+      *
+           END-IF
       *
            .
        20031-SRYKBN-CHECK-EXT.
@@ -588,6 +601,19 @@
            IF  WRK-TBLMAX           >   100
                DISPLAY "*** ORCR0920 TBL-ZAI INDEX[100] OVER  ***"
            ELSE
+      *        先頭の診療行為コード編集
+               IF      FLG-OK       =   ZERO
+                  IF  ( TBL-ZAIW-SRYCD(IDX1)(1:1)  =  "8"   )
+                  OR  ( TBL-ZAIW-SRYCD(IDX1)(1:3)  =  "008" )
+                    CONTINUE
+                  ELSE
+                    MOVE   TBL-ZAIW-SRYCD(IDX1)  TO  WRK-SRYCD1
+                    MOVE   TBL-ZAIW-TENTTLKBN(IDX1)
+                                                 TO  WRK-NYUTENTTLKBN
+                    MOVE      1                  TO  FLG-OK
+                  END-IF
+               END-IF
+      *
                MOVE    TBL-ZAIW-SRYACTINF (IDX1)
                                        TO  TBL-ZAI-SRYACTINF(WRK-TBLMAX)
                MOVE    TBL-ZAIW-NAMEINF   (IDX1)
@@ -631,7 +657,8 @@
            MOVE    RECE84-SRYKA      TO  RECE86-SRYKA
            MOVE    RECE84-SRYKBN     TO  RECE86-SRYKBN 
            MOVE    RECE84-ZAIKAISU   TO  RECE86-ZAIKAISU 
-           MOVE    TBL-ZAI-SRYCD (1) TO  RECE86-SRYCD1
+      **** MOVE    TBL-ZAI-SRYCD (1) TO  RECE86-SRYCD1
+           MOVE    WRK-SRYCD1        TO  RECE86-SRYCD1
            MOVE    RECE84-ZAINUM     TO  RECE86-ZAINUM
            MOVE    WRK-LINENUM       TO  RECE86-LINENUM
       *---------適用欄並び替え用の編集（表用番号等）-----------------
@@ -659,10 +686,15 @@
                 IF  RECE86-SRYCD1(1:5)  =  "09593"
                   MOVE    999           TO  RECE86-NYUTENTTLKBN
                 ELSE
-                  MOVE    TBL-ZAI-TENTTLKBN(1)
-                                        TO  RECE86-NYUTENTTLKBN
+      ****        MOVE    TBL-ZAI-TENTTLKBN(1)
+      ****                              TO  RECE86-NYUTENTTLKBN
+                  MOVE    WRK-NYUTENTTLKBN  TO  RECE86-NYUTENTTLKBN
                 END-IF
               END-IF
+           END-IF
+      *
+           IF      IDY   =   WRK-TBLMAX
+                MOVE    1      TO     RECE86-ZAILAST
            END-IF
       *
            WRITE   RECE86-REC
