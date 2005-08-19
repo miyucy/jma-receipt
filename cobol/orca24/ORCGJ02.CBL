@@ -46,6 +46,7 @@
       *                                     一括入力項目追加
       *  01.00.16    NACL-多々納  05/04/14  レセプレビュー追加
       *  01.00.17    NACL-多々納  05/04/20  診療会計附加情報追加
+      *  01.00.18    NACL-多々納  05/08/19  診区順追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -555,6 +556,8 @@
            COPY    "CPSK1005.INC".
       *
            COPY    "CPSK0041.INC".
+      *    会計照会機能情報
+           COPY  "CPSK1043.INC".
       *
       *    点数マスタ−
       *01  TENSU-REC.
@@ -1503,6 +1506,8 @@
       *
       *    診療種別
            PERFORM 3006-SRYKBN-HEN-SEC
+      *    診療順
+           PERFORM 3007-SRYKBN-FLG-HEN-SEC
       *
            IF     (SPA-PTID            =   ZERO )  AND
                   (SPA-GMN-PTID        =   ZERO )
@@ -1810,6 +1815,47 @@
            END-IF
            .
        3006-SRYKBN-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診区初期表示編集
+      *****************************************************************
+       3007-SRYKBN-FLG-HEN-SEC                  SECTION.
+      *
+           INITIALIZE                  SPA-NAI-SRYKBN-FLG
+      *    診療科
+           MOVE    SPACE               TO  SYS-1043-REC
+           MOVE    "1043"              TO  SYS-1043-KANRICD
+           MOVE    "*"                 TO  SYS-1043-KBNCD
+           MOVE    ZERO                TO  SYS-1043-STYUKYMD
+           MOVE    ALL "9"             TO  SYS-1043-EDYUKYMD
+      *    システム管理検索
+           MOVE    SYS-1043-REC        TO  MCPDATA-REC
+           MOVE    SPA-NAI-SRYYM       TO  ORC-DBYMD(1:6)
+           MOVE    "01"                TO  ORC-DBYMD(7:2)
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 900-KANRIMST-READ-SEC
+           ELSE
+               INITIALIZE                  SYS-1043-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1043-REC
+               MOVE    SYS-1043-SRYKBN-FLG TO  SPA-NAI-SRYKBN-FLG
+           END-IF
+           MOVE    "SYSKANRI-KEY"     TO  ORC-DBPATH
+           PERFORM 980-DBCLOSE-SEC
+      *
+           .
+       3005-SRYKA-HEN-EXT.
            EXIT.
       *****************************************************************
       *   保険一覧編集処理
@@ -3587,6 +3633,17 @@
            MOVE    WRK-NYUGAIKBN-G     TO  SPA-GMN-NYUGAIKBN-G
            MOVE    WRK-SRYKBN-G        TO  SPA-GMN-SRYKBN-G
            MOVE    WRK-HKNCOMBI-G      TO  SPA-GMN-HHKNCOMBI-G
+      *    全科の時
+           IF     (SPA-J01-SRYKA       =   "00" ) AND
+                  (SPA-GMN-SRYKBN      =   "00"  OR  "01" )
+               IF      SPA-NAI-SRYKBN-FLG  =   1
+                   MOVE    SPA-GMN-SRYKBN-LST (02)
+                                           TO  SPA-GMN-SRYKBN-G
+               ELSE
+                   MOVE    SPA-GMN-SRYKBN-LST (01)
+                                           TO  SPA-GMN-SRYKBN-G
+               END-IF
+           END-IF
       *
            MOVE    SPA-J02-SRYYMDW(1:6)    TO  SPA-GMN-SRYYM
            MOVE    SPA-J02-SRYYMD (1:6)    TO  SPA-NAI-SRYYM
