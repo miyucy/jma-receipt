@@ -22,6 +22,7 @@
       ************************************************************
       *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      * 01.00.01     NACL-Â¿¡¹Ç¼  05/08/17  ÊÝ¸±¼ÔÈÖ¹æ¡¢¸øÈñ£É£ÄÊÖµÑÄÉ²Ã
       ************************************************************
        01  ORCSHKNSETAREA.
       *
@@ -63,17 +64,31 @@
                        09  ORCSHKN-NAI-HKNNUM          PIC  X(03).
       *                ÊÝ¸±¶èÊ¬
                        09  ORCSHKN-NAI-HKNKBN          PIC  9(01).
+      *                ÊÝ¸±¼ÔÈÖ¹æ
+                       09  ORCSHKN-NAI-HKNJANUM        PIC  X(08).
       *                Ï«ºÒ¡¦»Í»è¶èÊ¬
                        09  ORCSHKN-NAI-RSI-SISIKBN     PIC  X(01).
       *                Ï«ºÒ¡¦½ýÉÂÇ¯·îÆü
                        09  ORCSHKN-NAI-RSI-SHOBYOYMD   PIC  X(08).
       *                Ï«ºÒ¡¦ÊÝ¸±¶èÊ¬
                        09  ORCSHKN-NAI-RSI-HKNKBN      PIC  X(01).
-      *                ¸øÈñ¼ïÎà
-                       09  ORCSHKN-NAI-KOH1HKNNUM      PIC  X(03).
-                       09  ORCSHKN-NAI-KOH2HKNNUM      PIC  X(03).
-                       09  ORCSHKN-NAI-KOH3HKNNUM      PIC  X(03).
-                       09  ORCSHKN-NAI-KOH4HKNNUM      PIC  X(03).
+      *                ÆÃÄê¼À´µ¤Î¼õµë¼ÔÈÖ¹æ
+                       09  ORCSHKN-NAI-JKYSNUM         PIC  X(20).
+      *                ¸øÈñ¼ïÎà¡¦¸øÈñ£É£Ä
+                       09  ORCSHKN-NAI-KOH-G.
+                           11  ORCSHKN-NAI-KOH1HKNNUM      PIC  X(03).
+                           11  ORCSHKN-NAI-KOH1ID          PIC  9(10).
+                           11  ORCSHKN-NAI-KOH2HKNNUM      PIC  X(03).
+                           11  ORCSHKN-NAI-KOH2ID          PIC  9(10).
+                           11  ORCSHKN-NAI-KOH3HKNNUM      PIC  X(03).
+                           11  ORCSHKN-NAI-KOH3ID          PIC  9(10).
+                           11  ORCSHKN-NAI-KOH4HKNNUM      PIC  X(03).
+                           11  ORCSHKN-NAI-KOH4ID          PIC  9(10).
+                       09  ORCSHKN-NAI-KOH-R       REDEFINES
+                                                   ORCSHKN-NAI-KOH-G.
+                           11  ORCSHKN-NAI-KOH-OCC     OCCURS   4.
+                               13  ORCSHKN-NAI-KOHHKNNUM   PIC  X(03).
+                               13  ORCSHKN-NAI-KOHID       PIC  9(10).
       *¥¨¥é¡¼¥³¡¼¥É
            03  ORCSHKN-ERRCD                    PIC 9(01).
       *
