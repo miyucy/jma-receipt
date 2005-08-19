@@ -30,6 +30,7 @@
       * 01.00.01     NACL-多々納  03/05/12  自賠責割合変更追加
       * 01.00.02     NACL-多々納  03/07/29  労災割合変更追加
       * 01.00.03     NACL-多々納  04/01/06  包括まとめ入力追加
+      * 01.00.04     NACL-多々納  05/08/17  保険者番号、公費ＩＤ返却追加
       *****************************************************************
       *
       *
@@ -53,6 +54,8 @@
            03  FLG-JYURRK          PIC 9(01).
            03  FLG-PTRSIINF        PIC 9(01).
            03  FLG-HKNNUM          PIC 9(01).
+           03  FLG-PTHKNINF        PIC 9(01).
+           03  FLG-PTKOHINF        PIC 9(01).
       *
            03  FLG-CHK             PIC 9(01).
            03  FLG-HKNCOMBICHK     PIC 9(01).
@@ -62,6 +65,7 @@
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX2                PIC 9(04).
+           03  IDK                 PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -129,6 +133,14 @@
       *    保険情報
        01  HKNNUM-REC.
            COPY    "CPHKNNUM.INC".
+      *
+      *    患者保険情報
+       01  PTHKNINF-REC.
+           COPY    "CPPTHKNINF.INC".
+      *
+      *    患者公費情報
+       01  PTKOHINF-REC.
+           COPY    "CPPTKOHINF.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -313,12 +325,8 @@
       *    最大件数
            MOVE    IDX                 TO  ORCSHKN-HKN-MAX
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "HKNCOMBI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        100-HKNCOMBI-HENSYU-EXT.
@@ -348,12 +356,8 @@
                INITIALIZE                      PTRSIINF-REC
                MOVE    1                   TO  FLG-PTRSIINF
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTRSIINF-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
            .
        1100-PTRSIINF-CHK-EXT.
            EXIT.
@@ -377,6 +381,10 @@
                                                                (IDX)
            MOVE    COMB-KOH4HKNNUM     TO  ORCSHKN-NAI-KOH4HKNNUM 
                                                                (IDX)
+           MOVE    COMB-KOH1ID         TO  ORCSHKN-NAI-KOH1ID  (IDX)
+           MOVE    COMB-KOH2ID         TO  ORCSHKN-NAI-KOH2ID  (IDX)
+           MOVE    COMB-KOH3ID         TO  ORCSHKN-NAI-KOH3ID  (IDX)
+           MOVE    COMB-KOH4ID         TO  ORCSHKN-NAI-KOH4ID  (IDX)
       *
            MOVE    COMB-TEKSTYMD       TO  ORCSHKN-NAI-TEKSTYMD
                                                                (IDX)
@@ -390,10 +398,29 @@
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  ORCSHKN-GMN-TEKEDYMD(IDX)
       *
+      *    保険者番号
+           IF     (COMB-HKNID          =   ZERO )  OR
+                  (COMB-HKNNUM         =   "971"
+                                       OR  "973" )
+               CONTINUE
+           ELSE
+                PERFORM 1102-HKNJANUM-SET-SEC
+           END-IF
+      *
       *    保険名称編集・労災編集
            PERFORM 1101-HKNCOMBIMEI-HEN-SEC
            MOVE    WRK-HKNCOMBI        TO  ORCSHKN-GMN-HKNCOMBIMEI
                                                                 (IDX)
+      *    特定疾患の受給者番号編集処理
+           PERFORM VARYING     IDK     FROM    1   BY  1
+                   UNTIL       IDK     >   4
+               IF     (COMB-KOHHKNNUM (IDK)    =   "051"
+                                               OR  "052"
+                                               OR  "091" )
+                   PERFORM 1103-JKYSNUM-SET-SEC
+                   MOVE    4               TO  IDK
+               END-IF
+           END-PERFORM
       *
       *    負担割合
            IF      SPA-NYUGAIKBN       =   "1"
@@ -554,6 +581,74 @@
        1101-HKNCOMBIMEI-HEN-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    保険者番号編集処理
+      *****************************************************************
+       1102-HKNJANUM-SET-SEC             SECTION.
+      *    保険者編集
+           INITIALIZE                  PTHKNINF-REC
+           MOVE    COMB-HOSPID         TO  PTHKN-HOSPID
+           MOVE    COMB-PTID           TO  PTHKN-PTID
+           MOVE    COMB-HKNID          TO  PTHKN-HKNID
+      *
+           MOVE    PTHKNINF-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTHKNINF-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "PTHKNINF-KEY"      TO  ORC-DBPATH
+               PERFORM 910-PTHKNINF-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-PTHKNINF
+           END-IF
+           MOVE    "PTHKNINF-KEY"      TO  ORC-DBPATH
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-PTHKNINF        =   ZERO
+               MOVE    PTHKN-HKNJANUM      TO  ORCSHKN-NAI-HKNJANUM
+                                                               (IDX)
+           END-IF
+      *
+           .
+       1102-HKNJANUM-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    特定疾患の受給者番号編集処理
+      *****************************************************************
+       1103-JKYSNUM-SET-SEC             SECTION.
+      *    患者公費情報
+           INITIALIZE                  PTKOHINF-REC
+           MOVE    COMB-HOSPID         TO  PTKOH-KOHID
+           MOVE    COMB-PTID           TO  PTKOH-PTID
+           MOVE    COMB-KOHID (IDK)    TO  PTKOH-KOHID
+      *
+           MOVE    PTKOHINF-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTKOHINF-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "PTKOHINF-KEY"      TO  ORC-DBPATH
+               PERFORM 910-PTKOHINF-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-PTKOHINF
+           END-IF
+           MOVE    "PTKOHINF-KEY"      TO  ORC-DBPATH
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-PTKOHINF        =   ZERO
+               MOVE    PTKOH-JKYSNUM       TO  ORCSHKN-NAI-JKYSNUM
+                                                               (IDX)
+           END-IF
+      *
+           .
+       1103-JKYSNUM-SET-EXT.
+           EXIT.
       *
       *****************************************************************
       *    今回対象保険編集処理
@@ -688,12 +783,8 @@
                    PERFORM 970-JYURRK-READ-SEC
                END-IF
            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "JYURRK-KEY11"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        2001-JYURRK-CHK-EXT.
@@ -726,12 +817,8 @@
                INITIALIZE                  HKNNUM-REC
                MOVE    1               TO  FLG-HKNNUM
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "HKNNUM-KEY"        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        3001-HKNNUM-CHK-EXT.
@@ -770,12 +857,8 @@
                INITIALIZE                  SYS-4001-REC
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        1002-RSI-SYSKANRI-EXT.
@@ -814,13 +897,9 @@
                MOVE    SPACE               TO  SYS-1008-REC
                INITIALIZE                  SYS-1008-REC
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      *    相互作用チェック期間
+           PERFORM 990-DBCLOSE-SEC
+      *    包括登録
            IF      SYS-1008-HOUKATU-FLG    =   "1"
                CONTINUE
            ELSE
@@ -977,5 +1056,61 @@
            END-IF
            .
        921-HKNNUM-NEXT-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険マスター読み込み
+      *****************************************************************
+       910-PTHKNINF-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTHKNINF-REC
+               MOVE    ZERO            TO  FLG-PTHKNINF
+           ELSE
+               INITIALIZE                  PTHKNINF-REC
+               MOVE    1               TO  FLG-PTHKNINF
+           END-IF
+      *
+           .
+       910-PTHKNINF-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者公費読み込み
+      *****************************************************************
+       910-PTKOHINF-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTKOHINF-REC
+               MOVE    ZERO            TO  FLG-PTKOHINF
+           ELSE
+               INITIALIZE                  PTKOHINF-REC
+               MOVE    1               TO  FLG-PTKOHINF
+           END-IF
+      *
+           .
+       910-PTKOHINF-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢクロース処理
+      *****************************************************************
+       990-DBCLOSE-SEC         SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       990-DBCLOSE-EXT.
            EXIT.
       *****************************************************************
