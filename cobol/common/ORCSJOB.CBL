@@ -48,7 +48,7 @@
       *
        01  FLG-AREA.
            03  FLG-END                                 PIC 9(01).
-           03  FLG-JOBKANRI                            PIC 9(01).
+           03  FLG-JOBKANRI                            PIC S9(03).
       *    カウント領域
        01  CNT-AREA.
            03  CNT-IN                                  PIC 9(06).
@@ -209,7 +209,7 @@
                PERFORM 910-JOBKANRI-INV2-SEC
            END-IF        
            IF      FLG-JOBKANRI   NOT  =  ZERO
-               MOVE  MCP-RC                TO  SJOBKANRI-RETURN
+               MOVE  FLG-JOBKANRI      TO  SJOBKANRI-RETURN
                GO  TO  120-JBE-EXT
            END-IF
       *    エラーコード
@@ -256,7 +256,7 @@
            MOVE    JOBKANRI-REC        TO  MCPDATA-REC
            PERFORM 910-JOBKANRI-INV2-SEC
            IF       FLG-JOBKANRI       NOT  =  ZERO
-               MOVE  MCP-RC            TO  SJOBKANRI-RETURN
+               MOVE  FLG-JOBKANRI      TO  SJOBKANRI-RETURN
                GO    TO                130-STS-EXT
            END-IF
       *
@@ -295,7 +295,7 @@
            MOVE    JOBKANRI-REC        TO  MCPDATA-REC
            PERFORM 910-JOBKANRI-INV2-SEC
            IF       FLG-JOBKANRI       NOT  =  ZERO
-               MOVE  MCP-RC            TO  SJOBKANRI-RETURN
+               MOVE  FLG-JOBKANRI      TO  SJOBKANRI-RETURN
                GO    TO                160-STE-EXT
            END-IF
       *
@@ -337,7 +337,7 @@
            MOVE    JOBKANRI-REC        TO  MCPDATA-REC
            PERFORM 910-JOBKANRI-INV2-SEC
            IF       FLG-JOBKANRI       NOT  =  ZERO
-               MOVE  MCP-RC            TO  SJOBKANRI-RETURN
+               MOVE  FLG-JOBKANRI      TO  SJOBKANRI-RETURN
                GO    TO                140-DEL-EXT
            END-IF
       *
@@ -403,7 +403,7 @@
            MOVE    JOBKANRI-REC        TO  MCPDATA-REC
            PERFORM 910-JOBKANRI-INV2-SEC
            IF       FLG-JOBKANRI       NOT  =  ZERO
-               MOVE  MCP-RC            TO  SJOBKANRI-RETURN
+               MOVE  FLG-JOBKANRI      TO  SJOBKANRI-RETURN
            ELSE
                MOVE    ZERO            TO  SJOBKANRI-RETURN
                MOVE    WRK-JOBKANRI-REC
@@ -423,7 +423,7 @@
            MOVE    JOBKANRI-REC        TO  MCPDATA-REC
            PERFORM 910-JOBKANRI-INV2-SEC
            IF       FLG-JOBKANRI       NOT  =  ZERO
-               MOVE  MCP-RC            TO  SJOBKANRI-RETURN
+               MOVE  FLG-JOBKANRI      TO  SJOBKANRI-RETURN
                GO    TO                180-STM-EXT
            END-IF
       *
@@ -463,7 +463,7 @@
            MOVE    JOBKANRI-REC        TO  MCPDATA-REC
            PERFORM 910-JOBKANRI-INV2-SEC
            IF      FLG-JOBKANRI   NOT  =  ZERO
-               MOVE  MCP-RC                TO  SJOBKANRI-RETURN
+               MOVE  FLG-JOBKANRI      TO  SJOBKANRI-RETURN
                GO  TO  190-STP-EXT
            END-IF
       *
@@ -502,7 +502,7 @@
            MOVE    JOBKANRI-REC        TO  MCPDATA-REC
            PERFORM 910-JOBKANRI-INV2-SEC
            IF      FLG-JOBKANRI   NOT  =  ZERO
-               MOVE  MCP-RC                TO  SJOBKANRI-RETURN
+               MOVE  FLG-JOBKANRI      TO  SJOBKANRI-RETURN
                GO  TO  200-CANCEL-EXT
            END-IF
       *
@@ -541,7 +541,7 @@
            MOVE    JOBKANRI-REC        TO  MCPDATA-REC
            PERFORM 910-JOBKANRI-INV2-SEC
            IF      FLG-JOBKANRI   NOT  =  ZERO
-               MOVE  MCP-RC                TO  SJOBKANRI-RETURN
+               MOVE  FLG-JOBKANRI      TO  SJOBKANRI-RETURN
                GO  TO  210-CANCEL2-EXT
            END-IF
       *
@@ -605,11 +605,18 @@
                    MOVE    MCPDATA-REC         TO  WRK-JOBKANRI-REC
                    MOVE    ZERO                TO  FLG-JOBKANRI
                ELSE
-                   MOVE    1                   TO  FLG-JOBKANRI
+                   MOVE    MCP-RC              TO  FLG-JOBKANRI
                END-IF
            ELSE
-               MOVE    1                   TO  FLG-JOBKANRI
+               MOVE    MCP-RC                  TO  FLG-JOBKANRI
            END-IF
+      *
+           MOVE    PATH-TBL-JOBKANRI-KEY
+                                       TO  MCP-PATH
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        910-JOBKANRI-INV-EXT.
@@ -640,11 +647,18 @@
                    MOVE    MCPDATA-REC         TO  WRK-JOBKANRI-REC
                    MOVE    ZERO                TO  FLG-JOBKANRI
                ELSE
-                   MOVE    1                   TO  FLG-JOBKANRI
+                   MOVE    MCP-RC              TO  FLG-JOBKANRI
                END-IF
            ELSE
-               MOVE    1                   TO  FLG-JOBKANRI
+               MOVE    MCP-RC                  TO  FLG-JOBKANRI
            END-IF
+      *
+           MOVE    PATH-TBL-JOBKANRI-KEY2
+                                       TO  MCP-PATH
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        910-JOBKANRI-INV2-EXT.
