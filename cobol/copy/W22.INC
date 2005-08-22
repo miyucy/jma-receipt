@@ -35,9 +35,9 @@
                   06  W22-MEISYOU-COUNT      PIC S9(9)   BINARY.
                   06  W22-MEISYOU-ROW        PIC S9(9)   BINARY.
                   06  W22-MEISYOU-ROWATTR    PIC S9(9)   BINARY.
-                  06  W22-MEISYOU-ITEM           OCCURS  20 TIMES.
+                  06  W22-MEISYOU-ITEM           OCCURS  30 TIMES.
                     07  W22-VALUE1           PIC X(16).
                     07  W22-VALUE2           PIC X(60).
                     07  W22-VALUE3           PIC X(19).
                     07  W22-VALUE4           PIC X(19).
-                  06  W22-MEISYOU-SELECT     PIC X OCCURS  20 TIMES.
+                  06  W22-MEISYOU-SELECT     PIC X OCCURS  30 TIMES.

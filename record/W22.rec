@@ -29,8 +29,8 @@ W22	{
 					value2	varchar(60);
 					value3	varchar(19);
 					value4	varchar(19);
-				}	[20];
-				select	bool[20];
+				}	[30];
+				select	bool[30];
 			};
 		};
 	};

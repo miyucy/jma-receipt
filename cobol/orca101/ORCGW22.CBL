@@ -592,7 +592,7 @@
            IF  MCP-RC   =   ZERO
                PERFORM SYS-KANRI-READ-SEC
                PERFORM VARYING IDX    FROM    1   BY  1
-                       UNTIL   IDX    >   20
+                       UNTIL   IDX    >   30
                    MOVE    SYS-KBNCD           TO  SPA-W22-ITEM1 (IDX)
                    EVALUATE    SPA-W22-KANRICD-C
                        WHEN    "5101"
@@ -721,7 +721,7 @@
            PERFORM 910-DB-SELECT-SEC.
            IF  MCP-RC   =   ZERO
                PERFORM SYS-KANRI-READ-SEC
-               PERFORM UNTIL   IDX   >   20
+               PERFORM UNTIL   IDX   >   30
                    IF  (FLG-UPD-KBN            =   2)  AND
                        (SPA-W22-KBNCD          =   SYS-KBNCD)  AND
                        (SPA-W22-STYUKYMD-OLD   =   SYS-STYUKYMD)  AND
@@ -1193,7 +1193,7 @@
            MOVE    SPA-W22-EDYUKYMD        TO  W22-EDYUKYMD.
       *
            PERFORM VARYING IDX FROM   1   BY  1
-                   UNTIL   IDX >      20
+                   UNTIL   IDX >      30
                MOVE    SPA-W22-ITEM1 (IDX)
                                            TO  W22-VALUE1 (IDX)
                MOVE    SPA-W22-ITEM2 (IDX)
