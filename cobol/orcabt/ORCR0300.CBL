@@ -160,6 +160,7 @@
       *                                     変更による対応
       *  02.06.03    NACL-藤原    05/07/28  レセプト特記事項編集情報の
       *                                     負担者番号に条件を追加
+      *  02.06.04    NACL-藤原    05/08/22  検体検査コメントの追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -569,6 +570,8 @@
                            11  TBL-ZAIW-CHUKSNCD    PIC  X(04).
       *                    通番
                            11  TBL-ZAIW-CHUKSNTUBAN PIC  X(01).
+      *                検体検査コメント
+                       09  TBL-ZAIW-KENTAICOMMENT   PIC  9(01).
       *                入力コメント
                        09  TBL-ZAIW-INPUTCOMENT     PIC  X(80).
       *            名称情報
@@ -635,6 +638,8 @@
                        09  TBL-KOUI-CHUKSNCD    PIC  X(04).
       *                通番
                        09  TBL-KOUI-CHUKSNTUBAN PIC  X(01).
+      *            検体検査コメント
+                   07  TBL-KOUI-KENTAICOMMENT   PIC  9(01).
       *            入力コメント
                    07  TBL-KOUI-INPUTCOMENT     PIC  X(80). 
       *        名称情報
@@ -719,6 +724,8 @@
                            11  WRK-KOUI-CHUKSNCD    PIC  X(04).
       *                通番
                            11  WRK-KOUI-CHUKSNTUBAN PIC  X(01).
+      *            検体検査コメント
+                       09  WRK-KOUI-KENTAICOMMENT   PIC  9(01).
       *            入力コメント
                        09  WRK-KOUI-INPUTCOMENT     PIC  X(80). 
       *        名称情報

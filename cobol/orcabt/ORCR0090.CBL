@@ -150,6 +150,7 @@
       *                                     編集を追加
       *                                     条件に負担者番号を追加
       *  02.06.08    NACL-藤原    05/08/17  包括対象検査フラグの新設に対応
+      *  02.06.09    NACL-藤原    05/08/22  検体検査コメントの追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -651,6 +652,8 @@
                            11  TBL-ZAIW-CHUKSNCD    PIC  X(04).
       *                    通番
                            11  TBL-ZAIW-CHUKSNTUBAN PIC  X(01).
+      *                検体検査コメント
+                       09  TBL-ZAIW-KENTAICOMMENT   PIC  9(01).
       *                入力コメント
                        09  TBL-ZAIW-INPUTCOMENT     PIC  X(80).
       *            名称情報
