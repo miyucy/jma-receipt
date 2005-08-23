@@ -754,7 +754,7 @@
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
                UNTIL     ( FLG-SYSKANRI    =   1 )
-                 OR      ( IDX1    >   20 )
+                 OR      ( IDX1    >   30 )
       *
                COMPUTE SPA-GMN-W21-BRM-SAGAKU-CNT
                    =   SPA-GMN-W21-BRM-SAGAKU-CNT  +   1

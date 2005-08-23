@@ -55,7 +55,7 @@
                 05  W21-BRM-SAGAKU         PIC X(10).
                 05  W21-BRM-SAGAKU-STT     PIC S9(9)   BINARY.
                 05  W21-BRM-SAGAKU-CNT     PIC S9(9)   BINARY.
-                05  W21-BRM-SAGAKU-ITM     PIC X(10)   OCCURS  20.
+                05  W21-BRM-SAGAKU-ITM     PIC X(10)   OCCURS  30.
                 05  W21-BRM-SAGAKU-ITM-STT PIC S9(9)   BINARY.
               04  W21-CMB-BRM-SEX.
                 05  W21-BRM-SEX            PIC X(12).

@@ -590,7 +590,7 @@
       *                        室料差額コンボ項目
                                13  SPA-GMN-W21-BRM-SAGAKU-ITM
                                                            PIC X(10)
-                                                           OCCURS  20
+                                                           OCCURS  30
                                                INDEXED BY  CMB-IDX24.
       *                    性別特定コンボ
                            11  SPA-GMN-W21-CMB-BRM-SEX.
