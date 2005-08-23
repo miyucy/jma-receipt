@@ -60,6 +60,7 @@
       *
       *  02.06.01    NACL-門脇    05/05/10  脳血管疾患急性発症病名記載対応
       *  02.06.02    NACL-竹田    05/05/30  realtime preview 処理追加
+      *  02.06.03    NACL-門脇    05/08/22  リハビリ実施回数差し込み修正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -258,7 +259,6 @@
            03  FLG-COMMENT         PIC 9(02).
            03  FLG-WRKRECE65       PIC 9(01).
            03  FLG-FIRST           PIC 9(01).
-           03  FLG-ARI             PIC 9(01).
            03  FLG-NYU-RENZOKU     PIC 9(01).
            03  FLG-SRYACT          PIC 9(01).
            03  FLG-SANTEI          PIC 9(01).
@@ -373,60 +373,6 @@
                05  WK-FREE-NAME3             PIC  X(1000).              
                05  WK-FREE-NAME3-TAIHI       PIC  X(1000).              
       *
-      *理学療法剤番号退避領域
-       01  WRK-TAIHI-ZAINUM.
-           03  WRK-TAIHI-ZAINUM-T              OCCURS  5.
-               05  WRK-RIGA1-SHU-ZAINUM      PIC  9(08).   
-               05  WRK-RIGA1-KO-ZAINUM       PIC  9(08).   
-               05  WRK-RIGA2-SHU-ZAINUM      PIC  9(08).   
-               05  WRK-RIGA2-KO-ZAINUM       PIC  9(08).   
-               05  WRK-RIGA3-SHU-ZAINUM      PIC  9(08).   
-               05  WRK-RIGA3-KO-ZAINUM       PIC  9(08).   
-               05  WRK-RIGA4-SHU-ZAINUM      PIC  9(08).   
-               05  WRK-RIGA4-KO-ZAINUM       PIC  9(08).   
-               05  WRK-SAGYO1-SHU-ZAINUM     PIC  9(08).   
-               05  WRK-SAGYO2-SHU-ZAINUM     PIC  9(08).   
-               05  WRK-SAGYO1-KO-ZAINUM      PIC  9(08).   
-               05  WRK-SAGYO2-KO-ZAINUM      PIC  9(08).   
-               05  WRK-GENGO1-SHU-ZAINUM     PIC  9(08).   
-               05  WRK-GENGO1-KO-ZAINUM      PIC  9(08).   
-               05  WRK-GENGO2-SHU-ZAINUM     PIC  9(08).   
-               05  WRK-GENGO2-KO-ZAINUM      PIC  9(08).   
-               05  WRK-GENGO3-SHU-ZAINUM     PIC  9(08).   
-               05  WRK-GENGO3-KO-ZAINUM      PIC  9(08).   
-      *
-       01  WRK-TAIHI-ZAINUM-R     REDEFINES   WRK-TAIHI-ZAINUM.
-           03  WRK-RIHA-ZAINUM-T               OCCURS  5.
-               05  WRK-RIHA-ZAINUM   PIC 9(08)   OCCURS   18.           
-      *
-      *理学療法実施カレンダー
-       01  WRK-RIGAKU-AREA.
-           03  WRK-RIGAKU-T                    OCCURS  5.
-             05  WRK-RIGA1-SHU                 PIC  X(01)  OCCURS 31.   
-             05  WRK-RIGA1-KO                  PIC  X(01)  OCCURS 31.   
-             05  WRK-RIGA2-SHU                 PIC  X(01)  OCCURS 31.   
-             05  WRK-RIGA2-KO                  PIC  X(01)  OCCURS 31.   
-             05  WRK-RIGA3-SHU                 PIC  X(01)  OCCURS 31.   
-             05  WRK-RIGA3-KO                  PIC  X(01)  OCCURS 31.   
-             05  WRK-RIGA4-SHU                 PIC  X(01)  OCCURS 31.   
-             05  WRK-RIGA4-KO                  PIC  X(01)  OCCURS 31.   
-             05  WRK-SAGYO1-SHU                PIC  X(01)  OCCURS 31.   
-             05  WRK-SAGYO2-SHU                PIC  X(01)  OCCURS 31.   
-             05  WRK-SAGYO1-KO                 PIC  X(01)  OCCURS 31.   
-             05  WRK-SAGYO2-KO                 PIC  X(01)  OCCURS 31.   
-             05  WRK-GENGO1-SHU                PIC  X(01)  OCCURS 31.   
-             05  WRK-GENGO1-KO                 PIC  X(01)  OCCURS 31.   
-             05  WRK-GENGO2-SHU                PIC  X(01)  OCCURS 31.   
-             05  WRK-GENGO2-KO                 PIC  X(01)  OCCURS 31.   
-             05  WRK-GENGO3-SHU                PIC  X(01)  OCCURS 31.   
-             05  WRK-GENGO3-KO                 PIC  X(01)  OCCURS 31.   
-      *
-       01  WRK-RIGAKU-R        REDEFINES     WRK-RIGAKU-AREA.
-           02  WRK-RIGAKU-OCC                  OCCURS    5.
-             03  WRK-RIGAKU-OCC2               OCCURS   18.             
-               04  WRK-RIGAKU-OCC3             OCCURS   31.
-                 05  WRK-RIGAKU                PIC  X(01).
-      *
       *    日付全角変換領域
        01  TBL-DAY-AREA.
            03  FILLER              PIC X(04)  VALUE "　１".
@@ -478,44 +424,6 @@
            03  CONS-KYUSEI          PIC X(09)  VALUE "099800101".
       *    脳血管疾患急性発症終了日
            03  CONS-KYUSEI-END      PIC X(09)  VALUE "099800102".
-      *
-      *   リハビリ診療行為テーブル
-       01  TBL-RIHA-AREA.
-           03  FILLER          PIC X(09)   VALUE    "180706910".
-           03  FILLER          PIC X(09)   VALUE    "180022210".
-           03  FILLER          PIC X(09)   VALUE    "180706810".
-           03  FILLER          PIC X(09)   VALUE    "180022110".
-           03  FILLER          PIC X(09)   VALUE    "180707110".
-           03  FILLER          PIC X(09)   VALUE    "180022410".
-           03  FILLER          PIC X(09)   VALUE    "180707010".
-           03  FILLER          PIC X(09)   VALUE    "180022310".
-           03  FILLER          PIC X(09)   VALUE    "180707310".
-           03  FILLER          PIC X(09)   VALUE    "180022610".
-           03  FILLER          PIC X(09)   VALUE    "180707210".
-           03  FILLER          PIC X(09)   VALUE    "180022510".
-           03  FILLER          PIC X(09)   VALUE    "180707510".
-           03  FILLER          PIC X(09)   VALUE    "180022810".
-           03  FILLER          PIC X(09)   VALUE    "180707410".
-           03  FILLER          PIC X(09)   VALUE    "180022710".
-           03  FILLER          PIC X(09)   VALUE    "180708210".
-           03  FILLER          PIC X(09)   VALUE    "180023710".
-           03  FILLER          PIC X(09)   VALUE    "180708410".
-           03  FILLER          PIC X(09)   VALUE    "180023910".
-           03  FILLER          PIC X(09)   VALUE    "180708110".
-           03  FILLER          PIC X(09)   VALUE    "180023610".
-           03  FILLER          PIC X(09)   VALUE    "180708310".
-           03  FILLER          PIC X(09)   VALUE    "180023810".
-           03  FILLER          PIC X(09)   VALUE    "180024910".
-           03  FILLER          PIC X(09)   VALUE    "180024810".
-           03  FILLER          PIC X(09)   VALUE    "180025110".
-           03  FILLER          PIC X(09)   VALUE    "180025010".
-           03  FILLER          PIC X(09)   VALUE    "180025510".
-           03  FILLER          PIC X(09)   VALUE    "180025410".
-      *
-       01  TBL-RIHA-R          REDEFINES   TBL-RIHA-AREA.
-            03  TBL-RIHA       PIC X(09)   OCCURS   30.                 
-      *
-       01  TBL-RIHA-MAX        PIC 9(02)   VALUE    30.                 
       *
       *    酸素（金額・数量）情報
        01  TBL-SANSO-INF.
@@ -717,63 +625,57 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-           INITIALIZE                      WRK-RIGAKU-AREA
-           INITIALIZE                      WRK-TAIHI-ZAINUM
-      *
            MOVE  RECE62-KOHBUNRI-MIN   TO  WRK-KOHBUNRI-JIDO
       *
-           IF   RECE62-COMCNTFLG   =   "1"
+      **** IF   RECE62-COMCNTFLG   =   "1"
       *
-             INITIALIZE                      RECE64-REC
-             MOVE    RECE62-HOSPID       TO  RECE64-HOSPID
-             MOVE    RECE62-SRYYM        TO  RECE64-SRYYM
-             MOVE    RECE62-NYUGAIKBN    TO  RECE64-NYUGAIKBN
-             MOVE    RECE62-PTID         TO  RECE64-PTID
-             MOVE    RECE62-RECEKA       TO  RECE64-RECEKA
-             MOVE    RECE62-TEISYUTUSAKI TO  RECE64-TEISYUTUSAKI
-             MOVE    RECE62-RECESYUBETU  TO  RECE64-RECESYUBETU
-             MOVE    RECE62-HKNJANUM-KEY TO  RECE64-HKNJANUM
-             MOVE    RECE62-HOJOKBN-KEY  TO  RECE64-HOJOKBN
-             MOVE    RECE62-TEKSTYMD     TO  RECE64-TEKSTYMD
-             MOVE    ZERO                TO  RECE64-ZAINUM
+      ****   INITIALIZE                      RECE64-REC
+      ****   MOVE    RECE62-HOSPID       TO  RECE64-HOSPID
+      ****   MOVE    RECE62-SRYYM        TO  RECE64-SRYYM
+      ****   MOVE    RECE62-NYUGAIKBN    TO  RECE64-NYUGAIKBN
+      ****   MOVE    RECE62-PTID         TO  RECE64-PTID
+      ****   MOVE    RECE62-RECEKA       TO  RECE64-RECEKA
+      ****   MOVE    RECE62-TEISYUTUSAKI TO  RECE64-TEISYUTUSAKI
+      ****   MOVE    RECE62-RECESYUBETU  TO  RECE64-RECESYUBETU
+      ****   MOVE    RECE62-HKNJANUM-KEY TO  RECE64-HKNJANUM
+      ****   MOVE    RECE62-HOJOKBN-KEY  TO  RECE64-HOJOKBN
+      ****   MOVE    RECE62-TEKSTYMD     TO  RECE64-TEKSTYMD
+      ****   MOVE    ZERO                TO  RECE64-ZAINUM
       *
-             START   RECE64-FILE
-                 KEY IS    >=   RECE64-KEY
-                 INVALID
-                     MOVE    1           TO  FLG-RECE64
-                 NOT INVALID
-                     PERFORM 990-RECE64-NEXT-SEC
-             END-START
-             PERFORM
-               UNTIL  ( FLG-RECE64           =   1                   )
-               OR     ( RECE62-HOSPID    NOT =   RECE64-HOSPID       )
-               OR     ( RECE62-SRYYM     NOT =   RECE64-SRYYM        )
-               OR     ( RECE62-NYUGAIKBN NOT =   RECE64-NYUGAIKBN    )
-               OR     ( RECE62-PTID      NOT =   RECE64-PTID         )
-               OR     ( RECE62-RECEKA    NOT =   RECE64-RECEKA       )
-               OR     ( RECE62-TEISYUTUSAKI
-                                         NOT =   RECE64-TEISYUTUSAKI )
-               OR     ( RECE62-RECESYUBETU
-                                         NOT =   RECE64-RECESYUBETU  )
-               OR     ( RECE62-HKNJANUM-KEY
-                                         NOT =   RECE64-HKNJANUM     )
-               OR     ( RECE62-HOJOKBN-KEY
-                                         NOT =   RECE64-HOJOKBN      )
-               OR     ( RECE62-TEKSTYMD  NOT =   RECE64-TEKSTYMD     )
+      ****   START   RECE64-FILE
+      ****       KEY IS    >=   RECE64-KEY
+      ****       INVALID
+      ****           MOVE    1           TO  FLG-RECE64
+      ****       NOT INVALID
+      ****           PERFORM 990-RECE64-NEXT-SEC
+      ****   END-START
+      ****   PERFORM
+      ****     UNTIL  ( FLG-RECE64           =   1                   )
+      ****     OR     ( RECE62-HOSPID    NOT =   RECE64-HOSPID       )
+      ****     OR     ( RECE62-SRYYM     NOT =   RECE64-SRYYM        )
+      ****     OR     ( RECE62-NYUGAIKBN NOT =   RECE64-NYUGAIKBN    )
+      ****     OR     ( RECE62-PTID      NOT =   RECE64-PTID         )
+      ****     OR     ( RECE62-RECEKA    NOT =   RECE64-RECEKA       )
+      ****     OR     ( RECE62-TEISYUTUSAKI
+      ****                               NOT =   RECE64-TEISYUTUSAKI )
+      ****     OR     ( RECE62-RECESYUBETU
+      ****                               NOT =   RECE64-RECESYUBETU  )
+      ****     OR     ( RECE62-HKNJANUM-KEY
+      ****                               NOT =   RECE64-HKNJANUM     )
+      ****     OR     ( RECE62-HOJOKBN-KEY
+      ****                               NOT =   RECE64-HOJOKBN      )
+      ****     OR     ( RECE62-TEKSTYMD  NOT =   RECE64-TEKSTYMD     )
       *
-               EVALUATE      RECE64-SRYKBN
-                   WHEN      "80"
-      *            （リハビリのカウント）
-                      IF  RECE64-RIHABIRI-COMMENT     =  "1"
-                         PERFORM    2001-RIHA-COUNT-SEC
-                      END-IF
-               END-EVALUATE
+      ****     EVALUATE      RECE64-SRYKBN
+      *++++
+      *++++
+      ****     END-EVALUATE
       *
-               PERFORM 990-RECE64-NEXT-SEC
+      ****     PERFORM 990-RECE64-NEXT-SEC
       *
-             END-PERFORM
+      ****   END-PERFORM
       *
-           END-IF
+      **** END-IF
       *
       *    他保険にて入院料算定済みのコメント
       *
@@ -895,18 +797,7 @@
                       END-IF
       *            （リハビリのセット）
                       IF   FLG-COMMENT  =  ZERO
-                         COMPUTE  WRK-KOHBUNRI 
-                                 =    RECE64-KOHBUNRI  +  1
-                         MOVE    ZERO     TO    FLG-ARI
-                         PERFORM   VARYING   IDX    FROM   1   BY   1
-                              UNTIL   (IDX             >      18)       
-                               OR     (FLG-ARI         =       1)
-                           IF  RECE64-ZAINUM  =  
-                                   WRK-RIHA-ZAINUM(WRK-KOHBUNRI IDX)
-                               MOVE    1    TO   FLG-ARI 
-                           END-IF
-                         END-PERFORM
-                         IF  FLG-ARI  =  1
+                         IF  RECE64-RIHABIRI-COMMENT     =  "1"
                              MOVE      99   TO   FLG-COMMENT
                              PERFORM   2001-RIHA-COMMENT-SEC
                          END-IF
@@ -952,123 +843,6 @@
       *
            .
        200-MAIN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    リハビリのカウント
-      *****************************************************************
-       2001-RIHA-COUNT-SEC          SECTION.
-      *
-           PERFORM   VARYING   IDX   FROM    1   BY  1
-                     UNTIL   ( IDX           >   TBL-RIHA-MAX )
-      *
-              INITIALIZE                        SRYACT-REC
-              MOVE    RECE64-HOSPID     TO      SRY-HOSPID
-              MOVE    RECE64-NYUGAIKBN  TO      SRY-NYUGAIKBN
-              MOVE    RECE64-PTID       TO      SRY-PTID
-              MOVE    RECE64-SRYYM      TO      SRY-SRYYM
-              MOVE    RECE64-ZAINUM     TO      SRY-ZAINUM
-              MOVE    TBL-RIHA(IDX)     TO      SRY-SRYCD (1)
-              MOVE    TBL-RIHA(IDX)     TO      SRY-SRYCD (2)
-              MOVE    TBL-RIHA(IDX)     TO      SRY-SRYCD (3)
-              MOVE    TBL-RIHA(IDX)     TO      SRY-SRYCD (4)
-              MOVE    TBL-RIHA(IDX)     TO      SRY-SRYCD (5)
-      *
-              MOVE    SRYACT-REC        TO      MCPDATA-REC
-              MOVE    "DBSELECT"        TO      MCP-FUNC
-              MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-              CALL    "ORCMCPSUB"       USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      *
-              IF  MCP-RC                =       ZERO
-                  MOVE    "DBFETCH"     TO      MCP-FUNC
-                  MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-                  CALL    "ORCMCPSUB"           USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC
-                  IF      MCP-RC        =       ZERO
-                     EVALUATE    IDX
-                        WHEN   1  
-                        WHEN   2
-                           MOVE    1    TO    IDX2   
-                        WHEN   3  
-                        WHEN   4
-                           MOVE    2    TO    IDX2   
-                        WHEN   5  
-                        WHEN   6
-                           MOVE    3    TO    IDX2   
-                        WHEN   7  
-                        WHEN   8
-                           MOVE    4    TO    IDX2   
-                        WHEN   9  
-                        WHEN  10
-                           MOVE    5    TO    IDX2   
-                        WHEN  11  
-                        WHEN  12
-                           MOVE    6    TO    IDX2   
-                        WHEN  13  
-                        WHEN  14
-                           MOVE    7    TO    IDX2   
-                        WHEN  15  
-                        WHEN  16
-                           MOVE    8    TO    IDX2   
-                        WHEN  17  
-                        WHEN  18
-                           MOVE    9    TO    IDX2   
-                        WHEN  19  
-                        WHEN  20
-                           MOVE   10    TO    IDX2   
-                        WHEN  21  
-                        WHEN  22
-                           MOVE   11    TO    IDX2   
-                        WHEN  23  
-                        WHEN  24
-                           MOVE   12    TO    IDX2   
-                        WHEN  25  
-                           MOVE   13    TO    IDX2
-                        WHEN  26
-                           MOVE   14    TO    IDX2   
-                        WHEN  27  
-                           MOVE   15    TO    IDX2
-                        WHEN  28
-                           MOVE   16    TO    IDX2   
-                        WHEN  29                                        
-                           MOVE   17    TO    IDX2                      
-                        WHEN  30                                        
-                           MOVE   18    TO    IDX2                      
-                     END-EVALUATE
-                     COMPUTE  WRK-KOHBUNRI 
-                                 =    RECE64-KOHBUNRI  +  1
-                     IF  RECE64-ZAINUM  >  
-                                     WRK-RIHA-ZAINUM(WRK-KOHBUNRI IDX2)
-                         MOVE  RECE64-ZAINUM  TO  
-                                     WRK-RIHA-ZAINUM(WRK-KOHBUNRI IDX2)
-                     END-IF
-                     PERFORM  VARYING   IDX1  FROM  1  BY  1
-                              UNTIL     IDX1  >   31
-                         IF   RECE64-KAISU(1 IDX1)  NOT = ZERO
-                              MOVE  "1"  TO  
-                                    WRK-RIGAKU(WRK-KOHBUNRI IDX2 IDX1)
-                         END-IF
-                     END-PERFORM
-                  END-IF
-              END-IF
-      *
-              INITIALIZE                        MCPAREA
-              MOVE    "DBCLOSECURSOR"   TO      MCP-FUNC
-              MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-              CALL    "ORCMCPSUB"       USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      *
-           END-PERFORM
-      *
-           .
-       2001-RIHA-COUNT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2673,154 +2447,12 @@
              MOVE    "実施日数　　日"
                             TO  WRK-RECE65XX-NAME(MAX-MEISAISU 1)
              MOVE    ZERO                 TO  CNT-RIHA
-             EVALUATE   RECE64-ZAINUM
-                 WHEN   WRK-RIGA1-SHU-ZAINUM(WRK-KOHBUNRI)
-                        PERFORM  VARYING  IDX   FROM  1  BY  1
-                                 UNTIL    IDX   >   31
-                            IF   WRK-RIGA1-SHU(WRK-KOHBUNRI IDX) 
-                                                      NOT = SPACE
-                                 ADD      1     TO  CNT-RIHA
-                            END-IF
-                        END-PERFORM
-                 WHEN   WRK-RIGA2-SHU-ZAINUM(WRK-KOHBUNRI)
-                        PERFORM  VARYING  IDX   FROM  1  BY  1
-                                 UNTIL    IDX   >   31
-                            IF   WRK-RIGA2-SHU(WRK-KOHBUNRI IDX) 
-                                                      NOT = SPACE
-                                ADD      1     TO  CNT-RIHA
-                            END-IF
-                        END-PERFORM
-                 WHEN   WRK-RIGA3-SHU-ZAINUM(WRK-KOHBUNRI)
-                        PERFORM  VARYING  IDX   FROM  1  BY  1
-                                 UNTIL    IDX   >   31
-                            IF   WRK-RIGA3-SHU(WRK-KOHBUNRI IDX) 
-                                                      NOT = SPACE
-                                 ADD      1     TO  CNT-RIHA
-                            END-IF
-                        END-PERFORM
-                 WHEN   WRK-RIGA4-SHU-ZAINUM(WRK-KOHBUNRI)
-                        PERFORM  VARYING  IDX   FROM  1  BY  1
-                                 UNTIL    IDX   >   31
-                            IF   WRK-RIGA4-SHU(WRK-KOHBUNRI IDX) 
-                                                      NOT = SPACE
-                                 ADD      1     TO  CNT-RIHA
-                            END-IF
-                        END-PERFORM
-                 WHEN   WRK-RIGA1-KO-ZAINUM(WRK-KOHBUNRI)
-                        PERFORM  VARYING  IDX   FROM  1  BY  1
-                                 UNTIL    IDX   >   31
-                            IF   WRK-RIGA1-KO(WRK-KOHBUNRI IDX) 
-                                                     NOT = SPACE
-                                 ADD      1     TO  CNT-RIHA
-                            END-IF
-                        END-PERFORM
-                 WHEN   WRK-RIGA2-KO-ZAINUM(WRK-KOHBUNRI)
-                        PERFORM  VARYING  IDX   FROM  1  BY  1
-                                 UNTIL    IDX   >   31
-                            IF   WRK-RIGA2-KO(WRK-KOHBUNRI IDX) 
-                                                     NOT = SPACE
-                                 ADD      1     TO  CNT-RIHA
-                            END-IF
-                        END-PERFORM
-                 WHEN   WRK-RIGA3-KO-ZAINUM(WRK-KOHBUNRI)
-                        PERFORM  VARYING  IDX   FROM  1  BY  1
-                                 UNTIL    IDX   >   31
-                            IF   WRK-RIGA3-KO(WRK-KOHBUNRI IDX) 
-                                                     NOT = SPACE
-                                 ADD      1     TO  CNT-RIHA
-                            END-IF
-                        END-PERFORM
-                 WHEN   WRK-RIGA4-KO-ZAINUM(WRK-KOHBUNRI)
-                        PERFORM  VARYING  IDX   FROM  1  BY  1
-                                 UNTIL    IDX   >   31
-                            IF   WRK-RIGA4-KO(WRK-KOHBUNRI IDX) 
-                                                     NOT = SPACE
-                                 ADD      1     TO  CNT-RIHA
-                            END-IF
-                        END-PERFORM
-                 WHEN   WRK-SAGYO1-SHU-ZAINUM(WRK-KOHBUNRI)
-                        PERFORM  VARYING  IDX   FROM  1  BY  1
-                                 UNTIL    IDX   >   31
-                            IF   WRK-SAGYO1-SHU(WRK-KOHBUNRI IDX) 
-                                                       NOT = SPACE
-                                 ADD      1     TO  CNT-RIHA
-                            END-IF
-                        END-PERFORM
-                 WHEN   WRK-SAGYO2-SHU-ZAINUM(WRK-KOHBUNRI)
-                        PERFORM  VARYING  IDX   FROM  1  BY  1
-                                 UNTIL    IDX   >   31
-                            IF   WRK-SAGYO2-SHU(WRK-KOHBUNRI IDX) 
-                                                       NOT = SPACE
-                                 ADD      1     TO  CNT-RIHA
-                            END-IF
-                        END-PERFORM
-                 WHEN   WRK-SAGYO1-KO-ZAINUM(WRK-KOHBUNRI)
-                        PERFORM  VARYING  IDX   FROM  1  BY  1
-                                 UNTIL    IDX   >   31
-                            IF   WRK-SAGYO1-KO(WRK-KOHBUNRI IDX) 
-                                                      NOT = SPACE
-                                 ADD      1     TO  CNT-RIHA
-                            END-IF
-                        END-PERFORM
-                 WHEN   WRK-SAGYO2-KO-ZAINUM(WRK-KOHBUNRI)
-                        PERFORM  VARYING  IDX   FROM  1  BY  1
-                                 UNTIL    IDX   >   31
-                            IF   WRK-SAGYO2-KO(WRK-KOHBUNRI IDX) 
-                                                      NOT = SPACE
-                                 ADD      1     TO  CNT-RIHA
-                            END-IF
-                        END-PERFORM
-                 WHEN   WRK-GENGO1-SHU-ZAINUM(WRK-KOHBUNRI)
-                        PERFORM  VARYING  IDX   FROM  1  BY  1
-                                 UNTIL    IDX   >   31
-                            IF   WRK-GENGO1-SHU(WRK-KOHBUNRI IDX) 
-                                                       NOT = SPACE
-                                 ADD      1     TO  CNT-RIHA
-                            END-IF
-                        END-PERFORM
-                 WHEN   WRK-GENGO2-SHU-ZAINUM(WRK-KOHBUNRI)
-                        PERFORM  VARYING  IDX   FROM  1  BY  1
-                                 UNTIL    IDX   >   31
-                            IF   WRK-GENGO2-SHU(WRK-KOHBUNRI IDX) 
-                                                       NOT = SPACE
-                                 ADD      1     TO  CNT-RIHA
-                            END-IF
-                        END-PERFORM
-                 WHEN   WRK-GENGO3-SHU-ZAINUM(WRK-KOHBUNRI)             
-                        PERFORM  VARYING  IDX   FROM  1  BY  1
-                                 UNTIL    IDX   >   31
-                            IF   WRK-GENGO3-SHU(WRK-KOHBUNRI IDX) 
-                                                       NOT = SPACE
-                                 ADD      1     TO  CNT-RIHA
-                            END-IF
-                        END-PERFORM
-                 WHEN   WRK-GENGO1-KO-ZAINUM(WRK-KOHBUNRI)
-                        PERFORM  VARYING  IDX   FROM  1  BY  1
-                                 UNTIL    IDX   >   31
-                            IF   WRK-GENGO1-KO(WRK-KOHBUNRI IDX) 
-                                                      NOT = SPACE
-                                 ADD      1     TO  CNT-RIHA
-                            END-IF
-                        END-PERFORM
-                 WHEN   WRK-GENGO2-KO-ZAINUM(WRK-KOHBUNRI)
-                        PERFORM  VARYING  IDX   FROM  1  BY  1
-                                 UNTIL    IDX   >   31
-                            IF   WRK-GENGO2-KO(WRK-KOHBUNRI IDX) 
-                                                      NOT = SPACE
-                                 ADD      1     TO  CNT-RIHA
-                            END-IF
-                        END-PERFORM
-                 WHEN   WRK-GENGO3-KO-ZAINUM(WRK-KOHBUNRI)              
-                        PERFORM  VARYING  IDX   FROM  1  BY  1
-                                 UNTIL    IDX   >   31
-                            IF   WRK-GENGO3-KO(WRK-KOHBUNRI IDX) 
-                                                      NOT = SPACE
-                                 ADD      1     TO  CNT-RIHA
-                            END-IF
-                        END-PERFORM
-                 WHEN   OTHER
-                        CONTINUE
-             END-EVALUATE
+             PERFORM  VARYING   IDX  FROM  1  BY  1
+                       UNTIL    IDX   >   31
+                 IF   RECE64-KAISU(1 IDX)  NOT = ZERO
+                        ADD      1        TO  CNT-RIHA
+                 END-IF
+             END-PERFORM
              IF      CNT-RIHA             NOT =    ZERO
                MOVE    CNT-RIHA             TO  DAY-IDX
                MOVE    TBL-DAY(DAY-IDX)
