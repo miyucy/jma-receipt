@@ -100,6 +100,7 @@
       *  01.01.13    NACL-門脇    05/07/19  収納項目追加に伴う修正
       *  01.01.14    NACL-門脇    05/07/22  日上限、月上限がある場合の対応
       *  01.01.15    NACL-門脇    05/08/23  埼玉県さいたま市対応
+      *  01.01.16    NACL-門脇    05/08/24  千葉４１老人対応
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -1931,7 +1932,8 @@
       *
            MOVE     SPACE     TO    WK-NYUJGNKBN.
       *
-           IF (( WK-1001-PREFNUM   =  01  OR  26  OR  27  OR 34  ) AND
+           IF (( WK-1001-PREFNUM   =  01  OR  26  OR  27  OR 34
+                                                          OR 12  ) AND
                ( HKN-HKNNUM        = "141"                       ))
            OR (( WK-1001-PREFNUM   =  28                         ) AND
                ( HKN-HKNNUM        = "241" OR "180" OR "182" OR
@@ -2687,7 +2689,8 @@
       ******************************************************************
        2103-KOH1-KAISU-SEC           SECTION.
       *
-           IF (( WK-1001-PREFNUM   =  01  OR  26  OR  27  OR 34  ) AND
+           IF (( WK-1001-PREFNUM   =  01  OR  26  OR  27  OR 34
+                                                          OR 12  ) AND
                ( COMB-KOH1HKNNUM   = "141"                       ))
            OR (( WK-1001-PREFNUM   =  28                         ) AND
                ( COMB-KOH1HKNNUM   = "241" OR "180" OR "182" OR
@@ -2769,7 +2772,8 @@
       ******************************************************************
        2104-KOH2-KAISU-SEC           SECTION.
       *
-           IF (( WK-1001-PREFNUM   =  01  OR  26  OR  27  OR 34  ) AND
+           IF (( WK-1001-PREFNUM   =  01  OR  26  OR  27  OR 34
+                                                          OR 12  ) AND
                ( COMB-KOH2HKNNUM   = "141"                       ))
            OR (( WK-1001-PREFNUM   =  28                         ) AND
                ( COMB-KOH2HKNNUM   = "241" OR "180" OR "182" OR
@@ -2846,7 +2850,8 @@
       ******************************************************************
        2105-KOH3-KAISU-SEC           SECTION.
       *
-           IF (( WK-1001-PREFNUM   =  01  OR  26  OR  27  OR 34  ) AND
+           IF (( WK-1001-PREFNUM   =  01  OR  26  OR  27  OR 34
+                                                          OR 12  ) AND
                ( COMB-KOH3HKNNUM   = "141"                       ))
            OR (( WK-1001-PREFNUM   =  28                         ) AND
                ( COMB-KOH3HKNNUM   = "241" OR "180" OR "182" OR
@@ -2923,7 +2928,8 @@
       ******************************************************************
        2106-KOH4-KAISU-SEC           SECTION.
       *
-           IF (( WK-1001-PREFNUM   =  01  OR  26  OR  27  OR 34  ) AND
+           IF (( WK-1001-PREFNUM   =  01  OR  26  OR  27  OR 34
+                                                          OR 12  ) AND
                ( COMB-KOH4HKNNUM   = "141"                       ))
            OR (( WK-1001-PREFNUM   =  28                         ) AND
                ( COMB-KOH4HKNNUM   = "241" OR "180" OR "182" OR
@@ -3187,6 +3193,7 @@
        2108-ROUJIN41-JYOGEN-HENSYU-SEC           SECTION.
       *
            IF   WK-1001-PREFNUM      =   01  OR  26  OR  27  OR  34
+                                                             OR  12
       *
               IF   COMB-KOH1HKNNUM         =  "241"
                       MOVE  "1"          TO   COMB-KOH1-NYUJGNKBN
@@ -6701,7 +6708,8 @@
            MOVE       SPACE               TO   WK-NYUSKJRYYKBN.
            MOVE       ZERO                TO   WK-NYUSKJJYOGAK.
       *
-           IF (( WK-1001-PREFNUM   =  01  OR  26  OR  27  OR 34  ) AND
+           IF (( WK-1001-PREFNUM   =  01  OR  26  OR  27  OR 34
+                                                          OR 12  ) AND
                ( COMB-KOHHKNNUM(KOH-IDX)  = "141"                ))
            OR (( WK-1001-PREFNUM   =  28                         ) AND
                ( COMB-KOHHKNNUM(KOH-IDX)   = "241" OR "180" OR
