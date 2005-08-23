@@ -1156,7 +1156,7 @@
            PERFORM 900-TBL-SELECT-SEC
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
-               UNTIL     ( IDX1            >   20 )
+               UNTIL     ( IDX1            >   30 )
                    OR    ( FLG-DBRC    NOT =   ZERO )
       *
                MOVE    MCPDATA-REC TO  SYS-5113-REC
