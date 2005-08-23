@@ -4734,6 +4734,8 @@
       *
            OPEN    OUTPUT              PARA-FILE
       *
+      *    £Ã£Ì£Á£É£ÍÅ¸³«
+           MOVE    ZERO                TO  SPA-WKSRY-KARTE-FLG
       *    ÂÐ¾Ý¤ÎÊÝ¸±ÁÈ¹ç¤»¤ÎÊÝÂ¸
            MOVE    SPACE               TO  WKSRYACT-REC
            INITIALIZE                  WKSRYACT-REC
@@ -4793,6 +4795,8 @@
                    MOVE    HZN-WKSRYACT-REC    TO  PARA-DATA-REC
                    WRITE                       PARA-REC
                END-IF
+      *        £Ã£Ì£Á£É£ÍÅ¸³«
+               MOVE    WKSRY-KARTE-FLG     TO  SPA-WKSRY-KARTE-FLG
       *        ¥ï¡¼¥¯¿ÇÎÅ¹Ô°ÙºîÀ®Í­Ìµ
                MOVE    1                   TO  LNK-SC95-WKSRYACT
       *        ¹¹¿·Ãæ¥Õ¥é¥°
