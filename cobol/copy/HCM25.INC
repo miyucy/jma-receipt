@@ -58,7 +58,6 @@
                     PIC X(52)   OCCURS  29 TIMES.
             02  HCM25-SHINDANSYOSUU PIC X(3).
             02  HCM25-FTNWARIAI PIC X(3).
-            02  HCM25-FTNNISSU  PIC X(3).
             02  HCM25-MEISAISYOSUU  PIC X(3).
             02  HCM25-SEIKYU
                     PIC X(10)   OCCURS  8 TIMES.
