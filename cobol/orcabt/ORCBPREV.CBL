@@ -208,8 +208,6 @@
       *
            PERFORM 900-PRTFILE-READ-SEC
       *   レセ以外はここで中間ファイルを削除する
-      *  10        20        30        40        50        60
-----+-*--+----+----+----+----+----+----+----+----+----+----+----+----+
            MOVE    PRT-TBL-KEY         TO  WRK-PRT-TBL-KEY
            IF      PRT-TBL-KEY     NOT =   "RECEPT2"
                    PERFORM 900-PRV-RRKSET-SEC
@@ -584,8 +582,7 @@
       *   プレビュー管理DBの履歴取得 
       *****************************************************************
        900-PRV-RRKSET-SEC              SECTION.
-      *  10        20        30        40        50        60
-----+-*--+----+----+----+----+----+----+----+----+----+----+----+----+
+      *
            MOVE    PRT-TBL-GROUP       TO  PRVKANRI-TBL-GROUP
                                            WRK-PRT-TBL-GROUP
            MOVE    PRT-TBL-KEY         TO  PRVKANRI-TBL-KEY
@@ -619,6 +616,13 @@
            ELSE
                MOVE    1                   TO  FLG-PRVKANRI
            END-IF
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    PATH-TBL-PRVKANRI-KEY4
+                                       TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
        900-PRV-RRKSET-EXT.
            EXIT.
@@ -681,6 +685,13 @@
                MOVE    1                   TO  FLG-PRTDATA
                INITIALIZE                      PRTDATA-REC
            END-IF
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    PATH-TBL-PRTDATA-KEY
+                                       TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
        900-PRTDATA-INV-EXT.
            EXIT.
@@ -715,6 +726,13 @@
            ELSE 
                MOVE    1                   TO  FLG-PRVKANRI
            END-IF
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    PATH-TBL-PRVKANRI-KEY
+                                       TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
        900-PREVDATA-INV-EXT.
            EXIT.
@@ -748,6 +766,13 @@
            ELSE 
                MOVE    1                   TO  FLG-PRTKANRI
            END-IF
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    PATH-TBL-PRTKANRI-KEY
+                                       TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
        900-PREVDATA-INV-EXT.
            EXIT.
@@ -785,6 +810,15 @@
            ELSE 
                MOVE    1                   TO  FLG-PREVIEW
            END-IF
+      *
+      *    ラージオブジェクト対応までコメント★
+      *    MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+      *    MOVE    PATH-TBL-PREVIEW-KEY
+      *                                TO  MCP-PATH
+      *    CALL    "MCPSUB"            USING
+      *                                MCPAREA
+      *                                MCPDATA-REC
+      * end ラージオブジェクト対応までコメント★
            .
        900-PREVDATA-INV-EXT.
            EXIT.

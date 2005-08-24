@@ -923,6 +923,8 @@
                        END-IF     
                    END-IF
                  END-IF
+                 MOVE    "HKNNUM-KEY"      TO  WK-PATH
+                 PERFORM CSR-CLOSE-SEC
                END-IF
            END-PERFORM
       *
@@ -1018,6 +1020,8 @@
                            END-IF   
                        END-PERFORM
                    END-IF
+                   MOVE    "PTKOHINF-KEY4"   TO  WK-PATH
+                   PERFORM CSR-CLOSE-SEC
                END-IF
            END-IF              
       *

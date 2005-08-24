@@ -335,6 +335,13 @@
            ELSE 
                MOVE    1                   TO  FLG-PREVIEW
            END-IF
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    PATH-TBL-PRVKANRI-KEY4
+                                       TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
        120-PRVKANRI-RRKUPD-EXT.
            EXIT.
@@ -807,6 +814,13 @@
                MOVE    1                   TO  FLG-PRTKANRI
                                                FLG-END
            END-IF
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    PATH-TBL-PRTKANRI-KEY2
+                                       TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
        900-PRTKANRI-SELECT-EXT.
            EXIT.
@@ -841,6 +855,13 @@
            ELSE 
                MOVE    1                   TO  FLG-PREVIEW
            END-IF
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    PATH-TBL-PRVKANRI-KEY
+                                       TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
        900-PRVKANRI-INV-EXT.
            EXIT.
@@ -912,6 +933,13 @@
            ELSE 
                MOVE    1                   TO  FLG-PRTDATA
            END-IF
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    PATH-TBL-PRTDATA-KEY2
+                                       TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
        900-PRTDATA-SELECT-EXT.
            EXIT.

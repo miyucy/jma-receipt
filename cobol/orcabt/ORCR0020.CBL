@@ -784,9 +784,9 @@
                ELSE
                    DISPLAY   "PTKOHINF SELECT ERR" 
                END-IF
+               MOVE   "PTKOHINF-KEY"      TO  WK-PATH
+               PERFORM   CSR-CLOSE-SEC
            END-IF
-           MOVE   "PTKOHINF-KEY"      TO  WK-PATH
-           PERFORM   CSR-CLOSE-SEC
       *
       *    ƒπ¥¸π‚≥€Œ≈Õ‹»Ò§Œ ‘Ω∏
            MOVE    SPACE              TO   WRK-CHOKI
@@ -825,6 +825,8 @@
                        END-IF     
                    END-IF
                  END-IF
+                 MOVE    "HKNNUM-KEY"      TO  WK-PATH
+                 PERFORM CSR-CLOSE-SEC
                END-IF
            END-PERFORM
       *
@@ -936,6 +938,8 @@
                            END-IF   
                        END-PERFORM
                    END-IF
+                   MOVE    "PTKOHINF-KEY4"   TO  WK-PATH
+                   PERFORM CSR-CLOSE-SEC
                END-IF
            END-IF              
       *
