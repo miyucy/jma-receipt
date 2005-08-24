@@ -1051,6 +1051,14 @@ COPYS = \
 	HCM08V02.INC \
 	L04.INC \
         CPSK1043.INC \
+              HCM09V03.INC \
+              HCN06V04.INC \
+              HCN061V02.INC \
+              HCN062V02.INC \
+              HCN063V01.INC \
+              HCRCP400V03.INC \
+              HCRCP060V03.INC \
+              HCRCP401V01.INC \
 
 
 DBPATH = \
