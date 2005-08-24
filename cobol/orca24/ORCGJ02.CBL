@@ -10319,7 +10319,7 @@
                                        TO  SPA-GMN-SRYKA-G
            MOVE    SPA-GMN-SRYKA       TO  SPA-J01-SRYKA
       *    ≈¿≈©
-           MOVE    SPA-GMN-SRYKBN-LST(04)
+           MOVE    SPA-GMN-SRYKBN-LST(05)
                                        TO  SPA-GMN-SRYKBN-G
            MOVE    SPA-GMN-SRYKAMEI    TO  SPA-J01-SRYKAMEI
       *
