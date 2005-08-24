@@ -7,6 +7,7 @@
       *  01.00.01    MCC-Æ£¸¶     02.02.27  ¼ýÇ¼£Ä£Â¤ÎÊÑ¹¹¤Ë¤è¤ê½¤Àµ
       *  01.00.02    NACL-¾®Æ¦Âô  04.01.21  ¼ýÇ¼£Ä£Â¤ÎÊÑ¹¹¤Ë¤è¤ê½¤Àµ
       *  01.00.03    NACL-ÂÀÅÄ    04.03.17  ¼ýÇ¼£Ä£Â¤ÎÊÑ¹¹¤Ë¤è¤ê½¤Àµ
+      *  01.00.04    NACL-ÂÀÅÄ    05.08.24  ¼ýÇ¼£Ä£Â¤ÎÊÑ¹¹¤Ë¤è¤ê½¤Àµ
       ************************************************************
       *01  BD002-REC.
            03  BD002-KEY.
@@ -229,7 +230,7 @@
                   09  BD002-TOTAL-TGMONEY-TAX   PIC  9(07).
       *ÊÝ¸±Å¬ÍÑ³°¶â³Û¡Ý¾ÃÈñÀÇ¡ÊºÆ·Ç¡Ë
            03  BD002-TGMONEY-TAX-SAI         PIC  9(07).
-      *¼«Èñ£±¤«¤é£µ
+      *¼«Èñ£±¤«¤é£±£°
            03  BD002-JIHI-NAIYOU.
                05  BD002-JIHI-1              PIC  9(07). 
                05  BD002-JIHI-1-TAX          PIC  9(07). 
@@ -241,8 +242,18 @@
                05  BD002-JIHI-4-TAX          PIC  9(07). 
                05  BD002-JIHI-5              PIC  9(07). 
                05  BD002-JIHI-5-TAX          PIC  9(07). 
-           03  BD002-JIHI-NAIYOU-R     REDEFINES  BD002-JIHI-NAIYOU.
-               05  BD002-JIHI-TBL            OCCURS   5.
+               05  BD002-JIHI-6              PIC  9(07). 
+               05  BD002-JIHI-6-TAX          PIC  9(07). 
+               05  BD002-JIHI-7              PIC  9(07). 
+               05  BD002-JIHI-7-TAX          PIC  9(07). 
+               05  BD002-JIHI-8              PIC  9(07). 
+               05  BD002-JIHI-8-TAX          PIC  9(07). 
+               05  BD002-JIHI-9              PIC  9(07). 
+               05  BD002-JIHI-9-TAX          PIC  9(07). 
+               05  BD002-JIHI-10             PIC  9(07). 
+               05  BD002-JIHI-10-TAX         PIC  9(07). 
+           03  BD002-JIHI-NAIYOU-R         REDEFINES  BD002-JIHI-NAIYOU.
+               05  BD002-JIHI-TBL            OCCURS   10.
                  07  BD002-JIHI-TAXNASI        PIC  9(07).
                  07  BD002-JIHI-TAXARI         PIC  9(07).
       *¼«Èñ¾®·×¡Ê¾ÃÈñÀÇ¤Ê¤·¡Ë
@@ -285,6 +296,8 @@
            03  BD002-DISCOUNT-TEIRITU    PIC  X(01).
       *³ä°úÎ¨
            03  BD002-DISCOUNT-RATE       PIC  9(07).
+      *¸ºÌÈ¶â³Û
+           03  BD002-DISCOUNT-MONEY      PIC  9(07).
       *Ï«ºÒÊÝ¸±¡Ý½é¿ÇÎÁ
            03  BD002-RSISHOSHIN-MONEY    PIC  9(07).
       *Ï«ºÒÊÝ¸±¡ÝºÆ¿ÇÎÁ
@@ -337,7 +350,7 @@
                05  BD002-SHOKUJI6        PIC  9(07).
                05  BD002-SHOKUJI7-NISSU  PIC  9(02).
                05  BD002-SHOKUJI7        PIC  9(07).
-           03  BD002-SYOKUJI-NAIYOUR  REDEFINES   BD002-SHOKUJI-NAIYOU.
+           03  BD002-SYOKUJI-NAIYOUR   REDEFINES   BD002-SHOKUJI-NAIYOU.
                05  BD002-SYOKUJI-TBL     OCCURS   7.
                  07  BD002-SHOKUJI-NISSU   PIC  9(02).
                  07  BD002-SHOKUJI         PIC  9(07).
@@ -478,6 +491,12 @@
            03  BD002-NYUIN-RRKNUM        PIC  9(03).
       *²ñ·×ÊÑ¹¹¶èÊ¬
            03  BD002-ACCT-UPDKBN         PIC  X(01).
+      *ÊÑÂ§½õÀ®¡Ý´µ¼ÔÉéÃ´¶â³Û
+           03  BD002-JYO-HKNFTNMONEY     PIC  9(07).
+      *ÊÑÂ§½õÀ®¡Ý·×»»ÉéÃ´¶â
+           03  BD002-JYO-COMPFTN         PIC  9(07).
+      *ÊÑÂ§½õÀ®¡Ý·×»»ÉéÃ´¶â¡Ê±ßÃ±°Ìµ­Ï¿ÍÑ¡Ë
+           03  BD002-JYO-COMPFTN-ENTANI  PIC  9(07)V9(01).
       *Ã¼Ëö£É£Ä
            03  BD002-TERMID              PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
