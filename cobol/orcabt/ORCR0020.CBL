@@ -1060,6 +1060,13 @@
                                        RECE02-KOHSKY-KOHFTNJANUM (IDX)
                        END-IF
                    END-IF    
+      *
+                   MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+                   MOVE    "PTKOHINF-KEY"      TO  ORC-DBPATH
+                   CALL    "ORCMCPSUB"         USING
+                                               MCPAREA
+                                               ORCMCPAREA
+                                               MCPDATA-REC
                END-PERFORM
            END-IF
       *
