@@ -152,7 +152,7 @@ end
 
 # ファイル名に空白がある場合、前後に「"」をセットする処理
 def filename_unchange(name)
-	if name =~ ' '
+	if name =~ / /
 		filename_unchange = "\"" + name + "\""
 	else
 		filename_unchange = name
