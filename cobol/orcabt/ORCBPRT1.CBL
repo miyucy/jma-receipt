@@ -614,7 +614,6 @@
            DISPLAY "*** ORCBPRT1 IN  "  CNT-IN
            DISPLAY "*** ORCBPRT1 OUT "  CNT-OUT
       **** DISPLAY "*** ORCBPRT1 END ***"
-      *****ACCEPT WRK-IN
            .
        300-END-EXT.
            EXIT.
@@ -643,10 +642,16 @@
                MOVE    1                   TO  FLG-PRVKANRI
                                                FLG-END
                DISPLAY "ORCBPRT1 SYSTEM ERR!!"
-               GO      TO             900-PRVKANRI-EXT
            END-IF
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    PATH-TBL-PRVKANRI-KEY
+                                       TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
-       900-PRVKANRI-EXT.
+       900-PRVKANRI-INV-EXT.
            EXIT.
       *
       *
@@ -679,12 +684,19 @@
                MOVE    1                   TO  FLG-PRVKANRI
                                                FLG-END
                DISPLAY "ORCBPRT1 SYSTEM ERR!!"
+           END-IF
+      *
+          MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
+           MOVE    PATH-TBL-PRVKANRI-KEY
+                                       TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           IF      FLG-PRVKANRI        =   1 
                GO      TO             900-PRVKANRI-SELECT1-EXT
            END-IF
       *
-           IF  MCP-RC            NOT  =   ZERO
-               GO      TO             900-PRVKANRI-SELECT1-EXT
-           END-IF
                DISPLAY "ORCBPRT1 start hit ok!!"
       *
            INITIALIZE                      PRVKANRI-REC
@@ -711,13 +723,22 @@
                MOVE    1                   TO  FLG-PRVKANRI
                                                FLG-END
                DISPLAY "ORCBPRT1 SYSTEM ERR!!"
+           END-IF
+      *
+           MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
+           MOVE    PATH-TBL-PRVKANRI-KEY
+                                       TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           IF      FLG-PRVKANRI        =   1 
                GO      TO             900-PRVKANRI-SELECT1-EXT
            END-IF
       *
-           IF  MCP-RC                 =   ZERO
                DISPLAY "ORCBPRT1 next hit ok!!"
       *    プレビュー以外の時
-            IF WRK-PARA-PRTFLG        =    "3"
+           IF WRK-PARA-PRTFLG        =    "3"
                MOVE    SPACE          TO  ORCF-FILE-NAME
                STRING  "/var/tmp/.orca_ps/"
                                        DELIMITED  BY  SPACE
@@ -737,7 +758,6 @@
                        MOVE    ZERO    TO  FLG-END
                        MOVE    1       TO  FLG-NODATA
                END-IF
-            END-IF
            END-IF
            .
        900-PRVKANRI-SELECT1-EXT.
