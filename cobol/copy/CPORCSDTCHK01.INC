@@ -28,6 +28,12 @@
                05  SDTCHK01-KJNYMD             PIC X(08).
                05  SDTCHK01-CDKBN              PIC X(01).
                05  SDTCHK01-NYUGAIKBN          PIC X(01).
+               05  SDTCHK01-HKNPROCKBN-G.
+                   07  SDTCHK01-SYAHOPROCKBN   PIC  X(01).
+                   07  SDTCHK01-KOKUHOPROCKBN  PIC  X(01).
+                   07  SDTCHK01-RSIPROCKBN     PIC  X(01).
+                   07  SDTCHK01-JBIPROCKBN     PIC  X(01).
+                   07  SDTCHK01-JIHIPROCKBN    PIC  X(01).
            03  SDTCHK01-OT.
                05  SDTCHK01-O-OK               PIC 9(01).
                05  SDTCHK01-O-MAX              PIC 9(05).

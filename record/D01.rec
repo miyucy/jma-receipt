@@ -10,6 +10,25 @@ D01	{
 			count	int;
 			item	varchar(20)[5];
 		};
+		CHK_SYAHO	{
+			value	bool;
+		};
+		CHK_KOKUHO	{
+			value	bool;
+		};
+		CHK_RSIJBI	{
+			value	bool;
+		};
+		CHK_JIHI	{
+			value	bool;
+		};
+		CMB_PRTSRTKBN	{
+			PRTSRTKBN	{
+				value	varchar(22);
+			};
+			count	int;
+			item	varchar(22)[5];
+		};
 		CHKMSG1	{
 			value	varchar(40);
 		};
@@ -64,7 +83,7 @@ D01	{
 		CHKMSG18	{
 			value	varchar(40);
 		};
-		JIHIPROCMSG	{
+		CHKMSG19	{
 			value	varchar(40);
 		};
 		INGAIPROCMSG	{
@@ -196,8 +215,8 @@ D01	{
 			count	int;
 			item	varchar(20)[5];
 		};
-		CMB_JIHIPROCKBN	{
-			JIHIPROCKBN	{
+		CMB_CHKKBN19	{
+			CHKKBN19	{
 				value	varchar(20);
 			};
 			count	int;

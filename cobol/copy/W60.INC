@@ -33,7 +33,7 @@
               03  W60-CMB-PRTSRTKBN.
                 04  W60-PRTSRTKBN          PIC X(22).
                 04  W60-PRTSRTKBN-COUNT    PIC S9(9)   BINARY.
-                04  W60-PRTSRTKBN-ITEM     PIC X(22)   OCCURS  2.
+                04  W60-PRTSRTKBN-ITEM     PIC X(22)   OCCURS  5.
               03  W60-CMB-PRTPTLSTKBN.
                 04  W60-PRTPTLSTKBN        PIC X(22).
                 04  W60-PRTPTLSTKBN-COUNT  PIC S9(9)   BINARY.

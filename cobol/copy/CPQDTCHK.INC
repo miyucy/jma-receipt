@@ -35,6 +35,7 @@
            03  QDTCHK-NYUGAIKBN            PIC X(01).
            03  QDTCHK-TENKIKBN             PIC X(01).
            03  QDTCHK-TENKIYMD             PIC X(08).
+           03  QDTCHK-HKNCOMBI             PIC 9(04).
            03  QDTCHK-REZEFLG              PIC X(01).
            03  QDTCHK-REZEMM               PIC 9(02).
       *

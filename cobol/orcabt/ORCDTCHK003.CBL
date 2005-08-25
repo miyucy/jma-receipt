@@ -60,8 +60,8 @@
       *
        WORKING-STORAGE                 SECTION.
       *
-           COPY    "HCM401V01.INC"
-                                   REPLACING  //HCM401V01//
+           COPY    "HCM401V02.INC"
+                                   REPLACING  //HCM401V02//
                                    BY         //HCM401//.
       *
       *    エラーファイルファイル名称領域 
@@ -83,12 +83,15 @@
            03  FLG-END                                 PIC 9(01).
            03  FLG-ERR                                 PIC 9(01).
            03  FLG-DTCHK004                            PIC 9(01).
+           03  FLG-HKNOTHERS                           PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
            03  CNT-DTCHK004                            PIC 9(06).
            03  CNT-LINE                                PIC 9(06).
            03  CNT-PAGE                                PIC 9(06).
+           03  CNT-TTL-PAGE                            PIC 9(06).
+           03  CNT-RENBAN                              PIC 9(06).
       *
        01  IDX-AREA.
            03  IDX0                                    PIC 9(05). 
@@ -134,7 +137,17 @@
                05  WRK-YYS2                            PIC 9(04).
                05  WRK-MMS2                            PIC 9(02).
                05  WRK-DDS2                            PIC 9(02).
+           03  WRK-SHORI-RENNUM                        PIC 9(04).
            03  WRK-SPRT-TITLE                          PIC X(100).
+           03  WRK-HKNMES                              PIC X(20).
+           03  WRK-ERRMSG                              PIC X(500).
+           03  WRK-HKNKBN                              PIC X(01).
+      *
+       01  KEY-AREA.
+           03  KEY-NEW.
+               05  KEY-N-HKNKBN                        PIC X(01).
+           03  KEY-OLD.
+               05  KEY-O-HKNKBN                        PIC X(01).
       *
       *    パラメタ領域
        01  WRK-PARA.
@@ -154,6 +167,9 @@
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
+      *
+      *    データチェック機能情報２
+           COPY    "CPSK1101.INC".
       *
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
@@ -181,6 +197,7 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
+           COPY    "ORCA-DBPATH".
            COPY    "MCPAREA".
       *
       ****************************************************************
@@ -242,8 +259,13 @@
                                                ORCBSD01-SRYYM
                                                ORCBSD01-NYUGAIKBN
                                                ORCBSD01-CHKKBN-G
+                                               ORCBSD01-SYAHOPROCKBN
+                                               ORCBSD01-KOKUHOPROCKBN
+                                               ORCBSD01-RSIPROCKBN
+                                               ORCBSD01-JBIPROCKBN
                                                ORCBSD01-JIHIPROCKBN
                                                ORCBSD01-INGAIPROCKBN
+                                               ORCBSD01-PRTSRTKBN
                                                ORCBSD01-PRTPTLSTKBN
       *
            PERFORM 900-DBSTART-SEC
@@ -267,6 +289,9 @@
            MOVE    "DTCHK004"          TO  DTCHK004-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  DTCHK004-TERMID
       *
+      *    データチェック２機能情報
+           PERFORM 1001-SYS1101-GET-SEC
+      *
       *    初期値設定処理
            PERFORM 1001-INIT-VAL-SET-SEC
       *
@@ -276,9 +301,37 @@
        100-INIT-EXT.
            EXIT.
       *****************************************************************
+      *    データチェック２機能情報
+      *****************************************************************
+       1001-SYS1101-GET-SEC            SECTION.
+      *
+           INITIALIZE                      SYS-1101-REC
+           MOVE    "1101"              TO  SYS-1101-KANRICD
+           MOVE    "*%"                TO  SYS-1101-KBNCD
+           MOVE    ORCBSD01-SRYYM      TO  SYS-1101-STYUKYMD
+           MOVE    "01"                TO  SYS-1101-STYUKYMD (7:2)
+           MOVE    SYS-1101-STYUKYMD   TO  SYS-1101-EDYUKYMD
+           MOVE    SYS-1101-REC        TO  MCPDATA-REC
+           MOVE    PATH-TBL-SYSKANRI-KEY   TO  MCP-PATH
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYS-1101-REC
+           ELSE
+               INITIALIZE                  SYS-1101-REC
+           END-IF
+      *
+           MOVE    PATH-TBL-SYSKANRI-KEY   TO  MCP-PATH
+           PERFORM 910-DBCLOSE-SEC
+      *
+           .
+       1001-SYS1101-GET-EXT.
+           EXIT.
+      *****************************************************************
       *    初期値設定処理
       *****************************************************************
        1001-INIT-VAL-SET-SEC           SECTION.
+      *
+           MOVE    1                   TO  WRK-SHORI-RENNUM
       *
            MOVE    ORCBSD01-SRYYM      TO  WRK-SYMD
            MOVE    "01"                TO  WRK-SYMD(7:2)
@@ -286,15 +339,16 @@
            MOVE    WRK-EDTYMD3         TO  WRK-SRYYMD
       *
            IF    ( ORCBSD01-NYUGAIKBN  =   "1" )
-               MOVE    "（入院）"      TO  WRK-NYUGAIMES
+               MOVE    "入院"          TO  WRK-NYUGAIMES
            ELSE
-               MOVE    "（外来）"      TO  WRK-NYUGAIMES
+               MOVE    "外来"          TO  WRK-NYUGAIMES
            END-IF
       *
            MOVE    SPACE               TO  WRK-SPRT-TITLE
            STRING  WRK-EDTYMD3(1:16)   DELIMITED   BY  SIZE
-                   "分チェックリスト"  DELIMITED   BY  SIZE
+                   "分（"              DELIMITED   BY  SIZE
                    WRK-NYUGAIMES       DELIMITED   BY  SPACE
+                   "）"                DELIMITED   BY  SIZE
            INTO    WRK-SPRT-TITLE
            END-STRING
       *
@@ -310,6 +364,8 @@
       *
            MOVE    ZERO            TO  FLG-DTCHK004
            MOVE    ZERO            TO  CNT-PAGE
+                                       CNT-TTL-PAGE
+           MOVE    ZERO            TO  CNT-RENBAN
       *
       *    チェック結果ファイル読込
            PERFORM 900-DTCHK004-READ-SEC
@@ -317,11 +373,15 @@
            PERFORM UNTIL ( FLG-DTCHK004    =   1 )
                      OR  ( FLG-END         =   1 )
       *
+               MOVE    KEY-NEW     TO  KEY-OLD
+               MOVE    ZERO        TO  FLG-HKNOTHERS
+      *
       *        帳票編集<見出し>処理
                PERFORM 210-HEAD-HEN-SEC
       *
                PERFORM UNTIL ( FLG-DTCHK004    =   1 )
                         OR   ( FLG-END         =   1 )
+                        OR   ( KEY-NEW     NOT =   KEY-OLD )
                         OR   ( CNT-LINE       >=   CONST-LINE-MAX )
       *
       *            帳票編集<明細>処理
@@ -332,8 +392,28 @@
       *
                END-PERFORM
       *
+      *        帳票編集<注釈>処理
+               PERFORM 230-BIKOMARK-HEN-SEC
+      *
       *        帳票印刷処理
                PERFORM 290-PRINT-OUT-SEC
+      *
+               IF    ( KEY-NEW     NOT =   KEY-OLD )
+                   IF    ( ORCBSD01-PRTSRTKBN  =   "3" OR  "4" )
+                       IF    ( KEY-N-HKNKBN    NOT =   KEY-O-HKNKBN )
+                           COMPUTE WRK-SHORI-RENNUM
+                               =   WRK-SHORI-RENNUM    +   1
+                           COMPUTE CNT-TTL-PAGE
+                               =   CNT-TTL-PAGE    +   CNT-PAGE
+                           MOVE    ZERO        TO  CNT-PAGE
+                           MOVE    ZERO        TO  CNT-RENBAN
+                       END-IF
+                   ELSE
+                           COMPUTE CNT-TTL-PAGE
+                               =   CNT-PAGE
+                   END-IF
+      *
+               END-IF
       *
            END-PERFORM
       *
@@ -354,7 +434,23 @@
       *
            MOVE    WRK-SRYYMD (1:16)   TO  HCM401-SRYYM
       *
-           MOVE    WRK-NYUGAIMES       TO  HCM401-NYUGAIKBN
+           IF    ( ORCBSD01-PRTSRTKBN  =   "3" OR  "4" )
+               MOVE    DTCHK004-HKNKBN TO  WRK-HKNKBN
+               PERFORM 2201-HKNNAME-GET-SEC
+               STRING  "（"                DELIMITED   BY  SIZE
+                       WRK-NYUGAIMES       DELIMITED   BY  SPACE
+                       "　"                DELIMITED   BY  SIZE
+                       WRK-HKNMES          DELIMITED   BY  SPACE
+                        "）"               DELIMITED   BY  SIZE
+               INTO    HCM401-NYUGAIKBN
+               END-STRING
+           ELSE
+               STRING  "（"                DELIMITED   BY  SIZE
+                       WRK-NYUGAIMES       DELIMITED   BY  SPACE
+                        "）"               DELIMITED   BY  SIZE
+               INTO    HCM401-NYUGAIKBN
+               END-STRING
+           END-IF
       *
            MOVE    CNT-PAGE            TO  WRK-ZZ9
            MOVE    WRK-ZZ9             TO  WRK-MAE-INPUT
@@ -393,9 +489,10 @@
        220-BODY-HEN-SEC                SECTION.
       *
            COMPUTE CNT-LINE    =   CNT-LINE    +   1
+           COMPUTE CNT-RENBAN  =   CNT-RENBAN  +   1
       *
       *    番号
-           MOVE    CNT-DTCHK004        TO  WRK-ZZZZ9
+           MOVE    CNT-RENBAN          TO  WRK-ZZZZ9
            MOVE    WRK-ZZZZ9           TO  WRK-MAE-INPUT
            PERFORM 800-ZENKAKU-HEN-SEC
            MOVE    WRK-OUT-INPUT       TO  HCM401-RENBAN(CNT-LINE)
@@ -430,10 +527,28 @@
            END-IF
       *
       *    データチェック内容
-           IF    ( DTCHK004-ERRMSG (111:)  =   SPACE )
-               MOVE    DTCHK004-ERRMSG TO  HCM401-MESG  (CNT-LINE)
+           MOVE    SPACE               TO  WRK-ERRMSG
+           IF    ( DTCHK004-HKNOTHERS  =   "1" )
+      *
+               MOVE    1               TO  FLG-HKNOTHERS
+      *
+               MOVE    "＊"            TO  HCM401-MARK (CNT-LINE)
+      *
+               MOVE    DTCHK004-HKNKBN TO  WRK-HKNKBN
+               PERFORM 2201-HKNNAME-GET-SEC
+               STRING  WRK-HKNMES      DELIMITED   BY  SPACE
+                       "："            DELIMITED   BY  SIZE
+                       DTCHK004-ERRMSG DELIMITED   BY  SIZE
+               INTO    WRK-ERRMSG
+               END-STRING
            ELSE
-               MOVE    DTCHK004-ERRMSG TO  HCM401-MESG2 (CNT-LINE)
+               MOVE    DTCHK004-ERRMSG TO  WRK-ERRMSG
+           END-IF
+      *
+           IF    ( WRK-ERRMSG  (111:)  =   SPACE )
+               MOVE    WRK-ERRMSG      TO  HCM401-MESG  (CNT-LINE)
+           ELSE
+               MOVE    WRK-ERRMSG      TO  HCM401-MESG2 (CNT-LINE)
            END-IF
       *
            .
@@ -459,9 +574,50 @@
        2201-NENREI-HEN-EXT.
            EXIT.
       *****************************************************************
+      *    保険名称取得処理
+      *****************************************************************
+       2201-HKNNAME-GET-SEC            SECTION.
+      *
+           MOVE    SPACE               TO  WRK-HKNMES
+           EVALUATE    WRK-HKNKBN
+           WHEN    "1"
+               MOVE    "社保"          TO  WRK-HKNMES
+           WHEN    "2"
+               MOVE    "国保"          TO  WRK-HKNMES
+           WHEN    "3"
+               MOVE    "労災"          TO  WRK-HKNMES
+           WHEN    "4"
+               MOVE    "自賠責"        TO  WRK-HKNMES
+           WHEN    "5"
+               MOVE    "自費"          TO  WRK-HKNMES
+           END-EVALUATE
+      *
+           .
+       2201-HKNNAME-GET-EXT.
+           EXIT.
+      *****************************************************************
+      *    注釈編集処理
+      *****************************************************************
+       230-BIKOMARK-HEN-SEC            SECTION.
+      *
+           IF    ( FLG-HKNOTHERS       =   1 )
+               MOVE    "＊"            TO  HCM401-BIKOMARK
+               MOVE    "他保険あり"    TO  HCM401-BIKO
+           END-IF
+      *
+           .
+       230-BIKOMARK-HEN-EXT.
+           EXIT.
+      *****************************************************************
       *    帳票印刷処理
       *****************************************************************
        290-PRINT-OUT-SEC               SECTION.
+      *
+           MOVE    SPACE               TO  WRK-HKNMES
+           IF    ( ORCBSD01-PRTSRTKBN  =   "3" OR  "4" )
+               MOVE    KEY-O-HKNKBN    TO  WRK-HKNKBN
+               PERFORM 2201-HKNNAME-GET-SEC
+           END-IF
       *
            INITIALIZE                  ORCSPRTAREA
            MOVE    "INS"               TO  SPRT-MODE
@@ -474,12 +630,20 @@
            MOVE    LNK-PRTKANRI-SKYYMD TO  SPRT-SKYYMD
            MOVE    LNK-PRTKANRI-SHELLID 
                                        TO  SPRT-SHELLID
-           MOVE    LNK-PRTKANRI-SHORI-RENNUM
-                                       TO  SPRT-SHORI-RENNUM
+           MOVE    WRK-SHORI-RENNUM    TO  SPRT-SHORI-RENNUM
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
-           MOVE   "HCM401V01.red"      TO  SPRT-PRTID
-           MOVE    WRK-SPRT-TITLE      TO  SPRT-TITLE
+           MOVE   "HCM401V02.red"      TO  SPRT-PRTID
+           IF    ( WRK-HKNMES      NOT =   SPACE )
+               STRING  WRK-SPRT-TITLE      DELIMITED   BY  SPACE
+                       "（"                DELIMITED   BY  SIZE
+                       WRK-HKNMES          DELIMITED   BY  SPACE
+                       "）"                DELIMITED   BY  SIZE
+               INTO    SPRT-TITLE
+               END-STRING
+           ELSE
+               MOVE    WRK-SPRT-TITLE  TO  SPRT-TITLE
+           END-IF
            MOVE    HCM401              TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
            MOVE    LNK-PRTKANRI-OPID   TO  SPRT-OPID
@@ -545,7 +709,7 @@
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
-           MOVE    CNT-PAGE        TO  JOB-UPDCNT
+           MOVE    CNT-TTL-PAGE    TO  JOB-UPDCNT
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA
                                    JOBKANRI-REC
@@ -624,7 +788,14 @@
            END-READ
       *
            IF    ( FLG-DTCHK004        =   ZERO )
+               IF    ( ORCBSD01-PRTSRTKBN  =   "3" OR  "4" )
+                   MOVE    DTCHK004-HKNKBN TO  KEY-N-HKNKBN
+               ELSE
+                   MOVE    "0"             TO  KEY-N-HKNKBN
+               END-IF
                COMPUTE CNT-DTCHK004    =   CNT-DTCHK004    +   1
+           ELSE
+               MOVE    HIGH-VALUE      TO  KEY-NEW
            END-IF
       *
            .

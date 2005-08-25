@@ -52,7 +52,7 @@ W60	{
 				value	varchar(22);
 			};
 			count	int;
-			item	varchar(22)[2];
+			item	varchar(22)[5];
 		};
 		CMB_PRTPTLSTKBN	{
 			PRTPTLSTKBN	{

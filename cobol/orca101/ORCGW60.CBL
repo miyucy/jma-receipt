@@ -85,7 +85,7 @@
                        09  SPA-GMN-UTAGAIKKNKBNMEIL PIC X(08).
                05  SPA-GMN-PRTSRTKBNLST-G.
                    07  SPA-GMN-PRTSRTKBN-MAX       PIC 9(03).
-                   07  SPA-GMN-PRTSRTKBNLST        OCCURS   2.
+                   07  SPA-GMN-PRTSRTKBNLST        OCCURS   4.
                        09  SPA-GMN-PRTSRTKBNL      PIC X(01).
                        09                          PIC X(01).
                        09  SPA-GMN-PRTSRTKBNMEIL   PIC X(20).
@@ -363,7 +363,7 @@
            MOVE    SPA-GMN-BYOSRYKAKBN TO  WRK-CMB-CD
            PERFORM 4200-BYOSRYKAKBNLST-CHK-SEC
            IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-BYOSRYKAKBNLST (2)
+               MOVE    SPA-GMN-BYOSRYKAKBNLST (1)
                                    TO  SPA-GMN-BYOSRYKAKBN-G
            ELSE
                MOVE    WRK-CMB-ITM TO  SPA-GMN-BYOSRYKAKBN-G
@@ -437,7 +437,7 @@
            MOVE    "2"             TO  SPA-GMN-BYOSRYKAKBNL    (2)
            MOVE    "しない"        TO  SPA-GMN-BYOSRYKAKBNMEIL (2)
       *
-           MOVE    SPA-GMN-BYOSRYKAKBNLST  (2)
+           MOVE    SPA-GMN-BYOSRYKAKBNLST  (1)
                                    TO  SPA-GMN-BYOSRYKAKBN-G
       *
            . 
@@ -471,13 +471,19 @@
       *
            INITIALIZE                  SPA-GMN-PRTSRTKBNLST-G
       *
-           MOVE    2               TO  SPA-GMN-PRTSRTKBN-MAX
+           MOVE    4               TO  SPA-GMN-PRTSRTKBN-MAX
       *
            MOVE    "1"             TO  SPA-GMN-PRTSRTKBNL    (1)
            MOVE    "吹荚戎规界"    TO  SPA-GMN-PRTSRTKBNMEIL (1)
       *
            MOVE    "2"             TO  SPA-GMN-PRTSRTKBNL    (2)
            MOVE    "カナ会叹界"    TO  SPA-GMN-PRTSRTKBNMEIL (2)
+      *
+           MOVE    "3"                 TO  SPA-GMN-PRTSRTKBNL    (3)
+           MOVE    "瘦副、吹荚戎规界"  TO  SPA-GMN-PRTSRTKBNMEIL (3)
+      *
+           MOVE    "4"                 TO  SPA-GMN-PRTSRTKBNL    (4)
+           MOVE    "瘦副、カナ会叹界"  TO  SPA-GMN-PRTSRTKBNMEIL (4)
       *
            MOVE    SPA-GMN-PRTSRTKBNLST  (1)
                                    TO  SPA-GMN-PRTSRTKBN-G
@@ -697,7 +703,7 @@
            MOVE    SPA-GMN-BYOSRYKAKBN TO  WRK-CMB-CD
            PERFORM 4200-BYOSRYKAKBNLST-CHK-SEC
            IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-BYOSRYKAKBNLST (2)
+               MOVE    SPA-GMN-BYOSRYKAKBNLST (1)
                                    TO  SPA-GMN-BYOSRYKAKBN-G
            ELSE
                MOVE    WRK-CMB-ITM TO  SPA-GMN-BYOSRYKAKBN-G

@@ -28,16 +28,33 @@
            03  DTCHK004-KEY-R1        REDEFINES    DTCHK004-KEY.
                05  DTCHK004-R1-PTNUM       PIC X(20).
                05  DTCHK004-R1-PTID        PIC 9(10).
+               05  DTCHK004-R1-HKNKBN      PIC X(01).
                05  DTCHK004-R1-ERRCD       PIC X(06).
                05  DTCHK004-R1-ERRCD-SEQ   PIC 9(05).
-               05  DTCHK004-R1-DUMMY       PIC X(59).
+               05  DTCHK004-R1-DUMMY       PIC X(58).
            03  DTCHK004-KEY-R2        REDEFINES    DTCHK004-KEY.
                05  DTCHK004-R2-KANANAME    PIC X(50).
                05  DTCHK004-R2-PTNUM       PIC X(20).
                05  DTCHK004-R2-PTID        PIC 9(10).
+               05  DTCHK004-R2-HKNKBN      PIC X(01).
                05  DTCHK004-R2-ERRCD       PIC X(06).
                05  DTCHK004-R2-ERRCD-SEQ   PIC 9(05).
-               05  DTCHK004-R2-DUMMY       PIC X(09).
+               05  DTCHK004-R2-DUMMY       PIC X(08).
+           03  DTCHK004-KEY-R3        REDEFINES    DTCHK004-KEY.
+               05  DTCHK004-R3-HKNKBN      PIC X(01).
+               05  DTCHK004-R3-PTNUM       PIC X(20).
+               05  DTCHK004-R3-PTID        PIC 9(10).
+               05  DTCHK004-R3-ERRCD       PIC X(06).
+               05  DTCHK004-R3-ERRCD-SEQ   PIC 9(05).
+               05  DTCHK004-R3-DUMMY       PIC X(58).
+           03  DTCHK004-KEY-R4        REDEFINES    DTCHK004-KEY.
+               05  DTCHK004-R4-HKNKBN      PIC X(01).
+               05  DTCHK004-R4-KANANAME    PIC X(50).
+               05  DTCHK004-R4-PTNUM       PIC X(20).
+               05  DTCHK004-R4-PTID        PIC 9(10).
+               05  DTCHK004-R4-ERRCD       PIC X(06).
+               05  DTCHK004-R4-ERRCD-SEQ   PIC 9(05).
+               05  DTCHK004-R4-DUMMY       PIC X(08).
       *
       *患者番号
            03  DTCHK004-PTNUM         PIC X(20).
@@ -47,6 +64,12 @@
       *
       *氏名
            03  DTCHK004-NAME          PIC X(100).
+      *
+      *保険区分
+           03  DTCHK004-HKNKBN        PIC  X(01).
+      *
+      *他保険区分
+           03  DTCHK004-HKNOTHERS     PIC  X(01).
       *
       *生年月日
            03  DTCHK004-BIRTHDAY      PIC  X(08).

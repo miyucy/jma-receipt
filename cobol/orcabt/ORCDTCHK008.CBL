@@ -16,14 +16,14 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION                  DIVISION.
-       PROGRAM-ID.                     ORCDTCHK001.
+       PROGRAM-ID.                     ORCDTCHK008.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : データチェック
-      *  コンポーネント名  : 対象患者抽出
+      *  コンポーネント名  : チェックリスト前処理
       *  管理者            :
       *  作成日付    作業者        記述
-      *  03/11/21    NACL−太田    新規作成
+      *  05/03/31    NACL−太田    新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
@@ -34,17 +34,22 @@
        INPUT-OUTPUT                    SECTION.
        FILE-CONTROL.
       *
-      *    データチェック診療会計
-           SELECT  DCACCT-FILE     ASSIGN  DTCHKACCTPARA
+      *
+      *    データチェック中間ファイル（チェック結果）
+           SELECT  DTCHK004-FILE
+                                   ASSIGN  DTCHK004PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  DCACCT-KEY
-                                   FILE    STATUS  IS  STS-DCACCT.
+                                   RECORD  KEY     IS  DTCHK004-KEY
+                                   FILE    STATUS  IS  STS-DTCHK004.
       *
-      *    データチェック中間ファイル（対象患者情報）
-           SELECT  DTCHK003-FILE   ASSIGN  DTCHK003PARA
-                                   FILE    STATUS  IS  STS-DTCHK003
-                                   ORGANIZATION    IS  LINE SEQUENTIAL.
+      *    データチェック中間ファイル（複数保険エラー患者）
+           SELECT  DTCHK007-FILE
+                                   ASSIGN  DTCHK007PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  DTCHK007-KEY
+                                   FILE    STATUS  IS  STS-DTCHK007.
       *
       *    エラーファイル
            SELECT  DTCHKERR-FILE   ASSIGN  DTCHKERRPARA
@@ -53,16 +58,13 @@
        DATA                            DIVISION.
        FILE                            SECTION.
       *
-      *    データチェック診療会計
-       FD  DCACCT-FILE.
-       01  DCACCT-REC.
-           COPY    "CPDCACCT.INC".
+      *    データチェック中間ファイル（チェック結果）
+       FD  DTCHK004-FILE.
+           COPY    "CPDTCHK004.INC".
       *
-      *    データチェック中間ファイル（患者情報）
-       FD  DTCHK003-FILE.
-           COPY    "CPDTCHK001.INC"
-                                   REPLACING  //DTCHK001//
-                                   BY         //DTCHK003//.
+      *    データチェック中間ファイル（複数保険エラー患者）
+       FD  DTCHK007-FILE.
+           COPY    "CPDTCHK007.INC".
       *
       *    エラーファイル
        FD  DTCHKERR-FILE.
@@ -74,101 +76,88 @@
            COPY    "CPCOMMONDAT6.INC"
                                    REPLACING  //DTCHK//
                                    BY         //DTCHKERR//.
+      *
+      *    中間ファイルファイル名称領域 
            COPY    "CPCOMMONDAT6.INC"
                                    REPLACING  //DTCHK//
-                                   BY         //DTCHK003//.
+                                   BY         //DTCHK004//.
+      *
+      *    中間ファイルファイル名称領域 
            COPY    "CPCOMMONDAT6.INC"
                                    REPLACING  //DTCHK//
-                                   BY         //DTCHKACCT//.
+                                   BY         //DTCHK007//.
       *
       *    フラグ領域
        01  STS-AREA.
-           03  STS-DTCHK003                            PIC X(02).
+           03  STS-DTCHK004                            PIC X(02).
+           03  STS-DTCHK007                            PIC X(02).
            03  STS-DTCHKERR                            PIC X(02).
-           03  STS-DCACCT                              PIC X(02).
       *
        01  FLG-AREA.
            03  FLG-END                                 PIC 9(01).
            03  FLG-ERR                                 PIC 9(01).
-           03  FLG-DCACCT                              PIC 9(01).
-           03  FLG-LOOP-END                            PIC 9(01).
-           03  FLG-TAISYO-HKN                          PIC 9(01).
-           03  FLG-STATUS-G.
-               05  FLG-STATUS-VAL.
-                   07  FLG-STS-NYUKHN                  PIC 9(01).
-                   07  FLG-STS-GAIHAKU                 PIC 9(01).
-                   07  FLG-STS-HKNCOMBI                PIC 9(01).
-                   07  FLG-STS-NYUKSN                  PIC 9(01).
-                   07  FLG-STS-NYUGEN                  PIC 9(01).
-                   07  FLG-STS-JITDAY                  PIC 9(01).
-                   07  FLG-STS-SNTDAY                  PIC 9(01).
-                   07  FLG-STS-08                      PIC 9(01).
-                   07  FLG-STS-09                      PIC 9(01).
-                   07  FLG-STS-10                      PIC 9(01).
-                   07  FLG-STS-11                      PIC 9(01).
-                   07  FLG-STS-12                      PIC 9(01).
-                   07  FLG-STS-13                      PIC 9(01).
-                   07  FLG-STS-14                      PIC 9(01).
-                   07  FLG-STS-15                      PIC 9(01).
-                   07  FLG-STS-16                      PIC 9(01).
-               05  FLG-STATUS-R    REDEFINES   FLG-STATUS-VAL.
-                   07  FLG-STATUS                      PIC 9(01)
-                                                       OCCURS  16.
+           03  FLG-DTCHK004                            PIC 9(01).
+           03  FLG-DTCHK007                            PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
-           03  CNT-DTCHK003                            PIC 9(06).
+           03  CNT-DTCHK004                            PIC 9(06).
+           03  CNT-DTCHK007                            PIC 9(06).
+           03  CNT-HKN                                 PIC 9(06).
       *
        01  IDX-AREA.
            03  IDX0                                    PIC 9(05). 
       *
        01  WRK-AREA.
            03  WRK-DTCHKERR                            PIC X(200).
-           03  WRK-PTID                                PIC 9(10).
-           03  WRK-ZAIHKNNUM                           PIC X(03).
-           03  WRK-STATUS                              PIC 9(05).
-           03  WRK-HKNKBN-G.
-               05  WRK-SYAHOPROCKBN                    PIC X(01).
-               05  WRK-KOKUHOPROCKBN                   PIC X(01).
-               05  WRK-RSIPROCKBN                      PIC X(01).
-               05  WRK-JBIPROCKBN                      PIC X(01).
-               05  WRK-JIHIPROCKBN                     PIC X(01).
+           03  WRK-HKNOTHERS                           PIC X(1).
+      *
+       01  KEY-AREA.
+           03  KEY-NEW.
+               05  KEY-N-PTID                          PIC 9(10).
+               05  KEY-N-HKNKBN                        PIC X(1).
+           03  KEY-OLD.
+               05  KEY-O-PTID                          PIC 9(10).
+               05  KEY-O-HKNKBN                        PIC X(1).
       *
       *    パラメタ領域
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
-           03  WRK-PARA-JOBID      PIC 9(07).
-           03  WRK-PARA-SHELLID    PIC X(08).
-           03  WRK-PARA-HOSPID     PIC X(24).
+           03  WRK-PARA-JOBID                          PIC 9(07).
+           03  WRK-PARA-SHELLID                        PIC X(08).
+           03  WRK-PARA-HOSPID                         PIC X(24).
       *
       *    データチェック一括処理パラメータ
            COPY    "CPORCBSD01PARA.INC".
+      *
+      *    固定値領域
+      *01  CONST-AREA.
       *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
       *
+      *    データチェック機能情報２
+           COPY    "CPSK1101.INC".
+      *
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
-      *
-      *    データチェック機能情報２
-           COPY    "CPSK1101.INC".
       *
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
       *
-      *    ジョブ管理ＤＢ制御サブ
-           COPY    "CPORCSJOBKANRI.INC".
-      *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
+      *    ジョブ管理ＤＢ制御サブ
+           COPY    "CPORCSJOBKANRI.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "MCPAREA".
            COPY    "ORCA-DBPATH".
+           COPY    "MCPAREA".
       *
       ****************************************************************
        LINKAGE                         SECTION.
@@ -184,22 +173,23 @@
       *****************************************************************
       *    主処理
       *****************************************************************
-       000-PROC-SEC                SECTION.
+       000-PROC-SEC                    SECTION.
       *
            PERFORM 100-INIT-SEC
       *
-           PERFORM 200-MAIN-SEC
+           PERFORM 200-MAIN-SEC    UNTIL ( FLG-END =   1 )
       *
            PERFORM 300-END-SEC
       *
-           MOVE    FLG-ERR             TO  DTCHK-RC
+           MOVE    FLG-ERR         TO  DTCHK-RC
       *
            EXIT    PROGRAM
+      *
            .
       *****************************************************************
       *    初期　処理
       *****************************************************************
-       100-INIT-SEC                SECTION.
+       100-INIT-SEC                    SECTION.
       *
            INITIALIZE                  STS-AREA
                                        IDX-AREA
@@ -208,6 +198,7 @@
                                        WRK-AREA
                                        WRK-PARA
                                        ORCBSD01PARA
+                                       KEY-AREA
       *
            UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
                                        INTO    LNK-PRTKANRI-RENNUM
@@ -244,8 +235,9 @@
            INITIALIZE                      JOBKANRI-REC
            MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
-           MOVE    "ORCDTCHK001"          TO  JOB-PGID
-           MOVE    "対象患者抽出"      TO  JOB-SHELLMSG
+           MOVE    "ORCDTCHK008"       TO  JOB-PGID
+           MOVE    "リスト作成前処理"
+                                       TO  JOB-SHELLMSG
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
@@ -253,13 +245,14 @@
            MOVE    ZERO                TO  FLG-END
                                            FLG-ERR
       *
+      *    データチェック中間ファイル名
+           MOVE    "DTCHK004"          TO  DTCHK004-FILE-ID
+           MOVE    LNK-PRTKANRI-TERMID TO  DTCHK004-TERMID
       *
       *    データチェック中間ファイル名
-           MOVE    "DCACCT00"          TO  DTCHKACCT-FILE-ID
-           MOVE    LNK-PRTKANRI-TERMID TO  DTCHKACCT-TERMID
+           MOVE    "DTCHK007"          TO  DTCHK007-FILE-ID
+           MOVE    LNK-PRTKANRI-TERMID TO  DTCHK007-TERMID
       *
-           MOVE    "DTCHK003"          TO  DTCHK003-FILE-ID
-           MOVE    LNK-PRTKANRI-TERMID TO  DTCHK003-TERMID
       *
       *    データチェック２機能情報
            PERFORM 1001-SYS1101-GET-SEC
@@ -301,6 +294,9 @@
       *****************************************************************
        1001-INIT-VAL-SET-SEC           SECTION.
       *
+            IF   ( ORCBSD01-PRTSRTKBN  =   "3" OR  "4" )
+                MOVE   1               TO  FLG-END
+            END-IF
       *
            .
        1001-INIT-VAL-SET-EXT.
@@ -310,168 +306,109 @@
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
-      *    対象患者情報編集処理
-           PERFORM 2001-DTCHK003-HEN-SEC
+           PERFORM 2001-DTCHK007-EDIT-SEC
       *
-           MOVE    1                   TO  FLG-END
+           PERFORM 2001-DTCHK004-EDIT-SEC
+      *
+           MOVE    1               TO  FLG-END
+      *
            .
        200-MAIN-EXT.
            EXIT.
       *****************************************************************
-      *    対象患者編集処理
+      *    複数保険エラー患者ファイル編集処理
       *****************************************************************
-       2001-DTCHK003-HEN-SEC           SECTION.
+       2001-DTCHK007-EDIT-SEC          SECTION.
       *
-           OPEN    INPUT                   DCACCT-FILE
-           OPEN    OUTPUT                  DTCHK003-FILE
+           OPEN    INPUT               DTCHK004-FILE
+           OPEN    OUTPUT              DTCHK007-FILE
       *
-           MOVE    ZERO                TO  CNT-DTCHK003
-           MOVE    ZERO                TO  FLG-DCACCT
+           MOVE    ZERO            TO  FLG-DTCHK004
       *
-           MOVE    ZERO                TO  WRK-PTID
-           MOVE    ZERO                TO  WRK-HKNKBN-G
+      *    チェック結果ファイル読込
+           PERFORM 900-DTCHK004-READ-SEC
       *
-      *    データチェック診療会計読込処理
-           PERFORM 900-DCACCT-READ-SEC
+           PERFORM UNTIL ( FLG-DTCHK004    =   1 )
       *
-           PERFORM UNTIL ( FLG-DCACCT      NOT =   ZERO )
+               MOVE    ZERO        TO  CNT-HKN
+               MOVE    KEY-NEW     TO  KEY-OLD
       *
-               MOVE    DCACCT-PTID     TO  WRK-PTID
-               MOVE    ZERO            TO  WRK-HKNKBN-G
+               PERFORM UNTIL ( FLG-DTCHK004    =   1 )
+                        OR   ( KEY-N-PTID  NOT =   KEY-O-PTID )
       *
-               PERFORM UNTIL ( WRK-PTID    NOT =   DCACCT-PTID )
-                        OR   ( FLG-DCACCT  NOT =   ZERO )
+                   MOVE    KEY-NEW     TO  KEY-OLD
       *
-                   INITIALIZE                  FLG-STATUS-G
-                   MOVE    DCACCT-STATUS   TO  WRK-STATUS
+                   PERFORM UNTIL ( FLG-DTCHK004    =   1 )
+                            OR   ( KEY-N-PTID      NOT =   KEY-O-PTID )
+                            OR   ( KEY-N-HKNKBN    NOT =   KEY-O-HKNKBN)
       *
-                   PERFORM VARYING IDX0    FROM    1   BY  1
-                           UNTIL ( IDX0    >   16 )
-                       DIVIDE  WRK-STATUS  BY  2   GIVING  WRK-STATUS
-                               REMAINDER   FLG-STATUS (IDX0)
+      *                チェック結果ファイル読込
+                       PERFORM 900-DTCHK004-READ-SEC
+      *
                    END-PERFORM
       *
-                   IF    ( FLG-STS-HKNCOMBI    =   ZERO )
-                       MOVE    DCACCT-HKNNUM   TO  WRK-ZAIHKNNUM
-                       PERFORM 220-TAISYO-HKN-CHK-SEC
-                   END-IF
-      *
-                   PERFORM 900-DCACCT-READ-SEC
+                   COMPUTE  CNT-HKN    =   CNT-HKN +   1
       *
                END-PERFORM
       *
-      *        IF    ( ORCBSD01-PRTSRTKBN      =   "3" OR  "4" )
-      *
-                   IF    ( WRK-SYAHOPROCKBN    =   "1" )
-                       INITIALIZE              DTCHK003-REC
-                       MOVE    "1"         TO  DTCHK003-HKNKBN
-                       MOVE    WRK-SYAHOPROCKBN
-                                           TO  DTCHK003-SYAHOPROCKBN
-                       PERFORM 210-DTCHK003-WRITE-SEC
-                   END-IF
-      *
-                   IF    ( WRK-KOKUHOPROCKBN   =   "1" )
-                       INITIALIZE              DTCHK003-REC
-                       MOVE    "2"         TO  DTCHK003-HKNKBN
-                       MOVE    WRK-KOKUHOPROCKBN
-                                           TO  DTCHK003-KOKUHOPROCKBN
-                       PERFORM 210-DTCHK003-WRITE-SEC
-                   END-IF
-      *
-                   IF    ( WRK-RSIPROCKBN   =   "1" )
-                       INITIALIZE              DTCHK003-REC
-                       MOVE    "3"         TO  DTCHK003-HKNKBN
-                       MOVE    WRK-RSIPROCKBN
-                                           TO  DTCHK003-RSIPROCKBN
-                       PERFORM 210-DTCHK003-WRITE-SEC
-                   END-IF
-      *
-                   IF    ( WRK-JBIPROCKBN   =   "1" )
-                       INITIALIZE              DTCHK003-REC
-                       MOVE    "4"         TO  DTCHK003-HKNKBN
-                       MOVE    WRK-JBIPROCKBN
-                                           TO  DTCHK003-JBIPROCKBN
-                       PERFORM 210-DTCHK003-WRITE-SEC
-                   END-IF
-      *
-                   IF    ( WRK-JIHIPROCKBN     =   "1" )
-                       INITIALIZE              DTCHK003-REC
-                       MOVE    "5"         TO  DTCHK003-HKNKBN
-                       MOVE    WRK-JIHIPROCKBN
-                                           TO  DTCHK003-JIHIPROCKBN
-                       PERFORM 210-DTCHK003-WRITE-SEC
-                   END-IF
-      *        ELSE
-      *                INITIALIZE              DTCHK003-REC
-      *                MOVE    "0"         TO  DTCHK003-HKNKBN
-      *                MOVE    WRK-SYAHOPROCKBN
-      *                                    TO  DTCHK003-SYAHOPROCKBN
-      *                MOVE    WRK-KOKUHOPROCKBN
-      *                                    TO  DTCHK003-KOKUHOPROCKBN
-      *                MOVE    WRK-RSIPROCKBN
-      *                                    TO  DTCHK003-RSIPROCKBN
-      *                MOVE    WRK-JBIPROCKBN
-      *                                    TO  DTCHK003-JBIPROCKBN
-      *                MOVE    WRK-JIHIPROCKBN
-      *                                    TO  DTCHK003-JIHIPROCKBN
-      *                PERFORM 210-DTCHK003-WRITE-SEC
-      *        END-IF
+               IF    ( CNT-HKN     >   1 )
+                   INITIALIZE          DTCHK007-REC
+                   MOVE    KEY-O-PTID  TO  DTCHK007-PTID
+                   WRITE   DTCHK007-REC
+               END-IF
       *
            END-PERFORM
       *
-           CLOSE                           DCACCT-FILE
-                                           DTCHK003-FILE
+           CLOSE                       DTCHK004-FILE
+                                       DTCHK007-FILE
       *
            .
-       2001-DTCHK003-HEN-EXT.
+       2001-DTCHK007-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    患者情報ファイル出力処理
+      *    チェック結果ファイル複数保険エラー編集処理
       *****************************************************************
-       210-DTCHK003-WRITE-SEC        SECTION.
+       2001-DTCHK004-EDIT-SEC          SECTION.
       *
-           MOVE    WRK-PARA-HOSPID TO  DTCHK003-HOSPID
-           MOVE    WRK-PTID        TO  DTCHK003-PTID
-           WRITE                       DTCHK003-REC
+           OPEN    I-O                 DTCHK004-FILE
+           OPEN    INPUT               DTCHK007-FILE
       *
-           COMPUTE CNT-DTCHK003    =   CNT-DTCHK003    +   1
+           MOVE    ZERO            TO  FLG-DTCHK004
+      *
+      *    チェック結果ファイル読込
+           PERFORM 900-DTCHK004-READ-SEC
+      *
+           PERFORM UNTIL ( FLG-DTCHK004    =   1 )
+      *
+               MOVE    KEY-NEW     TO  KEY-OLD
+      *
+               MOVE    SPACE       TO  WRK-HKNOTHERS
+               PERFORM 900-DTCHK007-READ-SEC
+               IF    ( FLG-DTCHK007    =   ZERO )
+                   MOVE    "1"     TO  WRK-HKNOTHERS
+               END-IF
+      *
+                   DISPLAY "DTCHK004-PTNUM =" DTCHK004-PTNUM
+                   DISPLAY "WRK-HKNOTHERS  =" WRK-HKNOTHERS
+               PERFORM UNTIL ( FLG-DTCHK004    =   1 )
+                        OR   ( KEY-N-PTID  NOT =   KEY-O-PTID )
+      *
+                   MOVE    WRK-HKNOTHERS   TO  DTCHK004-HKNOTHERS
+      *
+                   REWRITE DTCHK004-REC
+      *
+      *            チェック結果ファイル読込
+                   PERFORM 900-DTCHK004-READ-SEC
+      *
+               END-PERFORM
+      *
+           END-PERFORM
+      *
+           CLOSE                       DTCHK004-FILE
+                                       DTCHK007-FILE
       *
            .
-       210-DTCHK003-WRITE-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    対象保険チェック処理
-      *****************************************************************
-       220-TAISYO-HKN-CHK-SEC          SECTION.
-      *
-           EVALUATE    TRUE
-           WHEN      ( WRK-ZAIHKNNUM   =   "060" )
-           WHEN      ( WRK-ZAIHKNNUM   =   "067" )
-               IF    ( ORCBSD01-KOKUHOPROCKBN  =   "1" )
-                   MOVE    "1"         TO  WRK-KOKUHOPROCKBN
-               END-IF
-           WHEN      ( WRK-ZAIHKNNUM   =   "971" )
-               IF    ( ORCBSD01-RSIPROCKBN  =   "1" )
-                   MOVE    "1"         TO  WRK-RSIPROCKBN
-               END-IF
-           WHEN      ( WRK-ZAIHKNNUM   =   "973" )
-               IF    ( ORCBSD01-JBIPROCKBN  =   "1" )
-                   MOVE    "1"         TO  WRK-JBIPROCKBN
-               END-IF
-      *
-           WHEN      ( WRK-ZAIHKNNUM (1:2) =   "98" )
-               IF    ( ORCBSD01-JIHIPROCKBN    =   "1" )
-                   MOVE    "1"         TO  WRK-JIHIPROCKBN
-               END-IF
-      *
-           WHEN      OTHER
-               IF    ( ORCBSD01-SYAHOPROCKBN   =   "1" )
-                   MOVE    "1"         TO  WRK-SYAHOPROCKBN
-               END-IF
-           END-EVALUATE
-      *
-           .
-       220-TAISYO-HKN-CHK-EXT.
+       2001-DTCHK004-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    エラー出力処理
@@ -518,60 +455,59 @@
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
+           MOVE    ZERO            TO  JOB-UPDCNT
            CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA  
+                                   ORCSJOBKANRIAREA
                                    JOBKANRI-REC
       *
            PERFORM 900-DBCOMMIT-SEC
       *     
-           DISPLAY "*** ORCDTCHK001 END ***"
-           DISPLAY "DTCHK003 CNT [" CNT-DTCHK003 "]"
-           DISPLAY "***********************"
+           DISPLAY "*** ORCDTCHK008 END ***"
            .
        300-END-EXT.
            EXIT.
       *
       *****************************************************************
-      *    マシン日付取得サブ
+      *    チェック結果ファイル読込処理
       *****************************************************************
-       800-MCNDATE-SEC         SECTION.
+       900-DTCHK004-READ-SEC           SECTION.
       *
-           CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
+           READ    DTCHK004-FILE       NEXT
+           AT  END
+               MOVE    1               TO  FLG-DTCHK004
+           END-READ
+      *
+           IF    ( FLG-DTCHK004        =   ZERO )
+               MOVE    DTCHK004-PTID   TO  KEY-N-PTID
+               MOVE    DTCHK004-HKNKBN TO  KEY-N-HKNKBN
+               COMPUTE CNT-DTCHK004    =   CNT-DTCHK004    +   1
+           ELSE
+               MOVE    HIGH-VALUE      TO  KEY-NEW
+           END-IF
       *
            .
-      *
-       800-MCNDATE-EXT.
+       900-DTCHK004-READ-EXT.
            EXIT.
       *****************************************************************
-      *    データチェック診療会計読込処理
+      *    複数保険エラー患者ファイル読み込み処理
       *****************************************************************
-       900-DCACCT-READ-SEC         SECTION.
+       900-DTCHK007-READ-SEC            SECTION.
       *
-           MOVE    ZERO            TO  FLG-LOOP-END
+           MOVE    ZERO            TO  FLG-DTCHK007
       *
-           PERFORM UNTIL ( FLG-DCACCT      NOT =   ZERO )
-                    OR   ( FLG-LOOP-END    NOT =   ZERO )
+           INITIALIZE                  DTCHK007-REC
+           MOVE    DTCHK004-PTID   TO  DTCHK007-PTID
       *
-               READ    DCACCT-FILE         NEXT
-               AT  END
-                   MOVE    1       TO  FLG-DCACCT
-               NOT AT  END
-      *
-                   MOVE    1   TO  FLG-LOOP-END
-      *
-                   IF    ( ORCBSD01-NYUGAIKBN
-                                       NOT =   DCACCT-NYUGAIKBN )
-                       MOVE    ZERO    TO  FLG-LOOP-END
-                   END-IF
-      *
-               END-READ
-           END-PERFORM
+           READ    DTCHK007-FILE
+           INVALID KEY
+               MOVE    1           TO  FLG-DTCHK007
+           END-READ
       *
            .
-       900-DCACCT-READ-EXT.
+       900-DTCHK007-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ＤＢ検索処理
+      *    ＤＢ検索処理（FHETCHも行う)
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -585,7 +521,21 @@
       *
            .
       *
-       910-DB-SELECT-EXT.
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ検索処理（FHETCHは行わない)
+      *****************************************************************
+       911-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       911-DBSELECT-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ読み込み処理
@@ -616,30 +566,29 @@
        910-DBCLOSE-EXT.
            EXIT.
       *****************************************************************
-      *    ＤＢＳＴＡＲＴ処理
+      *    ＤＢ　オープン処理
       *****************************************************************
        900-DBSTART-SEC                 SECTION.
       *
-           MOVE    LOW-VALUE            TO  MCP-PATH
-           MOVE    "DBSTART"            TO  MCP-FUNC
-           CALL    "MCPSUB"             USING
-                                        MCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-PATH
+           MOVE    "DBSTART"           TO  MCP-FUNC.
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
        900-DBSTART-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ＤＢＣＯＭＭＩＴ処理
+      *    ＤＢ　クローズ処理
       *****************************************************************
-       900-DBCOMMIT-SEC                 SECTION.
+       900-DBCOMMIT-SEC                SECTION.
       *
-           MOVE    LOW-VALUE            TO  MCP-PATH
-           MOVE    "DBCOMMIT"           TO  MCP-FUNC
-           CALL    "MCPSUB"             USING
-                                        MCPAREA
-                                        MCPDATA-REC.
-      *
+           MOVE    LOW-VALUE           TO  MCP-PATH
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC.
            .
        900-DBCOMMIT-EXT.
            EXIT.

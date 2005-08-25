@@ -21,19 +21,22 @@
             04  D01-NYUGAIKBN          PIC X(20).
             04  D01-NYUGAIKBN-COUNT    PIC S9(9)   BINARY.
             04  D01-NYUGAIKBN-ITEM     PIC X(20)   OCCURS  5 TIMES.
+          03  D01-CHK-SYAHO            PIC X(01).
+          03  D01-CHK-KOKUHO           PIC X(01).
+          03  D01-CHK-RSIJBI           PIC X(01).
+          03  D01-CHK-JIHI             PIC X(01).
+          03  D01-CMB-PRTSRTKBN.
+            04  D01-PRTSRTKBN          PIC X(22).
+            04  D01-PRTSRTKBN-COUNT    PIC S9(9)   BINARY.
+            04  D01-PRTSRTKBN-ITEM     PIC X(22)   OCCURS  5.
           03  D01-CHKMSG-G.
-            04  D01-CHKMSG             PIC X(40)   OCCURS 18 TIMES.
-          03  D01-JIHIPROCMSG          PIC X(40).
+            04  D01-CHKMSG             PIC X(40)   OCCURS 19 TIMES.
           03  D01-INGAIPROCMSG         PIC X(40).
           03  D01-CMB-CHKKBN-G.
-            04  D01-CMB-CHKKBN-OCC                 OCCURS 18 TIMES.
+            04  D01-CMB-CHKKBN-OCC                 OCCURS 19 TIMES.
               05  D01-CHKKBN           PIC X(20).
               05  D01-CHKKBN-COUNT     PIC S9(9)   BINARY.
               05  D01-CHKKBN-ITEM      PIC X(20)   OCCURS  5 TIMES.
-          03  D01-CMB-JIHIPROCKBN.
-            04  D01-JIHIPROCKBN        PIC X(20).
-            04  D01-JIHIPROCKBN-COUNT  PIC S9(9)   BINARY.
-            04  D01-JIHIPROCKBN-ITEM   PIC X(20)   OCCURS  5 TIMES.
           03  D01-CMB-INGAIPROCKBN.
             04  D01-INGAIPROCKBN       PIC X(20).
             04  D01-INGAIPROCKBN-COUNT PIC S9(9)   BINARY.

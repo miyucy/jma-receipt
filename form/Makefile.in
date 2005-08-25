@@ -257,6 +257,8 @@ FORM_files = \
               HCRCP400V03.red \
               HCRCP060V03.red \
               HCRCP401V01.red \
+              HCM401V02.red \
+              HCM402V01.red \
 
 all:   
 

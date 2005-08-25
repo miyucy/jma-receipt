@@ -45,6 +45,7 @@
            03  FLG-TAISYO                  PIC 9(01).
            03  FLG-HIT                     PIC 9(01).
            03  FLG-LOOP-END                PIC 9(01).
+           03  FLG-TAISYO-HKN              PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -52,6 +53,7 @@
            03  IDX1                        PIC 9(05).
            03  IDX-LEN                     PIC 9(05).
            03  IDX-ST                      PIC 9(05).
+           03  IDX-COMB                    PIC 9(05).
       *
       *    一時領域
        01  WRK-AREA.
@@ -70,6 +72,8 @@
                    07  WRK-BYOMEICD-SEP    PIC X(01).
            03  WRK-CHKMST-KEY              PIC X(200).
            03  WRK-PTBYOMEI-KEY            PIC X(200).
+           03  WRK-HKNCOMBI                PIC 9(04).
+           03  WRK-ZAIHKNNUM               PIC X(03).
       *
        01  LEN-AREA.
            03  LEN-CHKMST                  PIC 9(05).
@@ -102,6 +106,10 @@
        01  QDTCHK-REC.
            COPY    "CPQDTCHK.INC".
       *
+      *    保険組合せ
+       01  HKNCOMBI-REC.
+           COPY    "CPHKNCOMBI.INC".
+      *
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
@@ -121,11 +129,18 @@
       *
            COPY    "CPORCSDTCHK01.INC".
            COPY    "CPSK1101.INC".
+           COPY    "CPORCSDTCHK02.INC".
+           01  LNK-HKNCOMBI-AREA.
+             02  LNK-HKNCOMBI-OCC      OCCURS  100.
+           COPY    "CPHKNCOMBI.INC"    REPLACING  //COMB-//
+                                       BY         //LNK-COMB-//.
       *
       *
        PROCEDURE                    DIVISION    USING
        SDTCHK01AREA
-       SYS-1101-REC.
+       SYS-1101-REC
+       SDTCHK02AREA
+       LNK-HKNCOMBI-AREA.
       *
       *****************************************************************
       *    主　　処理
@@ -415,7 +430,7 @@
                    UNTIL ( IDX1            >   TBYOMEI-MAX )
                     OR   ( TBYOMEI-IDX1    >   ZERO    )
       *
-               IF    ( SYS-1101-BYOSRYKAKBN    =   "1" )
+               IF    ( SYS-1101-BYOSRYKAKBN    =   "1" OR SPACE)
                    IF    ( TBYOMEI-BYOMEI (IDX1)   =   QDTCHK-BYOMEI )
                     AND  ( TBYOMEI-SRYKA  (IDX1)   =   QDTCHK-SRYKA )
                        MOVE    IDX1    TO  TBYOMEI-IDX1
@@ -478,6 +493,64 @@
       *
            .
        2001-ERRINF-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険組合せ取得処理
+      *****************************************************************
+       220-HKNCOMBI-GET-SEC            SECTION.
+      *
+           INITIALIZE                  HKNCOMBI-REC
+      *
+           PERFORM VARYING IDX-COMB    FROM    1   BY  1
+                   UNTIL ( IDX-COMB    >   SDTCHK02-O-MAX )
+                    OR   ( COMB-HKNNUM    NOT =   SPACE )
+      *
+               IF    ( LNK-COMB-HKNCOMBINUM (IDX-COMB)
+                                  =    WRK-HKNCOMBI )
+                   MOVE    LNK-HKNCOMBI-OCC (IDX-COMB)
+                                  TO   HKNCOMBI-REC
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       220-HKNCOMBI-GET-EXT.
+           EXIT.
+      *****************************************************************
+      *    対象保険チェック処理
+      *****************************************************************
+       220-TAISYO-HKN-CHK-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-TAISYO-HKN
+      *
+           EVALUATE    TRUE
+           WHEN      ( WRK-ZAIHKNNUM   =   "060" )
+           WHEN      ( WRK-ZAIHKNNUM   =   "067" )
+               IF    ( SDTCHK01-KOKUHOPROCKBN  =   "1" )
+                   MOVE    1           TO  FLG-TAISYO-HKN
+               END-IF
+           WHEN      ( WRK-ZAIHKNNUM   =   "971" )
+               IF    ( SDTCHK01-RSIPROCKBN  =   "1" )
+                   MOVE    1           TO  FLG-TAISYO-HKN
+               END-IF
+           WHEN      ( WRK-ZAIHKNNUM   =   "973" )
+               IF    ( SDTCHK01-JBIPROCKBN  =   "1" )
+                   MOVE    1           TO  FLG-TAISYO-HKN
+               END-IF
+      *
+           WHEN      ( WRK-ZAIHKNNUM (1:2) =   "98" )
+               IF    ( SDTCHK01-JIHIPROCKBN    =   "1" )
+                   MOVE    1           TO  FLG-TAISYO-HKN
+               END-IF
+      *
+           WHEN      OTHER
+               IF    ( SDTCHK01-SYAHOPROCKBN    =   "1" )
+                   MOVE    1           TO  FLG-TAISYO-HKN
+               END-IF
+           END-EVALUATE
+      *
+           .
+       220-TAISYO-HKN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    終了処理
@@ -583,7 +656,7 @@
       *
            MOVE    SDTCHK01-HOSPID     TO  QDTCHK-SELHOSPID
            MOVE    SDTCHK01-PTID       TO  QDTCHK-SELPTID
-           IF    ( SYS-1101-BYOSRYKAKBN    =   "1" )
+           IF    ( SYS-1101-BYOSRYKAKBN    =   "1" OR SPACE )
                MOVE    SDTCHK01-SRYKA  TO  QDTCHK-SELSRYKA
            ELSE
                MOVE    "%"             TO  QDTCHK-SELSRYKA
@@ -630,6 +703,16 @@
       *
                IF    ( QDTCHK-REZEFLG  =   "1" )
                    MOVE    ZERO        TO  FLG-LOOP-END
+               END-IF
+      *
+               IF    ( QDTCHK-HKNCOMBI  NOT =   ZERO )
+                   MOVE    QDTCHK-HKNCOMBI     TO  WRK-HKNCOMBI
+                   PERFORM 220-HKNCOMBI-GET-SEC
+                   MOVE    COMB-HKNNUM         TO  WRK-ZAIHKNNUM
+                   PERFORM 220-TAISYO-HKN-CHK-SEC
+                   IF    ( FLG-TAISYO-HKN  =   ZERO )
+                       MOVE    ZERO            TO  FLG-LOOP-END
+                   END-IF
                END-IF
       *
            END-PERFORM
