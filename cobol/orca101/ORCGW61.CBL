@@ -503,7 +503,7 @@
            MOVE    "固定の文字列を記載する"
                                    TO  SPA-GMN-FTNJANUMKBNMEIL   (2)
            MOVE    "03"            TO  SPA-GMN-FTNJANUMKBNL      (3)
-           MOVE    "前にゼロづめにして記載する"
+           MOVE    "前にゼロづめにして記載"
                                    TO  SPA-GMN-FTNJANUMKBNMEIL   (3)
            MOVE    3               TO  SPA-GMN-FTNJANUMKBN-MAX
       *

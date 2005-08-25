@@ -3251,7 +3251,7 @@
                    OR      HKN-HKNNUM        NOT =   SPACE
                IF    ( WRK-CHK-HKNNUM  =
                                        TBL-HKN-HKNNUM (WRK-HKNNUM-IDX) )
-               IF    ( WRK-CHK-PAYKBN  =
+               AND   ( WRK-CHK-PAYKBN  =
                                        TBL-HKN-PAYKBN (WRK-HKNNUM-IDX) )
                AND   ( TBL-HKN-TEKSTYMD (WRK-HKNNUM-IDX)
                                        <=  WRK-CHK-TEKSTYMD            )
