@@ -43,6 +43,7 @@
       *                                     未コード化傷病名コードの場合
       *  01.00.13    NACL-藤原    05/05/25  疑いフラグ、主病名フラグによ
       *                                     る病名の更新
+      *  01.00.14    NACL-藤原    05/08/25  更新時の疑いフラグの設定
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2902,6 +2903,21 @@
       *            病名コード
                    MOVE    WRK-TBYOMEICD (IDY) 
                                            TO  PTBYO-BYOMEICD (IDY)
+      *            疑いフラグ（病名コードより）
+                   IF      PTBYO-UTAGAIFLG     =   "3"
+                       CONTINUE
+                   ELSE
+                       EVALUATE    PTBYO-UTAGAIFLG ALSO
+                                               WRK-TUTAGAIFLG (IDY)
+                           WHEN    SPACE           ALSO    "1"
+                           WHEN    SPACE           ALSO    "2"
+                               MOVE    WRK-TUTAGAIFLG (IDY)
+                                                   TO  PTBYO-UTAGAIFLG
+                           WHEN    "2"             ALSO    "1"
+                           WHEN    "1"             ALSO    "2"
+                               MOVE    "3"         TO  PTBYO-UTAGAIFLG
+                       END-EVALUATE
+                   END-IF      
       *            病名コード数
                    ADD     1                   TO  PTBYO-BYOMEICDSU
       *            基本病名コード・基本部位コード
@@ -3033,6 +3049,22 @@
                MOVE    PTBYO-BYOMEI        TO  LNK-BYO-BYOMEI
                MOVE    PTBYO-SYUBYOFLG     TO  LNK-BYO-SYUBYOFLG 
                CALL    "ORCSBYOMEI"        USING    ORCSBYOMEIAREA
+      *  
+      *        疑いフラグ
+               IF      PTBYO-UTAGAIFLG     =   "3"
+                   CONTINUE
+               ELSE
+                   EVALUATE    PTBYO-UTAGAIFLG ALSO
+                                           LNK-BYO-UTAGAIFLG
+                       WHEN    SPACE           ALSO    "1"
+                       WHEN    SPACE           ALSO    "2"
+                           MOVE    LNK-BYO-UTAGAIFLG
+                                                   TO  PTBYO-UTAGAIFLG
+                       WHEN    "2"             ALSO    "1"
+                       WHEN    "1"             ALSO    "2"
+                           MOVE    "3"         TO  PTBYO-UTAGAIFLG
+                   END-EVALUATE
+               END-IF      
       *        病名コード
                PERFORM VARYING IDX4    FROM    1   BY  1
                        UNTIL   IDX4    >       LNK-BYO-BYOMEI-MAX
