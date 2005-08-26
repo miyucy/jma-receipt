@@ -360,62 +360,35 @@
       *
                END-PERFORM
       *
-      *        IF    ( ORCBSD01-PRTSRTKBN      =   "3" OR  "4" )
+               IF    ( WRK-SYAHOPROCKBN    =   "1" )
+                   INITIALIZE              DTCHK003-REC
+                   MOVE    "1"         TO  DTCHK003-HKNKBN
+                   PERFORM 210-DTCHK003-WRITE-SEC
+               END-IF
       *
-                   IF    ( WRK-SYAHOPROCKBN    =   "1" )
-                       INITIALIZE              DTCHK003-REC
-                       MOVE    "1"         TO  DTCHK003-HKNKBN
-                       MOVE    WRK-SYAHOPROCKBN
-                                           TO  DTCHK003-SYAHOPROCKBN
-                       PERFORM 210-DTCHK003-WRITE-SEC
-                   END-IF
+               IF    ( WRK-KOKUHOPROCKBN   =   "1" )
+                   INITIALIZE              DTCHK003-REC
+                   MOVE    "2"         TO  DTCHK003-HKNKBN
+                   PERFORM 210-DTCHK003-WRITE-SEC
+               END-IF
       *
-                   IF    ( WRK-KOKUHOPROCKBN   =   "1" )
-                       INITIALIZE              DTCHK003-REC
-                       MOVE    "2"         TO  DTCHK003-HKNKBN
-                       MOVE    WRK-KOKUHOPROCKBN
-                                           TO  DTCHK003-KOKUHOPROCKBN
-                       PERFORM 210-DTCHK003-WRITE-SEC
-                   END-IF
+               IF    ( WRK-RSIPROCKBN   =   "1" )
+                   INITIALIZE              DTCHK003-REC
+                   MOVE    "3"         TO  DTCHK003-HKNKBN
+                   PERFORM 210-DTCHK003-WRITE-SEC
+               END-IF
       *
-                   IF    ( WRK-RSIPROCKBN   =   "1" )
-                       INITIALIZE              DTCHK003-REC
-                       MOVE    "3"         TO  DTCHK003-HKNKBN
-                       MOVE    WRK-RSIPROCKBN
-                                           TO  DTCHK003-RSIPROCKBN
-                       PERFORM 210-DTCHK003-WRITE-SEC
-                   END-IF
+               IF    ( WRK-JBIPROCKBN   =   "1" )
+                   INITIALIZE              DTCHK003-REC
+                   MOVE    "4"         TO  DTCHK003-HKNKBN
+                   PERFORM 210-DTCHK003-WRITE-SEC
+               END-IF
       *
-                   IF    ( WRK-JBIPROCKBN   =   "1" )
-                       INITIALIZE              DTCHK003-REC
-                       MOVE    "4"         TO  DTCHK003-HKNKBN
-                       MOVE    WRK-JBIPROCKBN
-                                           TO  DTCHK003-JBIPROCKBN
-                       PERFORM 210-DTCHK003-WRITE-SEC
-                   END-IF
-      *
-                   IF    ( WRK-JIHIPROCKBN     =   "1" )
-                       INITIALIZE              DTCHK003-REC
-                       MOVE    "5"         TO  DTCHK003-HKNKBN
-                       MOVE    WRK-JIHIPROCKBN
-                                           TO  DTCHK003-JIHIPROCKBN
-                       PERFORM 210-DTCHK003-WRITE-SEC
-                   END-IF
-      *        ELSE
-      *                INITIALIZE              DTCHK003-REC
-      *                MOVE    "0"         TO  DTCHK003-HKNKBN
-      *                MOVE    WRK-SYAHOPROCKBN
-      *                                    TO  DTCHK003-SYAHOPROCKBN
-      *                MOVE    WRK-KOKUHOPROCKBN
-      *                                    TO  DTCHK003-KOKUHOPROCKBN
-      *                MOVE    WRK-RSIPROCKBN
-      *                                    TO  DTCHK003-RSIPROCKBN
-      *                MOVE    WRK-JBIPROCKBN
-      *                                    TO  DTCHK003-JBIPROCKBN
-      *                MOVE    WRK-JIHIPROCKBN
-      *                                    TO  DTCHK003-JIHIPROCKBN
-      *                PERFORM 210-DTCHK003-WRITE-SEC
-      *        END-IF
+               IF    ( WRK-JIHIPROCKBN     =   "1" )
+                   INITIALIZE              DTCHK003-REC
+                   MOVE    "5"         TO  DTCHK003-HKNKBN
+                   PERFORM 210-DTCHK003-WRITE-SEC
+               END-IF
       *
            END-PERFORM
       *

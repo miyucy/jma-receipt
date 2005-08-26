@@ -97,6 +97,16 @@
            03  CONST-STRLEN-MAX            PIC 9(05)   VALUE   200.
            03  CONST-MICODE                PIC X(07)   VALUE "0000999".
            03  CONST-MKCD-MAX              PIC 9(05)   VALUE   21.
+           03  CONST-SYAHO                 PIC X(01)
+                                           VALUE   "1".
+           03  CONST-KOKUHO                PIC X(01)
+                                           VALUE   "2".
+           03  CONST-ROSAI                 PIC X(01)
+                                           VALUE   "3".
+           03  CONST-JIBAI                 PIC X(01)
+                                           VALUE   "4".
+           03  CONST-JIHI                  PIC X(01)
+                                           VALUE   "5".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -526,25 +536,25 @@
            EVALUATE    TRUE
            WHEN      ( WRK-ZAIHKNNUM   =   "060" )
            WHEN      ( WRK-ZAIHKNNUM   =   "067" )
-               IF    ( SDTCHK01-KOKUHOPROCKBN  =   "1" )
+               IF    ( SDTCHK01-HKNKBN =   CONST-KOKUHO )
                    MOVE    1           TO  FLG-TAISYO-HKN
                END-IF
            WHEN      ( WRK-ZAIHKNNUM   =   "971" )
-               IF    ( SDTCHK01-RSIPROCKBN  =   "1" )
+               IF    ( SDTCHK01-HKNKBN =   CONST-ROSAI )
                    MOVE    1           TO  FLG-TAISYO-HKN
                END-IF
            WHEN      ( WRK-ZAIHKNNUM   =   "973" )
-               IF    ( SDTCHK01-JBIPROCKBN  =   "1" )
+               IF    ( SDTCHK01-HKNKBN =   CONST-JIBAI )
                    MOVE    1           TO  FLG-TAISYO-HKN
                END-IF
       *
            WHEN      ( WRK-ZAIHKNNUM (1:2) =   "98" )
-               IF    ( SDTCHK01-JIHIPROCKBN    =   "1" )
+               IF    ( SDTCHK01-HKNKBN =   CONST-JIHI )
                    MOVE    1           TO  FLG-TAISYO-HKN
                END-IF
       *
            WHEN      OTHER
-               IF    ( SDTCHK01-SYAHOPROCKBN    =   "1" )
+               IF    ( SDTCHK01-HKNKBN =   CONST-SYAHO )
                    MOVE    1           TO  FLG-TAISYO-HKN
                END-IF
            END-EVALUATE
@@ -711,6 +721,11 @@
                    MOVE    COMB-HKNNUM         TO  WRK-ZAIHKNNUM
                    PERFORM 220-TAISYO-HKN-CHK-SEC
                    IF    ( FLG-TAISYO-HKN  =   ZERO )
+                       MOVE    ZERO            TO  FLG-LOOP-END
+                   END-IF
+               ELSE
+                   IF    ( SDTCHK01-HKNKBN      =  CONST-ROSAI
+                                                OR CONST-JIBAI  )
                        MOVE    ZERO            TO  FLG-LOOP-END
                    END-IF
                END-IF

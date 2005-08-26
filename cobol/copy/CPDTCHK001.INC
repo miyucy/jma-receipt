@@ -29,10 +29,3 @@
       *´µ¼Ô£É£Ä
            03  DTCHK001-PTID               PIC 9(10).
            03  DTCHK001-HKNKBN             PIC  X(01).
-           03  DTCHK001-HKNPROCKBN-G.
-               05  DTCHK001-SYAHOPROCKBN   PIC  X(01).
-               05  DTCHK001-KOKUHOPROCKBN  PIC  X(01).
-               05  DTCHK001-RSIPROCKBN     PIC  X(01).
-               05  DTCHK001-JBIPROCKBN     PIC  X(01).
-               05  DTCHK001-JIHIPROCKBN    PIC  X(01).
-

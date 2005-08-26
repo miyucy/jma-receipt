@@ -765,6 +765,16 @@
                                                    VALUE   "099600801".
            03  CONST-GENZAN-MAX                    PIC 9(03)
                                                    VALUE   3.
+           03  CONST-SYAHO                         PIC X(01)
+                                                   VALUE   "1".
+           03  CONST-KOKUHO                        PIC X(01)
+                                                   VALUE   "2".
+           03  CONST-ROSAI                         PIC X(01)
+                                                   VALUE   "3".
+           03  CONST-JIBAI                         PIC X(01)
+                                                   VALUE   "4".
+           03  CONST-JIHI                          PIC X(01)
+                                                   VALUE   "5".
       *
       *    エラーメッセージ
            COPY    "CPDTCHKERRMES.INC".
@@ -1597,25 +1607,25 @@
            EVALUATE    TRUE
            WHEN      ( WRK-ZAIHKNNUM   =   "060" )
            WHEN      ( WRK-ZAIHKNNUM   =   "067" )
-               IF    ( DTCHK003-KOKUHOPROCKBN  =   "1" )
+               IF    ( DTCHK003-HKNKBN =   CONST-KOKUHO )
                    MOVE    1           TO  FLG-TAISYO-HKN
                END-IF
            WHEN      ( WRK-ZAIHKNNUM   =   "971" )
-               IF    ( DTCHK003-RSIPROCKBN  =   "1" )
+               IF    ( DTCHK003-HKNKBN =   CONST-ROSAI )
                    MOVE    1           TO  FLG-TAISYO-HKN
                END-IF
            WHEN      ( WRK-ZAIHKNNUM   =   "973" )
-               IF    ( DTCHK003-JBIPROCKBN  =   "1" )
+               IF    ( DTCHK003-HKNKBN =   CONST-JIBAI )
                    MOVE    1           TO  FLG-TAISYO-HKN
                END-IF
       *
            WHEN      ( WRK-ZAIHKNNUM (1:2) =   "98" )
-               IF    ( DTCHK003-JIHIPROCKBN    =   "1" )
+               IF    ( DTCHK003-HKNKBN =   CONST-JIHI )
                    MOVE    1           TO  FLG-TAISYO-HKN
                END-IF
       *
            WHEN      OTHER
-               IF    ( DTCHK003-SYAHOPROCKBN    =   "1" )
+               IF    ( DTCHK003-HKNKBN =   CONST-SYAHO )
                    MOVE    1           TO  FLG-TAISYO-HKN
                END-IF
            END-EVALUATE
@@ -4531,8 +4541,7 @@
                MOVE    CHKSND-CDKBN    TO  SDTCHK01-CDKBN
                MOVE    ORCBSD01-NYUGAIKBN
                                        TO  SDTCHK01-NYUGAIKBN
-               MOVE    DTCHK003-HKNPROCKBN-G
-                                       TO  SDTCHK01-HKNPROCKBN-G
+               MOVE    DTCHK003-HKNKBN TO  SDTCHK01-HKNKBN
                CALL    "ORCSDTCHK01"   USING   SDTCHK01AREA
                                                SYS-1101-REC
                                                SDTCHK02AREA
@@ -4715,8 +4724,7 @@
                MOVE    CHKSND-CDKBN    TO  SDTCHK01-CDKBN
                MOVE    ORCBSD01-NYUGAIKBN
                                        TO  SDTCHK01-NYUGAIKBN
-               MOVE    DTCHK003-HKNPROCKBN-G
-                                       TO  SDTCHK01-HKNPROCKBN-G
+               MOVE    DTCHK003-HKNKBN TO  SDTCHK01-HKNKBN
                CALL    "ORCSDTCHK01"   USING   SDTCHK01AREA
                                                SYS-1101-REC
                                                SDTCHK02AREA
@@ -7557,6 +7565,11 @@
                        MOVE    COMB-HKNNUM         TO  WRK-ZAIHKNNUM
                        PERFORM 2001111-TAISYO-HKN-CHK-SEC
                        IF    ( FLG-TAISYO-HKN  =   ZERO )
+                           MOVE    ZERO            TO  FLG-LOOP-END
+                       END-IF
+                   ELSE
+                       IF    ( DTCHK003-HKNKBN     =   CONST-ROSAI
+                                                   OR  CONST-JIBAI )
                            MOVE    ZERO            TO  FLG-LOOP-END
                        END-IF
                    END-IF
