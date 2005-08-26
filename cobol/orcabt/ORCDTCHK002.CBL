@@ -213,6 +213,7 @@
                05  FLG-STATUS-R    REDEFINES   FLG-STATUS-VAL.
                    07  FLG-STATUS                      PIC 9(01)
                                                        OCCURS  16.
+           03  FLG-TAISYO-BYOMEI                       PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -3568,45 +3569,9 @@
            PERFORM UNTIL ( FLG-PTBYOMEI    NOT =   ZERO )
                     OR   ( FLG-CHK-END     NOT =   ZERO )
       *
-               IF    ( SYS-1101-BYOSRYKAKBN    =   "1" OR SPACE )
-                   PERFORM VARYING IDX4    FROM    1   BY  1
-                           UNTIL ( IDX4    >   TSRYKA-MAX )
-      *
-                       IF    ( PTBYO-SRYKA =   TSRYKA-SRYKA (IDX4) )
-      *
-                           PERFORM 2001121-PTBYOMEI-CHK-SEC
-      *
-                           IF    ( PTBYO-NYUGAIKBN
-                                           =   SPACE )
-                            OR   ( PTBYO-NYUGAIKBN
-                                           =   ORCBSD01-NYUGAIKBN )
-      *
-                               PERFORM 2001121-PTBYO-DAY-HEN-SEC
-      *
-      *                        診療開始日チェック（１）
-                               IF    ( FLG-CHKEND (6)  =   ZERO )
-                                   PERFORM 2001121-PTBYO-SRYYMD-CHK-SEC
-                               END-IF
-                           END-IF
-      *
-                           MOVE    TSRYKA-MAX  TO  IDX4
-      *
-                       END-IF
-      *
-                   END-PERFORM
-               ELSE
-                       PERFORM 2001121-PTBYOMEI-CHK-SEC
-      *
-                       IF    ( PTBYO-NYUGAIKBN =   SPACE )
-                        OR   ( PTBYO-NYUGAIKBN =   ORCBSD01-NYUGAIKBN )
-      *
-                           PERFORM 2001121-PTBYO-DAY-HEN-SEC
-      *
-      *                    診療開始日チェック（１）
-                           IF    ( FLG-CHKEND (6)  =   ZERO )
-                               PERFORM 2001121-PTBYO-SRYYMD-CHK-SEC
-                           END-IF
-                       END-IF
+               PERFORM 200113-TAISYO-BYOMEI-CHK-SEC
+               IF    ( FLG-TAISYO-BYOMEI   =   1   )
+                   PERFORM 200113-PTBYOMEI-CHK-SEC
                END-IF
       *
                IF    ( PTBYO-SRYYMD (1:6) <=  ORCBSD01-SRYYM )
@@ -3636,6 +3601,103 @@
       *
            .
        200112-PTBYOMEI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    対象病名チェック処理
+      *****************************************************************
+       200113-TAISYO-BYOMEI-CHK-SEC    SECTION.
+      *
+           MOVE    1                   TO  FLG-TAISYO-BYOMEI
+      *
+      *    レセプト表示期間を過ぎていないかチェック
+           IF    ( PTBYO-REZEMM    >   ZERO )
+      *
+               MOVE    PTBYO-SRYYMD    TO  WRK-SYMD
+      *
+               IF    ( PTBYO-REZEMM    >   1 )
+                   MOVE    "2"         TO  WRK-ZOGENPTN
+                   COMPUTE WRK-ZOGEN   =   PTBYO-REZEMM
+                                               -   1
+                   PERFORM 800-CALENDAR-SEC
+               END-IF
+      *
+               IF    ( WRK-KJNYMD(1:6) >   WRK-SYMD(1:6))
+                   MOVE    ZERO        TO  FLG-TAISYO-BYOMEI
+               END-IF
+      *
+           END-IF
+      *
+      *    レセプト表示を行うか
+           IF    ( PTBYO-REZEFLG   =   "1" )
+                   MOVE    ZERO        TO  FLG-TAISYO-BYOMEI
+           END-IF
+      *
+           IF    ( PTBYO-HKNCOMBI  NOT =   ZERO )
+               MOVE    PTBYO-HKNCOMBI  TO  WRK-HKNCOMBI
+               PERFORM 220-HKNCOMBI-GET-SEC
+               MOVE    COMB-HKNNUM         TO  WRK-ZAIHKNNUM
+               PERFORM 2001111-TAISYO-HKN-CHK-SEC
+               IF    ( FLG-TAISYO-HKN  =   ZERO )
+                   MOVE    ZERO        TO  FLG-TAISYO-BYOMEI
+               END-IF
+           ELSE
+               IF    ( DTCHK003-HKNKBN =   CONST-ROSAI
+                                       OR  CONST-JIBAI )
+                   MOVE    ZERO        TO  FLG-TAISYO-BYOMEI
+               END-IF
+           END-IF
+      *
+           .
+       200113-TAISYO-BYOMEI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者病名情報チェック処理
+      *****************************************************************
+       200113-PTBYOMEI-CHK-SEC         SECTION.
+      *
+           IF    ( SYS-1101-BYOSRYKAKBN    =   "1" OR SPACE )
+               PERFORM VARYING IDX4    FROM    1   BY  1
+                       UNTIL ( IDX4    >   TSRYKA-MAX )
+      *
+                   IF    ( PTBYO-SRYKA =   TSRYKA-SRYKA (IDX4) )
+      *
+                       PERFORM 2001121-PTBYOMEI-CHK-SEC
+      *
+                       IF    ( PTBYO-NYUGAIKBN
+                                           =   SPACE )
+                        OR   ( PTBYO-NYUGAIKBN
+                                           =   ORCBSD01-NYUGAIKBN )
+      *
+                           PERFORM 2001121-PTBYO-DAY-HEN-SEC
+      *
+      *                    診療開始日チェック（１）
+                           IF    ( FLG-CHKEND (6)  =   ZERO )
+                               PERFORM 2001121-PTBYO-SRYYMD-CHK-SEC
+                           END-IF
+                       END-IF
+      *
+                       MOVE    TSRYKA-MAX  TO  IDX4
+      *
+                   END-IF
+      *
+               END-PERFORM
+           ELSE
+                   PERFORM 2001121-PTBYOMEI-CHK-SEC
+      *
+                   IF    ( PTBYO-NYUGAIKBN =   SPACE )
+                    OR   ( PTBYO-NYUGAIKBN =   ORCBSD01-NYUGAIKBN )
+      *
+                       PERFORM 2001121-PTBYO-DAY-HEN-SEC
+      *
+      *                診療開始日チェック（１）
+                       IF    ( FLG-CHKEND (6)  =   ZERO )
+                           PERFORM 2001121-PTBYO-SRYYMD-CHK-SEC
+                       END-IF
+                   END-IF
+           END-IF
+      *
+           .
+       200113-PTBYOMEI-CHK-EXT.
            EXIT.
       *****************************************************************
       *    患者病名情報チェック処理
@@ -7535,44 +7597,6 @@
                    MOVE    MCPDATA-REC TO  PTBYOMEI-REC
       *
                    MOVE    1           TO  FLG-LOOP-END
-      *
-      *            レセプト表示期間を過ぎていないかチェック
-                   IF    ( PTBYO-REZEMM    >   ZERO )
-      *
-                       MOVE    PTBYO-SRYYMD    TO  WRK-SYMD
-      *
-                       IF    ( PTBYO-REZEMM    >   1 )
-                           MOVE    "2"         TO  WRK-ZOGENPTN
-                           COMPUTE WRK-ZOGEN   =   PTBYO-REZEMM
-                                               -   1
-                           PERFORM 800-CALENDAR-SEC
-                       END-IF
-      *
-                       IF    ( WRK-KJNYMD(1:6) >   WRK-SYMD(1:6))
-                           MOVE    ZERO        TO  FLG-LOOP-END
-                       END-IF
-      *
-                   END-IF
-      *
-      *            レセプト表示を行うか
-                   IF    ( PTBYO-REZEFLG   =   "1" )
-                           MOVE    ZERO        TO  FLG-LOOP-END
-                   END-IF
-      *
-                   IF    ( PTBYO-HKNCOMBI  NOT =   ZERO )
-                       MOVE    PTBYO-HKNCOMBI      TO  WRK-HKNCOMBI
-                       PERFORM 220-HKNCOMBI-GET-SEC
-                       MOVE    COMB-HKNNUM         TO  WRK-ZAIHKNNUM
-                       PERFORM 2001111-TAISYO-HKN-CHK-SEC
-                       IF    ( FLG-TAISYO-HKN  =   ZERO )
-                           MOVE    ZERO            TO  FLG-LOOP-END
-                       END-IF
-                   ELSE
-                       IF    ( DTCHK003-HKNKBN     =   CONST-ROSAI
-                                                   OR  CONST-JIBAI )
-                           MOVE    ZERO            TO  FLG-LOOP-END
-                       END-IF
-                   END-IF
       *
                ELSE
                    MOVE    1           TO  FLG-PTBYOMEI
