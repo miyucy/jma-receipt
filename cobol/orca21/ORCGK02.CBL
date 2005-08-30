@@ -1237,7 +1237,9 @@
            MOVE    "2"                 TO  SPA-NYUGAIKBN
       *
       *    入院機能の判定
-           IF     (SPA-MOTOPG(1:3)     =   "M01" )
+           IF     (SPA-MOTOPG(1:3)     =   "M01" )  OR
+                 ((SPA-MOTOPG(1:3)     =   "U02" ) AND
+                  (SPA-PTNUM           =   SPACE ))
                PERFORM 3009-NYUINCHK-SEC
                IF      FLG-END             =   1
                    GO      TO      300-SCREEN-EXT
@@ -1527,12 +1529,11 @@
            MOVE    SPACE               TO  SYS-1010-REC
            INITIALIZE                  SYS-1010-REC
            MOVE    "1010"              TO  SYS-1010-KANRICD
-           MOVE    ZERO                TO  SYS-1010-STYUKYMD
-           MOVE    ALL "9"             TO  SYS-1010-EDYUKYMD
+           MOVE    SPA-OPID            TO  SYS-1010-USERID
       *    システム管理検索
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           MOVE    "SYSKANRI-KEY3"     TO  ORC-DBPATH
            IF      SPA-SRYYMD          =   SPACE
                MOVE    SPA-SYSYMD          TO  ORC-DBYMD
            ELSE
@@ -1543,35 +1544,27 @@
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+               MOVE    "SYSKANRI-KEY3"     TO  ORC-DBPATH
                PERFORM 960-KANRIMST-READ-SEC
            ELSE
                INITIALIZE                  SYS-1010-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
            MOVE    SPACE               TO  WRK-GYOUMU-KBN
-           PERFORM
-                   UNTIL       FLG-SYSKANRI    =   1
+           IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1010-REC
-      *        オペレータＩＤ判定
-               IF      SPA-OPID            =   SYS-1010-USERID
-      *TEST        MOVE    SPA-1010-????       TO  WRK-GYOUMU-KBN
-      *てすとで入院とする
-      *            入退院登録の権限がある時
+               IF      SYS-1010-ORCA21FLG  =   SPACE
+      *            初期画面設定が無い時、入退院登録の権限がある時
                    IF      SYS-1010-GSRAUTH(36:1)   =  "1"
-                       MOVE    "0211"              TO  WRK-GYOUMU-KBN
+                       MOVE    "1"         TO  SYS-1010-ORCA21FLG
                    END-IF
-                   MOVE    1                   TO  FLG-SYSKANRI
-               ELSE
-                   MOVE    "SYSKANRI-KEY2"    TO  ORC-DBPATH
-                   PERFORM 960-KANRIMST-READ-SEC
                END-IF
-           END-PERFORM
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           END-IF
+           MOVE    "SYSKANRI-KEY3"     TO  ORC-DBPATH
            PERFORM 990-DBCLOSE-SEC
       *    入院業務を表示する
            IF      (SPA-BEDFLG         >   ZERO )  AND
-                   (WRK-GYOUMU-KBN     =   "0211")
+                   (SYS-1010-ORCA21FLG =   "1"  )
                INITIALIZE              SPA-KYOTUKEY
                INITIALIZE              SPA-K02
                INITIALIZE              SPA-SCR-REC
