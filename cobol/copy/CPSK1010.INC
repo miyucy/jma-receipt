@@ -59,8 +59,11 @@
                05  SYS-1010-KANRIAUTHFLG  PIC  X(01).
       *麻薬ライセンス
                05  SYS-1010-MAYAKULICENSE    PIC  X(40).
+      *診療行為初期表示フラグ
+               05  SYS-1010-ORCA21FLG     PIC  X(01).
       *予備
-           03                           PIC  X(175).
+      **** 03                           PIC  X(175).
+           03                           PIC  X(174).
       *端末ＩＤ
            03  SYS-1010-TERMID          PIC  X(16).
       *オペーレータＩＤ

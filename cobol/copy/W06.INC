@@ -15,67 +15,144 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-         02  W06.
-                03  W06-FIXED1.
-                  04  W06-YUKOSTYMD       PIC X(9).
-                  04  W06-YUKOEDYMD       PIC X(9).
-                  04  W06-KBNCD           PIC X(5).
-                  04  W06-KBNNAME         PIC X(20).
-                  04  W06-USERID          PIC X(16).
-                  04  W06-KANANAME        PIC X(80).
-                  04  W06-NAME            PIC X(80).
-                  04  W06-ISEKINUM        PIC X(8).
-                  04  W06-HKNDRNUMS       PIC X(8).
-                  04  W06-HKNDRNUMK       PIC X(12).
-                  04  W06-MAYAKULICENSE   PIC X(40).
-                  04  W06-SEMONKACOMBO        OCCURS  5.
-                    05  W06-SEMONKACD.
-                      06  W06-CD-VALUE    PIC X(17).
-                    05  W06-CD-COUNT      PIC S9(9)   BINARY.
-                    05  W06-CD-ITEM       PIC X(17)   OCCURS  99.
-                  04  W06-CHK01            PIC X.
-                  04  W06-CHK02            PIC X.
-                  04  W06-CHK03            PIC X.
-                  04  W06-CHK04            PIC X.
-                  04  W06-CHK05            PIC X.
-                  04  W06-CHK06            PIC X.
-                  04  W06-CHK07            PIC X.
-                  04  W06-CHK08            PIC X.
-                  04  W06-CHK09            PIC X.
-                  04  W06-CHK10           PIC X.
-                  04  W06-CHK11           PIC X.
-                  04  W06-CHK12           PIC X.
-                  04  W06-CHK13           PIC X.
-                  04  W06-CHK14           PIC X.
-                  04  W06-CHK15           PIC X.
-                  04  W06-CHK16           PIC X.
-                  04  W06-CHK17           PIC X.
-                  04  W06-CHK18           PIC X.
-                  04  W06-CHK19.
-                    05  W06-CHK19-VALUE   PIC X.
-                    05  W06-CHK19-STATE   PIC S9(9)   BINARY.
-                  04  W06-CHK20           PIC X.
-                  04  W06-CHK21           PIC X.
-                  04  W06-CHK22           PIC X.
-                  04  W06-CHK23           PIC X.
-                  04  W06-CHK24           PIC X.
-                  04  W06-CHK25           PIC X.
-                  04  W06-CHK26           PIC X.
-                  04  W06-CHK27           PIC X.
-                  04  W06-CHK28           PIC X.
-                  04  W06-CHK29           PIC X.
-                  04  W06-CHK30           PIC X.
-                  04  W06-CHK31           PIC X.
-                  04  W06-CHK32           PIC X.
-                  04  W06-CHK33.
-                    05  W06-CHK33-VALUE   PIC X.
-                    05  W06-CHK33-STATE   PIC S9(9)   BINARY.
-                  04  W06-CHK34           PIC X.
-                  04  W06-CHK35           PIC X.
-                  04  W06-KANRIAUTHCOMBO.
-                    05  W06-KANRIAUTHFLG.
-                      06  W06-FLG-VALUE   PIC X(12).
-                    05  W06-FLG-COUNT     PIC S9(9)   BINARY.
-                    05  W06-FLG-ITEM      PIC X(12)   OCCURS  2.
-                  04  W06-B03.
-                    05  W06-B03-STATE     PIC S9(9)   BINARY.
+        02  W06.
+  ********  02  W06-FIXED1.
+              03  W06-NT1.
+                04  W06-PAGENO  PIC S9(9)   BINARY.
+                04  W06-TG1.
+                  05  W06-ISEKINUM.
+                    06  W06-VALUE   PIC X(8).
+                  05  W06-HKNDRNUMS.
+                    06  W06-VALUE   PIC X(8).
+                  05  W06-HKNDRNUMK.
+                    06  W06-VALUE   PIC X(12).
+                  05  W06-MAYAKULICENSE.
+                    06  W06-VALUE   PIC X(40).
+                  05  W06-SEMONKACD-COMBG     OCCURS   5.
+                    06  W06-SEMONKACD-COMB.
+                      07  W06-SEMONKACD.
+                        09  W06-VALUE   PIC X(17).
+                      07  W06-SEMONKACD-COUNT   PIC S9(9)   BINARY.
+                      07  W06-SEMONKACD-ITEM
+                              PIC X(17)   OCCURS  99 TIMES.
+                  05  W06-CHK33.
+                    06  W06-CHK33-VALUE   PIC X.
+                    06  W06-CHK33-STATE   PIC S9(9)   BINARY.
+                  05  W06-CHK11.
+                    06  W06-VALUE   PIC X.
+                  05  W06-CHK01.
+                    06  W06-VALUE   PIC X.
+                  05  W06-CHK10.
+                    06  W06-VALUE   PIC X.
+                  05  W06-CHK14.
+                    06  W06-VALUE   PIC X.
+                  05  W06-CHK24.
+                    06  W06-VALUE   PIC X.
+                  05  W06-CHK20.
+                    06  W06-VALUE   PIC X.
+                  05  W06-CHK18.
+                    06  W06-VALUE   PIC X.
+                  05  W06-CHK19.
+                    06  W06-CHK19-VALUE   PIC X.
+                    06  W06-CHK19-STATE   PIC S9(9)   BINARY.
+                  05  W06-CHK03.
+                    06  W06-VALUE   PIC X.
+                  05  W06-CHK04.
+                    06  W06-VALUE   PIC X.
+                  05  W06-CHK05.
+                    06  W06-VALUE   PIC X.
+                  05  W06-CHK02.
+                    06  W06-VALUE   PIC X.
+                  05  W06-CHK06.
+                    06  W06-VALUE   PIC X.
+                  05  W06-CHK07.
+                    06  W06-VALUE   PIC X.
+                  05  W06-CHK08.
+                    06  W06-VALUE   PIC X.
+                  05  W06-CHK09.
+                    06  W06-VALUE   PIC X.
+                  05  W06-CHK27.
+                    06  W06-VALUE   PIC X.
+                  05  W06-CHK28.
+                    06  W06-VALUE   PIC X.
+                  05  W06-CHK29.
+                    06  W06-VALUE   PIC X.
+                  05  W06-CHK30.
+                    06  W06-VALUE   PIC X.
+                  05  W06-CHK31.
+                    06  W06-VALUE   PIC X.
+                  05  W06-CHK32.
+                    06  W06-VALUE   PIC X.
+                  05  W06-CHK12.
+                    06  W06-VALUE   PIC X.
+                  05  W06-CHK13.
+                    06  W06-VALUE   PIC X.
+                  05  W06-CHK15.
+                    06  W06-VALUE   PIC X.
+                  05  W06-CHK16.
+                    06  W06-VALUE   PIC X.
+                  05  W06-CHK17.
+                    06  W06-VALUE   PIC X.
+                  05  W06-CHK26.
+                    06  W06-VALUE   PIC X.
+                  05  W06-CHK25.
+                    06  W06-VALUE   PIC X.
+                  05  W06-CHK21.
+                    06  W06-VALUE   PIC X.
+                  05  W06-CHK22.
+                    06  W06-VALUE   PIC X.
+                  05  W06-CHK23.
+                    06  W06-VALUE   PIC X.
+                  05  W06-CHK34.
+                    06  W06-VALUE   PIC X.
+                  05  W06-CHK35.
+                    06  W06-VALUE   PIC X.
+                  05  W06-KKANRIAUTHFLG-COMB.
+                    06  W06-KANRIAUTHFLG.
+                      07  W06-VALUE   PIC X(12).
+                    06  W06-KANRIAUTHFLG-COUNT   PIC S9(9)   BINARY.
+                    06  W06-KANRIAUTHFLG-ITEM
+                            PIC X(12)   OCCURS  2 TIMES.
+                  05  W06-ORCA21FLG-COMB.
+                    06  W06-ORCA21FLG.
+                      07  W06-VALUE   PIC X(12).
+                    06  W06-ORCA21FLG-COUNT   PIC S9(9)   BINARY.
+                    06  W06-ORCA21FLG-ITEM
+                            PIC X(12)   OCCURS  2 TIMES.
+              03  W06-STYUKYMD.
+                04  W06-VALUE   PIC X(10).
+              03  W06-EDYUKYMD.
+                04  W06-VALUE   PIC X(10).
+              03  W06-USERID.
+                04  W06-VALUE   PIC X(16).
+              03  W06-KANANAME.
+                04  W06-VALUE   PIC X(80).
+              03  W06-NAME.
+                04  W06-VALUE   PIC X(80).
+              03  W06-SELNUM.
+                04  W06-VALUE   PIC S9(2).
+              03  W06-SYOKUKBN-COMB.
+                04  W06-SYOKUKBN.
+                  05  W06-VALUE   PIC X(20).
+                04  W06-SYOKUKBN-COUNT   PIC S9(9)   BINARY.
+                04  W06-SYOKUKBN-ITEM
+                        PIC X(20)   OCCURS  10 TIMES.
+              03  W06-SYOKUCOD-COMB.
+                04  W06-SYOKUCOD.
+                  05  W06-VALUE   PIC X(35).
+                04  W06-SYOKUCOD-COUNT   PIC S9(9)   BINARY.
+                04  W06-SYOKUCOD-ITEM
+                        PIC X(35)   OCCURS  100 TIMES.
+              03  W06-SCROLLEDWINDOW1.
+                04  W06-KIKAN-LIST.
+                  05  W06-KIKAN-COUNT   PIC S9(9)   BINARY.
+                  05  W06-KIKAN-ROW PIC S9(9)   BINARY.
+                  05  W06-KIKAN-ROWATTR PIC S9(9)   BINARY.
+                  05  W06-ITEM        OCCURS  10 TIMES.
+                    06  W06-TNO   PIC X(3).
+                    06  W06-TSTYUKYMD  PIC X(10).
+                    06  W06-TEDYUKYMD  PIC X(10).
+                  05  W06-KIKAN-SELECT
+                          PIC X       OCCURS  10 TIMES.
+              03  W06-B03.
+                04  W06-B03-STATE   PIC S9(9)   BINARY.
