@@ -1,16 +1,183 @@
 W06	{
 	fixed1	{
-		YUKOSTYMD	{
-			value	varchar(9);
+		nt1	{
+			pageno	int;
+			TG1	{
+				ISEKINUM	{
+					value	varchar(8);
+				};
+				HKNDRNUMS	{
+					value	varchar(8);
+				};
+				HKNDRNUMK	{
+					value	varchar(12);
+				};
+				MAYAKULICENSE	{
+					value	varchar(40);
+				};
+				SEMONKACD1_COMB	{
+					SEMONKACD1	{
+						value	varchar(17);
+					};
+					count	int;
+					item	varchar(17)[99];
+				};
+				SEMONKACD2_COMB	{
+					SEMONKACD2	{
+						value	varchar(17);
+					};
+					count	int;
+					item	varchar(17)[99];
+				};
+				SEMONKACD3_COMB	{
+					SEMONKACD3	{
+						value	varchar(17);
+					};
+					count	int;
+					item	varchar(17)[99];
+				};
+				SEMONKACD4_COMB	{
+					SEMONKACD4	{
+						value	varchar(17);
+					};
+					count	int;
+					item	varchar(17)[99];
+				};
+				SEMONKACD5_COMB	{
+					SEMONKACD5	{
+						value	varchar(17);
+					};
+					count	int;
+					item	varchar(17)[99];
+				};
+				CHK33	{
+					value	bool;
+		                        state   int;
+				};
+				CHK11	{
+					value	bool;
+				};
+				CHK01	{
+					value	bool;
+				};
+				CHK10	{
+					value	bool;
+				};
+				CHK14	{
+					value	bool;
+				};
+				CHK24	{
+					value	bool;
+				};
+				CHK20	{
+					value	bool;
+				};
+				CHK18	{
+					value	bool;
+				};
+				CHK19	{
+					value	bool;
+		                        state   int;
+				};
+				CHK03	{
+					value	bool;
+				};
+				CHK04	{
+					value	bool;
+				};
+				CHK05	{
+					value	bool;
+				};
+				CHK02	{
+					value	bool;
+				};
+				CHK06	{
+					value	bool;
+				};
+				CHK07	{
+					value	bool;
+				};
+				CHK08	{
+					value	bool;
+				};
+				CHK09	{
+					value	bool;
+				};
+				CHK27	{
+					value	bool;
+				};
+				CHK28	{
+					value	bool;
+				};
+				CHK29	{
+					value	bool;
+				};
+				CHK30	{
+					value	bool;
+				};
+				CHK31	{
+					value	bool;
+				};
+				CHK32	{
+					value	bool;
+				};
+				CHK12	{
+					value	bool;
+				};
+				CHK13	{
+					value	bool;
+				};
+				CHK15	{
+					value	bool;
+				};
+				CHK16	{
+					value	bool;
+				};
+				CHK17	{
+					value	bool;
+				};
+				CHK26	{
+					value	bool;
+				};
+				CHK25	{
+					value	bool;
+				};
+				CHK21	{
+					value	bool;
+				};
+				CHK22	{
+					value	bool;
+				};
+				CHK23	{
+					value	bool;
+				};
+				CHK34	{
+					value	bool;
+				};
+				CHK35	{
+					value	bool;
+				};
+				KKANRIAUTHFLG_COMB	{
+					KANRIAUTHFLG	{
+						value	varchar(12);
+					};
+					count	int;
+					item	varchar(12)[2];
+				};
+				ORCA21FLG_COMB	{
+					ORCA21FLG	{
+						value	varchar(12);
+					};
+					count	int;
+					item	varchar(12)[2];
+				};
+			};
 		};
-		YUKOEDYMD	{
-			value	varchar(9);
+		STYUKYMD	{
+			value	varchar(10);
 		};
-		KBNCD	{
-			value	varchar(5);
-		};
-		KBNNAME	{
-			value	varchar(20);
+		EDYUKYMD	{
+			value	varchar(10);
 		};
 		USERID	{
 			value	varchar(16);
@@ -21,166 +188,35 @@ W06	{
 		NAME	{
 			value	varchar(80);
 		};
-		ISEKINUM	{
-			value	varchar(8);
+		SELNUM	{
+			value	number(2);
 		};
-		HKNDRNUMS	{
-			value	varchar(8);
-		};
-		HKNDRNUMK	{
-			value	varchar(12);
-		};
-		MAYAKULICENSE	{
-			value	varchar(40);
-		};
-		SEMONKACOMBO1	{
-			SEMONKACD1	{
-				value	varchar(17);
+		SYOKUKBN_COMB	{
+			SYOKUKBN	{
+				value	varchar(20);
 			};
 			count	int;
-			item	varchar(17)[99];
+			item	varchar(20)[10];
 		};
-		SEMONKACOMBO2	{
-			SEMONKACD2	{
-				value	varchar(17);
+		SYOKUCOD_COMB	{
+			SYOKUCOD	{
+				value	varchar(35);
 			};
 			count	int;
-			item	varchar(17)[99];
+			item	varchar(35)[100];
 		};
-		SEMONKACOMBO3	{
-			SEMONKACD3	{
-				value	varchar(17);
+		scrolledwindow1	{
+			KIKAN_LIST	{
+				count	int;
+				row 	int;
+				rowattr	int;
+				item	{
+					value0	varchar(3);
+					value1	varchar(10);
+					value2	varchar(10);
+				}	[10];
+				select	bool[10];
 			};
-			count	int;
-			item	varchar(17)[99];
-		};
-		SEMONKACOMBO4	{
-			SEMONKACD4	{
-				value	varchar(17);
-			};
-			count	int;
-			item	varchar(17)[99];
-		};
-		SEMONKACOMBO5	{
-			SEMONKACD5	{
-				value	varchar(17);
-			};
-			count	int;
-			item	varchar(17)[99];
-		};
-		CHK01	{
-			value	bool;
-		};
-		CHK02	{
-			value	bool;
-		};
-		CHK03	{
-			value	bool;
-		};
-		CHK04	{
-			value	bool;
-		};
-		CHK05	{
-			value	bool;
-		};
-		CHK06	{
-			value	bool;
-		};
-		CHK07	{
-			value	bool;
-		};
-		CHK08	{
-			value	bool;
-		};
-		CHK09	{
-			value	bool;
-		};
-		CHK10	{
-			value	bool;
-		};
-		CHK11	{
-			value	bool;
-		};
-		CHK12	{
-			value	bool;
-		};
-		CHK13	{
-			value	bool;
-		};
-		CHK14	{
-			value	bool;
-		};
-		CHK15	{
-			value	bool;
-		};
-		CHK16	{
-			value	bool;
-		};
-		CHK17	{
-			value	bool;
-		};
-		CHK18	{
-			value	bool;
-		};
-		CHK19	{
-			value	bool;
-                        state   int;
-		};
-		CHK20	{
-			value	bool;
-		};
-		CHK21	{
-			value	bool;
-		};
-		CHK22	{
-			value	bool;
-		};
-		CHK23	{
-			value	bool;
-		};
-		CHK24	{
-			value	bool;
-		};
-		CHK25	{
-			value	bool;
-		};
-		CHK26	{
-			value	bool;
-		};
-		CHK27	{
-			value	bool;
-		};
-		CHK28	{
-			value	bool;
-		};
-		CHK29	{
-			value	bool;
-		};
-		CHK30	{
-			value	bool;
-		};
-		CHK31	{
-			value	bool;
-		};
-		CHK32	{
-			value	bool;
-		};
-		CHK33	{
-			value	bool;
-                        state   int;
-		};
-		CHK34	{
-			value	bool;
-		};
-		CHK35	{
-			value	bool;
-		};
-		KANRIAUTHCOMBO	{
-			KANRIAUTHFLG	{
-				value	varchar(12);
-			};
-			count	int;
-			item	varchar(12)[2];
 		};
                 B03	{
 			state   int;

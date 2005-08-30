@@ -231,3 +231,14 @@ path	key13	{
 		;
 	};
 };
+path	key14	{
+	DBSELECT	{
+		DECLARE tbl_syskanri_key14_csr CURSOR FOR
+		SELECT DISTINCT ON (KBNCD) *
+		FROM tbl_syskanri 
+			WHERE   KANRICD      =   :KANRICD
+			AND	KBNCD        LIKE   :KBNCD
+			ORDER	BY	KBNCD
+		;
+	};
+};
