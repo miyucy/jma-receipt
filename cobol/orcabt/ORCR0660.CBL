@@ -61,6 +61,7 @@
       *  02.06.01    NACL-門脇    05/05/10  脳血管疾患急性発症病名記載対応
       *  02.06.02    NACL-竹田    05/05/30  realtime preview 処理追加
       *  02.06.03    NACL-門脇    05/08/22  リハビリ実施回数差し込み修正対応
+      *  02.06.04    NACL-門脇    05/08/31  剤番号編集修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1434,7 +1435,7 @@
                 MOVE    RECE62-HKNJANUM-KEY  TO  RECE659-HKNJANUM
                 MOVE    RECE62-HOJOKBN-KEY   TO  RECE659-HOJOKBN
                 MOVE    RECE62-TEKSTYMD      TO  RECE659-TEKSTYMD
-                MOVE    99999998             TO  RECE659-ZAINUM
+                MOVE    99999996             TO  RECE659-ZAINUM
                 MOVE    WRK-KOHBUNRI-JIDO    TO  RECE659-KOHBUNRI
                 MOVE    "99"                 TO  RECE659-SRYKBN
                 ADD     1                    TO  WRK-RENNUM
@@ -1469,7 +1470,7 @@
            MOVE    RECE62-HKNJANUM-KEY TO  RECE649-HKNJANUM
            MOVE    RECE62-HOJOKBN-KEY  TO  RECE649-HOJOKBN
            MOVE    RECE62-TEKSTYMD     TO  RECE649-TEKSTYMD
-           MOVE    99999998            TO  RECE649-ZAINUM
+           MOVE    99999996            TO  RECE649-ZAINUM
            MOVE    WRK-KOHBUNRI-JIDO   TO  RECE649-KOHBUNRI
            MOVE    "99"                TO  RECE649-SRYKBN
       *

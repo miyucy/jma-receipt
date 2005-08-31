@@ -419,7 +419,7 @@
                MOVE    SPACE             TO  RECE46-SRYKBN
                MOVE    ZERO              TO  RECE46-GAITENTTLKBN
                MOVE    SPACE             TO  RECE46-SRYCD1
-               MOVE    99999996          TO  RECE46-ZAINUM
+               MOVE    99999986          TO  RECE46-ZAINUM
                MOVE    RECE41-PTNUM      TO  RECE46-PTNUM
                MOVE    SPACE             TO  RECE46-SRYKA
                PERFORM 450-RECE47-OUT-SEC                         
@@ -440,7 +440,7 @@
                MOVE    SPACE             TO  RECE46-SRYKBN
                MOVE    ZERO              TO  RECE46-GAITENTTLKBN
                MOVE    SPACE             TO  RECE46-SRYCD1
-               MOVE    99999997          TO  RECE46-ZAINUM
+               MOVE    99999987          TO  RECE46-ZAINUM
                MOVE    RECE41-PTNUM      TO  RECE46-PTNUM
                MOVE    SPACE             TO  RECE46-SRYKA
                PERFORM 450-RECE47-OUT-SEC                       

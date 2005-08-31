@@ -60,6 +60,7 @@
       *  01.02.04    NACL-ÌçÏÆ    05/04/20  ÆâÉþÌôºÞÄþ¸ºÊÔ½¸ÂÐ±þ
       *  01.02.05    NACL-ÌçÏÆ    05/05/10  Ç¾·ì´É¼À´µµÞÀ­È¯¾ÉÉÂÌ¾µ­ºÜÂÐ±þ
       *  01.02.06    NACL-ÌçÏÆ    05/08/22  ¥ê¥Ï¥Ó¥ê¼Â»Ü²ó¿ôº¹¤·¹þ¤ß½¤ÀµÂÐ±þ
+      *  01.02.07    NACL-ÌçÏÆ    05/08/31  ¼«ÇåÀÕ½¾ÍèÍÍ¼°ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -301,6 +302,7 @@
                05  WRK-PARA-SRYYM              PIC  X(06).
                05  WRK-PARA-TERMID             PIC  X(16).
                05  WRK-PARA-SYSYMD             PIC  X(08).
+               05  WRK-PARA-RECEKBN            PIC  X(01).
                05  WRK-PARA-JOBID              PIC  9(07).
                05  WRK-PARA-SHELLID            PIC  X(08).
       *
@@ -1745,7 +1747,7 @@
                 MOVE    RECE41-RECEKA       TO  RECE459-RECEKA
                 MOVE    RECE41-HKNID        TO  RECE459-HKNID
                 MOVE    RECE41-TEKSTYMD     TO  RECE459-TEKSTYMD
-                MOVE    99999998            TO  RECE459-ZAINUM
+                MOVE    99999996            TO  RECE459-ZAINUM
                 MOVE    "99"                TO  RECE459-SRYKBN
                 ADD     1                   TO  WRK-RENNUM
                 MOVE    WRK-RENNUM          TO  RECE459-RENNUM
@@ -1776,7 +1778,7 @@
            MOVE    RECE41-RECEKA       TO  RECE449-RECEKA
            MOVE    RECE41-HKNID        TO  RECE449-HKNID
            MOVE    RECE41-TEKSTYMD     TO  RECE449-TEKSTYMD
-           MOVE    99999998            TO  RECE449-ZAINUM
+           MOVE    99999996            TO  RECE449-ZAINUM
            MOVE    "99"                TO  RECE449-SRYKBN
       *
            MOVE    WRK-CNT-MEISAI      TO  RECE449-MEISAISU

@@ -307,7 +307,7 @@
                MOVE    "99"              TO  WRK-RECE46-SRYKBN
                MOVE    ZERO              TO  WRK-RECE46-GAITENTTLKBN
                MOVE    SPACE             TO  WRK-RECE46-SRYCD1
-               MOVE    99999996          TO  WRK-RECE46-ZAINUM
+               MOVE    99999986          TO  WRK-RECE46-ZAINUM
                MOVE    RECE41-PTNUM      TO  WRK-RECE46-PTNUM
                MOVE    SPACE             TO  WRK-RECE46-SRYKA
       *
@@ -332,7 +332,7 @@
                MOVE    "99"              TO  WRK-RECE46-SRYKBN
                MOVE    ZERO              TO  WRK-RECE46-GAITENTTLKBN
                MOVE    SPACE             TO  WRK-RECE46-SRYCD1
-               MOVE    99999997          TO  WRK-RECE46-ZAINUM
+               MOVE    99999987          TO  WRK-RECE46-ZAINUM
                MOVE    RECE41-PTNUM      TO  WRK-RECE46-PTNUM
                MOVE    SPACE             TO  WRK-RECE46-SRYKA
       *

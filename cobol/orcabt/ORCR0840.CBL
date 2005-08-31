@@ -352,6 +352,12 @@
            03  TBL-SYS1001-OCC     OCCURS  10.
                05  TBL-SYS1001                         PIC X(610).
       *
+      *    手技点・薬剤等点数用領域
+       01  TBL-TENSUG-JI.
+           03  TBL-TENSU-JI                            OCCURS   50.
+               05  TBL-SYUTEN-JI                       PIC 9(09).
+               05  TBL-YKZTEN-JI                       PIC 9(09).
+      *
       *    一時領域
        01  WRK-AREA.
            03  WRK-PARA.
@@ -394,6 +400,7 @@
            03  WRK-TOKUKANRIKASAN                      PIC 9(01).
       *
            03  WRK-KEISAN                              PIC 9(09).
+           03  WRK-KEISAN2                             PIC 9(09).
       *
            03  WRK-SROUNYUIN-SRYCDTOTAL                PIC 9(14).
            03  WRK-SROUNYUIN-MEISAISU                  PIC 9(07).
@@ -983,6 +990,8 @@
            INITIALIZE          WRK-DAY-TABLE
       *
            INITIALIZE          FLG-KHNTEN-JI-AREA
+      *
+           INITIALIZE          TBL-TENSUG-JI
       *
            MOVE   ZERO   TO    FLG-HEYA
       *
@@ -2149,72 +2158,46 @@
                        MOVE  ACCT-ZAIKAISU     TO   WK-ZAIKAISU
                        MOVE  ACCT-ZAITEN       TO   WK-ZAITEN
                        IF   RECE82-HKNKBN    NOT  =  "4"
-                         IF ( ACCT-SRYKBN          =  "80"    ) AND   
-                            ( SRY-SRYCD(IDX3)(1:5) =  "09593"
-                                                   OR "09594" )       
-                                  MOVE   ACCT-SYUTEN1   TO   WK-SYUTEN  
-                                  COMPUTE   WK-YKZTEN =                 
-                                                      ACCT-KIZAITEN  +  
-                                                      ACCT-YKZTEN       
-                         ELSE
-                           IF    SRY-SRYKBN     =  "40"  OR  "50"  OR
-                                                   "60"  OR  "70"  OR
-                                                   "80"  OR  "54"
+                         IF    SRY-SRYKBN   =  "31" OR "32" OR "33" OR
+                                               "40" OR "50" OR "54" OR
+                                               "60" OR "70" OR "80"
                                 MOVE   ACCT-SYUTEN1   TO   WK-SYUTEN
                                 COMPUTE   WK-YKZTEN   =
                                                       ACCT-KIZAITEN  +
                                                       ACCT-YKZTEN
-                           END-IF
                          END-IF
                        ELSE
-                         IF ( ACCT-SRYKBN          =  "80"    )   AND
-                            ( SRY-SRYCD(IDX3)(1:5) =  "09591" OR 
-                                                      "09592" )
-                               CONTINUE
-                         ELSE
-                           IF ( ACCT-SRYKBN          =  "80"    ) AND   
-                              ( SRY-SRYCD(IDX3)(1:5) =  "09593"
-                                                     OR "09594" )       
-                                  MOVE   ACCT-SYUTEN1   TO   WK-SYUTEN  
-                                  COMPUTE   WK-YKZTEN =                 
+                         IF    SRY-SRYKBN   =  "31" OR "32" OR "33" OR
+                                               "40" OR "50" OR "54" OR
+                                               "60" OR "70" OR "80"
+                                MOVE   ACCT-SYUTEN1   TO   WK-SYUTEN  
+                                COMPUTE   WK-YKZTEN =                 
                                                       ACCT-KIZAITEN  +  
                                                       ACCT-YKZTEN       
-                           ELSE                                         
-                             IF    SRY-SRYKBN   =  "30"  OR  "31"  OR     
-                                                   "32"  OR  "33"  OR     
-                                                   "40"  OR  "50"  OR     
-                                                   "54"  OR  "60"  OR     
-                                                   "70"  OR  "80"         
-                                  MOVE   ACCT-SYUTEN1   TO   WK-SYUTEN  
-                                  COMPUTE   WK-YKZTEN =                 
-                                                      ACCT-KIZAITEN  +  
-                                                      ACCT-YKZTEN       
-                                  IF  SRY-SRYKBN  =  "70"
+                                IF  SRY-SRYKBN  =  "70"
                                      COMPUTE  WK-SYUTEN  =  WK-SYUTEN
                                                          -  ACCT-SYUTEN2
                                      COMPUTE  WK-YKZTEN  =  WK-YKZTEN
                                                          +  ACCT-SYUTEN2
-                                  END-IF
-                                  IF  WRK-YOUBUKASAN  NOT =  ZERO
+                                END-IF
+                                IF  WRK-YOUBUKASAN  NOT =  ZERO
                                    COMPUTE  WK-SYUTEN  = WK-SYUTEN
                                                        - WRK-YOUBUKASAN
                                    COMPUTE  WK-YKZTEN  = WK-YKZTEN
                                                        + WRK-YOUBUKASAN
-                                  END-IF
-                                  IF  WRK-KYOBUKASAN  NOT =  ZERO
+                                END-IF
+                                IF  WRK-KYOBUKASAN  NOT =  ZERO
                                    COMPUTE  WK-SYUTEN  = WK-SYUTEN
                                                        - WRK-KYOBUKASAN
                                    COMPUTE  WK-YKZTEN  = WK-YKZTEN
                                                        + WRK-KYOBUKASAN
-                                  END-IF
-                                  IF  WRK-SOGAIKASAN  NOT =  ZERO
+                                END-IF
+                                IF  WRK-SOGAIKASAN  NOT =  ZERO
                                    COMPUTE  WK-SYUTEN  = WK-SYUTEN
                                                        - WRK-SOGAIKASAN
                                    COMPUTE  WK-YKZTEN  = WK-YKZTEN
                                                        + WRK-SOGAIKASAN
-                                  END-IF
-                             END-IF
-                           END-IF                                       
+                                END-IF
                          END-IF
                        END-IF
                        IF    SRY-SRYKBN     =  "14"
@@ -2919,8 +2902,11 @@
                          WHEN    3
                              MOVE  "3"     TO   RECE82-SHOSHINTIME
                      END-EVALUATE
-                     COMPUTE    RECE82-TENSU(1)  =
-                                RECE82-TENSU(1)  +
+                     COMPUTE    RECE82-TENSU(1)    =
+                                RECE82-TENSU(1)    +
+                               (TNS-TEN   *   ACCT-ZAIKAISU)
+                     COMPUTE    TBL-SYUTEN-JI(1)   =
+                                TBL-SYUTEN-JI(1)   +
                                (TNS-TEN   *   ACCT-ZAIKAISU)
                      IF  SRY-SRYCD(IDX3)  =  CONS-NYUKSN1  OR
                                              CONS-NYUKSN2
@@ -2962,14 +2948,24 @@
                          COMPUTE    RECE82-TENSU(2)  =
                                     RECE82-TENSU(2)  +
                                    (WK-ZAITEN *   WK-ZAIKAISU)
+                         COMPUTE    TBL-SYUTEN-JI(2) =
+                                    TBL-SYUTEN-JI(2) +
+                                   (WK-ZAITEN *   WK-ZAIKAISU)
                    END-IF                   
       *    在宅のレセ点数欄の編集
                WHEN    "14"
                    COMPUTE    RECE82-TENSU(28)  =
                               RECE82-TENSU(28)  +
                              (WK-SYUTEN     *   WK-ZAIKAISU)
+                   COMPUTE    TBL-SYUTEN-JI(28) =
+                              TBL-SYUTEN-JI(28) +
+                             (WK-SYUTEN     *   WK-ZAIKAISU)
                    COMPUTE    RECE82-TENSU(28)  =
                               RECE82-TENSU(28)  +
+                             (WK-KIZAITEN   *   WK-ZAIKAISU)  +
+                             (WK-YKZTEN     *   WK-ZAIKAISU)
+                   COMPUTE    TBL-YKZTEN-JI(28) =
+                              TBL-YKZTEN-JI(28) +
                              (WK-KIZAITEN   *   WK-ZAIKAISU)  +
                              (WK-YKZTEN     *   WK-ZAIKAISU)
       *    投薬のレセ点数欄の編集
@@ -2982,10 +2978,16 @@
                            COMPUTE   RECE82-TENSU(4)  =
                                      RECE82-TENSU(4)  -
                                     (WK-ZAITEN   *   WK-ZAIKAISU)
+                           COMPUTE   TBL-YKZTEN-JI(4) =
+                                     TBL-YKZTEN-JI(4) -
+                                    (WK-ZAITEN   *   WK-ZAIKAISU)
                      ELSE
                            ADD   WK-ZAIKAISU   TO   RECE82-KAISU(4)
                            COMPUTE   RECE82-TENSU(4)  =
                                      RECE82-TENSU(4)  +
+                                    (WK-ZAITEN   *   WK-ZAIKAISU)
+                           COMPUTE   TBL-YKZTEN-JI(4) =
+                                     TBL-YKZTEN-JI(4) +
                                     (WK-ZAITEN   *   WK-ZAIKAISU)
                      END-IF
                    ELSE
@@ -2994,6 +2996,9 @@
                             COMPUTE   RECE82-TENSU(4)  =
                                       RECE82-TENSU(4)  +
                                      (WK-ZAITEN   *   WK-ZAIKAISU)
+                            COMPUTE   TBL-YKZTEN-JI(4) =
+                                      TBL-YKZTEN-JI(4) +
+                                     (WK-ZAITEN   *   WK-ZAIKAISU)
                      END-IF   
                    END-IF
                WHEN    "22"
@@ -3001,10 +3006,16 @@
                    COMPUTE   RECE82-TENSU(5)  =
                              RECE82-TENSU(5)  +
                             (WK-ZAITEN   *   WK-ZAIKAISU)
+                   COMPUTE   TBL-YKZTEN-JI(5) =
+                             TBL-YKZTEN-JI(5) +
+                            (WK-ZAITEN   *   WK-ZAIKAISU)
                WHEN    "23"
                    ADD    WK-ZAIKAISU    TO   RECE82-KAISU(6)
                    COMPUTE   RECE82-TENSU(6)  =
                              RECE82-TENSU(6)  +
+                            (WK-ZAITEN   *   WK-ZAIKAISU)
+                   COMPUTE   TBL-YKZTEN-JI(6) =
+                             TBL-YKZTEN-JI(6) +
                             (WK-ZAITEN   *   WK-ZAIKAISU)
       *    調剤のレセ点数欄の編集
                WHEN    "24"
@@ -3020,6 +3031,9 @@
                    COMPUTE   RECE82-TENSU(7)  =
                              RECE82-TENSU(7)  +
                             (TNS-TEN   *   ACCT-ZAIKAISU)
+                   COMPUTE   TBL-SYUTEN-JI(7) =
+                             TBL-SYUTEN-JI(7) +
+                            (TNS-TEN   *   ACCT-ZAIKAISU)
       *    麻毒のレセ点数欄の編集
                WHEN    "26"
                    IF    RECE82-KHNTEN(8)   =   ZERO
@@ -3033,6 +3047,9 @@
                    ADD    WK-ZAIKAISU    TO   RECE82-KAISU(8)
                    COMPUTE   RECE82-TENSU(8)  =
                              RECE82-TENSU(8)  +
+                            (TNS-TEN   *   ACCT-ZAIKAISU)
+                   COMPUTE   TBL-SYUTEN-JI(8) =
+                             TBL-SYUTEN-JI(8) +
                             (TNS-TEN   *   ACCT-ZAIKAISU)
       *    調基のレセ点数欄の編集
                WHEN    "27"
@@ -3048,43 +3065,70 @@
                    COMPUTE   RECE82-TENSU(9)  =
                              RECE82-TENSU(9)  +
                             (TNS-TEN   *   ACCT-ZAIKAISU)
+                   COMPUTE   TBL-SYUTEN-JI(9) =
+                             TBL-SYUTEN-JI(9) +
+                            (TNS-TEN   *   ACCT-ZAIKAISU)
       *    皮下筋肉内注射のレセ点数欄の編集
                WHEN    "31"
                    ADD    WK-ZAIKAISU     TO   RECE82-KAISU(11)
-                   COMPUTE   RECE82-TENSU(11)  =
-                             RECE82-TENSU(11)  +
+                   COMPUTE   RECE82-TENSU(11)   =
+                             RECE82-TENSU(11)   +
                             (WK-SYUTEN   *   WK-ZAIKAISU)
-                   COMPUTE   RECE82-TENSU(11)  =
-                             RECE82-TENSU(11)  +
+                   COMPUTE   TBL-SYUTEN-JI(11)  =
+                             TBL-SYUTEN-JI(11)  +
+                            (WK-SYUTEN   *   WK-ZAIKAISU)
+                   COMPUTE   RECE82-TENSU(11)   =
+                             RECE82-TENSU(11)   +
+                            (WK-YKZTEN   *   WK-ZAIKAISU)
+                   COMPUTE   TBL-YKZTEN-JI(11)  =
+                             TBL-YKZTEN-JI(11)  +
                             (WK-YKZTEN   *   WK-ZAIKAISU)
       *    静脈内注射のレセ点数欄の編集
                WHEN    "32"
                    ADD    WK-ZAIKAISU     TO   RECE82-KAISU(12)
-                   COMPUTE   RECE82-TENSU(12)  =
-                             RECE82-TENSU(12)  +
+                   COMPUTE   RECE82-TENSU(12)   =
+                             RECE82-TENSU(12)   +
                             (WK-SYUTEN   *   WK-ZAIKAISU)
-                   COMPUTE   RECE82-TENSU(12)  =
-                             RECE82-TENSU(12)  +
+                   COMPUTE   TBL-SYUTEN-JI(12)  =
+                             TBL-SYUTEN-JI(12)  +
+                            (WK-SYUTEN   *   WK-ZAIKAISU)
+                   COMPUTE   RECE82-TENSU(12)   =
+                             RECE82-TENSU(12)   +
+                            (WK-YKZTEN   *   WK-ZAIKAISU)
+                   COMPUTE   TBL-YKZTEN-JI(12)  =
+                             TBL-YKZTEN-JI(12)  +
                             (WK-YKZTEN   *   WK-ZAIKAISU)
       *    その他注射のレセ点数欄の編集
                WHEN    "33"
                    ADD    WK-ZAIKAISU     TO   RECE82-KAISU(13)
-                   COMPUTE   RECE82-TENSU(13)  =
-                             RECE82-TENSU(13)  +
+                   COMPUTE   RECE82-TENSU(13)   =
+                             RECE82-TENSU(13)   +
                             (WK-SYUTEN   *   WK-ZAIKAISU)
-                   COMPUTE   RECE82-TENSU(13)  =
-                             RECE82-TENSU(13)  +
+                   COMPUTE   TBL-SYUTEN-JI(13)  =
+                             TBL-SYUTEN-JI(13)  +
+                            (WK-SYUTEN   *   WK-ZAIKAISU)
+                   COMPUTE   RECE82-TENSU(13)   =
+                             RECE82-TENSU(13)   +
+                            (WK-YKZTEN   *   WK-ZAIKAISU)
+                   COMPUTE   TBL-YKZTEN-JI(13)  =
+                             TBL-YKZTEN-JI(13)  +
                             (WK-YKZTEN   *   WK-ZAIKAISU)
       *    処置のレセ点数欄の編集
                WHEN    "40"
                    IF    WK-SYUTEN       NOT =   ZERO
                        ADD    WK-ZAIKAISU    TO   RECE82-KAISU(15)
                    END-IF
-                   COMPUTE   RECE82-TENSU(15)  =
-                             RECE82-TENSU(15)  +
+                   COMPUTE   RECE82-TENSU(15)   =
+                             RECE82-TENSU(15)   +
                             (WK-SYUTEN   *   WK-ZAIKAISU)
-                   COMPUTE   RECE82-TENSU(16)  =
-                             RECE82-TENSU(16)  +
+                   COMPUTE   TBL-SYUTEN-JI(15)  =
+                             TBL-SYUTEN-JI(15)  +
+                            (WK-SYUTEN   *   WK-ZAIKAISU)
+                   COMPUTE   RECE82-TENSU(16)   =
+                             RECE82-TENSU(16)   +
+                            (WK-YKZTEN   *   WK-ZAIKAISU)
+                   COMPUTE   TBL-YKZTEN-JI(16)  =
+                             TBL-YKZTEN-JI(16)  +
                             (WK-YKZTEN   *   WK-ZAIKAISU)
       *    手術のレセ点数欄の編集
                WHEN    "50"
@@ -3092,19 +3136,28 @@
                    IF    WK-SYUTEN       NOT =   ZERO
                        ADD    WK-ZAIKAISU    TO   RECE82-KAISU(18)
                    END-IF
-                   COMPUTE   RECE82-TENSU(18)  =
-                             RECE82-TENSU(18)  +
+                   COMPUTE   RECE82-TENSU(18)   =
+                             RECE82-TENSU(18)   +
                             (WK-SYUTEN   *   WK-ZAIKAISU)
-                   COMPUTE   RECE82-TENSU(19)  =
-                             RECE82-TENSU(19)  +
+                   COMPUTE   TBL-SYUTEN-JI(18)  =
+                             TBL-SYUTEN-JI(18)  +
+                            (WK-SYUTEN   *   WK-ZAIKAISU)
+                   COMPUTE   RECE82-TENSU(19)   =
+                             RECE82-TENSU(19)   +
+                            (WK-YKZTEN   *   WK-ZAIKAISU)
+                   COMPUTE   TBL-YKZTEN-JI(19)  =
+                             TBL-YKZTEN-JI(19)  +
                             (WK-YKZTEN   *   WK-ZAIKAISU)
       *    検査のレセ点数欄の編集
                WHEN    "60"
                    IF    WK-SYUTEN       NOT =   ZERO
                        ADD    WK-ZAIKAISU    TO   RECE82-KAISU(21)
                    END-IF
-                   COMPUTE   RECE82-TENSU(21)  =
-                             RECE82-TENSU(21)  +
+                   COMPUTE   RECE82-TENSU(21)   =
+                             RECE82-TENSU(21)   +
+                            (WK-SYUTEN   *   WK-ZAIKAISU)
+                   COMPUTE   TBL-SYUTEN-JI(21)  =
+                             TBL-SYUTEN-JI(21)  +
                             (WK-SYUTEN   *   WK-ZAIKAISU)
                    IF    TNS-KNSJISKBN    =   2
                       COMPUTE   RECE82-KAISU(21)  =
@@ -3120,19 +3173,28 @@
                                         WK-ZAIKAISU
                          END-IF
                    END-IF
-                   COMPUTE   RECE82-TENSU(22)  =
-                             RECE82-TENSU(22)  +
+                   COMPUTE   RECE82-TENSU(22)   =
+                             RECE82-TENSU(22)   +
+                            (WK-YKZTEN   *   WK-ZAIKAISU)
+                   COMPUTE   TBL-YKZTEN-JI(22)  =
+                             TBL-YKZTEN-JI(22)  +
                             (WK-YKZTEN   *   WK-ZAIKAISU)
       *    画像診断のレセ点数欄の編集
                WHEN    "70"
                    IF    WK-SYUTEN       NOT =   ZERO
                        ADD    WK-ZAIKAISU    TO   RECE82-KAISU(24)
                    END-IF
-                   COMPUTE   RECE82-TENSU(24)  =
-                             RECE82-TENSU(24)  +
+                   COMPUTE   RECE82-TENSU(24)   =
+                             RECE82-TENSU(24)   +
                             (WK-SYUTEN   *   WK-ZAIKAISU)
-                   COMPUTE   RECE82-TENSU(25)  =
-                             RECE82-TENSU(25)  +
+                   COMPUTE   TBL-SYUTEN-JI(24)  =
+                             TBL-SYUTEN-JI(24)  +
+                            (WK-SYUTEN   *   WK-ZAIKAISU)
+                   COMPUTE   RECE82-TENSU(25)   =
+                             RECE82-TENSU(25)   +
+                            (WK-YKZTEN   *   WK-ZAIKAISU)
+                   COMPUTE   TBL-YKZTEN-JI(25)  =
+                             TBL-YKZTEN-JI(25)  +
                             (WK-YKZTEN   *   WK-ZAIKAISU)
       *    その他のレセ点数欄の編集
                WHEN    "80"
@@ -3209,19 +3271,28 @@
                                  (WRK-RYOYOTEATE  *   ACCT-ZAIKAISU)    
                      ELSE
                       IF    TNS-NYUTENTTLKBN   =    130
-                            COMPUTE   RECE82-TENSU(2)  =
-                                      RECE82-TENSU(2)  +
+                            COMPUTE   RECE82-TENSU(2)   =
+                                      RECE82-TENSU(2)   +
+                                     (TNS-TEN   *   ACCT-ZAIKAISU)
+                            COMPUTE   TBL-SYUTEN-JI(2)  =
+                                      TBL-SYUTEN-JI(2)  +
                                      (TNS-TEN   *   ACCT-ZAIKAISU)
                       ELSE
                         IF    WK-SYUTEN       NOT =   ZERO
                            ADD  WK-ZAIKAISU  TO  RECE82-KAISU(15)
                         END-IF
-                        COMPUTE   RECE82-TENSU(15)  =
-                                  RECE82-TENSU(15)  +
+                        COMPUTE   RECE82-TENSU(15)   =
+                                  RECE82-TENSU(15)   +
+                                 (WK-SYUTEN   *   ACCT-ZAIKAISU)
+                        COMPUTE   TBL-SYUTEN-JI(15)  =
+                                  TBL-SYUTEN-JI(15)  +
                                  (WK-SYUTEN   *   ACCT-ZAIKAISU)
                       END-IF
                       COMPUTE   RECE82-TENSU(16)  =
                                 RECE82-TENSU(16)  +
+                               (WK-YKZTEN   *   WK-ZAIKAISU)
+                      COMPUTE   TBL-YKZTEN-JI(16)  =
+                                TBL-YKZTEN-JI(16)  +
                                (WK-YKZTEN   *   WK-ZAIKAISU)
                      END-IF
                     END-IF                                              
@@ -4556,6 +4627,9 @@
                     COMPUTE   RECE82-TENSU(13)  =
                               RECE82-TENSU(13)  +
                               (RECE84-ZAITEN  *  RECE84-ZAIKAISU)
+                    COMPUTE   TBL-YKZTEN-JI(13) =
+                              TBL-YKZTEN-JI(13) +
+                              (RECE84-ZAITEN  *  RECE84-ZAIKAISU)
                 END-EVALUATE
            END-IF
            .                                           
@@ -5104,6 +5178,109 @@
                COMPUTE  RECE82-SONOTAKIN-JYU  =
                         RECE82-SONOTAKIN-JYU  +
                   (WRK-KINGAKU-JI *  WRK-KSNRATE)  +  0.5
+      ***
+               PERFORM    VARYING    ID3    FROM    1   BY   1
+                           UNTIL     ID3     >     29
+                 IF   ID3  =   3  OR  10  OR  14  OR  17  OR
+                              20  OR  23  OR  26  OR  29
+                    CONTINUE
+                 ELSE
+                    COMPUTE  RECE82-KINGAKU-JYU(ID3) =
+                             RECE82-KINGAKU-JYU(ID3) +
+                    (TBL-SYUTEN-JI(ID3) * RECE82-TANKA * WRK-KSNRATE)
+                                                       + 0.5
+                    COMPUTE  RECE82-KINGAKU-JYU(ID3) =
+                             RECE82-KINGAKU-JYU(ID3) +
+                    (TBL-YKZTEN-JI(ID3) * RECE82-TANKA)
+                                                       + 0.5
+                 END-IF
+               END-PERFORM
+      *
+               COMPUTE   RECE82-KINGAKU-JYU(3)  =
+                         RECE82-KINGAKU-JYU(1)  +
+                         RECE82-KINGAKU-JYU(2)   
+      *
+               COMPUTE   RECE82-KINGAKU-JYU(10)  =
+                         RECE82-KINGAKU-JYU(4)   +
+                         RECE82-KINGAKU-JYU(5)   +
+                         RECE82-KINGAKU-JYU(6)   +
+                         RECE82-KINGAKU-JYU(7)   +
+                         RECE82-KINGAKU-JYU(8)   +
+                         RECE82-KINGAKU-JYU(9)    
+      *
+               COMPUTE   RECE82-KINGAKU-JYU(14)  =
+                         RECE82-KINGAKU-JYU(11)  +
+                         RECE82-KINGAKU-JYU(12)  +
+                         RECE82-KINGAKU-JYU(13)   
+      *
+               COMPUTE   RECE82-KINGAKU-JYU(17)  =
+                         RECE82-KINGAKU-JYU(15)  +
+                         RECE82-KINGAKU-JYU(16)   
+      *
+               COMPUTE   RECE82-KINGAKU-JYU(20)  =
+                         RECE82-KINGAKU-JYU(18)  +
+                         RECE82-KINGAKU-JYU(19)   
+      *
+               COMPUTE   RECE82-KINGAKU-JYU(23)  =
+                         RECE82-KINGAKU-JYU(21)  +
+                         RECE82-KINGAKU-JYU(22)   
+      *
+               COMPUTE   RECE82-KINGAKU-JYU(26)  =
+                         RECE82-KINGAKU-JYU(24)  +
+                         RECE82-KINGAKU-JYU(25)   
+      *
+               COMPUTE   RECE82-KINGAKU-JYU(29)  =
+                         RECE82-KINGAKU-JYU(27)  +
+                         RECE82-KINGAKU-JYU(28)   
+      ***
+               PERFORM    VARYING    ID3    FROM    1   BY   1
+                           UNTIL     ID3     >     10
+      *
+                  COMPUTE  RECE82-NYUKHNKIN-JYU(ID3) =
+                           RECE82-NYUKHNKIN-JYU(ID3) +
+                  (RECE82-NYUKHNKEI(ID3) * RECE82-TANKA * WRK-KSNRATE)
+                                                        + 0.5
+                  COMPUTE  RECE82-NYUTOTALKIN-JYU    =
+                           RECE82-NYUTOTALKIN-JYU    +
+                  (RECE82-NYUKHNKEI(ID3) * RECE82-TANKA * WRK-KSNRATE)
+                                                        + 0.5
+      *
+                  COMPUTE  RECE82-NYUTOKKIN-JYU(ID3) =
+                           RECE82-NYUTOKKIN-JYU(ID3) +
+                  (RECE82-NYUTOKKEI(ID3) * RECE82-TANKA * WRK-KSNRATE)
+                                                        + 0.5
+                  COMPUTE  RECE82-NYUTOTALKIN-JYU    =
+                           RECE82-NYUTOTALKIN-JYU    +
+                  (RECE82-NYUTOKKEI(ID3) * RECE82-TANKA * WRK-KSNRATE)
+                                                        + 0.5
+      *
+               END-PERFORM
+      *
+               MOVE   RECE82-NYUKHNKEI2  TO  WRK-KEISAN2
+               COMPUTE  RECE82-NYUKHNKIN2-JYU  =
+                        RECE82-NYUKHNKIN2-JYU  +
+                        (WRK-KEISAN2 * RECE82-TANKA * WRK-KSNRATE)
+                                                    + 0.5
+               MOVE   RECE82-NYUTOKKEI2  TO  WRK-KEISAN2
+               COMPUTE  RECE82-NYUTOKKIN2-JYU  =
+                        RECE82-NYUTOKKIN2-JYU  +
+                        (WRK-KEISAN2 * RECE82-TANKA * WRK-KSNRATE)
+                                                    + 0.5
+               IF     RECE82-NYUKHNKEI2  <   ZERO
+                   COMPUTE  RECE82-NYUKHNKIN2-JYU   =
+                            RECE82-NYUKHNKIN2-JYU   *  -1
+               END-IF
+               IF     RECE82-NYUTOKKEI2  <   ZERO
+                   COMPUTE  RECE82-NYUTOKKIN2-JYU   =
+                            RECE82-NYUTOKKIN2-JYU   *  -1
+               END-IF
+      *
+               COMPUTE  RECE82-NYUTOTALKIN-JYU    =
+                        RECE82-NYUTOTALKIN-JYU    +
+                        RECE82-NYUKHNKIN2-JYU
+               COMPUTE  RECE82-NYUTOTALKIN-JYU    =
+                        RECE82-NYUTOTALKIN-JYU    +
+                        RECE82-NYUTOKKIN2-JYU
       *
              END-EVALUATE
       *

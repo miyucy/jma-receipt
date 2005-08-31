@@ -31,6 +31,7 @@
       *  中止処理追加
       *  01.00.01    NACL-藤原    04/10/13  中止処理の追加
       *  01.00.02    NACL-門脇    05/05/26  手術・麻酔の記載順変更対応
+      *  01.00.03    NACL-門脇    05/08/31  剤番号編集修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -249,10 +250,6 @@
            MOVE    RECE86-HKNID         TO      RECE87-HKNID
            MOVE    RECE86-TEKSTYMD      TO      RECE87-TEKSTYMD
            MOVE    RECE86-ZAINUM        TO      RECE87-ZAINUM
-           IF      RECE86-ZAINUM(1:7)  =  "9999998"
-           AND     RECE86-ZAINUM   NOT =   99999980
-                 MOVE     ZERO          TO      RECE87-ZAINUM
-           END-IF
            IF      RECE86-ZAINUM       =   99999999
                  MOVE     ZERO          TO      RECE87-ZAINUM
            END-IF

@@ -43,6 +43,7 @@
       *  01.02.03    NACL-門脇    05/01/18  酸素計算式コメント対応
       *  01.02.04    NACL-門脇    05/05/10  脳血管疾患急性発症病名記載対応
       *  01.02.05    NACL-門脇    05/08/22  リハビリ実施回数差し込み修正対応
+      *  01.02.06    NACL-門脇    05/08/31  自賠責従来様式対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -274,6 +275,7 @@
                05  WRK-PARA-SRYYM              PIC  X(06).
                05  WRK-PARA-TERMID             PIC  X(16).
                05  WRK-PARA-SYSYMD             PIC  X(08).
+               05  WRK-PARA-RECEKBN            PIC  X(01).
                05  WRK-PARA-JOBID              PIC  9(07).
                05  WRK-PARA-SHELLID            PIC  X(08).
       *
@@ -1236,7 +1238,7 @@
                 MOVE    RECE82-RECEKA       TO  RECE859-RECEKA
                 MOVE    RECE82-HKNID        TO  RECE859-HKNID
                 MOVE    RECE82-TEKSTYMD     TO  RECE859-TEKSTYMD
-                MOVE    99999998            TO  RECE859-ZAINUM
+                MOVE    99999996            TO  RECE859-ZAINUM
                 MOVE    "99"                TO  RECE859-SRYKBN
                 ADD     1                   TO  WRK-RENNUM
                 MOVE    WRK-RENNUM          TO  RECE859-RENNUM
@@ -1267,7 +1269,7 @@
            MOVE    RECE82-RECEKA       TO  RECE849-RECEKA
            MOVE    RECE82-HKNID        TO  RECE849-HKNID
            MOVE    RECE82-TEKSTYMD     TO  RECE849-TEKSTYMD
-           MOVE    99999998            TO  RECE849-ZAINUM
+           MOVE    99999996            TO  RECE849-ZAINUM
            MOVE    "99"                TO  RECE849-SRYKBN
       *
            MOVE    WRK-CNT-MEISAI      TO  RECE849-MEISAISU

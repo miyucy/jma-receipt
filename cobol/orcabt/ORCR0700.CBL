@@ -37,6 +37,7 @@
       *
       *  02.06.01    NACL-門脇    05/05/26  手術・麻酔の記載順変更対応
       *  02.06.02    NACL-竹田    05/05/30  realtime preview 処理追加
+      *  02.06.03    NACL-門脇    05/08/31  剤番号編集修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -261,10 +262,6 @@
            MOVE    RECE66-TEKSTYMD      TO      RECE661-TEKSTYMD
            MOVE    RECE66-KOHBUNRI      TO      RECE661-KOHBUNRI
            MOVE    RECE66-ZAINUM        TO      RECE661-ZAINUM
-           IF      RECE66-ZAINUM(1:7)  =  "9999998"
-           AND     RECE66-ZAINUM   NOT =   99999980
-                 MOVE     ZERO          TO      RECE661-ZAINUM
-           END-IF
            IF      RECE66-ZAINUM       =   99999999
                  MOVE     ZERO          TO      RECE661-ZAINUM
            END-IF
