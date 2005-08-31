@@ -9,3 +9,4 @@
             02  HCM402V01-MEISAI        OCCURS  20 TIMES.
               03  HCM402V01-RENBAN    PIC X(6).
               03  HCM402V01-MESG  PIC X(156).
+            02  HCM402V01-BIKO  PIC X(20).

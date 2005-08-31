@@ -48,6 +48,11 @@
         </appinfo>
       </element>
     </element>
+    <element name="BIKO" occurs="1">
+      <appinfo>
+        <embed object="string" length="20"/>
+      </appinfo>
+    </element>
   </dictionarydata>
   <diagramdata>
     <attribute name="background">
@@ -2843,5 +2848,47 @@
         </attribute>
       </object>
     </group>
+    <object type="Embed - Text" version="0" id="O83">
+      <attribute name="obj_pos">
+        <point val="0.4,0.95"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="0.4,0.714286;1.915,1.01429"/>
+      </attribute>
+      <attribute name="dnode_path">
+        <string>#BIKO#</string>
+      </attribute>
+      <attribute name="embed_text_string">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#194;&#190;&#202;&#221;&#184;&#177;&#164;&#162;&#164;&#234;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.3"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="0.4,0.95"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+          <attribute name="single">
+            <real val="0.1818"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.1515"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
   </layer>
 </diagram>

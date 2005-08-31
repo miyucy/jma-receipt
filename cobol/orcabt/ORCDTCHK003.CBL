@@ -526,23 +526,30 @@
                MOVE    WRK-OUT-INPUT   TO  HCM401-NENREI(CNT-LINE)
            END-IF
       *
-      *    データチェック内容
+      *    他保険あり
+           IF    ( ORCBSD01-PRTSRTKBN  =   "3" OR  "4" )
+               IF    ( DTCHK004-HKNOTHERS  =   "1" )
+                   MOVE    1           TO  FLG-HKNOTHERS
+                   MOVE    "＊"        TO  HCM401-MARK (CNT-LINE)
+               END-IF
+           END-IF
+      *
            MOVE    SPACE               TO  WRK-ERRMSG
-           IF    ( DTCHK004-HKNOTHERS  =   "1" )
-      *
-               MOVE    1               TO  FLG-HKNOTHERS
-      *
-               MOVE    "＊"            TO  HCM401-MARK (CNT-LINE)
-      *
-               MOVE    DTCHK004-HKNKBN TO  WRK-HKNKBN
-               PERFORM 2201-HKNNAME-GET-SEC
-               STRING  WRK-HKNMES      DELIMITED   BY  SPACE
-                       "："            DELIMITED   BY  SIZE
-                       DTCHK004-ERRMSG DELIMITED   BY  SIZE
-               INTO    WRK-ERRMSG
-               END-STRING
+           IF    ( ORCBSD01-PRTSRTKBN  =   "1" OR  "2" )
+      *        データチェック内容
+               IF    ( DTCHK004-MULHKNKBN  =   "1" )
+                   MOVE    DTCHK004-HKNKBN TO  WRK-HKNKBN
+                   PERFORM 2201-HKNNAME-GET-SEC
+                   STRING  WRK-HKNMES      DELIMITED   BY  SPACE
+                           "："            DELIMITED   BY  SIZE
+                           DTCHK004-ERRMSG DELIMITED   BY  SIZE
+                   INTO    WRK-ERRMSG
+                   END-STRING
+               ELSE
+                   MOVE    DTCHK004-ERRMSG TO  WRK-ERRMSG
+               END-IF
            ELSE
-               MOVE    DTCHK004-ERRMSG TO  WRK-ERRMSG
+                   MOVE    DTCHK004-ERRMSG TO  WRK-ERRMSG
            END-IF
       *
            IF    ( WRK-ERRMSG  (111:)  =   SPACE )

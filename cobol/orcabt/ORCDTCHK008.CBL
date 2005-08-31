@@ -103,7 +103,7 @@
        01  CNT-AREA.
            03  CNT-DTCHK004                            PIC 9(06).
            03  CNT-DTCHK007                            PIC 9(06).
-           03  CNT-HKN                                 PIC 9(06).
+           03  CNT-ERRHKN                              PIC 9(06).
       *
        01  IDX-AREA.
            03  IDX0                                    PIC 9(05). 
@@ -111,6 +111,7 @@
        01  WRK-AREA.
            03  WRK-DTCHKERR                            PIC X(200).
            03  WRK-HKNOTHERS                           PIC X(1).
+           03  WRK-PTID                                PIC 9(10).
       *
        01  KEY-AREA.
            03  KEY-NEW.
@@ -131,7 +132,16 @@
            COPY    "CPORCBSD01PARA.INC".
       *
       *    固定値領域
-      *01  CONST-AREA.
+       01  CONST-AREA.
+               05  CONST-HKNKBN-MAX            PIC 9(03)   VALUE   5.
+               05  CONST-HKNKBN-VAL.
+                   07  CONST-SYAHO             PIC X(01)   VALUE   "1".
+                   07  CONST-KOKUHO            PIC X(01)   VALUE   "2".
+                   07  CONST-ROSAI             PIC X(01)   VALUE   "3".
+                   07  CONST-JIBAI             PIC X(01)   VALUE   "4".
+                   07  CONST-JIHI              PIC X(01)   VALUE   "5".
+               05  CONST-HKNKBN-R      REDEFINES   CONST-HKNKBN-VAL.
+                   07  CONST-HKNKBN            PIC X(01)   OCCURS  5.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -294,9 +304,6 @@
       *****************************************************************
        1001-INIT-VAL-SET-SEC           SECTION.
       *
-            IF   ( ORCBSD01-PRTSRTKBN  =   "3" OR  "4" )
-                MOVE   1               TO  FLG-END
-            END-IF
       *
            .
        1001-INIT-VAL-SET-EXT.
@@ -321,7 +328,11 @@
        2001-DTCHK007-EDIT-SEC          SECTION.
       *
            OPEN    INPUT               DTCHK004-FILE
+      *
            OPEN    OUTPUT              DTCHK007-FILE
+           CLOSE                       DTCHK007-FILE
+      *
+           OPEN    I-O                 DTCHK007-FILE
       *
            MOVE    ZERO            TO  FLG-DTCHK004
       *
@@ -330,31 +341,32 @@
       *
            PERFORM UNTIL ( FLG-DTCHK004    =   1 )
       *
-               MOVE    ZERO        TO  CNT-HKN
                MOVE    KEY-NEW     TO  KEY-OLD
       *
                PERFORM UNTIL ( FLG-DTCHK004    =   1 )
-                        OR   ( KEY-N-PTID  NOT =   KEY-O-PTID )
+                        OR   ( KEY-N-PTID      NOT =   KEY-O-PTID )
+                        OR   ( KEY-N-HKNKBN    NOT =   KEY-O-HKNKBN)
       *
-                   MOVE    KEY-NEW     TO  KEY-OLD
-      *
-                   PERFORM UNTIL ( FLG-DTCHK004    =   1 )
-                            OR   ( KEY-N-PTID      NOT =   KEY-O-PTID )
-                            OR   ( KEY-N-HKNKBN    NOT =   KEY-O-HKNKBN)
-      *
-      *                チェック結果ファイル読込
-                       PERFORM 900-DTCHK004-READ-SEC
-      *
-                   END-PERFORM
-      *
-                   COMPUTE  CNT-HKN    =   CNT-HKN +   1
+      *            チェック結果ファイル読込
+                   PERFORM 900-DTCHK004-READ-SEC
       *
                END-PERFORM
       *
-               IF    ( CNT-HKN     >   1 )
-                   INITIALIZE          DTCHK007-REC
+               INITIALIZE              DTCHK007-REC
+               MOVE    KEY-O-PTID  TO  WRK-PTID
+               PERFORM 900-DTCHK007-READ-SEC
+               IF    ( FLG-DTCHK007    =   ZERO )
+                   PERFORM 20011-HKN-CHK-SEC
+      *
+                   REWRITE DTCHK007-REC
+      *
+               ELSE
+                   INITIALIZE              DTCHK007-REC
                    MOVE    KEY-O-PTID  TO  DTCHK007-PTID
-                   WRITE   DTCHK007-REC
+                   PERFORM 20011-HKN-CHK-SEC
+      *
+                   WRITE DTCHK007-REC
+      *
                END-IF
       *
            END-PERFORM
@@ -364,6 +376,42 @@
       *
            .
        2001-DTCHK007-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険チェック処理
+      *****************************************************************
+       20011-HKN-CHK-SEC               SECTION.
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   CONST-HKNKBN-MAX )
+      *
+               IF    ( CONST-HKNKBN (IDX0) =   KEY-O-HKNKBN )
+                   MOVE   1            TO  DTCHK007-ERRHKN (IDX0)
+                   MOVE   CONST-HKNKBN-MAX
+                                       TO  IDX0
+               END-IF
+      *
+           END-PERFORM
+      *
+           MOVE    ZERO                TO  CNT-ERRHKN
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   CONST-HKNKBN-MAX )
+      *
+               IF    ( DTCHK007-ERRHKN (IDX0)  =   1 )
+                   COMPUTE CNT-ERRHKN
+                       =   CNT-ERRHKN
+                       +   1
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( CNT-ERRHKN          >   1 )
+               MOVE    "1"             TO  DTCHK007-HKNOTHERS
+           END-IF
+      *
+           .
+       20011-HKN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    チェック結果ファイル複数保険エラー編集処理
@@ -383,13 +431,13 @@
                MOVE    KEY-NEW     TO  KEY-OLD
       *
                MOVE    SPACE       TO  WRK-HKNOTHERS
+               MOVE    DTCHK004-PTID   TO  WRK-PTID
                PERFORM 900-DTCHK007-READ-SEC
                IF    ( FLG-DTCHK007    =   ZERO )
-                   MOVE    "1"     TO  WRK-HKNOTHERS
+                   MOVE    DTCHK007-HKNOTHERS
+                                   TO  WRK-HKNOTHERS
                END-IF
       *
-                   DISPLAY "DTCHK004-PTNUM =" DTCHK004-PTNUM
-                   DISPLAY "WRK-HKNOTHERS  =" WRK-HKNOTHERS
                PERFORM UNTIL ( FLG-DTCHK004    =   1 )
                         OR   ( KEY-N-PTID  NOT =   KEY-O-PTID )
       *
@@ -496,8 +544,7 @@
            MOVE    ZERO            TO  FLG-DTCHK007
       *
            INITIALIZE                  DTCHK007-REC
-           MOVE    DTCHK004-PTID   TO  DTCHK007-PTID
-      *
+           MOVE    WRK-PTID        TO  DTCHK007-PTID
            READ    DTCHK007-FILE
            INVALID KEY
                MOVE    1           TO  FLG-DTCHK007

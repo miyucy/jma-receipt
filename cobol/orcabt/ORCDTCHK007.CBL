@@ -446,6 +446,11 @@
                         "）"               DELIMITED   BY  SIZE
                INTO    HCM402-NYUGAIKBN
                END-STRING
+      *
+               IF    ( DTCHK004-HKNOTHERS  =   "1" )
+                   MOVE    "他保険あり"    TO  HCM402-BIKO
+               END-IF
+      *
            ELSE
                STRING  "（"                DELIMITED   BY  SIZE
                        WRK-NYUGAIMES       DELIMITED   BY  SPACE
@@ -524,16 +529,20 @@
            MOVE    WRK-OUT-INPUT       TO  HCM402-RENBAN(CNT-LINE)
       *
       *    データチェック内容
-           IF    ( DTCHK004-HKNOTHERS  =   "1" )
-               MOVE    DTCHK004-HKNKBN TO  WRK-HKNKBN
-               PERFORM 2201-HKNNAME-GET-SEC
-               STRING  WRK-HKNMES      DELIMITED   BY  SPACE
-                       "："            DELIMITED   BY  SIZE
-                       DTCHK004-ERRMSG DELIMITED   BY  SIZE
-               INTO    HCM402-MESG  (CNT-LINE)
-               END-STRING
+           IF    ( ORCBSD01-PRTSRTKBN  =   "1" OR  "2" )
+               IF    ( DTCHK004-MULHKNKBN  =   "1" )
+                   MOVE    DTCHK004-HKNKBN TO  WRK-HKNKBN
+                   PERFORM 2201-HKNNAME-GET-SEC
+                   STRING  WRK-HKNMES      DELIMITED   BY  SPACE
+                           "："            DELIMITED   BY  SIZE
+                           DTCHK004-ERRMSG DELIMITED   BY  SIZE
+                   INTO    HCM402-MESG  (CNT-LINE)
+                   END-STRING
+               ELSE
+                   MOVE    DTCHK004-ERRMSG TO  HCM402-MESG  (CNT-LINE)
+               END-IF
            ELSE
-               MOVE    DTCHK004-ERRMSG TO  HCM402-MESG  (CNT-LINE)
+                   MOVE    DTCHK004-ERRMSG TO  HCM402-MESG  (CNT-LINE)
            END-IF
       *
            .

@@ -1640,6 +1640,15 @@
                GO  TO  4900-KANRENCHK-EXT
            END-IF
       *
+      *    保険がいずれか一つは入力されていること
+           IF    ( SPA-GMN-D01-CHK-SYAHO   =   "F" )
+            AND  ( SPA-GMN-D01-CHK-KOKUHO  =   "F" )
+            AND  ( SPA-GMN-D01-CHK-RSIJBI  =   "F" )
+            AND  ( SPA-GMN-D01-CHK-JIHI    =   "F" )
+               MOVE    "1003"          TO  SPA-ERRCD
+               GO  TO  4900-KANRENCHK-EXT
+           END-IF
+      *
       *    確認項目がいずれか一つは入力されていること
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0        >   CONST-CHKKBN-MAX )
@@ -2034,6 +2043,9 @@
                                        TO  SPA-ERRMSG
            WHEN    "4001"              THRU    "4999"
                MOVE    "更新処理に失敗しました"
+                                       TO  SPA-ERRMSG
+           WHEN    "1003"
+               MOVE    "保険を選択してください"
                                        TO  SPA-ERRMSG
            WHEN    "7777"
                MOVE    WRK-ERRMSG      TO  SPA-ERRMSG

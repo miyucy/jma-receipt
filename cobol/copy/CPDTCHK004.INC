@@ -61,14 +61,16 @@
       *
       *患者ＩＤ
            03  DTCHK004-PTID          PIC 9(10).
-      *
       *氏名
            03  DTCHK004-NAME          PIC X(100).
+      *
+      *複数保険区分
+           03  DTCHK004-MULHKNKBN     PIC  X(01).
       *
       *保険区分
            03  DTCHK004-HKNKBN        PIC  X(01).
       *
-      *他保険区分
+      *他保険エラー区分
            03  DTCHK004-HKNOTHERS     PIC  X(01).
       *
       *生年月日

@@ -118,6 +118,17 @@
       *    カウント領域
        01  CNT-AREA.
            03  CNT-DTCHK003                            PIC 9(06).
+           03  CNT-HKNKBN-G.
+               05  CNT-HKNKBN-VAL.
+                   07  CNT-SYAHO                       PIC 9(03).
+                   07  CNT-KOKUHO                      PIC 9(03).
+                   07  CNT-ROSAI                       PIC 9(03).
+                   07  CNT-JIBAI                       PIC 9(03).
+                   07  CNT-JIHI                        PIC 9(03).
+               05  CNT-HKNKBN-R    REDEFINES   CNT-HKNKBN-VAL.
+                   07  CNT-HKNKBN                      PIC 9(03)
+                                                       OCCURS   5.
+           03  CNT-HKNKBN-TTL                          PIC 9(03).
       *
        01  IDX-AREA.
            03  IDX0                                    PIC 9(05). 
@@ -128,11 +139,15 @@
            03  WRK-ZAIHKNNUM                           PIC X(03).
            03  WRK-STATUS                              PIC 9(05).
            03  WRK-HKNKBN-G.
-               05  WRK-SYAHOPROCKBN                    PIC X(01).
-               05  WRK-KOKUHOPROCKBN                   PIC X(01).
-               05  WRK-RSIPROCKBN                      PIC X(01).
-               05  WRK-JBIPROCKBN                      PIC X(01).
-               05  WRK-JIHIPROCKBN                     PIC X(01).
+               05  WRK-HKNKBN-VAL.
+                   07  WRK-SYAHOPROCKBN                PIC X(01).
+                   07  WRK-KOKUHOPROCKBN               PIC X(01).
+                   07  WRK-RSIPROCKBN                  PIC X(01).
+                   07  WRK-JBIPROCKBN                  PIC X(01).
+                   07  WRK-JIHIPROCKBN                 PIC X(01).
+               05  WRK-HKNKBN-R    REDEFINES           WRK-HKNKBN-VAL.
+                   07  WRK-HKNKBN                      PIC X(01)
+                                                       OCCURS  5.
       *
       *    パラメタ領域
        01  WRK-PARA.
@@ -143,6 +158,17 @@
       *
       *    データチェック一括処理パラメータ
            COPY    "CPORCBSD01PARA.INC".
+      *
+       01  CONST-AREA.
+           03  CONST-HKNKBN-G.
+               05  CONST-HKNKBN-VAL.
+                   07  CONST-SYAHO             PIC X(01)   VALUE   "1".
+                   07  CONST-KOKUHO            PIC X(01)   VALUE   "2".
+                   07  CONST-ROSAI             PIC X(01)   VALUE   "3".
+                   07  CONST-JIBAI             PIC X(01)   VALUE   "4".
+                   07  CONST-JIHI              PIC X(01)   VALUE   "5".
+               05  CONST-HKNKBN-R      REDEFINES   CONST-HKNKBN-VAL.
+                   07  CONST-HKNKBN            PIC X(01)   OCCURS  5.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -328,16 +354,14 @@
            MOVE    ZERO                TO  CNT-DTCHK003
            MOVE    ZERO                TO  FLG-DCACCT
       *
-           MOVE    ZERO                TO  WRK-PTID
-           MOVE    ZERO                TO  WRK-HKNKBN-G
-      *
       *    データチェック診療会計読込処理
            PERFORM 900-DCACCT-READ-SEC
       *
            PERFORM UNTIL ( FLG-DCACCT      NOT =   ZERO )
       *
                MOVE    DCACCT-PTID     TO  WRK-PTID
-               MOVE    ZERO            TO  WRK-HKNKBN-G
+               INITIALIZE                  WRK-HKNKBN-G
+                                           CNT-HKNKBN-G
       *
                PERFORM UNTIL ( WRK-PTID    NOT =   DCACCT-PTID )
                         OR   ( FLG-DCACCT  NOT =   ZERO )
@@ -360,35 +384,30 @@
       *
                END-PERFORM
       *
-               IF    ( WRK-SYAHOPROCKBN    =   "1" )
-                   INITIALIZE              DTCHK003-REC
-                   MOVE    "1"         TO  DTCHK003-HKNKBN
-                   PERFORM 210-DTCHK003-WRITE-SEC
-               END-IF
+               MOVE    ZERO                TO  CNT-HKNKBN-TTL
       *
-               IF    ( WRK-KOKUHOPROCKBN   =   "1" )
-                   INITIALIZE              DTCHK003-REC
-                   MOVE    "2"         TO  DTCHK003-HKNKBN
-                   PERFORM 210-DTCHK003-WRITE-SEC
-               END-IF
+               PERFORM VARYING IDX0    FROM    1   BY  1
+                       UNTIL ( IDX0    >   5 )
       *
-               IF    ( WRK-RSIPROCKBN   =   "1" )
-                   INITIALIZE              DTCHK003-REC
-                   MOVE    "3"         TO  DTCHK003-HKNKBN
-                   PERFORM 210-DTCHK003-WRITE-SEC
-               END-IF
+                   IF    ( CNT-HKNKBN (IDX0)   =   1 )
+                       COMPUTE CNT-HKNKBN-TTL
+                           =   CNT-HKNKBN-TTL
+                           +   1
+                   END-IF
       *
-               IF    ( WRK-JBIPROCKBN   =   "1" )
-                   INITIALIZE              DTCHK003-REC
-                   MOVE    "4"         TO  DTCHK003-HKNKBN
-                   PERFORM 210-DTCHK003-WRITE-SEC
-               END-IF
+               END-PERFORM
       *
-               IF    ( WRK-JIHIPROCKBN     =   "1" )
-                   INITIALIZE              DTCHK003-REC
-                   MOVE    "5"         TO  DTCHK003-HKNKBN
-                   PERFORM 210-DTCHK003-WRITE-SEC
-               END-IF
+               PERFORM VARYING IDX0    FROM    1   BY  1
+                       UNTIL ( IDX0    >   5 )
+      *
+                   IF    ( WRK-HKNKBN (IDX0)   =   "1" )
+                       INITIALIZE          DTCHK003-REC
+                       MOVE    CONST-HKNKBN (IDX0)
+                                       TO  DTCHK003-HKNKBN
+                       PERFORM 210-DTCHK003-WRITE-SEC
+                   END-IF
+      *
+               END-PERFORM
       *
            END-PERFORM
       *
@@ -405,6 +424,11 @@
       *
            MOVE    WRK-PARA-HOSPID TO  DTCHK003-HOSPID
            MOVE    WRK-PTID        TO  DTCHK003-PTID
+      *
+           IF    ( CNT-HKNKBN-TTL  >   1 )
+               MOVE    "1"         TO  DTCHK003-MULHKNKBN
+           END-IF
+      *
            WRITE                       DTCHK003-REC
       *
            COMPUTE CNT-DTCHK003    =   CNT-DTCHK003    +   1
@@ -420,24 +444,37 @@
            EVALUATE    TRUE
            WHEN      ( WRK-ZAIHKNNUM   =   "060" )
            WHEN      ( WRK-ZAIHKNNUM   =   "067" )
+      *
+               MOVE    1               TO  CNT-KOKUHO
+      *
                IF    ( ORCBSD01-KOKUHOPROCKBN  =   "1" )
                    MOVE    "1"         TO  WRK-KOKUHOPROCKBN
                END-IF
            WHEN      ( WRK-ZAIHKNNUM   =   "971" )
+      *
+               MOVE    1               TO  CNT-ROSAI
+      *
                IF    ( ORCBSD01-RSIPROCKBN  =   "1" )
                    MOVE    "1"         TO  WRK-RSIPROCKBN
                END-IF
            WHEN      ( WRK-ZAIHKNNUM   =   "973" )
+      *
+               MOVE    1               TO  CNT-JIBAI
+      *
                IF    ( ORCBSD01-JBIPROCKBN  =   "1" )
                    MOVE    "1"         TO  WRK-JBIPROCKBN
                END-IF
-      *
            WHEN      ( WRK-ZAIHKNNUM (1:2) =   "98" )
+      *
+               MOVE    1               TO  CNT-JIHI
+      *
                IF    ( ORCBSD01-JIHIPROCKBN    =   "1" )
                    MOVE    "1"         TO  WRK-JIHIPROCKBN
                END-IF
-      *
            WHEN      OTHER
+      *
+               MOVE    1               TO  CNT-SYAHO
+      *
                IF    ( ORCBSD01-SYAHOPROCKBN   =   "1" )
                    MOVE    "1"         TO  WRK-SYAHOPROCKBN
                END-IF

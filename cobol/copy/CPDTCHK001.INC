@@ -28,4 +28,5 @@
            03  DTCHK001-HOSPID             PIC X(24).
       *´µ¼Ô£É£Ä
            03  DTCHK001-PTID               PIC 9(10).
+           03  DTCHK001-MULHKNKBN          PIC  X(01).
            03  DTCHK001-HKNKBN             PIC  X(01).
