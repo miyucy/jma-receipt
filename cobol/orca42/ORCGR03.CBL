@@ -1472,12 +1472,20 @@
                IF      SJOBKANRI-RETURN
                                        =   ZERO
                    IF      JOB-ENDYMD      =   SPACE
-                       IF    ( JOB-SYOKBN      =   "1"           )
-                       AND   ( JOB-SRYYM   NOT =   SPA-NAI-SRYYM )
-                           CONTINUE
-                       ELSE
-                           MOVE    "7777"          TO  SPA-ERRCD
-                           MOVE    SPACE             TO  WRK-RECEERR
+                       EVALUATE    SPA-GMN-IKKATU
+                           WHEN    "T"
+                               IF    ( JOB-SYOKBN  =   "1"           )
+                               AND   ( JOB-SRYYM  
+                                               NOT =   SPA-NAI-SRYYM )
+                                   CONTINUE
+                               ELSE
+                                   MOVE    "7777"      TO  SPA-ERRCD
+                               END-IF
+                           WHEN    "F"
+                               MOVE    "7777"      TO  SPA-ERRCD
+                       END-EVALUATE
+                       IF      SPA-ERRCD         =   "7777"    
+                           MOVE    SPACE         TO  WRK-RECEERR
                            STRING  "定期請求処理中です【"
                                                  DELIMITED  BY  SIZE
                                JOB-SHELLMSG      DELIMITED  BY  SPACE
