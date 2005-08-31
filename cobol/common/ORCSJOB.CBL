@@ -434,8 +434,9 @@
            COMPUTE WRK-JOB-UPDCNT      =   WRK-JOB-UPDCNT  +
                                            JOB-UPDCNT                            
            MOVE    JOB-YOBI            TO  WRK-JOB-YOBI
-           MOVE    JOB-PGID            TO  WRK-JOB-PGID
-           MOVE    JOB-SHELLMSG        TO  WRK-JOB-SHELLMSG
+           IF    ( JOB-SHELLMSG    NOT =   SPACE )
+               MOVE    JOB-SHELLMSG    TO  WRK-JOB-SHELLMSG
+           END-IF
            MOVE    WRK-JOBKANRI-REC    TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    PATH-TBL-JOBKANRI-UPD1
