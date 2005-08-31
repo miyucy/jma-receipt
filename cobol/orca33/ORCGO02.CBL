@@ -153,6 +153,7 @@
            03  FLG-SYUARI          PIC 9(01).
            03  FLG-KIKAN           PIC 9(01).
            03  FLG-GETUMATU        PIC 9(01).
+           03  FLG-HAITA           PIC 9(01).
       *
       *    フラグ領域
        01  STS-AREA.
@@ -261,6 +262,11 @@
       *    ジョブ管理ＤＢのキー値  
            03  CONST-JOB-SHELLID   PIC X(08)   VALUE   "TEIKI1".
            03  CONST-JOB-JOBID     PIC 9(07)   VALUE   1.
+      *
+           03  CONST-JOB-SHELLID-RECEPT1
+                                   PIC X(08)   VALUE   "RECEPT1".
+           03  CONST-JOB-JOBID-RECEPT1
+                                   PIC 9(07)   VALUE   1.
            03  CONST-SAKKBN-MAX    PIC 9(02)   VALUE   4.
            03  CONST-SAKKBN-VAL.
                05                  PIC X(01)   VALUE   "1".
@@ -1960,6 +1966,38 @@
                END-IF
            END-IF
       *
+      *
+      *    ジョブ管理チェック処理
+           MOVE    "CHK"               TO  SJOBKANRI-MODE
+           INITIALIZE                      JOBKANRI-REC
+           MOVE    CONST-JOB-JOBID-RECEPT1     TO  JOB-JOBID
+           MOVE    CONST-JOB-SHELLID-RECEPT1   TO  JOB-SHELLID
+           MOVE    SPA-TERMID          TO  JOB-TERMID
+           CALL    "ORCSJOB"           USING
+                                       ORCSJOBKANRIAREA 
+                                       JOBKANRI-REC 
+           IF    ( SJOBKANRI-RETURN    =   ZERO )
+               IF   (  JOB-ENDYMD      =   SPACE )
+      *
+                   MOVE    1           TO  FLG-HAITA
+      *
+                   IF    ( JOB-NYUGAIKBN   =   "2" )
+                       MOVE    ZERO    TO  FLG-HAITA
+                   END-IF
+      *
+                   IF    ( FLG-HAITA   =   1 )
+                       MOVE    "7777"      TO  SPA-ERRCD
+                       MOVE    SPACE       TO  WRK-TEIKIERR
+                       STRING  "入院レセプト処理中です【"
+                                           DELIMITED  BY  SIZE
+                              JOB-SHELLMSG DELIMITED  BY  SPACE
+                              "】"         DELIMITED  BY  SIZE
+                       INTO  WRK-TEIKIERR
+                       END-STRING
+                   END-IF
+               END-IF
+           END-IF
+      *
            .
        4501-JOBKANRICHK-EXT.
            EXIT.
@@ -2438,6 +2476,11 @@
            MOVE    CONST-JOB-JOBID     TO  JOB-JOBID
            MOVE    CONST-JOB-SHELLID   TO  JOB-SHELLID
            MOVE    SPA-TERMID          TO  JOB-TERMID
+           IF    ( SJOBKANRI-MODE      =   "JBS" )
+               MOVE    "2"             TO  JOB-SYOKBN
+               MOVE    SPA-NAI-SRYYM   TO  JOB-SRYYM
+               MOVE    "1"             TO  JOB-NYUGAIKBN
+           END-IF
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA 
                                        JOBKANRI-REC 

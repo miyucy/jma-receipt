@@ -116,6 +116,7 @@
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
+           03  FLG-HAITA               PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -180,6 +181,10 @@
       *    ジョブ管理ＤＢのキー値
            03  CONST-JOB-SHELLID       PIC X(08)   VALUE   "TEIKI1".
            03  CONST-JOB-JOBID         PIC 9(07)   VALUE   1.
+      *
+           03  CONST-JOB-SHELLID-RECEPT1
+                                       PIC X(08)   VALUE   "RECEPT1".
+           03  CONST-JOB-JOBID-RECEPT1 PIC 9(07)   VALUE   1.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -974,18 +979,55 @@
        4501-JOBKANRICHK-SEC            SECTION.
       *
       *    ジョブ管理チェック処理
-           MOVE    "CHK"           TO  SJOBKANRI-MODE
+           MOVE    "CHK"               TO  SJOBKANRI-MODE
            PERFORM 800-ORCSJOB-SEC
            IF    ( SJOBKANRI-RETURN    =   ZERO )
                IF      JOB-ENDYMD  =   SPACE
-                   MOVE    "7777"          TO  SPA-ERRCD
-                   MOVE    SPACE             TO  WRK-TEIKIERR
+                   MOVE    "7777"      TO  SPA-ERRCD
+                   MOVE    SPACE       TO  WRK-TEIKIERR
                    STRING  "定期請求処理中です【"
-                                             DELIMITED  BY  SIZE
-                           JOB-SHELLMSG      DELIMITED  BY  SPACE
-                           "】"              DELIMITED  BY  SIZE
-                                             INTO  WRK-TEIKIERR
+                                           DELIMITED  BY  SIZE
+                           JOB-SHELLMSG    DELIMITED  BY  SPACE
+                           "】"            DELIMITED  BY  SIZE
+                   INTO  WRK-TEIKIERR
                    END-STRING
+               END-IF
+           END-IF
+      *
+      *
+      *    ジョブ管理チェック処理
+           MOVE    "CHK"               TO  SJOBKANRI-MODE
+           INITIALIZE                      JOBKANRI-REC
+           MOVE    CONST-JOB-JOBID-RECEPT1     TO  JOB-JOBID
+           MOVE    CONST-JOB-SHELLID-RECEPT1   TO  JOB-SHELLID
+           MOVE    SPA-TERMID          TO  JOB-TERMID
+           CALL    "ORCSJOB"           USING
+                                       ORCSJOBKANRIAREA 
+                                       JOBKANRI-REC 
+           IF    ( SJOBKANRI-RETURN    =   ZERO )
+               IF   (  JOB-ENDYMD      =   SPACE )
+      *
+                   MOVE    1           TO  FLG-HAITA
+      *
+                   IF    ( JOB-NYUGAIKBN   =   "2" )
+                       MOVE    ZERO    TO  FLG-HAITA
+                   ELSE
+                       IF    ( JOB-SYOKBN      =   "1" )
+                        AND  ( JOB-SRYYM   NOT =   SPA-NAI-SRYYM )
+                           MOVE    ZERO    TO  FLG-HAITA
+                       END-IF
+                   END-IF
+      *
+                   IF    ( FLG-HAITA   =   1 )
+                       MOVE    "7777"      TO  SPA-ERRCD
+                       MOVE    SPACE       TO  WRK-TEIKIERR
+                       STRING  "入院レセプト処理中です【"
+                                           DELIMITED  BY  SIZE
+                              JOB-SHELLMSG DELIMITED  BY  SPACE
+                              "】"         DELIMITED  BY  SIZE
+                       INTO  WRK-TEIKIERR
+                       END-STRING
+                   END-IF
                END-IF
            END-IF
       *
@@ -1650,6 +1692,11 @@
            MOVE    CONST-JOB-JOBID     TO  JOB-JOBID
            MOVE    CONST-JOB-SHELLID   TO  JOB-SHELLID
            MOVE    SPA-TERMID          TO  JOB-TERMID
+           IF    ( SJOBKANRI-MODE      =   "JBS" )
+               MOVE    "1"             TO  JOB-SYOKBN
+               MOVE    SPA-NAI-SRYYM   TO  JOB-SRYYM
+               MOVE    "1"             TO  JOB-NYUGAIKBN
+           END-IF
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA 
                                        JOBKANRI-REC 
