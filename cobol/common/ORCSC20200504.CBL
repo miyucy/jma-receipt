@@ -1212,7 +1212,7 @@
       *    借数涞换年
            IF    ((FLG-NAIYAK2         =   1    )  OR
                   (FLG-TONPUK2         =   1    )  OR
-                  (FLG-GAIYAK2         =   1    ))   AND
+                  (FLG-GAIYAK2         =   1    )) OR
                   (IDX-SYOHOU      NOT =   ZERO )
                MOVE    1               TO  FLG-SYOHOSENN
            END-IF
@@ -1221,7 +1221,7 @@
       *    借数涞换年
            IF    ((FLG-NAIYAK2         =   1    )  OR
                   (FLG-TONPUK2         =   1    )  OR
-                  (FLG-GAIYAK2         =   1    ))   AND
+                  (FLG-GAIYAK2         =   1    ))   OR
                   (IDX-SYOHOU      NOT =   ZERO )
                MOVE    ZERO                TO  FLG-SYOHORYO
            ELSE
