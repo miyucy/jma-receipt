@@ -294,6 +294,7 @@
            03  IDZ                 PIC 9(04).
            03  DAY-IDX             PIC 9(04).
            03  DAY-IDX2            PIC 9(02).
+           03  DAY-IDX3            PIC 9(01).
            03  IDX-RECE45          PIC 9(04).
       *     
       *    ∞Ïª˛ŒŒ∞Ë
@@ -327,6 +328,9 @@
       *
            03  WRK-HENSYU-KAISU    PIC X(02).
            03  WRK-HENSYU-KAISU2   PIC X(04).
+      *
+           03  WRK-HENSYU-KASANRITU   PIC X(01).
+           03  WRK-HENSYU-KASANRITU2  PIC X(02).
       *
            03  TBL-SANTEI-DAY.
                05  TB-SANTEI-DAY   PIC 9(02)   OCCURS  31.
@@ -851,6 +855,12 @@
       *
            IF     CNT-DOUJITU     >   ZERO
                 PERFORM    2001-DOUJITU-COMMENT-SEC
+           END-IF
+      *
+      *    º´«Â¿’ΩæÕËÕÕº∞°ß≤√ªªŒ® 
+           IF   RECE41-HKNKBN     =   "4"
+           AND  WRK-PARA-RECEKBN  =   "5"
+                PERFORM    2001-KASANRITU-COMMENT-SEC
            END-IF
       *
       *    •—•È•·°º•ø£∞£¥•’•°•§•Î§Ë§Í ‘Ω∏
@@ -1788,6 +1798,88 @@
       *
            .
        20011-KYUSEIHASSYO-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    º´«Â¿’ΩæÕËÕÕº∞°ß≤√ªªŒ® §Œ•≥•·•Û•» ‘Ω∏
+      *****************************************************************
+       2001-KASANRITU-COMMENT-SEC          SECTION.
+      *
+           INITIALIZE                      RECE449-REC
+           MOVE    RECE41-HOSPID       TO  RECE449-HOSPID
+           MOVE    RECE41-SRYYM        TO  RECE449-SRYYM
+           MOVE    RECE41-NYUGAIKBN    TO  RECE449-NYUGAIKBN
+           MOVE    RECE41-PTID         TO  RECE449-PTID
+           MOVE    RECE41-RECEKA       TO  RECE449-RECEKA
+           MOVE    RECE41-HKNID        TO  RECE449-HKNID
+           MOVE    RECE41-TEKSTYMD     TO  RECE449-TEKSTYMD
+           MOVE    99999998            TO  RECE449-ZAINUM
+           MOVE    "99"                TO  RECE449-SRYKBN
+           MOVE    1                   TO  RECE449-MEISAISU
+      *
+           WRITE   RECE449-REC
+           ADD     1                   TO  CNT-RECE449
+      *
+           INITIALIZE                      RECE459-REC
+           MOVE    RECE41-HOSPID       TO  RECE459-HOSPID
+           MOVE    RECE41-SRYYM        TO  RECE459-SRYYM
+           MOVE    RECE41-NYUGAIKBN    TO  RECE459-NYUGAIKBN
+           MOVE    RECE41-PTID         TO  RECE459-PTID
+           MOVE    RECE41-RECEKA       TO  RECE459-RECEKA
+           MOVE    RECE41-HKNID        TO  RECE459-HKNID
+           MOVE    RECE41-TEKSTYMD     TO  RECE459-TEKSTYMD
+           MOVE    99999998            TO  RECE459-ZAINUM
+           MOVE    "99"                TO  RECE459-SRYKBN
+      *    ≤√ªªŒ®§Œ•≥•·•Û•»§Œ¡ﬁ∆˛
+           MOVE    SPACE                TO  WRK-RECE45XX-REC
+           INITIALIZE                       WRK-RECE45XX-REC
+           MOVE    "810000001"          TO  WRK-RECE45XX-SRYCD(1 1)
+           MOVE    ZERO                 TO  WRK-RECE45XX-SRYSURYO(1 1)
+           MOVE    10                   TO  WRK-RECE45XX-YUKOKETA(1 1)
+           MOVE    "≤√ªªŒ®° °°°•°°°°°À°Û"
+                                        TO  WRK-RECE45XX-NAME(1 1)
+      *
+           MOVE    RECE41-KSNRATE(1:1)  TO  DAY-IDX3
+           PERFORM    20011-KASANRITU-HENSYU-SEC
+           MOVE    WRK-HENSYU-KASANRITU2 TO WRK-RECE45XX-NAME(1 1)(9:2)
+           MOVE    RECE41-KSNRATE(2:1)  TO  DAY-IDX3
+           PERFORM    20011-KASANRITU-HENSYU-SEC
+           MOVE    WRK-HENSYU-KASANRITU2 TO WRK-RECE45XX-NAME(1 1)(13:2)
+           MOVE    RECE41-KSNRATE(3:1)  TO  DAY-IDX3
+           PERFORM    20011-KASANRITU-HENSYU-SEC
+           MOVE    WRK-HENSYU-KASANRITU2 TO WRK-RECE45XX-NAME(1 1)(15:2)
+      *
+           MOVE    "1"                  TO  WRK-RECE45XX-SIKFLG(1 1)
+           MOVE    WRK-RECE45XX-SRYACT-TBL(1 1)
+                                        TO  RECE459-SRYACT-TBL(1)
+           WRITE   RECE459-REC
+           ADD     1                    TO  CNT-RECE459
+      *
+           .
+       2001-KASANRITU-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ≤√ªªŒ® ‘Ω∏
+      *****************************************************************
+       20011-KASANRITU-HENSYU-SEC          SECTION.
+      *
+           MOVE    SPACE                TO  WRK-HENSYU-KASANRITU
+           MOVE    SPACE                TO  WRK-HENSYU-KASANRITU2
+      *
+           MOVE    DAY-IDX3             TO  WRK-HENSYU-KASANRITU
+      *
+           INITIALIZE                       ORCSKANACHKAREA
+           MOVE    "2"                  TO  KANACHK-SYORI
+           MOVE    WRK-HENSYU-KASANRITU TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"    USING   ORCSKANACHKAREA
+           IF      KANACHK-RC      =   ZERO
+                MOVE    KANACHK-OUT-INPUT(1:2)
+                                        TO  WRK-HENSYU-KASANRITU2
+           END-IF
+      *
+           .
+       20011-KASANRITU-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
