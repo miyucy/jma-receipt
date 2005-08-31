@@ -17,9 +17,9 @@ tbl_jobkanri	{
 	STEPENDTIME		char(8);
 	PARAM			char(256);
 	ERRCD			char(4);
-	SYOKBN 			char(1),
-	SRYYM 			char(6),
-	NYUGAIKBN		char(1),
+	SYOKBN 			char(1);
+	SRYYM 			char(6);
+	NYUGAIKBN		char(1);
 	SRYYMD			char(8);
 	PTID			number(10,0);
 	UPDCNT			number(10,0);
