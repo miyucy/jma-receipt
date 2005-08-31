@@ -75,6 +75,7 @@
       *  01.05.03    NACL-藤原    05/01/13 受診日指定
       *
       *  02.06.01    NACL-藤原    05/06/22 自賠責レセプトの様式追加
+      *  02.06.02    NACL-藤原    05/08/30 定期請求との排他制御処理
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -252,6 +253,9 @@
            03  WRK-CONS-JOB-SHELLID
                                    PIC X(08)   VALUE   "RECEPT1".
            03  WRK-CONS-JOB-JOBID  PIC 9(07)   VALUE   1.
+           03  WRK-CONS-JOB-SHELLID1
+                                   PIC X(08)   VALUE   "TEIKI1".
+           03  WRK-CONS-JOB-JOBID1 PIC 9(07)   VALUE   1.
       *
       *    印刷管理ＤＢのキー値  
            03  WRK-CONS-PRTKANRI-TBL-KEY
@@ -1451,6 +1455,39 @@
                    END-STRING                          
                END-IF
            END-IF    
+      *
+      *    入院の処理のとき定期請求のチェックをする
+           IF    ( SPA-ERRCD       =   SPACE )
+           AND   ( SPA-GMN-NYUGAIKBN   
+                                   =   "1"   )
+               MOVE    "CHK"           TO  SJOBKANRI-MODE
+               INITIALIZE                  JOBKANRI-REC
+               MOVE    WRK-CONS-JOB-JOBID1
+                                       TO  JOB-JOBID
+               MOVE    WRK-CONS-JOB-SHELLID1
+                                       TO  JOB-SHELLID
+               CALL    "ORCSJOB"       USING
+                                       ORCSJOBKANRIAREA 
+                                       JOBKANRI-REC 
+               IF      SJOBKANRI-RETURN
+                                       =   ZERO
+                   IF      JOB-ENDYMD      =   SPACE
+                       IF    ( JOB-SYOKBN      =   "1"           )
+                       AND   ( JOB-SRYYM   NOT =   SPA-NAI-SRYYM )
+                           CONTINUE
+                       ELSE
+                           MOVE    "7777"          TO  SPA-ERRCD
+                           MOVE    SPACE             TO  WRK-RECEERR
+                           STRING  "定期請求処理中です【"
+                                                 DELIMITED  BY  SIZE
+                               JOB-SHELLMSG      DELIMITED  BY  SPACE
+                               "】"              DELIMITED  BY  SIZE      
+                                                 INTO  WRK-RECEERR
+                           END-STRING
+                       END-IF 
+                   END-IF
+               END-IF
+           END-IF        
            .
        4501-JOBKANRI-CHK-EXT.
            EXIT.
@@ -1611,6 +1648,10 @@
                    MOVE    WRK-CONS-JOB-SHELLID
                                            TO  JOB-SHELLID
                    MOVE    SPA-TERMID      TO  JOB-TERMID                        
+                   MOVE    SPA-R01-NYUGAIKBN
+                                           TO  JOB-NYUGAIKBN
+                   MOVE    "1"             TO  JOB-SYOKBN
+                   MOVE    SPA-R01-SRYYM   TO  JOB-SRYYM
                    CALL    "ORCSJOB"       USING
                                            ORCSJOBKANRIAREA 
                                           JOBKANRI-REC
