@@ -311,6 +311,8 @@
            IF      IDX-MAX             =   ZERO
                MOVE    ZERO                TO  KANACHK-MAX
                MOVE    SPACE               TO  KANACHK-OUT-INPUT
+           ELSE
+               MOVE    IDX-MAX             TO  KANACHK-MAX
            END-IF
       *
            IF      IDX-MAX             >   ZERO
@@ -356,6 +358,7 @@
                MOVE    7                   TO  KANACHK-RC2
            END-IF
            MOVE    KANACONV-MAXLEN     TO  IDX-MAX
+           MOVE    KANACONV-MAXLEN     TO  KANACHK-MAX
            IF      KANACHK-MAX-CNT     =   ZERO
                MOVE    100                 TO  KANACHK-MAX-CNT
            END-IF
