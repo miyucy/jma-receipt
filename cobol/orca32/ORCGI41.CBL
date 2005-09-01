@@ -2148,14 +2148,14 @@
            END-IF
       *
            IF     (WRK-HKN-ST          =   WRK-HKN-ED ) 
-               STRING  "保険の適用が切れている期間があります。　"
+               STRING  "保険の適用が切れている期間があります。"
                                             DELIMITED  BY  SIZE
                        WRK-HKN-ST           DELIMITED  BY  SIZE
                        "日"                 DELIMITED  BY  SIZE
                                        INTO      SPA-GMN-KEIKOKU
                END-STRING
            ELSE
-               STRING  "保険の適用が切れている期間があります。　"
+               STRING  "保険の適用が切れている期間があります。"
                                             DELIMITED  BY  SIZE
                        WRK-HKN-ST           DELIMITED  BY  SIZE
                        " - "                DELIMITED  BY  SIZE
