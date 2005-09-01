@@ -137,6 +137,8 @@
       *
            03  FLG-FUKU                PIC 9(01).
            03  FLG-TOUROKU             PIC 9(01).
+      *    ユーザプログラム起動
+           03  FLG-USERPG              PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -514,6 +516,9 @@
       *
       *    まとめ入金編集パラメタ領域
            COPY    "CPORCSNYUKIN.INC".
+      *
+      *    ユーザプログラム起動サブパラメタ
+           COPY    "CPORCSUSERPG.INC".
       *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
@@ -4253,15 +4258,23 @@
                PERFORM 450012-GAIRAI-CALL-SEC
            END-IF
       *
-           IF      SPA-ERRCD           =   SPACE
+           IF     (SPA-ERRCD           =   SPACE ) OR
+                  (SPA-ERRCD(1:1)      =   "K"   ) 
       *        各帳票印刷
                PERFORM 45009-PRINT-SEC
            END-IF
       *
       *    ＣＬＡＩＭ送信
-           IF     (SPA-ERRCD           =   SPACE ) AND
+           IF    ((SPA-ERRCD           =   SPACE ) OR
+                  (SPA-ERRCD(1:1)      =   "K"  )) AND
                   (FLG-CLAIM           =   1     )
                PERFORM 4906-CLAIM-SOUSIN-SEC
+           END-IF
+      *    ユーザプログラム起動
+           IF     (SPA-ERRCD           =   SPACE ) OR
+                  (SPA-ERRCD(1:1)      =   "K"   )
+               MOVE    1               TO  FLG-USERPG
+               PERFORM 4907-USERPG-SEC
            END-IF
       *
            .
@@ -4434,6 +4447,12 @@
                    MOVE    "K001"          TO  SPA-ERRCD
                    MOVE    1               TO  SPA-KEI-FLG
                 END-IF
+           END-IF
+      *    ユーザプログラム起動
+           IF     (SPA-ERRCD           =   SPACE ) OR
+                  (SPA-ERRCD(1:1)      =   "K"   )
+               MOVE    3               TO  FLG-USERPG
+               PERFORM 4907-USERPG-SEC
            END-IF
       *
            .
@@ -4822,6 +4841,37 @@
       *
            .
        4906-CLAIM-SOUSIN-EXT.
+           EXIT.
+      *****************************************************************
+      *    ユーザプログラム起動処理
+      *****************************************************************
+       4907-USERPG-SEC  SECTION.
+      *
+      *    ユーザプログラム起動
+           INITIALIZE                  ORCSUSERPGAREA
+           MOVE    "K03"               TO  ORCSUSERPG-GMNPG
+      *
+           IF      FLG-USERPG          =   1
+               IF      SPA-SYORIFLG        =   ZERO
+      *        追加
+                   MOVE    "1"             TO  ORCSUSERPG-SYORI
+               ELSE
+      *        更新
+                   MOVE    "2"             TO  ORCSUSERPG-SYORI
+               END-IF
+           ELSE
+      *        削除
+               MOVE    "3"             TO  ORCSUSERPG-SYORI
+           END-IF
+           MOVE    SPA-SYSYMD          TO  ORCSUSERPG-SYSYMD
+           MOVE    SPA-SRYYMD          TO  ORCSUSERPG-SRYYMD
+           MOVE    SPA-PTID            TO  ORCSUSERPG-PTID
+           MOVE    SPA-PTNUM           TO  ORCSUSERPG-PTNUM
+      *
+           CALL    "ORCSUSERPG"        USING   ORCSUSERPGAREA
+      *
+           .
+       4907-USERPG-EXT.
            EXIT.
       *
       *****************************************************************
