@@ -5897,9 +5897,23 @@
                                                TO  WRK-MAE-INPUT
                        PERFORM 800-ZENKAKU-HEN-SEC
                        MOVE    WRK-OUT-INPUT   TO  WRK-HKNCOMBIMEI
-                       MOVE    THKNCOMBI-DAY-G (IDX16)
-                                       TO  WRK-NISSU-DAY-G
+      *
+                       INITIALIZE  WRK-NISSU-DAY-G
+                       MOVE    WRK-KJNYMD      TO  WRK-YMD
+                       PERFORM VARYING IDX24   FROM    1   BY  1
+                               UNTIL ( IDX24   >   31 )
+                           MOVE    THKNCOMBI-DAY  (IDX16 IDX24)
+                                               TO  WRK-DD
+                           IF    ( THKNCOMBI-STYMD (IDX16) >=  WRK-YMD )
+                            AND  ( THKNCOMBI-EDYMD (IDX16) <=  WRK-YMD )
+                               CONTINUE
+                           ELSE
+                               MOVE    1       TO  WRK-NISSU-DAY (IDX24)
+                           END-IF
+                       END-PERFORM
+      *
                        PERFORM 200111-NISSU-HEN-SEC
+      *
                        MOVE    SPACE       TO  WRK-ERRMES-PLUS
                        STRING  WRK-ACCTNAME    DELIMITED   BY  SPACE
                                WRK-HKNCOMBINUM DELIMITED   BY  SPACE
