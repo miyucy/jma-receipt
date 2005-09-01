@@ -1012,7 +1012,8 @@
                    IF    ( JOB-NYUGAIKBN   =   "2" )
                        MOVE    ZERO    TO  FLG-HAITA
                    ELSE
-                       IF    ( JOB-SYOKBN      =   "1" )
+                       IF    ( SPA-GMN-IKKATU  =   "T" )
+                        AND  ( JOB-SYOKBN      =   "1" )
                         AND  ( JOB-SRYYM   NOT =   SPA-NAI-SRYYM )
                            MOVE    ZERO    TO  FLG-HAITA
                        END-IF
