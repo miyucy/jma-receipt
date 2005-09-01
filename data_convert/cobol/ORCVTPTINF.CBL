@@ -38,6 +38,7 @@
       *  01.00.05    MCC-¿¹ÏÆ     02/05/01  ¶õÇòÊÔ½¸¤ÎÊÑ¹¹  
       *  01.01.01    NACL-¿¹ÏÆ    02/11/28  Æþ±¡ÍúÎòÈÖ¹æ¡¢»ÞÈÖ¹æ¤ÎÄÉ²Ã
       *  01.01.02    NACL-Â¿¡¹Ç¼  03/10/10  ¼«Í³¹½À®´µ¼ÔÈÖ¹æÊÔ½¸½¤Àµ
+      *  01.01.03    NACL-Â¿¡¹Ç¼  05/09/01  Á´³Ñ¥Á¥§¥Ã¥¯ÊÑ´¹ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -180,6 +181,8 @@
            03  WRK-DATA                PIC X(200).
            03  WRK-LEN                 PIC 9(03). 
       *
+           03  WRK-MAX-CNT             PIC 9(03). 
+      *
       *    Ä¢É¼½ÐÎÏÎÎ°è
        01  MES-AREA.
            03  MES-TITLE1.
@@ -260,6 +263,11 @@
       *
       *    ¶¦ÄÌ¥Ñ¥é¥á¥¿
            COPY    "MCPAREA".
+      *
+      *    Á´³Ñ¥Á¥§¥Ã¥¯¥Ñ¥é¥á¥¿
+           COPY    "CPORCSKANACHK.INC".
+      *
+           COPY    "CPORCXKANACONV.INC".
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
@@ -739,17 +747,24 @@
            WHEN    2
                MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  WRK-DATA
-               PERFORM 2401-SPACE-HENSYU-SEC                        
-               MOVE    WRK-DATA (1:WRK-LEN)
+               MOVE    50              TO  WRK-MAX-CNT
+               PERFORM 2402-ZENKAKU-HEN-SEC
+      *********PERFORM 2401-SPACE-HENSYU-SEC
+               IF      FLG-ERR         =   ZERO
+                   MOVE    WRK-DATA (1:WRK-LEN)
                                        TO  PTINF-KANANAME
+               END-IF
       *    £³¡§´Á»ú»áÌ¾
            WHEN    3
                IF  WRK-MO-CNT          >   ZERO
                    MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  WRK-DATA
-               PERFORM 2401-SPACE-HENSYU-SEC                        
-               MOVE    WRK-DATA (1:WRK-LEN)
+                   MOVE    50              TO  WRK-MAX-CNT
+                   PERFORM 2402-ZENKAKU-HEN-SEC
+                   IF      FLG-ERR         =   ZERO
+                       MOVE    WRK-DATA (1:WRK-LEN)
                                        TO  PTINF-NAME
+                   END-IF
                ELSE
                    MOVE    PTINF-KANANAME
                                        TO  PTINF-NAME
@@ -759,9 +774,12 @@
                IF  WRK-MO-CNT          >   ZERO
                    MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  WRK-DATA
-                   PERFORM 2401-SPACE-HENSYU-SEC                        
-                   MOVE    WRK-DATA (1:WRK-LEN)
-                                       TO  PTINF-NICKNAME
+                   MOVE    50              TO  WRK-MAX-CNT
+                   PERFORM 2402-ZENKAKU-HEN-SEC
+                   IF      FLG-ERR         =   ZERO
+                       MOVE    WRK-DATA (1:WRK-LEN)
+                                           TO  PTINF-NICKNAME
+                   END-IF
                END-IF
       *    £µ¡§À­ÊÌ
            WHEN    5
@@ -780,18 +798,24 @@
                IF  WRK-MO-CNT          >   ZERO
                    MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  WRK-DATA
-                   PERFORM 2401-SPACE-HENSYU-SEC                        
-                   MOVE    WRK-DATA (1:WRK-LEN)
+                   MOVE    100             TO  WRK-MAX-CNT
+                   PERFORM 2402-ZENKAKU-HEN-SEC
+                   IF      FLG-ERR         =   ZERO
+                       MOVE    WRK-DATA (1:WRK-LEN)
                                        TO  PTINF-HOME-ADRS
+                   END-IF
                END-IF
       *    £±£°¡§¼«Âð¡ÝÈÖÃÏ
            WHEN    10
                IF  WRK-MO-CNT          >   ZERO
                    MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  WRK-DATA
-                   PERFORM 2401-SPACE-HENSYU-SEC                        
-                   MOVE    WRK-DATA (1:WRK-LEN)
+                   MOVE    100             TO  WRK-MAX-CNT
+                   PERFORM 2402-ZENKAKU-HEN-SEC
+                   IF      FLG-ERR         =   ZERO
+                       MOVE    WRK-DATA (1:WRK-LEN)
                                        TO  PTINF-HOME-BANTI
+                   END-IF
                END-IF
       *    £±£±¡§¼«Âð¡ÝÅÅÏÃÈÖ¹æ¡ÊÃë¡Ë
            WHEN    11
@@ -816,27 +840,36 @@
                IF  WRK-MO-CNT          >   ZERO
                    MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  WRK-DATA
-                   PERFORM 2401-SPACE-HENSYU-SEC    
-                   MOVE    WRK-DATA (1:WRK-LEN)
+                   MOVE    50              TO  WRK-MAX-CNT
+                   PERFORM 2402-ZENKAKU-HEN-SEC
+                   IF      FLG-ERR         =   ZERO
+                       MOVE    WRK-DATA (1:WRK-LEN)
                                        TO  PTINF-SETAINUSI
+                   END-IF
                END-IF
       *    £±£´¡§Â³ÊÁ
            WHEN    14
                IF  WRK-MO-CNT          >   ZERO
                    MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  WRK-DATA
-                   PERFORM 2401-SPACE-HENSYU-SEC 
-                   MOVE    WRK-DATA (1:WRK-LEN)
+                   MOVE    30              TO  WRK-MAX-CNT
+                   PERFORM 2402-ZENKAKU-HEN-SEC
+                   IF      FLG-ERR         =   ZERO
+                       MOVE    WRK-DATA (1:WRK-LEN)
                                        TO  PTINF-ZOKUGARA
+                   END-IF
                END-IF
       *    £±£µ¡§¿¦¶È
            WHEN    15
                IF  WRK-MO-CNT          >   ZERO
                    MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  WRK-DATA
-                   PERFORM 2401-SPACE-HENSYU-SEC                        
-                   MOVE    WRK-DATA (1:WRK-LEN)
+                   MOVE    20              TO  WRK-MAX-CNT
+                   PERFORM 2402-ZENKAKU-HEN-SEC
+                   IF      FLG-ERR         =   ZERO
+                       MOVE    WRK-DATA (1:WRK-LEN)
                                        TO  PTINF-JOB
+                   END-IF
                END-IF
       *    £±£¶¡§·ÈÂÓÅÅÏÃÈÖ¹æ
            WHEN    16
@@ -879,7 +912,8 @@
                IF  WRK-MO-CNT          >   ZERO
                    MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  WRK-DATA
-                   PERFORM 2401-SPACE-HENSYU-SEC                        
+                   MOVE    100             TO  WRK-MAX-CNT
+                   PERFORM 2402-ZENKAKU-HEN2-SEC
                    MOVE    WRK-DATA (1:WRK-LEN)
                                        TO  PTINF-COMMENT-1
                END-IF
@@ -888,7 +922,8 @@
                IF  WRK-MO-CNT          >   ZERO
                    MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  WRK-DATA
-                   PERFORM 2401-SPACE-HENSYU-SEC                        
+                   MOVE    100             TO  WRK-MAX-CNT
+                   PERFORM 2402-ZENKAKU-HEN2-SEC
                    MOVE    WRK-DATA (1:WRK-LEN)
                                        TO  PTINF-COMMENT-2
                END-IF
@@ -897,72 +932,96 @@
                IF  WRK-MO-CNT          >   ZERO
                    MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  WRK-DATA
-                   PERFORM 2401-SPACE-HENSYU-SEC                        
-                   MOVE    WRK-DATA (1:WRK-LEN)
+                   MOVE    100         TO  WRK-MAX-CNT
+                   PERFORM 2402-ZENKAKU-HEN-SEC
+                   IF      FLG-ERR         =   ZERO
+                       MOVE    WRK-DATA (1:WRK-LEN)
                                        TO  PTINF-TABOO-1
+                   END-IF
                END-IF
       *    £²£µ¡§¶Ø´÷£²
            WHEN    25
                IF  WRK-MO-CNT          >   ZERO
                    MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  WRK-DATA
-                   PERFORM 2401-SPACE-HENSYU-SEC                        
-                   MOVE    WRK-DATA (1:WRK-LEN)
+                   MOVE    100         TO  WRK-MAX-CNT
+                   PERFORM 2402-ZENKAKU-HEN-SEC
+                   IF      FLG-ERR         =   ZERO
+                       MOVE    WRK-DATA (1:WRK-LEN)
                                        TO  PTINF-TABOO-2
+                   END-IF
                END-IF
       *    £²£¶¡§¥¢¥ì¥ë¥®¡¼£±
            WHEN    26
                IF  WRK-MO-CNT          >   ZERO
                    MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  WRK-DATA
-                   PERFORM 2401-SPACE-HENSYU-SEC                        
-                   MOVE    WRK-DATA (1:WRK-LEN)
+                   MOVE    100         TO  WRK-MAX-CNT
+                   PERFORM 2402-ZENKAKU-HEN-SEC
+                   IF      FLG-ERR         =   ZERO
+                       MOVE    WRK-DATA (1:WRK-LEN)
                                        TO  PTINF-ALLERGY-1
+                   END-IF
                END-IF
       *    £²£·¡§¥¢¥ì¥ë¥®¡¼£²
            WHEN    27
                IF  WRK-MO-CNT          >   ZERO
                    MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  WRK-DATA
-                   PERFORM 2401-SPACE-HENSYU-SEC                        
-                   MOVE    WRK-DATA (1:WRK-LEN)
+                   MOVE    100         TO  WRK-MAX-CNT
+                   PERFORM 2402-ZENKAKU-HEN-SEC
+                   IF      FLG-ERR         =   ZERO
+                       MOVE    WRK-DATA (1:WRK-LEN)
                                        TO  PTINF-ALLERGY-2
+                   END-IF
                END-IF
       *    £²£¸¡§´¶À÷¾É£±
            WHEN    28
                IF  WRK-MO-CNT          >   ZERO
                    MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  WRK-DATA
-                   PERFORM 2401-SPACE-HENSYU-SEC                        
-                   MOVE    WRK-DATA (1:WRK-LEN)
+                   MOVE    100         TO  WRK-MAX-CNT
+                   PERFORM 2402-ZENKAKU-HEN-SEC
+                   IF      FLG-ERR         =   ZERO
+                       MOVE    WRK-DATA (1:WRK-LEN)
                                        TO  PTINF-KANSENSYO-1
+                   END-IF
                END-IF
       *    £²£¹¡§´¶À÷¾É£²
            WHEN    29
                IF  WRK-MO-CNT          >   ZERO
                    MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  WRK-DATA
-                   PERFORM 2401-SPACE-HENSYU-SEC                        
-                   MOVE    WRK-DATA (1:WRK-LEN)
+                   MOVE    100         TO  WRK-MAX-CNT
+                   PERFORM 2402-ZENKAKU-HEN-SEC
+                   IF      FLG-ERR         =   ZERO
+                       MOVE    WRK-DATA (1:WRK-LEN)
                                        TO  PTINF-KANSENSYO-2
+                   END-IF
                END-IF
       *    £³£°¡§Ï¢ÍíÀè¡ÝÌ¾¾Î
            WHEN    30
                IF  WRK-MO-CNT          >   ZERO
                    MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  WRK-DATA
-                   PERFORM 2401-SPACE-HENSYU-SEC                        
-                   MOVE    WRK-DATA (1:WRK-LEN)
+                   MOVE    50          TO  WRK-MAX-CNT
+                   PERFORM 2402-ZENKAKU-HEN-SEC
+                   IF      FLG-ERR         =   ZERO
+                       MOVE    WRK-DATA (1:WRK-LEN)
                                        TO  PTINF-RENRAKU-NAME
+                   END-IF
                END-IF
       *    £³£±¡§Ï¢ÍíÀè¡ÝÂ³ÊÁ
            WHEN    31
                IF  WRK-MO-CNT          >   ZERO
                    MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  WRK-DATA
-                   PERFORM 2401-SPACE-HENSYU-SEC                        
-                   MOVE    WRK-DATA (1:WRK-LEN)
+                   MOVE    30          TO  WRK-MAX-CNT
+                   PERFORM 2402-ZENKAKU-HEN-SEC
+                   IF      FLG-ERR         =   ZERO
+                       MOVE    WRK-DATA (1:WRK-LEN)
                                        TO  PTINF-RENRAKU-ZOKUGARA
+                   END-IF
                END-IF
       *    £³£²¡§Ï¢ÍíÀè¡ÝÍ¹ÊØÈÖ¹æ
            WHEN    32
@@ -972,18 +1031,24 @@
                IF  WRK-MO-CNT          >   ZERO
                    MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  WRK-DATA
-                   PERFORM 2401-SPACE-HENSYU-SEC                        
-                   MOVE    WRK-DATA (1:WRK-LEN)
+                   MOVE    100         TO  WRK-MAX-CNT
+                   PERFORM 2402-ZENKAKU-HEN-SEC
+                   IF      FLG-ERR         =   ZERO
+                       MOVE    WRK-DATA (1:WRK-LEN)
                                        TO  PTINF-RENRAKU-ADRS
+                   END-IF
                END-IF
       *    £³£´¡§Ï¢ÍíÀè¡ÝÈÖÃÏÊý½ñ
            WHEN    34
                IF  WRK-MO-CNT          >   ZERO
                    MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  WRK-DATA
-                   PERFORM 2401-SPACE-HENSYU-SEC                        
-                   MOVE    WRK-DATA (1:WRK-LEN)
+                   MOVE    100         TO  WRK-MAX-CNT
+                   PERFORM 2402-ZENKAKU-HEN-SEC
+                   IF      FLG-ERR         =   ZERO
+                       MOVE    WRK-DATA (1:WRK-LEN)
                                        TO  PTINF-RENRAKU-BANTI
+                   END-IF
                END-IF
       *    £³£µ¡§Ï¢ÍíÀè¡ÝÅÅÏÃÈÖ¹æ¡ÊÃë¡Ë
            WHEN    35
@@ -1008,9 +1073,12 @@
                IF  WRK-MO-CNT          >   ZERO
                    MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  WRK-DATA
-                   PERFORM 2401-SPACE-HENSYU-SEC                        
-                   MOVE    WRK-DATA (1:WRK-LEN)
+                   MOVE    50          TO  WRK-MAX-CNT
+                   PERFORM 2402-ZENKAKU-HEN-SEC
+                   IF      FLG-ERR         =   ZERO
+                       MOVE    WRK-DATA (1:WRK-LEN)
                                        TO  PTINF-OFFICE-NAME
+                   END-IF
                END-IF
       *    £³£¸¡§¶ÐÌ³Àè¡ÝÍ¹ÊØÈÖ¹æ
            WHEN    38
@@ -1020,18 +1088,24 @@
                IF  WRK-MO-CNT          >   ZERO
                    MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  WRK-DATA
-                   PERFORM 2401-SPACE-HENSYU-SEC                        
-                   MOVE    WRK-DATA (1:WRK-LEN)
+                   MOVE    100         TO  WRK-MAX-CNT
+                   PERFORM 2402-ZENKAKU-HEN-SEC
+                   IF      FLG-ERR         =   ZERO
+                       MOVE    WRK-DATA (1:WRK-LEN)
                                        TO  PTINF-OFFICE-ADRS
+                   END-IF
                END-IF
       *    £´£°¡§¶ÐÌ³Àè¡ÝÈÖÃÏÊý½ñ
            WHEN    40
                IF  WRK-MO-CNT          >   ZERO
                    MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  WRK-DATA
-                   PERFORM 2401-SPACE-HENSYU-SEC                        
-                   MOVE    WRK-DATA (1:WRK-LEN)
+                   MOVE    100         TO  WRK-MAX-CNT
+                   PERFORM 2402-ZENKAKU-HEN-SEC
+                   IF      FLG-ERR         =   ZERO
+                       MOVE    WRK-DATA (1:WRK-LEN)
                                        TO  PTINF-OFFICE-BANTI
+                   END-IF
                END-IF
       *    £´£±¡§¶ÐÌ³Àè¡ÝÅÅÏÃÈÖ¹æ
            WHEN    41
@@ -1047,9 +1121,12 @@
                IF  WRK-MO-CNT          >   ZERO
                    MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  WRK-DATA
-                   PERFORM 2401-SPACE-HENSYU-SEC                        
-                   MOVE    WRK-DATA (1:WRK-LEN)
+                   MOVE    50          TO  WRK-MAX-CNT
+                   PERFORM 2402-ZENKAKU-HEN-SEC
+                   IF      FLG-ERR         =   ZERO
+                       MOVE    WRK-DATA (1:WRK-LEN)
                                        TO  PTINF-KISEI-NAME
+                   END-IF
                END-IF
       *    £´£³¡§µ¢¾ÊÀè¡ÝÍ¹ÊØÈÖ¹æ
            WHEN    43
@@ -1059,18 +1136,24 @@
                IF  WRK-MO-CNT          >   ZERO
                    MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  WRK-DATA
-                   PERFORM 2401-SPACE-HENSYU-SEC                        
-                   MOVE    WRK-DATA (1:WRK-LEN)
+                   MOVE    100         TO  WRK-MAX-CNT
+                   PERFORM 2402-ZENKAKU-HEN-SEC
+                   IF      FLG-ERR         =   ZERO
+                       MOVE    WRK-DATA (1:WRK-LEN)
                                        TO  PTINF-KISEI-ADRS
+                   END-IF
                END-IF
       *    £´£µ¡§µ¢¾ÊÀè¡ÝÈÖÃÏÊý½ñ
            WHEN    45
                IF  WRK-MO-CNT          >   ZERO
                    MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  WRK-DATA
-                   PERFORM 2401-SPACE-HENSYU-SEC                        
-                   MOVE    WRK-DATA (1:WRK-LEN)
+                   MOVE    100         TO  WRK-MAX-CNT
+                   PERFORM 2402-ZENKAKU-HEN-SEC
+                   IF      FLG-ERR         =   ZERO
+                       MOVE    WRK-DATA (1:WRK-LEN)
                                        TO  PTINF-KISEI-BANTI
+                   END-IF
                END-IF
       *    £´£¶¡§µ¢¾ÊÀè¡ÝÅÅÏÃÈÖ¹æ
            WHEN    46
@@ -1098,6 +1181,100 @@
            EXIT.
       *
       *****************************************************************
+      *    Á´³Ñ·å¿ô¡¦¶õÇò½èÍý
+      *****************************************************************
+       2402-ZENKAKU-HEN-SEC              SECTION.
+      *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    WRK-DATA            TO  KANACHK-MAE-INPUT
+           MOVE    WRK-MAX-CNT         TO  KANACHK-MAX-CNT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  WRK-DATA
+           MOVE    KANACHK-MAX         TO  WRK-LEN
+           IF      KANACHK-RC      NOT =   ZERO
+      *        Á´³Ñ¡¦È¾³Ñº®ºß¥¨¥é¡Ý
+               MOVE    3                   TO  FLG-ERR
+           ELSE
+               IF      KANACHK-SYUBETU     =   1
+      *        È¾³Ñ¤òÁ´³Ñ¤Ø
+                   INITIALIZE                  ORCSKANACHKAREA
+                   MOVE    "2"                 TO  KANACHK-SYORI
+                   MOVE    WRK-DATA            TO  KANACHK-MAE-INPUT
+                   MOVE    WRK-MAX-CNT         TO  KANACHK-MAX-CNT
+                   CALL    "ORCSKANACHK"       USING
+                                               ORCSKANACHKAREA
+                   IF      KANACHK-RC          =   ZERO
+                       MOVE    KANACHK-MAX         TO  WRK-LEN
+                       MOVE    KANACHK-OUT-INPUT   TO  WRK-DATA
+                   END-IF
+               ELSE
+                   MOVE    KANACHK-OUT-INPUT   TO  WRK-DATA
+               END-IF
+           END-IF
+           IF      WRK-LEN             =   ZERO
+               MOVE    1                   TO  WRK-LEN
+           END-IF
+      *    ¸å¤í¤ÎÁ´³Ñ¶õÇò¤òºï½ü
+           IF      WRK-LEN             >   1
+               PERFORM 24021-KUHAKU-DEL-SEC
+           END-IF
+           .
+       2402-ZENKAKU-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Á´³Ñ¶õÇòºï½ü½èÍý
+      *****************************************************************
+       24021-KUHAKU-DEL-SEC              SECTION.
+      *
+           COMPUTE IDW             =   WRK-LEN     -   1
+           IF      WRK-DATA (IDW:2)    =   "¡¡"
+               MOVE    1                   TO  WRK-LEN
+               PERFORM VARYING IDE     FROM    IDW BY  -2
+                       UNTIL   IDE     <   2
+                   IF      WRK-DATA (IDE:2)    NOT =   "¡¡"
+                       COMPUTE WRK-LEN         =   IDE     +   1
+                       MOVE    2               TO  IDE
+                   ELSE
+                       IF      IDE             =   3
+                           IF      WRK-DATA (1:2)      NOT =   "¡¡"
+                               MOVE    2               TO  WRK-LEN
+                           END-IF
+                       END-IF
+                   END-IF
+               END-PERFORM    
+           END-IF
+           .
+       2402-ZENKAKU-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Á´³Ñ·å¿ô¡¦¶õÇò½èÍý¡Ê¥³¥á¥ó¥È¡Ë
+      *****************************************************************
+       2402-ZENKAKU-HEN2-SEC              SECTION.
+      *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    WRK-DATA            TO  KANACHK-MAE-INPUT
+           MOVE    WRK-MAX-CNT         TO  KANACHK-MAX-CNT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  WRK-DATA
+           MOVE    KANACHK-MAX         TO  WRK-LEN
+           IF      WRK-LEN             =   ZERO
+               MOVE    1                   TO  WRK-LEN
+           END-IF
+      *    ¸å¤í¤ÎÁ´³Ñ¶õÇò¤òºï½ü
+           IF      WRK-LEN             >   1
+               PERFORM 24021-KUHAKU-DEL-SEC
+           END-IF
+           .
+       2402-ZENKAKU-HEN2-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ¹àÌÜ¶õÇò½èÍý
       *****************************************************************
        2401-SPACE-HENSYU-SEC              SECTION.
@@ -1115,24 +1292,9 @@
                    END-IF     
                END-PERFORM
       *
+      *        ¸å¤í¤ÎÁ´³Ñ¶õÇò¤òºï½ü
                IF      WRK-LEN             >   1
-                   COMPUTE IDW     =   WRK-LEN     -   1
-                   IF      WRK-DATA (IDW:2)    =   "¡¡"
-                       MOVE    1                   TO  WRK-LEN
-                       PERFORM VARYING IDE FROM    IDW BY  -2
-                               UNTIL   IDE  < 2
-                           IF      WRK-DATA (IDE:2)    NOT =   "¡¡"
-                               COMPUTE WRK-LEN     =   IDE     +   1
-                               MOVE    2                TO  IDE
-                           ELSE
-                               IF  IDE = 3 
-                                   IF  WRK-DATA (1:2)    NOT =   "¡¡"
-                                       MOVE    2   TO  WRK-LEN
-                                   END-IF
-                               END-IF
-                           END-IF
-                       END-PERFORM    
-                   END-IF         
+                    PERFORM 24021-KUHAKU-DEL-SEC
                END-IF
            END-IF
            .
