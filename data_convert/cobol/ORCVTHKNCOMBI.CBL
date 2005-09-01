@@ -34,6 +34,7 @@
       *  01.00.03    NACL-多々納  02/11/29  前期高齢者対応
       *  01.00.04    NACL-多々納  03/05/12  保険期間外の対応（暫定）
       *  01.00.05    NACL-多々納  03/05/16  保険期間外の対応
+      *  01.00.06    NACL-多々納  05/08/18  前期高齢者コンバート対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -196,6 +197,8 @@
            03  WRK-HKN-HKNKOHSBTKBN    PIC X(02).
            03  FLG-HENKOU              PIC 9(01).
       *
+           03  WRK-ERRCD               PIC 9(04).
+      *
       *    新組合せパラメタデータ用レイアウト
        01  NC01PARA-REC.
            03  PARA-NC01-REC           PIC X(500).
@@ -255,6 +258,8 @@
                "患者保険更新エラー".
            03  CONS-MES9               PIC X(50) VALUE
                "患者公費更新エラー".
+           03  CONS-MES10              PIC X(50) VALUE
+               "患者保険の補助区分が前期高齢者の区分です".
       *
        01  CONS1-AREA.
            03  CONS-CNTST              PIC 9(06) VALUE   0.
@@ -705,14 +710,12 @@
                    PERFORM 2210-HKNKOH-KAKUNIN-SEC
                    IF     (WRK-KEN-ERFLG       =   SPACE )  AND
                           (WRK-KEN-ERFLG2      =   SPACE )
-      *                前期高齢者の時、補助区分を再編集する
-                       IF     (PTINF-BIRTHDAY      >   "19320930" ) AND
-                              (WRK-BYMD-70         <=  WRK-SYMD   ) AND
-                              (PTHKN-TEKEDYMD      >=  WRK-SYMD   )
-                           PERFORM 2201-HOJOKBN-SET-SEC
-                       END-IF
-      *
-                       ADD     1               TO  IDX
+      *                補助区分を再編集する
+                       PERFORM 2201-HOJOKBN-SET-SEC
+                   END-IF
+                   IF     (WRK-KEN-ERFLG       =   SPACE )  AND
+                          (WRK-KEN-ERFLG2      =   SPACE )
+                       ADD     1                   TO  IDX
                        MOVE    SPACE               TO  PARA-REC
                        INITIALIZE                      PARA-REC
                        MOVE    "PTHKNINF"          TO  PARA-FILEMEI
@@ -754,9 +757,20 @@
       *****************************************************************
        2201-HOJOKBN-SET-SEC        SECTION.
       *
-      *
            MOVE    ZERO                TO  FLG-HENKOU
-           PERFORM 22011-HOJOKBN-CHK-SEC
+      *    コンバート時に前期高齢者の時、補助区分を再編集する
+           IF     (PTINF-BIRTHDAY      >   "19320930" ) AND
+                  (WRK-BYMD-70         <=  WRK-SYMD   ) AND
+                  (PTHKN-TEKEDYMD      >=  WRK-SYMD   )
+               IF     (WRK-BYMD-70         >   PTHKN-TEKSTYMD )
+      *            適用開始日が前期高齢者年齢以前
+                   PERFORM 22012-HOJOKBN-CHK2-SEC
+               ELSE
+                   PERFORM 22011-HOJOKBN-CHK-SEC
+               END-IF
+           ELSE
+               PERFORM 22012-HOJOKBN-CHK2-SEC
+           END-IF
       *
            IF      FLG-HENKOU          =   1
       *        保険情報更新
@@ -788,7 +802,6 @@
                GO      TO      22011-HOJOKBN-CHK-EXT
            END-IF
       *
-           MOVE    ZERO                TO  FLG-HENKOU
            EVALUATE    PTHKN-HKNNUM
                WHEN    "002"
       *            船員
@@ -802,7 +815,8 @@
                        WHEN    "3"
                            MOVE    "C"         TO  PTHKN-HOJOKBN
                            MOVE    1           TO  FLG-HENKOU
-                       WHEN    OTHER
+                       WHEN    "0"
+                       WHEN    SPACE
                            MOVE    "9"         TO  PTHKN-HOJOKBN
                            MOVE    1           TO  FLG-HENKOU
                    END-EVALUATE
@@ -811,6 +825,8 @@
                    EVALUATE    PTHKN-HOJOKBN
                        WHEN    "1"
                        WHEN    "2"
+                       WHEN    "4"
+                       WHEN    "5"
                            CONTINUE
                        WHEN    OTHER
                            MOVE    "1"         TO  PTHKN-HOJOKBN
@@ -818,12 +834,57 @@
                    END-EVALUATE
                WHEN    OTHER
       *            その他
-                   MOVE    "9"             TO  PTHKN-HOJOKBN
-                   MOVE    1               TO  FLG-HENKOU
+                   EVALUATE    PTHKN-HOJOKBN
+                       WHEN    "9"
+                       WHEN    "8"
+                           CONTINUE
+                       WHEN    OTHER
+                           MOVE    "9"         TO  PTHKN-HOJOKBN
+                           MOVE    1           TO  FLG-HENKOU
+                   END-EVALUATE
            END-EVALUATE
       *
            .
        22011-HOJOKBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    前期高齢者以外の時、補助区分のチェック処理
+      *****************************************************************
+        22012-HOJOKBN-CHK2-SEC        SECTION.
+      *
+      *    老人年齢、労災・自費・治験
+           IF     (PTINF-BIRTHDAY      <=  "19320930" ) OR
+                  (WRK-HKN-HKNKOHSBTKBN    =   "4"  OR  "8"  OR  "9")
+               GO      TO      22012-HOJOKBN-CHK2-EXT
+           END-IF
+      *
+           EVALUATE    PTHKN-HKNNUM
+               WHEN    "002"
+      *            船員
+                   EVALUATE    PTHKN-HOJOKBN
+                       WHEN    "1"
+                       WHEN    "2"
+                       WHEN    "3"
+                       WHEN    "0"
+                           CONTINUE
+                       WHEN    OTHER
+                           MOVE    "5"             TO  WRK-KEN-ERFLG
+                   END-EVALUATE
+               WHEN    "060"
+      *            国保
+                   CONTINUE
+               WHEN    OTHER
+      *            その他
+                   EVALUATE    PTHKN-HOJOKBN
+                       WHEN    "9"
+                       WHEN    "8"
+                           MOVE    "5"             TO  WRK-KEN-ERFLG
+                   END-EVALUATE
+           END-EVALUATE
+      *
+           .
+        22012-HOJOKBN-CHK2-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1123,6 +1184,7 @@
                   (WRK-BYMD-70         <=  WRK-SYMD   ) AND
                   (PTHKN-TEKEDYMD      >=  WRK-SYMD   ) AND
                   (PTHKN-TEKSTYMD      >   "20021001" )
+              AND (PTHKN-TEKSTYMD      >=  WRK-BYMD-70 )
                PERFORM 22011-HOJOKBN-CHK-SEC
            END-IF
       *
@@ -1163,6 +1225,7 @@
                   (WRK-BYMD-70         <=  WRK-SYMD   ) AND
                   (PTHKN-TEKEDYMD      >=  WRK-SYMD   ) AND
                   (PTHKN-TEKSTYMD      >   "20021001" )
+              AND (PTHKN-TEKSTYMD      >=  WRK-BYMD-70 )
                PERFORM 22011-HOJOKBN-CHK-SEC
            END-IF
       *    保険ＩＤ設定
@@ -1474,54 +1537,56 @@
        400-PARA-INSERT-EXT.
            EXIT.
       *
-      *
       *****************************************************************
       *    エラーリスト出力処理
       *****************************************************************
        2220-ERRLST-OUT-SEC                SECTION.
       *
            ADD     1                   TO  CNT-ERR
-           MOVE    ZERO                TO  FLG-ERR
+           MOVE    ZERO                TO  WRK-ERRCD
       *
            IF  SPA-ERRCD               =   SPACE
                EVALUATE    WRK-KEN-ERFLG
       *        該当する保険番号なし
                WHEN    "1"
                WHEN    "2"
-                   MOVE    1           TO  FLG-ERR
+                   MOVE    1           TO  WRK-ERRCD
       *        患者保険マスタに公費が入っている場合
                WHEN    "3"
-                   MOVE    2           TO  FLG-ERR
+                   MOVE    2           TO  WRK-ERRCD
       *        患者公費マスタに保険が入っている場合
                WHEN    "4"
-                   MOVE    3           TO  FLG-ERR
+                   MOVE    3           TO  WRK-ERRCD
+      *        前期高齢者の補助区分が入っている場合
+               WHEN    "5"
+                   MOVE    10          TO  WRK-ERRCD
       *        患者保険マスタ更新エラー
                WHEN    "8"
-                   MOVE    8           TO  FLG-ERR
+                   MOVE    8           TO  WRK-ERRCD
       *        患者公費マスタ更新エラー
                WHEN    "9"
-                   MOVE    9           TO  FLG-ERR
+                   MOVE    9           TO  WRK-ERRCD
                END-EVALUATE
       ******** IF  FLG-ERR             =   ZERO
-      *            MOVE    6           TO  FLG-ERR
+      *            MOVE    6           TO  WRK-ERRCD
       ******** END-IF
            ELSE
       *        サブプロ（ORCGP02W2）内でエラー発生
                EVALUATE    SPA-ERRCD
       *        保険・公費テーブル１００件オーバー
                WHEN    "0015"
-                   MOVE    4           TO  FLG-ERR
+                   MOVE    4           TO  WRK-ERRCD
       *        保険・公費　該当なし
                WHEN    "0001"
                WHEN    "0014"
-                   MOVE    5           TO  FLG-ERR
+                   MOVE    5           TO  WRK-ERRCD
                END-EVALUATE
            END-IF
       *
            MOVE    SPACE               TO  ERR-REC
            MOVE    CNT-ERR (1:3)       TO  ERR-NO (1:3)
            MOVE    ":"                 TO  ERR-NO (5:1)
-           EVALUATE    FLG-ERR
+           EVALUATE    WRK-ERRCD
            WHEN    1
                MOVE    CONS-MES1       TO  ERR-MES
                MOVE    WRK-KEN-HKNNUM  TO  ERR-HKNNUM
@@ -1541,8 +1606,10 @@
                MOVE    CONS-MES8       TO  ERR-MES
            WHEN    9
                MOVE    CONS-MES9       TO  ERR-MES
+           WHEN    10
+               MOVE    CONS-MES10      TO  ERR-MES
            END-EVALUATE
-           IF     (FLG-ERR             =   ZERO )  AND
+           IF     (WRK-ERRCD           =   ZERO )  AND
                   (WRK-KEN-ERFLG2  NOT =   SPACE)
       *            期間変更
                EVALUATE    WRK-KEN-ERFLG2
@@ -1570,6 +1637,7 @@
       *
            MOVE    SPACE               TO  WRK-KEN-ERFLG
            MOVE    SPACE               TO  SPA-ERRCD
+           MOVE    ZERO                TO  WRK-ERRCD
            MOVE    ZERO                TO  FLG-ERR
       *
            .
@@ -2002,6 +2070,6 @@
                DISPLAY "DBDISCONNECT ERROR"
            END-IF
            .
-       900-DBCLOSE-EXT.
+       900-DBDISCONNECT-EXT.
            EXIT.
       *
