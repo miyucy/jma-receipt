@@ -253,6 +253,8 @@
            COPY    "CPORCSNUM.INC".
       *   画面日付変換サブ
            COPY    "CPORCSGDAY.INC".
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -303,6 +305,7 @@
            COPY    "W60.INC".
            COPY    "W61.INC".
            COPY    "W98.INC".
+           COPY    "W97.INC".
            COPY    "W99.INC".
            COPY    "WERR.INC".
            COPY    "WID1.INC".
@@ -2042,6 +2045,9 @@
       *****************************************************************
        490-KOUSHIN-SEC           SECTION.
       *
+      *    更新日取得
+           CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
+      *
            MOVE    SPACE               TO  SYS-1010-REC
            INITIALIZE                      SYS-1010-REC
            MOVE    "1010"                  TO  SYS-1010-KANRICD
@@ -2086,11 +2092,13 @@
       *
            MOVE    SPA-GMN-ORCA21FLG       TO  SYS-1010-ORCA21FLG
       *
-           MOVE    SYS-1010-REC            TO  SYSKANRI-REC
-      *
            IF     (FLG-SYSKANRI        =   ZERO ) AND
                   (SPA-GMN-SYORI       =   2    )
       *        更新
+               MOVE    SMCNDATE-YMD        TO  SYS-1010-UPYMD
+               MOVE    SMCNDATE-HMS        TO  SYS-1010-UPHMS
+               MOVE    SYS-1010-REC        TO  SYSKANRI-REC
+      *
                MOVE    SYS-KANRICD         TO  SYSUP-KANRICD
                MOVE    SYS-KBNCD           TO  SYSUP-KBNCD
                MOVE    SPA-MAE-STYUKYMD    TO  SYSUP-STYUKYMD
@@ -2107,7 +2115,12 @@
                    DISPLAY "W06 DB UPD ERR KEY:" SYS-1010-KEY 
                END-IF
            ELSE
-               MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+      *        追加
+               MOVE    SMCNDATE-YMD        TO  SYS-1010-CREYMD
+               MOVE    SMCNDATE-YMD        TO  SYS-1010-UPYMD
+               MOVE    SMCNDATE-HMS        TO  SYS-1010-UPHMS
+      *
+               MOVE    SYS-1010-REC        TO  MCPDATA-REC
                MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
                MOVE    "DBINSERT"          TO  MCP-FUNC
                CALL    "ORCMCPSUB"         USING

@@ -72,6 +72,7 @@
       *  01.05.22    NACL-小豆沢  05/07/15  自費１０項目対応
       *  01.05.23    NACL-多々納  05/08/15  1043 会計照会機能情報追加
       *  01.05.24    NACL-多々納  05/08/29  職員情報更新修正
+      *  01.05.25    NACL-多々納  05/08/31  9700 ユーザプログラム起動追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -297,13 +298,15 @@
            03  FILLER              PIC X(35)   VALUE
                "9000 ＣＬＡＩＭ接続情報".
            03  FILLER              PIC X(35)   VALUE
+               "9700 ユーザプログラム起動情報".
+           03  FILLER              PIC X(35)   VALUE
                "9800 排他制御情報".
        01  TBL-KANRICD-G-AREAR         REDEFINES   TBL-KANRICD-G-AREA.
-           03  TBL-KANRICD-G-TBL           OCCURS   2.
+           03  TBL-KANRICD-G-TBL           OCCURS   3.
                05  TBL-KANRICD-G           PIC X(04).
                05  TBL-FILLER              PIC X(01).
                05  TBL-KANRICDMEI-G        PIC X(30).
-       01  TBL-KANRICDG-MAX                 PIC 9(04)   VALUE   2.
+       01  TBL-KANRICDG-MAX                 PIC 9(04)   VALUE   3.
       *
       *入院のみ
        01  TBL-KANRICD-N-AREA.
@@ -330,14 +333,16 @@
            03  FILLER              PIC X(35)   VALUE
                "9000 ＣＬＡＩＭ接続情報".
            03  FILLER              PIC X(35)   VALUE
+               "9700 ユーザプログラム起動情報".
+           03  FILLER              PIC X(35)   VALUE
                "9800 排他制御情報".
       *
        01  TBL-KANRICD-N-AREAR         REDEFINES   TBL-KANRICD-N-AREA.
-           03  TBL-KANRICD-N-TBL           OCCURS   12.
+           03  TBL-KANRICD-N-TBL           OCCURS   13.
                05  TBL-KANRICD-N           PIC X(04).
                05  TBL-FILLER              PIC X(01).
                05  TBL-KANRICDMEI-N        PIC X(30).
-       01  TBL-KANRICDN-MAX                PIC 9(04)   VALUE   12.
+       01  TBL-KANRICDN-MAX                PIC 9(04)   VALUE   13.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -447,6 +452,7 @@
            COPY    "W60.INC".
            COPY    "W61.INC".
            COPY    "W98.INC".
+           COPY    "W97.INC".
            COPY    "W99.INC".
            COPY    "WERR.INC".
            COPY    "WID1.INC".
@@ -1056,7 +1062,6 @@
       *---- (01.02.02) LINE ADD END   --------------------------------
                    PERFORM 41041-KBNCD-HENSYU-SEC
                    MOVE    5               TO  SPA-GMN-CUR
-                   GO  TO  4104-KANRICD-CHK-EXT
       *---- (01.05.24) LINE ADD START --------------------------------
                WHEN    "1010"
       *---- (01.05.24) LINE ADD END   --------------------------------
@@ -1069,21 +1074,30 @@
                WHEN    "5005"
                WHEN    "5006"
                WHEN    "2006"
+               WHEN    "9700"
+      *            期間指定なし
                    MOVE    SPACE           TO  SPA-GMN-KBNCD
                    MOVE    12              TO  SPA-GMN-CUR
-                   GO  TO  4104-KANRICD-CHK-EXT
       *        出力先プリンタ割り当て
                WHEN    "1031"
                    PERFORM 41041-1031-HEN-SEC
                    MOVE    12                      TO  SPA-GMN-CUR
-                   GO  TO  4104-KANRICD-CHK-EXT
       *        入院指示せん設定
                WHEN    "5007"
                    PERFORM 41049-1043-HEN-SEC
-                   GO  TO  4104-KANRICD-CHK-EXT
                WHEN    OTHER
-                   MOVE    SPACE           TO  SPA-GMN-KBNCD 
-           END-EVALUATE         
+                   MOVE    SPACE           TO  SPA-GMN-KBNCD
+                   PERFORM 4104-KANRICD-CHK-SYORI-SEC
+           END-EVALUATE
+           .
+       4104-KANRICD-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システム管理区分編集処理
+      *****************************************************************
+       4104-KANRICD-CHK-SYORI-SEC              SECTION.
+      *
       *    システム管理読み込み
            MOVE    SPACE               TO  SYS-KEY
            MOVE    SPA-GMN-KANRICD     TO  SYS-KANRICD
@@ -1166,7 +1180,7 @@
                    MOVE    2                       TO  SPA-GMN-CUR
            END-EVALUATE
            .
-       4104-KANRICD-CHK-EXT.
+       4104-KANRICD-CHK-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1693,7 +1707,8 @@
              OR                            "5006"
              OR                            "2006"
       *---- (01.05.24) LINE ADD START --------------------------------
-             OR                            "1010")
+             OR                            "1010"
+             OR                            "9700")
       *---- (01.05.24) LINE ADD END   --------------------------------
                CONTINUE
            ELSE
@@ -1795,6 +1810,8 @@
                    MOVE    "W29"               TO  SPA-SAKIPG
                WHEN    "9000"
                    MOVE    "W99"               TO  SPA-SAKIPG
+               WHEN    "9700"
+                   MOVE    "W97"               TO  SPA-SAKIPG
       *        排他 INS ST
                WHEN    "9800"
                    MOVE    "W98"               TO  SPA-SAKIPG
