@@ -67,6 +67,7 @@
       *  01.02.12    NACL-小豆沢  05/05/20  入院点滴種別追加に伴う修正
       *  01.02.13    NACL-門脇    05/07/15  自賠責従来様式対応
       *  01.02.14    NACL-門脇    05/08/22  リハビリ実施回数差し込み修正対応
+      *  01.02.15    NACL-藤原    05/08/22  検体検査コメントの追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1652,6 +1653,8 @@
                ELSE
                   MOVE TNS-YUKOKETA       TO    RECE85-YUKOKETA(IDX4)
                END-IF
+               MOVE    TNS-KENTAICOMMENT  TO    RECE85-KENTAICOMMENT
+                                                               (IDX4)
                MOVE    TNS-DATAKBN        TO    RECE85-DATAKBN (IDX4)
                MOVE    TNS-HOUKNSKBN      TO    RECE85-HOUKNSKBN(IDX4)
                MOVE    TNS-KNSJISKBN      TO    RECE85-KNSJISKBN(IDX4)

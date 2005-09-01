@@ -55,6 +55,8 @@
       *  01.02.10    NACL-門脇    05/06/06  ワーク項目桁数修正
       *  01.02.11    NACL-藤原    05/08/17  包括対象検査フラグの新設に対応
       *  01.02.12    NACL-門脇    05/08/18  自賠責従来様式対応
+      *  01.02.13    NACL-伊藤    05/09/01  検体検査コメントのついた包括
+      *                                     対象検査の剤まとめに対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -289,6 +291,11 @@
       *    剤の診療種別区分
            03  WRK-SRYSYUKBN                   PIC X(03).
       *
+           03  WRK-KENTAICOMMENT-YUKOKETA      PIC 9(03).
+           03  WRK-KENTAICOMMENT-NAME          PIC X(200).
+           03  WRK-KENTAICOMMENT-NAME-TEMP     PIC X(200).
+           03  WRK-KENTAICOMMENT-SRYCD         PIC 9(09).
+      *
       *    剤・診療行為テーブル
        01  TBL-ZAI-AREA.
            03  TBL-ZAI-OCC         OCCURS   100.
@@ -310,10 +317,12 @@
                05  WRK-KENSA-SU            PIC 9(03).
                05  WRK-RECE84-IDX-G.
                    07  WRK-RECE84-IDX      PIC 9(03)
-                                                  OCCURS  4.
+                                                  OCCURS  30.
                05  WRK-KENSA-SRYCD-G.
-                   07  WRK-KENSA-SRYCD     PIC 9(09)
-                                                  OCCURS  4.
+                   07  WRK-KENSA-SRYCD-OCC OCCURS  30.
+                       09  WRK-KENSA-KENTAICOMMENT-SRYCD
+                                           PIC 9(09).
+                       09  WRK-KENSA-SRYCD PIC 9(09).
       *
        01  WRK-RECE84-ZAITEN               PIC 9(08).
       *
@@ -337,7 +346,10 @@
                05  WRK-RECE84-HOUKNSKBN           PIC 9(02).
                05  WRK-RECE84-SRYSYUKBN           PIC X(03).
                05  WRK-RECE84-REC                 PIC X(600).
-               05  WRK-RECE84-SRYCD               PIC 9(09).
+               05  WRK-RECE84-SRYCD-G.
+                   07  WRK-RECE84-KENTAICOMMENT-SRYCD
+                                                  PIC 9(09).
+                   07  WRK-RECE84-SRYCD           PIC 9(09).
                05  WRK-RECE84-DAY-AREA.
                    07  WRK-RECE84-DAY-TBL         OCCURS  4.
                        09  WRK-RECE84-KAISUINF    OCCURS  31.
@@ -428,6 +440,8 @@
                        09  TBL-ZAIW-AUTOKBN         PIC  X(01).
                        09  TBL-ZAIW-INPUTNUM        PIC  9(03).
                        09  TBL-ZAIW-TENTTLKBN       PIC  9(03).
+      *                検体検査コメント
+                       09  TBL-ZAIW-KENTAICOMMENT   PIC  9(01).
                    07  TBL-ZAIW-NAMEINF.
       *                漢字有効桁数/漢字名称
                        09  TBL-ZAIW-YUKOKETA        PIC  9(02).
@@ -439,6 +453,7 @@
                    07  TBL-ZAIW-HOUKNSKBNINF.
                        09  TBL-ZAIW-HOUKNSKBN       PIC  9(02).
                    07  TBL-ZAIW-SRYSYUKBN-INPUT     PIC  X(03).
+                   07  TBL-ZAIW-KENTAICOMMENT-SRYCD PIC  9(09).
       *
        01  TBL-ZAI-MAX         PIC  9(03)  VALUE   100.
       *
@@ -1029,6 +1044,19 @@
                                GO  TO  2002-TBLZAIW-TAIHI-EXT
                        END-EVALUATE
                    END-IF            
+      *
+                   IF      RECE85-KENTAICOMMENT (IDX)   =   1
+                       MOVE    RECE85-NAME (IDX)        TO
+                                             WRK-KENTAICOMMENT-NAME
+                       INSPECT WRK-KENTAICOMMENT-NAME
+                               REPLACING  ALL  "〈"  BY  "（"
+                                          ALL  "〉"  BY  "）"
+                       MOVE    RECE85-YUKOKETA (IDX)    TO
+                                             WRK-KENTAICOMMENT-YUKOKETA
+                       MOVE    RECE85-SRYCD (IDX)       TO
+                                             WRK-KENTAICOMMENT-SRYCD
+                   ELSE
+      *
                    ADD     1                 TO  WRK-ZAIWMAX (IDY)
                                                  WRK-ZAIWMAX (6)
                    IF      WRK-ZAIWMAX (IDY) >   TBL-ZAI-MAX 
@@ -1080,6 +1108,28 @@
                                      TO  TBL-ZAIW-HOUKNSKBNINF(IDY IDZ)
                        MOVE    RECE85-SRYSYUKBN  TO
                                      TBL-ZAIW-SRYSYUKBN-INPUT(IDY IDZ)
+                       IF      WRK-KENTAICOMMENT-SRYCD  NOT =  ZERO
+                           STRING  TBL-ZAIW-NAME (IDY IDZ)
+                                     DELIMITED   BY  SPACE
+                                   WRK-KENTAICOMMENT-NAME
+                                     DELIMITED   BY  SPACE
+                                   INTO  WRK-KENTAICOMMENT-NAME-TEMP
+                           END-STRING
+                           MOVE    WRK-KENTAICOMMENT-NAME-TEMP
+                                     TO  TBL-ZAIW-NAME (IDY IDZ)
+                           COMPUTE TBL-ZAIW-YUKOKETA (IDY IDZ)  =
+                                   TBL-ZAIW-YUKOKETA (IDY IDZ)  +
+                                   WRK-KENTAICOMMENT-YUKOKETA
+                           MOVE    WRK-KENTAICOMMENT-SRYCD      TO
+                                  TBL-ZAIW-KENTAICOMMENT-SRYCD (IDY IDZ)
+                           MOVE    ZERO          TO
+                                     WRK-KENTAICOMMENT-YUKOKETA
+                                     WRK-KENTAICOMMENT-SRYCD
+                           MOVE    SPACE         TO
+                                     WRK-KENTAICOMMENT-NAME
+                                     WRK-KENTAICOMMENT-NAME-TEMP
+                       END-IF
+     *
                        IF      RECE85-SRYCD (IDX) (1:1)
                                                  =   "1"
                        AND     RECE84-SRYKBN     =   "70"
@@ -1161,6 +1211,8 @@
                        AND   ( RECE85-SRYCD(IDX) =   CONS-HIKAKIN )
                            MOVE    1             TO  FLG-HIKAKIN
                        END-IF  
+                   END-IF
+      *
                    END-IF
                  END-IF
                END-PERFORM
@@ -1659,8 +1711,11 @@
            IF      FLG-SRYCD1          =   1
                PERFORM 2005-SRYKBNELSE-HENSYU-SEC
            ELSE
-      *        剤の明細数が２以上のときはまとめない
-               IF      RECE84-MEISAISU     >   1
+      *        剤の明細数が３以上の場合と明細数が２で
+      *        先頭が検体名コードでない場合はまとめない
+               IF    ( RECE84-MEISAISU     >   2 )
+                 OR (( RECE84-MEISAISU     =   2 )
+                 AND ( TBL-ZAIW-KENTAICOMMENT-SRYCD (3 1) = 0 ))
                    PERFORM 2005-SRYKBNELSE-HENSYU-SEC
                ELSE    
       *        包括対象でないときまとめない         
@@ -1703,6 +1758,9 @@
                                                       (WRK-RECE84-MAX)
            MOVE    TBL-ZAIW-SRYCD(3 1)
                                    TO  WRK-RECE84-SRYCD
+                                                      (WRK-RECE84-MAX)
+           MOVE    TBL-ZAIW-KENTAICOMMENT-SRYCD (3 1)
+                                   TO  WRK-RECE84-KENTAICOMMENT-SRYCD
                                                       (WRK-RECE84-MAX)
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       31
@@ -1757,19 +1815,19 @@
                     PERFORM  VARYING  IDX2  FROM 1 BY 1
                              UNTIL    IDX2  >    IDX1
                       IF   WRK-KENSA-SRYCD(101 IDX2)  =  0
-                           MOVE  WRK-RECE84-SRYCD (IDY)
-                                          TO  WRK-KENSA-SRYCD(101 IDX2)
+                           MOVE  WRK-RECE84-SRYCD-G (IDY)
+                                       TO  WRK-KENSA-SRYCD-OCC(101 IDX2)
                       ELSE
-                        IF   WRK-RECE84-SRYCD (IDY)
-                                          <   WRK-KENSA-SRYCD(101 IDX2)
+                        IF   WRK-RECE84-SRYCD-G (IDY)
+                                       <   WRK-KENSA-SRYCD-OCC(101 IDX2)
                              PERFORM  VARYING  IDX3  FROM  IDX1  BY -1
                                       UNTIL    IDX3  =     IDX2
                                COMPUTE  IDX4   =     IDX3  -  1
-                               MOVE   WRK-KENSA-SRYCD(101 IDX4)
-                                      TO  WRK-KENSA-SRYCD(101 IDX3)
+                               MOVE   WRK-KENSA-SRYCD-OCC(101 IDX4)
+                                       TO  WRK-KENSA-SRYCD-OCC(101 IDX3)
                              END-PERFORM
-                             MOVE  WRK-RECE84-SRYCD (IDY)
-                                          TO  WRK-KENSA-SRYCD(101 IDX2)
+                             MOVE  WRK-RECE84-SRYCD-G (IDY)
+                                       TO  WRK-KENSA-SRYCD-OCC(101 IDX2)
                              MOVE  IDX1   TO  IDX2
                         END-IF
                       END-IF

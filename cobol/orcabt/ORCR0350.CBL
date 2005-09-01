@@ -75,6 +75,9 @@
       *                                     変更による対応
       *  02.06.03    NACL-藤原    05/07/28  レセプト特記事項編集情報の
       *                                     負担者番号に条件を追加
+      *  02.06.04    NACL-藤原    05/08/22  検体検査コメントの追加
+      *  02.06.05    NACL-藤原    05/08/31  愛媛県の地方公費の場合に９７
+      *                                     の負担区分を変更する
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -502,6 +505,8 @@
                            11  TBL-ZAIW-CHUKSNCD    PIC  X(04).
       *                    通番
                            11  TBL-ZAIW-CHUKSNTUBAN PIC  X(01).
+      *                検体検査コメント
+                       09  TBL-ZAIW-KENTAICOMMENT   PIC  9(01).
       *                入力コメント
                        09  TBL-ZAIW-INPUTCOMENT     PIC  X(80).
       *            名称情報
@@ -568,6 +573,8 @@
                        09  TBL-KOUI-CHUKSNCD    PIC  X(04).
       *                通番
                        09  TBL-KOUI-CHUKSNTUBAN PIC  X(01).
+      *            検体検査コメント
+                   07  TBL-KOUI-KENTAICOMMENT   PIC  9(01).
       *            入力コメント
                    07  TBL-KOUI-INPUTCOMENT     PIC  X(80). 
       *        名称情報
@@ -652,6 +659,8 @@
                            11  WRK-KOUI-CHUKSNCD    PIC  X(04).
       *                通番
                            11  WRK-KOUI-CHUKSNTUBAN PIC  X(01).
+      *            検体検査コメント
+                       09  WRK-KOUI-KENTAICOMMENT   PIC  9(01).
       *            入力コメント
                        09  WRK-KOUI-INPUTCOMENT     PIC  X(80). 
       *        名称情報
@@ -3862,6 +3871,35 @@
                        PERFORM 20070-FTNKBN-HENSYU-SEC
                        IF      WRK-FTNKBN          =   SPACE
                            MOVE    ZERO                TO  FLG-CHK
+                       ELSE
+      *
+      *                    食事療養で食事愛媛県の地方公費がある場合は 
+      *                    該当の地方公費をはずした負担区分とする
+                           IF    ( IDZ1                =   3     )
+                           AND   ( SYS-1001-PREFNUM    =   "38"  )
+                           AND   ( RECE62-FUKUSHIFLG-SKJINF-AREA
+                                                   NOT =   SPACE )
+                               EVALUATE    WRK-FTNKBN
+                                   WHEN    "2"
+                                   WHEN    "3"
+                                   WHEN    "8"
+                                       MOVE    "1"     TO  WRK-FTNKBN
+                                   WHEN    "4"
+                                       IF      RECE62-FUKUSHIFLG-SKJ (1)
+                                                           =   "1"
+                                           MOVE    "3" TO  WRK-FTNKBN
+                                       ELSE
+                                           MOVE    "2" TO  WRK-FTNKBN
+                                       END-IF
+                                   WHEN    "A"
+                                       IF      RECE62-FUKUSHIFLG-SKJ (1)
+                                                           =   "1"
+                                           MOVE    "8" TO  WRK-FTNKBN
+                                       ELSE
+                                           MOVE    "3" TO  WRK-FTNKBN
+                                       END-IF
+                               END-EVALUATE
+                           END-IF
                        END-IF
                    END-IF
       *

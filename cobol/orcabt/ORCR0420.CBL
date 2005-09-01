@@ -92,6 +92,7 @@
       *                                     の場合の編集
       *  01.02.11    NACL-門脇    05/07/15  自賠責従来様式対応
       *  01.02.12    NACL-門脇    05/08/22  リハビリ実施回数差し込み修正対応
+      *  01.02.13    NACL-藤原    05/08/22  検体検査コメントの追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1479,6 +1480,8 @@
                ELSE
                   MOVE TNS-YUKOKETA       TO    RECE45-YUKOKETA(IDX4)
                END-IF
+               MOVE    TNS-KENTAICOMMENT  TO    RECE45-KENTAICOMMENT
+                                                               (IDX4)
                MOVE    TNS-DATAKBN        TO    RECE45-DATAKBN (IDX4)
                MOVE    TNS-HOUKNSKBN      TO    RECE45-HOUKNSKBN(IDX4)
                MOVE    TNS-KNSJISKBN      TO    RECE45-KNSJISKBN(IDX4)

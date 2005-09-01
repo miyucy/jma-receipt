@@ -147,6 +147,7 @@
       *  02.06.10    NACL-藤原    05/07/13  本人−入院−内容の追加
       *  02.06.11    NACL-藤原    05/08/05  記載外公費−負担者番号の追加
       *  02.06.12    NACL-門脇    05/08/22  リハビリ実施回数差し込み修正対応
+      *  02.06.13    NACL-藤原    05/08/22  検体検査コメントの追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2078,6 +2079,8 @@
                MOVE    TNS-CHUKSNCD   TO RECE65-CHUKSNCD       (IDX4)
                MOVE    TNS-CHUKSNTUBAN
                                       TO RECE65-CHUKSNTUBAN    (IDX4)
+               MOVE    TNS-KENTAICOMMENT
+                                      TO RECE65-KENTAICOMMENT  (IDX4)
       *
                IF     TNS-SRYCD       =  "170022290"  OR
                                          "170022390"  OR
