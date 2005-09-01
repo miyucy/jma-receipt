@@ -113,6 +113,8 @@
            03  FLG-CLAIM               PIC 9(01).
            03  FLG-CHK                 PIC 9(01).
            03  FLG-HKNOK               PIC 9(01).
+      *    ユーザプログラム起動
+           03  FLG-USERPG              PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -330,6 +332,9 @@
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
+      *
+      *    ユーザプログラム起動サブパラメタ
+           COPY    "CPORCSUSERPG.INC".
       *
       *===> For Claim Start
            COPY    "CPSHELLTBL.INC".
@@ -2971,6 +2976,7 @@
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
       *
+           MOVE    ZERO                TO  FLG-USERPG
       *    受付マスタ追加          
            IF      SPA-GMN-SELNUM            =   ZERO
                PERFORM 4901-UKEADD-SEC
@@ -3055,6 +3061,9 @@
            IF      FLG-CLAIM       =   1 
                PERFORM 4906-CLAIM-SOUSIN-SEC
            END-IF
+      *
+      *    ユーザプログラム起動
+           PERFORM 4907-USERPG-SEC
       *
            MOVE    WRK-SPA-KYOUTU          TO  SPA-KYOUTU
       *
@@ -3202,6 +3211,9 @@
                DISPLAY "U02 UKETUKE INS ERR:"  MCP-RC
                        ",KEY:" UKE-KEY
            END-IF
+      *
+           MOVE    1                   TO  FLG-USERPG
+      *
            .
        4901-UKEADD-EXT.
            EXIT.   
@@ -3266,6 +3278,9 @@
                DISPLAY "U02 UKETUKE UPD ERR:"  MCP-RC
                        ",KEY:" UKE-KEY
            END-IF
+      *
+           MOVE    2                   TO  FLG-USERPG
+      *
            .
        4902-UKEUPD-EXT.
            EXIT.   
@@ -3483,6 +3498,37 @@
            EXIT.
       *
       *****************************************************************
+      *    ユーザプログラム起動処理
+      *****************************************************************
+       4907-USERPG-SEC  SECTION.
+      *
+      *    ユーザプログラム起動
+           INITIALIZE                  ORCSUSERPGAREA
+           MOVE    "U02"               TO  ORCSUSERPG-GMNPG
+      *
+           EVALUATE    FLG-USERPG
+               WHEN    1
+      *        追加
+                   MOVE    "1"             TO  ORCSUSERPG-SYORI
+               WHEN    2
+      *        更新
+                   MOVE    "2"             TO  ORCSUSERPG-SYORI
+               WHEN    3
+      *        削除
+                   MOVE    "3"             TO  ORCSUSERPG-SYORI
+           END-EVALUATE
+           MOVE    SPA-SYSYMD          TO  ORCSUSERPG-SYSYMD
+           MOVE    SPA-SYSYMD          TO  ORCSUSERPG-SRYYMD
+           MOVE    SPA-GMN-PTID        TO  ORCSUSERPG-PTID
+           MOVE    SPA-GMN-PTNUM       TO  ORCSUSERPG-PTNUM
+      *
+           CALL    "ORCSUSERPG"        USING   ORCSUSERPGAREA
+      *
+           .
+       4907-USERPG-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    保険・公費情報更新処理
       *****************************************************************
        4904-HKN-KOUSIN-SEC              SECTION.
@@ -3641,6 +3687,9 @@
                END-IF
            END-IF
       *
+      *    ユーザプログラム起動
+           MOVE    3                   TO  FLG-USERPG
+           PERFORM 4907-USERPG-SEC
       *
            PERFORM 493-CLEAR-SEC  
            PERFORM 3101-UKETU-HEN-SEC

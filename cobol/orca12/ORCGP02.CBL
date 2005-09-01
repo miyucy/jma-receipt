@@ -110,6 +110,8 @@
            03  FLG-BACK            PIC 9(01).
            03  FLG-CLAIM           PIC 9(01).
            03  FLG-CLAIM-OK        PIC 9(01).
+      *    ユーザプログラム起動
+           03  FLG-USERPG          PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -395,6 +397,9 @@
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
+      *
+      *    ユーザプログラム起動サブパラメタ
+           COPY    "CPORCSUSERPG.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -1897,6 +1902,10 @@
                GO      TO      4991-DELETE-SYORI-EXT
            END-IF
       *
+      *    ユーザプログラム起動
+           MOVE    2                   TO  FLG-USERPG
+           PERFORM 4907-USERPG-SEC
+      *
       *****IF      SPA-MACHIPG         =   "U02"  OR  "K02" OR "Q02"
            IF      SPA-HZN-MOTOPG(1:3) =   "U02"  OR  "K02" OR "Q02"
                                                   OR  "I01"
@@ -2580,6 +2589,9 @@
            IF      FLG-CLAIM           =   1
                PERFORM 4906-CLAIM-SOUSIN-SEC
            END-IF
+      *    ユーザプログラム起動
+           MOVE    1                   TO  FLG-USERPG
+           PERFORM 4907-USERPG-SEC
       *
       **** IF      SPA-MACHIPG         =   "U02"  OR  "K02" OR "Q02"
            MOVE    0                   TO  FLG-BACK
@@ -3086,6 +3098,38 @@
       *
            .
        4906-CLAIM-SOUSIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ユーザプログラム起動処理
+      *****************************************************************
+       4907-USERPG-SEC  SECTION.
+      *
+      *    ユーザプログラム起動
+           INITIALIZE                  ORCSUSERPGAREA
+           MOVE    "P02"               TO  ORCSUSERPG-GMNPG
+      *
+           IF      FLG-USERPG          =   1
+               IF      SPA-P02-SYORI       =   1
+      *        追加
+                   MOVE    "1"             TO  ORCSUSERPG-SYORI
+               ELSE
+      *        更新
+                   MOVE    "2"             TO  ORCSUSERPG-SYORI
+               END-IF
+           ELSE
+      *        削除
+               MOVE    "3"             TO  ORCSUSERPG-SYORI
+           END-IF
+           MOVE    SPA-SYSYMD          TO  ORCSUSERPG-SYSYMD
+           MOVE    SPA-SYSYMD          TO  ORCSUSERPG-SRYYMD
+           MOVE    SPA-GMN-PTID        TO  ORCSUSERPG-PTID
+           MOVE    SPA-GMN-PTNUM       TO  ORCSUSERPG-PTNUM
+      *
+           CALL    "ORCSUSERPG"        USING   ORCSUSERPGAREA
+      *
+           .
+       4907-USERPG-EXT.
            EXIT.
       *
       *****************************************************************
