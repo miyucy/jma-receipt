@@ -1062,6 +1062,9 @@ COPYS = \
         HCM401V02.INC \
         HCM402V01.INC \
         CPDTCHK007.INC \
+        W97.INC \
+        CPORCSUSERPG.INC \
+        CPSK9700.INC \
 
 
 DBPATH = \
