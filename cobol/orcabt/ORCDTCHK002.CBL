@@ -5902,14 +5902,21 @@
                        MOVE    WRK-KJNYMD      TO  WRK-YMD
                        PERFORM VARYING IDX24   FROM    1   BY  1
                                UNTIL ( IDX24   >   31 )
-                           MOVE    THKNCOMBI-DAY  (IDX16 IDX24)
-                                               TO  WRK-DD
-                           IF    ( THKNCOMBI-STYMD (IDX16) >=  WRK-YMD )
-                            AND  ( THKNCOMBI-EDYMD (IDX16) <=  WRK-YMD )
-                               CONTINUE
-                           ELSE
-                               MOVE    1       TO  WRK-NISSU-DAY (IDX24)
+      *
+                           IF    ( THKNCOMBI-DAY  (IDX16 IDX24)
+                                               >   ZERO )
+      *
+                               MOVE    IDX24       TO  WRK-DD
+                               IF    ( WRK-YMD
+                                       >=  LNK-COMB-TEKSTYMD(IDX17) )
+                                AND  ( WRK-YMD
+                                       <=  LNK-COMB-TEKEDYMD(IDX17) )
+                                   CONTINUE
+                               ELSE
+                                   MOVE    1   TO  WRK-NISSU-DAY (IDX24)
+                               END-IF
                            END-IF
+      *
                        END-PERFORM
       *
                        PERFORM 200111-NISSU-HEN-SEC
