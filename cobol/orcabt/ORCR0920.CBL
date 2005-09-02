@@ -231,7 +231,7 @@
                    07  TBL-ZAIW-INPUTNUM        PIC  9(03).
                    07  TBL-ZAIW-TENTTLKBN       PIC  9(03).
       *            検体検査コメント
-                   07  TBL-ZAIW-KENTAICOMMENT   PIC  9(01).
+      *****        07  TBL-ZAIW-KENTAICOMMENT   PIC  9(01).
                05  TBL-ZAIW-NAMEINF.
       *            漢字有効桁数/漢字名称
                    07  TBL-ZAIW-YUKOKETA        PIC  9(02).
@@ -258,7 +258,7 @@
                    07  TBL-ZAI-INPUTNUM        PIC  9(03).
                    07  TBL-ZAI-TENTTLKBN       PIC  9(03).
       *            検体検査コメント
-                   07  TBL-ZAI-KENTAICOMMENT   PIC  9(01).
+      *****        07  TBL-ZAI-KENTAICOMMENT   PIC  9(01).
                05  TBL-ZAI-NAMEINF.
       *            漢字有効桁数/漢字名称
                    07  TBL-ZAI-YUKOKETA        PIC  9(02).

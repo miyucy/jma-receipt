@@ -165,6 +165,7 @@
       *  01.02.13    NACL-ÌçÏÆ    05/07/19  ¼ýÇ¼¹àÌÜÄÉ²Ã¤ËÈ¼¤¦½¤Àµ
       *  01.02.14    NACL-ÌçÏÆ    05/08/25  Ê¡Åç¡¢²¬»³¡¢ºë¶ÌÆÃ¼ì·×»»½¤Àµ
       *  01.02.15    NACL-ÌçÏÆ    05/08/26  Ä¹´ü¤Ë¤Ä¤¤¤Æ¤Î»»Äê½¤Àµ
+      *  01.02.16    NACL-ÌçÏÆ    05/09/01  ¾ÊÄ£ÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -631,6 +632,7 @@
            03  IDX6                    PIC  9(03).
            03  IDX7                    PIC  9(03).
            03  IDX8                    PIC  9(03).
+           03  IDX9                    PIC  9(03).
            03  Y-IDX                   PIC  9(03)  VALUE  ZERO.
            03  Y-IDX2                  PIC  9(03)  VALUE  ZERO.
            03  Y-IDX3                  PIC  9(03)  VALUE  ZERO.
@@ -2202,14 +2204,6 @@
                COMPUTE  LNK-SYU-RSIETC-MONEY =  LNK-SYU-RSIETC-MONEY
                                              +  ( 84 *  WK-RYOYO )
            END-IF.
-      *
-      *    ´µ¼ÔÉéÃ´¶â»»½ÐÁ°¤Î£±£°£°¡óÉéÃ´³Û»»½Ð
-           MOVE      ZERO         TO      WK-ZENGAKU.
-           PERFORM   VARYING   IDX     FROM    1   BY  1
-                     UNTIL     IDX         >   11
-               COMPUTE WK-ZENGAKU  =   WK-ZENGAKU  +
-                                      (LNK-SYU-HKNTEN (IDX) * 10)
-           END-PERFORM.
       *
       *Ê¿À®£±£´Ç¯£±£°·î²þÀµÂÐ±þ
       *¹âÎð¼Ô¤ÎºßÂðÁí¹ç¡¦ºßÂðËö´ü»»Äê´µ¼Ô¤ÎÉéÃ´¾å¸Â»»Äê¥¨¥ê¥¢½é´ü²½
@@ -8182,6 +8176,22 @@
                END-EVALUATE
            END-IF.
       *
+      *    ´µ¼ÔÉéÃ´¶â»»½ÐÁ°¤Î£±£°£°¡óÉéÃ´³Û»»½Ð
+           IF     WK-HKNKBN         =   "1"
+           OR     COMB-HKNNUM(1:1)  =   "0"
+                 MOVE    10    TO      HKN-TENTNK
+           ELSE
+             IF   HKN-TENTNK   =   ZERO
+                 MOVE    10    TO      HKN-TENTNK
+             END-IF
+           END-IF.
+           MOVE      ZERO      TO      WK-ZENGAKU.
+           PERFORM   VARYING   IDX9    FROM    1   BY  1
+                     UNTIL     IDX9       >   11
+               COMPUTE WK-ZENGAKU  =   WK-ZENGAKU  +
+                            (LNK-SYU-HKNTEN (IDX9) *  HKN-TENTNK)
+           END-PERFORM.
+      *
       *    ¡Ê£×£Ë¡Ý£È£Ë£Î£Ë£Â£Î¡¡¶õÇò¡§°åÊÝ¡¡£±¡§Ï«ºÒ¡¡£²¡§¼«ÇåÀÕ¡Ë
            EVALUATE   WK-HKNKBN
              WHEN   SPACE
@@ -8494,6 +8504,23 @@
                                          MCPAREA
                                          ORCMCPAREA
                                          MCPDATA-REC.
+      *
+      *    ´µ¼ÔÉéÃ´¶â»»½ÐÁ°¤Î£±£°£°¡óÉéÃ´³Û»»½Ð
+           IF     COMB-KOHHKNNUM(KOH-IDX)(1:1)   =   "0"
+           OR     COMB-KOHHKNNUM(KOH-IDX)        =   "972"
+                 MOVE    10    TO      HKN-TENTNK
+           ELSE
+             IF   HKN-TENTNK   =   ZERO
+                 MOVE    10    TO      HKN-TENTNK
+             END-IF
+           END-IF.
+           MOVE      ZERO      TO      WK-ZENGAKU.
+           PERFORM   VARYING   IDX9    FROM    1   BY  1
+                     UNTIL     IDX9       >   11
+               COMPUTE WK-ZENGAKU  =   WK-ZENGAKU  +
+                            (LNK-SYU-HKNTEN (IDX9) *  HKN-TENTNK)
+           END-PERFORM.
+      *
            MOVE       ZERO                TO   WK-GAIKFTNRATE.
            MOVE       SPACE               TO   WK-GAIYKZFTNKBN.
            MOVE       ZERO                TO   WK-GAIKKOTGAK.
@@ -8641,11 +8668,11 @@
                     WHEN  "1"
                       COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX)  =
                                 LNK-SYU-KYUFUGAI-GOKEI-TEN
-                                        *  10
+                                        *  HKN-TENTNK
                                         *  WK-FUTANWARI
                       COMPUTE   LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)  =
                                 LNK-SYU-KYUFUGAI-GOKEI-TEN
-                                        *  10
+                                        *  HKN-TENTNK
                                         *  WK-FUTANWARI
                     WHEN  "2"
                       MOVE    ZERO   TO   LNK-SYU-KOH-COMPFTN(KOH-IDX)
@@ -9441,11 +9468,11 @@
                     WHEN  "1"
                       COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX)  =
                                 LNK-SYU-KYUFUGAI-GOKEI-TEN
-                                        *  10
+                                        *  HKN-TENTNK
                                         *  WK-FUTANWARI
                       COMPUTE   LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)  =
                                 LNK-SYU-KYUFUGAI-GOKEI-TEN
-                                        *  10
+                                        *  HKN-TENTNK
                                         *  WK-FUTANWARI
                     WHEN  "2"
                       MOVE    ZERO   TO   LNK-SYU-KOH-COMPFTN(KOH-IDX)
