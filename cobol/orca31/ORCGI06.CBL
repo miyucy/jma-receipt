@@ -936,12 +936,15 @@
       *
                MOVE    SYSKANRI-REC    TO  SYS-1010-REC
       *
-               COMPUTE CNT-MAX =   CNT-MAX +   1
+               IF    ( SYS-1010-KBNCD (1 : 1)  =   "1" )
       *
-               MOVE    SYS-1010-KBNCD (2 : 4)
+                   COMPUTE CNT-MAX =   CNT-MAX +   1
+      *
+                   MOVE    SYS-1010-KBNCD (2 : 4)
                                TO  SPA-GMN-DRL    (CNT-MAX)
-               MOVE    SYS-1010-NAME
+                   MOVE    SYS-1010-NAME
                                TO  SPA-GMN-DRMEIL (CNT-MAX)
+               END-IF
       *
                PERFORM 900-SYSKANRI-KEY2-FET-SEC
       *
