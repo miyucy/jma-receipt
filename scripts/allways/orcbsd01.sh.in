@@ -42,12 +42,14 @@ fi
 
 ##      作業ファイル削除
 tmpf="/var/tmp/DTCHK"*"$9"
+tmpf="$tmpf /var/tmp/DCACCT"*"$9"
+tmpf="$tmpf /var/tmp/DCSRY"*"$9"
 
-	for f in $tmpf
-	do
-		if  [ -e $f ]; then
-			rm  $f
-		fi
-	done
+for f in $tmpf
+do
+	if  [ -e $f ]; then
+		rm  $f
+	fi
+done
 
 exit
