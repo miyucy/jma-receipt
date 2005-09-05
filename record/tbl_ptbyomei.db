@@ -528,6 +528,7 @@ path	key27	{
 			AND     PTID      =   :PTID
 			AND     SRYKA     <>  :SRYKA
 			AND     BYOMEI    =   :BYOMEI
+			ORDER  BY  SRYKA,RENNUM
 		;
 	};
 };
@@ -542,6 +543,7 @@ path	key28	{
 			AND     SRYKA     <>  :SRYKA
 			AND   NYUGAIKBN   IN (' ',:NYUGAIKBN)
 			AND     BYOMEI    =   :BYOMEI
+			ORDER  BY  SRYKA,RENNUM
 		;
 	};
 };

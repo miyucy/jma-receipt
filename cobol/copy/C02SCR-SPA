@@ -60,7 +60,8 @@
       *                                     同一病名警告メッセージ表示
       *                                     有無区分
       *                                     の追加
-      *  02.06.02    NACL-藤原    05/07/25 簡単修正画面の開始日を追加
+      *  02.06.02    NACL-藤原    05/07/25  簡単修正画面の開始日を追加
+      *  02.06.03    NACL-藤原    05/08/26  労災・自賠責存在フラグを追加
       *****************************************************************
       *
        01  SPA-C02FREE.
@@ -255,6 +256,7 @@
                        09  SPA-NAI-C02-HEAD.
                            11  SPA-NAI-C02-PTID            PIC 9(10).
                            11  SPA-NAI-C02-BIRTHDAY        PIC X(08).
+                           11  SPA-NAI-C02-HKNCOMBI-ROUSAI PIC 9(01).
                        09  SPA-NAI-C02-KOUMOKU.
                            11  SPA-NAI-C02-SRYYMD          PIC X(08).
                            11  SPA-NAI-C02-RENNUM          PIC 9(02).
