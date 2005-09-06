@@ -33,6 +33,7 @@
       *  中止処理追加
       *  01.01.01    NACL-藤原    04/10/13  中止処理の追加
       *  01.01.02    NACL-門脇    05/07/05  検査は診療種別区分毎でまとめる
+      *  01.01.03    NACL-門脇    05.09.06  自賠責従来様式対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -178,6 +179,7 @@
                05  WRK-PARA-SRYYM                      PIC  X(06).
                05  WRK-PARA-TERMID                     PIC  X(16).
                05  WRK-PARA-SYSYMD                     PIC  X(08).
+               05  WRK-PARA-RECEKBN                    PIC  X(01).
                05  WRK-PARA-JOBID                      PIC  9(07).
                05  WRK-PARA-SHELLID                    PIC  X(08).
       *

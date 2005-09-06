@@ -45,14 +45,14 @@ fi
         if  [ -e $4 ]; then
             exit  
         else 
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0820 -parameter $1$5$6        >> /home/orca/recept10.log
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0820 -parameter $1$3$5$6      >> /home/orca/recept10.log
 
         fi 
 
         if  [ -e $4 ]; then
             exit 
         else 
-     	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0830 -parameter $1$5$6        >> /home/orca/recept10.log
+     	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0830 -parameter $1$3$5$6      >> /home/orca/recept10.log
 
         fi
 
@@ -66,14 +66,14 @@ fi
         if  [ -e $4 ]; then
             exit 
         else 
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0850 -parameter $1$5$6        >> /home/orca/recept10.log
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0850 -parameter $1$3$5$6      >> /home/orca/recept10.log
 
         fi
 
         if  [ -e $4 ]; then
             exit 
         else 
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0860 -parameter $1$5$6        >> /home/orca/recept10.log
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0860 -parameter $1$3$5$6      >> /home/orca/recept10.log
 
         fi
 
@@ -87,21 +87,21 @@ fi
         if  [ -e $4 ]; then
             exit 
         else 
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0880 -parameter $1$5$6        >> /home/orca/recept10.log
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0880 -parameter $1$3$5$6      >> /home/orca/recept10.log
 
         fi
 
         if  [ -e $4 ]; then
             exit 
         else 
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0890 -parameter $1$5$6        >> /home/orca/recept10.log
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0890 -parameter $1$3$5$6      >> /home/orca/recept10.log
 
         fi
 
         if  [ -e $4 ]; then
            exit 
         else 
-       	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0900 -parameter $1$5$6        >> /home/orca/recept10.log
+       	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0900 -parameter $1$3$5$6      >> /home/orca/recept10.log
 
         fi
 
@@ -122,14 +122,14 @@ fi
         if  [ -e $4 ]; then
             exit 
         else 
-       	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0930 -parameter $1$5$6        >> /home/orca/recept10.log
+       	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0930 -parameter $1$3$5$6      >> /home/orca/recept10.log
 
         fi
 
         if  [ -e $4 ]; then
             exit 
         else 
-       	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0940 -parameter $1$5$6        >> /home/orca/recept10.log
+       	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0940 -parameter $1$3$5$6      >> /home/orca/recept10.log
 
         fi
 

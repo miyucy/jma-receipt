@@ -40,6 +40,7 @@
       *                                     使用加算の技術・薬剤等の選択対応
       *  01.01.05    NACL-門脇    05/03/03  食事に関する編集修正
       *  01.01.06    NACL-門脇    05/05/16  療養担当手当（北海道）対応
+      *  01.01.07    NACL-門脇    05.09.06  自賠責従来様式対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -146,6 +147,7 @@
                05  WRK-PARA-SRYYM                      PIC  X(06).
                05  WRK-PARA-TERMID                     PIC  X(16).
                05  WRK-PARA-SYSYMD                     PIC  X(08).
+               05  WRK-PARA-RECEKBN                    PIC  X(01).
                05  WRK-PARA-JOBID                      PIC  9(07).
                05  WRK-PARA-SHELLID                    PIC  X(08).
       *

@@ -154,6 +154,7 @@
                05  WRK-PARA-SRYYM              PIC  X(06).
                05  WRK-PARA-TERMID             PIC  X(16).
                05  WRK-PARA-SYSYMD             PIC  X(08).
+               05  WRK-PARA-RECEKBN            PIC  X(01).
                05  WRK-PARA-JOBID              PIC  9(07).
                05  WRK-PARA-SHELLID            PIC  X(08).
       *

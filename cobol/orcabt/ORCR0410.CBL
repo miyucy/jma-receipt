@@ -54,6 +54,7 @@
       *                                     使用加算の技術・薬剤等の選択対応
       *  01.01.06    NACL-門脇    05.06.27  加算率３桁対応
       *  01.01.07    NACL-門脇    05.08.18  転帰事由編集修正
+      *  01.01.08    NACL-門脇    05.09.06  自賠責従来様式対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -168,6 +169,7 @@
                05  WRK-PARA-SRYYM                      PIC  X(06).
                05  WRK-PARA-TERMID                     PIC  X(16).
                05  WRK-PARA-SYSYMD                     PIC  X(08).
+               05  WRK-PARA-RECEKBN                    PIC  X(01).
                05  WRK-PARA-JOBID                      PIC  9(07).
                05  WRK-PARA-SHELLID                    PIC  X(08).
       *
