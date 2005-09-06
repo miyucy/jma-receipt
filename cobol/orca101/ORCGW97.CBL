@@ -487,6 +487,12 @@
       *****************************************************************
        41021-SHELL-CHK-SEC            SECTION.
       *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GYOUMU-MAX
+               IF      SPA-GMN-SHELL (IDX) =   SPACE
+                   MOVE    "F"         TO  SPA-GMN-CHK (IDX)
+               END-IF
+           END-PERFORM
       *
            .
        41021-SHELL-CHK-EXT.
