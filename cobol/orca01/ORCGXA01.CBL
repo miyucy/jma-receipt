@@ -132,6 +132,7 @@
            03  FLG-SYSKANRI                        PIC 9(01).
            03  FLG-PRTKANRI                        PIC 9(01).
            03  FLG-END                             PIC 9(01).
+           03  FLG-LIST-ROW                        PIC 9(01).
       *
       *    システム領域
        01  SYS-AREA.
@@ -193,6 +194,9 @@
                05  WRK-MM          PIC X(02).
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-SS          PIC X(02).
+      *
+       01  WRK-ROW.
+           05  WRK-LIST-ROW        PIC S9(9)   BINARY.
       *                             
        01  WRK-SHELL-NAME.
            05  FILLER             PIC X(16) VALUE
@@ -294,6 +298,10 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  WRK-AREA
+           INITIALIZE                  IDX-AREA
+      *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-FREE        TO  SPA-XA01
            MOVE    SPA-WORK        TO  SPA-XA01KYOUTU 
@@ -328,9 +336,6 @@
       *    初期　処理
       *****************************************************************
        100-INIT-SEC                   SECTION.
-      *
-           INITIALIZE                  FLG-AREA
-           INITIALIZE                  WRK-AREA
       *
       *    エラー画面より
            IF      SPA-MOTOPG          =   "XAERR"
@@ -517,6 +522,9 @@
                                        MCPDATA-REC
       *                                 
            MOVE    IDX                 TO  SPA-GMN-MAX
+      *                                 
+           MOVE    1                   TO  FLG-LIST-ROW
+      *                                 
            MOVE    1                   TO  SPA-GMN-CUR                                                 
            .
        310-SPASET-EXT.
@@ -1660,7 +1668,18 @@
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
-           MOVE    SPACE               TO  XA01
+           MOVE    XA01-ROW            TO  WRK-LIST-ROW
+      *
+           INITIALIZE  XA01
+      *
+           EVALUATE    FLG-LIST-ROW
+           WHEN    1
+               MOVE    ZERO            TO  XA01-ROW
+               MOVE    ZERO            TO  XA01-ROWATTR
+           WHEN    OTHER
+               MOVE    WRK-LIST-ROW    TO  XA01-ROW
+               MOVE    ZERO            TO  XA01-ROWATTR
+           END-EVALUATE
       *
            MOVE    SPA-GMN-TITLE1      TO  XA01-HEAD1
            MOVE    SPA-GMN-TITLE2      TO  XA01-HEAD2
