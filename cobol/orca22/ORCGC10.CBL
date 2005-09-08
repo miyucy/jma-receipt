@@ -1106,7 +1106,7 @@
            IF    ( WRK-HENSYU-DATA-O (1)   NOT =   SPACE         )
            OR    ( WRK-HENSYU-DATA-O (6)   NOT =   SPACE         )
            OR    ( WRK-HENSYU-DATA-O (7)   NOT =   SPACE AND "-" )
-           OR    ( WRK-HENSYU-DATA-O (8)       =   SPACE        )
+           OR    ( WRK-HENSYU-DATA-O (8)       =   SPACE         )
       *        転帰・保険適用と開始日のチェック
                PERFORM VARYING IDXX    FROM    1   BY  1
                        UNTIL   IDXX    >       5
@@ -1225,9 +1225,14 @@
                                NOT =   SPACE
                PERFORM VARYING IDXY    FROM    IDXX    BY  1
                        UNTIL   IDXY    >       5
+                       OR      SPA-ERRCD
+                                   NOT =       SPACE
                    IF      WRK-STNUM-O (IDXY)  >   ZERO
-                       PERFORM VARYING IDY FROM    IDX  BY 1
+                       PERFORM VARYING IDY FROM    WRK-STNUM-O(IDXY)
+                                                   BY 1
                                UNTIL   IDY >       WRK-EDNUM-O(IDXY)
+                               OR      SPA-ERRCD
+                                           NOT =       SPACE
                            PERFORM 410111-KANTAN-SYUSEI-HKNCOMBI-CHK-SEC
                        END-PERFORM
                    END-IF
@@ -1347,8 +1352,7 @@
        410111-KANTAN-SYUSEI-HKNCOMBI-CHK-SEC SECTION.
       *
       *    同一診療科・同一病名の場合だけチェック
-           IF  ( IDXX              =    IDXY )
-           AND ( IDX               =    IDY  )
+           IF       IDX               =    IDY
                 CONTINUE
            ELSE
                IF    ( SPA-GMN-C02-TBYOMEI (IDX)   =
@@ -1503,9 +1507,14 @@
                                NOT =   SPACE
                PERFORM VARYING IDXY    FROM    IDXX    BY  1
                        UNTIL   IDXY    >       5
+                       OR      SPA-ERRCD
+                                   NOT =       SPACE
                    IF      WRK-STNUM-O (IDXY)  >   ZERO
-                       PERFORM VARYING IDY FROM    IDX  BY 1
+                       PERFORM VARYING IDY FROM    WRK-STNUM-O (IDXY)
+                                           BY 1
                                UNTIL   IDY >       WRK-EDNUM-O(IDXY)
+                               OR      SPA-ERRCD
+                                       NOT =       SPACE
                            PERFORM 410121-COPY-HKNCOMBI-CHK-SEC
                        END-PERFORM
                    END-IF
@@ -1614,8 +1623,7 @@
        410121-COPY-HKNCOMBI-CHK-SEC SECTION.
       *
       *    同一診療科・同一病名の場合だけチェック
-           IF  ( IDXX              =    IDXY )
-           AND ( IDX               =    IDY  )
+           IF      IDX             =    IDY
                 CONTINUE
            ELSE
                IF    ( SPA-GMN-C02-TBYOMEI (IDX)   =

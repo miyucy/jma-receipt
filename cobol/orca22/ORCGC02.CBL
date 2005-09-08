@@ -3037,8 +3037,9 @@
                PERFORM VARYING IDXY    FROM    IDXX    BY  1
                        UNTIL   IDXY    >       5
                    IF      WRK-STNUM-O (IDXY)  >   ZERO
-                       PERFORM VARYING IDY FROM    IDX  BY 1
-                               UNTIL   IDY >       WRK-EDNUM-O(IDXY)
+                       PERFORM VARYING IDY FROM    WRK-STNUM-O (IDXY)
+                                           BY 1
+                               UNTIL   IDY >       WRK-EDNUM-O (IDXY)
                            PERFORM
                                41011321-KANTAN-SYUSEI-HKNCOMBI-CHK-SEC
                        END-PERFORM
