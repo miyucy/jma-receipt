@@ -1065,7 +1065,14 @@ COPYS = \
         W97.INC \
         CPORCSUSERPG.INC \
         CPSK9700.INC \
-
+        HCM18V04.INC \
+        HCM20V04.INC \
+        HCM21V04.INC \
+        HCM22V04.INC \
+        HCM24V04.INC \
+        HCM29V02.INC \
+        HCN22V04.INC \
+        HCN21V04.INC \
 
 DBPATH = \
 	ORCA-DBPATH

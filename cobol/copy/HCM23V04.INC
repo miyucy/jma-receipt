@@ -83,3 +83,4 @@
             02  HCM23V04-KANANAME   PIC X(50).
             02  HCM23V04-RENNUM PIC X(7).
             02  HCM23V04-HOKENNAME  PIC X(60).
+            02  HCM23V04-PAGE   PIC X(5).

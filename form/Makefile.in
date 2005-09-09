@@ -259,6 +259,14 @@ FORM_files = \
               HCRCP401V01.red \
               HCM401V02.red \
               HCM402V01.red \
+              HCM18V04.red \
+              HCM20V04.red \
+              HCM21V04.red \
+              HCM22V04.red \
+              HCM24V04.red \
+              HCM29V02.red \
+              HCN22V04.red \
+              HCN21V04.red \
 
 all:   
 

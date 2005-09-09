@@ -78,3 +78,4 @@
             02  HCM25-TEL   PIC X(15).
             02  HCM25-BYOSYOSU  PIC X(4).
             02  HCM25-HOKENNAME PIC X(60).
+            02  HCM25-PAGE  PIC X(5).
