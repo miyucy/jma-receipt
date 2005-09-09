@@ -55,11 +55,15 @@
            03  FLG-SYSKANRI                PIC 9(01).
            03  FLG-ERR                     PIC 9(01).
            03  FLG-HOURS                   PIC 9(01).
+           03  FLG-KARITIME                PIC 9(01).
       *
        01  IDX-AREA.
            03  IDX0                        PIC 9(05).
            03  IDX1                        PIC 9(05).
            03  IDX2                        PIC 9(05).
+           03  IDX3                        PIC 9(05).
+           03  IDX4                        PIC 9(05).
+           03  IDX5                        PIC 9(05).
            03  IDX-TERM                    PIC 9(05).
            03  IDX-CMB                     PIC 9(05).
            03  IDX-CHK                     PIC 9(05).
@@ -72,6 +76,7 @@
                05  WRK-MCP-PNAME           PIC S9(9)   BINARY.
            03  WRK-SYMD                    PIC X(10).
            03  WRK-HENYMDG                 PIC X(09).
+           03  WRK-YOBI                    PIC 9(01).
            03  WRK-ZOGENPTN                PIC X(01).
            03  WRK-ZOGEN                   PIC S9(05).
            03  WRK-FROMYMD.
@@ -126,6 +131,7 @@
       *
       *    システム管理
            COPY    "CPSYSKANRI.INC".
+           COPY    "CPSK1039.INC".
            COPY    "CPSK3005.INC".
       *
       *    締め処理
@@ -278,6 +284,18 @@
       *
            INITIALIZE                  SPA-L04-AREA
       *
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    "1039"              TO  SYS-KANRICD
+           MOVE    "*"                 TO  SYS-KBNCD
+           MOVE    SPA-SYSYMD          TO  SYS-STYUKYMD
+                                           SYS-EDYUKYMD
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           IF    ( FLG-SYSKANRI        =   ZERO )
+               MOVE    SYSKANRI-REC    TO  SYS-1039-REC
+           ELSE
+               INITIALIZE                  SYS-1039-REC
+           END-IF
+      *
       *    メッセージ編集処理
            PERFORM 3101-MES-HEN-SEC
       *
@@ -285,8 +303,44 @@
       *
            PERFORM 3101-COMBO-SYOKI-SEC
       *
-           MOVE    SPA-GMN-L04-PROCKBNLST (1)
+           MOVE    SMCNDATE-YMD        TO  WRK-SYMD
+           PERFORM 800-YOBI-HEN-SEC
+      *
+           MOVE    ZERO                TO  FLG-KARITIME
+           PERFORM VARYING IDX3    FROM    1   BY  1
+                   UNTIL ( IDX3    >   2 )
+                    OR   ( FLG-KARITIME    =   1 )
+      *
+               IF    ( SYS-1039-KARIDAY (IDX3 WRK-YOBI)
+                                       =   "1" )
+                   PERFORM VARYING IDX4    FROM    1   BY  1
+                       UNTIL ( IDX4    >   2 )
+                        OR   ( FLG-KARITIME    =   1 )
+                       IF    ( SYS-1039-KARISTTIME (IDX3 IDX4)
+                                           =   SPACE OR ZERO )
+                        AND  ( SYS-1039-KARIEDTIME (IDX3 IDX4)
+                                           =   SPACE OR ZERO )
+                           CONTINUE
+                       ELSE
+                           IF    ( SMCNDATE-HMS (1:4)
+                                  >=  SYS-1039-KARISTTIME (IDX3 IDX4))
+                            AND  ( SMCNDATE-HMS (1:4)
+                                  <=  SYS-1039-KARIEDTIME (IDX3 IDX4))
+                               MOVE    1   TO  FLG-KARITIME
+                           END-IF
+                       END-IF
+                   END-PERFORM
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( FLG-KARITIME    =   ZERO )
+               MOVE    SPA-GMN-L04-PROCKBNLST (1)
                                        TO  SPA-GMN-L04-PROCKBN-G
+           ELSE
+               MOVE    SPA-GMN-L04-PROCKBNLST (2)
+                                       TO  SPA-GMN-L04-PROCKBN-G
+           END-IF
       *
            PERFORM 41001-PROCKBN-CHK-SEC
       *
@@ -2203,6 +2257,31 @@
       *
            .
        800-HIZUKE-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    曜日編集処理
+      *****************************************************************
+       800-YOBI-HEN-SEC              SECTION.
+      *
+           MOVE    ZERO            TO  WRK-YOBI
+      *
+           INITIALIZE                  STS-AREA-DAY
+           INITIALIZE                  LNK-DAY3-AREA
+           MOVE    "31"            TO  LNK-DAY3-IRAI
+           MOVE    WRK-SYMD        TO  LNK-DAY3-YMD
+           CALL    "ORCSDAY"       USING   STS-AREA-DAY
+                                           LNK-DAY3-AREA
+           IF    ( STS-DAY-RC1         =   ZERO )
+               IF    ( LNK-DAY3-YOBI   >=  7 )
+                   MOVE    1       TO  WRK-YOBI
+               ELSE
+                   COMPUTE WRK-YOBI
+                       =   LNK-DAY3-YOBI   +   1
+               END-IF
+           END-IF
+      *
+           .
+       800-YOBI-HEN-EXT.
            EXIT.
       *****************************************************************
       *    年月日チェック処理

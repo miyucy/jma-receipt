@@ -341,6 +341,96 @@ W07	{
 				SYUSTIME_MM	{
 					value	number(2);
 				};
+				SYUKARI1DAY1	{
+					value	bool;
+				};
+				SYUKARI1DAY2	{
+					value	bool;
+				};
+				SYUKARI1DAY3	{
+					value	bool;
+				};
+				SYUKARI1DAY4	{
+					value	bool;
+				};
+				SYUKARI1DAY5	{
+					value	bool;
+				};
+				SYUKARI1DAY6	{
+					value	bool;
+				};
+				SYUKARI1DAY7	{
+					value	bool;
+				};
+				SYUKARIST11_HH	{
+					value	number(2);
+				};
+				SYUKARIST11_MM	{
+					value	number(2);
+				};
+				SYUKARIED11_HH	{
+					value	number(2);
+				};
+				SYUKARIED11_MM	{
+					value	number(2);
+				};
+				SYUKARIST12_HH	{
+					value	number(2);
+				};
+				SYUKARIST12_MM	{
+					value	number(2);
+				};
+				SYUKARIED12_HH	{
+					value	number(2);
+				};
+				SYUKARIED12_MM	{
+					value	number(2);
+				};
+				SYUKARI2DAY1	{
+					value	bool;
+				};
+				SYUKARI2DAY2	{
+					value	bool;
+				};
+				SYUKARI2DAY3	{
+					value	bool;
+				};
+				SYUKARI2DAY4	{
+					value	bool;
+				};
+				SYUKARI2DAY5	{
+					value	bool;
+				};
+				SYUKARI2DAY6	{
+					value	bool;
+				};
+				SYUKARI2DAY7	{
+					value	bool;
+				};
+				SYUKARIST21_HH	{
+					value	number(2);
+				};
+				SYUKARIST21_MM	{
+					value	number(2);
+				};
+				SYUKARIED21_HH	{
+					value	number(2);
+				};
+				SYUKARIED21_MM	{
+					value	number(2);
+				};
+				SYUKARIST22_HH	{
+					value	number(2);
+				};
+				SYUKARIST22_MM	{
+					value	number(2);
+				};
+				SYUKARIED22_HH	{
+					value	number(2);
+				};
+				SYUKARIED22_MM	{
+					value	number(2);
+				};
 			};
 			TAGNAME4    {
 			  	state   int;

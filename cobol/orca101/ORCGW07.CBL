@@ -70,6 +70,7 @@
       *  02.01.20    NACL-多々納  05/07/06  訂正時の自動発生追加
       *  02.01.21    NACL-太田    05/07/26  収納明細登録時刻入力欄追加
       *  02.01.22    NACL-多々納  05/08/19  会計照会情報追加
+      *  02.01.21    NACL-太田    05/09/09  収納明細登録仮締め時刻入力欄追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -334,8 +335,25 @@
                            11  SPA-GMN-SYUSKYPRTN-F1       PIC X(01).
                            11  SPA-GMN-SYUSKYPRTNMEI       PIC X(22).
                        09  SPA-GMN-SYUSTIME.
-                           11   SPA-GMN-SYUSTIME-HH        PIC 9(02).
-                           11   SPA-GMN-SYUSTIME-MM        PIC 9(02).
+                           11  SPA-GMN-SYUSTIME-HH         PIC 9(02).
+                           11  SPA-GMN-SYUSTIME-MM         PIC 9(02).
+                       09  SPA-GMN-SYUKARITIME-G.
+                           11  SPA-GMN-SYUKARITIME-OCC1    OCCURS  2.
+                               13  SPA-GMN-SYUKARIDAY-G.
+                                   15  SPA-GMN-SYUKARIDAY  PIC X(01)
+                                                           OCCURS  7.
+                               13  SPA-GMN-SYUKARITIME-OCC2
+                                                           OCCURS  2.
+                                   15  SPA-GMN-SYUKARISTTIME.
+                                       17  SPA-GMN-SYUKARIST-HH
+                                                           PIC 9(02).
+                                       17  SPA-GMN-SYUKARIST-MM
+                                                           PIC 9(02).
+                                   15  SPA-GMN-SYUKARIEDTIME.
+                                       17  SPA-GMN-SYUKARIED-HH
+                                                           PIC 9(02).
+                                       17  SPA-GMN-SYUKARIED-MM
+                                                           PIC 9(02).
       *
                        09  SPA-GMN-SYUNYKNKNRKBNLST-G.
                            11  SPA-GMN-SYUNYKNKNRKBN-MAX   PIC 9(03).
@@ -495,10 +513,15 @@
            03  IDY                 PIC 9(04).
       *
            03  IDT                 PIC 9(04).
+           03  IDX1                PIC 9(04).
+           03  IDX2                PIC 9(04).
+           03  IDX3                PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
-           03  WRK-GMN-CUR         PIC 9(02).
+           03  WRK-GMN-CUR         PIC 9(03).
+           03  WRK-ERR-CUR         PIC 9(03).
+           03  WRK-KARIDAY         PIC X(01).
            03  WRK-WIDGET.
                05  WRK-WIDGET1     PIC X(04).
                05  WRK-WIDGET2     PIC X(02).
@@ -1648,12 +1671,48 @@
            PERFORM 3101-SYUSKYPRTN-SYOKI-SEC
       *
            IF    ( SYS-1039-STIME          IS  NUMERIC )
-               MOVE    SYS-1039-STIME-HH   TO  SPA-GMN-SYUSTIME-HH
-               MOVE    SYS-1039-STIME-MM   TO  SPA-GMN-SYUSTIME-MM
+               MOVE    SYS-1039-STIME      TO  SPA-GMN-SYUSTIME
            ELSE
-               MOVE    ZERO                TO  SPA-GMN-SYUSTIME-HH
-                                               SPA-GMN-SYUSTIME-MM
+               MOVE    ZERO                TO  SPA-GMN-SYUSTIME
            END-IF
+      *
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   2 )
+      *
+               PERFORM VARYING IDX2    FROM    1   BY  1
+                   UNTIL ( IDX2    >   7 )
+                   IF    ( SYS-1039-KARIDAY (IDX1 IDX2)    =   "1" )
+                       MOVE    "T"         TO  SPA-GMN-SYUKARIDAY
+                                                        (IDX1 IDX2)
+                   ELSE
+                       MOVE    "F"         TO  SPA-GMN-SYUKARIDAY
+                                                        (IDX1 IDX2)
+                   END-IF
+               END-PERFORM
+      *
+               PERFORM VARYING IDX2    FROM    1   BY  1
+                   UNTIL ( IDX2    >   2 )
+      *
+                   IF    ( SYS-1039-KARISTTIME (IDX1 IDX2) IS  NUMERIC )
+                       MOVE    SYS-1039-KARISTTIME (IDX1 IDX2)
+                                           TO  SPA-GMN-SYUKARISTTIME
+                                                             (IDX1 IDX2)
+                   ELSE
+                       MOVE    ZERO        TO  SPA-GMN-SYUKARISTTIME
+                                                             (IDX1 IDX2)
+                   END-IF
+      *
+                   IF    ( SYS-1039-KARIEDTIME (IDX1 IDX2) IS  NUMERIC )
+                       MOVE    SYS-1039-KARIEDTIME (IDX1 IDX2)
+                                           TO  SPA-GMN-SYUKARIEDTIME
+                                                             (IDX1 IDX2)
+                   ELSE
+                       MOVE    ZERO        TO  SPA-GMN-SYUKARIEDTIME
+                                                             (IDX1 IDX2)
+                   END-IF
+      *
+               END-PERFORM
+           END-PERFORM
       *
            MOVE    40                 TO  SPA-GMN-CUR
       *
@@ -1959,6 +2018,24 @@
       *    登録
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 490-TOUROKU-SEC
+      *    登録
+               WHEN    "CLICKED"       ALSO    "SYUKARI1DAY1"
+               WHEN    "CLICKED"       ALSO    "SYUKARI1DAY2"
+               WHEN    "CLICKED"       ALSO    "SYUKARI1DAY3"
+               WHEN    "CLICKED"       ALSO    "SYUKARI1DAY4"
+               WHEN    "CLICKED"       ALSO    "SYUKARI1DAY5"
+               WHEN    "CLICKED"       ALSO    "SYUKARI1DAY6"
+               WHEN    "CLICKED"       ALSO    "SYUKARI1DAY7"
+               WHEN    "CLICKED"       ALSO    "SYUKARI2DAY1"
+               WHEN    "CLICKED"       ALSO    "SYUKARI2DAY2"
+               WHEN    "CLICKED"       ALSO    "SYUKARI2DAY3"
+               WHEN    "CLICKED"       ALSO    "SYUKARI2DAY4"
+               WHEN    "CLICKED"       ALSO    "SYUKARI2DAY5"
+               WHEN    "CLICKED"       ALSO    "SYUKARI2DAY6"
+               WHEN    "CLICKED"       ALSO    "SYUKARI2DAY7"
+                   MOVE    MCP-WIDGET (8:1)
+                                       TO  WRK-KARIDAY
+                   PERFORM 4110-SYUKARIDAY-CHK-SEC
            END-EVALUATE
       *
            .
@@ -2071,6 +2148,20 @@
            MOVE    W07-SYUSKYPRTN      TO  SPA-GMN-SYUSKYPRTN-G
            MOVE    W07-SYUSTIME-HH     TO  SPA-GMN-SYUSTIME-HH
            MOVE    W07-SYUSTIME-MM     TO  SPA-GMN-SYUSTIME-MM
+      *
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   2 )
+               PERFORM VARYING IDX2    FROM    1   BY  1
+                   UNTIL ( IDX2    >   2 )
+                   MOVE    W07-SYUKARISTTIME (IDX1 IDX2)
+                                       TO  SPA-GMN-SYUKARISTTIME
+                                                       (IDX1 IDX2)
+                   MOVE    W07-SYUKARIEDTIME (IDX1 IDX2)
+                                       TO  SPA-GMN-SYUKARIEDTIME
+                                                       (IDX1 IDX2)
+      *
+               END-PERFORM
+           END-PERFORM
       *
       *    病名機能情報
            MOVE    W07-MSG1-DSPKBN     TO  SPA-GMN-MSG1-DSPKBN-G
@@ -2217,13 +2308,13 @@
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4109-SYUNYKNKNRKBN-CHK-SEC
                    END-IF
-      *            時刻チェック（時）
+      *            登録時刻チェック
                    IF      SPA-ERRCD           =   SPACE
-                       PERFORM 4110-SYUSTIME-HH-CHK-SEC
+                       PERFORM 4110-SYUSTIME-CHK-SEC
                    END-IF
-      *            時刻チェック（分）
+      *            仮締め時間帯チェック
                    IF      SPA-ERRCD           =   SPACE
-                       PERFORM 4110-SYUSTIME-MM-CHK-SEC
+                       PERFORM 4110-SYUKARITIME-CHK-SEC
                    END-IF
                WHEN    "1042"
       *            主病名確認メッセージ表示有無チェック
@@ -3291,30 +3382,110 @@
        4110-SYUSKYPRTN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    時刻チェック（時）
+      *    登録時刻チェック
       *****************************************************************
-       4110-SYUSTIME-HH-CHK-SEC        SECTION.
+       4110-SYUSTIME-CHK-SEC           SECTION.
       *
            IF    ( SPA-GMN-SYUSTIME-HH     >=  24 )
                MOVE    "3003"          TO  SPA-ERRCD
                MOVE    43              TO  SPA-GMN-CUR
            END-IF
       *
-           .
-       4110-SYUSTIME-HH-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    時刻チェック（分）
-      *****************************************************************
-       4110-SYUSTIME-MM-CHK-SEC        SECTION.
-      *
-           IF    ( SPA-GMN-SYUSTIME-MM     >=  60 )
-               MOVE    "3003"          TO  SPA-ERRCD
-               MOVE    44              TO  SPA-GMN-CUR
+           IF    ( SPA-ERRCD           =   SPACE )
+               IF    ( SPA-GMN-SYUSTIME-MM     >=  60 )
+                   MOVE    "3003"      TO  SPA-ERRCD
+                   MOVE    44          TO  SPA-GMN-CUR
+               END-IF
            END-IF
       *
            .
-       4110-SYUSTIME-MM-CHK-EXT.
+       4110-SYUSTIME-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    仮締め時間帯チェック
+      *****************************************************************
+       4110-SYUKARITIME-CHK-SEC        SECTION.
+      *
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   2 )
+                    OR   ( SPA-ERRCD   NOT =   SPACE )
+               PERFORM VARYING IDX2    FROM    1   BY  1
+                   UNTIL ( IDX2    >   2 )
+                    OR   ( SPA-ERRCD   NOT =   SPACE )
+      *
+                   COMPUTE WRK-ERR-CUR
+                       =   400
+                       + ( IDX1    -   1 ) *  8
+                       + ( IDX2    -   1 ) *  4
+      *
+                   IF    ( SPA-GMN-SYUKARIST-HH (IDX1 IDX2)    >=  24 )
+                       MOVE    "3004"          TO  SPA-ERRCD
+                       MOVE    WRK-ERR-CUR     TO  SPA-GMN-CUR
+                   END-IF
+      *
+                   IF    ( SPA-ERRCD           =   SPACE )
+                       IF    ( SPA-GMN-SYUKARIST-MM(IDX1 IDX2) >=  60 )
+                           MOVE    "3004"      TO  SPA-ERRCD
+                           COMPUTE SPA-GMN-CUR
+                               =   WRK-ERR-CUR +   1
+                       END-IF
+                   END-IF
+      *
+                   IF    ( SPA-ERRCD           =   SPACE )
+                       IF    ( SPA-GMN-SYUKARIED-HH(IDX1 IDX2) >=  24 )
+                           MOVE    "3004"      TO  SPA-ERRCD
+                           COMPUTE SPA-GMN-CUR
+                               =   WRK-ERR-CUR +   2
+                       END-IF
+                   END-IF
+      *
+                   IF    ( SPA-ERRCD           =   SPACE )
+                       IF    ( SPA-GMN-SYUKARIED-MM(IDX1 IDX2) >=  60 )
+                           MOVE    "3004"      TO  SPA-ERRCD
+                           COMPUTE SPA-GMN-CUR
+                               =   WRK-ERR-CUR +   3
+                       END-IF
+                   END-IF
+               END-PERFORM
+           END-PERFORM
+      *
+           .
+       4110-SYUKARITIME-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    仮締め時間帯曜日チェック
+      *****************************************************************
+       4110-SYUKARIDAY-CHK-SEC       SECTION.
+      *
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   2 )
+               PERFORM VARYING IDX2    FROM    1   BY  1
+                   UNTIL ( IDX2    >   7 )
+                   MOVE    W07-SYUKARIDAY (IDX1 IDX2)
+                                       TO  SPA-GMN-SYUKARIDAY
+                                                       (IDX1 IDX2)
+               END-PERFORM
+           END-PERFORM
+      *
+           IF    ( WRK-KARIDAY     =   "1" )
+               MOVE    1           TO  IDX1
+               MOVE    2           TO  IDX2
+           ELSE
+               MOVE    2           TO  IDX1
+               MOVE    1           TO  IDX2
+           END-IF
+      *
+           PERFORM VARYING IDX3    FROM    1   BY  1
+                   UNTIL ( IDX3    >   7 )
+      *
+               IF    ( SPA-GMN-SYUKARIDAY (IDX1 IDX3)  =   "T" )
+                   MOVE    "F"     TO  SPA-GMN-SYUKARIDAY (IDX2 IDX3)
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       4110-SYUKARIDAY-CHK-EXT.
            EXIT.
       *****************************************************************
       *    主病名確認メッセージ表示有無チェック処理（病名機能情報）
@@ -3769,6 +3940,7 @@
                        MOVE    "1005"           TO  SPA-WIDCD
                    END-IF
                WHEN    "1039"
+                   PERFORM 4904-KANRENCHK-SEC
                    IF      SPA-ERRCD        =   SPACE
                        MOVE    "1007"           TO  SPA-WIDCD
                    END-IF
@@ -4144,6 +4316,29 @@
            MOVE    SPA-GMN-SYUSKYPRTN      TO  SYS-1039-SKYPRTNKBN
            MOVE    SPA-GMN-SYUSTIME        TO  SYS-1039-STIME
       *
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   2 )
+               PERFORM VARYING IDX2    FROM    1   BY  1
+                   UNTIL ( IDX2    >   7 )
+                   IF    ( SPA-GMN-SYUKARIDAY (IDX1 IDX2)  =   "T" )
+                       MOVE    "1"         TO  SYS-1039-KARIDAY
+                                                        (IDX1 IDX2)
+                   ELSE
+                       MOVE    SPACE       TO  SYS-1039-KARIDAY
+                                                        (IDX1 IDX2)
+                   END-IF
+               END-PERFORM
+               PERFORM VARYING IDX2    FROM    1   BY  1
+                   UNTIL ( IDX2    >   2 )
+                       MOVE    SPA-GMN-SYUKARISTTIME (IDX1 IDX2)
+                                           TO  SYS-1039-KARISTTIME
+                                                             (IDX1 IDX2)
+                       MOVE    SPA-GMN-SYUKARIEDTIME (IDX1 IDX2)
+                                           TO  SYS-1039-KARIEDTIME
+                                                             (IDX1 IDX2)
+               END-PERFORM
+           END-PERFORM
+      *
            MOVE    SYS-1039-REC            TO  SYSKANRI-REC
       *
            IF      FLG-SYSKANRI            =   ZERO
@@ -4384,6 +4579,38 @@
            END-IF
            .
        4900-KANRENCHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *       入力項目の関連チェック処理（収納機能情報）
+      *****************************************************************
+       4904-KANRENCHK-SEC          SECTION.
+      *
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   2 )
+                    OR   ( SPA-ERRCD   NOT =   SPACE )
+               PERFORM VARYING IDX2    FROM    1   BY  1
+                   UNTIL ( IDX2    >   2 )
+                    OR   ( SPA-ERRCD   NOT =   SPACE )
+      *
+                   COMPUTE WRK-ERR-CUR
+                       =   400
+                       + ( IDX1    -   1 ) *  8
+                       + ( IDX2    -   1 ) *  4
+      *
+                   IF    ( SPA-GMN-SYUKARISTTIME (IDX1 IDX2)
+                           >       SPA-GMN-SYUKARIEDTIME (IDX1 IDX2) )
+      *
+                       MOVE    WRK-ERR-CUR TO  SPA-GMN-CUR
+                       MOVE    "3101"      TO  SPA-ERRCD
+      *
+                   END-IF
+      *
+               END-PERFORM
+           END-PERFORM
+      *
+           .
+       4904-KANRENCHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4762,6 +4989,31 @@
            MOVE    SPA-GMN-SYUSTIME-HH TO  W07-SYUSTIME-HH
            MOVE    SPA-GMN-SYUSTIME-MM TO  W07-SYUSTIME-MM
       *
+      *    仮締め時間帯
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   2 )
+      *
+               PERFORM VARYING IDX2    FROM    1   BY  1
+                   UNTIL ( IDX2    >   7 )
+      *
+                   MOVE    SPA-GMN-SYUKARIDAY (IDX1 IDX2)
+                                       TO  W07-SYUKARIDAY
+                                                       (IDX1 IDX2)
+               END-PERFORM
+      *
+               PERFORM VARYING IDX2    FROM    1   BY  1
+                   UNTIL ( IDX2    >   2 )
+      *
+                   MOVE    SPA-GMN-SYUKARISTTIME (IDX1 IDX2)
+                                       TO  W07-SYUKARISTTIME
+                                                       (IDX1 IDX2)
+                   MOVE    SPA-GMN-SYUKARIEDTIME (IDX1 IDX2)
+                                       TO  W07-SYUKARIEDTIME
+                                                       (IDX1 IDX2)
+      *
+               END-PERFORM
+           END-PERFORM
+      *
       *    主病名確認メッセージ表示有無区分（病名機能情報）
            MOVE    SPA-GMN-MSG1-DSPKBN-G   TO  W07-MSG1-DSPKBN
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -5045,6 +5297,12 @@
                WHEN    "3003"
                    MOVE    "登録時刻入力エラー"
                                                        TO  SPA-ERRMSG
+               WHEN    "3004"
+                   MOVE    "仮締め時刻入力エラー"
+                                                       TO  SPA-ERRMSG
+               WHEN    "3101"
+                   MOVE    "期間の指定に誤りがあります"
+                                                       TO  SPA-ERRMSG
       *    病名機能情報
                WHEN    "4001"
                    MOVE
@@ -5289,6 +5547,38 @@
                    MOVE  "SYUSTIME_HH"     TO   MCP-WIDGET
                WHEN    44
                    MOVE  "SYUSTIME_MM"     TO   MCP-WIDGET
+               WHEN    400
+                   MOVE  "SYUKARIST11_HH"  TO   MCP-WIDGET
+               WHEN    401
+                   MOVE  "SYUKARIST11_MM"  TO   MCP-WIDGET
+               WHEN    402
+                   MOVE  "SYUKARIED11_HH"  TO   MCP-WIDGET
+               WHEN    403
+                   MOVE  "SYUKARIED11_MM"  TO   MCP-WIDGET
+               WHEN    404
+                   MOVE  "SYUKARIST12_HH"  TO   MCP-WIDGET
+               WHEN    405
+                   MOVE  "SYUKARIST12_MM"  TO   MCP-WIDGET
+               WHEN    406
+                   MOVE  "SYUKARIED12_HH"  TO   MCP-WIDGET
+               WHEN    407
+                   MOVE  "SYUKARIED12_MM"  TO   MCP-WIDGET
+               WHEN    408
+                   MOVE  "SYUKARIST21_HH"  TO   MCP-WIDGET
+               WHEN    409
+                   MOVE  "SYUKARIST21_MM"  TO   MCP-WIDGET
+               WHEN    410
+                   MOVE  "SYUKARIED21_HH"  TO   MCP-WIDGET
+               WHEN    411
+                   MOVE  "SYUKARIED21_MM"  TO   MCP-WIDGET
+               WHEN    412
+                   MOVE  "SYUKARIST22_HH"  TO   MCP-WIDGET
+               WHEN    413
+                   MOVE  "SYUKARIST22_MM"  TO   MCP-WIDGET
+               WHEN    414
+                   MOVE  "SYUKARIED22_HH"  TO   MCP-WIDGET
+               WHEN    415
+                   MOVE  "SYUKARIED22_MM"  TO   MCP-WIDGET
       *
                WHEN    70
                    MOVE  "MSG1_DSPKBN"     TO   MCP-WIDGET
@@ -5323,6 +5613,7 @@
                    MOVE    2               TO  W07-PAGENO
                    MOVE    2               TO  SPA-GMN-PAGENO
                WHEN    40  THRU    49
+               WHEN    400 THRU    499
                    MOVE    3               TO  W07-PAGENO
                    MOVE    3               TO  SPA-GMN-PAGENO
                WHEN    70  THRU    79
@@ -5473,6 +5764,38 @@
                WHEN    "SYUSTIME_HH"
                    MOVE    44              TO  SPA-GMN-CUR
                WHEN    "SYUSTIME_MM"
+                   MOVE    400             TO  SPA-GMN-CUR
+               WHEN    "SYUKARIST11_HH"
+                   MOVE    401             TO  SPA-GMN-CUR
+               WHEN    "SYUKARIST11_MM"
+                   MOVE    402             TO  SPA-GMN-CUR
+               WHEN    "SYUKARIED11_HH"
+                   MOVE    403             TO  SPA-GMN-CUR
+               WHEN    "SYUKARIED11_MM"
+                   MOVE    404             TO  SPA-GMN-CUR
+               WHEN    "SYUKARIST12_HH"
+                   MOVE    405             TO  SPA-GMN-CUR
+               WHEN    "SYUKARIST12_MM"
+                   MOVE    406             TO  SPA-GMN-CUR
+               WHEN    "SYUKARIED12_HH"
+                   MOVE    407             TO  SPA-GMN-CUR
+               WHEN    "SYUKARIED12_MM"
+                   MOVE    408             TO  SPA-GMN-CUR
+               WHEN    "SYUKARIST21_HH"
+                   MOVE    409             TO  SPA-GMN-CUR
+               WHEN    "SYUKARIST21_MM"
+                   MOVE    410             TO  SPA-GMN-CUR
+               WHEN    "SYUKARIED21_HH"
+                   MOVE    411             TO  SPA-GMN-CUR
+               WHEN    "SYUKARIED21_MM"
+                   MOVE    412             TO  SPA-GMN-CUR
+               WHEN    "SYUKARIST22_HH"
+                   MOVE    413              TO  SPA-GMN-CUR
+               WHEN    "SYUKARIST22_MM"
+                   MOVE    414              TO  SPA-GMN-CUR
+               WHEN    "SYUKARIED22_HH"
+                   MOVE    415             TO  SPA-GMN-CUR
+               WHEN    "SYUKARIED22_MM"
                    MOVE    99              TO  SPA-GMN-CUR
       *
                WHEN    "MSG1_DSPKBN"

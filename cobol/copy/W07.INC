@@ -239,6 +239,16 @@
                     06  W07-SYUSKYPRTN-ITEM       PIC X(24)   OCCURS  2.
                   05  W07-SYUSTIME-HH             PIC S9(02).
                   05  W07-SYUSTIME-MM             PIC S9(02).
+                  05  W07-SYUKARITIME-G.
+                    06  W07-SYUKARITIME-OCC1      OCCURS      2.
+                      07  W07-SYUKARIDAY          PIC X       OCCURS  7.
+                      07  W07-SYUKARITIME-OCC2    OCCURS      2.
+                        08  W07-SYUKARISTTIME.
+                          09  W07-SYUKARIST-HH      PIC S9(02).
+                          09  W07-SYUKARIST-MM      PIC S9(02).
+                        08  W07-SYUKARIEDTIME.
+                          09  W07-SYUKARIED-HH      PIC S9(02).
+                          09  W07-SYUKARIED-MM      PIC S9(02).
                 04  W07-TAGNAME4.
                   05  W07-TAGNAME4-STATE   PIC S9(9)   BINARY.
                 04  W07-TAG5.

@@ -46,8 +46,19 @@
                05  SYS-1039-STIME.
                    07  SYS-1039-STIME-HH   PIC  X(02).
                    07  SYS-1039-STIME-MM   PIC  X(02).
+      *²¾Äù»þ´Ö
+               05  SYS-1039-KARITIME.
+                   07  SYS-1039-KARITIME-OCC1          OCCURS  2.
+                       09  SYS-1039-KARIDAY    PIC X   OCCURS  7.
+                       09  SYS-1039-KARITIME-OCC2      OCCURS  2.
+                           11  SYS-1039-KARISTTIME.
+                               13  SYS-1039-KARIST-HH  PIC X(02).
+                               13  SYS-1039-KARIST-MM  PIC X(02).
+                           11  SYS-1039-KARIEDTIME.
+                               13  SYS-1039-KARIED-HH  PIC X(02).
+                               13  SYS-1039-KARIED-MM  PIC X(02).
       *Í½È÷
-               05                       PIC  X(493).
+               05                       PIC  X(447).
       *Ã¼Ëö£É£Ä
            03  SYS-1039-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
