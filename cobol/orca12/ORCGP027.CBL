@@ -974,8 +974,7 @@
            MOVE    ZERO                TO  IDY
            MOVE    ZERO                TO  SPA-NAI27-IDX
            PERFORM   VARYING   IDX     FROM    1   BY  1
-                     UNTIL   ( IDX         >   15   )
-                     OR      ( IDX         >   SPA-GMN27-MAX )
+                     UNTIL   ( IDX         >   SPA-GMN27-MAX )
                      OR      ( IDY     NOT =   ZERO )
                IF  LNK-COMB-HKNCOMBINUM (IDX)  =   SPA-NAI27-SELNUM
                    MOVE    IDX                 TO  SPA-NAI27-IDX
