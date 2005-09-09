@@ -138,6 +138,15 @@ K06	{
 		SRYKA	{
 			value	number(2);
 		};
+		HKNCOMBI	{
+			value	number(4);
+		};
+		SRYKAMEI	{
+			value	varchar(7);
+		};
+		HKNCOMBIMEI	{
+			value	varchar(15);
+		};
 		scrolledwindow1	{
 			SANTEILST	{
 				count	int;
@@ -157,15 +166,6 @@ K06	{
 				}	[100];
 				select	bool[100];
 			};
-		};
-		HKNCOMBI	{
-			value	number(4);
-		};
-		SRYKAMEI	{
-			value	varchar(10);
-		};
-		HKNCOMBIMEI	{
-			value	varchar(20);
 		};
 	};
 };
