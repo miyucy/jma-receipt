@@ -41,6 +41,9 @@
       *                                     に変更
       *  02.00.06    NACL-小豆沢  05/06/10  原爆一般＋長期の組合せを作成可能
       *                                     に変更
+      *  02.00.07    NACL-門脇    05/09/08  補助公費を追加した組合せの作成
+      *                                     （全国公費＋地方公費＋補助公費）
+      *                                     省庁対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -114,6 +117,7 @@
       *----(01.00.01) LINE ADD START ---------------------------------
            03  FLG-RJN             PIC 9(01).
       *----(01.00.01) LINE ADD END   ---------------------------------
+           03  FLG-SYOCYO          PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -139,6 +143,8 @@
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
+           03  IDZ2                PIC 9(04).
+           03  IDZ3                PIC 9(04).
            03  IDA                 PIC 9(04).
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
@@ -572,6 +578,10 @@
       *****************************************************************
        330-KOHINF-SET-SEC               SECTION.
       *
+           IF      PTKOH-KOHNUM(1:2) = "99"
+                MOVE    1     TO     FLG-SYOCYO
+           END-IF
+      *
            MOVE    PTKOH-KOHID          TO  WRK-KOH-KOHID     (CNT-KOH)
            MOVE    PTKOH-KOHNUM         TO  WRK-KOH-HKNNUM    (CNT-KOH)
       *
@@ -754,6 +764,12 @@
                  ( WRK-LCOMB-GAI-FTNKBN   (IDZ)    =   "1"  )
                CONTINUE
              ELSE
+              IF     (  FLG-SYOCYO   =  ZERO                    )
+              OR     (( FLG-SYOCYO   =   1                     ) AND
+                      ((WRK-LCOMB-KOH1HKNNUM(IDZ)(1:2) = "99" ) OR
+                       (WRK-LCOMB-KOH2HKNNUM(IDZ)(1:2) = "99" ) OR
+                       (WRK-LCOMB-KOH3HKNNUM(IDZ)(1:2) = "99" ) OR
+                       (WRK-LCOMB-KOH4HKNNUM(IDZ)(1:2) = "99" )))
                ADD     1               TO  CNT-COMB
       ******** INITIALIZE                  NC01PARA-REC
       *        MOVE    SPA-TERMID      TO  PARA-NC01-TERMID
@@ -781,6 +797,7 @@
                                             MCPAREA
                                            ORCMCPAREA
                                            MCPDATA-REC
+              END-IF
              END-IF
            END-PERFORM
       *
@@ -1165,6 +1182,7 @@
                       MOVE    WRK-KOH-SBT   (WRK-COMB-IDX)
                                   TO  WRK-RCOMB-KOH3-HKNKOHSBTKBN(IDX1)
                   ELSE
+                    IF  WRK-RCOMB-KOH4HKNNUM (IDX1)  =   SPACE
                       MOVE    WRK-KOH-KOHID     (WRK-COMB-IDX)
                                     TO  WRK-RCOMB-KOH4ID      (IDX1)
                       MOVE    WRK-KOH-HKNNUM     (WRK-COMB-IDX)
@@ -1175,6 +1193,9 @@
                                   TO  WRK-RCOMB-KOH4-TANSEIDONAME(IDX1)
                       MOVE    WRK-KOH-SBT   (WRK-COMB-IDX)
                                   TO  WRK-RCOMB-KOH4-HKNKOHSBTKBN(IDX1)
+                    ELSE
+                      DISPLAY "IREKAE NASI"
+                    END-IF
                   END-IF
               END-IF
            END-IF
@@ -1200,14 +1221,15 @@
                    ( WRK-KOH-SAKJOKBN  (IDZ)   =   SPACE)      AND
                    ( WRK-KOH-SBT       (IDZ)   =   "7" OR "A") AND
       *----(01.00.04) LINE MOD END   -------------------------------
-                   ( WRK-KOH-HKNKOHKBN (IDZ)   =   "2" OR "3") AND
-                   ((WRK-KOH-GENHKNNUM1(IDZ)   =   SPACE)  OR
-                    (WRK-KOH-GENHKNNUM1(IDZ)
-                                           =   WRK-SRT-HJO-KOHNO) OR
-                    (WRK-KOH-GENHKNNUM2(IDZ)
-                                           =   WRK-SRT-HJO-KOHNO) OR
-                    (WRK-KOH-GENHKNNUM3(IDZ)
-                                           =   WRK-SRT-HJO-KOHNO))
+                   ( WRK-KOH-HKNKOHKBN (IDZ)   =   "2" OR "3")
+      ****         ( WRK-KOH-HKNKOHKBN (IDZ)   =   "2" OR "3") AND
+      ****         ((WRK-KOH-GENHKNNUM1(IDZ)   =   SPACE)  OR
+      ****          (WRK-KOH-GENHKNNUM1(IDZ)
+      ****                                 =   WRK-SRT-HJO-KOHNO) OR
+      ****          (WRK-KOH-GENHKNNUM2(IDZ)
+      ****                                 =   WRK-SRT-HJO-KOHNO) OR
+      ****          (WRK-KOH-GENHKNNUM3(IDZ)
+      ****                                 =   WRK-SRT-HJO-KOHNO))
       *          [補助公費]適用年月日と[組合せ]適用年月日 
                  IF  (WRK-KOH-TEKEDYMD(IDZ)    <   WRK-SRT-STYMD) OR
                      (WRK-KOH-TEKSTYMD(IDZ)    >   WRK-SRT-EDYMD)
@@ -1252,7 +1274,7 @@
            END-PERFORM
       *
            .
-       5701411-HJOIDX-SORT-EXT.
+       5701412-HJOIDX-SORT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3289,7 +3311,76 @@
                              UNTIL     IDZ   >     WRK-SRT-HJO-CNT
                    MOVE    WRK-SRT-HJO-IDX (IDZ)
                                              TO  WRK-COMB-HJOIDX
-                   PERFORM 5701413-SYUKOH-HJO-SEC
+                   IF   WRK-SRT-HJO-KOHNO(1:2) = "99"
+                     CONTINUE
+                   ELSE
+                     IF (WRK-KOH-GENHKNNUM1(WRK-COMB-HJOIDX)
+                                       =               SPACE)  OR
+                        (WRK-KOH-GENHKNNUM1(WRK-COMB-HJOIDX)
+                                       =   WRK-SRT-HJO-KOHNO)  OR
+                        (WRK-KOH-GENHKNNUM2(WRK-COMB-HJOIDX)
+                                       =   WRK-SRT-HJO-KOHNO)  OR
+                        (WRK-KOH-GENHKNNUM3(WRK-COMB-HJOIDX)
+                                       =   WRK-SRT-HJO-KOHNO)
+                          PERFORM 5701413-SYUKOH-HJO-SEC
+                     END-IF
+                   END-IF
+                 END-PERFORM
+      *          上で作成した組合せに、補助公費を追加した組合せを作成する。
+      *          （全国公費＋地方公費＋補助公費）
+                 MOVE   WRK-RCOMB-MAX  TO   IDZ3
+                 PERFORM     VARYING   IDZ   FROM  1   BY  1
+                             UNTIL     IDZ   >     WRK-SRT-HJO-CNT
+                   MOVE    WRK-SRT-HJO-IDX (IDZ)
+                                       TO   WRK-COMB-HJOIDX
+                   IF  WRK-KOH-HKNKOHKBN (WRK-COMB-HJOIDX)  =   "2"
+                   OR  WRK-KOH-HKNNUM(WRK-COMB-HJOIDX)(1:2) =   "99"
+                     PERFORM   VARYING   IDZ2  FROM  1   BY  1
+                               UNTIL     IDZ2  >     IDZ3
+                       IF  (WRK-RCOMB-KOH1HKNNUM(IDZ2)      = "027" AND
+                            WRK-RCOMB-KOH2HKNNUM(IDZ2)  NOT = SPACE AND
+                            WRK-RCOMB-KOH3HKNNUM(IDZ2)  NOT = SPACE)
+                       OR  (WRK-RCOMB-KOH1HKNNUM(IDZ2)  NOT = "027" AND
+                            WRK-RCOMB-KOH1HKNNUM(IDZ2)  NOT = SPACE AND
+                            WRK-RCOMB-KOH2HKNNUM(IDZ2)  NOT = SPACE)
+                         IF   WRK-RCOMB-KOH1HKNNUM(IDZ2)    = "027"
+                           IF  (WRK-KOH-HKNNUM(WRK-COMB-HJOIDX)
+                                          = WRK-RCOMB-KOH3HKNNUM(IDZ2))
+                           OR  (WRK-RCOMB-KOH3HKNNUM(IDZ2)(1:2) = "99")
+                              CONTINUE
+                           ELSE
+                             IF (WRK-KOH-GENHKNNUM1(WRK-COMB-HJOIDX)
+                                      =                       SPACE) OR
+                                (WRK-KOH-GENHKNNUM1(WRK-COMB-HJOIDX)
+                                      =  WRK-RCOMB-KOH3HKNNUM(IDZ2)) OR
+                                (WRK-KOH-GENHKNNUM2(WRK-COMB-HJOIDX)
+                                      =  WRK-RCOMB-KOH3HKNNUM(IDZ2)) OR
+                                (WRK-KOH-GENHKNNUM3(WRK-COMB-HJOIDX)
+                                      =  WRK-RCOMB-KOH3HKNNUM(IDZ2))
+                                 PERFORM 5701414-SYUKOH-HJO2-SEC
+                             END-IF
+                           END-IF
+                         ELSE
+                           IF  (WRK-KOH-HKNNUM(WRK-COMB-HJOIDX)
+                                          = WRK-RCOMB-KOH2HKNNUM(IDZ2))
+                           OR  (WRK-RCOMB-KOH2HKNNUM(IDZ2)(1:2) = "99")
+                              CONTINUE
+                           ELSE
+                             IF (WRK-KOH-GENHKNNUM1(WRK-COMB-HJOIDX)
+                                      =                       SPACE) OR
+                                (WRK-KOH-GENHKNNUM1(WRK-COMB-HJOIDX)
+                                      =  WRK-RCOMB-KOH2HKNNUM(IDZ2)) OR
+                                (WRK-KOH-GENHKNNUM2(WRK-COMB-HJOIDX)
+                                      =  WRK-RCOMB-KOH2HKNNUM(IDZ2)) OR
+                                (WRK-KOH-GENHKNNUM3(WRK-COMB-HJOIDX)
+                                      =  WRK-RCOMB-KOH2HKNNUM(IDZ2))
+                                 PERFORM 5701414-SYUKOH-HJO2-SEC
+                             END-IF
+                           END-IF
+                         END-IF
+                       END-IF
+                     END-PERFORM
+                   END-IF
                  END-PERFORM
                ELSE
                  ADD     1                 TO  WRK-RCOMB-MAX
@@ -3443,22 +3534,26 @@
                    CONTINUE
                ELSE
       *          更生医療・小児特定・マル福がある場合、長期をつける
-                 IF ((WRK-KCOMB-KOH1HKNNUM(IDX2)  = 
+                 IF (( WRK-KCOMB-KOH1HKNNUM(IDX2)  = 
                                             "015" OR "052" OR "019") OR
-                    ((WRK-KCOMB-KOH1HKNNUM(IDX2) >=  "100")  AND
-                     (WRK-KCOMB-KOH1HKNNUM(IDX2) <=  "899"))       ) OR
-                    ((WRK-KCOMB-KOH2HKNNUM(IDX2)  =
+                     ((WRK-KCOMB-KOH1HKNNUM(IDX2) >=  "100")  AND
+                      (WRK-KCOMB-KOH1HKNNUM(IDX2) <=  "899")       ) OR
+                     ( WRK-KCOMB-KOH1HKNNUM(IDX2)(1:2)  =  "99"    )) OR
+                    (( WRK-KCOMB-KOH2HKNNUM(IDX2)  =
                                             "015" OR "052" OR "019") OR
-                    ((WRK-KCOMB-KOH2HKNNUM(IDX2) >=  "100")  AND
-                     (WRK-KCOMB-KOH2HKNNUM(IDX2) <=  "899"))       ) OR
-                    ((WRK-KCOMB-KOH3HKNNUM(IDX2)  =
+                     ((WRK-KCOMB-KOH2HKNNUM(IDX2) >=  "100")  AND
+                      (WRK-KCOMB-KOH2HKNNUM(IDX2) <=  "899")       ) OR
+                     ( WRK-KCOMB-KOH2HKNNUM(IDX2)(1:2)  =  "99"    )) OR
+                    (( WRK-KCOMB-KOH3HKNNUM(IDX2)  =
                                             "015" OR "052" OR "019") OR
-                    ((WRK-KCOMB-KOH3HKNNUM(IDX2) >=  "100")  AND
-                     (WRK-KCOMB-KOH3HKNNUM(IDX2) <=  "899"))       ) OR
-                    ((WRK-KCOMB-KOH4HKNNUM(IDX2)  =
+                     ((WRK-KCOMB-KOH3HKNNUM(IDX2) >=  "100")  AND
+                      (WRK-KCOMB-KOH3HKNNUM(IDX2) <=  "899")       ) OR
+                     ( WRK-KCOMB-KOH3HKNNUM(IDX2)(1:2)  =  "99"    )) OR
+                    (( WRK-KCOMB-KOH4HKNNUM(IDX2)  =
                                             "015" OR "052" OR "019") OR
-                    ((WRK-KCOMB-KOH4HKNNUM(IDX2) >=  "100")  AND
-                     (WRK-KCOMB-KOH4HKNNUM(IDX2) <=  "899"))       )
+                     ((WRK-KCOMB-KOH4HKNNUM(IDX2) >=  "100")  AND
+                      (WRK-KCOMB-KOH4HKNNUM(IDX2) <=  "899")       ) OR
+                     ( WRK-KCOMB-KOH4HKNNUM(IDX2)(1:2)  =  "99"    ))   
       *              公費表中より長期高額を検索し、
       *                            適用開始日順にインデックス取得
                      MOVE    WRK-KCOMB-TEKSTYMD (IDX2)
@@ -3486,6 +3581,17 @@
                ADD     1               TO  WRK-LCOMB-MAX
                MOVE    WRK-RCOMB-REC (IDZ)
                                        TO  WRK-LCOMB-REC(WRK-LCOMB-MAX)
+      ************
+      *        DISPLAY "WRK-LCOMB-MAX=" WRK-LCOMB-MAX
+      *        DISPLAY "WRK-LCOMB-KOH1HKNNUM(WRK-LCOMB-MAX)="
+      *                   WRK-LCOMB-KOH1HKNNUM(WRK-LCOMB-MAX)
+      *        DISPLAY "WRK-LCOMB-KOH2HKNNUM(WRK-LCOMB-MAX)="
+      *                   WRK-LCOMB-KOH2HKNNUM(WRK-LCOMB-MAX)
+      *        DISPLAY "WRK-LCOMB-KOH3HKNNUM(WRK-LCOMB-MAX)="
+      *                   WRK-LCOMB-KOH3HKNNUM(WRK-LCOMB-MAX)
+      *        DISPLAY "WRK-LCOMB-KOH4HKNNUM(WRK-LCOMB-MAX)="
+      *                   WRK-LCOMB-KOH4HKNNUM(WRK-LCOMB-MAX)
+      **************
                MOVE    WRK-LCOMB-MAX   TO  IDX2
                PERFORM 57012-FUTAN-SET-SEC
            END-PERFORM
@@ -3540,6 +3646,48 @@
            EXIT.
       *
       *****************************************************************
+      *    主公費−補助　組合せ作成処理
+      *****************************************************************
+       5701414-SYUKOH-HJO2-SEC       SECTION.
+      *
+           MOVE    WRK-COMB-HJOIDX      TO  IDX6
+           ADD     1                    TO  WRK-RCOMB-MAX
+           MOVE    WRK-RCOMB-MAX        TO  IDX1
+           MOVE    WRK-RCOMB-REC (IDZ2) TO  WRK-RCOMB-REC  (IDX1)
+      *    [補助 開始日]≦[組合せ 開始日]
+           IF  WRK-KOH-TEKSTYMD (WRK-COMB-HJOIDX)
+                                    <=  WRK-RCOMB-TEKSTYMD (IDZ2)
+      *        [補助 終了日]＜[組合せ 終了日]
+               IF  WRK-KOH-TEKEDYMD(WRK-COMB-HJOIDX)
+                                    <   WRK-RCOMB-TEKEDYMD (IDZ2)
+      *            ●[組合せ] 開始 <---> [補助] 終了日
+                   MOVE    WRK-KOH-TEKEDYMD   (WRK-COMB-HJOIDX)
+                                    TO  WRK-RCOMB-TEKEDYMD (IDX1)
+               ELSE
+      *            [組合せ 終了日]≦[補助 終了日]
+                   CONTINUE
+               END-IF
+           ELSE
+      *        [組合せ 開始日]＜[補助 開始日]
+      *        ●[補助] 開始 <---> [組合せ] 終了日
+               MOVE    WRK-KOH-TEKSTYMD   (WRK-COMB-HJOIDX)
+                                    TO  WRK-RCOMB-TEKSTYMD    (IDX1)
+      *        [補助 終了日]＜[組合せ 終了日]
+               IF  WRK-KOH-TEKEDYMD(WRK-COMB-HJOIDX)
+                                    <   WRK-RCOMB-TEKEDYMD (IDZ2)
+      *            ●[補助] 開始 <---> [補助] 終了日に変更
+                   MOVE    WRK-KOH-TEKEDYMD   (WRK-COMB-HJOIDX)
+                                    TO  WRK-RCOMB-TEKEDYMD    (IDX1)
+               ELSE
+                   CONTINUE
+               END-IF
+           END-IF
+           PERFORM 5701413-HJO-IREKAE-SEC
+           .
+       5701414-SYUKOH-HJO2-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    補助公費付加　公費１〜４入替処理
       *****************************************************************
        5701413-HJO-IREKAE-SEC       SECTION.
@@ -3583,6 +3731,7 @@
                       MOVE    WRK-KOH-SBT   (WRK-COMB-HJOIDX)
                                   TO  WRK-RCOMB-KOH3-HKNKOHSBTKBN(IDX1)
                   ELSE
+                    IF  WRK-RCOMB-KOH4HKNNUM (IDX1)  =   SPACE
                       MOVE    WRK-KOH-KOHID     (WRK-COMB-HJOIDX)
                                     TO  WRK-RCOMB-KOH4ID      (IDX1)
                       MOVE    WRK-KOH-HKNNUM     (WRK-COMB-HJOIDX)
@@ -3594,6 +3743,9 @@
       *               ------------------------------------
                       MOVE    WRK-KOH-SBT   (WRK-COMB-HJOIDX)
                                   TO  WRK-RCOMB-KOH4-HKNKOHSBTKBN(IDX1)
+                    ELSE
+                      DISPLAY "IREKAE NASI"
+                    END-IF
                   END-IF
               END-IF
            END-IF
