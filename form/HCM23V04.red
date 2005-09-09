@@ -305,6 +305,11 @@
         <embed object="string" length="60"/>
       </appinfo>
     </element>
+    <element name="PAGE" occurs="1">
+      <appinfo>
+        <embed object="string" length="5"/>
+      </appinfo>
+    </element>
   </dictionarydata>
   <diagramdata>
     <attribute name="background">
@@ -14092,5 +14097,47 @@
         </attribute>
       </object>
     </group>
+    <object type="Embed - Text" version="0" id="O326">
+      <attribute name="obj_pos">
+        <point val="17.7,3.5"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="17.7,3.22636;18.7605,3.57636"/>
+      </attribute>
+      <attribute name="dnode_path">
+        <string>#PAGE#</string>
+      </attribute>
+      <attribute name="embed_text_string">
+        <enum val="1"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#99999#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.35"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="17.7,3.5"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
   </layer>
 </diagram>
