@@ -27,11 +27,12 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  03/09/01    NACL−藤原   メモ欄の全角チェック追加
-      *  03/10/27    NACL−藤原   前頁追加
-      *  04/02/13    NACL−太田   コラムリスト位置修正
-      *  02/05/00    NACL−竹田   データ格納方法変更
-      *  02/06/00    NACL−竹田   リアルタイムプレビュー対応
+      *  03/09/01    NACL−藤原            メモ欄の全角チェック追加
+      *  03/10/27    NACL−藤原            前頁追加
+      *  04/02/13    NACL−太田            コラムリスト位置修正
+      *  02/05/00    NACL−竹田            データ格納方法変更
+      *  02/06/00    NACL−竹田            リアルタイムプレビュー対応
+      *  02/06/01    NACL−竹田            最大行の修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -95,7 +96,7 @@
                    07  SPA-GMN-TITLE               PIC X(40).
                    07  SPA-GMN-TITLE1              PIC X(08).
                    07  SPA-GMN-TITLE2              PIC X(10).
-                   07  SPA-GMN-ERRMSG              PIC X(40).
+                   07  SPA-GMN-ERRMSG              PIC X(60).
                    07  SPA-GMN-FILENAME            PIC X(200).
                    07  SPA-GMN-OBJECT              PIC X(08).
                    07  SPA-GMN-TBL.
@@ -276,7 +277,7 @@
            03  WRK-CONS-JOB-JOBID  PIC 9(07)   VALUE   ZERO.
       *
       *
-           03  WRK-CONS-LINE-MAX   PIC 9(03)   VALUE   50.
+           03  WRK-CONS-LINE-MAX   PIC 9(03)   VALUE   100.
       *     
       *    プレビュー用情報
            COPY    "CPXC01LNK.INC".
@@ -2020,7 +2021,8 @@
                                                TO  SPA-GMN-ERRMSG
                    END-IF
             ELSE
-                 MOVE    "帳票データ作成中です"
+                 MOVE 
+                "帳票データ作成中です。状態（Ｆ２）を押下してください。"
                                            TO  SPA-GMN-ERRMSG
             END-IF
       *
