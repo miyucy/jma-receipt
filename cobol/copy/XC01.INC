@@ -4,7 +4,7 @@
                   05  XC01-SELNUM.
                     06  XC01-VALUE  PIC S9(5).
                   05  XC01-ERRMSG-STYLE     PIC X(20).
-                  05  XC01-ERRMSG           PIC X(40).
+                  05  XC01-ERRMSG           PIC X(60).
                   05  XC01-TITLE-STYLE      PIC X(20).
                   05  XC01-TITLE            PIC X(40).
                   05  XC01-PSAREA.
