@@ -96,6 +96,7 @@
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
+           03  IDX1                PIC 9(04).
       *
       *    ¥Ñ¥é¥á¥¿ÎÎ°è
        01  WRK-PARA.
@@ -174,6 +175,7 @@
            03  WRK-EDDAILYKEY.
                05  WRK-EDDAILYKEY-YMD  PIC X(08).
                05  WRK-EDDAILYKEY-TIME PIC X(04).
+           03  WRK-STR                 PIC X(300).
       *
        01  KEY-AREA.
            03  KEY-NEW-TBL.
@@ -877,10 +879,49 @@
            MOVE    WRK-Z9              TO  HCM07-RYOSYUTTL(IDX)
            MOVE    WRK-GMISYU(IDX)     TO  WRK-Z9
            MOVE    WRK-Z9              TO  HCM07-MISYUTTL(IDX)
+      *
+      *    IF    ( IDX    =    3 )
+      *        PERFORM 3311-TOTAL-MES-HEN-SEC
+      *    END-IF
+      *
            .
        331-TOTAL-HENSYU-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    ÎÎ¼ý¶â³Û·×ÊÔ½¸½èÍý
+      *****************************************************************
+       3311-TOTAL-MES-HEN-SEC      SECTION.
+      *
+           MOVE    WRK-GRYOSYU(IDX)    TO  WRK-Z9
+           MOVE    SPACE               TO  WRK-STR
+           MOVE    1                   TO  IDX1
+           UNSTRING    WRK-Z9
+                   DELIMITED   BY  ALL SPACE
+                   INTO    WRK-STR
+                   WITH    POINTER IDX1
+           END-UNSTRING
+           MOVE    WRK-Z9 (IDX1 : )    TO  WRK-MAE-INPUT
+           PERFORM 800-ZENKAKU-HEN-SEC
+      *
+      *    ¥¹¥Æ¥Ã¥×ÅÓÃæ½èÍý
+           MOVE    "STM"               TO  SJOBKANRI-MODE
+           INITIALIZE                      JOBKANRI-REC
+           STRING  "ÎÎ¼ý¶â³Û¹ç·×¡¡"    DELIMITED   BY  SIZE
+                   WRK-OUT-INPUT       DELIMITED   BY  SPACE
+                   "±ß"                DELIMITED   BY  SIZE
+           INTO    JOB-YOBI
+           END-STRING
+           MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
+      *
+           CALL    "ORCSJOB"               USING
+                                           ORCSJOBKANRIAREA
+                                           JOBKANRI-REC
+      *
+           .
+       3311-TOTAL-MES-HEN-EXT.
+           EXIT.
       *****************************************************************
       *    Ä¢É¼°õºþ½èÍý
       *****************************************************************
@@ -1097,15 +1138,15 @@
       *
            INITIALIZE                  SMEI2-REC
            MOVE    WRK-PARA-HOSPID TO  SMEI2-HOSPID
+           MOVE    SMEI-PTID       TO  SMEI2-PTID
            MOVE    SMEI-DENPNUM    TO  SMEI2-DENPNUM
            MOVE    SMEI-DENPEDANUM TO  SMEI2-DENPEDANUM
            MOVE    "2"             TO  SMEI2-NYUGAIKBN
            MOVE    SMEI2-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "SYUMEI-KEY5"   TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    PATH-TBL-SYUMEI-KEY11   TO  MCP-PATH
+           CALL    "MCPSUB"            USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                PERFORM 900-SMEI2-FETCH-SEC
@@ -1122,10 +1163,9 @@
        900-SMEI2-FETCH-SEC         SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           MOVE    "SYUMEI-KEY5"   TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    PATH-TBL-SYUMEI-KEY11   TO  MCP-PATH
+           CALL    "MCPSUB"            USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-SMEI2
@@ -1143,10 +1183,9 @@
        900-SMEI2-CLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           MOVE    "SYUMEI-KEY5"   TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    PATH-TBL-SYUMEI-KEY11   TO  MCP-PATH
+           CALL    "MCPSUB"            USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            .
        900-SMEI2-CLOSE-EXT.
