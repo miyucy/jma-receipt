@@ -15,11 +15,23 @@ L04	{
 		MESSTTIME	{
 			value	varchar(10);
 		};
+		CHK_MESSTSRYYMD	{
+			value	bool;
+		};
+		CHK_MESSTTIME	{
+			value	bool;
+		};
 		MESEDSRYYMD	{
 			value	varchar(10);
 		};
 		MESEDTIME	{
 			value	varchar(10);
+		};
+		CHK_MESEDSRYYMD	{
+			value	bool;
+		};
+		CHK_MESEDTIME	{
+			value	bool;
 		};
 		CMB_PROCKBN	{
 			PROCKBN	{

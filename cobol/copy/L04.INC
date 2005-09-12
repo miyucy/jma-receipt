@@ -24,8 +24,12 @@
               03  L04-MESPROC          PIC X(10).
               03  L04-MESSTSRYYMD      PIC X(10).
               03  L04-MESSTTIME        PIC X(10).
+              03  L04-CHK-MESSTSRYYMD  PIC X.
+              03  L04-CHK-MESSTTIME    PIC X.
               03  L04-MESEDSRYYMD      PIC X(10).
               03  L04-MESEDTIME        PIC X(10).
+              03  L04-CHK-MESEDSRYYMD  PIC X.
+              03  L04-CHK-MESEDTIME    PIC X.
               03  L04-CMB-PROCKBN.
                 04  L04-PROCKBN.
                   05  L04-VALUE        PIC X(50).

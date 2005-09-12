@@ -377,22 +377,17 @@
       *
                MOVE    SYS-3005-STSRYYMD   TO  WRK-SYMD
                PERFORM 800-HIZUKE-HEN-SEC
+               MOVE    WRK-SYMD        TO  SPA-NAI-L04-MESSTSRYYMD
                MOVE    WRK-HENYMDG     TO  SPA-GMN-L04-MESSTSRYYMD
       *
-               MOVE    SYS-3005-STTIME TO  WRK-HMS-G
-               MOVE    WRK-HMS-HH      TO  WRK-TIME-HH
-               MOVE    ":"             TO  WRK-TIME-SEP
-               MOVE    WRK-HMS-MM      TO  WRK-TIME-MM
-               MOVE    WRK-TIME-G      TO  SPA-GMN-L04-MESSTTIME
+               MOVE    SYS-3005-STTIME TO  SPA-GMN-L04-MESSTTIME
+      *
                MOVE    SYS-3005-EDSRYYMD   TO  WRK-SYMD
                PERFORM 800-HIZUKE-HEN-SEC
+               MOVE    WRK-SYMD        TO  SPA-NAI-L04-MESEDSRYYMD
                MOVE    WRK-HENYMDG     TO  SPA-GMN-L04-MESEDSRYYMD
       *
-               MOVE    SYS-3005-EDTIME TO  WRK-HMS-G
-               MOVE    WRK-HMS-HH      TO  WRK-TIME-HH
-               MOVE    ":"             TO  WRK-TIME-SEP
-               MOVE    WRK-HMS-MM      TO  WRK-TIME-MM
-               MOVE    WRK-TIME-G      TO  SPA-GMN-L04-MESEDTIME
+               MOVE    SYS-3005-EDTIME TO  SPA-GMN-L04-MESEDTIME
            END-IF
       *
            .
@@ -609,6 +604,12 @@
            MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+           WHEN    "CLICKED"       ALSO    "CHK_MESSTSRYYMD"
+           WHEN    "CLICKED"       ALSO    "CHK_MESSTTIME"
+               PERFORM 4101-CHK-FROM-CHK-SEC
+           WHEN    "CLICKED"       ALSO    "CHK_MESEDSRYYMD"
+           WHEN    "CLICKED"       ALSO    "CHK_MESEDTIME"
+               PERFORM 4101-CHK-TO-CHK-SEC
            WHEN    "CLICKED"       ALSO    "CHK_SRYYMD011"
            WHEN    "CLICKED"       ALSO    "CHK_TIME011"
                MOVE    1               TO  IDX-CHK
@@ -1139,6 +1140,74 @@
       *
            .
        41001-EDNO-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    締め自チェックチェック処理
+      *****************************************************************
+       4101-CHK-FROM-CHK-SEC       SECTION.
+      *
+           IF    ( SPA-GMN-L04-PROCKBN =   CONST-SELTERM )
+               CONTINUE
+           ELSE
+               GO  TO  4101-CHK-FROM-CHK-EXT
+           END-IF
+      *
+           IF    ( SPA-NAI-L04-MESSTSRYYMD
+                                   NOT  =   SPACE )
+      *
+               MOVE    ZERO            TO  SPA-GMN-L04-STNO
+                                           SPA-GMN-L04-TERM-STSEL
+      *
+               MOVE    SPA-GMN-L04-MESSTSRYYMD
+                                       TO  SPA-GMN-L04-STSRYYMD
+               MOVE    SPA-NAI-L04-MESSTSRYYMD
+                                       TO  SPA-NAI-L04-STSRYYMD
+               MOVE    SPA-GMN-L04-MESSTTIME
+                                       TO  WRK-HMS-G
+               MOVE    WRK-HMS-HH  TO  SPA-GMN-L04-STHR
+               MOVE    WRK-HMS-MM  TO  SPA-GMN-L04-STMIN
+      *
+               IF    ( SPA-NAI-L04-EDSRYYMD    =   SPACE )
+                AND  ( SPA-GMN-L04-EDTIME      =   ZERO  )
+      *
+                   PERFORM 4101-CHK-TO-CHK-SEC
+      *
+               END-IF
+           END-IF
+      *
+           .
+       4101-CHK-FROM-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    締め至チェックチェック処理
+      *****************************************************************
+       4101-CHK-TO-CHK-SEC         SECTION.
+      *
+           IF    ( SPA-GMN-L04-PROCKBN =   CONST-SELTERM )
+               CONTINUE
+           ELSE
+               GO  TO  4101-CHK-TO-CHK-EXT
+           END-IF
+      *
+           IF    ( SPA-NAI-L04-MESEDSRYYMD
+                                   NOT  =   SPACE )
+      *
+               MOVE    ZERO            TO  SPA-GMN-L04-EDNO
+                                           SPA-GMN-L04-TERM-EDSEL
+      *
+               MOVE    SPA-GMN-L04-MESEDSRYYMD
+                                       TO  SPA-GMN-L04-EDSRYYMD
+               MOVE    SPA-NAI-L04-MESEDSRYYMD
+                                       TO  SPA-NAI-L04-EDSRYYMD
+               MOVE    SPA-GMN-L04-MESEDTIME
+                                       TO  WRK-HMS-G
+               MOVE    WRK-HMS-HH  TO  SPA-GMN-L04-EDHR
+               MOVE    WRK-HMS-MM  TO  SPA-GMN-L04-EDMIN
+      *
+           END-IF
+      *
+           .
+       4101-CHK-TO-CHK-EXT.
            EXIT.
       *****************************************************************
       *    処理区分チェック処理
@@ -1867,12 +1936,23 @@
       *
            INITIALIZE                  L04
       *
-      *
            MOVE    SPA-GMN-L04-MESPROC     TO  L04-MESPROC
            MOVE    SPA-GMN-L04-MESSTSRYYMD TO  L04-MESSTSRYYMD
-           MOVE    SPA-GMN-L04-MESSTTIME   TO  L04-MESSTTIME
+           MOVE    SPACE                   TO  WRK-TIME-G
+      *
+           MOVE    SPA-GMN-L04-MESSTTIME   TO  WRK-KJNHM
+           MOVE    WRK-KJNHM-HH            TO  WRK-TIME-HH
+           MOVE    ":"                     TO  WRK-TIME-SEP
+           MOVE    WRK-KJNHM-MM            TO  WRK-TIME-MM
+           MOVE    WRK-TIME-G              TO  L04-MESSTTIME
+      *
            MOVE    SPA-GMN-L04-MESEDSRYYMD TO  L04-MESEDSRYYMD
-           MOVE    SPA-GMN-L04-MESEDTIME   TO  L04-MESEDTIME
+      *
+           MOVE    SPA-GMN-L04-MESEDTIME   TO  WRK-KJNHM
+           MOVE    WRK-KJNHM-HH            TO  WRK-TIME-HH
+           MOVE    ":"                     TO  WRK-TIME-SEP
+           MOVE    WRK-KJNHM-MM            TO  WRK-TIME-MM
+           MOVE    WRK-TIME-G              TO  L04-MESEDTIME
       *
            MOVE    SPA-GMN-L04-PROCKBN-G   TO  L04-PROCKBN
            MOVE    SPA-GMN-L04-PROCKBN-MAX TO  L04-PROCKBN-COUNT

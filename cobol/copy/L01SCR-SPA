@@ -89,11 +89,15 @@
                05  SPA-GMN-L04-CUR                 PIC 9(03).
                05  SPA-GMN-L04-VIEW-MODE           PIC 9(01).
                05  SPA-GMN-L04-MES-AREA.
-                   07  SPA-GMN-L04-MESPROC         PIC X(10).
-                   07  SPA-GMN-L04-MESSTSRYYMD     PIC X(10).
-                   07  SPA-GMN-L04-MESSTTIME       PIC X(10).
-                   07  SPA-GMN-L04-MESEDSRYYMD     PIC X(10).
-                   07  SPA-GMN-L04-MESEDTIME       PIC X(10).
+                   07  SPA-GMN-L04-MESPROC             PIC X(10).
+                   07  SPA-GMN-L04-MESSTSRYYMD         PIC X(10).
+                   07  SPA-GMN-L04-MESSTTIME.
+                       09  SPA-GMN-L04-MESSTTIME-HH    PIC X(02).
+                       09  SPA-GMN-L04-MESSTTIME-MM    PIC X(02).
+                   07  SPA-GMN-L04-MESEDSRYYMD         PIC X(10).
+                   07  SPA-GMN-L04-MESEDTIME.
+                       09  SPA-GMN-L04-MESEDTIME-HH    PIC X(02).
+                       09  SPA-GMN-L04-MESEDTIME-MM    PIC X(02).
       *
                05  SPA-GMN-L04-HAED-INPUT-AREA.
                    07  SPA-GMN-L04-PROCKBN-G.
@@ -143,6 +147,9 @@
                            11                          PIC X(01).
                            11  SPA-GMN-L04-HOURSKBNMEIL
                                                        PIC X(08).
+               05  SPA-NAI-L04-MES-AREA.
+                   07  SPA-NAI-L04-MESSTSRYYMD     PIC X(10).
+                   07  SPA-NAI-L04-MESEDSRYYMD     PIC X(10).
                05  SPA-NAI-L04-VIEW-AREA.
                    07  SPA-NAI-L04-TERM-G.
                        09  SPA-NAI-L04-TERM-OCC        OCCURS  10.
