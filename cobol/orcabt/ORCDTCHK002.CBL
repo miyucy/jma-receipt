@@ -3458,16 +3458,18 @@
                                    FLG-PTBYO-DAY-KA-G
                                    WRK-SYOSINYMD-G
       *
-      *    初診算定日取得処理
-           PERFORM 2001121-SYOSIN-SANTEI-SEC
+           IF    ( FLG-CHKEND (6)  =   ZERO )
+      *        初診算定日取得処理
+               PERFORM 2001121-SYOSIN-SANTEI-SEC
       *
-      *    初再診期間編集処理
-           PERFORM VARYING IDX4    FROM    1   BY  1
-                   UNTIL ( IDX4    >   TSRYKA-MAX )
+      *        初再診期間編集処理
+               PERFORM VARYING IDX4    FROM    1   BY  1
+                       UNTIL ( IDX4    >   TSRYKA-MAX )
       *
-               PERFORM 200112-SYOSAISIN-KKN-SEC
+                   PERFORM 200112-SYOSAISIN-KKN-SEC
       *
-           END-PERFORM
+               END-PERFORM
+           END-IF
       *
       *    患者病名情報チェック処理
            PERFORM 200112-PTBYOMEI-CHK-SEC
