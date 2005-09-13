@@ -55,6 +55,7 @@
       *  01.01.06    NACL-ÌçÏÆ    05.06.27  ²Ã»»Î¨£³·åÂÐ±þ
       *  01.01.07    NACL-ÌçÏÆ    05.08.18  Å¾µ¢»öÍ³ÊÔ½¸½¤Àµ
       *  01.01.08    NACL-ÌçÏÆ    05.09.06  ¼«ÇåÀÕ½¾ÍèÍÍ¼°ÂÐ±þ
+      *  01.01.09    NACL-ÌçÏÆ    05.09.13  ¡ÊÆÃ¡ËÂÐ¾Ý¤ÎÊÔ½¸½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -155,6 +156,8 @@
            03  IDX                                     PIC  9(03).
            03  IDY                                     PIC  9(03).
            03  IDZ                                     PIC  9(03).
+           03  IDZ2                                    PIC  9(03).
+           03  IDZ3                                    PIC  9(03).
            03  ID1                                     PIC  9(03).
            03  IDX2                                    PIC  9(02).
            03  IDX3                                    PIC  9(02).
@@ -237,14 +240,17 @@
                                                        OCCURS   31.     
       *    ³°Íè´ÉÍý²Ã»»¡ÊÆÃÎã¡§£µ£²¡ËÍÑÎÎ°è
        01  TBL-G52NISSU.
+         02  TBL-G52NISSU-OCC                          OCCURS   3.
            03  TBL-G52NISSU-DAY                        PIC  X(01)
                                                        OCCURS   31.
       *    ³°Íè´ÉÍý²Ã»»¡ÊÆÃÎã¡§£²£¶¡ËÍÑÎÎ°è
        01  TBL-G26NISSU.
+         02  TBL-G26NISSU-OCC                          OCCURS   3.
            03  TBL-G26NISSU-DAY                        PIC  X(01)
                                                        OCCURS   31.
       *    ³°Íè´ÉÍý²Ã»»»»ÄêÍÑÎÎ°è
        01  TBL-GXXNISSU.
+         02  TBL-GXXNISSU-OCC                          OCCURS   3.
            03  TBL-GXXNISSU-DAY                        PIC  X(01)
                                                        OCCURS   31.
       *
@@ -1562,30 +1568,42 @@
                     END-PERFORM
                END-IF
                IF   FLG-GAIRAIXX        =       1
-                    PERFORM    VARYING   IDZ   FROM   1    BY   1
-                                    UNTIL    IDZ     >    31
-                           IF  ACCT-DAY(1 IDZ)   NOT =    ZERO
+                    PERFORM    VARYING   IDZ2   FROM   2    BY   1
+                                UNTIL    IDZ2     >    4
+                       COMPUTE    IDZ3  =   IDZ2  -   1
+                       PERFORM    VARYING   IDZ   FROM   1    BY   1
+                                   UNTIL    IDZ     >    31
+                           IF  ACCT-DAY(IDZ2 IDZ)   NOT =    ZERO
                                MOVE    "1"       TO
-                                             TBL-GXXNISSU-DAY(IDZ)
+                                             TBL-GXXNISSU-DAY(IDZ3 IDZ)
                            END-IF
+                       END-PERFORM
                     END-PERFORM
                END-IF
                IF   FLG-GAIRAI26        =       1
-                    PERFORM    VARYING   IDZ   FROM   1    BY   1
-                                    UNTIL    IDZ     >    31
-                           IF  ACCT-DAY(1 IDZ)   NOT =    ZERO
+                    PERFORM    VARYING   IDZ2   FROM   2    BY   1
+                                UNTIL    IDZ2     >    4
+                       COMPUTE    IDZ3  =   IDZ2  -   1
+                       PERFORM    VARYING   IDZ   FROM   1    BY   1
+                                   UNTIL    IDZ     >    31
+                           IF  ACCT-DAY(IDZ2 IDZ)   NOT =    ZERO
                                MOVE    "1"       TO
-                                             TBL-G26NISSU-DAY(IDZ)
+                                             TBL-G26NISSU-DAY(IDZ3 IDZ)
                            END-IF
+                       END-PERFORM
                     END-PERFORM
                END-IF
                IF   FLG-GAIRAI52        =       1
-                    PERFORM    VARYING   IDZ   FROM   1    BY   1
-                                    UNTIL    IDZ     >    31
-                           IF  ACCT-DAY(1 IDZ)   NOT =    ZERO
+                    PERFORM    VARYING   IDZ2   FROM   2    BY   1
+                                UNTIL    IDZ2     >    4
+                       COMPUTE    IDZ3  =   IDZ2  -   1
+                       PERFORM    VARYING   IDZ   FROM   1    BY   1
+                                   UNTIL    IDZ     >    31
+                           IF  ACCT-DAY(IDZ2 IDZ)   NOT =    ZERO
                                MOVE    "1"       TO
-                                             TBL-G52NISSU-DAY(IDZ)
+                                             TBL-G52NISSU-DAY(IDZ3 IDZ)
                            END-IF
+                       END-PERFORM
                     END-PERFORM
                END-IF
                IF    RECE41-HKNKBN   =   "4"
@@ -1625,28 +1643,34 @@
       *****************************************************************
        2104-HENSYU-SET-SEC                    SECTION.
       *
-           PERFORM    VARYING    IDZ    FROM    1   BY   1
-                          UNTIL      IDZ    >     31
-                    IF   ( TBL-GXXNISSU-DAY(IDZ)
+           PERFORM    VARYING   IDZ2   FROM   1    BY   1
+                       UNTIL    IDZ2     >    3
+              PERFORM    VARYING    IDZ    FROM    1   BY   1
+                          UNTIL     IDZ     >     31
+                  IF   ( TBL-GXXNISSU-DAY(IDZ2 IDZ)
                                         NOT =  SPACE )
-                    AND  ( TBL-G52NISSU-DAY(IDZ)
+                  AND  ( TBL-G52NISSU-DAY(IDZ2 IDZ)
                                         NOT =  SPACE )
-                          ADD    1      TO    RECE41-GAITOKU-KAISU1
-                    END-IF
+                       ADD    1      TO    RECE41-GAITOKU-KAISU1
+                  END-IF
+              END-PERFORM
            END-PERFORM
            IF    RECE41-GAITOKU-KAISU1  NOT  =  ZERO 
                   MOVE   "1"   TO     RECE41-GAITOKU-PRTKBN1
                   MOVE    52   TO     RECE41-GAITOKU-TEN1
            END-IF
       *
-           PERFORM    VARYING    IDZ    FROM    1   BY   1
-                          UNTIL      IDZ    >     31
-                    IF   ( TBL-GXXNISSU-DAY(IDZ)
+           PERFORM    VARYING   IDZ2   FROM   1    BY   1
+                       UNTIL    IDZ2     >    3
+              PERFORM    VARYING    IDZ    FROM    1   BY   1
+                          UNTIL     IDZ     >     31
+                  IF   ( TBL-GXXNISSU-DAY(IDZ2 IDZ)
                                         NOT =  SPACE )
-                    AND  ( TBL-G26NISSU-DAY(IDZ)
+                  AND  ( TBL-G26NISSU-DAY(IDZ2 IDZ)
                                         NOT =  SPACE )
-                          ADD    1      TO    RECE41-GAITOKU-KAISU2
-                    END-IF
+                       ADD    1      TO    RECE41-GAITOKU-KAISU2
+                  END-IF
+              END-PERFORM
            END-PERFORM
            IF    RECE41-GAITOKU-KAISU2  NOT  =  ZERO 
                   MOVE   "1"   TO     RECE41-GAITOKU-PRTKBN2
