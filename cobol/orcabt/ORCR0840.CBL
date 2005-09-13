@@ -68,6 +68,7 @@
       *  01.02.13    NACL-門脇    05/07/15  自賠責従来様式対応
       *  01.02.14    NACL-門脇    05/08/22  リハビリ実施回数差し込み修正対応
       *  01.02.15    NACL-藤原    05/08/22  検体検査コメントの追加
+      *  01.02.16    NACL-門脇    05/09/13  入院点滴コメントに関する修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1417,6 +1418,13 @@
             OR     ( SRY-SRYCD(IDX2)(1:3)  =  "001"        )
             OR     ((SRY-SRYCD(IDX2)(1:3)  =  "059") AND
                     (TNS-TEN               =  ZERO )       )
+            OR     ((SRY-SRYSYUKBN  = "330" OR "331" OR
+                                      "332" OR "350" OR
+                                      "352"               ) AND
+                    ((SRY-SRYCD(IDX2)(1:1) =   "8"       ) OR
+                     (SRY-SRYCD(IDX2)(1:3) =   "008"     )) AND
+                    ( ACCT-ZAITEN      NOT =   ZERO       ) AND
+                    ( ACCT-ZAIKAISU    NOT =   ZERO       ))
                   COMPUTE   RECE84-MEISAISU    =  RECE84-MEISAISU
                                                -  1
                   MOVE      SRY-SRYCD(IDX2)   TO  WRK-SRYCD
@@ -1456,6 +1464,13 @@
               OR     ( SRY-SRYCD(IDX2)(1:3)  =  "001"        )
               OR     ((SRY-SRYCD(IDX2)(1:3)  =  "059") AND
                       (TNS-TEN               =  ZERO )       )
+              OR     ((SRY-SRYSYUKBN  = "330" OR "331" OR
+                                        "332" OR "350" OR
+                                        "352"               ) AND
+                      ((SRY-SRYCD(IDX2)(1:1) =   "8"       ) OR
+                       (SRY-SRYCD(IDX2)(1:3) =   "008"     )) AND
+                      ( ACCT-ZAITEN      NOT =   ZERO       ) AND
+                      ( ACCT-ZAIKAISU    NOT =   ZERO       ))
       *
                CONTINUE
       *

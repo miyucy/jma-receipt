@@ -148,6 +148,7 @@
       *  02.06.11    NACL-藤原    05/08/05  記載外公費−負担者番号の追加
       *  02.06.12    NACL-門脇    05/08/22  リハビリ実施回数差し込み修正対応
       *  02.06.13    NACL-藤原    05/08/22  検体検査コメントの追加
+      *  02.06.14    NACL-門脇    05/09/13  入院点滴コメントに関する修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1876,6 +1877,13 @@
             IF     ( SRY-SRYCD(IDX2)(1:3)  =  "001"        )
             OR     ((SRY-SRYCD(IDX2)(1:3)  =  "059") AND
                     (TNS-TEN               =  ZERO )       )
+            OR     ((SRY-SRYSYUKBN  = "330" OR "331" OR
+                                      "332" OR "350" OR
+                                      "352"               ) AND
+                    ((SRY-SRYCD(IDX2)(1:1) =   "8"       ) OR
+                     (SRY-SRYCD(IDX2)(1:3) =   "008"     )) AND
+                    ( ACCT-ZAITEN      NOT =   ZERO       ) AND
+                    ( ACCT-ZAIKAISU    NOT =   ZERO       ))
                   COMPUTE   RECE64-MEISAISU    =  RECE64-MEISAISU
                                                -  1
                   MOVE      SRY-SRYCD(IDX2)   TO  WRK-SRYCD
@@ -1937,6 +1945,13 @@
               OR     ( SRY-SRYCD(IDX2)(1:3)  =  "001"        )
               OR     ((SRY-SRYCD(IDX2)(1:3)  =  "059") AND
                       (TNS-TEN               =  ZERO )       )
+              OR     ((SRY-SRYSYUKBN  = "330" OR "331" OR
+                                        "332" OR "350" OR
+                                        "352"               ) AND
+                      ((SRY-SRYCD(IDX2)(1:1) =   "8"       ) OR
+                       (SRY-SRYCD(IDX2)(1:3) =   "008"     )) AND
+                      ( ACCT-ZAITEN      NOT =   ZERO       ) AND
+                      ( ACCT-ZAIKAISU    NOT =   ZERO       ))
       *
                CONTINUE
       *
