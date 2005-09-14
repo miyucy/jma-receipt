@@ -2022,9 +2022,8 @@
                                                TO  SPA-GMN-ERRMSG
                    END-IF
             ELSE
-                 MOVE 
-                "帳票データ作成中です。状態（Ｆ２）を押下してください。"
-                                           TO  SPA-GMN-ERRMSG
+                 MOVE    "帳票データ作成中です。"
+                                               TO  SPA-GMN-ERRMSG
             END-IF
       *
            .
@@ -2385,7 +2384,7 @@
            IF      SPA-GMN-TPRFLG (1)  =   "*"
                MOVE    ZERO                TO  XC01-DURATION
            ELSE
-               MOVE    5                   TO  XC01-DURATION
+               MOVE    3                   TO  XC01-DURATION
            END-IF
       *
            PERFORM 5001-MAPCUR-SEC
@@ -2463,6 +2462,8 @@
                WHEN    "9999"
                    MOVE    WRK-RECEERR         TO  SPA-ERRMSG
            END-EVALUATE
+      *
+           MOVE    ZERO                 TO  XC01-DURATION
       *
            MOVE    SPACE                TO  XCERR
            MOVE    SPA-ERRCD            TO  XCERR-ERRCODE
