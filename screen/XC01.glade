@@ -343,16 +343,6 @@
     </widget>
 
     <widget>
-      <class>GtkPandaTimer</class>
-      <name>pandatimer1</name>
-      <x>24</x>
-      <y>16</y>
-      <width>21</width>
-      <height>21</height>
-      <duration>5</duration>
-    </widget>
-
-    <widget>
       <class>GtkLabel</class>
       <name>ERRMSG</name>
       <x>10</x>
@@ -579,6 +569,22 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkPandaTimer</class>
+      <name>pandatimer1</name>
+      <x>24</x>
+      <y>16</y>
+      <width>21</width>
+      <height>21</height>
+      <signal>
+	<name>timeout</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Wed, 14 Sep 2005 05:18:47 GMT</last_modification_time>
+      </signal>
+      <duration>5</duration>
     </widget>
   </widget>
 </widget>
