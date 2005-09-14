@@ -33,6 +33,7 @@
       *  02/05/00    NACL−竹田            データ格納方法変更
       *  02/06/00    NACL−竹田            リアルタイムプレビュー対応
       *  02/06/01    NACL−竹田            最大行の修正
+      *  02/06/02    NACL−竹田            タイマーの停止処理
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2380,6 +2381,12 @@
            END-PERFORM
       *
            MOVE    SPA-GMN-MAX         TO  XC01-COUNT
+      *
+           IF      SPA-GMN-TPRFLG (1)  =   "*"
+               MOVE    ZERO                TO  XC01-DURATION
+           ELSE
+               MOVE    5                   TO  XC01-DURATION
+           END-IF
       *
            PERFORM 5001-MAPCUR-SEC
       *
