@@ -16603,10 +16603,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O416">
       <attribute name="obj_pos">
-        <point val="17,3.5"/>
+        <point val="17.5257,3.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="17,3.22636;18.0605,3.57636"/>
+        <rectangle val="17.5257,3.22636;18.5862,3.57636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#PAGE#</string>
@@ -16626,7 +16626,7 @@
             <real val="0.35"/>
           </attribute>
           <attribute name="pos">
-            <point val="17,3.5"/>
+            <point val="17.5257,3.5"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
