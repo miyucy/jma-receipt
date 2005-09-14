@@ -24,3 +24,4 @@
                       07  XC01-SELECT PIC X       OCCURS  100 TIMES.
                   05  XC01-MEMO-STATE   PIC S9(09) BINARY.
                   05  XC01-MEMO          PIC X(100).
+                  05 XC01-DURATION   PIC S9(09) BINARY.

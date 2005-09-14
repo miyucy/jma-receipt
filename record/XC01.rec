@@ -37,5 +37,8 @@ XC01	{
 		       	state	int;
                         value   varchar(100);
 		};
+       pandatimer1     {
+              duration        int;
+       };
 	};
 };
