@@ -567,6 +567,7 @@
                    PERFORM 210-BACK
       *     ¾õÂÖ
                WHEN    "CLICKED"       ALSO    "B02"
+               WHEN    "CLICKED"       ALSO    "pandatimer1"
                  IF     SPA-PRTKANRI-TBL-KEY        =  "RECEPTX"
                         INITIALIZE                  SPA-NAI-TBL
       *                 PERFORM VARYING IDZ FROM    1   BY  1
@@ -1881,7 +1882,6 @@
                              MOVE   SPA-NAI-PAGE (IDX)
                                            TO  WRK-PSFILE-PAGE
                              MOVE   SPACE  TO  ORCF-FILE-NAME
-----+-*--+----+----+----+----+----+----+----+----+----+----+----+----+
                              STRING  "/var/tmp/.orca_ps/"
                                                  DELIMITED  BY  SPACE
                                WRK-PSFILE-TBL-KEY
