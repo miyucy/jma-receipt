@@ -3312,19 +3312,8 @@
            MOVE    AGECHK-ROUJIN       TO  SPA-NAI-ROUJIN
            MOVE    AGECHK-ROUJIN2      TO  SPA-NAI-ROUJIN2
       *
-      *    孟数给锐のみの
-           IF     (SPA-HKNNUM          =   SPACE )  AND
-                  (SPA-KOH1HKNNUM      >=  "100"  AND
-                                       <=  "899"  )  AND
-                 ((SPA-KOH2HKNNUM      =   SPACE  ) OR
-                  (SPA-KOH2HKNNUM      >=  "100"  AND
-                                       <=  "899"  )) AND
-                 ((SPA-KOH3HKNNUM      =   SPACE  ) OR
-                  (SPA-KOH3HKNNUM      >=  "100"  AND
-                                       <=  "899"  )) AND
-                 ((SPA-KOH4HKNNUM      =   SPACE  ) OR
-                  (SPA-KOH4HKNNUM      >=  "100"  AND
-                                       <=  "899"  ))
+      *    孟数给锐帽迫
+           IF      AGECHK-KOHCHK       =   1
                MOVE    ZERO            TO  SPA-NAI-KOHFLG-ERR
                MOVE    1               TO  SPA-NAI-KOHFLG
            END-IF
