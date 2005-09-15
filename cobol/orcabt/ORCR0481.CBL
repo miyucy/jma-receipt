@@ -50,6 +50,7 @@
       *
       *  02.06.01    NACL-藤原    05/07/20  レセコメントのコメントの長さ
       *                                     変更による対応
+      *  02.06.02    NACL-藤原    05/09/05  複数枚レセの連番記載
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -162,7 +163,8 @@
       *****                        BY         //HC21//.
       *****COPY    "HCM21V01.INC"  REPLACING  //HCM21V01//
       *****COPY    "HCM21V02.INC"  REPLACING  //HCM21V02//
-           COPY    "HCM21V03.INC"  REPLACING  //HCM21V03//
+      *****COPY    "HCM21V03.INC"  REPLACING  //HCM21V03//
+           COPY    "HCM21V04.INC"  REPLACING  //HCM21V04//
                                    BY         //HC21//.
       *
       *    （続紙）     
@@ -171,7 +173,8 @@
       *****                        BY         //HC24//.
       *****COPY    "HCM24V01.INC"  REPLACING  //HCM24V01//
       *****COPY    "HCM24V02.INC"  REPLACING  //HCM24V02//
-           COPY    "HCM24V03.INC"  REPLACING  //HCM24V03//
+      *****COPY    "HCM24V03.INC"  REPLACING  //HCM24V03//
+           COPY    "HCM24V04.INC"  REPLACING  //HCM24V04//
                                    BY         //HC24//.
       *
       *    スパ領域
@@ -257,6 +260,8 @@
            03  IDY1                PIC 9(03).
            03  IDY2                PIC 9(03).
            03  IDY3                PIC 9(03).
+           03  IDXY                PIC 9(03).
+      *
            03  SYSKAN-IDX          PIC 9(03).
       *
       *    
@@ -392,6 +397,21 @@
       *    手術歴編集
            03  WRK-OPECOM          PIC 9(01).
            03  WRK-OPECOM-HEN      PIC X(50).
+      *
+      *    複数枚レセ用連番
+           03  WRK-HEN-PAGE-AREA.
+               05  WRK-PAGE1       PIC Z9.
+               05  WRK-PAGE-HEN    PIC X(01).
+               05  WRK-PAGE2       PIC Z9.
+      *
+      *    レセプト格納用
+       01  TABLE-AREA                          VALUE   SPACE.
+           03  TBL-RECE-MAX        PIC 9(02).
+           03  TBL-RECE-OCC            OCCURS  99.
+               05  TBL-RECE-PRTDATA
+                                   PIC X(10000).
+               05  TBL-RECE-FORMID PIC X(20). 
+               05  TBL-RECE-RENNUM PIC 9(02).
       *
       *    区切り線
        01  WRK-LINE-AREA.
@@ -553,6 +573,7 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  SPA-AREA
            INITIALIZE                  CNT-AREA
+                                       TABLE-AREA
            INITIALIZE                  SYS-1001-REC
            INITIALIZE                  SYS-1002-REC
       *
@@ -990,10 +1011,11 @@
       *****************************************************************
       *    主　　処理
       *****************************************************************
-       2001-SYORI-SEC                SECTION.
+       2001-SYORI-SEC                  SECTION.
       *
-           MOVE    1         TO  CNT-PAGE
+           MOVE    1               TO  CNT-PAGE
            INITIALIZE                  WRK-EDIT-AREA
+           INITIALIZE                  TABLE-AREA
       *
       *    帳票編集<ヘッダー部>処理
            PERFORM 310-HC101-HEAD-HEN-SEC
@@ -1026,6 +1048,9 @@
                MOVE    1                  TO  CNT-PAGE
                PERFORM 390-PRINT-OUT-SEC
            END-IF    
+      *
+      *    帳票更新処理
+           PERFORM 391-DB-WRITE-SEC
       *
            .
        2001-SYORI-EXT.
@@ -2072,28 +2097,60 @@
            EXIT.
       *
       *****************************************************************
-      *    帳票印刷処理
+      *    帳票格納処理
       *****************************************************************
-       390-PRINT-OUT-SEC                SECTION.
+       390-PRINT-OUT-SEC               SECTION.
+      *
+           ADD     1                   TO  TBL-RECE-MAX
+      * 
+           MOVE    CNT-PAGE            TO  TBL-RECE-RENNUM(TBL-RECE-MAX)
+           IF      CNT-PAGE            =   1
+               MOVE    "HCM21V04.red"      TO
+                                       TBL-RECE-FORMID  (TBL-RECE-MAX)
+               MOVE    HC21                TO
+                                       TBL-RECE-PRTDATA (TBL-RECE-MAX)
+           ELSE
+               MOVE    "HCM24V04.red"      TO
+                                       TBL-RECE-FORMID  (TBL-RECE-MAX)
+               MOVE    HC24                TO
+                                       TBL-RECE-PRTDATA (TBL-RECE-MAX)
+           END-IF        
+      *
+           .
+       390-PRINT-OUT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    帳票更新処理
+      *****************************************************************
+       391-DB-WRITE-SEC                SECTION.
       *
            MOVE    ZERO                 TO  FLG-ERR
       *
-           ADD     1                    TO  WRK-RECENUM
-      * 
-      *    レセプト明細管理ＤＢ
-           PERFORM 3901-RECE08-INSERT-SEC
+           PERFORM VARYING IDXY    FROM    1   BY  1
+                   UNTIL   IDXY    >       TBL-RECE-MAX
+                   OR      FLG-ERR >       ZERO
       *
-      *    レセプト帳票管理ファイル出力
-           IF      FLG-ERR              =   ZERO
-               PERFORM 3903-RECE07-WRITE-SEC
-           END-IF
+               ADD     1                    TO  WRK-RECENUM
+      * 
+      *        レセプト明細管理ＤＢ
+               PERFORM 3901-RECE08-INSERT-SEC
+      *
+      *        レセプト帳票管理ファイル出力
+               IF      FLG-ERR              =   ZERO
+                   PERFORM 3903-RECE07-WRITE-SEC
+               END-IF
+           END-PERFORM
+      *
       *
            IF      FLG-ERR              =   1
                MOVE    2                    TO  SPA-STS
            END-IF
+      *
            .
-       390-PRINT-OUT-EXT.
+       391-DB-WRITE-EXT.
            EXIT.
+      *
       *
       *****************************************************************
       *    レセプト明細ＤＢ
@@ -2114,7 +2171,7 @@
       *****IF      RECE41-PTNUM        =   SPACE
       *        MOVE    ZERO                TO  RECE08-RECESYUBETU
       *    ELSE      
-               IF      CNT-PAGE            =   1                                 
+               IF      TBL-RECE-RENNUM (IDXY)  =   1                                 
                    MOVE    RECE41-RECESYUBETU  TO  RECE08-RECESYUBETU
                 ELSE
                    MOVE    RECE41-RECESYUBETU  TO  RECE08-RECESYUBETU
@@ -2132,7 +2189,8 @@
                END-IF
            END-PERFORM 
            MOVE    RECE41-SRYYM        TO  RECE08-SRYYM
-           MOVE    CNT-PAGE            TO  RECE08-RENNUM
+           MOVE    TBL-RECE-RENNUM (IDXY)
+                                       TO  RECE08-RENNUM
            MOVE    WRK-RECENUM         TO  RECE08-RECENUM
            MOVE    RECE08-REC          TO  MCPDATA-REC
            PERFORM 900-RECE08-READ-SEC
@@ -2151,21 +2209,31 @@
                MOVE    WRK-PARA-TERMID     TO  RECE08-TERMID
                MOVE    ZERO                TO  RECE08-PRTJYUN
                                                RECE08-PRTRENNUM
-               IF      CNT-PAGE            =   1
-                   MOVE    HC21                TO  RECE08-PRTDATA
-      *************MOVE    "HC21"              TO  RECE08-FORMID
-      *************MOVE    "HCM21.red"         TO  RECE08-FORMID
-      *************MOVE    "HCM21V01.red"      TO  RECE08-FORMID
-      *************MOVE    "HCM21V02.red"      TO  RECE08-FORMID
-                   MOVE    "HCM21V03.red"      TO  RECE08-FORMID
-               ELSE
-                   MOVE    HC24                TO  RECE08-PRTDATA
-      *************MOVE    "HC24"              TO  RECE08-FORMID
-      *************MOVE    "HCM24.red"         TO  RECE08-FORMID
-      *************MOVE    "HCM24V01.red"      TO  RECE08-FORMID
-      *************MOVE    "HCM24V02.red"      TO  RECE08-FORMID
-                   MOVE    "HCM24V03.red"      TO  RECE08-FORMID
-               END-IF        
+               MOVE    TBL-RECE-FORMID  (IDXY)
+                                           TO  RECE08-FORMID
+               MOVE    TBL-RECE-PRTDATA (IDXY)
+                                           TO  RECE08-PRTDATA
+      *        複数枚レセの場合連番を記載
+               IF      TBL-RECE-MAX        >   1
+                   MOVE    SPACE               TO  WRK-HEN-PAGE-AREA
+                   MOVE    TBL-RECE-RENNUM (IDXY) 
+                                               TO  WRK-PAGE1
+                   MOVE    "/"                 TO  WRK-PAGE-HEN
+                   MOVE    TBL-RECE-MAX        TO  WRK-PAGE2
+                   EVALUATE    RECE08-FORMID
+                       WHEN    "HCM21V04.red"                  
+                           MOVE    RECE08-PRTDATA  TO HC21
+                           MOVE    WRK-HEN-PAGE-AREA
+                                                   TO HC21-PAGE
+                           MOVE    HC21            TO RECE08-PRTDATA
+                       WHEN    "HCM24V04.red"                  
+                           MOVE    RECE08-PRTDATA  TO HC24
+                           MOVE    WRK-HEN-PAGE-AREA
+                                                   TO HC24-PAGE
+                           MOVE    HC24            TO RECE08-PRTDATA
+                   END-EVALUATE
+               END-IF
+      *
                MOVE    "RECEPRT-KEY"       TO  ORC-DBPATH
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    RECE08-REC          TO  MCPDATA-REC
@@ -2247,8 +2315,9 @@
                END-IF 
            ELSE
                ADD     1                   TO  RECE07-PAGE
-               IF      CNT-KENSU           =   1
-               AND     CNT-PAGE            =   1
+               IF    ( CNT-KENSU           =   1 )
+               AND   ( TBL-RECE-RENNUM (IDXY)
+                                           =   1 )
                    ADD     1                   TO  RECE07-KENSU
                END-IF
            END-IF
