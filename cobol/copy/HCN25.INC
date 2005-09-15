@@ -119,3 +119,4 @@
             02  HCN25-TEL   PIC X(15).
             02  HCN25-BYOSYOSU  PIC X(4).
             02  HCN25-HOKENNAME PIC X(60).
+            02  HCN25-PAGE  PIC X(5).
