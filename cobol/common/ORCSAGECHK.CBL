@@ -41,6 +41,7 @@
       * 01.00.10     NACL-Â¿¡¹Ç¼  04/01/06  Êñ³ç¤Þ¤È¤áÆþÎÏÄÉ²Ã
       * 01.00.11     NACL-Â¿¡¹Ç¼  04/04/21  Ï·¿Í¶èÊ¬£²¡¢ÊÝ¸±¶èÊ¬ÄÉ²Ã
       *                                     ¼ÂÇ¯ÎðÄÉ²Ã
+      * 01.00.12     NACL-Â¿¡¹Ç¼  05/09/15  ÃÏÊý¸øÈñÃ±ÆÈ¶èÊ¬ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -70,6 +71,7 @@
            03  FLG-OK              PIC 9(01).
            03  FLG-OK2             PIC 9(01).
            03  FLG-HKN-ERR         PIC 9(01).
+           03  FLG-KOHCHK          PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -390,6 +392,9 @@
       *
       *    Ï·¿ÍÈ½Äê
            PERFORM 2009-ROUJIN-HANTEI-SEC
+      *
+      *    ÃÏÊý¸øÈñÃ±ÆÈÈ½Äê
+           PERFORM 2010-KOHONLY-CHK-SEC
       *
       *    £È£±£´¡¥£±£°²þÀµ¸å°Ê²¼¤Î¥Á¥§¥Ã¥¯¤ò¹Ô¤¦
            IF      AGECHK-SRYYMD       >=  "20021001"
@@ -818,6 +823,85 @@
        20010-ROUJIN-CHK2-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    ÃÏÊý¸øÈñÃ±ÆÈÈ½Äê½èÍý
+      *****************************************************************
+       2010-KOHONLY-CHK-SEC         SECTION.
+      *
+             IF      (COMB-HKNNUM         =   SPACE )  AND
+                     (COMB-KOH1HKNNUM     >=  "100"  AND
+                                          <=  "899"  )  AND
+                    ((COMB-KOH2HKNNUM     =   SPACE  ) OR
+                     (COMB-KOH2HKNNUM     >=  "100"  AND
+                                          <=  "899"  )) AND
+                     ((COMB-KOH3HKNNUM     =   SPACE  ) OR
+                      (COMB-KOH3HKNNUM     >=  "100"  AND
+                                           <=  "899"  )) AND
+                     ((COMB-KOH4HKNNUM     =   SPACE  ) OR
+                      (COMB-KOH4HKNNUM     >=  "100"  AND
+                                           <=  "899"  ))
+      *        ¸øÈñ£±
+               IF      COMB-KOH1HKNNUM     NOT =   SPACE
+                   MOVE    COMB-KOH1HKNNUM     TO  WRK-HKNNUM
+                   MOVE    COMB-KOH1PAYKBN     TO  WRK-PAYKBN
+                   PERFORM 3001-HKNNUM-CHK-SEC
+                   IF      FLG-HKNNUM          =   ZERO
+                       IF      HKN-HKNKOHSBTKBN    =   "6"
+                           CONTINUE
+                       ELSE
+                           MOVE    1               TO  FLG-KOHCHK
+                       END-IF
+                   END-IF
+               END-IF
+      *        ¸øÈñ£²
+               IF      COMB-KOH2HKNNUM     NOT =   SPACE
+                   MOVE    COMB-KOH2HKNNUM     TO  WRK-HKNNUM
+                   MOVE    COMB-KOH2PAYKBN     TO  WRK-PAYKBN
+                   PERFORM 3001-HKNNUM-CHK-SEC
+                   IF      FLG-HKNNUM          =   ZERO
+                       IF      HKN-HKNKOHSBTKBN    =   "6"
+                           CONTINUE
+                       ELSE
+                           MOVE    1               TO  FLG-KOHCHK
+                       END-IF
+                   END-IF
+               END-IF
+      *        ¸øÈñ£³
+               IF      COMB-KOH3HKNNUM     NOT =   SPACE
+                   MOVE    COMB-KOH3HKNNUM     TO  WRK-HKNNUM
+                   MOVE    COMB-KOH3PAYKBN     TO  WRK-PAYKBN
+                   PERFORM 3001-HKNNUM-CHK-SEC
+                   IF      FLG-HKNNUM          =   ZERO
+                       IF      HKN-HKNKOHSBTKBN    =   "6"
+                           CONTINUE
+                       ELSE
+                           MOVE    1               TO  FLG-KOHCHK
+                       END-IF
+                   END-IF
+               END-IF
+      *        ¸øÈñ£´
+               IF      COMB-KOH4HKNNUM     NOT =   SPACE
+                   MOVE    COMB-KOH4HKNNUM     TO  WRK-HKNNUM
+                   MOVE    COMB-KOH4PAYKBN     TO  WRK-PAYKBN
+                   PERFORM 3001-HKNNUM-CHK-SEC
+                   IF      FLG-HKNNUM          =   ZERO
+                       IF      HKN-HKNKOHSBTKBN    =   "6"
+                           CONTINUE
+                       ELSE
+                           MOVE    1               TO  FLG-KOHCHK
+                       END-IF
+                   END-IF
+               END-IF
+           END-IF
+           IF      FLG-KOHCHK          =   1
+               MOVE    1                   TO  AGECHK-KOHCHK
+           ELSE
+               MOVE    ZERO                TO  AGECHK-KOHCHK
+           END-IF
+           .
+      *
+       2010-KOHONLY-CHK-EXT.
+           EXIT.
       *
       *****************************************************************
       *    ÊÝ¸±¾ðÊó½èÍý
