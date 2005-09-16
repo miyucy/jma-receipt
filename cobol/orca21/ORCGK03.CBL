@@ -140,6 +140,8 @@
       *    ユーザプログラム起動
            03  FLG-USERPG              PIC 9(01).
       *
+           03  FLG-JYOTAI              PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -1368,6 +1370,11 @@
                ELSE
                    MOVE    WRK-SEIKYU      TO  SYU-NYUKIN-TOTAL
                END-IF
+      *        入金状態が未入金の時、ゼロ
+               IF     (SPA-NAI-NYUKIN-JYOTAI   =   "2" )
+                   MOVE    ZERO                TO  SYU-NYUKIN-TOTAL
+               END-IF
+      *
                MOVE    SYUNOU-REC          TO  SPA-SYUNOU-REC (IDX)
            END-PERFORM
       *
@@ -2026,6 +2033,8 @@
       *    入院の取扱い
            INITIALIZE                  SPA-GMN-NYUKINHOU-LSTG
            INITIALIZE                  SPA-GMN-NYUKINHOU-G
+      *    入金方法入金状態
+           INITIALIZE                  SPA-NAI-NYUKINHOU-LSTG
       *
            MOVE    SPACE               TO  SYS-1041-REC
            MOVE    "1041"              TO  SYS-1041-KANRICD
@@ -2057,14 +2066,41 @@
                                            TO  SPA-GMN-NYUKINHOU-LIST
                                                      (SPA-NYUKINHOU-MAX)
                                                      (4:)
+               MOVE    SYS-1041-NYKN-JYOTAI
+                                           TO  SPA-NAI-NYUKIN-JYOTAIL
+                                                     (SPA-NYUKINHOU-MAX)
                MOVE    "SYSKANRI-KEY2"      TO  ORC-DBPATH
                PERFORM 960-KANRIMST-READ-SEC
            END-PERFORM
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
            PERFORM 990-DBCLOSE-SEC
       *    初期表示
-           MOVE    SPA-GMN-NYUKINHOU-LIST (1)
+      *    患者の入金方法
+           IF      SPA-NYUKIN-HOHO     =   SPACE
+               MOVE    SPA-GMN-NYUKINHOU-LIST (1)
                                        TO  SPA-GMN-NYUKINHOU-G
+               MOVE    SPA-NAI-NYUKIN-JYOTAIL (1)
+                                       TO  SPA-NAI-NYUKIN-JYOTAI
+           END-IF
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-NYUKINHOU-MAX )  OR
+                              (FLG-CHK NOT =   ZERO )
+               IF      SPA-NYUKIN-HOHO     =   SPA-GMN-NYUKINHOU-LIST
+                                                           (IDX)(1:2)
+                   MOVE    SPA-GMN-NYUKINHOU-LIST (IDX)
+                                           TO  SPA-GMN-NYUKINHOU-G
+                   MOVE    SPA-NAI-NYUKIN-JYOTAIL (IDX)
+                                           TO  SPA-NAI-NYUKIN-JYOTAI
+                   MOVE    1               TO  FLG-CHK
+               END-IF
+           END-PERFORM
+           IF      FLG-CHK             =   ZERO
+               MOVE    SPA-GMN-NYUKINHOU-LIST (1)
+                                       TO  SPA-GMN-NYUKINHOU-G
+               MOVE    SPA-NAI-NYUKIN-JYOTAIL(1)
+                                       TO  SPA-NAI-NYUKIN-JYOTAI
+           END-IF
       *
            .
        3103-NYUKINHOU-HEN-EXT.
@@ -3154,6 +3190,7 @@
        450-NYUKINHOU-CHK-SEC                SECTION.
       *
            MOVE    ZERO                TO  FLG-CHK
+           MOVE    ZERO                TO  FLG-JYOTAI
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   SPA-NYUKINHOU-MAX )  OR
                               (FLG-CHK NOT =   ZERO )
@@ -3161,6 +3198,12 @@
                                                            (IDX)(1:2)
                    MOVE    SPA-GMN-NYUKINHOU-LIST (IDX)
                                            TO  SPA-GMN-NYUKINHOU-G
+                   IF      SPA-NAI-NYUKIN-JYOTAIL (IDX)
+                                           NOT =   SPA-NAI-NYUKIN-JYOTAI
+                       MOVE    1               TO  FLG-JYOTAI
+                   END-IF
+                   MOVE    SPA-NAI-NYUKIN-JYOTAIL (IDX)
+                                           TO  SPA-NAI-NYUKIN-JYOTAI
                    MOVE    1               TO  FLG-CHK
                END-IF
            END-PERFORM
@@ -3168,12 +3211,16 @@
            IF      FLG-CHK               =   ZERO
                MOVE    "0016"            TO  SPA-ERRCD
                MOVE    13                TO  SPA-GMN-CUR
+           ELSE
+               IF      FLG-JYOTAI        =   1
+      *            入金額へ
+                   MOVE    1                 TO  SPA-GMN-CUR
+               END-IF
            END-IF
            .
       *
        450-NYUKINHOU-CHK-EXT.
            EXIT.
-      *
       *****************************************************************
       *    入金の取扱い処理
       *****************************************************************
@@ -3517,8 +3564,13 @@
            ELSE
                MOVE    SPA-GMN-SEIKYU  TO  SPA-GMN-NYUKIN
            END-IF
-           MOVE    SPA-GMN-NYUKIN          TO  WRK-Z99
-           MOVE    WRK-Z99                 TO  SPA-GMN-NYUKIN-X
+      *    入金状態が未入金の時、ゼロ
+           IF     (SPA-NAI-NYUKIN-JYOTAI   =   "2" ) 
+               MOVE    ZERO            TO  SPA-GMN-NYUKIN
+           END-IF
+      *
+           MOVE    SPA-GMN-NYUKIN      TO  WRK-Z99
+           MOVE    WRK-Z99             TO  SPA-GMN-NYUKIN-X
            .
        4101-CHOSEI-HENKOU-EXT.
            EXIT.
