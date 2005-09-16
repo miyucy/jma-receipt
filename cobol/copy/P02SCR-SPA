@@ -31,6 +31,7 @@
       *  02.00.04    NACL-多々納  03/02/14  法別番号チェック区分追加
       *  02.00.05    NACL-多々納  03/03/24  公費負担額追加
       *  02.00.06    NACL-多々納  03/05/12  自費請求区分追加
+      *  02.00.07    NACL-多々納  05/09/13  入金方法追加
       *****************************************************************
        01  SPA-P02SCRAREA.
       *
@@ -101,6 +102,12 @@
                    07  SPA-GMN-DISCOUNT        PIC X(14).
                    07  SPA-GMN-CONDITION       PIC X(23)
                                                OCCURS   3.
+      *            入金方法
+                   07  SPA-GMN-NYUKIN-HOHO-G.
+                       09  SPA-GMN-NYUKIN-HOHO     PIC X(02).
+                       09  SPA-GMN-NYUKIN-H        PIC X(01).
+                       09  SPA-GMN-NYUKIN-HOHO-MEI
+                                                   PIC X(20).
                    07  SPA-GMN-TABOO-1         PIC X(100).
                    07  SPA-GMN-TABOO-2         PIC X(100).
                    07  SPA-GMN-ALLERGY-1       PIC X(100).
@@ -134,6 +141,13 @@
                            11  SPA-GMN-CONDITION-LST2      OCCURS   99.
                                13  SPA-GMN-CONDITION-WORD  PIC X(02).
                            11  SPA-CONDITION-MAX           PIC 9(04).
+      *            入金方法(1041)
+                   07  SPA-GMN-NYUKIN-HOHO-TBL.
+                       09  SPA-GMN-NYUKIN-LST           OCCURS   99.
+                           11  SPA-GMN-NYUKIN-HOHOL         PIC X(02).
+                           11  SPA-GMN-NYUKIN-HL            PIC X(01).
+                           11  SPA-GMN-NYUKIN-MEIL          PIC X(20).
+                       09  SPA-NYUKIN-MAX                   PIC 9(04).
       *            保険情報
                    07  SPA-GMN-HKN-AREA.
       *                保険情報

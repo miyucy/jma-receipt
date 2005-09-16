@@ -306,7 +306,13 @@
                     06  P02-VALUE   PIC X(24).
                   05  P02-P02-HKNJATEL.
                     06  P02-VALUE   PIC X(16).
-                04  P02-FIXPAGE3.
+                  05  P02-P02-NYUKIN-COB.
+                    06  P02-P02-NYUKIN.
+                      07  P02-VALUE   PIC X(23).
+                    06  P02-P02-NYUKIN-COUNT   PIC S9(9)   BINARY.
+                    06  P02-P02-NYUKIN-ITEM
+                            PIC X(23)   OCCURS  99 TIMES.
+                04 P02-FP3.
                   05  P02-P027-SELNUM.
                     06  P02-VALUE   PIC X(4).
                   05  P02-P027-TITLE1.
