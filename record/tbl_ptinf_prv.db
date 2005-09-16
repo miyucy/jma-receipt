@@ -49,6 +49,7 @@ tbl_ptinf_prv {
 	KISEI_BANTI			varchar(200);
 	KISEI_TEL  			varchar(15);
 	TSTPTNUMKBN			char(1);
+	NYUKIN_HOHO			char(2);
 	MAXZAINUM   			number(8,0);
 	RRKNUM					number(3,0);
 	RRKEDANUM				number(3,0);

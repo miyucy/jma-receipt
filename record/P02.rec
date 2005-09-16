@@ -394,6 +394,13 @@ P02	{
 				P02_HKNJATEL	{
 					value	varchar(16);
 				};
+				P02_NYUKIN_COB	{
+					P02_NYUKIN	{
+						value	varchar(23);
+					};
+					count	int;
+					item	varchar(23)[99];
+				};
 			};
 			FP3	{
 				P027_SELNUM	{
