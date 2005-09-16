@@ -57,6 +57,10 @@
       *
       *  02.06.01    NACL-嚏掀    05/05/16  闻蛙么碰缄碰∈颂长苹∷滦炳
       *  02.06.02    NACL-幂拍    05/05/30  realtime preview 借妄纳裁
+      *  02.06.03    NACL-井痞卖  05/09/16  笆布の泼年掐薄瘟の嘲邱纷换を饯赖
+      *                                     壳闻疥戏客板闻瓷妄瘟
+      *                                     戏客拉千梦旧祭吹迹闻陕棚掐薄瘟１
+      *                                     戏客拉千梦旧祭吹迹闻陕棚掐薄瘟２
       *****************************************************************
       *
       *
@@ -2302,6 +2306,15 @@
                      MOVE  "190097010"      TO   WRK-GAIHAKU-SRYCD
                WHEN  "190813870"
                      MOVE  "190805710"      TO   WRK-GAIHAKU-SRYCD
+      *        壳闻疥戏客板闻瓷妄瘟
+               WHEN  "190774210"
+                     MOVE  "190774110"      TO   WRK-GAIHAKU-SRYCD
+      *        戏客拉千梦旧祭吹迹闻陕棚掐薄瘟１
+               WHEN  "190740010"
+                     MOVE  "190739910"      TO   WRK-GAIHAKU-SRYCD
+      *        戏客拉千梦旧祭吹迹闻陕棚掐薄瘟２
+               WHEN  "190813510"
+                     MOVE  "190813410"      TO   WRK-GAIHAKU-SRYCD
            END-EVALUATE
       *
            IF    WRK-GAIHAKU-SRYCD    NOT =   SPACE
