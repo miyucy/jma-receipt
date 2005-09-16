@@ -51,6 +51,7 @@
       *  01.00.20    NACL-太田    04/07/07  入金方法情報タブ追加
       *  01.00.21    NACL-太田    04/09/30  請求額端数区分（減免無）追加
       *  01.00.22    NACL-太田    04/12/01  更正・育成限度額日割計算区分追加
+      *  01.00.23    NACL-多々納  05/09/13  入金状態の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -318,6 +319,17 @@
                            11                          PIC X(01).
                            11  SPA-GMN-NYKN-BUNRUIMEIL PIC X(20).
                        09  SPA-GMN-NYKN-BUNRUI-MAX     PIC 9(03).
+      *                入金状態
+                       09  SPA-GMN-NYKN-JYOTAI-G.
+                           11  SPA-GMN-NYKN-JYOTAI
+                                                  PIC X(01).
+                           11                     PIC X(01).
+                           11  SPA-GMN-NYKN-JYOTAIMEI
+                                                  PIC X(20).
+                       09  SPA-GMN-NYKN-JYOTAILST-G.
+                           11  SPA-GMN-NYKN-JYOTAILST  PIC X(22)
+                                                       OCCURS  10.
+                       09  SPA-GMN-NYKN-JYOTAI-MAX     PIC 9(03).
       *
                05  SPA-NAIB-AREA.
                    07  SPA-NAI-STYUKYMD           PIC 9(08).
@@ -537,25 +549,24 @@
            ELSE
       *        初期画面セット
                PERFORM 300-SCREEN-SEC
-               IF      FLG-END             =   1
-                   GO  TO  100-INIT-EXT
-               END-IF
       *        画面編集
-               PERFORM 500-GMNHEN-SEC
-               PERFORM 510-GSRAUTH-SEC
-               IF      SPA-ERRCD       NOT =   SPACE
-                   PERFORM 510-ERRSET-SEC
-                   GO  TO  100-INIT-EXT
+               IF      FLG-END             =   ZERO
+                   PERFORM 500-GMNHEN-SEC
+                   PERFORM 510-GSRAUTH-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       PERFORM 510-ERRSET-SEC
+                   END-IF
                END-IF
            END-IF
       *
-           MOVE    SPACE               TO  LINKAREA
+           IF      FLG-END             =   ZERO
+               MOVE    SPACE               TO  LINKAREA
       * 
-      ***  MOVE    "NEW"                TO  MCP-PUTTYPE
-           MOVE    SPACE                TO  MCP-PUTTYPE
-           MOVE    "W02"                TO  MCP-WINDOW
-           PERFORM 900-PUT-WINDOW
-           MOVE    1                    TO  FLG-END
+               MOVE    SPACE                TO  MCP-PUTTYPE
+               MOVE    "W02"                TO  MCP-WINDOW
+               PERFORM 900-PUT-WINDOW
+               MOVE    1                    TO  FLG-END
+           END-IF
            .
        100-INIT-EXT.
            EXIT.
@@ -573,10 +584,9 @@
            EVALUATE    SPA-MOTOPG
                WHEN    "WID1"
                    PERFORM 330-WID1-SET-SEC
-                   GO      TO      300-SCREEN-EXT
+               WHEN    OTHER
+                   PERFORM 310-SPASET-SEC
            END-EVALUATE
-      *
-           PERFORM 310-SPASET-SEC
       *
            .
        300-SCREEN-EXT.
@@ -828,6 +838,8 @@
       * 
       *    入金方法分類区分設定処理
            PERFORM 3101-NYKN-BUNRUI-SET-SEC
+      *    入金状態設定処理
+           PERFORM 3101-NYKN-JYOTAI-SET-SEC
       * 
            MOVE    SPACE               TO  SYS-1001-REC
            INITIALIZE                      SYS-1001-REC
@@ -957,6 +969,24 @@
                                    TO  SPA-GMN-NYKN-BUNRUI-G
                            END-IF
                        END-PERFORM
+      *
+                       MOVE    SYS-1041-NYKN-JYOTAI
+                                               TO  SPA-GMN-NYKN-JYOTAI
+                       PERFORM VARYING IDX1    FROM    1   BY  1
+                           UNTIL ( IDX1    >   SPA-GMN-NYKN-JYOTAI-MAX )
+                           IF    ( SPA-GMN-NYKN-JYOTAI
+                                       =   SPA-GMN-NYKN-JYOTAILST(IDX1)
+                                                                 (1:1))
+                               MOVE    SPA-GMN-NYKN-JYOTAILST (IDX1)
+                                               TO  SPA-GMN-NYKN-JYOTAI-G
+                               MOVE    SPA-GMN-NYKN-JYOTAI-MAX
+                                               TO  IDX1
+                           END-IF
+                       END-PERFORM
+                       IF      SPA-GMN-NYKN-JYOTAI     =   SPACE
+                           MOVE    SPA-GMN-NYKN-JYOTAILST (01)
+                                               TO  SPA-GMN-NYKN-JYOTAI-G
+                       END-IF
       *
                END-EVALUATE
       *
@@ -1303,12 +1333,29 @@
            MOVE    "振込み"            TO  SPA-GMN-NYKN-BUNRUIMEIL (2)
            MOVE    "03"                TO  SPA-GMN-NYKN-BUNRUIL (3)
            MOVE    "デビットカード"    TO  SPA-GMN-NYKN-BUNRUIMEIL (3)
-           MOVE    "99"                TO  SPA-GMN-NYKN-BUNRUIL (4)
-           MOVE    "その他"            TO  SPA-GMN-NYKN-BUNRUIMEIL (4)
-           MOVE    4                   TO  SPA-GMN-NYKN-BUNRUI-MAX
+           MOVE    "04"                TO  SPA-GMN-NYKN-BUNRUIL (4)
+           MOVE    "給与引去"          TO  SPA-GMN-NYKN-BUNRUIMEIL (4)
+           MOVE    "99"                TO  SPA-GMN-NYKN-BUNRUIL (5)
+           MOVE    "その他"            TO  SPA-GMN-NYKN-BUNRUIMEIL (5)
+      *
+           MOVE    5                   TO  SPA-GMN-NYKN-BUNRUI-MAX
       *
            .
        3101-NYKN-BUNRUI-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    入金状態設定処理
+      *****************************************************************
+       3101-NYKN-JYOTAI-SET-SEC        SECTION.
+      *
+           INITIALIZE                  SPA-GMN-NYKN-JYOTAILST-G
+           MOVE    "1 入金済"          TO  SPA-GMN-NYKN-JYOTAILST (1)
+           MOVE    "2 未入金"          TO  SPA-GMN-NYKN-JYOTAILST (2)
+      *
+           MOVE    2                   TO  SPA-GMN-NYKN-JYOTAI-MAX
+      *
+           .
+       3101-NYKN-JYOTAI-SET-EXT.
            EXIT.
       *****************************************************************
       *    画面遷移処理
@@ -1430,6 +1477,7 @@
            MOVE    W02-NYKN-NAME       TO  SPA-GMN-NYKN-NAME
            MOVE    W02-NYKN-TANNAME    TO  SPA-GMN-NYKN-TANNAME
            MOVE    W02-NYKN-BUNRUI     TO  SPA-GMN-NYKN-BUNRUI-G
+           MOVE    W02-NYKN-JYOTAI     TO  SPA-GMN-NYKN-JYOTAI-G
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -1615,6 +1663,14 @@
       *****************************************************************
        41021-KIHON-1013-SEC       SECTION.
       *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    SPA-GMN-JIHINAME
+                                       TO  KANACHK-MAE-INPUT
+           MOVE    20                  TO  KANACHK-MAX-CNT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-JIHINAME
            .
        41021-KIHON-1013-EXT.
            EXIT.
@@ -1678,21 +1734,23 @@
        41021-KIHON-1041-SEC       SECTION.
       *
       *    入金方法名称チェック
-           PERFORM 4122-NYKN-NAME-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO  TO  41021-KIHON-1041-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4122-NYKN-NAME-CHK-SEC
            END-IF
       *
       *    入金方法短縮名称チェック
-           PERFORM 4122-NYKN-TANNAME-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO  TO  41021-KIHON-1041-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4122-NYKN-TANNAME-CHK-SEC
            END-IF
       *
       *    分類区分チェック
-           PERFORM 4122-NYKN-BUNRUI-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO  TO  41021-KIHON-1041-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4122-NYKN-BUNRUI-CHK-SEC
+           END-IF
+      *
+      *    入金状態チェック
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4122-NYKN-JYOTAI-CHK-SEC
            END-IF
       *
            .
@@ -1794,8 +1852,10 @@
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    SPA-GMN-HOSPNAME    TO  KANACHK-MAE-INPUT
+           MOVE    120                 TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-HOSPNAME
            IF     (KANACHK-RC      NOT =   ZERO  )  OR
                   (KANACHK-SYUBETU     =   1     )
                MOVE    "0012"          TO  SPA-ERRCD
@@ -1816,8 +1876,10 @@
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    SPA-GMN-KAISETUNAME TO  KANACHK-MAE-INPUT
+           MOVE    120                 TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-KAISETUNAME
            IF     (KANACHK-RC      NOT =   ZERO  )  OR
                   (KANACHK-SYUBETU     =   1     )
                MOVE    "0012"          TO  SPA-ERRCD
@@ -1839,8 +1901,10 @@
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    SPA-GMN-KANRINAME   TO  KANACHK-MAE-INPUT
+           MOVE    80                  TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-KANRINAME
            IF     (KANACHK-RC      NOT =   ZERO  )  OR
                   (KANACHK-SYUBETU     =   1     )
                MOVE    "0012"          TO  SPA-ERRCD
@@ -1916,9 +1980,11 @@
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    SPA-GMN-HOSPCDN     TO  KANACHK-MAE-INPUT
+           MOVE    20                  TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
-           IF     (KANACHK-RC      NOT =   ZERO  )  OR
+          MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-HOSPCDN
+          IF     (KANACHK-RC      NOT =   ZERO  )  OR
                   (KANACHK-SYUBETU     =   1     )
                MOVE    "0012"          TO  SPA-ERRCD
                MOVE    12              TO  SPA-GMN-CUR
@@ -2165,8 +2231,10 @@
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    SPA-GMN-ADRS        TO  KANACHK-MAE-INPUT
+           MOVE    100                 TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-ADRS
            IF     (KANACHK-RC      NOT =   ZERO  )  OR
                   (KANACHK-SYUBETU     =   1     )
                MOVE    "0012"          TO  SPA-ERRCD
@@ -2271,8 +2339,10 @@
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    SPA-GMN-NYKN-NAME   TO  KANACHK-MAE-INPUT
+           MOVE    30                  TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-NYKN-NAME
            IF     (KANACHK-RC      NOT =   ZERO  )  OR
                   (KANACHK-SYUBETU     =   1     )
                MOVE    "0017"          TO  SPA-ERRCD
@@ -2294,8 +2364,10 @@
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    SPA-GMN-NYKN-TANNAME
                                        TO  KANACHK-MAE-INPUT
+           MOVE    10                  TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-NYKN-TANNAME
            IF     (KANACHK-RC      NOT =   ZERO  )  OR
                   (KANACHK-SYUBETU     =   1     )
                MOVE    "0018"          TO  SPA-ERRCD
@@ -2334,6 +2406,33 @@
       *
            .
        4122-NYKN-BUNRUI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    入金状態チェック処理
+      *****************************************************************
+       4122-NYKN-JYOTAI-CHK-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >       SPA-GMN-NYKN-JYOTAI-MAX )
+                    OR   ( FLG-OK  =       1 )
+               IF     (SPA-GMN-NYKN-JYOTAI
+                                   =   SPA-GMN-NYKN-JYOTAILST (IDX1)
+                                                              (1:1))
+                   MOVE    SPA-GMN-NYKN-JYOTAILST (IDX1)
+                                           TO  SPA-GMN-NYKN-JYOTAI-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( FLG-OK          =   ZERO )
+               MOVE    SPA-GMN-NYKN-JYOTAILST (1)
+                                           TO  SPA-GMN-NYKN-JYOTAI-G
+           END-IF
+      *
+           .
+       4122-NYKN-JYOTAI-CHK-EXT.
            EXIT.
       *****************************************************************
       *    タグ編集処理
@@ -2683,6 +2782,8 @@
                                                TO  SYS-1041-NYKN-TANNAME
                    MOVE    SPA-GMN-NYKN-BUNRUI
                                                TO  SYS-1041-NYKN-BUNRUI
+                   MOVE    SPA-GMN-NYKN-JYOTAI
+                                               TO  SYS-1041-NYKN-JYOTAI
                    MOVE    SYS-1041-REC        TO  SYSKANRI-REC
            END-EVALUATE 
       *     
@@ -2829,8 +2930,13 @@
       *
            IF    ( SPA-GMN-NYKN-BUNRUI-G   =   SPACE )
                MOVE    92              TO  SPA-GMN-CUR
-               MOVE    "0099"          TO  SPA-ERRCD
-               GO  TO  4901-TAG9-CHK-EXT
+               MOVE    "0019"          TO  SPA-ERRCD
+           END-IF
+           IF    ( SPA-GMN-NYKN-JYOTAI-G   =   SPACE )
+               IF      SPA-ERRCD           =   SPACE
+                   MOVE    93              TO  SPA-GMN-CUR
+                   MOVE    "0022"          TO  SPA-ERRCD
+               END-IF
            END-IF
       *
            .
@@ -3056,7 +3162,14 @@
       *
                MOVE    SPA-GMN-NYKN-BUNRUILST (IDX1)
                                            TO  W02-NYKN-BUNRUILST (IDX1)
+           END-PERFORM
       *
+           MOVE    SPA-GMN-NYKN-JYOTAI-G   TO  W02-NYKN-JYOTAI
+           MOVE    SPA-GMN-NYKN-JYOTAI-MAX TO  W02-NYKN-JYOTAI-COUNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   SPA-GMN-NYKN-JYOTAI-MAX )
+               MOVE    SPA-GMN-NYKN-JYOTAILST (IDX1)
+                                       TO  W02-NYKN-JYOTAI-ITEM(IDX1)
            END-PERFORM
       *
       *    画面カーソルセット処理    
@@ -3186,11 +3299,17 @@
                WHEN    "0019"
                    MOVE    "分類区分入力エラー"
                                                TO  SPA-ERRMSG
+               WHEN    "0022"
+                   MOVE    "入金状態入力エラー"
+                                               TO  SPA-ERRMSG
                WHEN    "0020"
                    MOVE    "請求金端数設定（減免無）入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0021"
                    MOVE    "更正・育成限度額日割計算区分入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0030"
+                   MOVE    "自費名称は全角で入力して下さい。"
                                                TO  SPA-ERRMSG
       *----(01.00.09) LINE ADD END   ----------------------------------
                WHEN    "0099"
@@ -3363,6 +3482,8 @@
                     MOVE  "NYKN_TANNAME"   TO   MCP-WIDGET
                 WHEN    92
                     MOVE  "NYKN_BUNRUI"    TO   MCP-WIDGET
+                WHEN    93
+                    MOVE  "NYKN_JYOTAI"    TO   MCP-WIDGET
             END-EVALUATE
       *
             EVALUATE    SPA-GMN-CUR
@@ -3491,6 +3612,8 @@
               WHEN    "NYKN_TANNAME"
                   MOVE    92               TO  SPA-GMN-CUR
               WHEN    "NYKN_BUNRUI"
+                  MOVE    93               TO  SPA-GMN-CUR
+              WHEN    "NYKN_JYOTAI"
                   MOVE    90               TO  SPA-GMN-CUR
           END-EVALUATE
       *
