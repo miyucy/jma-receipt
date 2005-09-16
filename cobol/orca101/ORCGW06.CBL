@@ -844,6 +844,11 @@
            ELSE
                MOVE    SNUM-OUTEDT(12:4)   TO  SPA-GMN-SYOKUCOD
            END-IF
+      *    9999 はエラー
+           IF      SPA-GMN-SYOKUCOD    =   "9999"
+               MOVE    "0015"              TO  SPA-ERRCD
+               MOVE    2                   TO  SPA-GMN-CUR
+           END-IF
       *
            MOVE    ZERO                TO  FLG-OK
       *
@@ -2608,6 +2613,9 @@
                                                TO  SPA-ERRMSG
                WHEN    "0014"
                    MOVE    "診療行為初期画面入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0015"
+                   MOVE    "９９９９は入力できません。"
                                                TO  SPA-ERRMSG
                WHEN    "0020"
                    MOVE    "期間が重複しています。"
