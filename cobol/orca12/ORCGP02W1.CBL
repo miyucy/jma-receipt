@@ -168,6 +168,8 @@
            03  FLG-SEIHOGO         PIC 9(01).
       *
            03  FLG-P02A-CHK       PIC 9(01).
+      *    公費単独チェック
+           03  FLG-KOHCHK         PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -2203,6 +2205,7 @@
            MOVE    P02-P02-CONDITION1  TO  SPA-GMN-CONDITION(1)
            MOVE    P02-P02-CONDITION2  TO  SPA-GMN-CONDITION(2)
            MOVE    P02-P02-CONDITION3  TO  SPA-GMN-CONDITION(3)
+           MOVE    P02-P02-NYUKIN      TO  SPA-GMN-NYUKIN-HOHO-G
            MOVE    P02-P02-COMMENT1    TO  SPA-GMN-COMMENT-1
            MOVE    P02-P02-COMMENT2    TO  SPA-GMN-COMMENT-2
            MOVE    P02-P02-TABOO1      TO  SPA-GMN-TABOO-1
@@ -2475,6 +2478,11 @@
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (SPA-FLG-END         =   ZERO  )
                PERFORM 4101-DISCOUNT-CHK-SEC
+           END-IF
+      *    入金方法
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-FLG-END         =   ZERO  )
+               PERFORM 4101-NYUKIN-HOHO-CHK-SEC
            END-IF
       *    状態１から３
            IF     (SPA-ERRCD           =   SPACE )  AND
@@ -3351,6 +3359,31 @@
       *
            .
        4101-DISCOUNT-CHK-EXT.
+           EXIT.
+      ***************************************************************
+      *    入金方法チェック処理
+      ***************************************************************
+       4101-NYUKIN-HOHO-CHK-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   SPA-NYUKIN-MAX)
+                          OR  (FLG-CHK     =   1   )
+               IF      SPA-GMN-NYUKIN-HOHO
+                                           =   SPA-GMN-NYUKIN-HOHOL
+                                                              (IDX)
+                   MOVE    SPA-GMN-NYUKIN-LST (IDX)
+                                           TO  SPA-GMN-NYUKIN-HOHO-G
+                   MOVE    1               TO  FLG-CHK
+               END-IF
+           END-PERFORM
+           IF      FLG-CHK             =   ZERO
+               MOVE    "0166"              TO  SPA-ERRCD
+               MOVE    66                  TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       4101-NYUKIN-HOHO-CHK-EXT.
            EXIT.
       *
       ****************************************************************
@@ -5492,8 +5525,11 @@
                          ((COMB-KOH4HKNNUM     =   SPACE  ) OR
                           (COMB-KOH4HKNNUM     >=  "100"  AND
                                                <=  "899"  ))
-                       MOVE    "K010"         TO  SPA-ERRCD
-                       MOVE    1              TO  SPA-NAI-KOHONLY
+                       PERFORM 49011-KOHONLY-HKNCHK-SEC
+                       IF      FLG-KOHCHK      =   1
+                           MOVE    "K010"          TO  SPA-ERRCD
+                           MOVE    1               TO  SPA-NAI-KOHONLY
+                       END-IF
                    END-IF
                END-IF
       *
@@ -5509,6 +5545,60 @@
                                         MCPDATA-REC
            .
        4901-KOHONLY-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    単独公費の判定処理
+      *****************************************************************
+       49011-KOHONLY-HKNCHK-SEC             SECTION.
+      *
+           MOVE    ZERO                TO  FLG-KOHCHK
+      *
+           IF      COMB-KOH1HKNNUM NOT =   SPACE
+               MOVE    COMB-KOH1HKNNUM     TO  WRK-HKNNUM
+               MOVE    COMB-KOH1PAYKBN     TO  WRK-PAYKBN
+               PERFORM 49011-KOHHKNNUM-CHK-SEC
+           END-IF
+      *
+           IF      COMB-KOH2HKNNUM NOT =   SPACE
+               MOVE    COMB-KOH2HKNNUM     TO  WRK-HKNNUM
+               MOVE    COMB-KOH2PAYKBN     TO  WRK-PAYKBN
+               PERFORM 49011-KOHHKNNUM-CHK-SEC
+           END-IF
+      *
+           IF      COMB-KOH3HKNNUM NOT =   SPACE
+               MOVE    COMB-KOH3HKNNUM     TO  WRK-HKNNUM
+               MOVE    COMB-KOH3PAYKBN     TO  WRK-PAYKBN
+               PERFORM 49011-KOHHKNNUM-CHK-SEC
+           END-IF
+      *
+           IF      COMB-KOH4HKNNUM NOT =   SPACE
+               MOVE    COMB-KOH4HKNNUM     TO  WRK-HKNNUM
+               MOVE    COMB-KOH4PAYKBN     TO  WRK-PAYKBN
+               PERFORM 49011-KOHHKNNUM-CHK-SEC
+           END-IF
+           .
+       49011-KOHONLY-HKNCHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    単独公費の判定処理
+      *****************************************************************
+       49011-KOHHKNNUM-CHK-SEC             SECTION.
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-KOHMAX
+               IF     (WRK-HKNNUM      =   SPA-GMN-KOHNUML (IDX))
+      *            単独公費以外
+                   IF      SPA-NAI-KOHSBTKBN (IDX) =   "6"
+                       CONTINUE
+                   ELSE
+                       MOVE    1               TO  FLG-KOHCHK
+                   END-IF
+               END-IF
+           END-PERFORM
+           .
+       49011-KOHHKNNUM-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5672,6 +5762,8 @@
                   MOVE    "P02_DISCOUNTKBN"     TO  MCP-WIDGET
               WHEN    46
                   MOVE    "P02_DISCOUNT"        TO  MCP-WIDGET
+              WHEN    66
+                  MOVE    "P02_NYUKIN"          TO  MCP-WIDGET
               WHEN    47
                   MOVE    "P02_SETAINUSI"        TO  MCP-WIDGET
               WHEN    48
@@ -5861,6 +5953,10 @@
                    MOVE    45          TO  SPA-GMN-CUR
       *    割引率
                WHEN    "P02_DISCOUNT"
+      ************ MOVE    46          TO  SPA-GMN-CUR
+                   MOVE    65          TO  SPA-GMN-CUR
+      *    入金方法
+               WHEN    "P02_NYUKIN"
                    MOVE    46          TO  SPA-GMN-CUR
       *    世帯主
                WHEN    "P02_SETAINUSI"

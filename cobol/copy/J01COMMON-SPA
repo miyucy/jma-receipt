@@ -64,6 +64,8 @@
                05  SPA-NAI-NYUIN-KIKAN.
                    07  SPA-NAI-NYUIN       PIC 9(01)
                                            OCCURS   31.
+      *患者の入金方法
+               05  SPA-NYUKIN-HOHO         PIC   X(02).
       *
       *開始パラメタ番号
                05  SPA-MAE-STRNUM          PIC 9(04).

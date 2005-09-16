@@ -423,12 +423,8 @@
                MOVE    "PARA-KEY3"         TO  ORC-DBPATH
                PERFORM 990-PARA-READ-SEC
            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PARA-KEY3"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *    レセプト作成管理マスタ更新
            IF      SPA-ERRCD           =   SPACE
                PERFORM 2009-RECEUPD-UPDATE-SEC
@@ -552,6 +548,7 @@
            MOVE    SPA-GMN-ZOKUGARA        TO  PTINF-ZOKUGARA
            MOVE    SPA-GMN-DISCOUNTKBN     TO  PTINF-DISCOUNT-KBN
            MOVE    SPA-GMN-DISCOUNT        TO  PTINF-DISCOUNT
+           MOVE    SPA-GMN-NYUKIN-HOHO     TO  PTINF-NYUKIN-HOHO
            MOVE    SPA-GMN-CONDITION(1)    TO  PTINF-CONDITION-1
            MOVE    SPA-GMN-CONDITION(2)    TO  PTINF-CONDITION-2
            MOVE    SPA-GMN-CONDITION(3)    TO  PTINF-CONDITION-3
@@ -959,12 +956,8 @@
            ELSE
                MOVE    1                   TO  FLG-YYK
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "YYK-KEY"           TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
      *
            IF      FLG-YYK             =   ZERO
       *
@@ -1088,12 +1081,8 @@
                INITIALIZE                  JYURRK-REC
                MOVE    1                   TO  FLG-JYURRK
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "JYURRK-KEY23"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-JYURRK          =   ZERO
                IF      COMB-DELKBN         =   SPACE
@@ -1130,12 +1119,8 @@
                INITIALIZE                  PTBYOMEI-REC
                MOVE    1                   TO  FLG-PTBYOMEI
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTBYOMEI-KEY8"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-PTBYOMEI        =   ZERO
                IF      COMB-DELKBN         =   SPACE
@@ -1265,12 +1250,8 @@
                ELSE
                    MOVE    1               TO  FLG-SYSKANRI
                END-IF
-               MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
                MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+               PERFORM 990-DBCLOSE-SEC
                IF      FLG-SYSKANRI        =   ZERO
                    MOVE    MCPDATA-REC         TO  SYS-1009-REC
                ELSE
@@ -1320,12 +1301,8 @@
            ELSE
                MOVE    1                   TO  FLG-PTNUM
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-PTNUM           =   1
                INITIALIZE                      PTNUM-REC
@@ -1588,12 +1565,8 @@
            ELSE 
                MOVE    1               TO  FLG-PTKOHFTN
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTKOHFTN-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-PTKOHFTN        =   1
                MOVE    PARA-DATA-REC       TO  PTKOHFTN-REC
@@ -1896,12 +1869,8 @@
            ELSE
                MOVE    1               TO  FLG-PTINF
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTINF-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        900-PTINF-READ-EXT.
@@ -1933,12 +1902,8 @@
            ELSE
                MOVE    1               TO  FLG-PTHKNINF
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTHKNINF-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        910-PTHKNINF-READ-EXT.
@@ -1971,12 +1936,8 @@
            ELSE
                MOVE    1               TO  FLG-PTKOHINF
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTKOHINF-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        920-PTKOHINF-READ-EXT.
@@ -2010,12 +1971,8 @@
            ELSE
                MOVE    1               TO  FLG-MONTHLYNUM
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "MONTHLYNUM-KEY"    TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        925-MONTHLYNUM-READ-EXT.
@@ -2048,12 +2005,8 @@
            ELSE
                MOVE    1               TO  FLG-PTRSIINF
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTRSIINF-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        990-PTRSIINF-READ-EXT.
@@ -2086,12 +2039,8 @@
            ELSE
                MOVE    1               TO  FLG-UKETUKE
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "UKETUKE-KEY"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        930-UKETUKE-READ-EXT.
@@ -2161,12 +2110,8 @@
            ELSE
                MOVE    1               TO  FLG-HKNCOMBI
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        940-HKNCOMBI-READ-EXT.
@@ -2256,6 +2201,19 @@
            .
       *
        960-SYSKANRI-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢクロース処理
+      *****************************************************************
+       990-DBCLOSE-SEC              SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           .
+       990-DBCLOSE-EXT.
            EXIT.
       *****************************************************************
       *    パラメタ情報読み込み

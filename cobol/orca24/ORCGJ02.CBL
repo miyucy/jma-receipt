@@ -3342,6 +3342,12 @@
            MOVE    PTINF-BIRTHDAY      TO  WRK-SYMD
            PERFORM 41012-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  SPA-GMN-BIRTHDAYW
+      *    患者の入金方法
+           IF      PTINF-NYUKIN-HOHO   =   SPACE
+               MOVE    "01"                TO  SPA-NYUKIN-HOHO
+           ELSE
+               MOVE    PTINF-NYUKIN-HOHO   TO  SPA-NYUKIN-HOHO
+           END-IF
       *
       *    排他制御処理
            PERFORM 990-LOCK-IN-SEC
@@ -9488,7 +9494,8 @@
       *入返金額
                MOVE    SYU-NYUKIN-TOTAL    TO  SMEI-NYUHEN-MONEY
       *入金方法
-               MOVE    "01"                TO  SMEI-NYUKIN-HOHO
+      ******** MOVE    "01"                TO  SMEI-NYUKIN-HOHO
+               MOVE    SPA-NYUKIN-HOHO     TO  SMEI-NYUKIN-HOHO
            END-IF
       *状態区分
            IF      SYU-SKYMONEY        =   ZERO

@@ -2323,12 +2323,8 @@
                                                 ORCMCPAREA
                                                 MCPDATA-REC
                END-IF
-               MOVE    "DBCLOSECURSOR"    TO  MCP-FUNC
                MOVE    "YYK-KEY"          TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+               PERFORM 990-DBCLOSE-SEC
       *        削除
                MOVE    WRK-YYK-REC         TO  YYK-REC
                MOVE    YYK-REC             TO  MCPDATA-REC
@@ -2341,13 +2337,9 @@
       *
                MOVE    "YYK-KEY6"          TO  ORC-DBPATH
                PERFORM 900-YOYAKU-READ-SEC
-            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           END-PERFORM
            MOVE    "YYK-KEY6"          TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
       *    入院診療行為マスター
            INITIALIZE                      NYUINACT-REC
@@ -2852,11 +2844,8 @@
                MOVE    1               TO  FLG-PTNUM
                INITIALIZE                  PTNUM-REC
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTNUM-KEY2"        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"      USING   MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-PTNUM           =   ZERO
                MOVE    "1011"              TO  SPA-ERRCD
@@ -2947,12 +2936,8 @@
                MOVE    1                   TO  FLG-SYSKANRI
            END-IF
       *    カーソルクロース
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-SYSKANRI        =   1
                CONTINUE
@@ -3056,12 +3041,8 @@
            END-PERFORM
       *
       *    カーソルクロース
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            MOVE    SPACE               TO  WRK-UKETIME
       *    受付時間取得
@@ -3344,6 +3325,9 @@
                                                TO  SPA-ERRMSG
                WHEN    "0035"
                    MOVE    "割引率入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0166"
+                   MOVE    "入金方法入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0036"
                    MOVE    "状態入力エラー"
@@ -4157,12 +4141,8 @@
                INITIALIZE                  PTINF-REC
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTINF-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        900-PTINF-READ-EXT.
@@ -4312,12 +4292,8 @@
                INITIALIZE                  PTNUM-REC
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        970-PTNUM-NEXT-EXT.
@@ -4384,6 +4360,20 @@
            END-IF
            .
        900-SYSKANRI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢクロース処理
+      *****************************************************************
+       990-DBCLOSE-SEC              SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           .
+       990-DBCLOSE-EXT.
            EXIT.
       *
       *****************************************************************

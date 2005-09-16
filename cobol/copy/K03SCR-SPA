@@ -211,6 +211,11 @@
                    07  SPA-NAI-FLG               PIC 9(01).
       *            ·Ù¹ðºÑ¤ß
                    07  SPA-KEI-FLG               PIC 9(01).
+      *            Æþ¶âÊýË¡Æþ¶â¾õÂÖ
+                   07  SPA-NAI-NYUKIN-JYOTAI     PIC X(01).
+                   07  SPA-NAI-NYUKINHOU-LSTG.
+                       09  SPA-NAI-NYUKIN-JYOTAIL  PIC X(01)
+                                                   OCCURS  10.
       *
       *    £Ã£Ì£Á£É£Í²èÌÌ
            03  SPA-K03X-AREA.

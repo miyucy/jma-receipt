@@ -2573,6 +2573,8 @@
            MOVE    WRK-HENYMDG         TO  SPA-BIRTHDAYW
       *    禁忌情報設定
            PERFORM 401011-TABOO-SET-SEC
+      *    入金方法
+           MOVE    PTINF-NYUKIN-HOHO   TO  SPA-NYUKIN-HOHO
       *
            .
        1101-PTINF-HENSYU-EXT.

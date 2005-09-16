@@ -229,6 +229,8 @@
       *
       *    職員設定情報
            COPY    "CPSK1017.INC".
+      *    入金方法
+           COPY    "CPSK1041.INC".
       *
       *    受付
        01  UKETUKE-REC.
@@ -490,12 +492,8 @@
            ELSE
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"              USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1001-REC
       *        都道府県区分
@@ -528,12 +526,8 @@
            ELSE
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"             USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1001-REC
       *        病院種別
@@ -576,12 +570,8 @@
                PERFORM 900-SYSTEM-READ-SEC
            END-PERFORM
       *    カーソルクロース
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *----(01.00.07) LINE ADD START -------------------------------
            IF  SPA-GMN-DISCOUNTKBN-KBNCD (1)  =   SPACE
                MOVE    ZERO        TO  SPA-GMN-DISCOUNTKBN-KBNCD  (1)
@@ -645,12 +635,8 @@
                PERFORM 900-SYSTEM-READ-SEC
            END-PERFORM
       *    カーソルクロース
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *----(01.00.07) LINE ADD START -------------------------------
            IF  SPA-GMN-DISCOUNT-KBNCD (1)  =   SPACE
                MOVE    ZERO        TO  SPA-GMN-DISCOUNT-KBNCD  (1)
@@ -708,12 +694,8 @@
                PERFORM 900-SYSTEM-READ-SEC
              END-PERFORM
       *      カーソルクロース
-             MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
              MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-             CALL    "ORCMCPSUB"          USING
-                                          MCPAREA
-                                          ORCMCPAREA
-                                          MCPDATA-REC
+             PERFORM 990-DBCLOSE-SEC
       *----(01.00.07) LINE ADD START -------------------------------
              IF  SPA-GMN-CONDITION-KBNCD (IDX 1)  =   SPACE
                  MOVE    ZERO        TO  SPA-GMN-CONDITION-KBNCD(IDX 1)
@@ -736,6 +718,44 @@
                                        TO  SPA-GMN-CONDITION(3)
            MOVE    SPA-GMN-CONDITION-BODY  (3  1)
                                        TO  SPA-GMN-CONDITION(3)(4:)
+      *
+      *    入金方法情報
+           INITIALIZE                  SPA-GMN-NYUKIN-HOHO-TBL
+           INITIALIZE                  SYSKANRI-REC
+           MOVE    "1041"              TO  SYS-KANRICD
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"              USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
+               PERFORM 900-SYSTEM-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           PERFORM   VARYING   IDX   FROM    1   BY  1
+                     UNTIL   ( FLG-SYSKANRI  =   1  )
+                     OR      ( IDX           >   99 )
+               MOVE    MCPDATA-REC     TO  SYS-1041-REC
+               MOVE    SYS-1041-KBNCD (1:2)
+                                       TO  SPA-GMN-NYUKIN-HOHOL(IDX)
+               MOVE    SYS-1041-NYKN-TANNAME
+                                       TO  SPA-GMN-NYUKIN-MEIL (IDX)
+      *
+               MOVE    IDX             TO  SPA-NYUKIN-MAX
+      *
+               MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
+               PERFORM 900-SYSTEM-READ-SEC
+           END-PERFORM
+      *    カーソルクロース
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           PERFORM 990-DBCLOSE-SEC
+      *
+           MOVE    SPA-GMN-NYUKIN-LST(1)   TO  SPA-GMN-NYUKIN-HOHO-G
       *
       *    診療内容をＳＰＡにセット
            PERFORM 311-SRYNAI-SPASET-SEC
@@ -779,12 +799,8 @@
            ELSE
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"              USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1017-REC
       *        人名辞書使用チェック
@@ -856,12 +872,8 @@
                MOVE    SPA-GMN20-SRYNAILST(1)  TO  SPA-GMN20-SRYNAI
            END-IF
       *    カーソルクロース
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        311-SRYNAI-SPASET-EXT.
@@ -970,12 +982,8 @@
                MOVE    "SYSKANRI-KEY2"         TO  ORC-DBPATH
                PERFORM 900-SYSTEM-READ-SEC
            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"              USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            MOVE    SPA-GMN-SRYKA-LST (1)   TO  SPA-GMN-SRYKA-G
            MOVE    SPA-GMN-SRYKA-LST (1)   TO  SPA-GMN20-SRYKA-G
@@ -1067,12 +1075,8 @@
                MOVE    "HKNNUM-KEY6"       TO  ORC-DBPATH
                PERFORM 921-HKNMST-NEXT-SEC
            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "HKNNUM-KEY6"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        1004-HKNKOH-SET-EXT.
@@ -1295,12 +1299,8 @@
                MOVE    "UKETUKE-KEY"       TO  ORC-DBPATH
                PERFORM 930-UKETUKE-NEXT-SEC
            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "UKETUKE-KEY"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
            .
        4104-UKETUKE-HEN-EXT.
            EXIT.
@@ -1504,6 +1504,8 @@
            MOVE    PTINF-CONDITION-1   TO  SPA-GMN-CONDITION(1)
            MOVE    PTINF-CONDITION-2   TO  SPA-GMN-CONDITION(2)
            MOVE    PTINF-CONDITION-3   TO  SPA-GMN-CONDITION(3)
+      *    入金方法
+           MOVE    PTINF-NYUKIN-HOHO   TO  SPA-GMN-NYUKIN-HOHO
       *
       *    連絡先
            MOVE    PTINF-FAX           TO  SPA-GMN21-FAX
@@ -1558,7 +1560,7 @@
            MOVE    SPACE                   TO  WRK-RATE-AREA
            MOVE    SPA-GMN-DISCOUNT        TO  WRK-RATE-KBN
            PERFORM   VARYING   IDX   FROM    1   BY  1
-                     UNTIL   ( IDX         >   10 )
+                     UNTIL   ( IDX         >   SPA-DISCOUNT-MAX )
                      OR      ( SPA-GMN-DISCOUNT-KBNCD(IDX) = SPACE )
                      OR      ( WRK-RATE-EDIT-R         NOT = SPACE )
                IF  WRK-RATE-KBN        =   SPA-GMN-DISCOUNT-KBNCD(IDX)
@@ -1596,6 +1598,20 @@
            END-IF
            MOVE    3                   TO  IDX
            PERFORM 31110-CONDITIONH-SPASET-SEC
+      *    入金方法
+           IF      SPA-GMN-NYUKIN-HOHO     =   SPACE
+                                           OR  ZERO
+               MOVE    SPA-GMN-NYUKIN-LST (01)
+                                       TO  SPA-GMN-NYUKIN-HOHO-G
+           END-IF
+           PERFORM   VARYING   IDX   FROM    1   BY  1
+                     UNTIL     IDX       >   SPA-NYUKIN-MAX
+               IF      SPA-GMN-NYUKIN-HOHO
+                                       =   SPA-GMN-NYUKIN-HOHOL(IDX)
+                   MOVE    SPA-GMN-NYUKIN-LST (IDX)
+                                       TO  SPA-GMN-NYUKIN-HOHO-G
+               END-IF
+           END-PERFORM
       *
       *    入力の有無判定用
            MOVE    SPA-GMN-POST        TO  SPA-MAE-POST
@@ -1729,12 +1745,8 @@
                MOVE    "PTHKNINF-KEY2"   TO  ORC-DBPATH
                PERFORM 910-PTHKNINF-READ-SEC
            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTHKNINF-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"              USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
       *    公費編集
            INITIALIZE                  SPA-PTKOHINF-AREA
@@ -1782,12 +1794,8 @@
              MOVE    "PTKOHINF-KEY2"   TO  ORC-DBPATH
              PERFORM 920-PTKOHINF-READ-SEC
            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTKOHINF-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
       *    受診マスターより
            INITIALIZE                      UKETUKE-REC
@@ -1826,12 +1834,8 @@
                PERFORM 930-UKETUKE-NEXT-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"    TO  MCP-FUNC
            MOVE    "UKETUKE-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
       *    保険組合せより
            INITIALIZE                      HKNCOMBI-REC
@@ -1865,12 +1869,8 @@
                MOVE    "HKNCOMBI-KEY2"     TO  ORC-DBPATH
                PERFORM 940-HKNCOMB-NEXT-SEC
            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "HKNCOMBI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
       *    保険組合せマスタ　総件数（既削除データ除く）
            MOVE    IDX                 TO  SPA-P02-COMBMAX
@@ -1927,12 +1927,8 @@
                MOVE    "KYUSEIRRK-KEY2"    TO  ORC-DBPATH
                PERFORM 950-KYUSEI-NEXT-SEC
            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "KYUSEIRRK-KEY2"    TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
       *    低所得より
            INITIALIZE                      TSYRRK-REC
@@ -1974,12 +1970,8 @@
                PERFORM 990-TSYRRK-NEXT-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "TSYRRK-KEY3"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
       *    年金履歴より
            INITIALIZE                      TNKRRK-REC
@@ -2018,12 +2010,8 @@
                PERFORM 991-TNKRRK-NEXT-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "TNKRRK-KEY3"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
       *    公費負担ＴＢＬから編集
            PERFORM 100229-KOHFT-TBL-SPA-SEC
@@ -2125,12 +2113,8 @@
                PERFORM 991-PTKOHFTN-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTKOHFTN-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        100229-KOHFT-TBL-SPA-EXT.
@@ -2158,12 +2142,8 @@
            ELSE
                MOVE    1               TO  FLG-PARA
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PARA-KEY"          TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
            IF      FLG-PARA            =   1
                MOVE    PARA-REC            TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -2335,12 +2315,8 @@
                INITIALIZE              HKNNUM-REC
                MOVE    1               TO  FLG-HKNNUM
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "HKNNUM-KEY"        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            MOVE    SPACE               TO  WRK-HKNKOHSBTKBN
            MOVE    SPACE               TO  WRK-TANSEIDONAME
@@ -2410,12 +2386,8 @@
                MOVE    "PTRSIINF-KEY3"     TO  ORC-DBPATH
                PERFORM 993-PTRSIINF-NEXT-SEC
            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTRSIINF-KEY3"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
       *    患者労災保険情報マスタ　総件数（既削除データ除く）
            MOVE    IDX                 TO  SPA-P02-RSHKNMAX
@@ -2701,6 +2673,7 @@
            MOVE    SPA-GMN-DISCOUNT        TO  P02-P02-DISCOUNT
            MOVE    SPA-GMN-COMMENT-1       TO  P02-P02-COMMENT1
            MOVE    SPA-GMN-COMMENT-2       TO  P02-P02-COMMENT2
+           MOVE    SPA-GMN-NYUKIN-HOHO-G   TO  P02-P02-NYUKIN
       *
            MOVE    ZERO                TO  P02-P02-CONDITION1-COUNT
            MOVE    ZERO                TO  P02-P02-CONDITION2-COUNT
@@ -2770,6 +2743,15 @@
                MOVE    SPA-GMN-DISCOUNT-EDIT (IDX)
                                        TO  P02-P02-DISCOUNT-ITEM(IDX)
                MOVE    IDX             TO  P02-P02-DISCOUNT-COUNT
+           END-PERFORM
+      *    入金方法
+           MOVE    SPA-GMN-NYUKIN-HOHO-G   TO  P02-P02-NYUKIN
+           MOVE    ZERO                TO  P02-P02-NYUKIN-COUNT
+           PERFORM VARYING   IDX       FROM    1   BY  1
+                   UNTIL     IDX           >   SPA-NYUKIN-MAX
+               MOVE    SPA-GMN-NYUKIN-LST  (IDX)
+                                       TO  P02-P02-NYUKIN-ITEM(IDX)
+               MOVE    IDX             TO  P02-P02-NYUKIN-COUNT
            END-PERFORM
       *
       *    保険情報
@@ -3545,12 +3527,8 @@
                INITIALIZE                  PTINF-REC
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTINF-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        900-PTINF-READ-EXT.
@@ -3721,12 +3699,8 @@
                INITIALIZE                  PTNUM-REC
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        970-PTNUM-NEXT-EXT.
@@ -3817,6 +3791,20 @@
            END-IF
            .
        921-HKNMST-NEXT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢクロース処理
+      *****************************************************************
+       990-DBCLOSE-SEC              SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           .
+       990-DBCLOSE-EXT.
            EXIT.
       *
       *****************************************************************
