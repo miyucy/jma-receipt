@@ -79,6 +79,8 @@
       *  02.06.05    NACL-∆£∏∂    05/08/31  ∞¶…≤∏©§Œ√œ ˝∏¯»Ò§ŒæÏπÁ§À£π£∑
       *                                     §Œ…È√¥∂Ë ¨§Ú —ππ§π§Î
       *  02.06.05    NACL-æÆ∆¶¬Ù  05/09/05   °≤¨œ∑øÕ∏¯»Ò£≤≥‰§Œ ›∏±»÷πÊ —ππ
+      *  02.06.06    NACL-∆£∏∂    05/09/12  ∞Ï…Ù…È√¥∂‚§Œ•´•π•ø•ﬁ•§•∫π‡Ã‹
+      *                                     §Œ ‘Ω∏
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1792,6 +1794,15 @@
                    MOVE    9                     TO  WRK-NAGASA
                END-IF
            END-IF
+      *
+      *    ∏©√±Õ—π‡Ã‹
+           IF      FLG-RECE67          =   ZERO
+               IF      RECE67-RECEDEN-FTNMONEY(IDX1)
+                                           =   999999999
+                   MOVE    ZERO                TO  WRK-NUM
+                   MOVE    9                   TO  WRK-NAGASA
+               END-IF
+           END-IF
            PERFORM 5005-NUM-HENSYU-SEC
       *    πÒ ›∏∫Ã»∂Ë ¨                                 
            PERFORM 5004-MOJI-HENSYU-SEC     
@@ -1906,6 +1917,15 @@
                                            TO  WRK-NUM
                MOVE    6                   TO  WRK-NAGASA
            END-IF    
+      *
+      *    ∏©√±Õ—π‡Ã‹
+           IF      FLG-RECE67          =   ZERO
+               IF      RECE67-RECEDEN-FTNMONEY(IDX1)
+                                           =   999999999
+                   MOVE    ZERO                TO  WRK-NUM
+                   MOVE    6                   TO  WRK-NAGASA
+               END-IF
+           END-IF
            MOVE    1                   TO  WRK-END 
            PERFORM 5005-NUM-HENSYU-SEC     
       *
@@ -2083,6 +2103,15 @@
                    MOVE    8                      TO  WRK-NAGASA
                END-IF
            END-IF    
+      *
+      *    ∏©√±Õ—π‡Ã‹
+           IF      FLG-RECE67          =   ZERO
+               IF      RECE67-RECEDEN-FTNMONEY(IDX)
+                                           =   999999999
+                   MOVE    ZERO                TO  WRK-NUM
+                   MOVE    8                   TO  WRK-NAGASA
+               END-IF
+           END-IF
            PERFORM 5005-NUM-HENSYU-SEC
       *    …È√¥∂‚≥€° œ∑øÕ∏¯»ÒµÎ…’¬–æ›œ∑øÕ≥∞ÕË∞Ï…Ù…È√¥∂‚°À
            IF      RECE62-NYUGAIKBN      =   "2"

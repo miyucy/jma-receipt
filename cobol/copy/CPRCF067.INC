@@ -23,6 +23,8 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  00.00.01    NACL-藤原    04/04/07  コメント欄（上部）追加
       *  01.00.02    NACL-藤原    04/08/23  特記事項（レセ電用）の追加
+      *
+      *  02.06.01    NACL-藤原    05/09/12  一部負担金（レセ電用）追加
       ************************************************************
       *01  RECE67-REC.
            03  RECE67-KEY.
@@ -73,6 +75,11 @@
       *特記事項情報
            03  RECE67-TOKKIINF            OCCURS  5.
                05  RECE67-TOKKI           PIC  X(02).
+      *療養の給付情報（レセ電用）
+           03  RECE67-RECEDEN-TOTALTENINF OCCURS  5.
+      *負担金額
+               05  RECE67-RECEDEN-FTNMONEY
+                                          PIC  9(09).
       *コメント欄（上部）
            03  RECE67-HEAD4-G.
                05  RECE67-HEAD4           PIC  X(62)   OCCURS  2.
