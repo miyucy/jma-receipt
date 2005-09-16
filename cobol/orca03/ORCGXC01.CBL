@@ -2384,7 +2384,7 @@
            IF      SPA-GMN-TPRFLG (1)  =   "*"
                MOVE    ZERO                TO  XC01-DURATION
            ELSE
-               MOVE    3                   TO  XC01-DURATION
+               MOVE    2                   TO  XC01-DURATION
            END-IF
       *
            PERFORM 5001-MAPCUR-SEC
