@@ -270,7 +270,7 @@ K03	{
 				value	varchar(30);
 			};
 			count	int;
-			item	varchar(30)[10];
+			item	varchar(30)[99];
 		};
 		NYUKINKBN_COMB	{
 			NYUKINKBN	{

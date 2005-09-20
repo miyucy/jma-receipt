@@ -186,7 +186,7 @@
                   05  K03-VALUE   PIC X(30).
                 04  K03-NYUKINHOU-COUNT   PIC S9(9)   BINARY.
                 04  K03-NYUKINHOU-ITEM
-                        PIC X(30)   OCCURS  10 TIMES.
+                        PIC X(30)   OCCURS  99 TIMES.
               03  K03-NYUKINKBN-COMB.
                 04  K03-NYUKINKBN.
                   05  K03-VALUE   PIC X(40).
