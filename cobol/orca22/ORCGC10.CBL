@@ -1103,10 +1103,10 @@
            MOVE    SPA-NAI-C10-SRYYMD      TO  WRK-HENSYU-DATA-O (8)
       *
       *    簡単修正機能時のチェック
-           IF    ( WRK-HENSYU-DATA-O (1)   NOT =   SPACE         )
-           OR    ( WRK-HENSYU-DATA-O (6)   NOT =   SPACE         )
-           OR    ( WRK-HENSYU-DATA-O (7)   NOT =   SPACE AND "-" )
-           OR    ( WRK-HENSYU-DATA-O (8)       =   SPACE         )
+           IF    ( WRK-HENSYU-DATA-O (1)   NOT =   SPACE )
+           OR    ( WRK-HENSYU-DATA-O (6)   NOT =   SPACE )
+           OR    ( WRK-HENSYU-DATA-O (7)   NOT =   SPACE )
+           OR    ( WRK-HENSYU-DATA-O (8)       =   SPACE )
       *        転帰・保険適用と開始日のチェック
                PERFORM VARYING IDXX    FROM    1   BY  1
                        UNTIL   IDXX    >       5
