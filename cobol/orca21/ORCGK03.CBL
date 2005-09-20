@@ -2056,7 +2056,7 @@
            END-IF
            PERFORM
                UNTIL     ( FLG-SYSKANRI    =   1  )  OR
-                         ( SPA-NYUKINHOU-MAX   >=  10)
+                         ( SPA-NYUKINHOU-MAX   >=  99)
                MOVE    MCPDATA-REC         TO  SYS-1041-REC
                ADD     1                   TO  SPA-NYUKINHOU-MAX
                MOVE    SYS-1041-KBNCD(1:2) TO  SPA-GMN-NYUKINHOU-LIST
