@@ -5513,6 +5513,16 @@
                       (SPA-SYSYMD          >   COMB-TEKEDYMD)
                    CONTINUE
                ELSE
+      *            Ä¹ºê¸©¤ÎÈïÇú¼Ô°åÎÅ¡Ê£±£¸£¶¡Ë¤ÏÃ±ÆÈ²ÄÇ½
+                   IF      (COMB-HKNNUM         =   SPACE )  AND
+                           (COMB-KOH1HKNNUM     =   "186" )  AND
+                           (COMB-KOH2HKNNUM     =   SPACE )  AND
+                           (COMB-KOH3HKNNUM     =   SPACE )  AND
+                           (COMB-KOH4HKNNUM     =   SPACE )  AND
+                           (SPA-PREFNUM         =   "42"  )
+                       MOVE    ZERO             TO  FLG-KOHCHK
+                   ELSE
+      *
                    IF      (COMB-HKNNUM         =   SPACE )  AND
                           (COMB-KOH1HKNNUM     >=  "100"  AND
                                                <=  "899"  )  AND
@@ -5530,6 +5540,8 @@
                            MOVE    "K010"          TO  SPA-ERRCD
                            MOVE    1               TO  SPA-NAI-KOHONLY
                        END-IF
+                   END-IF
+      *
                    END-IF
                END-IF
       *
