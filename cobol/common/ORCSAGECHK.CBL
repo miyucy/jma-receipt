@@ -72,6 +72,7 @@
            03  FLG-OK2             PIC 9(01).
            03  FLG-HKN-ERR         PIC 9(01).
            03  FLG-KOHCHK          PIC 9(01).
+           03  FLG-KOH186          PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -113,6 +114,9 @@
       *
       *    共通領域
            COPY    "MCPAREA".
+      *
+      *    基本情報
+           COPY    "CPSK1001.INC".
       *
       *    労災医療機関情報
            COPY    "CPSK4001.INC".
@@ -416,9 +420,13 @@
                END-IF
            END-IF
       *
-      *
       *    ７０歳以上の時、老人であること
            IF      AGECHK-NENREI       <   70
+               GO      TO      200-FTNRATE-EXT
+           END-IF
+      *
+      *    長崎県の被爆者医療（１８６）単独はチェクなし
+           IF      FLG-KOH186          =   1
                GO      TO      200-FTNRATE-EXT
            END-IF
       *
@@ -828,6 +836,18 @@
       *****************************************************************
        2010-KOHONLY-CHK-SEC         SECTION.
       *
+           MOVE    ZERO                TO  FLG-KOH186
+           MOVE    ZERO                TO  FLG-KOHCHK
+      *
+      *    長崎県の被爆者医療（１８６）は単独可能
+           IF      (COMB-HKNNUM         =   SPACE )  AND
+                   (COMB-KOH1HKNNUM     =   "186" )  AND
+                   (COMB-KOH2HKNNUM     =   SPACE )  AND
+                   (COMB-KOH3HKNNUM     =   SPACE )  AND
+                   (COMB-KOH4HKNNUM     =   SPACE )
+               PERFORM 20101-KOH186-CHK-SEC
+           END-IF
+           IF      FLG-KOH186           =   ZERO
              IF      (COMB-HKNNUM         =   SPACE )  AND
                      (COMB-KOH1HKNNUM     >=  "100"  AND
                                           <=  "899"  )  AND
@@ -892,6 +912,7 @@
                        END-IF
                    END-IF
                END-IF
+             END-IF
            END-IF
            IF      FLG-KOHCHK          =   1
                MOVE    1                   TO  AGECHK-KOHCHK
@@ -901,6 +922,46 @@
            .
       *
        2010-KOHONLY-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    長崎県の被爆者医療（１８６）処理
+      *****************************************************************
+       20101-KOH186-CHK-SEC         SECTION.
+      *
+      *    システム管理検索（基本情報）
+           MOVE    SPACE               TO  SYS-1001-REC
+           INITIALIZE                  SYS-1001-REC
+           MOVE    "1001"              TO  SYS-1001-KANRICD
+           MOVE    "*"                 TO  SYS-1001-KBNCD
+           MOVE    SYS-1001-REC        TO  MCPDATA-REC
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    AGECHK-SRYYMD       TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYS-1001-REC
+               INITIALIZE                  SYS-1001-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1001-REC
+      *        県番号
+               IF      SYS-1001-PREFNUM    =   "42"
+                   MOVE    1                TO  FLG-KOH186
+               END-IF
+           END-IF
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           PERFORM 990-DBCLOSE-SEC
+           .
+       20101-KOH186-CHK-EXT.
            EXIT.
       *
       *****************************************************************
