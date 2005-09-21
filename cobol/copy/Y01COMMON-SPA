@@ -41,10 +41,12 @@
            03  SPA-Y01-PTNUM                 PIC X(20).
            03  SPA-Y01-SEX                   PIC X(02).
            03  SPA-Y01-BIRTHDAY              PIC X(08).
+           03  SPA-Y01-BIRTHDAYH             PIC X(09).
       *
            03  SPA-Y01-KEIKOKU               PIC 9(01).
       *    Í½Ìó°õºþÍÑ
            03  SPA-Y03-SET.
                05  SPA-Y03-SRYNAIYO          PIC X(02).
                05  SPA-Y03-DRCD              PIC X(05).
+               05  SPA-Y03-YYKYMDS           PIC X(08).
       *

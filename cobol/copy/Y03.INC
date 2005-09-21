@@ -18,7 +18,7 @@
         02  Y03.
       **** 02  Y03-FIXED1.
               03  Y03-SRYMD.
-                04  Y03-VALUE   PIC X(9).
+                04  Y03-VALUE   PIC X(20).
               03  Y03-HYODAI.
                 04  Y03-VALUE   PIC X(20).
               03  Y03-SCROLLEDWINDOW1.
