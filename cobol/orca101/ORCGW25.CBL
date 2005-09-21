@@ -692,12 +692,13 @@
                        MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
                        MOVE    "DBSELECT"          TO  MCP-FUNC
                        MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-                       IF    ( SPA-W01-STYUKYMD    <   "20020401" )
-                           MOVE    "20020401"      TO  ORC-DBYMD
-                       ELSE
-                           MOVE    SPA-W01-STYUKYMD
-                                                   TO  ORC-DBYMD
-                       END-IF
+      *                 IF    ( SPA-W01-STYUKYMD    <   "20020401" )
+      *                     MOVE    "20020401"      TO  ORC-DBYMD
+      *                 ELSE
+      *                     MOVE    SPA-W01-STYUKYMD
+      *                                             TO  ORC-DBYMD
+      *                 END-IF
+                       MOVE    SPA-W01-EDYUKYMD     TO  ORC-DBYMD
                        CALL    "ORCMCPSUB"          USING
                                                     MCPAREA
                                                     ORCMCPAREA
@@ -907,12 +908,13 @@
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    WRK-PATH            TO  ORC-DBPATH
-           IF    ( SPA-W01-STYUKYMD    <   "20020401" )
-               MOVE    "20020401"      TO  ORC-DBYMD
-           ELSE
-               MOVE    SPA-W01-STYUKYMD
-                                       TO  ORC-DBYMD
-           END-IF
+      *     IF    ( SPA-W01-STYUKYMD    <   "20020401" )
+      *         MOVE    "20020401"      TO  ORC-DBYMD
+      *     ELSE
+      *         MOVE    SPA-W01-STYUKYMD
+      *                                 TO  ORC-DBYMD
+      *     END-IF
+           MOVE    SPA-W01-EDYUKYMD    TO  ORC-DBYMD
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA

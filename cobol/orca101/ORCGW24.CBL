@@ -3176,13 +3176,13 @@
       *    点数マスタ検索
            INITIALIZE  TNS-TENSU-REC
            MOVE    WRK-SRYCD       TO  TNS-SRYCD
-           IF    ( SPA-W01-STYUKYMD    <   "20020401" )
-               MOVE    "20020401"  TO  ORC-DBYMD
-           ELSE
-               MOVE    SPA-W01-STYUKYMD
-                                   TO  ORC-DBYMD
-           END-IF
-      *
+      *     IF    ( SPA-W01-STYUKYMD    <   "20020401" )
+      *         MOVE    "20020401"  TO  ORC-DBYMD
+      *     ELSE
+      *         MOVE    SPA-W01-STYUKYMD
+      *                             TO  ORC-DBYMD
+      *     END-IF
+           MOVE    SPA-W01-EDYUKYMD TO  ORC-DBYMD
            MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
            MOVE    "TENSU-KEY" TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
