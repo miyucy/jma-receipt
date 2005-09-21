@@ -6192,7 +6192,10 @@
                                           >=   "100" )
                     AND  ( LNK-COMB-KOHHKNNUM (IDX17 IDX0)
                                           <=   "899" )
-                       COMPUTE CNT-CHIHOU      =   CNT-CHIHOU      +   1
+                       IF    ( LNK-COMB-KOH-HKNKOHSBTKBN (IDX17 IDX0)
+                                       NOT =   "6" )
+                           COMPUTE CNT-CHIHOU  =   CNT-CHIHOU      +   1
+                       END-IF
                    ELSE
                        COMPUTE CNT-UNCHIHOU    =   CNT-UNCHIHOU    +   1
                    END-IF
