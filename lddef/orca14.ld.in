@@ -7,6 +7,7 @@ bind	""		"OpenCOBOL"	"ORCGY01";
 bind	"Y01"		"OpenCOBOL"	"ORCGY01";
 bind	"Y03"		"OpenCOBOL"	"ORCGY03";
 bind	"Y04"		"OpenCOBOL"	"ORCGY04";
+bind	"Y05"		"OpenCOBOL"	"ORCGY05";
 bind	"YERR"		"OpenCOBOL"	"ORCGYERR";
 
 multiplex_group	orca14;
@@ -18,6 +19,7 @@ data	{
 		Y01;
 		Y03;
 		Y04;
+		Y05;
 		YERR;
 	};
 };
