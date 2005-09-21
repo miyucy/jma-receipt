@@ -68,12 +68,13 @@
       *
                05  SPA-GMN-AREA.
                    07  SPA-GMN-CHK-VAL.
-                       09  SPA-GMN-CHKYKZBYO   PIC X(01).
-                       09  SPA-GMN-CHKSRYBYO   PIC X(01).
-                       09  SPA-GMN-CHKYKZHEI   PIC X(01).
-                       09  SPA-GMN-CHKSRYHEI   PIC X(01).
+                       09  SPA-GMN-CHKYKZBYO       PIC X(01).
+                       09  SPA-GMN-CHKSRYBYO       PIC X(01).
+                       09  SPA-GMN-CHKYKZHEI       PIC X(01).
+                       09  SPA-GMN-CHKSRYHEI       PIC X(01).
+                       09  SPA-GMN-CHKYKZKNKBYO    PIC X(01).
                    07  SPA-GMN-CHK-R   REDEFINES   SPA-GMN-CHK-VAL.
-                       09  SPA-GMN-CHKKBN      PIC X(01)   OCCURS  4.
+                       09  SPA-GMN-CHKKBN      PIC X(01)   OCCURS  5.
                    07  SPA-GMN-CHKSRYRANGE     PIC X(01).
                    07  SPA-GMN-STSRYCD         PIC X(09).
                    07  SPA-GMN-STSRYNAME       PIC X(100).
@@ -146,14 +147,15 @@
       *
       *
        01  WRK-CONS-AREA.
-           03  WRK-CONS-CHKKBN-MAX     PIC 9(02)   VALUE   4.
+           03  WRK-CONS-CHKKBN-MAX     PIC 9(02)   VALUE   5.
            03  WRK-CONS-CHKKBN-VAL.
                05                      PIC X(01)   VALUE   "1".
                05                      PIC X(01)   VALUE   "2".
                05                      PIC X(01)   VALUE   "4".
                05                      PIC X(01)   VALUE   "5".
+               05                      PIC X(01)   VALUE   "6".
            03  WRK-CONS-CHKKBN-R       REDEFINES   WRK-CONS-CHKKBN-VAL.
-               05  WRK-CONS-CHKKBN     PIC X(01)   OCCURS  4.
+               05  WRK-CONS-CHKKBN     PIC X(01)   OCCURS  5.
       *    システム管理ＤＢ（３００３）のキー値  
            03  WRK-CONS-3003-KBNCD     PIC X(08)   VALUE   "103".
       *    印刷管理ＤＢのキー値  
@@ -194,6 +196,10 @@
        01  CHK-REC.
            COPY    "CPCHK.INC".
       *
+      *    チェック
+       01  CHKSND-REC.
+           COPY    "CPCHKSND.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -210,7 +216,6 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
@@ -384,6 +389,7 @@
            MOVE    "F"             TO  SPA-GMN-CHKSRYBYO
            MOVE    "F"             TO  SPA-GMN-CHKYKZHEI
            MOVE    "F"             TO  SPA-GMN-CHKSRYHEI
+           MOVE    "F"             TO  SPA-GMN-CHKYKZKNKBYO
       *
            MOVE    "F"             TO  SPA-GMN-CHKSRYRANGE
       *
@@ -500,28 +506,29 @@
                MOVE    X91-CHKYKZBYO   TO  SPA-GMN-CHKYKZBYO
                PERFORM 4101-GMN-SPA-SET-SEC
                PERFORM 41011-CHKMST-CHK-SEC
-               MOVE    2               TO  SPA-GMN-CUR
       *
       *    診療行為と病名チェックボタン
            WHEN    "CLICKED"       ALSO    "CHKSRYBYO"
                MOVE    X91-CHKSRYBYO   TO  SPA-GMN-CHKSRYBYO
                PERFORM 4101-GMN-SPA-SET-SEC
                PERFORM 41011-CHKMST-CHK-SEC
-               MOVE    3               TO  SPA-GMN-CUR
       *
       *    薬剤と併用禁忌チェックボタン
            WHEN    "CLICKED"       ALSO    "CHKYKZHEI"
                MOVE    X91-CHKYKZHEI   TO  SPA-GMN-CHKYKZHEI
                PERFORM 4101-GMN-SPA-SET-SEC
                PERFORM 41011-CHKMST-CHK-SEC
-               MOVE    4               TO  SPA-GMN-CUR
       *
       *    診療行為の併用算定チェックボタン
            WHEN    "CLICKED"       ALSO    "CHKSRYHEI"
                MOVE    X91-CHKSRYHEI   TO  SPA-GMN-CHKSRYHEI
                PERFORM 4101-GMN-SPA-SET-SEC
                PERFORM 41011-CHKMST-CHK-SEC
-               MOVE    5               TO  SPA-GMN-CUR
+      *    投与禁忌薬剤と病名
+           WHEN    "CLICKED"       ALSO    "CHKYKZKNKBYO"
+               MOVE    X91-CHKYKZKNKBYO    TO  SPA-GMN-CHKYKZKNKBYO
+               PERFORM 4101-GMN-SPA-SET-SEC
+               PERFORM 41011-CHKMST-CHK-SEC
       *
       *    診療行為範囲指定チェックボタン
            WHEN    "CLICKED"       ALSO    "CHKSRYRANGE"
@@ -677,7 +684,7 @@
            INITIALIZE                      TNS-TENSU-REC
            MOVE    SPA-GMN-STSRYCD     TO  TNS-SRYCD
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-           MOVE    "TENSU-KEY24"       TO  ORC-DBPATH
+           MOVE    PATH-TBL-TENSU-KEY24    TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  TNS-TENSU-REC
@@ -686,7 +693,7 @@
                INITIALIZE                  TNS-TENSU-REC
            END-IF
       *
-           MOVE    "TENSU-KEY24"       TO  ORC-DBPATH
+           MOVE    PATH-TBL-TENSU-KEY24    TO  MCP-PATH
            PERFORM 910-DBCLOSE-SEC
       *
            IF     (TNS-SRYCD(1:1)      =   "1") AND
@@ -696,9 +703,9 @@
                         TNS-NAME        DELIMITED   BY  SIZE
                 INTO    SPA-GMN-STSRYNAME
                 END-STRING
-            ELSE
+           ELSE
                 MOVE    TNS-NAME    TO  SPA-GMN-STSRYNAME
-            END-IF
+           END-IF
       *
       *    チェックマスタチェック
            PERFORM 41011-CHKMST-CHK-SEC
@@ -710,6 +717,8 @@
       *    チェックマスタチェック
       *****************************************************************
        41011-CHKMST-CHK-SEC            SECTION.
+      *
+           MOVE    ZERO            TO  SPA-GMN-CUR
       *
            MOVE    ZERO            TO  SPA-NAI-SRYCD-EXSIT-FLG
       *
@@ -723,20 +732,38 @@
                                    =   1 )
       *
                IF    ( SPA-GMN-CHKKBN (IDX0)   =   "T" )
-                   INITIALIZE                  CHK-REC
-                   MOVE    WRK-CONS-CHKKBN (IDX0)
-                                       TO  CHK-CHKKBN
-                   MOVE    SPA-GMN-STSRYCD TO  CHK-SRYCD
-                   MOVE    CHK-REC         TO  MCPDATA-REC
-                   MOVE    SPA-SYSYMD      TO  ORC-DBYMD
-                   MOVE    "CHK-KEY2"      TO  ORC-DBPATH
-                   PERFORM 910-DBSELECT-SEC
-                   IF    ( MCP-RC          =   ZERO )
-                       MOVE    1           TO  SPA-NAI-SRYCD-EXSIT-FLG
+                   IF    ( WRK-CONS-CHKKBN (IDX0)
+                                               =   "1" OR "2" OR "6")
+                       INITIALIZE                  CHKSND-REC
+                       MOVE    WRK-CONS-CHKKBN (IDX0)
+                                               TO  CHKSND-CHKKBN
+                       MOVE    SPA-GMN-STSRYCD TO  CHKSND-SRYCD
+                       MOVE    SPA-SYSYMD      TO  CHKSND-YUKOSTYMD
+                                                   CHKSND-YUKOEDYMD
+                       MOVE    CHKSND-REC      TO  MCPDATA-REC
+                       MOVE    PATH-TBL-CHKSND-KEY2    TO  MCP-PATH
+                       PERFORM 910-DBSELECT-SEC
+                       IF    ( MCP-RC          =   ZERO )
+                           MOVE    1       TO  SPA-NAI-SRYCD-EXSIT-FLG
+                       END-IF
+                       MOVE    PATH-TBL-CHKSND-KEY2    TO  MCP-PATH
+                       PERFORM 910-DBCLOSE-SEC
+                   ELSE
+                       INITIALIZE                  CHK-REC
+                       MOVE    WRK-CONS-CHKKBN (IDX0)
+                                               TO  CHK-CHKKBN
+                       MOVE    SPA-GMN-STSRYCD TO  CHK-SRYCD
+                       MOVE    SPA-SYSYMD      TO  CHK-YUKOSTYMD
+                                                   CHK-YUKOEDYMD
+                       MOVE    CHK-REC         TO  MCPDATA-REC
+                       MOVE    PATH-TBL-CHK-KEY2   TO  MCP-PATH
+                       PERFORM 910-DBSELECT-SEC
+                       IF    ( MCP-RC          =   ZERO )
+                           MOVE    1       TO  SPA-NAI-SRYCD-EXSIT-FLG
+                       END-IF
+                       MOVE    PATH-TBL-CHK-KEY2   TO  MCP-PATH
+                       PERFORM 910-DBCLOSE-SEC
                    END-IF
-      *
-                   MOVE    "CHK-KEY2"      TO  ORC-DBPATH
-                   PERFORM 910-DBCLOSE-SEC
                END-IF
       *
            END-PERFORM
@@ -785,6 +812,7 @@
             AND  ( SPA-GMN-CHKSRYBYO   =   "F")
             AND  ( SPA-GMN-CHKYKZHEI   =   "F")
             AND  ( SPA-GMN-CHKSRYHEI   =   "F")
+            AND  ( SPA-GMN-CHKYKZKNKBYO    =   "F")
                MOVE    "0100"          TO  SPA-ERRCD
                MOVE    1               TO  SPA-GMN-CUR
                GO  TO  4101-KANREN-CHK-EXT
@@ -866,9 +894,10 @@
            INITIALIZE                      SYS-3003-REC
            MOVE    "3003"              TO  SYS-3003-KANRICD
            MOVE    WRK-CONS-3003-KBNCD TO  SYS-3003-KBNCD
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           MOVE    SPA-SYSYMD          TO  SYS-3003-STYUKYMD
+                                           SYS-3003-EDYUKYMD
            MOVE    SYS-3003-REC        TO  MCPDATA-REC
-           PERFORM 900-SYSKANRI-INV-SEC
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            IF    ( FLG-SYSKANRI        =   ZERO )
                MOVE    MCPDATA-REC     TO  SYS-3003-REC 
                PERFORM VARYING IDX0    FROM    1   BY  1
@@ -1082,9 +1111,10 @@
            INITIALIZE                      SYS-3003-REC
            MOVE    "3003"              TO  SYS-3003-KANRICD
            MOVE    WRK-CONS-3003-KBNCD TO  SYS-3003-KBNCD
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           MOVE    SPA-SYSYMD          TO  SYS-3003-STYUKYMD
+                                           SYS-3003-EDYUKYMD
            MOVE    SYS-3003-REC        TO  MCPDATA-REC
-           PERFORM 900-SYSKANRI-INV-SEC
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            IF    ( FLG-SYSKANRI        =   ZERO )
                MOVE    MCPDATA-REC     TO  SYS-3003-REC
                PERFORM VARYING IDX0 FROM    1   BY  1
@@ -1160,17 +1190,18 @@
            INITIALIZE                      SYS-3003-REC
            MOVE    "3003"              TO  SYS-3003-KANRICD
            MOVE    WRK-CONS-3003-KBNCD TO  SYS-3003-KBNCD
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD 
+           MOVE    SPA-SYSYMD          TO  SYS-3003-STYUKYMD
+                                           SYS-3003-EDYUKYMD
            MOVE    SYS-3003-REC        TO  MCPDATA-REC
-           PERFORM 900-SYSKANRI-INV-SEC
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            IF    ( FLG-SYSKANRI        =   ZERO )
                MOVE    MCPDATA-REC     TO  SYS-3003-REC
                MOVE    SYS-3003-REC    TO  MCPDATA-REC
                MOVE    "DBDELETE"      TO  MCP-FUNC
-               MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
+               MOVE    PATH-TBL-SYSKANRI-KEY
+                                       TO  MCP-PATH
+               CALL    "MCPSUB"            USING
                                            MCPAREA
-                                           ORCMCPAREA
                                            MCPDATA-REC
                IF    ( MCP-RC          =   ZERO )
                    CONTINUE
@@ -1441,9 +1472,10 @@
            INITIALIZE                      SYS-3003-REC
            MOVE    "3003"              TO  SYS-3003-KANRICD
            MOVE    WRK-CONS-3003-KBNCD TO  SYS-3003-KBNCD
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           MOVE    SPA-SYSYMD          TO  SYS-3003-STYUKYMD
+                                           SYS-3003-EDYUKYMD
            MOVE    SYS-3003-REC        TO  MCPDATA-REC
-           PERFORM 900-SYSKANRI-INV-SEC
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
       *       
            MOVE    SPACE               TO  SYS-3003-REC
            INITIALIZE                      SYS-3003-REC
@@ -1458,16 +1490,16 @@
            MOVE    WRK-CONS-JOB-JOBID  TO  SYS-3003-JOBID
       *
            MOVE    SYS-3003-REC        TO  MCPDATA-REC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    PATH-TBL-SYSKANRI-KEY
+                                       TO  MCP-PATH
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    "DBUPDATE"      TO  MCP-FUNC
            ELSE
                MOVE    "DBINSERT"      TO  MCP-FUNC
            END-IF
       *
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MCPSUB"            USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF    ( MCP-RC          NOT =   ZERO )
                DISPLAY "SYSKANRI 3003  ERR KEY = ["
@@ -1490,9 +1522,10 @@
            INITIALIZE                      SYS-3003-REC
            MOVE    "3003"              TO  SYS-3003-KANRICD
            MOVE    WRK-CONS-3003-KBNCD TO  SYS-3003-KBNCD
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           MOVE    SPA-SYSYMD          TO  SYS-3003-STYUKYMD
+                                           SYS-3003-EDYUKYMD
            MOVE    SYS-3003-REC        TO  MCPDATA-REC
-           PERFORM 900-SYSKANRI-INV-SEC
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            IF    ( FLG-SYSKANRI        =   ZERO )
                MOVE    MCPDATA-REC     TO  SYS-3003-REC 
                PERFORM VARYING IDX0 FROM   1   BY  1
@@ -1620,6 +1653,7 @@
            MOVE    SPA-GMN-CHKSRYBYO   TO  X91-CHKSRYBYO
            MOVE    SPA-GMN-CHKYKZHEI   TO  X91-CHKYKZHEI
            MOVE    SPA-GMN-CHKSRYHEI   TO  X91-CHKSRYHEI
+           MOVE    SPA-GMN-CHKYKZKNKBYO    TO  X91-CHKYKZKNKBYO
            MOVE    SPA-GMN-CHKSRYRANGE TO  X91-CHKSRYRANGE
            MOVE    SPA-GMN-STSRYCD     TO  X91-STSRYCD
            MOVE    SPA-GMN-STSRYNAME   TO  X91-STSRYNAME
@@ -1684,6 +1718,8 @@
                MOVE    "SYU2"          TO  MCP-WIDGET
            WHEN    10
                MOVE    "SYU3"          TO  MCP-WIDGET
+           WHEN    11
+               MOVE    "CHKYKZKNKBYO"  TO  MCP-WIDGET
            WHEN    212
                MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
@@ -1699,36 +1735,27 @@
       *
            EVALUATE    WRK-MCP-WIDGET
            WHEN    "CHKYKZBYO"
-               MOVE    01              TO  SPA-GMN-CUR
-           WHEN    "CHKSRYBYO"
                MOVE    02              TO  SPA-GMN-CUR
-           WHEN    "CHKYKZHEI"
+           WHEN    "CHKSRYBYO"
                MOVE    03              TO  SPA-GMN-CUR
-           WHEN    "CHKSRYHEI"
+           WHEN    "CHKYKZHEI"
                MOVE    04              TO  SPA-GMN-CUR
-           WHEN    "CHKSRYRANGE"
+           WHEN    "CHKSRYHEI"
                MOVE    05              TO  SPA-GMN-CUR
-           WHEN    "STSRYCD"
+           WHEN    "CHKSRYRANGE"
+               MOVE    11              TO  SPA-GMN-CUR
+           WHEN    "CHKYKZKNKBYO"
                MOVE    06              TO  SPA-GMN-CUR
-           WHEN    "EDSRYCD"
+           WHEN    "STSRYCD"
                MOVE    07              TO  SPA-GMN-CUR
-           WHEN    "SYU1"
+           WHEN    "EDSRYCD"
                MOVE    08              TO  SPA-GMN-CUR
-           WHEN    "SYU2"
-               MOVE    09              TO  SPA-GMN-CUR
-           WHEN    "SYU3"
-               MOVE    10              TO  SPA-GMN-CUR
-           END-EVALUATE
-      *
-           EVALUATE    WRK-MCP-WIDGET
            WHEN    "SYU1"
-           WHEN    "SYU2"
-           WHEN    "SYU3"
-      *
                MOVE    212             TO  SPA-GMN-CUR
-           WHEN    OTHER
-      *
-               COMPUTE SPA-GMN-CUR     =   SPA-GMN-CUR +   1
+           WHEN    "SYU2"
+               MOVE    212             TO  SPA-GMN-CUR
+           WHEN    "SYU3"
+               MOVE    212             TO  SPA-GMN-CUR
            END-EVALUATE
       *
            .
@@ -1895,20 +1922,20 @@
       *****************************************************************
       *    管理マスター読込（キー）
       *****************************************************************
-       900-SYSKANRI-INV-SEC         SECTION.
+       900-SYSKANRI-KEY10-SEL-SEC      SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    PATH-TBL-SYSKANRI-KEY10
+                                       TO  MCP-PATH
+           CALL    "MCPSUB"            USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF    ( MCP-RC              =   ZERO )
                MOVE    "DBFETCH"       TO  MCP-FUNC
-               MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
+               MOVE    PATH-TBL-SYSKANRI-KEY10
+                                       TO  MCP-PATH
+               CALL    "MCPSUB"            USING
                                            MCPAREA
-                                           ORCMCPAREA
                                            MCPDATA-REC
                IF    ( MCP-RC          =   ZERO )
                    MOVE    ZERO        TO  FLG-SYSKANRI
@@ -1920,14 +1947,14 @@
            END-IF
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"             USING
+           MOVE    PATH-TBL-SYSKANRI-KEY10
+                                       TO  MCP-PATH
+           CALL    "MCPSUB"                USING
                                            MCPAREA
-                                           ORCMCPAREA
                                            MCPDATA-REC
       *
            .
-       900-SYSKANRI-INV-EXT.
+       900-SYSKANRI-KEY10-SEL-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理
@@ -1935,9 +1962,8 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MCPSUB"            USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
@@ -1953,9 +1979,8 @@
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MCPSUB"            USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
       *
            .
@@ -1968,9 +1993,8 @@
        910-DBCLOSE-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MCPSUB"            USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
       *
            .
@@ -1983,8 +2007,7 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"          TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"      USING   MCPAREA
-                                           ORCMCPAREA
+           CALL   "MCPSUB"         USING   MCPAREA
                                            MCPDATA-REC.
       *
        900-PUT-WINDOW-EXT.

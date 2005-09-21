@@ -36,4 +36,5 @@
                    07  SDTCHK01-O-ERRFLG       PIC 9(01).
                    07  SDTCHK01-O-SRYKA        PIC X(02).
                    07  SDTCHK01-O-SRYYMD       PIC X(08).
+                   07  SDTCHK01-O-NYUGAIKBN    PIC X(01).
                    07  SDTCHK01-O-BYOMEI       PIC X(160).

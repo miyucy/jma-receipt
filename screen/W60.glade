@@ -1013,22 +1013,6 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label301</name>
-      <x>35</x>
-      <y>160</y>
-      <width>304</width>
-      <height>25</height>
-      <label>＜薬剤と病名、診療行為と病名のチェック＞</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkPandaCombo</class>
       <name>CMB_PRTPTLSTKBN</name>
       <x>180</x>
@@ -1314,6 +1298,22 @@
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label301</name>
+      <x>35</x>
+      <y>160</y>
+      <width>304</width>
+      <height>25</height>
+      <label>＜チェックマスタ−適用病名チェック＞</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>

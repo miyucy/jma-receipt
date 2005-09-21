@@ -12,6 +12,9 @@ X91	{
 		CHKSRYHEI	{
 			value	bool;
 		};
+		CHKYKZKNKBYO	{
+			value	bool;
+		};
 		CHKSRYRANGE	{
 			value	bool;
 		};

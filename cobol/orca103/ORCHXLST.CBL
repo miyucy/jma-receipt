@@ -281,7 +281,7 @@
            MOVE    CONST-MEISAI-ST TO  IDX-LINE
       *
       *    明細編集処理
-           IF    ( HXLST-CHKKBN    =   "1" OR "2" )
+           IF    ( HXLST-CHKKBN    =   "1" OR "2" OR "6" )
       *
                PERFORM UNTIL ( FLG-CHKSND  =   1 )
                    PERFORM 200-MEISAI-CHKSND-SYORI-SEC
@@ -340,7 +340,7 @@
            MOVE    SPA-SYSYMD(5:2)     TO  H01-MM
            MOVE    SPA-SYSYMD(7:2)     TO  H01-DD
       *
-           IF        ( HXLST-CHKKBN    =   "1" OR "2" )
+           IF        ( HXLST-CHKKBN    =   "1" OR "2" OR "6" )
                    PERFORM 1001-CHKSND-SYOKI-SEC
            ELSE
                IF    ( HXLST-CHKKBN    =   "3" OR "4" OR "5" )
@@ -497,6 +497,14 @@
                "＜　診療行為と病名一覧表　＞"
                                        TO  H01-MIDASI
                    MOVE    "診療行為コード"
+                                       TO  H02-MIDASI1
+                   MOVE    "病名コード"
+                                       TO  H02-MIDASI2R1
+           WHEN    "6"
+               MOVE
+               "＜　投与禁忌薬剤と病名　＞"
+                                       TO  H01-MIDASI
+                   MOVE    "薬剤コード"
                                        TO  H02-MIDASI1
                    MOVE    "病名コード"
                                        TO  H02-MIDASI2R1
@@ -858,7 +866,7 @@
            MOVE    WRK-PAGE            TO  H01-PCNT
            MOVE    HEAD-01             TO  HCM44-MOJI(1)
       *
-           IF        ( HXLST-CHKKBN    =   "1" OR "2" )
+           IF        ( HXLST-CHKKBN    =   "1" OR "2" OR "6" )
                MOVE    SPACE           TO  H02-MIDASI2R2
                MOVE    1               TO  WRK-TGPNT
                PERFORM VARYING IDX2    FROM    1   BY  1

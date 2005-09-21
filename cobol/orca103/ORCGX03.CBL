@@ -394,6 +394,13 @@
                MOVE    "5"                 TO  SPA-X03-GMN-CHKKBNL   (1)
                MOVE    "¿ÇÎÅ¹Ô°Ù¤ÎÊ»ÍÑ»»Äê"
                                            TO  SPA-X03-GMN-CHKKBNMEIL(1)
+           WHEN    "6"
+      *
+               MOVE    1                   TO  SPA-X03-GMN-CHKKBN-MAX
+      *
+               MOVE    "6"                 TO  SPA-X03-GMN-CHKKBNL   (1)
+               MOVE    "ÅêÍ¿¶Ø´÷ÌôºÞ¤ÈÉÂÌ¾"
+                                           TO  SPA-X03-GMN-CHKKBNMEIL(1)
            END-EVALUATE
       *
            . 
@@ -407,6 +414,7 @@
            EVALUATE    SPA-X03-GMN-CHKKBN
            WHEN    "1"
            WHEN    "2"
+           WHEN    "6"
                PERFORM 3101-SELCHKLST-CHKSND-SEC
            WHEN    "M"
                IF    ( SPA-X03-GMN-SELNAME =   SPACE )
@@ -732,6 +740,7 @@
            EVALUATE    SPA-X03-GMN-CHKKBN
            WHEN    "1"
            WHEN    "2"
+           WHEN    "6"
                PERFORM UNTIL ( FLG-CHKSND  NOT =   ZERO )
                         OR   ( CNT-SELCHKLST   >   WRK-SKIP-MAX )
       *
@@ -1107,6 +1116,7 @@
                    EVALUATE    SPA-X03-GMN-CHKKBN
                    WHEN  "1"
                    WHEN  "2"
+                   WHEN  "6"
                        PERFORM 41011-RCHKLST-CHKSND-HEN-SEC
                    WHEN  "M"
                        PERFORM 41011-RCHKLST-MEDYAKKO-HEN-SEC
@@ -1478,6 +1488,7 @@
       *
                        IF    ( SPA-X03-GMN-CHKKBN  =   "1"
                                                    OR  "2"
+                                                   OR  "6"
                                                    OR  "M" )
                            IF    ( SPA-X03-GMN-TRCHK-NAME  (IDX0)
                                =   SPA-X03-GMN-TLCHK-NAME  (IDX6) )
@@ -1603,6 +1614,7 @@
       *
                        IF    ( SPA-X03-GMN-CHKKBN  =   "1"
                                                    OR  "2"
+                                                   OR  "6"
                                                    OR  "M" )
                            IF    ( SPA-X03-GMN-TRCHK-NAME  (IDX0)
                                =   SPA-X03-GMN-TLCHK-NAME  (IDX6) )
@@ -1756,7 +1768,7 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
-           IF    ( SPA-X01-CHKKBN  =   "1" OR "2" )
+           IF    ( SPA-X01-CHKKBN  =   "1" OR "2" OR "6" )
                MOVE    "X04"           TO  SPA-SAKIPG
            ELSE
                MOVE    "X02"           TO  SPA-SAKIPG
@@ -1820,7 +1832,7 @@
       *
            MOVE    1                   TO  SPA-X03-GMN-KAKUTEI
       *
-           IF    ( SPA-X01-CHKKBN  =   "1" OR "2" )
+           IF    ( SPA-X01-CHKKBN  =   "1" OR "2" OR "6" )
                MOVE    "X04"           TO  SPA-SAKIPG
            ELSE
                MOVE    "X02"           TO  SPA-SAKIPG
@@ -1971,7 +1983,7 @@
       *
            MOVE    SPA-X03-GMN-KJNYMD  TO  X03-KJNYMD
       *
-           IF    ( SPA-X01-CHKKBN  =   "1" OR "2" )
+           IF    ( SPA-X01-CHKKBN  =   "1" OR "2" OR "6" )
                MOVE    "°ìÃ×"          TO  X03-LBLLJYKN
                                            X03-LBLRJYKN
            END-IF

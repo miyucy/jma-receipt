@@ -216,6 +216,9 @@
            WHEN    "5"
                MOVE    "診療行為の併用算定一覧表"
                                        TO  WRK-TITLE
+           WHEN    "6"
+               MOVE    "薬剤と投与禁忌病名一覧表"
+                                       TO  WRK-TITLE
            END-EVALUATE
       *
       *    ステップ管理開始処理

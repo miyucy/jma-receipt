@@ -77,6 +77,12 @@
            05 PIC  X(30)   VALUE   "保険情報の番号に外字が入力され".
            05 PIC  X(30)   VALUE   "ています                      ".
            05 PIC  X(30)   VALUE   "                              ".
+      *                            +---------+---------+---------+.
+           05 PIC  X(06)   VALUE   "020008".
+           05 PIC  X(30)   VALUE   "レセ電算データの場合、保険情報".
+           05 PIC  X(30)   VALUE   "の記号に空白が入力されています".
+           05 PIC  X(30)   VALUE   "                              ".
+      *                            +---------+---------+---------+.
       *
       *    ** 030xxx 公費負担者番号・受給者番号抜け
       *                            +---------+---------+---------+.
@@ -256,8 +262,8 @@
       *    ** 010xxx 併用禁忌の薬剤
       *                            +---------+---------+---------+.
            05 PIC  X(06)   VALUE   "100001".
-           05 PIC  X(30)   VALUE   "禁忌の薬剤が入力されています  ".
-           05 PIC  X(30)   VALUE   "                              ".
+           05 PIC  X(30)   VALUE   "併用禁忌の薬剤が入力されていま".
+           05 PIC  X(30)   VALUE   "す                            ".
            05 PIC  X(30)   VALUE   "                              ".
       *
       *    ** 110xxx 併用算定の診療行為
@@ -333,6 +339,13 @@
            05 PIC  X(30)   VALUE   "                              ".
            05 PIC  X(30)   VALUE   "                              ".
       *
+      *    ** 150xxx 投与禁忌薬剤と病名
+      *                            +---------+---------+---------+.
+           05 PIC  X(06)   VALUE   "150001".
+           05 PIC  X(30)   VALUE   "投与禁忌薬剤が入力されています".
+           05 PIC  X(30)   VALUE   "                              ".
+           05 PIC  X(30)   VALUE   "                              ".
+      *
       *    ** 990xxx その他必須チェック
       *                            +---------+---------+---------+.
            05 PIC  X(06)   VALUE   "990001".
@@ -356,7 +369,7 @@
            05 PIC  X(30)   VALUE   "                              ".
       *
          03  ERRMES-RED    REDEFINES   ERRMES-VAL.
-           05 ERRMES-OCC   OCCURS  59.
+           05 ERRMES-OCC   OCCURS  61.
               07  ERRMES-CD            PIC X(06).
               07  ERRMES-MESSAGE       PIC X(90).
-         03  ERRMES-MAX                PIC 9(05)   VALUE   59.
+         03  ERRMES-MAX                PIC 9(05)   VALUE   61.

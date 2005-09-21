@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION          DIVISION.
-       PROGRAM-ID.             ORCSDTCHK01.
+       PROGRAM-ID.             ORCSDTCHK03.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : データチェック
-      *  コンポーネント名  : チェックマスタ−患者病名チェック
+      *  コンポーネント名  : チェックマスタ−投与禁忌病名チェック
       *  管理者            : 
       *  作成日付    作業者        記述
       *  05/02/02    NACL−太田    新規作成
@@ -40,7 +40,6 @@
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-QDTCHK                  PIC 9(01).
-           03  FLG-CHKMST-BYOMEI           PIC 9(01).
            03  FLG-MATCH                   PIC 9(01).
            03  FLG-TAISYO                  PIC 9(01).
            03  FLG-HIT                     PIC 9(01).
@@ -86,6 +85,7 @@
            03  TBYOMEI-STIDX               PIC 9(05).
            03  TBYOMEI-MAX                 PIC 9(05).
            03  TBYOMEI-OCC                 OCCURS 101.
+               05  TBYOMEI-NYUGAIKBN       PIC X(01).
                05  TBYOMEI-BYOMEI          PIC X(160).
                05  TBYOMEI-KEY.
                    07  TBYOMEI-ERRFLG      PIC 9(01).
@@ -138,19 +138,10 @@
        LINKAGE                     SECTION.
       *
            COPY    "CPORCSDTCHK01.INC".
-           COPY    "CPSK1101.INC".
-           COPY    "CPORCSDTCHK02.INC".
-           01  LNK-HKNCOMBI-AREA.
-             02  LNK-HKNCOMBI-OCC      OCCURS  100.
-           COPY    "CPHKNCOMBI.INC"    REPLACING  //COMB-//
-                                       BY         //LNK-COMB-//.
       *
       *
        PROCEDURE                    DIVISION    USING
-       SDTCHK01AREA
-       SYS-1101-REC
-       SDTCHK02AREA
-       LNK-HKNCOMBI-AREA.
+       SDTCHK01AREA.
       *
       *****************************************************************
       *    主　　処理
@@ -179,8 +170,6 @@
                                        WRK-AREA
                                        LEN-AREA
                                        TBYOMEI-AREA
-      *
-           MOVE    ZERO            TO  FLG-CHKMST-BYOMEI
       *
            .
        100-INIT-EXT.
@@ -219,21 +208,16 @@
            END-IF
       *
            PERFORM UNTIL ( FLG-QDTCHK      NOT =   ZERO )
-                    OR   ( FLG-CHKMST-BYOMEI   =   1    )
       *
                PERFORM 2001-BYOMEI-CHK-SEC
                IF    ( FLG-MATCH    =  1 )
                    PERFORM 2001-TAISYO-CHK-SEC
                    IF    ( FLG-TAISYO  =   1 )
-                       MOVE    1           TO  FLG-CHKMST-BYOMEI
-                   ELSE
                        PERFORM 2001-ERRINF-SEC
                    END-IF
                END-IF
       *
-               IF    ( FLG-CHKMST-BYOMEI   NOT =   1    )
-                   PERFORM 900-QDTCHK-KEY-FET-SEC
-               END-IF
+               PERFORM 900-QDTCHK-KEY-FET-SEC
       *
            END-PERFORM
       *
@@ -392,19 +376,11 @@
       *
            IF    ( QDTCHK-SRYYMD (1:6)        <=   SDTCHK01-KJNYMD(1:6))
                IF    ( QDTCHK-TENKIKBN         =   SPACE )
-                   IF    ( QDTCHK-NYUGAIKBN    =   SPACE )
-                    OR   ( QDTCHK-NYUGAIKBN    =   SDTCHK01-NYUGAIKBN )
-                           MOVE    1       TO  FLG-TAISYO
-                   END-IF
+                           MOVE    1   TO  FLG-TAISYO
                ELSE
                    IF    ( QDTCHK-TENKIYMD (1:6)
                                               >=   SDTCHK01-KJNYMD(1:6))
-                       IF    ( QDTCHK-NYUGAIKBN
-                                               =   SPACE )
-                        OR   ( QDTCHK-NYUGAIKBN
-                                               =   SDTCHK01-NYUGAIKBN )
-                           MOVE    1       TO  FLG-TAISYO
-                       END-IF
+                           MOVE    1   TO  FLG-TAISYO
                    END-IF
                END-IF
            END-IF
@@ -440,15 +416,11 @@
                    UNTIL ( IDX1            >   TBYOMEI-MAX )
                     OR   ( TBYOMEI-IDX1    >   ZERO    )
       *
-               IF    ( SYS-1101-BYOSRYKAKBN    =   "1" OR SPACE)
-                   IF    ( TBYOMEI-BYOMEI (IDX1)   =   QDTCHK-BYOMEI )
-                    AND  ( TBYOMEI-SRYKA  (IDX1)   =   QDTCHK-SRYKA )
-                       MOVE    IDX1    TO  TBYOMEI-IDX1
-                   END-IF
-               ELSE
-                   IF    ( TBYOMEI-BYOMEI (IDX1)   =   QDTCHK-BYOMEI )
-                       MOVE    IDX1    TO  TBYOMEI-IDX1
-                   END-IF
+               IF    ( TBYOMEI-BYOMEI (IDX1)   =   QDTCHK-BYOMEI )
+                AND  ( TBYOMEI-NYUGAIKBN
+                                      (IDX1)   =   QDTCHK-NYUGAIKBN )
+                AND  ( TBYOMEI-SRYKA  (IDX1)   =   QDTCHK-SRYKA )
+                   MOVE    IDX1    TO  TBYOMEI-IDX1
                END-IF
       *
            END-PERFORM
@@ -461,6 +433,9 @@
                COMPUTE TBYOMEI-MAX
                    =   TBYOMEI-MAX     +   1
       *
+               MOVE    QDTCHK-NYUGAIKBN
+                                       TO  TBYOMEI-NYUGAIKBN
+                                                          (TBYOMEI-MAX)
                MOVE    QDTCHK-BYOMEI   TO  TBYOMEI-BYOMEI (TBYOMEI-MAX)
                MOVE    QDTCHK-SRYKA    TO  TBYOMEI-SRYKA  (TBYOMEI-MAX)
                MOVE    "00000000"      TO  TBYOMEI-SRYYMD (TBYOMEI-MAX)
@@ -469,32 +444,7 @@
       *
            END-IF
       *
-      *    入外区分の誤りは"2"を設定、
-      *    適用期間が誤っている場合は適用期間の誤りとして"1"を設定
-           IF    ( QDTCHK-TENKIKBN      =   SPACE )
-               IF    ( QDTCHK-SRYYMD (1:6) <=   SDTCHK01-KJNYMD(1:6))
-                AND (( QDTCHK-NYUGAIKBN NOT =   SPACE )
-                 AND ( QDTCHK-NYUGAIKBN NOT =   SDTCHK01-NYUGAIKBN ))
-                       MOVE    2   TO  TBYOMEI-ERRFLG (TBYOMEI-IDX1)
-               ELSE
-                   IF    ( TBYOMEI-ERRFLG (TBYOMEI-IDX1)  <=   1 )
-                       MOVE    1   TO  TBYOMEI-ERRFLG (TBYOMEI-IDX1)
-                   END-IF
-               END-IF
-           ELSE
-               IF    ( QDTCHK-SRYYMD   (1:6)
-                                           <=  SDTCHK01-KJNYMD(1:6))
-                AND  ( QDTCHK-TENKIYMD (1:6)
-                                           >=  SDTCHK01-KJNYMD(1:6))
-                AND (( QDTCHK-NYUGAIKBN NOT =   SPACE )
-                 AND ( QDTCHK-NYUGAIKBN NOT =   SDTCHK01-NYUGAIKBN ))
-                       MOVE    2   TO  TBYOMEI-ERRFLG (TBYOMEI-IDX1)
-               ELSE
-                   IF    ( TBYOMEI-ERRFLG (TBYOMEI-IDX1)  <=   1 )
-                       MOVE    1   TO  TBYOMEI-ERRFLG (TBYOMEI-IDX1)
-                   END-IF
-               END-IF
-           END-IF
+           MOVE    1               TO  TBYOMEI-ERRFLG (TBYOMEI-IDX1)
       *
            IF    ( QDTCHK-SRYYMD   >   TBYOMEI-SRYYMD  (TBYOMEI-IDX1))
                MOVE    QDTCHK-SRYYMD
@@ -505,74 +455,13 @@
        2001-ERRINF-EXT.
            EXIT.
       *****************************************************************
-      *    保険組合せ取得処理
-      *****************************************************************
-       220-HKNCOMBI-GET-SEC            SECTION.
-      *
-           INITIALIZE                  HKNCOMBI-REC
-      *
-           PERFORM VARYING IDX-COMB    FROM    1   BY  1
-                   UNTIL ( IDX-COMB    >   SDTCHK02-O-MAX )
-                    OR   ( COMB-HKNNUM    NOT =   SPACE )
-      *
-               IF    ( LNK-COMB-HKNCOMBINUM (IDX-COMB)
-                                  =    WRK-HKNCOMBI )
-                   MOVE    LNK-HKNCOMBI-OCC (IDX-COMB)
-                                  TO   HKNCOMBI-REC
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-       220-HKNCOMBI-GET-EXT.
-           EXIT.
-      *****************************************************************
-      *    対象保険チェック処理
-      *****************************************************************
-       220-TAISYO-HKN-CHK-SEC          SECTION.
-      *
-           MOVE    ZERO                TO  FLG-TAISYO-HKN
-      *
-           EVALUATE    TRUE
-           WHEN      ( WRK-ZAIHKNNUM   =   "060" )
-           WHEN      ( WRK-ZAIHKNNUM   =   "067" )
-               IF    ( SDTCHK01-HKNKBN =   CONST-KOKUHO )
-                   MOVE    1           TO  FLG-TAISYO-HKN
-               END-IF
-           WHEN      ( WRK-ZAIHKNNUM   =   "971" )
-               IF    ( SDTCHK01-HKNKBN =   CONST-ROSAI )
-                   MOVE    1           TO  FLG-TAISYO-HKN
-               END-IF
-           WHEN      ( WRK-ZAIHKNNUM   =   "973" )
-               IF    ( SDTCHK01-HKNKBN =   CONST-JIBAI )
-                   MOVE    1           TO  FLG-TAISYO-HKN
-               END-IF
-      *
-           WHEN      ( WRK-ZAIHKNNUM (1:2) =   "98" )
-               IF    ( SDTCHK01-HKNKBN =   CONST-JIHI )
-                   MOVE    1           TO  FLG-TAISYO-HKN
-               END-IF
-      *
-           WHEN      OTHER
-               IF    ( SDTCHK01-HKNKBN =   CONST-SYAHO )
-                   MOVE    1           TO  FLG-TAISYO-HKN
-               END-IF
-           END-EVALUATE
-      *
-           .
-       220-TAISYO-HKN-CHK-EXT.
-           EXIT.
-      *****************************************************************
       *    終了処理
       *****************************************************************
        300-END-SEC                     SECTION.
       *
            INITIALIZE                      SDTCHK01-OT
-           MOVE    FLG-CHKMST-BYOMEI   TO  SDTCHK01-O-OK
       *
-           IF    ( SDTCHK01-O-OK       =   ZERO )
-               PERFORM 3001-TBYOMEI-SORT-SEC
-           END-IF
+           PERFORM 3001-TBYOMEI-SORT-SEC
       *
            MOVE    TBYOMEI-MAX         TO  SDTCHK01-O-MAX
            PERFORM VARYING IDX0    FROM    1   BY  1
@@ -666,11 +555,7 @@
       *
            MOVE    SDTCHK01-HOSPID     TO  QDTCHK-SELHOSPID
            MOVE    SDTCHK01-PTID       TO  QDTCHK-SELPTID
-           IF    ( SYS-1101-BYOSRYKAKBN    =   "1" OR SPACE )
-               MOVE    SDTCHK01-SRYKA  TO  QDTCHK-SELSRYKA
-           ELSE
-               MOVE    "%"             TO  QDTCHK-SELSRYKA
-           END-IF
+           MOVE    "%"                 TO  QDTCHK-SELSRYKA
            MOVE    SDTCHK01-CHKKBN     TO  QDTCHK-SELCHKKBN
            MOVE    SDTCHK01-SRYCD      TO  QDTCHK-SELSRYCD
            MOVE    SDTCHK01-KJNYMD     TO  QDTCHK-SELYUKOSTYMD
@@ -713,21 +598,6 @@
       *
                IF    ( QDTCHK-REZEFLG  =   "1" )
                    MOVE    ZERO        TO  FLG-LOOP-END
-               END-IF
-      *
-               IF    ( QDTCHK-HKNCOMBI  NOT =   ZERO )
-                   MOVE    QDTCHK-HKNCOMBI     TO  WRK-HKNCOMBI
-                   PERFORM 220-HKNCOMBI-GET-SEC
-                   MOVE    COMB-HKNNUM         TO  WRK-ZAIHKNNUM
-                   PERFORM 220-TAISYO-HKN-CHK-SEC
-                   IF    ( FLG-TAISYO-HKN  =   ZERO )
-                       MOVE    ZERO            TO  FLG-LOOP-END
-                   END-IF
-               ELSE
-                   IF    ( SDTCHK01-HKNKBN      =  CONST-ROSAI
-                                                OR CONST-JIBAI  )
-                       MOVE    ZERO            TO  FLG-LOOP-END
-                   END-IF
                END-IF
       *
            END-PERFORM

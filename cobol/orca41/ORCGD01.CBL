@@ -1,3 +1,4 @@
+
       *******************************************************************
       * Project code name "ORCA"
       * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
@@ -184,7 +185,7 @@
        01  CONST-AREA.
            03  CONST-LINE                  PIC X(40)   VALUE
                "¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²".
-           03  CONST-CHKKBN-MAX            PIC 9(03)   VALUE   14.
+           03  CONST-CHKKBN-MAX            PIC 9(03)   VALUE   15.
            03  CONST-CHKMSG-VAL.
                05                          PIC X(40)   VALUE
                "ÊÝ¸±¼ÔÈÖ¹æ".
@@ -214,8 +215,10 @@
                "´µ¼Ô»áÌ¾".
                05                          PIC X(40)   VALUE
                "ÊÝ¸±ÁÈ¹ç¤»Í­¸ú´ü´Ö".
+               05                          PIC X(40)   VALUE
+               "ÅêÍ¿¶Ø´÷ÌôºÞ¤ÈÉÂÌ¾".
            03  CONST-CHKMSG-R              REDEFINES   CONST-CHKMSG-VAL.
-               05  CONST-CHKMSG            PIC X(40)   OCCURS  14.
+               05  CONST-CHKMSG            PIC X(40)   OCCURS  15.
            03  CONST-INGAIPROCMSG          PIC X(40)   VALUE
                "±¡³°½èÊý¤Î½èÍý".
       *

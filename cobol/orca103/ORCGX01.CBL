@@ -342,15 +342,16 @@
            INITIALIZE                  SPA-X01-AREA
                                        SPA-X01KYOUTU
       *
-           MOVE    "1"                 TO  SPA-GMN-CHKKBNL    (1)
-           MOVE    "ÌôºÞ¤ÈÉÂÌ¾"        TO  SPA-GMN-CHKKBNMEIL (1)
-           MOVE    "2"                 TO  SPA-GMN-CHKKBNL    (2)
-           MOVE    "¿ÇÎÅ¹Ô°Ù¤ÈÉÂÌ¾"    TO  SPA-GMN-CHKKBNMEIL (2)
-           MOVE    "4"                 TO  SPA-GMN-CHKKBNL    (3)
-           MOVE    "ÌôºÞ¤ÈÊ»ÍÑ¶Ø´÷"    TO  SPA-GMN-CHKKBNMEIL (3)
-           MOVE    "5"                 TO  SPA-GMN-CHKKBNL    (4)
-           MOVE    "¿ÇÎÅ¹Ô°Ù¤ÎÊ»ÍÑ»»Äê"
-                                       TO  SPA-GMN-CHKKBNMEIL (4)
+           MOVE    "1"                     TO  SPA-GMN-CHKKBNL    (1)
+           MOVE    "ÌôºÞ¤ÈÉÂÌ¾"            TO  SPA-GMN-CHKKBNMEIL (1)
+           MOVE    "2"                     TO  SPA-GMN-CHKKBNL    (2)
+           MOVE    "¿ÇÎÅ¹Ô°Ù¤ÈÉÂÌ¾"        TO  SPA-GMN-CHKKBNMEIL (2)
+           MOVE    "4"                     TO  SPA-GMN-CHKKBNL    (3)
+           MOVE    "ÌôºÞ¤ÈÊ»ÍÑ¶Ø´÷"        TO  SPA-GMN-CHKKBNMEIL (3)
+           MOVE    "5"                     TO  SPA-GMN-CHKKBNL    (4)
+           MOVE    "¿ÇÎÅ¹Ô°Ù¤ÎÊ»ÍÑ»»Äê"    TO  SPA-GMN-CHKKBNMEIL (4)
+           MOVE    "6"                     TO  SPA-GMN-CHKKBNL    (5)
+           MOVE    "ÅêÍ¿¶Ø´÷ÌôºÞ¤ÈÉÂÌ¾"    TO  SPA-GMN-CHKKBNMEIL (5)
       *
            MOVE    1                   TO  SPA-GMN-CUR 
       *
@@ -830,6 +831,7 @@
                WHEN    "1"
                WHEN    "3"
                WHEN    "4"
+               WHEN    "6"
                    IF      SPA-GMN-SRYCD (1:1) NOT =   "6"
                        MOVE    "0008"              TO  SPA-ERRCD
                        MOVE    2               TO  SPA-GMN-CUR
@@ -848,7 +850,7 @@
            MOVE    SPA-GMN-SRYCD       TO  SPA-MAE-SRYCD
       *
       *    ¥Á¥§¥Ã¥¯¥Þ¥¹¥¿ÆÉ¤ß¹þ¤ß 
-           IF    ( SPA-GMN-CHKKBN      =   "1" OR "2" )
+           IF    ( SPA-GMN-CHKKBN      =   "1" OR "2" OR "6" )
                MOVE    ZERO            TO  FLG-CHKSND
                PERFORM 900-CHKSND-KEY12-SEL-SEC
                IF      MCP-RC              =   ZERO
@@ -1118,6 +1120,7 @@
                    WHEN    "1"
                    WHEN    "3"
                    WHEN    "4"
+                   WHEN    "6"
       *                ÌôºÞ
                        MOVE    "3"             TO  SPA-X98-GMN-SYORI
                    WHEN    "2"
@@ -1310,7 +1313,7 @@
            MOVE    SPA-GMN-NAME        TO  SPA-X01-NAME  
            MOVE    SPA-X01KYOUTU       TO  SPA-WORK
       *
-           IF    ( SPA-X01-CHKKBN      =   "1" OR  "2" )
+           IF    ( SPA-X01-CHKKBN      =   "1" OR  "2" OR  "6" )
                MOVE    "X04"           TO  SPA-SAKIPG
            ELSE
                MOVE    "X02"           TO  SPA-SAKIPG
@@ -1431,7 +1434,7 @@
            MOVE    SPA-GMN-CHKKBN-G    TO  X01-CHKKBN 
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >       4
+                   UNTIL       IDX     >       5
                MOVE    SPA-GMN-CHKKBNLIST(IDX) TO  X01-CHKKBNLIST (IDX)
                MOVE    IDX                     TO  X01-CHKKBNCOUNT
            END-PERFORM

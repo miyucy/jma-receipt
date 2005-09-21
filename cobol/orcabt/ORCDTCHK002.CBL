@@ -63,6 +63,13 @@
                                    RECORD  KEY     IS  DTCHK004-KEY
                                    FILE    STATUS  IS  STS-DTCHK004.
       *
+      *    データチェック中間ファイル（チェックマスタに存在しない診療行為）
+           SELECT  DTCHK008-FILE   ASSIGN  DTCHK008PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  DTCHK008-KEY
+                                   FILE    STATUS  IS  STS-DTCHK008.
+      *
       *    エラーファイル
            SELECT  DTCHKERR-FILE   ASSIGN  DTCHKERRPARA
                                    FILE    STATUS  IS  STS-DTCHKERR.
@@ -89,6 +96,10 @@
       *    データチェック中間ファイル（チェック結果）
        FD  DTCHK004-FILE.
            COPY    "CPDTCHK004.INC".
+      *
+      *    データチェック中間ファイル（チェックマスタに存在しない診療行為）
+       FD  DTCHK008-FILE.
+           COPY    "CPDTCHK008.INC".
       *
       *    エラーファイル
        FD  DTCHKERR-FILE.
@@ -119,13 +130,16 @@
                                    BY         //DTCHKACCT//.
            COPY    "CPCOMMONDAT6.INC"
                                    REPLACING  //DTCHK//
+                                   BY         //DTCHK008//.
+           COPY    "CPCOMMONDAT6.INC"
+                                   REPLACING  //DTCHK//
                                    BY         //DTCHKSRY//.
       *
       *    フラグ領域
        01  STS-AREA.
            03  STS-DTCHK003                            PIC X(02).
            03  STS-DTCHK004                            PIC X(02).
-           03  STS-DTCHK004CL                          PIC X(02).
+           03  STS-DTCHK008                            PIC X(02).
            03  STS-DTCHKERR                            PIC X(02).
            03  STS-DCACCT                              PIC X(02).
            03  STS-DCSRY                               PIC X(02).
@@ -145,10 +159,12 @@
            03  FLG-TENSU                               PIC 9(01).
            03  FLG-PTBYOMEI                            PIC 9(01).
            03  FLG-DTCHK003                            PIC 9(01).
+           03  FLG-DTCHK008                            PIC 9(01).
            03  FLG-YKZBYO                              PIC 9(01).
            03  FLG-SRYBYO                              PIC 9(01).
            03  FLG-YKZHEI                              PIC 9(01).
            03  FLG-SRYHEI                              PIC 9(01).
+           03  FLG-YKZKNKBYO                           PIC 9(01).
            03  FLG-CHKEND-G.
                05  FLG-CHKEND                          PIC 9(01)
                                                        OCCURS  50.
@@ -214,6 +230,7 @@
                    07  FLG-STATUS                      PIC 9(01)
                                                        OCCURS  16.
            03  FLG-TAISYO-BYOMEI                       PIC 9(01).
+           03  FLG-KOHERR                              PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -551,15 +568,6 @@
                        09  THEIYOU-DAY2                PIC 9(01)
                                                        OCCURS 31.
       *
-      *    チェックマスタに存在しない診療行為退避ワーク
-       01  TNILCHK-AREA.
-           03  TNILCHK-FLG                            PIC 9(01).
-           03  TNILCHK-MAX                            PIC 9(05).
-           03  TNILCHK-OCC                            OCCURS  2000.
-               05  TNILCHK-CHKKBN                     PIC X(01).
-               05  TNILCHK-CDKBN                      PIC X(01).
-               05  TNILCHK-SRYCD                      PIC X(09).
-      *
       *    チェックマスタ退避ワーク（併用禁忌の薬剤、併用算定の診療行為のみ）
        01  TCHK-AREA.
            03  TCHK-IDX                                PIC 9(08).
@@ -750,8 +758,6 @@
                                                    VALUE   20.
            03  CONST-TCHK-MAX                      PIC 9(05)
                                                    VALUE   2000.
-           03  CONST-TNILCHK-MAX                   PIC 9(05)
-                                                   VALUE   2000.
            03  CONST-TCHK-STK-CD-MAX               PIC 9(05)
                                                    VALUE   200.
            03  CONST-PTACCT-MAX                    PIC 9(05)
@@ -837,6 +843,9 @@
       *
       *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
+      *
+      *    医療機関基本情報
+           COPY    "CPSK1001.INC".
       *
       *    診療科目情報
            COPY    "CPSK1005.INC".
@@ -994,6 +1003,9 @@
            MOVE    "DTCHK004"          TO  DTCHK004-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  DTCHK004-TERMID
       *
+           MOVE    "DTCHK008"          TO  DTCHK008-FILE-ID
+           MOVE    LNK-PRTKANRI-TERMID TO  DTCHK008-TERMID
+      *
       *    初期値設定処理
            PERFORM 1001-INIT-VAL-SET-SEC
       *
@@ -1002,6 +1014,9 @@
       *
       *    保険の種類・公費の種類編集処理
            PERFORM 1001-HKNKOH-HEN-SEC
+      *
+      *    医療機関基本情報
+           PERFORM 1001-SYS1001-GET-SEC
       *
       *    診療科編集処理
            PERFORM 1001-SRYKA-HEN-SEC
@@ -1021,6 +1036,10 @@
       *
            OPEN    OUTPUT              DTCHK004-FILE
       *
+           OPEN    OUTPUT              DTCHK008-FILE
+           CLOSE   DTCHK008-FILE
+           OPEN    I-O                 DTCHK008-FILE
+      *
            .
        100-INIT-EXT.
            EXIT.
@@ -1033,7 +1052,6 @@
            MOVE    "01"                TO  WRK-KJNYMD(7:2)
       *
            INITIALIZE                      TCHK-AREA
-                                           TNILCHK-AREA
                                            TTNS-AREA
       *
            MOVE    CONST-NBHOUKTCD     TO  WRK-SRYCD
@@ -1054,6 +1072,7 @@
                                            FLG-SRYBYO
                                            FLG-YKZHEI
                                            FLG-SRYHEI
+                                           FLG-YKZKNKBYO
       *
       *    薬剤と病名
            MOVE    "1"                 TO  WRK-CHK-CHKKBN
@@ -1085,6 +1104,14 @@
            PERFORM 900-CHK-KEY5-SEL-SEC
            IF    ( FLG-CHKMST          =   ZERO )
                MOVE    1               TO  FLG-SRYHEI
+           END-IF
+      *
+      *    薬剤と投与禁忌病名
+           MOVE    "6"                 TO  WRK-CHK-CHKKBN
+           MOVE    "1"                 TO  WRK-CHK-CDKBN
+           PERFORM 900-CHKSND-KEY5-SEL-SEC
+           IF    ( FLG-CHKMST          =   ZERO )
+               MOVE    1               TO  FLG-YKZKNKBYO
            END-IF
       *
            .
@@ -1223,6 +1250,31 @@
       *
            .
        10011-KOH-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    公費負担者番号・受給者番号抜けチェック対象取得処理
+      *****************************************************************
+       1001-SYS1001-GET-SEC            SECTION.
+      *
+           INITIALIZE                      SYS-1001-REC
+           MOVE    "1001"              TO  SYS-1001-KANRICD
+           MOVE    "*%"                TO  SYS-1001-KBNCD
+           MOVE    WRK-KJNYMD          TO  SYS-1001-STYUKYMD
+                                           SYS-1001-EDYUKYMD
+           MOVE    SYS-1001-REC        TO  MCPDATA-REC
+           MOVE    PATH-TBL-SYSKANRI-KEY   TO  MCP-PATH
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYS-1001-REC
+           ELSE
+               INITIALIZE                  SYS-1001-REC
+           END-IF
+      *
+           MOVE    PATH-TBL-SYSKANRI-KEY   TO  MCP-PATH
+           PERFORM 910-DBCLOSE-SEC
+      *
+           .
+       1001-SYS1001-GET-EXT.
            EXIT.
       *****************************************************************
       *    診療科編集処理
@@ -3123,8 +3175,24 @@
                END-IF
            END-IF
       *
-      *    レセ電の場合、文字列長チェック
+      *    レセ電の場合、記号と文字列長チェック
            IF    ( FLG-RECEDEN-CHK     =   1 )
+      *
+               MOVE    SPACE               TO  WRK-STR
+               STRING  WRK-PTHKN-KIGO      DELIMITED   BY  SPACE
+               INTO    WRK-STR
+               END-STRING
+      *
+               IF    ( WRK-PTHKN-KIGO      NOT =   WRK-STR )
+                   MOVE    PTHKN-HKNNUM    TO  SRH-HKNNUM
+                   MOVE    "020008"        TO  WRK-ERRCD
+                   PERFORM 211-ERRMES-HEN-SEC
+      *
+                   IF    ( ORCBSD01-CHKKBN (2) =   "1" )
+                       MOVE    1       TO  FLG-CHKEND (2)
+                       GO  TO  200111-KIGONUM-CHK-EXT
+                   END-IF
+               END-IF
       *
                MOVE    SPACE               TO  WRK-KIGONUM-STR
                STRING  PTHKN-KIGO              DELIMITED   BY  SPACE
@@ -3204,6 +3272,7 @@
                    MOVE    PTKOH-KOHNUM    TO  SRH-KOHNUM
                    MOVE    PTKOH-PAYKBN    TO  SRH-PAYKBN
                    MOVE    "030001"        TO  WRK-ERRCD
+                   MOVE    SPACE           TO  WRK-ERRMES-PLUS
                    PERFORM 212-ERRMES-HEN-SEC
       *
                    IF    ( ORCBSD01-CHKKBN (3) =   "1" )
@@ -3222,6 +3291,7 @@
                    MOVE    PTKOH-KOHNUM    TO  SRH-KOHNUM
                    MOVE    PTKOH-PAYKBN    TO  SRH-PAYKBN
                    MOVE    "030002"        TO  WRK-ERRCD
+                   MOVE    SPACE           TO  WRK-ERRMES-PLUS
                    PERFORM 212-ERRMES-HEN-SEC
       *
                    IF    ( ORCBSD01-CHKKBN (3) =   "1" )
@@ -3245,6 +3315,7 @@
                        ELSE
                            MOVE    "030003"    TO  WRK-ERRCD
                        END-IF
+                       MOVE    SPACE           TO  WRK-ERRMES-PLUS
                        PERFORM 212-ERRMES-HEN-SEC
       *
                        IF    ( ORCBSD01-CHKKBN (3) =   "1" )
@@ -3270,6 +3341,7 @@
                        ELSE
                            MOVE    "030004"    TO  WRK-ERRCD
                        END-IF
+                       MOVE    SPACE           TO  WRK-ERRMES-PLUS
                        PERFORM 212-ERRMES-HEN-SEC
       *
                        IF    ( ORCBSD01-CHKKBN (3) =   "1" )
@@ -4517,8 +4589,8 @@
                        MOVE    "1"     TO  WRK-CHK-CDKBN
                        MOVE    TSRYKA-SRYCD (IDX6 IDX7)
                                        TO  WRK-CHK-SRYCD
-                       PERFORM 200112-TNILCHK-CHK-SEC
-                       IF    ( TNILCHK-FLG    =   ZERO )
+                       PERFORM 900-DTCHK008-READ-SEC
+                       IF    ( FLG-DTCHK008    =   1 )
                            PERFORM 200112-CHKMST-YKZ-BYO-CHK-SEC
                        END-IF
                    END-IF
@@ -4528,27 +4600,6 @@
       *
            .
        200112-YKZ-BYO-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    チェックマスタに存在しない診療行為退避ワークチェック
-      *****************************************************************
-       200112-TNILCHK-CHK-SEC         SECTION.
-      *
-           MOVE    ZERO                TO  TNILCHK-FLG
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0        >   TNILCHK-MAX )
-                    OR   ( TNILCHK-FLG    =   1 )
-      *
-               IF    ( WRK-CHK-CHKKBN  =   TNILCHK-CHKKBN (IDX0) )
-                AND  ( WRK-CHK-CDKBN   =   TNILCHK-CDKBN  (IDX0) )
-                AND  ( WRK-CHK-SRYCD   =   TNILCHK-SRYCD  (IDX0) )
-                   MOVE    1           TO  TNILCHK-FLG
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-       200112-TNILCHK-CHK-EXT.
            EXIT.
       *****************************************************************
       *    薬剤と病名チェック処理（チェックマスタチェック）
@@ -4617,13 +4668,11 @@
                END-IF
            ELSE
                MOVE    1               TO  FLG-CHKMST
-               IF    ( CONST-TNILCHK-MAX   >   TNILCHK-MAX )
-                   COMPUTE TNILCHK-MAX =   TNILCHK-MAX    +   1
-                   MOVE    "1"         TO  TNILCHK-CHKKBN (TNILCHK-MAX)
-                   MOVE    "1"         TO  TNILCHK-CDKBN  (TNILCHK-MAX)
-                   MOVE    TSRYKA-SRYCD (IDX6 IDX7)
-                                       TO  TNILCHK-SRYCD  (TNILCHK-MAX)
-               END-IF
+               MOVE    "1"             TO  WRK-CHK-CHKKBN
+               MOVE    "1"             TO  WRK-CHK-CDKBN
+               MOVE    TSRYKA-SRYCD (IDX6 IDX7)
+                                       TO  WRK-CHK-SRYCD
+               PERFORM 900-DTCHK008-WRITE-SEC
            END-IF
       *
            .
@@ -4721,8 +4770,8 @@
                        MOVE    "1"         TO  WRK-CHK-CDKBN
                        MOVE    TSRYKA-SRYCD (IDX6 IDX7)
                                        TO  WRK-CHK-SRYCD
-                       PERFORM 200112-TNILCHK-CHK-SEC
-                       IF    ( TNILCHK-FLG    =   ZERO )
+                       PERFORM 900-DTCHK008-READ-SEC
+                       IF    ( FLG-DTCHK008    =   1 )
                            PERFORM 200112-CHKMST-SRY-BYO-CHK-SEC
                        END-IF
                    END-IF
@@ -4800,13 +4849,11 @@
                END-IF
            ELSE
                MOVE    1               TO  FLG-CHKMST
-               IF    ( CONST-TNILCHK-MAX   >   TNILCHK-MAX )
-                   COMPUTE TNILCHK-MAX =   TNILCHK-MAX    +   1
-                   MOVE    "2"         TO  TNILCHK-CHKKBN (TNILCHK-MAX)
-                   MOVE    "1"         TO  TNILCHK-CDKBN  (TNILCHK-MAX)
-                   MOVE    TSRYKA-SRYCD (IDX6 IDX7)
-                                       TO  TNILCHK-SRYCD  (TNILCHK-MAX)
-               END-IF
+               MOVE    "2"             TO  WRK-CHK-CHKKBN
+               MOVE    "1"             TO  WRK-CHK-CDKBN
+               MOVE    TSRYKA-SRYCD (IDX6 IDX7)
+                                       TO  WRK-CHK-SRYCD
+               PERFORM 900-DTCHK008-WRITE-SEC
            END-IF
       *
            .
@@ -4927,8 +4974,8 @@
                        MOVE    "2"             TO  WRK-CHK-CDKBN
                        MOVE    TSRYCD-SRYCD (IDX6)
                                                TO  WRK-CHK-SRYCD
-                       PERFORM 200112-TNILCHK-CHK-SEC
-                       IF    ( TNILCHK-FLG    =   ZERO )
+                       PERFORM 900-DTCHK008-READ-SEC
+                       IF    ( FLG-DTCHK008    =   1 )
                            PERFORM 200112-CHKMST-HEI-YKZ-CHK-SEC
                        END-IF
                    END-IF
@@ -4957,13 +5004,11 @@
            IF    ( TCHK-ACT-CD-MAX     >   ZERO )
                CONTINUE
            ELSE
-               IF    ( CONST-TNILCHK-MAX   >   TNILCHK-MAX )
-                   COMPUTE TNILCHK-MAX =   TNILCHK-MAX    +   1
-                   MOVE    "4"         TO  TNILCHK-CHKKBN (TNILCHK-MAX)
-                   MOVE    "2"         TO  TNILCHK-CDKBN  (TNILCHK-MAX)
-                   MOVE    TSRYCD-SRYCD (IDX6)
-                                       TO  TNILCHK-SRYCD  (TNILCHK-MAX)
-               END-IF
+               MOVE    "4"             TO  WRK-CHK-CHKKBN
+               MOVE    "2"             TO  WRK-CHK-CDKBN
+               MOVE    TSRYCD-SRYCD (IDX6)
+                                       TO  WRK-CHK-SRYCD
+               PERFORM 900-DTCHK008-WRITE-SEC
            END-IF
       *
       *    チェックマスタより診療行為チェック処理
@@ -5292,6 +5337,184 @@
        200112-HEI-YKZ-ERRMES-HEN-EXT.
            EXIT.
       *****************************************************************
+      *    薬剤と投与禁忌病名チェック処理
+      *****************************************************************
+       200112-HEI-YKZKNKBYO-CHK-SEC    SECTION.
+      *
+           PERFORM VARYING IDX6    FROM    1   BY  1
+                   UNTIL ( IDX6    >       TSRYKA-MAX )
+                     OR  ( FLG-CHKEND (15)      =   1 )
+      *
+               PERFORM VARYING IDX7    FROM    1   BY  1
+                       UNTIL ( IDX7    >   TSRYKA-SRYCD-MAX (IDX6))
+                         OR  ( FLG-CHKEND (15)  =   1 )
+      *
+                   IF    ( TSRYKA-SRYCD (IDX6 IDX7)(1:1)   =   "6" )
+                       MOVE    "6"     TO  WRK-CHK-CHKKBN
+                       MOVE    "1"     TO  WRK-CHK-CDKBN
+                       MOVE    TSRYKA-SRYCD (IDX6 IDX7)
+                                       TO  WRK-CHK-SRYCD
+                       PERFORM 900-DTCHK008-READ-SEC
+                       IF    ( FLG-DTCHK008    =   1 )
+                           PERFORM 200112-CHKMST-KNKBYO-CHK-SEC
+                       END-IF
+                   END-IF
+      *
+               END-PERFORM
+           END-PERFORM
+      *
+           .
+       200112-HEI-YKZKNKBYO-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    薬剤と投与禁忌病名チェック処理（チェックマスタチェック）
+      *****************************************************************
+       200112-CHKMST-KNKBYO-CHK-SEC    SECTION.
+      *
+           MOVE    ZERO                TO  FLG-CHKMST
+      *
+           INITIALIZE                      CHKSND-REC
+           MOVE    "6"                 TO  CHKSND-CHKKBN
+           MOVE    "1"                 TO  CHKSND-CDKBN
+           MOVE    TSRYKA-SRYCD (IDX6 IDX7)
+                                       TO  CHKSND-SRYCD
+           MOVE    WRK-KJNYMD          TO  CHKSND-YUKOSTYMD
+                                           CHKSND-YUKOEDYMD
+           MOVE    CHKSND-REC          TO  MCPDATA-REC
+           MOVE    PATH-TBL-CHKSND-KEY13
+                                       TO  MCP-PATH
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  CHKSND-REC
+               IF    ( CHKSND-NYUGAIKBN    =   SPACE )
+                OR   ( CHKSND-NYUGAIKBN    =   ORCBSD01-NYUGAIKBN )
+                   CONTINUE
+               ELSE
+                   MOVE    1           TO  FLG-CHKMST
+               END-IF
+           ELSE
+                   MOVE    1           TO  FLG-CHKMST
+                   INITIALIZE              CHKSND-REC
+           END-IF
+      *
+           MOVE    PATH-TBL-CHKSND-KEY13
+                                       TO  MCP-PATH
+           PERFORM 910-DBCLOSE-SEC
+      *
+           IF    ( FLG-CHKMST          =   ZERO )
+      *
+               INITIALIZE                  SDTCHK01AREA
+               IF    ( SYS-1101-BYOCHKPTN-G    =   SPACE )
+                   MOVE    CONST-CHKPTN    TO  SDTCHK01-CHKPTN-G
+               ELSE
+                   MOVE    SYS-1101-BYOCHKPTN-G
+                                       TO  SDTCHK01-CHKPTN-G
+               END-IF
+               MOVE    DTCHK003-HOSPID TO  SDTCHK01-HOSPID
+               MOVE    DTCHK003-PTID   TO  SDTCHK01-PTID
+               MOVE    TSRYKA-SRYKA (IDX6)
+                                       TO  SDTCHK01-SRYKA
+               MOVE    CHKSND-CHKKBN   TO  SDTCHK01-CHKKBN
+               MOVE    TSRYKA-SRYCD (IDX6 IDX7)
+                                       TO  SDTCHK01-SRYCD
+               MOVE    WRK-KJNYMD      TO  SDTCHK01-KJNYMD
+               MOVE    CHKSND-CDKBN    TO  SDTCHK01-CDKBN
+               MOVE    ORCBSD01-NYUGAIKBN
+                                       TO  SDTCHK01-NYUGAIKBN
+               MOVE    DTCHK003-HKNKBN TO  SDTCHK01-HKNKBN
+               CALL    "ORCSDTCHK03"   USING   SDTCHK01AREA
+               IF    ( SDTCHK01-O-OK   =   ZERO )
+                   MOVE    TSRYKA-SRYKA (IDX6)
+                                       TO  WRK-SRYKA
+                   PERFORM 200112-KNKBYO-ERRMES-HEN-SEC
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-CHKMST
+               MOVE    "6"             TO  WRK-CHK-CHKKBN
+               MOVE    "1"             TO  WRK-CHK-CDKBN
+               MOVE    TSRYKA-SRYCD (IDX6 IDX7)
+                                       TO  WRK-CHK-SRYCD
+               PERFORM 900-DTCHK008-WRITE-SEC
+           END-IF
+      *
+           .
+       200112-CHKMST-KNKBYO-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    薬剤と病名エラーメッセージ編集処理
+      *****************************************************************
+       200112-KNKBYO-ERRMES-HEN-SEC    SECTION.
+      *
+           INITIALIZE  WRK-NISSU-AREA
+           MOVE    TSRYKA-SRYCD-DAY-G (IDX6 IDX7)
+                                       TO  WRK-NISSU-DAY-G
+      *
+           PERFORM 200111-NISSU-HEN-SEC
+      *
+           MOVE    CHKSND-SRYCD        TO  WRK-SRYCD
+           MOVE    WRK-KJNYMD          TO  WRK-TNS-YMD
+           PERFORM 900-TENSU-KEY-SEL-SEC
+           IF    ( FLG-TENSU       NOT =   ZERO )
+               MOVE    WRK-SRYCD       TO  WRK-MAE-INPUT
+               PERFORM 800-ZENKAKU-HEN-SEC
+               MOVE    WRK-OUT-INPUT   TO  TNS-NAME
+           END-IF
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >    SDTCHK01-O-MAX )
+                    OR   ( FLG-CHKEND (15) =   1 )
+      *
+               MOVE    SPACE               TO  WRK-NYUGAI-MES
+               IF    ( ORCBSD01-NYUGAIKBN
+                                   NOT =   SDTCHK01-O-NYUGAIKBN (IDX0))
+                   IF    ( SDTCHK01-O-NYUGAIKBN (IDX0)
+                                       =   "1" )
+                       MOVE    "（入院）"  TO  WRK-NYUGAI-MES
+                   ELSE
+                       MOVE    "（外来）"  TO  WRK-NYUGAI-MES
+                   END-IF
+               END-IF
+      *
+               MOVE    SPACE           TO  WRK-STR
+               IF    ( WRK-SRYKA   NOT =   SDTCHK01-O-SRYKA (IDX0))
+                   MOVE    SDTCHK01-O-SRYKA (IDX0)
+                                       TO  SRH-1005-SRYKA
+                   PERFORM 2111-SRYKA-GET-SEC
+                   IF    ( SRH-1005-SRYKAMEI2  NOT =   SPACE )
+                       STRING  "［"            DELIMITED   BY  SIZE
+                           SRH-1005-SRYKAMEI2  DELIMITED   BY  SPACE
+                           "］"                DELIMITED   BY  SIZE
+                       INTO    WRK-STR
+                       END-STRING
+                   END-IF
+               END-IF
+      *
+               MOVE   SPACE            TO  WRK-ERRMES-PLUS
+               STRING TNS-NAME             DELIMITED BY SPACE
+                      "、"                 DELIMITED BY SIZE
+                      WRK-STR              DELIMITED BY SPACE
+                      WRK-NYUGAI-MES       DELIMITED BY SPACE
+                      SDTCHK01-O-BYOMEI (IDX0)
+                                           DELIMITED BY SPACE
+                      WRK-NISSU-MES        DELIMITED BY SPACE
+               INTO   WRK-ERRMES-PLUS
+               END-STRING
+      *
+               MOVE    "150001"        TO  WRK-ERRCD
+      *
+               MOVE    WRK-SRYKA       TO  SRH-1005-SRYKA
+               PERFORM 213-ERRMES-HEN-SEC
+      *
+               IF    ( ORCBSD01-CHKKBN (15) =   "1" )
+                   MOVE    1           TO  FLG-CHKEND (15)
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       200112-KNKBYO-ERRMES-HEN-EXT.
+           EXIT.
+      *****************************************************************
       *    併用算定の診療行為チェック処理
       *****************************************************************
        200112-HEI-SRY-CHK-SEC          SECTION.
@@ -5311,8 +5534,8 @@
                        MOVE    "2"         TO  WRK-CHK-CDKBN
                        MOVE    TSRYCD-SRYCD (IDX6)
                                            TO  WRK-CHK-SRYCD
-                       PERFORM 200112-TNILCHK-CHK-SEC
-                       IF    ( TNILCHK-FLG     =   ZERO )
+                       PERFORM 900-DTCHK008-READ-SEC
+                       IF    ( FLG-DTCHK008    =   1 )
                            PERFORM 200112-CHKMST-HEI-SRY-CHK-SEC
                        END-IF
                    END-IF
@@ -5342,13 +5565,11 @@
            IF    ( TCHK-ACT-CD-MAX     >   ZERO )
                CONTINUE
            ELSE
-               IF    ( CONST-TNILCHK-MAX   >   TNILCHK-MAX )
-                   COMPUTE TNILCHK-MAX =   TNILCHK-MAX    +   1
-                   MOVE    "5"         TO  TNILCHK-CHKKBN (TNILCHK-MAX)
-                   MOVE    "2"         TO  TNILCHK-CDKBN  (TNILCHK-MAX)
-                   MOVE    TSRYCD-SRYCD (IDX6)
-                                       TO  TNILCHK-SRYCD  (TNILCHK-MAX)
-               END-IF
+               MOVE    "5"             TO  WRK-CHK-CHKKBN
+               MOVE    "2"             TO  WRK-CHK-CDKBN
+               MOVE    TSRYCD-SRYCD (IDX6)
+                                       TO  WRK-CHK-SRYCD
+               PERFORM 900-DTCHK008-WRITE-SEC
            END-IF
       *
       *    チェックマスタより診療行為チェック処理
@@ -5961,6 +6182,7 @@
       *
            MOVE    ZERO            TO  CNT-CHIHOU
                                        CNT-UNCHIHOU
+                                       FLG-KOHERR
       *
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >   4 )
@@ -5980,6 +6202,17 @@
       *
            IF    ( CNT-CHIHOU      >   ZERO )
             AND  ( CNT-UNCHIHOU    =   ZERO )
+               IF    ( CNT-CHIHOU  =   1 )
+                AND  ( LNK-COMB-KOHHKNNUM (IDX17 1)    =   "186" )
+                AND  ( SYS-1001-PREFNUM                =   "42" )
+                   CONTINUE
+               ELSE
+                   MOVE    1       TO  FLG-KOHERR
+               END-IF
+           END-IF
+      *
+           IF    ( FLG-KOHERR      =   1 )
+      *
                MOVE    SDTCHK02-O-HKNCOMBIMEI (IDX17)
                                        TO  WRK-MAE-INPUT
                PERFORM 800-ZENKAKU-HEN-SEC
@@ -6470,6 +6703,11 @@
                PERFORM 200121-HEI-YKZ-CHK-SEC
            END-IF
       *
+      *    併用禁忌の薬剤チェック処理
+           IF    ( ORCBSD01-CHKKBN(15) NOT =   ZERO  )
+               PERFORM 200121-HEI-YKZKNKBYO-CHK-SEC
+           END-IF
+      *
            .
        20012-KINKI-CHK-EXT.
            EXIT.
@@ -6490,6 +6728,24 @@
       *
            .
        200121-HEI-YKZ-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    薬剤と投与禁忌病名チェック処理
+      *****************************************************************
+       200121-HEI-YKZKNKBYO-CHK-SEC    SECTION.
+      *
+           IF    ( ORCBSD01-CHKKBN(15) =   ZERO  )
+               MOVE    1               TO  FLG-CHKEND (15)
+           END-IF
+      *
+      *    併用禁忌の薬剤チェック処理
+           IF    ( FLG-CHKEND (15)     =   ZERO )
+            AND  ( FLG-YKZKNKBYO       =   1 )
+               PERFORM 200112-HEI-YKZKNKBYO-CHK-SEC
+           END-IF
+      *
+           .
+       200121-HEI-YKZKNKBYO-CHK-EXT.
            EXIT.
       *****************************************************************
       *    エラーメッセージ編集処理（メッセージに付加する情報なし）
@@ -7165,6 +7421,7 @@
                                        DCSRY-FILE
                                        DTCHK003-FILE
                                        DTCHK004-FILE
+                                       DTCHK008-FILE
       *
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
@@ -7181,6 +7438,7 @@
            DISPLAY "*** ORCDTCHK002 END ***"
            DISPLAY "DTCHK004 CNT [" CNT-DTCHK004 "]"
            DISPLAY "***********************"
+      *
            .
        300-END-EXT.
            EXIT.
@@ -7399,6 +7657,40 @@
            .
       *
        900-CHKSND-KEY5-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    データチェック中間ファイル読込処理
+      *****************************************************************
+       900-DTCHK008-WRITE-SEC          SECTION.
+      *
+           INITIALIZE                  DTCHK008-KEY
+           MOVE    WRK-CHK-CHKKBN      TO  DTCHK008-CHKKBN
+           MOVE    WRK-CHK-CDKBN       TO  DTCHK008-CDKBN
+           MOVE    WRK-CHK-SRYCD       TO  DTCHK008-SRYCD
+      *
+           WRITE   DTCHK008-REC
+      *
+           .
+       900-DTCHK008-WRITE-EXT.
+           EXIT.
+      *****************************************************************
+      *    データチェック中間ファイル読込処理
+      *****************************************************************
+       900-DTCHK008-READ-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-DTCHK008
+      *
+           INITIALIZE                  DTCHK008-KEY
+           MOVE    WRK-CHK-CHKKBN      TO  DTCHK008-CHKKBN
+           MOVE    WRK-CHK-CDKBN       TO  DTCHK008-CDKBN
+           MOVE    WRK-CHK-SRYCD       TO  DTCHK008-SRYCD
+           READ    DTCHK008-FILE
+           INVALID KEY
+               MOVE    1               TO  FLG-DTCHK008
+           END-READ
+      *
+           .
+       900-DTCHK008-READ-EXT.
            EXIT.
       *****************************************************************
       *    データチェック診療会計START処理
