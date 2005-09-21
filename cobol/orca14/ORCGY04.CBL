@@ -228,6 +228,7 @@
       *****COPY    "Y02.INC".
            COPY    "Y03.INC".
            COPY    "Y04.INC".
+           COPY    "Y05.INC".
            COPY    "YERR.INC".
       *
        PROCEDURE                   DIVISION    USING
@@ -325,6 +326,18 @@
            MOVE    SPA-WORK                TO  SPA-Y01KYOUTU
       *
       *    診療内容をＳＰＡにセット
+      *    全体を１行へ
+           MOVE    1                   TO  SPA-SINRYO-MAX
+           MOVE    "00"                TO  SPA-GMN-SINRYOLST
+                                                   (SPA-SINRYO-MAX)
+                                                   (1:2)
+           MOVE    SPACE               TO  SPA-GMN-SINRYOLST
+                                                   (SPA-SINRYO-MAX)
+                                                   (3:1)
+           MOVE    "全体"              TO  SPA-GMN-SINRYOLST
+                                                   (SPA-SINRYO-MAX)
+                                                   (4:)
+     *
            MOVE    SPACE               TO  SYS-1012-REC
            MOVE    "1012"              TO  SYS-1012-KANRICD
            MOVE    SPA-Y01-YYKYMDS     TO  ORC-DBYMD
@@ -346,37 +359,32 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    ZERO                TO  SPA-SINRYO-MAX
-           PERFORM VARYING IDX FROM    1       BY  1
-                   UNTIL      (IDX             >   30    )   OR
+           PERFORM
+                   UNTIL      (SPA-SINRYO-MAX  >=  31  )   OR
                               (FLG-SYSKANRI    =   1   )
       *
-               MOVE    MCPDATA-REC       TO  SYS-1012-REC
-               ADD      1                TO  SPA-SINRYO-MAX
-               MOVE    SYS-1012-KBNCD    TO  SPA-GMN-SINRYOCD
-               MOVE    SPACE             TO  SPA-GMN-SK1
+               MOVE    MCPDATA-REC         TO  SYS-1012-REC
+               ADD      1                  TO  SPA-SINRYO-MAX
+               MOVE    SYS-1012-KBNCD      TO  SPA-GMN-SINRYOCD
+               MOVE    SPACE               TO  SPA-GMN-SK1
                MOVE    SYS-1012-SRYNAIYODSP
-                                         TO  SPA-GMN-SINRYOMEI
-               MOVE    SPA-GMN-SINRYO    TO  SPA-GMN-SINRYOLST (IDX)
+                                           TO  SPA-GMN-SINRYOMEI
+               MOVE    SPA-GMN-SINRYO      TO  SPA-GMN-SINRYOLST
+                                                  (SPA-SINRYO-MAX)
       *
-               MOVE    "SYSKANRI-KEY2"         TO  ORC-DBPATH
+               MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
                PERFORM 900-SYSKANRI-READ-SEC
            END-PERFORM
       *    カーソルクロース
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
            PERFORM 990-DBCLOSE-SEC
-      *    全体
-           ADD     1                   TO  SPA-SINRYO-MAX
-           MOVE    "00"                TO  SPA-GMN-SINRYOLST
-                                                   (SPA-SINRYO-MAX)
-                                                   (1:2)
-           MOVE    SPACE               TO  SPA-GMN-SINRYOLST
-                                                   (SPA-SINRYO-MAX)
-                                                   (3:1)
-           MOVE    "全体"              TO  SPA-GMN-SINRYOLST
-                                                   (SPA-SINRYO-MAX)
-                                                   (4:)
+      *
       *    職員情報をＳＰＡにセット
+      *    全体を１件目
+           MOVE    1                   TO  SPA-DRCD-MAX
+           MOVE    "9999 指定なし"     TO  SPA-GMN-DRNAMELST
+                                                (SPA-DRCD-MAX)
+      *
            MOVE    SPACE               TO  SYS-1010-REC
            MOVE    "1010"              TO  SYS-1010-KANRICD
            MOVE    SPA-Y01-YYKYMDS     TO  ORC-DBYMD
@@ -398,20 +406,18 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    ZERO                TO  WRK-DRNCD-MAX
-           MOVE    ZERO                TO  IDX
            PERFORM
-                   UNTIL      (IDX               >=  49  )   OR
+                   UNTIL      (SPA-DRCD-MAX      >=  50  )   OR
                               (FLG-SYSKANRI      =   1   )
       *
                MOVE    MCPDATA-REC      TO  SYS-1010-REC
                IF      SYS-1010-KBNCD(1:1) =   "1"
-                   ADD     1                   TO  IDX
+                   ADD     1                   TO  SPA-DRCD-MAX
                    MOVE    SYS-1010-KBNCD(2:4) TO  SPA-GMN-DRNCD
                    MOVE    SPACE               TO  SPA-GMN-D1
                    MOVE    SYS-1010-NAME       TO  SPA-GMN-DRNAMEMEI
-                   MOVE    SPA-GMN-DRNAME  TO  SPA-GMN-DRNAMELST (IDX)
-                   ADD     1               TO  WRK-DRNCD-MAX
+                   MOVE    SPA-GMN-DRNAME      TO  SPA-GMN-DRNAMELST
+                                                       (SPA-DRCD-MAX)
                END-IF
       *
                MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
@@ -421,15 +427,6 @@
       *    カーソルクロース
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
            PERFORM 990-DBCLOSE-SEC
-      *
-           ADD     1                   TO  WRK-DRNCD-MAX
-           MOVE    "9999"              TO  SPA-GMN-DRNAMELST
-                                                (WRK-DRNCD-MAX)(1:4)
-           MOVE    SPACE               TO  SPA-GMN-DRNAMELST
-                                                (WRK-DRNCD-MAX)(5:1)
-           MOVE    "指定なし"          TO  SPA-GMN-DRNAMELST
-                                                (WRK-DRNCD-MAX)(6:)
-           MOVE    WRK-DRNCD-MAX       TO  SPA-DRCD-MAX
       *
            MOVE    SPA-Y01-SRYNAIYOG   TO  SPA-GMN-SINRYO
            MOVE    SPA-Y01-DRNAME      TO  SPA-GMN-DRNAME
@@ -841,6 +838,9 @@
       *    次日
                WHEN    "CLICKED"       ALSO    "B08"
                    PERFORM 430-ATOHI-SEC
+      *    全体
+               WHEN    "CLICKED"       ALSO    "B10"
+                   PERFORM 430-ALL-HEN-SEC
            END-EVALUATE
       *
            .
@@ -1026,6 +1026,32 @@
        440-ATOGMN-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    全体　処理
+      *****************************************************************
+       430-ALL-HEN-SEC              SECTION.
+      *
+           IF     (SPA-GMN-SINRYOCD    =   "00"  ) AND
+                  (SPA-GMN-DRNCD       =   "9999")
+               MOVE    SPA-Y01-SRYNAIYOG   TO  SPA-GMN-SINRYO
+               MOVE    SPA-Y01-DRNAME      TO  SPA-GMN-DRNAME
+               MOVE    SPA-Y01-DRCD        TO  SPA-NAI-DRNCD
+           ELSE
+               MOVE    SPA-GMN-SINRYOLST(01)
+                                           TO  SPA-GMN-SINRYO
+               MOVE    SPA-GMN-DRNAMELST(01)
+                                           TO  SPA-GMN-DRNAME
+               MOVE    "1"                 TO  SPA-NAI-DRNCD(1:1)
+               MOVE    SPA-GMN-DRNCD       TO  SPA-NAI-DRNCD(2:4)
+           END-IF
+      *
+           MOVE    SPA-NAI-YYKYMD (01) TO  WRK-STR-YMD
+           MOVE    1                   TO  SPA-GMN-PAGE
+           PERFORM 310-YYKHEN-SEC
+      *
+           .
+       430-ALL-HEN-EXT.
+           EXIT.
       *
       *****************************************************************
       *    一覧表印刷　処理

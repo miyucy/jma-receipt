@@ -225,7 +225,8 @@
            INITIALIZE                  YYK-KEY
            INITIALIZE                  YYK-REC
            MOVE    SPA-HOSPID          TO  YYK-HOSPID
-           MOVE    SPA-Y01-YYKYMDS     TO  YYK-YYKYMD
+      **** MOVE    SPA-Y01-YYKYMDS     TO  YYK-YYKYMD
+           MOVE    SPA-Y03-YYKYMDS     TO  YYK-YYKYMD
            MOVE    SPA-Y03-SRYNAIYO    TO  YYK-SRYNAIYO
            MOVE    SPA-Y03-DRCD        TO  YYK-DRCD
            IF     (SPA-Y03-SRYNAIYO    =   "00"  )  OR
@@ -443,7 +444,7 @@
            PERFORM 990-DBCLOSE-SEC
       *
       *    ¿ÇÎÅÆü
-           MOVE    SPA-Y01-YYKYMDS     TO  WRK-SYMD
+           MOVE    SPA-Y03-YYKYMDS     TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
       *
            .
@@ -498,7 +499,7 @@
            MOVE    SPACE               TO  SYS-1010-REC
            MOVE    "1010"              TO  SYS-1010-KANRICD
            MOVE    YYK-DRCD            TO  SYS-1010-KBNCD
-           MOVE    SPA-Y01-YYKYMDS     TO  ORC-DBYMD
+           MOVE    SPA-Y03-YYKYMDS     TO  ORC-DBYMD
       *
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -523,7 +524,7 @@
            MOVE    SPACE               TO  SYS-1005-REC
            MOVE    "1005"              TO  SYS-1005-KANRICD
            MOVE    YYK-SRYKA           TO  SYS-1005-KBNCD
-           MOVE    SPA-Y01-YYKYMDS     TO  ORC-DBYMD
+           MOVE    SPA-Y03-YYKYMDS     TO  ORC-DBYMD
       *
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -548,7 +549,7 @@
            MOVE    SPACE               TO  SYS-1012-REC
            MOVE    "1012"              TO  SYS-1012-KANRICD
            MOVE    YYK-SRYNAIYO        TO  SYS-1012-KBNCD
-           MOVE    SPA-Y01-YYKYMDS     TO  ORC-DBYMD
+           MOVE    SPA-Y03-YYKYMDS     TO  ORC-DBYMD
       *
            MOVE    SYS-1012-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -573,7 +574,7 @@
            MOVE    SPACE               TO  SYS-0051-REC
            MOVE    "0051"              TO  SYS-0051-KANRICD
            MOVE    YYK-KAKREN          TO  SYS-0051-KBNCD
-           MOVE    SPA-Y01-YYKYMDS     TO  ORC-DBYMD
+           MOVE    SPA-Y03-YYKYMDS     TO  ORC-DBYMD
       *
            MOVE    SYS-0051-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC

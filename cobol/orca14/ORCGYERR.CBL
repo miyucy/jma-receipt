@@ -70,6 +70,7 @@
       *****COPY    "Y02.INC".
            COPY    "Y03.INC".
            COPY    "Y04.INC".
+           COPY    "Y05.INC".
            COPY    "YERR.INC".
       *
        PROCEDURE                   DIVISION    USING

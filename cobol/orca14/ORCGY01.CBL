@@ -449,9 +449,9 @@
       *
        01  SCRAREA.
            COPY    "Y01.INC".
-      *****COPY    "Y02.INC".
            COPY    "Y03.INC".
            COPY    "Y04.INC".
+           COPY    "Y05.INC".
            COPY    "YERR.INC".
       *
        PROCEDURE                   DIVISION    USING
@@ -566,6 +566,15 @@
                    MOVE    SPACE               TO  SPA-GMN-SEX
                    MOVE    SPACE               TO  SPA-GMN-BIRTHDAYH
                    MOVE    SPACE               TO  SPA-GMN-YYKNAME
+      *            患者検索の時、患者番号表示
+                   IF      SPA-MOTOPG          =   "Y05"
+                       MOVE    SPA-Y01-PTNUM       TO  SPA-GMN-PTNUM
+                       MOVE    SPA-Y01-PTID        TO  SPA-GMN-PTID
+                       MOVE    SPA-Y01-YYKNAME     TO  SPA-GMN-NAME
+                       MOVE    SPA-Y01-SEX         TO  SPA-GMN-SEX
+                       MOVE    SPA-Y01-BIRTHDAYH   TO  SPA-GMN-BIRTHDAYH
+                       MOVE    SPA-Y01-YYKNAME     TO  SPA-GMN-YYKNAME
+                   END-IF
                WHEN    OTHER
       *            氏名検索画面より選択後
                    IF     (SPA-MOTOPG(1:3)    =   "P97"  OR  "U01") AND
@@ -1094,9 +1103,12 @@
       *    未院一覧
                WHEN    "CLICKED"       ALSO    "B06"
                    PERFORM 460-MINICHI-SEC
-      *    患者一覧
+      *    週間一覧
                WHEN    "CLICKED"       ALSO    "B07"
                    PERFORM 470-KANJCHI-SEC
+      *    予約日検索
+               WHEN    "CLICKED"       ALSO    "B08"
+                   PERFORM 470-PTNUM-ICHI-SEC
       *    氏名検索
                WHEN    "CLICKED"       ALSO    "B09"
                    PERFORM 470-SIMEIKEN-SEC
@@ -3394,6 +3406,38 @@
            EXIT.
       *
       *****************************************************************
+      *   予約日検索処理へ
+      *****************************************************************
+       470-PTNUM-ICHI-SEC            SECTION.
+      *
+      *    予約日検索へ
+           INITIALIZE                      SPA-Y01KYOUTU
+           IF     (SPA-GMN-PTID        =   ZERO ) OR
+                  (SPA-GMN-NAME        =   SPACE )
+               CONTINUE
+           ELSE
+               MOVE    SPA-GMN-PTID        TO  SPA-Y01-PTID
+               MOVE    SPA-GMN-PTNUM       TO  SPA-Y01-PTNUM
+               MOVE    SPA-GMN-NAME        TO  SPA-Y01-YYKNAME
+               MOVE    SPA-GMN-SEX         TO  SPA-Y01-SEX
+               MOVE    SPA-GMN-BIRTHDAYH   TO  SPA-Y01-BIRTHDAYH
+           END-IF
+      *
+           MOVE    "Y01"               TO  SPA-MOTOPG
+           MOVE    "Y05"               TO  SPA-SAKIPG
+      *
+           MOVE    SPA-Y01KYOUTU       TO  SPA-WORK
+      *
+           MOVE   "CHANGE"             TO  MCP-PUTTYPE
+           MOVE   "Y05"                TO  MCP-WINDOW
+           PERFORM 900-PUT-WINDOW
+           MOVE    1                   TO  FLG-END
+      *
+          .
+       470-PTNUM-ICHI-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    氏名検索へ
       *****************************************************************
        470-SIMEIKEN-SEC             SECTION.
@@ -3802,6 +3846,11 @@
                WHEN    "0017"
                    MOVE    "予約氏名は全角で入力して下さい。"
                                                TO  SPA-ERRMSG
+               WHEN    "0020"
+                   MOVE    "患者番号が入力されていません。"
+                                               TO  SPA-ERRMSG
+                   MOVE    "患者検索へ遷移できません。"
+                                               TO  SPA-ERRMSG(31:)
                WHEN    "1000"
                    MOVE    "警告！予約件数がオーバーしてます"
                                                TO  SPA-ERRMSG
