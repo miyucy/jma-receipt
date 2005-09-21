@@ -1,7 +1,7 @@
 Y03	{
 	fixed1	{
 		SRYMD	{
-			value	varchar(9);
+			value	varchar(20);
 		};
 		HYODAI	{
 			value	varchar(20);

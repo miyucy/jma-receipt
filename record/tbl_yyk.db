@@ -128,3 +128,17 @@ path	key7 	{
 		;
 	};
 };
+
+path	key8 	{
+	DBSELECT	{
+		DECLARE tbl_yyk_key8_csr CURSOR FOR
+		SELECT *
+		FROM tbl_yyk
+			WHERE   HOSPID      =   :HOSPID
+			AND     PTID        =   :PTID
+			ORDER   BY        YYKYMD  DESC,
+                                          KEYYYKTIME DESC,
+                                          YYKTIME DESC
+		;
+	};
+};
