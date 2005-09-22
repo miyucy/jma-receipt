@@ -66,6 +66,7 @@
                            11  SPA-GMN-TBANGO      PIC 9(03).
                            11  SPA-GMN-TYYKYMD-G.
                                13  SPA-GMN-TYYKYMD     PIC X(09).
+                               13  SPA-GMN-TF1         PIC X(01).
                                13  SPA-GMN-TYOBI       PIC X(04).
                            11  SPA-GMN-TYYKTIME    PIC X(04).
                            11  SPA-GMN-TSRYKA      PIC X(20).
