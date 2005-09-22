@@ -104,6 +104,8 @@
       *  01.01.17    NACL-ÌçÏÆ    05/08/25  Ê¡Åç¡¢²¬»³ÆÃ¼ì·×»»½¤Àµ
       *  01.01.18    NACL-ÌçÏÆ    05/09/01  ¾ÊÄ£ÂÐ±þ
       *  01.01.19    NACL-ÌçÏÆ    05/09/15  Åçº¬¸©ÃÏÊý¸øÈñÂÐ±þ
+      *  01.01.20    NACL-ÌçÏÆ    05/09/21  Á´¹ñÅÚÌÚ·úÃÛ¡¢Á´¹ñÈÄ¶â¶È¡Ü
+      *                                     Àº¿À¡¢·ë³ËÂÐ±þ
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -145,6 +147,7 @@
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-PTINF               PIC 9(01).
            03  FLG-PTKOHINF            PIC 9(01).
+           03  FLG-PTHKNINF            PIC 9(01).
            03  FLG-NYUINACCT           PIC 9(01).
            03  FLG-SRYACCT             PIC 9(01).
            03  FLG-TENSU               PIC 9(01).
@@ -161,6 +164,7 @@
            03  FLG-TAIGAI              PIC X(01).
            03  FLG-HIKOTEI             PIC 9(01).
            03  FLG-TUKIHIKAKU          PIC 9(01).
+           03  FLG-SEISINJYO           PIC 9(01).
       *
        01  WRK-AREA.
            03  WK-PAYKBN               PIC X(02).
@@ -633,6 +637,10 @@
        01  PTKOHINF-REC.
            COPY    "CPPTKOHINF.INC".
       *
+      *    ´µ¼ÔÊÝ¸±¾ðÊó
+       01  PTHKNINF-REC.
+           COPY    "CPPTHKNINF.INC".
+      *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
       *****************************************************************
@@ -756,6 +764,8 @@
            MOVE    ZERO            TO  LNK-SYU-JYO-HKNFTNMONEY.
            MOVE    ZERO            TO  LNK-SYU-JYO-COMPFTN.
            MOVE    ZERO            TO  LNK-SYU-JYO-COMPFTN-ENTANI.
+      *
+           MOVE    ZERO            TO  FLG-SEISINJYO.
       *
       *    ÀÁµá¶â³ÛÃ¼¿ô¶èÊ¬¡¢¾ÃÈñÀÇÃ¼¿ô¶èÊ¬¤Î¼è¤ê¹þ¤ß
            INITIALIZE                         SYS-1001-REC.
@@ -2264,6 +2274,14 @@
                     MOVE    "1"        TO   COMB-KOH1-NYUJGNKBN
                END-IF
       *
+               IF    COMB-KOH1HKNNUM       =  "010"
+                   PERFORM  2101-PTHKNINF-KENSAKU-SEC
+                   IF    FLG-SEISINJYO  =   1
+                      MOVE   ZERO   TO    MAX-KIN-KOHI1-M
+                      MOVE   SPACE  TO    COMB-KOH1-NYUJGNKBN
+                   END-IF
+               END-IF
+      *
                IF  ( LNK-S02-KOUREI-NYUIN-KBN     =       "1"  )
                AND ( COMB-KOH1HKNNUM(1:1)        >=       "1"  )
                AND ( COMB-KOH1HKNNUM(1:1)        <=       "8"  )
@@ -2335,6 +2353,14 @@
                AND (COMB-KOH2HKNNUM           =  "010")
                     MOVE   40200       TO   MAX-KIN-KOHI2-M
                     MOVE    "1"        TO   COMB-KOH2-NYUJGNKBN
+               END-IF
+      *
+               IF    COMB-KOH2HKNNUM       =  "010"
+                   PERFORM  2101-PTHKNINF-KENSAKU-SEC
+                   IF    FLG-SEISINJYO  =   1
+                      MOVE   ZERO   TO    MAX-KIN-KOHI2-M
+                      MOVE   SPACE  TO    COMB-KOH2-NYUJGNKBN
+                   END-IF
                END-IF
       *
                IF  ( LNK-S02-KOUREI-NYUIN-KBN     =       "1"  )
@@ -2410,6 +2436,14 @@
                     MOVE    "1"        TO   COMB-KOH3-NYUJGNKBN
                END-IF
       *
+               IF    COMB-KOH3HKNNUM       =  "010"
+                   PERFORM  2101-PTHKNINF-KENSAKU-SEC
+                   IF    FLG-SEISINJYO  =   1
+                      MOVE   ZERO   TO    MAX-KIN-KOHI3-M
+                      MOVE   SPACE  TO    COMB-KOH3-NYUJGNKBN
+                   END-IF
+               END-IF
+      *
                IF  ( LNK-S02-KOUREI-NYUIN-KBN     =       "1"  )
                AND ( COMB-KOH3HKNNUM(1:1)        >=       "1"  )
                AND ( COMB-KOH3HKNNUM(1:1)        <=       "8"  )
@@ -2481,6 +2515,14 @@
                AND (COMB-KOH4HKNNUM           =  "010")
                     MOVE   40200       TO   MAX-KIN-KOHI4-M
                     MOVE    "1"        TO   COMB-KOH4-NYUJGNKBN
+               END-IF
+      *
+               IF    COMB-KOH4HKNNUM       =  "010"
+                   PERFORM  2101-PTHKNINF-KENSAKU-SEC
+                   IF    FLG-SEISINJYO  =   1
+                      MOVE   ZERO   TO    MAX-KIN-KOHI4-M
+                      MOVE   SPACE  TO    COMB-KOH4-NYUJGNKBN
+                   END-IF
                END-IF
       *
                IF  ( LNK-S02-KOUREI-NYUIN-KBN     =       "1"  )
@@ -2689,6 +2731,45 @@
            END-IF.
       *
        210-HOKEN-KAISU-EXT.
+           EXIT.
+      *
+      ***************************************************************
+      *        ´µ¼ÔÊÝ¸±¾ðÊó¸¡º÷
+      ***************************************************************
+       2101-PTHKNINF-KENSAKU-SEC           SECTION.
+      *
+           MOVE   ZERO               TO    FLG-SEISINJYO
+      *
+           INITIALIZE                      PTHKNINF-REC
+           MOVE   COMB-HOSPID        TO    PTHKN-HOSPID
+           MOVE   COMB-PTID          TO    PTHKN-PTID
+           MOVE   COMB-HKNID         TO    PTHKN-HKNID
+           MOVE   PTHKNINF-REC       TO    MCPDATA-REC
+           MOVE   "DBSELECT"         TO    MCP-FUNC
+           MOVE   "PTHKNINF-KEY"     TO    ORC-DBPATH
+           CALL   "ORCMCPSUB"        USING MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC            =     ZERO
+               MOVE   "PTHKNINF-KEY" TO    ORC-DBPATH
+               PERFORM  PTHKNINF-READ-SEC
+               IF      FLG-PTHKNINF   =     ZERO
+                  IF   PTHKN-HKNJANUM = "133033" OR "133280"
+                      MOVE    1      TO    FLG-SEISINJYO
+                  END-IF
+               END-IF
+           END-IF
+      *
+           MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
+           MOVE    "PTHKNINF-KEY"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+      *
+       2101-PTHKNINF-KENSAKU-EXT.
            EXIT.
       *
       ******************************************************************
@@ -6874,6 +6955,12 @@
       *
                    MOVE    HKN-HON-NYUKFTNRATE  TO   WK-KOH-FTNRATE
                    MOVE    "1"                  TO   HKN-RECEFTNDSPKBN
+           END-IF.
+      *
+           IF   COMB-KOHHKNNUM(KOH-IDX)  =  "010"
+              IF   FLG-SEISINJYO  =  1
+                    MOVE     ZERO     TO    WK-NYUKFTNRATE
+              END-IF
            END-IF.
       *
       *    ºë¶Ì¸©¤µ¤¤¤¿¤Þ»Ô
@@ -11561,5 +11648,27 @@
       *
            .
        PTKOHINF-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ´µ¼ÔÊÝ¸±¾ðÊóÆÉ¹þ
+      *****************************************************************
+       PTHKNINF-READ-SEC           SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTHKNINF-REC
+               MOVE    ZERO            TO  FLG-PTHKNINF
+           ELSE
+               INITIALIZE                  PTHKNINF-REC
+               MOVE    1               TO  FLG-PTHKNINF
+           END-IF
+      *
+           .
+       PTHKNINF-READ-EXT.
            EXIT.
       *
