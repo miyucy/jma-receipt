@@ -153,6 +153,8 @@
       *                                     診療所老人医療管理料
       *                                     老人性認知症疾患治療病棟入院料１
       *                                     老人性認知症疾患治療病棟入院料２
+      *  02.06.16    NACL-門脇    05/09/22  全国土木建築、全国板金業＋
+      *                                     精神、結核対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -7424,6 +7426,8 @@
                                                        OR "051" )
                OR ((WRK-PREFNUM      =   13           ) AND
                    (RECE62-KOHNUM(KOHFTN-IDX) =  "151" OR "451"))
+               OR ((RECE62-KOHNUM(KOHFTN-IDX) =  "010"         ) AND
+                   (RECE62-HKNJANUM  =  "133033" OR "133280"   ))
                      MOVE  "1"   TO
                              RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
                ELSE

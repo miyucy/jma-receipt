@@ -218,6 +218,8 @@
       *  02.06.09    NACL-藤原    05/08/05  記載外公費−負担者番号の追加
       *  02.06.10    NACL-門脇    05/08/22  リハビリ実施回数差し込み修正対応
       *  02.06.11    NACL-藤原    05/08/22  検体検査コメントの追加
+      *  02.06.12    NACL-門脇    05/09/22  全国土木建築、全国板金業＋
+      *                                     精神、結核対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -5155,6 +5157,8 @@
                                                        OR "051" )
                OR ((SYS-1001-PREFNUM =   13           ) AND
                    (RECE02-KOHNUM(KOHFTN-IDX) =  "151" OR "451"))
+               OR ((RECE02-KOHNUM(KOHFTN-IDX) =  "010" OR "021") AND
+                   (RECE02-HKNJANUM  =  "133033" OR "133280"   ))
                      MOVE  "1"  TO
                              RECE02-ZEROKISAIFLG(KOHFTN-IDX + 1)
                ELSE
