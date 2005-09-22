@@ -214,6 +214,11 @@
                    07  WORK-SORT-KEY          PIC X(10).
                    07  WORK-SORT-UKEID        PIC 9(05).
       *
+      *    スパ領域 ワーク
+           COPY    "COMMON-SPA"      REPLACING
+                                     //SPA-// BY //WRK-SPA-//.
+      *
+      *
       *****************************************************************
       *    ファイルレイアウト領域
       *****************************************************************
@@ -299,7 +304,7 @@
       *
            MOVE    SPA-COMMON      TO  SPA-AREA.
            MOVE    SPA-WORK        TO  SPA-U01KYOUTU
-           MOVE    SPA-FREE        TO  SPA-U01.
+           MOVE    SPA-FREE        TO  SPA-U01
       *
            MOVE    SPACE           TO  SPA-ERRCD
            MOVE    ZERO            TO  FLG-END
@@ -934,6 +939,12 @@
       *
       *    受付ファイルｓｏｒｔｋｅｙセット
            PERFORM 503-JYUSIN-RWT-SEC
+      *
+      *    予約からの時、内容の保存
+           IF      SPA-NAI-MOTOPG      =   "Y01"
+               MOVE    LNK-KYOUTU          TO  WRK-SPA-KYOUTU
+               MOVE    WRK-SPA-WORK        TO  SPA-WORK
+           END-IF
       *
            MOVE    SPA-NAI-MOTOPG      TO  SPA-SAKIPG
            MOVE    "U01"               TO  SPA-MOTOPG
