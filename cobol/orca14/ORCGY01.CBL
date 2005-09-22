@@ -31,6 +31,7 @@
       *  01.00.03    NACL-多々納  02/11/20  GO TO 先修正他
       *  01.00.04    NACL-多々納  03/03/05  排他制御処理追加
       *  01.00.05    NACL-多々納  03/12/01  一覧表を２００件へ
+      *  01.00.06    NACL-多々納  05/09/21  患者予約日検索追加他
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -246,10 +247,7 @@
       *
            03  FLG-HENFLG          PIC 9(01).
            03  FLG-TOUROKU         PIC 9(01).
-      *
-      *    カウント領域
-       01  CNT-AREA.
-           03  CNT-ERR             PIC 9(06).
+           03  FLG-HENKOU          PIC 9(01).
       *
       *    システム領域
        01  SYS-AREA.
@@ -338,6 +336,8 @@
       *    コラムリスト位置
            03  WRK-Y01-ROW             PIC S9(09).
            03  FLG-GMN-INIT            PIC  9(01).
+      *
+           03  WRK-GMN-CUR         PIC 9(02).
       *
       *  ＳＯＲＴ用ワーク
       *    受付患者一覧
@@ -466,7 +466,7 @@
        000-PROC-SEC                SECTION.
       *
            INITIALIZE                  FLG-AREA
-           INITIALIZE                  CNT-AREA
+           INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
@@ -504,11 +504,6 @@
       *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
-      *
-      *
-           INITIALIZE                  FLG-AREA
-           INITIALIZE                  CNT-AREA
-           INITIALIZE                  WRK-AREA
       *
       *    エラー画面より
            IF      SPA-MOTOPG          =   "YERR"
@@ -548,12 +543,6 @@
                MOVE    SPA-WORK            TO  SPA-Y01KYOUTU
            ELSE
                INITIALIZE                  SPA-Y01KYOUTU
-      ******** IF      SPA-MOTOPG         =   "I41"
-      *            MOVE    SPA-PTID            TO  SPA-Y01-PTID
-      *            MOVE    SPA-PTNUM           TO  SPA-Y01-PTNUM
-      *            MOVE    SPA-SEX             TO  SPA-Y01-SEX
-      *            MOVE    SPA-BIRTHDAY        TO  SPA-Y01-BIRTHDAY
-      *********END-IF
            END-IF
       *
            PERFORM 310-SPASET-SEC
@@ -579,9 +568,6 @@
       *            氏名検索画面より選択後
                    IF     (SPA-MOTOPG(1:3)    =   "P97"  OR  "U01") AND
                           (SPA-PTID       NOT =   ZERO   )
-      *****************CONTINUE
-      **************** MOVE    SPA-NAME       TO  SPA-GMN-YYKNAME
-      *************ELSE
                        MOVE    SPA-PTID       TO  SPA-GMN-PTID
                        MOVE    SPA-PTNUM      TO  SPA-GMN-PTNUM
                        MOVE    SPA-NAME       TO  SPA-GMN-NAME
@@ -589,14 +575,6 @@
                        MOVE    SPA-BIRTHDAYW  TO  SPA-GMN-BIRTHDAYH
                        MOVE    SPA-NAME       TO  SPA-GMN-YYKNAME
                    END-IF
-      *************IF      SPA-MOTOPG         =   "I41"
-      *                MOVE    SPA-PTID       TO  SPA-GMN-PTID
-      *                MOVE    SPA-PTNUM      TO  SPA-GMN-PTNUM
-      *                MOVE    SPA-NAME       TO  SPA-GMN-NAME
-      *                MOVE    SPA-SEX        TO  SPA-GMN-SEX
-      *                MOVE    SPA-BIRTHDAYW  TO  SPA-GMN-BIRTHDAYH
-      *                MOVE    SPA-NAME       TO  SPA-GMN-YYKNAME
-      ************ END-IF
            END-EVALUATE
       *
            MOVE    SPACE               TO  SPA-GMN-SELBAN
@@ -672,8 +650,13 @@
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
            PERFORM 990-DBCLOSE-SEC
       *
-           MOVE    SPA-GMN-SRYNAIYOLST (01)
+           IF      SPA-Y01-SRYNAIYOG   =   SPACE
+               MOVE    SPA-GMN-SRYNAIYOLST (01)
                                        TO  SPA-GMN-SRYNAIYO
+           ELSE
+               MOVE    SPA-Y01-SRYNAIYOG
+                                       TO  SPA-GMN-SRYNAIYO
+           END-IF
       *
       *    職員情報をＳＰＡにセット
            MOVE    SPACE               TO  SYS-1010-REC
@@ -735,10 +718,15 @@
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
            PERFORM 990-DBCLOSE-SEC
       *
-           MOVE    SPA-GMN-DRCDLST (01)
-                                       TO  SPA-GMN-DRNAME
-           MOVE    "1"                 TO  SPA-NAI-DRCD1
-           MOVE    SPA-GMN-DRCD        TO  SPA-NAI-DRCD2
+           IF      SPA-Y01-DRNAME      =   SPACE
+               MOVE    SPA-GMN-DRCDLST (01)
+                                           TO  SPA-GMN-DRNAME
+               MOVE    "1"                 TO  SPA-NAI-DRCD1
+               MOVE    SPA-GMN-DRCD        TO  SPA-NAI-DRCD2
+           ELSE
+               MOVE    SPA-Y01-DRNAME      TO  SPA-GMN-DRNAME
+               MOVE    SPA-Y01-DRCD        TO  SPA-NAI-DRCD
+           END-IF
       *
       *    診療科
            MOVE    SPACE               TO  SYS-1005-KEY
@@ -2819,6 +2807,31 @@
       *****************************************************************
        220-CLEAR-SEC             SECTION.
       *
+           MOVE    ZERO                TO  FLG-HENKOU
+           IF     (SPA-GMN-PTNUM       =   SPACE )  AND
+                  (SPA-GMN-PTID        =   ZERO  )  AND
+                  (SPA-GMN-YYKNAME     =   SPACE )
+               IF     (SPA-GMN-SRYNAIYOLST (01)(1:2)
+                                       NOT =   SPA-GMN-SRYNAIYOCD) OR
+                      (SPA-GMN-DRCDLST (01)(1:4)
+                                       NOT =   SPA-GMN-DRCD  )
+                   MOVE    1                   TO  FLG-HENKOU
+               END-IF
+               MOVE    1                   TO  SPA-GMN-CUR
+               INITIALIZE                      SPA-Y01KYOUTU
+           ELSE
+               MOVE    SPA-GMN-SRYNAIYO    TO  SPA-Y01-SRYNAIYOG
+               MOVE    SPA-GMN-DRNAME      TO  SPA-Y01-DRNAME
+               MOVE    SPA-NAI-DRCD        TO  SPA-Y01-DRCD
+      *        排他制御解除処理
+               PERFORM 990-LOCK-OUT-SEC
+      *
+               MOVE    3                   TO  SPA-GMN-CUR
+           END-IF
+           IF     (SPA-SYSYMD      NOT =   SPA-NAI-YYKYMD )
+               MOVE    1                   TO  FLG-HENKOU
+           END-IF
+      *
            MOVE    ZERO                TO  SPA-YYK-SYORI
            INITIALIZE                  SPA-GMN-YYKAREA
       *
@@ -2833,11 +2846,11 @@
            MOVE    SPACE               TO  SPA-GMN-SELBAN
            MOVE    ZERO                TO  SPA-NAI-SELBAN
       *
-           MOVE    3                   TO  SPA-GMN-CUR
-      *
-      *    排他制御解除処理
-           PERFORM 990-LOCK-OUT-SEC
-      *
+           MOVE    SPA-GMN-CUR         TO  WRK-GMN-CUR
+           IF      FLG-HENKOU          =   1
+               PERFORM 310-SPASET-SEC
+           END-IF
+           MOVE    WRK-GMN-CUR         TO  SPA-GMN-CUR
            .
        220-CLEAR-EXT.
            EXIT.
@@ -3410,8 +3423,12 @@
       *****************************************************************
        470-PTNUM-ICHI-SEC            SECTION.
       *
-      *    予約日検索へ
            INITIALIZE                      SPA-Y01KYOUTU
+           MOVE    SPA-GMN-SRYNAIYO    TO  SPA-Y01-SRYNAIYOG
+           MOVE    SPA-GMN-DRNAME      TO  SPA-Y01-DRNAME
+           MOVE    SPA-NAI-DRCD        TO  SPA-Y01-DRCD
+      *
+      *    予約日検索へ
            IF     (SPA-GMN-PTID        =   ZERO ) OR
                   (SPA-GMN-NAME        =   SPACE )
                CONTINUE
@@ -3444,6 +3461,10 @@
       *
       *    画面移行用のスパを編集する
            INITIALIZE                  SPA-KYOTUKEY
+           MOVE    SPA-GMN-SRYNAIYO    TO  SPA-Y01-SRYNAIYOG
+           MOVE    SPA-GMN-DRNAME      TO  SPA-Y01-DRNAME
+           MOVE    SPA-NAI-DRCD        TO  SPA-Y01-DRCD
+           MOVE    SPA-Y01KYOUTU       TO  SPA-WORK
       *
            MOVE    "Y01"               TO  SPA-MOTOPG
            MOVE    "P97"               TO  SPA-SAKIPG
@@ -3469,6 +3490,11 @@
       *
       *    画面移行用のスパを編集する
            INITIALIZE                  SPA-KYOTUKEY
+           INITIALIZE                  SPA-Y01KYOUTU
+           MOVE    SPA-GMN-SRYNAIYO    TO  SPA-Y01-SRYNAIYOG
+           MOVE    SPA-GMN-DRNAME      TO  SPA-Y01-DRNAME
+           MOVE    SPA-NAI-DRCD        TO  SPA-Y01-DRCD
+           MOVE    SPA-Y01KYOUTU       TO  SPA-WORK
       *
            MOVE    "Y01"               TO  SPA-MOTOPG
            MOVE    "U01"               TO  SPA-SAKIPG
