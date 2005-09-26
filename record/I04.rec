@@ -250,7 +250,7 @@ I04	{
                                 value   varchar(33);
                         };
                         count   int;
-                        item    varchar(33)[50];
+                        item    varchar(33)[99];
 
                 };
 		HKNTEKMONEY	{

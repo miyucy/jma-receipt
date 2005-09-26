@@ -729,6 +729,8 @@
                        11  SPA-NAI-I04-TAIINCD       PIC X(02).
       *                È¯¹ÔÆü
                        11  SPA-NAI-I04-HAKYMD        PIC X(08).
+      *                Æþ¶âÊýË¡
+                       11  SPA-NAI-I04-NYKNJYOTAI    PIC X(01).
       *                ÀÁµá¥Ç¡¼¥¿
                        11  SPA-NAI-I04-SEIKYU-AREA.
       *                    ÀÁµá¶â³Û
@@ -763,9 +765,11 @@
                        11  SPA-GMN-I04-CMB-NYKNHOHO.
                            13  SPA-GMN-I04-NYKNHOHO-CNT
                                                      PIC 9(5).
-                           13  SPA-GMN-I04-NYKNHOHO-ITM
-                                                     PIC X(33)
-                                                     OCCURS  50.
+                           13  SPA-GMN-I04-NYKNHOHO-OCC    OCCURS  99.
+                               15  SPA-GMN-I04-NYKNHOHO-ITM
+                                                           PIC X(33).
+                               15  SPA-GMN-I04-NYKNJYOTAI-ITM
+                                                           PIC X(01).
       *                    ÀÁµá½ñ·óÎÎ¼ý½ñ
                        11  SPA-GMN-I04-CMB-SKYPRTOUT.
                            13  SPA-GMN-I04-SKYPRTOUT-CNT

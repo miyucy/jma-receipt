@@ -573,6 +573,9 @@
       *    コンボボックス初期化
            PERFORM 3100-CMB-SYOKI-SEC
       *
+      *    患者マスタ検索
+           PERFORM 900-PTINF-KEY-SEL-SEC
+      *
       *    システム管理マスタ検索処理
            INITIALIZE                  SYSKANRI-REC
            MOVE    "5000"          TO  SYS-KANRICD
@@ -617,8 +620,19 @@
            END-IF
       *
       *    入金方法初期値
-           MOVE    SPA-GMN-I04-NYKNHOHO-ITM (1)
+           MOVE    PTINF-NYUKIN-HOHO   TO  WRK-CMB-CD
+           PERFORM 4103-CMB-NYKNHOHO-SRH-SEC
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    SPA-GMN-I04-NYKNHOHO-ITM (1)
                                    TO  SPA-GMN-I04-NYKNHOHO
+               MOVE    "2"         TO  SPA-NAI-I04-NYKNJYOTAI
+           ELSE
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-I04-NYKNHOHO
+               MOVE    WRK-CMB-ITM2    TO  SPA-NAI-I04-NYKNJYOTAI
+           END-IF
+      *
+           DISPLAY "PTINF-NYUKIN-HOHO = " PTINF-NYUKIN-HOHO
+           DISPLAY "SPA-NAI-I04-NYKNJYOTAI = " SPA-NAI-I04-NYKNJYOTAI
       *
       *    主治医氏名初期値
            MOVE    SPA-GMN-I01-DR-CD (1)
@@ -652,8 +666,13 @@
                                                    (IDX1)
       *        MOVE    WKSYU-SKYMONEY      TO  SPA-NAI-I04-NYUKIN
       *                                            (IDX1)
-               MOVE    ZERO                TO  SPA-NAI-I04-NYUKIN
+               IF    ( SPA-NAI-I04-NYKNJYOTAI  =   "1" )
+                   MOVE    WKSYU-SKYMONEY      TO  SPA-NAI-I04-NYUKIN
                                                    (IDX1)
+               ELSE
+                   MOVE    ZERO                TO  SPA-NAI-I04-NYUKIN
+                                                   (IDX1)
+               END-IF
                MOVE    SPA-NAI-I04-NYUKIN (IDX1)
                                            TO  WRK-Z92
                MOVE    WRK-Z92             TO  SPA-NAI-I04-NYUKIN-X
@@ -843,6 +862,7 @@
       *
            MOVE    ZERO                TO  IDX0
            PERFORM UNTIL ( FLG-SYSKANRI    =   1 )
+                    OR   ( IDX0           >=   99 )
       *
                COMPUTE IDX0    =   IDX0    +   1
       *
@@ -852,6 +872,12 @@
                MOVE    SYS-1041-NYKN-NAME
                                    TO  SPA-GMN-I04-NYKNHOHO-ITM (IDX0)
                                                                 (4:)
+               IF    ( SYS-1041-NYKN-JYOTAI-N  NOT =   SPACE )
+                   MOVE    SYS-1041-NYKN-JYOTAI-N
+                                   TO  SPA-GMN-I04-NYKNJYOTAI-ITM (IDX0)
+               ELSE
+                   MOVE    "2"     TO  SPA-GMN-I04-NYKNJYOTAI-ITM (IDX0)
+               END-IF
       *
                MOVE    "SYSKANRI-KEY2" TO  WRK-DBPATH
                PERFORM 900-TBL-READ-SEC
@@ -2212,6 +2238,10 @@
                GO  TO  4100-NYKNHOHO-CHK-EXT
            ELSE
                MOVE    WRK-CMB-ITM TO  SPA-GMN-I04-NYKNHOHO
+               IF    ( WRK-CMB-ITM2    NOT = SPA-NAI-I04-NYKNJYOTAI )
+                   MOVE    1       TO  SPA-GMN-I04-CUR
+               END-IF
+               MOVE   WRK-CMB-ITM2 TO  SPA-NAI-I04-NYKNJYOTAI
            END-IF
       *
            .
@@ -2322,6 +2352,7 @@
        4103-CMB-NYKNHOHO-SRH-SEC   SECTION.
       *
            INITIALIZE              WRK-CMB-ITM
+                                   WRK-CMB-ITM2
                                    WRK-CMB-IDX
       *
            PERFORM VARYING IDX-CMB FROM    1   BY  1
@@ -2336,6 +2367,8 @@
                                    >=  IDX-CMB    )
                MOVE    SPA-GMN-I04-NYKNHOHO-ITM (IDX-CMB)
                                    TO  WRK-CMB-ITM
+               MOVE    SPA-GMN-I04-NYKNJYOTAI-ITM (IDX-CMB)
+                                   TO  WRK-CMB-ITM2
                MOVE    IDX-CMB     TO  WRK-CMB-IDX
            END-IF
       *
