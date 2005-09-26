@@ -3502,8 +3502,12 @@
       *    患者病名情報チェック初期処理
            PERFORM 200111-PTBYOMEI-CHK-INIT-SEC
       *
-           IF    ( TSRYKA-MAX          >   ZERO )
-               PERFORM 2001111-PTBYOMEI-CHK-SEC
+           IF    ( FLG-CHKEND (5) =   ZERO )
+             OR  ( FLG-CHKEND (6) =   ZERO )
+             OR  ( FLG-CHKEND (7) =   ZERO )
+               IF    ( TSRYKA-MAX          >   ZERO )
+                   PERFORM 2001111-PTBYOMEI-CHK-SEC
+               END-IF
            END-IF
       *
       *    薬剤と病名チェック処理
@@ -3658,8 +3662,6 @@
                IF    ( FLG-CHKEND (5) =   1 )
                  AND ( FLG-CHKEND (6) =   1 )
                  AND ( FLG-CHKEND (7) =   1 )
-                 AND ( FLG-CHKEND (8) =   1 )
-                 AND ( FLG-CHKEND (9) =   1 )
                    MOVE    1           TO  FLG-CHK-END
                END-IF
       *
