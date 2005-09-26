@@ -2095,7 +2095,7 @@
                ADD     1                   TO  RECE07-PAGE
                IF    ( CNT-KENSU           =   1 )
                AND   ( TBL-RECE-RENNUM (IDXY)
-                                           =   1 )
+                                           <   3 )
                    ADD     1                   TO  RECE07-KENSU
                END-IF
            END-IF
