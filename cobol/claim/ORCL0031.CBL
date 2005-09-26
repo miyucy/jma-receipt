@@ -44,6 +44,7 @@
       *  01.00.13    NACL-藤原    05/05/25  疑いフラグ、主病名フラグによ
       *                                     る病名の更新
       *  01.00.14    NACL-藤原    05/08/25  更新時の疑いフラグの設定
+      *  01.00.15    NACL-多々納  05/09/26  加算のみの剤を有効とする
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1400,7 +1401,18 @@
                                                    "33" )
                        MOVE    1                   TO  FLG-ZAIEND
                    END-IF
-               END-IF
+      *            前の剤と診療区分が同じ時
+                   IF     (TBL-MAX            >   ZERO )  AND
+                          (WRK-SRYKBN         =   TBL-WKSRY-SRYKBN
+                                                          (TBL-MAX)) AND
+                         ((WRK-SRYSYUKBN      =   TBL-WKSRY-SRYSYUKBN
+                                                          (TBL-MAX))  OR
+                          (WRK-SRYSYUKBN      =   SPACE            ))
+                       CONTINUE
+                   ELSE
+                       MOVE    1                   TO  FLG-ZAIEND
+                   END-IF
+              END-IF
            END-IF
            .
        2002-ZAICHK-EXT.
