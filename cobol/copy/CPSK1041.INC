@@ -46,8 +46,11 @@
                05  SYS-1041-NYKN-BUNRUI PIC  X(02).
       *入金状態
                05  SYS-1041-NYKN-JYOTAI PIC  X(01).
+      *入金状態
+               05  SYS-1041-NYKN-JYOTAI-N
+                                        PIC  X(01).
       *予備
-               05                       PIC  X(457).
+               05                       PIC  X(456).
       *端末ＩＤ
            03  SYS-1041-TERMID          PIC  X(16).
       *オペーレータＩＤ

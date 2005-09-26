@@ -52,6 +52,7 @@
       *  01.00.21    NACL-太田    04/09/30  請求額端数区分（減免無）追加
       *  01.00.22    NACL-太田    04/12/01  更正・育成限度額日割計算区分追加
       *  01.00.23    NACL-多々納  05/09/13  入金状態の追加
+      *  01.00.24    NACL-多々納  05/09/26  入金状態の追加（入院）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -330,6 +331,12 @@
                            11  SPA-GMN-NYKN-JYOTAILST  PIC X(22)
                                                        OCCURS  10.
                        09  SPA-GMN-NYKN-JYOTAI-MAX     PIC 9(03).
+                       09  SPA-GMN-NYKN-JYOTAI-N-G.
+                           11  SPA-GMN-NYKN-JYOTAI-N
+                                                  PIC X(01).
+                           11                     PIC X(01).
+                           11  SPA-GMN-NYKN-JYOTAI-NMEI
+                                                  PIC X(20).
       *
                05  SPA-NAIB-AREA.
                    07  SPA-NAI-STYUKYMD           PIC 9(08).
@@ -988,6 +995,24 @@
                                                TO  SPA-GMN-NYKN-JYOTAI-G
                        END-IF
       *
+                       MOVE    SYS-1041-NYKN-JYOTAI-N
+                                               TO  SPA-GMN-NYKN-JYOTAI-N
+                       PERFORM VARYING IDX1    FROM    1   BY  1
+                           UNTIL ( IDX1    >   SPA-GMN-NYKN-JYOTAI-MAX )
+                           IF    ( SPA-GMN-NYKN-JYOTAI-N
+                                       =   SPA-GMN-NYKN-JYOTAILST(IDX1)
+                                                                 (1:1))
+                               MOVE    SPA-GMN-NYKN-JYOTAILST (IDX1)
+                                           TO  SPA-GMN-NYKN-JYOTAI-N-G
+                               MOVE    SPA-GMN-NYKN-JYOTAI-MAX
+                                               TO  IDX1
+                           END-IF
+                       END-PERFORM
+                       IF      SPA-GMN-NYKN-JYOTAI-N   =   SPACE
+                           MOVE    SPA-GMN-NYKN-JYOTAILST (02)
+                                           TO  SPA-GMN-NYKN-JYOTAI-N-G
+                       END-IF
+      *
                END-EVALUATE
       *
            ELSE
@@ -1000,6 +1025,10 @@
                        MOVE    SPA-W01-KBNCD   TO  SPA-GMN-NYKN-KBNCD
                        MOVE    SPA-GMN-NYKN-BUNRUILST (1)
                                                TO  SPA-GMN-NYKN-BUNRUI-G
+                       MOVE    SPA-GMN-NYKN-JYOTAILST (01)
+                                               TO  SPA-GMN-NYKN-JYOTAI-G
+                       MOVE    SPA-GMN-NYKN-JYOTAILST (02)
+                                           TO  SPA-GMN-NYKN-JYOTAI-N-G
                END-EVALUATE
            END-IF 
       *  
@@ -1478,6 +1507,7 @@
            MOVE    W02-NYKN-TANNAME    TO  SPA-GMN-NYKN-TANNAME
            MOVE    W02-NYKN-BUNRUI     TO  SPA-GMN-NYKN-BUNRUI-G
            MOVE    W02-NYKN-JYOTAI     TO  SPA-GMN-NYKN-JYOTAI-G
+           MOVE    W02-NYKN-JYOTAI-N   TO  SPA-GMN-NYKN-JYOTAI-N-G
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -1751,6 +1781,11 @@
       *    入金状態チェック
            IF      SPA-ERRCD           =   SPACE
                PERFORM 4122-NYKN-JYOTAI-CHK-SEC
+           END-IF
+      *
+      *    入金状態チェック
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4122-NYKN-JYOTAI-N-CHK-SEC
            END-IF
       *
            .
@@ -2435,6 +2470,33 @@
        4122-NYKN-JYOTAI-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    入金状態チェック処理（入院）
+      *****************************************************************
+       4122-NYKN-JYOTAI-N-CHK-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >       SPA-GMN-NYKN-JYOTAI-MAX )
+                    OR   ( FLG-OK  =       1 )
+               IF     (SPA-GMN-NYKN-JYOTAI-N
+                                   =   SPA-GMN-NYKN-JYOTAILST (IDX1)
+                                                              (1:1))
+                   MOVE    SPA-GMN-NYKN-JYOTAILST (IDX1)
+                                           TO  SPA-GMN-NYKN-JYOTAI-N-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( FLG-OK          =   ZERO )
+               MOVE    SPA-GMN-NYKN-JYOTAILST (2)
+                                           TO  SPA-GMN-NYKN-JYOTAI-N-G
+           END-IF
+      *
+           .
+       4122-NYKN-JYOTAI-N-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    タグ編集処理
       *****************************************************************
        440-TAG-CHANGE-SEC            SECTION.
@@ -2784,6 +2846,8 @@
                                                TO  SYS-1041-NYKN-BUNRUI
                    MOVE    SPA-GMN-NYKN-JYOTAI
                                                TO  SYS-1041-NYKN-JYOTAI
+                   MOVE    SPA-GMN-NYKN-JYOTAI-N
+                                              TO  SYS-1041-NYKN-JYOTAI-N
                    MOVE    SYS-1041-REC        TO  SYSKANRI-REC
            END-EVALUATE 
       *     
@@ -2936,6 +3000,13 @@
                IF      SPA-ERRCD           =   SPACE
                    MOVE    93              TO  SPA-GMN-CUR
                    MOVE    "0022"          TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-NYKN-JYOTAI-N-G =   SPACE )
+               IF      SPA-ERRCD           =   SPACE
+                   MOVE    94              TO  SPA-GMN-CUR
+                   MOVE    "0023"          TO  SPA-ERRCD
                END-IF
            END-IF
       *
@@ -3172,6 +3243,14 @@
                                        TO  W02-NYKN-JYOTAI-ITEM(IDX1)
            END-PERFORM
       *
+           MOVE    SPA-GMN-NYKN-JYOTAI-N-G TO  W02-NYKN-JYOTAI-N
+           MOVE    SPA-GMN-NYKN-JYOTAI-MAX TO  W02-NYKN-JYOTAI-N-COUNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   SPA-GMN-NYKN-JYOTAI-MAX )
+               MOVE    SPA-GMN-NYKN-JYOTAILST (IDX1)
+                                       TO  W02-NYKN-JYOTAI-N-ITEM(IDX1)
+           END-PERFORM
+      *
       *    画面カーソルセット処理    
            PERFORM 5001-MAPCUR-SEC
       *
@@ -3301,6 +3380,9 @@
                                                TO  SPA-ERRMSG
                WHEN    "0022"
                    MOVE    "入金状態入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0023"
+                   MOVE    "入金状態（入院）入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0020"
                    MOVE    "請求金端数設定（減免無）入力エラー"
@@ -3484,6 +3566,8 @@
                     MOVE  "NYKN_BUNRUI"    TO   MCP-WIDGET
                 WHEN    93
                     MOVE  "NYKN_JYOTAI"    TO   MCP-WIDGET
+                WHEN    94
+                    MOVE  "NYKN_JYOTAI_N"  TO   MCP-WIDGET
             END-EVALUATE
       *
             EVALUATE    SPA-GMN-CUR
@@ -3614,6 +3698,8 @@
               WHEN    "NYKN_BUNRUI"
                   MOVE    93               TO  SPA-GMN-CUR
               WHEN    "NYKN_JYOTAI"
+                  MOVE    94               TO  SPA-GMN-CUR
+              WHEN    "NYKN_JYOTAI_N"
                   MOVE    90               TO  SPA-GMN-CUR
           END-EVALUATE
       *

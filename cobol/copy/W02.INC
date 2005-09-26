@@ -190,6 +190,12 @@
                     06  W02-NYKN-JYOTAI-COUNT   PIC S9(9)   BINARY.
                     06  W02-NYKN-JYOTAI-ITEM
                             PIC X(22)   OCCURS  10 TIMES.
+                  05  W02-NYKN-JYOTAI-N-COMB.
+                    06  W02-NYKN-JYOTAI-N.
+                      07  W02-VALUE   PIC X(22).
+                    06  W02-NYKN-JYOTAI-N-COUNT   PIC S9(9)   BINARY.
+                    06  W02-NYKN-JYOTAI-N-ITEM
+                            PIC X(22)   OCCURS  10 TIMES.
                 04  W02-N09.
                   05  W02-N09-STATE   PIC S9(9)   BINARY.
 

@@ -263,6 +263,13 @@ W02	{
 					count	int;
 					item	varchar(22)[10];
 				};
+				NYKN_JYOTAI_N_COMB	{
+					NYKN_JYOTAI_N	{
+						value	varchar(22);
+					};
+					count	int;
+					item	varchar(22)[10];
+				};
 			};
 	            N09	{
 	            	state	int;
