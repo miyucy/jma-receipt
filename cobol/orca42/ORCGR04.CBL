@@ -712,7 +712,7 @@
                                                SPA-GMN-PAGEH
                    ADD     RECE07-KENSU    TO  SPA-GMN-TKENSU(IDX)
                    IF      RECE07-RECESYUBETU (4:1)
-                                       NOT =   "3"
+                                       NOT =   "3" AND "2"
                        ADD     RECE07-KENSU    TO  SPA-GMN-KENSUH
                    END-IF    
                END-IF
