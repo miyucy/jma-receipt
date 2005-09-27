@@ -475,6 +475,8 @@
                                        TO  SDTCHK01-O-SRYYMD (IDX0)
                MOVE    TBYOMEI-BYOMEI (IDX0)
                                        TO  SDTCHK01-O-BYOMEI (IDX0)
+               MOVE    TBYOMEI-NYUGAIKBN (IDX0)
+                                       TO  SDTCHK01-O-NYUGAIKBN (IDX0)
       *
            END-PERFORM
       *

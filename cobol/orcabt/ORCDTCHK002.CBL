@@ -5467,7 +5467,9 @@
                     OR   ( FLG-CHKEND (15) =   1 )
       *
                MOVE    SPACE               TO  WRK-NYUGAI-MES
-               IF    ( ORCBSD01-NYUGAIKBN
+               IF  ( SDTCHK01-O-NYUGAIKBN (IDX0)
+                                   NOT =   SPACE )
+                AND( ORCBSD01-NYUGAIKBN
                                    NOT =   SDTCHK01-O-NYUGAIKBN (IDX0))
                    IF    ( SDTCHK01-O-NYUGAIKBN (IDX0)
                                        =   "1" )
@@ -6600,6 +6602,8 @@
                                        PTSRY-AREA
                                        PTZAI-AREA
       *
+           PERFORM 200111-TSRYKA-AREA-INIT-SEC
+      *
            .
        200121-TAIHI-AREA-INIT-EXT.
            EXIT.
@@ -6626,6 +6630,7 @@
                        MOVE    PTACCT-OCC (IDX-ACCT)
                                        TO  DCACCT-REC
                        IF ( DCACCT-ACCTRENNUM  =   1 )
+      *
                            PERFORM 2001211-SRYINF-TAIHI-SEC
                        END-IF
                    END-IF
@@ -6664,6 +6669,10 @@
       *****************************************************************
        2001211-SRYINF-TAIHI-SEC        SECTION.
       *
+           MOVE    ZERO        TO  IDX-TSRYKA
+           MOVE    ZERO        TO  FLG-TSRYKA-OVER
+           PERFORM 200111-TSRYKA-SRYKA-HEN-SEC
+      *
            INITIALIZE                  FLG-STATUS-G
            MOVE    DCACCT-STATUS   TO  WRK-STATUS
       *
@@ -6683,6 +6692,12 @@
                                        TO  DCSRY-REC
       *
                    IF    ( DCSRY-SRYCD (1:1)  =    "6" )
+      *
+                       IF    ( FLG-TSRYKA-OVER =   ZERO )
+                        AND  ( IDX-TSRYKA      >   ZERO )
+      *                    診療科退避ワーク診療行為コード編集処理
+                           PERFORM 200111-TSRYKA-SRYCD-HEN-SEC
+                       END-IF
       *
       *                診療行為コード退避ワーク編集処理
                        PERFORM 200111-TSRYCD-HEN-SEC
