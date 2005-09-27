@@ -3500,14 +3500,14 @@
                MOVE    SPA-GMN-COMMENT-1   TO  WRK-MAE-INPUT
                MOVE    100                 TO  WRK-LEN
                PERFORM 890-HALF-ZEN-SEC
-               MOVE    WRK-ATO-INPUT       TO  SPA-GMN-COMMENT-1
+               MOVE    WRK-MAE-INPUT       TO  SPA-GMN-COMMENT-1
            END-IF
            IF     (SPA-GMN-COMMENT-2   NOT =   SPACE ) AND
                   (SPA-ERRCD               =   SPACE )
                MOVE    SPA-GMN-COMMENT-2   TO  WRK-MAE-INPUT
                MOVE    100                 TO  WRK-LEN
                PERFORM 890-HALF-ZEN-SEC
-               MOVE    WRK-ATO-INPUT       TO  SPA-GMN-COMMENT-2
+               MOVE    WRK-MAE-INPUT       TO  SPA-GMN-COMMENT-2
            END-IF
            .
        4101-COMMENT-CHK-EXT.
@@ -6059,6 +6059,7 @@
            MOVE    WRK-LEN             TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  WRK-MAE-INPUT
            IF     (KANACHK-RC      NOT =   ZERO  )  OR
                   (KANACHK-SYUBETU     =   1     )
                MOVE    1                   TO  FLG-ERR
@@ -6071,7 +6072,6 @@
            .
        890-HALF-ZEN-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿¡¡£Ò£Å£Á£Ä
