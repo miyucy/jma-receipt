@@ -3337,7 +3337,7 @@
                        IF      IDW2                >   ZERO
                            PERFORM 4503-SRYACCTPLUS-INS-SEC
                        END-IF
-                       MOVE    5              TO  IDX-GEN2
+                       MOVE    10             TO  IDX-GEN2
                    END-IF
                END-PERFORM
            END-PERFORM

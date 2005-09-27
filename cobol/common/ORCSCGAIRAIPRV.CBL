@@ -253,8 +253,9 @@
       *!!
       *    ¿ÇÎÅ¹Ô°ÙÉí²Ã¾ðÊóÀßÄê¡Ê²ÊËè¡Ë
            03  WRK-ACTP-AREA.
-               05  WRK-ACTP-ZAINUM-G       OCCURS   5.
+               05  WRK-ACTP-ZAINUM-G       OCCURS   10.
                    07  WRK-ACTP-SRYKA      PIC X(02).
+                   07  WRK-ACTP-HKNCOMBI   PIC X(04).
                    07  WRK-ACTP-MAX        PIC 9(04).
                    07  WRK-ACTP-ZAINUM     PIC 9(08)   OCCURS   50.
                05  IDX-GEN                 PIC 9(04).
@@ -288,9 +289,10 @@
       *
       *    ¿ÇÎÅ²ñ·×Éí²Ã¾ðÊó¥Þ¥¹¥¿¡Ý¡ÊÆâÉþÄþ¸º¡Ë
        01  TBL-SRYACCTPLUS-AREA.
-           02  TBL-SRYACCTPLUS-REC   OCCURS   5.
+           02  TBL-SRYACCTPLUS-REC   OCCURS   10.
            COPY    "CPSRYACCTPLUS.INC"  REPLACING
                                      //ACCTP-// BY //TBL-ACCTP-//.
+           03  TBL-ACCTP-HKNCOMBI      PIC X(04).
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -2984,23 +2986,29 @@
       *    ÆâÉþÄþ¸º½èÍý
            IF      FLG-GEN-ARI         =   1
                PERFORM VARYING IDX-GEN2    FROM    1   BY  1
-                       UNTIL   IDX-GEN2    >   5
+                       UNTIL   IDX-GEN2    >   10
                    IF      WRK-ACTP-SRYKA(IDX-GEN2)    =   SPACE
                        MOVE    LNK-WKSRY-SRYKA(01)
                                            TO  WRK-ACTP-SRYKA(IDX-GEN2)
+                       MOVE    LNK-WKSRY-HKNCOMBI(01)
+                                           TO  WRK-ACTP-HKNCOMBI
+                                                            (IDX-GEN2)
                    END-IF
-                   IF      WRK-ACTP-SRYKA(IDX-GEN2)
-                                           =   LNK-WKSRY-SRYKA(01)
+                   IF     (WRK-ACTP-SRYKA(IDX-GEN2)
+                                           =   LNK-WKSRY-SRYKA(01))
+                     AND  (WRK-ACTP-HKNCOMBI(IDX-GEN2)
+                                           =   LNK-WKSRY-HKNCOMBI(01))
                        ADD     1           TO  WRK-ACTP-MAX (IDX-GEN2)
                        MOVE    WRK-ACTP-MAX (IDX-GEN2) 
                                            TO  IDX-GEN
                        IF      IDX-GEN     >   50
                            MOVE    50                  TO  IDX-GEN
                        END-IF
-                   END-IF
+      ************ END-IF
                    MOVE    WRK-ZAINUM      TO  WRK-ACTP-ZAINUM
                                                      (IDX-GEN2 IDX-GEN)
-                   MOVE    5               TO  IDX-GEN2
+                   MOVE    10              TO  IDX-GEN2
+                   END-IF
                END-PERFORM
            END-IF
       *!!
@@ -3151,12 +3159,15 @@
                               (FLG-ERR         =   1 )
                    MOVE    ZERO                TO  FLG-ERR2
                    PERFORM VARYING IDX-GEN5    FROM    1   BY  1
-                           UNTIL  (IDX-GEN5    >   5   )  OR
+                           UNTIL  (IDX-GEN5    >   10  )  OR
                                   (WRK-ACTP-SRYKA(IDX-GEN5)
                                                =   SPACE  )  OR
                                   (FLG-ERR2    =   1      )
-                       IF      LNK-WKSRY-SRYKA(01)
-                                           =   WRK-ACTP-SRYKA(IDX-GEN5)
+                       IF     (LNK-WKSRY-SRYKA(01)
+                                           =   WRK-ACTP-SRYKA(IDX-GEN5))
+                         AND  (LNK-WKSRY-HKNCOMBI (01)
+                                           =   WRK-ACTP-HKNCOMBI
+                                                            (IDX-GEN5))
                            PERFORM VARYING IDX-GEN6    FROM    1   BY  1
                                    UNTIL  (IDX-GEN6    >   50  )  OR
                                           (WRK-ACTP-ZAINUM
@@ -3630,11 +3641,13 @@
       *    ÆâÉþ£·¼ïÎàÄþ¸ºÂÐ¾ÝºÞÈÖ¹æ
            IF      LNK-WKSRYP-TEI-NKBN (1) =   2
                PERFORM VARYING     IDW     FROM    1   BY  1
-                       UNTIL       IDW     >   5
+                       UNTIL       IDW     >   10
                    IF      TBL-ACCTP-HOSPID (IDW)  =   SPACE
                        MOVE    SRYACCTPLUS-REC
                                            TO  TBL-SRYACCTPLUS-REC(IDW)
-                       MOVE    5           TO  IDW
+                       MOVE    ACCT-HKNCOMBI
+                                           TO  TBL-ACCTP-HKNCOMBI (IDW)
+                       MOVE    10          TO  IDW
                    END-IF
                END-PERFORM
            ELSE
@@ -3656,11 +3669,14 @@
                INITIALIZE                  ACCTP-GRP-ZAINUM-G
                MOVE    ZERO                TO  IDW2
                PERFORM VARYING     IDX-GEN2    FROM    1   BY  1
-                       UNTIL      (IDX-GEN2    >   5   )   OR
+                       UNTIL      (IDX-GEN2    >   10  )   OR
                                   (WRK-ACTP-SRYKA(IDX-GEN2)
                                               =   SPACE)
-                   IF      ACCTP-SRYKA        =    WRK-ACTP-SRYKA
-                                                          (IDX-GEN2)
+                   IF     (ACCTP-SRYKA        =    WRK-ACTP-SRYKA
+                                                          (IDX-GEN2))
+                     AND  (TBL-ACCTP-HKNCOMBI(IDW)
+                                              =    WRK-ACTP-HKNCOMBI
+                                                          (IDX-GEN2))
                        PERFORM VARYING IDX-GEN FROM    1   BY  1
                                UNTIL   (IDX-GEN    >   50  )   OR
                                        (WRK-ACTP-ZAINUM
@@ -3679,7 +3695,7 @@
                        IF      IDW2                >   ZERO
                            PERFORM 4503-SRYACCTPLUS-INS-SEC
                        END-IF
-                       MOVE    5              TO  IDX-GEN2
+                       MOVE    10             TO  IDX-GEN2
                    END-IF
                END-PERFORM
            END-PERFORM
