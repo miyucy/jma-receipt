@@ -144,6 +144,8 @@
            03  IDX-CHOKI           PIC 9(04).
            03  IDT                 PIC 9(04).
       *
+           03  IDX-GEN             PIC 9(04).
+      *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
            03  WRK-SRYCD           PIC X(09).
@@ -195,6 +197,17 @@
                05  WRK-ZAITEN-G        PIC 9(08)V9(4).
       *
                05  WRK-CHK-SRYSYUKBN   PIC X(03).
+      *    ÊÝ¸±Ëè¤ÎÄþ¸º·×»»
+           03  WRK-HKNKEI-G.
+               05  WRK-CNT-HKN         PIC 9(03).
+               05  WRK-SANTEN-G        PIC 9(08).
+               05  WRK-SANTEN-GEN      PIC 9(08).
+               05  WRK-SANTENSU        PIC 9(08).
+               05  WRK-SANTEN-KEI      PIC 9(08).
+               05  WRK-HKNKEI-TBL      OCCURS   5.
+                   07  WRK-HKNKEI-COMBI    PIC X(04).
+                   07  WRK-HKNKEI-KEIKEI   PIC 9(08).
+      *
       *    Ç¯ÎðÈ½ÄêÍÑ
            03  WRK-KGNAGE          PIC 9(03).
            03  WRK-JGNAGE          PIC 9(03).
@@ -963,6 +976,8 @@
            INITIALIZE                  TBL-NYUINDAY-AREA
            MOVE    SPACE               TO  WRK-HENSYU-MEISYO
       *
+           INITIALIZE                  WRK-HKNKEI-G
+      *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   200  )  OR
                               (WRK-GMN-INPUTCD(IDX) =   SPACE)
@@ -1023,6 +1038,12 @@
                        IF      WRK-NAI-HKNCOMBI    =   SPACE
                            MOVE    WRK-COM-HKNCOMBI (IDX)
                                                    TO  WRK-NAI-HKNCOMBI
+                       END-IF
+                       IF      WRK-CNT-HKN         =   ZERO
+                           MOVE    1               TO  WRK-CNT-HKN
+                           MOVE    WRK-COM-HKNCOMBI (IDX)
+                                                   TO  WRK-HKNKEI-COMBI
+                                                      (WRK-CNT-HKN)
                        END-IF
                    WHEN    "212"
                    WHEN    "292"
@@ -1294,6 +1315,20 @@
       *****************************************************************
        3000-SYOHOU-CHK-SEC              SECTION.
       *
+      *    Ê£¿ôÊÝ¸±È½Äê¡ÊÆâÉþ¤Î¤ß¡Ë
+           IF      WRK-CHK-SRYSYUKBN   =   "211"
+                                       OR  "291"
+               IF      WRK-HKNKEI-COMBI (WRK-CNT-HKN)
+                                       =   WRK-COM-HKNCOMBI (IDX)
+                   CONTINUE
+               ELSE
+                   ADD     1               TO  WRK-CNT-HKN
+                   MOVE    WRK-COM-HKNCOMBI (IDX)
+                                           TO  WRK-HKNKEI-COMBI
+                                                      (WRK-CNT-HKN)
+               END-IF
+           END-IF
+      *
            EVALUATE    WRK-CHK-SRYSYUKBN
                WHEN    "211"
                WHEN    "221"
@@ -1386,6 +1421,8 @@
                IF      WRK-CHK-SRYSYUKBN   =   "211"
                                            OR  "291"
                    ADD     WRK-COM-KEI (IDX)   TO  WRK-KEIKEI
+                   ADD     WRK-COM-KEI (IDX)   TO  WRK-HKNKEI-KEIKEI
+                                                       (WRK-CNT-HKN)
                ELSE
                    ADD     WRK-COM-KEI (IDX)   TO  WRK-KEIKEI2
                END-IF
@@ -1826,20 +1863,20 @@
                END-IF
            END-IF
       *
-      *    ÌôºÞÎÁÄþ¸º
-           IF      WRK-ZAICNT          >=  7
-               MOVE    "630010002"         TO  WRK-SRYCD
-               MOVE    SPACE               TO  WRK-SRYCD2
-               PERFORM 3002-KASAN-SYORI-SEC
-               IF      FLG-ERR             =   ZERO
-                   MOVE    "210"           TO  LNK-ORCSC-SRYSYUKBN
-                                                         (02 IDXS)
-                   MOVE    "21"            TO  LNK-ORCSC-SRYKBN
-                                                         (02 IDXS)
-                   MOVE    WRK-NAI-HKNCOMBI    TO  LNK-ORCSC-HKNCOMBI
-                                                         (02 IDXS)
-               END-IF
-           END-IF
+      ***  ÌôºÞÎÁÄþ¸º
+      **** IF      WRK-ZAICNT          >=  7
+      *        MOVE    "630010002"         TO  WRK-SRYCD
+      *        MOVE    SPACE               TO  WRK-SRYCD2
+      *        PERFORM 3002-KASAN-SYORI-SEC
+      *        IF      FLG-ERR             =   ZERO
+      *            MOVE    "210"           TO  LNK-ORCSC-SRYSYUKBN
+      *                                                  (02 IDXS)
+      *            MOVE    "21"            TO  LNK-ORCSC-SRYKBN
+      *                                                  (02 IDXS)
+      *            MOVE    WRK-NAI-HKNCOMBI    TO  LNK-ORCSC-HKNCOMBI
+      *                                                  (02 IDXS)
+      *        END-IF
+      *****END-IF
       *
       *    ±¡³°½èÊý¤¬Í­¤ì¤Ð¼«Æ°²Ã»»¤ò¤·¤Ê¤¤
            IF     (FLG-NAIYAK2         =   1    )  OR
@@ -2387,6 +2424,43 @@
                ADD     1               TO  WRK-GMN-MAX
            END-PERFORM
       *
+      *    ÌôºÞÎÁÄþ¸º
+           MOVE    ZERO                TO  WRK-SANTEN-G
+           COMPUTE WRK-SANTEN-KEI      =   WRK-KEIKEI
+                                       -   WRK-SANTEN
+      *
+           PERFORM VARYING IDX-GEN     FROM    1   BY  1
+                   UNTIL   IDX-GEN     >   WRK-CNT-HKN
+               IF      IDX-GEN         =   WRK-CNT-HKN
+                   COMPUTE WRK-SANTENSU    =   WRK-SANTEN-KEI
+                                           -   WRK-SANTEN-G
+               ELSE
+                   COMPUTE WRK-SANTEN-9    =   WRK-HKNKEI-KEIKEI
+                                                       (IDX-GEN)
+                                           *   90
+                                           /   100.00
+                                           +   0.5
+                   MOVE    WRK-SANTEN-9    TO  WRK-SANTEN-GEN
+                   COMPUTE WRK-SANTENSU    =   WRK-HKNKEI-KEIKEI
+                                                       (IDX-GEN)
+                                           -   WRK-SANTEN-GEN
+                   ADD     WRK-SANTENSU    TO  WRK-SANTEN-G
+               END-IF
+      *
+               MOVE    "630010002"         TO  WRK-SRYCD
+               MOVE    SPACE               TO  WRK-SRYCD2
+               PERFORM 3002-KASAN-SYORI-SEC
+               IF      FLG-ERR             =   ZERO
+                   MOVE    "210"           TO  LNK-ORCSC-SRYSYUKBN
+                                                         (02 IDXS)
+                   MOVE    "21"            TO  LNK-ORCSC-SRYKBN
+                                                         (02 IDXS)
+                   MOVE    WRK-HKNKEI-COMBI (IDX-GEN)
+                                           TO  LNK-ORCSC-HKNCOMBI
+                                                         (02 IDXS)
+               END-IF
+           END-PERFORM
+      *
            .
        3001-GENHEN-EXT.
            EXIT.
@@ -2917,9 +2991,11 @@
                MOVE    TNS-TEN         TO  LNK-ORCSC-TENSU
                                                    (02 IDXS)
                IF      WRK-SRYCD       =   "630010002"
-                   COMPUTE LNK-ORCSC-TENSU (02 IDXS)
-                                           =   WRK-KEIKEI
-                                           -   WRK-SANTEN
+      *********    COMPUTE LNK-ORCSC-TENSU (02 IDXS)
+      *                                    =   WRK-KEIKEI
+      *********                            -   WRK-SANTEN
+                   MOVE    WRK-SANTENSU    TO  LNK-ORCSC-TENSU
+                                                   (02 IDXS)
                END-IF
                MOVE    WRK-SRYKA       TO  LNK-ORCSC-SRYKA
                                                          (02 IDXS)
