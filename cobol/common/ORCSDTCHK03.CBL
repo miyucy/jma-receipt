@@ -411,24 +411,7 @@
       *****************************************************************
        2001-ERRINF-SEC                 SECTION.
       *
-           MOVE    ZERO            TO  TBYOMEI-IDX1
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1            >   TBYOMEI-MAX )
-                    OR   ( TBYOMEI-IDX1    >   ZERO    )
-      *
-               IF    ( TBYOMEI-BYOMEI (IDX1)   =   QDTCHK-BYOMEI )
-                AND  ( TBYOMEI-NYUGAIKBN
-                                      (IDX1)   =   QDTCHK-NYUGAIKBN )
-                AND  ( TBYOMEI-SRYKA  (IDX1)   =   QDTCHK-SRYKA )
-                   MOVE    IDX1    TO  TBYOMEI-IDX1
-               END-IF
-      *
-           END-PERFORM
-      *
-           IF    ( TBYOMEI-IDX1        =   ZERO )
-               IF    ( TBYOMEI-MAX    >=   CONST-TBYOMEI-MAX )
-                   GO  TO  2001-ERRINF-EXT
-               END-IF
+           IF    ( TBYOMEI-MAX     <   CONST-TBYOMEI-MAX )
       *
                COMPUTE TBYOMEI-MAX
                    =   TBYOMEI-MAX     +   1
@@ -436,19 +419,11 @@
                MOVE    QDTCHK-NYUGAIKBN
                                        TO  TBYOMEI-NYUGAIKBN
                                                           (TBYOMEI-MAX)
-               MOVE    QDTCHK-BYOMEI   TO  TBYOMEI-BYOMEI (TBYOMEI-MAX)
+               MOVE    QDTCHK-PTBYOMEI TO  TBYOMEI-BYOMEI (TBYOMEI-MAX)
                MOVE    QDTCHK-SRYKA    TO  TBYOMEI-SRYKA  (TBYOMEI-MAX)
-               MOVE    "00000000"      TO  TBYOMEI-SRYYMD (TBYOMEI-MAX)
+               MOVE    QDTCHK-SRYYMD   TO  TBYOMEI-SRYYMD (TBYOMEI-MAX)
+               MOVE    1               TO  TBYOMEI-ERRFLG (TBYOMEI-MAX)
       *
-               MOVE    TBYOMEI-MAX     TO  TBYOMEI-IDX1
-      *
-           END-IF
-      *
-           MOVE    1               TO  TBYOMEI-ERRFLG (TBYOMEI-IDX1)
-      *
-           IF    ( QDTCHK-SRYYMD   >   TBYOMEI-SRYYMD  (TBYOMEI-IDX1))
-               MOVE    QDTCHK-SRYYMD
-                                   TO  TBYOMEI-SRYYMD  (TBYOMEI-IDX1)
            END-IF
       *
            .
