@@ -1856,7 +1856,7 @@
       *
       *    患者名セット
            INITIALIZE                  ORCSKANACHKAREA
-           MOVE    2                   TO  KANACHK-SYORI
+           MOVE    "2"                 TO  KANACHK-SYORI
            MOVE    TOKEI2-NAME         TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
