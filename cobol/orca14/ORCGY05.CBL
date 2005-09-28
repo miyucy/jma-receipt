@@ -72,8 +72,8 @@
                            11  SPA-GMN-TSRYKA      PIC X(20).
                            11  SPA-GMN-TSINRYO     PIC X(20).
                            11  SPA-GMN-TDRNAME     PIC X(50).
-                           11  SPA-GMN-TYYKKBN     PIC X(10).
-                           11  SPA-GMN-TRENRAKU    PIC X(10).
+                           11  SPA-GMN-TYYKKBN     PIC X(20).
+                           11  SPA-GMN-TRENRAKU    PIC X(20).
                            11  SPA-GMN-TRAIIN      PIC X(04).
                05  SPA-NAIB-AREA.
                    07  SPA-NAI-PTID                PIC 9(10).
