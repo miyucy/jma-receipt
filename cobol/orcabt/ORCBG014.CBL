@@ -16,7 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION          DIVISION.
-       PROGRAM-ID.             ORCBM032.
+       PROGRAM-ID.             ORCBG014.
       *****************************************************************
       *  システム名        :   ＯＲＣＡ
       *  サブシステム名    :   月次帳票
@@ -443,7 +443,7 @@
            INITIALIZE                      JOBKANRI-REC
            MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
-           MOVE    "ORCBM032"          TO  JOB-PGID
+           MOVE    "ORCBG014"          TO  JOB-PGID
            MOVE    "保険請求確認リスト"
                                        TO  JOB-SHELLMSG
            CALL    "ORCSJOB"               USING
@@ -2210,7 +2210,7 @@
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
       *
-           DISPLAY "*** ORCBM032 END ***"
+           DISPLAY "*** ORCBG014 END ***"
       *     
       *    ステップ管理終了処理
            MOVE    "STE"               TO  SJOBKANRI-MODE
