@@ -20,8 +20,8 @@
                     06  Y05-SRYKA   PIC X(20).
                     06  Y05-SINRYO  PIC X(18).
                     06  Y05-DRNAME  PIC X(50).
-                    06  Y05-YYKKBN  PIC X(10).
-                    06  Y05-RENRAKU PIC X(10).
+                    06  Y05-YYKKBN  PIC X(20).
+                    06  Y05-RENRAKU PIC X(20).
                     06  Y05-RAIIN   PIC X(4).
                   05  Y05-SELECT
                           PIC X       OCCURS  100 TIMES.
