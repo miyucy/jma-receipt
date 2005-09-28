@@ -33,6 +33,7 @@
       * 01.00.04     NACL-多々納  02/10/25  入院対応
       * 01.00.05     NACL-多々納  04/03/04  用法複数対応
       * 01.00.06     NACL-多々納  04/10/14  複数科保険対応
+      * 01.00.07     NACL-多々納  05/09/28  ドクター複数科対応
       *****************************************************************
       *
       *
@@ -122,6 +123,9 @@
       *
            03  WRK-DENPNUM         PIC 9(07).
            03  WRK-ORC-DBPATH      PIC X(64).
+      *
+           03  WRK-DRCD            PIC X(05).
+           03  WRK-HZN-DRCD        PIC X(05).
       *
       *
       *****************************************************************
@@ -280,10 +284,17 @@
       *    IF      WRK-YAKJYO-PG       =   SPACE
       *        MOVE    "ORCHC30"           TO  WRK-YAKJYO-PG
       *****END-IF
+      *    ドクター変更
+           MOVE    SPA-DRCD            TO  WRK-HZN-DRCD
+           IF      WRK-DRCD        NOT =   SPACE
+               MOVE    WRK-DRCD            TO  SPA-DRCD
+           END-IF
       *
            CALL    WRK-YAKJYO-PG           USING
                                            SPA-AREA
                                            ORCHC30AREA
+      *
+           MOVE    WRK-HZN-DRCD        TO  SPA-DRCD
       *
            .
        300-HC30-PRINT-EXT.
@@ -558,6 +569,11 @@
                    END-IF
       *
                    IF      FLG-OK              =   1
+      *                最初のドクター
+                       IF      WRK-DRCD        =   SPACE
+                           MOVE    JYURRK-DRCD     TO  WRK-DRCD
+                       END-IF
+      *
                        PERFORM VARYING     IDXA    FROM    1   BY  1
                                UNTIL      (IDXA    >   5   )  OR
                                           (SRY-SRYCD (IDXA)   =   SPACE)
@@ -784,6 +800,11 @@
                        END-IF
       *
                        IF      FLG-OK              =   1
+      *                    最初のドクター
+                           IF      WRK-DRCD        =   SPACE
+                               MOVE    WKSRY-DRCD      TO  WRK-DRCD
+                           END-IF
+      *
       *                    パラメタ編集
                            PERFORM 2003-HC30TBL-SET-SEC
                        END-IF
