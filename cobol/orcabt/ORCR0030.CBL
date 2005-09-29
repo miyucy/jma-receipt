@@ -5425,7 +5425,6 @@
                                            NOT =   SPACE
                            PERFORM VARYING IDXX    FROM    1   BY  1
                                    UNTIL   IDXX    >       4
-                                   OR      RECE02-KOHNUM (IDXX)
                                IF      WRK-RECE02-KOHNUMHC (IDX IDY)   =
                                                    RECE02-KOHNUM (IDXX)
                                    MOVE    WRK-RECE02-KOHNUMHCINF
