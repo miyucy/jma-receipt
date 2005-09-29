@@ -357,9 +357,9 @@
            MOVE "/var/tmp/.orca_ps/"   TO  WRK-PSFILE-FOLDER
            MOVE    WRK-CONS-PRTKANRI-TBL-KEY
                                        TO  WRK-PSFILE-TBL-KEY
-           MOVE    1                   TO  WRK-PSFILE-RENNUM
+           MOVE    "1"                 TO  WRK-PSFILE-RENNUM
            MOVE    LINK-PTID           TO  WRK-PSFILE-GROUP
-           MOVE    1                   TO  WRK-PSFILE-SRENNUM
+           MOVE    "1"                 TO  WRK-PSFILE-SRENNUM
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   MAX-PAGE-CNT
                MOVE  IDX               TO  WRK-PSFILE-PAGE
