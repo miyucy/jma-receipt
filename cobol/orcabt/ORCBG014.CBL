@@ -255,8 +255,12 @@
       *
       *    ø«Œ≈«Ø∑Ó ‘Ω∏Õ—
            03  WRK-HENSRYYM-G.
-               05  WRK-HENSRYYM        PIC 9(06).
-               05  WRK-HENDENPYM       PIC 9(06).
+               05  WRK-HENSRYYM.
+                   07  WRK-HENSRY-YY   PIC 9(04).
+                   07  WRK-HENSRY-MM   PIC 9(02).
+               05  WRK-HENDENPYM.
+                   07  WRK-HENDENP-YY  PIC 9(04).
+                   07  WRK-HENDENP-MM  PIC 9(02).
                05  WRK-HENSYY          PIC S9(04).
                05  WRK-HENSMM          PIC S9(02).
       *
@@ -2371,12 +2375,16 @@
                                        WRK-SRYYMFLG
            MOVE    RECE10-SRYYM    TO  WRK-HENSRYYM
            MOVE    WRK-PARA-DENPPRTYM  TO  WRK-HENDENPYM
-           COMPUTE WRK-HENSYY      =   WRK-HENDENPYM(1:4)
-                                   -   WRK-HENSRYYM(1:4)
-           COMPUTE WRK-HENSMM      =   WRK-HENDENPYM(5:2)
-                                   -   WRK-HENSRYYM(5:2)
-           COMPUTE WRK-SRYYMFLG    =   WRK-HENSYY * 12
-                                   +   WRK-HENSMM
+           COMPUTE WRK-HENSYY      =   WRK-HENDENP-YY
+                                   -   WRK-HENSRY-YY
+           COMPUTE WRK-HENSMM      =   WRK-HENDENP-MM
+                                   -   WRK-HENSRY-MM
+           IF      WRK-HENSYY      <=  0
+               MOVE    WRK-HENSMM  TO  WRK-SRYYMFLG
+           ELSE
+               COMPUTE WRK-SRYYMFLG    =   WRK-HENSYY * 12
+                                       +   WRK-HENSMM
+           END-IF
       *    ∫ﬂ¡Ìø«•¡•ß•√•Ø
            IF          RECE10-ZAITAKU      =   "1"
                IF      WRK-PARA-ZAIKBN     =   "1"
