@@ -163,7 +163,7 @@
                        09  SPA-GMN-NYUKINHOUMEI    PIC X(26).
                    07  SPA-GMN-NYUKINHOU-LSTG.
                        09  SPA-GMN-NYUKINHOU-LIST  PIC X(30)
-                                                   OCCURS  10.
+                                                   OCCURS  99.
                        09  SPA-NYUKINHOU-MAX           PIC 9(04).
       *
       *            Ê£¿ô²Ê½èÍý
@@ -215,7 +215,7 @@
                    07  SPA-NAI-NYUKIN-JYOTAI     PIC X(01).
                    07  SPA-NAI-NYUKINHOU-LSTG.
                        09  SPA-NAI-NYUKIN-JYOTAIL  PIC X(01)
-                                                   OCCURS  10.
+                                                   OCCURS  99.
       *
       *    £Ã£Ì£Á£É£Í²èÌÌ
            03  SPA-K03X-AREA.
