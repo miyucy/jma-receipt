@@ -6960,6 +6960,7 @@
            IF   COMB-KOHHKNNUM(KOH-IDX)  =  "010"
               IF   FLG-SEISINJYO  =  1
                     MOVE     ZERO     TO    WK-NYUKFTNRATE
+                    MOVE     "3"      TO    WK-NYUSKJRYYKBN
               END-IF
            END-IF.
       *
