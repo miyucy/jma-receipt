@@ -93,6 +93,7 @@
       *  01.02.11    NACL-門脇    05/07/15  自賠責従来様式対応
       *  01.02.12    NACL-門脇    05/08/22  リハビリ実施回数差し込み修正対応
       *  01.02.13    NACL-藤原    05/08/22  検体検査コメントの追加
+      *  01.02.14    NACL-門脇    05/08/29  ０９５９３のコメント対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1673,6 +1674,12 @@
                                                CONS-ROUSAI16 OR
                                                CONS-ROUSAI17    ) AND
                           ( SRY-SRYCD(IDX2)(1:1)   =   "8"      ))
+                      OR (( ACCT-SRYKBN            =  "80"      ) AND
+                          ( SRY-SRYCD(1)(1:5)      =  "09593"   ) AND
+                          ( SRY-SRYCD(IDX2)(1:1)   =   "8"      ))
+                      OR (( ACCT-SRYKBN            =  "80"      ) AND
+                          ( SRY-SRYCD(1)(1:5)      =  "09593"   ) AND
+                          ( SRY-SRYCD(IDX2)(1:3)   =   "008"    ))
       *
                          ADD    1      TO    WRK-MEISAI-CNT             
                          MOVE  "2"     TO    RECE45-SIKFLG(IDX4)
