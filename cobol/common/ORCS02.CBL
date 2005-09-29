@@ -2274,7 +2274,7 @@
                     MOVE    "1"        TO   COMB-KOH1-NYUJGNKBN
                END-IF
       *
-               IF    COMB-KOH1HKNNUM       =  "010"
+               IF    COMB-KOH1HKNNUM       =  "010" OR "021"
                    PERFORM  2101-PTHKNINF-KENSAKU-SEC
                    IF    FLG-SEISINJYO  =   1
                       MOVE   ZERO   TO    MAX-KIN-KOHI1-M
@@ -2355,7 +2355,7 @@
                     MOVE    "1"        TO   COMB-KOH2-NYUJGNKBN
                END-IF
       *
-               IF    COMB-KOH2HKNNUM       =  "010"
+               IF    COMB-KOH2HKNNUM       =  "010" OR "021"
                    PERFORM  2101-PTHKNINF-KENSAKU-SEC
                    IF    FLG-SEISINJYO  =   1
                       MOVE   ZERO   TO    MAX-KIN-KOHI2-M
@@ -2436,7 +2436,7 @@
                     MOVE    "1"        TO   COMB-KOH3-NYUJGNKBN
                END-IF
       *
-               IF    COMB-KOH3HKNNUM       =  "010"
+               IF    COMB-KOH3HKNNUM       =  "010" OR "021"
                    PERFORM  2101-PTHKNINF-KENSAKU-SEC
                    IF    FLG-SEISINJYO  =   1
                       MOVE   ZERO   TO    MAX-KIN-KOHI3-M
@@ -2517,7 +2517,7 @@
                     MOVE    "1"        TO   COMB-KOH4-NYUJGNKBN
                END-IF
       *
-               IF    COMB-KOH4HKNNUM       =  "010"
+               IF    COMB-KOH4HKNNUM       =  "010" OR "021"
                    PERFORM  2101-PTHKNINF-KENSAKU-SEC
                    IF    FLG-SEISINJYO  =   1
                       MOVE   ZERO   TO    MAX-KIN-KOHI4-M
@@ -6957,7 +6957,7 @@
                    MOVE    "1"                  TO   HKN-RECEFTNDSPKBN
            END-IF.
       *
-           IF   COMB-KOHHKNNUM(KOH-IDX)  =  "010"
+           IF   COMB-KOHHKNNUM(KOH-IDX)  =  "010" OR "021"
               IF   FLG-SEISINJYO  =  1
                     MOVE     ZERO     TO    WK-NYUKFTNRATE
                     MOVE     "3"      TO    WK-NYUSKJRYYKBN
