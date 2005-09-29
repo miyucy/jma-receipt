@@ -1582,15 +1582,18 @@
                    MOVE    "¡ö°åÊÝÃ±ÆÈ¡Ê£·£°°Ê¾å£¸³ä¡Ë"
                                                        TO  WRK-PRT-LINE
                WHEN    "1" ALSO    "1" ALSO    "3" ALSO    "001"
-                   MOVE    "¡ö°åÊÝËÜ¿Í¤È¸øÈñ¤ÎÊ»ÍÑ"    TO  WRK-PRT-LINE
+                   MOVE    "¡ö°åÊÝ¡ÊËÜ¿Í¡Ë¤È¸øÈñ¤ÎÊ»ÍÑ"
+                                                       TO  WRK-PRT-LINE
                WHEN    "1" ALSO    "1" ALSO    "3" ALSO    ANY
                    MOVE    "¡ö°åÊÝÃ±ÆÈ¡ÊËÜ¿Í¡Ë"        TO  WRK-PRT-LINE
                WHEN    "1" ALSO    "1" ALSO    "4" ALSO    "001"
-                   MOVE    "¡ö°åÊÝ²ÈÂ²¤È¸øÈñ¤ÎÊ»ÍÑ"    TO  WRK-PRT-LINE
+                   MOVE    "¡ö°åÊÝ¡Ê²ÈÂ²¡Ë¤È¸øÈñ¤ÎÊ»ÍÑ"
+                                                       TO  WRK-PRT-LINE
                WHEN    "1" ALSO    "1" ALSO    "4" ALSO    ANY
                    MOVE    "¡ö°åÊÝÃ±ÆÈ¡Ê²ÈÂ²¡Ë"        TO  WRK-PRT-LINE
                WHEN    "1" ALSO    "1" ALSO    "5" ALSO    "001"
-                   MOVE    "¡ö°åÊÝ¡Ê£³ºÐ¡Ë¤È¸øÈñ¤ÎÊ»ÍÑ"TO  WRK-PRT-LINE
+                   MOVE    "¡ö°åÊÝ¡Ê£³ºÐ¡Ë¤È¸øÈñ¤ÎÊ»ÍÑ"
+                                                       TO  WRK-PRT-LINE
                WHEN    "1" ALSO    "1" ALSO    "5" ALSO    ANY
                    MOVE    "¡ö°åÊÝÃ±ÆÈ¡Ê£³ºÐ¡Ë"        TO  WRK-PRT-LINE
                WHEN    "2" ALSO    "1" ALSO    "1" ALSO    ANY
