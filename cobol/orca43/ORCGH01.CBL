@@ -46,8 +46,9 @@
       *                                     科コードの入力の修正
       *  01.02.04    NACL-藤原    03/07/05  患者氏名での検索を追加
       *  01.02.05    NACL-藤原    04/01/26  排他制御処理追加
-      *  ver.2.6.0
-      *  01.03.01    NACL-藤原    05/04/11  本人家族区分の追加
+      *
+      *  02.06.01    NACL-藤原    05/04/11  本人家族区分の追加
+      *  02.06.02    NACL-藤原    05/09/29  補助区分からの編集の修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1057,19 +1058,23 @@
                                    INTO    SPA-H01GMN-HKIGO
            END-STRING
       *
-           EVALUATE    RECE10-HOJOKBN-KEY
-               WHEN    "1"
-               WHEN    "A"
-               WHEN    "D"
-                   MOVE    "職務上"    TO  SPA-H01GMN-HHOJOKBN
-               WHEN    "2"
-               WHEN    "B"
-               WHEN    "E"
-                   MOVE    "下船３月"  TO  SPA-H01GMN-HHOJOKBN
-               WHEN    "3"
-               WHEN    "C"
-               WHEN    "F"
-                   MOVE    "通勤災害"  TO  SPA-H01GMN-HHOJOKBN
+           EVALUATE    RECE10-HKNNUM
+               WHEN    "002"
+               WHEN    "031"  THRU  "034"
+                   EVALUATE    RECE10-HOJOKBN-KEY
+                       WHEN    "1"
+                       WHEN    "A"
+                       WHEN    "D"
+                           MOVE    "職務上"    TO  SPA-H01GMN-HHOJOKBN
+                       WHEN    "2"
+                       WHEN    "B"
+                       WHEN    "E"
+                           MOVE    "下船３月"  TO  SPA-H01GMN-HHOJOKBN
+                       WHEN    "3"
+                       WHEN    "C"
+                       WHEN    "F"
+                           MOVE    "通勤災害"  TO  SPA-H01GMN-HHOJOKBN
+                   END-EVALUATE
            END-EVALUATE
       *
            MOVE    RECE10-SKYYM        TO  SPA-H01NAI-SKYYM
