@@ -337,6 +337,20 @@
                            11                     PIC X(01).
                            11  SPA-GMN-NYKN-JYOTAI-NMEI
                                                   PIC X(20).
+                       09  SPA-GMN-NYKN-JYOTAI-N-LST-G.
+                           11  SPA-GMN-NYKN-JYOTAI-N-LST   PIC X(22)
+                                                           OCCURS  10.
+                       09  SPA-GMN-NYKN-JYOTAI-N-MAX       PIC 9(03).
+                       09  SPA-GMN-NYKN-JYOTAI-T-G.
+                           11  SPA-GMN-NYKN-JYOTAI-T
+                                                  PIC X(01).
+                           11                     PIC X(01).
+                           11  SPA-GMN-NYKN-JYOTAI-TMEI
+                                                  PIC X(20).
+                       09  SPA-GMN-NYKN-JYOTAI-T-LST-G.
+                           11  SPA-GMN-NYKN-JYOTAI-T-LST   PIC X(22)
+                                                           OCCURS  10.
+                       09  SPA-GMN-NYKN-JYOTAI-T-MAX       PIC 9(03).
       *
                05  SPA-NAIB-AREA.
                    07  SPA-NAI-STYUKYMD           PIC 9(08).
@@ -998,19 +1012,39 @@
                        MOVE    SYS-1041-NYKN-JYOTAI-N
                                                TO  SPA-GMN-NYKN-JYOTAI-N
                        PERFORM VARYING IDX1    FROM    1   BY  1
-                           UNTIL ( IDX1    >   SPA-GMN-NYKN-JYOTAI-MAX )
+                           UNTIL ( IDX1
+                                       >   SPA-GMN-NYKN-JYOTAI-N-MAX )
                            IF    ( SPA-GMN-NYKN-JYOTAI-N
-                                       =   SPA-GMN-NYKN-JYOTAILST(IDX1)
-                                                                 (1:1))
-                               MOVE    SPA-GMN-NYKN-JYOTAILST (IDX1)
+                                       =   SPA-GMN-NYKN-JYOTAI-N-LST
+                                                          (IDX1)(1:1))
+                               MOVE    SPA-GMN-NYKN-JYOTAI-N-LST (IDX1)
                                            TO  SPA-GMN-NYKN-JYOTAI-N-G
-                               MOVE    SPA-GMN-NYKN-JYOTAI-MAX
+                               MOVE    SPA-GMN-NYKN-JYOTAI-N-MAX
                                                TO  IDX1
                            END-IF
                        END-PERFORM
                        IF      SPA-GMN-NYKN-JYOTAI-N   =   SPACE
-                           MOVE    SPA-GMN-NYKN-JYOTAILST (02)
+                           MOVE    SPA-GMN-NYKN-JYOTAI-N-LST (02)
                                            TO  SPA-GMN-NYKN-JYOTAI-N-G
+                       END-IF
+      *
+                       MOVE    SYS-1041-NYKN-JYOTAI-T
+                                               TO  SPA-GMN-NYKN-JYOTAI-T
+                       PERFORM VARYING IDX1    FROM    1   BY  1
+                           UNTIL ( IDX1
+                                       >   SPA-GMN-NYKN-JYOTAI-T-MAX )
+                           IF    ( SPA-GMN-NYKN-JYOTAI-T
+                                       =   SPA-GMN-NYKN-JYOTAI-T-LST
+                                                          (IDX1)(1:1))
+                               MOVE    SPA-GMN-NYKN-JYOTAI-T-LST (IDX1)
+                                           TO  SPA-GMN-NYKN-JYOTAI-T-G
+                               MOVE    SPA-GMN-NYKN-JYOTAI-T-MAX
+                                               TO  IDX1
+                           END-IF
+                       END-PERFORM
+                       IF      SPA-GMN-NYKN-JYOTAI-T   =   SPACE
+                           MOVE    SPA-GMN-NYKN-JYOTAI-T-LST (03)
+                                           TO  SPA-GMN-NYKN-JYOTAI-T-G
                        END-IF
       *
                END-EVALUATE
@@ -1027,8 +1061,10 @@
                                                TO  SPA-GMN-NYKN-BUNRUI-G
                        MOVE    SPA-GMN-NYKN-JYOTAILST (01)
                                                TO  SPA-GMN-NYKN-JYOTAI-G
-                       MOVE    SPA-GMN-NYKN-JYOTAILST (02)
+                       MOVE    SPA-GMN-NYKN-JYOTAI-N-LST (02)
                                            TO  SPA-GMN-NYKN-JYOTAI-N-G
+                       MOVE    SPA-GMN-NYKN-JYOTAI-T-LST (03)
+                                           TO  SPA-GMN-NYKN-JYOTAI-T-G
                END-EVALUATE
            END-IF 
       *  
@@ -1383,6 +1419,20 @@
       *
            MOVE    2                   TO  SPA-GMN-NYKN-JYOTAI-MAX
       *
+           INITIALIZE                  SPA-GMN-NYKN-JYOTAI-N-LST-G
+           MOVE    "1 入金済"          TO  SPA-GMN-NYKN-JYOTAI-N-LST (1)
+           MOVE    "2 未入金"          TO  SPA-GMN-NYKN-JYOTAI-N-LST (2)
+      *
+           MOVE    2                   TO  SPA-GMN-NYKN-JYOTAI-N-MAX
+      *
+           INITIALIZE                  SPA-GMN-NYKN-JYOTAI-T-LST-G
+           MOVE    "1 入金済"          TO  SPA-GMN-NYKN-JYOTAI-T-LST (1)
+           MOVE    "2 未入金"          TO  SPA-GMN-NYKN-JYOTAI-T-LST (2)
+           MOVE    "3 定期請求情報の設定"
+                                       TO  SPA-GMN-NYKN-JYOTAI-T-LST (3)
+      *
+           MOVE    3                   TO  SPA-GMN-NYKN-JYOTAI-T-MAX
+      *
            .
        3101-NYKN-JYOTAI-SET-EXT.
            EXIT.
@@ -1508,6 +1558,7 @@
            MOVE    W02-NYKN-BUNRUI     TO  SPA-GMN-NYKN-BUNRUI-G
            MOVE    W02-NYKN-JYOTAI     TO  SPA-GMN-NYKN-JYOTAI-G
            MOVE    W02-NYKN-JYOTAI-N   TO  SPA-GMN-NYKN-JYOTAI-N-G
+           MOVE    W02-NYKN-JYOTAI-T   TO  SPA-GMN-NYKN-JYOTAI-T-G
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -1783,9 +1834,14 @@
                PERFORM 4122-NYKN-JYOTAI-CHK-SEC
            END-IF
       *
-      *    入金状態チェック
+      *    入金状態チェック（入院：退院時）
            IF      SPA-ERRCD           =   SPACE
                PERFORM 4122-NYKN-JYOTAI-N-CHK-SEC
+           END-IF
+      *
+      *    入金状態チェック（入院：定期請求）
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4122-NYKN-JYOTAI-T-CHK-SEC
            END-IF
       *
            .
@@ -2470,18 +2526,18 @@
        4122-NYKN-JYOTAI-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    入金状態チェック処理（入院）
+      *    入金状態チェック処理（入院：退院時）
       *****************************************************************
        4122-NYKN-JYOTAI-N-CHK-SEC      SECTION.
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >       SPA-GMN-NYKN-JYOTAI-MAX )
+                   UNTIL ( IDX1    >       SPA-GMN-NYKN-JYOTAI-N-MAX )
                     OR   ( FLG-OK  =       1 )
                IF     (SPA-GMN-NYKN-JYOTAI-N
-                                   =   SPA-GMN-NYKN-JYOTAILST (IDX1)
-                                                              (1:1))
-                   MOVE    SPA-GMN-NYKN-JYOTAILST (IDX1)
+                                   =   SPA-GMN-NYKN-JYOTAI-N-LST (IDX1)
+                                                                 (1:1))
+                   MOVE    SPA-GMN-NYKN-JYOTAI-N-LST (IDX1)
                                            TO  SPA-GMN-NYKN-JYOTAI-N-G
                    MOVE    1               TO  FLG-OK
                END-IF
@@ -2489,12 +2545,39 @@
            END-PERFORM
       *
            IF    ( FLG-OK          =   ZERO )
-               MOVE    SPA-GMN-NYKN-JYOTAILST (2)
+               MOVE    SPA-GMN-NYKN-JYOTAI-N-LST (2)
                                            TO  SPA-GMN-NYKN-JYOTAI-N-G
            END-IF
       *
            .
        4122-NYKN-JYOTAI-N-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    入金状態チェック処理（入院：定期請求）
+      *****************************************************************
+       4122-NYKN-JYOTAI-T-CHK-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >       SPA-GMN-NYKN-JYOTAI-T-MAX )
+                    OR   ( FLG-OK  =       1 )
+               IF     (SPA-GMN-NYKN-JYOTAI-T
+                                   =   SPA-GMN-NYKN-JYOTAI-T-LST (IDX1)
+                                                                 (1:1))
+                   MOVE    SPA-GMN-NYKN-JYOTAI-T-LST (IDX1)
+                                           TO  SPA-GMN-NYKN-JYOTAI-T-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( FLG-OK          =   ZERO )
+               MOVE    SPA-GMN-NYKN-JYOTAI-T-LST (3)
+                                           TO  SPA-GMN-NYKN-JYOTAI-T-G
+           END-IF
+      *
+           .
+       4122-NYKN-JYOTAI-T-CHK-EXT.
            EXIT.
       *****************************************************************
       *    タグ編集処理
@@ -2848,6 +2931,8 @@
                                                TO  SYS-1041-NYKN-JYOTAI
                    MOVE    SPA-GMN-NYKN-JYOTAI-N
                                               TO  SYS-1041-NYKN-JYOTAI-N
+                   MOVE    SPA-GMN-NYKN-JYOTAI-T
+                                              TO  SYS-1041-NYKN-JYOTAI-T
                    MOVE    SYS-1041-REC        TO  SYSKANRI-REC
            END-EVALUATE 
       *     
@@ -3007,6 +3092,13 @@
                IF      SPA-ERRCD           =   SPACE
                    MOVE    94              TO  SPA-GMN-CUR
                    MOVE    "0023"          TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-NYKN-JYOTAI-T-G =   SPACE )
+               IF      SPA-ERRCD           =   SPACE
+                   MOVE    95              TO  SPA-GMN-CUR
+                   MOVE    "0024"          TO  SPA-ERRCD
                END-IF
            END-IF
       *
@@ -3244,11 +3336,21 @@
            END-PERFORM
       *
            MOVE    SPA-GMN-NYKN-JYOTAI-N-G TO  W02-NYKN-JYOTAI-N
-           MOVE    SPA-GMN-NYKN-JYOTAI-MAX TO  W02-NYKN-JYOTAI-N-COUNT
+           MOVE    SPA-GMN-NYKN-JYOTAI-N-MAX
+                                           TO  W02-NYKN-JYOTAI-N-COUNT
            PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   SPA-GMN-NYKN-JYOTAI-MAX )
-               MOVE    SPA-GMN-NYKN-JYOTAILST (IDX1)
+                   UNTIL ( IDX1    >   SPA-GMN-NYKN-JYOTAI-N-MAX )
+               MOVE    SPA-GMN-NYKN-JYOTAI-N-LST (IDX1)
                                        TO  W02-NYKN-JYOTAI-N-ITEM(IDX1)
+           END-PERFORM
+      *
+           MOVE    SPA-GMN-NYKN-JYOTAI-T-G TO  W02-NYKN-JYOTAI-T
+           MOVE    SPA-GMN-NYKN-JYOTAI-T-MAX
+                                           TO  W02-NYKN-JYOTAI-T-COUNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   SPA-GMN-NYKN-JYOTAI-T-MAX )
+               MOVE    SPA-GMN-NYKN-JYOTAI-T-LST (IDX1)
+                                       TO  W02-NYKN-JYOTAI-T-ITEM(IDX1)
            END-PERFORM
       *
       *    画面カーソルセット処理    
@@ -3382,7 +3484,10 @@
                    MOVE    "入金状態入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0023"
-                   MOVE    "入金状態（入院）入力エラー"
+                   MOVE    "入金状態（退院時）入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0024"
+                   MOVE    "入金状態（定期請求）入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0020"
                    MOVE    "請求金端数設定（減免無）入力エラー"
@@ -3568,6 +3673,8 @@
                     MOVE  "NYKN_JYOTAI"    TO   MCP-WIDGET
                 WHEN    94
                     MOVE  "NYKN_JYOTAI_N"  TO   MCP-WIDGET
+                WHEN    95
+                    MOVE  "NYKN_JYOTAI_T"  TO   MCP-WIDGET
             END-EVALUATE
       *
             EVALUATE    SPA-GMN-CUR
@@ -3700,6 +3807,8 @@
               WHEN    "NYKN_JYOTAI"
                   MOVE    94               TO  SPA-GMN-CUR
               WHEN    "NYKN_JYOTAI_N"
+                  MOVE    95               TO  SPA-GMN-CUR
+              WHEN    "NYKN_JYOTAI_T"
                   MOVE    90               TO  SPA-GMN-CUR
           END-EVALUATE
       *
