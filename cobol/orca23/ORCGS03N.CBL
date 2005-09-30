@@ -484,8 +484,15 @@
                MOVE    WRK-HENYMDG     TO  SPA-GMN-NYUKINYMD
       *
                IF    ( SPA-GMN-NYKN-HOHO-MAX   >   ZERO )
-                   MOVE    SPA-GMN-NYKN-HOHOLST (1)
+                   MOVE    SPA-S01-NYUKIN-HOHO TO  WRK-CMB-CD
+                   PERFORM 4200-NYKN-HOHOLST-CHK-SEC
+                   IF    ( WRK-CMB-ITM =   SPACE )
+                       MOVE    SPA-GMN-NYKN-HOHOLST (1)
                                        TO  SPA-GMN-NYKN-HOHO-G
+                   ELSE
+                       MOVE    WRK-CMB-ITM
+                                       TO  SPA-GMN-NYKN-HOHO-G
+                   END-IF
                END-IF
       *
            END-EVALUATE

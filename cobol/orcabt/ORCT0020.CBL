@@ -85,6 +85,19 @@
                05  WRK-MM                  PIC 9(02).
                05  WRK-DD                  PIC 9(02).
            03  WRK-PRINT-PG                PIC X(20).
+           03  WRK-NYUKIN-HOHO             PIC X(02).
+           03  WRK-NYUKIN-JYOTAI           PIC X(01).
+           03  WRK-NYUKIN-KBN              PIC X(01).
+           03  WRK-NYUKINPRT-KBN           PIC X(01).
+      *
+       01  SRH-AREA.
+           03  SRH-IDX                     PIC 9(05).
+           03  SRH-1041-DAT.
+               05  SRH-1041-JYOTAI         PIC X(01).
+               05  SRH-1041-MAX            PIC 9(05).
+               05  SRH-1041-OCC            OCCURS  99.
+                   07  SRH-1041-KBNCDL     PIC X(02).
+                   07  SRH-1041-JYOTAIL    PIC X(01).
       *
        01  ERR-MES-AREA.
            03  ERR-MES01                   PIC X(100)    VALUE
@@ -117,6 +130,9 @@
       *    帳票ＰＧ名
            COPY    "CPSK1035.INC".
       *
+      *    入金方法
+           COPY  "CPSK1041.INC".
+      *
       *    定期請求情報
            COPY    "CPSK5010.INC".
       *
@@ -135,6 +151,10 @@
       *    定期請求印刷
        01  TEIKIPRT-REC.
            COPY    "CPTEIKIPRT.INC".
+      *
+      *    患者情報
+       01  PTINF-REC.
+           COPY    "CPPTINF.INC".
       *
       *****************************************************************
       *    サブプロ用領域
@@ -243,10 +263,57 @@
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
            PERFORM 910-DBCLOSE-SEC
       *
+           PERFORM 1001-SRH-1041-HEN-SEC
+      *
            .
        100-INIT-EXT.
            EXIT.
       * 
+      *****************************************************************
+      *    入金方法
+      *****************************************************************
+       1001-SRH-1041-HEN-SEC               SECTION.
+      *
+      *    入金方法
+           MOVE    ZERO            TO  SRH-1041-MAX
+      *
+           INITIALIZE                  SYS-1041-REC
+           MOVE    "1041"          TO  SYS-1041-KANRICD
+           MOVE    TEIKI2P-SYSYMD  TO  ORC-DBYMD
+           MOVE    SYS-1041-REC    TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-KEY2-SEL-SEC
+           IF    ( FLG-SYSKANRI        =   ZERO )
+               MOVE    MCPDATA-REC TO  SYS-1041-REC
+           END-IF
+      *
+           PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
+                    OR   ( SRH-1041-MAX    >=  99 )
+      *
+               COMPUTE SRH-1041-MAX    =   SRH-1041-MAX    +   1
+      *
+               MOVE    SYS-1041-KBNCD  TO  SRH-1041-KBNCDL
+                                                        (SRH-1041-MAX)
+      *
+               IF    ( SYS-1041-NYKN-JYOTAI-T  =   SPACE )
+                   MOVE    "3"     TO  SRH-1041-JYOTAIL (SRH-1041-MAX)
+               ELSE
+                   MOVE    SYS-1041-NYKN-JYOTAI-T
+                                   TO  SRH-1041-JYOTAIL (SRH-1041-MAX)
+               END-IF
+      *
+               PERFORM 900-SYSKANRI-KEY2-FET-SEC
+               IF    ( FLG-SYSKANRI        =   ZERO )
+                   MOVE    MCPDATA-REC TO  SYS-1041-REC
+               END-IF
+      *
+           END-PERFORM
+      *
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           PERFORM 910-DBCLOSE-SEC
+      *
+           .
+       1001-SRH-1041-HEN-EXT.
+           EXIT.
       *****************************************************************
       *    主処理
       *****************************************************************
@@ -374,6 +441,14 @@
                END-IF
            END-IF
       *
+      *    患者情報を検索する
+           MOVE    TEIKIPRT-HOSPID     TO  PTINF-HOSPID
+           MOVE    TEIKIPRT-PTID       TO  PTINF-PTID
+           PERFORM 900-PTINF-KEY-SEL-SEC
+      *
+      *    入金方法取得
+           PERFORM 200111-NYUKIN-HOHO-HEN-SEC
+      *
       *    収納データを検索する
            INITIALIZE  SYUNOU-REC
            MOVE    TEIKIPRT-HOSPID     TO  SYU-HOSPID
@@ -429,8 +504,9 @@
            MOVE    PTTEIKIRRK-SKYMONEY TO  ORCHCN03-SEIKYU    (CNT-OUT1)
       *
            MOVE    ZERO                TO  ORCHCN03-NYUKIN    (CNT-OUT1)
-           IF    ( SYS-5010-NYUKINKBN      =   "2" )
-            AND  ( SYS-5010-NYUKINPRTKBN   =   "2" )
+      *
+           IF    ( WRK-NYUKIN-KBN      =   "2" )
+            AND  ( WRK-NYUKINPRT-KBN   =   "2" )
                IF    ( PTTEIKIRRK-SKYMONEY >   ZERO )
                    INITIALIZE              SYUMEI-REC
                    MOVE    PTTEIKIRRK-HOSPID       TO  SMEI-HOSPID
@@ -454,6 +530,63 @@
        20011-HENSYU-EXT.
            EXIT. 
       *
+      *****************************************************************
+      *    入金方法編集処理
+      *****************************************************************
+       200111-NYUKIN-HOHO-HEN-SEC      SECTION.
+      *
+           MOVE    "01"            TO  WRK-NYUKIN-HOHO
+           MOVE    "3"             TO  WRK-NYUKIN-JYOTAI
+           MOVE    SPACE           TO  WRK-NYUKIN-KBN
+           MOVE    SPACE           TO  WRK-NYUKINPRT-KBN
+      *
+           IF    ( PTINF-NYUKIN-HOHO   NOT =   SPACE )
+               MOVE    PTINF-NYUKIN-HOHO
+                                   TO  WRK-NYUKIN-HOHO
+           END-IF
+      *
+           MOVE    SPACE           TO  SRH-1041-JYOTAI
+           PERFORM VARYING SRH-IDX FROM    1   BY  1
+                   UNTIL ( SRH-IDX >   SRH-1041-MAX )
+                    OR   ( SRH-1041-JYOTAI NOT =   SPACE )
+      *
+               IF    ( WRK-NYUKIN-HOHO =   SRH-1041-KBNCDL (SRH-IDX))
+                   MOVE    SRH-1041-JYOTAIL (SRH-IDX)
+                                   TO  SRH-1041-JYOTAI
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( SRH-1041-JYOTAI NOT =   SPACE )
+               MOVE    SRH-1041-JYOTAI TO  WRK-NYUKIN-JYOTAI
+           END-IF
+      *
+           EVALUATE    WRK-NYUKIN-JYOTAI
+           WHEN    "1"
+               MOVE    "2"             TO  WRK-NYUKIN-KBN
+               IF    ( SYS-5010-NYUKINKBN  =   "2" )
+                   MOVE    SYS-5010-NYUKINPRTKBN
+                                       TO  WRK-NYUKINPRT-KBN
+               ELSE
+                   MOVE    "2"         TO  WRK-NYUKINPRT-KBN
+               END-IF
+           WHEN    "2"
+               MOVE    "1"             TO  WRK-NYUKIN-KBN
+           WHEN    "3"
+               MOVE    SYS-5010-NYUKINKBN
+                                       TO  WRK-NYUKIN-KBN
+               MOVE    SYS-5010-NYUKINPRTKBN
+                                       TO  WRK-NYUKINPRT-KBN
+           WHEN    OTHER
+               MOVE    SYS-5010-NYUKINKBN
+                                       TO  WRK-NYUKIN-KBN
+               MOVE    SYS-5010-NYUKINPRTKBN
+                                       TO  WRK-NYUKINPRT-KBN
+           END-EVALUATE
+      *
+           .
+       200111-NYUKIN-HOHO-HEN-EXT.
+           EXIT. 
       *****************************************************************
       *    エラー出力処理
       *****************************************************************
@@ -560,6 +693,59 @@
       *
            .
        900-SYUMEI-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者マスター読込（主キー）
+      *****************************************************************
+       900-PTINF-KEY-SEL-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-PTINF
+      *
+           MOVE    PTINF-REC           TO  MCPDATA-REC
+           MOVE    "PTINF-KEY"         TO  ORC-DBPATH
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  PTINF-REC
+           ELSE
+               MOVE    1               TO  FLG-PTINF
+               INITIALIZE                  PTINF-REC
+           END-IF
+      *
+           MOVE    "PTINF-KEY"         TO  ORC-DBPATH
+           PERFORM 910-DBCLOSE-SEC
+      *
+           .
+       900-PTINF-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    システム管理マスタ読込(KEY2)
+      *****************************************************************
+       900-SYSKANRI-KEY2-SEL-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYSKANRI
+      *
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          NOT =   ZERO )
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           .
+       900-SYSKANRI-KEY2-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    システム管理マスタ読込(KEY2)
+      *****************************************************************
+       900-SYSKANRI-KEY2-FET-SEC       SECTION.
+      *
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC          NOT =   ZERO )
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           .
+       900-SYSKANRI-KEY2-FET-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理（FHETCHも行う)

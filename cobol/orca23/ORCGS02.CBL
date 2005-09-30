@@ -190,6 +190,7 @@
                    07  SPA-NAI-HEAD.
                        09  SPA-NAI-LOCK            PIC 9(01).
                        09  SPA-NAI-BIRTHDAY        PIC X(08).
+                       09  SPA-NAI-NYUKIN-HOHO     PIC X(02).
                        09  SPA-NAI-HKNCOMBI-G.
                            11  SPA-NAI-HKNCOMBI-MAX        PIC 9(05).
                            11  SPA-NAI-HKNCOMBILST         OCCURS  100.
@@ -968,6 +969,12 @@
            PERFORM 31011-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  SPA-GMN-BIRTHDAY
       *
+           IF    ( PTINF-NYUKIN-HOHO   NOT =   SPACE )
+               MOVE    PTINF-NYUKIN-HOHO   TO  SPA-NAI-NYUKIN-HOHO
+           ELSE
+               MOVE    "01"                TO  SPA-NAI-NYUKIN-HOHO
+           END-IF
+      *
       *    排他制御処理
            PERFORM 990-LOCK-IN-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
@@ -1042,6 +1049,7 @@
            MOVE    SPA-S01-LOCK        TO  SPA-NAI-LOCK
            MOVE    SPA-S01-BIRTHDAYW   TO  SPA-GMN-BIRTHDAY
            MOVE    SPA-S01-BIRTHDAY    TO  SPA-NAI-BIRTHDAY
+           MOVE    SPA-S01-NYUKIN-HOHO TO  SPA-NAI-NYUKIN-HOHO
            MOVE    SPA-S01-HSRYKA      TO  SPA-GMN-SRYKA
            MOVE    SPA-S01-HNYUGAIKBN  TO  SPA-GMN-NYUGAIKBN 
       *
@@ -1092,6 +1100,7 @@
            MOVE    SPA-S01-LOCK        TO  SPA-NAI-LOCK
            MOVE    SPA-S01-BIRTHDAYW   TO  SPA-GMN-BIRTHDAY
            MOVE    SPA-S01-BIRTHDAY    TO  SPA-NAI-BIRTHDAY
+           MOVE    SPA-S01-NYUKIN-HOHO TO  SPA-NAI-NYUKIN-HOHO
       *
       *
            PERFORM 320-HKNCOMBI-EDIT-SEC
@@ -3981,6 +3990,7 @@
            MOVE    SPA-GMN-NAME        TO  SPA-S01-NAME
            MOVE    SPA-GMN-SEX         TO  SPA-S01-SEX
            MOVE    SPA-GMN-BIRTHDAY    TO  SPA-S01-BIRTHDAYW
+           MOVE    SPA-NAI-NYUKIN-HOHO TO  SPA-S01-NYUKIN-HOHO
            MOVE    SPA-NAI-LOCK        TO  SPA-S01-LOCK
            MOVE    SPA-NAI-BIRTHDAY    TO  SPA-S01-BIRTHDAY
            IF    ( SPA-GMN-SELBAN      >   ZERO )

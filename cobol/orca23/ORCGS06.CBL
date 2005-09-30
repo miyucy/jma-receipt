@@ -480,8 +480,15 @@
       *
       *    入金方法コンボ初期値
            IF    ( SPA-GMN-NYKNHOHO-MAX    >   ZERO )
-               MOVE    SPA-GMN-NYKNHOHOLST (1)
+               MOVE    SPA-S01-NYUKIN-HOHO TO  WRK-CMB-CD
+               PERFORM 4200-NYKNHOHOLST-CHK-SEC
+               IF    ( WRK-CMB-ITM =   SPACE )
+                   MOVE    SPA-GMN-NYKNHOHOLST (1)
                                        TO  SPA-GMN-NYKNHOHO-G
+               ELSE
+                   MOVE    WRK-CMB-ITM
+                                       TO  SPA-GMN-NYKNHOHO-G
+               END-IF
            END-IF
       *
       *    請求書兼領収書発行区分コンボ初期値

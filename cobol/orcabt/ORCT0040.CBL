@@ -181,6 +181,18 @@
            03  WRK-NYUKINRENNUM        PIC 9(02).
            03  WRK-KUGIRI              PIC X(02).
            03  WRK-PTID                PIC 9(10).
+           03  WRK-NYUKIN-HOHO         PIC X(02).
+           03  WRK-NYUKIN-JYOTAI       PIC X(01).
+           03  WRK-NYUKIN-KBN          PIC X(01).
+      *
+       01  SRH-AREA.
+           03  SRH-IDX                     PIC 9(05).
+           03  SRH-1041-DAT.
+               05  SRH-1041-JYOTAI         PIC X(01).
+               05  SRH-1041-MAX            PIC 9(05).
+               05  SRH-1041-OCC            OCCURS  99.
+                   07  SRH-1041-KBNCDL     PIC X(02).
+                   07  SRH-1041-JYOTAIL    PIC X(01).
       *
        01  ERR-EDIT-AREA.
            03  ERR-PTID                PIC 9(10).
@@ -314,6 +326,8 @@
            COPY    "CPSYSKANRI.INC".
       *    伝票番号
            COPY    "CPSK0042.INC".
+      *    入金方法
+           COPY  "CPSK1041.INC".
       *    定期請求管理情報
            COPY  "CPSK5010.INC".
       *    定期請求作成指示（個別指示）コード
@@ -438,10 +452,57 @@
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
       *
+           PERFORM 1001-SRH-1041-HEN-SEC
+      *
            .
        100-INIT-EXT.
            EXIT.
       * 
+      *****************************************************************
+      *    入金方法
+      *****************************************************************
+       1001-SRH-1041-HEN-SEC               SECTION.
+      *
+      *    入金方法
+           MOVE    ZERO            TO  SRH-1041-MAX
+      *
+           INITIALIZE                  SYS-1041-REC
+           MOVE    "1041"          TO  SYS-1041-KANRICD
+           MOVE    TEIKI1P-SYSYMD  TO  ORC-DBYMD
+           MOVE    SYS-1041-REC    TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-KEY2-SEL-SEC
+           IF    ( FLG-SYSKANRI        =   ZERO )
+               MOVE    MCPDATA-REC TO  SYS-1041-REC
+           END-IF
+      *
+           PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
+                    OR   ( SRH-1041-MAX    >=  99 )
+      *
+               COMPUTE SRH-1041-MAX    =   SRH-1041-MAX    +   1
+      *
+               MOVE    SYS-1041-KBNCD  TO  SRH-1041-KBNCDL
+                                                        (SRH-1041-MAX)
+      *
+               IF    ( SYS-1041-NYKN-JYOTAI-T  =   SPACE )
+                   MOVE    "3"     TO  SRH-1041-JYOTAIL (SRH-1041-MAX)
+               ELSE
+                   MOVE    SYS-1041-NYKN-JYOTAI-T
+                                   TO  SRH-1041-JYOTAIL (SRH-1041-MAX)
+               END-IF
+      *
+               PERFORM 900-SYSKANRI-KEY2-FET-SEC
+               IF    ( FLG-SYSKANRI        =   ZERO )
+                   MOVE    MCPDATA-REC TO  SYS-1041-REC
+               END-IF
+      *
+           END-PERFORM
+      *
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           PERFORM 910-DBCLOSE-SEC
+      *
+           .
+       1001-SRH-1041-HEN-EXT.
+           EXIT.
       *****************************************************************
       *    主処理
       *****************************************************************
@@ -725,6 +786,19 @@
       *
                MOVE    TEIKI06-SYU-DAT TO  SYUNOU-REC
       *
+      *        患者情報読み込み
+               INITIALIZE              PTINF-REC
+               MOVE    SYU-HOSPID      TO  PTINF-HOSPID
+               MOVE    SYU-PTID        TO  PTINF-PTID
+               PERFORM 900-PTINF-KEY-SEL-SEC
+               IF    ( FLG-PTINF       NOT =   ZERO )
+                   MOVE    PTINF-PTID  TO  ERR-PTID
+                   MOVE    ERR-MES13   TO  ERR-ERRMSG
+                   PERFORM 800-ERRMSG-EDIT-SEC
+               END-IF
+      *
+               PERFORM 200311-NYUKIN-HOHO-HEN-SEC
+      *
                MOVE    WRK-DENPNUM     TO  SYU-DENPNUM
       *
       *        更新前チェック（既に重複するデータがある場合はエラー）
@@ -944,7 +1018,8 @@
            MOVE    01                  TO  SMEI-NYUKINRENNUM
       *
            MOVE    "00"                TO  SMEI-NYUKIN-HOHO
-           IF    ( SYS-5010-NYUKINKBN  =   "2" )
+      *
+           IF    ( WRK-NYUKIN-KBN  =   "2" )
                IF    ( SYU-NYUKIN-TOTAL    =   ZERO )
                    CONTINUE
                ELSE
@@ -954,7 +1029,8 @@
                    MOVE    SYU-NYUKIN-TOTAL
                                        TO  SMEI-NYUHEN-MONEY
       *            入金方法
-                   MOVE    "01"        TO  SMEI-NYUKIN-HOHO
+                   MOVE    WRK-NYUKIN-HOHO
+                                       TO  SMEI-NYUKIN-HOHO
                END-IF
            END-IF
       *
@@ -1003,20 +1079,56 @@
        20031-SYUMEI-SAKUSEI-EXT.
            EXIT. 
       *****************************************************************
+      *    入金方法編集処理
+      *****************************************************************
+       200311-NYUKIN-HOHO-HEN-SEC      SECTION.
+      *
+           MOVE    "01"            TO  WRK-NYUKIN-HOHO
+           MOVE    "3"             TO  WRK-NYUKIN-JYOTAI
+           MOVE    SPACE           TO  WRK-NYUKIN-KBN
+      *
+           IF    ( PTINF-NYUKIN-HOHO   NOT =   SPACE )
+               MOVE    PTINF-NYUKIN-HOHO
+                                   TO  WRK-NYUKIN-HOHO
+           END-IF
+      *
+           MOVE    SPACE           TO  SRH-1041-JYOTAI
+           PERFORM VARYING SRH-IDX FROM    1   BY  1
+                   UNTIL ( SRH-IDX >   SRH-1041-MAX )
+                    OR   ( SRH-1041-JYOTAI NOT =   SPACE )
+      *
+               IF    ( WRK-NYUKIN-HOHO =   SRH-1041-KBNCDL (SRH-IDX))
+                   MOVE    SRH-1041-JYOTAIL (SRH-IDX)
+                                   TO  SRH-1041-JYOTAI
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( SRH-1041-JYOTAI NOT =   SPACE )
+               MOVE    SRH-1041-JYOTAI TO  WRK-NYUKIN-JYOTAI
+           END-IF
+      *
+           EVALUATE    WRK-NYUKIN-JYOTAI
+           WHEN    "1"
+               MOVE    "2"             TO  WRK-NYUKIN-KBN
+           WHEN    "2"
+               MOVE    "1"             TO  WRK-NYUKIN-KBN
+           WHEN    "3"
+               MOVE    SYS-5010-NYUKINKBN
+                                       TO  WRK-NYUKIN-KBN
+           WHEN    OTHER
+               MOVE    SYS-5010-NYUKINKBN
+                                       TO  WRK-NYUKIN-KBN
+           END-EVALUATE
+           
+      *
+           .
+       200311-NYUKIN-HOHO-HEN-EXT.
+           EXIT. 
+      *****************************************************************
       *    最新病棟番号別集計処理
       *****************************************************************
        20031-NOW-BTUNUM-SUM-SEC        SECTION.
-      *
-      *    患者情報読み込み
-           INITIALIZE                  PTINF-REC
-           MOVE    SYU-HOSPID          TO  PTINF-HOSPID
-           MOVE    SYU-PTID            TO  PTINF-PTID
-           PERFORM 900-PTINF-KEY-SEL-SEC
-           IF    ( FLG-PTINF       NOT =   ZERO )
-               MOVE    PTINF-PTID      TO  ERR-PTID
-               MOVE    ERR-MES13       TO  ERR-ERRMSG
-               PERFORM 800-ERRMSG-EDIT-SEC
-           END-IF
       *
       *    最新の入院履歴情報より病棟番号を取得
            INITIALIZE  PTNYUINRRK-REC
@@ -1150,6 +1262,19 @@
       *
                MOVE    TEIKI09-SYU-DAT TO  SYUNOU-REC
       *
+      *        患者情報読み込み
+               INITIALIZE              PTINF-REC
+               MOVE    SYU-HOSPID      TO  PTINF-HOSPID
+               MOVE    SYU-PTID        TO  PTINF-PTID
+               PERFORM 900-PTINF-KEY-SEL-SEC
+               IF    ( FLG-PTINF       NOT =   ZERO )
+                   MOVE    PTINF-PTID  TO  ERR-PTID
+                   MOVE    ERR-MES13   TO  ERR-ERRMSG
+                   PERFORM 800-ERRMSG-EDIT-SEC
+               END-IF
+      *
+               PERFORM 200311-NYUKIN-HOHO-HEN-SEC
+      *
       *        更新前チェック（更新対象の収納がなければエラー）
                PERFORM 400-SYUNOU-CHK-SEC
                IF    ( FLG-SYUNOU  NOT =   ZERO )
@@ -1215,7 +1340,7 @@
       *
       *    入金済みとして処理する場合、請求額の差分がプラスで計上される
       *    場合は同額を入金額に加算する
-           IF    ( SYS-5010-NYUKINKBN  =   "2" )
+           IF    ( WRK-NYUKIN-KBN  =   "2" )
                IF    ( TEIKI09-TSI-SKYMONEY    >   ZERO )
       *
                    COMPUTE SYU-NYUKIN-TOTAL
@@ -1423,12 +1548,13 @@
            MOVE    "00"                TO  SMEI-NYUKIN-HOHO
       *
       *    入金額がゼロの時、入金力なし
-           IF    ( SYS-5010-NYUKINKBN  =   "2" )
+           IF    ( WRK-NYUKIN-KBN  =   "2" )
                IF    ( TEIKI09-TSI-SKYMONEY >   ZERO )
                    MOVE    "1"         TO  SMEI-NYUHEN-KBN
                    MOVE    TEIKI09-TSI-SKYMONEY
                                        TO  SMEI-NYUHEN-MONEY
-                   MOVE    "01"        TO  SMEI-NYUKIN-HOHO
+                   MOVE    WRK-NYUKIN-HOHO
+                                       TO  SMEI-NYUKIN-HOHO
                END-IF
            END-IF
       *
@@ -1920,6 +2046,36 @@
       *
            .
        900-SYSKANRI-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    システム管理マスタ読込(KEY2)
+      *****************************************************************
+       900-SYSKANRI-KEY2-SEL-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYSKANRI
+      *
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          NOT =   ZERO )
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           .
+       900-SYSKANRI-KEY2-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    システム管理マスタ読込(KEY2)
+      *****************************************************************
+       900-SYSKANRI-KEY2-FET-SEC       SECTION.
+      *
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC          NOT =   ZERO )
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           .
+       900-SYSKANRI-KEY2-FET-EXT.
            EXIT.
       *****************************************************************
       *    定期請求収納ファイル読込
