@@ -151,3 +151,11 @@
             02  HCRCP401V01-KYUFUGAI-TEN    PIC X(5).
             02  HCRCP401V01-KYUFUGAI4   PIC X(2).
             02  HCRCP401V01-PAGE    PIC X(5).
+            02  HCRCP401V01-TOTALTEN1
+                    PIC X(10)   OCCURS  4 TIMES.
+            02  HCRCP401V01-FTNMONEY1
+                    PIC X(8)    OCCURS  4 TIMES.
+            02  HCRCP401V01-SYOTOTALTEN1
+                    PIC X(7)    OCCURS  4 TIMES.
+            02  HCRCP401V01-SYOFTNMONEY1
+                    PIC X(8)    OCCURS  4 TIMES.

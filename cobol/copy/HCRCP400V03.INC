@@ -113,3 +113,7 @@
             02  HCRCP400V03-KYUFUGAI-TEN    PIC X(5).
             02  HCRCP400V03-KYUFUGAI4   PIC X(2).
             02  HCRCP400V03-PAGE    PIC X(5).
+            02  HCRCP400V03-TOTALTEN1
+                    PIC X(7)    OCCURS  4 TIMES.
+            02  HCRCP400V03-FTNMONEY1
+                    PIC X(8)    OCCURS  4 TIMES.

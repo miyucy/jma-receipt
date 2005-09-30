@@ -108,3 +108,7 @@
             02  HCM09V03-KHNTEN3    PIC X(7).
             02  HCM09V03-SONOTA PIC X(10).
             02  HCM09V03-PAGE   PIC X(5).
+            02  HCM09V03-TOTALTEN1
+                    PIC X(7)    OCCURS  4 TIMES.
+            02  HCM09V03-FTNMONEY1
+                    PIC X(8)    OCCURS  4 TIMES.

@@ -146,3 +146,11 @@
             02  HCN06V04-NYUKOHTEN
                     PIC X(7)    OCCURS  10 TIMES.
             02  HCN06V04-PAGE   PIC X(5).
+            02  HCN06V04-TOTALTEN1
+                    PIC X(10)   OCCURS  4 TIMES.
+            02  HCN06V04-FTNMONEY1
+                    PIC X(8)    OCCURS  4 TIMES.
+            02  HCN06V04-SYOTOTALTEN1
+                    PIC X(7)    OCCURS  4 TIMES.
+            02  HCN06V04-SYOFTNMONEY1
+                    PIC X(8)    OCCURS  4 TIMES.

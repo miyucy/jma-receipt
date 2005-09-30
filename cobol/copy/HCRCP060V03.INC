@@ -126,3 +126,7 @@
             02  HCRCP060V03-ITBKINGAK   PIC X(8).
             02  HCRCP060V03-SAKUJYOSEN  PIC X(52).
             02  HCRCP060V03-PAGE    PIC X(5).
+            02  HCRCP060V03-TOTALTEN1
+                    PIC X(7)    OCCURS  4 TIMES.
+            02  HCRCP060V03-FTNMONEY1
+                    PIC X(8)    OCCURS  4 TIMES.
