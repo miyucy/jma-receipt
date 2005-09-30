@@ -29346,10 +29346,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O760">
       <attribute name="obj_pos">
-        <point val="5.65,26.025"/>
+        <point val="5.65,26"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="2.62,25.6341;5.65,26.1341"/>
+        <rectangle val="2.923,25.6482;5.65,26.0982"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#TOTALTEN1[0]#</string>
@@ -29366,10 +29366,10 @@
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.5"/>
+            <real val="0.45"/>
           </attribute>
           <attribute name="pos">
-            <point val="5.65,26.025"/>
+            <point val="5.65,26"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -29378,10 +29378,10 @@
             <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.303"/>
+            <real val="0.2727"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.2525"/>
+            <real val="0.22725"/>
           </attribute>
         </composite>
       </attribute>
@@ -29391,7 +29391,7 @@
         <point val="5.65,26.35"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="2.62,25.9591;5.65,26.4591"/>
+        <rectangle val="2.923,25.9982;5.65,26.4482"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#TOTALTEN1[1]#</string>
@@ -29408,7 +29408,7 @@
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.5"/>
+            <real val="0.45"/>
           </attribute>
           <attribute name="pos">
             <point val="5.65,26.35"/>
@@ -29420,20 +29420,20 @@
             <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.303"/>
+            <real val="0.2727"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.2525"/>
+            <real val="0.22725"/>
           </attribute>
         </composite>
       </attribute>
     </object>
     <object type="Embed - Text" version="0" id="O762">
       <attribute name="obj_pos">
-        <point val="5.65,26.8"/>
+        <point val="5.65,26.775"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="2.62,26.4091;5.65,26.9091"/>
+        <rectangle val="2.923,26.4232;5.65,26.8732"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#TOTALTEN1[2]#</string>
@@ -29450,10 +29450,10 @@
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.5"/>
+            <real val="0.45"/>
           </attribute>
           <attribute name="pos">
-            <point val="5.65,26.8"/>
+            <point val="5.65,26.775"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -29462,10 +29462,10 @@
             <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.303"/>
+            <real val="0.2727"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.2525"/>
+            <real val="0.22725"/>
           </attribute>
         </composite>
       </attribute>
@@ -29475,7 +29475,7 @@
         <point val="5.65,27.125"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="2.62,26.7341;5.65,27.2341"/>
+        <rectangle val="2.923,26.7732;5.65,27.2232"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#TOTALTEN1[3]#</string>
@@ -29492,7 +29492,7 @@
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.5"/>
+            <real val="0.45"/>
           </attribute>
           <attribute name="pos">
             <point val="5.65,27.125"/>
@@ -29504,20 +29504,20 @@
             <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.303"/>
+            <real val="0.2727"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.2525"/>
+            <real val="0.22725"/>
           </attribute>
         </composite>
       </attribute>
     </object>
     <object type="Embed - Text" version="0" id="O764">
       <attribute name="obj_pos">
-        <point val="10.45,26.025"/>
+        <point val="10.45,26"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="8.026,25.6341;10.45,26.1341"/>
+        <rectangle val="8.2684,25.6482;10.45,26.0982"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#FTNMONEY1[0]#</string>
@@ -29534,10 +29534,10 @@
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.5"/>
+            <real val="0.45"/>
           </attribute>
           <attribute name="pos">
-            <point val="10.45,26.025"/>
+            <point val="10.45,26"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -29546,10 +29546,10 @@
             <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.303"/>
+            <real val="0.2727"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.2525"/>
+            <real val="0.22725"/>
           </attribute>
         </composite>
       </attribute>
@@ -29559,7 +29559,7 @@
         <point val="10.45,26.35"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="8.026,25.9591;10.45,26.4591"/>
+        <rectangle val="8.2684,25.9982;10.45,26.4482"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#FTNMONEY1[1]#</string>
@@ -29576,7 +29576,7 @@
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.5"/>
+            <real val="0.45"/>
           </attribute>
           <attribute name="pos">
             <point val="10.45,26.35"/>
@@ -29588,20 +29588,20 @@
             <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.303"/>
+            <real val="0.2727"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.2525"/>
+            <real val="0.22725"/>
           </attribute>
         </composite>
       </attribute>
     </object>
     <object type="Embed - Text" version="0" id="O766">
       <attribute name="obj_pos">
-        <point val="10.45,26.8"/>
+        <point val="10.45,26.775"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="8.026,26.4091;10.45,26.9091"/>
+        <rectangle val="8.2684,26.4232;10.45,26.8732"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#FTNMONEY1[2]#</string>
@@ -29618,10 +29618,10 @@
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.5"/>
+            <real val="0.45"/>
           </attribute>
           <attribute name="pos">
-            <point val="10.45,26.8"/>
+            <point val="10.45,26.775"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -29630,10 +29630,10 @@
             <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.303"/>
+            <real val="0.2727"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.2525"/>
+            <real val="0.22725"/>
           </attribute>
         </composite>
       </attribute>
@@ -29643,7 +29643,7 @@
         <point val="10.45,27.125"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="8.026,26.7341;10.45,27.2341"/>
+        <rectangle val="8.2684,26.7732;10.45,27.2232"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#FTNMONEY1[3]#</string>
@@ -29660,7 +29660,7 @@
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.5"/>
+            <real val="0.45"/>
           </attribute>
           <attribute name="pos">
             <point val="10.45,27.125"/>
@@ -29672,20 +29672,20 @@
             <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.303"/>
+            <real val="0.2727"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.2525"/>
+            <real val="0.22725"/>
           </attribute>
         </composite>
       </attribute>
     </object>
     <object type="Embed - Text" version="0" id="O768">
       <attribute name="obj_pos">
-        <point val="15.35,26.025"/>
+        <point val="15.35,26"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="13.229,25.6341;15.35,26.1341"/>
+        <rectangle val="13.4411,25.6482;15.35,26.0982"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#SYOTOTALTEN1[0]#</string>
@@ -29702,10 +29702,10 @@
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.5"/>
+            <real val="0.45"/>
           </attribute>
           <attribute name="pos">
-            <point val="15.35,26.025"/>
+            <point val="15.35,26"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -29714,10 +29714,10 @@
             <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.303"/>
+            <real val="0.2727"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.2525"/>
+            <real val="0.22725"/>
           </attribute>
         </composite>
       </attribute>
@@ -29727,7 +29727,7 @@
         <point val="15.35,26.35"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="13.229,25.9591;15.35,26.4591"/>
+        <rectangle val="13.4411,25.9982;15.35,26.4482"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#SYOTOTALTEN1[1]#</string>
@@ -29744,7 +29744,7 @@
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.5"/>
+            <real val="0.45"/>
           </attribute>
           <attribute name="pos">
             <point val="15.35,26.35"/>
@@ -29756,20 +29756,20 @@
             <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.303"/>
+            <real val="0.2727"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.2525"/>
+            <real val="0.22725"/>
           </attribute>
         </composite>
       </attribute>
     </object>
     <object type="Embed - Text" version="0" id="O770">
       <attribute name="obj_pos">
-        <point val="15.35,26.8"/>
+        <point val="15.35,26.775"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="13.229,26.4091;15.35,26.9091"/>
+        <rectangle val="13.4411,26.4232;15.35,26.8732"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#SYOTOTALTEN1[2]#</string>
@@ -29786,10 +29786,10 @@
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.5"/>
+            <real val="0.45"/>
           </attribute>
           <attribute name="pos">
-            <point val="15.35,26.8"/>
+            <point val="15.35,26.775"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -29798,10 +29798,10 @@
             <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.303"/>
+            <real val="0.2727"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.2525"/>
+            <real val="0.22725"/>
           </attribute>
         </composite>
       </attribute>
@@ -29811,7 +29811,7 @@
         <point val="15.35,27.125"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="13.229,26.7341;15.35,27.2341"/>
+        <rectangle val="13.4411,26.7732;15.35,27.2232"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#SYOTOTALTEN1[3]#</string>
@@ -29828,7 +29828,7 @@
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.5"/>
+            <real val="0.45"/>
           </attribute>
           <attribute name="pos">
             <point val="15.35,27.125"/>
@@ -29840,20 +29840,20 @@
             <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.303"/>
+            <real val="0.2727"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.2525"/>
+            <real val="0.22725"/>
           </attribute>
         </composite>
       </attribute>
     </object>
     <object type="Embed - Text" version="0" id="O772">
       <attribute name="obj_pos">
-        <point val="20.15,26.025"/>
+        <point val="20.15,26"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="17.726,25.6341;20.15,26.1341"/>
+        <rectangle val="17.9684,25.6482;20.15,26.0982"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#SYOFTNMONEY1[0]#</string>
@@ -29870,10 +29870,10 @@
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.5"/>
+            <real val="0.45"/>
           </attribute>
           <attribute name="pos">
-            <point val="20.15,26.025"/>
+            <point val="20.15,26"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -29882,10 +29882,10 @@
             <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.303"/>
+            <real val="0.2727"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.2525"/>
+            <real val="0.22725"/>
           </attribute>
         </composite>
       </attribute>
@@ -29895,7 +29895,7 @@
         <point val="20.15,26.35"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="17.726,25.9591;20.15,26.4591"/>
+        <rectangle val="17.9684,25.9982;20.15,26.4482"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#SYOFTNMONEY1[1]#</string>
@@ -29912,7 +29912,7 @@
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.5"/>
+            <real val="0.45"/>
           </attribute>
           <attribute name="pos">
             <point val="20.15,26.35"/>
@@ -29924,20 +29924,20 @@
             <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.303"/>
+            <real val="0.2727"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.2525"/>
+            <real val="0.22725"/>
           </attribute>
         </composite>
       </attribute>
     </object>
     <object type="Embed - Text" version="0" id="O774">
       <attribute name="obj_pos">
-        <point val="20.15,26.8"/>
+        <point val="20.15,26.775"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="17.726,26.4091;20.15,26.9091"/>
+        <rectangle val="17.9684,26.4232;20.15,26.8732"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#SYOFTNMONEY1[2]#</string>
@@ -29954,10 +29954,10 @@
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.5"/>
+            <real val="0.45"/>
           </attribute>
           <attribute name="pos">
-            <point val="20.15,26.8"/>
+            <point val="20.15,26.775"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -29966,10 +29966,10 @@
             <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.303"/>
+            <real val="0.2727"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.2525"/>
+            <real val="0.22725"/>
           </attribute>
         </composite>
       </attribute>
@@ -29979,7 +29979,7 @@
         <point val="20.15,27.125"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="17.726,26.7341;20.15,27.2341"/>
+        <rectangle val="17.9684,26.7732;20.15,27.2232"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#SYOFTNMONEY1[3]#</string>
@@ -29996,7 +29996,7 @@
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.5"/>
+            <real val="0.45"/>
           </attribute>
           <attribute name="pos">
             <point val="20.15,27.125"/>
@@ -30008,10 +30008,10 @@
             <enum val="2"/>
           </attribute>
           <attribute name="single">
-            <real val="0.303"/>
+            <real val="0.2727"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.2525"/>
+            <real val="0.22725"/>
           </attribute>
         </composite>
       </attribute>
