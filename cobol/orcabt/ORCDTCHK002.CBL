@@ -4537,6 +4537,9 @@
       *
            END-PERFORM
       *
+           MOVE    PATH-TBL-SANTEI-KEY11   TO  MCP-PATH
+           PERFORM 910-DBCLOSE-SEC
+      *
            IF    ( WRK-KON-SRYYM   NOT =   SPACE )
                PERFORM VARYING IDX-DAY    FROM     31  BY  -1
                        UNTIL ( IDX-DAY    <    1 )
@@ -6439,7 +6442,7 @@
       *
            END-PERFORM
       *
-           MOVE    PATH-TBL-SANTEI-KEY TO  MCP-PATH
+           MOVE    PATH-TBL-SANTEI-KEY9 TO  MCP-PATH
            PERFORM 910-DBCLOSE-SEC
       *
            IF    ( FLG-NBFUKACD       =    1 )
