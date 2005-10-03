@@ -865,6 +865,9 @@
            MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
+               WHEN    "0001"
+                   MOVE    "該当の患者番号がありません。"
+                                       TO  SPA-ERRMSG
                WHEN    "0002"
                    MOVE    "前ページは有りません"
                                        TO  SPA-ERRMSG
