@@ -275,6 +275,8 @@
            03  FLG-TOUGETU            PIC 9(01).
       *
            03  FLG-WKSRYACT-ARI       PIC 9(01).
+      *
+           03  FLG-HKNCHK             PIC 9(01).
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -1240,9 +1242,11 @@
            IF     (SPA-MOTOPG(1:3)     =   "M01" )  OR
                  ((SPA-MOTOPG(1:3)     =   "U02" ) AND
                   (SPA-PTNUM           =   SPACE ))
-               PERFORM 3009-NYUINCHK-SEC
-               IF      FLG-END             =   1
-                   GO      TO      300-SCREEN-EXT
+               IF      (SPA-BEDFLG         >   ZERO )
+                   PERFORM 3009-NYUINCHK-SEC
+                   IF      FLG-END             =   1
+                       GO      TO      300-SCREEN-EXT
+                   END-IF
                END-IF
            END-IF
       *
@@ -4714,6 +4718,12 @@
       *****************************************************************
        41012-HKNCOMBI-CHANGE-SEC         SECTION.
       *
+           IF     (SPA-RJN-ERR         =   ZERO )  AND
+                  (SPA-HKN-ERR         =   ZERO )
+               MOVE    ZERO                TO  FLG-HKNCHK
+           ELSE
+               MOVE    1                   TO  FLG-HKNCHK
+           END-IF
       *    保険組合
            PERFORM 3101-HKNCOMBI-HEN-SEC
            IF      SPA-ERRCD       NOT =   SPACE
@@ -4735,6 +4745,8 @@
                   (SPA-NAI-ROUJIN      =   SPA-MAE-ROUJIN)
       *            労災の時、初回算定日を再編集する
              AND  (SPA-HKNKBN          =   ZERO)
+      *           変更前がエラーでないこと
+             AND  (FLG-HKNCHK          =   ZERO )
                CONTINUE
            ELSE
                PERFORM 410121-HKNCOMBI-SAI-SEC
@@ -4854,6 +4866,7 @@
                   (SPA-HKNKBN          =   ZERO            )  AND
                   (SPA-NAI-ROUJIN      =   SPA-MAE-ROUJIN)
              AND  (SPA-MAE-HKNCOMBINUM NOT =   "9999"  )
+             AND  (FLG-HKNCHK          =   ZERO )
                CONTINUE
            ELSE
       *        初診算定時のから変更がある時、診察料の変更のみ
