@@ -1507,8 +1507,6 @@
       **               UNTIL     IDZ   >     11
       **               ADD    SYU-HKNTEN (IDZ)  TO  SYU-HKNTEN (12)
       **     END-PERFORM
-           MOVE     "SYSKANRI-KEY"     TO  WK-PATH
-           PERFORM   CSR-CLOSE-SEC
       *
       *    入院保険適用外
            ADD    NYUIN-TGMONEY        TO  SYU-TGMONEY(11)
@@ -2159,8 +2157,6 @@
                               MOVE   NYUINACT-IDX  TO  SENTEI-IDX
                          END-IF
                      END-IF                  
-                     MOVE   "TENSU-KEY"      TO  WK-PATH
-                     PERFORM   CSR-CLOSE-SEC
                END-PERFORM
            END-IF
       *
@@ -2213,8 +2209,6 @@
                    COMPUTE    WRK-SENTEI-ZAITEN  =  WRK-SENTEI-KHNTEN
                                                  +  WRK-KSNTEN
                END-IF                  
-               MOVE   "TENSU-KEY"      TO  WK-PATH
-               PERFORM   CSR-CLOSE-SEC
       *
            END-IF
            .
@@ -2391,8 +2385,6 @@
                IF       FLG-TENSU      =    ZERO
                         MOVE   TNS-TEN   TO   WRK-GAIHAKU-KHNTEN
                END-IF                  
-               MOVE   "TENSU-KEY"      TO  WK-PATH
-               PERFORM   CSR-CLOSE-SEC
            END-IF
       *
            .
@@ -3278,6 +3270,9 @@
                                PERFORM    SRYACT-READ-SEC
                            END-PERFORM
                        END-IF
+                       MOVE   "SRYACT-KEY2"      TO  WK-PATH
+                       PERFORM   CSR-CLOSE-SEC
+      *
                END-EVALUATE
            END-IF
       *
@@ -4106,6 +4101,8 @@
           ELSE
                 MOVE    1                TO   FLG-SRYACT
           END-IF
+          MOVE   "SRYACT-KEY2"      TO  WK-PATH
+          PERFORM   CSR-CLOSE-SEC
       *
            .
       *

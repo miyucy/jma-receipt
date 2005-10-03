@@ -881,21 +881,11 @@
                MOVE    "HKNCOMBI-KEY"   TO      ORC-DBPATH 
                PERFORM   HKNCOMBI-READ-SEC
                IF      FLG-HKNCOMBI     =       1
-                   MOVE    "DBCLOSECURSOR"  TO      MCP-FUNC
-                   MOVE    "HKNCOMBI-KEY"   TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"       USING   MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
                    DISPLAY "HKNCOMBI DBFETCH ERR"
                    MOVE     10          TO      LNK-S01-RC
                    GO   TO              MAIN-EXT
                END-IF
            ELSE
-               MOVE    "DBCLOSECURSOR"  TO      MCP-FUNC
-               MOVE    "HKNCOMBI-KEY"   TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"       USING   MCPAREA
-                                                 ORCMCPAREA
-                                                 MCPDATA-REC
                MOVE    1                TO      FLG-HKNCOMBI
                DISPLAY "HKNCOMBI DBSELECT ERR"
                MOVE     10              TO      LNK-S01-RC
@@ -2257,6 +2247,12 @@
                         END-IF   
                     END-PERFORM
                 END-IF
+                MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
+                MOVE    "PTKOHINF-KEY4"      TO  ORC-DBPATH
+                CALL    "ORCMCPSUB"          USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
            END-IF.
       *
            IF  (LNK-S01-KOUREI-ZAITAKU-KBN   =   SPACE)   AND
@@ -2305,43 +2301,21 @@
                                    MOVE  "1"    TO   
                                             LNK-S01-KOUREI-ZAITAKU-KBN
                                END-IF
-                               MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-                               MOVE    "SRYACCT-KEY31" TO  ORC-DBPATH
-                               CALL    "ORCMCPSUB"         USING
-                                                           MCPAREA
-                                                           ORCMCPAREA
-                                                           MCPDATA-REC
-                           ELSE
-                               MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-                               MOVE    "SRYACCT-KEY31" TO  ORC-DBPATH
-                               CALL    "ORCMCPSUB"         USING
-                                                           MCPAREA
-                                                           ORCMCPAREA
-                                                           MCPDATA-REC
                            END-IF
-                       ELSE
-                           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-                           MOVE    "SRYACCT-KEY31" TO  ORC-DBPATH
-                           CALL    "ORCMCPSUB"         USING
-                                                       MCPAREA
-                                                       ORCMCPAREA
-                                                       MCPDATA-REC
                        END-IF
-                   ELSE
-                       MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-                       MOVE    "SRYACT-KEY7"        TO  ORC-DBPATH
-                       CALL    "ORCMCPSUB"          USING
-                                                    MCPAREA
-                                                    ORCMCPAREA
-                                                    MCPDATA-REC
+                       MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+                       MOVE    "SRYACCT-KEY31" TO  ORC-DBPATH
+                       CALL    "ORCMCPSUB"         USING
+                                                   MCPAREA
+                                                   ORCMCPAREA
+                                                   MCPDATA-REC
                    END-IF
-               ELSE
-                   MOVE    "DBCLOSECURSOR"  TO      MCP-FUNC
-                   MOVE    "SRYACT-KEY7"    TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"      USING   MCPAREA
-                                                    ORCMCPAREA
-                                                    MCPDATA-REC
                END-IF
+               MOVE    "DBCLOSECURSOR"  TO      MCP-FUNC
+               MOVE    "SRYACT-KEY7"    TO      ORC-DBPATH
+               CALL    "ORCMCPSUB"      USING   MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
       *        寝たきり老人在宅総合診療料（院内処方せんを交付しない）
                INITIALIZE                           SRYACT-REC
                MOVE    LNK-SYU-HOSPID       TO      SRY-HOSPID
@@ -2386,43 +2360,21 @@
                                    MOVE  "1"    TO   
                                             LNK-S01-KOUREI-ZAITAKU-KBN
                                END-IF
-                               MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-                               MOVE    "SRYACCT-KEY31" TO  ORC-DBPATH
-                               CALL    "ORCMCPSUB"         USING
-                                                           MCPAREA
-                                                           ORCMCPAREA
-                                                           MCPDATA-REC
-                           ELSE
-                               MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-                               MOVE    "SRYACCT-KEY31" TO  ORC-DBPATH
-                               CALL    "ORCMCPSUB"         USING
-                                                           MCPAREA
-                                                           ORCMCPAREA
-                                                           MCPDATA-REC
                            END-IF
-                       ELSE
-                           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-                           MOVE    "SRYACCT-KEY31" TO  ORC-DBPATH
-                           CALL    "ORCMCPSUB"         USING
-                                                       MCPAREA
-                                                       ORCMCPAREA
-                                                       MCPDATA-REC
                        END-IF
-                   ELSE
-                       MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-                       MOVE    "SRYACT-KEY7"        TO  ORC-DBPATH
-                       CALL    "ORCMCPSUB"          USING
-                                                    MCPAREA
-                                                    ORCMCPAREA
-                                                    MCPDATA-REC
+                       MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+                       MOVE    "SRYACCT-KEY31" TO  ORC-DBPATH
+                       CALL    "ORCMCPSUB"         USING
+                                                   MCPAREA
+                                                   ORCMCPAREA
+                                                   MCPDATA-REC
                    END-IF
-               ELSE
-                   MOVE    "DBCLOSECURSOR"  TO      MCP-FUNC
-                   MOVE    "SRYACT-KEY7"    TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"      USING   MCPAREA
-                                                    ORCMCPAREA
-                                                    MCPDATA-REC
                END-IF
+               MOVE    "DBCLOSECURSOR"  TO      MCP-FUNC
+               MOVE    "SRYACT-KEY7"    TO      ORC-DBPATH
+               CALL    "ORCMCPSUB"      USING   MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
       *        在宅末期医療総合診療料（院外）
                INITIALIZE                           SRYACT-REC
                MOVE    LNK-SYU-HOSPID       TO      SRY-HOSPID
@@ -2467,43 +2419,21 @@
                                    MOVE  "1"    TO   
                                             LNK-S01-KOUREI-ZAITAKU-KBN
                                END-IF
-                               MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-                               MOVE    "SRYACCT-KEY31" TO  ORC-DBPATH
-                               CALL    "ORCMCPSUB"         USING
-                                                           MCPAREA
-                                                           ORCMCPAREA
-                                                           MCPDATA-REC
-                           ELSE
-                               MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-                               MOVE    "SRYACCT-KEY31" TO  ORC-DBPATH
-                               CALL    "ORCMCPSUB"         USING
-                                                           MCPAREA
-                                                           ORCMCPAREA
-                                                           MCPDATA-REC
                            END-IF
-                       ELSE
-                           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-                           MOVE    "SRYACCT-KEY31" TO  ORC-DBPATH
-                           CALL    "ORCMCPSUB"         USING
-                                                       MCPAREA
-                                                       ORCMCPAREA
-                                                       MCPDATA-REC
                        END-IF
-                   ELSE
-                       MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-                       MOVE    "SRYACT-KEY7"        TO  ORC-DBPATH
-                       CALL    "ORCMCPSUB"          USING
-                                                    MCPAREA
-                                                    ORCMCPAREA
-                                                    MCPDATA-REC
+                       MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+                       MOVE    "SRYACCT-KEY31" TO  ORC-DBPATH
+                       CALL    "ORCMCPSUB"         USING
+                                                   MCPAREA
+                                                   ORCMCPAREA
+                                                   MCPDATA-REC
                    END-IF
-               ELSE
-                   MOVE    "DBCLOSECURSOR"  TO      MCP-FUNC
-                   MOVE    "SRYACT-KEY7"    TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"      USING   MCPAREA
-                                                    ORCMCPAREA
-                                                    MCPDATA-REC
                END-IF
+               MOVE    "DBCLOSECURSOR"  TO      MCP-FUNC
+               MOVE    "SRYACT-KEY7"    TO      ORC-DBPATH
+               CALL    "ORCMCPSUB"      USING   MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
       *        在宅末期医療総合診療料（院内）
                INITIALIZE                           SRYACT-REC
                MOVE    LNK-SYU-HOSPID       TO      SRY-HOSPID
@@ -2548,43 +2478,21 @@
                                    MOVE  "1"    TO   
                                             LNK-S01-KOUREI-ZAITAKU-KBN
                                END-IF
-                               MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-                               MOVE    "SRYACCT-KEY31" TO  ORC-DBPATH
-                               CALL    "ORCMCPSUB"         USING
-                                                           MCPAREA
-                                                           ORCMCPAREA
-                                                           MCPDATA-REC
-                           ELSE
-                               MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-                               MOVE    "SRYACCT-KEY31" TO  ORC-DBPATH
-                               CALL    "ORCMCPSUB"         USING
-                                                           MCPAREA
-                                                           ORCMCPAREA
-                                                           MCPDATA-REC
                            END-IF
-                       ELSE
-                           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-                           MOVE    "SRYACCT-KEY31" TO  ORC-DBPATH
-                           CALL    "ORCMCPSUB"         USING
-                                                       MCPAREA
-                                                       ORCMCPAREA
-                                                       MCPDATA-REC
                        END-IF
-                   ELSE
-                       MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-                       MOVE    "SRYACT-KEY7"        TO  ORC-DBPATH
-                       CALL    "ORCMCPSUB"          USING
-                                                    MCPAREA
-                                                    ORCMCPAREA
-                                                    MCPDATA-REC
+                       MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+                       MOVE    "SRYACCT-KEY31" TO  ORC-DBPATH
+                       CALL    "ORCMCPSUB"         USING
+                                                   MCPAREA
+                                                   ORCMCPAREA
+                                                   MCPDATA-REC
                    END-IF
-               ELSE
-                   MOVE    "DBCLOSECURSOR"  TO      MCP-FUNC
-                   MOVE    "SRYACT-KEY7"    TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"      USING   MCPAREA
-                                                    ORCMCPAREA
-                                                    MCPDATA-REC
                END-IF
+               MOVE    "DBCLOSECURSOR"  TO      MCP-FUNC
+               MOVE    "SRYACT-KEY7"    TO      ORC-DBPATH
+               CALL    "ORCMCPSUB"      USING   MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
       *
       *        患者年齢計算
                INITIALIZE                           PTINF-REC
@@ -4224,21 +4132,11 @@
                MOVE    "HKNCOMBI-KEY" TO      ORC-DBPATH 
                PERFORM   HKNCOMBI-READ2-SEC
                IF      FLG-HKNCOMBI     =       1
-                   MOVE    "DBCLOSECURSOR"  TO      MCP-FUNC
-                   MOVE    "HKNCOMBI-KEY"   TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"       USING   MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
                    DISPLAY "HKNCOMBI DBFETCH ERR"
                    MOVE     10          TO      LNK-S01-RC
                    GO   TO              2202-SYUNOU-COUNT-EXT
                END-IF
            ELSE
-               MOVE    "DBCLOSECURSOR"  TO      MCP-FUNC
-               MOVE    "HKNCOMBI-KEY"   TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"       USING   MCPAREA
-                                                 ORCMCPAREA
-                                                 MCPDATA-REC
                MOVE    1                TO      FLG-HKNCOMBI
                DISPLAY "HKNCOMBI DBSELECT ERR"
                MOVE     10              TO      LNK-S01-RC

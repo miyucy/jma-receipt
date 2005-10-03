@@ -855,21 +855,11 @@
                MOVE    "HKNCOMBI-KEY"   TO      ORC-DBPATH 
                PERFORM   HKNCOMBI-READ-SEC
                IF      FLG-HKNCOMBI     =       1
-                   MOVE    "DBCLOSECURSOR"  TO      MCP-FUNC
-                   MOVE    "HKNCOMBI-KEY"   TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"       USING   MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
                    DISPLAY "HKNCOMBI DBFETCH ERR"
                    MOVE     10          TO      LNK-S02-RC
                    GO   TO              MAIN-EXT
                END-IF
            ELSE
-               MOVE    "DBCLOSECURSOR"  TO      MCP-FUNC
-               MOVE    "HKNCOMBI-KEY"   TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"       USING   MCPAREA
-                                                 ORCMCPAREA
-                                                 MCPDATA-REC
                MOVE    1                TO      FLG-HKNCOMBI
                DISPLAY "HKNCOMBI DBSELECT ERR"
                MOVE     10              TO      LNK-S02-RC
@@ -2098,6 +2088,13 @@
                         END-IF   
                     END-PERFORM
                 END-IF
+      *
+                MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
+                MOVE    "PTKOHINF-KEY4"      TO  ORC-DBPATH
+                CALL    "ORCMCPSUB"          USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
            END-IF.
       *
            IF  LNK-S02-KOUREI-NYUIN-KBN     =   SPACE   
@@ -3487,21 +3484,11 @@
                MOVE    "HKNCOMBI-KEY" TO      ORC-DBPATH 
                PERFORM   HKNCOMBI-READ2-SEC
                IF      FLG-HKNCOMBI     =       1
-                   MOVE    "DBCLOSECURSOR"  TO      MCP-FUNC
-                   MOVE    "HKNCOMBI-KEY"   TO      ORC-DBPATH
-                   CALL    "ORCMCPSUB"       USING   MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
                    DISPLAY "HKNCOMBI DBFETCH ERR"
                    MOVE     10          TO      LNK-S02-RC
                    GO   TO              2201-SYUNOU-COUNT-EXT
                END-IF
            ELSE
-               MOVE    "DBCLOSECURSOR"  TO      MCP-FUNC
-               MOVE    "HKNCOMBI-KEY"   TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"       USING   MCPAREA
-                                                 ORCMCPAREA
-                                                 MCPDATA-REC
                MOVE    1                TO      FLG-HKNCOMBI
                DISPLAY "HKNCOMBI DBSELECT ERR"
                MOVE     10              TO      LNK-S02-RC
