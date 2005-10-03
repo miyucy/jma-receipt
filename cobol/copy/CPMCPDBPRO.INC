@@ -383,6 +383,7 @@
       *                                     TOUKEIMEMO-ALL追加
       *                                     Q002-ALL追加
       *                                     BD003-ALL追加
+      *  01.01.171   NACL-太田    05/09/30  HOURS-ALL追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -3549,6 +3550,9 @@
       *
                WHEN    ANY             ALSO   "Q002-ALL"
                    MOVE    PATH-VIEW-Q002-ALL
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "HOURS-ALL"
+                   MOVE    PATH-TBL-HOURS-ALL
                                        TO  WRK-PATH
       *
                WHEN    OTHER

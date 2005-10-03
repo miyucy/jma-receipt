@@ -63,3 +63,12 @@ path	key4 	{
 	};
 };
 
+path	all 	{
+	DBSELECT	{
+		DECLARE tbl_hours_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_hours
+		;
+	};
+};
+
