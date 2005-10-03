@@ -1238,9 +1238,11 @@
       *
            MOVE    "2"                 TO  SPA-NYUGAIKBN
       *
+      *TEST
       *    入院機能の判定
            IF     (SPA-MOTOPG(1:3)     =   "M01" )  OR
-                 ((SPA-MOTOPG(1:3)     =   "U02" ) AND
+                 ((SPA-MACHIPG         =   "U02" ) AND
+                  (SPA-MOTOPG          =   "U02" ) AND
                   (SPA-PTNUM           =   SPACE ))
                IF      (SPA-BEDFLG         >   ZERO )
                    PERFORM 3009-NYUINCHK-SEC
