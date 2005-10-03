@@ -739,7 +739,7 @@
       *            氏名編集
                    MOVE    SPA-GMN-PTNUM       TO  SPA-NAME
                    PERFORM 470-P97-SYORI-SEC
-               WHEN    ZERO
+               WHEN    00
       *            患者番号決定
                    MOVE    SPTNUM-PTID         TO  SPA-NAI-PTID
                    MOVE    SPTNUM-PTNUM        TO  SPA-GMN-PTNUM
