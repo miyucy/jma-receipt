@@ -132,6 +132,18 @@
       *
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
+      *    診療行為ＳＰＡデータ
+       01  FILE-NAME1.
+           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+           03  FILLER              PIC X(09)   VALUE   "K02SPASCR".
+           03  FILE-TERMID1        PIC X(64)   VALUE   SPACE.
+           03  FILLER              PIC X(04)   VALUE   ".TXT".
+      *    診療行為パラメタファイル名
+       01  FILE-NAME2.
+           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+           03  FILLER              PIC X(07)   VALUE   "K01PARA".
+           03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
+           03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
       *    一時領域
        01  WRK-AREA.
@@ -335,6 +347,9 @@
       *
       *    ユーザプログラム起動サブパラメタ
            COPY    "CPORCSUSERPG.INC".
+      *
+      *    ファイル削除パラメタ
+           COPY    "CPORCSFDEL.INC".
       *
       *===> For Claim Start
            COPY    "CPSHELLTBL.INC".
@@ -2531,6 +2546,8 @@
            IF      SPA-MACHIPG         =   "U02"
       *        待ち受け画面の時、Ｍ０１へ
                MOVE    "M01"               TO  SPA-SAKIPG
+      *        診療行為のパラメタ削除
+               PERFORM 210-PARA-DEL-SEC
            ELSE
       *        待ち受け以外の時、Ｋ０２へ
                IF      SPA-HZN-MOTOPG      =   SPACE
@@ -2558,6 +2575,28 @@
        210-BACK-EXT.
            EXIT.
       *---- (01.00.05) LINE ADD START ---------------------------------
+      *
+      *****************************************************************
+      *    診療行為のパラメタクリア編集処理
+      *****************************************************************
+       210-PARA-DEL-SEC               SECTION.
+      *
+           MOVE    SPA-TERMID          TO  FILE-TERMID1
+           MOVE    SPA-TERMID          TO  FILE-TERMID2
+      *
+           MOVE    ZERO                TO  IF-RESULT
+           MOVE    FILE-NAME1          TO  IF-FILENAME
+           CALL    "orcfiledel"        USING
+                                       ORCSFDELAREA
+      *
+           MOVE    ZERO                TO  IF-RESULT
+           MOVE    FILE-NAME2          TO  IF-FILENAME
+           CALL    "orcfiledel"        USING
+                                       ORCSFDELAREA
+      *
+           .
+       210-PARA-DEL-EXT.
+           EXIT.
       *
       *****************************************************************
       *    項目クリア
