@@ -123,8 +123,9 @@
                05  PIC X(23)   VALUE "089tbl_syutotal_prv".
                05  PIC X(23)   VALUE "090tbl_santei_prv".
                05  PIC X(23)   VALUE "091tbl_srykarrk_prv".
+               05  PIC X(23)   VALUE "094tbl_hours".
            03  TGTSCM-R     REDEFINES TGTSCM-VAL.
-               05  TGTSCM-OCC  OCCURS  99.
+               05  TGTSCM-OCC  OCCURS  100.
                    07  TGTSCM-NO     PIC 9(03).
                    07  TGTSCM-ID     PIC X(20).
-           03  TGTSCM-MAX      PIC 9(05)   VALUE 99.
+           03  TGTSCM-MAX      PIC 9(05)   VALUE 100.
