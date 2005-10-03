@@ -154,3 +154,5 @@
                     PIC X(7)    OCCURS  4 TIMES.
             02  HCN06V04-SYOFTNMONEY1
                     PIC X(8)    OCCURS  4 TIMES.
+            02  HCN06V04-SYONISSU1
+                    PIC X(2)    OCCURS  4 TIMES.
