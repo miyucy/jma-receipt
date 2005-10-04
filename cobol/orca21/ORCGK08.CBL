@@ -102,6 +102,12 @@
            03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
            03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
+      * ＳＰＡデータ
+       01  FILE-NAME1.
+           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+           03  FILLER              PIC X(09)   VALUE   "K02SPASCR".
+           03  FILE-TERMID1        PIC X(64)   VALUE   SPACE.
+           03  FILLER              PIC X(04)   VALUE   ".TXT".
       *    パラメタファイル名
        01  FILE-NAME02.
            03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
@@ -2906,6 +2912,8 @@
       *****************************************************************
        210-BACK                        SECTION.
       *
+           PERFORM 210-WRKPARA-DEL-SEC
+      *
            MOVE    SPA-HZN-MOTOPG      TO  SPA-SAKIPG
            MOVE    "K08"               TO  SPA-MOTOPG
       *
@@ -2949,6 +2957,8 @@
       *
       *    更新処理
            PERFORM 4501-KOUSIN-SYORI-SEC
+      *
+           PERFORM 210-WRKPARA-DEL-SEC
       *
            MOVE    "K03"               TO  SPA-SAKIPG
            MOVE    "K08"               TO  SPA-MOTOPG
@@ -4367,12 +4377,36 @@
       *****************************************************************
       *    戻るのクリア編集処理
       *****************************************************************
-       210-PARA-DEL-SEC               SECTION.
+       210-WRKPARA-DEL-SEC               SECTION.
       *
            MOVE    SPA-TERMID          TO  FILE-TERMID02
       *
            MOVE    ZERO                TO  IF-RESULT
            MOVE    FILE-NAME02         TO  IF-FILENAME
+           CALL    "orcfiledel"        USING
+                                       ORCSFDELAREA
+      *
+           .
+       210-WRKPARA-DEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    戻るのクリア編集処理
+      *****************************************************************
+       210-PARA-DEL-SEC               SECTION.
+      *
+           PERFORM 210-WRKPARA-DEL-SEC
+      *
+           MOVE    SPA-TERMID          TO  FILE-TERMID1
+           MOVE    SPA-TERMID          TO  FILE-TERMID2
+      *
+           MOVE    ZERO                TO  IF-RESULT
+           MOVE    FILE-NAME1          TO  IF-FILENAME
+           CALL    "orcfiledel"        USING
+                                       ORCSFDELAREA
+      *
+           MOVE    ZERO                TO  IF-RESULT
+           MOVE    FILE-NAME2          TO  IF-FILENAME
            CALL    "orcfiledel"        USING
                                        ORCSFDELAREA
       *
