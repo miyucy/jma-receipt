@@ -344,6 +344,8 @@
                  06  WK-SONOTA93-ZAIKAISU  PIC  9(07).
                  06  WK-SONOTA93-TANKA     PIC  9(07).
       *
+           03  WK-SYO-GAIKFTNRATE      PIC 9(03).
+      *
       *    ¸øÈñ¤Î´µ¼ÔÉéÃ´¾å¸Â²ó¿ô¤È¾å¸Â¶â³Û¤ÎÂàÈòÍÑ¥¨¥ê¥¢
        01  HOKEN-MAX-AREA.
            03  MAX-KAI-KOHI1-D         PIC 9(05).
@@ -7600,6 +7602,7 @@
            END-IF.
       *
       *    ÊÝ¸±¡¦¸øÈñËè¤Î´µ¼ÔÉéÃ´¶â³Û¤Î·×»»
+           MOVE     ZERO     TO    WK-SYO-GAIKFTNRATE.
            MOVE     ZERO     TO    WK-KOH-FTNRATE.
            IF    ((COMB-KOH1-HKNKOHSBTKBN    =   "3")    AND
                   (COMB-KOH1HKNNUM           =   "027")) OR 
@@ -8191,6 +8194,8 @@
            EVALUATE   WK-HKNKBN
              WHEN   SPACE
                IF   COMB-HONKZKKBN        =   "1"
+                        MOVE  HKN-HON-GAIKFTNRATE
+                                               TO  WK-SYO-GAIKFTNRATE
                         MOVE  HKN-HON-GAIKFTNRATE  TO  WK-KOH-FTNRATE
                         IF    HKN-HON-GAIKFTNRATE     NOT =    ZERO
                               COMPUTE   WK-FUTANWARI  =
@@ -8260,6 +8265,8 @@
                                   LNK-SYU-SYUCOMPFTN     +
                                   LNK-SYU-SYUCOMPYKZFTN
                ELSE
+                        MOVE  HKN-KZK-GAIKFTNRATE
+                                               TO  WK-SYO-GAIKFTNRATE
                         MOVE  HKN-KZK-GAIKFTNRATE  TO  WK-KOH-FTNRATE
                         IF    HKN-KZK-GAIKFTNRATE     NOT =    ZERO
                               COMPUTE   WK-FUTANWARI  =
@@ -8628,6 +8635,11 @@
                END-IF
            END-IF.
       *
+           IF  (COMB-KOHHKNNUM(KOH-IDX)(1:2)  = "99"  ) AND
+               (WK-GAIKFTNRATE                =  ZERO )
+                    MOVE    WK-SYO-GAIKFTNRATE   TO   WK-GAIKFTNRATE
+           END-IF.
+      *
        2304-KOH-HKNREAD-EXT.
            EXIT.
       *
@@ -8665,6 +8677,11 @@
       *
       *    ÉéÃ´¶â³Û¤Î·×»»
            IF  WK-GAIKFTNRATE     NOT =    ZERO
+      *
+               IF   LNK-SYU-KOH-HKNNUM(KOH-IDX)  =   "027"
+                    MOVE   WK-GAIKFTNRATE  TO  WK-SYO-GAIKFTNRATE
+               END-IF
+      *
                COMPUTE   WK-FUTANWARI  =
                               WK-GAIKFTNRATE  /  100
                IF    WK-KOH-FTNKBN   NOT =  SPACE
@@ -9465,6 +9482,11 @@
       *
       *    ÉéÃ´¶â³Û¤Î·×»»
            IF  WK-GAIKFTNRATE     NOT =    ZERO
+      *
+               IF   LNK-SYU-KOH-HKNNUM(KOH-IDX)  =   "027"
+                    MOVE   WK-GAIKFTNRATE  TO  WK-SYO-GAIKFTNRATE
+               END-IF
+      *
                COMPUTE   WK-FUTANWARI  =
                               WK-GAIKFTNRATE  /  100
                IF    WK-KOH-FTNKBN   NOT =  SPACE

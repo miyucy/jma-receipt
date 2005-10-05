@@ -107,6 +107,7 @@
       *  02.06.03    NACL-藤原    05/07/28  レセプト特記事項編集情報のため
       *                                     のレセプト請求しない地方公費の
       *                                     を追加
+      *  02.06.04    NACL-門脇    05/10/05  省庁対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1010,8 +1011,9 @@
                    OR      COMB-KOHHKNNUM (IDX)    
                                            =   SPACE
       *        地方公費のときレセプト請求区分を取得して判別
-               IF      COMB-KOHHKNNUM (IDX)(1:1)
-                                           >=  "1" AND <=  "8"
+               IF     (COMB-KOHHKNNUM (IDX)(1:1)
+                                           >=  "1" AND <=  "8")
+               OR     (COMB-KOHHKNNUM (IDX)(1:2)   =  "99"    )
       *
                    INITIALIZE                      HKNNUM-REC
                    MOVE    SYS-1001-HOSPID         TO  HKN-HOSPID
@@ -1025,6 +1027,8 @@
                    IF    ( COMB-HKNNUM         =   "060"   OR  "067" )
                    AND   ( SYS-1001-PREFNUM    =   "40"              )
                    AND   ( HKN-HBTNUM      NOT =   "41"              )    
+                   AND   ( COMB-KOHHKNNUM(IDX)(1:1)
+                                              >=  "1" AND <=  "8"    )
                        PERFORM 20011-PREFKBN-40-CHECK-SEC
                    ELSE
       *                福岡県の社保のとき（４１老人）
@@ -1112,6 +1116,8 @@
                        AND   ( SYS-1001-PREFNUM
                                                =   "40"              )
                        AND   ( HKN-HBTNUM  NOT =   "41"              )    
+                       AND   ( COMB-KOHHKNNUM(IDX)(1:1)
+                                              >=  "1" AND <=  "8"    )
                            ADD     1                      TO  IDZ    
                            MOVE    COMB-KOHHKNNUM (IDX)   TO 
                                           WRK-SEIKYU-KOHHKNNUM(2 IDZ)

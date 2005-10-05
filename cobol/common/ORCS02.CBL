@@ -260,6 +260,7 @@
            03  WK-ZAN-KOHI-D           PIC 9(05).
            03  WK-DAY-NYUKFTNRATE      PIC 9(03).
            03  WK-DAY-COMPFTN          PIC 9(05).
+           03  WK-SYO-NYUKFTNRATE      PIC 9(03).
            03  WK-RYOYO                PIC 9(07).
            03  WK-KSNRATE9             PIC 9(03).
            03  WK-KSNRATE              PIC 9V99. 
@@ -5220,6 +5221,7 @@
       *
       *    ÊÝ¸±¡¦¸øÈñËè¤Î´µ¼ÔÉéÃ´¶â³Û¤Î·×»»
            MOVE     ZERO       TO       WK-DAY-NYUKFTNRATE.
+           MOVE     ZERO       TO       WK-SYO-NYUKFTNRATE.
            MOVE     ZERO       TO       WK-KOH-FTNRATE.
            IF    ((COMB-KOH1-HKNKOHSBTKBN    =   "3")    AND
                   (COMB-KOH1HKNNUM           =   "027")) OR 
@@ -6525,6 +6527,7 @@
                         IF    HKN-HON-NYUKFTNRATE     NOT =    ZERO
                               MOVE   HKN-HON-NYUKFTNRATE
                                            TO   WK-DAY-NYUKFTNRATE
+                                                WK-SYO-NYUKFTNRATE
                               MOVE   HKN-HON-NYUKFTNRATE
                                            TO   WK-KOH-FTNRATE
                               COMPUTE   WK-FUTANWARI  =
@@ -6595,6 +6598,7 @@
                         IF    HKN-KZK-NYUKFTNRATE     NOT =    ZERO
                               MOVE   HKN-KZK-NYUKFTNRATE
                                            TO   WK-DAY-NYUKFTNRATE
+                                                WK-SYO-NYUKFTNRATE
                               MOVE   HKN-KZK-NYUKFTNRATE
                                            TO   WK-KOH-FTNRATE
                               COMPUTE   WK-FUTANWARI  =
@@ -6993,6 +6997,11 @@
                END-IF
            END-IF.
       *
+           IF  (COMB-KOHHKNNUM(KOH-IDX)(1:2)  = "99"  ) AND
+               (WK-NYUKFTNRATE                =  ZERO )
+                    MOVE    WK-SYO-NYUKFTNRATE   TO   WK-NYUKFTNRATE
+           END-IF.
+      *
        2306-KOH-HKNREAD-EXT.
            EXIT.
       *
@@ -7045,6 +7054,10 @@
                  IF  WK-DAY-NYUKFTNRATE  > WK-NYUKFTNRATE
                     MOVE      WK-NYUKFTNRATE   TO   WK-DAY-NYUKFTNRATE
                  END-IF
+               END-IF
+      *
+               IF   LNK-SYU-KOH-HKNNUM(KOH-IDX)  =   "027"
+                    MOVE      WK-NYUKFTNRATE   TO   WK-SYO-NYUKFTNRATE
                END-IF
       *
                COMPUTE   WK-FUTANWARI  =
@@ -7782,6 +7795,10 @@
                  IF  WK-DAY-NYUKFTNRATE  > WK-NYUKFTNRATE
                     MOVE      WK-NYUKFTNRATE   TO   WK-DAY-NYUKFTNRATE
                  END-IF
+               END-IF
+      *
+               IF   LNK-SYU-KOH-HKNNUM(KOH-IDX)  =   "027"
+                    MOVE      WK-NYUKFTNRATE   TO   WK-SYO-NYUKFTNRATE
                END-IF
       *
                COMPUTE   WK-FUTANWARI  =
