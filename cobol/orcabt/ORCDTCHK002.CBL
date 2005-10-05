@@ -3107,21 +3107,17 @@
            INSPECT WRK-PTHKN-KIGO      REPLACING   ALL "¡¡"    BY  "  "
            INSPECT WRK-PTHKN-NUM       REPLACING   ALL "¡¡"    BY  "  "
       *
-      *    IF    ( WRK-PTHKN-KIGO      =   SPACE )
-      *     AND  ( WRK-PTHKN-NUM       =   SPACE )
-      *
-      *        MOVE    PTHKN-HKNNUM    TO  SRH-HKNNUM
-      *        MOVE    "020001"        TO  WRK-ERRCD
-      *        PERFORM 211-ERRMES-HEN-SEC
-      *
-      *        IF    ( ORCBSD01-CHKKBN (2) =   "1" )
-      *            MOVE    1           TO  FLG-CHKEND (2)
-      *            GO  TO  200111-KIGONUM-CHK-EXT
-      *        END-IF
-      *
-      *    END-IF
-      *
-           IF    ( WRK-PTHKN-NUM       =   SPACE )
+           EVALUATE    TRUE
+           WHEN  ( WRK-PTHKN-KIGO      =   SPACE )
+            AND  ( WRK-PTHKN-NUM       =   SPACE )
+               MOVE    PTHKN-HKNNUM    TO  SRH-HKNNUM
+               MOVE    "020001"        TO  WRK-ERRCD
+               PERFORM 211-ERRMES-HEN-SEC
+               IF    ( ORCBSD01-CHKKBN (2) =   "1" )
+                   MOVE    1           TO  FLG-CHKEND (2)
+                   GO  TO  200111-KIGONUM-CHK-EXT
+               END-IF
+           WHEN  ( WRK-PTHKN-NUM       =   SPACE )
       *
                MOVE    PTHKN-HKNNUM    TO  SRH-HKNNUM
                MOVE    "020005"        TO  WRK-ERRCD
@@ -3132,7 +3128,7 @@
                    GO  TO  200111-KIGONUM-CHK-EXT
                END-IF
       *
-           END-IF
+           END-EVALUATE
       *
            IF    ( PTHKN-KIGO          NOT =   SPACE )
                MOVE    PTHKN-KIGO      TO  WRK-KANACHK-MAE-INPUT
