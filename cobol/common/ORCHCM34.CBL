@@ -2547,6 +2547,10 @@
                END-IF
            END-SEARCH
       *
+           IF    ( ACCT-SRYCDTOTAL     =   630010002 )
+                   MOVE    ZERO        TO  FLG-ZAIMATOME
+           END-IF
+      *
            IF    ( FLG-ZAIMATOME       =   1 )
                COMPUTE WKACCT-ZAIKAISU  (WKSRYACCT-IDX)
                    =   WKACCT-ZAIKAISU  (WKSRYACCT-IDX)
