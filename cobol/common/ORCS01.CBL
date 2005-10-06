@@ -169,6 +169,7 @@
       *  01.02.17    NACL-ÌçÏÆ    05/09/15  Åçº¬¸©ÃÏÊý¸øÈñÂÐ±þ
       *  01.02.18    NACL-ÌçÏÆ    05/09/21  Á´¹ñÅÚÌÚ·úÃÛ¡¢Á´¹ñÈÄ¶â¶È¡Ü
       *                                     Àº¿À¡¢·ë³ËÂÐ±þ
+      *  01.02.19    NACL-ÌçÏÆ    05/10/03  µÜ¾ë¸©ÃÏÊý¸øÈñÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -219,6 +220,8 @@
            03  WK-GENMEN-KEISAN        PIC 9(07).
            03  WK-GENMEN-KEISAN2       PIC 9(07).
            03  WK-GENMEN-KEISAN3       PIC 9(07).
+           03  WK-JYOSEIGAKU           PIC 9(07).
+           03  WK-KEISU                PIC 9V99.
        01  SHOHOUSEN-AREA.
            03  FLG-INNAI               PIC X(01).
            03  FLG-INGAI               PIC X(01).
@@ -258,6 +261,7 @@
            03  FLG-GRPNYURYOKU         PIC 9(01).
            03  FLG-GENMEN              PIC 9(01).
            03  FLG-SEISINJYO           PIC 9(01).
+           03  FLG-MIYAGI              PIC 9(01).
       *
        01  WRK-AREA.
            03  WK-END                  PIC 9(08).
@@ -8635,6 +8639,52 @@
                END-IF
            END-IF.
       *
+           MOVE      ZERO      TO        FLG-MIYAGI.
+           IF     (WK-1001-PREFNUM         =  04           ) AND
+                  (COMB-KOHHKNNUM(KOH-IDX) = "183" OR "383" 
+                                                   OR "483") AND
+                  (LNK-SYU-SRYYMD(1:6)    >= "200510"      )
+      *
+                INITIALIZE                       PTKOHINF-REC
+                MOVE    LNK-SYU-HOSPID       TO  PTKOH-HOSPID
+                MOVE    LNK-SYU-PTID         TO  PTKOH-PTID
+                MOVE    COMB-KOHHKNNUM(KOH-IDX)
+                                             TO  PTKOH-KOHNUM
+                MOVE    LNK-SYU-SRYYMD       TO  PTKOH-TEKSTYMD
+                MOVE    LNK-SYU-SRYYMD       TO  PTKOH-TEKEDYMD
+                MOVE    PTKOHINF-REC         TO  MCPDATA-REC
+                MOVE    "DBSELECT"           TO  MCP-FUNC
+                MOVE    "PTKOHINF-KEY6"      TO  ORC-DBPATH
+                CALL    "ORCMCPSUB"          USING   MCPAREA
+                                                     ORCMCPAREA
+                                                     MCPDATA-REC
+                IF      MCP-RC               =       ZERO
+                    MOVE    "PTKOHINF-KEY6"  TO  ORC-DBPATH
+                    PERFORM  PTKOHINF-READ-SEC
+                    PERFORM  UNTIL   FLG-PTKOHINF    =   1
+                        IF   PTKOH-KOHID  =  COMB-KOHID(KOH-IDX)
+                           EVALUATE  PTKOH-FTNJANUM
+                             WHEN    "83041024"
+                               MOVE    1    TO  FLG-MIYAGI
+                             WHEN    "83041255"
+                               MOVE    2    TO  FLG-MIYAGI
+                           END-EVALUATE
+                           MOVE    1        TO  FLG-PTKOHINF
+                        ELSE
+                           MOVE    "PTKOHINF-KEY6"  TO  ORC-DBPATH
+                           PERFORM  PTKOHINF-READ-SEC
+                        END-IF
+                    END-PERFORM
+                END-IF
+                MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+                MOVE    "PTKOHINF-KEY6"     TO  ORC-DBPATH
+                CALL    "ORCMCPSUB"         USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+      *
+           END-IF.
+      *
            IF  (COMB-KOHHKNNUM(KOH-IDX)(1:2)  = "99"  ) AND
                (WK-GAIKFTNRATE                =  ZERO )
                     MOVE    WK-SYO-GAIKFTNRATE   TO   WK-GAIKFTNRATE
@@ -9578,6 +9628,12 @@
       *
              ELSE
       *
+              IF     FLG-MIYAGI   NOT =  ZERO
+      *
+               PERFORM   23062-MIYAGI-KOHI-SEC
+      *
+              ELSE
+      *
                IF    WK-GAIKKOTGAK  NOT =  ZERO
       *
                  MOVE  WK-GAIKKOTGAK TO  LNK-SYU-KOH-COMPFTN(KOH-IDX)
@@ -9648,6 +9704,8 @@
                  MOVE  WK-GAIYKZFTNKBN TO LNK-SYU-KOH-YKZFTNKBN(KOH-IDX)
       *
                END-IF
+      *
+              END-IF
       *
              END-IF
       *
@@ -11119,6 +11177,64 @@
            .
       *
        23061-KUMAMOTO-KOHI-EXT.
+           EXIT.                                                        
+      *
+      ******************************************************************
+      *        µÜ¾ë¸©ÃÏÊý¸øÈñ·×»»¡ÊÆýÍÄ»ù¡Ë
+      ******************************************************************
+       23062-MIYAGI-KOHI-SEC           SECTION.
+      *
+           IF   WK-TOKUTEI-COMPFTN   NOT =    ZERO
+              EVALUATE    FLG-MIYAGI
+                WHEN         1
+                    IF   LNK-SYU-SRYYMD(1:6)   <=    "200603"
+                       MOVE   0.25    TO     WK-KEISU
+                    END-IF
+                    IF ( LNK-SYU-SRYYMD(1:6)    >=   "200604" ) AND
+                       ( LNK-SYU-SRYYMD(1:6)    <=   "200703" )
+                       MOVE   0.50    TO     WK-KEISU
+                    END-IF
+                    IF ( LNK-SYU-SRYYMD(1:6)    >=   "200704" ) AND
+                       ( LNK-SYU-SRYYMD(1:6)    <=   "200803" )
+                       MOVE   0.75    TO     WK-KEISU
+                    END-IF
+                    IF   LNK-SYU-SRYYMD(1:6)    >=   "200804"
+                       MOVE   1.00    TO     WK-KEISU
+                    END-IF
+                WHEN         2
+                    MOVE      0.50    TO     WK-KEISU
+              END-EVALUATE
+              COMPUTE   WK-JYOSEIGAKU       =
+                        WK-TOKUTEI-COMPFTN  *  WK-KEISU
+              COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX)  =
+                        WK-TOKUTEI-COMPFTN  -  WK-JYOSEIGAKU
+              COMPUTE   LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)  =
+                        WK-TOKUTEI-COMPFTN  -  WK-JYOSEIGAKU
+           ELSE
+              MOVE     ZERO    TO   LNK-SYU-KOH-COMPFTN(KOH-IDX)
+              MOVE     ZERO    TO   LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)
+           END-IF
+      *
+           IF   HKN-RECEFTNDSPKBN   =   "2"
+                MOVE   "1"   TO   WK-TAIHI-RECEFTNDSPKBN(KOH-IDX)
+                IF    WK-TOKUTEI-COMPFTN   NOT =    ZERO
+                    MOVE  WK-TOKUTEI-COMPFTN
+                                     TO  LNK-SYU-SYUCOMPFTN
+                END-IF
+           ELSE
+                COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX) =
+                          LNK-SYU-KOH-COMPFTN(KOH-IDX) +  5
+                COMPUTE   WK-FTN      =
+                          LNK-SYU-KOH-COMPFTN(KOH-IDX) /  10
+                COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX) =  WK-FTN
+                                                       *  10
+           END-IF
+      *
+           MOVE  WK-GAIYKZFTNKBN   TO   LNK-SYU-KOH-YKZFTNKBN(KOH-IDX)
+      *
+           .
+      *
+       23062-MIYAGI-KOHI-EXT.
            EXIT.                                                        
       *
       ******************************************************************
