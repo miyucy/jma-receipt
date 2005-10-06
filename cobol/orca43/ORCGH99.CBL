@@ -37,47 +37,7 @@
       *  01.02.03    NACL-Æ£¸¶    03/02/17  Êä½õ¶èÊ¬¤ÎÄÉ²Ã
       *  01.02.04    NACL-Æ£¸¶    03/05/28  Êä½õ¶èÊ¬¤ÎÈ½Äê¤Î½¤Àµ
       *  01.02.05    NACL-Æ£¸¶    04/01/26  ÇÓÂ¾À©¸æ½èÍýÄÉ²Ã
-      *
-      *  02.06.01    NACL-Æ£¸¶    05/09/29  Êä½õ¶èÊ¬¤«¤é¤ÎÊÔ½¸¤Î½¤Àµ
-      *
-      *  02.07.01    NACL-Æ£¸¶    05/08/20  ÆÃÊÌÎÅÍÜÈñÂÐ±þ
-      *  02.07.02    NACL-Æ£¸¶    05/10/31  MONFUNCÂÐ±þ
-      *
-      *  02.08.01    NACL-Æ£¸¶    06/02/20  ¼ç²ÊÂÐ±þ
-      *
-      *  03.03.01    NACL-Æ£¸¶    06/09/27  £²£°£°£¶Ç¯£±£°·î²þÀµÂÐ±þ
-      *
-      *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
-      *
-      *  04.01.01    NACL-Æ£¸¶    07/11/22  ¸ø³²¥ì¥»¥×¥ÈÂÐ±þ
-      *
-      *  04.02.01    NACL-Æ£¸¶    08/03/25  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
-      *
-      *  04.03.01    NACL-Æ£¸¶    08/05/07  ¸øÈñ£´¼ï¤Þ¤Ç¤ÎÊ»ÍÑ¤Îµ­Ï¿ÂÐ±þ
-      *  04.03.02    NACL-Æ£¸¶    08/06/06  ¥ì¥»¥×¥È¼ïÊÌÌ¾¾Î¡¢ºîÀ®Æü¤ÎÄÉ²Ã
-      *
-      *  04.04.01    NACL-Æ£¸¶    09/12/10  ÊÖÌáÂÐ±þ
-      *
-      *  04.05.01    NACL-Æ£¸¶    09/04/16  ¼ç²ÊÀßÄê»þ¤Î¼ç²ÊÌ¤ÀßÄê¤Î¥Á¥§
-      *                                     ¥Ã¥¯ÄÉ²Ã
-      *  04.05.02    NACL-Æ£¸¶    11/08/25  ¸øÈñÃ±ÆÈÂÐ±þ
-      *                                     ¸øÈñ¤òºÇÂç£µ£°¤ËÊÑ¹¹
-      *
-      *  04.06.01    NACL-Æ£¸¶    10/12/07  ¸øÈñÃ±ÆÈ¤ÎÉéÃ´¼ÔÈÖ¹æ¡¢¼õµë¼Ô
-      *                                     ÈÖ¹æ¤ÎÉ½¼¨¤Ë¼«Î©»Ù±ç¤òÄÉ²Ã
-      *  04.06.02    NACL-Æ£¸¶    11/02/01  ¼çÊÝ¸±¤¬¤Ê¤¤¾ì¹ç¡¢»ùÆ¸ÊÝ¸î(53)
-      *                                     ¤Ï¸øÈñÃ±ÆÈ¤Î¥ì¥»¥×¥È¤È¤¹¤ë
-      *  04.06.03    NACL-Æ£¸¶    11/12/12  ÅÀ¸¡¥ì¥»£°ÅÀ¸øÈñ°õ»úÂÐ±þ
-      *  04.06.04    NACL-Æ£¸¶    12/10/26  ÆÃµ­»ö¹à£°£·¡ÊÏ·Ê»¡ËµÚ¤Ó
-      *                                     £°£¸¡ÊÏ··ò¡Ë¤Î¥ì¥»¥×¥ÈÂÐ±þ
-      *
-      *  04.07.01    NACL-Æ£¸¶    11/09/02  Ï«ºÒÀÁµá½ñºîÀ®ÂÐ±þ
-      *  04.07.02    NACL-Æ£¸¶    13/09/20  Âè»°¼Ô¹Ô°ÙÂÐ±þ
-      *
-      *  04.08.01    NACL-Æ£¸¶    16/08/08  ºÒ³²³ºÅöÊ¬¡ÊÈó¸ºÌÈÂÐ¾Ý¤È¸ºÌÈÂÐ¾Ý¡Ë
-      *                                     ¥ì¥»¥×¥È¤ÎÊ¬³äÂÐ±þ
-      *  04.08.02    NACL-Æ£¸¶    17/04/10  ´µ¼ÔÃ±°Ì¤Ç¤ÎÅÀ¿ô»»ÄêÀßÄê
-      *                                     ¡ÊÏ«ºÒ½àµòËô¤Ï·òÊÝ½àµò¡ËÂÐ±þ
+      *  01.02.06    NACL-Æ£¸¶    05/09/29  Êä½õ¶èÊ¬¤«¤é¤ÎÊÔ½¸¤Î½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -88,7 +48,9 @@
        DATA                    DIVISION.
        FILE                        SECTION.
       *
+      *
        WORKING-STORAGE             SECTION.
+      *
       *
       *    ¥¹¥ÑÎÎ°è
            COPY    "COMMON-SPA".
@@ -99,26 +61,7 @@
       *    ²èÌÌÍÑ£Ó£Ð£Á
            COPY    "H01SCR-SPA".
       *
-      *    ÀßÄêºÑÊÖÌá¥Ç¡¼¥¿
-           02  SPA-HENREI-B-REC.
-           COPY    "CPHENREI-BODY.INC"
-                                   REPLACING   //HENREI-B-//
-                                   BY          //SPA-HENREI-B-//.
-      *
-      *    ÂÐ¾Ý°ìÍ÷ÍÑÊÖÌá¥Ç¡¼¥¿
-           02  TBL-HENREI-B-REC    OCCURS  30.
-           COPY    "CPHENREI-BODY.INC"
-                                   REPLACING   //HENREI-B-//
-                                   BY          //TBL-HENREI-B-//.
-           02  TBL-HENREI-B-ERR    PIC 9(01)   OCCURS  30.
-           02  TBL-HENREI-B-MAX    PIC 9(02).
-      *
-      *    ¹¹¿·ÂÐ¾ÝÊÖÌá¥Ç¡¼¥¿
-           02  WRK-HENREI-B-REC.
-           COPY    "CPHENREI-BODY.INC"
-                                   REPLACING   //HENREI-B-//
-                                   BY          //WRK-HENREI-B-//.
-      *
+      *   
            COPY    "ENUM-VALUE".
       *
       *    ¥Õ¥é¥°ÎÎ°è
@@ -126,8 +69,7 @@
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-SEIKYU          PIC 9(01).
-           03  FLG-MONTHLYNUM      PIC 9(01).
-           03  FLG-PTKOHINF        PIC 9(01).
+           03  FLG-PTINF           PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -144,7 +86,7 @@
        01  WRK-AREA.
            03  WRK-Z9              PIC Z9.
            03  WRK-SELNO           PIC 9(02).
-           03  WRK-RECESYUBETU     PIC X(44).
+           03  WRK-RECESYUBETU     PIC X(08).
            03  WRK-YM              PIC X(07). 
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).
@@ -155,9 +97,6 @@
                05  WRK-WYY         PIC 9(02).
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
-           03  WRK-SYURUINAME      PIC X(40).
-      *
-       01  WRK-ERRCD               PIC X(04).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -169,6 +108,8 @@
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-HDD         PIC 9(02).
       *
+                    
+      *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
       *****************************************************************
@@ -178,17 +119,11 @@
       *
            COPY    "CPSK1005.INC".
       *
-           COPY    "CPSK2003.INC".
-      *
            COPY    "CPRCF010.INC".
       *
-      *    ·îÂå¤ï¤ê¼õµë¼ÔÈÖ¹æ
-       01  MONTHLYNUM-REC.
-           COPY    "CPMONTHLYNUM.INC".
-      *
-      *    ´µ¼Ô¸øÈñ¾ðÊó
-       01  PTKOHINF-REC.
-           COPY    "CPPTKOHINF.INC".
+      *    ´µ¼Ô¥Þ¥¹¥¿¡Ý
+       01  PTINF-REC.
+           COPY    "CPPTINF.INC".
       *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
@@ -205,6 +140,7 @@
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
+           COPY    "CPORCMCP.INC".
       *
       *    ÇÓÂ¾À©¸æ¥µ¥Ö¥Ñ¥é¥á¥¿
            COPY    "CPORCSLOCK.INC".
@@ -222,8 +158,6 @@
       *
        01  SCRAREA.
            COPY    "H01.INC".
-           COPY    "H02.INC".
-           COPY    "H03.INC".
            COPY    "H99.INC".
            COPY    "HERR.INC".
            COPY    "HID1.INC".
@@ -243,7 +177,6 @@
            MOVE    SPA-FREE        TO  SPA-H01FREE
            MOVE    SPA-WORK        TO  SPA-H01KYOUTU
       *
-           MOVE    SPA-ERRCD       TO  WRK-ERRCD
            MOVE    SPACE           TO  SPA-ERRCD
            MOVE    ZERO            TO  FLG-END
       *
@@ -280,18 +213,11 @@
       *
       *    ¥¨¥é¡¼²èÌÌ¤è¤ê
            IF      SPA-MOTOPG          =   "HERR"
-               IF      WRK-ERRCD           =   "0009"
-                   PERFORM 210-BACK
-                   GO  TO  100-INIT-EXT
-               END-IF
                MOVE    SPACE               TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
       *        ½é´ü²èÌÌ¥»¥Ã¥È
                PERFORM 300-SCREEN-SEC
-               IF      FLG-END             =   1
-                   GO  TO  100-INIT-EXT
-               END-IF
       *        ²èÌÌÊÔ½¸
                PERFORM 500-GMNHEN-SEC
            END-IF
@@ -312,42 +238,11 @@
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
-           EVALUATE    SPA-MOTOPG
-               WHEN    "HID1"
-                   PERFORM 310-HID1-SET-SEC
-                   GO      TO      300-SCREEN-EXT
-           END-EVALUATE
-      *
            MOVE    4                   TO  SPA-H99GMN-CUR
       *
            PERFORM 41021-H99-HENSYU-SEC
            .
        300-SCREEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ³ÎÇ§²èÌÌÌá¤ê½èÍý
-      *****************************************************************
-       310-HID1-SET-SEC            SECTION.
-      *
-           IF      SPA-HID1-FLG    =   "OK"
-               EVALUATE    SPA-HIDCD
-                   WHEN    "1006"
-                       PERFORM 210-BACK
-               END-EVALUATE
-           ELSE
-               EVALUATE    SPA-HIDCD
-                   WHEN    "1006"
-      *****************MOVE    SPACE      TO  SPA-H99-AREA
-      *****************INITIALIZE             SPA-H99GMN-SELNUM
-                       MOVE    4          TO  SPA-H99GMN-CUR
-               END-EVALUATE 
-           END-IF
-      *
-           MOVE    SPACE           TO  SPA-HID1-FLG
-           MOVE    SPACE           TO  SPA-HIDCD      
-           .
-       310-HID1-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -358,8 +253,6 @@
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
       *        Ìá¤ë
                WHEN    "CLICKED"       ALSO    "B01"
-                   MOVE    SPACE      TO  SPA-H99-AREA
-                   INITIALIZE             SPA-H99GMN-SELNUM
                    PERFORM 210-BACK
       *     ³ÎÄê
                WHEN    "CLICKED"       ALSO    "B12"
@@ -375,6 +268,12 @@
        200-ENTRY                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+      *********WHEN    "ACTIVATE"      ALSO    "PTNUM"
+      *********    PERFORM 4101-PTNUM-CHK-SEC
+      *********WHEN    "ACTIVATE"      ALSO    "SRYYM"
+      *********    PERFORM 4102-SRYYM-CHK-SEC
+      *********WHEN    "ACTIVATE"      ALSO    "SRYKA"
+      *********    PERFORM 4103-SRYKA-CHK-SEC
                WHEN    "ACTIVATE"      ALSO    "SELNUM"
                    PERFORM 4104-SELNUM-CHK-SEC
                WHEN    ANY             ALSO    "RECELST"
@@ -386,27 +285,185 @@
            EXIT.
       *
       *****************************************************************
+      *    ´µ¼ÔÈÖ¹æ¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       4101-PTNUM-CHK-SEC            SECTION.
+      *
+           MOVE    2                   TO  SPA-H99GMN-CUR
+      *
+           MOVE    H99-PTNUM           TO  SPA-H99GMN-PTNUM
+      *
+           INITIALIZE                  ORCSPTIDAREA
+           MOVE    SPA-HOSPID          TO  SPTID-HOSPID
+           MOVE    SPA-H99GMN-PTNUM    TO  SPTID-PTNUM
+           CALL    "ORCSPTID"          USING   ORCSPTIDAREA
+                                               SPA-1009-TBL
+           IF      SPTID-RC        NOT =   ZERO
+               MOVE    "0004"          TO  SPA-ERRCD
+           ELSE
+               IF      SPTID-PTID          =   SPA-H99NAI-PTID
+                   CONTINUE
+               ELSE
+                   INITIALIZE                  SPA-H99GMN-TBL
+                                               SPA-H99NAI-TBL
+                   MOVE    ZERO                TO  SPA-H99GMN-MAX
+                   MOVE    SPTID-PTNUM     TO  SPA-H99GMN-PTNUM
+                   MOVE    SPTID-PTID      TO  SPA-H99NAI-PTID
+      *            ´µ¼Ô¥Þ¥¹¥¿¡¼Â¸ºß¥Á¥§¥Ã¥¯
+                   MOVE    SPA-HOSPID      TO  PTINF-HOSPID
+                   MOVE    SPA-H99NAI-PTID TO  PTINF-PTID
+                   PERFORM 900-PTINF-READ-SEC
+                   IF      FLG-PTINF   NOT =   ZERO
+                       MOVE    "0001"      TO  SPA-ERRCD
+                   ELSE
+      *
+      *                ÇÓÂ¾À©¸æ½èÍý
+                       PERFORM 990-LOCK-IN-SEC
+                       IF      SPA-ERRCD       NOT =   SPACE
+                           GO      TO     4101-PTNUM-CHK-EXT
+                       ELSE
+                           MOVE    PTINF-NAME  TO  SPA-H99GMN-NAME
+                       END-IF
+                   END-IF
+               END-IF     
+           END-IF
+      *
+           IF      SPA-ERRCD         =   SPACE
+      *    ÀÁµá´ÉÍý£Ä£Â¸¡º÷½èÍý
+               IF      SPA-SYS-1001-HOSPSBT1   =   ZERO 
+                   PERFORM 41021-SEIKYU-KENSAKU-SEC
+               ELSE
+                   MOVE    3               TO  SPA-H99GMN-CUR
+               END-IF
+           ELSE 
+               MOVE    SPACE               TO  SPA-H99GMN-NAME
+               MOVE    ZERO                TO  SPA-H99NAI-PTID 
+           END-IF 
+           .
+       4101-PTNUM-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¿ÇÎÅÇ¯·î¡¡ÆþÎÏ½èÍý
+      *****************************************************************
+       4102-SRYYM-CHK-SEC          SECTION.
+      *
+           MOVE    1               TO  SPA-H99GMN-CUR
+      *
+           MOVE    H99-SRYYM       TO  SPA-H99GMN-SRYYM
+      *
+      *    ÆüÉÕ²èÌÌ¥Á¥§¥Ã¥¯¥µ¥Ö
+           INITIALIZE                      ORCSGDAYAREA
+           MOVE    "1"                 TO  SGDAY-INTYPE
+           MOVE    SPA-H99GMN-SRYYM       TO  SGDAY-INDAY
+           CALL    "ORCSGDAY"          USING
+                                       ORCSGDAYAREA
+           IF      SGDAY-RC            =   ZERO
+               MOVE    SGDAY-OTDAY(1:6)    TO  SPA-H99GMN-SRYYM
+               MOVE    SGDAY-SDAY (1:6)    TO  SPA-H99NAI-SRYYM
+               MOVE    2                 TO  SPA-H99GMN-CUR
+           ELSE
+               INITIALIZE                  SPA-H99GMN-TBL
+                                           SPA-H99NAI-TBL
+               MOVE    ZERO                TO  SPA-H99GMN-MAX
+               MOVE    "0002"          TO  SPA-ERRCD
+               GO  TO  4102-SRYYM-CHK-EXT
+           END-IF
+           .
+       4102-SRYYM-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÀÁµá´ÉÍý£Ä£Â¸¡º÷½èÍý
+      *****************************************************************
+       41021-SEIKYU-KENSAKU-SEC        SECTION.
+      *
+           INITIALIZE                  SPA-H99GMN-TBL
+                                       SPA-H99NAI-TBL
+           MOVE    ZERO                TO  SPA-H99GMN-MAX
+      *
+      *    ÀÁµá´ÉÍý£Ä£Â¸¡º÷
+           INITIALIZE                  RECE10-REC
+           MOVE    SPA-HOSPID          TO  RECE10-HOSPID
+           MOVE    SPA-H99NAI-PTID     TO  RECE10-PTID
+           IF      SPA-H99GMN-SRYKA    =   SPACE
+               MOVE    ZERO            TO  RECE10-RECEKA
+           ELSE
+               MOVE    SPA-H99GMN-SRYKA
+                                       TO  RECE10-RECEKA
+           END-IF
+           MOVE    SPA-H99NAI-SRYYM    TO  RECE10-SRYYM
+           MOVE    RECE10-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SEIKYU-KEY2"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SEIKYU-KEY2"       TO  ORC-DBPATH
+               PERFORM 900-SEIKYU-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SEIKYU
+           END-IF
+      *
+           MOVE    ZERO                TO  IDX 
+           PERFORM             UNTIL   FLG-SEIKYU     =   1
+                               OR      IDX            =   2
+               ADD     1                   TO  IDX
+               IF      IDX                 =   1 
+                   MOVE    MCPDATA-REC     TO  RECE10-REC
+               END-IF
+      *
+               MOVE    "SEIKYU-KEY2"       TO  ORC-DBPATH
+               PERFORM 900-SEIKYU-READ-SEC
+           END-PERFORM
+      *   
+      *    ¥«¡¼¥½¥ë¥¯¥í¡¼¥¹
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "SEIKYU-KEY2"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           EVALUATE    IDX
+               WHEN    ZERO
+                   MOVE    "0003"         TO  SPA-ERRCD
+               WHEN    1
+                   MOVE    RECE10-KEY     TO  SPA-H99-KEY
+                   PERFORM 210-BACK
+               WHEN    OTHER
+                   PERFORM 41021-H99-HENSYU-SEC
+           END-EVALUATE
+           .
+       41021-SEIKYU-KENSAKU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ¥ì¥»¥×¥È¸¡º÷²èÌÌÊÔ½¸½èÍý
       *****************************************************************
        41021-H99-HENSYU-SEC         SECTION.
       *
       *    ÀÁµá´ÉÍý£Ä£Â¸¡º÷
            INITIALIZE                  RECE10-REC
-           MOVE    SPA-HOSPNUM         TO  RECE10-HOSPNUM
+           MOVE    SPA-HOSPID          TO  RECE10-HOSPID
            MOVE    SPA-H99NAI-PTID     TO  RECE10-PTID
            IF      SPA-H99GMN-SRYKA    =   SPACE
-               MOVE    "%%"                TO  RECE10-RECEKA
+               MOVE    ZERO                TO  RECE10-RECEKA
            ELSE
                MOVE    SPA-H99GMN-SRYKA    TO  RECE10-RECEKA
            END-IF
            MOVE    SPA-H99NAI-SRYYM    TO  RECE10-SRYYM
            MOVE    RECE10-REC          TO  MCPDATA-REC
-           MOVE    "tbl_seikyu"        TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-grpsys     PERFORM 900-DBSELECT-SEC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SEIKYU-KEY2"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_seikyu"        TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
+               MOVE    "SEIKYU-KEY2"       TO  ORC-DBPATH
                PERFORM 900-SEIKYU-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-SEIKYU
@@ -414,20 +471,16 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            MOVE    ZERO                TO  IDX 
            PERFORM     UNTIL       FLG-SEIKYU     =   1
-                       OR          IDX            =  50
+                       OR          IDX            =  10
                ADD     1                   TO  IDX
                MOVE    MCPDATA-REC     TO  RECE10-REC
-               MOVE    RECE10-KEY      TO  SPA-H99NAI-RECE10-KEY   (IDX)
-      *        ÅÀ¸¡¥ì¥»£°ÅÀ¸øÈñ¤¢¤ê
-               MOVE    RECE10-SKYKBN-RECEDEN
-                                       TO  SPA-H99NAI-SKYKBN-RECEDEN
-                                                                   (IDX)
-      *  
+               MOVE    RECE10-KEY      TO
+                                   SPA-H99NAI-RECE10-KEY (IDX)
                MOVE    IDX             TO  WRK-Z9
                MOVE    WRK-Z9          TO
                                    SPA-H99GMN-TRENNUM    (IDX)
                IF      RECE10-NYUGAIKBN    =   "1"
-                   MOVE    "Æþ  ±¡"    TO
+                   MOVE    "Æþ¡¡±¡"    TO
                                    SPA-H99GMN-TNYUGAIKBN (IDX)
                ELSE    
                    MOVE    "Æþ±¡³°"    TO
@@ -439,9 +492,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    INITIALIZE              SYS-1005-REC
                    MOVE    "1005"          TO  SYS-1005-KANRICD
                    MOVE    RECE10-RECEKA   TO  SYS-1005-KBNCD
-                   MOVE    SPA-SYSYMD      TO  SYS-1005-STYUKYMD
-                                               SYS-1005-EDYUKYMD
-grpsys             MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
+                   MOVE    SPA-SYSYMD      TO  ORC-DBYMD
                    MOVE    SYS-1005-REC    TO  MCPDATA-REC
                    PERFORM 910-SYSKANRI-INV-SEC
                    IF      FLG-SYSKANRI    =   ZERO
@@ -452,44 +503,137 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
                    MOVE    SYS-1005-SRYKANAME  TO
                                        SPA-H99GMN-TSRYKA(IDX)
                END-IF
-               EVALUATE    RECE10-TEISYUTUSAKI
-                   WHEN    "1"
-                       MOVE    "»ÙÊ§´ð¶â"      TO
-                                           SPA-H99GMN-TTEISYUTUSAKI(IDX)
-                   WHEN    "2"
-                       MOVE    "¹ñÊÝÏ¢¹ç²ñ"    TO
-                                           SPA-H99GMN-TTEISYUTUSAKI(IDX)
-                   WHEN    "3"
-                       MOVE    "Ï«ºÒ"          TO
-                                           SPA-H99GMN-TTEISYUTUSAKI(IDX)
-                   WHEN    "4"
-                       MOVE    "¼«ÇåÀÕ"        TO
-                                           SPA-H99GMN-TTEISYUTUSAKI(IDX)
-                   WHEN    "5"
-                       MOVE    "¸ø³²"          TO
-                                           SPA-H99GMN-TTEISYUTUSAKI(IDX)
-                   WHEN    "6"
-                       MOVE    "¹­°èÏ¢¹ç"      TO
-                                           SPA-H99GMN-TTEISYUTUSAKI(IDX)
-               END-EVALUATE
+               IF      RECE10-TEISYUTUSAKI     =   "1"
+                   MOVE    "»ÙÊ§´ð¶â"      TO
+                                   SPA-H99GMN-TTEISYUTUSAKI(IDX)
+               ELSE    
+                   MOVE    "¹ñÊÝÏ¢¹ç²ñ"    TO
+                                   SPA-H99GMN-TTEISYUTUSAKI(IDX)
+               END-IF
       *
-               PERFORM 530-RECESYUBETU-HENSYU-SEC
+               IF      RECE10-SRYYM        >   "200209"
+                   MOVE    RECE10-RECESYUBETU  TO  WRK-RECESYUBETU
+               ELSE        
+                 EVALUATE  RECE10-RECESYUBETU
+                                 ALSO  RECE10-TEISYUTUSAKI
+                 WHEN    1111      ALSO      2
+                   IF  RECE10-HONKZKKBN    =   2
+                       MOVE    "¡ú¡ú¡ú"    TO  WRK-RECESYUBETU
+                   ELSE
+                       MOVE    "¡ú"        TO  WRK-RECESYUBETU
+                   END-IF
+                 WHEN    1111      ALSO      1
+                 WHEN    1111      ALSO      ANY
+                   MOVE    "¡ú"            TO  WRK-RECESYUBETU
+      *
+                 WHEN    1112      ALSO      2
+                   IF  RECE10-HONKZKKBN    =   2
+                       MOVE    "¡ù¡ù¡ù¡ù"  TO  WRK-RECESYUBETU
+                   ELSE
+                       MOVE    "¡ù¡ù"      TO  WRK-RECESYUBETU
+                   END-IF
+                 WHEN    1112      ALSO      1
+                   MOVE    "¡ù¡ù"          TO  WRK-RECESYUBETU
+      *
+                 WHEN    1115      ALSO      ANY
+                   MOVE    "¡ú¡ú¡ú"        TO  WRK-RECESYUBETU
+      *
+                 WHEN    1116      ALSO      ANY
+                   MOVE    "¡ù¡ù¡ù¡ù"      TO  WRK-RECESYUBETU
+      *
+                 WHEN    1121      ALSO      2
+                   IF  RECE10-HONKZKKBN    =   2
+                       MOVE    "¡ú¡ú¡ú"    TO  WRK-RECESYUBETU
+                   ELSE
+                       MOVE    "¡ú"        TO  WRK-RECESYUBETU
+                   END-IF
+                  WHEN    1121      ALSO      1
+                   MOVE    "¡ú"            TO  WRK-RECESYUBETU
+      *
+                 WHEN    1122      ALSO      2
+                   IF  RECE10-HONKZKKBN    =   2
+                       MOVE    "¡ù¡ù¡ù¡ù"  TO  WRK-RECESYUBETU
+                   ELSE
+                       MOVE    "¡ù¡ù"      TO  WRK-RECESYUBETU
+                   END-IF
+                 WHEN    1122      ALSO      1
+                   MOVE    "¡ù¡ù"          TO  WRK-RECESYUBETU
+      *
+                 WHEN    1125      ALSO      ANY
+                   MOVE    "¡ú¡ú¡ú"        TO  WRK-RECESYUBETU
+      *
+                 WHEN    1126      ALSO      ANY
+                   MOVE    "¡ù¡ù¡ù¡ù"      TO  WRK-RECESYUBETU
+      *
+                 WHEN    1131      ALSO      2
+                   IF  RECE10-HONKZKKBN    =   2
+                       MOVE    "¡ú¡ú¡ú"    TO  WRK-RECESYUBETU
+                   ELSE
+                       MOVE    "¡ú"        TO  WRK-RECESYUBETU
+                   END-IF
+                 WHEN    1131      ALSO      1
+                   MOVE    "¡ú"            TO  WRK-RECESYUBETU
+      *
+                 WHEN    1132      ALSO      2
+                   IF  RECE10-HONKZKKBN    =   2
+                       MOVE    "¡ù¡ù¡ù¡ù"  TO  WRK-RECESYUBETU
+                   ELSE
+                       MOVE    "¡ù¡ù"      TO  WRK-RECESYUBETU
+                   END-IF
+                 WHEN    1132      ALSO      1
+                   MOVE    "¡ù¡ù"          TO  WRK-RECESYUBETU
+      *
+                 WHEN    1135      ALSO      ANY
+                   MOVE    "¡ú¡ú¡ú"        TO  WRK-RECESYUBETU
+      *
+                 WHEN    1136      ALSO      ANY
+                   MOVE    "¡ù¡ù¡ù¡ù"      TO  WRK-RECESYUBETU
+      *
+                 WHEN    1211      ALSO      ANY
+                 WHEN    1221      ALSO      ANY
+                 WHEN    1231      ALSO      ANY
+                   MOVE    "¡ü"            TO  WRK-RECESYUBETU
+      *
+                 WHEN    1212      ALSO      ANY
+                 WHEN    1222      ALSO      ANY
+                 WHEN    1232      ALSO      ANY
+                   MOVE    "¡û¡û"          TO  WRK-RECESYUBETU
+      *
+                 WHEN    1311      ALSO      ANY
+                 WHEN    1321      ALSO      ANY
+                 WHEN    1331      ALSO      ANY
+                   MOVE    "¢¥"            TO  WRK-RECESYUBETU
+      *
+                 WHEN    1312      ALSO      ANY
+                 WHEN    1322      ALSO      ANY
+                 WHEN    1332      ALSO      ANY
+                   MOVE    "¢¤¢¤"          TO  WRK-RECESYUBETU
+      *
+                 WHEN    1411      ALSO      ANY
+                 WHEN    1421      ALSO      ANY
+                 WHEN    1431      ALSO      ANY
+                   MOVE    "¢¡"            TO  WRK-RECESYUBETU
+      *
+                 WHEN    1412      ALSO      ANY
+                 WHEN    1422      ALSO      ANY
+                 WHEN    1432      ALSO      ANY
+                   MOVE    "¡þ¡þ"          TO  WRK-RECESYUBETU
+      *
+                 WHEN    1415      ALSO      ANY
+                 WHEN    1425      ALSO      ANY
+                 WHEN    1435      ALSO      ANY
+                   MOVE    "¢¡¢¡¢¡"        TO  WRK-RECESYUBETU
+      *
+                 WHEN    1416      ALSO      ANY
+                 WHEN    1426      ALSO      ANY
+                 WHEN    1436      ALSO      ANY
+                   MOVE    "¡þ¡þ¡þ¡þ"      TO  WRK-RECESYUBETU
+                 END-EVALUATE
+               END-IF  
                MOVE    WRK-RECESYUBETU  TO
-                                   SPA-H99GMN-TRECESYUBETU (IDX)
-      *
-               EVALUATE    RECE10-TEISYUTUSAKI
-                   WHEN    "1"
-                   WHEN    "2"
-                   WHEN    "6"
-                       IF      RECE10-HKNJANUM     NOT =   "00000000"
-                           MOVE    RECE10-HKNJANUM     TO
-                                           SPA-H99GMN-THKNJANUM (IDX)
-                       END-IF
-                   WHEN    "3"
-                       MOVE    RECE10-KOFUNUM      TO
-                                           SPA-H99GMN-THKNJANUM (IDX)
-               END-EVALUATE
-      *
+                                       SPA-H99GMN-TRECESYUBETU (IDX)
+               MOVE    RECE10-HKNJANUM     TO
+                                       SPA-H99GMN-THKNJANUM    (IDX)
                EVALUATE    RECE10-HKNNUM
                    WHEN    "002"
                    WHEN    "031"  THRU  "034"
@@ -497,118 +641,37 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
                            WHEN    "1"
                            WHEN    "A"
                            WHEN    "D"
-                           WHEN    "G"
                                MOVE    "¿¦Ì³¾å"    TO
                                                SPA-H99GMN-THOJOKBN(IDX)
                            WHEN    "2"
                            WHEN    "B"
                            WHEN    "E"
-                           WHEN    "H"
                                MOVE    "²¼Á¥£³·î"  TO
                                                SPA-H99GMN-THOJOKBN(IDX)
                            WHEN    "3"
                            WHEN    "C"
                            WHEN    "F"
-                           WHEN    "I"
                                MOVE    "ÄÌ¶ÐºÒ³²"  TO
                                                SPA-H99GMN-THOJOKBN(IDX)
                        END-EVALUATE
                END-EVALUATE
-               EVALUATE    RECE10-TEISYUTUSAKI
-                   WHEN    "6"
-                       MOVE    RECE10-NUM  TO  SPA-H99GMN-TKIGO(IDX)
-                   WHEN    "3"
-                   WHEN    "4"
-                       MOVE    RECE10-COMMENT
-                                           TO  SPA-H99GMN-TKIGO(IDX)
-                   WHEN    OTHER
-                       STRING  RECE10-KIGO     DELIMITED   BY  SPACE
-                               "¡¡"            DELIMITED   BY  SIZE
-                               RECE10-NUM      DELIMITED   BY  SPACE
+               STRING  RECE10-KIGO     DELIMITED   BY  SPACE
+                       "¡¡"            DELIMITED   BY  SIZE
+                       RECE10-NUM      DELIMITED   BY  SPACE
                                        INTO    SPA-H99GMN-TKIGO(IDX)
-                       END-STRING
-               END-EVALUATE
-               MOVE    RECE10-CREYMD       TO  WRK-SYMD
-               PERFORM 5002-HIZUKE-HEN-SEC
-               MOVE    WRK-HENYMDG         TO  SPA-H99GMN-TCREYMD (IDX)
+               END-STRING
       *
-               EVALUATE    RECE10-RECEIPT-KBN (1:1)
-                   WHEN    "1"
-                       MOVE    "Ï·Ê»"          TO
-                                           SPA-H99GMN-TRECEIPT-KBN (IDX)
-                   WHEN    "2"
-                       MOVE    "Ï··ò"          TO
-                                           SPA-H99GMN-TRECEIPT-KBN (IDX)
-               END-EVALUATE
-               IF      RECE10-ETC-YKZFTN (1)   >   ZERO
-                   MOVE    "ºÒ"            TO
-                                           SPA-H99GMN-TDISASTER (IDX)
-               END-IF
-      *
-      *       ¸øÈñÃ±ÆÈ¤ÇÀ¸ÊÝËô¤ÏÃæ¹ñ»ÄÎ±Ë®¿ÍÅù¡¢¼«Î©»Ù±ç¤Î¤È¤­ÉéÃ´¼ÔÈÖ¹æ¡¢
-      *       ¼õµë¼ÔÈÖ¹æ¤ò¥»¥Ã¥È
-               IF    ( RECE10-HKNNUM       =   SPACE                 )
-                   IF    ( RECE10-KOHNUM (1)   =   "012"   OR  "025"
-                                               OR  "021"   OR  "020"
-                                               OR  "015"   OR  "016"
-                                               OR  "053"             )
-                   AND   ( RECE10-KOHNUM (2)   =   SPACE             )
-                       INITIALIZE                  PTKOHINF-REC
-                       MOVE    SPA-HOSPNUM     TO  PTKOH-HOSPNUM
-                       MOVE    RECE10-PTID     TO  PTKOH-PTID
-                       MOVE    RECE10-KOHID(1) TO  PTKOH-KOHID
-                       MOVE    PTKOHINF-REC    TO  MCPDATA-REC
-                       PERFORM 900-PTKOHINF-READ-SEC
-                       IF      RECE10-KOHNUM (1)   =   "012"   OR  "025"
-                           MOVE    SPA-HOSPNUM     TO
-                                                   MONTHLYNUM-HOSPNUM
-                           MOVE    RECE10-PTID     TO  MONTHLYNUM-PTID
-                           MOVE    RECE10-KOHID(1) TO  MONTHLYNUM-KOHID
-                           MOVE    RECE10-SRYYM    TO  MONTHLYNUM-SRYYM
-                           MOVE    RECE10-NYUGAIKBN
-                                                   TO
-                                                   MONTHLYNUM-NYUGAIKBN
-                           MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
-                           PERFORM 900-MONTHLYNUM-READ-SEC
-                           IF      FLG-MONTHLYNUM  =   ZERO
-                               MOVE    MONTHLYNUM-JKYSNUM
-                                                   TO  PTKOH-JKYSNUM
-                           ELSE
-                               MOVE    SPA-HOSPNUM TO
-                                                   MONTHLYNUM-HOSPNUM
-                               MOVE    RECE10-PTID TO  MONTHLYNUM-PTID
-                               MOVE    ZERO        TO  MONTHLYNUM-KOHID
-                               MOVE    RECE10-SRYYM
-                                                   TO  MONTHLYNUM-SRYYM
-                               MOVE    RECE10-NYUGAIKBN
-                                                   TO
-                                                   MONTHLYNUM-NYUGAIKBN
-                               MOVE    MONTHLYNUM-REC
-                                                   TO  MCPDATA-REC
-                               PERFORM 900-MONTHLYNUM-READ-SEC
-                               IF      FLG-MONTHLYNUM  =   ZERO
-                                   MOVE    MONTHLYNUM-JKYSNUM
-                                                       TO  PTKOH-JKYSNUM
-                               END-IF
-                           END-IF
-                       END-IF
-                       STRING  PTKOH-FTNJANUM  DELIMITED   BY  SPACE
-                               "¡¡"            DELIMITED   BY  SIZE
-                               PTKOH-JKYSNUM   DELIMITED   BY  SPACE
-                                       INTO    SPA-H99GMN-TKIGO(IDX)
-                       END-STRING
-                   END-IF
-               END-IF
-      *
-               MOVE    "tbl_seikyu"        TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
+               MOVE    "SEIKYU-KEY2"       TO  ORC-DBPATH
                PERFORM 900-SEIKYU-READ-SEC
            END-PERFORM
       *   
       *    ¥«¡¼¥½¥ë¥¯¥í¡¼¥¹
-           MOVE    "tbl_seikyu"        TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "SEIKYU-KEY2"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            MOVE    IDX                 TO  SPA-H99GMN-MAX
       *
@@ -617,253 +680,42 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
        41021-H99-HENSYU-EXT.
            EXIT.
       *
+      ******************************************************
+      *    ¿ÇÎÅ²ÊÆþÎÏ½èÍý
       *****************************************************************
-      *    ¥ì¥»¥×¥È¼ïÊÌÊÔ½¸½èÍý
-      *****************************************************************
-       530-RECESYUBETU-HENSYU-SEC          SECTION.
+       4103-SRYKA-CHK-SEC             SECTION.
       *
-           MOVE   SPACE                TO  WRK-RECESYUBETU
-      * 
-           IF      RECE10-TEISYUTUSAKI =   "5"
-      ***      MOVE    "¸ø³²"              TO  WRK-RECESYUBETU
-               GO  TO  530-RECESYUBETU-HENSYU-EXT
-           END-IF        
+           MOVE    3                   TO  SPA-H99GMN-CUR
       *
-           IF      RECE10-RECESYUBETU  =   "6666"
-               MOVE    "ÆÃÊÌÎÅÍÜÈñ"        TO  WRK-RECESYUBETU
-               GO  TO  530-RECESYUBETU-HENSYU-EXT
-           END-IF        
+           MOVE    H99-SRYKA           TO  SPA-H99GMN-SRYKA
       *
-           IF      RECE10-TEISYUTUSAKI =   "3" OR  "4"
-               EVALUATE    RECE10-RECESYUBETU
-                   WHEN    "7101"
-                   WHEN    "7091"
-                       MOVE    "½ýÉÂ¡¦¶ÈÌ³"        TO  WRK-RECESYUBETU
-                   WHEN    "7102"
-                   WHEN    "7092"
-                       MOVE    "½ýÉÂ¡¦ÄÌ¶Ð"        TO  WRK-RECESYUBETU
-                   WHEN    "7071"
-                   WHEN    "7081"
-                       MOVE    "Ã»´ü¡¦¶ÈÌ³"        TO  WRK-RECESYUBETU
-                   WHEN    "7072"
-                   WHEN    "7082"
-                       MOVE    "Ã»´ü¡¦ÄÌ¶Ð"        TO  WRK-RECESYUBETU
-                   WHEN    "7021"
-                       MOVE    "¥¢¥Õ¥¿¡¼¥±¥¢"      TO  WRK-RECESYUBETU
-                   WHEN    "7051"
-                   WHEN    "7061"
-                       MOVE    "¸øÌ³ºÒ³²"          TO  WRK-RECESYUBETU
-                   WHEN    "7011"
-                   WHEN    "7001"
-                       EVALUATE    RECE10-RECEKBN
-                           WHEN    "4"
-                              MOVE    "¿·ÍÍ¼°"     TO  WRK-RECESYUBETU
-                           WHEN    "5"
-                               EVALUATE    RECE10-HKNKBN
-                                   WHEN    "5"
-                                       MOVE    "½¾ÍèÍÍ¼°¡¦Ï«ºÒ"
-                                                   TO  WRK-RECESYUBETU
-                                   WHEN    "6"
-                                       MOVE    "½¾ÍèÍÍ¼°¡¦·òÊÝ"
-                                                   TO  WRK-RECESYUBETU
-                                   WHEN    OTHER
-                                       MOVE    "½¾ÍèÍÍ¼°"
-                                                   TO  WRK-RECESYUBETU
-                               END-EVALUATE
-                           WHEN    "6"
-                               MOVE    "Âè»°¼Ô¹Ô°Ù"
-                                                   TO  WRK-RECESYUBETU
-                       END-EVALUATE
-               END-EVALUATE
-               GO  TO  530-RECESYUBETU-HENSYU-EXT
-           END-IF        
+           MOVE    SPACE               TO SPA-H99GMN-SRYKANAME
       *
-           IF      RECE10-SRYYM        >   "200209"
-               MOVE    RECE10-RECESYUBETU  TO  WRK-RECESYUBETU
-               EVALUATE    RECE10-RECESYUBETU  (3:1)
-                   WHEN    "4"
-                   WHEN    "5"
-                       MOVE    "3"             TO  WRK-RECESYUBETU (3:1)
-               END-EVALUATE
-      *
-               INITIALIZE                      SYS-2003-REC
-               MOVE    "2003"              TO  SYS-2003-KANRICD
-               MOVE    SPA-HOSPNUM         TO  SYS-2003-HOSPNUM
-               MOVE    RECE10-SRYYM        TO  SYS-2003-STYUKYMD (1:6)
-               MOVE    "01"                TO  SYS-2003-STYUKYMD (7:2)
-               MOVE    SYS-2003-STYUKYMD   TO  SYS-2003-EDYUKYMD
-               MOVE    SYS-2003-REC        TO  MCPDATA-REC
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-grpsys         PERFORM 900-DBSELECT-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
-                   MOVE    "key2"              TO  MCP-PATHNAME
-                   PERFORM 900-SYSKANRI-READ-SEC
+           IF      SPA-H99GMN-SRYKA    =   SPACE
+               CONTINUE
+           ELSE
+               INITIALIZE              SYS-1005-REC
+               MOVE    "1005"          TO  SYS-1005-KANRICD
+               MOVE    SPA-H99GMN-SRYKA
+                                       TO  SYS-1005-KBNCD
+               MOVE    SPA-SYSYMD      TO  ORC-DBYMD
+               MOVE    SYS-1005-REC    TO  MCPDATA-REC
+               PERFORM 910-SYSKANRI-INV-SEC
+               IF      FLG-SYSKANRI    =   ZERO
+                   MOVE    MCPDATA-REC TO  SYS-1005-REC
+                   MOVE    SYS-1005-SRYKANAME
+                                       TO  SPA-H99GMN-SRYKANAME
                ELSE
-                   INITIALIZE                  SYS-2003-REC
-                   MOVE    1               TO  FLG-SYSKANRI
+                   MOVE    "0001"      TO  SPA-ERRCD
                END-IF
+           END-IF
       *
-               PERFORM    UNTIL   FLG-SYSKANRI     =   1
-                   MOVE    MCPDATA-REC   TO  SYS-2003-REC
-                   IF    ( SYS-2003-TEISYUTUSAKI   =
-                                           RECE10-TEISYUTUSAKI )
-                   AND   ( SYS-2003-NYUGAIKBN      =
-                                           RECE10-NYUGAIKBN    )
-                   AND   ( SYS-2003-SYUBETU (1)    =
-                                           RECE10-RECESYUBETU  )
-                       MOVE    SYS-2003-SYURUINAME(1:6)
-                                               TO  WRK-SYURUINAME
-                       MOVE    5               TO  IDY
-                       PERFORM VARYING IDZ FROM    7   BY  2
-                               UNTIL   IDZ >       39
-                               OR      SYS-2003-SYURUINAME (IDZ:2)
-                                           =       "  "
-                           IF      SYS-2003-SYURUINAME (IDZ:2)
-                                                   =   "¡¡"
-                               CONTINUE
-                           ELSE
-                               ADD     2       TO  IDY
-                               MOVE    SYS-2003-SYURUINAME(IDZ:2)
-                                               TO  WRK-SYURUINAME(IDY:2)
-                           END-IF
-                       END-PERFORM    
-                       MOVE    WRK-SYURUINAME  TO  WRK-RECESYUBETU(5:)
-                       MOVE    1               TO  FLG-SYSKANRI
-                   ELSE
-                       MOVE    "tbl_syskanri"      TO  MCP-TABLE
-                       MOVE    "key2"              TO  MCP-PATHNAME
-                       PERFORM 900-SYSKANRI-READ-SEC
-                   END-IF
-               END-PERFORM
-      *
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 900-CLOSE-SEC
-      *
-               GO  TO  530-RECESYUBETU-HENSYU-EXT
-           END-IF        
-      *         
-           EVALUATE  RECE10-RECESYUBETU
-                                 ALSO  RECE10-TEISYUTUSAKI
-           WHEN    1111      ALSO      2
-               IF  RECE10-HONKZKKBN    =   2
-                   MOVE    "¡ú¡ú¡ú"    TO  WRK-RECESYUBETU
-               ELSE
-                   MOVE    "¡ú"        TO  WRK-RECESYUBETU
-               END-IF
-           WHEN    1111      ALSO      1
-           WHEN    1111      ALSO      ANY
-               MOVE    "¡ú"            TO  WRK-RECESYUBETU
-      *
-           WHEN    1112      ALSO      2
-               IF  RECE10-HONKZKKBN    =   2
-                   MOVE    "¡ù¡ù¡ù¡ù"  TO  WRK-RECESYUBETU
-               ELSE
-                   MOVE    "¡ù¡ù"      TO  WRK-RECESYUBETU
-               END-IF
-           WHEN    1112      ALSO      1
-               MOVE    "¡ù¡ù"          TO  WRK-RECESYUBETU
-      *
-           WHEN    1115      ALSO      ANY
-               MOVE    "¡ú¡ú¡ú"        TO  WRK-RECESYUBETU
-      *
-           WHEN    1116      ALSO      ANY
-               MOVE    "¡ù¡ù¡ù¡ù"      TO  WRK-RECESYUBETU
-      ****     MOVE    "¡ú¡ú¡ú¡ú"      TO  WRK-RECESYUBETU
-      *
-           WHEN    1121      ALSO      2
-               IF  RECE10-HONKZKKBN    =   2
-                   MOVE    "¡ú¡ú¡ú"    TO  WRK-RECESYUBETU
-               ELSE
-                   MOVE    "¡ú"        TO  WRK-RECESYUBETU
-               END-IF
-           WHEN    1121      ALSO      1
-               MOVE    "¡ú"            TO  WRK-RECESYUBETU
-      *
-           WHEN    1122      ALSO      2
-               IF  RECE10-HONKZKKBN    =   2
-                   MOVE    "¡ù¡ù¡ù¡ù"  TO  WRK-RECESYUBETU
-               ELSE
-                   MOVE    "¡ù¡ù"      TO  WRK-RECESYUBETU
-               END-IF
-           WHEN    1122      ALSO      1
-               MOVE    "¡ù¡ù"          TO  WRK-RECESYUBETU
-      *
-           WHEN    1125      ALSO      ANY
-               MOVE    "¡ú¡ú¡ú"        TO  WRK-RECESYUBETU
-      *
-           WHEN    1126      ALSO      ANY
-               MOVE    "¡ù¡ù¡ù¡ù"      TO  WRK-RECESYUBETU
-      *
-           WHEN    1131      ALSO      2
-               IF  RECE10-HONKZKKBN    =   2
-                   MOVE    "¡ú¡ú¡ú"    TO  WRK-RECESYUBETU
-               ELSE
-                   MOVE    "¡ú"        TO  WRK-RECESYUBETU
-               END-IF
-           WHEN    1131      ALSO      1
-               MOVE    "¡ú"            TO  WRK-RECESYUBETU
-      *
-           WHEN    1132      ALSO      2
-               IF  RECE10-HONKZKKBN    =   2
-                   MOVE    "¡ù¡ù¡ù¡ù"  TO  WRK-RECESYUBETU
-               ELSE
-                   MOVE    "¡ù¡ù"      TO  WRK-RECESYUBETU
-               END-IF
-           WHEN    1132      ALSO      1
-               MOVE    "¡ù¡ù"          TO  WRK-RECESYUBETU
-      *
-           WHEN    1135      ALSO      ANY
-               MOVE    "¡ú¡ú¡ú"        TO  WRK-RECESYUBETU
-      *
-           WHEN    1136      ALSO      ANY
-               MOVE    "¡ù¡ù¡ù¡ù"      TO  WRK-RECESYUBETU
-      *
-           WHEN    1211      ALSO      ANY
-           WHEN    1221      ALSO      ANY
-           WHEN    1231      ALSO      ANY
-               MOVE    "¡ü"            TO  WRK-RECESYUBETU
-      *
-           WHEN    1212      ALSO      ANY
-           WHEN    1222      ALSO      ANY
-           WHEN    1232      ALSO      ANY
-               MOVE    "¡û¡û"          TO  WRK-RECESYUBETU
-      *
-           WHEN    1311      ALSO      ANY
-           WHEN    1321      ALSO      ANY
-           WHEN    1331      ALSO      ANY
-               MOVE    "¢¥"            TO  WRK-RECESYUBETU
-      *
-           WHEN    1312      ALSO      ANY
-           WHEN    1322      ALSO      ANY
-           WHEN    1332      ALSO      ANY
-               MOVE    "¢¤¢¤"          TO  WRK-RECESYUBETU
-      *
-           WHEN    1411      ALSO      ANY
-           WHEN    1421      ALSO      ANY
-           WHEN    1431      ALSO      ANY
-               MOVE    "¢¡"            TO  WRK-RECESYUBETU
-      *
-           WHEN    1412      ALSO      ANY
-           WHEN    1422      ALSO      ANY
-           WHEN    1432      ALSO      ANY
-               MOVE    "¡þ¡þ"          TO  WRK-RECESYUBETU
-      *
-           WHEN    1415      ALSO      ANY
-           WHEN    1425      ALSO      ANY
-           WHEN    1435      ALSO      ANY
-               MOVE    "¢¡¢¡¢¡"        TO  WRK-RECESYUBETU
-      *
-           WHEN    1416      ALSO      ANY
-           WHEN    1426      ALSO      ANY
-           WHEN    1436      ALSO      ANY
-               MOVE    "¡þ¡þ¡þ¡þ"      TO  WRK-RECESYUBETU
-           END-EVALUATE
-      *
+           IF      SPA-ERRCD           =   SPACE 
+      *    ÀÁµá´ÉÍý£Ä£Â¸¡º÷½èÍý
+               PERFORM 41021-SEIKYU-KENSAKU-SEC
+           END-IF
            .
-       530-RECESYUBETU-HENSYU-EXT.
+       4103-SRYKA-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -881,33 +733,6 @@ grpsys         PERFORM 900-DBSELECT-SEC
            ELSE
                MOVE    SPA-H99NAI-RECE10-KEY (SPA-H99GMN-SELNUM)
                                        TO  SPA-H99-KEY
-      *        ÅÀ¸¡ÍÑ¥ì¥»£°ÅÀ¸øÈñ¤Î¤È¤­ÆþÎÏÉÔ²Ä
-               IF      SPA-H99NAI-SKYKBN-RECEDEN  (SPA-H99GMN-SELNUM)
-                                           =   "1"
-                   MOVE    "0009"              TO  SPA-ERRCD
-                   GO  TO  4104-SELNUM-CHK-EXT
-               END-IF
-      *        ¼ç²ÊÀßÄê»þ¤Î¼ç²ÊÌ¤ÀßÄê¤Î¥Á¥§¥Ã¥¯¡ÊÆÃÊÌÎÅÍÜÈñ¤ò½ü¤¯¡Ë
-               IF    ( SPA-H99-RECEKA          =   "00"   )
-               AND   ( SPA-H99-RECESYUBETU NOT =   "6666" )
-                   EVALUATE    SPA-H99-TEISYUTUSAKI
-                       WHEN    "1"
-                           IF     SPA-NAI-2009-SYUKA-SYAHO  =   "1"                           
-                               MOVE    "1006"         TO  SPA-HIDCD
-                               GO  TO  4104-SELNUM-CHK-EXT
-                           END-IF
-                       WHEN    "2"
-                           IF      SPA-NAI-2009-SYUKA-KOKUHO =   "1"
-                               MOVE    "1006"         TO  SPA-HIDCD
-                               GO  TO  4104-SELNUM-CHK-EXT
-                           END-IF
-                       WHEN    "6"
-                           IF      SPA-NAI-2009-SYUKA-KOUIKI =   "1"
-                               MOVE    "1006"         TO  SPA-HIDCD
-                               GO  TO  4104-SELNUM-CHK-EXT
-                           END-IF
-                   END-EVALUATE
-               END-IF
                PERFORM 210-BACK
            END-IF
            .
@@ -922,10 +747,10 @@ grpsys         PERFORM 900-DBSELECT-SEC
            MOVE    ZERO                TO  WRK-SELNO
       *     
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >       SPA-H99GMN-MAX
+                   UNTIL       IDX     >   5
                IF      H99-SELECT (IDX)    =   "T"
                    MOVE    IDX             TO  WRK-SELNO
-                   MOVE    SPA-H99GMN-MAX  TO  IDX
+                   MOVE    5               TO  IDX
                END-IF    
            END-PERFORM
       *
@@ -933,37 +758,9 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *
            MOVE    SPA-H99NAI-RECE10-KEY (SPA-H99GMN-SELNUM)
                                        TO  SPA-H99-KEY
-      *    ÅÀ¸¡ÍÑ¥ì¥»£°ÅÀ¸øÈñ¤Î¤È¤­ÆþÎÏÉÔ²Ä
-           IF      SPA-H99NAI-SKYKBN-RECEDEN  (SPA-H99GMN-SELNUM)
-                                       =   "1"
-               MOVE    "0009"              TO  SPA-ERRCD
-               GO  TO  4105-RECESEL-EXT
-           END-IF
-      *    ¼ç²ÊÀßÄê»þ¤Î¼ç²ÊÌ¤ÀßÄê¤Î¥Á¥§¥Ã¥¯¡ÊÆÃÊÌÎÅÍÜÈñ¤ò½ü¤¯¡Ë
-           IF    ( SPA-H99-RECEKA          =   "00"   )
-           AND   ( SPA-H99-RECESYUBETU NOT =   "6666" )
-               EVALUATE    SPA-H99-TEISYUTUSAKI
-                   WHEN    "1"
-                       IF     SPA-NAI-2009-SYUKA-SYAHO  =   "1"                           
-                           MOVE    "1006"         TO  SPA-HIDCD
-                           GO  TO  4105-RECESEL-EXT
-                       END-IF
-                   WHEN    "2"
-                       IF      SPA-NAI-2009-SYUKA-KOKUHO =   "1"
-                           MOVE    "1006"         TO  SPA-HIDCD
-                           GO  TO  4105-RECESEL-EXT
-                       END-IF
-                   WHEN    "6"
-                       IF      SPA-NAI-2009-SYUKA-KOUIKI =   "1"
-                           MOVE    "1006"         TO  SPA-HIDCD
-                           GO  TO  4105-RECESEL-EXT
-                       END-IF
-               END-EVALUATE
-           END-IF
-      *
            PERFORM 210-BACK
            .
-       4105-RECESEL-EXT.
+       41016-BYOMEISEL-EXT.
            EXIT.
       *
       *****************************************************************
@@ -974,6 +771,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
            MOVE    "H01"               TO  SPA-SAKIPG
            MOVE    "H99"               TO  SPA-MOTOPG
       *
+      ***  MOVE   "BACK"               TO  MCP-PUTTYPE
            MOVE   "JOIN"               TO  MCP-PUTTYPE
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
@@ -991,11 +789,11 @@ grpsys         PERFORM 900-DBSELECT-SEC
        450-KAKUTEI-SEC                SECTION.
       *
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       SPA-H99GMN-MAX
+                   UNTIL   IDX >       5
                IF      H99-SELECT (IDX)    =   "T"
                    MOVE    SPA-H99NAI-RECE10-KEY (IDX)
                                            TO  SPA-H99-KEY
-                   MOVE    SPA-H99GMN-MAX  TO  IDX 
+                   MOVE    5               TO  IDX 
                END-IF
            END-PERFORM
       * 
@@ -1022,17 +820,12 @@ grpsys         PERFORM 900-DBSELECT-SEC
                GO  TO  500-SET-SCREEN-EXT
            END-IF
       *
-           IF      SPA-HIDCD       NOT =   SPACE
-               PERFORM 520-HIDSET-SEC
-               GO  TO  500-SET-SCREEN-EXT
-           END-IF
-      *
            MOVE    SPACE               TO  LINKAREA
       *
-           MOVE    "CURRENT"           TO  MCP-PUTTYPE
-           MOVE    "H99    "           TO  MCP-WINDOW
+           MOVE    "CURRENT"           TO  MCP-PUTTYPE.
+           MOVE    "H99    "           TO  MCP-WINDOW.
       *
-           PERFORM 900-PUT-WINDOW
+           PERFORM 900-PUT-WINDOW.
            .
        500-SET-SCREEN-EXT.
            EXIT.
@@ -1051,7 +844,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
                                         H99-SRYKANAME-VALUE
       *
            PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   IDX     >       SPA-H99GMN-MAX
+                   UNTIL   IDX     >       5
                    OR      SPA-H99GMN-TNYUGAIKBN (IDX)
                                                =   SPACE
                MOVE    SPA-H99GMN-TRENNUM      (IDX)
@@ -1070,22 +863,14 @@ grpsys         PERFORM 900-DBSELECT-SEC
                                    TO  H99-THOJOKBN     (IDX)
                MOVE    SPA-H99GMN-TKIGO        (IDX)
                                    TO  H99-TKIGO        (IDX)
-               MOVE    SPA-H99GMN-TCREYMD      (IDX)
-                                   TO  H99-TCREYMD      (IDX)
-               MOVE    SPA-H99GMN-TRECEIPT-KBN (IDX)
-                                   TO  H99-TRECEIPT-KBN (IDX)
-               MOVE    SPA-H99GMN-TDISASTER    (IDX)
-                                   TO  H99-TDISASTER    (IDX)
                MOVE    IDX         TO  H99-COUNT
            END-PERFORM
       ***  MOVE    "T"              TO  H99-SELECT (1)
-      *
-           MOVE    SPA-H99GMN-SELNUM   TO  H99-SELNUM
       *            
            MOVE    "blue"              TO  H99-NAME-STYLE
                                            H99-SRYKANAME-STYLE
       *            
-           IF      SPA-SYS-1001-HOSPSBT1   =   "0"
+           IF      SPA-SYS-1001-HOSPSBT1   =   0
                MOVE    WIDGET-INSENSITIVE  TO  H99-SRYKA-STATE
            ELSE
                MOVE    WIDGET-NORMAL       TO  H99-SRYKA-STATE
@@ -1103,6 +888,12 @@ grpsys         PERFORM 900-DBSELECT-SEC
        5001-MAPCUR-SEC             SECTION.
       *
          EVALUATE    SPA-H99GMN-CUR
+             WHEN    1
+                    MOVE  "SRYYM"        TO  MCP-WIDGET
+             WHEN    2
+                    MOVE  "PTNUM"        TO  MCP-WIDGET
+             WHEN    3
+                    MOVE  "SRYKA"        TO  MCP-WIDGET
              WHEN    4
                     MOVE  "SELNUM"       TO  MCP-WIDGET
              WHEN    12
@@ -1114,21 +905,22 @@ grpsys         PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    ¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸É½¼¨½èÍý
+      *    ¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸É½¼¨Íý
       *****************************************************************
        510-ERRSET-SEC              SECTION.
-      *
            MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
                    MOVE    "ÆþÎÏ¥¨¥é¡¼¤Ç¤¹"  TO  SPA-ERRMSG
+               WHEN    "0002"
+                   MOVE    "Ç¯·î¤ÎÆþÎÏ¥¨¥é¡¼¤Ç¤¹"
+                                             TO  SPA-ERRMSG
                WHEN    "0003"
                    MOVE    "ÂÐ¾Ý¤Î¥ì¥»¥×¥È¤ÏÂ¸ºß¤·¤Þ¤»¤ó"
                                              TO  SPA-ERRMSG
-               WHEN    "0009"
-                   MOVE
-                   "£°ÅÀ¸øÈñµ­ºÜ¤Î¥ì¥»¥×¥È¤Ç¤¹¡¢¹¹¿·½èÍý¤Ï¤Ç¤­¤Þ¤»¤ó" 
+               WHEN    "0004"
+                   MOVE    "³ºÅö¤Î´µ¼Ô¤¬Â¸ºß¤·¤Þ¤»¤ó"
                                                TO  SPA-ERRMSG
       *
                WHEN    "9999"
@@ -1157,69 +949,23 @@ grpsys         PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    ³ÎÇ§¥á¥Ã¥»¡¼¥¸É½¼¨½èÍý
-      *****************************************************************
-       520-HIDSET-SEC              SECTION.
-      *
-           MOVE    SPACE                TO  HID1
-           INITIALIZE                       HID1
-           MOVE    SPA-HIDCD            TO  HID1-ID1CODE
-           EVALUATE    SPA-HIDCD
-               WHEN    "1006"
-                   MOVE    "¼ç²ÊÌ¤ÀßÄê¤Ç¤¹¡£¤è¤í¤·¤¤¤Ç¤¹¤«"
-                                        TO  HID1-ID1MSG
-           END-EVALUATE
-      *
-           MOVE    "B12"                TO  MCP-WIDGET
-      *
-           MOVE    "H99"                TO  SPA-MOTOPG
-           MOVE    "HID1"               TO  SPA-SAKIPG
-      *
-           MOVE    "NEW"                TO  MCP-PUTTYPE
-           MOVE    "HID1"               TO  MCP-WINDOW
-      *
-           PERFORM 900-PUT-WINDOW
-      *
-           MOVE    1                    TO  FLG-END              
-      *
-           .
-       520-HIDSET-EXT.
-           EXIT.
-      *
-      *
-      *****************************************************************
-      *    ÏÂÎñÀ¾ÎñÊÑ´¹ÊÔ½¸½èÍý
-      *****************************************************************
-       5002-HIZUKE-HEN-SEC          SECTION.
-      *
-           IF      WRK-SYMD (1:6)          =   ZERO    OR  SPACE
-               MOVE    SPACE                   TO  WRK-HENYMDG
-           ELSE
-               INITIALIZE                      STS-AREA-DAY
-               INITIALIZE                      LNK-DAY2-AREA
-               MOVE    "21"                TO  LNK-DAY2-IRAI
-               MOVE    WRK-SYMD            TO  LNK-DAY2-YMD
-               CALL    "ORCSDAY"            USING   STS-AREA-DAY
-                                                   LNK-DAY2-AREA
-               MOVE    LNK-DAY2-EDTYMD1    TO  WRK-HENYMDG
-           END-IF
-      *
-           .
-       5002-HIZUKE-HEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿ÆÉ¹þ
       *****************************************************************
        910-SYSKANRI-INV-SEC         SECTION.
       *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-grpsys     PERFORM 900-DBSELECT-SEC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key10"             TO  MCP-PATHNAME
-grpsys         PERFORM 900-DBFETCH-SEC
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-SYSKANRI
                ELSE
@@ -1229,12 +975,87 @@ grpsys         PERFORM 900-DBFETCH-SEC
                MOVE    1                   TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        910-SYSKANRI-INV-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ´µ¼Ô¥Þ¥¹¥¿¡¼ÆÉ¹þ¡Ê¼ç¥­¡¼¡Ë
+      *****************************************************************
+       900-PTINF-READ-SEC         SECTION.
+      *
+           MOVE    PTINF-REC           TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTINF-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "PTINF-KEY"         TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  PTINF-REC
+                   MOVE    ZERO                TO  FLG-PTINF
+               ELSE
+                   MOVE    1                   TO  FLG-PTINF
+                   INITIALIZE                  PTINF-REC
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-PTINF
+               INITIALIZE                  PTINF-REC
+           END-IF
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "PTINF-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       900-PTINF-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÀÁµá¥Þ¥¹¥¿¡¼ÆÉ¹þ¡Ê¼ç¥­¡¼¡Ë
+      *****************************************************************
+       900-SEIKYU-INV-SEC         SECTION.
+      *
+           MOVE    RECE10-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SEIKYU-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SEIKYU-KEY"        TO  ORC-DBPATH
+               PERFORM 900-SEIKYU-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SEIKYU
+           END-IF
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "SEIKYU-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       900-SEIKYU-INV-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1242,7 +1063,11 @@ grpsys         PERFORM 900-DBFETCH-SEC
       *****************************************************************
        900-SEIKYU-READ-SEC           SECTION.
       *
-grpsys     PERFORM 900-DBFETCH-SEC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-SEIKYU
            ELSE
@@ -1252,84 +1077,6 @@ grpsys     PERFORM 900-DBFETCH-SEC
            .
        900-SEIKYU-READ-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿£Ò£Å£Á£Ä
-      *****************************************************************
-       900-SYSKANRI-READ-SEC         SECTION.
-      *
-grpsys     PERFORM 900-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    ZERO            TO  FLG-SYSKANRI
-           ELSE
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-           .
-       900-SYSKANRI-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ´µ¼Ô¸øÈñ¾ðÊóÆÉ¹þ
-      *****************************************************************
-       900-PTKOHINF-READ-SEC           SECTION.
-      *
-           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 900-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 900-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC     TO  PTKOHINF-REC
-                   MOVE    ZERO            TO  FLG-PTKOHINF
-               ELSE
-                   INITIALIZE                  PTKOHINF-REC
-                   MOVE    1               TO  FLG-PTKOHINF
-               END-IF
-           ELSE
-               INITIALIZE                  PTKOHINF-REC
-               MOVE    1               TO  FLG-PTKOHINF
-           END-IF
-      *
-           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
-      *
-           .
-       900-PTKOHINF-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ·îÂå¤ï¤ê¼õµë¼ÔÈÖ¹æ¥Þ¥¹¥¿ÆÉ¹þ
-      *****************************************************************
-       900-MONTHLYNUM-READ-SEC         SECTION.
-      *
-           MOVE    "tbl_monthlynum"    TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
-           PERFORM 900-DBSELECT-SEC
-           IF      MCP-RC               =   ZERO
-           MOVE    "tbl_monthlynum"    TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
-               PERFORM 900-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    ZERO                TO  FLG-MONTHLYNUM
-                   MOVE    MCPDATA-REC         TO  MONTHLYNUM-REC
-               ELSE
-                   MOVE    1                   TO  FLG-MONTHLYNUM
-               END-IF
-           ELSE
-               MOVE    1                   TO  FLG-MONTHLYNUM
-           END-IF
-      *
-           MOVE    "tbl_monthlynum"    TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
-      *
-           .
-       900-MONTHLYNUM-READ-EXT.
-           EXIT.
-      *
       *
       *****************************************************************
       *    ÇÓÂ¾À©¸æ½èÍý
@@ -1365,62 +1112,19 @@ grpsys     PERFORM 900-DBFETCH-SEC
        990-LOCK-OUT-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    £Ä£Â£Ó£Å£Ì£Å£Ã£Ô½èÍý
-      *****************************************************************
-       900-DBSELECT-SEC                SECTION.
-      *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
-           .
-       900-DBSELECT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    £Ä£Â£Æ£Å£Ô£Ã£È½èÍý
-      *****************************************************************
-       900-DBFETCH-SEC                SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
-      *
-           .
-       900-DBFETCH-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¥¯¥í¡¼¥º½èÍý
-      *****************************************************************
-       900-CLOSE-SEC               SECTION.
-      *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
-      *
-           .
-       900-CLOSE-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¥¢¥¯¥»¥¹½èÍý
-      *****************************************************************
-       900-ORCDBMAIN-SEC               SECTION.
-      *
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           .
-      *
-       900-ORCDBMAIN-EXT.
-           EXIT.
-      *
-      *****************************************************************
+      *****************************************************`PN@`PN@ ******
       *    £Ð£Õ£Ô¡¡½èÍý
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *
-           MOVE   "PUTWINDOW"          TO  MCP-FUNC
-           PERFORM 900-ORCDBMAIN-SEC
-           .
+           MOVE   "PUTWINDOW"       TO  MCP-FUNC.
+           CALL   "ORCMCPSUB"   USING
+                                MCPAREA
+                                ORCMCPAREA
+                                MCPDATA-REC.
       *
+           .
        900-PUT-WINDOW-EXT.
            EXIT.
+      *
+      *
