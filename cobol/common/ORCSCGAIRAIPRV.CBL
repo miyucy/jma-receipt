@@ -827,7 +827,8 @@
                   (SYU-DENPNUM         =   ZERO )
       *        システム管理より、伝票番号を取得する
       *----> take mod st
-               CONTINUE
+               ADD     1               TO  WRK-DENPNUM
+      *        CONTINUE
       *        PERFORM 45001-DENPNUM-SET-SEC
       *----> take mod ed
       ******** IF      SPA-ERRCD       NOT =   SPACE
