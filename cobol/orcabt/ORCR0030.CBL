@@ -220,6 +220,7 @@
       *  02.06.11    NACL-Æ£¸¶    05/08/22  ¸¡ÂÎ¸¡ºº¥³¥á¥ó¥È¤ÎÄÉ²Ã
       *  02.06.12    NACL-ÌçÏÆ    05/09/22  Á´¹ñÅÚÌÚ·úÃÛ¡¢Á´¹ñÈÄ¶â¶È¡Ü
       *                                     Àº¿À¡¢·ë³ËÂÐ±þ
+      *  02.06.13    NACL-ÌçÏÆ    05/09/28  Åçº¬¸©ÃÏÊý¸øÈñ£±£°·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -5256,6 +5257,29 @@
              END-PERFORM
       *
            END-IF
+      *
+      *    Åçº¬¸©ÆýÍÄ»ù¡¦Ê¡»ã
+      *
+           EVALUATE   SYS-1001-PREFNUM
+      *
+             WHEN    "32"
+      *
+               IF   RECE02-SRYYM    >=   "200510"
+      *
+                   IF  ( RECE02-HKNNUM       NOT = SPACE    )
+                   AND ( RECE02-KOHNUM(1)(1:1)   =  "0"     )
+                   AND ( RECE02-KOHNUM(2)(1:1)
+                                           >= "1" AND <= "8")
+                   AND ( RECE02-TOTALTEN(1)  NOT =
+                                          RECE02-TOTALTEN(2))
+                      COMPUTE  RECE02-TOTALTEN(3) =
+                               RECE02-TOTALTEN(1) -
+                               RECE02-TOTALTEN(2)
+                   END-IF
+      *
+               END-IF
+      *
+           END-EVALUATE
       *
            .
        2111-ICHIBUFUTAN-OKIKAE-EXT.
