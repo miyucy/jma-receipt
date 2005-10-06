@@ -70,6 +70,7 @@
       *  01.02.15    NACL-Æ£¸¶    05/08/22  ¸¡ÂÎ¸¡ºº¥³¥á¥ó¥È¤ÎÄÉ²Ã
       *  01.02.16    NACL-ÌçÏÆ    05/09/13  Æþ±¡ÅÀÅ©¥³¥á¥ó¥È¤Ë´Ø¤¹¤ë½¤Àµ
       *  01.02.17    NACL-ÌçÏÆ    05/08/29  £°£¹£µ£¹£³¤Î¥³¥á¥ó¥ÈÂÐ±þ
+      *  01.02.18    NACL-ÌçÏÆ    05/10/06  ¿Ç¶è£¹£µ£¹£¶ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1039,7 +1040,11 @@
                PERFORM  UNTIL
                   (FLG-SRYACCT        =    1)
       *
-                 MOVE   ZERO          TO  FLG-RINYAK
+                MOVE   ZERO          TO  FLG-RINYAK
+      *
+                IF    ACCT-SRYKBN       =  "95"  OR  "96"
+                 CONTINUE
+                ELSE
       *
       *          Ì¤¼Â»Ü¸º»»¡¦Æü¾ïÀ¸³è¾ã³²²Ã»»¡¦ÃÔÊò²Ã»»¡¦
       *          êóáì´µ¼Ô´ÉÍý²Ã»»¤ò½ü¤¯
@@ -1177,8 +1182,9 @@
                        END-IF
                    END-IF
                  END-IF
-                 MOVE     "SRYACCT-KEY22"  TO   ORC-DBPATH
-                 PERFORM   900-SRYACCT-READ-SEC
+                END-IF
+                MOVE     "SRYACCT-KEY22"  TO   ORC-DBPATH
+                PERFORM   900-SRYACCT-READ-SEC
                END-PERFORM
            END-IF
       *

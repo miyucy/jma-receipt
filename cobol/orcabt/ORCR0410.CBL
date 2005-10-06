@@ -56,6 +56,7 @@
       *  01.01.07    NACL-ÌçÏÆ    05.08.18  Å¾µ¢»öÍ³ÊÔ½¸½¤Àµ
       *  01.01.08    NACL-ÌçÏÆ    05.09.06  ¼«ÇåÀÕ½¾ÍèÍÍ¼°ÂÐ±þ
       *  01.01.09    NACL-ÌçÏÆ    05.09.13  ¡ÊÆÃ¡ËÂÐ¾Ý¤ÎÊÔ½¸½¤Àµ
+      *  01.01.10    NACL-ÌçÏÆ    05.10.06  ¿Ç¶è£¹£µ£¹£¶ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1442,7 +1443,10 @@
       *
                  END-IF
       *
-                 PERFORM   VARYING   IDY   FROM   1   BY   1
+                 IF    ACCT-SRYKBN       =  "95"  OR  "96"
+                    CONTINUE
+                 ELSE
+                    PERFORM   VARYING   IDY   FROM   1   BY   1
                              UNTIL    (IDY            >       5)  OR
                                       (SRY-SRYCD(IDY) =   SPACE)  
       *
@@ -1504,7 +1508,8 @@
                                     ( WRK-ZAIKAISU-JI * TNS-TEN )
                        END-IF
       *
-                 END-PERFORM
+                    END-PERFORM
+                 END-IF
       *
                  MOVE     "SRYACT-KEY2"    TO   ORC-DBPATH
                  PERFORM   800-SRYACT-READ-SEC

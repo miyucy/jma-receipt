@@ -94,6 +94,7 @@
       *  01.02.12    NACL-ÌçÏÆ    05/08/22  ¥ê¥Ï¥Ó¥ê¼Â»Ü²ó¿ôº¹¤·¹þ¤ß½¤ÀµÂÐ±þ
       *  01.02.13    NACL-Æ£¸¶    05/08/22  ¸¡ÂÎ¸¡ºº¥³¥á¥ó¥È¤ÎÄÉ²Ã
       *  01.02.14    NACL-ÌçÏÆ    05/08/29  £°£¹£µ£¹£³¤Î¥³¥á¥ó¥ÈÂÐ±þ
+      *  01.02.15    NACL-ÌçÏÆ    05/10/06  ¿Ç¶è£¹£µ£¹£¶ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -905,8 +906,11 @@
                PERFORM  800-SRYACCT-READ-SEC
                PERFORM  UNTIL     FLG-SRYACCT   =   1 
       *
-                   MOVE   ZERO          TO  FLG-RINYAK
+                 MOVE   ZERO          TO  FLG-RINYAK
       *
+                 IF    ACCT-SRYKBN       =  "95"  OR  "96"
+                   CONTINUE
+                 ELSE
                    IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
                         (ACCT-ZAIKAISU  NOT =    ZERO)
                                MOVE    ZERO    TO      WRK-TEN
@@ -1028,9 +1032,10 @@
                                END-IF
                              END-IF
                    END-IF
+                 END-IF
       *
-                   MOVE     "SRYACCT-KEY24"  TO   ORC-DBPATH
-                   PERFORM   800-SRYACCT-READ-SEC
+                 MOVE     "SRYACCT-KEY24"  TO   ORC-DBPATH
+                 PERFORM   800-SRYACCT-READ-SEC
                END-PERFORM
            END-IF
       *
@@ -4251,8 +4256,11 @@
                PERFORM  800-SRYACCT-READ-SEC
                PERFORM  UNTIL     FLG-SRYACCT   =   1 
       *
-                   MOVE   ZERO          TO  FLG-RINYAK
+                 MOVE   ZERO          TO  FLG-RINYAK
       *
+                 IF    ACCT-SRYKBN       =  "95"  OR  "96"
+                   CONTINUE
+                 ELSE
                    MOVE   RECE41-TEKSTYMD(7:2)   TO   WRK-DAY
                    IF  ACCT-DAY(1 WRK-DAY)   NOT =    ZERO
                         MOVE    1       TO   FLG-DAY
@@ -4389,8 +4397,9 @@
                              END-IF
                            END-IF
                    END-IF
-                   MOVE     "SRYACCT-KEY24"  TO   ORC-DBPATH
-                   PERFORM   800-SRYACCT-READ-SEC
+                 END-IF
+                 MOVE     "SRYACCT-KEY24"  TO   ORC-DBPATH
+                 PERFORM   800-SRYACCT-READ-SEC
                END-PERFORM
            END-IF
       *

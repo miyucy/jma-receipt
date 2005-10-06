@@ -41,6 +41,7 @@
       *  01.01.05    NACL-ÌçÏÆ    05/03/03  ¿©»ö¤Ë´Ø¤¹¤ëÊÔ½¸½¤Àµ
       *  01.01.06    NACL-ÌçÏÆ    05/05/16  ÎÅÍÜÃ´Åö¼êÅö¡ÊËÌ³¤Æ»¡ËÂÐ±þ
       *  01.01.07    NACL-ÌçÏÆ    05.09.06  ¼«ÇåÀÕ½¾ÍèÍÍ¼°ÂÐ±þ
+      *  01.01.08    NACL-ÌçÏÆ    05.10.06  ¿Ç¶è£¹£µ£¹£¶ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1692,7 +1693,10 @@
       *
                  END-IF
       *
-                 PERFORM   VARYING   SRYACT-IDX   FROM   1   BY   1
+                 IF    ACCT-SRYKBN       =  "95"  OR  "96"
+                   CONTINUE
+                 ELSE
+                   PERFORM   VARYING   SRYACT-IDX   FROM   1   BY   1
                          UNTIL    (SRYACT-IDX            >       5)  OR
                                   (SRY-SRYCD(SRYACT-IDX) =   SPACE)  
       *
@@ -1771,7 +1775,8 @@
                                                 ORCMCPAREA
                                                 MCPDATA-REC
       *
-                 END-PERFORM
+                   END-PERFORM
+                 END-IF
       *
                  MOVE     "SRYACT-KEY9"    TO   ORC-DBPATH
                  PERFORM   900-SRYACT-READ-SEC
