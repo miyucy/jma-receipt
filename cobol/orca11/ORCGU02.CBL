@@ -3665,6 +3665,8 @@
            END-EVALUATE
       *
            MOVE    SPACE               TO  LINKAREA
+           MOVE    "U02"               TO  SPA-MOTOPG
+           MOVE    "U02"               TO  SPA-SAKIPG
            MOVE    SPA-KYOUTU          TO  LNK-COMMON
            MOVE    SPA-U02             TO  LNK-SCRSPA
       *
