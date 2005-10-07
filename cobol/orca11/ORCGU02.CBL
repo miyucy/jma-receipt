@@ -115,6 +115,7 @@
            03  FLG-CHK                 PIC 9(01).
            03  FLG-HKNOK               PIC 9(01).
       *    ¥æ¡¼¥¶¥×¥í¥°¥é¥àµ¯Æ°
+           03  FLG-GMN                 PIC 9(01).
            03  FLG-USERPG              PIC 9(01).
       *
       *    Åº»úÎÎ°è
@@ -3178,10 +3179,10 @@
            IF      FLG-END             =   ZERO
       *
                MOVE    WRK-SPA-KYOUTU          TO  SPA-KYOUTU
-      *
-               PERFORM 493-CLEAR-SEC  
-               PERFORM 3101-UKETU-HEN-SEC
            END-IF
+      *
+           PERFORM 493-CLEAR-SEC  
+           PERFORM 3101-UKETU-HEN-SEC
            .
        49001-KOUSIN-EXT.
            EXIT.   
@@ -3655,6 +3656,14 @@
       *****************************************************************
        49071-XD01-SYORI-SEC              SECTION.
       *
+           EVALUATE    SPA-MOTOPG
+      *        £Ã£Ì£Á£É£Í²èÌÌ¤è¤ê
+               WHEN    "U02X"
+                   MOVE    1               TO  FLG-GMN
+               WHEN    OTHER 
+                   MOVE    ZERO            TO  FLG-GMN
+           END-EVALUATE
+      *
            MOVE    SPACE               TO  LINKAREA
            MOVE    SPA-KYOUTU          TO  LNK-COMMON
            MOVE    SPA-U02             TO  LNK-SCRSPA
@@ -3672,7 +3681,11 @@
       *****INITIALIZE                  SPA-KYOTUKEY
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
       *
-           MOVE   "CHANGE"             TO  MCP-PUTTYPE
+           IF      FLG-GMN             =   ZERO
+               MOVE   "CHANGE"             TO  MCP-PUTTYPE
+           ELSE
+               MOVE    "JOIN"              TO  MCP-PUTTYPE
+           END-IF
            MOVE   "XD01   "            TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
