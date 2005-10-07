@@ -1732,7 +1732,7 @@
            END-PERFORM
       *
            IF    ( SPA-S01-SYORINO     =   CONST-PROC-RRKSYU )
-               IF    ( SPA-NAI-DENPJTIKBN  =   "1" OR "2" OR "8" )
+               IF    ( SPA-NAI-DENPJTIKBN  =   "1" OR "2" OR "8" OR "9")
                    CONTINUE
                ELSE
       *
@@ -1829,7 +1829,7 @@
            IF    ( SPA-ERRCD       =   SPACE )
                IF    ( SPA-S01-SYORINO     =   CONST-PROC-RRKSYU )
                    IF    ( SPA-NAI-TJOUTAIKBN (SPA-GMN-SELNUM)
-                                           =   "1" OR "2" OR "8" )
+                                           =   "1" OR "2" OR "8" OR "9")
                        CONTINUE
                    ELSE
                        MOVE    "0009"  TO  SPA-ERRCD
@@ -2506,6 +2506,8 @@
                MOVE    "1005"          TO  SPA-ERRCD
            ELSE
       *
+               PERFORM 900-SYUNOU-KEY-SEL-SEC
+      *
       *        ÆþÊÖ¶â³Û
                MOVE    SPA-GMN-NYUKIN      TO  SMEI-NYUHEN-MONEY
       *
@@ -2526,8 +2528,16 @@
       *
       *        ÅÁÉ¼¾õÂÖ¶èÊ¬
                IF    ( SPA-NAI-DENPJTIKBN  NOT = "8" )
-                   IF    ( SPA-GMN-NYUKIN  NOT = ZERO )
-                       MOVE    "2"     TO  SMEI-JOUTAIKBN
+                   IF    ( SPA-NAI-DENPJTIKBN  = "9" )
+                       IF   (  SYU-SKYMONEY    >   SYU-NYUKIN-TOTAL )
+                           MOVE    "9"     TO  SMEI-JOUTAIKBN
+                       ELSE
+                           MOVE    "1"     TO  SMEI-JOUTAIKBN
+                       END-IF
+                   ELSE
+                       IF    ( SPA-GMN-NYUKIN  NOT = ZERO )
+                           MOVE    "2"     TO  SMEI-JOUTAIKBN
+                       END-IF
                    END-IF
                END-IF 
       *
