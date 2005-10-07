@@ -20,7 +20,7 @@
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 診療行為入力
-      *  コンポーネント名  : 外来用マスタ更新処理(K03で使用）
+      *  コンポーネント名  : 外来用マスタ更新処理(K08で使用）
       *                    : リアルタイムプレビュー用
       *                    : 実DBではなくtmpDBを更新する
       *                    :(内容はORCSCGAIRAIと同じ)
@@ -183,6 +183,10 @@
       *
            03  WRK-PATH                    PIC X(64).
            03  WRK-MEIBAN                  PIC 9(03).
+           03  WRK-MCP-PATH.
+               04  WRK-MCP-BLOCKS  PIC S9(9)   BINARY.
+               04  WRK-MCP-RNAME   PIC S9(9)   BINARY.
+               04  WRK-MCP-PNAME   PIC S9(9)   BINARY.
       *
            03  WRK-DENPNUM                 PIC 9(07).
            03  WRK-KA-DENPNUM              PIC 9(07).
@@ -1642,22 +1646,32 @@
            MOVE    WRK-SRYKA           TO  JYURRK-SRYKA
            MOVE    SPA-SRYYMD          TO  JYURRK-SRYYMD
            IF      WRK-RENNUM          =   ZERO
-               MOVE    "JYURRK-KEY4"       TO  WRK-PATH
+               MOVE    PATH-TBL-JYURRK-PRV-KEY4
+                                           TO  WRK-MCP-PATH
+      *        MOVE    "JYURRK-KEY4"       TO  WRK-PATH
            ELSE
                MOVE    WRK-RENNUM          TO  JYURRK-RENNUM
-               MOVE    "JYURRK-KEY5"       TO  WRK-PATH
+      *        MOVE    "JYURRK-KEY5"       TO  WRK-PATH
+               MOVE    PATH-TBL-JYURRK-PRV-KEY5
+                                           TO  WRK-MCP-PATH
            END-IF
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
+      *    MOVE    WRK-PATH            TO  ORC-DBPATH
+      *    CALL    "ORCMCPSUB"          USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      *                                 MCPDATA-REC
+           MOVE    WRK-MCP-PATH         TO  MCP-PATH
+           CALL    "MCPSUB"             USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    WRK-PATH            TO  ORC-DBPATH
-               PERFORM 970-JYURRK-NEXT-SEC
+      *        MOVE    WRK-PATH            TO  ORC-DBPATH
+      *        PERFORM 970-JYURRK-NEXT-SEC
+               MOVE    WRK-MCP-PATH        TO  MCP-PATH
+               PERFORM 970-JYURRK-NEXT2-SEC
            ELSE
                MOVE    1                   TO  FLG-JYURRK
            END-IF
@@ -1673,12 +1687,16 @@
       *                                    WRK-JYURRK-DOUJI-RENNUM
       *!       END-IF
       *
-               MOVE    WRK-PATH            TO  ORC-DBPATH
-               PERFORM 970-JYURRK-NEXT-SEC
+      *        MOVE    WRK-PATH            TO  ORC-DBPATH
+      *        PERFORM 970-JYURRK-NEXT-SEC
+               MOVE    WRK-MCP-PATH        TO  MCP-PATH
+               PERFORM 970-JYURRK-NEXT2-SEC
            END-PERFORM
       *
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           PERFORM 990-DBCLOSE-SEC
+      *    MOVE    WRK-PATH            TO  ORC-DBPATH
+      *    PERFORM 990-DBCLOSE-SEC
+           MOVE    WRK-MCP-PATH        TO  MCP-PATH
+           PERFORM 990-DBCLOSE2-SEC
       *
       *    連番の設定
            IF      WRK-RENNUM          =   ZERO
