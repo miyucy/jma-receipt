@@ -212,7 +212,7 @@
            END-IF
       *
            IF      FLG-END             =   ZERO
-               MOVE    SPACE               TO  LINKAREA
+               MOVE    SPACE               TO  LNK-KYOUTU
       *
                MOVE   SPACE                TO  MCP-PUTTYPE
                MOVE   "XD01"               TO  MCP-WINDOW
@@ -971,10 +971,12 @@
       *****************************************************************
        210-BACK                        SECTION.
       *
-           MOVE    SPA-MAE-MOTOPG      TO  SPA-SAKIPG
+           MOVE    LNK-COMMON          TO  SPA-KYOUTU
+      *
+      **** MOVE    SPA-MAE-MOTOPG      TO  SPA-SAKIPG
            MOVE    "XD01"              TO  SPA-MOTOPG
       *
-           MOVE    SPACE               TO  LINKAREA
+           MOVE    SPACE               TO  LNK-KYOUTU
            INITIALIZE                  SPA-KYOTUKEY
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
       *
