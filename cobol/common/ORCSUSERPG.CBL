@@ -96,11 +96,8 @@
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
       *
-           PERFORM 100-SYSKANRI-CHK-SEC
-           IF      FLG-OK              =   1
-      *        ユーザプログラム起動
-               PERFORM 200-SHELL-SYORI-SEC
-           END-IF
+      *    ユーザプログラム起動
+           PERFORM 100-SHELL-SYORI-SEC
       *
            .
        000-PROC-EXT.
@@ -108,58 +105,12 @@
            .
       *
       *****************************************************************
-      *    ユーザプログラム起動チェク処理
-      *****************************************************************
-       100-SYSKANRI-CHK-SEC             SECTION.
-      *
-           MOVE    SPACE               TO  SYS-9700-REC
-           INITIALIZE                      SYS-9700-REC
-           MOVE    "9700"              TO  SYS-9700-KANRICD
-           STRING  ORCSUSERPG-GMNPG    DELIMITED BY  SPACE
-                   "%"                 DELIMITED BY  SIZE
-                                   INTO    SYS-9700-KBNCD
-           END-STRING
-           MOVE    "00000000"          TO  SYS-9700-STYUKYMD
-           MOVE    "99999999"          TO  SYS-9700-EDYUKYMD
-           MOVE    SYS-9700-REC        TO  MCPDATA-REC
-           MOVE    PATH-TBL-SYSKANRI-KEY   TO  MCP-PATH
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    PATH-TBL-SYSKANRI-KEY   TO  MCP-PATH
-               PERFORM 990-SYSKANRI-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-SYSKANRI
-           END-IF
-           MOVE    ZERO                TO  FLG-OK
-           PERFORM UNTIL   (FLG-SYSKANRI   =   1 )  OR
-                           (FLG-OK         =   1 )
-               MOVE    MCPDATA-REC         TO  SYS-9700-REC
-               IF      SYS-9700-KBNCD      =   ORCSUSERPG-GMNPG
-                   MOVE    1                   TO  FLG-OK
-               ELSE
-                   MOVE    PATH-TBL-SYSKANRI-KEY   TO  MCP-PATH
-                   PERFORM 990-SYSKANRI-READ-SEC
-               END-IF
-           END-PERFORM
-           MOVE    PATH-TBL-SYSKANRI-KEY   TO  MCP-PATH
-           PERFORM 990-DBCLOSE-SEC
-      *
-           .
-       100-SYSKANRI-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    ユーザプログラム起動処理
       *****************************************************************
-       200-SHELL-SYORI-SEC             SECTION.
+       100-SHELL-SYORI-SEC             SECTION.
       *
-           IF      SYS-9700-EXECUTE-SW     =   "1"
-      *        実行可
-      ******** SYS-9700-SHELL
-               CONTINUE
-           END-IF
            .
-       200-SHELL-SYORI-EXT.
+       100-SHELL-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
