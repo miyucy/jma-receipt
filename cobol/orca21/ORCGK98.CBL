@@ -127,6 +127,8 @@
                05  WRK-SEMM        PIC 9(02).
                05  WRK-SEDD        PIC 9(02).
       *
+           03  WRK-STR             PIC 9(06).
+      *
            03  WRK-CNT-ENT         PIC 9(04).
            03  WRK-MOJI            PIC 9(04).
            03  WRK-MAP-INDEX       PIC 9(03).
@@ -508,11 +510,11 @@
            MOVE    ZERO                TO  FLG-MAX
       **** MOVE    SPACE               TO  SPA-K98-SRYKBN
       *    開始
-           IF     (SPA-K98-PAGE        =   ZERO )  OR
-                  (SPA-K98-NEXT        =   ZERO )
+           IF     (SPA-K98-PAGE        =   ZERO )
+      *********OR (SPA-K98-NEXT        =   ZERO )
                MOVE    1                   TO  SPA-K98-PAGE
            END-IF
-           COMPUTE SPA-K98-NEXT        =  (SPA-K98-PAGE   -   1  )
+           COMPUTE WRK-STR             =  (SPA-K98-PAGE   -   1  )
                                        *   200
                                        +   1
       *
@@ -703,7 +705,7 @@
                IF      FLG-CHK             =   ZERO
                    ADD     1               TO  IDX2
       *            次ページの時、表示分は読み飛ばし
-                   IF      IDX2            >=  SPA-K98-NEXT
+                   IF      IDX2            >=  WRK-STR
                        PERFORM 31021-TENSU-HEN-SEC
                    END-IF
                END-IF
@@ -869,7 +871,7 @@
                IF      FLG-CHK             =   ZERO
                    ADD     1               TO  IDX2
       *            次ページの時、表示分は読み飛ばし
-                   IF      IDX2            >=  SPA-K98-NEXT
+                   IF      IDX2            >=  WRK-STR
                        PERFORM 31021-TENSU-HEN-SEC
                    END-IF
                END-IF
@@ -987,7 +989,7 @@
                            IF      FLG-CHK         =   ZERO
                                ADD     1               TO  IDX2
       *                        次ページの時、表示分は読み飛ばし
-                               IF      IDX2            >=  SPA-K98-NEXT
+                               IF      IDX2            >=  WRK-STR
                                    PERFORM 31012-INPUTCD-HEN-SEC
                                END-IF
                            END-IF
@@ -1025,7 +1027,7 @@
       *
            ADD     1               TO  IDX2
       *    次ページの時、表示分は読み飛ばし
-           IF      IDX2            >=  SPA-K98-NEXT
+           IF      IDX2            >=  WRK-STR
                CONTINUE
            ELSE
                GO      TO      31013-SET-HEN-EXT
@@ -1033,7 +1035,7 @@
       *
            ADD     1                   TO  IDX
            IF      IDX                 >   200
-               MOVE    IDX2                TO  SPA-K98-NEXT
+               MOVE    1                   TO  SPA-K98-NEXT
                MOVE    1                   TO  FLG-MAX
            ELSE
                ADD     1                   TO  WRK-CNT-ENT
@@ -1059,7 +1061,7 @@
       *    ２００件オーバーチェック
            IF      IDX                 >   200
                MOVE    1                   TO  FLG-MAX
-               MOVE    IDX2                TO  SPA-K98-NEXT
+               MOVE    1                   TO  SPA-K98-NEXT
                GO      TO      31012-INPUTCD-HEN-EXT
            END-IF
       *
@@ -1265,7 +1267,7 @@
                IF      FLG-CHK             =   ZERO
                    ADD     1               TO  IDX2
       *            次ページの時、表示分は読み飛ばし
-                   IF      IDX2            >=  SPA-K98-NEXT
+                   IF      IDX2            >=  WRK-STR
                        PERFORM 31021-TENSU-HEN-SEC
                    END-IF
                END-IF
@@ -1459,7 +1461,7 @@
                    IF      FLG-CHK             =   ZERO
                        ADD     1               TO  IDX2
       *                次ページの時、表示分は読み飛ばし
-                       IF      IDX2            >=  SPA-K98-NEXT
+                       IF      IDX2            >=  WRK-STR
                            PERFORM 31021-TENSU-HEN-SEC
                        END-IF
                    END-IF
@@ -1528,7 +1530,7 @@
       *    ２００件オーバーチェック
            IF      IDX                 >   200
                MOVE    1                   TO  FLG-MAX
-               MOVE    IDX2                TO  SPA-K98-NEXT
+               MOVE    1                   TO  SPA-K98-NEXT
                GO      TO      31021-TENSU-HEN-EXT
            END-IF
       *
