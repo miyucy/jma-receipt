@@ -1,0 +1,24 @@
+name	orca04;
+
+arraysize	20;
+textsize	400;
+
+bind	""		"OpenCOBOL"	"ORCGXD01";
+bind	"XD01"		"OpenCOBOL"	"ORCGXD01";
+bind	"XDERR"		"OpenCOBOL"	"ORCGXDERR";
+bind	"XDID1"		"OpenCOBOL"	"ORCGXDID1";
+
+multiplex_group	orca04;
+
+
+data	{
+	spa	orcaspa;
+	window	{
+		XD01;
+		XDERR;
+		XDID1;
+	};
+};
+
+#include "orcadb.inc"
+
