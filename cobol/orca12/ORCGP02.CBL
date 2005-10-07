@@ -3093,14 +3093,14 @@
            IF      FLG-USERPG          =   1
                IF      SPA-P02-SYORI       =   1
       *        追加
-                   MOVE    "1"             TO  ORCSUSERPG-SYORI
+                   MOVE    "1"             TO  ORCSUSERPG-SYORI-FLG
                ELSE
       *        更新
-                   MOVE    "2"             TO  ORCSUSERPG-SYORI
+                   MOVE    "2"             TO  ORCSUSERPG-SYORI-FLG
                END-IF
            ELSE
       *        削除
-               MOVE    "3"             TO  ORCSUSERPG-SYORI
+               MOVE    "3"             TO  ORCSUSERPG-SYORI-FLG
            END-IF
            MOVE    SPA-SYSYMD          TO  ORCSUSERPG-SYSYMD
            MOVE    SPA-SYSYMD          TO  ORCSUSERPG-SRYYMD
