@@ -1501,20 +1501,23 @@
                        GO  TO  4105-KBNCD-CHK-EXT
                    END-IF
                WHEN    "1010"
-                   MOVE    5                   TO  WRK-CODE-MAX
-                   IF      WRK-LEN         NOT =   5
-                       MOVE    "0011"          TO  SPA-ERRCD
-                       GO  TO  4105-KBNCD-CHK-EXT
-                   END-IF
-                   IF    ( SPA-GMN-KBNCD (1:1) =   "1" OR  "2"  OR 
-                                                   "3" OR  "4"  OR
-                                                   "5" ) OR
-                           SPA-GMN-KBNCD       =   "00001"
-                       CONTINUE
-                   ELSE  
-                       MOVE    "0012"          TO  SPA-ERRCD
-                       GO  TO  4105-KBNCD-CHK-EXT
-                   END-IF
+                   MOVE    SPACE               TO  SPA-GMN-KBNCD
+                   MOVE    12                  TO  SPA-GMN-CUR
+                   GO  TO  4105-KBNCD-CHK-EXT
+      ************ MOVE    5                   TO  WRK-CODE-MAX
+      *            IF      WRK-LEN         NOT =   5
+      *                MOVE    "0011"          TO  SPA-ERRCD
+      *                GO  TO  4105-KBNCD-CHK-EXT
+      *            END-IF
+      *            IF    ( SPA-GMN-KBNCD (1:1) =   "1" OR  "2"  OR 
+      *                                            "3" OR  "4"  OR
+      *                                            "5" ) OR
+      *                    SPA-GMN-KBNCD       =   "00001"
+      *                CONTINUE
+      *            ELSE  
+      *                MOVE    "0012"          TO  SPA-ERRCD
+      *                GO  TO  4105-KBNCD-CHK-EXT
+      ************ END-IF
       *---- (01.02.02) LINE ADD START --------------------------------
                WHEN    "2004"
                    MOVE    4                   TO  WRK-CODE-MAX
