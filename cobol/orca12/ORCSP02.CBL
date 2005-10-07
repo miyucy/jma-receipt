@@ -351,6 +351,9 @@
       *    ドクター編集変換サブ
            COPY    "CPORCSDRSET.INC".
       *
+      *    ユーザプログラム起動チェックパラメタ
+           COPY    "CPORCSUSERCHK.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
@@ -1216,6 +1219,32 @@
            MOVE    SPA-GMN20-SYOHOU-LST(1)
                                        TO  SPA-GMN20-SYOHOU-G
            MOVE    2                   TO  SPA-SYOHOU-MAX
+      *
+      *    ユーザプログラム起動初期
+           INITIALIZE                      ORCSUSERCHKAREA
+           MOVE    "P02"               TO  ORCSUSERCHK-GMNPG
+           MOVE    "1"                 TO  ORCSUSERCHK-SYORI
+           CALL    "ORCSUSERCHK"       USING
+                                       ORCSUSERCHKAREA
+           MOVE    ORCSUSERCHK-GYOUMU-FLG  TO  SPA-NAI-GYOUMU-FLG
+           MOVE    ORCSUSERCHK-GYOUMU-ARI  TO  SPA-NAI-GYOUMU-ARI
+      *
+           MOVE    "0 Ｕ・Ｐ指示なし"      TO  SPA-GMN-USERPG-LST (1)
+           IF      SPA-NAI-GYOUMU-ARI  =   "1"
+      *        実行するプログラムがある時
+               MOVE    "1 Ｕ・Ｐ指示あり"  TO  SPA-GMN-USERPG-LST (2)
+               MOVE    2                   TO  SPA-USERPG-MAX
+               IF      SPA-NAI-GYOUMU-FLG  =   "1"
+                   MOVE    SPA-GMN-USERPG-LST (2)  TO  SPA-GMN-USERPG-G
+               ELSE
+                   MOVE    SPA-GMN-USERPG-LST (1)  TO  SPA-GMN-USERPG-G
+               END-IF
+           ELSE
+      *        実行するプログラムがない時
+               MOVE    1                   TO  SPA-USERPG-MAX
+               MOVE    SPA-GMN-USERPG-LST (1)  TO  SPA-GMN-USERPG-G
+           END-IF
+      *
       *
            .
        1005-COMB-SET-EXT.
@@ -2650,6 +2679,15 @@
                MOVE    SPA-GMN-HAKKO-LST (IDX)
                                        TO  P02-P02-HAKKO-ITEM (IDX)
                MOVE    IDX             TO  P02-P02-HAKKO-COUNT
+           END-PERFORM
+      *
+      *    Ｕ・Ｐ
+           MOVE    SPA-GMN-USERPG-G    TO  P02-P02-USERPG
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-USERPG-MAX
+               MOVE    SPA-GMN-USERPG-LST (IDX)
+                                       TO  P02-P02-USERPG-ITEM (IDX)
+               MOVE    IDX             TO  P02-P02-USERPG-COUNT
            END-PERFORM
       *
            MOVE    SPA-GMN-TABOO-1         TO  P02-P02-TABOO1

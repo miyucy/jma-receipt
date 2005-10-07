@@ -66,6 +66,8 @@
       *                                     兵庫の１８６公費追加
       *  02.00.15    NACL-多々納  05/03/23  平成１７年４月改正対応
       *                                     （公費負担額に'025'追加）
+      *  02.00.16    NACL-多々納  05/10/07  ユーザプログラム起動追加
+      *  02.00.17    NACL-多々納  05/09/29  特別療養費追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2179,6 +2181,7 @@
       *
            MOVE    P02-TSTPTNUMKBN     TO  SPA-GMN-TSTPTNUMKBN-G
            MOVE    P02-P02-HAKKO       TO  SPA-GMN-HAKKO-G
+           MOVE    P02-P02-USERPG      TO  SPA-GMN-USERPG-G
       *
       *
            IF      P02-P02-POST        =   SPA-MAE-POST
@@ -2388,6 +2391,11 @@
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (SPA-FLG-END         =   ZERO  )
                PERFORM 4101-HAKKO-CHK-SEC
+           END-IF
+      *    Ｕ・Ｐチェック処理
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-FLG-END         =   ZERO  )
+               PERFORM 4101-USERPG-CHK-SEC
            END-IF
       *    保険者番号
            IF     (SPA-ERRCD           =   SPACE )  AND
@@ -3021,11 +3029,33 @@
            IF      FLG-CHK             =   ZERO
                MOVE    "0029"              TO  SPA-ERRCD
                MOVE    6                   TO  SPA-GMN-CUR
-               GO      TO      4101-HAKKO-CHK-EXT
            END-IF
       *
            .
        4101-HAKKO-CHK-EXT.
+           EXIT.
+      *
+      ***************************************************************
+      *    Ｕ・Ｐチェック処理
+      ***************************************************************
+       4101-USERPG-CHK-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-USERPG-MAX
+               IF      SPA-GMN-USERPG  =   SPA-GMN-USERPG-LST(IDX)(1:1)
+                   MOVE    SPA-GMN-USERPG-LST (IDX)
+                                           TO  SPA-GMN-USERPG-G
+                   MOVE    1               TO  FLG-CHK
+               END-IF
+           END-PERFORM
+           IF      FLG-CHK             =   ZERO
+               MOVE    "0901"              TO  SPA-ERRCD
+               MOVE    70                  TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       4101-USERPG-CHK-EXT.
            EXIT.
       *****************************************************************
       *    郵便番号 チェック処理
@@ -3944,7 +3974,7 @@
                    UNTIL      (IDX     >   SPA-PTHKN-MAX )  OR
                               (SPA-ERRCD   NOT =   SPACE )
                IF     (SPA-PTHKN-SAKJOKBN(IDX) =   SPACE    )  AND
-                      (SPA-PTHKN-HKNNUM  (IDX) =   "060" OR "067")
+                      (SPA-PTHKN-HKNNUM  (IDX) =   "060" OR "067" )
                    PERFORM VARYING  IDY     FROM    1   BY  1
                            UNTIL   (IDY     >   SPA-PTKOH-MAX )  OR
                                    (SPA-ERRCD   NOT =   SPACE )
@@ -4083,14 +4113,14 @@
       ****************************************************************
        410331-HKNKOH-JYUFUKU-SEC      SECTION.
       *
-           IF     (SPA-PTKOH-TEKEDYMD (IDY)
+          IF     (SPA-PTKOH-TEKEDYMD (IDY)
                                        <   SPA-PTHKN-TEKSTYMD (IDX)) OR
                   (SPA-PTKOH-TEKSTYMD (IDY)
                                        >   SPA-PTHKN-TEKEDYMD (IDX))
                CONTINUE
            ELSE
       *        生活保護の場合エラー
-               IF      SPA-PTHKN-HKN-SBTKBN (IDY)  =   "5"
+               IF      SPA-PTKOH-HKN-SBTKBN (IDY)  =   "5"
                    MOVE    "0089"              TO  SPA-ERRCD
                END-IF
            END-IF
@@ -5688,6 +5718,8 @@
                   MOVE    "P02_NICKNAME"         TO  MCP-WIDGET
               WHEN    06
                   MOVE    "P02_HAKKO"            TO  MCP-WIDGET
+              WHEN    70
+                  MOVE    "P02_USERPG"           TO  MCP-WIDGET
               WHEN    07
                   MOVE    "TSTPTNUMKBN"          TO  MCP-WIDGET
       *       保険情報
@@ -5846,6 +5878,10 @@
                    MOVE    7           TO  SPA-GMN-CUR
       *    カルテ発行
                WHEN    "P02_HAKKO"
+      *            保険情報へ
+                   MOVE    7           TO  SPA-GMN-CUR
+      *    Ｕ・Ｐ
+               WHEN    "P02_USERPG"
       *            保険情報へ
                    MOVE    7           TO  SPA-GMN-CUR
       *    テスト患者

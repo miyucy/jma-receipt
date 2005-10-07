@@ -398,8 +398,8 @@
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    ユーザプログラム起動サブパラメタ
-           COPY    "CPORCSUSERPG.INC".
+      *    ユーザプログラム起動チェックパラメタ
+           COPY    "CPORCSUSERCHK.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -580,6 +580,21 @@
                    MOVE    "P02"               TO  SPA-P02-GAMEN
                    MOVE    ZERO                TO  SPA-GMN-CUR
       *            各画面を初期編集する
+                   PERFORM 310-SPA-SET-SEC
+      *        ユーザプログラム実行
+               WHEN    "XD01"
+                   MOVE    LNK-COMMON      TO  SPA-KYOUTU
+                   MOVE    LNK-SCRSPA      TO  SPA-P02SCRAREA
+                   MOVE    SPA-WORK        TO  SPA-P02KYOUTU
+      *            各画面を初期編集する
+                   MOVE    SPA-HZN-PTNUM       TO  WRK-HZN-PTNUM
+                   MOVE    SPA-HZN-MOTOPG      TO  WRK-HZN-MOTOPG
+                   INITIALIZE                  SPA-P02SCRAREA
+                   INITIALIZE                  SPA-P02KYOUTU
+                   MOVE    WRK-HZN-PTNUM       TO  SPA-HZN-PTNUM
+                   MOVE    WRK-HZN-MOTOPG      TO  SPA-HZN-MOTOPG
+                   MOVE    "P02"               TO  SPA-P02-GAMEN
+                   MOVE    ZERO                TO  SPA-GMN-CUR
                    PERFORM 310-SPA-SET-SEC
       *        受付、診療行為、患者照会より
                WHEN    "K02"
@@ -1905,6 +1920,11 @@
       *    ユーザプログラム起動
            MOVE    2                   TO  FLG-USERPG
            PERFORM 4907-USERPG-SEC
+           IF      FLG-END             =   1
+      *        排他制御解除処理
+               PERFORM 990-LOCK-OUT-SEC
+               GO      TO      4991-DELETE-SYORI-EXT
+           END-IF
       *
       *****IF      SPA-MACHIPG         =   "U02"  OR  "K02" OR "Q02"
            IF      SPA-HZN-MOTOPG(1:3) =   "U02"  OR  "K02" OR "Q02"
@@ -2581,9 +2601,6 @@
            IF      FLG-CLAIM           =   1
                PERFORM 4906-CLAIM-SOUSIN-SEC
            END-IF
-      *    ユーザプログラム起動
-           MOVE    1                   TO  FLG-USERPG
-           PERFORM 4907-USERPG-SEC
       *
       **** IF      SPA-MACHIPG         =   "U02"  OR  "K02" OR "Q02"
            MOVE    0                   TO  FLG-BACK
@@ -2605,6 +2622,16 @@
                    MOVE    1               TO  FLG-BACK
                END-IF
            END-IF
+      *    ユーザプログラム起動
+           MOVE    1                   TO  FLG-USERPG
+           PERFORM 4907-USERPG-SEC
+           IF      FLG-END             =   1
+      *        排他制御解除処理
+               PERFORM 990-LOCK-OUT-SEC
+               MOVE    ZERO                TO  SPA-KEI-FLG
+               GO      TO      49021-KOUSIN-AFTER-EXT
+           END-IF
+      *
       *****IF      SPA-HZN-MOTOPG(1:3) =   "U02"  OR  "K02" OR "Q02"
       *                                           OR  "I01"
       *        IF     (SPA-HZN-PTNUM       =   SPACE  )
@@ -3086,31 +3113,101 @@
       *****************************************************************
        4907-USERPG-SEC  SECTION.
       *
-      *    ユーザプログラム起動
-           INITIALIZE                  ORCSUSERPGAREA
-           MOVE    "P02"               TO  ORCSUSERPG-GMNPG
-      *
-           IF      FLG-USERPG          =   1
-               IF      SPA-P02-SYORI       =   1
+           EVALUATE    FLG-USERPG
+               WHEN    1
       *        追加
-                   MOVE    "1"             TO  ORCSUSERPG-SYORI-FLG
-               ELSE
+                   IF      SPA-P02-SYORI   =   1
+                       MOVE    1               TO  SPA-SYORI-FLG
+                   ELSE
       *        更新
-                   MOVE    "2"             TO  ORCSUSERPG-SYORI-FLG
-               END-IF
-           ELSE
+                       MOVE    2               TO  SPA-SYORI-FLG
+                   END-IF
+               WHEN    2
       *        削除
-               MOVE    "3"             TO  ORCSUSERPG-SYORI-FLG
+                   MOVE    3               TO  SPA-SYORI-FLG
+           END-EVALUATE
+           IF      SPA-GMN-USERPG      =   "1"
+      *        ユーザプログラム実行画面表示へ
+               PERFORM 49071-XD01-SYORI-SEC
+           ELSE
+               IF      SPA-NAI-GYOUMU-ARI  =   "1"
+      *            起動するユーザプログラムある時、実行
+                   INITIALIZE                      ORCSUSERCHKAREA
+                   MOVE    "P02"               TO  ORCSUSERCHK-GMNPG
+                   MOVE    "2"                 TO  ORCSUSERCHK-SYORI
+                   MOVE    SPA-SYSYMD          TO  ORCSUSERCHK-SYSYMD
+                   MOVE    SPA-SYSYMD          TO  ORCSUSERCHK-SRYYMD
+                   MOVE    SPA-GMN-PTID        TO  ORCSUSERCHK-PTID
+                   MOVE    SPA-GMN-PTNUM       TO  ORCSUSERCHK-PTNUM
+                   MOVE    SPACE               TO  ORCSUSERCHK-SRYKA
+                   MOVE    SPACE               TO  ORCSUSERCHK-HKNCOMBI
+                   MOVE    SPACE               TO  ORCSUSERCHK-DRCD
+                   MOVE    SPA-SYORI-FLG       TO  ORCSUSERCHK-SYORI-FLG
+                   CALL    "ORCSUSERCHK"       USING
+                                               ORCSUSERCHKAREA
+               END-IF
            END-IF
-           MOVE    SPA-SYSYMD          TO  ORCSUSERPG-SYSYMD
-           MOVE    SPA-SYSYMD          TO  ORCSUSERPG-SRYYMD
-           MOVE    SPA-GMN-PTID        TO  ORCSUSERPG-PTID
-           MOVE    SPA-GMN-PTNUM       TO  ORCSUSERPG-PTNUM
-      *
-           CALL    "ORCSUSERPG"        USING   ORCSUSERPGAREA
       *
            .
        4907-USERPG-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ユーザプログラム実行画面表示処理
+      *****************************************************************
+       49071-XD01-SYORI-SEC              SECTION.
+      *
+      *    パラメタファイル削除
+           PERFORM 992-PARA-DEL-SEC
+      *
+           IF      FLG-BACK            =   ZERO
+               MOVE    "P02"               TO  SPA-SAKIPG
+               MOVE    "P02"               TO  SPA-MOTOPG
+           ELSE
+               MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
+               MOVE    SPA-GMN-PTID        TO  SPA-PTID
+               MOVE    SPACE               TO  SPA-ERRMSG
+      *        更新後、元の画面へ
+               IF      SPA-HZN-MOTOPG(1:3) =   "U02"  OR  "K02" OR "Q02"
+                                               OR  "I01"
+                   MOVE    SPA-HZN-MOTOPG      TO  SPA-SAKIPG
+                   MOVE    "P02"               TO  SPA-MOTOPG
+                   MOVE    SPACE               TO  SPA-MOTOPG2
+               ELSE
+                   MOVE    "P02"               TO  SPA-SAKIPG
+                   MOVE    "P02"               TO  SPA-MOTOPG
+               END-IF
+           END-IF
+           MOVE    SPACE               TO  LINKAREA
+           MOVE    SPA-KYOUTU          TO  LNK-COMMON
+           MOVE    SPA-P02SCRAREA      TO  LNK-SCRSPA
+      *
+           MOVE    SPA-GMN-PTID        TO  SPA-PTID
+           MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
+           MOVE    SPACE               TO  SPA-SRYKA
+           MOVE    SPACE               TO  SPA-HKNCOMBINUM
+           MOVE    SPACE               TO  SPA-DRCD
+           MOVE    SPACE               TO  SPA-SRYYMD
+      *
+      *    画面移行用のパラメタ変更
+           MOVE    "P02"               TO  SPA-MOTOPG
+           MOVE    "XD01"              TO  SPA-SAKIPG
+      *****INITIALIZE                  SPA-KYOTUKEY
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+      *
+           IF     (FLG-CLAIM-OK        =   ZERO )  AND
+                  (SPA-KEI-FLG         =   ZERO )
+               MOVE   "CHANGE"             TO  MCP-PUTTYPE
+           ELSE
+               MOVE    "JOIN"              TO  MCP-PUTTYPE
+           END-IF
+           MOVE   "XD01   "            TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+           .
+       49071-XD01-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3307,6 +3404,9 @@
                                                TO  SPA-ERRMSG
                WHEN    "0029"
                    MOVE    "カルテ発行区分が違います。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0901"
+                   MOVE    "ユーザプログラム起動表示行区分が違います。"
                                                TO  SPA-ERRMSG
                WHEN    "0030"
                    MOVE    "すべて全角で入力して下さい。"

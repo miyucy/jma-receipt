@@ -32,6 +32,7 @@
       *  02.00.05    NACL-多々納  03/03/24  公費負担額追加
       *  02.00.06    NACL-多々納  03/05/12  自費請求区分追加
       *  02.00.07    NACL-多々納  05/09/13  入金方法追加
+      *  02.00.08    NACL-多々納  05/10/07  Ｕ・Ｐ追加
       *****************************************************************
        01  SPA-P02SCRAREA.
       *
@@ -77,6 +78,15 @@
                        09  SPA-GMN-HAKKOMEI        PIC X(14).
                    07  SPA-GMN-HAKKO-COB.
                        09  SPA-GMN-HAKKO-LST       PIC X(16)  OCCURS 2.
+      *           ユーザプログラム起動
+                   07  SPA-GMN-USERPG-G.
+                       09  SPA-GMN-USERPG          PIC X(01).
+                       09  SPA-GMN-USERPG-H        PIC X(01).
+                       09  SPA-GMN-USERPG-MEI      PIC X(18).
+                   07  SPA-GMN-USERPG-COB.
+                       09  SPA-GMN-USERPG-LST      PIC X(20)  OCCURS 2.
+                   07  SPA-USERPG-MAX              PIC 9(04).
+      *
       *            診療科
                    07  SPA-GMN-SRYKA-G.
                        09  SPA-GMN-SRYKA           PIC X(02).
@@ -372,6 +382,9 @@
                        09 SPA-B75-YY               PIC 9(04).
                        09 SPA-B75-MM               PIC 9(02).
                        09 SPA-B75-DD               PIC 9(02).
+      *        ユーザプログラム起動フラグ
+                   07  SPA-NAI-GYOUMU-FLG          PIC X(01).
+                   07  SPA-NAI-GYOUMU-ARI          PIC X(01).
       *            保険表示連番
       **************7  SPA-NAI-HKNEDANUM       PIC 9(04).
       *

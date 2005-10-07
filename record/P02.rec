@@ -401,6 +401,13 @@ P02	{
 					count	int;
 					item	varchar(23)[99];
 				};
+				P02_USERPG_COB	{
+					P02_USERPG	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[2];
+				};
 			};
 			FP3	{
 				P027_SELNUM	{
