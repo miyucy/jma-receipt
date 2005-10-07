@@ -52,19 +52,62 @@
                05  SPA-GMN-CUR         PIC 9(03).
       *
       *        起動画面
+               05  SPA-GMN-GYOUMUMEI-G.
+                   07  SPA-GMN-GYOUMUMEI          PIC X(40).
+      *
+      *        起動画面
                05  SPA-GMN-GYOUMU-TBL.
-                   07  SPA-GMN-GYOUMU-OCC   OCCURS   20.
-                       09  SPA-GMN-GYOUMUMEI      PIC X(20).
-                       09  SPA-GMN-GYOUMUID       PIC X(08).
+                   07  SPA-GMN-GYOUMU-OCC   OCCURS   25.
+                       09  SPA-GMN-GYOUMUMEIL     PIC X(40).
+      *
+                       09  SPA-NAI-GYOUMUIDL      PIC X(10).
                05  SPA-GYOUMU-MAX      PIC 9(03).
+      *        起動画面初期表示
+               05  SPA-GMN-GYOUMUFLG-G.
+                   07  SPA-GMN-GYOUMUFLG           PIC X(01).
+                   07  SPA-GMN-GF1                 PIC X(01).
+                   07  SPA-GMN-GYOUMUFLG-MEI       PIC X(18).
+      *        起動画面初期表示
+               05  SPA-GMN-GYOUMUFLG-LSTG.
+                   07  SPA-GMN-GYOUMUFLG-LST       PIC X(20)
+                                                   OCCURS   2.
+      *
       *        実行スクリプト
                05  SPA-GMN-SHELL-TBL.
-                   07  SPA-GMN-SHELL-OCC   OCCURS   20.
+                   07  SPA-GMN-SHELL-OCC   OCCURS   10.
+                       09  SPA-GMN-SYORINM       PIC X(30).
                        09  SPA-GMN-SHELL         PIC X(100).
+                       09  SPA-GMN-PRTNM         PIC X(16).
+      *
+                       09  SPA-GMN-TYPE-G.
+                           11  SPA-GMN-TYPE          PIC X(01).
+                           11  SPA-GMN-TYPEF1        PIC X(01).
+                           11  SPA-GMN-TYPE-MEI      PIC X(18).
       *
                        09  SPA-GMN-EXECUTE       PIC X(01).
-                       09  SPA-GMN-EXECUTE-MEI   PIC X(04).
+                       09  SPA-GMN-EXECUTE-MEI   PIC X(10).
                        09  SPA-GMN-CHK           PIC X(01).
+                   07  SPA-TBL-MAX               PIC 9(04).
+      *
+               05  SPA-GMN-TYPE-LSTG.
+                   07  SPA-GMN-TYPE-LST          PIC X(20)
+                                                 OCCURS   2.
+                   07  SPA-TYPE-MAX              PIC 9(04).
+      *
+               05  SPA-NAI-AREA.
+                   07  SPA-NAI-GYOUMUID          PIC X(10).
+                   07  SPA-NAI-KANRICD             PIC X(04).
+                   07  SPA-NAI-KBNCD               PIC X(08).
+                   07  SPA-NAI-GYOUMUIDX           PIC 9(04).
+      *
+               05  SPA-9700-TBL-AREA.
+                   07  SPA-9700-TBL-OCC      OCCURS    25.
+                       09  SPA-9700-GYOUMUID       PIC  X(10).
+                       09  SPA-9700-GYOUMU-KANRICD PIC  X(04).
+      *                指示画面初期表示
+                       09  SPA-9700-GYOUMU-FLG     PIC  X(01).
+      *                指示件数
+                       09  SPA-9700-GYOUMU-CNT     PIC  9(02).
       *
            COPY    "ENUM-VALUE".
       *
@@ -73,6 +116,7 @@
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-CHK             PIC 9(01).
            03  FLG-ERR             PIC 9(01).
+           03  FLG-OK              PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -100,6 +144,8 @@
       *
            03  WRK-MCP-WIDGET      PIC X(64).
       *
+           03  WRK-SYORI-CNT       PIC 9(02).
+      *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-HENYMD.
@@ -118,6 +164,8 @@
            COPY  "CPSYSKANRI.INC".
       *    ユーザプログラム起動
            COPY  "CPSK9700.INC".
+      *    ユーザプログラム起動
+           COPY  "CPSK9701.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -323,20 +371,24 @@
       *
            INITIALIZE   SPA-W97
       *
-           MOVE    "患者登録"          TO  SPA-GMN-GYOUMUMEI (1)
-           MOVE    "P02"               TO  SPA-GMN-GYOUMUID  (1)
-           MOVE    "受付"              TO  SPA-GMN-GYOUMUMEI (2)
-           MOVE    "U02"               TO  SPA-GMN-GYOUMUID  (2)
-           MOVE    "請求確認"          TO  SPA-GMN-GYOUMUMEI (3)
-           MOVE    "K03"               TO  SPA-GMN-GYOUMUID  (3)
+           MOVE    "患者登録  (P02)"   TO  SPA-GMN-GYOUMUMEIL (1)
+           MOVE    "P02"               TO  SPA-NAI-GYOUMUIDL  (1)
+           MOVE    "受付  (U02)"       TO  SPA-GMN-GYOUMUMEIL (2)
+           MOVE    "U02"               TO  SPA-NAI-GYOUMUIDL  (2)
+           MOVE    "請求確認  (K03)"   TO  SPA-GMN-GYOUMUMEIL (3)
+           MOVE    "K03"               TO  SPA-NAI-GYOUMUIDL  (3)
+      *
            MOVE    3                   TO  SPA-GYOUMU-MAX
       *
-      *    初期表示
+      *    業務初期表示
            MOVE    SPACE               TO  SYS-9700-REC
            INITIALIZE                      SYS-9700-REC
            MOVE    "9700"              TO  SYS-9700-KANRICD
+           MOVE    "1%"                TO  SYS-9700-KBNCD
+           MOVE    SPA-SYSYMD          TO  SYS-9700-STYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-9700-EDYUKYMD
            MOVE    SYS-9700-REC        TO  MCPDATA-REC
-           MOVE    PATH-TBL-SYSKANRI-KEY6
+           MOVE    PATH-TBL-SYSKANRI-KEY
                                        TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
@@ -344,50 +396,51 @@
            ELSE
                MOVE    1                   TO  FLG-SYSKANRI
            END-IF
-           PERFORM UNTIL    FLG-SYSKANRI   =   1
+           IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-9700-REC
-               PERFORM 3101-SPA-GMNHEN-SEC
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL       IDX     >   SPA-GYOUMU-MAX
+                   MOVE    SYS-9700-GYOUMUID(IDX)
+                                           TO  SPA-9700-GYOUMUID(IDX)
+                   MOVE    SYS-9700-GYOUMU-FLG(IDX)
+                                           TO  SPA-9700-GYOUMU-FLG(IDX)
+                   MOVE    SYS-9700-GYOUMU-CNT(IDX)
+                                           TO  SPA-9700-GYOUMU-CNT(IDX)
+      *            管理コード
+                   MOVE    SYS-9700-GYOUMU-KANRICD(IDX)
+                                           TO  SPA-9700-GYOUMU-KANRICD
+                                                                (IDX)
+               END-PERFORM
+           ELSE
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL       IDX     >   SPA-GYOUMU-MAX
+                   MOVE    SPA-NAI-GYOUMUIDL(IDX)
+                                           TO  SPA-9700-GYOUMUID(IDX)
+                   MOVE    "0"             TO  SPA-9700-GYOUMU-FLG(IDX)
+                   MOVE    ZERO            TO  SPA-9700-GYOUMU-CNT(IDX)
+               END-PERFORM
       *
-               MOVE    PATH-TBL-SYSKANRI-KEY6  TO  MCP-PATH
-               PERFORM 990-SYSKANRI-READ-SEC
-           END-PERFORM
-           MOVE    PATH-TBL-SYSKANRI-KEY6  TO  MCP-PATH
+               MOVE    "9701"          TO  SPA-9700-GYOUMU-KANRICD (1)
+               MOVE    "9702"          TO  SPA-9700-GYOUMU-KANRICD (2)
+               MOVE    "9703"          TO  SPA-9700-GYOUMU-KANRICD (3)
+           END-IF
+           MOVE    PATH-TBL-SYSKANRI-KEY   TO  MCP-PATH
            PERFORM 990-DBCLOSE-SEC
       *
-      *    実行可否初期設定
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GYOUMU-MAX
-               IF      SPA-GMN-EXECUTE (IDX)   =   "1"
-                   MOVE    "T"             TO  SPA-GMN-CHK (IDX)
-               ELSE
-                   MOVE    "F"             TO  SPA-GMN-CHK (IDX)
-               END-IF
-           END-PERFORM
+           MOVE    "0 表示しない"      TO  SPA-GMN-GYOUMUFLG-LST (1)
+           MOVE    "1 表示する"        TO  SPA-GMN-GYOUMUFLG-LST (2)
+      *
+           MOVE    "1 画面指示"        TO  SPA-GMN-TYPE-LST (1)
+           MOVE    "2 全部実行"        TO  SPA-GMN-TYPE-LST (2)
+           MOVE    2                   TO  SPA-TYPE-MAX
+      *
+           MOVE    10                  TO  SPA-TBL-MAX
+      *
+           MOVE    SPA-GMN-GYOUMUMEIL (1)  TO  SPA-GMN-GYOUMUMEI
       *
            MOVE    1                   TO  SPA-GMN-CUR
            . 
        310-SPASET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    初期表示編集処理
-      *****************************************************************
-       3101-SPA-GMNHEN-SEC              SECTION.
-      *
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GYOUMU-MAX
-               IF      SYS-9700-KBNCD  =   SPA-GMN-GYOUMUID (IDX)
-      *            シェル名
-                   MOVE    SYS-9700-SHELL  TO  SPA-GMN-SHELL (IDX)
-      *            実行可否
-                   MOVE    SYS-9700-EXECUTE-SW 
-                                           TO  SPA-GMN-EXECUTE (IDX)
-                   MOVE    SPA-GYOUMU-MAX  TO  IDX
-               END-IF
-           END-PERFORM
-      *
-           . 
-       3101-SPA-GMNHEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -400,6 +453,9 @@
                WHEN    "CLICKED"       ALSO    "B01"
                    MOVE   "CHANGE"             TO  MCP-PUTTYPE
                    PERFORM 210-BACK
+      *    クリア
+               WHEN    "CLICKED"      ALSO    "B02"
+                   PERFORM 420-CLREA-SEC
       *    登録
                WHEN    "CLICKED"      ALSO    "B12"
                    PERFORM 490-TOUROKU-SEC
@@ -414,16 +470,6 @@
                WHEN    "CLICKED"      ALSO    "EXECUTE08"
                WHEN    "CLICKED"      ALSO    "EXECUTE09"
                WHEN    "CLICKED"      ALSO    "EXECUTE10"
-               WHEN    "CLICKED"      ALSO    "EXECUTE11"
-               WHEN    "CLICKED"      ALSO    "EXECUTE12"
-               WHEN    "CLICKED"      ALSO    "EXECUTE13"
-               WHEN    "CLICKED"      ALSO    "EXECUTE14"
-               WHEN    "CLICKED"      ALSO    "EXECUTE15"
-               WHEN    "CLICKED"      ALSO    "EXECUTE16"
-               WHEN    "CLICKED"      ALSO    "EXECUTE17"
-               WHEN    "CLICKED"      ALSO    "EXECUTE18"
-               WHEN    "CLICKED"      ALSO    "EXECUTE19"
-               WHEN    "CLICKED"      ALSO    "EXECUTE20"
                    PERFORM 410-EXECUTE-CHK-SEC
            END-EVALUATE
       *
@@ -437,10 +483,169 @@
       *
            MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
            MOVE    ZERO                TO  SPA-GMN-CUR
-      *    入力チェック処理
-           PERFORM 410-INPUT-CHK-SEC
+      *
+           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+      *        業務選択
+               WHEN    "ACTIVATE"      ALSO    "GYOUMUMEI"
+                   PERFORM 4001-GYOUMUMEI-CHK-SEC
+      *        画面表示選択
+               WHEN    "ACTIVATE"      ALSO    "GYOUMUFLG"
+                   PERFORM 4002-GYOUMUFLG-CHK-SEC
+      *
+               WHEN    OTHER
+      *            入力チェック処理
+                   PERFORM 410-INPUT-CHK-SEC
+           END-EVALUATE
            .
        200-ENTRY-EXT.
+           EXIT.
+      *****************************************************************
+      *    業務選択チェック処理
+      *****************************************************************
+       4001-GYOUMUMEI-CHK-SEC       SECTION.
+      *
+           MOVE    W97-GYOUMUMEI       TO  SPA-GMN-GYOUMUMEI-G
+      *
+           MOVE    SPACE               TO  SPA-NAI-GYOUMUID
+           MOVE    SPACE               TO  SPA-NAI-KANRICD
+           MOVE    ZERO                TO  SPA-NAI-GYOUMUIDX
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-GYOUMU-MAX )  OR
+                              (FLG-OK  =   1   )
+               IF      SPA-GMN-GYOUMUMEI   =   SPA-GMN-GYOUMUMEIL(IDX)
+                   MOVE    SPA-NAI-GYOUMUIDL (IDX)
+                                           TO  SPA-NAI-GYOUMUID
+                   MOVE    SPA-9700-GYOUMU-KANRICD (IDX)
+                                           TO  SPA-NAI-KANRICD
+                   MOVE    IDX             TO  SPA-NAI-GYOUMUIDX
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    "0001"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-GMN-CUR
+           ELSE
+               PERFORM 40011-GYOUMUGMN-SET-SEC
+               MOVE    2                   TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       4001-GYOUMUMEI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    起動画面毎の画面表示処理
+      *****************************************************************
+       40011-GYOUMUGMN-SET-SEC       SECTION.
+      *
+      *    初期画面表示
+           MOVE    SPA-9700-GYOUMU-FLG (SPA-NAI-GYOUMUIDX)
+                                       TO  SPA-GMN-GYOUMUFLG
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   2   )  OR
+                              (FLG-OK  =   1   )
+               IF      SPA-GMN-GYOUMUFLG   =   SPA-GMN-GYOUMUFLG-LST
+                                                          (IDX)(1:1)
+                   MOVE    SPA-GMN-GYOUMUFLG-LST (IDX)
+                                           TO  SPA-GMN-GYOUMUFLG-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+      *
+           INITIALIZE                      SPA-GMN-SHELL-TBL
+      *    業務初期表示
+           MOVE    SPACE               TO  SYS-9701-REC
+           INITIALIZE                      SYS-9701-REC
+           MOVE    SPA-NAI-KANRICD     TO  SYS-9701-KANRICD
+           MOVE    SPA-SYSYMD          TO  SYS-9701-STYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-9701-EDYUKYMD
+      *
+           MOVE    SYS-9701-REC        TO  MCPDATA-REC
+           MOVE    PATH-TBL-SYSKANRI-KEY2
+                                       TO  MCP-PATH
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               PERFORM 990-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SYSKANRI
+           END-IF
+           MOVE    ZERO                TO  IDX
+           PERFORM UNTIL     (FLG-SYSKANRI     =   1 )
+                          OR (IDX              >=  10 )
+               MOVE    MCPDATA-REC         TO  SYS-9701-REC
+               ADD     1                   TO  IDX
+               MOVE    SYS-9701-SYORINM    TO  SPA-GMN-SYORINM (IDX)
+               MOVE    SYS-9701-SHELL      TO  SPA-GMN-SHELL (IDX)
+               MOVE    SYS-9701-PRTNM      TO  SPA-GMN-PRTNM (IDX)
+               MOVE    SYS-9701-EXECUTE-YTPE
+                                           TO  SPA-GMN-TYPE  (IDX)
+               MOVE    SYS-9701-EXECUTE-SW
+                                           TO  SPA-GMN-EXECUTE  (IDX)
+      *
+               MOVE    PATH-TBL-SYSKANRI-KEY2
+                                           TO  MCP-PATH
+               PERFORM 990-SYSKANRI-READ-SEC
+           END-PERFORM
+           MOVE    PATH-TBL-SYSKANRI-KEY2  TO  MCP-PATH
+           PERFORM 990-DBCLOSE-SEC
+      *
+           MOVE    10                  TO  SPA-TBL-MAX
+      *
+      *    実行可否初期設定
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-TBL-MAX
+               IF      SPA-GMN-EXECUTE (IDX)   =   "1"
+                   MOVE    "T"             TO  SPA-GMN-CHK (IDX)
+               ELSE
+                   MOVE    "F"             TO  SPA-GMN-CHK (IDX)
+               END-IF
+           END-PERFORM
+      *    初期設定
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-TBL-MAX
+               IF      SPA-GMN-TYPE (IDX)  NOT =   SPACE
+                   PERFORM VARYING     IDY     FROM    1   BY  1
+                           UNTIL       IDY     >   SPA-TYPE-MAX
+                       IF      SPA-GMN-TYPE (IDX)  =   SPA-GMN-TYPE-LST
+                                                         (IDY) (1:1)
+                            MOVE    SPA-GMN-TYPE-LST(IDY)
+                                               TO  SPA-GMN-TYPE-G(IDX)
+                       END-IF
+                   END-PERFORM
+               END-IF
+           END-PERFORM
+      *
+           .
+       40011-GYOUMUGMN-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    画面表示チェック処理
+      *****************************************************************
+       4002-GYOUMUFLG-CHK-SEC       SECTION.
+      *
+           MOVE    W97-GYOUMUFLG       TO  SPA-GMN-GYOUMUFLG-G
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   2   )  OR
+                              (FLG-OK  =   1   )
+               IF      SPA-GMN-GYOUMUFLG   =   SPA-GMN-GYOUMUFLG-LST
+                                                          (IDX)(1:1)
+                   MOVE    SPA-GMN-GYOUMUFLG-LST (IDX)
+                                           TO  SPA-GMN-GYOUMUFLG-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    "0002"              TO  SPA-ERRCD
+               MOVE    2                   TO  SPA-GMN-CUR
+           ELSE
+               MOVE    301                 TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       4002-GYOUMUFLG-CHK-EXT.
            EXIT.
       *****************************************************************
       *    入力チェック処理
@@ -462,8 +667,11 @@
        4101-GMN-SPA-SET-SEC       SECTION.
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GYOUMU-MAX
+                   UNTIL       IDX     >   SPA-TBL-MAX
+               MOVE    W97-SYORINM (IDX)   TO  SPA-GMN-SYORINM (IDX)
                MOVE    W97-SHELL (IDX)     TO  SPA-GMN-SHELL (IDX)
+               MOVE    W97-PRTNM (IDX)     TO  SPA-GMN-PRTNM (IDX)
+               MOVE    W97-TYPE  (IDX)     TO  SPA-GMN-TYPE-G (IDX)
            END-PERFORM
       *
            .
@@ -475,27 +683,64 @@
       *****************************************************************
        4102-KIHON-CHK-SEC       SECTION.
       *
-           IF      SPA-ERRCD           =   SPACE
-               PERFORM 41021-SHELL-CHK-SEC
-           END-IF
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-TBL-MAX )  OR
+                              (SPA-ERRCD   NOT =   SPACE )
+      *        処理名が空白の時、行削除
+               IF      SPA-GMN-SYORINM (IDX)   =   SPACE
+                   INITIALIZE                  SPA-GMN-SHELL-OCC (IDX)
+                   MOVE    "F"             TO  SPA-GMN-CHK (IDX)
+               ELSE
+      *            処理名
+                   PERFORM 41021-SYORINM-CHK-SEC
+      *            タイプ名
+                   PERFORM 41021-TYPE-CHK-SEC
+               END-IF
+           END-PERFORM
       *
            .
        4102-KIHON-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    実行スクリプトチェック処理
+      *    処理・帳票名チェック処理
       *****************************************************************
-       41021-SHELL-CHK-SEC            SECTION.
+       41021-SYORINM-CHK-SEC            SECTION.
       *
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GYOUMU-MAX
-               IF      SPA-GMN-SHELL (IDX) =   SPACE
-                   MOVE    "F"         TO  SPA-GMN-CHK (IDX)
-               END-IF
-           END-PERFORM
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    SPA-GMN-SYORINM (IDX)
+                                       TO  KANACHK-MAE-INPUT
+           MOVE    30                  TO  KANACHK-MAX-CNT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-SYORINM (IDX)
       *
            .
-       41021-SHELL-CHK-EXT.
+       41021-SYORINM-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    実行形式チェック処理
+      *****************************************************************
+       41021-TYPE-CHK-SEC            SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL      (IDY     >   SPA-TYPE-MAX ) OR
+                              (FLG-OK  =   1        )
+               IF      SPA-GMN-TYPE (IDX)  =   SPA-GMN-TYPE-LST
+                                                         (IDY) (1:1)
+                    MOVE    SPA-GMN-TYPE-LST(IDY)
+                                               TO  SPA-GMN-TYPE-G(IDX)
+                    MOVE    1                  TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+      *        未選択は１
+               MOVE    SPA-GMN-TYPE-LST(1)     TO  SPA-GMN-TYPE-G(IDX)
+           END-IF
+      *
+           .
+       41021-EXECUTE-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -548,6 +793,17 @@
            EXIT.
       *
       *****************************************************************
+      *    クリア　処理
+      *****************************************************************
+       420-CLREA-SEC                  SECTION.
+      *
+           PERFORM 310-SPASET-SEC
+      *
+           .
+       420-CLREA-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *       登録前処理
       *****************************************************************
        490-TOUROKU-SEC              SECTION.
@@ -555,11 +811,47 @@
       *    入力項目のチェック
            PERFORM 410-INPUT-CHK-SEC
       *
+      *    更新前のチェック
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 420-KOUSIN-CHK-SEC
+           END-IF
+      *
            IF      SPA-ERRCD           =   SPACE
               MOVE    "1001"           TO  SPA-WIDCD
            END-IF
            .
        490-TOUROKU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *       更新前のチェック処理
+      *****************************************************************
+       420-KOUSIN-CHK-SEC           SECTION.
+      *
+           IF     (SPA-NAI-GYOUMUIDX   =   ZERO )  OR
+                  (SPA-NAI-KANRICD     =   SPACE ) OR
+                  (SPA-NAI-GYOUMUID    =   SPACE )
+               MOVE    "0005"          TO  SPA-ERRCD
+               MOVE    1               TO  SPA-GMN-CUR
+           END-IF
+      *    画面表示選択
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4002-GYOUMUFLG-CHK-SEC
+           END-IF
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-TBL-MAX )
+                           OR (SPA-ERRCD   NOT =   SPACE )
+               IF      SPA-GMN-SYORINM(IDX)    NOT =   SPACE
+                   IF      SPA-GMN-SHELL (IDX)     =   SPACE
+                       MOVE    "0004"          TO  SPA-ERRCD
+                       COMPUTE SPA-GMN-CUR     =   300
+                                               +   IDX
+                   END-IF
+               END-IF
+           END-PERFORM
+           .
+       420-KOUSIN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -570,63 +862,175 @@
       *    更新日取得
            CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
       *
+      *    処理・業務データ削除
+           PERFORM 4900-DELETE-SEC
+      *
+           MOVE    ZERO                TO  IDX2
+           MOVE    ZERO                TO  WRK-SYORI-CNT
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GYOUMU-MAX
-      *
-               IF      SPA-GMN-CHK (IDX)   =   "T"
-                   MOVE    "1"             TO  SPA-GMN-EXECUTE (IDX)
+                   UNTIL      (IDX     >   SPA-TBL-MAX )
+                           OR (SPA-ERRCD   NOT =   SPACE )
+               IF      SPA-GMN-SYORINM(IDX)    =   SPACE
+                   CONTINUE
                ELSE
-                   MOVE    "0"             TO  SPA-GMN-EXECUTE (IDX)
+      *            更新処理
+                   PERFORM 4901-KOUSIN-SYORI-SEC
                END-IF
-      *
-               MOVE    SPACE               TO  SYS-9700-REC
-               INITIALIZE                      SYS-9700-REC
-               MOVE    "9700"                  TO  SYS-9700-KANRICD
-               STRING  SPA-GMN-GYOUMUID(IDX)   DELIMITED BY  SPACE
-                       "%"                     DELIMITED BY  SIZE
-                                         INTO  SYS-9700-KBNCD
-               END-STRING
-               MOVE    "00000000"              TO  SYS-9700-STYUKYMD
-               MOVE    "99999999"              TO  SYS-9700-EDYUKYMD
-               MOVE    SYS-9700-REC            TO  MCPDATA-REC
-               MOVE    PATH-TBL-SYSKANRI-KEY   TO  MCP-PATH
-               PERFORM 910-DBSELECT-SEC
-               IF      MCP-RC              =   ZERO
-                   PERFORM 990-SYSKANRI-READ-SEC
-               ELSE
-                   MOVE    1                   TO  FLG-SYSKANRI
-               END-IF
-               MOVE    PATH-TBL-SYSKANRI-KEY   TO  MCP-PATH
-               PERFORM 990-DBCLOSE-SEC
-               IF      FLG-SYSKANRI            =   ZERO
-                   MOVE    MCPDATA-REC             TO  SYS-9700-REC
-      *            実行スクリプト
-                   IF      SPA-GMN-SHELL (IDX)     =   SPACE
-      *                削除
-                       PERFORM 4903-DELETE-SYORI-SEC
-                   ELSE
-      *                更新
-                       PERFORM 4902-UPDATE-SYORI-SEC
-                   END-IF
-               ELSE
-      *            実行スクリプト
-                   IF      SPA-GMN-SHELL (IDX)     =   SPACE
-                       CONTINUE
-                   ELSE
-      *                新規
-                       PERFORM 4901-INSERT-SYORI-SEC
-                   END-IF
-               END-IF
-      *
            END-PERFORM
+      *    指示画面表示更新
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4902-KOUSIN-9700-SEC
+           END-IF
       *
            IF      SPA-ERRCD           =   SPACE
-      *        戻る
-               MOVE   "JOIN"               TO  MCP-PUTTYPE
-               PERFORM 210-BACK
+               PERFORM 40011-GYOUMUGMN-SET-SEC
+               MOVE    1               TO  SPA-GMN-CUR
            END-IF
            .
        490-KOUSHIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *       指示画面表示更新処理
+      *****************************************************************
+       4902-KOUSIN-9700-SEC           SECTION.
+      *
+           MOVE    SPA-GMN-GYOUMUFLG   TO  SPA-9700-GYOUMU-FLG
+                                                 (SPA-NAI-GYOUMUIDX)
+      *    実行処理数
+           MOVE    WRK-SYORI-CNT       TO  SPA-9700-GYOUMU-CNT
+                                                 (SPA-NAI-GYOUMUIDX)
+      *
+           MOVE    SPACE               TO  SYS-9700-REC
+           INITIALIZE                      SYS-9700-REC
+           MOVE    "9700"              TO  SYS-9700-KANRICD
+           MOVE    "1%"                TO  SYS-9700-KBNCD
+           MOVE    "00000000"          TO  SYS-9700-STYUKYMD
+           MOVE    "99999999"          TO  SYS-9700-EDYUKYMD
+           MOVE    SYS-9700-REC        TO  MCPDATA-REC
+           MOVE    PATH-TBL-SYSKANRI-KEY
+                                       TO  MCP-PATH
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               PERFORM 990-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SYSKANRI
+           END-IF
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-9700-REC
+           ELSE
+               MOVE    SPACE               TO  SYS-9700-REC
+               INITIALIZE                      SYS-9700-REC
+               MOVE    "9700"              TO  SYS-9700-KANRICD
+               MOVE    "1"                 TO  SYS-9700-KBNCD
+               MOVE    "00000000"          TO  SYS-9700-STYUKYMD
+               MOVE    "99999999"          TO  SYS-9700-EDYUKYMD
+           END-IF
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GYOUMU-MAX
+               MOVE    SPA-9700-GYOUMUID(IDX)
+                                       TO  SYS-9700-GYOUMUID(IDX)
+               MOVE    SPA-9700-GYOUMU-KANRICD (IDX)
+                                       TO  SYS-9700-GYOUMU-KANRICD(IDX)
+               MOVE    SPA-9700-GYOUMU-FLG(IDX)
+                                       TO  SYS-9700-GYOUMU-FLG(IDX)
+               MOVE    SPA-9700-GYOUMU-CNT(IDX)
+                                       TO  SYS-9700-GYOUMU-CNT(IDX)
+           END-PERFORM
+      *
+           MOVE    SMCNDATE-YMD            TO  SYS-9700-UPYMD
+           MOVE    SMCNDATE-HMS            TO  SYS-9700-UPHMS
+      *
+           IF      FLG-SYSKANRI        =   ZERO
+      *        更新
+               MOVE    SYS-9700-REC        TO  MCPDATA-REC
+      *
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO 
+                   MOVE    "1002"              TO  SPA-ERRCD
+                   DISPLAY "W97 DB UPD ERR KEY:" SYS-9700-KEY 
+               END-IF
+           ELSE
+      *    新規
+               MOVE    SMCNDATE-YMD            TO  SYS-9700-CREYMD
+               MOVE    SYS-9700-REC            TO  MCPDATA-REC
+      *
+               PERFORM 4901-INSERT-SYORI-SEC
+           END-IF
+           .
+       4902-KOUSIN-9700-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    処理・業務データ削除処理
+      *****************************************************************
+       4900-DELETE-SEC           SECTION.
+      *
+      *    すべてを削除する
+           MOVE    SPACE               TO  SYS-9701-REC
+           INITIALIZE                      SYS-9701-REC
+           MOVE    SPA-NAI-KANRICD     TO  SYS-9701-KANRICD
+           MOVE    "00000000"          TO  SYS-9701-STYUKYMD
+           MOVE    "99999999"          TO  SYS-9701-EDYUKYMD
+      *
+           MOVE    SYS-9701-REC        TO  MCPDATA-REC
+           MOVE    PATH-TBL-SYSKANRI-DEL11
+                                       TO  MCP-PATH
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           IF      MCP-RC              NOT =   ZERO 
+               MOVE    "1003"              TO  SPA-ERRCD
+               DISPLAY "W97 DB DEL ERR SYSKANRI-KEY =>" SYS-9701-KEY 
+           END-IF
+           .
+       4900-DELETE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    更新処理
+      *****************************************************************
+       4901-KOUSIN-SYORI-SEC           SECTION.
+      *
+           IF      SPA-GMN-CHK (IDX)   =   "T"
+               MOVE    "1"             TO  SPA-GMN-EXECUTE (IDX)
+               ADD     1               TO  WRK-SYORI-CNT
+           ELSE
+               MOVE    "0"             TO  SPA-GMN-EXECUTE (IDX)
+           END-IF
+      *
+           ADD     1                   TO  IDX2
+      *
+           MOVE    SPACE               TO  SYS-9701-REC
+           INITIALIZE                      SYS-9701-REC
+           MOVE    SPA-NAI-KANRICD     TO  SYS-9701-KANRICD
+           MOVE    IDX2                TO  SYS-9701-KBNCD
+           MOVE    "00000000"          TO  SYS-9701-STYUKYMD
+           MOVE    "99999999"          TO  SYS-9701-EDYUKYMD
+      *
+           MOVE    SPA-GMN-SYORINM (IDX)   TO  SYS-9701-SYORINM
+           MOVE    SPA-GMN-SHELL (IDX)     TO  SYS-9701-SHELL
+           MOVE    SPA-GMN-PRTNM (IDX)     TO  SYS-9701-PRTNM
+           MOVE    SPA-GMN-EXECUTE(IDX)    TO  SYS-9701-EXECUTE-SW
+           MOVE    SPA-GMN-TYPE   (IDX)    TO  SYS-9701-EXECUTE-YTPE
+      *
+           MOVE    SMCNDATE-YMD            TO  SYS-9701-CREYMD
+           MOVE    SMCNDATE-YMD            TO  SYS-9701-UPYMD
+           MOVE    SMCNDATE-HMS            TO  SYS-9701-UPHMS
+      *
+           MOVE    SYS-9701-REC            TO  MCPDATA-REC
+      *    新規
+           PERFORM 4901-INSERT-SYORI-SEC
+      *
+           .
+       4901-KOUSIN-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -634,20 +1038,6 @@
       *****************************************************************
        4901-INSERT-SYORI-SEC           SECTION.
       *
-           MOVE    SPACE                   TO  SYS-9700-REC
-           INITIALIZE                      SYS-9700-REC
-           MOVE   "9700"                   TO  SYS-9700-KANRICD
-           MOVE    SPA-GMN-GYOUMUID(IDX)   TO  SYS-9700-KBNCD
-           MOVE    "00000000"              TO  SYS-9700-STYUKYMD
-           MOVE    "99999999"              TO  SYS-9700-EDYUKYMD
-           MOVE    SPA-GMN-SHELL (IDX)     TO  SYS-9700-SHELL
-           MOVE    SPA-GMN-EXECUTE(IDX)    TO  SYS-9700-EXECUTE-SW
-      *
-           MOVE    SMCNDATE-YMD        TO  SYS-9700-CREYMD
-           MOVE    SMCNDATE-YMD        TO  SYS-9700-UPYMD
-           MOVE    SMCNDATE-HMS        TO  SYS-9700-UPHMS
-      *
-           MOVE    SYS-9700-REC        TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
            MOVE    "DBINSERT"          TO  MCP-FUNC
            CALL    "ORCMCPSUB"         USING
@@ -656,7 +1046,7 @@
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO 
                MOVE    "1001"              TO  SPA-ERRCD
-               DISPLAY "W97 DB INS ERR KEY:" SYS-9700-KEY 
+               DISPLAY "W97 DB INS ERR KEY:" SYS-9701-KEY 
            END-IF
            .
        4901-INSERT-SYORI-EXT.
@@ -667,20 +1057,8 @@
       *****************************************************************
        4902-UPDATE-SYORI-SEC           SECTION.
       *
-           MOVE    SPA-GMN-SHELL (IDX)     TO  SYS-9700-SHELL
-           MOVE    SPA-GMN-EXECUTE(IDX)    TO  SYS-9700-EXECUTE-SW
-      *
-           MOVE    SMCNDATE-YMD        TO  SYS-9700-UPYMD
-           MOVE    SMCNDATE-HMS        TO  SYS-9700-UPHMS
-      *
-           MOVE    SYS-9700-REC        TO  SYSKANRI-REC
-           MOVE    SYS-KANRICD         TO  SYSUP-KANRICD
-           MOVE    SYS-KBNCD           TO  SYSUP-KBNCD
-           MOVE    SYS-STYUKYMD        TO  SYSUP-STYUKYMD
-           MOVE    SYS-EDYUKYMD        TO  SYSUP-EDYUKYMD
-           MOVE    "SYSKANRI-UPD1"     TO  ORC-DBPATH
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
@@ -691,27 +1069,6 @@
            END-IF
            .
        4902-UPDATE-SYORI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    削除処理
-      *****************************************************************
-       4903-DELETE-SYORI-SEC           SECTION.
-      *
-           MOVE    SYS-9700-REC            TO  MCPDATA-REC
-           MOVE    "DBDELETE"              TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"              USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-      *
-           IF      MCP-RC              NOT =   ZERO 
-               MOVE    "1003"              TO  SPA-ERRCD
-               DISPLAY "W97 DB DEL ERR SYSKANRI-KEY =>" SYS-9700-KEY 
-           END-IF
-           .
-       4903-DELETE-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -749,21 +1106,47 @@
       *
            MOVE    SPACE               TO  W97
       *
+           MOVE    SPA-GMN-GYOUMUMEI-G TO  W97-GYOUMUMEI
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GYOUMU-MAX
-               MOVE    SPA-GMN-GYOUMUMEI(IDX)
-                                           TO  W97-GYOUMUMEI(IDX)
-               MOVE    SPA-GMN-GYOUMUID(IDX)
-                                           TO  W97-GYOUMUID (IDX)
+               MOVE    SPA-GMN-GYOUMUMEIL(IDX)
+                                           TO  W97-GYOUMUMEI-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GYOUMU-MAX      TO  W97-GYOUMUMEI-COUNT
+      *
+           MOVE    SPA-GMN-GYOUMUFLG-G TO  W97-GYOUMUFLG
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   2
+               MOVE    SPA-GMN-GYOUMUFLG-LST(IDX)
+                                           TO  W97-GYOUMUFLG-ITEM(IDX)
+           END-PERFORM
+           MOVE    2                   TO  W97-GYOUMUFLG-COUNT
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-TBL-MAX
+               MOVE    SPA-GMN-SYORINM  (IDX)
+                                           TO  W97-SYORINM  (IDX)
+               MOVE    SPA-GMN-PRTNM   (IDX)
+                                           TO  W97-PRTNM (IDX)
                MOVE    SPA-GMN-SHELL  (IDX)
                                            TO  W97-SHELL (IDX)
                MOVE    SPA-GMN-CHK    (IDX)
                                            TO  W97-EXECUTE-VALUE(IDX)
                IF      SPA-GMN-CHK    (IDX)    =   "T"
-                   MOVE    "ON"            TO  W97-EXECUTE-LABEL(IDX)
+                   MOVE    "実行する"      TO  W97-EXECUTE-LABEL(IDX)
                ELSE
-                   MOVE    "OFF"           TO  W97-EXECUTE-LABEL(IDX)
+                   MOVE    "実行しない"    TO  W97-EXECUTE-LABEL(IDX)
                END-IF
+      *
+               MOVE    SPA-GMN-TYPE-G (IDX)
+                                           TO  W97-TYPE (IDX)
+               PERFORM VARYING     IDY     FROM    1   BY  1
+                       UNTIL       IDY     >   SPA-TYPE-MAX
+                   MOVE    SPA-GMN-TYPE-LST (IDY)
+                                           TO  W97-TYPE-ITEM (IDX IDY)
+               END-PERFORM
+               MOVE    SPA-TYPE-MAX        TO  W97-TYPE-COUNT (IDX)
+      *
            END-PERFORM
       *
            PERFORM 5001-MAPCUR-SEC
@@ -778,13 +1161,11 @@
        510-GSRAUTH-SEC             SECTION.
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   20
-              IF      IDX              <=  SPA-GYOUMU-MAX
-                   MOVE    WIDGET-NORMAL       TO  W97-SHELL-STATE(IDX)
+                   UNTIL       IDX     >   10
+              IF      IDX              <=  SPA-TBL-MAX
                    MOVE    WIDGET-NORMAL       TO  W97-EXECUTE-STATE
                                                                   (IDX)
                ELSE
-                   MOVE    WIDGET-INSENSITIVE  TO  W97-SHELL-STATE(IDX)
                    MOVE    WIDGET-INSENSITIVE  TO  W97-EXECUTE-STATE
                                                                   (IDX)
                END-IF
@@ -801,7 +1182,16 @@
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "入力エラー"
+                   MOVE    "起動画面選択エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0002"
+                   MOVE    "指示画面初期表示エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0004"
+                   MOVE    "実行スクリプトは必須入力です。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0005"
+                   MOVE    "起動画面を選択して下さい。"
                                                TO  SPA-ERRMSG
                WHEN    "1001"
                    MOVE    "登録ができませんでした"
@@ -875,14 +1265,29 @@
           END-IF
       *
           EVALUATE    SPA-GMN-CUR
-                WHEN    01   THRU  20
-                    MOVE     SPA-GMN-CUR       TO  IDX2
+                WHEN    1
+                    MOVE     "GYOUMUMEI"       TO  MCP-WIDGET
+                WHEN    2
+                    MOVE     "GYOUMUFLG"       TO  MCP-WIDGET
+                WHEN    301  THRU  310
+                    MOVE     SPA-GMN-CUR(2:2)  TO  IDX2
+                    MOVE     "SYORINM"         TO  MCP-WIDGET
+                    MOVE     IDX2              TO  MCP-WIDGET(8:2)
+                WHEN    401  THRU  410
+                    MOVE     SPA-GMN-CUR(2:2)  TO  IDX2
                     MOVE     "SHELL"           TO  MCP-WIDGET
                     MOVE     IDX2              TO  MCP-WIDGET(6:2)
-                WHEN    21   THRU  41
+                WHEN    501  THRU  510
+                    MOVE     SPA-GMN-CUR(2:2)  TO  IDX2
+                    MOVE     "PRTNM"           TO  MCP-WIDGET
+                    MOVE     IDX2              TO  MCP-WIDGET(6:2)
+                WHEN    601  THRU  610
+                    MOVE     SPA-GMN-CUR       TO  IDX2
+                    MOVE     "TYPE"            TO  MCP-WIDGET
+                    MOVE     IDX2              TO  MCP-WIDGET(5:2)
+                WHEN    701  THRU  710
                     MOVE     SPA-GMN-CUR       TO  IDX2
                     MOVE     "EXECUTE"         TO  MCP-WIDGET
-                    COMPUTE  IDX2              =   IDX2   -   20
                     MOVE     IDX2              TO  MCP-WIDGET(8:2)
       *
                 WHEN    99
@@ -899,21 +1304,36 @@
        50011-CUR-SET-SEC         SECTION.
       *
            EVALUATE    TRUE
+               WHEN    WRK-MCP-WIDGET          =   "GYOMUMEI"
+                   MOVE    2                   TO  SPA-GMN-CUR
+               WHEN    WRK-MCP-WIDGET          =   "GYOMUFLG"
+                   MOVE    301                 TO  SPA-GMN-CUR
+      *
+               WHEN    WRK-MCP-WIDGET(1:7)     =   "SYORINM"
+                   MOVE    WRK-MCP-WIDGET(8:2)     TO  IDX2
+                   COMPUTE SPA-GMN-CUR         =   IDX2
+                                               +   400
       *
                WHEN    WRK-MCP-WIDGET(1:5)     =   "SHELL"
                    MOVE    WRK-MCP-WIDGET(6:2)     TO  IDX2
-                   IF      IDX2                <=  SPA-GYOUMU-MAX
-                        COMPUTE SPA-GMN-CUR    =   IDX2
-                                               +   20
-                   ELSE
-                        MOVE    99             TO  SPA-GMN-CUR
-                   END-IF
+                   COMPUTE SPA-GMN-CUR         =   IDX2
+                                               +   500
+      *
+               WHEN    WRK-MCP-WIDGET(1:5)     =   "PRTNM"
+                   MOVE    WRK-MCP-WIDGET(6:2)     TO  IDX2
+                   COMPUTE SPA-GMN-CUR         =   IDX2
+                                               +   600
+      *
+               WHEN    WRK-MCP-WIDGET(1:4)     =   "TYPE"
+                   MOVE    WRK-MCP-WIDGET(5:2)     TO  IDX2
+                   COMPUTE SPA-GMN-CUR         =   IDX2
+                                               +   700
       *
                WHEN    WRK-MCP-WIDGET(1:7)     =   "EXECUTE"
                    MOVE    WRK-MCP-WIDGET(8:2)     TO  IDX2
-                   IF      IDX2                <   SPA-GYOUMU-MAX
+                   IF      IDX2                <   SPA-TBL-MAX
                         COMPUTE SPA-GMN-CUR    =   IDX2
-                                               +   1
+                                               +   301
                    ELSE
                         MOVE    99             TO  SPA-GMN-CUR
                    END-IF
