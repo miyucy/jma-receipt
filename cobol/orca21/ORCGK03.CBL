@@ -4903,24 +4903,24 @@
            INITIALIZE                  ORCSUSERPGAREA
            MOVE    "K03"               TO  ORCSUSERPG-GMNPG
       *
-           IF      FLG-USERPG          =   1
-               IF      SPA-SYORIFLG        =   ZERO
+      *    IF      FLG-USERPG          =   1
+      *        IF      SPA-SYORIFLG        =   ZERO
       *        追加
-                   MOVE    "1"             TO  ORCSUSERPG-SYORI-FLG
-               ELSE
+      *            MOVE    "1"             TO  ORCSUSERPG-SYORI-FLG
+      *        ELSE
       *        更新
-                   MOVE    "2"             TO  ORCSUSERPG-SYORI-FLG
-               END-IF
-           ELSE
+      *            MOVE    "2"             TO  ORCSUSERPG-SYORI-FLG
+      *        END-IF
+      *    ELSE
       *        削除
-               MOVE    "3"             TO  ORCSUSERPG-SYORI-FLG
-           END-IF
+      *        MOVE    "3"             TO  ORCSUSERPG-SYORI-FLG
+      *    END-IF
            MOVE    SPA-SYSYMD          TO  ORCSUSERPG-SYSYMD
            MOVE    SPA-SRYYMD          TO  ORCSUSERPG-SRYYMD
            MOVE    SPA-PTID            TO  ORCSUSERPG-PTID
            MOVE    SPA-PTNUM           TO  ORCSUSERPG-PTNUM
       *
-           CALL    "ORCSUSERPG"        USING   ORCSUSERPGAREA
+      *****CALL    "ORCSUSERPG"        USING   ORCSUSERPGAREA
       *
            .
        4907-USERPG-EXT.
