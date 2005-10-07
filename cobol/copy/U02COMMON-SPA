@@ -83,6 +83,13 @@
                            11  SPA-GMN-TMIKAKUYMD      PIC X(12).
                        09  SPA-MIKAKU-MAX                  PIC 9(04).
       *
+               05  SPA-GMN-AREA2.
+      *            £Õ¡¦£Ð
+                   07  SPA-GMN-USERPG-G.
+                       09  SPA-GMN-USERPG            PIC X(01).
+                       09  SPA-GMN-UP1               PIC X(01).
+                       09  SPA-GMN-USERPGMEI         PIC X(18).
+      *
                05  SPA-GMN-SELNUM                 PIC 9(04).
                05  SPA-GMN-COMB-AREA.
       *            ¿ÇÎÅ²Ê
@@ -104,6 +111,13 @@
       *            ½èÊýäµ
                    07  SPA-GMN-SYOHOLST               PIC X(14)
                                                       OCCURS  2.
+      *            £Õ¡¦£Ð
+                   07  SPA-GMN-USERPGLST              PIC X(20)
+                                                      OCCURS  2.
+      *
+                   07  SPA-USERPG-MAX                 PIC 9(02).
+                   07  SPA-NAI-GYOUMU-FLG             PIC X(01).
+                   07  SPA-NAI-GYOUMU-ARI             PIC 9(01).
       *
               05  SPA-GMN-LISTTBL.
                    07  SPA-GMN-TBL.

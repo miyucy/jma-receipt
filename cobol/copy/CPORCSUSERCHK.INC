@@ -16,38 +16,44 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------*
-      *    ユーザプログラム起動パラメタ      COPY (CPORCSUSERPG.INC)
+      *    ユーザプログラム起動パラメタ      COPY (CPORCSUSERCHK.INC)
       *----------------------------------------------------------*
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *
-       01  ORCSUSERPGAREA.
+       01  ORCSUSERCHKAREA.
       *
       *処理ＰＧ
-           03  ORCSUSERPG-GMNPG            PIC X(08).
-      *
-      *処理状況（１：追加、２：更新、３：削除）
-           03  ORCSUSERPG-SYORI-FLG        PIC X(01).
+           03  ORCSUSERCHK-GMNPG            PIC X(08).
+      *処理区分(１：チェック、２：実行）
+           03  ORCSUSERCHK-SYORI            PIC X(01).
+      *実行の時のみ
+           03  ORCSUSERCHK-IN-AREA.
+      *処理内容(１：新規、２：更新、３：削除）
+               05  ORCSUSERCHK-SYORI-FLG        PIC X(01).
       *システム日付西暦
-           03  ORCSUSERPG-SYSYMD           PIC X(08).
+               05  ORCSUSERCHK-SYSYMD           PIC X(08).
       *診療日
-           03  ORCSUSERPG-SRYYMD           PIC X(08).
+               05  ORCSUSERCHK-SRYYMD           PIC X(08).
       *患者ＩＤ
-           03  ORCSUSERPG-PTID             PIC 9(10).
+               05  ORCSUSERCHK-PTID             PIC 9(10).
       *患者番号
-           03  ORCSUSERPG-PTNUM            PIC X(20).
+               05  ORCSUSERCHK-PTNUM            PIC X(20).
       *診療科
-           03  ORCSUSERPG-SRYKA            PIC X(02).
+               05  ORCSUSERCHK-SRYKA            PIC X(02).
       *ドクター
-           03  ORCSUSERPG-DRCD             PIC X(05).
+               05  ORCSUSERCHK-DRCD             PIC X(05).
       *保険組合せ
-           03  ORCSUSERPG-HKNCOMBI         PIC X(04).
-      *処理・帳票名
-           03  ORCSUSERPG-SYORINM          PIC X(30).
-      *実行名
-           03  ORCSUSERPG-SHELL            PIC X(100).
-      *プリンタ名
-           03  ORCSUSERPG-PRTNM            PIC X(16).
+               05  ORCSUSERCHK-HKNCOMBI         PIC X(04).
+      *
+      *出力
+      *    １：画面表示あり
+           03  ORCSUSERCHK-GMNSYORI         PIC X(01).
+      *    画面初期表示
+           03  ORCSUSERCHK-GYOUMU-FLG       PIC X(01).
+      *    1:実行あり
+           03  ORCSUSERCHK-GYOUMU-ARI       PIC X(01).
+      *
       *

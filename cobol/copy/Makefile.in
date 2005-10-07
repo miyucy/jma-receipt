@@ -1075,6 +1075,12 @@ COPYS = \
         HCN21V04.INC \
         CPDTCHK008.INC \
         Y05.INC \
+        XD01.INC \
+        XDERR.INC \
+        XDID1.INC \
+        XD01SCR-SPA \
+        CPORCSUSERCHK.INC \
+        CPSK9701.INC \
 
 DBPATH = \
 	ORCA-DBPATH

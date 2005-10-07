@@ -110,6 +110,12 @@
                   05  U02-MLKIGONUM         PIC X(40).
                   05  U02-MLLASTYMD         PIC X(10).
                 04  U02-MIKAKUNINN-SELECT  PIC X       OCCURS  5 TIMES.
+              03  U02-USERPG-COMB.
+                04  U02-USERPG.
+                  05  U02-VALUE   PIC X(20).
+                04  U02-USERPG-COUNT   PIC S9(9)   BINARY.
+                04  U02-USERPG-ITEM
+                        PIC X(20)   OCCURS  2 TIMES.
               03  U02-B05.
                 04  U02-B05-STATE   PIC S9(9)   BINARY.
               03  U02-B06.

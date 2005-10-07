@@ -17,43 +17,44 @@
       ********************************************************************
       ************************************************************
       *         システム管理マスタ     (CPSK9700.INC)   *
-      *         （９７００）                            *
+      *         （９７０１）                            *
       *         ユーザプログラム起動                 *
       ************************************************************
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
-       01  SYS-9700-REC.
-           03  SYS-9700-KEY.
+       01  SYS-9701-REC.
+           03  SYS-9701-KEY.
       *管理コード
-               05  SYS-9700-KANRICD     PIC  X(04).
-      *区分コード
-               05  SYS-9700-KBNCD       PIC  X(08).
+               05  SYS-9701-KANRICD     PIC  X(04).
+      *区分コード（9701:P02 , 9702:U02 , 9703:K03 )
+               05  SYS-9701-KBNCD       PIC  X(08).
       *有効開始年月日
-               05  SYS-9700-STYUKYMD    PIC  X(08).
+               05  SYS-9701-STYUKYMD    PIC  X(08).
       *有効終了年月日
-               05  SYS-9700-EDYUKYMD    PIC  X(08).
+               05  SYS-9701-EDYUKYMD    PIC  X(08).
       *管理テーブル
-           03  SYS-9700-TBL.
-               05  SYS-9700-TBL-OCC     OCCURS   25.
-      *指示画面ＩＤ
-                   07  SYS-9700-GYOUMUID         PIC  X(10).
-      *指示管理コード
-                   07  SYS-9700-GYOUMU-KANRICD   PIC  X(04).
-      *指示画面初期表示
-                   07  SYS-9700-GYOUMU-FLG       PIC  X(01).
-      *指示件数表示
-                   07  SYS-9700-GYOUMU-CNT       PIC  9(02).
+           03  SYS-9701-TBL.
+      *処理・帳票名
+               05  SYS-9701-SYORINM        PIC  X(30).
+      *シェル名
+               05  SYS-9701-SHELL          PIC  X(100).
+      *プリンタ名
+               05  SYS-9701-PRTNM          PIC  X(16).
+      *実行可否
+               05  SYS-9701-EXECUTE-SW     PIC  X(01).
+      *実行形式
+               05  SYS-9701-EXECUTE-YTPE   PIC  X(01).
       *予備
-                   07  SYS-9700-YOBI             PIC  X(03).
+           03  FILLER                   PIC  X(352).
       *端末ＩＤ
-           03  SYS-9700-TERMID          PIC  X(16).
+           03  SYS-9701-TERMID          PIC  X(16).
       *オペーレータＩＤ
-           03  SYS-9700-OPID            PIC  X(16).
+           03  SYS-9701-OPID            PIC  X(16).
       *作成年月日
-           03  SYS-9700-CREYMD          PIC  X(08).
+           03  SYS-9701-CREYMD          PIC  X(08).
       *更新年月日
-           03  SYS-9700-UPYMD           PIC  X(08).
+           03  SYS-9701-UPYMD           PIC  X(08).
       *更新時間
-           03  SYS-9700-UPHMS           PIC  X(06).
+           03  SYS-9701-UPHMS           PIC  X(06).
