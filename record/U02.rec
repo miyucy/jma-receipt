@@ -122,6 +122,13 @@ U02	{
 			}	[5];
 			select	bool[5];
 		};
+		USERPG_COMB	{
+			USERPG	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[2];
+		};
 		B05	{
 	           	state	int;
 		};

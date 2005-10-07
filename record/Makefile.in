@@ -304,6 +304,9 @@ RECORD_files = \
 	L04.rec \
 	W97.rec \
 	Y05.rec \
+	XD01.rec \
+	XDERR.rec \
+	XDID1.rec \
 
 DEF_files = \
 	HC01.def \
