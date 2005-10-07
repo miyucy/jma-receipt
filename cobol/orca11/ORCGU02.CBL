@@ -62,6 +62,7 @@
       *  02.00.11    NACL-多々納  03/10/15  ２００明細へ
       *  02.00.12    NACL-多々納  03/11/07  受付更新修正
       *  02.00.13    NACL-多々納  05/02/04  受付マスタに保険組合せ追加
+      *  02.00.14    NACL-多々納  05/10/07  ユーザプログラム起動追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -346,7 +347,7 @@
            COPY    "CPORCSMCNDATE.INC".
       *
       *    ユーザプログラム起動サブパラメタ
-           COPY    "CPORCSUSERPG.INC".
+           COPY    "CPORCSUSERCHK.INC".
       *
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
@@ -685,6 +686,31 @@
            MOVE    "0:発行なし"        TO  SPA-GMN-SYOHOLST (1)
            MOVE    "1:発行あり"        TO  SPA-GMN-SYOHOLST (2)
            MOVE    SPA-GMN-SYOHOLST (1)    TO  SPA-GMN-SYOHO-G
+      *
+      *    ユーザプログラム起動初期
+           INITIALIZE                      ORCSUSERCHKAREA
+           MOVE    "U02"               TO  ORCSUSERCHK-GMNPG
+           MOVE    "1"                 TO  ORCSUSERCHK-SYORI
+           CALL    "ORCSUSERCHK"       USING
+                                       ORCSUSERCHKAREA
+           MOVE    ORCSUSERCHK-GYOUMU-FLG  TO  SPA-NAI-GYOUMU-FLG
+           MOVE    ORCSUSERCHK-GYOUMU-ARI  TO  SPA-NAI-GYOUMU-ARI
+      *
+           MOVE    "0 Ｕ・Ｐ指示なし"      TO  SPA-GMN-USERPGLST (1)
+           IF      SPA-NAI-GYOUMU-ARI  =   "1"
+      *        実行するプログラムがある時
+               MOVE    "1 Ｕ・Ｐ指示あり"  TO  SPA-GMN-USERPGLST (2)
+               MOVE    2                   TO  SPA-USERPG-MAX
+               IF      SPA-NAI-GYOUMU-FLG  =   "1"
+                   MOVE    SPA-GMN-USERPGLST (2)   TO  SPA-GMN-USERPG-G
+               ELSE
+                   MOVE    SPA-GMN-USERPGLST (1)   TO  SPA-GMN-USERPG-G
+               END-IF
+           ELSE
+      *        実行するプログラムがない時
+               MOVE    1                   TO  SPA-USERPG-MAX
+               MOVE    SPA-GMN-USERPGLST (1)   TO  SPA-GMN-USERPG-G
+           END-IF
       *
            .
        310-SPASET-EXT.
@@ -1287,6 +1313,7 @@
            MOVE    U02-KARUTE          TO  SPA-GMN-KARUTE-G
            MOVE    U02-SYOHO           TO  SPA-GMN-SYOHO-G
            MOVE    U02-HKNCOMBI        TO  SPA-GMN-COMBINUM
+           MOVE    U02-USERPG          TO  SPA-GMN-USERPG-G
       *
            MOVE    U02-SELNUM          TO  SPA-GMN-SELNUM
            .
@@ -1343,10 +1370,15 @@
                   (FLG-END             =   ZERO  )
                PERFORM 4108-SYOHO-CHK-SEC
            END-IF
-      *     組合せ
+      *    保険組合せ
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (FLG-END             =   ZERO  )
                PERFORM 4109-HKNCOMBI-CHK-SEC
+           END-IF
+      *    Ｕ・Ｐ
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (FLG-END             =   ZERO  )
+               PERFORM 4109-USERPG-CHK-SEC
            END-IF
       *
            .
@@ -1867,6 +1899,30 @@
            EXIT.
       *
       *****************************************************************
+      *    Ｕ・Ｐチェック処理
+      *****************************************************************
+       4109-USERPG-CHK-SEC        SECTION.
+      *
+           MOVE    ZERO               TO  FLG-HENFLG
+           PERFORM VARYING IDY         FROM   1   BY  1
+                   UNTIL  (IDY         >   SPA-USERPG-MAX )
+                   OR     (FLG-HENFLG  =   1  )
+               IF      SPA-GMN-USERPG   =   SPA-GMN-USERPGLST(IDY)(1:1)
+                   MOVE    SPA-GMN-USERPGLST (IDY)
+                                           TO  SPA-GMN-USERPG-G
+                   MOVE    1           TO  FLG-HENFLG
+               END-IF
+           END-PERFORM
+           IF      FLG-HENFLG          =   ZERO
+               MOVE    "0029"              TO  SPA-ERRCD
+               MOVE    10                  TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       4109-USERPG-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    予約選択 チェック処理
       *****************************************************************
        4104-SELNUM-CHK-SEC        SECTION.
@@ -1913,6 +1969,13 @@
                MOVE    ZERO                TO  SPA-GMN-COMBINUM
            ELSE
                MOVE    SPA-GMN-THKNCOMBI(IDX)  TO  SPA-GMN-COMBINUM
+           END-IF
+      *    Ｕ・Ｐ
+           IF     (SPA-NAI-GYOUMU-FLG  =   "1" ) AND
+                  (SPA-USERPG-MAX      >   1   )
+               MOVE    SPA-GMN-USERPGLST (2)   TO  SPA-GMN-USERPG-G
+           ELSE
+               MOVE    SPA-GMN-USERPGLST (1)   TO  SPA-GMN-USERPG-G
            END-IF
       *    登録済みの患者の時、保険情報をセットする
            IF      SPA-GMN-PTID        NOT =  ZERO
@@ -2647,6 +2710,13 @@
                                        TO  SPA-GMN-SYOHO-G
            MOVE    SPA-GMN-KARUTELST(1)
                                        TO  SPA-GMN-KARUTE-G
+      *    Ｕ・Ｐ
+           IF     (SPA-NAI-GYOUMU-FLG  =   "1" ) AND
+                  (SPA-USERPG-MAX      >   1   )
+               MOVE    SPA-GMN-USERPGLST (2)   TO  SPA-GMN-USERPG-G
+           ELSE
+               MOVE    SPA-GMN-USERPGLST (1)   TO  SPA-GMN-USERPG-G
+           END-IF
            .
        1009-HEAD-CLEAR-EXT.
            EXIT.
@@ -3102,14 +3172,16 @@
            END-IF
       *
       *    ユーザプログラム起動
-           PERFORM 4907-USERPG-SEC
+           IF      SPA-GMN-PTNUM   NOT =   SPACE
+               PERFORM 4907-USERPG-SEC
+           END-IF
+           IF      FLG-END             =   ZERO
       *
-           MOVE    WRK-SPA-KYOUTU          TO  SPA-KYOUTU
+               MOVE    WRK-SPA-KYOUTU          TO  SPA-KYOUTU
       *
-      *??? INITIALIZE                            SPA-U02
-      *??? PERFORM 310-SPASET-SEC
-           PERFORM 493-CLEAR-SEC  
-           PERFORM 3101-UKETU-HEN-SEC
+               PERFORM 493-CLEAR-SEC  
+               PERFORM 3101-UKETU-HEN-SEC
+           END-IF
            .
        49001-KOUSIN-EXT.
            EXIT.   
@@ -3539,32 +3611,75 @@
       *****************************************************************
       *    ユーザプログラム起動処理
       *****************************************************************
-       4907-USERPG-SEC  SECTION.
-      *
-      *    ユーザプログラム起動
-           INITIALIZE                  ORCSUSERPGAREA
-           MOVE    "U02"               TO  ORCSUSERPG-GMNPG
+       4907-USERPG-SEC                 SECTION.
       *
            EVALUATE    FLG-USERPG
                WHEN    1
       *        追加
-                   MOVE    "1"             TO  ORCSUSERPG-SYORI
+                   MOVE    1               TO  SPA-SYORI-FLG
                WHEN    2
       *        更新
-                   MOVE    "2"             TO  ORCSUSERPG-SYORI
+                   MOVE    2               TO  SPA-SYORI-FLG
                WHEN    3
       *        削除
-                   MOVE    "3"             TO  ORCSUSERPG-SYORI
+                   MOVE    3               TO  SPA-SYORI-FLG
            END-EVALUATE
-           MOVE    SPA-SYSYMD          TO  ORCSUSERPG-SYSYMD
-           MOVE    SPA-SYSYMD          TO  ORCSUSERPG-SRYYMD
-           MOVE    SPA-GMN-PTID        TO  ORCSUSERPG-PTID
-           MOVE    SPA-GMN-PTNUM       TO  ORCSUSERPG-PTNUM
-      *
-           CALL    "ORCSUSERPG"        USING   ORCSUSERPGAREA
+           IF      SPA-GMN-USERPG      =   "1"
+      *        ユーザプログラム実行画面表示へ
+               PERFORM 49071-XD01-SYORI-SEC
+           ELSE
+               IF      SPA-NAI-GYOUMU-ARI  =   "1"
+      *            起動するユーザプログラムある時、実行
+                   INITIALIZE                      ORCSUSERCHKAREA
+                   MOVE    "U02"               TO  ORCSUSERCHK-GMNPG
+                   MOVE    "2"                 TO  ORCSUSERCHK-SYORI
+                   MOVE    SPA-SYSYMD          TO  ORCSUSERCHK-SYSYMD
+                   MOVE    SPA-SYSYMD          TO  ORCSUSERCHK-SRYYMD
+                   MOVE    SPA-GMN-PTID        TO  ORCSUSERCHK-PTID
+                   MOVE    SPA-GMN-PTNUM       TO  ORCSUSERCHK-PTNUM
+                   MOVE    SPA-GMN-SRYKA       TO  ORCSUSERCHK-SRYKA
+                   MOVE    SPA-GMN-COMBINUM    TO  ORCSUSERCHK-HKNCOMBI
+                   MOVE    SPA-GMN-DRCD        TO  ORCSUSERCHK-DRCD
+                   MOVE    SPA-SYORI-FLG       TO  ORCSUSERCHK-SYORI-FLG
+                   CALL    "ORCSUSERCHK"       USING
+                                               ORCSUSERCHKAREA
+               END-IF
+           END-IF
       *
            .
        4907-USERPG-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ユーザプログラム実行画面表示処理
+      *****************************************************************
+       49071-XD01-SYORI-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  LINKAREA
+           MOVE    SPA-KYOUTU          TO  LNK-COMMON
+           MOVE    SPA-U02             TO  LNK-SCRSPA
+      *
+           MOVE    SPA-GMN-PTID        TO  SPA-PTID
+           MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
+           MOVE    SPA-GMN-SRYKA       TO  SPA-SRYKA
+           MOVE    SPA-GMN-COMBINUM    TO  SPA-HKNCOMBINUM
+           MOVE    SPA-GMN-DRCD        TO  SPA-DRCD
+           MOVE    SPACE               TO  SPA-SRYYMD
+      *
+      *    画面移行用のパラメタ変更
+           MOVE    "U02"               TO  SPA-MOTOPG
+           MOVE    "XD01"              TO  SPA-SAKIPG
+      *****INITIALIZE                  SPA-KYOTUKEY
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+      *
+           MOVE   "CHANGE"             TO  MCP-PUTTYPE
+           MOVE   "XD01   "            TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+           .
+       49071-XD01-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3727,8 +3842,10 @@
            END-IF
       *
       *    ユーザプログラム起動
-           MOVE    3                   TO  FLG-USERPG
-           PERFORM 4907-USERPG-SEC
+           IF      SPA-GMN-PTNUM   NOT =   SPACE
+               MOVE    3                   TO  FLG-USERPG
+               PERFORM 4907-USERPG-SEC
+           END-IF
       *
            PERFORM 493-CLEAR-SEC  
            PERFORM 3101-UKETU-HEN-SEC
@@ -4114,6 +4231,14 @@
            MOVE    SPA-SRYNAIYO-MAX        TO  U02-SRYNAIYO-COUNT
            MOVE    SPA-GMN-SRYNAIYOCD-G           TO  U02-SRYNAIYO
       *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >       SPA-USERPG-MAX
+               MOVE    SPA-GMN-USERPGLST(IDX)
+                                           TO  U02-USERPG-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-USERPG-MAX        TO  U02-USERPG-COUNT
+           MOVE    SPA-GMN-USERPG-G      TO  U02-USERPG
+      *
       *    カルテ
            MOVE    SPA-GMN-KARUTELST (1)   TO  U02-KARUTE-ITEM (1)
            MOVE    SPA-GMN-KARUTELST (2)   TO  U02-KARUTE-ITEM (2)
@@ -4353,6 +4478,8 @@
                    MOVE    "SYOHO"      TO  MCP-WIDGET
                WHEN    09
                    MOVE    "HKNCOMBI"   TO  MCP-WIDGET
+               WHEN    10
+                   MOVE    "USERPG"     TO  MCP-WIDGET
                WHEN    58
                    MOVE    "B05"        TO  MCP-WIDGET
                WHEN    62
@@ -4403,6 +4530,13 @@
                        MOVE    9                   TO  SPA-GMN-CUR
                    END-IF
                WHEN    "HKNCOMBI"
+      ***********  MOVE    62              TO  SPA-GMN-CUR
+                   IF      SPA-USERPG-MAX  =   1
+                       MOVE    62              TO  SPA-GMN-CUR
+                   ELSE
+                       MOVE    10              TO  SPA-GMN-CUR
+                   END-IF
+               WHEN    "USERPG"
                    MOVE    62              TO  SPA-GMN-CUR
            END-EVALUATE
            .
@@ -4493,6 +4627,9 @@
                                                 TO  SPA-ERRMSG
                    MOVE    "患者登録はできません。"
                                                 TO  SPA-ERRMSG(33:)
+               WHEN    "0029"
+                   MOVE    "ユーザプログラム起動選択エラー"
+                                                TO  SPA-ERRMSG
                WHEN    "2001"
                    MOVE    "前の未確認保険はありません。"
                                                 TO  SPA-ERRMSG
