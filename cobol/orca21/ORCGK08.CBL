@@ -1454,6 +1454,11 @@
                        MOVE    ZERO                TO  SPA-NAI-JIDFLG
                                                               (IDX-NAI)
                    END-IF
+                   IF     (LNK-WKSRY-AUTOKBN (IDX IDZ)   =   "3" ) AND
+                          (LNK-WKSRYP-PLUSKBN (IDX)      =   1   )
+                       MOVE    ZERO                TO  SPA-NAI-JIDFLG
+                                                              (IDX-NAI)
+                   END-IF
       *            訂正で自動発生なしの時、削除なし
                    IF     (LNK-WKSRY-AUTOKBN (IDX IDZ)   =   "4"
                                                          OR  "6" ) AND
