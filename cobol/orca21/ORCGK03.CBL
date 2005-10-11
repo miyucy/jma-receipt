@@ -53,6 +53,7 @@
       *  02.00.17    NACL-多々納  04/01/07  更新をサブプロへ他
       *  02.00.18    NACL-多々納  04/07/XX  複数科・保険一括入力対応
       *  02.00.19    NACL-多々納  04/10/21  CLAIMにドクター追加
+      *  02.00.20    NACL-多々納  05/10/11  ユーザプログラム起動追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -520,7 +521,7 @@
            COPY    "CPORCSNYUKIN.INC".
       *
       *    ユーザプログラム起動サブパラメタ
-           COPY    "CPORCSUSERPG.INC".
+           COPY    "CPORCSUSERCHK.INC".
       *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
@@ -630,7 +631,10 @@
                IF     (SPA-ERRMSG2     NOT =   SPACE )  AND
                       (SPA-KEI-FLG         =   1     )
                    MOVE    "JOIN"              TO  WRK-MCP-PUTTYPE
-                   PERFORM 4900-END-SYORI-SEC
+                   PERFORM 450011-KOUSIN-ATO-SEC
+                   IF      FLG-END             =   ZERO
+                       PERFORM 4900-END-SYORI-SEC
+                   END-IF
                ELSE
                    MOVE    SPACE               TO  SPA-MOTOPG
                    PERFORM 5001-MAPCUR-SEC
@@ -804,6 +808,9 @@
       *                訂正時、受診履歴等の削除
                        MOVE    ZERO                TO  FLG-CLAIM-OK
                        PERFORM 4500-TOROKU-SYORI-SEC
+                       IF      SPA-ERRCD (1:1)     =   "K"
+                           PERFORM 510-ERRSET-SEC
+                       END-IF
                    END-IF
            END-EVALUATE
            MOVE    SPACE               TO  SPA-KIDCD
@@ -938,6 +945,31 @@
                    MOVE    SPA-GMN-HAKFLGLST(IDX)  TO  SPA-GMN-HAKFLG-G
                END-IF
            END-PERFORM
+      *
+      *    ユーザプログラム起動初期
+           INITIALIZE                      ORCSUSERCHKAREA
+           MOVE    "K03"               TO  ORCSUSERCHK-GMNPG
+           MOVE    "1"                 TO  ORCSUSERCHK-SYORI
+           CALL    "ORCSUSERCHK"       USING
+                                       ORCSUSERCHKAREA
+           MOVE    ORCSUSERCHK-GYOUMU-FLG  TO  SPA-NAI-GYOUMU-FLG
+           MOVE    ORCSUSERCHK-GYOUMU-ARI  TO  SPA-NAI-GYOUMU-ARI
+      *
+           MOVE    "0 Ｕ・Ｐ指示なし"      TO  SPA-GMN-USERPG-LIST (1)
+           IF      SPA-NAI-GYOUMU-ARI  =   "1"
+      *        実行するプログラムがある時
+               MOVE    "1 Ｕ・Ｐ指示あり"  TO  SPA-GMN-USERPG-LIST (2)
+               MOVE    2                   TO  SPA-USERPG-MAX
+               IF      SPA-NAI-GYOUMU-FLG  =   "1"
+                   MOVE    SPA-GMN-USERPG-LIST (2) TO  SPA-GMN-USERPG-G
+               ELSE
+                   MOVE    SPA-GMN-USERPG-LIST (1) TO  SPA-GMN-USERPG-G
+               END-IF
+           ELSE
+      *        実行するプログラムがない時
+               MOVE    1                   TO  SPA-USERPG-MAX
+               MOVE    SPA-GMN-USERPG-LIST(1)  TO  SPA-GMN-USERPG-G
+           END-IF
       *
             .
        310-SPA-SET-EXT.
@@ -2297,11 +2329,13 @@
       *    更新処理
            MOVE    1                   TO  FLG-CLAIM-OK
            PERFORM 4500-TOROKU-SYORI-SEC
+           IF      SPA-ERRCD (1:1)     =   "K"
+               PERFORM 510-ERRSET-SEC
+           END-IF
       *
           .
        3009-CLAIM-SYORI-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *    画面編集処理
@@ -2543,6 +2577,14 @@
                                            TO  K03-YAKJYOFLG-ITEM(IDX)
            END-PERFORM
            MOVE    SPA-YAKJYOFLG-MAX   TO  K03-YAKJYOFLG-COUNT
+      *    Ｕ・Ｐ
+           MOVE    SPA-GMN-USERPG-G    TO  K03-USERPG
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-USERPG-MAX
+               MOVE    SPA-GMN-USERPG-LIST (IDX)
+                                           TO  K03-USERPG-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-USERPG-MAX      TO  K03-USERPG-COUNT
       *
       *    自費名称
            MOVE    SPA-GMN-JIHIMSG(1)  TO  K03-JIHIMSG1
@@ -2802,6 +2844,8 @@
                    MOVE    "NYUKINHOU"       TO  MCP-WIDGET
                WHEN    14
                    MOVE    "HAKHOUFLG"       TO  MCP-WIDGET
+               WHEN    15
+                   MOVE    "USERPG"          TO  MCP-WIDGET
                WHEN    07
                    MOVE    "B12"             TO  MCP-WIDGET
       *!       WHEN    08
@@ -2866,11 +2910,18 @@
       *       ドクター
                WHEN    "DRCD"
                    MOVE    07          TO  SPA-GMN-CUR
-      *            複数科継続中の時、確定へ
-                   IF     (SPA-FUKU-DENPNUM    NOT =   ZERO )  AND
-                          (SPA-SYORIFLG            =   ZERO )
-                       MOVE    09              TO  SPA-GMN-CUR
+      *!           複数科継続中の時、確定へ
+      *!           IF     (SPA-FUKU-DENPNUM    NOT =   ZERO )  AND
+      *!                  (SPA-SYORIFLG            =   ZERO )
+      *!               MOVE    09              TO  SPA-GMN-CUR
+      *!           END-IF
+      *            Ｕ・Ｐ
+                   IF      SPA-USERPG-MAX      >   1
+                       MOVE    15              TO  SPA-GMN-CUR
                    END-IF
+      *       Ｕ・Ｐ
+               WHEN    "USERPG"
+                   MOVE    07          TO  SPA-GMN-CUR
            END-EVALUATE
            .
       *
@@ -3060,6 +3111,7 @@
            MOVE    K03-SYOHOPRTFLG     TO  SPA-GMN-SYOHOPRTFLG-G
            MOVE    K03-YAKJYOFLG       TO  SPA-GMN-YAKJYOFLG-G
            MOVE    K03-DRCD            TO  SPA-GMN-DRCD-G
+           MOVE    K03-USERPG          TO  SPA-GMN-USERPG-G
            .
       *
        4101-GMN-SPA-SET-EXT.
@@ -3121,6 +3173,11 @@
            END-IF
       *    ドクター
            PERFORM 440-DRCD-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *    Ｕ・Ｐ
+           PERFORM 440-USERPG-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -3745,6 +3802,36 @@
            EXIT.
       *
       *****************************************************************
+      *    Ｕ・Ｐ入力　処理
+      *****************************************************************
+       440-USERPG-CHK-SEC              SECTION.
+      *
+           IF      SPA-GMN-USERPG      =   SPACE
+               MOVE    "0"                 TO  SPA-GMN-USERPG
+           END-IF
+      *
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-USERPG-MAX)  OR
+                              (FLG-CHK NOT =   ZERO )
+               IF      SPA-GMN-USERPG      =   SPA-GMN-USERPG-LIST (IDX)
+                                                               (1:1)
+                   MOVE    SPA-GMN-USERPG-LIST (IDX)
+                                           TO  SPA-GMN-USERPG-G
+                   MOVE    1               TO  FLG-CHK
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-CHK               =   ZERO
+               MOVE    "0027"            TO  SPA-ERRCD
+               MOVE    15                TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       440-USERPG-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    戻る　処理
       *****************************************************************
        210-BACK                        SECTION.
@@ -4081,8 +4168,10 @@
                   (SPA-KIDCD       NOT =   SPACE )
                MOVE    SPACE               TO  WRK-MCP-PUTTYPE
            ELSE
+               IF      FLG-END         =   ZERO
       *        終了処理
-               PERFORM 4900-END-SYORI-SEC
+                   PERFORM 4900-END-SYORI-SEC
+               END-IF
            END-IF
            .
        4500-TOROKU-SYORI-EXT.
@@ -4310,27 +4399,52 @@
                PERFORM 450012-GAIRAI-CALL-SEC
            END-IF
       *
-           IF     (SPA-ERRCD           =   SPACE ) OR
-                  (SPA-ERRCD(1:1)      =   "K"   ) 
-      *        各帳票印刷
-               PERFORM 45009-PRINT-SEC
-           END-IF
-      *
-      *    ＣＬＡＩＭ送信
-           IF    ((SPA-ERRCD           =   SPACE ) OR
-                  (SPA-ERRCD(1:1)      =   "K"  )) AND
-                  (FLG-CLAIM           =   1     )
-               PERFORM 4906-CLAIM-SOUSIN-SEC
-           END-IF
-      *    ユーザプログラム起動
-           IF     (SPA-ERRCD           =   SPACE ) OR
-                  (SPA-ERRCD(1:1)      =   "K"   )
-               MOVE    1               TO  FLG-USERPG
-               PERFORM 4907-USERPG-SEC
+           MOVE    SPACE               TO  WRK-MCP-PUTTYPE
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    FLG-CLAIM       TO  SPA-FLG-CLAIM
+               MOVE    FLG-CLAIM-OK    TO  SPA-CLAIM-OK
+               MOVE    1               TO  SPA-USERPG-FLG
+               PERFORM 450011-KOUSIN-ATO-SEC
+           ELSE
+               IF      SPA-ERRCD(1:1)  =   "K"
+                   MOVE    FLG-CLAIM-OK    TO  SPA-CLAIM-OK
+                   MOVE    FLG-CLAIM       TO  SPA-FLG-CLAIM
+                   MOVE    1               TO  SPA-USERPG-FLG
+               END-IF
            END-IF
       *
            .
        45001-TOROKU-KOUSIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    警告後処理
+      *****************************************************************
+       450011-KOUSIN-ATO-SEC           SECTION.
+      *
+      *    各帳票印刷
+           PERFORM 45009-PRINT-SEC
+      *
+      *    ＣＬＡＩＭ送信
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-FLG-CLAIM       =   1     )
+               PERFORM 4906-CLAIM-SOUSIN-SEC
+           END-IF
+      *    ユーザプログラム起動
+           IF     (SPA-ERRCD           =   SPACE ) 
+               MOVE    SPA-USERPG-FLG      TO  FLG-USERPG
+               IF      WRK-MCP-PUTTYPE     =   SPACE
+                   IF      SPA-CLAIM-OK        =   ZERO
+                       MOVE    "CHANGE"            TO  WRK-MCP-PUTTYPE
+                   ELSE
+                       MOVE    "JOIN"              TO  WRK-MCP-PUTTYPE
+                  END-IF
+               END-IF
+               PERFORM 4907-USERPG-SEC
+           END-IF
+      *
+           .
+       450011-KOUSIN-ATO-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4501,10 +4615,15 @@
                 END-IF
            END-IF
       *    ユーザプログラム起動
-           IF     (SPA-ERRCD           =   SPACE ) OR
-                  (SPA-ERRCD(1:1)      =   "K"   )
+           IF      SPA-ERRCD           =   SPACE
                MOVE    3               TO  FLG-USERPG
+               MOVE    "JOIN"          TO  WRK-MCP-PUTTYPE
                PERFORM 4907-USERPG-SEC
+           ELSE
+               IF      SPA-ERRCD(1:1)  =   "K"
+                   MOVE    ZERO        TO  SPA-FLG-CLAIM
+                   MOVE    3           TO  SPA-USERPG-FLG
+               END-IF
            END-IF
       *
            .
@@ -4899,31 +5018,82 @@
       *****************************************************************
        4907-USERPG-SEC  SECTION.
       *
-      *    ユーザプログラム起動
-           INITIALIZE                  ORCSUSERPGAREA
-           MOVE    "K03"               TO  ORCSUSERPG-GMNPG
-      *
-      *    IF      FLG-USERPG          =   1
-      *        IF      SPA-SYORIFLG        =   ZERO
+           EVALUATE    SPA-USERPG-FLG
+               WHEN    1
       *        追加
-      *            MOVE    "1"             TO  ORCSUSERPG-SYORI-FLG
-      *        ELSE
+                   IF      SPA-SYORIFLG        =   ZERO
+                       MOVE    1               TO  SPA-SYORI-FLG
+                   ELSE
       *        更新
-      *            MOVE    "2"             TO  ORCSUSERPG-SYORI-FLG
-      *        END-IF
-      *    ELSE
+                       MOVE    2               TO  SPA-SYORI-FLG
+                   END-IF
+               WHEN    3
       *        削除
-      *        MOVE    "3"             TO  ORCSUSERPG-SYORI-FLG
-      *    END-IF
-           MOVE    SPA-SYSYMD          TO  ORCSUSERPG-SYSYMD
-           MOVE    SPA-SRYYMD          TO  ORCSUSERPG-SRYYMD
-           MOVE    SPA-PTID            TO  ORCSUSERPG-PTID
-           MOVE    SPA-PTNUM           TO  ORCSUSERPG-PTNUM
-      *
-      *****CALL    "ORCSUSERPG"        USING   ORCSUSERPGAREA
+                   MOVE    3               TO  SPA-SYORI-FLG
+           END-EVALUATE
+           IF      SPA-GMN-USERPG      =   "1"
+      *        ユーザプログラム実行画面表示へ
+               PERFORM 49071-XD01-SYORI-SEC
+           ELSE
+               IF      SPA-NAI-GYOUMU-ARI  =   "1"
+      *            起動するユーザプログラムある時、実行
+                   INITIALIZE                      ORCSUSERCHKAREA
+                   MOVE    "K03"               TO  ORCSUSERCHK-GMNPG
+                   MOVE    "2"                 TO  ORCSUSERCHK-SYORI
+                   MOVE    SPA-SYSYMD          TO  ORCSUSERCHK-SYSYMD
+                   MOVE    SPA-SRYYMD          TO  ORCSUSERCHK-SRYYMD
+                   MOVE    SPA-PTID            TO  ORCSUSERCHK-PTID
+                   MOVE    SPA-PTNUM           TO  ORCSUSERCHK-PTNUM
+                   MOVE    SPA-SRYKA           TO  ORCSUSERCHK-SRYKA
+                   MOVE    SPA-HKNCOMBINUM     TO  ORCSUSERCHK-HKNCOMBI
+                   MOVE    SPA-DRCD            TO  ORCSUSERCHK-DRCD
+                   MOVE    SPA-SYORI-FLG       TO  ORCSUSERCHK-SYORI-FLG
+                   CALL    "ORCSUSERCHK"       USING
+                                               ORCSUSERCHKAREA
+               END-IF
+           END-IF
       *
            .
        4907-USERPG-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ユーザプログラム実行画面表示処理
+      *****************************************************************
+       49071-XD01-SYORI-SEC              SECTION.
+      *
+      *    排他制御解除処理
+           PERFORM 990-LOCK-OUT-SEC
+      *
+           MOVE    SPACE               TO  LINKAREA
+      *    共通キー編集
+           MOVE    "K03"               TO  SPA-MOTOPG
+           MOVE    "XD01"              TO  SPA-SAKIPG
+           MOVE    SPA-AREA            TO  LNK-KYOUTU
+      *
+      *    共通のキーをクリアする
+           MOVE    SPACE               TO  SPA-ERRMSG
+           INITIALIZE                      SPA-KYOTUKEY
+           INITIALIZE                      SPA-K01KYOUTU
+           MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+           MOVE    "K03"               TO  SPA-MOTOPG
+           MOVE    "K02"               TO  SPA-SAKIPG
+      *
+           MOVE    SPA-KYOUTU          TO  LNK-COMMON
+           MOVE    SPACE               TO  LNK-SCRSPA
+      *
+      *    画面移行用のパラメタ変更
+           MOVE    "K03"               TO  SPA-MOTOPG
+           MOVE    "XD01"              TO  SPA-SAKIPG
+      *
+           MOVE    WRK-MCP-PUTTYPE     TO  MCP-PUTTYPE
+           MOVE    "XD01"              TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+           .
+       49071-XD01-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5012,6 +5182,9 @@
                                        TO  SPA-ERRMSG
                WHEN    "0017"
                    MOVE    "発行方法区分がありません。"
+                                       TO  SPA-ERRMSG
+               WHEN    "0027"
+                   MOVE    "Ｕ・Ｐがありません。"
                                        TO  SPA-ERRMSG
                WHEN    "0020"
                    MOVE    "複数科まとめのできない保険です。"

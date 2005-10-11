@@ -165,6 +165,15 @@
                        09  SPA-GMN-NYUKINHOU-LIST  PIC X(30)
                                                    OCCURS  99.
                        09  SPA-NYUKINHOU-MAX           PIC 9(04).
+      *            Ｕ・Ｐ
+                   07  SPA-GMN-USERPG-G.
+                       09  SPA-GMN-USERPG            PIC X(01).
+                       09  SPA-GMN-UP1               PIC X(01).
+                       09  SPA-GMN-USERPGMEI         PIC X(18).
+                   07  SPA-GMN-USERPG-LSTG.
+                       09  SPA-GMN-USERPG-LIST     PIC X(20)
+                                                   OCCURS  2.
+                   07  SPA-USERPG-MAX                 PIC 9(02).
       *
       *            複数科処理
                    07  SPA-GMN-FUKUSAGAKU        PIC S9(10).
@@ -216,6 +225,14 @@
                    07  SPA-NAI-NYUKINHOU-LSTG.
                        09  SPA-NAI-NYUKIN-JYOTAIL  PIC X(01)
                                                    OCCURS  99.
+      *            ユーザプログラム起動
+                   07  SPA-NAI-GYOUMU-FLG             PIC X(01).
+                   07  SPA-NAI-GYOUMU-ARI             PIC 9(01).
+      *            終了時
+                   07  SPA-MCP-PUTTYPE                PIC X(16).
+                   07  SPA-FLG-CLAIM                  PIC 9(01).
+                   07  SPA-CLAIM-OK                   PIC 9(01).
+                   07  SPA-USERPG-FLG                 PIC 9(01).
       *
       *    ＣＬＡＩＭ画面
            03  SPA-K03X-AREA.
