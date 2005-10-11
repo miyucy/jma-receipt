@@ -1081,6 +1081,7 @@ COPYS = \
         XD01SCR-SPA \
         CPORCSUSERCHK.INC \
         CPSK9701.INC \
+        CPCSV.INC \
 
 DBPATH = \
 	ORCA-DBPATH
