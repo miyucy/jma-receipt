@@ -291,6 +291,11 @@
                05  SYS-YY          PIC 9(02).
                05  SYS-MM          PIC 9(02).
                05  SYS-DD          PIC 9(02).
+           03  SYS-TIME.
+               05  SYS-HH          PIC 9(02).
+               05  SYS-MM          PIC 9(02).
+               05  SYS-SS          PIC 9(02).
+               05  SYS-TT          PIC 9(02).
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -389,6 +394,7 @@
            INITIALIZE              WRK-LF02-REC
       *    システム日付セット
            ACCEPT  SYS-YMD         FROM    DATE
+           ACCEPT  SYS-TIME        FROM    TIME
            COMPUTE WRK-SYSYY       =   SYS-YY      +   2000
            MOVE    SYS-MM              TO  WRK-SYSMM
            MOVE    SYS-DD              TO  WRK-SYSDD
@@ -427,7 +433,13 @@
       * 
            MOVE    LNK-SRYYMD      TO  WRK-WYMD
            PERFORM 500-HIZUKE-HENSYU-SEC
-           MOVE    WRK-HENYMD      TO  WRK-LF02-ORDER-TIME
+           MOVE    WRK-HENYMD      TO  WRK-LF02-ORDER-TIME(1:10)
+           MOVE    "T"             TO  WRK-LF02-ORDER-TIME(11:1)
+           MOVE    SYS-TIME(1:2)   TO  WRK-LF02-ORDER-TIME(12:2)
+           MOVE    ":"             TO  WRK-LF02-ORDER-TIME(14:1)
+           MOVE    SYS-TIME(3:2)   TO  WRK-LF02-ORDER-TIME(15:2)
+           MOVE    ":"             TO  WRK-LF02-ORDER-TIME(17:1)
+           MOVE    SYS-TIME(5:2)   TO  WRK-LF02-ORDER-TIME(18:2)
       *
       *    診療科名称
            MOVE    SPACE               TO  SYS-1005-REC
