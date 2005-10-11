@@ -53,6 +53,12 @@
       *    一時領域
       *01  WRK-AREA.
       *
+      *    ユーザプログラム用シェル（scripts/以下ならどこでもよい）
+       01  WRK-SHELL-USERPG.
+           03  FILLER             PIC X(08) VALUE
+                                             "scripts/".
+           03  WRK-SHELL-SHELL    PIC X(100).
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -68,6 +74,10 @@
       *
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
+      *
+           COPY    "CPMKPASS.INC".
+      *
+           COPY    "CPSHELLTBL.INC".
       *
            COPY    "ORCA-DBPATH".
       *
@@ -90,9 +100,6 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
-      *TEST
-           DISPLAY "ORCSUSERPGAREA:" ORCSUSERPGAREA
-      *TEST
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
       *
@@ -109,7 +116,36 @@
       *****************************************************************
        100-SHELL-SYORI-SEC             SECTION.
       *
-           .
+           MOVE    SPACE               TO  SHELLTBL
+           MOVE    ORCSUSERPG-SHELL    TO  WRK-SHELL-SHELL
+      *    ファイルデイレクトリ位置指定
+           INITIALIZE                      ORCSMKPASSAREA
+           MOVE    WRK-SHELL-USERPG    TO  MKPASS-IN-01
+           CALL    "ORCSMKPASSSITE"    USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
+      *
+      *    パラメタセット
+      *
+           MOVE    ORCSUSERPG-GMNPG    TO  SHELLTBL-ARG1
+           MOVE    ORCSUSERPG-SYORI-FLG
+                                       TO  SHELLTBL-ARG2
+           MOVE    ORCSUSERPG-SYSYMD   TO  SHELLTBL-ARG3
+           MOVE    ORCSUSERPG-SRYYMD   TO  SHELLTBL-ARG4
+           MOVE    ORCSUSERPG-PTID     TO  SHELLTBL-ARG5
+           MOVE    ORCSUSERPG-PTNUM    TO  SHELLTBL-ARG6
+           MOVE    ORCSUSERPG-SRYKA    TO  SHELLTBL-ARG7
+           MOVE    ORCSUSERPG-DRCD     TO  SHELLTBL-ARG8
+           MOVE    ORCSUSERPG-HKNCOMBI TO  SHELLTBL-ARG9
+           MOVE    ORCSUSERPG-SYORINM  TO  SHELLTBL-ARG10
+           MOVE    ORCSUSERPG-PRTNM    TO  SHELLTBL-ARG11
+      *
+           MOVE    SHELLTBL            TO  MCPDATA-REC
+           MOVE    "SHELL"             TO  MCP-FUNC
+           MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                           MCPAREA
+                                           MCPDATA-REC
+            .
        100-SHELL-SYORI-EXT.
            EXIT.
       *
