@@ -1563,19 +1563,19 @@
            EVALUATE    TOKEI-TEISYUTU      ALSO    TOKEI-HKNKBN
                ALSO    TOKEI-SYUBETUKBN    ALSO    TOKEI-KBN
                WHEN    "1" ALSO    "1" ALSO    "1" ALSO    "001"
-                   MOVE    "¡ö°åÊÝ¡Ê£·£°°Ê¾å£¹³ä¡Ë¤È¸øÈñ¤ÎÊ»ÍÑ"
+                   MOVE    "¡ö°åÊÝ¡Ê£·£°ºÐ°Ê¾å£¹³ä¡Ë¤È¸øÈñ¤ÎÊ»ÍÑ"
                                                    TO  WRK-PRT-LINE
                    MOVE    "01"                    TO  CSV-SYUBETUKBN
                WHEN    "1" ALSO    "1" ALSO    "1" ALSO    ANY
-                   MOVE    "¡ö°åÊÝÃ±ÆÈ¡Ê£·£°°Ê¾å£¹³ä¡Ë"
+                   MOVE    "¡ö°åÊÝÃ±ÆÈ¡Ê£·£°ºÐ°Ê¾å£¹³ä¡Ë"
                                                    TO  WRK-PRT-LINE
                    MOVE    "01"                    TO  CSV-SYUBETUKBN
                WHEN    "1" ALSO    "1" ALSO    "2" ALSO    "001"
-                   MOVE    "¡ö°åÊÝ¡Ê£·£°°Ê¾å£¸³ä¡Ë¤È¸øÈñ¤ÎÊ»ÍÑ"
+                   MOVE    "¡ö°åÊÝ¡Ê£·£°ºÐ°Ê¾å£¸³ä¡Ë¤È¸øÈñ¤ÎÊ»ÍÑ"
                                                    TO  WRK-PRT-LINE
                    MOVE    "02"                    TO  CSV-SYUBETUKBN
                WHEN    "1" ALSO    "1" ALSO    "2" ALSO    ANY
-                   MOVE    "¡ö°åÊÝÃ±ÆÈ¡Ê£·£°°Ê¾å£¸³ä¡Ë"
+                   MOVE    "¡ö°åÊÝÃ±ÆÈ¡Ê£·£°ºÐ°Ê¾å£¸³ä¡Ë"
                                                    TO  WRK-PRT-LINE
                    MOVE    "02"                    TO  CSV-SYUBETUKBN
                WHEN    "1" ALSO    "1" ALSO    "3" ALSO    "001"
@@ -1612,11 +1612,11 @@
                    MOVE    "¡ö¸øÈñÃ±ÆÈ"            TO  WRK-PRT-LINE
                    MOVE    "09"                    TO  CSV-SYUBETUKBN
                WHEN    "2" ALSO    "1" ALSO    "1" ALSO    ANY
-                   MOVE    "¡ö°ìÈÌ¡Ê£·£°°Ê¾å£¹³ä¡Ë"
+                   MOVE    "¡ö°ìÈÌ¡Ê£·£°ºÐ°Ê¾å£¹³ä¡Ë"
                                                    TO  WRK-PRT-LINE
                    MOVE    "10"                    TO  CSV-SYUBETUKBN
                WHEN    "2" ALSO    "1" ALSO    "2" ALSO    ANY
-                   MOVE    "¡ö°ìÈÌ¡Ê£·£°°Ê¾å£¸³ä¡Ë"
+                   MOVE    "¡ö°ìÈÌ¡Ê£·£°ºÐ°Ê¾å£¸³ä¡Ë"
                                                    TO  WRK-PRT-LINE
                    MOVE    "11"                    TO  CSV-SYUBETUKBN
                WHEN    "2" ALSO    "1" ALSO    "3" ALSO    ANY
