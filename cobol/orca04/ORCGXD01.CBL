@@ -1084,6 +1084,7 @@
       *
            MOVE    SPA-GMN-SYORINML(1) TO  SPA-GMN-SYORINM
            MOVE    SPA-NAI-KBNCDL (1)  TO  SPA-NAI-KBNCD
+           MOVE    SPA-NAI-PRTNML (1)  TO  SPA-GMN-PRTNM
       *
            MOVE    2                   TO  SPA-GMN-CUR
       *
