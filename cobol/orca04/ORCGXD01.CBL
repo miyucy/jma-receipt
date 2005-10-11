@@ -386,7 +386,7 @@
            IF      SPA-DRCD            =   SPACE
                MOVE    SPA-GMN-DRCD-LIST(01) TO  SPA-GMN-DRCD-G
            ELSE
-               MOVE    SPA-DRCD            TO  SPA-GMN-DRCD
+               MOVE    SPA-DRCD(2:4)       TO  SPA-GMN-DRCD
                PERFORM 30012-DRCD-TBLHEN-SEC
            END-IF
       *
@@ -523,7 +523,7 @@
       *
            PERFORM VARYING     IDX-T   FROM    1   BY  1
                    UNTIL       IDX-T   >   SPA-DRCD-MAX
-               IF      SPA-DRCD        =   SPA-GMN-DRCDL (IDX-T)
+               IF      SPA-DRCD(2:4)   =   SPA-GMN-DRCDL (IDX-T)
                    MOVE    SPA-GMN-DRCDMEIL (IDX-T)
                                            TO  SPA-GMN-TDRCD (IDY)
                    MOVE    SPA-DRCD-MAX   TO  IDX-T
@@ -973,11 +973,10 @@
       *
            MOVE    LNK-COMMON          TO  SPA-KYOUTU
       *
-      **** MOVE    SPA-MAE-MOTOPG      TO  SPA-SAKIPG
-           MOVE    "XD01"              TO  SPA-MOTOPG
+           IF      SPA-MOTOPG          =   SPA-SAKIPG
+               MOVE    "XD01"              TO  SPA-MOTOPG
+           END-IF
       *
-           MOVE    SPACE               TO  LNK-KYOUTU
-           INITIALIZE                  SPA-KYOTUKEY
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
       *
            MOVE    "CHANGE"            TO  MCP-PUTTYPE
@@ -1068,7 +1067,7 @@
            IF      SPA-DRCD            =   SPACE
                MOVE    SPA-GMN-DRCD-LIST(01) TO  SPA-GMN-DRCD-G
            ELSE
-               MOVE    SPA-DRCD            TO  SPA-GMN-DRCD
+               MOVE    SPA-DRCD (2:4)      TO  SPA-GMN-DRCD
                PERFORM 30012-DRCD-TBLHEN-SEC
            END-IF
       *
