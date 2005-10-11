@@ -1565,91 +1565,65 @@
                WHEN    "1" ALSO    "1" ALSO    "1" ALSO    "001"
                    MOVE    "¡ö°åÊÝ¡Ê£·£°ºÐ°Ê¾å£¹³ä¡Ë¤È¸øÈñ¤ÎÊ»ÍÑ"
                                                    TO  WRK-PRT-LINE
-                   MOVE    "01"                    TO  CSV-SYUBETUKBN
                WHEN    "1" ALSO    "1" ALSO    "1" ALSO    ANY
                    MOVE    "¡ö°åÊÝÃ±ÆÈ¡Ê£·£°ºÐ°Ê¾å£¹³ä¡Ë"
                                                    TO  WRK-PRT-LINE
-                   MOVE    "01"                    TO  CSV-SYUBETUKBN
                WHEN    "1" ALSO    "1" ALSO    "2" ALSO    "001"
                    MOVE    "¡ö°åÊÝ¡Ê£·£°ºÐ°Ê¾å£¸³ä¡Ë¤È¸øÈñ¤ÎÊ»ÍÑ"
                                                    TO  WRK-PRT-LINE
-                   MOVE    "02"                    TO  CSV-SYUBETUKBN
                WHEN    "1" ALSO    "1" ALSO    "2" ALSO    ANY
                    MOVE    "¡ö°åÊÝÃ±ÆÈ¡Ê£·£°ºÐ°Ê¾å£¸³ä¡Ë"
                                                    TO  WRK-PRT-LINE
-                   MOVE    "02"                    TO  CSV-SYUBETUKBN
                WHEN    "1" ALSO    "1" ALSO    "3" ALSO    "001"
                    MOVE    "¡ö°åÊÝ¡ÊËÜ¿Í¡Ë¤È¸øÈñ¤ÎÊ»ÍÑ"
                                                    TO  WRK-PRT-LINE
-                   MOVE    "03"                    TO  CSV-SYUBETUKBN
                WHEN    "1" ALSO    "1" ALSO    "3" ALSO    ANY
                    MOVE    "¡ö°åÊÝÃ±ÆÈ¡ÊËÜ¿Í¡Ë"    TO  WRK-PRT-LINE
-                   MOVE    "03"                    TO  CSV-SYUBETUKBN
                WHEN    "1" ALSO    "1" ALSO    "4" ALSO    "001"
                    MOVE    "¡ö°åÊÝ¡Ê²ÈÂ²¡Ë¤È¸øÈñ¤ÎÊ»ÍÑ"
                                                    TO  WRK-PRT-LINE
-                   MOVE    "04"                    TO  CSV-SYUBETUKBN
                WHEN    "1" ALSO    "1" ALSO    "4" ALSO    ANY
                    MOVE    "¡ö°åÊÝÃ±ÆÈ¡Ê²ÈÂ²¡Ë"    TO  WRK-PRT-LINE
-                   MOVE    "04"                    TO  CSV-SYUBETUKBN
                WHEN    "1" ALSO    "1" ALSO    "5" ALSO    "001"
                    MOVE    "¡ö°åÊÝ¡Ê£³ºÐ¡Ë¤È¸øÈñ¤ÎÊ»ÍÑ"
                                                    TO  WRK-PRT-LINE
-                   MOVE    "05"                    TO  CSV-SYUBETUKBN
                WHEN    "1" ALSO    "1" ALSO    "5" ALSO    ANY
                    MOVE    "¡ö°åÊÝÃ±ÆÈ¡Ê£³ºÐ¡Ë"    TO  WRK-PRT-LINE
-                   MOVE    "05"                    TO  CSV-SYUBETUKBN
                WHEN    "1" ALSO    "2" ALSO    "1" ALSO    ANY
                    MOVE    "¡öÏ·¿Í£¹³ä"            TO  WRK-PRT-LINE
-                   MOVE    "06"                    TO  CSV-SYUBETUKBN
                WHEN    "1" ALSO    "2" ALSO    "2" ALSO    ANY
                    MOVE    "¡öÏ·¿Í£¸³ä"            TO  WRK-PRT-LINE
-                   MOVE    "07"                    TO  CSV-SYUBETUKBN
                WHEN    "1" ALSO    "3" ALSO    "1" ALSO    ANY
                    MOVE    "¡ö¸øÈñ¤È¸øÈñ¤ÎÊ»ÍÑ"    TO  WRK-PRT-LINE
-                   MOVE    "08"                    TO  CSV-SYUBETUKBN
                WHEN    "1" ALSO    "3" ALSO    "2" ALSO    ANY
                    MOVE    "¡ö¸øÈñÃ±ÆÈ"            TO  WRK-PRT-LINE
-                   MOVE    "09"                    TO  CSV-SYUBETUKBN
                WHEN    "2" ALSO    "1" ALSO    "1" ALSO    ANY
                    MOVE    "¡ö°ìÈÌ¡Ê£·£°ºÐ°Ê¾å£¹³ä¡Ë"
                                                    TO  WRK-PRT-LINE
-                   MOVE    "10"                    TO  CSV-SYUBETUKBN
                WHEN    "2" ALSO    "1" ALSO    "2" ALSO    ANY
                    MOVE    "¡ö°ìÈÌ¡Ê£·£°ºÐ°Ê¾å£¸³ä¡Ë"
                                                    TO  WRK-PRT-LINE
-                   MOVE    "11"                    TO  CSV-SYUBETUKBN
                WHEN    "2" ALSO    "1" ALSO    "3" ALSO    ANY
                    MOVE    "¡ö°ìÈÌÈïÊÝ¸±¼Ô"        TO  WRK-PRT-LINE
-                   MOVE    "12"                    TO  CSV-SYUBETUKBN
                WHEN    "2" ALSO    "1" ALSO    "4" ALSO    ANY
                    MOVE    "¡ö°ìÈÌ¡Ê£³ºÐÌ¤Ëþ¡Ë"    TO  WRK-PRT-LINE
-                   MOVE    "13"                    TO  CSV-SYUBETUKBN
                WHEN    "2" ALSO    "1" ALSO    "5" ALSO    ANY
                    MOVE    "¡öÂà¿¦¡ÊËÜ¿Í¡Ë"        TO  WRK-PRT-LINE
-                   MOVE    "14"                    TO  CSV-SYUBETUKBN
                WHEN    "2" ALSO    "1" ALSO    "6" ALSO    ANY
                    MOVE    "¡öÂà¿¦¡Ê£·£°ºÐ°Ê¾å£¹³ä¡Ë"
                                                    TO  WRK-PRT-LINE
-                   MOVE    "15"                    TO  CSV-SYUBETUKBN
                WHEN    "2" ALSO    "1" ALSO    "7" ALSO    ANY
                    MOVE    "¡öÂà¿¦¡Ê£·£°ºÐ°Ê¾å£¸³ä¡Ë"
                                                    TO  WRK-PRT-LINE
-                   MOVE    "16"                    TO  CSV-SYUBETUKBN
                WHEN    "2" ALSO    "1" ALSO    "8" ALSO    ANY
                    MOVE    "¡öÂà¿¦¡ÊÈïÉÞÍÜ¼Ô¡Ë"    TO  WRK-PRT-LINE
-                   MOVE    "17"                    TO  CSV-SYUBETUKBN
                WHEN    "2" ALSO    "1" ALSO    "9" ALSO    ANY
                    MOVE    "¡öÂà¿¦¡Ê£³ºÐÌ¤Ëþ¡Ë"    TO  WRK-PRT-LINE
-                   MOVE    "18"                    TO  CSV-SYUBETUKBN
                WHEN    "2" ALSO    "2" ALSO    "1" ALSO    ANY
                    MOVE    "¡öÏ·¿Í£¹³ä"            TO  WRK-PRT-LINE
-                   MOVE    "19"                    TO  CSV-SYUBETUKBN
                WHEN    "2" ALSO    "2" ALSO    "2" ALSO    ANY
                    MOVE    "¡öÏ·¿Í£¸³ä"            TO  WRK-PRT-LINE
-                   MOVE    "20"                    TO  CSV-SYUBETUKBN
                WHEN    OTHER
-                   MOVE    "00"                    TO  CSV-SYUBETUKBN
                    GO  TO  3201-SYUBETU-BODY-HEN-EXT
            END-EVALUATE
       *
@@ -1657,6 +1631,7 @@
            PERFORM 320-BODY-SET-SEC
       *
            MOVE    TOKEI-SYUBETUKBN    TO  WRK-SYUBETUKBN
+           MOVE    WRK-SYUBETUKBN      TO  CSV-SYUBETUKBN
            MOVE    SPACE               TO  WRK-KBN
       *
            .
