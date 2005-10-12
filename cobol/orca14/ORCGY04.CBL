@@ -723,7 +723,7 @@
            MOVE    ZERO               TO  Y04-LIST6-COUNT
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX             >   SPA-GMN-MAX(1)
-                   OR          SPA-GMN-TSINRYO (1 IDX)  =   SPACE 
+                   OR          SPA-GMN-TKNJNAME (1 IDX)  =   SPACE 
                MOVE    SPA-GMN-TSINRYO (1 IDX) 
                                            TO  Y04-LIST1-SRYNAIYO(IDX)
                MOVE    SPA-GMN-TYYKTIME(1 IDX)
@@ -735,7 +735,7 @@
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX             >   SPA-GMN-MAX(2)
-                   OR          SPA-GMN-TSINRYO (2 IDX)  =   SPACE 
+                   OR          SPA-GMN-TKNJNAME (2 IDX)  =   SPACE 
                MOVE    SPA-GMN-TSINRYO (2 IDX) 
                                            TO  Y04-LIST2-SRYNAIYO(IDX)
                MOVE    SPA-GMN-TYYKTIME(2 IDX)
@@ -747,7 +747,7 @@
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX             >   SPA-GMN-MAX(3)
-                   OR          SPA-GMN-TSINRYO (3 IDX)  =   SPACE 
+                   OR          SPA-GMN-TKNJNAME (3 IDX)  =   SPACE 
                MOVE    SPA-GMN-TSINRYO (3 IDX) 
                                            TO  Y04-LIST3-SRYNAIYO(IDX)
                MOVE    SPA-GMN-TYYKTIME(3 IDX)
@@ -759,7 +759,7 @@
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX             >   SPA-GMN-MAX(4)
-                   OR          SPA-GMN-TSINRYO (4 IDX)  =   SPACE 
+                   OR          SPA-GMN-TKNJNAME (4 IDX)  =   SPACE 
                MOVE    SPA-GMN-TSINRYO (4 IDX) 
                                            TO  Y04-LIST4-SRYNAIYO(IDX)
                MOVE    SPA-GMN-TYYKTIME(4 IDX)
@@ -771,7 +771,7 @@
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX             >   SPA-GMN-MAX(5)
-                   OR          SPA-GMN-TSINRYO (5 IDX)  =   SPACE 
+                   OR          SPA-GMN-TKNJNAME (5 IDX)  =   SPACE 
                MOVE    SPA-GMN-TSINRYO (5 IDX) 
                                            TO  Y04-LIST5-SRYNAIYO(IDX)
                MOVE    SPA-GMN-TYYKTIME(5 IDX)
@@ -783,7 +783,7 @@
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX             >   SPA-GMN-MAX(6)
-                   OR          SPA-GMN-TSINRYO (6 IDX)  =   SPACE 
+                   OR          SPA-GMN-TKNJNAME (6 IDX)  =   SPACE 
                MOVE    SPA-GMN-TSINRYO (6 IDX) 
                                            TO  Y04-LIST6-SRYNAIYO(IDX)
                MOVE    SPA-GMN-TYYKTIME(6 IDX)
