@@ -181,7 +181,6 @@
       *
       *
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -585,7 +584,7 @@
            MOVE    1                  TO  JOB-JOBID.
            MOVE    "ORCBSE1"          TO  JOB-SHELLID.
            MOVE    ALL "*"            TO  JOB-TERMID.
-           CALL    "ORCSJOB"          USING
+           CALL    "ORCSJOBCUST"          USING
                                       WRK-JOBKANRI-AREA  
                                       JOBKANRI-REC.
            MOVE    SPACE              TO  EID2.
@@ -650,10 +649,10 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"                   TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"                    USING
-                                                 MCPAREA
-                                                 ORCMCPAREA
-                                                 MCPDATA-REC.
+           CALL "MONFUNC"          USING
+                                   MCPAREA
+                                   MCPDATA-REC
+           .
       *
        900-PUT-WINDOW-EXT.
            EXIT.

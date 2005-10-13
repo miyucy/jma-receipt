@@ -216,7 +216,6 @@
       *
       *    シェル用領域
            COPY    "CPSHELLTBL.INC".
-           COPY    "ORCA-DBPATH".
       *
       *    ジョブ管理
        01  WRK-JOBKANRI-AREA.
@@ -237,7 +236,6 @@
       *
       *
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
@@ -326,7 +324,7 @@
                    MOVE    1                   TO  JOB-JOBID
                    MOVE    "ORCBSE1"           TO  JOB-SHELLID
                    MOVE    ALL "*"             TO  JOB-TERMID
-                   CALL    "ORCSJOB"           USING
+                   CALL    "ORCSJOBCUST"           USING
                                                WRK-JOBKANRI-AREA  
                                                JOBKANRI-REC
                    IF  WRK-JOBKANRI-RETURN   =   ZERO
@@ -336,7 +334,7 @@
                        MOVE    1                   TO  JOB-JOBID
                        MOVE    "ORCBSE1"           TO  JOB-SHELLID
                        MOVE    ALL "*"             TO  JOB-TERMID
-                       CALL    "ORCSJOB"           USING
+                       CALL    "ORCSJOBCUST"           USING
                                                    WRK-JOBKANRI-AREA
                                                    JOBKANRI-REC
                    END-IF
@@ -347,7 +345,7 @@
                    MOVE    "ORCBSE1"           TO  JOB-SHELLID
                    MOVE    ALL "*"             TO  JOB-TERMID
                    MOVE    "ＣＳＶ出力"        TO  JOB-SHELLMSG
-                   CALL    "ORCSJOB"           USING
+                   CALL    "ORCSJOBCUST"           USING
                                                WRK-JOBKANRI-AREA
                                                JOBKANRI-REC
                    INITIALIZE                      ORCSMKPASSAREA
@@ -368,8 +366,9 @@
                    MOVE    SHELL-ARG4          TO  SHELLTBL-ARG4
                    MOVE    SHELLTBL            TO  MCPDATA-REC
                    MOVE    "SHELL"             TO  MCP-FUNC
-                   MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
-                   CALL    "MCPSUB"            USING
+                   MOVE    "shell"             TO  MCP-TABLE
+                   MOVE    "shell"             TO  MCP-PATHNAME
+                   CALL    "MONFUNC"           USING
                                                MCPAREA
                                                MCPDATA-REC
                    MOVE    1                   TO  FLG-END
@@ -730,7 +729,7 @@
            MOVE    1                  TO  JOB-JOBID.
            MOVE    "ORCBSE1"          TO  JOB-SHELLID.
            MOVE    ALL "*"            TO  JOB-TERMID.
-           CALL    "ORCSJOB"          USING
+           CALL    "ORCSJOBCUST"          USING
                                       WRK-JOBKANRI-AREA  
                                       JOBKANRI-REC.
            MOVE    SPACE              TO  EID2.
@@ -814,9 +813,8 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"                   TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"                    USING
+           CALL   "MONFUNC"                      USING
                                                  MCPAREA
-                                                 ORCMCPAREA
                                                  MCPDATA-REC.
       *
        900-PUT-WINDOW-EXT.
