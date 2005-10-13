@@ -841,6 +841,13 @@
       *    最大行数−１のセット
            COMPUTE IDX-MAX             =   WRK-IDX-MAX  -  1
       *
+           IF      IDX-SMAX            >   ZERO
+               IF      IDX-LINE        >=   IDX-MAX
+                   PERFORM 22091-PRINT-HEN-SEC
+               END-IF
+           END-IF
+      *
+      *
            PERFORM VARYING IDX         FROM    1   BY  1
                    UNTIL   IDX         >   IDX-SMAX
                ADD     1                   TO  IDX-LINE
@@ -869,7 +876,7 @@
       *
            IF     (IDX-S   +   IDX-LINE)   >   WRK-IDX-MAX
                MOVE    "次ページへ続く"    TO  WRK-NAIYOU
-                                     (IDX-PAGE WRK-IDX-MAX)(50:)
+                                     (IDX-PAGE WRK-IDX-MAX)(51:)
                IF      IDX-LINE         >   ZERO
       *            改ページ
                    ADD     1                   TO  IDX-PAGE
