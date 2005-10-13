@@ -8850,18 +8850,6 @@
                      PERFORM    23052-KOHHI-HIKAKU2-SEC                       
                  END-IF                                                 
                END-IF                                                   
-      *****    IF ( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =  "051"         ) OR
-      *****       ( HKN-RECEFTNDSPKBN            =  "2"           ) OR
-      *****       ( (LNK-SYU-SRYYMD(1:6)        >=  "200404"      ) AND
-      *****         (LNK-SYU-KOH-HKNNUM(KOH-IDX) =  "015" OR "016") )
-      *****      MOVE  LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)              
-      *****                                        TO   WK-ENTANI       
-      *****      IF    WK-ENTANI    >=      ZAN-KOHI-T2(KOH-IDX)        
-      *****          MOVE   ZAN-KOHI-T2(KOH-IDX)   TO                   
-      *****                               WK-KOH-COMPFTN(KOH-IDX)       
-      *****          PERFORM    23052-KOHHI-HIKAKU2-SEC                       
-      *****      END-IF                                                 
-      *****    END-IF                                                   
                IF    LNK-SYU-KOH-COMPFTN(KOH-IDX)   >
                                             ZAN-KOHI-T(KOH-IDX)
                      MOVE   ZAN-KOHI-T(KOH-IDX)   TO
@@ -8982,8 +8970,9 @@
                                           20 OR  15 OR  22 OR  18 ) AND
                          ( LNK-SYU-KOH-HKNNUM(KOH-IDX)(1:1) 
                                                      = "0" OR "9" )))
-                     IF  ( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =  "012"  )
-                     AND ( LNK-SYU-SYUHKNNUM            =  SPACE  )
+                     IF (( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =  "012"  ) AND
+                         ( LNK-SYU-SYUHKNNUM            =  SPACE  ))
+                     OR (  LNK-SYU-KOH-HKNNUM(KOH-IDX)  =  "972"   )
                        IF    LNK-SYU-SYUCOMPFTN-ENTANI
                                                  >  ZAN-KOHI-T3(KOH-IDX)
                            MOVE   ZAN-KOHI-T3(KOH-IDX)
@@ -9031,8 +9020,9 @@
                                           20 OR  15 OR  22 OR  18 ) AND
                          ( LNK-SYU-KOH-HKNNUM(KOH-IDX)(1:1) 
                                                      = "0" OR "9" )))
-                     IF  ( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =  "012"  )
-                     AND ( LNK-SYU-SYUHKNNUM            =  SPACE  )
+                     IF (( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =  "012"  ) AND
+                         ( LNK-SYU-SYUHKNNUM            =  SPACE  ))
+                     OR (  LNK-SYU-KOH-HKNNUM(KOH-IDX)  =  "972"   )
                        IF    LNK-SYU-KOH-COMPFTN-ENTANI(1)
                                                  >  ZAN-KOHI-T3(KOH-IDX)
                            MOVE   ZAN-KOHI-T3(KOH-IDX)
@@ -9079,8 +9069,9 @@
                                           20 OR  15 OR  22 OR  18 ) AND
                          ( LNK-SYU-KOH-HKNNUM(KOH-IDX)(1:1) 
                                                      = "0" OR "9" )))
-                     IF  ( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =  "012"  )
-                     AND ( LNK-SYU-SYUHKNNUM            =  SPACE  )
+                     IF (( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =  "012"  ) AND
+                         ( LNK-SYU-SYUHKNNUM            =  SPACE  ))
+                     OR (  LNK-SYU-KOH-HKNNUM(KOH-IDX)  =  "972"   )
                        IF    WK-ZENGAKU   >  ZAN-KOHI-T3(KOH-IDX)
                            MOVE   ZAN-KOHI-T3(KOH-IDX)
                                  TO  LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)
@@ -9131,8 +9122,9 @@
                                           20 OR  15 OR  22 OR  18 ) AND
                          ( LNK-SYU-KOH-HKNNUM(KOH-IDX)(1:1) 
                                                      = "0" OR "9" )))
-                     IF  ( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =  "012"  )
-                     AND ( LNK-SYU-SYUHKNNUM            =  SPACE  )
+                     IF (( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =  "012"  ) AND
+                         ( LNK-SYU-SYUHKNNUM            =  SPACE  ))
+                     OR (  LNK-SYU-KOH-HKNNUM(KOH-IDX)  =  "972"   )
                        IF    LNK-SYU-SYUCOMPFTN  >  ZAN-KOHI-T2(KOH-IDX)
                            MOVE   ZAN-KOHI-T2(KOH-IDX)
                                             TO  WK-KOH-COMPFTN(KOH-IDX)
@@ -9181,8 +9173,9 @@
                                           20 OR  15 OR  22 OR  18 ) AND
                          ( LNK-SYU-KOH-HKNNUM(KOH-IDX)(1:1) 
                                                      = "0" OR "9" )))
-                     IF  ( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =  "012"  )
-                     AND ( LNK-SYU-SYUHKNNUM            =  SPACE  )
+                     IF (( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =  "012"  ) AND
+                         ( LNK-SYU-SYUHKNNUM            =  SPACE  ))
+                     OR (  LNK-SYU-KOH-HKNNUM(KOH-IDX)  =  "972"   )
                        IF LNK-SYU-KOH-COMPFTN(1) >  ZAN-KOHI-T2(KOH-IDX)
                           MOVE   ZAN-KOHI-T2(KOH-IDX)
                                        TO  WK-KOH-COMPFTN(KOH-IDX)
@@ -9230,8 +9223,9 @@
                                           20 OR  15 OR  22 OR  18 ) AND
                          ( LNK-SYU-KOH-HKNNUM(KOH-IDX)(1:1) 
                                                      = "0" OR "9" )))
-                     IF  ( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =  "012"  )
-                     AND ( LNK-SYU-SYUHKNNUM            =  SPACE  )
+                     IF (( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =  "012"  ) AND
+                         ( LNK-SYU-SYUHKNNUM            =  SPACE  ))
+                     OR (  LNK-SYU-KOH-HKNNUM(KOH-IDX)  =  "972"   )
                        IF WK-ZENGAKU    >    ZAN-KOHI-T2(KOH-IDX)
                           MOVE   ZAN-KOHI-T2(KOH-IDX)
                                        TO  WK-KOH-COMPFTN(KOH-IDX)
@@ -9283,8 +9277,9 @@
                                           20 OR  15 OR  22 OR  18 ) AND
                          ( LNK-SYU-KOH-HKNNUM(KOH-IDX)(1:1) 
                                                      = "0" OR "9" )))
-                     IF  ( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =  "012"  )
-                     AND ( LNK-SYU-SYUHKNNUM            =  SPACE  )
+                     IF (( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =  "012"  ) AND
+                         ( LNK-SYU-SYUHKNNUM            =  SPACE  ))
+                     OR (  LNK-SYU-KOH-HKNNUM(KOH-IDX)  =  "972"   )
                        IF    LNK-SYU-SYUCOMPFTN  >  ZAN-KOHI-T(KOH-IDX)  
                            MOVE   ZAN-KOHI-T(KOH-IDX)
                                             TO  LNK-SYU-KOH-COMPFTN
@@ -9351,8 +9346,9 @@
                                           20 OR  15 OR  22 OR  18 ) AND
                          ( LNK-SYU-KOH-HKNNUM(KOH-IDX)(1:1) 
                                                      = "0" OR "9" )))
-                     IF  ( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =  "012"  )
-                     AND ( LNK-SYU-SYUHKNNUM            =  SPACE  )
+                     IF (( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =  "012"  ) AND
+                         ( LNK-SYU-SYUHKNNUM            =  SPACE  ))
+                     OR (  LNK-SYU-KOH-HKNNUM(KOH-IDX)  =  "972"   )
                        IF LNK-SYU-KOH-COMPFTN(1) >  ZAN-KOHI-T(KOH-IDX)
                           MOVE   ZAN-KOHI-T(KOH-IDX)
                                        TO  LNK-SYU-KOH-COMPFTN(KOH-IDX)
@@ -9414,8 +9410,9 @@
                                           20 OR  15 OR  22 OR  18 ) AND
                          ( LNK-SYU-KOH-HKNNUM(KOH-IDX)(1:1) 
                                                      = "0" OR "9" )))
-                     IF  ( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =  "012"  )
-                     AND ( LNK-SYU-SYUHKNNUM            =  SPACE  )
+                     IF (( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =  "012"  ) AND
+                         ( LNK-SYU-SYUHKNNUM            =  SPACE  ))
+                     OR (  LNK-SYU-KOH-HKNNUM(KOH-IDX)  =  "972"   )
                        IF WK-ZENGAKU    >    ZAN-KOHI-T(KOH-IDX)
                           MOVE   ZAN-KOHI-T(KOH-IDX)
                                        TO  LNK-SYU-KOH-COMPFTN(KOH-IDX)
@@ -11576,6 +11573,47 @@
                     END-IF
                  END-IF
       *
+      ***           IF    LNK-SYU-KOH-HKNNUM(1)       =  "972"
+      ***             IF   LNK-SYU-KOH1HKNFTNMONEY  >  LNK-SYU-SYUCOMPFTN
+      ***                 MOVE  LNK-SYU-SYUCOMPFTN
+      ***                                     TO  LNK-SYU-KOH1COMPFTN
+      ***                                         LNK-SYU-KOH1HKNFTNMONEY
+      ***                 COMPUTE   LNK-SYU-KOH1COMPTOTAL   =
+      ***                           LNK-SYU-KOH1COMPFTN     +
+      ***                           LNK-SYU-KOH1COMPYKZFTN
+      ***             END-IF
+      ***           END-IF
+      ***           IF    LNK-SYU-KOH-HKNNUM(2)       =  "972"
+      ***             IF   LNK-SYU-KOH2HKNFTNMONEY  >  LNK-SYU-SYUCOMPFTN
+      ***                 MOVE  LNK-SYU-SYUCOMPFTN
+      ***                                     TO  LNK-SYU-KOH2COMPFTN
+      ***                                         LNK-SYU-KOH2HKNFTNMONEY
+      ***                 COMPUTE   LNK-SYU-KOH2COMPTOTAL   =
+      ***                           LNK-SYU-KOH2COMPFTN     +
+      ***                           LNK-SYU-KOH2COMPYKZFTN
+      ***             END-IF
+      ***           END-IF
+      ***           IF    LNK-SYU-KOH-HKNNUM(3)       =  "972"
+      ***             IF   LNK-SYU-KOH3HKNFTNMONEY  >  LNK-SYU-SYUCOMPFTN
+      ***                 MOVE  LNK-SYU-SYUCOMPFTN
+      ***                                     TO  LNK-SYU-KOH3COMPFTN
+      ***                                         LNK-SYU-KOH3HKNFTNMONEY
+      ***                 COMPUTE   LNK-SYU-KOH3COMPTOTAL   =
+      ***                           LNK-SYU-KOH3COMPFTN     +
+      ***                           LNK-SYU-KOH3COMPYKZFTN
+      ***             END-IF
+      ***           END-IF
+      ***           IF    LNK-SYU-KOH-HKNNUM(4)       =  "972"
+      ***             IF   LNK-SYU-KOH4HKNFTNMONEY  >  LNK-SYU-SYUCOMPFTN
+      ***                 MOVE  LNK-SYU-SYUCOMPFTN
+      ***                                     TO  LNK-SYU-KOH4COMPFTN
+      ***                                         LNK-SYU-KOH4HKNFTNMONEY
+      ***                 COMPUTE   LNK-SYU-KOH4COMPTOTAL   =
+      ***                           LNK-SYU-KOH4COMPFTN     +
+      ***                           LNK-SYU-KOH4COMPYKZFTN
+      ***             END-IF
+      ***           END-IF
+      *
               END-IF
       *
               IF   COMB-KOH1HKNNUM            =   "027"
@@ -11612,6 +11650,37 @@
                                  LNK-SYU-KOH1COMPYKZFTN
                     END-IF
                  END-IF
+      *
+      ***           IF    LNK-SYU-KOH-HKNNUM(2)       =  "972"
+      ***             IF   LNK-SYU-KOH2HKNFTNMONEY  >  LNK-SYU-KOH1COMPFTN
+      ***                 MOVE  LNK-SYU-KOH1COMPFTN
+      ***                                     TO  LNK-SYU-KOH2COMPFTN
+      ***                                         LNK-SYU-KOH2HKNFTNMONEY
+      ***                 COMPUTE   LNK-SYU-KOH2COMPTOTAL   =
+      ***                           LNK-SYU-KOH2COMPFTN     +
+      ***                           LNK-SYU-KOH2COMPYKZFTN
+      ***             END-IF
+      ***           END-IF
+      ***           IF    LNK-SYU-KOH-HKNNUM(3)       =  "972"
+      ***             IF   LNK-SYU-KOH3HKNFTNMONEY  >  LNK-SYU-KOH1COMPFTN
+      ***                 MOVE  LNK-SYU-KOH1COMPFTN
+      ***                                     TO  LNK-SYU-KOH3COMPFTN
+      ***                                         LNK-SYU-KOH3HKNFTNMONEY
+      ***                 COMPUTE   LNK-SYU-KOH3COMPTOTAL   =
+      ***                           LNK-SYU-KOH3COMPFTN     +
+      ***                           LNK-SYU-KOH3COMPYKZFTN
+      ***             END-IF
+      ***           END-IF
+      ***           IF    LNK-SYU-KOH-HKNNUM(4)       =  "972"
+      ***             IF   LNK-SYU-KOH4HKNFTNMONEY  >  LNK-SYU-KOH1COMPFTN
+      ***                 MOVE  LNK-SYU-KOH1COMPFTN
+      ***                                     TO  LNK-SYU-KOH4COMPFTN
+      ***                                         LNK-SYU-KOH4HKNFTNMONEY
+      ***                 COMPUTE   LNK-SYU-KOH4COMPTOTAL   =
+      ***                           LNK-SYU-KOH4COMPFTN     +
+      ***                           LNK-SYU-KOH4COMPYKZFTN
+      ***             END-IF
+      ***           END-IF
       *
               END-IF
       *
