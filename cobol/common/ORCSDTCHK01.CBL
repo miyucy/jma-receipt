@@ -237,7 +237,8 @@
       *
            END-PERFORM
       *
-           MOVE    PATH-QUERY-DTCHK-KEY2   TO  MCP-PATH
+      *
+           MOVE    WRK-MCP-PATH        TO  MCP-PATH
            PERFORM 910-DBCLOSE-SEC
       *
            .
