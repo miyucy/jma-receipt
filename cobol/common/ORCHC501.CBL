@@ -1003,6 +1003,7 @@
       *
            IF     (IDX-S               =   1   )  AND
                   (IDX-LINE            =   IDX-MAX)
+             AND  (FLG-ORDERPRT        =   1   )
                CONTINUE
            ELSE
                IF     (IDX-S   +   IDX-LINE)   >   IDX-MAX
