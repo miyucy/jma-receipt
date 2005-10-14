@@ -3,8 +3,14 @@ TID1	{
 		ID1CODE	{
 			value	varchar(10);
 		};
+		B01	{
+			label	varchar(6);
+		};
 		ID1MSG	{
 			value	varchar(70);
+		};
+		B12	{
+			label	varchar(6);
 		};
 	};
 };

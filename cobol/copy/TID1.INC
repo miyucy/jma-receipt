@@ -19,5 +19,7 @@
             03  TID1-FIXED1.
               04  TID1-ID1CODE.
                 05  TID1-VALUE  PIC X(10).
+              04  TID1-B01-LABEL PIC X(6).
               04  TID1-ID1MSG.
                 05  TID1-VALUE  PIC X(70).
+              04  TID1-B12-LABEL PIC X(6).
