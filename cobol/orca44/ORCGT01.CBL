@@ -71,6 +71,8 @@
       *  01.06.01    NACL-藤原    04/10/25  公費個別発行機能の追加
       *  01.06.02    NACL-藤原    05/02/10  レセ電総括表対応
       *                                     一括入力 
+      *
+      *  02.06.01    NACL-藤原    05/10/14  データ収集事業対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -228,6 +230,12 @@
            03  WRK-CONS-JOB-SHELLID-RECEPT1
                                    PIC X(08)   VALUE   "RECEPT1".
            03  WRK-CONS-JOB-JOBID-RECEPT1
+                                   PIC 9(07)   VALUE   1.
+      *     
+      *    ジョブ管理ＤＢのキー値（データ収集）  
+           03  WRK-CONS-JOB-SHELLID-COLLECT
+                                  PIC X(08)    VALUE   "COLLECT".
+           03  WRK-CONS-JOB-JOBID-COLLECT
                                    PIC 9(07)   VALUE   1.
       *    
       *    固定端末ＩＤ
@@ -772,7 +780,18 @@
                        IF      SPA-ERRCD       =   SPACE
                            PERFORM 460-RECEDEN-SEC
                        END-IF
-               END-EVALUATE        
+                   WHEN    "2002"
+      *****************PERFORM 470-COLLECT-SYORI-SEC
+                       DISPLAY "COLLECT START !!"
+                       MOVE    "JOIN"          TO  MCP-PUTTYPE
+                       PERFORM 210-BACK-SYORI-SEC
+               END-EVALUATE
+           ELSE        
+               EVALUATE    SPA-TIDCD
+                   WHEN    "2002"
+                       MOVE    "JOIN"          TO  MCP-PUTTYPE
+                       PERFORM 210-BACK-SYORI-SEC
+               END-EVALUATE
            END-IF
       *
            MOVE    1               TO  SPA-GMN-CUR
@@ -1475,6 +1494,30 @@
                    END-IF
                END-PERFORM
            END-IF
+      *        
+      *    ジョブ管理チェック（データ収集）
+           IF      SPA-DATACREATEFLG   =   1
+               MOVE    "CHK"           TO  SJOBKANRI-MODE
+               INITIALIZE                  JOBKANRI-REC
+               MOVE    WRK-CONS-JOB-JOBID-COLLECT
+                                       TO  JOB-JOBID
+               MOVE    WRK-CONS-JOB-SHELLID-COLLECT
+                                       TO  JOB-SHELLID
+               CALL    "ORCSJOB"       USING
+                                       ORCSJOBKANRIAREA  
+                                       JOBKANRI-REC 
+              IF      SJOBKANRI-RETURN =   ZERO
+                   IF      JOB-ENDYMD      =   SPACE
+                       CONTINUE
+                   ELSE
+                       MOVE    "2002"          TO  SPA-TIDCD
+                       GO  TO  210-BACK-EXT
+                   END-IF
+               ELSE
+                   MOVE    "2002"          TO  SPA-TIDCD
+                   GO  TO  210-BACK-EXT
+               END-IF    
+           END-IF    
       *
            PERFORM 210-BACK-SYORI-SEC         
            .
@@ -2536,6 +2579,57 @@
            EXIT.
       *
       *****************************************************************
+      *    データ収集処理        
+      *****************************************************************
+       470-COLLECT-SYORI-SEC      SECTION.
+      *
+      *    ジョブ開始セット処理
+           MOVE    "DEL"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-CONS-JOB-JOBID-COLLECT
+                                   TO  JOB-JOBID
+           MOVE    WRK-CONS-JOB-SHELLID-COLLECT
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA 
+                                   JOBKANRI-REC
+      *
+           MOVE    "JBS"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-CONS-JOB-JOBID-COLLECT
+                                   TO  JOB-JOBID
+           MOVE    WRK-CONS-JOB-SHELLID-COLLECT
+                                   TO  JOB-SHELLID
+           MOVE    SPA-TERMID      TO  JOB-TERMID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA 
+                                   JOBKANRI-REC
+      *             
+      *    ファイルデイレクトリ位置指定
+           MOVE    "scripts/monthly/******.sh"
+                                   TO  WRK-SHELL-NAME
+           INITIALIZE                  ORCSMKPASSAREA
+           MOVE    WRK-SHELL-NAME  TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+      *
+           MOVE    SPACE           TO  SHELLTBL
+           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+           MOVE    " "             TO  SHELLTBL-ARG1
+           MOVE    " "             TO  SHELLTBL-ARG2
+      *
+           MOVE    SHELLTBL        TO  MCPDATA-REC
+           MOVE    "SHELL"         TO  MCP-FUNC
+           MOVE    PATH-SHELL-SHELL
+                                   TO  MCP-PATH
+           CALL    "MCPSUB"        USING
+                                   MCPAREA
+                                   MCPDATA-REC
+      *
+           .
+       470-COLLECT-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    印刷前処理（チェック・集計表）
       *****************************************************************
        480-PRINT-GID-SEC                SECTION.
@@ -3291,6 +3385,9 @@
                WHEN    "2001"
                    MOVE    "媒体をドライブにセットして下さい"
                                        TO  WRK-TIDMSG
+               WHEN    "2002"
+                   MOVE    "データ収集用のファイルを作成しますか"
+                                            TO  WRK-TIDMSG
                WHEN    "6666"
                    MOVE    "印刷処理中です"
                                             TO  WRK-TIDMSG
@@ -3302,7 +3399,15 @@
            MOVE    SPACE                TO  TID1
            MOVE    SPA-TIDCD            TO  TID1-ID1CODE
            MOVE    WRK-TIDMSG           TO  TID1-ID1MSG
-           MOVE    "B12"                TO  MCP-WIDGET
+      *
+           EVALUATE    SPA-TIDCD
+               WHEN    "2002"
+                   MOVE    "いいえ"         TO  TID1-B01-LABEL
+                   MOVE    "は  い"         TO  TID1-B12-LABEL
+               WHEN    OTHER
+                   MOVE    "戻る"           TO  TID1-B01-LABEL
+                   MOVE    "ＯＫ"           TO  TID1-B12-LABEL
+           END-EVALUATE
       *
            MOVE    "T01"                TO  SPA-MOTOPG
            MOVE    "TID1"               TO  SPA-SAKIPG

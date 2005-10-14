@@ -1581,6 +1581,8 @@
            MOVE    SPACE                TO  TID1
            MOVE    SPA-TIDCD            TO  TID1-ID1CODE
            MOVE    WRK-TIDMSG           TO  TID1-ID1MSG
+           MOVE    "Ã·§Î"               TO  TID1-B01-LABEL
+           MOVE    "£œ£À"               TO  TID1-B12-LABEL
            MOVE    "B12"                TO  MCP-WIDGET
       *
            MOVE    "T02"                TO  SPA-MOTOPG
