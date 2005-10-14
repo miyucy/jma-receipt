@@ -1354,9 +1354,9 @@
                 END-IF
            END-PERFORM
       *
-      *    データ作成フラグ 空白の時、"1"とする
+      *    データ作成フラグ 空白の時、"0"とする
            IF      SYS-1001-DATACREATEFLG  =   SPACE
-               MOVE    "1"             TO  SYS-1001-DATACREATEFLG
+               MOVE    "0"             TO  SYS-1001-DATACREATEFLG
            END-IF
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       SPA-DATACREATE-MAX
