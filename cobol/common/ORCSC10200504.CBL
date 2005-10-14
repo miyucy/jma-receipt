@@ -101,6 +101,8 @@
            03  FLG-ADD             PIC 9(01).
       *    Â¾ÊÝ¸±»»ÄêºÑ¤ß
            03  FLG-TAHOKEN         PIC 9(01).
+      *    Â¾²Ê»»ÄêºÑ¤ß
+           03  FLG-TAKA            PIC 9(01).
       *    £Ä£Õ£Í£Í£Ù¿Ç»¡ÎÁÍÑ
            03  FLG-KENSIN          PIC 9(01).
            03  FLG-DUMMY           PIC 9(01).
@@ -3021,6 +3023,8 @@
            MOVE    ZERO                TO  LNK-ORCSC-TOKUTEIG-KNJ
            MOVE    ZERO                TO  LNK-ORCSC-GAIRAI-TEN
       *
+           MOVE    ZERO                TO  FLG-TAKA
+      *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
                    UNTIL      (IDX-Z       >   200      )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
@@ -3071,6 +3075,7 @@
                                COMPUTE IDX-ZAI2    =   IDX-ZAI2  -  1
                            ELSE
                                MOVE   IDX-Z            TO  IDX-SYU2
+                               MOVE    1               TO  FLG-TAKA
                            END-IF
                        END-IF
                        IF     (WRK-COM-INPUTCD(IDX-Z)  =  "830000020")
@@ -3082,6 +3087,7 @@
                                COMPUTE IDX-ZAI1    =   IDX-ZAI1  -  1
                            ELSE
                                MOVE   IDX-Z            TO  IDX-SYU2
+                               MOVE    1               TO  FLG-TAKA
                            END-IF
                        END-IF
       *                ¿Ç»¡ÎÁ£Ä£Õ£Í£Í£Ù¤â¿Ç»¡ÎÁ¤È¤¹¤ë
@@ -3339,9 +3345,16 @@
                   (IDX-SYU2            >   ZERO )
                IF      (IDX-ZAI1       >   ZERO )  OR
                        (IDX-ZAI2       >   ZERO )
-                   MOVE    "0110"          TO  SPA-ERRCD
-                   MOVE    "1"             TO  WRK-COM-CUR (IDX-SYU2)
-                   GO      TO      200-ALL-SYORI-EXT
+                   IF     ((IDX-ZAI1       =   1  ) AND
+                           (FLG-TAKA       =   1  ))  OR
+                          ((IDX-ZAI2       =   1  ) AND
+                           (FLG-TAKA       =   1  ))
+                       CONTINUE
+                   ELSE
+                       MOVE    "0110"      TO  SPA-ERRCD
+                       MOVE    "1"         TO  WRK-COM-CUR (IDX-SYU2)
+                       GO      TO      200-ALL-SYORI-EXT
+                   END-IF
                END-IF
            END-IF
       *
