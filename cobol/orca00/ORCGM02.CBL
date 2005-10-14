@@ -268,6 +268,23 @@
                MOVE    SYSKANRI-REC        TO  SYS-1001-REC
       *        病院種別
                MOVE    SYS-1001-HOSPSBT    TO  SPA-HOSPSBT
+      *
+      *        データ作成フラグ
+               IF     (SYS-1001-DATACREATEFLG  =   SPACE )  OR
+                      (SYS-1001-DATACREATEFLG  NOT NUMERIC)
+                   MOVE    ZERO            TO  SPA-DATACREATEFLG
+               ELSE
+                   MOVE    SYS-1001-DATACREATEFLG
+                                           TO  SPA-DATACREATEFLG
+               END-IF
+      *        データ提出方法区分
+               IF     (SYS-1001-DATATEISYUTUKBN  =   SPACE )  OR
+                      (SYS-1001-DATATEISYUTUKBN  NOT NUMERIC)
+                   MOVE    ZERO            TO  SPA-DATATEISYUTUKBN
+               ELSE
+                   MOVE    SYS-1001-DATATEISYUTUKBN
+                                           TO  SPA-DATATEISYUTUKBN
+               END-IF
            ELSE
                INITIALIZE                  SYS-1001-REC
            END-IF

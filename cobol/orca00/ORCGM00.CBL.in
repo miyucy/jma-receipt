@@ -54,6 +54,8 @@
       *  01.02.16    NACL-森脇    04/01/16  プログラム更新ボタン追加
       *  01.02.17    NACL-多々納  04/03/19  曜日設定追加
       *  01.02.18    NACL-多々納  05/05/17  病床数フラグ追加
+      *  01.02.19    NACL-多々納  05/10/14  データ収集作成フラグ、
+      *                                     データ収集提出方法区分追加
       *****************************************************************
       *
       *
@@ -384,6 +386,23 @@
                    MOVE    ZERO                TO  SPA-BEDSUIPN
                ELSE
                    MOVE    SYS-1001-BEDSUIPN   TO  SPA-BEDSUIPN
+               END-IF
+      *
+      *        データ作成フラグ
+               IF     (SYS-1001-DATACREATEFLG  =   SPACE )  OR
+                      (SYS-1001-DATACREATEFLG  NOT NUMERIC)
+                   MOVE    ZERO            TO  SPA-DATACREATEFLG
+               ELSE
+                   MOVE    SYS-1001-DATACREATEFLG
+                                           TO  SPA-DATACREATEFLG
+               END-IF
+      *        データ提出方法区分
+               IF     (SYS-1001-DATATEISYUTUKBN  =   SPACE )  OR
+                      (SYS-1001-DATATEISYUTUKBN  NOT NUMERIC)
+                   MOVE    ZERO            TO  SPA-DATATEISYUTUKBN
+               ELSE
+                   MOVE    SYS-1001-DATATEISYUTUKBN
+                                           TO  SPA-DATATEISYUTUKBN
                END-IF
       *
       *        県番号

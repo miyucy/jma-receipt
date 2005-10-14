@@ -53,6 +53,7 @@
       *  01.00.22    NACL-太田    04/12/01  更正・育成限度額日割計算区分追加
       *  01.00.23    NACL-多々納  05/09/13  入金状態の追加
       *  01.00.24    NACL-多々納  05/09/26  入金状態の追加（入院）
+      *  01.00.25    NACL-多々納  05/10/14  データ収集フラグ追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -246,6 +247,30 @@
                                13  SPA-GMN-F13        PIC X(01).
                                13  SPA-GMN-HIWARIKBNMEI
                                                       PIC X(18).
+      *                データ収集
+                       09  SPA-GMN-DATASYU.
+      *                    データ作成フラグ
+                           11  SPA-GMN-DATACREATE-G.
+                               13  SPA-GMN-DATACREATE
+                                                      PIC X(01).
+                               13  SPA-GMN-F14        PIC X(01).
+                               13  SPA-GMN-DATACREATE-MEI
+                                                      PIC X(12).
+                           11  SPA-GMN-DATACREATE-LST-G.
+                               13  SPA-GMN-DATACREATE-LST  PIC X(14)
+                                                      OCCURS   5.
+                               13  SPA-DATACREATE-MAX      PIC 9(02).
+      *                    データ提出方法区分
+                           11  SPA-GMN-DATATEISYUTU-G.
+                               13  SPA-GMN-DATATEISYUTU
+                                                      PIC X(01).
+                               13  SPA-GMN-F15        PIC X(01).
+                               13  SPA-GMN-DATATEISYUTU-MEI
+                                                      PIC X(12).
+                           11  SPA-GMN-DATATEISYUTU-LST-G.
+                               13  SPA-GMN-DATATEISYUTU-LST  PIC X(14)
+                                                      OCCURS   5.
+                               13  SPA-DATATEISYUTU-MAX     PIC 9(02).
       *----(01.00.09) LINE ADD END   ----------------------------------
                    07  SPA-GMN-1002-AREA.
                        09  SPA-GMN-POST           PIC X(07).
@@ -853,6 +878,15 @@
            MOVE    "3"         TO  SPA-GMN-DISCOUNT-OBJL (3)
            MOVE    "自費分のみ"
                                TO  SPA-GMN-DISCOUNT-OBJMEIL (3)
+      *    データ作成フラグ
+           MOVE    "0 作成しない"      TO  SPA-GMN-DATACREATE-LST (1)
+           MOVE    "1 作成する"        TO  SPA-GMN-DATACREATE-LST (2)
+           MOVE    2                   TO  SPA-DATACREATE-MAX
+      *    データ提出方法区分
+           MOVE    "0 提出しない"      TO  SPA-GMN-DATATEISYUTU-LST (1)
+           MOVE    "1 自動で送信"      TO  SPA-GMN-DATATEISYUTU-LST (2)
+           MOVE    "2 手動で送信"      TO  SPA-GMN-DATATEISYUTU-LST (3)
+           MOVE    3                   TO  SPA-DATATEISYUTU-MAX
       * 
       *    割引率区分設定処理
            PERFORM 3101-DISCOUNT-KBN-SET-SEC
@@ -1320,6 +1354,36 @@
                 END-IF
            END-PERFORM
       *
+      *    データ作成フラグ 空白の時、"1"とする
+           IF      SYS-1001-DATACREATEFLG  =   SPACE
+               MOVE    "1"             TO  SYS-1001-DATACREATEFLG
+           END-IF
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >       SPA-DATACREATE-MAX
+               IF      SYS-1001-DATACREATEFLG
+                                       =   SPA-GMN-DATACREATE-LST (IDY)
+                                                                 (1:1)
+                   MOVE    SPA-GMN-DATACREATE-LST (IDY)
+                                               TO  SPA-GMN-DATACREATE-G
+                   MOVE    SPA-DATACREATE-MAX  TO  IDY
+                END-IF
+           END-PERFORM
+      *
+      *    データ提出方法区分 空白の時、"0"とする
+           IF      SYS-1001-DATATEISYUTUKBN  =   SPACE
+               MOVE    "0"             TO  SYS-1001-DATATEISYUTUKBN
+           END-IF
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >       SPA-DATATEISYUTU-MAX
+               IF      SYS-1001-DATATEISYUTUKBN
+                                       =   SPA-GMN-DATATEISYUTU-LST(IDY)
+                                                                 (1:1)
+                   MOVE    SPA-GMN-DATATEISYUTU-LST (IDY)
+                                           TO  SPA-GMN-DATATEISYUTU-G
+                   MOVE    SPA-DATATEISYUTU-MAX    TO  IDY
+                END-IF
+           END-PERFORM
+      *
            . 
        31091-KIHON-HENSYU-EXT.
            EXIT.
@@ -1525,6 +1589,8 @@
            MOVE    W02-DISCOUNTHASU2   TO  SPA-GMN-DISCOUNT-HASU-KBN2-G
            MOVE    W02-TAXHASU         TO  SPA-GMN-TAX-HASU-KBN-G
            MOVE    W02-HIWARIKBN       TO  SPA-GMN-HIWARIKBN-G
+           MOVE    W02-DATACREATE      TO  SPA-GMN-DATACREATE-G
+           MOVE    W02-DATATEISYU      TO  SPA-GMN-DATATEISYUTU-G
       *
       *    連絡先情報タグ
            MOVE    W02-POST            TO  SPA-GMN-POST
@@ -1712,6 +1778,14 @@
            PERFORM 4131-HIWARIKBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      41021-KIHON-1001-EXT
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4131-DATACREATE-CHK-SEC
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4131-DATATEISYUTU-CHK-SEC
            END-IF
       *
            .
@@ -2306,6 +2380,57 @@
        4131-HIWARIKBN-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    データ収集作成フラグ
+      *****************************************************************
+       4131-DATACREATE-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-DATACREATE-MAX
+               IF      SPA-GMN-DATACREATE
+                                       =   SPA-GMN-DATACREATE-LST
+                                                          (IDY)(1:1)
+                   MOVE    SPA-GMN-DATACREATE-LST (IDY)
+                                       TO  SPA-GMN-DATACREATE-G
+                   MOVE    SPA-DATACREATE-MAX  TO  IDY
+                   MOVE    1           TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    "0203"          TO  SPA-ERRCD
+               MOVE    203             TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       4131-DATACREATE-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    データ収集提出方法フラグ
+      *****************************************************************
+       4131-DATATEISYUTU-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-DATATEISYUTU-MAX
+               IF      SPA-GMN-DATATEISYUTU
+                                       =   SPA-GMN-DATATEISYUTU-LST
+                                                          (IDY)(1:1)
+                   MOVE    SPA-GMN-DATATEISYUTU-LST (IDY)
+                                       TO  SPA-GMN-DATATEISYUTU-G
+                   MOVE    SPA-DATATEISYUTU-MAX  TO  IDY
+                   MOVE    1           TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    "0204"          TO  SPA-ERRCD
+               MOVE    204             TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       4131-DATATEISYUTU-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    郵便番号チェック処理
       *****************************************************************
        4112-POST-CHK-SEC           SECTION.
@@ -2778,6 +2903,10 @@
                                        TO  SYS-1001-TAX-HASU-KBN
                    MOVE    SPA-GMN-HIWARIKBN
                                        TO  SYS-1001-HIWARIKBN
+                   MOVE    SPA-GMN-DATACREATE
+                                       TO  SYS-1001-DATACREATEFLG
+                   MOVE    SPA-GMN-DATATEISYUTU
+                                       TO  SYS-1001-DATATEISYUTUKBN
                    MOVE    SYS-1001-REC    TO  SYSKANRI-REC
       * 
       *    医療機関情報ー所在地、連絡先情報
@@ -3261,6 +3390,22 @@
                                        TO  W02-HIWARIKBNLST (IDX)
            END-PERFORM    
            MOVE    2                   TO  W02-HIWARIKBN-COUNT     
+      *    データ収集
+           MOVE    SPA-GMN-DATACREATE-G    TO  W02-DATACREATE
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       SPA-DATACREATE-MAX
+               MOVE    SPA-GMN-DATACREATE-LST (IDX)
+                                       TO  W02-DATACREATE-ITEM (IDX)
+           END-PERFORM
+           MOVE    SPA-DATACREATE-MAX  TO  W02-DATACREATE-COUNT
+      *
+           MOVE    SPA-GMN-DATATEISYUTU-G  TO  W02-DATATEISYU
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       SPA-DATATEISYUTU-MAX
+               MOVE    SPA-GMN-DATATEISYUTU-LST (IDX)
+                                       TO  W02-DATATEISYU-ITEM (IDX)
+           END-PERFORM
+           MOVE    SPA-DATATEISYUTU-MAX  TO  W02-DATATEISYU-COUNT
       *----(01.00.09) LINE ADD END   ----------------------------------
       *
       *    医療機関情報ー所在地、連絡先情報
@@ -3495,6 +3640,12 @@
                WHEN    "0021"
                    MOVE    "更正・育成限度額日割計算区分入力エラー"
                                                TO  SPA-ERRMSG
+               WHEN    "0203"
+                   MOVE    "データ収集作成フラグ入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0204"
+                   MOVE    "データ収集提出方法区分入力エラー"
+                                               TO  SPA-ERRMSG
                WHEN    "0030"
                    MOVE    "自費名称は全角で入力して下さい。"
                                                TO  SPA-ERRMSG
@@ -3637,6 +3788,13 @@
                 WHEN    202
                     MOVE  "HIWARIKBN"
                                            TO   MCP-WIDGET
+                WHEN    203
+                    MOVE  "DATACREATE"
+                                           TO   MCP-WIDGET
+                WHEN    204
+                    MOVE  "DATATEISYU"
+                                           TO   MCP-WIDGET
+      *
                 WHEN    40
                     MOVE  "TEIRITU"        TO   MCP-WIDGET
                 WHEN    41
@@ -3755,6 +3913,11 @@
               WHEN    "TAXHASU"
                   MOVE    202              TO  SPA-GMN-CUR
               WHEN    "HIWARIKBN"
+      *********   MOVE    01               TO  SPA-GMN-CUR
+                  MOVE    203              TO  SPA-GMN-CUR
+              WHEN    "DATACREATE"
+                  MOVE    204              TO  SPA-GMN-CUR
+              WHEN    "DATATEISYU"
                   MOVE    01               TO  SPA-GMN-CUR
       *       連絡先情報
               WHEN    "POST"

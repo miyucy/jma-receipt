@@ -108,6 +108,18 @@
                                              PIC S9(9)   BINARY.
                     06  W02-HIWARIKBNLST     PIC X(20)
                                                       OCCURS  2.
+                  05  W02-DATACREATE-COMB.
+                    06  W02-DATACREATE.
+                      07  W02-VALUE   PIC X(14).
+                    06  W02-DATACREATE-COUNT   PIC S9(9)   BINARY.
+                    06  W02-DATACREATE-ITEM
+                            PIC X(14)   OCCURS  5 TIMES.
+                  05  W02-DATATEISYU-COMB.
+                    06  W02-DATATEISYU.
+                      07  W02-VALUE   PIC X(14).
+                    06  W02-DATATEISYU-COUNT   PIC S9(9)   BINARY.
+                    06  W02-DATATEISYU-ITEM
+                            PIC X(14)   OCCURS  5 TIMES.
                 04  W02-N01-STATE   PIC S9(9)   BINARY.
                 04  W02-FIXED24.
                   05  W02-POST.
