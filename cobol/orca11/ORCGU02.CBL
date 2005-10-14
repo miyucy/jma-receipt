@@ -2313,7 +2313,9 @@
                                PERFORM 4101153-HOKI-HENSYU-SEC
                            END-IF
                          ELSE
-                             PERFORM 4101153-HOKI-HENSYU-SEC
+                             IF      HKN-PAYKBN    =   PTKOH-PAYKBN
+                                 PERFORM 4101153-HOKI-HENSYU-SEC
+                             END-IF
                          END-IF
                        ELSE
                            PERFORM 4101153-HOKI-HENSYU-SEC
