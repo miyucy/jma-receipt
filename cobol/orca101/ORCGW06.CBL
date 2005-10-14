@@ -1787,8 +1787,8 @@
       *
       *    システム管理はオルカマスターの時、可能
            IF       SPA-GMN-CHK(20)    =   "F"
-               IF      (SPA-GMN-SYOKUKBN   =   "1"  )  AND
-                       (SPA-GMN-SYOKUCOD   =   "0000")
+               IF      (SPA-GMN-SYOKUKBN   =   "0"  )  AND
+                       (SPA-GMN-SYOKUCOD   =   "0001")
                     MOVE    "0100"         TO  SPA-ERRCD
                END-IF
            END-IF
@@ -2549,8 +2549,8 @@
                MOVE    WIDGET-NORMAL       TO  W06-B03-STATE
            END-IF
       *    オルカマスターのみ削除不可能にする
-           IF      (SPA-GMN-SYOKUKBN   =   "1"  )  AND
-                   (SPA-GMN-SYOKUCOD   =   "0000")
+           IF      (SPA-GMN-SYOKUKBN   =   "0"  )  AND
+                   (SPA-GMN-SYOKUCOD   =   "0001")
                MOVE    WIDGET-INSENSITIVE      TO  W06-B03-STATE
            END-IF
       *
