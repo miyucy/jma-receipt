@@ -224,6 +224,8 @@
                        09  SPA-NAI-O04-NYKN-HOHOLST    OCCURS  50.
                            11  SPA-NAI-O04-NYKN-HOHOMEIL
                                                        PIC X(10).
+                           11  SPA-NAI-O04-NYKN-BUNRUIL
+                                                       PIC X(02).
       *
                05  SPA-NAI-O04-SMEITBL-AREA.
                    07  SPA-NAI-O04-SMEITBL-OCC         OCCURS  50.

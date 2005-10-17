@@ -182,16 +182,17 @@
            03  WRK-KUGIRI              PIC X(02).
            03  WRK-PTID                PIC 9(10).
            03  WRK-NYUKIN-HOHO         PIC X(02).
+           03  WRK-NYUKIN-BUNRUI       PIC X(02).
            03  WRK-NYUKIN-JYOTAI       PIC X(01).
            03  WRK-NYUKIN-KBN          PIC X(01).
       *
        01  SRH-AREA.
            03  SRH-IDX                     PIC 9(05).
            03  SRH-1041-DAT.
-               05  SRH-1041-JYOTAI         PIC X(01).
                05  SRH-1041-MAX            PIC 9(05).
                05  SRH-1041-OCC            OCCURS  99.
                    07  SRH-1041-KBNCDL     PIC X(02).
+                   07  SRH-1041-BUNRUIL    PIC X(02).
                    07  SRH-1041-JYOTAIL    PIC X(01).
       *
        01  ERR-EDIT-AREA.
@@ -481,6 +482,9 @@
                COMPUTE SRH-1041-MAX    =   SRH-1041-MAX    +   1
       *
                MOVE    SYS-1041-KBNCD  TO  SRH-1041-KBNCDL
+                                                        (SRH-1041-MAX)
+               MOVE    SYS-1041-NYKN-BUNRUI
+                                       TO  SRH-1041-BUNRUIL
                                                         (SRH-1041-MAX)
       *
                IF    ( SYS-1041-NYKN-JYOTAI-T  =   SPACE )
@@ -1034,6 +1038,8 @@
                END-IF
            END-IF
       *
+           MOVE    WRK-NYUKIN-HOHO     TO  SMEI-NYUKIN-HOHO
+      *
       *    ¾õÂÖ¶èÊ¬
            IF    ( SYU-SKYMONEY        =   ZERO )
                MOVE    SPACE               TO  SMEI-JOUTAIKBN
@@ -1084,29 +1090,27 @@
        200311-NYUKIN-HOHO-HEN-SEC      SECTION.
       *
            MOVE    "01"            TO  WRK-NYUKIN-HOHO
-           MOVE    "3"             TO  WRK-NYUKIN-JYOTAI
+           MOVE    SPACE           TO  WRK-NYUKIN-JYOTAI
            MOVE    SPACE           TO  WRK-NYUKIN-KBN
+           MOVE    SPACE           TO  WRK-NYUKIN-BUNRUI
       *
            IF    ( PTINF-NYUKIN-HOHO   NOT =   SPACE )
                MOVE    PTINF-NYUKIN-HOHO
                                    TO  WRK-NYUKIN-HOHO
            END-IF
       *
-           MOVE    SPACE           TO  SRH-1041-JYOTAI
            PERFORM VARYING SRH-IDX FROM    1   BY  1
                    UNTIL ( SRH-IDX >   SRH-1041-MAX )
-                    OR   ( SRH-1041-JYOTAI NOT =   SPACE )
+                    OR   ( WRK-NYUKIN-JYOTAI   NOT =   SPACE )
       *
                IF    ( WRK-NYUKIN-HOHO =   SRH-1041-KBNCDL (SRH-IDX))
                    MOVE    SRH-1041-JYOTAIL (SRH-IDX)
-                                   TO  SRH-1041-JYOTAI
+                                   TO  WRK-NYUKIN-JYOTAI
+                   MOVE    SRH-1041-BUNRUIL (SRH-IDX)
+                                   TO  WRK-NYUKIN-BUNRUI
                END-IF
       *
            END-PERFORM
-      *
-           IF    ( SRH-1041-JYOTAI NOT =   SPACE )
-               MOVE    SRH-1041-JYOTAI TO  WRK-NYUKIN-JYOTAI
-           END-IF
       *
            EVALUATE    WRK-NYUKIN-JYOTAI
            WHEN    "1"
@@ -2189,7 +2193,7 @@
                MOVE    ZERO            TO  FLG-PTINF
            ELSE
                MOVE    1               TO  FLG-PTINF
-               INITIALIZE              PTINF-REC
+      *        INITIALIZE              PTINF-REC
            END-IF
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC

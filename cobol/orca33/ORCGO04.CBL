@@ -104,6 +104,7 @@
            03  WRK-CMB-ITM-G.
                05  WRK-CMB-ITM                     PIC X(200).
                05  WRK-CMB-ITM2                    PIC X(200).
+               05  WRK-CMB-ITM3                    PIC X(200).
            03  WRK-JIHI-IDX-X.
                05  WRK-JIHI-IDX                    PIC 9(01).
            03  WRK-MCP-WIDGET                      PIC X(64).
@@ -521,6 +522,8 @@
                                    TO  SPA-GMN-O04-NYKN-HOHOMEIL (IDX3)
                MOVE    SYS-1041-NYKN-TANNAME
                                    TO  SPA-NAI-O04-NYKN-HOHOMEIL (IDX3)
+               MOVE    SYS-1041-NYKN-BUNRUI
+                                   TO  SPA-NAI-O04-NYKN-BUNRUIL  (IDX3)
       *
                MOVE    PATH-TBL-SYSKANRI-KEY2
                                    TO  MCP-PATH
@@ -3361,6 +3364,11 @@
                    MOVE   "00"             TO  SMEI-NYUKIN-HOHO
                END-IF
       *
+               IF    ( SMEI-DENPEDANUM     =   1 )
+                   MOVE  SPA-GMN-O04-NYKN-HOHO
+                                           TO  SMEI-NYUKIN-HOHO
+               END-IF
+      *
       *        ≈¡…ºæı¬÷∂Ë ¨
                EVALUATE    SPA-NAI-O04-PROC-FLG
                WHEN    1
@@ -3575,8 +3583,10 @@
            IF    ( IDX-CMB     <=  SPA-GMN-O04-NYKN-HOHO-MAX )
                MOVE    SPA-GMN-O04-NYKN-HOHOLST (IDX-CMB)
                                        TO  WRK-CMB-ITM
-               MOVE    SPA-NAI-O04-NYKN-HOHOLST (IDX-CMB)
+               MOVE    SPA-NAI-O04-NYKN-HOHOMEIL (IDX-CMB)
                                        TO  WRK-CMB-ITM2
+               MOVE    SPA-NAI-O04-NYKN-BUNRUIL (IDX-CMB)
+                                       TO  WRK-CMB-ITM3
            END-IF
       *
            .
