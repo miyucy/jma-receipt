@@ -3676,7 +3676,12 @@
            MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
            MOVE    SPA-GMN-SRYKA       TO  SPA-SRYKA
            MOVE    SPA-GMN-COMBINUM    TO  SPA-HKNCOMBINUM
-           MOVE    SPA-GMN-DRCD        TO  SPA-DRCD
+           IF      SPA-GMN-DRCD        =   SPACE
+               MOVE    SPACE               TO  SPA-DRCD
+           ELSE
+               MOVE    "1"                 TO  SPA-DRCD (1:1) 
+               MOVE    SPA-GMN-DRCD        TO  SPA-DRCD (2:)
+           END-IF
            MOVE    SPACE               TO  SPA-SRYYMD
       *
       *    画面移行用のパラメタ変更
