@@ -40,6 +40,8 @@
       *                                     とする
       *  01.00.11    NACL-太田    04.10.14  退院事由追加
       *  01.00.12    NACL-小豆沢  05.07.19  自費１０項目対応
+      *  01.00.13    NACL-小豆沢  05/10/17  入金額ゼロでも入金方法を
+      *                                     セットする
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3367,7 +3369,8 @@
       *
       *    入金額がゼロの時、入金力なし
            IF    ( SYU-NYUKIN-TOTAL    =   ZERO )
-               MOVE    "00"                TO  SMEI-NYUKIN-HOHO
+               MOVE    SPA-GMN-I04-NYKNHOHO-CD
+                                           TO  SMEI-NYUKIN-HOHO
            ELSE
       *        入返金区分
                MOVE    "1"                 TO  SMEI-NYUHEN-KBN

@@ -28,6 +28,8 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-多々納  05/04/22  レセ電対応
+      *  01.00.02    NACL-小豆沢  05/10/17  入金額ゼロでも入金方法を
+      *                                     セットする
       *****************************************************************
       *
       *
@@ -297,6 +299,8 @@
            COPY    "CPSK0041.INC".
       *
            COPY    "CPSK1013.INC".
+      *
+           COPY    "CPSK1041.INC".
       *
       *
       *    患者マスタ−
@@ -1304,10 +1308,9 @@
       *診療科
            MOVE    SYU-SRYKA           TO  SMEI-SRYKA
       *
-      *    入金額がゼロの時、入金力なし
+      *    入金額がゼロの時
            IF      WRK-KON-NYUKIN      =   ZERO
-      *入金方法
-               MOVE    ZERO                TO  SMEI-NYUKIN-HOHO
+               MOVE    ORCSCGAIRAI-NYUKIN-HOHO  TO  SMEI-NYUKIN-HOHO
            ELSE
       *入返金区分
                MOVE    "1"                 TO  SMEI-NYUHEN-KBN
