@@ -1,0 +1,25 @@
+#!/bin/sh
+
+if test -z "$JMARECEIPT_ENV" ; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
+. $JMARECEIPT_ENV
+
+#-------------------------------------------#
+#    収集データ作成
+#-------------------------------------------#
+
+JOBID="0000001"
+SHELLID="COLLECT"
+
+#
+# 中身はまだ先
+#
+
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE$JOBID$SHELLID
+	
+        exit 

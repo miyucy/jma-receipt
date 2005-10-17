@@ -781,8 +781,7 @@
                            PERFORM 460-RECEDEN-SEC
                        END-IF
                    WHEN    "2002"
-      *****************PERFORM 470-COLLECT-SYORI-SEC
-                       DISPLAY "COLLECT START !!"
+                       PERFORM 470-COLLECT-SYORI-SEC
                        MOVE    "JOIN"          TO  MCP-PUTTYPE
                        PERFORM 210-BACK-SYORI-SEC
                END-EVALUATE
@@ -2606,7 +2605,7 @@
                                    JOBKANRI-REC
       *             
       *    ファイルデイレクトリ位置指定
-           MOVE    "scripts/monthly/******.sh"
+           MOVE    "scripts/monthly/collectdata1.sh"
                                    TO  WRK-SHELL-NAME
            INITIALIZE                  ORCSMKPASSAREA
            MOVE    WRK-SHELL-NAME  TO  MKPASS-IN-01
