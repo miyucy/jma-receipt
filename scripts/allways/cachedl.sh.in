@@ -12,16 +12,16 @@ fi
 umask 022
 
 PACKAGEFILE=patch@VERSION@.gz
-CACHE_DIR=/var/lib/jma-receipt/cache/patch
+PATCHDIR=/var/lib/jma-receipt/patch
 
 FTP=$PGUPGRADEPATH/@VERSION@
 
-if ! [ -d $CACHE_DIR ];	then
-	echo "キャッシュディレクトリが存在しません"
+if ! [ -d $PATCHDIR ];	then
+	echo "パッチディレクトリが存在しません"
 	exit
 fi
 
 #更新プログラムダウンロード
-ruby $SCRIPTSDIR/allways/cachedl.rb $PACKAGEFILE $CACHE_DIR $FTP
+ruby $SCRIPTSDIR/allways/cachedl.rb $PACKAGEFILE $PATCHDIR $FTP
 
 exit

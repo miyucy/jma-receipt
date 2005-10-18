@@ -16,13 +16,13 @@ PRGDIR=orca-prg@VERSION@
 PRGCFILE=ORCAPGC.DAT
 UPDFILE=/home/orca/$PRGDIR/ORCAPGC.OUT
 RSTFILE=/home/orca/$PRGDIR/RESTART
-CACHE_DIR=/var/lib/jma-receipt/cache/patch
+PATCHDIR=/var/lib/jma-receipt/patch
 PACKAGEFILE=patch@VERSION@.gz
 
 FTP=$PGUPGRADEPATH/@VERSION@
 
 #更新プログラムダウンロード
-ruby $SCRIPTSDIR/allways/cachedl.rb $PACKAGEFILE $CACHE_DIR $FTP
+ruby $SCRIPTSDIR/allways/cachedl.rb $PACKAGEFILE $PATCHDIR $FTP
 
 if ! [	-d	$HOME/$PRGDIR	];	then 
 	cd $HOME
@@ -32,7 +32,7 @@ cd $HOME/$PRGDIR
 rm -f *.*
 
 #アーカイブよりパッチプログラムを複写
-ruby $SCRIPTSDIR/allways/cachetoprgdir.rb $PACKAGEFILE $CACHE_DIR $HOME/$PRGDIR
+ruby $SCRIPTSDIR/allways/cachetoprgdir.rb $PACKAGEFILE $PATCHDIR $HOME/$PRGDIR
 
 if ! [ -e $HOME/$PRGDIR/$PRGCFILE ];	then
 	echo "プログラム管理ファイルが存在しません"
