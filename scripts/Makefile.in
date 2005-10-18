@@ -61,6 +61,7 @@ shell_sources = \
 	allways/chkmst.sh.in \
 	allways/orcbs01.sh.in \
 	monthly/receipt_prv.sh.in \
+	allways/cachedl.sh.in \
 
 ruby_scripts = \
 	daily/print-data.rb \
@@ -69,6 +70,7 @@ ruby_scripts = \
 	daily/print_parent.rb \
 	daily/orcred2ps.rb \
 	daily/print_parent_prv.rb \
+	allways/cachedl.rb \
 
 claim_scripts = \
 	claim/rb/clm_rcv.rb \

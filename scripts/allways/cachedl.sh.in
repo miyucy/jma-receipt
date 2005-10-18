@@ -1,0 +1,27 @@
+#!/bin/sh
+
+if test -z "$JMARECEIPT_ENV"; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
+. $JMARECEIPT_ENV
+
+umask 022
+
+PACKAGEFILE=patch@VERSION@.gz
+CACHE_DIR=/var/lib/jma-receipt/cache/patch
+
+FTP=$PGUPGRADEPATH/@VERSION@
+
+if ! [ -d $CACHE_DIR ];	then
+	echo "キャッシュディレクトリが存在しません"
+	exit
+fi
+
+#更新プログラムダウンロード
+ruby $SCRIPTSDIR/allways/cachedl.rb $PACKAGEFILE $CACHE_DIR $FTP
+
+exit
