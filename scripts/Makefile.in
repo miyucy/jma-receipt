@@ -71,6 +71,7 @@ ruby_scripts = \
 	daily/orcred2ps.rb \
 	daily/print_parent_prv.rb \
 	allways/cachedl.rb \
+	allways/cachetoprgdir.rb \
 
 claim_scripts = \
 	claim/rb/clm_rcv.rb \

@@ -16,32 +16,13 @@ PRGDIR=orca-prg@VERSION@
 PRGCFILE=ORCAPGC.DAT
 UPDFILE=/home/orca/$PRGDIR/ORCAPGC.OUT
 RSTFILE=/home/orca/$PRGDIR/RESTART
+CACHE_DIR=/var/lib/jma-receipt/cache/patch
+PACKAGEFILE=patch@VERSION@.gz
 
 FTP=$PGUPGRADEPATH/@VERSION@
 
-function orcawget () {
-#受信ファイル削除
-	if [	-e	$1	]
-	then
-#	echo "rm start" $1
-		rm $1;
-	fi
-	wget -q --passive-ftp ftp://$FTP/$1
-#接続確認
-	if [ $? -eq 0 ]	;	then 
-#	echo "wget end OK"
-		return 0;
-	else
-		return 1;
-	fi
-#ファイルサイズチェック
-	if [	-s	$1	]
-	then
-		return 0;
-	else
-		return 1;
-	fi
-}
+#更新プログラムダウンロード
+ruby $SCRIPTSDIR/allways/cachedl.rb $PACKAGEFILE $CACHE_DIR $FTP
 
 if ! [	-d	$HOME/$PRGDIR	];	then 
 	cd $HOME
@@ -50,14 +31,13 @@ fi
 cd $HOME/$PRGDIR
 rm -f *.*
 
-#プログラム更新情報取得
-#センタからのプログラム更新情報ダウンロード
-if	orcawget $PRGCFILE ;	then
-	echo "センタからのプログラム更新情報のダウンロードが終了しました"
-else
-	echo "センタからのプログラム更新情報のダウンロードに失敗しました"
-	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT01
-        exit 99
+#アーカイブよりパッチプログラムを複写
+ruby $SCRIPTSDIR/allways/cachetoprgdir.rb $PACKAGEFILE $CACHE_DIR $HOME/$PRGDIR
+
+if ! [ -e $HOME/$PRGDIR/$PRGCFILE ];	then
+	echo "プログラム管理ファイルが存在しません"
+	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT99
+	exit 99
 fi
 
 #プログラム管理テーブル更新
@@ -75,39 +55,6 @@ if [ $1 = "1" ];	then
 	exit
 fi
 
-#ダウンロードファイル生成
-	$DBSTUB  -dir $LDDIRECTORY -bd orcabt ORCXPMNT2 -parameter $UPDFILE
-	if [ $? -ne 0 ]	;	then 
-		echo "ダウロードファイル生成に失敗しました"
-		$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT99
-		exit 99
-	fi
-
-#ダウンロードファイルよりプログラムを受信
-#ファイルサイズチェック
-	if [	-s	$UPDFILE	]
-	then
-		echo "ダウンロードファイルの作成が終了しました"
-	else
-		echo "ダウンロードファイルの作成に失敗しました"
-		$DBSTUB  -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT01
-		exit 99
-	fi
-
-UPDLIST=`awk '{gsub(/\t| |;/,""); print} ' $UPDFILE`
-
-for UPD in $UPDLIST
-do
-	echo $UPD
-	if	orcawget $UPD ;	then
-		echo $UPD "ダウンロードが終了しました"
-	else
-		echo $UPD "ダウンロードに失敗しました"
-		$DBSTUB  -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT99
-	        exit 99
-	fi
-done
-
 #プログラム更新処理
 	$DBSTUB  -noredirect -dir $LDDIRECTORY -bd orcabt ORCXPMNT3 -parameter $RSTFILE,$HOME/$PRGDIR
 	if [ $? -ne 0 ]	;	then 
@@ -116,11 +63,6 @@ done
 	fi
 
 sleep 3
-
-#システム再起動(コボルからの起動に変更)
-#if test -f "$RSTFILE"; then
-#	sh $SCRIPTSDIR/allways/program_upgrade_restart.sh
-#fi
 
 echo  "全ての処理が完了しました"
 
