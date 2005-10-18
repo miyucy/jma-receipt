@@ -1377,19 +1377,24 @@
                                    TO  WRK-SRYYMD
            MOVE    SPACE           TO  SPA-NAI-L04-STSRYYMD
       *
-           MOVE    SPA-GMN-L04-STSRYYMD    TO  WRK-SYMD
-           PERFORM 800-HIZUKE-CHK-SEC
-           IF    ( SGDAY-RC        =   ZERO )
-               MOVE    SGDAY-OTDAY TO  SPA-GMN-L04-STSRYYMD
-               MOVE    SGDAY-SDAY  TO  SPA-NAI-L04-STSRYYMD
+           IF    ( SPA-GMN-L04-PROCKBN     =   CONST-SELTERM )
+            AND  ( SPA-GMN-L04-STSRYYMD    =   SPACE )
+               CONTINUE
            ELSE
-               MOVE    WRK-SRYYMD  TO  WRK-SYMD
+               MOVE    SPA-GMN-L04-STSRYYMD    TO  WRK-SYMD
                PERFORM 800-HIZUKE-CHK-SEC
-               MOVE    SGDAY-OTDAY TO  SPA-GMN-L04-STSRYYMD
-               MOVE    SGDAY-SDAY  TO  SPA-NAI-L04-STSRYYMD
+               IF    ( SGDAY-RC        =   ZERO )
+                   MOVE    SGDAY-OTDAY TO  SPA-GMN-L04-STSRYYMD
+                   MOVE    SGDAY-SDAY  TO  SPA-NAI-L04-STSRYYMD
+               ELSE
+                   MOVE    WRK-SRYYMD  TO  WRK-SYMD
+                   PERFORM 800-HIZUKE-CHK-SEC
+                   MOVE    SGDAY-OTDAY TO  SPA-GMN-L04-STSRYYMD
+                   MOVE    SGDAY-SDAY  TO  SPA-NAI-L04-STSRYYMD
       *
-               MOVE    "0001"      TO  SPA-ERRCD
-               MOVE    3           TO  SPA-GMN-L04-CUR
+                   MOVE    "0001"      TO  SPA-ERRCD
+                   MOVE    3           TO  SPA-GMN-L04-CUR
+               END-IF
            END-IF
       *
            .
@@ -1430,19 +1435,24 @@
                                    TO  WRK-SRYYMD
            MOVE    SPACE           TO  SPA-NAI-L04-EDSRYYMD
       *
-           MOVE    SPA-GMN-L04-EDSRYYMD    TO  WRK-SYMD
-           PERFORM 800-HIZUKE-CHK-SEC
-           IF    ( SGDAY-RC        =   ZERO )
-               MOVE    SGDAY-OTDAY TO  SPA-GMN-L04-EDSRYYMD
-               MOVE    SGDAY-SDAY  TO  SPA-NAI-L04-EDSRYYMD
+           IF    ( SPA-GMN-L04-PROCKBN     =   CONST-SELTERM )
+            AND  ( SPA-GMN-L04-EDSRYYMD    =   SPACE )
+               CONTINUE
            ELSE
-               MOVE    WRK-SRYYMD  TO  WRK-SYMD
+               MOVE    SPA-GMN-L04-EDSRYYMD    TO  WRK-SYMD
                PERFORM 800-HIZUKE-CHK-SEC
-               MOVE    SGDAY-OTDAY TO  SPA-GMN-L04-EDSRYYMD
-               MOVE    SGDAY-SDAY  TO  SPA-NAI-L04-EDSRYYMD
+               IF    ( SGDAY-RC        =   ZERO )
+                   MOVE    SGDAY-OTDAY TO  SPA-GMN-L04-EDSRYYMD
+                   MOVE    SGDAY-SDAY  TO  SPA-NAI-L04-EDSRYYMD
+               ELSE
+                   MOVE    WRK-SRYYMD  TO  WRK-SYMD
+                   PERFORM 800-HIZUKE-CHK-SEC
+                   MOVE    SGDAY-OTDAY TO  SPA-GMN-L04-EDSRYYMD
+                   MOVE    SGDAY-SDAY  TO  SPA-NAI-L04-EDSRYYMD
       *
-               MOVE    "0001"      TO  SPA-ERRCD
-               MOVE    7           TO  SPA-GMN-L04-CUR
+                   MOVE    "0001"      TO  SPA-ERRCD
+                   MOVE    7           TO  SPA-GMN-L04-CUR
+               END-IF
            END-IF
       *
            .
@@ -1692,6 +1702,18 @@
       *    登録時期間指定処理チェック処理
       *****************************************************************
        212-TOUROKU-SELTERM-CHK-SEC     SECTION.
+      *
+           IF    ( SPA-GMN-L04-STSRYYMD    =   SPACE )
+               MOVE    "1013"      TO  SPA-ERRCD
+               MOVE    3           TO  SPA-GMN-L04-CUR
+               GO  TO  212-TOUROKU-SELTERM-CHK-EXT
+           END-IF
+      *
+           IF    ( SPA-GMN-L04-EDSRYYMD    =   SPACE )
+               MOVE    "1013"      TO  SPA-ERRCD
+               MOVE    7           TO  SPA-GMN-L04-CUR
+               GO  TO  212-TOUROKU-SELTERM-CHK-EXT
+           END-IF
       *
            IF    ( SPA-NAI-L04-STSRYYMD    >   SPA-NAI-L04-EDSRYYMD )
                MOVE    "1010"      TO  SPA-ERRCD
@@ -2274,6 +2296,8 @@
            WHEN    "1012"
                MOVE    "期間は１０日間以内で指定してください"
                                                    TO  SPA-ERRMSG
+           WHEN    "1013"
+               MOVE    "日付を入力してください"    TO  SPA-ERRMSG
            WHEN    "4001"          THRU    "4999"
                MOVE    "更新処理に失敗しました"
                                                    TO  SPA-ERRMSG
