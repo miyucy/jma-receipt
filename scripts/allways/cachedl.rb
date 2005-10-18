@@ -1,7 +1,6 @@
 #!/usr/bin/ruby
 
 require "digest/md5"
-require "readline"
 
 package_file = ARGV[0]  # ex. patch2.6.0.gz
 save_dir = ARGV[1]+"/"  # ex. /var/lib/jma-receipt/patch/

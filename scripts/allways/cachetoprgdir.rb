@@ -1,7 +1,5 @@
 #!/usr/bin/ruby
 
-require "readline"
-
 package_file = ARGV[0]  # ex. patch2.6.0.gz
 save_dir = ARGV[1]+"/"  # ex. /var/lib/jma-receipt/patch/
 prg_dir = ARGV[2]+"/"   # ex. /home/orca/orca-prg2.6.0/
