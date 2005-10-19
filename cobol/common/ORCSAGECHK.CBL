@@ -43,6 +43,7 @@
       *                                     実年齢追加
       * 01.00.12     NACL-多々納  05/09/15  地方公費単独区分追加
       * 01.00.13     NACL-多々納  05/09/22  長崎県被爆者医療（１８６）追加
+      * 01.00.14     NACL-多々納  05/10/04  特別療養費（０６８）追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -462,7 +463,8 @@
                END-IF
                IF      FLG-PTHKNINF        =   ZERO
                    IF     (PTHKN-HOJOKBN       =   "8"  OR  "9") OR
-                          ((COMB-HKNNUM        =   "060"   )  AND
+                          ((COMB-HKNNUM        =   "060"
+                                               OR  "068"       )  AND
                            (PTHKN-HOJOKBN      =   "1"  OR  "2"
                                                OR  "4"  OR  "5"))
                        MOVE    1               TO  FLG-OK
