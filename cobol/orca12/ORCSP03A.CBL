@@ -36,6 +36,8 @@
       * 01.00.07     NACL-多々納  03/07/08  保険者異動日チェック追加
       * 01.00.08     NACL-多々納  03/09/30  国保家族の被保険者編集修正
       * 01.00.09     NACL-多々納  03/11/26  任継の５５歳以上判定追加
+      * 01.00.10     NACL-多々納  05/10/19  特別療養費追加
+      *                                     自費補助区分変更修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -487,6 +489,14 @@
            IF     (SPA-NAI-HKNSTR      >   ZERO      ) AND
                   (SPA-PTHKN-SINKIKBN (SPA-NAI-HKNSTR)
                                        =    SPACE    )
+      *        保険区分を変更する
+               IF    ((WRK-HKNJA-HKNNUM    =   "060" ) AND
+                      (SPA-MAE-HKNNUM      =   "068" ))
+                  OR ((WRK-HKNJA-HKNNUM    =   "067" ) AND
+                      (SPA-MAE-HKNNUM      =   "069" ))
+                   MOVE    SPA-MAE-HKNNUM      TO  WRK-HKNJA-HKNNUM
+               END-IF
+      *
                IF      WRK-HKNJA-HKNNUM    NOT =   SPA-MAE-HKNNUM
                    PERFORM 10011-HKNNUM-HENCHK-SEC
       *************IF      SPA-GMN-HKNJANUM    NOT =   SPA-MAE-HKNJANUM
@@ -504,9 +514,14 @@
                        GO      TO      100-HKNJANUM-CHK-EXT
                    END-IF
       *            保険区分を変更する
-      ***          IF      SPA-GMN-HKNNUM      =   SPACE
+                   IF    ((WRK-HKNJA-HKNNUM    =   "060" ) AND
+                          (SPA-GMN-HKNNUM      =   "068" ))
+                      OR ((WRK-HKNJA-HKNNUM    =   "067" ) AND
+                          (SPA-GMN-HKNNUM      =   "069" ))
+                        CONTINUE
+                   ELSE
                         MOVE    WRK-HKNJA-HKNNUM    TO  SPA-GMN-HKNNUM
-      ****         END-IF
+                   END-IF
                END-IF
            END-IF
            .
@@ -600,9 +615,13 @@
            IF     (WRK-HKNHBTNUM-1     =   SPACE )  AND
                   (WRK-HKNHBTNUM-2     =   SPACE )
                IF     (WRK-HKNJA-HKNNUM    =   "060"
-                                           OR  "001" )  OR
+                                           OR  "001"
+                                           OR  "068"
+                                           OR  "069" )  OR
                       (SPA-MAE-HKNNUM      =   "060"
-                                           OR  "001" )
+                                           OR  "001"
+                                           OR  "068"
+                                           OR  "069" )
                    MOVE    "0042"          TO  SPA-ERRCD
                    MOVE    8               TO  SPA-GMN-CUR
                END-IF
@@ -672,7 +691,9 @@
       *                法別番号が同じこと
                        IF     (SPA-GMN-HKNJANUM        =   SPACE) OR
                               (SPA-GMN-HKNNUM          =   "001"  OR
-                                                           "060" )
+                                                           "060"  OR
+                                                           "068"  OR
+                                                           "069" )
                            CONTINUE
                        ELSE
       *                    法別番号チェック区分
@@ -750,7 +771,10 @@
       *    継続区分
            INITIALIZE                      SPA-GMN-CONTKBN-LIST
            IF    ( SPA-NAI-PTHKN-SBTKBN    =   "1"  ) AND
-                 ( SPA-GMN-HKNNUM      NOT =   "060"  AND "067" )
+                 ( SPA-GMN-HKNNUM      NOT =   "060"  AND "067"
+      *              特別療養費追加
+                                           AND "068"
+                                           AND "069" )
                IF      SPA-GMN-HKNNUM      =   "003"
                    MOVE    3               TO  WRK-CONT-MAX
                ELSE
@@ -821,6 +845,7 @@
                    END-IF
       *        国保
                WHEN    "060"
+               WHEN    "068"
                    PERFORM VARYING   IDT     FROM    1  BY  1
                          UNTIL       IDT     >   7
                        MOVE    WRK-HJO-REC2 (IDT)
@@ -1047,7 +1072,8 @@
       *
       *   国保で新規の場合
            IF     (SPA-MAE-HONKZKKBN   NOT =   SPA-GMN-HONKZKKBN) AND
-                  (SPA-GMN-HKNNUM          =   "060"     )  AND
+                  (SPA-GMN-HKNNUM          =   "060"
+                                           OR  "068" )  AND
                  ((SPA-NAI-HKNSTR          =   ZERO  ) OR
                   (SPA-PTHKN-SINKIKBN (SPA-NAI-HKNSTR)
                                            =   "1"    ))
@@ -1078,6 +1104,12 @@
            END-IF
       *
       *    訂正で、老人割合編集分の時、補助区分の変更はできない
+      *    特別療養費・自費は対象外
+           IF     (SPA-GMN-HKNNUM      =   "068"  OR   "069" )
+              OR  (SPA-GMN-HKNNUM(1:2) =   "98"      )
+               CONTINUE
+           ELSE
+      *
            IF     (SPA-NAI-HKNSTR      >   ZERO      ) AND
                   (SPA-PTHKN-SINKIKBN (SPA-NAI-HKNSTR)
                                       NOT  =   "1"    ) AND
@@ -1089,15 +1121,30 @@
                    GO      TO      1001-HOJOKBN-CHK-EXT
                END-IF
            END-IF
+      *
+           END-IF
+      *
       *    国保で、割合を変更された時
            IF     (SPA-NAI-HKNSTR      >   ZERO      ) AND
                   (SPA-PTHKN-SINKIKBN (SPA-NAI-HKNSTR)
                                   NOT  =   "1"       ) AND
-                  (SPA-GMN-HKNNUM      =   "060"     ) AND
+                  (SPA-GMN-HKNNUM      =   "060"     )  AND
                   (SPA-GMN-HOJOKBN NOT =   SPA-MAE-HOJOKBN)
                IF     (SPA-SYSYMD      >=   "20021001" )  AND
                       (SPA-SYSYMD      >=   SPA-BYMD-70 )
                    MOVE    "0068"          TO  SPA-ERRCD
+                   MOVE    11              TO  SPA-GMN-CUR
+                   GO      TO      1001-HOJOKBN-CHK-EXT
+               END-IF
+           END-IF
+      *
+      *    国保の前期高齢者の補助区分判定
+           IF    ( SPA-GMN-HKNNUM      =   "060"  OR  "068"  )  AND
+                 ( SPA-NAI-BIRTHDAY    >   "19320930"        )  AND
+                 ((SPA-NAI-HTEKSTYMD   >=  "20021001"   ) AND
+                  (SPA-NAI-HTEKSTYMD   >=  SPA-BYMD-70  )    )
+               IF      (SPA-GMN-HOJOKBN    =   "3"  OR  "6")
+                   MOVE    "1066"          TO  SPA-ERRCD
                    MOVE    11              TO  SPA-GMN-CUR
                    GO      TO      1001-HOJOKBN-CHK-EXT
                END-IF
@@ -1507,10 +1554,15 @@
       *    被保険者名入力で、家族の場合世帯主名を編集する
            IF     (SPA-GMN-HIHKNJANAME NOT =   SPACE     )  AND
                   (SPA-MCP-WIDGET          =   "P02_HIHKNJANAME") AND
-                  (SPA-GMN-HONKZKKBN       =   "2"      )  AND
-                  (SPA-GMN-HKNNUM      NOT =   "060"   AND 
-                                               "067"    )
-               MOVE    SPA-GMN-HIHKNJANAME     TO  SPA-GMN-SETAINUSI
+                  (SPA-GMN-HONKZKKBN       =   "2"      )
+               IF      (SPA-GMN-HKNNUM         =   "060" 
+                                               OR  "067"
+                                               OR  "068"
+                                               OR  "069" )
+                   CONTINUE
+               ELSE
+                   MOVE    SPA-GMN-HIHKNJANAME     TO  SPA-GMN-SETAINUSI
+               END-IF
            END-IF
            .
       *
@@ -1536,6 +1588,8 @@
       *    国保、退職国保の場合
            IF      SPA-GMN-HKNNUM      =   "060"
                                        OR  "067"
+                                       OR  "068"
+                                       OR  "069"
                IF      SPA-GMN-HIHKNJANAME     =   SPACE
                    MOVE    SPA-GMN-NAME    TO  SPA-GMN-HIHKNJANAME
                END-IF
@@ -1849,7 +1903,8 @@
       **** END-IF
       *
       *    国保・自費の時必須
-           IF      (SPA-GMN-HKNNUM         =   "060")   OR
+           IF      (SPA-GMN-HKNNUM         =   "060"
+                                           OR  "068" )   OR
                    (SPA-NAI-PTHKN-SBTKBN   =   "8"  )
                IF      SPA-GMN-HOJOKBN     =   SPACE
                    MOVE    "0060"          TO  SPA-ERRCD

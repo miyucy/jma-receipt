@@ -44,6 +44,7 @@
       *  02.00.07    NACL-門脇    05/09/08  補助公費を追加した組合せの作成
       *                                     （全国公費＋地方公費＋補助公費）
       *                                     省庁対応
+      *  02.00.08    NACL-多々納  05/10/19  特別療養費 単独保険組合追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -821,8 +822,11 @@
                        UNTIL   ( IDX   >       100 )
                        OR      ( IDX   >       CNT-HKN )
              IF  WRK-HKN-SBT (IDX)     =   "1"
+      *!       特別療養費は対象外
+             AND (WRK-HKN-HKNNUM (IDX) NOT =   "068"
+                                           AND "069" )
+      *!
       *        一般療養、特別療養（旧日雇、旧特別日雇）の判定
-               
                IF   WRK-HKN-HKNNUM (IDX)       =   "003"  OR "004"
                    MOVE    1           TO   WRK-HIYATOI-FLG
                    MOVE    WRK-HKN-TEKSTYMD (IDX)
@@ -1705,8 +1709,14 @@
                           END-IF
                       ELSE
       *----(02.00.0) LINE UPD END   -------------------------------
+                          IF  HKN-HKNNUM               =   "068"
+                                                       OR  "069"
+      *                       特別療養費対象外
+                              CONTINUE
+                          ELSE
       *                   老人の負担割合編集
                           PERFORM 570129-RJN-FUTAN-SET-SEC
+                          END-IF
                       END-IF
                   ELSE
       *               本人
@@ -3009,6 +3019,10 @@
                      ELSE
       *                [主保険]
                        IF  WRK-HKN-SBT(IDY2)  =   "1"
+      *!       特別療養費は対象外
+                       AND (WRK-HKN-HKNNUM (IDY2)  NOT =   "068"
+                                                       AND "069" )
+      *!
       ****                 IF  ((WRK-HKN-HKNNUM (IDY)  =   "002") AND
       *                         (WRK-HKN-HOJOKBN(IDY)  =   SPACE OR
       *                                                    "8"  OR
@@ -4205,7 +4219,11 @@
                        UNTIL   ( IDZ   >       100 )
                        OR      ( IDZ   >       CNT-HKN )
       *
-             IF  (WRK-HKN-SBT(IDZ)     =   "1"  )  AND
+             IF  ((WRK-HKN-SBT(IDZ)     =   "1"  )  AND
+      *!         特別療養費は対象外
+                  (WRK-HKN-HKNNUM (IDZ)  NOT =   "068"
+                                              AND "069" )) AND
+      *!
                  (WRK-HKN-SAKJOKBN (IDZ)     =   SPACE)  AND
                  (WRK-HKN-CONTKBN (IDZ)     =   SPACE)
       *
@@ -4503,9 +4521,13 @@
            PERFORM     VARYING   IDX   FROM    1   BY  1
                        UNTIL   ( IDX   >       100 )
                        OR      ( IDX   >       CNT-HKN )
-             IF  (WRK-HKN-SBT   (IDX)  =   "4" OR "8" OR "9") AND
+             IF  ((WRK-HKN-SBT   (IDX)  =   "4" OR "8" OR "9")
+      *!          特別療養費 対象
+               OR (WRK-HKN-HKNNUM (IDX) =   "068"
+                                        OR  "069" )) AND
+      *!
                  (WRK-HKN-SAKJOKBN    (IDX)  =   SPACE)
-      *        自費・治験・労災
+      *        自費・治験・労災  特別療養費
                INITIALIZE                  WRK-COMB-AREA
       *
       *        組合せレコード編集転送処理
