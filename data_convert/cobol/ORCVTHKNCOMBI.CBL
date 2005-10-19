@@ -34,7 +34,7 @@
       *  01.00.03    NACL-多々納  02/11/29  前期高齢者対応
       *  01.00.04    NACL-多々納  03/05/12  保険期間外の対応（暫定）
       *  01.00.05    NACL-多々納  03/05/16  保険期間外の対応
-      *  01.00.06    NACL-多々納  05/08/18  前期高齢者コンバート対応
+      *  01.00.06    NACL-多々納  05/09/01  前期高齢者コンバート対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1470,6 +1470,16 @@
                        ",KEY:" PTHKN-KEY
                GO      TO      221022-PTKOHINF-INS-EXT
            END-IF
+      *
+      *    パラメタＤＢへ追加
+           ADD     1                   TO  IDY
+           MOVE    SPACE               TO  PARA-REC
+           INITIALIZE                      PARA-REC
+           MOVE    "PTKOHINF"          TO  PARA-FILEMEI
+           MOVE    IDY                 TO  PARA-EDANUM
+           MOVE    PTKOHINF-REC        TO  PARA-DATA-REC
+           PERFORM 400-PARA-INSERT-SEC
+      *
       *
            .
        221022-PTKOHINF-INS-EXT.
