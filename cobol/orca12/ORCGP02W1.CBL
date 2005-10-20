@@ -68,6 +68,7 @@
       *                                     （公費負担額に'025'追加）
       *  02.00.16    NACL-多々納  05/10/07  ユーザプログラム起動追加
       *  02.00.17    NACL-多々納  05/10/19  特別療養費追加
+      *  02.00.18    NACL-多々納  05/10/20  公費削除修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -172,6 +173,9 @@
            03  FLG-P02A-CHK       PIC 9(01).
       *    公費単独チェック
            03  FLG-KOHCHK         PIC 9(01).
+      *
+      *    重複エラーなし
+           03  FLG-ERRCHK         PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -2020,6 +2024,7 @@
       *
            MOVE    ZERO                TO  SPA-HKNKOH-FLG
            MOVE    ZERO                TO  FLG-TOUROKU
+           MOVE    ZERO                TO  FLG-ERRCHK
       *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
       *
@@ -2096,6 +2101,14 @@
                CONTINUE
            ELSE
                PERFORM 410-INPUT-CHK2-SEC
+      *        タグ切り替えの時、期間重複はクリアする
+               IF     (SPA-TAGU-FLG        =   1 )
+                   OR (FLG-ERRCHK          =   1 )
+                   IF      SPA-ERRCD       =   "0064"  OR
+                                               "0089"
+                       MOVE   SPACE            TO  SPA-ERRCD
+                   END-IF
+               END-IF
            END-IF
       *
            .
@@ -2415,7 +2428,8 @@
                                                    SPA-P02SCRAREA
                                                    SPA-P02KYOUTU
       *            タグ切り替えの時、期間重複はクリアする
-                   IF      SPA-TAGU-FLG        =   1
+                   IF     (SPA-TAGU-FLG        =   1 )
+                       OR (FLG-ERRCHK          =   1 )
                        IF      SPA-ERRCD       =   "0064"  OR
                                                    "0089"
                            MOVE   SPACE            TO  SPA-ERRCD
@@ -2442,6 +2456,7 @@
                                                SPA-P02KYOUTU
       *    タグ切り替えの時、期間重複はクリアする
            IF      SPA-TAGU-FLG        =   1
+               OR (FLG-ERRCHK          =   1 )
                IF      SPA-ERRCD       =   "0088"  OR
                                            "0089"
                    MOVE   SPACE            TO  SPA-ERRCD
@@ -2620,9 +2635,11 @@
       *    画面の空白行をつめる
            PERFORM 41022-PTKOH-TBL-SET-SEC
       *    次のデータを編集する
-           IF      FLG-KOH-DEL         =   1
+      **** IF      FLG-KOH-DEL         =   1
+           IF      SPA-KOH-MAX         <   3
                PERFORM 41023-PTKOH-SAI-SET-SEC
            END-IF
+      **** END-IF
            .
       *
        4102-KOH-CHKALL-EXT.
@@ -2716,26 +2733,27 @@
       *
       *    空いた行へ次ぎのデータを編集する
            MOVE    SPA-KOH-MAX         TO  IDX-K
-           IF      IDX-K               <   3
-               IF     (IDX-K               >   ZERO )  AND
-                      (SPA-NAI-PTKOH-EDANUM(IDX-K) NOT =   ZERO)
+           IF      IDX-K               =   ZERO
+               MOVE    1                   TO  IDX-K2
+           ELSE
+               IF      (SPA-NAI-PTKOH-EDANUM(IDX-K) NOT =   ZERO)
                    MOVE    SPA-NAI-PTKOH-EDANUM(IDX-K) TO  IDX-K2
                    ADD     1                   TO  IDX-K2
                ELSE
-                   MOVE    1                   TO  IDX-K2
+                   MOVE    4                   TO  IDX-K2
                END-IF
-               MOVE    IDX-K               TO  IDY
-               PERFORM VARYING     IDX     FROM    IDX-K2 BY  1
-                       UNTIL      (IDX     >   SPA-PTKOH-MAX )  OR
-                                  (IDY     >=  3    )
-                   IF     (SPA-PTKOH-SAKJOKBN (IDX)    =   SPACE) AND
-                          (SPA-PTKOH-KOHNUM (IDX)  NOT =   SPACE )
-                       ADD     1                   TO  IDY
-                       MOVE    IDY                 TO  SPA-KOH-MAX
-                       PERFORM 3102-KOUHI-HEN-SEC
-                   END-IF
-               END-PERFORM
            END-IF
+           MOVE    IDX-K               TO  IDY
+           PERFORM VARYING     IDX     FROM    IDX-K2 BY  1
+                   UNTIL      (IDX     >   SPA-PTKOH-MAX )  OR
+                              (IDY     >=  3    )
+               IF     (SPA-PTKOH-SAKJOKBN (IDX)    =   SPACE) AND
+                      (SPA-PTKOH-KOHNUM (IDX)  NOT =   SPACE )
+                   ADD     1                   TO  IDY
+                   MOVE    IDY                 TO  SPA-KOH-MAX
+                   PERFORM 3102-KOUHI-HEN-SEC
+               END-IF
+           END-PERFORM
       *
            .
       *
@@ -4404,6 +4422,7 @@
            MOVE    ZERO                TO  SPA-HKNKOH-FLG
            MOVE    ZERO                TO  FLG-TOUROKU
            MOVE    ZERO                TO  SPA-GMN-CUR
+           MOVE    ZERO                TO  FLG-ERRCHK
       *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
       *
@@ -4444,6 +4463,7 @@
       *
            MOVE    ZERO                TO  SPA-HKNKOH-FLG
            MOVE    ZERO                TO  FLG-TOUROKU
+           MOVE    ZERO                TO  FLG-ERRCHK
       *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
       *
@@ -4533,6 +4553,7 @@
       *
            MOVE    ZERO                TO  SPA-HKNKOH-FLG
            MOVE    ZERO                TO  FLG-TOUROKU
+           MOVE    ZERO                TO  FLG-ERRCHK
       *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
       *
@@ -4618,6 +4639,7 @@
       *
            MOVE    1                   TO  SPA-HKNKOH-FLG
            MOVE    ZERO                TO  SPA-GMN-CUR
+           MOVE    ZERO                TO  FLG-ERRCHK
            IF      FLG-TOUROKU2        =   2
                CONTINUE
            ELSE
@@ -5035,6 +5057,7 @@
       *
            MOVE    1                   TO  SPA-HKNKOH-FLG
            MOVE    ZERO                TO  FLG-TOUROKU
+           MOVE    ZERO                TO  FLG-ERRCHK
       *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
@@ -5062,6 +5085,7 @@
       *
            MOVE    1                   TO  SPA-HKNKOH-FLG
            MOVE    ZERO                TO  FLG-TOUROKU
+           MOVE    ZERO                TO  FLG-ERRCHK
       *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
@@ -5112,6 +5136,7 @@
            MOVE    1                   TO  SPA-HKNKOH-FLG
            MOVE    ZERO                TO  FLG-TOUROKU
            MOVE    ZERO                TO  SPA-GMN-CUR
+           MOVE    1                   TO  FLG-ERRCHK
       *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
@@ -5176,6 +5201,7 @@
            MOVE    1                   TO  SPA-HKNKOH-FLG
            MOVE    ZERO                TO  FLG-TOUROKU
            MOVE    ZERO                TO  SPA-GMN-CUR
+           MOVE    1                   TO  FLG-ERRCHK
       *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
