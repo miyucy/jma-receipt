@@ -266,11 +266,12 @@
       *       OR  ((LNK-COM-SRYKBN (IDX)    =   "40" )  AND
       *            (IDX                     <   200  )  AND
       ************ (LNK-COM-INPUTCD(IDX + 1)  =   "099309901"))
-           IF     (LNK-COM-TANICD (IDX)    =   "014"
-                                           OR  "022"
-                                           OR  "046"  )  AND
-                 ((IDX                     <   200    )  AND
-                  (LNK-COM-INPUTCD(IDX + 1)  =   "099309901"))
+      *    IF     (LNK-COM-TANICD (IDX)    =   "014"
+      *                                    OR  "022"
+      ***                                  OR  "046"  )  AND
+      *    残量廃棄のあるすべての注射薬を対象とする
+           IF     (IDX                     <   200    )  AND
+                  (LNK-COM-INPUTCD(IDX + 1)  =   "099309901")
                IF      LNK-COM-SURYO(IDX)(6:3) >   ZERO
                    COMPUTE WRK-SURYO-CHU9      =   LNK-COM-SURYO (IDX)
                                                +   0.99
