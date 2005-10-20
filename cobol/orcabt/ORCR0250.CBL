@@ -29,6 +29,8 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    05/01/07  差し込みコメントを対象とする
+      *
+      *  02.07.01    NACL-藤原    05/08/20  特別療養費対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -386,7 +388,8 @@
                              ( RECE64-TEISYUTUSAKI
                                                    =   "2"  )      )
                        OR  (   RECE64-RECESYUBETU  =   ZERO   OR 
-                                                       8888        )
+                                                       8888   OR 
+                                                       6666        )
       ****             OR  ( RECE64-SRYKBN         >=  "90"   AND 
       ****                                         <   "99"        )
                        OR  ( RECE64-SRYKBN         >=  "95"   AND 

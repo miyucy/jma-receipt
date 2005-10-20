@@ -81,6 +81,8 @@
       *
       *  02.06.01    NACL-藤原    05/07/13  国保の県内県外の印刷順の指定
       *                                     「４」の追加
+      *
+      *  02.07.01    NACL-藤原    05/08/20  特別療養費対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -390,6 +392,8 @@
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
       *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -917,6 +921,12 @@
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
+      *    特別療養費の編集     
+           MOVE    "34"              TO  SPA-NAI-PRTJYUNI    (1 34)
+           MOVE    "2"               TO  SPA-NAI-TEISYUTUSAKI(1 34)
+           MOVE    "6666"            TO  SPA-NAI-SYUBETU     (1 34 1)
+           MOVE    "特別療養費"      TO  SPA-GMN-TSYURUINAME (1 34)
+           MOVE    "T"               TO  SPA-GMN-TCHK-VALUE  (1 34)
       *    自費の編集     
            MOVE    "35"              TO  SPA-NAI-PRTJYUNI    (1 35)
            MOVE    "1"               TO  SPA-NAI-TEISYUTUSAKI(1 35)
@@ -963,6 +973,20 @@
                END-PERFORM
              END-PERFORM  
            END-PERFORM
+      *     
+      *    特別療養費レセプトのページ数     
+           INITIALIZE                  RECE07-REC
+           MOVE    SPA-R01-RECE07-KEY  TO  RECE07-KEY
+           MOVE    "2"                 TO  RECE07-TEISYUTUSAKI 
+           MOVE    "6666"              TO  RECE07-RECESYUBETU
+           MOVE    RECE07-REC          TO  MCPDATA-REC                             
+           PERFORM 900-RECE07-READ-SEC
+           IF      FLG-RECE07          =   ZERO
+               ADD     RECE07-PAGE     TO  SPA-GMN-TPAGE (1 34)
+                                           SPA-GMN-PAGEH
+               ADD     RECE07-KENSU    TO  SPA-GMN-TKENSU(1 34)
+                                           SPA-GMN-KENSUH
+           END-IF
       *     
       *    自費のレセプトのページ数     
            INITIALIZE                  RECE07-REC
@@ -1057,6 +1081,13 @@
            MOVE    "国保"              TO  SPA-GMN-TSYURUINAME (1 2)
            MOVE    "T"                 TO  SPA-GMN-TCHK-VALUE  (1 2)
       *
+      *    特別療養費の編集     
+           MOVE    "34"              TO  SPA-NAI-PRTJYUNI    (1 34)
+           MOVE    "2"               TO  SPA-NAI-TEISYUTUSAKI(1 34)
+           MOVE    "6666"            TO  SPA-NAI-SYUBETU     (1 34 1)
+           MOVE    "特別療養費"      TO  SPA-GMN-TSYURUINAME (1 34)
+           MOVE    "T"               TO  SPA-GMN-TCHK-VALUE  (1 34)
+      *
       *    自費の編集     
            MOVE    "35"              TO  SPA-NAI-PRTJYUNI    (1 35)
            MOVE    "1"               TO  SPA-NAI-TEISYUTUSAKI(1 35)
@@ -1096,10 +1127,14 @@
                END-IF
       *
                PERFORM                     UNTIL   FLG-RECE07  =   1
-                   ADD     RECE07-PAGE     TO  SPA-GMN-TPAGE (1 IDX)
-                                               SPA-GMN-PAGEH
-                   ADD     RECE07-KENSU    TO  SPA-GMN-TKENSU(1 IDX)
-                                               SPA-GMN-KENSUH
+                   IF      RECE07-RECESYUBETU  =   "6666"
+                       CONTINUE
+                   ELSE
+                       ADD     RECE07-PAGE     TO  SPA-GMN-TPAGE (1 IDX)
+                                                   SPA-GMN-PAGEH
+                       ADD     RECE07-KENSU    TO  SPA-GMN-TKENSU(1 IDX)
+                                                   SPA-GMN-KENSUH
+                   END-IF
                    MOVE    "RECEKANRI-KEY3"     TO  ORC-DBPATH
                    PERFORM 900-RECE07-NEXT-SEC
                END-PERFORM    
@@ -1110,6 +1145,20 @@
                                            ORCMCPAREA
                                            MCPDATA-REC
            END-PERFORM
+      *                                     
+      *    特別療養費レセプトのページ数     
+           INITIALIZE                  RECE07-REC
+           MOVE    SPA-R01-RECE07-KEY  TO  RECE07-KEY
+           MOVE    "2"                 TO  RECE07-TEISYUTUSAKI 
+           MOVE    "6666"              TO  RECE07-RECESYUBETU
+           MOVE    RECE07-REC          TO  MCPDATA-REC                             
+           PERFORM 900-RECE07-READ-SEC
+           IF      FLG-RECE07          =   ZERO
+               ADD     RECE07-PAGE     TO  SPA-GMN-TPAGE (1 34)
+                                           SPA-GMN-PAGEH
+               ADD     RECE07-KENSU    TO  SPA-GMN-TKENSU(1 34)
+                                           SPA-GMN-KENSUH
+           END-IF
       *                                     
       *    自費レセプトのページ数     
            INITIALIZE                  RECE07-REC
@@ -1835,7 +1884,8 @@
                        MOVE    "F"     TO  SPA-GMN-TCHK-VALUE (IDW IDX)
                      END-PERFORM 
                    END-PERFORM
-                   MOVE    "F"      TO  SPA-GMN-TCHK-VALUE (1 35)
+                   MOVE    "F"      TO  SPA-GMN-TCHK-VALUE (1 34)
+                                        SPA-GMN-TCHK-VALUE (1 35)
                                         SPA-GMN-TCHK-VALUE (1 36)
       *            *全件印刷
                WHEN    "F"
@@ -1858,7 +1908,8 @@
                        MOVE    "T"     TO  SPA-GMN-TCHK-VALUE (IDW IDX)
                      END-PERFORM 
                    END-PERFORM
-                   MOVE    "T"      TO  SPA-GMN-TCHK-VALUE (1 35)
+                   MOVE    "T"      TO  SPA-GMN-TCHK-VALUE (1 34)
+                                        SPA-GMN-TCHK-VALUE (1 35)
                                         SPA-GMN-TCHK-VALUE (1 36)
            END-EVALUATE 
       *
@@ -2038,11 +2089,14 @@
                                                 MCPDATA-REC
       *
       *    印刷ＤＢのＫＥＹ用     
-           ACCEPT  SYS-YMD         FROM    DATE
-           COMPUTE WRK-SYSYY       =   SYS-YY      +   2000
-           MOVE    SYS-MM              TO  WRK-SYSMM
-           MOVE    SYS-DD              TO  WRK-SYSDD
-           ACCEPT  SYS-TIME            FROM    TIME
+      *****ACCEPT  SYS-YMD         FROM    DATE
+      *****COMPUTE WRK-SYSYY       =   SYS-YY      +   2000
+      *****MOVE    SYS-MM              TO  WRK-SYSMM
+      *****MOVE    SYS-DD              TO  WRK-SYSDD
+      *****ACCEPT  SYS-TIME            FROM    TIME
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD        TO  WRK-SYSYMD
+           MOVE    SMCNDATE-HMS        TO  SYS-TIME
            MOVE    SPACE               TO  WRK-CONS-PRTKANRI-TBL-GROUP                                
            MOVE    WRK-SYSYMD          TO
                                    WRK-CONS-PRTKANRI-TBL-GROUP (1:8)
@@ -2125,6 +2179,42 @@
                                MOVE    "2"          TO  WRK-TEISYUTUSAKI
                                MOVE    "2"          TO  WRK-PREFKBN
                                PERFORM 4501-PRTJYUN-PRINT-SEC
+                           END-IF
+                       END-IF
+                   END-IF
+               END-IF
+      *
+      *        特別療養費レセプト出力
+               IF    ( SPA-ERRCD        =   SPACE )
+                   IF      SPA-GMN-TCHK-VALUE  (1 34)   =   "T"
+                   AND     SPA-GMN-TPAGE       (1 34)   >   ZERO
+      *                特別療養費（県内・県外混在）出力
+                       IF      SPA-GMN-PREFKBN  =   "4"
+                           MOVE    1               TO  IDW
+                           MOVE    "2"             TO  WRK-TEISYUTUSAKI
+                           MOVE    "%"             TO  WRK-PREFKBN
+                           MOVE    34              TO  IDX
+                           MOVE    1               TO  IDY
+                           PERFORM 45011-RECEPRT-HENSYU-SEC
+                       ELSE
+      *                    特別療養費（県内分）出力
+                           IF      SPA-GMN-PREFKBN =   "1" OR  "2"
+                               MOVE    1           TO  IDW
+                               MOVE    "2"         TO  WRK-TEISYUTUSAKI
+                               MOVE    "1"         TO  WRK-PREFKBN
+                               MOVE    34          TO  IDX
+                               MOVE    1           TO  IDY
+                               PERFORM 45011-RECEPRT-HENSYU-SEC
+                           END-IF
+      *
+      *                    特別療養費（県外分）出力
+                           IF      SPA-GMN-PREFKBN  =   "1" OR  "3"
+                               MOVE    1           TO  IDW
+                               MOVE    "2"         TO  WRK-TEISYUTUSAKI
+                               MOVE    "2"         TO  WRK-PREFKBN
+                               MOVE    34          TO  IDX
+                               MOVE    1           TO  IDY
+                               PERFORM 45011-RECEPRT-HENSYU-SEC
                            END-IF
                        END-IF
                    END-IF
@@ -2220,7 +2310,7 @@
            ELSE
                MOVE    2               TO  LNK-PRTKANRI-PRIORITY
            END-IF
-          MOVE    SPA-TERMID      TO  LNK-PRTKANRI-TERMID
+           MOVE    SPA-TERMID      TO  LNK-PRTKANRI-TERMID
            MOVE    SPA-OPID        TO  LNK-PRTKANRI-OPID
       *****MOVE    SYS-1031-PRTNM (5)
       *****                            TO  LNK-PRTKANRI-PRTNM
@@ -3388,6 +3478,18 @@
            END-IF
            .
        900-SYSKANRI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    マシン日付取得サブ
+      *****************************************************************
+       800-MCNDATE-SEC         SECTION.
+      *
+           CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
+      *
+           .
+      *
+       800-MCNDATE-EXT.
            EXIT.
       *
       *****************************************************`PN@`PN@ ******

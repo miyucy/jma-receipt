@@ -170,6 +170,29 @@ W12	{
 					item	varchar(20)[2];
 				};
 			};
+			fi25	{
+				MOJI_COMBO	{
+					MOJI_KISAIKBN	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[5];
+				};
+				KYURATE_COMBO	{
+					KYURATE_KISAIKBN	{
+						value	varchar(26);
+					};
+					count	int;
+					item	varchar(26)[5];
+				};
+				RECESYUBETU_COMBO	{
+					RECESYUBETU_KISAIKBN	{
+						value	varchar(26);
+					};
+					count	int;
+					item	varchar(26)[5];
+				};
+			};
 			fi24	{
 				KKHPRTKBN_COMBO	{
 					KKHPRTKBN	{

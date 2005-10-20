@@ -164,6 +164,8 @@
       *  02.06.05    NACL-æÆ∆¶¬Ù  05/09/05   °≤¨œ∑øÕ∏¯»Ò£≤≥‰§Œ ›∏±»÷πÊ —ππ
       *  02.06.06    NACL-∆£∏∂    05/09/12  ∞Ï…Ù…È√¥∂‚§Œ•´•π•ø•ﬁ•§•∫π‡Ã‹
       *                                     §Œ ‘Ω∏
+      *
+      *  02.07.01    NACL-∆£∏∂    05/08/20  ∆√ ÃŒ≈Õ‹»Ò¬–±˛
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -5047,9 +5049,19 @@
                        OR  (   RECE02-PTNUM        =   SPACE       )
                        OR  (   RECE02-TSTPTNUMKBN  =   "1"         )
                        OR  (   RECE02-RECESYUBETU  =   ZERO   OR 
-                                                       8888        )
+                                                       8888   OR 
+                                                       6666        )
                            CONTINUE
                        ELSE
+                         IF    ( RECE02-TOTALTEN (1) =   ZERO     )
+                         AND   ( RECE02-TOTALTEN (2) =   ZERO     )
+                         AND   ( RECE02-TOTALTEN (3) =   ZERO     )
+                         AND   ( RECE02-TOTALTEN (4) =   ZERO     )
+                         AND   ( RECE02-TOTALTEN (5) =   ZERO     )
+                         AND   ( RECE02-RECESYUBETU  NOT =  8888
+                                                         AND ZERO )
+                             CONTINUE
+                         ELSE
       *
       *                    ∞ÂŒ≈µ°¥ÿæ ÛºË∆¿
                            IF      WRK-PARA-SRYYM  =   ZERO
@@ -5105,6 +5117,7 @@
                                MOVE    1               TO  FLG-READ
                              END-IF
                            END-IF
+                         END-IF
                        END-IF    
       *
                        IF      FLG-READ            =   1

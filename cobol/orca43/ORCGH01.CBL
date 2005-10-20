@@ -49,6 +49,8 @@
       *
       *  02.06.01    NACL-Æ£¸¶    05/04/11  ËÜ¿Í²ÈÂ²¶èÊ¬¤ÎÄÉ²Ã
       *  02.06.02    NACL-Æ£¸¶    05/09/29  Êä½õ¶èÊ¬¤«¤é¤ÎÊÔ½¸¤Î½¤Àµ
+      *
+      *  02.07.01    NACL-Æ£¸¶    05/08/20  ÆÃÊÌÎÅÍÜÈñÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -105,7 +107,7 @@
       *
            03  WRK-NYUGAIKBN       PIC X(06).
            03  WRK-TEISYUTUSAKI    PIC X(10).
-           03  WRK-RECESYUBETU     PIC X(08).
+           03  WRK-RECESYUBETU     PIC X(10).
            03  WRK-YM              PIC X(07). 
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).
@@ -1185,24 +1187,28 @@
                MOVE    "ºßÂð¿²¤¿¤­¤êÅù"    TO  SPA-H01GMN-ZAITAKU
            END-IF
       *
-           EVALUATE    RECE10-RECESYUBETU (4:1)
-               WHEN    "1"
-               WHEN    "2"
-                   MOVE    "ËÜ¿Í"          TO  SPA-H01GMN-HONKZKKBN
-               WHEN    "3"
-               WHEN    "4"
-                   MOVE    "»°ºÐ"          TO  SPA-H01GMN-HONKZKKBN
-               WHEN    "5"
-               WHEN    "6"
-                   MOVE    "²ÈÂ²"          TO  SPA-H01GMN-HONKZKKBN
-               WHEN    "7"
-               WHEN    "8"
-                   MOVE    "¹â£¹"          TO  SPA-H01GMN-HONKZKKBN
-               WHEN    "9"
-               WHEN    "0"
-                   MOVE    "¹â£¸"          TO  SPA-H01GMN-HONKZKKBN
-           END-EVALUATE             
-      *
+           IF      RECE10-RECESYUBETU  =   "6666"
+               CONTINUE
+           ELSE
+               EVALUATE    RECE10-RECESYUBETU (4:1)
+                   WHEN    "1"
+                   WHEN    "2"
+                       MOVE    "ËÜ¿Í"          TO  SPA-H01GMN-HONKZKKBN
+                   WHEN    "3"
+                   WHEN    "4"
+                       MOVE    "»°ºÐ"          TO  SPA-H01GMN-HONKZKKBN
+                   WHEN    "5"
+                   WHEN    "6"
+                       MOVE    "²ÈÂ²"          TO  SPA-H01GMN-HONKZKKBN
+                   WHEN    "7"
+                   WHEN    "8"
+                       MOVE    "¹â£¹"          TO  SPA-H01GMN-HONKZKKBN
+                   WHEN    "9"
+                   WHEN    "0"
+                       MOVE    "¹â£¸"          TO  SPA-H01GMN-HONKZKKBN
+               END-EVALUATE
+           END-IF             
+      * 
            MOVE    "1"                 TO  SPA-HENFLG
       *         
            MOVE    4                   TO  SPA-H01GMN-CUR
@@ -2264,10 +2270,14 @@
            EXIT.
       *
       *****************************************************************
-      *    ÏÂÎñÀ¾ÎñÊÑ´¹ÊÔ½¸½èÍý
+      *    ¥ì¥»¥×¥È¼ïÊÌÊÔ½¸½èÍý
       *****************************************************************
        530-RECESYUBETU-HENSYU-SEC          SECTION.
       *
+           IF      RECE10-RECESYUBETU  =   "6666"
+               MOVE    "ÆÃÊÌÎÅÍÜÈñ"        TO  WRK-RECESYUBETU
+               GO  TO  530-RECESYUBETU-HENSYU-EXT
+           END-IF        
       *
            IF      RECE10-SRYYM        >   "200209"
                MOVE    RECE10-RECESYUBETU  TO  WRK-RECESYUBETU

@@ -52,6 +52,8 @@
       *                                     ただし、給付割合が変更になっ
       *                                     た場合はそれぞれにレセプトを
       *                                     作成する
+      *
+      *  02.07.01    NACL-藤原    05/08/20  特別療養費対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1238,6 +1240,7 @@
                                    MOVE    "0" TO  TOUKEI01-HONKZKKBN
                              END-EVALUATE
                        WHEN    "060" 
+                       WHEN    "068" 
                            EVALUATE   PTHKN-HOJOKBN
                                WHEN   "1"
                                WHEN   "4"
@@ -1271,6 +1274,7 @@
                                                TOUKEI01-HOJOKBN
                    END-IF
                WHEN    "060"
+               WHEN    "068"
                    EVALUATE    WRK-PARA-NYUGAIKBN
                        WHEN    "1"
                            EVALUATE   PTHKN-HOJOKBN
@@ -1695,8 +1699,10 @@
                     MOVE   HKN-HBTNUM      TO  TOUKEI01-TKOHHBTNUM (IDY)
                END-IF
       *        地方公費のときレセプト請求区分を取得
-               IF      COMB-KOHHKNNUM (IDX)(1:1)
-                                           >=  "1" AND <=  "8"
+               IF    ( COMB-KOHHKNNUM (IDX)(1:1)
+                                           >=  "1" AND <=  "8" )
+               OR    ( COMB-KOHHKNNUM (IDX)(1:2)
+                                           =  "99"             )
       ************ 福岡県の国保のとき（４１老人以外）
       ************ IF    ( COMB-HKNNUM         =   "060"   OR  "067" )
       ************ AND   ( SYS-1001-PREFNUM    =   "40"              )
@@ -1913,8 +1919,9 @@
            END-IF
       *         
            IF      TOUKEI01-HKNNUM     NOT =   SPACE
-               IF      TOUKEI01-HKNNUM     =   "060"   OR   "067"
-                   IF      TOUKEI01-HKNNUM     =   "060"
+               IF      TOUKEI01-HKNNUM     =   "060"   OR   "067"   OR
+                                               "068"   OR   "069"
+                   IF      TOUKEI01-HKNNUM     =   "060"   OR  "068"
                         MOVE   "1"             TO  WK-KOKUHO
                    ELSE
                         MOVE   "2"             TO  WK-KOKUHO
@@ -1988,6 +1995,7 @@
                                    MOVE   "8"   TO   WK-HONKZKKBN
                            END-EVALUATE
                        WHEN    "060" 
+                       WHEN    "068" 
                            IF  (TOUKEI01-AGE  >=   70)  AND
                                (TOUKEI01-AGE  <=   74)
                                EVALUATE   TOUKEI01-THOJOKBN (IDY)
@@ -2549,6 +2557,11 @@
                        SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
                    MOVE    1430            TO    TOUKEI01-RECESYUBETU
              END-EVALUATE
+           END-IF
+      *     
+      *    特別療養費のときのレセプト種別を編集
+           IF      TOUKEI01-HKNNUM     =   "068"   OR  "069"
+               MOVE    6666                 TO  TOUKEI01-RECESYUBETU    
            END-IF
       *
       *    DISPLAY "TOUKEI01-RECESYUBETU=" TOUKEI01-RECESYUBETU

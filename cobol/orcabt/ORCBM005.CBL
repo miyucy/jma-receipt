@@ -39,6 +39,8 @@
       *                                     プレビュー・再印刷処理に対応
       *  ver.2.5.0
       *  01.02.01    NACL-藤原    05.03.08  実日数１、実日数２の追加
+      *
+      *  02.07.01    NACL-藤原    05/08/20  特別療養費対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -79,7 +81,9 @@
            03  FLG-RECE10          PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01). 
            03  FLG-PTINF           PIC 9(01).
-           03  FLG-SEIKYU          PIC 9(01). 
+           03  FLG-SEIKYU          PIC 9(01).
+      *
+           03  FLG-SYORI           PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -266,9 +270,6 @@
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC
       *
-      *****MOVE    "RECEERR"           TO  RECEERR-FILE-ID
-      *****MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
-      *
       *    システム日付の編集
            MOVE    LNK-PRTKANRI-SKYYMD TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
@@ -279,8 +280,6 @@
            PERFORM 31012-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG(1:16)   TO  WRK-SRYYM
       *
-           PERFORM 900-SEIKYU-SELECT-SEC
-      *
            .
        100-INIT-EXT.
            EXIT.
@@ -289,6 +288,35 @@
       *    主　　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
+      *
+      *    医保分
+           MOVE    ZERO            TO  FLG-END
+           MOVE    1               TO  FLG-SYORI
+      *
+           PERFORM 900-SEIKYU-SELECT-SEC
+           PERFORM 2001-HENSYU-SEC
+                   UNTIL       FLG-END     =   1
+      *
+           PERFORM 900-SEIKYU-CLOSE-SEC
+      *
+      *    特別療養費分
+           MOVE    ZERO            TO  FLG-END
+           MOVE    2               TO  FLG-SYORI
+      *
+           PERFORM 900-SEIKYU-SELECT-SEC
+           PERFORM 2001-HENSYU-SEC
+                   UNTIL       FLG-END     =   1
+      *
+           PERFORM 900-SEIKYU-CLOSE-SEC
+      *
+           .
+       100-INIT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    帳票作成処理
+      *****************************************************************
+       2001-HENSYU-SEC                SECTION.
       *
            MOVE    ZERO            TO  SUM-AREA
                                        CNT-RENNUM
@@ -309,7 +337,7 @@
       *    帳票印刷処理
            PERFORM 390-PRINT-OUT-SEC
            .
-       200-MAIN-EXT.
+       2001-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -327,16 +355,20 @@
            MOVE    CNT-PAGE            TO  WRK-PAGE
            MOVE    WRK-PAGE            TO  HC05-PAGE
       *
-           EVALUATE    KEY-N-TEISYUTUSAKI  ALSO
+           EVALUATE    FLG-SYORI   ALSO    KEY-N-TEISYUTUSAKI  ALSO
                                        KEY-N-NYUGAIKBN
-               WHEN    1   ALSO    1 
+               WHEN    1   ALSO    1   ALSO    1 
                    MOVE    "社保・入院"    TO  HC05-TEISYUTUNAME
-               WHEN    2   ALSO    1    
+               WHEN    1   ALSO    2   ALSO    1    
                    MOVE    "国保・入院"    TO  HC05-TEISYUTUNAME
-               WHEN    1   ALSO    2 
+               WHEN    1   ALSO    1   ALSO    2 
                    MOVE    "社保・入院外"  TO  HC05-TEISYUTUNAME
-               WHEN    2   ALSO    2    
+               WHEN    1   ALSO    2   ALSO    2    
                    MOVE    "国保・入院外"  TO  HC05-TEISYUTUNAME
+               WHEN    2   ALSO    2   ALSO    1    
+                   MOVE    "特療・入院"    TO  HC05-TEISYUTUNAME
+               WHEN    2   ALSO    2   ALSO    2    
+                   MOVE    "特療・入院外"  TO  HC05-TEISYUTUNAME
            END-EVALUATE
       *
            .
@@ -561,8 +593,6 @@
       *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
-      *
-           PERFORM 900-SEIKYU-CLOSE-SEC
       *     
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
@@ -724,16 +754,19 @@
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-END
                MOVE    MCPDATA-REC         TO  RECE10-REC
-      *********EVALUATE    WRK-PARA-TEISYUTUSAKI
-      *********    WHEN    ZERO
-      *********        CONTINUE
-      *********    WHEN    1
-      *********    WHEN    2
-      *********        IF      RECE10-TEISYUTUSAKI NOT =
-      *********                                WRK-PARA-TEISYUTUSAKI
-      *********            GO  TO  900-SEIKYU-FETCH-SEC
-      *********        END-IF
-      *********END-EVALUATE                                        
+      *
+               EVALUATE    FLG-SYORI
+                   WHEN    1
+                       IF      RECE10-RECESYUBETU  =    '6666'
+                           GO  TO  900-SEIKYU-FETCH-SEC
+                       END-IF
+                   WHEN    2
+                       IF      RECE10-RECESYUBETU  =    '6666'
+                           CONTINUE
+                       ELSE
+                           GO  TO  900-SEIKYU-FETCH-SEC
+                       END-IF
+               END-EVALUATE
       *
       *        テスト患者のときは読み飛ばす
                MOVE    SPACE               TO  PTINF-REC

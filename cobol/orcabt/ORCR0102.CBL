@@ -92,6 +92,11 @@
       *                                     HCRCP401V01.red
       *                                     HCN061V02.red HCN062V02.red
       *                                     HCN063V01.red
+      *
+      *  02.07.01    NACL-∆£∏∂    05/08/20  ∆√ ÃŒ≈Õ‹»Ò¬–±˛
+      *                                     HCM09V04.red HCN06V04.red
+      *                                     HCN061V03.red HCN062V03.red
+      *                                     HCN063V02.red
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -224,18 +229,23 @@
            COPY    "HCN06V02.INC".
            COPY    "HCN06V03.INC".
            COPY    "HCN06V04.INC".
+           COPY    "HCN06V05.INC".
            COPY    "HCN061.INC".
            COPY    "HCN061V01.INC".
            COPY    "HCN061V02.INC".
+           COPY    "HCN061V03.INC".
            COPY    "HCN062.INC".
            COPY    "HCN062V01.INC".
            COPY    "HCN062V02.INC".
+           COPY    "HCN062V03.INC".
            COPY    "HCN063.INC".
            COPY    "HCN063V01.INC".
+           COPY    "HCN063V02.INC".
            COPY    "HCM09.INC".
            COPY    "HCM09V01.INC".
            COPY    "HCM09V02.INC".
            COPY    "HCM09V03.INC".
+           COPY    "HCM09V04.INC".
            COPY    "HCRCP060.INC".
            COPY    "HCRCP060V01.INC".
            COPY    "HCRCP060V02.INC".
@@ -653,6 +663,10 @@
                        MOVE    RECE08-PRTDATA      TO  HCN06V04
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN06V04-RENNUM
                        MOVE    HCN06V04            TO  RECE08-PRTDATA
+                   WHEN    "HCN06V05.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCN06V05
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCN06V05-RENNUM
+                       MOVE    HCN06V05            TO  RECE08-PRTDATA
                    WHEN    "HCN061.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCN061
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN061-RENNUM
@@ -665,6 +679,10 @@
                        MOVE    RECE08-PRTDATA      TO  HCN061V02
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN061V02-RENNUM
                        MOVE    HCN061V02           TO  RECE08-PRTDATA
+                   WHEN    "HCN061V03.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCN061V03
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCN061V03-RENNUM
+                       MOVE    HCN061V03           TO  RECE08-PRTDATA
                    WHEN    "HCN062.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCN062
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN062-RENNUM
@@ -677,6 +695,10 @@
                        MOVE    RECE08-PRTDATA      TO  HCN062V02
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN062V02-RENNUM
                        MOVE    HCN062V02           TO  RECE08-PRTDATA
+                   WHEN    "HCN062V03.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCN062V03
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCN062V03-RENNUM
+                       MOVE    HCN062V03           TO  RECE08-PRTDATA
                    WHEN    "HCN063.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCN063
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN063-RENNUM
@@ -685,6 +707,10 @@
                        MOVE    RECE08-PRTDATA      TO  HCN063V01
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN063V01-RENNUM
                        MOVE    HCN063V01           TO  RECE08-PRTDATA
+                   WHEN    "HCN063V02.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCN063V02
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCN063V02-RENNUM
+                       MOVE    HCN063V02           TO  RECE08-PRTDATA
                    WHEN    "HCM09.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCM09
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM09-RENNUM
@@ -701,6 +727,10 @@
                        MOVE    RECE08-PRTDATA      TO  HCM09V03
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM09V03-RENNUM
                        MOVE    HCM09V03            TO  RECE08-PRTDATA
+                   WHEN    "HCM09V04.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM09V04
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM09V04-RENNUM
+                       MOVE    HCM09V04            TO  RECE08-PRTDATA
                    WHEN    "HCRCP060.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCRCP060
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCRCP060-RENNUM

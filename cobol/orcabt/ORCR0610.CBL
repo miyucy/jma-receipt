@@ -71,6 +71,8 @@
       *                                     ¤Î¥ì¥»¥×¥ÈÀÁµá¤·¤Ê¤¤ÃÏÊý¸øÈñ¤Î
       *                                     ¤òÄÉ²Ã
       *  02.06.05    NACL-ÌçÏÆ    05/10/05  ¾ÊÄ£ÂÐ±þ
+      *
+      *  02.07.01    NACL-Æ£¸¶    05/08/20  ÆÃÊÌÎÅÍÜÈñÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1706,6 +1708,7 @@
                                    MOVE    "0" TO  WRK-RECE61-HONKZKKBN
                              END-EVALUATE
                        WHEN    "060" 
+                       WHEN    "068" 
       *****                IF     (WRK-NENREI  >=   70)  AND
       *****                       (WRK-NENREI  <=   74)
                                EVALUATE   PTHKN-HOJOKBN
@@ -1746,6 +1749,7 @@
                        MOVE    PTHKN-HOJOKBN   TO  WRK-RECE61-HOJOKBN
                    END-IF
                WHEN    "060" 
+               WHEN    "068" 
       *****        IF     (WRK-NENREI  >=   70)  AND
       *****               (WRK-NENREI  <=   74)
                        EVALUATE   PTHKN-HOJOKBN

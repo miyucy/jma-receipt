@@ -136,6 +136,26 @@
                     06  W12-SRYKAHENKBN-COUNT   PIC S9(9)   BINARY.
                     06  W12-SRYKAHENKBNLST
                             PIC X(20)   OCCURS  2 TIMES.
+                04  W12-FI25.
+                  05  W12-MOJI-KISAIKBN-COMBO.
+                    06  W12-MOJI-KISAIKBN.
+                      07  W12-VALUE   PIC X(20).
+                    06  W12-MOJI-KISAIKBN-COUNT   PIC S9(9)   BINARY.
+                    06  W12-MOJI-KISAIKBNLST
+                            PIC X(20)   OCCURS  5 TIMES.
+                  05  W12-KYURATE-KISAIKBN-COMBO.
+                    06  W12-KYURATE-KISAIKBN.
+                      07  W12-VALUE   PIC X(26).
+                    06  W12-KYURATE-KISAIKBN-COUNT   PIC S9(9)   BINARY.
+                    06  W12-KYURATE-KISAIKBNLST
+                            PIC X(26)   OCCURS  5 TIMES.
+                  05  W12-RECESYUBETU-KISAIKBN-COMBO.
+                    06  W12-RECESYUBETU-KISAIKBN.
+                      07  W12-VALUE   PIC X(26).
+                    06  W12-RECESYUBETU-KISAIKBN-COUNT
+                                        PIC S9(9)   BINARY.
+                    06  W12-RECESYUBETU-KISAIKBNLST
+                            PIC X(26)   OCCURS  5 TIMES.
                 04  W12-FI24.
                   05  W12-KKHPRTKBN-COMBO.
                     06  W12-KKHPRTKBN.

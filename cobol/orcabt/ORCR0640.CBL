@@ -157,6 +157,8 @@
       *                                     精神、結核対応
       *  02.06.17    NACL-門脇    05/09/28  島根県地方公費１０月改正対応
       *  02.06.18    NACL-門脇    05/10/04  精神食事療養記載修正
+      *
+      *  02.07.01    NACL-藤原    05/08/20  特別療養費対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -8019,17 +8021,37 @@
       *都道府県番号
            MOVE    SYS-1001-PREFNUM     TO      OCR1-PREFNUM
       *点数表
-           MOVE    RECE62-RECESYUBETU(1:1)
+           IF      RECE62-RECESYUBETU   =    6666
+               MOVE    RECE62-RECESYUBETU-X(1:1)
                                         TO      OCR1-TENSUHYO
+           ELSE
+               MOVE    RECE62-RECESYUBETU(1:1)
+                                        TO      OCR1-TENSUHYO
+           END-IF
       *保険種別１
-           MOVE    RECE62-RECESYUBETU(2:1)
+           IF      RECE62-RECESYUBETU   =    6666
+               MOVE    RECE62-RECESYUBETU-X(2:1)
                                         TO      OCR1-HKNSYUBETU1
+           ELSE
+               MOVE    RECE62-RECESYUBETU(2:1)
+                                        TO      OCR1-HKNSYUBETU1
+           END-IF
       *保険種別２
-           MOVE    RECE62-RECESYUBETU(3:1)
+           IF      RECE62-RECESYUBETU   =    6666
+               MOVE    RECE62-RECESYUBETU-X(3:1)
                                         TO      OCR1-HKNSYUBETU2
+           ELSE
+               MOVE    RECE62-RECESYUBETU(3:1)
+                                        TO      OCR1-HKNSYUBETU2
+           END-IF
       *本人・家族・入外
-           MOVE    RECE62-RECESYUBETU(4:1)
+           IF      RECE62-RECESYUBETU   =    6666
+               MOVE    RECE62-RECESYUBETU-X(4:1)
                                         TO      OCR1-HONKZKKBN
+           ELSE
+               MOVE    RECE62-RECESYUBETU(4:1)
+                                        TO      OCR1-HONKZKKBN
+           END-IF
       *整理番号
            MOVE    1                    TO      OCR1-SEIRINO
       *チェックディジット７

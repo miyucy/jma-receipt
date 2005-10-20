@@ -107,7 +107,9 @@
       *  02.06.03    NACL-藤原    05/07/28  レセプト特記事項編集情報のため
       *                                     のレセプト請求しない地方公費の
       *                                     を追加
-      *  02.06.04    NACL-門脇    05/10/05  省庁対応
+      *  02.06.05    NACL-門脇    05/10/05  省庁対応
+      *
+      *  02.07.01    NACL-藤原    05/08/20  特別療養費対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1010,10 +1012,11 @@
                    UNTIL   IDX >       4
                    OR      COMB-KOHHKNNUM (IDX)    
                                            =   SPACE
-      *        地方公費のときレセプト請求区分を取得して判別
+      *        地方公費・省庁のときレセプト請求区分を取得して判別
                IF     (COMB-KOHHKNNUM (IDX)(1:1)
                                            >=  "1" AND <=  "8")
-               OR     (COMB-KOHHKNNUM (IDX)(1:2)   =  "99"    )
+               OR     (COMB-KOHHKNNUM (IDX)(1:2)
+                                           =  "99"            )
       *
                    INITIALIZE                      HKNNUM-REC
                    MOVE    SYS-1001-HOSPID         TO  HKN-HOSPID
@@ -1308,8 +1311,8 @@
        20011-FILE-HENSYU-SEC              SECTION.
       *
       *    公費で不明分は出力しない
-           IF      WRK-SYOKBN         =   "2"
-           AND     WRK-TEISEIKBN      =   1
+           IF    ( WRK-SYOKBN         =   "2" )
+           AND   ( WRK-TEISEIKBN      =   1   )
                GO  TO  20011-FILE-HENSYU-EXT
            END-IF
       *     
@@ -1359,6 +1362,7 @@
                                    MOVE    "0" TO  WRK-RECE01-HONKZKKBN
                              END-EVALUATE
                        WHEN    "060" 
+                       WHEN    "068" 
       *****                IF     (WRK-NENREI  >=   70)  AND
       *****                       (WRK-NENREI  <=   74)
                                EVALUATE   PTHKN-HOJOKBN
@@ -1401,6 +1405,7 @@
                                                WRK-RECE01-HOJOKBN
                    END-IF
                WHEN    "060" 
+               WHEN    "068" 
       *****        IF     (WRK-NENREI  >=   70)  AND
       *****               (WRK-NENREI  <=   74)
                        EVALUATE   PTHKN-HOJOKBN
@@ -1429,9 +1434,9 @@
       *
       *    レセのとき地方公費のみの場合は出力しない
            IF      WRK-SYOKBN             =   "1"        
-               IF      WRK-RECE01-HKNNUM      =   SPACE
-               AND     WRK-RECE01-KOHID       =   ZERO
-               AND     WRK-SEIKYU-KOHID (1 1) =   ZERO
+               IF    ( WRK-RECE01-HKNNUM      =   SPACE )
+               AND   ( WRK-RECE01-KOHID       =   ZERO  )
+               AND   ( WRK-SEIKYU-KOHID (1 1) =   ZERO  )
                    GO  TO  20011-FILE-HENSYU-EXT
                END-IF
            END-IF 
@@ -2910,17 +2915,15 @@
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    "DBOPEN"            TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
-           MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    "DBSTART"           TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -2930,17 +2933,15 @@
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
-           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        900-DBDISCONNECT-EXT.

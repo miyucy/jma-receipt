@@ -28,6 +28,8 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-門脇    04.07.12  ファイルクリア追加
+      *
+      *  02.07.01    NACL-藤原    05/08/20  特別療養費対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -328,7 +330,8 @@
                              ( RECE031-TEISYUTUSAKI
                                                    =   "2"  )      )
                        OR  (   RECE031-RECESYUBETU =   ZERO   OR 
-                                                       8888        )
+                                                       8888   OR 
+                                                       6666        )
                            CONTINUE
                        ELSE
                            MOVE    1           TO  FLG-READ

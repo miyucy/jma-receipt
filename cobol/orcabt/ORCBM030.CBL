@@ -36,6 +36,8 @@
       *  01.00.04    NACL-∆£∏∂    04/04/09  ∞Ï…Ù…È√¥∂‚§Œµ≠∫‹§ŒΩ§¿µ
       * ÷Ã· ¨¬–±˛  
       *  01.01.01    NACL-∆£∏∂    05/03/03   ÷Ã· ¨¬–±˛
+      *
+      *  02.07.01    NACL-∆£∏∂    05/08/20  ∆√ ÃŒ≈Õ‹»Ò¬–±˛
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -80,10 +82,12 @@
            03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *****COPY    "HCM2O.INC".
-           COPY    "HCM2OV01.INC"  REPLACING  //HCM2OV01//
+      *****COPY    "HCM2OV01.INC"  REPLACING  //HCM2OV01//
+           COPY    "HCM2OV02.INC"  REPLACING  //HCM2OV02//
                                    BY         //HCM2O//.
       *****COPY    "HCM2P.INC".
-           COPY    "HCM2PV01.INC"  REPLACING  //HCM2PV01//
+      *****COPY    "HCM2PV01.INC"  REPLACING  //HCM2PV01//
+           COPY    "HCM2PV02.INC"  REPLACING  //HCM2PV02//
                                    BY         //HCM2P//.
       *
       *    •π•—ŒŒ∞Ë
@@ -127,6 +131,7 @@
            03  WRK-PARA-NYUGAIKBN  PIC X(01).
            03  WRK-PARA-HKNJANUM   PIC X(08).
            03  WRK-PARA-SYOKBN     PIC X(01).
+           03  WRK-PARA-SYOKBN1    PIC X(01).
       *
       *    ∞Ïª˛ŒŒ∞Ë
        01  WRK-AREA.
@@ -333,6 +338,7 @@
                                                WRK-PARA-NYUGAIKBN
                                                WRK-PARA-HKNJANUM
                                                WRK-PARA-SYOKBN
+                                               WRK-PARA-SYOKBN1
            END-UNSTRING  
       *
       *    •π•∆•√•◊¥…Õ˝≥´ªœΩËÕ˝
@@ -451,11 +457,15 @@
            MOVE    LOW-VALUE           TO  KEY-AREA
            MOVE    1                   TO  WRK-INDEX
       *     
-           EVALUATE    WRK-SYOKBN
-               WHEN    "1"
+           EVALUATE    WRK-SYOKBN      ALSO    WRK-PARA-SYOKBN1
+               WHEN    "1"             ALSO    "1"
                    MOVE    PATH-TBL-SEIKYU-KEY34    TO  WRK-PATH
-               WHEN    "2"
+               WHEN    "2"             ALSO    "1"
                    MOVE    PATH-TBL-SEIKYU-KEY33    TO  WRK-PATH
+               WHEN    "1"             ALSO    "2"
+                   MOVE    PATH-TBL-SEIKYU-KEY40    TO  WRK-PATH
+               WHEN    "2"             ALSO    "2"
+                   MOVE    PATH-TBL-SEIKYU-KEY39    TO  WRK-PATH
            END-EVALUATE  
            PERFORM 900-SEIKYU-SELECT-SEC
       *
@@ -469,7 +479,9 @@
                                            MCPDATA-REC
       *
       *    ∆˛±°≥∞Ω∏∑◊° ∫ﬂ¡Ìø«§ﬁ§ø§œ∫ﬂ∞Â¡Ì§ÚªªƒÍ§∑§ø•Ï•ª°À
-           IF      FLG-ERR             =   ZERO
+      *    ∆√ ÃŒ≈Õ‹»Ò§ŒæÏπÁ§œ∫ﬂ¡Ìø«§œ§ §∑
+           IF    ( FLG-ERR             =   ZERO )
+           AND   ( WRK-PARA-SYOKBN1    =   "1"  )
                MOVE    LOW-VALUE           TO  KEY-AREA
                MOVE    2                   TO  WRK-INDEX
       *         
@@ -544,6 +556,7 @@
       *        πÒÃ±∑ÚπØ ›∏±
                EVALUATE    RECE10-HKNNUM-S
                        WHEN    "060"
+                       WHEN    "068"
                            IF      RECE10-AGE          >=  70
                                EVALUATE    RECE10-KYURATE
                                    WHEN    9
@@ -568,6 +581,7 @@
                                END-IF
                            END-IF
                        WHEN    "067"
+                       WHEN    "069"
                            IF      RECE10-AGE          >=  70
                                EVALUATE    RECE10-KYURATE
                                    WHEN    9
@@ -808,6 +822,11 @@
                    MOVE    "°  ÷Ã· ¨°À"  TO  HCM2O-TITLE1
            END-EVALUATE           
       *
+           EVALUATE    WRK-PARA-SYOKBN1
+               WHEN    "2"
+                   MOVE    "∆√ ÃŒ≈Õ‹»Ò"  TO  HCM2O-MOJI
+           END-EVALUATE           
+      *
            .
        20021-HEAD-HEN-01-EXT.
            EXIT.
@@ -834,6 +853,11 @@
            EVALUATE    WRK-SYOKBN
                WHEN    "2"
                    MOVE    "°  ÷Ã· ¨°À"  TO  HCM2P-TITLE1
+           END-EVALUATE           
+      *
+           EVALUATE    WRK-PARA-SYOKBN1
+               WHEN    "2"
+                   MOVE    "∆√ ÃŒ≈Õ‹»Ò"  TO  HCM2P-MOJI
            END-EVALUATE           
       *
            .
@@ -1084,25 +1108,40 @@
                WHEN    ZERO 
                    MOVE    WRK-PAGE            TO  HCM2O-PAGE                           
       *************MOVE   "HCM2O.red"          TO  SPRT-PRTID
-                   MOVE   "HCM2OV01.red"       TO  SPRT-PRTID
+      *************MOVE   "HCM2OV01.red"       TO  SPRT-PRTID
+                   MOVE   "HCM2OV02.red"       TO  SPRT-PRTID
                    MOVE    HCM2O               TO  SPRT-PRTDATA
                WHEN    1                            
                    MOVE    WRK-PAGE            TO  HCM2P-PAGE                           
       *************MOVE   "HCM2P.red"          TO  SPRT-PRTID
-                   MOVE   "HCM2PV01.red"       TO  SPRT-PRTID
+      *************MOVE   "HCM2PV01.red"       TO  SPRT-PRTID
+                   MOVE   "HCM2PV02.red"       TO  SPRT-PRTID
                    MOVE    HCM2P               TO  SPRT-PRTDATA
            END-EVALUATE        
            EVALUATE    WRK-INDEX    ALSO    WRK-SYOKBN
-               WHEN    1            ALSO    "1"
+                                            ALSO    WRK-PARA-SYOKBN1
+               WHEN    1            ALSO    "1"     
+                                            ALSO   "1"
                    MOVE    "πÒ ›¡Ì≥Á…Ω"        TO  SPRT-TITLE
                WHEN    2            ALSO    "1"
+                                            ALSO   "1"
                    MOVE    "πÒ ›¡Ì≥Á…Ω° ∫ﬂ¡Ìø«≈˘°À"
                                                TO  SPRT-TITLE
                WHEN    1            ALSO    "2"
+                                            ALSO   "1"
                    MOVE    "πÒ ›¡Ì≥Á…Ω°Œ ÷Ã· ¨°œ" 
                                                TO  SPRT-TITLE
                WHEN    2            ALSO    "2"
+                                            ALSO   "1"
                    MOVE    "πÒ ›¡Ì≥Á…Ω° ∫ﬂ¡Ìø«≈˘°À°Œ ÷Ã· ¨°œ"
+                                               TO  SPRT-TITLE
+               WHEN    1            ALSO    "1"     
+                                            ALSO   "2"
+                   MOVE    "πÒ ›¡Ì≥Á…Ω°Œ∆√ ÃŒ≈Õ‹»Ò°œ"
+                                               TO  SPRT-TITLE
+               WHEN    1            ALSO    "2"
+                                            ALSO   "2"
+                   MOVE    "πÒ ›¡Ì≥Á…Ω°Œ ÷Ã· ¨°œ°Œ∆√ ÃŒ≈Õ‹»Ò°œ" 
                                                TO  SPRT-TITLE
            END-EVALUATE        
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
@@ -1287,7 +1326,7 @@
                MOVE    "99999999"          TO  RECE10-XXEDHKNJANUM
            END-IF 
       *
-           DISPLAY "SYOKBN=" WRK-SYOKBN
+           DISPLAY "SYOKBN=" WRK-SYOKBN "#" WRK-PARA-SYOKBN1
       *
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC

@@ -95,9 +95,9 @@ RENNUM=0
                if  [ ${23} -eq '0' ] || [ ${23} -eq '2' ]; then
                    RENNUM=$(expr $RENNUM + 1) 
                    if  [ ${15} = 1 ]; then
-                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM030 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},${21},2
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM030 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},${21},2,1
                    else
-                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM029 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},${21},2
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM029 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},${21},2,1
                    fi
                    if  [ -e ${18} ]; then
                        exit
@@ -107,14 +107,40 @@ RENNUM=0
                if  [ ${23} -eq '0' ] || [ ${23} -eq '1' ]; then
                    RENNUM=$(expr $RENNUM + 1) 
                    if  [ ${15} = 1 ]; then
-                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM030 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},${21},1
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM030 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},${21},1,1
                    else
-                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM029 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},${21},1
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM029 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},${21},1,1
                    fi
                    if  [ -e ${18} ]; then
                        exit
                    fi
                fi
+
+##             返戻分（特別療養費分）
+               if  [ ${23} -eq '0' ] || [ ${23} -eq '2' ]; then
+                   RENNUM=$(expr $RENNUM + 1) 
+                   if  [ ${15} = 1 ]; then
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM030 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},${21},2,2
+                   else
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM029 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},${21},2,2
+                   fi
+                   if  [ -e ${18} ]; then
+                       exit
+                   fi
+               fi
+##             当月・月遅れ分（特別療養費分）
+               if  [ ${23} -eq '0' ] || [ ${23} -eq '1' ]; then
+                   RENNUM=$(expr $RENNUM + 1) 
+                   if  [ ${15} = 1 ]; then
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM030 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},${21},1,2
+                   else
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM029 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},${21},1,2
+                   fi
+                   if  [ -e ${18} ]; then
+                       exit
+                   fi
+               fi
+
             fi    
        fi
        

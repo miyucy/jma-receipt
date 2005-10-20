@@ -42,6 +42,8 @@
       *  02.06.04    NACL-藤原    05/07/28  レセプト特記事項編集情報の
       *                                     負担者番号に条件を追加
       *  02.06.05    NACL-藤原    05/09/05  複数枚レセの連番記載
+      *
+      *  02.07.01    NACL-藤原    05/08/20  特別療養費対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -184,13 +186,16 @@
                                    REPLACING  //HCRCP401V01//
                                    BY         //HC06//.
       ***  COPY    "HCN061V01.INC" REPLACING  //HCN061V01//
-           COPY    "HCN061V02.INC" REPLACING  //HCN061V02//
+      ***  COPY    "HCN061V02.INC" REPLACING  //HCN061V02//
+           COPY    "HCN061V03.INC" REPLACING  //HCN061V03//
                                    BY         //HC061//.
       ***  COPY    "HCN062V01.INC" REPLACING  //HCN062V01//
-           COPY    "HCN062V02.INC" REPLACING  //HCN062V02//
+      ***  COPY    "HCN062V02.INC" REPLACING  //HCN062V02//
+           COPY    "HCN062V03.INC" REPLACING  //HCN062V03//
                                    BY         //HC062//.
       ***  COPY    "HCN063.INC"    REPLACING  //HCN063//
-           COPY    "HCN063V01.INC" REPLACING  //HCN063V01//
+      ***  COPY    "HCN063V01.INC" REPLACING  //HCN063V01//
+           COPY    "HCN063V02.INC" REPLACING  //HCN063V02//
                                    BY         //HC063//.
       *
       *    スパ領域
@@ -5629,17 +5634,20 @@
            ELSE
                EVALUATE    SYS-2005-NEXTPRTKBN
                    WHEN    ZERO
-                       MOVE    "HCN061V02.red" TO
+      **************** MOVE    "HCN061V02.red" TO
+                       MOVE    "HCN061V03.red" TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                        MOVE    HC061           TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
                    WHEN    "1"   
-                       MOVE    "HCN062V02.red" TO
+      **************** MOVE    "HCN062V02.red" TO
+                       MOVE    "HCN062V03.red" TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                        MOVE    HC062           TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
                    WHEN    "2"   
-                       MOVE    "HCN063V01.red" TO
+      **************** MOVE    "HCN063V01.red" TO
+                       MOVE    "HCN063V02.red" TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                        MOVE    HC063           TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
@@ -5822,17 +5830,20 @@
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HC06-PAGE
                            MOVE    HC06            TO RECE08-PRTDATA
-                       WHEN    "HCN061V02.red"                  
+      **************** WHEN    "HCN061V02.red"                  
+                       WHEN    "HCN061V03.red"                  
                            MOVE    RECE08-PRTDATA  TO HC061
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HC061-PAGE
                            MOVE    HC061           TO RECE08-PRTDATA
-                       WHEN    "HCN062V02.red"                  
+      **************** WHEN    "HCN062V02.red"                  
+                       WHEN    "HCN062V03.red"                  
                            MOVE    RECE08-PRTDATA  TO HC062
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HC062-PAGE
                            MOVE    HC062           TO RECE08-PRTDATA
-                       WHEN    "HCN063V01.red"                  
+      **************** WHEN    "HCN063V01.red"                  
+                       WHEN    "HCN063V02.red"                  
                            MOVE    RECE08-PRTDATA  TO HC063
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HC063-PAGE
@@ -6328,6 +6339,9 @@
                    MOVE    HIGH-VALUE          TO  KEY-NEW
                NOT AT  END
                    MOVE    ZERO                TO  FLG-RECE62
+                   IF      RECE62-RECESYUBETU  =   6666
+                       GO  TO  900-RECE62-READ-SEC
+                   END-IF
                    IF    ( RECE62-TOTALTEN (1) =   ZERO            )
                    AND   ( RECE62-TOTALTEN (2) =   ZERO            )
                    AND   ( RECE62-TOTALTEN (3) =   ZERO            )

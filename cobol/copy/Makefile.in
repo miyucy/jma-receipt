@@ -1082,6 +1082,11 @@ COPYS = \
         CPORCSUSERCHK.INC \
         CPSK9701.INC \
         CPCSV.INC \
+        HCM09V04.INC \
+        HCN06V05.INC \
+        HCN061V03.INC \
+        HCN062V03.INC \
+        HCN063V02.INC \
 
 DBPATH = \
 	ORCA-DBPATH

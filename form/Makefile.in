@@ -267,6 +267,11 @@ FORM_files = \
               HCM29V02.red \
               HCN22V04.red \
               HCN21V04.red \
+              HCM09V04.red \
+              HCN06V05.red \
+              HCN061V03.red \
+              HCN062V03.red \
+              HCN063V02.red \
 
 all:   
 

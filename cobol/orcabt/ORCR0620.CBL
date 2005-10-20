@@ -91,6 +91,10 @@
       *  02.06.06    NACL-藤原    05/07/28  レセプト特記事項編集情報のため
       *                                     のレセプト請求しない地方公費の
       *                                     を追加
+      *
+      *  02.07.01    NACL-藤原    05/08/20  特別療養費対応
+      *  02.07.02    NACL-藤原    05/10/06  公費単独の三歳未満の割合設定
+      *                                     をしないようにする
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -702,10 +706,12 @@
                        PERFORM 210-HENSYU-SEC
                    WHEN    "1"
                        IF      RECE61-HKNNUM   NOT =   "060" AND "067"
+                                                   AND "068" AND "069"    
                            PERFORM 210-HENSYU-SEC
                        END-IF
                    WHEN    "2"
                        IF      RECE61-HKNNUM       =   "060" OR  "067"
+                                                   OR  "068" OR  "069"
                            PERFORM 210-HENSYU-SEC
                        END-IF
                END-EVALUATE
@@ -790,7 +796,8 @@
                MOVE    RECE61-SRYKA (IDX)  TO  RECE62-SRYKA (IDX)
            END-PERFORM
       *    審査支払機関
-           IF      RECE61-HKNNUM        =   "060"   OR    "067"
+           IF      RECE61-HKNNUM        =   "060"   OR    "067"   OR
+                                            "068"   OR    "069"
                MOVE    2                TO  RECE62-TEISYUTUSAKI
            ELSE
                MOVE    1                TO  RECE62-TEISYUTUSAKI
@@ -815,7 +822,11 @@
       *        法別番号のセット
                INITIALIZE                  HKNNUM-REC
                MOVE   RECE62-HOSPID    TO  HKN-HOSPID
-               MOVE   RECE62-HKNNUM    TO  HKN-HKNNUM
+               IF     RECE62-HKNNUM    =   "069"
+                   MOVE    "067"           TO  HKN-HKNNUM
+               ELSE
+                   MOVE   RECE62-HKNNUM    TO  HKN-HKNNUM
+               END-IF
                PERFORM 900-HKNNUM-CHK-SEC
                IF      FLG-HKNNUM      =   ZERO
                    MOVE    HKNNUM-REC      TO  WRK-HKNNUM-REC
@@ -1295,8 +1306,9 @@
       *         
            IF     (RECE62-HKNNUM        NOT =   SPACE)   AND
                   (WRK-JIHI-FLG         =   SPACE)
-               IF      RECE62-HKNNUM    =   "060"   OR   "067"
-                   IF   RECE62-HKNNUM   =   "060"
+               IF      RECE62-HKNNUM    =   "060"   OR   "067"   OR
+                                            "068"   OR   "069"
+                   IF   RECE62-HKNNUM   =   "060"   OR   "068"
                         MOVE   "1"      TO  WK-KOKUHO
                    ELSE
                         MOVE   "2"      TO  WK-KOKUHO
@@ -1378,6 +1390,7 @@
                                MOVE   "8"   TO   WK-HONKZKKBN
                        END-EVALUATE
                    WHEN    "060" 
+                   WHEN    "068" 
                        IF  (WRK-NENREI  >=   70)  AND
                            (WRK-NENREI  <=   74)
                            EVALUATE   RECE62-HOJOKBN
@@ -1801,6 +1814,13 @@
                        SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
                    MOVE    1430            TO    RECE62-RECESYUBETU
            END-EVALUATE
+      *     
+      *    特別療養費のときのレセプト種別を編集
+           IF      RECE62-HKNNUM        =   "068"   OR  "069"
+               MOVE    RECE62-RECESYUBETU   TO  RECE62-RECESYUBETU-X 
+               MOVE    6666                 TO  RECE62-RECESYUBETU    
+           END-IF
+      *
       *    DISPLAY   "RECE62-RECESYUBETU: " RECE62-RECESYUBETU
            .
        RECESYUBETU-SET-EXT.
@@ -1813,98 +1833,102 @@
       *
       *    主保険情報の補助区分から患者の負担割合を再セット
       *   （国保のみ）
-              EVALUATE    RECE62-HKNNUM       
-                  WHEN    "060"
-                      IF       WRK-NENREI           <     3
-                          IF    RECE62-HOJOKBN  =    "0"  OR   "1" OR
+           EVALUATE    RECE62-HKNNUM       
+               WHEN    "060"
+               WHEN    "068"
+                   IF      WRK-NENREI           <     3
+                       IF      RECE62-HOJOKBN  =    "0"  OR   "1" OR
                                                      "4"  OR   "5"
-                              EVALUATE   RECE62-HOJOKBN
-                                  WHEN   "0"
-                                      MOVE   ZERO    TO   RECE62-KYURATE
-                                  WHEN   "1"
-                                      MOVE   10      TO   RECE62-KYURATE
-                                  WHEN   "4"
-                                      MOVE   ZERO    TO   RECE62-KYURATE
-                                  WHEN   "5"
-                                      MOVE   10      TO   RECE62-KYURATE
-                              END-EVALUATE
-                          ELSE
-                              MOVE  20      TO    RECE62-KYURATE
-                          END-IF
-                      ELSE
-                          EVALUATE   RECE62-HOJOKBN
-                              WHEN   "0"
-                                  MOVE   ZERO      TO   RECE62-KYURATE
-                              WHEN   "1"
-                                  MOVE   10        TO   RECE62-KYURATE
-                              WHEN   "2"
-                                  MOVE   20        TO   RECE62-KYURATE
-                              WHEN   "3"
-                                  MOVE   30        TO   RECE62-KYURATE
-                              WHEN   "4"
-                                  MOVE   ZERO      TO   RECE62-KYURATE
-                              WHEN   "5"
-                                  MOVE   10        TO   RECE62-KYURATE
-                              WHEN   "6"
-                                  MOVE   20        TO   RECE62-KYURATE
-                              WHEN   "8"
-                                  MOVE   20        TO   RECE62-KYURATE
-                              WHEN   "9"
-                                  MOVE   10        TO   RECE62-KYURATE
-                          END-EVALUATE
-                      END-IF
-                  WHEN    "067"
-                      IF       WRK-NENREI           <     3
-                          MOVE  20      TO    RECE62-KYURATE
-                      ELSE
-                        IF      RECE62-HOJOKBN        NOT =  SPACE
-                          EVALUATE   RECE62-HOJOKBN
-                              WHEN   "8"
-                                  MOVE   20        TO   RECE62-KYURATE
-                              WHEN   "9"
-                                  MOVE   10        TO   RECE62-KYURATE
-                          END-EVALUATE
-                        ELSE
-                          IF      RECE62-HONKZKKBN      =    "1"
-                              MOVE   WRK-HKN-HON-GAIKFTNRATE
+                           EVALUATE   RECE62-HOJOKBN
+                               WHEN   "0"
+                                   MOVE   ZERO    TO   RECE62-KYURATE
+                               WHEN   "1"
+                                   MOVE   10      TO   RECE62-KYURATE
+                               WHEN   "4"
+                                   MOVE   ZERO    TO   RECE62-KYURATE
+                               WHEN   "5"
+                                   MOVE   10      TO   RECE62-KYURATE
+                           END-EVALUATE
+                       ELSE
+                           MOVE  20      TO    RECE62-KYURATE
+                       END-IF
+                   ELSE
+                       EVALUATE   RECE62-HOJOKBN
+                           WHEN   "0"
+                               MOVE   ZERO      TO   RECE62-KYURATE
+                           WHEN   "1"
+                               MOVE   10        TO   RECE62-KYURATE
+                           WHEN   "2"
+                               MOVE   20        TO   RECE62-KYURATE
+                           WHEN   "3"
+                               MOVE   30        TO   RECE62-KYURATE
+                           WHEN   "4"
+                               MOVE   ZERO      TO   RECE62-KYURATE
+                           WHEN   "5"
+                               MOVE   10        TO   RECE62-KYURATE
+                           WHEN   "6"
+                               MOVE   20        TO   RECE62-KYURATE
+                           WHEN   "8"
+                               MOVE   20        TO   RECE62-KYURATE
+                           WHEN   "9"
+                               MOVE   10        TO   RECE62-KYURATE
+                       END-EVALUATE
+                   END-IF
+               WHEN    "067"
+               WHEN    "069"
+                   IF       WRK-NENREI           <     3
+                       MOVE  20      TO    RECE62-KYURATE
+                   ELSE
+                       IF      RECE62-HOJOKBN        NOT =  SPACE
+                           EVALUATE   RECE62-HOJOKBN
+                               WHEN   "8"
+                                   MOVE   20        TO   RECE62-KYURATE
+                               WHEN   "9"
+                                   MOVE   10        TO   RECE62-KYURATE
+                           END-EVALUATE
+                       ELSE
+                           IF      RECE62-HONKZKKBN      =    "1"
+                               MOVE   WRK-HKN-HON-GAIKFTNRATE
                                                    TO   RECE62-KYURATE
-                          ELSE
-                              MOVE   WRK-HKN-KZK-GAIKFTNRATE
+                           ELSE
+                               MOVE   WRK-HKN-KZK-GAIKFTNRATE
                                                    TO   RECE62-KYURATE
-                          END-IF
-                        END-IF
-                      END-IF
-                  WHEN    OTHER
-                      IF   WRK-NENREI           <     3
-                          MOVE  20      TO    RECE62-KYURATE
-                      ELSE
-                          IF  RECE62-HOJOKBN      =     SPACE
-                              IF      RECE62-HONKZKKBN    =     "1"
-                                  MOVE    WRK-HKN-HON-GAIKFTNRATE
+                           END-IF
+                       END-IF
+                   END-IF
+               WHEN    SPACE
+                   MOVE    ZERO            TO  RECE62-KYURATE
+               WHEN    OTHER
+                   IF   WRK-NENREI           <     3
+                       MOVE  20      TO    RECE62-KYURATE
+                   ELSE
+                       IF  RECE62-HOJOKBN      =     SPACE
+                           IF      RECE62-HONKZKKBN    =     "1"
+                               MOVE    WRK-HKN-HON-GAIKFTNRATE
                                                   TO  RECE62-KYURATE
-                              ELSE
-                                  MOVE    WRK-HKN-KZK-GAIKFTNRATE
+                           ELSE
+                               MOVE    WRK-HKN-KZK-GAIKFTNRATE
                                                   TO  RECE62-KYURATE
-                              END-IF
-                          ELSE
-                              EVALUATE   RECE62-HOJOKBN
-                                  WHEN   "8"
-                                      MOVE   20   TO  RECE62-KYURATE
-                                  WHEN   "9"
-                                      MOVE   10   TO  RECE62-KYURATE
-                              END-EVALUATE
-                         END-IF
-                     END-IF
-              END-EVALUATE
+                           END-IF
+                       ELSE
+                           EVALUATE   RECE62-HOJOKBN
+                               WHEN   "8"
+                                   MOVE   20   TO  RECE62-KYURATE
+                               WHEN   "9"
+                                   MOVE   10   TO  RECE62-KYURATE
+                           END-EVALUATE
+                       END-IF
+                   END-IF
+           END-EVALUATE
       *
-              IF  RJN-RATE-KBN      NOT =    SPACE
-                  EVALUATE   RJN-RATE-KBN
-                      WHEN   "1"
-                             MOVE   10        TO  RECE62-KYURATE
-                      WHEN   "2"
-                             MOVE   20        TO  RECE62-KYURATE
-                  END-EVALUATE
-              END-IF
+           IF      RJN-RATE-KBN      NOT =    SPACE
+               EVALUATE   RJN-RATE-KBN
+                   WHEN   "1"
+                       MOVE   10        TO  RECE62-KYURATE
+                   WHEN   "2"
+                       MOVE   20        TO  RECE62-KYURATE
+               END-EVALUATE
+           END-IF
       *
       *    船員保険（被保険者）＋通勤災害フラグセット
            IF    RECE62-HKNNUM           =    "002"
@@ -2011,6 +2035,7 @@
                                                 TO  RECE69-TEKEDYMDX
       * 
                    IF      RECE61-HKNNUM       =   "060"   OR  "067"
+                                               OR  "068"   OR  "069"
                        MOVE    2               TO  RECE69-TEISYUTUSAKI
                    ELSE
                        MOVE    1               TO  RECE69-TEISYUTUSAKI

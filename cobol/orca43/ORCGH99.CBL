@@ -39,6 +39,8 @@
       *  01.02.05    NACL-Æ£¸¶    04/01/26  ÇÓÂ¾À©¸æ½èÍýÄÉ²Ã
       *
       *  02.06.01    NACL-Æ£¸¶    05/09/29  Êä½õ¶èÊ¬¤«¤é¤ÎÊÔ½¸¤Î½¤Àµ
+      *
+      *  02.07.01    NACL-Æ£¸¶    05/08/20  ÆÃÊÌÎÅÍÜÈñÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -87,7 +89,7 @@
        01  WRK-AREA.
            03  WRK-Z9              PIC Z9.
            03  WRK-SELNO           PIC 9(02).
-           03  WRK-RECESYUBETU     PIC X(08).
+           03  WRK-RECESYUBETU     PIC X(10).
            03  WRK-YM              PIC X(07). 
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).
@@ -512,9 +514,12 @@
                                    SPA-H99GMN-TTEISYUTUSAKI(IDX)
                END-IF
       *
-               IF      RECE10-SRYYM        >   "200209"
-                   MOVE    RECE10-RECESYUBETU  TO  WRK-RECESYUBETU
-               ELSE        
+               IF      RECE10-RECESYUBETU  =   "6666"
+                   MOVE    "ÆÃÊÌÎÅÍÜÈñ"        TO  WRK-RECESYUBETU
+               ELSE
+                IF      RECE10-SRYYM        >   "200209"
+                    MOVE    RECE10-RECESYUBETU  TO  WRK-RECESYUBETU
+                ELSE        
                  EVALUATE  RECE10-RECESYUBETU
                                  ALSO  RECE10-TEISYUTUSAKI
                  WHEN    1111      ALSO      2
@@ -630,6 +635,7 @@
                  WHEN    1436      ALSO      ANY
                    MOVE    "¡þ¡þ¡þ¡þ"      TO  WRK-RECESYUBETU
                  END-EVALUATE
+                END-IF
                END-IF  
                MOVE    WRK-RECESYUBETU  TO
                                        SPA-H99GMN-TRECESYUBETU (IDX)
