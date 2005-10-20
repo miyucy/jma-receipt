@@ -262,6 +262,8 @@ path	key51 	{
 			AND   SRYCD  LIKE '6%'
 			AND   YKZKBN     <>   '4'
 			AND   YKZKBN     <>   '6'
+			AND   YKZKBN     <>   '8'
+			AND   YKZKBN     <>   '9'
 			ORDER   BY       KANANAME
 		;
 	};
@@ -277,7 +279,9 @@ path	key52 	{
 			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
 			AND   SRYCD  LIKE '6%'
-			AND   YKZKBN     =   '6'
+			AND  (YKZKBN     =   '6'
+			OR    YKZKBN     =   '8'
+			OR    YKZKBN     =   '9'  )
 			ORDER   BY       KANANAME
 		;
 	};
@@ -343,6 +347,8 @@ path	key51j 	{
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
 			AND   YKZKBN     <>   '4'
 			AND   YKZKBN     <>   '6'
+			AND   YKZKBN     <>   '8'
+			AND   YKZKBN     <>   '9'
 			AND   a.SRYCD = b.SRYCD 
                         AND   b.SRYCD LIKE '6%'
 			ORDER   BY       KANANAME
@@ -359,7 +365,9 @@ path	key52j 	{
 			OR     KANANAME   LIKE :KANANAME)
 			AND   YUKOSTYMD  <=  :YUKOSTYMD
 			AND   YUKOEDYMD  >=  :YUKOEDYMD
-			AND   YKZKBN     =   '6'
+			AND  (YKZKBN     =   '6'
+			 OR   YKZKBN     =   '8'
+			 OR   YKZKBN     =   '9'   )
 			AND   a.SRYCD = b.SRYCD 
                         AND   b.SRYCD LIKE '6%'
 			ORDER   BY       KANANAME
