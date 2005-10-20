@@ -20,6 +20,9 @@ data	{
 	};
 };
 
-#include "orcadb.inc"
-
+db	{
+	tbl_hknjainf;
+	tbl_hknnum;
+	tbl_adrs;
+};
 
