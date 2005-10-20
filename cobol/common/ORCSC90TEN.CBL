@@ -20,16 +20,13 @@
       *****************************************************************
       *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
       *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ¿ÇÎÅ¹Ô°ÙÆþÎÏ
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ºÞ¤´¤ÈÅÀ¿ô·×»»¡Ê2005.4¡Ë
+      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ºÞ¤´¤ÈÅÀ¿ô·×»»
       *  ´ÉÍý¼Ô            : 
       *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
       *  00/12/01    NACL¡ÝÂ¿¡¹Ç¼  ¿·µ¬ºîÀ®
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  03.03.00    NACL-Â¿¡¹Ç¼  07/03/06  »ÀÁÇÅÀ¿ô·×»»½¤Àµ
-      *  04.05.00    NACL-Â¿¡¹Ç¼  09/06/XX  ¿ôÎÌ¾®¿ô£µ·åÂÐ±þ
-      *  04.05.00    NACL-Â¿¡¹Ç¼  10/01/XX  ÌôÉ¾ÂÐ±þ
       *****************************************************************
       *
       *
@@ -48,7 +45,6 @@
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SP              PIC 9(01).
-           03  FLG-GENTEN          PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -62,42 +58,38 @@
            03  IDX-END             PIC 9(04).
            03  IDX-SYU             PIC 9(04).
       *
-           03  IDX-H               PIC 9(04).
-           03  IDX-K               PIC 9(04).
-      *
            03  IDX7                PIC 9(04).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
-           03  WRK-SURYO           PIC 9(05)V9(05).
+           03  WRK-SURYO           PIC 9(05)V9(03).
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
                05  WRK-SURYO-S1    PIC 9(05).
-               05  WRK-SURYO-S2    PIC 9(05).
+               05  WRK-SURYO-S2    PIC 9(03).
       *
-           03  WRK-SYOKEIS         PIC 9(08)V9(8).
-           03  WRK-SYOKEIS2        PIC 9(08)V9(8).
-           03  WRK-SYOKEIS3        PIC 9(08)V9(8).
+           03  WRK-SYOKEIS         PIC 9(08)V99.
+           03  WRK-SYOKEIS2        PIC 9(08)V9999.
+           03  WRK-SYOKEIS3        PIC 9(08)V9999.
            03  WRK-SYOKEI          PIC 9(08).
-           03  WRK-TENSUKEIS       PIC 9(08)V9(6).
+           03  WRK-TENSUKEIS       PIC 9(08)V9999.
            03  WRK-TENSUKEI-9      PIC 9(08).
       *    ÌôºÞ
-           03  WRK-ZAIKEI          PIC 9(08)V9(8).
+           03  WRK-ZAIKEI          PIC 9(08)V999.
       *    ´ïºà
-           03  WRK-KIZKEI          PIC 9(08)V9(5).
-           03  WRK-KIZKEI-3        PIC 9(08)V9(5).
+           03  WRK-KIZKEI          PIC 9(08)V999.
+           03  WRK-KIZKEI-3        PIC 9(08)V999.
       *    ¥Õ¥£¥ë¥à
-           03  WRK-FIRKEI          PIC 9(08)V9(5).
-           03  WRK-NYU-FIRKEI      PIC 9(08)V9(5).
-           03  WRK-NYU-FIRTEN      PIC 9(08)V9(5).
+           03  WRK-FIRKEI          PIC 9(08)V999.
+           03  WRK-NYU-FIRKEI      PIC 9(08)V999.
+           03  WRK-NYU-FIRTEN      PIC 9(08)V999.
            03  WRK-FIRTEN-G        PIC 9(08).
            03  WRK-FIRTEN          PIC 9(08).
       *    ÃâÁÇ
-           03  WRK-CHISOKEI        PIC 9(08)V9(5).
+           03  WRK-CHISOKEI        PIC 9(08)V999.
            03  WRK-CHITEN          PIC 9(08).
       *    »ÀÁÇ
-           03  WRK-SANSOKIN        PIC 9(08)V9(5).
-           03  WRK-SANSOKIN-SUM    PIC 9(08)V9(5).
-           03  WRK-SANSOGOK        PIC 9(08).
+           03  WRK-SANSOKIN        PIC 9(08)V999.
+           03  WRK-SANSOKIN-SUM    PIC 9(08)V999.
            03  WRK-SANTEN          PIC 9(08).
       *
       *    ÌôºÞÅÀ¿ô
@@ -109,14 +101,11 @@
       *
       *    Ãí¼Í±Õ·×»»ÍÑ
            03  WRK-SURYO-CHU9      PIC 9(05).
-           03  WRK-SURYO-CHU       PIC 9(05)V9(05).
+           03  WRK-SURYO-CHU       PIC 9(05)V9(03).
       *
            03  WRK-MOJI            PIC X(01).
       *
            03  WRK-MAISU           PIC 9(05).
-      *
-      *¿ÇÎÅ¹Ô°Ù½èÍýºÇÂç¹Ô
-       01  MAX-LINE                PIC 9(03)   VALUE   400.
       *
       *    ¥¹¥ÑÎÎ°è
        01  SPA-SCR-REC.
@@ -154,7 +143,7 @@
                MOVE    LNK-SC90-IDX-STR    TO  IDX-STR
            END-IF
            IF      LNK-SC90-IDX-END    =   ZERO
-               MOVE    MAX-LINE            TO  IDX-END
+               MOVE    200                 TO  IDX-END
            ELSE
                MOVE    LNK-SC90-IDX-END    TO  IDX-END
            END-IF
@@ -190,10 +179,6 @@
                ELSE
                    MOVE    LNK-COM-INPUTCD(IDX)(1:1)   TO  WRK-MOJI
                END-IF
-      *        ÌôÉ¾¤ÏÂÐ¾Ý³°
-               IF      LNK-COM-YAKUHYO (IDX)   =   "1"
-                   CONTINUE
-               ELSE
       *
                MOVE    IDX                 TO  IDX-MAX
                EVALUATE    WRK-MOJI
@@ -220,8 +205,6 @@
                        END-IF
                    END-IF
                END-EVALUATE
-      *
-               END-IF
            END-PERFORM
       *
       *    ÌôºÞÅÀ¿ô·×»»¡ÊºÞÆâ¤Ç¤Þ¤È¤á¤Æ·×»»¡Ë
@@ -275,12 +258,11 @@
       *                                    OR  "022"
       *!                                   OR  "046"  )  AND
       *    »ÄÎÌÇÑ´þ¤Î¤¢¤ë¤¹¤Ù¤Æ¤ÎÃí¼ÍÌôºÞ¤òÂÐ¾Ý¤È¤¹¤ë
-           IF     (IDX                     <   MAX-LINE    )  AND
+           IF     (IDX                     <   200    )  AND
                   (LNK-COM-INPUTCD(IDX + 1)  =   "099309901")
-               MOVE    LNK-COM-SURYO(IDX)    TO  WRK-SURYO
-               IF      WRK-SURYO-S2          >   ZERO
+               IF      LNK-COM-SURYO(IDX)(6:3) >   ZERO
                    COMPUTE WRK-SURYO-CHU9      =   LNK-COM-SURYO (IDX)
-                                               +   0.99999
+                                               +   0.99
                    MOVE    WRK-SURYO-CHU9          TO  WRK-SURYO-CHU
                ELSE
                    MOVE    LNK-COM-SURYO (IDX)     TO  WRK-SURYO-CHU
@@ -413,7 +395,7 @@
                                            +   1
            END-IF
       *
-           COMPUTE WRK-SC90-YKZTEN     =   WRK-SYOKEIS3   + 0.999999
+           COMPUTE WRK-SC90-YKZTEN     =   WRK-SYOKEIS3   + 0.9999
       *
            .
        1005-KEIZAITENU-EXT.
@@ -502,10 +484,9 @@
            MOVE    ZERO                TO  WRK-CHISOKEI
            MOVE    ZERO                TO  WRK-SANSOKIN-SUM
            MOVE    ZERO                TO  IDX-MAX
-           MOVE    ZERO                TO  FLG-GENTEN
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   MAX-LINE  )  OR
+                   UNTIL      (IDX     >   200  )  OR
                              ((LNK-COM-INPUTCD(IDX)    =   SPACE ) AND
                               (LNK-GMN-INPUTCD(IDX)    =   SPACE ))
                ADD     1                   TO  IDX-MAX
@@ -516,13 +497,6 @@
       *                »ÀÁÇ¡¦ÃâÁÇ¤Î½¸·×
                        PERFORM 2004-KIZAI-SET-SEC
                    END-IF
-               END-IF
-      *        ¸ºÅÀ
-               IF     (LNK-COM-PLUSKBN (IDX)   =   1   )
-                   MOVE    1               TO  FLG-GENTEN
-               END-IF
-               IF      FLG-GENTEN          =   1
-                   MOVE    1               TO  LNK-COM-PLUSKBN (IDX)
                END-IF
            END-PERFORM
       *    ÃâÁÇÅÀ¿ô·×»»½èÍý
@@ -568,10 +542,6 @@
                                            +   LNK-SC90-FIRTEN
                                            +   LNK-SC90-SANTEN
                                            +   LNK-SC90-CHITEN
-      *    ¸ºÅÀÊ¬
-           IF      FLG-GENTEN          =   1
-               MOVE    1               TO  LNK-COM-PLUSKBN (IDX-MAX)
-           END-IF
       *
            .
        200-TENSUKEI-EXT.
@@ -626,74 +596,36 @@
       *
            MOVE      ZERO              TO  LNK-SC90-SANTEN
       *
-      *    »ÀÁÇËè¤ÎÊäÀµÎ¨²Ã»»¤È¤¹¤ë
-           MOVE    ZERO                TO  WRK-SANSOKIN-SUM
-           MOVE    ZERO                TO  IDX-H
-           MOVE    ZERO                TO  IDX-K
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   IDX-MAX )
+                   UNTIL       IDX     >   IDX-MAX
                EVALUATE    LNK-COM-INPUTCD (IDX)
       *            »ÀÁÇÊäÀµÎ¨¼«Æ°²Ã»»
                    WHEN    "770020070"
-                       MOVE    IDX             TO  IDX-H
-      *            ¹âµ¤°µ»ÀÁÇ·×»»
-                   WHEN    "770030070"
-                       MOVE    IDX             TO  IDX-K
+      *                »ÀÁÇ¶â³Û¡Ü¡Ê»ÀÁÇ¶â³Û¡ßÊäÀµÎ¨¡¿£±£°£°¡Ë¡¡»Í¼Î¸ÞÆþ
+                       COMPUTE WRK-SYOKEIS     =   WRK-SANSOKIN-SUM
+                                               *   LNK-COM-KISOTEN (IDX)
+                                               /   100
+                       COMPUTE WRK-SANSOKIN    =   WRK-SANSOKIN-SUM
+                                               +   WRK-SYOKEIS
                END-EVALUATE
            END-PERFORM
       *
-           MOVE    ZERO                TO  WRK-SYOKEI
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   IDX-MAX )
-               MOVE    ZERO                TO  WRK-SANSOKIN
-               MOVE    ZERO                TO  WRK-SANSOGOK
-      *        »ÀÁÇ
-               IF     (LNK-COM-INPUTCD (IDX)(1:1)  =   "7"  ) AND
-                      (LNK-COM-TENSIKIBETU (IDX)   =   1
-                                                   OR  2    ) AND
-                      (LNK-COM-TOKUKIZAISBT1(IDX)  =   2    ) AND
-                      (LNK-COM-SANSOKBN (IDX)      =   1    )
-      *            (¹ØÆþ²Á³Ê¡ö¿ôÎÌ)
-                   COMPUTE WRK-SYOKEIS2    =   LNK-COM-KISOTEN(IDX)
-                                           *   LNK-COM-SURYO  (IDX)
-      *            »ÀÁÇ¶â³Û¡Ü¡Ê»ÀÁÇ¶â³Û¡ßÊäÀµÎ¨¡¿£±£°£°¡Ë¡¡»Í¼Î¸ÞÆþ
-                   COMPUTE WRK-SYOKEIS3    =   WRK-SYOKEIS2
-                                           *   LNK-COM-KISOTEN (IDX-H)
-                                           /   100
-                   COMPUTE WRK-SANSOKIN    =   WRK-SYOKEIS2
-                                           +   WRK-SYOKEIS3
+                   UNTIL       IDX     >   IDX-MAX
+               EVALUATE    LNK-COM-INPUTCD (IDX)
       *            ¹âµ¤°µ»ÀÁÇ·×»»
-                   IF      IDX-K           >   ZERO
+                   WHEN    "770030070"
       *                »ÀÁÇ¶â³Û¡Ü¡Ê»ÀÁÇ¶â³Û¡ßÊäÀµÎ¨¡¿£±£°£°¡Ë
       *                                           ¡ßµ¤°µ¿ô¡¡»Í¼Î¸ÞÆþ
                        COMPUTE WRK-SYOKEIS     =   WRK-SANSOKIN
-                                               *   LNK-COM-SURYO (IDX-K)
+                                               *   LNK-COM-SURYO (IDX)
                        MOVE    WRK-SYOKEIS     TO  WRK-SANSOKIN
-                   END-IF
-      *            ¶â³Û¡¡»Í¼Î¸ÞÆþ
-                   COMPUTE WRK-SANSOGOK        =   WRK-SANSOKIN
-                                               +   0.5
-                   COMPUTE WRK-SYOKEI      =   WRK-SYOKEI
-                                           +   WRK-SANSOGOK
-               END-IF
+               END-EVALUATE
            END-PERFORM
-      *
-      *    PERFORM VARYING     IDX     FROM    1   BY  1
-      *            UNTIL       IDX     >   IDX-MAX
-      *        EVALUATE    LNK-COM-INPUTCD (IDX)
-      *            ¹âµ¤°µ»ÀÁÇ·×»»
-      *            WHEN    "770030070"
-      *                »ÀÁÇ¶â³Û¡Ü¡Ê»ÀÁÇ¶â³Û¡ßÊäÀµÎ¨¡¿£±£°£°¡Ë
-      *                                           ¡ßµ¤°µ¿ô¡¡»Í¼Î¸ÞÆþ
-      *                COMPUTE WRK-SYOKEIS     =   WRK-SANSOKIN
-      *                                        *   LNK-COM-SURYO (IDX)
-      *                MOVE    WRK-SYOKEIS     TO  WRK-SANSOKIN
-      *        END-EVALUATE
-      *    END-PERFORM
       *    »ÀÁÇ¤ÎÅÀ¿ô¿ô·×»»
       *    ¶â³Û·×¡¡»Í¼Î¸ÞÆþ
-      *    COMPUTE WRK-SYOKEI          =   WRK-SANSOKIN
-      *                                +   0.5
+           COMPUTE WRK-SYOKEI          =   WRK-SANSOKIN
+                                       +   0.5
       *    ¶â³Û·×¡à£±£°¡¡»Í¼Î¸ÞÆþ
            COMPUTE WRK-SYOKEIS2        =   WRK-SYOKEI
                                        /   10

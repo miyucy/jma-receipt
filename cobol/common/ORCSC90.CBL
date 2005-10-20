@@ -58,17 +58,17 @@
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
-           03  WRK-SURYO           PIC 9(05)V9(05).
+           03  WRK-SURYO           PIC 9(05)V9(03).
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
                05  WRK-SURYO-S1    PIC 9(05).
-               05  WRK-SURYO-S2    PIC 9(05).
+               05  WRK-SURYO-S2    PIC 9(03).
       *
            03  WRK-SURYO-X.
                05  WRK-SURYO-Z1    PIC ZZZZZ.
                05  WRK-SURYO-Z1-9  REDEFINES   WRK-SURYO-Z1
                                    PIC ZZZZ9.
                05  WRK-SURYO-Z2    PIC X(01).
-               05  WRK-SURYO-Z3    PIC ZZZZZ.
+               05  WRK-SURYO-Z3    PIC ZZZ.
            03  WRK-TENSU-X.
                05  WRK-TENSU-Z     PIC ZZZZZZZZ.
            03  WRK-TENSUS-X.
@@ -85,23 +85,21 @@
                05  WRK-GOKEI-Z     PIC ZZZZZZZZ.
            03  WRK-GMN-INPUTCD     PIC X(22).
       *
-           03  WRK-SYOKEIS         PIC 9(08)V9(8).
-           03  WRK-SYOKEIS2        PIC 9(08)V9(8).
-           03  WRK-SYOKEIS3        PIC 9(08)V9(8).
+           03  WRK-SYOKEIS         PIC 9(08)V99.
+           03  WRK-SYOKEIS2        PIC 9(08)V9999.
+           03  WRK-SYOKEIS3        PIC 9(08)V9999.
            03  WRK-SYOKEI          PIC 9(08).
-           03  WRK-TENSUKEIS       PIC 9(08)V9(6).
+           03  WRK-TENSUKEIS       PIC 9(08)V9999.
            03  WRK-FIRTEN          PIC 9(08).
       *
       *    Ãí¼Í±Õ·×»»ÍÑ
            03  WRK-SURYO-CHU9      PIC 9(05).
-           03  WRK-SURYO-CHU       PIC 9(05)V9(05).
+           03  WRK-SURYO-CHU       PIC 9(05)V9(03).
       *
            03  WRK-MOJI            PIC X(01).
       *
            03  WRK-MAISU           PIC 9(05).
       *
-      *¿ÇÎÅ¹Ô°Ù½èÍýºÇÂç¹Ô
-       01  MAX-LINE                PIC 9(03)   VALUE   400.
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -129,7 +127,7 @@
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
       *
-           IF      LNK-SC90-IDX        <   1  OR  >  MAX-LINE
+           IF      LNK-SC90-IDX        <   1  OR  >  200
                GO      TO      000-PROC-EXT
            END-IF
       *
@@ -262,21 +260,21 @@
       *D                                   OR  "40" 
       *                                                   ) AND
       *          ((LNK-COM-TANICD (IDX)    =   "014" OR "022" OR "046")
-      *        OR  ((IDX                     <   MAX-LINE  )  AND
+      *        OR  ((IDX                     <   200  )  AND
       *             (LNK-COM-INPUTCD(IDX + 1)  =   "099309901"))) )
       *        ½èÃÖ¤Î»þ¡¢¼¡¤¬»ÄÎÌÇÑ´þ
       *       OR  ((LNK-COM-SRYKBN (IDX)    =   "40" )  AND
-      *            (IDX                     <   MAX-LINE  )  AND
+      *            (IDX                     <   200  )  AND
       ************ (LNK-COM-INPUTCD(IDX + 1)  =   "099309901"))
       *    IF     (LNK-COM-TANICD (IDX)    =   "014"
       *                                    OR  "022"
       ***                                  OR  "046"  )  AND
       *    »ÄÎÌÇÑ´þ¤Î¤¢¤ë¤¹¤Ù¤Æ¤ÎÃí¼ÍÌô¤òÂÐ¾Ý¤È¤¹¤ë
-           IF     (IDX                     <   MAX-LINE )  AND
+           IF     (IDX                     <   200    )  AND
                   (LNK-COM-INPUTCD(IDX + 1)  =   "099309901")
-               IF      LNK-COM-SURYO(IDX)(6:5) >   ZERO
+               IF      LNK-COM-SURYO(IDX)(6:3) >   ZERO
                    COMPUTE WRK-SURYO-CHU9      =   LNK-COM-SURYO (IDX)
-                                               +   0.99999
+                                               +   0.99
                    MOVE    WRK-SURYO-CHU9      TO  WRK-SURYO-CHU
                ELSE
                    MOVE    LNK-COM-SURYO (IDX)     TO  WRK-SURYO-CHU
@@ -505,7 +503,7 @@
                                            +   1
            END-IF
       *
-           COMPUTE LNK-SC90-ZAITEN     =   WRK-SYOKEIS3   + 0.999999
+           COMPUTE LNK-SC90-ZAITEN     =   WRK-SYOKEIS3   + 0.9999
       *
            .
        2001-KEIZAITENU-EXT.
@@ -546,7 +544,7 @@
            END-IF
       *
       *****COMPUTE LNK-SC90-ZAITEN     =   WRK-SYOKEIS2   + 0.99
-           COMPUTE LNK-SC90-ZAITEN     =   WRK-SYOKEIS3   + 0.999999
+           COMPUTE LNK-SC90-ZAITEN     =   WRK-SYOKEIS3   + 0.9999
       *
            .
        2001-ZAITENU-EXT.
@@ -583,7 +581,7 @@
            END-IF
       *
       *****COMPUTE LNK-SC90-GAITEN     =   WRK-SYOKEIS2   + 0.99
-           COMPUTE LNK-SC90-GAITEN     =   WRK-SYOKEIS3   + 0.999999
+           COMPUTE LNK-SC90-GAITEN     =   WRK-SYOKEIS3   + 0.9999
       *
            .
        2002-GAITENU-SET-EXT.
