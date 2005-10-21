@@ -444,6 +444,8 @@
            EVALUATE    TRUE
            WHEN      ( WRK-ZAIHKNNUM   =   "060" )
            WHEN      ( WRK-ZAIHKNNUM   =   "067" )
+           WHEN      ( WRK-ZAIHKNNUM   =   "068" )
+           WHEN      ( WRK-ZAIHKNNUM   =   "069" )
       *
                MOVE    1               TO  CNT-KOKUHO
       *

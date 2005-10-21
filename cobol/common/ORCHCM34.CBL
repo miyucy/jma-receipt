@@ -1904,6 +1904,7 @@
                END-IF
       *    国保
            WHEN    "060"
+           WHEN    "068"
                EVALUATE    WRK-PTHKN-HOJOKBN
                WHEN    "0"
                    MOVE    "無し"          TO  WRK-PTHKN-HOJOKBNMEI

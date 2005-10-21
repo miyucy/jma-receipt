@@ -537,6 +537,8 @@
            EVALUATE    TRUE
            WHEN      ( WRK-ZAIHKNNUM   =   "060" )
            WHEN      ( WRK-ZAIHKNNUM   =   "067" )
+           WHEN      ( WRK-ZAIHKNNUM   =   "068" )
+           WHEN      ( WRK-ZAIHKNNUM   =   "069" )
                IF    ( SDTCHK01-HKNKBN =   CONST-KOKUHO )
                    MOVE    1           TO  FLG-TAISYO-HKN
                END-IF

@@ -540,6 +540,8 @@
       ***              MOVE    7                   TO  IDX
                    WHEN    "060"
                    WHEN    "067"
+                   WHEN    "068"
+                   WHEN    "069"
                        IF      SYU-KOH1HKNNUM      =   "027"
                            MOVE    5                   TO  IDX
                        ELSE
