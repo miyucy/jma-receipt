@@ -26,3 +26,4 @@
                05  QSUB03-HKNCOMBIMEI  PIC X(20).
                05  QSUB03-SRYKA        PIC X(02).
                05  QSUB03-LASTYMD      PIC X(08).
+               05  QSUB03-BRMNUM       PIC X(10).

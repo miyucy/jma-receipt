@@ -179,6 +179,14 @@
            03  FILLER                  PIC X(01)   VALUE ",".
            03  CSV-HKN                 PIC X(20).
            03  FILLER                  PIC X(01)   VALUE ",".
+           03  CSV-BTUNUM              PIC X(02).
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CSV-BRMNUM              PIC X(08).
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CSV-LASTYMD             PIC X(10).
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CSV-TEL                 PIC X(10).
+           03  FILLER                  PIC X(01)   VALUE ",".
            03  CSV-POST                PIC X(07).
            03  FILLER                  PIC X(01)   VALUE ",".
            03  CSV-JYUSYO              PIC X(400).
@@ -458,6 +466,8 @@
                MOVE    "男"        TO  CSV-SEX
            WHEN    2
                MOVE    "女"        TO  CSV-SEX
+           WHEN    OTHER
+               MOVE    SPACE       TO  CSV-SEX
            END-EVALUATE
       *
            MOVE    QUERY-PTINF-BIRTHDAY (1:4)
@@ -478,6 +488,27 @@
            MOVE    WRK-PARA-SYSYMD     TO  QSUB03-KJNYMD
            CALL    "ORCGQSUB03"        USING QSUB03-LNK
            MOVE    QSUB03-HKNCOMBIMEI  TO  CSV-HKN
+      *
+      *
+      *    電話番号
+           MOVE    QUERY-PTINF-HOME-TEL1
+                                       TO  CSV-TEL
+      *    病棟番号
+           MOVE    QSUB03-BRMNUM (1:2) TO  CSV-BTUNUM
+      *
+      *    病室番号
+           MOVE    QSUB03-BRMNUM (4:)  TO  CSV-BRMNUM
+      *
+      *    最終受診日
+           IF    ( QSUB03-LASTYMD      =   SPACE )
+               MOVE    SPACE           TO  CSV-LASTYMD
+           ELSE
+               MOVE    QSUB03-LASTYMD (1:4)    TO  CSV-LASTYMD (1:4)
+               MOVE    "/"                     TO  CSV-LASTYMD (5:1)
+               MOVE    QSUB03-LASTYMD (5:2)    TO  CSV-LASTYMD (6:2)
+               MOVE    "/"                     TO  CSV-LASTYMD (8:1)
+               MOVE    QSUB03-LASTYMD (7:2)    TO  CSV-LASTYMD (9:2)
+           END-IF
       *
            MOVE    QUERY-PTINF-HOME-POST
                                    TO  CSV-POST
@@ -547,6 +578,23 @@
            MOVE    WRK-PARA-SYSYMD     TO  QSUB03-KJNYMD
            CALL    "ORCGQSUB03"        USING QSUB03-LNK
            MOVE    QSUB03-HKNCOMBIMEI  TO  HC28-HKN (CNT-LINE)
+      *
+      *    電話番号
+           MOVE    QUERY-PTINF-HOME-TEL1
+                                       TO  HC28-TEL (CNT-LINE)
+      *    最終受診日
+           IF    ( QSUB03-BRMNUM       NOT =   SPACE )
+               MOVE    QSUB03-BRMNUM   TO  HC28-LASTYMD
+                                                    (CNT-LINE)
+                                                    (2:)
+           ELSE
+               MOVE    QSUB03-LASTYMD  TO  WRK-SYMD
+               IF    ( QSUB03-LASTYMD  NOT =   SPACE )
+                   PERFORM 800-SEIWA-HEN-SEC
+                   MOVE    WRK-HENYMDG1    TO  HC28-LASTYMD
+                                                    (CNT-LINE)
+               END-IF
+           END-IF
       *
            IF    ( QUERY-PTINF-HOME-POST   NOT =   SPACE )
                MOVE    QUERY-PTINF-HOME-POST (1:3)

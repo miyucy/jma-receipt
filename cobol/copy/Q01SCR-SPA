@@ -489,7 +489,11 @@
       *
       *                        電話番号
                                13  SPA-GMN-Q02-KEKKALST-TEL
-                                                       PIC X(16).
+                                                       PIC X(15).
+      *
+      *                        最終受診日
+                               13  SPA-GMN-Q02-KEKKALST-LASTYMD
+                                                       PIC X(10).
       *
                            11  SPA-GMN-Q02-KEKKA-MAX   PIC 9(05).
                            11  SPA-GMN-Q02-KEKKA-SEL   PIC 9(05).

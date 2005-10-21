@@ -26,9 +26,13 @@
                     PIC X(4)    OCCURS  30 TIMES.
             02  HCM28-HKN
                     PIC X(10)   OCCURS  30 TIMES.
+            02  HCM28-LASTYMD
+                    PIC X(10)    OCCURS  30 TIMES.
+            02  HCM28-TEL
+                    PIC X(15)   OCCURS  30 TIMES.
             02  HCM28-POST
                     PIC X(8)    OCCURS  30 TIMES.
             02  HCM28-JYUSYO
-                    PIC X(68)   OCCURS  30 TIMES.
+                    PIC X(50)   OCCURS  30 TIMES.
             02  HCM28-JYUSYO2
                     PIC X(100)  OCCURS  30 TIMES.

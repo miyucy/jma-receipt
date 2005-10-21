@@ -40,6 +40,8 @@
                     07  Q02-KEKKALST-BIRTH     PIC X(10).
                     07  Q02-KEKKALST-AGE       PIC X(08).
                     07  Q02-KEKKALST-HKN       PIC X(06).
+                    07  Q02-KEKKALST-LASTYMD   PIC X(10).
+                    07  Q02-KEKKALST-TEL       PIC X(15).
                     07  Q02-KEKKALST-POST      PIC X(08).
                     07  Q02-KEKKALST-SRYACTNAIYO
                                                PIC X(200).

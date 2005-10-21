@@ -735,6 +735,30 @@
                MOVE    QSUB03-HKNCOMBIMEI  TO  SPA-GMN-Q02-KEKKALST-HKN
                                                                (IDX-GMN)
       *
+      *        電話番号
+               MOVE    QUERY-PTINF-HOME-TEL1
+                                           TO  SPA-GMN-Q02-KEKKALST-TEL
+                                                               (IDX-GMN)
+      *        最終受診日
+               IF    ( QSUB03-BRMNUM       NOT =   SPACE )
+                   MOVE    QSUB03-BRMNUM
+                                       TO  SPA-GMN-Q02-KEKKALST-LASTYMD
+                                                               (IDX-GMN)
+               ELSE
+                   MOVE    QSUB03-LASTYMD  TO  SGDAY-INDAY
+                   CALL    "ORCSGDAY"      USING
+                                           ORCSGDAYAREA
+                   IF  ( SGDAY-RC          =   ZERO )
+                       MOVE    SGDAY-OTDAY
+                                       TO  SPA-GMN-Q02-KEKKALST-LASTYMD
+                                                               (IDX-GMN)
+                   ELSE
+                       MOVE    SPACE
+                                       TO  SPA-GMN-Q02-KEKKALST-LASTYMD
+                                                               (IDX-GMN)
+                   END-IF
+               END-IF
+      *
       *        郵便番号
                IF    ( QUERY-PTINF-HOME-POST   NOT =   SPACE )
                    MOVE    QUERY-PTINF-HOME-POST (1:3)
@@ -1761,6 +1785,12 @@
       *        保険組合せ
                MOVE    SPA-GMN-Q02-KEKKALST-HKN (IDX1)
                                    TO  Q02-KEKKALST-HKN (IDX1)
+      *        最終受診日
+               MOVE    SPA-GMN-Q02-KEKKALST-LASTYMD (IDX1)
+                                   TO  Q02-KEKKALST-LASTYMD (IDX1)
+      *        電話番号
+               MOVE    SPA-GMN-Q02-KEKKALST-TEL (IDX1)
+                                   TO  Q02-KEKKALST-TEL (IDX1)
       *        郵便番号
                MOVE    SPA-GMN-Q02-KEKKALST-POST (IDX1)
                                    TO  Q02-KEKKALST-POST (IDX1)

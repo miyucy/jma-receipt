@@ -47,6 +47,7 @@
            03  FLG-HKNCOMBI                        PIC 9(01).
            03  FLG-SYSKANRI                        PIC 9(01).
            03  FLG-NYUIN                           PIC 9(01).
+           03  FLG-SRYKARRK                        PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -62,10 +63,14 @@
            03  WRK-HKNCOMBI-MEI                    PIC X(10).
            03  WRK-SRYKA                           PIC X(02).
            03  WRK-LASTYMD                         PIC X(08).
+           03  WRK-BRMNUM                          PIC X(09).
       *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
       *****************************************************************
+      *
+      *    ÉÂ¼¼Ì¾ÊÔ½¸
+           COPY    "CPORCSBRMNUM.INC".
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -88,7 +93,6 @@
            COPY    "CPHKNCOMBI.INC".
       *
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
            COPY    "MCPAREA".
       *
       *****************************************************************
@@ -161,11 +165,23 @@
            MOVE    QSUB03-KJNYMD       TO  PTNYUINRRK-TAIINYMD
       *
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-           MOVE    "PTNYUINRRK-KEY11"  TO  ORC-DBPATH
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key11"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
       *
                MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
+      *
+               MOVE    PTNYUINRRK-BTUNUM (1:2)
+                                       TO  WRK-BRMNUM (1:2)
+               MOVE    "-"             TO  WRK-BRMNUM (3:1)
+      *
+               INITIALIZE  ORCSBRMNUMAREA
+               MOVE   PTNYUINRRK-BRMNUM ( 3 : )
+                                       TO  SBRMNUM-IN-BRMNUM
+               CALL   "ORCSBRMNUM"     USING   ORCSBRMNUMAREA
+               MOVE   SBRMNUM-OT-BRMNUM
+                                       TO  WRK-BRMNUM (4:)
       *
                MOVE    PTNYUINRRK-NYUINKA
                                        TO  WRK-SRYKA
@@ -174,7 +190,8 @@
                MOVE    1               TO  FLG-NYUIN
            END-IF
       *
-           MOVE    "PTNYUINRRK-KEY11"  TO  ORC-DBPATH
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key11"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSE-SEC
       *
            .
@@ -187,6 +204,12 @@
       *
       *    ÊÝ¸±¤ÎÈ½Äê
            PERFORM 20011-JYURRK-HKN-HEN-SEC
+      *
+      *
+           IF    ( WRK-LASTYMD     =    SPACE )
+      *        ¿ÇÎÅ²ÊÍúÎò¤«¤é
+               PERFORM 20011-SRYKARRK-HEN-SEC
+           END-IF
       *
            .
        2001-GAIRAI-CHK-EXT.
@@ -205,7 +228,9 @@
            MOVE    QSUB03-KJNYMD       TO  JYURRK-SRYYMD
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
-           MOVE    "JYURRK-KEY10"      TO  ORC-DBPATH
+           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  JYURRK-REC
@@ -215,15 +240,71 @@
            END-IF
       *
            IF ( FLG-JYURRK             =   ZERO )
+               MOVE    JYURRK-SRYYMD   TO  WRK-LASTYMD
+               MOVE    JYURRK-SRYKA    TO  WRK-SRYKA
                MOVE    JYURRK-HKNCOMBINUM
                                        TO  WRK-HKNCOMBI
            END-IF
       *
-           MOVE    "JYURRK-KEY10"      TO  ORC-DBPATH
+           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSE-SEC
       *
            .
        20011-JYURRK-HKN-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¿ÇÎÅ²ÊÊÔ½¸½èÍý¡Ê¿ÇÎÅ²ÊÍúÎò¤è¤ê¡Ë
+      *****************************************************************
+       20011-SRYKARRK-HEN-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SRYKARRK
+      *
+      *    ¿ÇÎÅ²ÊÎò¤ò¸¡º÷
+           INITIALIZE                      SRYKARRK-REC
+           MOVE    QSUB03-HOSPID       TO  KARRK-HOSPID
+           MOVE    QSUB03-PTID         TO  KARRK-PTID
+      *
+           MOVE    SRYKARRK-REC        TO  MCPDATA-REC
+           MOVE    "tbl_srykarrk"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SRYKARRK-REC
+           ELSE
+               INITIALIZE                  SRYKARRK-REC
+               MOVE    1               TO  FLG-SRYKARRK
+           END-IF
+      *
+           PERFORM UNTIL       FLG-SRYKARRK    =   1
+      *
+      *        ºÇ½ª¼õ¿ÇÆü
+               IF    ( KARRK-SRYKA     NOT =   SPACE       )
+                 AND ( KARRK-LASTYMD   NOT =   SPACE       )
+                 AND ( KARRK-LASTYMD      >=   WRK-LASTYMD )
+      *
+                   MOVE    KARRK-LASTYMD   TO  WRK-LASTYMD
+                   MOVE    KARRK-SRYKA     TO  WRK-SRYKA
+      *
+               END-IF
+      *
+               MOVE    "tbl_srykarrk"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 910-DBFETCH-SEC
+               IF    ( MCP-RC              =   ZERO )
+                   MOVE    MCPDATA-REC     TO  SRYKARRK-REC
+               ELSE
+                   INITIALIZE                  SRYKARRK-REC
+                   MOVE    1               TO  FLG-SRYKARRK
+               END-IF
+           END-PERFORM
+      *
+           MOVE    "tbl_srykarrk"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSE-SEC
+      *
+           .
+       20011-SRYKARRK-HEN-EXT.
            EXIT.
       *****************************************************************
       *    ÊÝ¸±ÁÈ¹ç¤»ÊÔ½¸½èÍý
@@ -255,7 +336,8 @@
            MOVE    WRK-HKNCOMBI        TO  COMB-HKNCOMBINUM
       *
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
-           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
       *
@@ -268,7 +350,8 @@
                END-IF
            END-IF
       *
-           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBCLOSE-SEC
       *
            .
@@ -286,7 +369,8 @@
            MOVE    QSUB03-PTID         TO  COMB-PTID
       *
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
-           MOVE    "HKNCOMBI-KEY2"     TO  ORC-DBPATH
+           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
@@ -306,7 +390,8 @@
                    END-IF
                END-IF
       *
-               MOVE    "HKNCOMBI-KEY2" TO  ORC-DBPATH
+               MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 910-DBFETCH-SEC
                IF    ( MCP-RC          =   ZERO )
                    MOVE    MCPDATA-REC TO  HKNCOMBI-REC
@@ -317,7 +402,8 @@
       *
            END-PERFORM
       *
-           MOVE    "HKNCOMBI-KEY2"     TO  ORC-DBPATH
+           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBCLOSE-SEC
       *
            .
@@ -349,6 +435,7 @@
            MOVE    WRK-HKNCOMBI-MEI    TO  QSUB03-HKNCOMBIMEI
            MOVE    WRK-SRYKA           TO  QSUB03-SRYKA
            MOVE    WRK-LASTYMD         TO  QSUB03-LASTYMD
+           MOVE    WRK-BRMNUM          TO  QSUB03-BRMNUM
       *
            .
        300-END-EXT.
@@ -359,9 +446,8 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
@@ -377,9 +463,8 @@
        911-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
       *
            .
@@ -392,9 +477,8 @@
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
       *
            .
@@ -407,9 +491,8 @@
        910-DBCLOSE-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
       *
            .

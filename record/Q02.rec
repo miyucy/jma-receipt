@@ -43,8 +43,10 @@ Q02	{
 					value4	varchar(10);
 					value5	varchar(8);
 					value6	varchar(6);
-					value7	varchar(8);
-					value8	varchar(200);
+					value7	varchar(10);
+					value8	varchar(15);
+					value9	varchar(8);
+					value10	varchar(200);
 				}	[200];
 				select	bool[200];
 			};
