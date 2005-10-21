@@ -248,7 +248,7 @@
                    MOVE    1                   TO  JOB-JOBID
                    MOVE    "ORCBSF1"           TO  JOB-SHELLID
                    MOVE    ALL "*"             TO  JOB-TERMID
-                   CALL    "ORCSJOBCUST"           USING
+                   CALL    "ORCSJOB"           USING
                                                WRK-JOBKANRI-AREA  
                                                JOBKANRI-REC
                    IF  WRK-JOBKANRI-RETURN   =   ZERO
@@ -258,7 +258,7 @@
                        MOVE    1                   TO  JOB-JOBID
                        MOVE    "ORCBSF1"           TO  JOB-SHELLID
                        MOVE    ALL "*"             TO  JOB-TERMID
-                       CALL    "ORCSJOBCUST"           USING
+                       CALL    "ORCSJOB"           USING
                                                    WRK-JOBKANRI-AREA
                                                    JOBKANRI-REC
                    END-IF
@@ -269,7 +269,7 @@
                    MOVE    "ORCBSF1"           TO  JOB-SHELLID
                    MOVE    ALL "*"             TO  JOB-TERMID
                    MOVE    "ÇÞÂÎÊÑ´¹"          TO  JOB-SHELLMSG
-                   CALL    "ORCSJOBCUST"           USING
+                   CALL    "ORCSJOB"           USING
                                                WRK-JOBKANRI-AREA
                                                JOBKANRI-REC
                    PERFORM T-000-READWRIT-SEC
@@ -545,7 +545,7 @@
            MOVE    1                  TO  JOB-JOBID.
            MOVE    "ORCBSF1"          TO  JOB-SHELLID.
            MOVE    ALL "*"            TO  JOB-TERMID.
-           CALL    "ORCSJOBCUST"          USING
+           CALL    "ORCSJOB"          USING
                                       WRK-JOBKANRI-AREA  
                                       JOBKANRI-REC.
            MOVE    SPACE              TO  FID2.

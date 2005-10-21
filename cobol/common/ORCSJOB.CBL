@@ -35,6 +35,7 @@
       *  01.00.06    NACL-藤原    04/12/20  CN2を追加
       *                                     JBEのときYOBIが空白以外のとき
       *                                     だけ編集を行う
+      *  01.00.07    NACL-太田    05/10/21  MONFUNC対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -88,8 +89,6 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "ORCA-DBPATH".
-           COPY    "CPORCMCP.INC".
       *     
       **************************************************************************
       *
@@ -173,9 +172,10 @@
            ACCEPT  JOB-STARTTIME       FROM TIME
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    JOBKANRI-REC        TO  MCPDATA-REC
-           MOVE    PATH-TBL-JOBKANRI-KEY
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    "tbl_jobkanri"      TO  MCP-TABLE
+           MOVE    "key"
+                                       TO  MCP-PATHNAME
+           CALL    "MONFUNC"            USING
                                        MCPAREA
                                        MCPDATA-REC      
       *
@@ -229,9 +229,10 @@
            MOVE    JOB-ERRCD           TO  WRK-JOB-ERRCD
            MOVE    WRK-JOBKANRI-REC    TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    PATH-TBL-JOBKANRI-UPD1
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    "tbl_jobkanri"      TO  MCP-TABLE
+           MOVE    "upd1"
+                                       TO  MCP-PATHNAME
+           CALL    "MONFUNC"            USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -268,9 +269,10 @@
            MOVE    JOB-SHELLMSG        TO  WRK-JOB-SHELLMSG
            MOVE    WRK-JOBKANRI-REC    TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    PATH-TBL-JOBKANRI-UPD1
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    "tbl_jobkanri"      TO  MCP-TABLE
+           MOVE    "upd1"
+                                       TO  MCP-PATHNAME
+           CALL    "MONFUNC"            USING
                                        MCPAREA
                                        MCPDATA-REC      
       *
@@ -311,9 +313,10 @@
                                            1                            
            MOVE    WRK-JOBKANRI-REC    TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    PATH-TBL-JOBKANRI-UPD1
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    "tbl_jobkanri"      TO  MCP-TABLE
+           MOVE    "upd1"
+                                       TO  MCP-PATHNAME
+           CALL    "MONFUNC"            USING
                                        MCPAREA
                                        MCPDATA-REC      
       *
@@ -344,9 +347,10 @@
       *    レコード更新
            MOVE    JOBKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    PATH-TBL-JOBKANRI-DEL11
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    "tbl_jobkanri"      TO  MCP-TABLE
+           MOVE    "del11"
+                                       TO  MCP-PATHNAME
+           CALL    "MONFUNC"            USING
                                        MCPAREA
                                        MCPDATA-REC      
       *
@@ -377,9 +381,10 @@
       *    レコード更新
            MOVE    JOBKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    PATH-TBL-JOBKANRI-DEL12
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    "tbl_jobkanri"      TO  MCP-TABLE
+           MOVE    "del12"
+                                       TO  MCP-PATHNAME
+           CALL    "MONFUNC"            USING
                                        MCPAREA
                                        MCPDATA-REC      
       *
@@ -439,9 +444,10 @@
            END-IF
            MOVE    WRK-JOBKANRI-REC    TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    PATH-TBL-JOBKANRI-UPD1
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    "tbl_jobkanri"      TO  MCP-TABLE
+           MOVE    "upd1"
+                                       TO  MCP-PATHNAME
+           CALL    "MONFUNC"            USING
                                        MCPAREA
                                        MCPDATA-REC      
       *
@@ -475,9 +481,10 @@
                MOVE    JOB-STOPFLG         TO  WRK-JOB-STOPFLG
                MOVE    WRK-JOBKANRI-REC    TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
-               MOVE    PATH-TBL-JOBKANRI-UPD1
-                                           TO  MCP-PATH
-               CALL    "MCPSUB"            USING
+               MOVE    "tbl_jobkanri"      TO  MCP-TABLE
+               MOVE    "upd1"
+                                           TO  MCP-PATHNAME
+               CALL    "MONFUNC"            USING
                                            MCPAREA
                                            MCPDATA-REC
       *
@@ -516,9 +523,10 @@
            MOVE    JOB-STOPFLG         TO  WRK-JOB-STOPFLG
            MOVE    WRK-JOBKANRI-REC    TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    PATH-TBL-JOBKANRI-UPD1
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    "tbl_jobkanri"      TO  MCP-TABLE
+           MOVE    "upd1"
+                                       TO  MCP-PATHNAME
+           CALL    "MONFUNC"            USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -552,9 +560,10 @@
            MOVE    JOB-STOPFLG         TO  WRK-JOB-STOPFLG
            MOVE    WRK-JOBKANRI-REC    TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    PATH-TBL-JOBKANRI-UPD1
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    "tbl_jobkanri"      TO  MCP-TABLE
+           MOVE    "upd1"
+                                       TO  MCP-PATHNAME
+           CALL    "MONFUNC"            USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -587,16 +596,18 @@
        910-JOBKANRI-INV-SEC         SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    PATH-TBL-JOBKANRI-KEY
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    "tbl_jobkanri"      TO  MCP-TABLE
+           MOVE    "KEY"
+                                       TO  MCP-PATHNAME
+           CALL    "MONFUNC"            USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"       TO  MCP-FUNC
-               MOVE    PATH-TBL-JOBKANRI-KEY
-                                       TO  MCP-PATH
-               CALL    "MCPSUB"        USING
+               MOVE    "tbl_jobkanri"      TO  MCP-TABLE
+               MOVE    "KEY"
+                                       TO  MCP-PATHNAME
+               CALL    "MONFUNC"        USING
                                        MCPAREA
                                        MCPDATA-REC
       *????
@@ -612,10 +623,11 @@
                MOVE    MCP-RC                  TO  FLG-JOBKANRI
            END-IF
       *
-           MOVE    PATH-TBL-JOBKANRI-KEY
-                                       TO  MCP-PATH
+           MOVE    "tbl_jobkanri"      TO  MCP-TABLE
+           MOVE    "KEY"
+                                       TO  MCP-PATHNAME
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"            USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -629,16 +641,18 @@
        910-JOBKANRI-INV2-SEC         SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    PATH-TBL-JOBKANRI-KEY2
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    "tbl_jobkanri"      TO  MCP-TABLE
+           MOVE    "KEY2"
+                                       TO  MCP-PATHNAME
+           CALL    "MONFUNC"            USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"       TO  MCP-FUNC
-               MOVE    PATH-TBL-JOBKANRI-KEY2
-                                       TO  MCP-PATH
-               CALL    "MCPSUB"        USING
+               MOVE    "tbl_jobkanri"  TO  MCP-TABLE
+               MOVE    "KEY2"
+                                       TO  MCP-PATHNAME
+               CALL    "MONFUNC"        USING
                                        MCPAREA
                                        MCPDATA-REC
       *????
@@ -654,10 +668,11 @@
                MOVE    MCP-RC                  TO  FLG-JOBKANRI
            END-IF
       *
-           MOVE    PATH-TBL-JOBKANRI-KEY2
-                                       TO  MCP-PATH
+           MOVE    "tbl_jobkanri"      TO  MCP-TABLE
+           MOVE    "KEY2"
+                                       TO  MCP-PATHNAME
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"            USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -671,8 +686,8 @@
        900-DBCOMMIT-SEC            SECTION.
       *
            MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           MOVE    LOW-VALUE           TO  MCP-PATH.
-           CALL    "MCPSUB"          USING
+           MOVE    LOW-VALUE           TO  MCP-PATHNAME.
+           CALL    "MONFUNC"          USING
                                         MCPAREA
                                         MCPDATA-REC.
       *
@@ -686,11 +701,10 @@
        900-DBSTART-SEC                SECTION.
       *
            MOVE    "DBSTART"           TO  MCP-FUNC.
-           MOVE    LOW-VALUE           TO  MCP-PATH.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE           TO  MCP-PATHNAME.
+           CALL    "MONFUNC"             USING
+                                         MCPAREA
+                                         MCPDATA-REC.
            .
        900-DBSTART-EXT.
            EXIT.
