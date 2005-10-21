@@ -47,7 +47,6 @@
            03  FLG-HKNCOMBI                        PIC 9(01).
            03  FLG-SYSKANRI                        PIC 9(01).
            03  FLG-NYUIN                           PIC 9(01).
-           03  FLG-SRYKARRK                        PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
