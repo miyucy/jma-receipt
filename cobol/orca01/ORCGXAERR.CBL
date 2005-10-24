@@ -136,10 +136,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           CALL   "MONFUNC"         USING
+                                    MCPAREA
+                                    MCPDATA-REC
       *
            .
        900-PUT-WINDOW-EXT.

@@ -24,6 +24,20 @@ data	{
 	};
 };
 
-#include "orcadb.inc"
+db	{
+	tbl_syskanri;
+	tbl_jobkanri;
+	tbl_prtkanri;
+	tbl_prtdata;
+};
+db	"shell"	{
+	shell;
+};
+db	"system"	{
+	metadb;
+};
+db      "blob_body"{
+         blob;
+};
 
 
