@@ -597,7 +597,7 @@
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_jobkanri"      TO  MCP-TABLE
-           MOVE    "KEY"
+           MOVE    "key"
                                        TO  MCP-PATHNAME
            CALL    "MONFUNC"            USING
                                        MCPAREA
@@ -605,7 +605,7 @@
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"       TO  MCP-FUNC
                MOVE    "tbl_jobkanri"      TO  MCP-TABLE
-               MOVE    "KEY"
+               MOVE    "key"
                                        TO  MCP-PATHNAME
                CALL    "MONFUNC"        USING
                                        MCPAREA
@@ -624,7 +624,7 @@
            END-IF
       *
            MOVE    "tbl_jobkanri"      TO  MCP-TABLE
-           MOVE    "KEY"
+           MOVE    "key"
                                        TO  MCP-PATHNAME
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            CALL    "MONFUNC"            USING
@@ -642,7 +642,7 @@
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_jobkanri"      TO  MCP-TABLE
-           MOVE    "KEY2"
+           MOVE    "key2"
                                        TO  MCP-PATHNAME
            CALL    "MONFUNC"            USING
                                        MCPAREA
@@ -650,7 +650,7 @@
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"       TO  MCP-FUNC
                MOVE    "tbl_jobkanri"  TO  MCP-TABLE
-               MOVE    "KEY2"
+               MOVE    "key2"
                                        TO  MCP-PATHNAME
                CALL    "MONFUNC"        USING
                                        MCPAREA
@@ -669,7 +669,7 @@
            END-IF
       *
            MOVE    "tbl_jobkanri"      TO  MCP-TABLE
-           MOVE    "KEY2"
+           MOVE    "key2"
                                        TO  MCP-PATHNAME
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            CALL    "MONFUNC"            USING
