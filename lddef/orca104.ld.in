@@ -24,7 +24,7 @@ data	{
 	};
 };
 
-#include "orcadb.inc"
-
-
-
+db	{
+	tbl_hknnum;
+	tbl_kohplus;
+};

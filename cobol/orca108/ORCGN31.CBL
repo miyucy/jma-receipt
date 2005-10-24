@@ -198,7 +198,6 @@
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -525,9 +524,12 @@
            MOVE    ZERO            TO  IDX2
       *
            INITIALIZE                  ADRS-REC
-           MOVE    SPA-GMN-POST    TO  ADRS-POST
+           STRING  SPA-GMN-POST        DELIMITED  BY  SPACE
+                   "%"                 DELIMITED  BY  SIZE
+                                       INTO    ADRS-POST
+           END-STRING
            MOVE    ADRS-REC        TO  MCPDATA-REC
-           MOVE    "ADRS-KEY6"     TO  WRK-DBPATH
+           MOVE    "key6"          TO  MCP-PATHNAME
            PERFORM 900-ADRS-SELECT-SEC
       *
            PERFORM UNTIL  (FLG-ADRS    =   1   )  OR
@@ -624,7 +626,7 @@
            MOVE    SPA-GMN-CYO-EDANUM(SPA-GMN-SELNUM)
                                    TO  ADRS-EDANUM
            MOVE    ADRS-REC        TO  MCPDATA-REC
-           MOVE    "ADRS-KEY"      TO  WRK-DBPATH
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-ADRS-SELECT-SEC
       *
            IF      FLG-ADRS        =   ZERO
@@ -993,10 +995,10 @@
                                    TO  ADRS-EDANUM
            MOVE    ADRS-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"      TO  MCP-FUNC
-           MOVE    "ADRS-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_adrs"      TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
       *
            IF      MCP-RC          NOT =   ZERO
@@ -1089,8 +1091,8 @@
                INITIALIZE                  ADRS-REC
                MOVE    SPA-GMN-POST    TO  ADRS-POST
                MOVE    WRK-LPUBCD      TO  ADRS-LPUBCD
-               MOVE    "ADRS-KEY7"     TO  WRK-DBPATH
                MOVE    ADRS-REC        TO  MCPDATA-REC
+               MOVE    "key7"          TO  MCP-PATHNAME
                PERFORM 900-ADRS-SELECT-SEC
                PERFORM 900-ADRS-CLOSE-SEC
       *
@@ -1130,8 +1132,8 @@
            MOVE    WRK-LPUBCD      TO  ADRS-LPUBCD
            MOVE    SPA-GMN-POST    TO  ADRS-POST
            MOVE    WRK-RENNUM      TO  ADRS-EDANUM
-           MOVE    "ADRS-KEY"      TO  WRK-DBPATH
            MOVE    ADRS-REC        TO  MCPDATA-REC
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-ADRS-SELECT-SEC
            PERFORM 900-ADRS-CLOSE-SEC
       *
@@ -1160,6 +1162,7 @@
                    ADRS-CITYKANA       DELIMITED  BY  SPACE
                    ADRS-TOWNKANA       DELIMITED  BY  SPACE
                                        INTO    ADRS-EDITADRS-KANA
+           END-STRING
       *
       *    ÊÔ½¸½»½ê
            MOVE    SPACE           TO  ADRS-EDITADRS-NAME
@@ -1167,13 +1170,14 @@
                    ADRS-CITYNAME       DELIMITED  BY  SPACE
                    ADRS-TOWNNAME       DELIMITED  BY  SPACE
                                        INTO    ADRS-EDITADRS-NAME
+           END-STRING
       *
-           MOVE    ADRS-REC            TO  MCPDATA-REC
-           MOVE    "ADRS-KEY"          TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"             USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+           MOVE    ADRS-REC        TO  MCPDATA-REC
+           MOVE    "tbl_adrs"      TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              NOT =   ZERO
                MOVE    "1001"              TO  SPA-ERRCD
                GO  TO  490-INSERT-EXT
@@ -1412,22 +1416,22 @@
            MOVE    ZERO            TO  SYS-1001-REC
            INITIALIZE                  SYS-1001-REC
            MOVE    "1001"          TO  SYS-1001-KANRICD
-           MOVE    "*"             TO  SYS-1001-KBNCD
+           MOVE    "*%"            TO  SYS-1001-KBNCD
+           MOVE    SPA-SYSYMD      TO  SYS-1001-STYUKYMD
+                                       SYS-1001-EDYUKYMD
            MOVE    SYS-1001-REC    TO  MCPDATA-REC
-           MOVE    SPA-SYSYMD      TO  ORC-DBYMD
-      *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"       TO  MCP-FUNC
-               MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
                                            MCPAREA
-                                           ORCMCPAREA
                                            MCPDATA-REC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO            TO  FLG-SYSKANRI
@@ -1440,10 +1444,10 @@
            END-IF
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            .
       *
@@ -1456,10 +1460,9 @@
        900-ADRS-SELECT-SEC         SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_adrs"      TO  MCP-TABLE
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                PERFORM 900-ADRS-FETCH-SEC
@@ -1477,10 +1480,9 @@
        900-ADRS-FETCH-SEC          SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_adrs"      TO  MCP-TABLE
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-ADRS
@@ -1499,10 +1501,9 @@
        900-ADRS-CLOSE-SEC          SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_adrs"      TO  MCP-TABLE
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            .
       *
@@ -1515,9 +1516,8 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"      TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"          USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC.
       *
            .

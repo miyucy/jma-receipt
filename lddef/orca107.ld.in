@@ -20,5 +20,8 @@ data	{
 	};
 };
 
-#include "orcadb.inc"
-
+db	{
+	tbl_inputcd;
+	tbl_tensu;
+	tbl_yakujyo;
+};

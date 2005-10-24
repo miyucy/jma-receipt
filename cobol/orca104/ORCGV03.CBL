@@ -233,7 +233,6 @@
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -623,7 +622,8 @@
            MOVE    ZERO                TO  FLG-KOHPLUS
            INITIALIZE                      KOHPLUS-REC
            MOVE    KOHPLUS-REC         TO  MCPDATA-REC
-           MOVE    "KOHPLUS-ALL"       TO  WRK-DBPATH
+           MOVE    "tbl_kohplus"   TO  MCP-TABLE
+           MOVE    "all"           TO  MCP-PATHNAME
            PERFORM 900-TBL-SELECT-SEC
            IF    ( FLG-DBRC        NOT =   ZERO )
                MOVE    1               TO  FLG-KOHPLUS
@@ -637,7 +637,8 @@
       *
                PERFORM 31021-KOHPLUSLST-HEN-SEC
       *
-               MOVE    "KOHPLUS-ALL"       TO  WRK-DBPATH
+               MOVE    "tbl_kohplus"   TO  MCP-TABLE
+               MOVE    "all"           TO  MCP-PATHNAME
                PERFORM 900-TBL-READ-SEC
                IF    ( FLG-DBRC        NOT =   ZERO )
                    MOVE    1               TO  FLG-KOHPLUS
@@ -647,7 +648,8 @@
       *
            END-PERFORM
       *
-           MOVE    "KOHPLUS-ALL"       TO  WRK-DBPATH
+           MOVE    "tbl_kohplus"   TO  MCP-TABLE
+           MOVE    "all"           TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
       *
@@ -928,7 +930,8 @@
            MOVE    SPA-NAI-TYUKOSTYMD  (IDX-LST)
                                            TO  KOHPLUS-YUKOSTYMD
            MOVE    KOHPLUS-REC             TO  MCPDATA-REC
-           MOVE    "KOHPLUS-KEY"           TO  WRK-DBPATH
+           MOVE    "tbl_kohplus"   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-TBL-SELECT-SEC
            IF    ( FLG-DBRC            NOT =   ZERO )
                MOVE    1                   TO  FLG-KOHPLUS
@@ -936,7 +939,8 @@
                MOVE    MCPDATA-REC         TO  KOHPLUS-REC
            END-IF
       *
-           MOVE    "KOHPLUS-KEY"           TO  WRK-DBPATH
+           MOVE    "tbl_kohplus"   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
            IF    ( FLG-KOHPLUS         NOT =   ZERO )
@@ -1123,6 +1127,8 @@
                                            HKN-TEKEDYMD
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "HKNNUM-KEY"        TO  WRK-DBPATH
+           MOVE    "tbl_hknnum"    TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-TBL-SELECT-SEC
            IF    ( FLG-DBRC        NOT =   ZERO )
                MOVE    1               TO  FLG-HKNNUM
@@ -1130,7 +1136,8 @@
                MOVE    MCPDATA-REC     TO  HKNNUM-REC
            END-IF
       *
-           MOVE    "HKNNUM-KEY"        TO  WRK-DBPATH
+           MOVE    "tbl_hknnum"    TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
            IF    ( FLG-HKNNUM      NOT =   ZERO )
@@ -1531,13 +1538,15 @@
            MOVE    KOHPLUS-REC             TO  WKKOHPLUS-REC
            MOVE    ZERO                    TO  FLG-KOHPLUS
            MOVE    KOHPLUS-REC             TO  MCPDATA-REC
-           MOVE    "KOHPLUS-KEY"           TO  WRK-DBPATH
+           MOVE    "tbl_kohplus"   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-TBL-SELECT-SEC
            IF    ( FLG-DBRC            NOT =   ZERO )
                MOVE    1                   TO  FLG-KOHPLUS
            END-IF
       *
-           MOVE    "KOHPLUS-KEY"           TO  WRK-DBPATH
+           MOVE    "tbl_kohplus"   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
            IF    ( FLG-KOHPLUS             =   ZERO )
@@ -1548,7 +1557,8 @@
       *    ¸øÈñÉÕ²Ã¾ðÊó¥Þ¥¹¥¿¹¹¿·
            MOVE    WKKOHPLUS-REC           TO  KOHPLUS-REC
            MOVE    KOHPLUS-REC             TO  MCPDATA-REC
-           MOVE    "KOHPLUS-KEY"           TO  WRK-DBPATH
+           MOVE    "tbl_kohplus"   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-TBL-INSERT-SEC
            IF    ( FLG-DBRC            NOT =   ZERO )
                MOVE   "4002"               TO  SPA-ERRCD
@@ -1661,7 +1671,8 @@
            MOVE    SPA-NAI-PTKBN-MOT       TO  KOHPLUS-PTKBN
            MOVE    SPA-NAI-YUKOSTYMD-MOT   TO  KOHPLUS-YUKOSTYMD
            MOVE    KOHPLUS-REC             TO  MCPDATA-REC
-           MOVE    "KOHPLUS-KEY"           TO  WRK-DBPATH
+           MOVE    "tbl_kohplus"   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-TBL-SELECT-SEC
            IF    ( FLG-DBRC            NOT =   ZERO )
                MOVE    1                   TO  FLG-KOHPLUS
@@ -1669,7 +1680,8 @@
                MOVE    MCPDATA-REC         TO  KOHPLUS-REC
            END-IF
       *
-           MOVE    "KOHPLUS-KEY"           TO  WRK-DBPATH
+           MOVE    "tbl_kohplus"   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
            IF    ( FLG-KOHPLUS             =   1 )
@@ -1681,7 +1693,8 @@
            MOVE    KOHPLUS-CREYMD          TO  WKKOHPLUS-CREYMD
            MOVE    WKKOHPLUS-REC           TO  KOHPLUS-REC
            MOVE    KOHPLUS-REC             TO  MCPDATA-REC
-           MOVE    "KOHPLUS-UPD1"          TO  WRK-DBPATH
+           MOVE    "tbl_kohplus"   TO  MCP-TABLE
+           MOVE    "upd1"          TO  MCP-PATHNAME
            PERFORM 900-TBL-UPDATE-SEC
            IF    ( FLG-DBRC            NOT =   ZERO )
                MOVE   "4004"               TO  SPA-ERRCD
@@ -1729,6 +1742,8 @@
            MOVE    SPA-NAI-YUKOSTYMD-MOT   TO  KOHPLUS-YUKOSTYMD
            MOVE    KOHPLUS-REC             TO  MCPDATA-REC
            MOVE    "KOHPLUS-KEY"           TO  WRK-DBPATH
+           MOVE    "tbl_kohplus"   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-TBL-DELETE-SEC
            IF    ( FLG-DBRC            NOT =   ZERO )
                MOVE    "4005"              TO  SPA-ERRCD
@@ -1864,7 +1879,8 @@
            MOVE    SPA-GMN-KOHNUM      TO  KOHPLUS-KOHNUM
            MOVE    SPA-GMN-PTKBN   TO  KOHPLUS-PTKBN
            MOVE    KOHPLUS-REC         TO  MCPDATA-REC
-           MOVE    "KOHPLUS-KEY3"      TO  WRK-DBPATH
+           MOVE    "tbl_kohplus"   TO  MCP-TABLE
+           MOVE    "key3"          TO  MCP-PATHNAME
            PERFORM 900-TBL-SELECT-SEC
            IF    ( FLG-DBRC        NOT =   ZERO )
                MOVE    1               TO  FLG-KOHPLUS
@@ -1897,7 +1913,8 @@
                    END-IF
                END-IF
       *
-               MOVE    "KOHPLUS-KEY3"      TO  WRK-DBPATH
+               MOVE    "tbl_kohplus"   TO  MCP-TABLE
+               MOVE    "key3"          TO  MCP-PATHNAME
                PERFORM 900-TBL-READ-SEC
                IF    ( FLG-DBRC        NOT =   ZERO )
                    MOVE    1               TO  FLG-KOHPLUS
@@ -1907,7 +1924,8 @@
       *
            END-PERFORM
       *
-           MOVE    "KOHPLUS-KEY3"          TO  WRK-DBPATH
+           MOVE    "tbl_kohplus"   TO  MCP-TABLE
+           MOVE    "key3"          TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
            IF    ( FLG-KIKAN-DABURI    =   1 )
@@ -2395,18 +2413,14 @@
        900-TBL-SELECT-SEC              SECTION.
       *
            MOVE    ZERO            TO  FLG-DBRC
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF    ( MCP-RC          =   ZERO )
-               MOVE    WRK-DBPATH  TO  ORC-DBPATH
                MOVE    "DBFETCH"   TO  MCP-FUNC
-               CALL    "ORCMCPSUB"     USING
+               CALL    "MONFUNC"       USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
                IF    ( MCP-RC          =   ZERO )
                    CONTINUE
@@ -2426,11 +2440,9 @@
        900-TBL-READ-SEC                SECTION.
       *
            MOVE    ZERO            TO  FLG-DBRC
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF    ( MCP-RC          =   ZERO )
                CONTINUE
@@ -2446,11 +2458,9 @@
       *****************************************************************
        900-TBL-CLOSE-SEC               SECTION.
       *
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
       *
            .
@@ -2462,11 +2472,9 @@
        900-TBL-UPDATE-SEC              SECTION.
       *
            MOVE    ZERO            TO  FLG-DBRC
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
            MOVE    "DBUPDATE"      TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF    ( MCP-RC          =   ZERO )
                CONTINUE
@@ -2483,11 +2491,9 @@
        900-TBL-INSERT-SEC              SECTION.
       *
            MOVE    ZERO            TO  FLG-DBRC
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
            MOVE    "DBINSERT"      TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF    ( MCP-RC          =   ZERO )
                CONTINUE
@@ -2504,11 +2510,9 @@
        900-TBL-DELETE-SEC              SECTION.
       *
            MOVE    ZERO            TO  FLG-DBRC
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
            MOVE    "DBDELETE"      TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF    ( MCP-RC          =   ZERO )
                CONTINUE
@@ -2525,10 +2529,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"   USING
-                                MCPAREA
-                                ORCMCPAREA
-                                MCPDATA-REC.
+           CALL    "MONFUNC"       USING
+                                   MCPAREA
+                                   MCPDATA-REC.
       *
            .
        900-PUT-WINDOW-EXT.

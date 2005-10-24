@@ -116,7 +116,6 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -556,7 +555,7 @@
       *
            INITIALIZE                JINMEI-REC
            MOVE    SPA-GMN-JYOKEN    TO  JINMEI-KANA
-           MOVE    "JINMEI-KEY2"     TO  WRK-PATH
+           MOVE    "key2"            TO  WRK-PATH
            MOVE    JINMEI-REC        TO  MCPDATA-REC
            PERFORM 900-JINMEI-SELECT-SEC
            IF      FLG-JINMEI        =   ZERO
@@ -587,7 +586,7 @@
       *
            INITIALIZE              JINMEI-REC
            MOVE    SPA-GMN-JYOKEN  TO  JINMEI-KANJI
-           MOVE    "JINMEI-KEY3"   TO  WRK-PATH
+           MOVE    "key3"          TO  WRK-PATH
            MOVE    JINMEI-REC      TO  MCPDATA-REC
            PERFORM 900-JINMEI-SELECT-SEC
            IF      FLG-JINMEI      =   ZERO
@@ -695,10 +694,10 @@
       *
            MOVE    JINMEI-REC      TO  MCPDATA-REC
            MOVE    "DBDELETE"      TO  MCP-FUNC
-           MOVE    "JINMEI-KEY"    TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_jinmei"    TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
       *
            IF      MCP-RC              NOT =   ZERO
@@ -773,7 +772,7 @@
                END-EVALUATE
       *
                MOVE    JINMEI-REC      TO  MCPDATA-REC
-               MOVE    "JINMEI-KEY"    TO  WRK-PATH
+               MOVE    "key"           TO  WRK-PATH
                PERFORM 900-JINMEI-SELECT-SEC
                PERFORM 900-JINMEI-CLOSE-SEC
                IF  FLG-JINMEI  =  ZERO
@@ -813,13 +812,12 @@
            MOVE    SYS-TIME        TO  JINMEI-UPHMS
            MOVE    SPA-SYSYMD      TO  JINMEI-UPYMD
       *
-           MOVE    "JINMEI-KEY"    TO  ORC-DBPATH
-           MOVE    "DBINSERT"      TO  MCP-FUNC
-      *
            MOVE    JINMEI-REC      TO  MCPDATA-REC
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "DBINSERT"      TO  MCP-FUNC
+           MOVE    "tbl_jinmei"    TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
       *
            IF      MCP-RC              NOT =   ZERO 
@@ -961,9 +959,9 @@
       *****************************************************************
       *    ガイドメッセージ表示
       *****************************************************************
-       520-N11IDSET-SEC              SECTION.
+       520-N11IDSET-SEC            SECTION.
       *
-           MOVE    SPACE                TO  WRK-N11IDMSG
+           MOVE    SPACE           TO  WRK-N11IDMSG
       *
            EVALUATE    SPA-N11IDCD
       *         WHEN    "1011"
@@ -971,21 +969,21 @@
       *                                          TO  WRK-N11IDMSG
                WHEN    "1012"
                    MOVE  SPA-GMN-NAME(SPA-GMN-SELNUM)
-                                                TO  WRK-STR1
+                                                  TO  WRK-STR1
                    MOVE    "】を削除します"       TO  WRK-STR2
                    PERFORM  530-MSGSET-SEC
            END-EVALUATE
       *
-           MOVE    SPACE                TO  N11ID1
-           MOVE    SPA-N11IDCD            TO  N11ID1-ID1CODE
-           MOVE    WRK-N11IDMSG           TO  N11ID1-ID1MSG
-           MOVE    "B12"                TO  MCP-WIDGET
+           MOVE    SPACE           TO  N11ID1
+           MOVE    SPA-N11IDCD     TO  N11ID1-ID1CODE
+           MOVE    WRK-N11IDMSG    TO  N11ID1-ID1MSG
+           MOVE    "B12"           TO  MCP-WIDGET
       *
-           MOVE    "N11"                TO  SPA-MOTOPG
-           MOVE    "N11ID1"               TO  SPA-SAKIPG
+           MOVE    "N11"           TO  SPA-MOTOPG
+           MOVE    "N11ID1"        TO  SPA-SAKIPG
       *
-           MOVE    "NEW"                TO  MCP-PUTTYPE
-           MOVE    "N11ID1"               TO  MCP-WINDOW
+           MOVE    "NEW"           TO  MCP-PUTTYPE
+           MOVE    "N11ID1"        TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *
@@ -1033,14 +1031,14 @@
       *****************************************************************
       *    人名マスター読込（キー）
       *****************************************************************
-       900-JINMEI-SELECT-SEC         SECTION.
+       900-JINMEI-SELECT-SEC       SECTION.
       *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           MOVE    "tbl_jinmei"    TO  MCP-TABLE
+           MOVE    WRK-PATH        TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-JINMEI
                PERFORM  900-JINMEI-FETCH-SEC
@@ -1055,14 +1053,14 @@
       *****************************************************************
       *    人名マスター読込（キー）
       *****************************************************************
-       900-JINMEI-FETCH-SEC         SECTION.
+       900-JINMEI-FETCH-SEC        SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           MOVE    "tbl_jinmei"    TO  MCP-TABLE
+           MOVE    WRK-PATH        TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-JINMEI
@@ -1078,14 +1076,14 @@
       *****************************************************************
       *    人名マスター読込（キー）
       *****************************************************************
-       900-JINMEI-CLOSE-SEC         SECTION.
+       900-JINMEI-CLOSE-SEC        SECTION.
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           MOVE    "tbl_jinmei"    TO  MCP-TABLE
+           MOVE    WRK-PATH        TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
       *
        900-JINMEI-CLOSE-EXT.
@@ -1096,11 +1094,10 @@
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *
-           MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"   USING
-                                MCPAREA
-                                ORCMCPAREA
-                                MCPDATA-REC
+           MOVE   "PUTWINDOW"      TO  MCP-FUNC.
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC.
            .
       *
        900-PUT-WINDOW-EXT.

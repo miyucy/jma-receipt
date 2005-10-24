@@ -20,6 +20,6 @@ data	{
 	};
 };
 
-#include "orcadb.inc"
-
-
+db	{
+	tbl_jinmei;
+};

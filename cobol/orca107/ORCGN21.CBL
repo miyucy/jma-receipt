@@ -197,7 +197,6 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -571,7 +570,7 @@
                        GO  TO  4120-INPUTCD-CDSYU-HAN-EXT
                    END-IF
                    MOVE    "J"         TO  WRK-CDSYU
-                   MOVE    "INPUTCD-KEY"   TO  WRK-IPCPATH
+                   MOVE    "key"       TO  WRK-IPCPATH
       *        半角
                WHEN    1
       *            コード種別を桁数で決定
@@ -586,14 +585,14 @@
                            WHEN    OTHER
                                MOVE    "6"         TO  WRK-CDSYU
                        END-EVALUATE
-                       MOVE    "INPUTCD-KEY2"      TO  WRK-IPCPATH
+                       MOVE    "key2"              TO  WRK-IPCPATH
                    ELSE
                        IF          SPA-GMN-KENCD(1:1)  =   "P"  OR  "S"
                            MOVE    "0007"      TO  SPA-ERRCD
                            GO  TO  4120-INPUTCD-CDSYU-HAN-EXT
                        END-IF
                        MOVE    "A"             TO  WRK-CDSYU
-                       MOVE    "INPUTCD-KEY"   TO  WRK-IPCPATH
+                       MOVE    "key"           TO  WRK-IPCPATH
                    END-IF
            END-EVALUATE
       *
@@ -610,9 +609,15 @@
            INITIALIZE              INPUTCD-REC
            MOVE    SPA-HOSPID      TO  ICD-HOSPID
            MOVE    WRK-CDSYU       TO  ICD-CDSYU
-           MOVE    SPA-GMN-KENCD   TO  ICD-INPUTCD
+           IF      WRK-IPCPATH     =   "key"
+               STRING  SPA-GMN-KENCD   DELIMITED  BY  SPACE
+                       "%"             DELIMITED  BY  SIZE
+                                       INTO    ICD-INPUTCD
+               END-STRING
+           ELSE
+               MOVE    SPA-GMN-KENCD   TO  ICD-INPUTCD
+           END-IF
            MOVE    INPUTCD-REC     TO  MCPDATA-REC
-           MOVE    WRK-IPCPATH     TO  ORC-DBPATH
       *
            PERFORM 900-INPUTCD-SELECT-SEC
       *
@@ -1004,10 +1009,10 @@
       *
            MOVE    YAKUJYO-REC     TO  MCPDATA-REC
            MOVE    "DBDELETE"      TO  MCP-FUNC
-           MOVE    "YAKUJYO-KEY"   TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_yakujyo"   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
       *
            IF          MCP-RC      NOT     =   ZERO
@@ -1094,15 +1099,12 @@
                MOVE    "DBINSERT"      TO  MCP-FUNC
                MOVE    SPA-SYSYMD      TO  YAKUJYO-CREYMD
            END-IF
-           DISPLAY "YAKUJYO-UPYMD=" YAKUJYO-UPYMD
-           DISPLAY "YAKUJYO-CREYMD=" YAKUJYO-CREYMD
-      *
-           MOVE    "YAKUJYO-KEY"   TO  ORC-DBPATH
       *
            MOVE    YAKUJYO-REC     TO  MCPDATA-REC
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_yakujyo"   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
       *
            IF      MCP-RC              NOT =   ZERO 
@@ -1541,11 +1543,18 @@
       *
       *    点数マスタ読み込み
            INITIALIZE              TNS-TENSU-REC
-           MOVE    WRK-NAME        TO  TNS-NAME
-           MOVE    WRK-NAME        TO  TNS-KANANAME
+           STRING  WRK-NAME            DELIMITED  BY  SPACE
+                   "%"                 DELIMITED  BY  SIZE
+                                       INTO    TNS-NAME
+           END-STRING
+           STRING  WRK-NAME            DELIMITED  BY  SPACE
+                   "%"                 DELIMITED  BY  SIZE
+                                       INTO    TNS-KANANAME
+           END-STRING
+           MOVE    SPA-SYSYMD      TO  TNS-YUKOSTYMD
+                                       TNS-YUKOEDYMD
            MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
-           MOVE    SPA-SYSYMD      TO  ORC-DBYMD
-           MOVE    "TENSU-KEY5"    TO  WRK-TNSPATH
+           MOVE    "key5"          TO  WRK-TNSPATH
            PERFORM 900-TENSU-SELECT-SEC
       *
       *----(00.01.01)--ADD-START----
@@ -1633,9 +1642,10 @@
       *    点数マスタ読み込み
            INITIALIZE              TNS-TENSU-REC
            MOVE    WRK-SRYCD       TO  TNS-SRYCD
+           MOVE    SPA-SYSYMD      TO  TNS-YUKOSTYMD
+                                       TNS-YUKOEDYMD
            MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
-           MOVE    SPA-SYSYMD      TO  ORC-DBYMD
-           MOVE    "TENSU-KEY"     TO  WRK-TNSPATH
+           MOVE    "key"           TO  WRK-TNSPATH
            PERFORM 900-TENSU-SELECT-SEC
            PERFORM 900-TENSU-CLOSE-SEC
            .
@@ -1649,11 +1659,11 @@
        900-TENSU-SELECT-SEC    SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    WRK-TNSPATH     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"     USING
-                                   MCPAREA
-                                   ORCMCPAREA
-                                   MCPDATA-REC
+           MOVE    "tbl_tensu"     TO  MCP-TABLE
+           MOVE    WRK-TNSPATH     TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF          MCP-RC      =   ZERO
                MOVE    ZERO        TO  FLG-TENSU
                PERFORM 900-TENSU-FETCH-SEC
@@ -1671,11 +1681,11 @@
        900-TENSU-FETCH-SEC     SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           MOVE    WRK-TNSPATH     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"     USING
-                                   MCPAREA
-                                   ORCMCPAREA
-                                   MCPDATA-REC
+           MOVE    "tbl_tensu"     TO  MCP-TABLE
+           MOVE    WRK-TNSPATH     TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            IF          MCP-RC      =   ZERO
                MOVE    ZERO            TO  FLG-TENSU
@@ -1694,11 +1704,11 @@
        900-TENSU-CLOSE-SEC     SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           MOVE    WRK-TNSPATH     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"     USING
-                                   MCPAREA
-                                   ORCMCPAREA
-                                   MCPDATA-REC
+           MOVE    "tbl_tensu"     TO  MCP-TABLE
+           MOVE    WRK-TNSPATH     TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
       *
        900-TENSU-CLOSE-EXT.
@@ -1710,11 +1720,11 @@
        900-INPUTCD-SELECT-SEC  SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    WRK-IPCPATH     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"     USING
-                                   MCPAREA
-                                   ORCMCPAREA
-                                   MCPDATA-REC
+           MOVE    "tbl_inputcd"   TO  MCP-TABLE
+           MOVE    WRK-IPCPATH     TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF          MCP-RC      =   ZERO
                MOVE    ZERO        TO  FLG-INPUTCD
                PERFORM 900-INPUTCD-FETCH-SEC
@@ -1732,11 +1742,11 @@
        900-INPUTCD-FETCH-SEC   SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           MOVE    WRK-IPCPATH     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"     USING
-                                   MCPAREA
-                                   ORCMCPAREA
-                                   MCPDATA-REC
+           MOVE    "tbl_inputcd"   TO  MCP-TABLE
+           MOVE    WRK-IPCPATH     TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            IF          MCP-RC      =   ZERO
                MOVE    ZERO            TO  FLG-INPUTCD
@@ -1755,11 +1765,11 @@
        900-INPUTCD-CLOSE-SEC   SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           MOVE    WRK-IPCPATH     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"     USING
-                                   MCPAREA
-                                   ORCMCPAREA
-                                   MCPDATA-REC
+           MOVE    "tbl_inputcd"   TO  MCP-TABLE
+           MOVE    WRK-IPCPATH     TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
       *
        900-INPUTCD-CLOSE-EXT.
@@ -1777,19 +1787,19 @@
            MOVE    YAKUJYO-REC     TO  MCPDATA-REC
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "YAKUJYO-KEY"   TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"     USING
-                                   MCPAREA
-                                   ORCMCPAREA
-                                   MCPDATA-REC
+           MOVE    "tbl_yakujyo"   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            IF          MCP-RC      =   ZERO
                MOVE    "DBFETCH"       TO  MCP-FUNC
-               MOVE    "YAKUJYO-KEY"   TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"     USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+               MOVE    "tbl_yakujyo"   TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
                IF          MCP-RC      =   ZERO
                    MOVE    ZERO            TO  FLG-YAKUJYO
                    MOVE    MCPDATA-REC     TO  YAKUJYO-REC
@@ -1801,11 +1811,11 @@
            END-IF
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           MOVE    "YAKUJYO-KEY"   TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"     USING
-                                   MCPAREA
-                                   ORCMCPAREA
-                                   MCPDATA-REC
+           MOVE    "tbl_yakujyo"   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
             .
        900-YAKUJYO-READ-EXT.
            EXIT.
@@ -1816,10 +1826,9 @@
        900-PUT-WINDOW          SECTION.
       *
            MOVE    "PUTWINDOW"     TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"     USING
+           CALL    "MONFUNC"       USING
                                    MCPAREA
-                                   ORCMCPAREA
-                                   MCPDATA-REC
+                                   MCPDATA-REC.
            .
       *
        900-PUT-WINDOW-EXT.

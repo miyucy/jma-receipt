@@ -158,7 +158,6 @@
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    Ï¢ÍíÎÎ°è
@@ -595,18 +594,17 @@
       *
            MOVE    V01-HKNNUM     TO  SPA-GMN-HKNNUM
       * 
-           INITIALIZE                      HKNNUM-REC
-           MOVE    SPA-HOSPID              TO  HKN-HOSPID
-           MOVE    SPA-GMN-HKNNUM          TO  HKN-HKNNUM
-           MOVE    HKNNUM-REC              TO  MCPDATA-REC
-           MOVE    "DBSELECT"              TO  MCP-FUNC
-           MOVE    "HKNNUM-KEY2"           TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"                  USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC
+           INITIALIZE                  HKNNUM-REC
+           MOVE    SPA-HOSPID      TO  HKN-HOSPID
+           MOVE    SPA-GMN-HKNNUM  TO  HKN-HKNNUM
+           MOVE    HKNNUM-REC      TO  MCPDATA-REC
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           MOVE    "tbl_hknnum"    TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "HKNNUM-KEY2"     TO  ORC-DBPATH
                PERFORM 900-HKNNUM-READ-SEC
            ELSE
                INITIALIZE                  HKNNUM-REC
@@ -630,16 +628,17 @@
                MOVE    WRK-HENYMDG        TO  SPA-GMN-TEDYUKYMD (IDX)
                MOVE    IDX                TO  SPA-GMN-MAX
       *
-               MOVE    "HKNNUM-KEY2"      TO  ORC-DBPATH
+               MOVE    "tbl_hknnum"    TO  MCP-TABLE
+               MOVE    "key2"          TO  MCP-PATHNAME
                PERFORM 900-HKNNUM-READ-SEC
            END-PERFORM
       *    ¥«¡¼¥½¥ë¥¯¥í¡¼¥¹
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"             USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           MOVE    "tbl_hknnum"    TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            MOVE    SPA-GMN-HKNNUM      TO  SPA-NAI-HKNNUM
       *     
@@ -1128,19 +1127,19 @@
       *****************************************************************
        900-HKNNUM-INV-SEC         SECTION.
       *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "HKNNUM-KEY"        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           MOVE    "tbl_hknnum"    TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "HKNNUM-KEY"        TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+               MOVE    "DBFETCH"       TO  MCP-FUNC
+               MOVE    "tbl_hknnum"    TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-HKNNUM
                ELSE
@@ -1150,12 +1149,12 @@
                MOVE    1                   TO  FLG-HKNNUM
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "HKNNUM-KEY"        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           MOVE    "tbl_hknnum"    TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        900-HKNNUM-INV-EXT.
@@ -1167,12 +1166,10 @@
       *****************************************************************
        900-HKNNUM-READ-SEC         SECTION.
       *
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-HKNNUM
            ELSE
@@ -1188,10 +1185,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"   USING
-                                MCPAREA
-                                ORCMCPAREA
-                                MCPDATA-REC.
+           CALL    "MONFUNC"       USING
+                                   MCPAREA
+                                   MCPDATA-REC.
       *
            .
        900-PUT-WINDOW-EXT.
