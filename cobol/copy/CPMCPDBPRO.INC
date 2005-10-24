@@ -3565,6 +3565,7 @@
        2001-SEL-SYSKANRI-SEC          SECTION.
       *
            IF      MCP-FUNC            =   "DBFETCH" OR
+                                           "DBCLOSECURSOR" OR
                                            "DBINSERT"
                    GO                  TO  2001-SEL-SYSKANRI-EXT
            END-IF
@@ -3629,6 +3630,7 @@
        2002-SEL-SYSKANRI-SEC          SECTION.
       *
            IF      MCP-FUNC            =   "DBFETCH" OR
+                                           "DBCLOSECURSOR" OR
                                            "DBINSERT"
                    GO                  TO  2002-SEL-SYSKANRI-EXT
            END-IF
@@ -3664,6 +3666,7 @@
        2001-SEL-PTHKNINF-SEC          SECTION.
       *
            IF      MCP-FUNC            =   "DBFETCH" OR
+                                           "DBCLOSECURSOR" OR
                                            "DBINSERT"
                    GO                  TO  2001-SEL-PTHKNINF-EXT
            END-IF
@@ -3685,6 +3688,7 @@
        2001-SEL-PTKOHINF-SEC          SECTION.
       *
            IF      MCP-FUNC            =   "DBFETCH" OR
+                                           "DBCLOSECURSOR" OR
                                            "DBINSERT"
                    GO                  TO  2001-SEL-PTKOHINF-EXT
            END-IF
@@ -3706,6 +3710,7 @@
        2001-SEL-BYOKEY-SEC             SECTION.
       *
            IF      MCP-FUNC            =   "DBFETCH" OR
+                                           "DBCLOSECURSOR" OR
                                            "DBINSERT"
                    GO                  TO  2001-SEL-BYOKEY-EXT
            END-IF
@@ -3813,6 +3818,7 @@
       *****************************************************************
        2001-SEL-CHK-SEC          SECTION.
            IF      MCP-FUNC            =   "DBFETCH" OR
+                                           "DBCLOSECURSOR" OR
                                            "DBINSERT"
                    GO                  TO  2001-SEL-CHK-EXT
            END-IF
@@ -3833,6 +3839,7 @@
       *****************************************************************
        2001-SEL-NYUKSNCHK-SEC    SECTION.
            IF      MCP-FUNC            =   "DBFETCH" OR
+                                           "DBCLOSECURSOR" OR
                                            "DBINSERT"
                    GO                  TO  2001-SEL-NYUKSNCHK-EXT
            END-IF
@@ -3854,6 +3861,7 @@
       *****************************************************************
        2001-SEL-NYUINRYAKUSHO-SEC    SECTION.
            IF      MCP-FUNC            =   "DBFETCH" OR
+                                           "DBCLOSECURSOR" OR
                                            "DBINSERT"
                    GO                  TO  2001-SEL-NYUINRYAKUSHO-EXT
            END-IF
@@ -3873,6 +3881,7 @@
       *****************************************************************
        2001-SEL-INPUTCD-SEC      SECTION.
            IF      MCP-FUNC            =   "DBFETCH" OR
+                                           "DBCLOSECURSOR" OR
                                            "DBINSERT"
                    GO                  TO  2001-SEL-INPUTCD-EXT
            END-IF
@@ -3923,6 +3932,7 @@
       *****************************************************************
        2001-SEL-PTNUM-SEC             SECTION.
            IF      MCP-FUNC            =   "DBFETCH" OR
+                                           "DBCLOSECURSOR" OR
                                            "DBINSERT"
                    GO                  TO  2001-SEL-PTNUM-EXT
            END-IF
@@ -3952,6 +3962,7 @@
       *****************************************************************
        2001-SEL-PTINF-SEC             SECTION.
            IF      MCP-FUNC            =   "DBFETCH" OR
+                                           "DBCLOSECURSOR" OR
                                            "DBINSERT"
                    GO                  TO  2001-SEL-PTINF-EXT
            END-IF
@@ -4009,6 +4020,7 @@
        2001-SEL-ADRS-SEC         SECTION.
       *
            IF      MCP-FUNC            =   "DBFETCH" OR
+                                           "DBCLOSECURSOR" OR
                                            "DBINSERT"
                    GO                  TO  2001-SEL-ADRS-EXT
            END-IF
@@ -4073,6 +4085,7 @@
       *****************************************************************
        2001-SEL-TENSU-REC          SECTION.
            IF      MCP-FUNC            =   "DBFETCH" OR
+                                           "DBCLOSECURSOR" OR
                                            "DBINSERT"
                    GO                  TO  2001-SEL-TENSU-EXT
            END-IF
@@ -4169,6 +4182,7 @@
       *****************************************************************
        2001-SEL-PARA-SEC            SECTION.
            IF      MCP-FUNC            =   "DBFETCH" OR
+                                           "DBCLOSECURSOR" OR
                                            "DBINSERT"
                    GO                  TO  2001-SEL-PARA-EXT
            END-IF
@@ -4200,6 +4214,7 @@
        2001-SEL-USERBYOMEI-SEC         SECTION.
       *
            IF      MCP-FUNC            =   "DBFETCH" OR
+                                           "DBCLOSECURSOR" OR
                                            "DBINSERT"
                    GO                  TO  2001-SEL-USERBYOMEI-EXT
            END-IF
@@ -4236,6 +4251,7 @@
        2001-SEL-SEIKYU-SEC             SECTION.
       *
            IF      MCP-FUNC            =   "DBFETCH" OR
+                                           "DBCLOSECURSOR" OR
                                            "DBINSERT"
                    GO                  TO  2001-SEL-SEIKYU-EXT
            END-IF
