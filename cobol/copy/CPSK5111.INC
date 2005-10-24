@@ -38,12 +38,12 @@
            03  SYS-5111-TBL.
       *ÆÃÄêÆþ±¡ÎÁÌ¾¾Î
                05  SYS-5111-BRM-TOKUTEINYUIN-NM
-                                        PIC  X(40).
+                                        PIC  X(60).
       *ÆÃÄêÆþ±¡ÎÁÌ¾¾Î£²
                05  SYS-5111-BRM-TOKUTEINYUIN-NM2
                                         PIC  X(24).
       *Í½È÷
-           03                           PIC  X(436).
+           03                           PIC  X(416).
       *Ã¼Ëö£É£Ä
            03  SYS-5111-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

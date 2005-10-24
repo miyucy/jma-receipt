@@ -124,7 +124,7 @@
                  11  SPA-GMN-I01-TOKNYUIN.
                    13  SPA-GMN-I01-TOKNYUIN-CD     PIC X(02).
                    13                              PIC X(01).
-                   13  SPA-GMN-I01-TOKNYUIN-NM     PIC X(48).
+                   13  SPA-GMN-I01-TOKNYUIN-NM     PIC X(60).
                  11  SPA-GMN-I01-TOKNYUIN-STT      PIC S9(9)   BINARY.
       *          算定入院料
                  11  SPA-GMN-I01-SNTNYUIN          PIC X(60).
@@ -330,7 +330,7 @@
                                            OCCURS  30
                                            INDEXED BY  CMB-IDX08.
                      15    SPA-GMN-I01-TOKNYUIN-ITM
-                                                   PIC X(51).
+                                                   PIC X(63).
       *              ITM2には特定入院料の正式コードを設定する。
       *              (先頭１バイトに特定入院料の区分を付加）
                      15    SPA-GMN-I01-TOKNYUIN-ITM2

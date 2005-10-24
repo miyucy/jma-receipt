@@ -149,11 +149,11 @@ I01	{
 		};
 		CMB_TOKNYUIN	{
 			TOKNYUIN	{
-				value	varchar(51);
+				value	varchar(63);
 				state	int;
 			};
 			count	int;
-			item	varchar(51)[30];
+			item	varchar(63)[30];
 			state	int;
 		};
 		SNTNYUIN{
