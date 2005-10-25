@@ -31,6 +31,7 @@
       * Maj/Min/Rev  修正者        日付      内容
       *  01.00.01    MCC-太田      01/05/22  患者番号ゼロ詰め処理
       *  01.00.02    MCC-多々納    01/11/27  自由構成区分の追加修正
+      *  02.07.00    NACL-太田     05/10/24  MONFUNC 対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -63,6 +64,7 @@
            03  WRK-PTNUM           PIC X(20).
            03  WRK-ST              PIC 9(02).
       *----(01.00.01) LINE ADD END   --------------------------------
+           03  WRK-SADDSIGN-STR    PIC X(1000).
       *
       *    一時領域
       *    患者番号変換マスタ
@@ -75,7 +77,9 @@
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
       *     
-           COPY    "CPORCMCP.INC".  
+      *    COPY    "CPORCMCP.INC".  
+      *
+           COPY    "CPORCSADDSIGN.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -161,14 +165,17 @@
       *
            MOVE    ZERO                TO  FLG-OK
            MOVE    SPTID-HOSPID        TO  PTNUM-HOSPID
-           MOVE    SPTID-PTNUM         TO  PTNUM-PTNUM
+      *
+           MOVE    SPTID-PTNUM         TO  WRK-SADDSIGN-STR
+           PERFORM 800-ORCSADDSIGN-SEC
+           MOVE    WRK-SADDSIGN-STR    TO  PTNUM-PTNUM
       *
            MOVE    PTNUM-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTNUM-KEY2"        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
+           MOVE    "tbl_ptnum"         TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-PTNUM
@@ -180,11 +187,11 @@
                UNTIL      (FLG-PTNUM   NOT =   ZERO )  OR
                           (FLG-OK          =   1    )
                MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "PTNUM-KEY2"        TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+               MOVE    "tbl_ptnum"         TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  PTNUM-REC
                    MOVE    ZERO                TO  FLG-PTNUM
@@ -199,10 +206,10 @@
            END-PERFORM
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "PTNUM-KEY2"        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
+           MOVE    "tbl_ptnum"         TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
       *
            IF      FLG-OK              =   1
@@ -228,17 +235,17 @@
       *
            MOVE    PTNUM-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
+           MOVE    "tbl_ptnum"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
+               MOVE    "tbl_ptnum"         TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               CALL    "MONFUNC"       USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  PTNUM-REC
@@ -253,10 +260,10 @@
            END-IF
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
+           MOVE    "tbl_ptnum"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
       *
            IF      FLG-PTNUM           =   ZERO
@@ -341,3 +348,16 @@
       *
       *----(01.00.01) LINE ADD END   --------------------------------
       *
+      *****************************************************************
+      *    検索文字列編集処理
+      *****************************************************************
+       800-ORCSADDSIGN-SEC             SECTION.
+      *
+           INITIALIZE                  ORCSADDSIGNAREA
+           MOVE    WRK-SADDSIGN-STR    TO  SADDSIGN-STR
+           CALL    "ORCSADDSIGN"       USING ORCSADDSIGNAREA
+           MOVE    SADDSIGN-STR        TO  WRK-SADDSIGN-STR
+      *
+           .
+       800-ORCSADDSIGN-EXT.
+           EXIT.

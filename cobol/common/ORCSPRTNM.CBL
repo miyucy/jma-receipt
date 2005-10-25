@@ -31,6 +31,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者        日付      内容
       * 01.00.01     NACL-多々納  04/12/16   カルテ３号紙（入院）追加
+      * 02.07.00     NACL-太田    05/10/24   MONFUNC 対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -88,7 +89,7 @@
       *
            COPY    "MCPDATA.INC".
       * 
-           COPY    "CPORCMCP.INC".  
+      *    COPY    "CPORCMCP.INC".  
       *
       *****************************************************************
       *    連絡　領域
@@ -266,17 +267,19 @@
            INITIALIZE                      SYS-1032-REC
            MOVE    "1032"              TO  SYS-1032-KANRICD
            MOVE    WRK-KBNCD           TO  SYS-1032-KBNCD
+           MOVE    WRK-SRYYMD          TO  SYS-1032-STYUKYMD
+                                           SYS-1032-EDYUKYMD
       *
            MOVE    SYS-1032-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           MOVE    WRK-SRYYMD          TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key10"         TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
            ELSE
                INITIALIZE                  SYS-1032-REC
@@ -294,10 +297,10 @@
            END-IF
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           CALL    "MONFUNC"          USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC
       *
            .
@@ -313,17 +316,19 @@
            INITIALIZE                      SYS-1035-REC
            MOVE    "1035"              TO  SYS-1035-KANRICD
            MOVE    WRK-KBNCD           TO  SYS-1035-KBNCD
+           MOVE    WRK-SRYYMD          TO  SYS-1035-STYUKYMD
+                                           SYS-1035-EDYUKYMD
       *
            MOVE    SYS-1035-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           MOVE    WRK-SRYYMD          TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           CALL    "MONFUNC"         USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key10"         TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
            ELSE
                INITIALIZE                  SYS-1035-REC
@@ -341,10 +346,10 @@
            END-IF
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           CALL    "MONFUNC"          USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC
       *
            .
@@ -404,17 +409,19 @@
            INITIALIZE                      SYS-1031-REC
            MOVE    "1031"              TO  SYS-1031-KANRICD
            MOVE    WRK-KBNCD           TO  SYS-1031-KBNCD
+           MOVE    WRK-SRYYMD          TO  SYS-1031-STYUKYMD
+                                           SYS-1031-EDYUKYMD
       *
            MOVE    SYS-1031-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           MOVE    WRK-SRYYMD          TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           CALL    "MONFUNC"         USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key10"         TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
            ELSE
                INITIALIZE                  SYS-1031-REC
@@ -427,10 +434,10 @@
            END-IF
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           CALL    "MONFUNC"          USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC
       *
            .
@@ -446,17 +453,19 @@
            INITIALIZE                      SYS-1034-REC
            MOVE    "1034"              TO  SYS-1034-KANRICD
            MOVE    WRK-KBNCD           TO  SYS-1034-KBNCD
+           MOVE    WRK-SRYYMD          TO  SYS-1034-STYUKYMD
+                                           SYS-1034-EDYUKYMD
       *
            MOVE    SYS-1034-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           MOVE    WRK-SRYYMD          TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           CALL    "MONFUNC"         USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
            ELSE
                INITIALIZE                  SYS-1034-REC
@@ -469,10 +478,10 @@
            END-IF
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           CALL    "MONFUNC"          USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC
       *
            .
@@ -485,9 +494,8 @@
        900-SYSKANRI-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
+           CALL    "MONFUNC"          USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-SYSKANRI

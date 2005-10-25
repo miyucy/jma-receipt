@@ -29,6 +29,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô        ÆüÉÕ      ÆâÍÆ
+      *  02.07.00    NACL-ÂÀÅÄ     05/10/24  MONFUNC ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -86,7 +87,7 @@
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
+      *    COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -211,13 +212,14 @@
       *    ´µ¼Ô¥Þ¥¹¥¿¡¼¤ò´Á»ú»áÌ¾¤Ç¸¡º÷
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTINF-KEY5"        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
+           MOVE    "tbl_ptinf"         TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"            USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "PTINF-KEY5"        TO  ORC-DBPATH
+               MOVE    "tbl_ptinf"     TO  MCP-TABLE
+               MOVE    "key5"          TO  MCP-PATHNAME
                PERFORM 910-PTINF-READ-SEC
            ELSE
                INITIALIZE                  PTINF-REC
@@ -231,14 +233,15 @@
                ADD     1                   TO  IDX
                MOVE    PTINF-PTID          TO  WRK-PTID
       *
-               MOVE    "PTINF-KEY5"        TO  ORC-DBPATH
+               MOVE    "tbl_ptinf"         TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
                PERFORM 910-PTINF-READ-SEC
            END-PERFORM
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "PTINF-KEY5"        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
+           MOVE    "tbl_ptinf"         TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"            USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC
       *
       *    ´µ¼Ô·èÄê
@@ -274,9 +277,8 @@
        910-PTINF-READ-SEC        SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
+           CALL    "MONFUNC"            USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-PTINF
