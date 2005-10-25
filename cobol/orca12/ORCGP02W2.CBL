@@ -959,8 +959,8 @@
                        PERFORM 570112-SYUHKN-SEH-SEC
                      END-PERFORM
                      IF  WRK-KCOMB-TEKSTYMD (IDX2)
-      ****(2005.10.25)                NOT =  WRK-KCOMB-TEKEDYMD (IDX2)
-                                      <=     WRK-KCOMB-TEKEDYMD (IDX2)
+                                      NOT =  WRK-KCOMB-TEKEDYMD (IDX2)
+      ****(2005.10.25)                <=     WRK-KCOMB-TEKEDYMD (IDX2)
                        ADD     1           TO  WRK-RCOMB-MAX
                        MOVE    WRK-KCOMB-REC (IDX2)
                                            TO  WRK-RCOMB-REC
@@ -3256,8 +3256,8 @@
                     WRK-KCOMB-TEKEDYMD (IDX2)
       *    老人保険が終了しその後、主保険のみが存在する場合
            IF  WRK-KCOMB-TEKSTYMD (IDX2)
-      ****** (2005.10.25)      NOT =   WRK-KCOMB-TEKEDYMD (IDX2)
-                                  <=   WRK-KCOMB-TEKEDYMD (IDX2)
+                                  NOT =   WRK-KCOMB-TEKEDYMD (IDX2)
+      ****** (2005.10.25)         <=   WRK-KCOMB-TEKEDYMD (IDX2)
                ADD     1             TO  WRK-RCOMB-MAX
                MOVE    WRK-KCOMB-REC (IDX2)
                                      TO  WRK-RCOMB-REC (WRK-RCOMB-MAX)
