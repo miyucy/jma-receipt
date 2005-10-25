@@ -198,6 +198,8 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
+      *    LIKE使用KEY対応
+           COPY    "CPORCSADDSIGN.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -611,10 +613,11 @@
            MOVE    SPA-HOSPID      TO  ICD-HOSPID
            MOVE    WRK-CDSYU       TO  ICD-CDSYU
            IF      WRK-IPCPATH     =   "key"
-               STRING  SPA-GMN-KENCD   DELIMITED  BY  SPACE
-                       "%"             DELIMITED  BY  SIZE
-                                       INTO    ICD-INPUTCD
-               END-STRING
+               INITIALIZE                  ORCSADDSIGNAREA
+               MOVE    SPA-GMN-KENCD   TO  SADDSIGN-STR
+               CALL    "ORCSADDSIGN"       USING
+                                           ORCSADDSIGNAREA
+               MOVE    SADDSIGN-STR    TO  ICD-INPUTCD
            ELSE
                MOVE    SPA-GMN-KENCD   TO  ICD-INPUTCD
            END-IF
@@ -1549,14 +1552,12 @@
       *
       *    点数マスタ読み込み
            INITIALIZE              TNS-TENSU-REC
-           STRING  WRK-NAME            DELIMITED  BY  SPACE
-                   "%"                 DELIMITED  BY  SIZE
-                                       INTO    TNS-NAME
-           END-STRING
-           STRING  WRK-NAME            DELIMITED  BY  SPACE
-                   "%"                 DELIMITED  BY  SIZE
-                                       INTO    TNS-KANANAME
-           END-STRING
+           INITIALIZE                  ORCSADDSIGNAREA
+           MOVE    WRK-NAME        TO  SADDSIGN-STR
+           CALL    "ORCSADDSIGN"       USING
+                                       ORCSADDSIGNAREA
+           MOVE    SADDSIGN-STR    TO  TNS-NAME
+                                       TNS-KANANAME
            MOVE    SPA-SYSYMD      TO  TNS-YUKOSTYMD
                                        TNS-YUKOEDYMD
            MOVE    TNS-TENSU-REC   TO  MCPDATA-REC

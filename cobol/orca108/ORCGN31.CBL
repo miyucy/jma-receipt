@@ -199,6 +199,8 @@
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
+      *    LIKE»ÈÍÑKEYÂÐ±þ
+           COPY    "CPORCSADDSIGN.INC".
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -525,10 +527,11 @@
            MOVE    ZERO            TO  IDX2
       *
            INITIALIZE                  ADRS-REC
-           STRING  SPA-GMN-POST        DELIMITED  BY  SPACE
-                   "%"                 DELIMITED  BY  SIZE
-                                       INTO    ADRS-POST
-           END-STRING
+           INITIALIZE                  ORCSADDSIGNAREA
+           MOVE    SPA-GMN-POST    TO  SADDSIGN-STR
+           CALL    "ORCSADDSIGN"       USING
+                                       ORCSADDSIGNAREA
+           MOVE    SADDSIGN-STR    TO  ADRS-POST
            MOVE    ADRS-REC        TO  MCPDATA-REC
            MOVE    "tbl_adrs"      TO  WRK-PATH-TABLE
            MOVE    "key6"          TO  WRK-PATH-PATHNAME
@@ -1421,7 +1424,11 @@
            MOVE    ZERO            TO  SYS-1001-REC
            INITIALIZE                  SYS-1001-REC
            MOVE    "1001"          TO  SYS-1001-KANRICD
-           MOVE    "*%"            TO  SYS-1001-KBNCD
+           INITIALIZE                  ORCSADDSIGNAREA
+           MOVE    "*"             TO  SADDSIGN-STR
+           CALL    "ORCSADDSIGN"       USING
+                                       ORCSADDSIGNAREA
+           MOVE    SADDSIGN-STR    TO  SYS-1001-KBNCD
            MOVE    SPA-SYSYMD      TO  SYS-1001-STYUKYMD
                                        SYS-1001-EDYUKYMD
            MOVE    SYS-1001-REC    TO  MCPDATA-REC
