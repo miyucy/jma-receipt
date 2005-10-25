@@ -61,6 +61,8 @@
            03  WRK-PTNUM           PIC X(20).
            03  WRK-PTID            PIC 9(10).
       *
+           03  WRK-NAME            PIC X(50).
+      *
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -200,13 +202,18 @@
       *
            MOVE    2                   TO  SPTNUM-SYUBETU
       *
+           MOVE    SPTNUM-PTNUM(1:KANACHK-MAX)
+                                       TO  WRK-NAME
+           COMPUTE IDX                 =   KANACHK-MAX  +  1
+           MOVE    "%"                 TO  WRK-NAME(IDX:1)
+      *
       *    漢字検索
            INITIALIZE                  PTINF-REC
            MOVE    SPA-HOSPID          TO  PTINF-HOSPID
            MOVE    SPACE               TO  PTINF-NAME
-           MOVE    SPTNUM-PTNUM(1:KANACHK-MAX)
+           MOVE    WRK-NAME
                                        TO  PTINF-NAME
-           MOVE    SPTNUM-PTNUM(1:KANACHK-MAX)
+           MOVE    WRK-NAME
                                        TO  PTINF-KANANAME
       *
       *    患者マスターを漢字氏名で検索
@@ -218,7 +225,6 @@
                                         MCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_ptinf"     TO  MCP-TABLE
                MOVE    "key5"          TO  MCP-PATHNAME
                PERFORM 910-PTINF-READ-SEC
            ELSE
@@ -275,6 +281,8 @@
       *    患者マスター読込処理
       *****************************************************************
        910-PTINF-READ-SEC        SECTION.
+      *
+           MOVE    "tbl_ptinf"         TO  MCP-TABLE
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
            CALL    "MONFUNC"            USING
