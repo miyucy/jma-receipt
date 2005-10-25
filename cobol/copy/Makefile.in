@@ -1091,6 +1091,7 @@ COPYS = \
         HCM2NV02.INC \
         HCM2OV02.INC \
         HCM2PV02.INC \
+        CPORCSADDSIGN.INC \
 
 DBPATH = \
 	ORCA-DBPATH
