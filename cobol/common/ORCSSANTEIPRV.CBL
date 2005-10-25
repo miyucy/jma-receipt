@@ -266,6 +266,9 @@
                END-IF
            END-IF
       *
+           MOVE    WRK-MCP-PATH        TO  MCP-PATH
+           PERFORM 990-DBCLOSE-SEC
+      *
       *    同一算定コードがある時、すべてでチェック
            SET     TBL-IDX             TO  1
            SEARCH      TBL-OCC     VARYING   TBL-IDX
@@ -305,6 +308,9 @@
                                                    TO  WRK-FSANTEIYMD
                        END-IF
                    END-IF
+      *
+                   MOVE    WRK-MCP-PATH        TO  MCP-PATH
+                   PERFORM 990-DBCLOSE-SEC
                END-IF
            END-PERFORM
       *
@@ -382,6 +388,10 @@
                PERFORM 920-SANTEI-READ-SEC
            END-PERFORM
       *
+      *
+           MOVE    WRK-MCP-PATH        TO  MCP-PATH
+           PERFORM 990-DBCLOSE-SEC
+      *
            IF      WRK-YMD3            =   SPACE
       *        他の履歴が無い時
                MOVE    HZN-SANTEI-REC      TO  SANTEI-REC
@@ -439,6 +449,9 @@
       *----->take mod ed
                PERFORM 920-SANTEI-READ-SEC
            END-PERFORM
+      *
+           MOVE    WRK-MCP-PATH        TO  MCP-PATH
+           PERFORM 990-DBCLOSE-SEC
            .
        10010-MAE-SANTEI-HEN-EXT.
            EXIT.
@@ -719,6 +732,11 @@
                    PERFORM 920-SANTEI-READ-SEC
                END-IF
            END-PERFORM
+      *
+      *
+           MOVE    WRK-MCP-PATH        TO  MCP-PATH
+           PERFORM 990-DBCLOSE-SEC
+      *
            .
       *
        100912-SANTEI-CHK-EXT.
@@ -765,6 +783,9 @@
            MOVE    "SANTEI-KEY"        TO  WRK-DBPATH
       *----->take mod ed
            PERFORM 1001-SANTEI-KEN-SEC
+      *-----> closecursor
+           MOVE    WRK-MCP-PATH        TO  MCP-PATH
+           PERFORM 990-DBCLOSE-SEC
       *
       *    健保以外で保険別の時、3月以内は作成なし
       *DDDDIF     (FLG-HKN-SANTEI      =   1   )  AND
@@ -1103,6 +1124,10 @@
       *----->take mod ed
                        PERFORM 920-SANTEI-READ-SEC
                    END-PERFORM
+      *
+                   MOVE    WRK-MCP-PATH        TO  MCP-PATH
+                   PERFORM 990-DBCLOSE-SEC
+      *
                END-IF
            END-PERFORM
       *
@@ -1123,6 +1148,9 @@
            MOVE    "SANTEI-KEY"        TO  WRK-DBPATH
       *----->take mod st
            PERFORM 1001-SANTEI-KEN-SEC
+      *
+           MOVE    WRK-MCP-PATH        TO  MCP-PATH
+           PERFORM 990-DBCLOSE-SEC
       *
       *    健保以外で保険別の時、3月以内は作成なし
       *DDD IF     (FLG-HKN-SANTEI      =   1   )  AND
@@ -1363,6 +1391,9 @@
                PERFORM 920-SANTEI-READ-SEC
            END-PERFORM
       *
+           MOVE    WRK-MCP-PATH        TO  MCP-PATH
+           PERFORM 990-DBCLOSE-SEC
+      *
            .
        300111-DEL-SYOKAI-EXT.
            EXIT.
@@ -1419,6 +1450,10 @@
                PERFORM 920-SANTEI-READ-SEC
            END-PERFORM
       *
+      *
+           MOVE    WRK-MCP-PATH        TO  MCP-PATH
+           PERFORM 990-DBCLOSE-SEC
+      *
            .
        3002-SANTEI-UPD-EXT.
            EXIT.
@@ -1450,6 +1485,10 @@
       *----->take mod ed
                PERFORM 920-SANTEI-READ-SEC
            END-PERFORM
+      *
+      *
+           MOVE    WRK-MCP-PATH        TO  MCP-PATH
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        400-SANTEI-MANSEI-EXT.
@@ -1522,6 +1561,11 @@
       *
                PERFORM 500-SANTEI-INS-SEC
            END-IF
+      *
+      *
+           MOVE    WRK-MCP-PATH        TO  MCP-PATH
+           PERFORM 990-DBCLOSE-SEC
+      *
            .
        3001-NAIBUNFUKA-UPD-EXT.
            EXIT.

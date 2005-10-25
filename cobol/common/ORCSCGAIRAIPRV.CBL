@@ -481,13 +481,11 @@
       *        ¿ÇÎÅ¹Ô°ÙºîÀ®
                WHEN    "1"
       *----->take mod st
-            DISPLAY "take ¡ú ¿·µ¬ "
                    PERFORM 100-PRV-DBMAKE-SEC
       *----->take mod ed
                    PERFORM 100-SAKUSEI-SYORI-SEC
       *        ºï½ü
                WHEN    "2"
-            DISPLAY "take ¡ú ÊÑ¹¹ "
       *----->take mod st
                    PERFORM 100-PRV-DBMAKE-SEC
       *----->take mod ed
@@ -1915,8 +1913,11 @@
       *----->take mod ed
            END-PERFORM
       *
-           MOVE    "JYURRK-KEY6"       TO  ORC-DBPATH
-           PERFORM 990-DBCLOSE-SEC
+      *    MOVE    "JYURRK-KEY6"       TO  ORC-DBPATH
+      *    PERFORM 990-DBCLOSE-SEC
+           MOVE    PATH-TBL-JYURRK-PRV-KEY6
+                                       TO  MCP-PATH
+           PERFORM 990-DBCLOSE2-SEC
       *    ²ÊËè¤ÎÏ¢ÈÖ
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   15
@@ -2132,7 +2133,7 @@
       *----->take mod st
       *            MOVE    "88888888"          TO  ACCT-CREYMD
                    MOVE    SRYACCT-REC         TO  MCPDATA-REC
-                   DISPLAY "take sryacct = "    SRYACCT-REC(1:100)
+      *            DISPLAY "take sryacct = "    SRYACCT-REC(1:100)
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
       *            MOVE    "DBINSERT"          TO  MCP-FUNC
       *            MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
@@ -2212,7 +2213,7 @@
                    PERFORM 930-SRYACCT-NEXT2-SEC
       *----> take mod ed
                ELSE
-          DISPLAY "take ¡ú sryacct not fount"
+      *   DISPLAY "take ¡ú sryacct not fount"
                    MOVE    1                   TO  FLG-SRYACCT
                END-IF
                PERFORM
@@ -2242,9 +2243,9 @@
                    MOVE    ZERO                TO  ACCT-DAY
                                                        (IDX-1 IDX-2)
       *            ²ó¿ô¤¬¥¼¥í¤Î»þ¡¢ºï½ü
-             DISPLAY "take ¡ú sryacct delete before"
+      *      DISPLAY "take ¡ú sryacct delete before"
                    IF      ACCT-ZAIKAISU       =   ZERO
-             DISPLAY "take ¡ú sryacct delete "
+      *      DISPLAY "take ¡ú sryacct delete "
                        PERFORM 45001121-ZAINUM-DELETE-SEC
                    ELSE
       *
@@ -2308,7 +2309,7 @@
            MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
       *----->take mod st
            MOVE    SRYACT-REC          TO  MCPDATA-REC
-           DISPLAY "take act delete = "    SRYACT-REC(1:100)
+      *    DISPLAY "take act delete = "    SRYACT-REC(1:100)
            MOVE    "DBDELETE"          TO  MCP-FUNC
       *    MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
            MOVE    PATH-TBL-SRYACT-PRV-DEL11
@@ -2952,7 +2953,7 @@
            MOVE    WRK-MEISAISU            TO  ORCSCZAICHK-MEISAISU
            MOVE    WRK-SRYSURYOKEI         TO  ORCSCZAICHK-SURYOUTOTAL
            MOVE    WRK-SRYKAISUKEI         TO  ORCSCZAICHK-ZAIKAISU
-           DISPLAY "take call bifore zaikaizu = "    WRK-SRYKAISUKEI
+      *    DISPLAY "take call bifore zaikaizu = "    WRK-SRYKAISUKEI
            MOVE    ZERO                    TO  IDX-ATO
            PERFORM VARYING     IDX1    FROM    1   BY  1
                    UNTIL       IDX1        >   IDX-KOUI
@@ -2985,7 +2986,7 @@
       *-----> take mod ed
                                                ORCSCZAICHKAREA
            MOVE    ORCSCZAICHK-ZAINUM  TO  WRK-ZAINUM
-           DISPLAY "take new zainum = "    ORCSCZAICHK-ZAINUM
+      *    DISPLAY "take new zainum = "    ORCSCZAICHK-ZAINUM
       *    ÆâÉþÄþ¸º¤ÎºÞ¥Á¥§¥Ã¥¯
            IF     (WRK-ZAINUM      NOT =   ZERO )  AND
                   (LNK-WKSRY-SRYKBN    (1) =   "21" )  AND
@@ -2993,7 +2994,7 @@
                PERFORM 45015-TEIGEN-CHK-SEC
            END-IF
       *
-           DISPLAY "take wrk-zainum = "      WRK-ZAINUM
+      *    DISPLAY "take wrk-zainum = "      WRK-ZAINUM
            IF      WRK-ZAINUM          =   ZERO
       *        ºÞÈÖ¹æ¼èÆÀ½èÍý
                PERFORM 45013-ZAINUM-SET-SEC
@@ -3103,7 +3104,7 @@
                MOVE    1                   TO  FLG-SINKI
            ELSE
       *        ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡¼ÊÔ½¸½èÍý
-               DISPLAY "take before sryacct = "    ACCT-ZAIKAISU
+      *        DISPLAY "take before sryacct = "    ACCT-ZAIKAISU
                PERFORM 45014-SRYACCT-HEN-SEC
       *
                MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
@@ -3113,7 +3114,7 @@
                MOVE    SRYACCT-REC         TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
       *        MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
-               DISPLAY "take sryacct = "    ACCT-ZAIKAISU
+      *        DISPLAY "take sryacct = "    ACCT-ZAIKAISU
                MOVE    PATH-TBL-SRYACCT-PRV-KEY
                                            TO  MCP-PATH
       *        CALL    "ORCMCPSUB"          USING
@@ -3411,7 +3412,7 @@
                MOVE    "DBINSERT"          TO  MCP-FUNC
       *----->take mod st
       *        MOVE    "SRYACT-KEY"        TO  ORC-DBPATH
-               DISPLAY "take sryact_prv insert = " SRY-ZAINUM
+      *        DISPLAY "take sryact_prv insert = " SRY-ZAINUM
                MOVE    PATH-TBL-SRYACT-PRV-KEY
                                            TO  MCP-PATH
       *        CALL    "ORCMCPSUB"          USING
@@ -4244,10 +4245,8 @@
       *    ºï½ü½èÍý
       *    Ê£¿ô²Ê¡¦ÊÝ¸±ÆþÎÏ¤¬¤¢¤Ã¤¿¾ì¹ç¡¢¤¹¤Ù¤Æºï½ü¤¹¤ë
            IF      SPA-TEI-DENPNUM (1) NOT =   ZERO
-            DISPLAY "take ¡ú ¤³¤Ã¤Á "
                PERFORM 45001210-GRP-SRYACTDEL-SEC
            ELSE
-            DISPLAY "take ¡ú Àµ²ò "
                PERFORM 4500121-TEISEI-SRYACTDEL-SEC
            END-IF
       *
@@ -4295,7 +4294,6 @@
       *****************************************************************
        4500121-TEISEI-SRYACTDEL-SEC    SECTION.
       *
-           DISPLAY "take ¡ú 4500121-TEISEI-SRYACTDEL-SEC st"
       *    ¼õ¿ÇÍúÎò¤ÎÏ¢ÈÖ¤ò¤¹¤Ù¤Æºï½ü¤¹¤ë
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                      JYURRK-REC
@@ -4326,7 +4324,6 @@
                PERFORM 970-JYURRK-NEXT2-SEC
       *----->take mod ed
            ELSE
-           DISPLAY "take ¡ú jyurrk not found"
                MOVE    1                   TO  FLG-JYURRK
            END-IF
       *
