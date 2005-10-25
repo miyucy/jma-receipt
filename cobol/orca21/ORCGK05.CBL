@@ -4139,6 +4139,8 @@
                GO      TO      510-TBLHEN-EXT
            END-IF
       *
+      *    剤別初回編集
+           INITIALIZE                  ORCSC00AREA
       *    診療種別件数クリア
            INITIALIZE                  SPA-SRYKBN-AREA
       *    剤ごとの処理
@@ -4310,7 +4312,8 @@
                MOVE    1               TO  WRK-KAISU
            END-IF
       *
-           INITIALIZE                  ORCSC00AREA
+      *****INITIALIZE                  ORCSC00AREA
+           INITIALIZE                  LNK-ORCSZAI-AREA
            MOVE    "1"                 TO  LNK-ORCSC-KBN
            MOVE    "K05"               TO  LNK-ORCSC-PG
            MOVE    WRK-KAISU           TO  LNK-ORCSC-KAISU

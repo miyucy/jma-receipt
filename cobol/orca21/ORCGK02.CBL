@@ -3794,7 +3794,8 @@
       *Éü³è
       *        ÅöÆü»»ÄêÊ¬
                IF     (ACCT-DAY(1 WRK-TDD) >   ZERO  )  AND
-                      (ACCT-SRYKBN         =   "33"  )
+                      (ACCT-SRYKBN         =   "33"
+                                           OR  "32"  )
                    MOVE    2               TO  FLG-ACCTSYORI
       *            ¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡¼ÊÔ½¸
                    PERFORM 3201-SRYACT-HEN-SEC
@@ -3917,6 +3918,30 @@
                    COMPUTE SPA-ACCT2-CSYYOURYO =   SPA-ACCT2-CSYYOURYO
                                                +  (TNS-CSYYOURYO
                                                *   SRY-SRYSURYO (IDX2))
+               END-IF
+           END-IF
+      *
+      *    ÀÅÌ®Ãí¼Í
+           IF     (SRY-SRYSYUKBN       =   "320"  OR
+                                           "340" )  AND
+                  (SRY-SRYCD (IDX2)(1:1)   =   "1" ) AND
+                  (SPA-ACCT2-SRYCD-JYO1    =   SPACE ) AND
+                  (SPA-ACCT2-SRYCD-JYO2    =   SPACE )
+               MOVE    SRY-SRYCD (IDX2)    TO  TNS-SRYCD
+               PERFORM 910-TENSU-READ-SEC
+               IF     (TNS-DATAKBN         =   "1" )  AND
+                      (TNS-CDKBN-KBN       =   "G" )
+      *            ÀÅÌ®Ãí¼Í
+                   IF    (TNS-CDKBN-KBNNUM =   001 )
+                       MOVE    SRY-SRYCD (IDX2)
+                                               TO  SPA-ACCT2-SRYCD-JYO1
+                   END-IF
+      *            Ãæ¿´ÀÅÌ®
+                   IF     (TNS-CDKBN-KBNNUM        =   005) AND
+                          (TNS-CDKBN-KBNNUM-EDA    =   00 )
+                       MOVE    SRY-SRYCD (IDX2)
+                                               TO  SPA-ACCT2-SRYCD-JYO2
+                   END-IF
                END-IF
            END-IF
       *
@@ -9382,6 +9407,7 @@
       *
       *    Åö·î¿ÇÎÅ¹Ô°Ù¥Á¥§¥Ã¥¯ÍÑÊÔ½¸¡¢Åö·îÎß·×ÅÀ¿ô·×»»
            MOVE    ZERO                TO  SPA-ZAITENTOTAL
+           INITIALIZE                      SPA-NAIACCT2-AREA
            MOVE    SPACE               TO  SPA-ACCT2-SRYCD
            MOVE    ZERO                TO  SPA-ACCT2-ZAINUM
            MOVE    ZERO                TO  SPA-ACCT2-CSYYOURYO
@@ -9393,6 +9419,21 @@
            COMPUTE SPA-ACCT2-CSYYOURYO
                                        =   SPA-ACCT2-CSYYOURYO
                                        -   LNK-SC95-CHUSYA
+      *
+            PERFORM VARYING     IDX     FROM    1   BY  1
+                    UNTIL      (IDX     >   200 )  OR
+                               (SPA-K02-TEI-SRYCD (IDX)
+                                        =   SPACE )
+               IF     (SPA-K02-TEI-SRYCD (IDX)
+                                       =   SPA-ACCT2-SRYCD-JYO1)  AND
+                      (SPA-K02-TEI-KAISU (IDX)  <=  1      )
+                   MOVE    SPACE           TO  SPA-ACCT2-SRYCD-JYO1
+               END-IF
+               IF     (SPA-K02-TEI-SRYCD (IDX)
+                                       =   SPA-ACCT2-SRYCD-JYO2) 
+                   MOVE    SPACE           TO  SPA-ACCT2-SRYCD-JYO2
+               END-IF
+           END-PERFORM
       *
       *    ²èÌÌÍÑ¥¹¥ÑÊÔ½¸½èÍý
            MOVE    1                   TO  FLG-TEISEI

@@ -317,6 +317,23 @@
                WHEN    "0157"
                    MOVE    "動脈注射は１日１回しか算定できません。"
                                        TO  SPA-ERRMSG
+      *
+               WHEN    "0301"
+                   MOVE    "既に点滴注射・中心静脈注射が算定済みです。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "静脈注射は算定できません。"
+                                       TO  SPA-ERRMSG(43:)
+               WHEN    "0302"
+                   MOVE    "既に静脈注射・中心静脈注射が算定済みです。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "点滴注射は算定できません。"
+                                       TO  SPA-ERRMSG(43:)
+               WHEN    "0303"
+                   MOVE    "既に点滴注射・静脈注射・中心静脈注射が"
+                                       TO  SPA-ERRMSG
+                   MOVE    "算定済みです。算定できません。"
+                                       TO  SPA-ERRMSG(39:)
+      *
                WHEN    "0058"
                    MOVE    "外来管理加算は算定済です。算定できません。"
                                        TO  SPA-ERRMSG

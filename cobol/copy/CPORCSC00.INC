@@ -192,6 +192,9 @@
                05  LNK-ACCT2-SRYCD           PIC X(09).
                05  LNK-ACCT2-ZAINUM          PIC 9(08).
                05  LNK-ACCT2-CSYYOURYO       PIC 9(08).
+      *        静脈注射
+               05  LNK-ACCT2-SRYCD-JYO1      PIC X(09).
+               05  LNK-ACCT2-SRYCD-JYO2      PIC X(09).
       *
       *    訂正時の診療コード
            03  LNK-ORCSC-TEISEI-AREA.
@@ -238,6 +241,12 @@
       *
       *    全体件数
          02  LNK-ORCSALL-AREA.
+      *
+           03  LNK-ORCSC-CHUSYA-AREA.
+      *        点滴・静脈注射
+               05  LNK-ORCSC-TEN             PIC X(01).
+               05  LNK-ORCSC-JYO1            PIC X(01).
+               05  LNK-ORCSC-JYO2            PIC X(01).
       *
       *リハビリ当月内回数集計
            03  LNK-ORCSC-RIGAKU-TBL.

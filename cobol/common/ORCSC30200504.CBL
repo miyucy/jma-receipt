@@ -38,6 +38,7 @@
       * 01.00.08     NACL−多々納 03/09/04  手術料との算定エラー追加
       * 01.00.09     NACL−多々納 03/10/03  手術料との算定エラーを警告へ
       * 01.00.10     NACL−多々納 05/05/13  332点滴（手術以外）
+      * 01.00.11     NACL−多々納 05/10/25  外来静脈注射チェック追加
       *****************************************************************
       *
       *
@@ -130,6 +131,8 @@
            03  WRK-MAISU           PIC 9(08).
            03  WRK-KEIMAI          PIC 9(08).
            03  WRK-KAISU           PIC 9(04).
+      *
+           03  WRK-SRYSYUKBNMEI    PIC X(40).
       *
            03  WRK-TENSUKEI        PIC 9(08)V99.
            03  WRK-TENSUKEI-9      PIC 9(08).
@@ -314,6 +317,9 @@
            COPY    "CPORCSC91.INC".
       *    診療行為点数編集・基本チェック
            COPY    "CPORCSC92.INC".
+      *
+      *    診療種別名テーブル
+           COPY    "CPORCSSRYSYU.INC".
       *
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -527,6 +533,21 @@
                           (SPA-NYUGAIKBN           =   "1"   )
                        PERFORM 1005-ZAI-CHK-SEC
                    END-IF
+      *            外来の同時算定チェック
+                   IF    ((SPA-HKNCOMBINUM     =   "9999" )  AND
+                          (LNK-ORCSC-PG        =   "K02"  ))  OR
+                         ( LNK-ORCSC-PG        =   "J04"   )
+                       CONTINUE
+                   ELSE
+                       IF     (SPA-NYUGAIKBN           =   "2" ) AND
+                              (WRK-COM-DATAKBN (IDX-Z) =   "1" ) AND
+                              (WRK-COM-SRYSYUKBN(IDX-Z)
+                                                       =   "320" OR
+                                                           "330" OR
+                                                           "340" )
+                           PERFORM 1006-DOUJI-CHK-SEC
+                       END-IF
+                   END-IF
       *
       *        薬剤
                WHEN    "6"
@@ -618,11 +639,101 @@
            EXIT.
       *
       *****************************************************************
+      *    外来の同時算定チェック処理
+      *****************************************************************
+       1006-DOUJI-CHK-SEC           SECTION.
+      *
+           EVALUATE    WRK-COM-SRYSYUKBN (IDX-Z)
+               WHEN    "320"
+      *            静脈注射
+                   IF     (LNK-ACCT2-SRYCD-JYO2    =   SPACE )  AND
+                          (LNK-ACCT2-SRYCD         =   SPACE )  AND
+                          (LNK-ORCSC-TEN           =   SPACE )  AND
+                          (LNK-ORCSC-JYO2          =   SPACE )
+                       MOVE    "1"                 TO  LNK-ORCSC-JYO1
+                   ELSE
+                       MOVE    "0301"          TO  WRK-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
+                   END-IF
+               WHEN    "330"
+      *            点滴注射
+                   IF     (LNK-ACCT2-SRYCD-JYO1    =   SPACE )  AND
+                          (LNK-ACCT2-SRYCD-JYO2    =   SPACE )  AND
+                          (LNK-ORCSC-JYO1          =   SPACE )  AND
+                          (LNK-ORCSC-JYO2          =   SPACE )
+                       MOVE    "1"                 TO  LNK-ORCSC-TEN
+                   ELSE
+                       MOVE    "0302"          TO  WRK-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
+                   END-IF
+               WHEN    "340"
+      *            中心静脈注射
+                   IF      WRK-COM-INPUTCD (IDX-Z) =   "130004410"
+                       IF     (LNK-ACCT2-SRYCD-JYO1    =   SPACE )  AND
+                              (LNK-ACCT2-SRYCD-JYO2    =   SPACE )  AND
+                              (LNK-ACCT2-SRYCD         =   SPACE )  AND
+                              (LNK-ORCSC-TEN           =   SPACE )  AND
+                              (LNK-ORCSC-JYO1          =   SPACE )  AND
+                              (LNK-ORCSC-JYO2          =   SPACE )
+                           MOVE    "1"             TO  LNK-ORCSC-JYO2
+                       ELSE
+                           MOVE    "0303"          TO  WRK-ERRCD
+                           MOVE    "1"             TO  WRK-COM-CUR
+                                                                (IDX-Z)
+                       END-IF
+                   END-IF
+           END-EVALUATE
+      *
+           .
+       1006-DOUJI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    手技料自動発生成処理
       *****************************************************************
        1003-SYUGIJIDOU-SEC           SECTION.
       *
            MOVE    SPACE               TO  WRK-SRYCD
+      *
+      *    外来の同日重複チェック
+           IF     (SPA-NYUGAIKBN       =   "2"  )  AND
+                 ((SPA-HKNCOMBINUM NOT =   "9999") AND
+                  (LNK-ORCSC-PG        =   "K02"  ))  OR
+                 ( LNK-ORCSC-PG        =   "K05"   ) 
+               EVALUATE    WRK-COM-SRYSYUKBN (01)
+      *            静脈注射
+                   WHEN    "320"
+                       IF     (LNK-ACCT2-SRYCD-JYO2    =   SPACE )  AND
+                              (LNK-ACCT2-SRYCD         =   SPACE )  AND
+                              (LNK-ORCSC-TEN           =   SPACE )  AND
+                              (LNK-ORCSC-JYO2          =   SPACE )
+                           CONTINUE
+                       ELSE
+                           MOVE    "1"         TO  WRK-COM-SRYSYUKBN(01)
+                                                            (3:1)
+                           MOVE    "1"         TO  WRK-GMN-INPUTCD(01)
+                                                            (4:1)
+      *                    診療種別名称
+                           PERFORM 10021-SRYKBN-MEI-SEC 
+                       END-IF
+      *            点滴注射
+                   WHEN    "330"
+                       IF     (LNK-ACCT2-SRYCD-JYO1    =   SPACE ) AND
+                              (LNK-ACCT2-SRYCD-JYO2    =   SPACE ) AND
+                              (LNK-ORCSC-TEN           =   SPACE ) AND
+                              (LNK-ORCSC-JYO1          =   SPACE ) AND
+                              (LNK-ORCSC-JYO2          =   SPACE )
+                           CONTINUE
+                       ELSE
+                           MOVE    "1"         TO  WRK-COM-SRYSYUKBN(01)
+                                                            (3:1)
+                           MOVE    "1"         TO  WRK-GMN-INPUTCD(01)
+                                                            (4:1)
+      *                    診療種別名称
+                           PERFORM 10021-SRYKBN-MEI-SEC 
+                       END-IF
+               END-EVALUATE
+           END-IF
       *
            EVALUATE    WRK-COM-SRYSYUKBN (01)
       *        皮下筋肉注射
@@ -816,9 +927,8 @@
                            MOVE    WRK-COM-SRYSYUKBN(IDX-SYU)
                                                TO  WRK-GMN-INPUTCD
                                                             (01)(2:3)
-      *                    診療種別名称（固定とする）
-                           MOVE    "静脈注射"
-                                               TO  WRK-GMN-MEISYO (01)
+      *                    診療種別名称
+                           PERFORM 10021-SRYKBN-MEI-SEC 
                        END-IF
       *
                        PERFORM VARYING     IDX     FROM    1   BY  1
@@ -838,7 +948,32 @@
            END-IF
       *
            .
-       1003-TENTEKI-CHK-EXT.
+       1002-CHUSYA-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療種別名称処理
+      *****************************************************************
+       10021-SRYKBN-MEI-SEC           SECTION.
+      *
+      *    診療種別テーブルセット
+           CALL    "ORCSSRYSYU"        USING
+                                       MSYU-DATA-REC
+      *
+           SET     MSYU-IDX            TO  1
+           SEARCH      MSYU-TBL-OCC    VARYING   MSYU-IDX
+                   AT   END
+                       MOVE    SPACE           TO  WRK-SRYSYUKBNMEI
+                   WHEN    WRK-COM-SRYSYUKBN(1)
+                                               =   MSYU-SRYSYUKBN 
+                                                           (MSYU-IDX)
+                       MOVE    MSYU-SRYMEI (MSYU-IDX)
+                                                TO  WRK-SRYSYUKBNMEI
+           END-SEARCH
+      *
+           MOVE    WRK-SRYSYUKBNMEI    TO  WRK-GMN-MEISYO (01)
+           .
+       10021-SRYKBN-MEI-EXT.
            EXIT.
       *
       *****************************************************************

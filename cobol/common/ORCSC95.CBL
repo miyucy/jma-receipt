@@ -4443,6 +4443,13 @@
                           (SRY-SRYKBN          =   "60"    ) OR
       *                   º´∆∞»Ø¿∏ ¨
                           (SRY-AUTOKBN(IDX)    =   "3"     )
+      *                   ¿≈ÃÆ√ÌºÕ°¶√Êø¥¿≈ÃÆ√ÌºÕ
+                      OR  ((TNS-DATAKBN        =   "1"  ) AND
+                           (TNS-CDKBN-KBN      =   "G"  ) AND
+                           (TNS-CDKBN-KBNNUM   =   001
+                                               OR  005 ) AND
+                          (TNS-CDKBN-KBNNUM-EDA    =  00 ))
+      *
                        ADD     1               TO  IDX-TEI
                        IF      IDX-TEI         <=  200
                            MOVE    SRY-SRYCD (IDX) TO  SPA-K02-TEI-SRYCD
