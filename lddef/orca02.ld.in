@@ -20,5 +20,18 @@ data	{
 	};
 };
 
-#include "orcadb.inc"
+db	{
+	tbl_jobkanri;
+};
+db	"shell"	{
+	shell;
+};
+db	"system"	{
+	metadb;
+};
+db      "blob_body"{
+         blob;
+};
+
+
 
