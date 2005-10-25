@@ -108,6 +108,8 @@
       *
       *    一時領域
        01  WRK-AREA.
+           03  WRK-PATH-TABLE      PIC X(64).
+           03  WRK-PATH-PATHNAME   PIC X(64).
            03  WRK-VIDMSG          PIC X(70). 
            03  WRK-SELNO           PIC 9(03).
            03  WRK-WIDMSG          PIC X(70). 
@@ -513,7 +515,10 @@
            MOVE    SPA-NAI-STYUKYMD        TO  HKN-TEKSTYMD
            MOVE    SPA-NAI-EDYUKYMD        TO  HKN-TEKEDYMD
            MOVE    HKNNUM-REC              TO  MCPDATA-REC
-           PERFORM 900-HKNNUM-INV-SEC
+           MOVE    "tbl_hknnum"        TO  WRK-PATH-TABLE
+           MOVE    "key"               TO  WRK-PATH-PATHNAME
+           PERFORM 900-HKNNUM-SELECT-SEC
+           PERFORM 900-HKNNUM-CLOSE-SEC
            IF      FLG-HKNNUM              =   ZERO
                MOVE    MCPDATA-REC             TO  HKNNUM-REC
                MOVE    HKN-TANSEIDONAME        TO  SPA-GMN-TANSEIDONAME
@@ -598,17 +603,13 @@
            MOVE    SPA-HOSPID      TO  HKN-HOSPID
            MOVE    SPA-GMN-HKNNUM  TO  HKN-HKNNUM
            MOVE    HKNNUM-REC      TO  MCPDATA-REC
-           MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_hknnum"    TO  MCP-TABLE
-           MOVE    "key2"          TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               PERFORM 900-HKNNUM-READ-SEC
+           MOVE    "tbl_hknnum"        TO  WRK-PATH-TABLE
+           MOVE    "key2"              TO  WRK-PATH-PATHNAME
+           PERFORM 900-HKNNUM-SELECT-SEC
+           IF      FLG-HKNNUM              =   ZERO
+               MOVE    MCPDATA-REC         TO  HKNNUM-REC
            ELSE
-               INITIALIZE                  HKNNUM-REC
-               MOVE    1               TO  FLG-HKNNUM
+               INITIALIZE                      HKNNUM-REC
            END-IF
       *
            MOVE    ZERO                TO  IDX
@@ -628,17 +629,10 @@
                MOVE    WRK-HENYMDG        TO  SPA-GMN-TEDYUKYMD (IDX)
                MOVE    IDX                TO  SPA-GMN-MAX
       *
-               MOVE    "tbl_hknnum"    TO  MCP-TABLE
-               MOVE    "key2"          TO  MCP-PATHNAME
-               PERFORM 900-HKNNUM-READ-SEC
+               PERFORM 900-HKNNUM-FETCH-SEC
            END-PERFORM
       *    カーソルクロース
-           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           MOVE    "tbl_hknnum"    TO  MCP-TABLE
-           MOVE    "key2"          TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           PERFORM 900-HKNNUM-CLOSE-SEC
       *
            MOVE    SPA-GMN-HKNNUM      TO  SPA-NAI-HKNNUM
       *     
@@ -1121,52 +1115,36 @@
        520-VIDSET-EXT.
            EXIT.
       *
-      *
       *****************************************************************
-      *    管理マスター読込（キー）
+      *    システム管理マスタ読み込み処理
       *****************************************************************
-       900-HKNNUM-INV-SEC         SECTION.
+       900-HKNNUM-SELECT-SEC       SECTION.
       *
-           MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_hknnum"    TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
+           MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"       TO  MCP-FUNC
-               MOVE    "tbl_hknnum"    TO  MCP-TABLE
-               MOVE    "key"           TO  MCP-PATHNAME
-               CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
-               IF      MCP-RC              =   ZERO
-                   MOVE    ZERO                TO  FLG-HKNNUM
-               ELSE
-                   MOVE    1                   TO  FLG-HKNNUM
-               END-IF
+               MOVE    ZERO            TO  FLG-HKNNUM
+               PERFORM 900-HKNNUM-FETCH-SEC
            ELSE
-               MOVE    1                   TO  FLG-HKNNUM
+               MOVE    1               TO  FLG-HKNNUM
            END-IF
       *
-           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           MOVE    "tbl_hknnum"    TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
-      *
            .
-       900-HKNNUM-INV-EXT.
+       900-HKNNUM-SELECT-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *    システム管理マスタ読み込み処理
       *****************************************************************
-       900-HKNNUM-READ-SEC         SECTION.
+       900-HKNNUM-FETCH-SEC        SECTION.
       *
-           MOVE    "DBFETCH"       TO  MCP-FUNC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
+           MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
@@ -1177,17 +1155,34 @@
            END-IF
       *
            .
-       900-HKNNUM-READ-EXT.
+       900-HKNNUM-FETCH-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    システム管理マスタ読み込み処理
+      *****************************************************************
+       900-HKNNUM-CLOSE-SEC        SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
+           MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       900-HKNNUM-CLOSE-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *
-           MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL    "MONFUNC"       USING
-                                   MCPAREA
-                                   MCPDATA-REC.
+           MOVE   "PUTWINDOW"      TO  MCP-FUNC.
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC.
       *
            .
        900-PUT-WINDOW-EXT.

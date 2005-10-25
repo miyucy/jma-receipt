@@ -64,7 +64,8 @@
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
-           03  WRK-DBPATH          PIC X(64).
+           03  WRK-PATH-TABLE      PIC X(64).
+           03  WRK-PATH-PATHNAME   PIC X(64).
            03  WRK-N31IDMSG        PIC X(70).
       *
            03  WRK-LPUBCD          PIC X(05).
@@ -529,7 +530,8 @@
                                        INTO    ADRS-POST
            END-STRING
            MOVE    ADRS-REC        TO  MCPDATA-REC
-           MOVE    "key6"          TO  MCP-PATHNAME
+           MOVE    "tbl_adrs"      TO  WRK-PATH-TABLE
+           MOVE    "key6"          TO  WRK-PATH-PATHNAME
            PERFORM 900-ADRS-SELECT-SEC
       *
            PERFORM UNTIL  (FLG-ADRS    =   1   )  OR
@@ -626,7 +628,8 @@
            MOVE    SPA-GMN-CYO-EDANUM(SPA-GMN-SELNUM)
                                    TO  ADRS-EDANUM
            MOVE    ADRS-REC        TO  MCPDATA-REC
-           MOVE    "key"           TO  MCP-PATHNAME
+           MOVE    "tbl_adrs"      TO  WRK-PATH-TABLE
+           MOVE    "key"           TO  WRK-PATH-PATHNAME
            PERFORM 900-ADRS-SELECT-SEC
       *
            IF      FLG-ADRS        =   ZERO
@@ -1092,7 +1095,8 @@
                MOVE    SPA-GMN-POST    TO  ADRS-POST
                MOVE    WRK-LPUBCD      TO  ADRS-LPUBCD
                MOVE    ADRS-REC        TO  MCPDATA-REC
-               MOVE    "key7"          TO  MCP-PATHNAME
+               MOVE    "tbl_adrs"      TO  WRK-PATH-TABLE
+               MOVE    "key7"          TO  WRK-PATH-PATHNAME
                PERFORM 900-ADRS-SELECT-SEC
                PERFORM 900-ADRS-CLOSE-SEC
       *
@@ -1133,7 +1137,8 @@
            MOVE    SPA-GMN-POST    TO  ADRS-POST
            MOVE    WRK-RENNUM      TO  ADRS-EDANUM
            MOVE    ADRS-REC        TO  MCPDATA-REC
-           MOVE    "key"           TO  MCP-PATHNAME
+           MOVE    "tbl_adrs"      TO  WRK-PATH-TABLE
+           MOVE    "key"           TO  WRK-PATH-PATHNAME
            PERFORM 900-ADRS-SELECT-SEC
            PERFORM 900-ADRS-CLOSE-SEC
       *
@@ -1420,16 +1425,17 @@
            MOVE    SPA-SYSYMD      TO  SYS-1001-STYUKYMD
                                        SYS-1001-EDYUKYMD
            MOVE    SYS-1001-REC    TO  MCPDATA-REC
-           MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_syskanri"  TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"       TO  MCP-FUNC
-               MOVE    "tbl_syskanri"  TO  MCP-TABLE
-               MOVE    "key"           TO  MCP-PATHNAME
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
                CALL    "MONFUNC"           USING
                                            MCPAREA
                                            MCPDATA-REC
@@ -1443,9 +1449,9 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           MOVE    "tbl_syskanri"  TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
@@ -1459,8 +1465,9 @@
       *****************************************************************
        900-ADRS-SELECT-SEC         SECTION.
       *
-           MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_adrs"      TO  MCP-TABLE
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
+           MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
@@ -1479,8 +1486,9 @@
       *****************************************************************
        900-ADRS-FETCH-SEC          SECTION.
       *
-           MOVE    "DBFETCH"       TO  MCP-FUNC
-           MOVE    "tbl_adrs"      TO  MCP-TABLE
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
+           MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
@@ -1500,8 +1508,9 @@
       *****************************************************************
        900-ADRS-CLOSE-SEC          SECTION.
       *
-           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           MOVE    "tbl_adrs"      TO  MCP-TABLE
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
+           MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC

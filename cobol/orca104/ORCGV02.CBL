@@ -2972,7 +2972,7 @@
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *
-           MOVE   "PUTWINDOW"       TO  MCP-FUNC.
+           MOVE   "PUTWINDOW"      TO  MCP-FUNC.
            CALL    "MONFUNC"       USING
                                    MCPAREA
                                    MCPDATA-REC.

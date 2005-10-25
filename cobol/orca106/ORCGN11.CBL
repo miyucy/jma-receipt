@@ -88,8 +88,9 @@
       *
       *    一時領域
        01  WRK-AREA.
+           03  WRK-PATH-TABLE      PIC X(64).
+           03  WRK-PATH-PATHNAME   PIC X(64).
            03  WRK-GMN-CUR         PIC 9(02).
-           03  WRK-PATH            PIC X(64).
            03  WRK-N11IDMSG        PIC X(70).
            03  WRK-ZZZZ9           PIC ZZZZ9.
            03  WRK-STR1            PIC X(100).
@@ -551,19 +552,20 @@
       *****************************************************************
       *    漢字リストセット処理
       *****************************************************************
-       500-KANJILIST-SET-SEC        SECTION.
+       500-KANJILIST-SET-SEC       SECTION.
       *
-           INITIALIZE                JINMEI-REC
-           MOVE    SPA-GMN-JYOKEN    TO  JINMEI-KANA
-           MOVE    "key2"            TO  WRK-PATH
-           MOVE    JINMEI-REC        TO  MCPDATA-REC
+           INITIALIZE                  JINMEI-REC
+           MOVE    SPA-GMN-JYOKEN  TO  JINMEI-KANA
+           MOVE    JINMEI-REC      TO  MCPDATA-REC
+           MOVE    "tbl_jinmei"    TO  WRK-PATH-TABLE
+           MOVE    "key2"          TO  WRK-PATH-PATHNAME
            PERFORM 900-JINMEI-SELECT-SEC
            IF      FLG-JINMEI        =   ZERO
                PERFORM VARYING     IDX     FROM    1   BY  1
                        UNTIL       IDX     >    200
                    MOVE    IDX           TO  WRK-ZZZZ9
                    MOVE    WRK-ZZZZ9     TO  SPA-GMN-NO(IDX)
-                   MOVE    JINMEI-KANJI  TO     SPA-GMN-NAME(IDX)
+                   MOVE    JINMEI-KANJI  TO  SPA-GMN-NAME(IDX)
                    PERFORM 900-JINMEI-FETCH-SEC
                    IF   FLG-JINMEI    NOT  =  ZERO
                         MOVE    IDX       TO  SPA-GMN-MAX
@@ -584,17 +586,18 @@
       *****************************************************************
        500-KANALIST-SET-SEC        SECTION.
       *
-           INITIALIZE              JINMEI-REC
+           INITIALIZE                  JINMEI-REC
            MOVE    SPA-GMN-JYOKEN  TO  JINMEI-KANJI
-           MOVE    "key3"          TO  WRK-PATH
            MOVE    JINMEI-REC      TO  MCPDATA-REC
+           MOVE    "tbl_jinmei"    TO  WRK-PATH-TABLE
+           MOVE    "key3"          TO  WRK-PATH-PATHNAME
            PERFORM 900-JINMEI-SELECT-SEC
            IF      FLG-JINMEI      =   ZERO
                PERFORM VARYING     IDX     FROM    1   BY  1
                        UNTIL       IDX     >    200
                    MOVE    IDX           TO  WRK-ZZZZ9
                    MOVE    WRK-ZZZZ9     TO  SPA-GMN-NO(IDX)
-                   MOVE    JINMEI-KANA  TO     SPA-GMN-NAME(IDX)
+                   MOVE    JINMEI-KANA   TO  SPA-GMN-NAME(IDX)
                    PERFORM 900-JINMEI-FETCH-SEC
                    IF  FLG-JINMEI       NOT  =  ZERO
                        MOVE    IDX       TO  SPA-GMN-MAX
@@ -772,7 +775,8 @@
                END-EVALUATE
       *
                MOVE    JINMEI-REC      TO  MCPDATA-REC
-               MOVE    "key"           TO  WRK-PATH
+               MOVE    "tbl_jinmei"    TO  WRK-PATH-TABLE
+               MOVE    "key"           TO  WRK-PATH-PATHNAME
                PERFORM 900-JINMEI-SELECT-SEC
                PERFORM 900-JINMEI-CLOSE-SEC
                IF  FLG-JINMEI  =  ZERO
@@ -1033,17 +1037,17 @@
       *****************************************************************
        900-JINMEI-SELECT-SEC       SECTION.
       *
-           MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_jinmei"    TO  MCP-TABLE
-           MOVE    WRK-PATH        TO  MCP-PATHNAME
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
+           MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    ZERO                TO  FLG-JINMEI
+               MOVE    ZERO            TO  FLG-JINMEI
                PERFORM  900-JINMEI-FETCH-SEC
            ELSE
-               MOVE    1                   TO  FLG-JINMEI
+               MOVE    1               TO  FLG-JINMEI
            END-IF
       *
             .
@@ -1055,18 +1059,18 @@
       *****************************************************************
        900-JINMEI-FETCH-SEC        SECTION.
       *
-           MOVE    "DBFETCH"       TO  MCP-FUNC
-           MOVE    "tbl_jinmei"    TO  MCP-TABLE
-           MOVE    WRK-PATH        TO  MCP-PATHNAME
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
+           MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
            IF      MCP-RC              =   ZERO
-               MOVE    ZERO                TO  FLG-JINMEI
-               MOVE    MCPDATA-REC         TO  JINMEI-REC
+               MOVE    ZERO            TO  FLG-JINMEI
+               MOVE    MCPDATA-REC     TO  JINMEI-REC
            ELSE
-               MOVE    1                   TO  FLG-JINMEI
+               MOVE    1               TO  FLG-JINMEI
            END-IF
            .
       *
@@ -1078,9 +1082,9 @@
       *****************************************************************
        900-JINMEI-CLOSE-SEC        SECTION.
       *
-           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           MOVE    "tbl_jinmei"    TO  MCP-TABLE
-           MOVE    WRK-PATH        TO  MCP-PATHNAME
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
+           MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC

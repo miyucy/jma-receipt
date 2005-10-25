@@ -150,12 +150,12 @@
       *****************************************************************
       *    £Ð£Õ£Ô¡¡½èÍý
       *****************************************************************
-       900-PUT-WINDOW          SECTION.
+       900-PUT-WINDOW              SECTION.
       *
-           MOVE   "PUTWINDOW"  TO  MCP-FUNC.
-           CALL    "MONFUNC"       USING
-                                   MCPAREA
-                                   MCPDATA-REC.
+           MOVE   "PUTWINDOW"      TO  MCP-FUNC.
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC.
       *
            .
        900-PUT-WINDOW-EXT.
