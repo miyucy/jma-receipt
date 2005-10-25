@@ -45,6 +45,7 @@
       *                                     （全国公費＋地方公費＋補助公費）
       *                                     省庁対応
       *  02.00.08    NACL-多々納  05/10/19  特別療養費 単独保険組合追加
+      *  02.00.09    NACL-小豆沢  05/10/25  公費適用期間１日対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3246,9 +3247,15 @@
                PERFORM 570142-RJN-HEN-SEC
            END-PERFORM
       *
+           DISPLAY "IDX2 = " IDX2
+           DISPLAY "WRK-KCOMB-TEKSTYMD (IDX2) = "
+                    WRK-KCOMB-TEKSTYMD (IDX2)
+           DISPLAY "WRK-KCOMB-TEKEDYMD (IDX2) = "
+                    WRK-KCOMB-TEKEDYMD (IDX2)
       *    老人保険が終了しその後、主保険のみが存在する場合
            IF  WRK-KCOMB-TEKSTYMD (IDX2)
-                                 NOT =   WRK-KCOMB-TEKEDYMD (IDX2)
+      ****** (2005.10.25)      NOT =   WRK-KCOMB-TEKEDYMD (IDX2)
+                                  <=   WRK-KCOMB-TEKEDYMD (IDX2)
                ADD     1             TO  WRK-RCOMB-MAX
                MOVE    WRK-KCOMB-REC (IDX2)
                                      TO  WRK-RCOMB-REC (WRK-RCOMB-MAX)
