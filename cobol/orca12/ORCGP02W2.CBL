@@ -46,6 +46,7 @@
       *                                     省庁対応
       *  02.00.08    NACL-多々納  05/10/19  特別療養費 単独保険組合追加
       *  02.00.09    NACL-小豆沢  05/10/25  公費適用期間１日対応
+      *  02.00.10    NACL-小豆沢  05/10/26  公費適用期間１日対応（生活保護）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -958,7 +959,8 @@
                        PERFORM 570112-SYUHKN-SEH-SEC
                      END-PERFORM
                      IF  WRK-KCOMB-TEKSTYMD (IDX2)
-                                      NOT =  WRK-KCOMB-TEKEDYMD (IDX2)
+      ****(2005.10.25)                NOT =  WRK-KCOMB-TEKEDYMD (IDX2)
+                                      <=     WRK-KCOMB-TEKEDYMD (IDX2)
                        ADD     1           TO  WRK-RCOMB-MAX
                        MOVE    WRK-KCOMB-REC (IDX2)
                                            TO  WRK-RCOMB-REC
