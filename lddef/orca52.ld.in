@@ -28,4 +28,21 @@ data	{
 	};
 };
 
-#include "orcadb.inc"
+db	{
+	tbl_syskanri;
+	tbl_ptnum;
+	tbl_ptinf;
+	tbl_jobkanri;
+        tbl_toukeimemo;
+	tbl_hours;
+};
+db	"shell"	{
+	shell;
+};
+db	"system"	{
+	metadb;
+};
+db      "blob_body"{
+         blob;
+};
+

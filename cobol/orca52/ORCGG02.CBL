@@ -35,6 +35,7 @@
       *  01.00.04    NACL-藤原    04.08.10  処理開始前にジョブ管理の
       *                                     チェックを再度行なう
       *  01.00.05    NACL-藤原    05/01/30  入院対応
+      *  02.07.00    NACL-太田    05/10/26  クリアボタン追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -262,7 +263,6 @@
       *
       *ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
@@ -272,7 +272,6 @@
       *
            COPY    "CPSHELLTBL.INC".
       *     
-           COPY    "ORCA-DBPATH".         
            COPY    "ORCA-DBMETA".
       *
       *
@@ -387,7 +386,6 @@
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
-           MOVE    1               TO  SPA-GMN-CUR
       *    他のＬＤより
            IF      LINKAREA        NOT =   SPACE
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
@@ -406,6 +404,8 @@
            END-IF
       *
            EVALUATE    SPA-MOTOPG
+               WHEN    "G99"
+                   GO      TO      300-SCREEN-EXT
       *    作表処理
                WHEN    "GID1"
                    PERFORM 330-GID1-SET-SEC
@@ -425,6 +425,12 @@
       *
       *
            INITIALIZE              SPA-G02-AREA
+      *
+           MOVE    SPA-SYSYMD      TO  WRK-SYMD
+           PERFORM 5002-HIZUKE-HEN-SEC
+           MOVE    WRK-SYMD    (1:6)  TO  SPA-NAI-SRYYM
+           MOVE    WRK-HENYMDG (1:6)  TO  SPA-GMN-SRYYM
+           MOVE    WRK-HENYMDG3(1:16) TO  SPA-NAI-SRYYMH
       *
            IF      SPA-BEDSU       >   ZERO
                MOVE    "1"             TO  SPA-GMN-NYUGAIKBNL       (1)
@@ -549,6 +555,9 @@
                WHEN    "CLICKED"       ALSO    "B01"
                    MOVE    "CHANGE"            TO  MCP-PUTTYPE
                    PERFORM 210-BACK
+      *     クリア
+               WHEN    "CLICKED"       ALSO    "B02"
+                   PERFORM 310-SPASET-SEC
       *     情報削除
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 490-JYOUHOU-DEL-SEC
@@ -1055,7 +1064,8 @@
            INITIALIZE                  SYS-1001-REC
            MOVE    "1001"          TO  SYS-1001-KANRICD
            MOVE    "*"             TO  SYS-1001-KBNCD
-           MOVE    SPA-SYSYMD      TO  ORC-DBYMD
+           MOVE    SPA-SYSYMD      TO  SYS-1001-STYUKYMD
+                                       SYS-1001-EDYUKYMD
            MOVE    SYS-1001-REC    TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI    =   ZERO
@@ -1116,18 +1126,18 @@
            MOVE    SPA-GMN-FILE2   TO  SHELLTBL-ARG17
       *    ipアドレス取得
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           MOVE    PATH-METADB-PRIMARY
-                                   TO  MCP-PATH
-           CALL    "MCPSUB"        USING
+           MOVE    "metadb"        TO  MCP-TABLE
+           MOVE    "primary"       TO  MCP-PATHNAME
+           CALL    "MONFUNC"       USING
                                    MCPAREA
                                    DBMETA
            MOVE    DBMETA-HOST     TO  SHELLTBL-ARG18
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
-           MOVE    PATH-SHELL-SHELL
-                                   TO  MCP-PATH
-           CALL    "MCPSUB"        USING
+           MOVE    "shell"         TO  MCP-TABLE
+           MOVE    "shell"         TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -1545,17 +1555,17 @@
        900-SYSKANRI-INV-SEC         SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           CALL    "MONFUNC"            USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               CALL    "MONFUNC"          USING
                                             MCPAREA
-                                            ORCMCPAREA
                                             MCPDATA-REC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-SYSKANRI
@@ -1567,10 +1577,10 @@
            END-IF
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           CALL    "MONFUNC"          USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC
       *
            .
@@ -1583,9 +1593,8 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"   USING
+           CALL   "MONFUNC"   USING
                                 MCPAREA
-                                ORCMCPAREA
                                 MCPDATA-REC.
       *
            .

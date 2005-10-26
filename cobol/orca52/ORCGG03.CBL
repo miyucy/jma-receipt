@@ -83,6 +83,8 @@
                05  FILLER      PIC S9(9)   BINARY.
                05  FILLER      PIC S9(9)   BINARY.
                05  FILLER      PIC S9(9)   BINARY.
+           03  WRK-MCP-TABLE                   PIC X(64).
+           03  WRK-MCP-PATHNAME                PIC X(64).
            03  WRK-MAE-INPUT                   PIC X(100).
            03  WRK-ATO-INPUT                   PIC X(100).
       *
@@ -143,8 +145,6 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
-           COPY    "ORCA-DBPATH".
       *
       *    患者番号変換サブ
            COPY    "CPORCSPTNUM.INC".
@@ -332,8 +332,8 @@
            MOVE    SPA-SYSYMD          TO  TKIMEMO-STYUKYMD
                                            TKIMEMO-EDYUKYMD
            MOVE    TOUKEIMEMO-REC      TO  MCPDATA-REC
-           MOVE    PATH-TBL-TOUKEIMEMO-KEY2
-                                       TO  WRK-MCP-PATH
+           MOVE    "tbl_toukeimemo"    TO  WRK-MCP-TABLE
+           MOVE    "key2"              TO  WRK-MCP-PATHNAME
            PERFORM 900-TOUKEIMEMO-SEL-SEC
            IF    ( FLG-TOUKEIMEMO  NOT =   ZERO )
                INITIALIZE                  TOUKEIMEMO-REC
@@ -344,8 +344,8 @@
                MOVE    "00000000"      TO  TKIMEMO-STYUKYMD
                MOVE    "99999999"      TO  TKIMEMO-EDYUKYMD
                MOVE    TOUKEIMEMO-REC  TO  MCPDATA-REC
-               MOVE    PATH-TBL-TOUKEIMEMO-KEY
-                                       TO  WRK-MCP-PATH
+               MOVE    "tbl_toukeimemo"    TO  WRK-MCP-TABLE
+               MOVE    "key"               TO  WRK-MCP-PATHNAME
                PERFORM 900-TOUKEIMEMO-SEL-SEC
            END-IF
            .
@@ -1016,66 +1016,6 @@
        800-KANA-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    管理マスター読込（キー）
-      *****************************************************************
-       900-SYSKANRI-INV-SEC         SECTION.
-      *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
-               IF    ( MCP-RC          =   ZERO )
-                   MOVE    ZERO            TO  FLG-SYSKANRI
-               ELSE
-                   MOVE    1               TO  FLG-SYSKANRI
-               END-IF
-           ELSE
-               MOVE    1                   TO  FLG-SYSKANRI
-           END-IF
-      *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-      *
-           .
-       900-SYSKANRI-INV-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    システム管理マスタ読込処理
-      *****************************************************************
-       900-SYSKANRI-NEXT-SEC            SECTION.
-      *
-           MOVE  "DBFETCH"             TO  MCP-FUNC
-           MOVE  "SYSKANRI-KEY2"       TO  ORC-DBPATH
-           CALL  "ORCMCPSUB"           USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-           IF   ( MCP-RC               =   ZERO )
-               MOVE    MCPDATA-REC     TO  SYS-3002-REC
-               MOVE    ZERO            TO  FLG-SYSKANRI
-           ELSE
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-           .
-      *
-       900-SYSKANRI-NEXT-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    統計メモテーブル検索処理
       *****************************************************************
        900-TOUKEIMEMO-SEL-SEC          SECTION.
@@ -1083,14 +1023,16 @@
            MOVE    ZERO                TO  FLG-TOUKEIMEMO
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-MCP-PATH        TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF    ( MCP-RC              =   ZERO )
                MOVE    "DBFETCH"       TO  MCP-FUNC
-               MOVE    WRK-MCP-PATH    TO  MCP-PATH
-               CALL    "MCPSUB"        USING
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+               CALL    "MONFUNC"       USING
                                        MCPAREA
                                        MCPDATA-REC
                IF    ( MCP-RC          =   ZERO )
@@ -1106,8 +1048,9 @@
            END-IF
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-MCP-PATH        TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -1120,9 +1063,8 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"          TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"   USING
+           CALL   "MONFUNC"     USING
                                 MCPAREA
-                                ORCMCPAREA
                                 MCPDATA-REC.
       *
            .
