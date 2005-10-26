@@ -686,6 +686,7 @@
        900-DBCOMMIT-SEC            SECTION.
       *
            MOVE    "DBCOMMIT"          TO  MCP-FUNC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE.
            MOVE    LOW-VALUE           TO  MCP-PATHNAME.
            CALL    "MONFUNC"          USING
                                         MCPAREA
@@ -701,6 +702,7 @@
        900-DBSTART-SEC                SECTION.
       *
            MOVE    "DBSTART"           TO  MCP-FUNC.
+           MOVE    LOW-VALUE           TO  MCP-TABLE.
            MOVE    LOW-VALUE           TO  MCP-PATHNAME.
            CALL    "MONFUNC"             USING
                                          MCPAREA
