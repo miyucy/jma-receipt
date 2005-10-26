@@ -330,18 +330,24 @@
 
     <widget>
       <class>GtkButton</class>
-      <name>button138</name>
+      <name>B02</name>
       <x>88</x>
       <y>720</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F2</key>
+	<signal>clicked</signal>
+      </accelerator>
       <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
-	<last_modification_time>Tue, 05 Dec 2000 19:14:33 GMT</last_modification_time>
+	<data>CLICKED</data>
+	<last_modification_time>Wed, 26 Oct 2005 08:06:03 GMT</last_modification_time>
       </signal>
-      <label></label>
+      <label>¥¯¥ê¥¢</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
