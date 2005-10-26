@@ -181,8 +181,8 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "ORCA-DBPATH".
-           COPY    "CPORCMCP.INC".
+      ***  COPY    "ORCA-DBPATH".
+      **** COPY    "CPORCMCP.INC".
       *     
       **************************************************************************
       *
@@ -273,6 +273,12 @@
                  END-IF
                END-PERFORM
            END-IF
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "tbl_lock"          TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"            USING
+                                        MCPAREA
+                                        MCPDATA-REC
       * 排他
            IF  FLG-MAP          =     1
       *        PERFORM  1102-TERMID-BUNKAI-SEC
@@ -489,11 +495,11 @@
       *
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    TBL-LOCK            TO  MCPDATA-REC
-           MOVE    PATH-TBL-LOCK-KEY
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    "tbl_lock"          TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       MCPDATA-REC      
+                                       MCPDATA-REC
       *
            IF      MCP-RC     =   ZERO
                CONTINUE
@@ -512,9 +518,9 @@
        910-LOCK-UPD-SEC              SECTION.
       *
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    PATH-TBL-LOCK-KEY
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    "tbl_lock"          TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -535,9 +541,9 @@
        920-LOCK-DEL-SEC              SECTION.
       *
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    PATH-TBL-LOCK-KEY
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    "tbl_lock"          TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -677,11 +683,11 @@
       *    レコード更新
            MOVE    TBL-LOCK            TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    PATH-TBL-LOCK-KEY
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    "tbl_lock"          TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       MCPDATA-REC      
+                                       MCPDATA-REC
       *
            IF      MCP-RC     =   ZERO
                MOVE  MCP-RC            TO  SLOCK-RETURN
@@ -710,11 +716,11 @@
       *    レコード更新
            MOVE    TBL-LOCK            TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    PATH-TBL-LOCK-KEY
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    "tbl_lock"          TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       MCPDATA-REC      
+                                       MCPDATA-REC
       *
            IF      MCP-RC     =   ZERO
                MOVE  MCP-RC            TO  SLOCK-RETURN
@@ -743,11 +749,11 @@
       *    レコード更新
            MOVE    TBL-LOCK        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    PATH-TBL-LOCK-KEY
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    "tbl_lock"          TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       MCPDATA-REC      
+                                       MCPDATA-REC
       *
            IF      MCP-RC     =   ZERO
                MOVE  MCP-RC            TO  SLOCK-RETURN
@@ -766,18 +772,18 @@
        910-LOCK-INV-SEC         SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    PATH-TBL-LOCK-KEY
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    "tbl_lock"          TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"       TO  MCP-FUNC
-               MOVE    PATH-TBL-LOCK-KEY
-                                       TO  MCP-PATH
-               CALL    "MCPSUB"        USING
-                                       MCPAREA
-                                       MCPDATA-REC
+               MOVE    "tbl_lock"          TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
       *????
       *        DISPLAY "FETCH=" MCP-RC    
       *???? 
@@ -791,6 +797,13 @@
                MOVE    1                   TO  FLG-LOCK
            END-IF
       *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "tbl_lock"          TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"            USING
+                                        MCPAREA
+                                        MCPDATA-REC
+      *
            .
        910-LOCK-INV-EXT.
            EXIT.
@@ -801,18 +814,18 @@
        910-LOCK-INV2-SEC         SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    PATH-TBL-LOCK-KEY2
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    "tbl_lock"          TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"       TO  MCP-FUNC
-               MOVE    PATH-TBL-LOCK-KEY2
-                                       TO  MCP-PATH
-               CALL    "MCPSUB"        USING
-                                       MCPAREA
-                                       MCPDATA-REC
+               MOVE    "tbl_lock"          TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
       *????
       *        DISPLAY "FETCH=" MCP-RC    
       *???? 
@@ -837,18 +850,18 @@
        910-MAP-INV1-SEC         SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    PATH-TBL-LDMAP-KEY2
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    "tbl_ldmap"         TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"       TO  MCP-FUNC
-               MOVE    PATH-TBL-LDMAP-KEY2
-                                       TO  MCP-PATH
-               CALL    "MCPSUB"        USING
-                                       MCPAREA
-                                       MCPDATA-REC
+               MOVE    "tbl_ldmap"         TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
       *????
       *        DISPLAY "LDMAP FETCH=" MCP-RC    
       *???? 
@@ -862,6 +875,12 @@
       *        DISPLAY "LDMAP SELECT=" MCP-RC    
                MOVE    9                       TO  FLG-MAP
            END-IF
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "tbl_ldmap"         TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"            USING
+                                        MCPAREA
+                                        MCPDATA-REC
       *
            .
        910-MAP-INV1-EXT.
@@ -873,11 +892,11 @@
        910-LOCK-READ2-SEC         SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           MOVE    PATH-TBL-LOCK-KEY2
-                                   TO  MCP-PATH
-           CALL    "MCPSUB"        USING
-                                   MCPAREA
-                                   MCPDATA-REC
+           MOVE    "tbl_lock"          TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *????
       *        DISPLAY "FETCH=" MCP-RC    
       *???? 
@@ -898,7 +917,7 @@
        900-DBCOMMIT-SEC            SECTION.
       *
            MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           CALL    "MCPSUB"          USING
+           CALL    "MONFUNC"           USING
                                         MCPAREA
                                         MCPDATA-REC.
       *
@@ -912,9 +931,8 @@
        900-DBSTART-SEC                SECTION.
       *
            MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
+           CALL    "MONFUNC"           USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC.
            .
        900-DBSTART-EXT.

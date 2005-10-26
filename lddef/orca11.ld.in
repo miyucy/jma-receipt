@@ -19,6 +19,37 @@ data	{
 		U2ERR;
 	};
 };
+db	{
+	tbl_syskanri;
+	tbl_hkncombi;
+	tbl_hknnum;
+	tbl_jyurrk;
+	tbl_srykarrk;
+	tbl_ptbyomei;
+	tbl_ptcom;
+	tbl_ptnum;
+	tbl_pthkninf;
+	tbl_ptkohinf;
+	tbl_ptinf;
+	tbl_sryacct;
+	tbl_sryact;
+	tbl_tensu;
+	tbl_uketuke;
+	tbl_yyk;
+	tbl_wksryact;
+	tbl_hknjainf;
+	tbl_ptrsiinf;
+	tbl_ldmap;
+	tbl_lock;
+};
+db	"shell"	{
+	shell;
+};
+db	"system"	{
+	metadb;
+};
+db      "blob_body"{
+         blob;
+};
 
-#include "orcadb.inc"
 

@@ -88,7 +88,6 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -189,17 +188,15 @@
            MOVE    SPACE               TO  SYS-9001-REC
            INITIALIZE                  SYS-9001-REC
            MOVE    "9001"              TO  SYS-9001-KANRICD
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           MOVE    SPA-SYSYMD          TO  SYS-9001-STYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-9001-EDYUKYMD
       *    システム管理検索
            MOVE    SYS-9001-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
            ELSE
                INITIALIZE                  SYS-9001-REC
@@ -220,17 +217,13 @@
                                                                   (IDX)
                MOVE    IDX                   TO  SPA-U02X-GMN-MAX
       *
-               MOVE    "SYSKANRI-KEY2"       TO  ORC-DBPATH
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
            END-PERFORM
       *
       *    カーソルクロース
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
       *    送信コード
            MOVE    SPA-U02X-CODE       TO  SPA-GMN-SCODE
@@ -587,10 +580,9 @@
        900-SYSKANRI-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
@@ -600,6 +592,33 @@
        900-SYSKANRI-READ-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    テーブル検索処理
+      *****************************************************************
+       910-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       910-DBSELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢクローズ処理
+      *****************************************************************
+       990-DBCLOSE-SEC         SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       990-DBCLOSE-EXT.
+           EXIT.
       *
       *****************************************************************
       *    ＰＵＴ　処理
@@ -607,10 +626,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"   USING
-                                MCPAREA
-                                ORCMCPAREA
-                                MCPDATA-REC.
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        900-PUT-WINDOW-EXT.

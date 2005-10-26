@@ -78,9 +78,9 @@
            COPY    "CPORCSUSERPG.INC".
       *
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
+      **** COPY    "CPORCMCP.INC".
       *
-           COPY    "ORCA-DBPATH".
+      **** COPY    "ORCA-DBPATH".
       *
            COPY    "MCPAREA".
       *
@@ -133,19 +133,22 @@
            MOVE    SPACE               TO  SYS-9700-REC
            INITIALIZE                      SYS-9700-REC
            MOVE    "9700"              TO  SYS-9700-KANRICD
-           MOVE    "1%"                TO  SYS-9700-KBNCD
+           MOVE    "1"                 TO  SYS-9700-KBNCD
            MOVE    "00000000"          TO  SYS-9700-STYUKYMD
            MOVE    "99999999"          TO  SYS-9700-EDYUKYMD
+      *
            MOVE    SYS-9700-REC        TO  MCPDATA-REC
-           MOVE    PATH-TBL-SYSKANRI-KEY   TO  MCP-PATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    PATH-TBL-SYSKANRI-KEY   TO  MCP-PATH
+               MOVE    "key10"             TO  MCP-PATHNAME
                PERFORM 990-SYSKANRI-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-SYSKANRI
            END-IF
-           MOVE    PATH-TBL-SYSKANRI-KEY   TO  MCP-PATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
            MOVE    SPACE               TO  WRK-GYOUMU-FLG
            MOVE    ZERO                TO  FLG-GYOUMU-ARI
@@ -186,10 +189,11 @@
            MOVE    "99999999"          TO  SYS-9701-EDYUKYMD
       *
            MOVE    SYS-9701-REC        TO  MCPDATA-REC
-           MOVE    PATH-TBL-SYSKANRI-KEY2
-                                       TO  MCP-PATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 990-SYSKANRI-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-SYSKANRI
@@ -200,10 +204,11 @@
                       (SYS-9701-EXECUTE-YTPE   =   "2" )
                    PERFORM 2001-SHELL-SYORI-SEC
                END-IF
-               MOVE    PATH-TBL-SYSKANRI-KEY2  TO  MCP-PATH
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 990-SYSKANRI-READ-SEC
            END-PERFORM
-           MOVE    PATH-TBL-SYSKANRI-KEY2  TO  MCP-PATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            .
@@ -253,6 +258,8 @@
       *****************************************************************
        990-SYSKANRI-READ-SEC                SECTION.
       *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+      *
            PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-SYSKANRI
@@ -269,7 +276,7 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -282,7 +289,7 @@
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -297,7 +304,7 @@
        990-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *

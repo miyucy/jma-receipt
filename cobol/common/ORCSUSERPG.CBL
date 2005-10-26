@@ -73,13 +73,13 @@
       *****************************************************************
       *
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
+      **** COPY    "CPORCMCP.INC".
       *
            COPY    "CPMKPASS.INC".
       *
            COPY    "CPSHELLTBL.INC".
       *
-           COPY    "ORCA-DBPATH".
+      **** COPY    "ORCA-DBPATH".
       *
            COPY    "MCPAREA".
       *
@@ -141,10 +141,11 @@
       *
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
-           MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                           MCPAREA
-                                           MCPDATA-REC
+           MOVE    "shell"             TO  MCP-TABLE
+           MOVE    "shell"             TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
             .
        100-SHELL-SYORI-EXT.
            EXIT.
@@ -170,7 +171,7 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -183,7 +184,7 @@
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -198,7 +199,7 @@
        990-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *

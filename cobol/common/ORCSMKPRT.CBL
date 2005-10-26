@@ -48,7 +48,7 @@
       *
       *    ¥·¥§¥ëÍÑÎÎ°è
            COPY    "CPSHELLTBL.INC".
-           COPY    "ORCA-DBPATH".
+      *****COPY    "ORCA-DBPATH".
       *
        01  FLG-AREA.
            03  FLG-SYORI           PIC 9(01).
@@ -87,7 +87,7 @@
            COPY   "CPMKPASS.INC".
       *
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
+      *****COPY    "CPORCMCP.INC".
       *
            COPY    "MCPAREA".
       *
@@ -189,10 +189,11 @@
       *
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
-           MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                   MCPAREA
-                   MCPDATA-REC
+           MOVE    "shell"             TO  MCP-TABLE
+           MOVE    "shell"             TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        100-DIA-PRINT-EXT.
@@ -239,11 +240,11 @@
       *
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
-           MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                   MCPAREA
-                   MCPDATA-REC
-      *
+           MOVE    "shell"             TO  MCP-TABLE
+           MOVE    "shell"             TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        200-MON-PRINT-EXT.
