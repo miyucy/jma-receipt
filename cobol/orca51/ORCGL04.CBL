@@ -70,10 +70,8 @@
       *
        01  WRK-AREA.
            03  WRK-MCP-WIDGET              PIC X(64).
-           03  WRK-MCP-PATH.
-               05  WRK-MCP-BLOCKS          PIC S9(9)   BINARY.
-               05  WRK-MCP-RNAME           PIC S9(9)   BINARY.
-               05  WRK-MCP-PNAME           PIC S9(9)   BINARY.
+           03  WRK-MCP-TABLE               PIC X(64).
+           03  WRK-MCP-PATHNAME            PIC X(64).
            03  WRK-SYMD                    PIC X(10).
            03  WRK-HENYMDG                 PIC X(09).
            03  WRK-YOBI                    PIC 9(01).
@@ -153,7 +151,6 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "ORCA-DBPATH".
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
@@ -463,11 +460,14 @@
            EVALUATE    SPA-GMN-L04-VIEW-MODE
            WHEN    3
            WHEN    ZERO
-               MOVE    PATH-TBL-HOURS-KEY2 TO  WRK-MCP-PATH
+               MOVE    "tbl_hours"         TO  WRK-MCP-TABLE
+               MOVE    "key2"              TO  WRK-MCP-PATHNAME
            WHEN    1
-               MOVE    PATH-TBL-HOURS-KEY4 TO  WRK-MCP-PATH
+               MOVE    "tbl_hours"         TO  WRK-MCP-TABLE
+               MOVE    "key4"              TO  WRK-MCP-PATHNAME
            WHEN    2
-               MOVE    PATH-TBL-HOURS-KEY4 TO  WRK-MCP-PATH
+               MOVE    "tbl_hours"         TO  WRK-MCP-TABLE
+               MOVE    "key4"              TO  WRK-MCP-PATHNAME
            END-EVALUATE
       *
            INITIALIZE                  HOURS-REC
@@ -510,7 +510,8 @@
       *
            MOVE    IDX-TERM         TO  SPA-GMN-L04-TERM-MAX
       *
-           MOVE    WRK-MCP-PATH     TO  MCP-PATH
+           MOVE    WRK-MCP-TABLE    TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME TO  MCP-PATHNAME
            PERFORM 910-DBCLOSE-SEC
       *
       *
@@ -522,9 +523,11 @@
            PERFORM 800-CALENDAR-SEC
            MOVE    WRK-SYMD            TO  HOURS-SRYYMD
            IF    ( SPA-GMN-L04-VIEW-MODE   =   3 )
-               MOVE    PATH-TBL-HOURS-KEY2 TO  WRK-MCP-PATH
+               MOVE    "tbl_hours"         TO  WRK-MCP-TABLE
+               MOVE    "key2"              TO  WRK-MCP-PATHNAME
            ELSE
-               MOVE    PATH-TBL-HOURS-KEY4 TO  WRK-MCP-PATH
+               MOVE    "tbl_hours"         TO  WRK-MCP-TABLE
+               MOVE    "key4"              TO  WRK-MCP-PATHNAME
            END-IF
       *
            PERFORM 900-HOURS-SEL-SEC
@@ -546,7 +549,8 @@
       *
            END-PERFORM
       *
-           MOVE    WRK-MCP-PATH     TO  MCP-PATH
+           MOVE    WRK-MCP-TABLE    TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME TO  MCP-PATHNAME
            PERFORM 910-DBCLOSE-SEC
       *
            .
@@ -1851,7 +1855,8 @@
                                            HOURS-UPYMD
            MOVE    SMCNDATE-HMS        TO  HOURS-UPHMS
            MOVE    HOURS-REC           TO  MCPDATA-REC
-           MOVE    PATH-TBL-HOURS-KEY  TO  MCP-PATH
+           MOVE    "tbl_hours"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBINSERT-SEC
            IF    ( MCP-RC          NOT =   ZERO )
                MOVE    "4001"          TO  SPA-ERRCD
@@ -1870,7 +1875,8 @@
            MOVE    SPA-GMN-L04-EDTIME      TO  HOURS-TIME
       *
            MOVE    HOURS-REC           TO  MCPDATA-REC
-           MOVE    PATH-TBL-HOURS-KEY  TO  MCP-PATH
+           MOVE    "tbl_hours"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBDELETE-SEC
            IF    ( MCP-RC          NOT =   ZERO )
                MOVE    "4004"          TO  SPA-ERRCD
@@ -1905,7 +1911,8 @@
                MOVE    SMCNDATE-HMS    TO  SYS-UPHMS
       *
                MOVE    SYSKANRI-REC    TO  MCPDATA-REC
-               MOVE    PATH-TBL-SYSKANRI-KEY   TO  MCP-PATH
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
                PERFORM 910-DBUPDATE-SEC
                IF    ( MCP-RC      NOT =   ZERO )
                    MOVE    "4002"      TO  SPA-ERRCD
@@ -1918,7 +1925,8 @@
                MOVE    SMCNDATE-HMS    TO  SYS-UPHMS
       *
                MOVE    SYSKANRI-REC    TO  MCPDATA-REC
-               MOVE    PATH-TBL-SYSKANRI-KEY   TO  MCP-PATH
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
                PERFORM 910-DBINSERT-SEC
                IF    ( MCP-RC      NOT =   ZERO )
                    MOVE    "4003"      TO  SPA-ERRCD
@@ -2419,7 +2427,8 @@
            MOVE    ZERO                TO  FLG-SYSKANRI
       *
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-           MOVE    PATH-TBL-SYSKANRI-KEY10 TO  MCP-PATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO  SYSKANRI-REC
@@ -2428,7 +2437,8 @@
                INITIALIZE                  SYSKANRI-REC
            END-IF
       *
-           MOVE    PATH-TBL-SYSKANRI-KEY10 TO  MCP-PATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSE-SEC
       *
            .
@@ -2442,7 +2452,8 @@
            MOVE    ZERO                TO  FLG-HOURS
       *
            MOVE    HOURS-REC           TO  MCPDATA-REC
-           MOVE    WRK-MCP-PATH        TO  MCP-PATH
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO  HOURS-REC
@@ -2459,7 +2470,8 @@
       *****************************************************************
        900-HOURS-FET-SEC               SECTION.
       *
-           MOVE    WRK-MCP-PATH        TO  MCP-PATH
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO  HOURS-REC
@@ -2482,7 +2494,8 @@
            MOVE    SPA-NAI-L04-EDSRYYMD    TO  HOURS-SRYYMD
            MOVE    SPA-GMN-L04-EDTIME      TO  HOURS-TIME
            MOVE    HOURS-REC           TO  MCPDATA-REC
-           MOVE    PATH-TBL-HOURS-KEY  TO  MCP-PATH
+           MOVE    "tbl_hours"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO  HOURS-REC
@@ -2491,7 +2504,8 @@
                INITIALIZE                  HOURS-REC
            END-IF
       *
-           MOVE    PATH-TBL-HOURS-KEY  TO  MCP-PATH
+           MOVE    "tbl_hours"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBCLOSE-SEC
       *
            .
@@ -2509,7 +2523,8 @@
            MOVE    SPA-GMN-L04-EDTIME      TO  HOURS-TIME
       *
            MOVE    HOURS-REC           TO  MCPDATA-REC
-           MOVE    PATH-TBL-HOURS-KEY2 TO  MCP-PATH
+           MOVE    "tbl_hours"         TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO  HOURS-REC
@@ -2526,7 +2541,8 @@
       *****************************************************************
        900-HOURS-KEY2-FET-SEC          SECTION.
       *
-           MOVE    PATH-TBL-HOURS-KEY2 TO  MCP-PATH
+           MOVE    "tbl_hours"         TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO  HOURS-REC
@@ -2546,7 +2562,8 @@
            MOVE    ZERO                TO  FLG-HOURS
       *
            MOVE    HOURS-REC           TO  MCPDATA-REC
-           MOVE    PATH-TBL-HOURS-KEY3 TO  MCP-PATH
+           MOVE    "tbl_hours"         TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO  HOURS-REC
@@ -2555,7 +2572,8 @@
                INITIALIZE                  HOURS-REC
            END-IF
       *
-           MOVE    PATH-TBL-HOURS-KEY3 TO  MCP-PATH
+           MOVE    "tbl_hours"         TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 910-DBCLOSE-SEC
       *
            .
@@ -2569,7 +2587,8 @@
            MOVE    ZERO                TO  FLG-HOURS
       *
            MOVE    HOURS-REC           TO  MCPDATA-REC
-           MOVE    PATH-TBL-HOURS-KEY4 TO  MCP-PATH
+           MOVE    "tbl_hours"         TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO  HOURS-REC
@@ -2578,7 +2597,8 @@
                INITIALIZE                  HOURS-REC
            END-IF
       *
-           MOVE    PATH-TBL-HOURS-KEY4 TO  MCP-PATH
+           MOVE    "tbl_hours"         TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
            PERFORM 910-DBCLOSE-SEC
       *
            .
@@ -2590,7 +2610,7 @@
        910-DBSELECT-SEC          SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF        ( MCP-RC          =   ZERO )
@@ -2606,7 +2626,7 @@
        910-DBFETCH-SEC            SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -2619,7 +2639,7 @@
        910-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -2632,7 +2652,7 @@
        910-DBINSERT-SEC                SECTION.
       *
            MOVE    "DBINSERT"      TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -2645,7 +2665,7 @@
        910-DBUPDATE-SEC                SECTION.
       *
            MOVE    "DBUPDATE"      TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -2658,7 +2678,7 @@
        910-DBDELETE-SEC                SECTION.
       *
            MOVE    "DBDELETE"      TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -2671,7 +2691,7 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"          TO  MCP-FUNC.
-           CALL   "MCPSUB"      USING
+           CALL   "MONFUNC"     USING
                                 MCPAREA
                                 MCPDATA-REC.
       *

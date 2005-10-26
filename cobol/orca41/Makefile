@@ -1,7 +1,4 @@
 SRCS = ORCGD01.CBL \
-       ORCGD02.CBL \
-       ORCGD03.CBL \
-       ORCGD04.CBL \
        ORCGDERR.CBL \
        ORCGDID2.CBL \
        ORCGDID1.CBL \

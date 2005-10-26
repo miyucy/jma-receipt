@@ -52,7 +52,6 @@
       *****************************************************************
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
@@ -138,9 +137,8 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"   USING
+           CALL   "MONFUNC"      USING
                                 MCPAREA
-                                ORCMCPAREA
                                 MCPDATA-REC.
       *
            .
