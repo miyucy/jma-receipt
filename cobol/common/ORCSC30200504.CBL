@@ -696,10 +696,12 @@
            MOVE    SPACE               TO  WRK-SRYCD
       *
       *    外来の同日重複チェック
-           IF     (SPA-NYUGAIKBN       =   "2"  )  AND
-                 ((SPA-HKNCOMBINUM NOT =   "9999") AND
-                  (LNK-ORCSC-PG        =   "K02"  ))  OR
-                 ( LNK-ORCSC-PG        =   "K05"   ) 
+           IF     (SPA-NYUGAIKBN       =   "1"  )  OR
+                 ((SPA-HKNCOMBINUM     =   "9999") AND
+                  (LNK-ORCSC-PG        =   "K02" ))  OR
+                 ( LNK-ORCSC-PG        =   "J04"   )
+               CONTINUE
+           ELSE
                EVALUATE    WRK-COM-SRYSYUKBN (01)
       *            静脈注射
                    WHEN    "320"
