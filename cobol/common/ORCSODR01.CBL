@@ -120,7 +120,7 @@
            03  ERRCD-ORDER             PIC X(04).
       *
        01  CONST-AREA.
-           03  CONST-TOKNYUIN-MAX      PIC 9(05)   VALUE   38.
+           03  CONST-TOKNYUIN-MAX      PIC 9(05)   VALUE   39.
            03  CONST-TOKNYUIN-VAL.
                05  PIC    X(03)        VALUE   "101".
                05  PIC    X(09)        VALUE   "190075810".
@@ -198,8 +198,10 @@
                05  PIC    X(09)        VALUE   "190799410".
                05  PIC    X(03)        VALUE   "323".
                05  PIC    X(09)        VALUE   "190808910".
+               05  PIC    X(03)        VALUE   "324".
+               05  PIC    X(09)        VALUE   "190799510".
            03  CONST-TOKNYUIN-R    REDEFINES    CONST-TOKNYUIN-VAL.
-               05  CONST-TOKNYUIN-OCC  OCCURS   38.
+               05  CONST-TOKNYUIN-OCC  OCCURS   39.
                    07  CONST-TOKNYUIN-G        PIC X(03).
                    07  CONST-TOKNYUINCD        PIC X(09).
            03  CONST-ITEMNUM-MAX               PIC 9(05)   VALUE 30.

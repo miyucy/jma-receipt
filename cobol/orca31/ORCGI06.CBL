@@ -1093,6 +1093,10 @@
                MOVE    "3"         TO  WRK-TOKNYUIN-KBN
                MOVE    "22"        TO  WRK-TOKKBNCD
                PERFORM 31011-TOKNYUINLST-SET-SEC
+      *
+               MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+               MOVE    "24"        TO  WRK-TOKKBNCD
+               PERFORM 31011-TOKNYUINLST-SET-SEC
            END-IF
       *
       *    短期滞在手術基本料をコンボに設定
