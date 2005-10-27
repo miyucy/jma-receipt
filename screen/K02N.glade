@@ -120,7 +120,7 @@
       <name>RATE</name>
       <x>752</x>
       <y>8</y>
-      <width>36</width>
+      <width>44</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2717,7 +2717,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>NYUINKIKAN</name>
-      <x>852</x>
+      <x>854</x>
       <y>8</y>
       <width>140</width>
       <height>24</height>
@@ -3251,22 +3251,6 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label164</name>
-      <x>788</x>
-      <y>8</y>
-      <width>64</width>
-      <height>20</height>
-      <label>入院期間</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkButton</class>
       <name>BHELP</name>
       <x>996</x>
@@ -3436,22 +3420,6 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label158</name>
-      <x>770</x>
-      <y>68</y>
-      <width>36</width>
-      <height>20</height>
-      <label>計</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkPandaCombo</class>
       <name>SRYKACOMB</name>
       <x>528</x>
@@ -3492,22 +3460,6 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>SYORIMEI</name>
-      <x>868</x>
-      <y>60</y>
-      <width>96</width>
-      <height>24</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkPandaCombo</class>
       <name>HKNCOMBICOMB</name>
       <x>440</x>
@@ -3545,6 +3497,54 @@
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>SYORIMEI</name>
+      <x>868</x>
+      <y>60</y>
+      <width>96</width>
+      <height>24</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label158</name>
+      <x>770</x>
+      <y>68</y>
+      <width>36</width>
+      <height>20</height>
+      <label>計</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label164</name>
+      <x>793</x>
+      <y>8</y>
+      <width>61</width>
+      <height>24</height>
+      <label>入院期間</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>
