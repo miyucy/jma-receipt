@@ -30,6 +30,8 @@
       *  00.00.01    NACL-森脇     05/10/05  出力順パラメタ追加
       *                                      ＣＳＶ出力
       *                                      統計ファイルをひとつにまとめる
+      *  00.00.02    NACL-森脇     05/10/26  特別療養費追加
+      *                                      MONFUNCに変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -61,7 +63,7 @@
       *
       *KEYの説明-------------------------------------------------------------------------
       *        SKYKBN      請求区分    1:請求済、未請求、2:請求しない
-      *        TEISYUTU    提出先区分  1:社保、2:国保
+      *        TEISYUTU    提出先区分  1:社保、2:国保、3:特別療養費
       *        HKNJANUM    保険者番号  国保の時だけ使用、社保＆請求しない場合はオールゼロ
       *        SYOKBN      処理区分    1:通常分、2:返戻分、3:月遅れ分
       *        NYUGAIKBN   入外区分    1:外来分、2:入院分
@@ -152,7 +154,7 @@
       *
       *PARAの説明---------------------------------------------------------------------
       *        DENPPRTYM   請求日付
-      *        TEISYUTU    提出先区分  0:全部、1:社保、2:国保
+      *        TEISYUTU    提出先区分  0:全部、1:社保、2:国保、3:特別療養費
       *        HKNJANUM    保険者番号  国保の時だけ使用
       *        SYOKBN      処理区分    0:全部、1:通常分、2:返戻分、3:月遅れ分、4:請求しない
       *        NYUGAIKBN   入外区分    O:全部、1:入院分、2:外来分
@@ -239,6 +241,10 @@
            03  WRK-RECEERR             PIC X(200).
       *    検索パス
            03  WRK-PATH                PIC X(64).
+      *----(00.00.02)--ADD-START---
+           03  WRK-PATH-TABLE          PIC X(64).
+           03  WRK-PATH-PATHNAME       PIC X(64).
+      *----(00.00.02)--ADD-END-----
       *
       *    日付編集用
            03  WRK-SYSYMD              PIC X(08).
@@ -374,7 +380,6 @@
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
            COPY    "COMMON-SPA".
       *
@@ -486,9 +491,11 @@
       *        社保をセット
                WHEN    "01"    THRU    "09"
                    MOVE    "1"         TO  WRK-PARA-TEISYUTU
+      *----(00.00.02)--UPD-START---
       *        国保をセット
-               WHEN    "10"    THRU    "20"
-                   MOVE    "2"         TO  WRK-PARA-TEISYUTU
+      *         WHEN    "10"    THRU    "20"
+      *             MOVE    "2"         TO  WRK-PARA-TEISYUTU
+      *----(00.00.02)--UPD-END-----
            END-EVALUATE
       *
            .
@@ -506,28 +513,46 @@
       *    統計用ファイルを開く
            OPEN    I-O                 TOKEI-FILE
       *
+      *----(00.00.02)--UPD-START---
       *    請求社保分集計処理
-           IF        ( WRK-PARA-SYOKBN     NOT = "4" )
-               AND   ( WRK-PARA-TEISYUTU   NOT = "2" )
+           IF        ( WRK-PARA-SYOKBN     NOT =   "4" )
+               AND   ( WRK-PARA-TEISYUTU   NOT =   "2" )
+               AND   ( WRK-PARA-TEISYUTU   NOT =   "3" )
                AND   ( WRK-PARA-HKNJANUM       =   SPACE )
-               MOVE    "SEIKYU-KEY3"       TO  WRK-PATH
+               MOVE    "tbl_seikyu"        TO  WRK-PATH-TABLE
+               MOVE    "key3"              TO  WRK-PATH-PATHNAME
                PERFORM 210-SYUKEI-READ-SEC
            END-IF
       *
       *    請求国保分集計処理
-           IF        ( WRK-PARA-SYOKBN     NOT = "4" )
-               AND   ( WRK-PARA-TEISYUTU   NOT = "1" )
-               MOVE    "SEIKYU-KEY4"       TO  WRK-PATH
+           IF        ( WRK-PARA-SYOKBN     NOT =   "4" )
+               AND   ( WRK-PARA-TEISYUTU   NOT =   "1" )
+               AND   ( WRK-PARA-TEISYUTU   NOT =   "3" )
+               MOVE    "tbl_seikyu"        TO  WRK-PATH-TABLE
+               MOVE    "key4"              TO  WRK-PATH-PATHNAME
                PERFORM 210-SYUKEI-READ-SEC
            END-IF
-      *
+      *----(00.00.02)--UPD-END-----
+      *----(00.00.02)--ADD-START---
+      *    請求特別療養費分集計処理
+           IF        ( WRK-PARA-SYOKBN     NOT =   "4" )
+               AND   ( WRK-PARA-TEISYUTU   NOT =   "1" )
+               AND   ( WRK-PARA-TEISYUTU   NOT =   "2" )
+               MOVE    "tbl_seikyu"        TO  WRK-PATH-TABLE
+               MOVE    "key41"             TO  WRK-PATH-PATHNAME
+               PERFORM 210-SYUKEI-READ-SEC
+           END-IF
+      *----(00.00.02)--ADD-END-----
+      *----(00.00.02)--UPD-START---
       *    請求しない分集計処理
-           IF        ( WRK-PARA-SYOKBN     NOT = "1" )
-               AND   ( WRK-PARA-SYOKBN     NOT = "2" )
-               AND   ( WRK-PARA-SYOKBN     NOT = "3" )
-               MOVE    "SEIKYU-KEY5"       TO  WRK-PATH
+           IF        ( WRK-PARA-SYOKBN     NOT =   "1" )
+               AND   ( WRK-PARA-SYOKBN     NOT =   "2" )
+               AND   ( WRK-PARA-SYOKBN     NOT =   "3" )
+               MOVE    "tbl_seikyu"        TO  WRK-PATH-TABLE
+               MOVE    "key5"              TO  WRK-PATH-PATHNAME
                PERFORM 210-SYUKEI-READ-SEC
            END-IF
+      *----(00.00.02)--UPD-END-----
       *
       *    統計用ファイルを閉じる
            CLOSE                       TOKEI-FILE
@@ -573,13 +598,16 @@
                    PERFORM 220-KOH-SYAHO-SYUKEI-SEC
                END-IF
       *
-      *        国保分集計処理
+      *----(00.00.02)--UPD-START---
+      *        国保分、特別療養費分集計処理
                IF        ( WRK-TEISYUTU    =   "2" )
+                   OR    ( WRK-TEISYUTU    =   "3" )
       *            一般・退職
                    PERFORM 220-IHO-KOKHO-SYUKEI-SEC
       *            老人
                    PERFORM 220-ROU-KOKHO-SYUKEI-SEC
                END-IF
+      *----(00.00.02)--UPD-END-----
       *
       *        請求読み込み
                PERFORM 900-SEIKYU-READ-SEC
@@ -851,9 +879,11 @@
            MOVE    "001"               TO  WRK-KBN
            MOVE    1                   TO  IDX
       *
+      *----(00.00.02)--UPD-START---
       *    レセプト種別区分分類
            EVALUATE    RECE10-HKNNUM-S
                WHEN    "060"
+               WHEN    "068"
                    IF      RECE10-AGE          >=  70
                        EVALUATE    RECE10-KYURATE
                            WHEN    9
@@ -869,6 +899,7 @@
                        END-IF
                    END-IF
                WHEN    "067"
+               WHEN    "069"
                    IF      RECE10-AGE          >=  70
                        EVALUATE    RECE10-KYURATE
                            WHEN    9
@@ -888,6 +919,7 @@
                        END-IF
                    END-IF
            END-EVALUATE
+      *----(00.00.02)--UPD-END-----
       *
       *    保健集計処理
            PERFORM 230-SYUKEI-CHK-SEC
@@ -938,7 +970,7 @@
                GO  TO  230-SYUKEI-CHK-EXT
            END-IF
       *
-      *    レセ種別チェック
+      *----(00.00.02)--UPD-START---
            EVALUATE    WRK-TEISYUTU    ALSO    WRK-HKNKBN
                ALSO    WRK-SYUBETUKBN  ALSO    WRK-PARA-SYUBETUKBN
       *        指定なし
@@ -962,33 +994,45 @@
                WHEN    "1" ALSO    "3" ALSO    "1" ALSO    "08"
       *        社保公費単独
                WHEN    "1" ALSO    "3" ALSO    "2" ALSO    "09"
-      *        国保一般老人９割
+      *        国保、特別療養費一般老人９割
                WHEN    "2" ALSO    "1" ALSO    "1" ALSO    "10"
-      *        国保一般老人８割
+               WHEN    "3" ALSO    "1" ALSO    "1" ALSO    "10"
+      *        国保、特別療養費一般老人８割
                WHEN    "2" ALSO    "1" ALSO    "2" ALSO    "11"
-      *        国保一般被保険者
+               WHEN    "3" ALSO    "1" ALSO    "2" ALSO    "11"
+      *        国保、特別療養費一般被保険者
                WHEN    "2" ALSO    "1" ALSO    "3" ALSO    "12"
-      *        国保一般三歳
+               WHEN    "3" ALSO    "1" ALSO    "3" ALSO    "12"
+      *        国保、特別療養費一般三歳
                WHEN    "2" ALSO    "1" ALSO    "4" ALSO    "13"
-      *        国保退職本人
+               WHEN    "3" ALSO    "1" ALSO    "4" ALSO    "13"
+      *        国保、特別療養費退職本人
                WHEN    "2" ALSO    "1" ALSO    "5" ALSO    "14"
-      *        国保退職老人９割
+               WHEN    "3" ALSO    "1" ALSO    "5" ALSO    "14"
+      *        国保、特別療養費退職老人９割
                WHEN    "2" ALSO    "1" ALSO    "6" ALSO    "15"
-      *        国保退職老人８割
+               WHEN    "3" ALSO    "1" ALSO    "6" ALSO    "15"
+      *        国保、特別療養費退職老人８割
                WHEN    "2" ALSO    "1" ALSO    "7" ALSO    "16"
-      *        国保退職被扶養者
+               WHEN    "3" ALSO    "1" ALSO    "7" ALSO    "16"
+      *        国保、特別療養費退職被扶養者
                WHEN    "2" ALSO    "1" ALSO    "8" ALSO    "17"
-      *        国保退職三歳
+               WHEN    "3" ALSO    "1" ALSO    "8" ALSO    "17"
+      *        国保、特別療養費退職三歳
                WHEN    "2" ALSO    "1" ALSO    "9" ALSO    "18"
-      *        国保老人９割
+               WHEN    "3" ALSO    "1" ALSO    "9" ALSO    "18"
+      *        国保、特別療養費老人９割
                WHEN    "2" ALSO    "2" ALSO    "1" ALSO    "19"
-      *        国保老人８割
+               WHEN    "3" ALSO    "2" ALSO    "1" ALSO    "19"
+      *        国保、特別療養費老人８割
                WHEN    "2" ALSO    "2" ALSO    "2" ALSO    "20"
+               WHEN    "3" ALSO    "2" ALSO    "2" ALSO    "20"
                    CONTINUE
       *        指定したレセ種別が正しくない場合は処理抜ける
                WHEN    OTHER
                    GO  TO  230-SYUKEI-CHK-EXT
            END-EVALUATE
+      *----(00.00.02)--UPD-END-----
       *
       *    患者別集計処理
            PERFORM 240-PTINF-SYUKEI-SEC
@@ -1128,13 +1172,23 @@
                    MOVE    "（国保返戻分）　"  TO  WRK-PRT1-BUNRUI
                WHEN    "2"     ALSO    "3"
                    MOVE    "（国保月遅れ分）"  TO  WRK-PRT1-BUNRUI
+      *----(00.00.02)--ADD-START---
+               WHEN    "3"     ALSO    "1"
+                   MOVE    "（特別療養費分）"  TO  WRK-PRT1-BUNRUI
+               WHEN    "3"     ALSO    "2"
+                   MOVE    "（特別返戻分）　"  TO  WRK-PRT1-BUNRUI
+               WHEN    "3"     ALSO    "3"
+                   MOVE    "（特別月遅れ分）"  TO  WRK-PRT1-BUNRUI
+      *----(00.00.02)--ADD-END-----
            END-EVALUATE
       *
            MOVE    WRK-TEISYUTU    TO  CSV-TEISYUTU
            MOVE    WRK-SYOKBN      TO  CSV-SYOKBN
       *
-      *    国保の場合は保険者名セット
-           IF      WRK-TEISYUTU    =   "2"
+      *----(00.00.02)--UPD-START---
+      *    国保分、特別療養費分の場合は保険者名セット
+           IF        ( WRK-TEISYUTU    =   "2" )
+               OR    ( WRK-TEISYUTU    =   "3" )
                MOVE    SPACE           TO  HKNJAINF-REC
                INITIALIZE                  HKNJAINF-REC
                MOVE    WRK-PARA-HOSPID TO  HKNJA-HOSPID
@@ -1156,6 +1210,7 @@
                                            CSV-HKNJANUM
                MOVE    SPACE           TO  WRK-PRT2-FILLER
            END-IF
+      *----(00.00.02)--UPD-END-----
       *
       *    医療機関名セット
            PERFORM 310-HEAD-SYSKANRI-HEN-SEC
@@ -1424,13 +1479,19 @@
       *
            EVALUATE    TOKEI-TEISYUTU  ALSO    TOKEI-NYUGAIKBN
                WHEN    "1"     ALSO    "1"
-                   MOVE    "＜社保外来＞"  TO  WRK-PRT-LINE
+                   MOVE    "＜社保外来＞"          TO  WRK-PRT-LINE
                WHEN    "1"     ALSO    "2"
-                   MOVE    "＜社保入院＞"  TO  WRK-PRT-LINE
+                   MOVE    "＜社保入院＞"          TO  WRK-PRT-LINE
                WHEN    "2"     ALSO    "1"
-                   MOVE    "＜国保外来＞"  TO  WRK-PRT-LINE
+                   MOVE    "＜国保外来＞"          TO  WRK-PRT-LINE
                WHEN    "2"     ALSO    "2"
-                   MOVE    "＜国保入院＞"  TO  WRK-PRT-LINE
+                   MOVE    "＜国保入院＞"          TO  WRK-PRT-LINE
+      *----(00.00.02)--ADD-START---
+               WHEN    "3"     ALSO    "1"
+                   MOVE    "＜特別療養費外来＞"    TO  WRK-PRT-LINE
+               WHEN    "3"     ALSO    "2"
+                   MOVE    "＜特別療養費入院＞"    TO  WRK-PRT-LINE
+      *----(00.00.02)--ADD-END-----
            END-EVALUATE
       *
       *    見出し行セット
@@ -1560,6 +1621,7 @@
       *
            MOVE    SPACE               TO  WRK-PRT-LINE
       *
+      *----(00.00.02)--UPD-START---
            EVALUATE    TOKEI-TEISYUTU      ALSO    TOKEI-HKNKBN
                ALSO    TOKEI-SYUBETUKBN    ALSO    TOKEI-KBN
                WHEN    "1" ALSO    "1" ALSO    "1" ALSO    "001"
@@ -1598,34 +1660,46 @@
                WHEN    "1" ALSO    "3" ALSO    "2" ALSO    ANY
                    MOVE    "＊公費単独"            TO  WRK-PRT-LINE
                WHEN    "2" ALSO    "1" ALSO    "1" ALSO    ANY
+               WHEN    "3" ALSO    "1" ALSO    "1" ALSO    ANY
                    MOVE    "＊一般（７０歳以上９割）"
                                                    TO  WRK-PRT-LINE
                WHEN    "2" ALSO    "1" ALSO    "2" ALSO    ANY
+               WHEN    "3" ALSO    "1" ALSO    "2" ALSO    ANY
                    MOVE    "＊一般（７０歳以上８割）"
                                                    TO  WRK-PRT-LINE
                WHEN    "2" ALSO    "1" ALSO    "3" ALSO    ANY
+               WHEN    "3" ALSO    "1" ALSO    "3" ALSO    ANY
                    MOVE    "＊一般被保険者"        TO  WRK-PRT-LINE
                WHEN    "2" ALSO    "1" ALSO    "4" ALSO    ANY
+               WHEN    "3" ALSO    "1" ALSO    "4" ALSO    ANY
                    MOVE    "＊一般（３歳未満）"    TO  WRK-PRT-LINE
                WHEN    "2" ALSO    "1" ALSO    "5" ALSO    ANY
+               WHEN    "3" ALSO    "1" ALSO    "5" ALSO    ANY
                    MOVE    "＊退職（本人）"        TO  WRK-PRT-LINE
                WHEN    "2" ALSO    "1" ALSO    "6" ALSO    ANY
+               WHEN    "3" ALSO    "1" ALSO    "6" ALSO    ANY
                    MOVE    "＊退職（７０歳以上９割）"
                                                    TO  WRK-PRT-LINE
                WHEN    "2" ALSO    "1" ALSO    "7" ALSO    ANY
+               WHEN    "3" ALSO    "1" ALSO    "7" ALSO    ANY
                    MOVE    "＊退職（７０歳以上８割）"
                                                    TO  WRK-PRT-LINE
                WHEN    "2" ALSO    "1" ALSO    "8" ALSO    ANY
+               WHEN    "3" ALSO    "1" ALSO    "8" ALSO    ANY
                    MOVE    "＊退職（被扶養者）"    TO  WRK-PRT-LINE
                WHEN    "2" ALSO    "1" ALSO    "9" ALSO    ANY
+               WHEN    "3" ALSO    "1" ALSO    "9" ALSO    ANY
                    MOVE    "＊退職（３歳未満）"    TO  WRK-PRT-LINE
                WHEN    "2" ALSO    "2" ALSO    "1" ALSO    ANY
+               WHEN    "3" ALSO    "2" ALSO    "1" ALSO    ANY
                    MOVE    "＊老人９割"            TO  WRK-PRT-LINE
                WHEN    "2" ALSO    "2" ALSO    "2" ALSO    ANY
+               WHEN    "3" ALSO    "2" ALSO    "2" ALSO    ANY
                    MOVE    "＊老人８割"            TO  WRK-PRT-LINE
                WHEN    OTHER
                    GO  TO  3201-SYUBETU-BODY-HEN-EXT
            END-EVALUATE
+      *----(00.00.02)--UPD-END-----
       *
       *    見出し行セット
            PERFORM 320-BODY-SET-SEC
@@ -1643,12 +1717,15 @@
       *****************************************************************
        3201-KBN-BODY-HEN-SEC       SECTION.
       *
-      *    国保の場合は抜ける
-           IF      WRK-TEISYUTU    =   "2"
+      *----(00.00.02)--UPD-START---
+      *    国保、特別療養費の場合は抜ける
+           IF        ( WRK-TEISYUTU    =   "2" )
+               OR    ( WRK-TEISYUTU    =   "3" )
                MOVE    TOKEI-KBN       TO  WRK-KBN
                MOVE    SPACE           TO  CSV-KBN
                GO  TO  3201-KBN-BODY-HEN-EXT
            END-IF
+      *----(00.00.02)--UPD-END-----
       *
            MOVE    SPACE               TO  WRK-PRT-LINE
       *
@@ -1700,21 +1777,12 @@
       *
       *    保険番号読込み
            INITIALIZE                  HKNNUM-REC
-           MOVE   WRK-PARA-HOSPID  TO  HKN-HOSPID
-           MOVE   TOKEI-KBN        TO  HKN-HKNNUM
-           MOVE   HKNNUM-REC       TO  MCPDATA-REC
-           MOVE   "DBSELECT"       TO  MCP-FUNC
-           MOVE   "HKNNUM-KEY2"    TO  ORC-DBPATH
-           CALL   "ORCMCPSUB"          USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-           IF      MCP-RC          =   ZERO
-               MOVE    "HKNNUM-KEY2"   TO  ORC-DBPATH
-               PERFORM 900-HKNNUM-READ-SEC
-           ELSE
-               MOVE    1               TO  FLG-HKNNUM
-           END-IF
+           MOVE    WRK-PARA-HOSPID TO  HKN-HOSPID
+           MOVE    TOKEI-KBN       TO  HKN-HKNNUM
+           MOVE    HKNNUM-REC      TO  MCPDATA-REC
+           MOVE    "tbl_hknnum"    TO  WRK-PATH-TABLE
+           MOVE    "key2"          TO  WRK-PATH-PATHNAME
+           PERFORM 900-HKNNUM-SELECT-SEC
       *
            PERFORM UNTIL   FLG-HKNNUM      =   1
                IF        ( HKN-TEKSTYMD    <=  WRK-SYSYMD )
@@ -1747,8 +1815,7 @@
                END-IF
       *
                IF      FLG-HKNNUM           =   ZERO
-                   MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
-                   PERFORM 900-HKNNUM-READ-SEC
+                   PERFORM 900-HKNNUM-FETCH-SEC
                ELSE
                    MOVE    HKN-HBTNUM      TO  WRK-Z4
                    INITIALIZE                  ORCSKANACHKAREA
@@ -1763,12 +1830,7 @@
                END-IF 
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"  TO  MCP-FUNC
-           MOVE    "HKNNUM-KEY2"    TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 900-HKNNUM-CLOSE-SEC
       *
            .
        3201-HKNNUM-HENSYU-EXT.
@@ -2093,10 +2155,13 @@
       *****************************************************************
        3203-HKNKBN-BODY-END-SEC    SECTION.
       *
-      *    国保は処理抜ける
-           IF      WRK-TEISYUTU    =   "2"
+      *----(00.00.02)--UPD-START---
+      *    国保、特別療養費は処理抜ける
+           IF        ( WRK-TEISYUTU    =   "2" )
+               OR    ( WRK-TEISYUTU    =   "3" )
                GO  TO  3203-HKNKBN-BODY-END-EXT
            END-IF
+      *----(00.00.02)--UPD-END-----
       *
       *     MOVE    SPACE               TO  WRK-PRT-LINE-AREA
       *
@@ -2294,23 +2359,25 @@
       *****************************************************************
        900-SYS1001-READ-SEC        SECTION.
       *
+      *----(00.00.02)--UPD-START---
            INITIALIZE                  SYS-1001-REC
            MOVE    "1001"          TO  SYS-1001-KANRICD
-           MOVE    "*"             TO  SYS-1001-KBNCD
+           MOVE    "*%"            TO  SYS-1001-KBNCD
+           MOVE    WRK-SYSYMD      TO  SYS-1001-STYUKYMD
+                                       SYS-1001-EDYUKYMD
            MOVE    SYS-1001-REC    TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    WRK-SYSYMD      TO  ORC-DBYMD
-           MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF        ( MCP-RC      =   ZERO )
                MOVE    "DBFETCH"       TO  MCP-FUNC
-               MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
                                            MCPAREA
-                                           ORCMCPAREA
                                            MCPDATA-REC
                IF        ( MCP-RC      =   ZERO )
                    MOVE    ZERO            TO  FLG-SYSKANRI
@@ -2324,11 +2391,12 @@
            END-IF
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
+      *----(00.00.02)--UPD-END-----
             .
        900-SYS1001-READ-EXT.
            EXIT.
@@ -2355,12 +2423,14 @@
                MOVE    "99999999"          TO  RECE10-XXEDHKNJANUM
            END-IF
            MOVE    RECE10-REC          TO  MCPDATA-REC
+      *----(00.00.02)--UPD-START---
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"             USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+           MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
+           MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *----(00.00.02)--UPD-END-----
            IF      MCP-RC          =   ZERO
                PERFORM 900-SEIKYU-READ-SEC
            ELSE
@@ -2375,11 +2445,12 @@
       *****************************************************************
        900-SEIKYU-READ-SEC         SECTION.
       *
-           MOVE    WRK-PATH        TO  ORC-DBPATH
-           MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
+      *----(00.00.02)--UPD-START---
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
+           MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          =   ZERO
                MOVE    ZERO            TO  FLG-RECE10
@@ -2390,18 +2461,30 @@
            END-IF
       *
       *    提出先チェック
-           IF        ( RECE10-HKNNUM-S =   "060" )
-               OR    ( RECE10-HKNNUM-S =   "067" )
-               IF      WRK-PARA-TEISYUTU   =   "1"
-                   GO  TO  900-SEIKYU-READ-SEC
-               END-IF
-               MOVE    "2"             TO  WRK-TEISYUTU
-           ELSE
-               IF      WRK-PARA-TEISYUTU   =   "2"
-                   GO  TO  900-SEIKYU-READ-SEC
-               END-IF
-               MOVE    "1"             TO  WRK-TEISYUTU
-           END-IF
+           EVALUATE    RECE10-HKNNUM-S
+      *        国保
+               WHEN    "060"
+               WHEN    "067"
+                   IF        ( WRK-PARA-TEISYUTU   =   "1" )
+                       OR    ( WRK-PARA-TEISYUTU   =   "3" )
+                       GO  TO  900-SEIKYU-READ-SEC
+                   END-IF
+                   MOVE    "2"             TO  WRK-TEISYUTU
+      *        特別療養費
+               WHEN    "068"
+               WHEN    "069"
+                   IF        ( WRK-PARA-TEISYUTU   =   "1" )
+                       OR    ( WRK-PARA-TEISYUTU   =   "2" )
+                       GO  TO  900-SEIKYU-READ-SEC
+                   END-IF
+                   MOVE    "3"             TO  WRK-TEISYUTU
+               WHEN    OTHER
+                   IF        ( WRK-PARA-TEISYUTU   =   "2" )
+                       OR    ( WRK-PARA-TEISYUTU   =   "3" )
+                       GO  TO  900-SEIKYU-READ-SEC
+                   END-IF
+                   MOVE    "1"             TO  WRK-TEISYUTU
+           END-EVALUATE
       *
       *    保険者チェック
            IF        ( WRK-PARA-HKNJANUM   NOT =   SPACE )
@@ -2453,7 +2536,7 @@
                MOVE    "1"             TO  WRK-ZAIKBN
            END-IF
       *
-           IF      WRK-PATH        =   "SEIKYU-KEY5"
+           IF      WRK-PATH-PATHNAME   =   "key5"
       *        請求区分チェック（請求しない分）
                IF      RECE10-SKYKBN   NOT =   "0"
                    GO  TO  900-SEIKYU-READ-SEC
@@ -2465,7 +2548,8 @@
            ELSE
       *        請求区分チェック（請求分）
                MOVE    "1"             TO  WRK-SKYKBN
-               IF      WRK-TEISYUTU    =   "2"
+               IF        ( WRK-TEISYUTU    =   "2" )
+                   OR    ( WRK-TEISYUTU    =   "3" )
                    MOVE    RECE10-HKNJANUM-S   TO  WRK-HKNJANUM
                ELSE
                    MOVE    "00000000"          TO  WRK-HKNJANUM
@@ -2500,6 +2584,7 @@
                AND   ( PTINF-TSTPTNUMKBN   =   "1"  )
                GO  TO  900-SEIKYU-READ-SEC
            END-IF
+      *----(00.00.02)--UPD-END-----
       *
            .
        900-SEIKYU-READ-EXT.
@@ -2510,34 +2595,99 @@
       *****************************************************************
        900-SEIKYU-CLOSE-SEC        SECTION.
       *
-           MOVE    WRK-PATH        TO  ORC-DBPATH
-           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
+      *----(00.00.02)--UPD-START---
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
+           MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
+      *----(00.00.02)--UPD-END-----
       *
            .
        900-SEIKYU-CLOSE-EXT.
            EXIT.
       *
+      *----(00.00.02)--UPD-START---
+      *****************************************************************
+      *    保険番号マスター読込
+      *****************************************************************
+       900-HKNNUM-SELECT-SEC       SECTION.
+      *
+           MOVE   "DBSELECT"           TO  MCP-FUNC
+           MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
+           MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          =   ZERO
+               PERFORM 900-HKNNUM-FETCH-SEC
+           ELSE
+               MOVE    1               TO  FLG-HKNNUM
+           END-IF
+      *
+           .
+       900-HKNNUM-SELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険番号マスター読込
+      *****************************************************************
+       900-HKNNUM-FETCH-SEC        SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
+           MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          =   ZERO
+               MOVE    MCPDATA-REC     TO  HKNNUM-REC
+               MOVE    ZERO            TO  FLG-HKNNUM
+           ELSE
+               INITIALIZE                  HKNNUM-REC
+               MOVE    1               TO  FLG-HKNNUM
+           END-IF
+      *
+           .
+       900-HKNNUM-FETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険番号マスター読込
+      *****************************************************************
+       900-HKNNUM-CLOSE-SEC        SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    WRK-PATH-TABLE      TO  MCP-TABLE
+           MOVE    WRK-PATH-PATHNAME   TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       900-HKNNUM-CLOSE-EXT.
+           EXIT.
+      *
+      *----(00.00.02)--UPD-END-----
       *****************************************************************
       *    患者情報マスタ読込
       *****************************************************************
        900-PTINF-READ-SEC          SECTION.
       *
+      *----(00.00.02)--UPD-START---
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "PTINF-KEY"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_ptinf"     TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          =   ZERO
                MOVE    "DBFETCH"       TO  MCP-FUNC
-               MOVE    "PTINF-KEY"     TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
+               MOVE    "tbl_ptinf"     TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
                                            MCPAREA
-                                           ORCMCPAREA
                                            MCPDATA-REC
                IF      MCP-RC          =   ZERO
                    MOVE    ZERO            TO  FLG-PTINF
@@ -2552,36 +2702,15 @@
            END-IF
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           MOVE    "PTINF-KEY"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_ptinf"     TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
+      *----(00.00.02)--UPD-END-----
       *
            .
        900-PTINF-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    保険番号マスター読込
-      *****************************************************************
-       900-HKNNUM-READ-SEC         SECTION.
-      *
-           MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-           IF      MCP-RC          =   ZERO
-               MOVE    MCPDATA-REC     TO  HKNNUM-REC
-               MOVE    ZERO            TO  FLG-HKNNUM
-           ELSE
-               INITIALIZE                  HKNNUM-REC
-               MOVE    1               TO  FLG-HKNNUM
-           END-IF
-      *
-           .
-       900-HKNNUM-READ-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2589,18 +2718,19 @@
       *****************************************************************
        900-HKNJAINF-READ-SEC       SECTION.
       *
+      *----(00.00.02)--UPD-START---
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "HKNJAINF-KEY"  TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_hknjainf"  TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"       TO  MCP-FUNC
-               MOVE    "HKNJAINF-KEY"  TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
+               MOVE    "tbl_hknjainf"  TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
                                            MCPAREA
-                                           ORCMCPAREA
                                            MCPDATA-REC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO            TO  FLG-HKNJAINF
@@ -2613,11 +2743,12 @@
            END-IF
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           MOVE    "HKNJAINF-KEY"  TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_hknjainf"  TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
+      *----(00.00.02)--UPD-END-----
       *
            .
        900-HKNJAINF-READ-EXT.
@@ -2658,17 +2789,17 @@
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
       *
+      *----(00.00.02)--UPD-START---
            MOVE    "DBOPEN"        TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC.
       *
            MOVE    "DBSTART"       TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC.
+      *----(00.00.02)--UPD-END-----
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -2678,17 +2809,17 @@
       *****************************************************************
        900-DBDISCONNECT-SEC        SECTION.
       *
+      *----(00.00.02)--UPD-START---
            MOVE    "DBCOMMIT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC.
       *
            MOVE    "DBDISCONNECT"  TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC.
+      *----(00.00.02)--UPD-END-----
            .
        900-DBDISCONNECT-EXT.
            EXIT.

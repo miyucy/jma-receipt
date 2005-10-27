@@ -1491,3 +1491,25 @@ path	key40	{
 		;
 	};
 };
+
+path	key41	{
+	DBSELECT	{
+		DECLARE tbl_seikyu_key41_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu
+                WHERE (      HOSPID      =   :HOSPID     )
+                  AND (      HKNNUM_S    =  '068'                   
+                        OR   HKNNUM_S    =  '069'        ) 
+                  AND (      RECESYUBETU <>  '0000'      ) 
+                  AND (   (( SRYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )
+                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
+                       OR (( SKYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )) )
+                  AND (      HKNJANUM_S  >=  :XXSTHKNJANUM  
+                       AND   HKNJANUM_S  <=  :XXEDHKNJANUM  ) 
+                ORDER  BY  HKNJANUM_S   
+		;
+	};
+};
+
