@@ -1775,6 +1775,7 @@
       *****************************************************************
        3201-HKNNUM-HENSYU-SEC      SECTION.
       *
+      *----(00.00.02)--UPD-START---
       *    保険番号読込み
            INITIALIZE                  HKNNUM-REC
            MOVE    WRK-PARA-HOSPID TO  HKN-HOSPID
@@ -1831,6 +1832,7 @@
            END-PERFORM
       *
            PERFORM 900-HKNNUM-CLOSE-SEC
+      *----(00.00.02)--UPD-END-----
       *
            .
        3201-HKNNUM-HENSYU-EXT.
@@ -2791,11 +2793,15 @@
       *
       *----(00.00.02)--UPD-START---
            MOVE    "DBOPEN"        TO  MCP-FUNC.
+           MOVE    LOW-VALUE       TO  MCP-TABLE.
+           MOVE    LOW-VALUE       TO  MCP-PATHNAME.
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC.
       *
            MOVE    "DBSTART"       TO  MCP-FUNC.
+           MOVE    LOW-VALUE       TO  MCP-TABLE.
+           MOVE    LOW-VALUE       TO  MCP-PATHNAME.
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC.
@@ -2811,11 +2817,15 @@
       *
       *----(00.00.02)--UPD-START---
            MOVE    "DBCOMMIT"      TO  MCP-FUNC.
+           MOVE    LOW-VALUE       TO  MCP-TABLE.
+           MOVE    LOW-VALUE       TO  MCP-PATHNAME.
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC.
       *
            MOVE    "DBDISCONNECT"  TO  MCP-FUNC.
+           MOVE    LOW-VALUE       TO  MCP-TABLE.
+           MOVE    LOW-VALUE       TO  MCP-PATHNAME.
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC.
