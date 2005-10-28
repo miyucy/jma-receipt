@@ -26,4 +26,14 @@ data	{
 	};
 };
 
-#include "orcadb.inc"
+db	{
+	tbl_syskanri;
+	tbl_ptnum;
+	tbl_ptinf;
+	tbl_jobkanri;
+	view_I001;
+};
+db	"shell"	{
+	shell;
+};
+
