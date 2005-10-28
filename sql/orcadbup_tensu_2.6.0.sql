@@ -5,7 +5,7 @@
 --                                   --
 
 -- 入院用システム予約コード作成      --
--- 099999915 療養担当手当（北海道限定）--
+-- 099999917 療養担当手当（北海道限定）--
 
 insert into tbl_tensu (srycd,yukostymd,yukoedymd,srykbn,srysyukbn,yukoketa,name,kanayukoketa,kananame,tensikibetu,ten,tanicd,datakbn,
 chuksncd,chuksntsuban,kgnage,jgnage,ageksnkgn1,ageksnjgn1,ageksnsrycd1,ageksnkgn2,ageksnjgn2,ageksnsrycd2,ageksnkgn3,
