@@ -159,6 +159,7 @@
       *  02.06.18    NACL-ÌçÏÆ    05/10/04  Àº¿À¿©»öÎÅÍÜµ­ºÜ½¤Àµ
       *
       *  02.07.01    NACL-Æ£¸¶    05/08/20  ÆÃÊÌÎÅÍÜÈñÂÐ±þ
+      *  02.07.02    NACL-¾®Æ¦Âô  05/10/28  ÆÃµ­»ö¹à¡¡Àè¿Ê¡¢À©Ä¶¡¡ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -688,6 +689,8 @@
            03  CONS-TOKKI10        PIC X(14) VALUE "00000099990110".
            03  CONS-TOKKI11        PIC X(14) VALUE "00000099990111".
            03  CONS-TOKKI12        PIC X(14) VALUE "00000099990112".
+           03  CONS-TOKKI13        PIC X(14) VALUE "00000099990113".
+           03  CONS-TOKKI14        PIC X(14) VALUE "00000099990114".
       *
       *    ÉÂ¾²¿ôÊÔ½¸¥Õ¥é¥°ÊÔ½¸¤Î°Ù¤Î¥³¡¼¥É¡ÊÆÃÄê¼À´µÎÅÍÜ»ØÆ³ÎÁÅù¡Ë
            03  CONS-SIDORYO1       PIC X(09) VALUE "113001810".
@@ -1576,7 +1579,9 @@
                                                        CONS-TOKKI9 OR
                                                        CONS-TOKKI10 OR
                                                        CONS-TOKKI11 OR
-                                                       CONS-TOKKI12
+                                                       CONS-TOKKI12 OR
+                                                       CONS-TOKKI13 OR
+                                                       CONS-TOKKI14
                                       MOVE    1    TO      FLG-TOKKI
                                       PERFORM   21013-TOKKI-HENSYU-SEC
                                  ELSE
@@ -1913,7 +1918,9 @@
                                      OR  CONS-TOKKI9(6:9)
                                      OR  CONS-TOKKI10(6:9)
                                      OR  CONS-TOKKI11(6:9)
-                                     OR  CONS-TOKKI12(6:9) )
+                                     OR  CONS-TOKKI12(6:9)
+                                     OR  CONS-TOKKI13(6:9)
+                                     OR  CONS-TOKKI14(6:9) )
                   COMPUTE   RECE64-MEISAISU    =  RECE64-MEISAISU
                                                -  1
                   MOVE      SRY-SRYCD(IDX2)   TO  WRK-SRYCD
@@ -1951,7 +1958,9 @@
                                        OR  CONS-TOKKI9(6:9)
                                        OR  CONS-TOKKI10(6:9)
                                        OR  CONS-TOKKI11(6:9)
-                                       OR  CONS-TOKKI12(6:9) )
+                                       OR  CONS-TOKKI12(6:9)
+                                       OR  CONS-TOKKI13(6:9)
+                                       OR  CONS-TOKKI14(6:9) )
               OR     ( SRY-SRYCD(IDX2)(1:3)  =  "001"        )
               OR     ((SRY-SRYCD(IDX2)(1:3)  =  "059") AND
                       (TNS-TEN               =  ZERO )       )
@@ -3306,6 +3315,10 @@
                        MOVE    "11"      TO      WRK-TOKKI
                    WHEN    CONS-TOKKI12
                        MOVE    "12"      TO      WRK-TOKKI
+                   WHEN    CONS-TOKKI13
+                       MOVE    "13"      TO      WRK-TOKKI
+                   WHEN    CONS-TOKKI14
+                       MOVE    "14"      TO      WRK-TOKKI
                END-EVALUATE
              WHEN        2
                EVALUATE    SRY-SRYCD(IDX2)
@@ -3331,6 +3344,10 @@
                        MOVE    "11"      TO      WRK-TOKKI
                    WHEN    CONS-TOKKI12(6:9)
                        MOVE    "12"      TO      WRK-TOKKI
+                   WHEN    CONS-TOKKI13(6:9)
+                       MOVE    "13"      TO      WRK-TOKKI
+                   WHEN    CONS-TOKKI14(6:9)
+                       MOVE    "14"      TO      WRK-TOKKI
                END-EVALUATE
            END-EVALUATE
       *
