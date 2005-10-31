@@ -2119,8 +2119,27 @@
       *        算定履歴検索（診療日降順）
                SET     TBL-TOK             TO  IDX
                MOVE    TBL-TOKSRYCD  (TBL-TOK) TO  WRK-SRYCD
+               INITIALIZE                  SANTEI-REC
+               MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+               MOVE    SPA-PTID            TO  SANTEI-PTID
+               MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
+               MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+               MOVE    ZERO                TO  SANTEI-SRYKA
+      *
                MOVE    "SANTEI-KEY3"       TO  WRK-DBPATH
-               PERFORM 100111-SANTEI-KEN-SEC
+               MOVE    SANTEI-REC          TO  MCPDATA-REC
+               MOVE    "DBSELECT"          TO  MCP-FUNC
+               MOVE    WRK-DBPATH      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    WRK-DBPATH      TO  ORC-DBPATH
+                   PERFORM 920-SANTEI-READ-SEC
+               ELSE
+                   MOVE    1                   TO  FLG-SANTEI
+               END-IF
                PERFORM
                    UNTIL   FLG-SANTEI          =   1
                    IF     (SANTEI-MSANTEICNT   >   ZERO      ) AND
@@ -2144,6 +2163,8 @@
                    MOVE    WRK-DBPATH      TO  ORC-DBPATH
                    PERFORM 920-SANTEI-READ-SEC
                END-PERFORM
+               MOVE    WRK-DBPATH          TO  ORC-DBPATH
+               PERFORM 900-DBCLOSE-SEC
            END-PERFORM
       *
       *    訂正の時、初回算定日と診療日が同じ時、初回分とする
@@ -4556,6 +4577,7 @@
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
+                                        MCPDATA-REC
            .
        900-DBCLOSE-EXT.
            EXIT.
