@@ -772,7 +772,8 @@
                       ((WRK-LCOMB-KOH1HKNNUM(IDZ)(1:2) = "99" ) OR
                        (WRK-LCOMB-KOH2HKNNUM(IDZ)(1:2) = "99" ) OR
                        (WRK-LCOMB-KOH3HKNNUM(IDZ)(1:2) = "99" ) OR
-                       (WRK-LCOMB-KOH4HKNNUM(IDZ)(1:2) = "99" )))
+                       (WRK-LCOMB-KOH4HKNNUM(IDZ)(1:2) = "99" ) OR
+                       (WRK-LCOMB-HKNNUM(IDZ)(1:1)     = "9"  )))
                ADD     1               TO  CNT-COMB
       ******** INITIALIZE                  NC01PARA-REC
       *        MOVE    SPA-TERMID      TO  PARA-NC01-TERMID
