@@ -369,6 +369,9 @@
       *    印刷ＤＢ更新サブ
            COPY    "CPORCSPRT.INC".
       *
+      *    ファイル削除パラメタ
+           COPY    "CPORCSFDEL.INC".
+      *
       *    半角チェックサブ
            COPY    "CPORCSKANACHK.INC".
       *
@@ -565,11 +568,16 @@
            PERFORM 300-PRINT-HENSYU-SEC
       *
       *    統計用ファイルを閉じる
-           CLOSE   RECECSV-FILE
+           CLOSE                       RECECSV-FILE
            CLOSE                       TOKEI-FILE
       *    統計用ファイルをクリアする
            OPEN    OUTPUT              TOKEIX-FILE
            CLOSE                       TOKEIX-FILE
+      *    ファイル削除
+           MOVE    ZERO            TO  IF-RESULT
+           MOVE    TOKEIPARA       TO  IF-FILENAME
+           CALL    "orcfiledel"        USING
+                                       ORCSFDELAREA
       *
            MOVE    1                   TO  FLG-END
       *
