@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.01.01    MCC-藤原     01/09/21  JOINの修正      
+      *  02.07.02    NACL-藤原    05/10/31  MONFUNC対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -47,7 +48,6 @@
       *    レセプト作成指示共通パラメタ
            COPY    "H01COMMON-SPA".
       *
-
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                           PIC 9(01).
@@ -62,8 +62,6 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-      *     
-           COPY    "CPORCMCP.INC".  
       *
       *****************************************************************
       *    連絡　領域
@@ -161,11 +159,11 @@
       *****************************************************************
        900-PUT-WINDOW                            SECTION.
       *
-           MOVE   "PUTWINDOW"                    TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"                     USING
-                                                  MCPAREA
-                                                  ORCMCPAREA
-                                                  MCPDATA-REC.
+           MOVE   "PUTWINDOW"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           .
       *
        900-PUT-WINDOW-EXT.
            EXIT.

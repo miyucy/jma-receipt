@@ -3,7 +3,7 @@ name	orca43;
 arraysize	20;
 textsize	400;
 
-bind	""		"OpenCOBOL"	"ORCGH01";
+bind	""		    "OpenCOBOL"	"ORCGH01";
 bind	"H01"		"OpenCOBOL"	"ORCGH01";
 bind	"H99"		"OpenCOBOL"	"ORCGH99";
 bind	"HERR"		"OpenCOBOL"	"ORCGHERR";
@@ -16,11 +16,24 @@ data	{
 	spa	orcaspa;
 	window	{
 		H01;
-                H99;
+		H99;
 		HERR;
-                HID1;
+		HID1;
 	};
 };
 
-#include "orcadb.inc"
+db	{
+	tbl_syskanri;
+	tbl_ptnum;
+	tbl_lock;
+	tbl_ldmap;
+	tbl_seikyu;
+	tbl_kohsky;
+	tbl_ptinf;
+};
+
+db	"shell"	{
+	shell;
+};
+
 

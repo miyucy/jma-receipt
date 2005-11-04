@@ -19,7 +19,7 @@
        PROGRAM-ID.                 ORCGTERR.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
-      *  サブシステム名    : セブと指示
+      *  サブシステム名    : 総括表・公費請求書
       *  コンポーネント名  : エラーメッセージ（ＥＲＲ）
       *  管理者            : 
       *  作成日付    作業者        記述
@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.01.01    MCC-藤原     01/09/21  JOINの修正      
+      *  02.07.01    NACL-藤原    05/10/31  MONFUNC対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -37,7 +38,6 @@
       *
        DATA                        DIVISION.
       *FILE                        SECTION.
-      *
       *
        WORKING-STORAGE             SECTION.
       *
@@ -58,8 +58,6 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-      *     
-           COPY    "CPORCMCP.INC".  
       *
       *****************************************************************
       *    連絡　領域
@@ -138,12 +136,10 @@
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *
-           MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"   USING
-                                MCPAREA
-                                ORCMCPAREA
-                                MCPDATA-REC.
-      *
+           MOVE   "PUTWINDOW"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
        900-PUT-WINDOW-EXT.
            EXIT.

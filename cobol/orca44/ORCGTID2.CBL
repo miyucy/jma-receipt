@@ -19,7 +19,7 @@
        PROGRAM-ID.                               ORCGTID2.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
-      *  サブシステム名    : レセプト作成指示
+      *  サブシステム名    : 総括表・公費請求書
       *  コンポーネント名  : 確認画面２（ＴＩＤ２）
       *  管理者            : 
       *  作成日付    作業者        記述
@@ -60,8 +60,6 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-      *     
-           COPY    "CPORCMCP.INC".  
       *
       *****************************************************************
       *    連絡　領域
@@ -80,7 +78,6 @@
            COPY    "TERR.INC".
            COPY    "TID1.INC".
            COPY    "TID2.INC".
-
       *
        PROCEDURE                                 DIVISION    USING
                                                  MCPAREA
@@ -164,12 +161,11 @@
       *****************************************************************
        900-PUT-WINDOW                            SECTION.
       *
-           MOVE   "PUTWINDOW"                    TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"                     USING
-                                                  MCPAREA
-                                                  ORCMCPAREA
-                                                  MCPDATA-REC.
-      *
+           MOVE   "PUTWINDOW"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           .
        900-PUT-WINDOW-EXT.
            EXIT.
       *

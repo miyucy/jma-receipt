@@ -26,6 +26,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  02.07.01    NACL-藤原    05/10/31  MONFUNC対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -100,10 +101,8 @@
            03  WRK-RENNUM          PIC 9(04).
            03  WRK-NUM             PIC ZZ9.
            03  WRK-MOTOPG          PIC X(08).
-           03  WRK-PATH.
-               05  FILLER          PIC S9(9)   BINARY.  
-               05  FILLER          PIC S9(9)   BINARY.  
-               05  FILLER          PIC S9(9)   BINARY.  
+           03  WRK-MCP-TABLE       PIC X(64).
+           03  WRK-MCP-PATHNAME    PIC X(64).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -123,11 +122,9 @@
                05  WRK-SS          PIC X(02).
       *
       *    スパ領域（ワーク）
-           COPY    "COMMON-SPA"
-                                   REPLACING  //SPA-//
+           COPY    "COMMON-SPA"    REPLACING  //SPA-//
                                    BY         //WRK-SPA-//.
       *     
-           COPY    "ORCA-DBPATH".
            COPY    "ORCA-DBMETA".
       *
        01  WRK-CONS-AREA.
@@ -387,10 +384,10 @@
                    MOVE    SMCNDATE-YMD        TO  BTPARA-UPYMD
                    MOVE    SMCNDATE-HMS        TO  BTPARA-UPHMS
                    MOVE    BTPARA-REC          TO  MCPDATA-REC
-                   MOVE    PATH-TBL-BTPARA-UPD1
-                                               TO  MCP-PATH
+                   MOVE    "tbl_btpara"        TO  MCP-TABLE
+                   MOVE    "upd1"              TO  MCP-PATHNAME
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
-                   CALL    "MCPSUB"            USING
+                   CALL    "MONFUNC"           USING
                                                MCPAREA
                                                MCPDATA-REC
                    IF      MCP-RC      NOT =   ZERO
@@ -549,8 +546,8 @@
            MOVE    SPA-NAI-T02-TSHELLID (SPA-NAI-T02-SELNUM1)
                                        TO  BTPARA-SCRIPTID
            MOVE    BTPARA-REC          TO  MCPDATA-REC
-           MOVE    PATH-TBL-BTPARA-KEY3
-                                       TO  MCP-PATH
+           MOVE    "tbl_btpara"        TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 4100111-SHELLID-LST-SEC
       *
            MOVE    2                   TO  SPA-GMN-T02-CUR
@@ -564,11 +561,12 @@
        4100111-SHELLID-LST-SEC         SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    PATH-TBL-BTPARA-KEY3    TO  MCP-PATH
+               MOVE    "tbl_btpara"        TO  MCP-TABLE
+               MOVE    "key3"              TO  MCP-PATHNAME
                PERFORM 900-BTPARA-READ-N-SEC
            ELSE
                INITIALIZE                  BTPARA-REC
@@ -624,15 +622,14 @@
                    END-IF
                END-IF
       *
-               MOVE    PATH-TBL-BTPARA-KEY3    TO  MCP-PATH
+               MOVE    "tbl_btpara"        TO  MCP-TABLE
+               MOVE    "key3"              TO  MCP-PATHNAME
                PERFORM 900-BTPARA-READ-N-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    PATH-TBL-BTPARA-KEY3    TO  MCP-PATH
-           CALL    "MCPSUB"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_btpara"        TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            IF    ( IDX                 >=  WRK-CONS-PARALST-MAX )  AND
                  ( FLG-BTPARA          =   ZERO                 )
@@ -738,7 +735,7 @@
                        ELSE
                            INITIALIZE                  HKNJAINF-REC
                            MOVE    SPA-HOSPID      TO  HKNJA-HOSPID
-                           MOVE   SPA-GMN-T02-PARA TO HKNJA-HKNJANUM
+                           MOVE   SPA-GMN-T02-PARA TO  HKNJA-HKNJANUM
                            MOVE    HKNJAINF-REC    TO  MCPDATA-REC
                            PERFORM 900-HKNJA-READ-SEC
                            IF      FLG-HKNJAINF    =   ZERO
@@ -790,8 +787,8 @@
                            MOVE    SPA-GMN-T02-PARA 
                                                TO  BTPARA-INFO-PTNUM
                    END-EVALUATE
-                   MOVE    PATH-TBL-BTPARA-KEY2
-                                               TO  WRK-PATH
+                   MOVE    "tbl_btpara"        TO  WRK-MCP-TABLE
+                   MOVE    "key2"              TO  WRK-MCP-PATHNAME
                    PERFORM 900-BTPARA-READ-SEC
                    IF      FLG-BTPARA          =   ZERO
                        IF    ( SPA-NAI-T02-SELNUM2 >   ZERO            )
@@ -840,8 +837,8 @@
                                        TO  BTPARA-SHELLID
            MOVE    SPA-NAI-T02-TSHELLID (SPA-NAI-T02-SELNUM1)
                                        TO  BTPARA-SCRIPTID
-           MOVE    PATH-TBL-BTPARA-KEY6
-                                       TO  WRK-PATH
+           MOVE    "tbl_btpara"        TO  WRK-MCP-TABLE
+           MOVE    "key6"              TO  WRK-MCP-PATHNAME
            PERFORM 900-BTPARA-READ-SEC
            COMPUTE WRK-RENNUM  =   BTPARA-RENNUM   +   1
       *
@@ -866,11 +863,12 @@
            MOVE    SMCNDATE-YMD        TO  BTPARA-UPYMD
            MOVE    SMCNDATE-HMS        TO  BTPARA-UPHMS
            MOVE    BTPARA-REC          TO  MCPDATA-REC
-           MOVE    PATH-TBL-BTPARA-KEY TO  MCP-PATH
+           MOVE    "tbl_btpara"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                           MCPAREA
-                                           MCPDATA-REC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC      NOT =   ZERO
                MOVE    "1002"          TO  SPA-ERRCD
            ELSE
@@ -925,8 +923,8 @@
                                        TO  BTPARA-SCRIPTID
            MOVE    SPA-GMN-T02-TRENNUM2 (SPA-NAI-T02-SELNUM2)
                                        TO  BTPARA-RENNUM
-           MOVE    PATH-TBL-BTPARA-KEY4
-                                       TO  WRK-PATH
+           MOVE    "tbl_btpara"        TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
            PERFORM 900-BTPARA-READ-SEC
            IF      FLG-BTPARA          =   ZERO
                EVALUATE    SPA-NAI-T02-TPARAKBN(SPA-NAI-T02-SELNUM1)
@@ -939,11 +937,12 @@
                MOVE    SMCNDATE-YMD        TO  BTPARA-UPYMD
                MOVE    SMCNDATE-HMS        TO  BTPARA-UPHMS
                MOVE    BTPARA-REC          TO  MCPDATA-REC
-               MOVE    PATH-TBL-BTPARA-KEY TO  MCP-PATH
+               MOVE    "tbl_btpara"        TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
                MOVE    "DBUPDATE"          TO  MCP-FUNC
-               CALL    "MCPSUB"            USING
-                                               MCPAREA
-                                               MCPDATA-REC
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC      NOT =   ZERO
                    MOVE    "1003"          TO  SPA-ERRCD
                END-IF
@@ -1152,9 +1151,9 @@
                                    TO  BTPARA-SCRIPTID
            MOVE    BTPARA-REC      TO  MCPDATA-REC
            MOVE    "DBDELETE"      TO  MCP-FUNC
-           MOVE    PATH-TBL-BTPARA-DEL2
-                                   TO  MCP-PATH
-           CALL    "MCPSUB"        USING
+           MOVE    "tbl_btpara"    TO  MCP-TABLE
+           MOVE    "del2"          TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC      NOT =   ZERO
@@ -1172,8 +1171,8 @@
                MOVE    SPA-NAI-T02-TSHELLID (SPA-NAI-T02-SELNUM1)
                                            TO  BTPARA-SCRIPTID
                MOVE    BTPARA-REC          TO  MCPDATA-REC
-               MOVE    PATH-TBL-BTPARA-KEY3
-                                           TO  MCP-PATH
+               MOVE    "tbl_btpara"        TO  MCP-TABLE
+               MOVE    "key3"              TO  MCP-PATHNAME
                PERFORM 4100111-SHELLID-LST-SEC
       *
                MOVE    4                   TO  SPA-GMN-T02-CUR
@@ -1639,14 +1638,16 @@
       *
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    PATH-TBL-PTINF-KEY      TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    "tbl_ptinf"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    PATH-TBL-PTINF-KEY      TO  MCP-PATH
-               CALL    "MCPSUB"            USING
+               MOVE    "tbl_ptinf"         TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
                                            MCPAREA
                                            MCPDATA-REC
                IF      MCP-RC              =   ZERO
@@ -1661,11 +1662,9 @@
                INITIALIZE                      PTINF-REC
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    PATH-TBL-PTINF-KEY      TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_ptinf"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            .
        900-PTINF-READ-EXT.
@@ -1676,38 +1675,32 @@
       *****************************************************************
        900-HKNJA-READ-SEC         SECTION.
       *
-           MOVE    HKNJAINF-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    PATH-TBL-HKNJAINF-KEY 
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    "tbl_hknjainf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    PATH-TBL-HKNJAINF-KEY 
-                                           TO  MCP-PATH
-               CALL    "MCPSUB"            USING
+               MOVE    "tbl_hknjainf"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
                                            MCPAREA
                                            MCPDATA-REC
                IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC         TO  HKNJAINF-REC
                    MOVE    ZERO                TO  FLG-HKNJAINF
+                   MOVE    MCPDATA-REC         TO  HKNJAINF-REC
                ELSE
                    MOVE    1                   TO  FLG-HKNJAINF
-                   INITIALIZE                      HKNJAINF-REC
                END-IF
            ELSE
                MOVE    1                   TO  FLG-HKNJAINF
-               INITIALIZE                      HKNJAINF-REC
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    PATH-TBL-HKNJAINF-KEY 
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_hknjainf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            .
        900-HKNJA-READ-EXT.
@@ -1720,23 +1713,23 @@
       *
            MOVE    BTPARA-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    WRK-PATH            TO  MCP-PATH
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 900-BTPARA-READ-N-SEC
            ELSE
                MOVE    1                   TO  FLG-BTPARA
                INITIALIZE                      BTPARA-REC
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            .
        900-BTPARA-READ-EXT.
@@ -1748,7 +1741,7 @@
        900-BTPARA-READ-N-SEC          SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
@@ -1769,36 +1762,47 @@
        900-SYSKANRI-READ-SEC         SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    PATH-TBL-SYSKANRI-KEY10
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    PATH-TBL-SYSKANRI-KEY10
-                                           TO  MCP-PATH
-               CALL    "MCPSUB"            USING
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
                                            MCPAREA
                                            MCPDATA-REC
                IF      MCP-RC              =   ZERO
-                   MOVE    ZERO                TO  FLG-SYSKANRI
+                   MOVE    ZERO            TO  FLG-SYSKANRI
                ELSE
-                   MOVE    1                   TO  FLG-SYSKANRI
+                   MOVE    1               TO  FLG-SYSKANRI
                END-IF
            ELSE
                MOVE    1                   TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    PATH-TBL-SYSKANRI-KEY10
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            .
        900-SYSKANRI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    テーブルクローズ処理
+      *****************************************************************
+       900-CLOSE-SEC               SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+      *
+           .
+       900-CLOSE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1806,11 +1810,10 @@
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *
-           MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL    "MCPSUB"            USING
+           MOVE   "PUTWINDOW"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
-      *
            .
        900-PUT-WINDOW-EXT.
            EXIT.
