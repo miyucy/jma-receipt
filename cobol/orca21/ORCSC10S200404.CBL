@@ -2626,6 +2626,11 @@
       *
            MOVE    1                   TO  FLG-SYONIKA
            MOVE    1                   TO  SPA-SYONIKA-ARI
+      *
+           IF      SPA-GMN-IDX         >   ZERO
+      *        療養担当手当（北海道）
+               PERFORM 330123-RYOYOU-TEATE-SEC
+           END-IF
            .
        3303-SYONIKA-SET-EXT.
            EXIT.
@@ -3903,6 +3908,7 @@
       *      自費は対象外
              IF     (SPA-COM-SRYKBN(IDX)     =   "95" OR
                                                  "96" OR
+                                                 "98" OR
                                                  "99"  )  OR
       *!             複数科・保険行
                     (SPA-GMN-INPUTCD(IDX)(1:1)   =   "#"  OR
@@ -4004,6 +4010,12 @@
       *                    開放型病院共同指導料（１）であること
                            PERFORM 50192-SYONIKASRYCD-CHK-SEC
                            IF      FLG-SYONIKA-CHK     =   1
+                               MOVE    SPACE       TO  SPA-ERRCD
+                               MOVE    SPACE       TO  SPA-COM-CUR
+                                                                (IDX)
+                           END-IF
+      *                    その他の診療種別
+                           IF      SPA-GMN-INPUTCD(IDX)    =   ".800"
                                MOVE    SPACE       TO  SPA-ERRCD
                                MOVE    SPACE       TO  SPA-COM-CUR
                                                                 (IDX)
