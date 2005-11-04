@@ -133,9 +133,10 @@
            MOVE    SPACE               TO  SDNTCHK-DJKBN
            MOVE    ZERO                TO  SDNTCHK-STYMD
       *
-           IF    ( LNKNRRK-DOUJITSUKBN =   "1" )
+           EVALUATE    LNKNRRK-DOUJITSUKBN
+           WHEN    "1"
       *
-               MOVE    "1"             TO  SDNTCHK-DJKBN
+               MOVE    LNKNRRK-DOUJITSUKBN TO  SDNTCHK-DJKBN
       *
                IF    ( LNKNRRK-NYUINYMD    <  LNKNRRK-TAIINYMD )
                 AND  ( LNKNRRK-NYUINYMD    <  SDNTCHK-KJNYMD )
@@ -145,9 +146,12 @@
                    PERFORM 800-CALENDAR-SEC
                    MOVE    WRK-KEISANYMD   TO  SDNTCHK-STYMD
                END-IF
-           ELSE
+           WHEN    "2"
+               MOVE    LNKNRRK-DOUJITSUKBN TO  SDNTCHK-DJKBN
                MOVE    LNKNRRK-NYUINYMD    TO  SDNTCHK-STYMD
-           END-IF
+           WHEN    OTHER
+               MOVE    LNKNRRK-NYUINYMD    TO  SDNTCHK-STYMD
+           END-EVALUATE
       *
            .
        200-MAIN-EXT.

@@ -168,6 +168,8 @@
            03  FLG-SHONUM                  PIC 9(01).
            03  FLG-TAIINRRK                PIC 9(01).
            03  FLG-TEIKI-CHK               PIC 9(01).
+           03  FLG-TAINDOUJITU             PIC 9(01).
+           03  FLG-TAINTUSANMINUS          PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -1431,6 +1433,14 @@
            IF    ( WRK-I0ID-FLG    =   "OK" )
                MOVE    SPACE       TO  WRK-UPDKBN
                EVALUATE    WRK-I0IDCD
+               WHEN    "3009"
+               WHEN    "3010"
+                   MOVE    1       TO  FLG-TAINTUSANMINUS
+                   MOVE    "INS"   TO  WRK-UPDKBN
+                   PERFORM 4801-PTNYUINRRK-UPD-SEC
+                   IF    ( SPA-ERRCD       NOT =   SPACE )
+                       GO  TO  330-I0ID1-SET-EXT
+                   END-IF
       *        入院取消
                WHEN "3001"
                WHEN "3006"
@@ -1483,6 +1493,13 @@
       *
            ELSE
                EVALUATE    WRK-I0IDCD
+      *        入院登録
+               WHEN    "3010"
+                   MOVE    "INS"   TO  WRK-UPDKBN
+                   PERFORM 4801-PTNYUINRRK-UPD-SEC
+                   IF    ( SPA-ERRCD       NOT =   SPACE )
+                       GO  TO  330-I0ID1-SET-EXT
+                   END-IF
       *        入院取消
                WHEN "3001"
                WHEN "3006"
@@ -6331,7 +6348,19 @@
            EVALUATE    SPA-GMN-I01-SYORIKBN-CD
       *    入院登録
            WHEN    "01"
+      *
+               IF    ( FLG-TAINDOUJITU =   1 )
+                   MOVE    "3009"  TO  SPA-I0IDCD
+                   GO  TO  480-TOUROKU-EXT
+               END-IF
+      *
+               IF    ( FLG-TAINDOUJITU =   2 )
+                   MOVE    "3010"  TO  SPA-I0IDCD
+                   GO  TO  480-TOUROKU-EXT
+               END-IF
+      *
                MOVE    "INS"       TO  WRK-UPDKBN
+      *
       *    退院登録
            WHEN    "02"
       *
@@ -6705,7 +6734,8 @@
       *    前歴が自（他）院歴の場合は前回退院日＜入院日となっていること
            IF    ( SPA-NAI-I01-TTAIINYMD (1) NOT =   SPACE )
       *
-               IF    ( SPA-NAI-I01-TZITA-FLG (1)  =   ZERO )
+               EVALUATE    SPA-NAI-I01-TZITA-FLG (1)
+               WHEN    ZERO
                    IF    ( SPA-NAI-I01-TTAIINYMD (1)
                                   <=    SPA-NAI-I01-NYUINYMD )
                        CONTINUE
@@ -6728,7 +6758,29 @@
                            GO  TO  4801-NYUIN-TOUROKU-CHK-EXT
                        END-IF
                    END-IF
-               ELSE
+               WHEN    1
+                   IF    ( SPA-NAI-I01-TTAIINYMD (1)
+                                  <=    SPA-NAI-I01-NYUINYMD )
+                       IF    ( SPA-NAI-I01-TTAIINYMD (1)
+                                   =    SPA-NAI-I01-NYUINYMD )
+                           MOVE    SPA-NAI-I01-TNYUINYMD (1)
+                                           TO  WRK-STYMD
+                           MOVE    SPA-NAI-I01-TTAIINYMD (1)
+                                           TO  WRK-EDYMD
+                           PERFORM 5002-KIKAN-CALC-SEC
+                           IF    ( SPA-NAI-I01-TNYURRKTAISYO (1)
+                                           =   WRK-NISSU2 )
+                               MOVE    1   TO  FLG-TAINDOUJITU
+                           ELSE
+                               MOVE    2   TO  FLG-TAINDOUJITU
+                           END-IF
+                       END-IF
+                   ELSE
+                       MOVE    "1018"      TO  SPA-ERRCD
+                       MOVE    7           TO  SPA-GMN-I01-CUR
+                       GO  TO  4801-NYUIN-TOUROKU-CHK-EXT
+                   END-IF
+               WHEN    OTHER
                    IF    ( SPA-NAI-I01-TTAIINYMD (1)
                                   <     SPA-NAI-I01-NYUINYMD )
                        CONTINUE
@@ -6743,7 +6795,7 @@
                    IF    ( SPA-ERRCD   NOT =   SPACE )
                        GO  TO  4801-NYUIN-TOUROKU-CHK-EXT
                    END-IF
-               END-IF
+               END-EVALUATE
            END-IF
       *
            .
@@ -6851,7 +6903,7 @@
            END-IF
       *
       *    同日再入院の場合、入院日≠退院日となっていること
-           IF    ( SPA-NAI-I01-DJKBN   =   "1" )
+           IF    ( SPA-NAI-I01-DJKBN   =   "1" OR "2" )
                IF    ( SPA-NAI-I01-NYUINYMD =   SPA-NAI-I01-TAIINYMD )
                    MOVE    "1037"      TO  SPA-ERRCD
                    MOVE    11          TO  SPA-GMN-I01-CUR
@@ -7375,7 +7427,12 @@
                IF    ( SPA-NAI-I01-TTAIINYMD (1)   NOT =   SPACE )
                    IF    ( SPA-NAI-I01-TTAIINYMD (1)
                                    =   SPA-NAI-I01-NYUINYMD )
-                       MOVE    "1" TO  PTNYUINRRK-DOUJITSUKBN
+                       EVALUATE    SPA-NAI-I01-TZITA-FLG (1)
+                       WHEN    ZERO
+                           MOVE    "1" TO  PTNYUINRRK-DOUJITSUKBN
+                       WHEN    1
+                           MOVE    "2" TO  PTNYUINRRK-DOUJITSUKBN
+                       END-EVALUATE
                    END-IF
                END-IF
            ELSE
@@ -7419,6 +7476,16 @@
                                    TO  WRK-RRKNUM
            MOVE    SPA-NAI-I01-PTRRKEDANUM
                                    TO  WRK-RRKEDANUM
+      *
+      *    入院登録時、他院退院日との同一入院時で他院歴の
+      *    通算日数を調整する場合
+           IF    ( SPA-GMN-I01-SYORIKBN-CD =   "01" )
+            AND  ( FLG-TAINTUSANMINUS      =   1 )
+               PERFORM 4801-TAINTUSANMINUS-UPD-SEC
+               IF    ( SPA-ERRCD       NOT =   SPACE )
+                   GO  TO  4801-PTNYUINRRK-EDIT-MAE-EXT
+               END-IF
+           END-IF
       *
       *    入院登録で初回の場合、設定する初回番号を求める
            IF    ( SPA-GMN-I01-SYORIKBN-CD =   "01" )
@@ -8088,6 +8155,43 @@
       *
            .
        4801-TENKAREKI-TAIHI-EXT.
+           EXIT.
+      *****************************************************************
+      *    他院歴通算日数減算更新処理
+      *****************************************************************
+       4801-TAINTUSANMINUS-UPD-SEC  SECTION.
+      *
+           MOVE    SPA-NAI-I01-TRRKNUM (1)
+                               TO      WRK-RRKNUM
+           MOVE    1           TO      WRK-RRKEDANUM
+           PERFORM 4801-PTNYUINRRK-SEL-SEC
+           IF    ( FLG-PTNYUINRRK  NOT =   ZERO )
+               MOVE    "4028"  TO      SPA-ERRCD
+               GO  TO  4801-TAINTUSANMINUS-UPD-EXT
+           END-IF
+      *
+           IF    ( PTNYUINRRK-JTIKBN   NOT =   "5" )
+               MOVE    "4030"  TO  SPA-ERRCD
+           END-IF
+      *
+           COMPUTE PTNYUINRRK-TAISYONISSU
+               =   PTNYUINRRK-TAISYONISSU  -   1
+      *
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD        TO  PTNYUINRRK-UPYMD
+           MOVE    SMCNDATE-HMS        TO  PTNYUINRRK-UPHMS
+      *
+           MOVE    "PTNYUINRRK-KEY"
+                               TO  WRK-DBPATH
+           MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
+           PERFORM 900-TBL-UPDATE-SEC
+           IF    ( FLG-DBRC    NOT =   ZERO )
+               MOVE    "4029"  TO  SPA-ERRCD
+               GO  TO  4801-TAINTUSANMINUS-UPD-EXT
+           END-IF
+      *
+           .
+       4801-TAINTUSANMINUS-UPD-EXT.
            EXIT.
       *****************************************************************
       *    異動前歴更新処理
@@ -13983,6 +14087,20 @@
                MOVE    SPACE           TO  WRK-I0IDMSG
                STRING  "入院情報（異動歴あり）を削除します"
                        "（会計情報も併せて削除します）"
+               DELIMITED BY SIZE
+               INTO  WRK-I0IDMSG
+               END-STRING
+           WHEN    "3009"
+               MOVE    SPACE           TO  WRK-I0IDMSG
+               STRING  "入院日が他院退院日と重複します。"
+                       "他院歴の通算日数を減算しますか？"
+               DELIMITED BY SIZE
+               INTO  WRK-I0IDMSG
+               END-STRING
+           WHEN    "3010"
+               MOVE    SPACE           TO  WRK-I0IDMSG
+               STRING  "入院日が他院退院日と重複します。"
+                       "他院歴の通算日数を減算しますか？"
                DELIMITED BY SIZE
                INTO  WRK-I0IDMSG
                END-STRING
