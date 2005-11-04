@@ -1434,8 +1434,13 @@
                MOVE    SPACE       TO  WRK-UPDKBN
                EVALUATE    WRK-I0IDCD
                WHEN    "3009"
-               WHEN    "3010"
                    MOVE    1       TO  FLG-TAINTUSANMINUS
+                   MOVE    "INS"   TO  WRK-UPDKBN
+                   PERFORM 4801-PTNYUINRRK-UPD-SEC
+                   IF    ( SPA-ERRCD       NOT =   SPACE )
+                       GO  TO  330-I0ID1-SET-EXT
+                   END-IF
+               WHEN    "3010"
                    MOVE    "INS"   TO  WRK-UPDKBN
                    PERFORM 4801-PTNYUINRRK-UPD-SEC
                    IF    ( SPA-ERRCD       NOT =   SPACE )
@@ -1493,13 +1498,6 @@
       *
            ELSE
                EVALUATE    WRK-I0IDCD
-      *        入院登録
-               WHEN    "3010"
-                   MOVE    "INS"   TO  WRK-UPDKBN
-                   PERFORM 4801-PTNYUINRRK-UPD-SEC
-                   IF    ( SPA-ERRCD       NOT =   SPACE )
-                       GO  TO  330-I0ID1-SET-EXT
-                   END-IF
       *        入院取消
                WHEN "3001"
                WHEN "3006"
@@ -14100,7 +14098,7 @@
            WHEN    "3010"
                MOVE    SPACE           TO  WRK-I0IDMSG
                STRING  "入院日が他院退院日と重複します。"
-                       "他院歴の通算日数を減算しますか？"
+                       "よろしいですか？"
                DELIMITED BY SIZE
                INTO  WRK-I0IDMSG
                END-STRING
