@@ -64,9 +64,11 @@
            03  FILLER              PIC X(11)   VALUE   "4 113007670".
            03  FILLER              PIC X(11)   VALUE   "4 113007770".
            03  FILLER              PIC X(11)   VALUE   "4 113007870".
+      *    療養担当手当（入院外）
+           03  FILLER              PIC X(11)   VALUE   "9 199000610".
       *
        01  TBL-SYONIKA-AREA-R      REDEFINES   TBL-SYONIKA-AREA.
-           03  TBL-SYONIKA-OCC     OCCURS  35  INDEXED   TBL-SYO.
+           03  TBL-SYONIKA-OCC     OCCURS  36  INDEXED   TBL-SYO.
       *        1:初診、2:再診、3:初診時間外、4:再診時間外
       *        9:小児科外来診察料以外でも算定可能
                05  TBL-SYONIKA-KBN         PIC X(01).
