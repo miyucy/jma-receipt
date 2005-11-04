@@ -39,26 +39,6 @@
       *  01.01.03    NACL-門脇    05/08/31  剤番号編集修正
       *  01.01.04    NACL-門脇    05.09.06  自賠責従来様式対応
       *  01.01.05    NACL-門脇    05/11/01  （検選）等コメント対応
-      *  03.01.01    NACL-門脇    06/07/14  診療区分置き換えフラグの編集
-      *
-      *  03.05.01    NACL-門脇    07/05/25  グループ診療対応
-      *  03.05.02    NACL-藤原    07/06/01  realtime preview 処理追加
-      *  04.02.01    NACL-門脇    08/03/24  平成２０年４月改正対応
-      *                                     （診療区分６４：病理診断対応）
-      *  04.02.02    NACL-門脇    08/04/21  ８０その他記載順対応
-      *
-      *  04.03.01    NACL-門脇    08/07/09  投薬の記載順変更（日付順）
-      *  04.04.01    NACL-門脇    10/03/29  改正対応
-      *                                     （画像診断２回目以降減算編集）
-      *
-      *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
-      *  04.05.02    NACL-門脇    10/01/21  治験対応
-      *
-      *  04.07.01    NACL-門脇    13/12/03  自賠責（労災準拠）のレセプト様式
-      *                                     追加対応
-      *
-      *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
-      *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -105,20 +85,24 @@
       *
        WORKING-STORAGE             SECTION.
       *
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01//
                                    BY         //RECE46//.
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
+      *
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01//
                                    BY         //RECE47//.
+      *
       *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01PARA//
                                    BY         //RECEERR//.
+           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    フラグ領域
        01  STS-AREA.
            03  STS-RECE46                              PIC X(02).
-           03  STS-RECE47                              PIC X(02).
+           03  STS-RECE47                             PIC X(02).
            03  STS-RECEERR                             PIC X(02).
       *
        01  FLG-AREA.
@@ -140,8 +124,6 @@
                05  WRK-PARA-RECEKBN                    PIC  X(01).
                05  WRK-PARA-JOBID                      PIC  9(07).
                05  WRK-PARA-SHELLID                    PIC  X(08).
-           03  WRK-PARA-JIBAIPRTKBN                    PIC  X(01).
-           03  WRK-PARA-HOSPNUM                        PIC  9(02).
       *
            03  WRK-RECEERR             PIC X(200). 
       *
@@ -164,14 +146,11 @@
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
-      *
-           COPY    "COMMON-SPA".
+           COPY    "CPORCMCP.INC".
       *
       ****************************************************************
        LINKAGE                 SECTION.
@@ -193,11 +172,7 @@
       *
            PERFORM 300-TERM-SEC
       *
-           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-               STOP    RUN
-           ELSE
-               EXIT    PROGRAM
-           END-IF 
+           STOP    RUN
            .
       *****************************************************************
       *    初期　処理
@@ -207,55 +182,35 @@
            INITIALIZE                  CNT-AREA
                                        WRK-AREA
                                        FLG-AREA
-                                       SPA-AREA
-                                       RECEERR
       *
-           UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
-                                       INTO    WRK-PARA
-                                               WRK-PARA-JIBAIPRTKBN
-                                               WRK-PARA-HOSPNUM
-                                               RECEERR
-           END-UNSTRING
-           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+           MOVE    COMMAND-PARAM       TO  WRK-PARA
       *
-           MOVE    SPACE               TO  RECE46PARA
-           INITIALIZE                      RECE46PARA
            MOVE    "RECE460"           TO  RECE46PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE46PARA-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
       *
-           MOVE    SPACE               TO  RECE47PARA
-           INITIALIZE                      RECE47PARA
            MOVE    "RECE470"           TO  RECE47PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE47PARA-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE47PARA-HOSPNUM
       *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
-           MOVE    RECE46PARA-BASENAME TO  SGETTEMP-BASENAMES  (2)
-           MOVE    RECE47PARA-BASENAME TO  SGETTEMP-BASENAMES  (3)
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  RECE46PARA
-           MOVE    SGETTEMP-FULLNAMES (3)
-                                       TO  RECE47PARA
+           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
       *
-           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-               PERFORM 100-DBOPEN-SEC
+           PERFORM 100-DBOPEN-SEC
       *
-      *        ステップ管理開始処理
-               MOVE    "STS"           TO  SJOBKANRI-MODE
-               INITIALIZE                  JOBKANRI-REC
-               MOVE    "ORCR0470"      TO  JOB-PGID
-               MOVE    "摘要欄並び替え（労災・自賠責）"
-                                       TO  JOB-SHELLMSG
-grpsys         PERFORM 900-CALL-ORCSJOB-SEC
+      *    ステップ管理開始処理
+           MOVE    "STS"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           MOVE    "ORCR0470"      TO  JOB-PGID
+           MOVE    "摘要欄並び替え（労災・自賠責）"
+                                   TO  JOB-SHELLMSG
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
       *
-      *        処理中止設定処理
-               PERFORM 500-CANCEL-HENSYU-SEC
-           END-IF
+      *    処理中止設定処理
+           PERFORM 500-CANCEL-HENSYU-SEC
       *
            OPEN    OUTPUT              RECE47X-FILE
            CLOSE                       RECE47X-FILE
@@ -292,7 +247,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
        210-HENSYU-SEC                   SECTION.
       *
            INITIALIZE                           RECE47-REC
-           MOVE    RECE46-HOSPNUM       TO      RECE47-HOSPNUM
+           MOVE    RECE46-HOSPID        TO      RECE47-HOSPID
            MOVE    RECE46-SRYYM         TO      RECE47-SRYYM
            MOVE    RECE46-NYUGAIKBN     TO      RECE47-NYUGAIKBN
            MOVE    RECE46-PTID          TO      RECE47-PTID
@@ -303,7 +258,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            IF      RECE46-ZAINUM       =   99999999
                  MOVE     ZERO          TO      RECE47-ZAINUM
            END-IF
-           IF      RECE46-SRYKBN        =       "60" OR "64"
+           IF      RECE46-SRYKBN        =       "60"
               IF   RECE46-KNSJISKBN     =       2
                    MOVE    5            TO      RECE47-KNSJISKBN
               ELSE
@@ -323,8 +278,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                           MOVE   4      TO      RECE47-KNSJISKBN
                   END-IF
               END-IF
-              IF   (RECE46-SAFLG   NOT =   SPACE )
-              OR   (RECE46-ZAIKBN      =   1 OR 2)
+              IF    RECE46-SAFLG   =   "1"
                    MOVE    9            TO      RECE47-KNSJISKBN
               END-IF
            END-IF     
@@ -333,14 +287,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    RECE46-ZAIMEISAISU   TO      RECE47-ZAIMEISAISU
            MOVE    RECE46-PTNUM         TO      RECE47-PTNUM
            MOVE    RECE46-SRYKA         TO      RECE47-SRYKA
-           IF     (RECE46-SRYKBN          =  "99" )
-           AND    (RECE46-SRYSYUKBN   NOT =  "991")
-             IF     (WRK-PARA-RECEKBN       =  "4")
-             AND    (WRK-PARA-JIBAIPRTKBN   =  "2")
-               MOVE  "01"               TO      RECE47-SRYKBN
-             ELSE
+           IF      RECE46-SRYKBN        =       "99"          
                MOVE  SPACE              TO      RECE47-SRYKBN
-             END-IF
            ELSE
                MOVE  RECE46-SRYKBN      TO      RECE47-SRYKBN
            END-IF
@@ -361,10 +309,10 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                   END-IF
                END-IF
            END-IF     
-           IF      RECE46-SRYKBN        NOT =   "21" AND "22" AND "23"
-               IF   RECE46-SRYKBN       NOT =   "40" AND "60" AND "80"
-                                                     AND "64"
-                   MOVE    RECE46-ZAITEN   TO  RECE47-ZAITEN
+           IF      RECE46-SRYKBN        NOT =   "21"
+               IF   RECE46-SRYKBN       NOT =   "40" AND "60" AND "80"  
+      ***      IF   RECE46-SRYKBN       NOT =   "40" AND "80"  
+                   MOVE    RECE46-ZAITEN    TO      RECE47-ZAITEN
                END-IF
                MOVE   RECE46-CDKBN-SYO     TO  RECE47-CDKBN-SYO
                MOVE   RECE46-CDKBN-BU      TO  RECE47-CDKBN-BU
@@ -375,22 +323,24 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                MOVE   RECE46-CDKBN-KOUBAN  TO  RECE47-CDKBN-KOUBAN
                MOVE   RECE46-KOUHYOJUNNUM  TO  RECE47-KOUHYOJUNNUM
            END-IF
+      ***      IF      RECE46-SRYKBN        =   "60"
+      ***          CONTINUE
+      ***      ELSE    
+      ***          MOVE    RECE46-CDKBN-SYO     TO  RECE47-CDKBN-SYO
+      ***          MOVE    RECE46-CDKBN-BU      TO  RECE47-CDKBN-BU
+      ***          MOVE    RECE46-CDKBN-KBN     TO  RECE47-CDKBN-KBN
+      ***          MOVE    RECE46-CDKBN-KBNNUM  TO  RECE47-CDKBN-KBNNUM
+      ***          MOVE    RECE46-CDKBN-KBNNUM-EDA
+      ***                                   TO  RECE47-CDKBN-KBNNUM-EDA
+      ***          MOVE    RECE46-CDKBN-KOUBAN  TO  RECE47-CDKBN-KOUBAN
+      ***          MOVE    RECE46-KOUHYOJUNNUM  TO  RECE47-KOUHYOJUNNUM
+      ***      END-IF  
+      ***  END-IF
       *
            MOVE   RECE46-SRYSYUKBN   TO   RECE47-SRYSYUKBN
            MOVE   RECE46-DAY         TO   RECE47-DAY
       *
-           MOVE   RECE46-OKIKAEFLG   TO   RECE47-OKIKAEFLG
-      *
-           MOVE   RECE46-SYOHOUFLG   TO   RECE47-SYOHOUFLG
-      *
-           MOVE   RECE46-ZAIKBN      TO   RECE47-ZAIKBN
-      *
-           MOVE   RECE46-DAY2        TO   RECE47-DAY2
-      *
-           MOVE   RECE46-JIHOKBN     TO   RECE47-JIHOKBN
-      *
-           MOVE   RECE46-TEKIYO2-INF TO   RECE47-TEKIYO2-INF
-      *
+      *****IF     RECE46-SRYKBN  NOT =  "11" AND "95" AND "96"
            IF     RECE46-SRYKBN  NOT =  "95" AND "96"
                PERFORM     2101-RECE47-WRITE-SEC
            END-IF
@@ -419,18 +369,22 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            CLOSE   RECE46-FILE
                    RECE47-FILE
       *
-           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *    ステップ管理終了処理
-               MOVE    "STE"           TO  SJOBKANRI-MODE
-               INITIALIZE                  JOBKANRI-REC
-grpsys         PERFORM 900-CALL-ORCSJOB-SEC
+           MOVE    "STE"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
       *
-               PERFORM 900-DBDISCONNECT-SEC
-           END-IF
+           PERFORM 900-DBDISCONNECT-SEC
       *
            DISPLAY "RECE46-IN   :" CNT-IN   
            DISPLAY "RECE47-OUT :" CNT-OUT   
            DISPLAY "*** ORCR0470 END ***"
+      ***     ACCEPT  WRK-IN FROM CONSOLE 
            .
        300-TERM-EXT.
            EXIT.
@@ -450,14 +404,17 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                WRITE   RECEERR-REC
                CLOSE   RECEERR-FILE
       *         
-               IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-      *            ジョブ管理開始処理
-                   MOVE    "JBE"           TO  SJOBKANRI-MODE
-                   INITIALIZE                  JOBKANRI-REC
-                   MOVE    WRK-RECEERR     TO  JOB-YOBI
-                   MOVE    "9999"          TO  JOB-ERRCD
-grpsys             PERFORM 900-CALL-ORCSJOB-SEC
-               END-IF
+      *        ジョブ管理開始処理
+               MOVE    "JBE"           TO  SJOBKANRI-MODE
+               INITIALIZE                  JOBKANRI-REC
+               MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+               MOVE    WRK-PARA-SHELLID
+                                       TO  JOB-SHELLID
+               MOVE    WRK-RECEERR     TO  JOB-YOBI
+               MOVE    "9999"          TO  JOB-ERRCD
+               CALL    "ORCSJOB"       USING
+                                       ORCSJOBKANRIAREA  
+                                       JOBKANRI-REC
            END-IF
       *                             
            MOVE    1                   TO  FLG-END
@@ -471,39 +428,45 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
       *****************************************************************
        500-CANCEL-HENSYU-SEC                SECTION.
       *
-           IF      WRK-PARA-SHELLID    =   "RECEPTX"
-               CONTINUE
-           ELSE
-               MOVE    "CHK"           TO  SJOBKANRI-MODE
-               INITIALIZE                  JOBKANRI-REC
-grpsys         PERFORM 900-CALL-ORCSJOB-SEC
-               IF    ( SJOBKANRI-RETURN
-                                       =   ZERO )
-               AND   ( JOB-STOPFLG     =   1    )
-                   MOVE    "処理が中止されました"
+           MOVE    "CHK"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
+           IF    ( SJOBKANRI-RETURN
+                                   =   ZERO )
+           AND   ( JOB-STOPFLG     =   1    )
+               MOVE    "処理が中止されました"
                                            TO  WRK-RECEERR
       *
-                   OPEN    INPUT   RECEERR-FILE
-                   IF      STS-RECEERR         =   ZERO
-                       CLOSE   RECEERR-FILE
-                   ELSE
-                       OPEN    OUTPUT              RECEERR-FILE
+               OPEN    INPUT   RECEERR-FILE
+               IF      STS-RECEERR         =   ZERO
+                   CLOSE   RECEERR-FILE
+               ELSE
+                   OPEN    OUTPUT              RECEERR-FILE
       *    
-                       MOVE    WRK-RECEERR         TO  RECEERR-REC
-                       WRITE   RECEERR-REC
-                       CLOSE   RECEERR-FILE
+                   MOVE    WRK-RECEERR         TO  RECEERR-REC
+                   WRITE   RECEERR-REC
+                   CLOSE   RECEERR-FILE
       *         
-      *                ジョブ管理終了処理
-                       MOVE    "CAN"           TO  SJOBKANRI-MODE
-                       INITIALIZE                  JOBKANRI-REC
-                       MOVE    WRK-RECEERR     TO  JOB-YOBI
-                       MOVE    "8888"          TO  JOB-ERRCD
-                       MOVE    2               TO  JOB-STOPFLG
-grpsys                 PERFORM 900-CALL-ORCSJOB-SEC
-                   END-IF
-      *                             
-                   MOVE    1                   TO  FLG-END
+      *            ジョブ管理終了処理
+                   MOVE    "CAN"           TO  SJOBKANRI-MODE
+                   INITIALIZE                  JOBKANRI-REC
+                   MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+                   MOVE    WRK-PARA-SHELLID
+                                           TO  JOB-SHELLID
+                   MOVE    WRK-RECEERR     TO  JOB-YOBI
+                   MOVE    "8888"          TO  JOB-ERRCD
+                   MOVE    2               TO  JOB-STOPFLG
+                   CALL    "ORCSJOB"       USING
+                                           ORCSJOBKANRIAREA  
+                                           JOBKANRI-REC
                END-IF
+      *                             
+               MOVE    1                   TO  FLG-END
            END-IF
            .
        500-CANCEL-HENSYU-EXT.
@@ -528,50 +491,23 @@ grpsys                 PERFORM 900-CALL-ORCSJOB-SEC
        900-RECE46-READ-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    ジョブ管理ＤＢ制御処理
-      *****************************************************************
-       900-CALL-ORCSJOB-SEC            SECTION.
-      *
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
-grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA 
-                                   JOBKANRI-REC
-                                   SPA-AREA
-           .
-       900-CALL-ORCSJOB-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    テーブルアクセス処理
-      *****************************************************************
-       900-ORCDBMAIN-SEC               SECTION.
-      *
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           .
-      *
-       900-ORCDBMAIN-EXT.
-           EXIT.
-      *
+      *      
       *****************************************************************
       *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
-           MOVE    LOW-VALUE           TO  MCP-TABLE
-                                           MCP-PATHNAME
-           MOVE    "DBOPEN"            TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           MOVE    "DBOPEN"            TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
       *
-           MOVE    LOW-VALUE           TO  MCP-TABLE
-                                           MCP-PATHNAME
-           MOVE    "DBSTART"           TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           MOVE    "DBSTART"           TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -581,15 +517,18 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
-           MOVE    LOW-VALUE           TO  MCP-TABLE
-                                           MCP-PATHNAME
-           MOVE    "DBCOMMIT"          TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
       *
-           MOVE    LOW-VALUE           TO  MCP-TABLE
-                                           MCP-PATHNAME
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
            .
        900-DBDISCONNECT-EXT.
            EXIT.
