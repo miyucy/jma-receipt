@@ -114,6 +114,8 @@
            03  FLG-JIKASAN         PIC 9(01).
            03  FLG-TAIIN           PIC 9(01).
       *
+           03  FLG-TBL             PIC 9(01).
+      *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -3557,11 +3559,13 @@
                        MOVE    SPACE           TO  WRK-KBN
                        MOVE    SPACE           TO  WRK-KBN2
                        MOVE    ZERO            TO  WRK-KAISU
+                       MOVE    ZERO            TO  FLG-TBL
                    WHEN    WRK-COM-INPUTCD(IDX-Z)
                                                =   TBL-SRYCD (TBL-IDX)
                        MOVE    TBL-KAISU (TBL-IDX) TO  WRK-KAISU
                        MOVE    TBL-KBN (TBL-IDX)   TO  WRK-KBN
                        MOVE    SPACE               TO  WRK-KBN2
+                       MOVE    1                   TO  FLG-TBL
            END-SEARCH
       *
       *    Ï«ºÒÊÝ¸±¤Î¥Á¥§¥Ã¥¯
@@ -3593,7 +3597,8 @@
            END-IF
       *
       *    ½é¿ÇÎÁ¤ÎÈ½Äê
-           IF      WRK-KBN         NOT =   SPACE
+      *****IF      WRK-KBN         NOT =   SPACE
+           IF      FLG-TBL             =   1
                IF      WRK-KBN             =   "F"
                    MOVE    1               TO  LNK-ORCSC-SYOSIN2
                ELSE
