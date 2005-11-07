@@ -41,6 +41,9 @@
       *
        WORKING-STORAGE             SECTION.
       *
+       01  FLG-AREA.
+           03  FLG-STREDIT         PIC 9(01).
+      *
        01  IDX-AREA.
            03  IDX1                PIC 9(05).
       *
@@ -69,6 +72,7 @@
       *
            INITIALIZE              IDX-AREA
                                    WRK-AREA
+                                   FLG-AREA
       *
            MOVE    SADDSIGN-STR    TO      WRK-STR
       *
@@ -88,11 +92,14 @@
       *****************************************************************
        200-REPLACE-SIGN-SEC            SECTION.
       *
+           MOVE    ZERO            TO  FLG-STREDIT
+      *
            PERFORM 210-GET-STRLEN-SEC
       *
            IF    ( WRK-LEN         >   1 )
                IF    ( WRK-STR (WRK-LEN - 1 : 2)   =   "¡ö" )
                    MOVE    "%"     TO  WRK-STR (WRK-LEN - 1 : 2)
+                   MOVE    1       TO  FLG-STREDIT
                END-IF
            END-IF
       *
@@ -100,6 +107,13 @@
                    MOVE    "%"             TO  WRK-STR-TMP
                    MOVE    WRK-STR (3:)    TO  WRK-STR-TMP(2:)
                    MOVE    WRK-STR-TMP     TO  WRK-STR
+                   MOVE    1               TO  FLG-STREDIT
+           END-IF
+      *
+           IF    ( FLG-STREDIT     =   ZERO )
+               IF    ( WRK-LEN     <   CONST-LEN )
+                   MOVE    "%"     TO  WRK-STR (WRK-LEN + 1 : 1)
+               END-IF
            END-IF
       *
            .
