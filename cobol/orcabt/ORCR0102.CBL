@@ -94,7 +94,7 @@
       *                                     HCN063V01.red
       *
       *  02.07.01    NACL-Æ£¸¶    05/08/20  ÆÃÊÌÎÅÍÜÈñÂÐ±þ
-      *                                     HCM09V04.red HCN06V04.red
+      *                                     HCM09V04.red HCN06V05.red
       *                                     HCN061V03.red HCN062V03.red
       *                                     HCN063V02.red
       *****************************************************************
@@ -839,6 +839,7 @@
                WHEN    "HCM09V01.red"  ALSO    ANY             
                WHEN    "HCM09V02.red"  ALSO    ANY             
                WHEN    "HCM09V03.red"  ALSO    ANY             
+               WHEN    "HCM09V04.red"  ALSO    ANY             
                WHEN    "HCRCP060.red"  ALSO    ANY                
                WHEN    "HCRCP060V01.red"  
                                        ALSO    ANY                
@@ -856,25 +857,32 @@
                WHEN    "HCN061.red"    ALSO    "2"              
                WHEN    "HCN061V01.red" ALSO    "2"              
                WHEN    "HCN061V02.red" ALSO    "2"              
+               WHEN    "HCN061V03.red" ALSO    "2"              
                WHEN    "HCN062.red"    ALSO    "2"              
                WHEN    "HCN062V01.red" ALSO    "2"              
                WHEN    "HCN062V02.red" ALSO    "2"              
+               WHEN    "HCN062V03.red" ALSO    "2"              
                WHEN    "HCN063.red"    ALSO    "2"              
                WHEN    "HCN063V01.red" ALSO    "2"              
+               WHEN    "HCN063V02.red" ALSO    "2"              
                    MOVE    "°å²Ê¥ì¥»¥×¥È¡ÊÆþ±¡³°¡Ë"    TO  SPRT-TITLE
                WHEN    "HCN06.red"     ALSO    ANY             
                WHEN    "HCN06V01.red"  ALSO    ANY             
                WHEN    "HCN06V02.red"  ALSO    ANY             
                WHEN    "HCN06V03.red"  ALSO    ANY             
                WHEN    "HCN06V04.red"  ALSO    ANY             
+               WHEN    "HCN06V05.red"  ALSO    ANY             
                WHEN    "HCN061.red"    ALSO    "1"              
                WHEN    "HCN061V01.red" ALSO    "1"              
                WHEN    "HCN061V02.red" ALSO    "1"              
+               WHEN    "HCN061V03.red" ALSO    "1"              
                WHEN    "HCN062.red"    ALSO    "1"              
                WHEN    "HCN062V01.red" ALSO    "1"              
                WHEN    "HCN062V02.red" ALSO    "1"              
+               WHEN    "HCN062V03.red" ALSO    "1"              
                WHEN    "HCN063.red"    ALSO    "1"              
                WHEN    "HCN063V01.red" ALSO    "1"              
+               WHEN    "HCN063V02.red" ALSO    "1"              
                WHEN    "HCRCP401.red"  ALSO    ANY                
                WHEN    "HCRCP401V01.red"
                                        ALSO    ANY                
