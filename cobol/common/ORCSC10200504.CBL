@@ -532,6 +532,12 @@
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
       *
+           IF      LNK-ORCSC-PG        =   "K02"
+               MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+           ELSE
+               INITIALIZE                      SPA-K01KYOUTU
+           END-IF
+      *
            EVALUATE    LNK-ORCSC-KBN
       *        剤別　チェック、編集、自動算定
                WHEN    "1"
@@ -3597,12 +3603,23 @@
            END-IF
       *
       *    初診料の判定
-      *****IF      WRK-KBN         NOT =   SPACE
+      **** IF      WRK-KBN         NOT =   SPACE
            IF      FLG-TBL             =   1
                IF      WRK-KBN             =   "F"
                    MOVE    1               TO  LNK-ORCSC-SYOSIN2
                ELSE
-                   MOVE    ZERO            TO  LNK-ORCSC-SYOSIN2
+      *            訂正で初診料からの変更時
+                   IF     (LNK-ORCSC-PG        =   "K02") AND
+                          (LNK-ORCSC-SYORIFLG  =   1   )  AND
+                          (LNK-ORCSC-SYOSIN2   =   1   )  AND
+                          (SPA-SYOYMD          =   SPA-SRYYMD) AND
+                          (SPA-SYOYMD1         =   SPACE   OR
+                                                   SPA-SYOYMD)
+                       MOVE    "0139"          TO  WRK-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
+                   ELSE
+                       MOVE    ZERO            TO  LNK-ORCSC-SYOSIN2
+                   END-IF
                END-IF
            END-IF
       *

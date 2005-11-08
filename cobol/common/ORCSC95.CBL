@@ -223,6 +223,8 @@
                05  WRK-YYMM            PIC X(06).
                05  WRK-DD              PIC X(02).
            03  WRK-SYOSINYMD1          PIC X(08).
+           03  WRK-SYOSINYMDS          PIC X(08).
+           03  WRK-YMDS                PIC X(08).
            03  WRK-SRYCD               PIC X(09).
       *
            03  WRK-KEY-SRYYMD          PIC X(08).
@@ -2896,7 +2898,6 @@
                IF      KARRK-SRYKA         =   SPACE
                    CONTINUE
                ELSE
-      *
       *        ½é¿Ç»»ÄêÆü
                IF     (KARRK-SYOSINYMD2 NOT =  SPACE      ) AND
                       (KARRK-SYOSINYMD2    >=  SPA-SYOYMD )
@@ -3065,6 +3066,8 @@
                END-IF
            END-IF
       *
+      *    ºÇ½é¤Î½é¿Ç»»ÄêÆü
+           MOVE    SPACE               TO  SPA-SYOYMD1
       *    ½é¿Ç»»ÄêÆü¤¬¿ÇÎÅÆü°Ê¹ß¤Î»þ¡¢Ä¾µ¢¤Î½é¿Ç»»ÄêÆü
            IF     (SPA-SYOYMD      NOT =   SPACE )  AND
                   (SPA-SYOYMD          >   SPA-SRYYMD)
@@ -3742,6 +3745,8 @@
       *
       *    ÄûÀµÆü¤Î½é¿Ç»»ÄêÆü
            PERFORM 3009-SYOSIN-SYORI-SEC
+      *    ºÇ½é¤Î½é¿Ç»»ÄêÆü
+           MOVE    WRK-SYOSINYMDS      TO  SPA-SYOYMD1
       *
       *    ÊÝ¸±ÁÈ¹ç¤»¤¬»ÈÍÑ¤Ç¤­¤ë¤«¤Î¥Á¥§¥Ã¥¯
       *****PERFORM 100131-HKNCOMBI-CHK-SEC
@@ -3794,6 +3799,7 @@
       *
       *    ½é¿ÇÎÁ¤Î»»ÄêÍúÎò¤Î¥Á¥§¥Ã¥¯
            MOVE    SPACE               TO  WRK-SYOSINYMD1
+           MOVE    SPACE               TO  WRK-SYOSINYMDS
       *
       *    EVALUATE    SPA-HOSPSBT
       *        ÉÂ±¡
@@ -3805,12 +3811,22 @@
                           (WRK-YMD             >   WRK-SYOSINYMD1)
                        MOVE    WRK-YMD         TO  WRK-SYOSINYMD1
                    END-IF
+                   IF     (WRK-SYOSINYMDS      =   SPACE  )  OR
+                         ((WRK-YMDS        NOT =   SPACE    )  AND
+                          (WRK-YMDS            <   WRK-SYOSINYMDS))
+                       MOVE    WRK-YMDS        TO  WRK-SYOSINYMDS
+                   END-IF
       *            Ï·¿Í³°
                    MOVE    "111000110"         TO  WRK-SRYCD
                    PERFORM 30091-SANTEI-CHK-SEC
                    IF     (WRK-SYOSINYMD1      =   SPACE  )  OR
                           (WRK-YMD             >   WRK-SYOSINYMD1)
                        MOVE    WRK-YMD         TO  WRK-SYOSINYMD1
+                   END-IF
+                   IF     (WRK-SYOSINYMDS      =   SPACE  )  OR
+                         ((WRK-YMDS        NOT =   SPACE    )  AND
+                          (WRK-YMDS            <   WRK-SYOSINYMDS))
+                       MOVE    WRK-YMDS        TO  WRK-SYOSINYMDS
                    END-IF
       *        ¿ÇÎÅ½ê
       *******  WHEN    2
@@ -3821,12 +3837,22 @@
                           (WRK-YMD             >   WRK-SYOSINYMD1)
                        MOVE    WRK-YMD         TO  WRK-SYOSINYMD1
                    END-IF
+                   IF     (WRK-SYOSINYMDS      =   SPACE  )  OR
+                         ((WRK-YMDS        NOT =   SPACE    )  AND
+                          (WRK-YMDS            <   WRK-SYOSINYMDS))
+                       MOVE    WRK-YMDS        TO  WRK-SYOSINYMDS
+                   END-IF
       *            Ï·¿Í³°
                    MOVE    "111003610"         TO  WRK-SRYCD
                    PERFORM 30091-SANTEI-CHK-SEC
                    IF     (WRK-SYOSINYMD1      =   SPACE  )  OR
                           (WRK-YMD             >   WRK-SYOSINYMD1)
                        MOVE    WRK-YMD         TO  WRK-SYOSINYMD1
+                   END-IF
+                   IF     (WRK-SYOSINYMDS      =   SPACE  )  OR
+                         ((WRK-YMDS        NOT =   SPACE    )  AND
+                          (WRK-YMDS            <   WRK-SYOSINYMDS))
+                       MOVE    WRK-YMDS        TO  WRK-SYOSINYMDS
                    END-IF
       *****END-EVALUATE
       *    ¾®»ù²Ê¿Ç»¡ÎÁ
@@ -3837,12 +3863,22 @@
                   (WRK-YMD             >   WRK-SYOSINYMD1)
                MOVE    WRK-YMD         TO  WRK-SYOSINYMD1
            END-IF
+           IF     (WRK-SYOSINYMDS      =   SPACE  )  OR
+                 ((WRK-YMDS        NOT =   SPACE    )  AND
+                  (WRK-YMDS            <   WRK-SYOSINYMDS))
+               MOVE    WRK-YMDS        TO  WRK-SYOSINYMDS
+           END-IF
       *    ¡¡¡¡±¡Æâ½èÊý   ½é¿Ç
            MOVE    "113003710"         TO  WRK-SRYCD
            PERFORM 30091-SANTEI-CHK-SEC
            IF     (WRK-SYOSINYMD1      =   SPACE  )  OR
                   (WRK-YMD             >   WRK-SYOSINYMD1)
                MOVE    WRK-YMD         TO  WRK-SYOSINYMD1
+           END-IF
+           IF     (WRK-SYOSINYMDS      =   SPACE  )  OR
+                 ((WRK-YMDS        NOT =   SPACE    )  AND
+                  (WRK-YMDS            <   WRK-SYOSINYMDS))
+               MOVE    WRK-YMDS        TO  WRK-SYOSINYMDS
            END-IF
       *
       *    ²¾¤Î½é¿ÇÎÁ
@@ -3852,6 +3888,11 @@
                   (WRK-YMD             >   WRK-SYOSINYMD1)
                MOVE    WRK-YMD         TO  WRK-SYOSINYMD1
            END-IF
+           IF     (WRK-SYOSINYMDS      =   SPACE  )  OR
+                 ((WRK-YMDS        NOT =   SPACE    )  AND
+                  (WRK-YMDS            <   WRK-SYOSINYMDS))
+               MOVE    WRK-YMDS        TO  WRK-SYOSINYMDS
+           END-IF
       *
       *    Ï«ºÒ½é¿ÇÎÁ
            MOVE    "101110010"         TO  WRK-SRYCD
@@ -3860,6 +3901,12 @@
                   (WRK-YMD             >   WRK-SYOSINYMD1)
                MOVE    WRK-YMD         TO  WRK-SYOSINYMD1
            END-IF
+           IF     (WRK-SYOSINYMDS      =   SPACE  )  OR
+                 ((WRK-YMDS        NOT =   SPACE    )  AND
+                  (WRK-YMDS            <   WRK-SYOSINYMDS))
+               MOVE    WRK-YMDS        TO  WRK-SYOSINYMDS
+           END-IF
+      *    Á°²ó¤Î½é¿Ç»»ÄêÆü
            MOVE    WRK-SYOSINYMD1      TO  SPA-SYOYMD-OLD
       *
           .
@@ -3872,6 +3919,7 @@
        30091-SANTEI-CHK-SEC               SECTION.
       *
            MOVE    SPACE               TO  WRK-YMD
+           MOVE    SPACE               TO  WRK-YMDS
       *
       *    »»ÄêÍúÎò¸¡º÷
            INITIALIZE                  SANTEI-REC
@@ -3905,7 +3953,11 @@
                            END-IF
                        END-PERFORM
                        MOVE    SANTEI-SRYYM        TO  WRK-YMD(1:6)
-                       MOVE    1                   TO  FLG-SANTEI
+                       MOVE    WRK-YMD             TO  WRK-YMDS
+      *                ÄûÀµ»þ¤Ï¤¹¤Ù¤Æ
+                       IF      SPA-SYORIFLG        =   ZERO
+                           MOVE    1                   TO  FLG-SANTEI
+                       END-IF
                    END-IF
                END-IF
       *
