@@ -138,6 +138,8 @@
       *
       *初診算定日
                05  SPA-SYOYMD              PIC  X(08).
+      *初診算定日（初回）
+               05  SPA-SYOYMD1             PIC  X(08).
       *初診算定日（訂正時の直帰）
                05  SPA-SYOYMD-OLD          PIC  X(08).
       *最終受診日
