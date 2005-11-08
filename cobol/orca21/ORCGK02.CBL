@@ -7735,8 +7735,8 @@
       *    初診フラグ
            MOVE    SPA-SYOSIN          TO  LNK-ORCSC-SYOSIN2
       *    初診フラグ（初診で、履歴の無い時、’１’）
-           IF      (SPA-SYOSIN         =   1   )  AND
-                   (SPA-GMN-MAX1       =   ZERO)  AND
+           IF     ((SPA-SYOSIN         =   1   )  AND
+                   (SPA-GMN-MAX1       =   ZERO)) OR
                    (SPA-SYOYMD         =   SPACE)
                MOVE    1                   TO  LNK-ORCSC-SYOSIN
            ELSE
@@ -8823,8 +8823,8 @@
       *    初診フラグ
            MOVE    SPA-SYOSIN          TO  LNK-ORCSC-SYOSIN2
       *    初診フラグ（初診で、履歴の無い時、’１’）
-           IF      (SPA-SYOSIN         =   1   )  AND
-                   (SPA-GMN-MAX1       =   ZERO)  AND
+           IF     ((SPA-SYOSIN         =   1   )  AND
+                   (SPA-GMN-MAX1       =   ZERO)) OR
                    (SPA-SYOYMD         =   SPACE)
                MOVE    1                   TO  LNK-ORCSC-SYOSIN
            ELSE
