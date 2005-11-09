@@ -86,6 +86,8 @@
       *
       *  02.06.01    NACL-藤原    05/06/22 自賠責レセプトの様式追加
       *  02.06.02    NACL-藤原    05/08/30 定期請求との排他制御処理
+      *
+      *  02.07.01    NACL-藤原    05/10/31  MONFUNC対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -276,7 +278,6 @@
            03  WRK-RECEERR         PIC X(200).
            03  WRK-RIDMSG          PIC X(70).
            03  WRK-YM              PIC X(07). 
-           03  WRK-PATH            PIC X(64).
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).
                05  WRK-SMM         PIC 9(02).
@@ -307,10 +308,8 @@
       *    入力項目名
            03  WRK-MCP-WIDGET      PIC X(64).
       *
-           03  WRK-DBPATH.
-               05  FILLER          PIC S9(09)  BINARY.
-               05  FILLER          PIC S9(09)  BINARY.
-               05  FILLER          PIC S9(09)  BINARY.
+           03  WRK-MCP-TABLE       PIC X(64).
+           03  WRK-MCP-PATHNAME    PIC X(64).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -356,8 +355,6 @@
                                    PIC X(03)   VALUE   "973". 
       *
            COPY    "CPSHELLTBL.INC".
-      *     
-           COPY    "ORCA-DBPATH".         
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -431,7 +428,6 @@
       *     
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
       *
       *****************************************************************
@@ -674,8 +670,8 @@
                                            TO  BTPARA-SHELLID
                    MOVE    WRK-CONS-JOB-JOBID
                                            TO  BTPARA-JOBID
-                   MOVE    PATH-TBL-BTPARA-KEY5
-                                           TO  MCP-PATH
+                   MOVE    "tbl_btpara"    TO  MCP-TABLE
+                   MOVE    "key5"          TO  MCP-PATHNAME
                    PERFORM 900-BTPARA-READ-SEC
                    EVALUATE    BTPARA-INFO-KBN
                        WHEN    "03"
@@ -1253,13 +1249,14 @@
            MOVE    SPA-GMN-NYUGAIKBN   TO  ACCT-NYUGAIKBN
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
+           MOVE    "tbl_sryacct"   TO  MCP-TABLE
+           MOVE    "key30"         TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          =   ZERO
+               MOVE    "tbl_sryacct"   TO  MCP-TABLE
+               MOVE    "key30"         TO  MCP-PATHNAME
                PERFORM 900-SRYACCT-READ-SEC
            ELSE
                INITIALIZE                  SRYACCT-REC
@@ -1272,12 +1269,9 @@
                PERFORM 42031-SRYACCT-CHK-SEC
            END-PERFORM
       *    カーソルクロース
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_sryacct"   TO  MCP-TABLE
+           MOVE    "key30"         TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
       *    入院のとき診療会計に存在しないとき入院会計をチェック
            IF      FLG-ERR             =   ZERO
@@ -1350,7 +1344,8 @@
                    OR      FLG-CHK         =   1
                    OR      FLG-ERR         =   1 
                    OR      KEY-NEW     NOT =   KEY-OLD
-               MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
+               MOVE    "tbl_sryacct"   TO  MCP-TABLE
+               MOVE    "key30"         TO  MCP-PATHNAME
                PERFORM 900-SRYACCT-READ-SEC
            END-PERFORM
            .
@@ -1369,13 +1364,14 @@
            MOVE    SPA-NAI-SRYYM       TO  NACCT-SRYYM
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "NYUINACCT-KEY14"   TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key14"             TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "NYUINACCT-KEY14"   TO  ORC-DBPATH
+               MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+               MOVE    "key14"             TO  MCP-PATHNAME
                PERFORM  900-NYUINACCT-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-NYUINACCT    
@@ -1430,21 +1426,15 @@
                  END-PERFORM
                  MOVE    1                   TO  FLG-NYUINACCT 
                ELSE            
-                 MOVE    "NYUINACCT-KEY14"   TO  ORC-DBPATH
+                 MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+                 MOVE    "key14"             TO  MCP-PATHNAME
                  PERFORM  900-NYUINACCT-READ-SEC
                END-IF
            END-PERFORM    
       *    カーソルクロース
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "NYUINACCT-KEY14"   TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      *
-      *****IF      FLG-NYUINACCT       =   ZERO
-      *****    MOVE    "1"                 TO  FLG-CHK
-      *****END-IF
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key14"             TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
            .
        42032-NYUINACCT-CHK-EXT.
            EXIT.
@@ -1701,7 +1691,8 @@
                MOVE    "1"                 TO  RECE07-SYOKBN
                MOVE    SPA-R01-NYUGAIKBN   TO  RECE07-NYUGAIKBN
                MOVE    SPA-R01-RECEKBN     TO  RECE07-RECEKBN
-               MOVE    "RECEKANRI-KEY7"    TO  WRK-PATH
+               MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
+               MOVE    "key7"              TO  WRK-MCP-PATHNAME
                MOVE    RECE07-REC          TO  MCPDATA-REC
                PERFORM 900-RECE07-INV-SEC
                IF      FLG-RECE07          =   ZERO
@@ -1936,7 +1927,8 @@
            INITIALIZE                  SYS-2001-REC
            MOVE    "2001"              TO  SYS-2001-KANRICD
            MOVE    "*"                 TO  SYS-2001-KBNCD
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           MOVE    SPA-SYSYMD          TO  SYS-2001-STYUKYMD
+                                           SYS-2001-EDYUKYMD
            MOVE    SYS-2001-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -1969,16 +1961,18 @@
       *        レセプト指示（個別指示）コード読み込み
            INITIALIZE                      SYS-2002-REC
            MOVE    "2002"              TO  SYS-2002-KANRICD
-           MOVE    ZERO                TO  ORC-DBYMD
+           MOVE    ZERO                TO  SYS-2002-STYUKYMD
+                                           SYS-2002-EDYUKYMD
            MOVE    SYS-2002-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-SYSKANRI
@@ -2023,17 +2017,15 @@
                MOVE    WRK-HENYMDG(1:6)
                                        TO  SPA-GMN-TSRYYM(SPA-GMN-MAX)
       *
-               MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
            END-PERFORM
       *
       *    カーソルクロース
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
       *    １行目のとき
            IF      SPA-GMN-MAX      >   ZERO 
@@ -2120,32 +2112,33 @@
                    MOVE    PTINF-REC           TO  MCPDATA-REC
                    MOVE    "DBSELECT"          TO  MCP-FUNC
                    IF      SPA-GMN-SYORI       =   "2"
-                       MOVE    PATH-TBL-PTINF-KEY13
-                                                   TO  WRK-DBPATH
+                       MOVE    "tbl_ptinf"         TO  WRK-MCP-TABLE
+                       MOVE    "key13"             TO  WRK-MCP-PATHNAME
                    ELSE
-                       MOVE    PATH-TBL-PTINF-KEY11
-                                                   TO  WRK-DBPATH
+                       MOVE    "tbl_ptinf"         TO  WRK-MCP-TABLE
+                       MOVE    "key11"             TO  WRK-MCP-PATHNAME
                    END-IF
-                   MOVE    WRK-DBPATH          TO  MCP-PATH
-                   CALL    "MCPSUB"           USING
-                                                  MCPAREA
-                                                  MCPDATA-REC
+                   MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+                   MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+                   CALL    "MONFUNC"       USING
+                                               MCPAREA
+                                               MCPDATA-REC
                    IF      MCP-RC              =   ZERO
-                       MOVE    WRK-DBPATH          TO  MCP-PATH
+                       MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+                       MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                        PERFORM 900-PTINF-READ-N-SEC
                    ELSE
                        MOVE    1                  TO  FLG-PTINF
                    END-IF
                    PERFORM                 UNTIL   FLG-PTINF   =   1
                        ADD     1                   TO  WRK-KENSU
-                       MOVE    WRK-DBPATH          TO  MCP-PATH
+                       MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+                       MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                        PERFORM 900-PTINF-READ-N-SEC
                    END-PERFORM
-                   MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-                   MOVE    WRK-DBPATH          TO  MCP-PATH
-                   CALL    "MCPSUB"            USING
-                                               MCPAREA
-                                               MCPDATA-REC
+                   MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+                   MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+                   PERFORM 900-CLOSE-SEC
       *
                    IF      WRK-KENSU           =   ZERO
                        IF      SPA-GMN-SYORI       =   "2"
@@ -2264,13 +2257,15 @@
       *********MOVE    "2"                 TO  RECE07-NYUGAIKBN
                MOVE    SPA-R01-NYUGAIKBN   TO  RECE07-NYUGAIKBN
                MOVE    SPA-R01-RECEKBN     TO  RECE07-RECEKBN
-               MOVE    "RECEKANRI-KEY7"    TO  WRK-PATH
+               MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
+               MOVE    "key7"              TO  WRK-MCP-PATHNAME
            ELSE
       *********MOVE    ZERO                TO  RECE07-SRYYM
                MOVE    "2"                 TO  RECE07-SYOKBN
                MOVE    SPA-R01-NYUGAIKBN   TO  RECE07-NYUGAIKBN
       *********MOVE    "RECEKANRI-KEY2"    TO  WRK-PATH
-               MOVE    "RECEKANRI-KEY5"    TO  WRK-PATH
+               MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
+               MOVE    "key5"              TO  WRK-MCP-PATHNAME
            END-IF
            MOVE    RECE07-REC          TO  MCPDATA-REC
            PERFORM 900-RECE07-INV-SEC
@@ -2300,7 +2295,8 @@
            INITIALIZE                  SYS-2001-REC
            MOVE    "2001"              TO  SYS-2001-KANRICD
            MOVE    "*"                 TO  SYS-2001-KBNCD
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           MOVE    SPA-SYSYMD          TO  SYS-2001-STYUKYMD
+                                           SYS-2001-EDYUKYMD
            MOVE    SYS-2001-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -2322,11 +2318,11 @@
            ELSE
               MOVE    "DBUPDATE"          TO  MCP-FUNC
            END-IF
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"       USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO 
                MOVE    "1003"              TO  SPA-ERRCD
                DISPLAY "2001 SYSKANRI-KEY =>" SYS-2001-KEY 
@@ -2338,20 +2334,22 @@
                INITIALIZE                  SYS-2002-REC
                MOVE    "2002"              TO  SYS-2002-KANRICD
                MOVE    "001"               TO  SYS-2002-KBNCD
-               MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+               MOVE    SPA-SYSYMD          TO  SYS-2002-STYUKYMD
+                                               SYS-2002-EDYUKYMD
                MOVE    SYS-2002-REC        TO  MCPDATA-REC
                PERFORM 900-SYSKANRI-INV-SEC
                IF      FLG-SYSKANRI        =   ZERO
                    INITIALIZE                      SYS-2002-REC
                    MOVE    "2002"                  TO  SYS-2002-KANRICD
+                   MOVE    SPA-SYSYMD              TO  SYS-2002-STYUKYMD
+                                                       SYS-2002-EDYUKYMD
                    MOVE    SYS-2002-REC            TO  MCPDATA-REC
-                   MOVE    SPA-SYSYMD              TO  ORC-DBYMD
                    MOVE    "DBDELETE"              TO  MCP-FUNC
-                   MOVE    "SYSKANRI-KEY2"         TO  ORC-DBPATH
-                   CALL    "ORCMCPSUB"              USING
-                                                    MCPAREA
-                                                    ORCMCPAREA
-                                                    MCPDATA-REC
+                   MOVE    "tbl_syskanri"          TO  MCP-TABLE
+                   MOVE    "del11"                 TO  MCP-PATHNAME
+                   CALL    "MONFUNC"               USING
+                                                       MCPAREA
+                                                       MCPDATA-REC
       *
                    IF      MCP-RC              NOT =   ZERO 
                        MOVE    "1001"                  TO  SPA-ERRCD
@@ -2375,11 +2373,11 @@
                                                TO  SYS-2002-NYUGAIKBN
                    MOVE    SYS-2002-REC        TO  MCPDATA-REC
                    MOVE    "DBINSERT"          TO  MCP-FUNC
-                   MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-                   CALL    "ORCMCPSUB"          USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC
+                   MOVE    "tbl_syskanri"          TO  MCP-TABLE
+                   MOVE    "key"                   TO  MCP-PATHNAME
+                   CALL    "MONFUNC"               USING
+                                                       MCPAREA
+                                                       MCPDATA-REC
       *
                    IF      MCP-RC          NOT =   ZERO 
                        MOVE    "1002"              TO  SPA-ERRCD
@@ -2395,9 +2393,9 @@
                                    TO  BTPARA-SHELLID
            MOVE    BTPARA-REC      TO  MCPDATA-REC
            MOVE    "DBDELETE"      TO  MCP-FUNC
-           MOVE    PATH-TBL-BTPARA-DEL1
-                                   TO  MCP-PATH
-           CALL    "MCPSUB"        USING
+           MOVE    "tbl_btpara"    TO  MCP-TABLE
+           MOVE    "del1"          TO  MCP-PATHNAME
+           CALL    "MONFUNC"       USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -2429,11 +2427,12 @@
            MOVE    SMCNDATE-YMD        TO  BTPARA-UPYMD
            MOVE    SMCNDATE-HMS        TO  BTPARA-UPHMS
            MOVE    BTPARA-REC          TO  MCPDATA-REC
-           MOVE    PATH-TBL-BTPARA-KEY TO  MCP-PATH
+           MOVE    "tbl_btpara"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                           MCPAREA
-                                           MCPDATA-REC
+           CALL    "MONFUNC"       USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC      NOT =   ZERO
                MOVE    "1004"          TO  SPA-ERRCD
                GO  TO  450-KOUSHIN-EXT
@@ -2477,13 +2476,14 @@
            MOVE    "*"                 TO  SYS-KBNCD
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"             USING
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                            MCPAREA
-                                           ORCMCPAREA
                                            MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key8"              TO  MCP-PATHNAME
                PERFORM  900-SYSKANRI-READ-SEC
                PERFORM  UNTIL   FLG-SYSKANRI   =    1
                    MOVE    MCPDATA-REC   TO  SYS-1001-REC
@@ -2494,23 +2494,22 @@
                            MOVE    1                   TO  FLG-SYSKANRI
                    END-EVALUATE    
       *
-                   MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
+                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                   MOVE    "key8"              TO  MCP-PATHNAME
                    PERFORM 900-SYSKANRI-READ-SEC
       *
                END-PERFORM
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
       *    カスタマイズＰＧ・レセ電情報の設定
            INITIALIZE                  SYS-2005-REC
            MOVE    "2005"          TO  SYS-2005-KANRICD
            MOVE    "*"             TO  SYS-2005-KBNCD
-           MOVE    SPA-SYSYMD      TO  ORC-DBYMD
+           MOVE    SPA-SYSYMD      TO  SYS-2005-STYUKYMD
+                                       SYS-2005-EDYUKYMD
            MOVE    SYS-2005-REC    TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI    =   ZERO
@@ -2625,9 +2624,9 @@
            MOVE    WRK-PREFNUM     TO  SHELLTBL-ARG14
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
-           MOVE    PATH-SHELL-SHELL
-                                   TO  MCP-PATH
-           CALL    "MCPSUB"        USING
+           MOVE    "shell"         TO  MCP-TABLE
+           MOVE    "shell"         TO  MCP-PATHNAME
+           CALL    "MONFUNC"       USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -3282,20 +3281,18 @@
        900-RECE07-INV-SEC         SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-      *****MOVE    "RECEKANRI-KEY2"    TO  ORC-DBPATH
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
-      *****    MOVE    "RECEKANRI-KEY2"    TO  ORC-DBPATH
-               MOVE    WRK-PATH            TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-RECE07
                    MOVE    MCPDATA-REC         TO  RECE07-REC
@@ -3306,13 +3303,9 @@
                MOVE    1                   TO  FLG-RECE07
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-      *****MOVE    "RECEKANRI-KEY2"    TO  ORC-DBPATH
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            .
        900-RECE07-INV-EXT.
@@ -3325,36 +3318,24 @@
       *
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTINF-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_ptinf"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "PTINF-KEY"         TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC         TO  PTINF-REC
-                   MOVE    ZERO                TO  FLG-PTINF
-               ELSE
-                   MOVE    1                   TO  FLG-PTINF
-                   INITIALIZE                  PTINF-REC
-               END-IF
+               MOVE    "tbl_ptinf"         TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-PTINF-READ-N-SEC
            ELSE
                MOVE    1                   TO  FLG-PTINF
-               INITIALIZE                  PTINF-REC
+               INITIALIZE                      PTINF-REC
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "PTINF-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_ptinf"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            .
        900-PTINF-READ-EXT.
@@ -3366,9 +3347,9 @@
        900-PTINF-READ-N-SEC       SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                           MCPAREA
-                                           MCPDATA-REC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  PTINF-REC
                MOVE    ZERO                TO  FLG-PTINF
@@ -3387,33 +3368,23 @@
        900-SYSKANRI-INV-SEC         SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key10"         TO  MCP-PATHNAME
+           CALL    "MONFUNC"       USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-               IF      MCP-RC              =   ZERO
-                   MOVE    ZERO                TO  FLG-SYSKANRI
-               ELSE
-                   MOVE    1                   TO  FLG-SYSKANRI
-               END-IF
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key10"         TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key10"         TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            .
        900-SYSKANRI-INV-EXT.
@@ -3425,10 +3396,9 @@
        900-SYSKANRI-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "MONFUNC"       USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
@@ -3439,55 +3409,14 @@
            EXIT.
       *
       *****************************************************************
-      *    診療行為マスタ読込
-      *****************************************************************
-       910-SRYACCT-INV-SEC         SECTION.
-      *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-               IF      MCP-RC              =   ZERO
-                   MOVE    ZERO                TO  FLG-SRYACCT
-                   MOVE    MCPDATA-REC         TO  SRYACCT-REC
-               ELSE
-                   MOVE    1                   TO  FLG-SRYACCT
-               END-IF
-           ELSE
-               MOVE    1                   TO  FLG-SRYACCT
-           END-IF
-      *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      *
-           .
-       910-SRYACCT-INV-EXT.
-           EXIT.
-      *
-      *
-      *****************************************************************
       *    診療行為マスタ　ＲＥＡＤ
       *****************************************************************
        900-SRYACCT-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-SRYACCT
                MOVE    MCPDATA-REC         TO  SRYACCT-REC
@@ -3510,10 +3439,9 @@
        900-NYUINACCT-READ-SEC          SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-NYUINACCT
                MOVE    MCPDATA-REC         TO  NYUINACCT-REC
@@ -3536,18 +3464,18 @@
        910-HKNCOMBI-INV-SEC         SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+               MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-HKNCOMBI
                    MOVE    MCPDATA-REC         TO  HKNCOMBI-REC
@@ -3563,12 +3491,9 @@
                INITIALIZE                      HKNCOMBI-REC
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            .
        910-HKNCOMBI-INV-EXT.
@@ -3580,24 +3505,24 @@
        900-BTPARA-READ-SEC         SECTION.
       *
            MOVE    BTPARA-REC          TO  MCPDATA-REC
+           MOVE    "tbl_btpara"        TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    PATH-TBL-BTPARA-KEY5    TO  MCP-PATH
+               MOVE    "tbl_btpara"        TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
                PERFORM 900-BTPARA-READ-N-SEC
            ELSE
                MOVE    1                   TO  FLG-BTPARA
                INITIALIZE                      BTPARA-REC
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    PATH-TBL-BTPARA-KEY5
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_btpara"        TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            .
        900-BTPARA-READ-EXT.
@@ -3609,9 +3534,9 @@
        900-BTPARA-READ-N-SEC          SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  BTPARA-REC
                MOVE    ZERO                TO  FLG-BTPARA
@@ -3625,18 +3550,28 @@
            EXIT.
       *
       *****************************************************************
+      *    テーブルクローズ処理
+      *****************************************************************
+       900-CLOSE-SEC               SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+      *
+           .
+       900-CLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *
-           MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"   USING
-                                MCPAREA
-                                ORCMCPAREA
-                                MCPDATA-REC.
-      *
+           MOVE   "PUTWINDOW"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
        900-PUT-WINDOW-EXT.
            EXIT.
-      *
-      *

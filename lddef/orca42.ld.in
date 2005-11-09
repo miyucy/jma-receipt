@@ -22,17 +22,33 @@ data	{
 	spa	orcaspa;
 	window	{
 		R01;
-                R02;
-                R03;
-                R04;
-                R98;
-                R99;
+		R02;
+		R03;
+		R04;
+		R98;
+		R99;
 		RERR;
-                RID1;
-                RID2;
-                RID3;
+		RID1;
+		RID2;
+		RID3;
 	};
 };
+db	{
+	tbl_btpara;
+	tbl_hkncombi;
+	tbl_hknnum;
+	tbl_jobkanri;
+	tbl_monthlynum;
+	tbl_nyuinacct;
+	tbl_ptinf;
+	tbl_ptkohinf;
+	tbl_ptnum;
+	tbl_recekanri;
+	tbl_receprt;
+	tbl_sryacct;
+	tbl_syskanri;
+};
 
-#include "orcadb.inc"
-
+db	"shell"	{
+	shell;
+};

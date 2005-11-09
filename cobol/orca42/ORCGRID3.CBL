@@ -27,6 +27,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  02.07.01    NACL-Æ£¸¶    05/10/31  MONFUNCÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -60,8 +61,6 @@
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
-      *     
-           COPY    "CPORCMCP.INC".  
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -84,7 +83,6 @@
            COPY    "RID1.INC".
            COPY    "RID2.INC".
            COPY    "RID3.INC".
-
       *
        PROCEDURE                                 DIVISION    USING
                                                  MCPAREA
@@ -170,14 +168,12 @@
       *****************************************************************
       *    £Ð£Õ£Ô¡¡½èÍý
       *****************************************************************
-       900-PUT-WINDOW                            SECTION.
+       900-PUT-WINDOW              SECTION.
       *
-           MOVE   "PUTWINDOW"                    TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"                     USING
-                                                  MCPAREA
-                                                  ORCMCPAREA
-                                                  MCPDATA-REC.
-      *
+           MOVE   "PUTWINDOW"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           .
        900-PUT-WINDOW-EXT.
            EXIT.
-      *
