@@ -48,6 +48,7 @@
       * 01.00.14     NACL-多々納  05/05/11  備考コメント追加
       *                                     備考欄を４２文字へ変更
       * 01.00.15     NACL-多々納  05/10/26  MONFUNCへ変更
+      * 01.00.16     NACL-多々納  05/11/09  再印刷処理追加
       *****************************************************************
       *
       *
@@ -117,6 +118,9 @@
            03  FLG-TAIGAI              PIC 9(01).
       *
            03  FLG-WKSRYEND            PIC 9(01).
+      *---(01.00.16) LINE ADD START ------------------------------------
+           03  FLG-INGAI           PIC 9(01).
+      *---(01.00.16) LINE ADD END   ------------------------------------
       *
       *    添字領域
        01  IDX-AREA.
@@ -141,6 +145,7 @@
       *
            03  KETA                PIC 9(04).
            03  IDX-L               PIC 9(04).
+           03  IDX-L2              PIC 9(04).
       *
       *    システム領域
        01  SYS-AREA.
@@ -603,7 +608,12 @@
            EVALUATE    ORCHC19-KBN
                WHEN    "1"
       *            前回処方印刷
-                   PERFORM 2001-RENNUM-SET-SEC
+      *---(01.00.16) LINE ADD START -----------------------------------
+                   IF      ORCHC19-DENPNUM     =   ZERO
+                       PERFORM 2001-RENNUM-SET-SEC
+                   ELSE
+                       PERFORM 2005-ZENKAI-SYORI-SEC
+                   END-IF
                WHEN    "2"
       *            見出しのみ
                    INITIALIZE                  WRK-SYOHOU-AREA
@@ -614,6 +624,17 @@
                WHEN    "5"
       *            中途終了時、発行
                    PERFORM 2003-WKSRYACT-SYORI-SEC
+      *---(01.00.16) LINE ADD START -----------------------------------
+               WHEN    "A"
+      *            前回処方（内容変更）
+               WHEN    "D"
+      *            前回処方（日数ゼロ）（選択）
+                   PERFORM 2004-HENKOU-SYORI-SEC
+               WHEN    "B"
+               WHEN    "C"
+      *            前回処方（日数ゼロ）（選択なし）
+                   PERFORM 2005-ZENKAI-SYORI-SEC
+      *---(01.00.16) LINE ADD END   -----------------------------------
                WHEN    OTHER
       *            診療行為登録時印刷
                    PERFORM 2002-DENPNUM-SYORI-SEC
@@ -800,6 +821,14 @@
                    WHEN    "2"
       *                前回処方と頭書
                        MOVE    1                   TO  WRK-PAGE-MAX
+      *---(01.00.16) LINE ADD START -----------------------------------
+                   WHEN    "A"
+                   WHEN    "B"
+                   WHEN    "C"
+                   WHEN    "D"
+      *                前回処方
+                       MOVE    1                   TO  WRK-PAGE-MAX
+      *---(01.00.16) LINE ADD END  -----------------------------------
                    WHEN    OTHER
                        MOVE    ZERO                TO  WRK-PAGE-MAX
                END-EVALUATE
@@ -961,6 +990,10 @@
       *****************************************************************
        4001-DB-KENSAKU-SEC                SECTION.
       *
+      *TEST 
+           DISPLAY "4001-DB-KENSAKU WRK-DRCD:" WRK-DRCD
+              ",WRK-HKNCOMBI;" WRK-HKNCOMBINUM
+      *TEST
       *    職員情報（ドクター）
            MOVE    SPACE               TO  SYS-1010-REC
            MOVE    "1010"              TO  SYS-1010-KANRICD
@@ -1536,8 +1569,12 @@
            MOVE    SPA-HOSPID          TO  SRY-HOSPID
            MOVE    SPA-NYUGAIKBN       TO  SRY-NYUGAIKBN
            MOVE    SPA-PTID            TO  SRY-PTID
-           MOVE    WRK-SRYKA           TO  SRY-SRYKA
-           MOVE    WRK-SRYYMD(1:6)     TO  SRY-SRYYM
+      *---(01.00.16) LINE UPD START ------------------------------------
+      ***  MOVE    WRK-SRYKA           TO  SRY-SRYKA
+      ***  MOVE    WRK-SRYYMD(1:6)     TO  SRY-SRYYM
+           MOVE    JYURRK-SRYKA        TO  SRY-SRYKA
+           MOVE    JYURRK-SRYYMD(1:6)  TO  SRY-SRYYM
+      *---(01.00.16) LINE UPD END   ------------------------------------
            MOVE    WRK-ZAINUM          TO  SRY-ZAINUM
       *
            MOVE    SRYACT-REC          TO  MCPDATA-REC
@@ -1569,6 +1606,9 @@
                MOVE    SRY-SRYKBN          TO  WRK-SRYKBN
       *
                MOVE    ZERO                TO  FLG-TAIGAI
+      *---(01.00.16) LINE ADD START ------------------------------------
+               MOVE    ZERO                TO  FLG-INGAI
+      *---(01.00.16) LINE ADD END   ------------------------------------
       *
       *        在宅の時、薬剤の有無をチェックする
                IF     (SRY-SRYKBN          =   "14"  )  AND
@@ -1589,6 +1629,9 @@
                MOVE    ZERO                TO  FLG-ZAITAKU
                IF     (SRY-SRYKBN          =   "14" ) 
                    IF      ORCHC19-KBN         =   "3"
+      *---(01.00.16) LINE ADD START ------------------------------------
+                                               OR  "C"
+      *---(01.00.16) LINE ADD END   ------------------------------------
       *                院内
                        IF     (SRY-SRYSYUKBN       =   "148"  OR
                                                        "149" )  OR
@@ -1613,6 +1656,9 @@
                                                "223"  OR
                                                "233")
                    IF      ORCHC19-KBN         =   "3"
+      *---(01.00.16) LINE ADD START ------------------------------------
+                                               OR  "C"
+      *---(01.00.16) LINE ADD END   ------------------------------------
                        MOVE    1               TO  FLG-INNAI
                    ELSE
                        MOVE    1               TO  FLG-TAIGAI
@@ -1640,12 +1686,29 @@
       *            診療会計より、点数チェック
                    PERFORM 20021-SRYACCT-SYORI-SEC
       *            点数がゼロのものを院外処方分とする
-                   IF    ((ORCHC19-KBN     NOT =   "3"  ) AND
-                          (ACCT-ZAITEN         =   ZERO ))  OR
-                         ((ORCHC19-KBN         =   "3"  ) AND
-                          (ACCT-ZAITEN     NOT =   ZERO ))  OR
-                          (FLG-ZAITAKU         =   1    )  OR
-                          (FLG-INNAI           =   1    )
+      *---(01.00.16) LINE UPD START ------------------------------------
+      **********   IF    ((ORCHC19-KBN     NOT =   "3"  ) AND
+      *                   (ACCT-ZAITEN         =   ZERO ))  OR
+      *                  ((ORCHC19-KBN         =   "3"  ) AND
+      *                   (ACCT-ZAITEN     NOT =   ZERO ))  OR
+      *                   (FLG-ZAITAKU         =   1    )  OR
+      *************       (FLG-INNAI           =   1    )
+                   IF     (ORCHC19-KBN         =   "3"
+                                               OR  "C"  )
+      *                院内判定
+                       IF      ACCT-ZAITEN    NOT =   ZERO
+                           MOVE    1               TO  FLG-INNAI
+                       END-IF
+                   ELSE
+      *                院外判定
+                       IF      ACCT-ZAITEN         =   ZERO
+                           MOVE    1               TO  FLG-INGAI
+                       END-IF
+                   END-IF
+                   IF     (FLG-ZAITAKU         =   1    )  OR
+                          (FLG-INNAI           =   1    )  OR
+                          (FLG-INGAI           =   1    )
+      *---(01.00.16) LINE UPD END   ------------------------------------
                        PERFORM VARYING     IDXA    FROM    1   BY  1
                                UNTIL      (IDXA    >   5   )  OR
                                           (SRY-SRYCD (IDXA)   =   SPACE)
@@ -1755,6 +1818,10 @@
       *
       *    最後の行に回数を編集
            IF      ORCHC19-KBN         =   "1"
+      *---(01.00.16) LINE ADD START -----------------------------------
+                                       OR  "B"
+                                       OR  "C"
+      *---(01.00.16) LINE ADD END   -----------------------------------
       *        回数編集なし
                CONTINUE
            ELSE
@@ -2186,6 +2253,7 @@
            MOVE    SPA-SRYYMD          TO  WKSRY-SRYYMD
            MOVE    SPA-HKNCOMBINUM     TO  WKSRY-HKNCOMBI
       *
+           MOVE    WKSRYACT-REC        TO  MCPDATA-REC
            MOVE    "tbl_wksryact"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
@@ -2487,7 +2555,7 @@
                    END-IF
                END-IF
            END-IF
-      *        処方のみで、院内処方印刷の時
+      *    処方のみで、院内処方印刷の時
            IF      WRK-SRYKBN          =   "21"  OR  "22" OR "23"
                IF     (WRK-SRYSYUKBN       =   "213"  OR
                                                "223"  OR
@@ -2559,6 +2627,242 @@
        200321-HENSYU-SYORI-EXT.
            EXIT.
       *---(01.00.07) LINE ADD END   ------------------------------------
+      *---(01.00.16) LINE ADD START -----------------------------------
+      *****************************************************************
+      *    前回処方（内容変更）処理
+      *****************************************************************
+       2004-HENKOU-SYORI-SEC         SECTION.
+      *
+      *    処方編集初期クリア処理
+           PERFORM 200411-SYOHOU-SPAINIT-SEC
+      *
+           PERFORM VARYING     IDX-L   FROM    1   BY  1
+                   UNTIL      (IDX-L   >   ORCHC19-ZAI-MAX)
+               MOVE    ORCHC19-ZAIKAIKEI(IDX-L)   TO  WRK-KAISU
+               MOVE    ORCHC19-SRYSYUKBN(IDX-L)   TO  WRK-SRYSYUKBN
+               MOVE    ORCHC19-SRYKBN   (IDX-L)   TO  WRK-SRYKBN
+               MOVE    SPACE               TO  WRK-SRYCD
+               MOVE    ZERO                TO  IDX-S
+               MOVE    ZERO                TO  IDXA
+               INITIALIZE                  SRYACT-REC
+               PERFORM VARYING     IDX-L2  FROM    1   BY  1
+                       UNTIL      (IDX-L2  >   50  )   OR
+                                  (ORCHC19-SRYCD (IDX-L IDX-L2)
+                                               =   SPACE )
+      *            コメント（備考）（院内・院外共通）
+                   IF      WRK-SRYKBN          =   "98"
+                       PERFORM 20042-ORCHC19-98-HEN-SEC
+                   ELSE
+                       PERFORM 20041-ORCHC19-HEN-SEC
+                   END-IF
+               END-PERFORM
+      *        剤終了時、編集へ
+               IF      IDX-S           >   ZERO
+                   PERFORM 20043-END-HENSYU-SEC
+               END-IF
+           END-PERFORM
+      *    印刷
+           PERFORM 200212-PRINT-CHK-SEC
+           .
+       2004-HENKOU-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    処方編集初期クリア処理
+      *****************************************************************
+       200411-SYOHOU-SPAINIT-SEC          SECTION.
+      *
+           MOVE    SPA-HKNCOMBINUM     TO  WRK-HKNCOMBINUM
+           MOVE    SPA-SRYKA           TO  WRK-SRYKA
+           MOVE    SPA-SRYYMD          TO  WRK-SRYYMD
+           MOVE    SPA-DRCD            TO  WRK-DRCD
+      *
+           MOVE    ZERO                TO  FLG-SYOHOU
+           INITIALIZE                  WRK-SYOHOU-AREA
+           MOVE    1                   TO  WRK-PAGE-MAX
+           MOVE    ZERO                TO  IDX
+           MOVE    ZERO                TO  IDX-Z
+           MOVE    ZERO                TO  FLG-MAYAKU
+      *
+           INITIALIZE                  WRK-BIKOU-AREA
+      *
+           .
+       200411-SYOHOU-SPAINIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    前回処方編集処理
+      *****************************************************************
+       20041-ORCHC19-HEN-SEC         SECTION.
+      *
+           ADD     1                   TO  IDXA
+           IF      IDXA                >   5
+               INITIALIZE                  SRYACT-REC
+               MOVE    1                   TO  IDXA
+           END-IF
+           MOVE    ORCHC19-SRYCD (IDX-L IDX-L2)
+                                       TO  SRY-SRYCD (IDXA)
+      *    数量
+           MOVE    ORCHC19-SRYSURYO (IDX-L IDX-L2)
+                                       TO  SRY-SRYSURYO (IDXA)
+      *    回数
+           MOVE    ORCHC19-SRYKAISU (IDX-L IDX-L2)
+                                       TO  SRY-SRYKAISU (IDXA)
+           MOVE    ORCHC19-SRYCD (IDX-L IDX-L2)
+                                       TO  WRK-SRYCD
+      *    内容編集
+           PERFORM 3103-SRYACT-HEN-SEC
+      *
+           IF    ((ORCHC19-SRYCD (IDX-L IDX-L2)(1:1)
+                                       =    "8")   OR
+                  (ORCHC19-SRYCD (IDX-L IDX-L2)(1:3)
+                                       =    "008")) AND
+                  (ORCHC19-INPUTCOMENT (IDX-L IDX-L2)
+                                   NOT =   SPACE)
+               MOVE    ORCHC19-INPUTCOMENT (IDX-L IDX-L2)
+                                           TO  WRK-TNS-NAME
+      *        名称編集
+               PERFORM 31031-MEISYOU-HEN-SEC
+               INSPECT WRK-MEISYOU1 (IDX-S)
+                                        REPLACING  ALL "  "  BY  "　"
+           END-IF
+      *
+           .
+       20041-ORCHC19-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    前回処方（選択なし）処理
+      *****************************************************************
+       20042-ORCHC19-98-HEN-SEC         SECTION.
+      *
+           MOVE    ORCHC19-SRYCD (IDX-L IDX-L2)
+                                       TO  TNS-SRYCD
+           PERFORM 910-TENSU-READ-SEC
+           IF    ((ORCHC19-SRYCD (IDX-L IDX-L2)(1:1)
+                                       =    "8")   OR
+                  (ORCHC19-SRYCD (IDX-L IDX-L2)(1:3)
+                                       =    "008")) AND
+                  (ORCHC19-INPUTCOMENT (IDX-L IDX-L2)
+                                   NOT =   SPACE)
+               MOVE    ORCHC19-INPUTCOMENT (IDX-L IDX-L2)
+                                           TO  WRK-TNS-NAME
+           ELSE
+               MOVE    TNS-NAME            TO  WRK-TNS-NAME
+           END-IF
+           IF      ORCHC19-SRYCD (IDX-L IDX-L2)(1:3) =   "001"
+               MOVE    SPACE           TO  WRK-TNS-NAME
+               STRING  "【"            DELIMITED   BY  SIZE
+                       TNS-NAME        DELIMITED   BY  "    "
+                       "】"            DELIMITED   BY  SIZE
+                  INTO                 WRK-TNS-NAME
+               END-STRING
+           END-IF
+           ADD     1                   TO  IDX-BIKOU
+           IF      IDX-BIKOU           <=  9
+               MOVE    WRK-TNS-NAME        TO  WRK-BIKOU-NAME
+                                                           (IDX-BIKOU)
+           END-IF
+           .
+       20042-ORCHC19-98-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    剤終了時編集処理
+      *****************************************************************
+       20043-END-HENSYU-SEC         SECTION.
+      *
+      *    最後の行に回数を編集
+           IF      WRK-SRYCD (1:1)     =   "6"
+               ADD     1                   TO  IDX-S
+           END-IF
+      *
+           IF      ORCHC19-KBN         =   "A"
+      *        最後の行に回数を編集
+               EVALUATE    WRK-SRYKBN
+                   WHEN    "21"
+                   WHEN    "22"
+                       PERFORM 20022-KAISU-HEN-SEC
+               END-EVALUATE
+           END-IF
+      *
+           EVALUATE    WRK-SRYKBN
+               WHEN    "21"
+                   MOVE    "（"                  TO  WRK-K3      (IDX-S)
+                   MOVE    "日分）"              TO  WRK-HINICHI (IDX-S)
+               WHEN    "22"
+                   MOVE    "（"                  TO  WRK-K3      (IDX-S)
+                   MOVE    "回分）"              TO  WRK-HINICHI (IDX-S)
+               WHEN    "23"
+               WHEN    "14"
+                   IF      WRK-NAIYOU-Z (IDX-S)  =   SPACE
+                       COMPUTE IDX-S             =   IDX-S    -   1
+                   END-IF
+           END-EVALUATE
+      *
+           INSPECT WRK-NAIYOU-Z (IDX-S)    REPLACING  ALL "  "  BY  "　"
+      *
+      *    帳票用編集処理
+           PERFORM 20022-PRINT-HEN-SEC
+      *
+           MOVE    SPACE               TO  WRK-NAIYOU-AREA
+           MOVE    SPACE               TO  WRK-SRYSYUKBN
+           MOVE    SPACE               TO  WRK-SRYKBN
+           MOVE    SPACE               TO  WRK-SRYCD
+           MOVE    ZERO                TO  WRK-KAISU
+           MOVE    ZERO                TO  IDX-S
+           MOVE    ZERO                TO  FLG-KAISU
+           MOVE    ZERO                TO  FLG-ZAITAKU
+           MOVE    ZERO                TO  WRK-YKZTEN
+           MOVE    ZERO                TO  WRK-KIZAITEN
+      *
+           .
+       20043-END-HENSYU-EXT.
+           EXIT.
+      *****************************************************************
+      *    前回処方（選択なし）処理
+      *****************************************************************
+       2005-ZENKAI-SYORI-SEC         SECTION.
+      *
+      *    処方編集初期クリア処理
+           PERFORM 200411-SYOHOU-SPAINIT-SEC
+      *    受診履歴検索
+           MOVE    SPACE               TO  JYURRK-REC
+           INITIALIZE                      JYURRK-REC
+           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-PTID            TO  JYURRK-PTID
+           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
+           MOVE    ORCHC19-DENPNUM     TO  JYURRK-DENPNUM
+      *
+           MOVE    JYURRK-REC          TO  MCPDATA-REC
+           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+           MOVE    "key6"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+               MOVE    "key6"              TO  MCP-PATHNAME
+               PERFORM 970-JYURRK-NEXT-SEC
+           ELSE
+               MOVE    1                   TO  FLG-JYURRK
+               INITIALIZE                      JYURRK-REC
+           END-IF
+      *
+           PERFORM
+                   UNTIL       FLG-JYURRK      =   1
+      *        受診履歴より編集
+               PERFORM 20023-JYURRK-HEN-SEC
+      *
+               MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+               MOVE    "key6"              TO  MCP-PATHNAME
+               PERFORM 970-JYURRK-NEXT-SEC
+           END-PERFORM
+           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+           MOVE    "key6"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+      *    印刷判定
+           PERFORM 200212-PRINT-CHK-SEC
+      *
+           .
+       2005-ZENKAI-SYORI-EXT.
+           EXIT.
+      *---(01.00.16) LINE ADD END   ------------------------------------
       *****************************************************************
       *    システム管理マスタ読み込み処理
       *****************************************************************
