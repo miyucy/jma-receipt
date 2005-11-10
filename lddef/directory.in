@@ -34,6 +34,7 @@ ld	{
 	orca22	 1;
 	orca23	 1;
 	orca24	 1;
+	orca29	 1;
 	orca31   1;	#hosp
 	orca32   1;	#hosp
 	orca33   1;	#hosp

@@ -1,0 +1,48 @@
+name	orca29;
+
+arraysize	20;
+textsize	400;
+
+bind	""		"OpenCOBOL"	"ORCGKA01";
+bind	"KA01"		"OpenCOBOL"	"ORCGKA01";
+bind	"KAERR"		"OpenCOBOL"	"ORCGKAERR";
+bind	"KAID1"		"OpenCOBOL"	"ORCGKAID1";
+bind	"KAID2"		"OpenCOBOL"	"ORCGKAID2";
+
+multiplex_group	orca29;
+
+
+data	{
+	spa	orcaspa;
+	window	{
+		KA01;
+		KAERR;
+		KAID1;
+		KAID2;
+	};
+};
+
+db	{
+	tbl_syskanri;
+	tbl_hkncombi;
+	tbl_hknnum;
+	tbl_jyurrk;
+	tbl_ptcom;
+	tbl_ptnum;
+	tbl_pthkninf;
+	tbl_ptkohinf;
+	tbl_ptinf;
+	tbl_sryacct;
+	tbl_sryact;
+	tbl_tensu;
+        tbl_tensuplus;
+	tbl_wksryact;
+	tbl_ptrsiinf;
+	tbl_yakujyo;
+	tbl_monthlynum;
+	tbl_jobkanri;
+};
+db	"shell"	{
+	shell;
+};
+
