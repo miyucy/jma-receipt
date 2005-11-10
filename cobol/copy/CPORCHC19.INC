@@ -23,11 +23,15 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-多々納  04/07/20  伝票番号追加
+      *  01.00.02    NACL-多々納  05/11/10  処理区分 A〜D 、処方内容追加
       ************************************************************
       *
        01  ORCHC19AREA.
       *
       *    1:前回処方、空白：今回処方、2:頭書のみ、3:院内分
+      *    4:中途終了時（院外）、5:中途終了時（院内）
+      *    A:処方内容変更、B:前回処方（院外）
+      *    C:前回処方（院内）、D:前回処方（選択）
            03  ORCHC19-KBN             PIC X(01).
       *
       *    受診歴の連番（確定しない時、ゼロ）
@@ -35,4 +39,18 @@
       *
       *    伝票番号
            03  ORCHC19-DENPNUM         PIC 9(07).
+      *
+      *    処方内容（A:処方内容変更、D:前回処方（選択）で使用）
+           03  ORCHC19-DATA-REC.
+               05  ORCHC19-ZAI-MAX         PIC 9(03).
+               05  ORCHC19-REC-TBL         OCCURS   100.
+                   07  ORCHC19-ZAIKAIKEI       PIC 9(03).
+                   07  ORCHC19-ZAITENKEI       PIC 9(08).
+                   07  ORCHC19-SRYKBN          PIC X(02).
+                   07  ORCHC19-SRYSYUKBN       PIC X(03).
+                   07  ORCHC19-NAI-TBL         OCCURS   50.
+                       09  ORCHC19-SRYCD           PIC  X(09).
+                       09  ORCHC19-SRYSURYO        PIC  9(05)V9(03).
+                       09  ORCHC19-SRYKAISU        PIC  9(03).
+                       09  ORCHC19-INPUTCOMENT     PIC  X(80).
       *

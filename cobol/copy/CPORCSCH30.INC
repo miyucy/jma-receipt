@@ -22,13 +22,28 @@
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-多々納  05/11/09  処理区分 5 内容変更追加
       ************************************************************
       *
        01  ORCSCH30AREA.
       *
       *    処理区分(１：院内、２：院外、3:中途終了院内、4:中途終了院外）
+      *              5:内容変更
            03  ORCSCH30-KBN            PIC X(01).
       *
       *    伝票番号
            03  ORCSCH30-DENPNUM        PIC 9(07).
+      *
+      *    処方内容（C:処方内容変更のみ使用）
+           03  ORCSCH30-DATA-REC.
+               05  ORCSCH30-ZAI-MAX         PIC 9(03).
+               05  ORCSCH30-REC-TBL     OCCURS   100.
+                   07  ORCSCH30-ZAIKAIKEI       PIC 9(03).
+                   07  ORCSCH30-SRYKBN          PIC X(02).
+                   07  ORCSCH30-SRYSYUKBN       PIC X(03).
+                   07  ORCSCH30-NAI-TBL         OCCURS   50.
+                       09  ORCSCH30-SRYCD           PIC  X(09).
+                       09  ORCSCH30-SRYSURYO        PIC  9(05)V9(03).
+                       09  ORCSCH30-SRYKAISU        PIC  9(03).
+                       09  ORCSCH30-ZAIKAISU        PIC  9(03).
       *
