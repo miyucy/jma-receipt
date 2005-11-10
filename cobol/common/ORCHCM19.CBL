@@ -145,7 +145,9 @@
       *
            03  KETA                PIC 9(04).
            03  IDX-L               PIC 9(04).
+      *---(01.00.16) LINE ADD START ------------------------------------
            03  IDX-L2              PIC 9(04).
+      *---(01.00.16) LINE END START ------------------------------------
       *
       *    システム領域
        01  SYS-AREA.
@@ -608,12 +610,13 @@
            EVALUATE    ORCHC19-KBN
                WHEN    "1"
       *            前回処方印刷
-      *---(01.00.16) LINE ADD START -----------------------------------
+      *---(01.00.16) LINE UPD START -----------------------------------
                    IF      ORCHC19-DENPNUM     =   ZERO
                        PERFORM 2001-RENNUM-SET-SEC
                    ELSE
                        PERFORM 2005-ZENKAI-SYORI-SEC
                    END-IF
+      *---(01.00.16) LINE UPD END   -----------------------------------
                WHEN    "2"
       *            見出しのみ
                    INITIALIZE                  WRK-SYOHOU-AREA
