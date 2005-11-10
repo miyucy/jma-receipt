@@ -69,6 +69,7 @@
       *  03.00.21    NACL-多々納  04/02/20  セット展開変更
       *  03.00.22    NACL-多々納  04/03/XX  Ｈ１６年４月改正対応他
       *  03.00.23    NACL-多々納  04/07/XX  複数科・保険組合せ一括入力
+      *  03.00.24    NACL-多々納  05/11/10  前回処方印刷変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1214,6 +1215,7 @@
                MOVE    SPA-MOTOPG          TO  WRK-MOTOPG
                IF      WRK-MOTOPG          =   "Y01"  OR  "U01"
                                                       OR  "P97"
+                                                      OR  "KA01"
                    MOVE    LNK-COMMON      TO  SPA-KYOUTU
                    MOVE    LNK-SCRSPA      TO  SPA-K02
                    MOVE    SPA-WORK        TO  SPA-K01KYOUTU
@@ -1221,6 +1223,7 @@
                END-IF
       *        予約の時、そのまま画面表示へ
                IF      WRK-MOTOPG          =   "Y01"
+                                           OR  "KA01"
                    IF      SPA-PTID            =   ZERO
                        INITIALIZE              SPA-K01SET-AREA
                        MOVE    SPA-SYOHOKBN    TO  SPA-INGAIKBN
@@ -4242,7 +4245,7 @@
       *        処方（前回）
                WHEN    "CLICKED"       ALSO    "BSH2"
                    MOVE    2                   TO  FLG-SYOHOU
-                   PERFORM 4124-SYOHOU-SYORI-SEC
+                   PERFORM 4124-MAESYOHOU-SYORI-SEC
       *        入力コード設定へ
                WHEN    "CLICKED"       ALSO    "B05"
                    PERFORM 4106S-INPUTCD-SYORI-SEC
@@ -9889,6 +9892,54 @@
       *
            .
        4101-INGAI-HENKOU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    前回処方箋発行画面へ処理
+      *****************************************************************
+       4124-MAESYOHOU-SYORI-SEC             SECTION.
+      *
+      *    患者の確定されてない時、処理をしない
+           IF     (SPA-GMN-PTNUM       =   SPACE )  OR
+                  (SPA-PTID            =   ZERO  )
+               GO      TO      4124-MAESYOHOU-SYORI-EXT
+           END-IF
+      *
+      *!!!!
+           MOVE    1                   TO  FLG-HENKOU
+      *    診療行為入力チェック
+           PERFORM 41011-KOUI-ALLHEN-SEC
+           IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-KIDCD           =   "0180" )  OR
+                  (FLG-END             =   1     )
+               GO      TO      4124-MAESYOHOU-SYORI-EXT
+           END-IF
+      *
+      *    ワーク行為負担パラメタを作成
+           PERFORM 4410-WSINPARA-SEC
+      *
+      *    戻り時、画面を元へ戻す
+           MOVE    SPACE               TO  LINKAREA
+           MOVE    SPA-KYOUTU          TO  LNK-COMMON
+           MOVE    SPA-K02             TO  LNK-SCRSPA
+      *
+      *    画面移行用のパラメタ変更
+           MOVE    "K02"               TO  SPA-MOTOPG
+           MOVE    "K02"               TO  SPA-MOTOPG3
+           MOVE    "KA01"              TO  SPA-SAKIPG
+      *
+      *****MOVE    SPACE               TO  SPA-KYOTUKEY
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+      *
+           MOVE    "CHANGE"            TO  MCP-PUTTYPE
+           MOVE    "KA01"              TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       4124-MAESYOHOU-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
