@@ -191,6 +191,7 @@
            03  IDX15                       PIC 9(05).
            03  IDX16                       PIC 9(05).
            03  IDX-CMB                     PIC 9(05).
+           03  IDX-DAY                     PIC 9(02).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -386,7 +387,9 @@
            03  WRK-ORCHCN01-HKNCOMBINUM    PIC 9(04).
            03  WRK-STIDX                   PIC 9(02).
            03  WRK-EDIDX                   PIC 9(02).
-           03  WRK-MIN-YMD                 PIC X(08).
+           03  WRK-MIN-YMD.
+               05  WRK-MIN-YM              PIC X(06).
+               05  WRK-MIN-DD              PIC 9(02).
       *    特定入院料の会計作成後に一般の入院料で会計を作成するための
       *    領域
            03  IPN-NYUKAIKEI-SAKUSEI-FLG   PIC X(01).
@@ -419,6 +422,9 @@
                                            PIC X(06).
                    07  WRK-TENROOM-SKJ-DD  PIC 9(02).
                    07  WRK-TENROOM-SKJ     PIC 9(03)  OCCURS  31.
+           03  WRK-NAI-NYUINYMD.
+               05  WRK-NAI-NYUINYM         PIC X(06).
+               05  WRK-NAI-NYUINDD         PIC 9(02).
       *
       *    患者年齢算出用エリア
        01  WRK-NENREI-AREA.
@@ -6057,7 +6063,7 @@
            MOVE    SPA-HOSPID          TO  NACCT-HOSPID
            MOVE    "1"                 TO  NACCT-NYUGAIKBN
            MOVE    SPA-NAI-I01-PTID    TO  NACCT-PTID
-           MOVE    WRK-MIN-YMD (1:6)   TO  NACCT-SRYYM
+           MOVE    WRK-MIN-YM          TO  NACCT-SRYYM
            MOVE    "5"                 TO  NACCT-ZAISKBKBN
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "NYUINACCT-KEY19"   TO  WRK-DBPATH
@@ -6083,41 +6089,43 @@
       *
                MOVE    1                   TO  WRK-EDIDX
       *
-               PERFORM VARYING IDX16   FROM    WRK-STIDX   BY  -1
-                   UNTIL ( IDX16           <   WRK-EDIDX )
+               PERFORM VARYING IDX-DAY   FROM    WRK-STIDX   BY  -1
+                   UNTIL ( IDX-DAY           <   WRK-EDIDX )
                     OR   ( FLG-HKNCOMBIGET =   1 )
       *
-                   IF    ( WRK-MIN-YMD (1 : 6)  =   NACCT-SRYYM )
-                       IF    ( WRK-MIN-YMD (7 : 2)    >=  IDX16 (4 : 2))
-                        AND  ( NACCT-DAY (IDX16)   NOT =   ZERO )
-                           MOVE    NACCT-DAY (IDX16)
+                   IF    ( WRK-MIN-YM      =   NACCT-SRYYM )
+                       IF    ( WRK-MIN-DD >=  IDX-DAY)
+                        AND  ( NACCT-DAY (IDX-DAY)   NOT =   ZERO )
+                           MOVE    NACCT-DAY (IDX-DAY)
                                            TO  WRK-ORCHCN01-HKNCOMBINUM
                            MOVE    1       TO  FLG-HKNCOMBIGET
                        END-IF
                    ELSE
-                       IF    ( SPA-NAI-I01-NYUINYMD (1:6)
+                       MOVE    SPA-NAI-I01-NYUINYMD
+                                           TO  WRK-NAI-NYUINYMD
+                       IF    ( WRK-NAI-NYUINYM
                                            =   NACCT-SRYYM )
-                        AND  ( SPA-NAI-I01-NYUINYMD (7:2)
-                                           >   IDX16(4 : 2))
-                           MOVE    1       TO  IDX16
+                        AND  ( WRK-NAI-NYUINDD
+                                           >   IDX-DAY)
+                           MOVE    1       TO  IDX-DAY
                        ELSE
-                           IF    ( NACCT-DAY (IDX16)   NOT =   ZERO )
-                               MOVE    NACCT-DAY (IDX16)
+                           IF    ( NACCT-DAY (IDX-DAY)   NOT =   ZERO )
+                               MOVE    NACCT-DAY (IDX-DAY)
                                            TO  WRK-ORCHCN01-HKNCOMBINUM
                                MOVE    1   TO  FLG-HKNCOMBIGET
                            END-IF
                        END-IF
                    END-IF
       *
-                   MOVE    "NYUINACCT-KEY19"   TO  WRK-DBPATH
-                   PERFORM 900-TBL-READ-SEC
-                   IF    ( FLG-DBRC        NOT =   ZERO )
-                       MOVE    1           TO  FLG-NYUINACCT
-                   ELSE
-                       MOVE    MCPDATA-REC TO  NYUINACCT-REC
-                   END-IF
-      *
                END-PERFORM
+      *
+               MOVE    "NYUINACCT-KEY19"   TO  WRK-DBPATH
+               PERFORM 900-TBL-READ-SEC
+               IF    ( FLG-DBRC        NOT =   ZERO )
+                   MOVE    1           TO  FLG-NYUINACCT
+               ELSE
+                   MOVE    MCPDATA-REC TO  NYUINACCT-REC
+               END-IF
       *
            END-PERFORM
       *
