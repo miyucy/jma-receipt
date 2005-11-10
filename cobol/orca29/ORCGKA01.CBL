@@ -1,0 +1,3675 @@
+      *******************************************************************
+      * Project code name "ORCA"
+      * 日医標準レセプトソフト（JMA standard receipt software）
+      * Copyright(C) 2002 JMA (Japan Medical Association)
+      *
+      * This program is part of "JMA standard receipt software".
+      *
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this license along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
+      ********************************************************************
+       IDENTIFICATION              DIVISION.
+       PROGRAM-ID.                 ORCGKA01.
+      *****************************************************************
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 処方せん・薬剤情報再印刷
+      *  コンポーネント名  : 処方せん・薬剤情報再印刷（ＫＡ０１）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  05/10/27    NACL-多々納   新規作成
+      *****************************************************************
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *****************************************************************
+      *
+       ENVIRONMENT                 DIVISION.
+       CONFIGURATION               SECTION.
+       INPUT-OUTPUT                SECTION.
+      *FILE-CONTROL.
+      *
+      *
+       DATA                        DIVISION.
+      *FILE                        SECTION.
+      *
+       WORKING-STORAGE             SECTION.
+      *
+      *    画面色等
+           COPY    "ENUM-VALUE".
+      *
+      *    スパ領域
+           COPY    "COMMON-SPA".
+      *
+           COPY    "KA01COMMON-SPA".
+      *    画面スパ領域
+       01  SPA-KA01.
+           03  SPA-MAE-MOTOPG          PIC X(08).
+      *
+           03  SPA-KA01-AREA.
+               05  SPA-GMN-CUR                   PIC 9(03).
+      *        見出領域
+               05  SPA-GMN-PTNUM           PIC X(20).
+               05  SPA-GMN-PTID            PIC 9(10).
+               05  SPA-GMN-NAME            PIC X(50).
+               05  SPA-GMN-KANANAME        PIC X(50).
+               05  SPA-GMN-SEX             PIC X(02).
+               05  SPA-GMN-BIRTHDAY        PIC X(10).
+               05  SPA-GMN-NENREI          PIC X(06).
+      *
+               05  SPA-GMN-AREA.
+      *            診療日
+                   07  SPA-GMN-SRYYMD          PIC X(09).
+      *            交付日
+                   07  SPA-GMN-KOUFUYMD         PIC X(09).
+      *            診療科
+                   07  SPA-GMN-SRYKAMEI        PIC X(12).
+      *            ドクター
+                   07  SPA-GMN-DRCD-G.
+                       09  SPA-GMN-DRCD               PIC X(04).
+                       09  SPA-GMN-DRCD1              PIC X(01).
+                       09  SPA-GMN-DRCDNAME           PIC X(24).
+      *            保険組合せ
+                   07  SPA-GMN-HKNCOMBI-G.
+                       09  SPA-GMN-HKNCOMBINUM     PIC X(04).
+                       09  SPA-GMN-HKNCOMBY1       PIC X(01).
+                       09  SPA-GMN-HKNCOMBIMEI     PIC X(65).
+      *            院内・院外
+                   07  SPA-NAI-INNAI               PIC X(01).
+      *
+               05  SPA-GMN-INITAREA.
+                   07  SPA-GMN-DRCD-COMB-G.
+                       09  SPA-GMN-DRCD-COMB       OCCURS  20.
+                           11  SPA-GMN-TDRCD       PIC X(04).
+                           11  SPA-GMN-TDRCD1      PIC X(01).
+                           11  SPA-GMN-TDRCDMEI    PIC X(24).
+                       09  SPA-DRCD-MAX            PIC 9(04).
+      *
+      *            保険組合せ一覧
+                   07  SPA-GMN-HKNCOMI-COMB-G.
+                       09  SPA-GMN-HKNCOMBI-COMB       OCCURS  15.
+                           11  SPA-GMN-THKNCOMBINUM    PIC X(04).
+                           11  SPA-GMN-THKNCOMBY1      PIC X(01).
+                           11  SPA-GMN-THKNCOMBIMEI    PIC X(65).
+                       09  SPA-HKNCOMBI-MAX            PIC  9(04).
+      *            診療科
+                   07  SPA-GMN-SRYKA-COMB-G.
+                       09  SPA-GMN-SRYKA-COMB       OCCURS  40.
+                           11  SPA-GMN-TSRYKA       PIC X(02).
+                           11  SPA-GMN-TSRYKA1      PIC X(01).
+                           11  SPA-GMN-TSRYKAMEI    PIC X(12).
+                       09  SPA-SRYKA-MAX            PIC  9(04).
+      *
+      *        診療履歴
+               05  SPA-GMN-RRKTBL.
+                   07  SPA-GMN-RRKTBLREC         OCCURS  40.
+                       09  SPA-GMN-NUM           PIC 9(03).
+                       09  SPA-GMN-RRKYMD        PIC X(16).
+                       09  SPA-GMN-RRKSRYKA      PIC X(12).
+                       09  SPA-GMN-RRKHKNCOMBI   PIC X(04).
+                   07  SPA-JYURRK-MAX            PIC 9(04).
+      *        内容
+               05  SPA-GMN-MEISAI-AREA.
+                   07  SPA-GMN-MEISAI-TBL        OCCURS   200.
+                       09  SPA-GMN-TBANGO        PIC 9(03).
+                       09  SPA-GMN-TSEL          PIC X(01).
+                       09  SPA-GMN-TFLG          PIC X(02).
+                       09  SPA-GMN-TMEISYO       PIC X(120).
+                       09  SPA-GMN-TMEISYO-1   REDEFINES
+                                                   SPA-GMN-TMEISYO.
+                           11  SPA-GMN-TYOBI0      PIC X(02).
+                           11  SPA-GMN-TMEISYO1    PIC X(118).
+                       09  SPA-GMN-TMEISYO-2   REDEFINES
+                                               SPA-GMN-TMEISYO.
+                           11  SPA-GMN-TMEISYO2    PIC X(46).
+                           11  SPA-GMN-HEN1.
+                               13  SPA-GMN-TSURYOU     PIC X(18).
+                               13  SPA-GMN-TTANI1      PIC X(08).
+                               13  SPA-GMN-TTANMEI     PIC X(06).
+                               13  SPA-GMN-TYOBI1      PIC X(02).
+                               13  SPA-GMN-TZAIKEI     PIC X(40).
+      *
+                       09  SPA-NAI-TSRYCD        PIC  X(09).
+                       09  SPA-NAI-TWNUM         PIC  9(03).
+                       09  SPA-NAI-KAIFLG        PIC  9(01).
+                       09  SPA-NAI-ERRFLG        PIC  9(01).
+      *
+                       09  SPA-NAI-TBANGO        PIC  9(03).
+                       09  SPA-NAI-TBANGO2       PIC  9(03).
+                   07  SPA-MEISAI-MAX            PIC  9(04).
+      *
+      *        入力項目
+               05  SPA-GMN-SELNUM1           PIC 9(03).
+               05  SPA-GMN-SELNUM2           PIC 9(03).
+               05  SPA-GMN-INPUT-AREA.
+                   07  SPA-GMN-NISUU         PIC 9(03).
+                   07  SPA-GMN-INPUT-TBL     OCCURS   50.
+                       09  SPA-GMN-INPUT     PIC X(100).
+                       09  SPA-GMN-SURYO     PIC X(10).
+      *
+                       09  SPA-NAI-SURYO     PIC 9(05)V9(3).
+                       09  SPA-NAI-SRYCD     PIC X(09).
+                   07  SPA-INPUT-MAX         PIC 9(04).
+                   07  SPA-INPUT-PAGE        PIC 9(02).
+                   07  SPA-GMN-SRYKBN        PIC X(02).
+      *
+               05  SPA-NAI-AREA.
+      *            診療日＋４日
+                   07  SPA-SRYYMD-4            PIC X(08).
+      *
+                   07  SPA-PRINT-SYORI         PIC 9(01).
+                   07  SPA-SEL-SYORI           PIC 9(01).
+      *
+                   07  SPA-KEIFLG              PIC 9(01).
+      *            診療履歴
+                   07  SPA-NAI-RRKTBL.
+                       09  SPA-NAI-RRKTBLREC         OCCURS   40.
+                           11  SPA-NAI-RRKYMD        PIC  X(08).
+                           11  SPA-NAI-RENNUM        PIC  9(01).
+                           11  SPA-NAI-DOUJI-RENNUM  PIC  9(01).
+                           11  SPA-NAI-RRK-SRYKA     PIC  X(02).
+                           11  SPA-NAI-RRK-HKNKBN    PIC  X(01).
+                           11  SPA-NAI-RRK-HKNCOMBI  PIC  X(04).
+                           11  SPA-NAI-RRK-DENPNUM   PIC  9(07).
+                           11  SPA-NAI-RRK-DRCD      PIC  X(05).
+      *                複数診療科・保険
+                           11  SPA-NAI-GRP-DENPNUM   PIC  9(07).
+                           11  SPA-NAI-GRP-RENNUM    PIC  9(01).
+      *
+                   07  SPA-NAI-SRYYMD          PIC X(08).
+      *
+               05  SPA-NAI-WKSRY-TBL.
+                   07  SPA-WKSRY-MAX               PIC 9(04).
+                   07  SPA-NAI-WKSRYREC            OCCURS   100.
+                       09  SPA-WKSRY-SELFLG            PIC  9(01).
+                       09  SPA-WKSRY-ZAINUM            PIC  9(08).
+                       09  SPA-WKSRY-SRYSYUKBN         PIC  X(03).
+                       09  SPA-WKSRY-SRYKBN            PIC  X(02).
+                       09  SPA-WKSRY-SINRYO-TBL        OCCURS   50.
+                           11  SPA-WKSRY-SRYCD         PIC  X(09).
+                           11  SPA-WKSRY-NAME          PIC  X(50).
+                           11  SPA-WKSRY-SRYSURYO      PIC  9(05)V9(03).
+                           11  SPA-WKSRY-SRYKAISU      PIC  9(03).
+                           11  SPA-WKSRY-ZAIKAISU      PIC  9(08).
+                           11  SPA-WKSRY-INPUTNUM      PIC  9(03).
+                           11  SPA-WKSRY-INPUTCOMENT   PIC  X(80).
+                           11  SPA-WKSRY-ERRKBN        PIC  9(01).
+      *                剤点数計
+                       09  SPA-WKSRY-ZAITENKEI     PIC  9(08).
+                       09  SPA-WKSRY-ZAIKAIKEI     PIC  9(07).
+      *
+      *    フラグ領域
+       01  FLG-AREA.
+           03  FLG-END             PIC 9(01).
+           03  FLG-PTINF           PIC 9(01).
+           03  FLG-SYSKANRI        PIC 9(01).
+           03  FLG-PTCOM           PIC 9(01).
+           03  FLG-SRYACCT         PIC 9(01).
+           03  FLG-SRYACT          PIC 9(01).
+           03  FLG-JYURRK          PIC 9(01).
+           03  FLG-TENSU           PIC 9(01).
+      *
+           03  FLG-OK              PIC 9(01).
+           03  FLG-CHK             PIC 9(01).
+           03  FLG-ERR             PIC 9(01).
+           03  FLG-KOUSIN          PIC 9(01).
+           03  FLG-ZAITAKU         PIC 9(01).
+           03  FLG-PRINT           PIC 9(01).
+           03  FLG-SP              PIC 9(01).
+           03  FLG-YAKUZAI         PIC 9(01).
+      *
+      *    添字領域
+       01  IDX-AREA.
+           03  IDX                 PIC 9(04).
+           03  IDY                 PIC 9(04).
+           03  IDZ                 PIC 9(04).
+           03  IDG                 PIC 9(04).
+           03  IDG-K               PIC 9(04).
+           03  IDM                 PIC 9(04).
+           03  IDX-T               PIC 9(04).
+           03  IDX-J               PIC 9(04).
+           03  IDX-J2              PIC 9(04).
+           03  IDX-S               PIC 9(04).
+           03  IDX-R               PIC 9(04).
+           03  IDX-B               PIC 9(04).
+           03  IDX-G               PIC 9(04).
+           03  IDX-W               PIC 9(04).
+           03  IDX-W2              PIC 9(04).
+           03  IDK1                PIC 9(04).
+           03  IDK2                PIC 9(04).
+           03  IDX1                PIC 9(04).
+      *
+           03  IDX-KOUI             PIC 9(04).
+           03  IDX-KAI              PIC 9(04).
+      *
+           03  IDX2                PIC 9(02).
+           03  IDX-S2              PIC 9(02).
+           03  IDX-STR             PIC 9(04).
+      *
+      *    一時領域
+       01  WRK-AREA.
+           03  WRK-SELNUM              PIC 9(03).
+           03  WRK-SELNUM2             PIC 9(03).
+           03  WRK-SELNUM-T            PIC 9(03).
+           03  WRK-SYMD.
+               05  WRK-SYY         PIC 9(04).
+               05  WRK-SMM         PIC 9(02).
+               05  WRK-SDD         PIC 9(02).
+      *
+           03  WRK-ZAINUM          PIC 9(08).
+           03  WRK-ZAIKAISU        PIC 9(08).
+           03  WRK-EDANUM          PIC 9(02).
+           03  WRK-SRYYMD          PIC X(08).
+      *
+          03  WRK-ZAITEN           PIC 9(07).
+          03  WRK-KAISU-X.
+               05  WRK-KAISU       PIC Z(08).
+           03  WRK-TENSU-X.
+               05  WRK-TENSU       PIC Z(08).
+      *
+      *    診療行為名称
+           03  WRK-SRYSYUMEI       PIC X(40).
+           03  WRK-MEISYO          PIC X(40).
+      *    数量表示用
+           03  WRK-SURYO           PIC 9(05)V9(03).
+           03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
+               05  WRK-SURYO-S1    PIC 9(05).
+               05  WRK-SURYO-S2    PIC 9(03).
+           03  WRK-SURYO-X.
+               05  WRK-SURYO-Z1    PIC ZZZZZ.
+               05  WRK-SURYO-Z1-9  REDEFINES   WRK-SURYO-Z1
+                                   PIC ZZZZ9.
+               05  WRK-SURYO-Z2    PIC X(01).
+               05  WRK-SURYO-Z3    PIC ZZZ.
+           03  WRK-SURYO-J         PIC X(18).
+      *    剤回数等画面編集用
+           03  WRK-KAISU-H         PIC X(08).
+           03  WRK-KAISU-J         PIC X(16).
+           03  WRK-IDG             PIC 9(04).
+           03  WRK-ZAIKEIJ         PIC X(80).
+           03  IDJ                 PIC 9(04).
+           03  IDJ1                PIC 9(01).
+           03  IDJ2                PIC 9(04).
+      *
+           03  WRK-Z9              PIC Z,ZZZ,ZZZ.
+           03  WRK-Z92             PIC --,---,---.
+           03  WRK-ZZ              PIC ZZZ.
+      *
+           03  WRK-SRYKAISUKEI         PIC 9(03).
+      *
+           03  WRK-DENPNUM             PIC 9(07).
+           03  WRK-TBANGO              PIC 9(03).
+      *
+           03  WRK-MCP-WIDGET          PIC X(68).
+      *    処方せんＰＧ名
+           03  WRK-SYOHOU-PG           PIC X(20).
+      *
+      *    コラムリスト位置
+           03  WRK-KA01-RRKLIST-ROW     PIC S9(09).
+           03  WRK-KA01-MEILIST-ROW     PIC S9(09).
+           03  FLG-GMN-INIT1           PIC  9(01).
+           03  FLG-GMN-INIT2           PIC  9(01).
+      *   年齢表示
+       01  WRK-NENREI-G.
+           03  WRK-NENREI-Z        PIC ZZ9.
+           03  WRK-NENREI-MEI      PIC X(04).
+       01  WRK-NENREI-GR           REDEFINES   WRK-NENREI-G.
+           03  WRK-NENREI-ZN       PIC Z9.
+           03  WRK-NENREI-MEIN     PIC X(08).
+      *
+      *
+       01  WRK-HENSYU-AREA.
+           03  WRK-HENYMDG         PIC X(09).
+           03  WRK-HENYMD.
+               05  WRK-HGO         PIC X(01).
+               05  WRK-HYY         PIC Z9.
+               05  FILLER          PIC X(01)   VALUE  ".".
+               05  WRK-HMM         PIC Z9.
+               05  FILLER          PIC X(01)   VALUE  ".".
+               05  WRK-HDD         PIC Z9.
+      *
+      *    ＳＰＡ保存
+           COPY    "COMMON-SPA"    REPLACING
+                                   //SPA-// BY //HZN-SPA-//.
+      *
+      *    診療種別名テーブル
+           COPY    "CPORCSSRYSYU.INC".
+      *
+      *****************************************************************
+      *    ファイルレイアウト
+      *****************************************************************
+      *
+      *    システム管理マスタ
+           COPY    "CPSYSKANRI.INC".
+      *
+           COPY    "CPSK1005.INC".
+      *    職員情報
+           COPY    "CPSK1010.INC".
+      *    帳票ＰＧ
+           COPY    "CPSK1032.INC".
+      *
+      *    患者マスタ−
+       01  PTINF-REC.
+           COPY    "CPPTINF.INC".
+      *    点数マスタ−
+      *01  TENSU-REC.
+           COPY    "CPTENSU.INC".
+      *
+      *    入力コードマスタ−
+       01  INPUTCD-REC.
+           COPY    "CPINPUTCD.INC".
+      *
+      *    診療行為マスタ−
+       01  SRYACT-REC.
+           COPY    "CPSRYACT.INC".
+      *
+      *    診療会計マスタ−
+       01  SRYACCT-REC.
+           COPY    "CPSRYACCT.INC".
+      *
+      *    患者コメント
+       01  PTCOM-REC.
+           COPY    "CPPTCOM.INC".
+      *
+      *    ワーク診療行為マスタ−
+       01  WKSRYACT-REC.
+           COPY    "CPWKSRYACT.INC".
+      *
+      *    受診履歴
+       01  JYURRK-REC.
+           COPY    "CPJYURRK.INC".
+      *    受診履歴
+       01  HZN-JYURRK-REC.
+           COPY    "CPJYURRK.INC"    REPLACING
+                                     //JYURRK-// BY //HZN-JYURRK-//.
+      *    受診履歴
+       01  WRK-JYURRK-TBL-G.
+          02  WRK-JYURRK-REC         OCCURS   9.
+           COPY    "CPJYURRK.INC"    REPLACING
+                                     //JYURRK-// BY //WRK-JYURRK-//.
+      *
+      *    保険組み合わせ
+       01  HKNCOMBI-REC.
+           COPY    "CPHKNCOMBI.INC".
+      *
+      *    診療行為マスタワーク
+       01  LNK-WKSRYACT-AREA.
+           02  LNK-WKSRYACT-REC      OCCURS   50.
+           COPY    "CPWKSRYACT.INC"  REPLACING
+                                     //WKSRY-// BY //LNK-WKSRY-//.
+      *
+      *****************************************************************
+      *    サブプロ用　領域
+      *****************************************************************
+      *
+      *   日付変換サブ
+           COPY    "CPORCSDAY.INC".
+           COPY    "CPORCSLNK.INC".
+      *    数字変換領域
+           COPY    "CPORCSNUM.INC".
+      *
+      *    全角変換サブ
+           COPY    "CPORCSKANACHK.INC".
+      *    全角・半角チェック
+      **** COPY    "CPORCXKANACONV.INC".
+      *    保険年齢・負担割合算定サブ
+           COPY    "CPORCSAGECHK.INC".
+      *
+      *    ドクター編集変換サブ
+           COPY    "CPORCSDRSET.INC".
+      *
+      *    保険組合せセット領域
+           COPY    "CPORCSHKNSET.INC".
+      *
+      *    処方箋印刷パラメタ（Ａ５）
+           COPY    "CPORCHC19.INC".
+      *
+      *    薬情報印刷パラメタ
+           COPY    "CPORCSCH30.INC".
+      *
+      *    ファイル削除パラメタ
+           COPY    "CPORCSFDEL.INC".
+      *
+      *    オンライン帳票名・出力先プリンタ名取得パラ
+           COPY    "CPORCSPRTNM.INC".
+      *
+      *    ＤＢ検索
+           COPY    "MCPDATA.INC".
+      *
+      *****************************************************************
+      *    連絡　領域
+      *****************************************************************
+        LINKAGE                     SECTION.
+      *
+           COPY    "MCPAREA".
+           COPY    "ORCA-SPA".
+      *
+           COPY    "LINKAREA".
+      *
+       01  SCRAREA.
+           COPY    "KA01.INC".
+           COPY    "KAERR.INC".
+           COPY    "KAID1.INC".
+           COPY    "KAID2.INC".
+      *
+       PROCEDURE                   DIVISION    USING
+           MCPAREA
+           SPAAREA
+           LINKAREA
+           SCRAREA.
+      *
+      *****************************************************************
+      *    主　　処理
+      *****************************************************************
+       000-PROC-SEC                SECTION.
+      *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  IDX-AREA
+           INITIALIZE                  WRK-AREA
+      *
+           MOVE    SPA-COMMON          TO  SPA-AREA
+           MOVE    SPA-WORK            TO  SPA-KA01KYOUTU
+           MOVE    SPA-FREE            TO  SPA-KA01
+      *
+           MOVE    SPACE               TO  SPA-ERRCD
+           MOVE    ZERO                TO  FLG-END
+           EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
+               WHEN    "LINK"          ALSO    ANY
+                   PERFORM 100-INIT-SEC
+      *    画面遷移
+               WHEN     "PUTG"           ALSO   "CLICKED"
+                   PERFORM 200-GMNSENI
+      *    入力
+               WHEN      OTHER
+                   PERFORM 200-ENTRY
+           END-EVALUATE
+      *
+      *    画面遷移がない時、画面表示へ
+           IF      FLG-END             =   ZERO
+               PERFORM 500-SET-SCREEN
+           END-IF
+      *
+           MOVE    SPA-KA01KYOUTU      TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-KA01            TO  SPA-FREE
+      *
+           .
+           EXIT    PROGRAM
+           .
+      *****************************************************************
+      *    初期　処理
+      *****************************************************************
+       100-INIT-SEC                SECTION.
+      *
+      *    エラー画面より
+           IF      SPA-MOTOPG          =   "KAERR"
+               MOVE    SPACE               TO  SPA-MOTOPG
+               PERFORM 5001-MAPCUR-SEC
+           ELSE
+      *        初期画面編集
+               PERFORM 300-SCREEN-SEC
+      *        画面編集
+               IF      FLG-END             =   ZERO
+                   PERFORM 500-GMNHEN-SEC
+               END-IF
+           END-IF
+      *
+           IF      FLG-END             =   ZERO
+               MOVE    SPACE               TO  LNK-KYOUTU
+      *
+               MOVE   SPACE                TO  MCP-PUTTYPE
+               MOVE   "KA01"               TO  MCP-WINDOW
+               PERFORM 900-PUT-WINDOW
+      *
+               MOVE    1                   TO  FLG-END
+           END-IF
+           .
+      *
+       100-INIT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    初期画面処理
+      *****************************************************************
+       300-SCREEN-SEC             SECTION.
+      *
+           IF      LNK-KYOUTU      NOT =   SPACE
+               MOVE    LNK-KYOUTU          TO  SPA-AREA
+           END-IF
+      *
+      *    内部画面より
+           EVALUATE    SPA-MOTOPG
+               WHEN    "KAID1"
+      *            確認画面より
+                   PERFORM 3002-KAID1-SET-SEC
+               WHEN    "KAID2"
+      *            確認画面より
+                   PERFORM 3003-KAID2-SET-SEC
+               WHEN    OTHER
+                   PERFORM 3001-SPA-SET-SEC
+           END-EVALUATE
+      *
+           .
+       300-SCREEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    初期画面編集処理
+      *****************************************************************
+       3001-SPA-SET-SEC             SECTION.
+      *
+           INITIALIZE                  SPA-KA01
+           INITIALIZE                  SPA-KA01KYOUTU
+      *
+           MOVE    SPA-MOTOPG          TO  SPA-HZN-MOTOPG
+      *    診療日
+           IF      SPA-SRYYMD          =   SPACE
+               MOVE    SPA-SYSYMD          TO  SPA-SRYYMD
+               MOVE    SPA-SYSYMDWH        TO  SPA-SRYYMDW
+               MOVE    SPA-SYSYMDWH        TO  SPA-GMN-SRYYMD
+           ELSE
+               MOVE    SPA-SRYYMDW(1:9)    TO  SPA-GMN-SRYYMD
+           END-IF
+      *    交付日
+           MOVE    SPA-SRYYMDW(1:9)   TO  SPA-GMN-KOUFUYMD
+      *    診療日−４日
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY6-AREA
+           MOVE    "61"                TO  LNK-DAY6-IRAI
+           MOVE    SPA-SRYYMD          TO  LNK-DAY6-KIJUN
+           MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
+           MOVE    -4                  TO  LNK-DAY6-ZOGEN
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY6-AREA
+           MOVE    LNK-DAY6-KEISAN     TO  SPA-SRYYMD-4
+      *    外来
+           MOVE    "2"                 TO  SPA-NYUGAIKBN
+      *    患者情報検索
+           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+           MOVE    SPA-PTID            TO  PTINF-PTID
+           PERFORM 900-PTINF-READ-SEC
+      *
+           MOVE    SPA-PTNUM           TO  SPA-GMN-PTNUM
+           MOVE    PTINF-KANANAME      TO  SPA-GMN-KANANAME
+           MOVE    PTINF-NAME          TO  SPA-GMN-NAME
+           EVALUATE    PTINF-SEX
+               WHEN    "1"
+                   MOVE    "男"                TO  SPA-GMN-SEX
+               WHEN    "2"
+                   MOVE    "女"                TO  SPA-GMN-SEX
+           END-EVALUATE
+      *
+           MOVE    PTINF-BIRTHDAY      TO  SPA-BIRTHDAY
+           MOVE    PTINF-BIRTHDAY      TO  WRK-SYMD
+           PERFORM 800-SEIWA-HEN-SEC
+           MOVE    WRK-HENYMDG         TO  SPA-GMN-BIRTHDAY
+      *    年齢計算
+           INITIALIZE                  ORCSAGECHKAREA
+           MOVE    SPA-HOSPID          TO  AGECHK-HOSPID
+           MOVE    SPA-PTID            TO  AGECHK-PTID
+           MOVE    SPA-SRYYMD          TO  AGECHK-SRYYMD
+           MOVE    SPA-BIRTHDAY        TO  AGECHK-BIRTHDAY
+           MOVE    SPA-NYUGAIKBN       TO  AGECHK-NYUGAIKBN
+           CALL    "ORCSAGECHK"        USING
+                                       ORCSAGECHKAREA
+      *    画面表示用
+           IF      AGECHK-NENREI2-YY    =   ZERO
+               MOVE    AGECHK-NENREI2-MM   TO  WRK-NENREI-ZN
+               MOVE    "ヶ月"              TO  WRK-NENREI-MEIN
+           ELSE
+               MOVE    AGECHK-NENREI2-YY   TO  WRK-NENREI-Z
+               MOVE    "才"                TO  WRK-NENREI-MEI
+           END-IF
+           MOVE    WRK-NENREI-G        TO  SPA-GMN-NENREI
+      *
+      *    診療科初期編集
+           MOVE    SPACE               TO  SYS-KEY
+           MOVE    SPACE               TO  SYS-1005-REC
+           INITIALIZE                  SYS-1005-REC
+           MOVE    "1005"              TO  SYS-1005-KANRICD
+           MOVE    "00000000"          TO  SYS-1005-STYUKYMD
+           MOVE    "99999999"          TO  SYS-1005-EDYUKYMD
+      *
+           MOVE    SYS-1005-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYS-1005-REC
+               INITIALIZE                  SYS-1005-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       (IDX            >   40   )  OR
+                               (FLG-SYSKANRI   =   1    )
+               MOVE    MCPDATA-REC           TO  SYS-1005-REC
+               MOVE    SYS-1005-KBNCD (1:2)  TO  SPA-GMN-TSRYKA   (IDX)
+               MOVE    SYS-1005-SRYKANAME1   TO  SPA-GMN-TSRYKAMEI(IDX)
+               MOVE    IDX                   TO  SPA-SRYKA-MAX
+      *
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+      *    保険組合せ
+           INITIALIZE                  ORCSHKNSETAREA
+           MOVE    "1"                 TO  ORCSHKN-KBN
+           MOVE    SPACE               TO  ORCSHKN-KBN2
+           CALL    "ORCSHKNSET"        USING
+                                       SPA-AREA
+                                       ORCSHKNSETAREA
+           MOVE    ORCSHKN-HKN-MAX     TO  SPA-HKNCOMBI-MAX
+      *
+           PERFORM VARYING     IDX     FROM   1   BY  1
+                   UNTIL      (IDX     >   ORCSHKN-HKN-MAX )
+                           OR (IDX     >   15   )
+               MOVE    ORCSHKN-GMN-HKNCOMBINUM (IDX)
+                                       TO  SPA-GMN-THKNCOMBINUM (IDX)
+               MOVE    ORCSHKN-GMN-HKNCOMBIMEI (IDX)
+                                       TO  SPA-GMN-THKNCOMBIMEI (IDX)
+           END-PERFORM
+      *
+      *    受診履歴編集
+           PERFORM 30011-JYURRK-HENSYU-SEC
+           IF      SPA-JYURRK-MAX      >   ZERO
+      *       １件目を対象として内容編集
+               MOVE    1               TO  SPA-GMN-SELNUM1
+               PERFORM 30012-MEISAI-SYORI-SEC
+               MOVE    2                   TO  SPA-GMN-CUR
+           ELSE
+               MOVE    91                  TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       3001-SPA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    受診履歴編集処理
+      *****************************************************************
+       30011-JYURRK-HENSYU-SEC          SECTION.
+      *
+           MOVE    1                   TO  FLG-GMN-INIT1
+           INITIALIZE                  SPA-GMN-RRKTBL
+           INITIALIZE                  SPA-NAI-RRKTBL
+      *
+           MOVE    SPACE               TO  JYURRK-REC
+           INITIALIZE                  JYURRK-REC
+           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-PTID            TO  JYURRK-PTID
+           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
+      *
+           MOVE    JYURRK-REC          TO  MCPDATA-REC
+           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 910-JYURRK-READ-SEC
+           ELSE
+               INITIALIZE                  JYURRK-REC
+               MOVE    1               TO  FLG-JYURRK
+           END-IF
+           MOVE    ZERO                TO  IDX
+           INITIALIZE                  WRK-JYURRK-TBL-G
+           PERFORM
+                   UNTIL   (SPA-JYURRK-MAX >=  40   )  OR
+                           (FLG-JYURRK     =   1    )
+               IF      JYURRK-HKNCOMBINUM  =   "9999"
+                   CONTINUE
+               ELSE
+      *            伝票番号毎にテーブル編集
+                   IF     (IDX             >   ZERO )  AND
+                          (JYURRK-EDANUM   =   1    )
+      *                編集処理
+                       PERFORM 300111-JYURRK-CHK-SEC
+                       MOVE    ZERO                TO  IDX
+                       INITIALIZE                  WRK-JYURRK-TBL-G
+                   END-IF
+                   ADD     1               TO  IDX
+                   MOVE    JYURRK-REC      TO  WRK-JYURRK-REC (IDX)
+               END-IF
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 910-JYURRK-READ-SEC
+           END-PERFORM
+      *    編集処理
+           IF      IDX             >   ZERO
+                PERFORM 300111-JYURRK-CHK-SEC
+           END-IF
+      *
+           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *    複数診療編集
+           PERFORM VARYING     IDX-J   FROM    1   BY  1
+                   UNTIL       IDX-J   >   SPA-JYURRK-MAX
+               IF     (SPA-NAI-GRP-DENPNUM(IDX-J)  >   ZERO )
+                  AND (IDX-J                       <   SPA-JYURRK-MAX)
+                  AND (SPA-NAI-GRP-DENPNUM(IDX-J)
+                                               =   SPA-NAI-GRP-DENPNUM
+                                                        (IDX-J + 1))
+                   MOVE    "F"         TO  SPA-GMN-RRKYMD (IDX-J)
+                                                              (14:1)
+                   MOVE    "F"         TO  SPA-GMN-RRKYMD (IDX-J + 1)
+                                                              (14:1)
+               END-IF
+           END-PERFORM
+           .
+       30011-JYURRK-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    受診履歴チェック・編集処理
+      *****************************************************************
+       300111-JYURRK-CHK-SEC       SECTION.
+      *
+           MOVE    WRK-JYURRK-REC (1)  TO  HZN-JYURRK-REC
+      *
+           MOVE    ZERO                TO  FLG-OK
+           IF     (HZN-JYURRK-SRYKBN2  =   "01" )  OR
+                  (HZN-JYURRK-SRYKBN3  =   "01" )  OR
+                  (HZN-JYURRK-SRYKBN4  =   "01" )
+      *        投薬あり
+               MOVE    1                   TO  FLG-OK
+           ELSE
+               IF      HZN-JYURRK-SRYKBN1  =   "01"
+                   PERFORM VARYING     IDX-J   FROM    1   BY  1
+                           UNTIL      (IDX-J   >   IDX     )   OR
+                                      (FLG-OK  =   1       )
+                       MOVE    WRK-JYURRK-REC (IDX-J)
+                                               TO  HZN-JYURRK-REC
+                       PERFORM VARYING     IDX-J2  FROM    1   BY  1
+                               UNTIL      (IDX-J2  >   15  )   OR
+                                          (FLG-OK  =   1       )
+                           IF      HZN-JYURRK-ZAINUM(IDX-J2)
+                                                       NOT =   ZERO
+                               MOVE    HZN-JYURRK-ZAINUM(IDX-J2)
+                                                       TO  WRK-ZAINUM
+                               PERFORM 300112-SRYACCT-CHK-SEC
+                           END-IF
+                       END-PERFORM
+                   END-PERFORM
+                END-IF
+           END-IF
+      *
+           IF     FLG-OK               =   1
+               IF      SPA-JYURRK-MAX      <    40
+                   PERFORM 300113-JYURRK-HEN-SEC
+               END-IF
+           END-IF
+      *
+           .
+       300111-JYURRK-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    在宅薬剤判定処理
+      *****************************************************************
+       300112-SRYACCT-CHK-SEC         SECTION.
+      *
+           MOVE    SPACE               TO  SRYACT-REC
+           INITIALIZE                      SRYACT-REC
+           MOVE    JYURRK-HOSPID       TO  SRY-HOSPID
+           MOVE    JYURRK-NYUGAIKBN    TO  SRY-NYUGAIKBN
+           MOVE    JYURRK-PTID         TO  SRY-PTID
+           MOVE    JYURRK-SRYKA        TO  SRY-SRYKA
+           MOVE    JYURRK-SRYYMD(1:6)  TO  SRY-SRYYM
+           MOVE    WRK-ZAINUM          TO  SRY-ZAINUM
+      *
+           MOVE    SRYACT-REC          TO  MCPDATA-REC
+           MOVE    "tbl_sryact"        TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 930-SRYACT-READ-SEC
+           ELSE
+               INITIALIZE                  SRYACT-REC
+               MOVE    1               TO  FLG-SRYACT
+           END-IF
+           PERFORM
+                   UNTIL  (FLG-SRYACT      =   1  )  OR
+                          (SRY-SRYKBN  NOT =   "14") OR
+                          (FLG-OK          =   1  )
+      *        在宅薬剤・器材判定
+               PERFORM VARYING     IDX-S   FROM    1   BY  1
+                       UNTIL      (IDX-S   >   5   )  OR
+                                  (SRY-SRYCD (IDX-S)  =   SPACE)
+                   IF     (SRY-SRYCD(IDX-S)(1:1)   =   "6" 
+                                                   OR  "7"  )  OR
+                          (SRY-SRYCD(IDX-S)(1:3)   =   "059" )
+                       MOVE    1               TO  FLG-OK
+                   END-IF
+               END-PERFORM
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 930-SRYACT-READ-SEC
+           END-PERFORM
+      *
+           MOVE    "tbl_sryact"        TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       300112-SRYACCT-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面編集処理
+      *****************************************************************
+       300113-JYURRK-HEN-SEC          SECTION.
+      *
+           MOVE    WRK-JYURRK-REC (1)  TO  HZN-JYURRK-REC
+      *
+           ADD     1                   TO  SPA-JYURRK-MAX
+           MOVE    SPA-JYURRK-MAX      TO  IDX-J
+           MOVE    IDX-J               TO  SPA-GMN-NUM  (IDX-J)
+      *    連番
+           MOVE    HZN-JYURRK-RENNUM   TO  SPA-NAI-RENNUM(IDX-J)
+      *    連番
+           MOVE    HZN-JYURRK-DOUJI-RENNUM
+                                       TO  SPA-NAI-DOUJI-RENNUM(IDX-J)
+      *    伝票番号
+           MOVE    HZN-JYURRK-DENPNUM  TO  SPA-NAI-RRK-DENPNUM(IDX-J)
+      *    診察日
+           MOVE    HZN-JYURRK-SRYYMD   TO  SPA-NAI-RRKYMD(IDX-J)
+           MOVE    HZN-JYURRK-SRYYMD   TO  WRK-SYMD
+           PERFORM 800-SEIWA-HEN-SEC
+           MOVE    WRK-HENYMDG         TO  SPA-GMN-RRKYMD (IDX-J)
+      *    保険組合せ
+           MOVE    HZN-JYURRK-HKNCOMBINUM
+                                       TO  SPA-NAI-RRK-HKNCOMBI(IDX-J)
+           MOVE    HZN-JYURRK-SRYKA    TO  SPA-NAI-RRK-SRYKA (IDX-J)
+           MOVE    HZN-JYURRK-DRCD     TO  SPA-NAI-RRK-DRCD  (IDX-J)
+      *    複数診療科・保険
+           MOVE    HZN-JYURRK-GRP-DENPNUM
+                                       TO  SPA-NAI-GRP-DENPNUM (IDX-J)
+           MOVE    HZN-JYURRK-GRP-RENNUM
+                                       TO  SPA-NAI-GRP-RENNUM (IDX-J)
+      *    同日再診
+           IF     (HZN-JYURRK-RENNUM        >   1 ) OR
+                  (HZN-JYURRK-DOUJI-RENNUM  >  ZERO )
+               MOVE    "("                 TO  SPA-GMN-RRKYMD (IDX-J)
+                                                               (10:1)
+               MOVE    HZN-JYURRK-RENNUM   TO  SPA-GMN-RRKYMD (IDX-J)
+                                                              (11:1)
+               MOVE    ")"                 TO  SPA-GMN-RRKYMD (IDX-J)
+                                                              (12:1)
+               IF      HZN-JYURRK-DOUJI-RENNUM NOT =   ZERO
+                   MOVE    HZN-JYURRK-DOUJI-RENNUM 
+                                           TO  SPA-GMN-RRKYMD (IDX-J)
+                                                              (13:1)
+               END-IF
+           END-IF
+      *    保険組合せ
+           MOVE    SPA-NAI-RRK-HKNCOMBI(IDX-J)
+                                           TO  SPA-GMN-RRKHKNCOMBI
+                                                              (IDX-J)
+           IF      HZN-JYURRK-HKNKBN       =   "1"
+               MOVE    "労"                TO  SPA-GMN-RRKHKNCOMBI
+                                                              (IDX-J)
+           END-IF
+           IF      HZN-JYURRK-HKNKBN       =   "2"
+               MOVE    "自"                TO  SPA-GMN-RRKHKNCOMBI
+                                                              (IDX-J)
+           END-IF
+      *    科名
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-SRYKA-MAX
+               IF      HZN-JYURRK-SRYKA    =   SPA-GMN-TSRYKA (IDY)
+                   MOVE    SPA-GMN-TSRYKAMEI (IDY)
+                                           TO  SPA-GMN-RRKSRYKA(IDX-J)
+                   MOVE    SPA-SRYKA-MAX   TO  IDY
+               END-IF
+           END-PERFORM
+           .
+       300113-JYURRK-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    明細内容表示処理
+      *****************************************************************
+       30012-MEISAI-SYORI-SEC         SECTION.
+      *
+           MOVE    1                   TO  FLG-GMN-INIT2
+      *
+      *    診療種別テーブルセット
+           CALL    "ORCSSRYSYU"        USING
+                                       MSYU-DATA-REC
+      *
+           MOVE    SPA-GMN-SELNUM1     TO  IDX
+      *    診療日等編集
+           PERFORM 300121-HEAD-HEN-SEC
+      *
+           MOVE    ZERO                TO  SPA-PRINT-SYORI
+           MOVE    ZERO                TO  SPA-NAI-INNAI
+           INITIALIZE                  SPA-GMN-MEISAI-AREA
+           INITIALIZE                  SPA-NAI-WKSRY-TBL
+           MOVE    ZERO                TO  SPA-KEIFLG
+      *
+      *    受診歴を検索する
+           INITIALIZE                  JYURRK-KEY
+           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-PTID            TO  JYURRK-PTID
+           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
+      *    伝票番号
+           MOVE    SPA-NAI-RRK-DENPNUM(IDX)
+                                       TO  JYURRK-DENPNUM
+      *
+           MOVE    JYURRK-REC          TO  MCPDATA-REC
+           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+           MOVE    "key6"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key6"              TO  MCP-PATHNAME
+               PERFORM 910-JYURRK-READ-SEC
+           ELSE
+               INITIALIZE                  JYURRK-REC
+               MOVE    1               TO  FLG-JYURRK
+           END-IF
+           PERFORM
+                   UNTIL   (FLG-JYURRK     =   1 )
+                       OR  (SPA-WKSRY-MAX  >=  100 )
+                       OR  (IDG            >=  200 )
+               PERFORM VARYING     IDX-J   FROM    1   BY  1
+                       UNTIL      (IDX-J           >   15  )
+                   IF      JYURRK-ZAINUM (IDX-J)   NOT =   ZERO
+                       PERFORM 41011-ZAISET-HEN-SEC
+                   END-IF
+               END-PERFORM
+      *
+               MOVE    "key6"              TO  MCP-PATHNAME
+               PERFORM 910-JYURRK-READ-SEC
+           END-PERFORM
+      *
+           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+           MOVE    "key6"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+      *    最大件数
+           IF      IDG                 >   200
+               MOVE    200                 TO  SPA-MEISAI-MAX
+           ELSE
+               MOVE    IDG                 TO  SPA-MEISAI-MAX
+           END-IF
+      *
+      *    すべての行を選択可能とする
+           MOVE    ZERO                TO  WRK-TBANGO
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX             >   SPA-MEISAI-MAX
+               IF      SPA-GMN-TMEISYO(IDX)(1:3)   NOT =   "---"
+                   IF      SPA-GMN-TBANGO (IDX)    NOT =   ZERO
+                       MOVE    SPA-GMN-TBANGO (IDX)    TO  WRK-TBANGO
+                   END-IF
+                   MOVE    WRK-TBANGO      TO  SPA-NAI-TBANGO2(IDX)
+               END-IF
+           END-PERFORM
+      *
+          .
+       30012-MEISAI-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療日等編集処理
+      *****************************************************************
+       300121-HEAD-HEN-SEC           SECTION.
+      *
+      *    院内・院外
+           MOVE    SPACE                   TO  SPA-NAI-INNAI
+      *
+           MOVE    SPA-GMN-RRKYMD (IDX)    TO  SPA-GMN-SRYYMD
+           MOVE    SPA-NAI-RRKYMD (IDX)    TO  SPA-NAI-SRYYMD
+      *    交付日
+           MOVE    SPA-SRYYMDW(1:9)   TO  SPA-GMN-KOUFUYMD
+      *    診療科
+           MOVE    SPA-GMN-RRKSRYKA(IDX)   TO  SPA-GMN-SRYKAMEI
+      *    保険組合せ
+           MOVE    SPACE               TO  SPA-GMN-HKNCOMBI-G
+           MOVE    SPA-NAI-RRK-HKNCOMBI(IDX)
+                                       TO  SPA-GMN-HKNCOMBINUM
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL       IDY     >   SPA-HKNCOMBI-MAX
+               IF      SPA-GMN-HKNCOMBINUM =   SPA-GMN-THKNCOMBINUM
+                                                   (IDY)
+                   MOVE    SPA-GMN-HKNCOMBI-COMB(IDY)
+                                           TO  SPA-GMN-HKNCOMBI-G
+                   MOVE    SPA-HKNCOMBI-MAX    TO  IDY
+               END-IF
+           END-PERFORM
+      *    ドクター
+           INITIALIZE                  ORCSDRSETAREA
+           MOVE    SPA-NAI-SRYYMD      TO  ORCSDR-SYSYMD
+           MOVE    "1"                 TO  ORCSDR-KBN
+           MOVE    SPA-NAI-RRK-SRYKA(IDX)  TO  ORCSDR-SRYKA
+           CALL    "ORCSDRSET"         USING
+                                       SPA-AREA
+                                       ORCSDRSETAREA
+           MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN-DRCD-COMB-G
+           MOVE    ORCSDR-DRCD-MAX     TO  SPA-DRCD-MAX
+      *
+           MOVE    SPACE               TO  SPA-GMN-DRCD-G
+           MOVE    SPA-NAI-RRK-DRCD (IDX)(2:4)
+                                       TO  SPA-GMN-DRCD
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL       IDY     >   SPA-DRCD-MAX
+               IF      SPA-GMN-DRCD    =   SPA-GMN-TDRCD
+                                                   (IDY)
+                   MOVE    SPA-GMN-DRCD-COMB (IDY)
+                                           TO  SPA-GMN-DRCD-G
+                   MOVE    SPA-DRCD-MAX    TO  IDY
+                   MOVE    1               TO  FLG-CHK
+               END-IF
+           END-PERFORM
+           IF      FLG-CHK             =   ZERO
+      *        職員情報をＳＰＡにセット
+               INITIALIZE                  ORCSDRSETAREA
+               MOVE    SPA-NAI-SRYYMD      TO  ORCSDR-SYSYMD
+               MOVE    "2"                 TO  ORCSDR-KBN
+               MOVE    SPA-NAI-RRK-SRYKA(IDX)
+                                           TO  ORCSDR-SRYKA
+               MOVE    SPA-GMN-DRCD-COMB-G TO  ORCSDR-DRCD-TBL-G
+               MOVE    SPA-DRCD-MAX        TO  ORCSDR-DRCD-MAX
+               MOVE    SPA-GMN-DRCD        TO  ORCSDR-IN-DRCD
+               CALL    "ORCSDRSET"         USING
+                                           SPA-AREA
+                                           ORCSDRSETAREA
+               MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN-DRCD-COMB-G
+               MOVE    ORCSDR-DRCD-MAX     TO  SPA-DRCD-MAX
+               MOVE    ORCSDR-IN-DRCD-G    TO  SPA-GMN-DRCD-G
+           END-IF
+           .
+       300121-HEAD-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療行為検索処理
+      *****************************************************************
+       41011-ZAISET-HEN-SEC           SECTION.
+      *
+      *    ワーク診療行為のレイアウトへ編集後、画面用編集へ
+           MOVE    SPACE               TO  LNK-WKSRYACT-AREA
+           MOVE    ZERO                TO  IDX-KOUI
+           MOVE    ZERO                TO  IDX-KAI
+      *    対象日の位置セット
+           MOVE    JYURRK-SRYYMD(7:2)  TO  IDX-S2
+           MOVE    JYURRK-SRYYMD       TO  WRK-SRYYMD
+      *
+           INITIALIZE                  SRYACT-REC
+           MOVE    SPA-HOSPID          TO  SRY-HOSPID
+           MOVE    SPA-NYUGAIKBN       TO  SRY-NYUGAIKBN
+           MOVE    SPA-PTID            TO  SRY-PTID
+           MOVE    JYURRK-SRYKA        TO  SRY-SRYKA
+           MOVE    JYURRK-SRYYMD(1:6)  TO  SRY-SRYYM
+           MOVE    JYURRK-ZAINUM(IDX-J)
+                                       TO  SRY-ZAINUM
+      *
+           MOVE    SRYACT-REC          TO  MCPDATA-REC
+           MOVE    "tbl_sryact"        TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 930-SRYACT-READ-SEC
+           ELSE
+               INITIALIZE                  SRYACT-REC
+               MOVE    1               TO  FLG-SRYACT
+           END-IF
+      *
+           MOVE    ZERO                TO  WRK-ZAINUM
+           MOVE    ZERO                TO  FLG-OK
+           MOVE    ZERO                TO  FLG-ZAITAKU
+      *    処方せん対象のみ
+           IF     (FLG-SRYACT          =   ZERO )  AND
+                 ((SRY-SRYKBN          =   "14" )  OR
+                  (SRY-SRYKBN          =   "21" )  OR
+                  (SRY-SRYKBN          =   "22" )  OR
+                  (SRY-SRYKBN          =   "23" )  OR
+                  (SRY-SRYSYUKBN       =   "980"))
+      *        内服逓減剤は対象外
+               IF      (SRY-SRYCD (1)  =  "630010002")
+                   MOVE    1                   TO  FLG-SRYACT
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-SRYACT
+           END-IF
+           PERFORM
+                   UNTIL   FLG-SRYACT      =   1
+      *        診療会計検索編集
+               PERFORM 41012-SRYACT-HEN-SEC
+      *
+               IF      IDY                 >   ZERO
+                   ADD     1               TO  IDX-KOUI
+                   MOVE    WKSRYACT-REC    TO  LNK-WKSRYACT-REC
+                                                          (IDX-KOUI)
+               END-IF
+      *
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 930-SRYACT-READ-SEC
+           END-PERFORM
+      *
+           MOVE    "tbl_sryact"        TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF     (IDX-KOUI        >   ZERO ) AND
+                  (FLG-OK          =   1    ) AND
+                  (SPA-WKSRY-MAX   <   100  )
+      *        剤毎に処理を行う
+               PERFORM 3101-WKSRYACT-HEN-SEC
+           END-IF
+      *
+           .
+       41011-ZAISET-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療行為マスタを作成する 
+      *****************************************************************
+       41012-SRYACT-HEN-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  IDY
+           MOVE    ZERO                TO  WRK-ZAIKAISU
+      *    剤回数取得
+           INITIALIZE                      SRYACCT-REC
+           MOVE    SRY-HOSPID          TO  ACCT-HOSPID
+           MOVE    SRY-NYUGAIKBN       TO  ACCT-NYUGAIKBN
+           MOVE    SRY-PTID            TO  ACCT-PTID
+           MOVE    SRY-SRYKA           TO  ACCT-SRYKA
+           MOVE    SRY-SRYYM           TO  ACCT-SRYYM
+           MOVE    SRY-SRYKBN          TO  ACCT-SRYKBN
+           MOVE    SRY-ZAINUM          TO  ACCT-ZAINUM
+      *    主キー読み
+           PERFORM 940-SRYACCT-READ-SEC
+           IF      FLG-SRYACCT         =   ZERO
+      *    回数決定
+      *        同日再診の最終回セット
+               EVALUATE    JYURRK-RENNUM
+                   WHEN    1
+                       MOVE    ACCT-DAY (2 IDX-S2)    TO  WRK-ZAIKAISU
+                   WHEN    2
+                       MOVE    ACCT-DAY (3 IDX-S2)    TO  WRK-ZAIKAISU
+                   WHEN    OTHER
+                       MOVE    ACCT-DAY (4 IDX-S2)    TO  WRK-ZAIKAISU
+               END-EVALUATE
+           END-IF
+      *
+           INITIALIZE                  WKSRYACT-REC
+      *
+      *    回数ゼロは対象外とする
+           IF      WRK-ZAIKAISU        =   ZERO
+               CONTINUE
+           ELSE
+               PERFORM 410121-WKSRYACT-HEN-SEC
+           END-IF
+      *
+           .
+       41012-SRYACT-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    ワーク診療行為レイアウト編集処理 
+      *****************************************************************
+       410121-WKSRYACT-HEN-SEC              SECTION.
+      *
+           INITIALIZE                  WKSRYACT-REC
+           MOVE    SRY-HOSPID          TO  WKSRY-HOSPID
+           MOVE    SRY-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
+           MOVE    SRY-PTID            TO  WKSRY-PTID
+           MOVE    SRY-SRYKA           TO  WKSRY-SRYKA
+           MOVE    SRY-SRYYM           TO  WKSRY-SRYYMD(1:6)
+           MOVE    SRY-SRYKBN          TO  WKSRY-SRYKBN
+           MOVE    SRY-ZAINUM          TO  WKSRY-ZAINUM
+           MOVE    SRY-RENNUM          TO  WKSRY-RENNUM
+           MOVE    SRY-SRYSYUKBN       TO  WKSRY-SRYSYUKBN
+           MOVE    SRY-JIHIMONEYTOTAL  TO  WKSRY-JIHIMONEYTOTAL
+      *剤回数計
+           MOVE    WRK-ZAIKAISU        TO  WKSRY-ZAIKAIKEI
+      *
+      *    剤点数計
+           MOVE    ACCT-ZAITEN         TO  WKSRY-ZAITENKEI
+      *保険組合
+           MOVE    ACCT-HKNCOMBI       TO  WKSRY-HKNCOMBI
+      *
+           MOVE    ZERO                TO  IDX-W
+           MOVE    ZERO                TO  IDY
+           MOVE    ZERO                TO  FLG-YAKUZAI
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   5   )   OR
+                              (SRY-SRYCD (IDX)     =   SPACE )
+      *        在宅薬剤がないとき対象外
+               IF      SRY-SRYKBN          =   "14"
+                   IF      (SRY-SRYSYUKBN      =   "148"
+                                               OR  "149" )
+                       MOVE    1           TO  FLG-ZAITAKU
+                   ELSE
+                       IF      (SRY-SRYCD (IDX)(1:1)   =   "6"
+                                                       OR  "7" ) OR
+                               (SRY-SRYCD (IDX)(1:3)   =   "059" )
+                           MOVE    1           TO  FLG-ZAITAKU
+                      END-IF
+                   END-IF
+               END-IF
+               IF      (SRY-SRYCD (IDX)(1:1)   =   "6"
+                                               OR  "7"
+                                               OR  "8" ) OR
+                       (SRY-SRYCD (IDX)(1:3)   =   "059" 
+                                               OR  "001"
+                                               OR  "008" )
+                   MOVE    1                   TO  FLG-OK
+      *
+                   ADD     1                   TO  IDY
+                   MOVE    SRY-SRYCD (IDX)     TO  WKSRY-SRYCD    (IDY)
+                   MOVE    SRY-SRYSURYO (IDX)  TO  WKSRY-SRYSURYO (IDY)
+                   MOVE    SRY-SRYKAISU (IDX)  TO  WKSRY-SRYKAISU (IDY)
+                   MOVE    SRY-AUTOKBN  (IDX)  TO  WKSRY-AUTOKBN  (IDY)
+                   MOVE    SRY-INPUTNUM (IDX)  TO  WKSRY-INPUTNUM (IDY)
+                   MOVE    SRY-JIHIMONEY(IDX)  TO  WKSRY-JIHIMONEY(IDY)
+                   IF      SRY-INPUTNUM (IDX)  NOT =   ZERO
+                       PERFORM 490111-PTCOM-SET-SEC
+                   END-IF
+                   MOVE    IDY                 TO  IDX-W
+               END-IF
+               IF       SRY-SRYCD (IDX)(1:1)   =   "6"
+                                               OR  "7"
+                   MOVE    1                   TO  FLG-YAKUZAI
+               END-IF
+           END-PERFORM
+      *
+           IF      IDX-W               >   ZERO
+               MOVE    WRK-ZAIKAISU        TO  WKSRY-ZAIKAISU (IDX-W)
+           END-IF
+      *    院外判定
+           IF     (WKSRY-SRYSYUKBN     =   "212"
+                                       OR  "222"
+                                       OR  "232"
+                                       OR  "292"
+                                       OR  "148"
+                                       OR  "149")
+               MOVE    "1"                     TO  SPA-NAI-INNAI
+           END-IF
+           IF     (WKSRY-SRYKBN(1:1)   =   "2"  )  AND
+                  (ACCT-ZAITEN         =   ZERO )  AND
+                  (FLG-YAKUZAI         =   1    )
+               IF     (WKSRY-SRYSYUKBN     =   "213"
+                                           OR  "223"
+                                           OR  "233")
+                   CONTINUE
+               ELSE
+                   MOVE    "1"                 TO  SPA-NAI-INNAI
+               END-IF
+           END-IF
+      *
+           .
+       410121-WKSRYACT-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者コメントから編集する 
+      *****************************************************************
+       490111-PTCOM-SET-SEC              SECTION.
+      *
+           MOVE    SRY-HOSPID          TO  PTCOM-HOSPID
+           MOVE    SRY-PTID            TO  PTCOM-PTID
+           MOVE    SRY-ZAINUM          TO  PTCOM-ZAINUM
+           MOVE    SRY-SRYCD (IDX)     TO  PTCOM-SRYCD
+           MOVE    SRY-INPUTNUM(IDX)   TO  PTCOM-RENNUM
+      *主キーで検索
+           PERFORM 950-PTCOM-READ-SEC
+           IF      FLG-PTCOM           =   ZERO
+               MOVE    PTCOM-INPUTCOMENT   TO  WKSRY-INPUTCOMENT (IDY)
+               MOVE    PTCOM-INPUTCHI (1)  TO  WKSRY-INPUTCHI (IDY 1)
+               MOVE    PTCOM-INPUTCHI (2)  TO  WKSRY-INPUTCHI (IDY 2)
+               MOVE    PTCOM-INPUTCHI (3)  TO  WKSRY-INPUTCHI (IDY 3)
+               MOVE    PTCOM-INPUTCHI (4)  TO  WKSRY-INPUTCHI (IDY 4)
+           END-IF
+           .
+       490111-PTCOM-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     診療行為内容編集処理
+      *****************************************************************
+       3101-WKSRYACT-HEN-SEC              SECTION.
+      *
+      *    診療コード計計算
+           MOVE    ZERO                TO  IDZ
+           MOVE    ZERO                TO  WRK-SRYKAISUKEI
+      *
+           ADD     1                   TO  SPA-WKSRY-MAX
+           MOVE    JYURRK-ZAINUM(IDX-J)    TO  SPA-WKSRY-ZAINUM
+                                                    (SPA-WKSRY-MAX)
+           MOVE    ZERO                TO  IDX-W
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   IDX-KOUI  )
+      *        診療種別
+               MOVE    LNK-WKSRY-SRYKBN (IDX)  TO  SPA-WKSRY-SRYKBN
+                                                    (SPA-WKSRY-MAX)
+               MOVE    LNK-WKSRY-SRYSYUKBN(IDX)
+                                           TO  SPA-WKSRY-SRYSYUKBN
+                                                    (SPA-WKSRY-MAX)
+      *        剤点数計
+               MOVE    LNK-WKSRY-ZAITENKEI(IDX)
+                                           TO  SPA-WKSRY-ZAITENKEI
+                                                    (SPA-WKSRY-MAX)
+      *        回数計
+               MOVE    LNK-WKSRY-ZAIKAIKEI(IDX)
+                                           TO  SPA-WKSRY-ZAIKAIKEI
+                                                    (SPA-WKSRY-MAX)
+               MOVE    LNK-WKSRY-ZAIKAIKEI(IDX)
+                                       TO  WRK-SRYKAISUKEI
+      *        剤内１行目
+               IF      IDX                 =   1
+                   ADD     1               TO  IDG
+                   PERFORM 31011-GYO1-HEN-SEC
+               END-IF
+      *
+      *        剤明細編集
+               PERFORM VARYING     IDZ     FROM    1   BY  1
+                       UNTIL      (IDZ         >   5   )  OR
+                                  (IDG         >=  200 )  OR
+                                  (IDX-W       >=  50  )  OR
+                                  (LNK-WKSRY-SRYCD (IDX IDZ) =  SPACE)
+                   ADD     1                   TO  IDX-W
+                   PERFORM 31012-ZAIMEI-HEN-SEC
+               END-PERFORM
+           END-PERFORM
+      *
+      *     ＊日数　編集 （最終行に追加）
+            PERFORM 31013-KAISU-HEN-SEC
+            MOVE    WRK-ZAIKEIJ         TO  SPA-GMN-TZAIKEI (IDG)
+            MOVE    1                   TO  SPA-NAI-KAIFLG  (IDG)
+      *
+           INSPECT SPA-GMN-TZAIKEI (IDG)   REPLACING
+                                               ALL "  "  BY  "　"
+      *
+           MOVE    SPA-WKSRY-MAX       TO  SPA-NAI-TBANGO    (IDG)
+      *
+      *    剤終了編集
+           ADD     1                   TO  IDG
+           IF      IDG                 <=  200
+               MOVE    ALL "-"             TO  SPA-GMN-TMEISYO (IDG)
+           END-IF
+      *
+            .
+       3101-WKSRYACT-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   剤内１行目  編集処理
+      *****************************************************************
+       31011-GYO1-HEN-SEC                  SECTION.
+      *
+      *    診療種別区分名称、診療行為区分セット
+           SET     MSYU-IDX            TO  1
+           SEARCH      MSYU-TBL-OCC    VARYING   MSYU-IDX
+                   AT   END
+                       MOVE    SPACE       TO  WRK-SRYSYUMEI
+                   WHEN    LNK-WKSRY-SRYSYUKBN(IDX) =   MSYU-SRYSYUKBN
+                                                      (MSYU-IDX)
+                       MOVE    MSYU-SRYMEI (MSYU-IDX)
+                                                TO  WRK-SRYSYUMEI
+           END-SEARCH
+      *
+      *    診療種別がない時、診療行為区分より
+           IF      LNK-WKSRY-SRYSYUKBN (IDX)   =   SPACE
+               SET     MSYU-IDX            TO  1
+               SEARCH      MSYU-TBL-OCC    VARYING   MSYU-IDX
+                   AT   END
+                       MOVE    SPACE           TO  WRK-SRYSYUMEI
+                   WHEN    LNK-WKSRY-SRYKBN(IDX)
+                                           =   MSYU-SRYKBN(MSYU-IDX)
+                       MOVE    MSYU-SRYMEI (MSYU-IDX)
+                                               TO  WRK-SRYSYUMEI
+               END-SEARCH
+           END-IF
+      *
+           IF      LNK-WKSRY-SRYSYUKBN (IDX)   =   SPACE
+               MOVE    SPACE           TO  SPA-GMN-TMEISYO (IDG)
+               MOVE    WRK-SRYSYUMEI   TO  SPA-GMN-TMEISYO (IDG)(7:)
+           ELSE
+               MOVE    "."             TO  SPA-GMN-TMEISYO (IDG)(1:1)
+               MOVE    LNK-WKSRY-SRYSYUKBN (IDX)
+                                       TO  SPA-GMN-TMEISYO (IDG)(2:3)
+               MOVE    WRK-SRYSYUMEI   TO  SPA-GMN-TMEISYO (IDG)(7:)
+           END-IF
+      *
+           INSPECT SPA-GMN-TMEISYO  (IDG)   REPLACING
+                                            ALL "  "  BY  "　"
+           INSPECT SPA-GMN-TYOBI0   (IDG)   REPLACING
+                                            ALL "  "  BY  "　"
+      *
+      *    番号
+           MOVE    SPA-WKSRY-MAX        TO  SPA-GMN-TBANGO    (IDG)
+           MOVE    SPA-WKSRY-MAX        TO  SPA-NAI-TBANGO    (IDG)
+      *
+           .
+       31011-GYO1-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   剤内明細  編集処理
+      *****************************************************************
+       31012-ZAIMEI-HEN-SEC                  SECTION.
+      *
+           ADD     1                   TO  IDG
+           MOVE    SPA-WKSRY-MAX       TO  SPA-NAI-TBANGO    (IDG)
+      *    ＳＰＡへ
+           MOVE    LNK-WKSRY-SRYCD (IDX IDZ)
+                                       TO  SPA-WKSRY-SRYCD
+                                                   (SPA-WKSRY-MAX IDX-W)
+           MOVE    LNK-WKSRY-SRYCD (IDX IDZ)
+                                       TO  SPA-WKSRY-SRYCD
+                                                   (SPA-WKSRY-MAX IDX-W)
+           MOVE    LNK-WKSRY-SRYSURYO (IDX IDZ)
+                                       TO  SPA-WKSRY-SRYSURYO
+                                                   (SPA-WKSRY-MAX IDX-W)
+           MOVE    LNK-WKSRY-SRYKAISU (IDX IDZ)
+                                       TO  SPA-WKSRY-SRYKAISU
+                                                   (SPA-WKSRY-MAX IDX-W)
+           MOVE    LNK-WKSRY-SRYKAISU (IDX IDZ)
+                                       TO  SPA-WKSRY-SRYKAISU
+                                                   (SPA-WKSRY-MAX IDX-W)
+           MOVE    LNK-WKSRY-ZAIKAISU (IDX IDZ)
+                                       TO  SPA-WKSRY-ZAIKAISU
+                                                   (SPA-WKSRY-MAX IDX-W)
+           MOVE    LNK-WKSRY-INPUTNUM(IDX IDZ)
+                                       TO  SPA-WKSRY-INPUTNUM
+                                                   (SPA-WKSRY-MAX IDX-W)
+           MOVE    LNK-WKSRY-INPUTCOMENT(IDX IDZ)
+                                       TO  SPA-WKSRY-INPUTCOMENT
+                                                   (SPA-WKSRY-MAX IDX-W)
+           MOVE    LNK-WKSRY-SRYCD (IDX IDZ)
+                                       TO  SPA-NAI-TSRYCD (IDG)
+           MOVE    IDX-W               TO  SPA-NAI-TWNUM (IDG)
+      *
+      *    診療コードより診療行為名称を取得
+           MOVE    LNK-WKSRY-SRYCD (IDX IDZ)   TO  TNS-SRYCD
+           PERFORM 910-TENSU-READ-SEC
+           IF      FLG-TENSU       NOT =   ZERO
+               MOVE    LNK-WKSRY-SRYCD (IDX IDZ)   TO  TNS-NAME
+           END-IF
+           MOVE    TNS-NAME            TO  SPA-WKSRY-NAME
+                                                   (SPA-WKSRY-MAX IDX-W)
+      *    交付日期間外の点数マスタ判定
+           IF     (FLG-TENSU           =   ZERO  )  AND
+                  (TNS-YUKOSTYMD       <=  SPA-SRYYMD ) AND
+                  (TNS-YUKOEDYMD       >=  SPA-SRYYMD )
+               CONTINUE
+           ELSE
+               MOVE    1               TO  SPA-WKSRY-ERRKBN
+                                                   (SPA-WKSRY-MAX IDX-W)
+               MOVE    1               TO  SPA-NAI-ERRFLG  (IDG)
+           END-IF
+      *    行為名称
+           MOVE    TNS-NAME            TO  SPA-GMN-TMEISYO2(IDG)
+      *    薬剤服用コメントの時、再編集
+           IF      LNK-WKSRY-SRYCD (IDX IDZ)(1:3)  =   "001"
+                PERFORM 3100121-FUKIYO-MEISYO-SEC
+                MOVE    WRK-MEISYO    TO  SPA-GMN-TMEISYO2(IDG)
+           END-IF
+      *
+      *    コメントの時、内容設定
+           IF    ((LNK-WKSRY-SRYCD   (IDX IDZ)(1:1)  =   "8"   ) OR
+                  (LNK-WKSRY-SRYCD   (IDX IDZ)(1:3)  =   "008" ))  AND
+                  (LNK-WKSRY-INPUTCOMENT(IDX IDZ) NOT =  SPACE )
+               MOVE    LNK-WKSRY-INPUTCOMENT(IDX IDZ)
+                                           TO  SPA-GMN-TMEISYO2(IDG)
+           END-IF
+      *
+           MOVE    SPA-GMN-TMEISYO2(IDG)   TO  SPA-WKSRY-NAME
+                                                   (SPA-WKSRY-MAX IDX-W)
+      *
+      *    数量（薬剤、器材のとき）
+           IF     (LNK-WKSRY-SRYCD (IDX IDZ)(1:1)   =   "6"  OR  "7" )
+               OR (LNK-WKSRY-SRYCD (IDX IDZ)(1:3)   =   "059"  )
+               MOVE    LNK-WKSRY-SRYSURYO (IDX IDZ)  TO  WRK-SURYO
+               PERFORM 310121-SURYO-HEN-SEC
+               MOVE    WRK-SURYO-J         TO  SPA-GMN-TSURYOU (IDG)
+               MOVE    TNS-TANINAME        TO  SPA-GMN-TTANI1  (IDG)
+           END-IF
+      *
+           INSPECT SPA-GMN-TMEISYO2(IDG) REPLACING  ALL "  "  BY  "　"
+           INSPECT SPA-GMN-TSURYOU (IDG) REPLACING  ALL "  "  BY  "　"
+           INSPECT SPA-GMN-TTANMEI (IDG) REPLACING  ALL "  "  BY  "　"
+           INSPECT SPA-GMN-TTANI1  (IDG) REPLACING  ALL "  "  BY  "　"
+           INSPECT SPA-GMN-TYOBI1  (IDG) REPLACING  ALL "  "  BY  "　"
+      *
+      *    コメント以外の最終行セット
+           IF      LNK-WKSRY-SRYCD (IDX IDZ)(1:1)   =   "0"  OR  "8"
+               CONTINUE
+           ELSE
+               MOVE    IDG             TO  WRK-IDG
+           END-IF
+      *
+           .
+       31012-ZAIMEI-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *     薬剤服用コメントの時、再編集処理
+      *****************************************************************
+       3100121-FUKIYO-MEISYO-SEC        SECTION.
+      *
+           MOVE    SPACE               TO  WRK-MEISYO
+      *
+           STRING     "【"             DELIMITED   BY  SIZE
+                      TNS-NAME         DELIMITED   BY  "    "
+                      "】"             DELIMITED   BY  SIZE
+                      INTO             WRK-MEISYO
+           END-STRING
+           .
+       3100121-FUKIYO-MEISYO-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    数量表示用編集処理
+      *****************************************************************
+       310121-SURYO-HEN-SEC            SECTION.
+      *
+           MOVE    SPACE               TO  WRK-SURYO-X
+           MOVE    WRK-SURYO-S1        TO  WRK-SURYO-Z1
+      *
+           MOVE    ZERO                TO  FLG-SP
+           PERFORM VARYING     IDM     FROM    3  BY  -1
+                   UNTIL       IDM     <   1
+               IF      WRK-SURYO-S2(IDM:1) NOT =   ZERO
+                   MOVE    1               TO  FLG-SP
+               END-IF
+               IF      FLG-SP          =   1
+                   MOVE    WRK-SURYO-S2(IDM:1) TO  WRK-SURYO-Z3(IDM:1)
+               END-IF
+           END-PERFORM
+      *
+           IF      WRK-SURYO-Z3        NOT =   SPACE
+               MOVE    "."                 TO  WRK-SURYO-Z2
+               MOVE    WRK-SURYO-S1        TO  WRK-SURYO-Z1-9
+           END-IF
+      *
+      *    日本語変換
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"                 TO  KANACHK-SYORI
+           MOVE    WRK-SURYO-X         TO  KANACHK-MAE-INPUT
+           MOVE    18                  TO  KANACHK-MAX-CNT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                           TO  WRK-SURYO-J
+           .
+       310121-SURYO-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   回数画面再編集処理
+      *****************************************************************
+       31013-KAISU-HEN-SEC                  SECTION.
+      *
+      *    回数
+           MOVE    WRK-SRYKAISUKEI     TO  WRK-KAISU
+           MOVE    ZERO                TO  IDK2
+           MOVE    SPACE               TO  WRK-KAISU-H 
+           MOVE    SPACE               TO  WRK-KAISU-J 
+           PERFORM VARYING     IDK1    FROM    1   BY  1
+                   UNTIL       IDK1    >   8
+               IF      WRK-KAISU-X (IDK1:1)    NOT =   SPACE
+                   ADD     1           TO  IDK2
+                   MOVE    WRK-KAISU-X (IDK1:1)
+                                       TO  WRK-KAISU-H (IDK2:1)
+               END-IF
+           END-PERFORM
+      *
+      *    日本語変換
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"                 TO  KANACHK-SYORI
+           MOVE    WRK-KAISU-H         TO  KANACHK-MAE-INPUT
+           MOVE    40                  TO  KANACHK-MAX-CNT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                           TO  WRK-KAISU-J
+      *
+           STRING  "×"                    DELIMITED   BY  SIZE
+                   WRK-KAISU-J             DELIMITED   BY  SPACE
+                   INTO                    WRK-ZAIKEIJ
+           END-STRING
+      *
+           .
+       31013-INPUTCD-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    確認画面（ＸＤＩＤ１）ＯＫ処理
+      *****************************************************************
+       3002-KAID1-SET-SEC          SECTION.
+      *
+           EVALUATE    SPA-KAID1CD
+      *        前回処方
+               WHEN    "0201"
+                   IF      SPA-KAID1-FLG        =   "OK"
+                       IF      SPA-SEL-SYORI        =   1
+                           MOVE    4                TO  FLG-PRINT
+                       ELSE
+                           MOVE    3                TO  FLG-PRINT
+                       END-IF
+                       PERFORM 4102-SYOHOU-PRINT-SEC
+                   ELSE
+                       MOVE    1               TO  SPA-GMN-CUR
+                   END-IF
+      *        処方せん・薬剤情報前回印刷
+               WHEN    "0102"
+                   IF      SPA-KAID1-FLG        =   "OK"
+                       MOVE    2                TO  FLG-PRINT
+                       PERFORM 4102-SYOHOU-PRINT-SEC
+                       PERFORM 4103-YAKJYO-PRINT-SEC
+                   ELSE
+                       MOVE    1               TO  SPA-GMN-CUR
+                   END-IF
+      *        薬剤情報前回印刷
+               WHEN    "0104"
+                   IF      SPA-KAID1-FLG        =   "OK"
+                       MOVE    2                TO  FLG-PRINT
+                       PERFORM 4103-YAKJYO-PRINT-SEC
+                   ELSE
+                       MOVE    1               TO  SPA-GMN-CUR
+                   END-IF
+      *        処方せん前回印刷
+               WHEN    "0106"
+                   IF      SPA-KAID1-FLG        =   "OK"
+                       MOVE    2                TO  FLG-PRINT
+                       PERFORM 4102-SYOHOU-PRINT-SEC
+                   ELSE
+                       MOVE    1               TO  SPA-GMN-CUR
+                   END-IF
+      *        再印刷確認
+               WHEN    "0301"
+                   IF      SPA-KAID1-FLG       =   "OK"
+                       MOVE    ZERO            TO  SPA-PRINT-SYORI
+                       MOVE    "0101"          TO  SPA-KAID2CD
+                       PERFORM 530-KA02IDSET-SEC
+                   ELSE
+                       MOVE    1               TO  SPA-GMN-CUR
+                   END-IF
+           END-EVALUATE
+           MOVE    SPACE               TO  SPA-KAID1CD
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               PERFORM 510-ERRSET-SEC
+           END-IF
+           .
+       3002-KAID1-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    確認画面（ＫＡＩＤ２）ＯＫ処理
+      *****************************************************************
+       3003-KAID2-SET-SEC          SECTION.
+      *
+           EVALUATE    SPA-KAID2CD
+               WHEN    "0101"
+                   EVALUATE    SPA-KAID2-FLG
+                       WHEN    "F5"
+      *                    薬剤情報再印刷
+                           MOVE    1                TO  FLG-PRINT
+                           PERFORM 4103-YAKJYO-PRINT-SEC
+                       WHEN    "F8"
+      *                    処方せん再印刷
+                           MOVE    1                TO  FLG-PRINT
+                           PERFORM 4102-SYOHOU-PRINT-SEC
+                       WHEN    "F9"
+      *                    処方せん・薬剤情報再印刷
+                           MOVE    1                TO  FLG-PRINT
+                           PERFORM 4102-SYOHOU-PRINT-SEC
+                           PERFORM 4103-YAKJYO-PRINT-SEC
+                       WHEN    OTHER
+                           MOVE    1               TO  SPA-GMN-CUR
+                   END-EVALUATE
+           END-EVALUATE
+           MOVE    SPACE               TO  SPA-KAID2CD
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               PERFORM 510-ERRSET-SEC
+           END-IF
+      *
+           .
+       3003-KAID2-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面遷移処理
+      *****************************************************************
+       200-GMNSENI                   SECTION.
+      *
+           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+      *        戻る
+               WHEN    "CLICKED"       ALSO    "B01"
+                   PERFORM 210-BACK
+      *        クリア
+               WHEN    "CLICKED"       ALSO    "B02"
+                    PERFORM 402-CLREA-SEC
+      *        変更確定
+               WHEN    "CLICKED"       ALSO    "B08"
+                    PERFORM 408-KAKUTEI-SEC
+      *        前回処方印刷
+               WHEN    "CLICKED"       ALSO    "B04"
+                    PERFORM 404-MAE-SYOHO-PRT-SEC
+      *        選択印刷
+               WHEN    "CLICKED"       ALSO    "B05"
+                    PERFORM 405-SEL-PRT-SEC
+      *        前頁
+               WHEN    "CLICKED"       ALSO    "B06"
+                   PERFORM 406-MAE-PAGE-SEC
+      *        次頁
+               WHEN    "CLICKED"       ALSO    "B07"
+                   PERFORM 407-NEXT-PAGE-SEC
+      *        再印刷
+               WHEN    "CLICKED"       ALSO    "B09"
+                    PERFORM 409-SAI-PRINT-SEC
+      *        処方せん・薬剤情報印刷
+               WHEN    "CLICKED"       ALSO    "B10"
+                    PERFORM 410-SYOHOYAKU-PRT-SEC
+      *        薬剤情報印刷
+               WHEN    "CLICKED"       ALSO    "B11"
+                    PERFORM 411-YAKUZAI-PRT-SEC
+      *        処方せん印刷
+               WHEN    "CLICKED"       ALSO    "B12"
+                    PERFORM 412-SYOHOU-PRT-SEC
+           END-EVALUATE
+      *
+           .
+       200-GMNSENI-EXT.
+           EXIT.
+      *****************************************************************
+      *    会話　処理
+      *****************************************************************
+       200-ENTRY                   SECTION.
+      *
+           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
+           MOVE    ZERO                TO  SPA-GMN-CUR
+      *
+           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+      *        選択番号
+               WHEN    "ACTIVATE"      ALSO    "SELNUM1"
+                   PERFORM 4001-SELNUM1-CHK-SEC
+      *        選択
+               WHEN    ANY             ALSO    "RRKLIST"
+                   PERFORM 4003-RRKLIST-SEL-SEC
+      *        選択番号
+               WHEN    "ACTIVATE"      ALSO    "SELNUM2"
+                   PERFORM 4004-SELNUM2-CHK-SEC
+      *        選択
+               WHEN    ANY             ALSO    "MEILIST"
+                   PERFORM 4005-MEILIST-SEL-SEC
+      *
+               WHEN    OTHER
+                   MOVE    ZERO            TO  FLG-KOUSIN
+      *            入力チェック処理
+                   PERFORM 410-INPUT-CHK-SEC
+           END-EVALUATE
+      *
+           .
+      *
+       200-ENTRY-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    選択番号１チェック処理
+      *****************************************************************
+       4001-SELNUM1-CHK-SEC          SECTION.
+      *
+           MOVE    KA01-SELNUM1        TO  SPA-GMN-SELNUM1
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-JYURRK-MAX )  OR
+                              (FLG-OK  =   1   )
+               IF      SPA-GMN-SELNUM1     =   SPA-GMN-NUM (IDX)
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           INITIALIZE                  SPA-GMN-SELNUM2
+           INITIALIZE                  SPA-GMN-INPUT-AREA
+           MOVE    ZERO                TO  SPA-PRINT-SYORI
+           MOVE    ZERO                TO  SPA-SEL-SYORI
+           IF      FLG-OK              =   ZERO
+               IF      SPA-GMN-SELNUM1     >   ZERO
+                   MOVE    "0001"              TO  SPA-ERRCD
+                   MOVE    1                   TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    1                   TO  SPA-GMN-CUR
+               END-IF
+           ELSE
+      *        内容編集
+               PERFORM 30012-MEISAI-SYORI-SEC
+               MOVE    2                   TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       4001-SELNUM1-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    明細リスト選択処理
+      *****************************************************************
+       4003-RRKLIST-SEL-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  WRK-SELNUM
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-JYURRK-MAX
+               IF      KA01-RRKLIST-SELECT (IDX)   =   "T"
+                   IF      SPA-GMN-NUM (IDX)   NOT =   SPA-GMN-SELNUM1
+                       MOVE    SPA-GMN-NUM  (IDX)     TO  WRK-SELNUM
+                       MOVE    SPA-JYURRK-MAX         TO  IDX
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           IF     (WRK-SELNUM          >   ZERO ) AND
+                  (WRK-SELNUM      NOT =   SPA-GMN-SELNUM1)
+               MOVE    WRK-SELNUM          TO  SPA-GMN-SELNUM1
+               MOVE    SPA-GMN-SELNUM1     TO  KA01-SELNUM1
+               PERFORM 4001-SELNUM1-CHK-SEC
+           END-IF
+      *
+           .
+       4003-RRKLIST-SEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    選択番号２チェック処理
+      *****************************************************************
+       4004-SELNUM2-CHK-SEC          SECTION.
+      *
+           MOVE    KA01-SELNUM2        TO  SPA-GMN-SELNUM2
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-MEISAI-MAX )  OR
+                              (FLG-OK  =   1   )
+               IF      SPA-GMN-SELNUM2     =   SPA-GMN-TBANGO  (IDX)
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      SPA-GMN-SELNUM2     =   ZERO
+               INITIALIZE                  SPA-GMN-INPUT-AREA
+               MOVE    2                   TO  SPA-GMN-CUR
+               MOVE    ZERO                TO  SPA-KEIFLG
+           ELSE
+               IF      FLG-OK              =   ZERO
+                   MOVE    "0002"              TO  SPA-ERRCD
+                   MOVE    2                   TO  SPA-GMN-CUR
+               ELSE
+      *            内容編集
+                   PERFORM 40041-INPUT-HENSYU-SEC
+      *            前回処方処理へ
+                   MOVE    1                   TO  SPA-PRINT-SYORI
+                   MOVE    5                   TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           .
+       4004-SELNUM2-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    選択内容編集処理
+      *****************************************************************
+       40041-INPUT-HENSYU-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  IDX-W
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-MEISAI-MAX )  OR
+                              (IDX-W   >   ZERO      )
+               IF      SPA-GMN-SELNUM2     =   SPA-GMN-TBANGO (IDX)
+                   MOVE    SPA-NAI-TBANGO (IDX)    TO  IDX-W
+               END-IF
+           END-PERFORM
+      *    明細選択設定
+           IF     (IDX-W               >   ZERO ) AND
+                  (SPA-SEL-SYORI       =   1    )
+               MOVE    1               TO  SPA-WKSRY-SELFLG (IDX-W)
+           END-IF
+      *
+           INITIALIZE                  SPA-GMN-INPUT-AREA
+           MOVE    ZERO                TO  SPA-KEIFLG
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   50  )   OR
+                              (SPA-WKSRY-SRYCD (IDX-W IDX) =   SPACE)
+               MOVE    SPA-WKSRY-SRYCD (IDX-W IDX)
+                                       TO  SPA-NAI-SRYCD (IDX)
+               IF     (SPA-WKSRY-SRYCD (IDX-W IDX)(1:1)   =   "6"
+                                                          OR  "7" ) OR
+                      (SPA-WKSRY-SRYCD (IDX-W IDX)(1:3)   =   "059")
+                   MOVE    SPA-WKSRY-SRYSURYO (IDX-W IDX)
+                                           TO  SPA-NAI-SURYO (IDX)
+               ELSE
+                   IF      SPA-WKSRY-SRYSURYO (IDX-W IDX)  >   ZERO
+                       MOVE    1           TO  SPA-NAI-SURYO (IDX)
+                   ELSE
+                       MOVE    ZERO        TO  SPA-NAI-SURYO (IDX)
+                   END-IF
+               END-IF
+               MOVE    SPA-WKSRY-NAME (IDX-W IDX)
+                                       TO  SPA-GMN-INPUT (IDX)
+               PERFORM 400411-SUURYO-HEN-SEC
+               MOVE    IDX             TO  SPA-INPUT-MAX
+           END-PERFORM
+           MOVE    SPA-WKSRY-ZAIKAIKEI (IDX-W)
+                                       TO  SPA-GMN-NISUU
+           MOVE    SPA-WKSRY-SRYKBN    (IDX-W)
+                                       TO  SPA-GMN-SRYKBN
+           MOVE    1                   TO  SPA-INPUT-PAGE
+           .
+       40041-INPUT-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    数量編集処理
+      *****************************************************************
+       400411-SUURYO-HEN-SEC          SECTION.
+      *
+           MOVE    SPA-NAI-SURYO (IDX) TO  WRK-SURYO
+           MOVE    SPACE               TO  WRK-SURYO-X
+           MOVE    WRK-SURYO-S1        TO  WRK-SURYO-Z1
+      *
+           MOVE    ZERO                TO  FLG-SP
+           PERFORM VARYING     IDM     FROM    3  BY  -1
+                   UNTIL       IDM     <   1
+               IF      WRK-SURYO-S2(IDM:1) NOT =   ZERO
+                   MOVE    1               TO  FLG-SP
+               END-IF
+               IF      FLG-SP          =   1
+                   MOVE    WRK-SURYO-S2(IDM:1) TO  WRK-SURYO-Z3(IDM:1)
+               END-IF
+           END-PERFORM
+           IF      WRK-SURYO-Z3        NOT =   SPACE
+               MOVE    "."                 TO  WRK-SURYO-Z2
+               MOVE    WRK-SURYO-S1        TO  WRK-SURYO-Z1-9
+           END-IF
+      *
+           MOVE    WRK-SURYO-X         TO  SPA-GMN-SURYO (IDX)
+           .
+       400411-SUURYO-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    明細リスト選択処理
+      *****************************************************************
+       4005-MEILIST-SEL-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  WRK-SELNUM
+           MOVE    ZERO                TO  WRK-SELNUM2
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-MEISAI-MAX
+              IF      KA01-MEILIST-SELECT (IDX)   =   "T"
+                   IF      SPA-NAI-TBANGO (IDX)
+                                               NOT =   SPA-GMN-SELNUM2
+                       MOVE    SPA-NAI-TBANGO2(IDX)
+                                                   TO  WRK-SELNUM
+                   ELSE
+                       MOVE    SPA-NAI-TBANGO2(IDX)
+                                                   TO  WRK-SELNUM2
+                   END-IF
+               END-IF
+           END-PERFORM
+      *    明細選択設定・選択解除
+           IF      SPA-SEL-SYORI       =   1
+               PERFORM 40051-SEL-SYORI-SEC
+           END-IF
+      *
+           IF     (WRK-SELNUM          >   ZERO ) AND
+                  (WRK-SELNUM      NOT =   SPA-GMN-SELNUM2)
+               MOVE    WRK-SELNUM          TO  SPA-GMN-SELNUM2
+               MOVE    SPA-GMN-SELNUM2     TO  KA01-SELNUM2
+               PERFORM 4004-SELNUM2-CHK-SEC
+               MOVE    05                  TO  SPA-GMN-CUR
+           ELSE
+               MOVE    2                   TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       4005-MEILIST-SEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    選択解除処理
+      *****************************************************************
+       40051-SEL-SYORI-SEC          SECTION.
+      *
+           IF      WRK-SELNUM      =   ZERO
+               MOVE    WRK-SELNUM2     TO  WRK-SELNUM-T
+           ELSE
+               MOVE    WRK-SELNUM      TO  WRK-SELNUM-T
+           END-IF
+      *
+           MOVE    ZERO                TO  IDX-W
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-MEISAI-MAX )  OR
+                              (IDX-W   >   ZERO      )
+               IF      WRK-SELNUM-T        =   SPA-GMN-TBANGO (IDX)
+                   MOVE    SPA-NAI-TBANGO (IDX)    TO  IDX-W
+                   IF      SPA-GMN-TSEL   (IDX)    =   "T"
+                       MOVE    SPACE           TO  SPA-GMN-TSEL   (IDX)
+                       MOVE    ZERO            TO  SPA-WKSRY-SELFLG
+                                                                 (IDX-W)
+                       MOVE    ZERO            TO  WRK-SELNUM
+      *                選択項目クリア
+                       MOVE    WRK-SELNUM      TO  SPA-GMN-SELNUM2
+                       INITIALIZE                  SPA-GMN-INPUT-AREA
+                       MOVE    ZERO                TO  SPA-KEIFLG
+                   ELSE
+                       MOVE    "T"             TO  SPA-GMN-TSEL   (IDX)
+                       MOVE    1               TO  SPA-WKSRY-SELFLG
+                                                                 (IDX-W)
+                   END-IF
+               END-IF
+           END-PERFORM
+           .
+       40051-SEL-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力チェック処理
+      *****************************************************************
+       410-INPUT-CHK-SEC          SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *    基本チェックと別画面処理
+           PERFORM 4102-KIHON-CHK-SEC
+      *
+           .
+       410-INPUT-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面ＳＰＡ編集処理
+      *****************************************************************
+       4101-GMN-SPA-SET-SEC          SECTION.
+      *
+           MOVE    KA01-DRCD           TO  SPA-GMN-DRCD-G
+           MOVE    KA01-HKNCOMBI       TO  SPA-GMN-HKNCOMBI-G
+      *
+           IF      SPA-INPUT-PAGE      >   ZERO
+               MOVE    KA01-NISUU          TO  SPA-GMN-NISUU
+               COMPUTE IDX-STR         =  (SPA-INPUT-PAGE  -  1  )
+                                       *   6
+                                       +   1
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL      (IDX         >   6   )  OR
+                                  (IDX-STR     >   50  )
+                   IF      SPA-GMN-INPUT (IDX-STR) =   SPACE
+                       CONTINUE
+                   ELSE
+                       MOVE    KA01-SUURYO (IDX)
+                                           TO  SPA-GMN-SURYO(IDX-STR)
+                   END-IF
+                   ADD     1               TO  IDX-STR
+               END-PERFORM
+           END-IF
+           .
+      *
+       4101-GMN-SPA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    基本チェック処理
+      *****************************************************************
+       4102-KIHON-CHK-SEC          SECTION.
+      *
+      *    保険組合せ
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4101-HKNCOMBI-CHK-SEC
+           END-IF
+      *    ドクター
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4102-DRCD-CHK-SEC
+           END-IF
+      *
+      *    剤選択時のみ
+           IF      SPA-INPUT-PAGE      >   ZERO
+               IF      SPA-ERRCD           =   SPACE
+                   PERFORM 4103-NISUU-CHK-SEC
+               END-IF
+               IF      SPA-ERRCD           =   SPACE
+                   PERFORM 4103-SURYO-CHK-SEC
+               END-IF
+           END-IF
+      *
+           .
+       4102-KIHON-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ドクターチェック処理
+      *****************************************************************
+       4102-DRCD-CHK-SEC          SECTION.
+      *
+           IF      SPA-GMN-DRCD        =   SPACE
+               MOVE    SPACE           TO  SPA-GMN-DRCD-G
+           ELSE
+               MOVE    ZERO                TO  FLG-OK
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL      (IDX         >   SPA-DRCD-MAX)
+                               OR (FLG-OK      =   1     )
+                   IF      SPA-GMN-DRCD        =   SPA-GMN-TDRCD(IDX)
+                       MOVE    SPA-GMN-DRCD-COMB (IDX)
+                                               TO  SPA-GMN-DRCD-G
+                       MOVE    1               TO  FLG-OK
+                   END-IF
+               END-PERFORM
+      *
+               IF      FLG-OK              =   ZERO
+                   PERFORM 41021-DRCD-TBL-CHK-SEC
+                   IF      ORCSDR-ERRCD    NOT =   ZERO
+                       MOVE    "0004"          TO  SPA-ERRCD
+                       MOVE    4               TO  SPA-GMN-CUR
+                   END-IF
+               ELSE
+                   IF      SPA-GMN-SELNUM1     >   ZERO
+                       IF     SPA-NAI-RRK-DRCD(SPA-GMN-SELNUM1)(2:4)
+                                               NOT =   SPA-GMN-DRCD
+                           MOVE    1           TO  SPA-PRINT-SYORI
+                       END-IF
+                   END-IF
+               END-IF
+           END-IF
+           .
+       4102-DRCD-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    ドクター追加チェック処理
+      *****************************************************************
+       41021-DRCD-TBL-CHK-SEC          SECTION.
+      *
+           INITIALIZE                  ORCSDRSETAREA
+           MOVE    SPA-NAI-SRYYMD      TO  ORCSDR-SYSYMD
+           MOVE    "2"                 TO  ORCSDR-KBN
+           MOVE    SPA-NAI-RRK-SRYKA(SPA-GMN-SELNUM1)
+                                       TO  ORCSDR-SRYKA
+           MOVE    SPA-GMN-DRCD-COMB-G TO  ORCSDR-DRCD-TBL-G
+           MOVE    SPA-DRCD-MAX        TO  ORCSDR-DRCD-MAX
+           MOVE    SPA-GMN-DRCD        TO  ORCSDR-IN-DRCD
+           CALL    "ORCSDRSET"         USING
+                                       SPA-AREA
+                                       ORCSDRSETAREA
+           IF      ORCSDR-ERRCD            ZERO
+               MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN-DRCD-COMB-G
+               MOVE    ORCSDR-DRCD-MAX     TO  SPA-DRCD-MAX
+               MOVE    ORCSDR-IN-DRCD-G    TO  SPA-GMN-DRCD-G
+           END-IF
+           .
+       41021-DRCD-TBL-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険組合せチェック処理
+      *****************************************************************
+       4101-HKNCOMBI-CHK-SEC          SECTION.
+      *
+           IF      SPA-GMN-HKNCOMBINUM =   SPACE
+               MOVE    SPACE           TO  SPA-GMN-HKNCOMBI-G
+           END-IF
+           IF      SPA-GMN-SELNUM1     >   ZERO
+               MOVE    ZERO                TO  FLG-OK
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL      (IDX         >   SPA-HKNCOMBI-MAX)
+                               OR (FLG-OK      =   1     )
+                   IF      SPA-GMN-HKNCOMBINUM =   SPA-GMN-THKNCOMBINUM
+                                                                (IDX)
+                       MOVE    SPA-GMN-HKNCOMBI-COMB (IDX)
+                                               TO  SPA-GMN-HKNCOMBI-G
+                       MOVE    1               TO  FLG-OK
+                   END-IF
+               END-PERFORM
+      *
+               IF      FLG-OK              =   ZERO
+                   MOVE    "0003"          TO  SPA-ERRCD
+                   MOVE    3               TO  SPA-GMN-CUR
+               ELSE
+                   IF      SPA-GMN-SELNUM1     >   ZERO
+                       IF     SPA-NAI-RRK-HKNCOMBI(SPA-GMN-SELNUM1)
+                                           NOT =   SPA-GMN-HKNCOMBINUM
+                           MOVE    1           TO  SPA-PRINT-SYORI
+                       END-IF
+                   END-IF
+               END-IF
+           END-IF
+           .
+       4101-HKNCOMBI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    日数チェック処理
+      *****************************************************************
+       4103-NISUU-CHK-SEC            SECTION.
+      *
+      *    在宅、コメントは日数１とする
+           IF      SPA-GMN-NISUU       >   1
+               IF      SPA-GMN-SRYKBN      =   "14"  OR  "98"
+                   MOVE    "0006"          TO  SPA-ERRCD
+                   MOVE    5               TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+           .
+       4103-NISUU-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    数量チェック処理
+      *****************************************************************
+       4103-SURYO-CHK-SEC            SECTION.
+      *
+           MOVE    ZERO                TO  IDY
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   50  )  OR
+                              (SPA-ERRCD   NOT =   SPACE )
+               ADD     1               TO  IDY
+               IF      IDY             >   6
+                   MOVE    1               TO  IDY
+               END-IF
+               IF     (SPA-GMN-INPUT (IDX)     =   SPACE )  OR
+                      (SPA-GMN-SURYO (IDX)     =   SPACE )
+                   MOVE    ZERO           TO  SPA-NAI-SURYO(IDX)
+               ELSE
+                   INITIALIZE                      ORCSNUMAREA
+                   MOVE    SPA-GMN-SURYO (IDX) TO  SNUM-INX
+                   CALL    "ORCSNUM"           USING
+                                               ORCSNUMAREA
+                   IF     (SNUM-RC        NOT =   ZERO  )   OR
+                          (SNUM-MINKBN        =   "1"   )   OR
+                          (SNUM-SEISUU        >   5     )   OR
+                          (SNUM-SYOSUU        >   3     )
+                       MOVE    "0005"         TO  SPA-ERRCD
+                       COMPUTE SPA-GMN-CUR    =   IDY   +   10
+                   ELSE
+                       MOVE    SNUM-OUTNUM     TO  SPA-NAI-SURYO(IDX)
+                       PERFORM 400411-SUURYO-HEN-SEC
+                   END-IF
+               END-IF
+           END-PERFORM
+           .
+       4103-SURYO-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    戻る　処理
+      *****************************************************************
+       210-BACK                        SECTION.
+      *
+           MOVE    SPA-HZN-MOTOPG      TO  SPA-SAKIPG
+           MOVE    "KA01"              TO  SPA-MOTOPG
+      *
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+      *
+           MOVE    "CHANGE"            TO  MCP-PUTTYPE
+           MOVE    SPA-SAKIPG          TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+           .
+       210-BACK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    クリア処理
+      *****************************************************************
+       402-CLREA-SEC       SECTION.
+      *
+           IF      SPA-GMN-SELNUM2     >   ZERO
+               MOVE    ZERO                TO  SPA-GMN-SELNUM2
+               INITIALIZE                  SPA-GMN-INPUT-AREA
+               MOVE    2                   TO  SPA-GMN-CUR
+               MOVE    ZERO                TO  SPA-KEIFLG
+           ELSE
+      *        初期表示
+               INITIALIZE                  SPA-GMN-MEISAI-AREA
+               INITIALIZE                  SPA-NAI-WKSRY-TBL
+               INITIALIZE                  SPA-GMN-AREA
+               INITIALIZE                  SPA-GMN-INPUT-AREA
+               MOVE    ZERO                TO  SPA-GMN-SELNUM1
+               INITIALIZE                  SPA-PRINT-SYORI
+               MOVE    ZERO                TO  SPA-SEL-SYORI
+               MOVE    ZERO                TO  SPA-KEIFLG
+               MOVE    1                   TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       402-CLREA-EXT.
+           EXIT.
+      *****************************************************************
+      *    変更確定処理
+      *****************************************************************
+       408-KAKUTEI-SEC       SECTION.
+      *
+           IF      SPA-GMN-SELNUM2     >   ZERO
+      *        入力チェック処理
+               MOVE    2               TO  FLG-KOUSIN
+               PERFORM 410-INPUT-CHK-SEC
+               IF      SPA-ERRCD       =   SPACE
+      *            入力編集処理
+                   PERFORM 4103-INPUT-TBLSET-SEC
+               END-IF
+           END-IF
+      *
+           .
+       408-KAKUTEI-EXT.
+           EXIT.
+      *****************************************************************
+      *    入力編集処理
+      *****************************************************************
+       4103-INPUT-TBLSET-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  IDX-W
+           MOVE    ZERO                TO  IDX-G
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-MEISAI-MAX )  OR
+                              (IDX-W   >   ZERO      )
+               IF      SPA-GMN-SELNUM2     =   SPA-GMN-TBANGO (IDX)
+                   MOVE    SPA-NAI-TBANGO (IDX)    TO  IDX-W
+                   MOVE    IDX                 TO  IDX-G
+               END-IF
+           END-PERFORM
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   50  )   OR
+                              (SPA-WKSRY-SRYCD (IDX-W IDX) =   SPACE)
+               IF      SPA-WKSRY-SRYCD (IDX-W IDX)
+                                           =  SPA-NAI-SRYCD (IDX)
+                   MOVE    SPA-NAI-SURYO (IDX)
+                                   TO  SPA-WKSRY-SRYSURYO (IDX-W IDX)
+               END-IF
+           END-PERFORM
+           MOVE    SPA-GMN-NISUU       TO  SPA-WKSRY-ZAIKAIKEI(IDX-W)
+      *
+           MOVE    ZERO                TO  IDG-K
+      *    画面再編集
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   50  )   OR
+                              (SPA-WKSRY-SRYCD (IDX-W IDX)
+                                        =   SPACE )
+               MOVE    ZERO                TO  FLG-OK
+               PERFORM VARYING     IDG     FROM    IDX-G   BY  1
+                       UNTIL      (IDG     >   200 )   OR
+                                  (FLG-OK  =   1   )
+                   IF      SPA-WKSRY-SRYCD (IDX-W IDX)
+                                       =   SPA-NAI-TSRYCD (IDG)
+                       MOVE    1               TO  FLG-OK
+                       MOVE    SPACE           TO  SPA-GMN-TFLG (IDG)
+                       IF      SPA-WKSRY-SRYCD (IDX-W IDX)(1:1)
+                                                   =   "6"  OR  "7"
+                           MOVE    SPA-WKSRY-SRYSURYO (IDX-W IDX)
+                                               TO  WRK-SURYO
+                           PERFORM 310121-SURYO-HEN-SEC
+                           MOVE    WRK-SURYO-J
+                                               TO  SPA-GMN-TSURYOU (IDG)
+                       END-IF
+                       IF      SPA-WKSRY-SRYSURYO (IDX-W IDX)
+                                               =   ZERO
+                           MOVE    "削"        TO  SPA-GMN-TFLG (IDG)
+                       END-IF
+                   END-IF
+               END-PERFORM
+           END-PERFORM
+      *    回数
+           PERFORM VARYING     IDG     FROM    IDX-G   BY  1
+                   UNTIL      (IDG     >   SPA-MEISAI-MAX )
+               IF     (SPA-GMN-SELNUM2     =   SPA-GMN-TBANGO (IDG))
+                 AND  (SPA-WKSRY-ZAIKAIKEI(IDX-W)  =   ZERO )
+                   MOVE    "削"            TO  SPA-GMN-TFLG (IDG)
+               END-IF
+               IF          SPA-NAI-KAIFLG (IDG)    =   1
+                   MOVE    SPA-WKSRY-ZAIKAIKEI(IDX-W)
+                                               TO   WRK-SRYKAISUKEI
+                   PERFORM 31013-KAISU-HEN-SEC
+                   MOVE    WRK-ZAIKEIJ         TO  SPA-GMN-TZAIKEI
+                                                              (IDG)
+               END-IF
+               IF      SPA-GMN-TMEISYO (IDG)(1:1)  =   "-"
+                   MOVE    SPA-MEISAI-MAX          TO  IDG
+               END-IF
+           END-PERFORM
+      *
+           INITIALIZE                  SPA-GMN-INPUT-AREA
+           MOVE    ZERO                TO  SPA-GMN-SELNUM2
+           MOVE    ZERO                TO  SPA-KEIFLG
+           MOVE    99                  TO  SPA-GMN-CUR
+           .
+       4103-INPUT-TBLSET-EXT.
+           EXIT.
+      *****************************************************************
+      *    選択印刷処理
+      *****************************************************************
+       405-SEL-PRT-SEC       SECTION.
+      *
+           IF      SPA-SEL-SYORI       =   ZERO
+               MOVE    1               TO  SPA-SEL-SYORI
+           ELSE
+               MOVE    ZERO            TO  SPA-SEL-SYORI
+           END-IF
+      *
+           IF      SPA-GMN-SELNUM1     >   ZERO
+      *        選択のクリア
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL       IDX     >    SPA-MEISAI-MAX
+                   MOVE    SPACE           TO  SPA-GMN-TSEL (IDX)
+               END-PERFORM
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL       IDX     >    SPA-WKSRY-MAX
+                   MOVE    ZERO            TO  SPA-WKSRY-SELFLG(IDX)
+               END-PERFORM
+               INITIALIZE                  SPA-GMN-INPUT-AREA
+               MOVE    ZERO                TO  SPA-GMN-SELNUM2
+               MOVE    ZERO                TO  SPA-KEIFLG
+               MOVE    2                   TO  SPA-GMN-CUR
+           END-IF
+           .
+       405-SEL-PRT-EXT.
+           EXIT.
+      *****************************************************************
+      *    前頁処理
+      *****************************************************************
+       406-MAE-PAGE-SEC       SECTION.
+      *
+           MOVE    1                   TO  FLG-KOUSIN
+           PERFORM 410-INPUT-CHK-SEC
+           IF     (SPA-ERRCD           =   SPACE ) AND
+                  (SPA-INPUT-PAGE      >   1     )
+               COMPUTE SPA-INPUT-PAGE  =   SPA-INPUT-PAGE
+                                       -   1
+               MOVE    11                  TO  SPA-GMN-CUR
+           END-IF
+           .
+       406-MAE-PAGE-EXT.
+           EXIT.
+      *****************************************************************
+      *    次頁処理
+      *****************************************************************
+       407-NEXT-PAGE-SEC       SECTION.
+      *
+           MOVE    1                   TO  FLG-KOUSIN
+           PERFORM 410-INPUT-CHK-SEC
+           IF     (SPA-ERRCD           =   SPACE ) AND
+                  (SPA-INPUT-PAGE      >   ZERO  )
+               COMPUTE IDX-STR         =   SPA-INPUT-PAGE
+                                       *   6
+                                       +   1
+               IF     (IDX-STR         <=  50 )  AND
+                      (SPA-GMN-INPUT (IDX-STR) NOT =   SPACE )
+                   COMPUTE SPA-INPUT-PAGE  =   SPA-INPUT-PAGE
+                                               +   1
+                   MOVE    11                  TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+           .
+       407-NEXT-PAGE-EXT.
+           EXIT.
+      *****************************************************************
+      *    前回処方印刷処理
+      *****************************************************************
+       404-MAE-SYOHO-PRT-SEC       SECTION.
+      *
+           IF      SPA-GMN-SELNUM1     =   ZERO
+               MOVE    "0100"          TO  SPA-ERRCD
+               MOVE    1               TO  SPA-GMN-CUR
+           ELSE
+               MOVE    1                TO  FLG-KOUSIN
+               PERFORM 410-INPUT-CHK-SEC
+               IF      SPA-ERRCD       =   SPACE
+      *            対象チェック処理
+                   PERFORM 4104-TBL-CHK-SEC
+               END-IF
+           END-IF
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    1                   TO  SPA-PRINT-SYORI
+               MOVE    "0201"              TO  SPA-KAID1CD
+           END-IF
+      *
+           .
+       404-MAE-SYOHO-PRT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    再印刷処理
+      *****************************************************************
+       409-SAI-PRINT-SEC       SECTION.
+      *
+           IF      SPA-GMN-SELNUM1     =   ZERO
+               MOVE    "0100"          TO  SPA-ERRCD
+               MOVE    1               TO  SPA-GMN-CUR
+           END-IF
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-NAI-RRKYMD (SPA-GMN-SELNUM1)
+                                           <   SPA-SRYYMD-4
+                   MOVE    "0301"          TO  SPA-KAID1CD
+               ELSE
+                   MOVE    ZERO                TO  SPA-PRINT-SYORI
+                   MOVE    "0101"              TO  SPA-KAID2CD
+               END-IF
+           END-IF
+      *
+           .
+       409-SAI-PRINT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    処方せん・薬剤情報印刷
+      *****************************************************************
+       410-SYOHOYAKU-PRT-SEC       SECTION.
+      *
+           IF      SPA-GMN-SELNUM1     =   ZERO
+               MOVE    "0100"          TO  SPA-ERRCD
+               MOVE    1               TO  SPA-GMN-CUR
+           ELSE
+               MOVE    1                TO  FLG-KOUSIN
+               PERFORM 410-INPUT-CHK-SEC
+               IF      SPA-ERRCD       =   SPACE
+      *            対象チェック処理
+                   PERFORM 4104-TBL-CHK-SEC
+               END-IF
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    1                   TO  SPA-PRINT-SYORI
+               MOVE    "0102"              TO  SPA-KAID1CD
+           END-IF
+           .
+      *
+       409-SYOHOYAKU-PRT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    印刷内容チェック処理
+      *****************************************************************
+       4104-TBL-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           MOVE    ZERO                TO  FLG-ERR
+           PERFORM VARYING     IDX-W   FROM    1   BY  1
+                   UNTIL       IDX-W   >   SPA-WKSRY-MAX
+               IF     ( SPA-WKSRY-ZAIKAIKEI(IDX-W) =   ZERO  )
+                 OR   ((SPA-SEL-SYORI              =   1    ) AND
+                       (SPA-WKSRY-SELFLG (IDX-W)   =   ZERO ))
+                   CONTINUE
+               ELSE
+                   PERFORM VARYING     IDX-W2  FROM    1   BY  1
+                           UNTIL      (IDX-W2  >   50      )  OR
+                                      (SPA-WKSRY-SRYCD (IDX-W IDX-W2)
+                                                   =   SPACE)
+                       IF      SPA-WKSRY-SRYSURYO (IDX-W IDX-W2)
+                                                       >   ZERO
+                           IF      SPA-WKSRY-ERRKBN(IDX-W IDX-W2)
+                                                   =   1
+                               MOVE    1               TO  FLG-ERR
+                           END-IF
+                       END-IF
+                   END-PERFORM
+               END-IF
+           END-PERFORM
+           IF      SPA-KEIFLG      =   ZERO
+               IF      FLG-ERR         =   1
+                   MOVE    1               TO  SPA-KEIFLG
+                   MOVE    "K001"          TO  SPA-ERRCD
+               END-IF
+           END-IF
+           .
+      *
+       4104-TBL-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    薬剤情報印刷処理
+      *****************************************************************
+       411-YAKUZAI-PRT-SEC       SECTION.
+      *
+           IF      SPA-GMN-SELNUM1     =   ZERO
+               MOVE    "0100"          TO  SPA-ERRCD
+               MOVE    1               TO  SPA-GMN-CUR
+           ELSE
+               MOVE    1                TO  FLG-KOUSIN
+               PERFORM 410-INPUT-CHK-SEC
+               IF      SPA-ERRCD       =   SPACE
+      *            対象チェック処理
+                   PERFORM 4104-TBL-CHK-SEC
+               END-IF
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    1                   TO  SPA-PRINT-SYORI
+               MOVE    "0104"              TO  SPA-KAID1CD
+           END-IF
+           .
+       411-YAKUZAI-PRT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    処方せん印刷処理
+      *****************************************************************
+       412-SYOHOU-PRT-SEC       SECTION.
+      *
+           IF      SPA-GMN-SELNUM1     =   ZERO
+               MOVE    "0100"          TO  SPA-ERRCD
+               MOVE    1               TO  SPA-GMN-CUR
+           ELSE
+               MOVE    1                TO  FLG-KOUSIN
+               PERFORM 410-INPUT-CHK-SEC
+               IF      SPA-ERRCD       =   SPACE
+      *            対象チェック処理
+                   PERFORM 4104-TBL-CHK-SEC
+               END-IF
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    "0106"          TO  SPA-KAID1CD
+               MOVE    1                   TO  SPA-PRINT-SYORI
+           END-IF
+           .
+       412-SYOHOU-PRT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    処方せん印刷処理
+      *****************************************************************
+       4102-SYOHOU-PRINT-SEC             SECTION.
+      *
+      *    帳票プログラム取得
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "1"                 TO  ORCSPRTNM-KBN
+           MOVE    "00000002"          TO  ORCSPRTNM-KBNCD
+           MOVE    SPA-SRYYMD          TO  ORCSPRTNM-SRYYMD
+           CALL    "ORCSPRTNM"         USING
+                                       ORCSPRTNMAREA
+                                       SPA-AREA
+                                       SYS-1032-REC
+           IF      ORCSPRTNM-RC    NOT =   ZERO
+               MOVE    "1030"              TO  SPA-ERRCD
+               GO      TO      4102-SYOHOU-PRINT-EXT
+           END-IF
+           MOVE    ORCSPRTNM-PRTPG     TO  WRK-SYOHOU-PG
+      *
+           MOVE    SPA-AREA            TO  HZN-SPA-AREA
+      *
+      *    処方箋印刷（Ａ５）
+           INITIALIZE                  ORCHC19AREA
+           EVALUATE    FLG-PRINT
+               WHEN    1
+      *            再印刷
+                   IF      SPA-NAI-INNAI       =   "1"
+      *                院外
+                       MOVE    SPACE               TO  ORCHC19-KBN
+                   ELSE
+      *                院内
+                       MOVE    "3"                 TO  ORCHC19-KBN
+                   END-IF
+                   MOVE    SPA-NAI-RRK-DENPNUM (SPA-GMN-SELNUM1)
+                                               TO  ORCHC19-DENPNUM
+      *
+                   MOVE    SPA-NAI-RRKYMD (SPA-GMN-SELNUM1)
+                                               TO  SPA-SRYYMD
+                   MOVE    SPA-NAI-RRK-HKNCOMBI (SPA-GMN-SELNUM1)
+                                               TO  SPA-HKNCOMBINUM
+                   MOVE    SPA-NAI-RRK-SRYKA (SPA-GMN-SELNUM1)
+                                               TO  SPA-SRYKA
+                   MOVE    SPA-NAI-RRK-DRCD (SPA-GMN-SELNUM1)
+                                               TO  SPA-DRCD
+               WHEN    2
+      *            前回処方（内容変更）
+                   MOVE    "A"                 TO  ORCHC19-KBN
+                   MOVE    SPA-GMN-HKNCOMBINUM TO  SPA-HKNCOMBINUM
+                   MOVE    "1"                 TO  SPA-DRCD(1:1)
+                   MOVE    SPA-GMN-DRCD        TO  SPA-DRCD(2:4)
+                   MOVE    SPA-NAI-RRK-SRYKA (SPA-GMN-SELNUM1)
+                                               TO  SPA-SRYKA
+                   PERFORM 41021-ORCHC19-HENSYU-SEC
+               WHEN    3
+      *            前回処方（日数なし）
+                   IF     (SPA-NAI-RRK-HKNCOMBI (SPA-GMN-SELNUM1)
+                                               =   SPA-GMN-HKNCOMBINUM)
+                      AND (SPA-NAI-RRK-DRCD (SPA-GMN-SELNUM1)
+                                               =   SPA-DRCD     )
+                       IF      SPA-NAI-INNAI       =   "1"
+      *                    院外
+                           MOVE    "1"                 TO  ORCHC19-KBN
+                       ELSE
+      *                    院内
+                           MOVE    "C"                 TO  ORCHC19-KBN
+                       END-IF
+                   ELSE
+                       IF      SPA-NAI-INNAI       =   "1"
+      *                    院外
+                           MOVE    "B"                 TO  ORCHC19-KBN
+                       ELSE
+      *                    院内
+                           MOVE    "C"                 TO  ORCHC19-KBN
+                       END-IF
+                   END-IF
+                   MOVE    SPA-NAI-RRK-DENPNUM (SPA-GMN-SELNUM1)
+                                               TO  ORCHC19-DENPNUM
+      *
+                   MOVE    SPA-GMN-HKNCOMBINUM TO  SPA-HKNCOMBINUM
+                   MOVE    "1"                 TO  SPA-DRCD(1:1)
+                   MOVE    SPA-GMN-DRCD        TO  SPA-DRCD(2:4)
+                   MOVE    SPA-NAI-RRK-SRYKA (SPA-GMN-SELNUM1)
+                                               TO  SPA-SRYKA
+               WHEN    4
+      *            前回処方（日数なし）（選択分）
+                   MOVE    "D"                 TO  ORCHC19-KBN
+                   MOVE    SPA-GMN-HKNCOMBINUM TO  SPA-HKNCOMBINUM
+                   MOVE    "1"                 TO  SPA-DRCD(1:1)
+                   MOVE    SPA-GMN-DRCD        TO  SPA-DRCD(2:4)
+                   MOVE    SPA-NAI-RRK-SRYKA (SPA-GMN-SELNUM1)
+                                               TO  SPA-SRYKA
+                   PERFORM 41021-ORCHC19-HENSYU-SEC
+           END-EVALUATE
+      *
+           CALL    WRK-SYOHOU-PG       USING   SPA-AREA
+                                               ORCHC19AREA
+           MOVE    HZN-SPA-AREA         TO  SPA-AREA
+           .
+       4102-SYOHOU-PRINT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    処方せん明細編集処理
+      *****************************************************************
+       41021-ORCHC19-HENSYU-SEC             SECTION.
+      *
+           MOVE    ZERO                TO  IDX1
+           PERFORM VARYING     IDX-W   FROM    1   BY  1
+                   UNTIL       IDX-W   >   SPA-WKSRY-MAX
+               IF     ( SPA-WKSRY-ZAIKAIKEI(IDX-W) =   ZERO  )
+                 OR   ((SPA-SEL-SYORI              =   1    ) AND
+                       (SPA-WKSRY-SELFLG (IDX-W)   =   ZERO ))
+                   CONTINUE
+               ELSE
+                   ADD     1               TO  IDX1
+                   MOVE    IDX1            TO  ORCHC19-ZAI-MAX
+                   MOVE    SPA-WKSRY-ZAIKAIKEI (IDX-W)
+                                           TO  ORCHC19-ZAIKAIKEI (IDX1)
+                   MOVE    SPA-WKSRY-SRYSYUKBN (IDX-W)
+                                           TO  ORCHC19-SRYSYUKBN (IDX1)
+                   MOVE    SPA-WKSRY-SRYKBN (IDX-W)
+                                           TO  ORCHC19-SRYKBN (IDX1)
+                   MOVE    SPA-WKSRY-ZAITENKEI (IDX-W)
+                                           TO  ORCHC19-ZAITENKEI (IDX1)
+                   MOVE    ZERO            TO  IDX2
+                   PERFORM VARYING     IDX-W2  FROM    1   BY  1
+                           UNTIL      (IDX-W2  >   50      )  OR
+                                      (SPA-WKSRY-SRYCD (IDX-W IDX-W2)
+                                                   =   SPACE)
+                   IF      SPA-WKSRY-SRYSURYO (IDX-W IDX-W2)
+                                                   >   ZERO
+                       ADD     1           TO  IDX2
+                       MOVE    SPA-WKSRY-SRYCD (IDX-W IDX-W2)
+                                           TO  ORCHC19-SRYCD (IDX1 IDX2)
+                       MOVE    SPA-WKSRY-SRYSURYO (IDX-W IDX-W2)
+                                           TO  ORCHC19-SRYSURYO
+                                                             (IDX1 IDX2)
+                       MOVE    SPA-WKSRY-SRYKAISU (IDX-W IDX-W2)
+                                           TO  ORCHC19-SRYKAISU
+                                                             (IDX1 IDX2)
+                       MOVE    SPA-WKSRY-INPUTCOMENT (IDX-W IDX-W2)
+                                           TO  ORCHC19-INPUTCOMENT
+                                                             (IDX1 IDX2)
+                   END-IF
+               END-PERFORM
+           END-PERFORM
+      *
+           .
+       41021-ORCHC19-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    薬剤情報印刷処理
+      *****************************************************************
+       4103-YAKJYO-PRINT-SEC             SECTION.
+      *
+           MOVE    SPA-AREA            TO  HZN-SPA-AREA
+           INITIALIZE                      ORCSCH30AREA
+           EVALUATE    FLG-PRINT
+               WHEN    1
+      *            再印刷
+                   IF      SPA-NAI-INNAI       =   "1"
+      *                院外
+                       MOVE    "2"                 TO  ORCSCH30-KBN
+                   ELSE
+      *                院内
+                       MOVE    "1"                 TO  ORCSCH30-KBN
+                   END-IF
+                   MOVE    SPA-NAI-RRK-DENPNUM (SPA-GMN-SELNUM1)
+                                               TO  ORCSCH30-DENPNUM
+      *
+                   MOVE    SPA-NAI-RRKYMD (SPA-GMN-SELNUM1)
+                                               TO  SPA-SRYYMD
+                   MOVE    SPA-NAI-RRK-HKNCOMBI (SPA-GMN-SELNUM1)
+                                               TO  SPA-HKNCOMBINUM
+                   MOVE    SPA-NAI-RRK-SRYKA (SPA-GMN-SELNUM1)
+                                               TO  SPA-SRYKA
+                   MOVE    SPA-NAI-RRK-DRCD (SPA-GMN-SELNUM1)
+                                               TO  SPA-DRCD
+               WHEN    2
+               WHEN    3
+      *            前回処方（内容変更）
+                   MOVE    "5"                 TO  ORCSCH30-KBN
+                   MOVE    SPA-GMN-HKNCOMBINUM TO  SPA-HKNCOMBINUM
+                   MOVE    "1"                 TO  SPA-DRCD(1:1)
+                   MOVE    SPA-GMN-DRCD        TO  SPA-DRCD(2:4)
+                   MOVE    SPA-NAI-RRK-SRYKA (SPA-GMN-SELNUM1)
+                                               TO  SPA-SRYKA
+                   PERFORM 41031-ORCSCH30-HENSYU-SEC
+           END-EVALUATE
+      *
+           IF      SPA-ERRCD           =   SPACE
+               CALL    "ORCSCH30"          USING   SPA-AREA
+                                                   ORCSCH30AREA
+           END-IF
+      *
+           MOVE    HZN-SPA-AREA         TO  SPA-AREA
+           .
+       4103-YAKJYO-PRINT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    薬剤情報明細編集処理
+      *****************************************************************
+       41031-ORCSCH30-HENSYU-SEC             SECTION.
+      *
+           MOVE    ZERO                TO  IDX1
+           PERFORM VARYING     IDX-W   FROM    1   BY  1
+                   UNTIL       IDX-W   >   SPA-WKSRY-MAX
+               IF     ( SPA-WKSRY-ZAIKAIKEI(IDX-W) =   ZERO  )
+                 OR   ((SPA-SEL-SYORI              =   1    )  AND
+                       (SPA-WKSRY-SELFLG (IDX-W)   =   ZERO ))
+                 OR   ( SPA-WKSRY-SRYSYUKBN(IDX-W) =   "980" )
+                   CONTINUE
+               ELSE
+                   ADD     1               TO  IDX1
+                   MOVE    IDX1            TO  ORCSCH30-ZAI-MAX
+                   MOVE    SPA-WKSRY-ZAIKAIKEI (IDX-W)
+                                           TO  ORCSCH30-ZAIKAIKEI (IDX1)
+                   MOVE    SPA-WKSRY-SRYSYUKBN (IDX-W)
+                                           TO  ORCSCH30-SRYSYUKBN (IDX1)
+                   MOVE    SPA-WKSRY-SRYKBN (IDX-W)
+                                           TO  ORCSCH30-SRYKBN (IDX1)
+                   MOVE    ZERO            TO  IDX2
+                   PERFORM VARYING     IDX-W2  FROM    1   BY  1
+                           UNTIL      (IDX-W2  >   50      )  OR
+                                      (SPA-WKSRY-SRYCD (IDX-W IDX-W2)
+                                                   =   SPACE)
+      *            （減）は対象外
+                   IF     (SPA-WKSRY-SRYSURYO (IDX-W IDX-W2)
+                                                   >   ZERO )  AND
+                          (SPA-WKSRY-SRYCD (IDX-W IDX-W2)
+                                               NOT =   "820000047" )
+                       ADD     1           TO  IDX2
+                       MOVE    SPA-WKSRY-SRYCD (IDX-W IDX-W2)
+                                           TO  ORCSCH30-SRYCD(IDX1 IDX2)
+                       MOVE    SPA-WKSRY-SRYSURYO (IDX-W IDX-W2)
+                                           TO  ORCSCH30-SRYSURYO
+                                                             (IDX1 IDX2)
+                       MOVE    SPA-WKSRY-SRYKAISU (IDX-W IDX-W2)
+                                           TO  ORCSCH30-SRYKAISU
+                                                             (IDX1 IDX2)
+                       MOVE    SPA-WKSRY-ZAIKAISU (IDX-W IDX-W2)
+                                           TO  ORCSCH30-ZAIKAISU
+                                                             (IDX1 IDX2)
+                   END-IF
+               END-PERFORM
+           END-PERFORM
+           IF      ORCSCH30-ZAI-MAX    =   ZERO
+               MOVE    "0101"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       41031-ORCSCH30-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    西暦和暦編集処理
+      *****************************************************************
+       800-SEIWA-HEN-SEC             SECTION.
+      *
+           IF      WRK-SYMD            =   ALL "9"  OR   SPACE
+               MOVE    SPACE               TO  WRK-HGO
+               MOVE    WRK-SYMD(3:2)       TO  WRK-HYY
+               MOVE    WRK-SYMD(5:2)       TO  WRK-HMM
+               MOVE    WRK-SYMD(7:2)       TO  WRK-HDD
+               MOVE    WRK-HENYMD          TO  WRK-HENYMDG
+           ELSE
+               INITIALIZE                      STS-AREA-DAY
+               INITIALIZE                      LNK-DAY2-AREA
+               MOVE    "21"                TO  LNK-DAY2-IRAI
+               MOVE    WRK-SYMD            TO  LNK-DAY2-YMD
+               CALL    "ORCSDAY"            USING   STS-AREA-DAY
+                                                   LNK-DAY2-AREA
+               MOVE    LNK-DAY2-EDTYMD1    TO  WRK-HENYMDG
+           END-IF
+           .
+       800-SEIWA-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    自画面編集処理
+      *****************************************************************
+       500-SET-SCREEN              SECTION.
+      *
+           PERFORM 500-GMNHEN-SEC
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               PERFORM 510-ERRSET-SEC
+               GO      TO      500-SET-SCREEN-EXT
+           END-IF
+      *
+           IF      SPA-KAID1CD       NOT =   SPACE
+               PERFORM 520-KA01IDSET-SEC
+               GO      TO      500-SET-SCREEN-EXT
+           END-IF
+      *
+           IF      SPA-KAID2CD       NOT =   SPACE
+               PERFORM 530-KA02IDSET-SEC
+               GO      TO      500-SET-SCREEN-EXT
+           END-IF
+      *
+      *
+           MOVE    "CURRENT"           TO  MCP-PUTTYPE.
+           MOVE    "KA01"              TO  MCP-WINDOW.
+      *
+           PERFORM 900-PUT-WINDOW.
+           .
+       500-SET-SCREEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面編集処理
+      *****************************************************************
+       500-GMNHEN-SEC                  SECTION.
+      *
+           IF      FLG-GMN-INIT1       =   1
+               MOVE    ZERO            TO  WRK-KA01-RRKLIST-ROW
+               MOVE    ZERO            TO  WRK-KA01-MEILIST-ROW
+           ELSE
+               MOVE    KA01-RRKLIST-ROW    TO  WRK-KA01-RRKLIST-ROW
+               IF      FLG-GMN-INIT2       =   1
+                   MOVE    ZERO            TO  WRK-KA01-MEILIST-ROW
+               ELSE
+                   MOVE    KA01-MEILIST-ROW TO  WRK-KA01-MEILIST-ROW
+               END-IF
+           END-IF
+      *
+           MOVE    SPACE               TO  KA01
+      *    コラムリストの位置指定
+           MOVE    ZERO                TO  KA01-RRKLIST-ROW
+           MOVE    ZERO                TO  KA01-RRKLIST-ROWATTR
+           MOVE    ZERO                TO  KA01-MEILIST-ROW
+           MOVE    ZERO                TO  KA01-MEILIST-ROWATTR
+           IF      WRK-KA01-RRKLIST-ROW NOT =   ZERO
+               MOVE    WRK-KA01-RRKLIST-ROW TO  KA01-RRKLIST-ROW
+           END-IF
+           IF      WRK-KA01-MEILIST-ROW NOT =   ZERO
+               MOVE    WRK-KA01-MEILIST-ROW TO  KA01-MEILIST-ROW
+           END-IF
+      *
+           MOVE    SPA-GMN-PTNUM       TO  KA01-PTNUM
+           MOVE    SPA-GMN-NAME        TO  KA01-NAME
+           MOVE    SPA-GMN-SEX         TO  KA01-SEX
+           MOVE    SPA-GMN-BIRTHDAY    TO  KA01-BIRTHDAY
+           MOVE    SPA-GMN-NENREI      TO  KA01-NENREI
+      *
+           IF      SPA-SEL-SYORI       =   ZERO
+               MOVE   SPACE                TO  KA01-SYORIMEI
+           ELSE
+               MOVE   "＜ 選択印刷 ＞"     TO  KA01-SYORIMEI-VALUE
+               MOVE   "red"                TO  KA01-SYORIMEI-STYLE
+           END-IF
+      *
+           MOVE    SPA-GMN-SRYYMD      TO  KA01-SRYYMD
+           MOVE    SPA-GMN-KOUFUYMD    TO  KA01-KOUFUYMD
+           MOVE    SPA-GMN-SRYKAMEI    TO  KA01-SRYKA
+      *
+           IF      SPA-GMN-SELNUM1     >   ZERO
+               IF      SPA-NAI-INNAI       =   "1"
+                   MOVE    "【院外処方】"      TO  KA01-INNAI-VALUE
+                   MOVE   "black"              TO  KA01-INNAI-STYLE
+               ELSE
+                   MOVE    "【院内処方】"      TO  KA01-INNAI-VALUE
+                   MOVE   "blue"               TO  KA01-INNAI-STYLE
+               END-IF
+           END-IF
+      *
+           PERFORM VARYING   IDX     FROM    1   BY  1
+                   UNTIL     IDX     >   SPA-JYURRK-MAX
+               MOVE    SPA-GMN-NUM  (IDX)  TO  KA01-TNUM   (IDX)
+               MOVE    SPA-GMN-RRKYMD(IDX)
+                                           TO  KA01-TRRKYMD (IDX)
+               MOVE    SPA-GMN-RRKSRYKA(IDX)
+                                           TO  KA01-TRRKSRYKA   (IDX)
+               MOVE    SPA-GMN-RRKHKNCOMBI(IDX)
+                                           TO  KA01-TRRKHKNCOMBI   (IDX)
+               IF      SPA-GMN-NUM (IDX)   =   SPA-GMN-SELNUM1
+                   MOVE    "T"             TO  KA01-RRKLIST-SELECT(IDX)
+               ELSE
+                   MOVE    "F"             TO  KA01-RRKLIST-SELECT(IDX)
+               END-IF
+           END-PERFORM
+           MOVE    SPA-JYURRK-MAX      TO  KA01-RRKLIST-COUNT
+      *
+           PERFORM VARYING   IDX     FROM    1   BY  1
+                   UNTIL     IDX     >   SPA-MEISAI-MAX
+               IF      SPA-GMN-TMEISYO(IDX)(1:1)   =   "-"
+                   MOVE    ALL "-"             TO  KA01-MNUM  (IDX)
+                   MOVE    ALL "-"             TO  KA01-MSYORI(IDX)
+                   MOVE    ALL "-"             TO  KA01-MDEL  (IDX)
+                   MOVE    ALL "−"            TO  KA01-MEISAI(IDX)
+               ELSE
+                   IF      SPA-GMN-TBANGO (IDX)    NOT =   ZERO
+                       MOVE    SPA-GMN-TBANGO (IDX)    TO  WRK-ZZ
+                       MOVE    WRK-ZZ              TO  KA01-MNUM (IDX)
+                   ELSE
+                       MOVE    SPACE               TO  KA01-MNUM (IDX)
+                   END-IF
+                   IF      SPA-GMN-TSEL   (IDX)    =   "T"
+                       MOVE    "◎"            TO  KA01-MSYORI(IDX)
+                   ELSE
+                       MOVE    SPACE           TO  KA01-MSYORI(IDX)
+                   END-IF
+                   MOVE    SPA-GMN-TFLG   (IDX)
+                                           TO  KA01-MDEL   (IDX)
+      *            期間外
+                   IF     (SPA-GMN-TSEL (IDX)  =   SPACE )  AND
+                          (SPA-NAI-ERRFLG(IDX) =   1     )
+                       MOVE    "外"            TO  KA01-MSYORI (IDX)
+                   END-IF
+                   MOVE    SPA-GMN-TMEISYO(IDX)
+                                           TO  KA01-MEISAI (IDX)
+               END-IF
+               IF     (SPA-GMN-TMEISYO (IDX)   NOT =   ALL "-" )  AND
+                      (SPA-GMN-TBANGO (IDX)    >   ZERO  )  AND
+                      (SPA-GMN-TBANGO (IDX)    =   SPA-GMN-SELNUM2)
+                   MOVE    "T"             TO  KA01-MEILIST-SELECT(IDX)
+               ELSE
+                   MOVE    "F"             TO  KA01-MEILIST-SELECT(IDX)
+               END-IF
+           END-PERFORM
+           MOVE    SPA-MEISAI-MAX      TO  KA01-MEILIST-COUNT
+      *
+           MOVE    SPA-GMN-DRCD-G      TO  KA01-DRCD
+           PERFORM   VARYING   IDX     FROM    1   BY  1
+                     UNTIL     IDX     >   SPA-DRCD-MAX
+               MOVE    SPA-GMN-DRCD-COMB(IDX)  TO  KA01-DRCD-ITEM
+                                                                  (IDX)
+           END-PERFORM
+           MOVE    SPA-DRCD-MAX        TO  KA01-DRCD-COUNT
+      *
+           MOVE    SPA-GMN-HKNCOMBI-G  TO  KA01-HKNCOMBI
+           PERFORM   VARYING   IDX     FROM    1   BY  1
+                     UNTIL     IDX     >   SPA-HKNCOMBI-MAX
+               MOVE    SPA-GMN-HKNCOMBI-COMB(IDX)
+                                           TO  KA01-HKNCOMBI-ITEM
+                                                                  (IDX)
+           END-PERFORM
+           MOVE    SPA-HKNCOMBI-MAX    TO  KA01-HKNCOMBI-COUNT
+      *
+           MOVE    SPA-GMN-SELNUM1     TO  KA01-SELNUM1
+           MOVE    SPA-GMN-SELNUM2     TO  KA01-SELNUM2
+      *
+           MOVE    SPA-GMN-NISUU       TO  KA01-NISUU
+      *
+           IF      SPA-INPUT-PAGE      >   ZERO
+               COMPUTE IDX-STR         =  (SPA-INPUT-PAGE -  1)
+                                       *  6    +   1
+               PERFORM   VARYING   IDX     FROM    1   BY  1
+                         UNTIL    (IDX     >   6   )   OR
+                                  (IDX-STR >   50  )
+                   MOVE    SPA-GMN-SURYO (IDX-STR)
+                                           TO   KA01-SUURYO(IDX)
+                   EVALUATE    IDX
+                       WHEN    1
+                           MOVE    SPA-GMN-INPUT (IDX-STR)
+                                                   TO  KA01-INPUT01
+                       WHEN    2
+                           MOVE    SPA-GMN-INPUT (IDX-STR)
+                                                   TO  KA01-INPUT02
+                       WHEN    3
+                           MOVE    SPA-GMN-INPUT (IDX-STR)
+                                                   TO  KA01-INPUT03
+                       WHEN    4
+                           MOVE    SPA-GMN-INPUT (IDX-STR)
+                                                   TO  KA01-INPUT04
+                       WHEN    5
+                           MOVE    SPA-GMN-INPUT (IDX-STR)
+                                                   TO  KA01-INPUT05
+                       WHEN    6
+                           MOVE    SPA-GMN-INPUT (IDX-STR)
+                                                   TO  KA01-INPUT06
+                   END-EVALUATE
+                   ADD     1               TO  IDX-STR
+               END-PERFORM
+           END-IF
+      *
+      *    非活性処理
+           PERFORM 510-GSRAUTH-SEC
+      *
+           PERFORM 5001-MAPCUR-SEC
+           .
+       500-GMNHEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    非活性処理
+      *****************************************************************
+       510-GSRAUTH-SEC             SECTION.
+      *
+           .
+       51O-GSRAUTH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面カーソルセット処理
+      *****************************************************************
+       5001-MAPCUR-SEC             SECTION.
+      *
+           IF      SPA-GMN-CUR     =   ZERO
+               PERFORM 50011-CUR-SET-SEC
+           END-IF
+      *
+           EVALUATE    SPA-GMN-CUR
+               WHEN    01
+                   MOVE    "SELNUM1"        TO  MCP-WIDGET
+               WHEN    02
+                   MOVE    "SELNUM2"         TO  MCP-WIDGET
+               WHEN    03
+                   MOVE    "HKNCOMBI"        TO  MCP-WIDGET
+               WHEN    04
+                   MOVE    "DRCD"            TO  MCP-WIDGET
+               WHEN    05
+                   MOVE    "NISUU"           TO  MCP-WIDGET
+               WHEN    11
+                   MOVE    "SUURYO1"         TO  MCP-WIDGET
+               WHEN    12
+                   MOVE    "SUURYO2"         TO  MCP-WIDGET
+               WHEN    13
+                   MOVE    "SUURYO3"         TO  MCP-WIDGET
+               WHEN    14
+                   MOVE    "SUURYO4"         TO  MCP-WIDGET
+               WHEN    15
+                   MOVE    "SUURYO5"         TO  MCP-WIDGET
+               WHEN    16
+                   MOVE    "SUURYO6"         TO  MCP-WIDGET
+               WHEN    20
+                   MOVE    "B08"             TO  MCP-WIDGET
+               WHEN    91
+                   MOVE    "B01"             TO  MCP-WIDGET
+               WHEN    99
+                   MOVE    "B12"             TO  MCP-WIDGET
+           END-EVALUATE
+      *
+           .
+       5001-MAPCUR-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    カーソル編集処理
+      *****************************************************************
+       50011-CUR-SET-SEC           SECTION.
+      *
+           EVALUATE    WRK-MCP-WIDGET
+               WHEN    "SELNUM1"
+                   MOVE    2               TO  SPA-GMN-CUR
+               WHEN    "SELNUM2"
+                   MOVE    05              TO  SPA-GMN-CUR
+               WHEN    "HKNCOMBI"
+                   MOVE    4               TO  SPA-GMN-CUR
+               WHEN    "DRCD"
+                   MOVE    99              TO  SPA-GMN-CUR
+               WHEN    "NISUU"
+                   MOVE    11              TO  SPA-GMN-CUR
+               WHEN    OTHER
+                   IF      WRK-MCP-WIDGET(1:6) =   "SUURYO"
+                       MOVE    WRK-MCP-WIDGET(7:2) TO  IDX2
+                       COMPUTE SPA-GMN-CUR     =   IDX2   +   10
+                       IF     (IDX2                <   06 ) AND
+                              (SPA-GMN-INPUT (IDX2 + 1)
+                                                   NOT =   SPACE)
+                           ADD     1               TO  SPA-GMN-CUR
+                       ELSE
+                           MOVE    20              TO  SPA-GMN-CUR
+                       END-IF
+                   END-IF
+           END-EVALUATE
+      *
+           .
+       50011-CUR-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    エラーメッセージ表示理
+      *****************************************************************
+       510-ERRSET-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  SPA-ERRMSG
+      *
+           EVALUATE    SPA-ERRCD
+               WHEN    "0001"
+                   MOVE    "受診履歴番号入力エラー"
+                                       TO  SPA-ERRMSG
+               WHEN    "0002"
+                   MOVE    "明細番号選択エラ−"
+                                       TO  SPA-ERRMSG
+               WHEN    "0003"
+                   MOVE    "保険組合せ入力エラー"
+                                       TO  SPA-ERRMSG
+               WHEN    "0004"
+                   MOVE    "ドクター入力エラー"
+                                       TO  SPA-ERRMSG
+               WHEN    "0005"
+                   MOVE    "数量数値エラー"
+                                       TO  SPA-ERRMSG
+               WHEN    "0006"
+                   MOVE    "日数は１で入力して下さい。"
+                                       TO  SPA-ERRMSG
+               WHEN    "0010"
+                   MOVE    "数量・日数の変更中です。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "変更確定を押下して下さい"
+                                       TO  SPA-ERRMSG(25:)
+               WHEN    "0100"
+                   MOVE    "履歴番号が選択されていません。"
+                                       TO  SPA-ERRMSG
+               WHEN    "0101"
+                   MOVE    "明細がありません。印刷しません。"
+                                       TO  SPA-ERRMSG
+               WHEN    "1030"
+                   MOVE    "処方せんプログラムがありません。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "システム管理を確認して下さい。"
+                                       TO  SPA-ERRMSG(33:)
+               WHEN    "1031"
+                   MOVE    "薬剤情報印刷プログラムがありません。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "システム管理を確認して下さい。"
+                                       TO  SPA-ERRMSG(35:)
+               WHEN    "K001"
+                   MOVE    "警告！交付日で対象外のコードがあります。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "空白で印刷されます。"
+                                       TO  SPA-ERRMSG(41:)
+               WHEN    OTHER
+                   MOVE    SPA-ERRCD   TO  SPA-ERRMSG
+           END-EVALUATE
+      *
+           MOVE    SPACE               TO  KAERR
+           MOVE    SPA-ERRCD           TO  KAERR-ERRCODE
+           MOVE    SPA-ERRMSG          TO  KAERR-ERRMSG
+           MOVE    "B01"               TO  MCP-WIDGET
+      *
+           MOVE    "KA01"              TO  SPA-MOTOPG
+           MOVE    "KAERR"             TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "KAERR"             TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       510-ERRSET-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    確認メッセージ表示理
+      *****************************************************************
+       520-KA01IDSET-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  KAID1
+           EVALUATE    SPA-KAID1CD
+               WHEN    "0201"
+                   STRING  "前回処方せんを日数空白で印刷します。"
+                                           DELIMITED  BY  SIZE
+                           "よろしいですか？"
+                                           DELIMITED  BY  SIZE
+                                       INTO   KAID1-ID1MSG
+                   END-STRING
+               WHEN    "0102"
+                   STRING  "変更内容で処方せん・薬剤情報を"
+                                           DELIMITED  BY  SIZE
+                           "印刷します。よろしいですか？"
+                                           DELIMITED  BY  SIZE
+                                       INTO   KAID1-ID1MSG
+                   END-STRING
+               WHEN    "0104"
+                   STRING  "変更内容で薬剤情報を印刷します。"
+                                           DELIMITED  BY  SIZE
+                           "よろしいですか？"
+                                           DELIMITED  BY  SIZE
+                                       INTO   KAID1-ID1MSG
+                   END-STRING
+               WHEN    "0106"
+                   STRING  "変更内容で処方せんを印刷します。"
+                                           DELIMITED  BY  SIZE
+                           "よろしいですか？"
+                                           DELIMITED  BY  SIZE
+                                       INTO   KAID1-ID1MSG
+                   END-STRING
+               WHEN    "0301"
+                   STRING  "診療日が４日以上前になります。"
+                                           DELIMITED  BY  SIZE
+                           "再印刷してもいいですか？"
+                                           DELIMITED  BY  SIZE
+                                       INTO   KAID1-ID1MSG
+                   END-STRING
+               WHEN    "0302"
+                   STRING  "診療日が４日以上前になります。"
+                                           DELIMITED  BY  SIZE
+                           "再印刷してもいいですか？"
+                                           DELIMITED  BY  SIZE
+                                       INTO   KAID1-ID1MSG
+                   END-STRING
+               WHEN    OTHER
+                   MOVE    SPA-KAID1CD
+                                       TO  KAID1-ID1MSG
+           END-EVALUATE
+      *
+           MOVE    SPA-KAID1CD         TO  KAID1-ID1CODE
+      *
+           MOVE    SPACE               TO  SPA-KAID1-FLG
+      *
+           MOVE    "B12"               TO  MCP-WIDGET
+      *
+           MOVE    "KA01"              TO  SPA-MOTOPG
+           MOVE    "KAID1"             TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "KAID1"             TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       520-KA01IDSET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    確認メッセージ表示理
+      *****************************************************************
+       530-KA02IDSET-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  KAID2
+           EVALUATE    SPA-KAID2CD
+               WHEN    "0101"
+                   STRING  "診療日を交付日として再印刷します。"
+                                           DELIMITED  BY  SIZE
+                           "再印刷する帳票を選択して下さい。"
+                                           DELIMITED  BY  SIZE
+                                       INTO   KAID2-ID2MSG
+                   END-STRING
+               WHEN    OTHER
+                   MOVE    SPA-KAID2CD
+                                       TO  KAID2-ID2MSG
+           END-EVALUATE
+      *
+           MOVE    SPA-KAID2CD         TO  KAID2-ID2CODE
+      *
+           MOVE    SPACE               TO  SPA-KAID2-FLG
+      *
+           MOVE    "B12"               TO  MCP-WIDGET
+      *
+           MOVE    "KA01"              TO  SPA-MOTOPG
+           MOVE    "KAID2"             TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "KAID2"             TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       530-KA02IDSET-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者マスター読込（主キー）
+      *****************************************************************
+       900-PTINF-READ-SEC         SECTION.
+      *
+           MOVE    PTINF-REC           TO  MCPDATA-REC
+           MOVE    "tbl_ptinf"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  PTINF-REC
+                   MOVE    ZERO            TO  FLG-PTINF
+               ELSE
+                   INITIALIZE                  PTINF-REC
+                   MOVE    1               TO  FLG-PTINF
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-PTINF
+               INITIALIZE                  PTINF-REC
+           END-IF
+      *
+           MOVE    "tbl_ptinf"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       900-PTINF-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システム管理読込処理
+      *****************************************************************
+       900-SYSKANRI-READ-SEC         SECTION.
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO            TO  FLG-SYSKANRI
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           .
+       900-SYSKANRI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    点数マスター読込
+      *****************************************************************
+       910-TENSU-READ-SEC         SECTION.
+      *
+           MOVE    WRK-SRYYMD          TO  TNS-YUKOSTYMD
+           MOVE    WRK-SRYYMD          TO  TNS-YUKOEDYMD
+      *
+           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
+                   MOVE    ZERO                TO  FLG-TENSU
+               ELSE
+                   INITIALIZE                  TNS-TENSU-REC
+                   MOVE    1                   TO  FLG-TENSU
+               END-IF
+           ELSE
+               INITIALIZE                  TNS-TENSU-REC
+               MOVE    1                   TO  FLG-TENSU
+           END-IF
+      *
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       910-TENSU-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療行為マスター読込
+      *****************************************************************
+       930-SRYACT-READ-SEC         SECTION.
+      *
+           MOVE    "tbl_sryact"        TO  MCP-TABLE
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SRYACT-REC
+               MOVE    ZERO            TO  FLG-SRYACT
+           ELSE
+               INITIALIZE                  SRYACT-REC
+               MOVE    1               TO  FLG-SRYACT
+           END-IF
+      *
+           .
+       930-SRYACT-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療会計マスター読込（主キー）
+      *****************************************************************
+       940-SRYACCT-READ-SEC           SECTION.
+      *
+           MOVE    SRYACCT-REC         TO  MCPDATA-REC
+      *
+           MOVE    "tbl_sryacct"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  SRYACCT-REC
+                   MOVE    ZERO                TO  FLG-SRYACCT
+               ELSE
+                   MOVE    1                   TO  FLG-SRYACCT
+                   INITIALIZE                  SRYACCT-REC
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-SRYACCT
+               INITIALIZE                  SRYACCT-REC
+           END-IF
+      *
+           MOVE    "tbl_sryacct"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       940-SRYACCT-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者コメントマスタ読み込み
+      *****************************************************************
+       950-PTCOM-READ-SEC           SECTION.
+      *
+           MOVE    PTCOM-REC           TO  MCPDATA-REC
+      *
+           MOVE    "tbl_ptcom"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  PTCOM-REC
+                   MOVE    ZERO                TO  FLG-PTCOM
+               ELSE
+                   MOVE    1                   TO  FLG-PTCOM
+                   INITIALIZE                  PTCOM-REC
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-PTCOM
+               INITIALIZE                  PTCOM-REC
+           END-IF
+      *
+           MOVE    "tbl_ptcom"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       950-PTCOM-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    受診履歴マスター読込
+      *****************************************************************
+       910-JYURRK-READ-SEC         SECTION.
+      *
+           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  JYURRK-REC
+               MOVE    ZERO            TO  FLG-JYURRK
+           ELSE
+               INITIALIZE                  JYURRK-REC
+               MOVE    1               TO  FLG-JYURRK
+           END-IF
+      *
+           .
+       910-JYURRK-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    テーブル検索処理
+      *****************************************************************
+       910-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ読み込み処理
+      *****************************************************************
+       920-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       920-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢクロース処理
+      *****************************************************************
+       990-DBCLOSE-SEC           SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       990-DBCLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＰＵＴ　処理
+      *****************************************************************
+       900-PUT-WINDOW              SECTION.
+      *
+           MOVE   "PUTWINDOW"          TO  MCP-FUNC.
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       900-PUT-WINDOW-EXT.
+           EXIT.
+      *

@@ -307,6 +307,10 @@ RECORD_files = \
 	XD01.rec \
 	XDERR.rec \
 	XDID1.rec \
+        KA01.rec \
+        KAERR.rec \
+        KAID1.rec \
+        KAID2.rec \
 
 DEF_files = \
 	HC01.def \

@@ -1092,6 +1092,11 @@ COPYS = \
         HCM2OV02.INC \
         HCM2PV02.INC \
         CPORCSADDSIGN.INC \
+        KA01.INC \
+        KAERR.INC \
+        KAID1.INC \
+        KAID2.INC \
+        KA01COMMON-SPA \
 
 DBPATH = \
 	ORCA-DBPATH

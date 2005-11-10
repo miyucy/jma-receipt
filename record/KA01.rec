@@ -1,0 +1,123 @@
+KA01	{
+	fixed1	{
+		PTNUM	{
+			value	varchar(20);
+		};
+		NAME	{
+			value	varchar(50);
+		};
+		SEX	{
+			value	varchar(2);
+		};
+		BIRTHDAY	{
+			value	varchar(10);
+		};
+		NENREI	{
+			value	varchar(6);
+		};
+		SELNUM1	{
+			value	number(3);
+		};
+		SRYYMD	{
+			value	varchar(9);
+		};
+		SELNUM2	{
+			value	number(3);
+		};
+		INPUT01	{
+			value	varchar(80);
+		};
+		INPUT02	{
+			value	varchar(80);
+		};
+		INPUT03	{
+			value	varchar(80);
+		};
+		INPUT04	{
+			value	varchar(80);
+		};
+		INPUT05	{
+			value	varchar(80);
+		};
+		INPUT06	{
+			value	varchar(80);
+		};
+		NISUU	{
+			value	number(3);
+		};
+		SRYKA	{
+			value	varchar(12);
+		};
+		scrolledwindow1	{
+			RRKLIST	{
+				count	int;
+				row 	int;
+				rowattr	int;
+				item	{
+					value0	varchar(3);
+					value1	varchar(16);
+					value2	varchar(6);
+					value3	varchar(4);
+				}	[40];
+				select	bool[40];
+			};
+		};
+		scrolledwindow2	{
+			MEILIST	{
+				count	int;
+				row 	int;
+				rowattr	int;
+				item	{
+					value0	varchar(3);
+					value1	varchar(2);
+					value2	varchar(2);
+					value3	varchar(200);
+				}	[200];
+				select	bool[200];
+			};
+		};
+		SYORIMEI	{
+			style	varchar(20);
+			value	varchar(20);
+		};
+		HKNCOMBI_COMB	{
+			HKNCOMBI	{
+				value	varchar(65);
+			};
+			count	int;
+			item	varchar(65)[15];
+		};
+		DRCD_COMB	{
+			DRCD	{
+				value	varchar(29);
+			};
+			count	int;
+			item	varchar(29)[20];
+		};
+		INNAI	{
+			style	varchar(20);
+			value	varchar(16);
+		};
+		SUURYO1	{
+			value	varchar(10);
+		};
+		SUURYO2	{
+			value	varchar(10);
+		};
+		SUURYO3	{
+			value	varchar(10);
+		};
+		SUURYO4	{
+			value	varchar(10);
+		};
+		SUURYO5	{
+			value	varchar(10);
+		};
+		SUURYO6	{
+			value	varchar(10);
+		};
+		KOUFUYMD	{
+			value	varchar(9);
+		};
+	};
+};
