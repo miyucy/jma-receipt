@@ -990,10 +990,6 @@
       *****************************************************************
        4001-DB-KENSAKU-SEC                SECTION.
       *
-      *TEST 
-           DISPLAY "4001-DB-KENSAKU WRK-DRCD:" WRK-DRCD
-              ",WRK-HKNCOMBI;" WRK-HKNCOMBINUM
-      *TEST
       *    職員情報（ドクター）
            MOVE    SPACE               TO  SYS-1010-REC
            MOVE    "1010"              TO  SYS-1010-KANRICD
