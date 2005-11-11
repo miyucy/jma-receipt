@@ -1182,6 +1182,8 @@
                                        RECE62-KOHSKY-KOHFTNJANUM (IDX)
                        END-IF
                    END-IF    
+                   MOVE    "PTKOHINF-KEY"   TO  WK-PATH
+                   PERFORM CSR-CLOSE-SEC
                END-PERFORM
            END-IF
       *
