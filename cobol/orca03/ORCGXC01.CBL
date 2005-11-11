@@ -1094,6 +1094,17 @@
       *
       *    行選択
            IF     (SPA-NAI-SELNUM      =   1)
+               IF    ( SPA-GMN-PAGE    =   1 )
+                   GO                  TO  480-BEFORELINE-EXT
+               END-IF
+               PERFORM 440-MAEGMN-SEC
+               MOVE    WRK-CONS-LINE-MAX   TO  SPA-NAI-SELNUM
+               MOVE    SPA-GMN-TNO (SPA-NAI-SELNUM)
+                                           TO  SPA-GMN-SELNUM
+               MOVE    SPA-NAI-SELNUM      TO  WRK-BANGO
+      *                                 
+               PERFORM 2011-SELECT-HENSYU-SEC
+               MOVE    2               TO  FLG-GMN-INIT
                    GO                  TO  480-BEFORELINE-EXT
            END-IF
       *     
@@ -1119,6 +1130,10 @@
       *
       *    行選択
            IF     (SPA-GMN-MAX         <=  SPA-NAI-SELNUM) 
+               IF    ( SPA-GMN-NEXT     =   ZERO )
+                   GO                  TO  470-NEXTLINE-EXT
+               END-IF
+               PERFORM 440-ATOGMN-SEC
                    GO                  TO  470-NEXTLINE-EXT
            END-IF
       *     
@@ -2293,13 +2308,17 @@
       *
            MOVE    SPACE               TO  XC01
       *
-           IF    ( FLG-GMN-INIT        =   1 )
+           EVALUATE    FLG-GMN-INIT
+           WHEN    1
                MOVE    ZERO            TO  XC01-ROW 
                MOVE    ZERO            TO  XC01-ROWATTR
-           ELSE
+           WHEN    2
+               MOVE    SPA-GMN-MAX     TO  XC01-ROW 
+               MOVE    1               TO  XC01-ROWATTR
+           WHEN    OTHER
                MOVE    WRK-ROW         TO  XC01-ROW
                MOVE    ZERO            TO  XC01-ROWATTR
-           END-IF
+           END-EVALUATE
       *
            EVALUATE    SPA-PRTKANRI-TBL-KEY
                WHEN    "RECEPT2"
