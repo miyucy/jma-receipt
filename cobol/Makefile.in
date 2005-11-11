@@ -21,6 +21,7 @@ SUBDIRS = \
 	orca22 \
 	orca23 \
 	orca24 \
+	orca29 \
 	orca41 \
 	orca42 \
 	orca43 \
