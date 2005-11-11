@@ -2801,22 +2801,23 @@
                            UNTIL      (IDX-W2  >   50      )  OR
                                       (SPA-WKSRY-SRYCD (IDX-W IDX-W2)
                                                    =   SPACE)
-                   IF      SPA-WKSRY-SRYSURYO (IDX-W IDX-W2)
+                       IF      SPA-WKSRY-SRYSURYO (IDX-W IDX-W2)
                                                    >   ZERO
-                       ADD     1           TO  IDX2
-                       MOVE    SPA-WKSRY-SRYCD (IDX-W IDX-W2)
+                           ADD     1           TO  IDX2
+                           MOVE    SPA-WKSRY-SRYCD (IDX-W IDX-W2)
                                            TO  ORCHC19-SRYCD (IDX1 IDX2)
-                       MOVE    SPA-WKSRY-SRYSURYO (IDX-W IDX-W2)
+                           MOVE    SPA-WKSRY-SRYSURYO (IDX-W IDX-W2)
                                            TO  ORCHC19-SRYSURYO
                                                              (IDX1 IDX2)
-                       MOVE    SPA-WKSRY-SRYKAISU (IDX-W IDX-W2)
+                           MOVE    SPA-WKSRY-SRYKAISU (IDX-W IDX-W2)
                                            TO  ORCHC19-SRYKAISU
                                                              (IDX1 IDX2)
-                       MOVE    SPA-WKSRY-INPUTCOMENT (IDX-W IDX-W2)
+                           MOVE    SPA-WKSRY-INPUTCOMENT (IDX-W IDX-W2)
                                            TO  ORCHC19-INPUTCOMENT
                                                              (IDX1 IDX2)
-                   END-IF
-               END-PERFORM
+                       END-IF
+                   END-PERFORM
+               END-IF
            END-PERFORM
       *
            .
@@ -2901,24 +2902,25 @@
                                       (SPA-WKSRY-SRYCD (IDX-W IDX-W2)
                                                    =   SPACE)
       *            （減）は対象外
-                   IF     (SPA-WKSRY-SRYSURYO (IDX-W IDX-W2)
+                       IF     (SPA-WKSRY-SRYSURYO (IDX-W IDX-W2)
                                                    >   ZERO )  AND
-                          (SPA-WKSRY-SRYCD (IDX-W IDX-W2)
+                              (SPA-WKSRY-SRYCD (IDX-W IDX-W2)
                                                NOT =   "820000047" )
-                       ADD     1           TO  IDX2
-                       MOVE    SPA-WKSRY-SRYCD (IDX-W IDX-W2)
+                           ADD     1           TO  IDX2
+                           MOVE    SPA-WKSRY-SRYCD (IDX-W IDX-W2)
                                            TO  ORCSCH30-SRYCD(IDX1 IDX2)
-                       MOVE    SPA-WKSRY-SRYSURYO (IDX-W IDX-W2)
+                           MOVE    SPA-WKSRY-SRYSURYO (IDX-W IDX-W2)
                                            TO  ORCSCH30-SRYSURYO
                                                              (IDX1 IDX2)
-                       MOVE    SPA-WKSRY-SRYKAISU (IDX-W IDX-W2)
+                           MOVE    SPA-WKSRY-SRYKAISU (IDX-W IDX-W2)
                                            TO  ORCSCH30-SRYKAISU
                                                              (IDX1 IDX2)
-                       MOVE    SPA-WKSRY-ZAIKAISU (IDX-W IDX-W2)
+                           MOVE    SPA-WKSRY-ZAIKAISU (IDX-W IDX-W2)
                                            TO  ORCSCH30-ZAIKAISU
                                                              (IDX1 IDX2)
-                   END-IF
-               END-PERFORM
+                       END-IF
+                   END-PERFORM
+               END-IF
            END-PERFORM
            IF      ORCSCH30-ZAI-MAX    =   ZERO
                MOVE    "0101"          TO  SPA-ERRCD
