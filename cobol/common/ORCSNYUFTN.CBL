@@ -1392,7 +1392,7 @@
            PERFORM      NYUINACCT-GET-SEC
                UNTIL   (FLG-NYUINACCT   =       1      )
       *
-           MOVE     "NYUINACT-KEY9"    TO  WK-PATH
+           MOVE     "NYUINACCT-KEY9"    TO  WK-PATH
            PERFORM   CSR-CLOSE-SEC
       *
            COMPUTE  NYUIN-COUNT = NYUIN-COUNT  -  WRK-GAIHAKU-COUNT
@@ -1564,7 +1564,7 @@
            PERFORM      NYUINACCT-GET2-SEC
                UNTIL   (FLG-NYUINACCT   =       1      )
       *
-           MOVE     "NYUINACT-KEY9"    TO  WK-PATH
+           MOVE     "NYUINACCT-KEY9"    TO  WK-PATH
            PERFORM   CSR-CLOSE-SEC
       *
            MOVE    SYUNOU-REC          TO  LNK-SYUNOU-REC(IDX)
