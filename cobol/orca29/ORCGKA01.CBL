@@ -247,6 +247,7 @@
            03  IDX-KOUI             PIC 9(04).
            03  IDX-KAI              PIC 9(04).
       *
+           03  IDX11               PIC 9(01).
            03  IDX2                PIC 9(02).
            03  IDX-S2              PIC 9(02).
            03  IDX-STR             PIC 9(04).
@@ -3230,10 +3231,10 @@
                    MOVE    11              TO  SPA-GMN-CUR
                WHEN    OTHER
                    IF      WRK-MCP-WIDGET(1:6) =   "SUURYO"
-                       MOVE    WRK-MCP-WIDGET(7:2) TO  IDX2
-                       COMPUTE SPA-GMN-CUR     =   IDX2   +   10
-                       IF     (IDX2                <   06 ) AND
-                              (SPA-GMN-INPUT (IDX2 + 1)
+                       MOVE    WRK-MCP-WIDGET(7:1) TO  IDX11
+                       COMPUTE SPA-GMN-CUR     =   IDX11   +   10
+                       IF     (IDX11               <   6 ) AND
+                              (SPA-GMN-INPUT (IDX11 + 1)
                                                    NOT =   SPACE)
                            ADD     1               TO  SPA-GMN-CUR
                        ELSE
