@@ -1634,6 +1634,7 @@
            MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
                                            TO  WRK-KAISU-J
       *
+           MOVE    SPACE               TO  WRK-ZAIKEIJ
            STRING  "¡ß"                    DELIMITED   BY  SIZE
                    WRK-KAISU-J             DELIMITED   BY  SPACE
                    INTO                    WRK-ZAIKEIJ
