@@ -2441,7 +2441,7 @@
            INITIALIZE                  SPA-GMN-INPUT-AREA
            MOVE    ZERO                TO  SPA-GMN-SELNUM2
            MOVE    ZERO                TO  SPA-KEIFLG
-           MOVE    99                  TO  SPA-GMN-CUR
+           MOVE    2                   TO  SPA-GMN-CUR
            .
        4103-INPUT-TBLSET-EXT.
            EXIT.
