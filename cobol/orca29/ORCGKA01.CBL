@@ -1927,12 +1927,14 @@
                    UNTIL      (IDX     >   SPA-MEISAI-MAX )  OR
                               (IDX-W   >   ZERO      )
                IF      SPA-GMN-SELNUM2     =   SPA-GMN-TBANGO (IDX)
+                   MOVE    IDX                     TO  IDG
                    MOVE    SPA-NAI-TBANGO (IDX)    TO  IDX-W
                END-IF
            END-PERFORM
       *    明細選択設定
            IF     (IDX-W               >   ZERO ) AND
                   (SPA-SEL-SYORI       =   1    )
+               MOVE    "T"             TO  SPA-GMN-TSEL   (IDG)
                MOVE    1               TO  SPA-WKSRY-SELFLG (IDX-W)
            END-IF
       *
