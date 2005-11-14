@@ -524,15 +524,14 @@
                        ELSE
                            MOVE    5          TO  LNK-NYURECEDEN-RC
                        END-IF
+      *                保険組合せクローズ
+                       MOVE    "HKNCOMBI-KEY"          TO  ORC-DBPATH
+                        PERFORM   910-DB-CLOSE-SEC
                    ELSE
                        MOVE    5              TO  LNK-NYURECEDEN-RC
                    END-IF
                END-IF
            END-PERFORM
-      *
-      *    保険組合せクローズ
-           MOVE    "HKNCOMBI-KEY"          TO  ORC-DBPATH
-           PERFORM   910-DB-CLOSE-SEC
       *
       *入院料の取得
            MOVE    ZERO                    TO  FLG-OK
@@ -1011,7 +1010,7 @@
                END-PERFORM
            END-IF
       *    診療会計クローズ
-           MOVE    "SRYACCT-KEY22"      TO  ORC-DBPATH
+           MOVE    "SRYACCT-KEY30"      TO  ORC-DBPATH
            PERFORM   910-DB-CLOSE-SEC
       *
       *
@@ -1714,7 +1713,7 @@
                END-PERFORM
            END-PERFORM
       *    入院会計クローズ
-           MOVE    "NYUINACCT-KEY17"           TO  ORC-DBPATH
+           MOVE    "NYUINACCT-KEY23"           TO  ORC-DBPATH
            PERFORM   910-DB-CLOSE-SEC
       *
       *    再構築した食事情報から同一剤のまとめ処理
