@@ -2085,12 +2085,6 @@
                    MOVE     NYURYAKUSHO-RYAKUSHO
                                        TO  WRK-RYAKUSHO
                  END-IF                  
-                 MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
-                 MOVE    "NYUINRYAKUSHO-KEY"     TO  ORC-DBPATH
-                 CALL    "ORCMCPSUB"             USING
-                                                 MCPAREA
-                                                 ORCMCPAREA
-                                                 MCPDATA-REC
       *
                END-IF 
       *
@@ -2716,12 +2710,6 @@
       *
                        PERFORM   500-RYAKUSYO-HENSYU-SEC
       *
-                       MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
-                       MOVE    "NYUINRYAKUSHO-KEY"     TO  ORC-DBPATH
-                       CALL    "ORCMCPSUB"             USING
-                                                       MCPAREA
-                                                       ORCMCPAREA
-                                                       MCPDATA-REC
                  END-PERFORM
       *
                  MOVE          "NYUINACT-KEY9"  TO   ORC-DBPATH
@@ -2775,12 +2763,6 @@
       *
                        PERFORM   500-RYAKUSYO-HENSYU-SEC
       *
-                       MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
-                       MOVE    "NYUINRYAKUSHO-KEY"     TO  ORC-DBPATH
-                       CALL    "ORCMCPSUB"             USING
-                                                       MCPAREA
-                                                       ORCMCPAREA
-                                                       MCPDATA-REC
                    END-PERFORM
                    MOVE     "SRYACT-KEY9"    TO   ORC-DBPATH
                    PERFORM   900-SRYACT-READ-SEC
@@ -2902,12 +2884,6 @@
                              TO   RECE62-SHOKUJISYUBETU(ID1)
                 END-IF
            END-IF                  
-           MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
-           MOVE    "NYUINRYAKUSHO-KEY"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"             USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
       *
            .
        2011411-NYUINKHN-SET4-EXT.
@@ -3693,7 +3669,7 @@
       *
               END-IF
       *
-           END-IF                  
+           END-IF
       *
            .
        500-RYAKUSYO-HENSYU-EXT.
@@ -3858,6 +3834,12 @@
                    MOVE    1                    TO  FLG-NYURYAKUSHO
                    INITIALIZE                       NYURYAKUSHO-REC
                END-IF
+               MOVE    "DBCLOSECURSOR"          TO  MCP-FUNC
+               MOVE    "NYUINRYAKUSHO-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"              USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
            END-IF
       *
            .
