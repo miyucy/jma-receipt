@@ -38,6 +38,12 @@
       *
       *  02.06.01    NACL-竹田    05/05/30  realtime preview 処理追加
       *  02.06.02    NACL-門脇    05/07/19  ダミー収納削除処理の修正
+      *
+      *  02.07.01    NACL-藤原    05/08/20  特別療養費対応
+      *  02.07.02    NACL-藤原    05/07/12  診療会計テーブルの読み込みを
+      *                                     グループ化に変更
+      *                                     SRYACCT-KEY29 -> SRYACCT-KEY36
+      *                                     SRYACCT-KEY30 -> SRYACCT-KEY37
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -81,6 +87,7 @@
            03  FLG-SYUNOU                              PIC 9(01).
            03  FLG-SET                                 PIC 9(01).
            03  FLG-DATA                                PIC 9(01).
+           03  FLG-SYORI                               PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -579,13 +586,13 @@
                MOVE    "1"                 TO  ACCT-NYUGAIKBN
                MOVE    SRYACCT-REC         TO  MCPDATA-REC
                MOVE    "DBSELECT"          TO  MCP-FUNC
-               MOVE    "SRYACCT-KEY29"     TO  ORC-DBPATH
+               MOVE    "SRYACCT-KEY36"     TO  ORC-DBPATH
                CALL    "ORCMCPSUB"          USING
                                             MCPAREA
                                             ORCMCPAREA
                                             MCPDATA-REC
                IF      MCP-RC              =   ZERO
-                   MOVE    "SRYACCT-KEY29"     TO  ORC-DBPATH
+                   MOVE    "SRYACCT-KEY36"     TO  ORC-DBPATH
                    PERFORM 900-SRYACCT-READ-SEC
                ELSE
                    INITIALIZE                  SRYACCT-REC
@@ -598,7 +605,7 @@
                END-PERFORM
       *        カーソルクロース
                MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-               MOVE    "SRYACCT-KEY29"     TO  ORC-DBPATH
+               MOVE    "SRYACCT-KEY36"     TO  ORC-DBPATH
                CALL    "ORCMCPSUB"          USING
                                             MCPAREA
                                             ORCMCPAREA
@@ -672,7 +679,7 @@
                PERFORM         UNTIL   FLG-SRYACCT     =   1 
                                OR      FLG-ERR         =   1
                                OR      KEY-N-PTID  NOT =   KEY-O-PTID
-                   MOVE    "SRYACCT-KEY29"         TO  ORC-DBPATH
+                   MOVE    "SRYACCT-KEY36"         TO  ORC-DBPATH
                    PERFORM 900-SRYACCT-READ-SEC
                END-PERFORM
            ELSE
@@ -727,7 +734,7 @@
                                    OR      FLG-ERR     =   1
                                    OR      KEY-N-PTID  
                                                    NOT =   KEY-O-PTID
-                               MOVE    "SRYACCT-KEY29" TO  ORC-DBPATH
+                               MOVE    "SRYACCT-KEY36" TO  ORC-DBPATH
                                PERFORM 900-SRYACCT-READ-SEC
                            END-PERFORM
                          ELSE
@@ -736,7 +743,7 @@
                            PERFORM     UNTIL   FLG-SRYACCT =   1 
                                        OR      FLG-ERR     =   1
                                        OR      KEY-NEW NOT =   KEY-OLD
-                               MOVE    "SRYACCT-KEY29" TO  ORC-DBPATH
+                               MOVE    "SRYACCT-KEY36" TO  ORC-DBPATH
                                PERFORM 900-SRYACCT-READ-SEC
                            END-PERFORM
                          END-IF    
@@ -1315,6 +1322,8 @@
            MOVE    LNK-DAY7-KOYOMI     TO  WRK-EDYMD
       *
       *    診療会計読み込み
+           MOVE    ZERO                TO  FLG-SYORI
+      *
            INITIALIZE                  SRYACCT-REC
            MOVE    SYS-1001-HOSPID     TO  ACCT-HOSPID
            MOVE    SYS-2002-PTID       TO  ACCT-PTID
@@ -1322,13 +1331,13 @@
            MOVE    SYS-2002-NYUGAIKBN  TO  ACCT-NYUGAIKBN
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
+           MOVE    "SRYACCT-KEY37"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
+               MOVE    "SRYACCT-KEY37"     TO  ORC-DBPATH
                PERFORM 900-SRYACCT-READ-SEC
            ELSE
                INITIALIZE                  SRYACCT-REC
@@ -1341,11 +1350,16 @@
            END-PERFORM
       *    カーソルクロース
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
+           MOVE    "SRYACCT-KEY37"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
+      *
+      *    処理対象のとき仮収納作成
+           IF      FLG-SYORI           =   1
+               PERFORM 20011-SRYACCT-FILE-HENSYU-SEC 
+           END-IF
       *
       *    診療会計より仮収納を作成しなかったときのみ処理
            IF    ( WRK-DATAKBN         =   SPACE )
@@ -1443,13 +1457,13 @@
            MOVE    SYS-2002-NYUGAIKBN  TO  ACCT-NYUGAIKBN
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
+           MOVE    "SRYACCT-KEY37"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
+               MOVE    "SRYACCT-KEY37"     TO  ORC-DBPATH
                PERFORM 900-SRYACCT-READ-SEC
            ELSE
                INITIALIZE                  SRYACCT-REC
@@ -1462,11 +1476,16 @@
            END-PERFORM
       *    カーソルクロース
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
+           MOVE    "SRYACCT-KEY37"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
+      *
+      *    処理対象のとき仮収納作成
+           IF      FLG-SYORI           =   1
+               PERFORM 20011-SRYACCT-FILE-HENSYU-SEC 
+           END-IF
       *
       *    診療会計より仮収納を作成しなかったときのみ処理
            IF    ( WRK-DATAKBN         =   SPACE )
@@ -1538,24 +1557,28 @@
            PERFORM         UNTIL   FLG-SRYACCT     =   1 
                            OR      FLG-ERR         =   1
                            OR      KEY-NEW     NOT =   KEY-OLD
-      *        社保・国保の読み飛ばし
-               EVALUATE    WRK-PARA-RECEKBN
+               IF      WRK-ROUSAIKBN      =   ZERO
+      *          社保・国保の読み飛ばし
+                 EVALUATE    WRK-PARA-RECEKBN
                    WHEN    "0"
-                       PERFORM 20011-SRYACCT-FILE-HENSYU-SEC 
+                       MOVE    1               TO  FLG-SYORI
                    WHEN    "1"
-                       IF      COMB-HKNNUM NOT =   "060" AND "067"
-                           PERFORM 20011-SRYACCT-FILE-HENSYU-SEC 
+                       IF      COMB-HKNNUM NOT =   "060" AND "067" AND
+                                                   "068" AND "069" 
+                           MOVE    1               TO  FLG-SYORI
                        END-IF
                    WHEN    "2"
-                       IF      COMB-HKNNUM     =   "060" OR  "067"
-                           PERFORM 20011-SRYACCT-FILE-HENSYU-SEC 
+                       IF      COMB-HKNNUM     =   "060" OR  "067" OR
+                                                   "068" OR  "069"
+                           MOVE    1               TO  FLG-SYORI
                        END-IF
-               END-EVALUATE
+                 END-EVALUATE
+               END-IF  
       *
                IF        FLG-ERR            =    1
                  CONTINUE
                ELSE
-                 IF      WRK-DATAKBN        =   "1"
+                 IF      FLG-SYORI          =   1
       *            仮収納作成のとき処理を抜ける 
                    MOVE    1                  TO  FLG-SRYACCT
                  ELSE
@@ -1564,7 +1587,7 @@
                    PERFORM     UNTIL   FLG-SRYACCT     =   1
                                OR      FLG-ERR         =   1  
                                OR      KEY-NEW     NOT =   KEY-OLD
-                       MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
+                       MOVE    "SRYACCT-KEY37"     TO  ORC-DBPATH
                        PERFORM 900-SRYACCT-READ-SEC
                    END-PERFORM
                  END-IF
