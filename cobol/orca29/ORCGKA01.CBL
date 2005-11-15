@@ -2009,7 +2009,8 @@
            MOVE    ZERO                TO  WRK-SELNUM2
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-MEISAI-MAX
-              IF      KA01-MEILIST-SELECT (IDX)   =   "T"
+              IF     (KA01-MEILIST-SELECT (IDX)   =   "T" )
+                 AND (KA01-MNUM  (IDX)(1:1)  NOT  =   "-" )
                    IF      SPA-NAI-TBANGO (IDX)
                                                NOT =   SPA-GMN-SELNUM2
                        MOVE    SPA-NAI-TBANGO2(IDX)
@@ -2021,8 +2022,13 @@
                END-IF
            END-PERFORM
       *    明細選択設定・選択解除
-           IF      SPA-SEL-SYORI       =   1
-               PERFORM 40051-SEL-SYORI-SEC
+           IF     (WRK-SELNUM          =   ZERO )  AND
+                  (WRK-SELNUM2         =   ZERO )
+               CONTINUE
+           ELSE
+               IF      SPA-SEL-SYORI       =   1
+                   PERFORM 40051-SEL-SYORI-SEC
+               END-IF
            END-IF
       *
            IF     (WRK-SELNUM          >   ZERO ) AND
@@ -2890,6 +2896,8 @@
                  OR   ((SPA-SEL-SYORI              =   1    )  AND
                        (SPA-WKSRY-SELFLG (IDX-W)   =   ZERO ))
                  OR   ( SPA-WKSRY-SRYSYUKBN(IDX-W) =   "980" )
+      *            投薬のみ
+                 OR   ( SPA-WKSRY-SRYKBN (IDX-W)   =   "14"  )
                    CONTINUE
                ELSE
                    ADD     1               TO  IDX1
