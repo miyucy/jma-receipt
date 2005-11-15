@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-多々納  02/09/03  住所一覧を５０件へ変更
+      *  01.00.02    NACL-多々納  05/11/14  MONFUNC 対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -92,7 +93,7 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
+      *****COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    連絡領域
@@ -115,7 +116,7 @@
            COPY    "P015.INC".
            COPY    "P98.INC".
            COPY    "P981.INC".
-           COPY    "P99.INC".
+      *****COPY    "P99.INC".
            COPY    "P0201.INC".
            COPY    "P982.INC".
            COPY    "P100.INC".
@@ -177,15 +178,15 @@
       *    エラー画面より
            IF      SPA-MOTOPG          =   "PERR"
                MOVE    SPACE           TO  SPA-MOTOPG
-           END-IF
+               PERFORM 5001-MAPCUR-SEC
+           ELSE
       *
-      *    住所登録画面より
-           IF      SPA-MOTOPG          =   "P981"
-               PERFORM 310-P981SPASET-SEC
-           END-IF
+      *        初期画面編集
+               PERFORM 300-SCREEN-SEC
       *
-           MOVE    1                   TO  SPA-GMN98-CUR
-           PERFORM  500-GMNHEN-SEC
+      *        画面編集
+               PERFORM 500-GMNHEN-SEC
+           END-IF
       *
            MOVE    SPACE                         TO  LINKAREA.
       *
@@ -195,11 +196,25 @@
       *
            PERFORM 900-PUT-WINDOW.
       *
-           MOVE    1                             TO  FLG-END.
+           MOVE    1                             TO  FLG-END
+           .
        100-INIT-EXT.
            EXIT.
+      *
       *****************************************************************
-      *    画面遷移処理
+      *    初期画面処理
+      *****************************************************************
+       300-SCREEN-SEC             SECTION.
+      *
+      *    住所登録画面より
+           PERFORM 310-P981SPASET-SEC
+           MOVE    1                   TO  SPA-GMN98-CUR
+           .
+       300-SCREEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    住所登録画面遷移処理
       *****************************************************************
        310-P981SPASET-SEC                         SECTION.
       *
@@ -207,20 +222,19 @@
            MOVE  ZERO                        TO  SPA-GMN98-MAX
            MOVE  ZERO                        TO  SPA-GMN98-PAGE
       *    システム管理より周辺住所を取る
-           INITIALIZE                            SYS-1015-REC.
-           MOVE  "1015"                          TO  SYS-1015-KANRICD.
-           MOVE  SYS-1015-REC                    TO  MCPDATA-REC.
+           INITIALIZE                      SYS-1015-REC.
+           MOVE  "1015"                TO  SYS-1015-KANRICD.
+           MOVE    SPA-SYSYMD          TO  SYS-1015-STYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-1015-EDYUKYMD
+           MOVE    SYS-1015-REC        TO  MCPDATA-REC.
       *
-           MOVE  "DBSELECT"                      TO  MCP-FUNC.
-           MOVE  SPA-SYSYMD                      TO  ORC-DBYMD.
-           MOVE  "SYSKANRI-KEY2"                 TO  ORC-DBPATH.
-           CALL  "ORCMCPSUB"                      USING
-                                                  MCPAREA
-                                                  ORCMCPAREA
-                                                  MCPDATA-REC.
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
       *
            IF      MCP-RC                        =   ZERO
-               MOVE  "SYSKANRI-KEY2"                 TO  ORC-DBPATH
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
            ELSE
                MOVE    1               TO  FLG-SYSKANRI
@@ -238,18 +252,15 @@
                MOVE    SYS-1015-TOWNNAMEDSP
                                           TO  SPA-GMN98-TADRS (IDXX)
       *
-               MOVE    "SYSKANRI-KEY2"       TO  ORC-DBPATH
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
            END-PERFORM
       *
-           MOVE  "SYSKANRI-KEY2"             TO  ORC-DBPATH
-           MOVE  "DBCLOSECURSOR"             TO  MCP-FUNC
-           CALL  "ORCMCPSUB"                  USING
-                                              MCPAREA
-                                              ORCMCPAREA
-                                              MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
-      *****COMPUTE SPA-GMN98-MAX =   (IDXX   -   1)  /   25  +   1    
            COMPUTE SPA-GMN98-MAX =   (IDXX   -   1)  /   50  +   1    
       *
            IF      IDXX                      >   ZERO
@@ -651,19 +662,13 @@
            MOVE  SPA-GMN98-TPOST  (IDXZ)     TO  ADRS-POST
            MOVE  SPA-GMN98-TRENNUM(IDXZ)     TO  ADRS-EDANUM
            MOVE  ADRS-REC                    TO  MCPDATA-REC
-           MOVE  "DBSELECT"                  TO  MCP-FUNC
-           MOVE  "ADRS-KEY"                  TO  ORC-DBPATH
-           CALL  "ORCMCPSUB"                  USING
-                                              MCPAREA
-                                              ORCMCPAREA
-                                              MCPDATA-REC
+           MOVE    "tbl_adrs"          TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF  MCP-RC                        =  ZERO
-               MOVE  "DBFETCH"               TO  MCP-FUNC
-               MOVE  "ADRS-KEY"              TO  ORC-DBPATH
-               CALL  "ORCMCPSUB"             USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
+               MOVE    "tbl_adrs"          TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
                IF  MCP-RC                    =   ZERO
                    MOVE    MCPDATA-REC         TO  ADRS-REC
                    MOVE    ADRS-POST           TO  SPA-GMN98-POST
@@ -672,12 +677,9 @@
                END-IF
            END-IF
       *
-           MOVE  "ADRS-KEY"                  TO  ORC-DBPATH
-           MOVE  "DBCLOSECURSOR"             TO  MCP-FUNC
-           CALL  "ORCMCPSUB"                  USING
-                                              MCPAREA
-                                              ORCMCPAREA
-                                              MCPDATA-REC
+           MOVE    "tbl_adrs"          TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
            IF      FLG-ADRS            =   ZERO
                MOVE    "0003"              TO  SPA-ERRCD
                MOVE    1                   TO  SPA-GMN98-CUR
@@ -694,12 +696,9 @@
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
@@ -709,17 +708,58 @@
            .
        900-SYSKANRI-READ-EXT.
            EXIT.
+      *****************************************************************
+      *    テーブル検索処理
+      *****************************************************************
+       910-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ読み込み処理
+      *****************************************************************
+       920-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       920-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢクローズ処理
+      *****************************************************************
+       990-DBCLOSE-SEC         SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       990-DBCLOSE-EXT.
+           EXIT.
       *
       *****************************************************************
       *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW                            SECTION.
       *
-           MOVE   "PUTWINDOW"                    TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"                     USING  MCPAREA
-                                                         ORCMCPAREA
-                                                         MCPDATA-REC.
-      *
+           MOVE   "PUTWINDOW"          TO  MCP-FUNC.
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           .
        900-PUT-WINDOW-EXT.
            EXIT.
       *

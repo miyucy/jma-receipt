@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     NACL-多々納  05/01/06  年をシステム管理へ修正
+      * 01.00.02     NACL-多々納  05/11/14  MONFUNC 対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -128,11 +129,11 @@
            COPY    "CPORCSLNK.INC".
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
+      *****COPY    "CPORCMCP.INC".
       *
       *
            COPY    "MCPAREA".
-           COPY    "ORCA-SPA".
+      *****COPY    "ORCA-SPA".
       *
       *****************************************************************
       *    連絡　領域
@@ -295,11 +296,11 @@
       *    患者番号採番  更新
            MOVE    SYS-1009-REC        TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"              USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"               USING
+                                           MCPAREA
+                                           MCPDATA-REC
            IF      MCP-RC         NOT  =   ZERO
                MOVE    "1011"          TO  SPA-ERRCD
                DISPLAY "P012 SYSKANRI UPDATE:" MCP-RC "."
@@ -668,11 +669,11 @@
       *    患者番号採番  更新
            MOVE    SYS-1009-REC        TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"              USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"               USING
+                                           MCPAREA
+                                           MCPDATA-REC
            IF      MCP-RC         NOT  =   ZERO
                MOVE    "1011"          TO  SPA-ERRCD
                DISPLAY "P012 SYSKANRI UPDATE:" MCP-RC "."
@@ -748,28 +749,24 @@
            INITIALIZE                  SYS-1009-REC.
            MOVE    "1009"              TO  SYS-1009-KANRICD
            MOVE    "*"                 TO  SYS-1009-KBNCD
+           MOVE    SPA-SYSYMD          TO  SYS-1009-STYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-1009-EDYUKYMD
       *
            MOVE    SYS-1009-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
                PERFORM 960-KANRIMST-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-KANRIMST
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        980-PTGETNUM-GET-EXT.
@@ -781,10 +778,9 @@
        960-KANRIMST-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"              USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1009-REC
                MOVE    ZERO                TO  FLG-KANRIMST
@@ -795,4 +791,46 @@
            .
        960-KANRIMST-READ-EXT.
            EXIT.
+      *****************************************************************
+      *    テーブル検索処理
+      *****************************************************************
+       910-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ読み込み処理
+      *****************************************************************
+       920-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       920-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢクローズ処理
+      *****************************************************************
+       990-DBCLOSE-SEC         SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       990-DBCLOSE-EXT.
+           EXIT.
+      *
       *

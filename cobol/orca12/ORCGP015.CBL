@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-多々納  05/11/11  MONFUNC 対応 他
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -127,7 +128,7 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
+      *****COPY    "CPORCMCP.INC".
       *
       *   患者番号発生サブ
            COPY    "CPORCSP01.INC".
@@ -152,7 +153,7 @@
            COPY    "P015.INC".
            COPY    "P98.INC".
            COPY    "P981.INC".
-           COPY    "P99.INC".
+      *****COPY    "P99.INC".
            COPY    "P0201.INC".
            COPY    "P982.INC".
            COPY    "P100.INC".
@@ -424,26 +425,27 @@
            INITIALIZE                      PTNUM-REC
            MOVE    SPA-HOSPID          TO  PTNUM-HOSPID
            MOVE    SPA-GMN015-PTNUM    TO  PTNUM-PTNUM
+           IF      SPA-GMN015-PTNUM(20:1) =   SPACE
+               STRING  SPA-GMN015-PTNUM    DELIMITED   BY  SPACE
+                       "%"                 DELIMITED   BY  SIZE
+                       INTO                    PTNUM-PTNUM
+               END-STRING
+           END-IF
       *
            MOVE    PTNUM-REC           TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTNUM-KEY2"        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_ptnum"         TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "PTNUM-KEY2"        TO  ORC-DBPATH
+               MOVE    "tbl_ptnum"         TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 950-PTNUM-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-PTNUM
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "PTNUM-KEY2"        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_ptnum"         TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-PTNUM           =   ZERO
                MOVE    "0003"              TO  SPA-ERRCD
@@ -470,24 +472,19 @@
            MOVE    SPA-GMN-PTID        TO  PTNUM-PTID
       *
            MOVE    PTNUM-REC           TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_ptnum"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
+               MOVE    "tbl_ptnum"         TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 950-PTNUM-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-PTNUM
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_ptnum"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
            IF     (FLG-PTNUM           =   1  )  OR
                   (PTNUM-PTNUM     NOT =   SPA-GMN-PTNUM)
                MOVE    "0004"              TO  SPA-ERRCD
@@ -497,10 +494,10 @@
       *
                MOVE    PTNUM-REC           TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
-               MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
+               MOVE    "tbl_ptnum"         TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
                                            MCPAREA
-                                           ORCMCPAREA
                                            MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P015 PTNUM UPDATE:" MCP-RC
@@ -691,11 +688,9 @@
       *****************************************************************
        950-PTNUM-READ-SEC           SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_ptnum"         TO  MCP-TABLE
+      *
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PTNUM-REC
                MOVE    ZERO            TO  FLG-PTNUM
@@ -707,15 +702,56 @@
        950-PTNUM-READ-EXT.
            EXIT.
       *****************************************************************
+      *    テーブル検索処理
+      *****************************************************************
+       910-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ読み込み処理
+      *****************************************************************
+       920-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       920-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢクローズ処理
+      *****************************************************************
+       990-DBCLOSE-SEC         SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       990-DBCLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"   USING
-                                MCPAREA
-                                ORCMCPAREA
-                                MCPDATA-REC.
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        900-PUT-WINDOW-EXT.

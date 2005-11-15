@@ -55,7 +55,7 @@
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
+      ***  COPY    "CPORCMCP.INC".
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
       *****************************************************************
@@ -82,7 +82,7 @@
            COPY    "P015.INC".
            COPY    "P98.INC".
            COPY    "P981.INC".
-           COPY    "P99.INC".
+      *****COPY    "P99.INC".
            COPY    "P0201.INC".
            COPY    "P982.INC".
            COPY    "P100.INC".
@@ -172,10 +172,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"   USING
-                                MCPAREA
-                                ORCMCPAREA
-                                MCPDATA-REC.
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        900-PUT-WINDOW-EXT.

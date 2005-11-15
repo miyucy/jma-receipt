@@ -27,9 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *****************************************************************
-      *  プログラム修正履歴
-      * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-多々納  05/11/14  MONFUNC 対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -113,7 +111,7 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
+      *****COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -137,7 +135,7 @@
            COPY    "P015.INC".
            COPY    "P98.INC".
            COPY    "P981.INC".
-           COPY    "P99.INC".
+      *****COPY    "P99.INC".
            COPY    "P0201.INC".
            COPY    "P982.INC".
            COPY    "P100.INC".
@@ -258,33 +256,45 @@
            INITIALIZE                      SPA-GMN982-TBL-G
       *
            INITIALIZE                      ADRS-REC
-           MOVE    SPA-GMN982-LPUBCD       TO  ADRS-LPUBCD
-           MOVE    SPA-GMN982-POST         TO  ADRS-POST
+           IF      SPA-GMN982-LPUBCD(5:1)  =   SPACE
+               STRING    SPA-GMN982-LPUBCD DELIMITED   BY  SPACE
+                         "%"               DELIMITED   BY  SIZE
+                                           INTO    ADRS-LPUBCD
+               END-STRING
+           ELSE
+               MOVE    SPA-GMN982-LPUBCD       TO  ADRS-LPUBCD
+           END-IF
+           IF      SPA-GMN982-POST(7:1)    =   SPACE
+               STRING    SPA-GMN982-POST   DELIMITED   BY  SPACE
+                         "%"               DELIMITED   BY  SIZE
+                                           INTO    ADRS-POST
+               END-STRING
+           ELSE
+               MOVE    SPA-GMN982-POST         TO  ADRS-POST
+           END-IF
       *    地方公共団体コードのみ
            IF     (SPA-GMN982-LPUBCD   NOT =   SPACE )  AND
                   (SPA-GMN982-POST         =   SPACE )
-               MOVE    "ADRS-KEY3"         TO  WRK-DBPATH
+               MOVE    "key3"              TO  WRK-DBPATH
            END-IF
       *    郵便番号のみ
            IF     (SPA-GMN982-LPUBCD       =   SPACE )  AND
                   (SPA-GMN982-POST     NOT =   SPACE )
-               MOVE    "ADRS-KEY4"         TO  WRK-DBPATH
+               MOVE    "key4"              TO  WRK-DBPATH
            END-IF
       *    両方
            IF     (SPA-GMN982-LPUBCD   NOT =   SPACE )  AND
                   (SPA-GMN982-POST     NOT =   SPACE )
-               MOVE    "ADRS-KEY5"         TO  WRK-DBPATH
+               MOVE    "key5"              TO  WRK-DBPATH
            END-IF
       *
            MOVE    ADRS-REC            TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-DBPATH          TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_adrs"          TO  MCP-TABLE
+           MOVE    WRK-DBPATH          TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    WRK-DBPATH          TO  ORC-DBPATH
+               MOVE    "tbl_adrs"          TO  MCP-TABLE
+               MOVE    WRK-DBPATH          TO  MCP-PATHNAME
                PERFORM 900-ADRS-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-ADRS
@@ -306,15 +316,13 @@
                    MOVE    ADRS-EDANUM     TO  SPA-GMN982-TRENNUM(IDX)
                END-IF
       *
-               MOVE    WRK-DBPATH          TO  ORC-DBPATH
+               MOVE    "tbl_adrs"          TO  MCP-TABLE
+               MOVE    WRK-DBPATH          TO  MCP-PATHNAME
                PERFORM 900-ADRS-READ-SEC
            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-DBPATH          TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_adrs"          TO  MCP-TABLE
+           MOVE    WRK-DBPATH          TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            IF     (SPA-GMN982-MAX          =   100  )  AND
                   (FLG-ADRS                =   ZERO )
@@ -395,7 +403,6 @@
            IF      SPA-NAI982-SELNUM   <   1   OR
                                        >   SPA-GMN982-MAX
                MOVE    "0002"              TO  SPA-ERRCD
-               GO      TO      41011-SELNUM-CHK-EXT
            ELSE
                MOVE    SPA-NAI982-SELNUM   TO  IDX
                MOVE    SPA-GMN982-TPOST   (IDX)
@@ -574,17 +581,16 @@
        510-ERRSET-EXT.
            EXIT.
       *
-      *
       *****************************************************************
       *    住所マスター読込処理
       *****************************************************************
        900-ADRS-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  ADRS-REC
                MOVE    ZERO                TO  FLG-ADRS
@@ -596,6 +602,48 @@
            .
        900-ADRS-READ-EXT.
            EXIT.
+      *****************************************************************
+      *    テーブル検索処理
+      *****************************************************************
+       910-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ読み込み処理
+      *****************************************************************
+       920-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       920-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢクローズ処理
+      *****************************************************************
+       990-DBCLOSE-SEC         SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       990-DBCLOSE-EXT.
+           EXIT.
+      *
       * 
       *****************************************************************
       *    ＰＵＴ　処理
@@ -603,10 +651,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"   USING
-                                MCPAREA
-                                ORCMCPAREA
-                                MCPDATA-REC.
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        900-PUT-WINDOW-EXT.

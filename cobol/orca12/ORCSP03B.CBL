@@ -38,6 +38,7 @@
       * 01.00.09     NACL-多々納  03/12/16  ”５１”チェックに”７０１”追加
       * 01.00.10     NACL-多々納  05/01/13  有効開始日の初期設定追加
       * 01.00.11     NACL-多々納  05/02/10  特定の重複登録可能
+      * 01.00.12     NACL-多々納  05/11/15  MONFUNC 対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -216,7 +217,7 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
+      **** COPY    "CPORCMCP.INC".
       *
       *
            COPY    "MCPAREA".
@@ -327,35 +328,29 @@
        100-KIHON-CHK-SEC     SECTION.
       *
       *    負担者番号
-           PERFORM 1001-FTNJANUM-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      100-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 1001-FTNJANUM-CHK-SEC
            END-IF
       *
       *    公費
-           PERFORM 1001-KOHNUM-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      100-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 1001-KOHNUM-CHK-SEC
            END-IF
       *    受給者番号
-           PERFORM 1001-JKYSNUM-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      100-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 1001-JKYSNUM-CHK-SEC
            END-IF
       *    適用開始日
-           PERFORM 1001-KTEKSTYMD-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      100-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+              PERFORM 1001-KTEKSTYMD-CHK-SEC
            END-IF
       *    適用終了日
-           PERFORM 1001-KTEKEDYMD-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      100-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 1001-KTEKEDYMD-CHK-SEC
            END-IF
       *    確認日
-           PERFORM 1001-KKAKUNINYMD-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      100-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 1001-KKAKUNINYMD-CHK-SEC
            END-IF
            .
        100-KIHON-CHK-EXT.
@@ -425,26 +420,21 @@
            MOVE    SPA-GMN-FTNJANUM (IDX-K)
                                          TO  HKNJA-HKNJANUM
            MOVE    HKNJAINF-REC          TO  MCPDATA-REC
-           MOVE    "DBSELECT"            TO  MCP-FUNC
-           MOVE    "HKNJAINF-KEY"        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_hknjainf"        TO  MCP-TABLE
+           MOVE    "key"                 TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "HKNJAINF-KEY"      TO  ORC-DBPATH
+               MOVE    "tbl_hknjainf"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 900-HKNJAINF-READ-SEC
            ELSE
                INITIALIZE                  HKNJAINF-REC
                MOVE    1               TO  FLG-HKNJAINF
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "HKNJAINF-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_hknjainf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-HKNJAINF        =   ZERO
       *        保険判定
@@ -555,19 +545,20 @@
            MOVE    ZERO                TO  HKN-PAYKBN
       *
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "HKNNUM-KEY7"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_hknnum"        TO  MCP-TABLE
+           MOVE    "key7"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "HKNNUM-KEY7"   TO  ORC-DBPATH
+               MOVE    "tbl_hknnum"        TO  MCP-TABLE
+               MOVE    "key7"              TO  MCP-PATHNAME
                PERFORM 921-HKNMST-NEXT-SEC
            ELSE
                INITIALIZE              HKNNUM-REC
                MOVE    1               TO  FLG-HKNNUM
            END-IF
+           MOVE    "tbl_hknnum"        TO  MCP-TABLE
+           MOVE    "key7"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-HKNNUM          =   ZERO
       *        保険公費種別区分
@@ -633,14 +624,12 @@
            MOVE    SPA-SYSYMD          TO  HKN-TEKSTYMD
            MOVE    SPA-SYSYMD          TO  HKN-TEKEDYMD
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
-           MOVE    "HKNNUM-KEY4"       TO  ORC-DBPATH
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_hknnum"       TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "HKNNUM-KEY4"       TO  ORC-DBPATH
+               MOVE    "tbl_hknnum"       TO  MCP-TABLE
+               MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM 921-HKNMST-NEXT-SEC
            ELSE
                INITIALIZE                  HKNNUM-REC
@@ -667,16 +656,14 @@
              END-IF
       *
                IF      FLG-HKNNUM          =   ZERO
-                   MOVE    "HKNNUM-KEY4"       TO  ORC-DBPATH
+                   MOVE    "tbl_hknnum"       TO  MCP-TABLE
+                   MOVE    "key4"              TO  MCP-PATHNAME
                    PERFORM 921-HKNMST-NEXT-SEC
                END-IF
            END-PERFORM
-           MOVE    "HKNNUM-KEY4"       TO  ORC-DBPATH
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_hknnum"       TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            IF     FLG-OK               =   1
                MOVE    SPACE           TO  WRK-MAE-KOHNUM
@@ -1272,14 +1259,12 @@
            END-IF
       *
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "HKNNUM-KEY7"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_hknnum"        TO  MCP-TABLE
+           MOVE    "key7"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "HKNNUM-KEY7"   TO  ORC-DBPATH
+               MOVE    "tbl_hknnum"        TO  MCP-TABLE
+               MOVE    "key7"              TO  MCP-PATHNAME
                PERFORM 921-HKNMST-NEXT-SEC
            ELSE
                INITIALIZE              HKNNUM-REC
@@ -1314,16 +1299,14 @@
                END-IF
       *
                IF      FLG-HKNNUM          =   ZERO
-                   MOVE    "HKNNUM-KEY7"   TO  ORC-DBPATH
+                   MOVE    "tbl_hknnum"        TO  MCP-TABLE
+                   MOVE    "key7"              TO  MCP-PATHNAME
                    PERFORM 921-HKNMST-NEXT-SEC
                END-IF
            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "HKNNUM-KEY7"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_hknnum"       TO  MCP-TABLE
+           MOVE    "key7"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
            IF      FLG-CHK             =   ZERO
       *        マスタなし
                MOVE    "0072"          TO  SPA-ERRCD
@@ -1432,9 +1415,6 @@
       *    受給者番号モジュラス10チェック
            IF      HKN-JKYSKENSNUMCHKKBN   =   "1"
                PERFORM 4912-JKYSNUM-CHECK-SEC
-               IF      SPA-ERRCD       NOT =  SPACE
-                   GO      TO      2002-FTNJANUM-KANREN-EXT
-               END-IF
            END-IF
       *
            .
@@ -2106,25 +2086,20 @@
                                        TO  HKN-PAYKBN
       *
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "HKNNUM-KEY7"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_hknnum"        TO  MCP-TABLE
+           MOVE    "key7"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "HKNNUM-KEY7"   TO  ORC-DBPATH
+               MOVE    "tbl_hknnum"        TO  MCP-TABLE
+               MOVE    "key7"              TO  MCP-PATHNAME
                PERFORM 921-HKNMST-NEXT-SEC
            ELSE
                INITIALIZE              HKNNUM-REC
                MOVE    1               TO  FLG-HKNNUM
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "HKNNUM-KEY7"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_hknnum"       TO  MCP-TABLE
+           MOVE    "key7"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-HKNNUM          =   ZERO
       *        開始日
@@ -2232,25 +2207,20 @@
                                        TO  HKN-PAYKBN
       *
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "HKNNUM-KEY7"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_hknnum"        TO  MCP-TABLE
+           MOVE    "key7"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "HKNNUM-KEY7"   TO  ORC-DBPATH
+               MOVE    "tbl_hknnum"        TO  MCP-TABLE
+               MOVE    "key7"              TO  MCP-PATHNAME
                PERFORM 921-HKNMST-NEXT-SEC
            ELSE
                INITIALIZE              HKNNUM-REC
                MOVE    1               TO  FLG-HKNNUM
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "HKNNUM-KEY7"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_hknnum"        TO  MCP-TABLE
+           MOVE    "key7"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-HKNNUM          =   ZERO
       *        開始日
@@ -2388,11 +2358,9 @@
       *****************************************************************
        921-HKNMST-NEXT-SEC              SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_hknnum"        TO  MCP-TABLE
+      *
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  HKNNUM-REC
                MOVE    ZERO            TO  FLG-HKNNUM
@@ -2409,19 +2377,58 @@
       *****************************************************************
        900-HKNJAINF-READ-SEC              SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_hknjainf"      TO  MCP-TABLE
+      *
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  HKNJAINF-REC
-               MOVE    ZERO            TO  FLG-HKNJAINF
+               MOVE    ZERO                TO  FLG-HKNJAINF
            ELSE
-               INITIALIZE              HKNJAINF-REC
-               MOVE    1               TO  FLG-HKNJAINF
+               INITIALIZE                  HKNJAINF-REC
+               MOVE    1                   TO  FLG-HKNJAINF
            END-IF
            .
        900-HKNJAINF-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    テーブル検索処理
+      *****************************************************************
+       910-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ読み込み処理
+      *****************************************************************
+       920-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       920-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢクローズ処理
+      *****************************************************************
+       990-DBCLOSE-SEC         SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       990-DBCLOSE-EXT.
            EXIT.
       *

@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     NACL-多々納  02/11/20  GO TO 修正
+      * 01.00.02     NACL-多々納  05/11/14  MONFUNC 対応 他
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -146,8 +147,8 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "ORCA-DBPATH".
-           COPY    "CPORCMCP.INC".
+      *****COPY    "ORCA-DBPATH".
+      *****COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    連絡領域
@@ -170,7 +171,7 @@
            COPY    "P015.INC".
            COPY    "P98.INC".
            COPY    "P981.INC".
-           COPY    "P99.INC".
+      *****COPY    "P99.INC".
            COPY    "P0201.INC".
            COPY    "P982.INC".
            COPY    "P100.INC".
@@ -631,10 +632,10 @@
       *                タイムスタンプを更新する
                        MOVE    JINMEI-REC          TO  MCPDATA-REC
                        MOVE    "DBUPDATE"          TO  MCP-FUNC
-                       MOVE    "JINMEI-UPD1"       TO  ORC-DBPATH
-                       CALL    "ORCMCPSUB"         USING
+                       MOVE    "tbl_jinmei"        TO  MCP-TABLE
+                       MOVE    "upd1"              TO  MCP-PATHNAME
+                       CALL    "MONFUNC"           USING
                                                    MCPAREA
-                                                   ORCMCPAREA
                                                    MCPDATA-REC
                    ELSE
       *
@@ -642,10 +643,10 @@
       *                人名テーブル追加処理
                        MOVE    JINMEI-REC          TO  MCPDATA-REC
                        MOVE    "DBINSERT"          TO  MCP-FUNC
-                       MOVE    "JINMEI-KEY"        TO  ORC-DBPATH
-                       CALL    "ORCMCPSUB"         USING
+                       MOVE    "tbl_jinmei"        TO  MCP-TABLE
+                       MOVE    "key"               TO  MCP-PATHNAME
+                       CALL    "MONFUNC"           USING
                                                    MCPAREA
-                                                   ORCMCPAREA
                                                    MCPDATA-REC
                    END-IF
       *
@@ -825,23 +826,25 @@
       *
       *    人名テーブル検索
            MOVE    JINMEI-REC          TO  MCPDATA-REC
-           MOVE    "JINMEI-KEY"        TO  ORC-DBPATH
+           MOVE    "tbl_jinmei"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DB-SELECT-SEC
-           IF  ( MCP-RC    NOT =   ZERO )
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_jinmei"        TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 910-DB-READ-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO            TO  FLG-JINMEI
+               ELSE
+                   MOVE    1               TO  FLG-JINMEI
+               END-IF
+           ELSE
                MOVE    1               TO  FLG-JINMEI
-               GO  TO  900-JINMEI-READ-EXT
-           END-IF
-      *
-      *    人名テーブル読み込み
-           MOVE    "JINMEI-KEY"        TO  ORC-DBPATH
-           PERFORM 910-DB-READ-SEC
-           IF  ( MCP-RC    NOT =   ZERO )
-               MOVE    1               TO  FLG-JINMEI
-               GO  TO  900-JINMEI-READ-EXT
            END-IF
       *
       *    人名テーブルクローズ
-           MOVE    "JINMEI-KEY"        TO  ORC-DBPATH
+           MOVE    "tbl_jinmei"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DB-CLOSE-SEC
       *
            .
@@ -854,10 +857,9 @@
        910-DB-SELECT-SEC               SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
@@ -869,9 +871,8 @@
        910-DB-READ-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
       *
            .
@@ -884,10 +885,9 @@
        910-DB-CLOSE-SEC                SECTION.
       *
            MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
@@ -899,7 +899,8 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE    "PUTWINDOW"     TO  MCP-FUNC.
-           CALL    "MCPSUB"    USING   MCPAREA
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
                                        MCPDATA-REC
       *
            .

@@ -47,6 +47,7 @@
       *  02.00.08    NACL-多々納  05/10/19  特別療養費 単独保険組合追加
       *  02.00.09    NACL-小豆沢  05/10/25  公費適用期間１日対応
       *  02.00.10    NACL-小豆沢  05/10/26  公費適用期間１日対応（生活保護）
+      *  02.00.11    NACL-多々納  05/11/14  MONFUNC 対応他
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -429,14 +430,12 @@
            MOVE    "PTHKNINF"          TO  PARA-FILEMEI
       *
            MOVE    PARA-REC            TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PARA-KEY2"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "PARA-KEY2"         TO  ORC-DBPATH
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
                PERFORM 990-PARA-READ-SEC
            ELSE
                INITIALIZE                  PARA-REC
@@ -456,15 +455,13 @@
                        PERFORM 330-HKNINF-SET-SEC
                    END-IF
                END-IF
-               MOVE    "PARA-KEY2"         TO  ORC-DBPATH
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
                PERFORM 990-PARA-READ-SEC
            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "PARA-KEY2"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
       *    公費情報
            INITIALIZE                      PARA-REC
@@ -473,14 +470,12 @@
            MOVE    "PTKOHINF"          TO  PARA-FILEMEI
       *
            MOVE    PARA-REC            TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PARA-KEY2"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "PARA-KEY2"         TO  ORC-DBPATH
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
                PERFORM 990-PARA-READ-SEC
            ELSE
                INITIALIZE                  PARA-REC
@@ -500,15 +495,13 @@
                        PERFORM 330-KOHINF-SET-SEC
                    END-IF
                END-IF
-               MOVE    "PARA-KEY2"         TO  ORC-DBPATH
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
                PERFORM 990-PARA-READ-SEC
            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "PARA-KEY2"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        320-PARAFILE-KENSAKU-EXT.
@@ -720,11 +713,11 @@
       *
            MOVE    PARA-REC            TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "PARA-KEY2"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "del3"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
       *   主保険中心　組合せ作成処理
            PERFORM     57011-SYUHKN-HEN-SEC
@@ -796,10 +789,10 @@
       *
                MOVE    PARA-REC            TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
-               MOVE    "PARA-KEY"          TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                           ORCMCPAREA
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
                                            MCPDATA-REC
               END-IF
              END-IF
@@ -4608,14 +4601,13 @@
            MOVE    SPA-HOSPID         TO  HKN-HOSPID
            MOVE    WRK-KEN-HKNNUM     TO  HKN-HKNNUM
            MOVE    HKNNUM-REC         TO  MCPDATA-REC
-           MOVE    "DBSELECT"         TO  MCP-FUNC
-           MOVE    "HKNNUM-KEY2"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"     USING   MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+           MOVE    "tbl_hknnum"       TO  MCP-TABLE
+           MOVE    "key2"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
       *----(01.00.01) LINE MOD START ---------------------------------
            IF      MCP-RC             =   ZERO
-               MOVE    "HKNNUM-KEY2"  TO  ORC-DBPATH
+               MOVE    "tbl_hknnum"       TO  MCP-TABLE
+               MOVE    "key2"             TO  MCP-PATHNAME
                PERFORM 921-HKNNUM-NEXT-SEC
                MOVE    "1"            TO  WRK-KEN-ERFLG
            ELSE
@@ -4637,142 +4629,17 @@
                    END-IF
                END-IF
                IF      FLG-HKNNUM          =   ZERO
-                   MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
+                   MOVE    "tbl_hknnum"       TO  MCP-TABLE
+                   MOVE    "key2"             TO  MCP-PATHNAME
                    PERFORM 921-HKNNUM-NEXT-SEC
                END-IF
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"    TO  MCP-FUNC
-           MOVE    "HKNNUM-KEY2"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"     USING   MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+           MOVE    "tbl_hknnum"       TO  MCP-TABLE
+           MOVE    "key2"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
-      *----  H14.10  以下削除
-           GO      TO      4410-HKNKOH-KAKUNIN-EXT
-      *
-      *    対象支払区分の老人が存在しない場合
-           IF  (WRK-KEN-ERFLG         =   "1")  AND
-               (FLG-RJN               =   "1")
-               MOVE    ZERO               TO  FLG-HKNNUM
-               MOVE    SPACE              TO  HKNNUM-REC
-               MOVE    SPA-HOSPID         TO  HKN-HOSPID
-               MOVE    WRK-KEN-HKNNUM     TO  HKN-HKNNUM
-               MOVE    HKNNUM-REC         TO  MCPDATA-REC
-               MOVE    "DBSELECT"         TO  MCP-FUNC
-               MOVE    "HKNNUM-KEY2"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"     USING   MCPAREA
-                                               ORCMCPAREA
-                                               MCPDATA-REC
-               IF      MCP-RC             =   ZERO
-                   MOVE    "HKNNUM-KEY2"  TO  ORC-DBPATH
-                   PERFORM 921-HKNNUM-NEXT-SEC
-               ELSE
-                   INITIALIZE             HKNNUM-REC
-                   MOVE    1              TO  FLG-HKNNUM
-               END-IF
-      *
-               PERFORM   UNTIL   FLG-HKNNUM   =   1
-                 IF  ( WRK-KEN-TEKSTYMD       >=  HKN-TEKSTYMD ) AND
-                     ( WRK-KEN-TEKEDYMD       <=  HKN-TEKEDYMD )
-                     IF  HKN-HKNKOHSBTKBN     =   "3"
-                         IF  (HKN-PAYKBN      =   "00")
-                             MOVE    SPACE    TO  WRK-KEN-ERFLG
-                             MOVE    1        TO  FLG-HKNNUM
-                         ELSE
-                             PERFORM 921-HKNNUM-NEXT-SEC
-                         END-IF
-                     ELSE
-                         PERFORM 921-HKNNUM-NEXT-SEC
-                     END-IF
-                 ELSE
-                     PERFORM 921-HKNNUM-NEXT-SEC
-                 END-IF
-               END-PERFORM
-               MOVE    "DBCLOSECURSOR"    TO  MCP-FUNC
-               MOVE    "HKNNUM-KEY2"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"     USING   MCPAREA
-                                               ORCMCPAREA
-                                               MCPDATA-REC
-           END-IF
-      *     IF      MCP-RC             =   ZERO
-      *         MOVE    "HKNNUM-KEY2"  TO  ORC-DBPATH
-      *         PERFORM 921-HKNNUM-NEXT-SEC
-      *     ELSE
-      *         MOVE    1              TO  FLG-HKNNUM
-      *     END-IF
-      *     MOVE    "1"                TO  WRK-KEN-ERFLG
-      *     IF  WRK-KEN-SBTKBN         =   "3"
-      **      // 老人 //　支払区分(病院区分:支払区分)を検索
-      *       PERFORM   UNTIL  (FLG-HKNNUM NOT =   ZERO      )
-      *                 OR     (HKN-HOSPID NOT =   SPA-HOSPID)
-      *                 OR     (HKN-HKNNUM NOT =   WRK-KEN-HKNNUM)
-      *         IF   (WRK-KEN-TEKYMD   >=  HKN-TEKSTYMD )   AND
-      *              (HKN-PAYKBN(1:1)  =   SPA-HOSPSBT  )   AND
-      *              (HKN-PAYKBN(2:1)  =   SPA-ROUPAYKBN)
-      *             MOVE    SPACE          TO  WRK-KEN-ERFLG
-      *             EXIT    PERFORM
-      *         ELSE
-      *             PERFORM 921-HKNNUM-NEXT-SEC
-      *         END-IF
-      *       END-PERFORM
-      *       MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-      *       MOVE    "HKNNUM-KEY2"        TO  ORC-DBPATH
-      *       CALL    "MCPDBSUB"       USING   MCPAREA
-      *                                        MCPDATA-REC
-      **      対象保険番号マスタが存在しない場合
-      *       IF  WRK-KEN-ERFLG        NOT =   SPACE
-      *         MOVE    ZERO               TO  FLG-HKNNUM
-      *         MOVE    SPACE              TO  HKNNUM-REC
-      *         MOVE    SPA-HOSPID         TO  HKN-HOSPID
-      *         MOVE    WRK-KEN-HKNNUM     TO  HKN-HKNNUM
-      *         MOVE    HKNNUM-REC         TO  MCPDATA-REC
-      *         MOVE    "DBSELECT"         TO  MCP-FUNC
-      *         MOVE    "HKNNUM-KEY2"      TO  ORC-DBPATH
-      *         CALL    "MCPDBSUB"     USING   MCPAREA
-      *                                        MCPDATA-REC
-      *         IF      MCP-RC             =   ZERO
-      *             MOVE    "HKNNUM-KEY2"  TO  ORC-DBPATH
-      *             PERFORM 921-HKNNUM-NEXT-SEC
-      *         ELSE
-      *             MOVE    1              TO  FLG-HKNNUM
-      *         END-IF
-      *         MOVE    "1"                TO  WRK-KEN-ERFLG
-      *         PERFORM   UNTIL  (FLG-HKNNUM   NOT =   ZERO      )
-      *                   OR     (HKN-HOSPID   NOT =   SPA-HOSPID)
-      *                   OR     (HKN-HKNNUM   NOT =   WRK-KEN-HKNNUM)
-      *           IF   (WRK-KEN-TEKYMD     >=  HKN-TEKSTYMD)  AND
-      *                (HKN-PAYKBN         =   "00")
-      *               MOVE    SPACE        TO  WRK-KEN-ERFLG
-      *               EXIT    PERFORM
-      *           ELSE
-      *               PERFORM 921-HKNNUM-NEXT-SEC
-      *           END-IF
-      *         END-PERFORM
-      *         MOVE    "DBCLOSECURSOR"    TO  MCP-FUNC
-      *         MOVE    "HKNNUM-KEY2"      TO  ORC-DBPATH
-      *         CALL    "MCPDBSUB"     USING   MCPAREA
-      *                                        MCPDATA-REC
-      *       END-IF
-      *     ELSE
-      **      // 老人以外 //　通常どおり検索
-      *       PERFORM   UNTIL (FLG-HKNNUM  NOT =   ZERO      )
-      *                 OR    (HKN-HOSPID  NOT =   SPA-HOSPID)
-      *                 OR    (HKN-HKNNUM  NOT =   WRK-KEN-HKNNUM)
-      *         IF    WRK-KEN-TEKYMD       >=  HKN-TEKSTYMD
-      *             MOVE    SPACE          TO  WRK-KEN-ERFLG
-      *             EXIT    PERFORM
-      *         ELSE
-      *             PERFORM 921-HKNNUM-NEXT-SEC
-      *         END-IF
-      *       END-PERFORM
-      *       MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-      *       MOVE    "HKNNUM-KEY2"        TO  ORC-DBPATH
-      *       CALL    "MCPDBSUB"       USING   MCPAREA
-      *                                        MCPDATA-REC
-      *     END-IF
-      *----(01.00.01) LINE MOD START ---------------------------------
-          .
+           .
        4410-HKNKOH-KAKUNIN-EXT.
            EXIT.
       *
@@ -4847,11 +4714,9 @@
       *****************************************************************
        921-HKNNUM-NEXT-SEC              SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_hknnum"       TO  MCP-TABLE
+      *
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  HKNNUM-REC
                MOVE    ZERO            TO  FLG-HKNNUM
@@ -4868,11 +4733,9 @@
       *****************************************************************
        990-PARA-READ-SEC        SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+      *
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PARA-REC
                MOVE    ZERO            TO  FLG-PARA
@@ -4884,5 +4747,45 @@
            .
        990-PARA-READ-EXT.
            EXIT.
+      *****************************************************************
+      *    テーブル検索処理
+      *****************************************************************
+       910-DBSELECT-SEC                SECTION.
       *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ読み込み処理
+      *****************************************************************
+       920-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       920-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢクローズ処理
+      *****************************************************************
+       990-DBCLOSE-SEC         SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       990-DBCLOSE-EXT.
+           EXIT.
       *

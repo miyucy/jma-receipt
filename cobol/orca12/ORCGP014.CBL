@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-多々納  05/11/11  MONFUNC 対応 他
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -152,7 +153,7 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
+      *****COPY    "CPORCMCP.INC".
       *
       *   患者番号発生サブ
            COPY    "CPORCSP01.INC".
@@ -179,7 +180,7 @@
            COPY    "P015.INC".
            COPY    "P98.INC".
            COPY    "P981.INC".
-           COPY    "P99.INC".
+      *****COPY    "P99.INC".
            COPY    "P0201.INC".
            COPY    "P982.INC".
            COPY    "P100.INC".
@@ -529,26 +530,34 @@
       *        拡張構成 <フリー + 連番号 + フリー>
                WHEN    "1"
                    PERFORM 4001-PTNUM1-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO  TO                490-KAKUTEI-EXT
-                   END-IF
-                   PERFORM 4003-PTNUM3-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO  TO                490-KAKUTEI-EXT
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4003-PTNUM3-SEC
                    END-IF
       *        拡張構成 <フリー + 連番号>
                WHEN    "2"
                    PERFORM 4001-PTNUM1-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO  TO                490-KAKUTEI-EXT
-                   END-IF
       *        拡張構成 <連番号 + フリー>
                WHEN    "3"
                    PERFORM 4002-PTNUM2-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO  TO                490-KAKUTEI-EXT
-                   END-IF
            END-EVALUATE
+      *
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4901-KAKUTEI-HEN-SEC
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+      *        戻る
+               PERFORM 210-BACK
+           END-IF
+      *
+          .
+       490-KAKUTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者番号編集処理
+      *****************************************************************
+       4901-KAKUTEI-HEN-SEC           SECTION.
       *
       *    患者番号編集
            MOVE    SPACE               TO  SPA-GMN014-PTNUM
@@ -557,7 +566,6 @@
                    SPA-GMN014-PTNUM3   DELIMITED  BY  " "
                    INTO                SPA-GMN014-PTNUM
            END-STRING
-      *
       *
       *    患者番号変換(管理）を検索
            INITIALIZE                      ORCSPTIDAREA
@@ -570,13 +578,10 @@
                MOVE    "0003"              TO  SPA-ERRCD
                MOVE    05                  TO  SPA-GMN-CUR
                MOVE    SPACE               TO  SPA-GMN014-PTNUM
-               GO      TO              490-KAKUTEI-EXT
            END-IF
       *
-           PERFORM 210-BACK
-      *
           .
-       490-KAKUTEI-EXT.
+       4901-KAKUTEI-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -664,13 +669,11 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"   USING
-                                MCPAREA
-                                ORCMCPAREA
-                                MCPDATA-REC.
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        900-PUT-WINDOW-EXT.
            EXIT.
-      *
       *

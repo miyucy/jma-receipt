@@ -31,6 +31,7 @@
       *  01.00.02    MCC-多々納   01/06/13  登録後、診療行為遷移を追加
       *  01.00.03    MCC-小豆沢   02/03/13  患者負担区分に固定額を追加
       *  02.00.01    NACL-多々納  02/07/31  パラメタファイルをＤＢへ
+      *  02.00.02    NACL-多々納  05/11/11  MONFUNC 対応 他
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -191,7 +192,7 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
+      *****COPY    "CPORCMCP.INC".
       *
       *
       *****************************************************************
@@ -216,7 +217,7 @@
            COPY    "P015.INC".
            COPY    "P98.INC".
            COPY    "P981.INC".
-           COPY    "P99.INC".
+      *****COPY    "P99.INC".
            COPY    "P0201.INC".
            COPY    "P982.INC".
            COPY    "P100.INC".
@@ -374,14 +375,12 @@
            MOVE    "HKNCOMBI"          TO  PARA-FILEMEI
       *
            MOVE    PARA-REC            TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PARA-KEY2"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "PARA-KEY2"         TO  ORC-DBPATH
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
                PERFORM 990-PARA-READ-SEC
            ELSE
                INITIALIZE                  PARA-REC
@@ -405,15 +404,13 @@
                    END-IF
                END-IF
       *
-               MOVE    "PARA-KEY2"         TO  ORC-DBPATH
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
                PERFORM 990-PARA-READ-SEC
            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "PARA-KEY2"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            IF      IDY                 >   ZERO
                MOVE    IDY             TO  SPA-GMN27-MAX
@@ -1385,10 +1382,9 @@
        990-PARA-READ-SEC        SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PARA-REC
                MOVE    ZERO            TO  FLG-PARA
@@ -1400,37 +1396,46 @@
            .
        990-PARA-READ-EXT.
            EXIT.
+      *****************************************************************
+      *    テーブル検索処理
+      *****************************************************************
+       910-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ読み込み処理
+      *****************************************************************
+       920-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       920-DBFETCH-EXT.
+           EXIT.
       *
       *****************************************************************
-      *    パラメタデータ順読み
+      *    ＤＢクローズ処理
       *****************************************************************
-      *980-PARA-READ-SEC         SECTION.
+       990-DBCLOSE-SEC         SECTION.
       *
-      *    READ    PARA-FILE 
-      *        INVALID
-      *            MOVE    1           TO  FLG-PARA
-      *        NOT INVALID
-      *            MOVE    ZERO        TO  FLG-PARA
-      *    END-READ
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
-      *    .
-      *980-PARA-READ-EXT.
-      *    EXIT.
+           .
+       990-DBCLOSE-EXT.
+           EXIT.
       *
-      *****************************************************************
-      *    パラメタデータ順読み
-      *****************************************************************
-      *990-PARA-NEXT-SEC           SECTION.
-      *
-      *    READ    PARA-FILE       NEXT
-      *     READ    PARA-FILE
-      *        AT  END
-      *            MOVE    1           TO  FLG-PARA
-      *        NOT AT  END
-      *            MOVE    ZERO        TO  FLG-PARA
-      *    END-READ
-      *
-      *    .
-      *990-PARA-NEXT-EXT.
-      *    EXIT.
       *

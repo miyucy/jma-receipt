@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-多々納  05/11/11  MONFUNC 対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -77,7 +78,7 @@
                05  WRK-SDD         PIC 9(02).
            03  WRK-RENNUMZ         PIC ZZZZ.
       *
-           03  WRK-ORC-DBPATH      PIC X(64).
+           03  WRK-MCP-PATHNAME      PIC X(64).
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMD.
@@ -111,10 +112,12 @@
       *
       *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
+      *    検索文字追加
+           COPY    "CPORCSADDSIGN.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
+      **** COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -138,7 +141,7 @@
            COPY    "P015.INC".
            COPY    "P98.INC".
            COPY    "P981.INC".
-           COPY    "P99.INC".
+      *****COPY    "P99.INC".
            COPY    "P0201.INC".
            COPY    "P982.INC".
            COPY    "P100.INC".
@@ -262,20 +265,26 @@
                   (SPA-NAI-JYUFUKU-CHKKBN  =   "2")
                MOVE    SPA-NAI-BIRTHDAY    TO  PTINF-BIRTHDAY
                MOVE    SPA-GMN-SEX         TO  PTINF-SEX
-               MOVE    "PTINF-KEY7"        TO  WRK-ORC-DBPATH
+               MOVE    "key7"              TO  WRK-MCP-PATHNAME
            ELSE
-               MOVE    "PTINF-KEY3"        TO  WRK-ORC-DBPATH
+      *        LIKE検索
+               INITIALIZE                  ORCSADDSIGNAREA
+               MOVE    PTINF-KANANAME      TO  SADDSIGN-STR
+               CALL    "ORCSADDSIGN"       USING
+                                           ORCSADDSIGNAREA
+               MOVE    SADDSIGN-STR        TO  PTINF-KANANAME
+      *
+               MOVE    "key3"              TO  WRK-MCP-PATHNAME
            END-IF
       *
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"             USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+           MOVE    "tbl_ptinf"         TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
+               MOVE    "tbl_ptinf"         TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 900-PTINF-READ-SEC
            ELSE
                INITIALIZE                  PTINF-REC
@@ -363,17 +372,15 @@
                    END-IF
                END-IF
       *
-               MOVE    WRK-ORC-DBPATH  TO  ORC-DBPATH
+               MOVE    "tbl_ptinf"         TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 900-PTINF-READ-SEC
            END-PERFORM
            MOVE    IDY                 TO  SPA-GMN2A-MAX
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"              USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+           MOVE    "tbl_ptinf"         TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        3000-SCREEN-INIT-EXT.
@@ -693,11 +700,9 @@
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"              USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+           MOVE    "tbl_ptinf"         TO  MCP-TABLE
+      *
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PTINF-REC
                MOVE    ZERO            TO  FLG-PTINF
@@ -709,6 +714,47 @@
            .
        900-PTINF-READ-EXT.
            EXIT.
+      *****************************************************************
+      *    テーブル検索処理
+      *****************************************************************
+       910-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ読み込み処理
+      *****************************************************************
+       920-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       920-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢクローズ処理
+      *****************************************************************
+       990-DBCLOSE-SEC         SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       990-DBCLOSE-EXT.
+           EXIT.
       *
       *****************************************************************
       *    ＰＵＴ　処理
@@ -716,13 +762,11 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"   USING
-                                MCPAREA
-                                ORCMCPAREA
-                                MCPDATA-REC.
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        900-PUT-WINDOW-EXT.
            EXIT.
-      *
       *
