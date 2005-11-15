@@ -2948,8 +2948,6 @@
       *
               PERFORM 900-HCM34SRY-READ-SEC
       *
-              DISPLAY "WRK-RUIKEITOTAL2 = " WRK-RUIKEITOTAL2
-      *
            END-PERFORM
       *
            CLOSE   HCM34SRY-FILE
