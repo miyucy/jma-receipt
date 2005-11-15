@@ -161,6 +161,7 @@
       *  02.07.01    NACL-藤原    05/08/20  特別療養費対応
       *  02.07.02    NACL-小豆沢  05/10/28  特記事項　先進、制超　対応
       *  02.07.03    NACL-門脇    05/11/01  （検選）等コメント対応
+      *  02.07.04    NACL-門脇    05/11/11  コメントがある場合の編集修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2165,7 +2166,7 @@
                        END-IF
                    END-IF
       *
-                   MOVE   "1"                  TO    RECE64-COMCDFLG
+      ***          MOVE   "1"                  TO    RECE64-COMCDFLG
                ELSE
                    MOVE    TNS-NAME            TO    RECE65-NAME(IDX4)
                                                      RECE65-INPUTCOMENT
@@ -2184,6 +2185,11 @@
                          COMPUTE  RECE65-YUKOKETA(IDX4) =
                                   RECE65-YUKOKETA(IDX4) + 2
                    END-IF
+               END-IF
+      *
+               IF    (SRY-SRYCD    (IDX2)(1:1)     =   "8"  )  OR
+                     (SRY-SRYCD    (IDX2)(1:3)     =   "008")
+                        MOVE     "1"       TO    RECE64-COMCDFLG
                END-IF
       *
                IF  RECE65-YUKOKETA(IDX4)  =  ZERO

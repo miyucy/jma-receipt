@@ -28,6 +28,7 @@
       *                                     導料算定時の点滴注射の追加
       *  01.01.02    NACL-門脇    04.08.17  レセプト科追加
       *  01.01.03    NACL-門脇    05.07.05  診療種別区分追加
+      *  01.01.04    NACL-門脇    05.11.11  コメントデータ追加
       ************************************************************
       *01  RECE042-REC.
            03  RECE042-KEY.
@@ -67,11 +68,11 @@
                05  RECE042-RUIKEITOTAL     PIC  9(15)V9(03).
       *明細数
                05  RECE042-MEISAISU        PIC  9(04).
-      *コメント剤連番
-               05  RECE042-COMRENNUM       PIC  9(05).
       *在宅患者訪問点滴注射管理指導料算定時の点滴注射
                05  RECE042-FLG-HOUTEN-COMMENT
                                            PIC  X(01).
+      *コメント剤連番
+               05  RECE042-COMRENNUM       PIC  9(05).
       *剤回数
            03  RECE042-ZAIKAISU            PIC  9(04).
       *日数回数テーブル
@@ -82,3 +83,6 @@
                        09  RECE042-KAISU   PIC  9(03).
       *データ
            03  RECE042-REC1                PIC  X(600).
+      *コメントデータ
+           03  RECE042-COM-AREA.
+               05  RECE042-COM             PIC  X(200)    OCCURS  10.

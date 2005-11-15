@@ -226,6 +226,7 @@
       *  02.07.02    NACL-門脇    05/10/26  宮城県地方公費１０月改正対応
       *  02.07.03    NACL-小豆沢  05/10/28  特記事項　先進、制超　対応
       *  02.07.04    NACL-門脇    05/11/01  （検選）等コメント対応
+      *  02.07.05    NACL-門脇    05/11/11  コメントがある場合の編集修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2251,9 +2252,9 @@
                        END-IF
                    END-IF
       *
-                   IF    RECE04-COMCDFLG   NOT =   "2"
-                      MOVE   "1"           TO    RECE04-COMCDFLG
-                   END-IF
+      ***          IF    RECE04-COMCDFLG   NOT =   "2"
+      ***             MOVE   "1"           TO    RECE04-COMCDFLG
+      ***          END-IF
                ELSE
                    MOVE    TNS-NAME        TO    RECE05-NAME    (IDX4)
                                                  RECE05-INPUTCOMENT
@@ -2278,6 +2279,12 @@
                     IF   SRY-SRYCD(IDX2)  =  "820000047" OR 
                                              "630010002"
                         MOVE     "2"       TO    RECE04-COMCDFLG
+                    END-IF
+               END-IF
+               IF    (SRY-SRYCD    (IDX2)(1:1)     =   "8"  )  OR
+                     (SRY-SRYCD    (IDX2)(1:3)     =   "008")
+                    IF    RECE04-COMCDFLG   NOT =   "2"
+                        MOVE     "1"       TO    RECE04-COMCDFLG
                     END-IF
                END-IF
       *
