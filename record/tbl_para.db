@@ -73,3 +73,39 @@ path	key3 	{
 		;
 	};
 };
+
+path	key4 	{
+	DBSELECT	{
+		DECLARE tbl_para_key4_csr CURSOR FOR
+		SELECT *
+		FROM tbl_para
+			WHERE   GYOUMUID   =   :GYOUMUID
+			AND   TERMID       =   :TERMID
+			AND   FILEMEI      =   :FILEMEI
+			AND   EDANUM       =   :EDANUM
+		;
+	};
+};
+
+path	key5 	{
+	DBSELECT	{
+		DECLARE tbl_para_key5_csr CURSOR FOR
+		SELECT *
+		FROM tbl_para
+			WHERE   GYOUMUID   =   :GYOUMUID
+			AND   TERMID       =   :TERMID
+			AND   FILEMEI      =   :FILEMEI
+			ORDER   BY        EDANUM
+		;
+	};
+};
+path	del3 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_para
+			WHERE   GYOUMUID   =   :GYOUMUID
+			AND   TERMID       =   :TERMID
+			AND   FILEMEI      =   :FILEMEI
+		;
+	};
+};
