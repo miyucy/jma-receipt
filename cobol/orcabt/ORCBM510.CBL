@@ -412,9 +412,9 @@
            WHEN    "8"
                MOVE    "８光嘲９"      TO  HCM37-HONKZK
            WHEN    "9"
-               MOVE    "０光掐８"      TO  HCM37-HONKZK
+               MOVE    "９光掐８"      TO  HCM37-HONKZK
            WHEN    "0"
-               MOVE    "９光嘲８"      TO  HCM37-HONKZK
+               MOVE    "０光嘲８"      TO  HCM37-HONKZK
            END-EVALUATE
       *
       *    壳闻钳奉
