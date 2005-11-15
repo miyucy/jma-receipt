@@ -701,30 +701,30 @@
                    07  SPA-GMN21-KISEI-BANTI       PIC X(100).
                    07  SPA-GMN21-KISEI-TEL         PIC X(15).
       *
-      *    P023(紹介情報）
-           03  SPA-P023-AREA.
-               05  SPA-GMN23-CUR             PIC 9(02).
-               05  SPA-GMN23-AREA.
-                   07  SPA-GMN23-TBL.
-                       09  SPA-GMN23-REC              OCCURS  13.
-                           11  SPA-GMN23-SYKKBN       PIC X(04).
-                           11  SPA-GMN23-SYKYMDW      PIC X(10).
-                           11  SPA-GMN23-SYKYMD       PIC X(08).
-                           11  SPA-GMN23-SYKIRYID     PIC X(12).
-                           11  SPA-GMN23-SYKIRYNAME   PIC X(40).
-                           11  SPA-GMN23-SYKKA        PIC X(14).
-                           11  SPA-GMN23-DOCTOR       PIC X(14).
-                           11  SPA-GMN23-SOAP         PIC X(14).
-                   07  SPA-GMN23-MAX                  PIC 9(04).
+      **** P023(紹介情報）
+      *    03  SPA-P023-AREA.
+      *        05  SPA-GMN23-CUR             PIC 9(02).
+      *        05  SPA-GMN23-AREA.
+      *            07  SPA-GMN23-TBL.
+      *                09  SPA-GMN23-REC              OCCURS  13.
+      *                    11  SPA-GMN23-SYKKBN       PIC X(04).
+      *                    11  SPA-GMN23-SYKYMDW      PIC X(10).
+      *                    11  SPA-GMN23-SYKYMD       PIC X(08).
+      *                    11  SPA-GMN23-SYKIRYID     PIC X(12).
+      *                    11  SPA-GMN23-SYKIRYNAME   PIC X(40).
+      *                    11  SPA-GMN23-SYKKA        PIC X(14).
+      *                    11  SPA-GMN23-DOCTOR       PIC X(14).
+      *                    11  SPA-GMN23-SOAP         PIC X(14).
+      *            07  SPA-GMN23-MAX                  PIC 9(04).
       *
-                   07  SPA-GMN23-TSYKYMDW             PIC X(10).
-                   07  SPA-GMN23-TSYKYMD              PIC X(08).
-                   07  SPA-GMN23-TSYKKBN              PIC X(01).
-                   07  SPA-GMN23-TSYKIRYID            PIC X(10).
-                   07  SPA-GMN23-TSYKIRYNAME          PIC X(40).
-                   07  SPA-GMN23-TSYKKA               PIC X(14).
-                   07  SPA-GMN23-TDOCTOR              PIC X(40).
-                   07  SPA-GMN23-TSOAP                PIC X(66).
+      *            07  SPA-GMN23-TSYKYMDW             PIC X(10).
+      *            07  SPA-GMN23-TSYKYMD              PIC X(08).
+      *            07  SPA-GMN23-TSYKKBN              PIC X(01).
+      *            07  SPA-GMN23-TSYKIRYID            PIC X(10).
+      *            07  SPA-GMN23-TSYKIRYNAME          PIC X(40).
+      *            07  SPA-GMN23-TSYKKA               PIC X(14).
+      *            07  SPA-GMN23-TDOCTOR              PIC X(40).
+      *************07  SPA-GMN23-TSOAP                PIC X(66).
       *
       *    P024(所得者情報）
            03  SPA-P024-AREA.

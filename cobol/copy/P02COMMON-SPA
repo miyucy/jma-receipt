@@ -125,7 +125,7 @@
                05  JPAR-CNT                PIC 9(02).
                05  JPAR-ERRCD              PIC X(01).
                05  JPAR-KBN                PIC X(01).
-               05  JPAR-FREE               PIC X(438).
+      ******** 05  JPAR-FREE               PIC X(438).
       *
       *    保険期間変換用
            03  SPA-HKN-KENKAN-AREA.

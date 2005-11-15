@@ -494,41 +494,6 @@
                     06  P02-VALUE   PIC X(100).
                   05  P02-P021-KISTEL.
                     06  P02-VALUE   PIC X(15).
-                04  P02-FIXPAGE6.
-                  05  P02-P023-SELNUM.
-                    06  P02-VALUE   PIC X(4).
-                  05  P02-P023-TSYKYMD.
-                    06  P02-VALUE   PIC X(10).
-                  05  P02-P023-THOSPNUM.
-                    06  P02-VALUE   PIC X(10).
-                  05  P02-P023-THOSPNAME.
-                    06  P02-VALUE   PIC X(40).
-                  05  P02-P023-TDRNAME.
-                    06  P02-VALUE   PIC X(40).
-                  05  P02-P023-TSOAP.
-                    06  P02-VALUE   PIC X(66).
-                  05  P02-P023-TSYKKA.
-                    06  P02-VALUE   PIC X(14).
-                  05  P02-SC103.
-                    06  P02-P023-SYKRRKLIST.
-                      07  P02-P023-SYKRRKLIST-COUNT PIC S9(9) BINARY.
-                      07  P02-P023-SYKRRKLIST-ROW   PIC S9(9) BINARY.
-                      07  P02-P023-SYKRRKLIST-ROWATTR PIC S9(9) BINARY.
-                      07  P02-P023-SYKRRKLIST-ITEM OCCURS  20 TIMES.
-                        08  P02-P023-NUM      PIC X(3).
-                        08  P02-P023-MOTSAK   PIC X(3).
-                        08  P02-P023-SYKYMD   PIC X(10).
-                        08  P02-P023-HOSPNUM  PIC X(10).
-                        08  P02-P023-HOSPNAME PIC X(30).
-                        08  P02-P023-SYKKA    PIC X(10).
-                        08  P02-P023-DRNAME   PIC X(30).
-                        08  P02-P023-SOAP     PIC X(66).
-                      07  P02-P023-SYKRRKLIST-SELECT PIC X
-                                                  OCCURS  20 TIMES.
-                  05  P02-TMOTSAK1.
-                    06  P02-VALUE   PIC X.
-                  05  P02-TMOTSAK2.
-                    06  P02-VALUE   PIC X.
                 04  P02-FIXPAGE7.
                   05  P02-P024-TSRSELNUM.
                     06  P02-VALUE   PIC X(4).
