@@ -44,5 +44,65 @@ data	{
 	};
 };
 
-#include "orcadb.inc"
+db	{
+	tbl_syskanri;
+	tbl_byomei;
+	tbl_hkncombi;
+	tbl_hknnum;
+	tbl_adrs;
+	tbl_jyurrk;
+	tbl_srykarrk;
+	tbl_ptbyomei;
+	tbl_ptcom;
+	tbl_ptnum;
+	tbl_pthkninf;
+	tbl_ptkohinf;
+	tbl_ptinf;
+	tbl_kyuseirrk;
+	tbl_sryacct;
+	tbl_sryact;
+	tbl_syumei;
+	tbl_syunou;
+	tbl_tsyrrk;
+	tbl_tensu;
+	tbl_uketuke;
+	tbl_yyk;
+	tbl_sykrrk;
+	tbl_tnkrrk;
+	tbl_wksryact;
+	tbl_santei;
+	tbl_para;
+        tbl_tensuplus;
+	tbl_hknjainf;
+	tbl_seikyu;
+	tbl_rececom;
+	tbl_ptrsiinf;
+	tbl_jinmei;
+	tbl_monthlynum;
+	tbl_ptnyuinrrk;
+	tbl_pttainfuka;
+	tbl_nyuinacct;
+	tbl_nyuinact;
+	tbl_ptteikirrk;
+        tbl_kohsky;
+	tbl_ldmap;
+	tbl_lock;
+	tbl_ptkohftn;
+	tbl_receden;
+        tbl_syuday;
+        tbl_opecom;
+        tbl_syutotal;
+        tbl_toukeimemo;
+	tbl_receupd;
+	tbl_sryacctplus;
+};
+db	"shell"	{
+	shell;
+};
+db	"system"	{
+	metadb;
+};
+db      "blob_body"{
+         blob;
+};
 
