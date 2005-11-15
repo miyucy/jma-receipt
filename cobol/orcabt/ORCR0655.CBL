@@ -36,25 +36,6 @@
       *                                     中止処理の追加
       *  02.06.02    NACL-門脇    05.07.05  検査は診療種別区分毎でまとめる
       *  02.06.03    NACL-門脇    05.11.11  コメントを含む場合の編集修正
-      *  02.09.01    NACL-門脇    06/04/13  ２００６年４月改正対応
-      *  03.05.01    NACL-小豆沢  07/06/04  グループ診療対応
-      *  04.02.01    NACL-門脇    08/03/24  平成２０年４月改正対応
-      *                                     （診療区分６４：病理診断対応）
-      *
-      *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
-      *
-      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
-      *                                     キーにkohid 追加
-      *
-      *  04.07.01    NACL-門脇    15/08/10  日別保険組合せ番号編集対応
-      *
-      *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
-      *  04.08.02    NACL-門脇    14/07/23  ３２文字以上の文字列修正
-      *                                     （コンパイル時のワーニング修正）
-      *  04.08.03    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  04.08.04    NACL-門脇    16/08/23  持参薬対応
-      *  04.08.05    NACL-門脇    16/11/07  １５円以下薬剤の提出用レセプト記載
-      *                                     （記録）対応修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -140,28 +121,31 @@
       *
        WORKING-STORAGE             SECTION.
       *
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECE62PARA//.
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01//
+                                   BY         //RECE62//.
       *
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECE64PARA//.
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01//
+                                   BY         //RECE64//.
       *
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECE65PARA//.
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01//
+                                   BY         //RECE65//.
       *
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECE642PARA//.
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01//
+                                   BY         //RECE642//.
       *
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECE64WPARA//.
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01//
+                                   BY         //RECE64W//.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01PARA//
                                    BY         //RECEERR//.
-      *
-      *    ファイル名取得
-           COPY    "CPRECEDAT1.INC".
-           COPY    "CPTEMPFL.INC".
+           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -206,7 +190,6 @@
                05  WRK-PARA-SYSYMD                     PIC  X(08).
                05  WRK-PARA-JOBID                      PIC  9(07).
                05  WRK-PARA-SHELLID                    PIC  X(08).
-           03  WRK-PARA-HOSPNUM                        PIC  9(02).
       *
            03  WRK-COMRENNUM           PIC 9(05).
       *
@@ -242,14 +225,12 @@
       *
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
-      *
-           COPY    "CPORCSGETTEMP.INC".
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
+      *     
+           COPY    "CPORCMCP.INC".  
       *
            COPY    "MCPAREA".
-      *
-           COPY    "COMMON-SPA".
       *
       ****************************************************************
        LINKAGE                 SECTION.
@@ -285,53 +266,10 @@
            INITIALIZE                  CNT-AREA
                                        WRK-AREA
                                        FLG-AREA
-                                       SPA-AREA
       *
            MOVE    ZERO                TO  FLG-END
       *
-           UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
-                                       INTO    WRK-PARA
-                                               WRK-PARA-HOSPNUM
-                                               RECEERR
-           END-UNSTRING
-           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
-           MOVE    "RECE620"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (2)
-           MOVE    "RECE640"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (3)
-           MOVE    "RECE650"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (4)
-           MOVE    "RECE642"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (5)
-           MOVE    "RECE64W"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (6)
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SPACE               TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  RECE62PARA
-           MOVE    SGETTEMP-FULLNAMES (3)
-                                       TO  RECE64PARA
-           MOVE    SGETTEMP-FULLNAMES (4)
-                                       TO  RECE65PARA
-           MOVE    SGETTEMP-FULLNAMES (5)
-                                       TO  RECE642PARA
-           MOVE    SGETTEMP-FULLNAMES (6)
-                                       TO  RECE64WPARA
+           MOVE    COMMAND-PARAM       TO  WRK-PARA
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ＤＢオープン処理
@@ -340,13 +278,36 @@
       *        ステップ管理開始処理
                MOVE    "STS"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
+               MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+               MOVE    WRK-PARA-SHELLID
+                                       TO  JOB-SHELLID
                MOVE    "ORCR0655"      TO  JOB-PGID
                MOVE    "同一剤のまとめ"
                                        TO  JOB-SHELLMSG
-               PERFORM   900-CALL-ORCSJOB-SEC
+               CALL    "ORCSJOB"       USING
+                                       ORCSJOBKANRIAREA  
+                                       JOBKANRI-REC
       *        処理中止設定処理
                PERFORM 500-CANCEL-HENSYU-SEC
            END-IF
+      *
+           MOVE    "RECE620"           TO  RECE62PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE62PARA-TERMID
+      *
+           MOVE    "RECE640"           TO  RECE64PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE64PARA-TERMID
+      *
+           MOVE    "RECE650"           TO  RECE65PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE65PARA-TERMID
+      *
+           MOVE    "RECE642"           TO  RECE642PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE642PARA-TERMID
+      *
+           MOVE    "RECE64W"           TO  RECE64WPARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE64WPARA-TERMID
+      *
+           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
       *
            OPEN    OUTPUT              RECE642X-FILE
            CLOSE                       RECE642X-FILE
@@ -403,7 +364,16 @@
            MOVE    ZERO                TO  WRK-COMRENNUM
       *
            INITIALIZE                      RECE64-REC
-           MOVE    RECE62-KEY          TO  RECE64-KEY1
+           MOVE    RECE62-HOSPID       TO  RECE64-HOSPID
+           MOVE    RECE62-SRYYM        TO  RECE64-SRYYM
+           MOVE    RECE62-NYUGAIKBN    TO  RECE64-NYUGAIKBN
+           MOVE    RECE62-PTID         TO  RECE64-PTID
+           MOVE    RECE62-RECEKA       TO  RECE64-RECEKA
+           MOVE    RECE62-TEISYUTUSAKI TO  RECE64-TEISYUTUSAKI
+           MOVE    RECE62-RECESYUBETU  TO  RECE64-RECESYUBETU
+           MOVE    RECE62-HKNJANUM-KEY TO  RECE64-HKNJANUM
+           MOVE    RECE62-HOJOKBN-KEY  TO  RECE64-HOJOKBN
+           MOVE    RECE62-TEKSTYMD     TO  RECE64-TEKSTYMD
            MOVE    ZERO                TO  RECE64-ZAINUM
       *
            START   RECE64-FILE
@@ -415,12 +385,25 @@
            END-START
            PERFORM
                UNTIL  ( FLG-RECE64           =   1                   )
-               OR     ( RECE62-KEY       NOT =   RECE64-KEY1         )
+               OR     ( RECE62-HOSPID    NOT =   RECE64-HOSPID       )
+               OR     ( RECE62-SRYYM     NOT =   RECE64-SRYYM        )
+               OR     ( RECE62-NYUGAIKBN NOT =   RECE64-NYUGAIKBN    )
+               OR     ( RECE62-PTID      NOT =   RECE64-PTID         )
+               OR     ( RECE62-RECEKA    NOT =   RECE64-RECEKA       )
+               OR     ( RECE62-TEISYUTUSAKI
+                                         NOT =   RECE64-TEISYUTUSAKI )
+               OR     ( RECE62-RECESYUBETU
+                                         NOT =   RECE64-RECESYUBETU  )
+               OR     ( RECE62-HKNJANUM-KEY
+                                         NOT =   RECE64-HKNJANUM     )
+               OR     ( RECE62-HOJOKBN-KEY
+                                         NOT =   RECE64-HOJOKBN      )
+               OR     ( RECE62-TEKSTYMD  NOT =   RECE64-TEKSTYMD     )
       *
                MOVE    RECE64-ZAINUM     TO      WRK-ZAINUM
                MOVE    SPACE             TO      WRK-SRYSYUKBN
-               IF       RECE64-SRYKBN  =  "60" OR "64" OR "99"
-                   PERFORM   2101-RECE65-SRYSYUKBN-HEN-SEC
+               IF       RECE64-SRYKBN  =  "60"
+                   PERFORM   2101-RECE65-SRYSYUKBN-HENSYU-SEC
                END-IF
       *
                INITIALIZE          WRK-COM-AREA
@@ -430,7 +413,16 @@
       *
                MOVE    SPACE               TO  RECE642-REC
                INITIALIZE                      RECE642-REC
-               MOVE    RECE64-KEY1         TO  RECE642-KEY1
+               MOVE    RECE64-HOSPID       TO  RECE642-HOSPID
+               MOVE    RECE64-SRYYM        TO  RECE642-SRYYM
+               MOVE    RECE64-NYUGAIKBN    TO  RECE642-NYUGAIKBN
+               MOVE    RECE64-PTID         TO  RECE642-PTID
+               MOVE    RECE64-RECEKA       TO  RECE642-RECEKA
+               MOVE    RECE64-TEISYUTUSAKI TO  RECE642-TEISYUTUSAKI
+               MOVE    RECE64-RECESYUBETU  TO  RECE642-RECESYUBETU
+               MOVE    RECE64-HKNJANUM     TO  RECE642-HKNJANUM
+               MOVE    RECE64-HOJOKBN      TO  RECE642-HOJOKBN
+               MOVE    RECE64-TEKSTYMD     TO  RECE642-TEKSTYMD
                MOVE    RECE64-KOHBUNRI     TO  RECE642-KOHBUNRI
                MOVE    RECE64-SRYKBN       TO  RECE642-SRYKBN
                MOVE    WRK-SRYSYUKBN       TO  RECE642-SRYSYUKBN
@@ -439,8 +431,6 @@
                MOVE    RECE64-SURYOUTOTAL  TO  RECE642-SURYOUTOTAL
                MOVE    RECE64-RUIKEITOTAL  TO  RECE642-RUIKEITOTAL
                MOVE    RECE64-MEISAISU     TO  RECE642-MEISAISU 
-               MOVE    RECE64-JIHOKBN      TO  RECE642-JIHOKBN
-               MOVE    RECE64-JISANYAKKBN  TO  RECE642-JISANYAKKBN
                IF      RECE64-COMCDFLG   =   "1"
                  ADD     1                 TO  WRK-COMRENNUM
                  MOVE    WRK-COMRENNUM     TO  RECE642-COMRENNUM
@@ -462,33 +452,6 @@
                                          TO   RECE642-KAISU (IDX IDY)
                      END-PERFORM
                  END-PERFORM
-                 PERFORM VARYING IDY FROM    1   BY  1
-                         UNTIL   IDY >       31
-                     IF  RECE64-HKNCOMBI-DAY(IDY) NOT = ZERO
-                     AND RECE642-HKNCOMBI-DAY(IDY)    = ZERO
-                         MOVE    RECE64-HKNCOMBI-DAY(IDY)
-                                         TO   RECE642-HKNCOMBI-DAY(IDY)
-                     END-IF
-                 END-PERFORM
-      *
-                 IF  RECE64-SYODOU-SRYKA(1)  NOT =  SPACE
-                   MOVE     ZERO     TO    FLG-ARI
-                   PERFORM  VARYING  IDX   FROM    1   BY  1
-                             UNTIL IDX                       > 10
-                              OR   RECE642-SYODOU-SRYKA(IDX) = SPACE
-                              OR   FLG-ARI                   = 1
-                      IF  RECE64-SYODOU-SRYKA(1)
-                                 =  RECE642-SYODOU-SRYKA(IDX)
-                          MOVE  1   TO   FLG-ARI
-                      END-IF
-                   END-PERFORM
-                   IF  FLG-ARI  =  ZERO
-                   AND IDX     <=  10
-                          MOVE   RECE64-SYODOU-SRYKA(1)
-                                    TO   RECE642-SYODOU-SRYKA(IDX)
-                   END-IF
-                 END-IF
-      *
                  IF      FLG-MATOME    =   ZERO
                      WRITE   RECE642-REC
                      ADD     1                   TO  CNT-RECE642
@@ -512,33 +475,6 @@
                                          TO   RECE642-KAISU (IDX IDY)
                      END-PERFORM
                  END-PERFORM
-                 PERFORM VARYING IDY FROM    1   BY  1
-                         UNTIL   IDY >       31
-                     IF  RECE64-HKNCOMBI-DAY(IDY) NOT = ZERO
-                     AND RECE642-HKNCOMBI-DAY(IDY)    = ZERO
-                         MOVE    RECE64-HKNCOMBI-DAY(IDY)
-                                         TO   RECE642-HKNCOMBI-DAY(IDY)
-                     END-IF
-                 END-PERFORM
-      *
-                 IF  RECE64-SYODOU-SRYKA(1)  NOT =  SPACE
-                   MOVE     ZERO     TO    FLG-ARI
-                   PERFORM  VARYING  IDX   FROM    1   BY  1
-                             UNTIL IDX                       > 10
-                              OR   RECE642-SYODOU-SRYKA(IDX) = SPACE
-                              OR   FLG-ARI                   = 1
-                      IF  RECE64-SYODOU-SRYKA(1)
-                                 =  RECE642-SYODOU-SRYKA(IDX)
-                          MOVE  1   TO   FLG-ARI
-                      END-IF
-                   END-PERFORM
-                   IF  FLG-ARI  =  ZERO
-                   AND IDX     <=  10
-                          MOVE   RECE64-SYODOU-SRYKA(1)
-                                    TO   RECE642-SYODOU-SRYKA(IDX)
-                   END-IF
-                 END-IF
-      *
                  IF      FLG-RECE642         =   1
                      WRITE   RECE642-REC
                      ADD     1                   TO  CNT-RECE642
@@ -548,9 +484,7 @@
                END-IF
       *
                IF   WRK-KOHBUNRI-MIN  >  RECE64-KOHBUNRI
-                 IF   RECE64-ZAITEN  NOT = ZERO
                    MOVE   RECE64-KOHBUNRI  TO  WRK-KOHBUNRI-MIN
-                 END-IF
                END-IF
       *
                PERFORM     900-RECE64-READ-SEC
@@ -568,10 +502,19 @@
       *****************************************************************
       *    診療種別区分取得
       *****************************************************************
-       2101-RECE65-SRYSYUKBN-HEN-SEC         SECTION.
+       2101-RECE65-SRYSYUKBN-HENSYU-SEC         SECTION.
       *
            INITIALIZE                           RECE65-REC
-           MOVE    RECE62-KEY           TO      RECE65-KEY1
+           MOVE    RECE62-HOSPID        TO      RECE65-HOSPID
+           MOVE    RECE62-SRYYM         TO      RECE65-SRYYM
+           MOVE    RECE62-NYUGAIKBN     TO      RECE65-NYUGAIKBN
+           MOVE    RECE62-PTID          TO      RECE65-PTID
+           MOVE    RECE62-RECEKA        TO      RECE65-RECEKA
+           MOVE    RECE62-TEISYUTUSAKI  TO      RECE65-TEISYUTUSAKI
+           MOVE    RECE62-RECESYUBETU   TO      RECE65-RECESYUBETU
+           MOVE    RECE62-HKNJANUM-KEY  TO      RECE65-HKNJANUM
+           MOVE    RECE62-HOJOKBN-KEY   TO      RECE65-HOJOKBN
+           MOVE    RECE62-TEKSTYMD      TO      RECE65-TEKSTYMD
            MOVE    WRK-ZAINUM           TO      RECE65-ZAINUM
            START   RECE65-FILE
                KEY IS    >=   RECE65-KEY
@@ -581,7 +524,16 @@
                    PERFORM  900-RECE65-READ-SEC
            END-START
            PERFORM   UNTIL
-                  (RECE62-KEY           NOT =  RECE65-KEY1  )    OR
+                  (RECE62-HOSPID        NOT =  RECE65-HOSPID)    OR
+                  (RECE62-SRYYM         NOT =  RECE65-SRYYM)     OR
+                  (RECE62-NYUGAIKBN     NOT =  RECE65-NYUGAIKBN) OR
+                  (RECE62-PTID          NOT =  RECE65-PTID)      OR
+                  (RECE62-RECEKA        NOT =  RECE65-RECEKA)    OR
+                  (RECE62-TEISYUTUSAKI  NOT =  RECE65-TEISYUTUSAKI) OR
+                  (RECE62-RECESYUBETU   NOT =  RECE65-RECESYUBETU)  OR
+                  (RECE62-HKNJANUM-KEY  NOT =  RECE65-HKNJANUM)  OR
+                  (RECE62-HOJOKBN-KEY   NOT =  RECE65-HOJOKBN )  OR
+                  (RECE62-TEKSTYMD      NOT =  RECE65-TEKSTYMD)  OR
                   (WRK-ZAINUM           NOT =  RECE65-ZAINUM)    OR
                   (FLG-RECE65               =      1        )
       *
@@ -592,7 +544,7 @@
            END-PERFORM
       *
            .
-       2101-RECE65-SRYSYUKBN-HEN-EXT.
+       2101-RECE65-SRYSYUKBN-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -603,7 +555,16 @@
            MOVE    ZERO                 TO      IDZ2
       *
            INITIALIZE                           RECE65-REC
-           MOVE    RECE62-KEY           TO      RECE65-KEY1
+           MOVE    RECE62-HOSPID        TO      RECE65-HOSPID
+           MOVE    RECE62-SRYYM         TO      RECE65-SRYYM
+           MOVE    RECE62-NYUGAIKBN     TO      RECE65-NYUGAIKBN
+           MOVE    RECE62-PTID          TO      RECE65-PTID
+           MOVE    RECE62-RECEKA        TO      RECE65-RECEKA
+           MOVE    RECE62-TEISYUTUSAKI  TO      RECE65-TEISYUTUSAKI
+           MOVE    RECE62-RECESYUBETU   TO      RECE65-RECESYUBETU
+           MOVE    RECE62-HKNJANUM-KEY  TO      RECE65-HKNJANUM
+           MOVE    RECE62-HOJOKBN-KEY   TO      RECE65-HOJOKBN
+           MOVE    RECE62-TEKSTYMD      TO      RECE65-TEKSTYMD
            MOVE    WRK-ZAINUM           TO      RECE65-ZAINUM
            START   RECE65-FILE
                KEY IS    >=   RECE65-KEY
@@ -613,7 +574,16 @@
                    PERFORM  900-RECE65-READ-SEC
            END-START
            PERFORM   UNTIL
-                  (RECE62-KEY           NOT =  RECE65-KEY1  )    OR
+                  (RECE62-HOSPID        NOT =  RECE65-HOSPID)    OR
+                  (RECE62-SRYYM         NOT =  RECE65-SRYYM)     OR
+                  (RECE62-NYUGAIKBN     NOT =  RECE65-NYUGAIKBN) OR
+                  (RECE62-PTID          NOT =  RECE65-PTID)      OR
+                  (RECE62-RECEKA        NOT =  RECE65-RECEKA)    OR
+                  (RECE62-TEISYUTUSAKI  NOT =  RECE65-TEISYUTUSAKI) OR
+                  (RECE62-RECESYUBETU   NOT =  RECE65-RECESYUBETU)  OR
+                  (RECE62-HKNJANUM-KEY  NOT =  RECE65-HKNJANUM)  OR
+                  (RECE62-HOJOKBN-KEY   NOT =  RECE65-HOJOKBN )  OR
+                  (RECE62-TEKSTYMD      NOT =  RECE65-TEKSTYMD)  OR
                   (WRK-ZAINUM           NOT =  RECE65-ZAINUM)    OR
                   (FLG-RECE65               =      1        )
       *
@@ -623,15 +593,10 @@
       *
                      IF  (RECE65-SRYCD(IDZ)(1:1)  =   "8"  )  OR
                          (RECE65-SRYCD(IDZ)(1:3)  =   "008")
-                       IF   (RECE65-RECEPTFLG(IDZ)   =  "1")
-                       AND  (RECE65-RECEDENFLG(IDZ)  =  "1")
-                         CONTINUE
-                       ELSE
                          ADD       1                 TO  IDZ2
                          IF   IDZ2  <=  10
                             MOVE   RECE65-NAME(IDZ)  TO  WRK-COM(IDZ2)
                          END-IF
-                       END-IF
                      END-IF
       *
                   END-PERFORM
@@ -654,11 +619,6 @@
       *   剤回数・日数回数テーブルの加算したものを編集
            MOVE    RECE642-ZAIKAISU     TO  RECE64W-ZAIKAISU
            MOVE    RECE642-DAY-AREA     TO  RECE64W-DAY-AREA
-           MOVE    RECE642-HKNCOMBI-DAY-AREA
-                                        TO  RECE64W-HKNCOMBI-DAY-AREA
-      *
-           MOVE    RECE642-SYODOU-SRYKA-AREA
-                                        TO  RECE64W-SYODOU-SRYKA-AREA
       *
            WRITE   RECE64W-REC
            ADD     1                   TO  CNT-RECE64W
@@ -687,9 +647,14 @@
       *            ジョブ管理終了処理
                    MOVE    "JBE"           TO  SJOBKANRI-MODE
                    INITIALIZE                  JOBKANRI-REC
+                   MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+                   MOVE    WRK-PARA-SHELLID
+                                           TO  JOB-SHELLID
                    MOVE    WRK-RECEERR     TO  JOB-YOBI
                    MOVE    "9999"          TO  JOB-ERRCD
-                   PERFORM   900-CALL-ORCSJOB-SEC
+                   CALL    "ORCSJOB"       USING
+                                           ORCSJOBKANRIAREA  
+                                           JOBKANRI-REC
                END-IF
            END-IF
       *                             
@@ -709,7 +674,12 @@
            ELSE
                MOVE    "CHK"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
-               PERFORM   900-CALL-ORCSJOB-SEC
+               MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+               MOVE    WRK-PARA-SHELLID
+                                       TO  JOB-SHELLID
+               CALL    "ORCSJOB"       USING
+                                       ORCSJOBKANRIAREA  
+                                       JOBKANRI-REC
                IF    ( SJOBKANRI-RETURN
                                        =   ZERO )
                AND   ( JOB-STOPFLG     =   1    )
@@ -729,10 +699,15 @@
       *                ジョブ管理終了処理
                        MOVE    "CAN"           TO  SJOBKANRI-MODE
                        INITIALIZE                  JOBKANRI-REC
+                       MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+                       MOVE    WRK-PARA-SHELLID
+                                               TO  JOB-SHELLID
                        MOVE    WRK-RECEERR     TO  JOB-YOBI
                        MOVE    "8888"          TO  JOB-ERRCD
                        MOVE    2               TO  JOB-STOPFLG
-                       PERFORM   900-CALL-ORCSJOB-SEC
+                       CALL    "ORCSJOB"       USING
+                                               ORCSJOBKANRIAREA  
+                                               JOBKANRI-REC
                    END-IF
       *                             
                    MOVE    1                   TO  FLG-END
@@ -751,7 +726,12 @@
       *        ステップ管理終了処理
                MOVE    "STE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
-               PERFORM   900-CALL-ORCSJOB-SEC
+               MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+               MOVE    WRK-PARA-SHELLID
+                                       TO  JOB-SHELLID
+               CALL    "ORCSJOB"       USING
+                                       ORCSJOBKANRIAREA  
+                                       JOBKANRI-REC
       *
                PERFORM 900-DBDISCONNECT-SEC
            END-IF
@@ -762,17 +742,6 @@
            DISPLAY "*** ORCR0655 END ***"
            .
        300-TERM-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    一時ファイル名取得処理
-      *****************************************************************
-       800-FILENM-SET-SEC        SECTION.
-      *
-           MOVE    WRK-PARA-TERMID     TO  RECEDAT1PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
-           .
-       800-FILENM-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -862,7 +831,16 @@
            MOVE    ZERO                TO  FLG-MATOME
       *
            INITIALIZE                      RECE642-REC
-           MOVE    RECE64-KEY1         TO  RECE642-KEY1
+           MOVE    RECE64-HOSPID       TO  RECE642-HOSPID
+           MOVE    RECE64-SRYYM        TO  RECE642-SRYYM
+           MOVE    RECE64-NYUGAIKBN    TO  RECE642-NYUGAIKBN
+           MOVE    RECE64-PTID         TO  RECE642-PTID
+           MOVE    RECE64-RECEKA       TO  RECE642-RECEKA
+           MOVE    RECE64-TEISYUTUSAKI TO  RECE642-TEISYUTUSAKI
+           MOVE    RECE64-RECESYUBETU  TO  RECE642-RECESYUBETU
+           MOVE    RECE64-HKNJANUM     TO  RECE642-HKNJANUM
+           MOVE    RECE64-HOJOKBN      TO  RECE642-HOJOKBN
+           MOVE    RECE64-TEKSTYMD     TO  RECE642-TEKSTYMD
            MOVE    RECE64-KOHBUNRI     TO  RECE642-KOHBUNRI
            MOVE    RECE64-SRYKBN       TO  RECE642-SRYKBN
            MOVE    WRK-SRYSYUKBN       TO  RECE642-SRYSYUKBN
@@ -871,8 +849,6 @@
            MOVE    RECE64-SURYOUTOTAL  TO  RECE642-SURYOUTOTAL
            MOVE    RECE64-RUIKEITOTAL  TO  RECE642-RUIKEITOTAL
            MOVE    RECE64-MEISAISU     TO  RECE642-MEISAISU
-           MOVE    RECE64-JIHOKBN      TO  RECE642-JIHOKBN
-           MOVE    RECE64-JISANYAKKBN  TO  RECE642-JISANYAKKBN
            START   RECE642-FILE
                KEY IS    >=   RECE642-KEY
                INVALID
@@ -881,7 +857,16 @@
                    PERFORM  900-RECE642-READ-SEC
            END-START
            PERFORM   UNTIL
-                  (RECE64-KEY1         NOT =  RECE642-KEY1    )     OR
+                  (RECE64-HOSPID       NOT =  RECE642-HOSPID)       OR
+                  (RECE64-SRYYM        NOT =  RECE642-SRYYM)        OR
+                  (RECE64-NYUGAIKBN    NOT =  RECE642-NYUGAIKBN)    OR
+                  (RECE64-PTID         NOT =  RECE642-PTID)         OR
+                  (RECE64-RECEKA       NOT =  RECE642-RECEKA)       OR
+                  (RECE64-TEISYUTUSAKI NOT =  RECE642-TEISYUTUSAKI) OR
+                  (RECE64-RECESYUBETU  NOT =  RECE642-RECESYUBETU)  OR
+                  (RECE64-HKNJANUM     NOT =  RECE642-HKNJANUM)     OR
+                  (RECE64-HOJOKBN      NOT =  RECE642-HOJOKBN)      OR
+                  (RECE64-TEKSTYMD     NOT =  RECE642-TEKSTYMD)     OR
                   (RECE64-KOHBUNRI     NOT =  RECE642-KOHBUNRI)     OR
                   (RECE64-SRYKBN       NOT =  RECE642-SRYKBN)       OR
                   (WRK-SRYSYUKBN       NOT =  RECE642-SRYSYUKBN)    OR
@@ -890,8 +875,6 @@
                   (RECE64-SURYOUTOTAL  NOT =  RECE642-SURYOUTOTAL)  OR
                   (RECE64-RUIKEITOTAL  NOT =  RECE642-RUIKEITOTAL)  OR
                   (RECE64-MEISAISU     NOT =  RECE642-MEISAISU)     OR
-                  (RECE64-JIHOKBN      NOT =  RECE642-JIHOKBN)      OR
-                  (RECE64-JISANYAKKBN  NOT =  RECE642-JISANYAKKBN)  OR
                   (FLG-RECE642             =  1)
       *
                   MOVE     ZERO     TO     FLG-NASHI
@@ -947,49 +930,21 @@
            EXIT.
       *
       *****************************************************************
-      *    ジョブ管理ＤＢ制御処理
-      *****************************************************************
-       900-CALL-ORCSJOB-SEC            SECTION.
-      *
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
-           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA 
-                                   JOBKANRI-REC
-                                   SPA-AREA
-           .
-       900-CALL-ORCSJOB-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    テーブルアクセス処理
-      *****************************************************************
-       900-ORCDBMAIN-SEC               SECTION.
-      *
-           CALL    "ORCDBMAIN"     USING   MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
-           .
-      *
-       900-ORCDBMAIN-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
-           MOVE    LOW-VALUE           TO  MCP-TABLE
-                                           MCP-PATHNAME
-           MOVE    "DBOPEN"            TO  MCP-FUNC
-           PERFORM   900-ORCDBMAIN-SEC
+           MOVE    "DBOPEN"            TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
       *
-           MOVE    LOW-VALUE           TO  MCP-TABLE
-                                           MCP-PATHNAME
-           MOVE    "DBSTART"           TO  MCP-FUNC
-           PERFORM   900-ORCDBMAIN-SEC
+           MOVE    "DBSTART"           TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -999,15 +954,17 @@
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
-           MOVE    LOW-VALUE           TO  MCP-TABLE
-                                           MCP-PATHNAME
-           MOVE    "DBCOMMIT"          TO  MCP-FUNC
-           PERFORM   900-ORCDBMAIN-SEC
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
       *
-           MOVE    LOW-VALUE           TO  MCP-TABLE
-                                           MCP-PATHNAME
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC
-           PERFORM   900-ORCDBMAIN-SEC
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
       *
            .
        900-DBDISCONNECT-EXT.
