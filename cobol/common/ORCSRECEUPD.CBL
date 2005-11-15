@@ -26,6 +26,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-多々納  05/11/11  MONFUNC 対応 他
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -58,8 +59,11 @@
                05  FILLER          PIC S9(09)  BINARY.
                05  FILLER          PIC S9(09)  BINARY.
                05  FILLER          PIC S9(09)  BINARY.
+      *
+           03  WRK-MCP-TABLE       PIC X(64).
+           03  WRK-MCP-PATHNAME    PIC X(64).
       *     
-           COPY    "ORCA-DBPATH".
+      **** COPY    "ORCA-DBPATH".
            COPY    "ORCA-DBMETA".
       *
       *****************************************************************
@@ -76,7 +80,7 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
+      **** COPY    "CPORCMCP.INC".
       *
            COPY    "MCPAREA".
       *
@@ -138,8 +142,8 @@
                    MOVE    LNK-UPD-PTID    TO  JYURRK-PTID
                    MOVE    WRK-SYSYMD(1:6) TO  JYURRK-SRYYMD (1:6)
                    MOVE    "__"            TO  JYURRK-SRYYMD (7:2)
-                   MOVE    PATH-TBL-JYURRK-KEY27
-                                           TO  WRK-DBPATH
+                   MOVE    "tbl_jyurrk"    TO  WRK-MCP-TABLE
+                   MOVE    "key27"         TO  WRK-MCP-PATHNAME
                    PERFORM 200-HENSYU-SEC
                WHEN    "2"
                    INITIALIZE                  JYURRK-REC
@@ -150,8 +154,8 @@
                    MOVE    LNK-UPD-SRYYM   TO  JYURRK-SRYYMD (1:6)
                    MOVE    "__"            TO  JYURRK-SRYYMD (7:2)
                    MOVE    LNK-UPD-HKNKBN  TO  JYURRK-HKNKBN
-                   MOVE    PATH-TBL-JYURRK-KEY28
-                                           TO  WRK-DBPATH
+                   MOVE    "tbl_jyurrk"    TO  WRK-MCP-TABLE
+                   MOVE    "key28"         TO  WRK-MCP-PATHNAME
                    PERFORM 200-HENSYU-SEC
                WHEN    OTHER
                    MOVE    "1"             TO  LNK-UPD-RC
@@ -167,14 +171,16 @@
       *****************************************************************
        200-HENSYU-SEC            SECTION.
       *
+           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-DBPATH          TO  MCP-PATH
            MOVE    JYURRK-REC          TO  MCPDATA-REC
-           CALL    "MCPSUB"            USING
-                                           MCPAREA
-                                           MCPDATA-REC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    WRK-DBPATH          TO  MCP-PATH
+               MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 900-JYURRK-READ-N-SEC
            ELSE
                MOVE    1                  TO  FLG-JYURRK
@@ -223,24 +229,26 @@
                END-EVALUATE    
       *
                MOVE    RECEUPD-REC         TO  MCPDATA-REC
-               MOVE    PATH-TBL-RECEUPD-KEY
-                                           TO  MCP-PATH
-               CALL    "MCPSUB"            USING
+               MOVE    "tbl_receupd"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
                                                MCPAREA
                                                MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                    MOVE    "2"                 TO  LNK-UPD-RC
                ELSE
-                   MOVE    WRK-DBPATH          TO  MCP-PATH
+                   MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+                   MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                    PERFORM 900-JYURRK-READ-N-SEC
                END-IF
            END-PERFORM      
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-DBPATH          TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                           MCPAREA
-                                           MCPDATA-REC
+           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
        200-HENSYU-EXT.
            EXIT.
@@ -252,16 +260,16 @@
       *
            MOVE    RECEUPD-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    PATH-TBL-RECEUPD-KEY
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    "tbl_receupd"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                            MCPAREA
                                            MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    PATH-TBL-RECEUPD-KEY
-                                           TO  MCP-PATH
+               MOVE    "tbl_receupd"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
                MOVE    "DBFETCH"           TO  MCP-FUNC
-               CALL    "MCPSUB"            USING
+               CALL    "MONFUNC"            USING
                                                MCPAREA
                                                MCPDATA-REC
                IF      MCP-RC              =   ZERO
@@ -275,9 +283,9 @@
            END-IF
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    PATH-TBL-RECEUPD-KEY
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    "tbl_receupd"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                            MCPAREA
                                            MCPDATA-REC
       *
@@ -291,7 +299,7 @@
        900-JYURRK-READ-N-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                            MCPAREA
                                            MCPDATA-REC
            IF      MCP-RC              =   ZERO
