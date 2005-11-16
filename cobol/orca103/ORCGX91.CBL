@@ -50,7 +50,6 @@
       *
       *    SHELLÍÑ
            COPY    "CPSHELLTBL.INC".
-           COPY    "ORCA-DBPATH".
       *
       *    ¥¹¥ÑÎÎ°è
            COPY    "COMMON-SPA".
@@ -73,8 +72,9 @@
                        09  SPA-GMN-CHKYKZHEI       PIC X(01).
                        09  SPA-GMN-CHKSRYHEI       PIC X(01).
                        09  SPA-GMN-CHKYKZKNKBYO    PIC X(01).
+                       09  SPA-GMN-CHKSRYSNT       PIC X(01).
                    07  SPA-GMN-CHK-R   REDEFINES   SPA-GMN-CHK-VAL.
-                       09  SPA-GMN-CHKKBN      PIC X(01)   OCCURS  5.
+                       09  SPA-GMN-CHKKBN      PIC X(01)   OCCURS  6.
                    07  SPA-GMN-CHKSRYRANGE     PIC X(01).
                    07  SPA-GMN-STSRYCD         PIC X(09).
                    07  SPA-GMN-STSRYNAME       PIC X(100).
@@ -147,15 +147,16 @@
       *
       *
        01  WRK-CONS-AREA.
-           03  WRK-CONS-CHKKBN-MAX     PIC 9(02)   VALUE   5.
+           03  WRK-CONS-CHKKBN-MAX     PIC 9(02)   VALUE   6.
            03  WRK-CONS-CHKKBN-VAL.
                05                      PIC X(01)   VALUE   "1".
                05                      PIC X(01)   VALUE   "2".
                05                      PIC X(01)   VALUE   "4".
                05                      PIC X(01)   VALUE   "5".
                05                      PIC X(01)   VALUE   "6".
+               05                      PIC X(01)   VALUE   "7".
            03  WRK-CONS-CHKKBN-R       REDEFINES   WRK-CONS-CHKKBN-VAL.
-               05  WRK-CONS-CHKKBN     PIC X(01)   OCCURS  5.
+               05  WRK-CONS-CHKKBN     PIC X(01)   OCCURS  6.
       *    ¥·¥¹¥Æ¥à´ÉÍý£Ä£Â¡Ê£³£°£°£³¡Ë¤Î¥­¡¼ÃÍ  
            03  WRK-CONS-3003-KBNCD     PIC X(08)   VALUE   "103".
       *    °õºþ´ÉÍý£Ä£Â¤Î¥­¡¼ÃÍ  
@@ -200,6 +201,10 @@
        01  CHKSND-REC.
            COPY    "CPCHKSND.INC".
       *
+      *    ¥Á¥§¥Ã¥¯
+       01  CHKTRD-REC.
+           COPY    "CPCHKTRD.INC".
+      *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
       *****************************************************************
@@ -240,6 +245,7 @@
            COPY    "X02.INC".
            COPY    "X03.INC".
            COPY    "X04.INC".
+           COPY    "X05.INC".
            COPY    "X91.INC".
            COPY    "X97.INC".
            COPY    "X98.INC". 
@@ -390,6 +396,7 @@
            MOVE    "F"             TO  SPA-GMN-CHKYKZHEI
            MOVE    "F"             TO  SPA-GMN-CHKSRYHEI
            MOVE    "F"             TO  SPA-GMN-CHKYKZKNKBYO
+           MOVE    "F"             TO  SPA-GMN-CHKSRYSNT
       *
            MOVE    "F"             TO  SPA-GMN-CHKSRYRANGE
       *
@@ -527,6 +534,10 @@
       *    ÅêÍ¿¶Ø´÷ÌôºÞ¤ÈÉÂÌ¾
            WHEN    "CLICKED"       ALSO    "CHKYKZKNKBYO"
                MOVE    X91-CHKYKZKNKBYO    TO  SPA-GMN-CHKYKZKNKBYO
+               PERFORM 4101-GMN-SPA-SET-SEC
+               PERFORM 41011-CHKMST-CHK-SEC
+           WHEN    "CLICKED"       ALSO    "CHKSRYSNT"
+               MOVE    X91-CHKSRYSNT       TO  SPA-GMN-CHKSRYSNT
                PERFORM 4101-GMN-SPA-SET-SEC
                PERFORM 41011-CHKMST-CHK-SEC
       *
@@ -684,7 +695,8 @@
            INITIALIZE                      TNS-TENSU-REC
            MOVE    SPA-GMN-STSRYCD     TO  TNS-SRYCD
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-           MOVE    PATH-TBL-TENSU-KEY24    TO  MCP-PATH
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key24"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  TNS-TENSU-REC
@@ -693,7 +705,8 @@
                INITIALIZE                  TNS-TENSU-REC
            END-IF
       *
-           MOVE    PATH-TBL-TENSU-KEY24    TO  MCP-PATH
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key24"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSE-SEC
       *
            IF     (TNS-SRYCD(1:1)      =   "1") AND
@@ -732,8 +745,10 @@
                                    =   1 )
       *
                IF    ( SPA-GMN-CHKKBN (IDX0)   =   "T" )
-                   IF    ( WRK-CONS-CHKKBN (IDX0)
-                                               =   "1" OR "2" OR "6")
+                   EVALUATE    WRK-CONS-CHKKBN (IDX0)
+                   WHEN    "1"
+                   WHEN    "2"
+                   WHEN    "6"
                        INITIALIZE                  CHKSND-REC
                        MOVE    WRK-CONS-CHKKBN (IDX0)
                                                TO  CHKSND-CHKKBN
@@ -741,14 +756,33 @@
                        MOVE    SPA-SYSYMD      TO  CHKSND-YUKOSTYMD
                                                    CHKSND-YUKOEDYMD
                        MOVE    CHKSND-REC      TO  MCPDATA-REC
-                       MOVE    PATH-TBL-CHKSND-KEY2    TO  MCP-PATH
+                       MOVE    "tbl_chksnd"            TO  MCP-TABLE
+                       MOVE    "key2"                  TO  MCP-PATHNAME
                        PERFORM 910-DBSELECT-SEC
                        IF    ( MCP-RC          =   ZERO )
                            MOVE    1       TO  SPA-NAI-SRYCD-EXSIT-FLG
                        END-IF
-                       MOVE    PATH-TBL-CHKSND-KEY2    TO  MCP-PATH
+                       MOVE    "tbl_chksnd"            TO  MCP-TABLE
+                       MOVE    "key2"                  TO  MCP-PATHNAME
                        PERFORM 910-DBCLOSE-SEC
-                   ELSE
+                   WHEN    "7"
+                       INITIALIZE                  CHKTRD-REC
+                       MOVE    WRK-CONS-CHKKBN (IDX0)
+                                               TO  CHKTRD-CHKKBN
+                       MOVE    SPA-GMN-STSRYCD TO  CHKTRD-SRYCD
+                       MOVE    SPA-SYSYMD      TO  CHKTRD-YUKOSTYMD
+                                                   CHKTRD-YUKOEDYMD
+                       MOVE    CHKTRD-REC      TO  MCPDATA-REC
+                       MOVE    "tbl_chktrd"            TO  MCP-TABLE
+                       MOVE    "key2"                  TO  MCP-PATHNAME
+                       PERFORM 910-DBSELECT-SEC
+                       IF    ( MCP-RC          =   ZERO )
+                           MOVE    1       TO  SPA-NAI-SRYCD-EXSIT-FLG
+                       END-IF
+                       MOVE    "tbl_chktrd"            TO  MCP-TABLE
+                       MOVE    "key2"                  TO  MCP-PATHNAME
+                       PERFORM 910-DBCLOSE-SEC
+                   WHEN    OTHER
                        INITIALIZE                  CHK-REC
                        MOVE    WRK-CONS-CHKKBN (IDX0)
                                                TO  CHK-CHKKBN
@@ -756,14 +790,16 @@
                        MOVE    SPA-SYSYMD      TO  CHK-YUKOSTYMD
                                                    CHK-YUKOEDYMD
                        MOVE    CHK-REC         TO  MCPDATA-REC
-                       MOVE    PATH-TBL-CHK-KEY2   TO  MCP-PATH
+                       MOVE    "tbl_chk"           TO  MCP-TABLE
+                       MOVE    "key2"              TO  MCP-PATHNAME
                        PERFORM 910-DBSELECT-SEC
                        IF    ( MCP-RC          =   ZERO )
                            MOVE    1       TO  SPA-NAI-SRYCD-EXSIT-FLG
                        END-IF
-                       MOVE    PATH-TBL-CHK-KEY2   TO  MCP-PATH
+                       MOVE    "tbl_chk"           TO  MCP-TABLE
+                       MOVE    "key2"              TO  MCP-PATHNAME
                        PERFORM 910-DBCLOSE-SEC
-                   END-IF
+                   END-EVALUATE
                END-IF
       *
            END-PERFORM
@@ -813,6 +849,7 @@
             AND  ( SPA-GMN-CHKYKZHEI   =   "F")
             AND  ( SPA-GMN-CHKSRYHEI   =   "F")
             AND  ( SPA-GMN-CHKYKZKNKBYO    =   "F")
+            AND  ( SPA-GMN-CHKSRYSNT   =   "F")
                MOVE    "0100"          TO  SPA-ERRCD
                MOVE    1               TO  SPA-GMN-CUR
                GO  TO  4101-KANREN-CHK-EXT
@@ -1198,9 +1235,9 @@
                MOVE    MCPDATA-REC     TO  SYS-3003-REC
                MOVE    SYS-3003-REC    TO  MCPDATA-REC
                MOVE    "DBDELETE"      TO  MCP-FUNC
-               MOVE    PATH-TBL-SYSKANRI-KEY
-                                       TO  MCP-PATH
-               CALL    "MCPSUB"            USING
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
                                            MCPAREA
                                            MCPDATA-REC
                IF    ( MCP-RC          =   ZERO )
@@ -1334,9 +1371,10 @@
                MOVE    WRK-STPAGE          TO  SHELLTBL-ARG15
                MOVE    WRK-EDPAGE          TO  SHELLTBL-ARG16
                MOVE    SHELLTBL            TO  MCPDATA-REC
+               MOVE    "shell"             TO  MCP-TABLE
+               MOVE    "shell"             TO  MCP-PATHNAME
                MOVE    "SHELL"             TO  MCP-FUNC
-               MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
-               CALL    "MCPSUB"            USING
+               CALL    "MONFUNC"           USING
                                            MCPAREA
                                            MCPDATA-REC
            END-IF
@@ -1418,9 +1456,9 @@
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
-           MOVE    PATH-SHELL-SHELL
-                                   TO  MCP-PATH
-           CALL    "MCPSUB"        USING
+           MOVE    "shell"         TO  MCP-TABLE
+           MOVE    "shell"         TO  MCP-PATHNAME
+           CALL    "MONFUNC"       USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
@@ -1490,15 +1528,15 @@
            MOVE    WRK-CONS-JOB-JOBID  TO  SYS-3003-JOBID
       *
            MOVE    SYS-3003-REC        TO  MCPDATA-REC
-           MOVE    PATH-TBL-SYSKANRI-KEY
-                                       TO  MCP-PATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    "DBUPDATE"      TO  MCP-FUNC
            ELSE
                MOVE    "DBINSERT"      TO  MCP-FUNC
            END-IF
       *
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF    ( MCP-RC          NOT =   ZERO )
@@ -1654,6 +1692,7 @@
            MOVE    SPA-GMN-CHKYKZHEI   TO  X91-CHKYKZHEI
            MOVE    SPA-GMN-CHKSRYHEI   TO  X91-CHKSRYHEI
            MOVE    SPA-GMN-CHKYKZKNKBYO    TO  X91-CHKYKZKNKBYO
+           MOVE    SPA-GMN-CHKSRYSNT   TO  X91-CHKSRYSNT
            MOVE    SPA-GMN-CHKSRYRANGE TO  X91-CHKSRYRANGE
            MOVE    SPA-GMN-STSRYCD     TO  X91-STSRYCD
            MOVE    SPA-GMN-STSRYNAME   TO  X91-STSRYNAME
@@ -1925,16 +1964,16 @@
        900-SYSKANRI-KEY10-SEL-SEC      SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    PATH-TBL-SYSKANRI-KEY10
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF    ( MCP-RC              =   ZERO )
                MOVE    "DBFETCH"       TO  MCP-FUNC
-               MOVE    PATH-TBL-SYSKANRI-KEY10
-                                       TO  MCP-PATH
-               CALL    "MCPSUB"            USING
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key10"         TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
                                            MCPAREA
                                            MCPDATA-REC
                IF    ( MCP-RC          =   ZERO )
@@ -1947,9 +1986,9 @@
            END-IF
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    PATH-TBL-SYSKANRI-KEY10
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"                USING
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           CALL    "MONFUNC"               USING
                                            MCPAREA
                                            MCPDATA-REC
       *
@@ -1962,7 +2001,7 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF    ( MCP-RC          =   ZERO )
@@ -1979,7 +2018,7 @@
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -1993,7 +2032,7 @@
        910-DBCLOSE-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -2007,7 +2046,7 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"          TO  MCP-FUNC.
-           CALL   "MCPSUB"         USING   MCPAREA
+           CALL   "MONFUNC"        USING   MCPAREA
                                            MCPDATA-REC.
       *
        900-PUT-WINDOW-EXT.

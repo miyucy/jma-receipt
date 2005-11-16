@@ -39,6 +39,6 @@
                 04  X01-VALUE   PIC X(100).
               03  X01-CHKKBNCOMB.
                 04  X01-CHKKBN.
-                  05  X01-VALUE   PIC X(22).
+                  05  X01-VALUE   PIC X(32).
                 04  X01-CHKKBNCOUNT   PIC S9(9)   BINARY.
-                04  X01-CHKKBNLIST    PIC X(22)   OCCURS  9 TIMES.
+                04  X01-CHKKBNLIST    PIC X(32)   OCCURS  9 TIMES.

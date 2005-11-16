@@ -32,7 +32,7 @@
                05  SPA-X03-GMN-NEXT                    PIC 9(01).
                05  SPA-X03-GMN-PAGE                    PIC 9(05).
                05  SPA-X03-GMN-CUR                     PIC 9(03).
-               05  SPA-X03-GMN-LCHKKBNMEI              PIC X(20).
+               05  SPA-X03-GMN-LCHKKBNMEI              PIC X(70).
                05  SPA-X03-GMN-LYUKOSTYMD              PIC X(09).
                05  SPA-X03-GMN-LYUKOEDYMD              PIC X(09).
                05  SPA-X03-GMN-LNAME                   PIC X(70).
@@ -44,7 +44,7 @@
                        09  SPA-X03-GMN-TLCHK-JYKN      PIC X(01).
                    07  SPA-X03-GMN-LCHKLST-FLG         PIC 9(01)
                                                        OCCURS  100.
-               05  SPA-X03-GMN-RCHKKBNMEI              PIC X(20).
+               05  SPA-X03-GMN-RCHKKBNMEI              PIC X(70).
                05  SPA-X03-GMN-RYUKOSTYMD              PIC X(09).
                05  SPA-X03-GMN-RYUKOEDYMD              PIC X(09).
                05  SPA-X03-GMN-RNAME                   PIC X(70).
@@ -60,13 +60,13 @@
                05  SPA-X03-GMN-CHKKBN-G.
                    07  SPA-X03-GMN-CHKKBN              PIC X(01).
                    07                                  PIC X(01).
-                   07  SPA-X03-GMN-CHKKBNMEI           PIC X(20).
+                   07  SPA-X03-GMN-CHKKBNMEI           PIC X(70).
                05  SPA-X03-GMN-CHKKBNLST-G.
                    07  SPA-X03-GMN-CHKKBN-MAX          PIC 9(03).
                    07  SPA-X03-GMN-CHKKBNLST           OCCURS  05.
                        09  SPA-X03-GMN-CHKKBNL         PIC X(01).
                        09                              PIC X(01).
-                       09  SPA-X03-GMN-CHKKBNMEIL      PIC X(20).
+                       09  SPA-X03-GMN-CHKKBNMEIL      PIC X(70).
                05  SPA-X03-GMN-SELNAME                 PIC X(70).
                05  SPA-X03-GMN-SELCHKLST.
                    07  SPA-X03-GMN-SELCHKLST-MAX       PIC 9(03).

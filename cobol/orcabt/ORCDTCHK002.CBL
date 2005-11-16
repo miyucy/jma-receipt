@@ -165,6 +165,7 @@
            03  FLG-YKZHEI                              PIC 9(01).
            03  FLG-SRYHEI                              PIC 9(01).
            03  FLG-YKZKNKBYO                           PIC 9(01).
+           03  FLG-SRYSNT                              PIC 9(01).
            03  FLG-CHKEND-G.
                05  FLG-CHKEND                          PIC 9(01)
                                                        OCCURS  50.
@@ -231,6 +232,12 @@
                                                        OCCURS  16.
            03  FLG-TAISYO-BYOMEI                       PIC 9(01).
            03  FLG-KOHERR                              PIC 9(01).
+           03  FLG-SRYSNT-G.
+               05  FLG-SRYSNT-DAYCHK                   PIC 9(01).
+               05  FLG-SRYSNT-MONTHCHK                 PIC 9(01).
+               05  FLG-SRYSNT-DAYERR                   PIC 9(01)
+                                                       OCCURS  31.
+               05  FLG-SRYSNT-MONTHERR                 PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -290,6 +297,8 @@
            03  IDX28                                   PIC 9(05). 
            03  IDX29                                   PIC 9(05). 
            03  IDX30                                   PIC 9(05). 
+           03  IDX31                                   PIC 9(05). 
+           03  IDX32                                   PIC 9(05). 
            03  IDXA                                    PIC 9(05). 
            03  IDXE                                    PIC 9(05). 
            03  IDX-TSRYKA                              PIC 9(05).
@@ -519,6 +528,9 @@
                05  TSRYCD-DAY-G.
                    07  TSRYCD-DAY                      PIC 9(01)
                                                        OCCURS  31.
+               05  TSRYCD-DAY-NYUGAIKBN-G.
+                   07  TSRYCD-DAY-NYUGAIKBN            PIC X(01)
+                                                       OCCURS  31.
       *
       *    実日数退避ワーク（実日数チェック用）
        01  TJNISSU-AREA.
@@ -578,10 +590,13 @@
                05  TCHK-ACT-YUKOSTYMD                  PIC X(08).
                05  TCHK-ACT-YUKOEDYMD                  PIC X(08).
                05  TCHK-ACT-CDKBN                      PIC X(01).
+               05  TCHK-ACT-NYUGAIKBN                  PIC X(01).
+               05  TCHK-ACT-NYUGAIBNDKBN               PIC X(01).
                05  TCHK-ACT-CD-G.
                    07  TCHK-ACT-CD-MAX                 PIC 9(05).
-                   07  TCHK-ACT-CD                     PIC X(09)
-                                                       OCCURS  200.
+                   07  TCHK-ACT-CD-OCC                 OCCURS  200.
+                       09  TCHK-ACT-CD                 PIC X(09).
+                       09  TCHK-ACT-DAYMONTHKBN        PIC X(01).
            03  TCHK-CHK-CHKKBN                         PIC X(01).
            03  TCHK-CHK-SRYCD                          PIC X(09).
            03  TCHK-CHK-YMD                            PIC X(08).
@@ -595,10 +610,13 @@
                    07  TCHK-STK-YUKOSTYMD              PIC X(08).
                    07  TCHK-STK-YUKOEDYMD              PIC X(08).
                    07  TCHK-STK-CDKBN                  PIC X(01).
+                   07  TCHK-STK-NYUGAIKBN              PIC X(01).
+                   07  TCHK-STK-NYUGAIBNDKBN           PIC X(01).
                    07  TCHK-STK-CD-G.
                        09  TCHK-STK-CD-MAX             PIC 9(05).
-                       09  TCHK-STK-CD                 PIC X(09)
-                                                       OCCURS  200.
+                       09  TCHK-STK-CD-OCC             OCCURS  200.
+                           11  TCHK-STK-CD             PIC X(09).
+                           11  TCHK-STK-DAYMONTHKBN    PIC X(01).
       *
        01  TGENZAN-AREA.
            03  TGENZAN-VAL.
@@ -837,6 +855,10 @@
        01  CHKSND-REC.
            COPY    "CPCHKSND.INC".
       *
+      *    チェックマスタ３
+       01  CHKTRD-REC.
+           COPY    "CPCHKTRD.INC".
+      *
       *    保険番号
        01  HKNNUM-REC.
            COPY    "CPHKNNUM.INC".
@@ -1073,6 +1095,7 @@
                                            FLG-YKZHEI
                                            FLG-SRYHEI
                                            FLG-YKZKNKBYO
+                                           FLG-SRYSNT
       *
       *    薬剤と病名
            MOVE    "1"                 TO  WRK-CHK-CHKKBN
@@ -1112,6 +1135,14 @@
            PERFORM 900-CHKSND-KEY5-SEL-SEC
            IF    ( FLG-CHKMST          =   ZERO )
                MOVE    1               TO  FLG-YKZKNKBYO
+           END-IF
+      *
+      *    診療行為どうしの算定漏れ
+           MOVE    "7"                 TO  WRK-CHK-CHKKBN
+           MOVE    "2"                 TO  WRK-CHK-CDKBN
+           PERFORM 900-CHKTRD-KEY5-SEL-SEC
+           IF    ( FLG-CHKMST          =   ZERO )
+               MOVE    1               TO  FLG-SRYSNT
            END-IF
       *
            .
@@ -2398,7 +2429,16 @@
                        UNTIL ( IDX27   >   31 )
                    IF    ( PTZAI-DAY (IDX-ZAI IDX27)  >   ZERO )
                        MOVE    1   TO  TSRYCD-DAY (IDX26 IDX27)
+      *
+                       IF    ( TSRYCD-DAY-NYUGAIKBN (IDX26 IDX27)
+                                                =  SPACE 
+                        OR                         DCACCT-NYUGAIKBN )
+                           MOVE    DCACCT-NYUGAIKBN
+                               TO  TSRYCD-DAY-NYUGAIKBN (IDX26 IDX27)
+                       END-IF
+      *
                    END-IF
+      *
                END-PERFORM
            END-IF
       *
@@ -2988,6 +3028,11 @@
       *    併用算定の診療行為チェック処理
            IF    ( ORCBSD01-CHKKBN(11) NOT =   ZERO  )
                PERFORM 200111-HEI-SRY-CHK-SEC
+           END-IF
+      *
+      *    併用算定の診療行為チェック処理
+           IF    ( ORCBSD01-CHKKBN(16) NOT =   ZERO  )
+               PERFORM 200111-SRYSNT-CHK-SEC
            END-IF
       *
       *    実日数チェック処理
@@ -5689,6 +5734,227 @@
        200112-HEI-SRY-ERRMES-HEN-EXT.
            EXIT.
       *****************************************************************
+      *    診療行為どうしの算定漏れチェック
+      *****************************************************************
+       200111-SRYSNT-CHK-SEC           SECTION.
+      *
+           IF    ( ORCBSD01-CHKKBN(16) =   ZERO  )
+               MOVE    1               TO  FLG-CHKEND (16)
+           END-IF
+      *
+      *    併用算定の診療行為チェック処理
+           IF    ( FLG-CHKEND (16)     =   ZERO )
+            AND  ( FLG-SRYSNT          =   1 )
+               PERFORM 200112-SRYSNT-CHK-SEC
+           END-IF
+      *
+           .
+       200111-HEI-SRY-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療行為どうしの算定漏れチェック
+      *****************************************************************
+       200112-SRYSNT-CHK-SEC           SECTION.
+      *
+           PERFORM VARYING IDX6    FROM    1   BY  1
+                   UNTIL ( IDX6    >   TSRYCD-MAX )
+                    OR   ( FLG-CHKEND (16)     =   1 )
+      *
+      *        チェックマスタよりチェック
+               IF    ( FLG-CHKEND (16)     =   ZERO )
+                   MOVE    "7"         TO  WRK-CHK-CHKKBN
+                   MOVE    "2"         TO  WRK-CHK-CDKBN
+                   MOVE    TSRYCD-SRYCD (IDX6)
+                                       TO  WRK-CHK-SRYCD
+                   PERFORM 900-DTCHK008-READ-SEC
+                   IF    ( FLG-DTCHK008    =   1 )
+                       PERFORM 200112-CHKMST-SRYSNT-CHK-SEC
+                   END-IF
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       200112-SRYSNT-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療行為どうしの算定漏れチェック処理（チェックマスタ）
+      *****************************************************************
+       200112-CHKMST-SRYSNT-CHK-SEC   SECTION.
+      *
+           INITIALIZE                  FLG-SRYSNT-G
+      *
+           MOVE    "7"                 TO  TCHK-CHK-CHKKBN
+           MOVE    TSRYCD-SRYCD (IDX6) TO  TCHK-CHK-SRYCD
+           MOVE    WRK-KJNYMD          TO  TCHK-CHK-YMD
+           MOVE    "2"                 TO  TCHK-CHK-CDKBN
+           PERFORM 230-CHKTRD-GET-SEC
+           IF    ( TCHK-ACT-CD-MAX     >   ZERO )
+               CONTINUE
+           ELSE
+               MOVE    "7"             TO  WRK-CHK-CHKKBN
+               MOVE    "2"             TO  WRK-CHK-CDKBN
+               MOVE    TSRYCD-SRYCD (IDX6)
+                                       TO  WRK-CHK-SRYCD
+               PERFORM 900-DTCHK008-WRITE-SEC
+           END-IF
+      *
+           IF    ( TCHK-ACT-NYUGAIKBN  =   SPACE )
+              OR ( TCHK-ACT-NYUGAIKBN  =   ORCBSD01-NYUGAIKBN )
+      *
+               PERFORM VARYING IDX10   FROM    1   BY  1
+                       UNTIL ( IDX10   >   TCHK-ACT-CD-MAX )
+                   IF    ( TCHK-ACT-DAYMONTHKBN (IDX10)
+                                       =   ZERO )
+                       MOVE    1       TO  FLG-SRYSNT-DAYCHK
+                   ELSE
+                       MOVE    1       TO  FLG-SRYSNT-MONTHCHK
+                   END-IF
+               END-PERFORM
+      *
+               IF    ( FLG-SRYSNT-DAYCHK   =   1 )
+                   PERFORM VARYING IDX10   FROM    1   BY  1
+                       UNTIL ( IDX10   >   31 )
+                       IF   ( TSRYCD-DAY ( IDX6 IDX10)    >   ZERO )
+                           PERFORM 200112-CHKTRD-DAY-CHK-SEC
+                       END-IF
+                   END-PERFORM
+      *
+                   INITIALIZE  WRK-NISSU-AREA
+                   PERFORM VARYING IDX10   FROM    1   BY  1
+                           UNTIL ( IDX10   >   31 )
+                       IF    ( FLG-SRYSNT-DAYERR (IDX10)   =   1 )
+                           MOVE    1       TO  WRK-NISSU-DAY (IDX10)
+                       END-IF
+                   END-PERFORM
+      *
+                   IF    ( WRK-NISSU-DAY-G NOT =   ZERO )
+                       MOVE    "160001"    TO  WRK-ERRCD
+                       PERFORM 200112-SRYSNT-ERR-HEN-SEC
+                   END-IF
+      *
+               END-IF
+      *
+               IF    ( FLG-SRYSNT-MONTHCHK =   1 )
+                   PERFORM 200112-CHKTRD-MONTH-CHK-SEC
+                   IF    ( FLG-SRYSNT-MONTHERR =   1 )
+                       MOVE    TSRYCD-DAY-G (IDX6)
+                                               TO  WRK-NISSU-DAY-G
+                       MOVE    "160002"        TO  WRK-ERRCD
+                       PERFORM 200112-SRYSNT-ERR-HEN-SEC
+                   END-IF
+               END-IF
+      *
+           END-IF
+      *
+      *
+           .
+       200112-CHKMST-SRYSNT-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェックマスタ３診療行為チェック処理（日別）
+      *****************************************************************
+       200112-CHKTRD-DAY-CHK-SEC       SECTION.
+      *
+           PERFORM VARYING IDX31   FROM    1   BY  1
+                   UNTIL ( IDX31           >   TCHK-ACT-CD-MAX )
+                    OR   ( FLG-SRYSNT-DAYERR (IDX10)   =  2 )
+      *
+               IF    ( TCHK-ACT-DAYMONTHKBN (IDX31)
+                                               =   ZERO )
+                   MOVE    1       TO  FLG-SRYSNT-DAYERR (IDX10)
+      *
+                   PERFORM VARYING IDX32   FROM   1    BY  1
+                           UNTIL ( IDX32   >   TSRYCD-MAX )
+                       IF    ( TCHK-ACT-CD (IDX31)
+                                           =   TSRYCD-SRYCD (IDX32))
+                        AND  ( TSRYCD-DAY (IDX32 IDX10)    >   ZERO )
+      *
+                           IF    ( TCHK-ACT-NYUGAIBNDKBN   =   "2" )
+                               IF    ( TSRYCD-DAY-NYUGAIKBN
+                                                      (IDX32 IDX10)
+                                           =   ORCBSD01-NYUGAIKBN )
+                                   MOVE    2
+                                       TO FLG-SRYSNT-DAYERR (IDX10)
+                               END-IF
+                           ELSE
+                                   MOVE    2
+                                       TO FLG-SRYSNT-DAYERR (IDX10)
+                           END-IF
+                       END-IF
+                   END-PERFORM
+               END-IF
+           END-PERFORM
+      *
+           .
+       200112-CHKTRD-DAY-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェックマスタ３診療行為チェック処理（月別）
+      *****************************************************************
+       200112-CHKTRD-MONTH-CHK-SEC     SECTION.
+      *
+           PERFORM VARYING IDX31   FROM    1   BY  1
+                   UNTIL ( IDX31           >   TCHK-ACT-CD-MAX )
+                    OR   ( FLG-SRYSNT-MONTHERR =   2 )
+      *
+               IF    ( TCHK-ACT-DAYMONTHKBN (IDX31)
+                                               =   "1" )
+                   MOVE    1       TO  FLG-SRYSNT-MONTHERR
+      *
+                   PERFORM VARYING IDX32   FROM   1    BY  1
+                           UNTIL ( IDX32      >   TSRYCD-MAX )
+                       IF    ( TCHK-ACT-CD (IDX31)
+                                              =   TSRYCD-SRYCD (IDX32))
+      *
+                           IF    ( TCHK-ACT-NYUGAIBNDKBN   =   "2" )
+                               IF    ( TSRYCD-NYUGAIKBN (IDX32)
+                                               =   ORCBSD01-NYUGAIKBN )
+                                   MOVE    2   TO FLG-SRYSNT-MONTHERR
+                               END-IF
+                           ELSE
+                                   MOVE    2   TO FLG-SRYSNT-MONTHERR
+                           END-IF
+                       END-IF
+                   END-PERFORM
+               END-IF
+           END-PERFORM
+      *
+           .
+       200112-CHKTRD-MONTH-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療行為どうしの算定漏れチェックエラー編集処理
+      *****************************************************************
+       200112-SRYSNT-ERR-HEN-SEC       SECTION.
+      *
+           MOVE    TSRYCD-SRYCD (IDX6) TO  WRK-SRYCD
+           MOVE    WRK-KJNYMD          TO  WRK-TNS-YMD
+           PERFORM 900-TENSU-KEY-SEL-SEC
+           IF    ( FLG-TENSU       NOT =   ZERO )
+               MOVE    WRK-SRYCD       TO  WRK-MAE-INPUT
+               PERFORM 800-ZENKAKU-HEN-SEC
+               MOVE    WRK-OUT-INPUT   TO  TNS-NAME
+           END-IF
+      *
+           PERFORM 200111-NISSU-HEN-SEC
+      *
+           MOVE    SPACE       TO   WRK-ERRMES-PLUS
+      *
+           STRING TNS-NAME         DELIMITED   BY  SPACE
+                  WRK-NISSU-MES    DELIMITED   BY SPACE
+           INTO   WRK-ERRMES-PLUS
+           END-STRING
+      *
+           PERFORM 215-ERRMES-HEN-SEC
+           IF    ( ORCBSD01-CHKKBN (16)    =   "1" )
+               MOVE    1       TO  FLG-CHKEND (16)
+           END-IF
+      *
+           .
+       200112-SRYSNT-ERR-HEN-EXT.
+           EXIT.
+      *****************************************************************
       *    実日数算定チェック処理
       *****************************************************************
        200111-JNISSU-CHK-SEC           SECTION.
@@ -7356,6 +7622,10 @@
                                        TO  TCHK-ACT-YUKOEDYMD
                    MOVE    TCHK-STK-CDKBN     (TCHK-IDX)
                                        TO  TCHK-ACT-CDKBN
+                   MOVE    TCHK-STK-NYUGAIKBN (TCHK-IDX)
+                                       TO  TCHK-ACT-NYUGAIKBN
+                   MOVE    TCHK-STK-NYUGAIBNDKBN (TCHK-IDX)
+                                       TO  TCHK-ACT-NYUGAIBNDKBN
                    MOVE    TCHK-STK-CD-G      (TCHK-IDX)
                                        TO  TCHK-ACT-CD-G
       *
@@ -7390,6 +7660,12 @@
                    MOVE    TCHK-ACT-CDKBN
                                        TO  TCHK-STK-CDKBN
                                                        (TCHK-STOCK-MAX)
+                   MOVE    TCHK-ACT-NYUGAIKBN
+                                       TO  TCHK-STK-NYUGAIKBN
+                                                       (TCHK-STOCK-MAX)
+                   MOVE    TCHK-ACT-NYUGAIBNDKBN
+                                       TO  TCHK-STK-NYUGAIBNDKBN
+                                                       (TCHK-STOCK-MAX)
                    MOVE    TCHK-ACT-CD-G
                                        TO  TCHK-STK-CD-G
                                                        (TCHK-STOCK-MAX)
@@ -7398,6 +7674,87 @@
       *
            .
        2301-TCHK-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェックマスタ３情報取得処理
+      *****************************************************************
+       230-CHKTRD-GET-SEC              SECTION.
+      *
+           MOVE    ZERO                TO  FLG-CHKMST
+      *
+           INITIALIZE                      TCHK-ACTIVE-G
+           MOVE    ZERO                TO  IDX-MAX
+      *
+           PERFORM 2301-TCHK-CHK-SEC
+           IF    ( TCHK-FLG            =   ZERO )
+      *
+               INITIALIZE                  CHKTRD-REC
+               MOVE    TCHK-CHK-CHKKBN TO  CHKTRD-CHKKBN
+               MOVE    TCHK-CHK-CDKBN  TO  CHKTRD-CDKBN
+               MOVE    TCHK-CHK-SRYCD  TO  CHKTRD-SRYCD
+               MOVE    TCHK-CHK-YMD    TO  CHKTRD-YUKOSTYMD
+                                           CHKTRD-YUKOEDYMD
+               MOVE    CHKTRD-REC      TO  MCPDATA-REC
+               MOVE    PATH-TBL-CHKTRD-KEY3   TO  MCP-PATH
+               PERFORM 910-DBSELECT-SEC
+               IF    ( MCP-RC          =   ZERO )
+                   MOVE    MCPDATA-REC TO  CHKTRD-REC
+               ELSE
+                   INITIALIZE              CHKTRD-REC
+                   MOVE    1           TO  FLG-CHKMST
+               END-IF
+      *
+               PERFORM UNTIL ( FLG-CHKMST  NOT =   ZERO )
+                        OR   ( IDX-MAX    >=  CONST-TCHK-STK-CD-MAX )
+      *
+                   COMPUTE IDX-MAX =   IDX-MAX +   1
+      *
+                   IF    ( IDX-MAX     =   1 )
+                       MOVE    CHKTRD-CHKKBN
+                                               TO  TCHK-ACT-CHKKBN
+                       MOVE    CHKTRD-SRYCD
+                                               TO  TCHK-ACT-SRYCD
+                       MOVE    CHKTRD-YUKOSTYMD
+                                               TO  TCHK-ACT-YUKOSTYMD
+                       MOVE    CHKTRD-YUKOEDYMD
+                                               TO  TCHK-ACT-YUKOEDYMD
+                       MOVE    CHKTRD-CDKBN
+                                               TO  TCHK-ACT-CDKBN
+                       MOVE    CHKTRD-NYUGAIKBN
+                                               TO  TCHK-ACT-NYUGAIKBN
+                       MOVE    CHKTRD-NYUGAIBNDKBN
+                                               TO  TCHK-ACT-NYUGAIBNDKBN
+                   END-IF
+      *
+                   MOVE    CHKTRD-CD           TO  TCHK-ACT-CD (IDX-MAX)
+                   MOVE    CHKTRD-DAYMONTHKBN  TO  TCHK-ACT-DAYMONTHKBN
+                                                               (IDX-MAX)
+      *
+                   MOVE    PATH-TBL-CHKTRD-KEY3   TO  MCP-PATH
+                   PERFORM 910-DBFETCH-SEC
+                   IF    ( MCP-RC          =   ZERO )
+                       MOVE    MCPDATA-REC TO  CHKTRD-REC
+                   ELSE
+                       INITIALIZE              CHKTRD-REC
+                       MOVE    1           TO  FLG-CHKMST
+                   END-IF
+      *
+               END-PERFORM
+      *
+               MOVE    PATH-TBL-CHKTRD-KEY3   TO  MCP-PATH
+               PERFORM 910-DBCLOSE-SEC
+      *
+               IF    ( IDX-MAX         >   ZERO )
+                   MOVE    IDX-MAX     TO  TCHK-ACT-CD-MAX
+                   PERFORM 2301-TCHK-HEN-SEC
+               ELSE
+                   MOVE    1           TO  FLG-CHKMST
+               END-IF
+      *
+           END-IF
+      *
+           .
+       230-CHKTRD-GET-EXT.
            EXIT.
       *****************************************************************
       *    エラー出力処理
@@ -7649,7 +8006,7 @@
        900-CHK-KEY5-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    チェックマスタ２検索処理(CHK-KEY5)
+      *    チェックマスタ２検索処理(CHKSND-KEY5)
       *****************************************************************
        900-CHKSND-KEY5-SEL-SEC             SECTION.
       *
@@ -7678,6 +8035,37 @@
            .
       *
        900-CHKSND-KEY5-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェックマスタ３検索処理(CHKTRD-KEY5)
+      *****************************************************************
+       900-CHKTRD-KEY5-SEL-SEC             SECTION.
+      *
+           MOVE    ZERO                TO  FLG-CHKMST
+      *
+           INITIALIZE                      CHKTRD-REC
+           MOVE    WRK-CHK-CHKKBN      TO  CHKTRD-CHKKBN
+           MOVE    WRK-CHK-CDKBN       TO  CHKTRD-CDKBN
+           MOVE    WRK-KJNYMD          TO  CHKTRD-YUKOSTYMD
+                                           CHKTRD-YUKOEDYMD
+           MOVE    CHKTRD-REC          TO  MCPDATA-REC
+           MOVE    PATH-TBL-CHKTRD-KEY5
+                                       TO  MCP-PATH
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  CHKTRD-REC
+           ELSE
+               INITIALIZE                  CHKTRD-REC
+               MOVE    1               TO  FLG-CHKMST
+           END-IF
+      *
+           MOVE    PATH-TBL-CHKTRD-KEY5
+                                       TO  MCP-PATH
+           PERFORM 910-DBCLOSE-SEC
+      *
+           .
+      *
+       900-CHKTRD-KEY5-SEL-EXT.
            EXIT.
       *****************************************************************
       *    データチェック中間ファイル読込処理

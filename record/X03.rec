@@ -13,7 +13,7 @@ X03	{
 			state	int;
 		};
 		LCHKKBNMEI	{
-			value	varchar(20);
+			value	varchar(70);
 		};
 		LYUKOSTYMD	{
 			value	varchar(9);
@@ -27,7 +27,7 @@ X03	{
 		scrolledwindow1	{
 			LCHKLST	{
 				LBLLJYKN	{
-					value	varchar(04);
+					value	varchar(06);
 				};
 				count	int;
 				row	int;
@@ -41,7 +41,7 @@ X03	{
 			};
 		};
 		RCHKKBNMEI	{
-			value	varchar(20);
+			value	varchar(70);
 		};
 		RYUKOSTYMD	{
 			value	varchar(9);
@@ -55,7 +55,7 @@ X03	{
 		scrolledwindow3	{
 			RCHKLST	{
 				LBLRJYKN	{
-					value	varchar(04);
+					value	varchar(06);
 				};
 				count	int;
 				row	int;
@@ -70,10 +70,10 @@ X03	{
 		};
 		CMB_CHKKBN	{
 			CHKKBN	{
-				value	varchar(22);
+				value	varchar(72);
 			};
 			count	int;
-			item	varchar(22)[5];
+			item	varchar(72)[5];
 		};
 		SELNAME	{
 				value	varchar(70);

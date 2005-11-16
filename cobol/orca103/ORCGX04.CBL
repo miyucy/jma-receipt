@@ -364,7 +364,6 @@
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
-           COPY    "ORCA-DBPATH".
       *
       *    ¥Á¥§¥Ã¥¯¥Þ¥¹¥¿¶ÈÌ³¥µ¥Ö£±¡ÊÉÂÌ¾ÍóÊÔ½¸¡Ë
            COPY    "CPXSUB01.INC".
@@ -387,6 +386,7 @@
            COPY    "X02.INC".
            COPY    "X03.INC".
            COPY    "X04.INC".
+           COPY    "X05.INC".
            COPY    "X91.INC".
            COPY    "X97.INC".
            COPY    "X98.INC". 
@@ -614,8 +614,8 @@
            MOVE    SPA-SYSYMD      TO  SYS-1005-STYUKYMD
                                        SYS-1005-EDYUKYMD
            MOVE    SYS-1005-REC    TO  SYSKANRI-REC
-           MOVE    PATH-TBL-SYSKANRI-KEY2
-                                   TO  MCP-PATH
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 900-SYSKANRI-KEY2-SEL-SEC
            MOVE    SYSKANRI-REC    TO  SYS-1005-REC
       *
@@ -635,8 +635,9 @@
       *
            END-PERFORM
       *
-           MOVE    PATH-TBL-SYSKANRI-KEY2  TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            . 
        3101-SRTKBNLST-PTBYO-SET-EXT.
@@ -691,8 +692,9 @@
       *
            END-PERFORM
       *
-           MOVE    PATH-TBL-USERBYOMEI-KEY4    TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_userbyomei"    TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            . 
        3101-SRTKBNLST-UBYO-SET-EXT.
@@ -784,8 +786,9 @@
       *
            END-PERFORM
       *
-           MOVE    PATH-TBL-CHKSND-KEY2    TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_chksnd"        TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            . 
        3101-BYOLST-EXT.
@@ -1564,9 +1567,9 @@
       *
            END-PERFORM
       *
-           MOVE    PATH-TBL-PTBYOMEI-KEY26
-                                       TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
+           MOVE    "key26"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            MOVE    IDX1            TO  SPA-GMN-SRCBYOLST-MAX
       *
@@ -1628,9 +1631,9 @@
       *
            END-PERFORM
       *
-           MOVE    PATH-TBL-BYOMEI-KEY2
-                                       TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_byomei"        TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            MOVE    IDX1            TO  SPA-GMN-SRCBYOLST-MAX
       *
@@ -1704,9 +1707,9 @@
       *
            END-PERFORM
       *
-           MOVE    PATH-TBL-USERBYOMEI-KEY10
-                                       TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_userbyomei"    TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            MOVE    IDX1            TO  SPA-GMN-SRCBYOLST-MAX
       *
@@ -1778,8 +1781,9 @@
       *
            END-PERFORM
       *
-           MOVE    PATH-TBL-MEDYAKKO-KEY3  TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_medyakko"          TO  MCP-TABLE
+           MOVE    "key3"                  TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            MOVE    IDX1            TO  SPA-GMN-SRCBYOLST-MAX
       *
@@ -2131,7 +2135,8 @@
                            MOVE    SPA-NAI-BYOCD (IDX6)
                                            TO  BYO-BYOMEICD
                            MOVE    BYOMEI-REC  TO  MCPDATA-REC
-                           MOVE    PATH-TBL-BYOMEI-KEY     TO  MCP-PATH
+                           MOVE    "tbl_byomei"    TO  MCP-TABLE
+                           MOVE    "key"           TO  MCP-PATHNAME
                            PERFORM 910-DBSELECT-SEC
                            IF    ( MCP-RC      =   ZERO )
                                MOVE    MCPDATA-REC TO  BYOMEI-REC
@@ -2139,8 +2144,9 @@
                                INITIALIZE              BYOMEI-REC
                            END-IF
       *
-                           MOVE    PATH-TBL-BYOMEI-KEY     TO  MCP-PATH
-                           PERFORM 910-DBCLOSE-SEC
+                           MOVE    "tbl_byomei"     TO  MCP-TABLE
+                           MOVE    "key"            TO  MCP-PATHNAME
+                           PERFORM 910-DBCLOSECURSOR-SEC
       *
                            MOVE    BYO-BYOMEI
                                TO  SPA-GMN-TCDBYOMEI (SPA-GMN-CDLST-MAX)
@@ -2854,7 +2860,8 @@
            MOVE    SPA-X01-SEL-STYUKYMD    TO  CHKSND-YUKOSTYMD
            MOVE    SPA-X01-SEL-EDYUKYMD    TO  CHKSND-YUKOEDYMD
            MOVE    CHKSND-REC              TO  MCPDATA-REC
-           MOVE    PATH-TBL-CHKSND-DEL11   TO  MCP-PATH
+           MOVE    "tbl_chksnd"            TO  MCP-TABLE
+           MOVE    "del11"                 TO  MCP-PATHNAME
            PERFORM 910-DBDELETE-SEC
            IF    ( MCP-RC              NOT =   ZERO )
                MOVE    "1002"              TO  SPA-ERRCD
@@ -2924,7 +2931,8 @@
            MOVE    SPA-X01-SEL-STYUKYMD    TO  CHKSND-YUKOSTYMD
            MOVE    SPA-X01-SEL-EDYUKYMD    TO  CHKSND-YUKOEDYMD
            MOVE    CHKSND-REC              TO  MCPDATA-REC
-           MOVE    PATH-TBL-CHKSND-DEL11   TO  MCP-PATH
+           MOVE    "tbl_chksnd"            TO  MCP-TABLE
+           MOVE    "del11"                 TO  MCP-PATHNAME
            PERFORM 910-DBDELETE-SEC
            IF    ( MCP-RC              NOT =   ZERO )
                MOVE    "1003"              TO  SPA-ERRCD
@@ -2963,7 +2971,8 @@
                MOVE    SMCNDATE-HMS        TO  CHKSND-UPHMS
       *
                MOVE    CHKSND-REC            TO  MCPDATA-REC
-               MOVE    PATH-TBL-CHKSND-KEY   TO  MCP-PATH
+               MOVE    "tbl_chksnd"        TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 910-DBINSERT-SEC
                IF    ( MCP-RC              NOT =   ZERO )
                    MOVE    "1001"                  TO  SPA-ERRCD
@@ -3609,7 +3618,8 @@
            END-IF
       *
            MOVE    CHKSND-REC          TO  MCPDATA-REC
-           MOVE    PATH-TBL-CHKSND-KEY2  TO  MCP-PATH
+           MOVE    "tbl_chksnd"        TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  CHKSND-REC
@@ -3627,7 +3637,8 @@
       *****************************************************************
        900-CHKSND-KEY2-FET-SEC      SECTION.
       *
-           MOVE    PATH-TBL-CHKSND-KEY2  TO  MCP-PATH
+           MOVE    "tbl_chksnd"        TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC    =     ZERO )
                MOVE    MCPDATA-REC     TO  CHKSND-REC
@@ -3648,8 +3659,8 @@
            MOVE    ZERO            TO  FLG-SYSKANRI
       *
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
-           MOVE    PATH-TBL-SYSKANRI-KEY2
-                                   TO  MCP-PATH
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC    =     ZERO )
                MOVE    MCPDATA-REC TO  SYSKANRI-REC
@@ -3667,8 +3678,8 @@
       *****************************************************************
        900-SYSKANRI-KEY2-FET-SEC      SECTION.
       *
-           MOVE    PATH-TBL-SYSKANRI-KEY2
-                                   TO  MCP-PATH
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC    =     ZERO )
                MOVE    MCPDATA-REC TO  SYSKANRI-REC
@@ -3706,8 +3717,8 @@
            END-STRING
       *
            MOVE    PTBYOMEI-REC    TO  MCPDATA-REC
-           MOVE    PATH-TBL-PTBYOMEI-KEY26
-                                   TO  MCP-PATH
+           MOVE    "tbl_ptbyomei"  TO  MCP-TABLE
+           MOVE    "key26"         TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC    =     ZERO )
                MOVE    MCPDATA-REC TO  PTBYOMEI-REC
@@ -3725,8 +3736,8 @@
       *****************************************************************
        900-PTBYOMEI-KEY26-FET-SEC      SECTION.
       *
-           MOVE    PATH-TBL-PTBYOMEI-KEY26
-                                   TO  MCP-PATH
+           MOVE    "tbl_ptbyomei"  TO  MCP-TABLE
+           MOVE    "key26"         TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC    =     ZERO )
                MOVE    MCPDATA-REC TO  PTBYOMEI-REC
@@ -3758,8 +3769,8 @@
       *
            MOVE    BYO-BYOMEI      TO  BYO-BYOMEIKANA
            MOVE    BYOMEI-REC      TO  MCPDATA-REC
-           MOVE    PATH-TBL-BYOMEI-KEY7
-                                   TO  MCP-PATH
+           MOVE    "tbl_byomei"    TO  MCP-TABLE
+           MOVE    "key7"          TO  MCP-PATHNAME
            PERFORM 911-DBSELECT-SEC
            IF    ( MCP-RC    =     ZERO )
                PERFORM 900-BYOMEI-KEY7-FET-SEC
@@ -3779,8 +3790,8 @@
            PERFORM UNTIL ( FLG-BYOMEI      NOT =   ZERO )
                     OR   ( FLG-LOOP-END    NOT =   ZERO )
       *
-               MOVE    PATH-TBL-BYOMEI-KEY7
-                                   TO  MCP-PATH
+               MOVE    "tbl_byomei"    TO  MCP-TABLE
+               MOVE    "key7"          TO  MCP-PATHNAME
                PERFORM 910-DBFETCH-SEC
                IF    ( MCP-RC    =     ZERO )
                    MOVE    MCPDATA-REC TO  BYOMEI-REC
@@ -3811,8 +3822,9 @@
            MOVE    SPA-HOSPID      TO  USBYO-HOSPID
       *
            MOVE    USERBYOMEI-REC  TO  MCPDATA-REC
-           MOVE    PATH-TBL-USERBYOMEI-KEY4
-                                   TO  MCP-PATH
+           MOVE    "tbl_userbyomei"
+                                   TO  MCP-TABLE
+           MOVE    "key4"          TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC    =     ZERO )
                MOVE    MCPDATA-REC TO  USERBYOMEI-REC
@@ -3830,8 +3842,9 @@
       *****************************************************************
        900-USERBYOMEI-KEY4-FET-SEC    SECTION.
       *
-           MOVE    PATH-TBL-USERBYOMEI-KEY4
-                                   TO  MCP-PATH
+           MOVE    "tbl_userbyomei"
+                                   TO  MCP-TABLE
+           MOVE    "key4"          TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC    =     ZERO )
                MOVE    MCPDATA-REC TO  USERBYOMEI-REC
@@ -3863,8 +3876,9 @@
            END-STRING
       *
            MOVE    USERBYOMEI-REC  TO  MCPDATA-REC
-           MOVE    PATH-TBL-USERBYOMEI-KEY10
-                                   TO  MCP-PATH
+           MOVE    "tbl_userbyomei"
+                                   TO  MCP-TABLE
+           MOVE    "key10"         TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC    =     ZERO )
                MOVE    MCPDATA-REC TO  USERBYOMEI-REC
@@ -3882,8 +3896,9 @@
       *****************************************************************
        900-USERBYOMEI-KEY10-FET-SEC    SECTION.
       *
-           MOVE    PATH-TBL-USERBYOMEI-KEY10
-                                   TO  MCP-PATH
+           MOVE    "tbl_userbyomei"
+                                   TO  MCP-TABLE
+           MOVE    "key10"         TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC    =     ZERO )
                MOVE    MCPDATA-REC TO  USERBYOMEI-REC
@@ -3908,8 +3923,8 @@
            MOVE    1               TO  MYAK-RENNUM
       *
            MOVE    MEDYAKKO-REC    TO  MCPDATA-REC
-           MOVE    PATH-TBL-MEDYAKKO-KEY
-                                   TO  MCP-PATH
+           MOVE    "tbl_medyakko"  TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC    =     ZERO )
                MOVE    MCPDATA-REC TO  MEDYAKKO-REC
@@ -3918,8 +3933,8 @@
                MOVE    1           TO  FLG-MEDYAKKO
            END-IF
       *
-           MOVE    PATH-TBL-MEDYAKKO-KEY
-                                   TO  MCP-PATH
+           MOVE    "tbl_medyakko"  TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
       *
            .
@@ -3943,8 +3958,8 @@
            
       *
            MOVE    MEDYAKKO-REC    TO  MCPDATA-REC
-           MOVE    PATH-TBL-MEDYAKKO-KEY3
-                                   TO  MCP-PATH
+           MOVE    "tbl_medyakko"  TO  MCP-TABLE
+           MOVE    "key3"          TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC    =     ZERO )
                MOVE    MCPDATA-REC TO  MEDYAKKO-REC
@@ -3962,8 +3977,8 @@
       *****************************************************************
        900-MEDYAKKO-KEY3-FET-SEC     SECTION.
       *
-           MOVE    PATH-TBL-MEDYAKKO-KEY3
-                                   TO  MCP-PATH
+           MOVE    "tbl_medyakko"  TO  MCP-TABLE
+           MOVE    "key3"          TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC    =     ZERO )
                MOVE    MCPDATA-REC TO  MEDYAKKO-REC
@@ -3982,7 +3997,7 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF    ( MCP-RC          =   ZERO )
@@ -3999,7 +4014,7 @@
        911-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -4013,7 +4028,7 @@
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -4024,16 +4039,16 @@
       *****************************************************************
       *    £Ä£Â¥¯¥í¡¼¥º½èÍý
       *****************************************************************
-       910-DBCLOSE-SEC                 SECTION.
+       910-DBCLOSECURSOR-SEC                 SECTION.
       *
-      *    MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-      *    CALL    "MCPSUB"            USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
-       910-DBCLOSE-EXT.
+       910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
       *    £Ä£Â£Ä£Å£Ì£Å£Ô£Å½èÍý
@@ -4041,7 +4056,7 @@
        910-DBDELETE-SEC                 SECTION.
       *
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -4055,7 +4070,7 @@
        910-DBINSERT-SEC                SECTION.
       *
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -4069,7 +4084,7 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"          TO  MCP-FUNC.
-           CALL   "MCPSUB"             USING
+           CALL   "MONFUNC"            USING
                                        MCPAREA
                                        MCPDATA-REC.
       *

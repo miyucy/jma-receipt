@@ -225,9 +225,9 @@
     <widget>
       <class>GtkButton</class>
       <name>BTN_INS</name>
-      <x>460</x>
+      <x>455</x>
       <y>225</y>
-      <width>110</width>
+      <width>105</width>
       <height>25</height>
       <can_focus>True</can_focus>
       <accelerator>
@@ -248,9 +248,9 @@
     <widget>
       <class>GtkButton</class>
       <name>BTN_ALLINS</name>
-      <x>460</x>
+      <x>455</x>
       <y>260</y>
-      <width>110</width>
+      <width>105</width>
       <height>25</height>
       <can_focus>True</can_focus>
       <accelerator>
@@ -271,9 +271,9 @@
     <widget>
       <class>GtkButton</class>
       <name>BTN_DEL</name>
-      <x>460</x>
+      <x>455</x>
       <y>295</y>
-      <width>110</width>
+      <width>105</width>
       <height>25</height>
       <can_focus>True</can_focus>
       <accelerator>
@@ -300,7 +300,7 @@
       <height>25</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
+      <text_max_length>70</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -376,7 +376,7 @@
       <height>25</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
+      <text_max_length>70</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -762,95 +762,6 @@
     </widget>
 
     <widget>
-      <class>GtkScrolledWindow</class>
-      <name>scrolledwindow3</name>
-      <x>585</x>
-      <y>105</y>
-      <width>425</width>
-      <height>310</height>
-      <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
-      <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
-      <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
-      <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
-
-      <widget>
-	<class>GtkPandaCList</class>
-	<name>RCHKLST</name>
-	<can_focus>True</can_focus>
-	<signal>
-	  <name>select_row</name>
-	  <handler>clist_send_event</handler>
-	  <after>True</after>
-	  <data>SELECT</data>
-	  <last_modification_time>Tue, 20 Nov 2001 03:43:38 GMT</last_modification_time>
-	</signal>
-	<signal>
-	  <name>unselect_row</name>
-	  <handler>clist_send_event</handler>
-	  <after>True</after>
-	  <data>SELECT</data>
-	  <last_modification_time>Tue, 20 Nov 2001 03:43:45 GMT</last_modification_time>
-	</signal>
-	<signal>
-	  <name>select_row</name>
-	  <handler>selection_changed</handler>
-	  <data>SELECT</data>
-	  <last_modification_time>Tue, 20 Nov 2001 03:43:51 GMT</last_modification_time>
-	</signal>
-	<signal>
-	  <name>unselect_row</name>
-	  <handler>selection_changed</handler>
-	  <data>SELECT</data>
-	  <last_modification_time>Tue, 20 Nov 2001 03:44:00 GMT</last_modification_time>
-	</signal>
-	<columns>3</columns>
-	<column_widths>30,315,30</column_widths>
-	<selection_mode>GTK_SELECTION_MULTIPLE</selection_mode>
-	<show_titles>True</show_titles>
-	<shadow_type>GTK_SHADOW_IN</shadow_type>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
-	  <name>label1003</name>
-	  <label>番号</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
-	  <name>label521</name>
-	  <label>名称</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
-	  <name>LBLRJYKN</name>
-	  <label></label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-      </widget>
-    </widget>
-
-    <widget>
       <class>GtkLabel</class>
       <name>label1006</name>
       <x>840</x>
@@ -899,7 +810,7 @@
 	</signal>
 	<editable>True</editable>
 	<text_visible>True</text_visible>
-	<text_max_length>22</text_max_length>
+	<text_max_length>72</text_max_length>
 	<text></text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
@@ -923,11 +834,34 @@
     </widget>
 
     <widget>
+      <class>GtkButton</class>
+      <name>B09S</name>
+      <x>688</x>
+      <y>693</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F9</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Mon, 13 May 2002 04:58:51 GMT</last_modification_time>
+      </signal>
+      <label>選択解除</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
       <class>GtkScrolledWindow</class>
       <name>scrolledwindow1</name>
-      <x>20</x>
+      <x>10</x>
       <y>105</y>
-      <width>425</width>
+      <width>435</width>
       <height>595</height>
       <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
       <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
@@ -1012,26 +946,92 @@
     </widget>
 
     <widget>
-      <class>GtkButton</class>
-      <name>B09S</name>
-      <x>688</x>
-      <y>693</y>
-      <width>80</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <accelerator>
-	<modifiers>0</modifiers>
-	<key>GDK_F9</key>
-	<signal>clicked</signal>
-      </accelerator>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Mon, 13 May 2002 04:58:51 GMT</last_modification_time>
-      </signal>
-      <label>選択解除</label>
-      <relief>GTK_RELIEF_NORMAL</relief>
+      <class>GtkScrolledWindow</class>
+      <name>scrolledwindow3</name>
+      <x>575</x>
+      <y>105</y>
+      <width>435</width>
+      <height>310</height>
+      <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
+      <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
+      <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
+      <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
+
+      <widget>
+	<class>GtkPandaCList</class>
+	<name>RCHKLST</name>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>select_row</name>
+	  <handler>clist_send_event</handler>
+	  <after>True</after>
+	  <data>SELECT</data>
+	  <last_modification_time>Tue, 20 Nov 2001 03:43:38 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>unselect_row</name>
+	  <handler>clist_send_event</handler>
+	  <after>True</after>
+	  <data>SELECT</data>
+	  <last_modification_time>Tue, 20 Nov 2001 03:43:45 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>select_row</name>
+	  <handler>selection_changed</handler>
+	  <data>SELECT</data>
+	  <last_modification_time>Tue, 20 Nov 2001 03:43:51 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>unselect_row</name>
+	  <handler>selection_changed</handler>
+	  <data>SELECT</data>
+	  <last_modification_time>Tue, 20 Nov 2001 03:44:00 GMT</last_modification_time>
+	</signal>
+	<columns>3</columns>
+	<column_widths>30,315,30</column_widths>
+	<selection_mode>GTK_SELECTION_MULTIPLE</selection_mode>
+	<show_titles>True</show_titles>
+	<shadow_type>GTK_SHADOW_IN</shadow_type>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>label1003</name>
+	  <label>番号</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>label521</name>
+	  <label>名称</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>LBLRJYKN</name>
+	  <label></label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+      </widget>
     </widget>
   </widget>
 </widget>

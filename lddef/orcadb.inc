@@ -102,6 +102,7 @@ db	{
 	tbl_santei_prv;
 	tbl_srykarrk_prv;
 	tbl_hours;
+	tbl_chktrd;
 };
 db	"shell"	{
 	shell;

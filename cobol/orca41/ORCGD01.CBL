@@ -185,7 +185,7 @@
        01  CONST-AREA.
            03  CONST-LINE                  PIC X(40)   VALUE
                "¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²".
-           03  CONST-CHKKBN-MAX            PIC 9(03)   VALUE   15.
+           03  CONST-CHKKBN-MAX            PIC 9(03)   VALUE   16.
            03  CONST-CHKMSG-VAL.
                05                          PIC X(40)   VALUE
                "ÊÝ¸±¼ÔÈÖ¹æ".
@@ -217,8 +217,10 @@
                "ÊÝ¸±ÁÈ¹ç¤»Í­¸ú´ü´Ö".
                05                          PIC X(40)   VALUE
                "ÅêÍ¿¶Ø´÷ÌôºÞ¤ÈÉÂÌ¾".
+               05                          PIC X(40)   VALUE
+               "¿ÇÎÅ¹Ô°Ù¤É¤¦¤·¤Î»»ÄêÏ³¤ì".
            03  CONST-CHKMSG-R              REDEFINES   CONST-CHKMSG-VAL.
-               05  CONST-CHKMSG            PIC X(40)   OCCURS  15.
+               05  CONST-CHKMSG            PIC X(40)   OCCURS  16.
            03  CONST-INGAIPROCMSG          PIC X(40)   VALUE
                "±¡³°½èÊý¤Î½èÍý".
       *

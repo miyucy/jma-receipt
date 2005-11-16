@@ -116,7 +116,6 @@
       *    ＤＢ検索
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
-           COPY    "ORCA-DBPATH".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -622,7 +621,8 @@
            INITIALIZE                  BYOMEI-REC
            MOVE    WRK-RECECD      TO  BYO-BYOMEICD
            MOVE    BYOMEI-REC      TO  MCPDATA-REC
-           MOVE    PATH-TBL-BYOMEI-KEY     TO  MCP-PATH
+           MOVE    "tbl_byomei"    TO MCP-TABLE
+           MOVE    "key"           TO MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC      =   ZERO )
                 MOVE    MCPDATA-REC TO  BYOMEI-REC
@@ -631,8 +631,9 @@
                 MOVE    1           TO  FLG-BYOMEI
            END-IF
       *
-           MOVE    PATH-TBL-BYOMEI-KEY     TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_byomei"    TO MCP-TABLE
+           MOVE    "key"           TO MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
       *
@@ -649,8 +650,8 @@
            MOVE    SPA-HOSPID      TO  USBYO-HOSPID
            MOVE    WRK-BYOCD       TO  USBYO-BYOMEIINPUTCD
            MOVE    USERBYOMEI-REC  TO  MCPDATA-REC
-           MOVE    PATH-TBL-USERBYOMEI-KEY6
-                                   TO  MCP-PATH
+           MOVE    "tbl_userbyomei"    TO MCP-TABLE
+           MOVE    "key6"              TO MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC      =   ZERO )
                 MOVE    MCPDATA-REC    TO  USERBYOMEI-REC
@@ -659,9 +660,9 @@
                 MOVE    1              TO  FLG-USERBYOMEI
            END-IF
       *
-           MOVE    PATH-TBL-USERBYOMEI-KEY6
-                                       TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_userbyomei"    TO MCP-TABLE
+           MOVE    "key6"              TO MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
       *
@@ -673,7 +674,7 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF    ( MCP-RC          =   ZERO )
@@ -690,7 +691,7 @@
        911-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -704,7 +705,7 @@
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -715,14 +716,14 @@
       *****************************************************************
       *    ＤＢクローズ処理
       *****************************************************************
-       910-DBCLOSE-SEC                 SECTION.
+       910-DBCLOSECURSOR-SEC                 SECTION.
       *
-      *    MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-      *    CALL    "MCPSUB"            USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
-       910-DBCLOSE-EXT.
+       910-DBCLOSECURSOR-EXT.
            EXIT.

@@ -26,7 +26,7 @@
               03  X03-B10-STATE PIC S9(9)   BINARY.
               03  X03-B10-2-STATE PIC S9(9)   BINARY.
               03  X03-LCHKKBNMEI.
-                04  X03-VALUE   PIC X(20).
+                04  X03-VALUE   PIC X(70).
               03  X03-LYUKOSTYMD.
                 04  X03-VALUE   PIC X(9).
               03  X03-LYUKOEDYMD.
@@ -35,7 +35,7 @@
                 04  X03-VALUE   PIC X(70).
               03  X03-SCROLLEDWINDOW1.
                 04  X03-LCHKLST.
-                  05  X03-LBLLJYKN        PIC X(04).
+                  05  X03-LBLLJYKN        PIC X(06).
                   05  X03-LCHKLST-COUNT   PIC S9(9)   BINARY.
                   05  X03-LCHKLST-ROW     PIC S9(9)   BINARY.
                   05  X03-LCHKLST-ROWATTR PIC S9(9)   BINARY.
@@ -46,7 +46,7 @@
                   05  X03-LCHKLST-SELECT
                           PIC X       OCCURS  100 TIMES.
               03  X03-RCHKKBNMEI.
-                04  X03-VALUE   PIC X(20).
+                04  X03-VALUE   PIC X(70).
               03  X03-RYUKOSTYMD.
                 04  X03-VALUE   PIC X(9).
               03  X03-RYUKOEDYMD.
@@ -55,7 +55,7 @@
                 04  X03-VALUE   PIC X(70).
               03  X03-SCROLLEDWINDOW3.
                 04  X03-RCHKLST.
-                  05  X03-LBLRJYKN        PIC X(04).
+                  05  X03-LBLRJYKN        PIC X(06).
                   05  X03-RCHKLST-COUNT   PIC S9(9)   BINARY.
                   05  X03-RCHKLST-ROW     PIC S9(9)   BINARY.
                   05  X03-RCHKLST-ROWATTR PIC S9(9)   BINARY.
@@ -67,10 +67,10 @@
                           PIC X       OCCURS  100 TIMES.
               03  X03-CMB-CHKKBN.
                 04  X03-CHKKBN.
-                  05  X03-VALUE   PIC X(22).
+                  05  X03-VALUE   PIC X(72).
                 04  X03-CHKKBN-COUNT   PIC S9(9)   BINARY.
                 04  X03-CHKKBN-ITEM
-                        PIC X(22)   OCCURS  5 TIMES.
+                        PIC X(72)   OCCURS  5 TIMES.
               03  X03-SELNAME.
                 04  X03-VALUE             PIC X(70).
               03  X03-SCROLLEDWINDOW2.

@@ -346,6 +346,17 @@
            05 PIC  X(30)   VALUE   "                              ".
            05 PIC  X(30)   VALUE   "                              ".
       *
+      *    ** 160xxx 診療行為どうしの算定漏れ
+      *                            +---------+---------+---------+.
+           05 PIC  X(06)   VALUE   "160001".
+           05 PIC  X(30)   VALUE   "該当の診療行為に対して同日の算".
+           05 PIC  X(30)   VALUE   "定漏れがあります              ".
+           05 PIC  X(30)   VALUE   "                              ".
+      *
+           05 PIC  X(06)   VALUE   "160002".
+           05 PIC  X(30)   VALUE   "該当の診療行為に対して同月の算".
+           05 PIC  X(30)   VALUE   "定漏れがあります              ".
+           05 PIC  X(30)   VALUE   "                              ".
       *    ** 990xxx その他必須チェック
       *                            +---------+---------+---------+.
            05 PIC  X(06)   VALUE   "990001".
@@ -369,7 +380,7 @@
            05 PIC  X(30)   VALUE   "                              ".
       *
          03  ERRMES-RED    REDEFINES   ERRMES-VAL.
-           05 ERRMES-OCC   OCCURS  61.
+           05 ERRMES-OCC   OCCURS  63.
               07  ERRMES-CD            PIC X(06).
               07  ERRMES-MESSAGE       PIC X(90).
-         03  ERRMES-MAX                PIC 9(05)   VALUE   61.
+         03  ERRMES-MAX                PIC 9(05)   VALUE   63.
