@@ -1864,6 +1864,10 @@
       *    慢性疼痛疾病管理料算定チェック
            PERFORM 1004-TOUTUU-CHK-SEC
       *
+           MOVE    ZERO                TO  SPA-SYONIKA-ARI3
+           MOVE    ZERO                TO  SPA-SYONIKA-ARI2
+           MOVE    ZERO                TO  SPA-SYONIKA-ARI
+      *
            .
        1000-SANTEI-RSI-EXT.
            EXIT.
@@ -2556,7 +2560,12 @@
       *
       *    年齢エラーの時、エラーをはずす（当月はＯＫ）
            IF      LNK-SC92-ERRCD5 NOT =   SPACE
-               MOVE    SPACE               TO  LNK-SC92-ERRCD5
+      *        当月算定済み
+               IF     (SPA-SYONIKA-ARI3    =   ZERO )
+                   CONTINUE
+               ELSE
+                   MOVE    SPACE               TO  LNK-SC92-ERRCD5
+               END-IF
            END-IF
       *
       *    同日再診時、併用算定エラー

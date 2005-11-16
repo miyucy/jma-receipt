@@ -6663,7 +6663,7 @@
            END-IF
       *
       *    ¾®»ù²Ê³°Íè¿ÇÎÅ²Ê¤Î»þ¡¢Ç¯Îð¥¨¥é¡¼¤Ï¤½¤Î¤Þ¤Þ
-           IF     (SPA-SYONIKA-ARI     NOT =   ZERO )  AND
+           IF     (SPA-SYONIKA-ARI3    NOT =   ZERO )   AND
                   (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:1)  =   "1" )
                IF      SPA-ERRCD           =   "0032"
                    MOVE    SPACE               TO  SPA-ERRCD
@@ -7859,7 +7859,7 @@
                    MOVE    LNK-ORCSC-GAIRAISIN TO  SPA-GAIRAISIN
       *
       *            ¾®»ù²Ê³°Íè¿ÇÎÅ²Ê¤Î»þ¡¢Ç¯Îð¥¨¥é¡¼¤Ï¤½¤Î¤Þ¤Þ
-                   IF      SPA-SYONIKA-ARI     NOT =   ZERO
+                   IF      SPA-SYONIKA-ARI3    NOT =   ZERO
                        IF      SPA-ERRCD           =   "0032"
                            MOVE    SPACE               TO  SPA-ERRCD
                        END-IF
@@ -8942,7 +8942,7 @@
                END-IF
       *
       *        ¾®»ù²Ê³°Íè¿ÇÎÅ²Ê¤Î»þ¡¢Ç¯Îð¥¨¥é¡¼¤Ï¤½¤Î¤Þ¤Þ
-               IF      SPA-SYONIKA-ARI     NOT =   ZERO
+               IF      SPA-SYONIKA-ARI3    NOT =   ZERO
                    IF      SPA-ERRCD           =   "0032"
                        MOVE    SPACE               TO  SPA-ERRCD
                    END-IF
@@ -11254,7 +11254,7 @@
                                                SPA-AREA
       *
       *            ¾®»ù²Ê³°Íè¿ÇÎÅ²Ê¤Î»þ¡¢Ç¯Îð¥¨¥é¡¼¤Ï¤½¤Î¤Þ¤Þ
-                   IF      SPA-SYONIKA-ARI     NOT =   ZERO
+                   IF      SPA-SYONIKA-ARI3    NOT =   ZERO
                        IF      LNK-SC92-ERRCD5 NOT =   SPACE
                            MOVE    SPACE           TO  LNK-SC92-ERRCD5
                        END-IF
