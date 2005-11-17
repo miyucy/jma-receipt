@@ -133,8 +133,6 @@
       *****************************************************************
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "ORCA-DBPATH".
-           COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    連絡領域
@@ -280,13 +278,7 @@
       *    周辺住所検索処理（システム管理マスタより検索）
            INITIALIZE              SYS-1015-REC
            MOVE  "1015"            TO  SYS-1015-KANRICD
-           PERFORM 900-SYSKANRI-SELECT-SEC
-      *
-           IF  ( FLG-SYSKANRI    =   ZERO )
-      *
-      *        住所読込処理
-               PERFORM 900-SYSKANRI-READ-SEC
-           END-IF
+           PERFORM 900-SYSKANRI-KEY2-SEL-SEC
       *
       *    システム管理マスタ読み飛ばし処理
            PERFORM 910-SYSKANRI-READ-SKIP-SEC
@@ -308,11 +300,13 @@
                MOVE    SYS-1015-RENNUM    TO SPA-GMN-Q98-TRENNUM(IDX1)
       *
       *        住所読込処理
-               PERFORM 900-SYSKANRI-READ-SEC
+               PERFORM 900-SYSKANRI-KEY2-FET-SEC
       *
            END-PERFORM
       *
-           PERFORM 900-SYSKANRI-CLOSE-SEC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            MOVE    FLG-SYSKANRI        TO  SPA-GMN-Q98-FLG-SYSKANRI
       *
@@ -482,23 +476,11 @@
            MOVE  SPA-GMN-Q98-TPOST  (IDX1)   TO  ADRS-POST
            MOVE  SPA-GMN-Q98-TRENNUM(IDX1)   TO  ADRS-EDANUM
       *
-           PERFORM 900-ADRS-SELECT-SEC
-           IF  ( FLG-ADRS      NOT =   ZERO )
-               GO  TO  4100-KAKUTEI-JYUSHO-EDIT-EXT
+           PERFORM 900-ADRS-KEY-SEL-SEC
+           IF  ( FLG-ADRS      =   ZERO )
+               MOVE  ADRS-POST           TO  SPA-GMN-Q98-POST
+               MOVE  ADRS-EDITADRS-NAME  TO  SPA-GMN-Q98-ADRS
            END-IF
-      *
-      *    住所マスタ読み込み
-           PERFORM 900-ADRS-READ-SEC
-           IF  ( FLG-ADRS      NOT =   ZERO )
-               GO  TO  4100-KAKUTEI-JYUSHO-EDIT-EXT
-           END-IF
-      *
-           MOVE  MCPDATA-REC         TO  ADRS-REC
-           MOVE  ADRS-POST           TO  SPA-GMN-Q98-POST
-           MOVE  ADRS-EDITADRS-NAME  TO  SPA-GMN-Q98-ADRS
-      *
-      *    住所マスタクローズ
-           PERFORM 900-ADRS-CLOSE-SEC
       *
            .
        4100-KAKUTEI-JYUSHO-EDIT-EXT.
@@ -718,33 +700,34 @@
       *****************************************************************
       *    システム管理マスタ検索（周辺住所）
       *****************************************************************
-       900-SYSKANRI-SELECT-SEC         SECTION.
+       900-SYSKANRI-KEY2-SEL-SEC       SECTION.
       *
            MOVE    ZERO                TO  FLG-SYSKANRI
+           MOVE    SPA-SYSYMD          TO  SYS-1015-STYUKYMD
+                                           SYS-1015-EDYUKYMD
            MOVE    SYS-1015-REC        TO  MCPDATA-REC
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-      *
-           PERFORM 910-DB-SELECT-SEC
-      *
-           IF  ( MCP-RC            NOT =   ZERO )
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF  ( MCP-RC                =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYS-1015-REC
+           ELSE
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
       *
            .
-       900-SYSKANRI-SELECT-EXT.
+       900-SYSKANRI-KEY2-SEL-EXT.
            EXIT.
       *****************************************************************
       *    システム管理マスタ検索（周辺住所）
       *****************************************************************
-       900-SYSKANRI-READ-SEC           SECTION.
+       900-SYSKANRI-KEY2-FET-SEC       SECTION.
       *
            MOVE    ZERO                TO  FLG-SYSKANRI
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-      *
-           PERFORM 910-DB-READ-SEC
-      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
            IF  ( MCP-RC                =   ZERO )
                MOVE    MCPDATA-REC     TO  SYS-1015-REC
            ELSE
@@ -752,7 +735,7 @@
            END-IF
       *
            .
-       900-SYSKANRI-READ-EXT.
+       900-SYSKANRI-KEY2-FET-EXT.
            EXIT.
       *****************************************************************
       *    システム管理マスタ読み飛ばし処理
@@ -764,7 +747,7 @@
                  OR      ( FLG-SYSKANRI    =   "1" )
       *
       *        システム管理マスタ読込処理
-               PERFORM 900-SYSKANRI-READ-SEC
+               PERFORM 900-SYSKANRI-KEY2-FET-SEC
       *
            END-PERFORM
       *
@@ -772,111 +755,69 @@
        910-SYSKANRI-READ-SKIP-EXT.
            EXIT.
       *****************************************************************
-      *    システム管理マスタクローズ処理（周辺住所）
-      *****************************************************************
-       900-SYSKANRI-CLOSE-SEC          SECTION.
-      *
-           MOVE  "SYSKANRI-KEY2"       TO  ORC-DBPATH
-      *
-           PERFORM 910-DB-CLOSE-SEC
-      *
-           .
-       900-SYSKANRI-CLOSE-EXT.
-           EXIT.
-      *****************************************************************
       *    住所マスター検索（主キー）
       *****************************************************************
-       900-ADRS-SELECT-SEC             SECTION.
+       900-ADRS-KEY-SEL-SEC             SECTION.
       *
            MOVE    ZERO                TO  FLG-ADRS
            MOVE    ADRS-REC            TO  MCPDATA-REC
-           MOVE    "ADRS-KEY"          TO  ORC-DBPATH
-      *
-           PERFORM 910-DB-SELECT-SEC
-      *
-           IF  ( MCP-RC            NOT =   ZERO )
-               MOVE    1               TO  FLG-ADRS
-           END-IF
-      *
-      *
-           .
-       900-ADRS-SELECT-EXT.
-           EXIT.
-      *****************************************************************
-      *    住所マスター読込（主キー）
-      *****************************************************************
-       900-ADRS-READ-SEC               SECTION.
-      *
-           MOVE    ZERO                TO  FLG-ADRS
-           MOVE    "ADRS-KEY"          TO  ORC-DBPATH
-      *
-           PERFORM 910-DB-READ-SEC
-      *
+           MOVE    "tbl_adrs"          TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF  ( MCP-RC                =   ZERO )
                MOVE    MCPDATA-REC     TO  ADRS-REC
            ELSE
                MOVE    1               TO  FLG-ADRS
            END-IF
       *
-           .
-       900-ADRS-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    住所マスタークローズ（主キー）
-      *****************************************************************
-       900-ADRS-CLOSE-SEC              SECTION.
-      *
-           MOVE    "ADRS-KEY"          TO  ORC-DBPATH
-      *
-           PERFORM 910-DB-CLOSE-SEC
+           MOVE    "tbl_adrs"          TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
-       900-ADRS-CLOSE-EXT.
+       900-ADRS-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理
       *****************************************************************
-       910-DB-SELECT-SEC               SECTION.
+       910-DBSELECT-SEC               SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "MONFUNC"   USING   MCPAREA
+                                       MCPDATA-REC
+           IF    ( MCP-RC          =   ZERO )
+               PERFORM 910-DBFETCH-SEC
+           END-IF
       *
            .
       *
-       910-DB-SELECT-EXT.
+       910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ読み込み処理
       *****************************************************************
-       910-DB-READ-SEC                 SECTION.
+       910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
+           CALL    "MONFUNC"   USING   MCPAREA
                                        MCPDATA-REC
       *
            .
       *
-       910-DB-READ-EXT.
+       910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢクローズ処理
       *****************************************************************
-       910-DB-CLOSE-SEC                SECTION.
+       910-DBCLOSECURSOR-SEC           SECTION.
       *
-           MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           CALL    "MONFUNC"   USING   MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
-       910-DB-CLOSE-EXT.
+       910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
       *    ＰＵＴ　処理
@@ -884,7 +825,7 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE    "PUTWINDOW"     TO  MCP-FUNC.
-           CALL    "MCPSUB"    USING   MCPAREA
+           CALL    "MONFUNC"   USING   MCPAREA
                                        MCPDATA-REC
       *
            .

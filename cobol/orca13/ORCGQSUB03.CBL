@@ -191,7 +191,7 @@
       *
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key11"             TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        2001-NYUIN-CHK-EXT.
@@ -247,7 +247,7 @@
       *
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        20011-JYURRK-HKN-HEN-EXT.
@@ -300,7 +300,7 @@
       *
            MOVE    "tbl_srykarrk"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        20011-SRYKARRK-HEN-EXT.
@@ -351,7 +351,7 @@
       *
            MOVE    "tbl_hkncombi"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        20011-HKNCOMBI-CHK1-EXT.
@@ -403,7 +403,7 @@
       *
            MOVE    "tbl_hkncombi"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        20011-HKNCOMBI-CHK2-EXT.
@@ -487,7 +487,7 @@
       *****************************************************************
       *    ＤＢクローズ処理
       *****************************************************************
-       910-DBCLOSE-SEC                 SECTION.
+       910-DBCLOSECURSOR-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            CALL    "MONFUNC"           USING
@@ -496,5 +496,5 @@
       *
            .
       *
-       910-DBCLOSE-EXT.
+       910-DBCLOSECURSOR-EXT.
            EXIT.

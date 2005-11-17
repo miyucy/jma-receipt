@@ -245,6 +245,7 @@
       *****************************************************************
       *
       *    患者状態コメント
+           COPY    "CPSYSKANRI.INC".
            COPY    "CPSK1018.INC".
       *
       *    診療科
@@ -290,13 +291,15 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
       *    患者番号変換サブ
            COPY    "CPORCSPTID.INC".
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
+      *
+      *    部分一致文字列編集
+           COPY    "CPORCSADDSIGN.INC".
       *
       *****************************************************************
       *    連絡領域
@@ -648,24 +651,15 @@
            MOVE    ZERO                TO  FLG-SYSKANRI
            INITIALIZE                      SYS-1005-REC
            MOVE    "1005"              TO  SYS-1005-KANRICD
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
-           MOVE    SYS-1005-REC        TO  MCPDATA-REC
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           PERFORM 910-DB-SELECT-SEC
-           IF    ( MCP-RC          NOT =   ZERO )
-               MOVE    1               TO  FLG-SYSKANRI
-           ELSE
-               MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
-               PERFORM 910-DB-READ-SEC
-               IF    ( MCP-RC          NOT =   ZERO )
-                   MOVE    1           TO  FLG-SYSKANRI
-               ELSE
-                   MOVE    MCPDATA-REC TO  SYS-1005-REC
-               END-IF
-           END-IF
+           MOVE    SPA-SYSYMD          TO  SYS-1005-STYUKYMD
+                                           SYS-1005-EDYUKYMD
+           MOVE    SYS-1005-REC        TO  SYSKANRI-REC
+           PERFORM 900-SYSKANRI-KEY2-SEL-SEC
       *
            PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
                     OR   ( SPA-GMN-Q01-SRYKALST-MAX    >   50 )
+      *
+               MOVE    SYSKANRI-REC    TO  SYS-1005-REC
       *
                COMPUTE SPA-GMN-Q01-SRYKALST-MAX
                    =   SPA-GMN-Q01-SRYKALST-MAX    +   1
@@ -678,18 +672,13 @@
                MOVE    SYS-1005-SRYKANAME
                                    TO  SPA-GMN-Q01-SRYKAMEIL (IDX5)
       *
-               MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
-               PERFORM 910-DB-READ-SEC
-               IF    ( MCP-RC          NOT =   ZERO )
-                   MOVE    1           TO  FLG-SYSKANRI
-               ELSE
-                   MOVE    MCPDATA-REC TO  SYS-1005-REC
-               END-IF
+               PERFORM 900-SYSKANRI-KEY2-FET-SEC
       *
            END-PERFORM
       *
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           PERFORM 910-DB-CLOSE-SEC
+           MOVE    "tbl_syskanri"     TO  MCP-TABLE
+           MOVE    "key2"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        3101-SRYKA-CMB-SYOKI-EXT.
@@ -704,24 +693,15 @@
            MOVE    ZERO                TO  FLG-SYSKANRI
            INITIALIZE                      SYS-1018-REC
            MOVE    "1018"              TO  SYS-1018-KANRICD
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
-           MOVE    SYS-1018-REC        TO  MCPDATA-REC
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           PERFORM 910-DB-SELECT-SEC
-           IF    ( MCP-RC          NOT =   ZERO )
-               MOVE    1               TO  FLG-SYSKANRI
-           ELSE
-               MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
-               PERFORM 910-DB-READ-SEC
-               IF    ( MCP-RC          NOT =   ZERO )
-                   MOVE    1           TO  FLG-SYSKANRI
-               ELSE
-                   MOVE    MCPDATA-REC TO  SYS-1018-REC
-               END-IF
-           END-IF
+           MOVE    SPA-SYSYMD          TO  SYS-1018-STYUKYMD
+                                           SYS-1018-EDYUKYMD
+           MOVE    SYS-1018-REC        TO  SYSKANRI-REC
+           PERFORM 900-SYSKANRI-KEY2-SEL-SEC
       *
            PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
                     OR   ( SPA-GMN-Q01-CONDITION1LST-MAX   >=   99 )
+      *
+               MOVE    SYSKANRI-REC    TO  SYS-1018-REC
       *
                COMPUTE SPA-GMN-Q01-CONDITION1LST-MAX
                    =   SPA-GMN-Q01-CONDITION1LST-MAX   +   1
@@ -734,18 +714,13 @@
                MOVE    SYS-1018-CONDITION-BODY
                                    TO  SPA-GMN-Q01-CONDITION1MEIL (IDX5)
       *
-               MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
-               PERFORM 910-DB-READ-SEC
-               IF    ( MCP-RC          NOT =   ZERO )
-                   MOVE    1           TO  FLG-SYSKANRI
-               ELSE
-                   MOVE    MCPDATA-REC TO  SYS-1018-REC
-               END-IF
+               PERFORM 900-SYSKANRI-KEY2-FET-SEC
       *
            END-PERFORM
       *
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           PERFORM 910-DB-CLOSE-SEC
+           MOVE    "tbl_syskanri"     TO  MCP-TABLE
+           MOVE    "key2"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        3101-CONDITION1-CMB-SYOKI-EXT.
@@ -760,24 +735,15 @@
            MOVE    ZERO                TO  FLG-SYSKANRI
            INITIALIZE                      SYS-1018-REC
            MOVE    "1019"              TO  SYS-1018-KANRICD
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
-           MOVE    SYS-1018-REC        TO  MCPDATA-REC
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           PERFORM 910-DB-SELECT-SEC
-           IF    ( MCP-RC          NOT =   ZERO )
-               MOVE    1               TO  FLG-SYSKANRI
-           ELSE
-               MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
-               PERFORM 910-DB-READ-SEC
-               IF    ( MCP-RC          NOT =   ZERO )
-                   MOVE    1           TO  FLG-SYSKANRI
-               ELSE
-                   MOVE    MCPDATA-REC TO  SYS-1018-REC
-               END-IF
-           END-IF
+           MOVE    SPA-SYSYMD          TO  SYS-1018-STYUKYMD
+                                           SYS-1018-EDYUKYMD
+           MOVE    SYS-1018-REC        TO  SYSKANRI-REC
+           PERFORM 900-SYSKANRI-KEY2-SEL-SEC
       *
            PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
                     OR   ( SPA-GMN-Q01-CONDITION2LST-MAX   >=   99 )
+      *
+               MOVE    SYSKANRI-REC    TO  SYS-1018-REC
       *
                COMPUTE SPA-GMN-Q01-CONDITION2LST-MAX
                    =   SPA-GMN-Q01-CONDITION2LST-MAX   +   1
@@ -790,18 +756,13 @@
                MOVE    SYS-1018-CONDITION-BODY
                                    TO  SPA-GMN-Q01-CONDITION2MEIL (IDX5)
       *
-               MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
-               PERFORM 910-DB-READ-SEC
-               IF    ( MCP-RC          NOT =   ZERO )
-                   MOVE    1           TO  FLG-SYSKANRI
-               ELSE
-                   MOVE    MCPDATA-REC TO  SYS-1018-REC
-               END-IF
+               PERFORM 900-SYSKANRI-KEY2-FET-SEC
       *
            END-PERFORM
       *
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           PERFORM 910-DB-CLOSE-SEC
+           MOVE    "tbl_syskanri"     TO  MCP-TABLE
+           MOVE    "key2"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        3101-CONDITION2-CMB-SYOKI-EXT.
@@ -816,24 +777,15 @@
            MOVE    ZERO                TO  FLG-SYSKANRI
            INITIALIZE                      SYS-1018-REC
            MOVE    "1020"              TO  SYS-1018-KANRICD
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
-           MOVE    SYS-1018-REC        TO  MCPDATA-REC
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           PERFORM 910-DB-SELECT-SEC
-           IF    ( MCP-RC          NOT =   ZERO )
-               MOVE    1               TO  FLG-SYSKANRI
-           ELSE
-               MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
-               PERFORM 910-DB-READ-SEC
-               IF    ( MCP-RC          NOT =   ZERO )
-                   MOVE    1           TO  FLG-SYSKANRI
-               ELSE
-                   MOVE    MCPDATA-REC TO  SYS-1018-REC
-               END-IF
-           END-IF
+           MOVE    SPA-SYSYMD          TO  SYS-1018-STYUKYMD
+                                           SYS-1018-EDYUKYMD
+           MOVE    SYS-1018-REC        TO  SYSKANRI-REC
+           PERFORM 900-SYSKANRI-KEY2-SEL-SEC
       *
            PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
                     OR   ( SPA-GMN-Q01-CONDITION3LST-MAX   >=   99 )
+      *
+               MOVE    SYSKANRI-REC    TO  SYS-1018-REC
       *
                COMPUTE SPA-GMN-Q01-CONDITION3LST-MAX
                    =   SPA-GMN-Q01-CONDITION3LST-MAX   +   1
@@ -846,18 +798,13 @@
                MOVE    SYS-1018-CONDITION-BODY
                                    TO  SPA-GMN-Q01-CONDITION3MEIL (IDX5)
       *
-               MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
-               PERFORM 910-DB-READ-SEC
-               IF    ( MCP-RC          NOT =   ZERO )
-                   MOVE    1           TO  FLG-SYSKANRI
-               ELSE
-                   MOVE    MCPDATA-REC TO  SYS-1018-REC
-               END-IF
+               PERFORM 900-SYSKANRI-KEY2-FET-SEC
       *
            END-PERFORM
       *
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           PERFORM 910-DB-CLOSE-SEC
+           MOVE    "tbl_syskanri"     TO  MCP-TABLE
+           MOVE    "key2"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        3101-CONDITION3-CMB-SYOKI-EXT.
@@ -899,15 +846,7 @@
            INITIALIZE              SPA-GMN-Q01-HKNNUMLST-G
       *
       *    保険番号検索
-           PERFORM 31011-HKNNUM-SELECT-SEC
-           IF    ( FLG-HKNNUM      =   ZERO )
-               CONTINUE
-           ELSE
-               GO  TO  3101-HKNKOH-CMB-EDIT-EXT
-           END-IF
-      *
-      *    保険番号読み込み
-           PERFORM 31011-HKNNUM-READ-SEC
+           PERFORM 900-HKNNUM-KEY3-SEL-SEC
       *
            PERFORM UNTIL ( FLG-HKNNUM      =   1 )
       *
@@ -950,66 +889,17 @@
                    END-IF
                END-IF
       *
-      *        保険番号読み込み
-               PERFORM 31011-HKNNUM-READ-SEC
+               PERFORM 900-HKNNUM-KEY3-FET-SEC
+      *
            END-PERFORM
       *
       *    保険番号クローズ
-           PERFORM 31011-HKNNUM-CLOSE-SEC
+           MOVE    "tbl_hknnum"        TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        3101-HKNKOH-CMB-EDIT-EXT.
-           EXIT.
-      *****************************************************************
-      *    保険番号マスター検索処理
-      *****************************************************************
-       31011-HKNNUM-SELECT-SEC         SECTION.
-      *
-           MOVE    ZERO                TO  FLG-HKNNUM
-           INITIALIZE                  HKNNUM-REC
-           MOVE    SPA-HOSPID          TO  HKN-HOSPID
-           MOVE    SPA-SYSYMD          TO  HKN-TEKSTYMD
-           MOVE    SPA-SYSYMD          TO  HKN-TEKEDYMD
-           MOVE    HKNNUM-REC          TO  MCPDATA-REC
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
-           MOVE    "HKNNUM-KEY3"       TO  ORC-DBPATH
-      *
-           PERFORM 910-DB-SELECT-SEC
-           IF ( MCP-RC             NOT =   ZERO )
-               MOVE    1               TO  FLG-HKNNUM
-           END-IF
-           .
-      *
-       31011-HKNNUM-SELECT-EXT.
-           EXIT.
-      *****************************************************************
-      *    保険番号マスター読込処理
-      *****************************************************************
-       31011-HKNNUM-READ-SEC       SECTION.
-      *
-           MOVE    "HKNNUM-KEY3"       TO  ORC-DBPATH
-      *
-           PERFORM 910-DB-READ-SEC
-           IF  ( MCP-RC        =   ZERO )
-               MOVE    MCPDATA-REC     TO  HKNNUM-REC
-           ELSE
-               MOVE    1               TO  FLG-HKNNUM
-           END-IF
-           .
-      *
-       31011-HKNNUM-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    保険番号マスタークローズ処理
-      *****************************************************************
-       31011-HKNNUM-CLOSE-SEC      SECTION.
-      *
-           MOVE    "HKNNUM-KEY3"       TO  ORC-DBPATH
-      *
-           PERFORM 910-DB-CLOSE-SEC
-      *
-           .
-       31011-HKNNUM-CLOSE-EXT.
            EXIT.
       *****************************************************************
       *    保険情報編集処理
@@ -1122,27 +1012,27 @@
       *
            MOVE    ZERO            TO  SPA-GMN-Q01-UBYOMEILST-MAX
       *
-           INITIALIZE                  USERBYOMEI-REC
-           MOVE    SPA-HOSPID          TO  USBYO-HOSPID
       *    自院病名マスタ−検索処理
-           PERFORM 31011-USERBYOMEI-SELECT-SEC
+           PERFORM 900-USERBYOMEI-KEY4-SEL-SEC
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
                UNTIL     ( IDX1    >   98)
                 OR       ( FLG-USERBYOMEI  NOT =   ZERO )
-      *        自院病名マスタ−読込処理
-               PERFORM 31011-USERBYOMEI-READ-SEC
-               IF  ( FLG-USERBYOMEI    =   ZERO )
-                   MOVE    IDX1    TO  SPA-GMN-Q01-UBYOMEILST-MAX
-                   MOVE    USBYO-BYOMEIINPUTCD
-                                   TO  SPA-GMN-Q01-UBYOMEIL (IDX1)
-                   MOVE    USBYO-BYOMEI
-                                   TO  SPA-GMN-Q01-UBYOMEIMEIL (IDX1)
-               END-IF
+      *
+               MOVE    IDX1    TO  SPA-GMN-Q01-UBYOMEILST-MAX
+               MOVE    USBYO-BYOMEIINPUTCD
+                               TO  SPA-GMN-Q01-UBYOMEIL (IDX1)
+               MOVE    USBYO-BYOMEI
+                               TO  SPA-GMN-Q01-UBYOMEIMEIL (IDX1)
+      *
+               PERFORM 900-USERBYOMEI-KEY4-FET-SEC
+      *
            END-PERFORM
       *
       *    自院病名マスタ−クローズ処理
-           PERFORM 31011-USERBYOMEI-CLOSE-SEC
+           MOVE    "tbl_userbyomei"    TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
       *    分類コード設定データが存在したかチェック
            IF  ( SPA-GMN-Q01-UBYOMEILST-MAX  =   ZERO )
@@ -1151,7 +1041,7 @@
       *        自院病名マスタ−読込処理２（データ存在チェック）
                INITIALIZE              USERBYOMEI-REC
                MOVE    SPA-HOSPID  TO  USBYO-HOSPID
-               PERFORM 31012-USERBYOMEI-READ-SEC
+               PERFORM 900-USERBYOMEI-KEY3-SEL-SEC
       *
       *        分類コードが設定されていないデータが存在したかチェック
                IF  ( FLG-USERBYOMEI    =   ZERO )
@@ -1191,84 +1081,6 @@
       *
            .
        3101-BYOMEI-CMB-SYOKI-EXT.
-           EXIT.
-      *****************************************************************
-      *    自院病名マスター検索処理
-      *****************************************************************
-       31011-USERBYOMEI-SELECT-SEC     SECTION.
-      *
-           MOVE    ZERO                TO  FLG-USERBYOMEI
-           MOVE    USERBYOMEI-REC      TO  MCPDATA-REC
-           MOVE    "USERBYOMEI-KEY4"   TO  ORC-DBPATH
-      *
-           PERFORM 910-DB-SELECT-SEC
-           IF ( MCP-RC             NOT =   ZERO )
-               MOVE    1               TO  FLG-USERBYOMEI
-           END-IF
-           .
-      *
-       31011-USERBYOMEI-SELECT-EXT.
-           EXIT.
-      *****************************************************************
-      *    自院病名マスター読込処理
-      *****************************************************************
-       31011-USERBYOMEI-READ-SEC       SECTION.
-      *
-           MOVE    "USERBYOMEI-KEY4"   TO  ORC-DBPATH
-      *
-           PERFORM 910-DB-READ-SEC
-           IF  ( MCP-RC        =   ZERO )
-               MOVE    MCPDATA-REC     TO  USERBYOMEI-REC
-           ELSE
-               MOVE    1               TO  FLG-USERBYOMEI
-           END-IF
-           .
-      *
-       31011-USERBYOMEI-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    自院病名マスタークローズ処理
-      *****************************************************************
-       31011-USERBYOMEI-CLOSE-SEC      SECTION.
-      *
-           MOVE    "USERBYOMEI-KEY4"   TO  ORC-DBPATH
-      *
-           PERFORM 910-DB-CLOSE-SEC
-      *
-           .
-       31011-USERBYOMEI-CLOSE-EXT.
-           EXIT.
-      *****************************************************************
-      *    自院病名マスター読込処理２（データ存在チェック）
-      *****************************************************************
-       31012-USERBYOMEI-READ-SEC       SECTION.
-      *
-           MOVE    ZERO                TO  FLG-USERBYOMEI
-           MOVE    USERBYOMEI-REC      TO  MCPDATA-REC
-           MOVE    "USERBYOMEI-KEY3"   TO  ORC-DBPATH
-      *
-           PERFORM 910-DB-SELECT-SEC
-           IF ( MCP-RC             =   ZERO )
-               MOVE    "USERBYOMEI-KEY3"
-                                       TO  ORC-DBPATH
-      *
-               PERFORM 910-DB-READ-SEC
-               IF  ( MCP-RC        =   ZERO )
-                   CONTINUE
-               ELSE
-                   MOVE    1           TO  FLG-USERBYOMEI
-               END-IF
-           ELSE
-               MOVE    1               TO  FLG-USERBYOMEI
-           END-IF
-      *
-           MOVE    "USERBYOMEI-KEY3"   TO  ORC-DBPATH
-      *
-           PERFORM 910-DB-CLOSE-SEC
-      *
-           .
-      *
-       31012-USERBYOMEI-READ-EXT.
            EXIT.
       *****************************************************************
       *    ソートキー項目初期処理
@@ -2584,24 +2396,25 @@
            MOVE    SPA-GMN-Q01-POST (IDX1)
                                        TO  ADRS-POST
       *    住所検索処理
-           PERFORM 900-ADRS-SELECT-SEC
+           PERFORM 900-ADRS-KEY4-SEL-SEC
       *
            PERFORM UNTIL ( FLG-ADRS    =   1 )
                     OR   ( CNT-ADRS    >   1 )
       *
       *        住所読込処理
-               PERFORM 900-ADRS-READ-SEC
-               IF  ( FLG-ADRS  =   ZERO )
-                   COMPUTE CNT-ADRS    =   CNT-ADRS    +   1
-                   IF  ( CNT-ADRS      =   1 )
-                       MOVE    ADRS-EDITADRS-NAME
-                                       TO  WRK-EDITADRS-NAME
-                   END-IF
+               COMPUTE CNT-ADRS    =   CNT-ADRS    +   1
+               IF  ( CNT-ADRS      =   1 )
+                   MOVE    ADRS-EDITADRS-NAME
+                                   TO  WRK-EDITADRS-NAME
                END-IF
+      *
+               PERFORM 900-ADRS-KEY4-FET-SEC
       *
            END-PERFORM
       *
-           PERFORM 900-ADRS-CLOSE-SEC
+           MOVE    "tbl_adrs"          TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
       *    郵便番号による住所検索チェック
            EVALUATE    CNT-ADRS
@@ -3118,12 +2931,7 @@
                                        TO  USBYO-BYOMEI
       *
       *    病名で自院病名マスターを検索
-           PERFORM 900-USERBYOMEI-SELECT-SEC
-      *
-           IF  ( FLG-USERBYOMEI        =   ZERO )
-      *        自院病名マスター読込
-               PERFORM 900-USERBYOMEI-READ-SEC
-           END-IF
+           PERFORM 900-USERBYOMEI-KEY8-SEL-SEC
       *
            MOVE    ZERO            TO  IDX1
       *
@@ -3134,11 +2942,13 @@
                PERFORM 41181-USERBYOMEI-HENSYU-SEC
       *
       *        自院病名マスター読込
-               PERFORM 900-USERBYOMEI-READ-SEC
+               PERFORM 900-USERBYOMEI-KEY8-FET-SEC
       *
            END-PERFORM
       *
-           PERFORM 900-USERBYOMEI-CLOSE-SEC
+           MOVE    "tbl_userbyomei"    TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
            .
       *
        4118-USERBYOMEI-LST-EDIT-EXT.
@@ -3203,12 +3013,7 @@
                                            BYO-BYOMEIKANA
       *
       *    病名漢字（カナ）で病名マスターを検索
-           PERFORM 900-BYOMEI-SELECT-SEC
-      *
-           IF  ( FLG-BYOMEI        =   ZERO )
-      *        病名マスター読込
-               PERFORM 900-BYOMEI-READ-SEC
-           END-IF
+           PERFORM 900-BYOMEI-KEY2-SEL-SEC
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL      (IDX1            >   200 )   OR
@@ -3218,11 +3023,13 @@
                PERFORM 41181-BYOMEI-HENSYU-SEC
       *
       *        病名マスター読込
-               PERFORM 900-BYOMEI-READ-SEC
+               PERFORM 900-BYOMEI-KEY2-FET-SEC
       *
            END-PERFORM
       *
-           PERFORM 900-BYOMEI-CLOSE-SEC
+           MOVE    "tbl_byomei"        TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
            .
       *
        4118-BYOMEI-LST-EDIT-EXT.
@@ -3426,7 +3233,7 @@
                                        TO  USBYO-BYOMEIINPUTCD
       *
       *    自院病名マスタ−読み込み処理
-           PERFORM 910-USERBYOMEI-READ-SEC
+           PERFORM 910-USERBYOMEI-KEY-SEL-SEC
       *
       *    自院病名マスタ−に存在せず、
       *    病名コードの桁数が７桁の場合、病名マスターを検索する
@@ -3441,7 +3248,7 @@
                    INITIALIZE              BYOMEI-REC
                    MOVE    SPA-GMN-Q01-BYOMEICD (IDX1)
                                    TO  BYO-BYOMEICD
-                   PERFORM 910-BYOMEI-READ-SEC
+                   PERFORM 900-BYOMEI-KEY-SEL-SEC
                    IF  ( FLG-BYOMEI    NOT =   ZERO )
                        MOVE    "0004"      TO  SPA-ERRCD
                        MOVE    WRK-ERR-CUR TO  SPA-GMN-Q01-CUR
@@ -3509,38 +3316,6 @@
            .
       *
        4121-USERBYOMEI-SEL-EDIT-EXT.
-           EXIT.
-      *****************************************************************
-      *    自院病名マスター読込処理
-      *****************************************************************
-       910-USERBYOMEI-READ-SEC            SECTION.
-      *
-           MOVE    ZERO                TO  FLG-USERBYOMEI
-           MOVE    USERBYOMEI-REC      TO  MCPDATA-REC
-           MOVE    "USERBYOMEI-KEY"    TO  ORC-DBPATH
-      *
-           PERFORM 910-DB-SELECT-SEC
-           IF ( MCP-RC             =   ZERO )
-               MOVE    "USERBYOMEI-KEY"
-                                       TO  ORC-DBPATH
-      *
-               PERFORM 910-DB-READ-SEC
-               IF  ( MCP-RC        =   ZERO )
-                   MOVE    MCPDATA-REC TO  USERBYOMEI-REC
-               ELSE
-                   MOVE    1           TO  FLG-USERBYOMEI
-               END-IF
-           ELSE
-               MOVE    1               TO  FLG-USERBYOMEI
-           END-IF
-      *
-           MOVE    "USERBYOMEI-KEY"    TO  ORC-DBPATH
-      *
-           PERFORM 910-DB-CLOSE-SEC
-      *
-           .
-      *
-       910-INPUTCD-READ-EXT.
            EXIT.
       *****************************************************************
       *    病名チェック処理
@@ -3651,12 +3426,7 @@
                                        TO  TNS-NAME
                                            TNS-KANANAME
       *
-           PERFORM 910-TENSU-SELECT-SEC
-      *
-           IF  ( FLG-TENSU     =   ZERO )
-      *        点数マスタ読込
-               PERFORM 910-TENSU-READ-SEC
-           END-IF
+           PERFORM 900-TENSU-KEY2-SEL-SEC
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL      (IDX1            >   200  )   OR
@@ -3666,12 +3436,14 @@
                PERFORM 41201-SRYACT-HENSYU-SEC
       *
       *        点数マスタ読込
-               PERFORM 910-TENSU-READ-SEC
+               PERFORM 900-TENSU-KEY2-FET-SEC
       *
            END-PERFORM
       *
       *    点数マスタクローズ
-           PERFORM 910-TENSU-CLOSE-SEC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            IF      ( IDX1              >   200 )
             AND    ( FLG-TENSU         =   ZERO )
@@ -3763,19 +3535,18 @@
            MOVE    WRK-SRYCD       TO  ICD-INPUTCD
       *
       *    入力コードマスタ−読み込み処理
-           PERFORM 910-INPUTCD-READ-SEC
+           PERFORM 900-INPUTCD-KEY-SEL-SEC
       *
       *    入力コードマスターに存在せず、
       *    入力コードの桁数が９桁の場合、点数マスターを検索する
            IF  ( FLG-INPUTCD       =   ZERO )
                INITIALIZE      TNS-TENSU-REC
-               MOVE   ICD-SRYCD
-                                   TO  TNS-SRYCD
+               MOVE   ICD-SRYCD    TO  TNS-SRYCD
       *
-               MOVE   SPA-SYSYMD
-                                   TO  ORC-DBYMD
+               MOVE   SPA-SYSYMD   TO  TNS-YUKOSTYMD
+                                       TNS-YUKOEDYMD
       *        点数マスタ−読み込み処理
-               PERFORM 910-TENSU-READ-02-SEC
+               PERFORM 900-TENSU-KEY-SEL-SEC
                IF  ( FLG-TENSU     =   ZERO )
                    CONTINUE
                ELSE
@@ -3790,9 +3561,10 @@
                    INITIALIZE      TNS-TENSU-REC
                    MOVE   WRK-SRYCD    TO  TNS-SRYCD
       *
-                   MOVE   SPA-SYSYMD   TO  ORC-DBYMD
+                   MOVE   SPA-SYSYMD   TO  TNS-YUKOSTYMD
+                                           TNS-YUKOEDYMD
       *            点数マスタ−読み込み処理
-                   PERFORM 910-TENSU-READ-02-SEC
+                   PERFORM 900-TENSU-KEY-SEL-SEC
                    IF  ( FLG-TENSU     =   ZERO )
                        CONTINUE
                    ELSE
@@ -6350,67 +6122,40 @@
        800-ZENKAKU-CHG-EXT.
            EXIT.
       *****************************************************************
-      *    患者マスター読込（主キー）
-      *****************************************************************
-       900-PTINF-READ-SEC         SECTION.
-      *
-           MOVE    ZERO                TO  FLG-PTINF
-           MOVE    PTINF-REC           TO  MCPDATA-REC
-           MOVE    "PTINF-KEY"         TO  ORC-DBPATH
-      *
-           PERFORM 910-DB-SELECT-SEC
-      *
-           IF  ( MCP-RC                =   ZERO )
-               MOVE    "PTINF-KEY"         TO  ORC-DBPATH
-      *
-               PERFORM 910-DB-READ-SEC
-      *
-               IF  ( MCP-RC            =   ZERO )
-                   MOVE    MCPDATA-REC TO  PTINF-REC
-               ELSE
-                   MOVE    1           TO  FLG-PTINF
-               END-IF
-           ELSE
-               MOVE    1               TO  FLG-PTINF
-           END-IF
-      *
-           MOVE    "PTINF-KEY"         TO  ORC-DBPATH
-      *
-           PERFORM 910-DB-CLOSE-SEC
-      *
-           .
-       900-PTINF-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    住所マスター検索（郵便番号）
       *****************************************************************
-       900-ADRS-SELECT-SEC             SECTION.
+       900-ADRS-KEY4-SEL-SEC           SECTION.
       *
            MOVE    ZERO                TO  FLG-ADRS
+      *
+           INITIALIZE                  ORCSADDSIGNAREA
+           MOVE    ADRS-POST           TO  SADDSIGN-STR
+           CALL    "ORCSADDSIGN"       USING   ORCSADDSIGNAREA
+           MOVE    SADDSIGN-STR        TO  ADRS-POST
+      *
            MOVE    ADRS-REC            TO  MCPDATA-REC
-           MOVE    "ADRS-KEY4"         TO  ORC-DBPATH
-      *
-           PERFORM 910-DB-SELECT-SEC
-      *
-           IF  ( MCP-RC            NOT =   ZERO )
+           MOVE    "tbl_adrs"          TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF  ( MCP-RC                =   ZERO )
+               MOVE    MCPDATA-REC     TO  ADRS-REC
+           ELSE
                MOVE    1               TO  FLG-ADRS
            END-IF
       *
       *
            .
-       900-BYOMEI-SELECT-EXT.
+       900-ADRS-KEY4-SEL-EXT.
            EXIT.
       *****************************************************************
       *    住所マスター読込（郵便番号）
       *****************************************************************
-       900-ADRS-READ-SEC               SECTION.
+       900-ADRS-KEY4-FET-SEC           SECTION.
       *
            MOVE    ZERO                TO  FLG-ADRS
-           MOVE    "ADRS-KEY4"         TO  ORC-DBPATH
-      *
-           PERFORM 910-DB-READ-SEC
-      *
+           MOVE    "tbl_adrs"          TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
            IF  ( MCP-RC                =   ZERO )
                MOVE    MCPDATA-REC     TO  ADRS-REC
            ELSE
@@ -6418,45 +6163,25 @@
            END-IF
       *
            .
-       900-ADRS-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    住所マスタークローズ（郵便番号）
-      *****************************************************************
-       900-ADRS-CLOSE-SEC              SECTION.
-      *
-           MOVE    "ADRS-KEY4"         TO  ORC-DBPATH
-      *
-           PERFORM 910-DB-CLOSE-SEC
-      *
-           .
-       900-ADRS-CLOSE-EXT.
+       900-ADRS-KEY4-FET-EXT.
            EXIT.
       *****************************************************************
       *    自院病名マスター検索処理
       *****************************************************************
-       900-USERBYOMEI-SELECT-SEC       SECTION.
+       900-USERBYOMEI-KEY8-SEL-SEC     SECTION.
       *
            MOVE    ZERO                TO  FLG-USERBYOMEI
+      *
+           INITIALIZE                  ORCSADDSIGNAREA
+           MOVE    "1"                 TO  SADDSIGN-KBN
+           MOVE    USBYO-BYOMEI        TO  SADDSIGN-STR
+           CALL    "ORCSADDSIGN"       USING   ORCSADDSIGNAREA
+           MOVE    SADDSIGN-STR        TO  USBYO-BYOMEI
+      *
            MOVE    USERBYOMEI-REC      TO  MCPDATA-REC
-           MOVE    "USERBYOMEI-KEY8"   TO  ORC-DBPATH
-      *
-           PERFORM 910-DB-SELECT-SEC
-           IF ( MCP-RC             NOT =   ZERO )
-               MOVE    1               TO  FLG-USERBYOMEI
-           END-IF
-           .
-      *
-       900-USERBYOMEI-SELECT-EXT.
-           EXIT.
-      *****************************************************************
-      *    自院病名マスター読込処理
-      *****************************************************************
-       900-USERBYOMEI-READ-SEC         SECTION.
-      *
-           MOVE    "USERBYOMEI-KEY8"   TO  ORC-DBPATH
-      *
-           PERFORM 910-DB-READ-SEC
+           MOVE    "tbl_userbyomei"    TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF  ( MCP-RC        =   ZERO )
                MOVE    MCPDATA-REC     TO  USERBYOMEI-REC
            ELSE
@@ -6464,49 +6189,43 @@
            END-IF
            .
       *
-       900-USERBYOMEI-READ-EXT.
+       900-USERBYOMEI-KEY8-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    自院病名マスタークローズ処理
+      *    自院病名マスター読込処理
       *****************************************************************
-       900-USERBYOMEI-CLOSE-SEC      SECTION.
+       900-USERBYOMEI-KEY8-FET-SEC     SECTION.
       *
-           MOVE    "USERBYOMEI-KEY8"   TO  ORC-DBPATH
-      *
-           PERFORM 910-DB-CLOSE-SEC
-      *
+           MOVE    "tbl_userbyomei"    TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF  ( MCP-RC        =   ZERO )
+               MOVE    MCPDATA-REC     TO  USERBYOMEI-REC
+           ELSE
+               MOVE    1               TO  FLG-USERBYOMEI
+           END-IF
            .
-       900-USERBYOMEI-CLOSE-EXT.
+      *
+       900-USERBYOMEI-KEY8-FET-EXT.
            EXIT.
       *****************************************************************
       *    病名マスター検索（漢字・カナ名）
       *****************************************************************
-       900-BYOMEI-SELECT-SEC           SECTION.
+       900-BYOMEI-KEY2-SEL-SEC         SECTION.
       *
            MOVE    ZERO                TO  FLG-BYOMEI
+      *
+           INITIALIZE                  ORCSADDSIGNAREA
+           MOVE    "1"             TO  SADDSIGN-KBN
+           MOVE    BYO-BYOMEI      TO  SADDSIGN-STR
+           CALL    "ORCSADDSIGN"       USING   ORCSADDSIGNAREA
+           MOVE    SADDSIGN-STR    TO  BYO-BYOMEI
+                                       BYO-BYOMEIKANA
+      *
            MOVE    BYOMEI-REC          TO  MCPDATA-REC
-           MOVE    "BYOMEI-KEY2"       TO  ORC-DBPATH
-      *
-           PERFORM 910-DB-SELECT-SEC
-      *
-           IF  ( MCP-RC            NOT =   ZERO )
-               MOVE    1               TO  FLG-BYOMEI
-           END-IF
-      *
-      *
-           .
-       900-BYOMEI-SELECT-EXT.
-           EXIT.
-      *****************************************************************
-      *    病名マスター読込（漢字・カナ名）
-      *****************************************************************
-       900-BYOMEI-READ-SEC             SECTION.
-      *
-           MOVE    ZERO                TO  FLG-BYOMEI
-           MOVE    "BYOMEI-KEY2"       TO  ORC-DBPATH
-      *
-           PERFORM 910-DB-READ-SEC
-      *
+           MOVE    "tbl_byomei"        TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF  ( MCP-RC                =   ZERO )
                MOVE    MCPDATA-REC     TO  BYOMEI-REC
            ELSE
@@ -6514,86 +6233,90 @@
            END-IF
       *
            .
-       900-BYOMEI-READ-EXT.
+       900-BYOMEI-KEY2-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    病名マスタークローズ（漢字・カナ名）
+      *    病名マスター読込（漢字・カナ名）
       *****************************************************************
-       900-BYOMEI-CLOSE-SEC            SECTION.
+       900-BYOMEI-KEY2-FET-SEC             SECTION.
       *
-           MOVE    "BYOMEI-KEY2"       TO  ORC-DBPATH
-      *
-           PERFORM 910-DB-CLOSE-SEC
+           MOVE    ZERO                TO  FLG-BYOMEI
+           MOVE    "tbl_byomei"        TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF  ( MCP-RC                =   ZERO )
+               MOVE    MCPDATA-REC     TO  BYOMEI-REC
+           ELSE
+               MOVE    1               TO  FLG-BYOMEI
+           END-IF
       *
            .
-       900-BYOMEI-CLOSE-EXT.
+       900-BYOMEI-KEY2-FET-EXT.
            EXIT.
       *****************************************************************
       *    病名マスター読込（主キー）
       *****************************************************************
-       910-BYOMEI-READ-SEC         SECTION.
+       900-BYOMEI-KEY-SEL-SEC          SECTION.
       *
            MOVE    ZERO                TO  FLG-BYOMEI
       *
            MOVE    BYOMEI-REC          TO  MCPDATA-REC
-           MOVE    "BYOMEI-KEY"        TO  ORC-DBPATH
-      *
-           PERFORM 910-DB-SELECT-SEC
-      *
+           MOVE    "tbl_byomei"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF  ( MCP-RC                =   ZERO )
-               MOVE    "BYOMEI-KEY"    TO  ORC-DBPATH
-      *
-               PERFORM 910-DB-READ-SEC
-      *
-               IF  ( MCP-RC            =   ZERO )
-                   MOVE    MCPDATA-REC TO  BYOMEI-REC
-               ELSE
-                   MOVE    1           TO  FLG-BYOMEI
-      *
-               END-IF
+               MOVE    MCPDATA-REC     TO  BYOMEI-REC
            ELSE
-      *
                MOVE    1               TO  FLG-BYOMEI
            END-IF
       *
-           MOVE    "BYOMEI-KEY"        TO  ORC-DBPATH
-      *
-           PERFORM 910-DB-CLOSE-SEC
-      *
+           MOVE    "tbl_byomei"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
-       910-BYOMEI-READ-EXT.
+       900-BYOMEI-KEY-SEL-EXT.
            EXIT.
       *
       *****************************************************************
       *    点数マスター検索（漢字・カナ名）
       *****************************************************************
-       910-TENSU-SELECT-SEC            SECTION.
+       900-TENSU-KEY2-SEL-SEC          SECTION.
       *
            MOVE    ZERO                TO  FLG-TENSU
+      *
+           INITIALIZE                      ORCSADDSIGNAREA
+           MOVE    "1"                 TO  SADDSIGN-KBN
+           MOVE    TNS-NAME            TO  SADDSIGN-STR
+           CALL    "ORCSADDSIGN"       USING   ORCSADDSIGNAREA
+           MOVE    SADDSIGN-STR        TO  TNS-NAME
+                                           TNS-KANANAME
+      *
+           MOVE    SPA-SYSYMD          TO  TNS-YUKOSTYMD
+                                           TNS-YUKOEDYMD
+      *
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-           MOVE    "TENSU-KEY2"        TO  ORC-DBPATH
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
-      *
-           PERFORM 910-DB-SELECT-SEC
-      *
-           IF  ( MCP-RC            NOT =   ZERO )
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF  ( MCP-RC                =   ZERO )
+               MOVE    MCPDATA-REC     TO  TNS-TENSU-REC
+           ELSE
                MOVE    1               TO  FLG-TENSU
            END-IF
       *
            .
-       910-TENSU-SELECT-EXT.
+       900-TENSU-KEY2-SEL-EXT.
            EXIT.
       *****************************************************************
       *    点数マスター読込（漢字・カナ名）
       *****************************************************************
-       910-TENSU-READ-SEC              SECTION.
+       900-TENSU-KEY2-FET-SEC           SECTION.
       *
            MOVE    ZERO                TO  FLG-TENSU
-           MOVE    "TENSU-KEY2"        TO  ORC-DBPATH
-      *
-           PERFORM 910-DB-READ-SEC
-      *
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
            IF  ( MCP-RC                =   ZERO )
                MOVE    MCPDATA-REC     TO  TNS-TENSU-REC
            ELSE
@@ -6602,128 +6325,266 @@
       *
            .
       *
-       910-TENSU-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    点数マスタークローズ（漢字・カナ名）
-      *****************************************************************
-       910-TENSU-CLOSE-SEC             SECTION.
-      *
-           MOVE    "TENSU-KEY2"        TO  ORC-DBPATH
-      *
-           PERFORM 910-DB-CLOSE-SEC
-      *
-           .
-       910-TENSU-CLOSE-EXT.
+       900-TENSU-KEY2-FET-EXT.
            EXIT.
       *****************************************************************
       *    入力コードマスター読込処理
       *****************************************************************
-       910-INPUTCD-READ-SEC            SECTION.
+       900-INPUTCD-KEY-SEL-SEC         SECTION.
       *
            MOVE    ZERO                TO  FLG-INPUTCD
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
-           MOVE    "INPUTCD-KEY2"      TO  ORC-DBPATH
-      *
-           PERFORM 910-DB-SELECT-SEC
+           MOVE    "tbl_inputcd"       TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF ( MCP-RC             =   ZERO )
-               MOVE    "INPUTCD-KEY2"  TO  ORC-DBPATH
-      *
-               PERFORM 910-DB-READ-SEC
-               IF  ( MCP-RC        =   ZERO )
-                   MOVE    MCPDATA-REC TO  INPUTCD-REC
-               ELSE
-                   MOVE    1           TO  FLG-INPUTCD
-               END-IF
+               MOVE    MCPDATA-REC TO  INPUTCD-REC
            ELSE
-               MOVE    1               TO  FLG-INPUTCD
+               MOVE    1           TO  FLG-INPUTCD
            END-IF
       *
-           MOVE    "INPUTCD-KEY2"      TO  ORC-DBPATH
-      *
-           PERFORM 910-DB-CLOSE-SEC
+           MOVE    "tbl_inputcd"       TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
       *
-       910-INPUTCD-READ-EXT.
+       900-INPUTCD-KEY-SEL-EXT.
            EXIT.
       *
       *****************************************************************
       *    点数マスター読込処理
       *****************************************************************
-       910-TENSU-READ-02-SEC            SECTION.
+       900-TENSU-KEY-SEL-SEC            SECTION.
       *
            MOVE    ZERO                TO  FLG-TENSU
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-      *
-           PERFORM 910-DB-SELECT-SEC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF ( MCP-RC             =   ZERO )
-               MOVE    "TENSU-KEY"     TO  ORC-DBPATH
-      *
-               PERFORM 910-DB-READ-SEC
-               IF  ( MCP-RC        =   ZERO )
-                   MOVE    MCPDATA-REC TO  TNS-TENSU-REC
-               ELSE
-                   MOVE    1           TO  FLG-TENSU
-               END-IF
+               MOVE    MCPDATA-REC TO  TNS-TENSU-REC
            ELSE
-               MOVE    1               TO  FLG-TENSU
+               MOVE    1           TO  FLG-TENSU
            END-IF
       *
-           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-      *
-           PERFORM 910-DB-CLOSE-SEC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
       *
-       910-TENSU-READ-02-EXT.
+       900-TENSU-KEY-SEL-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ＤＢ検索処理
+      *    システム管理マスタ検索処理(KEY2)
       *****************************************************************
-       910-DB-SELECT-SEC               SECTION.
+       900-SYSKANRI-KEY2-SEL-SEC       SECTION.
       *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    ZERO                TO  FLG-SYSKANRI
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYSKANRI-REC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           .
+       900-SYSKANRI-KEY2-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    システム管理マスタFETCH処理(KEY2)
+      *****************************************************************
+       900-SYSKANRI-KEY2-FET-SEC       SECTION.
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC          NOT =   ZERO )
+               MOVE    1               TO  FLG-SYSKANRI
+           ELSE
+               MOVE    MCPDATA-REC     TO  SYSKANRI-REC
+           END-IF
+      *
+           .
+       900-SYSKANRI-KEY2-FET-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険番号マスター検索処理
+      *****************************************************************
+       900-HKNNUM-KEY3-SEL-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-HKNNUM
+           INITIALIZE                  HKNNUM-REC
+           MOVE    SPA-HOSPID          TO  HKN-HOSPID
+           MOVE    SPA-SYSYMD          TO  HKN-TEKSTYMD
+           MOVE    SPA-SYSYMD          TO  HKN-TEKEDYMD
+           MOVE    HKNNUM-REC          TO  MCPDATA-REC
+           MOVE    "tbl_hknnum"        TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF  ( MCP-RC        =   ZERO )
+               MOVE    MCPDATA-REC     TO  HKNNUM-REC
+           ELSE
+               MOVE    1               TO  FLG-HKNNUM
+           END-IF
+           .
+      *
+       900-HKNNUM-KEY3-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険番号マスター読込処理
+      *****************************************************************
+       900-HKNNUM-KEY3-FET-SEC       SECTION.
+      *
+           MOVE    "tbl_hknnum"        TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF  ( MCP-RC        =   ZERO )
+               MOVE    MCPDATA-REC     TO  HKNNUM-REC
+           ELSE
+               MOVE    1               TO  FLG-HKNNUM
+           END-IF
+           .
+      *
+       900-HKNNUM-KEY3-FET-EXT.
+           EXIT.
+      *****************************************************************
+      *    自院病名マスター検索処理
+      *****************************************************************
+       900-USERBYOMEI-KEY4-SEL-SEC     SECTION.
+      *
+           MOVE    ZERO                TO  FLG-USERBYOMEI
+           INITIALIZE                  USERBYOMEI-REC
+           MOVE    SPA-HOSPID          TO  USBYO-HOSPID
+           MOVE    USERBYOMEI-REC      TO  MCPDATA-REC
+           MOVE    "tbl_userbyomei"    TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF  ( MCP-RC        =   ZERO )
+               MOVE    MCPDATA-REC     TO  USERBYOMEI-REC
+           ELSE
+               MOVE    1               TO  FLG-USERBYOMEI
+           END-IF
+           .
+      *
+       900-USERBYOMEI-KEY4-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    自院病名マスター読込処理
+      *****************************************************************
+       900-USERBYOMEI-KEY4-FET-SEC     SECTION.
+      *
+           MOVE    "tbl_userbyomei"    TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF  ( MCP-RC        =   ZERO )
+               MOVE    MCPDATA-REC     TO  USERBYOMEI-REC
+           ELSE
+               MOVE    1               TO  FLG-USERBYOMEI
+           END-IF
+           .
+      *
+       900-USERBYOMEI-KEY4-FET-EXT.
+           EXIT.
+      *****************************************************************
+      *    自院病名マスター検索処理
+      *****************************************************************
+       900-USERBYOMEI-KEY3-SEL-SEC     SECTION.
+      *
+           MOVE    ZERO                TO  FLG-USERBYOMEI
+           MOVE    USERBYOMEI-REC      TO  MCPDATA-REC
+           MOVE    "tbl_userbyomei"    TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+      *
+           PERFORM 910-DBSELECT-SEC
+           IF ( MCP-RC             =   ZERO )
+                   CONTINUE
+           ELSE
+               MOVE    1               TO  FLG-USERBYOMEI
+           END-IF
+      *
+           MOVE    "tbl_userbyomei"    TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
       *
-       910-DB-SELECT-EXT.
+       900-USERBYOMEI-KEY3-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    自院病名マスター読込処理
+      *****************************************************************
+       910-USERBYOMEI-KEY-SEL-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-USERBYOMEI
+           MOVE    USERBYOMEI-REC      TO  MCPDATA-REC
+           MOVE    "tbl_userbyomei"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF ( MCP-RC             =   ZERO )
+               MOVE    MCPDATA-REC     TO  USERBYOMEI-REC
+           ELSE
+               MOVE    1               TO  FLG-USERBYOMEI
+           END-IF
+      *
+           MOVE    "tbl_userbyomei"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+      *
+       910-USERBYOMEI-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ検索処理
+      *****************************************************************
+       910-DBSELECT-SEC               SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF    ( MCP-RC          =   ZERO )
+               PERFORM 910-DBFETCH-SEC
+           END-IF
+      *
+           .
+      *
+       910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ読み込み処理
       *****************************************************************
-       910-DB-READ-SEC                 SECTION.
+       910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
       *
            .
       *
-       910-DB-READ-EXT.
+       910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢクローズ処理
       *****************************************************************
-       910-DB-CLOSE-SEC                SECTION.
+       910-DBCLOSECURSOR-SEC           SECTION.
       *
-           MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
-       910-DB-CLOSE-EXT.
+       910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
       *    ＰＵＴ　処理
@@ -6731,9 +6592,8 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"   USING
+           CALL   "MONFUNC"     USING
                                 MCPAREA
-                                ORCMCPAREA
                                 MCPDATA-REC.
       *
            .

@@ -16,7 +16,6 @@ bind	"QID1"		"OpenCOBOL"	"ORCGQID1";
 
 multiplex_group	orca13;
 
-
 data	{
 	spa	orcaspa;
 	window	{
@@ -32,5 +31,22 @@ data	{
 	};
 };
 
-#include "orcadb.inc"
-
+db	{
+	tbl_syskanri;
+	tbl_byomei;
+	tbl_inputcd;
+	tbl_hkncombi;
+	tbl_hknnum;
+	tbl_adrs;
+	tbl_jyurrk;
+	tbl_srykarrk;
+	tbl_tensu;
+	tbl_userbyomei;
+	tbl_jobkanri;
+	query_ptinf;
+	query_ptinf_cnt;
+	tbl_ptnyuinrrk;
+};
+db	"shell"	{
+	shell;
+};

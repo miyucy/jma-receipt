@@ -124,8 +124,9 @@
       *****************************************************************
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "ORCA-DBPATH".
-           COPY    "CPORCMCP.INC".
+      *
+      *    部分一致文字列編集
+           COPY    "CPORCSADDSIGN.INC".
       *
       *****************************************************************
       *    連絡領域
@@ -256,13 +257,7 @@
                                    TO  ADRS-POST
       *
       *    住所検索処理
-           PERFORM 900-ADRS-SELECT-SEC
-      *
-           IF  ( FLG-ADRS    =   ZERO )
-      *
-      *        住所読込処理
-               PERFORM 900-ADRS-READ-SEC
-           END-IF
+           PERFORM 900-ADRS-KEY4-SEL-SEC
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
                UNTIL ( FLG-ADRS    =   1 )
@@ -272,11 +267,13 @@
                PERFORM 3101-ADRS-EDIT-SEC
       *
       *        住所読込処理
-               PERFORM 900-ADRS-READ-SEC
+               PERFORM 900-ADRS-KEY4-FET-SEC
       *
            END-PERFORM
       *
-           PERFORM 900-ADRS-CLOSE-SEC
+           MOVE    "tbl_adrs"          TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
       *    カーソルキー制御項目
            MOVE   1                TO  SPA-GMN-Q99-CUR
@@ -558,32 +555,38 @@
       *****************************************************************
       *    住所マスター検索（郵便番号）
       *****************************************************************
-       900-ADRS-SELECT-SEC             SECTION.
+       900-ADRS-KEY4-SEL-SEC           SECTION.
       *
            MOVE    ZERO                TO  FLG-ADRS
+      *
+           INITIALIZE                  ORCSADDSIGNAREA
+           MOVE    ADRS-POST           TO  SADDSIGN-STR
+           CALL    "ORCSADDSIGN"       USING   ORCSADDSIGNAREA
+           MOVE    SADDSIGN-STR        TO  ADRS-POST
+      *
            MOVE    ADRS-REC            TO  MCPDATA-REC
-           MOVE    "ADRS-KEY4"         TO  ORC-DBPATH
-      *
-           PERFORM 910-DB-SELECT-SEC
-      *
-           IF  ( MCP-RC            NOT =   ZERO )
+           MOVE    "tbl_adrs"          TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF  ( MCP-RC                =   ZERO )
+               MOVE    MCPDATA-REC     TO  ADRS-REC
+           ELSE
                MOVE    1               TO  FLG-ADRS
            END-IF
       *
       *
            .
-       900-ADRS-SELECT-EXT.
+       900-ADRS-KEY4-SEL-EXT.
            EXIT.
       *****************************************************************
       *    住所マスター読込（郵便番号）
       *****************************************************************
-       900-ADRS-READ-SEC               SECTION.
+       900-ADRS-KEY4-FET-SEC           SECTION.
       *
            MOVE    ZERO                TO  FLG-ADRS
-           MOVE    "ADRS-KEY4"         TO  ORC-DBPATH
-      *
-           PERFORM 910-DB-READ-SEC
-      *
+           MOVE    "tbl_adrs"          TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
            IF  ( MCP-RC                =   ZERO )
                MOVE    MCPDATA-REC     TO  ADRS-REC
            ELSE
@@ -591,64 +594,49 @@
            END-IF
       *
            .
-       900-ADRS-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    住所マスタークローズ（郵便番号）
-      *****************************************************************
-       900-ADRS-CLOSE-SEC              SECTION.
-      *
-           MOVE    "ADRS-KEY4"         TO  ORC-DBPATH
-      *
-           PERFORM 910-DB-CLOSE-SEC
-      *
-           .
-       900-ADRS-CLOSE-EXT.
+       900-ADRS-KEY4-FET-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理
       *****************************************************************
-       910-DB-SELECT-SEC               SECTION.
+       910-DBSELECT-SEC               SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "MONFUNC"   USING   MCPAREA
+                                       MCPDATA-REC
+           IF    ( MCP-RC          =   ZERO )
+               PERFORM 910-DBFETCH-SEC
+           END-IF
       *
            .
       *
-       910-DB-SELECT-EXT.
+       910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ読み込み処理
       *****************************************************************
-       910-DB-READ-SEC                 SECTION.
+       910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
+           CALL    "MONFUNC"   USING   MCPAREA
                                        MCPDATA-REC
       *
            .
       *
-       910-DB-READ-EXT.
+       910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢクローズ処理
       *****************************************************************
-       910-DB-CLOSE-SEC                SECTION.
+       910-DBCLOSECURSOR-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "MONFUNC"   USING   MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
-       910-DB-CLOSE-EXT.
+       910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
       *    ＰＵＴ　処理
@@ -656,7 +644,7 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE    "PUTWINDOW"     TO  MCP-FUNC.
-           CALL    "MCPSUB"    USING   MCPAREA
+           CALL    "MONFUNC"   USING   MCPAREA
                                        MCPDATA-REC
       *
            .

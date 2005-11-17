@@ -129,7 +129,8 @@
            03  WRK-Q96-SRYCD-G.
                05  WRK-Q96-SRYCD       PIC X(09)  OCCURS   5.
       *
-           03  WRK-PATH            PIC X(64).
+           03  WRK-MCP-TABLE       PIC X(64).
+           03  WRK-MCP-PATHNAME    PIC X(64).
       *
            03  WRK-KETA            PIC 9(04).
       *
@@ -293,6 +294,9 @@
       *    Á´³Ñ¥Á¥§¥Ã¥¯¥Ñ¥é¥á¥¿
            COPY    "CPORCSKANACHK.INC".
       *
+      *
+      *    ÉôÊ¬°ìÃ×Ê¸»úÎóÊÔ½¸
+           COPY    "CPORCSADDSIGN.INC".
       *
       *    £Ä£Â¸¡º÷
       *01  MCPDATA-REC                 PIC X(5000).
@@ -530,26 +534,32 @@
            MOVE    SPA-Q96-GMN-INPUT(2:1)  TO  TNS-CDKBN-KBN
            IF      SPA-Q96-GMN-INPUT(3:3)  NUMERIC
                MOVE    SPA-Q96-GMN-INPUT(3:3)   TO  TNS-CDKBN-KBNNUM
-               MOVE    "TENSU-KEY91"        TO  WRK-PATH
+               MOVE    "tbl_tensu"              TO  WRK-MCP-TABLE
+               MOVE    "key91"                  TO  WRK-MCP-PATHNAME
            ELSE
                MOVE    SPACE                TO  SPA-Q96-GMN-INPUT(3:)
-               MOVE    "TENSU-KEY90"        TO  WRK-PATH
+               MOVE    "tbl_tensu"              TO  WRK-MCP-TABLE
+               MOVE    "key90"                  TO  WRK-MCP-PATHNAME
            END-IF
       *    Ï·¿Í
            IF      SPA-Q96-GMN-INPUT(2:1)  =   "R"
-               MOVE    "TENSU-KEY92"            TO  WRK-PATH
+               MOVE    "tbl_tensu"              TO  WRK-MCP-TABLE
+               MOVE    "key92"                  TO  WRK-MCP-PATHNAME
            END-IF
       *
+           MOVE    SPA-SYSYMD          TO  TNS-YUKOSTYMD
+                                           TNS-YUKOEDYMD
+           PERFORM 800-EDIT-TENSU-NAME-SEC
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"          USING
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           CALL    "MONFUNC"            USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    WRK-PATH            TO  ORC-DBPATH
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM                     910-TENSU-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-TENSU
@@ -570,16 +580,16 @@
                    END-IF
                END-IF
       *
-               MOVE    WRK-PATH            TO  ORC-DBPATH
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM                     910-TENSU-READ-SEC
            END-PERFORM
       *
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"          USING
+           CALL    "MONFUNC"            USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC
       *
            MOVE    WRK-CNT-ENT         TO  SPA-Q96-GMN-MAX
@@ -707,18 +717,22 @@
            MOVE    WRK-TENSU2          TO  TNSXX-TK-EDTEN
            MOVE    "60"                TO  TNSXX-STSRYKBN
            MOVE    "69"                TO  TNSXX-EDSRYKBN
-           MOVE    "TENSU-KEY93"       TO  WRK-PATH
+           MOVE    "tbl_tensu"         TO  WRK-MCP-TABLE
+           MOVE    "key93"             TO  WRK-MCP-PATHNAME
       *
+           MOVE    SPA-SYSYMD          TO  TNS-YUKOSTYMD
+                                           TNS-YUKOEDYMD
+           PERFORM 800-EDIT-TENSU-NAME-SEC
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"          USING
+           CALL    "MONFUNC"            USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    WRK-PATH            TO  ORC-DBPATH
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM                     910-TENSU-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-TENSU
@@ -747,16 +761,16 @@
                    END-IF
                END-IF
       *
-               MOVE    WRK-PATH            TO  ORC-DBPATH
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM                     910-TENSU-READ-SEC
            END-PERFORM
       *
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"          USING
+           CALL    "MONFUNC"            USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC
       *
            MOVE    WRK-CNT-ENT         TO  SPA-Q96-GMN-MAX
@@ -804,9 +818,11 @@
                END-IF
            END-PERFORM
            IF      WRK-KETA            =   20
-               MOVE    "INPUTCD-KEY2"      TO  WRK-PATH
+               MOVE    "tbl_inputcd"       TO  WRK-MCP-TABLE
+               MOVE    "key2"              TO  WRK-MCP-PATHNAME
            ELSE
-               MOVE    "INPUTCD-KEY"       TO  WRK-PATH
+               MOVE    "tbl_inputcd"       TO  WRK-MCP-TABLE
+               MOVE    "key"               TO  WRK-MCP-PATHNAME
            END-IF
       *
       *
@@ -816,16 +832,23 @@
            MOVE    SPA-Q96-GMN-INPUT   TO  ICD-INPUTCD
       *D   MOVE    SPA-Q96-GMN-INPUT   TO  ICD-INPUTCDMLT
       *
+           IF    ( WRK-MCP-PATHNAME    =   "key" )
+               INITIALIZE                  ORCSADDSIGNAREA
+               MOVE    ICD-INPUTCD     TO  SADDSIGN-STR
+               CALL    "ORCSADDSIGN"       USING   ORCSADDSIGNAREA
+               MOVE    SADDSIGN-STR    TO  ICD-INPUTCD
+           END-IF
+      *
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-      *****MOVE    "INPUTCD-KEY"       TO  ORC-DBPATH
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           CALL    "MONFUNC"            USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    WRK-PATH            TO  ORC-DBPATH
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM                     930-INPUTCD-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-INPUTCD
@@ -848,25 +871,28 @@
       *                ÅÀ¿ô¥Þ¥¹¥¿¤è¤êÊÔ½¸
                        INITIALIZE                  TNS-TENSU-REC
                        MOVE    ICD-SRYCD           TO  TNS-SRYCD
+                       MOVE    SPA-SYSYMD          TO  TNS-YUKOSTYMD
+                                                       TNS-YUKOEDYMD
+                       PERFORM 800-EDIT-TENSU-NAME-SEC
                        MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
                        MOVE    "DBSELECT"          TO  MCP-FUNC
-                       MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-                       MOVE    SPA-SYSYMD          TO  ORC-DBYMD
-                       CALL    "ORCMCPSUB"          USING
+                       MOVE    "tbl_tensu"         TO  MCP-TABLE
+                       MOVE    "key"               TO  MCP-PATHNAME
+                       CALL    "MONFUNC"            USING
                                                     MCPAREA
-                                                    ORCMCPAREA
                                                     MCPDATA-REC
                        IF      MCP-RC              =   ZERO
-                           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+                           MOVE    "tbl_tensu"         TO  MCP-TABLE
+                           MOVE    "key"               TO  MCP-PATHNAME
                            PERFORM                 910-TENSU-READ-SEC
                        ELSE
                            MOVE    1                   TO  FLG-TENSU
                        END-IF
                        MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-                       MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-                       CALL    "ORCMCPSUB"          USING
+                       MOVE    "tbl_tensu"         TO  MCP-TABLE
+                       MOVE    "key"               TO  MCP-PATHNAME
+                       CALL    "MONFUNC"            USING
                                                     MCPAREA
-                                                    ORCMCPAREA
                                                     MCPDATA-REC
       *
                        IF      FLG-TENSU           =   ZERO
@@ -884,15 +910,16 @@
       *
                END-IF
       *
-               MOVE    WRK-PATH            TO  ORC-DBPATH
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM                     930-INPUTCD-READ-SEC
            END-PERFORM
       *
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
+           CALL    "MONFUNC"            USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC
       *
            MOVE    WRK-CNT-ENT         TO  SPA-Q96-GMN-MAX
@@ -1020,54 +1047,66 @@
                EVALUATE    SPA-Q96-GMN-SYORI
       *            ÆâÉþ
                    WHEN    "3"
-                       MOVE    "TENSU-KEY51J"       TO  WRK-PATH
+                       MOVE    "tbl_tensu"          TO  WRK-MCP-TABLE
+                       MOVE    "key51j"             TO  WRK-MCP-PATHNAME
       *            ³°ÍÑ
                    WHEN    "4"
-                       MOVE    "TENSU-KEY52J"      TO  WRK-PATH
+                       MOVE    "tbl_tensu"          TO  WRK-MCP-TABLE
+                       MOVE    "key52j"             TO  WRK-MCP-PATHNAME
       *            Ãí¼Í
                    WHEN    "5"
-                       MOVE    "TENSU-KEY53J"       TO  WRK-PATH
+                       MOVE    "tbl_tensu"          TO  WRK-MCP-TABLE
+                       MOVE    "key53j"             TO  WRK-MCP-PATHNAME
       *            ´ïºà
                    WHEN    "7"
-                       MOVE    "TENSU-KEY6J"        TO  WRK-PATH
+                       MOVE    "tbl_tensu"          TO  WRK-MCP-TABLE
+                       MOVE    "key6j"              TO  WRK-MCP-PATHNAME
       *            ¿ÇÎÅ¹Ô°Ù
                    WHEN    "8"
-                       MOVE    "TENSU-KEY7J"        TO  WRK-PATH
+                       MOVE    "tbl_tensu"          TO  WRK-MCP-TABLE
+                       MOVE    "key7j"              TO  WRK-MCP-PATHNAME
       *            ¸¡ºº
                    WHEN    "9"
-      *****************MOVE    "TENSU-KEY42J"       TO  WRK-PATH
-                       MOVE    "TENSU-KEY42JK"      TO  WRK-PATH
+                       MOVE    "tbl_tensu"          TO  WRK-MCP-TABLE
+                       MOVE    "key42jk"            TO  WRK-MCP-PATHNAME
       *            ÆâÉþ
                    WHEN    OTHER
                        MOVE    "3"              TO  SPA-Q96-GMN-SYORI
-                       MOVE    "TENSU-KEY51J"       TO  WRK-PATH
+                       MOVE    "tbl_tensu"          TO  WRK-MCP-TABLE
+                       MOVE    "key51j"             TO  WRK-MCP-PATHNAME
                END-EVALUATE
            ELSE
       *        Á´ÂÎÊ¬
                EVALUATE    SPA-Q96-GMN-SYORI
       *            ÆâÉþ
                    WHEN    "3"
-                       MOVE    "TENSU-KEY51"       TO  WRK-PATH
+                       MOVE    "tbl_tensu"          TO  WRK-MCP-TABLE
+                       MOVE    "key51"              TO  WRK-MCP-PATHNAME
       *            ³°ÍÑ
                    WHEN    "4"
-                       MOVE    "TENSU-KEY52"      TO  WRK-PATH
+                       MOVE    "tbl_tensu"          TO  WRK-MCP-TABLE
+                       MOVE    "key52"              TO  WRK-MCP-PATHNAME
       *            Ãí¼Í
                    WHEN    "5"
-                       MOVE    "TENSU-KEY53"       TO  WRK-PATH
+                       MOVE    "tbl_tensu"          TO  WRK-MCP-TABLE
+                       MOVE    "key53"              TO  WRK-MCP-PATHNAME
       *            ´ïºà
                    WHEN    "7"
-                       MOVE    "TENSU-KEY6"        TO  WRK-PATH
+                       MOVE    "tbl_tensu"          TO  WRK-MCP-TABLE
+                       MOVE    "key6"               TO  WRK-MCP-PATHNAME
       *            ¿ÇÎÅ¹Ô°Ù
                    WHEN    "8"
-                       MOVE    "TENSU-KEY7"        TO  WRK-PATH
+                       MOVE    "tbl_tensu"          TO  WRK-MCP-TABLE
+                       MOVE    "key7"               TO  WRK-MCP-PATHNAME
       *            ¸¡ºº
                    WHEN    "9"
-      **************   MOVE    "TENSU-KEY42"       TO  WRK-PATH
-                       MOVE    "TENSU-KEY42K"      TO  WRK-PATH
+                       MOVE    "tbl_tensu"          TO  WRK-MCP-TABLE
+                       MOVE    "key42k"             TO  WRK-MCP-PATHNAME
       *            ÆâÉþ
                    WHEN    OTHER
                        MOVE    "3"              TO  SPA-Q96-GMN-SYORI
-                       MOVE    "TENSU-KEY51"        TO  WRK-PATH
+                       MOVE    "tbl_tensu"          TO  WRK-MCP-TABLE
+                       MOVE    "key51"              TO  WRK-MCP-PATHNAME
                END-EVALUATE
            END-IF
       *
@@ -1096,16 +1135,19 @@
                END-IF
            END-IF
       *
+           MOVE    SPA-SYSYMD          TO  TNS-YUKOSTYMD
+                                           TNS-YUKOEDYMD
+           PERFORM 800-EDIT-TENSU-NAME-SEC
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"          USING
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           CALL    "MONFUNC"            USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    WRK-PATH            TO  ORC-DBPATH
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM                     910-TENSU-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-TENSU
@@ -1143,16 +1185,16 @@
                    END-IF
                END-IF
       *
-               MOVE    WRK-PATH            TO  ORC-DBPATH
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM                     910-TENSU-READ-SEC
            END-PERFORM
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"         USING
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
       *
            MOVE    WRK-CNT-ENT         TO  SPA-Q96-GMN-MAX
@@ -1182,88 +1224,102 @@
            EVALUATE    SPA-Q96-GMN-SYORI3
                WHEN    "J1"
       *            ¼«±¡¡¦ÆâÉþ
-                   MOVE    "TENSU-KEY11M1"      TO  WRK-PATH
+                   MOVE    "tbl_tensu"          TO  WRK-MCP-TABLE
+                   MOVE    "key11m1"            TO  WRK-MCP-PATHNAME
                    MOVE    "600000000"          TO  TNS-SRYCD
                    MOVE    "699999999"          TO  TNSUP-SRYCD
                    MOVE    1                    TO  TNS-YKZKBN
                    MOVE    "1"                  TO  SPA-Q01-Q96-GMN-ALL
                WHEN    "J2"
       *            ¼«±¡¡¦³°ÍÑ
-                   MOVE    "TENSU-KEY11M1"      TO  WRK-PATH
+                   MOVE    "tbl_tensu"          TO  WRK-MCP-TABLE
+                   MOVE    "key11m1"            TO  WRK-MCP-PATHNAME
                    MOVE    "600000000"          TO  TNS-SRYCD
                    MOVE    "699999999"          TO  TNSUP-SRYCD
                    MOVE    6                    TO  TNS-YKZKBN
                    MOVE    "1"                  TO  SPA-Q01-Q96-GMN-ALL
                WHEN    "J3"
       *            ¼«±¡¡¦Ãí¼Í
-                   MOVE    "TENSU-KEY11M1"      TO  WRK-PATH
+                   MOVE    "tbl_tensu"          TO  WRK-MCP-TABLE
+                   MOVE    "key11m1"            TO  WRK-MCP-PATHNAME
                    MOVE    "600000000"          TO  TNS-SRYCD
                    MOVE    "699999999"          TO  TNSUP-SRYCD
                    MOVE    4                    TO  TNS-YKZKBN
                    MOVE    "1"                  TO  SPA-Q01-Q96-GMN-ALL
                WHEN    "J4"
       *            ¼«±¡¡¦½èÃÖ
-                   MOVE    "TENSU-KEY12M1"      TO  WRK-PATH
+                   MOVE    "tbl_tensu"          TO  WRK-MCP-TABLE
+                   MOVE    "key12m1"            TO  WRK-MCP-PATHNAME
                    MOVE    "140000000"          TO  TNS-SRYCD
                    MOVE    "149999999"          TO  TNSUP-SRYCD
                    MOVE    "1"                  TO  SPA-Q01-Q96-GMN-ALL
                WHEN    "J5"
       *            ¼«±¡¡¦¿Ç»¡
-                   MOVE    "TENSU-KEY12M1"      TO  WRK-PATH
+                   MOVE    "tbl_tensu"          TO  WRK-MCP-TABLE
+                   MOVE    "key12m1"            TO  WRK-MCP-PATHNAME
                    MOVE    "1"                  TO  SPA-Q01-Q96-GMN-ALL
                    MOVE    "110000000"          TO  TNS-SRYCD
                    MOVE    "119999999"          TO  TNSUP-SRYCD
                WHEN    "J6"
       *            ¼«±¡¡¦Ãí¼Í
-                   MOVE    "TENSU-KEY12M1"      TO  WRK-PATH
+                   MOVE    "tbl_tensu"          TO  WRK-MCP-TABLE
+                   MOVE    "key12m1"            TO  WRK-MCP-PATHNAME
                    MOVE    "1"                  TO  SPA-Q01-Q96-GMN-ALL
                    MOVE    "130000000"          TO  TNS-SRYCD
                    MOVE    "139999999"          TO  TNSUP-SRYCD
                WHEN    "J7"
       *            ¼«±¡¡¦¼ê½Ñ
-                   MOVE    "TENSU-KEY12M1"      TO  WRK-PATH
+                   MOVE    "tbl_tensu"          TO  WRK-MCP-TABLE
+                   MOVE    "key12m1"            TO  WRK-MCP-PATHNAME
                    MOVE    "1"                  TO  SPA-Q01-Q96-GMN-ALL
                    MOVE    "150000000"          TO  TNS-SRYCD
                    MOVE    "159999999"          TO  TNSUP-SRYCD
                WHEN    "J8"
       *            ¼«±¡¡¦²èÁü¿ÇÃÇ
-                   MOVE    "TENSU-KEY12M1"      TO  WRK-PATH
+                   MOVE    "tbl_tensu"          TO  WRK-MCP-TABLE
+                   MOVE    "key12m1"            TO  WRK-MCP-PATHNAME
                    MOVE    "1"                  TO  SPA-Q01-Q96-GMN-ALL
                    MOVE    "170000000"          TO  TNS-SRYCD
                    MOVE    "179999999"          TO  TNSUP-SRYCD
                WHEN    "J9"
       *            ¼«±¡¡¦¤½¤ÎÂ¾
-                   MOVE    "TENSU-KEY12M1"      TO  WRK-PATH
+                   MOVE    "tbl_tensu"          TO  WRK-MCP-TABLE
+                   MOVE    "key12m1"            TO  WRK-MCP-PATHNAME
                    MOVE    "1"                  TO  SPA-Q01-Q96-GMN-ALL
                    MOVE    "180000000"          TO  TNS-SRYCD
                    MOVE    "199999999"          TO  TNSUP-SRYCD
                WHEN    "U4"
       *            ¼«±¡¡¦¥³¥á¥ó¥È
-                   MOVE    "TENSU-KEY12S"       TO  WRK-PATH
+                   MOVE    "tbl_tensu"          TO  WRK-MCP-TABLE
+                   MOVE    "key12s"            TO  WRK-MCP-PATHNAME
                    MOVE    "1"                  TO  SPA-Q01-Q96-GMN-ALL
                    MOVE    "800000000"          TO  TNS-SRYCD
                    MOVE    "899999999"          TO  TNSUP-SRYCD
                WHEN    "U1"
       *            ÍÑË¡
-                   MOVE    "TENSU-KEY12S"       TO  WRK-PATH
+                   MOVE    "tbl_tensu"          TO  WRK-MCP-TABLE
+                   MOVE    "key12s"            TO  WRK-MCP-PATHNAME
                    MOVE    "001000000"          TO  TNS-SRYCD
                    MOVE    "001999999"          TO  TNSUP-SRYCD
                    MOVE    "1"                  TO  SPA-Q01-Q96-GMN-ALL
                WHEN    "U2"
       *            Éô°Ì
-                   MOVE    "TENSU-KEY12S"       TO  WRK-PATH
+                   MOVE    "tbl_tensu"          TO  WRK-MCP-TABLE
+                   MOVE    "key12s"            TO  WRK-MCP-PATHNAME
                    MOVE    "002000000"          TO  TNS-SRYCD
                    MOVE    "002999999"          TO  TNSUP-SRYCD
                    MOVE    "1"                  TO  SPA-Q01-Q96-GMN-ALL
                WHEN    "U3"
       *            ¤½¤ÎÂ¾
-                   MOVE    "TENSU-KEY12S"       TO  WRK-PATH
+                   MOVE    "tbl_tensu"          TO  WRK-MCP-TABLE
+                   MOVE    "key12s"            TO  WRK-MCP-PATHNAME
                    MOVE    "003000000"          TO  TNS-SRYCD
                    MOVE    "098999999"          TO  TNSUP-SRYCD
                    MOVE    "1"                  TO  SPA-Q01-Q96-GMN-ALL
                WHEN    "U5"
       *            Ï«ºÒ¿Ç»¡
-                   MOVE    "TENSU-KEY12S"       TO  WRK-PATH
+                   MOVE    "tbl_tensu"          TO  WRK-MCP-TABLE
+                   MOVE    "key12s"             TO  WRK-MCP-PATHNAME
                    MOVE    "100000000"          TO  TNS-SRYCD
                    MOVE    "109999999"          TO  TNSUP-SRYCD
                    MOVE    "1"                  TO  SPA-Q01-Q96-GMN-ALL
@@ -1283,36 +1339,43 @@
                EVALUATE    IDX-KAI
                    WHEN    1
       *            ´ïºà
-                       MOVE    "TENSU-KEY12S"       TO  WRK-PATH
+                       MOVE    "tbl_tensu"          TO  WRK-MCP-TABLE
+                       MOVE    "key12s"             TO  WRK-MCP-PATHNAME
                        MOVE    "788888000"          TO  TNS-SRYCD
                        MOVE    "788888999"          TO  TNSUP-SRYCD
                    WHEN    2
       *            ¥³¥á¥ó¥È£±
-                       MOVE    "TENSU-KEY12S"       TO  WRK-PATH
+                       MOVE    "tbl_tensu"          TO  WRK-MCP-TABLE
+                       MOVE    "key12s"             TO  WRK-MCP-PATHNAME
                        MOVE    "820800000"          TO  TNS-SRYCD
                        MOVE    "820899999"          TO  TNSUP-SRYCD
                    WHEN    3
       *            ¥³¥á¥ó¥È£²
-                       MOVE    "TENSU-KEY12S"       TO  WRK-PATH
+                       MOVE    "tbl_tensu"          TO  WRK-MCP-TABLE
+                       MOVE    "key12s"             TO  WRK-MCP-PATHNAME
                        MOVE    "830800000"          TO  TNS-SRYCD
                        MOVE    "830899999"          TO  TNSUP-SRYCD
                    WHEN    4
       *            ¥³¥á¥ó¥È£³
-                       MOVE    "TENSU-KEY12S"       TO  WRK-PATH
+                       MOVE    "tbl_tensu"          TO  WRK-MCP-TABLE
+                       MOVE    "key12s"             TO  WRK-MCP-PATHNAME
                        MOVE    "840800000"          TO  TNS-SRYCD
                        MOVE    "840899999"          TO  TNSUP-SRYCD
                END-EVALUATE
       *
+               MOVE    SPA-SYSYMD          TO  TNS-YUKOSTYMD
+                                               TNS-YUKOEDYMD
+               PERFORM 800-EDIT-TENSU-NAME-SEC
                MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
                MOVE    "DBSELECT"          TO  MCP-FUNC
-               MOVE    WRK-PATH            TO  ORC-DBPATH
-               MOVE    SPA-SRYYMD          TO  ORC-DBYMD
-               CALL    "ORCMCPSUB"          USING
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+               CALL    "MONFUNC"            USING
                                             MCPAREA
-                                            ORCMCPAREA
                                             MCPDATA-REC
                IF      MCP-RC              =   ZERO
-                   MOVE    WRK-PATH            TO  ORC-DBPATH
+                   MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+                   MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                    PERFORM                     910-TENSU-READ-SEC
                ELSE
                   MOVE    1                   TO  FLG-TENSU
@@ -1333,14 +1396,15 @@
                        END-IF
                    END-IF
       *
-                   MOVE    WRK-PATH            TO  ORC-DBPATH
+                   MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+                   MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                    PERFORM                     910-TENSU-READ-SEC
                END-PERFORM
                MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-               MOVE    WRK-PATH            TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+               CALL    "MONFUNC"            USING
                                             MCPAREA
-                                            ORCMCPAREA
                                             MCPDATA-REC
            END-PERFORM
       *
@@ -2921,14 +2985,31 @@
        510-ERRSET-EXT.
            EXIT.
       *****************************************************************
+      *     ¸¡º÷ÍÑ¿ÇÎÅ¹Ô°ÙÌ¾¾ÎÊÔ½¸½èÍý
+      *****************************************************************
+       800-EDIT-TENSU-NAME-SEC         SECTION.
+      *
+           IF    ( TNS-NAME    NOT =   SPACE )
+               INITIALIZE                  ORCSADDSIGNAREA
+               MOVE    "1"             TO  SADDSIGN-KBN
+               MOVE    TNS-NAME        TO  SADDSIGN-STR
+               CALL    "ORCSADDSIGN"       USING   ORCSADDSIGNAREA
+               MOVE    SADDSIGN-STR    TO  TNS-NAME
+           END-IF
+      *
+           MOVE    TNS-NAME            TO  TNS-KANANAME
+      *
+           .
+       800-EDIT-TENSU-NAME-EXT.
+           EXIT.
+      *****************************************************************
       *    ÅÀ¿ô¥Þ¥¹¥¿¡¼ÆÉ¹þ
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
+           CALL    "MONFUNC"            USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
@@ -2948,9 +3029,8 @@
        930-INPUTCD-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
+           CALL    "MONFUNC"            USING
                                         MCPAREA
-                                        ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  INPUTCD-REC
@@ -2970,9 +3050,8 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"   USING
+           CALL   "MONFUNC"     USING
                                 MCPAREA
-                                ORCMCPAREA
                                 MCPDATA-REC.
       *
            .

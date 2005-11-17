@@ -254,7 +254,6 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "ORCA-DBPATH".
       *
       *    患者番号変換サブ
            COPY    "CPORCSPTID.INC".
@@ -550,9 +549,9 @@
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
-           MOVE    PATH-SHELL-SHELL
-                                   TO  MCP-PATH
-           CALL    "MCPSUB"        USING
+           MOVE    "shell"         TO  MCP-TABLE
+           MOVE    "shell"         TO  MCP-PATHNAME
+           CALL    "MONFUNC"       USING
                                    MCPAREA
                                    MCPDATA-REC
       *
@@ -627,27 +626,10 @@
            END-IF
       *+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
       *    患者マスタ検索処理
-           PERFORM 910-PTINF-SELECT-SEC
-      *
-           IF  ( FLG-PTINF         =   ZERO )
-      *        患者マスタ読込処理
-               PERFORM 910-PTINF-READ-SEC
-           END-IF
-      *
-           IF  (   FLG-PTINF       =   1 )
-      *
-      *        該当なしエラー
-               MOVE    "0001"      TO  SPA-ERRCD
-      *
-      *        患者マスタクローズ処理
-               PERFORM 910-PTINF-CLOSE-SEC
-      *
-               GO  TO  310-Q02-GMN-EDIT-EXT
-      *
-           END-IF
+           PERFORM 900-QUERY-PTINF-KEY-SEL-SEC
       *
       *    患者マスタ読み飛ばし処理
-           PERFORM 910-PTINF-READ-SKIP-SEC
+           PERFORM 900-QUERY-PTINF-KEY-SKIP-SEC
       *
            PERFORM VARYING IDX-GMN FROM    1   BY  1
                UNTIL   (   IDX-GMN     >   200 )
@@ -831,7 +813,7 @@
                                    TO  SPA-GMN-Q02-PTINF-PTID (IDX-GMN)
       *
       *        患者マスタ読込処理
-               PERFORM 910-PTINF-READ-SEC
+               PERFORM 900-QUERY-PTINF-KEY-FET-SEC
       *
            END-PERFORM
       *
@@ -856,7 +838,17 @@
            END-IF
       *
       *    患者マスタクローズ処理
-           PERFORM 910-PTINF-CLOSE-SEC
+           MOVE    "query_ptinf"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           IF    ( SPA-GMN-Q02-SKIP-KNS     =   ZERO )
+            AND  ( SPA-GMN-Q02-KEKKA-MAX    =   ZERO )
+      *
+      *        該当なしエラー
+               MOVE    "0001"      TO  SPA-ERRCD
+      *
+           END-IF
       *
            .
        310-Q02-GMN-EDIT-EXT.
@@ -956,12 +948,12 @@
            ELSE
       *        検索結果件数を取得
       *        INITIALIZE                  MCPAREA
-               MOVE    PATH-QUERY-PTINF-CNT-KEY
-                                           TO  MCP-PATH
+               MOVE    "query_ptinf_cnt"   TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
                MOVE    SPACE               TO  QUERY-PTINF-CNT-REC
                MOVE    WRK-SQL-COUNT       TO  QUERY-PTINF-CNT-SQL
                MOVE    QUERY-PTINF-CNT-REC TO  MCPDATA-REC
-               PERFORM 910-DB-SELECT-SEC
+               PERFORM 911-DBSELECT-SEC
                IF  (   MCP-RC          NOT =   ZERO    )
                    MOVE    SPACE       TO  SPA-GMN-Q02-TOTAL
                    GO  TO  3101-TOTAL-KNS-EDIT-EXT
@@ -2014,35 +2006,16 @@
       *****************************************************************
       *    患者マスタ検索処理
       *****************************************************************
-       910-PTINF-SELECT-SEC            SECTION.
+       900-QUERY-PTINF-KEY-SEL-SEC     SECTION.
       *
       *    INITIALIZE                  MCPAREA
-           MOVE    PATH-QUERY-PTINF-KEY
-                                       TO  MCP-PATH
+           MOVE    "query_ptinf"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            MOVE    SPACE               TO  QUERY-PTINF-REC
            MOVE    WRK-SQL             TO  QUERY-PTINF-SQL
            MOVE    QUERY-PTINF-REC     TO  MCPDATA-REC
-           PERFORM 910-DB-SELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    ZERO            TO  FLG-PTINF
-           ELSE
-               MOVE    1               TO  FLG-PTINF
-           END-IF
-      *
-           .
-       910-PTINF-SELECT-EXT.
-           EXIT.
-      *****************************************************************
-      *    患者マスタ読込処理
-      *****************************************************************
-       910-PTINF-READ-SEC              SECTION.
-      *
-      *    INITIALIZE              MCPAREA
-           MOVE    PATH-QUERY-PTINF-KEY
-                                       TO  MCP-PATH
-           MOVE    SPACE               TO  MCPDATA-REC
-           PERFORM 910-DB-READ-SEC
-           IF      MCP-RC              =   ZERO
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
                MOVE    ZERO            TO  FLG-PTINF
                MOVE    MCPDATA-REC     TO  QUERY-PTINF-REC
            ELSE
@@ -2050,77 +2023,98 @@
            END-IF
       *
            .
-       910-PTINF-READ-EXT.
+       900-QUERY-PTINF-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者マスタ読込処理
+      *****************************************************************
+       900-QUERY-PTINF-KEY-FET-SEC     SECTION.
+      *
+      *    INITIALIZE              MCPAREA
+           MOVE    "query_ptinf"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    ZERO            TO  FLG-PTINF
+               MOVE    MCPDATA-REC     TO  QUERY-PTINF-REC
+           ELSE
+               MOVE    1               TO  FLG-PTINF
+           END-IF
+      *
+           .
+       900-QUERY-PTINF-KEY-FET-EXT.
            EXIT.
       *****************************************************************
       *    患者マスタ読み飛ばし処理
       *****************************************************************
-       910-PTINF-READ-SKIP-SEC         SECTION.
+       900-QUERY-PTINF-KEY-SKIP-SEC    SECTION.
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
                UNTIL     ( IDX1        >       SPA-GMN-Q02-SKIP-KNS )
-                 OR      ( FLG-PTINF   =       "1" )
+                 OR      ( FLG-PTINF   =       1 )
       *
       *        患者マスタ読込処理
-               PERFORM 910-PTINF-READ-SEC
+               PERFORM 900-QUERY-PTINF-KEY-FET-SEC
       *
            END-PERFORM
       *
            .
-       910-PTINF-READ-SKIP-EXT.
-           EXIT.
-      *****************************************************************
-      *    患者マスタクローズ処理
-      *****************************************************************
-       910-PTINF-CLOSE-SEC             SECTION.
-      *
-      *    INITIALIZE              MCPAREA
-           MOVE    PATH-QUERY-PTINF-KEY
-                                       TO  MCP-PATH
-           MOVE    SPACE               TO  MCPDATA-REC
-           PERFORM 910-DB-CLOSE-SEC
-      *
-           .
-       910-PTINF-CLOSE-EXT.
+       900-QUERY-PTINF-KEY-SKIP-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理
       *****************************************************************
-       910-DB-SELECT-SEC               SECTION.
+       910-DBSELECT-SEC               SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MCPSUB"    USING   MCPAREA
+           CALL    "MONFUNC"   USING   MCPAREA
+                                       MCPDATA-REC
+           IF    ( MCP-RC          =   ZERO )
+               PERFORM 910-DBFETCH-SEC
+           END-IF
+      *
+           .
+      *
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ検索処理
+      *****************************************************************
+       911-DBSELECT-SEC               SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "MONFUNC"   USING   MCPAREA
                                        MCPDATA-REC
       *
            .
       *
-       910-DB-SELECT-EXT.
+       911-DBSELECT-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ読み込み処理
       *****************************************************************
-       910-DB-READ-SEC                 SECTION.
+       910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MCPSUB"    USING   MCPAREA
+           CALL    "MONFUNC"   USING   MCPAREA
                                        MCPDATA-REC
       *
            .
       *
-       910-DB-FETCH-EXT.
+       910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢクローズ処理
       *****************************************************************
-       910-DB-CLOSE-SEC                SECTION.
+       910-DBCLOSECURSOR-SEC                SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "MCPSUB"    USING   MCPAREA
+           CALL    "MONFUNC"   USING   MCPAREA
                                        MCPDATA-REC
       *
            .
       *
-       910-DB-CLOSE-EXT.
+       910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
       *    ジョブ開始セット処理
@@ -2185,7 +2179,7 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE    "PUTWINDOW"     TO  MCP-FUNC.
-           CALL    "MCPSUB"    USING   MCPAREA
+           CALL    "MONFUNC"   USING   MCPAREA
                                        MCPDATA-REC
       *
            .
