@@ -2928,7 +2928,7 @@
                            COMPUTE WRK-RUIKEITOTAL2
                                =   WRK-RUIKEITOTAL2
                                + ((WRK-NUM + 1 )
-                               *   CONST-RUIKEI2(WRK-NUM))
+                               *   CONST-RUIKEI2(WRK-NUM + 1))
                                *  (10 ** ( 9 - IDX0 ))
       *
                        END-PERFORM
