@@ -25,11 +25,12 @@
                   05  K10-ROW     PIC S9(9)   BINARY.
                   05  K10-ROWATTR PIC S9(9)   BINARY.
                   05  K10-ITEM        OCCURS  50 TIMES.
-                    06  K10-NO      PIC X(4).
+                    06  K10-NO      PIC X(3).
+                    06  K10-PTNUM   PIC X(20).
                     06  K10-NAME    PIC X(50).
                     06  K10-SRYYMD  PIC X(10).
                     06  K10-SRYKA   PIC X(10).
                     06  K10-HKNCOMBI    PIC X(50).
                     06  K10-DRCD-NAME    PIC X(50).
-                    06  K10-SYORIKBN     PIC X(4).
+                    06  K10-SYORIKBN     PIC X(2).
                   05  K10-SELECT  PIC X       OCCURS  50 TIMES.
