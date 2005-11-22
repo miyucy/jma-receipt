@@ -254,3 +254,21 @@ path	key7	{
 		;
 	};
 };
+path	key8	{
+	DBSELECT	{
+		DECLARE tbl_wksryact_key8_csr CURSOR FOR
+		SELECT distinct a.*,b.ptnum
+		FROM tbl_wksryact a,tbl_ptnum b
+			WHERE  a.HOSPID      =   :HOSPID
+			AND    a.NYUGAIKBN   =   :NYUGAIKBN
+			AND    a.HOSPID      =   b.HOSPID
+                        AND    a.PTID        =   b.PTID
+			ORDER   BY        b.PTNUM,
+		                          a.SRYYMD,
+                                          a.SRYKA,
+                                          a.HKNCOMBI,
+                                          a.ZAINUM,
+                                          a.RENNUM
+		;
+	};
+};
