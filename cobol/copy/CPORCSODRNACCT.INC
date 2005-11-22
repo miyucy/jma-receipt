@@ -29,6 +29,8 @@
            03  SODRNACCT-NYUKBN        PIC X(02).
       *    外泊・食事起算日
            03  SODRNACCT-STARTYMD      PIC X(08).
+      *    外泊・食事時間
+           03  SODRNACCT-SKJTIME       PIC X(02).
       *
            03  SODRNACCT-OPID          PIC X(16).
            03  SODRNACCT-UPYMD         PIC X(08).

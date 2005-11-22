@@ -161,6 +161,15 @@ I06	{
 			value	varchar(60);
 			state	int;
 		};
+		CMB_SKJTIME	{
+			SKJTIME	{
+				value	varchar(10);
+				state	int;
+			};
+			count	int;
+			item	varchar(10)[5];
+			state	int;
+		};
 		scrolledwindow1	{
 			ALLIDOLST	{
 				count	int;

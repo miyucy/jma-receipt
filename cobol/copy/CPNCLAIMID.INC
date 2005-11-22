@@ -23,89 +23,96 @@
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ     ÆâÍÆ
       ************************************************************
        01  NCLAIMID-AREA.
-           03  NCLAIMID-NYUINNM        PIC X(20)   VALUE   "Claim010".
-           03  NCLAIMID-NYUIDONM       PIC X(20)   VALUE   "Claim011".
-           03  NCLAIMID-ITEM-MAX       PIC 9(03)   VALUE   11.
+           03  NCLAIMID-CLASS          PIC X(20)   VALUE   "Claim010".
+           03  NCLAIMID-ORDER          PIC X(20)   VALUE   "Claim011".
+           03  NCLAIMID-ITEM-MAX       PIC 9(03)   VALUE   12.
            03  NCLAIMID-ITEM-VAL.
              05  NCLAIMID-NYUKBN-G.
-               07  NCLAIMID-NYUKBNNM
+               07  NCLAIMID-NYUKBN
                                 PIC X(20)   VALUE   "Claim012".
-               07  NCLAIMID-NYUKBNID
+               07  NCLAIMID-NYUKBNJMA
                                 PIC X(05)   VALUE   "00001".
-               07  NCLAIMID-NYUKBNMEI
+               07  NCLAIMID-NYUKBNMES
                                 PIC X(100)  VALUE   "Æþ±¡¶èÊ¬".
-             05  NCLAIMID-SYOKAI-G.
-               07  NCLAIMID-SYOKAINM
+             05  NCLAIMID-SHOKAI-G.
+               07  NCLAIMID-SHOKAI
                                 PIC X(20)   VALUE   "Claim013".
-               07  NCLAIMID-SYOKAIID
+               07  NCLAIMID-SHOKAIJMA
                                 PIC X(05)   VALUE   "00002".
-               07  NCLAIMID-SYOKAIMEI
+               07  NCLAIMID-SHOKAIMES
                                 PIC X(100)  VALUE   "·ÑÂ³Æþ±¡¶èÊ¬".
              05  NCLAIMID-BTUNUM-G.
-               07  NCLAIMID-BTUNUMNM
+               07  NCLAIMID-BTUNUM
                                 PIC X(20)   VALUE   "Claim014".
-               07  NCLAIMID-BTUNUMID
+               07  NCLAIMID-BTUNUMJMA
                                 PIC X(05)   VALUE   "00003".
-               07  NCLAIMID-BTUNUMMEI
+               07  NCLAIMID-BTUNUMMES
                                 PIC X(100)  VALUE   "ÉÂÅï".
              05  NCLAIMID-BRMNUM-G.
-               07  NCLAIMID-BRMNUMNM
+               07  NCLAIMID-BRMNUM
                                 PIC X(20)   VALUE   "Claim015".
-               07  NCLAIMID-BRMNUMID
+               07  NCLAIMID-BRMNUMJMA
                                 PIC X(05)   VALUE   "00004".
-               07  NCLAIMID-BRMNUMMEI
+               07  NCLAIMID-BRMNUMMES
                                 PIC X(100)  VALUE   "ÉÂ¼¼".
              05  NCLAIMID-SAGAKU-G.
-               07  NCLAIMID-SAGAKUNM
+               07  NCLAIMID-SAGAKU
                                 PIC X(20)   VALUE   "Claim016".
-               07  NCLAIMID-SAGAKUID
+               07  NCLAIMID-SAGAKUJMA
                                 PIC X(05)   VALUE   "00005".
-               07  NCLAIMID-SAGAKUMEI
+               07  NCLAIMID-SAGAKUMES
                                 PIC X(100)  VALUE   "¼¼ÎÁº¹³Û".
              05  NCLAIMID-DR-G.
-               07  NCLAIMID-DRNM
+               07  NCLAIMID-DR
                                 PIC X(20)   VALUE   "Claim017".
-               07  NCLAIMID-DRID
+               07  NCLAIMID-DRJMA
                                 PIC X(05)   VALUE   "00006".
-               07  NCLAIMID-DRMEI
+               07  NCLAIMID-DRMES
                                 PIC X(100)  VALUE   "Ã´Åö°å".
              05  NCLAIMID-TAIINCD-G.
-               07  NCLAIMID-TAIINCDNM
+               07  NCLAIMID-TAIINCD
                                 PIC X(20)   VALUE   "MML0016".
-               07  NCLAIMID-TAIINCDID
+               07  NCLAIMID-TAIINCDJMA
                                 PIC X(05)   VALUE   "00007".
-               07  NCLAIMID-TAIINCDMEI
+               07  NCLAIMID-TAIINCDMES
                                 PIC X(100)  VALUE   "Âà±¡»öÍ³".
              05  NCLAIMID-TOKNYUIN-G.
-               07  NCLAIMID-TOKNYUINNM
+               07  NCLAIMID-TOKNYUIN
                                 PIC X(20)   VALUE  "XXXXXXX".
-               07  NCLAIMID-TOKNYUINID
+               07  NCLAIMID-TOKNYUINJMA
                                 PIC X(05)   VALUE  "00008".
-               07  NCLAIMID-TOKNYUINMEI
+               07  NCLAIMID-TOKNYUINMES
                                 PIC X(100)  VALUE  "ÆÃÄêÆþ±¡ÎÁ".
              05  NCLAIMID-NYUINKA-G.
-               07  NCLAIMID-NYUINKANM
-                                PIC X(20)   VALUE  "XXXXXXX".
-               07  NCLAIMID-NYUINKAID
+               07  NCLAIMID-NYUINKA
+                                PIC X(20)   VALUE  "MML0028".
+               07  NCLAIMID-NYUINKAJMA
                                 PIC X(05)   VALUE  "00009".
-               07  NCLAIMID-NYUINKAMEI
+               07  NCLAIMID-NYUINKAMES
                                 PIC X(100)  VALUE  "Æþ±¡²Ê".
              05  NCLAIMID-HKNCOMBI-G.
-               07  NCLAIMID-HKNCOMBINM
+               07  NCLAIMID-HKNCOMBI
                                 PIC X(20)   VALUE  "XXXXXXX".
-               07  NCLAIMID-HKNCOMBIID
+               07  NCLAIMID-HKNCOMBIJMA
                                 PIC X(05)   VALUE  "00010".
-               07  NCLAIMID-HKNCOMBIMEI
+               07  NCLAIMID-HKNCOMBIMES
                                 PIC X(100)  VALUE  "ÊÝ¸±ÁÈ¹ç¤»".
+             05  NCLAIMID-SKJTIME-G.
+               07  NCLAIMID-SKJTIME
+                                PIC X(20)   VALUE  "Claim018".
+               07  NCLAIMID-SKJTIMEJMA
+                                PIC X(05)   VALUE  "00011".
+               07  NCLAIMID-SKJTIMEMES
+                                PIC X(100)  VALUE  "¿©»ö»þ´Ö".
              05  NCLAIMID-UNCHKECK-G.
-               07  NCLAIMID-UNCHKECKNM
+               07  NCLAIMID-UNCHKECK
                                 PIC X(20)   VALUE  "XXXXXXX".
-               07  NCLAIMID-UNCHKECKID
+               07  NCLAIMID-UNCHKECKJMA
                                 PIC X(05)   VALUE  "99999".
-               07  NCLAIMID-UNCHKECKMEI
+               07  NCLAIMID-UNCHKECKMES
                                 PIC X(100)  VALUE  "ÉÔÌÀ".
            03  NCLAIMID-ITEM-R          REDEFINES   NCLAIMID-ITEM-VAL.
-             05  NCLAIMID-ITEM-OCC      OCCURS  11.
-               07  NCLAIMID-ITEMNM      PIC X(20).
-               07  NCLAIMID-ITEMID      PIC X(05).
-               07  NCLAIMID-ITEMMEI     PIC X(100).
+             05  NCLAIMID-ITEM-OCC      OCCURS  12.
+               07  NCLAIMID-ITEM        PIC X(20).
+               07  NCLAIMID-ITEMJMA     PIC X(05).
+               07  NCLAIMID-ITEMMES     PIC X(100).

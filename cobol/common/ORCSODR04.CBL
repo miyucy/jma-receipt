@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION                  DIVISION.
-       PROGRAM-ID.                     ORCSODR03.
+       PROGRAM-ID.                     ORCSODR04.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 
-      *  コンポーネント名  : オーダー編集（外泊）
+      *  コンポーネント名  : オーダー編集（食事）
       *  管理者            : 
       *  作成日付    作業者        記述
       *  05/03/18    NACL−太田    新規作成
@@ -52,6 +52,7 @@
        01  CNT-AREA.
            03  CNT-NYUINKA             PIC 9(05).
            03  CNT-HKNCOMBI            PIC 9(05).
+           03  CNT-SKJTIME             PIC 9(05).
       *
       *    添字領域
        01  IDX-AREA.
@@ -71,6 +72,7 @@
        01  ITEM-AREA.
            03  ITEM-NYUINKA            PIC X(02).
            03  ITEM-HKNCOMBI           PIC 9(04).
+           03  ITEM-SKJTIME            PIC X(02).
       *
        01  ERRCD-AREA.
            03  ERRCD-ITEM              PIC X(04).
@@ -134,6 +136,7 @@
       *
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
+           COPY    "ORCA-DBPATH".
       *
       *****************************************************************
       *    連絡　領域
@@ -242,6 +245,8 @@
                    PERFORM 20011-NYUINKA-CHK-SEC
                WHEN    NCLAIMID-HKNCOMBIJMA
                    PERFORM 20011-HKNCOMBI-CHK-SEC
+               WHEN    NCLAIMID-SKJTIMEJMA
+                   PERFORM 20011-SKJTIME-CHK-SEC
                END-EVALUATE
       *
            END-PERFORM
@@ -269,13 +274,13 @@
                                        TO  ITEM-NYUINKA
       *
                ELSE
-                   MOVE    "3001"      TO  ERRCD-ERRCD
+                   MOVE    "4001"      TO  ERRCD-ERRCD
                    PERFORM 2100-ITEM-ERR-SET-SEC
                END-IF
       *
            ELSE
                PERFORM 2100-ITEM-UNPROCSTS-SET-SEC
-               MOVE    "3002"      TO  ERRCD-ERRCD
+               MOVE    "4002"      TO  ERRCD-ERRCD
                PERFORM 2100-ITEM-ERR-SET-SEC
            END-IF
       *
@@ -302,17 +307,45 @@
                        MOVE    LNK-ORDER-ITEM (IDXA)
                                        TO  ITEM-HKNCOMBI
                    ELSE
-                       MOVE    "3003"  TO  ERRCD-ERRCD
+                       MOVE    "4003"  TO  ERRCD-ERRCD
                        PERFORM 2100-ITEM-ERR-SET-SEC
                     END-IF
                ELSE
-                       MOVE    "3003"  TO  ERRCD-ERRCD
+                       MOVE    "4003"  TO  ERRCD-ERRCD
                        PERFORM 2100-ITEM-ERR-SET-SEC
                END-IF
       *
            ELSE
                PERFORM 2100-ITEM-UNPROCSTS-SET-SEC
-               MOVE    "3004"      TO  ERRCD-ERRCD
+               MOVE    "4004"      TO  ERRCD-ERRCD
+               PERFORM 2100-ITEM-ERR-SET-SEC
+           END-IF
+      *
+           .
+       20011-HKNCOMBI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    食事時間チェック処理
+      *****************************************************************
+       20011-SKJTIME-CHK-SEC           SECTION.
+      *
+           COMPUTE CNT-SKJTIME  =   CNT-SKJTIME  +   1
+      *
+           IF    ( CNT-SKJTIME  =   1 )
+      *
+               IF    ( LNK-ORDER-ITEM (IDXA)   =   "01"
+                                                OR "02"
+                                                OR "03" )
+                   MOVE    LNK-ORDER-ITEM (IDXA)
+                                   TO  ITEM-SKJTIME
+               ELSE
+                   MOVE    "4007"  TO  ERRCD-ERRCD
+                   PERFORM 2100-ITEM-ERR-SET-SEC
+               END-IF
+      *
+           ELSE
+               PERFORM 2100-ITEM-UNPROCSTS-SET-SEC
+               MOVE    "4008"  TO  ERRCD-ERRCD
                PERFORM 2100-ITEM-ERR-SET-SEC
            END-IF
       *
@@ -363,6 +396,11 @@
            END-IF
       *
            IF    ( ERRCD-ORDER     =   SPACE )
+      *        食事時間チェック処理
+               PERFORM 20021-SKJTIME-CHK-SEC
+           END-IF
+      *
+           IF    ( ERRCD-ORDER     =   SPACE )
       *        入院履歴チェック処理
                PERFORM 20021-NYUINRRK-CHK-SEC
            END-IF
@@ -381,7 +419,7 @@
        20021-NYUINKA-CHK-SEC           SECTION.
       *
            IF    ( ITEM-NYUINKA    =   SPACE )
-               MOVE    "3001"          TO  ERRCD-ORDER
+               MOVE    "4001"          TO  ERRCD-ORDER
            END-IF
       *
            .
@@ -393,11 +431,23 @@
        20021-HKNCOMBI-CHK-SEC          SECTION.
       *
            IF    ( ITEM-HKNCOMBI   =   ZERO )
-               MOVE    "3003"          TO  ERRCD-ORDER
+               MOVE    "4003"          TO  ERRCD-ORDER
            END-IF
       *
            .
        20021-HKNCOMBI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    食事時間チェック処理
+      *****************************************************************
+       20021-SKJTIME-CHK-SEC           SECTION.
+      *
+           IF    ( ITEM-SKJTIME   =   ZERO )
+               MOVE    "4007"         TO  ERRCD-ORDER
+           END-IF
+      *
+           .
+       20021-SKJTIME-CHK-EXT.
            EXIT.
       *****************************************************************
       *    入院履歴チェック処理
@@ -413,7 +463,7 @@
            IF    ( FLG-PTNYUINRRK  =   ZERO )
                MOVE    PTNYUINRRK-REC  TO  TRRK-REC
            ELSE
-               MOVE    "3005"          TO  ERRCD-ORDER
+               MOVE    "4005"          TO  ERRCD-ORDER
            END-IF
       *
            .
@@ -426,7 +476,7 @@
       *
            PERFORM 900-NYUINACCT-KEY17-SEL-SEC
            IF    ( FLG-NYUINACCT   NOT =   ZERO )
-               MOVE    "3006"      TO  ERRCD-ORDER
+               MOVE    "4006"      TO  ERRCD-ORDER
            END-IF
       *
            .
@@ -497,11 +547,11 @@
            IF    ( LNK-ORDER-ITEMID (IDXA)
                                        =   NCLAIMID-NYUINKAJMA
                                        OR  NCLAIMID-HKNCOMBIJMA
-                                           )
+                                       OR  NCLAIMID-SKJTIMEJMA  )
                CONTINUE
            ELSE
                MOVE    "3"             TO  ORDER-STATUS-ITEM
-               MOVE    "3901"          TO  ORDER-ERRCD-ITEM
+               MOVE    "4901"          TO  ORDER-ERRCD-ITEM
            END-IF
       *
            IF    ( SODR-PROCKBN    =   "1" )
@@ -720,7 +770,7 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
+           CALL    "MCPSUB"            USING
                                        MCPAREA
                                        MCPDATA-REC
            IF    ( MCP-RC          =   ZERO )
@@ -737,7 +787,7 @@
        911-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
+           CALL    "MCPSUB"            USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -751,7 +801,7 @@
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
+           CALL    "MCPSUB"            USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -765,7 +815,7 @@
        910-DBCLOSECURSOR-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
+           CALL    "MCPSUB"            USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -779,7 +829,7 @@
        910-DBINSERT-SEC                SECTION.
       *
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
+           CALL    "MCPSUB"            USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -793,7 +843,7 @@
        910-DBUPDATE-SEC                SECTION.
       *
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
+           CALL    "MCPSUB"            USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -807,7 +857,7 @@
        910-DBDELETE-SEC                SECTION.
       *
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           CALL    "MONFUNC"           USING
+           CALL    "MCPSUB"            USING
                                        MCPAREA
                                        MCPDATA-REC
       *

@@ -108,6 +108,10 @@
                        09                          PIC X(01).
                        09  SPA-GMN-TOKNYUINMEI     PIC X(46).
                    07  SPA-GMN-SNTNYUIN            PIC X(60).
+                   07  SPA-GMN-SKJTIME-G.
+                       09  SPA-GMN-SKJTIME         PIC X(02).
+                       09                          PIC X(01).
+                       09  SPA-GMN-SKJTIMEMEI      PIC X(08).
                05  SPA-GMN-ALLIDOLIST-INPUT-AREA.
                    07  SPA-GMN-SELNUM              PIC S9(3).
                    07  SPA-GMN-UKEYMD              PIC X(10).
@@ -192,6 +196,12 @@
                            11  SPA-GMN-TOKNYUINL2.
                                13  SPA-GMN-TOKNYUINL2-KBN    PIC X(01).
                                13  SPA-GMN-TOKNYUINL2-NYUIN  PIC X(02).
+                   07  SPA-GMN-SKJTIMELST-G.
+                       09  SPA-GMN-SKJTIME-MAX         PIC 9(05).
+                       09  SPA-GMN-SKJTIMELST          OCCURS  5.
+                           11  SPA-GMN-SKJTIMEL        PIC X(2).
+                           11                          PIC X(1).
+                           11  SPA-GMN-SKJTIMEMEIL     PIC X(8).
                05  SPA-NAI-HEAD-AREA.
                    07  SPA-NAI-KARTE-KEY           PIC X(36).
                    07  SPA-NAI-ORDERNUM            PIC 9(02).
@@ -212,13 +222,14 @@
                        09  SPA-NAI-STS-BRMNUM      PIC X(01).
                        09  SPA-NAI-STS-BTUNUM      PIC X(01).
                        09  SPA-NAI-STS-SAGAKU      PIC X(01).
-                       09  SPA-NAI-STS-SYOKAI      PIC X(01).
+                       09  SPA-NAI-STS-SHOKAI      PIC X(01).
                        09  SPA-NAI-STS-TAIINCD     PIC X(01).
                        09  SPA-NAI-STS-DR          PIC X(01)
                                                    OCCURS 3.
                        09  SPA-NAI-STS-TOKNYUIN    PIC X(01).
                        09  SPA-NAI-STS-HKNCOMBI    PIC X(01).
                        09  SPA-NAI-STS-NYUINKA     PIC X(01).
+                       09  SPA-NAI-STS-SKJTIME     PIC X(01).
                    07  SPA-NAI-BTU-G.
                        09  SPA-NAI-BTU-KHNSRYCD    PIC X(09).
                        09  SPA-NAI-BTU-BTUTOK      PIC X(02).
@@ -342,11 +353,12 @@
                05  WRK-BTUDEF-SAGAKU       PIC X(02).
                05  WRK-BTUDEF-NYUINKA      PIC X(02).
            03  WRK-TAIINCD                 PIC X(02).
-           03  WRK-INF-CANCEL              PIC 9(02).
+           03  WRK-INF-DIALOG              PIC 9(02).
            03  WRK-I0ID1-FLG               PIC X(02).
            03  WRK-I0IDCD                  PIC X(04).
            03  WRK-PTNUM-PTID              PIC 9(10).
            03  WRK-PTNUM-PTNUM             PIC X(20).
+           03  WRK-ALLORDERID              PIC X(04).
       *
        01  WRK-ROW-AREA.
            03  WRK-ALLIDOLST-ROW           PIC S9(9).
@@ -482,7 +494,6 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "ORCA-DBPATH".
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
@@ -657,6 +668,9 @@
       *    入院区分設定処理
            PERFORM 3101-NYUKBNLST-SET-SEC
       *
+      *    食事時間設定処理
+           PERFORM 3101-SKJTIMELST-SET-SEC
+      *
            .
        3101-COMBO-SYOKI-EXT.
            EXIT.
@@ -706,8 +720,9 @@
       *
            MOVE    IDX-MAX         TO  SPA-NAI-BTUDEF-MAX
       *
-           MOVE    PATH-TBL-SYSKANRI-KEY2  TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_syskanri"          TO  MCP-TABLE
+           MOVE    "key2"                  TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
       *
@@ -765,8 +780,9 @@
       *
            MOVE    CNT-MAX                 TO  SPA-GMN-BTUNAME-MAX
       *
-           MOVE    PATH-TBL-SYSKANRI-KEY2  TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_syskanri"          TO  MCP-TABLE
+           MOVE    "key2"                  TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            . 
        3101-BTUNAMELST-SET-EXT.
@@ -810,8 +826,9 @@
       *
            MOVE    CNT-MAX                 TO  SPA-GMN-SAGAKU-MAX
       *
-           MOVE    PATH-TBL-SYSKANRI-KEY2  TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_syskanri"          TO  MCP-TABLE
+           MOVE    "key2"                  TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            . 
        3101-SAGAKULST-SET-EXT.
@@ -851,8 +868,9 @@
       *
            MOVE    CNT-MAX                 TO  SPA-GMN-NYUINKA-MAX
       *
-           MOVE    PATH-TBL-SYSKANRI-KEY2  TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_syskanri"          TO  MCP-TABLE
+           MOVE    "key2"                  TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            . 
        3101-NYUINKALST-SET-EXT.
@@ -909,8 +927,9 @@
       *
            MOVE    CNT-MAX                 TO  SPA-GMN-TAIINCD-MAX
       *
-           MOVE    PATH-TBL-SYSKANRI-KEY2  TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_syskanri"          TO  MCP-TABLE
+           MOVE    "key2"                  TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            . 
        3101-TAIINCDLST-SET-EXT.
@@ -952,8 +971,9 @@
       *
            MOVE    CNT-MAX                 TO  SPA-GMN-DR-MAX
       *
-           MOVE    PATH-TBL-SYSKANRI-KEY2  TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_syskanri"          TO  MCP-TABLE
+           MOVE    "key2"                  TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            . 
        3101-DRLST-SET-EXT.
@@ -1028,6 +1048,27 @@
       *
            . 
        3101-NYUKBNLST-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    食事時間設定処理
+      *****************************************************************
+       3101-SKJTIMELST-SET-SEC          SECTION.
+      *
+           INITIALIZE                  SPA-GMN-SKJTIMELST-G
+      *
+           MOVE    3                   TO  SPA-GMN-SKJTIME-MAX
+      *
+           MOVE    "01"                TO  SPA-GMN-SKJTIMEL    (1)
+           MOVE    "朝"                TO  SPA-GMN-SKJTIMEMEIL (1)
+      *
+           MOVE    "02"                TO  SPA-GMN-SKJTIMEL    (2)
+           MOVE    "昼"                TO  SPA-GMN-SKJTIMEMEIL (2)
+      *
+           MOVE    "03"                TO  SPA-GMN-SKJTIMEL    (3)
+           MOVE    "夕"                TO  SPA-GMN-SKJTIMEMEIL (3)
+      *
+           . 
+       3101-SKJTIMELST-SET-EXT.
            EXIT.
       *****************************************************************
       *    特定入院料設定処理
@@ -1159,7 +1200,6 @@
            MOVE    SPA-HOSPID          TO   COMB-HOSPID
            MOVE    SPA-NAI-PTID        TO   COMB-PTID
            MOVE    SPA-GMN-HKNCOMBI    TO   COMB-HKNCOMBINUM
-           MOVE    PATH-TBL-HKNCOMBI-KEY    TO   MCP-PATH
            PERFORM 900-HKNCOMBI-KEY-SEL-SEC 
       *
       *    入院患者の年齢計算
@@ -1259,8 +1299,9 @@
       *
            MOVE    IDX-MAX         TO  SPA-GMN-ALLIDOLST-MAX
       *
-           MOVE    PATH-TBL-ORDER-KEY4     TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_order"             TO  MCP-TABLE
+           MOVE    "key4"                  TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            IF    ( SPA-GMN-ALLIDOLST-MAX   =   ZERO )
                MOVE    2                   TO  SPA-GMN-CUR
@@ -1314,8 +1355,9 @@
       *
            MOVE    IDX-MAX         TO  SPA-GMN-KJNIDOLST-MAX
       *
-           MOVE    PATH-TBL-ORDER-KEY7     TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_order"             TO  MCP-TABLE
+           MOVE    "key7"                  TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        3101-KJNIDOLST-EXT.
@@ -1400,13 +1442,20 @@
                MOVE    SPACE           TO  SPA-I0IDCD
       *
                EVALUATE    WRK-I0IDCD
+               WHEN    "2004"
+                   MOVE    1       TO  WRK-INF-DIALOG
+                   PERFORM 2121-NYUIN-TOUROKU-SEC
+               WHEN    "2005"
+                   MOVE    2       TO  WRK-INF-DIALOG
+                   PERFORM 2121-NYUIN-TOUROKU-SEC
+               WHEN    "2001"
                WHEN    "2001"
                    PERFORM 2301-DEL-SEC
                WHEN    "2002"
-                   MOVE    1       TO  WRK-INF-CANCEL
+                   MOVE    1       TO  WRK-INF-DIALOG
                    PERFORM 2121-TAIIN-TOUROKU-SEC
                WHEN    "2003"
-                   MOVE    2       TO  WRK-INF-CANCEL
+                   MOVE    2       TO  WRK-INF-DIALOG
                    PERFORM 2121-TAIIN-TOUROKU-SEC
                END-EVALUATE
            END-IF
@@ -1439,6 +1488,9 @@
       *    翌日
            WHEN    "CLICKED"       ALSO    "B07"
                PERFORM 270-NEXTDAY-SEC
+      *    歴表示更新
+           WHEN    "CLICKED"       ALSO    "B11"
+               PERFORM 310-SPASET-SEC
       *    登録
            WHEN    "CLICKED"       ALSO    "B12"
                PERFORM 212-TOUROKU-SEC
@@ -1512,6 +1564,7 @@
            MOVE    I06-HKNCOMBI        TO  SPA-GMN-HKNCOMBI-G
            MOVE    I06-NYUKBN          TO  SPA-GMN-NYUKBN-G
            MOVE    I06-TOKNYUIN        TO  SPA-GMN-TOKNYUIN-G
+           MOVE    I06-SKJTIME         TO  SPA-GMN-SKJTIME-G
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -1530,7 +1583,7 @@
                    MOVE    IDX-LST TO  SPA-GMN-ALLIDOLST-SEL
                                        SPA-GMN-SELNUM
       *
-                   PERFORM 41011-INPUT-AREA-HEN-SEC
+                   PERFORM 41011-INPUT-AREA-SEC
       *
                    MOVE    SPA-GMN-ALLIDOLST-MAX
                                TO  IDX-LST
@@ -1543,14 +1596,14 @@
        4101-ALLIDOLST-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    入力エリア編集処理
+      *    入力エリア処理
       *****************************************************************
-       41011-INPUT-AREA-HEN-SEC        SECTION.
+       41011-INPUT-AREA-SEC            SECTION.
       *
            IF    ( SPA-GMN-TALLSTS (SPA-GMN-ALLIDOLST-SEL) =   "4" )
                PERFORM 41011-DIRECT-UPD-KHNCHK-SEC
                IF    ( FLG-KHNERR  NOT =   ZERO )
-                   GO  TO  41011-INPUT-AREA-HEN-EXT
+                   GO  TO  41011-INPUT-AREA-EXT
                END-IF
            END-IF
       *
@@ -1562,22 +1615,19 @@
            WHEN    OTHER
                EVALUATE    SPA-NAI-TALLORDERID (SPA-GMN-ALLIDOLST-SEL)
                WHEN    NORDERID-NYUINID
-                   PERFORM 41011-INPUT-NYUIN-HEN-SEC
                WHEN    NORDERID-TAIINID
-                   PERFORM 41011-INPUT-TAIIN-HEN-SEC
-               WHEN    NORDERID-GAIHKID
                WHEN    NORDERID-GAIHKID
                WHEN    NORDERID-GBACKID
                WHEN    NORDERID-FNORLID
                WHEN    NORDERID-FSPCLID
                WHEN    NORDERID-FSELEID
                WHEN    NORDERID-FSTOPID
-                   PERFORM 41011-INPUT-KAIKEI-HEN-SEC
+                   PERFORM 41011-INPUT-AREA-HEN-SEC
                END-EVALUATE
            END-EVALUATE
       *
            .
-       41011-INPUT-AREA-HEN-EXT.
+       41011-INPUT-AREA-EXT.
            EXIT.
       *****************************************************************
       *    直接更新時基本項目チェック処理
@@ -1643,8 +1693,9 @@
       *
            END-PERFORM
       *
-           MOVE    PATH-TBL-ORDER-KEY6 TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_order"         TO  MCP-TABLE
+           MOVE    "key6"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            PERFORM 3101-KJNIDOLST-SEC
       *
@@ -1654,9 +1705,12 @@
        41011-KHNERR-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    入院入力領域編集処理
+      *    入力領域編集処理
       *****************************************************************
-       41011-INPUT-NYUIN-HEN-SEC       SECTION.
+       41011-INPUT-AREA-HEN-SEC        SECTION.
+      *
+           MOVE    SPA-NAI-TALLORDERID (SPA-GMN-ALLIDOLST-SEL)
+                                   TO  WRK-ALLORDERID
       *
            PERFORM 41011-HEAD-AREA-HEN-SEC
       *
@@ -1675,17 +1729,20 @@
       *
                IF    ( ORDER-STATUS-ITEM   NOT =   "3" )
       *
-                   COMPUTE CNT-ORDER   =  CNT-ORDER    +   1
-      *
-                   IF    ( CNT-ORDER   =  1 )
-                       MOVE    ORDER-SRYYMD    TO  WRK-YMD
-                       PERFORM 800-SEIWA-HEN-SEC
-                       MOVE    WRK-SYMD        TO  SPA-NAI-NYUINYMD
-                       MOVE    WRK-HENYMDG     TO  SPA-GMN-NYUINYMD
-                       MOVE    ORDER-REC       TO  SPA-NAI-ORDER-DAT
-                   END-IF
-      *
-                   PERFORM 410111-INPUT-NYUIN-HEN-SEC
+                   EVALUATE    WRK-ALLORDERID
+                   WHEN    NORDERID-NYUINID
+                       PERFORM 410111-NYUIN-HEN-SEC
+                   WHEN    NORDERID-TAIINID
+                       PERFORM 410111-TAIIN-HEN-SEC
+                   WHEN    NORDERID-GAIHKID
+                   WHEN    NORDERID-GBACKID
+                       PERFORM 410111-GAIHAKU-HEN-SEC
+                   WHEN    NORDERID-FNORLID
+                   WHEN    NORDERID-FSPCLID
+                   WHEN    NORDERID-FSELEID
+                   WHEN    NORDERID-FSTOPID
+                       PERFORM 410111-SYOKUJI-HEN-SEC
+                  END-EVALUATE
       *
                END-IF
       *
@@ -1700,100 +1757,13 @@
       *
            END-PERFORM
       *
-           MOVE    PATH-TBL-ORDER-KEY6 TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_order"         TO  MCP-TABLE
+           MOVE    "key6"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            PERFORM 41011-DIRECT-UPD-CHK-SEC
       *
-           IF    ( SPA-GMN-SHOKAI  =   "2" )
-               PERFORM 41011-SHONYUINYMD-SEC
-               MOVE    WRK-SHONUM      TO  SPA-GMN-SHONUM
-               MOVE    WRK-LBL-SHONYUINYMD
-                                       TO  SPA-GMN-LBL-SHONYUINYMD
-           ELSE
-               MOVE    "1"             TO  SPA-GMN-SHOKAI
-           END-IF
-      *
-           IF    ( ITEM-SAGAKU     NOT =   SPACE )
-               PERFORM 41011-SAGAKUCD-SEC
-               MOVE    WRK-SAGAKUCD    TO  SPA-GMN-SAGAKU
-           END-IF
-      *
-           PERFORM 3101-BTUDEF-SEC
-           PERFORM 3101-BTUNAMELST-SET-SEC
-           MOVE    SPA-GMN-BTUNAME     TO  WRK-CMB-CD
-           PERFORM 4200-BTUNAMELST-CHK-SEC
-           IF    ( WRK-CMB-ITM NOT =   SPACE )
-               MOVE    WRK-CMB-ITM     TO  SPA-GMN-BTUNAME-G
-               MOVE    SPA-NAI-BTUDEF-KHNSRYCD (WRK-CMB-IDX)
-                                       TO  SPA-NAI-BTU-KHNSRYCD
-               MOVE    SPA-NAI-BTUDEF-BTUTOK (WRK-CMB-IDX)
-                                       TO  SPA-NAI-BTU-BTUTOK
-               MOVE    SPA-NAI-BTUDEF-BRMTOK (WRK-CMB-IDX)
-                                       TO  SPA-NAI-BTU-BRMTOK
-           END-IF
-      *
-           PERFORM 3101-SAGAKULST-SET-SEC
-           MOVE    SPA-GMN-SAGAKU      TO  WRK-CMB-CD
-           PERFORM 4200-SAGAKULST-CHK-SEC
-           IF    ( WRK-CMB-ITM NOT =   SPACE )
-               MOVE    WRK-CMB-ITM     TO  SPA-GMN-SAGAKU-G
-           END-IF
-      *
-           PERFORM 3101-NYUINKALST-SET-SEC
-           MOVE    SPA-GMN-NYUINKA     TO  WRK-CMB-CD
-           PERFORM 4200-NYUINKALST-CHK-SEC
-           IF    ( WRK-CMB-ITM NOT =   SPACE )
-               MOVE    WRK-CMB-ITM     TO  SPA-GMN-NYUINKA-G
-           END-IF
-      *
-           PERFORM 3101-SHOKAILST-SET-SEC
-           MOVE    SPA-GMN-SHOKAI      TO  WRK-CMB-CD
-           PERFORM 4200-SHOKAILST-CHK-SEC
-           IF    ( WRK-CMB-ITM NOT =   SPACE )
-               MOVE    WRK-CMB-ITM     TO  SPA-GMN-SHOKAI-G
-           END-IF
-      *
-           PERFORM 3101-DRLST-SET-SEC
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   3 )
-               MOVE    SPA-GMN-DR (IDX1)   TO  WRK-CMB-CD
-               PERFORM 4200-DRLST-CHK-SEC
-               IF    ( WRK-CMB-ITM NOT =   SPACE )
-                   MOVE    WRK-CMB-ITM     TO  SPA-GMN-DR-G (IDX1)
-               END-IF
-           END-PERFORM
-      *
-           PERFORM 3101-HKNCOMBILST-SET-SEC
-           MOVE    SPA-GMN-HKNCOMBI    TO  WRK-CMB-CD
-           PERFORM 4200-HKNCOMBILST-CHK-SEC
-           IF    ( WRK-CMB-ITM NOT =   SPACE )
-               MOVE    WRK-CMB-ITM     TO  SPA-GMN-HKNCOMBI-G
-           END-IF
-      *
-           PERFORM 3101-NYUKBNLST-SET-SEC
-           MOVE    SPA-GMN-NYUKBN      TO  WRK-CMB-CD
-           PERFORM 4200-NYUKBNLST-CHK-SEC
-           IF    ( WRK-CMB-ITM NOT =   SPACE )
-               MOVE    WRK-CMB-ITM     TO  SPA-GMN-NYUKBN-G
-           END-IF
-      *
-           PERFORM 3101-TOKNYUINLST-SET-SEC
-           IF    ( SPA-GMN-NYUKBN  =   "02" )
-               MOVE    ITEM-TOKNYUIN-G TO WRK-CMB-CD
-               PERFORM 4201-TOKNYUINLST-CHK-SEC
-               IF    ( WRK-CMB-ITM NOT =   SPACE )
-                   MOVE    WRK-CMB-ITM TO  SPA-GMN-TOKNYUIN-G
-                   MOVE    SPA-GMN-TOKNYUINL2 (WRK-CMB-IDX)
-                                       TO  SPA-NAI-TOKUTEI-G
-               END-IF
-           END-IF
-      *
-           IF    ( SPA-GMN-TOKNYUINMEI NOT =   SPACE )
-               MOVE    SPA-GMN-TOKNYUINMEI TO  SPA-GMN-SNTNYUIN
-           ELSE
-               MOVE    SPA-NAI-KHNNYUIN    TO  SPA-GMN-SNTNYUIN
-           END-IF
+           PERFORM 410112-INPUT-AREA-HEN-SEC
       *
            PERFORM 3101-KJNIDOLST-SEC
       *
@@ -1802,170 +1772,179 @@
            ELSE
                PERFORM 3101-ERRMESLST-SEC
            END-IF
+      *
            .
-       41011-INPUT-NYUIN-HEN-EXT.
+       41011-INPUT-AREA-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    退院入力領域編集処理
+      *    入院時編集処理
       *****************************************************************
-       41011-INPUT-TAIIN-HEN-SEC       SECTION.
+       410111-NYUIN-HEN-SEC            SECTION.
       *
-           PERFORM 41011-HEAD-AREA-HEN-SEC
+           COMPUTE CNT-ORDER   =  CNT-ORDER    +   1
       *
-           INITIALIZE                  SPA-GMN-INPUT-AREA
-                                       SPA-NAI-INPUT-AREA
-                                       ERR-ORDER-REC
-                                       ITEM-AREA
-      *
-           MOVE    ALL "-"         TO  SPA-NAI-STATUS-G
-           MOVE    ZERO            TO  CNT-ORDER
-           MOVE    ZERO            TO  CNT-DRCD
-      *
-           PERFORM 900-ORDER-KEY6-SEL-SEC
-      *
-           PERFORM UNTIL ( FLG-ORDER   NOT =   ZERO )
-      *
-               IF    ( ORDER-STATUS-ITEM   NOT =   "3" )
-      *
-                   COMPUTE CNT-ORDER   =  CNT-ORDER    +   1
-      *
-                   IF    ( CNT-ORDER   =  1 )
-                       MOVE    ORDER-SRYYMD    TO  WRK-YMD
-                       PERFORM 800-SEIWA-HEN-SEC
-                       MOVE    WRK-SYMD        TO  SPA-NAI-TAIINYMD
-                       MOVE    WRK-HENYMDG     TO  SPA-GMN-TAIINYMD
-                       MOVE    ORDER-REC       TO  SPA-NAI-ORDER-DAT
-                   END-IF
-      *
-                   PERFORM 410111-INPUT-TAIIN-HEN-SEC
-      *
-               END-IF
-      *
-               IF    ( ERR-ORDER-MAX   >=  CONST-ORDER-MAX )
-                   CONTINUE
-               ELSE
-                   COMPUTE ERR-ORDER-MAX   =   ERR-ORDER-MAX   +   1
-                   MOVE    ORDER-REC   TO  ERR-ORDER-OCC (ERR-ORDER-MAX)
-               END-IF
-      *
-               PERFORM 900-ORDER-KEY6-FET-SEC
-      *
-           END-PERFORM
-      *
-           MOVE    PATH-TBL-ORDER-KEY6 TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
-      *
-           PERFORM 41011-DIRECT-UPD-CHK-SEC
-      *
-           IF    ( ITEM-TAIINCD    NOT =   SPACE )
-               PERFORM 41011-TAIINCD-SEC
-               MOVE    WRK-TAIINCD     TO  SPA-GMN-TAIINCD
+           IF    ( CNT-ORDER   =  1 )
+               MOVE    ORDER-SRYYMD    TO  WRK-YMD
+               PERFORM 800-SEIWA-HEN-SEC
+               MOVE    WRK-SYMD        TO  SPA-NAI-NYUINYMD
+               MOVE    WRK-HENYMDG     TO  SPA-GMN-NYUINYMD
+               MOVE    ORDER-REC       TO  SPA-NAI-ORDER-DAT
            END-IF
       *
-           PERFORM 3101-NYUINKALST-SET-SEC
-           MOVE    SPA-GMN-NYUINKA     TO  WRK-CMB-CD
-           PERFORM 4200-NYUINKALST-CHK-SEC
-           IF    ( WRK-CMB-ITM NOT =   SPACE )
-               MOVE    WRK-CMB-ITM     TO  SPA-GMN-NYUINKA-G
-           END-IF
+           PERFORM 410111-INPUT-COMMON-HEN-SEC
       *
-           PERFORM 3101-TAIINCDLST-SET-SEC
-           MOVE    SPA-GMN-TAIINCD     TO  WRK-CMB-CD
-           PERFORM 4200-TAIINCDLST-CHK-SEC
-           IF    ( WRK-CMB-ITM NOT =   SPACE )
-               MOVE    WRK-CMB-ITM     TO  SPA-GMN-TAIINCD-G
-           END-IF
+           EVALUATE    ORDER-ITEMID
       *
-           PERFORM 3101-HKNCOMBILST-SET-SEC
-           MOVE    SPA-GMN-HKNCOMBI    TO  WRK-CMB-CD
-           PERFORM 4200-HKNCOMBILST-CHK-SEC
-           IF    ( WRK-CMB-ITM NOT =   SPACE )
-               MOVE    WRK-CMB-ITM     TO  SPA-GMN-HKNCOMBI-G
-           END-IF
+           WHEN    NCLAIMID-NYUKBNJMA
+               PERFORM 4101111-NYUKBN-HEN-SEC
       *
-           PERFORM 3101-KJNIDOLST-SEC
+           WHEN    NCLAIMID-SHOKAIJMA
+               PERFORM 4101111-SHOKAI-HEN-SEC
       *
-           IF    ( SPA-NAI-STATUS-ORDER    =   ZERO )
-               CONTINUE
-           ELSE
-               PERFORM 3101-ERRMESLST-SEC
-           END-IF
+           WHEN    NCLAIMID-BTUNUMJMA
+               PERFORM 4101111-BTUNUM-HEN-SEC
+      *
+           WHEN    NCLAIMID-BRMNUMJMA
+               PERFORM 4101111-BRMNUM-HEN-SEC
+      *
+           WHEN    NCLAIMID-SAGAKUJMA
+               PERFORM 4101111-SAGAKU-HEN-SEC
+      *
+           WHEN    NCLAIMID-DRJMA
+               PERFORM 4101111-DR-HEN-SEC
+      *
+           WHEN    NCLAIMID-TOKNYUINJMA
+               PERFORM 4101111-TOKNYUIN-HEN-SEC
+      *
+           END-EVALUATE
       *
            .
-       41011-INPUT-TAIIN-HEN-EXT.
+       410111-NYUIN-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    会計入力領域編集処理
+      *    退院時編集処理
       *****************************************************************
-       41011-INPUT-KAIKEI-HEN-SEC      SECTION.
+       410111-TAIIN-HEN-SEC            SECTION.
       *
-           PERFORM 41011-HEAD-AREA-HEN-SEC
+           COMPUTE CNT-ORDER   =  CNT-ORDER    +   1
       *
-           INITIALIZE                  SPA-GMN-INPUT-AREA
-                                       SPA-NAI-INPUT-AREA
-                                       ERR-ORDER-REC
-                                       ITEM-AREA
-      *
-           MOVE    ALL "-"         TO  SPA-NAI-STATUS-G
-           MOVE    ZERO            TO  CNT-ORDER
-           MOVE    ZERO            TO  CNT-DRCD
-      *
-           PERFORM 900-ORDER-KEY6-SEL-SEC
-      *
-           PERFORM UNTIL ( FLG-ORDER   NOT =   ZERO )
-      *
-               IF    ( ORDER-STATUS-ITEM   NOT =   "3" )
-      *
-                   COMPUTE CNT-ORDER   =  CNT-ORDER    +   1
-      *
-                   IF    ( CNT-ORDER   =  1 )
-                       MOVE    ORDER-REC       TO  SPA-NAI-ORDER-DAT
-                   END-IF
-      *
-                   PERFORM 410111-INPUT-KAIKEI-HEN-SEC
-      *
-               END-IF
-      *
-               IF    ( ERR-ORDER-MAX   >=  CONST-ORDER-MAX )
-                   CONTINUE
-               ELSE
-                   COMPUTE ERR-ORDER-MAX   =   ERR-ORDER-MAX   +   1
-                   MOVE    ORDER-REC   TO  ERR-ORDER-OCC (ERR-ORDER-MAX)
-               END-IF
-      *
-               PERFORM 900-ORDER-KEY6-FET-SEC
-      *
-           END-PERFORM
-      *
-           MOVE    PATH-TBL-ORDER-KEY6 TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
-      *
-           PERFORM 41011-DIRECT-UPD-CHK-SEC
-      *
-           PERFORM 3101-NYUINKALST-SET-SEC
-           MOVE    SPA-GMN-NYUINKA     TO  WRK-CMB-CD
-           PERFORM 4200-NYUINKALST-CHK-SEC
-           IF    ( WRK-CMB-ITM NOT =   SPACE )
-               MOVE    WRK-CMB-ITM     TO  SPA-GMN-NYUINKA-G
+           IF    ( CNT-ORDER   =  1 )
+               MOVE    ORDER-SRYYMD    TO  WRK-YMD
+               PERFORM 800-SEIWA-HEN-SEC
+               MOVE    WRK-SYMD        TO  SPA-NAI-TAIINYMD
+               MOVE    WRK-HENYMDG     TO  SPA-GMN-TAIINYMD
+               MOVE    ORDER-REC       TO  SPA-NAI-ORDER-DAT
            END-IF
       *
-           PERFORM 3101-HKNCOMBILST-SET-SEC
-           MOVE    SPA-GMN-HKNCOMBI    TO  WRK-CMB-CD
-           PERFORM 4200-HKNCOMBILST-CHK-SEC
-           IF    ( WRK-CMB-ITM NOT =   SPACE )
-               MOVE    WRK-CMB-ITM     TO  SPA-GMN-HKNCOMBI-G
-           END-IF
+           PERFORM 410111-INPUT-COMMON-HEN-SEC
       *
-           PERFORM 3101-KJNIDOLST-SEC
+           EVALUATE    ORDER-ITEMID
       *
-           IF    ( SPA-NAI-STATUS-ORDER    =   ZERO )
-               CONTINUE
-           ELSE
-               PERFORM 3101-ERRMESLST-SEC
-           END-IF
+           WHEN    NCLAIMID-TAIINCDJMA
+               PERFORM 4101111-TAIINCD-HEN-SEC
+      *
+           END-EVALUATE
       *
            .
-       41011-INPUT-KAIKEI-HEN-EXT.
+       410111-TAIIN-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    外泊時編集処理
+      *****************************************************************
+       410111-GAIHAKU-HEN-SEC          SECTION.
+      *
+           COMPUTE CNT-ORDER   =  CNT-ORDER    +   1
+      *
+           IF    ( CNT-ORDER   =  1 )
+               MOVE    ORDER-REC       TO  SPA-NAI-ORDER-DAT
+           END-IF
+      *
+           PERFORM 410111-INPUT-COMMON-HEN-SEC
+      *
+           .
+       410111-GAIHAKU-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    食事時編集処理
+      *****************************************************************
+       410111-SYOKUJI-HEN-SEC          SECTION.
+      *
+           COMPUTE CNT-ORDER   =  CNT-ORDER    +   1
+      *
+           IF    ( CNT-ORDER   =  1 )
+               MOVE    ORDER-REC       TO  SPA-NAI-ORDER-DAT
+           END-IF
+      *
+           PERFORM 410111-INPUT-COMMON-HEN-SEC
+      *
+           EVALUATE    ORDER-ITEMID
+      *
+           WHEN    NCLAIMID-SKJTIMEJMA
+               PERFORM 4101111-SKJTIME-HEN-SEC
+      *
+           END-EVALUATE
+      *
+           .
+       410111-SYOKUJI-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    共通入力項目編集処理
+      *****************************************************************
+       410111-INPUT-COMMON-HEN-SEC     SECTION.
+      *
+           EVALUATE    ORDER-ITEMID
+      *
+           WHEN    NCLAIMID-NYUINKAJMA
+               PERFORM 4101111-NYUINKA-HEN-SEC
+      *
+           WHEN    NCLAIMID-HKNCOMBIJMA
+               PERFORM 4101111-HKNCOMBI-HEN-SEC
+      *
+           END-EVALUATE
+      *
+           .
+       410111-INPUT-COMMON-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    入力領域編集処理
+      *****************************************************************
+       410112-INPUT-AREA-HEN-SEC       SECTION.
+      *
+           PERFORM 4101112-NYUINKAMEI-HEN-SEC
+           PERFORM 4101112-HKNCOMBIMEI-HEN-SEC
+      *
+           EVALUATE    WRK-ALLORDERID
+      *
+           WHEN    NORDERID-NYUINID
+      *
+               PERFORM 4101112-SHOKAI-HEN-SEC
+               PERFORM 4101112-SAGAKU-HEN-SEC
+               PERFORM 4101112-BTUNUM-HEN-SEC
+               PERFORM 4101112-SAGAKUMEI-HEN-SEC
+               PERFORM 4101112-SHOKAIMEI-HEN-SEC
+               PERFORM 4101112-DRMEI-HEN-SEC
+               PERFORM 4101112-NYUKBNMEI-HEN-SEC
+               PERFORM 4101112-TOKNYUINMEI-HEN-SEC
+      *
+           WHEN    NORDERID-TAIINID
+      *
+               PERFORM 4101112-TAIINCDMEI-HEN-SEC
+      *
+           WHEN    NORDERID-GAIHKID
+           WHEN    NORDERID-GAIHKID
+           WHEN    NORDERID-GBACKID
+               CONTINUE
+           WHEN    NORDERID-FNORLID
+           WHEN    NORDERID-FSPCLID
+           WHEN    NORDERID-FSELEID
+           WHEN    NORDERID-FSTOPID
+      *
+               PERFORM 4101112-SKJTIME-HEN-SEC
+      *
+           END-EVALUATE
+      *
+           .
+       410112-INPUT-AREA-HEN-EXT.
            EXIT.
       *****************************************************************
       *    初回入院日編集処理
@@ -1976,6 +1955,7 @@
            MOVE    ZERO                TO  WRK-SHONUM
       *
            INSPECT ITEM-LASTNYINYMD REPLACING  ALL "-" BY  "."
+           MOVE    ITEM-LASTNYINYMD    TO  WRK-YMD
            PERFORM 800-SEIWA-HEN-SEC
            IF    ( FLG-HIZUKE-ERR  =   ZERO )
                MOVE    WRK-SYMD        TO  ITEM-LASTNYINYMD
@@ -2041,8 +2021,9 @@
       *
            END-PERFORM
       *
-           MOVE    PATH-TBL-SYSKANRI-KEY2  TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_syskanri"          TO  MCP-TABLE
+           MOVE    "key2"                  TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        41011-SAGAKUCD-EXT.
@@ -2075,93 +2056,340 @@
       *
            END-PERFORM
       *
-           MOVE    PATH-TBL-SYSKANRI-KEY2  TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_syskanri"          TO  MCP-TABLE
+           MOVE    "key2"                  TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        41011-TAIINCD-EXT.
            EXIT.
       *****************************************************************
-      *    入院入力領域編集処理
+      *    入院科編集処理
       *****************************************************************
-       410111-INPUT-NYUIN-HEN-SEC      SECTION.
+       4101111-NYUINKA-HEN-SEC         SECTION.
       *
-           EVALUATE    ORDER-ITEMID
-           WHEN    NCLAIMID-NYUKBNID
-               MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-NYUKBN
-               MOVE    ORDER-ITEM          TO  SPA-GMN-NYUKBN
-           WHEN    NCLAIMID-SYOKAIID
-               MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-SYOKAI
-               IF    ( ORDER-ITEM      =   "01" )
-                   MOVE    "2"             TO  SPA-GMN-SHOKAI
-                   MOVE    ORDER-REMARKS   TO  ITEM-LASTNYINYMD
-               END-IF
-           WHEN    NCLAIMID-BTUNUMID
-               MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-BTUNUM
-               MOVE    ORDER-ITEM          TO  SPA-GMN-BTUNAME
-           WHEN    NCLAIMID-BRMNUMID
-               MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-BRMNUM
-               MOVE    ORDER-ITEM          TO  SPA-GMN-BRMNUM
-           WHEN    NCLAIMID-SAGAKUID
-               MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-SAGAKU
-               MOVE    ORDER-ITEM          TO  ITEM-SAGAKU
-           WHEN    NCLAIMID-DRID
-               IF    ( CNT-DRCD    <   3 )
-                   COMPUTE CNT-DRCD    =   CNT-DRCD    +   1
-                   MOVE    ORDER-STATUS-ITEM
-                                           TO  SPA-NAI-STS-DR(CNT-DRCD)
-                   MOVE    ORDER-ITEM (2:) TO  SPA-GMN-DR    (CNT-DRCD)
-               END-IF
-           WHEN    NCLAIMID-TOKNYUINID
-               MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-TOKNYUIN
-               MOVE    ORDER-ITEM          TO  ITEM-TOKNYUIN-G
-           WHEN    NCLAIMID-NYUINKAID
-               MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-NYUINKA
-               MOVE    ORDER-ITEM          TO  SPA-GMN-NYUINKA
-           WHEN    NCLAIMID-HKNCOMBIID
-               MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-HKNCOMBI
-               MOVE    ORDER-ITEM          TO  SPA-GMN-HKNCOMBI
-           END-EVALUATE
+           MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-NYUINKA
+           MOVE    ORDER-ITEM          TO  SPA-GMN-NYUINKA
       *
            .
-       410111-INPUT-NYUIN-HEN-EXT.
+       4101111-NYUINKA-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    退院入力領域編集処理
+      *    保険組合せ処理編集処理
       *****************************************************************
-       410111-INPUT-TAIIN-HEN-SEC      SECTION.
+       4101111-HKNCOMBI-HEN-SEC         SECTION.
       *
-           EVALUATE    ORDER-ITEMID
-           WHEN    NCLAIMID-TAIINCDID
-               MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-TAIINCD
-               MOVE    ORDER-ITEM          TO  ITEM-TAIINCD
-           WHEN    NCLAIMID-NYUINKAID
-               MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-NYUINKA
-               MOVE    ORDER-ITEM          TO  SPA-GMN-NYUINKA
-           WHEN    NCLAIMID-HKNCOMBIID
-               MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-HKNCOMBI
-               MOVE    ORDER-ITEM          TO  SPA-GMN-HKNCOMBI
-           END-EVALUATE
+           MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-HKNCOMBI
+           MOVE    ORDER-ITEM          TO  SPA-GMN-HKNCOMBI
       *
            .
-       410111-INPUT-TAIIN-HEN-EXT.
+       4101111-HKNCOMBI-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    会計入力領域編集処理
+      *    入院区分編集処理
       *****************************************************************
-       410111-INPUT-KAIKEI-HEN-SEC      SECTION.
+       4101111-NYUKBN-HEN-SEC         SECTION.
       *
-           EVALUATE    ORDER-ITEMID
-           WHEN    NCLAIMID-NYUINKAID
-               MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-NYUINKA
-               MOVE    ORDER-ITEM          TO  SPA-GMN-NYUINKA
-           WHEN    NCLAIMID-HKNCOMBIID
-               MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-HKNCOMBI
-               MOVE    ORDER-ITEM          TO  SPA-GMN-HKNCOMBI
-           END-EVALUATE
+           MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-NYUKBN
+           MOVE    ORDER-ITEM          TO  SPA-GMN-NYUKBN
       *
            .
-       410111-INPUT-KAIKEI-HEN-EXT.
+       4101111-NYUKBN-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    初回区分編集処理
+      *****************************************************************
+       4101111-SHOKAI-HEN-SEC         SECTION.
+      *
+           MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-SHOKAI
+           IF    ( ORDER-ITEM      =   "01" )
+               MOVE    "2"             TO  SPA-GMN-SHOKAI
+               MOVE    ORDER-REMARKS   TO  ITEM-LASTNYINYMD
+           END-IF
+      *
+           .
+       4101111-SHOKAI-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    病棟番号編集処理
+      *****************************************************************
+       4101111-BTUNUM-HEN-SEC         SECTION.
+      *
+           MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-BTUNUM
+           MOVE    ORDER-ITEM          TO  SPA-GMN-BTUNAME
+      *
+           .
+       4101111-BTUNUM-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    病室番号編集処理
+      *****************************************************************
+       4101111-BRMNUM-HEN-SEC         SECTION.
+      *
+           MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-BRMNUM
+           MOVE    ORDER-ITEM          TO  SPA-GMN-BRMNUM
+      *
+           .
+       4101111-BRMNUM-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    室料差額編集処理
+      *****************************************************************
+       4101111-SAGAKU-HEN-SEC          SECTION.
+      *
+           MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-SAGAKU
+           MOVE    ORDER-ITEM          TO  ITEM-SAGAKU
+      *
+           .
+       4101111-SAGAKU-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    担当医編集処理
+      *****************************************************************
+       4101111-DR-HEN-SEC              SECTION.
+      *
+           IF    ( CNT-DRCD    <   3 )
+               COMPUTE CNT-DRCD    =   CNT-DRCD    +   1
+               MOVE    ORDER-STATUS-ITEM
+                                       TO  SPA-NAI-STS-DR(CNT-DRCD)
+               MOVE    ORDER-ITEM (2:) TO  SPA-GMN-DR    (CNT-DRCD)
+           END-IF
+      *
+           .
+       4101111-DR-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    退院事由編集処理
+      *****************************************************************
+       4101111-TAIINCD-HEN-SEC         SECTION.
+      *
+           MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-TAIINCD
+           MOVE    ORDER-ITEM          TO  ITEM-TAIINCD
+      *
+           .
+       4101111-TAIINCD-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    特定入院料編集処理
+      *****************************************************************
+       4101111-TOKNYUIN-HEN-SEC        SECTION.
+      *
+           MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-TOKNYUIN
+           MOVE    ORDER-ITEM          TO  ITEM-TOKNYUIN-G
+      *
+           .
+       4101111-TOKNYUIN-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    食事時間編集処理
+      *****************************************************************
+       4101111-SKJTIME-HEN-SEC         SECTION.
+      *
+           MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-SKJTIME
+           MOVE    ORDER-ITEM          TO  SPA-GMN-SKJTIME
+      *
+           .
+       4101111-SKJTIME-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    初回編集処理
+      *****************************************************************
+       4101112-SHOKAI-HEN-SEC          SECTION.
+      *
+           IF    ( SPA-GMN-SHOKAI  =   "2" )
+               PERFORM 41011-SHONYUINYMD-SEC
+               MOVE    WRK-SHONUM      TO  SPA-GMN-SHONUM
+               MOVE    WRK-LBL-SHONYUINYMD
+                                       TO  SPA-GMN-LBL-SHONYUINYMD
+           ELSE
+               MOVE    "1"             TO  SPA-GMN-SHOKAI
+           END-IF
+      *
+           .
+       4101112-SHOKAI-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    室料差額編集処理
+      *****************************************************************
+       4101112-SAGAKU-HEN-SEC          SECTION.
+      *
+           IF    ( ITEM-SAGAKU     NOT =   SPACE )
+               PERFORM 41011-SAGAKUCD-SEC
+               MOVE    WRK-SAGAKUCD    TO  SPA-GMN-SAGAKU
+           END-IF
+      *
+           .
+       4101112-SAGAKU-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    病棟編集処理
+      *****************************************************************
+       4101112-BTUNUM-HEN-SEC          SECTION.
+      *
+           PERFORM 3101-BTUDEF-SEC
+           PERFORM 3101-BTUNAMELST-SET-SEC
+           MOVE    SPA-GMN-BTUNAME     TO  WRK-CMB-CD
+           PERFORM 4200-BTUNAMELST-CHK-SEC
+           IF    ( WRK-CMB-ITM NOT =   SPACE )
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-BTUNAME-G
+               MOVE    SPA-NAI-BTUDEF-KHNSRYCD (WRK-CMB-IDX)
+                                       TO  SPA-NAI-BTU-KHNSRYCD
+               MOVE    SPA-NAI-BTUDEF-BTUTOK (WRK-CMB-IDX)
+                                       TO  SPA-NAI-BTU-BTUTOK
+               MOVE    SPA-NAI-BTUDEF-BRMTOK (WRK-CMB-IDX)
+                                       TO  SPA-NAI-BTU-BRMTOK
+           END-IF
+      *
+           .
+       4101112-BTUNUM-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    室料差額名編集処理
+      *****************************************************************
+       4101112-SAGAKUMEI-HEN-SEC       SECTION.
+      *
+           PERFORM 3101-SAGAKULST-SET-SEC
+           MOVE    SPA-GMN-SAGAKU      TO  WRK-CMB-CD
+           PERFORM 4200-SAGAKULST-CHK-SEC
+           IF    ( WRK-CMB-ITM NOT =   SPACE )
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-SAGAKU-G
+           END-IF
+      *
+           .
+       4101112-SAGAKUMEI-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院科名編集処理
+      *****************************************************************
+       4101112-NYUINKAMEI-HEN-SEC      SECTION.
+      *
+           PERFORM 3101-NYUINKALST-SET-SEC
+           MOVE    SPA-GMN-NYUINKA     TO  WRK-CMB-CD
+           PERFORM 4200-NYUINKALST-CHK-SEC
+           IF    ( WRK-CMB-ITM NOT =   SPACE )
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-NYUINKA-G
+           END-IF
+      *
+           .
+       4101112-NYUINKAMEI-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    初回名編集処理
+      *****************************************************************
+       4101112-SHOKAIMEI-HEN-SEC       SECTION.
+      *
+           PERFORM 3101-SHOKAILST-SET-SEC
+           MOVE    SPA-GMN-SHOKAI      TO  WRK-CMB-CD
+           PERFORM 4200-SHOKAILST-CHK-SEC
+           IF    ( WRK-CMB-ITM NOT =   SPACE )
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-SHOKAI-G
+           END-IF
+      *
+           .
+       4101112-SHOKAIMEI-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    担当医名編集処理
+      *****************************************************************
+       4101112-DRMEI-HEN-SEC           SECTION.
+      *
+           PERFORM 3101-DRLST-SET-SEC
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   3 )
+               MOVE    SPA-GMN-DR (IDX1)   TO  WRK-CMB-CD
+               PERFORM 4200-DRLST-CHK-SEC
+               IF    ( WRK-CMB-ITM NOT =   SPACE )
+                   MOVE    WRK-CMB-ITM     TO  SPA-GMN-DR-G (IDX1)
+               END-IF
+           END-PERFORM
+      *
+           .
+       4101112-DRMEI-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険組合せ名編集処理
+      *****************************************************************
+       4101112-HKNCOMBIMEI-HEN-SEC     SECTION.
+      *
+           PERFORM 3101-HKNCOMBILST-SET-SEC
+           MOVE    SPA-GMN-HKNCOMBI    TO  WRK-CMB-CD
+           PERFORM 4200-HKNCOMBILST-CHK-SEC
+           IF    ( WRK-CMB-ITM NOT =   SPACE )
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-HKNCOMBI-G
+           END-IF
+      *
+           .
+       4101112-HKNCOMBIMEI-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院区分名編集処理
+      *****************************************************************
+       4101112-NYUKBNMEI-HEN-SEC       SECTION.
+      *
+           PERFORM 3101-NYUKBNLST-SET-SEC
+           MOVE    SPA-GMN-NYUKBN      TO  WRK-CMB-CD
+           PERFORM 4200-NYUKBNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM NOT =   SPACE )
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-NYUKBN-G
+           END-IF
+      *
+           .
+       4101112-NYUKBNMEI-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    特定入院料名編集処理
+      *****************************************************************
+       4101112-TOKNYUINMEI-HEN-SEC     SECTION.
+      *
+           PERFORM 3101-TOKNYUINLST-SET-SEC
+           IF    ( SPA-GMN-NYUKBN  =   "02" )
+               MOVE    ITEM-TOKNYUIN-G TO WRK-CMB-CD
+               PERFORM 4201-TOKNYUINLST-CHK-SEC
+               IF    ( WRK-CMB-ITM NOT =   SPACE )
+                   MOVE    WRK-CMB-ITM TO  SPA-GMN-TOKNYUIN-G
+                   MOVE    SPA-GMN-TOKNYUINL2 (WRK-CMB-IDX)
+                                       TO  SPA-NAI-TOKUTEI-G
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-TOKNYUINMEI NOT =   SPACE )
+               MOVE    SPA-GMN-TOKNYUINMEI TO  SPA-GMN-SNTNYUIN
+           ELSE
+               MOVE    SPA-NAI-KHNNYUIN    TO  SPA-GMN-SNTNYUIN
+           END-IF
+      *
+           .
+       4101112-TOKNYUINMEI-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    退院事由名編集処理
+      *****************************************************************
+       4101112-TAIINCDMEI-HEN-SEC      SECTION.
+      *
+           PERFORM 3101-TAIINCDLST-SET-SEC
+           MOVE    SPA-GMN-TAIINCD     TO  WRK-CMB-CD
+           PERFORM 4200-TAIINCDLST-CHK-SEC
+           IF    ( WRK-CMB-ITM NOT =   SPACE )
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-TAIINCD-G
+           END-IF
+      *
+           .
+       4101112-TAIINCDMEI-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    食事時間名編集処理
+      *****************************************************************
+       4101112-SKJTIME-HEN-SEC         SECTION.
+      *
+           PERFORM 3101-SKJTIMELST-SET-SEC
+           MOVE    SPA-GMN-SKJTIME     TO  WRK-CMB-CD
+           PERFORM 4200-SKJTIMELST-CHK-SEC
+           IF    ( WRK-CMB-ITM NOT =   SPACE )
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-SKJTIME-G
+           END-IF
+      *
+           .
+       4101112-SKJTIME-HEN-EXT.
            EXIT.
       *****************************************************************
       *    直接更新時入院科保険組合せ設定処理
@@ -2445,6 +2673,8 @@
            IF    ( SPA-ERRCD       NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
+      *
+           PERFORM 4101-SKJTIME-CHK-SEC
       *
            IF    ( SPA-GMN-TOKNYUINMEI NOT =   SPACE )
                MOVE    SPA-GMN-TOKNYUINMEI TO  SPA-GMN-SNTNYUIN
@@ -2864,6 +3094,27 @@
        4101-TOKNYUIN-SYOKI-EXT.
            EXIT.
       *****************************************************************
+      *    食事時間チェック処理
+      *****************************************************************
+       4101-SKJTIME-CHK-SEC           SECTION.
+      *
+           IF    ( SPA-GMN-SKJTIME-G    =   SPACE )
+               GO  TO  4101-SKJTIME-CHK-EXT
+           END-IF
+      *
+           MOVE    SPA-GMN-SKJTIME     TO  WRK-CMB-CD
+           PERFORM 4200-SKJTIMELST-CHK-SEC
+           IF    ( WRK-CMB-ITM         =   SPACE )
+               MOVE    "0018"          TO  SPA-ERRCD
+               MOVE    18              TO  SPA-GMN-CUR
+           ELSE
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-SKJTIME-G
+           END-IF
+      *
+           .
+       4101-SKJTIME-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    病棟名コンボチェック処理
       *****************************************************************
        4200-BTUNAMELST-CHK-SEC         SECTION.
@@ -3033,6 +3284,27 @@
        4200-NYUKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    食事時間コンボチェック処理
+      *****************************************************************
+       4200-SKJTIMELST-CHK-SEC          SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB         >   SPA-GMN-SKJTIME-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-SKJTIMEL (IDX-CMB)  =   WRK-CMB-CD )
+                   MOVE    SPA-GMN-SKJTIMELST (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+                   MOVE    IDX-CMB     TO  WRK-CMB-IDX
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       4200-SKJTIMELST-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    特定入院料コンボチェック処理
       *****************************************************************
        4200-TOKNYUINLST-CHK-SEC        SECTION.
@@ -3130,8 +3402,8 @@
                    UNTIL ( IDX-CMB         >   NCLAIMID-ITEM-MAX )
                     OR   ( WRK-CMB-ITM NOT =   SPACE )
       *
-               IF    ( NCLAIMID-ITEMID (IDX-CMB)  =   WRK-CMB-CD )
-                   MOVE    NCLAIMID-ITEMMEI  (IDX-CMB)
+               IF    ( NCLAIMID-ITEMJMA (IDX-CMB)  =   WRK-CMB-CD )
+                   MOVE    NCLAIMID-ITEMMES  (IDX-CMB)
                                        TO  WRK-CMB-ITM
                    MOVE    IDX-CMB     TO  WRK-CMB-IDX
                END-IF
@@ -3215,7 +3487,8 @@
            MOVE    SPA-NAI-TALLORDERNUM  (IDX-LST)
                                            TO  ORDER-ORDERNUM
            MOVE    ORDER-REC               TO  MCPDATA-REC
-           MOVE    PATH-TBL-ORDER-UPD1     TO  MCP-PATH
+           MOVE    "tbl_order"             TO  MCP-TABLE
+           MOVE    "upd1"                  TO  MCP-PATHNAME
            PERFORM 910-DBUPDATE-SEC
            IF    ( MCP-RC      =   ZERO )
       *
@@ -3295,13 +3568,13 @@
            WHEN    NORDERID-TAIINID
                PERFORM 2121-TAIIN-TOUROKU-SEC
            WHEN    NORDERID-GAIHKID
-           WHEN    NORDERID-GAIHKID
            WHEN    NORDERID-GBACKID
+               PERFORM 2121-GAIHAKU-TOUROKU-SEC
            WHEN    NORDERID-FNORLID
            WHEN    NORDERID-FSPCLID
            WHEN    NORDERID-FSELEID
            WHEN    NORDERID-FSTOPID
-               PERFORM 2121-KAIKEI-TOUROKU-SEC
+               PERFORM 2121-SYOKUJI-TOUROKU-SEC
            END-EVALUATE
       *
            .
@@ -3336,7 +3609,7 @@
            END-IF
       *
            IF    ( CONST-ORDER-MAX     >   IDX-ITM )
-               PERFORM 2300-SYOKAI-SET-SEC
+               PERFORM 2300-SHOKAI-SET-SEC
            END-IF
       *
            IF    ( CONST-ORDER-MAX     >   IDX-ITM )
@@ -3380,6 +3653,12 @@
            WHEN  ( SODR-ERRCD   NOT =   SPACE )
                MOVE    LNK-ORDER-REC    TO ERR-ORDER-REC
                PERFORM 3101-ERRMESLST-SEC
+               EVALUATE    SODR-DIALOG
+               WHEN    1
+                   MOVE    "2004"       TO  SPA-I0IDCD
+               WHEN    2
+                   MOVE    "2005"       TO  SPA-I0IDCD
+               END-EVALUATE
            WHEN  OTHER
                PERFORM 220-CLEAR-SEC
       *        異動リスト編集処理
@@ -3426,7 +3705,7 @@
            WHEN  ( SODR-ERRCD   NOT =   SPACE )
                MOVE    LNK-ORDER-REC    TO ERR-ORDER-REC
                PERFORM 3101-ERRMESLST-SEC
-               EVALUATE    SODR-INF
+               EVALUATE    SODR-DIALOG
                WHEN    1
                    MOVE    "2002"       TO  SPA-I0IDCD
                WHEN    2
@@ -3442,9 +3721,9 @@
        2121-TAIIN-TOUROKU-EXT.
            EXIT.
       *****************************************************************
-      *    会計登録処理
+      *    外泊登録処理
       *****************************************************************
-       2121-KAIKEI-TOUROKU-SEC         SECTION.
+       2121-GAIHAKU-TOUROKU-SEC        SECTION.
       *
            INITIALIZE                  ORDER-REC
            INITIALIZE                  SODR-AREA
@@ -3481,7 +3760,53 @@
            END-EVALUATE
       *
            .
-       2121-KAIKEI-TOUROKU-EXT.
+       2121-GAIHAKU-TOUROKU-EXT.
+           EXIT.
+      *****************************************************************
+      *    食事登録処理
+      *****************************************************************
+       2121-SYOKUJI-TOUROKU-SEC        SECTION.
+      *
+           INITIALIZE                  ORDER-REC
+           INITIALIZE                  SODR-AREA
+           INITIALIZE                  LNK-ORDER-REC
+      *
+           MOVE    SPA-NAI-ORDER-DAT   TO  ORDER-REC
+      *
+           PERFORM 2300-SODR-COMMON-SET-SEC
+      *
+           MOVE    ZERO                TO  IDX-ITM
+      *
+           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+               PERFORM 2300-SKJTIME-SET-SEC
+           END-IF
+      *
+           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+               PERFORM 2300-NYUINKA-SET-SEC
+           END-IF
+      *
+           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+               PERFORM 2300-HKNCOMBI-SET-SEC
+           END-IF
+      *
+           MOVE   IDX-ITM          TO  LNK-ORDER-MAX
+      *
+           CALL   "ORCSODR04"      USING   SODR-AREA
+                                           LNK-ORDER-REC
+           EVALUATE    TRUE
+           WHEN  ( SODR-RC      NOT =   ZERO )
+               MOVE    "4005"   TO  SPA-ERRCD
+           WHEN  ( SODR-ERRCD   NOT =   SPACE )
+               MOVE    LNK-ORDER-REC    TO ERR-ORDER-REC
+               PERFORM 3101-ERRMESLST-SEC
+           WHEN  OTHER
+               PERFORM 220-CLEAR-SEC
+      *        異動リスト編集処理
+               PERFORM 3101-ALLIDOLST-SEC
+           END-EVALUATE
+      *
+           .
+       2121-SYOKUJI-TOUROKU-EXT.
            EXIT.
       *****************************************************************
       *    入院区分設定処理
@@ -3490,7 +3815,7 @@
       *
            PERFORM 2300-ORDER-COMMON-SET-SEC
       *
-           MOVE    NCLAIMID-NYUKBNID   TO  LNK-ORDER-ITEMID (IDX-ITM)
+           MOVE    NCLAIMID-NYUKBNJMA  TO  LNK-ORDER-ITEMID (IDX-ITM)
            IF    ( SPA-NAI-STS-NYUKBN  = "4" OR "-" )
                 MOVE    "4"        TO  LNK-ORDER-STATUS-ITEM (IDX-ITM)
            ELSE
@@ -3505,21 +3830,21 @@
       *****************************************************************
       *    初回設定処理
       *****************************************************************
-       2300-SYOKAI-SET-SEC             SECTION.
+       2300-SHOKAI-SET-SEC             SECTION.
       *
-           IF    ( SPA-NAI-STS-SYOKAI      = "-" )
+           IF    ( SPA-NAI-STS-SHOKAI      = "-" )
             AND  ( SPA-GMN-SHOKAI          = "01" )
-               GO  TO  2300-SYOKAI-SET-EXT
+               GO  TO  2300-SHOKAI-SET-EXT
            END-IF
       *
            PERFORM 2300-ORDER-COMMON-SET-SEC
       *
-           MOVE    NCLAIMID-SYOKAIID
+           MOVE    NCLAIMID-SHOKAIJMA
                                    TO  LNK-ORDER-ITEMID (IDX-ITM)
       *
            EVALUATE    TRUE
-           WHEN  ( SPA-NAI-STS-SYOKAI      = "4" )
-           WHEN  ( SPA-NAI-STS-SYOKAI      = "-" )
+           WHEN  ( SPA-NAI-STS-SHOKAI      = "4" )
+           WHEN  ( SPA-NAI-STS-SHOKAI      = "-" )
              AND ( SPA-GMN-SHOKAI          = "02" )
                 MOVE    "4"        TO  LNK-ORDER-STATUS-ITEM (IDX-ITM)
            WHEN  OTHER
@@ -3540,7 +3865,7 @@
            END-IF
       *
            .
-       2300-SYOKAI-SET-EXT.
+       2300-SHOKAI-SET-EXT.
            EXIT.
       *****************************************************************
       *    病棟番号設定処理
@@ -3549,7 +3874,7 @@
       *
            PERFORM 2300-ORDER-COMMON-SET-SEC
       *
-           MOVE    NCLAIMID-BTUNUMID   TO  LNK-ORDER-ITEMID (IDX-ITM)
+           MOVE    NCLAIMID-BTUNUMJMA  TO  LNK-ORDER-ITEMID (IDX-ITM)
            IF    ( SPA-NAI-STS-BTUNUM  = "4" OR "-" )
                MOVE    "4"         TO  LNK-ORDER-STATUS-ITEM (IDX-ITM)
            ELSE
@@ -3568,7 +3893,7 @@
       *
            PERFORM 2300-ORDER-COMMON-SET-SEC
       *
-           MOVE    NCLAIMID-BRMNUMID   TO  LNK-ORDER-ITEMID (IDX-ITM)
+           MOVE    NCLAIMID-BRMNUMJMA  TO  LNK-ORDER-ITEMID (IDX-ITM)
            IF    ( SPA-NAI-STS-BRMNUM  = "4" OR "-" )
                MOVE    "4"         TO  LNK-ORDER-STATUS-ITEM (IDX-ITM)
            ELSE
@@ -3592,7 +3917,7 @@
       *
            PERFORM 2300-ORDER-COMMON-SET-SEC
       *
-           MOVE    NCLAIMID-SAGAKUID   TO  LNK-ORDER-ITEMID (IDX-ITM)
+           MOVE    NCLAIMID-SAGAKUJMA  TO  LNK-ORDER-ITEMID (IDX-ITM)
       *
            EVALUATE    TRUE
            WHEN  ( SPA-NAI-STS-SAGAKU      = "4" )
@@ -3630,7 +3955,7 @@
       *
            PERFORM 2300-ORDER-COMMON-SET-SEC
       *
-           MOVE    NCLAIMID-DRID       TO  LNK-ORDER-ITEMID (IDX-ITM)
+           MOVE    NCLAIMID-DRJMA      TO  LNK-ORDER-ITEMID (IDX-ITM)
       *
            EVALUATE    TRUE
            WHEN  ( SPA-NAI-STS-DR (IDX2)       = "4" )
@@ -3662,7 +3987,7 @@
       *
            PERFORM 2300-ORDER-COMMON-SET-SEC
       *
-           MOVE    NCLAIMID-TOKNYUINID TO  LNK-ORDER-ITEMID (IDX-ITM)
+           MOVE    NCLAIMID-TOKNYUINJMA TO  LNK-ORDER-ITEMID (IDX-ITM)
       *
            EVALUATE    TRUE
            WHEN  ( SPA-NAI-STS-TOKNYUIN    = "4" )
@@ -3682,6 +4007,25 @@
        2300-TOKNYUIN-SET-EXT.
            EXIT.
       *****************************************************************
+      *    食事時間設定処理
+      *****************************************************************
+       2300-SKJTIME-SET-SEC             SECTION.
+      *
+           PERFORM 2300-ORDER-COMMON-SET-SEC
+      *
+           MOVE    NCLAIMID-SKJTIMEJMA TO  LNK-ORDER-ITEMID (IDX-ITM)
+           IF    ( SPA-NAI-STS-SKJTIME = "4" OR "-" )
+                MOVE    "4"        TO  LNK-ORDER-STATUS-ITEM (IDX-ITM)
+           ELSE
+                MOVE    "0"        TO  LNK-ORDER-STATUS-ITEM (IDX-ITM)
+           END-IF
+      *
+           MOVE    SPA-GMN-SKJTIME TO  LNK-ORDER-ITEM (IDX-ITM)
+      *
+           .
+       2300-SKJTIME-SET-EXT.
+           EXIT.
+      *****************************************************************
       *    退院事由設定処理
       *****************************************************************
        2300-TAIINCD-SET-SEC            SECTION.
@@ -3693,7 +4037,7 @@
       *
            PERFORM 2300-ORDER-COMMON-SET-SEC
       *
-           MOVE    NCLAIMID-TAIINCDID  TO  LNK-ORDER-ITEMID (IDX-ITM)
+           MOVE    NCLAIMID-TAIINCDJMA TO  LNK-ORDER-ITEMID (IDX-ITM)
       *
            EVALUATE    TRUE
            WHEN  ( SPA-NAI-STS-TAIINCD     = "4" )
@@ -3726,7 +4070,7 @@
       *
            PERFORM 2300-ORDER-COMMON-SET-SEC
       *
-           MOVE    NCLAIMID-NYUINKAID   TO  LNK-ORDER-ITEMID (IDX-ITM)
+           MOVE    NCLAIMID-NYUINKAJMA  TO  LNK-ORDER-ITEMID (IDX-ITM)
            IF    ( SPA-NAI-STS-NYUINKA  = "4" OR "-" )
                MOVE    "4"         TO   LNK-ORDER-STATUS-ITEM (IDX-ITM)
            ELSE
@@ -3745,7 +4089,7 @@
       *
            PERFORM 2300-ORDER-COMMON-SET-SEC
       *
-           MOVE    NCLAIMID-HKNCOMBIID
+           MOVE    NCLAIMID-HKNCOMBIJMA
                                    TO  LNK-ORDER-ITEMID (IDX-ITM)
            IF    ( SPA-NAI-STS-HKNCOMBI  = "4" OR "-" )
                MOVE    "4"         TO   LNK-ORDER-STATUS-ITEM (IDX-ITM)
@@ -3778,7 +4122,7 @@
            MOVE    ORDER-UKEYMD        TO  SODR-UKEYMD
            MOVE    ORDER-UKEHMS        TO  SODR-UKEHMS
            MOVE    "1"                 TO  SODR-PROCKBN
-           MOVE    WRK-INF-CANCEL      TO  SODR-INF-CANCEL
+           MOVE    WRK-INF-DIALOG      TO  SODR-INF-DIALOG
       *
            MOVE    SPA-OPID            TO  SODR-OPID
            PERFORM 800-MCNDATE-SEC
@@ -3975,6 +4319,14 @@
       *
            MOVE    SPA-GMN-SNTNYUIN    TO  I06-SNTNYUIN
       *
+           MOVE    SPA-GMN-SKJTIME-G    TO  I06-SKJTIME
+           MOVE    SPA-GMN-SKJTIME-MAX  TO  I06-SKJTIME-COUNT
+           PERFORM VARYING IDX-CMB     FROM    1   BY  1
+                   UNTIL ( IDX-CMB     >   SPA-GMN-SKJTIME-MAX )
+               MOVE    SPA-GMN-SKJTIMELST (IDX-CMB)
+                                       TO  I06-SKJTIME-ITEM (IDX-CMB)
+           END-PERFORM
+      *
            MOVE    SPA-GMN-ALLIDOLST-MAX   TO  I06-ALLIDOLST-COUNT
            PERFORM VARYING IDX-LST     FROM    1   BY  1
                    UNTIL ( IDX-LST     >   SPA-GMN-ALLIDOLST-MAX )
@@ -3998,6 +4350,8 @@
                    MOVE    "　削"          TO  I06-TALLERR    (IDX-LST)
                WHEN    "4"
                    MOVE    "　未"          TO  I06-TALLERR    (IDX-LST)
+               WHEN    "5"
+                   MOVE    "保留"          TO  I06-TALLERR    (IDX-LST)
                END-EVALUATE
       *
                IF    ( SPA-GMN-ALLIDOLST-SEL   =   IDX-LST )
@@ -4022,13 +4376,15 @@
                                            TO  I06-TKJNIDOJIYU (IDX-LST)
                EVALUATE    SPA-GMN-TKJNSTS (IDX-LST)
                WHEN    "1"
-                   MOVE    "　重"          TO  I06-TKJNERR    (IDX-LST)
+                   MOVE    "重"            TO  I06-TKJNERR    (IDX-LST)
                WHEN    "2"
-                   MOVE    "　有"          TO  I06-TKJNERR    (IDX-LST)
+                   MOVE    "有"            TO  I06-TKJNERR    (IDX-LST)
                WHEN    "3"
-                   MOVE    "　削"          TO  I06-TKJNERR    (IDX-LST)
+                   MOVE    "削"            TO  I06-TKJNERR    (IDX-LST)
                WHEN    "4"
-                   MOVE    "　未"          TO  I06-TKJNERR    (IDX-LST)
+                   MOVE    "未"            TO  I06-TKJNERR    (IDX-LST)
+               WHEN    "5"
+                   MOVE    "保留"          TO  I06-TKJNERR    (IDX-LST)
                END-EVALUATE
       *
                IF    ( SPA-GMN-KJNIDOLST-SEL   =   IDX-LST )
@@ -4095,6 +4451,8 @@
                                                I06-TOKNYUIN-ITEM-STATE
                                                I06-B12-STATE
                                                I06-SNTNYUIN-STATE
+                                               I06-SKJTIME-STATE
+                                               I06-SKJTIME-ITEM-STATE
       *
            IF    ( SPA-GMN-ALLIDOLST-SEL       =   ZERO )
                MOVE    WIDGET-NORMAL   TO      I06-BRMNUM-STATE
@@ -4124,9 +4482,12 @@
                                                I06-TOKNYUIN-STATE
                                                I06-TOKNYUIN-ITEM-STATE
                                                I06-SNTNYUIN-STATE
+                                               I06-SKJTIME-STATE
+                                               I06-SKJTIME-ITEM-STATE
                MOVE    WIDGET-INSENSITIVE  TO  I06-B12-STATE
            ELSE
                IF    ( SPA-NAI-STATUS-ORDER    =   "2" )
+                OR   ( SPA-NAI-STATUS-ORDER    =   "5" )
                 OR  (( SPA-NAI-STATUS-ORDER    =   "4" )
                  AND ( SPA-NAI-DIRECT-KHNERR   =   ZERO ))
                    EVALUATE    SPA-NAI-ORDERID
@@ -4166,8 +4527,13 @@
                                                I06-HKNCOMBI-ITEM-STATE
                                                I06-B12-STATE
                    WHEN    NORDERID-GAIHKID
-                   WHEN    NORDERID-GAIHKID
                    WHEN    NORDERID-GBACKID
+                       MOVE    WIDGET-NORMAL
+                                           TO  I06-NYUINKA-STATE
+                                               I06-NYUINKA-ITEM-STATE
+                                               I06-HKNCOMBI-STATE
+                                               I06-HKNCOMBI-ITEM-STATE
+                                               I06-B12-STATE
                    WHEN    NORDERID-FNORLID
                    WHEN    NORDERID-FSPCLID
                    WHEN    NORDERID-FSELEID
@@ -4177,6 +4543,8 @@
                                                I06-NYUINKA-ITEM-STATE
                                                I06-HKNCOMBI-STATE
                                                I06-HKNCOMBI-ITEM-STATE
+                                               I06-SKJTIME-STATE
+                                               I06-SKJTIME-ITEM-STATE
                                                I06-B12-STATE
                    END-EVALUATE
                END-IF
@@ -4236,6 +4604,8 @@
                MOVE    "NYUKBN"        TO  MCP-WIDGET
            WHEN    17
                MOVE    "TOKNYUIN"      TO  MCP-WIDGET
+           WHEN    18
+               MOVE    "SKJTIME"       TO  MCP-WIDGET
            WHEN    212
                MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
@@ -4283,6 +4653,8 @@
            WHEN    "NYUKBN"
                MOVE    17              TO  SPA-GMN-CUR
            WHEN    "TOKNYUIN"
+               MOVE    18              TO  SPA-GMN-CUR
+           WHEN    "SKJTIME"
                MOVE    212             TO  SPA-GMN-CUR
            END-EVALUATE
       *
@@ -4381,6 +4753,12 @@
       *
            IF    ( SPA-GMN-CUR         =   17 )
                IF    ( I06-TOKNYUIN-STATE  =   WIDGET-INSENSITIVE )
+                   MOVE    18          TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-CUR         =   18 )
+               IF    ( I06-SKJTIME-STATE   =   WIDGET-INSENSITIVE )
                    MOVE    212         TO  SPA-GMN-CUR
                END-IF
            END-IF
@@ -4446,6 +4824,9 @@
            WHEN    "0017"
                MOVE    "特定入院料入力エラー" 
                                        TO  SPA-ERRMSG
+           WHEN    "0018"
+               MOVE    "食事時間入力エラー" 
+                                       TO  SPA-ERRMSG
            WHEN    "1001"
                MOVE    "異動歴を選択してください"
                                        TO  SPA-ERRMSG
@@ -4495,6 +4876,20 @@
                MOVE    SPACE           TO  WRK-I0IDMSG
                STRING  "退院後の診療日で入力された診療行為は"
                        "削除されます。確認してください"
+               DELIMITED BY SIZE
+               INTO  WRK-I0IDMSG
+               END-STRING
+           WHEN    "2004"
+               MOVE    SPACE           TO  WRK-I0IDMSG
+               STRING  "入院日が他院退院日と重複します。"
+                       "他院歴の通算日数を減算しますか？"
+               DELIMITED BY SIZE
+               INTO  WRK-I0IDMSG
+               END-STRING
+           WHEN    "2005"
+               MOVE    SPACE           TO  WRK-I0IDMSG
+               STRING  "入院日が他院退院日と重複します。"
+                       "よろしいですか？"
                DELIMITED BY SIZE
                INTO  WRK-I0IDMSG
                END-STRING
@@ -4631,8 +5026,8 @@
            MOVE    ZERO            TO  FLG-SYSKANRI
       *
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
-           MOVE    PATH-TBL-SYSKANRI-KEY10
-                                   TO  MCP-PATH
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key10"         TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC    =     ZERO )
                MOVE    MCPDATA-REC TO  SYSKANRI-REC
@@ -4641,9 +5036,9 @@
                MOVE    1           TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    PATH-TBL-SYSKANRI-KEY10
-                                   TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key10"         TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
       *
@@ -4657,8 +5052,8 @@
            MOVE    ZERO            TO  FLG-SYSKANRI
       *
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
-           MOVE    PATH-TBL-SYSKANRI-KEY2
-                                   TO  MCP-PATH
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC    =     ZERO )
                MOVE    MCPDATA-REC TO  SYSKANRI-REC
@@ -4676,8 +5071,8 @@
       *****************************************************************
        900-SYSKANRI-KEY2-FET-SEC      SECTION.
       *
-           MOVE    PATH-TBL-SYSKANRI-KEY2
-                                   TO  MCP-PATH
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC    =     ZERO )
                MOVE    MCPDATA-REC TO  SYSKANRI-REC
@@ -4698,7 +5093,8 @@
            MOVE    ZERO                TO  FLG-HKNCOMBI
       *
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
-           MOVE    PATH-TBL-HKNCOMBI-KEY    TO   MCP-PATH
+           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO   HKNCOMBI-REC
@@ -4707,8 +5103,9 @@
                MOVE    1               TO   FLG-HKNCOMBI
            END-IF
       *
-           MOVE    PATH-TBL-HKNCOMBI-KEY    TO   MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
       *
@@ -4722,7 +5119,8 @@
            MOVE    ZERO                TO  FLG-PTKOHINF
       *
            MOVE    PTKOHINF-REC        TO  MCPDATA-REC
-           MOVE    PATH-TBL-PTKOHINF-KEY6  TO   MCP-PATH
+           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+           MOVE    "key6"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO  PTKOHINF-REC
@@ -4731,8 +5129,9 @@
                MOVE    1               TO  FLG-PTKOHINF
            END-IF
       *
-           MOVE    PATH-TBL-PTKOHINF-KEY6  TO   MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+           MOVE    "key6"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
       *
@@ -4752,7 +5151,8 @@
                                        TNS-YUKOEDYMD
            MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
       *
-           MOVE    PATH-TBL-TENSU-KEY  TO  MCP-PATH
+           MOVE    "tbl_tensu"     TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC TO  TNS-TENSU-REC
@@ -4762,8 +5162,9 @@
            END-IF
       *
       *    点数マスタクローズ
-           MOVE    PATH-TBL-TENSU-KEY  TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_tensu"     TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
       *
@@ -4780,7 +5181,8 @@
            MOVE    SPA-HOSPID      TO  ORDER-HOSPID
            MOVE    SPA-NAI-UKEYMD  TO  ORDER-UKEYMD
            MOVE    ORDER-REC       TO  MCPDATA-REC
-           MOVE    PATH-TBL-ORDER-KEY4 TO  MCP-PATH
+           MOVE    "tbl_order"     TO  MCP-TABLE
+           MOVE    "key4"          TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC TO  ORDER-REC
@@ -4798,7 +5200,8 @@
       *****************************************************************
        900-ORDER-KEY4-FET-SEC          SECTION.
       *
-           MOVE    PATH-TBL-ORDER-KEY4 TO  MCP-PATH
+           MOVE    "tbl_order"     TO  MCP-TABLE
+           MOVE    "key4"          TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC TO  ORDER-REC
@@ -4821,7 +5224,8 @@
            MOVE    SPA-HOSPID      TO  ORDER-HOSPID
            MOVE    SPA-GMN-PTNUM   TO  ORDER-PTNUM
            MOVE    ORDER-REC       TO  MCPDATA-REC
-           MOVE    PATH-TBL-ORDER-KEY7 TO  MCP-PATH
+           MOVE    "tbl_order"     TO  MCP-TABLE
+           MOVE    "key7"          TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC TO  ORDER-REC
@@ -4839,7 +5243,8 @@
       *****************************************************************
        900-ORDER-KEY7-FET-SEC          SECTION.
       *
-           MOVE    PATH-TBL-ORDER-KEY7 TO  MCP-PATH
+           MOVE    "tbl_order"     TO  MCP-TABLE
+           MOVE    "key7"          TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC TO  ORDER-REC
@@ -4863,7 +5268,8 @@
            MOVE    SPA-NAI-KARTE-KEY   TO  ORDER-KARTE-KEY
            MOVE    SPA-NAI-ORDERNUM    TO  ORDER-ORDERNUM
            MOVE    ORDER-REC       TO  MCPDATA-REC
-           MOVE    PATH-TBL-ORDER-KEY6 TO  MCP-PATH
+           MOVE    "tbl_order"     TO  MCP-TABLE
+           MOVE    "key6"          TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC TO  ORDER-REC
@@ -4880,7 +5286,8 @@
       *****************************************************************
        900-ORDER-KEY6-FET-SEC          SECTION.
       *
-           MOVE    PATH-TBL-ORDER-KEY6 TO  MCP-PATH
+           MOVE    "tbl_order"     TO  MCP-TABLE
+           MOVE    "key6"          TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC TO  ORDER-REC
@@ -4901,7 +5308,8 @@
            MOVE    SPA-HOSPID      TO  PTINF-HOSPID
            MOVE    WRK-PTINF-PTID  TO  PTINF-PTID
            MOVE    PTINF-REC       TO  MCPDATA-REC
-           MOVE    PATH-TBL-PTINF-KEY  TO  MCP-PATH
+           MOVE    "tbl_ptinf"     TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC TO  PTINF-REC
@@ -4910,8 +5318,9 @@
                INITIALIZE              PTINF-REC
            END-IF
       *
-           MOVE    PATH-TBL-PTINF-KEY  TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_ptinf"     TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        900-PTINF-KEY-SEL-EXT.
@@ -4928,8 +5337,8 @@
            MOVE    SPA-NAI-PTID    TO  PTNYUINRRK-PTID
       *
            MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
-           MOVE    PATH-TBL-PTNYUINRRK-KEY3
-                                   TO  MCP-PATH
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC TO  PTNYUINRRK-REC
@@ -4938,9 +5347,9 @@
                MOVE    1           TO  FLG-PTNYUINRRK
            END-IF
       *
-           MOVE    PATH-TBL-PTNYUINRRK-KEY3
-                                   TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        900-PTNYUINRRK-KEY3-SEL-EXT.
@@ -4953,8 +5362,8 @@
            MOVE    ZERO                TO  FLG-PTNYUINRRK
       *
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-           MOVE    PATH-TBL-PTNYUINRRK-KEY30
-                                       TO  MCP-PATH
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key30"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
@@ -4963,9 +5372,9 @@
                MOVE    1               TO  FLG-PTNYUINRRK
            END-IF
       *
-           MOVE    PATH-TBL-PTNYUINRRK-KEY30
-                                       TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key30"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        900-PTNYUINRRK-KEY30-SEL-EXT.
@@ -4978,8 +5387,8 @@
            MOVE    ZERO                TO  FLG-PTNYUINRRK
       *
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-           MOVE    PATH-TBL-PTNYUINRRK-KEY35
-                                       TO  MCP-PATH
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key35"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
@@ -4988,9 +5397,9 @@
                MOVE    1               TO  FLG-PTNYUINRRK
            END-IF
       *
-           MOVE    PATH-TBL-PTNYUINRRK-KEY35
-                                       TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key35"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        900-PTNYUINRRK-KEY35-SEL-EXT.
@@ -5003,8 +5412,8 @@
            MOVE    ZERO                TO  FLG-PTNYUINRRK
       *
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-           MOVE    PATH-TBL-PTNYUINRRK-KEY39
-                                       TO  MCP-PATH
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key39"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
@@ -5013,9 +5422,9 @@
                MOVE    1               TO  FLG-PTNYUINRRK
            END-IF
       *
-           MOVE    PATH-TBL-PTNYUINRRK-KEY39
-                                       TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key39"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        900-PTNYUINRRK-KEY39-SEL-EXT.
@@ -5031,7 +5440,8 @@
            MOVE    SPA-HOSPID          TO  PTNUM-HOSPID
            MOVE    WRK-PTNUM-PTID      TO  PTNUM-PTID
            MOVE    PTNUM-REC           TO  MCPDATA-REC
-           MOVE    PATH-TBL-PTNUM-KEY  TO  MCP-PATH
+           MOVE    "tbl_ptnum"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  PTNUM-REC
@@ -5040,8 +5450,9 @@
                MOVE    1               TO  FLG-PTNUM
            END-IF
       *
-           MOVE    PATH-TBL-PTNUM-KEY  TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_ptnum"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        900-PTNUM-KEY-SEL-EXT.
@@ -5066,7 +5477,8 @@
                END-STRING
       *
                MOVE    PTNUM-REC           TO  MCPDATA-REC
-               MOVE    PATH-TBL-PTNUM-KEY2 TO  MCP-PATH
+               MOVE    "tbl_ptnum"         TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 910-DBSELECT-SEC
                IF    ( MCP-RC              =   ZERO )
                    MOVE    MCPDATA-REC     TO  PTNUM-REC
@@ -5075,8 +5487,9 @@
                    MOVE    1               TO  FLG-PTNUM
                END-IF
       *
-               MOVE    PATH-TBL-PTNUM-KEY2 TO  MCP-PATH
-               PERFORM 910-DBCLOSE-SEC
+               MOVE    "tbl_ptnum"         TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 910-DBCLOSECURSOR-SEC
            END-IF
       *
            .
@@ -5088,7 +5501,7 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF    ( MCP-RC          =   ZERO )
@@ -5105,7 +5518,7 @@
        911-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -5119,7 +5532,7 @@
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -5130,16 +5543,16 @@
       *****************************************************************
       *    ＤＢクローズ処理
       *****************************************************************
-       910-DBCLOSE-SEC                 SECTION.
+       910-DBCLOSECURSOR-SEC           SECTION.
       *
-      *    MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-      *    CALL    "MCPSUB"            USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
-       910-DBCLOSE-EXT.
+       910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢＤＥＬＥＴＥ処理
@@ -5147,7 +5560,7 @@
        910-DBDELETE-SEC                 SECTION.
       *
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -5161,7 +5574,7 @@
        910-DBINSERT-SEC                SECTION.
       *
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -5175,7 +5588,7 @@
        910-DBUPDATE-SEC                SECTION.
       *
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -5189,7 +5602,7 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"          TO  MCP-FUNC.
-           CALL   "MCPSUB"             USING
+           CALL   "MONFUNC"            USING
                                        MCPAREA
                                        MCPDATA-REC.
       *

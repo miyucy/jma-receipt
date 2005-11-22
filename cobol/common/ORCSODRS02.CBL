@@ -97,7 +97,6 @@
       *
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
-           COPY    "ORCA-DBPATH".
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -316,7 +315,8 @@
            MOVE    SODR-UID8           TO  ORDER-KARTE-KEY
            MOVE    SODR-ORDERNUM       TO  ORDER-ORDERNUM
            MOVE    ORDER-REC           TO  MCPDATA-REC
-           MOVE    PATH-TBL-ORDER-KEY6 TO  MCP-PATH
+           MOVE    "tbl_order"         TO  MCP-TABLE
+           MOVE    "key6"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  ORDER-REC
@@ -325,8 +325,9 @@
                MOVE    1               TO  FLG-ORDER
            END-IF
       *
-           MOVE    PATH-TBL-ORDER-KEY6 TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_order"         TO  MCP-TABLE
+           MOVE    "key6"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        900-ORDER-KEY6-SEL-EXT.
@@ -346,8 +347,8 @@
                                            SYS-EDYUKYMD
       *
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-           MOVE    PATH-TBL-SYSKANRI-KEY10
-                                       TO  MCP-PATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  SYSKANRI-REC
@@ -356,9 +357,9 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    PATH-TBL-SYSKANRI-KEY10
-                                       TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        900-SYSKANRI-KEY10-SEL-EXT.
@@ -374,7 +375,8 @@
            MOVE    ORDER-HOSPID        TO  PTNUM-HOSPID
            MOVE    ORDER-PTID          TO  PTNUM-PTID
            MOVE    PTNUM-REC           TO  MCPDATA-REC
-           MOVE    PATH-TBL-PTNUM-KEY  TO  MCP-PATH
+           MOVE    "tbl_ptnum"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  PTNUM-REC
@@ -383,8 +385,9 @@
                MOVE    1               TO  FLG-PTNUM
            END-IF
       *
-           MOVE    PATH-TBL-PTNUM-KEY  TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_ptnum"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        900-PTNUM-KEY-SEL-EXT.
@@ -404,7 +407,8 @@
            END-STRING
       *
            MOVE    PTNUM-REC           TO  MCPDATA-REC
-           MOVE    PATH-TBL-PTNUM-KEY2 TO  MCP-PATH
+           MOVE    "tbl_ptnum"         TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  PTNUM-REC
@@ -413,8 +417,9 @@
                MOVE    1               TO  FLG-PTNUM
            END-IF
       *
-           MOVE    PATH-TBL-PTNUM-KEY2 TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_ptnum"         TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        900-PTNUM-KEY2-SEL-EXT.
@@ -425,7 +430,7 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF    ( MCP-RC          =   ZERO )
@@ -442,7 +447,7 @@
        911-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -456,7 +461,7 @@
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -467,16 +472,16 @@
       *****************************************************************
       *    £Ä£Â¥¯¥í¡¼¥º½èÍý
       *****************************************************************
-       910-DBCLOSE-SEC                 SECTION.
+       910-DBCLOSECURSOR-SEC                 SECTION.
       *
-      *    MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-      *    CALL    "MCPSUB"            USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
-       910-DBCLOSE-EXT.
+       910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
       *    £Ä£Â¥¤¥ó¥µ¡¼¥È½èÍý
@@ -484,7 +489,7 @@
        910-DBINSERT-SEC                SECTION.
       *
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -498,7 +503,7 @@
        910-DBUPDATE-SEC                SECTION.
       *
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -512,7 +517,7 @@
        910-DBDELETE-SEC                SECTION.
       *
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *

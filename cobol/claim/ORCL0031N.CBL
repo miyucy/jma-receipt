@@ -74,7 +74,7 @@
            03  WRK-KARTE-KEY           PIC X(36).
            03  WRK-ORDERNUM            PIC 9(05).
            03  WRK-ITEMNUM             PIC 9(05).
-           03  WRK-ITEMID              PIC X(05).
+           03  WRK-ITEMJMA             PIC X(05).
            03  WRK-REMARKS             PIC X(80).
            03  WRK-KANACHK-MAE-INPUT   PIC X(500).
            03  WRK-KANACHK-OUT-INPUT   PIC X(500).
@@ -146,7 +146,6 @@
       *
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
-           COPY    "ORCA-DBPATH".
       *
       *****************************************************************
       *    連絡　領域
@@ -229,7 +228,7 @@
                PERFORM 900-ORDER-KEY2-SEL-SEC
                IF    ( FLG-ORDER       =   ZERO )
                    MOVE    9           TO  FLG-KARTE-KEY
-                   DISPLAY "ORCL0031N ERROR:KARTE-KEY ２重登録"
+                   DISPLAY "ORCL0031N ERROR 001:KARTE-KEY ２重登録"
                            " PTID="        SCL31N-PTID
                            " KARTE-KEY="   LF04-UID8
                    MOVE    1           TO  FLG-END
@@ -312,7 +311,7 @@
                     OR   ( FLG-END =   1 )
       *
                IF    ( LF04-SRYCDTBL (IDXA) 
-                                   =   NCLAIMID-NYUINNM )
+                                   =   NCLAIMID-CLASS )
       *
                    COMPUTE WRK-ORDERNUM
                        =   WRK-ORDERNUM    +   1
@@ -375,7 +374,7 @@
                    UNTIL ( IDXB        >   CONST-SRYTBLC-MAX )
       *
                IF    ( LF04-TBLID (IDXA IDXB)
-                                   =   NCLAIMID-NYUIDONM )
+                                   =   NCLAIMID-ORDER )
       *
                        COMPUTE CNT-ORDER   =   CNT-ORDER   +   1
       *
@@ -447,9 +446,9 @@
                        UNTIL ( IDX-IJI >   NCLAIMID-ITEM-MAX )
                         OR   ( FLG-END =   1 )
                    IF    ( LF04-TBLID (IDXA IDXB)
-                                   =   NCLAIMID-ITEMNM (IDX-IJI) )
-                       MOVE    NCLAIMID-ITEMID (IDX-IJI)
-                                       TO  WRK-ITEMID
+                                   =   NCLAIMID-ITEM (IDX-IJI) )
+                       MOVE    NCLAIMID-ITEMJMA (IDX-IJI)
+                                       TO  WRK-ITEMJMA
                        PERFORM 20011-ORDER-INSERT-SEC
                    END-IF
                END-PERFORM
@@ -512,18 +511,24 @@
       *
            WHEN   NORDERID-GAIHKID
            WHEN   NORDERID-GBACKID
-           WHEN   NORDERID-FNORLID
-           WHEN   NORDERID-FSPCLID
-           WHEN   NORDERID-FSELEID
-           WHEN   NORDERID-FSTOPID
       *
                PERFORM 20011-ORCSODR03-ITM-CHK-SEC
       *
                MOVE    "ORCSODR03"     TO  WRK-PGNAME
       *
+           WHEN   NORDERID-FNORLID
+           WHEN   NORDERID-FSPCLID
+           WHEN   NORDERID-FSELEID
+           WHEN   NORDERID-FSTOPID
+      *
+               PERFORM 20011-ORCSODR04-ITM-CHK-SEC
+      *
+               MOVE    "ORCSODR04"     TO  WRK-PGNAME
+      *
            END-EVALUATE
       *
            IF    ( WRK-PGNAME      NOT =   SPACE )
+               DISPLAY "CALL " WRK-PGNAME
                CALL    WRK-PGNAME      USING   SODR-AREA
                                                LNK-ORDER-REC
                IF    ( SODR-RC     NOT =   ZERO )
@@ -544,24 +549,24 @@
            PERFORM VARYING IDXB    FROM    1   BY  1
                    UNTIL ( IDXB    >   CONST-SRYTBLC-MAX )
       *
-               MOVE    ALL "9"     TO  WRK-ITEMID
+               MOVE    ALL "9"     TO  WRK-ITEMJMA
       *
                MOVE    SPACE       TO  WRK-ITEM
                                        WRK-REMARKS
                                        WRK-STATUS-ITEM
       *
                IF    ( LF04-TBLID (IDXA IDXB)  NOT = SPACE )
-                AND  ( LF04-TBLID (IDXA IDXB)  NOT = NCLAIMID-NYUIDONM )
+                AND  ( LF04-TBLID (IDXA IDXB)  NOT = NCLAIMID-ORDER )
       *
                    PERFORM VARYING IDX-IJI FROM    1   BY  1
                            UNTIL ( IDX-IJI     >   NCLAIMID-ITEM-MAX )
-                            OR   ( WRK-ITEMID  NOT =   ALL "9" )
+                            OR   ( WRK-ITEMJMA  NOT =   ALL "9" )
       *
                        IF    ( LF04-TBLID (IDXA IDXB)
-                                   =   NCLAIMID-ITEMNM (IDX-IJI) )
+                                   =   NCLAIMID-ITEM (IDX-IJI) )
       *
-                           MOVE    NCLAIMID-ITEMID (IDX-IJI)
-                                       TO  WRK-ITEMID
+                           MOVE    NCLAIMID-ITEMJMA (IDX-IJI)
+                                       TO  WRK-ITEMJMA
                        END-IF
       *
                    END-PERFORM
@@ -569,11 +574,11 @@
                    MOVE    LF04-IJICD (IDXA IDXB)
                                        TO  WRK-ITEM
       *
-                   EVALUATE    WRK-ITEMID
-                   WHEN    NCLAIMID-TAIINCDID
+                   EVALUATE    WRK-ITEMJMA
+                   WHEN    NCLAIMID-TAIINCDJMA
                        MOVE    LF04-ALSNAME (IDXA IDXB)
                                        TO  WRK-REMARKS
-                   WHEN    NCLAIMID-SYOKAIID
+                   WHEN    NCLAIMID-SHOKAIJMA
                        MOVE    LF04-SRYMEMO (IDXA IDXB)
                                        TO  WRK-REMARKS
                    END-EVALUATE
@@ -628,7 +633,7 @@
            MOVE    WRK-UKEYMD          TO  LNK-ORDER-UKEYMD    (IDX1)
            MOVE    WRK-UKEHMS          TO  LNK-ORDER-UKEHMS    (IDX1)
       *
-           MOVE    WRK-ITEMID          TO  LNK-ORDER-ITEMID    (IDX1)
+           MOVE    WRK-ITEMJMA         TO  LNK-ORDER-ITEMID    (IDX1)
       *
            MOVE    WRK-ITEM            TO  WRK-KANACHK-MAE-INPUT
            PERFORM 800-HANKAKU-CHK-SEC
@@ -645,8 +650,8 @@
                MOVE    "1"         TO  LNK-ORDER-KEYGENERATE     (IDX1)
            END-IF
       *
-           EVALUATE    WRK-ITEMID
-           WHEN    NCLAIMID-TAIINCDID
+           EVALUATE    WRK-ITEMJMA
+           WHEN    NCLAIMID-TAIINCDJMA
                MOVE    WRK-REMARKS TO  WRK-KANACHK-MAE-INPUT
                PERFORM 800-ZENKAKU-CHK-SEC
                IF    ( FLG-ENTRYCHK        =   ZERO )
@@ -655,11 +660,11 @@
                ELSE
                    MOVE    SPACE   TO  LNK-ORDER-REMARKS       (IDX1)
                END-IF
-           WHEN    NCLAIMID-SYOKAIID
+           WHEN    NCLAIMID-SHOKAIJMA
                MOVE    WRK-REMARKS TO  WRK-KANACHK-MAE-INPUT
                PERFORM 800-HANKAKU-CHK-SEC
                IF    ( FLG-ENTRYCHK        =   ZERO )
-                   MOVE    WRK-KANACHK-OUT-INPUT
+                   MOVE    WRK-REMARKS
                                    TO  LNK-ORDER-REMARKS       (IDX1)
                ELSE
                    MOVE    SPACE   TO  LNK-ORDER-REMARKS       (IDX1)
@@ -708,7 +713,7 @@
        20011-ORCSODR02-ITM-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    会計処理項目チェック（必須項目抜け）
+      *    外泊処理項目チェック（必須項目抜け）
       *****************************************************************
        20011-ORCSODR03-ITM-CHK-SEC     SECTION.
       *
@@ -722,16 +727,33 @@
        20011-ORCSODR03-ITM-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    食事処理項目チェック（必須項目抜け）
+      *****************************************************************
+       20011-ORCSODR04-ITM-CHK-SEC     SECTION.
+      *
+      *    入院科チェック
+           PERFORM 20011-NYUINKA-CHK-SEC
+      *
+      *    保険組合せチェック
+           PERFORM 20011-HKNCOMBI-CHK-SEC
+      *
+      *    食事時間チェック
+           PERFORM 20011-SKJTIME-CHK-SEC
+      *
+           .
+       20011-ORCSODR04-ITM-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    入院区分チェック
       *****************************************************************
        20011-NYUKBN-CHK-SEC            SECTION.
       *
       *    入院区分チェック
-           MOVE    NCLAIMID-NYUKBNNM   TO  WRK-TBLID
+           MOVE    NCLAIMID-NYUKBN     TO  WRK-TBLID
            PERFORM 20011-ITEM-CNT-CHK-SEC
            IF        ( CNT-TBLID   =   ZERO )
-               MOVE    NCLAIMID-NYUKBNID
-                                       TO  WRK-ITEMID
+               MOVE    NCLAIMID-NYUKBNJMA
+                                       TO  WRK-ITEMJMA
                MOVE    SPACE           TO  WRK-ITEM
                MOVE    "4"             TO  WRK-STATUS-ITEM
                PERFORM 20011-LNK-ORDER-HEN-SEC
@@ -746,11 +768,11 @@
        20011-BTUNUM-CHK-SEC            SECTION.
       *
       *    病棟コードチェック
-           MOVE    NCLAIMID-BTUNUMNM   TO  WRK-TBLID
+           MOVE    NCLAIMID-BTUNUM     TO  WRK-TBLID
            PERFORM 20011-ITEM-CNT-CHK-SEC
            IF        ( CNT-TBLID   =   ZERO )
-               MOVE    NCLAIMID-BTUNUMID
-                                       TO  WRK-ITEMID
+               MOVE    NCLAIMID-BTUNUMJMA
+                                       TO  WRK-ITEMJMA
                MOVE    SPACE           TO  WRK-ITEM
                MOVE    "4"             TO  WRK-STATUS-ITEM
                PERFORM 20011-LNK-ORDER-HEN-SEC
@@ -765,11 +787,11 @@
        20011-BRMNUM-CHK-SEC            SECTION.
       *
       *    病室コードチェック
-           MOVE    NCLAIMID-BRMNUMNM   TO  WRK-TBLID
+           MOVE    NCLAIMID-BRMNUM     TO  WRK-TBLID
            PERFORM 20011-ITEM-CNT-CHK-SEC
            IF        ( CNT-TBLID   =   ZERO )
-               MOVE    NCLAIMID-BRMNUMID
-                                       TO  WRK-ITEMID
+               MOVE    NCLAIMID-BRMNUMJMA
+                                       TO  WRK-ITEMJMA
                MOVE    SPACE           TO  WRK-ITEM
                MOVE    "4"             TO  WRK-STATUS-ITEM
                PERFORM 20011-LNK-ORDER-HEN-SEC
@@ -784,11 +806,11 @@
        20011-NYUINKA-CHK-SEC           SECTION.
       *
       *    入院科チェック
-           MOVE    NCLAIMID-NYUINKANM  TO  WRK-TBLID
+           MOVE    NCLAIMID-NYUINKA    TO  WRK-TBLID
            PERFORM 20011-ITEM-CNT-CHK-SEC
            IF        ( CNT-TBLID   =   ZERO )
-               MOVE    NCLAIMID-NYUINKAID
-                                       TO  WRK-ITEMID
+               MOVE    NCLAIMID-NYUINKAJMA
+                                       TO  WRK-ITEMJMA
                MOVE    SCL31N-SRYKA    TO  WRK-ITEM
                MOVE    "4"             TO  WRK-STATUS-ITEM
                PERFORM 20011-LNK-ORDER-HEN-SEC
@@ -803,11 +825,11 @@
        20011-HKNCOMBI-CHK-SEC          SECTION.
       *
       *    保険組合せチェック
-           MOVE    NCLAIMID-HKNCOMBINM  TO  WRK-TBLID
+           MOVE    NCLAIMID-HKNCOMBI   TO  WRK-TBLID
            PERFORM 20011-ITEM-CNT-CHK-SEC
            IF        ( CNT-TBLID   =   ZERO )
-               MOVE    NCLAIMID-HKNCOMBIID
-                                       TO  WRK-ITEMID
+               MOVE    NCLAIMID-HKNCOMBIJMA
+                                       TO  WRK-ITEMJMA
                MOVE    SCL31N-HKNCOMBI TO  WRK-ITEM
                MOVE    "4"             TO  WRK-STATUS-ITEM
                PERFORM 20011-LNK-ORDER-HEN-SEC
@@ -815,6 +837,25 @@
       *
            .
        20011-HKNCOMBI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    食事時間コードチェック
+      *****************************************************************
+       20011-SKJTIME-CHK-SEC           SECTION.
+      *
+      *    食事時間コードチェック
+           MOVE    NCLAIMID-SKJTIME    TO  WRK-TBLID
+           PERFORM 20011-ITEM-CNT-CHK-SEC
+           IF        ( CNT-TBLID   =   ZERO )
+               MOVE    NCLAIMID-SKJTIMEJMA
+                                       TO  WRK-ITEMJMA
+               MOVE    SPACE           TO  WRK-ITEM
+               MOVE    "4"             TO  WRK-STATUS-ITEM
+               PERFORM 20011-LNK-ORDER-HEN-SEC
+           END-IF
+      *
+           .
+       20011-SKJTIME-CHK-EXT.
            EXIT.
       *****************************************************************
       *    項目出現回数チェック処理
@@ -887,7 +928,7 @@
       *
            MOVE    ERRCD-ERRCD (1)     TO  ORDER-ERRCD1
            MOVE    ERRCD-ERRCD (2)     TO  ORDER-ERRCD2
-           MOVE    WRK-ITEMID          TO  ORDER-ITEMID
+           MOVE    WRK-ITEMJMA         TO  ORDER-ITEMID
       *
            MOVE    LF04-IJICD (IDXA IDXB)
                                        TO  WRK-KANACHK-MAE-INPUT
@@ -923,7 +964,7 @@
       *
            PERFORM 900-ORDER-KEY-SEL-SEC
            IF    ( FLG-ORDER           =   ZERO )
-               DISPLAY "ORCL0031N ERROR:ORDER INSERT CHK ERR"
+               DISPLAY "ORCL0031N ERROR 002:ORDER INSERT CHK ERR"
                        " PTID="        SCL31N-PTID
                        " KARTE-KEY="   LF04-UID8
                MOVE    1               TO  FLG-END
@@ -931,10 +972,11 @@
            END-IF
       *
            MOVE    ORDER-REC           TO  MCPDATA-REC
-           MOVE    PATH-TBL-ORDER-KEY  TO  MCP-PATH
+           MOVE    "tbl_order"         TO MCP-TABLE
+           MOVE    "key"               TO MCP-PATHNAME
            PERFORM 910-DBINSERT-SEC
            IF    ( MCP-RC          NOT =   ZERO )
-               DISPLAY "ORCL0031N ERROR:ORDER INSERT ERR"
+               DISPLAY "ORCL0031N ERROR 003:ORDER INSERT ERR"
                        " PTID="        SCL31N-PTID
                        " KARTE-KEY="   LF04-UID8
                MOVE    1               TO  FLG-END
@@ -1005,11 +1047,11 @@
            CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
            IF      ( KANACHK-RC    =   ZERO )
                IF      ( KANACHK-SYUBETU   NOT =   1 )
-                   DISPLAY "HANKAKU CHK ERR : " WRK-KANACHK-MAE-INPUT
+                   DISPLAY "HANKAKU CHK ERR 004: " WRK-KANACHK-MAE-INPUT
                    MOVE    1       TO  FLG-ENTRYCHK
                END-IF
            ELSE
-                   DISPLAY "HANKAKU CHK ERR : " WRK-KANACHK-MAE-INPUT
+                   DISPLAY "HANKAKU CHK ERR 005: " WRK-KANACHK-MAE-INPUT
                    MOVE    1       TO  FLG-ENTRYCHK
            END-IF
       *
@@ -1035,17 +1077,15 @@
            MOVE    WRK-KANACHK-MAE-INPUT
                                    TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
-           IF      ( KANACHK-RC    =   ZERO )
-               MOVE    KANACHK-OUT-INPUT
+           MOVE    KANACHK-OUT-INPUT
                                    TO  WRK-KANACHK-OUT-INPUT
+           IF      ( KANACHK-RC    =   ZERO )
                IF      ( KANACHK-SYUBETU   NOT =   2 )
-                   DISPLAY "ZENKAKU CHK ERR : " WRK-KANACHK-MAE-INPUT
+                   DISPLAY "ZENKAKU CHK ERR 006: " WRK-KANACHK-MAE-INPUT
                    MOVE    1       TO  FLG-ENTRYCHK
                END-IF
            ELSE
-                   DISPLAY "ZENKAKU CHK ERR : " WRK-KANACHK-MAE-INPUT
-                   MOVE    KANACHK-OUT-INPUT
-                                   TO  WRK-KANACHK-OUT-INPUT
+                   DISPLAY "ZENKAKU CHK ERR 007: " WRK-KANACHK-MAE-INPUT
                    MOVE    1       TO  FLG-ENTRYCHK
            END-IF
       *
@@ -1071,14 +1111,16 @@
            MOVE    ZERO                TO  FLG-ORDER
       *
            MOVE    ORDER-REC           TO  MCPDATA-REC
-           MOVE    PATH-TBL-ORDER-KEY  TO  MCP-PATH
+           MOVE    "tbl_order"         TO MCP-TABLE
+           MOVE    "key"               TO MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          NOT =   ZERO )
                MOVE    1               TO  FLG-ORDER
            END-IF
       *
-           MOVE    PATH-TBL-ORDER-KEY  TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_order"         TO MCP-TABLE
+           MOVE    "key"               TO MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        900-ORDER-KEY-SEL-EXT.
@@ -1091,14 +1133,16 @@
            MOVE    ZERO                TO  FLG-ORDER
       *
            MOVE    ORDER-REC           TO  MCPDATA-REC
-           MOVE    PATH-TBL-ORDER-KEY2 TO  MCP-PATH
+           MOVE    "tbl_order"         TO MCP-TABLE
+           MOVE    "key2"              TO MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          NOT =   ZERO )
                MOVE    1               TO  FLG-ORDER
            END-IF
       *
-           MOVE    PATH-TBL-ORDER-KEY2 TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_order"         TO MCP-TABLE
+           MOVE    "key2"              TO MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        900-ORDER-KEY2-SEL-EXT.
@@ -1109,7 +1153,7 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF    ( MCP-RC          =   ZERO )
@@ -1126,7 +1170,7 @@
        911-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -1140,7 +1184,7 @@
        910-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -1151,16 +1195,16 @@
       *****************************************************************
       *    ＤＢクローズ処理
       *****************************************************************
-       910-DBCLOSE-SEC                 SECTION.
+       910-DBCLOSECURSOR-SEC                 SECTION.
       *
-      *    MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-      *    CALL    "MCPSUB"            USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
-       910-DBCLOSE-EXT.
+       910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢインサート処理
@@ -1168,7 +1212,7 @@
        910-DBINSERT-SEC                SECTION.
       *
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
