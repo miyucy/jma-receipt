@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-多々納  02/09/20  入力インターフェースの変更
+      *  01.00.02    NACL-多々納  05/11/17  MONFUNC 対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -126,6 +127,7 @@
       *
            03  IDX-K               PIC 9(04).
            03  IDX-C               PIC 9(04).
+           03  IDK                 PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -181,7 +183,7 @@
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
+      *****COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -283,27 +285,26 @@
                MOVE    SPACE               TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
-      *
       *        初期画面編集
                PERFORM 300-SCREEN-SEC
-               IF      FLG-END             =   1
-                   GO      TO      100-INIT-EXT
-               END-IF
-      *
       *        画面編集
-               PERFORM 500-GMNHEN-SEC
+               IF      FLG-END             =   ZERO
+                    PERFORM 500-GMNHEN-SEC
+               END-IF
            END-IF
       *
-           MOVE    SPACE               TO  LINKAREA
+           IF      FLG-END             =   ZERO
+               MOVE    SPACE               TO  LINKAREA
       *
-           PERFORM 5001-MAPCUR-SEC
+               PERFORM 5001-MAPCUR-SEC
       *
-           MOVE   "NEW"                TO  MCP-PUTTYPE.
-           MOVE   "K023"               TO  MCP-WINDOW.
+               MOVE   "NEW"                TO  MCP-PUTTYPE
+               MOVE   "K023"               TO  MCP-WINDOW
       *
-           PERFORM 900-PUT-WINDOW.
+               PERFORM 900-PUT-WINDOW
       *
-           MOVE    1                   TO  FLG-END
+               MOVE    1                   TO  FLG-END
+           END-IF
       *
            .
        100-INIT-EXT.
@@ -320,11 +321,22 @@
       *            確認画面より
                    PERFORM 30010-KID1-SET-SEC
                    MOVE    SPACE               TO  SPA-KIDCD
-                   GO      TO      300-SCREEN-EXT
+      *
+               WHEN    OTHER
+      *            初期画面
+                   PERFORM 300-INIT-SET-SEC
            END-EVALUATE
       *
-           MOVE    SPACE               TO  SPA-KIDCD
+           .
+       300-SCREEN-EXT.
+           EXIT.
       *
+      *****************************************************************
+      *    初期画面処理
+      *****************************************************************
+       300-INIT-SET-SEC                 SECTION.
+      *
+           MOVE    SPACE               TO  SPA-KIDCD
            INITIALIZE                  SPA-K023GMN-AREA
            MOVE    1                   TO  FLG-SYORI
       *
@@ -340,7 +352,7 @@
            MOVE    1                   TO  SPA-K023-CUR
       *
            .
-       300-SCREEN-EXT.
+       300-INIT-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -440,17 +452,13 @@
            MOVE    SPA-K023-SRYCD  (SPA-K023-MAX)
                                        TO  ICD-SRYCD
       *
-           MOVE    "INPUTCD-KEY4"      TO  WRK-PATH
-      *
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_inputcd"       TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    WRK-PATH            TO  ORC-DBPATH
+               MOVE    "tbl_inputcd"       TO  MCP-TABLE
+               MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM                     930-INPUTCD-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-INPUTCD
@@ -463,16 +471,14 @@
                MOVE    ICD-CDSYU           TO  SPA-K023-CDSYU
                                                    (SPA-K023-MAX IDX2)
       *
-               MOVE    WRK-PATH            TO  ORC-DBPATH
+               MOVE    "tbl_inputcd"       TO  MCP-TABLE
+               MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM                     930-INPUTCD-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_inputcd"       TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        3101-INPUTCD-SET-EXT.
@@ -941,35 +947,32 @@
            MOVE    ICD-CDSYU           TO  WRK-CDSYU
            MOVE    WRK-INPUTCD         TO  ICD-INPUTCD
            IF      WRK-CNT             =   20
-               MOVE    "INPUTCD-KEY2"      TO  WRK-PATH
+               MOVE    "key2"              TO  WRK-PATH
            ELSE
-               MOVE    "INPUTCD-KEY"       TO  WRK-PATH
+               COMPUTE IDK                 =   WRK-CNT  +  1
+               MOVE    "%"                 TO  ICD-INPUTCD(IDK:1)
+               MOVE    "key"               TO  WRK-PATH
            END-IF
       *
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_inputcd"       TO  MCP-TABLE
+           MOVE    WRK-PATH            TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    WRK-PATH            TO  ORC-DBPATH
+               MOVE    "tbl_inputcd"       TO  MCP-TABLE
+               MOVE    WRK-PATH            TO  MCP-PATHNAME
                PERFORM                     930-INPUTCD-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-INPUTCD
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_inputcd"       TO  MCP-TABLE
+           MOVE    WRK-PATH            TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
            IF     (FLG-INPUTCD         =   ZERO  )  AND
                   (WRK-INPUTCD         =   ICD-INPUTCD )
                IF      ICD-SRYCD       NOT =   SPA-K023-SRYCD (IDX-1)
                    MOVE    "0003"          TO  SPA-ERRCD
-                   GO      TO      41020-INPUTCD-CHK-EXT
                END-IF
            END-IF
       *
@@ -1172,12 +1175,11 @@
       *
       *    更新前の基本チェック
            PERFORM 41001-KIHON-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4100-TOROKU-EXT
-           END-IF
       *
       *    更新確認メッセージ表示へ
-           MOVE    "1001"              TO  SPA-KIDCD
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    "1001"              TO  SPA-KIDCD
+           END-IF
       *
            .
        4100-TOROKU-EXT.
@@ -1197,11 +1199,10 @@
            PERFORM 2002-GMNSPA-SET-SEC
       *    入力チェック処理
            PERFORM 220-INPUT-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      41001-KIHON-CHK-EXT
-           END-IF
       *    全体チェック
-           PERFORM 230-INPUT-ALL-SEC
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 230-INPUT-ALL-SEC
+           END-IF
            .
        41001-KIHON-CHK-EXT.
            EXIT.
@@ -1295,14 +1296,11 @@
            MOVE    "INPUTCD-KEY4"      TO  WRK-PATH
       *
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_inputcd"       TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    WRK-PATH            TO  ORC-DBPATH
+               MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM                     930-INPUTCD-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-INPUTCD
@@ -1313,16 +1311,14 @@
                MOVE    ICD-INPUTCD         TO  WRK-K023-INPUTCD (IDX-T)
                MOVE    ICD-CDSYU           TO  WRK-K023-CDSYU (IDX-T)
       *
-               MOVE    WRK-PATH            TO  ORC-DBPATH
+               MOVE    "tbl_inputcd"       TO  MCP-TABLE
+               MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM                     930-INPUTCD-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_inputcd"       TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
       *    画面内容のセット
            MOVE    SPA-K023-INPUTCD (IDX 1)    TO  WRK-K023-INPUTCD (1)
@@ -1340,11 +1336,11 @@
                MOVE    SPA-K023-SRYCD (IDX)    TO  ICD-SRYCD
                MOVE    INPUTCD-REC         TO  MCPDATA-REC
                MOVE    "DBDELETE"          TO  MCP-FUNC
-               MOVE    "INPUTCD-KEY4"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+               MOVE    "tbl_inputcd"       TO  MCP-TABLE
+               MOVE    "del22"             TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
            END-IF
            .
        410022-INPUTCD-HOZON-EXT.
@@ -1369,13 +1365,15 @@
       *
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "INPUTCD-KEY"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_inputcd"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                MOVE    "1001"          TO  SPA-ERRCD
+               DISPLAY "K023 INPUTCD INS ERR:"  MCP-RC
+                             ",KEY:"  ICD-KEY
            END-IF
            .
        410021-INPUTCD-INS-EXT.
@@ -1540,11 +1538,9 @@
       *****************************************************************
        930-INPUTCD-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_inputcd"       TO  MCP-TABLE
+      *
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  INPUTCD-REC
                MOVE    ZERO                TO  FLG-INPUTCD
@@ -1556,6 +1552,47 @@
            .
        920-INPUTCD-NEXT-EXT.
            EXIT.
+      *****************************************************************
+      *    テーブル検索処理
+      *****************************************************************
+       910-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ読み込み処理
+      *****************************************************************
+       920-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       920-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢクローズ処理
+      *****************************************************************
+       990-DBCLOSE-SEC         SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       990-DBCLOSE-EXT.
+           EXIT.
       *
       *****************************************************************
       *    ＰＵＴ　処理
@@ -1563,10 +1600,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"   USING
-                                MCPAREA
-                                ORCMCPAREA
-                                MCPDATA-REC.
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        900-PUT-WINDOW-EXT.

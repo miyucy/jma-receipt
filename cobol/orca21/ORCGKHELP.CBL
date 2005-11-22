@@ -27,6 +27,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  01.00.01    NACL-Â¿¡¹Ç¼  05/11/17  MONFUNC ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -139,9 +140,9 @@
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
+      **** COPY    "CPORCMCP.INC".
       *
-           COPY    "ORCA-DBPATH".
+      **** COPY    "ORCA-DBPATH".
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -323,10 +324,11 @@
            END-IF
       *
            MOVE    HELP-REC            TO  MCPDATA-REC
+           MOVE    "tbl_help"          TO  MCP-TABLE
            IF      SPA-KHELP-MENUNUM1  =   ZERO
-               MOVE    PATH-TBL-HELP-KEY1  TO  MCP-PATH
+               MOVE    "key1"              TO  MCP-PATHNAME
            ELSE
-               MOVE    PATH-TBL-HELP-KEY2  TO  MCP-PATH
+               MOVE    "key2"              TO  MCP-PATHNAME
            END-IF
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
@@ -383,16 +385,17 @@
                    END-IF
       *
                IF      SPA-KHELP-MENUNUM1  =   ZERO
-                   MOVE    PATH-TBL-HELP-KEY1  TO  MCP-PATH
+                   MOVE    "key1"              TO  MCP-PATHNAME
                ELSE
-                   MOVE    PATH-TBL-HELP-KEY2  TO  MCP-PATH
+                   MOVE    "key2"              TO  MCP-PATHNAME
                END-IF
                PERFORM 900-HELP-READ-SEC
            END-PERFORM
+           MOVE    "tbl_help"          TO  MCP-TABLE
            IF      SPA-KHELP-MENUNUM1  =   ZERO
-               MOVE    PATH-TBL-HELP-KEY1  TO  MCP-PATH
+               MOVE    "key1"              TO  MCP-PATHNAME
            ELSE
-               MOVE    PATH-TBL-HELP-KEY2  TO  MCP-PATH
+               MOVE    "key2"              TO  MCP-PATHNAME
            END-IF
            PERFORM 990-DBCLOSE-SEC
       *
@@ -661,9 +664,11 @@
            MOVE    SPA-KHELP-MENUNUM2  TO  HELP-MENUNUM2
       *
            MOVE    HELP-REC            TO  MCPDATA-REC
-           MOVE    PATH-TBL-HELP-KEY3  TO  MCP-PATH
+           MOVE    "tbl_help"          TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
+               MOVE    "key3"              TO  MCP-PATHNAME
                PERFORM 900-HELP-READ-SEC
            ELSE
                INITIALIZE                  HELP-REC
@@ -674,11 +679,13 @@
                ADD     1                   TO  IDX-H
                MOVE    HELP-HELP           TO  WRK-HELP (IDX-H)
       *
-               MOVE    PATH-TBL-HELP-KEY3  TO  MCP-PATH
+               MOVE    "tbl_help"          TO  MCP-TABLE
+               MOVE    "key3"              TO  MCP-PATHNAME
                PERFORM 900-HELP-READ-SEC
            END-PERFORM
       *
-           MOVE    PATH-TBL-HELP-KEY3  TO  MCP-PATH
+           MOVE    "tbl_help"          TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
       *    ²þ¹Ô¥³¡¼¥É¤Ç¥Æ¡¼¥Ö¥ëÊÔ½¸
@@ -795,10 +802,11 @@
                                        TO  HELP-MENU
       *
            MOVE    HELP-REC            TO  MCPDATA-REC
-           MOVE    PATH-TBL-HELP-KEY4  TO  MCP-PATH
+           MOVE    "tbl_help"          TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    PATH-TBL-HELP-KEY4  TO  MCP-PATH
+               MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM 900-HELP-READ-SEC
            ELSE
                INITIALIZE                  HELP-REC
@@ -848,10 +856,11 @@
                    END-IF
                END-IF
       *
-               MOVE    PATH-TBL-HELP-KEY4  TO  MCP-PATH
+               MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM 900-HELP-READ-SEC
            END-PERFORM
-           MOVE    PATH-TBL-HELP-KEY4  TO  MCP-PATH
+           MOVE    "tbl_help"          TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *    ¼¡ÊÇÈ½Äê
            IF     (IDX                 >=  300 )  AND
@@ -895,10 +904,11 @@
            MOVE    ZERO                TO  FLG-CHK
       *
            MOVE    HELP-REC            TO  MCPDATA-REC
-           MOVE    PATH-TBL-HELP-KEY2  TO  MCP-PATH
+           MOVE    "tbl_help"          TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    PATH-TBL-HELP-KEY2  TO  MCP-PATH
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-HELP-READ-SEC
            ELSE
                MOVE    1               TO  FLG-HELP
@@ -908,11 +918,12 @@
                IF      HELP-MENUNUM2   NOT =   ZERO
                    MOVE    1               TO  FLG-CHK
                ELSE
-                   MOVE    PATH-TBL-HELP-KEY2  TO  MCP-PATH
+                   MOVE    "key2"              TO  MCP-PATHNAME
                    PERFORM 900-HELP-READ-SEC
                END-IF
            END-PERFORM
-           MOVE    PATH-TBL-HELP-KEY2  TO  MCP-PATH
+           MOVE    "tbl_help"          TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-CHK             =   1
@@ -1143,8 +1154,10 @@
       *****************************************************************
        900-HELP-READ-SEC         SECTION.
       *
+           MOVE    "tbl_help"          TO  MCP-TABLE
+      *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
@@ -1166,7 +1179,7 @@
            MOVE    ZERO            TO  MCP-RC
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -1180,7 +1193,7 @@
        990-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -1194,10 +1207,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"   USING
-                                MCPAREA
-                                ORCMCPAREA
-                                MCPDATA-REC.
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        900-PUT-WINDOW-EXT.
