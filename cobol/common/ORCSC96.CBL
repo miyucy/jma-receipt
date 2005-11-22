@@ -1058,10 +1058,36 @@
                    "中途終了データはありません。"
                                        TO  SPA-ERRMSG
                WHEN    "1020"
-                   MOVE    "初診料が算定されてません。"
+                   STRING  "初診料が算定されてません。"
+                                                DELIMITED  BY  SIZE
+                           "初診料を算定後、算定して下さい"
+                                                DELIMITED  BY  SIZE
+                                       INTO   SPA-ERRMSG
+                   END-STRING
+               WHEN    "1040"
+                   MOVE    "往診料は算定できません。"
                                        TO  SPA-ERRMSG
-                   MOVE    "初診料を算定後、算定して下さい"
-                                       TO  SPA-ERRMSG(25:)
+               WHEN    "1042"
+                   STRING  "初診料が算定されています。"
+                                                DELIMITED  BY  SIZE
+                           "同時算定できません。"
+                                                DELIMITED  BY  SIZE
+                                       INTO   SPA-ERRMSG
+                   END-STRING
+               WHEN    "1041"
+                   STRING  "初診料と寝たきり老人退院時共同指導料は"
+                                                DELIMITED  BY  SIZE
+                           "同時算定できません。"
+                                                DELIMITED  BY  SIZE
+                                       INTO   SPA-ERRMSG
+                   END-STRING
+               WHEN    "1043"
+                   STRING  "初診料が算定されていません。"
+                                                DELIMITED  BY  SIZE
+                           "ＤＵＭＭＹの初診料を算定して下さい。"
+                                                DELIMITED  BY  SIZE
+                                       INTO   SPA-ERRMSG
+                   END-STRING
                WHEN    "1021"
                    MOVE    "処方料・処方せん料は１つのみの算定です。"
                                        TO  SPA-ERRMSG
