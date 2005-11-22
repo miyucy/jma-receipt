@@ -138,7 +138,7 @@
       *
       *初診算定日
                05  SPA-SYOYMD              PIC  X(08).
-      *初診算定日（初回）
+      *初診算定日（訂正時の初回）
                05  SPA-SYOYMD1             PIC  X(08).
       *初診算定日（訂正時の直帰）
                05  SPA-SYOYMD-OLD          PIC  X(08).
@@ -431,5 +431,6 @@
            03  SPA-ETC-MOTOPG          PIC X(08).
       *
       *ヘルプ・発行指示共通
-           03  SPA-ETCKYOUTU-AREA           PIC X(1500).
+      *****03  SPA-ETCKYOUTU-AREA           PIC X(1500).
+           03  SPA-ETCKYOUTU-AREA           PIC X(1480).
       *
