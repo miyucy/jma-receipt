@@ -26,7 +26,7 @@
            03  NORDERID-ORDER-NYUIN        PIC X(02) VALUE "01".
            03  NORDERID-ORDER-KYUSYOKU     PIC X(02) VALUE "02".
       *
-           03  NORDERID-MAX                PIC 9(03) VALUE 8.
+           03  NORDERID-MAX                PIC 9(03) VALUE 12.
       *
            03  NORDERID-VAL.
                05  NORDERID-NYUIN-G.
@@ -42,6 +42,34 @@
                    07  NORDERID-TAIINID    PIC X(04) VALUE "0102".
                    07  NORDERID-TAIINMES1  PIC X(30) VALUE "Âà±¡".
                    07  NORDERID-TAIINMES2  PIC X(10) VALUE "Âà±¡".
+      *
+               05  NORDERID-IDOBTU-G.
+                   07  NORDERID-IDOBTUCL1  PIC X(02) VALUE "01".
+                   07  NORDERID-IDOBTUCL2  PIC X(03) VALUE "003".
+                   07  NORDERID-IDOBTUID   PIC X(04) VALUE "0103".
+                   07  NORDERID-IDOBTUMES1 PIC X(30) VALUE "Å¾Åï".
+                   07  NORDERID-IDOBTUMES2 PIC X(10) VALUE "Å¾Åï".
+      *
+               05  NORDERID-IDOKA-G.
+                   07  NORDERID-IDOKACL1   PIC X(02) VALUE "01".
+                   07  NORDERID-IDOKACL2   PIC X(03) VALUE "004".
+                   07  NORDERID-IDOKAID    PIC X(04) VALUE "0104".
+                   07  NORDERID-IDOKAMES1  PIC X(30) VALUE "Å¾²Ê".
+                   07  NORDERID-IDOKAMES2  PIC X(10) VALUE "Å¾²Ê".
+      *
+               05  NORDERID-IDOBRM-G.
+                   07  NORDERID-IDOBRMCL1  PIC X(02) VALUE "01".
+                   07  NORDERID-IDOBRMCL2  PIC X(03) VALUE "005".
+                   07  NORDERID-IDOBRMID   PIC X(04) VALUE "0105".
+                   07  NORDERID-IDOBRMMES1 PIC X(30) VALUE "Å¾¼¼".
+                   07  NORDERID-IDOBRMMES2 PIC X(10) VALUE "Å¾¼¼".
+      *
+               05  NORDERID-IDODR-G.
+                   07  NORDERID-IDODRCL1   PIC X(02) VALUE "01".
+                   07  NORDERID-IDODRCL2   PIC X(03) VALUE "008".
+                   07  NORDERID-IDODRID    PIC X(04) VALUE "0106".
+                   07  NORDERID-IDODRMES1  PIC X(30) VALUE "Ã´Åö°å".
+                   07  NORDERID-IDODRMES2  PIC X(10) VALUE "Ã´Åö°å".
       *
                05  NORDERID-GAIHK-G.
                    07  NORDERID-GAIHKCL1   PIC X(02) VALUE "01".
@@ -121,7 +149,7 @@
                    07  NORDERID-FSTOPMES2  PIC X(10) VALUE "¿©»ß¤á".
       *
            03  NORDERID-R  REDEFINES       NORDERID-VAL.
-               05  NORDERID-OCC            OCCURS    8.
+               05  NORDERID-OCC            OCCURS    12.
                    07  NORDERID-CLAIMID.
                        09  NORDERID-CLAIMIDH   PIC X(02).
                        09  NORDERID-CLAIMIDT   PIC X(03).

@@ -281,6 +281,7 @@
            END-IF
       *
            IF    ( SCL31N-SRYYMD   =   SPACE )
+            OR   ( SCL31N-SRYYMD   =   ZERO )
                MOVE    "0007"      TO  ERRCD-KHNERR
                PERFORM 1001-KIHON-ERRSET-SEC
            END-IF
@@ -385,6 +386,10 @@
                                                OR  NORDERID-TAIINCL2
                                                OR  NORDERID-GAIHKCL2
                                                OR  NORDERID-GBACKCL2
+                                               OR  NORDERID-IDODRCL2
+                                               OR  NORDERID-IDOKACL2
+                                               OR  NORDERID-IDOBTUCL2
+                                               OR  NORDERID-IDOBRMCL2
                                                                      )
                            COMPUTE CNT-IDOKBN  =   CNT-IDOKBN  +   1
                            MOVE    LF04-IJICD (IDXA IDXB)
@@ -525,10 +530,23 @@
       *
                MOVE    "ORCSODR04"     TO  WRK-PGNAME
       *
+           WHEN   NORDERID-IDODRID
+      *
+               PERFORM 20011-ORCSODR05-ITM-CHK-SEC
+      *
+               MOVE    "ORCSODR05"     TO  WRK-PGNAME
+      *
+           WHEN   NORDERID-IDOKAID
+           WHEN   NORDERID-IDOBTUID
+           WHEN   NORDERID-IDOBRMID
+      *
+               PERFORM 20011-ORCSODR06-ITM-CHK-SEC
+      *
+               MOVE    "ORCSODR06"     TO  WRK-PGNAME
+      *
            END-EVALUATE
       *
            IF    ( WRK-PGNAME      NOT =   SPACE )
-               DISPLAY "CALL " WRK-PGNAME
                CALL    WRK-PGNAME      USING   SODR-AREA
                                                LNK-ORDER-REC
                IF    ( SODR-RC     NOT =   ZERO )
@@ -744,6 +762,43 @@
        20011-ORCSODR04-ITM-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    担当医処理項目チェック（必須項目抜け）
+      *****************************************************************
+       20011-ORCSODR05-ITM-CHK-SEC     SECTION.
+      *
+      *    入院科チェック
+           PERFORM 20011-NYUINKA-CHK-SEC
+      *
+      *    保険組合せチェック
+           PERFORM 20011-HKNCOMBI-CHK-SEC
+      *
+           .
+       20011-ORCSODR05-ITM-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    転科・転棟・転室処理項目チェック（必須項目抜け）
+      *****************************************************************
+       20011-ORCSODR06-ITM-CHK-SEC     SECTION.
+      *
+      *    入院区分チェック
+           PERFORM 20011-NYUKBN-CHK-SEC
+      *
+      *    病棟コードチェック
+           PERFORM 20011-BTUNUM-CHK-SEC
+      *
+      *    病室コードチェック
+           PERFORM 20011-BRMNUM-CHK-SEC
+      *
+      *    入院科チェック
+           PERFORM 20011-NYUINKA-CHK-SEC
+      *
+      *    保険組合せチェック
+           PERFORM 20011-HKNCOMBI-CHK-SEC
+      *
+           .
+       20011-ORCSODR06-ITM-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    入院区分チェック
       *****************************************************************
        20011-NYUKBN-CHK-SEC            SECTION.
@@ -839,11 +894,11 @@
        20011-HKNCOMBI-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    食事時間コードチェック
+      *    食事時間チェック
       *****************************************************************
        20011-SKJTIME-CHK-SEC           SECTION.
       *
-      *    食事時間コードチェック
+      *    食事時間チェック
            MOVE    NCLAIMID-SKJTIME    TO  WRK-TBLID
            PERFORM 20011-ITEM-CNT-CHK-SEC
            IF        ( CNT-TBLID   =   ZERO )

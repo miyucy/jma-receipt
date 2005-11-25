@@ -1622,6 +1622,7 @@
                WHEN    NORDERID-FSPCLID
                WHEN    NORDERID-FSELEID
                WHEN    NORDERID-FSTOPID
+               WHEN    NORDERID-IDODRID
                    PERFORM 41011-INPUT-AREA-HEN-SEC
                END-EVALUATE
            END-EVALUATE
@@ -1742,7 +1743,13 @@
                    WHEN    NORDERID-FSELEID
                    WHEN    NORDERID-FSTOPID
                        PERFORM 410111-SYOKUJI-HEN-SEC
-                  END-EVALUATE
+                   WHEN    NORDERID-IDODRID
+                       PERFORM 410111-DOCTOR-HEN-SEC
+                   WHEN   NORDERID-IDOBTUID
+                   WHEN   NORDERID-IDOBRMID
+                   WHEN   NORDERID-IDOKAID
+                       PERFORM 410111-IDOKABTUBRM-HEN-SEC
+                   END-EVALUATE
       *
                END-IF
       *
@@ -1888,6 +1895,71 @@
        410111-SYOKUJI-HEN-EXT.
            EXIT.
       *****************************************************************
+      *    Ã´Åö°å»þÊÔ½¸½èÍý
+      *****************************************************************
+       410111-DOCTOR-HEN-SEC           SECTION.
+      *
+           COMPUTE CNT-ORDER   =  CNT-ORDER    +   1
+      *
+           IF    ( CNT-ORDER   =  1 )
+               MOVE    ORDER-REC       TO  SPA-NAI-ORDER-DAT
+           END-IF
+      *
+           PERFORM 410111-INPUT-COMMON-HEN-SEC
+      *
+           EVALUATE    ORDER-ITEMID
+      *
+           WHEN    NCLAIMID-DRJMA
+               PERFORM 4101111-DR-HEN-SEC
+      *
+           END-EVALUATE
+      *
+           .
+       410111-DOCTOR-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    Å¾²ÊÅ¾ÅïÅ¾¼¼ÊÔ½¸½èÍý
+      *****************************************************************
+       410111-IDOKABTUBRM-HEN-SEC      SECTION.
+      *
+           COMPUTE CNT-ORDER   =  CNT-ORDER    +   1
+      *
+           IF    ( CNT-ORDER   =  1 )
+               MOVE    ORDER-SRYYMD    TO  WRK-YMD
+               PERFORM 800-SEIWA-HEN-SEC
+               MOVE    WRK-SYMD        TO  SPA-NAI-NYUINYMD
+               MOVE    WRK-HENYMDG     TO  SPA-GMN-NYUINYMD
+               MOVE    ORDER-REC       TO  SPA-NAI-ORDER-DAT
+           END-IF
+      *
+           PERFORM 410111-INPUT-COMMON-HEN-SEC
+      *
+           EVALUATE    ORDER-ITEMID
+      *
+           WHEN    NCLAIMID-NYUKBNJMA
+               PERFORM 4101111-NYUKBN-HEN-SEC
+      *
+           WHEN    NCLAIMID-BTUNUMJMA
+               PERFORM 4101111-BTUNUM-HEN-SEC
+      *
+           WHEN    NCLAIMID-BRMNUMJMA
+               PERFORM 4101111-BRMNUM-HEN-SEC
+      *
+           WHEN    NCLAIMID-SAGAKUJMA
+               PERFORM 4101111-SAGAKU-HEN-SEC
+      *
+           WHEN    NCLAIMID-DRJMA
+               PERFORM 4101111-DR-HEN-SEC
+      *
+           WHEN    NCLAIMID-TOKNYUINJMA
+               PERFORM 4101111-TOKNYUIN-HEN-SEC
+      *
+           END-EVALUATE
+      *
+           .
+       410111-IDOKABTUBRM-HEN-EXT.
+           EXIT.
+      *****************************************************************
       *    ¶¦ÄÌÆþÎÏ¹àÌÜÊÔ½¸½èÍý
       *****************************************************************
        410111-INPUT-COMMON-HEN-SEC     SECTION.
@@ -1940,7 +2012,19 @@
            WHEN    NORDERID-FSTOPID
       *
                PERFORM 4101112-SKJTIME-HEN-SEC
+           WHEN    NORDERID-IDODRID
       *
+               PERFORM 4101112-DRMEI-HEN-SEC
+           WHEN   NORDERID-IDOKAID
+           WHEN   NORDERID-IDOBTUID
+           WHEN   NORDERID-IDOBRMID
+      *
+               PERFORM 4101112-SAGAKU-HEN-SEC
+               PERFORM 4101112-BTUNUM-HEN-SEC
+               PERFORM 4101112-SAGAKUMEI-HEN-SEC
+               PERFORM 4101112-DRMEI-HEN-SEC
+               PERFORM 4101112-NYUKBNMEI-HEN-SEC
+               PERFORM 4101112-TOKNYUINMEI-HEN-SEC
            END-EVALUATE
       *
            .
@@ -2482,7 +2566,10 @@
       *
            END-IF
       *
-           PERFORM 900-PTNYUINRRK-KEY3-SEL-SEC
+           IF    ( SPA-NAI-HIDOYMD  NOT =   ZERO )
+               PERFORM 900-PTNYUINRRK-KEY42-SEL-SEC
+           END-IF
+      *
            IF    ( FLG-PTNYUINRRK      =   ZERO )
                IF    ( PTNYUINRRK-JTIKBN   =   "5" OR "6" )
                    CONTINUE
@@ -2524,7 +2611,10 @@
                        END-IF
                    END-IF
                END-IF
+           END-IF
       *
+           PERFORM 900-PTNYUINRRK-KEY3-SEL-SEC
+           IF    ( FLG-PTNYUINRRK      =   ZERO )
                EVALUATE    TRUE
                WHEN  ( PTNYUINRRK-TAIINYMD NOT =   "99999999" )
                    MOVE    "Á°²óÂà±¡Æü"    TO  SPA-GMN-LBL-MAEIDOMEI
@@ -2538,7 +2628,7 @@
                    END-IF
                WHEN  ( PTNYUINRRK-RRKEDANUM    >   1 )
                    MOVE    "Á°²ó°ÛÆ°Æü"        TO  SPA-GMN-LBL-MAEIDOMEI
-                   MOVE    PTNYUINRRK-TENSTUYMD    TO  WRK-YMD
+                   MOVE    PTNYUINRRK-TENNYUYMD    TO  WRK-YMD
                    PERFORM 800-SEIWA-HEN-SEC
                    MOVE    WRK-HENYMDG         TO  SPA-GMN-MAEIDOYMD
                    MOVE    WRK-SYMD            TO  SPA-NAI-MAEIDOYMD
@@ -3575,6 +3665,12 @@
            WHEN    NORDERID-FSELEID
            WHEN    NORDERID-FSTOPID
                PERFORM 2121-SYOKUJI-TOUROKU-SEC
+           WHEN    NORDERID-IDODRID
+               PERFORM 2121-DOCTOR-TOUROKU-SEC
+           WHEN   NORDERID-IDOBTUID
+           WHEN   NORDERID-IDOBRMID
+           WHEN   NORDERID-IDOKAID
+               PERFORM 2121-IDOKABTUBRM-TOUROKU-SEC
            END-EVALUATE
       *
            .
@@ -3807,6 +3903,124 @@
       *
            .
        2121-SYOKUJI-TOUROKU-EXT.
+           EXIT.
+      *****************************************************************
+      *    Ã´Åö°åÅÐÏ¿½èÍý
+      *****************************************************************
+       2121-DOCTOR-TOUROKU-SEC         SECTION.
+      *
+           INITIALIZE                  ORDER-REC
+           INITIALIZE                  SODR-AREA
+           INITIALIZE                  LNK-ORDER-REC
+      *
+           MOVE    SPA-NAI-ORDER-DAT   TO  ORDER-REC
+      *
+           PERFORM 2300-SODR-COMMON-SET-SEC
+      *
+           MOVE    ZERO                TO  IDX-ITM
+      *
+           PERFORM VARYING IDX2    FROM    1   BY  1
+                   UNTIL ( IDX2    >   3 )
+               IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+                   PERFORM 2300-DR-SET-SEC
+               END-IF
+           END-PERFORM
+      *
+           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+               PERFORM 2300-NYUINKA-SET-SEC
+           END-IF
+      *
+           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+               PERFORM 2300-HKNCOMBI-SET-SEC
+           END-IF
+      *
+           MOVE   IDX-ITM          TO  LNK-ORDER-MAX
+      *
+           CALL   "ORCSODR05"      USING   SODR-AREA
+                                           LNK-ORDER-REC
+           EVALUATE    TRUE
+           WHEN  ( SODR-RC      NOT =   ZERO )
+               MOVE    "4006"   TO  SPA-ERRCD
+           WHEN  ( SODR-ERRCD   NOT =   SPACE )
+               MOVE    LNK-ORDER-REC    TO ERR-ORDER-REC
+               PERFORM 3101-ERRMESLST-SEC
+           WHEN  OTHER
+               PERFORM 220-CLEAR-SEC
+      *        °ÛÆ°¥ê¥¹¥ÈÊÔ½¸½èÍý
+               PERFORM 3101-ALLIDOLST-SEC
+           END-EVALUATE
+      *
+           .
+       2121-DOCTOR-TOUROKU-EXT.
+           EXIT.
+      *****************************************************************
+      *    Å¾²ÊÅ¾ÅïÅ¾¼¼½èÍý
+      *****************************************************************
+       2121-IDOKABTUBRM-TOUROKU-SEC          SECTION.
+      *
+           INITIALIZE                  ORDER-REC
+           INITIALIZE                  SODR-AREA
+           INITIALIZE                  LNK-ORDER-REC
+      *
+           MOVE    SPA-NAI-ORDER-DAT   TO  ORDER-REC
+      *
+           PERFORM 2300-SODR-COMMON-SET-SEC
+      *
+           MOVE    ZERO                TO  IDX-ITM
+      *
+           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+               PERFORM 2300-NYUKBN-SET-SEC
+           END-IF
+      *
+           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+               PERFORM 2300-BTUNUM-SET-SEC
+           END-IF
+      *
+           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+               PERFORM 2300-BRMNUM-SET-SEC
+           END-IF
+      *
+           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+               PERFORM 2300-SAGAKU-SET-SEC
+           END-IF
+      *
+           PERFORM VARYING IDX2    FROM    1   BY  1
+                   UNTIL ( IDX2    >   3 )
+               IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+                   PERFORM 2300-DR-SET-SEC
+               END-IF
+           END-PERFORM
+      *
+           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+               PERFORM 2300-TOKNYUIN-SET-SEC
+           END-IF
+      *
+           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+               PERFORM 2300-NYUINKA-SET-SEC
+           END-IF
+      *
+           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+               PERFORM 2300-HKNCOMBI-SET-SEC
+           END-IF
+      *
+           MOVE   IDX-ITM          TO  LNK-ORDER-MAX
+      *
+           CALL   "ORCSODR06"      USING   SODR-AREA
+                                           LNK-ORDER-REC
+           EVALUATE    TRUE
+           WHEN  ( SODR-RC      NOT =   ZERO )
+               MOVE    "4007"   TO  SPA-ERRCD
+           WHEN  ( SODR-ERRCD   NOT =   SPACE )
+               MOVE    LNK-ORDER-REC    TO ERR-ORDER-REC
+               PERFORM 3101-ERRMESLST-SEC
+           WHEN  OTHER
+               PERFORM 220-CLEAR-SEC
+      *        °ÛÆ°¥ê¥¹¥ÈÊÔ½¸½èÍý
+               PERFORM 3101-ALLIDOLST-SEC
+           END-EVALUATE
+      *
+           .
+       2121-IDOKABTUBRM-TOUROKU-EXT.
            EXIT.
       *****************************************************************
       *    Æþ±¡¶èÊ¬ÀßÄê½èÍý
@@ -4546,6 +4760,44 @@
                                                I06-SKJTIME-STATE
                                                I06-SKJTIME-ITEM-STATE
                                                I06-B12-STATE
+                   WHEN    NORDERID-IDODRID
+                       MOVE    WIDGET-NORMAL
+                                           TO  I06-NYUINKA-STATE
+                                               I06-NYUINKA-ITEM-STATE
+                                               I06-HKNCOMBI-STATE
+                                               I06-HKNCOMBI-ITEM-STATE
+                                               I06-DR-STATE      (1)
+                                               I06-DR-ITEM-STATE (1)
+                                               I06-DR-STATE      (2)
+                                               I06-DR-ITEM-STATE (2)
+                                               I06-DR-STATE      (3)
+                                               I06-DR-ITEM-STATE (3)
+                                               I06-B12-STATE
+                   WHEN   NORDERID-IDOBTUID
+                   WHEN   NORDERID-IDOBRMID
+                   WHEN   NORDERID-IDOKAID
+                       MOVE    WIDGET-NORMAL
+                                           TO  I06-BRMNUM-STATE
+                                               I06-BTUNAME-STATE
+                                               I06-BTUNAME-ITEM-STATE
+                                               I06-SAGAKU-STATE
+                                               I06-SAGAKU-ITEM-STATE
+                                               I06-NYUINKA-STATE
+                                               I06-NYUINKA-ITEM-STATE
+                                               I06-DR-STATE      (1)
+                                               I06-DR-ITEM-STATE (1)
+                                               I06-DR-STATE      (2)
+                                               I06-DR-ITEM-STATE (2)
+                                               I06-DR-STATE      (3)
+                                               I06-DR-ITEM-STATE (3)
+                                               I06-HKNCOMBI-STATE
+                                               I06-HKNCOMBI-ITEM-STATE
+                                               I06-NYUKBN-STATE
+                                               I06-NYUKBN-ITEM-STATE
+                                               I06-TOKNYUIN-STATE
+                                               I06-TOKNYUIN-ITEM-STATE
+                                               I06-B12-STATE
+                                               I06-SNTNYUIN-STATE
                    END-EVALUATE
                END-IF
            END-IF
@@ -5353,6 +5605,37 @@
       *
            .
        900-PTNYUINRRK-KEY3-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    Æþ±¡ÍúÎò¸¡º÷½èÍý(KEY42)
+      *****************************************************************
+       900-PTNYUINRRK-KEY42-SEL-SEC    SECTION.
+      *
+           MOVE    ZERO                TO  FLG-PTNYUINRRK
+      *
+           INITIALIZE                  PTNYUINRRK-REC
+           MOVE    SPA-HOSPID      TO  PTNYUINRRK-HOSPID
+           MOVE    SPA-NAI-PTID    TO  PTNYUINRRK-PTID
+           MOVE    SPA-NAI-HIDOYMD TO  PTNYUINRRK-TENNYUYMD
+                                       PTNYUINRRK-TENSTUYMD
+      *
+           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key42"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
+           ELSE
+               INITIALIZE                  PTNYUINRRK-REC
+               MOVE    1               TO  FLG-PTNYUINRRK
+           END-IF
+      *
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key42"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       900-PTNYUINRRK-KEY42-SEL-EXT.
            EXIT.
       *****************************************************************
       *    Æþ±¡ÍúÎò¸¡º÷½èÍý(KEY30)

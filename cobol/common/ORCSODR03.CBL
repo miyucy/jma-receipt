@@ -407,13 +407,24 @@
            INITIALIZE                  PTNYUINRRK-REC
            MOVE    SODR-HOSPID     TO  PTNYUINRRK-HOSPID
            MOVE    SODR-PTID       TO  PTNYUINRRK-PTID
-           MOVE    SODR-SRYYMD     TO  PTNYUINRRK-NYUINYMD
-                                       PTNYUINRRK-TAIINYMD
-           PERFORM 900-PTNYUINRRK-KEY24-SEL-SEC
+           MOVE    SODR-SRYYMD     TO  PTNYUINRRK-TENNYUYMD
+                                       PTNYUINRRK-TENSTUYMD
+           PERFORM 900-PTNYUINRRK-KEY42-SEL-SEC
            IF    ( FLG-PTNYUINRRK  =   ZERO )
                MOVE    PTNYUINRRK-REC  TO  TRRK-REC
            ELSE
                MOVE    "3005"          TO  ERRCD-ORDER
+           END-IF
+      *
+      *    ¿ÇÎÅ²Ê¤ÈÊÝ¸±ÁÈ¹ç¤»¤ÎÊÑ¹¹¤ÏÉÔ²Ä
+           IF    ( PTNYUINRRK-NYUINKA  NOT =   ITEM-NYUINKA )
+               MOVE    "3007"      TO  ERRCD-ORDER
+               GO  TO  20021-NYUINRRK-CHK-EXT
+           END-IF
+      *
+           IF    ( PTNYUINRRK-HKNCOMBINUM  NOT =   ITEM-HKNCOMBI )
+               MOVE    "3008"      TO  ERRCD-ORDER
+               GO  TO  20021-NYUINRRK-CHK-EXT
            END-IF
       *
            .
@@ -516,7 +527,7 @@
       *
            PERFORM 900-ORDER-KEY-SEL-SEC
            IF    ( FLG-ORDER           =   ZERO )
-               DISPLAY "ORCSDR03 ERROR:ORDER INSERT CHK ERR"
+               DISPLAY "ORCSDR03 ERROR 001:ORDER INSERT CHK ERR"
                        " PTID="        SODR-PTID
                        " KARTE-KEY="   SODR-UID8
                MOVE    1               TO  FLG-END
@@ -528,7 +539,7 @@
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBINSERT-SEC
            IF    ( MCP-RC          NOT =   ZERO )
-               DISPLAY "ORCSDR03 ERROR:ORDER INSERT ERR"
+               DISPLAY "ORCSDR03 ERROR 002:ORDER INSERT ERR"
                        " PTID="        SODR-PTID
                        " KARTE-KEY="   SODR-UID8
                MOVE    1               TO  FLG-END
@@ -582,15 +593,15 @@
        300-END-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡ÍúÎò¸¡º÷½èÍý(KEY24)
+      *    Æþ±¡ÍúÎò¸¡º÷½èÍý(KEY42)
       *****************************************************************
-       900-PTNYUINRRK-KEY24-SEL-SEC    SECTION.
+       900-PTNYUINRRK-KEY42-SEL-SEC    SECTION.
       *
            MOVE    ZERO                TO  FLG-PTNYUINRRK
       *
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key24"             TO  MCP-PATHNAME
+           MOVE    "key42"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
@@ -600,11 +611,11 @@
            END-IF
       *
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key24"             TO  MCP-PATHNAME
+           MOVE    "key42"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
-       900-PTNYUINRRK-KEY24-SEL-EXT.
+       900-PTNYUINRRK-KEY42-SEL-EXT.
            EXIT.
       *****************************************************************
       *    Æþ±¡²ñ·×¸¡º÷½èÍý(KEY17)

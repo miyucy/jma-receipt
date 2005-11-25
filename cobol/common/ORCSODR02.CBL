@@ -374,10 +374,6 @@
       *
                END-PERFORM
       *
-               IF    ( FLG-END =   ZERO )
-                   PERFORM 2101-PTINF-UPDATE-SEC
-               END-IF
-      *
                IF    ( FLG-END  =   ZERO )
                    IF    ( SODR-PROCKBN    =   "1" )
                        PERFORM 2101-ORDER-RECONF-SEC
@@ -742,22 +738,31 @@
            MOVE    PTNYUINRRK-RRKNUM
                                    TO  WRK-RRKNUM
       *
+      *    診療科と保険組合せの変更は不可
+           IF    ( PTNYUINRRK-NYUINKA  NOT =   ITEM-NYUINKA )
+               MOVE    "2024"      TO  ERRCD-ORDER
+               GO  TO  20021-NYUINRRK-CHK-EXT
+           END-IF
+      *
+           IF    ( PTNYUINRRK-HKNCOMBINUM  NOT =   ITEM-HKNCOMBI )
+               MOVE    "2025"      TO  ERRCD-ORDER
+               GO  TO  20021-NYUINRRK-CHK-EXT
+           END-IF
+      *
       *    入院中であること
            IF    ( PTNYUINRRK-TAIINYMD NOT =   "99999999" )
                MOVE    "2007"      TO  ERRCD-ORDER
                GO  TO  20021-NYUINRRK-CHK-EXT
            END-IF
       *
-           IF    ( PTNYUINRRK-TENSTUYMD    =   "99999999" )
-               IF    ( PTNYUINRRK-NYUINYMD >  SODR-SRYYMD )
-                   MOVE    "2008"  TO  ERRCD-ORDER
-                   GO  TO  20021-NYUINRRK-CHK-EXT
-               END-IF
-           ELSE
-               IF    ( PTNYUINRRK-TENSTUYMD    >  SODR-SRYYMD )
-                   MOVE    "2009"  TO  ERRCD-ORDER
-                   GO  TO  20021-NYUINRRK-CHK-EXT
-               END-IF
+           IF    ( PTNYUINRRK-NYUINYMD     >  SODR-SRYYMD )
+               MOVE    "2008"  TO  ERRCD-ORDER
+               GO  TO  20021-NYUINRRK-CHK-EXT
+           END-IF
+      *
+           IF    ( PTNYUINRRK-TENNYUYMD    >  SODR-SRYYMD )
+               MOVE    "2009"  TO  ERRCD-ORDER
+               GO  TO  20021-NYUINRRK-CHK-EXT
            END-IF
       *
       *    同日再入院の場合、入院日≠退院日となっていること
@@ -1181,7 +1186,7 @@
            MOVE    "upd2"              TO  MCP-PATHNAME
            PERFORM 910-DBUPDATE-SEC
            IF    ( MCP-RC      NOT =   ZERO )
-               DISPLAY "ORCSDR02 ERROR:PTNYUINRRK UPDATE ERR 1"
+               DISPLAY "ORCSDR02 ERROR 001:PTNYUINRRK UPDATE ERR"
                        " PTID="        SODR-PTID
                        " KARTE-KEY="   SODR-UID8
                MOVE    1               TO  FLG-END
@@ -1193,7 +1198,7 @@
            MOVE    "upd3"              TO  MCP-PATHNAME
            PERFORM 910-DBUPDATE-SEC
            IF    ( MCP-RC      NOT =   ZERO )
-               DISPLAY "ORCSDR02 ERROR:PTNYUINRRK UPDATE ERR 2"
+               DISPLAY "ORCSDR02 ERROR 002:PTNYUINRRK UPDATE ERR"
                        " PTID="        SODR-PTID
                        " KARTE-KEY="   SODR-UID8
                MOVE    1               TO  FLG-END
@@ -1275,7 +1280,7 @@
                        MOVE    "key"           TO  MCP-PATHNAME
                        PERFORM 910-DBUPDATE-SEC
                        IF    ( MCP-RC      NOT =   ZERO )
-                           DISPLAY "ORCSDR02 ERROR:SYUNOU UPDATE ERR"
+                          DISPLAY "ORCSDR02 ERROR 003:SYUNOU UPDATE ERR"
                            " PTID="        SODR-PTID
                            " KARTE-KEY="   SODR-UID8
                            MOVE    1           TO  FLG-END
@@ -1378,7 +1383,7 @@
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
-               DISPLAY "ORCSDR02 ERROR:SYUMEI INSERT CHK ERR 1"
+               DISPLAY "ORCSDR02 ERROR 004:SYUMEI INSERT CHK ERR"
                        " PTID="        SODR-PTID
                        " KARTE-KEY="   SODR-UID8
                MOVE    1               TO  FLG-END
@@ -1407,7 +1412,7 @@
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            PERFORM 910-DBINSERT-SEC
            IF    ( MCP-RC          NOT =   ZERO )
-               DISPLAY "ORCSDR02 ERROR:SYUMEI INSERT ERR 1"
+               DISPLAY "ORCSDR02 ERROR 005:SYUMEI INSERT ERR"
                        " PTID="        SODR-PTID
                        " KARTE-KEY="   SODR-UID8
                MOVE    1               TO  FLG-END
@@ -1476,7 +1481,7 @@
            MOVE    "del3"              TO  MCP-PATHNAME
            PERFORM 910-DBDELETE-SEC
            IF    ( MCP-RC          NOT =   ZERO )
-               DISPLAY "ORCSDR02 ERROR:PTTEIKIRRK DELETE ERR"
+               DISPLAY "ORCSDR02 ERROR 006:PTTEIKIRRK DELETE ERR"
                        " PTID="        SODR-PTID
                        " KARTE-KEY="   SODR-UID8
                MOVE    1               TO  FLG-END
@@ -1588,7 +1593,7 @@
                    MOVE    "key"           TO  MCP-PATHNAME
                    PERFORM 910-DBUPDATE-SEC
                    IF    ( MCP-RC      NOT =   ZERO )
-                       DISPLAY "ORCSDR02 ERROR:TEIKIRRK UPDATE ERR"
+                       DISPLAY "ORCSDR02 ERROR 007:TEIKIRRK UPDATE ERR"
                                " PTID="        SODR-PTID
                                " KARTE-KEY="   SODR-UID8
                        MOVE    1           TO  FLG-END
@@ -1605,7 +1610,7 @@
                    MOVE    "key"           TO  MCP-PATHNAME
                    PERFORM 910-DBINSERT-SEC
                    IF    ( MCP-RC      NOT =   ZERO )
-                       DISPLAY "ORCSDR02 ERROR:TEIKIRRK INSERT ERR"
+                       DISPLAY "ORCSDR02 ERROR 008:TEIKIRRK INSERT ERR"
                                " PTID="        SODR-PTID
                                " KARTE-KEY="   SODR-UID8
                        MOVE    1           TO  FLG-END
@@ -1706,7 +1711,7 @@
       *
            PERFORM 900-ORDER-KEY-SEL-SEC
            IF    ( FLG-ORDER           =   ZERO )
-               DISPLAY "ORCSDR02 ERROR:ORDER INSERT CHK ERR"
+               DISPLAY "ORCSDR02 ERROR 009:ORDER INSERT CHK ERR"
                        " PTID="        SODR-PTID
                        " KARTE-KEY="   SODR-UID8
                MOVE    1               TO  FLG-END
@@ -1718,7 +1723,7 @@
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBINSERT-SEC
            IF    ( MCP-RC          NOT =   ZERO )
-               DISPLAY "ORCSDR02 ERROR:ORDER INSERT ERR"
+               DISPLAY "ORCSDR02 ERROR 010:ORDER INSERT ERR"
                        " PTID="        SODR-PTID
                        " KARTE-KEY="   SODR-UID8
                MOVE    1               TO  FLG-END
@@ -1781,7 +1786,7 @@
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            IF    ( FLG-SYUNOU      =   ZERO )
-               DISPLAY "ORCSDR02 ERROR:SYUNOU INSERT CHK ERR"
+               DISPLAY "ORCSDR02 ERROR 011:SYUNOU INSERT CHK ERR"
                        " PTID="        SODR-PTID
                        " KARTE-KEY="   SODR-UID8
                MOVE    1               TO  FLG-END
@@ -1798,7 +1803,7 @@
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 910-DBINSERT-SEC
            IF    ( MCP-RC      NOT =   ZERO )
-               DISPLAY "ORCSDR02 ERROR:SYUNOU INSERT ERR"
+               DISPLAY "ORCSDR02 ERROR 012:SYUNOU INSERT ERR"
                        " PTID="        SODR-PTID
                        " KARTE-KEY="   SODR-UID8
                MOVE    1               TO  FLG-END
@@ -1847,7 +1852,7 @@
                PERFORM 910-DBCLOSECURSOR-SEC
       *
                IF    ( FLG-SYUDAY      =   ZERO )
-                   DISPLAY "ORCSDR02 ERROR:SYUDAY INSERT CHK ERR"
+                   DISPLAY "ORCSDR02 ERROR 013:SYUDAY INSERT CHK ERR"
                            " PTID="        SODR-PTID
                            " KARTE-KEY="   SODR-UID8
                    MOVE    1               TO  FLG-END
@@ -1864,7 +1869,7 @@
                MOVE    "key"           TO  MCP-PATHNAME
                PERFORM 910-DBINSERT-SEC
                IF    ( MCP-RC      NOT =   ZERO )
-                   DISPLAY "ORCSDR02 ERROR:SYUDAY INSERT ERR"
+                   DISPLAY "ORCSDR02 ERROR 014:SYUDAY INSERT ERR"
                            " PTID="        SODR-PTID
                            " KARTE-KEY="   SODR-UID8
                    MOVE    1               TO  FLG-END
@@ -1947,7 +1952,7 @@
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            IF    ( FLG-SYUMEI      =   ZERO )
-               DISPLAY "ORCSDR02 ERROR:SYUMEI INSERT CHK ERR 2"
+               DISPLAY "ORCSDR02 ERROR 015:SYUMEI INSERT CHK ERR 2"
                        " PTID="        SODR-PTID
                        " KARTE-KEY="   SODR-UID8
                MOVE    1           TO  FLG-END
@@ -1972,7 +1977,7 @@
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 910-DBINSERT-SEC
            IF    ( MCP-RC      NOT =   ZERO )
-               DISPLAY "ORCSDR02 ERROR:SYUMEI INSERT ERR 2"
+               DISPLAY "ORCSDR02 ERROR 016:SYUMEI INSERT ERR 2"
                        " PTID="        SODR-PTID
                        " KARTE-KEY="   SODR-UID8
                MOVE    1           TO  FLG-END
@@ -2036,13 +2041,13 @@
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 910-DBUPDATE-SEC
                IF    ( MCP-RC          NOT =   ZERO )
-                   DISPLAY "ORCSDR02 ERROR:DENPNUM UPDATE ERR"
+                   DISPLAY "ORCSDR02 ERROR 017:DENPNUM UPDATE ERR"
                            " PTID="        SODR-PTID
                            " KARTE-KEY="   SODR-UID8
                    MOVE    1               TO  FLG-END
                END-IF
            ELSE
-                   DISPLAY "ORCSDR02 ERROR:DENPNUM SELECT ERR"
+                   DISPLAY "ORCSDR02 ERROR 018:DENPNUM SELECT ERR"
                            " PTID="        SODR-PTID
                            " KARTE-KEY="   SODR-UID8
                    MOVE    1               TO  FLG-END
@@ -2050,84 +2055,6 @@
       *
            .
        21021-DENPNUM-GET-EXT.
-           EXIT.
-      *****************************************************************
-      *    患者情報更新処理
-      *****************************************************************
-       2101-PTINF-UPDATE-SEC           SECTION.
-      *
-      *    入院歴より最新の歴情報を取得
-           INITIALIZE  PTNYUINRRK-REC
-           MOVE    SODR-HOSPID         TO  PTNYUINRRK-HOSPID
-           MOVE    SODR-PTID           TO  PTNYUINRRK-PTID
-           MOVE    PTNYUINRRK-REC    TO  MCPDATA-REC
-           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key35"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
-           ELSE
-               INITIALIZE      PTNYUINRRK-REC
-           END-IF
-      *
-           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key35"             TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-      *    患者マスタ検索
-           MOVE    ZERO                TO  FLG-PTINF
-           INITIALIZE  PTINF-REC
-           MOVE    SODR-HOSPID         TO  PTINF-HOSPID
-           MOVE    SODR-PTID           TO  PTINF-PTID
-           MOVE    PTINF-REC           TO  MCPDATA-REC
-      *
-           MOVE    "tbl_ptinf"         TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  PTINF-REC
-           ELSE
-               MOVE    1               TO  FLG-PTINF
-               INITIALIZE                  PTINF-REC
-           END-IF
-      *
-      *    患者マスタクローズ
-           MOVE    "tbl_ptinf"         TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           IF    ( FLG-PTINF           NOT =   ZERO )
-               DISPLAY "ORCSDR02 ERROR:PTINF UPDATE CHK ERR"
-                       " PTID="        SODR-PTID
-                       " KARTE-KEY="   SODR-UID8
-               MOVE    1               TO  FLG-END
-               GO  TO  2101-PTINF-UPDATE-EXT
-           END-IF
-      *
-      *    患者情報の入院歴番号を更新する
-           MOVE   PTNYUINRRK-RRKNUM
-                                       TO  PTINF-RRKNUM
-           MOVE   PTNYUINRRK-RRKEDANUM
-                                       TO  PTINF-RRKEDANUM
-      *
-           MOVE    SODR-OPID           TO  PTINF-OPID
-           MOVE    SODR-UPYMD          TO  PTINF-UPYMD
-           MOVE    SODR-UPHMS          TO  PTINF-UPHMS
-      *
-      *    患者情報更新
-           MOVE    PTINF-REC           TO  MCPDATA-REC
-           MOVE    "tbl_ptinf"         TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBUPDATE-SEC
-           IF     ( MCP-RC         NOT =  ZERO )
-               DISPLAY "ORCSDR02 ERROR:PTINF UPDATE ERR"
-                       " PTID="        SODR-PTID
-                       " KARTE-KEY="   SODR-UID8
-               MOVE    1               TO  FLG-END
-           END-IF
-      *
-           .
-       2101-PTINF-UPDATE-EXT.
            EXIT.
       *****************************************************************
       *    終了処理
