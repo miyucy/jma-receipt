@@ -10389,9 +10389,11 @@
       *    訂正時の登録エラー
            IF     (SPA-TEISEI-ERR      =   1  )  AND
                   (SPA-TEISEI-CHK      =   ZERO)
-               MOVE    "K999"              TO  SPA-ERRCD
-               MOVE    1                   TO  SPA-TEISEI-CHK
-               MOVE    1                   TO  SPA-GMN-CUR
+               IF      SPA-ERRCD       NOT =   "9100"
+                   MOVE    "K999"              TO  SPA-ERRCD
+                   MOVE    1                   TO  SPA-TEISEI-CHK
+                   MOVE    1                   TO  SPA-GMN-CUR
+               END-IF
            END-IF
       *    地方公費のみの場合、警告
            IF     (SPA-NAI-KOHFLG      =   1   )  AND
@@ -11215,6 +11217,7 @@
       *****************************************************************
        900-SRYACT-NEXT-SEC         SECTION.
       *
+           MOVE    "tbl_sryact"        TO  MCP-TABLE
            PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  SRYACT-REC
@@ -11233,6 +11236,7 @@
       *****************************************************************
        940-SRYACCT-READ-SEC         SECTION.
       *
+           MOVE    "tbl_sryacct"       TO  MCP-TABLE
            PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  SRYACCT-REC
