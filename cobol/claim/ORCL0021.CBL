@@ -969,8 +969,13 @@
                WHEN    "80"
                    ADD     1               TO  IDX-IJ
                    PERFORM 20022-SRYACT-SYORI-SEC
-      *        検査
-               WHEN    "90"
+      ******   入院
+      *        WHEN    "90"
+      *            ADD     1               TO  IDX-IJ
+      *****        PERFORM 20022-SRYACT-SYORI-SEC
+      *        コメント
+               WHEN    "98"
+               WHEN    "99"
                    ADD     1               TO  IDX-IJ
                    PERFORM 20022-SRYACT-SYORI-SEC
            END-EVALUATE
@@ -1368,6 +1373,8 @@
                                                    (IDX-LF IDX-IJ)
                    MOVE    TNS-NAME            TO  TBL-ALSNAME
                                                    (IDX-LF IDX-IJ)
+                   MOVE    TNS-NAME            TO  TBL-SRYMEMO
+                                                       (IDX-LF IDX-IJ)
                    MOVE    SRY-SRYSURYO(IDXA)  TO  TBL-SURYO
                                                        (IDX-LF IDX-IJ)
       *
@@ -1381,6 +1388,23 @@
                    IF      SRY-SRYCD(IDXA)(1:3)    =   "002"
                        MOVE    TNS-NAME            TO  TBL-LOCATION
                                                    (IDX-LF IDX-IJ)
+                   END-IF
+      *            コメント
+                   IF      SRY-SRYCD(IDXA)(1:3)    =   "008"
+                       MOVE    "0"                 TO  TBL-SRYSYUBETSU
+                                                      (IDX-LF IDX-IJ)
+                       MOVE    SRY-SRYCD(IDXA)     TO  TBL-IJICD
+                                                   (IDX-LF IDX-IJ)
+                       MOVE    TNS-NAME            TO  TBL-ALSNAME
+                                                   (IDX-LF IDX-IJ)
+                       MOVE    TNS-NAME            TO  TBL-SRYMEMO 
+                                                       (IDX-LF IDX-IJ)
+                       MOVE    SRY-SRYSURYO(IDXA)  TO  TBL-SURYO
+                                                       (IDX-LF IDX-IJ)
+      *                メモにフリーコメントの内容セット
+                       IF      SRY-INPUTNUM (IDXA)  NOT =   ZERO
+                           PERFORM 200221-PTCOM-SET-SEC
+                       END-IF
                    END-IF
            END-EVALUATE
       *
@@ -1454,8 +1478,10 @@
       *主キーで検索
            PERFORM 950-PTCOM-READ-SEC
            IF      FLG-PTCOM           =   ZERO
-               MOVE    PTCOM-INPUTCOMENT   TO  TBL-SRYMEMO 
-                                                       (IDX-LF IDX-IJ)
+     ********* MOVE    PTCOM-INPUTCOMENT   TO  TBL-SRYMEMO 
+     ********                                          (IDX-LF IDX-IJ)
+               MOVE    PTCOM-INPUTCOMENT   TO  TBL-ALSNAME
+                                                   (IDX-LF IDX-IJ)
            END-IF
            .
        200221-PTCOM-SET-EXT.
