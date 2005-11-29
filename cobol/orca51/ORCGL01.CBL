@@ -418,7 +418,7 @@
            ELSE
                COMPUTE SPA-GMN-L01-MAXPAGE = ( SPA-GMN-L01-MAX - 1 )
                                        / WRK-CONS-SCR-MAX
-                                       + 1
+               COMPUTE SPA-GMN-L01-MAXPAGE =   SPA-GMN-L01-MAXPAGE +   1
            END-IF
       *
            MOVE    1                   TO  SPA-GMN-L01-PAGE
