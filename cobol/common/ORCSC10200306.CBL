@@ -54,6 +54,7 @@
       * 02.00.18     NACL-多々納  03/08/29  Ｈ１５．９から
       *                                     労災・自賠責逓減制の廃止
       *                                     （レセ電コードの変更なし）
+      * 02.00.19     NACL-多々納  05/11/24  MONFUNC 対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -468,7 +469,7 @@
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
+      **** COPY    "CPORCMCP.INC".
       *
       *    診療行為用共通パラメタ
            COPY    "K01COMMON-SPA".
@@ -989,25 +990,20 @@
                MOVE    SPA-HKNCOMBINUM     TO  JYURRK-HKNCOMBINUM
       *
                MOVE    JYURRK-REC          TO  MCPDATA-REC
-               MOVE    "DBSELECT"          TO  MCP-FUNC
-               MOVE    "JYURRK-KEY15"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+               MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+               MOVE    "key15"             TO  MCP-PATHNAME
+               PERFORM 910-DBSELECT-SEC
                IF      MCP-RC              =   ZERO
-                   MOVE    "JYURRK-KEY15"      TO  ORC-DBPATH
+                   MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+                   MOVE    "key15"             TO  MCP-PATHNAME
                    PERFORM 970-JYURRK-READ-SEC
                ELSE
                    INITIALIZE                  JYURRK-REC
                    MOVE    1               TO  FLG-JYURRK
                END-IF
-               MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-               MOVE    "JYURRK-KEY15"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+               MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+               MOVE    "key15"             TO  MCP-PATHNAME
+               PERFORM 990-DBCLOSE-SEC
                IF      FLG-JYURRK          =   ZERO
                    IF      JYURRK-SRYYMD       <   SPA-SRYYMD
                        MOVE    "8002"          TO  WRK-ERRCD
@@ -1798,7 +1794,7 @@
       *        算定履歴検索（診療日降順）
                SET     TBL-TOK             TO  IDX
                MOVE    TBL-TOKSRYCD  (TBL-TOK) TO  WRK-SRYCD
-               MOVE    "SANTEI-KEY3"       TO  WRK-DBPATH
+               MOVE    "key3"              TO  WRK-DBPATH
                PERFORM 100111-SANTEI-KEN-SEC
                PERFORM
                    UNTIL   FLG-SANTEI          =   1
@@ -1820,9 +1816,13 @@
                            END-IF
                        END-IF
                    END-IF
-                   MOVE    WRK-DBPATH      TO  ORC-DBPATH
+                   MOVE    "tbl_santei"        TO  MCP-TABLE
+                   MOVE    WRK-DBPATH          TO  MCP-PATHNAME
                    PERFORM 920-SANTEI-READ-SEC
                END-PERFORM
+               MOVE    "tbl_santei"        TO  MCP-TABLE
+               MOVE    WRK-DBPATH          TO  MCP-PATHNAME
+               PERFORM 990-DBCLOSE-SEC
            END-PERFORM
       *
       *    訂正の時、初回算定日と診療日が同じ時、初回分とする
@@ -1844,8 +1844,11 @@
                    WHEN    "113000770"
       *            特定薬剤治療管理料が当月存在しないこと
                        MOVE    "113000410"         TO  WRK-SRYCD
-                       MOVE    "SANTEI-KEY"        TO  WRK-DBPATH
+                       MOVE    "key"               TO  WRK-DBPATH
                        PERFORM 100111-SANTEI-KEN-SEC
+                       MOVE    "tbl_santei"        TO  MCP-TABLE
+                       MOVE    WRK-DBPATH          TO  MCP-PATHNAME
+                       PERFORM 990-DBCLOSE-SEC
                        IF     (FLG-SANTEI          =   1  )  OR
                               (LNK-ORCSC-SYORIFLG  =   1  AND
                                SPA-SRYYMD(7:2)     =   SANTEI-MSANTEID)
@@ -2114,14 +2117,12 @@
                MOVE    ZERO                TO  SANTEI-SRYKA
       *
                MOVE    SANTEI-REC          TO  MCPDATA-REC
-               MOVE    "DBSELECT"          TO  MCP-FUNC
-               MOVE    "SANTEI-KEY4"       TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+               MOVE    "tbl_santei"        TO  MCP-TABLE
+               MOVE    "key4"              TO  MCP-PATHNAME
+               PERFORM 910-DBSELECT-SEC
                IF      MCP-RC              =   ZERO
-                   MOVE    "SANTEI-KEY4"       TO  ORC-DBPATH
+                   MOVE    "tbl_santei"        TO  MCP-TABLE
+                   MOVE    "key4"              TO  MCP-PATHNAME
                    PERFORM 920-SANTEI-READ-SEC
                ELSE
                    MOVE    1                   TO  FLG-SANTEI
@@ -2160,15 +2161,13 @@
                                                -   SANTEI-MSANTEICNT
                    END-IF
       *
-                   MOVE    "SANTEI-KEY4"       TO  ORC-DBPATH
+                   MOVE    "tbl_santei"        TO  MCP-TABLE
+                   MOVE    "key4"              TO  MCP-PATHNAME
                    PERFORM 920-SANTEI-READ-SEC
                END-PERFORM
-               MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-               MOVE    "SANTEI-KEY4"       TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+               MOVE    "tbl_santei"        TO  MCP-TABLE
+               MOVE    "key4"              TO  MCP-PATHNAME
+               PERFORM 990-DBCLOSE-SEC
            END-PERFORM
            .
        10013-SANTEI-CNT-EXT.
@@ -2184,7 +2183,7 @@
            MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
-           IF      WRK-DBPATH          =   "SANTEI-KEY"
+           IF      WRK-DBPATH          =   "key"
                MOVE    SPA-SRYYMD(1:6)     TO  SANTEI-SRYYM
            END-IF
       *    算定履歴区分は’１’であることとする
@@ -2192,24 +2191,16 @@
            MOVE    ZERO                TO  SANTEI-SRYKA
       *
            MOVE    SANTEI-REC          TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-DBPATH          TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    WRK-DBPATH          TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    WRK-DBPATH      TO  ORC-DBPATH
+               MOVE    "tbl_santei"        TO  MCP-TABLE
+               MOVE    WRK-DBPATH          TO  MCP-PATHNAME
                PERFORM 920-SANTEI-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-SANTEI
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-DBPATH          TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
       *
            .
        100111-SANTEI-KEN-EXT.
@@ -3526,8 +3517,11 @@
                    IF      LNK-ORCSC-TOKTEI-YMD    NOT  =  SPACE
       *                算定履歴検索
                        MOVE    WRK-COM-INPUTCD (IDX-Z) TO  WRK-SRYCD
-                       MOVE    "SANTEI-KEY3"       TO  WRK-DBPATH
+                       MOVE    "key3"              TO  WRK-DBPATH
                        PERFORM 100111-SANTEI-KEN-SEC
+                       MOVE    "tbl_santei"        TO  MCP-TABLE
+                       MOVE    WRK-DBPATH          TO  MCP-PATHNAME
+                       PERFORM 990-DBCLOSE-SEC
                        IF      FLG-SANTEI          =   ZERO
       *                    訂正の時、当日分はチェックしない
                            IF     (LNK-ORCSC-SYORIFLG   =   1  )  AND
@@ -4019,50 +4013,21 @@
            EXIT.
       *
       *****************************************************************
-      *    算定歴マスタ読み込み
-      *****************************************************************
-       900-CHK-READ-SEC         SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  CHK-REC
-               MOVE    ZERO                TO  FLG-CHK
-           ELSE
-               INITIALIZE                      CHK-REC
-               MOVE    1                   TO  FLG-CHK
-           END-IF
-      *
-           .
-       900-CHK-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    点数マスター読込
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
-           MOVE    ZERO                TO  TNS-YUKOSTYMD
-           MOVE    ALL "9"             TO  TNS-YUKOEDYMD
+           MOVE    SPA-SRYYMD          TO  TNS-YUKOSTYMD
+           MOVE    SPA-SRYYMD          TO  TNS-YUKOEDYMD
       *
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+               MOVE    "tbl_tensu"         TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
                    MOVE    ZERO                TO  FLG-TENSU
@@ -4075,13 +4040,9 @@
                MOVE    1                   TO  FLG-TENSU
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      *
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
            .
        910-TENSU-READ-EXT.
            EXIT.
@@ -4091,11 +4052,8 @@
       *****************************************************************
        920-SANTEI-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  SANTEI-REC
                MOVE    ZERO                TO  FLG-SANTEI
@@ -4112,11 +4070,8 @@
       *****************************************************************
        970-JYURRK-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  JYURRK-REC
                MOVE    ZERO            TO  FLG-JYURRK
@@ -4127,6 +4082,48 @@
       *
            .
        970-JYURRK-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    テーブル検索処理
+      *****************************************************************
+       910-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ読み込み処理
+      *****************************************************************
+       920-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       920-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢクロース処理
+      *****************************************************************
+       990-DBCLOSE-SEC         SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       990-DBCLOSE-EXT.
            EXIT.
       *
       *

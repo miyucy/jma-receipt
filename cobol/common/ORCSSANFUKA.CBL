@@ -28,6 +28,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-多々納  05/11/29  MONFUNC 対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -116,8 +117,8 @@
            COPY    "CPSANTEI.INC".
       *
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
-           COPY    "ORCA-DBPATH".
+      **** COPY    "CPORCMCP.INC".
+      *****COPY    "ORCA-DBPATH".
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
@@ -188,16 +189,19 @@
            MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
       *
            MOVE    SANTEI-REC          TO  MCPDATA-REC
-           MOVE    PATH-TBL-SANTEI-KEY TO  MCP-PATH
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    PATH-TBL-SANTEI-KEY     TO  MCP-PATH
+               MOVE    "tbl_santei"        TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 900-SANTEI-READ-SEC
            ELSE
                INITIALIZE                  SANTEI-REC
                MOVE    1                   TO  FLG-SANTEI
            END-IF
-           MOVE    PATH-TBL-SANTEI-KEY TO  MCP-PATH
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
            IF      FLG-SANTEI          =   ZERO
                MOVE    SANTEI-MSANTEITEN   TO  WRK-MSANTEITEN
@@ -229,10 +233,12 @@
                                        TO  SANTEI-SRYYM
       *
            MOVE    SANTEI-REC          TO  MCPDATA-REC
-           MOVE    PATH-TBL-SANTEI-KEY9    TO  MCP-PATH
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key9"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    PATH-TBL-SANTEI-KEY9    TO  MCP-PATH
+               MOVE    "tbl_santei"        TO  MCP-TABLE
+               MOVE    "key9"              TO  MCP-PATHNAME
                PERFORM 900-SANTEI-READ-SEC
            ELSE
                INITIALIZE                  SANTEI-REC
@@ -266,10 +272,12 @@
                    END-IF
                END-IF
       *
-               MOVE    PATH-TBL-SANTEI-KEY9    TO  MCP-PATH
+               MOVE    "tbl_santei"        TO  MCP-TABLE
+               MOVE    "key9"              TO  MCP-PATHNAME
                PERFORM 900-SANTEI-READ-SEC
            END-PERFORM
-           MOVE    PATH-TBL-SANTEI-KEY9    TO  MCP-PATH
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key9"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
       *    今月算定済み点数
@@ -468,10 +476,12 @@
                                        TO  SANTEI-SRYYM
       *
            MOVE    SANTEI-REC          TO  MCPDATA-REC
-           MOVE    PATH-TBL-SANTEI-KEY9    TO  MCP-PATH
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key9"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    PATH-TBL-SANTEI-KEY9    TO  MCP-PATH
+               MOVE    "tbl_santei"        TO  MCP-TABLE
+               MOVE    "key9"              TO  MCP-PATHNAME
                PERFORM 900-SANTEI-READ-SEC
            ELSE
                INITIALIZE                  SANTEI-REC
@@ -491,10 +501,12 @@
                    END-IF
                END-IF
       *
-               MOVE    PATH-TBL-SANTEI-KEY9    TO  MCP-PATH
+               MOVE    "tbl_santei"        TO  MCP-TABLE
+               MOVE    "key9"              TO  MCP-PATHNAME
                PERFORM 900-SANTEI-READ-SEC
            END-PERFORM
-           MOVE    PATH-TBL-SANTEI-KEY9    TO  MCP-PATH
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key9"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            IF      LNK-SANFUKA-ERRMSG  NOT =   SPACE
@@ -512,21 +524,17 @@
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
+           MOVE    WRK-SRYYMD          TO  TNS-YUKOSTYMD
+           MOVE    WRK-SRYYMD          TO  TNS-YUKOEDYMD
+      *
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-           MOVE    WRK-SRYYMD          TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+               MOVE    "tbl_tensu"         TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
                    MOVE    ZERO                TO  FLG-TENSU
@@ -539,12 +547,9 @@
                MOVE    1                   TO  FLG-TENSU
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        910-TENSU-READ-EXT.
@@ -574,7 +579,7 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -587,7 +592,7 @@
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -597,12 +602,12 @@
            EXIT.
       *
       *****************************************************************
-      *    ＤＢクロース処理
+      *    ＤＢＣＬＯＳＥ処理
       *****************************************************************
-       990-DBCLOSE-SEC           SECTION.
+       990-DBCLOSE-SEC         SECTION.
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
