@@ -31,6 +31,7 @@
       *  01.00.01    NACL¡ÝÂ¿¡¹Ç¼ 02/10/18  Æþ±¡ÄÉ²Ã
       *  01.00.02    NACL¡ÝÂ¿¡¹Ç¼ 03/01/12  È¾³Ñµ­¹æÆþÎÏ²ÄÇ½ÄÉ²Ã
       *  01.00.03    NACL¡ÝÂ¿¡¹Ç¼ 03/04/14  Á´³ÑÈ½Äê½¤Àµ¡¢ÌóÂ«½èÊý½¤Àµ
+      *  01.00.04    NACL-Â¿¡¹Ç¼  05/11/22  MONFUNC ÂÐ±þ Â¾
       *****************************************************************
       *
       *
@@ -79,6 +80,8 @@
       *
            03  MAP-IDX             PIC 9(04).
            03  GMN-IDX             PIC 9(04).
+      *
+           03  IDK                 PIC 9(04).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -1388,26 +1391,27 @@
        930-INPUTCD-READ-SEC         SECTION.
       *
            IF      WRK-CD-MCNT         =   20
-               MOVE    "INPUTCD-KEY2"      TO  WRK-PATH
+               MOVE    "key2"          TO  WRK-PATH
            ELSE
-               MOVE    "INPUTCD-KEY"       TO  WRK-PATH
+               MOVE    "key"           TO  WRK-PATH
+               COMPUTE IDK             =   WRK-CD-MCNT  +  1
+               MOVE    "%"             TO  ICD-INPUTCD(IDK:1)
            END-IF
       *
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
+           MOVE    "tbl_inputcd"       TO  MCP-TABLE
+           MOVE    WRK-PATH            TO  MCP-PATHNAME
            MOVE    "DBSELECT"          TO  MCP-FUNC
-      *****MOVE    "INPUTCD-KEY"       TO  ORC-DBPATH
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
+               MOVE    "tbl_inputcd"       TO  MCP-TABLE
+               MOVE    WRK-PATH            TO  MCP-PATHNAME
                MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    WRK-PATH            TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  INPUTCD-REC
                    MOVE    ZERO                TO  FLG-INPUTCD
@@ -1420,15 +1424,15 @@
                MOVE    1                   TO  FLG-INPUTCD
            END-IF
       *
+           MOVE    "tbl_inputcd"       TO  MCP-TABLE
+           MOVE    WRK-PATH            TO  MCP-PATHNAME
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
-       920-INPUTCD-NEXT-EXT.
+       930-INPUTCD-READ-EXT.
            EXIT.
       *
       *
