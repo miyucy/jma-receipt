@@ -1220,6 +1220,15 @@
                                        =   "96"  OR  "95"))
                MOVE    1               TO  FLG-SYUBETU
            END-IF
+      *
+      *    診療種別がなく、前の剤が自費の時
+           IF    ( LNK-WKSRY-SRYSYUKBN (IDX)   =   SPACE )  AND
+                 ((IDX2                >   ZERO  ) AND
+                  (SPA-COM-SRYSYUKBN  (IDX2)(1:2)
+                                       =   "96"  OR  "95"))
+               MOVE    1               TO  FLG-SYUBETU
+           END-IF
+      *
       *    訂正の時、再診料算定科を再診とする
            IF     (LNK-WKSRY-SRYKBN    (IDX)       =   "12" AND
                    LNK-WKSRY-SRYCD (IDX IDY)       =   "830000021")
@@ -1262,6 +1271,13 @@
                ADD     1                   TO  IDX2
                MOVE    "."                 TO  SPA-GMN-INPUTCD
                                                             (IDX2)(1:1)
+               IF      LNK-WKSRY-SRYSYUKBN (IDX)   =   SPACE
+                   MOVE     LNK-WKSRY-SRYKBN (IDX)
+                                           TO  LNK-WKSRY-SRYSYUKBN (IDX)
+                                                                   (1:2)
+                   MOVE     "0"            TO  LNK-WKSRY-SRYSYUKBN (IDX)
+                                                                   (3:1)
+               END-IF
                MOVE    LNK-WKSRY-SRYSYUKBN (IDX)
                                            TO  SPA-GMN-INPUTCD
                                                            (IDX2)(2:3)
