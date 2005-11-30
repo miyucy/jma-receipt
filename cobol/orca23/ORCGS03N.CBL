@@ -16,43 +16,28 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION              DIVISION.
-       PROGRAM-ID.                 ORCGS03.
+       PROGRAM-ID.                 ORCGS03N.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 収納登録
-      *  コンポーネント名  : 請求確認　（Ｓ０３）
+      *  コンポーネント名  : 請求確認　（Ｓ０３Ｎ）
       *  管理者            : 
       *  作成日付    作業者        記述
-      *  00/12/01    MCC−小豆沢   新規作成
+      *  00/12/01    NACL-太田    02/12/12  新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.00.01    MCC−小豆沢  01/04/10  無処理時のＰＦ１２キー無効対処
-      *  01.01.02    MCC-藤原     01/06/27  金額項目の変更
-      *  01.01.03    MCC-藤原     01/07/12  自費名称編集追加
-      *  01.01.04    MCC-藤原     01/07/16  日付画面用チェックサブ追加
-      *  01.01.05    MCC−小豆沢  01/09/25  コラムリストの選択追加
-      *  01.01.06    MCC-藤原     01/11/07  S01の削除
-      *  01.01.07    MCC-藤原     01/11/15  選択番号がないときのエラー
-      *                                     の追加
-      *  01.01.08    MCC-小豆沢   02/02/20  収納明細の表示に診療訂正の
-      *                                     表示を追加(伝票状態区分＝８)
-      *  01.01.09    MCC-藤原     02/02/27  未収理由の削除、自費消費税
-      *                                     なしの追加
-      *  01.01.10    NACL-藤原    02/11/05  入外区分追加
-      *  01.01.11    NACL-太田    02/12/12  前回未収額表示の不具合を修正
-      *  01.01.12    NACL-太田    02/12/13  請求金額を超えて入金できる
-      *                                     不具合を修正
-      *  01.01.13    NACL-太田    02.12.16  コラムリストの金額欄を
+      *  01.01.01    NACL-太田    02.12.16  コラムリストの金額欄を
       *                                     カンマ編集するよう修正
-      *  01.01.14    NACL-森脇    03.01.06  S04の追加
-      *  01.01.15    NACL-太田    03.10.27  入金上限額のチェックを修正
-      *  01.01.16    NACL-太田    03.10.29  履歴修正処理修正
-      *  01.01.17    NACL-太田    03.11.12  更新日付編集対応
-      *  01.01.18    NACL-森脇    03.12.11  処理区分表示修正
-      *  01.01.19    NACL-太田    04.02.09  コラムリスト編集修正
-      *  01.01.20    NACL-太田    04.07.12  コラムリストに入金方法を追加
-      *  01.01.21    NACL-小豆沢  05.07.15  自費１０項目の対応
+      *  01.01.02    NACL-森脇    03.01.06  S04の追加
+      *  01.01.03    NACL-太田    03.01.23  食事の計算方法修正
+      *  01.01.04    NACL-太田    03.03.25  入院の保険適用外金額欄追加
+      *  01.01.05    NACL-太田    03.10.27  入金上限額のチェックを修正
+      *  01.01.06    NACL-太田    03.10.29  履歴修正処理修正
+      *  01.01.07    NACL-太田    03.11.12  更新日付編集対応
+      *  01.01.08    NACL-太田    04.02.09  コラムリスト編集修正
+      *  01.01.09    NACL-太田    04.07.12  コラムリストに入金方法を追加
+      *  01.01.10    NACL-小豆沢  05.07.15  自費１０項目の対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -76,9 +61,9 @@
            COPY    ENUM-VALUE.
       *
       *    スパ領域
-       01  SPA-S03.
+       01  SPA-S03N.
       *
-           03  SPA-S03-AREA.
+           03  SPA-S03N-AREA.
                05  SPA-GMN-PAGE                    PIC 9(02).
                05  SPA-GMN-MAX                     PIC 9(02).
                05  SPA-GMN-CUR                     PIC 9(03).
@@ -104,10 +89,12 @@
       *
                    07  SPA-GMN-KINGAKU-AREA.
                        09  SPA-GMN-HKNRYO          PIC 9(07)
-                                                   OCCURS  11.
+                                                   OCCURS  12.
                        09  SPA-GMN-TGMONEY         PIC 9(07)
-                                                   OCCURS  10.
+                                                   OCCURS  11.
                        09  SPA-GMN-HKNTEKI         PIC 9(10).
+                       09  SPA-GMN-SKJRYOYO        PIC 9(07).
+                       09  SPA-GMN-SKJFTN          PIC 9(07).
                        09  SPA-GMN-ROUFTN          PIC 9(07).
                        09  SPA-GMN-KOHFTN          PIC 9(07).
                        09  SPA-GMN-JIHI-G          OCCURS  2.
@@ -119,8 +106,10 @@
                        09  SPA-GMN-ICHIFTN         PIC 9(07).
                        09  SPA-GMN-YAKFTN          PIC 9(07).
                        09  SPA-GMN-CHOSEI          PIC S9(07).
-                       09  SPA-GMN-SKYMONEY          PIC 9(07).
-                       09  SPA-GMN-ZENMISYU        PIC 9(07).
+                       09  SPA-GMN-RMSAGAKU        PIC 9(07).
+                       09  SPA-GMN-SKYMONEY        PIC 9(07).
+                       09  SPA-GMN-ZENMISYU-GAI    PIC 9(07).
+                       09  SPA-GMN-ZENMISYU-NYU    PIC 9(07).
                        09  SPA-GMN-SEIGOK          PIC S9(07).
                        09  SPA-GMN-MISYU-ZAN       PIC S9(07).
                        09  SPA-GMN-NYUKIN-TTL      PIC 9(08).
@@ -251,7 +240,7 @@
       *
        01  CONST-AREA.
            03  CONST-SMEILIST-MAX         PIC 9(03)   VALUE   50.
-           03  CONST-JIHI-MAX          PIC 9(03)   VALUE   10.
+           03  CONST-JIHI-MAX          PIC 9(03)   VALUE  10.
            03  CONST-PROC-NO-G.
                05  CONST-PROC-NYUKIN   PIC X(02)   VALUE   "05".
                05  CONST-PROC-RRKSYU   PIC X(02)   VALUE   "08".
@@ -268,15 +257,15 @@
       *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
-           COPY    "CPSK1001.INC".
-      *
            COPY    "CPSK1013.INC".
       *
-           COPY    "CPSK1032.INC".
+           COPY    "CPSK1035.INC".
       *
            COPY    "CPSK1039.INC".
       *
            COPY    "CPSK1041.INC".
+      *
+           COPY    "CPSK5000.INC".
       *
       *    収納マスター
        01  SYUNOU-REC.
@@ -292,7 +281,7 @@
       *************************************************************
       *
       *    請求書印刷パラメタ
-           COPY    "CPORCHC03.INC".
+           COPY    "CPORCHCN03.INC".
       *
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
@@ -357,7 +346,7 @@
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-WORK        TO  SPA-S01KYOUTU
-           MOVE    SPA-FREE        TO  SPA-S03
+           MOVE    SPA-FREE        TO  SPA-S03N
       *
            MOVE    SPACE           TO  SPA-ERRCD
            MOVE    ZERO            TO  FLG-END
@@ -383,7 +372,7 @@
       *
            MOVE    SPA-S01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
-           MOVE    SPA-S03         TO  SPA-FREE
+           MOVE    SPA-S03N        TO  SPA-FREE
       *
            .
            EXIT    PROGRAM
@@ -415,7 +404,7 @@
            MOVE    SPACE               TO  LINKAREA
       *
            MOVE    SPACE               TO  MCP-PUTTYPE.
-           MOVE    "S03"               TO  MCP-WINDOW.
+           MOVE    "S03N"              TO  MCP-WINDOW.
       *
            PERFORM 900-PUT-WINDOW.
       *
@@ -438,7 +427,7 @@
                IF    ( WRK-MOTOPG(1:3)     =   "Y01"  OR  "U01"  OR
                                                "E01" )
                    MOVE    LNK-COMMON      TO  SPA-KYOUTU
-                   MOVE    LNK-SCRSPA      TO  SPA-S03
+                   MOVE    LNK-SCRSPA      TO  SPA-S03N
                    MOVE    SPA-WORK        TO  SPA-S01KYOUTU
                END-IF
       *
@@ -472,7 +461,7 @@
       *************************************************************
        310-SPA-SET-SEC                 SECTION.
       *
-           INITIALIZE                  SPA-S03
+           INITIALIZE                  SPA-S03N
       *
       *    コンボ編集処理
            PERFORM 3101-COMBO-SET-SEC
@@ -645,7 +634,7 @@
       *
                    MOVE    MCPDATA-REC     TO  SYS-1039-REC
       *
-                   IF    ( SYS-1039-SKYPRTGKBN  =   "1" )
+                   IF    ( SYS-1039-SKYPRTNKBN  =   "1" )
                        MOVE    SPA-GMN-SKYPRTLST (2)
                                            TO  SPA-GMN-SKYPRT-G
                    ELSE
@@ -663,34 +652,35 @@
       *
            IF    ( SPA-GMN-SKYPRT-G    =   SPACE )
       *        システム管理マスタ検索処理
-               INITIALIZE                      SYSKANRI-REC
-               MOVE    "1001"              TO  SYS-KANRICD
-               MOVE    "*"                 TO  SYS-KBNCD
-               MOVE    SPA-S01-SRYYMD      TO  ORC-DBYMD
-               MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    "5000"          TO  SYS-KANRICD
+               MOVE    "*"             TO  SYS-KBNCD
+               MOVE    SPA-S01-SRYYMD  TO  ORC-DBYMD
+               MOVE    SYSKANRI-REC    TO  MCPDATA-REC
+               MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
                PERFORM 910-DBSELECT-SEC
                IF    ( MCP-RC          =   ZERO )
-                   MOVE    MCPDATA-REC TO  SYS-1001-REC
+                   MOVE    MCPDATA-REC TO  SYS-5000-REC
                ELSE
-                   INITIALIZE              SYS-1001-REC
+                   INITIALIZE              SYS-5000-REC
                END-IF
       *
       *        システム管理マスタクローズ
-               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
                PERFORM 910-DBCLOSE-SEC
       *
-               IF    ( SYS-1001-SKYPRTFLG  =   "1" OR  "2" )
+               IF    ( SYS-5000-SKYPRTKBN  =   "1" OR  "2" )
                    MOVE    SPA-GMN-SKYPRTLST (2)
                                        TO  SPA-GMN-SKYPRT-G
                ELSE
                    MOVE    SPA-GMN-SKYPRTLST (1)
                                        TO  SPA-GMN-SKYPRT-G
                END-IF
+      *
            END-IF
       *
            IF    ( SPA-NAI-HEAD-DENPJTIKBN =    "3" )
-               MOVE    SPACE           TO  SPA-GMN-SKYPRT-G
+               MOVE    SPACE       TO  SPA-GMN-SKYPRT-G
            END-IF
       *
            .
@@ -780,23 +770,23 @@
                MOVE  "継続"            TO  SPA-GMN-JOUTAI
            END-EVALUATE
       *
-           MOVE    SYU-DENPJTIKBN      TO  SPA-NAI-HEAD-DENPJTIKBN
-      *
       *    保険料
-           MOVE    ZERO                TO  SPA-GMN-HKNRYO (11)
+           MOVE    ZERO                TO  SPA-GMN-HKNRYO (12)
            PERFORM VARYING     IDX0    FROM    1   BY  1
-                   UNTIL     ( IDX0    >   10 )
+                   UNTIL     ( IDX0    >   11 )
                MOVE    SYU-HKNTEN (IDX0)
                                        TO  SPA-GMN-HKNRYO (IDX0)
       *
-               COMPUTE SPA-GMN-HKNRYO (11)
-                   =   SPA-GMN-HKNRYO (11) +   SYU-HKNTEN (IDX0)
+               COMPUTE SPA-GMN-HKNRYO (12)
+                   =   SPA-GMN-HKNRYO (12) +   SYU-HKNTEN (IDX0)
       *
            END-PERFORM
       *
+           MOVE    SYU-DENPJTIKBN      TO  SPA-NAI-HEAD-DENPJTIKBN
+      *
       *    保険適用外
            PERFORM VARYING     IDX0     FROM    1   BY  1
-                   UNTIL     ( IDX0     >   10 )
+                   UNTIL     ( IDX0     >   11 )
       *
                MOVE    ZERO            TO   SPA-GMN-TGMONEY (IDX0)
                COMPUTE SPA-GMN-TGMONEY (IDX0)
@@ -814,7 +804,7 @@
       *
       *    その他自費
            PERFORM VARYING IDX0 FROM    1   BY  1
-                   UNTIL ( IDX0 >   10 )
+                   UNTIL ( IDX0 >   10)
       *
                MOVE    SYU-JIHI-TAXNASI (IDX0)
                                        TO  SPA-GMN-JIHI (1 IDX0)
@@ -842,6 +832,16 @@
            MOVE    SYU-RSISDO-MONEY    TO SPA-GMN-RSISDO
            MOVE    SYU-RSIETC-MONEY    TO SPA-GMN-RSIETC
       *
+      *    食事療養費
+           COMPUTE SPA-GMN-SKJRYOYO
+               =   SYU-RYOYOHI-SKJ
+               +   SYU-RYOYOHI-SKJ-JIHI
+      *
+      *    食事負担額
+           COMPUTE SPA-GMN-SKJFTN
+               =   SYU-SKYMONEY-SKJ-KEI
+               +   SYU-SKYMONEY-SKJ-JIHI-KEI
+      *
       *    薬剤一部負担  
            MOVE    SYU-YKZ-FTN         TO  SPA-GMN-YAKFTN.
       *
@@ -849,6 +849,9 @@
            COMPUTE SPA-GMN-ICHIFTN     =   SPA-GMN-ROUFTN
                                        +   SPA-GMN-KOHFTN
                                        +   SPA-GMN-YAKFTN
+                                       +   SPA-GMN-SKJFTN
+      *    室料差額
+           MOVE    SYU-RMSAGAKU        TO  SPA-GMN-RMSAGAKU
       *
       *    調整金
            MOVE    SYU-CHOSEI          TO  SPA-GMN-CHOSEI
@@ -868,11 +871,13 @@
       *
       *    合計未収額
            IF    ( SPA-GMN-MISYU-ZAN   >   ZERO )
-               COMPUTE SPA-GMN-SEIGOK
-                   =   SPA-GMN-MISYU-ZAN   +   SPA-GMN-ZENMISYU
+               COMPUTE SPA-GMN-SEIGOK      =   SPA-GMN-MISYU-ZAN
+                                           +   SPA-GMN-ZENMISYU-GAI
+                                           +   SPA-GMN-ZENMISYU-NYU
            ELSE
-               MOVE    SPA-GMN-ZENMISYU    TO  SPA-GMN-SEIGOK
-           END-IF
+               COMPUTE SPA-GMN-SEIGOK      =   SPA-GMN-ZENMISYU-GAI
+                                           +   SPA-GMN-ZENMISYU-NYU
+           END-IF.
       *
            .
        3101-SYUNOU-SET-EXT.
@@ -949,6 +954,8 @@
       *
                WHEN    "8"
                    MOVE    "診療訂正"  TO  SPA-GMN-TJOUTAI (IDX1)
+               WHEN    "9"
+                   MOVE    "請求"      TO  SPA-GMN-TJOUTAI (IDX1)
                END-EVALUATE
       *
                MOVE    SMEI-NYUHEN-YMD TO  WRK-SYMD
@@ -1009,13 +1016,13 @@
                IF    ( SPA-S01-NYUGAIKBN   =   SYS-1013-KBNCD(1:1) )
                    MOVE   SYS-1013-KBNCD(2:1)
                                            TO  WRK-JIHI-IDX-X
-                   IF    ( WRK-JIHI-IDX-X >=   "1" ) AND
+                   IF    ( WRK-JIHI-IDX-X >=   "1" )   AND
                          ( WRK-JIHI-IDX-X <=   "9" )
                        MOVE    SYS-1013-JIHINAME
                                            TO  SPA-GMN-JIHIMSG
                                                     (WRK-JIHI-IDX)
                    ELSE
-                       IF   SYS-1013-KBNCD(2:1)  =   "0"
+                       IF    SYS-1013-KBNCD(2:1)   =   "0"
                            MOVE    SYS-1013-JIHINAME
                                            TO  SPA-GMN-JIHIMSG (10)
                        END-IF
@@ -1039,19 +1046,13 @@
       *************************************************************
        3101-ZENMISYU-SEC               SECTION.
       *
-           MOVE    ZERO            TO  SPA-GMN-ZENMISYU
-      *
            MOVE    "1"             TO  WRK-NYUGAIKBN
            PERFORM 3101-MISYU-SEC
-      *
-           COMPUTE SPA-GMN-ZENMISYU
-               =   SPA-GMN-ZENMISYU    +   WRK-MISYU
+           MOVE    WRK-MISYU       TO  SPA-GMN-ZENMISYU-NYU
       *
            MOVE    "2"             TO  WRK-NYUGAIKBN
            PERFORM 3101-MISYU-SEC
-      *
-           COMPUTE SPA-GMN-ZENMISYU
-               =   SPA-GMN-ZENMISYU    +   WRK-MISYU
+           MOVE    WRK-MISYU       TO  SPA-GMN-ZENMISYU-GAI
       *
            .
        3101-ZENMISYU-EXT.
@@ -1085,9 +1086,7 @@
                IF     (SPA-S01-DENPPRTYMD  <  SYU-DENPPRTYMD )
                 OR   ((SPA-S01-NYUGAIKBN   =  SYU-NYUGAIKBN )
                   AND (SPA-S01-DENPNUM     <= SYU-DENPNUM   ))
-      *
-                   MOVE    1           TO  FLG-SYORI
-      *
+                       MOVE    1     TO      FLG-SYORI
                END-IF
       *
                IF    ( FLG-SYORI           =   ZERO )
@@ -1126,7 +1125,7 @@
        210-BACK                        SECTION.
       *
            MOVE    "S02"               TO  SPA-SAKIPG
-           MOVE    "S03"               TO  SPA-MOTOPG
+           MOVE    "S03N"              TO  SPA-MOTOPG
       *
            MOVE    SPACE               TO  LINKAREA
       *
@@ -1157,7 +1156,7 @@
            MOVE    SPACE               TO  LNK-KYOUTU
       *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE
-           MOVE    "S03    "           TO  MCP-WINDOW
+           MOVE    "S03N    "          TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *
@@ -1170,143 +1169,166 @@
       *************************************************************
        500-GMNHEN-SEC                  SECTION.
       *
-           MOVE    S03-CLIST1-ROW   TO  WRK-SMEILIST1-ROW
+           MOVE    S03N-CLIST1-ROW     TO  WRK-SMEILIST1-ROW
       *
-           MOVE    SPACE               TO  S03
-           INITIALIZE                      S03
+           MOVE    SPACE               TO  S03N
+           INITIALIZE                      S03N
       *
-           MOVE    SPA-GMN-PTNUM       TO  S03-PTNUM
-           MOVE    SPA-GMN-KANANAME    TO  S03-KANANAME
-           MOVE    SPA-GMN-NAME        TO  S03-NAME
-           MOVE    SPA-GMN-SEX         TO  S03-SEX
-           MOVE    SPA-GMN-KUMI        TO  S03-HKNCOMBI
-           MOVE    SPA-GMN-RITU        TO  S03-RATE
-           MOVE    SPA-GMN-SRYYMD      TO  S03-SRYYMD
-           MOVE    SPA-GMN-BIRTHDAY    TO  S03-BIRTHDAY
-           MOVE    SPA-GMN-SRYKA       TO  S03-SRYKA
-           MOVE    SPA-GMN-NYUGAIKBN   TO  S03-NYUGAIKBN
+           EVALUATE SPA-S01-SYORINO
       *
-           MOVE    SPA-GMN-SYORIKBN-G  TO  S03-NAIYO
+           WHEN    CONST-PROC-NYUKIN
+               MOVE    "履歴修正"      TO  S03N-B03-LABEL
+      *
+           WHEN    CONST-PROC-RRKSYU
+               MOVE    "照会"          TO  S03N-B03-LABEL
+      *
+           WHEN    CONST-PROC-SYOKAI
+               MOVE    "入金"          TO  S03N-B03-LABEL
+      *
+           WHEN    OTHER
+               MOVE    "照会"          TO  S03N-B03-LABEL
+           END-EVALUATE
+      *
+           MOVE    SPA-GMN-PTNUM       TO  S03N-PTNUM
+           MOVE    SPA-GMN-KANANAME    TO  S03N-KANANAME
+           MOVE    SPA-GMN-NAME        TO  S03N-NAME
+           MOVE    SPA-GMN-SEX         TO  S03N-SEX
+           MOVE    SPA-GMN-KUMI        TO  S03N-HKNCOMBI
+           MOVE    SPA-GMN-RITU        TO  S03N-RATE
+           MOVE    SPA-GMN-SRYYMD      TO  S03N-SRYYMD
+           MOVE    SPA-GMN-BIRTHDAY    TO  S03N-BIRTHDAY
+           MOVE    SPA-GMN-SRYKA       TO  S03N-SRYKA
+           MOVE    SPA-GMN-NYUGAIKBN   TO  S03N-NYUGAIKBN
+      *
+           MOVE    SPA-GMN-SYORIKBN-G  TO  S03N-NAIYO
            MOVE    SPA-GMN-SYORIKBN-MAX
-                                       TO  S03-NAIYO-COUNT
+                                       TO  S03N-NAIYO-COUNT
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >   SPA-GMN-SYORIKBN-MAX )
                MOVE    SPA-GMN-SYORIKBNLST (IDX0)
-                                       TO  S03-NAIYOLST(IDX0)
+                                       TO  S03N-NAIYOLST(IDX0)
            END-PERFORM
       *
-           MOVE    SPA-GMN-JOUTAI      TO  S03-DENPJTI
-           MOVE    SPA-GMN-HAKYMD      TO  S03-HAKYMD
-           MOVE    SPA-S01-DENPNUM     TO  S03-DENPNUM (3:)
+           MOVE    SPA-GMN-JOUTAI      TO  S03N-DENPJTI
+           MOVE    SPA-GMN-HAKYMD      TO  S03N-HAKYMD
+           MOVE    SPA-S01-DENPNUM     TO  S03N-DENPNUM (3:)
       *
-           MOVE    SPA-GMN-HKNRYO (01) TO  S03-SSUHKNTEN
-           MOVE    SPA-GMN-HKNRYO (02) TO  S03-SDOHKNTEN
-           MOVE    SPA-GMN-HKNRYO (03) TO  S03-ZTKHKNTEN
-           MOVE    SPA-GMN-HKNRYO (04) TO  S03-TYKHKNTEN
-           MOVE    SPA-GMN-HKNRYO (05) TO  S03-CSYHKNTEN
-           MOVE    SPA-GMN-HKNRYO (06) TO  S03-SYCHKNTEN
-           MOVE    SPA-GMN-HKNRYO (07) TO  S03-SJTHKNTEN
-           MOVE    SPA-GMN-HKNRYO (08) TO  S03-KNSHKNTEN
-           MOVE    SPA-GMN-HKNRYO (09) TO  S03-GZUHKNTEN
-           MOVE    SPA-GMN-HKNRYO (10) TO  S03-ETCHKNTEN
-           MOVE    SPA-GMN-HKNRYO (11) TO  S03-TOTALHKNTEN
-           MOVE    SPA-GMN-HKNTEKI     TO  S03-HKNTEKMONEY
-           MOVE    SPA-GMN-ROUFTN      TO  S03-RJNFTN
-           MOVE    SPA-GMN-KOHFTN      TO  S03-KOHFTN
-           MOVE    SPA-GMN-JIHI (1 1)  TO  S03-JIHI1
-           MOVE    SPA-GMN-JIHI (1 2)  TO  S03-JIHI2
-           MOVE    SPA-GMN-JIHI (1 3)  TO  S03-JIHI3
-           MOVE    SPA-GMN-JIHI (1 4)  TO  S03-JIHI4
-           MOVE    SPA-GMN-JIHI (1 5)  TO  S03-JIHI5
-           MOVE    SPA-GMN-JIHI (1 6)  TO  S03-JIHI6
-           MOVE    SPA-GMN-JIHI (1 7)  TO  S03-JIHI7
-           MOVE    SPA-GMN-JIHI (1 8)  TO  S03-JIHI8
-           MOVE    SPA-GMN-JIHI (1 9)  TO  S03-JIHI9
-           MOVE    SPA-GMN-JIHI (1 10) TO  S03-JIHI10
-           MOVE    SPA-GMN-JIHIKEI(1)  TO  S03-JIHITOTAL
-           MOVE    SPA-GMN-JIHI (2 1)  TO  S03-JIHI1TAX
-           MOVE    SPA-GMN-JIHI (2 2)  TO  S03-JIHI2TAX
-           MOVE    SPA-GMN-JIHI (2 3)  TO  S03-JIHI3TAX
-           MOVE    SPA-GMN-JIHI (2 4)  TO  S03-JIHI4TAX
-           MOVE    SPA-GMN-JIHI (2 5)  TO  S03-JIHI5TAX
-           MOVE    SPA-GMN-JIHI (2 6)  TO  S03-JIHI6TAX
-           MOVE    SPA-GMN-JIHI (2 7)  TO  S03-JIHI7TAX
-           MOVE    SPA-GMN-JIHI (2 8)  TO  S03-JIHI8TAX
-           MOVE    SPA-GMN-JIHI (2 9)  TO  S03-JIHI9TAX
-           MOVE    SPA-GMN-JIHI (2 10) TO  S03-JIHI10TAX
-           MOVE    SPA-GMN-JIHIKEI(2)  TO  S03-JIHITAXTOTAL
-           MOVE    SPA-GMN-JIHIZEI     TO  S03-JIHITAX
-           MOVE    SPA-GMN-TGMONEY (01) TO  S03-SSUTGMONEY
-           MOVE    SPA-GMN-TGMONEY (02) TO  S03-SDOTGMONEY
-           MOVE    SPA-GMN-TGMONEY (03) TO  S03-ZTKTGMONEY
-           MOVE    SPA-GMN-TGMONEY (04) TO  S03-TYKTGMONEY
-           MOVE    SPA-GMN-TGMONEY (05) TO  S03-CSYTGMONEY
-           MOVE    SPA-GMN-TGMONEY (06) TO  S03-SYCTGMONEY
-           MOVE    SPA-GMN-TGMONEY (07) TO  S03-SJTGMONEY
-           MOVE    SPA-GMN-TGMONEY (08) TO  S03-KNSTGMONEY
-           MOVE    SPA-GMN-TGMONEY (09) TO  S03-GZUTGMONEY
-           MOVE    SPA-GMN-TGMONEY (10) TO  S03-ETCTGMONEY
-           MOVE    SPA-GMN-HKNGAI      TO  S03-HKNTEKGAI
-           MOVE    SPA-GMN-ICHIFTN     TO  S03-FTNTOTAL
-           MOVE    SPA-GMN-YAKFTN      TO  S03-YKZFTN 
-           MOVE    SPA-GMN-CHOSEI      TO  S03-NYUKINGK1
-           MOVE    SPA-GMN-SKYMONEY    TO  S03-SYKMONEY
-           MOVE    SPA-GMN-ZENMISYU    TO  S03-ZENMISYU
-           MOVE    SPA-GMN-SEIGOK      TO  S03-GOKMISYU
-           MOVE    SPA-GMN-MISYU-ZAN   TO  S03-MISYUZAN
-           MOVE    SPA-GMN-NYUKIN-TTL  TO  S03-NYUKINGK1
+           MOVE    SPA-GMN-HKNRYO (01) TO  S03N-SSUHKNTEN
+           MOVE    SPA-GMN-HKNRYO (02) TO  S03N-SDOHKNTEN
+           MOVE    SPA-GMN-HKNRYO (03) TO  S03N-ZTKHKNTEN
+           MOVE    SPA-GMN-HKNRYO (04) TO  S03N-TYKHKNTEN
+           MOVE    SPA-GMN-HKNRYO (05) TO  S03N-CSYHKNTEN
+           MOVE    SPA-GMN-HKNRYO (06) TO  S03N-SYCHKNTEN
+           MOVE    SPA-GMN-HKNRYO (07) TO  S03N-SJTHKNTEN
+           MOVE    SPA-GMN-HKNRYO (08) TO  S03N-KNSHKNTEN
+           MOVE    SPA-GMN-HKNRYO (09) TO  S03N-GZUHKNTEN
+           MOVE    SPA-GMN-HKNRYO (10) TO  S03N-ETCHKNTEN
+           MOVE    SPA-GMN-HKNRYO (11) TO  S03N-NYUHKNTEN
+           MOVE    SPA-GMN-HKNRYO (12) TO  S03N-TOTALHKNTEN
+           MOVE    SPA-GMN-HKNTEKI     TO  S03N-HKNTEKMONEY
+           MOVE    SPA-GMN-ROUFTN      TO  S03N-RJNFTN
+           MOVE    SPA-GMN-KOHFTN      TO  S03N-KOHFTN
+           MOVE    SPA-GMN-JIHI (1 1)  TO  S03N-JIHI1
+           MOVE    SPA-GMN-JIHI (1 2)  TO  S03N-JIHI2
+           MOVE    SPA-GMN-JIHI (1 3)  TO  S03N-JIHI3
+           MOVE    SPA-GMN-JIHI (1 4)  TO  S03N-JIHI4
+           MOVE    SPA-GMN-JIHI (1 5)  TO  S03N-JIHI5
+           MOVE    SPA-GMN-JIHI (1 6)  TO  S03N-JIHI6
+           MOVE    SPA-GMN-JIHI (1 7)  TO  S03N-JIHI7
+           MOVE    SPA-GMN-JIHI (1 8)  TO  S03N-JIHI8
+           MOVE    SPA-GMN-JIHI (1 9)  TO  S03N-JIHI9
+           MOVE    SPA-GMN-JIHI (1 10) TO  S03N-JIHI10
+           MOVE    SPA-GMN-JIHIKEI(1)  TO  S03N-JIHITOTAL
+           MOVE    SPA-GMN-JIHI (2 1)  TO  S03N-JIHI1TAX
+           MOVE    SPA-GMN-JIHI (2 2)  TO  S03N-JIHI2TAX
+           MOVE    SPA-GMN-JIHI (2 3)  TO  S03N-JIHI3TAX
+           MOVE    SPA-GMN-JIHI (2 4)  TO  S03N-JIHI4TAX
+           MOVE    SPA-GMN-JIHI (2 5)  TO  S03N-JIHI5TAX
+           MOVE    SPA-GMN-JIHI (2 6)  TO  S03N-JIHI6TAX
+           MOVE    SPA-GMN-JIHI (2 7)  TO  S03N-JIHI7TAX
+           MOVE    SPA-GMN-JIHI (2 8)  TO  S03N-JIHI8TAX
+           MOVE    SPA-GMN-JIHI (2 9)  TO  S03N-JIHI9TAX
+           MOVE    SPA-GMN-JIHI (2 10) TO  S03N-JIHI10TAX
+           MOVE    SPA-GMN-JIHIKEI(2)  TO  S03N-JIHITAXTOTAL
+           MOVE    SPA-GMN-JIHIZEI     TO  S03N-JIHITAX
+           MOVE    SPA-GMN-TGMONEY (01) TO  S03N-SSUTGMONEY
+           MOVE    SPA-GMN-TGMONEY (02) TO  S03N-SDOTGMONEY
+           MOVE    SPA-GMN-TGMONEY (03) TO  S03N-ZTKTGMONEY
+           MOVE    SPA-GMN-TGMONEY (04) TO  S03N-TYKTGMONEY
+           MOVE    SPA-GMN-TGMONEY (05) TO  S03N-CSYTGMONEY
+           MOVE    SPA-GMN-TGMONEY (06) TO  S03N-SYCTGMONEY
+           MOVE    SPA-GMN-TGMONEY (07) TO  S03N-SJTGMONEY
+           MOVE    SPA-GMN-TGMONEY (08) TO  S03N-KNSTGMONEY
+           MOVE    SPA-GMN-TGMONEY (09) TO  S03N-GZUTGMONEY
+           MOVE    SPA-GMN-TGMONEY (10) TO  S03N-ETCTGMONEY
+           MOVE    SPA-GMN-TGMONEY (11) TO  S03N-NYUTGMONEY
+           MOVE    SPA-GMN-HKNGAI      TO  S03N-HKNTEKGAI
+           MOVE    SPA-GMN-ICHIFTN     TO  S03N-FTNTOTAL
+           MOVE    SPA-GMN-YAKFTN      TO  S03N-YKZFTN 
+           MOVE    SPA-GMN-SKJFTN      TO  S03N-SKJFTN
+           MOVE    SPA-GMN-SKJRYOYO    TO  S03N-SKJRYOYO
+           MOVE    SPA-GMN-RMSAGAKU    TO  S03N-RMSAGAKU
+           MOVE    SPA-GMN-CHOSEI      TO  S03N-NYUKINGK1
+           MOVE    SPA-GMN-SKYMONEY    TO  S03N-SYKMONEY
+           MOVE    SPA-GMN-ZENMISYU-GAI
+                                       TO  S03N-ZENMISYU-GAI
+           MOVE    SPA-GMN-ZENMISYU-NYU
+                                       TO  S03N-ZENMISYU-NYU
+           MOVE    SPA-GMN-SEIGOK      TO  S03N-GOKMISYU
+           MOVE    SPA-GMN-MISYU-ZAN   TO  S03N-MISYUZAN
+           MOVE    SPA-GMN-NYUKIN-TTL  TO  S03N-NYUKINGK1
       *
       *    入金欄
            EVALUATE    SPA-S01-SYORINO
            WHEN    CONST-PROC-NYUKIN
            WHEN    CONST-PROC-RRKSYU
-               MOVE    SPA-GMN-NYUKIN      TO  S03-NYUKINGK2
-               MOVE    SPA-GMN-NYUKINYMD   TO  S03-NYUKINYMD
-               MOVE    SPA-GMN-NYKN-HOHO-G TO  S03-NYUKINHOUHOU
+               MOVE    SPA-GMN-NYUKIN      TO  S03N-NYUKINGK2
+               MOVE    SPA-GMN-NYUKINYMD   TO  S03N-NYUKINYMD
+               MOVE    SPA-GMN-NYKN-HOHO-G TO  S03N-NYUKINHOUHOU
                MOVE    SPA-GMN-NYKN-HOHO-MAX
-                                           TO  S03-NYUKINHOUHOU-COUNT
+                                           TO  S03N-NYUKINHOUHOU-COUNT
                PERFORM VARYING IDX0    FROM    1   BY  1
                        UNTIL ( IDX0    >   SPA-GMN-NYKN-HOHO-MAX )
                    MOVE    SPA-GMN-NYKN-HOHOLST (IDX0)
-                                           TO  S03-NYUKINHOUHOULST(IDX0)
+                                       TO  S03N-NYUKINHOUHOULST(IDX0)
                END-PERFORM
       *
-               MOVE    SPA-GMN-SKYPRT-G    TO  S03-SKYPRT
-               MOVE    SPA-GMN-SKYPRT-MAX  TO  S03-SKYPRT-COUNT
+               MOVE    SPA-GMN-SKYPRT-G    TO  S03N-SKYPRT
+               MOVE    SPA-GMN-SKYPRT-MAX  TO  S03N-SKYPRT-COUNT
                PERFORM VARYING IDX0    FROM    1   BY  1
                        UNTIL ( IDX0    >   SPA-GMN-SKYPRT-MAX )
                    MOVE    SPA-GMN-SKYPRTLST (IDX0)
-                                           TO  S03-SKYPRTLST(IDX0)
+                                           TO  S03N-SKYPRTLST(IDX0)
                END-PERFORM
       *
            END-EVALUATE
       *
-           MOVE    SPA-GMN-SELNUM          TO  S03-RIREKIIN
+           MOVE    SPA-GMN-SELNUM          TO  S03N-RIREKIIN
       *
-           MOVE    SPA-GMN-SMEILIST-MAX    TO  S03-CLIST1-COUNT
+           MOVE    SPA-GMN-SMEILIST-MAX    TO  S03N-CLIST1-COUNT
       *
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >   SPA-GMN-SMEILIST-MAX )
       *
                MOVE    SPA-GMN-TDENPEDANUM  (IDX0)
                                            TO  WRK-EDABAN
-               MOVE    WRK-EDABAN          TO  S03-TRENNUM (IDX0)
+               MOVE    WRK-EDABAN          TO  S03N-TRENNUM (IDX0)
                MOVE    SPA-GMN-TSKYMONEY    (IDX0)
                                            TO  WRK-Z9
-               MOVE    WRK-Z9              TO  S03-TSKYMONY(IDX0)
+               MOVE    WRK-Z9              TO  S03N-TSKYMONY(IDX0)
                MOVE    SPA-GMN-TNYUKIN  (IDX0)
                                            TO  WRK-Z9
-               MOVE    WRK-Z9              TO  S03-TNYUKINMONEY(IDX0)
+               MOVE    WRK-Z9              TO  S03N-TNYUKINMONEY(IDX0)
                MOVE    SPA-GMN-TSYORIYMD (IDX0)
-                                           TO  S03-TSYORIYMD   (IDX0)
+                                           TO  S03N-TSYORIYMD   (IDX0)
                MOVE    SPA-GMN-TJOUTAI  (IDX0)
-                                           TO  S03-TJTI        (IDX0)
+                                           TO  S03N-TJTI        (IDX0)
                MOVE    SPA-GMN-TNYKN-HOHO(IDX0)
-                                           TO  S03-TNYKN-NAME  (IDX0)
+                                           TO  S03N-TNYKN-NAME  (IDX0)
                IF    ( SPA-GMN-SMEILIST-SEL    =   IDX0 )
-                   MOVE    "T"             TO  S03-SELECT (IDX0)
+                   MOVE    "T"             TO  S03N-SELECT (IDX0)
                ELSE
-                   MOVE    "F"             TO  S03-SELECT (IDX0)
+                   MOVE    "F"             TO  S03N-SELECT (IDX0)
                END-IF
       *
            END-PERFORM
@@ -1315,77 +1337,79 @@
            PERFORM     VARYING IDX0    FROM    1   BY  1      
                        UNTIL ( IDX0    >       CONST-JIHI-MAX )
                MOVE    SPA-GMN-JIHIMSG(IDX0)
-                                       TO  S03-JIHIMSG (IDX0)
+                                       TO  S03N-JIHIMSG (IDX0)
            END-PERFORM
       *
       *    労災保険適用分
-           MOVE    SPA-GMN-RSISHOSHIN  TO  S03-RSISHOSHIN
-           MOVE    SPA-GMN-RSISAISHIN  TO  S03-RSISAISHIN
-           MOVE    SPA-GMN-RSISDO      TO  S03-RSISDO
-           MOVE    SPA-GMN-RSIETC      TO  S03-RSIETC
+           MOVE    SPA-GMN-RSISHOSHIN  TO  S03N-RSISHOSHIN
+           MOVE    SPA-GMN-RSISAISHIN  TO  S03N-RSISAISHIN
+           MOVE    SPA-GMN-RSISDO      TO  S03N-RSISDO
+           MOVE    SPA-GMN-RSIETC      TO  S03N-RSIETC
       *
-           MOVE    WIDGET-NORMAL       TO  S03-NYUKINGK2-STATE
-                                           S03-NYUKINYMD-STATE
-                                           S03-NYUKINHOUHOU-STATE
-                                           S03-NYUKINHOUHOULST-STATE
-                                           S03-SKYPRT-STATE
-                                           S03-SKYPRTLST-STATE
-                                           S03-B12-STATE
-                                           S03-B12S-STATE
-                                           S03-NAIYO-STATE
-                                           S03-NAIYOLST-STATE
+           MOVE    WIDGET-NORMAL       TO  S03N-NYUKINGK2-STATE
+                                           S03N-NYUKINYMD-STATE
+                                           S03N-NYUKINHOUHOU-STATE
+                                           S03N-NYUKINHOUHOULST-STATE
+                                           S03N-SKYPRT-STATE
+                                           S03N-SKYPRTLST-STATE
+                                           S03N-B12-STATE
+                                           S03N-B12S-STATE
+                                           S03N-NAIYO-STATE
+                                           S03N-NAIYOLST-STATE
       *
            IF    ( SPA-S01-SYORINO     =   CONST-PROC-SYOKAI )
-               MOVE    WIDGET-INSENSITIVE  TO  S03-NYUKINGK2-STATE
-                                               S03-NYUKINYMD-STATE
-                                               S03-NYUKINHOUHOU-STATE
-                                               S03-NYUKINHOUHOULST-STATE
-                                               S03-SKYPRT-STATE
-                                               S03-SKYPRTLST-STATE
-                                               S03-B12-STATE
+               MOVE    WIDGET-INSENSITIVE
+                                       TO  S03N-NYUKINGK2-STATE
+                                           S03N-NYUKINYMD-STATE
+                                           S03N-NYUKINHOUHOU-STATE
+                                           S03N-NYUKINHOUHOULST-STATE
+                                           S03N-SKYPRT-STATE
+                                           S03N-SKYPRTLST-STATE
+                                           S03N-B12-STATE
            END-IF
       *
            IF    ( SPA-NAI-HEAD-DENPJTIKBN =   "3" )
-               MOVE    WIDGET-INSENSITIVE  TO  S03-NYUKINGK2-STATE
-                                               S03-NYUKINYMD-STATE
-                                               S03-NYUKINHOUHOU-STATE
-                                               S03-NYUKINHOUHOULST-STATE
-                                               S03-SKYPRT-STATE
-                                               S03-SKYPRTLST-STATE
-                                               S03-B12-STATE
-                                               S03-NAIYO-STATE
-                                               S03-NAIYOLST-STATE
+               MOVE    WIDGET-INSENSITIVE
+                                       TO  S03N-NYUKINGK2-STATE
+                                           S03N-NYUKINYMD-STATE
+                                           S03N-NYUKINHOUHOU-STATE
+                                           S03N-NYUKINHOUHOULST-STATE
+                                           S03N-SKYPRT-STATE
+                                           S03N-SKYPRTLST-STATE
+                                           S03N-B12-STATE
+                                           S03N-NAIYO-STATE
+                                           S03N-NAIYOLST-STATE
       *
-               MOVE    SPACE               TO  S03-B03-LABEL
+               MOVE    SPACE               TO  S03N-B03-LABEL
       *
            ELSE
       *
                EVALUATE SPA-S01-SYORINO
       *
                WHEN    CONST-PROC-NYUKIN
-                   MOVE    "履歴修正"      TO  S03-B03-LABEL
+                   MOVE    "履歴修正"      TO  S03N-B03-LABEL
       *
                WHEN    CONST-PROC-RRKSYU
-                   MOVE    "照会"          TO  S03-B03-LABEL
+                   MOVE    "照会"          TO  S03N-B03-LABEL
       *
                WHEN    CONST-PROC-SYOKAI
-                   MOVE    "入金"          TO  S03-B03-LABEL
+                   MOVE    "入金"          TO  S03N-B03-LABEL
       *
                WHEN    OTHER
-                   MOVE    "照会"          TO  S03-B03-LABEL
+                   MOVE    "照会"          TO  S03N-B03-LABEL
                END-EVALUATE
            END-IF
       *
            EVALUATE    FLG-SMEILIST1-ROW
            WHEN    1
-               MOVE    ZERO               TO  S03-CLIST1-ROW
-               MOVE    ZERO               TO  S03-CLIST1-ROWATTR
+               MOVE    ZERO               TO  S03N-CLIST1-ROW
+               MOVE    ZERO               TO  S03N-CLIST1-ROWATTR
            WHEN    2
-               MOVE    S03-CLIST1-COUNT   TO  S03-CLIST1-ROW
-               MOVE    1                  TO  S03-CLIST1-ROWATTR
+               MOVE    S03N-CLIST1-COUNT   TO  S03N-CLIST1-ROW
+               MOVE    1                  TO  S03N-CLIST1-ROWATTR
            WHEN    OTHER
-               MOVE    WRK-SMEILIST1-ROW  TO  S03-CLIST1-ROW
-               MOVE    ZERO               TO  S03-CLIST1-ROWATTR
+               MOVE    WRK-SMEILIST1-ROW  TO  S03N-CLIST1-ROW
+               MOVE    ZERO               TO  S03N-CLIST1-ROWATTR
            END-EVALUATE
       *
            PERFORM 5001-MAPCUR-SEC
@@ -1455,39 +1479,39 @@
        50012-CUR-SKIP-SEC              SECTION.
       *
            IF    ( SPA-GMN-CUR             =   6 )
-               IF   ( S03-NAIYO-STATE  =   WIDGET-INSENSITIVE )
+               IF   ( S03N-NAIYO-STATE     =   WIDGET-INSENSITIVE )
                    MOVE    2           TO  SPA-GMN-CUR
                END-IF
            END-IF
       *
            IF    ( SPA-GMN-CUR             =   2 )
-               IF   ( S03-NYUKINGK2-STATE  =   WIDGET-INSENSITIVE )
+               IF   ( S03N-NYUKINGK2-STATE =   WIDGET-INSENSITIVE )
                    MOVE    3           TO  SPA-GMN-CUR
                END-IF
            END-IF
       *
            IF    ( SPA-GMN-CUR             =   3 )
-               IF   ( S03-NYUKINYMD-STATE  =   WIDGET-INSENSITIVE )
+               IF   ( S03N-NYUKINYMD-STATE =   WIDGET-INSENSITIVE )
                    MOVE    4           TO  SPA-GMN-CUR
                END-IF
            END-IF
       *
            IF    ( SPA-GMN-CUR             =   4 )
-               IF   ( S03-NYUKINHOUHOU-STATE
+               IF   ( S03N-NYUKINHOUHOU-STATE
                                            =   WIDGET-INSENSITIVE )
                    MOVE    5           TO  SPA-GMN-CUR
                END-IF
            END-IF
       *
            IF    ( SPA-GMN-CUR             =   5 )
-               IF   ( S03-SKYPRT-STATE
+               IF   ( S03N-SKYPRT-STATE
                                            =   WIDGET-INSENSITIVE )
                    MOVE    112         TO  SPA-GMN-CUR
                END-IF
            END-IF
       *
            IF    ( SPA-GMN-CUR             =   112 )
-               IF   ( S03-B12-STATE        =   WIDGET-INSENSITIVE )
+               IF   ( S03N-B12-STATE       =   WIDGET-INSENSITIVE )
                    MOVE    1           TO  SPA-GMN-CUR
                END-IF
            END-IF
@@ -1589,10 +1613,10 @@
       *****************************************************************
        4101-GMN-SPA-SET-SEC            SECTION.
       *
-           MOVE    S03-NYUKINGK2       TO  SPA-GMN-NYUKIN
-           MOVE    S03-NYUKINYMD       TO  SPA-GMN-NYUKINYMD
-           MOVE    S03-NYUKINHOUHOU    TO  SPA-GMN-NYKN-HOHO-G
-           MOVE    S03-SKYPRT          TO  SPA-GMN-SKYPRT-G
+           MOVE    S03N-NYUKINGK2      TO  SPA-GMN-NYUKIN
+           MOVE    S03N-NYUKINYMD      TO  SPA-GMN-NYUKINYMD
+           MOVE    S03N-NYUKINHOUHOU   TO  SPA-GMN-NYKN-HOHO-G
+           MOVE    S03N-SKYPRT         TO  SPA-GMN-SKYPRT-G
       *
            .
       *
@@ -1673,7 +1697,6 @@
       *****************************************************************
        4102-SYOKAI-KIHON-CHK-SEC       SECTION.
       *
-           PERFORM 4101-SKYPRT-CHK-SEC
       *
            .
        4102-SYOKAI-KIHON-CHK-EXT.
@@ -1694,7 +1717,7 @@
            PERFORM VARYING IDX2    FROM    1   BY  1
                    UNTIL ( IDX2    >   SPA-GMN-SMEILIST-MAX )
       *
-               IF    ( S03-SELECT (IDX2)   =   "T" )
+               IF    ( S03N-SELECT (IDX2)   =   "T" )
                    MOVE    IDX2    TO  SPA-GMN-SMEILIST-SEL
                                        SPA-GMN-SELNUM
                    IF    ( SPA-S01-SYORINO     =   CONST-PROC-RRKSYU )
@@ -1710,7 +1733,7 @@
            END-PERFORM
       *
            IF    ( SPA-S01-SYORINO     =   CONST-PROC-RRKSYU )
-               IF    ( SPA-NAI-DENPJTIKBN  =   "1" OR "2" OR "8" )
+               IF    ( SPA-NAI-DENPJTIKBN  =   "1" OR "2" OR "8" OR "9")
                    CONTINUE
                ELSE
       *
@@ -1736,7 +1759,7 @@
       *****************************************************************
        4100-SYORIKBN-CHK-SEC           SECTION.
       *
-           MOVE    S03-NAIYO       TO  SPA-GMN-SYORIKBN-G
+           MOVE    S03N-NAIYO      TO  SPA-GMN-SYORIKBN-G
       *
            EVALUATE SPA-GMN-SYORIKBN
            WHEN    "1"
@@ -1746,7 +1769,6 @@
            WHEN    OTHER
                MOVE    CONST-PROC-SYOKAI   TO  SPA-S01-SYORINO
            END-EVALUATE
-      *
       *
            PERFORM 4200-SPA-SET-SEC
       *
@@ -1772,7 +1794,7 @@
            MOVE    WRK-HENYMDG     TO  SPA-GMN-NYUKINYMD
            MOVE    WRK-SYMD        TO  SPA-NAI-NYUKINYMD
       *
-           MOVE    S03-RIREKIIN    TO  SPA-GMN-SELNUM
+           MOVE    S03N-RIREKIIN   TO  SPA-GMN-SELNUM
       *
            IF    ( SPA-GMN-SELNUM  NOT =   ZERO )
                PERFORM 41001-SELNUM-CHK-SEC
@@ -1808,7 +1830,7 @@
            IF    ( SPA-ERRCD       =   SPACE )
                IF    ( SPA-S01-SYORINO     =   CONST-PROC-RRKSYU )
                    IF    ( SPA-NAI-TJOUTAIKBN (SPA-GMN-SELNUM)
-                                           =   "1" OR "2" OR "8" )
+                                           =   "1" OR "2" OR "8" OR "9")
                        CONTINUE
                    ELSE
                        MOVE    "0009"  TO  SPA-ERRCD
@@ -1999,10 +2021,6 @@
                END-IF
            END-IF
       *
-           IF    ( SPA-NAI-HEAD-DENPJTIKBN =   "3" )
-               MOVE    SPACE           TO  SPA-GMN-SKYPRT-G
-           END-IF
-      *
            .
        4101-SKYPRT-CHK-EXT.
            EXIT.
@@ -2107,16 +2125,32 @@
       *
            PERFORM 41011-PRINT-PG-SEC
       *
-           INITIALIZE      ORCHC03AREA
-           MOVE   SPA-S01-DENPNUM      TO  ORCHC03-DENPNUM
-           MOVE   WRK-SKYPRT-SKYMONEY  TO  ORCHC03-SEIKYU
-      *    MOVE   ????                 TO  ORCHC03-SEIKYU-TAX-SAI
-           MOVE   WRK-SKYPRT-NYUKIN    TO  ORCHC03-NYUKIN
-           MOVE   3                    TO  ORCHC03-HAKKOFLG
-           MOVE   WRK-SKYPRT-DENPEDANUM
-                                       TO  ORCHC03-DENPEDANUM
-           CALL  WRK-SEIKYU-PG     USING   WRK-SPA-AREA
-                                           ORCHC03AREA
+           INITIALIZE      ORCHCN03AREA
+      *
+           MOVE    WRK-SPA-HOSPID  TO  ORCHCN03-HEAD-HOSPID
+           MOVE    WRK-SPA-STAFFCD TO  ORCHCN03-STAFFCD
+           MOVE    WRK-SPA-SYSYMD  TO  ORCHCN03-SYSYMD
+           MOVE    WRK-SPA-TERMID  TO  ORCHCN03-TERMID
+           MOVE    1               TO  ORCHCN03-CNT
+      *
+           MOVE    WRK-SPA-HOSPID  TO  ORCHCN03-HOSPID (1)
+           MOVE    WRK-SPA-PTID    TO  ORCHCN03-PTID   (1)
+           MOVE    WRK-SPA-PTNUM   TO  ORCHCN03-PTNUM  (1)
+           MOVE    "1"             TO  ORCHCN03-NYUGAIKBN (1)
+      *
+           MOVE    SPA-S01-SRYYMD  TO  ORCHCN03-KJNYMD  (1)
+           MOVE    SPA-S01-DENPNUM TO  ORCHCN03-DENPNUM (1)
+      *    MOVE    ?????           TO  ORCHCN03-SEIKYU-TAX-SAI
+      *                                                 (1)
+           MOVE    WRK-SKYPRT-SKYMONEY
+                                   TO  ORCHCN03-SEIKYU  (1)
+           MOVE    WRK-SKYPRT-NYUKIN
+                                   TO  ORCHCN03-NYUKIN  (1)
+           MOVE    3               TO  ORCHCN03-HAKKOFLG(1)
+           MOVE    WRK-SKYPRT-DENPEDANUM
+                                   TO  ORCHCN03-DENPEDANUM (1)
+      *
+           CALL    WRK-SEIKYU-PG   USING   ORCHCN03AREA
       *
            .
        4101-SKYPRT-PRINT-EXT.
@@ -2126,6 +2160,7 @@
       *****************************************************************
        41011-PRINT-PG-SEC              SECTION.
       *
+      *
       *    請求書
            MOVE    SPACE               TO  WRK-SEIKYU-PG
       *
@@ -2133,15 +2168,15 @@
            MOVE    "1"                 TO  ORCSPRTNM-KBN
            MOVE    "00000003"          TO  ORCSPRTNM-KBNCD
            MOVE    SPA-SYSYMD          TO  ORCSPRTNM-SRYYMD
-           MOVE    "2"                 TO  ORCSPRTNM-NYUGAIKBN
+           MOVE    "1"                 TO  ORCSPRTNM-NYUGAIKBN
            CALL    "ORCSPRTNM"         USING
                                            ORCSPRTNMAREA
                                            WRK-SPA-AREA
-                                           SYS-1032-REC
+                                           SYS-1035-REC
            IF    ( ORCSPRTNM-RC        =   ZERO )
-              MOVE    ORCSPRTNM-PRTPG  TO  WRK-SEIKYU-PG
+              MOVE    ORCSPRTNM-PRTPG     TO  WRK-SEIKYU-PG
            ELSE
-              MOVE    "ORCHC03"        TO  WRK-SEIKYU-PG
+              MOVE    "ORCHCN03"          TO  WRK-SEIKYU-PG
            END-IF
       *
            .
@@ -2472,6 +2507,8 @@
                MOVE    "1005"          TO  SPA-ERRCD
            ELSE
       *
+               PERFORM 900-SYUNOU-KEY-SEL-SEC
+      *
                MOVE    SMEI-NYUHEN-YMD     TO  WRK-OLD-NYUHEN-YMD
       *
       *        入返金額
@@ -2494,8 +2531,16 @@
       *
       *        伝票状態区分
                IF    ( SPA-NAI-DENPJTIKBN  NOT = "8" )
-                   IF    ( SPA-GMN-NYUKIN  NOT = ZERO )
-                       MOVE    "2"     TO  SMEI-JOUTAIKBN
+                   IF    ( SPA-NAI-DENPJTIKBN  = "9" )
+                       IF   (  SYU-SKYMONEY    >   SYU-NYUKIN-TOTAL )
+                           MOVE    "9"     TO  SMEI-JOUTAIKBN
+                       ELSE
+                           MOVE    "1"     TO  SMEI-JOUTAIKBN
+                       END-IF
+                   ELSE
+                       IF    ( SPA-GMN-NYUKIN  NOT = ZERO )
+                           MOVE    "2"     TO  SMEI-JOUTAIKBN
+                       END-IF
                    END-IF
                END-IF 
       *
@@ -2561,10 +2606,10 @@
       *    戻り時、画面を元へ戻す
            MOVE    SPACE               TO  LINKAREA
            MOVE    SPA-KYOUTU          TO  LNK-COMMON
-           MOVE    SPA-S03             TO  LNK-SCRSPA
+           MOVE    SPA-S03N            TO  LNK-SCRSPA
       *    画面移行用のパラメタ変更
-           MOVE    "S03"               TO  SPA-MOTOPG
-           MOVE    "S03"               TO  SPA-MOTOPG3
+           MOVE    "S03N"              TO  SPA-MOTOPG
+           MOVE    "S03N"              TO  SPA-MOTOPG3
            MOVE    "Y01"               TO  SPA-SAKIPG
            INITIALIZE                  SPA-KYOTUKEY
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
@@ -2588,10 +2633,10 @@
       *    戻り時、画面を元へ戻す
            MOVE    SPACE               TO  LINKAREA
            MOVE    SPA-KYOUTU          TO  LNK-COMMON
-           MOVE    SPA-S03             TO  LNK-SCRSPA
+           MOVE    SPA-S03N            TO  LNK-SCRSPA
       *
       *    画面移行用のパラメタ変更
-           MOVE    "S03"               TO  SPA-MOTOPG
+           MOVE    "S03N"              TO  SPA-MOTOPG
            MOVE    "U01"               TO  SPA-SAKIPG
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
       *
@@ -2723,7 +2768,7 @@
            MOVE    SPA-ERRMSG          TO  SERR-ERRMSG
            MOVE    "B01"               TO  MCP-WIDGET
       *
-           MOVE    "S03"               TO  SPA-MOTOPG
+           MOVE    "S03N"              TO  SPA-MOTOPG
            MOVE    "SERR"              TO  SPA-SAKIPG
       *
            MOVE    "NEW"               TO  MCP-PUTTYPE
