@@ -42,6 +42,7 @@
       *                                     確定ボタン追加
       *  01.00.11    NACL−多々納 03/10/31  セットからの次頁追加
       *  01.00.12    NACL−多々納 04/12/07  点数検査検索追加他
+      *  01.00.13    NACL-多々納  05/11/30  MONFUNC 対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -127,6 +128,8 @@
                05  WRK-SEMM        PIC 9(02).
                05  WRK-SEDD        PIC 9(02).
       *
+           03  WRK-STR             PIC 9(06).
+      *
            03  WRK-CNT-ENT         PIC 9(04).
            03  WRK-MOJI            PIC 9(04).
            03  WRK-MAP-INDEX       PIC 9(03).
@@ -155,6 +158,7 @@
            03  WRK-PATH            PIC X(64).
       *
            03  WRK-KETA            PIC 9(04).
+           03  WRK-KEY-INPUT       PIC X(22).
       *
            03  WRK-HEN-NAME        PIC X(70).
            03  WRK-KENSA-HEN       PIC X(02).
@@ -320,11 +324,13 @@
       *
       *    診療種別名テーブル
            COPY    "CPORCSSRYSYU.INC".
+      *    検索記号設定
+           COPY    "CPORCSADDSIGN.INC".
       *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
+      **** COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -335,7 +341,6 @@
            COPY    "ORCA-SPA".
       *
            COPY    "LINKAREA".
-      *
       *
        01  SCRAREA.
            COPY    "J02.INC".
@@ -444,7 +449,7 @@
       *    初期画面処理
       *****************************************************************
        300-SCREEN-SEC             SECTION.
-      *    K02 で初期化する
+      *    J04 で初期化する
       *D   INITIALIZE                  SPA-J98GMN-AREA
       *
       *****MOVE    ZERO                TO  SPA-J98-RC
@@ -470,6 +475,7 @@
            MOVE    "3:その他"          TO  SPA-J98-USERLST (3)
            MOVE    "4:コメント"        TO  SPA-J98-USERLST (4)
            MOVE    "5:労災"            TO  SPA-J98-USERLST (5)
+           MOVE    "6:システム予約"    TO  SPA-J98-USERLST (6)
            MOVE    SPACE               TO  SPA-J98-USER-G
       *
            IF      (SPA-J98-GMN-INPUT  =   SPACE )  AND
@@ -498,11 +504,11 @@
            MOVE    ZERO                TO  FLG-MAX
       **** MOVE    SPACE               TO  SPA-J98-SRYKBN
       *    開始
-           IF     (SPA-J98-PAGE        =   ZERO )  OR
-                  (SPA-J98-NEXT        =   ZERO )
+           IF     (SPA-J98-PAGE        =   ZERO )
+      *********OR (SPA-J98-NEXT        =   ZERO )
                MOVE    1                   TO  SPA-J98-PAGE
            END-IF
-           COMPUTE SPA-J98-NEXT        =  (SPA-J98-PAGE   -   1  )
+           COMPUTE WRK-STR             =  (SPA-J98-PAGE   -   1  )
                                        *   200
                                        +   1
       *
@@ -648,39 +654,33 @@
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
-      *
-               INITIALIZE                      TNS-TENSU-REC
-               MOVE    SPA-J98-GMN-INPUT(2:1)  TO  TNS-CDKBN-KBN
-               IF      SPA-J98-GMN-INPUT(3:3)  NUMERIC
-                   MOVE    SPA-J98-GMN-INPUT(3:3)   TO  TNS-CDKBN-KBNNUM
-                   MOVE    "TENSU-KEY91"        TO  WRK-PATH
-               ELSE
-                   MOVE    SPACE                TO  SPA-J98-GMN-INPUT
-                                                                (3:)
-                   MOVE    "TENSU-KEY90"        TO  WRK-PATH
-               END-IF
-      *        老人
-               IF      SPA-J98-GMN-INPUT(2:1)  =   "R"
-                   MOVE    "TENSU-KEY92"            TO  WRK-PATH
-               END-IF
-      *
-               MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-               MOVE    "DBSELECT"          TO  MCP-FUNC
-               MOVE    WRK-PATH            TO  ORC-DBPATH
-               MOVE    SPA-SRYYMD          TO  ORC-DBYMD
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-               IF      MCP-RC              =   ZERO
-                   MOVE    WRK-PATH            TO  ORC-DBPATH
-                   PERFORM                     910-TENSU-READ-SEC
-               ELSE
-                   MOVE    1                   TO  FLG-TENSU
-               END-IF
-           ELSE
-               MOVE    1                   TO  FLG-TENSU
+               PERFORM 310010-KUBUNNUM-TBLSET-SEC
            END-IF
+           .
+       310010-KUBUNNUM-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    区分番号編集
+      *****************************************************************
+       310010-KUBUNNUM-TBLSET-SEC       SECTION.
+      *
+           INITIALIZE                      TNS-TENSU-REC
+           MOVE    SPA-J98-GMN-INPUT(2:1)  TO  TNS-CDKBN-KBN
+           IF      SPA-J98-GMN-INPUT(3:3)  NUMERIC
+               MOVE    SPA-J98-GMN-INPUT(3:3)   TO  TNS-CDKBN-KBNNUM
+               MOVE    "key91"              TO  WRK-PATH
+           ELSE
+               MOVE    SPACE                TO  SPA-J98-GMN-INPUT
+                                                                (3:)
+               MOVE    "key90"              TO  WRK-PATH
+           END-IF
+      *    老人
+           IF      SPA-J98-GMN-INPUT(2:1)  =   "R"
+               MOVE    "key92"            TO  WRK-PATH
+           END-IF
+      *
+           MOVE    WRK-PATH            TO  MCP-PATHNAME
+           PERFORM 910-TENSU-SELECT-SEC
       *
            MOVE    ZERO                TO  IDX2
            MOVE    ZERO                TO  IDX
@@ -693,26 +693,20 @@
                IF      FLG-CHK             =   ZERO
                    ADD     1               TO  IDX2
       *            次ページの時、表示分は読み飛ばし
-                   IF      IDX2            >=  SPA-J98-NEXT
+                   IF      IDX2            >=  WRK-STR
                        PERFORM 31021-TENSU-HEN-SEC
                    END-IF
                END-IF
       *
-               MOVE    WRK-PATH            TO  ORC-DBPATH
+               MOVE    WRK-PATH            TO  MCP-PATHNAME
                PERFORM                     910-TENSU-READ-SEC
            END-PERFORM
       *
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-               MOVE    WRK-PATH            TO  ORC-DBPATH
-               MOVE    SPA-SRYYMD          TO  ORC-DBYMD
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    WRK-PATH            TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
-               MOVE    WRK-CNT-ENT         TO  SPA-J98-GMN-MAX
-           END-IF
+           MOVE    WRK-CNT-ENT         TO  SPA-J98-GMN-MAX
       *
       *    点数マスタで対象が有った時、タイプを変更する
            IF      SPA-J98-GMN-MAX     >   ZERO
@@ -720,7 +714,7 @@
            END-IF
       *
            .
-       310010-KUBUNNUM-SET-EXT.
+       310010-KUBUNNUM-TBLSET-EXT.
            EXIT.
       *
       *TEST
@@ -824,22 +818,9 @@
            MOVE    WRK-TENSU2          TO  TNSXX-TK-EDTEN
            MOVE    "60"                TO  TNSXX-STSRYKBN
            MOVE    "69"                TO  TNSXX-EDSRYKBN
-           MOVE    "TENSU-KEY93"       TO  WRK-PATH
       *
-           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    WRK-PATH            TO  ORC-DBPATH
-               PERFORM                     910-TENSU-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-TENSU
-           END-IF
+           MOVE    "key93"             TO  MCP-PATHNAME
+           PERFORM 910-TENSU-SELECT-SEC
       *
            MOVE    "K"                 TO   SPA-J98-GMN-SYORI
            MOVE    ZERO                TO  IDX2
@@ -859,22 +840,18 @@
                IF      FLG-CHK             =   ZERO
                    ADD     1               TO  IDX2
       *            次ページの時、表示分は読み飛ばし
-                   IF      IDX2            >=  SPA-J98-NEXT
+                   IF      IDX2            >=  WRK-STR
                        PERFORM 31021-TENSU-HEN-SEC
                    END-IF
                END-IF
       *
-               MOVE    WRK-PATH            TO  ORC-DBPATH
+               MOVE    "key93"             TO  MCP-PATHNAME
                PERFORM                     910-TENSU-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key93"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            MOVE    WRK-CNT-ENT         TO  SPA-J98-GMN-MAX
       *
@@ -908,28 +885,26 @@
                    MOVE    1               TO  IDX-K
                END-IF
            END-PERFORM
-           IF      WRK-KETA            =   20
-               MOVE    "INPUTCD-KEY2"      TO  WRK-PATH
-           ELSE
-               MOVE    "INPUTCD-KEY"       TO  WRK-PATH
-           END-IF
       *
            MOVE    SPACE               TO  INPUTCD-REC
            MOVE    SPA-HOSPID          TO  ICD-HOSPID
            MOVE    SPA-J98-CDSYUBETU   TO  ICD-CDSYU
            MOVE    SPA-J98-GMN-INPUT   TO  ICD-INPUTCD
-      *D   MOVE    SPA-J98-GMN-INPUT   TO  ICD-INPUTCDMLT
+           IF      WRK-KETA            =   20
+               MOVE    "key2"              TO  WRK-PATH
+           ELSE
+               COMPUTE IDX-K               =   WRK-KETA  +  1
+               MOVE    "%"                 TO  ICD-INPUTCD (IDX-K:1)
+               MOVE    "key"               TO  WRK-PATH
+           END-IF
       *
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-      *****MOVE    "INPUTCD-KEY"       TO  ORC-DBPATH
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_inputcd"       TO  MCP-TABLE
+           MOVE    WRK-PATH            TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    WRK-PATH            TO  ORC-DBPATH
+               MOVE    "tbl_inputcd"       TO  MCP-TABLE
+               MOVE    WRK-PATH            TO  MCP-PATHNAME
                PERFORM                     930-INPUTCD-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-INPUTCD
@@ -951,33 +926,14 @@
       *                点数マスタより編集
                        INITIALIZE                  TNS-TENSU-REC
                        MOVE    ICD-SRYCD           TO  TNS-SRYCD
-                       MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-                       MOVE    "DBSELECT"          TO  MCP-FUNC
-                       MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-                       MOVE    SPA-SRYYMD          TO  ORC-DBYMD
-                       CALL    "ORCMCPSUB"          USING
-                                                    MCPAREA
-                                                    ORCMCPAREA
-                                                    MCPDATA-REC
-                       IF      MCP-RC              =   ZERO
-                           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-                           PERFORM                 910-TENSU-READ-SEC
-                       ELSE
-                           MOVE    1                   TO  FLG-TENSU
-                       END-IF
-                       MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-                       MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-                       CALL    "ORCMCPSUB"          USING
-                                                    MCPAREA
-                                                    ORCMCPAREA
-                                                    MCPDATA-REC
+                       PERFORM 9110-TENSU-KEYREAD-SEC
       *
                        IF      FLG-TENSU           =   ZERO
                            PERFORM 31021-TENSU-CHK-SEC
                            IF      FLG-CHK         =   ZERO
                                ADD     1               TO  IDX2
       *                        次ページの時、表示分は読み飛ばし
-                               IF      IDX2            >=  SPA-J98-NEXT
+                               IF      IDX2            >=  WRK-STR
                                    PERFORM 31012-INPUTCD-HEN-SEC
                                END-IF
                            END-IF
@@ -986,16 +942,14 @@
       *
                END-IF
       *
-               MOVE    WRK-PATH            TO  ORC-DBPATH
+               MOVE    "tbl_inputcd"       TO  MCP-TABLE
+               MOVE    WRK-PATH            TO  MCP-PATHNAME
                PERFORM                     930-INPUTCD-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_inputcd"       TO  MCP-TABLE
+           MOVE    WRK-PATH            TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            MOVE    WRK-CNT-ENT         TO  SPA-J98-GMN-MAX
            IF      FLG-MAX         NOT =   ZERO
@@ -1015,7 +969,7 @@
       *
            ADD     1               TO  IDX2
       *    次ページの時、表示分は読み飛ばし
-           IF      IDX2            >=  SPA-J98-NEXT
+           IF      IDX2            >=  WRK-STR
                CONTINUE
            ELSE
                GO      TO      31013-SET-HEN-EXT
@@ -1023,7 +977,7 @@
       *
            ADD     1                   TO  IDX
            IF      IDX                 >   200
-               MOVE    IDX2                TO  SPA-J98-NEXT
+               MOVE    1                   TO  SPA-J98-NEXT
                MOVE    1                   TO  FLG-MAX
            ELSE
                ADD     1                   TO  WRK-CNT-ENT
@@ -1049,7 +1003,7 @@
       *    ２００件オーバーチェック
            IF      IDX                 >   200
                MOVE    1                   TO  FLG-MAX
-               MOVE    IDX2                TO  SPA-J98-NEXT
+               MOVE    1                   TO  SPA-J98-NEXT
                GO      TO      31012-INPUTCD-HEN-EXT
            END-IF
       *
@@ -1116,6 +1070,7 @@
       *
            MOVE    ZERO                TO  WRK-CNT-ENT
            MOVE    ZERO                TO  FLG-MAX
+           MOVE    SPACE               TO  WRK-KEY-INPUT
       *
       *    ユーザー登録分
            IF      SPA-J98-GMN-SYORI   =   "U"
@@ -1127,56 +1082,64 @@
                EVALUATE    SPA-J98-GMN-SYORI
       *            内服
                    WHEN    "3"
-                       MOVE    "TENSU-KEY51J"       TO  WRK-PATH
+                       MOVE    "key51j"       TO  WRK-PATH
       *            外用
                    WHEN    "4"
-                       MOVE    "TENSU-KEY52J"      TO  WRK-PATH
+                       MOVE    "key52j"       TO  WRK-PATH
       *            注射
                    WHEN    "5"
-                       MOVE    "TENSU-KEY53J"       TO  WRK-PATH
+                       MOVE    "key53j"       TO  WRK-PATH
       *            器材
                    WHEN    "7"
-                       MOVE    "TENSU-KEY6J"        TO  WRK-PATH
+                       MOVE    "key6j"        TO  WRK-PATH
       *            診療行為
                    WHEN    "8"
-                       MOVE    "TENSU-KEY7J"        TO  WRK-PATH
+                       MOVE    "key7j"        TO  WRK-PATH
       *            検査
                    WHEN    "9"
       **************** MOVE    "TENSU-KEY42J"       TO  WRK-PATH
-                       MOVE    "TENSU-KEY42JK"      TO  WRK-PATH
+                       MOVE    "key42jk"       TO  WRK-PATH
       *            内服
                    WHEN    OTHER
                        MOVE    "3"              TO  SPA-J98-GMN-SYORI
-                       MOVE    "TENSU-KEY51J"       TO  WRK-PATH
+                       MOVE    "key51j"         TO  WRK-PATH
                END-EVALUATE
            ELSE
       *        全体分
                EVALUATE    SPA-J98-GMN-SYORI
       *            内服
                    WHEN    "3"
-                       MOVE    "TENSU-KEY51"       TO  WRK-PATH
+                       MOVE    "key51"       TO  WRK-PATH
       *            外用
                    WHEN    "4"
-                       MOVE    "TENSU-KEY52"      TO  WRK-PATH
+                       MOVE    "key52"      TO  WRK-PATH
       *            注射
                    WHEN    "5"
-                       MOVE    "TENSU-KEY53"       TO  WRK-PATH
+                       MOVE    "key53"       TO  WRK-PATH
       *            器材
                    WHEN    "7"
-                       MOVE    "TENSU-KEY6"        TO  WRK-PATH
+                       MOVE    "key6"        TO  WRK-PATH
       *            診療行為
                    WHEN    "8"
-                       MOVE    "TENSU-KEY7"        TO  WRK-PATH
+                       MOVE    "key7"        TO  WRK-PATH
       *            検査
                    WHEN    "9"
       **************** MOVE    "TENSU-KEY42"       TO  WRK-PATH
-                       MOVE    "TENSU-KEY42K"      TO  WRK-PATH
+                       MOVE    "key42k"      TO  WRK-PATH
       *            内服
                    WHEN    OTHER
                        MOVE    "3"              TO  SPA-J98-GMN-SYORI
-                       MOVE    "TENSU-KEY51"        TO  WRK-PATH
+                       MOVE    "key51"        TO  WRK-PATH
                END-EVALUATE
+      *
            END-IF
+      *        検索キー編集
+               INITIALIZE                  ORCSADDSIGNAREA
+               MOVE    "1"                 TO  SADDSIGN-KBN
+               MOVE    SPA-J98-GMN-INPUT   TO  SADDSIGN-STR
+               CALL    "ORCSADDSIGN"       USING
+                                           ORCSADDSIGNAREA
+               MOVE    SADDSIGN-STR        TO  WRK-KEY-INPUT
       *
            END-IF
       *
@@ -1188,8 +1151,10 @@
                    MOVE    SPA-J98-NAI-KENSANO TO  TNS-KNSJISGRPKBN
       *********END-IF
            ELSE
-               MOVE    SPA-J98-GMN-INPUT   TO  TNS-NAME
-               MOVE    SPA-J98-GMN-INPUT   TO  TNS-KANANAME
+      *******  MOVE    SPA-J98-GMN-INPUT   TO  TNS-NAME
+      *******  MOVE    SPA-J98-GMN-INPUT   TO  TNS-KANANAME
+               MOVE    WRK-KEY-INPUT       TO  TNS-NAME
+               MOVE    WRK-KEY-INPUT       TO  TNS-KANANAME
            END-IF
       *
       *    ユーザー登録分
@@ -1203,20 +1168,8 @@
                END-IF
            END-IF
       *
-           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    WRK-PATH            TO  ORC-DBPATH
-               PERFORM                     910-TENSU-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-TENSU
-           END-IF
+           MOVE    WRK-PATH            TO  MCP-PATHNAME
+           PERFORM 910-TENSU-SELECT-SEC
       *
            MOVE    ZERO                TO  IDX2
            MOVE    ZERO                TO  IDX
@@ -1241,25 +1194,32 @@
                            END-IF
                    END-EVALUATE
                END-IF
+      *        システム予約の入力不可分
+               IF      SPA-J98-GMN-SYORI3      =   "U6"
+                   IF      TNS-SRYCD           >=  "099999911"
+                       MOVE    1               TO  FLG-CHK
+                   END-IF
+                   IF      TNS-SRYCD(1:4)      =   "0996"
+                                               OR  "0997"
+                       MOVE    1               TO  FLG-CHK
+                   END-IF
+               END-IF
       *
                IF      FLG-CHK             =   ZERO
                    ADD     1               TO  IDX2
       *            次ページの時、表示分は読み飛ばし
-                   IF      IDX2            >=  SPA-J98-NEXT
+                   IF      IDX2            >=  WRK-STR
                        PERFORM 31021-TENSU-HEN-SEC
                    END-IF
                END-IF
       *
-               MOVE    WRK-PATH            TO  ORC-DBPATH
+               MOVE    WRK-PATH            TO  MCP-PATHNAME
                PERFORM                     910-TENSU-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    WRK-PATH            TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            MOVE    WRK-CNT-ENT         TO  SPA-J98-GMN-MAX
       *
@@ -1287,90 +1247,96 @@
            EVALUATE    SPA-J98-GMN-SYORI3
                WHEN    "J1"
       *            自院・内服
-                   MOVE    "TENSU-KEY11M1"      TO  WRK-PATH
+                   MOVE    "key11m1"            TO  WRK-PATH
                    MOVE    "600000000"          TO  TNS-SRYCD
                    MOVE    "699999999"          TO  TNSUP-SRYCD
                    MOVE    1                    TO  TNS-YKZKBN
                    MOVE    "1"                  TO  SPA-J98-GMN-ALL
                WHEN    "J2"
       *            自院・外用
-                   MOVE    "TENSU-KEY11M1"      TO  WRK-PATH
+                   MOVE    "key11m1"            TO  WRK-PATH
                    MOVE    "600000000"          TO  TNS-SRYCD
                    MOVE    "699999999"          TO  TNSUP-SRYCD
                    MOVE    6                    TO  TNS-YKZKBN
                    MOVE    "1"                  TO  SPA-J98-GMN-ALL
                WHEN    "J3"
-      *            自院・注射
-                   MOVE    "TENSU-KEY11M1"      TO  WRK-PATH
+      *            自院・注射 
+                   MOVE    "key11m1"            TO  WRK-PATH
                    MOVE    "600000000"          TO  TNS-SRYCD
                    MOVE    "699999999"          TO  TNSUP-SRYCD
                    MOVE    4                    TO  TNS-YKZKBN
                    MOVE    "1"                  TO  SPA-J98-GMN-ALL
                WHEN    "J4"
       *            自院・処置
-                   MOVE    "TENSU-KEY12M1"      TO  WRK-PATH
+                   MOVE    "key12m1"            TO  WRK-PATH
                    MOVE    "140000000"          TO  TNS-SRYCD
                    MOVE    "149999999"          TO  TNSUP-SRYCD
                    MOVE    "1"                  TO  SPA-J98-GMN-ALL
                WHEN    "J5"
       *            自院・診察
-                   MOVE    "TENSU-KEY12M1"      TO  WRK-PATH
+                   MOVE    "key12m1"            TO  WRK-PATH
                    MOVE    "1"                  TO  SPA-J98-GMN-ALL
                    MOVE    "110000000"          TO  TNS-SRYCD
                    MOVE    "119999999"          TO  TNSUP-SRYCD
                WHEN    "J6"
       *            自院・注射
-                   MOVE    "TENSU-KEY12M1"      TO  WRK-PATH
+                   MOVE    "key12m1"            TO  WRK-PATH
                    MOVE    "1"                  TO  SPA-J98-GMN-ALL
                    MOVE    "130000000"          TO  TNS-SRYCD
                    MOVE    "139999999"          TO  TNSUP-SRYCD
                WHEN    "J7"
       *            自院・手術
-                   MOVE    "TENSU-KEY12M1"      TO  WRK-PATH
+                   MOVE    "key12m1"            TO  WRK-PATH
                    MOVE    "1"                  TO  SPA-J98-GMN-ALL
                    MOVE    "150000000"          TO  TNS-SRYCD
                    MOVE    "159999999"          TO  TNSUP-SRYCD
                WHEN    "J8"
       *            自院・画像診断
-                   MOVE    "TENSU-KEY12M1"      TO  WRK-PATH
+                   MOVE    "key12m1"            TO  WRK-PATH
                    MOVE    "1"                  TO  SPA-J98-GMN-ALL
                    MOVE    "170000000"          TO  TNS-SRYCD
                    MOVE    "179999999"          TO  TNSUP-SRYCD
                WHEN    "J9"
       *            自院・その他
-                   MOVE    "TENSU-KEY12M1"      TO  WRK-PATH
+                   MOVE    "key12m1"            TO  WRK-PATH
                    MOVE    "1"                  TO  SPA-J98-GMN-ALL
                    MOVE    "180000000"          TO  TNS-SRYCD
                    MOVE    "199999999"          TO  TNSUP-SRYCD
                WHEN    "U4"
       *            自院・コメント
-                   MOVE    "TENSU-KEY12S"       TO  WRK-PATH
+                   MOVE    "key12s"             TO  WRK-PATH
                    MOVE    "1"                  TO  SPA-J98-GMN-ALL
                    MOVE    "800000000"          TO  TNS-SRYCD
                    MOVE    "899999999"          TO  TNSUP-SRYCD
                WHEN    "U1"
       *            用法
-                   MOVE    "TENSU-KEY12S"       TO  WRK-PATH
+                   MOVE    "key12s"             TO  WRK-PATH
                    MOVE    "001000000"          TO  TNS-SRYCD
                    MOVE    "001999999"          TO  TNSUP-SRYCD
                    MOVE    "1"                  TO  SPA-J98-GMN-ALL
                WHEN    "U2"
       *            部位
-                   MOVE    "TENSU-KEY12S"       TO  WRK-PATH
+                   MOVE    "key12s"             TO  WRK-PATH
                    MOVE    "002000000"          TO  TNS-SRYCD
                    MOVE    "002999999"          TO  TNSUP-SRYCD
                    MOVE    "1"                  TO  SPA-J98-GMN-ALL
                WHEN    "U3"
       *            その他
-                   MOVE    "TENSU-KEY12S"       TO  WRK-PATH
+                   MOVE    "key12s"             TO  WRK-PATH
                    MOVE    "003000000"          TO  TNS-SRYCD
                    MOVE    "098999999"          TO  TNSUP-SRYCD
                    MOVE    "1"                  TO  SPA-J98-GMN-ALL
                WHEN    "U5"
       *            労災診察
-                   MOVE    "TENSU-KEY12S"       TO  WRK-PATH
+                   MOVE    "key12s"             TO  WRK-PATH
                    MOVE    "100000000"          TO  TNS-SRYCD
                    MOVE    "109999999"          TO  TNSUP-SRYCD
+                   MOVE    "1"                  TO  SPA-J98-GMN-ALL
+               WHEN    "U6"
+      *            予約コード
+                   MOVE    "key12s"             TO  WRK-PATH
+                   MOVE    "099000000"          TO  TNS-SRYCD
+                   MOVE    "099999999"          TO  TNSUP-SRYCD
                    MOVE    "1"                  TO  SPA-J98-GMN-ALL
            END-EVALUATE
       *
@@ -1388,40 +1354,28 @@
                EVALUATE    IDX-KAI
                    WHEN    1
       *            器材
-                       MOVE    "TENSU-KEY12S"       TO  WRK-PATH
+                       MOVE    "key12s"             TO  WRK-PATH
                        MOVE    "788888000"          TO  TNS-SRYCD
                        MOVE    "788888999"          TO  TNSUP-SRYCD
                    WHEN    2
       *            コメント１
-                       MOVE    "TENSU-KEY12S"       TO  WRK-PATH
+                       MOVE    "key12s"             TO  WRK-PATH
                        MOVE    "820800000"          TO  TNS-SRYCD
                        MOVE    "820899999"          TO  TNSUP-SRYCD
                    WHEN    3
       *            コメント２
-                       MOVE    "TENSU-KEY12S"       TO  WRK-PATH
+                       MOVE    "key12s"             TO  WRK-PATH
                        MOVE    "830800000"          TO  TNS-SRYCD
                        MOVE    "830899999"          TO  TNSUP-SRYCD
                    WHEN    4
       *            コメント３
-                       MOVE    "TENSU-KEY12S"       TO  WRK-PATH
+                       MOVE    "key12s"             TO  WRK-PATH
                        MOVE    "840800000"          TO  TNS-SRYCD
                        MOVE    "840899999"          TO  TNSUP-SRYCD
                END-EVALUATE
       *
-               MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-               MOVE    "DBSELECT"          TO  MCP-FUNC
-               MOVE    WRK-PATH            TO  ORC-DBPATH
-               MOVE    SPA-SRYYMD          TO  ORC-DBYMD
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-               IF      MCP-RC              =   ZERO
-                   MOVE    WRK-PATH            TO  ORC-DBPATH
-                   PERFORM                     910-TENSU-READ-SEC
-               ELSE
-                  MOVE    1                   TO  FLG-TENSU
-               END-IF
+               MOVE    WRK-PATH            TO  MCP-PATHNAME
+               PERFORM 910-TENSU-SELECT-SEC
       *
                PERFORM
                     UNTIL      (IDX         >    200 )   OR
@@ -1433,20 +1387,17 @@
                    IF      FLG-CHK             =   ZERO
                        ADD     1               TO  IDX2
       *                次ページの時、表示分は読み飛ばし
-                       IF      IDX2            >=  SPA-J98-NEXT
+                       IF      IDX2            >=  WRK-STR
                            PERFORM 31021-TENSU-HEN-SEC
                        END-IF
                    END-IF
       *
-                   MOVE    WRK-PATH            TO  ORC-DBPATH
+                   MOVE    WRK-PATH            TO  MCP-PATHNAME
                    PERFORM                     910-TENSU-READ-SEC
                END-PERFORM
-               MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-               MOVE    WRK-PATH            TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+               MOVE    "tbl_tensu"         TO  MCP-TABLE
+               MOVE    WRK-PATH            TO  MCP-PATHNAME
+               PERFORM 990-DBCLOSE-SEC
            END-PERFORM
       *
            MOVE    WRK-CNT-ENT         TO  SPA-J98-GMN-MAX
@@ -1502,7 +1453,7 @@
       *    ２００件オーバーチェック
            IF      IDX                 >   200
                MOVE    1                   TO  FLG-MAX
-               MOVE    IDX2                TO  SPA-J98-NEXT
+               MOVE    1                   TO  SPA-J98-NEXT
                GO      TO      31021-TENSU-HEN-EXT
            END-IF
       *
@@ -1526,6 +1477,9 @@
                CONTINUE
            ELSE
                IF      TNS-SRYCD (1:1)     =   "1"
+                   MOVE    TNS-SRYKBN          TO  SPA-J98-GMN-TANI(IDX)
+               END-IF
+               IF      TNS-SRYCD (1:3)     =   "099"
                    MOVE    TNS-SRYKBN          TO  SPA-J98-GMN-TANI(IDX)
                END-IF
            END-IF
@@ -1749,6 +1703,9 @@
                        WHEN    "U5"
                            MOVE    "労災"
                                                TO  J98-SENTAKU
+                       WHEN    "U6"
+                           MOVE    "システム予約コード"
+                                               TO  J98-SENTAKU
                    END-EVALUATE
       *        その他
                WHEN    OTHER
@@ -1825,7 +1782,8 @@
                END-IF
       *
       *!!      MOVE    SPA-J98-GMN-TANI (IDX)  TO  J98-TANI (IDX)
-               IF      SPA-J98-GMN-SRYCD (IDX) (1:1)   =   "1"
+               IF     (SPA-J98-GMN-SRYCD (IDX) (1:1)   =   "1" ) OR
+                      (SPA-J98-GMN-SRYCD (IDX) (1:3)   =   "099")
                    MOVE    SPA-J98-GMN-TANI (IDX)  TO  J98-SRYKBN(IDX)
                ELSE
                    MOVE    SPA-J98-GMN-TANI (IDX)  TO  J98-TANI (IDX)
@@ -2029,9 +1987,9 @@
       *        前ページ
                WHEN    "CLICKED"       ALSO    "B07S"
                    PERFORM 270-BACK-SEC
-      *!!!     確定
-      *!!!     WHEN    "CLICKED"       ALSO    "B12"
-      *!!!         PERFORM 290-KAKUTEI-SEC
+      *        確定
+               WHEN    "CLICKED"       ALSO    "B12"
+                   PERFORM 290-KAKUTEI-SEC
            END-EVALUATE
           .
       *
@@ -2091,9 +2049,13 @@
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    SPA-J98-GMN-INPUT   TO  KANACHK-MAE-INPUT
+           MOVE    22                  TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
-           MOVE    KANACHK-OUT-INPUT   TO  SPA-J98-GMN-INPUT
+           MOVE    KANACHK-MAE-INPUT   TO  SPA-J98-GMN-INPUT
+           IF      KANACHK-RC2         =   7
+               MOVE    KANACHK-OUT-INPUT   TO  SPA-J98-GMN-INPUT
+           END-IF
            IF      KANACHK-RC      NOT =   ZERO
       *        全角半角混在エラー
                MOVE    "0001"          TO  SPA-ERRCD
@@ -2324,8 +2286,8 @@
                    PERFORM 41014-KENSA-SEL-SEC
                END-IF
            ELSE
-      *!!!!!!!!PERFORM 41014-KENSA-SEL-SEC
-               PERFORM 41012-SRYCD-SEL-SEC
+               PERFORM 41014-KENSA-SEL-SEC
+      *!!!!!!! PERFORM 41012-SRYCD-SEL-SEC
       *        診療行為の時１件以上入力可
       *********IF      SPA-J98-GMN-SYORI   =   "8"
       *            PERFORM 41014-KENSA-SEL-SEC
@@ -2560,8 +2522,8 @@
                    PERFORM 41014-KENSA-SEL-SEC
                END-IF
            ELSE
-      *!!!     PERFORM 41014-KENSA-SEL-SEC
-               PERFORM 41012-SRYCD-SEL-SEC
+               PERFORM 41014-KENSA-SEL-SEC
+      *!!!     PERFORM 41012-SRYCD-SEL-SEC
            END-IF
            END-IF
            .
@@ -2796,6 +2758,8 @@
                    MOVE    "U4"            TO  SPA-J98-GMN-SYORI3
                WHEN    "5"
                    MOVE    "U5"            TO  SPA-J98-GMN-SYORI3
+               WHEN    "6"
+                   MOVE    "U6"            TO  SPA-J98-GMN-SYORI3
                WHEN    OTHER
                    MOVE    "0011"          TO  SPA-ERRCD
                    GO      TO      41014-USER-CHK-EXT
@@ -2967,6 +2931,12 @@
       *
            MOVE    WRK-INPUTCD         TO  SPA-J98-GMN-INPUT
       *
+           MOVE    SPACE               TO  WRK-KEY-INPUT
+           STRING  WRK-INPUTCD         DELIMITED  BY  SPACE
+                   "%"                 DELIMITED  BY  SIZE
+                                       INTO    WRK-KEY-INPUT
+           END-STRING
+      *
       *    ＳＰＡセット
            MOVE    ZERO                TO  SPA-J98-NEXT
            MOVE    1                   TO  SPA-J98-PAGE
@@ -3014,6 +2984,13 @@
                                        INTO    SPA-J98-GMN-INPUT
            END-STRING
       *
+           MOVE    SPACE               TO  WRK-KEY-INPUT
+           STRING  "%"                 DELIMITED  BY  SIZE
+                   WRK-INPUTCD         DELIMITED  BY  SPACE
+                   "%"                 DELIMITED  BY  SIZE
+                                       INTO    WRK-KEY-INPUT
+           END-STRING
+      *
       *    ＳＰＡセット
            MOVE    ZERO                TO  SPA-J98-NEXT
            MOVE    1                   TO  SPA-J98-PAGE
@@ -3057,6 +3034,12 @@
            STRING  "＊"                DELIMITED  BY  SIZE
                    WRK-INPUTCD         DELIMITED  BY  SPACE
                                        INTO    SPA-J98-GMN-INPUT
+           END-STRING
+      *
+           MOVE    SPACE               TO  WRK-KEY-INPUT
+           STRING  "%"                 DELIMITED  BY  SIZE
+                   WRK-INPUTCD         DELIMITED  BY  SPACE
+                                       INTO    WRK-KEY-INPUT
            END-STRING
       *
       *    ＳＰＡセット
@@ -3202,15 +3185,32 @@
        510-ERRSET-EXT.
            EXIT.
       *****************************************************************
+      *    点数マスター検索
+      *****************************************************************
+       910-TENSU-SELECT-SEC         SECTION.
+      *
+           MOVE    SPA-SRYYMD          TO  TNS-YUKOSTYMD
+           MOVE    SPA-SRYYMD          TO  TNS-YUKOEDYMD
+           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+      *
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               PERFORM                     910-TENSU-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-TENSU
+           END-IF
+           .
+       910-TENSU-SELECT-EXT.
+           EXIT.
+      *****************************************************************
       *    点数マスター読込
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+      *
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
                MOVE    ZERO                TO  FLG-TENSU
@@ -3222,17 +3222,43 @@
            .
        910-TENSU-READ-EXT.
            EXIT.
+      *****************************************************************
+      *    点数マスター主キー読込処理
+      *****************************************************************
+       9110-TENSU-KEYREAD-SEC         SECTION.
+      *
+           MOVE    SPA-SRYYMD          TO  TNS-YUKOSTYMD
+           MOVE    SPA-SRYYMD          TO  TNS-YUKOEDYMD
+      *
+           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_tensu"         TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 910-TENSU-READ-SEC
+           ELSE
+               INITIALIZE                  TNS-TENSU-REC
+               MOVE    1                   TO  FLG-TENSU
+           END-IF
+      *
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       9110-TENSU-KEYREAD-EXT.
+           EXIT.
       *
       *****************************************************************
       *    入力コードマスター読込
       *****************************************************************
        930-INPUTCD-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_inputcd"       TO  MCP-TABLE
+      *
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  INPUTCD-REC
                MOVE    ZERO                TO  FLG-INPUTCD
@@ -3244,6 +3270,47 @@
            .
        920-INPUTCD-NEXT-EXT.
            EXIT.
+      *****************************************************************
+      *    テーブル検索処理
+      *****************************************************************
+       910-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ読み込み処理
+      *****************************************************************
+       920-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       920-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢクローズ処理
+      *****************************************************************
+       990-DBCLOSE-SEC         SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       990-DBCLOSE-EXT.
+           EXIT.
       *
       *****************************************************************
       *    ＰＵＴ　処理
@@ -3251,10 +3318,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"   USING
-                                MCPAREA
-                                ORCMCPAREA
-                                MCPDATA-REC.
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        900-PUT-WINDOW-EXT.
