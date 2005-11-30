@@ -678,15 +678,15 @@
            MOVE    SPA-K98-GMN-INPUT(2:1)  TO  TNS-CDKBN-KBN
            IF      SPA-K98-GMN-INPUT(3:3)  NUMERIC
                MOVE    SPA-K98-GMN-INPUT(3:3)   TO  TNS-CDKBN-KBNNUM
-               MOVE    "KEY91"              TO  WRK-PATH
+               MOVE    "key91"              TO  WRK-PATH
            ELSE
                MOVE    SPACE                TO  SPA-K98-GMN-INPUT
                                                                 (3:)
-               MOVE    "KEY90"              TO  WRK-PATH
+               MOVE    "key90"              TO  WRK-PATH
            END-IF
       *    Ï·¿Í
            IF      SPA-K98-GMN-INPUT(2:1)  =   "R"
-               MOVE    "KEY92"            TO  WRK-PATH
+               MOVE    "key92"            TO  WRK-PATH
            END-IF
       *
            MOVE    WRK-PATH            TO  MCP-PATHNAME
