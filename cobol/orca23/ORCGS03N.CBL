@@ -2509,6 +2509,8 @@
       *
                PERFORM 900-SYUNOU-KEY-SEL-SEC
       *
+               MOVE    SMEI-NYUHEN-YMD     TO  WRK-OLD-NYUHEN-YMD
+      *
       *        入返金額
                MOVE    SPA-GMN-NYUKIN      TO  SMEI-NYUHEN-MONEY
       *
@@ -2519,8 +2521,6 @@
                    MOVE     SPA-NAI-NYUKINYMD
                                            TO  SMEI-NYUHEN-YMD
                END-IF
-      *
-               MOVE    SMEI-NYUHEN-YMD     TO  WRK-OLD-NYUHEN-YMD
       *
       *        入金方法
                IF    ( SPA-GMN-NYUKIN      >   ZERO )
