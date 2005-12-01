@@ -49,6 +49,5 @@ db	{
 	tbl_syskanri;
 };
 
-db	"shell"	{
-	shell;
-};
+/* #include "orcadb.inc" */
+#include "orcadbh.inc"

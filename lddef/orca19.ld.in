@@ -17,6 +17,7 @@ data	{
                 P97ERR;
 	};
 };
+
 db	{
 	tbl_syskanri;
 	tbl_hkncombi;
@@ -28,3 +29,5 @@ db	{
 	tbl_lock;
 };
 
+/* #include "orcadb.inc" */
+#include "orcadbh.inc"

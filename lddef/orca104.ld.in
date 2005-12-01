@@ -28,3 +28,6 @@ db	{
 	tbl_hknnum;
 	tbl_kohplus;
 };
+
+/* #include "orcadb.inc" */
+/* #include "orcadbh.inc" */

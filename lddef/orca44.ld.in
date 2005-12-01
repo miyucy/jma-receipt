@@ -37,10 +37,5 @@ db	{
 	tbl_btpara;
 };
 
-db	"shell"	{
-	shell;
-};
-db	"system"	{
-	metadb;
-};
-
+/* #include "orcadb.inc" */
+#include "orcadbh.inc"

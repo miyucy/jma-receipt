@@ -27,7 +27,5 @@ db	{
 	tbl_jobkanri;
 };
 
-db	"shell"	{
-	shell;
-};
-
+/* #include "orcadb.inc" */
+#include "orcadbh.inc"

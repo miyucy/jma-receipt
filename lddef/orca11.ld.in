@@ -19,6 +19,8 @@ data	{
 		U2ERR;
 	};
 };
+
+/*
 db	{
 	tbl_syskanri;
 	tbl_hkncombi;
@@ -42,14 +44,7 @@ db	{
 	tbl_ldmap;
 	tbl_lock;
 };
-db	"shell"	{
-	shell;
-};
-db	"system"	{
-	metadb;
-};
-db      "blob_body"{
-         blob;
-};
+*/
 
-
+#include "orcadb.inc"
+#include "orcadbh.inc"

@@ -25,3 +25,6 @@ db	{
 	tbl_tensu;
 	tbl_yakujyo;
 };
+
+/* #include "orcadb.inc" */
+/* #include "orcadbh.inc" */

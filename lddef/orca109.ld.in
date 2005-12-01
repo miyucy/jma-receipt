@@ -23,3 +23,6 @@ data	{
 db	{
 	tbl_help;
 };
+
+/* #include "orcadb.inc" */
+/* #include "orcadbh.inc" */

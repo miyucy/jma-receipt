@@ -42,7 +42,6 @@ db	{
 	tbl_monthlynum;
 	tbl_jobkanri;
 };
-db	"shell"	{
-	shell;
-};
 
+/* #include "orcadb.inc" */
+#include "orcadbh.inc"

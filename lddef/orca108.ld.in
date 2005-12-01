@@ -24,3 +24,6 @@ db	{
 	tbl_syskanri;
 	tbl_adrs;
 };
+
+/* #include "orcadb.inc" */
+/* #include "orcadbh.inc" */

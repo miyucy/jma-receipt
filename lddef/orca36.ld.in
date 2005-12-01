@@ -33,7 +33,6 @@ db	{
 	tbl_jobkanri;
 	view_I001;
 };
-db	"shell"	{
-	shell;
-};
 
+/* #include "orcadb.inc" */
+#include "orcadbh.inc"

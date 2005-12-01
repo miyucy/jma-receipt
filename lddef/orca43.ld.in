@@ -32,8 +32,5 @@ db	{
 	tbl_ptinf;
 };
 
-db	"shell"	{
-	shell;
-};
-
-
+/* #include "orcadb.inc" */
+#include "orcadbh.inc"

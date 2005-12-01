@@ -104,12 +104,3 @@ db	{
 	tbl_hours;
 	tbl_chktrd;
 };
-db	"shell"	{
-	shell;
-};
-db	"system"	{
-	metadb;
-};
-db      "blob_body"{
-         blob;
-};

@@ -47,6 +47,6 @@ db	{
 	query_ptinf_cnt;
 	tbl_ptnyuinrrk;
 };
-db	"shell"	{
-	shell;
-};
+
+/* #include "orcadb.inc" */
+#include "orcadbh.inc"

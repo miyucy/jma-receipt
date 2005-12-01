@@ -23,3 +23,6 @@ data	{
 db	{
 	tbl_jinmei;
 };
+
+/* #include "orcadb.inc" */
+/* #include "orcadbh.inc" */

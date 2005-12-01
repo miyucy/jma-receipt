@@ -65,7 +65,7 @@ BDFILE = $(BDFILE_sources:.bd.in=.bd)
 DIRECTORYFILE_in = directory.in
 DIRECTORYFILE = directory
 
-ORCADBFILE= orcadb.inc
+ORCADBFILE= orcadb.inc orcadbh.inc
 
 INSTALL_LDFILE = $(LDFILE) $(BDFILE) $(DIRECTORYFILE) \
                  $(ORCADBFILE)
@@ -77,7 +77,7 @@ INSTALL_LDFILE = $(LDFILE) $(BDFILE) $(DIRECTORYFILE) \
 
 all: $(LDFILE) $(BDFILE) $(DIRECTORYFILE) dbgroup.inc kentan.inc orcadbs.inc
 
-$(LDFILE) $(BDFILE):  orcadb.inc 
+$(LDFILE) $(BDFILE):  orcadb.inc orcadbh.inc 
 
 filecheck:
 
