@@ -1118,6 +1118,7 @@
                                            MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "K03 SYUNOU UPD ERR:"  MCP-RC
+                             ",KEY:" SYU-KEY
                    MOVE    "0005"          TO  SPA-ERRCD
                END-IF
       *
@@ -1175,6 +1176,7 @@
                                            MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "K03 SYUMEI UPD ERR:"  MCP-RC
+                           ",KEY:" SMEI-KEY
                    MOVE    "0005"          TO  SPA-ERRCD
                END-IF
       *
@@ -1262,10 +1264,12 @@
                IF      MCP-RC         NOT  =   ZERO
                    MOVE    "0005"              TO  SPA-ERRCD
                    DISPLAY "K03 SYSKANRI UPDATE:" MCP-RC
+                           ",KEY:" SYS-0041-KEY
                END-IF
            ELSE
                MOVE    "0005"              TO  SPA-ERRCD
                DISPLAY "K03 DENPNUM-SET ERR:" MCP-RC
+                           ",KEY:" SYS-0041-KEY
            END-IF
       *
            .
@@ -1867,6 +1871,7 @@
                                            MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                     DISPLAY "K03 JYURRK UPD1 ERR:" MCP-RC
+                           ",KEY:" JYURRK-KEY
                     MOVE    "0005"              TO  SPA-ERRCD
                END-IF
       *
@@ -1952,6 +1957,7 @@
                                                MCPDATA-REC
                    IF      MCP-RC          NOT =   ZERO
                         DISPLAY "K03 SRYACCT UPD ERR:" MCP-RC
+                                ",KEY:" ACCT-KEY
                         MOVE    "0005"             TO  SPA-ERRCD
                    END-IF
       *
@@ -2046,6 +2052,7 @@
                                                    MCPDATA-REC
                        IF      MCP-RC          NOT =   ZERO
                             DISPLAY "K03 SRYACCT UPD ERR:" MCP-RC
+                                ",KEY:" ACCT-KEY
                             MOVE    "0005"              TO  SPA-ERRCD
                        END-IF
                    END-IF
@@ -2768,6 +2775,7 @@
                                            MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "K03 SRYACCT INS ERR:" MCP-RC
+                                ",KEY:" ACCT-KEY
                    MOVE    "0005"              TO  SPA-ERRCD
                END-IF
       *        新規のときのみ、診療行為マスターを追加する
@@ -2788,6 +2796,7 @@
                                            MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "SYRACCT UPDTE ERR:" MCP-RC
+                                ",KEY:" ACCT-KEY
                    MOVE    "0005"              TO  SPA-ERRCD
                END-IF   
                MOVE    ZERO                TO  FLG-SINKI
@@ -2912,6 +2921,7 @@
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "PTINF UPDTE ERR:"   MCP-RC
+                                ",KEY:" PTINF-KEY
                MOVE    "0005"              TO  SPA-ERRCD
            END-IF 
       *
@@ -4007,6 +4017,7 @@
                                                MCPDATA-REC
                    IF      MCP-RC          NOT =   ZERO
                        DISPLAY "K03 JYURRK INS ERR:" JYURRK-KEY
+                           ",MCP-RC:" MCP-RC
                        MOVE    "0005"          TO  SPA-ERRCD
                    END-IF
       *            診療会計修正
@@ -4339,6 +4350,7 @@
       *
                        IF      MCP-RC          NOT =   ZERO
                             DISPLAY "K03 SRYACCT UPD ERR:" MCP-RC
+                             ",KEY:"  ACCT-KEY
                             MOVE    "0005"          TO  SPA-ERRCD
                        END-IF
       *

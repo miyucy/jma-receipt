@@ -1077,6 +1077,7 @@
                                            MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "SYRACCT INS ERR:" MCP-RC
+                            ",KEY:" ACCT-KEY
                    MOVE    "0005"              TO  SPA-ERRCD
                END-IF
       *        新規のときのみ、診療行為マスターを追加する
@@ -1098,6 +1099,7 @@
                                            MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "SYRACCT UPDTE ERR:" MCP-RC
+                            ",KEY:" ACCT-KEY
                    MOVE    "0005"              TO  SPA-ERRCD
                END-IF   
                MOVE    ZERO                TO  FLG-SINKI
@@ -1144,6 +1146,7 @@
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "PTINF UPDTE ERR:"   MCP-RC
+                            ",KEY:" PTINF-KEY
                MOVE    "0005"              TO  SPA-ERRCD
            END-IF 
       *
@@ -1357,6 +1360,7 @@
       *
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "K03 PTCOM INS ERR:" PTCOM-KEY
+                            ",MCP-RC:" MCP-RC
                MOVE    "0005"          TO  SPA-ERRCD
            END-IF
       *
