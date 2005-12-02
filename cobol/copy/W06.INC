@@ -119,6 +119,25 @@
                     06  W06-ORCA21FLG-COUNT   PIC S9(9)   BINARY.
                     06  W06-ORCA21FLG-ITEM
                             PIC X(12)   OCCURS  2 TIMES.
+                04  W06-TG2.
+                  05  W06-SKYPRTFLG-COMB.
+                    06  W06-SKYPRTFLG.
+                      07  W06-VALUE   PIC X(26).
+                    06  W06-SKYPRTFLG-COUNT   PIC S9(9)   BINARY.
+                    06  W06-SKYPRTFLG-ITEM
+                            PIC X(26)   OCCURS  5 TIMES.
+                  05  W06-SYOHOPRTFLG-COMB.
+                    06  W06-SYOHOPRTFLG.
+                      07  W06-VALUE   PIC X(26).
+                    06  W06-SYOHOPRTFLG-COUNT   PIC S9(9)   BINARY.
+                    06  W06-SYOHOPRTFLG-ITEM
+                            PIC X(26)   OCCURS  5 TIMES.
+                  05  W06-YAKUJYOFLG-COMB.
+                    06  W06-YAKUJYOFLG.
+                      07  W06-VALUE   PIC X(26).
+                    06  W06-YAKUJYOFLG-COUNT   PIC S9(9)   BINARY.
+                    06  W06-YAKUJYOFLG-ITEM
+                            PIC X(26)   OCCURS  5 TIMES.
               03  W06-STYUKYMD.
                 04  W06-VALUE   PIC X(10).
               03  W06-EDYUKYMD.
