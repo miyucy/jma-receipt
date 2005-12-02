@@ -505,7 +505,8 @@
            END-IF
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1001-REC
-      *
+      *        請求書発行
+               MOVE    SYS-1001-SKYPRTFLG  TO  SPA-SKYPRTFLG
       *        院外処方せん発行フラグ
                MOVE    SYS-1001-SYOHOPRTFLG    TO  SPA-SYOHOPRTFLG
       *        前回処方表示フラグ
@@ -539,6 +540,8 @@
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *    職員情報より発行フラグ再設定
+           PERFORM 1001-PRTFLG-HEN-SEC
       *
       *    システム管理検索（チェック機能制御情報）
            MOVE    SPACE               TO  SYS-1008-REC
@@ -883,6 +886,63 @@
       *
            .
        100-K01KYOUTU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    職員情報より発行フラグ再設定処理
+      *****************************************************************
+       1001-PRTFLG-HEN-SEC            SECTION.
+      *
+      *    当日の職員情報より業務識別の判定
+           MOVE    SPACE               TO  SYS-1010-REC
+           INITIALIZE                  SYS-1010-REC
+           MOVE    "1010"              TO  SYS-1010-KANRICD
+           STRING  SPA-OPID            DELIMITED  BY  SPACE
+                   "%"                 DELIMITED  BY  SIZE
+                                       INTO    SYS-1010-TBL
+           END-STRING
+           MOVE    SPA-SYSYMD          TO  SYS-1010-STYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-1010-EDYUKYMD
+      *    システム管理検索
+           MOVE    SYS-1010-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key3"              TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               INITIALIZE                  SYS-1010-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           PERFORM UNTIL   FLG-SYSKANRI        =   1
+               MOVE    MCPDATA-REC         TO  SYS-1010-REC
+               IF      SYS-1010-USERID     =   SPA-OPID
+      *            請求書発行フラグ
+                   IF      SYS-1010-SKYPRTFLG  NOT =   SPACE
+                       MOVE    SYS-1010-SKYPRTFLG  TO  SPA-SKYPRTFLG
+                   END-IF
+      *            院外処方せん発行フラグ
+                   IF      SYS-1010-SYOHOPRTFLG  NOT =   SPACE
+                       MOVE    SYS-1010-SYOHOPRTFLG  TO  SPA-SYOHOPRTFLG
+                   END-IF
+      *            薬剤情報発行フラグ
+                   IF      SYS-1010-YAKUJYOPRTFLG  NOT =   SPACE
+                       MOVE    SYS-1010-YAKUJYOPRTFLG
+                                                   TO  SPA-YAKJYOPRTFLG
+                   END-IF
+                   MOVE    1                   TO  FLG-SYSKANRI
+               ELSE
+                   MOVE    "key3"              TO  MCP-PATHNAME
+                   PERFORM 900-SYSKANRI-READ-SEC
+               END-IF
+           END-PERFORM
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       1001-PRTFLG-HEN-EXT.
            EXIT.
       *
       *****************************************************************
