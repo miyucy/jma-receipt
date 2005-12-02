@@ -172,6 +172,29 @@ W06	{
 					item	varchar(12)[2];
 				};
 			};
+			TG2	{
+				SKYPRTFLG_COMB	{
+					SKYPRTFLG	{
+						value	varchar(26);
+					};
+					count	int;
+					item	varchar(26)[5];
+				};
+				SYOHOPRTFLG_COMB	{
+					SYOHOPRTFLG	{
+						value	varchar(26);
+					};
+					count	int;
+					item	varchar(26)[5];
+				};
+				YAKUJYOFLG_COMB	{
+					YAKUJYOFLG	{
+						value	varchar(26);
+					};
+					count	int;
+					item	varchar(26)[5];
+				};
+			};
 		};
 		STYUKYMD	{
 			value	varchar(10);
