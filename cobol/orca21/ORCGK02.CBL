@@ -1539,7 +1539,10 @@
            MOVE    SPACE               TO  SYS-1010-REC
            INITIALIZE                  SYS-1010-REC
            MOVE    "1010"              TO  SYS-1010-KANRICD
-           MOVE    SPA-OPID            TO  SYS-1010-USERID
+           STRING    SPA-OPID          DELIMITED  BY  SPACE
+                     "%"               DELIMITED  BY  SIZE
+                                       INTO    SYS-1010-TBL
+           END-STRING
            MOVE    SPA-SYSYMD          TO  SYS-1010-STYUKYMD
            MOVE    SPA-SYSYMD          TO  SYS-1010-EDYUKYMD
       *    システム管理検索
@@ -1555,15 +1558,21 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
            MOVE    SPACE               TO  WRK-GYOUMU-KBN
-           IF      FLG-SYSKANRI        =   ZERO
+           PERFORM UNTIL   FLG-SYSKANRI        =   1
                MOVE    MCPDATA-REC         TO  SYS-1010-REC
-               IF      SYS-1010-ORCA21FLG  =   SPACE
+               IF      SYS-1010-USERID     =   SPA-OPID
+                   IF      SYS-1010-ORCA21FLG  =   SPACE
       *            初期画面設定が無い時、入退院登録の権限がある時
-                   IF      SYS-1010-GSRAUTH(36:1)   =  "1"
-                       MOVE    "1"         TO  SYS-1010-ORCA21FLG
+                       IF      SYS-1010-GSRAUTH(36:1)   =  "1"
+                           MOVE    "1"         TO  SYS-1010-ORCA21FLG
+                       END-IF
                    END-IF
+                   MOVE    1               TO  FLG-SYSKANRI
+               ELSE
+                   MOVE    "key3"              TO  MCP-PATHNAME
+                   PERFORM 960-KANRIMST-READ-SEC
                END-IF
-           END-IF
+           END-PERFORM
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
