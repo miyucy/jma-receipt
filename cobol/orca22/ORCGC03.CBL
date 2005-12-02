@@ -78,6 +78,8 @@
       *                                     をシス管の設定より行う
       *  00.02.07    NACL-藤原    05/07/07  未コード化傷病名以外の編集病
       *                                     の種別を変更できるようにする
+      *
+      *  02.07.01    NACL-藤原    05/10/31  MONFUNC対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -98,7 +100,6 @@
        FD  SPASCR-FILE.
        01  SPA-DATA-REC            PIC X(30000).
       *
-      *
        WORKING-STORAGE             SECTION.
       *
       * ＳＰＡパラメタデータ
@@ -118,7 +119,6 @@
            COPY    "ENUM-VALUE".
       *
            COPY    "CPSHELLTBL.INC".
-           COPY    "ORCA-DBPATH". 
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -179,7 +179,8 @@
       *
            03  WRK-STR             PIC 9(05).
       *                             
-           03  WRK-DBPATH          PIC X(64).
+           03  WRK-MCP-TABLE       PIC X(64).
+           03  WRK-MCP-PATHNAME    PIC X(64).
       *     
            03  WRK-HAISIYMDH       PIC X(22).
       * 
@@ -269,7 +270,6 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".  
       *
       *****************************************************************
       *    連絡　領域
@@ -510,10 +510,10 @@
                                                    USBYO-BYOMEIINPUTCD
                        MOVE    USERBYOMEI-REC      TO  MCPDATA-REC
                        MOVE    "DBDELETE"          TO  MCP-FUNC
-                       MOVE    "USERBYOMEI-DEL1"   TO  ORC-DBPATH
-                       CALL    "ORCMCPSUB"         USING
+                       MOVE    "tbl_userbyomei"    TO  MCP-TABLE
+                       MOVE    "del1"              TO  MCP-PATHNAME
+                       CALL    "MONFUNC"           USING
                                                    MCPAREA
-                                                   ORCMCPAREA
                                                    MCPDATA-REC
                        IF      MCP-RC          NOT =   ZERO 
                            MOVE    "1002"              TO  SPA-ERRCD
@@ -531,7 +531,8 @@
                                                    SPA-NAI-KOUMOKU
                                                    SPA-NAI-SELNO
                        MOVE    ZERO                TO  SPA-GMN-MAX
-                       MOVE    "USERBYOMEI-KEY3"   TO  WRK-DBPATH
+                       MOVE    "tbl_userbyomei"    TO  WRK-MCP-TABLE
+                       MOVE    "key3"              TO  WRK-MCP-PATHNAME
                        INITIALIZE                  USERBYOMEI-REC
                        MOVE    SPA-HOSPID          TO  USBYO-HOSPID
                        PERFORM 3101-USERBYOMEI-LST-SEC
@@ -546,10 +547,10 @@
                                                TO  USBYO-BYOMEIINPUTCD 
                        MOVE    USERBYOMEI-REC      TO  MCPDATA-REC
                        MOVE    "DBDELETE"          TO  MCP-FUNC
-                       MOVE    "USERBYOMEI-KEY"    TO  ORC-DBPATH
-                       CALL    "ORCMCPSUB"         USING
+                       MOVE    "tbl_userbyomei"    TO  MCP-TABLE
+                       MOVE    "key"               TO  MCP-PATHNAME
+                       CALL    "MONFUNC"           USING
                                                    MCPAREA
-                                                   ORCMCPAREA
                                                    MCPDATA-REC
                        IF      MCP-RC      NOT =   ZERO 
                            MOVE    "1002"          TO  SPA-ERRCD
@@ -570,9 +571,15 @@
                                SPA-GMN-BBUNRUICD (SPA-NAI-BUNRUI-SELNO)
                                                        TO
                                                        USBYO-BUNRUICD
-                           MOVE    "USERBYOMEI-KEY7"   TO  WRK-DBPATH
+                           MOVE    "tbl_userbyomei"    TO
+                                                       WRK-MCP-TABLE
+                           MOVE    "key7"              TO
+                                                       WRK-MCP-PATHNAME
                        ELSE
-                           MOVE    "USERBYOMEI-KEY3"   TO  WRK-DBPATH
+                           MOVE    "tbl_userbyomei"    TO
+                                                       WRK-MCP-TABLE
+                           MOVE    "key3"              TO
+                                                       WRK-MCP-PATHNAME
                        END-IF
                        PERFORM 3101-USERBYOMEI-LST-SEC
                        IF    ( SPA-GMN-MAX         =   ZERO )
@@ -586,9 +593,15 @@
                                            (SPA-NAI-BUNRUI-SELNO)
                                                            TO
                                                        USBYO-BUNRUICD
-                               MOVE    "USERBYOMEI-KEY7"   TO WRK-DBPATH
+                               MOVE    "tbl_userbyomei"    TO
+                                                       WRK-MCP-TABLE
+                               MOVE    "key7"              TO
+                                                       WRK-MCP-PATHNAME
                            ELSE
-                               MOVE    "USERBYOMEI-KEY3"   TO WRK-DBPATH
+                               MOVE    "tbl_userbyomei"    TO
+                                                       WRK-MCP-TABLE
+                               MOVE    "key3"              TO
+                                                       WRK-MCP-PATHNAME
                            END-IF
                            PERFORM 3101-USERBYOMEI-LST-SEC
                        END-IF
@@ -683,10 +696,10 @@
                                                    USBYO-BYOMEIINPUTCD
                        MOVE    USERBYOMEI-REC      TO  MCPDATA-REC
                        MOVE    "DBDELETE"          TO  MCP-FUNC
-                       MOVE    "USERBYOMEI-DEL1"   TO  ORC-DBPATH
-                       CALL    "ORCMCPSUB"         USING
+                       MOVE    "tbl_userbyomei"    TO  MCP-TABLE
+                       MOVE    "del1"              TO  MCP-PATHNAME
+                       CALL    "MONFUNC"           USING
                                                    MCPAREA
-                                                   ORCMCPAREA
                                                    MCPDATA-REC
                        IF      MCP-RC          NOT =   ZERO 
                            MOVE    "1002"              TO  SPA-ERRCD
@@ -701,10 +714,10 @@
                                                    USBYO-BYOMEIINPUTCD
                        MOVE    USERBYOMEI-REC      TO  MCPDATA-REC
                        MOVE    "DBDELETE"          TO  MCP-FUNC
-                       MOVE    "USERBYOMEI-DEL1"   TO  ORC-DBPATH
-                       CALL    "ORCMCPSUB"         USING
+                       MOVE    "tbl_userbyomei"    TO  MCP-TABLE
+                       MOVE    "del1"              TO  MCP-PATHNAME
+                       CALL    "MONFUNC"           USING
                                                    MCPAREA
-                                                   ORCMCPAREA
                                                    MCPDATA-REC
       *
                        INITIALIZE                  USBYO-KEY
@@ -712,10 +725,10 @@
                        MOVE    SPA-GMN-BUNRUICD    TO  USBYO-BUNRUICD
                        MOVE    USERBYOMEI-REC      TO  MCPDATA-REC
                        MOVE    "DBDELETE"          TO  MCP-FUNC
-                       MOVE    "USERBYOMEI-DEL2"   TO  ORC-DBPATH
-                       CALL    "ORCMCPSUB"         USING
+                       MOVE    "tbl_userbyomei"    TO  MCP-TABLE
+                       MOVE    "del2"              TO  MCP-PATHNAME
+                       CALL    "MONFUNC"           USING
                                                    MCPAREA
-                                                   ORCMCPAREA
                                                    MCPDATA-REC
                        IF      MCP-RC          NOT =   ZERO 
                            MOVE    "1002"              TO  SPA-ERRCD
@@ -743,7 +756,8 @@
                        INITIALIZE                  SPA-GMN-BYOMEI-TBL
                                                    SPA-NAI-TBL
                        MOVE    ZERO                TO  SPA-GMN-MAX
-                       MOVE    "USERBYOMEI-KEY3"   TO  WRK-DBPATH
+                       MOVE    "tbl_userbyomei"    TO  WRK-MCP-TABLE
+                       MOVE    "key3"              TO  WRK-MCP-PATHNAME
                        INITIALIZE                  USERBYOMEI-REC
                        MOVE    SPA-HOSPID          TO  USBYO-HOSPID
                        PERFORM 3101-USERBYOMEI-LST-SEC
@@ -816,7 +830,8 @@
       *    自院病名一覧
            MOVE    1                   TO  SPA-GMN-PAGE
       *
-           MOVE    "USERBYOMEI-KEY3"   TO  WRK-DBPATH
+           MOVE    "tbl_userbyomei"    TO  WRK-MCP-TABLE
+           MOVE    "key3"              TO  WRK-MCP-PATHNAME
            INITIALIZE                  USERBYOMEI-REC
            MOVE    SPA-HOSPID          TO  USBYO-HOSPID
            PERFORM 3101-USERBYOMEI-LST-SEC
@@ -833,13 +848,14 @@
       *
            MOVE    USERBYOMEI-REC      TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-DBPATH          TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    WRK-DBPATH          TO  ORC-DBPATH
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 900-USBYO-READ-SEC
            ELSE
                INITIALIZE                  USERBYOMEI-REC
@@ -861,16 +877,14 @@
                    PERFORM 31011-USERBYOMEI-SPA-SEC
                END-IF
       *
-               MOVE    WRK-DBPATH          TO  ORC-DBPATH
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 900-USBYO-READ-SEC
            END-PERFORM
       *    カーソルクロース
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-DBPATH          TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            IF    ( IDX                 >=  WRK-TBL-MAX  )  AND
                  ( FLG-USERBYOMEI      =   ZERO         )
@@ -982,13 +996,14 @@
            MOVE    SPA-HOSPID          TO  USBYO-HOSPID
            MOVE    USERBYOMEI-REC      TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "USERBYOMEI-KEY4"   TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_userbyomei"    TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "USERBYOMEI-KEY4"   TO  ORC-DBPATH
+               MOVE    "tbl_userbyomei"    TO  MCP-TABLE
+               MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM 900-USBYO-READ-SEC
            ELSE
                INITIALIZE                  USERBYOMEI-REC
@@ -1004,18 +1019,16 @@
                END-IF                            
                MOVE    USBYO-BYOMEI        TO  SPA-GMN-BBUNRUIMEI(IDX)
       *
-               MOVE    "USERBYOMEI-KEY4"   TO  ORC-DBPATH
+               MOVE    "tbl_userbyomei"    TO  MCP-TABLE
+               MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM 900-USBYO-READ-SEC
            END-PERFORM
       *
            MOVE    IDX                 TO  SPA-GMN-BUNRUI-MAX
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "USERBYOMEI-KEY4"   TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_userbyomei"    TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            .
        3102-BUNRUI-LST-EXT.
@@ -2027,7 +2040,8 @@
                MOVE    ZERO                TO  SPA-GMN-MAX
                MOVE    1                   TO  SPA-GMN-PAGE
       *
-               MOVE    "USERBYOMEI-KEY7"   TO  WRK-DBPATH
+               MOVE    "tbl_userbyomei"    TO  WRK-MCP-TABLE
+               MOVE    "key7"              TO  WRK-MCP-PATHNAME
                INITIALIZE                  USERBYOMEI-REC
                MOVE    SPA-HOSPID          TO  USBYO-HOSPID
                MOVE    SPA-GMN-BBUNRUICD (SPA-NAI-BUNRUI-SELNO)
@@ -2584,7 +2598,8 @@
                MOVE    ZERO                TO  SPA-GMN-MAX
                MOVE    1                   TO  SPA-GMN-PAGE 
       *
-               MOVE    "USERBYOMEI-KEY7"   TO  WRK-DBPATH
+               MOVE    "tbl_userbyomei"    TO  WRK-MCP-TABLE
+               MOVE    "key7"              TO  WRK-MCP-PATHNAME
                INITIALIZE                  USERBYOMEI-REC
                MOVE    SPA-HOSPID          TO  USBYO-HOSPID
                MOVE    SPA-GMN-BUNRUICD    TO  USBYO-BUNRUICD
@@ -2777,11 +2792,12 @@
       *
                    MOVE    "DBINSERT"      TO  MCP-FUNC
                    MOVE    USERBYOMEI-REC  TO  MCPDATA-REC
-                   MOVE    "USERBYOMEI-KEY"
-                                           TO  ORC-DBPATH
-                   CALL    "ORCMCPSUB"     USING   MCPAREA
-                                                   ORCMCPAREA
-                                                   MCPDATA-REC
+                   MOVE    "tbl_userbyomei"
+                                           TO  MCP-TABLE
+                   MOVE    "key"           TO  MCP-PATHNAME
+                   CALL    "MONFUNC"           USING
+                                               MCPAREA
+                                               MCPDATA-REC
                    IF      MCP-RC          NOT =   ZERO 
                        MOVE    "1005"              TO  SPA-ERRCD
                        DISPLAY "UPD USBYOMEI-KEY =>" USBYO-KEY 
@@ -2799,10 +2815,10 @@
       *
                        MOVE    "DBUPDATE"          TO  MCP-FUNC
                        MOVE    USERBYOMEI-REC      TO  MCPDATA-REC
-                       MOVE    "USERBYOMEI-KEY"    TO  ORC-DBPATH
-                       CALL    "ORCMCPSUB"         USING
+                       MOVE    "tbl_userbyomei"    TO  MCP-TABLE
+                       MOVE    "key"               TO  MCP-PATHNAME
+                       CALL    "MONFUNC"           USING
                                                    MCPAREA
-                                                   ORCMCPAREA
                                                    MCPDATA-REC
                        IF      MCP-RC          NOT =   ZERO 
                            MOVE    "1005"              TO  SPA-ERRCD
@@ -2887,10 +2903,10 @@
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    1                   TO  WRK-SYOKBN
                END-IF
-               MOVE    "USERBYOMEI-KEY"    TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
+               MOVE    "tbl_userbyomei"    TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
                                            MCPAREA
-                                           ORCMCPAREA
                                            MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO 
                    MOVE    "1004"              TO  SPA-ERRCD
@@ -2910,7 +2926,8 @@
            IF      WRK-SYOKBN          =   2
       *        追加のみ一件表示
                MOVE    1                   TO  SPA-GMN-PAGE
-               MOVE    "USERBYOMEI-KEY"    TO  WRK-DBPATH
+               MOVE    "tbl_userbyomei"    TO  WRK-MCP-TABLE
+               MOVE    "key"               TO  WRK-MCP-PATHNAME
                INITIALIZE                  USERBYOMEI-REC
                MOVE    SPA-HOSPID          TO  USBYO-HOSPID
                MOVE    SPA-NAI-CDSYU       TO  USBYO-CDSYU
@@ -2923,9 +2940,11 @@
                IF      SPA-NAI-BUNRUI-SELNO    >   ZERO
                    MOVE    SPA-GMN-BBUNRUICD (SPA-NAI-BUNRUI-SELNO)
                                                TO  USBYO-BUNRUICD
-                   MOVE    "USERBYOMEI-KEY7"   TO  WRK-DBPATH
+                   MOVE    "tbl_userbyomei"    TO  WRK-MCP-TABLE
+                   MOVE    "key7"              TO  WRK-MCP-PATHNAME
                ELSE
-                   MOVE    "USERBYOMEI-KEY3"   TO  WRK-DBPATH
+               MOVE    "tbl_userbyomei"        TO  WRK-MCP-TABLE
+               MOVE    "key3"                  TO  WRK-MCP-PATHNAME
                END-IF
                PERFORM 3101-USERBYOMEI-LST-SEC
            END-IF
@@ -2975,7 +2994,8 @@
                                        SPA-NAI-KOUMOKU
            MOVE    ZERO                TO  SPA-GMN-MAX
       *    検索処理
-           MOVE    "USERBYOMEI-KEY3"   TO  WRK-DBPATH
+           MOVE    "tbl_userbyomei"    TO  WRK-MCP-TABLE
+           MOVE    "key3"              TO  WRK-MCP-PATHNAME
            INITIALIZE                  USERBYOMEI-REC
            MOVE    SPA-HOSPID          TO  USBYO-HOSPID
            PERFORM 3101-USERBYOMEI-LST-SEC
@@ -3091,9 +3111,11 @@
                                       >   ZERO
                MOVE    SPA-GMN-BBUNRUICD   (SPA-NAI-BUNRUI-SELNO)
                                            TO  USBYO-BUNRUICD
-               MOVE    "USERBYOMEI-KEY7"   TO  WRK-DBPATH
+               MOVE    "tbl_userbyomei"    TO  WRK-MCP-TABLE
+               MOVE    "key7"              TO  WRK-MCP-PATHNAME
            ELSE
-               MOVE    "USERBYOMEI-KEY3"   TO  WRK-DBPATH
+               MOVE    "tbl_userbyomei"    TO  WRK-MCP-TABLE
+               MOVE    "key3"              TO  WRK-MCP-PATHNAME
            END-IF
            PERFORM 3101-USERBYOMEI-LST-SEC
       *
@@ -3123,9 +3145,11 @@
                                       >   ZERO
                MOVE    SPA-GMN-BBUNRUICD (SPA-NAI-BUNRUI-SELNO)
                                            TO  USBYO-BUNRUICD
-               MOVE    "USERBYOMEI-KEY7"   TO  WRK-DBPATH
+               MOVE    "tbl_userbyomei"    TO  WRK-MCP-TABLE
+               MOVE    "key7"              TO  WRK-MCP-PATHNAME
            ELSE
-               MOVE    "USERBYOMEI-KEY3"   TO  WRK-DBPATH
+               MOVE    "tbl_userbyomei"    TO  WRK-MCP-TABLE
+               MOVE    "key3"              TO  WRK-MCP-PATHNAME
            END-IF
            PERFORM 3101-USERBYOMEI-LST-SEC
       *
@@ -3165,11 +3189,11 @@
       *    
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
-           MOVE    PATH-SHELL-SHELL
-                                   TO  MCP-PATH
-           CALL    "MCPSUB"         USING
-                                    MCPAREA
-                                    MCPDATA-REC 
+           MOVE    "shell"         TO  MCP-TABLE
+           MOVE    "shell"         TO  MCP-PATHNAME
+           CALL    "MONFUNC"       USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
       *
        490-PRINT-EXT.
@@ -3769,25 +3793,23 @@
       *
            MOVE    USERBYOMEI-REC      TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "USERBYOMEI-KEY"    TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_userbyomei"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "USERBYOMEI-KEY"    TO  ORC-DBPATH
+               MOVE    "tbl_userbyomei"    TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 900-USBYO-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-USERBYOMEI
                INITIALIZE                  USERBYOMEI-REC
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "USERBYOMEI-KEY"    TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_userbyomei"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            .
        900-USBYO-INV-EXT.
@@ -3799,10 +3821,9 @@
        900-USBYO-READ-SEC           SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  USERBYOMEI-REC
                MOVE    ZERO            TO  FLG-USERBYOMEI
@@ -3820,39 +3841,25 @@
       *****************************************************************
        900-BYOMEI-READ-SEC         SECTION.
       *
-      *
            MOVE    BYOMEI-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "BYOMEI-KEY"           TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "BYOMEI-KEY"        TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_byomei"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                            MCPAREA
-                                           ORCMCPAREA
                                            MCPDATA-REC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC         TO  BYOMEI-REC
-                   MOVE    ZERO                TO  FLG-BYOMEI
-               ELSE
-                   MOVE    1                   TO  FLG-BYOMEI
-                   INITIALIZE                  BYOMEI-REC
-               END-IF
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_byomei"        TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-BYOMEI-READ-N-SEC
            ELSE
                MOVE    1                   TO  FLG-BYOMEI
                INITIALIZE                  BYOMEI-REC
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "BYOMEI-KEY"           TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_byomei"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            .
        900-BYOMEI-READ-EXT.
@@ -3865,18 +3872,32 @@
        900-BYOMEI-READ-N-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-BYOMEI
                MOVE    MCPDATA-REC     TO  BYOMEI-REC
            ELSE
-              MOVE    1               TO  FLG-BYOMEI
+               MOVE    1               TO  FLG-BYOMEI
+               INITIALIZE                  BYOMEI-REC
            END-IF
            .
        900-BYOMEI-READ-N-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    テーブルクローズ処理
+      *****************************************************************
+       900-CLOSE-SEC               SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+      *
+           .
+       900-CLOSE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3884,11 +3905,10 @@
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *
-           MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE   "PUTWINDOW"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
       *
            .
        900-PUT-WINDOW-EXT.

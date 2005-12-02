@@ -34,6 +34,8 @@
       *  00.00.03    NACL-藤原    04/07/08  病名システム予約コードが存在
       *                                     する場合の疑い・慢性疾患区分の
       *                                     編集を行なう
+      *
+      *  02.07.01    NACL-藤原    05/10/31  MONFUNC対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -41,9 +43,7 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *
        DATA                        DIVISION.
-      *FILE                        SECTION.
       *
        WORKING-STORAGE             SECTION.
       *
@@ -115,7 +115,8 @@
            03  WRK-BUI-MAX         PIC 9(01).
       *
            03  WRK-BYOMEI          PIC X(200).                             
-           03  WRK-DBPATH          PIC X(64).
+           03  WRK-MCP-TABLE       PIC X(64).
+           03  WRK-MCP-PATHNAME    PIC X(64).
            03  WRK-TANDOKUKBN      PIC X(01).
            03  WRK-KENBYOMEI       PIC X(02).
            03  WRK-LENGTH          PIC 9(03).
@@ -161,7 +162,6 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
            COPY    "MCPAREA".
       *
@@ -424,8 +424,9 @@
       *
            MOVE    ZERO                TO  IDY
       *    入力病名で検索
-           MOVE    "BYOMEI-KEY4"       TO  WRK-DBPATH
-           INITIALIZE                  BYOMEI-REC
+           MOVE    "tbl_byomei"        TO  WRK-MCP-TABLE
+           MOVE    "key4"              TO  WRK-MCP-PATHNAME
+           INITIALIZE                      BYOMEI-REC
            MOVE    LNK-BYO-BYOMEI      TO  BYO-BYOMEI
            PERFORM 2001-BYOMEICD-KENSAKU-SEC
            IF      FLG-BYOMEI          =   ZERO
@@ -433,12 +434,9 @@
                PERFORM 2002-BYOMEICD-HENSYU-SEC
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-DBPATH          TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            IF      IDY                 >   ZERO
                GO  TO  200-BYOMEI-SYORI-EXT
@@ -459,7 +457,8 @@
                        UNTIL   IDZ >       WRK-KEN-LENGTH
                        OR      WRK-KEN-ADDKBN  =   1
       *            病名の検索
-                   MOVE    "BYOMEI-KEY6"       TO  WRK-DBPATH
+                   MOVE    "tbl_byomei"        TO  WRK-MCP-TABLE
+                   MOVE    "key6"              TO  WRK-MCP-PATHNAME
                    INITIALIZE                  BYOMEI-REC
                    COMPUTE IDX1    =   WRK-KEN-LENGTH  -   IDZ +   1
                    MOVE    WRK-KEN-BYOMEI(IDZ:IDX1)  
@@ -472,12 +471,9 @@
                        END-IF 
                    END-IF      
       *
-                   MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-                   MOVE    WRK-DBPATH          TO  ORC-DBPATH
-                   CALL    "ORCMCPSUB"         USING
-                                                   MCPAREA
-                                                   ORCMCPAREA
-                                                   MCPDATA-REC
+                   MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+                   MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+                   PERFORM 900-CLOSE-SEC
       *
                    IF      WRK-KEN-ADDKBN          =   1
                        MOVE    WRK-KEN-LENGTH  TO  IDZ
@@ -528,7 +524,8 @@
                            UNTIL   IDW <       2
                            OR      WRK-KEN-ADDKBN  =   1
                        MOVE    IDW             TO  IDX1
-                       MOVE    "BYOMEI-KEY6"   TO  WRK-DBPATH
+                       MOVE    "tbl_byomei"        TO  WRK-MCP-TABLE
+                       MOVE    "key6"              TO  WRK-MCP-PATHNAME
                        INITIALIZE                  BYOMEI-REC
                        MOVE    WRK-KEN-BYOMEI(IDZ:IDX1)  
                                                TO  BYO-BYOMEI
@@ -548,12 +545,9 @@
                            END-IF
                        END-IF      
       *
-                       MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-                       MOVE    WRK-DBPATH      TO  ORC-DBPATH
-                       CALL    "ORCMCPSUB"     USING
-                                               MCPAREA
-                                               ORCMCPAREA
-                                               MCPDATA-REC
+                       MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+                       MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+                       PERFORM 900-CLOSE-SEC
       *
       *                検索できたとき
                        IF      WRK-KEN-ADDKBN      =   1
@@ -625,7 +619,8 @@
            PERFORM VARYING IDZ FROM    1   BY  1
                    UNTIL   IDZ  >      21
                IF       LNK-BYO-TBYOMEICD (IDZ)    NOT =   SPACE 
-                   MOVE    "BYOMEI-KEY"        TO  WRK-DBPATH
+                   MOVE    "tbl_byomei"        TO  WRK-MCP-TABLE
+                   MOVE    "key"               TO  WRK-MCP-PATHNAME
                    INITIALIZE                  BYOMEI-REC
                    MOVE    LNK-BYO-TBYOMEICD (IDZ)
                                                TO  BYO-BYOMEICD
@@ -666,12 +661,9 @@
                        END-IF
                    END-IF
       *
-                   MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-                   MOVE    WRK-DBPATH          TO  ORC-DBPATH
-                   CALL    "ORCMCPSUB"         USING
-                                               MCPAREA
-                                               ORCMCPAREA
-                                               MCPDATA-REC
+                   MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+                   MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+                   PERFORM 900-CLOSE-SEC
                END-IF
            END-PERFORM    
            .
@@ -781,13 +773,14 @@
       *
            MOVE    BYOMEI-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-DBPATH          TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    WRK-DBPATH            TO  ORC-DBPATH
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 900-BYOMEI-READ-N-SEC
            ELSE
                INITIALIZE                  BYOMEI-REC
@@ -797,7 +790,6 @@
        2001-BYOMEICD-KENSAKU-EXT.
            EXIT.
       *
-      *     
       *****************************************************************
       *    検索病名コード編集処理
       *****************************************************************
@@ -853,7 +845,8 @@
                MOVE    BYO-UTAGAIFLG   TO
                                        WRK-BYOMEI-UTAGAIFLG (IDY IDX)
       *
-               MOVE    WRK-DBPATH          TO  ORC-DBPATH
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 900-BYOMEI-READ-N-SEC
            END-PERFORM
       *
@@ -1050,7 +1043,8 @@
       *
       *    移行先病名
            IF      LNK-BYO-IKOSAKICD   NOT =   SPACE
-               MOVE    "BYOMEI-KEY"        TO  WRK-DBPATH
+               MOVE    "tbl_byomei"        TO  WRK-MCP-TABLE
+               MOVE    "key"               TO  WRK-MCP-PATHNAME
                MOVE    LNK-BYO-IKOSAKICD   TO  BYO-BYOMEICD
                PERFORM 900-BYOMEI-READ-SEC
                MOVE    BYO-BYOMEI          TO  LNK-BYO-IKOSAKICD-BYOMEI
@@ -1158,25 +1152,23 @@
       *
            MOVE    BYOMEI-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-DBPATH          TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    WRK-DBPATH        TO  ORC-DBPATH
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 900-BYOMEI-READ-N-SEC
            ELSE
                MOVE    1                   TO  FLG-BYOMEI
                INITIALIZE                  BYOMEI-REC
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-DBPATH           TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            .
        900-BYOMEI-READ-EXT.
@@ -1188,9 +1180,8 @@
        900-BYOMEI-READ-N-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-BYOMEI
@@ -1203,3 +1194,17 @@
        900-BYOMEI-READ-N-EXT.
            EXIT.
       *
+      *
+      *****************************************************************
+      *    テーブルクローズ処理
+      *****************************************************************
+       900-CLOSE-SEC               SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+      *
+           .
+       900-CLOSE-EXT.
+           EXIT.

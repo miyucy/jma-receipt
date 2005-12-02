@@ -37,6 +37,8 @@
       *                                     とする
       *  02.06.03    NACL-藤原    05/10/20  警告表示後の登録処理ができない
       *                                     ので修正
+      *
+      *  02.07.01    NACL-藤原    05/10/31  MONFUNC対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -138,10 +140,8 @@
            03  WRK-CHK-SRYYMD      PIC X(08).
            03  WRK-CHK-TENKIYMD    PIC X(08).            
       *                             
-           03  WRK-DBPATH.
-               05  FILLER          PIC S9(9)   BINARY.
-               05  FILLER          PIC S9(9)   BINARY.
-               05  FILLER          PIC S9(9)   BINARY.
+           03  WRK-MCP-TABLE       PIC X(64).
+           03  WRK-MCP-PATHNAME    PIC X(64).
       *
            03  WRK-KBN-HENSYU-AREA.
                05  WRK-KBN         PIC X(04).
@@ -199,8 +199,6 @@
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-HDD         PIC 9(02).
       *
-           COPY    "ORCA-DBPATH".
-      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -231,8 +229,6 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-      *
-           COPY    "CPORCMCP.INC".  
       *
       *****************************************************************
       *    連絡　領域
@@ -1270,11 +1266,11 @@
                END-IF
            END-IF     
            IF      PTBYO-NYUGAIKBN     =   SPACE 
-               MOVE    PATH-TBL-PTBYOMEI-KEY13
-                                           TO  WRK-DBPATH
+               MOVE    "tbl_ptbyomei"      TO  WRK-MCP-TABLE
+               MOVE    "key13"             TO  WRK-MCP-PATHNAME
            ELSE
-               MOVE    PATH-TBL-PTBYOMEI-KEY21
-                                           TO  WRK-DBPATH
+               MOVE    "tbl_ptbyomei"      TO  WRK-MCP-TABLE
+               MOVE    "key21"             TO  WRK-MCP-PATHNAME
            END-IF    
            PERFORM 900-PTBYO-INV-SEC
       *
@@ -1340,15 +1336,14 @@
                    END-IF
                END-IF
       *
-               MOVE    WRK-DBPATH      TO  MCP-PATH
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 900-PTBYO-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-DBPATH          TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                           MCPAREA
-                                           MCPDATA-REC
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
            .
        41011-KANTAN-SYUSEI-DABURI-CHK-EXT.
            EXIT.
@@ -1553,11 +1548,11 @@
                END-IF
            END-IF     
            IF      PTBYO-NYUGAIKBN     =   SPACE 
-               MOVE    PATH-TBL-PTBYOMEI-KEY13
-                                           TO  WRK-DBPATH
+               MOVE    "tbl_ptbyomei"      TO  WRK-MCP-TABLE
+               MOVE    "key13"             TO  WRK-MCP-PATHNAME
            ELSE
-               MOVE    PATH-TBL-PTBYOMEI-KEY21
-                                           TO  WRK-DBPATH
+               MOVE    "tbl_ptbyomei"      TO  WRK-MCP-TABLE
+               MOVE    "key21"             TO  WRK-MCP-PATHNAME
            END-IF    
            PERFORM 900-PTBYO-INV-SEC
       *
@@ -1611,15 +1606,14 @@
                    END-IF
                END-IF
       *
-               MOVE    WRK-DBPATH          TO  MCP-PATH
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 900-PTBYO-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-DBPATH          TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                           MCPAREA
-                                           MCPDATA-REC
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
            .
        41012-COPY-DABURI-CHK-EXT.
            EXIT.
@@ -1741,11 +1735,11 @@
                            END-IF
                        END-IF     
                        IF      PTBYO-NYUGAIKBN     =   SPACE
-                           MOVE    PATH-TBL-PTBYOMEI-KEY27
-                                                   TO  WRK-DBPATH
+                           MOVE    "tbl_ptbyomei"  TO  WRK-MCP-TABLE
+                           MOVE    "key27"         TO  WRK-MCP-PATHNAME
                        ELSE
-                           MOVE    PATH-TBL-PTBYOMEI-KEY28
-                                                   TO  WRK-DBPATH
+                           MOVE    "tbl_ptbyomei"  TO  WRK-MCP-TABLE
+                           MOVE    "key28"         TO  WRK-MCP-PATHNAME
                        END-IF
       *
                        PERFORM 900-PTBYO-INV-SEC
@@ -1820,15 +1814,14 @@
                                END-IF
                            END-IF
       *
-                           MOVE    WRK-DBPATH          TO MCP-PATH
+                           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+                           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                            PERFORM 900-PTBYO-READ-SEC
                        END-PERFORM
       *
-                       MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-                       MOVE    WRK-DBPATH          TO  MCP-PATH
-                       CALL    "MCPSUB"            USING
-                                                   MCPAREA
-                                                   MCPDATA-REC
+                       MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+                       MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+                       PERFORM 900-CLOSE-SEC
                    END-PERFORM
                END-IF
            END-PERFORM
@@ -2489,12 +2482,14 @@
       *
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-DBPATH          TO  MCP-PATH
-           CALL    "MCPSUB"             USING
-                                        MCPAREA
-                                        MCPDATA-REC
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    WRK-DBPATH          TO  MCP-PATH
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 900-PTBYO-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-PTBYOMEI
@@ -2511,7 +2506,7 @@
        900-PTBYO-READ-SEC           SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
@@ -2532,26 +2527,23 @@
        900-COMB-INV-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    PATH-TBL-HKNCOMBI-KEY
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    PATH-TBL-HKNCOMBI-KEY
-                                           TO  MCP-PATH
+               MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 900-COMB-READ-SEC
            ELSE
                INITIALIZE                  HKNCOMBI-REC
                MOVE    1               TO  FLG-HKNCOMBI
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    PATH-TBL-HKNCOMBI-KEY
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            .
        900-COMB-INV-EXT.
@@ -2563,7 +2555,7 @@
        900-COMB-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
@@ -2579,14 +2571,28 @@
            EXIT.
       *
       *****************************************************************
+      *    テーブルクローズ処理
+      *****************************************************************
+       900-CLOSE-SEC               SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+      *
+           .
+       900-CLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *
-           MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL    "MCPSUB"             USING
-                                        MCPAREA
-                                        MCPDATA-REC
+           MOVE   "PUTWINDOW"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        900-PUT-WINDOW-EXT.

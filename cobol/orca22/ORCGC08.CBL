@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  02.07.01    NACL-藤原    05/10/31  MONFUNC対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -55,8 +56,6 @@
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
-           03  FLG-HKNCOMBI        PIC 9(01).
-           03  FLG-RECECOM         PIC 9(01).
            03  FLG-EXAMPLE         PIC 9(01).
       *
            03  FLG-OK              PIC 9(01).
@@ -70,13 +69,6 @@
       *
       *    一時領域
        01  WRK-AREA.
-           03  WRK-SYMD            PIC X(08).
-           03  WRK-HKNCOMBI        PIC 9(04).
-           03  WRK-HKNCOMBIMEI     PIC X(100).
-      *
-           03  WRK-SRYKA           PIC X(02).
-           03  WRK-SRYKAMEI        PIC X(20).
-      *
            03  WRK-SELNUM          PIC 9(03).
            03  WRK-SELNUM2         PIC 9(03).
       *
@@ -99,19 +91,9 @@
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-HDD         PIC 9(02).
       *
-      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
-      *
-      *    保険組み合わせ
-       01  HKNCOMBI-REC.
-           COPY    "CPHKNCOMBI.INC".
-      *
-      *    レセプトコメント
-       01  RECECOM-REC.
-           COPY    "CPRECECOM.INC".
-      *
       *    雛形
        01  EXAMPLE-REC.
            COPY    "CPEXAMPLE.INC".
@@ -129,9 +111,7 @@
            COPY    "CPORCXKANACONV.INC".
       *
       *    ＤＢ検索
-      *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -316,13 +296,14 @@
       *
            MOVE    EXAMPLE-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "EXAMPLE-KEY1"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_example"       TO  MCP-TABLE
+           MOVE    "key1"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "EXAMPLE-KEY1"     TO  ORC-DBPATH
+               MOVE    "tbl_example"       TO  MCP-TABLE
+               MOVE    "key1"              TO  MCP-PATHNAME
                PERFORM 930-EXAMPLE-READ-SEC
            ELSE
                MOVE    1               TO  FLG-EXAMPLE
@@ -354,15 +335,13 @@
                    END-IF
                END-IF
       *
-               MOVE    "EXAMPLE-KEY1"      TO  ORC-DBPATH
+               MOVE    "tbl_example"       TO  MCP-TABLE
+               MOVE    "key1"              TO  MCP-PATHNAME
                PERFORM 930-EXAMPLE-READ-SEC
            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "EXAMPLE-KEY1"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_example"       TO  MCP-TABLE
+           MOVE    "key1"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            MOVE    ZERO                TO  SPA-C08-SELNUM
       *
@@ -568,24 +547,23 @@
       *
            MOVE    EXAMPLE-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "EXAMPLE-KEY"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_example"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "EXAMPLE-KEY"       TO  ORC-DBPATH
+               MOVE    "tbl_example"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 930-EXAMPLE-READ-SEC
            ELSE
                MOVE    1               TO  FLG-EXAMPLE
                INITIALIZE                  EXAMPLE-REC
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "EXAMPLE-KEY"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_example"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
            IF      FLG-EXAMPLE         =   ZERO
                IF      FLG-OK              =   1
       *            コメント追加
@@ -648,11 +626,11 @@
       *
            MOVE    EXAMPLE-REC         TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "EXAMPLE-KEY"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_example"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "C08 EXAMPLE DEL ERR:" MCP-RC "."
            END-IF
@@ -709,7 +687,6 @@
            MOVE    "C07"               TO  SPA-SAKIPG
            MOVE    "C08"               TO  SPA-MOTOPG
       *
-      *****MOVE   "BACK"               TO  MCP-PUTTYPE
            MOVE    "JOIN"              TO  MCP-PUTTYPE
            MOVE    "C07"               TO  MCP-WINDOW
       *
@@ -833,10 +810,9 @@
        930-EXAMPLE-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  EXAMPLE-REC
                MOVE    ZERO                TO  FLG-EXAMPLE
@@ -848,16 +824,30 @@
            .
        930-EXAMPLE-READ-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    テーブルクローズ処理
+      *****************************************************************
+       900-CLOSE-SEC               SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+      *
+           .
+       900-CLOSE-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *
-           MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"   USING
-                                MCPAREA
-                                ORCMCPAREA
-                                MCPDATA-REC.
+           MOVE   "PUTWINDOW"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        900-PUT-WINDOW-EXT.

@@ -44,5 +44,30 @@ data	{
 	};
 };
 
-#include "orcadb.inc"
+db	{
+	tbl_byomei;
+	tbl_example;
+	tbl_hkncombi;
+	tbl_hknnum;
+	tbl_jyurrk;
+	tbl_ldmap;
+	tbl_lock;
+	tbl_nyuinacct;
+	tbl_opecom;
+	tbl_ptbyomei;
+	tbl_ptinf;
+	tbl_ptnum;
+	tbl_ptnyuinrrk;
+	tbl_ptrsiinf;
+	tbl_pthkninf;
+	tbl_ptkohinf;
+	tbl_rececom;
+	tbl_receupd;
+	tbl_sryacct;
+	tbl_sryact;
+	tbl_syskanri;
+	tbl_tensu;
+	tbl_userbyomei;
+};
+
 #include "orcadbh.inc"

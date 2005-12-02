@@ -48,6 +48,8 @@
       *  01.04.03    NACL-藤原    05/04/20  移行病名警告メッセージの表示、
       *                                     廃止年月日警告メッセージ表示
       *                                     をシス管の設定より行う
+      *
+      *  02.07.01    NACL-藤原    05/10/31  MONFUNC対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -75,7 +77,6 @@
        01  FILE-NAME1.
            03  FILLE               PIC X(18)   VALUE
                                                "/var/tmp/C05SPASCR".
-      *****03  FILE-TERMID         PIC X(16)   VALUE   SPACE.
            03  FILE-TERMID         PIC X(64)   VALUE   SPACE.
            03  FILLER              PIC X(04)   VALUE   ".TXT".
       *
@@ -128,7 +129,6 @@
            03  WRK-HAISIYMDH       PIC X(22).
            03  WRK-CIDMSG          PIC X(100).
            03  WRK-BYOKEN          PIC X(30).
-      *****03  WRK-BYOMEI          PIC X(40).
       *
       *    並びかえ用ワーク
            03  WRK-GMN-BYOMEICD-G.
@@ -193,15 +193,12 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-      *     
-           COPY    "CPORCMCP.INC".  
       *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *****COPY    "MCPAREA.INC".
            COPY    MCPAREA.
            COPY    "ORCA-SPA".
       *
@@ -320,7 +317,6 @@
            OPEN    OUTPUT              SPASCR-FILE
            IF      STS-SPASCR     NOT =   ZERO
                DISPLAY "C05SPASCR OUT OPEN ERR:"   STS-SPASCR
-      ***         STOP    " "
            END-IF
            MOVE    SPA-SCR-REC         TO  WRK-DATA-REC
            PERFORM VARYING     IDX     FROM   1   BY  1
@@ -331,7 +327,6 @@
                WRITE                       SPA-DATA-REC
                IF      STS-SPASCR     NOT =   ZERO
                    DISPLAY "C05SPASCR OUT WRITE ERR:"   STS-SPASCR
-      ***             STOP    " "
                 END-IF
            END-PERFORM
       *
@@ -357,10 +352,10 @@
       * 
            MOVE  SPACE             TO  LINKAREA
       *
-           MOVE  SPACE             TO  MCP-PUTTYPE.
-           MOVE  "C05"             TO  MCP-WINDOW.
+           MOVE  SPACE             TO  MCP-PUTTYPE
+           MOVE  "C05"             TO  MCP-WINDOW
       *
-           PERFORM  900-PUT-WINDOW.
+           PERFORM  900-PUT-WINDOW
       *
            MOVE  1                 TO  FLG-END
           .
@@ -800,9 +795,9 @@
            END-PERFORM
       *
            MOVE    SPACE               TO  SPA-NAI-BYOKEN
-           STRING  "＊"                DELIMITED  BY  SIZE
+           STRING  "%"                 DELIMITED  BY  SIZE
                    WRK-BYOKEN          DELIMITED  BY  SPACE
-                   "＊"                DELIMITED  BY  SIZE
+                   "%"                 DELIMITED  BY  SIZE
                                        INTO    SPA-NAI-BYOKEN
            END-STRING
       *
@@ -861,7 +856,7 @@
            END-PERFORM
       *
            MOVE    SPACE               TO  SPA-NAI-BYOKEN
-           STRING  "＊"                DELIMITED  BY  SIZE
+           STRING  "%"                 DELIMITED  BY  SIZE
                    WRK-BYOKEN          DELIMITED  BY  SPACE
                                        INTO    SPA-NAI-BYOKEN
            END-STRING
@@ -888,7 +883,7 @@
       *****************************************************************
        41011-BYOKEN-HEN-SEC        SECTION.
       *
-           MOVE    3                   TO  SPA-GMN-CUR
+           MOVE    1                   TO  SPA-GMN-CUR
       *
            INITIALIZE                      SPA-GMN-BYOMEI-TBL
                                            SPA-NAI-BYOMEI-TBL
@@ -913,16 +908,50 @@
            MOVE    "1"                 TO  KANACHK-SYORI 
            MOVE    SPA-GMN-BYOKEN      TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
-           IF      KANACHK-RC          =   ZERO
-           AND     KANACHK-SYUBETU     =   "2"
+           IF    ( KANACHK-RC          =   ZERO )
+           AND   ( KANACHK-SYUBETU     =   "2"  )
                CONTINUE
            ELSE
                MOVE    "0071"              TO  SPA-ERRCD
                GO  TO  41011-BYOKEN-HEN-EXT
            END-IF
       *
+           MOVE    SPA-GMN-BYOKEN      TO  SPA-NAI-BYOKEN
+           INSPECT SPA-NAI-BYOKEN      REPLACING  ALL "＊"  BY  "  "
+           MOVE    SPACE               TO  WRK-BYOKEN
+           MOVE    ZERO                TO  IDX2
+           PERFORM VARYING     IDX1    FROM    1   BY  1
+                   UNTIL       IDX1    >   30
+               IF      SPA-NAI-BYOKEN(IDX1:1)  NOT =   SPACE
+                   ADD     1                   TO  IDX2
+                   MOVE    SPA-NAI-BYOKEN(IDX1:1)
+                                               TO  WRK-BYOKEN(IDX2:1)
+               END-IF
+           END-PERFORM
+           MOVE    SPACE               TO  SPA-NAI-BYOKEN
+           IF    ( SPA-GMN-BYOKEN (1:2)    =   "＊"  )
+           AND   ( SPA-GMN-BYOKEN(KANACHK-MAX - 1:2)
+                                           =   "＊"  )
+               STRING  "%"                 DELIMITED  BY  SIZE
+                       WRK-BYOKEN          DELIMITED  BY  SPACE
+                       "%"                 DELIMITED  BY  SIZE
+                                           INTO    SPA-NAI-BYOKEN
+               END-STRING
+           ELSE
+               IF    ( SPA-GMN-BYOKEN (1:2)    =   "＊"  )
+                   STRING  "%"                 DELIMITED  BY  SIZE
+                           WRK-BYOKEN          DELIMITED  BY  SPACE
+                                               INTO    SPA-NAI-BYOKEN
+                   END-STRING
+               ELSE
+                    STRING  WRK-BYOKEN      DELIMITED  BY  SPACE
+                            "%"             DELIMITED  BY  SIZE
+                                           INTO    SPA-NAI-BYOKEN
+                   END-STRING
+               END-IF
+           END-IF
+      *
            MOVE    1               TO  SPA-GMN-PAGE
-           MOVE    SPA-GMN-BYOKEN  TO  SPA-NAI-BYOKEN
            PERFORM 410112-BYOMEI-LST-SEC
       *
       *    選択番号へカーソルを移動させる
@@ -942,13 +971,14 @@
            MOVE    SPA-NAI-BYOKEN      TO  BYO-BYOMEI
            MOVE    BYOMEI-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "BYOMEI-KEY2"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
+           MOVE    "tbl_byomei"        TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "BYOMEI-KEY2"     TO  ORC-DBPATH
+               MOVE    "tbl_byomei"        TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-BYOMEI-READ-SEC
            ELSE
                INITIALIZE                  BYOMEI-REC
@@ -970,17 +1000,14 @@
                    PERFORM 4101121-BYOMEI-HENSYU-SEC
                END-IF
       *
-      *
-               MOVE    "BYOMEI-KEY2"     TO  ORC-DBPATH
+               MOVE    "tbl_byomei"        TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-BYOMEI-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "BYOMEI-KEY2"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_byomei"        TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            IF    ( IDX                 >=  WRK-CONS-BYOMEI-MAX )  AND
                  ( FLG-BYOMEI          =   ZERO                )
@@ -1173,6 +1200,10 @@
                                        =   SPACE 
                MOVE    SPA-GMN-TBYOMEICD1 (IDX)
                                       TO  LNK-BYO-TBYOMEICD (IDX)
+      *???
+           DISPLAY "LNK-BYO-TBYOMEICD (IDX)=" IDX "#" 
+                                    LNK-BYO-TBYOMEICD (IDX)
+      *???
            END-PERFORM
            CALL    "ORCSBYOMEI"     USING    ORCSBYOMEIAREA
       *
@@ -1180,6 +1211,9 @@
            MOVE    LNK-BYO-BYOMEI      TO  SPA-GMN-HENBYO
       *
       *    接尾語・接頭語チェック
+      *???
+           DISPLAY "LNK-BYO-BYOMEICD-ERR=" LNK-BYO-BYOMEICD-ERR 
+      *???
            IF      LNK-BYO-BYOMEICD-ERR    =   2   OR  3
                MOVE    "0003"          TO  SPA-ERRCD
            END-IF
@@ -1495,24 +1529,22 @@
       *
            MOVE    BYOMEI-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "BYOMEI-KEY"        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+           MOVE    "tbl_byomei"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "BYOMEI-KEY"        TO  ORC-DBPATH
+           MOVE    "tbl_byomei"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 900-BYOMEI-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-BYOMEI
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "BYOMEI-KEY"           TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_byomei"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            .
        900-BYOMEI-INV-EXT.
@@ -1524,9 +1556,8 @@
        900-BYOMEI-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-BYOMEI
@@ -1539,14 +1570,27 @@
            EXIT.
       *
       *****************************************************************
+      *    テーブルクローズ処理
+      *****************************************************************
+       900-CLOSE-SEC               SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+      *
+           .
+       900-CLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *
-           MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
+           MOVE   "PUTWINDOW"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            .
        900-PUT-WINDOW-EXT.

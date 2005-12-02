@@ -28,6 +28,8 @@
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  01.01.01    MCC-Æ£¸¶     01/11/05  C01¤Îºï½ü
       *  01.02.01    MCC-Æ£¸¶     01/11/21  ORCMCPSUB¤ØÊÑ¹¹  
+      *
+      *  02.07.01    NACL-Æ£¸¶    05/10/31  MONFUNCÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -61,8 +63,6 @@
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
-      *     
-           COPY    "CPORCMCP.INC".  
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -156,7 +156,6 @@
            MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
            MOVE    "CID1"              TO  SPA-MOTOPG
       *
-      ***  MOVE    "BACK"              TO  MCP-PUTTYPE
            MOVE    "JOIN"              TO  MCP-PUTTYPE
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
@@ -173,10 +172,9 @@
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *
-           MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
+           MOVE   "PUTWINDOW"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
       *
            .
