@@ -991,9 +991,9 @@
            MOVE    2                   TO  SPA-GMN-TENKBN-MAX 
       *     
            MOVE    "1"                 TO  SPA-GMN-ROUKAISUL      (1)
-           MOVE    "しない"            TO  SPA-GMN-ROUKAISUMEIL   (1)
+           MOVE    "記載なし"          TO  SPA-GMN-ROUKAISUMEIL   (1)
            MOVE    "2"                 TO  SPA-GMN-ROUKAISUL      (2)
-           MOVE    "する"              TO  SPA-GMN-ROUKAISUMEIL   (2)
+           MOVE    "記載あり"          TO  SPA-GMN-ROUKAISUMEIL   (2)
            MOVE    2                   TO  SPA-GMN-ROUKAISU-MAX 
       *     
            MOVE    "1"                 TO  SPA-GMN-TAXKBNL      (1)
@@ -1283,10 +1283,8 @@
        4101-TENKBN-CHK-SEC             SECTION.
       *
            IF    ( SPA-GMN-TENKBN      =   SPACE )
-               IF    ( SPA-GMN-RSIIRYOKBN  =   "1" )
-                   MOVE    "0003"                 TO  SPA-ERRCD
-                   MOVE    3                      TO  SPA-GMN-CUR
-               END-IF
+               MOVE    "0002"              TO  SPA-ERRCD
+               MOVE    3                   TO  SPA-GMN-CUR
            ELSE
                MOVE    SPA-GMN-TENKBN      TO  WRK-CMB-CD
                PERFORM 4200-TENKBNLST-CHK-SEC
