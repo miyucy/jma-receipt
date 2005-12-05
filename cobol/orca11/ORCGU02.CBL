@@ -1670,9 +1670,6 @@
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    "key30"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "key30"             TO  MCP-PATHNAME
                PERFORM 900-JYURRK-READ-SEC
