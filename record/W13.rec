@@ -49,6 +49,13 @@ W13	{
 			count	int;
 			item	varchar(20)[2];
 		};
+		ROUKAISU_COMBO	{
+			ROUKAISU	{
+				value	varchar(10);
+			};
+			count	int;
+			item	varchar(10)[2];
+		};
 		KSNRATE	{
 			value	number(3);
 		};

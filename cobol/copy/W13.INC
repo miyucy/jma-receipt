@@ -49,6 +49,10 @@
                 04  W13-TENKBN         PIC X(20).
                 04  W13-TENKBN-COUNT   PIC S9(9)   BINARY.
                 04  W13-TENKBNLST      PIC X(20)   OCCURS  2 TIMES.
+              03  W13-ROUKAISU-COMBO.
+                04  W13-ROUKAISU         PIC X(10).
+                04  W13-ROUKAISU-COUNT   PIC S9(9)   BINARY.
+                04  W13-ROUKAISULST      PIC X(10)   OCCURS  2 TIMES.
               03  W13-KSNRATE.
                 04  W13-VALUE   PIC S9(3).
               03  W13-RSIIRYOKBN-COMBO.

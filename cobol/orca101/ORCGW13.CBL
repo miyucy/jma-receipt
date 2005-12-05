@@ -39,6 +39,7 @@
       *  01.00.07    NACL-小豆沢  05.05.25  請求書兼領収書の円建て記載区分
       *                                     を追加
       *  02.06.01    NACL-藤原    05/06/22  自賠責加算率（３桁）対応
+      *  02.07.00    NACL-太田    05.12.05  労災レセ回数記載追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -81,6 +82,12 @@
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-TENKBNMEI
                                               PIC X(18).
+                       09  SPA-GMN-ROUKAISU-G.
+                           11  SPA-GMN-ROUKAISU
+                                              PIC X(01).
+                           11  SPA-GMN-F1     PIC X(01).
+                           11  SPA-GMN-ROUKAISUMEI
+                                              PIC X(08).
                        09  SPA-GMN-RSIIRYOCDN PIC X(40). 
                        09  SPA-GMN-KSNRATE    PIC 9(03).
                        09  SPA-GMN-TAXKBN-G.
@@ -138,6 +145,13 @@
                        09  SPA-GMN-TENKBNMEIL
                                               PIC X(18).
                    07  SPA-GMN-TENKBN-MAX     PIC 9(02).    
+                   07  SPA-GMN-ROUKAISULST          OCCURS  2.
+                       09  SPA-GMN-ROUKAISUL
+                                              PIC X(01).
+                       09  SPA-GMN-F1L        PIC X(01).
+                       09  SPA-GMN-ROUKAISUMEIL
+                                              PIC X(08).
+                   07  SPA-GMN-ROUKAISU-MAX   PIC 9(02).    
                    07  SPA-GMN-TAXKBNLST      OCCURS  2.
                        09  SPA-GMN-TAXKBNL    PIC X(01).
                        09  SPA-GMN-F1L        PIC X(01).
@@ -621,6 +635,10 @@
                MOVE    SPA-GMN-TENKBNLST(1)    TO  SPA-GMN-TENKBN-G
            END-IF
       *
+           IF    ( SPA-GMN-ROUKAISU-G        =   SPACE )
+               MOVE    SPA-GMN-ROUKAISULST(1)  TO  SPA-GMN-ROUKAISU-G
+           END-IF
+      *
            IF    ( SPA-GMN-TAXKBN-G        =   SPACE )
                MOVE    SPA-GMN-TAXKBNLST(1) TO  SPA-GMN-TAXKBN-G
            END-IF
@@ -664,6 +682,11 @@
            MOVE    SYS-4001-TENKBN     TO  WRK-CMB-CD
            PERFORM 4200-TENKBNLST-CHK-SEC
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-TENKBN-G
+      *
+      *
+           MOVE    SYS-4001-ROUKAISU   TO  WRK-CMB-CD
+           PERFORM 4200-ROUKAISULST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-ROUKAISU-G
       *
            MOVE    SYS-4001-RSIIRYOCDN TO  SPA-GMN-RSIIRYOCDN
       *
@@ -967,6 +990,12 @@
            MOVE    "１２円"            TO  SPA-GMN-TENKBNMEIL   (2)
            MOVE    2                   TO  SPA-GMN-TENKBN-MAX 
       *     
+           MOVE    "1"                 TO  SPA-GMN-ROUKAISUL      (1)
+           MOVE    "しない"            TO  SPA-GMN-ROUKAISUMEIL   (1)
+           MOVE    "2"                 TO  SPA-GMN-ROUKAISUL      (2)
+           MOVE    "する"              TO  SPA-GMN-ROUKAISUMEIL   (2)
+           MOVE    2                   TO  SPA-GMN-ROUKAISU-MAX 
+      *     
            MOVE    "1"                 TO  SPA-GMN-TAXKBNL      (1)
            MOVE    "無し"              TO  SPA-GMN-TAXKBNMEIL   (1)
            MOVE    "2"                 TO  SPA-GMN-TAXKBNL      (2)
@@ -1089,6 +1118,7 @@
            MOVE    W13-KSNRATE         TO  SPA-GMN-KSNRATE
            MOVE    W13-RSIIRYOCDN      TO  SPA-GMN-RSIIRYOCDN
            MOVE    W13-TENKBN          TO  SPA-GMN-TENKBN-G
+           MOVE    W13-ROUKAISU        TO  SPA-GMN-ROUKAISU-G
            MOVE    W13-TAXKBN          TO  SPA-GMN-TAXKBN-G
            MOVE    W13-SKJKBN          TO  SPA-GMN-SKJKBN-G
            MOVE    W13-KIZAITAXKBN     TO  SPA-GMN-KIZAITAXKBN-G
@@ -1119,6 +1149,11 @@
            END-IF
       *
            PERFORM 4101-TENKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4101-ROUKAISU-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -1265,6 +1300,30 @@
       *
            .
        4101-TENKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    労災レセ回数チェック
+      *****************************************************************
+       4101-ROUKAISU-CHK-SEC           SECTION.
+      *
+           IF    ( SPA-GMN-ROUKAISU        =   SPACE )
+               IF    ( SPA-GMN-RSIIRYOKBN  =   "1" )
+                   MOVE    "0003"          TO  SPA-ERRCD
+                   MOVE    15              TO  SPA-GMN-CUR
+               END-IF
+           ELSE
+               MOVE    SPA-GMN-ROUKAISU      TO  WRK-CMB-CD
+               PERFORM 4200-ROUKAISULST-CHK-SEC
+               IF    ( WRK-CMB-ITM         =   SPACE )
+                   MOVE    "0012"          TO  SPA-ERRCD
+                   MOVE    15              TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    WRK-CMB-ITM     TO  SPA-GMN-ROUKAISU-G
+               END-IF
+           END-IF
+      *
+           .
+       4101-ROUKAISU-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1605,6 +1664,27 @@
       *
            .
        4200-TENKBNLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    労災レセ回数コンボェック
+      *****************************************************************
+       4200-ROUKAISULST-CHK-SEC          SECTION.
+      *
+           INITIALIZE                      WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL ( IDY >       SPA-GMN-ROUKAISU-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( WRK-CMB-CD      =   SPA-GMN-ROUKAISUL (IDY) )
+                   MOVE    SPA-GMN-ROUKAISULST (IDY)
+                                       TO  WRK-CMB-ITM
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       4200-ROUKAISULST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    文書料（消費税）コンボチェック
@@ -1998,6 +2078,7 @@
            MOVE    SPA-W01-EDYUKYMD        TO  SYS-4001-EDYUKYMD
            MOVE    SPA-GMN-RSIIRYOKBN      TO  SYS-4001-RSIIRYOKBN
            MOVE    SPA-GMN-TENKBN          TO  SYS-4001-TENKBN
+           MOVE    SPA-GMN-ROUKAISU        TO  SYS-4001-ROUKAISU
            MOVE    SPA-GMN-RSIIRYOCDN      TO  SYS-4001-RSIIRYOCDN
            MOVE    SPA-GMN-KSNRATE         TO  SYS-4001-KSNRATE1
            MOVE    SPA-GMN-TAXKBN          TO  SYS-4001-TAXKBN
@@ -2308,6 +2389,7 @@
            MOVE    SPA-GMN-RSIIRYOKBN-G     TO  W13-RSIIRYOKBN
            MOVE    SPA-GMN-KSNRATE          TO  W13-KSNRATE 
            MOVE    SPA-GMN-TENKBN-G         TO  W13-TENKBN
+           MOVE    SPA-GMN-ROUKAISU-G       TO  W13-ROUKAISU
            MOVE    SPA-GMN-TAXKBN-G         TO  W13-TAXKBN
            MOVE    SPA-GMN-SKJKBN-G         TO  W13-SKJKBN
            MOVE    SPA-GMN-KIZAITAXKBN-G    TO  W13-KIZAITAXKBN
@@ -2328,6 +2410,13 @@
                                        TO  W13-TENKBNLST (IDY)
            END-PERFORM
            MOVE    SPA-GMN-TENKBN-MAX  TO  W13-TENKBN-COUNT 
+      *     
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-ROUKAISU-MAX
+               MOVE    SPA-GMN-ROUKAISULST (IDY)
+                                       TO  W13-ROUKAISULST (IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-ROUKAISU-MAX  TO  W13-ROUKAISU-COUNT 
       *
            MOVE    SPA-GMN-RSIIRYOCDN  TO  W13-RSIIRYOCDN
       *     
@@ -2493,6 +2582,8 @@
                WHEN    "0011"
                    MOVE    "対象外コードをこれ以上追加できません"
                                                          TO  SPA-ERRMSG
+               WHEN    "0012"
+                   MOVE    "労災レセ回数記載入力エラー"  TO  SPA-ERRMSG
                WHEN    "0099"
                    MOVE    "未入力の項目があります"
                                                TO  SPA-ERRMSG
@@ -2604,6 +2695,8 @@
                     MOVE  "KOTEIKBN"       TO   MCP-WIDGET
                 WHEN    14
                     MOVE  "RSIPRT"         TO   MCP-WIDGET
+                WHEN    15
+                    MOVE  "ROUKAISU"       TO   MCP-WIDGET
                 WHEN    99
                     MOVE  "B12"            TO   MCP-WIDGET
             END-EVALUATE
@@ -2622,6 +2715,8 @@
                WHEN    "RSIIRYOCDN"
                    MOVE    3               TO  SPA-GMN-CUR
                WHEN    "TENKBN"
+                   MOVE    15              TO  SPA-GMN-CUR
+               WHEN    "ROUKAISU"
                    MOVE    8               TO  SPA-GMN-CUR
                WHEN    "KSNRATE"
                    MOVE    4               TO  SPA-GMN-CUR
