@@ -120,7 +120,7 @@
                    07  SPA-GMN-ALLIDOLST-SEL       PIC  9(5).
                    07  SPA-GMN-ALLIDOLST-OCC       OCCURS  50.
                        09  SPA-GMN-TALLIDOYMD      PIC X(10).
-                       09  SPA-GMN-TALLIDOJIYU     PIC X(10).
+                       09  SPA-GMN-TALLIDOJIYU     PIC X(20).
                        09  SPA-GMN-TALLPTNUM       PIC X(20).
                        09  SPA-GMN-TALLNAME        PIC X(100).
                        09  SPA-GMN-TALLSTS         PIC X(1).
@@ -129,7 +129,7 @@
                    07  SPA-GMN-KJNIDOLST-SEL       PIC  9(5).
                    07  SPA-GMN-KJNIDOLST-OCC       OCCURS  50.
                        09  SPA-GMN-TKJNIDOYMD      PIC X(10).
-                       09  SPA-GMN-TKJNIDOJIYU     PIC X(10).
+                       09  SPA-GMN-TKJNIDOJIYU     PIC X(20).
                        09  SPA-GMN-TKJNSTS         PIC X(1).
                05  SPA-GMN-ERRMESLST-AREA.
                    07  SPA-GMN-ERRMESLST-MAX       PIC  9(5).
@@ -1623,6 +1623,9 @@
                WHEN    NORDERID-FSELEID
                WHEN    NORDERID-FSTOPID
                WHEN    NORDERID-IDODRID
+               WHEN    NORDERID-IDOKAID
+               WHEN    NORDERID-IDOBTUID
+               WHEN    NORDERID-IDOBRMID
                    PERFORM 41011-INPUT-AREA-HEN-SEC
                END-EVALUATE
            END-EVALUATE
@@ -2153,7 +2156,7 @@
        4101111-NYUINKA-HEN-SEC         SECTION.
       *
            MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-NYUINKA
-           MOVE    ORDER-ITEM          TO  SPA-GMN-NYUINKA
+           MOVE    ORDER-ITEM          TO  SPA-GMN-NYUINKA-G
       *
            .
        4101111-NYUINKA-HEN-EXT.
@@ -2164,7 +2167,7 @@
        4101111-HKNCOMBI-HEN-SEC         SECTION.
       *
            MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-HKNCOMBI
-           MOVE    ORDER-ITEM          TO  SPA-GMN-HKNCOMBI
+           MOVE    ORDER-ITEM          TO  SPA-GMN-HKNCOMBI-G
       *
            .
        4101111-HKNCOMBI-HEN-EXT.
@@ -2175,7 +2178,7 @@
        4101111-NYUKBN-HEN-SEC         SECTION.
       *
            MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-NYUKBN
-           MOVE    ORDER-ITEM          TO  SPA-GMN-NYUKBN
+           MOVE    ORDER-ITEM          TO  SPA-GMN-NYUKBN-G
       *
            .
        4101111-NYUKBN-HEN-EXT.
@@ -2200,7 +2203,7 @@
        4101111-BTUNUM-HEN-SEC         SECTION.
       *
            MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-BTUNUM
-           MOVE    ORDER-ITEM          TO  SPA-GMN-BTUNAME
+           MOVE    ORDER-ITEM          TO  SPA-GMN-BTUNAME-G
       *
            .
        4101111-BTUNUM-HEN-EXT.
@@ -2236,7 +2239,7 @@
                COMPUTE CNT-DRCD    =   CNT-DRCD    +   1
                MOVE    ORDER-STATUS-ITEM
                                        TO  SPA-NAI-STS-DR(CNT-DRCD)
-               MOVE    ORDER-ITEM (2:) TO  SPA-GMN-DR    (CNT-DRCD)
+               MOVE    ORDER-ITEM (2:) TO  SPA-GMN-DR-G  (CNT-DRCD)
            END-IF
       *
            .
@@ -2270,7 +2273,7 @@
        4101111-SKJTIME-HEN-SEC         SECTION.
       *
            MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-SKJTIME
-           MOVE    ORDER-ITEM          TO  SPA-GMN-SKJTIME
+           MOVE    ORDER-ITEM          TO  SPA-GMN-SKJTIME-G
       *
            .
        4101111-SKJTIME-HEN-EXT.
