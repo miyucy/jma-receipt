@@ -215,12 +215,7 @@
            MOVE    ZERO                TO  FLG-KARTE-KEY
            MOVE    LF04-UID8           TO  WRK-KARTE-KEY
       *
-           INITIALIZE                  ORDER-REC
-           MOVE    SCL31N-HOSPID       TO  ORDER-HOSPID
-           MOVE    LF04-UID8           TO  ORDER-KARTE-KEY
-      *
-           PERFORM 900-ORDER-KEY2-SEL-SEC
-           IF    ( FLG-ORDER       =   ZERO )
+           IF    ( WRK-KARTE-KEY       =   SPACE )
                PERFORM 800-KARTE-KEY-GET-SEC
                INITIALIZE                  ORDER-REC
                MOVE    SCL31N-HOSPID   TO  ORDER-HOSPID
@@ -228,13 +223,35 @@
                PERFORM 900-ORDER-KEY2-SEL-SEC
                IF    ( FLG-ORDER       =   ZERO )
                    MOVE    9           TO  FLG-KARTE-KEY
-                   DISPLAY "ORCL0031N ERROR 001:KARTE-KEY ２重登録"
+                   DISPLAY "ORCL0031N ERROR 001:KARTE-KEY 未設定"
                            " PTID="        SCL31N-PTID
                            " KARTE-KEY="   LF04-UID8
                    MOVE    1           TO  FLG-END
                ELSE
                    MOVE    C-UID       TO  WRK-KARTE-KEY
                    MOVE    1           TO  FLG-KARTE-KEY
+               END-IF
+           ELSE
+               INITIALIZE                  ORDER-REC
+               MOVE    SCL31N-HOSPID       TO  ORDER-HOSPID
+               MOVE    LF04-UID8           TO  ORDER-KARTE-KEY
+               PERFORM 900-ORDER-KEY2-SEL-SEC
+               IF    ( FLG-ORDER       =   ZERO )
+                   PERFORM 800-KARTE-KEY-GET-SEC
+                   INITIALIZE                  ORDER-REC
+                   MOVE    SCL31N-HOSPID   TO  ORDER-HOSPID
+                   MOVE    C-UID           TO  ORDER-KARTE-KEY
+                   PERFORM 900-ORDER-KEY2-SEL-SEC
+                   IF    ( FLG-ORDER       =   ZERO )
+                       MOVE    9           TO  FLG-KARTE-KEY
+                       DISPLAY "ORCL0031N ERROR 002:KARTE-KEY ２重登録"
+                               " PTID="        SCL31N-PTID
+                               " KARTE-KEY="   LF04-UID8
+                       MOVE    1           TO  FLG-END
+                   ELSE
+                       MOVE    C-UID       TO  WRK-KARTE-KEY
+                       MOVE    1           TO  FLG-KARTE-KEY
+                   END-IF
                END-IF
            END-IF
       *
@@ -320,6 +337,8 @@
                    EVALUATE    LF04-SRYCD (IDXA)
                    WHEN    NORDERID-ORDER-NYUIN
                    WHEN    NORDERID-ORDER-KYUSYOKU
+                   WHEN    NORDERID-ORDER-DELNYUIN
+                   WHEN    NORDERID-ORDER-ALLDELNYUIN
                            PERFORM 2001-NYUINIDO-SEC
                    WHEN    OTHER
                        MOVE    "0008"  TO  WRK-ERRCD
@@ -401,6 +420,22 @@
                                                OR  NORDERID-FSPCLCL2
                                                OR  NORDERID-FSELECL2
                                                OR  NORDERID-FSTOPCL2
+                                                                     )
+                           COMPUTE CNT-IDOKBN  =   CNT-IDOKBN  +   1
+                           MOVE    LF04-IJICD (IDXA IDXB)
+                                       TO  WRK-IDOKBN
+                       END-IF
+                   WHEN    NORDERID-ORDER-DELNYUIN
+                       IF    (  LF04-IJICD (IDXA IDXB)
+                                           =   NORDERID-DELNYUINCL2
+                                                                     )
+                           COMPUTE CNT-IDOKBN  =   CNT-IDOKBN  +   1
+                           MOVE    LF04-IJICD (IDXA IDXB)
+                                       TO  WRK-IDOKBN
+                       END-IF
+                   WHEN    NORDERID-ORDER-ALLDELNYUIN
+                       IF    (  LF04-IJICD (IDXA IDXB)
+                                           =   NORDERID-ALLDELNYUINCL2
                                                                      )
                            COMPUTE CNT-IDOKBN  =   CNT-IDOKBN  +   1
                            MOVE    LF04-IJICD (IDXA IDXB)
@@ -543,6 +578,13 @@
                PERFORM 20011-ORCSODR06-ITM-CHK-SEC
       *
                MOVE    "ORCSODR06"     TO  WRK-PGNAME
+      *
+           WHEN   NORDERID-DELNYUINID
+           WHEN   NORDERID-ALLDELNYUINID
+      *
+               PERFORM 20011-ORCSODR07-ITM-CHK-SEC
+      *
+               MOVE    "ORCSODR07"     TO  WRK-PGNAME
       *
            END-EVALUATE
       *
@@ -799,6 +841,20 @@
        20011-ORCSODR06-ITM-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    入院取消処理項目チェック（必須項目抜け）
+      *****************************************************************
+       20011-ORCSODR07-ITM-CHK-SEC     SECTION.
+      *
+      *    入院科チェック
+           PERFORM 20011-NYUINKA-CHK-SEC
+      *
+      *    保険組合せチェック
+           PERFORM 20011-HKNCOMBI-CHK-SEC
+      *
+           .
+       20011-ORCSODR07-ITM-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    入院区分チェック
       *****************************************************************
        20011-NYUKBN-CHK-SEC            SECTION.
@@ -1019,7 +1075,7 @@
       *
            PERFORM 900-ORDER-KEY-SEL-SEC
            IF    ( FLG-ORDER           =   ZERO )
-               DISPLAY "ORCL0031N ERROR 002:ORDER INSERT CHK ERR"
+               DISPLAY "ORCL0031N ERROR 003:ORDER INSERT CHK ERR"
                        " PTID="        SCL31N-PTID
                        " KARTE-KEY="   LF04-UID8
                MOVE    1               TO  FLG-END
@@ -1031,7 +1087,7 @@
            MOVE    "key"               TO MCP-PATHNAME
            PERFORM 910-DBINSERT-SEC
            IF    ( MCP-RC          NOT =   ZERO )
-               DISPLAY "ORCL0031N ERROR 003:ORDER INSERT ERR"
+               DISPLAY "ORCL0031N ERROR 004:ORDER INSERT ERR"
                        " PTID="        SCL31N-PTID
                        " KARTE-KEY="   LF04-UID8
                MOVE    1               TO  FLG-END

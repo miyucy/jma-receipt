@@ -32,6 +32,12 @@
       *    ³°Çñ¡¦¿©»ö»þ´Ö
            03  SODRNACCT-SKJTIME       PIC X(02).
       *
+      *    ¿ÇÎÅ²Ê¡ÊÅ¾²ÊÎò¡Ë
+           03  SODRNACCT-SRYKA-G.
+               05  SODRNACCT-SRYKA-CNT PIC 9(05).
+               05  SODRNACCT-OCC       OCCURS  50.
+                   07  SODRNACCT-SRYKA PIC X(02).
+      *
            03  SODRNACCT-OPID          PIC X(16).
            03  SODRNACCT-UPYMD         PIC X(08).
            03  SODRNACCT-UPHMS         PIC X(06).

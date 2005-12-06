@@ -116,7 +116,7 @@
                   05  I06-ALLIDOLST-ITEM       OCCURS  50 TIMES.
                     06  I06-TALLNUM            PIC X(4).
                     06  I06-TALLIDOYMD         PIC X(10).
-                    06  I06-TALLIDOJIYU        PIC X(10).
+                    06  I06-TALLIDOJIYU        PIC X(20).
                     06  I06-TALLPTNUM          PIC X(20).
                     06  I06-TALLNAME           PIC X(100).
                     06  I06-TALLERR            PIC X(4).
@@ -129,7 +129,7 @@
                   05  I06-KJNIDOLST-ITEM       OCCURS  50 TIMES.
                     06  I06-TKJNNUM            PIC X(4).
                     06  I06-TKJNIDOYMD         PIC X(10).
-                    06  I06-TKJNIDOJIYU        PIC X(10).
+                    06  I06-TKJNIDOJIYU        PIC X(20).
                     06  I06-TKJNERR            PIC X(4).
                   05  I06-KJNIDOLST-SELECT     PIC X       OCCURS  50.
               03  I06-SCROLLEDWINDOW4.

@@ -1626,6 +1626,8 @@
                WHEN    NORDERID-IDOKAID
                WHEN    NORDERID-IDOBTUID
                WHEN    NORDERID-IDOBRMID
+               WHEN    NORDERID-DELNYUINID
+               WHEN    NORDERID-ALLDELNYUINID
                    PERFORM 41011-INPUT-AREA-HEN-SEC
                END-EVALUATE
            END-EVALUATE
@@ -1752,6 +1754,9 @@
                    WHEN   NORDERID-IDOBRMID
                    WHEN   NORDERID-IDOKAID
                        PERFORM 410111-IDOKABTUBRM-HEN-SEC
+                   WHEN    NORDERID-DELNYUINID
+                   WHEN    NORDERID-ALLDELNYUINID
+                       PERFORM 410111-DELNYUIN-HEN-SEC
                    END-EVALUATE
       *
                END-IF
@@ -1963,6 +1968,26 @@
        410111-IDOKABTUBRM-HEN-EXT.
            EXIT.
       *****************************************************************
+      *    入院取消時編集処理
+      *****************************************************************
+       410111-DELNYUIN-HEN-SEC         SECTION.
+      *
+           COMPUTE CNT-ORDER   =  CNT-ORDER    +   1
+      *
+           IF    ( CNT-ORDER   =  1 )
+               MOVE    ORDER-SRYYMD    TO  WRK-YMD
+               PERFORM 800-SEIWA-HEN-SEC
+               MOVE    WRK-SYMD        TO  SPA-NAI-NYUINYMD
+               MOVE    WRK-HENYMDG     TO  SPA-GMN-NYUINYMD
+               MOVE    ORDER-REC       TO  SPA-NAI-ORDER-DAT
+           END-IF
+      *
+           PERFORM 410111-INPUT-COMMON-HEN-SEC
+      *
+           .
+       410111-DELNYUIN-HEN-EXT.
+           EXIT.
+      *****************************************************************
       *    共通入力項目編集処理
       *****************************************************************
        410111-INPUT-COMMON-HEN-SEC     SECTION.
@@ -2028,6 +2053,9 @@
                PERFORM 4101112-DRMEI-HEN-SEC
                PERFORM 4101112-NYUKBNMEI-HEN-SEC
                PERFORM 4101112-TOKNYUINMEI-HEN-SEC
+           WHEN    NORDERID-DELNYUINID
+           WHEN    NORDERID-ALLDELNYUINID
+               CONTINUE
            END-EVALUATE
       *
            .
@@ -3674,6 +3702,9 @@
            WHEN   NORDERID-IDOBRMID
            WHEN   NORDERID-IDOKAID
                PERFORM 2121-IDOKABTUBRM-TOUROKU-SEC
+           WHEN    NORDERID-DELNYUINID
+           WHEN    NORDERID-ALLDELNYUINID
+               PERFORM 2121-DELNYUIN-TOUROKU-SEC
            END-EVALUATE
       *
            .
@@ -4024,6 +4055,48 @@
       *
            .
        2121-IDOKABTUBRM-TOUROKU-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院取消登録処理
+      *****************************************************************
+       2121-DELNYUIN-TOUROKU-SEC       SECTION.
+      *
+           INITIALIZE                  ORDER-REC
+           INITIALIZE                  SODR-AREA
+           INITIALIZE                  LNK-ORDER-REC
+      *
+           MOVE    SPA-NAI-ORDER-DAT   TO  ORDER-REC
+      *
+           PERFORM 2300-SODR-COMMON-SET-SEC
+      *
+           MOVE    ZERO                TO  IDX-ITM
+      *
+           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+               PERFORM 2300-NYUINKA-SET-SEC
+           END-IF
+      *
+           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+               PERFORM 2300-HKNCOMBI-SET-SEC
+           END-IF
+      *
+           MOVE   IDX-ITM          TO  LNK-ORDER-MAX
+      *
+           CALL   "ORCSODR07"      USING   SODR-AREA
+                                           LNK-ORDER-REC
+           EVALUATE    TRUE
+           WHEN  ( SODR-RC      NOT =   ZERO )
+               MOVE    "4008"   TO  SPA-ERRCD
+           WHEN  ( SODR-ERRCD   NOT =   SPACE )
+               MOVE    LNK-ORDER-REC    TO ERR-ORDER-REC
+               PERFORM 3101-ERRMESLST-SEC
+           WHEN  OTHER
+               PERFORM 220-CLEAR-SEC
+      *        異動リスト編集処理
+               PERFORM 3101-ALLIDOLST-SEC
+           END-EVALUATE
+      *
+           .
+       2121-DELNYUIN-TOUROKU-EXT.
            EXIT.
       *****************************************************************
       *    入院区分設定処理
@@ -4801,6 +4874,14 @@
                                                I06-TOKNYUIN-ITEM-STATE
                                                I06-B12-STATE
                                                I06-SNTNYUIN-STATE
+                   WHEN    NORDERID-DELNYUINID
+                   WHEN    NORDERID-ALLDELNYUINID
+                       MOVE    WIDGET-NORMAL
+                                           TO  I06-NYUINKA-STATE
+                                               I06-NYUINKA-ITEM-STATE
+                                               I06-HKNCOMBI-STATE
+                                               I06-HKNCOMBI-ITEM-STATE
+                                               I06-B12-STATE
                    END-EVALUATE
                END-IF
            END-IF
