@@ -39,6 +39,8 @@
       *  01.01.01    NACL-森脇    02/11/28  入院履歴番号、枝番号の追加
       *  01.01.02    NACL-多々納  03/10/10  自由構成患者番号編集修正
       *  01.01.03    NACL-多々納  05/09/01  全角チェック変換追加
+      *  01.01.04    NACL-森脇    05/07/13  エラーメッセージ、コミット
+      *  01.01.05    NACL-森脇    05/09/26  構造変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -83,7 +85,7 @@
       *
       *    出力エラーファイル
        FD  ERR-FILE.
-       01  ERR-REC                     PIC X(130).
+       01  ERR-REC                     PIC X(100).
       *
        WORKING-STORAGE             SECTION.
       *
@@ -105,33 +107,38 @@
        01  FLG-AREA.
            03  FLG-PARA                PIC 9(01).
            03  FLG-CSV                 PIC 9(01).
-           03  FLG-PTINF               PIC 9(01).
+      *
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-PTNUM               PIC 9(01).
+           03  FLG-PTINF               PIC 9(01).
+      *
+           03  FLG-ERRARI              PIC 9(01).
+           03  FLG-DATAEND             PIC 9(01).
            03  FLG-AREA1.
                05  FLG-ERR             PIC 9(01).
                05  FLG-COMMA           PIC 9(01).
                05  FLG-DELI1           PIC 9(01).
                05  FLG-DELI2           PIC 9(01).
                05  FLG-NODATA          PIC 9(01).
-           03  FLG-ERRARI              PIC 9(01).
+      *
            03  FLG-UPDATE              PIC 9(01).
-           03  FLG-DATAEND             PIC 9(01).
+           03  FLG-YMD                 PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
            03  CNT-PARA                PIC 9(06).
            03  CNT-CSV                 PIC 9(06).
+           03  CNT-ERR                 PIC 9(06).
+           03  CNT-COMMIT              PIC 9(06).
            03  CNT-PTINF               PIC 9(06).
            03  CNT-PTNUM               PIC 9(06).
-           03  CNT-ERR                 PIC 9(03).
       *
       *    添字領域
        01  IDX-AREA.
-           03  IDW                     PIC 9(04).
            03  IDX                     PIC 9(04).
            03  IDY                     PIC 9(04).
            03  IDZ                     PIC 9(04).
+           03  IDS                     PIC 9(04).
            03  IDE                     PIC 9(04).
       *
       *    パラメータ保存
@@ -141,7 +148,9 @@
            03  PARA-03-3               PIC X(10).
            03  PARA-04-1               PIC X(10).
            03  PARA-05-1               PIC X(02).
-      *     
+           03  PARA-09-1               PIC X(06).
+           03  PARA-11-1               PIC X(06).
+      *
       *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD.
@@ -149,39 +158,30 @@
                05  WRK-SMM             PIC 9(02).
                05  WRK-SDD             PIC 9(02).
            03  WRK-SYMD2.
-               05  WRK-SYY2        PIC 9(02).
-               05  WRK-SMM2        PIC 9(02).
-               05  WRK-SDD2        PIC 9(02).
-           03  WRK-KENSAKU-AREA.
-               05  WRK-KEN-HKNNUM      PIC X(03).
-               05  WRK-KEN-TEKSTYMD    PIC X(08).
-               05  WRK-KEN-TEKEDYMD    PIC X(08).
-               05  WRK-KEN-ERFLG       PIC X(01).
-               05  WRK-KEN-SBTKBN      PIC X(01).
-               05  WRK-KEN-HOJOKBN     PIC X(01).
-               05  WRK-KEN-CONTKBN     PIC X(01).
-               05  WRK-KEN-SEIDO       PIC X(10).
-               05  WRK-KEN-HKNKOH      PIC 9(01).
+               05  WRK-SYY2            PIC 9(02).
+               05  WRK-SMM2            PIC 9(02).
+               05  WRK-SDD2            PIC 9(02).
+      *
            03  WRK-POINT-AREA.
                05  WRK-PO-ST           PIC 9(04).
                05  WRK-PO-ED           PIC 9(04).
-           03  WRK-KOUMOKU-NO          PIC 9(04).
            03  WRK-MOVE-AREA.
                05  WRK-MO-ST           PIC 9(04).
-               05  WRK-MO-ST1          PIC 9(04).
                05  WRK-MO-CNT          PIC 9(04).
-               05  WRK-WK1             PIC 9(04).
-               05  WRK-WK2             PIC 9(04).
-               05  WRK-WK3             PIC 9(04).
-               05  WRK-WK4             PIC 9(04).
-           03  WRK-WARIKBN             PIC 9(01).
-           03  WRK-RENKETA             PIC 9(02).
-           03  WRK-PTNUM               PIC X(20).
-           03  WRK-CNT                 PIC 9(04).
+               05  WRK-WK              PIC 9(04).
            03  WRK-DATA                PIC X(200).
-           03  WRK-LEN                 PIC 9(03). 
+           03  WRK-LEN                 PIC 9(03).
+           03  WRK-CNT                 PIC 9(04).
       *
-           03  WRK-MAX-CNT             PIC 9(03). 
+           03  WRK-RENKETA             PIC 9(02).
+           03  WRK-COMMIT              PIC 9(06).
+           03  WRK-ERR                 PIC 9(06).
+      *
+           03  WRK-KOUMOKU-NO          PIC 9(04).
+      *
+       01  WRK-HEN-AREA.
+           03  WRK-HEN-PTNUM           PIC X(20).
+           03  WRK-HEN-WARIKBN         PIC X(01).
       *
       *    帳票出力領域
        01  MES-AREA.
@@ -193,58 +193,50 @@
                05  MES-TITLE1-MM       PIC X(02) VALUE SPACE.
                05  FILLER              PIC X(01) VALUE ".".
                05  MES-TITLE1-DD       PIC X(02) VALUE SPACE.
-               05  FILLER              PIC X(01) VALUE SPACE.
-               05  MES-TITLE1-PARA     PIC X(10).
            03  MES-TITLE2.
-               05  FILLER              PIC X(18) VALUE
-                                                 "NO    ERR-MESSAGE/".
-               05  FILLER              PIC X(73) VALUE
-                   "ERRNO 1:必須未入力 2:項目桁数 3:誤入力 --------".
+               05  MES-TITLE2-L1.
+                   07  FILLER          PIC X(10) VALUE "LINENO ERR".
+                   07  FILLER          PIC X(42) VALUE
+                   " [1]必須未入力        [2]項目桁数不正     ".
+                   07  FILLER          PIC X(10) VALUE " [3]誤入力".
+               05  MES-TITLE2-L2.
+                   07  FILLER          PIC X(10) VALUE SPACE.
+                   07  FILLER          PIC X(42) VALUE
+                   " [5]患者ＩＤ取得失敗  [6]患者番号出力失敗 ".
+                   07  FILLER          PIC X(20) VALUE
+                   " [7]患者情報出力失敗".
+               05  MES-TITLE2-L3.
+                   07  FILLER          PIC X(50) VALUE
+                   "--------------------------------------------------".
+                   07  FILLER          PIC X(49) VALUE
+                   "-------------------------------------------------".
       *
        01  ERRLST-AREA.
-      *    エラー番号１・２・３　で使用
+      *    エラー番号１・２・３で使用
            03  ERR-REC1.
-               05  ERR1-NO             PIC X(05).
+               05  ERR1-LINENO         PIC X(06).
                05  FILLER              PIC X(01).
-               05  ERR1-PTNUM          PIC X(20).
-               05  FILLER              PIC X(01).
-               05  ERR1-NAME           PIC X(20).
+               05  ERR1-NAIYO          PIC X(04).
                05  ERR-OCCURS          OCCURS   4.
                    07  FILLER          PIC X(01).
-                   07  ERR1-ERRNO      PIC X(02).
-                   07  ERR1-KOMOKU     PIC X(08).
-                   07  FILLER          PIC X(01).
+                   07  ERR1-ERRNO      PIC X(03).
+                   07  ERR1-KOMOKU     PIC X(09).
                    07  ERR1-ATAI       PIC X(08).
-      *    エラー番号４・５・６　で使用
+      *    エラー番号４・５・６で使用
            03  ERR-REC2.
-               05  ERR2-NO             PIC X(05).
+               05  ERR2-LINENO         PIC X(06).
                05  FILLER              PIC X(01).
-               05  ERR2-MES            PIC X(20).
+               05  ERR2-NAIYO          PIC X(03).
                05  FILLER              PIC X(01).
-               05  ERR2-PTNUM          PIC X(20).
-               05  FILLER              PIC X(01).
-               05  ERR2-KANANAME       PIC X(30).
-               05  FILLER              PIC X(01).
-               05  ERR2-NAME           PIC X(20).
-               05  FILLER              PIC X(01).
-               05  ERR2-BIRTH          PIC X(08).
-               05  FILLER              PIC X(01).
-               05  ERR2-SEX            PIC X(02).
-      *
-      *    メッセージ領域
-       01  CONS-AREA.
-      *     03  CONS-MES1               PIC X(20) VALUE
-      *         "必須項目未入力エラー".
-      *     03  CONS-MES2               PIC X(20) VALUE
-      *         "項目桁数エラー".
-      *     03  CONS-MES3               PIC X(20) VALUE
-      *         "誤入力エラー".
-           03  CONS-MES4               PIC X(20) VALUE
-               "患者ＩＤ取得エラー".
-           03  CONS-MES5               PIC X(20) VALUE
-               "番号ＤＢ出力エラー".
-           03  CONS-MES6               PIC X(20) VALUE
-               "患者ＤＢ出力エラー".
+               05  ERR2-ERRNO          PIC X(03).
+               05  ERR2-PTNUMMES       PIC X(09).
+               05  ERR2-PTNUM          PIC X(10).
+               05  FILLER              PIC X(02).
+               05  ERR2-PTIDMES        PIC X(09).
+               05  ERR2-PTID           PIC X(10).
+               05  FILLER              PIC X(02).
+               05  ERR2-NAMEMES        PIC X(09).
+               05  ERR2-NAME           PIC X(30).
       *
       *****************************************************************
       *    ファイル定義
@@ -264,9 +256,12 @@
       *    共通パラメタ
            COPY    "MCPAREA".
       *
+      *    日付変換サブ
+           COPY    "CPORCSDAY.INC".
+           COPY    "CPORCSLNK.INC".
+      *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
-      *
            COPY    "CPORCXKANACONV.INC".
       *
       *    ＤＢ検索
@@ -303,11 +298,12 @@
       *
       *    パラメータ情報取得
            PERFORM 101-PARA-GET-SEC
-           IF  FLG-PARA            =   2
-               MOVE    1           TO  FLG-CSV
-               GO      TO          100-INIT-EXT
+           IF      FLG-PARA            =   2
+               MOVE    1               TO  FLG-CSV
+               GO  TO  100-INIT-EXT
            END-IF
       *
+      *    システム日付セット
            ACCEPT  WRK-SYMD2       FROM    DATE
            MOVE    WRK-SYMD2       TO  WRK-SYMD (3:)
            ADD     2000            TO  WRK-SYY
@@ -320,17 +316,17 @@
            MOVE    "ORCATERM"      TO  SPA-TERMID
       *
       *    帳票ＯＰＥＮ処理
-           OPEN    INPUT           CSV-FILE
-           IF  STS-CSV         NOT =   ZERO
-               MOVE    1           TO  FLG-CSV
+           OPEN    INPUT               CSV-FILE
+           IF      STS-CSV         NOT =   ZERO
+               MOVE    1               TO  FLG-CSV
                DISPLAY "*(ORCVTPTINF)* PTINF-FILE OPN STS[" STS-CSV "]"
-               GO      TO          100-INIT-EXT
+               GO  TO  100-INIT-EXT
            END-IF
+      *
       *    帳票出力　初期処理
-           MOVE    PARA-04-1       TO  MES-TITLE1-PARA
            PERFORM 2910-ERRLST-INIT-SEC
-           IF  FLG-CSV             =   1
-               GO  TO              100-INIT-EXT
+           IF      FLG-CSV             =   1
+               GO  TO  100-INIT-EXT
            END-IF
       *
       *    データベースオープン
@@ -338,23 +334,28 @@
       *
       *    システム管理情報　検索処理
            PERFORM 110-CP1001-KENSAKU-SEC
-           IF  FLG-CSV             =   1
-               GO  TO              100-INIT-EXT
+           IF      FLG-CSV             =   1
+               GO  TO  100-INIT-EXT
            END-IF
+      *
       *    患者番号構成クリア処理
-           IF      PARA-03-1       =   "T"
-               MOVE    9           TO  FLG-UPDATE
+           IF      PARA-03-1           =   "T"
+               MOVE    9               TO  FLG-UPDATE
                PERFORM 250-PTNUM-GET-SEC
            END-IF
+      *
       *    患者番号桁数　取得処理
            MOVE    ZERO            TO  FLG-UPDATE
            PERFORM 250-PTNUM-GET-SEC
-           IF  WRK-RENKETA (1:2)   NOT =   PARA-05-1
-               MOVE    1           TO  FLG-CSV
+           IF      WRK-RENKETA(1:2)    NOT =   PARA-05-1
+               MOVE    1               TO  FLG-CSV
                DISPLAY "*(ORCVTPTINF)* PTNUM BYTE UNMATCH!"
-               GO  TO              100-INIT-EXT
+               GO  TO  100-INIT-EXT
            END-IF
+      *
            MOVE    PARA-05-1       TO  WRK-RENKETA(1:2)
+           MOVE    PARA-09-1       TO  WRK-COMMIT
+           MOVE    PARA-11-1       TO  WRK-ERR
       *
       *    患者ＣＳＶファイル　検索処理
            MOVE    1               TO  FLG-UPDATE
@@ -369,55 +370,37 @@
       *****************************************************************
        101-PARA-GET-SEC            SECTION.
       *
-           MOVE    ZERO                TO  FLG-PARA
-           OPEN    INPUT           PARA-FILE
+           MOVE    ZERO            TO  FLG-PARA
+           MOVE    SPACE           TO  PARA-SAVE
+           OPEN    INPUT               PARA-FILE
            IF      STS-PARA        NOT =   ZERO
                MOVE    2               TO  FLG-PARA
                DISPLAY "*(ORCVTPTINF)* PARA-FILE OPN STS[" STS-PARA "]"
-               GO      TO          101-PARA-GET-EXT
+               GO  TO  101-PARA-GET-EXT
            END-IF
       *
            PERFORM 900-PARA-READ-SEC
       *
-           PERFORM UNTIL
-                   FLG-PARA  =  1
-      *
-               IF  PARA-RECKBN         =   "@"
+           PERFORM UNTIL   FLG-PARA    =   1
+               IF      PARA-RECKBN         =   "@"
                    PERFORM 101-PARA-GET1-SEC
                END-IF
-      *
-               PERFORM  900-PARA-READ-SEC
+               PERFORM 900-PARA-READ-SEC
            END-PERFORM
       *
-           CLOSE   PARA-FILE
+           CLOSE                       PARA-FILE
       *
       *    パラメータチェック処理
-           IF  PARA-03-2               IS  NUMERIC
+           IF    ( PARA-03-2           IS  NUMERIC )   AND
+                 ( PARA-03-3           IS  NUMERIC )   AND
+                 ( PARA-04-1           IS  NUMERIC )   AND
+                 ( PARA-05-1           IS  NUMERIC )   AND
+                 ( PARA-09-1           IS  NUMERIC )   AND
+                 ( PARA-11-1           IS  NUMERIC )
                CONTINUE
            ELSE
                MOVE    1               TO  FLG-CSV
-               GO      TO          101-PARA-GET-EXT
-           END-IF
-      *
-           IF  PARA-03-3               IS  NUMERIC
-               CONTINUE
-           ELSE
-               MOVE    1               TO  FLG-CSV
-               GO      TO          101-PARA-GET-EXT
-           END-IF
-      *
-           IF  PARA-04-1               IS  NUMERIC
-               CONTINUE
-           ELSE
-               MOVE    1               TO  FLG-CSV
-               GO      TO          101-PARA-GET-EXT
-           END-IF
-      *
-           IF  PARA-05-1               IS  NUMERIC
-               CONTINUE
-           ELSE
-               MOVE    1               TO  FLG-CSV
-               GO      TO          101-PARA-GET-EXT
+               GO  TO  101-PARA-GET-EXT
            END-IF
       *
            .
@@ -429,26 +412,30 @@
       *****************************************************************
        101-PARA-GET1-SEC           SECTION.
       *
-           EVALUATE                PARA-DATKBN
-             WHEN  "01-1"
-                   MOVE  PARA-DATA TO  ASS-CSV
-             WHEN  "02-1"
-                   MOVE  PARA-DATA TO  ASS-ERR
-             WHEN  "03-1"
-                   IF    PARA-DATA =   "YES"
-                                   OR  "yes"
-                     MOVE  "T"     TO  PARA-03-1
+           EVALUATE    PARA-DATKBN
+               WHEN    "01-1"
+                   MOVE    PARA-DATA     TO  ASS-CSV
+               WHEN    "02-1"
+                   MOVE    PARA-DATA     TO  ASS-ERR
+               WHEN    "03-1"
+                   IF    ( PARA-DATA     =   "YES" ) OR
+                         ( PARA-DATA     =   "yes" )
+                       MOVE    "T"       TO  PARA-03-1
                    ELSE
-                     MOVE  "F"     TO  PARA-03-1
+                       MOVE    "F"       TO  PARA-03-1
                    END-IF
-             WHEN  "03-2"
-                   MOVE  PARA-DATA TO  PARA-03-2
-             WHEN  "03-3"
-                   MOVE  PARA-DATA TO  PARA-03-3
-             WHEN  "04-1"
-                   MOVE  PARA-DATA TO  PARA-04-1
-             WHEN  "05-1"
-                   MOVE  PARA-DATA TO  PARA-05-1
+               WHEN    "03-2"
+                   MOVE    PARA-DATA     TO  PARA-03-2
+               WHEN    "03-3"
+                   MOVE    PARA-DATA     TO  PARA-03-3
+               WHEN    "04-1"
+                   MOVE    PARA-DATA     TO  PARA-04-1
+               WHEN    "05-1"
+                   MOVE    PARA-DATA     TO  PARA-05-1
+               WHEN    "09-1"
+                   MOVE    PARA-DATA     TO  PARA-09-1
+               WHEN    "11-1"
+                   MOVE    PARA-DATA     TO  PARA-11-1
            END-EVALUATE
       *
            .
@@ -458,26 +445,27 @@
       *****************************************************************
       *    システム管理情報　検索処理
       *****************************************************************
-       110-CP1001-KENSAKU-SEC          SECTION.
+       110-CP1001-KENSAKU-SEC      SECTION.
       *
-           MOVE    ZERO                TO  FLG-SYSKANRI
-           MOVE    SPACE               TO  SYS-1001-REC
-           MOVE    "1001"              TO  SYS-1001-KANRICD
-           MOVE    SYS-1001-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           MOVE    WRK-SYMD            TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"      USING   MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+           MOVE    ZERO            TO  FLG-SYSKANRI
+           MOVE    SPACE           TO  SYS-1001-REC
+           MOVE    "1001"          TO  SYS-1001-KANRICD
+           MOVE    SYS-1001-REC    TO  MCPDATA-REC
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
+           MOVE    WRK-SYMD        TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            IF      MCP-RC              =   ZERO
-               MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+               MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
                PERFORM 900-SYSTEM-NEXT-SEC
            ELSE
-               MOVE    1                   TO  FLG-SYSKANRI
+               MOVE    1               TO  FLG-SYSKANRI
            END-IF
-           IF  FLG-SYSKANRI            =   1
+           IF      FLG-SYSKANRI        =   1
                MOVE    1                   TO  FLG-CSV
            ELSE
                MOVE    MCPDATA-REC         TO  SYS-1001-REC
@@ -486,11 +474,12 @@
                MOVE    SYS-1001-ROUPAYKBN  TO  SPA-ROUPAYKBN
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"      USING   MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            .
        110-CP1001-KENSAKU-EXT.
@@ -499,87 +488,63 @@
       *****************************************************************
       *    メイン処理
       *****************************************************************
-       200-MAIN-SEC                    SECTION.
+       200-MAIN-SEC                SECTION.
       *
-           IF  CNT-CSV (4:3)           =   ZERO
+      *    1000件ごとにメッセージを表示
+           IF      CNT-CSV (4:3)       =   ZERO
                DISPLAY "***(ORCVTPTINF)*** CNT-CSV[" CNT-CSV "]"
            END-IF
-           MOVE    SPACE               TO  PTINF-REC
-           INITIALIZE                      PTINF-REC
-           MOVE    ZERO                TO  WRK-POINT-AREA
-           MOVE    ZERO                TO  IDX-AREA
-           MOVE    ZERO                TO  WRK-WARIKBN
-      *    対象患者にエラーが存在するかどうか
-           MOVE    ZERO                TO  FLG-ERRARI
-           MOVE    ZERO                TO  FLG-DATAEND
+      *    指定した件数になったらコミット
+           IF      CNT-COMMIT          =   WRK-COMMIT
+               PERFORM 900-DBCOMMIT-SEC
+               MOVE    ZERO            TO  CNT-COMMIT
+           END-IF
+      *    エラーが指定した件数になったら処理終了
+           IF    ( WRK-ERR         NOT =   ZERO )  AND
+                 ( CNT-ERR             =   WRK-ERR )
+               MOVE    1               TO  FLG-CSV
+               GO  TO  200-MAIN-EXT
+           END-IF
+      *
+           MOVE    SPACE           TO  PTINF-REC
+           INITIALIZE                  PTINF-REC
+           MOVE    SPACE           TO  WRK-HEN-AREA
+           INITIALIZE                  WRK-HEN-AREA
+           MOVE    ZERO            TO  WRK-POINT-AREA
+           MOVE    ZERO            TO  IDX-AREA
+           MOVE    ZERO            TO  FLG-ERRARI
+           MOVE    ZERO            TO  FLG-DATAEND
+           MOVE    ZERO            TO  WRK-KOUMOKU-NO
       *
       *    患者ＣＳＶファイルに存在する項目数分、繰り返す
       *    またはレコード終了、または項目エラー４個まで
-           PERFORM     VARYING   IDX   FROM    1   BY  1
-                       UNTIL   ( IDX           >   49   )
-                       OR      ( WRK-PO-ED     >=  3000 )
-                       OR      ( IDE           >   4    )
+           PERFORM VARYING   IDX   FROM    1   BY  1
+                   UNTIL   ( IDX           >   49   )
+                   OR      ( WRK-PO-ED     >=  3000 )
+                   OR      ( IDE           >   4    )
       *
                MOVE    ZERO            TO  FLG-AREA1
-               MOVE    IDX             TO  WRK-KOUMOKU-NO
-               COMPUTE     WRK-PO-ST   =   WRK-PO-ED   +   1
+               COMPUTE WRK-PO-ST   =   WRK-PO-ED   +   1
       *
                IF  ( CSV-R (WRK-PO-ST:)    =   SPACE )  OR
                    ( FLG-DATAEND           =   1     )
                    MOVE    1           TO  FLG-DATAEND
                    MOVE    WRK-PO-ST   TO  WRK-PO-ED
                ELSE
+                   ADD     1           TO  WRK-KOUMOKU-NO
       *            項目終了文字後のカンマ位置を取得(WRK-PO-ED)
                    PERFORM 210-CHAR-END-GET-SEC
                END-IF
-      *
       *        項目共通処理
                PERFORM 220-KOUMOKU-KYOTU-SEC
-      *
-      *        必須項目チェック処理
-               PERFORM 230-HISSU-KOUMOKU-SEC
-               IF  FLG-ERR             =   ZERO
-      *            項目別処理
-                   PERFORM 240-KOUMOKU-BETU-SEC
-                   IF  FLG-ERR         NOT =   ZERO
-                       PERFORM 290-ERRREC-EDIT-SEC
-                       MOVE    1           TO  FLG-ERRARI
-                   END-IF
-               ELSE
-                   PERFORM 290-ERRREC-EDIT-SEC
-                   MOVE    1               TO  FLG-ERRARI
-               END-IF
-      *
+      *        項目別処理
+               PERFORM 240-KOUMOKU-BETU-SEC
            END-PERFORM
       *
-      *----(01.01.01)--ADD-START---
-           MOVE    ZERO                TO  PTINF-MAXZAINUM
-           MOVE    ZERO                TO  PTINF-RRKNUM
-           MOVE    ZERO                TO  PTINF-RRKEDANUM
-      *----(01.01.01)--ADD-END-----
-      *
-           IF  FLG-ERRARI              =   ZERO
-      *        患者ＩＤ取得処理
-               PERFORM 250-PTNUM-GET-SEC
-               IF  FLG-ERR             =   ZERO
-      *            患者番号変換マスタ　更新処理
-                   PERFORM 260-PTNUM-INSERT-SEC
-                   IF  FLG-ERR             =   ZERO
-      *                患者マスタ　更新処理
-                       PERFORM 270-PTINF-INSERT-SEC
-                       IF  FLG-ERR         NOT =   ZERO
-      *                    エラーリスト編集/出力処理
-                           PERFORM 290-ERRREC-EDIT-SEC
-                           MOVE    2           TO  FLG-ERRARI
-                           PERFORM 290-ERRLST-OUT-SEC
-                       END-IF
-                   ELSE
-      *                エラーリスト編集/出力処理
-                       PERFORM 290-ERRREC-EDIT-SEC
-                       MOVE    2           TO  FLG-ERRARI
-                       PERFORM 290-ERRLST-OUT-SEC
-                   END-IF
-               ELSE
+           IF      FLG-ERRARI          =   ZERO
+      *        患者情報セット
+               PERFORM 250-PTINF-SET-SEC
+               IF      FLG-ERR         NOT =   ZERO
       *            エラーリスト編集/出力処理
                    PERFORM 290-ERRREC-EDIT-SEC
                    MOVE    2           TO  FLG-ERRARI
@@ -587,7 +552,6 @@
                END-IF
            ELSE
       *        エラーリスト出力処理
-               MOVE    1           TO  FLG-ERRARI
                PERFORM 290-ERRLST-OUT-SEC
            END-IF
       *
@@ -601,21 +565,21 @@
       *****************************************************************
       *    対象項目の文字終了位置を取得
       *****************************************************************
-       210-CHAR-END-GET-SEC            SECTION.
+       210-CHAR-END-GET-SEC        SECTION.
       *
-           PERFORM     VARYING   IDY   FROM    WRK-PO-ST   BY  1
-                       UNTIL   ( IDY           >=  3000 )
-                       OR      ( FLG-COMMA     =   1    )
+           PERFORM VARYING   IDY   FROM    WRK-PO-ST   BY  1
+                   UNTIL   ( IDY           >=  3000 )
+                   OR      ( FLG-COMMA     =   1    )
       *        カンマの位置
-               IF  ( CSV-X (IDY)       =   ","        )  OR
-                   ((IDX               =   49  OR  48) AND
-                    (CSV-X (IDY)       =   SPACE))
+               IF    ( CSV-X (IDY)     =   "," )  OR
+                     ((IDX             =   49  OR  48) AND
+                     ( CSV-X (IDY)     =   SPACE))
                    MOVE    IDY         TO  WRK-PO-ED
                    MOVE    1           TO  FLG-COMMA
                END-IF
       *        デリミタ(")存在するかどうか
-               IF  CSV-X (IDY)         =   """"
-                   IF  FLG-DELI1       =   ZERO
+               IF      CSV-X (IDY)         =   """"
+                   IF      FLG-DELI1       =   ZERO
                        MOVE    1       TO  FLG-DELI1
                    ELSE
                        MOVE    1       TO  FLG-DELI2
@@ -630,114 +594,60 @@
       *****************************************************************
       *    項目共通処理
       *****************************************************************
-       220-KOUMOKU-KYOTU-SEC           SECTION.
+       220-KOUMOKU-KYOTU-SEC       SECTION.
       *
-           MOVE    ZERO                TO  WRK-MOVE-AREA
+           MOVE    ZERO            TO  WRK-MOVE-AREA
       *
       *    データが省略されている場合、FLG-NODATAに1をセット
-           IF  FLG-DELI1               =   1
+           IF      FLG-DELI1           =   1
       *        デリミタ(")を含んでいる場合
-               IF  FLG-DELI2           =   1
-                   COMPUTE WRK-WK1     =   WRK-PO-ST   +   2
+               IF      FLG-DELI2       =   1
+                   COMPUTE WRK-WK      =   WRK-PO-ST   +   2
                ELSE
-                   COMPUTE WRK-WK1     =   WRK-PO-ST   +   1
+                   COMPUTE WRK-WK      =   WRK-PO-ST   +   1
                END-IF
-               IF  WRK-WK1             =   WRK-PO-ED
+               IF      WRK-WK          =   WRK-PO-ED
                    MOVE    1           TO  FLG-NODATA
-                   GO      TO          220-KOUMOKU-KYOTU-EXT
+                   GO  TO  220-KOUMOKU-KYOTU-EXT
                END-IF
            ELSE
       *        デリミタ(")を含んでいない場合
-               IF  WRK-PO-ST           =   WRK-PO-ED
+               IF      WRK-PO-ST       =   WRK-PO-ED
                    MOVE    1           TO  FLG-NODATA
-                   GO      TO          220-KOUMOKU-KYOTU-EXT
+                   GO  TO  220-KOUMOKU-KYOTU-EXT
                END-IF
            END-IF
       *
       *    転送開始位置・転送桁数を算出
-           IF  FLG-DELI1               =   1
+           IF      FLG-DELI1           =   1
       *        デリミタ(")を含んでいる場合
-               COMPUTE   WRK-MO-ST     =   WRK-PO-ST   +   1
-               IF  FLG-DELI2           =   1
-                   COMPUTE   WRK-MO-CNT    =   WRK-PO-ED
-                                           -  (WRK-PO-ST   +   2)
+               COMPUTE WRK-MO-ST       =   WRK-PO-ST   +   1
+               IF      FLG-DELI2       =   1
+                   COMPUTE WRK-MO-CNT  =   WRK-PO-ED
+                                       -  (WRK-PO-ST   +   2)
                ELSE
-                   COMPUTE   WRK-MO-CNT    =  (WRK-PO-ED   -   1)
-                                           -   WRK-PO-ST
+                   COMPUTE WRK-MO-CNT  =  (WRK-PO-ED   -   1)
+                                       -   WRK-PO-ST
                END-IF
            ELSE
       *        デリミタ(")を含んでいない場合
                MOVE    WRK-PO-ST       TO  WRK-MO-ST
-               COMPUTE   WRK-MO-CNT    =   WRK-PO-ED  -  WRK-PO-ST
+               COMPUTE WRK-MO-CNT      =   WRK-PO-ED  -  WRK-PO-ST
            END-IF
       *
-           IF  WRK-MO-CNT              =   1            AND
-      *        Cr(MS-DOS)
-               CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       =   X"0D"
+           IF    ( WRK-MO-CNT          =   1 ) AND
+                 ( CSV-REC (WRK-MO-ST:WRK-MO-CNT) =   X"0D" )
                MOVE  1                 TO  FLG-NODATA
            END-IF
-      *D     IF  CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-      *D                                 =   SPACE
-      *D         MOVE  1                 TO  FLG-NODATA
-      *D     END-IF
       *
            .
        220-KOUMOKU-KYOTU-EXT.
            EXIT.
       *
       *****************************************************************
-      *    必須項目チェック処理
-      *****************************************************************
-       230-HISSU-KOUMOKU-SEC           SECTION.
-      *
-           IF  FLG-NODATA              =   1
-      *
-               EVALUATE    WRK-KOUMOKU-NO
-      *        １：患者番号
-               WHEN    1
-      *        ２：カナ氏名
-               WHEN    2
-      *        ３：漢字氏名
-               WHEN    3
-                   IF  PTINF-KANANAME  =   SPACE
-                       CONTINUE
-                   ELSE
-                       GO  TO          230-HISSU-KOUMOKU-EXT
-                   END-IF
-      *        ５：性別
-               WHEN    5
-      *        ６：生年月日
-               WHEN    6
-      *コメント START --------------------------------
-      **        ９：自宅−住所
-      *         WHEN    9
-      **        １０：自宅−番地
-      *         WHEN    10
-      **        １３：世帯主
-      *         WHEN    13
-      **        １４：続柄
-      *         WHEN    14
-      **        １５：職業
-      *         WHEN    15
-      *コメント END   --------------------------------
-      *        ４７：テスト患者フラグ
-               WHEN    47
-                   MOVE    1           TO  FLG-ERR
-      *
-               WHEN    OTHER
-                   CONTINUE
-               END-EVALUATE
-           END-IF
-      *
-           .
-       230-HISSU-KOUMOKU-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    項目別処理
       *****************************************************************
-       240-KOUMOKU-BETU-SEC            SECTION.
+       240-KOUMOKU-BETU-SEC        SECTION.
       *
            EVALUATE    WRK-KOUMOKU-NO
       *    １：患者番号
@@ -745,42 +655,13 @@
                PERFORM 2410-PTNUM-SET-SEC
       *    ２：カナ氏名
            WHEN    2
-               MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-DATA
-               MOVE    50              TO  WRK-MAX-CNT
-               PERFORM 2402-ZENKAKU-HEN-SEC
-      *********PERFORM 2401-SPACE-HENSYU-SEC
-               IF      FLG-ERR         =   ZERO
-                   MOVE    WRK-DATA (1:WRK-LEN)
-                                       TO  PTINF-KANANAME
-               END-IF
+               PERFORM 2410-KANANAME-SET-SEC
       *    ３：漢字氏名
            WHEN    3
-               IF  WRK-MO-CNT          >   ZERO
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-DATA
-                   MOVE    50              TO  WRK-MAX-CNT
-                   PERFORM 2402-ZENKAKU-HEN-SEC
-                   IF      FLG-ERR         =   ZERO
-                       MOVE    WRK-DATA (1:WRK-LEN)
-                                       TO  PTINF-NAME
-                   END-IF
-               ELSE
-                   MOVE    PTINF-KANANAME
-                                       TO  PTINF-NAME
-               END-IF
+               PERFORM 2410-NAME-SET-SEC
       *    ４：通称
            WHEN    4
-               IF  WRK-MO-CNT          >   ZERO
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-DATA
-                   MOVE    50              TO  WRK-MAX-CNT
-                   PERFORM 2402-ZENKAKU-HEN-SEC
-                   IF      FLG-ERR         =   ZERO
-                       MOVE    WRK-DATA (1:WRK-LEN)
-                                           TO  PTINF-NICKNAME
-                   END-IF
-               END-IF
+               PERFORM 2410-NICKNAME-SET-SEC
       *    ５：性別
            WHEN    5
                PERFORM 2410-SEX-SET-SEC
@@ -795,109 +676,34 @@
                PERFORM 2410-HOME-POST-SET-SEC
       *    ９：自宅−住所
            WHEN    9
-               IF  WRK-MO-CNT          >   ZERO
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-DATA
-                   MOVE    100             TO  WRK-MAX-CNT
-                   PERFORM 2402-ZENKAKU-HEN-SEC
-                   IF      FLG-ERR         =   ZERO
-                       MOVE    WRK-DATA (1:WRK-LEN)
-                                       TO  PTINF-HOME-ADRS
-                   END-IF
-               END-IF
+               PERFORM 2410-HOME-ADRS-SET-SEC
       *    １０：自宅−番地
            WHEN    10
-               IF  WRK-MO-CNT          >   ZERO
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-DATA
-                   MOVE    100             TO  WRK-MAX-CNT
-                   PERFORM 2402-ZENKAKU-HEN-SEC
-                   IF      FLG-ERR         =   ZERO
-                       MOVE    WRK-DATA (1:WRK-LEN)
-                                       TO  PTINF-HOME-BANTI
-                   END-IF
-               END-IF
+               PERFORM 2410-HOME-BANTI-SET-SEC
       *    １１：自宅−電話番号（昼）
            WHEN    11
-               IF  WRK-MO-CNT          >   ZERO
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-DATA
-                   PERFORM 2401-SPACE-HENSYU-SEC                        
-                   MOVE    WRK-DATA (1:WRK-LEN)
-                                       TO  PTINF-HOME-TEL1
-               END-IF
+               PERFORM 2410-HOME-TEL1-SET-SEC
       *    １２：自宅−電話番号（夜）
            WHEN    12
-               IF  WRK-MO-CNT          >   ZERO
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-DATA
-                   PERFORM 2401-SPACE-HENSYU-SEC                        
-                   MOVE    WRK-DATA (1:WRK-LEN)
-                                       TO  PTINF-HOME-TEL2
-               END-IF
+               PERFORM 2410-HOME-TEL2-SET-SEC
       *    １３：世帯主
            WHEN    13
-               IF  WRK-MO-CNT          >   ZERO
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-DATA
-                   MOVE    50              TO  WRK-MAX-CNT
-                   PERFORM 2402-ZENKAKU-HEN-SEC
-                   IF      FLG-ERR         =   ZERO
-                       MOVE    WRK-DATA (1:WRK-LEN)
-                                       TO  PTINF-SETAINUSI
-                   END-IF
-               END-IF
+               PERFORM 2410-SETAINUSI-SET-SEC
       *    １４：続柄
            WHEN    14
-               IF  WRK-MO-CNT          >   ZERO
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-DATA
-                   MOVE    30              TO  WRK-MAX-CNT
-                   PERFORM 2402-ZENKAKU-HEN-SEC
-                   IF      FLG-ERR         =   ZERO
-                       MOVE    WRK-DATA (1:WRK-LEN)
-                                       TO  PTINF-ZOKUGARA
-                   END-IF
-               END-IF
+               PERFORM 2410-ZOKUGARA-SET-SEC
       *    １５：職業
            WHEN    15
-               IF  WRK-MO-CNT          >   ZERO
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-DATA
-                   MOVE    20              TO  WRK-MAX-CNT
-                   PERFORM 2402-ZENKAKU-HEN-SEC
-                   IF      FLG-ERR         =   ZERO
-                       MOVE    WRK-DATA (1:WRK-LEN)
-                                       TO  PTINF-JOB
-                   END-IF
-               END-IF
+               PERFORM 2410-JOB-SET-SEC
       *    １６：携帯電話番号
            WHEN    16
-               IF  WRK-MO-CNT          >   ZERO
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-DATA
-                   PERFORM 2401-SPACE-HENSYU-SEC                        
-                   MOVE    WRK-DATA (1:WRK-LEN)
-                                       TO  PTINF-KEITAI-TEL
-               END-IF
+               PERFORM 2410-KEITAI-TEL-SET-SEC
       *    １７：ＦＡＸ番号
            WHEN    17
-               IF  WRK-MO-CNT          >   ZERO
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-DATA
-                   PERFORM 2401-SPACE-HENSYU-SEC                        
-                   MOVE    WRK-DATA (1:WRK-LEN)
-                                       TO  PTINF-FAX
-               END-IF
+               PERFORM 2410-FAX-SET-SEC
       *    １８：電子メールアドレス
            WHEN    18
-               IF  WRK-MO-CNT          >   ZERO
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-DATA
-                   PERFORM 2401-SPACE-HENSYU-SEC                        
-                   MOVE    WRK-DATA (1:WRK-LEN)
-                                       TO  PTINF-EMAIL
-               END-IF
+               PERFORM 2410-EMAIL-SET-SEC
       *    １９：減免事由
            WHEN    19
                PERFORM 2410-DISCOUNT-KBN-SET-SEC
@@ -909,261 +715,79 @@
                PERFORM 2410-DISCOUNT-SET-SEC
       *    ２２：コメント１
            WHEN    22
-               IF  WRK-MO-CNT          >   ZERO
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-DATA
-                   MOVE    100             TO  WRK-MAX-CNT
-                   PERFORM 2402-ZENKAKU-HEN2-SEC
-                   MOVE    WRK-DATA (1:WRK-LEN)
-                                       TO  PTINF-COMMENT-1
-               END-IF
+               PERFORM 2410-COMMENT-1-SET-SEC
       *    ２３：コメント２
            WHEN    23
-               IF  WRK-MO-CNT          >   ZERO
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-DATA
-                   MOVE    100             TO  WRK-MAX-CNT
-                   PERFORM 2402-ZENKAKU-HEN2-SEC
-                   MOVE    WRK-DATA (1:WRK-LEN)
-                                       TO  PTINF-COMMENT-2
-               END-IF
+               PERFORM 2410-COMMENT-2-SET-SEC
       *    ２４：禁忌１
            WHEN    24
-               IF  WRK-MO-CNT          >   ZERO
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-DATA
-                   MOVE    100         TO  WRK-MAX-CNT
-                   PERFORM 2402-ZENKAKU-HEN-SEC
-                   IF      FLG-ERR         =   ZERO
-                       MOVE    WRK-DATA (1:WRK-LEN)
-                                       TO  PTINF-TABOO-1
-                   END-IF
-               END-IF
+               PERFORM 2410-TABOO-1-SET-SEC
       *    ２５：禁忌２
            WHEN    25
-               IF  WRK-MO-CNT          >   ZERO
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-DATA
-                   MOVE    100         TO  WRK-MAX-CNT
-                   PERFORM 2402-ZENKAKU-HEN-SEC
-                   IF      FLG-ERR         =   ZERO
-                       MOVE    WRK-DATA (1:WRK-LEN)
-                                       TO  PTINF-TABOO-2
-                   END-IF
-               END-IF
+               PERFORM 2410-TABOO-2-SET-SEC
       *    ２６：アレルギー１
            WHEN    26
-               IF  WRK-MO-CNT          >   ZERO
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-DATA
-                   MOVE    100         TO  WRK-MAX-CNT
-                   PERFORM 2402-ZENKAKU-HEN-SEC
-                   IF      FLG-ERR         =   ZERO
-                       MOVE    WRK-DATA (1:WRK-LEN)
-                                       TO  PTINF-ALLERGY-1
-                   END-IF
-               END-IF
+               PERFORM 2410-ALLERGY-1-SET-SEC
       *    ２７：アレルギー２
            WHEN    27
-               IF  WRK-MO-CNT          >   ZERO
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-DATA
-                   MOVE    100         TO  WRK-MAX-CNT
-                   PERFORM 2402-ZENKAKU-HEN-SEC
-                   IF      FLG-ERR         =   ZERO
-                       MOVE    WRK-DATA (1:WRK-LEN)
-                                       TO  PTINF-ALLERGY-2
-                   END-IF
-               END-IF
+               PERFORM 2410-ALLERGY-2-SET-SEC
       *    ２８：感染症１
            WHEN    28
-               IF  WRK-MO-CNT          >   ZERO
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-DATA
-                   MOVE    100         TO  WRK-MAX-CNT
-                   PERFORM 2402-ZENKAKU-HEN-SEC
-                   IF      FLG-ERR         =   ZERO
-                       MOVE    WRK-DATA (1:WRK-LEN)
-                                       TO  PTINF-KANSENSYO-1
-                   END-IF
-               END-IF
+               PERFORM 2410-KANSENSYO-1-SET-SEC
       *    ２９：感染症２
            WHEN    29
-               IF  WRK-MO-CNT          >   ZERO
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-DATA
-                   MOVE    100         TO  WRK-MAX-CNT
-                   PERFORM 2402-ZENKAKU-HEN-SEC
-                   IF      FLG-ERR         =   ZERO
-                       MOVE    WRK-DATA (1:WRK-LEN)
-                                       TO  PTINF-KANSENSYO-2
-                   END-IF
-               END-IF
+               PERFORM 2410-KANSENSYO-2-SET-SEC
       *    ３０：連絡先−名称
            WHEN    30
-               IF  WRK-MO-CNT          >   ZERO
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-DATA
-                   MOVE    50          TO  WRK-MAX-CNT
-                   PERFORM 2402-ZENKAKU-HEN-SEC
-                   IF      FLG-ERR         =   ZERO
-                       MOVE    WRK-DATA (1:WRK-LEN)
-                                       TO  PTINF-RENRAKU-NAME
-                   END-IF
-               END-IF
+               PERFORM 2410-RENRAKU-NAME-SET-SEC
       *    ３１：連絡先−続柄
            WHEN    31
-               IF  WRK-MO-CNT          >   ZERO
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-DATA
-                   MOVE    30          TO  WRK-MAX-CNT
-                   PERFORM 2402-ZENKAKU-HEN-SEC
-                   IF      FLG-ERR         =   ZERO
-                       MOVE    WRK-DATA (1:WRK-LEN)
-                                       TO  PTINF-RENRAKU-ZOKUGARA
-                   END-IF
-               END-IF
+               PERFORM 2410-RENRAKU-ZOKUGARA-SET-SEC
       *    ３２：連絡先−郵便番号
            WHEN    32
                PERFORM 2410-RENRAKU-POST-SET-SEC
       *    ３３：連絡先−住所
            WHEN    33
-               IF  WRK-MO-CNT          >   ZERO
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-DATA
-                   MOVE    100         TO  WRK-MAX-CNT
-                   PERFORM 2402-ZENKAKU-HEN-SEC
-                   IF      FLG-ERR         =   ZERO
-                       MOVE    WRK-DATA (1:WRK-LEN)
-                                       TO  PTINF-RENRAKU-ADRS
-                   END-IF
-               END-IF
+               PERFORM 2410-RENRAKU-ADRS-SET-SEC
       *    ３４：連絡先−番地方書
            WHEN    34
-               IF  WRK-MO-CNT          >   ZERO
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-DATA
-                   MOVE    100         TO  WRK-MAX-CNT
-                   PERFORM 2402-ZENKAKU-HEN-SEC
-                   IF      FLG-ERR         =   ZERO
-                       MOVE    WRK-DATA (1:WRK-LEN)
-                                       TO  PTINF-RENRAKU-BANTI
-                   END-IF
-               END-IF
+               PERFORM 2410-RENRAKU-BANTI-SET-SEC
       *    ３５：連絡先−電話番号（昼）
            WHEN    35
-               IF  WRK-MO-CNT          >   ZERO
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-DATA
-                   PERFORM 2401-SPACE-HENSYU-SEC                        
-                   MOVE    WRK-DATA (1:WRK-LEN)
-                                       TO  PTINF-RENRAKU-TEL1
-               END-IF
+               PERFORM 2410-RENRAKU-TEL1-SET-SEC
       *    ３６：連絡先−電話番号（夜）
            WHEN    36
-               IF  WRK-MO-CNT          >   ZERO
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-DATA
-                   PERFORM 2401-SPACE-HENSYU-SEC                        
-                   MOVE    WRK-DATA (1:WRK-LEN)
-                                       TO  PTINF-RENRAKU-TEL2
-               END-IF
+               PERFORM 2410-RENRAKU-TEL2-SET-SEC
       *    ３７：勤務先−名称
            WHEN    37
-               IF  WRK-MO-CNT          >   ZERO
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-DATA
-                   MOVE    50          TO  WRK-MAX-CNT
-                   PERFORM 2402-ZENKAKU-HEN-SEC
-                   IF      FLG-ERR         =   ZERO
-                       MOVE    WRK-DATA (1:WRK-LEN)
-                                       TO  PTINF-OFFICE-NAME
-                   END-IF
-               END-IF
+               PERFORM 2410-OFFICE-NAME-SET-SEC
       *    ３８：勤務先−郵便番号
            WHEN    38
                PERFORM 2410-OFFICE-POST-SET-SEC
       *    ３９：勤務先−住所
            WHEN    39
-               IF  WRK-MO-CNT          >   ZERO
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-DATA
-                   MOVE    100         TO  WRK-MAX-CNT
-                   PERFORM 2402-ZENKAKU-HEN-SEC
-                   IF      FLG-ERR         =   ZERO
-                       MOVE    WRK-DATA (1:WRK-LEN)
-                                       TO  PTINF-OFFICE-ADRS
-                   END-IF
-               END-IF
+               PERFORM 2410-OFFICE-ADRS-SET-SEC
       *    ４０：勤務先−番地方書
            WHEN    40
-               IF  WRK-MO-CNT          >   ZERO
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-DATA
-                   MOVE    100         TO  WRK-MAX-CNT
-                   PERFORM 2402-ZENKAKU-HEN-SEC
-                   IF      FLG-ERR         =   ZERO
-                       MOVE    WRK-DATA (1:WRK-LEN)
-                                       TO  PTINF-OFFICE-BANTI
-                   END-IF
-               END-IF
+               PERFORM 2410-OFFICE-BANTI-SET-SEC
       *    ４１：勤務先−電話番号
            WHEN    41
-               IF  WRK-MO-CNT          >   ZERO
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-DATA
-                   PERFORM 2401-SPACE-HENSYU-SEC                        
-                   MOVE    WRK-DATA (1:WRK-LEN)
-                                       TO  PTINF-OFFICE-TEL
-               END-IF
+               PERFORM 2410-OFFICE-TEL-SET-SEC
       *    ４２：帰省先−名称
            WHEN    42
-               IF  WRK-MO-CNT          >   ZERO
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-DATA
-                   MOVE    50          TO  WRK-MAX-CNT
-                   PERFORM 2402-ZENKAKU-HEN-SEC
-                   IF      FLG-ERR         =   ZERO
-                       MOVE    WRK-DATA (1:WRK-LEN)
-                                       TO  PTINF-KISEI-NAME
-                   END-IF
-               END-IF
+               PERFORM 2410-KISEI-NAME-SET-SEC
       *    ４３：帰省先−郵便番号
            WHEN    43
                PERFORM 2410-KISEI-POST-SET-SEC
       *    ４４：帰省先−住所
            WHEN    44
-               IF  WRK-MO-CNT          >   ZERO
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-DATA
-                   MOVE    100         TO  WRK-MAX-CNT
-                   PERFORM 2402-ZENKAKU-HEN-SEC
-                   IF      FLG-ERR         =   ZERO
-                       MOVE    WRK-DATA (1:WRK-LEN)
-                                       TO  PTINF-KISEI-ADRS
-                   END-IF
-               END-IF
+               PERFORM 2410-KISEI-ADRS-SET-SEC
       *    ４５：帰省先−番地方書
            WHEN    45
-               IF  WRK-MO-CNT          >   ZERO
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-DATA
-                   MOVE    100         TO  WRK-MAX-CNT
-                   PERFORM 2402-ZENKAKU-HEN-SEC
-                   IF      FLG-ERR         =   ZERO
-                       MOVE    WRK-DATA (1:WRK-LEN)
-                                       TO  PTINF-KISEI-BANTI
-                   END-IF
-               END-IF
+               PERFORM 2410-KISEI-BANTI-SET-SEC
       *    ４６：帰省先−電話番号
            WHEN    46
-               IF  WRK-MO-CNT          >   ZERO
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-DATA
-                   PERFORM 2401-SPACE-HENSYU-SEC                        
-                   MOVE    WRK-DATA (1:WRK-LEN)
-                                       TO  PTINF-KISEI-TEL
-               END-IF
+               PERFORM 2410-KISEI-TEL-SET-SEC
       *    ４７：テスト患者フラグ
            WHEN    47
                PERFORM 2410-TSTPTNUMKBN-SET-SEC
@@ -1173,39 +797,70 @@
       *    ４９：更新日
            WHEN    49
                PERFORM 2410-UPYMD-SET-SEC
-      *
            END-EVALUATE
+      *
+           IF      FLG-ERR             NOT =   ZERO
+               MOVE    1               TO  FLG-ERRARI
+               PERFORM 290-ERRREC-EDIT-SEC
+           END-IF
       *
            .
        240-KOUMOKU-BETU-EXT.
            EXIT.
       *
       *****************************************************************
+      *    項目空白処理
+      *****************************************************************
+       2401-SPACE-HENSYU-SEC       SECTION.
+      *
+           MOVE    ZERO            TO  WRK-LEN
+      *
+           IF      WRK-DATA            =   SPACE
+               MOVE    1               TO  WRK-LEN
+           ELSE
+               PERFORM VARYING IDS FROM    200 BY  -1
+                       UNTIL   IDS <       1
+                   IF      WRK-DATA (IDS:1)    NOT =   SPACE
+                       MOVE    IDS             TO  WRK-LEN
+                       MOVE    1               TO  IDS
+                   END-IF
+               END-PERFORM
+      *
+      *        後ろの全角空白を削除
+               IF      WRK-LEN             >   1
+                   PERFORM 24021-KUHAKU-DEL-SEC
+               END-IF
+           END-IF
+           .
+       2401-SPACE-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    全角桁数・空白処理
       *****************************************************************
-       2402-ZENKAKU-HEN-SEC              SECTION.
+       2402-ZENKAKU-HEN-SEC        SECTION.
       *
            INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "1"                 TO  KANACHK-SYORI
-           MOVE    WRK-DATA            TO  KANACHK-MAE-INPUT
-           MOVE    WRK-MAX-CNT         TO  KANACHK-MAX-CNT
+           MOVE    "1"             TO  KANACHK-SYORI
+           MOVE    WRK-DATA        TO  KANACHK-MAE-INPUT
+           MOVE    WRK-CNT         TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
            MOVE    KANACHK-MAE-INPUT   TO  WRK-DATA
            MOVE    KANACHK-MAX         TO  WRK-LEN
            IF      KANACHK-RC      NOT =   ZERO
       *        全角・半角混在エラ−
-               MOVE    3                   TO  FLG-ERR
+               MOVE    3               TO  FLG-ERR
            ELSE
-               IF      KANACHK-SYUBETU     =   1
+               IF      KANACHK-SYUBETU =   1
       *        半角を全角へ
                    INITIALIZE                  ORCSKANACHKAREA
-                   MOVE    "2"                 TO  KANACHK-SYORI
-                   MOVE    WRK-DATA            TO  KANACHK-MAE-INPUT
-                   MOVE    WRK-MAX-CNT         TO  KANACHK-MAX-CNT
+                   MOVE    "2"             TO  KANACHK-SYORI
+                   MOVE    WRK-DATA        TO  KANACHK-MAE-INPUT
+                   MOVE    WRK-CNT         TO  KANACHK-MAX-CNT
                    CALL    "ORCSKANACHK"       USING
                                                ORCSKANACHKAREA
-                   IF      KANACHK-RC          =   ZERO
+                   IF      KANACHK-RC      =   ZERO
                        MOVE    KANACHK-MAX         TO  WRK-LEN
                        MOVE    KANACHK-OUT-INPUT   TO  WRK-DATA
                    END-IF
@@ -1213,11 +868,11 @@
                    MOVE    KANACHK-OUT-INPUT   TO  WRK-DATA
                END-IF
            END-IF
-           IF      WRK-LEN             =   ZERO
-               MOVE    1                   TO  WRK-LEN
+           IF      WRK-LEN         =   ZERO
+               MOVE    1               TO  WRK-LEN
            END-IF
       *    後ろの全角空白を削除
-           IF      WRK-LEN             >   1
+           IF      WRK-LEN         >   1
                PERFORM 24021-KUHAKU-DEL-SEC
            END-IF
            .
@@ -1227,24 +882,24 @@
       *****************************************************************
       *    全角空白削除処理
       *****************************************************************
-       24021-KUHAKU-DEL-SEC              SECTION.
+       24021-KUHAKU-DEL-SEC        SECTION.
       *
-           COMPUTE IDW             =   WRK-LEN     -   1
-           IF      WRK-DATA (IDW:2)    =   "　"
+           COMPUTE IDZ             =   WRK-LEN     -   1
+           IF      WRK-DATA (IDZ:2)    =   "　"
                MOVE    1                   TO  WRK-LEN
-               PERFORM VARYING IDE     FROM    IDW BY  -2
-                       UNTIL   IDE     <   2
-                   IF      WRK-DATA (IDE:2)    NOT =   "　"
-                       COMPUTE WRK-LEN         =   IDE     +   1
-                       MOVE    2               TO  IDE
+               PERFORM VARYING IDS     FROM    IDZ BY  -2
+                       UNTIL   IDS     <   2
+                   IF      WRK-DATA (IDS:2)    NOT =   "　"
+                       COMPUTE WRK-LEN         =   IDS     +   1
+                       MOVE    2               TO  IDS
                    ELSE
-                       IF      IDE             =   3
+                       IF      IDS             =   3
                            IF      WRK-DATA (1:2)      NOT =   "　"
                                MOVE    2               TO  WRK-LEN
                            END-IF
                        END-IF
                    END-IF
-               END-PERFORM    
+               END-PERFORM
            END-IF
            .
        2402-ZENKAKU-HEN-EXT.
@@ -1253,18 +908,18 @@
       *****************************************************************
       *    全角桁数・空白処理（コメント）
       *****************************************************************
-       2402-ZENKAKU-HEN2-SEC              SECTION.
+       2402-ZENKAKU-HEN2-SEC       SECTION.
       *
            INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "1"                 TO  KANACHK-SYORI
-           MOVE    WRK-DATA            TO  KANACHK-MAE-INPUT
-           MOVE    WRK-MAX-CNT         TO  KANACHK-MAX-CNT
+           MOVE    "1"             TO  KANACHK-SYORI
+           MOVE    WRK-DATA        TO  KANACHK-MAE-INPUT
+           MOVE    WRK-CNT         TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
            MOVE    KANACHK-MAE-INPUT   TO  WRK-DATA
            MOVE    KANACHK-MAX         TO  WRK-LEN
            IF      WRK-LEN             =   ZERO
-               MOVE    1                   TO  WRK-LEN
+               MOVE    1               TO  WRK-LEN
            END-IF
       *    後ろの全角空白を削除
            IF      WRK-LEN             >   1
@@ -1275,80 +930,58 @@
            EXIT.
       *
       *****************************************************************
-      *    項目空白処理
-      *****************************************************************
-       2401-SPACE-HENSYU-SEC              SECTION.
-      *
-           MOVE    ZERO                   TO  WRK-LEN
-      *
-           IF      WRK-DATA               =   SPACE
-               MOVE    1                      TO  WRK-LEN
-           ELSE         
-               PERFORM VARYING IDE FROM    200 BY  -1
-                       UNTIL   IDE <       1
-                   IF      WRK-DATA (IDE:1)    NOT =   SPACE
-                       MOVE    IDE              TO  WRK-LEN
-                       MOVE    1                TO  IDE
-                   END-IF     
-               END-PERFORM
-      *
-      *        後ろの全角空白を削除
-               IF      WRK-LEN             >   1
-                    PERFORM 24021-KUHAKU-DEL-SEC
-               END-IF
-           END-IF
-           .
-       2401-SPACE-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    項目１：患者番号　処理
       *****************************************************************
-       2410-PTNUM-SET-SEC              SECTION.
+       2410-PTNUM-SET-SEC          SECTION.
       *
-           MOVE    SPACE               TO  SPA-PTNUM
+           MOVE    SPACE           TO  SPA-PTNUM
       *
-      *    空白までを編集する     
-           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-PTNUM
-           MOVE    ZERO                TO  WRK-CNT
-           PERFORM VARYING IDW FROM    1   BY  1
-                   UNTIL   IDW >       WRK-MO-CNT
-                   OR      WRK-PTNUM (IDW:1)   =   SPACE 
-               MOVE    IDW             TO    WRK-CNT
-           END-PERFORM
-           MOVE    WRK-CNT             TO  WRK-MO-CNT 
-      *
-           IF     (WRK-MO-CNT          >   0  )   AND
-                  (WRK-MO-CNT          <=  20 )
-               CONTINUE
-           ELSE
-      *        未入力、２０文字以上はエラー
-               MOVE    2               TO  FLG-ERR
-               GO      TO      2410-PTNUM-SET-EXT
+      *    必須未入力
+           IF      FLG-NODATA          =   1
+               MOVE    1               TO  FLG-ERR
+               GO  TO  2410-PTNUM-SET-EXT
            END-IF
       *
+      *    空白までを編集する
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                       TO  WRK-HEN-PTNUM
+           MOVE    ZERO                TO  WRK-CNT
+           PERFORM VARYING IDZ FROM    1   BY  1
+                   UNTIL ( IDZ >       WRK-MO-CNT )
+                   OR    ( WRK-HEN-PTNUM (IDZ:1)   =   SPACE )
+               MOVE    IDZ             TO  WRK-CNT
+           END-PERFORM
+           MOVE    WRK-CNT             TO  WRK-MO-CNT
+      *
+      *    項目桁数不正
+           IF    ( WRK-MO-CNT          =   0  )    OR
+                 ( WRK-MO-CNT          >   20 )
+               MOVE    2               TO  FLG-ERR
+               GO  TO  2410-PTNUM-SET-EXT
+           END-IF
+      *
+      *    患者番号セット
            IF   (( SYS-1009-PTNUMKSIKBN    =   "1" ) AND
                  ( SYS-1009-JIYKSIKBN      =   "2" ))    OR
                 (( SYS-1009-PTNUMKSIKBN    =   "2" ) AND
                  ( SYS-1009-HJNKSIKBN      =   "3" OR "4" ))
                MOVE    ZERO                TO  SPA-PTNUM(1:WRK-RENKETA)
                IF      WRK-MO-CNT      >   WRK-RENKETA
-                   COMPUTE WRK-MO-ST    =   WRK-MO-ST   
-                                        +  (WRK-MO-CNT  -   WRK-RENKETA)
+                   COMPUTE WRK-MO-ST   =   WRK-MO-ST
+                                       +  (WRK-MO-CNT  -   WRK-RENKETA)
                    MOVE  CSV-REC (WRK-MO-ST:WRK-RENKETA)
                                        TO  SPA-PTNUM
-               ELSE                       
-                  COMPUTE WRK-MO-ST1   =   WRK-RENKETA
+               ELSE
+                   COMPUTE IDZ         =   WRK-RENKETA
                                        -   WRK-MO-CNT
                                        +   1
                    MOVE  CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  SPA-PTNUM(WRK-MO-ST1:)
-               END-IF                        
+                                       TO  SPA-PTNUM(IDZ:)
+               END-IF
            ELSE
-               MOVE    1               TO  WRK-MO-ST1
+               MOVE    1               TO  IDZ
                MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  SPA-PTNUM(WRK-MO-ST1:)
+                                       TO  SPA-PTNUM(IDZ:)
            END-IF
       *
            .
@@ -1356,27 +989,110 @@
            EXIT.
       *
       *****************************************************************
+      *    項目２：カナ氏名　処理
+      *****************************************************************
+       2410-KANANAME-SET-SEC       SECTION.
+      *
+      *    必須未入力
+           IF      FLG-NODATA      =   1
+               MOVE    1               TO  FLG-ERR
+               GO  TO  2410-KANANAME-SET-EXT
+           END-IF
+      *
+      *    カナ氏名セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-DATA
+           MOVE    50              TO  WRK-CNT
+           PERFORM 2402-ZENKAKU-HEN-SEC
+           IF      FLG-ERR         =   ZERO
+               MOVE    WRK-DATA (1:WRK-LEN)
+                                   TO  PTINF-KANANAME
+           END-IF
+      *
+           .
+       2410-KANANAME-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    項目３：漢字氏名　処理
+      *****************************************************************
+       2410-NAME-SET-SEC           SECTION.
+      *
+      *    必須未入力
+           IF      FLG-NODATA      =   1
+      *        カナがなければエラー
+               IF  PTINF-KANANAME      =   SPACE
+                   MOVE    1               TO  FLG-ERR
+               ELSE
+                   MOVE    PTINF-KANANAME  TO  PTINF-NAME
+               END-IF
+               GO  TO  2410-NAME-SET-EXT
+           END-IF
+      *
+      *    漢字氏名セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-DATA
+           MOVE    50              TO  WRK-CNT
+           PERFORM 2402-ZENKAKU-HEN-SEC
+           IF      FLG-ERR         =   ZERO
+               MOVE    WRK-DATA (1:WRK-LEN)
+                                   TO  PTINF-NAME
+           END-IF
+      *
+           .
+       2410-NAME-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    項目４：通称　処理
+      *****************************************************************
+       2410-NICKNAME-SET-SEC       SECTION.
+      *
+      *    未入力
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-NICKNAME-SET-EXT
+           END-IF
+      *
+      *    通称セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-DATA
+           MOVE    50              TO  WRK-CNT
+           PERFORM 2402-ZENKAKU-HEN-SEC
+           IF      FLG-ERR         =   ZERO
+               MOVE    WRK-DATA (1:WRK-LEN)
+                                   TO  PTINF-NICKNAME
+           END-IF
+      *
+           .
+       2410-NICKNAME-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    項目５：性別　処理
       *****************************************************************
-       2410-SEX-SET-SEC                SECTION.
+       2410-SEX-SET-SEC            SECTION.
       *
-           IF  WRK-MO-CNT              =   1
-               CONTINUE
-           ELSE
+      *    必須未入力
+           IF      FLG-NODATA      =   1
+               MOVE    1               TO  FLG-ERR
+               GO  TO  2410-SEX-SET-EXT
+           END-IF
+      *
+      *    項目桁数不正
+           IF      WRK-MO-CNT      NOT =   1
                MOVE    2               TO  FLG-ERR
-               GO      TO              2410-SEX-SET-EXT
+               GO  TO  2410-SEX-SET-EXT
            END-IF
       *
-           IF  CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       =   "1"  OR  "2"
-               CONTINUE
-           ELSE
-               MOVE    3               TO  FLG-ERR
-               GO      TO              2410-SEX-SET-EXT
-           END-IF
-      *
-           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+      *    性別セット
+           EVALUATE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+               WHEN    "1"     THRU    "2"
+                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  PTINF-SEX
+               WHEN    OTHER
+                   MOVE    3           TO  FLG-ERR
+                   GO  TO  2410-SEX-SET-EXT
+           END-EVALUATE
       *
            .
        2410-SEX-SET-EXT.
@@ -1385,17 +1101,29 @@
       *****************************************************************
       *    項目６：生年月日　処理
       *****************************************************************
-       2410-BIRTHDAY-SET-SEC           SECTION.
+       2410-BIRTHDAY-SET-SEC       SECTION.
       *
-           IF  WRK-MO-CNT              =   8
-               CONTINUE
-           ELSE
-               MOVE    2               TO  FLG-ERR
-               GO      TO              2410-BIRTHDAY-SET-EXT
+      *    必須未入力
+           IF      FLG-NODATA      =   1
+               MOVE    1               TO  FLG-ERR
+               GO  TO  2410-BIRTHDAY-SET-EXT
            END-IF
       *
+      *    項目桁数不正
+           IF      WRK-MO-CNT      NOT =   8
+               MOVE    2               TO  FLG-ERR
+               GO  TO  2410-BIRTHDAY-SET-EXT
+           END-IF
+      *
+      *    生年月日セット
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  PTINF-BIRTHDAY
+                                   TO  WRK-SYMD
+           PERFORM 31012-SEIWA-HEN-SEC
+           IF      FLG-YMD         =   1
+               MOVE    3               TO  FLG-ERR
+           ELSE
+               MOVE    WRK-SYMD        TO  PTINF-BIRTHDAY
+           END-IF
       *
            .
        2410-BIRTHDAY-SET-EXT.
@@ -1404,19 +1132,23 @@
       *****************************************************************
       *    項目７：死亡区分　処理
       *****************************************************************
-       2410-DEATHKBN-SET-SEC           SECTION.
+       2410-DEATHKBN-SET-SEC       SECTION.
       *
-           IF  FLG-NODATA              =   1
+      *    未入力
+           IF      FLG-NODATA      =   1
                MOVE    "0"             TO  PTINF-DEATHKBN
-           ELSE
-               IF  WRK-MO-CNT          =   1
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  PTINF-DEATHKBN
-               ELSE
-                   MOVE    2           TO  FLG-ERR
-                   GO      TO          2410-DEATHKBN-SET-EXT
-               END-IF
+               GO  TO  2410-DEATHKBN-SET-EXT
            END-IF
+      *
+      *    項目桁数不正
+           IF      WRK-MO-CNT      NOT =   1
+               MOVE    2           TO  FLG-ERR
+               GO  TO  2410-DEATHKBN-SET-EXT
+           END-IF
+      *
+      *    死亡区分セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  PTINF-DEATHKBN
       *
            .
        2410-DEATHKBN-SET-EXT.
@@ -1425,44 +1157,275 @@
       *****************************************************************
       *    項目８：自宅−郵便番号　処理
       *****************************************************************
-       2410-HOME-POST-SET-SEC          SECTION.
+       2410-HOME-POST-SET-SEC      SECTION.
       *
-           IF  FLG-NODATA              =   ZERO
-      *
-               IF  WRK-MO-CNT         <=   7
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-DATA
-                   PERFORM 2401-SPACE-HENSYU-SEC                        
-                   MOVE    WRK-DATA (1:WRK-LEN)
-                                       TO  PTINF-HOME-POST
-               ELSE
-                   MOVE    2           TO  FLG-ERR
-                   GO      TO          2410-HOME-POST-SET-EXT
-               END-IF
+      *    未入力
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-HOME-POST-SET-EXT
            END-IF
+      *
+      *    項目桁数不正
+           IF      WRK-MO-CNT      >   7
+               MOVE    2           TO  FLG-ERR
+               GO  TO  2410-HOME-POST-SET-EXT
+           END-IF
+      *
+      *    郵便番号セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-DATA
+           PERFORM 2401-SPACE-HENSYU-SEC
+           MOVE    WRK-DATA (1:WRK-LEN)
+                                   TO  PTINF-HOME-POST
       *
            .
        2410-HOME-POST-SET-EXT.
            EXIT.
       *
       *****************************************************************
+      *    項目９：自宅−住所　処理
+      *****************************************************************
+       2410-HOME-ADRS-SET-SEC      SECTION.
+      *
+      *    未入力
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-HOME-ADRS-SET-EXT
+           END-IF
+      *
+      *    住所セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-DATA
+           MOVE    100             TO  WRK-CNT
+           PERFORM 2402-ZENKAKU-HEN-SEC
+           IF      FLG-ERR         =   ZERO
+               MOVE    WRK-DATA (1:WRK-LEN)
+                                   TO  PTINF-HOME-ADRS
+           END-IF
+      *
+           .
+       2410-HOME-ADRS-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    項目１０：自宅−番地　処理
+      *****************************************************************
+       2410-HOME-BANTI-SET-SEC     SECTION.
+      *
+      *    未入力
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-HOME-BANTI-SET-EXT
+           END-IF
+      *
+      *    番地セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-DATA
+           MOVE    100             TO  WRK-CNT
+           PERFORM 2402-ZENKAKU-HEN-SEC
+           IF      FLG-ERR         =   ZERO
+               MOVE    WRK-DATA (1:WRK-LEN)
+                                   TO  PTINF-HOME-BANTI
+           END-IF
+      *
+           .
+       2410-HOME-BANTI-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    項目１１：自宅−電話番号（昼）　処理
+      *****************************************************************
+       2410-HOME-TEL1-SET-SEC      SECTION.
+      *
+      *    未入力
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-HOME-TEL1-SET-EXT
+           END-IF
+      *
+      *    電話番号セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-DATA
+           PERFORM 2401-SPACE-HENSYU-SEC
+           MOVE    WRK-DATA (1:WRK-LEN)
+                                   TO  PTINF-HOME-TEL1
+      *
+           .
+       2410-HOME-TEL1-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    項目１２：自宅−電話番号（夜）　処理
+      *****************************************************************
+       2410-HOME-TEL2-SET-SEC      SECTION.
+      *
+      *    未入力
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-HOME-TEL2-SET-EXT
+           END-IF
+      *
+      *    電話番号セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-DATA
+           PERFORM 2401-SPACE-HENSYU-SEC
+           MOVE    WRK-DATA (1:WRK-LEN)
+                                   TO  PTINF-HOME-TEL2
+      *
+           .
+       2410-HOME-TEL2-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    項目１３：世帯主　処理
+      *****************************************************************
+       2410-SETAINUSI-SET-SEC      SECTION.
+      *
+      *    未入力
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-SETAINUSI-SET-EXT
+           END-IF
+      *
+      *    世帯主セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-DATA
+           MOVE    50              TO  WRK-CNT
+           PERFORM 2402-ZENKAKU-HEN-SEC
+           IF      FLG-ERR         =   ZERO
+               MOVE    WRK-DATA (1:WRK-LEN)
+                                   TO  PTINF-SETAINUSI
+           END-IF
+      *
+           .
+       2410-SETAINUSI-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    項目１４：続柄　処理
+      *****************************************************************
+       2410-ZOKUGARA-SET-SEC       SECTION.
+      *
+      *    未入力
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-ZOKUGARA-SET-EXT
+           END-IF
+      *
+      *    続柄セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-DATA
+           MOVE    30              TO  WRK-CNT
+           PERFORM 2402-ZENKAKU-HEN-SEC
+           IF      FLG-ERR         =   ZERO
+               MOVE    WRK-DATA (1:WRK-LEN)
+                                   TO  PTINF-ZOKUGARA
+           END-IF
+      *
+           .
+       2410-ZOKUGARA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    項目１５：職業　処理
+      *****************************************************************
+       2410-JOB-SET-SEC            SECTION.
+      *
+      *    未入力
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-JOB-SET-EXT
+           END-IF
+      *
+      *    職業セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-DATA
+           MOVE    20              TO  WRK-CNT
+           PERFORM 2402-ZENKAKU-HEN-SEC
+           IF      FLG-ERR         =   ZERO
+               MOVE    WRK-DATA (1:WRK-LEN)
+                                   TO  PTINF-JOB
+           END-IF
+      *
+           .
+       2410-JOB-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    項目１６：携帯電話番号　処理
+      *****************************************************************
+       2410-KEITAI-TEL-SET-SEC     SECTION.
+      *
+      *    未入力
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-KEITAI-TEL-SET-EXT
+           END-IF
+      *
+      *    携帯電話番号セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-DATA
+           PERFORM 2401-SPACE-HENSYU-SEC
+           MOVE    WRK-DATA (1:WRK-LEN)
+                                   TO  PTINF-KEITAI-TEL
+      *
+           .
+       2410-KEITAI-TEL-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    項目１７：ＦＡＸ番号　処理
+      *****************************************************************
+       2410-FAX-SET-SEC            SECTION.
+      *
+      *    未入力
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-FAX-SET-EXT
+           END-IF
+      *
+      *    ＦＡＸ番号セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-DATA
+           PERFORM 2401-SPACE-HENSYU-SEC
+           MOVE    WRK-DATA (1:WRK-LEN)
+                                   TO  PTINF-FAX
+      *
+           .
+       2410-FAX-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    項目１８：電子メールアドレス　処理
+      *****************************************************************
+       2410-EMAIL-SET-SEC          SECTION.
+      *
+      *    未入力
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-EMAIL-SET-EXT
+           END-IF
+      *
+      *    電子メールアドレス
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-DATA
+           PERFORM 2401-SPACE-HENSYU-SEC
+           MOVE    WRK-DATA (1:WRK-LEN)
+                                   TO  PTINF-EMAIL
+      *
+           .
+       2410-EMAIL-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    項目１９：減免事由　処理
       *****************************************************************
-       2410-DISCOUNT-KBN-SET-SEC       SECTION.
+       2410-DISCOUNT-KBN-SET-SEC   SECTION.
       *
-      *    例：職員家族通院（固定値:02）
-           IF  WRK-MO-CNT              =   ZERO
+      *    未入力
+           IF      FLG-NODATA      =   1
                MOVE    "00"            TO  PTINF-DISCOUNT-KBN
-           ELSE
-               EVALUATE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+               GO  TO  2410-DISCOUNT-KBN-SET-EXT
+           END-IF
+      *
+      *    減免事由セット
+           EVALUATE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                WHEN    "職員家族通院"
                    MOVE    "02"        TO  PTINF-DISCOUNT-KBN
                WHEN    "職員家族入院"
                    MOVE    "03"        TO  PTINF-DISCOUNT-KBN
                WHEN    OTHER
                    MOVE    "00"        TO  PTINF-DISCOUNT-KBN
-               END-EVALUATE
-           END-IF
+           END-EVALUATE
       *
            .
        2410-DISCOUNT-KBN-SET-EXT.
@@ -1471,24 +1434,30 @@
       *****************************************************************
       *    項目２０：割引区分　処理
       *****************************************************************
-       2410-WARIKBN-SET-SEC            SECTION.
+       2410-WARIKBN-SET-SEC        SECTION.
       *
-           IF  WRK-MO-CNT              =   ZERO
-               MOVE    ZERO            TO  WRK-WARIKBN
-           ELSE
-               IF  WRK-MO-CNT          =   1
-                   IF  CSV-REC (WRK-MO-ST:WRK-MO-CNT) =  "1"  OR  "2"
-                       MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-WARIKBN
-                   ELSE
-                       MOVE    3       TO  FLG-ERR
-                       GO      TO      2410-WARIKBN-SET-EXT
-                   END-IF
-               ELSE
-                   MOVE    2           TO  FLG-ERR
-                   GO      TO          2410-WARIKBN-SET-EXT
-               END-IF
+      *    未入力
+           IF      FLG-NODATA      =   1
+               MOVE    ZERO            TO  WRK-HEN-WARIKBN
+               GO  TO  2410-WARIKBN-SET-EXT
            END-IF
+      *
+      *    項目桁数不正
+           IF      WRK-MO-CNT      NOT =   1
+               MOVE    2           TO  FLG-ERR
+               GO  TO  2410-WARIKBN-SET-EXT
+           END-IF
+      *
+      *    割引区分セット
+           EVALUATE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+               WHEN    "1"     THRU    "2"
+                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                       TO  WRK-HEN-WARIKBN
+      *        誤入力
+               WHEN    OTHER
+                   MOVE    3       TO  FLG-ERR
+                   GO  TO  2410-WARIKBN-SET-EXT
+          END-EVALUATE
       *
            .
        2410-WARIKBN-SET-EXT.
@@ -1499,25 +1468,28 @@
       *****************************************************************
        2410-DISCOUNT-SET-SEC           SECTION.
       *
-           IF  WRK-MO-CNT              =   ZERO
+      *    未入力
+           IF      FLG-NODATA      =   1
                MOVE    "00"            TO  PTINF-DISCOUNT
-           ELSE
-               EVALUATE    TRUE
+               GO  TO  2410-DISCOUNT-SET-EXT
+           END-IF
+      *
+      *    割引セット
+           EVALUATE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
       *        例：定率
-               WHEN    CSV-REC (WRK-MO-ST:WRK-MO-CNT)  =   "20"
-                   IF  WRK-WARIKBN     =   "1"
+               WHEN    "20"
+                   IF  WRK-HEN-WARIKBN     =   "1"
                        MOVE    "02"    TO  PTINF-DISCOUNT
                    END-IF
       *        例：定額
-               WHEN    CSV-REC (WRK-MO-ST:WRK-MO-CNT)  =   "1000"
-                   IF  WRK-WARIKBN     =   "2"
+               WHEN    "1000"
+                   IF  WRK-HEN-WARIKBN     =   "2"
                        MOVE    "04"    TO  PTINF-DISCOUNT
                    END-IF
-               END-EVALUATE
+           END-EVALUATE
       *
-               IF  PTINF-DISCOUNT      =   SPACE
-                   MOVE    "00"        TO  PTINF-DISCOUNT
-               END-IF
+           IF  PTINF-DISCOUNT      =   SPACE
+               MOVE    "00"        TO  PTINF-DISCOUNT
            END-IF
       *
            .
@@ -1525,89 +1497,618 @@
            EXIT.
       *
       *****************************************************************
+      *    項目２２：コメント１　処理
+      *****************************************************************
+       2410-COMMENT-1-SET-SEC      SECTION.
+      *
+      *    未入力
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-COMMENT-1-SET-EXT
+           END-IF
+      *
+      *    コメント１セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-DATA
+           MOVE    100             TO  WRK-CNT
+           PERFORM 2402-ZENKAKU-HEN2-SEC
+           MOVE    WRK-DATA (1:WRK-LEN)
+                                   TO  PTINF-COMMENT-1
+      *
+           .
+       2410-COMMENT-1-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    項目２３：コメント２　処理
+      *****************************************************************
+       2410-COMMENT-2-SET-SEC      SECTION.
+      *
+      *    未入力
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-COMMENT-2-SET-EXT
+           END-IF
+      *
+      *    コメント２セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-DATA
+           MOVE    100             TO  WRK-CNT
+           PERFORM 2402-ZENKAKU-HEN2-SEC
+           MOVE    WRK-DATA (1:WRK-LEN)
+                                   TO  PTINF-COMMENT-2
+      *
+           .
+       2410-COMMENT-2-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    項目２４：禁忌１　処理
+      *****************************************************************
+       2410-TABOO-1-SET-SEC        SECTION.
+      *
+      *    未入力
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-TABOO-1-SET-EXT
+           END-IF
+      *
+      *    禁忌１セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-DATA
+           MOVE    100             TO  WRK-CNT
+           PERFORM 2402-ZENKAKU-HEN-SEC
+           IF      FLG-ERR         =   ZERO
+               MOVE    WRK-DATA (1:WRK-LEN)
+                                   TO  PTINF-TABOO-1
+           END-IF
+      *
+           .
+       2410-TABOO-1-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    項目２５：禁忌２　処理
+      *****************************************************************
+       2410-TABOO-2-SET-SEC        SECTION.
+      *
+      *    未入力
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-TABOO-2-SET-EXT
+           END-IF
+      *
+      *    禁忌２セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-DATA
+           MOVE    100             TO  WRK-CNT
+           PERFORM 2402-ZENKAKU-HEN-SEC
+           IF      FLG-ERR         =   ZERO
+               MOVE    WRK-DATA (1:WRK-LEN)
+                                   TO  PTINF-TABOO-2
+           END-IF
+      *
+           .
+       2410-TABOO-2-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    項目２６：アレルギー１　処理
+      *****************************************************************
+       2410-ALLERGY-1-SET-SEC      SECTION.
+      *
+      *    未入力
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-ALLERGY-1-SET-EXT
+           END-IF
+      *
+      *    アレルギー１セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-DATA
+           MOVE    100             TO  WRK-CNT
+           PERFORM 2402-ZENKAKU-HEN-SEC
+           IF      FLG-ERR         =   ZERO
+               MOVE    WRK-DATA (1:WRK-LEN)
+                                   TO  PTINF-ALLERGY-1
+           END-IF
+      *
+           .
+       2410-ALLERGY-1-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    項目２７：アレルギー２　処理
+      *****************************************************************
+       2410-ALLERGY-2-SET-SEC       SECTION.
+      *
+      *    未入力
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-ALLERGY-2-SET-EXT
+           END-IF
+      *
+      *    アレルギー２セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-DATA
+           MOVE    100             TO  WRK-CNT
+           PERFORM 2402-ZENKAKU-HEN-SEC
+           IF      FLG-ERR         =   ZERO
+               MOVE    WRK-DATA (1:WRK-LEN)
+                                   TO  PTINF-ALLERGY-2
+           END-IF
+      *
+           .
+       2410-ALLERGY-2-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    項目２８：感染症１　処理
+      *****************************************************************
+       2410-KANSENSYO-1-SET-SEC    SECTION.
+      *
+      *    未入力
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-KANSENSYO-1-SET-EXT
+           END-IF
+      *
+      *    感染症１セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-DATA
+           MOVE    100             TO  WRK-CNT
+           PERFORM 2402-ZENKAKU-HEN-SEC
+           IF      FLG-ERR         =   ZERO
+               MOVE    WRK-DATA (1:WRK-LEN)
+                                   TO  PTINF-KANSENSYO-1
+           END-IF
+      *
+           .
+       2410-KANSENSYO-1-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    項目２９：感染症２　処理
+      *****************************************************************
+       2410-KANSENSYO-2-SET-SEC    SECTION.
+      *
+      *    未入力
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-KANSENSYO-2-SET-EXT
+           END-IF
+      *
+      *    感染症２セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-DATA
+           MOVE    100             TO  WRK-CNT
+           PERFORM 2402-ZENKAKU-HEN-SEC
+           IF      FLG-ERR         =   ZERO
+               MOVE    WRK-DATA (1:WRK-LEN)
+                                   TO  PTINF-KANSENSYO-2
+           END-IF
+      *
+           .
+       2410-KANSENSYO-2-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    項目３０：連絡先−名称　処理
+      *****************************************************************
+       2410-RENRAKU-NAME-SET-SEC   SECTION.
+      *
+      *    未入力
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-RENRAKU-NAME-SET-EXT
+           END-IF
+      *
+      *    連絡先−名称セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-DATA
+           MOVE    50              TO  WRK-CNT
+           PERFORM 2402-ZENKAKU-HEN-SEC
+           IF      FLG-ERR         =   ZERO
+               MOVE    WRK-DATA (1:WRK-LEN)
+                                   TO  PTINF-RENRAKU-NAME
+           END-IF
+      *
+           .
+       2410-RENRAKU-NAME-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    項目３１：連絡先−続柄　処理
+      *****************************************************************
+       2410-RENRAKU-ZOKUGARA-SET-SEC   SECTION.
+      *
+      *    未入力
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-RENRAKU-ZOKUGARA-SET-EXT
+           END-IF
+      *
+      *    連絡先−続柄セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                  TO  WRK-DATA
+           MOVE    30             TO  WRK-CNT
+           PERFORM 2402-ZENKAKU-HEN-SEC
+           IF      FLG-ERR         =   ZERO
+               MOVE    WRK-DATA (1:WRK-LEN)
+                                  TO  PTINF-RENRAKU-ZOKUGARA
+           END-IF
+      *
+           .
+       2410-RENRAKU-ZOKUGARA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    項目３２：連絡先−郵便番号　処理
       *****************************************************************
-       2410-RENRAKU-POST-SET-SEC       SECTION.
+       2410-RENRAKU-POST-SET-SEC   SECTION.
       *
-           IF  FLG-NODATA              =   ZERO
-      *
-               IF  WRK-MO-CNT         <=   7
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-DATA
-                   PERFORM 2401-SPACE-HENSYU-SEC                        
-                   MOVE    WRK-DATA (1:WRK-LEN)
-                                       TO  PTINF-RENRAKU-POST
-               ELSE
-                   MOVE    2           TO  FLG-ERR
-                   GO      TO          2410-RENRAKU-POST-SET-EXT
-               END-IF
+      *    未入力
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-RENRAKU-POST-SET-EXT
            END-IF
+      *
+      *    項目桁数不正
+           IF      WRK-MO-CNT      >  7
+               MOVE    2           TO  FLG-ERR
+               GO  TO  2410-RENRAKU-POST-SET-EXT
+           END-IF
+      *
+      *    連絡先−郵便番号セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-DATA
+           PERFORM 2401-SPACE-HENSYU-SEC
+           MOVE    WRK-DATA (1:WRK-LEN)
+                                   TO  PTINF-RENRAKU-POST
       *
            .
        2410-RENRAKU-POST-SET-EXT.
            EXIT.
       *
       *****************************************************************
+      *    項目３３：連絡先−住所　処理
+      *****************************************************************
+       2410-RENRAKU-ADRS-SET-SEC   SECTION.
+      *
+      *    未入力
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-RENRAKU-ADRS-SET-EXT
+           END-IF
+      *
+      *    連絡先−住所セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-DATA
+           MOVE    100             TO  WRK-CNT
+           PERFORM 2402-ZENKAKU-HEN-SEC
+           IF      FLG-ERR         =   ZERO
+               MOVE    WRK-DATA (1:WRK-LEN)
+                                   TO  PTINF-RENRAKU-ADRS
+           END-IF
+      *
+           .
+       2410-RENRAKU-ADRS-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    項目３４：連絡先−番地方書　処理
+      *****************************************************************
+       2410-RENRAKU-BANTI-SET-SEC  SECTION.
+      *
+      *    未入力
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-RENRAKU-BANTI-SET-EXT
+           END-IF
+      *
+      *    連絡先−番地方書セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-DATA
+           MOVE    100             TO  WRK-CNT
+           PERFORM 2402-ZENKAKU-HEN-SEC
+           IF      FLG-ERR         =   ZERO
+               MOVE    WRK-DATA (1:WRK-LEN)
+                                   TO  PTINF-RENRAKU-BANTI
+           END-IF
+      *
+           .
+       2410-RENRAKU-BANTI-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    項目３５：連絡先−電話番号（昼）　処理
+      *****************************************************************
+       2410-RENRAKU-TEL1-SET-SEC   SECTION.
+      *
+      *    未入力
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-RENRAKU-TEL1-SET-EXT
+           END-IF
+      *
+      *    連絡先−電話番号セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                  TO  WRK-DATA
+           PERFORM 2401-SPACE-HENSYU-SEC
+           MOVE    WRK-DATA (1:WRK-LEN)
+                                  TO  PTINF-RENRAKU-TEL1
+      *
+           .
+       2410-RENRAKU-TEL1-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    項目３６：連絡先−電話番号（夜）　処理
+      *****************************************************************
+       2410-RENRAKU-TEL2-SET-SEC   SECTION.
+      *
+      *    未入力
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-RENRAKU-TEL2-SET-EXT
+           END-IF
+      *
+      *    連絡先−電話番号セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-DATA
+           PERFORM 2401-SPACE-HENSYU-SEC
+           MOVE    WRK-DATA (1:WRK-LEN)
+                                   TO  PTINF-RENRAKU-TEL2
+      *
+           .
+       2410-RENRAKU-TEL2-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    項目３７：勤務先−名称　処理
+      *****************************************************************
+       2410-OFFICE-NAME-SET-SEC    SECTION.
+      *
+      *    未入力
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-OFFICE-NAME-SET-EXT
+           END-IF
+      *
+      *    勤務先−名称セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-DATA
+           MOVE    50              TO  WRK-CNT
+           PERFORM 2402-ZENKAKU-HEN-SEC
+           IF      FLG-ERR         =   ZERO
+               MOVE    WRK-DATA (1:WRK-LEN)
+                                   TO  PTINF-OFFICE-NAME
+           END-IF
+      *
+           .
+       2410-OFFICE-NAME-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    項目３８：勤務先−郵便番号　処理
       *****************************************************************
-       2410-OFFICE-POST-SET-SEC        SECTION.
+       2410-OFFICE-POST-SET-SEC    SECTION.
       *
-           IF  FLG-NODATA              =   ZERO
-      *
-               IF  WRK-MO-CNT         <=   7
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-DATA
-                   PERFORM 2401-SPACE-HENSYU-SEC                        
-                   MOVE    WRK-DATA (1:WRK-LEN)
-                                       TO  PTINF-OFFICE-POST
-               ELSE
-                   MOVE    2           TO  FLG-ERR
-                   GO      TO          2410-OFFICE-POST-SET-EXT
-               END-IF
+      *    未入力
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-OFFICE-POST-SET-EXT
            END-IF
+      *
+      *    項目桁数不正
+           IF      WRK-MO-CNT      >   7
+               MOVE    2           TO  FLG-ERR
+               GO  TO  2410-OFFICE-POST-SET-EXT
+           END-IF
+      *
+      *    勤務先−郵便番号セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-DATA
+           PERFORM 2401-SPACE-HENSYU-SEC
+           MOVE    WRK-DATA (1:WRK-LEN)
+                                   TO  PTINF-OFFICE-POST
       *
            .
        2410-OFFICE-POST-SET-EXT.
            EXIT.
       *
       *****************************************************************
+      *    項目３９：勤務先−住所　処理
+      *****************************************************************
+       2410-OFFICE-ADRS-SET-SEC    SECTION.
+      *
+      *    未入力
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-OFFICE-ADRS-SET-EXT
+           END-IF
+      *
+      *    勤務先−住所セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-DATA
+           MOVE    100             TO  WRK-CNT
+           PERFORM 2402-ZENKAKU-HEN-SEC
+           IF      FLG-ERR         =   ZERO
+               MOVE    WRK-DATA (1:WRK-LEN)
+                                   TO  PTINF-OFFICE-ADRS
+           END-IF
+      *
+           .
+       2410-OFFICE-ADRS-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    項目４０：勤務先−番地方書　処理
+      *****************************************************************
+       2410-OFFICE-BANTI-SET-SEC   SECTION.
+      *
+      *    未入力
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-OFFICE-BANTI-SET-EXT
+           END-IF
+      *
+      *    勤務先−番地方書セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-DATA
+           MOVE    100             TO  WRK-CNT
+           PERFORM 2402-ZENKAKU-HEN-SEC
+           IF      FLG-ERR         =   ZERO
+               MOVE    WRK-DATA (1:WRK-LEN)
+                                   TO  PTINF-OFFICE-BANTI
+           END-IF
+      *
+           .
+       2410-OFFICE-BANTI-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    項目４１：勤務先−電話番号　処理
+      *****************************************************************
+       2410-OFFICE-TEL-SET-SEC     SECTION.
+      *
+      *    未入力
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-OFFICE-TEL-SET-EXT
+           END-IF
+      *
+      *    勤務先−電話番号セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-DATA
+           PERFORM 2401-SPACE-HENSYU-SEC
+           MOVE    WRK-DATA (1:WRK-LEN)
+                                   TO  PTINF-OFFICE-TEL
+      *
+           .
+       2410-OFFICE-TEL-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    項目４２：帰省先−名称　処理
+      *****************************************************************
+       2410-KISEI-NAME-SET-SEC     SECTION.
+      *
+      *    未入力
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-KISEI-NAME-SET-EXT
+           END-IF
+      *
+      *    帰省先−名称セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-DATA
+           MOVE    50              TO  WRK-CNT
+           PERFORM 2402-ZENKAKU-HEN-SEC
+           IF      FLG-ERR         =   ZERO
+               MOVE    WRK-DATA (1:WRK-LEN)
+                                   TO  PTINF-KISEI-NAME
+           END-IF
+      *
+           .
+       2410-KISEI-NAME-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    項目４３：帰省先−郵便番号　処理
       *****************************************************************
-       2410-KISEI-POST-SET-SEC        SECTION.
+       2410-KISEI-POST-SET-SEC     SECTION.
       *
-           IF  FLG-NODATA              =   ZERO
-      *
-               IF  WRK-MO-CNT         <=   7
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WRK-DATA
-                   PERFORM 2401-SPACE-HENSYU-SEC                        
-                   MOVE    WRK-DATA (1:WRK-LEN)
-                                       TO  PTINF-KISEI-POST
-               ELSE
-                   MOVE    2           TO  FLG-ERR
-                   GO      TO          2410-KISEI-POST-SET-EXT
-               END-IF
+      *    未入力
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-KISEI-POST-SET-EXT
            END-IF
+      *
+      *    項目桁数不正
+           IF      WRK-MO-CNT      >   7
+               MOVE    2           TO  FLG-ERR
+               GO  TO  2410-KISEI-POST-SET-EXT
+           END-IF
+      *
+      *    帰省先−郵便番号セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-DATA
+           PERFORM 2401-SPACE-HENSYU-SEC
+           MOVE    WRK-DATA (1:WRK-LEN)
+                                   TO  PTINF-KISEI-POST
       *
            .
        2410-KISEI-POST-SET-EXT.
            EXIT.
       *
       *****************************************************************
+      *    項目４４：帰省先−住所　処理
+      *****************************************************************
+       2410-KISEI-ADRS-SET-SEC     SECTION.
+      *
+      *    未入力
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-KISEI-ADRS-SET-EXT
+           END-IF
+      *
+      *    帰省先−住所セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-DATA
+           MOVE    100             TO  WRK-CNT
+           PERFORM 2402-ZENKAKU-HEN-SEC
+           IF      FLG-ERR         =   ZERO
+               MOVE    WRK-DATA (1:WRK-LEN)
+                                   TO  PTINF-KISEI-ADRS
+           END-IF
+      *
+           .
+       2410-KISEI-ADRS-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    項目４５：帰省先−番地方書　処理
+      *****************************************************************
+       2410-KISEI-BANTI-SET-SEC    SECTION.
+      *
+      *    未入力
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-KISEI-BANTI-SET-EXT
+           END-IF
+      *
+      *    帰省先−番地方書セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-DATA
+           MOVE    100             TO  WRK-CNT
+           PERFORM 2402-ZENKAKU-HEN-SEC
+           IF      FLG-ERR         =   ZERO
+               MOVE    WRK-DATA (1:WRK-LEN)
+                                   TO  PTINF-KISEI-BANTI
+           END-IF
+      *
+           .
+       2410-KISEI-BANTI-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    項目４６：帰省先−電話番号　処理
+      *****************************************************************
+       2410-KISEI-TEL-SET-SEC      SECTION.
+      *
+      *    未入力
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-KISEI-TEL-SET-EXT
+           END-IF
+      *
+      *    帰省先−電話番号セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-DATA
+           PERFORM 2401-SPACE-HENSYU-SEC
+           MOVE    WRK-DATA (1:WRK-LEN)
+                                   TO  PTINF-KISEI-TEL
+      *
+           .
+       2410-KISEI-TEL-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    項目４７：テスト患者フラグ　処理
       *****************************************************************
-       2410-TSTPTNUMKBN-SET-SEC        SECTION.
+       2410-TSTPTNUMKBN-SET-SEC    SECTION.
       *
-           IF  FLG-NODATA              =   ZERO
-      *
-               IF  WRK-MO-CNT          =   1
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  PTINF-TSTPTNUMKBN
-               ELSE
-                   MOVE    2           TO  FLG-ERR
-                   GO      TO          2410-TSTPTNUMKBN-SET-EXT
-               END-IF
+      *    必須未入力
+           IF      FLG-NODATA      =   1
+               MOVE    1           TO  FLG-ERR
+               GO  TO  2410-TSTPTNUMKBN-SET-EXT
            END-IF
+      *
+      *    項目桁数不正
+           IF  WRK-MO-CNT          NOT =   1
+               MOVE    2           TO  FLG-ERR
+               GO  TO  2410-TSTPTNUMKBN-SET-EXT
+           END-IF
+      *
+      *    帰省先−電話番号セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  PTINF-TSTPTNUMKBN
       *
            .
        2410-TSTPTNUMKBN-SET-EXT.
@@ -1616,22 +2117,27 @@
       *****************************************************************
       *    項目４８：登録日　処理
       *****************************************************************
-       2410-CREYMD-SET-SEC             SECTION.
+       2410-CREYMD-SET-SEC         SECTION.
       *
-           IF  FLG-NODATA              =   ZERO
+      *    未入力
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-CREYMD-SET-EXT
+           END-IF
       *
-               IF  WRK-MO-CNT          =   8
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  PTINF-CREYMD
-               ELSE
-                   IF  CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       =   ZERO
-                       CONTINUE
-                   ELSE
-                       MOVE    2       TO  FLG-ERR
-                       GO      TO      2410-CREYMD-SET-EXT
-                   END-IF
-               END-IF
+      *    項目桁数不正
+           IF      WRK-MO-CNT      NOT =   8
+               MOVE    2           TO  FLG-ERR
+               GO  TO  2410-CREYMD-SET-EXT
+           END-IF
+      *
+      *    登録日セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-SYMD
+           PERFORM 31012-SEIWA-HEN-SEC
+           IF      FLG-YMD         =   1
+               MOVE    3               TO  FLG-ERR
+           ELSE
+               MOVE    WRK-SYMD        TO  PTINF-CREYMD
            END-IF
       *
            .
@@ -1643,20 +2149,25 @@
       *****************************************************************
        2410-UPYMD-SET-SEC             SECTION.
       *
-           IF  FLG-NODATA              =   ZERO
+      *    未入力
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-UPYMD-SET-EXT
+           END-IF
       *
-               IF  WRK-MO-CNT          =   8
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  PTINF-UPYMD
-               ELSE
-                   IF  CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       =   ZERO
-                       CONTINUE
-                   ELSE
-                       MOVE    2       TO  FLG-ERR
-                       GO      TO      2410-UPYMD-SET-EXT
-                   END-IF
-               END-IF
+      *    項目桁数不正
+           IF  WRK-MO-CNT          NOT =   8
+               MOVE    2           TO  FLG-ERR
+               GO  TO  2410-UPYMD-SET-EXT
+           END-IF
+      *
+      *    更新日セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-SYMD
+           PERFORM 31012-SEIWA-HEN-SEC
+           IF      FLG-YMD         =   1
+               MOVE    3               TO  FLG-ERR
+           ELSE
+               MOVE    WRK-SYMD        TO  PTINF-UPYMD
            END-IF
       *
            .
@@ -1664,23 +2175,48 @@
            EXIT.
       *
       *****************************************************************
+      *    患者情報処理
+      *****************************************************************
+       250-PTINF-SET-SEC           SECTION.
+      *
+      *    患者ＩＤ取得処理
+           PERFORM 250-PTNUM-GET-SEC
+           IF  FLG-ERR             NOT =   ZERO
+               GO  TO  250-PTINF-SET-EXT
+           END-IF
+      *    患者番号変換マスタ　更新処理
+           PERFORM 260-PTNUM-INSERT-SEC
+           IF  FLG-ERR             NOT =   ZERO
+               GO  TO  250-PTINF-SET-EXT
+           END-IF
+      *    患者マスタ　更新処理
+           PERFORM 270-PTINF-INSERT-SEC
+           IF  FLG-ERR             NOT =   ZERO
+               GO  TO  250-PTINF-SET-EXT
+           END-IF
+      *
+           .
+       250-PTINF-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    患者ＩＤ取得処理
       *****************************************************************
-       250-PTNUM-GET-SEC               SECTION.
+       250-PTNUM-GET-SEC           SECTION.
       *
       *    患者番号採番検索
            PERFORM 2510-PTGETNUM-GET-SEC
            IF  FLG-SYSKANRI            =   1
-               MOVE    4               TO  FLG-ERR
-               GO  TO                  250-PTNUM-GET-EXT
+               MOVE    5               TO  FLG-ERR
+               GO  TO  250-PTNUM-GET-EXT
            END-IF
       *
-           MOVE    MCPDATA-REC         TO  SYS-1009-REC
+           MOVE    MCPDATA-REC     TO  SYS-1009-REC
            EVALUATE    FLG-UPDATE
            WHEN    ZERO
       *        患者番号桁数算出処理
                PERFORM 2520-PTNUM-KETA-SEC
-               GO  TO                  250-PTNUM-GET-EXT
+               GO  TO  250-PTNUM-GET-EXT
            WHEN    1
                COMPUTE SYS-1009-PTID   =   SYS-1009-PTID    +   1
                MOVE    SYS-1009-PTID   TO  SPA-PTID
@@ -1692,15 +2228,16 @@
            END-EVALUATE
       *
       *    患者番号採番  更新
-           MOVE    SYS-1009-REC        TO  MCPDATA-REC
-           MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"      USING   MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+           MOVE    SYS-1009-REC    TO  MCPDATA-REC
+           MOVE    "DBUPDATE"      TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
-               MOVE    4               TO  FLG-ERR
-               GO  TO                  250-PTNUM-GET-EXT
+               MOVE    5               TO  FLG-ERR
+               GO  TO  250-PTNUM-GET-EXT
            END-IF
       *
            .
@@ -1710,19 +2247,20 @@
       *****************************************************************
       *    患者番号採番検索
       *****************************************************************
-       2510-PTGETNUM-GET-SEC            SECTION.
+       2510-PTGETNUM-GET-SEC       SECTION.
       *
            INITIALIZE                  SYS-1009-REC
-           MOVE    "1009"              TO  SYS-1009-KANRICD
-           MOVE    "*"                 TO  SYS-1009-KBNCD
+           MOVE    "1009"          TO  SYS-1009-KANRICD
+           MOVE    "*"             TO  SYS-1009-KBNCD
       *
-           MOVE    SYS-1009-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"      USING   MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+           MOVE    SYS-1009-REC    TO  MCPDATA-REC
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
+           MOVE    SPA-SYSYMD      TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
                PERFORM 900-SYSTEM-NEXT-SEC
@@ -1730,11 +2268,12 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"      USING   MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            .
        2510-PTGETNUM-GET-EXT.
@@ -1743,36 +2282,38 @@
       *****************************************************************
       *    患者番号桁数算出処理
       *****************************************************************
-       2520-PTNUM-KETA-SEC            SECTION.
+       2520-PTNUM-KETA-SEC         SECTION.
       *
            EVALUATE    SYS-1009-PTNUMKSIKBN
            WHEN    "1"
-               MOVE    SYS-1009-JIYKSIKETA         TO  WRK-RENKETA
+               MOVE    SYS-1009-JIYKSIKETA
+                                       TO  WRK-RENKETA
            WHEN    "2"
-               MOVE    SYS-1009-HJNKSIRENNUMKETA   TO  WRK-RENKETA
-               IF  SYS-1009-HJNKSIKBN    =   "1"  OR  "2"
+               MOVE    SYS-1009-HJNKSIRENNUMKETA
+                                       TO  WRK-RENKETA
+               IF  SYS-1009-HJNKSIKBN  =   "1"  OR  "2"
                    EVALUATE    SYS-1009-HJNKSINENKBN
                    WHEN    "1"
-                       ADD     3         TO  WRK-RENKETA
+                       ADD     3           TO  WRK-RENKETA
                    WHEN    "2"
-                       ADD     4         TO  WRK-RENKETA
+                       ADD     4           TO  WRK-RENKETA
                    END-EVALUATE
                END-IF
-               IF  SYS-1009-HJNKSIKBN    =   "1"  OR  "3"
-                   ADD     1             TO  WRK-RENKETA
+               IF  SYS-1009-HJNKSIKBN   =   "1"  OR  "3"
+                   ADD     1            TO  WRK-RENKETA
                END-IF
            WHEN    "3"
                EVALUATE    SYS-1009-KKCKSIKBN
                WHEN    "1"
-                   COMPUTE WRK-RENKETA   =   SYS-1009-KKCKSIMAEKETA
-                                         +   SYS-1009-KKCKSIRENNUMKETA
-                                         +   SYS-1009-KKCKSIATOKETA
+                   COMPUTE WRK-RENKETA  =   SYS-1009-KKCKSIMAEKETA
+                                        +   SYS-1009-KKCKSIRENNUMKETA
+                                        +   SYS-1009-KKCKSIATOKETA
                WHEN    "2"
-                   COMPUTE WRK-RENKETA   =   SYS-1009-KKCKSIMAEKETA
-                                         +   SYS-1009-KKCKSIRENNUMKETA
+                   COMPUTE WRK-RENKETA  =   SYS-1009-KKCKSIMAEKETA
+                                        +   SYS-1009-KKCKSIRENNUMKETA
                WHEN    "3"
-                   COMPUTE WRK-RENKETA   =   SYS-1009-KKCKSIRENNUMKETA
-                                         +   SYS-1009-KKCKSIATOKETA
+                   COMPUTE WRK-RENKETA  =   SYS-1009-KKCKSIRENNUMKETA
+                                        +   SYS-1009-KKCKSIATOKETA
                END-EVALUATE
            END-EVALUATE
            .
@@ -1783,33 +2324,14 @@
       *****************************************************************
       *    患者番号変換マスタ　更新処理
       *****************************************************************
-       260-PTNUM-INSERT-SEC            SECTION.
+       260-PTNUM-INSERT-SEC        SECTION.
       *
-      *     MOVE    ZERO                TO  FLG-PTNUM
-      *     MOVE    SPACE               TO  PTNUM-REC
-      *     INITIALIZE                      PTNUM-REC
-      *     MOVE    SPA-HOSPID          TO  PTNUM-HOSPID
-      *     MOVE    SPA-PTID            TO  PTNUM-PTID
-      *     MOVE    PTNUM-REC           TO  MCPDATA-REC
-      *     MOVE    "DBSELECT"          TO  MCP-FUNC
-      *     MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
-      *     CALL    "MCPDBSUB"      USING   MCPAREA
-      *                                     MCPDATA-REC
-      *     IF      MCP-RC              =   ZERO
-      *         MOVE    "PTNUM-KEY"     TO  ORC-DBPATH
-      *         PERFORM 940-PTNUM-NEXT-SEC
-      *     ELSE
-      *         MOVE    1               TO  FLG-PTNUM
-      *     END-IF
-      *     MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-      *     MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
-      *     CALL    "MCPDBSUB"      USING   MCPAREA
-      *                                     MCPDATA-REC
-      **    重複エラー
-      *     IF      FLG-PTNUM           =   ZERO
-      *          MOVE    5              TO  FLG-ERR
-      *          GO      TO             260-PTNUM-INSERT-EXT
-      *     END-IF
+      *    存在チェック
+           PERFORM 900-PTNUM-READ-SEC
+           IF      FLG-PTNUM       =   ZERO
+               MOVE    6               TO  FLG-ERR
+               GO  TO  260-PTNUM-INSERT-EXT
+           END-IF
       *
            MOVE    SPACE               TO  PTNUM-REC
            INITIALIZE                      PTNUM-REC
@@ -1823,14 +2345,15 @@
            MOVE    PTNUM-REC           TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"      USING   MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-           IF      MCP-RC          NOT =   ZERO
-                MOVE    5              TO  FLG-ERR
-                GO      TO             260-PTNUM-INSERT-EXT
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC         NOT =   ZERO
+               MOVE    6              TO  FLG-ERR
+               GO  TO  260-PTNUM-INSERT-EXT
            END-IF
-           ADD     1                   TO  CNT-PTNUM
+           ADD     1               TO  CNT-PTNUM
       *
            .
        260-PTNUM-INSERT-EXT.
@@ -1839,25 +2362,36 @@
       *****************************************************************
       *    患者マスタ　登録処理
       *****************************************************************
-       270-PTINF-INSERT-SEC            SECTION.
+       270-PTINF-INSERT-SEC        SECTION.
       *
-           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
-           MOVE    SPA-PTID            TO  PTINF-PTID
-           MOVE    ZERO                TO  PTINF-CONDITION-1
-           MOVE    ZERO                TO  PTINF-CONDITION-2
-           MOVE    ZERO                TO  PTINF-CONDITION-3
-           MOVE    SPA-TERMID          TO  PTINF-TERMID
-           MOVE    PTINF-REC           TO  MCPDATA-REC
-           MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "PTINF-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"      USING   MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-           IF      MCP-RC          NOT =   ZERO
-                MOVE    6              TO  FLG-ERR
-                GO      TO             270-PTINF-INSERT-EXT
+      *    存在チェック
+           PERFORM 900-PTINF-READ-SEC
+           IF      FLG-PTINF       =   ZERO
+               MOVE    7               TO  FLG-ERR
+               GO  TO  270-PTINF-INSERT-EXT
            END-IF
-           ADD     1                   TO  CNT-PTINF
+      *
+           MOVE    SPA-HOSPID      TO  PTINF-HOSPID
+           MOVE    SPA-PTID        TO  PTINF-PTID
+           MOVE    ZERO            TO  PTINF-CONDITION-1
+           MOVE    ZERO            TO  PTINF-CONDITION-2
+           MOVE    ZERO            TO  PTINF-CONDITION-3
+           MOVE    ZERO            TO  PTINF-MAXZAINUM
+           MOVE    ZERO            TO  PTINF-RRKNUM
+           MOVE    ZERO            TO  PTINF-RRKEDANUM
+           MOVE    SPA-TERMID      TO  PTINF-TERMID
+           MOVE    PTINF-REC       TO  MCPDATA-REC
+           MOVE    "DBINSERT"      TO  MCP-FUNC
+           MOVE    "PTINF-KEY"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO
+                MOVE    7              TO  FLG-ERR
+                GO  TO  270-PTINF-INSERT-EXT
+           END-IF
+           ADD     1               TO  CNT-PTINF
       *
            .
        270-PTINF-INSERT-EXT.
@@ -1866,20 +2400,18 @@
       *****************************************************************
       *    エラーリスト編集処理
       *****************************************************************
-       290-ERRREC-EDIT-SEC             SECTION.
+       290-ERRREC-EDIT-SEC         SECTION.
       *
-           IF  FLG-ERR                 <=  3
+           IF      FLG-ERR         <=  3
                ADD     1               TO  IDE
-               IF  IDE                 >   4
-                   GO  TO              290-ERRREC-EDIT-EXT
+               IF      IDE             >   4
+                   GO  TO  290-ERRREC-EDIT-EXT
                END-IF
-               IF  IDE                     =   1
+               IF      IDE                 =   1
                    ADD     1               TO  CNT-ERR
                    MOVE    SPACE           TO  ERR-REC1
-                   MOVE    CNT-ERR (1:3)   TO  ERR1-NO (1:3)
-                   MOVE    ":"             TO  ERR1-NO (4:1)
-                   MOVE    SPA-PTNUM       TO  ERR1-PTNUM
-                   MOVE    PTINF-NAME      TO  ERR1-NAME
+                   MOVE    CNT-CSV         TO  ERR1-LINENO
+                   MOVE    "ERR"           TO  ERR1-NAIYO
                END-IF
            END-IF
       *
@@ -1892,11 +2424,11 @@
            WHEN    3
                PERFORM 2910-ERRREC-EDIT-BETU1-SEC
       *    患者ＩＤ取得エラー
-           WHEN    4
-      *    番号ＤＢ出力エラー
            WHEN    5
-      *    患者ＤＢ出力エラー
+      *    患者番号出力エラー
            WHEN    6
+      *    患者情報出力エラー
+           WHEN    7
                PERFORM 2910-ERRREC-EDIT-BETU2-SEC
            END-EVALUATE
       *
@@ -1907,168 +2439,168 @@
       *****************************************************************
       *    エラーリスト編集　別１　処理
       *****************************************************************
-       2910-ERRREC-EDIT-BETU1-SEC      SECTION.
+       2910-ERRREC-EDIT-BETU1-SEC  SECTION.
       *
       *    エラー内容番号転送
-           MOVE    FLG-ERR (1:1)       TO  ERR1-ERRNO (IDE)(1:1)
-           MOVE    ":"                 TO  ERR1-ERRNO (IDE)(2:1)
+           MOVE    "["             TO  ERR1-ERRNO(IDE)(1:1)
+           MOVE    FLG-ERR (1:1)   TO  ERR1-ERRNO(IDE)(2:1)
+           MOVE    "]"             TO  ERR1-ERRNO(IDE)(3:1)
       *
       *    エラー項目名称転送
            EVALUATE    WRK-KOUMOKU-NO
       *    １：患者番号
            WHEN    1
-               MOVE    "患者番号"      TO  ERR1-KOMOKU(IDE)
+               MOVE    "患者番号:"     TO  ERR1-KOMOKU(IDE)
       *    ２：カナ氏名
            WHEN    2
-               MOVE    "カナ氏名"      TO  ERR1-KOMOKU(IDE)
+               MOVE    "カナ氏名:"     TO  ERR1-KOMOKU(IDE)
       *    ３：漢字氏名
            WHEN    3
-               MOVE    "漢字氏名"      TO  ERR1-KOMOKU(IDE)
+               MOVE    "漢字氏名:"     TO  ERR1-KOMOKU(IDE)
       *    ４：通称
            WHEN    4
-               MOVE    "通称"          TO  ERR1-KOMOKU(IDE)
+               MOVE    "通称    :"     TO  ERR1-KOMOKU(IDE)
       *    ５：性別
            WHEN    5
-               MOVE    "性別"          TO  ERR1-KOMOKU(IDE)
+               MOVE    "性別    :"     TO  ERR1-KOMOKU(IDE)
       *    ６：生年月日
            WHEN    6
-               MOVE    "生年月日"      TO  ERR1-KOMOKU(IDE)
+               MOVE    "生年月日:"     TO  ERR1-KOMOKU(IDE)
       *    ７：死亡区分
            WHEN    7
-               MOVE    "死亡区分"      TO  ERR1-KOMOKU(IDE)
+               MOVE    "死亡区分:"     TO  ERR1-KOMOKU(IDE)
       *    ８：自宅−郵便番号
            WHEN    8
-               MOVE    "自郵便番"      TO  ERR1-KOMOKU(IDE)
+               MOVE    "自宅郵便:"     TO  ERR1-KOMOKU(IDE)
       *    ９：自宅−住所
            WHEN    9
-               MOVE    "自住所"        TO  ERR1-KOMOKU(IDE)
+               MOVE    "自宅住所:"     TO  ERR1-KOMOKU(IDE)
       *    １０：自宅−番地
            WHEN    10
-               MOVE    "自番地"        TO  ERR1-KOMOKU(IDE)
+               MOVE    "自宅番地:"     TO  ERR1-KOMOKU(IDE)
       *    １１：自宅−電話番号（昼）
            WHEN    11
-               MOVE    "自電話昼"      TO  ERR1-KOMOKU(IDE)
+               MOVE    "自宅電昼:"     TO  ERR1-KOMOKU(IDE)
       *    １２：自宅−電話番号（夜）
            WHEN    12
-               MOVE    "自電話夜"      TO  ERR1-KOMOKU(IDE)
+               MOVE    "自宅電夜:"     TO  ERR1-KOMOKU(IDE)
       *    １３：世帯主
            WHEN    13
-               MOVE    "世帯主"        TO  ERR1-KOMOKU(IDE)
+               MOVE    "世帯主  :"     TO  ERR1-KOMOKU(IDE)
       *    １４：続柄
            WHEN    14
-               MOVE    "続柄"          TO  ERR1-KOMOKU(IDE)
+               MOVE    "続柄    :"     TO  ERR1-KOMOKU(IDE)
       *    １５：職業
            WHEN    15
-               MOVE    "職業"          TO  ERR1-KOMOKU(IDE)
+               MOVE    "職業    :"     TO  ERR1-KOMOKU(IDE)
       *    １６：携帯電話番号
            WHEN    16
-               MOVE    "携帯"          TO  ERR1-KOMOKU(IDE)
+               MOVE    "携帯    :"     TO  ERR1-KOMOKU(IDE)
       *    １７：ＦＡＸ番号
            WHEN    17
-               MOVE    "ＦＡＸ"        TO  ERR1-KOMOKU(IDE)
+               MOVE    "ＦＡＸ  :"     TO  ERR1-KOMOKU(IDE)
       *    １８：電子メールアドレス
            WHEN    18
-               MOVE    "メール"        TO  ERR1-KOMOKU(IDE)
+               MOVE    "メール  :"     TO  ERR1-KOMOKU(IDE)
       *    １９：減免事由
            WHEN    19
-               MOVE    "減免事由"      TO  ERR1-KOMOKU(IDE)
+               MOVE    "減免事由:"     TO  ERR1-KOMOKU(IDE)
       *    ２０：割引区分
            WHEN    20
-               MOVE    "割引区分"      TO  ERR1-KOMOKU(IDE)
+               MOVE    "割引区分:"     TO  ERR1-KOMOKU(IDE)
       *    ２１：割引
            WHEN    21
-               MOVE    "割引"          TO  ERR1-KOMOKU(IDE)
+               MOVE    "割引    :"     TO  ERR1-KOMOKU(IDE)
       *    ２２：コメント１
            WHEN    22
-               MOVE    "コメ１"        TO  ERR1-KOMOKU(IDE)
+               MOVE    "コメ１  :"     TO  ERR1-KOMOKU(IDE)
       *    ２３：コメント２
            WHEN    23
-               MOVE    "コメ２"        TO  ERR1-KOMOKU(IDE)
+               MOVE    "コメ２  :"     TO  ERR1-KOMOKU(IDE)
       *    ２４：禁忌１
            WHEN    24
-               MOVE    "禁忌１"        TO  ERR1-KOMOKU(IDE)
+               MOVE    "禁忌１  :"     TO  ERR1-KOMOKU(IDE)
       *    ２５：禁忌２
            WHEN    25
-               MOVE    "禁忌２"        TO  ERR1-KOMOKU(IDE)
+               MOVE    "禁忌２  :"     TO  ERR1-KOMOKU(IDE)
       *    ２６：アレルギー１
            WHEN    26
-               MOVE    "アレル１"      TO  ERR1-KOMOKU(IDE)
+               MOVE    "アレル１:"     TO  ERR1-KOMOKU(IDE)
       *    ２７：アレルギー２
            WHEN    27
                MOVE    "アレル２"      TO  ERR1-KOMOKU(IDE)
       *    ２８：感染症１
            WHEN    28
-               MOVE    "感染症１"      TO  ERR1-KOMOKU(IDE)
+               MOVE    "感染症１:"     TO  ERR1-KOMOKU(IDE)
       *    ２９：感染症２
            WHEN    29
-               MOVE    "感染症２"      TO  ERR1-KOMOKU(IDE)
+               MOVE    "感染症２:"     TO  ERR1-KOMOKU(IDE)
       *    ３０：連絡先−名称
            WHEN    30
-               MOVE    "連−名称"      TO  ERR1-KOMOKU(IDE)
+               MOVE    "連絡名称:"     TO  ERR1-KOMOKU(IDE)
       *    ３１：連絡先−続柄
            WHEN    31
-               MOVE    "連−続柄"      TO  ERR1-KOMOKU(IDE)
+               MOVE    "連絡続柄:"     TO  ERR1-KOMOKU(IDE)
       *    ３２：連絡先−郵便番号
            WHEN    32
-               MOVE    "連郵便番"      TO  ERR1-KOMOKU(IDE)
+               MOVE    "連絡郵便:"     TO  ERR1-KOMOKU(IDE)
       *    ３３：連絡先−住所
            WHEN    33
-               MOVE    "連−住所"      TO  ERR1-KOMOKU(IDE)
+               MOVE    "連絡住所:"     TO  ERR1-KOMOKU(IDE)
       *    ３４：連絡先−番地方書
            WHEN    34
-               MOVE    "連−番地"      TO  ERR1-KOMOKU(IDE)
+               MOVE    "連絡番地:"     TO  ERR1-KOMOKU(IDE)
       *    ３５：連絡先−電話番号（昼）
            WHEN    35
-               MOVE    "連電話昼"      TO  ERR1-KOMOKU(IDE)
+               MOVE    "連絡電昼:"     TO  ERR1-KOMOKU(IDE)
       *    ３６：連絡先−電話番号（夜）
            WHEN    36
-               MOVE    "連電話夜"      TO  ERR1-KOMOKU(IDE)
+               MOVE    "連絡電夜:"     TO  ERR1-KOMOKU(IDE)
       *    ３７：勤務先−名称
            WHEN    37
-               MOVE    "勤−名称"      TO  ERR1-KOMOKU(IDE)
+               MOVE    "勤務名称:"     TO  ERR1-KOMOKU(IDE)
       *    ３８：勤務先−郵便番号
            WHEN    38
-               MOVE    "勤郵便番"      TO  ERR1-KOMOKU(IDE)
+               MOVE    "勤務郵便:"     TO  ERR1-KOMOKU(IDE)
       *    ３９：勤務先−住所
            WHEN    39
-               MOVE    "勤−住所"      TO  ERR1-KOMOKU(IDE)
+               MOVE    "勤務住所:"     TO  ERR1-KOMOKU(IDE)
       *    ４０：勤務先−番地方書
            WHEN    40
-               MOVE    "勤−番地"      TO  ERR1-KOMOKU(IDE)
+               MOVE    "勤務先番地:"   TO  ERR1-KOMOKU(IDE)
       *    ４１：勤務先−電話番号
            WHEN    41
-               MOVE    "勤−電話"      TO  ERR1-KOMOKU(IDE)
+               MOVE    "勤務電話:"     TO  ERR1-KOMOKU(IDE)
       *    ４２：帰省先−名称
            WHEN    42
-               MOVE    "帰−名称"      TO  ERR1-KOMOKU(IDE)
+               MOVE    "帰省名称:"     TO  ERR1-KOMOKU(IDE)
       *    ４３：帰省先−郵便番号
            WHEN    43
-               MOVE    "帰郵便番"      TO  ERR1-KOMOKU(IDE)
+               MOVE    "帰省郵便:"     TO  ERR1-KOMOKU(IDE)
       *    ４４：帰省先−住所
            WHEN    44
-               MOVE    "帰−住所"      TO  ERR1-KOMOKU(IDE)
+               MOVE    "帰省住所:"     TO  ERR1-KOMOKU(IDE)
       *    ４５：帰省先−番地方書
            WHEN    45
-               MOVE    "帰−住所"      TO  ERR1-KOMOKU(IDE)
+               MOVE    "帰省番地:"     TO  ERR1-KOMOKU(IDE)
       *    ４６：帰省先−電話番号
            WHEN    46
-               MOVE    "帰−電話"      TO  ERR1-KOMOKU(IDE)
+               MOVE    "帰省電話:"     TO  ERR1-KOMOKU(IDE)
       *    ４７：テスト患者フラグ
            WHEN    47
-               MOVE    "テスト患"      TO  ERR1-KOMOKU(IDE)
+               MOVE    "テスト患:"     TO  ERR1-KOMOKU(IDE)
       *    ４８：登録日
            WHEN    48
-               MOVE    "登録日"        TO  ERR1-KOMOKU(IDE)
+               MOVE    "登録日  :"     TO  ERR1-KOMOKU(IDE)
       *    ４９：更新日
            WHEN    49
-               MOVE    "更新日"        TO  ERR1-KOMOKU(IDE)
-      *
+               MOVE    "更新日  :"     TO  ERR1-KOMOKU(IDE)
            END-EVALUATE
       *
       *    エラー値転送
-           IF  WRK-MO-CNT          NOT =   ZERO
+           IF      WRK-MO-CNT          NOT =   ZERO
                MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  ERR1-ATAI  (IDE)(1:8)
+                                       TO  ERR1-ATAI(IDE)(1:8)
            END-IF
       *
            .
@@ -2078,29 +2610,23 @@
       *****************************************************************
       *    エラーリスト編集　別２　処理
       *****************************************************************
-       2910-ERRREC-EDIT-BETU2-SEC      SECTION.
+       2910-ERRREC-EDIT-BETU2-SEC  SECTION.
       *
-           ADD     1                   TO  CNT-ERR
-           MOVE    SPACE               TO  ERR-REC2
-           MOVE    CNT-ERR (1:3)       TO  ERR2-NO (1:3)
-           MOVE    ":"                 TO  ERR2-NO (4:1)
-           EVALUATE    FLG-ERR
-           WHEN    4
-               MOVE    CONS-MES4       TO  ERR2-MES
-           WHEN    5
-               MOVE    CONS-MES5       TO  ERR2-MES
-           WHEN    6
-               MOVE    CONS-MES6       TO  ERR2-MES
-           END-EVALUATE
-           MOVE    SPA-PTNUM           TO  ERR2-PTNUM
-           MOVE    PTINF-KANANAME      TO  ERR2-KANANAME
-           MOVE    PTINF-NAME          TO  ERR2-NAME
-           MOVE    PTINF-BIRTHDAY      TO  ERR2-BIRTH
-           IF  PTINF-SEX               =   "1"
-               MOVE    "男"            TO  ERR2-SEX
-           ELSE
-               MOVE    "女"            TO  ERR2-SEX
-           END-IF
+           ADD     1               TO  CNT-ERR
+           MOVE    SPACE           TO  ERR-REC2
+      *    エラー内容番号転送
+           MOVE    CNT-CSV         TO  ERR2-LINENO
+           MOVE    "["             TO  ERR2-ERRNO(1:1)
+           MOVE    FLG-ERR(1:1)    TO  ERR2-ERRNO(2:1)
+           MOVE    "]"             TO  ERR2-ERRNO(3:1)
+           MOVE    "患者番号:"     TO  ERR2-PTNUMMES
+           MOVE    "患者ＩＤ:"     TO  ERR2-PTIDMES
+           MOVE    "患者氏名:"     TO  ERR2-NAMEMES
+           MOVE    "ERR"           TO  ERR2-NAIYO
+      *
+           MOVE    SPA-PTNUM       TO  ERR2-PTNUM
+           MOVE    SPA-PTID        TO  ERR2-PTID
+           MOVE    PTINF-NAME      TO  ERR2-NAME
       *
            .
        2910-ERRREC-EDIT-BETU2-EXT.
@@ -2109,13 +2635,13 @@
       *****************************************************************
       *    エラーリスト出力処理
       *****************************************************************
-       290-ERRLST-OUT-SEC              SECTION.
+       290-ERRLST-OUT-SEC          SECTION.
       *
-           IF  FLG-ERRARI              =   1
-               MOVE    ERR-REC1        TO      ERR-REC
+           IF      FLG-ERRARI      =   1
+               MOVE    ERR-REC1        TO  ERR-REC
                WRITE   ERR-REC
            ELSE
-               MOVE    ERR-REC2        TO      ERR-REC
+               MOVE    ERR-REC2        TO  ERR-REC
                WRITE   ERR-REC
            END-IF
       *
@@ -2126,18 +2652,22 @@
       *****************************************************************
       *    帳票出力　初期処理
       *****************************************************************
-       2910-ERRLST-INIT-SEC            SECTION.
+       2910-ERRLST-INIT-SEC        SECTION.
       *
            OPEN    OUTPUT              ERR-FILE
-           IF  STS-LST             NOT =   ZERO
+           IF      STS-LST             NOT =   ZERO
                MOVE    1               TO  FLG-CSV
                DISPLAY "*(ORCVTPTINF)* ERRFILE OPN STS[" STS-LST "]"
-               GO      TO              2910-ERRLST-INIT-EXT
+               GO  TO  2910-ERRLST-INIT-EXT
            END-IF
       *
-           MOVE    MES-TITLE1      TO      ERR-REC
+           MOVE    MES-TITLE1      TO  ERR-REC
            WRITE   ERR-REC
-           MOVE    MES-TITLE2      TO      ERR-REC
+           MOVE    MES-TITLE2-L1   TO  ERR-REC
+           WRITE   ERR-REC
+           MOVE    MES-TITLE2-L2   TO  ERR-REC
+           WRITE   ERR-REC
+           MOVE    MES-TITLE2-L3   TO  ERR-REC
            WRITE   ERR-REC
       *
            .
@@ -2145,11 +2675,32 @@
            EXIT.
       *
       *****************************************************************
+      *    日付チェック処理
+      *****************************************************************
+       31012-SEIWA-HEN-SEC         SECTION.
+      *
+           INITIALIZE                  STS-AREA-DAY
+           INITIALIZE                  LNK-DAY1-AREA
+           MOVE    "11"            TO  LNK-DAY1-IRAI
+           MOVE    WRK-SYMD        TO  LNK-DAY1-YMD
+           CALL    "ORCSDAY"           USING
+                                       STS-AREA-DAY
+                                       LNK-DAY1-AREA
+           IF      STS-DAY-RC1     =   ZERO
+               MOVE    0               TO  FLG-YMD
+           ELSE
+               MOVE    1               TO  FLG-YMD
+           END-IF
+           .
+       31012-SEIWA-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    終了処理
       *****************************************************************
-       300-END-SEC                     SECTION.
+       300-END-SEC                 SECTION.
       *
-           MOVE    2                   TO  FLG-UPDATE
+           MOVE    2               TO  FLG-UPDATE
            PERFORM 250-PTNUM-GET-SEC
       *
       *    DB DISCONNECT
@@ -2172,10 +2723,11 @@
       *****************************************************************
        900-SYSTEM-NEXT-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"      USING   MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
@@ -2187,32 +2739,97 @@
            EXIT.
       *
       *****************************************************************
-      *    患者番号変換マスタＦＥＴＣＨ処理
+      *    患者番号読み込み　処理
       *****************************************************************
-       940-PTNUM-NEXT-SEC              SECTION.
+       900-PTNUM-READ-SEC          SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"      USING   MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  PTNUM-REC
-               MOVE    ZERO            TO  FLG-PTNUM
+           MOVE    ZERO            TO  FLG-PTNUM
+           MOVE    SPACE           TO  PTNUM-REC
+           INITIALIZE                  PTNUM-REC
+           MOVE    SPA-HOSPID      TO  PTNUM-HOSPID
+           MOVE    SPA-PTID        TO  PTNUM-PTID
+           MOVE    PTNUM-REC       TO  MCPDATA-REC
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           MOVE    "PTNUM-KEY"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF          MCP-RC          =   ZERO
+               MOVE    "DBFETCH"       TO  MCP-FUNC
+               MOVE    "PTNUM-KEY"     TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF          MCP-RC          =   ZERO
+                   MOVE    ZERO            TO  FLG-PTNUM
+               ELSE
+                   MOVE    1               TO  FLG-PTNUM
+               END-IF
            ELSE
-               INITIALIZE                  PTNUM-REC
                MOVE    1               TO  FLG-PTNUM
            END-IF
       *
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           MOVE    "PTNUM-KEY"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
            .
-       940-PTNUM-NEXT-EXT.
+       900-PTNUM-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者情報読み込み　処理
+      *****************************************************************
+       900-PTINF-READ-SEC          SECTION.
+      *
+           MOVE    ZERO            TO  FLG-PTINF
+           MOVE    SPA-HOSPID      TO  PTINF-HOSPID
+           MOVE    SPA-PTID        TO  PTINF-PTID
+           MOVE    PTINF-REC       TO  MCPDATA-REC
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           MOVE    "PTINF-KEY"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF          MCP-RC          =   ZERO
+               MOVE    "DBFETCH"       TO  MCP-FUNC
+               MOVE    "PTINF-KEY"     TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF          MCP-RC          =   ZERO
+                   MOVE    ZERO            TO  FLG-PTINF
+               ELSE
+                   MOVE    1               TO  FLG-PTINF
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-PTINF
+           END-IF
+      *
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           MOVE    "PTINF-KEY"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       900-PTINF-READ-EXT.
            EXIT.
       *
       *****************************************************************
       *    患者ＣＳＶファイル検索処理
       *****************************************************************
-       900-CSV-KENSAKU-SEC             SECTION.
+       900-CSV-KENSAKU-SEC         SECTION.
       *
-          MOVE    SPACE                TO  CSV-R
+          MOVE    SPACE            TO  CSV-R
       *
           READ    CSV-FILE
               AT  END
@@ -2220,6 +2837,7 @@
               NOT AT  END
                   MOVE    ZERO         TO  FLG-CSV
                   ADD     1            TO  CNT-CSV
+                  ADD     1            TO  CNT-COMMIT
           END-READ
       *
           .
@@ -2229,9 +2847,9 @@
       *****************************************************************
       *    パラメータファイル読み込み処理
       *****************************************************************
-       900-PARA-READ-SEC               SECTION.
+       900-PARA-READ-SEC           SECTION.
       *
-          MOVE    SPACE                TO  PARA-REC
+          MOVE    SPACE            TO  PARA-REC
       *
           READ    PARA-FILE
               AT  END
@@ -2247,23 +2865,23 @@
       *****************************************************************
       *    ＤＢ　オープン処理
       *****************************************************************
-       100-DBOPEN-SEC                SECTION.
+       100-DBOPEN-SEC              SECTION.
       *
-           MOVE    "DBOPEN"            TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "DBOPEN"        TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC      NOT =   ZERO
                DISPLAY "DBOPEN ERROR"
            END-IF
       *
-           MOVE    "DBSTART"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC      NOT =   ZERO
+           MOVE    "DBSTART"       TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO
                DISPLAY "DBSTART ERROR"
            END-IF
            .
@@ -2271,25 +2889,45 @@
            EXIT.
       *
       *****************************************************************
+      *    ＤＢ　ＣＯＭＭＩＴ処理
+      *****************************************************************
+       900-DBCOMMIT-SEC            SECTION.
+      *
+           MOVE    "DBCOMMIT"      TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           MOVE    "DBSTART"       TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           .
+       900-DBCOMMIT-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ＤＢ　クローズ処理
       *****************************************************************
-       900-DBDISCONNECT-SEC            SECTION.
+       900-DBDISCONNECT-SEC        SECTION.
       *
-           MOVE    "DBCOMMIT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC      NOT =   ZERO
+           MOVE    "DBCOMMIT"      TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO
                DISPLAY "DBCOMMIT ERROR"
            END-IF
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC      NOT =   ZERO
+           MOVE    "DBDISCONNECT"  TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO
                DISPLAY "DBDISCONNECT ERROR"
            END-IF
            .

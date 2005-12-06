@@ -26,7 +26,9 @@
       *  03/11/27    NACL-森脇     新規作成
       *****************************************************************
       *  プログラム修正履歴
-      * Maj/Min/Rev  修正者       日付      内容
+      * Maj/Min/Rev  修正者        日付      内容
+      *  01.00.01    NACL-森脇     05/07/13  エラーメッセージ、コミット
+      *  01.00.02    NACL-森脇     05/09/28  構造変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -71,7 +73,7 @@
       *
       *    出力エラーファイル
        FD  ERR-FILE.
-       01  ERR-REC                     PIC X(130).
+       01  ERR-REC                     PIC X(100).
       *
        WORKING-STORAGE             SECTION.
       *
@@ -96,12 +98,8 @@
            03  FLG-COMB                PIC 9(01).
            03  FLG-PTBYOMEI            PIC 9(01).
       *
-           03  FLG-HKNCOMBI            PIC 9(01).
            03  FLG-ERRARI              PIC 9(01).
            03  FLG-DATAEND             PIC 9(01).
-           03  FLG-YMD                 PIC 9(01).
-           03  FLG-TENKI               PIC 9(01).
-      *
            03  FLG-AREA1.
                05  FLG-ERR             PIC 9(01).
                05  FLG-COMMA           PIC 9(01).
@@ -109,11 +107,16 @@
                05  FLG-DELI2           PIC 9(01).
                05  FLG-NODATA          PIC 9(01).
       *
+           03  FLG-HKNCOMBI            PIC 9(01).
+           03  FLG-YMD                 PIC 9(01).
+           03  FLG-TENKI               PIC 9(01).
+      *
       *    カウント領域
        01  CNT-AREA.
            03  CNT-PARA                PIC 9(06).
            03  CNT-CSV                 PIC 9(06).
            03  CNT-ERR                 PIC 9(06).
+           03  CNT-COMMIT              PIC 9(06).
            03  CNT-PTBYOMEI            PIC 9(06).
       *
            03  CNT-BYOMEICD            PIC 9(01).
@@ -122,12 +125,25 @@
       *
       *    添字領域
        01  IDX-AREA.
-           03  IDW                     PIC 9(04).
            03  IDX                     PIC 9(04).
            03  IDY                     PIC 9(04).
            03  IDZ                     PIC 9(04).
+           03  IDS                     PIC 9(04).
            03  IDE                     PIC 9(04).
-           03  IDS                     PIC 9(02).
+           03  IDI                     PIC 9(02).
+           03  IDJ                     PIC 9(02).
+      *
+      *    パラメータ保存
+       01  PARA-SAVE.
+           03  PARA-05-1               PIC X(02).
+           03  PARA-08-G.
+               05  PARA-08-KENSU       PIC 9(02).
+               05  PARA-08             OCCURS  9.
+                   07  PARA-08-9       PIC 9(01).
+                   07  FILLER          PIC X(01).
+                   07  PARA-08-X       PIC X(01).
+           03  PARA-09-7               PIC X(06).
+           03  PARA-11-7               PIC X(06).
       *
       *    一時領域
        01  WRK-AREA.
@@ -153,35 +169,21 @@
            03  WRK-MOVE-AREA.
                05  WRK-MO-ST           PIC 9(04).
                05  WRK-MO-CNT          PIC 9(04).
-               05  WRK-MO-ED           PIC 9(04).
-      *
-      *    項目番号
-           03  WRK-KOUMOKU-NO          PIC 9(04).
-      *
-      *    患者番号取得作業領域
-           03  WRK-RENKETA             PIC 9(02).
-           03  WRK-PTNUM               PIC X(20).
+               05  WRK-WK              PIC 9(04).
+           03  WRK-DATA                PIC X(200).
+           03  WRK-LEN                 PIC 9(03). 
            03  WRK-CNT                 PIC 9(04).
       *
+           03  WRK-RENKETA             PIC 9(02).
+           03  WRK-COMMIT              PIC 9(06).
+           03  WRK-ERR                 PIC 9(06).
+      *
+           03  WRK-KOUMOKU-NO          PIC 9(04).
+      *
       *    保険組合せ用テーブル
-           03  WRK-HKNCOMBI-G.
-               05  WRK-HKNCOMBI        PIC 9(10)   OCCURS  4.
-      *
-      *    キー領域
-       01  KEY-AREA.
-           03  KEY-PTID                PIC 9(10).
-           03  KEY-SRYKA               PIC X(02).
-           03  KEY-SRYYMD              PIC X(08).
-      *
-      *    パラメータ保存
-       01  PARA-SAVE.
-           03  PARA-05-1               PIC X(02).
-           03  PARA-08-G.
-               05  PARA-08-KENSU       PIC 9(02).
-               05  PARA-08                         OCCURS  9.
-                   07  PARA-08-9       PIC 9(01).
-                   07  FILLER          PIC X(01).
-                   07  PARA-08-X       PIC X(01).
+           03  WRK-HEN-AREA.
+               05  WRK-HEN-PTNUM       PIC X(20).
+               05  WRK-HEN-HKNCOMBI    PIC 9(10)   OCCURS  4.
       *
       *    エラー帳票出力領域
        01  MES-AREA.
@@ -194,49 +196,50 @@
                05  FILLER              PIC X(01) VALUE ".".
                05  MES-TITLE1-DD       PIC X(02) VALUE SPACE.
            03  MES-TITLE2.
-               05  FILLER              PIC X(18) VALUE
-                                                 "NO    ERR-MESSAGE/".
-               05  FILLER              PIC X(73) VALUE
-                   "ERRNO 1:必須未入力 2:項目桁数 3:誤入力 --------".
+               05  MES-TITLE2-L1.
+                   07  FILLER          PIC X(10) VALUE "LINENO ERR".
+                   07  FILLER          PIC X(42) VALUE
+                   " [1]必須未入力        [2]項目桁数不正     ".
+                   07  FILLER          PIC X(41) VALUE
+                   " [3]誤入力            [4]病名適応期間重複".
+               05  MES-TITLE2-L2.
+                   07  FILLER          PIC X(10) VALUE SPACE.
+                   07  FILLER          PIC X(42) VALUE
+                   " [5]病名カナ変換失敗  [6]病名ＣＤ変換失敗 ".
+                   07  FILLER          PIC X(41) VALUE
+                   " [7]患者番号取得失敗  [8]患者病名出力失敗".
+               05  MES-TITLE2-L3.
+                   07  FILLER          PIC X(50) VALUE
+                   "--------------------------------------------------".
+                   07  FILLER          PIC X(49) VALUE
+                   "-------------------------------------------------".
       *
        01  ERRLST-AREA.
-      *    エラー番号１・２・３　で使用
+      *    エラー番号１・２・３で使用
            03  ERR-REC1.
-               05  ERR1-NO             PIC X(05).
+               05  ERR1-LINENO         PIC X(06).
                05  FILLER              PIC X(01).
-               05  ERR1-PTNUM          PIC X(20).
+               05  ERR1-NAIYO          PIC X(03).
                05  ERR-OCCURS          OCCURS   4.
                    07  FILLER          PIC X(01).
-                   07  ERR1-ERRNO      PIC X(02).
-                   07  ERR1-KOMOKU     PIC X(08).
-                   07  FILLER          PIC X(01).
+                   07  ERR1-ERRNO      PIC X(03).
+                   07  ERR1-KOMOKU     PIC X(09).
                    07  ERR1-ATAI       PIC X(08).
-      *    エラー番号４・５・６　で使用
+      *    エラー番号４・５・６で使用
            03  ERR-REC2.
-               05  ERR2-NO             PIC X(05).
+               05  ERR2-LINENO         PIC X(06).
                05  FILLER              PIC X(01).
-               05  ERR2-MES            PIC X(22).
+               05  ERR2-NAIYO          PIC X(03).
                05  FILLER              PIC X(01).
-               05  ERR2-PTNUM          PIC X(20).
-               05  FILLER              PIC X(01).
+               05  ERR2-ERRNO          PIC X(03).
+               05  ERR2-PTNUMMES       PIC X(09).
+               05  ERR2-PTNUM          PIC X(10).
+               05  FILLER              PIC X(02).
+               05  ERR2-PTIDMES        PIC X(09).
                05  ERR2-PTID           PIC X(10).
-               05  FILLER              PIC X(01).
-               05  ERR2-SRYKA          PIC X(02).
-               05  FILLER              PIC X(01).
-               05  ERR2-SRYYMD         PIC X(08).
-               05  FILLER              PIC X(01).
-               05  ERR2-RENNUM         PIC X(02).
-      *
-      *    メッセージ領域
-       01  CONS-AREA.
-           03  CONS-MES4               PIC X(22) VALUE
-               "患者番号ＤＢ取得エラー".
-           03  CONS-MES5               PIC X(22) VALUE
-               "患者番号ＤＢ出力エラー".
-           03  CONS-MES6               PIC X(22) VALUE
-               "患者病名ＤＢ出力エラー".
-           03  CONS-MES7               PIC X(22) VALUE
-               "追加前エラー".
+               05  FILLER              PIC X(02).
+               05  ERR2-BYOMEIMES      PIC X(09).
+               05  ERR2-BYOMEI         PIC X(30).
       *
       *****************************************************************
       *    ファイル定義
@@ -253,6 +256,9 @@
        01  COMB-REC.
            COPY    "CPHKNCOMBI.INC".
       *
+      *    患者番号変換
+       01  PTNUM-REC.
+           COPY    "CPPTNUM.INC".
       *    患者病名
        01  PTBYOMEI-REC.
            COPY    "CPPTBYOMEI.INC".
@@ -281,9 +287,7 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
-      *
-      *    患者番号変換サブ
-           COPY    "CPORCSPTID.INC".
+           COPY    "CPORCXKANACONV.INC".
       *
       *    病名検索
            COPY    "CPORCSBYOMEI.INC".
@@ -315,7 +319,6 @@
            MOVE    ZERO            TO  IDX-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  SPA-AREA
-           INITIALIZE                  KEY-AREA
       *
       *    パラメータ情報取得
            PERFORM 101-PARA-GET-SEC
@@ -367,6 +370,8 @@
            END-IF
       *
            MOVE    PARA-05-1       TO  WRK-RENKETA(1:2)
+           MOVE    PARA-09-7       TO  WRK-COMMIT
+           MOVE    PARA-11-7       TO  WRK-ERR
       *
       *    患者保険ＣＳＶファイル　検索処理
            PERFORM 900-CSV-KENSAKU-SEC
@@ -381,7 +386,7 @@
        101-PARA-GET-SEC            SECTION.
       *
            MOVE    ZERO            TO  FLG-PARA
-      *
+           MOVE    SPACE           TO  PARA-SAVE
       *    パラメタファイルOPEN
            OPEN    INPUT   PARA-FILE
            IF      STS-PARA    NOT =   ZERO
@@ -407,7 +412,9 @@
            CLOSE   PARA-FILE
       *
       *    パラメータチェック処理
-           IF      PARA-05-1       IS  NUMERIC
+           IF    ( PARA-05-1       IS  NUMERIC )   AND
+                 ( PARA-09-7       IS  NUMERIC )   AND
+                 ( PARA-11-7       IS  NUMERIC )
                CONTINUE
            ELSE
                MOVE    1               TO  FLG-CSV
@@ -450,6 +457,10 @@
                    MOVE  PARA-DATA TO  PARA-08(8)
                WHEN  "08-9"
                    MOVE  PARA-DATA TO  PARA-08(9)
+               WHEN  "09-7"
+                   MOVE  PARA-DATA TO  PARA-09-7
+               WHEN  "11-7"
+                   MOVE  PARA-DATA TO  PARA-11-7
            END-EVALUATE
       *
            .
@@ -613,57 +624,52 @@
            IF      CNT-CSV (4:3)   =   ZERO
                DISPLAY "***(ORCVTPTBYOMEI)*** CNT-CSV[" CNT-CSV "]"
            END-IF
+      *    指定した件数になったらコミット処理を行う
+           IF      CNT-COMMIT      =   WRK-COMMIT
+               PERFORM 900-DBCOMMIT-SEC
+               MOVE    ZERO            TO  CNT-COMMIT
+           END-IF
+      *    エラーが指定した件数になったら処理を抜ける
+           IF      CNT-ERR         =   WRK-ERR
+               MOVE    1               TO  FLG-CSV
+               GO  TO  200-MAIN-EXT
+           END-IF
       *
            MOVE    SPACE           TO  WKPTBYOMEI-REC
            INITIALIZE                  WKPTBYOMEI-REC
-      *
+           MOVE    SPACE           TO  WRK-HEN-AREA
+           INITIALIZE                  WRK-HEN-AREA
            MOVE    ZERO            TO  WRK-POINT-AREA
            MOVE    ZERO            TO  IDX-AREA
       *    対象患者にエラーが存在するかどうか
            MOVE    ZERO            TO  FLG-ERRARI
            MOVE    ZERO            TO  FLG-DATAEND
            MOVE    ZERO            TO  CNT-HKNCOMB
-           MOVE    ZERO            TO  WRK-HKNCOMBI-G
+           MOVE    ZERO            TO  WRK-KOUMOKU-NO
       *
       *    患者病名ＣＳＶファイルに存在する項目数分、繰り返す
       *    またはレコード終了、または項目エラー４個まで
            PERFORM VARYING   IDX   FROM    1   BY  1
                    UNTIL   ( IDX           >   33   )
                    OR      ( WRK-PO-ED     >=  300  )
-                   OR      ( WRK-PO-ST     >=  300  )
                    OR      ( IDE           >   4    )
       *
                COMPUTE WRK-PO-ST   =   WRK-PO-ED   +   1
                MOVE    ZERO            TO  FLG-AREA1
-               MOVE    IDX             TO  WRK-KOUMOKU-NO
       *
                IF    ( CSV-R (WRK-PO-ST:)  =   SPACE ) OR
                      ( FLG-DATAEND         =   1     )
                    MOVE    1           TO  FLG-DATAEND
                    MOVE    WRK-PO-ST   TO  WRK-PO-ED
                ELSE
+                   ADD     1             TO  WRK-KOUMOKU-NO
       *            項目終了文字後のカンマ位置を取得(WRK-PO-ED)
                    PERFORM 210-CHAR-END-GET-SEC
                END-IF
-      *
       *        項目共通処理デリミタチェック
                PERFORM 220-KOUMOKU-KYOTU-SEC
-      *
-      *        必須項目チェック処理
-               PERFORM 230-HISSU-KOUMOKU-SEC
-               IF      FLG-ERR             =   ZERO
-      *            項目別処理
-                   PERFORM 240-KOUMOKU-BETU-SEC
-                   IF      FLG-ERR         NOT =   ZERO
-      *                エラーリスト編集処理
-                       PERFORM 270-ERRREC-EDIT-SEC
-                       MOVE    1           TO  FLG-ERRARI
-                   END-IF
-               ELSE
-      *            エラーリスト編集処理
-                   PERFORM 270-ERRREC-EDIT-SEC
-                   MOVE    1           TO  FLG-ERRARI
-               END-IF
+      *        項目別処理
+               PERFORM 240-KOUMOKU-BETU-SEC
            END-PERFORM
       *
       *    エラーチェック
@@ -674,11 +680,9 @@
       *            エラーリスト編集/出力処理
                    PERFORM 270-ERRREC-EDIT-SEC
                    MOVE    2           TO  FLG-ERRARI
-      *            エラーリスト出力処理
                    PERFORM 270-ERRLST-OUT-SEC
                END-IF
            ELSE
-               MOVE    1           TO  FLG-ERRARI
       *        エラーリスト出力処理
                PERFORM 270-ERRLST-OUT-SEC
            END-IF
@@ -695,20 +699,20 @@
       *****************************************************************
        210-CHAR-END-GET-SEC        SECTION.
       *
-           PERFORM VARYING   WRK-PO-CNT  FROM    WRK-PO-ST   BY  1
-                   UNTIL   ( WRK-PO-CNT  >=  300  )
+           PERFORM VARYING   IDY   FROM    WRK-PO-ST   BY  1
+                   UNTIL   ( IDY           >=  300  )
                    OR      ( FLG-COMMA   =   1    )
       *
       *        カンマの位置
-               IF    ( CSV-X (WRK-PO-CNT)  =   "," ) OR
+               IF    ( CSV-X (IDY)         =   "," ) OR
                      ((IDX                 =   33 )  AND
-                     ( CSV-X (WRK-PO-CNT)  =   SPACE))
-                   MOVE    WRK-PO-CNT          TO  WRK-PO-ED
+                     ( CSV-X (IDY)         =   SPACE))
+                   MOVE    IDY                 TO  WRK-PO-ED
                    MOVE    1                   TO  FLG-COMMA
                END-IF
       *
       *        デリミタ(")存在するかどうか
-               IF      CSV-X (WRK-PO-CNT)  =   """"
+               IF      CSV-X (IDY)             =   """"
                    IF      FLG-DELI1           =   ZERO
                        MOVE    1               TO  FLG-DELI1
                    ELSE
@@ -732,12 +736,12 @@
            IF      FLG-DELI1       =   1
       *        デリミタ(")を含んでいる場合
                IF      FLG-DELI2       =   1
-                   COMPUTE WRK-MO-ED   =   WRK-PO-ST   +   2
+                   COMPUTE WRK-WK      =   WRK-PO-ST   +   2
                ELSE
-                   COMPUTE WRK-MO-ED   =   WRK-PO-ST   +   1
+                   COMPUTE WRK-WK      =   WRK-PO-ST   +   1
                END-IF
-               IF      WRK-MO-ED       =   WRK-PO-ED
-                   MOVE    1               TO  FLG-NODATA
+               IF      WRK-WK          =   WRK-PO-ED
+                   MOVE    1           TO  FLG-NODATA
                    GO  TO  220-KOUMOKU-KYOTU-EXT
                END-IF
            ELSE
@@ -767,33 +771,6 @@
       *
            .
        220-KOUMOKU-KYOTU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    必須項目チェック処理
-      *****************************************************************
-       230-HISSU-KOUMOKU-SEC       SECTION.
-      *
-           IF      FLG-NODATA          =   1
-      *
-               EVALUATE    WRK-KOUMOKU-NO
-      *        １：患者番号
-               WHEN    1
-      *        ２：診療科
-               WHEN    2
-      *        ３：診療開始日
-               WHEN    3
-      *        ４：病名
-               WHEN    4
-                   MOVE    1           TO  FLG-ERR
-      *
-               WHEN    OTHER
-                   CONTINUE
-               END-EVALUATE
-           END-IF
-      *
-           .
-       230-HISSU-KOUMOKU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -837,8 +814,76 @@
                PERFORM 2410-TENKIYMD-SET-SEC
            END-EVALUATE
       *
+           IF      FLG-ERR         NOT =   ZERO
+               MOVE    1           TO  FLG-ERRARI
+               PERFORM 270-ERRREC-EDIT-SEC
+           END-IF
+      *
            .
        240-KOUMOKU-BETU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    全角桁数・空白処理
+      *****************************************************************
+       2402-ZENKAKU-HEN-SEC        SECTION.
+      *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    WRK-DATA            TO  KANACHK-MAE-INPUT
+           MOVE    WRK-CNT             TO  KANACHK-MAX-CNT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  WRK-DATA
+           MOVE    KANACHK-MAX         TO  WRK-LEN
+           IF      KANACHK-RC      NOT =   ZERO
+      *        全角・半角混在の場合は半角を全角へ
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "2"                 TO  KANACHK-SYORI
+               MOVE    WRK-DATA            TO  KANACHK-MAE-INPUT
+               MOVE    WRK-CNT             TO  KANACHK-MAX-CNT
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
+               IF      KANACHK-RC          =   ZERO
+                   MOVE    KANACHK-MAX         TO  WRK-LEN
+                   MOVE    KANACHK-OUT-INPUT   TO  WRK-DATA
+               END-IF
+           END-IF
+           IF      WRK-LEN             =   ZERO
+               MOVE    1                   TO  WRK-LEN
+           END-IF
+      *    後ろの全角空白を削除
+           IF      WRK-LEN             >   1
+               PERFORM 24021-KUHAKU-DEL-SEC
+           END-IF
+           .
+       2402-ZENKAKU-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    全角空白削除処理
+      *****************************************************************
+       24021-KUHAKU-DEL-SEC        SECTION.
+      *
+           COMPUTE IDZ             =   WRK-LEN     -   1
+           IF      WRK-DATA (IDZ:2)    =   "　"
+               MOVE    1                   TO  WRK-LEN
+               PERFORM VARYING IDS     FROM    IDZ BY  -2
+                       UNTIL   IDS     <   2
+                   IF      WRK-DATA (IDS:2)    NOT =   "　"
+                       COMPUTE WRK-LEN         =   IDS     +   1
+                       MOVE    2               TO  IDS
+                   ELSE
+                       IF      IDS             =   3
+                           IF      WRK-DATA (1:2)      NOT =   "　"
+                               MOVE    2               TO  WRK-LEN
+                           END-IF
+                       END-IF
+                   END-IF
+               END-PERFORM    
+           END-IF
+           .
+       2402-ZENKAKU-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -847,25 +892,26 @@
        2410-PTNUM-SET-SEC          SECTION.
       *
            MOVE    SPACE           TO  SPA-PTNUM
-           MOVE    ZERO            TO  WRK-CNT
+      *
+           IF      FLG-NODATA          =   1
+               MOVE    1               TO  FLG-ERR
+               GO  TO  2410-PTNUM-SET-EXT
+           END-IF
       *
       *    空白までを編集する
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                   TO  WRK-PTNUM
-      *
-           PERFORM VARYING IDW     FROM    1   BY  1
-                   UNTIL  (IDW     >   WRK-MO-CNT)
-                   OR     (WRK-PTNUM (IDW:1)   =   SPACE)
-               MOVE    IDW             TO    WRK-CNT
+                                   TO  WRK-HEN-PTNUM
+           MOVE    ZERO            TO  WRK-CNT
+           PERFORM VARYING IDZ     FROM    1   BY  1
+                   UNTIL  (IDZ     >   WRK-MO-CNT)
+                   OR     (WRK-HEN-PTNUM (IDZ:1)   =   SPACE)
+               MOVE    IDZ             TO    WRK-CNT
            END-PERFORM
-      *
            MOVE    WRK-CNT         TO  WRK-MO-CNT
       *
       *    桁チェック
-           IF    ( WRK-MO-CNT      >   0  )  AND
-                 ( WRK-MO-CNT      <=  20 )
-               CONTINUE
-           ELSE
+           IF    ( WRK-MO-CNT      =   0  )  OR
+                 ( WRK-MO-CNT      >   20 )
                MOVE    2               TO  FLG-ERR
                GO  TO  2410-PTNUM-SET-EXT
            END-IF
@@ -876,17 +922,14 @@
                  ((SYS-1009-PTNUMKSIKBN    =   "2" )  AND
                  ( SYS-1009-HJNKSIKBN      =   "3" OR "4"))
                MOVE    ZERO            TO  SPA-PTNUM(1:WRK-RENKETA)
-               COMPUTE WRK-MO-ED       =   WRK-RENKETA
+               COMPUTE IDZ             =   WRK-RENKETA
                                        -   WRK-MO-CNT  +   1
                MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  SPA-PTNUM(WRK-MO-ED:)
+                                       TO  SPA-PTNUM(IDZ:)
            ELSE
                MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  SPA-PTNUM
            END-IF
-      *
-      *    患者番号変換
-           PERFORM 250-PTNUM-READ-SEC
       *
            .
        2410-PTNUM-SET-EXT.
@@ -896,6 +939,11 @@
       *    項目２：診療科　処理
       *****************************************************************
        2410-SRYKA-SET-SEC          SECTION.
+      *
+           IF      FLG-NODATA          =   1
+               MOVE    1               TO  FLG-ERR
+               GO  TO  2410-SRYKA-SET-EXT
+           END-IF
       *
       *    桁チェック
            IF      WRK-MO-CNT  NOT =   2
@@ -919,6 +967,11 @@
       *    項目３：診療開始日　処理
       *****************************************************************
        2410-SRYYMD-SET-SEC         SECTION.
+      *
+           IF      FLG-NODATA          =   1
+               MOVE    1               TO  FLG-ERR
+               GO  TO  2410-SRYYMD-SET-EXT
+           END-IF
       *
       *    桁チェック
            IF      WRK-MO-CNT  NOT =   8
@@ -945,23 +998,25 @@
       *****************************************************************
        2410-BYOMEI-SET-SEC         SECTION.
       *
+           IF      FLG-NODATA          =   1
+               MOVE    1               TO  FLG-ERR
+               GO  TO  2410-BYOMEI-SET-EXT
+           END-IF
+      *
       *    桁チェック
            IF      WRK-MO-CNT      >   100
                MOVE    2               TO  FLG-ERR
                GO  TO  2410-BYOMEI-SET-EXT
            END-IF
       *
-      *    全角変換
-           INITIALIZE                  WKPTBYO-BYOMEI
-           INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "2"                 TO  KANACHK-SYORI
+      *    病名セット
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  KANACHK-MAE-INPUT
-           CALL    "ORCSKANACHK"       USING
-                                       ORCSKANACHKAREA
-           IF      KANACHK-RC          =   ZERO
-               MOVE    KANACHK-OUT-INPUT
-                                           TO  WKPTBYO-BYOMEI
+                                   TO  WRK-DATA
+           MOVE    100             TO  WRK-CNT
+           PERFORM 2402-ZENKAKU-HEN-SEC
+           IF      FLG-ERR         =   ZERO
+               MOVE    WRK-DATA (1:WRK-LEN)
+                                   TO  WKPTBYO-BYOMEI
            END-IF
       *
            .
@@ -973,15 +1028,14 @@
       *****************************************************************
        2410-SYUBYOFLG-SET-SEC      SECTION.
       *
-           EVALUATE    WRK-MO-CNT
-           WHEN    0
+           IF      FLG-NODATA      =   1
                GO  TO  2410-SYUBYOFLG-SET-EXT
-           WHEN    1
-               CONTINUE
-           WHEN    OTHER
+           END-IF
+      *
+           IF      WRK-MO-CNT      NOT =   1
                MOVE    2               TO  FLG-ERR
                GO  TO  2410-SYUBYOFLG-SET-EXT
-           END-EVALUATE
+           END-IF
       *
       *    主病名フラグセット
            EVALUATE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
@@ -1033,35 +1087,34 @@
       *****************************************************************
        2410-HKNCOMBI-SET-SEC       SECTION.
       *
-      *    桁、ゼロチェック
-           EVALUATE    WRK-MO-CNT
-           WHEN    0
+           IF      FLG-NODATA      =   1
                GO  TO  2410-HKNCOMBI-SET-EXT
-           WHEN    1
-           WHEN    2
-               IF      CSV-REC (WRK-MO-ST:WRK-MO-CNT)  =   ZERO
-                   GO  TO  2410-HKNCOMBI-SET-EXT
-               END-IF
-           WHEN    OTHER
+           END-IF
+      *
+           IF      WRK-MO-CNT      >   2
                MOVE    2               TO  FLG-ERR
                GO  TO  2410-HKNCOMBI-SET-EXT
-           END-EVALUATE
+           END-IF
+      *
+           IF      CSV-REC (WRK-MO-ST:WRK-MO-CNT)  =   ZERO
+              GO  TO  2410-HKNCOMBI-SET-EXT
+           END-IF
       *
       *    保険組み合わせレコード番号セット
-           COMPUTE IDS = 11 - WRK-MO-CNT
+           COMPUTE IDZ = 11 - WRK-MO-CNT
            EVALUATE    WRK-KOUMOKU-NO
            WHEN    17
                MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                       TO  WRK-HKNCOMBI(1)(IDS:WRK-MO-CNT)
+                       TO  WRK-HEN-HKNCOMBI(1)(IDZ:WRK-MO-CNT)
            WHEN    18
                MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                       TO  WRK-HKNCOMBI(2)(IDS:WRK-MO-CNT)
+                       TO  WRK-HEN-HKNCOMBI(2)(IDZ:WRK-MO-CNT)
            WHEN    19
                MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                       TO  WRK-HKNCOMBI(3)(IDS:WRK-MO-CNT)
+                       TO  WRK-HEN-HKNCOMBI(3)(IDZ:WRK-MO-CNT)
            WHEN    20
                MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                       TO  WRK-HKNCOMBI(4)(IDS:WRK-MO-CNT)
+                       TO  WRK-HEN-HKNCOMBI(4)(IDZ:WRK-MO-CNT)
            END-EVALUATE
       *
            ADD     1                   TO  CNT-HKNCOMB
@@ -1076,10 +1129,11 @@
        2410-REZEMM-SET-SEC         SECTION.
       *
       *    桁チェック
-           IF      WRK-MO-CNT          =   0
+           IF      FLG-NODATA      =   1
                GO  TO  2410-REZEMM-SET-EXT
            END-IF
-           IF      WRK-MO-CNT      NOT =   1  AND  2
+      *
+           IF      WRK-MO-CNT      >  2
                MOVE    2               TO  FLG-ERR
                GO  TO  2410-REZEMM-SET-EXT
            END-IF
@@ -1092,9 +1146,9 @@
                MOVE    3               TO  FLG-ERR
                GO  TO  2410-REZEMM-SET-EXT
            WHEN    OTHER
-               COMPUTE IDS = 3 - WRK-MO-CNT
+               COMPUTE IDZ = 3 - WRK-MO-CNT
                MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                       TO  WKPTBYO-REZEMM(IDS:WRK-MO-CNT)
+                       TO  WKPTBYO-REZEMM(IDZ:WRK-MO-CNT)
            END-EVALUATE
       *
            .
@@ -1117,10 +1171,8 @@
            END-IF
       *
       *    転帰区分チェック(パラメタに転帰区分がある場合移行する)
-           MOVE    ZERO            TO  FLG-TENKI
-           PERFORM VARYING   IDZ
-                   FROM      1
-                   BY        1
+           MOVE    ZERO          TO  FLG-TENKI
+           PERFORM VARYING IDZ   FROM      1   BY        1
                    UNTIL  (IDZ        >  PARA-08-KENSU)
                      OR   (FLG-TENKI  =  1)
                IF  CSV-REC(WRK-MO-ST:WRK-MO-CNT)   =   PARA-08-9(IDZ)
@@ -1154,19 +1206,19 @@
                GO  TO  2410-TENKIYMD-SET-EXT
            END-IF
       *
-      *    転帰日チェック(転帰日が診療日より大きいか)
-           IF      WKPTBYO-SRYYMD  <=  CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-               MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+      *    日付チェック
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  WRK-SYMD
-      *        日付チェック
-               PERFORM 31012-SEIWA-HEN-SEC
-               IF      FLG-YMD         =   1
-                   MOVE    3               TO  FLG-ERR
-               ELSE
-                   MOVE    WRK-SYMD        TO  WKPTBYO-TENKIYMD
-               END-IF
-           ELSE
+           PERFORM 31012-SEIWA-HEN-SEC
+           IF      FLG-YMD         =   1
                MOVE    3               TO  FLG-ERR
+           ELSE
+      *        転帰日チェック(転帰日が診療日より大きいか)
+               IF      WKPTBYO-SRYYMD  <=  WRK-SYMD
+                   MOVE    WRK-SYMD        TO  WKPTBYO-TENKIYMD
+               ELSE
+                   MOVE    3               TO  FLG-ERR
+               END-IF
            END-IF
       *
            .
@@ -1174,44 +1226,19 @@
            EXIT.
       *
       *****************************************************************
-      *    患者番号変換マスタ　検索処理
-      *****************************************************************
-       250-PTNUM-READ-SEC          SECTION.
-      *
-      *    患者番号変換
-           INITIALIZE                  ORCSPTIDAREA
-           MOVE    SPA-HOSPID      TO  SPTID-HOSPID
-           MOVE    SPA-PTNUM       TO  SPTID-PTNUM
-           CALL    "ORCSPTID"          USING
-                                       ORCSPTIDAREA
-                                       SPA-1009-TBL
-           IF      SPTID-RC        =   ZERO
-               MOVE    ZERO            TO  FLG-ERR
-           ELSE
-               MOVE    3               TO  FLG-ERR
-           END-IF
-      *
-           .
-       250-PTNUM-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    患者病名マスタ　登録処理
       *****************************************************************
        260-PTBYOMEI-INSERT-SEC     SECTION.
       *
-      *    患者番号変換マスタより転送
-           MOVE    SPTID-PTID      TO  WKPTBYO-PTID
-      *
-      *    連番キーセット
-           IF    ( KEY-PTID    NOT =   WKPTBYO-PTID   )  OR
-                 ( KEY-SRYKA   NOT =   WKPTBYO-SRYKA  )  OR
-                 ( KEY-SRYYMD  NOT =   WKPTBYO-SRYYMD )
-               MOVE    WKPTBYO-PTID        TO  KEY-PTID
-               MOVE    WKPTBYO-SRYKA       TO  KEY-SRYKA
-               MOVE    WKPTBYO-SRYYMD      TO  KEY-SRYYMD
-               MOVE    ZERO                TO  CNT-RENNUM
+      *    患者番号変換
+           PERFORM 900-PTNUM-READ-SEC
+           IF      FLG-PTNUM           NOT =   ZERO
+               MOVE    7               TO  FLG-ERR
+               GO  TO  260-PTBYOMEI-INSERT-EXT
            END-IF
+      *
+           MOVE    PTNUM-PTID      TO  WKPTBYO-PTID
+           MOVE    ZERO            TO  CNT-RENNUM
       *
       *    追加前病名チェック
            PERFORM 2601-BYOMEI-CHECK-SEC
@@ -1226,35 +1253,39 @@
       *    追加前保険組合せチェック
            PERFORM 2601-HKNCOMBI-CHECK-SEC
       *
-           COMPUTE CNT-RENNUM          =   CNT-RENNUM  +   1
-      *
       *    重複データがないかチェック
            MOVE    ZERO            TO  PTBYOMEI-REC
            INITIALIZE                  PTBYOMEI-REC
            MOVE    WKPTBYOMEI-REC  TO  PTBYOMEI-REC
            MOVE    SPA-HOSPID      TO  PTBYO-HOSPID
-           MOVE    CNT-RENNUM      TO  PTBYO-RENNUM
            MOVE    PTBYOMEI-REC    TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "PTBYOMEI-KEY"  TO  ORC-DBPATH
+           MOVE    "PTBYOMEI-KEY7" TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          =   ZERO
-               MOVE    "PTBYOMEI-KEY"  TO  ORC-DBPATH
+               MOVE    "PTBYOMEI-KEY7" TO  ORC-DBPATH
                PERFORM 940-PTBYOMEI-NEXT-SEC
            ELSE
                MOVE    1               TO  FLG-PTBYOMEI
            END-IF
       *
-      *    データがすでにある場合はエラー
+      *    データがすでにある場合は最大連番から連番を振る
            IF      FLG-PTBYOMEI    =   ZERO
-               MOVE    5               TO  FLG-ERR
-               GO  TO  260-PTBYOMEI-INSERT-EXT
+               MOVE    MCPDATA-REC     TO  PTBYOMEI-REC
+               COMPUTE CNT-RENNUM      =   PTBYO-RENNUM +   1
+           ELSE
+               MOVE     1              TO  CNT-RENNUM
            END-IF
       *
       *    患者病名追加処理
+           MOVE    ZERO            TO  PTBYOMEI-REC
+           INITIALIZE                  PTBYOMEI-REC
+           MOVE    WKPTBYOMEI-REC  TO  PTBYOMEI-REC
+           MOVE    SPA-HOSPID      TO  PTBYO-HOSPID
+           MOVE    CNT-RENNUM      TO  PTBYO-RENNUM
            MOVE    PTBYOMEI-REC    TO  MCPDATA-REC
            MOVE    "DBINSERT"      TO  MCP-FUNC
            MOVE    "PTBYOMEI-KEY"  TO  ORC-DBPATH
@@ -1263,11 +1294,11 @@
                                        ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC      NOT =   ZERO
-               MOVE    6               TO  FLG-ERR
+               MOVE    8               TO  FLG-ERR
                GO  TO  260-PTBYOMEI-INSERT-EXT
            END-IF
       *
-           COMPUTE CNT-PTBYOMEI        =   CNT-PTBYOMEI    +   1
+           COMPUTE CNT-PTBYOMEI    =   CNT-PTBYOMEI    +   1
       *
            .
        260-PTBYOMEI-INSERT-EXT.
@@ -1286,15 +1317,20 @@
                                    TO  LNK-BYO-SYUBYOFLG
            MOVE    WKPTBYO-BYOMEI  TO  LNK-BYO-BYOMEI
            MOVE    WKPTBYO-SRYYMD  TO  LNK-BYO-SRYYMD-IN
-           CALL    "ORCSBYOMEI"    USING   ORCSBYOMEIAREA
+           CALL    "ORCSBYOMEI"        USING
+                                       ORCSBYOMEIAREA
       *
       *    エラーチェック
            IF    ( LNK-BYO-KANACHK-ERR     =   1 ) OR
-                 ( LNK-BYO-TANDOKUKBN-ERR  =   1 ) OR
-                 ( LNK-BYO-BYOMEICD-ERR    =   1 ) OR
-                 ( LNK-BYO-RC  NOT =   SPACE )
-               MOVE    7               TO  FLG-ERR
-               GO  TO  2410-BYOMEI-SET-EXT
+                 ( LNK-BYO-RC          NOT =   SPACE )
+               MOVE    5               TO  FLG-ERR
+               GO  TO  2601-BYOMEI-CHECK-EXT
+           END-IF
+      *    エラーチェック
+           IF    ( LNK-BYO-TANDOKUKBN-ERR  =   1 ) OR
+                 ( LNK-BYO-BYOMEICD-ERR    =   1 )
+               MOVE    6               TO  FLG-ERR
+               GO  TO  2601-BYOMEI-CHECK-EXT
            END-IF
       *
       *    基本病名コード
@@ -1307,14 +1343,14 @@
            MOVE    LNK-BYO-BYOMEICDSU  TO  WKPTBYO-BYOMEICDSU
       *
       *    病名コードセット
-           PERFORM VARYING IDY FROM  1 BY  1
-                   UNTIL  (IDY >   LNK-BYO-BYOMEICDSU)
-                   OR     (LNK-BYO-TBYOMEICD(IDY)  =   SPACE)
+           PERFORM VARYING IDI FROM  1 BY  1
+                   UNTIL  (IDI >   LNK-BYO-BYOMEICDSU)
+                   OR     (LNK-BYO-TBYOMEICD(IDI)  =   SPACE)
       *        診療開始日＜廃止年月日
       *         IF    ( LNK-BYO-THAISIYMD(IDY)  NOT =   SPACE ) AND
       *               ( WKPTBYO-SRYYMD  <   LNK-BYO-THAISIYMD(IDY))
-                   MOVE    LNK-BYO-TBYOMEICD(IDY)
-                                       TO  WKPTBYO-BYOMEICD(IDY)
+                   MOVE    LNK-BYO-TBYOMEICD(IDI)
+                                       TO  WKPTBYO-BYOMEICD(IDI)
       *         END-IF
            END-PERFORM
       *
@@ -1324,16 +1360,15 @@
            MOVE    LNK-BYO-MANSEIKBN   TO  WKPTBYO-MANSEIKBN
       *
       *    病名セット
-           MOVE    LNK-BYO-BYOMEI  TO  WKPTBYO-BYOMEI
+           MOVE    LNK-BYO-BYOMEI      TO  WKPTBYO-BYOMEI
       *    病名文字数セット
            MOVE    LNK-BYO-BYOMEIMOJI  TO  WKPTBYO-BYOMEIMOJI
       *
       *    病名編集フラグ
            MOVE    LNK-BYO-BYOMEIHENFLG
-                                   TO  WKPTBYO-BYOMEIHENFLG
+                                       TO  WKPTBYO-BYOMEIHENFLG
       *    レセ電エラーフラグ
-           MOVE    LNK-BYO-RECEDENFLG
-                                   TO  WKPTBYO-RECEDENFLG
+           MOVE    LNK-BYO-RECEDENFLG  TO  WKPTBYO-RECEDENFLG
       *
            .
        2601-BYOMEI-CHECK-EXT.
@@ -1374,8 +1409,8 @@
                PERFORM 26011-HKNCOMBI-SET-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "HKNCOMBI-KEY2"     TO  ORC-DBPATH
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           MOVE    "HKNCOMBI-KEY2" TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
@@ -1388,14 +1423,14 @@
       *****************************************************************
       *    患者病名マスタ　保険組合せ
       *****************************************************************
-       26011-HKNCOMBI-SET-SEC       SECTION.
+       26011-HKNCOMBI-SET-SEC      SECTION.
       *
-           MOVE    ZERO                TO  FLG-HKNCOMBI
+           MOVE    ZERO            TO  FLG-HKNCOMBI
       *
       *    主病名コード
            IF    ( COMB-HKNID      NOT =   SPACE ) OR
                  ( COMB-HKNID          =   ZERO )
-               IF      WRK-HKNCOMBI(1)     =   COMB-HKNID
+               IF      WRK-HEN-HKNCOMBI(1)     =   COMB-HKNID
                    ADD     1           TO  FLG-HKNCOMBI
                ELSE
                    MOVE    9           TO  FLG-HKNCOMBI
@@ -1403,14 +1438,14 @@
            END-IF
       *
       *    公費病名コード
-           PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL ( IDX     >   4 )
+           PERFORM VARYING IDI     FROM    1   BY  1
+                   UNTIL ( IDI     >   4 )
                    OR    ( FLG-HKNCOMBI    =   9 )
-               IF    ( COMB-KOHID(IDX) NOT =   SPACE ) AND
-                     ( COMB-KOHID(IDX) NOT =   ZERO )
-                   PERFORM VARYING IDY     FROM    2   BY  1
-                           UNTIL ( IDY     >   4 )
-                       IF  COMB-KOHID(IDX) =  WRK-HKNCOMBI(IDY)
+               IF    ( COMB-KOHID(IDI) NOT =   SPACE ) AND
+                     ( COMB-KOHID(IDI) NOT =   ZERO )
+                   PERFORM VARYING IDJ     FROM    2   BY  1
+                           UNTIL ( IDJ     >   4 )
+                       IF  COMB-KOHID(IDI) =  WRK-HEN-HKNCOMBI(IDJ)
                            ADD     1          TO  FLG-HKNCOMBI
                        END-IF
                    END-PERFORM
@@ -1453,19 +1488,19 @@
            END-IF
       *
       *    同一病名読み込み
-           MOVE    ZERO            TO  PTBYOMEI-REC
-           INITIALIZE                  PTBYOMEI-REC
-           MOVE    SPA-HOSPID      TO  PTBYO-HOSPID
-           MOVE    WKPTBYO-PTID    TO  PTBYO-PTID
-           MOVE    WKPTBYO-SRYKA   TO  PTBYO-SRYKA
-           MOVE    WKPTBYO-BYOMEI  TO  PTBYO-BYOMEI
-           MOVE    PTBYOMEI-REC    TO  MCPDATA-REC
-           MOVE    "DBSELECT"      TO  MCP-FUNC
+           MOVE    ZERO                TO  PTBYOMEI-REC
+           INITIALIZE                      PTBYOMEI-REC
+           MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+           MOVE    WKPTBYO-PTID        TO  PTBYO-PTID
+           MOVE    WKPTBYO-SRYKA       TO  PTBYO-SRYKA
+           MOVE    WKPTBYO-BYOMEI      TO  PTBYO-BYOMEI
+           MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "PTBYOMEI-KEY13"    TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
            IF      MCP-RC          =   ZERO
                MOVE    "PTBYOMEI-KEY13"    TO  ORC-DBPATH
       *        患者病名読み込み
@@ -1477,10 +1512,32 @@
            PERFORM UNTIL   FLG-PTBYOMEI    =   1
                MOVE    MCPDATA-REC     TO  PTBYOMEI-REC
       *        転帰日・診療開始日チェック
-               IF    ( PTBYO-TENKIYMD  =   SPACE ) OR
-                     ( WKPTBYO-SRYYMD  <   PTBYO-TENKIYMD )  OR
-                     ( WKPTBYO-SRYYMD  <=  PTBYO-SRYYMD )
-                   MOVE    7               TO  FLG-ERR
+               IF    ( PTBYO-TENKIYMD  =   SPACE ) 
+                   IF    ( WKPTBYO-SRYYMD      >   PTBYO-SRYYMD )
+                       MOVE    4               TO  FLG-ERR
+                   END-IF
+                   IF    ( WKPTBYO-TENKIYMD    =   SPACE )
+                       MOVE    4               TO  FLG-ERR
+                   ELSE
+                       IF    ( WKPTBYO-TENKIYMD    > PTBYO-SRYYMD )
+                           MOVE    4               TO  FLG-ERR
+                       END-IF
+                   END-IF
+               ELSE
+                   IF    ( WKPTBYO-SRYYMD  >   PTBYO-SRYYMD ) AND
+                         ( WKPTBYO-SRYYMD  <   PTBYO-TENKIYMD )
+                       MOVE    4               TO  FLG-ERR
+                   END-IF
+                   IF      WKPTBYO-TENKIYMD    NOT =   SPACE
+                       IF    ( WKPTBYO-TENKIYMD    >   PTBYO-SRYYMD )
+                       AND   ( WKPTBYO-TENKIYMD    <   PTBYO-TENKIYMD )
+                           MOVE    4               TO  FLG-ERR
+                       END-IF
+                       IF    ( WKPTBYO-SRYYMD      =   PTBYO-SRYYMD )
+                       AND   ( WKPTBYO-TENKIYMD    =   PTBYO-TENKIYMD )
+                           MOVE    4               TO  FLG-ERR
+                       END-IF
+                   END-IF
                END-IF
       *        患者病名読み込み
                PERFORM 940-PTBYOMEI-NEXT-SEC
@@ -1488,10 +1545,10 @@
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTBYOMEI-KEY13"    TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
       *
            .
        2601-TENKIYMD-CHECK-EXT.
@@ -1510,9 +1567,8 @@
                IF      IDE             =   1
                    ADD     1               TO  CNT-ERR
                    MOVE    SPACE           TO  ERR-REC1
-                   MOVE    CNT-ERR (1:3)   TO  ERR1-NO (1:3)
-                   MOVE    ":"             TO  ERR1-NO (4:1)
-                   MOVE    SPA-PTNUM       TO  ERR1-PTNUM
+                   MOVE    CNT-CSV         TO  ERR1-LINENO
+                   MOVE    "ERR"           TO  ERR1-NAIYO
                END-IF
            END-IF
       *
@@ -1524,14 +1580,16 @@
       *    誤入力エラー
            WHEN    3
                PERFORM 2910-ERRREC-EDIT-BETU1-SEC
-      *    番号ＤＢ取得エラー
+      *    追加前エラー（病名適応期間不正）
            WHEN    4
-      *    番号ＤＢ出力エラー
+      *    追加前エラー（病名カナ変換失敗）
            WHEN    5
-      *    患者保険ＤＢ出力エラー
+      *    追加前エラー（病名ＣＤ変換失敗）
            WHEN    6
-      *    追加前エラー
+      *    患者番号取得エラー
            WHEN    7
+      *    患者保険ＤＢ出力エラー
+           WHEN    8
                PERFORM 2910-ERRREC-EDIT-BETU2-SEC
            END-EVALUATE
       *
@@ -1545,44 +1603,45 @@
        2910-ERRREC-EDIT-BETU1-SEC  SECTION.
       *
       *    エラー内容番号転送
-           MOVE    FLG-ERR (1:1)   TO  ERR1-ERRNO (IDE)(1:1)
-           MOVE    ":"             TO  ERR1-ERRNO (IDE)(2:1)
+           MOVE    "["             TO  ERR1-ERRNO(IDE)(1:1)
+           MOVE    FLG-ERR (1:1)   TO  ERR1-ERRNO(IDE)(2:1)
+           MOVE    "]"             TO  ERR1-ERRNO(IDE)(3:1)
       *
       *    エラー項目名称転送
            EVALUATE    WRK-KOUMOKU-NO
       *    １：患者番号
            WHEN    1
-               MOVE    "患者番号"      TO  ERR1-KOMOKU(IDE)
+               MOVE    "患者番号:"       TO  ERR1-KOMOKU(IDE)
       *    ２：診療科
            WHEN    2
-               MOVE    "診療科"        TO  ERR1-KOMOKU(IDE)
+               MOVE    "診療科  :"       TO  ERR1-KOMOKU(IDE)
       *    ３：診療開始日
            WHEN    3
-               MOVE    "開始日"        TO  ERR1-KOMOKU(IDE)
+               MOVE    "開始日  :"       TO  ERR1-KOMOKU(IDE)
       *    ４：病名
            WHEN    4
-               MOVE    "病名"          TO  ERR1-KOMOKU(IDE)
+               MOVE    "病名    :"       TO  ERR1-KOMOKU(IDE)
       *    １４：主病名フラグ
            WHEN    14
-               MOVE    "主病名Ｆ"      TO  ERR1-KOMOKU(IDE)
+               MOVE    "主病区分:"       TO  ERR1-KOMOKU(IDE)
       *    １６：入外区分
            WHEN    16
-               MOVE    "入外区分"      TO  ERR1-KOMOKU(IDE)
+               MOVE    "入外区分:"       TO  ERR1-KOMOKU(IDE)
       *    ２１：レセプト表示月数
            WHEN    21
-               MOVE    "表示月数"      TO  ERR1-KOMOKU(IDE)
+               MOVE    "表示月数:"       TO  ERR1-KOMOKU(IDE)
       *    ２２：転帰事由区分
            WHEN    22
-               MOVE    "転帰事由"      TO  ERR1-KOMOKU(IDE)
+               MOVE    "転帰事由:"       TO  ERR1-KOMOKU(IDE)
       *    ２４：転帰日
            WHEN    24
-               MOVE    "転帰日"        TO  ERR1-KOMOKU(IDE)
+               MOVE    "転帰日  :"       TO  ERR1-KOMOKU(IDE)
            END-EVALUATE
       *
       *    エラー値転送
            IF      WRK-MO-CNT  NOT =   ZERO
                MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  ERR1-ATAI(IDE)(1:8)
+                                         TO  ERR1-ATAI(IDE)(1:8)
            END-IF
       *
            .
@@ -1596,25 +1655,18 @@
       *
            ADD     1               TO  CNT-ERR
            MOVE    SPACE           TO  ERR-REC2
-           MOVE    CNT-ERR (1:3)   TO  ERR2-NO (1:3)
-           MOVE    ":"             TO  ERR2-NO (4:1)
-      *
-           EVALUATE    FLG-ERR
-           WHEN    4
-               MOVE    CONS-MES4       TO  ERR2-MES
-           WHEN    5
-               MOVE    CONS-MES5       TO  ERR2-MES
-           WHEN    6
-               MOVE    CONS-MES6       TO  ERR2-MES
-           WHEN    7
-               MOVE    CONS-MES7       TO  ERR2-MES
-           END-EVALUATE
+           MOVE    CNT-CSV         TO  ERR2-LINENO
+           MOVE    "["             TO  ERR2-ERRNO(1:1)
+           MOVE    FLG-ERR(1:1)    TO  ERR2-ERRNO(2:1)
+           MOVE    "]"             TO  ERR2-ERRNO(3:1)
+           MOVE    "患者番号:"     TO  ERR2-PTNUMMES
+           MOVE    "患者ＩＤ:"     TO  ERR2-PTIDMES
+           MOVE    "患者病名:"     TO  ERR2-BYOMEIMES
       *
            MOVE    SPA-PTNUM       TO  ERR2-PTNUM
            MOVE    WKPTBYO-PTID    TO  ERR2-PTID
-           MOVE    WKPTBYO-SRYKA   TO  ERR2-SRYKA
-           MOVE    WKPTBYO-SRYYMD  TO  ERR2-SRYYMD
-           MOVE    WKPTBYO-RENNUM  TO  ERR2-RENNUM
+           MOVE    WKPTBYO-BYOMEI  TO  ERR2-BYOMEI
+           MOVE    "ERR"           TO  ERR2-NAIYO
       *
            .
        2910-ERRREC-EDIT-BETU2-EXT.
@@ -1652,7 +1704,11 @@
       *
            MOVE    MES-TITLE1      TO  ERR-REC
            WRITE   ERR-REC
-           MOVE    MES-TITLE2      TO  ERR-REC
+           MOVE    MES-TITLE2-L1   TO  ERR-REC
+           WRITE   ERR-REC
+           MOVE    MES-TITLE2-L2   TO  ERR-REC
+           WRITE   ERR-REC
+           MOVE    MES-TITLE2-L3   TO  ERR-REC
            WRITE   ERR-REC
       *
            .
@@ -1762,6 +1818,53 @@
            EXIT.
       *
       *****************************************************************
+      *    患者番号変換マスタ　読み込み処理
+      *****************************************************************
+       900-PTNUM-READ-SEC          SECTION.
+      *
+           MOVE    ZERO            TO  FLG-PTNUM
+           MOVE    SPACE           TO  PTNUM-REC
+           INITIALIZE                  PTNUM-REC
+           MOVE    SPA-HOSPID      TO  PTNUM-HOSPID
+           MOVE    SPA-PTNUM       TO  PTNUM-PTNUM
+           MOVE    PTNUM-REC       TO  MCPDATA-REC
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           MOVE    "PTNUM-KEY2"    TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           IF          MCP-RC          =   ZERO
+               MOVE    "PTNUM-KEY2"    TO  ORC-DBPATH
+               MOVE    "DBFETCH"       TO  MCP-FUNC
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF          MCP-RC          =   ZERO
+                   MOVE    MCPDATA-REC     TO  PTNUM-REC
+                   MOVE    ZERO            TO  FLG-PTNUM
+               ELSE
+                   INITIALIZE                  PTNUM-REC
+                   MOVE    1               TO  FLG-PTNUM
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-PTNUM
+           END-IF
+      *
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           MOVE    "PTNUM-KEY2"    TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       900-PTNUM-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    保険組合せマスタＦＥＴＣＨ処理
       *****************************************************************
        940-HKNCOMBI-NEXT-SEC       SECTION.
@@ -1796,6 +1899,7 @@
                NOT AT  END
                    MOVE    ZERO        TO  FLG-CSV
                    ADD     1           TO  CNT-CSV
+                   ADD     1           TO  CNT-COMMIT
            END-READ
       *
            .
@@ -1844,6 +1948,26 @@
            END-IF
            .
        100-DBOPEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢ　ＣＯＭＭＩＴ処理
+      *****************************************************************
+       900-DBCOMMIT-SEC            SECTION.
+      *
+           MOVE    "DBCOMMIT"      TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           MOVE    "DBSTART"       TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           .
+       900-DBCOMMIT-EXT.
            EXIT.
       *
       *****************************************************************

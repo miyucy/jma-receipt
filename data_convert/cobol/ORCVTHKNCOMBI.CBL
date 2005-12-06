@@ -35,6 +35,8 @@
       *  01.00.04    NACL-多々納  03/05/12  保険期間外の対応（暫定）
       *  01.00.05    NACL-多々納  03/05/16  保険期間外の対応
       *  01.00.06    NACL-多々納  05/09/01  前期高齢者コンバート対応
+      *  01.00.07    NACL-森脇    05/09/01  エラーメッセージ、コミット
+      *  01.00.08    NACL-森脇    05/09/28  構造変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -47,19 +49,11 @@
                                    "/home/orca/ORCADC.PARA"
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-PARM.
-      *
-      *    パラメタデータ
-      *    SELECT  PARA-FILE       ASSIGN  "/var/tmp/P01PARAORCATERM"
-      *                            ORGANIZATION    IS  INDEXED
-      *                            ACCESS  MODE    IS  DYNAMIC
-      *                            RECORD  KEY     IS  PAR-KEY
-      *                            FILE    STATUS  IS  STS-PARA.
-      *　　入力組合せデータ
-      *    SELECT  NC01PARA-FILE   ASSIGN  "/var/tmp/NC01PARAORCATERM"
-      *                            ORGANIZATION    IS  INDEXED
-      *                            ACCESS  MODE    IS  DYNAMIC
-      *                            RECORD  KEY     IS  PARA-NC01-KEY
-      ***                          FILE    STATUS  IS  STS-PARA.
+      *    患者情報ファイル
+           SELECT  PTINF-FILE      ASSIGN
+                                   ASS-PTINF
+                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   FILE    STATUS  IS  STS-PTINF.
       *    出力エラーファイル
            SELECT  ERR-FILE        ASSIGN
                                    ASS-ERR
@@ -76,40 +70,38 @@
            03  FILLER                  PIC X(01).
            03  PARM-DATA               PIC X(100).
       *
-      *    パラメタデータ
-      *FD  PARA-FILE.
-      *01  PARA-REC.
-      *    03  PAR-KEY.
-      *        05  PAR-FILEMEI         PIC X(08).
-      *        05  PAR-EDANUM          PIC 9(04).
-      *    03  PAR-DATA-REC            PIC X(3000).
-      *
-      *    新組合せパラメタデータ
-      *FD  NC01PARA-FILE.
-      *01  NC01PARA-REC.
-      *    03  PARA-NC01-KEY.
-      *        05  PARA-NC01-TERMID    PIC X(32).
-      *        05  PARA-NC01-EDANUM    PIC 9(04).
-      *    03  PARA-NC01-REC           PIC X(500).
-      *    03  PARA-NC01-FLG           PIC 9(01).
+      *    患者情報ファイル
+       FD  PTINF-FILE.
+       01  PTINFW-REC.
+           COPY    "CPPTINF.INC"       REPLACING
+                                       //PTINF-// BY //PTINFW-//.
       *
       *    出力エラーファイル
        FD  ERR-FILE.
        01  ERR-REC.
            03  ERR-REC1                PIC X(100).
            03  ERR-REC1-R  REDEFINES   ERR-REC1.
-               05  ERR-NO              PIC X(05).
+               05  ERR-LINENO          PIC X(06).
                05  FILLER              PIC X(01).
-               05  ERR-MES             PIC X(50).
+               05  ERR-NAIYO           PIC X(03).
                05  FILLER              PIC X(01).
-               05  ERR-HKNNUM          PIC X(03).
-               05  FILLER              PIC X(03).
+               05  ERR-ERRNO           PIC X(03).
+               05  ERR-PTNUMMES        PIC X(09).
+               05  ERR-PTNUM           PIC X(10).
+               05  FILLER              PIC X(02).
+               05  ERR-PTIDMES         PIC X(09).
                05  ERR-PTID            PIC X(10).
-               05  FILLER              PIC X(03).
-               05  ERR-MCPRC           PIC X(06).
-               05  FILLER              PIC X(03).
-               05  ERR-ERRCD           PIC X(12).
-               05  FILLER              PIC X(03).
+               05  FILLER              PIC X(02).
+               05  ERR-HKNNUMMES       PIC X(09).
+               05  ERR-HKNNUM          PIC X(03).
+               05  FILLER              PIC X(01).
+               05  ERR-HKNIDMES        PIC X(05).
+               05  ERR-HKNID           PIC X(02).
+               05  FILLER              PIC X(01).
+               05  ERR-TEKSTEDMES      PIC X(05).
+               05  ERR-TEKSTYMD        PIC X(08).
+               05  ERR-TEKBAR          PIC X(01).
+               05  ERR-TEKEDYMD        PIC X(08).
       *
        WORKING-STORAGE             SECTION.
       *
@@ -118,57 +110,85 @@
       *
       *    ファイル指定領域
        01  ASS-AREA.
-           03  ASS-ERR             PIC X(256).
+           03  ASS-PTINF               PIC X(256).
+           03  ASS-ERR                 PIC X(256).
       *
       *    フラグ領域
        01  STS-AREA.
-           03  STS-PARM            PIC X(02).
-           03  STS-PARA            PIC X(02).
-           03  STS-LST             PIC X(02).
+           03  STS-PARM                PIC X(02).
+           03  STS-PTINF               PIC X(02).
+           03  STS-PARA                PIC X(02).
+           03  STS-LST                 PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
-           03  FLG-PARM            PIC 9(01).
-           03  FLG-PARA            PIC 9(01).
-           03  FLG-NC01PARA        PIC 9(01).
-           03  FLG-PTINF           PIC 9(01).
-           03  FLG-HKNCOOMBI       PIC 9(01).
-           03  FLG-PTHKNINF        PIC 9(01).
-           03  FLG-PTKOHINF        PIC 9(01).
-           03  FLG-SYSKANRI        PIC 9(01).
-           03  FLG-PTNUM           PIC 9(01).
-           03  FLG-HKNNUM          PIC 9(01).
-           03  FLG-RJN             PIC 9(01).
-           03  FLG-HKNKOH          PIC 9(01).
-           03  FLG-ERR             PIC 9(01).
+           03  FLG-PARM                PIC 9(01).
+      *
+           03  FLG-SYSKANRI            PIC 9(01).
+           03  FLG-PTNUM               PIC 9(01).
+           03  FLG-PTINF               PIC 9(01).
+           03  FLG-PTHKNINF            PIC 9(01).
+           03  FLG-PTKOHINF            PIC 9(01).
+           03  FLG-HKNCOOMBI           PIC 9(01).
+           03  FLG-HKNNUM              PIC 9(01).
+           03  FLG-PARA                PIC 9(01).
+      *
+           03  FLG-RJN                 PIC 9(01).
+           03  FLG-ERR                 PIC 9(01).
+           03  FLG-HENKOU              PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
-           03  CNT-ERR             PIC 9(03).
-           03  CNT-PARM            PIC 9(06).
-           03  CNT-PTINF           PIC 9(06).
-           03  CNT-PTHKNINF        PIC 9(06).
-           03  CNT-PTKOHINF        PIC 9(06).
-           03  CNT-HKNCOMBI        PIC 9(06).
+           03  CNT-PARM                PIC 9(06).
+           03  CNT-ERR                 PIC 9(06).
+           03  CNT-COMMIT              PIC 9(06).
+           03  CNT-PTINF               PIC 9(06).
+           03  CNT-PTHKNINF            PIC 9(06).
+           03  CNT-PTKOHINF            PIC 9(06).
+           03  CNT-HKNCOMBI            PIC 9(06).
+      *
+      *    パラメータ保存
+       01  PARA-SAVE.
+           03  PARA-09-4               PIC X(06).
+           03  PARA-11-4               PIC X(06).
       *
       *    添字領域
        01  IDX-AREA.
-           03  IDX                 PIC 9(04).
-           03  IDY                 PIC 9(04).
-           03  IDZ                 PIC 9(04).
+           03  IDX                     PIC 9(04).
+           03  IDY                     PIC 9(04).
+           03  IDZ                     PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD.
-               05  WRK-SYY         PIC 9(04).
-               05  WRK-SMM         PIC 9(02).
-               05  WRK-SDD         PIC 9(02).
-      *TEST ST
+               05  WRK-SYY             PIC 9(04).
+               05  WRK-SMM             PIC 9(02).
+               05  WRK-SDD             PIC 9(02).
            03  WRK-SYMD2.
-               05  WRK-SYY2        PIC 9(02).
-               05  WRK-SMM2        PIC 9(02).
-               05  WRK-SDD2        PIC 9(02).
-      *TEST ED
+               05  WRK-SYY2            PIC 9(02).
+               05  WRK-SMM2            PIC 9(02).
+               05  WRK-SDD2            PIC 9(02).
+           03  WRK-SYSYMD.
+               05  WRK-SYSYY           PIC 9(04).
+               05  WRK-SYSMM           PIC 9(02).
+               05  WRK-SYSDD           PIC 9(02).
+      *
+           03  WRK-COMMIT              PIC 9(06).
+           03  WRK-ERR                 PIC 9(06).
+      *
+           03  WRK-TEKEDYMD            PIC X(08).
+           03  WRK-HKNKOHSBTKBN        PIC X(02).
+           03  WRK-NUM1                PIC 9(01).
+           03  WRK-NUM2                PIC 9(02).
+      *
+           03  WRK-BASEYMD.
+               05  WRK-BYY             PIC 9(04).
+               05  WRK-BMM             PIC 9(02).
+               05  WRK-BDD             PIC 9(02).
+           03  WRK-BYMD-70.
+               05  WRK-B70-YY          PIC 9(04).
+               05  WRK-B70-MM          PIC 9(02).
+               05  WRK-B70-DD          PIC 9(02).
       *
            03  WRK-KENSAKU-AREA.
                05  WRK-KEN-HKNNUM      PIC X(03).
@@ -182,22 +202,6 @@
                05  WRK-KEN-HKNKOH      PIC 9(01).
                05  WRK-KEN-PAYKBN      PIC X(02).
                05  WRK-KEN-ERFLG2      PIC X(01).
-      *    基準日
-           03  WRK-BASEYMD.
-               05  WRK-BYY             PIC 9(04).
-               05  WRK-BMM             PIC 9(02).
-               05  WRK-BDD             PIC 9(02).
-           03  WRK-BYMD-70.
-               05  WRK-B70-YY          PIC 9(04).
-               05  WRK-B70-MM          PIC 9(02).
-               05  WRK-B70-DD          PIC 9(02).
-      *
-           03  WRK-PTHKN-TEKEDYMD      PIC X(08).
-      *
-           03  WRK-HKN-HKNKOHSBTKBN    PIC X(02).
-           03  FLG-HENKOU              PIC 9(01).
-      *
-           03  WRK-ERRCD               PIC 9(04).
       *
       *    新組合せパラメタデータ用レイアウト
        01  NC01PARA-REC.
@@ -219,51 +223,39 @@
                05  MES-TITLE1-MM       PIC X(02).
                05  FILLER              PIC X(01) VALUE ".".
                05  MES-TITLE1-DD       PIC X(02).
-           03  MES-TITLE1-DATE         PIC X(10).
+               05  FILLER              PIC X(20) VALUE SPACE.
+               05  FILLER              PIC X(07) VALUE "HOSPID:".
+               05  MES-TITLE1-HOSPID   PIC X(10).
+               05  FILLER              PIC X(01) VALUE SPACE.
+               05  FILLER              PIC X(08) VALUE "HOSPSBT:".
+               05  MES-TITLE1-HOSPSBT  PIC X(01).
+               05  FILLER              PIC X(01) VALUE SPACE.
+               05  FILLER              PIC X(10) VALUE "ROUPAYKBN:".
+               05  MES-TITLE1-ROUPAY   PIC X(01).
            03  MES-TITLE2.
-               05  FILLER              PIC X(07) VALUE "   *** ".
-               05  MES-TITLE2-NAME     PIC X(09).
-               05  FILLER              PIC X(02) VALUE ": ".
-               05  MES-TITLE2-ATAI     PIC X(10).
-               05  FILLER              PIC X(04) VALUE " ***".
-           03  MES-TITLE3.
-               05  FILLER              PIC X(57) VALUE
-                                                 "NO    ERR-MESSAGE".
-               05  FILLER              PIC X(03) VALUE "HKN".
-               05  FILLER              PIC X(03) VALUE SPACE.
-      *         05  FILLER              PIC X(20) VALUE "PTNUM".
-      *         05  FILLER              PIC X(01).
-               05  FILLER              PIC X(10) VALUE "PTID".
-               05  FILLER              PIC X(03) VALUE SPACE.
-               05  FILLER              PIC X(06) VALUE "MCP-RC".
-               05  FILLER              PIC X(03) VALUE SPACE.
-               05  FILLER              PIC X(12) VALUE "ERRCD(P02W2)".
-               05  FILLER              PIC X(03) VALUE SPACE.
-      *
-      *    メッセージ領域
-       01  CONS-AREA.
-           03  CONS-MES1               PIC X(50) VALUE
-               "保険番号マスタ該当なし".
-           03  CONS-MES2               PIC X(50) VALUE
-               "患者保険マスタに公費が入っている".
-           03  CONS-MES3               PIC X(50) VALUE
-               "患者公費マスタに保険が入っている".
-           03  CONS-MES4               PIC X(50) VALUE
-               "保険・公費テーブルオーバー(P02W2)組合せ出力止め".
-           03  CONS-MES5               PIC X(50) VALUE
-               "保険番号マスタ該当なし    (P02W2)組合せ出力止め".
-           03  CONS-MES6               PIC X(50) VALUE
-               "患者番号変換マスタ読込エラー".
-           03  CONS-MES8               PIC X(50) VALUE
-               "患者保険更新エラー".
-           03  CONS-MES9               PIC X(50) VALUE
-               "患者公費更新エラー".
-           03  CONS-MES10              PIC X(50) VALUE
-               "患者保険の補助区分が前期高齢者の区分です".
-      *
-       01  CONS1-AREA.
-           03  CONS-CNTST              PIC 9(06) VALUE   0.
-           03  CONS-CNTED              PIC 9(06) VALUE   000100.
+               05  MES-TITLE2-L1.
+                   07  FILLER          PIC X(10) VALUE "LINENO ERR".
+                   07  FILLER          PIC X(42) VALUE
+                   " [1]保険番号取得失敗  [2]保険情報不正公費 ".
+                   07  FILLER          PIC X(44) VALUE
+                   " [3]公費情報不正保険  [4]補助区分前期高齢者".
+               05  MES-TITLE2-L2.
+                   07  FILLER          PIC X(10) VALUE SPACE.
+                   07  FILLER          PIC X(42) VALUE
+                   " [5]処理件数オーバー  [6]患者保険更新失敗 ".
+                   07  FILLER          PIC X(44) VALUE
+                   " [7]患者公費更新失敗  [8]保険組合せ出力失敗".
+               05  MES-TITLE2-L3.
+                   07  FILLER          PIC X(10) VALUE "       MSG".
+                   07  FILLER          PIC X(42) VALUE
+                   " [A]保険期間変更追加  [B]保険開始期間変更 ".
+                   07  FILLER          PIC X(41) VALUE
+                   " [C]公費期間変更追加  [D]公費開始期間変更".
+               05  MES-TITLE2-L4.
+                   07  FILLER          PIC X(50) VALUE
+                   "--------------------------------------------------".
+                   07  FILLER          PIC X(49) VALUE
+                   "-------------------------------------------------".
       *
       *****************************************************************
       *    ファイル定義
@@ -313,6 +305,9 @@
            COPY    "CPPARA.INC"        REPLACING
                                        //PARA-// BY //WRK-PARA-//.
       *
+      *    ファイル削除パラメタ
+           COPY    "CPORCSFDEL.INC".
+      *
       *    共通パラメタ
            COPY    "MCPAREA".
       *
@@ -321,7 +316,7 @@
            COPY    "CPORCMCP.INC".
       *
       *
-       PROCEDURE                       DIVISION.
+       PROCEDURE                   DIVISION.
       ****************************************************************
       *    主　　処理
       *****************************************************************
@@ -354,16 +349,13 @@
            PERFORM 101-PARM-GET-SEC
            IF  FLG-PARM            =   2
                MOVE    1           TO  FLG-PTINF
-               GO      TO          100-INIT-EXT
+               GO  TO  100-INIT-EXT
            END-IF
       *
            ACCEPT  WRK-SYMD2       FROM    DATE
-      *****MOVE    WRK-SYMD2       TO  WRK-SYMD (3:)
-           MOVE    WRK-SYY2        TO  WRK-SYY
-           MOVE    WRK-SMM2        TO  WRK-SMM
-           MOVE    WRK-SDD2        TO  WRK-SDD
-           ADD     2000            TO  WRK-SYY
-           MOVE    WRK-SYMD        TO  SPA-SYSYMD
+           MOVE    WRK-SYMD2       TO  WRK-SYSYMD (3:)
+           ADD     2000            TO  WRK-SYSYY
+           MOVE    WRK-SYSYMD      TO  SPA-SYSYMD
            MOVE    SPA-SYSYMD(1:4) TO  MES-TITLE1-YY
            MOVE    SPA-SYSYMD(5:2) TO  MES-TITLE1-MM
            MOVE    SPA-SYSYMD(7:2) TO  MES-TITLE1-DD
@@ -376,15 +368,23 @@
       *    システム管理情報　検索処理
            PERFORM 110-CP1001-KENSAKU-SEC
            IF  FLG-PTINF           =   1
-               GO  TO              100-INIT-EXT
+               GO  TO 100-INIT-EXT
            END-IF
       *
       *    帳票出力　初期処理
            PERFORM 120-LST-INIT-SEC
+           IF      FLG-PTINF       =   1
+               GO  TO  100-INIT-EXT
+           END-IF
       *
-      *    患者情報　検索処理
-           PERFORM 900-PTINF-KENSAKU-SEC
+           MOVE    PARA-09-4       TO  WRK-COMMIT
+           MOVE    PARA-11-4       TO  WRK-ERR
       *
+      *    患者情報　順ファイル処理
+           PERFORM 900-PTINF-SEQUENCE-SEC
+      *
+           OPEN    INPUT           PTINF-FILE
+           PERFORM 900-PTINF-READ-SEC
            .
        100-INIT-EXT.
            EXIT.
@@ -394,30 +394,36 @@
       *****************************************************************
        101-PARM-GET-SEC            SECTION.
       *
-           MOVE    ZERO                TO  FLG-PARM
-           OPEN    INPUT           PARM-FILE
+           MOVE    ZERO            TO  FLG-PARM
+           MOVE    SPACE           TO  PARA-SAVE
+           OPEN    INPUT               PARM-FILE
            IF      STS-PARM        NOT =   ZERO
                MOVE    2               TO  FLG-PARM
                DISPLAY "*(ORCVTHKNCOMBI)* PARM-FILE OPN STS["
                         STS-PARM "]"
-               GO      TO          101-PARM-GET-EXT
+               GO  TO  101-PARM-GET-EXT
            END-IF
       *
            PERFORM 900-PARM-READ-SEC
       *
            PERFORM UNTIL
                    FLG-PARM  =  1
-      *
                IF  PARM-RECKBN         =   "@"
                    PERFORM 101-PARM-GET1-SEC
                END-IF
-      *
                PERFORM  900-PARM-READ-SEC
            END-PERFORM
       *
            CLOSE   PARM-FILE
       *
       *    パラメータチェック処理
+           IF    ( PARA-09-4           IS  NUMERIC )   AND
+                 ( PARA-11-4           IS  NUMERIC )
+               CONTINUE
+           ELSE
+               MOVE    1               TO  FLG-PTINF
+               GO  TO  101-PARM-GET-EXT
+           END-IF
       *
            .
        101-PARM-GET-EXT.
@@ -431,6 +437,10 @@
            EVALUATE                PARM-DATKBN
              WHEN  "02-4"
                    MOVE  PARM-DATA TO  ASS-ERR
+             WHEN  "09-4"
+                 MOVE  PARM-DATA   TO  PARA-09-4
+             WHEN  "11-4"
+                 MOVE  PARM-DATA   TO  PARA-11-4
            END-EVALUATE
       *
            .
@@ -440,27 +450,28 @@
       *****************************************************************
       *    システム管理情報　検索処理
       *****************************************************************
-       110-CP1001-KENSAKU-SEC          SECTION.
+       110-CP1001-KENSAKU-SEC      SECTION.
       *
-           MOVE    ZERO                TO  FLG-SYSKANRI
-           MOVE    SPACE               TO  SYS-1001-REC
-           MOVE    "1001"              TO  SYS-1001-KANRICD
-           MOVE    SYS-1001-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           MOVE    WRK-SYMD            TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"      USING   MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+           MOVE    ZERO            TO  FLG-SYSKANRI
+           MOVE    SPACE           TO  SYS-1001-REC
+           MOVE    "1001"          TO  SYS-1001-KANRICD
+           MOVE    SYS-1001-REC    TO  MCPDATA-REC
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
+           MOVE    WRK-SYSYMD      TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            IF      MCP-RC              =   ZERO
-               MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+               MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
                PERFORM 900-SYSTEM-NEXT-SEC
            ELSE
-               MOVE    1                   TO  FLG-SYSKANRI
+               MOVE    1               TO  FLG-SYSKANRI
            END-IF
            IF  FLG-SYSKANRI            =   1
-               MOVE    1                   TO  FLG-PTINF
+               MOVE    1               TO  FLG-PTINF
            ELSE
                MOVE    MCPDATA-REC         TO  SYS-1001-REC
                MOVE    SYS-1001-HOSPID     TO  SPA-HOSPID
@@ -468,11 +479,12 @@
                MOVE    SYS-1001-ROUPAYKBN  TO  SPA-ROUPAYKBN
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY2"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"      USING   MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            .
        110-CP1001-KENSAKU-EXT.
@@ -481,30 +493,27 @@
       *****************************************************************
       *    帳票出力　初期処理
       *****************************************************************
-       120-LST-INIT-SEC                SECTION.
+       120-LST-INIT-SEC            SECTION.
       *
            OPEN    OUTPUT              ERR-FILE
            IF  STS-LST             NOT =   ZERO
                MOVE    1               TO  FLG-PTINF
                DISPLAY "*(ORCVTHKNCOMBI)* ERRFILE OPN STS[" STS-LST "]"
-               GO      TO              120-LST-INIT-EXT
+               GO  TO  120-LST-INIT-EXT
            END-IF
       *
+           MOVE    SPA-HOSPID(1:10)    TO  MES-TITLE1-HOSPID
+           MOVE    SPA-HOSPSBT         TO  MES-TITLE1-HOSPSBT
+           MOVE    SPA-ROUPAYKBN       TO  MES-TITLE1-ROUPAY
            MOVE    MES-TITLE1          TO  ERR-REC
            WRITE   ERR-REC
-           MOVE    "HOSPID"            TO  MES-TITLE2-NAME
-           MOVE    SPA-HOSPID(1:10)    TO  MES-TITLE2-ATAI
-           MOVE    MES-TITLE2          TO  ERR-REC
+           MOVE    MES-TITLE2-L1   TO  ERR-REC
            WRITE   ERR-REC
-           MOVE    "HOSPSBT"           TO  MES-TITLE2-NAME
-           MOVE    SPA-HOSPSBT         TO  MES-TITLE2-ATAI
-           MOVE    MES-TITLE2          TO  ERR-REC
+           MOVE    MES-TITLE2-L2   TO  ERR-REC
            WRITE   ERR-REC
-           MOVE    "ROUPAYKBN"         TO  MES-TITLE2-NAME
-           MOVE    SPA-ROUPAYKBN       TO  MES-TITLE2-ATAI
-           MOVE    MES-TITLE2          TO  ERR-REC
+           MOVE    MES-TITLE2-L3   TO  ERR-REC
            WRITE   ERR-REC
-           MOVE    MES-TITLE3          TO  ERR-REC
+           MOVE    MES-TITLE2-L4   TO  ERR-REC
            WRITE   ERR-REC
       *
            .
@@ -512,31 +521,52 @@
            EXIT.
       *
       *****************************************************************
-      *    患者情報　検索処理
+      *    患者情報　順ファイル処理
       *****************************************************************
-       900-PTINF-KENSAKU-SEC           SECTION.
+       900-PTINF-SEQUENCE-SEC      SECTION.
       *
-           MOVE    ZERO                TO  FLG-PTINF
-           MOVE    SPACE               TO  PTINF-REC
-           INITIALIZE                      PTINF-REC
-           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
-           MOVE    PTINF-REC           TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTINF-KEY4"        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"              USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "PTINF-KEY4"    TO  ORC-DBPATH
-               PERFORM 910-PTINF-NEXT-SEC
-           ELSE
+           MOVE    "/tmp/PTINF.txt"
+                                   TO  ASS-PTINF
+           OPEN    OUTPUT          PTINF-FILE
+      *
+           MOVE    ZERO            TO  FLG-PTINF
+           MOVE    SPACE           TO  PTINF-REC
+           INITIALIZE                  PTINF-REC
+           MOVE    SPA-HOSPID      TO  PTINF-HOSPID
+           MOVE    PTINF-REC       TO  MCPDATA-REC
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           MOVE    "PTINF-KEY4"    TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC         NOT  =   ZERO
                INITIALIZE                  PTINF-REC
                MOVE    1               TO  FLG-PTINF
+               GO      TO              900-PTINF-SEQUENCE-EXT
            END-IF
       *
+           PERFORM UNTIL   FLG-PTINF   =   1
+                   MOVE   "PTINF-KEY4" TO  ORC-DBPATH
+                   PERFORM 910-PTINF-NEXT-SEC
+                   IF      FLG-PTINF   =   ZERO
+                     MOVE  PTINF-REC   TO  PTINFW-REC
+                     WRITE PTINFW-REC
+                   END-IF
+           END-PERFORM
+      *
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           MOVE    "PTINF-KEY4"    TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           CLOSE   PTINF-FILE
+           MOVE    ZERO            TO  FLG-PTINF
+      *
            .
-       900-PTINF-KENSAKU-EXT.
+       900-PTINF-SEQUENCE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -547,14 +577,25 @@
            IF  CNT-PTINF (4:3)         =   ZERO
                DISPLAY "***(ORCVTHKNCOMBI)*** CNT-PTINF[" CNT-PTINF "]"
            END-IF
+      *    指定した件数になったらコミット処理する
+           IF  CNT-COMMIT              =   WRK-COMMIT
+               PERFORM 900-DBCOMMIT-SEC 
+               MOVE    ZERO            TO  CNT-COMMIT
+           END-IF
+      *    エラーが指定した件数になったら処理抜ける
+           IF  ( WRK-ERR           NOT =   ZERO )  AND
+               ( CNT-ERR               =   WRK-ERR )
+               MOVE    1               TO  FLG-PTINF
+               GO  TO  200-MAIN-EXT
+           END-IF
            IF   ( PTINF-PTID    NOT =   ALL "0"   AND
                   PTINF-PTID    NOT =   SPACE )
+      *         MOVE        PTNUM-PTID  TO  SPA-PTNUM
       *        作成処理
                PERFORM 200-SAKUSEI-SYORI-SEC
            END-IF
       *
-           MOVE    "PTINF-KEY4"        TO  ORC-DBPATH
-           PERFORM 910-PTINF-NEXT-SEC
+           PERFORM 900-PTINF-READ-SEC
       *
            .
        200-MAIN-EXT.
@@ -563,16 +604,21 @@
       *****************************************************************
       *    作成処理
       *****************************************************************
-       200-SAKUSEI-SYORI-SEC            SECTION.
+       200-SAKUSEI-SYORI-SEC       SECTION.
       *
+           MOVE    PTINF-PTID      TO  SPA-PTID
       *
-           MOVE    PTINF-PTID          TO  SPA-PTID
-           MOVE    ZERO                TO  IDX-AREA
-           MOVE    ZERO                TO  SPA-AREA2
+           PERFORM 900-PTNUM-READ-SEC
+           IF      FLG-PTNUM       =   ZERO
+               MOVE    PTNUM-PTNUM     TO  SPA-PTNUM
+           END-IF
+      *
+           MOVE    ZERO            TO  IDX-AREA
+           MOVE    ZERO            TO  SPA-AREA2
       *    ７０歳到達日
       *    生年月日から基準日を求める
       *    １日ならば生年月日、１日以外ならば生年月日の翌月１日
-           MOVE    PTINF-BIRTHDAY      TO  WRK-BASEYMD
+           MOVE    PTINF-BIRTHDAY  TO  WRK-BASEYMD
            IF      WRK-BDD         NOT =   01
                COMPUTE WRK-BMM         =   WRK-BMM     +   1
                IF      WRK-BMM         >   12
@@ -582,8 +628,8 @@
                MOVE    01                  TO  WRK-BDD
            END-IF
       *    ７０歳を迎える日
-           MOVE    WRK-BASEYMD         TO  WRK-BYMD-70
-           COMPUTE WRK-B70-YY          =   WRK-B70-YY  +   70
+           MOVE    WRK-BASEYMD     TO  WRK-BYMD-70
+           COMPUTE WRK-B70-YY      =   WRK-B70-YY  +   70
       *
       *    ファイルオープン処理
            PERFORM 210-PARA-OPEN-SEC
@@ -599,7 +645,7 @@
            IF  SPA-ERRCD           NOT =   SPACE
       *        エラーリスト出力処理
                PERFORM 2220-ERRLST-OUT-SEC
-               GO  TO                  200-SAKUSEI-SYORI-EXT
+               GO  TO  200-SAKUSEI-SYORI-EXT
            END-IF
       *
       *    保険組合せ　登録処理
@@ -617,57 +663,20 @@
       *****************************************************************
       *    ファイルオープン処理
       *****************************************************************
-       210-PARA-OPEN-SEC              SECTION.
-      *
-      *    MOVE    ZERO               TO  FLG-PARA
-      *    OPEN    I-O                PARA-FILE
-      *    IF  STS-PARA           NOT =   ZERO
-      *        MOVE    2              TO  FLG-PARA
-      *        DISPLAY "*(ORCVTHKNCOMBI)* PARA OPN1-ERR STS["
-      *                               STS-PARA "]"
-      *    ELSE
-      *        PERFORM 990-PARA-NEXT-SEC
-      *    END-IF
-      *
-      *    対象PTID以外のデータを削除
-      *    PERFORM   UNTIL  FLG-PARA  NOT =   ZERO
-      *#         IF  PAR-TERMID             =   SPA-TERMID
-      *            DELETE      PARA-FILE      RECORD
-      *            IF  STS-PARA       NOT =   ZERO
-      *                DISPLAY "*(ORCVTHKNCOMBI)* PARA DEL-ERR STS["
-      *                                   STS-PARA "]"
-      *            END-IF
-      *#         END-IF
-      *        PERFORM 990-PARA-NEXT-SEC
-      *    END-PERFORM
-      *    CLOSE                      PARA-FILE
-      *    IF  STS-PARA           NOT =   ZERO
-      *        DISPLAY "*(ORCVTHKNCOMBI)* PARA CLS1-ERR STS["
-      *                               STS-PARA "]"
-      *    END-IF
-      *
-      *    IF  FLG-PARA               =   2
-      *        OPEN    OUTPUT         PARA-FILE
-      *    ELSE
-      *        OPEN    I-O            PARA-FILE
-      *    END-IF
-      *    IF  STS-PARA           NOT =   ZERO
-      *        DISPLAY "*(ORCVTHKNCOMBI)* PARA OPN2-ERR STS["
-      *                               STS-PARA "]"
-      *****END-IF
+       210-PARA-OPEN-SEC           SECTION.
       *
       *    パラメタ削除
-           INITIALIZE                      PARA-REC
-           MOVE    "P02"               TO  PARA-GYOUMUID
-           MOVE    SPA-TERMID          TO  PARA-TERMID
+           INITIALIZE                  PARA-REC
+           MOVE    "P02"           TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID      TO  PARA-TERMID
       *
-           MOVE    PARA-REC            TO  MCPDATA-REC
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "PARA-DEL2"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    PARA-REC        TO  MCPDATA-REC
+           MOVE    "DBDELETE"      TO  MCP-FUNC
+           MOVE    "PARA-DEL2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            .
        210-PARA-OPEN-EXT.
@@ -676,20 +685,20 @@
       *****************************************************************
       *    患者保険情報　検索処理
       *****************************************************************
-       220-PTHKNINF-KENSAKU-SEC        SECTION.
+       220-PTHKNINF-KENSAKU-SEC    SECTION.
       *
-           MOVE    ZERO                TO  FLG-PTHKNINF
-           MOVE    SPACE               TO  PTHKNINF-REC
-           INITIALIZE                      PTHKNINF-REC
-           MOVE    SPA-HOSPID          TO  PTHKN-HOSPID
-           MOVE    SPA-PTID            TO  PTHKN-PTID
-           MOVE    PTHKNINF-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTHKNINF-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"              USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+           MOVE    ZERO            TO  FLG-PTHKNINF
+           MOVE    SPACE           TO  PTHKNINF-REC
+           INITIALIZE                  PTHKNINF-REC
+           MOVE    SPA-HOSPID      TO  PTHKN-HOSPID
+           MOVE    SPA-PTID        TO  PTHKN-PTID
+           MOVE    PTHKNINF-REC    TO  MCPDATA-REC
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           MOVE    "PTHKNINF-KEY2" TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "PTHKNINF-KEY2" TO  ORC-DBPATH
                PERFORM 920-PTHKNINF-NEXT-SEC
@@ -698,7 +707,7 @@
            END-IF
       *
            PERFORM   UNTIL   FLG-PTHKNINF  =   1
-               ADD     1                   TO  SPA-HKNID
+               ADD     1               TO  SPA-HKNID
                IF  PTHKN-SAKJOKBN          =   SPACE
                    INITIALIZE                  WRK-KENSAKU-AREA
                    MOVE    PTHKN-HKNNUM    TO  WRK-KEN-HKNNUM
@@ -722,16 +731,6 @@
                        MOVE    IDX                 TO  PARA-EDANUM
                        MOVE    PTHKNINF-REC        TO  PARA-DATA-REC
                        PERFORM 400-PARA-INSERT-SEC
-      *********        INITIALIZE                  PARA-REC
-      *#                 MOVE    SPA-TERMID      TO  PAR-TERMID
-      *                MOVE    "PTHKNINF"      TO  PAR-FILEMEI
-      *                MOVE    IDX             TO  PAR-EDANUM
-      *                MOVE    PTHKNINF-REC    TO  PAR-DATA-REC
-      *                WRITE                       PARA-REC
-      *                IF  STS-PARA        NOT =   ZERO
-      *              DISPLAY "*(ORCVTHKNCOMBI)* WRITE-HKN ERR STS["
-      *                                        STS-PARA "]"
-      **************** END-IF
                    ELSE
       *                エラーリスト出力処理
                        PERFORM 2220-ERRLST-OUT-SEC
@@ -741,12 +740,12 @@
                MOVE    "PTHKNINF-KEY2" TO  ORC-DBPATH
                PERFORM 920-PTHKNINF-NEXT-SEC
            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "PTHKNINF-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"              USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           MOVE    "PTHKNINF-KEY2" TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            .
        220-PTHKNINF-KENSAKU-EXT.
@@ -757,11 +756,11 @@
       *****************************************************************
        2201-HOJOKBN-SET-SEC        SECTION.
       *
-           MOVE    ZERO                TO  FLG-HENKOU
+           MOVE    ZERO            TO  FLG-HENKOU
       *    コンバート時に前期高齢者の時、補助区分を再編集する
            IF     (PTINF-BIRTHDAY      >   "19320930" ) AND
-                  (WRK-BYMD-70         <=  WRK-SYMD   ) AND
-                  (PTHKN-TEKEDYMD      >=  WRK-SYMD   )
+                  (WRK-BYMD-70         <=  WRK-SYSYMD ) AND
+                  (PTHKN-TEKEDYMD      >=  WRK-SYSYMD )
                IF     (WRK-BYMD-70         >   PTHKN-TEKSTYMD )
       *            適用開始日が前期高齢者年齢以前
                    PERFORM 22012-HOJOKBN-CHK2-SEC
@@ -774,13 +773,13 @@
       *
            IF      FLG-HENKOU          =   1
       *        保険情報更新
-               MOVE    PTHKNINF-REC        TO  MCPDATA-REC
-               MOVE    "DBUPDATE"          TO  MCP-FUNC
-               MOVE    "PTHKNINF-KEY"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"              USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC
+               MOVE    PTHKNINF-REC    TO  MCPDATA-REC
+               MOVE    "DBUPDATE"      TO  MCP-FUNC
+               MOVE    "PTHKNINF-KEY"  TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "*(ORCVTHKNCOMBI)*  PTHKNINF UPD ERR:" MCP-RC
                            ",KEY:" PTHKN-KEY
@@ -798,8 +797,8 @@
       *
            MOVE    ZERO                TO  FLG-HENKOU
       *    労災・自費・治験
-           IF      WRK-HKN-HKNKOHSBTKBN    =   "4"  OR  "8"  OR  "9"
-               GO      TO      22011-HOJOKBN-CHK-EXT
+           IF      WRK-HKNKOHSBTKBN    =   "4"  OR  "8"  OR  "9"
+               GO  TO  22011-HOJOKBN-CHK-EXT
            END-IF
       *
            EVALUATE    PTHKN-HKNNUM
@@ -851,12 +850,12 @@
       *****************************************************************
       *    前期高齢者以外の時、補助区分のチェック処理
       *****************************************************************
-        22012-HOJOKBN-CHK2-SEC        SECTION.
+        22012-HOJOKBN-CHK2-SEC     SECTION.
       *
       *    老人年齢、労災・自費・治験
            IF     (PTINF-BIRTHDAY      <=  "19320930" ) OR
-                  (WRK-HKN-HKNKOHSBTKBN    =   "4"  OR  "8"  OR  "9")
-               GO      TO      22012-HOJOKBN-CHK2-EXT
+                  (WRK-HKNKOHSBTKBN    =   "4"  OR  "8"  OR  "9")
+               GO  TO  22012-HOJOKBN-CHK2-EXT
            END-IF
       *
            EVALUATE    PTHKN-HKNNUM
@@ -890,21 +889,21 @@
       *****************************************************************
       *    患者公費情報　検索処理
       *****************************************************************
-       230-PTKOHINF-KENSAKU-SEC        SECTION.
+       230-PTKOHINF-KENSAKU-SEC    SECTION.
       *
-           MOVE    ZERO                TO  FLG-PTKOHINF
-           MOVE    SPACE               TO  PTKOHINF-REC
-           INITIALIZE                      PTKOHINF-REC
-           MOVE    SPA-HOSPID          TO  PTKOH-HOSPID
-           MOVE    SPA-PTID            TO  PTKOH-PTID
-           MOVE    PTKOHINF-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTKOHINF-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"              USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-           IF      MCP-RC              =   ZERO
+           MOVE    ZERO            TO  FLG-PTKOHINF
+           MOVE    SPACE           TO  PTKOHINF-REC
+           INITIALIZE                  PTKOHINF-REC
+           MOVE    SPA-HOSPID      TO  PTKOH-HOSPID
+           MOVE    SPA-PTID        TO  PTKOH-PTID
+           MOVE    PTKOHINF-REC    TO  MCPDATA-REC
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           MOVE    "PTKOHINF-KEY2" TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          =   ZERO
                MOVE    "PTKOHINF-KEY2" TO  ORC-DBPATH
                PERFORM 930-PTKOHINF-NEXT-SEC
            ELSE
@@ -912,8 +911,8 @@
            END-IF
       *
            PERFORM   UNTIL   FLG-PTKOHINF  =   1
-               ADD     1                   TO  SPA-KOHID
-               IF  PTKOH-SAKJOKBN          =   SPACE
+               ADD     1               TO  SPA-KOHID
+               IF  PTKOH-SAKJOKBN      =   SPACE
                    INITIALIZE                  WRK-KENSAKU-AREA
                    MOVE    PTKOH-KOHNUM    TO  WRK-KEN-HKNNUM
                    MOVE    PTKOH-TEKSTYMD  TO  WRK-KEN-TEKSTYMD
@@ -925,22 +924,12 @@
                    IF     (WRK-KEN-ERFLG       =   SPACE )  AND
                           (WRK-KEN-ERFLG2      =   SPACE )
                        ADD     1               TO  IDY
-                       MOVE    SPACE               TO  PARA-REC
-                       INITIALIZE                      PARA-REC
-                       MOVE    "PTKOHINF"          TO  PARA-FILEMEI
-                       MOVE    IDY                 TO  PARA-EDANUM
-                       MOVE    PTKOHINF-REC        TO  PARA-DATA-REC
+                       MOVE    SPACE           TO  PARA-REC
+                       INITIALIZE                  PARA-REC
+                       MOVE    "PTKOHINF"      TO  PARA-FILEMEI
+                       MOVE    IDY             TO  PARA-EDANUM
+                       MOVE    PTKOHINF-REC    TO  PARA-DATA-REC
                        PERFORM 400-PARA-INSERT-SEC
-      ***********      INITIALIZE                  PARA-REC
-      *#                 MOVE    SPA-TERMID      TO  PAR-TERMID
-      *                MOVE    "PTKOHINF"      TO  PAR-FILEMEI
-      *                MOVE    IDY             TO  PAR-EDANUM
-      *                MOVE    PTKOHINF-REC    TO  PAR-DATA-REC
-      *                WRITE                       PARA-REC
-      *                IF  STS-PARA        NOT =   ZERO
-      *                DISPLAY "*(ORCVTHKNCOMBI)* WRITE-KOH ERR STS["
-      *                                        STS-PARA "]"
-      **************   END-IF
                    ELSE
       *                エラーリスト出力処理
                        PERFORM 2220-ERRLST-OUT-SEC
@@ -950,12 +939,12 @@
                MOVE    "PTKOHINF-KEY2" TO  ORC-DBPATH
                PERFORM 930-PTKOHINF-NEXT-SEC
            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "PTKOHINF-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"              USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           MOVE    "PTKOHINF-KEY2" TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            .
        230-PTKOHINF-KENSAKU-EXT.
@@ -964,33 +953,34 @@
       *****************************************************************
       *    保険公費確認処理
       *****************************************************************
-       2210-HKNKOH-KAKUNIN-SEC        SECTION.
+       2210-HKNKOH-KAKUNIN-SEC     SECTION.
       *
-           MOVE    SPACE              TO  HZN-HKNNUM-AREA
-           INITIALIZE                     HZN-HKNNUM-AREA
+           MOVE    SPACE           TO  HZN-HKNNUM-AREA
+           INITIALIZE                  HZN-HKNNUM-AREA
       *
-           MOVE    ZERO               TO  FLG-HKNNUM
-           MOVE    SPACE              TO  HKNNUM-REC
-           INITIALIZE                     HKNNUM-REC
-           MOVE    SPA-HOSPID         TO  HKN-HOSPID
-           MOVE    WRK-KEN-HKNNUM     TO  HKN-HKNNUM
-           IF      WRK-KEN-PAYKBN     =   SPACE
-               MOVE    ZERO               TO  WRK-KEN-PAYKBN
+           MOVE    ZERO            TO  FLG-HKNNUM
+           MOVE    SPACE           TO  HKNNUM-REC
+           INITIALIZE                  HKNNUM-REC
+           MOVE    SPA-HOSPID      TO  HKN-HOSPID
+           MOVE    WRK-KEN-HKNNUM  TO  HKN-HKNNUM
+           IF      WRK-KEN-PAYKBN      =   SPACE
+               MOVE    ZERO            TO  WRK-KEN-PAYKBN
            END-IF
       *    老人公費で支払区分が設定されていない時、システム管理より
-           IF     (WRK-KEN-PAYKBN     =    ZERO )  AND
-                  (WRK-KEN-HKNNUM     =    "027")
+           IF     (WRK-KEN-PAYKBN      =    ZERO )  AND
+                  (WRK-KEN-HKNNUM      =    "027")
                MOVE    SPA-HOSPSBT         TO  HKN-PAYKBN (1:1) 
                MOVE    SPA-ROUPAYKBN       TO  HKN-PAYKBN (2:1)
            ELSE
                MOVE    WRK-KEN-PAYKBN      TO  HKN-PAYKBN
            END-IF
       *
-           MOVE    HKNNUM-REC         TO  MCPDATA-REC
-           MOVE    "DBSELECT"         TO  MCP-FUNC
-      *****MOVE    "HKNNUM-KEY2"      TO  ORC-DBPATH
-           MOVE    "HKNNUM-KEY7"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"     USING   MCPAREA
+           MOVE    HKNNUM-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+      *****MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
+           MOVE    "HKNNUM-KEY7"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
                                            ORCMCPAREA
                                            MCPDATA-REC
            IF      MCP-RC              =   ZERO
@@ -1005,7 +995,7 @@
            END-IF
       *
            MOVE    ZERO                TO  FLG-RJN
-           MOVE    SPACE               TO  WRK-HKN-HKNKOHSBTKBN
+           MOVE    SPACE               TO  WRK-HKNKOHSBTKBN
            PERFORM   UNTIL   FLG-HKNNUM    =   1
              IF  ( WRK-KEN-TEKSTYMD        >=  HKN-TEKSTYMD ) AND
                  ( WRK-KEN-TEKEDYMD        <=  HKN-TEKEDYMD )
@@ -1021,7 +1011,7 @@
                ELSE
                    MOVE    SPACE               TO  WRK-KEN-ERFLG
                    MOVE    1                   TO  FLG-HKNNUM
-                   MOVE    HKN-HKNKOHSBTKBN    TO  WRK-HKN-HKNKOHSBTKBN
+                   MOVE    HKN-HKNKOHSBTKBN    TO  WRK-HKNKOHSBTKBN
                END-IF
              ELSE
       *        終了日が対象の時、対象とする
@@ -1035,23 +1025,23 @@
                PERFORM 950-HKNNUM-NEXT-SEC
              END-IF
            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "HKNNUM-KEY7"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           MOVE    "HKNNUM-KEY7"   TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
       *    対象支払区分の老人が存在しない場合
            IF  (WRK-KEN-ERFLG          =   "1")  AND
                (FLG-RJN                =   1  )
-               MOVE    ZERO               TO  FLG-HKNNUM
-               MOVE    SPACE              TO  HKNNUM-REC
-               MOVE    SPA-HOSPID         TO  HKN-HOSPID
-               MOVE    WRK-KEN-HKNNUM     TO  HKN-HKNNUM
-               MOVE    HKNNUM-REC         TO  MCPDATA-REC
-               MOVE    "DBSELECT"         TO  MCP-FUNC
-               MOVE    "HKNNUM-KEY2"      TO  ORC-DBPATH
+               MOVE    ZERO            TO  FLG-HKNNUM
+               MOVE    SPACE           TO  HKNNUM-REC
+               MOVE    SPA-HOSPID      TO  HKN-HOSPID
+               MOVE    WRK-KEN-HKNNUM  TO  HKN-HKNNUM
+               MOVE    HKNNUM-REC      TO  MCPDATA-REC
+               MOVE    "DBSELECT"      TO  MCP-FUNC
+               MOVE    "HKNNUM-KEY2"   TO  ORC-DBPATH
                CALL    "ORCMCPSUB"         USING
                                            MCPAREA
                                            ORCMCPAREA
@@ -1081,8 +1071,8 @@
                      PERFORM 950-HKNNUM-NEXT-SEC
                  END-IF
                END-PERFORM
-               MOVE    "DBCLOSECURSOR"    TO  MCP-FUNC
-               MOVE    "HKNNUM-KEY2"      TO  ORC-DBPATH
+               MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+               MOVE    "HKNNUM-KEY2"   TO  ORC-DBPATH
                CALL    "ORCMCPSUB"         USING
                                            MCPAREA
                                            ORCMCPAREA
@@ -1131,7 +1121,7 @@
       *****************************************************************
       *    患者保険情報更新処理
       *****************************************************************
-       22101-HKNINF-UPD-SEC           SECTION.
+       22101-HKNINF-UPD-SEC        SECTION.
       *
       *    対象の保険番号が保険であること
            IF      HZN-HKN-HKNKOHSBTKBN (1)
@@ -1140,33 +1130,33 @@
                 CONTINUE
            ELSE
                MOVE    "3"        TO  WRK-KEN-ERFLG
-               GO      TO      22101-HKNINF-UPD-EXT
+               GO  TO  22101-HKNINF-UPD-EXT
            END-IF
       *    保険変更があった時、終了日を変更する
            IF      HZN-HKN-TEKSTYMD (2)    NOT =   SPACE
-               MOVE    PTHKN-TEKEDYMD          TO  WRK-PTHKN-TEKEDYMD
+               MOVE    PTHKN-TEKEDYMD          TO  WRK-TEKEDYMD
                MOVE    HZN-HKN-TEKEDYMD (2)    TO  PTHKN-TEKEDYMD
       *        開始日が保険より前の時、開始日を保険の開始日にする
                IF      HZN-HKN-TEKSTYMD (2)    >   PTHKN-TEKSTYMD
                    MOVE    HZN-HKN-TEKSTYMD(2) TO  PTHKN-TEKSTYMD
                END-IF
                MOVE    HZN-HKN-HKNKOHSBTKBN (2)
-                                           TO  WRK-HKN-HKNKOHSBTKBN
+                                           TO  WRK-HKNKOHSBTKBN
                MOVE    "A"                 TO  WRK-KEN-ERFLG2
       *        保険を更新する
                PERFORM 221011-PTHKNINF-UPD-SEC
       *        新しい保険を追加する
                MOVE    HZN-HKN-TEKSTYMD (1)    TO  PTHKN-TEKSTYMD
-               MOVE    WRK-PTHKN-TEKEDYMD      TO  PTHKN-TEKEDYMD
+               MOVE    WRK-TEKEDYMD      TO  PTHKN-TEKEDYMD
                MOVE    HZN-HKN-HKNKOHSBTKBN (1)
-                                           TO  WRK-HKN-HKNKOHSBTKBN
+                                           TO  WRK-HKNKOHSBTKBN
                PERFORM 221012-PTHKNINF-INS-SEC
            ELSE
       *        保険の開始日を変更する
                MOVE    HZN-HKN-TEKSTYMD (1)    TO  PTHKN-TEKSTYMD
                MOVE    "B"                 TO  WRK-KEN-ERFLG2
                MOVE    HZN-HKN-HKNKOHSBTKBN (1)
-                                           TO  WRK-HKN-HKNKOHSBTKBN
+                                           TO  WRK-HKNKOHSBTKBN
                PERFORM 221011-PTHKNINF-UPD-SEC
            END-IF
       *
@@ -1177,38 +1167,38 @@
       *****************************************************************
       *    患者保険情報更新処理
       *****************************************************************
-       221011-PTHKNINF-UPD-SEC           SECTION.
+       221011-PTHKNINF-UPD-SEC     SECTION.
       *
       *    前期高齢者の時、補助区分を再編集する
            IF     (PTINF-BIRTHDAY      >   "19320930" ) AND
-                  (WRK-BYMD-70         <=  WRK-SYMD   ) AND
-                  (PTHKN-TEKEDYMD      >=  WRK-SYMD   ) AND
+                  (WRK-BYMD-70         <=  WRK-SYSYMD ) AND
+                  (PTHKN-TEKEDYMD      >=  WRK-SYSYMD ) AND
                   (PTHKN-TEKSTYMD      >   "20021001" )
               AND (PTHKN-TEKSTYMD      >=  WRK-BYMD-70 )
                PERFORM 22011-HOJOKBN-CHK-SEC
            END-IF
       *
-           MOVE    PTHKNINF-REC        TO  MCPDATA-REC
-           MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "PTHKNINF-KEY"      TO  ORC-DBPATH
+           MOVE    PTHKNINF-REC    TO  MCPDATA-REC
+           MOVE    "DBUPDATE"      TO  MCP-FUNC
+           MOVE    "PTHKNINF-KEY"  TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
-               MOVE    "8"             TO  WRK-KEN-ERFLG
+               MOVE    "6"             TO  WRK-KEN-ERFLG
                DISPLAY "*(ORCVTHKNCOMBI)*  PTHKNINF UPD ERR:" MCP-RC
                        ",KEY:" PTHKN-KEY
-               GO      TO      221011-PTHKNINF-UPD-EXT
+               GO  TO  221011-PTHKNINF-UPD-EXT
            END-IF
       *
       *    パラメタＤＢへ追加
            ADD     1               TO  IDX
-           MOVE    SPACE               TO  PARA-REC
-           INITIALIZE                      PARA-REC
-           MOVE    "PTHKNINF"          TO  PARA-FILEMEI
-           MOVE    IDX                 TO  PARA-EDANUM
-           MOVE    PTHKNINF-REC        TO  PARA-DATA-REC
+           MOVE    SPACE           TO  PARA-REC
+           INITIALIZE                  PARA-REC
+           MOVE    "PTHKNINF"      TO  PARA-FILEMEI
+           MOVE    IDX             TO  PARA-EDANUM
+           MOVE    PTHKNINF-REC    TO  PARA-DATA-REC
            PERFORM 400-PARA-INSERT-SEC
       *
            .
@@ -1218,26 +1208,26 @@
       *****************************************************************
       *    患者保険情報追加処理
       *****************************************************************
-       221012-PTHKNINF-INS-SEC           SECTION.
+       221012-PTHKNINF-INS-SEC     SECTION.
       *
       *    前期高齢者の時、補助区分を再編集する
            IF     (PTINF-BIRTHDAY      >   "19320930" ) AND
-                  (WRK-BYMD-70         <=  WRK-SYMD   ) AND
-                  (PTHKN-TEKEDYMD      >=  WRK-SYMD   ) AND
+                  (WRK-BYMD-70         <=  WRK-SYSYMD ) AND
+                  (PTHKN-TEKEDYMD      >=  WRK-SYSYMD ) AND
                   (PTHKN-TEKSTYMD      >   "20021001" )
               AND (PTHKN-TEKSTYMD      >=  WRK-BYMD-70 )
                PERFORM 22011-HOJOKBN-CHK-SEC
            END-IF
       *    保険ＩＤ設定
            PERFORM 2210013-PTNUM-UPD-SEC
-           ADD     1                   TO  SPA-HKNID
+           ADD     1               TO  SPA-HKNID
       *
-           MOVE    PTNUM-HKNID         TO  PTHKN-HKNID
-           MOVE    PTHKNINF-REC        TO  HZN-PTHKNINF-REC
+           MOVE    PTNUM-HKNID     TO  PTHKN-HKNID
+           MOVE    PTHKNINF-REC    TO  HZN-PTHKNINF-REC
       *
-           MOVE    PTHKNINF-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTHKNINF-KEY"      TO  ORC-DBPATH
+           MOVE    PTHKNINF-REC    TO  MCPDATA-REC
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           MOVE    "PTHKNINF-KEY"  TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
@@ -1252,24 +1242,24 @@
            IF      FLG-PTHKNINF        =   1
                MOVE    HZN-PTHKNINF-REC    TO  PTHKNINF-REC
       *
-               MOVE    PTHKNINF-REC        TO  MCPDATA-REC
-               MOVE    "DBINSERT"          TO  MCP-FUNC
-               MOVE    "PTHKNINF-KEY"      TO  ORC-DBPATH
+               MOVE    PTHKNINF-REC    TO  MCPDATA-REC
+               MOVE    "DBINSERT"      TO  MCP-FUNC
+               MOVE    "PTHKNINF-KEY"  TO  ORC-DBPATH
                CALL    "ORCMCPSUB"         USING
                                            MCPAREA
                                            ORCMCPAREA
                                            MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
-                   MOVE    "8"             TO  WRK-KEN-ERFLG
+                   MOVE    "6"             TO  WRK-KEN-ERFLG
                    DISPLAY "*(ORCVTHKNCOMBI)*  PTHKNINF INS ERR:" MCP-RC
                            ",KEY:" PTHKN-KEY
-                   GO      TO      221012-PTHKNINF-INS-EXT
+                   GO  TO  221012-PTHKNINF-INS-EXT
                END-IF
            ELSE
-               MOVE    "8"             TO  WRK-KEN-ERFLG
+               MOVE    "6"             TO  WRK-KEN-ERFLG
                DISPLAY "*(ORCVTHKNCOMBI)*  PTHKNINF INS ERR:" MCP-RC
                        ",KEY:" PTHKN-KEY
-               GO      TO      221012-PTHKNINF-INS-EXT
+               GO  TO  221012-PTHKNINF-INS-EXT
            END-IF
       *
       *    パラメタＤＢへ追加
@@ -1285,38 +1275,15 @@
        221012-PTHKNINF-INS-EXT.
            EXIT.
       *
-      *
       *****************************************************************
       *    患者保険情報更新処理
       *****************************************************************
-       2210013-PTNUM-UPD-SEC           SECTION.
+       2210013-PTNUM-UPD-SEC       SECTION.
       *
+           PERFORM 900-PTNUM-READ-SEC
       *
-           INITIALIZE                      PTNUM-REC
-           MOVE    SPA-HOSPID          TO  PTNUM-HOSPID
-           MOVE    SPA-PTID            TO  PTNUM-PTID
-      *
-           MOVE    PTNUM-REC           TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
-               PERFORM 940-PTNUM-NEXT-SEC
-           ELSE
-               MOVE    1                   TO  FLG-PTNUM
-           END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      *
-           IF      FLG-PTNUM           =   ZERO
+           IF      FLG-PTNUM       =   ZERO
+               MOVE        PTNUM-PTID  TO  SPA-PTNUM
                EVALUATE    WRK-KEN-HKNKOH
                    WHEN    1
       *                保険更新
@@ -1328,10 +1295,10 @@
                                                +   1
                END-EVALUATE
       *
-               MOVE    SPA-SYSYMD          TO  PTNUM-UPYMD
-               MOVE    PTNUM-REC           TO  MCPDATA-REC
-               MOVE    "DBUPDATE"          TO  MCP-FUNC
-               MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
+               MOVE    SPA-SYSYMD      TO  PTNUM-UPYMD
+               MOVE    PTNUM-REC       TO  MCPDATA-REC
+               MOVE    "DBUPDATE"      TO  MCP-FUNC
+               MOVE    "PTNUM-KEY"     TO  ORC-DBPATH
                CALL    "ORCMCPSUB"         USING
                                            MCPAREA
                                            ORCMCPAREA
@@ -1349,40 +1316,40 @@
       *****************************************************************
       *    患者公費情報更新処理
       *****************************************************************
-       22102-KOHINF-UPD-SEC           SECTION.
+       22102-KOHINF-UPD-SEC        SECTION.
       *
       *    対象の保険番号が保険であること
            IF      HZN-HKN-HKNKOHSBTKBN (1)
                                        =   "1"  OR  "4"
                                        OR  "8"  OR  "9"
                MOVE    "4"             TO  WRK-KEN-ERFLG
-               GO      TO      22102-KOHINF-UPD-EXT
+               GO  TO  22102-KOHINF-UPD-EXT
            END-IF
       *    保険変更があった時、終了日を変更する
            IF      HZN-HKN-TEKSTYMD (2)    NOT =   SPACE
-               MOVE    PTKOH-TEKEDYMD          TO  WRK-PTHKN-TEKEDYMD
+               MOVE    PTKOH-TEKEDYMD          TO  WRK-TEKEDYMD
                MOVE    HZN-HKN-TEKEDYMD (2)    TO  PTKOH-TEKEDYMD
       *        開始日が保険より前の時、開始日を保険の開始日にする
                IF      HZN-HKN-TEKSTYMD (2)    >   PTKOH-TEKSTYMD
                    MOVE    HZN-HKN-TEKSTYMD(2) TO  PTKOH-TEKSTYMD
                END-IF
                MOVE    HZN-HKN-HKNKOHSBTKBN (2)
-                                           TO  WRK-HKN-HKNKOHSBTKBN
+                                           TO  WRK-HKNKOHSBTKBN
                MOVE    "C"                 TO  WRK-KEN-ERFLG2
       *        保険を更新する
                PERFORM 221021-PTKOHINF-UPD-SEC
       *        新しい保険を追加する
                MOVE    HZN-HKN-TEKSTYMD (1)    TO  PTKOH-TEKSTYMD
-               MOVE    WRK-PTHKN-TEKEDYMD      TO  PTKOH-TEKEDYMD
+               MOVE    WRK-TEKEDYMD      TO  PTKOH-TEKEDYMD
                MOVE    HZN-HKN-HKNKOHSBTKBN (1)
-                                           TO  WRK-HKN-HKNKOHSBTKBN
+                                           TO  WRK-HKNKOHSBTKBN
                PERFORM 221022-PTKOHINF-INS-SEC
            ELSE
       *        保険の開始日を変更する
                MOVE    HZN-HKN-TEKSTYMD (1)    TO  PTKOH-TEKSTYMD
                MOVE    "D"                 TO  WRK-KEN-ERFLG2
                MOVE    HZN-HKN-HKNKOHSBTKBN (1)
-                                           TO  WRK-HKN-HKNKOHSBTKBN
+                                           TO  WRK-HKNKOHSBTKBN
                PERFORM 221022-PTKOHINF-INS-SEC
            END-IF
       *
@@ -1393,29 +1360,29 @@
       *****************************************************************
       *    患者公費情報更新処理
       *****************************************************************
-       221021-PTKOHINF-UPD-SEC           SECTION.
+       221021-PTKOHINF-UPD-SEC     SECTION.
       *
-           MOVE    PTKOHINF-REC        TO  MCPDATA-REC
-           MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "PTKOHINF-KEY"      TO  ORC-DBPATH
+           MOVE    PTKOHINF-REC    TO  MCPDATA-REC
+           MOVE    "DBUPDATE"      TO  MCP-FUNC
+           MOVE    "PTKOHINF-KEY"  TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
-               MOVE    "9"             TO  WRK-KEN-ERFLG
+               MOVE    "7"             TO  WRK-KEN-ERFLG
                DISPLAY "*(ORCVTHKNCOMBI)*  PTKOHINF UPD ERR:" MCP-RC
                        ",KEY:" PTKOH-KEY
-               GO      TO      221021-PTKOHINF-UPD-EXT
+               GO  TO  221021-PTKOHINF-UPD-EXT
            END-IF
       *
       *    パラメタＤＢへ追加
-           ADD     1                   TO  IDY
-           MOVE    SPACE               TO  PARA-REC
-           INITIALIZE                      PARA-REC
-           MOVE    "PTKOHINF"          TO  PARA-FILEMEI
-           MOVE    IDY                 TO  PARA-EDANUM
-           MOVE    PTKOHINF-REC        TO  PARA-DATA-REC
+           ADD     1               TO  IDY
+           MOVE    SPACE           TO  PARA-REC
+           INITIALIZE                  PARA-REC
+           MOVE    "PTKOHINF"      TO  PARA-FILEMEI
+           MOVE    IDY             TO  PARA-EDANUM
+           MOVE    PTKOHINF-REC    TO  PARA-DATA-REC
            PERFORM 400-PARA-INSERT-SEC
       *
            .
@@ -1425,18 +1392,18 @@
       *****************************************************************
       *    患者公費情報追加処理
       *****************************************************************
-       221022-PTKOHINF-INS-SEC           SECTION.
+       221022-PTKOHINF-INS-SEC     SECTION.
       *
       *    保険ＩＤ設定
            PERFORM 2210013-PTNUM-UPD-SEC
-           ADD     1                   TO  SPA-KOHID
+           ADD     1               TO  SPA-KOHID
       *
-           MOVE    PTNUM-KOHID         TO  PTKOH-KOHID
-           MOVE    PTKOHINF-REC        TO  HZN-PTKOHINF-REC
+           MOVE    PTNUM-KOHID     TO  PTKOH-KOHID
+           MOVE    PTKOHINF-REC    TO  HZN-PTKOHINF-REC
       *
-           MOVE    PTKOHINF-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTKOHINF-KEY"      TO  ORC-DBPATH
+           MOVE    PTKOHINF-REC    TO  MCPDATA-REC
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           MOVE    "PTKOHINF-KEY"  TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
@@ -1459,16 +1426,16 @@
                                            ORCMCPAREA
                                            MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
-                   MOVE    "9"             TO  WRK-KEN-ERFLG
+                   MOVE    "7"             TO  WRK-KEN-ERFLG
                    DISPLAY "*(ORCVTHKNCOMBI)*  PTKOHINF INS ERR:" MCP-RC
                            ",KEY:" PTHKN-KEY
-                   GO      TO      221022-PTKOHINF-INS-EXT
+                   GO  TO  221022-PTKOHINF-INS-EXT
                END-IF
            ELSE
-               MOVE    "9"             TO  WRK-KEN-ERFLG
+               MOVE    "7"             TO  WRK-KEN-ERFLG
                DISPLAY "*(ORCVTHKNCOMBI)*  PTKOHINF INS ERR:" MCP-RC
                        ",KEY:" PTHKN-KEY
-               GO      TO      221022-PTKOHINF-INS-EXT
+               GO  TO  221022-PTKOHINF-INS-EXT
            END-IF
       *
       *    パラメタＤＢへ追加
@@ -1488,37 +1455,37 @@
       *****************************************************************
       *    パラメタファイル作成処理
       *****************************************************************
-       400-PARA-INSERT-SEC           SECTION.
+       400-PARA-INSERT-SEC         SECTION.
       *
       *    パラメタ登録
-           MOVE    "P02"               TO  PARA-GYOUMUID
-           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    "P02"           TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID      TO  PARA-TERMID
       *
-           MOVE    PARA-REC            TO  WRK-PARA-REC
+           MOVE    PARA-REC        TO  WRK-PARA-REC
       *
-           MOVE    PARA-REC            TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PARA-KEY"          TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "PARA-KEY"          TO  ORC-DBPATH
+           MOVE    PARA-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           MOVE    "PARA-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          =   ZERO
+               MOVE    "PARA-KEY"      TO  ORC-DBPATH
                PERFORM 990-PARA-READ-SEC
            ELSE
                MOVE    1               TO  FLG-PARA
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "PARA-KEY"          TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      FLG-PARA            =   1
-               MOVE    WRK-PARA-REC        TO  MCPDATA-REC
-               MOVE    "DBINSERT"          TO  MCP-FUNC
-               MOVE    "PARA-KEY"          TO  ORC-DBPATH
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           MOVE    "PARA-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      FLG-PARA        =   1
+               MOVE    WRK-PARA-REC    TO  MCPDATA-REC
+               MOVE    "DBINSERT"      TO  MCP-FUNC
+               MOVE    "PARA-KEY"      TO  ORC-DBPATH
                CALL    "ORCMCPSUB"         USING
                                            MCPAREA
                                            ORCMCPAREA
@@ -1529,9 +1496,9 @@
                            ",EDANUM:" PARA-EDANUM
                END-IF
            ELSE
-               MOVE    WRK-PARA-REC        TO  MCPDATA-REC
-               MOVE    "DBUPDATE"          TO  MCP-FUNC
-               MOVE    "PARA-KEY"          TO  ORC-DBPATH
+               MOVE    WRK-PARA-REC    TO  MCPDATA-REC
+               MOVE    "DBUPDATE"      TO  MCP-FUNC
+               MOVE    "PARA-KEY"      TO  ORC-DBPATH
                CALL    "ORCMCPSUB"         USING
                                            MCPAREA
                                            ORCMCPAREA
@@ -1550,104 +1517,109 @@
       *****************************************************************
       *    エラーリスト出力処理
       *****************************************************************
-       2220-ERRLST-OUT-SEC                SECTION.
+       2220-ERRLST-OUT-SEC         SECTION.
       *
-           ADD     1                   TO  CNT-ERR
-           MOVE    ZERO                TO  WRK-ERRCD
+           MOVE    ZERO            TO  FLG-ERR
       *
-           IF  SPA-ERRCD               =   SPACE
+           IF  SPA-ERRCD           =   SPACE
                EVALUATE    WRK-KEN-ERFLG
       *        該当する保険番号なし
                WHEN    "1"
                WHEN    "2"
-                   MOVE    1           TO  WRK-ERRCD
+                   MOVE    1           TO  FLG-ERR
       *        患者保険マスタに公費が入っている場合
                WHEN    "3"
-                   MOVE    2           TO  WRK-ERRCD
+                   MOVE    2           TO  FLG-ERR
       *        患者公費マスタに保険が入っている場合
                WHEN    "4"
-                   MOVE    3           TO  WRK-ERRCD
+                   MOVE    3           TO  FLG-ERR
       *        前期高齢者の補助区分が入っている場合
                WHEN    "5"
-                   MOVE    10          TO  WRK-ERRCD
+                   MOVE    4           TO  FLG-ERR
       *        患者保険マスタ更新エラー
-               WHEN    "8"
-                   MOVE    8           TO  WRK-ERRCD
+               WHEN    "6"
+                   MOVE    6           TO  FLG-ERR
       *        患者公費マスタ更新エラー
-               WHEN    "9"
-                   MOVE    9           TO  WRK-ERRCD
+               WHEN    "7"
+                   MOVE    7           TO  FLG-ERR
+      *        保険組合せ出力エラー
+               WHEN    "8"
+                   MOVE    8           TO  FLG-ERR
                END-EVALUATE
-      ******** IF  FLG-ERR             =   ZERO
-      *            MOVE    6           TO  WRK-ERRCD
-      ******** END-IF
            ELSE
       *        サブプロ（ORCGP02W2）内でエラー発生
                EVALUATE    SPA-ERRCD
       *        保険・公費テーブル１００件オーバー
                WHEN    "0015"
-                   MOVE    4           TO  WRK-ERRCD
+                   MOVE    5           TO  FLG-ERR
       *        保険・公費　該当なし
                WHEN    "0001"
                WHEN    "0014"
-                   MOVE    5           TO  WRK-ERRCD
+                   MOVE    1           TO  FLG-ERR
                END-EVALUATE
            END-IF
       *
-           MOVE    SPACE               TO  ERR-REC
-           MOVE    CNT-ERR (1:3)       TO  ERR-NO (1:3)
-           MOVE    ":"                 TO  ERR-NO (5:1)
-           EVALUATE    WRK-ERRCD
-           WHEN    1
-               MOVE    CONS-MES1       TO  ERR-MES
-               MOVE    WRK-KEN-HKNNUM  TO  ERR-HKNNUM
-           WHEN    2
-               MOVE    CONS-MES2       TO  ERR-MES
-               MOVE    WRK-KEN-HKNNUM  TO  ERR-HKNNUM
-           WHEN    3
-               MOVE    CONS-MES3       TO  ERR-MES
-               MOVE    WRK-KEN-HKNNUM  TO  ERR-HKNNUM
-           WHEN    4
-               MOVE    CONS-MES4       TO  ERR-MES
-           WHEN    5
-               MOVE    CONS-MES5       TO  ERR-MES
-           WHEN    6
-               MOVE    CONS-MES6       TO  ERR-MES
-           WHEN    8
-               MOVE    CONS-MES8       TO  ERR-MES
-           WHEN    9
-               MOVE    CONS-MES9       TO  ERR-MES
-           WHEN    10
-               MOVE    CONS-MES10      TO  ERR-MES
-           END-EVALUATE
-           IF     (WRK-ERRCD           =   ZERO )  AND
-                  (WRK-KEN-ERFLG2  NOT =   SPACE)
-      *            期間変更
-               EVALUATE    WRK-KEN-ERFLG2
-                   WHEN    "A"
-                       MOVE    "保険期間変更・追加"
-                                               TO  ERR-MES
-                       MOVE    WRK-KEN-HKNNUM  TO  ERR-HKNNUM
-                   WHEN    "B"
-                       MOVE    "保険開始期間変更"
-                                               TO  ERR-MES
-                       MOVE    WRK-KEN-HKNNUM  TO  ERR-HKNNUM
-                   WHEN    "C"
-                       MOVE    "公費期間変更・追加"
-                                               TO  ERR-MES
-                       MOVE    WRK-KEN-HKNNUM  TO  ERR-HKNNUM
-                   WHEN    "D"
-                       MOVE    "公費開始期間変更"
-                                               TO  ERR-MES
-                       MOVE    WRK-KEN-HKNNUM  TO  ERR-HKNNUM
+           ADD     1               TO  CNT-ERR
+           MOVE    SPACE           TO  ERR-REC
+           MOVE    "000000"        TO  ERR-LINENO
+      *
+           MOVE    "患者番号:"         TO  ERR-PTNUMMES
+           MOVE    "患者ＩＤ:"         TO  ERR-PTIDMES
+           MOVE    "保険番号:"         TO  ERR-HKNNUMMES
+           MOVE    "連番:"             TO  ERR-HKNIDMES
+           MOVE    "期間:"             TO  ERR-TEKSTEDMES
+      *
+           MOVE    SPA-PTNUM           TO  ERR-PTNUM
+           MOVE    SPA-PTID            TO  ERR-PTID
+      *
+           IF      WRK-KEN-HKNNUM      NOT =   SPACE
+               MOVE    WRK-KEN-HKNNUM      TO  ERR-HKNNUM
+               EVALUATE    WRK-KEN-HKNKOH
+                   WHEN    1
+                   IF      SPA-HKNID       <   10
+                       MOVE    SPA-HKNID       TO  WRK-NUM1
+                       MOVE    WRK-NUM1        TO  ERR-HKNID
+                   ELSE
+                       MOVE    SPA-HKNID       TO  WRK-NUM2
+                       MOVE    WRK-NUM2        TO  ERR-HKNID
+                   END-IF
+                   WHEN    2
+                   IF      SPA-KOHID       <   10
+                       MOVE    SPA-KOHID       TO  WRK-NUM1
+                       MOVE    WRK-NUM1        TO  ERR-HKNID
+                   ELSE
+                       MOVE    SPA-KOHID       TO  WRK-NUM2
+                       MOVE    WRK-NUM2        TO  ERR-HKNID
+                   END-IF
                END-EVALUATE
            END-IF
-           MOVE    SPA-PTID            TO  ERR-PTID
-           MOVE    SPA-ERRCD           TO  ERR-ERRCD
+      *
+           IF    ( WRK-KEN-TEKSTYMD    NOT =   SPACE ) AND
+                 ( WRK-KEN-TEKEDYMD    NOT =   SPACE )
+               MOVE    WRK-KEN-TEKSTYMD    TO  ERR-TEKSTYMD
+               MOVE    WRK-KEN-TEKEDYMD    TO  ERR-TEKEDYMD
+               MOVE    "-"                 TO  ERR-TEKBAR
+           END-IF
+      *
+           IF      FLG-ERR         =   0
+      *        期間変更
+               IF      WRK-KEN-ERFLG2  NOT =   SPACE
+                   MOVE    "["                 TO  ERR-ERRNO(1:1)
+                   MOVE    WRK-KEN-ERFLG2(1:1) TO  ERR-ERRNO(2:1)
+                   MOVE    "]"                 TO  ERR-ERRNO(3:1)
+                   MOVE    "MSG"               TO  ERR-NAIYO
+               END-IF
+           ELSE
+               MOVE    "["                 TO  ERR-ERRNO(1:1)
+               MOVE    FLG-ERR (1:1)       TO  ERR-ERRNO(2:1)
+               MOVE    "]"                 TO  ERR-ERRNO(3:1)
+               MOVE    "ERR"               TO  ERR-NAIYO
+           END-IF
+      *
            WRITE   ERR-REC
       *
            MOVE    SPACE               TO  WRK-KEN-ERFLG
            MOVE    SPACE               TO  SPA-ERRCD
-           MOVE    ZERO                TO  WRK-ERRCD
            MOVE    ZERO                TO  FLG-ERR
       *
            .
@@ -1657,54 +1629,29 @@
       *****************************************************************
       *    保険組合せ　登録処理
       *****************************************************************
-       240-HKNCOMBI-INSERT-SEC         SECTION.
+       240-HKNCOMBI-INSERT-SEC     SECTION.
       *
-      *    OPEN    INPUT               NC01PARA-FILE
-      *    IF  STS-PARA            NOT =   ZERO
-      *        MOVE    2               TO  FLG-PARA
-      *        DISPLAY "*(ORCVTHKNCOMBI)* NC01PARA OPN-ERR STS["
-      *                                STS-PARA "]"
-      *    END-IF
-      *    MOVE    ZERO                TO  FLG-NC01PARA
-      *    INITIALIZE                      PARA-NC01-KEY
-      *    MOVE    SPA-TERMID          TO  PARA-NC01-TERMID
-      *    START   NC01PARA-FILE
-      *        KEY IS    >=   PARA-NC01-KEY
-      *        INVALID
-      *            MOVE    1           TO  FLG-NC01PARA
-      *        NOT INVALID
-      *            PERFORM 980-NC01PARA-NEXT-SEC
-      *    END-START
-      *****PERFORM   UNTIL   FLG-NC01PARA  =   1
-      *        組合せ番号　設定処理
-      *        PERFORM 2410-HKNCOMBINUM-SET-SEC
+           INITIALIZE                  PARA-REC
+           MOVE    "P02"           TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID      TO  PARA-TERMID
+           MOVE    "NC01PARA"      TO  PARA-FILEMEI
       *
-      *        PERFORM 980-NC01PARA-NEXT-SEC
-      *    END-PERFORM
-      *****CLOSE                       NC01PARA-FILE
-      *
-      *
-           INITIALIZE                      PARA-REC
-           MOVE    "P02"               TO  PARA-GYOUMUID
-           MOVE    SPA-TERMID          TO  PARA-TERMID
-           MOVE    "NC01PARA"          TO  PARA-FILEMEI
-      *
-           MOVE    PARA-REC            TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PARA-KEY2"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "PARA-KEY2"         TO  ORC-DBPATH
+           MOVE    PARA-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           MOVE    "PARA-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          =   ZERO
+               MOVE    "PARA-KEY2"     TO  ORC-DBPATH
                PERFORM 990-PARA-READ-SEC
            ELSE
                INITIALIZE                  PARA-REC
-               MOVE    1                   TO  FLG-PARA
+               MOVE    1               TO  FLG-PARA
            END-IF
            PERFORM
-               UNTIL   FLG-PARA            =  1
+               UNTIL   FLG-PARA        =  1
       *
                MOVE    PARA-DATA-REC       TO  NC01PARA-REC
       *        組合せ番号　設定処理
@@ -1721,23 +1668,27 @@
       *****************************************************************
       *    組合せ番号　設定処理
       *****************************************************************
-       2410-HKNCOMBINUM-SET-SEC        SECTION.
+       2410-HKNCOMBINUM-SET-SEC    SECTION.
       *
-           MOVE    SPACE               TO  HKNCOMBI-REC
-           MOVE    PARA-NC01-REC       TO  HKNCOMBI-REC
-           ADD     1                   TO  IDZ
-           MOVE    IDZ                 TO  COMB-HKNCOMBINUM
+           MOVE    SPACE           TO  HKNCOMBI-REC
+           MOVE    PARA-NC01-REC   TO  HKNCOMBI-REC
+           ADD     1               TO  IDZ
+           MOVE    IDZ             TO  COMB-HKNCOMBINUM
       *
-           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
-           MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"      USING   MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+           MOVE    HKNCOMBI-REC    TO  MCPDATA-REC
+           MOVE    "DBINSERT"      TO  MCP-FUNC
+           MOVE    "HKNCOMBI-KEY"  TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "*(ORCVTHKNCOMBI)* HKNCOMBI INS-ERR[" MCP-RC "]"
+               MOVE    "8"            TO  WRK-KEN-ERFLG
+               PERFORM 2220-ERRLST-OUT-SEC
+               GO  TO  2410-HKNCOMBINUM-SET-EXT
            END-IF
-           ADD     1                   TO  CNT-HKNCOMBI
+           ADD     1               TO  CNT-HKNCOMBI
       *
            .
        2410-HKNCOMBINUM-SET-EXT.
@@ -1746,35 +1697,13 @@
       *****************************************************************
       *    患者番号変換マスタ　更新処理
       *****************************************************************
-       250-PTNUM-UPDATE-SEC            SECTION.
+       250-PTNUM-UPDATE-SEC        SECTION.
       *
-           MOVE    ZERO                TO  FLG-PTNUM
-           MOVE    SPACE               TO  PTNUM-REC
-           INITIALIZE                      PTNUM-REC
-           MOVE    SPA-HOSPID          TO  PTNUM-HOSPID
-           MOVE    SPA-PTID            TO  PTNUM-PTID
-           MOVE    PTNUM-REC           TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"      USING   MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "PTNUM-KEY"     TO  ORC-DBPATH
-               PERFORM 940-PTNUM-NEXT-SEC
-           ELSE
-               MOVE    1               TO  FLG-PTNUM
-           END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"      USING   MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+           PERFORM 900-PTNUM-READ-SEC
       *
-           IF      FLG-PTNUM           =   1
-                MOVE    SPACE          TO  SPA-ERRCD
-                MOVE    SPACE          TO  WRK-KEN-ERFLG
-                PERFORM 2220-ERRLST-OUT-SEC
+           IF      FLG-PTNUM       =   1
+               MOVE    SPACE           TO  SPA-ERRCD
+               MOVE    SPACE           TO  WRK-KEN-ERFLG
            ELSE
                MOVE    IDZ             TO  PTNUM-AUTOCOMBINUM
       *!       IF  SPA-HKNID       NOT =   PTNUM-HKNID
@@ -1789,9 +1718,10 @@
                MOVE    PTNUM-REC       TO  MCPDATA-REC
                MOVE    "DBUPDATE"      TO  MCP-FUNC
                MOVE    "PTNUM-KEY"     TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"  USING   MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC      NOT =   ZERO
                    DISPLAY "*(ORCVTHKNCOMBI)* PTNUM UPD-ERR PTID["
                            SPA-PTID "]MCP-RC[" MCP-RC "]"
@@ -1805,20 +1735,19 @@
       *****************************************************************
       *    終了処理
       *****************************************************************
-       300-END-SEC                     SECTION.
-      *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "PTINF-KEY4"        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"              USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+       300-END-SEC                 SECTION.
       *
       *    DB DISCONNECT
            PERFORM 900-DBDISCONNECT-SEC
       *
+           CLOSE                       PTINF-FILE
       *    帳票出力　終了処理
            CLOSE                       ERR-FILE
+      *
+           MOVE    ZERO            TO  IF-RESULT
+           MOVE    ASS-PTINF       TO  IF-FILENAME
+           CALL    "orcfiledel"        USING
+                                       ORCSFDELAREA
       *
            DISPLAY "*(ORCVTHKNCOMBI)* PTINF   /I CNT[" CNT-PTINF    "]"
            DISPLAY "*(ORCVTHKNCOMBI)* PTHKNINF/I CNT[" CNT-PTHKNINF "]"
@@ -1831,19 +1760,37 @@
            EXIT.
       *
       *****************************************************************
+      *    患者情報　読み込み処理
+      *****************************************************************
+       900-PTINF-READ-SEC          SECTION.
+      *
+           READ    PTINF-FILE
+                   AT  END
+                       MOVE  1     TO  FLG-PTINF
+                   NOT AT  END
+                       MOVE  PTINFW-REC
+                                   TO  PTINF-REC
+                       ADD   1     TO  CNT-PTINF
+                       ADD   1     TO  CNT-COMMIT
+           END-READ
+           .
+       900-PTINF-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    システム管理マスタＦＥＴＣＨ処理
       *****************************************************************
        900-SYSTEM-NEXT-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    ZERO            TO  FLG-SYSKANRI
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "ORCMCPSUB"        USING
+                                      MCPAREA
+                                      ORCMCPAREA
+                                      MCPDATA-REC
+           IF      MCP-RC             =   ZERO
+               MOVE    ZERO           TO  FLG-SYSKANRI
            ELSE
-               MOVE    1               TO  FLG-SYSKANRI
+               MOVE    1              TO  FLG-SYSKANRI
            END-IF
       *
            .
@@ -1853,17 +1800,16 @@
       *****************************************************************
       *    患者マスタＦＥＴＣＨ処理
       *****************************************************************
-       910-PTINF-NEXT-SEC              SECTION.
+       910-PTINF-NEXT-SEC          SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PTINF-REC
                MOVE    ZERO            TO  FLG-PTINF
-               ADD     1               TO  CNT-PTINF
            ELSE
                INITIALIZE                  PTINF-REC
                MOVE    1               TO  FLG-PTINF
@@ -1875,13 +1821,13 @@
       *****************************************************************
       *    患者保険マスタＦＥＴＣＨ処理
       *****************************************************************
-       920-PTHKNINF-NEXT-SEC         SECTION.
+       920-PTHKNINF-NEXT-SEC       SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PTHKNINF-REC
                MOVE    ZERO            TO  FLG-PTHKNINF
@@ -1894,16 +1840,17 @@
            .
        920-PTHKNINF-NEXT-EXT.
            EXIT.
+      *
       *****************************************************************
       *    患者公費マスタＦＥＴＣＨ処理
       *****************************************************************
-       930-PTKOHINF-NEXT-SEC         SECTION.
+       930-PTKOHINF-NEXT-SEC       SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PTKOHINF-REC
                MOVE    ZERO            TO  FLG-PTKOHINF
@@ -1916,38 +1863,18 @@
            .
        930-PTKOHINF-NEXT-EXT.
            EXIT.
-      *****************************************************************
-      *    患者番号変換マスタＦＥＴＣＨ処理
-      *****************************************************************
-       940-PTNUM-NEXT-SEC           SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  PTNUM-REC
-               MOVE    ZERO            TO  FLG-PTNUM
-           ELSE
-               INITIALIZE                  PTNUM-REC
-               MOVE    1               TO  FLG-PTNUM
-           END-IF
-      *
-           .
-       940-PTNUM-NEXT-EXT.
-           EXIT.
       *****************************************************************
       *    保険番号マスタ次検索処理
       *****************************************************************
-       950-HKNNUM-NEXT-SEC             SECTION.
+       950-HKNNUM-NEXT-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          =   ZERO
                MOVE    MCPDATA-REC     TO  HKNNUM-REC
                MOVE    ZERO            TO  FLG-HKNNUM
            ELSE
@@ -1959,44 +1886,55 @@
            EXIT.
       *
       *****************************************************************
-      *    新組合せパラメタデータ次読み
+      *    患者番号変換マスタ　更新処理
       *****************************************************************
-      *980-NC01PARA-NEXT-SEC          SECTION.
+       900-PTNUM-READ-SEC          SECTION.
       *
-      *   READ    NC01PARA-FILE       NEXT
-      *       AT  END
-      *           MOVE    1           TO  FLG-NC01PARA
-      *       NOT AT  END
-      *           MOVE    ZERO        TO  FLG-NC01PARA
-      *   END-READ
-      *
-      *   .
-      *980-NC01PARA-NEXT-EXT.
-      *** EXIT.
-      *
-      *****************************************************************
-      *    パラメタデータ次読み
-      *****************************************************************
-      *990-PARA-NEXT-SEC              SECTION.
-      *
-      *   READ    PARA-FILE           NEXT
-      *       AT  END
-      *           MOVE    1           TO  FLG-PARA
-      *       NOT AT  END
-      *           MOVE    ZERO        TO  FLG-PARA
-      *   END-READ
-      *
-      *   .
-      *990-PARA-NEXT-EXT.
-      *** EXIT.
-      *
+           MOVE    ZERO            TO  FLG-PTNUM
+           MOVE    SPACE           TO  PTNUM-REC
+           INITIALIZE                  PTNUM-REC
+           MOVE    SPA-HOSPID      TO  PTNUM-HOSPID
+           MOVE    SPA-PTID        TO  PTNUM-PTID
+           MOVE    PTNUM-REC       TO  MCPDATA-REC
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           MOVE    "PTNUM-KEY"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          =   ZERO
+               MOVE    "PTNUM-KEY"     TO  ORC-DBPATH
+               MOVE    "DBFETCH"       TO  MCP-FUNC
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                       MCPDATA-REC
+               IF      MCP-RC          =   ZERO
+                   MOVE    MCPDATA-REC     TO  PTNUM-REC
+                   MOVE    ZERO            TO  FLG-PTNUM
+               ELSE
+                   INITIALIZE                  PTNUM-REC
+                   MOVE    1               TO  FLG-PTNUM
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-PTNUM
+           END-IF
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           MOVE    "PTNUM-KEY"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           .
+       900-PTNUM-READ-EXT.
+           EXIT.
       *
       *****************************************************************
       *    パラメータファイル読み込み処理
       *****************************************************************
-       900-PARM-READ-SEC               SECTION.
+       900-PARM-READ-SEC           SECTION.
       *
-          MOVE    SPACE                TO  PARM-REC
+          MOVE    SPACE            TO  PARM-REC
       *
           READ    PARM-FILE
               AT  END
@@ -2011,13 +1949,13 @@
       *****************************************************************
       *    パラメタ情報読み込み
       *****************************************************************
-       990-PARA-READ-SEC        SECTION.
+       990-PARA-READ-SEC           SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PARA-REC
                MOVE    ZERO            TO  FLG-PARA
@@ -2034,22 +1972,22 @@
       *****************************************************************
       *    ＤＢ　オープン処理
       *****************************************************************
-       100-DBOPEN-SEC                SECTION.
+       100-DBOPEN-SEC              SECTION.
       *
-           MOVE    "DBOPEN"            TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "DBOPEN"        TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC      NOT =   ZERO
                DISPLAY "DBOPEN ERROR"
            END-IF
       *
-           MOVE    "DBSTART"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "DBSTART"       TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC      NOT =   ZERO
                DISPLAY "DBSTART ERROR"
            END-IF
@@ -2058,24 +1996,44 @@
            EXIT.
       *
       *****************************************************************
+      *    ＤＢ　ＣＯＭＭＩＴ処理
+      *****************************************************************
+       900-DBCOMMIT-SEC            SECTION.
+      *
+           MOVE    "DBCOMMIT"      TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           MOVE    "DBSTART"       TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           .
+       900-DBCOMMIT-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ＤＢ　クローズ処理
       *****************************************************************
-       900-DBDISCONNECT-SEC            SECTION.
+       900-DBDISCONNECT-SEC        SECTION.
       *
-           MOVE    "DBCOMMIT"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "DBCOMMIT"      TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC      NOT =   ZERO
                DISPLAY "DBCOMMIT ERROR"
            END-IF
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "DBDISCONNECT"  TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC      NOT =   ZERO
                DISPLAY "DBDISCONNECT ERROR"
            END-IF
