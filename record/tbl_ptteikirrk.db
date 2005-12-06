@@ -197,3 +197,14 @@ path	del3		{
 	};
 };
 
+path	del4		{ 	
+	DBDELETE	{
+		DELETE
+		FROM tbl_ptteikirrk
+        WHERE  HOSPID  =   :HOSPID
+        AND    PTID    =   :PTID
+        AND    RRKNUM  =   :RRKNUM
+		;
+	};
+};
+
