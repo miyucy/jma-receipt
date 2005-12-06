@@ -54,3 +54,5 @@ CREATE TABLE tbl_sryact_prv (
 ALTER TABLE ONLY tbl_sryact_prv
     ADD CONSTRAINT tbl_sryact_prv_primary_key PRIMARY KEY (hospid, nyugaikbn, ptid, sryka, sryym, zainum, rennum);
 
+COMMENT ON TABLE tbl_sryact_prv IS '¿ÇÎÅ¹Ô°Ù(¥×¥ì¥Ó¥å¡¼)';
+

@@ -29,3 +29,5 @@ CREATE TABLE tbl_syumei (
 ALTER TABLE ONLY tbl_syumei
     ADD CONSTRAINT tbl_syumei_primary_key PRIMARY KEY (hospid, nyugaikbn, ptid, denpnum, denpedanum);
 
+COMMENT ON TABLE tbl_syumei IS '¼ýÇ¼ÌÀºÙ';
+

@@ -112,3 +112,5 @@ CREATE TABLE tbl_hkncombi (
 ALTER TABLE ONLY tbl_hkncombi
     ADD CONSTRAINT tbl_hkncombi_primary_key PRIMARY KEY (hospid, ptid, hkncombinum);
 
+COMMENT ON TABLE tbl_hkncombi IS '保険組合せ';
+

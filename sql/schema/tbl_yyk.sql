@@ -24,3 +24,5 @@ CREATE TABLE tbl_yyk (
 ALTER TABLE ONLY tbl_yyk
     ADD CONSTRAINT tbl_yyk_primary_key PRIMARY KEY (hospid, srynaiyo, drcd, yykymd, keyyyktime, yykid);
 
+COMMENT ON TABLE tbl_yyk IS 'Í½Ìó';
+

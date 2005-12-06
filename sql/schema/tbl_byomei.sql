@@ -31,3 +31,5 @@ CREATE INDEX idx_byomei_byomeikana ON tbl_byomei USING btree (byomeikana);
 ALTER TABLE ONLY tbl_byomei
     ADD CONSTRAINT tbl_byomei_primary_key PRIMARY KEY (byomeicd);
 
+COMMENT ON TABLE tbl_byomei IS 'ибл╬';
+

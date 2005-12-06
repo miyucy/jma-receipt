@@ -49,3 +49,5 @@ CREATE TABLE tbl_userbyomei (
 ALTER TABLE ONLY tbl_userbyomei
     ADD CONSTRAINT tbl_userbyomei_primary_key PRIMARY KEY (hospid, cdsyu, byomeiinputcd);
 
+COMMENT ON TABLE tbl_userbyomei IS '¼«±¡ÉÂÌ¾';
+

@@ -30,3 +30,5 @@ CREATE INDEX idx_receupd_upymd ON tbl_receupd USING btree (hospid, upymd, nyugai
 ALTER TABLE ONLY tbl_receupd
     ADD CONSTRAINT tbl_receupd_pkey PRIMARY KEY (hospid, ptid, nyugaikbn, sryka, sryym, hknkbn, hknkbn2);
 
+COMMENT ON TABLE tbl_receupd IS 'レセプト作成管理';
+

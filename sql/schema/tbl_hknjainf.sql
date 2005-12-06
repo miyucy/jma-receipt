@@ -27,3 +27,5 @@ CREATE TABLE tbl_hknjainf (
 ALTER TABLE ONLY tbl_hknjainf
     ADD CONSTRAINT tbl_hknjainf_primary_key PRIMARY KEY (hospid, hknjanum);
 
+COMMENT ON TABLE tbl_hknjainf IS '保険者情報';
+

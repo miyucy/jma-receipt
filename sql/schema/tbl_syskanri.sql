@@ -14,3 +14,5 @@ CREATE TABLE tbl_syskanri (
 ALTER TABLE ONLY tbl_syskanri
     ADD CONSTRAINT tbl_syskanri_primary_key PRIMARY KEY (kanricd, kbncd, styukymd, edyukymd);
 
+COMMENT ON TABLE tbl_syskanri IS 'システム管理情報';
+

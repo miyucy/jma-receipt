@@ -532,3 +532,5 @@ CREATE TABLE tbl_kohsky (
 ALTER TABLE ONLY tbl_kohsky
     ADD CONSTRAINT tbl_kohsky_primary_key PRIMARY KEY (hospid, sryym, nyugaikbn, ptid, receka, teisyutusaki, recesyubetu, hknjanum_key, hojokbn_key, tekstymd);
 
+COMMENT ON TABLE tbl_kohsky IS '√œ ˝∏¯»Ò¿¡µ·ΩÒ';
+

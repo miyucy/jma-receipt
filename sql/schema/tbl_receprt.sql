@@ -26,3 +26,5 @@ CREATE TABLE tbl_receprt (
 ALTER TABLE ONLY tbl_receprt
     ADD CONSTRAINT tbl_receprt_primary_key PRIMARY KEY (prtid, receym, creymd, crehms, prefkbn, prefnum, hknjanum, tekstymd, teisyutusaki, recesyubetu, ptnum, sryym, rennum, recenum);
 
+COMMENT ON TABLE tbl_receprt IS 'レセプト明細書';
+

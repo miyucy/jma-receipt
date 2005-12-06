@@ -17,3 +17,5 @@ CREATE TABLE tbl_rececom (
 ALTER TABLE ONLY tbl_rececom
     ADD CONSTRAINT tbl_rececom_primary_key PRIMARY KEY (hospid, ptid, nyugaikbn, sryka, sryym, hkncombi, srydd);
 
+COMMENT ON TABLE tbl_rececom IS 'レセプトコメント';
+

@@ -59,3 +59,5 @@ CREATE TABLE tbl_nyuinacct (
 ALTER TABLE ONLY tbl_nyuinacct
     ADD CONSTRAINT tbl_nyuinacct_primary_key PRIMARY KEY (hospid, nyugaikbn, ptid, sryka, sryym, srykbn, zainum);
 
+COMMENT ON TABLE tbl_nyuinacct IS 'Æþ±¡²ñ·×';
+

@@ -26,3 +26,5 @@ CREATE TABLE tbl_chk (
 ALTER TABLE ONLY tbl_chk
     ADD CONSTRAINT tbl_chk_primary_key PRIMARY KEY (chkkbn, srycd, yukostymd, yukoedymd, cdkbn, rennum);
 
+COMMENT ON TABLE tbl_chk IS 'チェック';
+

@@ -15,3 +15,5 @@ CREATE TABLE tbl_kyuseirrk (
 ALTER TABLE ONLY tbl_kyuseirrk
     ADD CONSTRAINT tbl_kyuseirrk_primary_key PRIMARY KEY (hospid, ptid, chgymd);
 
+COMMENT ON TABLE tbl_kyuseirrk IS 'µלְ«ֽת־ע';
+

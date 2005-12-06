@@ -15,3 +15,5 @@ CREATE TABLE tbl_srykarrk (
 ALTER TABLE ONLY tbl_srykarrk
     ADD CONSTRAINT tbl_srykarrk_primary_key PRIMARY KEY (hospid, ptid, sryka);
 
+COMMENT ON TABLE tbl_srykarrk IS 'ø«Œ≈≤ Õ˙ŒÚ';
+

@@ -15,3 +15,5 @@ CREATE TABLE tbl_toukeimemo (
 ALTER TABLE ONLY tbl_toukeimemo
     ADD CONSTRAINT tbl_toukeimemo_primary_key PRIMARY KEY (pgid, kanricd, kbncd, styukymd, edyukymd);
 
+COMMENT ON TABLE tbl_toukeimemo IS 'Åý·×³Ð½ñ';
+

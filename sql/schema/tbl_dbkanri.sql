@@ -15,3 +15,5 @@ CREATE TABLE tbl_dbkanri (
 ALTER TABLE ONLY tbl_dbkanri
     ADD CONSTRAINT tbl_dbkanri_primary_key PRIMARY KEY (kanricd);
 
+COMMENT ON TABLE tbl_dbkanri IS 'データベース管理情報';
+

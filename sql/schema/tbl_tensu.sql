@@ -152,3 +152,5 @@ CREATE INDEX idx_tensu_kensagrp ON tbl_tensu USING btree (srykbn, knsjisgrpkbn);
 ALTER TABLE ONLY tbl_tensu
     ADD CONSTRAINT tbl_tensu_primary_key PRIMARY KEY (srycd, yukostymd, yukoedymd);
 
+COMMENT ON TABLE tbl_tensu IS 'ÅÀ¿ô';
+

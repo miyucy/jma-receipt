@@ -19,3 +19,5 @@ CREATE TABLE tbl_ptkohftn (
 ALTER TABLE ONLY tbl_ptkohftn
     ADD CONSTRAINT tbl_ptkohftn_primary_key PRIMARY KEY (hospid, ptid, kohid, rennum);
 
+COMMENT ON TABLE tbl_ptkohftn IS '¥µº‘∏¯»Ò…È√¥';
+

@@ -15,3 +15,5 @@ CREATE TABLE tbl_srykarrk_prv (
 ALTER TABLE ONLY tbl_srykarrk_prv
     ADD CONSTRAINT tbl_srykarrk_prv_primary_key PRIMARY KEY (hospid, ptid, sryka, creymd);
 
+COMMENT ON TABLE tbl_srykarrk_prv IS '¿ÇÎÅ²ÊÍúÎò(¥×¥ì¥Ó¥å¡¼)';
+

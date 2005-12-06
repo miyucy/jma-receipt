@@ -13,3 +13,5 @@ CREATE TABLE tbl_example (
 ALTER TABLE ONLY tbl_example
     ADD CONSTRAINT tbl_example_primary_key PRIMARY KEY (hospid, kubun, rennum);
 
+COMMENT ON TABLE tbl_example IS '¿÷·¿';
+

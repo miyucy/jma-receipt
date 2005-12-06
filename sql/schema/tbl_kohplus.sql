@@ -20,3 +20,5 @@ CREATE TABLE tbl_kohplus (
 ALTER TABLE ONLY tbl_kohplus
     ADD CONSTRAINT tbl_kohplus_primary_key PRIMARY KEY (hospid, prefnum, citynum, kohnum, ptkbn, yukostymd);
 
+COMMENT ON TABLE tbl_kohplus IS '∏¯»Ò…’≤√';
+

@@ -17,3 +17,5 @@ CREATE TABLE tbl_tensuplus (
 ALTER TABLE ONLY tbl_tensuplus
     ADD CONSTRAINT tbl_tensuplus_primary_key PRIMARY KEY (srycd, yukostymd, yukoedymd);
 
+COMMENT ON TABLE tbl_tensuplus IS '点数付加';
+

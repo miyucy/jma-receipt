@@ -67,3 +67,5 @@ CREATE INDEX idx_ptinf_prv_name ON tbl_ptinf_prv USING btree (name);
 ALTER TABLE ONLY tbl_ptinf_prv
     ADD CONSTRAINT tbl_ptinf_prv_primary_key PRIMARY KEY (hospid, ptid);
 
+COMMENT ON TABLE tbl_ptinf_prv IS '患者情報(プレビュー)';
+

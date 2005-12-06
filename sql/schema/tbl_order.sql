@@ -42,3 +42,5 @@ CREATE INDEX idx_order_ptnum ON tbl_order USING btree (ptnum);
 ALTER TABLE ONLY tbl_order
     ADD CONSTRAINT tbl_order_primary_key PRIMARY KEY (hospid, karte_key, nyugaikbn, ptnum, ptid, sryka, sryymd, hkncombi, drcd, orderid, ordernum, itemnum, ukeymd, ukehms);
 
+COMMENT ON TABLE tbl_order IS '入院オーダ';
+

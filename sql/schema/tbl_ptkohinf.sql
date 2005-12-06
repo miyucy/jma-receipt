@@ -20,3 +20,5 @@ CREATE TABLE tbl_ptkohinf (
 ALTER TABLE ONLY tbl_ptkohinf
     ADD CONSTRAINT tbl_ptkohinf_primary_key PRIMARY KEY (hospid, ptid, kohid);
 
+COMMENT ON TABLE tbl_ptkohinf IS '´µ¼Ô¸øÈñ¾ðÊó';
+

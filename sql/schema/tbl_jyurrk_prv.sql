@@ -55,3 +55,5 @@ CREATE INDEX idx_jyurrk_prv_upymd ON tbl_jyurrk_prv USING btree (hospid, upymd, 
 ALTER TABLE ONLY tbl_jyurrk_prv
     ADD CONSTRAINT tbl_jyurrk_prv_primary_key PRIMARY KEY (hospid, ptid, nyugaikbn, sryka, sryymd, rennum, douji_rennum, kaikei_rennum, edanum);
 
+COMMENT ON TABLE tbl_jyurrk_prv IS '受診履歴(プレビュー)';
+

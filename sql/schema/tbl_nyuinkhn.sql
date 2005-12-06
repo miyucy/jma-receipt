@@ -43,3 +43,5 @@ CREATE INDEX idx_nyuinkhn_key2 ON tbl_nyuinkhn USING btree (btusbtkbn, heikinzai
 ALTER TABLE ONLY tbl_nyuinkhn
     ADD CONSTRAINT tbl_nyuinkhn_primary_key PRIMARY KEY (khn_srycd, yukostymd, yukoedymd);
 
+COMMENT ON TABLE tbl_nyuinkhn IS 'Æþ±¡´ðËÜÎÁ';
+

@@ -12,3 +12,5 @@ CREATE TABLE tbl_teikikanri (
 ALTER TABLE ONLY tbl_teikikanri
     ADD CONSTRAINT tbl_teikikanri_primary_key PRIMARY KEY (btunum);
 
+COMMENT ON TABLE tbl_teikikanri IS 'Äê´üÀÁµá´ÉÍı';
+

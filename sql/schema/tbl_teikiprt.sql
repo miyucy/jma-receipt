@@ -10,3 +10,5 @@ CREATE TABLE tbl_teikiprt (
 ALTER TABLE ONLY tbl_teikiprt
     ADD CONSTRAINT tbl_teikiprt_primary_key PRIMARY KEY (btunum, denpnum);
 
+COMMENT ON TABLE tbl_teikiprt IS 'Äê´üÀÁµá°õºþ¾ðÊó';
+

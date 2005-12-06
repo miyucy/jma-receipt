@@ -49,3 +49,5 @@ CREATE TABLE tbl_nyuinact (
 ALTER TABLE ONLY tbl_nyuinact
     ADD CONSTRAINT tbl_nyuinact_primary_key PRIMARY KEY (hospid, nyugaikbn, ptid, sryka, sryym, zainum, rennum);
 
+COMMENT ON TABLE tbl_nyuinact IS 'Æþ±¡¹Ô°Ù';
+

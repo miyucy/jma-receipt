@@ -18,3 +18,5 @@ CREATE TABLE tbl_pttainfuka (
 ALTER TABLE ONLY tbl_pttainfuka
     ADD CONSTRAINT tbl_pttainfuka_primary_key PRIMARY KEY (hospid, ptid, rrknum);
 
+COMMENT ON TABLE tbl_pttainfuka IS '患者他院歴付加情報';
+

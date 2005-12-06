@@ -26,3 +26,5 @@ CREATE TABLE tbl_uketuke (
 ALTER TABLE ONLY tbl_uketuke
     ADD CONSTRAINT tbl_uketuke_primary_key PRIMARY KEY (hospid, ukeymd, ukeid);
 
+COMMENT ON TABLE tbl_uketuke IS 'ºı…’';
+

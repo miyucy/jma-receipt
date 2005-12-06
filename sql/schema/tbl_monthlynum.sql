@@ -15,3 +15,5 @@ CREATE TABLE tbl_monthlynum (
 ALTER TABLE ONLY tbl_monthlynum
     ADD CONSTRAINT tbl_monthlynum_primary_key PRIMARY KEY (hospid, ptid, kohnum, sryym, nyugaikbn);
 
+COMMENT ON TABLE tbl_monthlynum IS '月代り受給者番号';
+

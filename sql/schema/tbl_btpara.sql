@@ -17,3 +17,5 @@ CREATE TABLE tbl_btpara (
 ALTER TABLE ONLY tbl_btpara
     ADD CONSTRAINT tbl_btpara_primary_key PRIMARY KEY (shellid, run_opid, dsp_rennum, rennum);
 
+COMMENT ON TABLE tbl_btpara IS 'バッチ連係パラメタ';
+

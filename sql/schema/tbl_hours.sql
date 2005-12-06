@@ -13,3 +13,5 @@ CREATE TABLE tbl_hours (
 ALTER TABLE ONLY tbl_hours
     ADD CONSTRAINT tbl_hours_primary_key PRIMARY KEY (sryymd, "time");
 
+COMMENT ON TABLE tbl_hours IS 'Äù¤á»þ¹ï´ÉÍý';
+

@@ -171,3 +171,5 @@ CREATE TABLE tbl_syutotal_prv (
 ALTER TABLE ONLY tbl_syutotal_prv
     ADD CONSTRAINT tbl_syutotal_prv_pkey PRIMARY KEY (hospid, nyugaikbn, ptid, denpnum, creymd);
 
+COMMENT ON TABLE tbl_syutotal_prv IS '収納合計(プレビュー)';
+

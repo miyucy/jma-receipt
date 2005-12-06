@@ -406,3 +406,5 @@ CREATE TABLE tbl_lock (
 ALTER TABLE ONLY tbl_lock
     ADD CONSTRAINT tbl_lock_pkey PRIMARY KEY (lock_termid);
 
+COMMENT ON TABLE tbl_lock IS '排他制御管理';
+

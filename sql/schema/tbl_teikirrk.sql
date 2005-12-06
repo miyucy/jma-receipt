@@ -16,3 +16,5 @@ CREATE TABLE tbl_teikirrk (
 ALTER TABLE ONLY tbl_teikirrk
     ADD CONSTRAINT tbl_teikirrk_primary_key PRIMARY KEY (sryym, sakkbn);
 
+COMMENT ON TABLE tbl_teikirrk IS 'Äê´üÀÁµáÍúÎò';
+

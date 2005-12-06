@@ -19,3 +19,5 @@ CREATE TABLE tbl_receden (
 ALTER TABLE ONLY tbl_receden
     ADD CONSTRAINT tbl_receden_primary_key PRIMARY KEY (hospid, sryym, nyugaikbn, ptid, receka, teisyutusaki, recesyubetu, hknjanum, hojokbn_key, tekstymd, reckbn, rennum);
 
+COMMENT ON TABLE tbl_receden IS 'レセプト電算';
+

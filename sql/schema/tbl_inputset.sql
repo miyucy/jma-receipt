@@ -21,3 +21,5 @@ CREATE TABLE tbl_inputset (
 ALTER TABLE ONLY tbl_inputset
     ADD CONSTRAINT tbl_inputset_primary_key PRIMARY KEY (hospid, setcd, setseq);
 
+COMMENT ON TABLE tbl_inputset IS '入力セット';
+

@@ -274,3 +274,5 @@ CREATE TABLE tbl_syunou_prv (
 ALTER TABLE ONLY tbl_syunou_prv
     ADD CONSTRAINT tbl_syunou_prv_pkey PRIMARY KEY (hospid, nyugaikbn, ptid, denpnum, creymd);
 
+COMMENT ON TABLE tbl_syunou_prv IS '収納(プレビュー)';
+

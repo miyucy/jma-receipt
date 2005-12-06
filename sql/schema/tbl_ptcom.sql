@@ -19,3 +19,5 @@ CREATE TABLE tbl_ptcom (
 ALTER TABLE ONLY tbl_ptcom
     ADD CONSTRAINT tbl_ptcom_primary_key PRIMARY KEY (hospid, ptid, zainum, srycd, rennum);
 
+COMMENT ON TABLE tbl_ptcom IS '患者コメント';
+

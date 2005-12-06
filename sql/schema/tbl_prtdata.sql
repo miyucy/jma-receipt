@@ -19,3 +19,5 @@ CREATE TABLE tbl_prtdata (
 ALTER TABLE ONLY tbl_prtdata
     ADD CONSTRAINT tbl_prtdata_primary_key PRIMARY KEY (tbl_key, rennum, tbl_group, shori_rennum, page);
 
+COMMENT ON TABLE tbl_prtdata IS '°õºþ¥Ç¡¼¥¿';
+

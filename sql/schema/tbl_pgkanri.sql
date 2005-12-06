@@ -18,3 +18,5 @@ CREATE TABLE tbl_pgkanri (
 ALTER TABLE ONLY tbl_pgkanri
     ADD CONSTRAINT tbl_pgkanri_primary_key PRIMARY KEY (debianversion, systemversion, pgno);
 
+COMMENT ON TABLE tbl_pgkanri IS 'プログラム管理';
+

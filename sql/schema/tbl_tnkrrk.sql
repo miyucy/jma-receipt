@@ -13,3 +13,5 @@ CREATE TABLE tbl_tnkrrk (
 ALTER TABLE ONLY tbl_tnkrrk
     ADD CONSTRAINT tbl_tnkrrk_primary_key PRIMARY KEY (hospid, ptid, stymd);
 
+COMMENT ON TABLE tbl_tnkrrk IS '«Ø∂‚Õ˙ŒÚ';
+

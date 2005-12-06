@@ -9,3 +9,5 @@ CREATE TABLE tbl_para (
 ALTER TABLE ONLY tbl_para
     ADD CONSTRAINT tbl_para_primary_key PRIMARY KEY (gyoumuid, termid, filemei, edanum);
 
+COMMENT ON TABLE tbl_para IS 'パラメタ';
+

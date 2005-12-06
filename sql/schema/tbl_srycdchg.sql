@@ -13,3 +13,5 @@ CREATE INDEX idx_srycdchg_rjnsrycd ON tbl_srycdchg USING btree (rjnsrycd);
 ALTER TABLE ONLY tbl_srycdchg
     ADD CONSTRAINT tbl_srycdchg_primary_key PRIMARY KEY (ipnsrycd, rjnsrycd);
 
+COMMENT ON TABLE tbl_srycdchg IS '一般老人置換';
+

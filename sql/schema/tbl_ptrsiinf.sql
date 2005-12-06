@@ -38,3 +38,5 @@ CREATE TABLE tbl_ptrsiinf (
 ALTER TABLE ONLY tbl_ptrsiinf
     ADD CONSTRAINT tbl_ptrsiinf_primary_key PRIMARY KEY (hospid, ptid, hknid);
 
+COMMENT ON TABLE tbl_ptrsiinf IS '´µ¼ÔÏ«ºÒÊÝ¸±¾ðÊó';
+

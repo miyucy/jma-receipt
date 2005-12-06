@@ -440,3 +440,5 @@ CREATE TABLE tbl_seikyu (
 ALTER TABLE ONLY tbl_seikyu
     ADD CONSTRAINT tbl_seikyu_primary_key PRIMARY KEY (hospid, sryym, nyugaikbn, ptid, receka, teisyutusaki, recesyubetu, hknjanum, hojokbn_key, tekstymd);
 
+COMMENT ON TABLE tbl_seikyu IS 'ÀÁµá´ÉÍý';
+

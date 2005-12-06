@@ -60,3 +60,5 @@ CREATE TABLE tbl_sryacctplus_prv (
 ALTER TABLE ONLY tbl_sryacctplus_prv
     ADD CONSTRAINT tbl_sryacctplus_prv_primary_key PRIMARY KEY (hospid, nyugaikbn, ptid, sryka, sryym, zainum, rennum);
 
+COMMENT ON TABLE tbl_sryacctplus_prv IS '診療会計付加(プレビュー)';
+

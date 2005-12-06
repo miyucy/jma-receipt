@@ -63,3 +63,5 @@ CREATE TABLE tbl_ptbyomei (
 ALTER TABLE ONLY tbl_ptbyomei
     ADD CONSTRAINT tbl_ptbyomei_primary_key PRIMARY KEY (hospid, ptid, sryka, sryymd, rennum);
 
+COMMENT ON TABLE tbl_ptbyomei IS '╢╣╪тибл╬';
+

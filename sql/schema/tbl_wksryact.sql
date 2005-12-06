@@ -98,3 +98,5 @@ CREATE TABLE tbl_wksryact (
 ALTER TABLE ONLY tbl_wksryact
     ADD CONSTRAINT tbl_wksryact_primary_key PRIMARY KEY (hospid, nyugaikbn, ptid, sryka, sryymd, hkncombi, zainum, rennum);
 
+COMMENT ON TABLE tbl_wksryact IS '¥ï¡¼¥¯¿ÇÎÅ¹Ô°Ù';
+

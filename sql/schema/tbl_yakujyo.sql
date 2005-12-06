@@ -19,3 +19,5 @@ CREATE TABLE tbl_yakujyo (
 ALTER TABLE ONLY tbl_yakujyo
     ADD CONSTRAINT tbl_yakujyo_primary_key PRIMARY KEY (hospid, srycd, teknum);
 
+COMMENT ON TABLE tbl_yakujyo IS 'ÌôºÞ¾ðÊó';
+

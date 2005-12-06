@@ -17,3 +17,5 @@ CREATE TABLE tbl_sykrrk (
 ALTER TABLE ONLY tbl_sykrrk
     ADD CONSTRAINT tbl_sykrrk_primary_key PRIMARY KEY (hospid, ptid, sykkbn, sykymd);
 
+COMMENT ON TABLE tbl_sykrrk IS '¾Ò²ğÍúÎò¾ğÊó';
+

@@ -61,3 +61,5 @@ CREATE TABLE tbl_orderprt (
 ALTER TABLE ONLY tbl_orderprt
     ADD CONSTRAINT tbl_orderprt_primary_key PRIMARY KEY (hospid, ptid, ptnum, nyugaikbn, sryka, hkncombi, sysymd, printymd, printhms, prtkbn, ordernum, rennum);
 
+COMMENT ON TABLE tbl_orderprt IS '¥ª¡¼¥ÀÄ¢É¼';
+

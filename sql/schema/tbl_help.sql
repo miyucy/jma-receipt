@@ -22,3 +22,5 @@ CREATE INDEX idx_help_menu ON tbl_help USING btree (menu);
 ALTER TABLE ONLY tbl_help
     ADD CONSTRAINT tbl_help_primary_key PRIMARY KEY (helpkbn, key_opid, ldname, menunum1, menunum2, edanum);
 
+COMMENT ON TABLE tbl_help IS '¥Ø¥ë¥×';
+

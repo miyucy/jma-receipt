@@ -31,3 +31,5 @@ CREATE TABLE tbl_medyakko (
 ALTER TABLE ONLY tbl_medyakko
     ADD CONSTRAINT tbl_medyakko_primary_key PRIMARY KEY (iyakuhincd, rennum);
 
+COMMENT ON TABLE tbl_medyakko IS 'Ìô¸ú';
+

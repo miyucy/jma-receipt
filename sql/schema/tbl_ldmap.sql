@@ -62,3 +62,5 @@ CREATE TABLE tbl_ldmap (
 ALTER TABLE ONLY tbl_ldmap
     ADD CONSTRAINT tbl_ldmap_pkey PRIMARY KEY (map_ldname);
 
+COMMENT ON TABLE tbl_ldmap IS '排他制御業務管理';
+

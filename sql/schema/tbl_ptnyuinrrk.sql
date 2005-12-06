@@ -41,3 +41,5 @@ CREATE TABLE tbl_ptnyuinrrk (
 ALTER TABLE ONLY tbl_ptnyuinrrk
     ADD CONSTRAINT tbl_ptnyuinrrk_primary_key PRIMARY KEY (hospid, ptid, rrknum, rrkedanum);
 
+COMMENT ON TABLE tbl_ptnyuinrrk IS '´µ¼ÔÆþ±¡ÍúÎò';
+

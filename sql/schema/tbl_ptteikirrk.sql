@@ -23,3 +23,5 @@ CREATE TABLE tbl_ptteikirrk (
 ALTER TABLE ONLY tbl_ptteikirrk
     ADD CONSTRAINT tbl_ptteikirrk_primary_key PRIMARY KEY (hospid, ptid, sryym, sakkbn, hkncombinum);
 
+COMMENT ON TABLE tbl_ptteikirrk IS '´µ¼ÔÄê´üÀÁµáÍúÎò';
+

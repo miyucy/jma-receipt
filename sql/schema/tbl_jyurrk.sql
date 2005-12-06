@@ -55,3 +55,5 @@ CREATE INDEX idx_jyurrk_upymd ON tbl_jyurrk USING btree (hospid, upymd, nyugaikb
 ALTER TABLE ONLY tbl_jyurrk
     ADD CONSTRAINT tbl_jyurrk_primary_key PRIMARY KEY (hospid, ptid, nyugaikbn, sryka, sryymd, rennum, douji_rennum, kaikei_rennum, edanum);
 
+COMMENT ON TABLE tbl_jyurrk IS '¼õ¿ÇÍúÎò';
+

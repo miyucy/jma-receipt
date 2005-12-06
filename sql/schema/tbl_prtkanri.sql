@@ -18,3 +18,5 @@ CREATE TABLE tbl_prtkanri (
 ALTER TABLE ONLY tbl_prtkanri
     ADD CONSTRAINT tbl_prtkanri_primary_key PRIMARY KEY (tbl_key, rennum, tbl_group, shori_rennum);
 
+COMMENT ON TABLE tbl_prtkanri IS '°õºþ´ÉÍý';
+

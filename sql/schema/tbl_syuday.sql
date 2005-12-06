@@ -667,3 +667,5 @@ CREATE TABLE tbl_syuday (
 ALTER TABLE ONLY tbl_syuday
     ADD CONSTRAINT tbl_syuday_primary_key PRIMARY KEY (hospid, nyugaikbn, ptid, denpnum);
 
+COMMENT ON TABLE tbl_syuday IS 'ÆüÊÌ¼ýÇ¼';
+

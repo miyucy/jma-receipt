@@ -19,3 +19,5 @@ CREATE TABLE tbl_recekanri (
 ALTER TABLE ONLY tbl_recekanri
     ADD CONSTRAINT tbl_recekanri_primary_key PRIMARY KEY (prtid, syokbn, creymd, crehms, teisyutusaki, recesyubetu);
 
+COMMENT ON TABLE tbl_recekanri IS 'レセプト管理';
+

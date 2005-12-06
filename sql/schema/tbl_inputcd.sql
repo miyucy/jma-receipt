@@ -18,3 +18,5 @@ CREATE INDEX idx_inputcd_key2 ON tbl_inputcd USING btree (srycd, hospid);
 ALTER TABLE ONLY tbl_inputcd
     ADD CONSTRAINT tbl_inputcd_primary_key PRIMARY KEY (hospid, cdsyu, inputcd);
 
+COMMENT ON TABLE tbl_inputcd IS '入力コード';
+

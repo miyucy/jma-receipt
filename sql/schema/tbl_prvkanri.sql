@@ -33,3 +33,5 @@ CREATE TABLE tbl_prvkanri (
 ALTER TABLE ONLY tbl_prvkanri
     ADD CONSTRAINT tbl_prvkanri_pkey PRIMARY KEY (tbl_key, rennum, tbl_group, shori_rennum, page);
 
+COMMENT ON TABLE tbl_prvkanri IS 'プレビュー管理';
+

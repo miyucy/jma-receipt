@@ -53,3 +53,5 @@ CREATE TABLE tbl_santei (
 ALTER TABLE ONLY tbl_santei
     ADD CONSTRAINT tbl_santei_primary_key PRIMARY KEY (hospid, ptid, sryym, srycd, nyugaikbn, sryka, hkncombinum);
 
+COMMENT ON TABLE tbl_santei IS '»»ÄêÍúÎò';
+

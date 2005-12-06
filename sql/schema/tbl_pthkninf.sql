@@ -25,3 +25,5 @@ CREATE TABLE tbl_pthkninf (
 ALTER TABLE ONLY tbl_pthkninf
     ADD CONSTRAINT tbl_pthkninf_primary_key PRIMARY KEY (hospid, ptid, hknid);
 
+COMMENT ON TABLE tbl_pthkninf IS '患者保険情報';
+

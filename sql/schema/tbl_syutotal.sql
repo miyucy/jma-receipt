@@ -171,3 +171,5 @@ CREATE TABLE tbl_syutotal (
 ALTER TABLE ONLY tbl_syutotal
     ADD CONSTRAINT tbl_syutotal_primary_key PRIMARY KEY (hospid, nyugaikbn, ptid, denpnum);
 
+COMMENT ON TABLE tbl_syutotal IS '¼ýÇ¼¹ç·×';
+

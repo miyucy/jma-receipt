@@ -32,3 +32,5 @@ CREATE TABLE tbl_jobkanri (
 ALTER TABLE ONLY tbl_jobkanri
     ADD CONSTRAINT tbl_jobkanri_primary_key PRIMARY KEY (jobid, shellid, run_opid);
 
+COMMENT ON TABLE tbl_jobkanri IS 'ジョブ管理情報';
+

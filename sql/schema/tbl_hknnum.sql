@@ -111,3 +111,5 @@ CREATE TABLE tbl_hknnum (
 ALTER TABLE ONLY tbl_hknnum
     ADD CONSTRAINT tbl_hknnum_primary_key PRIMARY KEY (hospid, hknnum, tekstymd, paykbn);
 
+COMMENT ON TABLE tbl_hknnum IS ' ›∏±»÷πÊ';
+

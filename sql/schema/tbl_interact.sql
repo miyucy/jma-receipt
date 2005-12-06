@@ -13,3 +13,5 @@ CREATE INDEX idx_interact_drugcd ON tbl_interact USING btree (drugcd);
 
 CREATE INDEX idx_interact_drugcd2 ON tbl_interact USING btree (drugcd2);
 
+COMMENT ON TABLE tbl_interact IS 'ม๊ธ฿บ๎อั';
+

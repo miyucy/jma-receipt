@@ -29,3 +29,5 @@ CREATE TABLE tbl_syumei_prv (
 ALTER TABLE ONLY tbl_syumei_prv
     ADD CONSTRAINT tbl_syumei_prv_primary_key PRIMARY KEY (hospid, nyugaikbn, ptid, denpnum, denpedanum, creymd);
 
+COMMENT ON TABLE tbl_syumei_prv IS '収納明細(プレビュー)';
+

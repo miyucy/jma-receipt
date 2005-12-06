@@ -276,3 +276,5 @@ CREATE INDEX idx_syunou_ptid ON tbl_syunou USING btree (ptid);
 ALTER TABLE ONLY tbl_syunou
     ADD CONSTRAINT tbl_syunou_primary_key PRIMARY KEY (hospid, nyugaikbn, ptid, denpnum);
 
+COMMENT ON TABLE tbl_syunou IS '¼ýÇ¼';
+

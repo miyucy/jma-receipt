@@ -19,3 +19,5 @@ CREATE INDEX idx_ptnum_ptnum ON tbl_ptnum USING btree (ptnum);
 ALTER TABLE ONLY tbl_ptnum
     ADD CONSTRAINT tbl_ptnum_primary_key PRIMARY KEY (hospid, ptid);
 
+COMMENT ON TABLE tbl_ptnum IS '患者番号変換';
+

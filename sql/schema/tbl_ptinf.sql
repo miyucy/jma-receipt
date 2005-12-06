@@ -67,3 +67,5 @@ CREATE INDEX idx_ptinf_name ON tbl_ptinf USING btree (name);
 ALTER TABLE ONLY tbl_ptinf
     ADD CONSTRAINT tbl_ptinf_primary_key PRIMARY KEY (hospid, ptid);
 
+COMMENT ON TABLE tbl_ptinf IS '´µ¼Ô¾ðÊó';
+

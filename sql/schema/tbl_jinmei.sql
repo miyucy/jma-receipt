@@ -10,3 +10,5 @@ CREATE INDEX idx_jinmei_kana ON tbl_jinmei USING btree (kana);
 ALTER TABLE ONLY tbl_jinmei
     ADD CONSTRAINT tbl_jinmei_primary_key PRIMARY KEY (kanji, kana);
 
+COMMENT ON TABLE tbl_jinmei IS '¿ÍÌ¾¼­½ñ';
+

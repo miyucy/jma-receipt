@@ -53,3 +53,5 @@ CREATE TABLE tbl_santei_prv (
 ALTER TABLE ONLY tbl_santei_prv
     ADD CONSTRAINT tbl_santei_prv_primary_key PRIMARY KEY (hospid, ptid, sryym, srycd, nyugaikbn, sryka, hkncombinum);
 
+COMMENT ON TABLE tbl_santei_prv IS '算定履歴(プレビュー)';
+
