@@ -609,6 +609,7 @@
            MOVE    SODR-OPID       TO  SODRNACCT-OPID
            MOVE    SODR-UPYMD      TO  SODRNACCT-UPYMD
            MOVE    SODR-UPHMS      TO  SODRNACCT-UPHMS
+           MOVE    ITEM-SKJTIME    TO  SODRNACCT-SKJTIME
            MOVE    TRRK-REC        TO  LNK-PTNYUINRRK-REC
       *
            CALL    "ORCSODRNACCT"      USING
