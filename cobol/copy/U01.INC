@@ -41,6 +41,7 @@
                     07  U01-SI-HKNCOMBI  PIC X(50).
                     07  U01-SI-UKETIME  PIC X(8).
                     07  U01-SI-YYKTIME  PIC X(8).
+                    07  U01-SI-SRFLG    PIC X(4).
                   06  U01-SI-SELECT  PIC X       OCCURS  200 TIMES.
               04  U01-SCROLLEDWINDOW2.
                 05  U01-LIST2.
@@ -59,4 +60,5 @@
                     07  U01-SZ-HKNCOMBI  PIC X(50).
                     07  U01-SZ-UKETIME  PIC X(8).
                     07  U01-SZ-YYKTIME  PIC X(8).
+                    07  U01-SZ-SRFLG    PIC X(4).
                   06  U01-SZ-SELECT  PIC X       OCCURS  200 TIMES.

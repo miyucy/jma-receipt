@@ -152,6 +152,7 @@
                            11  SPA-GMN-TKYYKTIME       PIC X(04).
                            11  SPA-GMN-TYYKID          PIC X(02).
                            11  SPA-GMN-TRRKYMD         PIC X(10).
+                           11  SPA-GMN-TSRFLG          PIC X(04).
                    07  SPA-UKE-MAX                     PIC 9(04).
       *
       *---- (01.00.03) LINE MOD START -------------------------------

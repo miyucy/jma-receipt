@@ -527,9 +527,9 @@
     <widget>
       <class>GtkScrolledWindow</class>
       <name>scrolledwindow1</name>
-      <x>16</x>
+      <x>12</x>
       <y>56</y>
-      <width>964</width>
+      <width>972</width>
       <height>380</height>
       <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
       <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
@@ -567,8 +567,8 @@
 	  <data>SELECT</data>
 	  <last_modification_time>Wed, 23 Jan 2002 07:12:12 GMT</last_modification_time>
 	</signal>
-	<columns>11</columns>
-	<column_widths>36,82,160,80,54,72,69,96,106,54,54</column_widths>
+	<columns>12</columns>
+	<column_widths>30,82,160,80,43,58,69,96,106,54,54,20</column_widths>
 	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
 	<show_titles>True</show_titles>
 	<shadow_type>GTK_SHADOW_IN</shadow_type>
@@ -715,15 +715,28 @@
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
 	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>label81</name>
+	  <label>送信</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
       </widget>
     </widget>
 
     <widget>
       <class>GtkScrolledWindow</class>
       <name>scrolledwindow2</name>
-      <x>16</x>
+      <x>12</x>
       <y>496</y>
-      <width>964</width>
+      <width>972</width>
       <height>176</height>
       <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
       <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
@@ -761,8 +774,8 @@
 	  <data>SELECT</data>
 	  <last_modification_time>Wed, 23 Jan 2002 07:12:21 GMT</last_modification_time>
 	</signal>
-	<columns>11</columns>
-	<column_widths>36,82,160,80,54,72,69,96,106,54,54</column_widths>
+	<columns>12</columns>
+	<column_widths>30,82,160,80,42,59,69,96,106,54,54,20</column_widths>
 	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
 	<show_titles>True</show_titles>
 	<shadow_type>GTK_SHADOW_IN</shadow_type>
@@ -902,6 +915,19 @@
 	  <child_name>CList:title</child_name>
 	  <name>label80</name>
 	  <label>会計時間</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>label82</name>
+	  <label>送信</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>

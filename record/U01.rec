@@ -26,6 +26,7 @@ U01	{
 					value9	varchar(50);
 					value10	varchar(8);
 					value11	varchar(8);
+					value12	varchar(4);
 				}	[200];
 				select	bool[200];
 			};
@@ -47,6 +48,7 @@ U01	{
 					value9	varchar(50);
 					value10	varchar(8);
 					value11	varchar(8);
+					value12	varchar(4);
 				}	[200];
 				select	bool[200];
 			};

@@ -100,6 +100,7 @@
                     07  U02-ULSRYNAIYO    PIC X(20).
                     07  U02-ULHKNCOMBI    PIC X(55).
                     07  U02-ULRRKYMD      PIC X(10).
+                    07  U02-ULSRFLG       PIC X(04).
                   05  U02-UKETUKE-SELECT  PIC X       OCCURS  200 TIMES.
               03  U02-MIKAKUNINN-LIST.
                 04  U02-MIKAKUNINN-COUNT   PIC S9(9)   BINARY.
