@@ -1,4 +1,4 @@
-CREATE TABLE tbl_syunou (
+CREATE TABLE tbl_syunou_prv (
     hospid character(24) NOT NULL,
     nyugaikbn character(1) NOT NULL,
     ptid numeric(10,0) NOT NULL,
@@ -113,16 +113,16 @@ CREATE TABLE tbl_syunou (
     jihi_4_tax numeric(7,0),
     jihi_5 numeric(7,0),
     jihi_5_tax numeric(7,0),
-    jihi_6 numeric(7,0) DEFAULT 0,
-    jihi_6_tax numeric(7,0) DEFAULT 0,
-    jihi_7 numeric(7,0) DEFAULT 0,
-    jihi_7_tax numeric(7,0) DEFAULT 0,
-    jihi_8 numeric(7,0) DEFAULT 0,
-    jihi_8_tax numeric(7,0) DEFAULT 0,
-    jihi_9 numeric(7,0) DEFAULT 0,
-    jihi_9_tax numeric(7,0) DEFAULT 0,
-    jihi_10 numeric(7,0) DEFAULT 0,
-    jihi_10_tax numeric(7,0) DEFAULT 0,
+    jihi_6 numeric(7,0),
+    jihi_6_tax numeric(7,0),
+    jihi_7 numeric(7,0),
+    jihi_7_tax numeric(7,0),
+    jihi_8 numeric(7,0),
+    jihi_8_tax numeric(7,0),
+    jihi_9 numeric(7,0),
+    jihi_9_tax numeric(7,0),
+    jihi_10 numeric(7,0),
+    jihi_10_tax numeric(7,0),
     jihi_total numeric(7,0),
     jihi_total_tax numeric(7,0),
     jihi_tax numeric(7,0),
@@ -143,7 +143,7 @@ CREATE TABLE tbl_syunou (
     discount_ratekbn character(2),
     discount_teiritu character(1),
     discount_rate numeric(7,0),
-    discount_money numeric(7,0) DEFAULT 0,
+    discount_money numeric(7,0),
     rsishoshin_money numeric(7,0),
     rsisaishin_money numeric(7,0),
     rsisdo_money numeric(7,0),
@@ -261,18 +261,16 @@ CREATE TABLE tbl_syunou (
     dayinfflg character(1),
     nyuin_rrknum numeric(3,0),
     acct_updkbn character(1),
-    jyo_hknftnmoney numeric(7,0) DEFAULT 0,
-    jyo_compftn numeric(7,0) DEFAULT 0,
-    jyo_compftn_entani numeric(8,1) DEFAULT 0,
+    jyo_hknftnmoney numeric(7,0),
+    jyo_compftn numeric(7,0),
+    jyo_compftn_entani numeric(8,1),
     termid character varying(16),
     opid character varying(16),
-    creymd character(8),
+    creymd character(8) NOT NULL,
     upymd character(8),
     uphms character(6)
 );
 
-CREATE INDEX idx_syunou_ptid ON tbl_syunou USING btree (ptid);
-
-ALTER TABLE ONLY tbl_syunou
-    ADD CONSTRAINT tbl_syunou_primary_key PRIMARY KEY (hospid, nyugaikbn, ptid, denpnum);
+ALTER TABLE ONLY tbl_syunou_prv
+    ADD CONSTRAINT tbl_syunou_prv_pkey PRIMARY KEY (hospid, nyugaikbn, ptid, denpnum, creymd);
 

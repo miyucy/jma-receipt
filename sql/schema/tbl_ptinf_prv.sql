@@ -1,4 +1,4 @@
-CREATE TABLE tbl_ptinf (
+CREATE TABLE tbl_ptinf_prv (
     hospid character(24) NOT NULL,
     ptid numeric(10,0) NOT NULL,
     kananame character varying(100),
@@ -60,10 +60,10 @@ CREATE TABLE tbl_ptinf (
     uphms character(6)
 );
 
-CREATE INDEX idx_ptinf_kananame ON tbl_ptinf USING btree (kananame);
+CREATE INDEX idx_ptinf_prv_kananame ON tbl_ptinf_prv USING btree (kananame);
 
-CREATE INDEX idx_ptinf_name ON tbl_ptinf USING btree (name);
+CREATE INDEX idx_ptinf_prv_name ON tbl_ptinf_prv USING btree (name);
 
-ALTER TABLE ONLY tbl_ptinf
-    ADD CONSTRAINT tbl_ptinf_primary_key PRIMARY KEY (hospid, ptid);
+ALTER TABLE ONLY tbl_ptinf_prv
+    ADD CONSTRAINT tbl_ptinf_prv_primary_key PRIMARY KEY (hospid, ptid);
 

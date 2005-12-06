@@ -6,7 +6,7 @@ CREATE TABLE tbl_rececom (
     sryym character(6) NOT NULL,
     hkncombi numeric(4,0) NOT NULL,
     srydd character(2) NOT NULL,
-    "comment" character varying(800),
+    "comment" character varying(1600),
     termid character varying(16),
     opid character varying(16),
     creymd character(8),

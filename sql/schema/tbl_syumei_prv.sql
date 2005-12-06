@@ -1,4 +1,4 @@
-CREATE TABLE tbl_syumei (
+CREATE TABLE tbl_syumei_prv (
     hospid character(24) NOT NULL,
     nyugaikbn character(1) NOT NULL,
     ptid numeric(10,0) NOT NULL,
@@ -20,12 +20,12 @@ CREATE TABLE tbl_syumei (
     dailykey character(12),
     termid character varying(16),
     opid character varying(16),
-    creymd character(8),
+    creymd character(8) NOT NULL,
     crehms character(6),
     upymd character(8),
     uphms character(6)
 );
 
-ALTER TABLE ONLY tbl_syumei
-    ADD CONSTRAINT tbl_syumei_primary_key PRIMARY KEY (hospid, nyugaikbn, ptid, denpnum, denpedanum);
+ALTER TABLE ONLY tbl_syumei_prv
+    ADD CONSTRAINT tbl_syumei_prv_primary_key PRIMARY KEY (hospid, nyugaikbn, ptid, denpnum, denpedanum, creymd);
 
