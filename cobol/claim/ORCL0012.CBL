@@ -90,29 +90,25 @@
       *****************************************************************
        LINKAGE                     SECTION.
       *
-       01  LNK-KBN              PIC X(01).
        01  LNK-PTID             PIC 9(10).
        01  LNK-SRYKA            PIC X(02).
        01  LNK-TIME             PIC X(06).
        01  LNK-HOSPID           PIC X(24).
-       01  LNK-IP-ADDRESS       PIC X(05).
-       01  LNK-PORT             PIC X(05).
        01  LNK-DRCD             PIC X(05).
        01  LNK-HKNCOMBI         PIC X(04).
+       01  LNK-RC               PIC X(02).
       *
       *
       ******************************************************************
       *
        PROCEDURE                       DIVISION
-                                       USING   LNK-KBN
-                                               LNK-PTID
+                                       USING   LNK-PTID
                                                LNK-SRYKA
                                                LNK-TIME
                                                LNK-HOSPID
-                                               LNK-IP-ADDRESS
-                                               LNK-PORT
                                                LNK-DRCD
-                                               LNK-HKNCOMBI.
+                                               LNK-HKNCOMBI
+                                               LNK-RC.
       *
       *****************************************************************
       *    主　　処理
