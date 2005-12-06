@@ -1039,3 +1039,18 @@ path	key44 	{
 		;
 	};
 };
+
+path	key45 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_key45_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syunou
+			WHERE   HOSPID     =   :HOSPID
+			AND   NYUGAIKBN    =   :NYUGAIKBN
+			AND   PTID         =   :PTID
+			AND   NYUIN_RRKNUM =   :NYUIN_RRKNUM
+			AND   CREATEKBN   <>  '3'
+		;
+	};
+};
+
