@@ -124,6 +124,7 @@
                                             WRK-PARA-HOSPID
                                             WRK-PARA-DRCD
                                             WRK-PARA-HKNCOMBI
+                                            WRK-PARA-RC
       *
       *???
            DISPLAY "PARA " WRK-PARA "##"
