@@ -381,6 +381,8 @@
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPAREA".
+      *    LIKE»ÈÍÑKEYÂÐ±þ
+           COPY    "CPORCSADDSIGN.INC".
       *
            COPY    "MCPDATA.INC".
       *
@@ -2371,8 +2373,12 @@
       *
       *----(00.00.02)--UPD-START---
            INITIALIZE                  SYS-1001-REC
+           INITIALIZE                  ORCSADDSIGNAREA
            MOVE    "1001"          TO  SYS-1001-KANRICD
-           MOVE    "*%"            TO  SYS-1001-KBNCD
+           MOVE    "*"             TO  SADDSIGN-STR
+           CALL    "ORCSADDSIGN"       USING
+                                       ORCSADDSIGNAREA
+           MOVE    SADDSIGN-STR    TO  SYS-1001-KBNCD
            MOVE    WRK-SYSYMD      TO  SYS-1001-STYUKYMD
                                        SYS-1001-EDYUKYMD
            MOVE    SYS-1001-REC    TO  MCPDATA-REC
