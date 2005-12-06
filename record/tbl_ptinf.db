@@ -303,3 +303,18 @@ path	key15	{
 		;
 	};
 };
+
+path	upd1	{
+	DBUPDATE	{
+		UPDATE	tbl_ptinf
+		SET		RRKNUM			= :RRKNUM,
+				RRKEDANUM		= :RRKEDANUM,
+				OPID	   		= :OPID,
+				UPYMD    		= :UPYMD,
+				UPHMS			= :UPHMS
+		WHERE   HOSPID      =   :HOSPID
+		AND		PTID  		=   :PTID
+		;
+	};
+};
+
