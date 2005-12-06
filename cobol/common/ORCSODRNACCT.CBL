@@ -341,6 +341,9 @@
                05  WRK-MMS2                PIC 9(02).
                05  WRK-DDS2                PIC 9(02).
       *
+      *    食堂加算設定用の退避領域
+       01   WRK-SHOKUDOU                   PIC 9(02).
+      *
       *    診療所老人医療管理料（転科、転棟）計算エリア
        01  TN-IDX                          PIC 9(02).
        01  WK-TOKUTEI-DAY                  PIC 9(04).
@@ -2174,10 +2177,6 @@
       *****************************************************************
        4801-SHOKUJI-SEC         SECTION.
       *
-           DISPLAY "4801-SHOKUJI-SEC"
-           DISPLAY "LNK-PTNYUINRRK-HOSPID" LNK-PTNYUINRRK-HOSPID
-           DISPLAY "LNK-PTNYUINRRK-PTID" LNK-PTNYUINRRK-PTID
-           DISPLAY "SODRNACCT-STARTYMD" SODRNACCT-STARTYMD
       *    食事のセット
            INITIALIZE                          NYUINACCT-REC
            MOVE    LNK-PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
@@ -2189,12 +2188,10 @@
            IF      FLG-NYUINACCT           =   ZERO
                MOVE     "NYUINACCT-KEY17"  TO  ORC-DBPATH
                PERFORM   910-NYUINACCT-READ-SEC
-               DISPLAY "FLG-NYUINACCT " FLG-NYUINACCT
                PERFORM   UNTIL   (FLG-NYUINACCT    =   1)
                  IF   NACCT-SRYCDTOTAL  =  99999913
       *            食事区分のセット
                    MOVE    SODRNACCT-STARTYMD      TO  WRK-STARTYMD
-                   DISPLAY  "SODRNACCT-SKJTIME = " SODRNACCT-SKJTIME
                    IF   SODRNACCT-SKJTIME   =  "01"
                      EVALUATE   SODRNACCT-ORDERID(3:2)
                        WHEN   "01"
@@ -2227,6 +2224,9 @@
                            MOVE   4     TO   NACCT-DAY(WRK-STARTYMD-D)
                      END-EVALUATE
                    END-IF
+      *            食堂加算の編集用に退避
+                   MOVE    NACCT-DAY(WRK-STARTYMD-D)  TO WRK-SHOKUDOU
+      *
                    MOVE    NYUINACCT-REC   TO   MCPDATA-REC
                    MOVE    "DBUPDATE"      TO   MCP-FUNC
                    MOVE    "NYUINACCT-KEY" TO   ORC-DBPATH
@@ -2243,6 +2243,44 @@
            MOVE     "NYUINACCT-KEY17"       TO  WRK-DBPATH
            PERFORM   900-TBL-CLOSE-SEC
       *
+      *-------------------食堂加算ここから----------------------------
+      *    食事のセット
+           INITIALIZE                          NYUINACCT-REC
+           MOVE    LNK-PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
+           MOVE    LNK-PTNYUINRRK-PTID     TO  NACCT-PTID
+           MOVE    SODRNACCT-STARTYMD(1:6) TO  NACCT-SRYYM
+           MOVE    "4"                     TO  NACCT-ZAISKBKBN
+           MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
+           PERFORM 910-NYUINACCT-SELECT-SEC
+           IF      FLG-NYUINACCT           =   ZERO
+               MOVE     "NYUINACCT-KEY17"  TO  ORC-DBPATH
+               PERFORM   910-NYUINACCT-READ-SEC
+               PERFORM   UNTIL   (FLG-NYUINACCT    =   1)
+                 IF   NACCT-SRYCDTOTAL  =  197000570
+      *            食堂加算のセット
+                   MOVE    SODRNACCT-STARTYMD      TO  WRK-STARTYMD
+                   IF    WRK-SHOKUDOU    NOT =  ZERO
+                         MOVE   1   TO   NACCT-DAY(WRK-STARTYMD-D)
+                   ELSE
+                         MOVE   0   TO   NACCT-DAY(WRK-STARTYMD-D)
+                   END-IF
+      *
+                   MOVE    NYUINACCT-REC   TO   MCPDATA-REC
+                   MOVE    "DBUPDATE"      TO   MCP-FUNC
+                   MOVE    "NYUINACCT-KEY" TO   ORC-DBPATH
+                   CALL    "ORCMCPSUB"         USING    MCPAREA
+                                                        ORCMCPAREA
+                                                        MCPDATA-REC
+      *
+                 END-IF
+                 MOVE    "NYUINACCT-KEY17"   TO  ORC-DBPATH
+                 PERFORM 910-NYUINACCT-READ-SEC
+               END-PERFORM
+           END-IF
+      *    入院会計クローズ
+           MOVE     "NYUINACCT-KEY17"       TO  WRK-DBPATH
+           PERFORM   900-TBL-CLOSE-SEC
+      *-------------------食堂加算ここまで----------------------------
            .
        4801-SHOKUJI-EXT.
            EXIT.
