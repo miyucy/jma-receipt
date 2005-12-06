@@ -63,6 +63,7 @@
       *  02.00.12    NACL-多々納  03/11/07  受付更新修正
       *  02.00.13    NACL-多々納  05/02/04  受付マスタに保険組合せ追加
       *  02.00.14    NACL-多々納  05/10/07  ユーザプログラム起動追加
+      *  02.00.15    NACL-多々納  05/12/07  送受信フラグ追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -219,6 +220,7 @@
                 05  WRK-SORT-TKYYKTIME                PIC X(04).
                 05  WRK-SORT-TYYKID                   PIC X(02).
                 05  WRK-SORT-THKNCOMBI                PIC 9(04).
+                05  WRK-SORT-TSRFLG                   PIC X(02).
       *
            03  WORK-SORT                               PIC X(100).
       *
@@ -800,6 +802,9 @@
                                              WRK-SORT-TSRYNAIYOCD(IDX)
                        MOVE    UKE-HKNCOMBI  TO 
                                              WRK-SORT-THKNCOMBI   (IDX)
+      *                送受信フラグ
+                       MOVE    UKE-SRFLG     TO
+                                             WRK-SORT-TSRFLG   (IDX)
       *                患者氏名を患者マスタより
                        IF     (UKE-PTID      NOT =   ZERO  )  AND
                               (UKE-NAME          =   SPACE )
@@ -928,6 +933,18 @@
                ELSE
                    PERFORM 31013-HKNCOMBI-HEN-SEC
                END-IF
+      *
+      *        送受信フラグ
+               EVALUATE    WRK-SORT-TSRFLG (IDX)
+                   WHEN    "00"
+                       MOVE    "送済"          TO  SPA-GMN-TSRFLG (IDX)
+                   WHEN    "01"
+                       MOVE    "閉塞"          TO  SPA-GMN-TSRFLG (IDX)
+                   WHEN    "02"
+                       MOVE    "送誤"          TO  SPA-GMN-TSRFLG (IDX)
+                   WHEN    "03"
+                       MOVE    "会待"          TO  SPA-GMN-TSRFLG (IDX)
+               END-EVALUATE
            END-PERFORM
       *
            .
@@ -4363,6 +4380,7 @@
                MOVE    SPA-GMN-THKNCOMBI-G (IDX)
                                                 TO  U02-ULHKNCOMBI(IDX)
                MOVE    SPA-GMN-TRRKYMD  (IDX)   TO  U02-ULRRKYMD  (IDX)
+               MOVE    SPA-GMN-TSRFLG   (IDX)   TO  U02-ULSRFLG   (IDX)
       *
                IF      SPA-GMN-TNUM  (IDX)  =   SPA-NAI-SELNUM
                    MOVE    "T"              TO  U02-UKETUKE-SELECT
