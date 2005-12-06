@@ -19,10 +19,19 @@ RSTFILE=/home/orca/$PRGDIR/RESTART
 PATCHDIR=/var/lib/jma-receipt/patch
 PACKAGEFILE=patch@VERSION@.gz
 
-FTP=$PGUPGRADEPATH/@VERSION@
+PRGPATH=$PGUPGRADEPATH/@VERSION@
+
+#オフラインメンテナンスであるかチェック
+OFFLINEPATH=`echo $PRGPATH | sed -ne 's#file://##p'`
+if [ -z $OFFLINEPATH ]; then
+    OFFLINE="online"
+else
+    OFFLINE="offline"
+    PRGPATH=$OFFLINEPATH
+fi
 
 #更新プログラムダウンロード
-ruby $SCRIPTSDIR/allways/cachedl.rb $PACKAGEFILE $PATCHDIR $FTP
+ruby $SCRIPTSDIR/allways/cachedl.rb $PACKAGEFILE $PATCHDIR $PRGPATH $OFFLINE $WGETOPTION
 
 if ! [	-d	$HOME/$PRGDIR	];	then 
 	cd $HOME

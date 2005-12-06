@@ -12,10 +12,10 @@ fi
 HOME=/home/orca
 MSTDIR=orca-$(date +%Y%m%d)
 
+UPDKANRIFILE=info/ORCADBR-2.DAT
+
 UPDFILE=/home/orca/$MSTDIR/ORCADBR.OUT
 LEN=100
-
-FTP=ftp.orca.med.or.jp/pub/orca_data/
 
 function orcawget () {
 #受信ファイル削除
@@ -24,7 +24,7 @@ function orcawget () {
 #	echo "rm start" $1
 		rm $1;
 	fi
-	wget -q --passive-ftp ftp://$FTP/$1
+	wget -q $WGETOPTION $MSTUPDATEPATH/$1
 #接続確認
 	if [ $? -eq 0 ]	;	then 
 #	echo "wget end OK"
@@ -74,6 +74,14 @@ function orcatar () {
 	fi
 }
 
+#オフラインメンテナンスであるかチェック
+OFFLINEPATH=`echo $MSTUPDATEPATH | sed -ne 's#file://##p'`
+if [ -z $OFFLINEPATH ]; then
+    OFFLINE="online"
+else
+    OFFLINE="offline"
+fi
+
 echo $MSTDIR
 echo $UPDFILE
 if ! [	-d	$HOME/$MSTDIR	];	then 
@@ -86,13 +94,24 @@ if ! [	-d	$HOME/orca-mstlog	];	then
 fi
 cd $HOME/$MSTDIR
 rm -f *.*
-#センタからのDB構造体ダウンロード
-if	orcawget info/ORCADBR-2.DAT ;	then
-	echo "センタからのDBレコード管理情報のダウンロードが終了しました"
+if  [ $OFFLINE = "offline" ]; then
+    if  [ -e $OFFLINEPATH/$UPDKANRIFILE ]; then
+	cp $OFFLINEPATH/$UPDKANRIFILE ./
+	echo "DBレコード管理情報を複写しました"
+    else
+	echo "DBレコード管理情報がありませんでした"
+	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001MSTMNT99
+	exit 99
+    fi
 else
+#センタからのDB構造体ダウンロード
+    if	orcawget $UPDKANRIFILE ;	then
+	echo "センタからのDBレコード管理情報のダウンロードが終了しました"
+    else
 	echo "センタからのDBレコード管理情報のダウンロードに失敗しました"
 	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001MSTMNT99
         exit 99
+    fi
 fi
 
 #ダウンロードファイル生成
@@ -119,12 +138,23 @@ UPDLIST=`awk '{gsub(/\t| |;/,""); print} ' $UPDFILE`
 for UPD in $UPDLIST
 do
 	echo ${UPD:34:$LEN}
-	if	orcawget ${UPD:34:$LEN} ;	then
-		echo ${UPD:34:$LEN} "ダウンロードが終了しました"
+	if  [ $OFFLINE = "offline" ]; then
+	    if  [ -e $OFFLINEPATH/${UPD:34:$LEN} ]; then
+		cp $OFFLINEPATH/${UPD:34:$LEN} ./
+		echo ${UPD:34:$LEN} "複写が終了しました"
+	    else
+		echo ${UPD:34:$LEN} "複写に失敗しました"
+		$DBSTUB  -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001MSTMNT99
+	        exit 99
+	    fi
 	else
+	    if	orcawget ${UPD:34:$LEN} ;	then
+		echo ${UPD:34:$LEN} "ダウンロードが終了しました"
+	    else
 		echo ${UPD:34:$LEN} "ダウンロードに失敗しました"
 		$DBSTUB  -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001MSTMNT99
 	        exit 99
+	    fi
 	fi
 done
 

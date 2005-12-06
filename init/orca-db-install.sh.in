@@ -19,11 +19,13 @@ UPDSQL1="update tbl_dbkanri set termid='##' where kanricd='ORCADB00';"
 SQLSELECT="SELECT * FROM TBL_DBKANRI WHERE KANRICD='ORCADB00';"
 
 DBHOST=localhost
+
+UPDKANRIFILE=info/ORCADBS.DAT
+
 UPDFILE=/home/orca/$MSTDIR/ORCADBS.OUT
 TBLFILE=/home/orca/$MSTDIR/ORCADBS.TBL
 LEN=100
 #
-FTP=ftp.orca.med.or.jp/pub/orca_data/
 
 function orcawget () {
 	DWNFL=`echo $1 | awk '{i=split($0,arr,"/"); print arr[i]} ' `
@@ -36,7 +38,7 @@ function orcawget () {
 #	echo "rm start" $DWNFL
 		rm $DWNFL;
 	fi
-	wget -q --passive-ftp ftp://$FTP/$1
+	wget -q $WGETOPTION $DBUPGRADEPATH/$1
 #接続確認
 	if [ $? -eq 0 ]	;	then 
 #	echo "wget end OK"
@@ -110,6 +112,15 @@ fi
 #整合性チェックここまで
 #DB管理情報更新
         echo "update tbl_dbkanri set version=' $VERDATA2 ' where kanricd='ORCADB00';" | su - orca -c "psql orca"
+
+#オフラインメンテナンスであるかチェック
+OFFLINEPATH=`echo $DBUPGRADEPATH | sed -ne 's#file://##p'`
+if [ -z $OFFLINEPATH ]; then
+    OFFLINE="online"
+else
+    OFFLINE="offline"
+fi
+
 echo $MSTDIR
 echo $UPDFILE
 if ! [	-d	$HOME/$MSTDIR	];	then 
@@ -118,12 +129,22 @@ if ! [	-d	$HOME/$MSTDIR	];	then
 fi
 cd $HOME/$MSTDIR
 rm -f *
-#センタからのDB構造体ダウンロード
-if	orcawget info/ORCADBS.DAT ;	then
-	echo "センタからのDBレコード管理情報のダウンロードが終了しました" >>master_log
+if  [ $OFFLINE = "offline" ]; then
+    if  [ -e $OFFLINEPATH/$UPDKANRIFILE ]; then
+	cp $OFFLINEPATH/$UPDKANRIFILE ./
+	echo "DBレコード管理情報を複写しました" >>master_log
+    else
+	echo "DBレコード管理情報がありませんでした" >>master_log
+	exit 99
+    fi
 else
+#センタからのDB構造体ダウンロード
+    if	orcawget $UPDKANRIFILE ;	then
+	echo "センタからのDBレコード管理情報のダウンロードが終了しました" >>master_log
+    else
 	echo "センタからのDBレコード管理情報のダウンロードに失敗しました" >>master_log
         exit 99
+    fi
 fi
 
 #DB管理情報の取得
@@ -162,11 +183,21 @@ UPDLIST=`awk '{gsub(/\t| |;/,""); print} ' $UPDFILE`
 for UPD in $UPDLIST
 do
 	echo ${UPD:34:$LEN}
-	if	orcawget ${UPD:34:$LEN} ;	then
-		echo ${UPD:34:$LEN} "ダウンロードが終了しました" >>master_log
+	if  [ $OFFLINE = "offline" ]; then
+	    if  [ -e $OFFLINEPATH/${UPD:34:$LEN} ]; then
+		cp $OFFLINEPATH/${UPD:34:$LEN} ./
+		echo ${UPD:34:$LEN} "複写が終了しました" >>master_log
+	    else
+		echo ${UPD:34:$LEN} "複写に失敗しました" >>master_log
+	        exit 99
+	    fi
 	else
+	    if	orcawget ${UPD:34:$LEN} ;	then
+		echo ${UPD:34:$LEN} "ダウンロードが終了しました" >>master_log
+	    else
 		echo ${UPD:34:$LEN} "ダウンロードに失敗しました" >>master_log
 	        exit 99
+	    fi
 	fi
 done
 
