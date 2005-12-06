@@ -75,6 +75,8 @@ snd_file = $file_path_name.gsub(/.xml$/, "_#{$out_code}_snd.xml")
 logmsg = Time.now.strftime("%Y-%m-%dT%H:%M:%S") + "\n"
 logmsg = logmsg + "  Send to [" + $server + "] port [" + $port + "]\n"
 
+return_code = 0
+
 begin
   sock = TCPSocket.open($server, $port)
   puts "Connected"
@@ -94,16 +96,24 @@ begin
   logmsg = logmsg + "  Receive respons from server [ " + ans + " ]\n\n"
   
   sock.close
+  if ans == "OK"
+    return_code = 0
+  else
+    return_code = 02
+  end
 
 rescue
   puts "ERR: Can't open socket to server(0)"
   logmsg = logmsg + "  ERR: Can't open socket to server(0)\n\n"
+  return_code = 01
 ensure
   "(nothing)"
-
 end
 
 open($logfl, "a") do |log|
   log.puts logmsg
 end
+
+exit return_code
+
 #----- Script end -------------------------------------------
