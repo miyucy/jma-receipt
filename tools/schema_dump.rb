@@ -15,14 +15,20 @@ def table_list_sql(type)
   else
     return ""
   end
-  sql  = "SELECT c.relname "
-  sql += "  FROM pg_catalog.pg_class c "
-  sql += "  LEFT JOIN pg_catalog.pg_user u ON u.usesysid = c.relowner "
-  sql += "  LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace "
-  sql += " WHERE c.relkind = '#{relkind}' "
-  sql += "   AND n.nspname NOT IN ('pg_catalog', 'pg_toast') "
-  sql += "   AND pg_catalog.pg_table_is_visible(c.oid) "
-  sql += " ORDER BY 1; "
+#  sql  = "SELECT c.relname "
+#  sql += "  FROM pg_catalog.pg_class c "
+#  sql += "  LEFT JOIN pg_catalog.pg_user u ON u.usesysid = c.relowner "
+#  sql += "  LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace "
+#  sql += " WHERE c.relkind = '#{relkind}' "
+#  sql += "   AND n.nspname NOT IN ('pg_catalog', 'pg_toast') "
+#  sql += "   AND pg_catalog.pg_table_is_visible(c.oid) "
+#  sql += " ORDER BY 1; "
+
+  sql  = "SELECT relname "
+  sql += "  FROM pg_class c "
+  sql += "  LEFT JOIN pg_user u ON c.relname = u.usesysid "
+  sql += " WHERE c.relkind ='#{relkind}' "
+  sql += "   AND c.relname !~ '^pg_';"
 end
 
 def tschema_parse(schema)
@@ -85,10 +91,10 @@ outputdir = "./sql/schema"
 
 OptionParser.new {|opt|
   begin
-    opt.on('-d', '--db', 'database name'){|v|
+    opt.on('-d DB', '--db=DB', 'database name'){|v|
       db = v.to_s
     }
-    opt.on('-O', '--outputdir', 'output dir'){|v|
+    opt.on('-O DIR', '--outputdir=DIR', 'output dir'){|v|
       outputdir = v.to_s
     }
     opt.parse!(ARGV)

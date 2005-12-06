@@ -1,5 +1,4 @@
-CREATE VIEW view_q002 AS
-    SELECT a.hospid,
+CREATE VIEW "view_q002" as SELECT a.hospid,
            a.ptid,
            a.nyugaikbn,
            a.sryka,

@@ -1,21 +1,19 @@
-CREATE TABLE tbl_btpara (
-    shellid character(8) NOT NULL,
-    run_opid character(16) NOT NULL,
-    dsp_rennum numeric(3,0) DEFAULT 0 NOT NULL,
-    rennum numeric(4,0) DEFAULT 0 NOT NULL,
-    jobid numeric(3,0),
-    scriptid character(20),
-    info_kbn character(2),
-    info_para character varying(50),
-    termid character varying(16),
-    opid character varying(16),
-    creymd character(8),
-    upymd character(8),
-    uphms character(6)
+CREATE TABLE "tbl_btpara" (
+	"shellid" character(8) NOT NULL,
+	"run_opid" character(16) NOT NULL,
+	"dsp_rennum" numeric(3,0) DEFAULT 0 NOT NULL,
+	"rennum" numeric(4,0) DEFAULT 0 NOT NULL,
+	"jobid" numeric(3,0),
+	"scriptid" character(20),
+	"info_kbn" character(2),
+	"info_para" character varying(50),
+	"termid" character varying(16),
+	"opid" character varying(16),
+	"creymd" character(8),
+	"upymd" character(8),
+	"uphms" character(6),
+	Constraint "tbl_btpara_primary_key" Primary Key ("shellid", "run_opid", "dsp_rennum", "rennum")
 );
 
-ALTER TABLE ONLY tbl_btpara
-    ADD CONSTRAINT tbl_btpara_primary_key PRIMARY KEY (shellid, run_opid, dsp_rennum, rennum);
-
-COMMENT ON TABLE tbl_btpara IS 'バッチ連係パラメタ';
+COMMENT ON TABLE "tbl_btpara" IS 'バッチ連係パラメタ';
 

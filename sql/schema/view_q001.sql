@@ -1,5 +1,4 @@
-CREATE VIEW view_q001 AS
-    SELECT tbl_hkncombi.hospid,
+CREATE VIEW "view_q001" as SELECT tbl_hkncombi.hospid,
            tbl_hkncombi.ptid,
            tbl_hkncombi.hkncombinum,
            tbl_jyurrk.nyugaikbn,

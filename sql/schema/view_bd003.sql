@@ -1,5 +1,4 @@
-CREATE VIEW view_bd003 AS
-    SELECT a.hospid,
+CREATE VIEW "view_bd003" as SELECT a.hospid,
            a.nyugaikbn,
            a.ptid,
            a.denpnum,
