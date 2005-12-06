@@ -27,6 +27,9 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  02.06.01    NACL-小豆沢  05.12.06  入院登録時の食事と食堂加算の
+      *                                     カレンダークリア対応と、朝食優先
+      *                                     の条件追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -858,14 +861,14 @@
            END-IF
       *    食事区分
            MOVE   "099999913"   TO  LNK-SCNYUACCT-SHOKUJI-SRYCD
-           MOVE   1             TO  LNK-SCNYUACCT-SHOKUJIKBN
+           MOVE   0             TO  LNK-SCNYUACCT-SHOKUJIKBN
       *    食堂加算
            PERFORM     4801-BTUSEL-SEC
            IF   FLG-SYSKANRI           =    ZERO
                IF   SYS-5001-BTU-SYOKUDOKBN       =    "2"
                     MOVE     "197000570"    TO
                                 LNK-SCNYUACCT-SHOKUDO-SRYCD
-                    MOVE    1   TO   LNK-SCNYUACCT-SHOKUDO-KBN
+                    MOVE    0   TO   LNK-SCNYUACCT-SHOKUDO-KBN
                END-IF
            END-IF
       *    保険組合せ
@@ -2172,40 +2175,58 @@
        4801-SHOKUJI-SEC         SECTION.
       *
            DISPLAY "4801-SHOKUJI-SEC"
+           DISPLAY "LNK-PTNYUINRRK-HOSPID" LNK-PTNYUINRRK-HOSPID
+           DISPLAY "LNK-PTNYUINRRK-PTID" LNK-PTNYUINRRK-PTID
+           DISPLAY "SODRNACCT-STARTYMD" SODRNACCT-STARTYMD
       *    食事のセット
            INITIALIZE                          NYUINACCT-REC
            MOVE    LNK-PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
            MOVE    LNK-PTNYUINRRK-PTID     TO  NACCT-PTID
            MOVE    SODRNACCT-STARTYMD(1:6) TO  NACCT-SRYYM
-           MOVE    "NYUINACCT-KEY23"       TO  ORC-DBPATH
+           MOVE    "4"                     TO  NACCT-ZAISKBKBN
+           MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
            PERFORM 910-NYUINACCT-SELECT-SEC
            IF      FLG-NYUINACCT           =   ZERO
-               MOVE     "NYUINACCT-KEY23"  TO  ORC-DBPATH
+               MOVE     "NYUINACCT-KEY17"  TO  ORC-DBPATH
                PERFORM   910-NYUINACCT-READ-SEC
+               DISPLAY "FLG-NYUINACCT " FLG-NYUINACCT
                PERFORM   UNTIL   (FLG-NYUINACCT    =   1)
+                 IF   NACCT-SRYCDTOTAL  =  99999913
       *            食事区分のセット
                    MOVE    SODRNACCT-STARTYMD      TO  WRK-STARTYMD
-                   EVALUATE   SODRNACCT-ORDERID(3:2)
+                   DISPLAY  "SODRNACCT-SKJTIME = " SODRNACCT-SKJTIME
+                   IF   SODRNACCT-SKJTIME   =  "01"
+                     EVALUATE   SODRNACCT-ORDERID(3:2)
+                       WHEN   "01"
+                           MOVE  1  TO   NACCT-DAY(WRK-STARTYMD-D)
+                       WHEN   "02"
+                           MOVE  2  TO   NACCT-DAY(WRK-STARTYMD-D)
+                       WHEN   "03"
+                           MOVE  3  TO   NACCT-DAY(WRK-STARTYMD-D)
+                       WHEN   "04"
+                           MOVE   4     TO   NACCT-DAY(WRK-STARTYMD-D)
+                       WHEN   "05"
+                           MOVE  0  TO   NACCT-DAY(WRK-STARTYMD-D)
+                     END-EVALUATE
+                   ELSE
+                     EVALUATE   SODRNACCT-ORDERID(3:2)
                        WHEN   "01"
                            IF     NACCT-DAY(WRK-STARTYMD-D)  =  ZERO
                                MOVE  1  TO   NACCT-DAY(WRK-STARTYMD-D)
                            END-IF
                        WHEN   "02"
-                           IF     NACCT-DAY(WRK-STARTYMD-D) =  ZERO OR
-                                                               1    OR
+                           IF     NACCT-DAY(WRK-STARTYMD-D) =  1    OR
                                                                3
                                MOVE  2  TO   NACCT-DAY(WRK-STARTYMD-D)
                            END-IF
                        WHEN   "03"
-                           IF     NACCT-DAY(WRK-STARTYMD-D) =  ZERO OR
-                                                               1
+                           IF     NACCT-DAY(WRK-STARTYMD-D) =  1
                                MOVE  3  TO   NACCT-DAY(WRK-STARTYMD-D)
                            END-IF
                        WHEN   "04"
                            MOVE   4     TO   NACCT-DAY(WRK-STARTYMD-D)
-                       WHEN   "05"
-                           MOVE   0     TO   NACCT-DAY(WRK-STARTYMD-D)
-                   END-EVALUATE
+                     END-EVALUATE
+                   END-IF
                    MOVE    NYUINACCT-REC   TO   MCPDATA-REC
                    MOVE    "DBUPDATE"      TO   MCP-FUNC
                    MOVE    "NYUINACCT-KEY" TO   ORC-DBPATH
@@ -2213,12 +2234,13 @@
                                                         ORCMCPAREA
                                                         MCPDATA-REC
       *
-                   MOVE    "NYUINACCT-KEY23"   TO  ORC-DBPATH
-                   PERFORM 910-NYUINACCT-READ-SEC
+                 END-IF
+                 MOVE    "NYUINACCT-KEY17"   TO  ORC-DBPATH
+                 PERFORM 910-NYUINACCT-READ-SEC
                END-PERFORM
            END-IF
       *    入院会計クローズ
-           MOVE     "NYUINACCT-KEY23"       TO  WRK-DBPATH
+           MOVE     "NYUINACCT-KEY17"       TO  WRK-DBPATH
            PERFORM   900-TBL-CLOSE-SEC
       *
            .
