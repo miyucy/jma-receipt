@@ -53,6 +53,10 @@ elif [ $1 = "3" ]
     # --- to UTF-8 ---
 	./clm_snd.rb $6 $7 /var/tmp/claim_send_front$2$3.xml u8
 fi
+#-------------------------------------------#
+RC='0'$?
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCL0012P -parameter $1,$2,$3,$4,$5,$8,$9,${RC:${#RC}-2:2},END 
+#-------------------------------------------#
 	rm /var/tmp/claim*$2$3*
 #-------------------------------------------#
 # Add End
