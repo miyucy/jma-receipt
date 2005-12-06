@@ -179,7 +179,7 @@
                            (LNK-HKNCOMBI       =   UKE-HKNCOMBI))
       *                Á÷¿®´°Î»
                        MOVE    1                   TO  FLG-OK
-                       MOVE    "00"                TO  UKE-SRFLG
+                       MOVE    LNK-RC              TO  UKE-SRFLG
                        MOVE    UKETUKE-REC         TO  MCPDATA-REC
       *
                        MOVE    "DBUPDATE"          TO  MCP-FUNC
