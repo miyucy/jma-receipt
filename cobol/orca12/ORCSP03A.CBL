@@ -1094,41 +1094,41 @@
                MOVE    SPACE           TO  SPA-GMN-HOJOKBN-G
                GO      TO      1001-HOJOKBN-CHK-EXT
            END-IF
-      *
+      *訂正の補助区分変更をすべて認める(2005.12)
       *    訂正で、老人割合編集分の時、補助区分の変更はできない
       *    特別療養費・自費は対象外
-           IF     (SPA-GMN-HKNNUM      =   "068"  OR   "069" )
-              OR  (SPA-GMN-HKNNUM(1:2) =   "98"      )
-               CONTINUE
-           ELSE
+      *    IF     (SPA-GMN-HKNNUM      =   "068"  OR   "069" )
+      *       OR  (SPA-GMN-HKNNUM(1:2) =   "98"      )
+      *        CONTINUE
+      *    ELSE
       *
-           IF     (SPA-NAI-HKNSTR      >   ZERO      ) AND
-                  (SPA-PTHKN-SINKIKBN (SPA-NAI-HKNSTR)
-                                      NOT  =   "1"    ) AND
-                  (SPA-NAI-HTEKSTYMD   >=  "20021001" ) AND
-                  (SPA-NAI-HTEKSTYMD   >=  SPA-BYMD-70)
-               IF      SPA-GMN-HOJOKBN     NOT =   SPA-MAE-HOJOKBN
-                   MOVE    "0068"          TO  SPA-ERRCD
-                   MOVE    11              TO  SPA-GMN-CUR
-                   GO      TO      1001-HOJOKBN-CHK-EXT
-               END-IF
-           END-IF
+      *    IF     (SPA-NAI-HKNSTR      >   ZERO      ) AND
+      *           (SPA-PTHKN-SINKIKBN (SPA-NAI-HKNSTR)
+      *                               NOT  =   "1"    ) AND
+      *           (SPA-NAI-HTEKSTYMD   >=  "20021001" ) AND
+      *           (SPA-NAI-HTEKSTYMD   >=  SPA-BYMD-70)
+      *        IF      SPA-GMN-HOJOKBN     NOT =   SPA-MAE-HOJOKBN
+      *            MOVE    "0068"          TO  SPA-ERRCD
+      *            MOVE    11              TO  SPA-GMN-CUR
+      *            GO      TO      1001-HOJOKBN-CHK-EXT
+      *        END-IF
+      *    END-IF
       *
-           END-IF
+      **** END-IF
       *
       *    国保で、割合を変更された時
-           IF     (SPA-NAI-HKNSTR      >   ZERO      ) AND
-                  (SPA-PTHKN-SINKIKBN (SPA-NAI-HKNSTR)
-                                  NOT  =   "1"       ) AND
-                  (SPA-GMN-HKNNUM      =   "060"     )  AND
-                  (SPA-GMN-HOJOKBN NOT =   SPA-MAE-HOJOKBN)
-               IF     (SPA-SYSYMD      >=   "20021001" )  AND
-                      (SPA-SYSYMD      >=   SPA-BYMD-70 )
-                   MOVE    "0068"          TO  SPA-ERRCD
-                   MOVE    11              TO  SPA-GMN-CUR
-                   GO      TO      1001-HOJOKBN-CHK-EXT
-               END-IF
-           END-IF
+      *    IF     (SPA-NAI-HKNSTR      >   ZERO      ) AND
+      *           (SPA-PTHKN-SINKIKBN (SPA-NAI-HKNSTR)
+      *                           NOT  =   "1"       ) AND
+      *           (SPA-GMN-HKNNUM      =   "060"     )  AND
+      *           (SPA-GMN-HOJOKBN NOT =   SPA-MAE-HOJOKBN)
+      *        IF     (SPA-SYSYMD      >=   "20021001" )  AND
+      *               (SPA-SYSYMD      >=   SPA-BYMD-70 )
+      *            MOVE    "0068"          TO  SPA-ERRCD
+      *            MOVE    11              TO  SPA-GMN-CUR
+      *            GO      TO      1001-HOJOKBN-CHK-EXT
+      *        END-IF
+      *****END-IF
       *
       *    国保の前期高齢者の補助区分判定
            IF    ( SPA-GMN-HKNNUM      =   "060"  OR  "068"  )  AND
