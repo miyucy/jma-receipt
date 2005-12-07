@@ -1321,6 +1321,9 @@
                    MOVE    2               TO  IDT
                END-IF
            END-PERFORM
+           IF      SPA-GMN-HONKZKKBN   =   SPACE
+               MOVE    SPACE           TO  SPA-GMN-HONKZKKBN-G
+           END-IF
       *
       *    ·ÑÂ³¶èÊ¬
            IF    ( SPA-NAI-PTHKN-SBTKBN    =   "1"  ) AND
@@ -1345,6 +1348,7 @@
                END-PERFORM
            ELSE
                MOVE    ZERO                TO  SPA-GMN-CONT-MAX
+               MOVE    SPACE               TO  SPA-GMN-CONTKBN-G
            END-IF
       *
       *    ÉéÃ´³ä¹ç
@@ -1418,6 +1422,9 @@
                    END-IF
            END-EVALUATE
       *
+           IF      SPA-GMN-HOJO-MAX    =   ZERO
+               MOVE    SPACE           TO  SPA-GMN-HOJOKBN-G
+           END-IF
            PERFORM VARYING     IDT     FROM    1  BY  1
                    UNTIL       IDT     >   SPA-GMN-HOJO-MAX
                IF      SPA-GMN-HOJOKBNL (IDT)(1:1)
