@@ -7,7 +7,8 @@ INSTALL_DATA = @INSTALL_DATA@
 ETC_files = \
 	kentan.inc \
 	orcadbs.inc \
-	jma-receipt.env
+	jma-receipt.env \
+	jma-receipt.conf
 
 DBGROUP_files = dbgroup.inc 
 
@@ -19,6 +20,7 @@ clean:
 
 distclean: 
 	-rm -f jma-receipt.env
+	-rm -f jma-receipt.conf
 	-rm -f Makefile
 
 install: all
