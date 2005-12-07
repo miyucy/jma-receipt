@@ -2208,16 +2208,17 @@
                    ELSE
                      EVALUATE   SODRNACCT-ORDERID(3:2)
                        WHEN   "01"
-                           IF     NACCT-DAY(WRK-STARTYMD-D)  =  ZERO
+                           IF     NACCT-DAY(WRK-STARTYMD-D)  =  0
                                MOVE  1  TO   NACCT-DAY(WRK-STARTYMD-D)
                            END-IF
                        WHEN   "02"
-                           IF     NACCT-DAY(WRK-STARTYMD-D) =  1    OR
+                           IF     NACCT-DAY(WRK-STARTYMD-D) =  0    OR
+                                                               1    OR
                                                                3
                                MOVE  2  TO   NACCT-DAY(WRK-STARTYMD-D)
                            END-IF
                        WHEN   "03"
-                           IF     NACCT-DAY(WRK-STARTYMD-D) =  1
+                           IF     NACCT-DAY(WRK-STARTYMD-D) =  0  OR 1
                                MOVE  3  TO   NACCT-DAY(WRK-STARTYMD-D)
                            END-IF
                        WHEN   "04"
