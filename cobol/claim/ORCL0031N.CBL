@@ -420,6 +420,7 @@
                                                OR  NORDERID-FSPCLCL2
                                                OR  NORDERID-FSELECL2
                                                OR  NORDERID-FSTOPCL2
+                                               OR  NORDERID-FSPSLCL2
                                                                      )
                            COMPUTE CNT-IDOKBN  =   CNT-IDOKBN  +   1
                            MOVE    LF04-IJICD (IDXA IDXB)
@@ -560,6 +561,7 @@
            WHEN   NORDERID-FSPCLID
            WHEN   NORDERID-FSELEID
            WHEN   NORDERID-FSTOPID
+           WHEN   NORDERID-FSPSLID
       *
                PERFORM 20011-ORCSODR04-ITM-CHK-SEC
       *

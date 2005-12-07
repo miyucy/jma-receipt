@@ -28,8 +28,6 @@
            03  NORDERID-ORDER-DELNYUIN     PIC X(02) VALUE "11".
            03  NORDERID-ORDER-ALLDELNYUIN  PIC X(02) VALUE "12".
       *
-           03  NORDERID-MAX                PIC 9(03) VALUE 14.
-      *
            03  NORDERID-VAL.
                05  NORDERID-NYUIN-G.
                    07  NORDERID-NYUINCL1   PIC X(02) VALUE "01".
@@ -158,13 +156,14 @@
                                            VALUE "¿©»öÎÅÍÜ¡ÜÁªÂò¿©".
                    07  NORDERID-FSELEMES2  PIC X(14) VALUE "ÁªÂò¿©".
       *
-      *        05  NORDERID-FSPSL-G.
-      *            07  NORDERID-FSPSLCL1   PIC X(02) VALUE "02".
-      *            07  NORDERID-FSPSLCL2   PIC X(03) VALUE "000".
-      *            07  NORDERID-FSPSLID    PIC X(04) VALUE "0304".
-      *            07  NORDERID-FSPSLMES1  PIC X(30)
-      *                                VALUE "¿©»öÎÅÍÜ¡ÜÆÃ¿©¡ÜÁªÂò¿©".
-      *            07  NORDERID-FSPSLMES2  PIC X(14) VALUE "ÆÃ¿©¡ÜÁª¿©".
+               05  NORDERID-FSPSL-G.
+                   07  NORDERID-FSPSLCL1   PIC X(02) VALUE "02".
+                   07  NORDERID-FSPSLCL2   PIC X(03) VALUE "013".
+                   07  NORDERID-FSPSLID    PIC X(04) VALUE "0304".
+                   07  NORDERID-FSPSLMES1  PIC X(30)
+                                       VALUE "¿©»öÎÅÍÜ¡ÜÆÃ¿©¡ÜÁªÂò¿©".
+                   07  NORDERID-FSPSLMES2  PIC X(14)
+                                       VALUE "ÆÃ¿©¡ÜÁªÂò¿©".
       *
                05  NORDERID-FSTOP-G.
                    07  NORDERID-FSTOPCL1   PIC X(02) VALUE "02".
@@ -174,11 +173,13 @@
                    07  NORDERID-FSTOPMES2  PIC X(14) VALUE "¿©»ß¤á".
       *
            03  NORDERID-R  REDEFINES       NORDERID-VAL.
-               05  NORDERID-OCC            OCCURS    14.
+               05  NORDERID-OCC            OCCURS    15.
                    07  NORDERID-CLAIMID.
                        09  NORDERID-CLAIMIDH   PIC X(02).
                        09  NORDERID-CLAIMIDT   PIC X(03).
                    07  NORDERID-ORCAID         PIC X(04).
                    07  NORDERID-ORCAMES1       PIC X(30).
                    07  NORDERID-ORCAMES2       PIC X(14).
+      *
+           03  NORDERID-MAX                PIC 9(03) VALUE 15.
       *

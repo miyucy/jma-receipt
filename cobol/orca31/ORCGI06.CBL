@@ -1622,6 +1622,7 @@
                WHEN    NORDERID-FSPCLID
                WHEN    NORDERID-FSELEID
                WHEN    NORDERID-FSTOPID
+               WHEN    NORDERID-FSPSLID
                WHEN    NORDERID-IDODRID
                WHEN    NORDERID-IDOKAID
                WHEN    NORDERID-IDOBTUID
@@ -1747,6 +1748,7 @@
                    WHEN    NORDERID-FSPCLID
                    WHEN    NORDERID-FSELEID
                    WHEN    NORDERID-FSTOPID
+                   WHEN    NORDERID-FSPSLID
                        PERFORM 410111-SYOKUJI-HEN-SEC
                    WHEN    NORDERID-IDODRID
                        PERFORM 410111-DOCTOR-HEN-SEC
@@ -2038,6 +2040,7 @@
            WHEN    NORDERID-FSPCLID
            WHEN    NORDERID-FSELEID
            WHEN    NORDERID-FSTOPID
+           WHEN    NORDERID-FSPSLID
       *
                PERFORM 4101112-SKJTIME-HEN-SEC
            WHEN    NORDERID-IDODRID
@@ -3695,6 +3698,7 @@
            WHEN    NORDERID-FSPCLID
            WHEN    NORDERID-FSELEID
            WHEN    NORDERID-FSTOPID
+           WHEN    NORDERID-FSPSLID
                PERFORM 2121-SYOKUJI-TOUROKU-SEC
            WHEN    NORDERID-IDODRID
                PERFORM 2121-DOCTOR-TOUROKU-SEC
@@ -4828,6 +4832,7 @@
                    WHEN    NORDERID-FSPCLID
                    WHEN    NORDERID-FSELEID
                    WHEN    NORDERID-FSTOPID
+                   WHEN    NORDERID-FSPSLID
                        MOVE    WIDGET-NORMAL
                                            TO  I06-NYUINKA-STATE
                                                I06-NYUINKA-ITEM-STATE
