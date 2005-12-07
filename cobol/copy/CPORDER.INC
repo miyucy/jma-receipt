@@ -56,3 +56,5 @@
            03  ORDER-CREYMD            PIC X(08).
            03  ORDER-UPYMD             PIC X(08).
            03  ORDER-UPHMS             PIC X(06).
+           03  ORDER-SELSTSRYYMD       PIC X(08).
+           03  ORDER-SELEDSRYYMD       PIC X(08).

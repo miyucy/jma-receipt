@@ -31,6 +31,9 @@ tbl_order {
 	CREYMD   			char(8);
 	UPYMD    			char(8);
 	UPHMS				char(6);
+#-----> ¸¡º÷ÍÑ¹àÌÜ
+	SELSTSRYYMD			char(8),virtual;
+	SELEDSRYYMD 	    char(8),virtual;
 };
 primary	{
 	HOSPID,KARTE_KEY,NYUGAIKBN,PTNUM,PTID,SRYKA,SRYYMD,HKNCOMBI,DRCD,ORDERID,ORDERNUM,ITEMNUM,UKEYMD,UKEHMS;
@@ -169,3 +172,30 @@ path	all 	{
 		;
 	};
 };
+
+path	key8 	{
+	DBSELECT	{
+		DECLARE tbl_order_key8_csr CURSOR FOR
+		SELECT *
+		FROM tbl_order
+		WHERE  HOSPID        = :HOSPID
+		AND    SRYYMD       >= :SELSTSRYYMD
+		AND    SRYYMD       <= :SELEDSRYYMD
+		AND    ITEMNUM       = 1
+		AND    STATUS_ORDER  IN ('1','2','4')
+		;
+	};
+};
+
+path	key9 	{
+	DBSELECT	{
+		DECLARE tbl_order_key9_csr CURSOR FOR
+		SELECT *
+		FROM tbl_order
+		WHERE  HOSPID        = :HOSPID
+		AND    ITEMNUM       = 1
+		AND    STATUS_ORDER  IN ('1','2','4')
+		;
+	};
+};
+
