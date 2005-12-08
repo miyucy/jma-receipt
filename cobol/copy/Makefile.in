@@ -1097,6 +1097,7 @@ COPYS = \
         KAID2.INC \
         KA01COMMON-SPA \
         CPORCSMKBYOMEI.INC \
+        CPCHKTRD.INC \
 
 DBPATH = \
 	ORCA-DBPATH

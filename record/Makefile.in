@@ -310,6 +310,7 @@ RECORD_files = \
         KAERR.rec \
         KAID1.rec \
         KAID2.rec \
+        X05.rec \
 
 DEF_files = \
 	HC01.def \
@@ -476,6 +477,7 @@ DB_files = \
 	tbl_syunou_prv.db \
 	tbl_syutotal_prv.db \
 	tbl_hours.db \
+	tbl_chktrd.db \
 
 all:   
 
