@@ -1099,6 +1099,7 @@ COPYS = \
         CPORCSMKBYOMEI.INC \
         CPCHKTRD.INC \
         X05.INC \
+        CPORCBD009S.INC \
 
 DBPATH = \
 	ORCA-DBPATH
