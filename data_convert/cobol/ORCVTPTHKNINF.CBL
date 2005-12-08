@@ -1193,6 +1193,7 @@
                WHEN    "002"
                    EVALUATE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                        WHEN    "0"
+                           MOVE    SPACE   TO  WRK-HEN-HOJOKBN
                        WHEN    "1"     THRU    "3"
                            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                            TO  WRK-HEN-HOJOKBN
@@ -1205,7 +1206,6 @@
                WHEN    "060"
                    EVALUATE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                        WHEN    "0"
-                           MOVE    SPACE   TO  WRK-HEN-HOJOKBN
                        WHEN    "1"     THRU    "3"
                            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                            TO  WRK-HEN-HOJOKBN
@@ -1218,7 +1218,7 @@
                WHEN    "980"
                    EVALUATE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                        WHEN    "0"
-                           MOVE    SPACE   TO  WRK-HEN-HOJOKBN
+                           MOVE    "1"     TO  WRK-HEN-HOJOKBN
                        WHEN    "1"     THRU    "2"
                            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                            TO  WRK-HEN-HOJOKBN
