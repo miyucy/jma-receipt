@@ -630,7 +630,8 @@
                MOVE    ZERO            TO  CNT-COMMIT
            END-IF
       *    エラーが指定した件数になったら処理を抜ける
-           IF      CNT-ERR         =   WRK-ERR
+           IF    ( WRK-ERR         NOT =   ZERO )  AND
+                 ( CNT-ERR             =   WRK-ERR )
                MOVE    1               TO  FLG-CSV
                GO  TO  200-MAIN-EXT
            END-IF
@@ -1327,8 +1328,7 @@
                GO  TO  2601-BYOMEI-CHECK-EXT
            END-IF
       *    エラーチェック
-           IF    ( LNK-BYO-TANDOKUKBN-ERR  =   1 ) OR
-                 ( LNK-BYO-BYOMEICD-ERR    =   1 )
+           IF    ( LNK-BYO-TANDOKUKBN-ERR  =   1 )
                MOVE    6               TO  FLG-ERR
                GO  TO  2601-BYOMEI-CHECK-EXT
            END-IF

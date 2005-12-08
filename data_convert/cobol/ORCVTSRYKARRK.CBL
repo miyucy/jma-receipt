@@ -519,7 +519,8 @@
                MOVE    ZERO            TO  CNT-COMMIT
            END-IF
       *    エラーが指定した件数になったら処理を抜ける
-           IF  CNT-ERR             =   WRK-ERR
+           IF    ( WRK-ERR         NOT =   ZERO )  AND
+                 ( CNT-ERR             =   WRK-ERR )
                MOVE    1               TO  FLG-CSV
                GO  TO  200-MAIN-EXT
            END-IF

@@ -1263,7 +1263,7 @@
       *
       *    未入力
            IF      FLG-NODATA          =   1
-               MOVE    "0"             TO  PTHKN-CONTKBN
+               MOVE    SPACE           TO  PTHKN-CONTKBN
                GO  TO  2410-CONTKBN-SET-EXT
            END-IF
       *
@@ -1276,7 +1276,9 @@
       *    継続区分セット
            EVALUATE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                WHEN    "0"
+                   MOVE    SPACE       TO  PTHKN-CONTKBN
                WHEN    "1"
+               WHEN    "2"
                    MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  PTHKN-CONTKBN
       *        誤入力
