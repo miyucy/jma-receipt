@@ -1161,26 +1161,38 @@
       *
            INITIALIZE                  SYSKANRI-REC
       *
-           MOVE    "5111"          TO  SYS-KANRICD
+           IF    ( WRK-TOKNYUIN-KBN    =   "2" )
+               MOVE    "5110"          TO  SYS-KANRICD
+           ELSE
+               MOVE    "5111"          TO  SYS-KANRICD
+           END-IF
+      *
            MOVE    WRK-TOKKBNCD    TO  SYS-KBNCD
            MOVE    SPA-GMN-KJNYMD  TO  SYS-STYUKYMD
                                        SYS-EDYUKYMD
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            IF    ( FLG-SYSKANRI    =   ZERO )
       *
-               MOVE    SYSKANRI-REC    TO  SYS-5111-REC
       *
                COMPUTE CNT-MAX =   CNT-MAX +   1
       *
                MOVE    CNT-MAX     TO  WRK-99
       *
                MOVE    WRK-99      TO  SPA-GMN-TOKNYUINL      (CNT-MAX)
-               MOVE    SYS-5111-BRM-TOKUTEINYUIN-NM
-                                   TO  SPA-GMN-TOKNYUINMEIL   (CNT-MAX)
                MOVE    WRK-TOKNYUIN-KBN
                                    TO  SPA-GMN-TOKNYUINL2-KBN  (CNT-MAX)
                MOVE    WRK-TOKKBNCD
                                    TO  SPA-GMN-TOKNYUINL2-NYUIN(CNT-MAX)
+      *
+               IF    ( WRK-TOKNYUIN-KBN    =   "2" )
+                   MOVE    SYSKANRI-REC    TO  SYS-5110-REC
+                   MOVE    SYS-5110-BTU-TOKUTEINYUIN-NM
+                                   TO  SPA-GMN-TOKNYUINMEIL   (CNT-MAX)
+               ELSE
+                   MOVE    SYSKANRI-REC    TO  SYS-5111-REC
+                   MOVE    SYS-5111-BRM-TOKUTEINYUIN-NM
+                                   TO  SPA-GMN-TOKNYUINMEIL   (CNT-MAX)
+               END-IF
       *
            END-IF
       *
