@@ -101,7 +101,7 @@
       *    ∏«ƒÍ√ÕŒŒ∞Ë
        01  CONST-AREA.
            03  CONST-SRYTBLP-MAX       PIC 9(05)   VALUE   20.
-           03  CONST-SRYTBLC-MAX       PIC 9(05)   VALUE   30.
+           03  CONST-SRYTBLC-MAX       PIC 9(05)   VALUE   20.
       *
       *    π‡Ã‹ID•≥•‘°º∂Á
            COPY    "CPNCLAIMID.INC".
