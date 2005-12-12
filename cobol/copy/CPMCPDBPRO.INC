@@ -384,6 +384,7 @@
       *                                     Q002-ALL追加
       *                                     BD003-ALL追加
       *  01.01.171   NACL-太田    05/09/30  HOURS-ALL追加
+      *  01.01.172   NACL-小豆沢  05/12/12  NYUINACCT-KEY28追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1124,6 +1125,7 @@
                WHEN    "DBUPDATE"      ALSO   "NYUINACCT-KEY22"
                WHEN    "DBUPDATE"      ALSO   "NYUINACCT-KEY23"
                WHEN    "DBUPDATE"      ALSO   "NYUINACCT-KEY26"
+               WHEN    "DBUPDATE"      ALSO   "NYUINACCT-KEY28"
                    MOVE    PATH-TBL-NYUINACCT-KEY
                                        TO  WRK-PATH
                WHEN    "DBDELETE"      ALSO   "NYUINACCT-DEL1"
@@ -3162,6 +3164,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "NYUINACCT-KEY26"
                    MOVE    PATH-TBL-NYUINACCT-KEY26
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "NYUINACCT-KEY28"
+                   MOVE    PATH-TBL-NYUINACCT-KEY28
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "NYUINACCT-ALL"
                    MOVE    PATH-TBL-NYUINACCT-ALL
