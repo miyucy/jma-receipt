@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-多々納  05/12/09  MONFUNC対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -106,7 +107,7 @@
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
+      *****COPY    "CPORCMCP.INC".
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
@@ -169,14 +170,12 @@
            MOVE    SPA-Z01-SRYCD       TO  TNSP-SRYCD
       *
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "TENSUPLUS-KEY2"    TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC               =   ZERO
-               MOVE    "TENSUPLUS-KEY2"     TO  ORC-DBPATH
+               MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 990-TENSUPLUS-READ-SEC
            ELSE
                MOVE    1               TO  FLG-TENSUPLUS
@@ -185,16 +184,14 @@
                ADD     1                   TO  IDX-H
                MOVE    TENSUPLUS-REC       TO  TBL-TENSUPLUS-REC (IDX-H)
       *
-               MOVE    "TENSUPLUS-KEY2"     TO  ORC-DBPATH
+               MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 990-TENSUPLUS-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "TENSUPLUS-KEY2"    TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBLOSEC-SEC
       *
            IF      IDX-H               =   ZERO
                GO      TO      100-TENSUPLUS-CHK-EXT
@@ -214,10 +211,10 @@
                        MOVE    TNSP-YUKOEDYMD      TO  TNSPUP-YUKOEDYMD
                        MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
                        MOVE    "DBDELETE"          TO  MCP-FUNC
-                       MOVE    "TENSUPLUS-KEY"     TO  ORC-DBPATH
-                       CALL    "ORCMCPSUB"         USING
+                       MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+                       MOVE    "key"               TO  MCP-PATHNAME
+                       CALL    "MONFUNC"           USING
                                                    MCPAREA
-                                                   ORCMCPAREA
                                                    MCPDATA-REC
                     ADD     1               TO  IDX1
                ELSE
@@ -244,11 +241,11 @@
                                                    TO  TNSP-YUKOEDYMD
                        MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
                        MOVE    "DBUPDATE"          TO  MCP-FUNC
-                       MOVE    "TENSUPLUS-UPD1"    TO  ORC-DBPATH
-                       CALL    "ORCMCPSUB"          USING
-                                                    MCPAREA
-                                                    ORCMCPAREA
-                                                    MCPDATA-REC
+                       MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+                       MOVE    "upd1"              TO  MCP-PATHNAME
+                       CALL    "MONFUNC"           USING
+                                                   MCPAREA
+                                                   MCPDATA-REC
                        IF      MCP-RC           NOT =   ZERO
                            MOVE    "9004"          TO  SPA-ERRCD
                            DISPLAY "Z03 TENSUPLUS UPD ERR:" MCP-RC
@@ -268,10 +265,10 @@
                        MOVE    TNSP-YUKOEDYMD      TO  TNSPUP-YUKOEDYMD
                        MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
                        MOVE    "DBDELETE"          TO  MCP-FUNC
-                       MOVE    "TENSUPLUS-KEY"     TO  ORC-DBPATH
-                       CALL    "ORCMCPSUB"         USING
+                       MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+                       MOVE    "key"               TO  MCP-PATHNAME
+                       CALL    "MONFUNC"           USING
                                                    MCPAREA
-                                                   ORCMCPAREA
                                                    MCPDATA-REC
                        ADD     1               TO  IDX1
                    WHEN    (SPA-Z01-TYUKOSTYMD(IDX2)
@@ -313,24 +310,19 @@
                                            TO  TNSP-YUKOEDYMD
       *
                MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
-               MOVE    "DBSELECT"          TO  MCP-FUNC
-               MOVE    "TENSUPLUS-KEY"     TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+               MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 910-DBSELECT-SEC
                IF      MCP-RC               =   ZERO
-                   MOVE    "TENSUPLUS-KEY"     TO  ORC-DBPATH
+                   MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+                   MOVE    "key"               TO  MCP-PATHNAME
                    PERFORM 990-TENSUPLUS-READ-SEC
                ELSE
                    MOVE    1               TO  FLG-TENSUPLUS
                END-IF
-               MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-               MOVE    "TENSUPLUS-KEY"     TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+               MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 990-DBLOSEC-SEC
            ELSE
       *        新規
                MOVE    1                   TO  FLG-TENSUPLUS
@@ -354,11 +346,11 @@
       *
                        MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
                        MOVE    "DBUPDATE"          TO  MCP-FUNC
-                       MOVE    "TENSUPLUS-UPD1"    TO  ORC-DBPATH
-                       CALL    "ORCMCPSUB"          USING
-                                                    MCPAREA
-                                                    ORCMCPAREA
-                                                    MCPDATA-REC
+                       MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+                       MOVE    "upd1"              TO  MCP-PATHNAME
+                       CALL    "MONFUNC"           USING
+                                                   MCPAREA
+                                                   MCPDATA-REC
                        IF      MCP-RC           NOT =   ZERO
                            MOVE    "9004"          TO  SPA-ERRCD
                            DISPLAY "Z02 TENSUPLUS UPD ERR:" MCP-RC
@@ -384,11 +376,11 @@
       *
                        MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
                        MOVE    "DBUPDATE"          TO  MCP-FUNC
-                       MOVE    "TENSUPLUS-UPD1"    TO  ORC-DBPATH
-                       CALL    "ORCMCPSUB"          USING
-                                                    MCPAREA
-                                                    ORCMCPAREA
-                                                    MCPDATA-REC
+                       MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+                       MOVE    "upd1"              TO  MCP-PATHNAME
+                       CALL    "MONFUNC"           USING
+                                                   MCPAREA
+                                                   MCPDATA-REC
                        IF      MCP-RC          NOT =   ZERO
                            MOVE    "9004"          TO  SPA-ERRCD
                            DISPLAY "Z02 TENSUPLUS UPD ERR:" MCP-RC
@@ -413,11 +405,11 @@
       *
                MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
-               MOVE    "TENSUPLUS-KEY"     TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC
+               MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC              NOT =   ZERO
                    MOVE    "9004"          TO  SPA-ERRCD
                    DISPLAY "Z02 TENSUPLUS INS ERR:" MCP-RC
@@ -452,10 +444,9 @@
        990-TENSUPLUS-READ-SEC          SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  TENSUPLUS-REC
                MOVE    ZERO            TO  FLG-TENSUPLUS
@@ -466,6 +457,46 @@
            .
       *
        990-TENSUPLUS-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    テーブル検索処理
+      *****************************************************************
+       910-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ読み込み処理
+      *****************************************************************
+       920-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       920-DBFETCH-EXT.
+           EXIT.
+      *****************************************************************
+      *   ＤＢクローズ処理
+      *****************************************************************
+       990-DBLOSEC-SEC                 SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           .
+       990-DBLOSEC-EXT.
            EXIT.
       *
       *

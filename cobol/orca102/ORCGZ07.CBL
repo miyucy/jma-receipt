@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-多々納  05/12/12  MONFUNC対応 他
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -175,9 +176,12 @@
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
+      *****COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    連絡領域
@@ -269,22 +273,19 @@
            ELSE
       *        初期画面セット
                PERFORM 300-SCREEN-SEC
-               IF      FLG-END             =   1
-                   GO      TO      100-INIT-EXT
-               END-IF
       *        画面編集
-               PERFORM 500-GMNHEN-SEC
-               IF      FLG-END             =   1
-                   GO      TO      100-INIT-EXT
+               IF      FLG-END             =   ZERO
+                   PERFORM 500-GMNHEN-SEC
                END-IF
            END-IF
       *
-           MOVE    SPACE               TO  MCP-PUTTYPE
-           MOVE    "Z07    "           TO  MCP-WINDOW.
+           IF      FLG-END             =   ZERO
+               MOVE    SPACE               TO  MCP-PUTTYPE
+               MOVE    "Z07    "           TO  MCP-WINDOW
       *
-           PERFORM 900-PUT-WINDOW.
-      *
-           MOVE    1                   TO  FLG-END
+               PERFORM 900-PUT-WINDOW
+               MOVE    1                   TO  FLG-END
+           END-IF
            .
        100-INIT-EXT.
            EXIT.
@@ -304,10 +305,10 @@
                WHEN    "Z98"
       *            一覧検索
                    PERFORM 320-Z98-SPASET-SEC
-                   GO      TO      300-SCREEN-EXT
-           END-EVALUATE
       *
-           PERFORM 310-SPASET-SEC
+               WHEN    OTHER
+                   PERFORM 310-SPASET-SEC
+           END-EVALUATE
       *
            .
        300-SCREEN-EXT.
@@ -383,17 +384,14 @@
            INITIALIZE                      TNS-TENSU-REC
            MOVE    ALL "0"             TO  TNS-YUKOSTYMD
            MOVE    SPA-NAI-YUKOYMD     TO  TNS-YUKOEDYMD
-           MOVE    SPA-NAI-YUKOYMD     TO  ORC-DBYMD
       *
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "TENSU-KEY20"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key20"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "TENSU-KEY20"       TO  ORC-DBPATH
+               MOVE    "tbl_tensu"         TO  MCP-TABLE
+               MOVE    "key20"             TO  MCP-PATHNAME
                PERFORM 910-TENSU-NEXT-SEC
            ELSE
                MOVE    1                   TO  FLG-TENSU
@@ -464,15 +462,13 @@
                    END-IF
                END-IF
       *
-               MOVE    "TENSU-KEY20"       TO  ORC-DBPATH
+               MOVE    "tbl_tensu"         TO  MCP-TABLE
+               MOVE    "key20"             TO  MCP-PATHNAME
                PERFORM 910-TENSU-NEXT-SEC
            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "TENSU-KEY20"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key20"             TO  MCP-PATHNAME
+           PERFORM 990-DBLOSEC-SEC
       *    最大件数編集
            MOVE    IDX                 TO  SPA-TENSU-MAX
       *
@@ -484,24 +480,19 @@
                MOVE    SPA-GMN-TSRYCD(IDX) TO  ICD-SRYCD
       *
                MOVE    INPUTCD-REC         TO  MCPDATA-REC
-               MOVE    "DBSELECT"          TO  MCP-FUNC
-               MOVE    "INPUTCD-KEY4"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+               MOVE    "tbl_inputcd"       TO  MCP-TABLE
+               MOVE    "key4"               TO  MCP-PATHNAME
+               PERFORM 910-DBSELECT-SEC
                IF      MCP-RC              =   ZERO
-                   MOVE    "INPUTCD-KEY4"      TO  ORC-DBPATH
+                   MOVE    "tbl_inputcd"       TO  MCP-TABLE
+                   MOVE    "key4"               TO  MCP-PATHNAME
                    PERFORM 920-INPUTCD-READ-SEC
                ELSE
                    MOVE    1                   TO  FLG-INPUTCD
                END-IF
-               MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-               MOVE    "INPUTCD-KEY4"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+               MOVE    "tbl_inputcd"       TO  MCP-TABLE
+               MOVE    "key4"               TO  MCP-PATHNAME
+               PERFORM 990-DBLOSEC-SEC
                IF      FLG-INPUTCD         =   ZERO
                    MOVE    ICD-INPUTCD     TO  SPA-GMN-TINPUTCD (IDX)
                END-IF
@@ -653,14 +644,12 @@
            MOVE    SPA-GMN-OLD-SRYCD   TO  ICD-SRYCD
       *
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "INPUTCD-KEY4"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_inputcd"       TO  MCP-TABLE
+           MOVE    "key4"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "INPUTCD-KEY4"      TO  ORC-DBPATH
+               MOVE    "tbl_inputcd"       TO  MCP-TABLE
+               MOVE    "key4"               TO  MCP-PATHNAME
                PERFORM 920-INPUTCD-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-INPUTCD
@@ -673,16 +662,14 @@
                MOVE    ICD-INPUTCD         TO  SPA-GMN-INPUTCD (IDX)
                MOVE    ICD-CDSYU           TO  SPA-GMN-CDSYU   (IDX)
       *
-               MOVE    "INPUTCD-KEY4"      TO  ORC-DBPATH
+               MOVE    "tbl_inputcd"       TO  MCP-TABLE
+               MOVE    "key4"               TO  MCP-PATHNAME
                PERFORM 920-INPUTCD-READ-SEC
       *
            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "INPUTCD-KEY4"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_inputcd"       TO  MCP-TABLE
+           MOVE    "key4"               TO  MCP-PATHNAME
+           PERFORM 990-DBLOSEC-SEC
       *
            MOVE    3                   TO  SPA-GMN-CUR
       *
@@ -773,28 +760,24 @@
       *
            INITIALIZE                      TNS-TENSU-REC
            MOVE    SPA-GMN-SRYCD       TO  TNS-SRYCD
+           MOVE    SPA-SYSYMD          TO  TNS-YUKOSTYMD
+           MOVE    SPA-SYSYMD          TO  TNS-YUKOEDYMD
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
       *
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+               MOVE    "tbl_tensu"         TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 910-TENSU-NEXT-SEC
            ELSE
                MOVE    1                   TO  FLG-TENSU
                INITIALIZE                      TNS-TENSU-REC
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBLOSEC-SEC
            IF      FLG-TENSU           =   1
                MOVE    "0006"          TO  SPA-ERRCD
                MOVE    3               TO  SPA-GMN-CUR
@@ -809,24 +792,19 @@
            MOVE    SPA-GMN-SRYCD       TO  ICD-SRYCD
       *
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "INPUTCD-KEY4"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_inputcd"       TO  MCP-TABLE
+           MOVE    "key4"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "INPUTCD-KEY4"      TO  ORC-DBPATH
+               MOVE    "tbl_inputcd"       TO  MCP-TABLE
+               MOVE    "key4"               TO  MCP-PATHNAME
                PERFORM 920-INPUTCD-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-INPUTCD
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "INPUTCD-KEY4"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_inputcd"       TO  MCP-TABLE
+           MOVE    "key4"               TO  MCP-PATHNAME
+           PERFORM 990-DBLOSEC-SEC
            IF      FLG-INPUTCD         =   ZERO
                MOVE    "0007"          TO  SPA-ERRCD
                MOVE    3               TO  SPA-GMN-CUR
@@ -1073,30 +1051,20 @@
            MOVE    ICD-CDSYU           TO  SPA-GMN-CDSYU (IDX)
       *
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           IF      KANACHK-MAX         =   20
-               MOVE    "INPUTCD-KEY2"      TO  WRK-PATH
-           ELSE
-               MOVE    "INPUTCD-KEY"       TO  WRK-PATH
-           END-IF
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_inputcd"       TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    WRK-PATH            TO  ORC-DBPATH
+               MOVE    "tbl_inputcd"       TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 920-INPUTCD-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-INPUTCD
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_inputcd"       TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBLOSEC-SEC
       *
            IF     (FLG-INPUTCD         =   ZERO  )  AND
                   (SPA-GMN-INPUTCD(IDX)
@@ -1361,6 +1329,11 @@
       *****************************************************************
        4121-KOUSIN-SYORI-SEC          SECTION.
       *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   10  )   OR
                               (SPA-GMN-INPUTCD (IDX)   =   SPACE)
@@ -1374,28 +1347,19 @@
       *
                MOVE    INPUTCD-REC         TO  MCPDATA-REC
                MOVE    "DBSELECT"          TO  MCP-FUNC
-               IF      SPA-GMN-INPUTCD (IDX)(20:1) =   SPACE
-                   MOVE    "INPUTCD-KEY"       TO  WRK-PATH
-               ELSE
-                   MOVE    "INPUTCD-KEY2"      TO  WRK-PATH
-               END-IF
-               MOVE    WRK-PATH            TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+               MOVE    "tbl_inputcd"       TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 910-DBSELECT-SEC
                IF      MCP-RC              =   ZERO
-                   MOVE    WRK-PATH            TO  ORC-DBPATH
+                   MOVE    "tbl_inputcd"       TO  MCP-TABLE
+                   MOVE    "key2"              TO  MCP-PATHNAME
                    PERFORM 920-INPUTCD-READ-SEC
                ELSE
                    MOVE    1                   TO  FLG-INPUTCD
                END-IF
-               MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-               MOVE    WRK-PATH            TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+               MOVE    "tbl_inputcd"       TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 990-DBLOSEC-SEC
       *        入力コード更新
                IF      (FLG-INPUTCD        =   ZERO )  AND
                        (SPA-GMN-OLD-SRYCD  =   ICD-SRYCD )
@@ -1403,12 +1367,15 @@
                    MOVE    SPA-GMN-SRYCD       TO  ICD-SRYCD
                    MOVE    IDX                 TO  ICD-DSPSEQ
       *
+                   MOVE    SMCNDATE-YMD        TO  ICD-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  ICD-UPHMS
+      *
                    MOVE    INPUTCD-REC         TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
-                   MOVE    "INPUTCD-KEY"       TO  ORC-DBPATH
-                   CALL    "ORCMCPSUB"         USING
+                   MOVE    "tbl_inputcd"       TO  MCP-TABLE
+                   MOVE    "key"               TO  MCP-PATHNAME
+                   CALL    "MONFUNC"           USING
                                                MCPAREA
-                                               ORCMCPAREA
                                                MCPDATA-REC
                    IF      MCP-RC          NOT =   ZERO
                        MOVE    "0100"          TO  SPA-ERRCD
@@ -1431,12 +1398,16 @@
                    MOVE    SPA-GMN-SRYCD       TO  ICD-SRYCD
                    MOVE    IDX                 TO  ICD-DSPSEQ
       *
+                   MOVE    SMCNDATE-YMD        TO  ICD-CREYMD
+                   MOVE    SMCNDATE-YMD        TO  ICD-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  ICD-UPHMS
+      *
                    MOVE    INPUTCD-REC         TO  MCPDATA-REC
                    MOVE    "DBINSERT"          TO  MCP-FUNC
-                   MOVE    "INPUTCD-KEY"       TO  ORC-DBPATH
-                   CALL    "ORCMCPSUB"         USING
+                   MOVE    "tbl_inputcd"       TO  MCP-TABLE
+                   MOVE    "key"               TO  MCP-PATHNAME
+                   CALL    "MONFUNC"           USING
                                                MCPAREA
-                                               ORCMCPAREA
                                                MCPDATA-REC
                    IF      MCP-RC          NOT =   ZERO
                        MOVE    "0100"          TO  SPA-ERRCD
@@ -1465,14 +1436,12 @@
            MOVE    SPA-GMN-OLD-SRYCD   TO  ICD-SRYCD
       *
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "INPUTCD-KEY4"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_inputcd"       TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "INPUTCD-KEY4"      TO  ORC-DBPATH
+               MOVE    "tbl_inputcd"       TO  MCP-TABLE
+               MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM 920-INPUTCD-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-INPUTCD
@@ -1483,12 +1452,15 @@
                ADD     1                   TO  IDX
                MOVE    IDX                 TO  ICD-DSPSEQ
       *
+               MOVE    SMCNDATE-YMD        TO  ICD-UPYMD
+               MOVE    SMCNDATE-HMS        TO  ICD-UPHMS
+      *
                MOVE    INPUTCD-REC         TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
-               MOVE    "INPUTCD-KEY"       TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
+               MOVE    "tbl_inputcd"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
                                            MCPAREA
-                                           ORCMCPAREA
                                            MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
                    MOVE    "0100"          TO  SPA-ERRCD
@@ -1496,16 +1468,14 @@
                            ",KEY:" ICD-KEY
                END-IF
       *
-               MOVE    "INPUTCD-KEY4"      TO  ORC-DBPATH
+               MOVE    "tbl_inputcd"       TO  MCP-TABLE
+               MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM 920-INPUTCD-READ-SEC
       *
            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "INPUTCD-KEY4"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_inputcd"       TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 990-DBLOSEC-SEC
       *
            .
        41211-OLD-INPUTCD-EXT.
@@ -1759,11 +1729,7 @@
       *****************************************************************
        910-TENSU-NEXT-SEC     SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
                MOVE    ZERO                TO  FLG-TENSU
@@ -1780,11 +1746,7 @@
       *****************************************************************
        920-INPUTCD-READ-SEC     SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  INPUTCD-REC
                MOVE    ZERO                TO  FLG-INPUTCD
@@ -1796,6 +1758,45 @@
            .
        920-INPUTCD-READ-EXT.
            EXIT.
+      *****************************************************************
+      *    テーブル検索処理
+      *****************************************************************
+       910-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ読み込み処理
+      *****************************************************************
+       920-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       920-DBFETCH-EXT.
+           EXIT.
+      *****************************************************************
+      *   ＤＢクローズ処理
+      *****************************************************************
+       990-DBLOSEC-SEC                 SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           .
+       990-DBLOSEC-EXT.
+           EXIT.
       *
       *****************************************************************
       *    ＰＵＴ　処理
@@ -1803,9 +1804,10 @@
        900-PUT-WINDOW                            SECTION.
       *
            MOVE   "PUTWINDOW"                    TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"                     USING  MCPAREA
-                                                         ORCMCPAREA
-                                                         MCPDATA-REC.
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           .
       *
        900-PUT-WINDOW-EXT.
            EXIT.

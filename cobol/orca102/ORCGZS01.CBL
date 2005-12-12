@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    MCC-多々納   01/05/23  表示キー追加
+      *  01.00.02    NACL-多々納  05/12/09  MONFUNC対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -86,13 +87,16 @@
       *    入力コード
         01  INPUTCD-REC.
            COPY    "CPINPUTCD.INC".
+      *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
+      **** COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    連絡領域
@@ -111,22 +115,27 @@
       *****************************************************************
        000-PROC-SEC                              SECTION.
       *
-           MOVE    SPA-COMMON                    TO  SPA-AREA
-           MOVE    SPA-WORK                      TO  SPA-Z01KYOUTU
-           MOVE    SPA-FREE                      TO  SPA-Z01FREE
+           MOVE    SPA-COMMON          TO  SPA-AREA
+           MOVE    SPA-WORK            TO  SPA-Z01KYOUTU
+           MOVE    SPA-FREE            TO  SPA-Z01FREE
       *
-           MOVE    SPACE                         TO  SPA-ERRCD
+           MOVE    SPACE               TO  SPA-ERRCD
       *    
       *    入力コード削除
-           MOVE  SPA-HOSPID                  TO  ICD-HOSPID
-           MOVE  SPA-Z01-SRYCD               TO  ICD-SRYCD
-           MOVE  INPUTCD-REC                 TO  MCPDATA-REC
-           MOVE  "DBDELETE"                  TO  MCP-FUNC
-           MOVE  "INPUTCD-KEY4"              TO  ORC-DBPATH
-           CALL  "ORCMCPSUB"                  USING
-                                              MCPAREA
-                                              ORCMCPAREA
-                                              MCPDATA-REC
+           MOVE  SPA-HOSPID            TO  ICD-HOSPID
+           MOVE  SPA-Z01-SRYCD         TO  ICD-SRYCD
+           MOVE  INPUTCD-REC           TO  MCPDATA-REC
+      *
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_inputcd"       TO  MCP-TABLE
+           MOVE    "del22"             TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
       *************UNTIL       IDX     >       23
@@ -163,58 +172,6 @@
            EXIT.
       *
       *****************************************************************
-      *  入力コード更新
-      *****************************************************************
-      *4201-INPUTCD-OUT-SEC            SECTION.
-      *
-      *    INITIALIZE                      INPUTCD-REC
-      *    MOVE    SPA-HOSPID          TO  ICD-HOSPID
-      *    MOVE    WRK-CDSYU           TO  ICD-CDSYU
-      *    MOVE    SPA-Z99-INPUTCD(IDX)  TO  ICD-INPUTCD
-      *
-      *    MOVE    INPUTCD-REC         TO  MCPDATA-REC
-      *    MOVE    "DBSELECT"          TO  MCP-FUNC
-      *    MOVE    "INPUTCD-KEY"       TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
-      *    IF      MCP-RC              =   ZERO
-      *        MOVE    "INPUTCD-KEY"       TO  ORC-DBPATH
-      *        PERFORM                     920-INPUTCD-READ-SEC
-      *    ELSE
-      *        MOVE    1                   TO  FLG-INPUTCD
-      *    END-IF
-      *
-      *    MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-      *    MOVE    "INPUTCD-KEY"       TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
-      *
-      *    IF      FLG-INPUTCD         =   ZERO
-      *        更新
-      *        MOVE    SPA-Z01-SRYCD       TO  ICD-SRYCD
-      *        MOVE    SPA-Z99-DSPNAME(IDX)  TO  ICD-DSPNAME
-      *
-      *        MOVE    INPUTCD-REC         TO  MCPDATA-REC
-      *        MOVE    "DBUPDATE"          TO  MCP-FUNC
-      *        MOVE    "INPUTCD-KEY"       TO  ORC-DBPATH
-      *        CALL    "MCPDBSUB"          USING
-      *                                    MCPAREA
-      *                                    MCPDATA-REC
-      *        IF      MCP-RC          NOT =   ZERO
-      *            MOVE    "1001"          TO  SPA-ERRCD
-      *        END-IF
-      *    ELSE
-      *        登録
-      *        PERFORM 410022-INPUTCD-INS-SEC
-      *    END-IF
-      *
-      *    .
-      *4201-INPUTCD-OUT-EXT.
-      *****EXIT.
-      *
-      *****************************************************************
       *    入力コード追加処理
       *****************************************************************
        410022-INPUTCD-INS-SEC          SECTION.
@@ -228,39 +185,21 @@
       *---- (01.00.01) LINE ADD START --------------------------------
            MOVE    IDX                 TO  ICD-DSPSEQ
       *---- (01.00.01) LINE ADD END   --------------------------------
+           MOVE    SMCNDATE-YMD        TO  ICD-CREYMD
+           MOVE    SMCNDATE-YMD        TO  ICD-UPYMD
+           MOVE    SMCNDATE-HMS        TO  ICD-UPHMS
       *
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "INPUTCD-KEY2"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_inputcd"       TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                MOVE    "1001"          TO  SPA-ERRCD
            END-IF
            .
        410022-INPUTCD-INS-EXT.
-           EXIT.
-      *****************************************************************
-      *    入力コードマスター読込
-      *****************************************************************
-       920-INPUTCD-READ-SEC     SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  INPUTCD-REC
-               MOVE    ZERO                TO  FLG-INPUTCD
-           ELSE
-               INITIALIZE                      INPUTCD-REC
-               MOVE    1                   TO  FLG-INPUTCD
-           END-IF
-      *
-           .
-       920-INPUTCD-READ-EXT.
            EXIT.
       *

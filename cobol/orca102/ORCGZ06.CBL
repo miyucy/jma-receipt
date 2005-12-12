@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-多々納  05/12/09  MONFUNC対応 他
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -135,10 +136,11 @@
       *
       *    ワーク領域
        01  WRK-AREA.
-           03  WRK-GMN-CUR                       PIC X(30).
            03  WRK-ZIDMSG                        PIC X(70).
            03  WRK-STRINGTBL.
                05  WRK-STRING                    PIC X(01)  OCCURS 200.
+      *
+           03  WRK-YUKOEDYMD                     PIC X(08).
       *
            03  WRK-LNKYMD                        PIC X(10).
            03  WRK-WYMD.
@@ -196,9 +198,12 @@
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
+      *****COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    連絡領域
@@ -286,22 +291,21 @@
            ELSE
       *        初期画面セット
                PERFORM 300-SCREEN-SEC
-               IF      FLG-END         =   1
-                   GO  TO  100-INIT-EXT
-               END-IF
       *        画面編集
-               PERFORM 500-GMNHEN-SEC
+               IF      FLG-END         =   ZERO
+                   PERFORM 500-GMNHEN-SEC
+               END-IF
            END-IF
       *
-           MOVE    SPACE               TO  LINKAREA
+           IF      FLG-END         =   ZERO
+               MOVE    SPACE               TO  LINKAREA
       *
-      ***  MOVE    "NEW"               TO  MCP-PUTTYPE
-           MOVE    SPACE               TO  MCP-PUTTYPE
-           MOVE    "Z06"               TO  MCP-WINDOW
+               MOVE    SPACE               TO  MCP-PUTTYPE
+               MOVE    "Z06"               TO  MCP-WINDOW
       *
-           PERFORM 900-PUT-WINDOW.
-      *
-           MOVE    1                             TO  FLG-END
+               PERFORM 900-PUT-WINDOW
+               MOVE    1                             TO  FLG-END
+           END-IF
            .
        100-INIT-EXT.
            EXIT.
@@ -314,14 +318,13 @@
       *    更新処理
                WHEN    "ZID1"
                    PERFORM 330-ZID1-SET-SEC
-                   GO      TO      300-SCREEN-EXT
       *    更新処理
                WHEN    "Z99"
                    MOVE    10              TO  SPA-GMNZ6-CUR
-                   GO      TO      300-SCREEN-EXT
-           END-EVALUATE
       *
-           PERFORM 310-SPASET-SEC
+               WHEN    OTHER
+                   PERFORM 310-SPASET-SEC
+           END-EVALUATE
       *
            .
        300-SCREEN-EXT.
@@ -333,7 +336,7 @@
        310-SPASET-SEC                  SECTION.
       *
       *    点数マスタ該当データ読み出し
-           INITIALIZE                      SPA-GMN-AREA
+           INITIALIZE                      SPA-Z06
       *
            MOVE    SPA-Z01-SRYCD       TO  SPA-GMN-SRYCDH
       *
@@ -385,26 +388,20 @@
            END-IF
       *
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-           MOVE    TNS-YUKOSTYMD       TO  ORC-DBYMD
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+               MOVE    "tbl_tensu"         TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 900-TENSU-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-TENSU
-               INITIALIZE                  TNS-TENSU-REC
+               INITIALIZE                      TNS-TENSU-REC
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBLOSEC-SEC
            IF      FLG-TENSU           =   ZERO
                MOVE    TNS-NAME            TO  SPA-GMN-NAMEH
       *
@@ -543,9 +540,6 @@
       *    登録時、必須入力チェック
            IF      FLG-TOUROKU         =   1
                PERFORM 4109-TOUROKU-CHK-SEC
-               IF      SPA-ERRCD       NOT =   SPACE
-                   GO      TO      410-INPUT-CHK-EXT
-               END-IF
            END-IF
       *
            .
@@ -645,7 +639,6 @@
            ELSE
                MOVE    "0001"              TO  SPA-ERRCD
                MOVE    1                   TO  SPA-GMNZ6-CUR
-               GO      TO      501-YUKOSTYMDCHK-EXT
            END-IF
       *
            .
@@ -670,7 +663,6 @@
            ELSE
                MOVE    "0002"              TO  SPA-ERRCD
                MOVE    2                   TO  SPA-GMNZ6-CUR
-               GO      TO      502-YUKOEDYMDCHK-EXT
            END-IF
       *
            .
@@ -903,7 +895,6 @@
            IF      SPA-GMN-NAME        =   SPACE
                MOVE    "0004"              TO  SPA-ERRCD
                MOVE    4                   TO  SPA-GMNZ6-CUR
-               GO      TO      4109-TOUROKU-CHK-EXT
            END-IF
            .
       *
@@ -951,29 +942,38 @@
                                        TO  TNS-YUKOSTYMD
            MOVE    SPA-Z01-TYUKOEDYMD(SPA-Z01-SELNUM)
                                        TO  TNS-YUKOEDYMD
-           PERFORM 816-TENSUDEL-SEC
-           IF     MCP-RC               NOT =   ZERO
-               DISPLAY "TNS DEL ERR!!"
-               MOVE    "0015"              TO  SPA-ERRCD
-               GO      TO      4031-DEL-EXT
+      *
+           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO
+               DISPLAY "Z03 TENSU DEL ERR!!"   MCP-RC
+                       ",KEY:"   TNS-KEY
+               MOVE    "9001"                TO  SPA-ERRCD
            END-IF
       *
       *    入力コード削除
            IF     (SPA-Z01-SELNUM      =   1    )  AND
                   (SPA-Z01-MAX         =   1    )
-               MOVE  SPA-HOSPID                  TO  ICD-HOSPID
-               MOVE  SPA-Z01-SRYCD               TO  ICD-SRYCD
-               MOVE  INPUTCD-REC                 TO  MCPDATA-REC
-               MOVE  "DBDELETE"                  TO  MCP-FUNC
-               MOVE  "INPUTCD-KEY4"              TO  ORC-DBPATH
-               CALL  "ORCMCPSUB"                  USING
-                                                  MCPAREA
-                                                  ORCMCPAREA
-                                                  MCPDATA-REC
+               MOVE     SPA-HOSPID         TO  ICD-HOSPID
+               MOVE     SPA-Z01-SRYCD      TO  ICD-SRYCD
+               MOVE     INPUTCD-REC        TO  MCPDATA-REC
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               MOVE    "tbl_inputcd"       TO  MCP-TABLE
+               MOVE    "del22"             TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
            END-IF
       *
-           MOVE     "JOIN"            TO  MCP-PUTTYPE
-           PERFORM  210-BACK-SEC
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    "JOIN"              TO  MCP-PUTTYPE
+               PERFORM  210-BACK-SEC
+           END-IF
            .
        4031-DEL-EXT.
            EXIT.
@@ -1043,117 +1043,220 @@
       *****************************************************************
        4121-TOUROKU-SEC                          SECTION.
       *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
       *
-      *    改正時処理
-           IF  SPA-Z01-SYORIKBN                  =  3
-      *        データＵＰＤＡＴＥ
-               INITIALIZE                        TNS-TENSU-REC
+           EVALUATE    SPA-Z01-SYORIKBN
+      *        改正時処理
+               WHEN    3
+                   PERFORM 41211-KAISEI-SYORI-SEC
+      *　          新規処理
+                   PERFORM 41213-INSERT-SYORI-SEC
+      *　      更新処理
+               WHEN    2
+                   PERFORM 41212-UPDATE-SYORI-SEC
+      *　      新規処理
+               WHEN    1
+                   PERFORM 41213-INSERT-SYORI-SEC
+           END-EVALUATE
       *
-               MOVE  SPA-Z01-SRYCD               TO  TNS-SRYCD
-               MOVE  SPA-Z01-TYUKOSTYMD(SPA-Z01-SELNUM)
-                                                 TO  TNS-YUKOSTYMD
-               MOVE  SPA-Z01-TYUKOEDYMD(SPA-Z01-SELNUM)
-                                                 TO  TNS-YUKOEDYMD
-               PERFORM  811-TENSUSEL-SEC
-      *
-               IF  MCP-RC                        =   ZERO
-                   PERFORM  812-TENSUFET-SEC
-                   IF  MCP-RC                    =   ZERO
-                       MOVE  MCPDATA-REC         TO  TNS-TENSU-REC
-                       MOVE  SPA-NAI-YUKOSTYMD   TO  WRK-LNKYMD
-                       PERFORM  833-YMDCONV61-SEC
-                       IF  STS-DAY-RC1            =  ZERO
-                           MOVE  WRK-SYMD        TO  TNS-YUKOEDYMD
-                       ELSE
-                           MOVE    1             TO  SPA-GMNZ6-CUR
-                           MOVE    "0004"        TO  SPA-ERRCD
-                          GO                     TO  4121-TOUROKU-EXT
-                       END-IF
-                       MOVE  SPA-Z01-SRYCD       TO  TNSUP-SRYCD
-                       MOVE  SPA-Z01-TYUKOSTYMD(SPA-Z01-SELNUM)
-                                                 TO  TNSUP-YUKOSTYMD
-                       MOVE  SPA-Z01-TYUKOEDYMD(SPA-Z01-SELNUM)
-                                                 TO  TNSUP-YUKOEDYMD
-                       PERFORM  815-TENSUUPD-SEC
-                   END-IF
-               END-IF
-               IF      MCP-RC                NOT =   ZERO    
-                   MOVE    10                    TO  SPA-GMNZ6-CUR
-                   MOVE    "0014"                TO  SPA-ERRCD
-                   PERFORM  813-TENSUCLS-SEC
-                   GO                            TO  4121-TOUROKU-EXT
-               END-IF
-               PERFORM  813-TENSUCLS-SEC
-             
+      *    入力コード更新
+           IF      SPA-ERRCD           =   SPACE
+               CALL    "ORCGZS01"          USING
+                                           MCPAREA
+                                           SPAAREA
            END-IF
       *
-      *　  登録処理
-           IF  SPA-Z01-SYORIKBN                  =  2
-      *        データＵＰＤＡＴＥ
-               INITIALIZE                        TNS-TENSU-REC
-      *
-               MOVE  SPA-Z01-SRYCD               TO  TNS-SRYCD
-               MOVE  SPA-Z01-TYUKOSTYMD(SPA-Z01-SELNUM)
-                                             TO  TNS-YUKOSTYMD
-               MOVE  SPA-Z01-TYUKOEDYMD(SPA-Z01-SELNUM)
-                                             TO  TNS-YUKOEDYMD
-               PERFORM  811-TENSUSEL-SEC
-      *
-               IF  MCP-RC                        =   ZERO
-                   PERFORM  812-TENSUFET-SEC
-                   IF  MCP-RC                    =   ZERO
-                       MOVE  MCPDATA-REC         TO  TNS-TENSU-REC
-                       MOVE  SPA-NAI-YUKOSTYMD   TO  TNS-YUKOSTYMD
-                       MOVE  SPA-NAI-YUKOEDYMD   TO  TNS-YUKOEDYMD
-                       PERFORM  4121-KOUMOKUISO-SEC
-                       MOVE  SPA-Z01-SRYCD       TO  TNSUP-SRYCD
-                       MOVE  SPA-Z01-TYUKOSTYMD(SPA-Z01-SELNUM)
-                                                 TO  TNSUP-YUKOSTYMD
-                       MOVE  SPA-Z01-TYUKOEDYMD(SPA-Z01-SELNUM)
-                                                 TO  TNSUP-YUKOEDYMD
-                       PERFORM  815-TENSUUPD-SEC
-                   END-IF
-               END-IF
-               IF      MCP-RC                NOT =   ZERO    
-                   MOVE    10                    TO  SPA-GMNZ6-CUR
-                   MOVE    "0014"                TO  SPA-ERRCD
-                   PERFORM  813-TENSUCLS-SEC
-                   GO                            TO  4121-TOUROKU-EXT
-               END-IF
-               PERFORM  813-TENSUCLS-SEC
-      *********PERFORM  813-TENSUCLS-SEC
-           ELSE
-      *        データＩＮＳＥＲＴ
-               INITIALIZE                        TNS-TENSU-REC
-               MOVE  SPA-Z01-SRYCD               TO  TNS-SRYCD
-               MOVE  SPA-NAI-YUKOSTYMD         TO  TNS-YUKOSTYMD
-               MOVE  SPA-NAI-YUKOEDYMD         TO  TNS-YUKOEDYMD
-               PERFORM  4121-KOUMOKUISO-SEC
-               PERFORM  814-TENSUINS-SEC
-               IF  MCP-RC                   NOT  =   ZERO
-                   MOVE    10                    TO  SPA-GMNZ6-CUR
-                   MOVE    "0009"                TO  SPA-ERRCD
-                   GO                            TO  4121-TOUROKU-EXT
-               END-IF
+      *    前画面に戻る
+           IF      SPA-ERRCD           =   SPACE
+               MOVE     "JOIN"            TO  MCP-PUTTYPE
+               PERFORM  210-BACK-SEC
            END-IF
-      *
-      *    点数マスタ付加情報更新
-      *****PERFORM 4129-TENSUPLUS-UPD-SEC
-      *
-      *  入力コード更新
-           CALL    "ORCGZS01"                    USING
-                                                   MCPAREA
-                                                   SPAAREA
-           IF      SPA-ERRCD                   NOT =   SPACE
-                 GO                            TO  4121-TOUROKU-EXT
-           END-IF
-      *
-      *  前画面に戻る
-      *
-           MOVE     "JOIN"            TO  MCP-PUTTYPE
-           PERFORM  210-BACK-SEC
            .
        4121-TOUROKU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    改正時処理
+      *****************************************************************
+       41211-KAISEI-SYORI-SEC          SECTION.
+      *
+      *    有効終了日を決定する
+      *    今回の有効開始日の前日とする
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY6-AREA
+           MOVE    "61"                TO  LNK-DAY6-IRAI
+           MOVE    SPA-NAI-YUKOSTYMD   TO  LNK-DAY6-KIJUN
+           MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
+           MOVE    -1                  TO  LNK-DAY6-ZOGEN
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY6-AREA
+           IF      STS-DAY-RC1         =   ZERO
+               MOVE    LNK-DAY6-KEISAN     TO  WRK-YUKOEDYMD
+           ELSE
+               MOVE    1                   TO  SPA-GMNZ6-CUR
+               MOVE    "0001"              TO  SPA-ERRCD
+               GO      TO      41211-KAISEI-SYORI-EXT
+           END-IF
+      *
+      *    有効年月日を更新する
+           INITIALIZE                      TNS-TENSU-REC
+      *
+           MOVE    SPA-Z01-SRYCD       TO  TNS-SRYCD
+           MOVE    SPA-Z01-TYUKOSTYMD(SPA-Z01-SELNUM)
+                                       TO  TNS-YUKOSTYMD
+           MOVE    SPA-Z01-TYUKOEDYMD(SPA-Z01-SELNUM)
+                                       TO  TNS-YUKOEDYMD
+      *
+           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_tensu"         TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-TENSU-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-TENSU
+               INITIALIZE                      TNS-TENSU-REC
+           END-IF
+      *
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBLOSEC-SEC
+      *
+           IF      FLG-TENSU           =   ZERO
+      *        更新
+               MOVE    WRK-YUKOEDYMD       TO  TNS-YUKOEDYMD
+      *
+               MOVE    SPA-Z01-SRYCD       TO  TNSUP-SRYCD
+               MOVE    SPA-Z01-TYUKOSTYMD(SPA-Z01-SELNUM)
+                                           TO  TNSUP-YUKOSTYMD
+               MOVE    SPA-Z01-TYUKOEDYMD(SPA-Z01-SELNUM)
+                                           TO  TNSUP-YUKOEDYMD
+      *
+               MOVE    SMCNDATE-YMD        TO  TNS-UPYMD
+               MOVE    SMCNDATE-HMS        TO  TNS-UPHMS
+      *
+               MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    "tbl_tensu"         TO  MCP-TABLE
+               MOVE    "upd1"              TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC              NOT =   ZERO
+                   DISPLAY "Z02 TENSU UPD ERR:" MCP-RC
+                           ",KEY:" TNS-KEY
+                   MOVE    1                     TO  SPA-GMNZ6-CUR
+                   MOVE    "9002"                TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           .
+       41211-KAISEI-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    更新処理
+      *****************************************************************
+       41212-UPDATE-SYORI-SEC                       SECTION.
+      *
+      *
+           INITIALIZE                      TNS-TENSU-REC
+      *
+           MOVE    SPA-Z01-SRYCD       TO  TNS-SRYCD
+           MOVE    SPA-Z01-TYUKOSTYMD(SPA-Z01-SELNUM)
+                                       TO  TNS-YUKOSTYMD
+           MOVE    SPA-Z01-TYUKOEDYMD(SPA-Z01-SELNUM)
+                                       TO  TNS-YUKOEDYMD
+      *
+           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_tensu"         TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-TENSU-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-TENSU
+               INITIALIZE                      TNS-TENSU-REC
+           END-IF
+      *
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBLOSEC-SEC
+      *
+           IF      FLG-TENSU           =   ZERO
+      *        更新項目編集
+               MOVE    SPA-NAI-YUKOSTYMD   TO  TNS-YUKOSTYMD
+               MOVE    SPA-NAI-YUKOEDYMD   TO  TNS-YUKOEDYMD
+               PERFORM 4121-KOUMOKUISO-SEC
+      *
+               MOVE    SPA-Z01-SRYCD       TO  TNSUP-SRYCD
+               MOVE    SPA-Z01-TYUKOSTYMD(SPA-Z01-SELNUM)
+                                           TO  TNSUP-YUKOSTYMD
+               MOVE    SPA-Z01-TYUKOEDYMD(SPA-Z01-SELNUM)
+                                           TO  TNSUP-YUKOEDYMD
+      *
+               MOVE    SMCNDATE-YMD        TO  TNS-UPYMD
+               MOVE    SMCNDATE-HMS        TO  TNS-UPHMS
+      *
+               MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    "tbl_tensu"         TO  MCP-TABLE
+               MOVE    "upd1"              TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC              NOT =   ZERO
+                   DISPLAY "Z02 TENSU UPD ERR:" MCP-RC
+                           ",KEY:" TNS-KEY
+                   MOVE    1                     TO  SPA-GMNZ6-CUR
+                   MOVE    "9002"                TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           .
+       41212-UPDATE-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    更新処理
+      *****************************************************************
+       41213-INSERT-SYORI-SEC          SECTION.
+      *
+      *    データＩＮＳＥＲＴ
+           MOVE    SPACE               TO  TNS-TENSU-REC
+           INITIALIZE                      TNS-TENSU-REC
+           MOVE    SPA-Z01-SRYCD       TO  TNS-SRYCD
+           MOVE    SPA-NAI-YUKOSTYMD   TO  TNS-YUKOSTYMD
+           MOVE    SPA-NAI-YUKOEDYMD   TO  TNS-YUKOEDYMD
+           PERFORM 4121-KOUMOKUISO-SEC
+      *
+           MOVE    SMCNDATE-YMD        TO  TNS-CREYMD
+           MOVE    SMCNDATE-YMD        TO  TNS-UPYMD
+           MOVE    SMCNDATE-HMS        TO  TNS-UPHMS
+      *
+           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+           MOVE    "DBINSERT"          TO  MCP-FUNC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO
+               MOVE    1                   TO  SPA-GMNZ6-CUR
+               MOVE    "9003"              TO  SPA-ERRCD
+               DISPLAY "Z02 TENSU INS ERR:" MCP-RC
+                       ",KEY:" TNS-KEY
+           END-IF
+      *
+           .
+       41213-INSERT-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1461,115 +1564,12 @@
       *****************************************************************
       *    ＤＢ　処理
       *****************************************************************
-      *
       *****************************************************************
-      *    点数マスタＳＥＬＥＣＴ処理（診療行為、有効期間）
+      *    点数マスタ読込処理
       *****************************************************************
-       811-TENSUSEL-SEC                          SECTION.
+       900-TENSU-READ-SEC              SECTION.
       *
-           MOVE  TNS-TENSU-REC               TO  MCPDATA-REC
-           MOVE  TNS-YUKOSTYMD               TO  ORC-DBYMD
-           MOVE  "DBSELECT"                  TO  MCP-FUNC
-           MOVE  "TENSU-KEY"                 TO  ORC-DBPATH
-           CALL  "ORCMCPSUB"                  USING
-                                              MCPAREA
-                                              ORCMCPAREA
-                                              MCPDATA-REC
-           .                                       
-      *
-       811-TENSUSEL-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    点数マスタＦＥＴＣＨ処理（診療行為、有効期間）
-      *****************************************************************
-       812-TENSUFET-SEC                          SECTION.
-           MOVE  TNS-TENSU-REC               TO  MCPDATA-REC
-           MOVE  "DBFETCH"                   TO  MCP-FUNC
-           MOVE  "TENSU-KEY"                 TO  ORC-DBPATH
-           CALL  "ORCMCPSUB"                  USING
-                                              MCPAREA
-                                              ORCMCPAREA
-                                              MCPDATA-REC
-           .                                       
-      *
-       812-TENSUFET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    点数マスタＣＬＯＳＥ処理（診療行為、有効期間）
-      *****************************************************************
-       813-TENSUCLS-SEC                          SECTION.
-     ***** MOVE  TNS-TENSU-REC               TO  MCPDATA-REC
-           MOVE  "DBCLOSECURSOR"             TO  MCP-FUNC
-           MOVE  "TENSU-KEY"                 TO  ORC-DBPATH
-           CALL  "ORCMCPSUB"                  USING
-                                              MCPAREA
-                                              ORCMCPAREA
-                                              MCPDATA-REC
-           .                                   
-      *
-       813-TENSUCLS-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    点数マスタＩＮＳ処理
-      *****************************************************************
-       814-TENSUINS-SEC                          SECTION.
-           MOVE  TNS-TENSU-REC               TO  MCPDATA-REC
-           MOVE  "DBINSERT"                  TO  MCP-FUNC
-           MOVE  "TENSU-KEY"                 TO  ORC-DBPATH
-           CALL  "ORCMCPSUB"                  USING
-                                                  MCPAREA
-                                                  ORCMCPAREA
-                                                  MCPDATA-REC
-           .                                       
-      *
-       814-TENSUINS-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    点数マスタＵＰＤ処理
-      *****************************************************************
-       815-TENSUUPD-SEC                          SECTION.
-               MOVE  TNS-TENSU-REC               TO  MCPDATA-REC
-               MOVE  "DBUPDATE"                  TO  MCP-FUNC
-               MOVE  "TENSU-UPD1"                TO  ORC-DBPATH
-               CALL  "ORCMCPSUB"                  USING
-                                                  MCPAREA
-                                                  ORCMCPAREA
-                                                  MCPDATA-REC
-           .                                       
-      *
-       815-TENSUUPD-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    点数マスタＤＥＬ処理
-      *****************************************************************
-       816-TENSUDEL-SEC                          SECTION.
-               MOVE  TNS-TENSU-REC               TO  MCPDATA-REC
-               MOVE  "DBDELETE"                  TO  MCP-FUNC
-               MOVE  "TENSU-KEY"                 TO  ORC-DBPATH
-               CALL  "ORCMCPSUB"                  USING
-                                                  MCPAREA
-                                                  ORCMCPAREA
-                                                  MCPDATA-REC
-           .                                       
-      *
-       816-TENSUDEL-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    点数マスタ付加情報読込
-      *****************************************************************
-       900-TENSU-READ-SEC          SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  TNS-TENSU-REC
                MOVE    ZERO            TO  FLG-TENSU
@@ -1581,18 +1581,12 @@
       *
        900-TENSU-READ-EXT.
            EXIT.
-      *
-      *
       *****************************************************************
       *    点数マスタ付加情報読込
       *****************************************************************
        990-TENSUPLUS-READ-SEC          SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  TENSUPLUS-REC
                MOVE    ZERO            TO  FLG-TENSUPLUS
@@ -1600,9 +1594,48 @@
                INITIALIZE                  TENSUPLUS-REC
                MOVE    1               TO  FLG-TENSUPLUS
            END-IF
-           .                                       
+           .    
       *
        990-TENSUPLUS-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    テーブル検索処理
+      *****************************************************************
+       910-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ読み込み処理
+      *****************************************************************
+       920-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       920-DBFETCH-EXT.
+           EXIT.
+      *****************************************************************
+      *   ＤＢクローズ処理
+      *****************************************************************
+       990-DBLOSEC-SEC                 SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           .
+       990-DBLOSEC-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1744,9 +1777,10 @@
        900-PUT-WINDOW                            SECTION.
       *
            MOVE   "PUTWINDOW"                    TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"                     USING  MCPAREA
-                                                         ORCMCPAREA
-                                                         MCPDATA-REC.
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           .
       *
        900-PUT-WINDOW-EXT.
            EXIT.
