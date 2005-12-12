@@ -2074,7 +2074,7 @@
                                            WRK-TENROOM-SKJ-SRYYMX
       *
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
-           MOVE    "NYUINACCT-KEY23"   TO  WRK-DBPATH
+           MOVE    "NYUINACCT-KEY28"   TO  WRK-DBPATH
            PERFORM   900-TBL-SELECT-SEC
            IF      FLG-DBRC            =   ZERO
                MOVE     MCPDATA-REC    TO  NYUINACCT-REC
@@ -2098,7 +2098,7 @@
                END-PERFORM
            END-IF
       *    入院会計マスタクローズ
-           MOVE    "NYUINACCT-KEY23"      TO  ORC-DBPATH
+           MOVE    "NYUINACCT-KEY28"      TO  ORC-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
       *    （異動翌月分）
            INITIALIZE                      NYUINACCT-REC
@@ -2114,7 +2114,7 @@
                                        TO  NACCT-SRYYM
       *
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
-           MOVE    "NYUINACCT-KEY23"   TO  WRK-DBPATH
+           MOVE    "NYUINACCT-KEY28"   TO  WRK-DBPATH
            PERFORM   900-TBL-SELECT-SEC
            IF      FLG-DBRC            =   ZERO
                MOVE     MCPDATA-REC    TO  NYUINACCT-REC
@@ -2129,7 +2129,7 @@
                MOVE    SPACE           TO  WRK-TENROOM-SKJ-SRYYM(2)
            END-IF
       *    入院会計マスタクローズ
-           MOVE    "NYUINACCT-KEY23"      TO  ORC-DBPATH
+           MOVE    "NYUINACCT-KEY28"      TO  ORC-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
       *
       *    入院会計作成サブの呼出し
@@ -2934,12 +2934,12 @@
            MOVE    LNK-PTNYUINRRK-PTID     TO  NACCT-PTID
            MOVE    SODRNACCT-STARTYMD(1:6) TO  NACCT-SRYYM
            MOVE    "4"                     TO  NACCT-ZAISKBKBN
-           MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
+           MOVE    "NYUINACCT-KEY28"       TO  ORC-DBPATH
            PERFORM 910-NYUINACCT-SELECT-SEC
            IF      FLG-NYUINACCT           =   ZERO
-               MOVE     "NYUINACCT-KEY17"  TO  ORC-DBPATH
+               MOVE     "NYUINACCT-KEY28"  TO  ORC-DBPATH
                PERFORM   910-NYUINACCT-READ-SEC
-               PERFORM   UNTIL   (FLG-NYUINACCT    =   1)
+               IF        FLG-NYUINACCT     =   ZERO
                  IF   NACCT-SRYCDTOTAL  =  99999913
       *            食事区分のセット
                    MOVE    SODRNACCT-STARTYMD      TO  WRK-STARTYMD
@@ -2987,12 +2987,10 @@
                                                         MCPDATA-REC
       *
                  END-IF
-                 MOVE    "NYUINACCT-KEY17"   TO  ORC-DBPATH
-                 PERFORM 910-NYUINACCT-READ-SEC
-               END-PERFORM
+               END-IF
            END-IF
       *    入院会計クローズ
-           MOVE     "NYUINACCT-KEY17"       TO  WRK-DBPATH
+           MOVE     "NYUINACCT-KEY28"       TO  WRK-DBPATH
            PERFORM   900-TBL-CLOSE-SEC
       *
       *-------------------食堂加算ここから----------------------------
