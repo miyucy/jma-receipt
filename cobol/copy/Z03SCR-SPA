@@ -301,4 +301,7 @@
                05  SPA-NAI-YUKOSTYMD           PIC X(08).
                05  SPA-NAI-YUKOEDYMD           PIC X(08).
       *
+               05  SPA-NAI-KEIFLG1             PIC 9(01).
+               05  SPA-NAI-KEIFLG2             PIC 9(01).
+      *
       *
