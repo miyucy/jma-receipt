@@ -623,6 +623,10 @@
            IF    ( FLG-DBRC    =   ZERO  )
                MOVE    MCPDATA-REC     TO  PTINF-REC
            END-IF
+      *
+           MOVE    "PTINF-KEY"      TO   WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
            INITIALIZE      ORCSSYOKIKSNAREA
       *
       *    通算日数、算定開始日を求める
@@ -1244,6 +1248,9 @@
                GO  TO          4801-NYUKSN-CHK-EXT
            END-IF
       *
+           MOVE    "NYUKSNCHK-KEY"      TO   WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
            IF    ( NYUKSNCHK-CHKKBN    =   "1" OR "2" )
                CONTINUE
            ELSE
@@ -1376,6 +1383,9 @@
            ELSE
                MOVE    1               TO  FLG-PTINF
            END-IF
+      *
+           MOVE    "PTINF-KEY"      TO   WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
       *
            IF      FLG-PTINF           =   1
                MOVE    ZERO            TO  WRK-NENREI
