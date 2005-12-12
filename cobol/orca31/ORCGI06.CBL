@@ -128,6 +128,7 @@
                    07  SPA-GMN-KJNIDOLST-MAX       PIC  9(5).
                    07  SPA-GMN-KJNIDOLST-SEL       PIC  9(5).
                    07  SPA-GMN-KJNIDOLST-OCC       OCCURS  50.
+                       09  SPA-GMN-TKJNUKEYMD      PIC X(10).
                        09  SPA-GMN-TKJNIDOYMD      PIC X(10).
                        09  SPA-GMN-TKJNIDOJIYU     PIC X(20).
                        09  SPA-GMN-TKJNSTS         PIC X(1).
@@ -255,6 +256,7 @@
                    07  SPA-NAI-KJNIDOLST-OCC       OCCURS  50.
                        09  SPA-NAI-TKJNKARTE-KEY   PIC X(36).
                        09  SPA-NAI-TKJNORDERNUM    PIC 9(02).
+                       09  SPA-NAI-TKJNUKEYMD      PIC X(10).
                        09  SPA-NAI-TKJNIDOYMD      PIC X(10).
                        09  SPA-NAI-TKJNORDERID     PIC X(04).
                05  SPA-NAI-BTUDEF-AREA.
@@ -1347,6 +1349,10 @@
                                    TO  SPA-NAI-TKJNKARTE-KEY (IDX-MAX)
                MOVE    ORDER-ORDERNUM
                                    TO  SPA-NAI-TKJNORDERNUM  (IDX-MAX)
+               MOVE    ORDER-UKEYMD    TO  WRK-YMD
+               PERFORM 800-SEIWA-HEN-SEC
+               MOVE    WRK-HENYMDG TO  SPA-GMN-TKJNUKEYMD (IDX-MAX)
+               MOVE    WRK-SYMD    TO  SPA-NAI-TKJNUKEYMD (IDX-MAX)
       *
                MOVE    ORDER-SRYYMD    TO  WRK-YMD
                PERFORM 800-SEIWA-HEN-SEC
@@ -4676,6 +4682,8 @@
       *
                MOVE    IDX-LST             TO  WRK-ZZ9
                MOVE    WRK-ZZ9             TO  I06-TKJNNUM     (IDX-LST)
+               MOVE    SPA-GMN-TKJNUKEYMD  (IDX-LST)
+                                           TO  I06-TKJNUKEYMD  (IDX-LST)
                MOVE    SPA-GMN-TKJNIDOYMD  (IDX-LST)
                                            TO  I06-TKJNIDOYMD  (IDX-LST)
                MOVE    SPA-GMN-TKJNIDOJIYU (IDX-LST)

@@ -128,6 +128,7 @@
                   05  I06-KJNIDOLST-ROWATTR    PIC S9(9)   BINARY.
                   05  I06-KJNIDOLST-ITEM       OCCURS  50 TIMES.
                     06  I06-TKJNNUM            PIC X(4).
+                    06  I06-TKJNUKEYMD         PIC X(10).
                     06  I06-TKJNIDOYMD         PIC X(10).
                     06  I06-TKJNIDOJIYU        PIC X(20).
                     06  I06-TKJNERR            PIC X(4).
