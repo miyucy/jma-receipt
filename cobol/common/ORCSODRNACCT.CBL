@@ -2600,7 +2600,7 @@
                IF   SYS-5001-BTU-SYOKUDOKBN       =    "2"
                     MOVE     "197000570"    TO
                                 LNK-SCNYUACCT-SHOKUDO-SRYCD
-                    MOVE    1   TO   LNK-SCNYUACCT-SHOKUDO-KBN
+                    MOVE    0   TO   LNK-SCNYUACCT-SHOKUDO-KBN
                END-IF
            END-IF
       *    保険組合せ
