@@ -575,8 +575,6 @@
            MOVE    SPACE           TO  WRK-ERRCD
            MOVE    ZERO            TO  FLG-END
       *
-           DISPLAY "SODRNACCT-ORDERID = " SODRNACCT-ORDERID
-      *
            EVALUATE    SODRNACCT-ORDERID
       *       （入院）
                WHEN    "0101"
@@ -616,7 +614,6 @@
       *****************************************************************
        4801-NYUKAIKEI-EDIT-SEC         SECTION.
       *
-           DISPLAY "4801-NYUKAIKEI-EDIT-SEC START "
            INITIALIZE                      PTINF-REC
            MOVE    LNK-PTNYUINRRK-HOSPID   TO  PTINF-HOSPID
            MOVE    LNK-PTNYUINRRK-PTID     TO  PTINF-PTID
@@ -633,7 +630,6 @@
            IF    ( WRK-ERRCD    NOT =  SPACE )
                GO  TO  4801-NYUKAIKEI-EDIT-EXT
            END-IF
-           DISPLAY "4801-NYUKAIKEI-EDIT-SEC 2"
       *
            MOVE    WRK-TSUSAN      TO  SYOKIKSN-IN-TUSANNISSU
            MOVE    WRK-SANTEISTYMD
@@ -658,7 +654,6 @@
                    GO  TO  4801-NYUKAIKEI-EDIT-EXT
                END-IF
            END-IF
-           DISPLAY "4801-NYUKAIKEI-EDIT-SEC 3"
       *
       *    入院会計作成サブの呼出し
            INITIALIZE            ORCSNYUACCT-AREA
@@ -680,7 +675,6 @@
                MOVE   SYOKIKSN-OT-YUKOEDYMD(IDX6)
                          TO  LNK-SCNYUACCT-KAGEN-EDYUKYMD(IDX6)
            END-PERFORM
-           DISPLAY "4801-NYUKAIKEI-EDIT-SEC 4"
       *
       *    通算算定済日数
            MOVE   WRK-TSUSAN    TO  LNK-SCNYUACCT-NYUKHN-NISUU
@@ -720,7 +714,6 @@
                  MOVE    "99999999"
                                   TO LNK-SCNYUACCT-KAGEN-EDYUKYMD(2)
            END-IF
-           DISPLAY "4801-NYUKAIKEI-EDIT-SEC 5"
       *
       *    特定入院料で７日まで、１４日まで、それ以降は一般入院料を算定する
       *    場合の診療コードを取得
@@ -775,7 +768,6 @@
       *          一般入院会計作成用のフラグ設定
                  MOVE    "1"      TO      IPN-NYUKAIKEI-SAKUSEI-FLG
            END-IF
-           DISPLAY "4801-NYUKAIKEI-EDIT-SEC 6"
       *
       *    広範囲熱傷特定集中治療室管理料（６０日上限）
            IF    SYOKIKSN-IN-KHNSRYCD   =   "190024810"
@@ -832,7 +824,6 @@
                      MOVE    "1"   TO     IPN-NYUKAIKEI-SAKUSEI-FLG
                  END-IF
            END-IF
-           DISPLAY "4801-NYUKAIKEI-EDIT-SEC 7"
       *
       *    ハイケアユニット入院医療管理料（２１日を限度）
            IF    SYOKIKSN-IN-KHNSRYCD   =   "190117310"
@@ -871,7 +862,6 @@
            END-IF
       *
       *-------特定入院対応ここまで-----------------------------------
-           DISPLAY "4801-NYUKAIKEI-EDIT-SEC 8"
       *
       *    入院料加算診療コード取り込み
            PERFORM    4801-NYUKSN-GET-SEC
@@ -924,7 +914,6 @@
                DISPLAY  "ORCGI01 ORCSNYUACCT ERR RC = "
                          LNK-SCNYUACCT-RC
            END-IF
-           DISPLAY "4801-NYUKAIKEI-EDIT-SEC 9"
       *
            IF     IPN-NYUKAIKEI-SAKUSEI-FLG    =   "1"
                MOVE    SPACE   TO   LNK-PTNYUINRRK-TOKUTEI-NYUIN
@@ -933,7 +922,6 @@
                MOVE    IPN-SANTEISTYMD   TO   LNK-PTNYUINRRK-TENNYUYMD
       *****         PERFORM   4801-TENROOM-EDIT-SEC
            END-IF
-           DISPLAY "4801-NYUKAIKEI-EDIT-SEC END"
       *
            .
        4801-NYUKAIKEI-EDIT-EXT.
@@ -1296,8 +1284,6 @@
            ELSE
                MOVE    1           TO  FLG-TENSU
            END-IF
-           DISPLAY  "FLG-TENSU = " FLG-TENSU
-           DISPLAY "TNS-NYUKHNKSNKBN = " TNS-NYUKHNKSNKBN
       *
       *    点数マスタクローズ
            MOVE    "TENSU-KEY"     TO  ORC-DBPATH
@@ -1349,7 +1335,6 @@
            MOVE    WRK-NYUKHNKSN-SRYCD(IDX8)
                                    TO  TNS-SRYCD
            MOVE    SYOKIKSN-IN-SANTEISTYMD    TO  ORC-DBYMD
-           DISPLAY "SYOKIKSN-IN-SANTEISTYMD= " SYOKIKSN-IN-SANTEISTYMD
            MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
       *
            MOVE    "TENSU-KEY"     TO  WRK-DBPATH
@@ -1440,7 +1425,23 @@
                MOVE    WRK-SENTEI-STYMD
                                      TO  LNK-SCNYUACCT-SENTEI-STYMD
            END-IF
+      *
+           INITIALIZE                      PTINF-REC
+           MOVE    LNK-PTNYUINRRK-HOSPID   TO  PTINF-HOSPID
+           MOVE    LNK-PTNYUINRRK-PTID     TO  PTINF-PTID
+           MOVE    PTINF-REC           TO  MCPDATA-REC
+           MOVE    "PTINF-KEY"         TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC    =   ZERO  )
+               MOVE    MCPDATA-REC     TO  PTINF-REC
+           ELSE
+               MOVE    1               TO  FLG-PTINF
+           END-IF
+           MOVE    "PTINF-KEY"         TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
       *    １５才未満の患者は選定入院対象外
+           DISPLAY "PTINF-BIRTHDAY = " PTINF-BIRTHDAY
            MOVE     PTINF-BIRTHDAY   TO  WRK-BIRTHDAY-15
            ADD      15               TO  WRK-BIRTHDAY-15Y
            DISPLAY  "WRK-SENTEI-STYMD = " WRK-SENTEI-STYMD
@@ -1459,7 +1460,6 @@
       *****************************************************************
        4801-TSUSAN-SANTEI-GET-SEC      SECTION.
       *
-           DISPLAY  "4801-TSUSAN-SANTEI-GET-SEC START"
            INITIALIZE                  WRK-TSUSAN
                                        WRK-SANTEISTYMD
       *
@@ -1468,12 +1468,6 @@
            MOVE    LNK-PTNYUINRRK-PTID TO  STUSAN-PTID
            MOVE    LNK-PTNYUINRRK-TENNYUYMD
                                    TO  STUSAN-KJNYMD
-           DISPLAY "LNK-PTNYUINRRK-HOSPID = " LNK-PTNYUINRRK-HOSPID
-           DISPLAY "LNK-PTNYUINRRK-PTID   = " LNK-PTNYUINRRK-PTID
-           DISPLAY "LNK-PTNYUINRRK-TENNYUYMD = "
-                                      LNK-PTNYUINRRK-TENNYUYMD
-           DISPLAY "LNK-PTNYUINRRK-TOKUTEI-KBN = "
-                     LNK-PTNYUINRRK-TOKUTEI-KBN
       *    特定入院での算定済日数を取得用
       *    特定集中治療室管理料
       *    救命救急入院料
@@ -1518,15 +1512,12 @@
                        MOVE   "190117410"  TO  STUSAN-TOKUTEI-SRYCD(1)
                END-EVALUATE
            END-IF
-           DISPLAY  "4801-TSUSAN-SANTEI-GET-SEC 2"
            CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
-           DISPLAY "STUSAN-RC = " STUSAN-RC
            IF    ( STUSAN-RC       NOT =   ZERO )
       *         MOVE    "4025"      TO  WRK-ERRCD
                DISPLAY  "WRK-ERRCD = " WRK-ERRCD
       *         GO  TO  4801-TSUSAN-SANTEI-GET-EXT
            END-IF
-           DISPLAY  "4801-TSUSAN-SANTEI-GET-SEC 3"
       *
            COMPUTE WRK-TSUSAN  =   STUSAN-NISSU03  -   1
            MOVE    LNK-PTNYUINRRK-TENNYUYMD
@@ -1540,11 +1531,9 @@
            ELSE
                COMPUTE WRK-ZOGEN   =   180 - ( STUSAN-NISSU04  -   1 )
            END-IF
-           DISPLAY  "4801-TSUSAN-SANTEI-GET-SEC 4"
       *
            PERFORM 5002-CALENDAR-SEC
            MOVE    WRK-KEISANYMD   TO  WRK-SENTEI-STYMD
-           DISPLAY  "4801-TSUSAN-SANTEI-GET-SEC END"
       *
            .
        4801-TSUSAN-SANTEI-GET-EXT.
@@ -1984,7 +1973,6 @@
       *    転科／転棟／転室時　会計テーブル編集処理
       *****************************************************************
        4801-TENROOM-EDIT-SEC         SECTION.
-           DISPLAY "4801-TENROOM-EDIT-SEC"
       *
            MOVE      SPACE        TO    WRK-DOU-TENNYUYMD
            MOVE      SPACE        TO    IPN-NYUKAIKEI-SAKUSEI-FLG
@@ -1994,12 +1982,10 @@
            MOVE    SPACE   TO   SPA-ERRCD
       *    通算日数、算定開始日を求める
            PERFORM 4801-TSUSAN-SANTEI-GET-SEC
-           DISPLAY  "SPA-ERRCD = " SPA-ERRCD
            IF    ( SPA-ERRCD    NOT =  SPACE )
                GO  TO  4801-TENROOM-EDIT-EXT
            END-IF
       *
-           DISPLAY "AZU1 AZU1"
            MOVE    WRK-TSUSAN      TO  SYOKIKSN-IN-TUSANNISSU
            MOVE    WRK-SANTEISTYMD
                                    TO  SYOKIKSN-IN-SANTEISTYMD
@@ -2048,10 +2034,8 @@
                    END-IF
                END-IF
            END-IF
-           DISPLAY "AZU2 AZU2"
       *
            IF      LNK-PTNYUINRRK-TOKUTEI-NYUIN    NOT =   SPACE
-               DISPLAY "AZU3 AZU3"
                PERFORM   4801-TOKTEI-NYUIN-SET-SEC
            ELSE
                PERFORM   4801-BTUSEL-SEC
@@ -2059,13 +2043,6 @@
                    MOVE    SYS-5001-BTU-KHNSRYCD
                                        TO  SYOKIKSN-IN-KHNSRYCD
                    PERFORM   4801-RJNCD-CHG-SEC
-                   DISPLAY "SYOKIKSN-IN-TUSANNISSU = " 
-                            SYOKIKSN-IN-TUSANNISSU
-                   DISPLAY "SYOKIKSN-IN-KHNSRYCD = " 
-                            SYOKIKSN-IN-KHNSRYCD
-                   DISPLAY "SYOKIKSN-IN-SANTEISTYMD = " 
-                            SYOKIKSN-IN-SANTEISTYMD
-                   DISPLAY "AZU4 AZU4"
                    CALL    "ORCSSYOKIKSN"  USING   ORCSSYOKIKSNAREA
                    IF    ( SYOKIKSN-OT-RC  NOT =   ZERO )
                        MOVE    "4021"      TO  SPA-ERRCD
@@ -2146,7 +2123,6 @@
            PERFORM 900-TBL-CLOSE-SEC
       *
       *    入院会計作成サブの呼出し
-           DISPLAY  "ORCSNYUACCT MAE1"
            INITIALIZE                     ORCSNYUACCT-AREA
            MOVE    "8"                TO  LNK-SCNYUACCT-SYORI-KBN
            MOVE    "1"                TO  SPA-NYUGAIKBN
@@ -2170,7 +2146,6 @@
            END-PERFORM
       *    通算算定済日数
            MOVE   WRK-TSUSAN    TO  LNK-SCNYUACCT-NYUKHN-NISUU
-           DISPLAY  "ORCSNYUACCT MAE2"
       *
       *    特定入院で入院料が変更になるコードの対応
       *    診療所老人医療管理料
@@ -2579,7 +2554,6 @@
                  END-IF
            END-IF
       *-------特定入院対応ここまで-----------------------------------
-           DISPLAY  "ORCSNYUACCT MAE3"
       *
       *    入院料加算診療コード取り込み
            PERFORM    4801-NYUKSN-GET-SEC
@@ -2632,12 +2606,6 @@
            MOVE   SPA-SRYKA     TO  WRK-TAIHI-SRYKA
            MOVE   "00"          TO  SPA-SRYKA
            PERFORM 4801-SENTEI-SET-SEC
-           DISPLAY "LNK-SCNYUACCT-KAGEN-SRYCD(1) = "
-                            LNK-SCNYUACCT-KAGEN-SRYCD(1)
-           DISPLAY "LNK-SCNYUACCT-KAGEN-SRYCD(2) = "
-                            LNK-SCNYUACCT-KAGEN-SRYCD(2)
-           DISPLAY "LNK-SCNYUACCT-KAGEN-SRYCD(3) = "
-                            LNK-SCNYUACCT-KAGEN-SRYCD(3)
            MOVE    LNK-PTNYUINRRK-HOSPID   TO  SPA-HOSPID
            MOVE    LNK-PTNYUINRRK-PTID     TO  SPA-PTID
            CALL   "ORCSNYUACCT"  USING   SPA-AREA
@@ -2647,7 +2615,6 @@
                DISPLAY  "ORCGI01 ORCSNYUACCT ERR RC = "
                          LNK-SCNYUACCT-RC
            END-IF
-           DISPLAY  "ORCSNYUACCT MAE4"
       *
            IF     IPN-NYUKAIKEI-SAKUSEI-FLG    =   "1"
                MOVE    SPACE   TO   LNK-PTNYUINRRK-TOKUTEI-NYUIN
@@ -2727,7 +2694,6 @@
       *****************************************************************
        4801-TAIINKAIKEI-EDIT-SEC         SECTION.
       *
-           DISPLAY "4801-TAIINKAIKEI-EDIT-SEC"
       *    入院会計作成サブの呼出し
            INITIALIZE            ORCSNYUACCT-AREA
            MOVE     "2"     TO   LNK-SCNYUACCT-SYORI-KBN
@@ -2737,10 +2703,6 @@
            MOVE     LNK-PTNYUINRRK-NYUINKA TO  SPA-SRYKA
            MOVE     LNK-PTNYUINRRK-TAIINYMD
                                        TO   LNK-SCNYUACCT-EDSRYYMD
-           DISPLAY "LNK-PTNYUINRRK-PTID = " LNK-PTNYUINRRK-PTID
-           DISPLAY "LNK-PTNYUINRRK-NYUINKA = " LNK-PTNYUINRRK-NYUINKA
-           DISPLAY "LNK-PTNYUINRRK-TAIINYMD = "
-                                              LNK-PTNYUINRRK-TAIINYMD
       *    保険組合せ
            MOVE   LNK-PTNYUINRRK-HKNCOMBINUM
                                        TO  WRK-HKNCOMBINUM
@@ -2763,7 +2725,6 @@
       *****************************************************************
        4801-GAIHAKU-SEC         SECTION.
       *
-           DISPLAY "4801-GAIHAKU-SEC"
       *    外泊のセット
            IF      LNK-PTNYUINRRK-TAIINYMD =   "99999999"
                PERFORM    4801-GAIHAKU-1-SEC
@@ -2782,7 +2743,6 @@
       *    入院中患者の外泊データ更新なので、入院会計が存在する会計データに
       *    ついて全て更新を行う
       *
-           DISPLAY "4801-GAIHAKU-1-SEC"
       *    外泊のセット
            INITIALIZE                          NYUINACCT-REC
            MOVE    LNK-PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
@@ -2869,7 +2829,6 @@
       *    退院済患者の外泊データ更新なので、退院日までの会計データについて
       *    更新を行う
       *
-           DISPLAY "4801-GAIHAKU-2-SEC"
       *    外泊のセット
            INITIALIZE                          NYUINACCT-REC
            MOVE    LNK-PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
@@ -2958,7 +2917,6 @@
       *    食事　会計テーブル編集処理
       *****************************************************************
        4801-SHOKUJI-SEC         SECTION.
-           DISPLAY "4801-SHOKUJI-SEC"
       *
       *    食事のセット
            INITIALIZE                          NYUINACCT-REC
