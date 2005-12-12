@@ -2067,8 +2067,8 @@
       *    入院会計作成前に会計データの食事区分を退避
       *    （異動月分）
            INITIALIZE                      NYUINACCT-REC
-           MOVE    PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
-           MOVE    PTNYUINRRK-PTID     TO  NACCT-PTID
+           MOVE    LNK-PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
+           MOVE    LNK-PTNYUINRRK-PTID     TO  NACCT-PTID
            MOVE    LNK-PTNYUINRRK-TENNYUYMD(1:6)
                                        TO  NACCT-SRYYM
                                            WRK-TENROOM-SKJ-SRYYMX
@@ -2102,8 +2102,8 @@
            PERFORM 900-TBL-CLOSE-SEC
       *    （異動翌月分）
            INITIALIZE                      NYUINACCT-REC
-           MOVE    PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
-           MOVE    PTNYUINRRK-PTID     TO  NACCT-PTID
+           MOVE    LNK-PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
+           MOVE    LNK-PTNYUINRRK-PTID     TO  NACCT-PTID
            IF      WRK-TENROOM-SKJ-SRYMM9  =  12
                ADD   1     TO   WRK-TENROOM-SKJ-SRYYY9
                MOVE  1     TO   WRK-TENROOM-SKJ-SRYMM9
@@ -2636,8 +2636,8 @@
       *    入院会計作成後に退避データの食事区分を復元
       *    （異動月分）
            INITIALIZE                      NYUINACCT-REC
-           MOVE    PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
-           MOVE    PTNYUINRRK-PTID     TO  NACCT-PTID
+           MOVE    LNK-PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
+           MOVE    LNK-PTNYUINRRK-PTID     TO  NACCT-PTID
            MOVE    WRK-TENROOM-SKJ-SRYYM(1)
                                        TO  NACCT-SRYYM
       *
@@ -2668,8 +2668,8 @@
       *    （異動翌月分）
            IF   WRK-TENROOM-SKJ-SRYYM(2)  NOT =   SPACE
                INITIALIZE                      NYUINACCT-REC
-               MOVE    PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
-               MOVE    PTNYUINRRK-PTID     TO  NACCT-PTID
+               MOVE    LNK-PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
+               MOVE    LNK-PTNYUINRRK-PTID     TO  NACCT-PTID
                MOVE    WRK-TENROOM-SKJ-SRYYM(2)
                                            TO  NACCT-SRYYM
       *
