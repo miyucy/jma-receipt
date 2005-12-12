@@ -627,8 +627,13 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                    TO  SPRT-PRIORITY
            MOVE    "HCM45.red"     TO  SPRT-PRTID
-           MOVE    "入院オーダー確認リスト"
+           IF      WRK-PARA-SYORIKBN   =   "1"
+               MOVE    "入院オーダー確認リスト（全て）"
                                    TO  SPRT-TITLE
+           ELSE
+               MOVE    "入院オーダー確認リスト（エラー分）"
+                                   TO  SPRT-TITLE
+           END-IF
            MOVE    HCM45           TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID
                                    TO  SPRT-TERMID
