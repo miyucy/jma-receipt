@@ -7,7 +7,7 @@ TID1	{
 			label	varchar(6);
 		};
 		ID1MSG	{
-			value	varchar(70);
+			value	varchar(80);
 		};
 		B12	{
 			label	varchar(6);

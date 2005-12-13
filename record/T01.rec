@@ -25,10 +25,10 @@ T01	{
 		DATA_COMBO	{
 			state   int;
 			DATA	{
-				value	varchar(22);
+				value	varchar(38);
 			};
 			count	int;
-			item	varchar(22)[3];
+			item	varchar(38)[4];
 		};
 		NYUGAIKBN_COMBO	{
 			state   int;

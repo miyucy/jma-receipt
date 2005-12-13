@@ -25,6 +25,7 @@
       * 公費個別発行機能対応
       *  01.00.01    NACL-藤原    04/10/25  公費個別発行機能の追加
       *  01.00.02    NACL-藤原    05/02/10  レセ電総括表対応
+      *  02.07.01    NACL-藤原    05/12/02  レセ電データ複数枚対応
       *****************************************************************
       *
        01  SPA-T01FREE.
@@ -35,10 +36,10 @@
                05  SPA-GMN-PAGE                    PIC 9(02).
                05  SPA-GMN-CUR                     PIC 9(02).
                05  SPA-GMN-AREA.
-                   07  SPA-GMN-DATAKBNLST          OCCURS  3.
+                   07  SPA-GMN-DATAKBNLST          OCCURS  4.
                        09  SPA-GMN-DATAKBNL        PIC X(01).
                        09  SPA-GMN-F1L             PIC X(01).
-                       09  SPA-GMN-DATAKBNMEIL     PIC X(20).
+                       09  SPA-GMN-DATAKBNMEIL     PIC X(36).
                    07  SPA-GMN-DATAKBN-MAX         PIC 9(02).    
                    07  SPA-GMN-NYUGAIKBNLST        OCCURS  3.
                        09  SPA-GMN-NYUGAIKBNL      PIC X(01).
@@ -49,7 +50,7 @@
                    07  SPA-GMN-DATAKBN-G.
                        09  SPA-GMN-DATAKBN         PIC X(01).
                        09  SPA-GMN-F1              PIC X(01).
-                       09  SPA-GMN-DATAKBNMEI      PIC X(20).
+                       09  SPA-GMN-DATAKBNMEI      PIC X(36).
       *                                             
                    07  SPA-GMN-NYUGAIKBN-G.
                        09  SPA-GMN-NYUGAIKBN       PIC X(01).

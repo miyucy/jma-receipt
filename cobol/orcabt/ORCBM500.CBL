@@ -39,6 +39,10 @@
       *  01.01.04    NACL-藤原    05/05/09  改定通信医１６０３９号
       *                                     「主」の記録についてより
       *                                    「0000998」を「0000999」に変更
+      *
+      *  02.07.01    NACL-藤原    05/12/02  レセ電データ複数枚対応
+      *                                     出力場所「1」「3」のときのみ
+      *  02.07.02    NACL-藤原    05/12/02  MONFUNC対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -46,7 +50,7 @@
        INPUT-OUTPUT            SECTION.
        FILE-CONTROL.
       *    レセプト電算ファイル  
-           SELECT  RECE30-FILE     ASSIGN  "/var/tmp/RECE300.dat"
+           SELECT  RECE30-FILE     ASSIGN  RECE30PARA
                                    ORGANIZATION    IS  LINE
                                                        SEQUENTIAL
                                    FILE    STATUS  IS  STS-RECE30.
@@ -66,17 +70,18 @@
        01  RECEERR-REC             PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
-      *     レセプト電算ファイル 名称領域 
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING  //RECE01//
-                                   BY         //RECE30//.
-           03  FILLER              PIC X(04)   VALUE   ".dat".
+      *    レセプト電算ファイル 名称領域 
+       01  RECE30PARA.
+           03  FILLER              PIC X(12)   VALUE 
+                                               "/tmp/RECEDEN".
+           03  RECE30PARA-RENNUM   PIC 9(02).
+           03  FILLER              PIC X(04)   VALUE   ".txt".
       *
       *    エラーファイル 名称領域 
            COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING  //RECE01PARA//
-                                   BY         //RECEERR//.
-           03                      PIC X(04)   VALUE   ".dat".
+                                   REPLACING   //RECE01PARA//
+                                   BY          //RECEERR//.
+           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -88,6 +93,10 @@
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-RECEDEN             PIC 9(01).
            03  FLG-RECE10              PIC 9(01).
+           03  FLG-BTPARA              PIC 9(01).
+      *
+           03  FLG-DATA                PIC 9(01).
+           03  FLG-ERR                 PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -116,7 +125,7 @@
       *
        01  SUM-AREA                                VALUE   ZERO.
            03  SUM-TOTALKENSU         PIC 9(06).
-           03  SUM-TOTALTEN         PIC 9(10).
+           03  SUM-TOTALTEN           PIC 9(10).
       *
       *    一時領域
       *    パラメタエリア
@@ -126,10 +135,12 @@
            05  WRK-PARA-NYUGAIKBN      PIC X(01).
            05  WRK-PARA-JOBID          PIC 9(07).
            05  WRK-PARA-SHELLID        PIC X(08).
+           05  WRK-PARA-DATAKBN        PIC X(01).
+           05  WRK-PARA-FIXEDSIZE      PIC 9(07).
       *
            03  WRK-RECEERR             PIC X(200). 
       *    マルチボリューム識別情報     
-           03  WRK-VOLNUM              PIC 9(06).
+           03  WRK-VOLNUM              PIC 9(02).
       *    レセプト番号
            03  WRK-RECENUM             PIC 9(06).        
       *    請求年月（和暦）
@@ -138,12 +149,15 @@
            03  WRK-SRYYM               PIC 9(05). 
       *
            03  WRK-MOJISU              PIC 9(02).        
+      *
+      *    データ長
+           03  WRK-DATA-LENGTH         PIC 9(07).        
+           03  WRK-PTNUM-LENGTH        PIC 9(07).        
       *       
-           03  WRK-PATH.
-               05  WRK-MCP-BLOCKS      PIC S9(9)   BINARY.
-               05  WRK-MCP-RNAME       PIC S9(9)   BINARY.
-               05  WRK-MCP-PNAME       PIC S9(9)   BINARY.
-      *     右ずめ編集用     
+           03  WRK-MCP-TABLE           PIC X(64).
+           03  WRK-MCP-PATHNAME        PIC X(64).
+      *
+      *     右づめ編集用     
            03  WRK-HENKAN              PIC X(20).
            03  WRK-LENGTH              PIC 9(02).
            03  WRK-HENSYU              PIC X(20).
@@ -151,6 +165,7 @@
            03  WRK-SRYKBN              PIC X(02).
            03  WRK-REC                 PIC X(200).
            03  WRK-REC-LENGTH          PIC 9(03).
+           03  WRK-FILE-RENNUM         PIC 9(02).
            03  WRK-HENSYU-AREA.
                05  WRK-DATA            PIC X(80).
                05  WRK-NUM             PIC ZZZZZZZZZ9.999. 
@@ -161,18 +176,36 @@
       *    日付変換用
            03  WRK-SYMD                PIC X(08).
       *
+      *    パラメタＤＢ編集用
+           03  WRK-BTPARA-INFO-PARA.
+               05  WRK-BTPARA-DATA PIC X(10).
+               05  WRK-BTPARA-FILENM
+                                   PIC X(20).
+               05  WRK-BTPARA-DATAKBN
+                                   PIC X(01).
+               05  WRK-BTPARA-STNO PIC 9(02).
+               05  WRK-BTPARA-EDNO PIC 9(02).
+               05  WRK-BTPARA-WRNO PIC 9(02).  
+      *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG             PIC 9(08).
            03  WRK-HENYMDGR            REDEFINES   WRK-HENYMDG.
                05  FILLER              PIC 9(01).
                05  WRK-HENYMD          PIC 9(07).
+      *
+       01  TABLE-AREA.
+           03  TABLE-OCC               OCCURS  10000.
+               05  TBL-RECEDATA        PIC X(200).
+           03  TABLE-MAX               PIC 9(05).
       *  
        01  WRK-CONS-AREA.
       *    コンマ
-           03  WRK-KUGIRI             PIC X(01)   VALUE   ",".
+           03  WRK-KUGIRI              PIC X(01)   VALUE   ",".
       *    改行コード
-           03  WRK-KAIGYO             PIC X(01)   VALUE   X"0D".
-     *
+           03  WRK-KAIGYO              PIC X(01)   VALUE   X"0D".
+      *
+           03  WRK-CONS-LENGTH         PIC 9(07)   VALUE   1441500.
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -194,6 +227,10 @@
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
+      *    パラメタ
+       01  BTPARA-REC.
+           COPY    "CPBTPARA.INC".
+      *
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
@@ -212,13 +249,13 @@
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
-           COPY    "ORCA-DBPATH".
       *
            COPY    "MCPAREA".
-      *
       *
       ****************************************************************
        LINKAGE                 SECTION.
@@ -247,9 +284,10 @@
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-           INITIALIZE                  CNT-AREA
-                                       WRK-AREA
-                                       FLG-AREA
+           INITIALIZE              CNT-AREA
+                                   WRK-AREA
+                                   FLG-AREA
+           MOVE    ZERO            TO  WRK-VOLNUM
       *
            UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
                                        INTO    LNK-PRTKANRI-RENNUM
@@ -267,7 +305,9 @@
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
                                                WRK-PARA-NYUGAIKBN
-           END-UNSTRING                                  
+                                               WRK-PARA-DATAKBN
+                                               WRK-PARA-FIXEDSIZE
+           END-UNSTRING
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -303,30 +343,32 @@
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC
       *
+           IF    ( WRK-PARA-FIXEDSIZE  NUMERIC         )
+           AND   ( WRK-PARA-FIXEDSIZE
+                               NOT =   WRK-CONS-LENGTH )
+               MOVE    WRK-PARA-FIXEDSIZE      TO  WRK-CONS-LENGTH
+           END-IF
+           DISPLAY "LENGTH=" WRK-CONS-LENGTH
+      *
            PERFORM 110-SYSKANRI-HENSYU-SEC
       *
            PERFORM 120-SKYYM-HENSYU-SEC
-      *     
-           MOVE    "RECE300"           TO  RECE30PARA-FILE-ID
-           MOVE    LNK-PRTKANRI-TERMID TO  RECE30PARA-TERMID
       *
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
       *
-           OPEN    OUTPUT             RECE30-FILE  
-      *
-      *
            EVALUATE    WRK-PARA-TEISYUTUSAKI
                            ALSO    WRK-PARA-NYUGAIKBN   
                WHEN    "1" ALSO    ZERO
-                   MOVE    PATH-TBL-SEIKYU-KEY23   TO  WRK-PATH
+                   MOVE    "key23"                 TO  WRK-MCP-PATHNAME
                WHEN    "1" ALSO    ANY
-                   MOVE    PATH-TBL-SEIKYU-KEY25   TO  WRK-PATH
+                   MOVE    "key25"                 TO  WRK-MCP-PATHNAME
                WHEN    "2" ALSO    ZERO
-                   MOVE    PATH-TBL-SEIKYU-KEY24   TO  WRK-PATH
+                   MOVE    "key24"                 TO  WRK-MCP-PATHNAME
                WHEN    "2" ALSO    ANY
-                   MOVE    PATH-TBL-SEIKYU-KEY26   TO  WRK-PATH
+                   MOVE    "key26"                 TO  WRK-MCP-PATHNAME
            END-EVALUATE
+           MOVE    "tbl_seikyu"        TO  WRK-MCP-TABLE
            PERFORM 900-SEIKYU-SELECT-SEC
            .
        100-INIT-EXT.
@@ -341,7 +383,8 @@
            INITIALIZE                  SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
            MOVE    "*"                 TO  SYS-1001-KBNCD
-           MOVE    LNK-PRTKANRI-SKYYMD TO  ORC-DBYMD
+           MOVE    LNK-PRTKANRI-SKYYMD TO  SYS-1001-STYUKYMD
+                                           SYS-1001-EDYUKYMD
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            PERFORM 910-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -355,7 +398,8 @@
            INITIALIZE                  SYS-1002-REC
            MOVE    "1002"              TO  SYS-1002-KANRICD
            MOVE    "*"                 TO  SYS-1002-KBNCD
-           MOVE    LNK-PRTKANRI-SKYYMD TO  ORC-DBYMD
+           MOVE    LNK-PRTKANRI-SKYYMD TO  SYS-1002-STYUKYMD
+                                           SYS-1002-EDYUKYMD
            MOVE    SYS-1002-REC        TO  MCPDATA-REC
            PERFORM 910-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -393,9 +437,10 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-           MOVE    ZERO            TO  WRK-VOLNUM
-                                       WRK-RECENUM
+           MOVE    ZERO            TO  WRK-RECENUM
                                        SUM-AREA
+                                       WRK-LENGTH 
+                                       FLG-DATA 
       *     
       *    医療機関情報レコード
            PERFORM     2001-HENSYU-SEC
@@ -403,26 +448,51 @@
       *    診療科別処理
            MOVE    KEY-NEW         TO  KEY-OLD
            PERFORM                 UNTIL   FLG-END     =   1
+                                   OR      FLG-ERR     =   1
                                    OR      KEY-NEW NOT =   KEY-OLD
-      *        
+      *
+               INITIALIZE                  TABLE-AREA
+                                           WRK-PTNUM-LENGTH
+      *
+      *???
+               DISPLAY "PTNUM=" RECE10-PTNUM 
+      *???
                PERFORM 900-RECEDEN-SELECT-SEC
                PERFORM     UNTIL   FLG-RECEDEN =   1
                    PERFORM 2002-HENSYU-SEC
                END-PERFORM
       *
-               MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-               MOVE    "RECEDEN-KEY2"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+               MOVE    "tbl_receden"       TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-CLOSE-SEC
       *
-               MOVE    WRK-PATH            TO  MCP-PATH
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 900-SEIKYU-READ-SEC
-           END-PERFORM
       *
-      *        合計書レコード
-          PERFORM     2008-HENSYU-SEC
+      *???
+               DISPLAY "FLG=" FLG-END "#" WRK-DATA-LENGTH "#"
+                              WRK-PTNUM-LENGTH 
+      *???
+      *        ＦＤ出力のときは複数枚のチェックをする
+               IF      WRK-PARA-DATAKBN    =   "1" OR  "3"
+                   IF    ( WRK-DATA-LENGTH +   WRK-PTNUM-LENGTH )
+                                           >   WRK-CONS-LENGTH
+      *                合計書レコード
+                       PERFORM 2008-HENSYU-SEC
+      *                医療機関情報レコード
+                       PERFORM 2001-HENSYU-SEC
+                   END-IF
+               END-IF
+      *        データ出力処理
+               PERFORM 2003-TABLE-WRITE-SEC
+           END-PERFORM
+      * 
+      *    合計書レコード
+           IF      FLG-ERR         =   ZERO
+               MOVE    9               TO  FLG-DATA 
+               PERFORM 2008-HENSYU-SEC
+           END-IF
            .
        200-MAIN-EXT.
            EXIT.             
@@ -431,6 +501,13 @@
       *    医療機関情報レコード編集処理
       *****************************************************************
        2001-HENSYU-SEC              SECTION.
+      *     
+           COMPUTE WRK-FILE-RENNUM =   WRK-VOLNUM  +   1
+           MOVE    WRK-FILE-RENNUM     TO  RECE30PARA-RENNUM 
+      *
+           OPEN    OUTPUT              RECE30-FILE  
+      *
+           MOVE    ZERO                TO  WRK-DATA-LENGTH
       *
            MOVE    SPACE               TO  WRK-REC
            MOVE    ZERO                TO  WRK-REC-LENGTH
@@ -522,69 +599,95 @@
       *
            MOVE    SPACE               TO  WRK-REC
       *
-      *****IF      RECEDEN-SRYYM       <=  "200403"
-               MOVE    ZERO             TO  WRK-MOJISU
-                                            WRK-NAGASA
-               EVALUATE    RECEDEN-RECEDATA (1:2)
-                   WHEN    "RE"
-                       INSPECT RECEDEN-RECEDATA
-                                               TALLYING    WRK-MOJISU
+           MOVE    ZERO             TO  WRK-MOJISU
+                                        WRK-NAGASA
+           EVALUATE    RECEDEN-RECEDATA (1:2)
+               WHEN    "RE"
+                   INSPECT RECEDEN-RECEDATA   TALLYING    WRK-MOJISU
                                                FOR ALL "," 
-                       IF      WRK-MOJISU          =   16
-                           PERFORM VARYING IDX FROM    250 BY  -1
-                                   UNTIL   IDX <       1
-                               IF      RECEDEN-RECEDATA (IDX:1)
-                                                       =   WRK-KAIGYO
-                                   COMPUTE WRK-NAGASA  =   IDX     -   1
-                                   MOVE    1               TO  IDX
-                               END-IF    
-                           END-PERFORM   
-                           STRING    RECEDEN-RECEDATA (1:WRK-NAGASA)
-                                                   DELIMITED  BY  SIZE
-                                     ","           DELIMITED  BY  SIZE
-                                     WRK-KAIGYO    DELIMITED  BY  SIZE
-                                     INTO          WRK-REC
-                           END-STRING
-                           MOVE    WRK-REC         TO  RECEDEN-RECEDATA
-                       END-IF     
-                   WHEN    "TO"
-                       INSPECT RECEDEN-RECEDATA
-                                               TALLYING    WRK-MOJISU
+                   IF      WRK-MOJISU          =   16
+                       PERFORM VARYING IDX FROM    250 BY  -1
+                               UNTIL   IDX <       1
+                           IF      RECEDEN-RECEDATA (IDX:1)
+                                                   =   WRK-KAIGYO
+                               COMPUTE WRK-NAGASA  =   IDX     -   1
+                               MOVE    1               TO  IDX
+                           END-IF    
+                       END-PERFORM   
+                       STRING    RECEDEN-RECEDATA (1:WRK-NAGASA)
+                                               DELIMITED  BY  SIZE
+                                 ","           DELIMITED  BY  SIZE
+                                 WRK-KAIGYO    DELIMITED  BY  SIZE
+                                 INTO          WRK-REC
+                       END-STRING
+                       MOVE    WRK-REC         TO  RECEDEN-RECEDATA
+                   END-IF     
+               WHEN    "TO"
+                   INSPECT RECEDEN-RECEDATA    TALLYING    WRK-MOJISU
                                                FOR ALL "," 
-                       IF      WRK-MOJISU          =   9
-                           PERFORM VARYING IDX FROM    250 BY  -1
-                                   UNTIL   IDX <       1
-                               IF      RECEDEN-RECEDATA (IDX:1)
-                                                       =   WRK-KAIGYO
-                                   COMPUTE WRK-NAGASA  =   IDX     -   1
-                                   MOVE    1               TO  IDX
-                               END-IF    
-                           END-PERFORM   
-                           STRING    RECEDEN-RECEDATA (1:WRK-NAGASA)
-                                                   DELIMITED  BY  SIZE
-                                     ","           DELIMITED  BY  SIZE
-                                     WRK-KAIGYO    DELIMITED  BY  SIZE
-                                     INTO          WRK-REC
-                           END-STRING
-                           MOVE    WRK-REC         TO  RECEDEN-RECEDATA
-                       END-IF     
-                   WHEN    "SY"
-                       IF      RECEDEN-RECEDATA (4:7)
-                                                   =   "0000998"
-                           MOVE    "0000999"   TO
-                                               RECEDEN-RECEDATA (4:7)
-                       END-IF
-               END-EVALUATE
-      *****END-IF
-      *          
-           MOVE    RECEDEN-RECEDATA    TO  RECE30-R
-           WRITE   RECE30-R
+                   IF      WRK-MOJISU          =   9
+                       PERFORM VARYING IDX FROM    250 BY  -1
+                               UNTIL   IDX <       1
+                           IF      RECEDEN-RECEDATA (IDX:1)
+                                                   =   WRK-KAIGYO
+                               COMPUTE WRK-NAGASA  =   IDX     -   1
+                               MOVE    1               TO  IDX
+                           END-IF    
+                       END-PERFORM   
+                       STRING    RECEDEN-RECEDATA (1:WRK-NAGASA)
+                                               DELIMITED  BY  SIZE
+                                 ","           DELIMITED  BY  SIZE
+                                 WRK-KAIGYO    DELIMITED  BY  SIZE
+                                 INTO          WRK-REC
+                       END-STRING
+                       MOVE    WRK-REC         TO  RECEDEN-RECEDATA
+                   END-IF     
+               WHEN    "SY"
+                   IF      RECEDEN-RECEDATA (4:7)
+                                               =   "0000998"
+                       MOVE    "0000999"   TO
+                                           RECEDEN-RECEDATA (4:7)
+                   END-IF
+           END-EVALUATE
       *
-           ADD     1                   TO  CNT-OUT
+           ADD     1                   TO  TABLE-MAX
+           MOVE    RECEDEN-RECEDATA    TO  TBL-RECEDATA (TABLE-MAX)
+      *
+           MOVE    ZERO                TO  WRK-REC-LENGTH
+           PERFORM VARYING IDX FROM    250 BY  -1
+                   UNTIL   IDX <       1
+               IF      RECEDEN-RECEDATA (IDX:1)
+                                       =   WRK-KAIGYO
+                   MOVE    IDX             TO  WRK-REC-LENGTH
+                   MOVE    1               TO  IDX
+               END-IF
+           END-PERFORM
+           COMPUTE WRK-PTNUM-LENGTH    =   WRK-PTNUM-LENGTH
+                                       +   WRK-REC-LENGTH
       *
            PERFORM 900-RECEDEN-READ-SEC     
            .
        2002-HENSYU-EXT.
+           EXIT. 
+      * 
+      *****************************************************************
+      *    データ出力処理
+      *****************************************************************
+       2003-TABLE-WRITE-SEC         SECTION.
+      *
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       TABLE-MAX
+               MOVE    TBL-RECEDATA (IDX)  TO  RECE30-R
+               WRITE   RECE30-R
+      *
+               ADD     1                   TO  CNT-OUT
+           END-PERFORM
+      *
+           COMPUTE WRK-DATA-LENGTH  =   WRK-DATA-LENGTH
+                                    +   WRK-PTNUM-LENGTH
+      *
+           .
+       2003-TABLE-WRITE-EXT.
            EXIT. 
       * 
       *****************************************************************
@@ -598,22 +701,87 @@
            MOVE    "GO,"               TO  WRK-REC
            MOVE    3                   TO  WRK-REC-LENGTH
       *
-           MOVE    SUM-TOTALKENSU      TO  WRK-NUM
-           MOVE    6                   TO  WRK-NAGASA
+           IF      FLG-DATA            =   9
+               MOVE    SUM-TOTALKENSU      TO  WRK-NUM
+               MOVE    6                   TO  WRK-NAGASA
+           END-IF
            PERFORM 5005-NUM-HENSYU-SEC
       *
-           MOVE    SUM-TOTALTEN        TO  WRK-NUM
-           MOVE    10                  TO  WRK-NAGASA
+           IF      FLG-DATA            =   9
+               MOVE    SUM-TOTALTEN        TO  WRK-NUM
+               MOVE    10                  TO  WRK-NAGASA
+           END-IF
            PERFORM 5005-NUM-HENSYU-SEC
       *
-           MOVE    "99"                TO  WRK-DATA
+           IF      FLG-DATA            =   9
+               MOVE    "99"                TO  WRK-DATA
+           ELSE
+               COMPUTE WRK-VOLNUM  =   WRK-VOLNUM  +   1
+               MOVE    WRK-VOLNUM          TO  WRK-DATA
+           END-IF    
            MOVE    2                   TO  WRK-NAGASA
            MOVE    1                   TO  WRK-END 
            PERFORM 5004-MOJI-HENSYU-SEC
       *
            PERFORM 5001-FILE-WRITE-SEC
+      *
+      *
+           CLOSE   RECE30-FILE
+      *
+      *    パラメタＤＢ更新処理
+           IF      FLG-DATA            =   ZERO    OR  9
+               PERFORM 20081-BTPARA-UPDATE-SEC
+           END-IF
+      *
+           IF      FLG-DATA            =   ZERO 
+               MOVE    1                   TO  FLG-DATA
+           END-IF
            .
        2008-HENSYU-EXT.
+           EXIT. 
+      *
+      *****************************************************************
+      *    パラメタＤＢ更新処理
+      *****************************************************************
+       20081-BTPARA-UPDATE-SEC     SECTION.
+      *
+           INITIALIZE                      BTPARA-REC
+           MOVE    WRK-PARA-SHELLID    TO  BTPARA-SHELLID
+           MOVE    "recept4.sh"        TO  BTPARA-SCRIPTID
+           MOVE    BTPARA-REC          TO  MCPDATA-REC
+           PERFORM 900-BTPARA-READ-SEC
+           IF      FLG-BTPARA          =   ZERO
+               MOVE    BTPARA-INFO-PARA    TO  WRK-BTPARA-INFO-PARA
+               EVALUATE    FLG-DATA
+                   WHEN    ZERO
+                       MOVE    WRK-FILE-RENNUM TO  WRK-BTPARA-STNO
+                   WHEN    9
+                       MOVE    WRK-FILE-RENNUM TO  WRK-BTPARA-EDNO
+               END-EVALUATE
+               MOVE    WRK-BTPARA-INFO-PARA
+                                           TO  BTPARA-INFO-PARA
+               MOVE    SMCNDATE-YMD        TO  BTPARA-UPYMD
+               MOVE    SMCNDATE-HMS        TO  BTPARA-UPHMS
+               MOVE    BTPARA-REC          TO  MCPDATA-REC
+               MOVE    "tbl_btpara"        TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC      NOT =   ZERO
+                   MOVE    "パラメタＤＢの更新処理でエラーとなりました"
+                                           TO  WRK-RECEERR
+                   PERFORM 500-ERR-HENSYU-SEC
+               END-IF
+           ELSE
+               MOVE    "対象のパラメタＤＢが存在しません" 
+                                           TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+           END-IF
+      *
+           .
+       20081-BTPARA-UPDATE-EXT.
            EXIT. 
       *
       *****************************************************************
@@ -621,13 +789,9 @@
       *****************************************************************
        300-TERM-SEC                SECTION.
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC      
-      *
-           CLOSE   RECE30-FILE
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            IF      CNT-RECEDEN         =   ZERO
                MOVE    "処理対象のデータがありませんでした"
@@ -646,8 +810,9 @@
                                    JOBKANRI-REC
       *
            PERFORM 900-DBDISCONNECT-SEC
-           DISPLAY "RECE300  CNT " CNT-IN  
-           DISPLAY "RECE300  CNT " CNT-OUT  
+           DISPLAY "RECE300  IN   " CNT-IN  
+           DISPLAY "RECE300  OUT  " CNT-OUT
+           DISPLAY "RECE300  FILE " WRK-FILE-RENNUM  
            DISPLAY "*** ORCBM500 END ***"
            .
        300-TERM-EXT.
@@ -682,6 +847,7 @@
            END-IF
       *                             
            MOVE    1                   TO  FLG-END
+                                           FLG-ERR
            .
        500-ERR-HENSYU-EXT.
            EXIT.
@@ -700,6 +866,10 @@
            MOVE    WRK-REC             TO  RECE30-R         
            WRITE   RECE30-R
            ADD     1                   TO  CNT-OUT
+      *
+           COMPUTE WRK-DATA-LENGTH  =   WRK-DATA-LENGTH
+                                    +   WRK-REC-LENGTH
+                                    +   2
            .
        5001-FILE-WRITE-EXT.
            EXIT.
@@ -730,7 +900,7 @@
            EXIT.
       *
       *****************************************************************
-      *    右ずめ編集処理
+      *    右づめ編集処理
       *****************************************************************
        5003-DATA-RIGHT-HENSYU-SEC          SECTION.
       *
@@ -855,12 +1025,14 @@
            MOVE    WRK-PARA-NYUGAIKBN  TO  RECE10-NYUGAIKBN
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       MCPDATA-REC      
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    WRK-PATH            TO  MCP-PATH
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 900-SEIKYU-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-END
@@ -875,10 +1047,9 @@
        900-SEIKYU-READ-SEC           SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
-                                       MCPDATA-REC      
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-END
                MOVE    MCPDATA-REC         TO  RECE10-REC
@@ -900,16 +1071,16 @@
            MOVE    ZERO                TO  FLG-RECEDEN
       *     
            MOVE    SPACE               TO  RECEDEN-REC
-           INITIALIZE                  RECEDEN-REC
+           INITIALIZE                      RECEDEN-REC
            MOVE    RECE10-KEY          TO  RECEDEN-KEY
            MOVE    "1"                 TO  RECEDEN-RECKBN
            MOVE    RECEDEN-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "RECEDEN-KEY2"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_receden"       TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                PERFORM 900-RECEDEN-READ-SEC
            ELSE
@@ -924,12 +1095,12 @@
       *****************************************************************
        900-RECEDEN-READ-SEC           SECTION.
       *
-           MOVE    "RECEDEN-KEY2"      TO  ORC-DBPATH
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_receden"       TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-RECEDEN
                MOVE    MCPDATA-REC         TO  RECEDEN-REC
@@ -948,18 +1119,18 @@
        910-SYSKANRI-INV-SEC         SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key10"         TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key10"         TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-SYSKANRI
                ELSE
@@ -969,15 +1140,75 @@
                MOVE    1                   TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key10"         TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            .
        910-SYSKANRI-INV-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    パラメタ読込
+      *****************************************************************
+       900-BTPARA-READ-SEC         SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "tbl_btpara"        TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_btpara"        TO  MCP-TABLE
+               MOVE    "key3"              TO  MCP-PATHNAME
+               PERFORM 900-BTPARA-READ-N-SEC
+           ELSE
+               MOVE    1                   TO  FLG-BTPARA
+               INITIALIZE                      BTPARA-REC
+           END-IF
+      *
+           MOVE    "tbl_btpara"        TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       900-BTPARA-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    パラメタ読込
+      *****************************************************************
+       900-BTPARA-READ-N-SEC          SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  BTPARA-REC
+               MOVE    ZERO                TO  FLG-BTPARA
+           ELSE
+               MOVE    1                   TO  FLG-BTPARA
+               INITIALIZE                      BTPARA-REC
+           END-IF
+      *
+           .
+       900-BTPARA-READ-N-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    テーブルクローズ処理
+      *****************************************************************
+       900-CLOSE-SEC               SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+      *
+           .
+       900-CLOSE-EXT.
            EXIT.
       *      
       *****************************************************************
@@ -985,17 +1216,20 @@
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE       TO  MCP-TABLE
+                                       MCP-PATHNAME
+           MOVE    "DBOPEN"        TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
-           MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE       TO  MCP-TABLE
+                                       MCP-PATHNAME
+           MOVE    "DBSTART"       TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           .
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -1005,17 +1239,19 @@
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
-           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE       TO  MCP-TABLE
+                                       MCP-PATHNAME
+           MOVE    "DBCOMMIT"      TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    LOW-VALUE       TO  MCP-TABLE
+                                       MCP-PATHNAME
+           MOVE    "DBDISCONNECT"  TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
        900-DBCLOSE-EXT.
            EXIT.

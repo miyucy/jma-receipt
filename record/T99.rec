@@ -1,5 +1,8 @@
 T99	{
 	fixed6	{
+		B01     {
+			 state   int;
+		 };
 		MSG	{
 			value	varchar(80);
 		};

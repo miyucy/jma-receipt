@@ -27,7 +27,7 @@
       *シェルＩＤ
                05  BTPARA-SHELLID       PIC X(08).
       *オペレータＩＤ
-               05  BTPARA-RUN-OPID      PIC 9(16).
+               05  BTPARA-RUN-OPID      PIC X(16).
       *
                05  BTPARA-DSP-RENNUM    PIC 9(03).
       *連番号

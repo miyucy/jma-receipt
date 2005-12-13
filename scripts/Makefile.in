@@ -38,6 +38,7 @@ shell_sources = \
 	monthly/recept2.sh.in \
 	monthly/recept3.sh.in \
 	monthly/recept4.sh.in \
+	monthly/recept4_fd.sh.in \
 	monthly/recept5.sh.in \
 	monthly/recept6.sh.in \
 	monthly/recept7.sh.in \

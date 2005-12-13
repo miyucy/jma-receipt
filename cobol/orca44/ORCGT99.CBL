@@ -34,6 +34,7 @@
       *  01.06.01    NACL-藤原    04/10/25  公費個別発行機能の追加
       *
       *  02.07.01    NACL-藤原    05/10/31  MONFUNC対応
+      *  02.07.02    NACL-藤原    05/12/02  レセ電データ複数枚対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -52,11 +53,20 @@
       *
       *    画面用ＳＰＡ
            COPY    "T01SCR-SPA".
+           COPY    "CPORCSPRTLNK.INC"
+                                   REPLACING  //LNK-//
+                                   BY         //SPA-LNK-//.
+      *
+      *    レセプト作成指示共通パラメタ
+           COPY    "T01COMMON-SPA".
+      *
+           COPY    "ENUM-VALUE".
       *
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
+           03  FLG-BTPARA          PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -64,6 +74,17 @@
       *
        01  WRK-AREA.
            03  WRK-PAGE            PIC ZZZZZZZZZ9.
+      *
+      *    パラメタＤＢ編集用
+           03  WRK-BTPARA-INFO-PARA.
+               05  WRK-BTPARA-DATA PIC X(10).
+               05  WRK-BTPARA-FILENM
+                                   PIC X(20).
+               05  WRK-BTPARA-DATAKBN
+                                   PIC X(01).
+               05  WRK-BTPARA-STNO PIC 9(02).
+               05  WRK-BTPARA-EDNO PIC 9(02).
+               05  WRK-BTPARA-WRNO PIC 9(02).  
       *     
        01  WRK-HEN-AREA.
            03  WRK-HENTIME.
@@ -85,12 +106,22 @@
            03  WRK-CONS-JOB-SHELLID
                                    PIC X(08)   VALUE   "SOKATU".
            03  WRK-CONS-JOB-JOBID  PIC 9(07)   VALUE   ZERO.
+      *     
+      *    パラメタＤＢのキー値（レセ電作成）  
+           03  WRK-CONS-BTPARA-SHELLID
+                                   PIC X(08)   VALUE   "SOKATU".
+           03  WRK-CONS-BTPARA-SCRIPTID
+                                   PIC X(10)   VALUE   "recept4.sh".
       *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
       *
            COPY    "CPSK3003.INC".
+      *
+      *    パラメタ
+       01  BTPARA-REC.
+           COPY    "CPBTPARA.INC".
       *
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
@@ -99,6 +130,9 @@
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
+      *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -137,6 +171,7 @@
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-FREE        TO  SPA-T01FREE
+           MOVE    SPA-WORK        TO  SPA-T01KYOUTU
       * 
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
@@ -146,6 +181,7 @@
                    PERFORM 200-GMNSENI
            END-EVALUATE
       *
+           MOVE    SPA-T01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
       *****MOVE    SPA-T01FREE     TO  SPA-FREE
       *
@@ -256,6 +292,7 @@
                            ELSE
                                MOVE    SPACE       TO  T99-MSG
                                PERFORM 510-ERRSET-SEC
+                               MOVE    9           TO  SPA-T01-SYORIFLG
                                IF      T99-MSG     =   SPACE
                                  STRING  JOB-YOBI    DELIMITED BY SPACE
                                          "【"        DELIMITED BY SIZE
@@ -273,14 +310,55 @@
            IF      T99-MSG              =   SPACE
                MOVE    "B01"                TO  MCP-WIDGET
                IF      T99-COUNT            >   ZERO
-                   MOVE    "処理は正常に終了しました"
-                                                TO  T99-MSG
+                   IF      SPA-T01-SYORIFLG    =   ZERO    OR  9
+                       MOVE    "処理は正常に終了しました"
+                                                   TO  T99-MSG
+                   ELSE
+                       IF      SPA-GMN-DATAKBN     =   "1"
+      *                    パラメタＤＢ更新処理（レセ電のとき）
+                           PERFORM 4901-BTPARA-UPDATE-SEC
+                           IF      SPA-ERRCD       =   SPACE
+                               IF    ( WRK-BTPARA-EDNO 
+                                               NOT =   WRK-BTPARA-WRNO )
+                                   PERFORM 210-BACK
+                                   GO  TO  490-KAKUNIN-EXT
+                               ELSE
+                                   IF      SPA-RECEDEN-FLG =   "OK"
+                                       PERFORM 210-BACK
+                                       GO  TO  490-KAKUNIN-EXT
+                                   ELSE
+                                       MOVE    9   TO  SPA-T01-SYORIFLG
+                                       MOVE
+                                          "処理は正常に終了しました"
+                                                   TO  T99-MSG
+                                   END-IF
+                               END-IF
+                           END-IF
+                       ELSE
+                           IF      SPA-RECEDEN-FLG =   "OK"
+                               PERFORM 210-BACK
+                               GO  TO  490-KAKUNIN-EXT
+                           ELSE
+                               MOVE    9       TO  SPA-T01-SYORIFLG
+                               MOVE    "処理は正常に終了しました"
+                                               TO  T99-MSG
+                           END-IF
+                       END-IF
+                   END-IF
                ELSE
                    MOVE    "該当する処理はありません"
                                                 TO  T99-MSG
                END-IF                                 
+               MOVE    WIDGET-NORMAL       TO  T99-B01-STATE
            ELSE                                        
-               MOVE    "B11"                TO  MCP-WIDGET
+               MOVE    "B11"               TO  MCP-WIDGET
+      *        レセ電作成時にフロッピー出力の場合は戻るは押下できない
+               IF    ( SPA-GMN-DATAKBN     =   "1" )
+               AND   ( SPA-T01-SYORIFLG    =   1   )
+                   MOVE    WIDGET-INSENSITIVE  TO  T99-B01-STATE
+               ELSE
+                   MOVE    WIDGET-NORMAL       TO  T99-B01-STATE
+               END-IF
            END-IF                                 
       *
            MOVE    SPACE               TO  LINKAREA
@@ -292,6 +370,49 @@
            .
        490-KAKUNIN-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    パラメタＤＢ更新処理
+      *****************************************************************
+       4901-BTPARA-UPDATE-SEC       SECTION.
+      *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
+      *    作成済枚数の更新
+           INITIALIZE                      BTPARA-REC
+           MOVE    WRK-CONS-BTPARA-SHELLID
+                                       TO  BTPARA-SHELLID
+           MOVE    WRK-CONS-BTPARA-SCRIPTID
+                                       TO  BTPARA-SCRIPTID
+           MOVE    BTPARA-REC          TO  MCPDATA-REC
+           PERFORM 900-BTPARA-READ-SEC
+           IF      FLG-BTPARA          =   ZERO
+               MOVE    BTPARA-INFO-PARA    TO  WRK-BTPARA-INFO-PARA
+               MOVE    SPA-T01-WRNO        TO  WRK-BTPARA-WRNO
+               MOVE    WRK-BTPARA-INFO-PARA
+                                           TO  BTPARA-INFO-PARA
+               MOVE    SMCNDATE-YMD        TO  BTPARA-UPYMD
+               MOVE    SMCNDATE-HMS        TO  BTPARA-UPHMS
+               MOVE    BTPARA-REC          TO  MCPDATA-REC
+               MOVE    "tbl_btpara"        TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC      NOT =   ZERO
+                   MOVE    "1002"              TO  SPA-ERRCD
+               END-IF
+           ELSE
+               MOVE    "1001"              TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       4901-BTPARA-UPDATE-EXT.
+           EXIT. 
       *
       *****************************************************************
       *    エラーメッセージセット処理
@@ -328,6 +449,41 @@
            EXIT.
       *
       *****************************************************************
+      *    エラーメッセージ表示理
+      *****************************************************************
+       520-ERRSET-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  SPA-ERRMSG
+      *
+           EVALUATE    SPA-ERRCD
+               WHEN    "1001"
+                   MOVE    "対象のパラメタＤＢが存在しません" 
+                                               TO  SPA-ERRMSG
+               WHEN    "1002"
+                   MOVE    "パラメタＤＢの更新処理でエラーとなりました" 
+                                               TO  SPA-ERRMSG
+           END-EVALUATE
+      *
+           MOVE    SPACE                TO  TERR
+           MOVE    SPA-ERRCD            TO  TERR-ERRCODE
+           MOVE    SPA-ERRMSG           TO  TERR-ERRMSG
+           MOVE    "B99"                TO  MCP-WIDGET
+      *
+           MOVE    "T99"                TO  SPA-MOTOPG
+           MOVE    "TERR"               TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"                TO  MCP-PUTTYPE
+           MOVE    "TERR"               TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                    TO  FLG-END              
+      *
+           .
+       520-ERRMSG-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    管理マスター読込（キー）
       *****************************************************************
        900-SYSKANRI-INV-SEC         SECTION.
@@ -360,6 +516,55 @@
       *
            .
        900-SYSKANRI-INV-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    パラメタ読込
+      *****************************************************************
+       900-BTPARA-READ-SEC         SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "tbl_btpara"        TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_btpara"        TO  MCP-TABLE
+               MOVE    "key3"              TO  MCP-PATHNAME
+               PERFORM 900-BTPARA-READ-N-SEC
+           ELSE
+               MOVE    1                   TO  FLG-BTPARA
+               INITIALIZE                      BTPARA-REC
+           END-IF
+      *
+           MOVE    "tbl_btpara"        TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       900-BTPARA-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    パラメタ読込
+      *****************************************************************
+       900-BTPARA-READ-N-SEC          SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  BTPARA-REC
+               MOVE    ZERO                TO  FLG-BTPARA
+           ELSE
+               MOVE    1                   TO  FLG-BTPARA
+               INITIALIZE                      BTPARA-REC
+           END-IF
+      *
+           .
+       900-BTPARA-READ-N-EXT.
            EXIT.
       *
       *****************************************************************

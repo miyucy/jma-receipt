@@ -1,4 +1,5 @@
             02  T99.
+              03  T99-B01-STATE   PIC S9(9)   BINARY.
               03  T99-MSG.
                 04  T99-VALUE   PIC X(80).
               03  T99-SCROLLEDWINDOW28.

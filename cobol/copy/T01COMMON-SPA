@@ -33,3 +33,11 @@
       *警告画面より（印刷指示）
            05  SPA-RECEDEN-FLG             PIC  X(02).
       *
+      *処理状態フラグ（１：レセ電）
+           05  SPA-T01-SYORIFLG            PIC  9(01).
+      *
+      *レセ電作成枚数
+           05  SPA-T01-WRNO                PIC  9(02).
+      *
+      *レセ電最終枚数
+           05  SPA-T01-EDNO                PIC  9(02).

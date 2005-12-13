@@ -23,6 +23,8 @@ fi
 #-------------------------------------------#
 
     rennum=0
+##  2HD flesize  
+    fixedsize=1441500
 
 ##  エラーファイル削除
 	echo $#
@@ -34,9 +36,13 @@ fi
         echo "arg18 = [" ${18} "]" >>/home/orca/recept4.log
         echo "hostname =  [" `hostname`  "]" >>/home/orca/recept4.log
 
+#   該当ファイル削除
+	rm ${13}RECEIPTC*.UKE
+	rm /tmp/RECEDEN*.txt
+
 #   レセ電ファイル作成
 
-    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM500 -parameter $1,$2,$3,$rennum,$5,$6,$7,$8,$9,${10},${11},${12},${14},${15},${19} >> /home/orca/recept4.log
+    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM500 -parameter $1,$2,$3,$rennum,$5,$6,$7,$8,$9,${10},${11},${12},${14},${15},${19},${17},$fixedsize >> /home/orca/recept4.log
     if  [ -e ${16} ]; then
         exit 
     fi
@@ -51,14 +57,43 @@ fi
         exit 
     fi
         
+
 #   漢字コード変換（ＥＵＣからシフトＪＩＳ）	
-    nkf -s /var/tmp/RECE300.dat > ${13}RECEIPTC.UKE
+
+	NUM=0
+    while [ $NUM -lt 100 ]
+    do
+        NUM=`expr $NUM + 1`
+        FILENUM='0'$NUM
+    	    echo "filenum"
+            echo  ${FILENUM:${#FILENUM}-2:2}
+	    if  test -s "/tmp/RECEDEN${FILENUM:${#FILENUM}-2:2}.txt"; then
+    	    echo ${FILENUM:${#FILENUM}-2:2}
+	    else
+    	    echo ${FILENUM:${#FILENUM}-2:2} "nothing"
+		    break
+	    fi
+	    if  test "${FILENUM:${#FILENUM}-2:2}"	=	"01"; then
+		    echo "先頭ファイルの処理(sjis変換)"
+		    nkf -s /tmp/RECEDEN${FILENUM:${#FILENUM}-2:2}.txt > ${13}RECEIPTC.UKE
+	    else
+		    echo "２番目以降のファイルの処理(sjis変換)"
+		    nkf -s /tmp/RECEDEN${FILENUM:${#FILENUM}-2:2}.txt > ${13}RECEIPTC${FILENUM:${#FILENUM}-2:2}.UKE
+	    fi
+    done
+
+#   先頭ファイルのみ処理 
 
     if  [ -e ${13}RECEIPTC.UKE ]; then
         echo "--- RECEIPTC.UKE exist ---" >>/home/orca/recept4.log
     fi
     FDDHOST=`echo ${18}|tr \[\] "  "`
     echo "FDDHOST = " $FDDHOST
+##
+		    echo "先頭ファイルの処理(fdw処理)" ${13}RECEIPTC.UKE
+##    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${14}${15} >> /home/orca/recept4.log
+##    exit 
+##
     if  [ ${17} -eq '1' ]; then
 	$FDW -host $FDDHOST -command fd-write.sh ${13}RECEIPTC.UKE RECEIPTC.UKE
 	RC=$?
