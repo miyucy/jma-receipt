@@ -166,6 +166,7 @@
       *                                     の編集
       *
       *  02.07.01    NACL-藤原    05/08/20  特別療養費対応
+      *  02.07.02    NACL-藤原    05/12/12  保険履歴を年月日記載へ変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -488,13 +489,16 @@
                05  WRK-HKN-RIREKI-TBL          OCCURS  50.  
                    07  WRK-HKN-RIREKI          PIC X(52).
                    07  WRK-HKN-RIREKI-W   REDEFINES    WRK-HKN-RIREKI.
-                       09  WRK-HKN-MEISYO      PIC X(12).
+                       09  WRK-HKN-MEISYO      PIC X(04).
                        09  WRK-HKN-TEKSTYMD.
                            11  WRK-HKN-TEKSTYY PIC X(08).
                            11  WRK-HKN-TEKSTMD PIC X(12).
                        09  WRK-HKN-FL.
                            11  WRK-HKN-FL1     PIC X(04).
-                           11  WRK-HKN-TEKEDYMD
+                           11  WRK-HKN-TEKEDYMD.
+                               13  WRK-HKN-TEKEDYY
+                                               PIC X(08).
+                               13  WRK-HKN-TEKEDMD
                                                PIC X(12).
                            11  WRK-HKN-FL2     PIC X(04).
            03  WRK-RIREKI-MAX                  PIC 9(02).                
@@ -3901,21 +3905,25 @@
       *
                MOVE    RECE09-TEKSTYMDX   TO  WRK-SYMD
                PERFORM 31012-SEIWA-HEN-SEC
-               IF      RECE09-TEKSTYMDX(1:6)  =   RECE02-SRYYM                      
-                   MOVE    LNK-DAY2-EDTYMD3(11:12)    TO  
-                                  WRK-HKN-TEKSTYMD(WRK-RIREKI-MAX)(9:)
-               ELSE
+      *********IF      RECE09-TEKSTYMDX(1:6)  =   RECE02-SRYYM                      
+      *            MOVE    LNK-DAY2-EDTYMD3(11:12)    TO  
+      *                           WRK-HKN-TEKSTYMD(WRK-RIREKI-MAX)(9:)
+      *********ELSE
                    MOVE    LNK-DAY2-EDTYMD3-G(1:2)    TO  
                                   WRK-HKN-TEKSTYMD(WRK-RIREKI-MAX)(1:2)
                    MOVE    LNK-DAY2-EDTYMD3(5:18)     TO  
                                   WRK-HKN-TEKSTYMD(WRK-RIREKI-MAX)(3:)
-               END-IF                                    
+      *********END-IF                                    
       *  
                IF      RECE09-TEKEDYMDX(1:6)  =   RECE02-SRYYM                      
                    MOVE    RECE09-TEKEDYMDX   TO  WRK-SYMD
                    PERFORM 31012-SEIWA-HEN-SEC
-                   MOVE    LNK-DAY2-EDTYMD3(11:12)    TO
-                                      WRK-HKN-TEKEDYMD(WRK-RIREKI-MAX)
+      *********    MOVE    LNK-DAY2-EDTYMD3(11:12)    TO
+      *********                       WRK-HKN-TEKEDYMD(WRK-RIREKI-MAX)
+                   MOVE    LNK-DAY2-EDTYMD3-G(1:2)    TO  
+                                  WRK-HKN-TEKEDYMD(WRK-RIREKI-MAX)(1:2)
+                   MOVE    LNK-DAY2-EDTYMD3(5:18)     TO  
+                                  WRK-HKN-TEKEDYMD(WRK-RIREKI-MAX)(3:)
                    MOVE    "から"             TO
                                       WRK-HKN-FL1     (WRK-RIREKI-MAX)
                    MOVE    "まで"             TO
