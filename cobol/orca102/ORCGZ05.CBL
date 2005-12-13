@@ -474,7 +474,7 @@
                MOVE    ZERO            TO  SPA-GMN-TANICD
       *        金額種別
                IF      SPA-Z01-SRYCD(1:3)  =   "059"
-                   MOVE    "1"             TO  SPA-GMN-TENSIKIBETU
+                   MOVE    1           TO  SPA-GMN-TENSIKIBETU
                END-IF
            END-IF
       *    各リストボックス編集
