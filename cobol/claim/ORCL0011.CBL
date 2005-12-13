@@ -1749,13 +1749,13 @@
                MOVE    "JYURRK-KEY14"      TO  ORC-DBPATH
                PERFORM 970-JYURRK-READ-SEC
            END-PERFORM
-      *    £±£µºÐÌ¤ËþºÆ¿Ç²Ê»»ÄêÍ­¤ê
-           IF     (WRK-NENREI-YY       =   15              )  AND
-                  (WRK-BIRTHDAY(1:6)   =   LNK-SYSYMD (1:6))
-               IF      FLG-15MIMAN         =   1
-                   MOVE    1               TO  WRK-15MIMAN-ARI
-               END-IF
-           END-IF
+      *!   £±£µºÐÌ¤ËþºÆ¿Ç²Ê»»ÄêÍ­¤ê
+      *    IF     (WRK-NENREI-YY       =   15              )  AND
+      *           (WRK-BIRTHDAY(1:6)   =   LNK-SYSYMD (1:6))
+      *        IF      FLG-15MIMAN         =   1
+      *            MOVE    1               TO  WRK-15MIMAN-ARI
+      *        END-IF
+      *!   END-IF
            .
        1000-SINSATU-KAISU-EXT.
            EXIT.
@@ -1861,10 +1861,10 @@
                IF      SRY-SRYCD(IDY)(1:3)     =   "113"
                    MOVE    1           TO  FLG-SYONIKA
                END-IF
-      *        £±£µºÐÌ¤Ëþ¤Î¼õ¿Ç¤¢¤ê
-               IF      JYURRK-SRYYMD       <   WRK-BIRTHDAY
-                   MOVE    1               TO  FLG-15MIMAN
-               END-IF
+      *!       £±£µºÐÌ¤Ëþ¤Î¼õ¿Ç¤¢¤ê
+      *        IF      JYURRK-SRYYMD       <   WRK-BIRTHDAY
+      *            MOVE    1               TO  FLG-15MIMAN
+      *!       END-IF
            ELSE
                EVALUATE    SRY-SRYCD (IDY)
       *            ºßÂð´µ¼ÔË¬Ìä¿Ç»¡ÎÁ
@@ -1915,13 +1915,13 @@
            END-IF
       *
            MOVE    SPACE               TO  WRK-KBN2
-      *    £±£µºÍÌ¤Ëþ
-           IF    ((WRK-NENREI-YY       <   15 ) OR
-                  (WRK-15MIMAN-ARI     =   1  )) AND
-                 ( WRK-KAISU           =   4  )
-               MOVE    4                   TO  WRK-KAISU
-               MOVE    "M"                 TO  WRK-KBN2
-           END-IF
+      *!!! £±£µºÍÌ¤Ëþ
+      *    IF    ((WRK-NENREI-YY       <   15 ) OR
+      *           (WRK-15MIMAN-ARI     =   1  )) AND
+      *          ( WRK-KAISU           =   4  )
+      *        MOVE    4                   TO  WRK-KAISU
+      *        MOVE    "M"                 TO  WRK-KBN2
+      *!!! END-IF
       *    Ï·¿Í
            IF      WRK-NENREI-YY       >=  70
                MOVE    1               TO  FLG-ROUJIN
@@ -1951,11 +1951,18 @@
        2001-SRYCD-TBL-EXT.
            EXIT.
       *
-      *
       *****************************************************************
       *    ¾®»ù²Ê³°Íè¿Ç»¡ÎÁÊÑ´¹½èÍý
       *****************************************************************
        20201-SYONIKA-HEN-SEC        SECTION.
+      *
+      *    £³ºÐ¤Ë¤Ê¤ëÇ¯·îÆü¤ò·×»»
+           MOVE    PTINF-BIRTHDAY      TO  WRK-BIRTHDAY
+           COMPUTE WRK-BIRTH-YY        =   WRK-BIRTH-YY    +  3
+      *    £³ºÐÅþÃ£·î¤ËÅ¬ÍÑ
+           IF      WRK-BIRTHDAY(1:6)   <   LNK-SYSYMD (1:6)
+               GO      TO      20201-SYONIKA-HEN-EXT
+           END-IF
       *
            IF      (WRK-NENREI-YY      =   3 )  AND
                    (WRK-NENREI-MM      =   ZERO)  AND
