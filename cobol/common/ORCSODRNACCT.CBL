@@ -31,6 +31,7 @@
       *                                     カレンダークリア対応と、朝食優先
       *                                     の条件追加
       *  02.07.02    NACL-小豆沢  05.12.12  転科、転棟、転室対応
+      *  02.07.03    NACL-小豆沢  05.12.13  入院取消対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -572,6 +573,7 @@
            INITIALIZE                  CNT-AREA
       *
       *
+           DISPLAY "SODRNACCT-ORDERID = " SODRNACCT-ORDERID
            MOVE    SPACE           TO  WRK-ERRCD
            MOVE    ZERO            TO  FLG-END
       *
@@ -587,6 +589,11 @@
                WHEN    "0104"
                WHEN    "0105"
                    PERFORM   4801-TENROOM-EDIT-SEC
+      *       （入院取消）
+               WHEN    "0107"
+      *       （入院取消−会計含む）
+               WHEN    "0108"
+                   PERFORM   4801-NYUKAIKEI-ERASE-SEC
       *       （外泊）
                WHEN    "0201"
                WHEN    "0202"
@@ -2699,6 +2706,51 @@
            .
        4801-TENROOM-EDIT-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    入院取消　会計テーブル編集処理
+      *****************************************************************
+       4801-NYUKAIKEI-ERASE-SEC         SECTION.
+      *
+           DISPLAY "4801-NYUKAIKEI-ERASE-SEC"
+           DISPLAY "PTNYUINRRK-PTID      = " LNK-PTNYUINRRK-PTID
+           DISPLAY "PTNYUINRRK-NYUINYMD  = " LNK-PTNYUINRRK-NYUINYMD
+           DISPLAY "PTNYUINRRK-TAIINYMD  = " LNK-PTNYUINRRK-TAIINYMD
+           DISPLAY "PTNYUINRRK-HKNCOMBINUM  = "
+                                         LNK-PTNYUINRRK-HKNCOMBINUM
+      *    入院会計作成サブの呼出し
+           INITIALIZE            ORCSNYUACCT-AREA
+           EVALUATE   SODRNACCT-ORDERID
+               WHEN   "0107"
+                      MOVE   "5"       TO   LNK-SCNYUACCT-SYORI-KBN
+               WHEN   "0108"
+                      MOVE   "6"       TO   LNK-SCNYUACCT-SYORI-KBN
+           END-EVALUATE
+           DISPLAY  "LNK-SCNYUACCT-SYORI-KBN = " 
+                     LNK-SCNYUACCT-SYORI-KBN
+           MOVE     LNK-PTNYUINRRK-HOSPID  TO  SPA-HOSPID
+           MOVE     "1"                    TO  SPA-NYUGAIKBN
+           MOVE     LNK-PTNYUINRRK-PTID    TO  SPA-PTID
+           MOVE     LNK-PTNYUINRRK-NYUINYMD
+                                       TO   LNK-SCNYUACCT-STSRYYMD
+      *    保険組合せ
+           MOVE   LNK-PTNYUINRRK-HKNCOMBINUM
+                                        TO  WRK-HKNCOMBINUM
+           MOVE   WRK-HKNCOMBINUM9      TO  LNK-SCNYUACCT-HKNCOMBINUM
+           MOVE   SPA-SRYKA     TO  WRK-TAIHI-SRYKA
+           MOVE   "00"          TO  SPA-SRYKA
+           CALL   "ORCSNYUACCT"  USING   SPA-AREA
+                                         ORCSNYUACCT-AREA
+           MOVE   WRK-TAIHI-SRYKA TO     SPA-SRYKA
+           IF     LNK-SCNYUACCT-RC   NOT =  ZERO
+                  DISPLAY  "ORCSNYUACCT ERR RC = "
+                            LNK-SCNYUACCT-RC
+           END-IF
+      *
+           .
+       4801-NYUKAIKEI-ERASE-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    退院　会計テーブル編集処理
       *****************************************************************
