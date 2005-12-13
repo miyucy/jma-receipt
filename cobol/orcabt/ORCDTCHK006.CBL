@@ -401,38 +401,41 @@
            PERFORM VARYING IDX-DAY FROM    1   BY  1
                    UNTIL ( IDX-DAY >   31 )
       *
-               PERFORM VARYING IDX5    FROM    1   BY  1
+               IF    ( WRK-HBTSRYKA-HBTKA (IDX-DAY)    NOT =   ZERO )
+      *
+                   PERFORM VARYING IDX5    FROM    1   BY  1
                        UNTIL ( IDX5    >   WRK-HBTSRYKA-MAX )
                        OR    ( WRK-HBTSRYKA (IDX5)
                                        = WRK-HBTSRYKA-HBTKA (IDX-DAY) )
       *
-                   CONTINUE
+                       CONTINUE
       *
-               END-PERFORM
+                   END-PERFORM
       *
-               MOVE    ZERO        TO  IDX6
+                   MOVE    ZERO        TO  IDX6
       *
-               IF    ( IDX5    >   WRK-HBTSRYKA-MAX )
+                   IF    ( IDX5    >   WRK-HBTSRYKA-MAX )
       *
-                   IF    ( WRK-HBTSRYKA-MAX    <   CONST-HBTSRYKA-MAX )
-                       COMPUTE WRK-HBTSRYKA-MAX
-                           =   WRK-HBTSRYKA-MAX    +   1
+                       IF    ( WRK-HBTSRYKA-MAX 
+                                               <   CONST-HBTSRYKA-MAX )
+                           COMPUTE WRK-HBTSRYKA-MAX
+                               =   WRK-HBTSRYKA-MAX    +   1
       *
-                       MOVE    WRK-HBTSRYKA-MAX    TO  IDX6
+                           MOVE    WRK-HBTSRYKA-MAX    TO  IDX6
       *
-                       MOVE    WRK-HBTSRYKA-HBTKA (IDX-DAY)
-                                   TO  WRK-HBTSRYKA (IDX6)
+                           MOVE    WRK-HBTSRYKA-HBTKA (IDX-DAY)
+                                       TO  WRK-HBTSRYKA (IDX6)
+                       END-IF
+                   ELSE
+                       MOVE    IDX5    TO  IDX6
                    END-IF
-               ELSE
-                   MOVE    IDX5    TO  IDX6
-               END-IF
       *
-               IF    ( IDX6        >   ZERO )
-                   MOVE    1       TO  WRK-HBTSRYKA-DAY (IDX6 IDX-DAY)
+                   IF    ( IDX6        >   ZERO )
+                       MOVE    1   TO  WRK-HBTSRYKA-DAY (IDX6 IDX-DAY)
+                   END-IF
                END-IF
       *
            END-PERFORM
-      *
       *
       *
            .
