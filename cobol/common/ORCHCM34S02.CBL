@@ -485,6 +485,9 @@
                PERFORM 990-EXIT-PROGRAM-SEC
            END-IF
       *
+           MOVE    "PTINF-KEY"             TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
       *    該当保険組み合わせの入院会計が存在するかチェック
            INITIALIZE                          FLG-NYUINDAY-G
       *
@@ -504,7 +507,13 @@
                    UNTIL     ( IDX1    >   31 )
                 IF   ( HCM34S01-HKNCOMBI   =   NACCT-DAY(IDX1) )
                    MOVE    1               TO  FLG-NYUINARI
-                   MOVE    1               TO  FLG-NYUINDAY (IDX1)
+                   IF    ( HCM34S01-SRYKAKBN   =   "1" )
+                       IF    ( HCM34S01-SRYKADAY (IDX1)    =   1 )
+                           MOVE    1       TO  FLG-NYUINDAY (IDX1)
+                       END-IF
+                   ELSE
+                           MOVE    1       TO  FLG-NYUINDAY (IDX1)
+                   END-IF
                 END-IF
            END-PERFORM
       *
@@ -796,13 +805,16 @@
       *
            PERFORM VARYING IDXD    FROM    1   BY  1
                    UNTIL ( IDXD    >   31 )
+      *
                IF    ( LNK-SROUNYUIN-NYUIN-FLG (IDXD)  =   "1" )
+                AND  ( FLG-NYUINDAY            (IDXD)  =    1  )
                    IF    ( LNK-SROUNYUIN-GAIHAKU(IDXD) =   ZERO )
                        PERFORM 20011-NYUINRYO-HEN-SEC
                    ELSE
                        PERFORM 20011-GAIHAKU-HEN-SEC
                    END-IF
                END-IF
+      *
            END-PERFORM
       *
            .

@@ -488,6 +488,8 @@
                MOVE    2                   TO  HCM34S01-RC
                PERFORM 990-EXIT-PROGRAM-SEC
            END-IF
+           MOVE    "PTINF-KEY"             TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
       *
       *    該当保険組み合わせの入院会計が存在するかチェック
            INITIALIZE                          FLG-NYUINDAY-G
@@ -508,7 +510,13 @@
                    UNTIL     ( IDX1    >   31 )
                 IF   ( HCM34S01-HKNCOMBI   =   NACCT-DAY(IDX1) )
                    MOVE    1               TO  FLG-NYUINARI
-                   MOVE    1               TO  FLG-NYUINDAY (IDX1)
+                   IF    ( HCM34S01-SRYKAKBN   =   "1" )
+                       IF    ( HCM34S01-SRYKADAY (IDX1)    =   1 )
+                           MOVE    1       TO  FLG-NYUINDAY (IDX1)
+                       END-IF
+                   ELSE
+                           MOVE    1       TO  FLG-NYUINDAY (IDX1)
+                   END-IF
                 END-IF
            END-PERFORM
       *

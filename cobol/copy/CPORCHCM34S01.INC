@@ -40,6 +40,14 @@
            03  HCM34S01-HKNCOMBI               PIC 9(04).
       * ›∏±»÷πÊ
            03  HCM34S01-HKNNUM                 PIC X(03).
+      *ø«Œ≈≤ ∂Ë ¨
+           03  HCM34S01-SRYKAKBN               PIC X(01).
+      *ø«Œ≈≤ 
+           03  HCM34S01-SRYKA                  PIC X(02).
+      *ø«Œ≈≤ ∆¸…’
+           03  HCM34S01-SRYKADAY-G.
+               05  HCM34S01-SRYKADAY           PIC 9(01)
+                                               OCCURS  31.
       * ÷µ—π‡Ã‹
            03  HCM34S01-HENKYAKU-AREA.
       *

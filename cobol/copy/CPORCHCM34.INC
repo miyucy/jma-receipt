@@ -31,6 +31,14 @@
                05  ORCHCM34-SRYYM          PIC X(06).
       *        ∆˛≥∞∂Ë ¨
                05  ORCHCM34-NYUGAIKBN      PIC X(01).
+      *        ø«Œ≈≤ ∂Ë ¨
+               05  ORCHCM34-SRYKAKBN       PIC X(01).
+      *        ø«Œ≈≤ 
+               05  ORCHCM34-SRYKA          PIC X(02).
+      *        ø«Œ≈≤ ∆¸…’
+               05  ORCHCM34-SRYKADAY-G.
+                   07  ORCHCM34-SRYKADAY   PIC 9(01)
+                                           OCCURS  31.
       *        ∞Ï≥Á•—•È•·•ø
                05  ORCHCM34-PRTAREA        PIC X(15000).
       *
