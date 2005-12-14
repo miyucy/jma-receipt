@@ -2599,7 +2599,7 @@
                   MOVE   WRK-TAIHI-SHOKUJI
                                 TO  LNK-SCNYUACCT-SHOKUJIKBN
            ELSE
-                  MOVE   1      TO  LNK-SCNYUACCT-SHOKUJIKBN
+                  MOVE   0      TO  LNK-SCNYUACCT-SHOKUJIKBN
            END-IF
       *    ¿©Æ²²Ã»»
            PERFORM     4801-BTUSEL-SEC
