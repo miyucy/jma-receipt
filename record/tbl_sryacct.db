@@ -979,4 +979,69 @@ path	key41	{
 	};
 };
 
+#SRYKAのみ取得
+path	key42	{
+	DBSELECT	{
+		DECLARE tbl_sryacct_key42_csr CURSOR FOR
+		SELECT  A.SRYKA
+		FROM tbl_sryacct A
+			WHERE  A.HOSPID	    =  :HOSPID
+			AND    A.NYUGAIKBN  =  :NYUGAIKBN
+			AND    A.PTID       =  :PTID
+			AND    A.SRYYM      =  :SRYYM
+			AND    A.ZAIKAISU   > 0
+			AND (( A.ZAITEN     > 0 )
+			 OR  ( A.ZAITEN     = 0 
+			  AND  EXISTS 
+			     ( SELECT * FROM TBL_SRYACT
+			       WHERE HOSPID =  A.HOSPID
+			        AND  NYUGAIKBN = A.NYUGAIKBN
+			        AND  PTID   =  A.PTID
+			        AND  SRYKA  =  A.SRYKA
+			        AND  SRYYM  =  A.SRYYM
+			        AND  ZAINUM =  A.ZAINUM
+			        AND  SRYKBN =  A.SRYKBN
+			        AND((SRYCD1 LIKE '6%' )
+			         OR (SRYCD2 LIKE '6%' )
+			         OR (SRYCD3 LIKE '6%' )
+			         OR (SRYCD4 LIKE '6%' )
+			         OR (SRYCD5 LIKE '6%')))))
+			GROUP BY SRYKA
+		;
+	};
+};
+
+#PTID,SRYKAのみ取得
+path	key43	{
+	DBSELECT	{
+		DECLARE tbl_sryacct_key43_csr CURSOR FOR
+		SELECT  A.PTID,A.SRYKA
+		FROM tbl_sryacct A
+		JOIN tbl_ptinf  B ON A.HOSPID=B.HOSPID AND A.PTID=B.PTID  
+			WHERE  A.HOSPID	    =  :HOSPID
+			AND    A.NYUGAIKBN  =  :NYUGAIKBN
+			AND    A.SRYYM      =  :SRYYM
+			AND    A.ZAIKAISU   > 0
+			AND (( A.ZAITEN     > 0 )
+			 OR  ( A.ZAITEN     = 0 
+			  AND  EXISTS 
+			     ( SELECT * FROM TBL_SRYACT
+			       WHERE HOSPID =  A.HOSPID
+			        AND  NYUGAIKBN = A.NYUGAIKBN
+			        AND  PTID   =  A.PTID
+			        AND  SRYKA  =  A.SRYKA
+			        AND  SRYYM  =  A.SRYYM
+			        AND  ZAINUM =  A.ZAINUM
+			        AND  SRYKBN =  A.SRYKBN
+			        AND((SRYCD1 LIKE '6%' )
+			         OR (SRYCD2 LIKE '6%' )
+			         OR (SRYCD3 LIKE '6%' )
+			         OR (SRYCD4 LIKE '6%' )
+			         OR (SRYCD5 LIKE '6%')))))
+			AND B.TSTPTNUMKBN <> '1'
+			GROUP BY A.PTID,A.SRYKA
+			ORDER BY A.PTID
+		;
+	};
+};
 
