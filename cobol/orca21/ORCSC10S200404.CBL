@@ -4138,7 +4138,7 @@
            SET     MSYU-IDX            TO  1
            SEARCH      MSYU-TBL-OCC    VARYING   MSYU-IDX
                    AT   END
-                       CONTINUE
+                       MOVE    SPACE       TO  SPA-GMN-MEISYO (IDX)
                    WHEN    SPA-COM-SRYSYUKBN(IDX)
                                            =   MSYU-SRYSYUKBN 
                                                            (MSYU-IDX)
