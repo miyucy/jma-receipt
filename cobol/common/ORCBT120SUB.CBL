@@ -484,14 +484,17 @@
                MOVE    LNK-ORCBT120SUB-PTID    TO  NACCT-PTID
                MOVE    LNK-ORCBT120SUB-SANTEIYMD(1:6)
                                                TO  NACCT-SRYYM
-               MOVE    "NYUINACCT-KEY23"       TO  ORC-DBPATH
+               MOVE    "NYUINACCT-KEY28"       TO  ORC-DBPATH
                PERFORM 910-NYUINACCT-SELECT-SEC
                IF      FLG-NYUINACCT           =   ZERO
-                   MOVE     "NYUINACCT-KEY23"  TO  ORC-DBPATH
+                   MOVE     "NYUINACCT-KEY28"  TO  ORC-DBPATH
                    PERFORM   910-NYUINACCT-READ-SEC
                    MOVE    NACCT-DAY(WRK-SANTEIDD)
                                      TO  LNK-ORCBT120SUB-SKJ-KBN
                END-IF
+      *       入院会計クローズ
+               MOVE    "NYUINACCT-KEY28"       TO  ORC-DBPATH
+               PERFORM   910-DB-CLOSE-SEC
            END-IF
       *
       *    収納情報の取得

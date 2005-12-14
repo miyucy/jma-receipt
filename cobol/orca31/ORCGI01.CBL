@@ -10163,7 +10163,7 @@
                                            WRK-TENROOM-SKJ-SRYYMX
       *
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
-           MOVE    "NYUINACCT-KEY23"   TO  WRK-DBPATH
+           MOVE    "NYUINACCT-KEY28"   TO  WRK-DBPATH
            PERFORM   900-TBL-SELECT-SEC
            IF      FLG-DBRC            =   ZERO
                MOVE     MCPDATA-REC    TO  NYUINACCT-REC
@@ -10187,7 +10187,7 @@
                END-PERFORM
            END-IF
       *    入院会計マスタクローズ
-           MOVE    "NYUINACCT-KEY23"      TO  ORC-DBPATH
+           MOVE    "NYUINACCT-KEY28"      TO  ORC-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
       *    （異動翌月分）
            INITIALIZE                      NYUINACCT-REC
@@ -10203,7 +10203,7 @@
                                        TO  NACCT-SRYYM
       *
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
-           MOVE    "NYUINACCT-KEY23"   TO  WRK-DBPATH
+           MOVE    "NYUINACCT-KEY28"   TO  WRK-DBPATH
            PERFORM   900-TBL-SELECT-SEC
            IF      FLG-DBRC            =   ZERO
                MOVE     MCPDATA-REC    TO  NYUINACCT-REC
@@ -10218,7 +10218,7 @@
                MOVE    SPACE           TO  WRK-TENROOM-SKJ-SRYYM(2)
            END-IF
       *    入院会計マスタクローズ
-           MOVE    "NYUINACCT-KEY23"      TO  ORC-DBPATH
+           MOVE    "NYUINACCT-KEY28"      TO  ORC-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
       *
       *    入院会計作成サブの呼出し
@@ -10727,7 +10727,7 @@
                                        TO  NACCT-SRYYM
       *
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
-           MOVE    "NYUINACCT-KEY23"   TO  WRK-DBPATH
+           MOVE    "NYUINACCT-KEY28"   TO  WRK-DBPATH
            PERFORM   900-TBL-SELECT-SEC
            IF      FLG-DBRC            =   ZERO
                MOVE     MCPDATA-REC    TO  NYUINACCT-REC
@@ -10747,7 +10747,7 @@
                                               ORCMCPAREA
                                               MCPDATA-REC 
       *    入院会計マスタクローズ
-           MOVE    "NYUINACCT-KEY23"      TO  ORC-DBPATH
+           MOVE    "NYUINACCT-KEY28"      TO  ORC-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
       *
       *    （異動翌月分）
@@ -10759,7 +10759,7 @@
                                            TO  NACCT-SRYYM
       *
                MOVE    NYUINACCT-REC       TO  MCPDATA-REC
-               MOVE    "NYUINACCT-KEY23"   TO  WRK-DBPATH
+               MOVE    "NYUINACCT-KEY28"   TO  WRK-DBPATH
                PERFORM   900-TBL-SELECT-SEC
                IF      FLG-DBRC            =   ZERO
                    MOVE     MCPDATA-REC    TO  NYUINACCT-REC
@@ -10777,7 +10777,7 @@
                                                   ORCMCPAREA
                                                   MCPDATA-REC 
       *        入院会計マスタクローズ
-               MOVE    "NYUINACCT-KEY23"      TO  ORC-DBPATH
+               MOVE    "NYUINACCT-KEY28"      TO  ORC-DBPATH
                PERFORM 900-TBL-CLOSE-SEC
            END-IF
       *
@@ -10864,7 +10864,7 @@
                                            WRK-TENROOM-SKJ-SRYYMX
       *
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
-           MOVE    "NYUINACCT-KEY23"   TO  WRK-DBPATH
+           MOVE    "NYUINACCT-KEY28"   TO  WRK-DBPATH
            PERFORM   900-TBL-SELECT-SEC
            IF      FLG-DBRC            =   ZERO
                MOVE     MCPDATA-REC    TO  NYUINACCT-REC
@@ -10881,7 +10881,7 @@
                END-PERFORM
            END-IF
       *    入院会計マスタクローズ
-           MOVE    "NYUINACCT-KEY23"      TO  ORC-DBPATH
+           MOVE    "NYUINACCT-KEY28"      TO  ORC-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
       *    （異動翌月分）
            INITIALIZE                      NYUINACCT-REC
@@ -10897,7 +10897,7 @@
                                        TO  NACCT-SRYYM
       *
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
-           MOVE    "NYUINACCT-KEY23"   TO  WRK-DBPATH
+           MOVE    "NYUINACCT-KEY28"   TO  WRK-DBPATH
            PERFORM   900-TBL-SELECT-SEC
            IF      FLG-DBRC            =   ZERO
                MOVE     MCPDATA-REC    TO  NYUINACCT-REC
@@ -10910,7 +10910,7 @@
                END-PERFORM
            END-IF
       *    入院会計マスタクローズ
-           MOVE    "NYUINACCT-KEY23"      TO  ORC-DBPATH
+           MOVE    "NYUINACCT-KEY28"      TO  ORC-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
       *
       *    保険組合せ
@@ -11522,7 +11522,7 @@
                                        TO  NACCT-SRYYM
       *
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
-           MOVE    "NYUINACCT-KEY23"   TO  WRK-DBPATH
+           MOVE    "NYUINACCT-KEY28"   TO  WRK-DBPATH
            PERFORM   900-TBL-SELECT-SEC
            IF      FLG-DBRC            =   ZERO
                MOVE     MCPDATA-REC    TO  NYUINACCT-REC
@@ -11542,7 +11542,7 @@
                                               ORCMCPAREA
                                               MCPDATA-REC 
       *    入院会計マスタクローズ
-           MOVE    "NYUINACCT-KEY23"      TO  ORC-DBPATH
+           MOVE    "NYUINACCT-KEY28"      TO  ORC-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
       *    （異動翌月分）
            IF   WRK-TENROOM-SKJ-SRYYM(2)  NOT =   SPACE
@@ -11553,7 +11553,7 @@
                                            TO  NACCT-SRYYM
       *
                MOVE    NYUINACCT-REC       TO  MCPDATA-REC
-               MOVE    "NYUINACCT-KEY23"   TO  WRK-DBPATH
+               MOVE    "NYUINACCT-KEY28"   TO  WRK-DBPATH
                PERFORM   900-TBL-SELECT-SEC
                IF      FLG-DBRC            =   ZERO
                    MOVE     MCPDATA-REC    TO  NYUINACCT-REC
@@ -11571,7 +11571,7 @@
                                                   ORCMCPAREA
                                                   MCPDATA-REC 
       *        入院会計マスタクローズ
-               MOVE    "NYUINACCT-KEY23"      TO  ORC-DBPATH
+               MOVE    "NYUINACCT-KEY28"      TO  ORC-DBPATH
                PERFORM 900-TBL-CLOSE-SEC
            END-IF
       *

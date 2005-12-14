@@ -1496,10 +1496,10 @@
            MOVE    LNK-NYURECEDEN-HOSPID   TO  NACCT-HOSPID
            MOVE    LNK-NYURECEDEN-PTID     TO  NACCT-PTID
            MOVE    LNK-NYURECEDEN-SANTEIYM TO  NACCT-SRYYM
-           MOVE    "NYUINACCT-KEY23"       TO  ORC-DBPATH
+           MOVE    "NYUINACCT-KEY28"       TO  ORC-DBPATH
            PERFORM 910-NYUINACCT-SELECT-SEC
            IF      FLG-NYUINACCT           =   ZERO
-               MOVE     "NYUINACCT-KEY23"  TO  ORC-DBPATH
+               MOVE     "NYUINACCT-KEY28"  TO  ORC-DBPATH
                PERFORM   910-NYUINACCT-READ-SEC
                PERFORM   VARYING   IDX1   FROM  1   BY  1
                          UNTIL     IDX1   >    31
@@ -1712,8 +1712,9 @@
                    END-IF
                END-PERFORM
            END-PERFORM
+      *
       *    入院会計クローズ
-           MOVE    "NYUINACCT-KEY23"           TO  ORC-DBPATH
+           MOVE    "NYUINACCT-KEY28"           TO  ORC-DBPATH
            PERFORM   910-DB-CLOSE-SEC
       *
       *    再構築した食事情報から同一剤のまとめ処理

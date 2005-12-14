@@ -1242,10 +1242,10 @@
            MOVE    LNK-ORCHCN33SUB-HOSPID   TO  NACCT-HOSPID
            MOVE    LNK-ORCHCN33SUB-PTID     TO  NACCT-PTID
            MOVE    LNK-ORCHCN33SUB-SANTEIYM TO  NACCT-SRYYM
-           MOVE    "NYUINACCT-KEY23"        TO  ORC-DBPATH
+           MOVE    "NYUINACCT-KEY28"        TO  ORC-DBPATH
            PERFORM 910-NYUINACCT-SELECT-SEC
            IF      FLG-NYUINACCT           =   ZERO
-               MOVE     "NYUINACCT-KEY23"  TO  ORC-DBPATH
+               MOVE     "NYUINACCT-KEY28"  TO  ORC-DBPATH
                PERFORM   910-NYUINACCT-READ-SEC
                PERFORM   VARYING   IDX1   FROM  1   BY  1
                          UNTIL     IDX1   >    31
@@ -1332,7 +1332,7 @@
                END-PERFORM
            END-PERFORM
       *    入院会計クローズ
-           MOVE    "NYUINACCT-KEY17"           TO  ORC-DBPATH
+           MOVE    "NYUINACCT-KEY28"           TO  ORC-DBPATH
            PERFORM   910-DB-CLOSE-SEC
       *
       *   結果表示
