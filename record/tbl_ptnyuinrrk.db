@@ -757,3 +757,34 @@ path	key42		{
 	};
 };
 
+#PTID¤Î¤ß
+path	key43		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptnyuinrrk_key43_csr CURSOR FOR
+		SELECT PTID
+		FROM tbl_ptnyuinrrk
+			WHERE	HOSPID      =   :HOSPID
+			AND	TENNYUYMD	<=	:TENNYUYMD
+			AND	TENSTUYMD	>=	:TENSTUYMD
+			AND	JTIKBN		<>	'5'
+			AND	JTIKBN		<>	'6'
+			GROUP BY PTID
+		;
+	};
+};
+
+path	key44		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptnyuinrrk_key44_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptnyuinrrk
+			WHERE	HOSPID   =   :HOSPID
+			AND PTID         =  :PTID
+			AND	TENNYUYMD	<=	:TENNYUYMD
+			AND	TENSTUYMD	>=	:TENSTUYMD
+			AND	JTIKBN		<>	'5'
+			AND	JTIKBN		<>	'6'
+			ORDER BY TENNYUYMD ,TENSTUYMD
+		;
+	};
+};
