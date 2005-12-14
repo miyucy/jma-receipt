@@ -42,6 +42,7 @@
       *  01.01.03    NACL-ÌçÏÆ    05/01/26  ¥·¥¹¥Æ¥à´ÉÍý£´£°£°£±¤Ë´Ø¤¹¤ë½¤Àµ
       *  01.01.04    NACL-ÌçÏÆ    05/06/27  ²Ã»»Î¨£³·åÂÐ±þ
       *  01.01.05    NACL-ÌçÏÆ    05/08/18  Å¾µ¢»öÍ³ÊÔ½¸½¤Àµ
+      *  01.01.06    NACL-ÌçÏÆ    05/12/01  Ï«ºÒ¥ì¥»¥×¥È²ó¿ôÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1120,6 +1121,9 @@
            MOVE   PTRSI-DRCD           TO  WRK-RECE82-DRCD
            MOVE   PTRSI-HOKENNAME      TO  WRK-RECE82-HOKENNAME
       *
+           MOVE   PTRSI-KIJYUNYM       TO  WRK-RECE82-KIJYUNYM-KSI
+           MOVE   PTRSI-KAISU          TO  WRK-RECE82-KAISU-KSI
+      *
       *    ÅÀ¿ôÃ±²Á
            EVALUATE  SYS-4001-TENKBN
                WHEN  "1"
@@ -1137,6 +1141,8 @@
            MOVE    SYS-4001-TAXKBN-KZI   TO   WRK-RECE82-TAXKBN-KZI
       *    ¼«ÇåÀÕ¸ÇÄêÂÓ²Ã»»Åù¼è°·
            MOVE    SYS-4001-KOTEIKBN     TO   WRK-RECE82-KOTEIKBN
+      *    Ï«ºÒ¥ì¥»²ó¿ôµ­ºÜ
+           MOVE    SYS-4001-ROUKAISU     TO   WRK-RECE82-ROUKAISU
       *
            MOVE    WRK-RECE82-REC      TO  RECE82-REC
            WRITE   RECE82-REC

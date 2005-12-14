@@ -53,6 +53,7 @@
       *                                     変更による対応
       *  02.06.03    NACL-藤原    05/09/05  複数枚レセの連番記載
       *  02.06.04    NACL-小豆沢  05/10/04  療養期間の再セット編集修正
+      *  02.06.05    NACL-門脇    05/12/01  労災レセプト回数対応の関連修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1032,7 +1033,7 @@
            PERFORM   VARYING   IDX4   FROM   IDX5   BY  1
                      UNTIL     IDX4    >     IDX6
                  IF  (RECE41-NYUINBITBL(IDX4)  =  SPACE)  OR
-                     (RECE41-JNISSUTBL(IDX4) =  1)
+                     (RECE41-JNISSUTBL(IDX4)   =  "1"  )
                      MOVE    IDX4                TO  WRK-ZZ
                      MOVE    WRK-ZZ              TO  HC23-STRDD
                      MOVE    IDX6                TO  IDX4
@@ -1042,7 +1043,7 @@
            PERFORM   VARYING   IDX4   FROM   IDX6   BY  -1
                      UNTIL     IDX4    <     IDX5
                  IF  (RECE41-NYUINBITBL(IDX4)   =  SPACE) OR
-                     (RECE41-JNISSUTBL(IDX4) =  1)
+                     (RECE41-JNISSUTBL(IDX4)    =  "1"  )
                      MOVE    IDX4                TO  WRK-ZZ
                      MOVE    WRK-ZZ              TO  HC23-ENDDD
                      MOVE    IDX5                TO  IDX4

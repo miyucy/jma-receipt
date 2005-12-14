@@ -123,5 +123,11 @@ P02D	{
 		HOKENNAME	{
 			value	varchar(80);
 		};
+		KIJYUNYM	{
+			value	varchar(6);
+		};
+		KAISU	{
+			value	number(3);
+		};
 	};
 };

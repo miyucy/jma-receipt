@@ -43,6 +43,7 @@
       *  02.06.01    NACL-藤原    05/07/20  レセコメントのコメントの長さ
       *                                     変更による対応
       *  02.06.02    NACL-藤原    05/09/05  複数枚レセの連番記載
+      *  02.06.03    NACL-門脇    05/12/01  労災レセプト回数対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -455,6 +456,7 @@
            03  WRK-KGK4            PIC ZZ,ZZZ,ZZZ.
            03  WRK-KGK2            PIC ZZ.
            03  WRK-ZZZ             PIC ZZZ.
+           03  WRK-RECEKAISU       PIC ZZZ.
       *
       *    改行コード
        01  WRK-CONS-RETURN          PIC X(01)   VALUE   X"0A".
@@ -1206,6 +1208,10 @@
                WHEN    "3"
                    MOVE    "○"        TO  HC22-GUNSIKUKBN3
            END-EVALUATE                             
+      *
+      *    労災レセプト回数
+           MOVE    RECE82-RECEKAISU    TO  WRK-RECEKAISU
+           MOVE    WRK-RECEKAISU       TO  HC22-KAI
       *
            .
        20021-HEAD-HEN-EXT.

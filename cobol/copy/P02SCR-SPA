@@ -33,6 +33,7 @@
       *  02.00.06    NACL-Â¿¡¹Ç¼  03/05/12  ¼«ÈñÀÁµá¶èÊ¬ÄÉ²Ã
       *  02.00.07    NACL-Â¿¡¹Ç¼  05/09/13  Æþ¶âÊýË¡ÄÉ²Ã
       *  02.00.08    NACL-Â¿¡¹Ç¼  05/10/07  £Õ¡¦£ÐÄÉ²Ã
+      *  02.00.09    NACL-Â¿¡¹Ç¼  05/12/07  Ï«ºÒ¥ì¥»²ó¿ôµ­ºÜÄÉ²Ã
       *****************************************************************
        01  SPA-P02SCRAREA.
       *
@@ -1104,8 +1105,12 @@
       *
                    07  SPA-GMN2D-HOKENNAME           PIC X(80).
       *
+                   07  SPA-GMN2D-KIJYUNYM            PIC X(06).
+                   07  SPA-GMN2D-KAISU               PIC 9(03).
+      *
                05  SPA-NAI2D-AREA.
                    07  SPA-NAI2D-HKNKBN-MAE        PIC X(01).
+                   07  SPA-NAI2D-HKNKBN-HZN        PIC X(01).
                    07  SPA-NAI2D-SHOBYOYMD         PIC X(08).
                    07  SPA-NAI2D-RYOSTYMD          PIC X(08).
                    07  SPA-NAI2D-RYOEDYMD          PIC X(08).
@@ -1115,10 +1120,14 @@
                    07  SPA-NAI2D-KAKUNINYMD        PIC X(08).
       *            ÊÝ¸±ÈÖ¹æ
                    07  SPA-NAI2D-HKNNUM            PIC X(03).
+      *            Ï«ºÒ¥ì¥»²ó¿ôµ­ºÜ ´ð½àÇ¯·î
+                   07  SPA-NAI2D-KIJYUNYM          PIC X(06).
       *
                    07  SPA-NAI2D-MAE-SRYKA         PIC X(02).
       *Â»½ý¶èÊ¬¡Ý»ÞÈÖ
       *************07  SPA-NAI2D-SONSHOUKBN-EDANUM   PIC  X(01).
+      *            ·Ù¹ð£±
+                   07  SPA-NAI2D-KEIFLG            PIC 9(01).
       *
                    07  SPA-NAI2D-GMNIDX            PIC 9(04).
       *

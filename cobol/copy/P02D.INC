@@ -105,4 +105,9 @@
                         PIC X(29)   OCCURS  20 TIMES.
               03  P02D-HOKENNAME.
                 04  P02D-VALUE  PIC X(80).
+              03  P02D-KIJYUNYM.
+                04  P02D-VALUE  PIC X(6).
+              03  P02D-KAISU.
+                04  P02D-VALUE  PIC S9(3).
+
 

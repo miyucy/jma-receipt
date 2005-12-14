@@ -33,6 +33,7 @@
       *  01.00.02    NACL-門脇    05/01/08  同月に継続なしで２回入院した
       *                                     場合の入院年月日の記載方法
       *  01.00.03    NACL-門脇    05.09.06  自賠責従来様式対応
+      *  01.00.04    NACL-門脇    05.12.01  労災レセプト回数対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -125,6 +126,7 @@
            03  IDX3                    PIC 9(03). 
            03  IDX4                    PIC 9(02).
            03  IDX5                    PIC 9(02).
+           03  IDX-ROU                 PIC 9(02).
       *
        01  WRK-AREA.
            03  WRK-PARA.
@@ -145,6 +147,8 @@
       *
            03  WRK-RYOSTYMD            PIC X(08).
            03  WRK-RYOEDYMD            PIC X(08).
+      *
+           03  WRK-STYMD               PIC X(08).
       *
       *    病棟区分テーブル                                             
        01  WRK-BYOTOKBN-TABLE.                                          
@@ -188,6 +192,8 @@
       *****************************************************************
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
+      *    労災レセプト回数取得サブ
+           COPY    "CPORCSROUKAISU.INC".
       *
            COPY    "MCPAREA".
       *
@@ -311,6 +317,48 @@
       *
       *    入退院履歴情報編集・病棟番号・種別セット処理
            PERFORM 2101-RECE88-HENSYU-SEC
+      *
+      *    労災レセプト回数取得
+           IF    ( RECE82-HKNKBN     =   "1"  OR  "2" )
+           AND   ( RECE82-ROUKAISU   =   "2"          )
+             INITIALIZE                    LNK-ORCSROUKAISU-REC
+             MOVE  RECE82-HOSPID       TO  LNK-ORCSROUKAISU-HOSPID
+             MOVE  RECE82-NYUGAIKBN    TO  LNK-ORCSROUKAISU-NYUGAIKBN
+             MOVE  RECE82-PTID         TO  LNK-ORCSROUKAISU-PTID
+             MOVE  RECE82-HKNCOMBI     TO  LNK-ORCSROUKAISU-HKNCOMBI
+             MOVE  RECE82-SRYYM        TO  LNK-ORCSROUKAISU-SRYYM
+             MOVE  RECE82-SHOSHINYMD   TO  LNK-ORCSROUKAISU-RYOSTYMD
+             MOVE  RECE82-KIJYUNYM-KSI TO  LNK-ORCSROUKAISU-KIJYUNYM-KSI
+             MOVE  RECE82-KAISU-KSI    TO  LNK-ORCSROUKAISU-KAISU-KSI
+      *+++
+             MOVE  RECE82-SRYYM        TO  WRK-STYMD (1:6)
+             MOVE  "01"                TO  WRK-STYMD (7:2)
+      *
+             IF    RECE82-RYOSTYMD   NOT =  SPACE
+               IF      RECE82-RYOSTYMD     <   WRK-STYMD
+                   MOVE   WRK-STYMD(7:2) TO  LNK-ORCSROUKAISU-KAISHIBI
+               ELSE
+                   MOVE   RECE82-RYOSTYMD(7:2)
+                                         TO  LNK-ORCSROUKAISU-KAISHIBI
+               END-IF
+             ELSE
+               PERFORM  VARYING  IDX-ROU  FROM   1   BY  1
+                         UNTIL   IDX-ROU   >    31
+                   IF      RECE82-DAY(IDX-ROU)  =   RECE82-HKNCOMBI
+                       MOVE    IDX-ROU   TO  LNK-ORCSROUKAISU-KAISHIBI
+                       MOVE    31        TO  IDX-ROU
+                   END-IF
+               END-PERFORM
+             END-IF
+      *
+             CALL    "ORCSROUKAISU"    USING
+                                       LNK-ORCSROUKAISU-REC
+      *
+             IF    LNK-ORCSROUKAISU-RC   =   ZERO
+                MOVE   LNK-ORCSROUKAISU-RECEKAISU
+                                         TO  RECE82-RECEKAISU
+             END-IF
+           END-IF
       *
            REWRITE RECE82-REC
            ADD     1     TO    CNT-OUT

@@ -35,6 +35,7 @@
       *  02.00.05    NACL-多々納  03/05/12  自費請求区分追加
       *  02.00.06    NACL-多々納  05/01/11  自賠責担当医、保険会社名追加
       *  02.00.05    NACL-多々納  05/11/11  MONFUNC 対応 他
+      *  02.00.06    NACL-多々納  05/12/07  労災レセ回数記載追加 他
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -445,6 +446,28 @@
            MOVE    PTRSI-DRCD(2:4)     TO  SPA-GMN2D-DRCD
       *自賠責保険会社名
            MOVE    PTRSI-HOKENNAME     TO  SPA-GMN2D-HOKENNAME
+      *
+      *労災レセ回数記載
+      *    短期給付・傷病年金の時、初期設定
+           EVALUATE    SPA-GMN2D-HKNKBN
+               WHEN    "1"
+               WHEN    "2"
+      *            基準年月
+                   IF      PTRSI-KIJYUNYM      =    SPACE
+                       MOVE    PTRSI-RYOSTYMD(1:6)  TO  PTRSI-KIJYUNYM
+                   END-IF
+                   MOVE    PTRSI-KIJYUNYM      TO  SPA-NAI2D-KIJYUNYM
+                   MOVE    PTRSI-KIJYUNYM      TO  WRK-SYMD(1:6)
+                   MOVE    "01"                TO  WRK-SYMD(7:2)
+                   PERFORM 410112-SE-WAFORMAT-YMDEDIT-SEC
+                   MOVE    WRK-HENYMD(1:6)     TO  SPA-GMN2D-KIJYUNYM
+      *            回数
+                   IF      PTRSI-KAISU         =   ZERO
+                       MOVE    1                   TO  SPA-GMN2D-KAISU
+                   ELSE
+                       MOVE    PTRSI-KAISU         TO  SPA-GMN2D-KAISU
+                   END-IF
+           END-EVALUATE
       *
            .
        3001-RSHKN-SET-EXT.
@@ -883,6 +906,9 @@
            MOVE    SPA-GMN2D-DRCD-MAX  TO  P02D-DRCD-COUNT
       *
            MOVE    SPA-GMN2D-HOKENNAME TO  P02D-HOKENNAME
+      *    労災レセ回数記載
+           MOVE    SPA-GMN2D-KIJYUNYM  TO  P02D-KIJYUNYM
+           MOVE    SPA-GMN2D-KAISU     TO  P02D-KAISU
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -939,6 +965,10 @@
                    MOVE    "DRCD"              TO  MCP-WIDGET
                WHEN    27
                    MOVE    "HOKENNAME"         TO  MCP-WIDGET
+               WHEN    28
+                   MOVE    "KIJYUNYM"          TO  MCP-WIDGET
+               WHEN    29
+                   MOVE    "KAISU"             TO  MCP-WIDGET
       *
                WHEN    16
                    MOVE    "KOHNUM3"           TO  MCP-WIDGET
@@ -1005,7 +1035,17 @@
                WHEN    "RYOSTYMD"
                    MOVE    10              TO  SPA-GMN2D-CUR
                WHEN    "RYOEDYMD"
-                   MOVE    11              TO  SPA-GMN2D-CUR
+                   EVALUATE    SPA-GMN2D-HKNKBN
+                       WHEN    "4"
+      *                    自賠責担当医へ
+                           MOVE    25              TO  SPA-GMN2D-CUR
+                       WHEN    "1"
+      *                    事業所へ
+                           MOVE    11              TO  SPA-GMN2D-CUR
+                       WHEN    "2"
+      *                    労災レセ回数記載へ
+                           MOVE    28              TO  SPA-GMN2D-CUR
+                   END-EVALUATE
                WHEN    "JIGYOUNAME"
                    MOVE    12              TO  SPA-GMN2D-CUR
                WHEN    "PREFNAME"
@@ -1020,13 +1060,19 @@
                            MOVE    25              TO  SPA-GMN2D-CUR
                        WHEN    "1"
                        WHEN    "2"
-                           MOVE    90              TO  SPA-GMN2D-CUR
+      *********************MOVE    90              TO  SPA-GMN2D-CUR
+                           MOVE    28              TO  SPA-GMN2D-CUR
                    END-EVALUATE
                WHEN    "SRYKA"
                    MOVE    26              TO  SPA-GMN2D-CUR
                WHEN    "DRCD"
                    MOVE    27              TO  SPA-GMN2D-CUR
                WHEN    "HOKENNAME"
+                   MOVE    90              TO  SPA-GMN2D-CUR
+      *
+               WHEN    "KIJYUNYM"
+                   MOVE    29              TO  SPA-GMN2D-CUR
+               WHEN    "KAISU"
                    MOVE    90              TO  SPA-GMN2D-CUR
       *
                WHEN    "KOHNUM3"
@@ -1141,6 +1187,9 @@
            MOVE    P02D-SRYKA         TO  SPA-GMN2D-SRYKA-G
            MOVE    P02D-DRCD          TO  SPA-GMN2D-DRCD-G
            MOVE    P02D-HOKENNAME     TO  SPA-GMN2D-HOKENNAME
+      *    労災レセ回数記載
+           MOVE    P02D-KIJYUNYM      TO  SPA-GMN2D-KIJYUNYM
+           MOVE    P02D-KAISU         TO  SPA-GMN2D-KAISU
            .
       *
        4101-GMN-SPA-SET-EXT.
@@ -1228,6 +1277,13 @@
            IF      SPA-ERRCD           =   SPACE
                PERFORM 4101-HOKENNAME-CHK-SEC
            END-IF
+      *    労災レセ回数記載
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4101-KIJYUNYM-CHK-SEC
+           END-IF
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4101-KAISU-CHK-SEC
+           END-IF
       *
            IF      SPA-ERRCD           =   SPACE
                PERFORM 4101-KOHNUM3-CHK-SEC
@@ -1265,6 +1321,8 @@
            END-IF
       *
            IF      SPA-GMN2D-HKNKBN-G  =   SPACE
+               MOVE    1                   TO  SPA-GMN2D-CUR
+               MOVE    SPA-GMN2D-HKNKBN    TO  SPA-NAI2D-HKNKBN-HZN
                GO      TO      4101-HKNKBN-CHK-EXT
            END-IF
       *
@@ -1284,8 +1342,13 @@
            END-IF
       *
       *    新規の時、初期表示
-           IF      SPA-NAI-RSHKN-EDANUM    =   ZERO
-               PERFORM 41011-SYOKI-SET-SEC
+           IF      SPA-ERRCD           =   SPACE
+               IF     (SPA-NAI-RSHKN-EDANUM    =   ZERO )  AND
+                      (SPA-GMN2D-HKNKBN    NOT =   SPA-NAI2D-HKNKBN-HZN)
+                   PERFORM 41011-SYOKI-SET-SEC
+                   MOVE    ZERO            TO  SPA-NAI2D-KEIFLG
+               END-IF
+               MOVE    SPA-GMN2D-HKNKBN    TO  SPA-NAI2D-HKNKBN-HZN
            END-IF
       *
           .
@@ -1353,7 +1416,8 @@
                                                TO  SPA-GMN2D-SISIKBN-G
                    END-IF
       *            所在地都道府県名
-                   IF      SPA-GMN2D-PREFNAME  =   SPACE
+                   IF      SPA-GMN2D-HKNKBN    =   "1"
+                     IF      SPA-GMN2D-PREFNAME  =   SPACE
                        IF      SPA-NAI-PREFNUM     NOT =   ZERO
                            MOVE    SPA-GMN2D-PREFNAME-LST
                                                 (SPA-NAI-PREFNUM)
@@ -1372,15 +1436,18 @@
                            MOVE    SPA-GMN2D-PREFKBN-LST (IDX)
                                                TO  SPA-GMN2D-PREFKBN-G
                        END-IF
-                   END-IF
-                   IF      SPA-GMN2D-PREFKBN   =   SPACE
+                     END-IF
+                     IF      SPA-GMN2D-PREFKBN   =   SPACE
                         MOVE    SPA-GMN2D-PREFKBN-LST (01)
                                                TO  SPA-GMN2D-PREFKBN-G
+                     END-IF
                    END-IF
       *************IF      SPA-GMN2D-CITYKBN   =   SPACE
       *                 MOVE    SPA-GMN2D-CITYKBN-LST (01)
       *                                        TO  SPA-GMN2D-CITYKBN-G
       *************END-IF
+      *            労災レセ回数記載：回数
+                   MOVE    1               TO  SPA-GMN2D-KAISU
       *
                WHEN    "3"
       *            自賠責請求区分
@@ -1677,7 +1744,6 @@
                    MOVE    SPACE               TO  SPA-NAI2D-SHOBYOYMD
                    MOVE    "0008"              TO  SPA-ERRCD
                    MOVE    8                   TO  SPA-GMN2D-CUR
-                   GO      TO                  4101-SHOBYOYMD-CHK-EXT
                END-IF
            END-IF
       *
@@ -1699,7 +1765,6 @@
                IF      SPA-GMN2D-HKNKBN    =   "1"  OR  "2"
                    MOVE    "0012"              TO  SPA-ERRCD
                    MOVE    9                   TO  SPA-GMN2D-CUR
-                   GO      TO      4101-RYOSTYMD-CHK-EXT
                END-IF
            ELSE
                INITIALIZE                      ORCSGDAYAREA
@@ -1713,15 +1778,28 @@
                    MOVE    SPACE               TO  SPA-NAI2D-RYOSTYMD
                    MOVE    "0009"              TO  SPA-ERRCD
                    MOVE    9                   TO  SPA-GMN2D-CUR
-                   GO      TO                  4101-RYOSTYMD-CHK-EXT
                END-IF
            END-IF
       *
-      *    傷病年月日＞療養開始日はエラーとする
-           IF      SPA-NAI2D-SHOBYOYMD >   SPA-NAI2D-RYOSTYMD
-               MOVE    "0030"              TO  SPA-ERRCD
-               MOVE    9                   TO  SPA-GMN2D-CUR
-               GO      TO                  4101-RYOSTYMD-CHK-EXT
+           IF     (SPA-ERRCD           =   SPACE ) AND
+                  (SPA-NAI2D-RYOSTYMD  NOT =    SPACE )
+      *        傷病年月日＞療養開始日はエラーとする
+               IF      SPA-NAI2D-SHOBYOYMD >   SPA-NAI2D-RYOSTYMD
+                   MOVE    "0030"              TO  SPA-ERRCD
+                   MOVE    9                   TO  SPA-GMN2D-CUR
+               END-IF
+           END-IF
+      *
+      *    労災レセ回数記載：基準年月
+           IF     (SPA-ERRCD           =   SPACE ) AND
+                  (SPA-NAI2D-RYOSTYMD  NOT =    SPACE )
+               IF     (SPA-GMN2D-HKNKBN    =   "1"  OR  "2" ) AND
+                      (SPA-NAI2D-KIJYUNYM  =   SPACE   )
+                   MOVE    SPA-NAI2D-RYOSTYMD(1:6)
+                                           TO  SPA-NAI2D-KIJYUNYM
+                   MOVE    SPA-GMN2D-RYOSTYMD(1:6)
+                                           TO  SPA-GMN2D-KIJYUNYM
+               END-IF
            END-IF
       *
            .
@@ -2053,6 +2131,67 @@
            EXIT.
       *
       *****************************************************************
+      *    労災レセ回数記載 基準年月入力処理
+      *****************************************************************
+       4101-KIJYUNYM-CHK-SEC           SECTION.
+      *
+           IF      SPA-GMN2D-RYOSTYMD  =   SPACE
+               GO      TO      4101-KIJYUNYM-CHK-EXT
+           END-IF
+      *
+           IF      SPA-GMN2D-KIJYUNYM      =   SPACE  OR  ZERO
+               MOVE    SPACE               TO  SPA-NAI2D-KIJYUNYM
+               IF      SPA-GMN2D-HKNKBN    =   "1"  OR  "2"
+                   MOVE    "0040"              TO  SPA-ERRCD
+                   MOVE    28                  TO  SPA-GMN2D-CUR
+               END-IF
+           ELSE
+               INITIALIZE                      ORCSGDAYAREA
+               MOVE    SPA-GMN2D-KIJYUNYM      TO  SGDAY-INDAY
+               MOVE    "1"                     TO  SGDAY-INTYPE
+               CALL    "ORCSGDAY"          USING
+                                           ORCSGDAYAREA
+               IF      SGDAY-RC            =   ZERO
+                   MOVE    SGDAY-OTDAY(1:6)    TO  SPA-GMN2D-KIJYUNYM
+                   MOVE    SGDAY-SDAY (1:6)    TO  SPA-NAI2D-KIJYUNYM
+               ELSE
+                   MOVE    SPACE               TO  SPA-NAI2D-KIJYUNYM
+                   MOVE    "0041"              TO  SPA-ERRCD
+                   MOVE    28                  TO  SPA-GMN2D-CUR
+               END-IF
+           END-IF
+      *
+           IF     (SPA-ERRCD           =   SPACE ) AND
+                  (SPA-NAI2D-KIJYUNYM  NOT =   SPACE )  AND
+                  (SPA-GMN2D-HKNKBN    =   "1"  OR  "2")
+      *        基準年月＜療養開始日はエラーとする
+               IF      SPA-NAI2D-KIJYUNYM  <   SPA-NAI2D-RYOSTYMD(1:6)
+                   MOVE    "0042"              TO  SPA-ERRCD
+                   MOVE    28                  TO  SPA-GMN2D-CUR
+               END-IF
+           END-IF
+      *
+          .
+       4101-KIJYUNYM-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    労災レセ回数記載 回数入力処理
+      *****************************************************************
+       4101-KAISU-CHK-SEC           SECTION.
+      *
+           IF      SPA-GMN2D-KAISU     =   ZERO
+               IF      SPA-GMN2D-HKNKBN    =   "1"  OR  "2"
+                   MOVE    "0043"              TO  SPA-ERRCD
+                   MOVE    29                  TO  SPA-GMN2D-CUR
+               END-IF
+           END-IF
+      *
+          .
+       4101-KAISU-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    健康管理手帳番号 入力処理
       *****************************************************************
        4101-KOHNUM3-CHK-SEC           SECTION.
@@ -2321,8 +2460,11 @@
            EVALUATE    SPA-GMN2D-HKNKBN
                WHEN    "1"
                    IF      SPA-GMN2D-KOHNUM1   =   SPACE
-                       MOVE    "0022"              TO  SPA-ERRCD
-                       MOVE    3                   TO  SPA-GMN2D-CUR
+                       IF      SPA-NAI2D-KEIFLG    =   ZERO
+                           MOVE    1               TO  SPA-NAI2D-KEIFLG
+                           MOVE    "K022"              TO  SPA-ERRCD
+                           MOVE    3                   TO  SPA-GMN2D-CUR
+                       END-IF
                    END-IF
                    IF      SPA-GMN2D-SAIGAI        =   SPACE
                      AND  (SPA-ERRCD               =   SPACE )
@@ -2343,8 +2485,11 @@
                WHEN    "2"
                    IF      SPA-GMN2D-KOHNUM2   =   SPACE
                      AND  (SPA-ERRCD               =   SPACE )
-                       MOVE    "0023"              TO  SPA-ERRCD
-                       MOVE    4                   TO  SPA-GMN2D-CUR
+                       IF      SPA-NAI2D-KEIFLG    =   ZERO
+                           MOVE    1               TO  SPA-NAI2D-KEIFLG
+                           MOVE    "K023"              TO  SPA-ERRCD
+                           MOVE    4                   TO  SPA-GMN2D-CUR
+                       END-IF
                    END-IF
                    IF      SPA-GMN2D-SAIGAI        =   SPACE
                      AND  (SPA-ERRCD               =   SPACE )
@@ -2364,8 +2509,11 @@
                WHEN    "3"
                    IF      SPA-GMN2D-KOHNUM3   =   SPACE
                      AND  (SPA-ERRCD               =   SPACE )
-                       MOVE    "0024"              TO  SPA-ERRCD
-                       MOVE    16                  TO  SPA-GMN2D-CUR
+                       IF      SPA-NAI2D-KEIFLG    =   ZERO
+                           MOVE    1               TO  SPA-NAI2D-KEIFLG
+                           MOVE    "K024"          TO  SPA-ERRCD
+                           MOVE    16              TO  SPA-GMN2D-CUR
+                       END-IF
                    END-IF
                    IF      SPA-GMN2D-SINSATUYMD    =   SPACE
                      AND  (SPA-ERRCD               =   SPACE )
@@ -2556,6 +2704,14 @@
                                                TO  PTRSI-SINSATUYMD
                    MOVE    SPA-NAI2D-SINSATUEND
                                                TO  PTRSI-SINSATUEND
+           END-EVALUATE
+      *    労災レセ回数記載
+           EVALUATE    SPA-GMN2D-HKNKBN
+               WHEN    "1"
+               WHEN    "2"
+      *        短期・傷病
+                   MOVE    SPA-NAI2D-KIJYUNYM  TO  PTRSI-KIJYUNYM
+                   MOVE    SPA-GMN2D-KAISU     TO  PTRSI-KAISU
            END-EVALUATE
       *    確認年月日
            MOVE    SPA-NAI2D-KAKUNINYMD
@@ -2767,14 +2923,14 @@
                WHEN    "0021"
                    MOVE    "労災自賠保険区分は変更できません"
                                                TO  SPA-ERRMSG
-               WHEN    "0022"
-                   MOVE    "労働保険番号を入力して下さい"
+               WHEN    "K022"
+                   MOVE    "警告！！労働保険番号が未入力です。"
                                                TO  SPA-ERRMSG
-               WHEN    "0023"
-                   MOVE    "年金証書番号を入力して下さい"
+               WHEN    "K023"
+                   MOVE    "警告！！年金証書番号が未入力です。"
                                                TO  SPA-ERRMSG
-               WHEN    "0024"
-                   MOVE    "健康管理手帳番号を入力して下さい"
+               WHEN    "K024"
+                   MOVE    "警告！！健康管理手帳番号が未入力です。"
                                                TO  SPA-ERRMSG
                WHEN    "0025"
                    MOVE    "傷病年月日は必須入力です。入力して下さい"
@@ -2822,6 +2978,18 @@
                                                TO  SPA-ERRMSG
                WHEN    "0038"
                    MOVE    "自賠責保険会社名は全角で入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "0040"
+                   MOVE    "基準年月は必須入力です。入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "0041"
+                   MOVE    "基準年月の暦日エラーです"
+                                               TO  SPA-ERRMSG
+               WHEN    "0042"
+                   MOVE    "療養開始日＞基準年月は入力できません"
+                                               TO  SPA-ERRMSG
+               WHEN    "0043"
+                   MOVE    "回数は必須入力です。入力して下さい"
                                                TO  SPA-ERRMSG
            END-EVALUATE
       *

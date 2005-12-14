@@ -28,6 +28,8 @@ tbl_ptrsiinf {
         JIBAISEIKBN                     char(1);
         DRCD			        char(5);
         HOKENNAME			varchar(80);
+        KIJYUNYM			char(6);
+        KAISU				number(03);
 	TERMID   			varchar(16);
 	OPID     			varchar(16);
 	CREYMD   			char(8);

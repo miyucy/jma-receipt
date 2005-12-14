@@ -57,6 +57,7 @@
       *  01.01.08    NACL-門脇    05.09.06  自賠責従来様式対応
       *  01.01.09    NACL-門脇    05.09.13  （特）対象の編集修正
       *  01.01.10    NACL-門脇    05.10.06  診区９５９６対応
+      *  01.01.11    NACL-門脇    05.12.01  労災レセプト回数対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -164,6 +165,9 @@
            03  IDX3                                    PIC  9(02).
            03  IDX4                                    PIC  9(02).
            03  SYSKAN-IDX                              PIC  9(03).
+           03  IDX-ROU                                 PIC  9(02).
+           03  IDX-ST                                  PIC  9(02).
+           03  IDX-ED                                  PIC  9(02).
       *    パス名領域
        01  WK-PATH                                     PIC  X(20).
       *    一時領域
@@ -216,6 +220,9 @@
       *
       *    消費税端数区分
            03  WRK-TAX1001-KBN                         PIC  X(01).
+      *
+           03  WRK-STYMD                               PIC  X(08).
+           03  WRK-EDYMD                               PIC  X(08).
       *
       *    手技点・薬剤等点数用領域
        01  TBL-TENSUG-JI.
@@ -345,15 +352,17 @@
       *    サブプロ用領域
       *****************************************************************
       *
-      *   日付変換サブ
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *    患者番号変換サブ
            COPY    "CPORCSPTID.INC".
-      *   ジョブ管理ＤＢ制御サブ
+      *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
+      *    労災レセプト回数取得サブ
+           COPY    "CPORCSROUKAISU.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -754,6 +763,9 @@
       *
                         MOVE   PTRSI-DRCD       TO  RECE41-DRCD
                         MOVE   PTRSI-HOKENNAME  TO  RECE41-HOKENNAME
+      *
+                        MOVE   PTRSI-KIJYUNYM   TO  RECE41-KIJYUNYM-KSI
+                        MOVE   PTRSI-KAISU      TO  RECE41-KAISU-KSI
                    END-IF
                END-IF
       *    END-IF
@@ -827,6 +839,68 @@
            MOVE    SYS-4001-TAXKBN-KZI   TO   RECE41-TAXKBN-KZI
       *    自賠責固定帯加算等取扱
            MOVE    WRK-KOTEIKBN          TO   RECE41-KOTEIKBN
+      *    労災レセ回数記載
+           MOVE    SYS-4001-ROUKAISU     TO   RECE41-ROUKAISU
+      *
+      *    労災レセプト回数取得
+           IF    ( RECE41-HKNKBN     =   "1"  OR  "2" )
+           AND   ( RECE41-ROUKAISU   =   "2"          )
+             INITIALIZE                    LNK-ORCSROUKAISU-REC
+             MOVE  RECE41-HOSPID       TO  LNK-ORCSROUKAISU-HOSPID
+             MOVE  RECE41-NYUGAIKBN    TO  LNK-ORCSROUKAISU-NYUGAIKBN
+             MOVE  RECE41-PTID         TO  LNK-ORCSROUKAISU-PTID
+             MOVE  RECE41-HKNCOMBI     TO  LNK-ORCSROUKAISU-HKNCOMBI
+             MOVE  RECE41-SRYYM        TO  LNK-ORCSROUKAISU-SRYYM
+             MOVE  RECE41-RYOSTYMD     TO  LNK-ORCSROUKAISU-RYOSTYMD
+             MOVE  RECE41-KIJYUNYM-KSI TO  LNK-ORCSROUKAISU-KIJYUNYM-KSI
+             MOVE  RECE41-KAISU-KSI    TO  LNK-ORCSROUKAISU-KAISU-KSI
+             MOVE  RECE41-SRYKA(1)     TO  LNK-ORCSROUKAISU-SRYKA
+             MOVE  RECE41-RECEKA       TO  LNK-ORCSROUKAISU-RECESRYKA
+      *+++
+             MOVE  RECE41-SRYYM        TO  WRK-STYMD (1:6)
+             MOVE  "01"                TO  WRK-STYMD (7:2)
+      *
+             INITIALIZE                    STS-AREA-DAY
+             INITIALIZE                    LNK-DAY7-AREA
+             MOVE    "71"              TO  LNK-DAY7-IRAI
+             MOVE    RECE41-SRYYM      TO  LNK-DAY7-YM
+             CALL    "ORCSDAY"         USING   STS-AREA-DAY
+                                               LNK-DAY7-AREA
+             MOVE    LNK-DAY7-KOYOMI   TO  WRK-EDYMD
+      *
+             IF      RECE41-RYOSTYMD   <   WRK-STYMD
+                 MOVE   WRK-STYMD(7:2) TO  IDX-ST
+                                           LNK-ORCSROUKAISU-KAISHIBI
+             ELSE
+                 MOVE   RECE41-RYOSTYMD(7:2)
+                                       TO  IDX-ST
+                                           LNK-ORCSROUKAISU-KAISHIBI
+             END-IF
+      *
+             IF      RECE41-RYOEDYMD   >   WRK-EDYMD
+                 MOVE   WRK-EDYMD(7:2) TO  IDX-ED
+             ELSE
+                 MOVE   RECE41-RYOEDYMD(7:2)
+                                       TO  IDX-ED
+             END-IF
+      *
+             PERFORM   VARYING   IDX-ROU   FROM   IDX-ST   BY  1
+                        UNTIL    IDX-ROU   >      IDX-ED
+                   IF  (RECE41-NYUINBITBL(IDX-ROU)  =  SPACE)  OR
+                       (RECE41-JNISSUTBL (IDX-ROU)  =  "1"  )
+                       MOVE    IDX-ROU   TO  LNK-ORCSROUKAISU-KAISHIBI
+                       MOVE    IDX-ED    TO  IDX-ROU
+                   END-IF
+             END-PERFORM
+      *
+             CALL    "ORCSROUKAISU"    USING
+                                       LNK-ORCSROUKAISU-REC
+      *
+             IF    LNK-ORCSROUKAISU-RC   =   ZERO
+                MOVE   LNK-ORCSROUKAISU-RECEKAISU
+                                         TO  RECE41-RECEKAISU
+             END-IF
+           END-IF
       *
            .
        210-HENSYU-EXT.

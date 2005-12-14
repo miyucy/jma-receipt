@@ -83,6 +83,10 @@
            03  PTRSI-DRCD                  PIC  X(05).
       *自賠責保険会社名
            03  PTRSI-HOKENNAME             PIC  X(80).
+      *労災レセ回数記載：基準年月
+           03  PTRSI-KIJYUNYM              PIC  X(06).
+      *労災レセ回数記載：回数
+           03  PTRSI-KAISU                 PIC  9(03).
       *端末ＩＤ
            03  PTRSI-TERMID                PIC  X(16).
       *オペーレータＩＤ
