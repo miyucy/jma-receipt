@@ -39,6 +39,7 @@
       *  02.00.05    NACL-多々納  03/07/10  入院調剤料算定なし追加
       *  02.00.06    NACL-多々納  04/03/10  改正対応
       *  02.00.07    NACL-多々納  04/06/XX  複数科・保険対応
+      *  02.00.08    NACL-多々納  05/12/14  .213 自動変換対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -233,6 +234,8 @@
       *
            03  WRK-ORC-DBPATH          PIC X(63).
       *
+           03  WRK-SRYSYUKBN           PIC X(03).
+      *
            03  WRK-HEN-MEI             PIC X(20).
            03  WRK-HENSYU-MEISYO       PIC X(60).
       *
@@ -315,6 +318,9 @@
       *    診療行為点数編集・基本チェック
            COPY    "CPORCSC92.INC".
       *
+      *    診療種別名テーブル
+           COPY    "CPORCSSRYSYU.INC".
+      *
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
@@ -354,6 +360,11 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
+           IF      LNK-ORCSC-PG        =   "K02"
+               MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+           ELSE
+               INITIALIZE                      SPA-K01KYOUTU
+           END-IF
       *
            EVALUATE    LNK-ORCSC-KBN
       *        剤別　チェック、編集、自動算定
@@ -420,6 +431,10 @@
                        MOVE    "9"                     TO  WRK-MOJI
                    END-IF
                END-IF
+      *        診療種別の変更
+               IF      WRK-SRYSYUKBN   NOT =   SPACE
+                   MOVE    WRK-SRYSYUKBN   TO  WRK-COM-SRYSYUKBN (IDX-Z)
+               END-IF
       *
                EVALUATE    WRK-MOJI
                    WHEN    "0"
@@ -452,6 +467,8 @@
                CONTINUE
            ELSE
       *
+           MOVE    WRK-COM-SRYSYUKBN (IDX-Z)
+                                       TO  WRK-SRYSYUKBN
            EVALUATE    WRK-GMN-INPUTCD(IDX-Z)(2:3)
                WHEN    "213"
                WHEN    "223"
@@ -463,10 +480,16 @@
                            (LNK-ORCSC-NETAKIRI-ARI2    =   ZERO) AND
                            (LNK-ORCSC-SYONIKA-ARI      =   ZERO)  AND
                            (LNK-ORCSC-SEIKATU-ARI2     =   ZERO) AND
-                           (LNK-ORCSC-SEIKATU-ARI      =   ZERO)
-                       MOVE    "0074"          TO  WRK-ERRCD
-                       MOVE    "1"             TO  WRK-COM-CUR
-                                                             (IDX-Z)
+                           (LNK-ORCSC-SEIKATU-ARI      =   ZERO) AND
+                           (SPA-ZAIMATU-ARI2           =   ZERO) AND
+                           (SPA-ZAIMATU-ARI            =   ZERO)
+      *************    MOVE    "0074"          TO  WRK-ERRCD
+      *                MOVE    "1"             TO  WRK-COM-CUR
+      *************                                          (IDX-Z)
+                       MOVE    "0"             TO  WRK-SRYSYUKBN(3:1)
+                       MOVE    "0"             TO  WRK-GMN-INPUTCD
+                                                        (IDX-Z)(4:1)
+                       PERFORM 100101-SRYSYUMEI-HEN-SEC
                    END-IF
                WHEN    "212"
                WHEN    "222"
@@ -491,6 +514,28 @@
            END-IF
            .
        10010-SRYKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療種別名編集処理
+      *****************************************************************
+       100101-SRYSYUMEI-HEN-SEC             SECTION.
+      *
+      *    診療種別テーブルセット
+           CALL    "ORCSSRYSYU"        USING
+                                       MSYU-DATA-REC
+      *
+           SET     MSYU-IDX            TO  1
+           SEARCH      MSYU-TBL-OCC    VARYING   MSYU-IDX
+                   AT   END
+                       CONTINUE
+                   WHEN    WRK-SRYSYUKBN       =   MSYU-SRYSYUKBN 
+                                                           (MSYU-IDX)
+                       MOVE    MSYU-SRYMEI (MSYU-IDX)
+                                       TO  WRK-GMN-MEISYO (IDX-Z)
+           END-SEARCH 
+      *
+           .
+       100101-SRYSYUMEI-HEN-EXT.
            EXIT.
       *
       *****************************************************************
