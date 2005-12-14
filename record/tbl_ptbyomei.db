@@ -563,3 +563,21 @@ path	key29	{
 		;
 	};
 };
+
+path	key30	{ 	
+	DBSELECT	{
+		DECLARE tbl_ptbyomei_key30_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptbyomei
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   SRYKA      LIKE :SRYKA
+			AND   SRYYMD      <   :SRYYMD
+			AND   NYUGAIKBN   IN (' ',:NYUGAIKBN)
+			AND  (TENKIKBN    =   :TENKIKBN  OR
+                  TENKIYMD    >=  :TENKIYMD)
+			ORDER BY SRYKA,SYUBYOFLG DESC,SRYYMD,RENNUM
+		;
+	};
+};
+
