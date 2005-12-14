@@ -51,6 +51,7 @@
       * 02.00.04     NACL-多々納  05/10/24  消炎鎮痛等処置判定修正
       * 02.00.05     NACL-多々納  05/11/18  MONFUNC 対応 他
       * 02.00.06     NACL-多々納  05/11/21  開放型病院共同指導料チェック追加
+      * 02.00.07     NACL-多々納  05/12/14  .213 自動変換対応
       *****************************************************************
       *
       *
@@ -531,6 +532,9 @@
       *
       *    保険年齢・負担割合算定サブ
            COPY    "CPORCSAGECHK.INC".
+      *
+      *    診療種別名テーブル
+           COPY    "CPORCSSRYSYU.INC".
       *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
@@ -1330,10 +1334,13 @@
                    END-IF
       *        在宅末期医療総合診察料（院外処方）
                WHEN    "114007610"
+                   IF      SANTEI-MSANTEICNT   >   ZERO
+                       MOVE    1                   TO  SPA-ZAIMATU-ARI2
+                   END-IF
       *        在宅末期医療総合診察料（院内処方）
                WHEN    "114007710"
                    IF      SANTEI-MSANTEICNT   >   ZERO
-                       MOVE    1                   TO  SPA-ZAIMATU-ARI2
+                       MOVE    2                   TO  SPA-ZAIMATU-ARI2
                    END-IF
       *
       *        高血圧症
@@ -3525,6 +3532,11 @@
                    WHEN    "114701710"
                        MOVE    IDX                 TO  WRK-IDX-IN
       *
+      *            在宅末期医療総合診察料
+                   WHEN    "114007610"
+                   WHEN    "114007710"
+                       MOVE    IDX                 TO  WRK-IDX-IN
+      *
       *            生活習慣病指導管理料
                    WHEN    "113003910"
                    WHEN    "113005810"
@@ -3557,6 +3569,11 @@
            IF      SPA-SEIKATU-ARI     NOT =   ZERO
       *        生活習慣病指導科振替え処理
                PERFORM 3306-SEIKATU-SET-SEC
+           END-IF
+      *
+           IF      SPA-ZAIMATU-ARI     NOT =   ZERO
+      *        在宅末期医療総合診察料
+               PERFORM 3307-ZAIMATU-SET-SEC
            END-IF
       *
            .
@@ -3606,6 +3623,29 @@
       *
            .
        3306-SEIKATU-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    在宅末期医療総合診察料自動処理
+      *****************************************************************
+       3307-ZAIMATU-SET-SEC            SECTION.
+      *
+           MOVE    SPACE               TO  WRK-SRYCD
+           IF      SPA-INGAIKBN        =   "1"
+      *        院外処方
+               MOVE    "114007610"         TO  WRK-SRYCD
+               MOVE    1                   TO  SPA-ZAIMATU-ARI
+           ELSE
+      *        院内処方
+               MOVE    "114007710"         TO  WRK-SRYCD
+               MOVE    2                   TO  SPA-ZAIMATU-ARI
+           END-IF
+           MOVE    ZERO                TO  FLG-ADD
+      *
+      *    追加共通処理
+           PERFORM 33041-SRYCD-ADD-SEC
+      *
+           .
+       3307-ZAIMATU-SET-EXT.
            EXIT.
       *****************************************************************
       *    在宅自己注射処理
@@ -3728,11 +3768,11 @@
                        MOVE    2               TO  SPA-NETAKIRI-ARI
       *                院内
                        MOVE    "0"             TO  SPA-INGAIKBN
-      *
+      *H14.3.31まで
       *            寝たきり老人訪問診察料
-                   WHEN    "114700110"
-                   WHEN    "114701110"
-                       MOVE    1               TO  SPA-HOUMON-ARI
+      *            WHEN    "114700110"
+      *            WHEN    "114701110"
+      ***              MOVE    1               TO  SPA-HOUMON-ARI
       *
       *            在宅患者訪問診察料
                    WHEN    "114001110"
@@ -3740,9 +3780,13 @@
       *
       *            在宅末期医療総合診察料
                    WHEN    "114007610"
-                   WHEN    "114007710"
-                       MOVE    1               TO  SPA-HOUMON-ARI
+      *                院外
                        MOVE    1               TO  SPA-ZAIMATU-ARI
+                       MOVE    "1"             TO  SPA-INGAIKBN
+                   WHEN    "114007710"
+      *                院内
+                       MOVE    "0"             TO  SPA-INGAIKBN
+                       MOVE    2               TO  SPA-ZAIMATU-ARI
       *
       *            開放型病院共同指導料（１）
                    WHEN    "180010510"
@@ -3870,6 +3914,12 @@
                END-IF
            END-IF
       *
+      *    在宅末期医療総合診察料チェック
+           IF     (SPA-ZAIMATU-ARI     NOT =   ZERO )  OR
+                  (SPA-ZAIMATU-ARI2    NOT =   ZERO )
+               PERFORM 5022-ZAIMATU-CHK-SEC
+           END-IF
+      *
            .
        700-SANTEI-CHK-EXT.
            EXIT.
@@ -3956,6 +4006,9 @@
                        WHEN    "21"
                        WHEN    "22"
                        WHEN    "23"
+      *                    院内時の診療種別変更
+                           PERFORM 50192-SRYSYUKBN-CHK-SEC
+      *
       *                    薬剤の時、院外処方であること
                            IF    ((SPA-INGAIKBN        =   "1"  ) AND
                                   (SPA-COM-SRYSYUKBN(IDX)
@@ -4024,6 +4077,79 @@
            EXIT.
       *
       *****************************************************************
+      *    投薬種別変更処理
+      *****************************************************************
+       50192-SRYSYUKBN-CHK-SEC                SECTION.
+      *
+           IF      SPA-COM-SRYSYUKBN(IDX)  =   SPACE
+      *        院外
+               IF      SPA-INGAIKBN        =   "1"
+                   CONTINUE
+               ELSE
+                   MOVE    SPA-COM-SRYKBN(IDX)
+                                           TO  SPA-COM-SRYSYUKBN(IDX)
+                                                               (1:2)
+                   MOVE    "3"             TO  SPA-COM-SRYSYUKBN(IDX)
+                                                               (3:1)
+               END-IF
+           END-IF
+           IF      SPA-COM-SRYSYUKBN(IDX)  =   "210"
+                                           OR  "220"
+                                           OR  "230"
+      *        院外
+               IF      SPA-INGAIKBN        =   "1"
+                   CONTINUE
+               ELSE
+                   MOVE    "3"             TO  SPA-COM-SRYSYUKBN(IDX)
+                                                               (3:1)
+                   IF      SPA-GMN-INPUTCD(IDX)(1:1)   =   "."
+                       MOVE    "3"         TO  SPA-GMN-INPUTCD(IDX)
+                                                               (4:1)
+                       PERFORM 501921-SRYSYUMEI-HEN-SEC
+                   END-IF
+               END-IF
+           END-IF
+      **** 処方のみ
+      *    IF      SPA-COM-SRYSYUKBN(IDX)(3:1) =   "3"
+      *        院外
+      *        IF      SPA-INGAIKBN        =   "1"
+      *            MOVE    "0"             TO  SPA-COM-SRYSYUKBN(IDX)
+      *                                                        (3:1)
+      *            IF      SPA-GMN-INPUTCD(IDX)(1:1)   =   "."
+      *                MOVE    "0"         TO  SPA-GMN-INPUTCD(IDX)
+      *                                                        (4:1)
+      *                PERFORM 501921-SRYSYUMEI-HEN-SEC
+      *            END-IF
+      *        END-IF
+      *****END-IF
+           .
+       50192-SRYSYUKBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療種別名編集処理
+      *****************************************************************
+       501921-SRYSYUMEI-HEN-SEC             SECTION.
+      *
+      *    診療種別テーブルセット
+           CALL    "ORCSSRYSYU"        USING
+                                       MSYU-DATA-REC
+      *
+           SET     MSYU-IDX            TO  1
+           SEARCH      MSYU-TBL-OCC    VARYING   MSYU-IDX
+                   AT   END
+                       CONTINUE
+                   WHEN    SPA-COM-SRYSYUKBN(IDX)
+                                           =   MSYU-SRYSYUKBN 
+                                                           (MSYU-IDX)
+                       MOVE    MSYU-SRYMEI (MSYU-IDX)
+                                           TO  SPA-GMN-MEISYO (IDX)
+           END-SEARCH 
+      *
+           .
+       501921-SRYSYUMEI-HEN-EXT.
+           EXIT.
+      *****************************************************************
       *    診察料検索処理
       *****************************************************************
        50191-SRYCD-CHK-SEC                SECTION.
@@ -4085,6 +4211,8 @@
                    WHEN    "21"
                    WHEN    "22"
                    WHEN    "23"
+      *                院内時の診療種別変更
+                       PERFORM 50192-SRYSYUKBN-CHK-SEC
       *                薬剤の時、院外処方であること
                        IF    ((SPA-INGAIKBN        =   "1"  ) AND
                               (SPA-COM-SRYSYUKBN(IDX)
@@ -4101,16 +4229,17 @@
                                                    =   "212" OR
                                                        "222" OR
                                                        "232"  )
-      *                    院外処方箋を交付しない場合の時、エラー
-                           IF      SPA-ROUMANSEI-ARI   =   2
+      *!!                  院外処方箋を交付しない場合の時、エラー
+      *                    IF      SPA-ROUMANSEI-ARI   =   2
       *                      処方のみはＯＫ
-                             IF      SPA-COM-SRYSYUKBN(IDX)(3:1)
-                                                   NOT =   "3" 
-                               MOVE    "0052"          TO  SPA-ERRCD
-                               MOVE    "1"             TO  SPA-COM-CUR
-                                                               (IDX)
-                             END-IF
-                           END-IF
+      *                      IF      SPA-COM-SRYSYUKBN(IDX)(3:1)
+      *                                            NOT =   "3" 
+      *                        MOVE    "0052"          TO  SPA-ERRCD
+      *                        MOVE    "1"             TO  SPA-COM-CUR
+      *                                                        (IDX)
+      *                      END-IF
+      *!!                  END-IF
+                           CONTINUE
                        ELSE
       *                    処方のみはＯＫ
                            IF      SPA-COM-SRYSYUKBN(IDX)(3:1)
@@ -4143,6 +4272,8 @@
                    WHEN    "21"
                    WHEN    "22"
                    WHEN    "23"
+      *                院内時の診療種別変更
+                       PERFORM 50192-SRYSYUKBN-CHK-SEC
       *                薬剤の時、院外処方であること
                        IF    ((SPA-INGAIKBN        =   "1"  ) AND
                               (SPA-COM-SRYSYUKBN(IDX)
@@ -4159,17 +4290,18 @@
                                                    =   "212" OR
                                                        "222" OR
                                                        "232"  )
-      *                    院外処方箋を交付しない場合の時、エラー
-                           IF     (SPA-NETAKIRI-ARI   =   2 )  OR
-                                  (SPA-NETAKIRI-ARI2  =   2 )
+      *!!                  院外処方箋を交付しない場合の時、エラー
+      *                    IF     (SPA-NETAKIRI-ARI   =   2 )  OR
+      *                           (SPA-NETAKIRI-ARI2  =   2 )
       *                      処方のみはＯＫ
-                             IF      SPA-COM-SRYSYUKBN(IDX)(3:1)
-                                                   NOT =   "3" 
-                               MOVE    "0054"          TO  SPA-ERRCD
-                               MOVE    "1"             TO  SPA-COM-CUR
-                                                                (IDX)
-                             END-IF
-                           END-IF
+      *                      IF      SPA-COM-SRYSYUKBN(IDX)(3:1)
+      *                                            NOT =   "3" 
+      *                        MOVE    "0054"          TO  SPA-ERRCD
+      *                        MOVE    "1"             TO  SPA-COM-CUR
+      *                                                         (IDX)
+      *                      END-IF
+      *!!                  END-IF
+                           CONTINUE
                        ELSE
       *                    処方のみはＯＫ
                            IF      SPA-COM-SRYSYUKBN(IDX)(3:1)
@@ -4205,6 +4337,8 @@
                    WHEN    "21"
                    WHEN    "22"
                    WHEN    "23"
+      *                院内時の診療種別変更
+                       PERFORM 50192-SRYSYUKBN-CHK-SEC
       *                薬剤の時、院外処方であること
                        IF    ((SPA-INGAIKBN        =   "1"  ) AND
                               (SPA-COM-SRYSYUKBN(IDX)
@@ -4221,17 +4355,18 @@
                                                    =   "212" OR
                                                        "222" OR
                                                        "232"  )
-      *                    院外処方箋を交付しない場合の時、エラー
-                           IF     (SPA-SEIKATU-ARI     =   2 )  OR
-                                  (SPA-SEIKATU-ARI2    =   2 )
+      *!!                  院外処方箋を交付しない場合の時、エラー
+      *                    IF     (SPA-SEIKATU-ARI     =   2 )  OR
+      *                           (SPA-SEIKATU-ARI2    =   2 )
       *                      処方のみはＯＫ
-                             IF      SPA-COM-SRYSYUKBN(IDX)(3:1)
-                                                   NOT =   "3" 
-                               MOVE    "0068"          TO  SPA-ERRCD
-                               MOVE    "1"             TO  SPA-COM-CUR
-                                                                (IDX)
-                             END-IF
-                           END-IF
+      *                      IF      SPA-COM-SRYSYUKBN(IDX)(3:1)
+      *                                            NOT =   "3" 
+      *                        MOVE    "0068"          TO  SPA-ERRCD
+      *                        MOVE    "1"             TO  SPA-COM-CUR
+      *                                                         (IDX)
+      *                      END-IF
+      *!!                  END-IF
+                           CONTINUE
                        ELSE
       *                    処方のみはＯＫ
                            IF      SPA-COM-SRYSYUKBN(IDX)(3:1)
@@ -4245,6 +4380,69 @@
            END-PERFORM
            .
        5022-SEIKATU-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    在宅末期医療総合診察料チェック処理
+      *****************************************************************
+       5022-ZAIMATU-CHK-SEC                SECTION.
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   200      )   OR
+                              (SPA-ERRCD           NOT =   SPACE )  OR
+                              (SPA-GMN-INPUTCD (IDX)   =   SPACE )
+      *        今回入力
+               IF      SPA-ZAIMATU-ARI    NOT  =   ZERO
+      *            在宅料以外は算定できない
+                   EVALUATE    SPA-COM-SRYKBN(IDX)
+                   WHEN    "14"
+                   WHEN    "95"
+                   WHEN    "96"
+                   WHEN    "98"
+                   WHEN    "99"
+                       CONTINUE
+                   WHEN    "21"
+                   WHEN    "22"
+                   WHEN    "23"
+      *                院内時の診療種別変更
+                       PERFORM 50192-SRYSYUKBN-CHK-SEC
+      *                薬剤の時、院外処方であること
+                       IF    ((SPA-INGAIKBN        =   "1"  ) AND
+                              (SPA-COM-SRYSYUKBN(IDX)
+                                                   =   "210" OR
+                                                       "212" OR
+                                                       "220" OR
+                                                       "222" OR
+                                                       "230" OR
+                                                       "232" OR
+                                                       "290" OR
+                                                       "292" OR
+                                                       SPACE  ))  OR
+                             ( SPA-COM-SRYSYUKBN(IDX)
+                                                   =   "212" OR
+                                                       "222" OR
+                                                       "232"  )
+                           CONTINUE
+                       ELSE
+      *                    処方のみはＯＫ
+                           IF      SPA-COM-SRYSYUKBN(IDX)(3:1)
+                                                   NOT =   "3" 
+                               MOVE    "1401"          TO  SPA-ERRCD
+                               MOVE    "1"             TO  SPA-COM-CUR
+                                                             (IDX)
+                           END-IF
+                       END-IF
+                       WHEN    "11"
+                       WHEN    "12"
+                           CONTINUE
+                       WHEN    OTHER
+      *                    算定エラー
+                           MOVE    "1401"          TO  SPA-ERRCD
+                           MOVE    "1"             TO  SPA-COM-CUR (IDX)
+                   END-EVALUATE
+               END-IF
+           END-PERFORM
+           .
+       5022-ZAIMATU-CHK-EXT.
            EXIT.
       *
       *****************************************************************
