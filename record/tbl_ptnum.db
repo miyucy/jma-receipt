@@ -71,4 +71,13 @@ path	del1 	{
 	};
 };
 
-
+path	key4 	{
+	DBSELECT	{
+		DECLARE tbl_ptnum_key4_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptnum
+			WHERE  HOSPID       =   :HOSPID
+			AND    PTNUM        =   :PTNUM
+		;
+	};
+};
