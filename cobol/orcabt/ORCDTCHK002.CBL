@@ -6163,7 +6163,7 @@
                MOVE    WRK-NISSU-MES   TO   WRK-ERRMES-PLUS
                MOVE    "120002"    TO  WRK-ERRCD
       *
-               PERFORM 210-ERRMES-HEN-SEC
+               PERFORM 215-ERRMES-HEN-SEC
                MOVE    1           TO  FLG-CHKEND (12)
            END-IF
       *
