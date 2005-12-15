@@ -57,6 +57,7 @@
       * 02.00.19     NACL-多々納  05/01/27  酸素追加
       * 02.00.20     NACL-多々納  05/11/21  開放型病院共同指導料チェック追加
       *                                     MONFUNC 対応 他
+      * 02.00.21     NACL-多々納  05/12/08  難病外来指導管理料等の初診算定日判定修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -781,6 +782,9 @@
            EVALUATE    TRUE
       *        在宅診察料が有る時
                WHEN    LNK-ORCSC-HOUMON-ARI    =   1
+                   PERFORM 100111-HOUMON-CHK-SEC
+      *        在宅末期医療総合診察料
+               WHEN    SPA-ZAIMATU-ARI NOT =   ZERO
                    PERFORM 100111-HOUMON-CHK-SEC
       *
       *        開放型病院共同指導料（１）等の判定
@@ -3361,6 +3365,16 @@
       *         皮膚科特定疾患
                IF      WRK-COM-INPUTCD(IDX-Z) =    "113002310"
                                                OR  "113000910"
+                   MOVE    1                   TO  FLG-SIDOU
+                   PERFORM 230-SIDOU-SYOSIN-SEC
+               END-IF
+      *
+      *        難病外来指導管理料
+               IF      WRK-COM-INPUTCD(IDX-Z)  =   "113002910"
+      *        小児指導管理料
+                                               OR  "113002210"
+      *        てんかん指導管理料
+                                               OR  "113002850"
                    MOVE    1                   TO  FLG-SIDOU
                    PERFORM 230-SIDOU-SYOSIN-SEC
                END-IF
