@@ -616,6 +616,7 @@
       *
                IF    ( WRK-PARA-SRYKA      =   TSRYKA-CHK-SRYKA )
                        MOVE    1           TO  TSRYKA-MAX
+                       MOVE    1           TO  TSRYKA-IDX
                        MOVE    TSRYKA-CHK-SRYKA
                                            TO  TSRYKA-SRYKA (1)
                END-IF

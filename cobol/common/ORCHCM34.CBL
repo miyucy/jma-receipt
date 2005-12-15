@@ -4688,9 +4688,7 @@
            OPEN    I-O                 HCM34SRY-FILE
       *
            PERFORM 900-NYUINACCT-KEY17-SEL-SEC
-      *
-           PERFORM UNTIL ( FLG-NYUINACCT   NOT =   ZERO )
-      *
+           IF    ( FLG-NYUINACCT       =   ZERO )
                IF    ( NACCT-ZAIKAISU  >   ZERO )
                    PERFORM 20021-HBTSRYKA-HEN-SEC
       *
@@ -4698,14 +4696,7 @@
       *
                    PERFORM 20021-NACCT-EDIT-SEC
                END-IF
-      *
-               PERFORM 900-NYUINACCT-KEY17-FET-SEC
-      *
-           END-PERFORM
-      *
-           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-           MOVE    "key17"             TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
+           END-IF
       *
            CLOSE                       HCM34ACCT-FILE
                                        HCM34SRY-FILE
@@ -6344,6 +6335,10 @@
                MOVE    1               TO  FLG-NYUINACCT
                INITIALIZE                  NYUINACCT-REC
            END-IF
+      *
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key17"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        900-NYUINACCT-KEY17-SEL-EXT.
