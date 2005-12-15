@@ -379,6 +379,11 @@
                MOVE    "2"             TO  WRK-PARA-NYUGAIKBN
            END-IF
       *
+           IF    ( WRK-PARA-SRYKA      NOT =   SPACE )
+            AND  ( WRK-PARA-SRYKAKBN       =   SPACE )
+               MOVE    "1"             TO  WRK-PARA-SRYKAKBN
+           END-IF
+      *
            IF    ( WRK-PARA-NYUGAIKBN  =   "1" )
                MOVE    "会計カード−入院"
                                        TO  WRK-TITLE
