@@ -250,6 +250,9 @@
                    MOVE   KOHPLUS-RECESKYKBN
                                           TO  LNK-SKOHPLUS-RECESKYKBN
                ELSE
+      *            公費付加情報クローズ
+                   MOVE    "KOHPLUS-KEY2"         TO  ORC-DBPATH
+                   PERFORM   910-DB-CLOSE-SEC
                    INITIALIZE                         KOHPLUS-REC
                    MOVE    LNK-SKOHPLUS-HOSPID    TO  KOHPLUS-HOSPID
                    MOVE    LNK-SKOHPLUS-PREFNUM   TO  KOHPLUS-PREFNUM
