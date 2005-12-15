@@ -1191,12 +1191,6 @@
                              MOVE    1      TO    FLG-SHOSAISIN
                          END-IF
                        END-IF
-                       MOVE    "DBCLOSECURSOR"    TO  MCP-FUNC
-                       MOVE    "TENSU-KEY"        TO  ORC-DBPATH
-                       CALL    "ORCMCPSUB"        USING
-                                                  MCPAREA
-                                                  ORCMCPAREA
-                                                  MCPDATA-REC
                    END-PERFORM
                    MOVE     "SRYACT-KEY9"    TO   ORC-DBPATH
                    PERFORM   900-SRYACT-READ-SEC
@@ -1483,12 +1477,6 @@
                      END-IF
                   END-PERFORM
                END-IF
-               MOVE    "DBCLOSECURSOR"    TO  MCP-FUNC
-               MOVE    "TENSU-KEY"        TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"        USING
-                                          MCPAREA
-                                          ORCMCPAREA
-                                          MCPDATA-REC
       *
            END-IF
       *
@@ -1513,13 +1501,6 @@
                      END-IF
                   END-PERFORM
                END-IF
-               MOVE    "DBCLOSECURSOR"    TO  MCP-FUNC
-               MOVE    "TENSU-KEY"        TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"        USING
-                                          MCPAREA
-                                          ORCMCPAREA
-                                          MCPDATA-REC
-      *
            END-IF
       *
            IF   FLG-MIJISI-JYOKU  =   1
@@ -1543,12 +1524,6 @@
                      END-IF
                   END-PERFORM
                END-IF
-               MOVE    "DBCLOSECURSOR"    TO  MCP-FUNC
-               MOVE    "TENSU-KEY"        TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"        USING
-                                          MCPAREA
-                                          ORCMCPAREA
-                                          MCPDATA-REC
       *
            END-IF
       *
@@ -2063,12 +2038,6 @@
                               MOVE   1         TO   FLG-NYUKHN
                          END-IF
                      END-IF                  
-                     MOVE    "DBCLOSECURSOR"    TO  MCP-FUNC
-                     MOVE    "TENSU-KEY"        TO  ORC-DBPATH
-                     CALL    "ORCMCPSUB"        USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC
                END-PERFORM
       *
                IF    WRK-NYUTENTTLKBN     =   920  
@@ -2123,12 +2092,6 @@
                        COMPUTE  WRK-SENTEI-ZAITEN  =  WRK-SENTEI-KHNTEN
                                                    +  WRK-KSNTEN
                     END-IF  
-                    MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-                    MOVE    "TENSU-KEY"          TO  ORC-DBPATH
-                    CALL    "ORCMCPSUB"          USING
-                                                 MCPAREA
-                                                 ORCMCPAREA
-                                                 MCPDATA-REC
       *
                  END-IF
       *
@@ -3793,6 +3756,13 @@
                MOVE    1                   TO  FLG-TENSU
                INITIALIZE                  TNS-TENSU-REC
            END-IF
+      *
+           MOVE    "DBCLOSECURSOR"    TO  MCP-FUNC
+           MOVE    "TENSU-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"        USING
+                                      MCPAREA
+                                      ORCMCPAREA
+                                      MCPDATA-REC
       *
            .
        900-TENSU-READ-EXT.
