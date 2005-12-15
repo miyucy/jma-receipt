@@ -2661,6 +2661,13 @@
                     MOVE   WRK-TENROOM-SKJ(1 IDX-SKJ)
                                        TO  NACCT-DAY(IDX-SKJ)
                END-PERFORM
+               MOVE  ZERO              TO  NACCT-ZAIKAISU
+               PERFORM  VARYING   IDX-SKJ FROM  1  BY  1
+                         UNTIL     IDX-SKJ   >   31
+                   IF   NACCT-DAY(IDX-SKJ)   NOT =  0
+                       ADD   1        TO  NACCT-ZAIKAISU
+                   END-IF
+               END-PERFORM   
            END-IF
            MOVE     NYUINACCT-REC      TO  MCPDATA-REC
            MOVE     "DBUPDATE"         TO  MCP-FUNC
@@ -2691,6 +2698,13 @@
                         MOVE   WRK-TENROOM-SKJ(2 IDX-SKJ)
                                            TO  NACCT-DAY(IDX-SKJ)
                    END-PERFORM
+                   MOVE  ZERO              TO  NACCT-ZAIKAISU
+                   PERFORM  VARYING   IDX-SKJ FROM  1  BY  1
+                            UNTIL     IDX-SKJ   >   31
+                       IF   NACCT-DAY(IDX-SKJ)   NOT =  0
+                           ADD   1        TO  NACCT-ZAIKAISU
+                       END-IF
+                   END-PERFORM   
                END-IF
                MOVE     NYUINACCT-REC      TO  MCPDATA-REC
                MOVE     "DBUPDATE"         TO  MCP-FUNC
