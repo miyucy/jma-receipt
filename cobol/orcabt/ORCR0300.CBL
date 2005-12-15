@@ -4247,6 +4247,13 @@
                PERFORM 900-RECECOM-READ-SEC
            END-PERFORM
       *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "RECECOM-KEY1"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
            .
        2009-COMMENT-HEN-99-EXT.
            EXIT.
