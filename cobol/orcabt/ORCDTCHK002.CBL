@@ -6145,21 +6145,27 @@
       *****************************************************************
        200112-NACCT-SRY-DAY-CHK-SEC    SECTION.
       *
+           INITIALIZE          WRK-NISSU-AREA
+      *
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >   31 )
-                    OR   ( FLG-CHKEND (12) =   1 )
       *
                IF    ( TNACCT-KKN-DAY (IDX0)       =   ZERO )
                    IF    ( TNYUIN-ACCT-DAY (IDX0)  =   1 )
-                       MOVE    "120002"    TO  WRK-ERRCD
-      *
-                       PERFORM 210-ERRMES-HEN-SEC
-                       MOVE    1           TO  FLG-CHKEND (12)
-      *
+                       MOVE    1       TO  WRK-NISSU-DAY (IDX0)
                    END-IF
                END-IF
       *
            END-PERFORM
+      *
+           IF    ( WRK-NISSU-DAY-G    NOT  =   ZERO )
+               PERFORM 200111-NISSU-HEN-SEC
+               MOVE    WRK-NISSU-MES   TO   WRK-ERRMES-PLUS
+               MOVE    "120002"    TO  WRK-ERRCD
+      *
+               PERFORM 210-ERRMES-HEN-SEC
+               MOVE    1           TO  FLG-CHKEND (12)
+           END-IF
       *
            .
        200112-NACCT-SRY-DAY-CHK-EXT.
