@@ -5502,7 +5502,7 @@
            END-IF
       *
       *    点数マスタクローズ
-           MOVE    "TENSU-KEY"     TO  ORC-DBPATH
+           MOVE    "TENSU-KEY"     TO  WRK-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
       *
            IF    ( FLG-TENSU       NOT =   ZERO )
@@ -5561,7 +5561,7 @@
            END-IF
       *
       *    点数マスタクローズ
-           MOVE    "TENSU-KEY"     TO  ORC-DBPATH
+           MOVE    "TENSU-KEY"     TO  WRK-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
       *
            IF    ( FLG-TENSU       NOT =   ZERO )

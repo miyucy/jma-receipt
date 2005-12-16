@@ -892,10 +892,10 @@
       *****************************************************************
        910-DBCLOSE-SEC                     SECTION.
       *
-      *    MOVE    "DBCLOSECURSOR" TO      MCP-FUNC
-      *    CALL    "MCPSUB"                USING
-      *                                    MCPAREA
-      *                                    MCPDATA-REC
+           MOVE    "DBCLOSECURSOR" TO      MCP-FUNC
+           CALL    "MCPSUB"                USING
+                                           MCPAREA
+                                           MCPDATA-REC
       *
            .
       *
