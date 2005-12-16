@@ -379,7 +379,7 @@
                             UNTIL  (IDX            >    20)
                              OR    (WRK-SRYKA(IDX) = SPACE)
                      PERFORM   VARYING   IDY   FROM   IDV   BY   1
-                                UNTIL    IDY     >=   IDW
+                                UNTIL    IDY     >    IDW
                         IF  WRK-DAYFLG(IDX IDY)   =   SPACE
                         AND WRK-DAY5(IDY)         =   ZERO
                              MOVE    "2"    TO    WRK-DAYFLG(IDX IDY)
