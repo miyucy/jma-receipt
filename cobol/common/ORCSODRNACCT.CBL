@@ -2661,6 +2661,7 @@
                     MOVE   WRK-TENROOM-SKJ(1 IDX-SKJ)
                                        TO  NACCT-DAY(IDX-SKJ)
                END-PERFORM
+      *        剤回数再セット
                MOVE  ZERO              TO  NACCT-ZAIKAISU
                PERFORM  VARYING   IDX-SKJ FROM  1  BY  1
                          UNTIL     IDX-SKJ   >   31
@@ -2698,6 +2699,7 @@
                         MOVE   WRK-TENROOM-SKJ(2 IDX-SKJ)
                                            TO  NACCT-DAY(IDX-SKJ)
                    END-PERFORM
+      *            剤回数再セット
                    MOVE  ZERO              TO  NACCT-ZAIKAISU
                    PERFORM  VARYING   IDX-SKJ FROM  1  BY  1
                             UNTIL     IDX-SKJ   >   31
@@ -3042,6 +3044,14 @@
                            MOVE   4     TO   NACCT-DAY(WRK-STARTYMD-D)
                      END-EVALUATE
                    END-IF
+      *            剤回数再セット
+                   MOVE  ZERO           TO  NACCT-ZAIKAISU
+                   PERFORM  VARYING   IDX-SKJ FROM  1  BY  1
+                            UNTIL     IDX-SKJ   >   31
+                       IF   NACCT-DAY(IDX-SKJ)   NOT =  0
+                           ADD   1        TO  NACCT-ZAIKAISU
+                       END-IF
+                   END-PERFORM   
       *            食堂加算の編集用に退避
                    MOVE    NACCT-DAY(WRK-STARTYMD-D)  TO WRK-SHOKUDOU
       *
@@ -3080,6 +3090,14 @@
                    ELSE
                          MOVE   0   TO   NACCT-DAY(WRK-STARTYMD-D)
                    END-IF
+      *            剤回数再セット
+                   MOVE  ZERO           TO  NACCT-ZAIKAISU
+                   PERFORM  VARYING   IDX-SKJ FROM  1  BY  1
+                            UNTIL     IDX-SKJ   >   31
+                       IF   NACCT-DAY(IDX-SKJ)   NOT =  0
+                           ADD   1        TO  NACCT-ZAIKAISU
+                       END-IF
+                   END-PERFORM   
       *
                    MOVE    NYUINACCT-REC   TO   MCPDATA-REC
                    MOVE    "DBUPDATE"      TO   MCP-FUNC
