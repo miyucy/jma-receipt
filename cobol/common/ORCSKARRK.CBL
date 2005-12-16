@@ -753,7 +753,7 @@
       *
            MOVE    SRYKARRK-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "tbl_srykarrk"      TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
            CALL    "MONFUNC"           USING
                                        MCPAREA
