@@ -589,6 +589,9 @@
                WHEN    "0104"
                WHEN    "0105"
                    PERFORM   4801-TENROOM-EDIT-SEC
+                   IF    IPN-NYUKAIKEI-SAKUSEI-FLG   =  "1"
+                       PERFORM   4801-TENROOM-EDIT-SEC
+                   END-IF
       *       （入院取消）
                WHEN    "0107"
       *       （入院取消−会計含む）
