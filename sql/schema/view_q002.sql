@@ -30,3 +30,5 @@ CREATE VIEW "view_q002" as SELECT a.hospid,
         OR (a.zainum = b.zainum14)) 
         OR (a.zainum = b.zainum15)));
 
+COMMENT ON VIEW "view_q002" IS '患者照会ビュー2';
+

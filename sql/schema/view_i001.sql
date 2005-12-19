@@ -43,3 +43,5 @@ CREATE VIEW "view_i001" as SELECT a.hospid,
        AND ((b.jtikbn <> '5'::bpchar) 
        AND (b.jtikbn <> '6'::bpchar)));
 
+COMMENT ON VIEW "view_i001" IS '入院患者照会ビュー';
+

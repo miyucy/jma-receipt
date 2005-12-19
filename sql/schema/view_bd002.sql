@@ -280,3 +280,5 @@ CREATE VIEW "view_bd002" as SELECT a.hospid,
        AND (a.createkbn <> '3'::bpchar)) 
        AND (c.tstptnumkbn <> '1'::bpchar));
 
+COMMENT ON VIEW "view_bd002" IS '¼ýÇ¼¥Ó¥å¡¼2';
+

@@ -13,3 +13,5 @@ CREATE VIEW "view_bd003" as SELECT a.hospid,
            ptid,
            denpnum));
 
+COMMENT ON VIEW "view_bd003" IS '¼ýÇ¼¥Ó¥å¡¼3';
+

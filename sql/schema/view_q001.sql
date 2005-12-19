@@ -36,3 +36,6 @@ CREATE VIEW "view_q001" as SELECT tbl_hkncombi.hospid,
         OR ((tbl_hkncombi.koh4id = tbl_ptkohinf.kohid) 
        AND (tbl_hkncombi.koh4hknnum = tbl_ptkohinf.kohnum))))));
 
+
+COMMENT ON VIEW "view_q001" IS '患者照会ビュー';
+
