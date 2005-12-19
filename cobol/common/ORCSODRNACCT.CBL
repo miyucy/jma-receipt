@@ -931,7 +931,7 @@
                MOVE    IPN-SANTEISTYMD   TO   WRK-SANTEISTYMD
                MOVE    IPN-SANTEISTYMD   TO   WRK-NAI-I01-IDOYMD
                MOVE    IPN-SANTEISTYMD   TO   LNK-PTNYUINRRK-TENNYUYMD
-      *****         PERFORM   4801-TENROOM-EDIT-SEC
+                   PERFORM   4801-TENROOM-EDIT-SEC
            END-IF
       *
            .
