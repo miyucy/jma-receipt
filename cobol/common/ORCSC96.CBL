@@ -1049,6 +1049,12 @@
                WHEN    "1016"
                    MOVE    "初診料への自動変更はできません。"
                                        TO  SPA-ERRMSG
+               WHEN    "1101"
+                   MOVE    "初診算定日＜診療日で入力して下さい。"
+                                       TO  SPA-ERRMSG
+               WHEN    "1102"
+                   MOVE    "初診算定日が暦日ではありません。"
+                                       TO  SPA-ERRMSG
                WHEN    "1017"
                    MOVE
                    "初診算定日を登録して、再診料自動算定をして下さい"
