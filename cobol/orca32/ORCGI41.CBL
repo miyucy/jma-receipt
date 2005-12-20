@@ -6709,6 +6709,9 @@
                MOVE    1                   TO  FLG-TENSU
            END-IF.
       *
+           MOVE    "TENSU-KEY"     TO      ORC-DBPATH.
+           PERFORM 910-DB-CLOSE-SEC.
+      *
        910-TENSU-READ-EXT.
            EXIT.
       *
