@@ -57,6 +57,7 @@
        01  WRK-AREA.
            03  WRK-TNS-NAME                        PIC X(200).
            03  WRK-DBPATH                          PIC X(20).
+           03  WRK-NYUKHN-DBPATH                   PIC X(20).
            03  WRK-CHG-SRYCD                       PIC X(09).
       *
       *****************************************************************
@@ -120,12 +121,14 @@
                MOVE    W20SUB01-I-KJNYMD   TO  NYUKHN-YUKOSTYMD
                                                NYUKHN-YUKOEDYMD
                MOVE    "NYUINKHN-KEY"      TO  WRK-DBPATH
+                                               WRK-NYUKHN-DBPATH
       *
       *    看護配置・平均在日数等で検索
            WHEN    "2"
                PERFORM 200-SELKEY-SET-SEC
       *
                MOVE    "NYUINKHN-KEY2"     TO  WRK-DBPATH
+                                               WRK-NYUKHN-DBPATH
            WHEN    OTHER
                MOVE    1                   TO  W20SUB01-O-RC
            END-EVALUATE 
@@ -187,6 +190,7 @@
                                        TO  NYUKHN-YUKOSTYMD
                                            NYUKHN-YUKOEDYMD
                MOVE    "NYUINKHN-KEY"  TO  WRK-DBPATH
+                                           WRK-NYUKHN-DBPATH
                PERFORM 800-NYUKHN-SEL-SEC
                IF    ( FLG-NYUKHN      =   ZERO )
                    PERFORM 1001-W20SUB01-0-HEN-SEC
@@ -449,6 +453,7 @@
            END-IF
       *
       *    入院料算定マスタクローズ
+           MOVE   WRK-NYUKHN-DBPATH   TO   WRK-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
       *
            .
