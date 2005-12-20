@@ -1892,6 +1892,10 @@
       *    ÃæÅÓ½ªÎ»Ê¬¤è¤ê¤Î»þ¡¡½é²èÌÌ¤òÊÔ½¸
            INITIALIZE                  SPA-SCR-REC
       *
+      *     ¥ï¡¼¥¯¿ÇÎÅ¹Ô°Ù²ò½ü
+            MOVE    ZERO            TO  FLG-MOD-FLG
+            PERFORM 4900-WKSRYACT-CLEAR-SEC
+      *
       *    ½é´ü£Ó£Ð£ÁÊÔ½¸½èÍý
            IF     (SPA-SRYYMD      NOT =   SPA-GMN-SRYYMD )  OR
                   (SPA-PTID        NOT =   SPA-GMN-PTID   )
@@ -6568,7 +6572,8 @@
       *            Êñ³çÊÝ¸±¤ÏÂÐ¾Ý³°
               AND (SPA-HKNCOMBINUM     NOT =   "9999"  )
                PERFORM 4101125-SYOSIN-CHK-SEC
-               IF      SPA-KIDCD       NOT =   SPACE
+               IF     (SPA-KIDCD       NOT =   SPACE )
+                   OR (SPA-ERRCD       NOT =   SPACE )
                    GO      TO      4101113-INPUTCD-CHK-EXT
                END-IF
            ELSE
@@ -6746,10 +6751,16 @@
            CALL    "ORCSGDAY"          USING
                                        ORCSGDAYAREA
            IF      SGDAY-RC            =   ZERO
-               MOVE    SGDAY-SDAY          TO  SPA-SYOSIN-YMD
-               MOVE    SPA-COM-INPUTCD(SPA-GMN-IDX)
-                                           TO  SPA-SYOSIN-SRYCD
-               MOVE    "0108"              TO  SPA-KIDCD
+               IF      SGDAY-SDAY          >=  SPA-SRYYMD
+                   MOVE    "1101"              TO  SPA-ERRCD
+               ELSE
+                   MOVE    SGDAY-SDAY          TO  SPA-SYOSIN-YMD
+                   MOVE    SPA-COM-INPUTCD(SPA-GMN-IDX)
+                                               TO  SPA-SYOSIN-SRYCD
+                   MOVE    "0108"              TO  SPA-KIDCD
+               END-IF
+           ELSE
+               MOVE    "1102"              TO  SPA-ERRCD
            END-IF
       *
            .
