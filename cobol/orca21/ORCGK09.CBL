@@ -1676,6 +1676,17 @@
                MOVE    WRK-SURYO-J         TO  SPA-GMN-TSURYOU (IDG)
                MOVE    TNS-TANINAME        TO  SPA-GMN-TTANI1  (IDG)
            END-IF
+      *    単位
+           IF     (LNK-WKSRY-SRYCD (IDX IDZ)(1:1) =   "1" )  AND
+                  (TNS-TANICD                 NOT =   ZERO ) AND
+                  (LNK-WKSRY-SRYKBN   (IDX)   NOT =   "70" )
+               IF      LNK-WKSRY-SRYSURYO (IDX IDZ)   >   1
+                   MOVE    LNK-WKSRY-SRYSURYO (IDX IDZ)  TO  WRK-SURYO
+                   PERFORM 310121-SURYO-HEN-SEC
+                   MOVE    WRK-SURYO-J         TO  SPA-GMN-TSURYOU (IDG)
+               END-IF
+               MOVE    TNS-TANINAME        TO  SPA-GMN-TTANI1  (IDG)
+           END-IF
       *    分画数
            IF     (LNK-WKSRY-SRYCD (IDX IDZ)(1:1)   =   "7"  )  AND
                   (TNS-DATAKBN             =   3    )  AND

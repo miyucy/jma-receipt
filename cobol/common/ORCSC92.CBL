@@ -1824,6 +1824,10 @@
       *    数量単位（薬剤・器材の時）
            IF     (SPA-COM-INPUTCD (IDX-T)(1:1)   =   "6"  OR  "7" ) OR
                   (SPA-COM-INPUTCD (IDX-T)(1:3)   =   "059" )  
+      *       単位があるもの（画像診断以外）
+              OR ((SPA-COM-INPUTCD (IDX-T)(1:1)   =   "1" )  AND
+                  (TNS-SRYKBN                 NOT =   "70" ) AND
+                  (TNS-TANICD                 NOT =   ZERO ))
                PERFORM 3004-TANI-HENSYU-SEC
                MOVE    WRK-TANINAME        TO  SPA-GMN-TANINAME (IDX-T)
            ELSE
@@ -2260,8 +2264,8 @@
                    MOVE    "cm"                TO  WRK-TANINAME
                WHEN    041
                    MOVE    "cm2"               TO  WRK-TANINAME
-               WHEN    042
-                   MOVE    "m"                 TO  WRK-TANINAME
+      ****     WHEN    042
+      ****         MOVE    "m"                 TO  WRK-TANINAME
                WHEN    043
                    MOVE    "uCi"               TO  WRK-TANINAME
                WHEN    044
