@@ -2330,7 +2330,9 @@
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 990-DBCLOSE-SEC
                PERFORM VARYING     IDX2    FROM    1   BY  1
-                       UNTIL      (IDX2        >   IDN1  )  OR
+      *!!!!!!!!!!!     UNTIL      (IDX2        >   IDN1  )  OR
+      *            当月内で算定
+                       UNTIL      (IDX2        >   31    )  OR
                                   (FLG-SYOHOU-ERR  =   1 )
       *            当日以前に算定
                    IF      IDN1            =   IDX2
