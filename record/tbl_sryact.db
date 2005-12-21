@@ -388,3 +388,17 @@ path	key12	{
 		;
 	};
 };
+
+path	key13	{
+	DBSELECT	{
+		DECLARE tbl_sryact_key13_csr CURSOR FOR
+		SELECT *
+		FROM tbl_sryact
+			WHERE (SRYCD1     >=   :SRYCD1 AND SRYCD1     <=   :SRYCD2 )
+			 OR   (SRYCD2     >=   :SRYCD1 AND SRYCD2     <=   :SRYCD2 )
+			 OR   (SRYCD3     >=   :SRYCD1 AND SRYCD3     <=   :SRYCD2 )
+			 OR   (SRYCD4     >=   :SRYCD1 AND SRYCD4     <=   :SRYCD2 )
+			 OR   (SRYCD5     >=   :SRYCD1 AND SRYCD5     <=   :SRYCD2 )
+		;
+	};
+};
