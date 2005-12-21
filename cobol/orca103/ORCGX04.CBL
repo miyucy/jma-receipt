@@ -181,7 +181,7 @@
            03  FLG-LOOP-END                PIC 9(01).
            03  FLG-SYSKANRI                PIC 9(01).
            03  FLG-CHKSND                  PIC 9(01).
-           03  FLG-MEDYAKKO                PIC 9(01).
+           03  FLG-TEKIOUBYOMEI            PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -334,9 +334,9 @@
        01  USERBYOMEI-REC.
            COPY    "CPUSERBYOMEI.INC".
       *
-      *    薬効マスター
-       01  MEDYAKKO-REC.
-           COPY    "CPMEDYAKKO.INC".
+      *    適応病名マスター
+       01  TEKIOUBYOMEI-REC.
+           COPY    "CPTEKIOUBYOMEI.INC".
       *
       *    チェックマスタ２
        01  CHKSND-REC.
@@ -700,16 +700,16 @@
        3101-SRTKBNLST-UBYO-SET-EXT.
            EXIT.
       *****************************************************************
-      *    病名ソート区分設定処理（薬効）
+      *    病名ソート区分設定処理（適応病名）
       *****************************************************************
-       3101-SRTKBNLST-MYAK-SET-SEC     SECTION.
+       3101-SRTKBNLST-TEKBYO-SET-SEC   SECTION.
       *
            INITIALIZE                  SPA-GMN-SRTKBNLST-G
       *
            MOVE    0               TO  SPA-GMN-SRTKBN-MAX
       *
            . 
-       3101-SRTKBNLST-MYAK-SET-EXT.
+       3101-SRTKBNLST-TEKBYO-SET-EXT.
            EXIT.
       *****************************************************************
       *    病名ソースコンボ設定処理
@@ -731,15 +731,12 @@
            MOVE    "自院病名"
                                    TO  SPA-GMN-SRCBYOKBNMEIL (3)
       *
-           IF    ( SPA-X01-CHKKBN  =   "1" )
+           PERFORM 900-TEKIOUBYOMEI-KEY-SEL-SEC
+           IF    ( FLG-TEKIOUBYOMEI    =   ZERO )
+               MOVE    4           TO  SPA-GMN-SRCBYOKBN-MAX
       *
-               PERFORM 900-MEDYAKKO-KEY-SEL-SEC
-               IF    ( FLG-MEDYAKKO    =   ZERO )
-                   MOVE    4       TO  SPA-GMN-SRCBYOKBN-MAX
-      *
-                   MOVE    "M"     TO  SPA-GMN-SRCBYOKBNL    (4)
-                   MOVE    "薬効"  TO  SPA-GMN-SRCBYOKBNMEIL (4)
-               END-IF
+               MOVE    "M"         TO  SPA-GMN-SRCBYOKBNL    (4)
+               MOVE    "適応病名"  TO  SPA-GMN-SRCBYOKBNMEIL (4)
            END-IF
       *
            . 
@@ -1428,7 +1425,7 @@
                WHEN    "3"
                    PERFORM 3101-SRTKBNLST-UBYO-SET-SEC
                WHEN    "M"
-                   PERFORM 3101-SRTKBNLST-MYAK-SET-SEC
+                   PERFORM 3101-SRTKBNLST-TEKBYO-SET-SEC
                END-EVALUATE
       *
                MOVE    SPA-GMN-SRTKBNLST (1)
@@ -1534,7 +1531,7 @@
            WHEN    "3"
                PERFORM 41013-SRCBYOLST-UBYO-SEC
            WHEN    "M"
-               PERFORM 41014-SRCBYOLST-MYAK-SEC
+               PERFORM 41014-SRCBYOLST-TEKBYO-SEC
            END-EVALUATE
       *
            .
@@ -1552,7 +1549,7 @@
       *
            PERFORM 900-PTBYOMEI-KEY26-SEL-SEC
       *
-           PERFORM 41011-SRCBYOLST-PTBYO-SKIP-SEC
+           PERFORM 41011-PTBYO-SKIP-SEC
       *
            MOVE    ZERO            TO  IDX1
            PERFORM UNTIL ( FLG-PTBYOMEI    NOT =   ZERO )
@@ -1583,7 +1580,7 @@
       *****************************************************************
       *    病名ソースリストスキップ編集処理
       *****************************************************************
-       41011-SRCBYOLST-PTBYO-SKIP-SEC  SECTION.
+       41011-PTBYO-SKIP-SEC        SECTION.
       *
            MOVE    ZERO            TO  CNT-SRCBYOLST
       *
@@ -1601,7 +1598,7 @@
            END-PERFORM
       *
            .
-       41011-SRCBYOLST-PTBYO-SKIP-EXT.
+       41011-PTBYO-SKIP-EXT.
            EXIT.
       *****************************************************************
       *    病名ソースリスト編集処理（病名より）
@@ -1615,7 +1612,7 @@
       *
            PERFORM 900-BYOMEI-KEY7-SEL-SEC
       *
-           PERFORM 41012-SRCBYOLST-BYO-SKIP-SEC
+           PERFORM 41012-BYO-SKIP-SEC
       *
            MOVE    ZERO            TO  IDX1
            PERFORM UNTIL ( FLG-BYOMEI  NOT =   ZERO )
@@ -1647,7 +1644,7 @@
       *****************************************************************
       *    病名ソースリストスキップ編集処理
       *****************************************************************
-       41012-SRCBYOLST-BYO-SKIP-SEC    SECTION.
+       41012-BYO-SKIP-SEC    SECTION.
       *
            MOVE    ZERO            TO  CNT-SRCBYOLST
       *
@@ -1665,7 +1662,7 @@
            END-PERFORM
       *
            .
-       41012-SRCBYOLST-BYO-SKIP-EXT.
+       41012-BYO-SKIP-EXT.
            EXIT.
       *****************************************************************
       *    病名ソースリスト編集処理（自院病名より）
@@ -1679,7 +1676,7 @@
       *
            PERFORM 900-USERBYOMEI-KEY10-SEL-SEC
       *
-           PERFORM 41013-SRCBYOLST-UBYO-SKIP-SEC
+           PERFORM 41013-UBYO-SKIP-SEC
       *
            MOVE    ZERO            TO  IDX1
            PERFORM UNTIL ( FLG-USERBYOMEI  NOT =   ZERO )
@@ -1723,7 +1720,7 @@
       *****************************************************************
       *    病名ソースリストスキップ編集処理
       *****************************************************************
-       41013-SRCBYOLST-UBYO-SKIP-SEC  SECTION.
+       41013-UBYO-SKIP-SEC  SECTION.
       *
            MOVE    ZERO            TO  CNT-SRCBYOLST
       *
@@ -1741,63 +1738,63 @@
            END-PERFORM
       *
            .
-       41013-SRCBYOLST-UBYO-SKIP-EXT.
+       41013-UBYO-SKIP-EXT.
            EXIT.
       *****************************************************************
-      *    病名ソースリスト編集処理（薬効マスタより）
+      *    病名ソースリスト編集処理（適応病名マスタより）
       *****************************************************************
-       41014-SRCBYOLST-MYAK-SEC        SECTION.
+       41014-SRCBYOLST-TEKBYO-SEC      SECTION.
       *
            MOVE    1               TO  FLG-SRCBYOLST-ROW
       *
            INITIALIZE              SPA-GMN-SRCBYOLST-AREA
                                    SPA-NAI-SRCBYOLST-AREA
       *
-           PERFORM 900-MEDYAKKO-KEY3-SEL-SEC
+           PERFORM 900-TEKIOUBYOMEI-KEY3-SEL-SEC
       *
-           PERFORM 41014-SRCBYOLST-MYAK-SKIP-SEC
+           PERFORM 41014-TEKBYO-SKIP-SEC
       *
            MOVE    ZERO            TO  IDX1
-           PERFORM UNTIL ( FLG-MEDYAKKO    NOT =   ZERO )
+           PERFORM UNTIL ( FLG-TEKIOUBYOMEI    NOT =   ZERO )
                     OR   ( IDX1    >=  CONST-SRCBYOLST-MAX )
       *
                COMPUTE IDX1    =   IDX1    +   1
       *
-               MOVE    MYAK-TEKIOUBYOMEI
+               MOVE    TEKBYO-BYOMEI
                                        TO  SPA-GMN-TSRCBYOMEI (IDX1)
-               MOVE    MYAK-BYOMEIHENFLG
+               MOVE    TEKBYO-BYOMEIHENFLG
                                        TO  SPA-NAI-TSRCBYOSTATUS(IDX1)
       *
                PERFORM VARYING IDX0    FROM    1   BY  1
                        UNTIL ( IDX0    >   CONST-MKCD-MAX )
-                        OR   ( MYAK-BYOMEICD (IDX0)    =   SPACE )
+                        OR   ( TEKBYO-BYOMEICD (IDX0)  =   SPACE )
       *
-                   MOVE    MYAK-BYOMEICD (IDX0)
+                   MOVE    TEKBYO-BYOMEICD (IDX0)
                                    TO  SPA-NAI-TSRCBYOCD(IDX1 IDX0)
       *
                END-PERFORM
       *
-               PERFORM 900-MEDYAKKO-KEY3-FET-SEC
+               PERFORM 900-TEKIOUBYOMEI-KEY3-FET-SEC
       *
            END-PERFORM
       *
-           MOVE    "tbl_medyakko"          TO  MCP-TABLE
+           MOVE    "tbl_tekioubyomei"      TO  MCP-TABLE
            MOVE    "key3"                  TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            MOVE    IDX1            TO  SPA-GMN-SRCBYOLST-MAX
       *
-           IF    ( FLG-MEDYAKKO    =   ZERO )
+           IF    ( FLG-TEKIOUBYOMEI    =   ZERO )
                MOVE    1           TO  SPA-GMN-SRCBYOLST-NEXT
            END-IF
       *
            .
-       41014-SRCBYOLST-MYAK-EXT.
+       41014-SRCBYOLST-TEKBYO-EXT.
            EXIT.
       *****************************************************************
       *    病名ソースリストスキップ編集処理
       *****************************************************************
-       41014-SRCBYOLST-MYAK-SKIP-SEC  SECTION.
+       41014-TEKBYO-SKIP-SEC  SECTION.
       *
            MOVE    ZERO            TO  CNT-SRCBYOLST
       *
@@ -1805,17 +1802,17 @@
                = ( SPA-GMN-SRCBYOLST-PAGE  -   1 )
                *   CONST-SRCBYOLST-MAX
       *
-           PERFORM UNTIL ( FLG-MEDYAKKO    NOT =   ZERO )
-                    OR   ( CNT-SRCBYOLST      >=   WRK-SKIP-MAX )
+           PERFORM UNTIL ( FLG-TEKIOUBYOMEI    NOT =   ZERO )
+                    OR   ( CNT-SRCBYOLST          >=   WRK-SKIP-MAX )
       *
                COMPUTE CNT-SRCBYOLST   =   CNT-SRCBYOLST   +   1
       *
-               PERFORM 900-MEDYAKKO-KEY3-FET-SEC
+               PERFORM 900-TEKIOUBYOMEI-KEY3-FET-SEC
       *
            END-PERFORM
       *
            .
-       41014-SRCBYOLST-MYAK-SKIP-EXT.
+       41014-TEKBYO-SKIP-EXT.
            EXIT.
       *****************************************************************
       *    選択番号チェック処理
@@ -3912,84 +3909,86 @@
        900-USERBYOMEI-KEY10-FET-EXT.
            EXIT.
       *****************************************************************
-      *    薬効マスタ検索処理(KEY)
+      *    適応病名マスタ検索処理(KEY)
       *****************************************************************
-       900-MEDYAKKO-KEY-SEL-SEC    SECTION.
+       900-TEKIOUBYOMEI-KEY-SEL-SEC    SECTION.
       *
-           MOVE    ZERO            TO  FLG-MEDYAKKO
+           MOVE    ZERO            TO  FLG-TEKIOUBYOMEI
       *
-           INITIALIZE              MEDYAKKO-REC
-           MOVE    SPA-X01-SRYCD   TO  MYAK-IYAKUHINCD
-           MOVE    1               TO  MYAK-RENNUM
+           INITIALIZE              TEKIOUBYOMEI-REC
+           MOVE    SPA-X01-CHKKBN  TO  TEKBYO-CHKKBN
+           MOVE    SPA-X01-SRYCD   TO  TEKBYO-SRYCD
+           MOVE    1               TO  TEKBYO-RENNUM
       *
-           MOVE    MEDYAKKO-REC    TO  MCPDATA-REC
-           MOVE    "tbl_medyakko"  TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
+           MOVE    TEKIOUBYOMEI-REC    TO  MCPDATA-REC
+           MOVE    "tbl_tekioubyomei"  TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC    =     ZERO )
-               MOVE    MCPDATA-REC TO  MEDYAKKO-REC
+               MOVE    MCPDATA-REC TO  TEKIOUBYOMEI-REC
            ELSE
-               INITIALIZE              MEDYAKKO-REC
-               MOVE    1           TO  FLG-MEDYAKKO
+               INITIALIZE              TEKIOUBYOMEI-REC
+               MOVE    1           TO  FLG-TEKIOUBYOMEI
            END-IF
       *
-           MOVE    "tbl_medyakko"  TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
+           MOVE    "tbl_tekioubyomei"  TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
       *
            .
       *
-       900-MEDYAKKO-KEY-SEL-EXT.
+       900-TEKIOUBYOMEI-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    薬効マスタ検索処理(KEY3)
+      *    適応病名マスタ検索処理(KEY3)
       *****************************************************************
-       900-MEDYAKKO-KEY3-SEL-SEC   SECTION.
+       900-TEKIOUBYOMEI-KEY3-SEL-SEC   SECTION.
       *
-           MOVE    ZERO            TO  FLG-MEDYAKKO
+           MOVE    ZERO            TO  FLG-TEKIOUBYOMEI
       *
-           INITIALIZE              MEDYAKKO-REC
-           MOVE    SPA-X01-SRYCD   TO  MYAK-IYAKUHINCD
+           INITIALIZE              TEKIOUBYOMEI-REC
+           MOVE    SPA-X01-CHKKBN  TO  TEKBYO-CHKKBN
+           MOVE    SPA-X01-SRYCD   TO  TEKBYO-SRYCD
       *
            STRING  WRK-SEL-BYOMEI  DELIMITED   BY  SPACE
                    "%"             DELIMITED   BY  SIZE
-           INTO    MYAK-TEKIOUBYOMEI
+           INTO    TEKBYO-BYOMEI
            END-STRING
            
       *
-           MOVE    MEDYAKKO-REC    TO  MCPDATA-REC
-           MOVE    "tbl_medyakko"  TO  MCP-TABLE
-           MOVE    "key3"          TO  MCP-PATHNAME
+           MOVE    TEKIOUBYOMEI-REC    TO  MCPDATA-REC
+           MOVE    "tbl_tekioubyomei"  TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC    =     ZERO )
-               MOVE    MCPDATA-REC TO  MEDYAKKO-REC
+               MOVE    MCPDATA-REC TO  TEKIOUBYOMEI-REC
            ELSE
-               INITIALIZE              MEDYAKKO-REC
-               MOVE    1           TO  FLG-MEDYAKKO
+               INITIALIZE              TEKIOUBYOMEI-REC
+               MOVE    1           TO  FLG-TEKIOUBYOMEI
            END-IF
       *
            .
       *
-       900-MEDYAKKO-KEY3-SEL-EXT.
+       900-TEKIOUBYOMEI-KEY3-SEL-EXT.
            EXIT.
       *****************************************************************
       *    薬効マスタFETCH処理(KEY3)
       *****************************************************************
-       900-MEDYAKKO-KEY3-FET-SEC     SECTION.
+       900-TEKIOUBYOMEI-KEY3-FET-SEC   SECTION.
       *
-           MOVE    "tbl_medyakko"  TO  MCP-TABLE
-           MOVE    "key3"          TO  MCP-PATHNAME
+           MOVE    "tbl_tekioubyomei"  TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC    =     ZERO )
-               MOVE    MCPDATA-REC TO  MEDYAKKO-REC
+               MOVE    MCPDATA-REC TO  TEKIOUBYOMEI-REC
            ELSE
-               INITIALIZE              MEDYAKKO-REC
-               MOVE    1           TO  FLG-MEDYAKKO
+               INITIALIZE              TEKIOUBYOMEI-REC
+               MOVE    1           TO  FLG-TEKIOUBYOMEI
            END-IF
       *
            .
       *
-       900-MEDYAKKO-KEY3-FET-EXT.
+       900-TEKIOUBYOMEI-KEY3-FET-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理（FHETCHも行う)
