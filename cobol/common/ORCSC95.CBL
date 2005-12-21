@@ -693,6 +693,13 @@
                    MOVE    "1"             TO  SPA-TEISEI-FLG
                    MOVE    "0"             TO  SPA-TEISEITOKU-FLG
                END-IF
+      *        病名表示区分
+               IF      SYS-1008-BYOHYOKBN-FLG   =   SPACE
+                   MOVE    "1"             TO  SPA-BYOHYOKBN-FLG
+               ELSE
+                   MOVE    SYS-1008-BYOHYOKBN-FLG
+                                           TO  SPA-BYOHYOKBN-FLG
+               END-IF
            ELSE
                MOVE    ZERO                TO  SPA-INTERACT-KIKAN
                MOVE    "1"                 TO  SPA-GAIKANRIKBN-CHK
@@ -713,6 +720,7 @@
                MOVE    "1"                 TO  SPA-YAKJYOCHK-FLG
                MOVE    "1"                 TO  SPA-TEISEI-FLG
                MOVE    "0"                 TO  SPA-TEISEITOKU-FLG
+               MOVE    "1"                 TO  SPA-BYOHYOKBN-FLG
            END-IF
       *
       *    診療科
@@ -1126,6 +1134,13 @@
                    MOVE    "1"             TO  SPA-TEISEI-FLG
                    MOVE    "0"             TO  SPA-TEISEITOKU-FLG
                END-IF
+      *        病名表示区分
+               IF      SYS-1008-BYOHYOKBN-FLG   =   SPACE
+                   MOVE    "1"             TO  SPA-BYOHYOKBN-FLG
+               ELSE
+                   MOVE    SYS-1008-BYOHYOKBN-FLG
+                                           TO  SPA-BYOHYOKBN-FLG
+               END-IF
            ELSE
                MOVE    ZERO                TO  SPA-INTERACT-KIKAN
       *
@@ -1142,6 +1157,7 @@
                MOVE    "1"                 TO  SPA-YAKJYOCHK-FLG
                MOVE    "1"                 TO  SPA-TEISEI-FLG
                MOVE    "0"                 TO  SPA-TEISEITOKU-FLG
+               MOVE    "1"                 TO  SPA-BYOHYOKBN-FLG
            END-IF
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -3481,6 +3497,11 @@
            MOVE    "key25"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
+      *    病名表示なし
+           IF      SPA-BYOHYOKBN-FLG   =   ZERO
+               MOVE    ZERO                TO  SPA-BYOMEI-MAX
+           ELSE
+      *
            MOVE    ZERO                TO  IDX
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   IDX-B   )   OR
@@ -3521,6 +3542,8 @@
                    END-IF
                END-PERFORM
            END-PERFORM
+      *
+           END-IF
       *
            IF      SPA-BYOMEI-MAX      >   100
                MOVE    100             TO  SPA-BYOMEI-MAX
@@ -4970,7 +4993,7 @@
                IF      SPA-SRYYMD          =   WKSRY-SRYYMD
                    IF      WKSRY-MOD-FLG       =   1
                        MOVE    9                   TO  WKSRY-MOD-FLG
-                   END-IF
+                  END-IF
                ELSE
                    MOVE    ZERO                TO  WKSRY-MOD-FLG
                END-IF
