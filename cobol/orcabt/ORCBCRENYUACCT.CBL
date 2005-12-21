@@ -1310,6 +1310,9 @@
                MOVE    1               TO  FLG-PTNYUINRRK
            END-IF
       *
+           MOVE    "PTNYUINRRK-KEY9"         TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
       *    通算日数を求める（通算日数取得サブを使用）
            PERFORM 4801-TSUSAN-SANTEI-GET-SEC
            IF    ( WRK-ERRCD       NOT =  SPACE )
@@ -1778,6 +1781,9 @@
                MOVE    1               TO  FLG-PTNYUINRRK
            END-IF
       *
+           MOVE    "PTNYUINRRK-KEY9"   TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
       *    通算日数を求める（通算日数取得サブを使用）
            PERFORM 4801-TSUSAN-SANTEI-GET-SEC
            IF    ( WRK-ERRCD    NOT =  SPACE )
@@ -1982,6 +1988,9 @@
            IF       WRK-SENTEI-STYMD   <=  WRK-BIRTHDAY-15
                MOVE   WRK-BIRTHDAY-15  TO  LNK-SCNYUACCT-SENTEI-STYMD
            END-IF
+      *
+           MOVE    "PTINF-KEY"         TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
       *
       *
       *     DISPLAY "LNK-SCNYUACCT-SENTEI-SRYCD = "
@@ -2380,6 +2389,9 @@
                GO  TO  4801-NYUKSN-CHK-EXT
            END-IF
       *
+           MOVE    "NYUKSNCHK-KEY"    TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
            .
       *
        4801-NYUKSN-CHK-EXT.
@@ -2514,6 +2526,9 @@
                MOVE     ZERO               TO  WRK-NENREI
            END-IF
       *
+           MOVE    "PTINF-KEY"         TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
            .
       *
        4801-PT-AGE-EXT.
@@ -2606,6 +2621,8 @@
            MOVE    "PTINF-KEY"         TO  ORC-DBPATH
            PERFORM 910-PTINF-SELECT-SEC
            PERFORM 910-PTINF-READ-SEC
+           MOVE    "PTINF-KEY"         TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
            MOVE    PTINF-BIRTHDAY      TO  AGECHK-BIRTHDAY
            MOVE    PTNYUINRRK-HKNCOMBINUM
                                        TO  AGECHK-HKNCOMBINUM
