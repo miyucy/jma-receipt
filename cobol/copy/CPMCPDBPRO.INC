@@ -385,6 +385,7 @@
       *                                     BD003-ALL追加
       *  01.01.171   NACL-太田    05/09/30  HOURS-ALL追加
       *  01.01.172   NACL-小豆沢  05/12/12  NYUINACCT-KEY28追加
+      *  01.01.173   NACL-太田    05/12/21  MEDYAKKO-ALL削除
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -3488,10 +3489,6 @@
       *
                WHEN    ANY             ALSO   "JYURRK-PRV-ALL3"
                    MOVE    PATH-TBL-JYURRK-PRV-ALL3
-                                       TO  WRK-PATH
-      *
-               WHEN    ANY             ALSO   "MEDYAKKO-ALL"
-                   MOVE    PATH-TBL-MEDYAKKO-ALL
                                        TO  WRK-PATH
       *
                WHEN    ANY             ALSO   "ORDER-ALL"

@@ -1,7 +1,8 @@
-tbl_medyakko {
-	IYAKUHINCD		char(9);
+tbl_tekioubyomei {
+	CHKKBN			char(1);
+	SRYCD			char(9);
 	RENNUM			number(4);
-	TEKIOUBYOMEI		varchar(400);
+	BYOMEI			varchar(400);
 	BYOMEICDSU		number(2);
 	BYOMEICD_1		char(7);
 	BYOMEICD_2		char(7);
@@ -24,69 +25,80 @@ tbl_medyakko {
 	BYOMEICD_19		char(7);
 	BYOMEICD_20		char(7);
 	BYOMEICD_21		char(7);
-	BYOMEIHENFLG		char(1);
+	BYOMEIHENFLG	char(1);
+	KHNBYOMEICD		char(7);
+	KHNBUICD_1		char(7);
+	KHNBUICD_2		char(7);
+	KHNBUICD_3		char(7);
+	TERMID			varchar(32);
+	OPID			varchar(16);
 	CREYMD			char(8);
+	UPYMD			char(8);
+	UPHMS			char(6);
 #-----> 検索キー用項目
 	SELNAME		char(200),virtual;
 	SELYUKOSTYMD  		char(8);
 	SELYUKOEDYMD  		char(8);
 };
 primary	{
-	IYAKUHINCD,RENNUM;
+	CHKKBN,SRYCD,RENNUM;
 };
 
 path	key 	{
 	DBSELECT	{
-		DECLARE tbl_medyakko_key_csr CURSOR FOR
+		DECLARE tbl_tekioubyomei_key_csr CURSOR FOR
 		SELECT *
-		FROM tbl_medyakko
-			WHERE   IYAKUHINCD	=	:IYAKUHINCD
-			AND	RENNUM		=	:RENNUM
+		FROM tbl_tekioubyomei
+			WHERE   CHKKBN	=	:CHKKBN
+			AND		SRYCD	=	:SRYCD
+			AND		RENNUM	=	:RENNUM
 		;
 	};
 };
 path	key2 	{
 	DBSELECT	{
-		DECLARE tbl_medyakko_key2_csr CURSOR FOR
+		DECLARE tbl_tekioubyomei_key2_csr CURSOR FOR
 		SELECT *
-		FROM tbl_medyakko
-			WHERE   IYAKUHINCD	=	:IYAKUHINCD
-			ORDER   BY  RENNUM
+		FROM tbl_tekioubyomei
+			WHERE   CHKKBN	=	:CHKKBN
+			AND		SRYCD	=	:SRYCD
 		;
 	};
 };
 
 path	key3 	{
 	DBSELECT	{
-		DECLARE tbl_medyakko_key3_csr CURSOR FOR
+		DECLARE tbl_tekioubyomei_key3_csr CURSOR FOR
 		SELECT *
-		FROM tbl_medyakko
-			WHERE   IYAKUHINCD	=	:IYAKUHINCD
-			AND   TEKIOUBYOMEI       LIKE   :TEKIOUBYOMEI
+		FROM tbl_tekioubyomei
+			WHERE CHKKBN		=	:CHKKBN
+			AND   SRYCD			=	:SRYCD
+			AND   BYOMEI       LIKE :BYOMEI
 		;
 	};
 };
 
 path	key4	{ 	
 	DBSELECT	{
-		DECLARE tbl_medyakko_key4_csr CURSOR FOR
-		SELECT A.* FROM tbl_medyakko A,TBL_TENSU B
-		WHERE  A.RENNUM	       = 1
-		AND    B.SRYCD         = A.IYAKUHINCD
+		DECLARE tbl_tekioubyomei_key4_csr CURSOR FOR
+		SELECT A.* FROM tbl_tekioubyomei A,TBL_TENSU B
+		WHERE  A.CHKKBN	       = :CHKKBN
+		AND    A.RENNUM	       = 1
+		AND    B.SRYCD         = A.SRYCD
 		AND    B.YUKOSTYMD    <= :SELYUKOSTYMD
 		AND    B.YUKOEDYMD    >= :SELYUKOEDYMD
 		AND	(B.NAME      LIKE :SELNAME
 		 OR	 B.KANANAME  LIKE :SELNAME)
-		ORDER BY B.KANANAME,A.IYAKUHINCD
+		ORDER BY B.KANANAME,A.SRYCD
 		;
 	};
 };
 
 path	all 	{
 	DBSELECT	{
-		DECLARE tbl_medyakko_all_csr CURSOR FOR
+		DECLARE tbl_tekioubyomei_all_csr CURSOR FOR
 		SELECT *
-		FROM tbl_medyakko
+		FROM tbl_tekioubyomei
 		;
 	};
 };

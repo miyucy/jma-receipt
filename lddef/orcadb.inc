@@ -88,7 +88,6 @@ db	{
         query_dtchk;
 	tbl_receupd;
 	tbl_orderprt;
-	tbl_medyakko;
 	tbl_sryacctplus;
 	tbl_jyurrk_prv;
 	tbl_sryacct_prv;
@@ -103,4 +102,5 @@ db	{
 	tbl_srykarrk_prv;
 	tbl_hours;
 	tbl_chktrd;
+	tbl_tekioubyomei;
 };

@@ -1,7 +1,8 @@
-CREATE TABLE "tbl_medyakko" (
-	"iyakuhincd" character(9) NOT NULL,
+CREATE TABLE "tbl_tekioubyomei" (
+	"chkkbn" character(1) NOT NULL,
+	"srycd" character(9) NOT NULL,
 	"rennum" numeric(4,0) NOT NULL,
-	"tekioubyomei" character varying(400),
+	"byomei" character varying(400),
 	"byomeicdsu" numeric(2,0) DEFAULT 0,
 	"byomeicd_1" character(7),
 	"byomeicd_2" character(7),
@@ -25,9 +26,17 @@ CREATE TABLE "tbl_medyakko" (
 	"byomeicd_20" character(7),
 	"byomeicd_21" character(7),
 	"byomeihenflg" character(1),
+	"khnbyomeicd" character(7),
+	"khnbuicd_1" character(7),
+	"khnbuicd_2" character(7),
+	"khnbuicd_3" character(7),
+	"termid" character varying(32),
+	"opid" character varying(16),
 	"creymd" character(8),
-	Constraint "tbl_medyakko_primary_key" Primary Key ("iyakuhincd", "rennum")
+	"upymd" character(8),
+	"uphms" character(6),
+	Constraint "tbl_tekioubyomei_primary_key" Primary Key ("chkkbn", "srycd", "rennum")
 );
 
-COMMENT ON TABLE "tbl_medyakko" IS '薬効';
+COMMENT ON TABLE "tbl_tekioubyomei" IS '適応病名';
 

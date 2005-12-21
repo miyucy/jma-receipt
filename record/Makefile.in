@@ -463,7 +463,6 @@ DB_files = \
 	tbl_chksnd.db \
 	tbl_receupd.db \
 	tbl_orderprt.db \
-	tbl_medyakko.db \
 	tbl_sryacctplus.db \
 	tbl_jyurrk_prv.db \
 	tbl_ptcom_prv.db \
@@ -478,6 +477,7 @@ DB_files = \
 	tbl_syutotal_prv.db \
 	tbl_hours.db \
 	tbl_chktrd.db \
+	tbl_tekioubyomei.db \
 
 all:   
 
