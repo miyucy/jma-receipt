@@ -1049,8 +1049,8 @@
                END-PERFORM
            END-PERFORM
       *    点数再計算
-           IF     (SPA-SYORIFLG    NOT =   1   )  AND
-                  (SPA-NYUGAIKBN       =   "1" )
+      **** IF     (SPA-SYORIFLG    NOT =   1   )  AND
+           IF     (SPA-NYUGAIKBN       =   "1" )
                PERFORM 41032-TENSU-KEI-SEC
            END-IF
       *
