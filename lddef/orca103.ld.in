@@ -36,5 +36,18 @@ data	{
 	};
 };
 
-#include "orcadb.inc"
+db	{
+	tbl_syskanri;
+	tbl_byomei;
+	tbl_chk;
+	tbl_inputcd;
+	tbl_ptbyomei;
+	tbl_tensu;
+	tbl_userbyomei;
+	tbl_jobkanri;
+        tbl_chksnd;
+	tbl_chktrd;
+	tbl_tekioubyomei;
+};
+
 #include "orcadbh.inc"
