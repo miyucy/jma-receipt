@@ -236,6 +236,20 @@ W07	{
 					count	int;
 					item	varchar(12)[2];
 				};
+				BYOHYOKBN_COMB	{
+					BYOHYOKBN	{
+						value	varchar(12);
+					};
+					count	int;
+					item	varchar(12)[2];
+				};
+				ZAIJUNKBN_COMB	{
+					ZAIJUNKBN	{
+						value	varchar(16);
+					};
+					count	int;
+					item	varchar(16)[2];
+				};
 			};
 			TAGNAME1    {
 			    state   int;

@@ -35,6 +35,8 @@
       *  01.00.08    NACL-多々納  05/06/06  中途終了展開時の自動発生
       *                                     薬剤情報提供料チェック追加
       *  01.00.09    NACL-多々納  05/07/06  訂正時の自動発生追加
+      *  01.00.10    NACL-多々納  05/12/21  病名表示区分
+      *                                     剤登録順区分追加
       *****************************************************************
        01  SYS-1008-REC.
            03  SYS-1008-KEY.
@@ -99,13 +101,18 @@
            03  SYS-1008-TEISEIAUTO-FLG         PIC X(01).
       *訂正時の自動発生（特定疾患処方管理）
            03  SYS-1008-TEISEITOKU-FLG         PIC X(01).
+      *病名表示区分
+           03  SYS-1008-BYOHYOKBN-FLG          PIC X(01).
+      *剤登録順区分
+           03  SYS-1008-ZAIJUNKBN-FLG          PIC X(01).
       *予備
       *****03  FILLER                   PIC X(489).
       *****03  FILLER                   PIC X(486).
       **** 03  FILLER                   PIC X(453).
       *****03  FILLER                   PIC X(451).
       *****03  FILLER                   PIC X(450).
-           03  FILLER                   PIC X(449).
+      *****03  FILLER                   PIC X(449).
+           03  FILLER                   PIC X(447).
       *端末ＩＤ
            03  SYS-1008-TERMID          PIC  X(16).
       *オペーレータＩＤ
