@@ -152,7 +152,8 @@
       *
       *    データ長
            03  WRK-DATA-LENGTH         PIC 9(07).        
-           03  WRK-PTNUM-LENGTH        PIC 9(07).        
+           03  WRK-PTNUM-LENGTH        PIC 9(07).   
+           03  WRK-LEN                 PIC 9(07).     
       *       
            03  WRK-MCP-TABLE           PIC X(64).
            03  WRK-MCP-PATHNAME        PIC X(64).
@@ -470,16 +471,19 @@
                MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 900-SEIKYU-READ-SEC
       *
-      *???
-               DISPLAY "FLG=" FLG-END "#" WRK-DATA-LENGTH "#"
-                              WRK-PTNUM-LENGTH 
-      *???
       *        ＦＤ出力のときは複数枚のチェックをする
                IF      WRK-PARA-DATAKBN    =   "1" OR  "3"
-                   IF    ( WRK-DATA-LENGTH +   WRK-PTNUM-LENGTH )
-                                           >   WRK-CONS-LENGTH
+                   COMPUTE WRK-LEN =
+                           WRK-DATA-LENGTH +   WRK-PTNUM-LENGTH
+                   IF      WRK-LEN         >   WRK-CONS-LENGTH
+      *???
+               DISPLAY "2008 WRITE VOL="  WRK-VOLNUM " LEN=" WRK-LEN 
+      *???
       *                合計書レコード
                        PERFORM 2008-HENSYU-SEC
+      *???
+               DISPLAY "CNT-OUT=" CNT-OUT
+      *???
       *                医療機関情報レコード
                        PERFORM 2001-HENSYU-SEC
                    END-IF
@@ -664,6 +668,7 @@
            END-PERFORM
            COMPUTE WRK-PTNUM-LENGTH    =   WRK-PTNUM-LENGTH
                                        +   WRK-REC-LENGTH
+                                       +   1
       *
            PERFORM 900-RECEDEN-READ-SEC     
            .
