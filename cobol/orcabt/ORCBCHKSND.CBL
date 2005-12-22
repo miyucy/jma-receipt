@@ -379,7 +379,7 @@
            END-PERFORM
       *
            MOVE    PATH-TBL-CHK-KEY13  TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            CLOSE   CHK-FILE
       *
@@ -601,7 +601,7 @@
            END-PERFORM
       *
            MOVE    PATH-TBL-CHK-KEY2   TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        20011-BYO-INF-HEN-EXT.
@@ -666,7 +666,7 @@
            END-PERFORM
       *
            MOVE    PATH-TBL-CHK-KEY2   TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            IF    ( FLG-INSERR           =  ZERO )
                IF    ( CNT-RENNUM      <=  ZERO )
@@ -1084,7 +1084,7 @@
       *
            MOVE    PATH-TBL-CHKSND-KEY3
                                    TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        900-CHKSND-KEY3-SEL-EXT.
@@ -1111,7 +1111,7 @@
            END-IF
       *
            MOVE    PATH-TBL-TENSU-KEY  TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        900-TENSU-KEY-SEL-EXT.
@@ -1136,7 +1136,7 @@
            END-IF
       *
            MOVE    PATH-TBL-BYOMEI-KEY TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
       *
@@ -1174,16 +1174,15 @@
       *****************************************************************
       *    テーブルクローズ処理
       *****************************************************************
-       910-DBCLOSE-SEC           SECTION.
+       910-DBCLOSECURSOR-SEC           SECTION.
       *
-      *    暫定的にコメント化
-      *    MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-      *    CALL    "MCPSUB"            USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
-       910-DBCLOSE-EXT.
+       910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢＤＥＬＥＴＥ処理

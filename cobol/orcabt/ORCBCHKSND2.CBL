@@ -339,7 +339,7 @@
            END-PERFORM
       *
            MOVE    PATH-TBL-CHKSND-KEY2    TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            IF    ( CNT-CD     >    ZERO )
                PERFORM 2001-CHKMST-INS-SEC
@@ -701,7 +701,7 @@
            END-IF
       *
            MOVE    PATH-TBL-CHK-KEY3   TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        900-CHKMST-KEY3-SEL-EXT.
@@ -728,7 +728,7 @@
            END-IF
       *
            MOVE    PATH-TBL-TENSU-KEY  TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        900-TENSU-KEY-SEL-EXT.
@@ -765,16 +765,15 @@
       *****************************************************************
       *    テーブルクローズ処理
       *****************************************************************
-       910-DBCLOSE-SEC           SECTION.
+       910-DBCLOSECURSOR-SEC           SECTION.
       *
-      *    暫定的にコメント化
-      *    MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-      *    CALL    "MCPSUB"            USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
-       910-DBCLOSE-EXT.
+       910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢＵＰＤＡＴＥ処理

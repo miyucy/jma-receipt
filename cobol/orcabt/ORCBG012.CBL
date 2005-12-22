@@ -620,7 +620,7 @@
            END-PERFORM
       *
            MOVE    PATH-TBL-SYSKANRI-KEY5  TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        1001-SRYKALST-HEN-EXT.
@@ -799,7 +799,7 @@
       *
       *
            MOVE    PATH-TBL-SYUNOU-KEY34   TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            CLOSE   BG012SRT-FILE
       *
@@ -1279,7 +1279,7 @@
            END-IF
       *
            MOVE    PATH-TBL-PTNUM-KEY  TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        900-PTNUM-KEY-SEL-EXT.
@@ -1305,7 +1305,7 @@
            END-IF
       *
            MOVE    PATH-TBL-PTINF-KEY  TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        900-PTINF-KEY-SEL-EXT.
@@ -1342,16 +1342,15 @@
       *****************************************************************
       *    テーブルクローズ処理
       *****************************************************************
-       910-DBCLOSE-SEC           SECTION.
+       910-DBCLOSECURSOR-SEC           SECTION.
       *
-      *    暫定的にコメント化
-      *    MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-      *    CALL    "MCPSUB"            USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
-       910-DBCLOSE-EXT.
+       910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ　オープン処理

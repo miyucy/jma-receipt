@@ -350,7 +350,7 @@
            END-PERFORM
       *
            MOVE    PATH-TBL-NYUINACCT-KEY27    TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            CLOSE           DCACCT-FILE
                            DCSRY-FILE
@@ -396,7 +396,7 @@
            END-PERFORM
       *
            MOVE    PATH-TBL-PTNYUINRRK-KEY41   TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            PERFORM VARYING IDX-DAY FROM    1   BY  1
                    UNTIL ( IDX-DAY >   31 )
@@ -925,7 +925,7 @@
            END-IF
       *
            MOVE    PATH-TBL-HKNCOMBI-KEY   TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        900-HKNCOMBI-KEY-SEL-EXT.
@@ -978,16 +978,16 @@
       *****************************************************************
       *    £Ä£Â¥¯¥í¡¼¥º½èÍý
       *****************************************************************
-       910-DBCLOSE-SEC                 SECTION.
+       910-DBCLOSECURSOR-SEC                 SECTION.
       *
-      *    MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-      *    CALL    "MCPSUB"            USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
       *
-       910-DBCLOSE-EXT.
+       910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
       *    £Ä£Â£Ä£Å£Ì£Å£Ô£Å½èÍý

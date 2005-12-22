@@ -294,7 +294,7 @@
       *
            MOVE    PATH-TBL-SYSKANRI-KEY2
                                        TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
       *
            .
@@ -932,7 +932,7 @@
       *
            MOVE    PATH-TBL-SYSKANRI-KEY10
                                        TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        900-SYSKANRI-KEY10-SEL-EXT.
@@ -957,7 +957,7 @@
       *
            MOVE    PATH-TBL-HKNCOMBI-KEY
                                        TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        900-HKNCOMBI-READ-EXT.
@@ -983,7 +983,7 @@
      *
            MOVE    PATH-TBL-PTRSIINF-KEY
                                        TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        900-PTRSIINF-KEY-EXT.
@@ -1007,7 +1007,7 @@
            END-IF
       *
            MOVE    PATH-TBL-PTINF-KEY  TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        900-PTINF-KEY-EXT.
@@ -1035,6 +1035,10 @@
            ELSE
                INITIALIZE              WKSYUNOU-REC
            END-IF
+      *
+           MOVE    PATH-TBL-SYUNOU-KEY38
+                                   TO  MCP-PATH
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
       *
@@ -1072,13 +1076,13 @@
       *****************************************************************
       *    テーブルクローズ処理
       *****************************************************************
-       910-DBCLOSE-SEC           SECTION.
+       910-DBCLOSECURSOR-SEC           SECTION.
       *
-      *    MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-      *    CALL    "MCPSUB"            USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
-       910-DBCLOSE-EXT.
+       910-DBCLOSECURSOR-EXT.
            EXIT.
