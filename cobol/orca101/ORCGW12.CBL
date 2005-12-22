@@ -1070,7 +1070,7 @@
                                    SPA-GMN-RECESYUBETU-PRTJYUNMEIL (5)
            MOVE    "6"             TO
                                    SPA-GMN-RECESYUBETU-PRTJYUNL    (6)
-           MOVE    "πÒ ›∞Ï»Ã°¶œ∑øÕ ›∑Ú°¶¬‡ø¶πÒ ›"      TO
+           MOVE    "¬‡ø¶πÒ ›°¶œ∑øÕ ›∑Ú°¶πÒ ›∞Ï»Ã"      TO
                                    SPA-GMN-RECESYUBETU-PRTJYUNMEIL (6)
            MOVE    6               TO  SPA-GMN-RECESYUBETU-PRTJYUN-MAX 
       *
@@ -3178,7 +3178,7 @@
                IF      SPA-ERRCD               =   SPACE  
                    IF    ( SPA-GMN-HKNJANUM-PRTKBN
                                                NOT =   SPACE )
-                   OR    ( SPA-GMN-HKNJANUM        =   SPACE )
+                   AND   ( SPA-GMN-HKNJANUM        =   SPACE )
                        MOVE    75                  TO  SPA-GMN-CUR
                        MOVE    "0098"              TO  SPA-ERRCD
                    END-IF
