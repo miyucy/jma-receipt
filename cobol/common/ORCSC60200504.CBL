@@ -408,13 +408,34 @@
            03  FILLER          PIC X(12)  VALUE    "12 160072210".
       *    超音波検査（断層撮影法）（その他）
            03  FILLER          PIC X(12)  VALUE    "12 160165010".
+      * 13
+      *    超音波（ＵＣＧ以外）（断層撮影法とＭモード法）
+           03  FILLER          PIC X(12)  VALUE    "13 160072450".
+      *    超音波（ＵＣＧ）（断層撮影法とＭモード法）
+           03  FILLER          PIC X(12)  VALUE    "13 160072510".
+      *    超音波（ＵＣＧ）（Ｍモード法）
+           03  FILLER          PIC X(12)  VALUE    "13 160072610".
+      *    超音波（ＵＣＧ以外）（Ｍモード法）
+           03  FILLER          PIC X(12)  VALUE    "13 160072750".
+      *    超音波（ＵＣＧ）（経食道的超音波法）
+           03  FILLER          PIC X(12)  VALUE    "13 160160410".
+      * 14
+      *    超音波（ドップラー法）（胎児心音観察）
+           03  FILLER          PIC X(12)  VALUE    "14 160072910".
+      *    超音波（ドップラー法）（脳動脈血流速度連続測定）
+           03  FILLER          PIC X(12)  VALUE    "14 160147110".
+      *    超音波（ドップラー法）（脳動脈血流速度マッピング法）
+           03  FILLER          PIC X(12)  VALUE    "14 160147210".
+      *    超音波（ドップラー法）（末梢血管血行動態）
+           03  FILLER          PIC X(12)  VALUE    "14 160150050".
       *
        01  TBL-KENSA-HOU-AREA-R    REDEFINES   TBL-KENSA-HOU-AREA.
-           03  TBL-KENSA-HOU-OCC       OCCURS  56  INDEXED  KEN-IDX.
+      **** 03  TBL-KENSA-HOU-OCC       OCCURS  56  INDEXED  KEN-IDX.
+           03  TBL-KENSA-HOU-OCC       OCCURS  65  INDEXED  KEN-IDX.
                05  TBL-KEN-HOU         PIC X(02).
                05  TBL-FILLER          PIC X(01).
                05  TBL-KEN-SRYCD       PIC X(09).
-       01  KEN-IDX-MAX                 PIC 9(04)   VALUE   56.
+       01  KEN-IDX-MAX                 PIC 9(04)   VALUE   65.
       *
       *****************************************************************
       *    重複算定不可テーブル
@@ -1093,15 +1114,6 @@
                                                            (IDX-TEI)
                END-IF
            END-IF
-      *    今回入力分
-           IF      SPA-NYUGAIKBN       =   "1"
-              ADD      WRK-COM-NYU-KAI(IDX-TEIGEN)
-                                           TO  LNK-ORCSC-TEIGEN-CNT
-                                                              (IDX-TEI)
-           ELSE
-               ADD     LNK-ORCSC-KAISU     TO  LNK-ORCSC-TEIGEN-CNT
-                                                             (IDX-TEI)
-           END-IF
       *
       *    同一算定検査がある時、すべての検査回数を算定する
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -1128,6 +1140,15 @@
                MOVE    "0096"              TO  WRK-ERRCD
                MOVE    "1"                 TO  WRK-COM-CUR (IDX-TEIGEN)
                GO      TO      100812-TEIGEN-CHK-EXT
+           END-IF
+      *    今回入力分
+           IF      SPA-NYUGAIKBN       =   "1"
+              ADD      WRK-COM-NYU-KAI(IDX-TEIGEN)
+                                           TO  LNK-ORCSC-TEIGEN-CNT
+                                                              (IDX-TEI)
+           ELSE
+               ADD     LNK-ORCSC-KAISU     TO  LNK-ORCSC-TEIGEN-CNT
+                                                             (IDX-TEI)
            END-IF
       *
            IF      LNK-ORCSC-TEIGEN-SANTEI(IDX-TEI) >   ZERO
