@@ -779,6 +779,7 @@
       *    ¿Ç»¡ÎÁ¤ÎÈ½Äê
            PERFORM 100110-SINSATU-CHK-SEC
       *
+           MOVE    ZERO                 TO  FLG-DEL
            EVALUATE    TRUE
       *        ºßÂð¿Ç»¡ÎÁ¤¬Í­¤ë»þ
                WHEN    LNK-ORCSC-HOUMON-ARI    =   1
@@ -794,10 +795,12 @@
       *       ¿²¤¿¤­¤êÏ·¿ÍÂà±¡»þ¶¦Æ±»ØÆ³ÎÁ¤ÎÈ½Äê
                WHEN     SPA-KAIHOU2-ARI     =   1
                    PERFORM 100113-KAIHOU2-CHK-SEC
-      *
-               WHEN    OTHER
-                   PERFORM 100114-SYUGISYORI-CHK-SEC
            END-EVALUATE
+      *
+           IF      (FLG-DEL            =   ZERO )  AND
+                   (WRK-ERRCD          =   SPACE)
+               PERFORM 100114-SYUGISYORI-CHK-SEC
+           END-IF
            .
        10011-SYUGISYORI-EXT.
            EXIT.
@@ -857,9 +860,10 @@
            IF      WRK-COM-SRYKBN (IDX-Z)  =   "12"
                INITIALIZE              WRK-GMN-TBLREC(IDX-Z)
                INITIALIZE              WRK-COM-TBLREC(IDX-Z)
+               MOVE    1                   TO  FLG-DEL
            ELSE
                IF     (FLG-TBL             =   ZERO )  AND
-                      (SPA-ERRCD           =   SPACE)
+                      (WRK-ERRCD           =   SPACE)
       *        ½é¿ÇÎÁ¤¬»»ÄêºÑ¤ß¤Ç¤¢¤ë¤³¤È
                    IF     (LNK-ORCSC-SYOYMD    =   SPACE ) OR
                          ((LNK-ORCSC-SYORIFLG  =   1  )  AND
@@ -1413,12 +1417,12 @@
                MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
            END-IF
       *    ºßÂðÎÁ
-           IF      WRK-COM-SRYKBN (IDX-Z)  =   "14"
-               IF      WRK-ERRCD       =   SPACE
-                   MOVE    "8017"          TO  WRK-ERRCD
-               END-IF
-               MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
-           END-IF
+      **** IF      WRK-COM-SRYKBN (IDX-Z)  =   "14"
+      *        IF      WRK-ERRCD       =   SPACE
+      *            MOVE    "8017"          TO  WRK-ERRCD
+      *        END-IF
+      *        MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+      **** END-IF
       *
            .
        100113-RSI-AFTCHK-EXT.
