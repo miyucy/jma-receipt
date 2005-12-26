@@ -95,6 +95,7 @@
            03  FLG-RIGAKU          PIC 9(01).
       *
            03  FLG-SOUKIKSN          PIC 9(01).
+           03  FLG-KYUSEI-CHK        PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -201,6 +202,21 @@
                 05   WRK-SYO-DD    PIC 9(02).
       *    診療日
            03   WRK-SRYYMD         PIC X(08).
+      *    急性発生日＋15
+           03   WRK-KYUSEI-15      PIC X(08).
+      *    急性発生日＋30
+           03   WRK-KYUSEI-30      PIC X(08).
+      *    急性発生日＋14
+           03   WRK-KYUSEI-14      PIC X(08).
+      *    急性発生日＋31
+           03   WRK-KYUSEI-31      PIC X(08).
+           03   WRK-KYUSEI-89      PIC X(08).
+           03   WRK-KYUSEI-YMD     PIC X(08).
+           03   WRK-KYUSEI         PIC X(08).
+           03   WRK-EDMM           PIC X(02).
+           03   WRK-EDDD           PIC X(02).
+      *
+           03   WRK-RIHA-KBN       PIC X(01).
       *
       *    自賠責金額用
            03  WRK-KINGAK          PIC 9(08).
@@ -745,6 +761,17 @@
            IF      FLG-RIGAKU          =   ZERO
                GO      TO      100112-RIGAKU-CHK-EXT
            END-IF
+      *    急性発生日計算処理
+           IF     (SPA-KYUSEI-YMD      =   SPACE ) AND
+                  (SPA-KYUSEI-FLG      =   ZERO  )
+               MOVE    SPACE           TO  WRK-KYUSEI-15
+               MOVE    SPACE           TO  WRK-KYUSEI-30
+               MOVE    SPACE           TO  WRK-KYUSEI-14
+               MOVE    SPACE           TO  WRK-KYUSEI-31
+               MOVE    SPACE           TO  WRK-KYUSEI-YMD
+           ELSE
+               PERFORM 1001121-KYUSEIYMD15-SEC
+           END-IF
       *
            IF     (SPA-NYUGAIKBN       =   "2" ) OR
                   (LNK-ORCSC-SYORIFLG  =   1   )
@@ -763,6 +790,73 @@
            EXIT.
       *
       *****************************************************************
+      *     急性発生日計算処理
+      *****************************************************************
+       1001121-KYUSEIYMD15-SEC          SECTION.
+      *
+           IF      (SPA-KYUSEI-FLG      =   1    )  AND
+                   (LNK-ORCSC-KYUSEI-YMD    NOT =  SPACE )
+               MOVE    LNK-ORCSC-KYUSEI-YMD TO  WRK-KYUSEI-YMD
+           ELSE
+               MOVE    SPA-KYUSEI-YMD       TO  WRK-KYUSEI-YMD
+           END-IF
+      *    14日後計算
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY6-AREA
+           MOVE    "61"                TO  LNK-DAY6-IRAI
+           MOVE    WRK-KYUSEI-YMD      TO  LNK-DAY6-KIJUN
+           MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
+           MOVE    14                  TO  LNK-DAY6-ZOGEN
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY6-AREA
+           MOVE    LNK-DAY6-KOYOMI     TO  WRK-KYUSEI-14
+      *
+      *    15日後計算
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY6-AREA
+           MOVE    "61"                TO  LNK-DAY6-IRAI
+           MOVE    WRK-KYUSEI-YMD      TO  LNK-DAY6-KIJUN
+           MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
+           MOVE    15                  TO  LNK-DAY6-ZOGEN
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY6-AREA
+           MOVE    LNK-DAY6-KOYOMI     TO  WRK-KYUSEI-15
+      *    30日後計算
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY6-AREA
+           MOVE    "61"                TO  LNK-DAY6-IRAI
+           MOVE    WRK-KYUSEI-YMD      TO  LNK-DAY6-KIJUN
+           MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
+           MOVE    30                  TO  LNK-DAY6-ZOGEN
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY6-AREA
+           MOVE    LNK-DAY6-KOYOMI     TO  WRK-KYUSEI-30
+      *    31日後計算
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY6-AREA
+           MOVE    "61"                TO  LNK-DAY6-IRAI
+           MOVE    WRK-KYUSEI-YMD      TO  LNK-DAY6-KIJUN
+           MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
+           MOVE    31                  TO  LNK-DAY6-ZOGEN
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY6-AREA
+           MOVE    LNK-DAY6-KOYOMI     TO  WRK-KYUSEI-31
+      *    89日後計算
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY6-AREA
+           MOVE    "61"                TO  LNK-DAY6-IRAI
+           MOVE    WRK-KYUSEI-YMD      TO  LNK-DAY6-KIJUN
+           MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
+           MOVE    89                  TO  LNK-DAY6-ZOGEN
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY6-AREA
+           MOVE    LNK-DAY6-KOYOMI     TO  WRK-KYUSEI-89
+      *
+           .
+       1001121-KYUSEIYMD15-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *     精神通院の逓減チェック処理
       *****************************************************************
        100113-SEISIN-CHK-SEC            SECTION.
@@ -771,7 +865,6 @@
            IF      SPA-HKNCOMBINUM     =   "9999"
                GO      TO      100113-SEISIN-CHK-EXT
            END-IF
-      *
       *
            IF      WRK-COM-INPUTCD (IDX-Z) =   "180012210"  OR
                                                "180012310"  OR
@@ -1711,6 +1804,7 @@
       *
            MOVE    ZERO                TO  FLG-SOUKI-ARI
            MOVE    ZERO                TO  IDX-KSN
+           MOVE    SPACE               TO  WRK-RIHA-KBN
       *
            PERFORM VARYING     IDX-R   FROM    1   BY  1
                    UNTIL      (IDX-R       >   200     )   OR
@@ -1741,10 +1835,17 @@
        200221-SOUKIKSN-KIKANCHK-SEC            SECTION.
       *
       *    急性発生９０日以内
+           MOVE    ZERO                 TO  FLG-KYUSEI-CHK
            IF      (LNK-ORCSC-KYUSEI-FLG   =   1   )  OR
                   ((LNK-ORCSC-KYUSEI-90    NOT =   SPACE ) AND
                    (LNK-ORCSC-KYUSEI-90    >   WRK-SRYYMD))
-               CONTINUE
+               MOVE    1                   TO  FLG-KYUSEI-CHK
+           END-IF
+           IF      FLG-KYUSEI-CHK          =   1
+      *        （イ）（ロ）（ハ）日数チェック
+               IF      WRK-RIHA-KBN        NOT =   SPACE
+                   PERFORM 2002211-SOUKIKSN-NISUU-SEC
+               END-IF
            ELSE
                IF      IDX-KSN             =   ZERO
                    MOVE    IDX-Z           TO  IDX-KSN
@@ -1759,6 +1860,164 @@
            END-IF
            .
        200221-SOUKIKSN-KIKANCHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    （イ）（ロ）（ハ）日数チェック処理
+      *****************************************************************
+       2002211-SOUKIKSN-NISUU-SEC            SECTION.
+      *
+           EVALUATE    WRK-RIHA-KBN
+               WHEN    "1"
+      *            （イ）１４日以内
+                   IF     (WRK-SRYYMD      >=  WRK-KYUSEI-YMD   ) AND
+                          (WRK-SRYYMD      <   WRK-KYUSEI-15    ) AND
+                         ((LNK-ORCSC-KYUSEI-END    =   SPACE  )  OR
+                          (WRK-SRYYMD      <=  LNK-ORCSC-KYUSEI-END ))
+                       CONTINUE
+                   ELSE
+                       STRING  "早期リハビリテーション加算（イ）の"
+                                               DELIMITED  BY  SIZE
+                               "算定期間は発生日から"
+                                               DELIMITED  BY  SIZE
+                               WRK-KYUSEI-14(5:2)
+                                               DELIMITED  BY  SIZE
+                               "月"
+                                               DELIMITED  BY  SIZE
+                               WRK-KYUSEI-14(7:2)
+                                               DELIMITED  BY  SIZE
+                               "日です。"
+                                               DELIMITED  BY  SIZE
+                                           INTO    LNK-ORCSC-ERRMSG
+                       END-STRING
+                       MOVE    "K098"          TO  SPA-ERRCD
+                       IF      (LNK-ORCSC-KYUSEI-END  NOT =   SPACE) AND
+                               (WRK-KYUSEI-14  <   LNK-ORCSC-KYUSEI-END)
+                           MOVE    SPACE           TO  LNK-ORCSC-ERRMSG
+                           MOVE    "K101"          TO  SPA-ERRCD
+                       END-IF
+                   END-IF
+               WHEN    "2"
+      *            （ロ）１５日から３０日
+                   IF     (WRK-SRYYMD      >=  WRK-KYUSEI-15 ) AND
+                          (WRK-SRYYMD      <=  WRK-KYUSEI-30 ) AND
+                         ((LNK-ORCSC-KYUSEI-END    =   SPACE  )  OR
+                          (WRK-SRYYMD      <=  LNK-ORCSC-KYUSEI-END ))
+                       CONTINUE
+                   ELSE
+                       IF      (LNK-ORCSC-KYUSEI-END  NOT =   SPACE) AND
+                               (WRK-KYUSEI-15  >=  LNK-ORCSC-KYUSEI-END)
+                           MOVE    "K101"          TO  SPA-ERRCD
+                       END-IF
+                       IF      (LNK-ORCSC-KYUSEI-END  NOT =   SPACE) AND
+                               (WRK-KYUSEI-30  >   LNK-ORCSC-KYUSEI-END)
+                           MOVE    LNK-ORCSC-KYUSEI-END(5:2)
+                                                   TO  WRK-EDMM
+                           MOVE    LNK-ORCSC-KYUSEI-END(7:2)
+                                                   TO  WRK-EDDD
+                       ELSE
+                           MOVE    WRK-KYUSEI-30(5:2)
+                                                   TO  WRK-EDMM
+                           MOVE    WRK-KYUSEI-30(7:2)
+                                                   TO  WRK-EDDD
+                       END-IF
+                       STRING  "早期リハビリテーション加算（ロ）の"
+                                               DELIMITED  BY  SIZE
+                               "算定期間は"
+                                               DELIMITED  BY  SIZE
+                               WRK-KYUSEI-15(5:2)
+                                               DELIMITED  BY  SIZE
+                               "月"
+                                               DELIMITED  BY  SIZE
+                               WRK-KYUSEI-15(7:2)
+                                               DELIMITED  BY  SIZE
+                               "日から"
+                                               DELIMITED  BY  SIZE
+                               WRK-EDMM
+                                               DELIMITED  BY  SIZE
+                               "月"
+                                               DELIMITED  BY  SIZE
+                               WRK-EDDD
+                                               DELIMITED  BY  SIZE
+                               "日です。"
+                                               DELIMITED  BY  SIZE
+                                           INTO    LNK-ORCSC-ERRMSG
+                       END-STRING
+                       IF      SPA-ERRCD       =   SPACE
+                           MOVE    "K098"          TO  SPA-ERRCD
+                       ELSE
+                           MOVE    SPACE           TO  LNK-ORCSC-ERRMSG
+                       END-IF
+                   END-IF
+               WHEN    "3"
+      *            （ハ）３０日以上
+                   IF     (WRK-SRYYMD      >=  WRK-KYUSEI-31 ) AND
+                          (WRK-SRYYMD      <   LNK-ORCSC-KYUSEI-90) AND
+                         ((LNK-ORCSC-KYUSEI-END    =   SPACE  )  OR
+                          (WRK-SRYYMD      <=  LNK-ORCSC-KYUSEI-END ))
+                       CONTINUE
+                   ELSE
+                       IF      (LNK-ORCSC-KYUSEI-END  NOT =   SPACE) AND
+                               (WRK-KYUSEI-31  >=  LNK-ORCSC-KYUSEI-END)
+                           MOVE    "K101"          TO  SPA-ERRCD
+                       END-IF
+                       IF      (LNK-ORCSC-KYUSEI-END  NOT =   SPACE) AND
+                               (WRK-KYUSEI-89  >   LNK-ORCSC-KYUSEI-END)
+                           MOVE    LNK-ORCSC-KYUSEI-END(5:2)
+                                                   TO  WRK-EDMM
+                           MOVE    LNK-ORCSC-KYUSEI-END(7:2)
+                                                   TO  WRK-EDDD
+                       ELSE
+                           MOVE    WRK-KYUSEI-89(5:2)
+                                                   TO  WRK-EDMM
+                           MOVE    WRK-KYUSEI-89(7:2)
+                                                   TO  WRK-EDDD
+                       END-IF
+                       STRING  "早期リハビリテーション加算（ハ）の"
+                                               DELIMITED  BY  SIZE
+                               "算定期間は"
+                                               DELIMITED  BY  SIZE
+                               WRK-KYUSEI-31(5:2)
+                                               DELIMITED  BY  SIZE
+                               "月"
+                                               DELIMITED  BY  SIZE
+                               WRK-KYUSEI-31(7:2)
+                                               DELIMITED  BY  SIZE
+                               "日から"
+                                               DELIMITED  BY  SIZE
+                               WRK-EDMM
+                                               DELIMITED  BY  SIZE
+                               "月"
+                                               DELIMITED  BY  SIZE
+                               WRK-EDDD
+                                               DELIMITED  BY  SIZE
+                               "日です。"
+                                               DELIMITED  BY  SIZE
+                                           INTO    LNK-ORCSC-ERRMSG
+                       END-STRING
+                       IF      SPA-ERRCD       =   SPACE
+                           MOVE    "K098"          TO  SPA-ERRCD
+                       ELSE
+                           MOVE    SPACE           TO  LNK-ORCSC-ERRMSG
+                       END-IF
+                   END-IF
+           END-EVALUATE
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               IF      IDX-KSN             =   ZERO
+                   MOVE    IDX-Z           TO  IDX-KSN
+               END-IF
+               IF     (WRK-COM-KZMFLG (IDX-KSN) =   SPACE) AND
+                      (LNK-ORCSC-KEI-IDX        =   ZERO )
+                   MOVE    "1"             TO  WRK-COM-CUR (IDX-KSN)
+                   MOVE    "1"             TO  WRK-COM-KZMFLG(IDX-KSN)
+                   MOVE    IDX-KSN         TO  LNK-ORCSC-KEI-IDX
+               ELSE
+                   MOVE    SPACE           TO  SPA-ERRCD
+               END-IF
+           END-IF
+           .
+       2002211-SOUKIKSN-NISUU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2052,6 +2311,7 @@
            END-SEARCH
       *
            MOVE    ZERO                TO  FLG-SOUKIKSN
+           MOVE    SPACE               TO  WRK-RIHA-KBN
            IF      FLG-SOUKI           =   ZERO
       *
       *        理学療法外来移行加算
@@ -2059,9 +2319,12 @@
                SEARCH      TBL-RIHABIRI-OCC   VARYING   TBL-RIDX
                        AT  END
                            MOVE    ZERO            TO  FLG-SOUKIKSN
+                           MOVE   SPACE            TO  WRK-RIHA-KBN
                        WHEN    WRK-SRYCD           =   TBL-RIHA-SRYCD
                                                            (TBL-RIDX)
                            MOVE    1               TO  FLG-SOUKIKSN
+                           MOVE    TBL-RIHA-KBN (TBL-RIDX)
+                                                   TO  WRK-RIHA-KBN
                END-SEARCH
            END-IF
       *

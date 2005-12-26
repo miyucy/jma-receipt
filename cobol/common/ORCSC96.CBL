@@ -509,6 +509,18 @@
                                        TO  SPA-ERRMSG
                    MOVE    "急性発症日から９０日以内に算定できます。"
                                        TO  SPA-ERRMSG(25:)
+               WHEN    "K098"
+                   STRING  "警告！早期リハビリテーション加算の"
+                                       DELIMITED   BY  SIZE
+                           "期間が違います。"
+                                       DELIMITED   BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "K101"
+                   STRING  "警告！急性発症日終了日以降の日です。"
+                                       DELIMITED   BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "0110"
                    MOVE    "他保険にて診察料算定済のコメントは"
                                        TO  SPA-ERRMSG
