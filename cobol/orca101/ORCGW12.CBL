@@ -538,6 +538,8 @@
                    07  SPA-NAI-STYUKYMD       PIC 9(08).
                    07  SPA-NAI-EDYUKYMD       PIC 9(08).
       *
+               05  SPA-1001-PREFNUM           PIC 9(02). 
+      *
            COPY    "ENUM-VALUE".
       *
       *
@@ -593,6 +595,9 @@
       *
       *    システム管理マスタ
            COPY  "CPSYSKANRI.INC".
+      *
+      *    医療機関情報
+           COPY    "CPSK1001.INC".
       *
       *    レセプト印刷情報
            COPY  "CPSK2005.INC".
@@ -1097,6 +1102,20 @@
            MOVE    "市町村国保の最後に印刷"
                                    TO  SPA-GMN-HKNJANUM-PRTKBNMEIL (2)
            MOVE    2               TO  SPA-GMN-HKNJANUM-PRTKBN-MAX 
+      *
+      *       医療機関情報
+           MOVE    SPACE               TO  SYS-1001-REC
+           INITIALIZE                      SYS-1001-REC
+           MOVE    "1001"                  TO  SYS-1001-KANRICD
+           MOVE    "*"                     TO  SYS-1001-KBNCD
+           MOVE    SPA-W01-SEL-STYUKYMD    TO  SYS-1001-STYUKYMD
+                                               SYS-1001-EDYUKYMD
+           MOVE    SYS-1001-REC            TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI            =   ZERO
+               MOVE    MCPDATA-REC             TO  SYS-1001-REC
+               MOVE    SYS-1001-PREFNUM        TO  SPA-1001-PREFNUM
+           END-IF 
       *
       *    レセプト・総括編集情報
            MOVE    SPACE               TO  SYS-2005-REC
@@ -2849,7 +2868,17 @@
                MOVE    HKNJAINF-REC        TO  MCPDATA-REC
                PERFORM 900-HKNJAINF-READ-SEC
                IF      FLG-HKNJAINF        =   ZERO
-                   MOVE    HKNJA-HKNJANAME     TO SPA-GMN-HKNJANAME
+                   MOVE    HKNJA-HKNJANAME     TO  SPA-GMN-HKNJANAME
+                   IF      HKNJA-HKNNUM    NOT =   "060"      
+                       MOVE    75                      TO  SPA-GMN-CUR
+                       MOVE    "0026"                  TO  SPA-ERRCD
+                   ELSE
+                       IF      HKNJA-HKNJANUM (1:2)
+                                               NOT =   SPA-1001-PREFNUM
+                           MOVE    75                  TO  SPA-GMN-CUR
+                           MOVE    "0029"              TO  SPA-ERRCD
+                       END-IF
+                   END-IF
                ELSE
                    MOVE    75                      TO  SPA-GMN-CUR
                    MOVE    "0026"                  TO  SPA-ERRCD
@@ -3630,6 +3659,9 @@
                                                          TO  SPA-ERRMSG
                WHEN    "0028"
                    MOVE    "一括作成出力順（国保）入力エラー"
+                                                         TO  SPA-ERRMSG
+               WHEN    "0029"
+                   MOVE    "所在地保険者は県内の保険者を入力して下さい"
                                                          TO  SPA-ERRMSG
                WHEN    "0097"
                    MOVE    "印刷順に未入力の項目があります"
