@@ -571,6 +571,9 @@
            03  WRK-SYOHOU-PG           PIC X(20).
            03  WRK-CHUSYA-PG           PIC X(20).
            03  WRK-SIJISEN-PG          PIC X(20).
+      *    急性発生日
+           03  WRK-KYUSEI-YMD          PIC X(08).
+           03  WRK-KYUSEI-END          PIC X(08).
       *
       *   年齢表示
        01  WRK-NENREI-G.
@@ -5696,6 +5699,8 @@
            MOVE    ZERO                TO  FLG-NAIFUTAN
            MOVE    ZERO                TO  WRK-KAISU
            INITIALIZE                      WRK-NYUIN-AREA
+           MOVE    SPACE               TO  WRK-KYUSEI-YMD
+           MOVE    SPACE               TO  WRK-KYUSEI-END
            PERFORM VARYING     IDX     FROM    WRK-GYO-MAX BY  -1
                    UNTIL       IDX     <   1
                IF     (SPA-GMN-INPUTCD (IDX)   =   SPACE )  AND
@@ -5753,6 +5758,11 @@
                    END-IF
       *            入院回数入力分以外
                    IF      SPA-GMN-INPUTCD(IDX)(1:1)   NOT =   "*"
+      *                算定日が違った時、警告クリア
+                       IF      WRK-NYUIN-AREA  NOT =
+                                               SPA-COM-NYUIN-AREA(IDX)
+                           MOVE    SPACE       TO  SPA-COM-KZMFLG(IDX)
+                       END-IF
                        MOVE    WRK-KAISU       TO  SPA-COM-KAISU (IDX)
                        MOVE    WRK-NYUIN-AREA  TO  SPA-COM-NYUIN-AREA
                                                                  (IDX)
@@ -5760,6 +5770,11 @@
       *            その他の算定有無
                    IF      SPA-COM-SRYKBN (IDX)    =   "80"
                        MOVE    1               TO  FLG-SONOTA
+      *                急性発生日判定
+                       IF      SPA-COM-INPUTCD(IDX)    =   "099800101"
+                                                       OR  "099800102"
+                           PERFORM 51019-KYUSEI-SEC
+                       END-IF
                    END-IF
       *            内分泌負担試験有無
                    IF     (SPA-COM-SRYKBN (IDX)    =   "60"  )  AND
@@ -6143,6 +6158,36 @@
        51019-NYUIN-SANCHK-EXT.
            EXIT.
       *****************************************************************
+      *    急性発生設定処理
+      *****************************************************************
+       51019-KYUSEI-SEC             SECTION.
+      *    急性発生日判定
+           IF      SPA-COM-INPUTCD(IDX)    =   "099800101"
+               MOVE    SPA-SRYYMD          TO  WRK-KYUSEI-YMD
+               PERFORM VARYING IDX-N2      FROM    1   BY  1
+                       UNTIL  (IDX-N2      >   31  )   OR
+                             (SPA-ERRCD   NOT =   SPACE )
+                   IF      SPA-COM-NYUINDAY(IDX IDX-N2)    >   ZERO
+                       MOVE    IDX-N2          TO  WRK-KYUSEI-YMD(7:2)
+                   END-IF
+               END-PERFORM
+           END-IF
+      *    急性発生終了日判定
+           IF      SPA-COM-INPUTCD(IDX)    =   "099800102"
+               MOVE    SPA-SRYYMD          TO  WRK-KYUSEI-END
+               PERFORM VARYING IDX-N2      FROM    1   BY  1
+                       UNTIL  (IDX-N2      >   31  )   OR
+                             (SPA-ERRCD   NOT =   SPACE )
+                   IF      SPA-COM-NYUINDAY(IDX IDX-N2)    >   ZERO
+                       MOVE    IDX-N2          TO  WRK-KYUSEI-END(7:2)
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+           .
+       51019-KYUSEI-EXT.
+           EXIT.
+      *****************************************************************
       *    剤ごとの処理
       *****************************************************************
        5102-ZAIBETU-SEC             SECTION.
@@ -6236,6 +6281,9 @@
            MOVE    SPA-KYUSEI-90       TO  LNK-ORCSC-KYUSEI-90
            MOVE    SPA-KYUSEI-180      TO  LNK-ORCSC-KYUSEI-180
            MOVE    SPA-KYUSEI-FLG      TO  LNK-ORCSC-KYUSEI-FLG
+      *    急性発生日
+           MOVE    WRK-KYUSEI-YMD      TO  LNK-ORCSC-KYUSEI-YMD
+           MOVE    WRK-KYUSEI-END      TO  LNK-ORCSC-KYUSEI-END
       *    当月外来管理加算の取れない患者
            MOVE    SPA-GAIRAI-NASI     TO  LNK-ORCSC-GAIRAI-NASI
       *    再診チェック済
@@ -7357,6 +7405,9 @@
            MOVE    SPA-KYUSEI-90       TO  LNK-ORCSC-KYUSEI-90
            MOVE    SPA-KYUSEI-180      TO  LNK-ORCSC-KYUSEI-180
            MOVE    SPA-KYUSEI-FLG      TO  LNK-ORCSC-KYUSEI-FLG
+      *    急性発生日
+           MOVE    WRK-KYUSEI-YMD      TO  LNK-ORCSC-KYUSEI-YMD
+           MOVE    WRK-KYUSEI-END      TO  LNK-ORCSC-KYUSEI-END
       *    当月外来管理加算の取れない患者
            MOVE    SPA-GAIRAI-NASI     TO  LNK-ORCSC-GAIRAI-NASI
       *    労災用 外来管理点数

@@ -633,6 +633,9 @@
            03  WRK-SYONIKA-KBN         PIC X(01).
       *    訂正時の点数判定
            03  WRK-MAE-TENSU           PIC 9(08).
+      *    急性発生日
+           03  WRK-KYUSEI-YMD          PIC X(08).
+           03  WRK-KYUSEI-END          PIC X(08).
       *
       *    小児科外来診察料テーブル
            COPY   "CMSYONIKATBL.INC".
@@ -7422,6 +7425,8 @@
            MOVE    ZERO                TO  FLG-SONOTA
            MOVE    ZERO                TO  FLG-NAIFUTAN
            MOVE    ZERO                TO  WRK-KAISU
+           MOVE    SPACE               TO  WRK-KYUSEI-YMD
+           MOVE    SPACE               TO  WRK-KYUSEI-END
            PERFORM VARYING     IDX     FROM    200 BY  -1
                    UNTIL       IDX     <   1
                IF     (SPA-GMN-INPUTCD (IDX)   =   SPACE )  AND
@@ -7445,6 +7450,13 @@
       *            その他の算定有無
                    IF      SPA-COM-SRYKBN (IDX)    =   "80"
                        MOVE    1               TO  FLG-SONOTA
+      *                急性発生日判定
+                       IF      SPA-COM-INPUTCD(IDX)    =   "099800101"
+                           MOVE    SPA-SRYYMD      TO  WRK-KYUSEI-YMD
+                       END-IF
+                       IF      SPA-COM-INPUTCD(IDX)    =   "099800102"
+                           MOVE    SPA-SRYYMD      TO  WRK-KYUSEI-END
+                       END-IF
                    END-IF
       *            内分泌負担試験有無
                    IF     (SPA-COM-SRYKBN (IDX)    =   "60"  )  AND
@@ -7810,6 +7822,9 @@
            MOVE    SPA-KYUSEI-90       TO  LNK-ORCSC-KYUSEI-90
            MOVE    SPA-KYUSEI-180      TO  LNK-ORCSC-KYUSEI-180
            MOVE    SPA-KYUSEI-FLG      TO  LNK-ORCSC-KYUSEI-FLG
+      *    急性発生日
+           MOVE    WRK-KYUSEI-YMD      TO  LNK-ORCSC-KYUSEI-YMD
+           MOVE    WRK-KYUSEI-END      TO  LNK-ORCSC-KYUSEI-END
       *    当月外来管理加算の取れない患者
            MOVE    SPA-GAIRAI-NASI     TO  LNK-ORCSC-GAIRAI-NASI
       *    再診チェック済
