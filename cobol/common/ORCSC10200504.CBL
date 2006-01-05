@@ -246,6 +246,7 @@
            03  WRK-SANTEI-CNT          PIC 9(04).
       *    特定薬剤初回算定日
            03  WRK-SANTEI-YMD          PIC X(08).
+           03  WRK-COM-YM              PIC X(06).
            03  WRK-WYM.
                05  WRK-WYY             PIC X(02).
                05  WRK-WMM             PIC X(02).
@@ -2297,6 +2298,8 @@
            END-IF
       *
            MOVE    ZERO                 TO  IDX-S
+      *    初回算定コメント判定
+           PERFORM 100110-COMMNT-CHK-SEC
       *    初回算定日の編集
            MOVE    SPACE               TO  WRK-SYOKAI-YMD
            MOVE    ZERO                TO  WRK-SYOKAI
@@ -2355,7 +2358,22 @@
       *    訂正の時、初回算定日と診療日が同じ時、初回分とする
            IF     (LNK-ORCSC-SYORIFLG   =   1  )  AND
                   (WRK-SYOKAI-YMD       =   SPA-SRYYMD)
-               MOVE    SPACE            TO  WRK-SYOKAI-YMD
+      *        初回算定年月
+               IF      (WRK-COM-YM      NOT =   SPACE )  AND
+                       (WRK-COM-YM          <   WRK-SYOKAI-YMD(1:6))
+                   CONTINUE
+               ELSE
+                   MOVE    SPACE            TO  WRK-SYOKAI-YMD
+               END-IF
+           END-IF
+           IF     (LNK-ORCSC-SYORIFLG   =   1  )  AND
+                  (WRK-SYOKAI-YMD       <   SPA-SRYYMD)
+      *        初回算定年月
+               IF      (WRK-COM-YM      NOT =   SPACE )  AND
+                       (WRK-COM-YM          >   WRK-SYOKAI-YMD(1:6))
+                 AND   (WRK-COM-YM          =   SPA-SRYYMD (1:6))
+                   MOVE    SPACE            TO  WRK-SYOKAI-YMD
+               END-IF
            END-IF
       *    すでに初回算定日がある時、初回算定日に入れる
            IF      LNK-ORCSC-TOKTEI-YMD    NOT =   SPACE
@@ -2404,6 +2422,11 @@
                EVALUATE    WRK-COM-INPUTCD (IDX-Z)
       *            特定薬剤治療管理料
                    WHEN    "113000410"
+      *                初回算定年月のコメントがあり、診療年月以前の場合
+                       IF      (WRK-COM-YM NOT =   SPACE )  AND
+                               (WRK-COM-YM     <   WRK-SANTEI-YMD(1:6))
+                           CONTINUE
+                       ELSE
       *                特定薬剤治療管理加算１回目自動発生
                        MOVE    "113000770"     TO  WRK-SRYCD
                        PERFORM 1110-KASAN-CHK-SEC
@@ -2416,6 +2439,9 @@
       *                特定薬剤治療管理料初回算定追加
                        MOVE    "840000038"         TO  WRK-SRYCD
                        PERFORM 100112-COMMT1-SEC
+      *
+                       END-IF
+      *
       *            特定薬剤治療管理料（ジギタリス製剤等）
                    WHEN    "180000110"
                    WHEN    "180000210"
@@ -2551,9 +2577,50 @@
                MOVE    SPA-SRYYMD          TO  WRK-SYOKAI-YMD
            END-IF
       *
-           MOVE    WRK-SYOKAI-YMD      TO  LNK-ORCSC-TOKTEI-YMD
+           IF      WRK-SYOKAI-YMD      >   LNK-ORCSC-TOKTEI-YMD
+               MOVE    WRK-SYOKAI-YMD      TO  LNK-ORCSC-TOKTEI-YMD
+           END-IF
            .
        10011-TOKUYAKU-EXT.
+           EXIT.
+      *****************************************************************
+      *     初回算定コメント判定処理
+      *****************************************************************
+       100110-COMMNT-CHK-SEC           SECTION.
+      *
+           MOVE    SPACE               TO  WRK-COM-YM
+      *
+           PERFORM VARYING     IDX1    FROM    1   BY  1
+                   UNTIL      (IDX1        >   200     )   OR
+                              (WRK-GMN-INPUTCD (IDX1)  =   SPACE ) OR
+                              (WRK-COM-YM      NOT =   SPACE )
+               EVALUATE    WRK-COM-INPUTCD (IDX1)
+                   WHEN    "840000038"
+                       IF     (WRK-COM-ATAI1(IDX1) NOT =   SPACE ) AND
+                              (WRK-COM-ATAI2(IDX1) NOT =   SPACE )
+                           MOVE    WRK-COM-ATAI1(IDX1)(1:2)  TO  WRK-WYY
+                           MOVE    WRK-COM-ATAI2(IDX1)(1:2)  TO  WRK-WMM
+      *        入力年月を西暦変換
+                           INITIALIZE                  STS-AREA-DAY
+                           INITIALIZE                  LNK-DAY1-AREA
+                           MOVE    "12"            TO  LNK-DAY1-IRAI
+                           IF      WRK-WYY         >   "60"
+                               MOVE    "3"         TO  LNK-DAY1-WYMD
+                                                                (1:1)
+                           ELSE
+                               MOVE    "4"         TO  LNK-DAY1-WYMD
+                                                                (1:1)
+                           END-IF
+                           MOVE    WRK-WYM     TO  LNK-DAY1-WYMD(2:4)
+                           MOVE    "01"        TO  LNK-DAY1-WYMD(6:2)
+                           CALL    "ORCSDAY"   USING   STS-AREA-DAY
+                                                       LNK-DAY1-AREA
+                           MOVE    LNK-DAY1-YMD(1:6)   TO  WRK-COM-YM
+                       END-IF
+               END-EVALUATE
+           END-PERFORM
+           .
+       100110-COMMNT-CHK-EXT.
            EXIT.
       *****************************************************************
       *    特定薬剤治療管理料のコメント追加処理
