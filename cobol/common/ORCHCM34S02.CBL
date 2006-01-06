@@ -141,7 +141,7 @@
                05  WRK-SKJ-SRYCD               PIC X(09)   OCCURS  20.
            03  WRK-SHOKUJIRYOYO                PIC 9(01).
            03  WRK-TOKUKANRIKASAN-G.
-               05  WRK-TOKUKANRIKASAN          PIC 9(01)   OCCURS  5.
+               05  WRK-TOKUKANRIKASAN          PIC 9(01)   OCCURS  31.
            03  WRK-TUKISTYMD                   PIC X(08).
            03  WRK-TUKIEDYMD                   PIC X(08).
            03  WRK-STDAY                       PIC 9(02).
