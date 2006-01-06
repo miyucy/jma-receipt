@@ -34,6 +34,8 @@
       *                                     ¿ÇÎÅ½êÏ·¿Í°åÎÅ´ÉÍýÎÁ
       *                                     Ï·¿ÍÀ­Ç§ÃÎ¾É¼À´µ¼£ÎÅÉÂÅïÆþ±¡ÎÁ£±
       *                                     Ï·¿ÍÀ­Ç§ÃÎ¾É¼À´µ¼£ÎÅÉÂÅïÆþ±¡ÎÁ£²
+      *  01.00.04    NACL-¾®Æ¦Âô  06/01/06  ¿©»ö¤ÎÆÃÊÌ´ÉÍý²Ã»»¤ò·îÅÓÃæ¤ÇÊÑ¹¹
+      *                                     ¤·¤¿¾ì¹ç¤ÎÂÐ½èÄÉ²Ã
       *****************************************************************
       *
       *
@@ -2374,6 +2376,27 @@
                PERFORM  910-SYSKANRI-READ-SEC
                PERFORM  UNTIL    FLG-SYSKANRI   =   1
                  MOVE   SYS-5000-STYUKYMD(7:2)  TO  IDV
+      *          ¿©»ö¤ÎÆÃÊÌ´ÉÍý²Ã»»ÂàÈò
+                 IF     SYS-5000-SHOKUCD(1)  NOT =  SPACE
+                    IF  SYS-5000-SHOKUKBN(1) =     "2"
+                        PERFORM VARYING GENSAN-IDX2 FROM IDV BY 1
+                                  UNTIL     GENSAN-IDX2   >   31
+                            MOVE  SYS-5000-SHOKUCD(1)
+                                  TO WRK-SYS5000-SHOKUCD(2 GENSAN-IDX2)
+                        END-PERFORM
+                    ELSE
+                        PERFORM VARYING GENSAN-IDX2 FROM IDV BY 1
+                                  UNTIL     GENSAN-IDX2   >   31
+                            MOVE  SPACE
+                                  TO WRK-SYS5000-SHOKUCD(2 GENSAN-IDX2)
+                        END-PERFORM
+                    END-IF
+                 ELSE
+                    PERFORM VARYING GENSAN-IDX2 FROM IDV BY 1
+                              UNTIL     GENSAN-IDX2   >   31
+                        MOVE SPACE TO WRK-SYS5000-SHOKUCD(2 GENSAN-IDX2)
+                    END-PERFORM
+                 END-IF
                  PERFORM  VARYING   GENSAN-IDX  FROM  1  BY  1
                             UNTIL     GENSAN-IDX   >   4
                     IF    SYS-5000-GENKBN(GENSAN-IDX)   =   "2"
