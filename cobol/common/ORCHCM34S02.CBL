@@ -75,8 +75,13 @@
                                                OCCURS  31.
            03  FLG-SANTEI                      PIC 9(01).
       *
+      *    カウント領域
+       01  CNT-AREA.
+           03  CNT-SYS5000                     PIC 9(05).
+      *
       *    添字領域
        01  IDX-AREA.
+           03  IDX0                            PIC 9(05).
            03  IDX1                            PIC 9(05).
            03  IDX2                            PIC 9(05).
            03  IDX3                            PIC 9(05).
@@ -135,7 +140,8 @@
                05  WRK-SKJ-SRYCDTOTAL          PIC 9(14).
                05  WRK-SKJ-SRYCD               PIC X(09)   OCCURS  20.
            03  WRK-SHOKUJIRYOYO                PIC 9(01).
-           03  WRK-TOKUKANRIKASAN              PIC 9(01).
+           03  WRK-TOKUKANRIKASAN-G.
+               05  WRK-TOKUKANRIKASAN          PIC 9(01)   OCCURS  5.
            03  WRK-TUKISTYMD                   PIC X(08).
            03  WRK-TUKIEDYMD                   PIC X(08).
            03  WRK-STDAY                       PIC 9(02).
@@ -154,6 +160,8 @@
                05  WRK-RSI-JOUSUKBN            PIC X(01)
                                                OCCURS  31.
            03  WRK-KEISAN                      PIC 9(08).
+           03  WRK-STIDX                       PIC  9(02).
+           03  WRK-EDIDX                       PIC  9(02).
            03  WRK-SRYCD-G.
                05  WRK-SRYCD                   PIC  X(09).
                05  WRK-SRYCD-9                 REDEFINES WRK-SRYCD
@@ -350,6 +358,9 @@
            03  CONST-JBISKJ-JOUSU              PIC X(09)
                                                    VALUE "099609901".
       *
+           COPY    "CPSK5000.INC"  REPLACING   //SYS-5000//
+                                   BY          //WKSYS-5000//.
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -436,6 +447,7 @@
       *
            INITIALIZE                      FLG-AREA
            INITIALIZE                      IDX-AREA
+           INITIALIZE                      CNT-AREA
            INITIALIZE                      WRK-AREA
            INITIALIZE                      WNYUINRYO-AREA
                                            WGAIHAKU-AREA
@@ -571,7 +583,7 @@
        150-INIT-SEC                    SECTION.
       *
            INITIALIZE                      WRK-SHOKUJIRYOYO
-                                           WRK-TOKUKANRIKASAN
+                                           WRK-TOKUKANRIKASAN-G
       *
       *    医療機関情報取得処理
            PERFORM 1501-SYS1001-GET-SEC
@@ -646,36 +658,92 @@
       *****************************************************************
        1501-SYS5000-GET-SEC            SECTION.
       *
+           MOVE    ZERO                TO  FLG-SYSKANRI
+           MOVE    ZERO                TO  CNT-SYS5000
+      *
+           INITIALIZE                      WKSYS-5000-REC
+      *
            INITIALIZE                      SYS-5000-REC
            MOVE    "5000"              TO  SYS-5000-KANRICD
            MOVE    "*"                 TO  SYS-5000-KBNCD
-           MOVE    HCM34S01-SANTEIYM   TO  ORC-DBYMD
-           MOVE    "01"                TO  ORC-DBYMD (7:2)
            MOVE    SYS-5000-REC        TO  MCPDATA-REC
-           MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
+           MOVE    "SYSKANRI-KEY4"     TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
            IF    ( FLG-DBRC        NOT =   ZERO )
-               INITIALIZE  SYS-5000-REC
+               MOVE    1               TO  FLG-SYSKANRI
            ELSE
                MOVE    MCPDATA-REC     TO  SYS-5000-REC
            END-IF
       *
-           MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
+           PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
+      *
+               IF    ( HCM34S01-SANTEIYM  >=  SYS-5000-STYUKYMD (1:6))
+                AND  ( HCM34S01-SANTEIYM  <=  SYS-5000-EDYUKYMD (1:6))
+      *
+                   PERFORM 1501-SYS5000-HEN-SEC
+      *
+                   MOVE    SYS-5000-REC
+                                       TO  WKSYS-5000-REC
+      *
+               END-IF
+      *
+               MOVE    "SYSKANRI-KEY4" TO  WRK-DBPATH
+               PERFORM 900-TBL-READ-SEC
+               IF    ( FLG-DBRC    NOT =   ZERO )
+                   MOVE    1           TO  FLG-SYSKANRI
+               ELSE
+                   MOVE    MCPDATA-REC TO  SYS-5000-REC
+               END-IF
+      *
+           END-PERFORM
+      *
+           MOVE    "SYSKANRI-KEY4"     TO  WRK-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
       *
-           IF    ( SYS-5000-SHOKUJIRYOYOCD     =   "197000110" )
-               MOVE     1              TO   WRK-SHOKUJIRYOYO
-               IF    ( SYS-5000-SHOKUKBN(1)    =  "1" )
-                   MOVE  ZERO          TO   WRK-TOKUKANRIKASAN
-               ELSE
-                   MOVE  1             TO   WRK-TOKUKANRIKASAN
-               END-IF
-           ELSE
-               MOVE      2             TO   WRK-SHOKUJIRYOYO
-           END-IF
+           MOVE    WKSYS-5000-REC      TO  SYS-5000-REC
       *
            .
        1501-SYS5000-GET-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院基本情報編集
+      *****************************************************************
+       1501-SYS5000-HEN-SEC            SECTION.
+      *
+           COMPUTE CNT-SYS5000 =   CNT-SYS5000 +   1
+      *
+           IF    ( CNT-SYS5000         =   1 )
+               IF    ( SYS-5000-SHOKUJIRYOYOCD     =   "197000110" )
+                   MOVE    1               TO   WRK-SHOKUJIRYOYO
+               ELSE
+                   MOVE    2               TO   WRK-SHOKUJIRYOYO
+               END-IF
+           END-IF
+      *
+           MOVE    01                      TO   WRK-STIDX
+           MOVE    31                      TO   WRK-EDIDX
+      *
+           IF    ( HCM34S01-SANTEIYM       =    SYS-5000-STYUKYMD (1:6))
+               MOVE    SYS-5000-STYUKYMD (7:2)
+                                           TO   WRK-STIDX
+           END-IF
+      *
+           IF    ( HCM34S01-SANTEIYM       =    SYS-5000-EDYUKYMD (1:6))
+               MOVE    SYS-5000-EDYUKYMD (7:2)
+                                           TO   WRK-EDIDX
+           END-IF
+      *
+           IF    ( SYS-5000-SHOKUJIRYOYOCD         =   "197000110" )
+               IF    ( SYS-5000-SHOKUKBN(1)    NOT =   "1" )
+                   PERFORM VARYING IDX0    FROM    WRK-STIDX   BY  1
+                           UNTIL ( IDX0        >   WRK-EDIDX )
+                       MOVE    1           TO  WRK-TOKUKANRIKASAN (IDX0)
+                   END-PERFORM
+               END-IF
+           END-IF
+      *
+           .
+       1501-SYS5000-HEN-EXT.
            EXIT.
       *****************************************************************
       *    主処理
@@ -1559,7 +1627,7 @@
                    PERFORM 2001111-SKJ-RYOYO1-SET-SEC
       *
       *            特別管理加算
-                   IF    ( WRK-TOKUKANRIKASAN  =  1 )
+                   IF    ( WRK-TOKUKANRIKASAN(IDXD)  =  1 )
                        PERFORM 2001111-SKJ-TOKKANRI-SET-SEC
                    END-IF
       *
@@ -1578,7 +1646,7 @@
                PERFORM 2001111-SKJ-RYOYO1-SET-SEC
       *
       *        特別管理加算
-               IF    ( WRK-TOKUKANRIKASAN  =  1 )
+               IF    ( WRK-TOKUKANRIKASAN(IDXD)  =  1 )
                    PERFORM 2001111-SKJ-TOKKANRI-SET-SEC
                END-IF
       *
@@ -1595,7 +1663,7 @@
                PERFORM 2001111-SKJ-RYOYO1-SET-SEC
       *
       *        特別管理加算
-               IF    ( WRK-TOKUKANRIKASAN      =  1 )
+               IF    ( WRK-TOKUKANRIKASAN(IDXD)      =  1 )
                    PERFORM 2001111-SKJ-TOKKANRI-SET-SEC
                END-IF
       *
@@ -1613,7 +1681,7 @@
                PERFORM 2001111-SKJ-RYOYO1-SET-SEC
       *
       *        特別管理加算
-               IF    ( WRK-TOKUKANRIKASAN      =  1 )
+               IF    ( WRK-TOKUKANRIKASAN(IDXD)      =  1 )
                    PERFORM 2001111-SKJ-TOKKANRI-SET-SEC
                END-IF
       *

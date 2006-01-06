@@ -156,7 +156,8 @@
                    07  WRK-SYS-MIJISI          PIC 9(01).
                    07  WRK-SYS-MIJISI-ZAITEN   PIC 9(08).
            03  WRK-SHOKUJIRYOYO                PIC 9(01).
-           03  WRK-TOKUKANRIKASAN              PIC 9(01).
+           03  WRK-TOKUKANRIKASAN-G.
+               05  WRK-TOKUKANRIKASAN          PIC 9(01)   OCCURS  31.
            03  WRK-SENTEI-PTFTN-G.
                05  WRK-SENTEI-PTFTN            PIC 9(08)   OCCURS  2.
            03  WRK-SENTEI-GAIHAKU1             PIC 9(08).
@@ -575,7 +576,7 @@
       *
            INITIALIZE                      WRK-SYS-MIJISI-G
                                            WRK-SHOKUJIRYOYO
-                                           WRK-TOKUKANRIKASAN
+                                           WRK-TOKUKANRIKASAN-G
                                            WRK-SENTEI-PTFTN-G
                                            FLG-NYUINGENDAY-G
                                            FLG-BRMSGKSANTEIDAY-G
@@ -674,20 +675,13 @@
            COMPUTE CNT-SYS5000 =   CNT-SYS5000 +   1
       *
            IF    ( CNT-SYS5000         =   1 )
-      *
                IF    ( SYS-5000-SHOKUJIRYOYOCD     =   "197000110" )
-                   MOVE     1              TO   WRK-SHOKUJIRYOYO
-                   IF    ( SYS-5000-SHOKUKBN(1)    =  "1" )
-                       MOVE  ZERO          TO   WRK-TOKUKANRIKASAN
-                   ELSE
-                       MOVE  1             TO   WRK-TOKUKANRIKASAN
-                   END-IF
+                   MOVE    1               TO   WRK-SHOKUJIRYOYO
                ELSE
-                   MOVE      2             TO   WRK-SHOKUJIRYOYO
+                   MOVE    2               TO   WRK-SHOKUJIRYOYO
                END-IF
            END-IF
       *
-      *    ∞ÂŒ≈µ°¥ÿ∏∫ªªæ Û ‘Ω∏
            MOVE    01                      TO   WRK-STIDX
            MOVE    31                      TO   WRK-EDIDX
       *
@@ -699,6 +693,15 @@
            IF    ( HCM34S01-SANTEIYM       =    SYS-5000-EDYUKYMD (1:6))
                MOVE    SYS-5000-EDYUKYMD (7:2)
                                            TO   WRK-EDIDX
+           END-IF
+      *
+           IF    ( SYS-5000-SHOKUJIRYOYOCD         =   "197000110" )
+               IF    ( SYS-5000-SHOKUKBN(1)    NOT =   "1" )
+                   PERFORM VARYING IDX0    FROM    WRK-STIDX   BY  1
+                           UNTIL ( IDX0        >   WRK-EDIDX )
+                       MOVE    1           TO  WRK-TOKUKANRIKASAN (IDX0)
+                   END-PERFORM
+               END-IF
            END-IF
       *
       *
@@ -2167,7 +2170,7 @@
                    PERFORM 2001111-SKJ-RYOYO1-SET-SEC
       *
       *            ∆√ Ã¥…Õ˝≤√ªª
-                   IF    ( WRK-TOKUKANRIKASAN  =  1 )
+                   IF    ( WRK-TOKUKANRIKASAN(IDXD) =  1 )
                        PERFORM 2001111-SKJ-TOKKANRI-SET-SEC
                    END-IF
       *
@@ -2186,7 +2189,7 @@
                PERFORM 2001111-SKJ-RYOYO1-SET-SEC
       *
       *        ∆√ Ã¥…Õ˝≤√ªª
-               IF    ( WRK-TOKUKANRIKASAN  =  1 )
+               IF    ( WRK-TOKUKANRIKASAN(IDXD)  =  1 )
                    PERFORM 2001111-SKJ-TOKKANRI-SET-SEC
                END-IF
       *
@@ -2203,7 +2206,7 @@
                PERFORM 2001111-SKJ-RYOYO1-SET-SEC
       *
       *        ∆√ Ã¥…Õ˝≤√ªª
-               IF    ( WRK-TOKUKANRIKASAN      =  1 )
+               IF    ( WRK-TOKUKANRIKASAN(IDXD)      =  1 )
                    PERFORM 2001111-SKJ-TOKKANRI-SET-SEC
                END-IF
       *
@@ -2221,7 +2224,7 @@
                PERFORM 2001111-SKJ-RYOYO1-SET-SEC
       *
       *        ∆√ Ã¥…Õ˝≤√ªª
-               IF    ( WRK-TOKUKANRIKASAN      =  1 )
+               IF    ( WRK-TOKUKANRIKASAN(IDXD)      =  1 )
                    PERFORM 2001111-SKJ-TOKKANRI-SET-SEC
                END-IF
       *
