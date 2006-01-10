@@ -61,6 +61,8 @@
       *                                     ø«Œ≈ΩÍœ∑øÕ∞ÂŒ≈¥…Õ˝Œ¡
       *                                     œ∑øÕ¿≠«ß√Œæ…º¿¥µº£Œ≈…¬≈Ô∆˛±°Œ¡£±
       *                                     œ∑øÕ¿≠«ß√Œæ…º¿¥µº£Œ≈…¬≈Ô∆˛±°Œ¡£≤
+      *  02.06.04    NACL-ÃÁœ∆    06/01/05  •∑•π¥…° £µ£∞£∞£∞°À§Œø©ªˆæ ÛºË
+      *                                     ∆¿Ω§¿µ
       *****************************************************************
       *
       *
@@ -143,6 +145,7 @@
            03  IDZ                                     PIC 9(03).
            03  IDX1                                    PIC 9(03).
            03  IDX2                                    PIC 9(03).
+           03  IDX3                                    PIC 9(02).
            03  HC-IDX                                  PIC 9(03).
            03  KH-IDX                                  PIC 9(03).
            03  NYUINACT-IDX                            PIC 9(03).
@@ -266,8 +269,12 @@
            03  WRK-NYUTENTTLKBN                        PIC 9(03).
            03  WRK-NYUKHNRYO                           PIC 9(09).
            03  WRK-NYUTOKRYO                           PIC 9(09).
-           03  WRK-SHOKUJIRYOYO                        PIC 9(01).
-           03  WRK-TOKUKANRIKASAN                      PIC 9(01).
+           03  WRK-SHOKUJIRYOYO-OCC.
+               05  WRK-SHOKUJIRYOYO                    PIC 9(01)
+                                                       OCCURS 31.
+           03  WRK-TOKUKANRIKASAN-OCC.
+               05  WRK-TOKUKANRIKASAN                  PIC 9(01)
+                                                       OCCURS 31.
            03  WRK-SRYCD                               PIC X(09).
            03  WRK-RYAKUSHO                            PIC X(14).
            03  WRK-SRYYMD                              PIC X(08).       
@@ -516,8 +523,8 @@
              MOVE     WRK-PARA-SRYYM     TO  WRK-SRYYM-5000
              PERFORM   10012-SYS-5000-CHK-SEC
       *      ∞ÂŒ≈µ°¥ÿ∏∫ªª§ŒºË∆¿° •∑•π•∆•‡¥…Õ˝•∆°º•÷•Î§Ë§Í°À
-             MOVE     ZERO               TO  WRK-SHOKUJIRYOYO
-                                             WRK-TOKUKANRIKASAN
+             INITIALIZE                   WRK-SHOKUJIRYOYO-OCC
+                                          WRK-TOKUKANRIKASAN-OCC
       *
              MOVE     ZERO               TO  FLG-MIJISI-INNAI
                                              FLG-MIJISI-IRYO
@@ -716,6 +723,26 @@
                     END-EVALUATE
                   END-IF
                  END-PERFORM
+      *
+                 PERFORM    VARYING  IDX3  FROM  IDV  BY  1
+                             UNTIL   IDX3    >   31
+                      EVALUATE    SYS-5000-SHOKUJIRYOYOCD
+      *                ∆˛±°ø©ªˆŒ≈Õ‹° £±°À
+                       WHEN         "197000110"
+                          MOVE     1      TO   WRK-SHOKUJIRYOYO(IDX3)
+                          EVALUATE  SYS-5000-SHOKUKBN(1)
+                            WHEN     "1"
+                              MOVE  ZERO  TO   WRK-TOKUKANRIKASAN(IDX3)
+                            WHEN     "2"
+                              MOVE    1   TO   WRK-TOKUKANRIKASAN(IDX3)
+                          END-EVALUATE
+      *                ∆˛±°ø©ªˆŒ≈Õ‹° £≤°À
+                       WHEN         "197000710"
+                          MOVE     2      TO   WRK-SHOKUJIRYOYO(IDX3)
+                          MOVE    ZERO    TO   WRK-TOKUKANRIKASAN(IDX3)
+                      END-EVALUATE
+                 END-PERFORM
+      *
                  MOVE    "SYSKANRI-KEY11"  TO  ORC-DBPATH
                  PERFORM  900-SYSKANRI-READ-SEC
                END-PERFORM
@@ -764,20 +791,23 @@
                 END-IF
            END-PERFORM
       *
-           EVALUATE    SYS-5000-SHOKUJIRYOYOCD
-      *      ∆˛±°ø©ªˆŒ≈Õ‹° £±°À
-             WHEN         "197000110"
-                  MOVE     1         TO   WRK-SHOKUJIRYOYO
-                  EVALUATE  SYS-5000-SHOKUKBN(1)
-                    WHEN     "1"
-                       MOVE  ZERO    TO   WRK-TOKUKANRIKASAN
-                    WHEN     "2"
-                       MOVE   1      TO   WRK-TOKUKANRIKASAN
-                  END-EVALUATE
-      *      ∆˛±°ø©ªˆŒ≈Õ‹° £≤°À
-             WHEN         "197000710"
-                  MOVE     2         TO   WRK-SHOKUJIRYOYO
-           END-EVALUATE
+           PERFORM   VARYING   IDX3   FROM  1  BY  1
+                      UNTIL    IDX3    >   31
+              EVALUATE    SYS-5000-SHOKUJIRYOYOCD
+      *         ∆˛±°ø©ªˆŒ≈Õ‹° £±°À
+                WHEN         "197000110"
+                    MOVE     1      TO   WRK-SHOKUJIRYOYO(IDX3)
+                    EVALUATE  SYS-5000-SHOKUKBN(1)
+                      WHEN     "1"
+                        MOVE  ZERO  TO   WRK-TOKUKANRIKASAN(IDX3)
+                      WHEN     "2"
+                        MOVE    1   TO   WRK-TOKUKANRIKASAN(IDX3)
+                    END-EVALUATE
+      *         ∆˛±°ø©ªˆŒ≈Õ‹° £≤°À
+                WHEN         "197000710"
+                    MOVE     2      TO   WRK-SHOKUJIRYOYO(IDX3)
+              END-EVALUATE
+           END-PERFORM
       *
            .
        10011-SYSKAN-HENSYU-EXT.
@@ -2748,7 +2778,7 @@
       *****************************************************************
        200114-RECE62-HENSYU4-SEC                SECTION.
       *
-           IF    WRK-SHOKUJIRYOYO   NOT =  ZERO
+      **   IF    WRK-SHOKUJIRYOYO   NOT =  ZERO
       *       ø©ªˆŒ¨æŒ§ŒºË∆¿
               PERFORM  VARYING  IDY    FROM    1   BY  1
                              UNTIL   IDY     >       31
@@ -2761,6 +2791,7 @@
                     IF   WRK-DAY5(IDY)  =  RECE62-HKNCOMBI (IDX1)
                          IF   (WRK-DAY4(IDY)   NOT =    ZERO)  
                          AND  (WRK-DAY2(IDY)  =    ZERO  OR  4)
+                         AND  (WRK-SHOKUJIRYOYO(IDY)  NOT = ZERO)
                               PERFORM   201141-NYUINKHN-GET4-SEC
                          END-IF
                          MOVE    10    TO    IDX1
@@ -2772,7 +2803,7 @@
                  END-PERFORM
       *
               END-PERFORM
-           END-IF
+      **   END-IF
       *
            .
        200114-RECE62-HENSYU4-EXT.
@@ -2785,11 +2816,11 @@
       *
            EVALUATE   WRK-DAY4(IDY)
              WHEN  1
-                EVALUATE   WRK-SHOKUJIRYOYO
+                EVALUATE   WRK-SHOKUJIRYOYO(IDY)
                   WHEN  1
                      MOVE    "197000110"  TO  WRK-SRYCD
                      PERFORM  2011411-NYUINKHN-SET4-SEC
-                     IF    WRK-TOKUKANRIKASAN  =  1
+                     IF    WRK-TOKUKANRIKASAN(IDY)  =  1
                         MOVE    "197000270"  TO  WRK-SRYCD
                         PERFORM  2011411-NYUINKHN-SET4-SEC
                      END-IF
@@ -2806,7 +2837,7 @@
              WHEN  4
                      MOVE    "197000110"  TO  WRK-SRYCD
                      PERFORM  2011411-NYUINKHN-SET4-SEC
-                     IF    WRK-TOKUKANRIKASAN  =  1
+                     IF    WRK-TOKUKANRIKASAN(IDY)  =  1
                         MOVE    "197000270"  TO  WRK-SRYCD
                         PERFORM  2011411-NYUINKHN-SET4-SEC
                      END-IF
@@ -3973,8 +4004,8 @@
                MOVE      RECE62-SRYYM   TO  WRK-SRYYM-5000
                PERFORM   10012-SYS-5000-CHK-SEC
       *        ∞ÂŒ≈µ°¥ÿ∏∫ªª§ŒºË∆¿° •∑•π•∆•‡¥…Õ˝•∆°º•÷•Î§Ë§Í°À
-               MOVE     ZERO      TO  WRK-SHOKUJIRYOYO
-                                      WRK-TOKUKANRIKASAN
+               INITIALIZE                 WRK-SHOKUJIRYOYO-OCC
+                                          WRK-TOKUKANRIKASAN-OCC
       *
                MOVE     ZERO      TO  FLG-MIJISI-INNAI
                                       FLG-MIJISI-IRYO

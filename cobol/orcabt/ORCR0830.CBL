@@ -110,11 +110,13 @@
            03  IDX                                     PIC 9(03).
            03  IDX1                                    PIC 9(03).
            03  IDX2                                    PIC 9(03).
+           03  IDX3                                    PIC 9(02).
            03  IDY                                     PIC 9(03).
            03  IDY2                                    PIC 9(03).
            03  ID1                                     PIC 9(03).
            03  SRYACT-IDX                              PIC 9(03).
            03  SYSKAN-IDX                              PIC 9(03).
+           03  IDV                                     PIC 9(02).
       *
       *    実日数カウント用領域
        01  TBL-JNISSU.
@@ -154,6 +156,9 @@
       *
            03  WRK-SYS-SRYYMD                          PIC  X(08).
       *
+           03  WRK-SRYYM-5000                          PIC  X(06).
+           03  WRK-SYS5000-COUNT                       PIC  9(02).
+      *
            03  WRK-TAIHI-FLG                           PIC  9(01).
            03  WRK-TAIHI-SRYYMD.
                05  WRK-TAIHI-SRYYM                     PIC  9(06).
@@ -176,8 +181,12 @@
            03  WRK-KEISAN-JI                           PIC  9(09).
            03  WRK-TEN-JI                              PIC  9(09).
       *
-           03  WRK-SHOKUJIRYOYO                        PIC  9(01).
-           03  WRK-TOKUKANRIKASAN                      PIC  9(01).
+           03  WRK-SHOKUJIRYOYO-OCC.
+               05  WRK-SHOKUJIRYOYO                    PIC  9(01)
+                                                       OCCURS 31.
+           03  WRK-TOKUKANRIKASAN-OCC.
+               05  WRK-TOKUKANRIKASAN                  PIC  9(01)
+                                                       OCCURS 31.
            03  WRK-SRYCD                               PIC  X(09).
            03  WRK-NYUTOKRYO                           PIC  9(09).
       *
@@ -370,9 +379,11 @@
       *
            IF   WRK-PARA-SRYYM    NOT =  ZERO
       *
+             MOVE     WRK-PARA-SRYYM     TO  WRK-SRYYM-5000
+             PERFORM   120-SYS-5000-CHK-SEC
       *      医療機関減算の取得（システム管理テーブルより）
-             MOVE     ZERO               TO  WRK-SHOKUJIRYOYO
-                                             WRK-TOKUKANRIKASAN
+             INITIALIZE                   WRK-SHOKUJIRYOYO-OCC
+                                          WRK-TOKUKANRIKASAN-OCC
       *
              INITIALIZE                      SYSKANRI-REC
              MOVE    "5000"              TO  SYS-KANRICD
@@ -391,6 +402,11 @@
                  PERFORM  900-SYSKANRI-READ-SEC
                  IF      FLG-SYSKANRI        =   ZERO
                    PERFORM  110-SYSKAN-HENSYU-SEC
+                   IF        WRK-SYS5000-COUNT    =     ZERO
+                      CONTINUE
+                   ELSE
+                      PERFORM  130-SYS-5000-GET-SEC
+                   END-IF
                  ELSE
                    MOVE "医療機関情報−入院基本が取得できませんでした。"
                                          TO  WRK-RECEERR
@@ -551,25 +567,127 @@
       *****************************************************************
        110-SYSKAN-HENSYU-SEC                SECTION.
       *
-           EVALUATE    SYS-5000-SHOKUJIRYOYOCD
-      *      入院食事療養（１）
-             WHEN         "197000110"
-                  MOVE     1         TO   WRK-SHOKUJIRYOYO
-                  EVALUATE  SYS-5000-SHOKUKBN(1)
-                    WHEN     "1"
-                       MOVE  ZERO    TO   WRK-TOKUKANRIKASAN
-                    WHEN     "2"
-                       MOVE   1      TO   WRK-TOKUKANRIKASAN
-                  END-EVALUATE
-      *      入院食事療養（２）
-             WHEN         "197000710"
-                  MOVE     2         TO   WRK-SHOKUJIRYOYO
-           END-EVALUATE
+           PERFORM   VARYING   IDX3   FROM  1  BY  1
+                      UNTIL    IDX3    >   31
+              EVALUATE    SYS-5000-SHOKUJIRYOYOCD
+      *         入院食事療養（１）
+                WHEN         "197000110"
+                    MOVE     1      TO   WRK-SHOKUJIRYOYO(IDX3)
+                    EVALUATE  SYS-5000-SHOKUKBN(1)
+                      WHEN     "1"
+                        MOVE  ZERO  TO   WRK-TOKUKANRIKASAN(IDX3)
+                      WHEN     "2"
+                        MOVE    1   TO   WRK-TOKUKANRIKASAN(IDX3)
+                    END-EVALUATE
+      *         入院食事療養（２）
+                WHEN         "197000710"
+                    MOVE     2      TO   WRK-SHOKUJIRYOYO(IDX3)
+              END-EVALUATE
+           END-PERFORM
       *
            .
        110-SYSKAN-HENSYU-EXT.
            EXIT.
-      * 
+      *
+      ******************************************************************
+      *    月内に複数の医療期間情報がないか検索（医療機関減算の確認）  *
+      ******************************************************************
+       120-SYS-5000-CHK-SEC                 SECTION.
+      *
+           MOVE     ZERO               TO  WRK-SYS5000-COUNT
+      *
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    "5000"              TO  SYS-KANRICD
+           MOVE    "*"                 TO  SYS-KBNCD
+           MOVE    WRK-SRYYM-5000      TO  ORC-DBYMD(1:6)
+           MOVE    "__"                TO  ORC-DBYMD(7:2)
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY11"    TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY11"  TO  ORC-DBPATH
+               PERFORM  900-SYSKANRI-READ-SEC
+               PERFORM  UNTIL    FLG-SYSKANRI   =   1
+                   ADD     1     TO        WRK-SYS5000-COUNT
+                   MOVE    "SYSKANRI-KEY11"  TO  ORC-DBPATH
+                   PERFORM  900-SYSKANRI-READ-SEC
+               END-PERFORM
+           END-IF
+      *
+           MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY11"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+      *
+           .
+      *
+       120-SYS-5000-CHK-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    月内の医療期間情報取得（医療機関減算情報）                  *
+      ******************************************************************
+       130-SYS-5000-GET-SEC                 SECTION.
+      *
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    "5000"              TO  SYS-KANRICD
+           MOVE    "*"                 TO  SYS-KBNCD
+           MOVE    WRK-SRYYM-5000      TO  ORC-DBYMD(1:6)
+           MOVE    "__"                TO  ORC-DBYMD(7:2)
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY11"    TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY11"  TO  ORC-DBPATH
+               PERFORM  900-SYSKANRI-READ-SEC
+               PERFORM  UNTIL    FLG-SYSKANRI   =   1
+                 MOVE   SYS-5000-STYUKYMD(7:2)  TO  IDV
+                 PERFORM    VARYING  IDX3  FROM  IDV  BY  1
+                             UNTIL   IDX3    >   31
+                      EVALUATE    SYS-5000-SHOKUJIRYOYOCD
+      *                入院食事療養（１）
+                       WHEN         "197000110"
+                          MOVE     1      TO   WRK-SHOKUJIRYOYO(IDX3)
+                          EVALUATE  SYS-5000-SHOKUKBN(1)
+                            WHEN     "1"
+                              MOVE  ZERO  TO   WRK-TOKUKANRIKASAN(IDX3)
+                            WHEN     "2"
+                              MOVE    1   TO   WRK-TOKUKANRIKASAN(IDX3)
+                          END-EVALUATE
+      *                入院食事療養（２）
+                       WHEN         "197000710"
+                          MOVE     2      TO   WRK-SHOKUJIRYOYO(IDX3)
+                          MOVE    ZERO    TO   WRK-TOKUKANRIKASAN(IDX3)
+                      END-EVALUATE
+                 END-PERFORM
+      *
+                 MOVE    "SYSKANRI-KEY11"  TO  ORC-DBPATH
+                 PERFORM  900-SYSKANRI-READ-SEC
+               END-PERFORM
+           END-IF
+      *
+           MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY11"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+      *
+           .
+      *
+       130-SYS-5000-GET-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    主処理
       *****************************************************************
@@ -1103,7 +1221,7 @@
       *****************************************************************
        250-RECE82-HENSYU4-SEC                SECTION.
       *
-           IF    WRK-SHOKUJIRYOYO   NOT =  ZERO
+      **   IF    WRK-SHOKUJIRYOYO   NOT =  ZERO
               PERFORM  VARYING  IDY    FROM    1   BY  1
                              UNTIL   IDY     >       31
       *
@@ -1111,12 +1229,13 @@
                     AND WRK-DAY5(IDY)  =  RECE82-HKNCOMBI
                          IF   (WRK-DAY4(IDY)   NOT =    ZERO)  
                          AND  (WRK-DAY2(IDY)  =    ZERO  OR  4)
+                         AND  (WRK-SHOKUJIRYOYO(IDY)  NOT = ZERO)
                               PERFORM   2501-NYUINKHN-GET4-SEC
                          END-IF
                     END-IF
       *
               END-PERFORM
-           END-IF
+      **   END-IF
       *
            .
        250-RECE82-HENSYU4-EXT.
@@ -1129,11 +1248,11 @@
       *
            EVALUATE   WRK-DAY4(IDY)
              WHEN  1
-                EVALUATE   WRK-SHOKUJIRYOYO
+                EVALUATE   WRK-SHOKUJIRYOYO(IDY)
                   WHEN  1
                      MOVE    "197000110"  TO  WRK-SRYCD
                      PERFORM  25011-NYUINKHN-SET4-SEC
-                     IF    WRK-TOKUKANRIKASAN  =  1
+                     IF    WRK-TOKUKANRIKASAN(IDY)  =  1
                         MOVE    "197000270"  TO  WRK-SRYCD
                         PERFORM  25011-NYUINKHN-SET4-SEC
                      END-IF
@@ -1150,7 +1269,7 @@
              WHEN  4
                      MOVE    "197000110"  TO  WRK-SRYCD
                      PERFORM  25011-NYUINKHN-SET4-SEC
-                     IF    WRK-TOKUKANRIKASAN  =  1
+                     IF    WRK-TOKUKANRIKASAN(IDY)  =  1
                         MOVE    "197000270"  TO  WRK-SRYCD
                         PERFORM  25011-NYUINKHN-SET4-SEC
                      END-IF
@@ -2231,9 +2350,11 @@
                   GO  TO  910-SYSKANRI-HENSYU-EXT
                 END-IF
       *
+                MOVE      RECE82-SRYYM   TO  WRK-SRYYM-5000
+                PERFORM   120-SYS-5000-CHK-SEC
       *         医療機関減算の取得（システム管理テーブルより）
-                MOVE     ZERO      TO  WRK-SHOKUJIRYOYO
-                                       WRK-TOKUKANRIKASAN
+                INITIALIZE                 WRK-SHOKUJIRYOYO-OCC
+                                           WRK-TOKUKANRIKASAN-OCC
       *
                 MOVE  ZERO         TO  FLG-SET
                 MOVE  RECE82-SRYYM TO  WRK-SYS-SRYYMD(1:6)
@@ -2248,6 +2369,11 @@
                    AND  ( WRK-SYS-SRYYMD     <=  SYS-5000-EDYUKYMD )
                       MOVE     1       TO    FLG-SET
                       PERFORM  110-SYSKAN-HENSYU-SEC
+                      IF        WRK-SYS5000-COUNT    =     ZERO
+                         CONTINUE
+                      ELSE
+                         PERFORM  130-SYS-5000-GET-SEC
+                      END-IF
                    END-IF
       *
                 END-PERFORM

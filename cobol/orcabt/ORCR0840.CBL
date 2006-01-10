@@ -77,6 +77,8 @@
       *  01.02.22    NACL-ÌçÏÆ    05/11/15  ½ýÉÂ¼êÅö¶â¡¢ÎÅÍÜÈñÆ±°Õ½ñ¤Î¼«Æ°
       *                                     µ­ºÜ¥Õ¥é¥°ÊÔ½¸½¤Àµ
       *  01.02.23    NACL-ÌçÏÆ    05/12/14  ½é¿Ç»þ´Ö¶èÊ¬ÊÔ½¸½¤Àµ
+      *  01.02.24    NACL-ÌçÏÆ    06/01/05  ¥·¥¹´É¡Ê£µ£°£°£°¡Ë¤Î¿©»ö¾ðÊó¼è
+      *                                     ÆÀ½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -275,6 +277,7 @@
            03  IDX8                                    PIC 9(03).
            03  IDX9                                    PIC 9(03).
            03  IDX10                                   PIC 9(03).
+           03  IDX11                                   PIC 9(02).
            03  IDY                                     PIC 9(03).
            03  IDY2                                    PIC 9(03).
            03  IDY3                                    PIC 9(03).
@@ -290,6 +293,7 @@
            03  SYUKEI-IDX3                             PIC 9(03).
            03  SYUKEI-IDX4                             PIC 9(03).
            03  SYSKAN-IDX                              PIC 9(03).
+           03  IDV                                     PIC 9(02).
       *
       *    ´ðËÜÅÀ¿ô¤ÎÈóÉ½¼¨È½ÄêÍÑ¥Õ¥é¥°¡Ê¼«ÇåÀÕÍÑ¡Ë
        01  FLG-KHNTEN-JI-AREA.                                          
@@ -382,6 +386,9 @@
                05  WRK-PARA-SHELLID                    PIC X(08).
            03  WRK-SYS-SRYYMD                          PIC X(08).
       *
+           03  WRK-SRYYM-5000                          PIC X(06).
+           03  WRK-SYS5000-COUNT                       PIC 9(02).
+      *
            03  WRK-TEN                                 PIC 9(09).
            03  WRK-MEISAI-CNT                          PIC 9(04).
            03  WRK-SRYCDTOTAL                          PIC 9(14).
@@ -409,8 +416,12 @@
       *
            03  WRK-RECEERR                             PIC X(200).
       *
-           03  WRK-SHOKUJIRYOYO                        PIC 9(01).
-           03  WRK-TOKUKANRIKASAN                      PIC 9(01).
+           03  WRK-SHOKUJIRYOYO-OCC.
+               05  WRK-SHOKUJIRYOYO                    PIC 9(01)
+                                                       OCCURS 31.
+           03  WRK-TOKUKANRIKASAN-OCC.
+               05  WRK-TOKUKANRIKASAN                  PIC 9(01)
+                                                       OCCURS 31.
       *
            03  WRK-KEISAN                              PIC 9(09).
            03  WRK-KEISAN2                             PIC 9(09).
@@ -865,9 +876,13 @@
            END-IF
       *
            IF   WRK-PARA-SRYYM    NOT =  ZERO
+      *
+             MOVE      WRK-PARA-SRYYM    TO  WRK-SRYYM-5000
+             PERFORM   120-SYS-5000-CHK-SEC
+      *
       *      ¿©»ö¡¦Ì¤¼Â»Ü¸º»»¾ðÊó¡Ê¥·¥¹¥Æ¥à´ÉÍý¥Æ¡¼¥Ö¥ë¤è¤ê¡Ë
-             MOVE     ZERO            TO  WRK-SHOKUJIRYOYO
-                                          WRK-TOKUKANRIKASAN
+             INITIALIZE                   WRK-SHOKUJIRYOYO-OCC
+                                          WRK-TOKUKANRIKASAN-OCC
       *
              INITIALIZE                      SYSKANRI-REC
              MOVE    "5000"              TO  SYS-KANRICD
@@ -887,6 +902,11 @@
                  IF      FLG-SYSKANRI        =   ZERO
                    MOVE     MCPDATA-REC  TO  SYS-5000-REC
                    PERFORM  110-SYSKAN-HENSYU-SEC
+                   IF        WRK-SYS5000-COUNT    =     ZERO
+                      CONTINUE
+                   ELSE
+                      PERFORM  130-SYS-5000-GET-SEC
+                   END-IF
                  ELSE
                    MOVE "°åÎÅµ¡´Ø¾ðÊó¡ÝÆþ±¡´ðËÜ¤¬¼èÆÀ¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿¡£"
                                          TO  WRK-RECEERR
@@ -974,25 +994,120 @@
       *****************************************************************
        110-SYSKAN-HENSYU-SEC                SECTION.
       *
-           EVALUATE    SYS-5000-SHOKUJIRYOYOCD
-      *      Æþ±¡¿©»öÎÅÍÜ¡Ê£±¡Ë
-             WHEN         "197000110"
-                  MOVE     1         TO   WRK-SHOKUJIRYOYO
-                  EVALUATE  SYS-5000-SHOKUKBN(1)
-                    WHEN     "1"
-                       MOVE  ZERO    TO   WRK-TOKUKANRIKASAN
-                    WHEN     "2"
-                       MOVE   1      TO   WRK-TOKUKANRIKASAN
-                  END-EVALUATE
-      *      Æþ±¡¿©»öÎÅÍÜ¡Ê£²¡Ë
-             WHEN         "197000710"
-                  MOVE     2         TO   WRK-SHOKUJIRYOYO
-           END-EVALUATE
+           PERFORM   VARYING   IDX11  FROM  1  BY  1
+                      UNTIL    IDX11   >   31
+              EVALUATE    SYS-5000-SHOKUJIRYOYOCD
+      *         Æþ±¡¿©»öÎÅÍÜ¡Ê£±¡Ë
+                WHEN         "197000110"
+                    MOVE     1      TO   WRK-SHOKUJIRYOYO(IDX11)
+                    EVALUATE  SYS-5000-SHOKUKBN(1)
+                      WHEN     "1"
+                        MOVE  ZERO  TO   WRK-TOKUKANRIKASAN(IDX11)
+                      WHEN     "2"
+                        MOVE    1   TO   WRK-TOKUKANRIKASAN(IDX11)
+                    END-EVALUATE
+      *         Æþ±¡¿©»öÎÅÍÜ¡Ê£²¡Ë
+                WHEN         "197000710"
+                    MOVE     2      TO   WRK-SHOKUJIRYOYO(IDX11)
+              END-EVALUATE
+           END-PERFORM
       *
            .
        110-SYSKAN-HENSYU-EXT.
            EXIT.
-      * 
+      *
+      ******************************************************************
+      *    ·îÆâ¤ËÊ£¿ô¤Î°åÎÅ´ü´Ö¾ðÊó¤¬¤Ê¤¤¤«¸¡º÷¡Ê°åÎÅµ¡´Ø¸º»»¤Î³ÎÇ§¡Ë  *
+      ******************************************************************
+       120-SYS-5000-CHK-SEC                 SECTION.
+      *
+           MOVE     ZERO               TO  WRK-SYS5000-COUNT
+      *
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    "5000"              TO  SYS-KANRICD
+           MOVE    "*"                 TO  SYS-KBNCD
+           MOVE    WRK-SRYYM-5000      TO  ORC-DBYMD(1:6)
+           MOVE    "__"                TO  ORC-DBYMD(7:2)
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY11"    TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY11"  TO  ORC-DBPATH
+               PERFORM 960-KANRIMST-READ-SEC
+               PERFORM  UNTIL    FLG-SYSKANRI   =   1
+                   ADD     1     TO        WRK-SYS5000-COUNT
+                   MOVE    "SYSKANRI-KEY11"  TO  ORC-DBPATH
+                   PERFORM 960-KANRIMST-READ-SEC
+               END-PERFORM
+           END-IF
+      *
+           MOVE   "SYSKANRI-KEY11"        TO  WK-PATH
+           PERFORM   CSR-CLOSE-SEC
+      *
+           .
+      *
+       120-SYS-5000-CHK-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    ·îÆâ¤Î°åÎÅ´ü´Ö¾ðÊó¼èÆÀ¡Ê°åÎÅµ¡´Ø¸º»»¾ðÊó¡Ë                  *
+      ******************************************************************
+       130-SYS-5000-GET-SEC                 SECTION.
+      *
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    "5000"              TO  SYS-KANRICD
+           MOVE    "*"                 TO  SYS-KBNCD
+           MOVE    WRK-SRYYM-5000      TO  ORC-DBYMD(1:6)
+           MOVE    "__"                TO  ORC-DBYMD(7:2)
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY11"    TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY11"  TO  ORC-DBPATH
+               PERFORM 960-KANRIMST-READ-SEC
+               PERFORM  UNTIL    FLG-SYSKANRI   =   1
+                 MOVE   MCPDATA-REC  TO  SYS-5000-REC
+                 MOVE   SYS-5000-STYUKYMD(7:2)  TO  IDV
+                 PERFORM    VARYING  IDX11  FROM  IDV  BY  1
+                             UNTIL   IDX11    >   31
+                      EVALUATE    SYS-5000-SHOKUJIRYOYOCD
+      *                Æþ±¡¿©»öÎÅÍÜ¡Ê£±¡Ë
+                       WHEN         "197000110"
+                          MOVE     1      TO   WRK-SHOKUJIRYOYO(IDX11)
+                          EVALUATE  SYS-5000-SHOKUKBN(1)
+                            WHEN     "1"
+                              MOVE  ZERO  TO   WRK-TOKUKANRIKASAN(IDX11)
+                            WHEN     "2"
+                              MOVE    1   TO   WRK-TOKUKANRIKASAN(IDX11)
+                          END-EVALUATE
+      *                Æþ±¡¿©»öÎÅÍÜ¡Ê£²¡Ë
+                       WHEN         "197000710"
+                          MOVE     2      TO   WRK-SHOKUJIRYOYO(IDX11)
+                          MOVE    ZERO    TO   WRK-TOKUKANRIKASAN(IDX11)
+                      END-EVALUATE
+                 END-PERFORM
+      *
+                 MOVE    "SYSKANRI-KEY11"  TO  ORC-DBPATH
+                 PERFORM 960-KANRIMST-READ-SEC
+               END-PERFORM
+           END-IF
+      *
+           MOVE   "SYSKANRI-KEY11"        TO  WK-PATH
+           PERFORM   CSR-CLOSE-SEC
+      *
+           .
+      *
+       130-SYS-5000-GET-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    ¼ç½èÍý
       *****************************************************************
@@ -3560,7 +3675,7 @@
                             AND (NACCT-ZAITEN         =  ZERO)
                             AND (NACCT-ZAISKBKBN      =  "4" )
                             AND (NACCT-DAY(IDY)  NOT  =  ZERO)
-                            AND (WRK-SHOKUJIRYOYO
+                            AND (WRK-SHOKUJIRYOYO(IDY)
                                                  NOT  =  ZERO)
                                IF  WRK-DAY2(IDY) =  ZERO  OR  4
                                   MOVE   NACCT-DAY(IDY)  
@@ -3617,7 +3732,7 @@
       *
            EVALUATE   WRK-DAY24(IDY)
               WHEN  1
-                EVALUATE   WRK-SHOKUJIRYOYO
+                EVALUATE   WRK-SHOKUJIRYOYO(IDY)
                   WHEN  1
       *              Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£±¡Ë
                      ADD    1             TO   WRK-SKJ-ZAIKAISU(IDY)
@@ -3634,7 +3749,7 @@
       *              Ï«ºÒ¾è¿ô
                      PERFORM     23012-NYUINACCT-SYU-JYOSU-SEC
       *              ÆÃÊÌ´ÉÍý²Ã»»
-                     IF    WRK-TOKUKANRIKASAN  =  1
+                     IF    WRK-TOKUKANRIKASAN(IDY)  =  1
                         ADD    1             TO   IDY2
                         MOVE  "197000270"    TO  WRK-SKJ-SRYCD-OCC
                                                              (IDY IDY2)
@@ -3695,7 +3810,7 @@
       *              Ï«ºÒ¾è¿ô
                      PERFORM     23012-NYUINACCT-SYU-JYOSU-SEC
       *              ÆÃÊÌ´ÉÍý²Ã»»
-                     IF    WRK-TOKUKANRIKASAN  =  1
+                     IF    WRK-TOKUKANRIKASAN(IDY)  =  1
                         ADD    1             TO   IDY2
                         MOVE  "197000270"    TO  WRK-SKJ-SRYCD-OCC
                                                              (IDY IDY2)
@@ -3753,7 +3868,7 @@
       *              Ï«ºÒ¾è¿ô
                      PERFORM     23012-NYUINACCT-SYU-JYOSU-SEC
       *              ÆÃÊÌ´ÉÍý²Ã»»
-                     IF    WRK-TOKUKANRIKASAN  =  1
+                     IF    WRK-TOKUKANRIKASAN(IDY)  =  1
                         ADD    1             TO   IDY2
                         MOVE  "197000270"    TO  WRK-SKJ-SRYCD-OCC
                                                              (IDY IDY2)
@@ -3811,7 +3926,7 @@
       *              Ï«ºÒ¾è¿ô
                      PERFORM     23012-NYUINACCT-SYU-JYOSU-SEC
       *              ÆÃÊÌ´ÉÍý²Ã»»
-                     IF    WRK-TOKUKANRIKASAN  =  1
+                     IF    WRK-TOKUKANRIKASAN(IDY)  =  1
                         ADD    1             TO   IDY2
                         MOVE  "197000270"    TO  WRK-SKJ-SRYCD-OCC
                                                              (IDY IDY2)
@@ -5068,45 +5183,46 @@
                PERFORM         26011-NYUINRYOFLG-SET-SEC
            END-IF
       *
-      *
            PERFORM  VARYING  ID1    FROM    1   BY  1
-                         UNTIL   ID1   >   2
+                     UNTIL   ID1      >     5
       *
             IF  SYU-SHOKUJI(ID1)   =   ZERO
               CONTINUE
-            ELSE 
+            ELSE
               MOVE     ZERO     TO    FLG-ARI
               PERFORM  VARYING  ID2    FROM    1   BY  1
-                         UNTIL   ID2                       > 2
-                           OR    RECE82-SHOKUJIKHNRYO(ID2) = ZERO
-                           OR    FLG-ARI                   = 1
+                        UNTIL   ID2                       > 2
+                          OR    RECE82-SHOKUJIKHNRYO(ID2) = ZERO
+                          OR    FLG-ARI                   = 1
                   IF  SYU-SHOKUJI(ID1)   =   RECE82-SHOKUJIKHNRYO(ID2)
-                        ADD   SYU-SHOKUJI-NISSU(ID1)  TO  
+                        ADD   SYU-SHOKUJI-NISSU(ID1)  TO
                                        RECE82-SHOKUJIKHNNISSU(ID2)
                         MOVE  1   TO   FLG-ARI
                   END-IF
-              END-PERFORM  
-              IF  FLG-ARI  =  ZERO  
-                  ADD   SYU-SHOKUJI-NISSU(ID1)  TO  
+              END-PERFORM
+              IF  FLG-ARI  =  ZERO
+              AND ID2     <=   2
+                  ADD   SYU-SHOKUJI-NISSU(ID1)  TO
                                        RECE82-SHOKUJIKHNNISSU(ID2)
-                  MOVE  SYU-SHOKUJI(ID1)        TO  
+                  MOVE  SYU-SHOKUJI(ID1)        TO
                                        RECE82-SHOKUJIKHNRYO(ID2)
               END-IF
             END-IF
       *
            END-PERFORM
       *
-           PERFORM  VARYING  ID1  FROM   3  BY   1
-                      UNTIL  ID1  >   4
-      *
-              IF      SYU-SHOKUJI(ID1)  NOT =  ZERO
-                   ADD   SYU-SHOKUJI-NISSU(ID1)  TO  
-                                       RECE82-SHOKUJIKHNNISSU(ID1)
-                   MOVE  SYU-SHOKUJI(ID1)        TO  
-                                       RECE82-SHOKUJIKHNRYO(ID1)
-              END-IF
-      *
-           END-PERFORM
+           IF      SYU-SHOKUJI(6)  NOT =  ZERO
+                ADD   SYU-SHOKUJI-NISSU(6)  TO
+                                    RECE82-SHOKUJIKHNNISSU(3)
+                MOVE  SYU-SHOKUJI(6)        TO
+                                    RECE82-SHOKUJIKHNRYO(3)
+           END-IF
+           IF      SYU-SHOKUJI(7)  NOT =  ZERO
+                ADD   SYU-SHOKUJI-NISSU(7)  TO
+                                    RECE82-SHOKUJIKHNNISSU(4)
+                MOVE  SYU-SHOKUJI(7)        TO
+                                    RECE82-SHOKUJIKHNRYO(4)
+           END-IF
       *
            IF      SYU-SYUSKJ-RYOYOHI  NOT =  ZERO
                    ADD   SYU-SYUSKJ-NISSU     TO  
@@ -5725,9 +5841,12 @@
                   GO  TO  910-SYSKANRI-HENSYU-EXT
                END-IF
       *
+               MOVE      RECE82-SRYYM   TO  WRK-SRYYM-5000
+               PERFORM   120-SYS-5000-CHK-SEC
+      *
       *        ¿©»ö¡¦Ì¤¼Â»Ü¸º»»¾ðÊó¡Ê¥·¥¹¥Æ¥à´ÉÍý¥Æ¡¼¥Ö¥ë¤è¤ê¡Ë
-               MOVE     ZERO      TO  WRK-SHOKUJIRYOYO
-                                      WRK-TOKUKANRIKASAN
+               INITIALIZE             WRK-SHOKUJIRYOYO-OCC
+                                      WRK-TOKUKANRIKASAN-OCC
       *
                MOVE  ZERO         TO  FLG-SET
                MOVE  RECE82-SRYYM TO  WRK-SYS-SRYYMD(1:6)
@@ -5742,6 +5861,11 @@
                   AND  ( WRK-SYS-SRYYMD     <=  SYS-5000-EDYUKYMD )
                      MOVE     1       TO    FLG-SET
                      PERFORM  110-SYSKAN-HENSYU-SEC
+                     IF        WRK-SYS5000-COUNT    =     ZERO
+                        CONTINUE
+                     ELSE
+                        PERFORM  130-SYS-5000-GET-SEC
+                     END-IF
                   END-IF
       *
                END-PERFORM
