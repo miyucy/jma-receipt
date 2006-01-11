@@ -95,6 +95,7 @@
       *  02.07.01    NACL-藤原    05/08/20  特別療養費対応
       *  02.07.02    NACL-藤原    05/10/06  公費単独の三歳未満の割合設定
       *                                     をしないようにする
+      *  02.07.03    NACL-門脇    06/01/11  病棟区分編集修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -314,6 +315,7 @@
                05  WRK-SRYYYMM                         PIC  9(06).
                05  WRK-SRYDD                           PIC  9(02).
            03  WK-PTNYUINRRK-TENSTUYMD                 PIC  X(08).
+           03  WK-PTNYUINRRK-TENSTUYMD2                PIC  X(08).
       *
       *    患者年齢算出用エリア
        01  WRK-NENREI-AREA.
@@ -2126,6 +2128,7 @@
       *
            INITIALIZE                      WRK-BYOTOKBN-TABLE
                                            WRK-SHONUM
+           MOVE      SPACE             TO  WK-PTNYUINRRK-TENSTUYMD2
       *
       *    診療月内の入退院情報
            INITIALIZE                      PTNYUINRRK-REC
@@ -2341,15 +2344,21 @@
            IF      FLG-SYSKANRI        =   ZERO               
                MOVE  MCPDATA-REC           TO  SYS-5001-REC
       *
-               IF      SYS-5001-RECEDSPKBN =  SPACE
-                   CONTINUE
-               ELSE
                    IF    ( WK-PTNYUINRRK-TENSTUYMD (1:6)
                                                <   RECE62-SRYYM )
                    OR    ( PTNYUINRRK-TENNYUYMD (1:6)
                                                >   RECE62-SRYYM )
                        CONTINUE
                    ELSE 
+                     IF ( WK-PTNYUINRRK-TENSTUYMD2      =  SPACE   )
+                     OR ( WK-PTNYUINRRK-TENSTUYMD(1:6)  = "999999" )
+                     OR ((WK-PTNYUINRRK-TENSTUYMD(1:6)
+                                                    NOT = "999999") AND
+                         (WK-PTNYUINRRK-TENSTUYMD  <
+                                          WK-PTNYUINRRK-TENSTUYMD2))
+                      IF      SYS-5001-RECEDSPKBN =  SPACE
+                       CONTINUE
+                      ELSE
                        PERFORM VARYING IDX3    FROM    1   BY  1
                                UNTIL   IDX3    >       4
                                OR      WRK-BYOTOKBN (IDX3)
@@ -2360,8 +2369,11 @@
                                MOVE    4           TO  IDX3
                            END-IF
                        END-PERFORM
+                      END-IF
+                      MOVE   WK-PTNYUINRRK-TENSTUYMD  TO
+                                            WK-PTNYUINRRK-TENSTUYMD2
+                     END-IF
                    END-IF
-               END-IF                                           
       *        病棟番号・種別
                MOVE    RECE62-SRYYM        TO  WRK-SRYYYMM
                PERFORM VARYING IDX3    FROM    1   BY  1
