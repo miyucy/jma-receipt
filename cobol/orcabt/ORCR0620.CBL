@@ -2321,6 +2321,22 @@
            MOVE    SPACE               TO  WK-PTNYUINRRK-TENSTUYMD
            IF      PTNYUINRRK-TENSTUYMD  =  PTNYUINRRK-TAIINYMD
               MOVE  PTNYUINRRK-TENSTUYMD  TO  WK-PTNYUINRRK-TENSTUYMD
+      *
+              IF  ( WK-PTNYUINRRK-TENSTUYMD2     NOT =  SPACE   )
+              AND ( WK-PTNYUINRRK-TENSTUYMD(1:6) NOT = "999999" )
+              AND ( WK-PTNYUINRRK-TENSTUYMD  =
+                                        WK-PTNYUINRRK-TENSTUYMD2)
+                 INITIALIZE                STS-AREA-DAY
+                 INITIALIZE                LNK-DAY6-AREA
+                 MOVE    "61"              TO  LNK-DAY6-IRAI
+                 MOVE   PTNYUINRRK-TENSTUYMD
+                                           TO  LNK-DAY6-KIJUN
+                 MOVE    "1"               TO  LNK-DAY6-ZOGENPTN
+                 MOVE    -1                TO  LNK-DAY6-ZOGEN
+                 CALL  "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY6-AREA
+                 MOVE    LNK-DAY6-KEISAN TO WK-PTNYUINRRK-TENSTUYMD
+              END-IF
            ELSE
               INITIALIZE                STS-AREA-DAY
               INITIALIZE                LNK-DAY6-AREA
@@ -2350,12 +2366,6 @@
                                                >   RECE62-SRYYM )
                        CONTINUE
                    ELSE 
-                     IF ( WK-PTNYUINRRK-TENSTUYMD2      =  SPACE   )
-                     OR ( WK-PTNYUINRRK-TENSTUYMD(1:6)  = "999999" )
-                     OR ((WK-PTNYUINRRK-TENSTUYMD(1:6)
-                                                    NOT = "999999") AND
-                         (WK-PTNYUINRRK-TENSTUYMD  <
-                                          WK-PTNYUINRRK-TENSTUYMD2))
                       IF      SYS-5001-RECEDSPKBN =  SPACE
                        CONTINUE
                       ELSE
@@ -2372,7 +2382,6 @@
                       END-IF
                       MOVE   WK-PTNYUINRRK-TENSTUYMD  TO
                                             WK-PTNYUINRRK-TENSTUYMD2
-                     END-IF
                    END-IF
       *        病棟番号・種別
                MOVE    RECE62-SRYYM        TO  WRK-SRYYYMM
