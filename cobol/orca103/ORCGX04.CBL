@@ -3282,8 +3282,7 @@
                MOVE    WIDGET-INSENSITIVE  TO  X04-BYOMEI-STATE
            END-IF
       *
-           IF    ( SPA-X01-CHKKBN      =    "1" )
-            AND  ( SPA-GMN-SRCBYOKBN   =    "M" )
+           IF    ( SPA-GMN-SRCBYOKBN   =    "M" )
                CONTINUE
            ELSE
                MOVE    WIDGET-INSENSITIVE  TO  X04-BTN-ALLINS-STATE
