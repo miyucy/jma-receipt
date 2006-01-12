@@ -1879,7 +1879,8 @@
            MOVE    IDI                 TO  ISAM-HKNID
            MOVE    SPA-PTNUM           TO  ISAM-PTNUM
            MOVE    PTHKN-HKNNUM        TO  ISAM-HKNNUM
-           MOVE    "0"                 TO  ISAM-FTNKBN
+     ***** MOVE    "0"                 TO  ISAM-FTNKBN
+           MOVE    WRK-HEN-FTNKBN      TO  ISAM-FTNKBN
            MOVE    PTHKN-HKNJANUM      TO  ISAM-HKNJANUM
            MOVE    PTHKN-HONKZKKBN     TO  ISAM-HONKZKKBN
            MOVE    WRK-HEN-HOJOKBN     TO  ISAM-HOJOKBN
