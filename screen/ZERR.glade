@@ -13,7 +13,7 @@
 <widget>
   <class>GtkWindow</class>
   <name>ZERR</name>
-  <width>523</width>
+  <width>574</width>
   <height>120</height>
   <signal>
     <name>map_event</name>
@@ -61,7 +61,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B01</name>
-      <x>224</x>
+      <x>240</x>
       <y>80</y>
       <width>64</width>
       <height>32</height>
@@ -81,7 +81,7 @@
       <name>ERRMSG</name>
       <x>8</x>
       <y>40</y>
-      <width>504</width>
+      <width>560</width>
       <height>32</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
