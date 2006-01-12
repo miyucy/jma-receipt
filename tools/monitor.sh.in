@@ -152,7 +152,7 @@ if test "x"$Start_GLSERVER = "xtrue"; then
 fi
 
 if test "x"$Start_dbredirector = "xtrue"; then
-    $DBREDIRECTOR -dir $DIRECTORY -ddir $LDDEF -record $RECORD -base $ORCA_DIR |tee $$dbredirector &
+    $DBREDIRECTOR -dir $DIRECTORY -ddir $LDDEF -record $RECORD log|tee $$dbredirector &
     until [ -s $$dbredirector ]
     do 
 	echo "wait..."
