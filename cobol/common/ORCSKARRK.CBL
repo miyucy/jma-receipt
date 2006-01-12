@@ -98,6 +98,10 @@
       *    ¿ÇÎÅ²ÊÍúÎò
        01  SRYKARRK-REC.
            COPY    "CPSRYKARRK.INC".
+      *    ¿ÇÎÅ²ÊÍúÎò
+       01  HZN-SRYKARRK-REC.
+           COPY    "CPSRYKARRK.INC"  REPLACING
+                                     //KARRK-// BY //HZN-KARRK-//.
       *
       *    »»ÄêÍúÎò
        01  SANTEI-REC.
@@ -544,6 +548,8 @@
                                                     MCP-RC  "."
                        MOVE    "3000"          TO  SPA-ERRCD
                    END-IF
+      *            Â¾¤Î¿ÇÎÅ²Ê¤ÎÆâÍÆ³ÎÇ§
+                   PERFORM 3005-DEL-SYORI-SEC
               END-IF
               GO      TO      300-SRYKARRK-HEN-EXT
            END-IF
@@ -739,6 +745,71 @@
            PERFORM 990-DBCLOSE-SEC
            .
        300112-SRYACT-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Â¾¤Î¿ÇÎÅ²Ê¤ÎÆâÍÆ³ÎÇ§½èÍý
+      *****************************************************************
+       3005-DEL-SYORI-SEC         SECTION.
+      *
+      *    ¿ÇÎÅ²ÊÍúÎòÆÉ¹þ
+           MOVE    SPACE               TO  SRYKARRK-REC
+           INITIALIZE                      SRYKARRK-REC
+           MOVE    SPA-HOSPID          TO  KARRK-HOSPID
+           MOVE    SPA-PTID            TO  KARRK-PTID
+      *
+           MOVE    SRYKARRK-REC        TO  MCPDATA-REC
+           MOVE    "tbl_srykarrk"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_srykarrk"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 975-SRYKARRK-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SRYKARRK
+           END-IF
+           MOVE    ZERO                TO  FLG-OK
+           MOVE    SPACE               TO  HZN-SRYKARRK-REC
+           PERFORM UNTIL    FLG-SRYKARRK   =   1
+               IF      KARRK-SYOSINYMD2    NOT =   SPACE
+                   MOVE    1                   TO  FLG-OK
+                   MOVE    1                   TO  FLG-SRYKARRK
+               ELSE
+                   IF     (HZN-SRYKARRK-REC    =   SPACE )  OR
+                          (KARRK-SYOSINYMD1    =   WRK-SYOSINYMD2)
+                       MOVE    SRYKARRK-REC        TO  HZN-SRYKARRK-REC
+                   END-IF
+                   MOVE    "tbl_srykarrk"      TO  MCP-TABLE
+                   MOVE    "key2"              TO  MCP-PATHNAME
+                   PERFORM 975-SRYKARRK-READ-SEC
+               END-IF
+           END-PERFORM
+           MOVE    "tbl_srykarrk"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           IF     (HZN-SRYKARRK-REC    NOT =   SPACE )  AND
+                  (FLG-OK              =   ZERO      )
+               MOVE    HZN-SRYKARRK-REC    TO  SRYKARRK-REC
+               MOVE    WRK-SYOSINYMD2      TO  KARRK-SYOSINYMD2
+      *
+               MOVE    SMCNDATE-YMD        TO  KARRK-UPYMD
+               MOVE    SMCNDATE-HMS        TO  KARRK-UPHMS
+      *
+               MOVE    SRYKARRK-REC        TO  MCPDATA-REC
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    "tbl_srykarrk"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO
+                   DISPLAY "ORCSCKARRK SRYKARRK UPD ERR:"  MCP-RC  "."
+                   MOVE    "3000"          TO  SPA-ERRCD
+               END-IF
+           END-IF
+           .
+       3005-DEL-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
