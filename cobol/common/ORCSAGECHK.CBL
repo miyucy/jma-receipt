@@ -44,7 +44,8 @@
       * 01.00.12     NACL-多々納  05/09/15  地方公費単独区分追加
       * 01.00.13     NACL-多々納  05/09/22  長崎県被爆者医療（１８６）追加
       * 01.00.14     NACL-多々納  05/10/04  特別療養費（０６８）追加
-      * 02.07.00     NACL-太田    05/10/25  MONFUNC 対応
+      * 02.00.00     NACL-太田    05/10/25  MONFUNC 対応
+      * 02.00.01     NACL-多々納  06/01/12  児童保護（０５３）追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -539,6 +540,14 @@
                   (COMB-KOH2HKNNUM     =   "021" )  OR
                   (COMB-KOH3HKNNUM     =   "021" )  OR
                   (COMB-KOH4HKNNUM     =   "021" ))
+               MOVE    1               TO  FLG-OK2
+           END-IF
+      *    児童保護措置及び知的障害者福祉のみ時
+           IF     (COMB-HKNNUM         =   SPACE )  AND
+                 ((COMB-KOH1HKNNUM     =   "053" )  OR
+                  (COMB-KOH2HKNNUM     =   "053" )  OR
+                  (COMB-KOH3HKNNUM     =   "053" )  OR
+                  (COMB-KOH4HKNNUM     =   "053" ))
                MOVE    1               TO  FLG-OK2
            END-IF
       *    老人公費で、支払区分がある時
