@@ -43,6 +43,7 @@
       *  01.00.09    NACL-森脇     05/07/13  エラーメッセージ、コミット
       *  01.00.10    NACL-森脇     05/08/25  負担区分追加
       *  01.00.11    NACL-森脇     05/09/26  構造変更
+      *  01.00.12    NACL-多々納   06/01/12  補助区分編集修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -163,6 +164,8 @@
       *
            03  FLG-YMD                 PIC 9(01).
       *
+           03  FLG-ROUJIN              PIC 9(01).
+      *
       *    カウント領域
        01  CNT-AREA.
            03  CNT-PARA                PIC 9(06).
@@ -226,7 +229,9 @@
            03  WRK-NUM1                PIC 9(01).
            03  WRK-NUM2                PIC 9(02).
            03  WRK-KOUMOKU-NO          PIC 9(04).
-      *
+     *
+           03  WRK-HEN-FTNKBN2         PIC X(01).
+     *
            03  WRK-BASEYMD.
                05  WRK-BYY             PIC 9(04).
                05  WRK-BMM             PIC 9(02).
@@ -1765,6 +1770,7 @@
                MOVE    SPA-TERMID      TO  PTHKN-TERMID
       *
       *        補助区分再セット
+               MOVE    1               TO  FLG-ROUJIN
                PERFORM 250-HOJYOKBN-HEN-SEC
       *        患者番号変換マスタ更新処理
                PERFORM 260-PTNUM-UPDATE-SEC
@@ -1800,6 +1806,8 @@
       *****************************************************************
        250-OLDFTNKBN-HEN-SEC       SECTION.
       *
+           MOVE    ZERO                TO  FLG-ROUJIN
+      *
       *    老人は対象外
            IF      PTINF-BIRTHDAY  <=   "19320930"
                GO  TO  250-OLDFTNKBN-HEN-EXT
@@ -1827,9 +1835,10 @@
                   (WRK-BYMD-70         <=  WRK-SYSYMD ) AND
                   (WRK-HEN-TEKEDYMD    >=  WRK-SYSYMD )
       *        前期高齢者で負担区分が0なら負担区分に１をセット
-               IF     (WRK-HEN-FTNKBN      NOT =   "0" )
+               IF     (WRK-HEN-FTNKBN      =   "0" )
                    MOVE    "1"             TO  WRK-HEN-FTNKBN
                END-IF
+               MOVE    1                   TO  FLG-ROUJIN
            ELSE
                GO  TO  250-OLDFTNKBN-HEN-EXT
            END-IF
@@ -1903,6 +1912,7 @@
            MOVE    WRK-BASEYMD     TO  WRK-SYMD
            PERFORM 20021-GETSUMASTU-GET-SEC
            MOVE    WRK-SYMD        TO  WRK-HEN-TEKEDYMD
+           MOVE    ZERO                TO  FLG-ROUJIN
            .
        250-OLDPTHKNINF-SET-EXT.
            EXIT.
@@ -1921,8 +1931,15 @@
                GO  TO  250-HOJYOKBN-HEN-EXT
            END-IF
       *
+      *    前期高齢者以外
+           IF      FLG-ROUJIN          =   ZERO
+               MOVE    SPACE           TO  WRK-HEN-FTNKBN2
+           ELSE
+               MOVE    WRK-HEN-FTNKBN  TO  WRK-HEN-FTNKBN2
+           END-IF
+      *
       *    通常の場合
-           EVALUATE    WRK-HEN-FTNKBN
+           EVALUATE    WRK-HEN-FTNKBN2
       *    負担割合１
            WHEN        "1"
                MOVE    "9"             TO  PTHKN-HOJOKBN
@@ -1934,7 +1951,7 @@
            EVALUATE    PTHKN-HKNNUM
       *    船員
            WHEN    "002"
-               EVALUATE  WRK-HEN-FTNKBN    ALSO    WRK-HEN-HOJOKBN
+               EVALUATE  WRK-HEN-FTNKBN2   ALSO    WRK-HEN-HOJOKBN
       *        負担割合１
                WHEN        "1"     ALSO    SPACE
                WHEN        "1"     ALSO    "0"
@@ -1958,7 +1975,7 @@
                END-EVALUATE
       *    共済
            WHEN    "031"   THRU    "034"
-               EVALUATE    WRK-HEN-FTNKBN  ALSO    WRK-HEN-HOJOKBN
+               EVALUATE    WRK-HEN-FTNKBN2 ALSO    WRK-HEN-HOJOKBN
                WHEN        "1"     ALSO    "2"
                    MOVE    "B"             TO  PTHKN-HOJOKBN
                WHEN        "2"     ALSO    "2"
@@ -1972,12 +1989,12 @@
                    WHEN    10      ALSO    0
                        MOVE    "4"             TO  PTHKN-HOJOKBN
                    WHEN    20      ALSO    10
-                       IF      WRK-HEN-FTNKBN      NOT =   "1"
+                       IF      WRK-HEN-FTNKBN2     NOT =   "1"
                            MOVE    "5"         TO  PTHKN-HOJOKBN
                        END-IF
                    WHEN    30      ALSO    20
-                       IF        ( WRK-HEN-FTNKBN      NOT =   "2" )
-                           AND   ( WRK-HEN-FTNKBN      NOT =   "1" )
+                       IF        ( WRK-HEN-FTNKBN2     NOT =   "2" )
+                           AND   ( WRK-HEN-FTNKBN2     NOT =   "1" )
                            MOVE    "6"         TO  PTHKN-HOJOKBN
                        END-IF
                    END-EVALUATE
