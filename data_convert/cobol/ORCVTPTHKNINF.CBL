@@ -377,9 +377,9 @@
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-           MOVE    ZERO            TO  FLG-AREA
-           MOVE    ZERO            TO  CNT-AREA
-           MOVE    ZERO            TO  IDX-AREA
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  CNT-AREA
+           INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  SPA-AREA
       *
@@ -1103,7 +1103,6 @@
       *        ¸íÆþÎÏ
                WHEN    OTHER
                    MOVE    3           TO  FLG-ERR
-                   GO  TO  2410-FTNKBN-SET-EXT
            END-EVALUATE
       *
            .
@@ -1416,6 +1415,7 @@
       *****************************************************************
        2410-GAIFTN-SET-SEC         SECTION.
       *
+           MOVE    ZERO                TO  WRK-HEN-GAIFTN
       *    Ì¤ÆþÎÏ
            IF      FLG-NODATA          =   1
                GO  TO  2410-GAIFTN-SET-EXT
@@ -1451,6 +1451,7 @@
       *****************************************************************
        2410-NYUFTN-SET-SEC         SECTION.
       *
+           MOVE    ZERO                TO  WRK-HEN-NYUFTN
       *    Ì¤ÆþÎÏ
            IF      FLG-NODATA          =   1
                GO  TO  2410-NYUFTN-SET-EXT
@@ -1939,16 +1940,6 @@
                MOVE    WRK-HEN-FTNKBN  TO  WRK-HEN-FTNKBN2
            END-IF
       *
-      *    ÄÌ¾ï¤Î¾ì¹ç
-           EVALUATE    WRK-HEN-FTNKBN2
-      *    ÉéÃ´³ä¹ç£±
-           WHEN        "1"
-               MOVE    "9"             TO  PTHKN-HOJOKBN
-      *    ÉéÃ´³ä¹ç£²
-           WHEN        "2"
-               MOVE    "8"             TO  PTHKN-HOJOKBN
-           END-EVALUATE
-      *
            EVALUATE    PTHKN-HKNNUM
       *    Á¥°÷
            WHEN    "002"
@@ -1999,7 +1990,27 @@
                            MOVE    "6"         TO  PTHKN-HOJOKBN
                        END-IF
                    END-EVALUATE
+               ELSE
+                   EVALUATE    WRK-HEN-FTNKBN2
+      *            ÉéÃ´³ä¹ç£±
+                   WHEN        "1"
+                       MOVE    "1"             TO  PTHKN-HOJOKBN
+      *            ÉéÃ´³ä¹ç£²
+                   WHEN        "2"
+                       MOVE    "2"             TO  PTHKN-HOJOKBN
+                   END-EVALUATE
                END-IF
+      *
+           WHEN    OTHER
+      *    ÄÌ¾ï¤Î¾ì¹ç
+               EVALUATE    WRK-HEN-FTNKBN2
+      *        ÉéÃ´³ä¹ç£±
+               WHEN        "1"
+                   MOVE    "9"             TO  PTHKN-HOJOKBN
+      *        ÉéÃ´³ä¹ç£²
+               WHEN        "2"
+                   MOVE    "8"             TO  PTHKN-HOJOKBN
+               END-EVALUATE
            END-EVALUATE
       *
            .
