@@ -104,6 +104,8 @@
       *  01.00.52    NACL-太田    04.08.02  定期請求中は退院登録は不可とする
       *  01.00.53    NACL-太田    04.10.14  退院事由追加
       *  01.00.54    NACL-小豆沢  05.07.19  自費１０項目対応
+      *  01.00.55    NACL-小豆沢  06.01.13  退院日以降の診療会計を残す処理
+      *                                     を可能とする区分を追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1485,6 +1487,7 @@
                    END-IF
                WHEN "3004"
                WHEN "3005"
+               WHEN "3011"
                    IF    ( WRK-I0IDCD      =   "3005" )
       *
                        MOVE    1   TO  SPA-NAI-I01-TORIKESI-FLG
@@ -1521,6 +1524,7 @@
                    MOVE    02      TO  SPA-GMN-I01-CUR
       *        退院登録
                WHEN "3004"
+               WHEN "3011"
                    MOVE    11      TO  SPA-GMN-I01-CUR
                END-EVALUATE
            END-IF
@@ -12427,6 +12431,9 @@
       *
                        IF    ( ACCT-DAY (1 IDX14)      >   ZERO )
                            MOVE    "3004"          TO  SPA-I0IDCD
+                           IF   SPA-GMN-I01-SYORIKBN-CD   =  "11"
+                               MOVE  "3011"          TO  SPA-I0IDCD
+                           END-IF
                        END-IF
       *
                        COMPUTE IDX14       =   IDX14   +   1
@@ -14132,6 +14139,13 @@
                MOVE    SPACE           TO  WRK-I0IDMSG
                STRING  "入院日が他院退院日と重複します。"
                        "よろしいですか？"
+               DELIMITED BY SIZE
+               INTO  WRK-I0IDMSG
+               END-STRING
+           WHEN    "3011"
+               MOVE    SPACE           TO  WRK-I0IDMSG
+               STRING  "退院後の診療日で入力された診療行為は"
+                       "そのままの状態となります"
                DELIMITED BY SIZE
                INTO  WRK-I0IDMSG
                END-STRING
