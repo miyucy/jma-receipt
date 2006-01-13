@@ -1127,7 +1127,9 @@
                                                    "180016210"  OR
                                                    "180016310"  OR
                                                    "113004410"
-               PERFORM 10010-COMMT-SEC
+               IF      LNK-ORCSC-PG        =   "K02"
+                   PERFORM 10010-COMMT-SEC
+               END-IF
            END-IF
       *
       *    ∆√ƒÍÃÙ∫ﬁº£Œ≈≤√ªªŒ¡•¡•ß•√•Ø
