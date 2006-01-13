@@ -62,7 +62,7 @@
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
       *     
-           COPY    "CPORCMCP.INC".  
+      *     COPY    "CPORCMCP.INC".  
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -127,6 +127,10 @@
       *        Ìá¤ë
                WHEN    "CLICKED"                 ALSO    "B01"
                    MOVE    SPACE                 TO  SPA-DID1-FLG
+                   PERFORM 210-BACK
+      *     ¥×¥ì¥Ó¥å¡¼
+               WHEN    "CLICKED"                 ALSO    "B10"
+                   MOVE    "PV"                  TO  SPA-DID1-FLG
                    PERFORM 210-BACK
       *     °õºþ¤·¤Ê¤¤
                WHEN    "CLICKED"                 ALSO    "B11"

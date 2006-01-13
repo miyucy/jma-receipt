@@ -127,6 +127,10 @@
                WHEN    "CLICKED"                 ALSO    "B01"
                    MOVE    SPACE                 TO  SPA-GID1-FLG
                    PERFORM 210-BACK
+      *     プレビュー
+               WHEN    "CLICKED"                 ALSO    "B10"
+                   MOVE    "PV"                  TO  SPA-GID1-FLG
+                   PERFORM 210-BACK
       *     印刷しない
                WHEN    "CLICKED"                 ALSO    "B11"
                    MOVE    "NO"                  TO  SPA-GID1-FLG

@@ -25,9 +25,12 @@
       *****************************************************************
        01  SPA-D01KYOUTU.
       *
+           05  SPA-D01-TBL-GROUP           PIC  X(14).
+           05  SPA-D01-JOB-JOBID           PIC  9(07).
       *警告メッセージ
            05  SPA-DIDCD                   PIC  X(04).
       *警告画面より
            05  SPA-DID1-AREA. 
                07  SPA-DID1-FLG            PIC  X(02).
+               07  SPA-D99-FLG             PIC  X(02).
       *

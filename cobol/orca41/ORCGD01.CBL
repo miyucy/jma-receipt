@@ -63,6 +63,8 @@
                                    REPLACING  //DTCHK//
                                    BY         //DTCHKERR//.
       *
+           COPY    "ENUM-VALUE".
+      *
       *    スパ領域
            COPY    "COMMON-SPA".
       *
@@ -181,6 +183,7 @@
            03  WRK-EDTYMD1                 PIC X(10).
            03  WRK-EDTYMD3                 PIC X(22).
            03  WRK-Z9                      PIC Z9.
+           03  WRK-PRT-PAGE                PIC 9(10).
       *
        01  CONST-AREA.
            03  CONST-LINE                  PIC X(40)   VALUE
@@ -252,7 +255,9 @@
            COPY    "CPSK1101.INC".
            COPY    "CPSK1031.INC".
            COPY    "CPSK3003.INC".
-      *
+      *  
+      *    プレビュー用情報
+           COPY    "CPXC01LNK.INC".
       *
       *    シェル用領域
            COPY    "CPSHELLTBL.INC".
@@ -401,10 +406,10 @@
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
       *
       *        元の画面へ戻す
-               IF    ( SPA-MOTOPG      =   "XA01"  OR  "XB01" )
+               IF    ( SPA-MOTOPG      =   "XA01" OR "XB01" OR "XC01" )
                    MOVE    LNK-COMMON      TO  SPA-KYOUTU
                    MOVE    LNK-SCRSPA      TO  SPA-D01
-                   MOVE    SPA-WORK        TO  SPA-D01KYOUTU
+                   INITIALIZE                  SPA-D01KYOUTU
                    GO  TO  300-SCREEN-EXT
                END-IF
       *
@@ -422,6 +427,7 @@
                GO      TO      300-SCREEN-EXT
       *    処理結果画面
            WHEN    "D99"
+               PERFORM 340-D99-SET-SEC
                GO  TO  300-SCREEN-EXT
            END-EVALUATE
       *
@@ -587,6 +593,7 @@
                END-EVALUATE
            END-IF
       *
+           MOVE    SPACE               TO  SPA-D99-FLG
            MOVE    SPACE               TO  SPA-DID1-FLG
            MOVE    SPACE               TO  SPA-DIDCD
       *
@@ -599,25 +606,90 @@
       *****************************************************************
        340-DID2-SET-SEC            SECTION.
       *
-           IF    ( SPA-DID1-FLG    =   "OK" OR "NO" )
-      *----(01.00.11)--UPD-START---
+           IF    ( SPA-DID1-FLG    NOT =   SPACE  )
       *        ジョブ管理チェック
                PERFORM 4900-JOBKANRICHK-SEC
                IF      SPA-ERRCD       =   SPACE
                    PERFORM 490-PRINT-SEC
                END-IF
-      *----(01.00.11)--UPD-END-----
+           ELSE
+               MOVE    SPACE       TO  SPA-DID1-FLG
            END-IF
       *
-           MOVE    SPACE           TO  SPA-DID1-FLG
+           MOVE    SPACE           TO  SPA-D99-FLG
            MOVE    SPACE           TO  SPA-DIDCD
            .
        340-DID2-SET-EXT.
            EXIT.
       *****************************************************************
+      *    処理表示画面戻り処理
+      *****************************************************************
+       340-D99-SET-SEC             SECTION.
+      *
+           IF    ( SPA-D99-FLG     =   "OK" )
+               PERFORM 4501-NEXT-GMN-SEC
+           END-IF
+      *
+           MOVE    ZERO            TO  SPA-GMN-D01-CUR
+      *     MOVE    ZERO            TO  IDX
+      *     MOVE    3               TO  IDY
+      *
+           MOVE    SPACE           TO  SPA-D99-FLG
+           MOVE    SPACE           TO  SPA-DID1-FLG
+           MOVE    SPACE           TO  SPA-DIDCD
+      *
+           .
+       340-D99-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    プレビュー処理
+      *****************************************************************
+       4501-NEXT-GMN-SEC            SECTION.
+      *
+      *    画面移行用のパラメタ変更
+           MOVE    "D01"               TO  SPA-MOTOPG
+           MOVE    "XC01"              TO  SPA-SAKIPG
+      *
+           MOVE    0                   TO  WRK-STPAGE
+           MOVE    0                   TO  WRK-EDPAGE
+      *
+           INITIALIZE                  LNK-XC01-AREA
+      *
+           MOVE    CONST-PRTKANRI-TBL-KEY
+                                       TO  SPA-PRTKANRI-TBL-KEY
+           MOVE    ZERO                TO  LNK-XC01-RENNUM
+           MOVE    SPA-D01-TBL-GROUP   TO  LNK-XC01-TBL-GROUP
+           MOVE    ZERO                TO  LNK-XC01-SHORI-RENNUM
+           MOVE    WRK-STPAGE          TO  LNK-XC01-ST-PAGE
+           MOVE    WRK-EDPAGE          TO  LNK-XC01-ED-PAGE
+           MOVE    "D01"               TO  LNK-XC01-MOTOPG
+           MOVE    SPACE               TO  LNK-XC01-MODE
+      *
+           MOVE    LNK-XC01-AREA       TO  SPA-WORK
+      *
+           MOVE    SPACE               TO  LINKAREA
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+           MOVE    SPA-KYOUTU          TO  LNK-COMMON
+           MOVE    SPA-D01             TO  LNK-SCRSPA
+      *
+           MOVE   "JOIN"               TO  MCP-PUTTYPE
+           MOVE   "XC01   "            TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       4501-NEXT-GMN-EXT.
+           EXIT.
+      *****************************************************************
       *    印刷処理
       *****************************************************************
        490-PRINT-SEC                       SECTION.
+      *
+           INITIALIZE                      SPA-D01-TBL-GROUP
+                                           SPA-D01-JOB-JOBID
       *
            PERFORM 900-SYS1101-SEL-SEC
       *
@@ -828,8 +900,13 @@
                                MCPDATA-REC
       *
       *    印刷処理
-           IF     ( SPA-DID1-FLG        =   "OK" )
+           IF     ( SPA-DID1-FLG        =   "OK"  OR "PV")
                PERFORM 45011-JOBKANRI-HENSYU-SEC
+      *
+               MOVE    CONST-PRTKANRI-TBL-GROUP
+                                   TO  SPA-D01-TBL-GROUP
+               MOVE    CONST-JOB-JOBID
+                                   TO  SPA-D01-JOB-JOBID
       *
                MOVE    0                   TO  WRK-STPAGE
                MOVE    99999               TO  WRK-EDPAGE
@@ -838,7 +915,7 @@
       *
       *        ファイルデイレクトリ位置指定
                INITIALIZE                  ORCSMKPASSAREA
-               MOVE    "/scripts/allways/print.sh"
+               MOVE    "/scripts/allways/print_prv.sh"
                                            TO  MKPASS-IN-01
                CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
                MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
@@ -852,7 +929,7 @@
                MOVE    ZERO                TO  LNK-PRTKANRI-SHORI-RENNUM
                MOVE    SPA-NAI-D01-SRYYM   TO  LNK-PRTKANRI-SRYYM
                MOVE    SPA-SYSYMD          TO  LNK-PRTKANRI-SKYYMD
-               MOVE    "print.sh"          TO  LNK-PRTKANRI-SHELLID
+               MOVE    "print_prv.sh"      TO  LNK-PRTKANRI-SHELLID
                MOVE    ZERO                TO  LNK-PRTKANRI-PRIORITY
                MOVE    SPA-TERMID          TO  LNK-PRTKANRI-TERMID
                MOVE    SPA-OPID            TO  LNK-PRTKANRI-OPID
@@ -879,6 +956,14 @@
                                            TO  SHELLTBL-ARG14
                MOVE    WRK-STPAGE          TO  SHELLTBL-ARG15
                MOVE    WRK-EDPAGE          TO  SHELLTBL-ARG16
+               EVALUATE    SPA-DID1-FLG
+               WHEN    "PV"
+                   MOVE    "3"             TO  SHELLTBL-ARG17
+      *         WHEN    "NO"
+      *             MOVE    "3"             TO  SHELLTBL-ARG17
+               WHEN    "OK"
+                   MOVE    "2"             TO  SHELLTBL-ARG17
+               END-EVALUATE
                MOVE    SHELLTBL            TO  MCPDATA-REC
                MOVE    "SHELL"             TO  MCP-FUNC
                MOVE    "shell"             TO  MCP-TABLE
@@ -965,6 +1050,8 @@
            IF    ( MCP-RC          NOT =   ZERO )
                MOVE    "4003"          TO  SPA-ERRCD
                GO  TO  45012-JOBID-UPD-EXT
+      *         DISPLAY "SYSKANRI 3003  ERR KEY = ["
+      *                            MCP-RC  " " SYS-3003-KEY  "]"
            END-IF
       *
            .
@@ -1511,6 +1598,8 @@
       *
            MOVE    SPACE               TO  D99
            MOVE    ZERO                TO  D99-COUNT
+           MOVE    WIDGET-INSENSITIVE  TO  D99-B12-STATE
+           MOVE    ZERO                TO  WRK-PRT-PAGE
       *
            PERFORM 900-SYS3003-SEL-SEC
       *
@@ -1558,25 +1647,41 @@
                                        "【"        DELIMITED  BY  SIZE
                                       JOB-SHELLMSG DELIMITED  BY  SPACE
                                       "】"         DELIMITED  BY  SIZE
-                               INTO  D99-MSG
+                                             INTO  D99-MSG
                                END-STRING
                            END-IF
                        END-IF
                        MOVE    IDX0            TO  D99-COUNT
+      *
+                       IF    ( JOB-JOBID   =   SPA-D01-JOB-JOBID )
+                           MOVE    JOB-UPDCNT  TO  WRK-PRT-PAGE
+                       END-IF
                    END-IF
                END-PERFORM
            END-IF
+      *
+           MOVE    "B01"               TO  MCP-WIDGET
       *
            IF    ( D99-MSG             =   SPACE )
                IF    ( D99-COUNT       >   ZERO )
                    MOVE    "処理は正常に終了しました"
                                                TO  D99-MSG
+                   IF    ( SPA-DID1-FLG    =   "PV" )
+                    AND  ( WRK-PRT-PAGE    >   ZERO )
+                       MOVE    WIDGET-NORMAL    TO  D99-B12-STATE
+                       MOVE    "B12"            TO  MCP-WIDGET
+                   ELSE
+                       MOVE    "B01"            TO  MCP-WIDGET
+                   END-IF
                ELSE
                    MOVE    "該当する処理はありません"
                                                TO  D99-MSG
                END-IF
            END-IF
-           MOVE    "B01"               TO  MCP-WIDGET
+      *
+           IF    ( SPA-DID1-FLG    =   "PV" )
+               MOVE    "F12:プレビュー"    TO  D99-B12-LABEL
+           END-IF
       *
            MOVE    "D01"               TO  SPA-MOTOPG
            MOVE    "D99"               TO  SPA-SAKIPG
@@ -2239,6 +2344,7 @@
        900-SYS3003-SEL-SEC             SECTION.
       *
            MOVE    ZERO                TO  FLG-SYSKANRI
+           MOVE    SPACE               TO  SYS-3003-REC
            INITIALIZE                      SYS-3003-REC
            MOVE    "3003"              TO  SYS-3003-KANRICD
            MOVE    CONST-3003-KBNCD    TO  SYS-3003-KBNCD

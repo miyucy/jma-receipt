@@ -47,6 +47,10 @@
       *    スパ領域
            COPY    "COMMON-SPA".
       *
+           COPY    "G01COMMON-SPA".
+      *   
+           COPY    "ENUM-VALUE".
+      *
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
@@ -58,6 +62,7 @@
       *
        01  WRK-AREA.
            03  WRK-PAGE            PIC ZZZZZZZZZ9.
+           03  WRK-PRT-PAGE        PIC 9(10).
       *     
        01  WRK-HEN-AREA.
            03  WRK-HENTIME.
@@ -136,6 +141,7 @@
        000-PROC-SEC                SECTION.
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-WORK        TO  SPA-G01KYOUTU
       * 
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
@@ -145,6 +151,7 @@
                    PERFORM 200-GMNSENI
            END-EVALUATE
       *
+           MOVE    SPA-G01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
       *
            .
@@ -172,6 +179,9 @@
                WHEN    "CLICKED"       ALSO    "pandatimer1"
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 490-KAKUNIN-SEC
+      *    プレビュー画面へ
+               WHEN    "CLICKED"       ALSO    "B12"
+                   PERFORM 4501-NEXT-GMN-SEC
            END-EVALUATE
       *
            .
@@ -181,6 +191,8 @@
       *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
+      *
+           MOVE    SPACE               TO  SPA-G99-FLG
       *
            MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
            MOVE    "G99"               TO  SPA-MOTOPG
@@ -197,12 +209,34 @@
            EXIT.
       *
       *****************************************************************
+      *    更新処理
+      *****************************************************************
+       4501-NEXT-GMN-SEC            SECTION.
+      *
+           MOVE    "OK"                TO  SPA-G99-FLG
+      *     
+           MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
+           MOVE    "G99"               TO  SPA-MOTOPG
+      *
+           MOVE    "JOIN"              TO  MCP-PUTTYPE
+           MOVE    SPA-SAKIPG          TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       4501-NEXT-GMN-EXT.
+           EXIT.
+      *****************************************************************
       *    処理確認処理
       *****************************************************************
        490-KAKUNIN-SEC            SECTION.
       *     
            MOVE    SPACE               TO  G99
            MOVE    ZERO                TO  G99-COUNT
+           MOVE    WIDGET-INSENSITIVE  TO  G99-B12-STATE
+           MOVE    ZERO                TO  WRK-PRT-PAGE
       *
            IF      SPA-MOTOPG          =   "G01"        
                MOVE    SPACE               TO  SYS-3003-REC 
@@ -248,20 +282,29 @@
                END-IF
            END-IF
       *
-           IF      G99-MSG              =   SPACE
-               MOVE    "B01"                TO  MCP-WIDGET
-               IF      G99-COUNT            >   ZERO    
+           MOVE    "B01"               TO  MCP-WIDGET
+           IF    ( G99-MSG             =   SPACE )
+               IF    ( G99-COUNT       >   ZERO )
                    MOVE    "処理は正常に終了しました"
                                                 TO  G99-MSG
+                   IF    ( SPA-GID1-FLG    =   "PV" )
+                    AND  ( WRK-PRT-PAGE    >   ZERO )
+                       MOVE    WIDGET-NORMAL    TO  G99-B12-STATE
+                       MOVE    "B12"            TO  MCP-WIDGET
+                   ELSE
+                       MOVE    "B01"            TO  MCP-WIDGET
+                   END-IF
                ELSE
                    MOVE    "該当する処理はありません"
                                                 TO  G99-MSG
                END-IF                                 
-           ELSE                                        
-               MOVE    "B11"                TO  MCP-WIDGET
            END-IF                                 
       *
            MOVE    SPACE               TO  LINKAREA
+      *
+           IF    ( SPA-GID1-FLG    =   "PV" )
+               MOVE    "F12:プレビュー"    TO  G99-B12-LABEL
+           END-IF
       *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE
            MOVE    "G99    "           TO  MCP-WINDOW
@@ -313,7 +356,10 @@
                    END-IF
               END-IF                          
            END-IF    
-           MOVE    IDX                     TO  G99-COUNT    
+           MOVE    IDX                     TO  G99-COUNT
+           IF    ( JOB-JOBID   =   SPA-G01-JOB-JOBID )
+                   MOVE    JOB-UPDCNT  TO  WRK-PRT-PAGE
+           END-IF    
            .
        490-KAKUNIN-EXT.
            EXIT.

@@ -60,6 +60,8 @@
       *
       *    月次統計共通パラメタ
            COPY    "L01COMMON-SPA".
+      *   
+           COPY    "ENUM-VALUE".
       *
       *    画面用ＳＰＡ
        01  SPA-L02.
@@ -853,6 +855,9 @@
       *****************************************************************
        500-KAKUTEI-SEC                 SECTION.
       *
+           INITIALIZE                      SPA-L01-TBL-GROUP
+                                           SPA-L01-JOB-JOBID
+      *
       *    ジョブ開始セット
            MOVE    "DEL"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
@@ -958,6 +963,7 @@
       *
            MOVE    SPACE               TO  L99
            MOVE    ZERO                TO  L99-COUNT
+           MOVE    WIDGET-INSENSITIVE  TO  L99-B12-STATE
       *
       *    ジョブ管理チェック処理
            MOVE    "CHK"           TO  SJOBKANRI-MODE

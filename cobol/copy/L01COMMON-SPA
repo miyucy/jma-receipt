@@ -28,10 +28,13 @@
            03  SPA-L01-SEL                 PIC  9(05).
            03  SPA-L01-IDX                 PIC  9(05).
            03  SPA-L01-CUR                 PIC  9(05).
+           03  SPA-L01-TBL-GROUP           PIC  X(14).
+           03  SPA-L01-JOB-JOBID           PIC  9(07).
       *
       *警告メッセージ
            03  SPA-LIDCD                   PIC  X(04).
       *警告画面より
            03  SPA-LID1-AREA. 
                05  SPA-LID1-FLG            PIC  X(02).
+               05  SPA-L99-FLG             PIC  X(02).
       *
