@@ -32,6 +32,7 @@
            03  QDTCHK-BYOMEICD-G.
                05  QDTCHK-BYOMEICD         PIC X(07)
                                            OCCURS  21.
+           03  QDTCHK-UTAGAIFLG            PIC X(01).
            03  QDTCHK-NYUGAIKBN            PIC X(01).
            03  QDTCHK-TENKIKBN             PIC X(01).
            03  QDTCHK-TENKIYMD             PIC X(08).
