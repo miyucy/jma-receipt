@@ -47,6 +47,13 @@ W60	{
 		CHKMTRX05	{
 			value	bool;
 		};
+		CMB_YBUTAGAIKBN	{
+			YBUTAGAIKBN	{
+				value	varchar(32);
+			};
+			count	int;
+			item	varchar(32)[5];
+		};
 		CMB_PRTSRTKBN	{
 			PRTSRTKBN	{
 				value	varchar(22);

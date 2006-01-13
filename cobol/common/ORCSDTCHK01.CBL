@@ -707,30 +707,38 @@
                PERFORM 910-DBFETCH-SEC
                IF    ( MCP-RC          =   ZERO )
                    MOVE    MCPDATA-REC     TO  QDTCHK-REC
+      *
+                   MOVE    1               TO  FLG-LOOP-END
+      *
+                   IF    ( SYS-1101-YBUTAGAIKBN    =   "2" )
+                       IF    ( SDTCHK01-CHKKBN     =   "1" )
+                        AND  ( QDTCHK-UTAGAIFLG    =   "1"  OR "3" )
+                           MOVE    ZERO        TO  FLG-LOOP-END
+                       END-IF
+                   END-IF
+      *
+                   IF    ( QDTCHK-REZEFLG  =   "1" )
+                       MOVE    ZERO        TO  FLG-LOOP-END
+                   END-IF
+      *
+                   IF    ( QDTCHK-HKNCOMBI  NOT =   ZERO )
+                       MOVE    QDTCHK-HKNCOMBI     TO  WRK-HKNCOMBI
+                       PERFORM 220-HKNCOMBI-GET-SEC
+                       MOVE    COMB-HKNNUM         TO  WRK-ZAIHKNNUM
+                       PERFORM 220-TAISYO-HKN-CHK-SEC
+                       IF    ( FLG-TAISYO-HKN  =   ZERO )
+                           MOVE    ZERO            TO  FLG-LOOP-END
+                       END-IF
+                   ELSE
+                       IF    ( SDTCHK01-HKNKBN      =  CONST-ROSAI
+                                                    OR CONST-JIBAI  )
+                           MOVE    ZERO            TO  FLG-LOOP-END
+                       END-IF
+                   END-IF
+      *
                ELSE
                    INITIALIZE                  QDTCHK-REC
                    MOVE    1               TO  FLG-QDTCHK
-               END-IF
-      *
-               MOVE    1               TO  FLG-LOOP-END
-      *
-               IF    ( QDTCHK-REZEFLG  =   "1" )
-                   MOVE    ZERO        TO  FLG-LOOP-END
-               END-IF
-      *
-               IF    ( QDTCHK-HKNCOMBI  NOT =   ZERO )
-                   MOVE    QDTCHK-HKNCOMBI     TO  WRK-HKNCOMBI
-                   PERFORM 220-HKNCOMBI-GET-SEC
-                   MOVE    COMB-HKNNUM         TO  WRK-ZAIHKNNUM
-                   PERFORM 220-TAISYO-HKN-CHK-SEC
-                   IF    ( FLG-TAISYO-HKN  =   ZERO )
-                       MOVE    ZERO            TO  FLG-LOOP-END
-                   END-IF
-               ELSE
-                   IF    ( SDTCHK01-HKNKBN      =  CONST-ROSAI
-                                                OR CONST-JIBAI  )
-                       MOVE    ZERO            TO  FLG-LOOP-END
-                   END-IF
                END-IF
       *
            END-PERFORM

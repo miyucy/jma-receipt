@@ -62,6 +62,10 @@
                05  SPA-GMN-CHKMTRX-G.
                    07  SPA-GMN-CHKMTRX         PIC X(01)
                                                OCCURS  5.
+               05  SPA-GMN-YBUTAGAIKBN-G.
+                   07  SPA-GMN-YBUTAGAIKBN     PIC X(01).
+                   07                          PIC X(01).
+                   07  SPA-GMN-YBUTAGAIKBNMEI  PIC X(30).
                05  SPA-GMN-PRTSRTKBN-G.
                    07  SPA-GMN-PRTSRTKBN       PIC X(01).
                    07                          PIC X(01).
@@ -83,6 +87,12 @@
                        09  SPA-GMN-UTAGAIKKNKBNL   PIC X(01).
                        09                          PIC X(01).
                        09  SPA-GMN-UTAGAIKKNKBNMEIL PIC X(08).
+               05  SPA-GMN-YBUTAGAIKBNLST-G.
+                   07  SPA-GMN-YBUTAGAIKBN-MAX     PIC 9(03).
+                   07  SPA-GMN-YBUTAGAIKBNLST      OCCURS   2.
+                       09  SPA-GMN-YBUTAGAIKBNL    PIC X(01).
+                       09                          PIC X(01).
+                       09  SPA-GMN-YBUTAGAIKBNMEIL PIC X(30).
                05  SPA-GMN-PRTSRTKBNLST-G.
                    07  SPA-GMN-PRTSRTKBN-MAX       PIC 9(03).
                    07  SPA-GMN-PRTSRTKBNLST        OCCURS   4.
@@ -143,7 +153,6 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "ORCA-DBPATH".
       *
       *****************************************************************
       *    連絡領域
@@ -359,6 +368,9 @@
                MOVE    SYS-1101-PRTPTLSTKBN
                                        TO  SPA-GMN-PRTPTLSTKBN
       *
+               MOVE    SYS-1101-YBUTAGAIKBN
+                                       TO  SPA-GMN-YBUTAGAIKBN
+      *
            END-IF
       *
            MOVE    SPA-GMN-BYOSRYKAKBN TO  WRK-CMB-CD
@@ -377,6 +389,15 @@
                                    TO  SPA-GMN-UTAGAIKKNKBN-G
            ELSE
                MOVE    WRK-CMB-ITM TO  SPA-GMN-UTAGAIKKNKBN-G
+           END-IF
+      *
+           MOVE    SPA-GMN-YBUTAGAIKBN TO  WRK-CMB-CD
+           PERFORM 4200-YBUTAGAIKBNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    SPA-GMN-YBUTAGAIKBNLST (1)
+                                       TO  SPA-GMN-YBUTAGAIKBN-G
+           ELSE
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-YBUTAGAIKBN-G
            END-IF
       *
            MOVE    SPA-GMN-PRTSRTKBN   TO  WRK-CMB-CD
@@ -413,6 +434,9 @@
       *
       *    疑い病名期間チェックコンボ設定処理
            PERFORM 3101-UTAGAIKKNKBNLST-SEC
+      *
+      *    薬剤と病名疑いコンボ設定処理
+           PERFORM 3101-YBUTAGAIKBNLST-SEC
       *
       *    帳票出力順コンボ設定処理
            PERFORM 3101-PRTSRTKBNLST-SEC
@@ -464,6 +488,29 @@
       *
            . 
        3101-UTAGAIKKNKBNLST-EXT.
+           EXIT.
+      *****************************************************************
+      *    薬剤と病名疑いコンボ設定処理
+      *****************************************************************
+       3101-YBUTAGAIKBNLST-SEC           SECTION.
+      *
+           INITIALIZE                  SPA-GMN-YBUTAGAIKBNLST-G
+      *
+           MOVE    2               TO  SPA-GMN-YBUTAGAIKBN-MAX
+      *
+           MOVE    "1"             TO  SPA-GMN-YBUTAGAIKBNL    (1)
+           MOVE    "適応病名とする"
+                                   TO  SPA-GMN-YBUTAGAIKBNMEIL (1)
+      *
+           MOVE    "2"             TO  SPA-GMN-YBUTAGAIKBNL    (2)
+           MOVE    "適応病名としない"
+                                   TO  SPA-GMN-YBUTAGAIKBNMEIL (2)
+      *
+           MOVE    SPA-GMN-YBUTAGAIKBNLST  (1)
+                                   TO  SPA-GMN-YBUTAGAIKBN-G
+      *
+           . 
+       3101-YBUTAGAIKBNLST-EXT.
            EXIT.
       *****************************************************************
       *    帳票出力順コンボ設定処理
@@ -659,6 +706,7 @@
       *
            MOVE    W60-BYOSRYKAKBN     TO  SPA-GMN-BYOSRYKAKBN-G
            MOVE    W60-UTAGAIKKNKBN    TO  SPA-GMN-UTAGAIKKNKBN-G
+           MOVE    W60-YBUTAGAIKBN     TO  SPA-GMN-YBUTAGAIKBN-G
            MOVE    W60-PRTSRTKBN       TO  SPA-GMN-PRTSRTKBN-G
            MOVE    W60-PRTPTLSTKBN     TO  SPA-GMN-PRTPTLSTKBN-G
       *
@@ -678,6 +726,11 @@
            END-IF
       *
            PERFORM 4101-UTAGAIKKNKBN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4101-YBUTAGAIKBN-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -731,6 +784,24 @@
            .
       *
        4101-UTAGAIKKNKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    薬剤と病名疑い区分チェック処理
+      *****************************************************************
+       4101-YBUTAGAIKBN-CHK-SEC        SECTION.
+      *
+           MOVE    SPA-GMN-YBUTAGAIKBN TO  WRK-CMB-CD
+           PERFORM 4200-YBUTAGAIKBNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    SPA-GMN-YBUTAGAIKBNLST (1)
+                                   TO  SPA-GMN-YBUTAGAIKBN-G
+           ELSE
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-YBUTAGAIKBN-G
+           END-IF
+      *
+           .
+      *
+       4101-YBUTAGAIKBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    帳票出力順区分チェック処理
@@ -815,6 +886,30 @@
       *
            .
        4200-UTAGAIKKNKBNLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    薬剤と病名疑い区分コンボチェック処理
+      *****************************************************************
+       4200-YBUTAGAIKBNLST-CHK-SEC     SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB         >   SPA-GMN-YBUTAGAIKBN-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-YBUTAGAIKBNL (IDX-CMB)
+                                   =   WRK-CMB-CD )
+      *
+                   MOVE    SPA-GMN-YBUTAGAIKBNLST (IDX-CMB)
+                                   TO  WRK-CMB-ITM
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       4200-YBUTAGAIKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    帳票出力順区分コンボチェック処理
@@ -927,7 +1022,8 @@
            MOVE    SPA-W01-SEL-STYUKYMD    TO  SYS-1101-STYUKYMD
            MOVE    SPA-W01-SEL-EDYUKYMD    TO  SYS-1101-EDYUKYMD
            MOVE    SYS-1101-REC            TO  MCPDATA-REC
-           MOVE    PATH-TBL-SYSKANRI-KEY   TO  MCP-PATH
+           MOVE    "tbl_syskanri"          TO  MCP-TABLE
+           MOVE    "key"                   TO  MCP-PATHNAME
            PERFORM 910-DBDELETE-SEC
            IF    ( MCP-RC              NOT =   ZERO )
                MOVE    "1003"              TO  SPA-ERRCD
@@ -1000,6 +1096,8 @@
                MOVE    2               TO  SYS-1101-UTAGAIKKN
            END-EVALUATE
       *
+           MOVE    SPA-GMN-YBUTAGAIKBN TO   SYS-1101-YBUTAGAIKBN
+      *
            MOVE    SPA-GMN-PRTSRTKBN   TO   SYS-1101-PRTSRTKBN
       *
            MOVE    SPA-GMN-PRTPTLSTKBN TO   SYS-1101-PRTPTLSTKBN
@@ -1015,7 +1113,8 @@
                MOVE    SMCNDATE-YMD            TO  SYS-UPYMD
                MOVE    SMCNDATE-HMS            TO  SYS-UPHMS
                MOVE    SYSKANRI-REC            TO  MCPDATA-REC
-               MOVE    PATH-TBL-SYSKANRI-UPD1  TO  MCP-PATH
+               MOVE    "tbl_syskanri"          TO  MCP-TABLE
+               MOVE    "upd1"                  TO  MCP-PATHNAME
                PERFORM 910-DBUPDATE-SEC
                IF    ( MCP-RC          NOT =   ZERO )
                    MOVE    "1001"              TO  SPA-ERRCD
@@ -1027,7 +1126,8 @@
                                                    SYS-UPYMD
                MOVE    SMCNDATE-HMS            TO  SYS-UPHMS
                MOVE    SYSKANRI-REC            TO  MCPDATA-REC
-               MOVE    PATH-TBL-SYSKANRI-KEY   TO  MCP-PATH
+               MOVE    "tbl_syskanri"          TO  MCP-TABLE
+               MOVE    "key"                   TO  MCP-PATHNAME
                PERFORM 910-DBINSERT-SEC
                IF    ( MCP-RC          NOT =   ZERO )
                    MOVE    "1002"              TO  SPA-ERRCD
@@ -1122,7 +1222,19 @@
       *
            END-PERFORM
       *
-           MOVE    SPA-GMN-PRTSRTKBN-G TO  W60-PRTSRTKBN
+           MOVE    SPA-GMN-YBUTAGAIKBN-G   TO  W60-YBUTAGAIKBN
+      *
+           MOVE    SPA-GMN-YBUTAGAIKBN-MAX
+                                       TO  W60-YBUTAGAIKBN-COUNT
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0        >   SPA-GMN-YBUTAGAIKBN-MAX )
+      *
+               MOVE    SPA-GMN-YBUTAGAIKBNLST (IDX0)
+                                       TO  W60-YBUTAGAIKBN-ITEM (IDX0)
+      *
+           END-PERFORM
+      *
+           MOVE    SPA-GMN-PRTSRTKBN-G     TO  W60-PRTSRTKBN
       *
            MOVE    SPA-GMN-PRTSRTKBN-MAX
                                        TO  W60-PRTSRTKBN-COUNT
@@ -1206,6 +1318,8 @@
                MOVE    "PRTSRTKBN"     TO  MCP-WIDGET
            WHEN    009
                MOVE    "PRTPTLSTKBN"   TO  MCP-WIDGET
+           WHEN    010
+               MOVE    "YBUTAGAIKBN"   TO  MCP-WIDGET
            WHEN    212
                MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
@@ -1223,7 +1337,7 @@
            WHEN    "BYOSRYKAKBN"
                MOVE    02              TO  SPA-GMN-CUR
            WHEN    "UTAGAIKKNKBN"
-               MOVE    08              TO  SPA-GMN-CUR
+               MOVE    10              TO  SPA-GMN-CUR
            WHEN    "CHKMTRX01"
                MOVE    04              TO  SPA-GMN-CUR
            WHEN    "CHKMTRX02"
@@ -1233,6 +1347,8 @@
            WHEN    "CHKMTRX04"
                MOVE    07              TO  SPA-GMN-CUR
            WHEN    "CHKMTRX05"
+               MOVE    10              TO  SPA-GMN-CUR
+           WHEN    "YBUTAGAIKBN"
                MOVE    08              TO  SPA-GMN-CUR
            WHEN    "PRTSRTKBN"
                MOVE    09              TO  SPA-GMN-CUR
@@ -1337,7 +1453,8 @@
            MOVE    ZERO                TO  FLG-SYSKANRI
       *
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-           MOVE    PATH-TBL-SYSKANRI-KEY10 TO  MCP-PATH
+           MOVE    "tbl_syskanri"          TO  MCP-TABLE
+           MOVE    "key10"                 TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC      =   ZERO )
                MOVE    MCPDATA-REC     TO  SYSKANRI-REC
@@ -1346,8 +1463,9 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    PATH-TBL-SYSKANRI-KEY10 TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_syskanri"          TO  MCP-TABLE
+           MOVE    "key10"                 TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        900-SYSKANRI-KEY10-SEL-EXT.
@@ -1360,7 +1478,8 @@
            MOVE    ZERO                TO  FLG-SYSKANRI
       *
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-           MOVE    PATH-TBL-SYSKANRI-KEY8 TO  MCP-PATH
+           MOVE    "tbl_syskanri"         TO  MCP-TABLE
+           MOVE    "key8"                 TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC      =   ZERO )
                MOVE    MCPDATA-REC     TO  SYSKANRI-REC
@@ -1369,8 +1488,9 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    PATH-TBL-SYSKANRI-KEY8 TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+           MOVE    "tbl_syskanri"         TO  MCP-TABLE
+           MOVE    "key8"                 TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        900-SYSKANRI-KEY8-SEL-EXT.
@@ -1381,7 +1501,7 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -1399,7 +1519,7 @@
        910-DBFETCH-SEC                  SECTION.
       *
            MOVE    "DBFETCH"       TO   MCP-FUNC
-           CALL    "MCPSUB"             USING
+           CALL    "MONFUNC"            USING
                                         MCPAREA
                                         MCPDATA-REC
       *
@@ -1410,16 +1530,16 @@
       *****************************************************************
       *    ＤＢクローズ処理
       *****************************************************************
-       910-DBCLOSE-SEC                  SECTION.
+       910-DBCLOSECURSOR-SEC            SECTION.
       *
            MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-           CALL    "MCPSUB"             USING
+           CALL    "MONFUNC"            USING
                                         MCPAREA
                                         MCPDATA-REC
       *
            .
       *
-       910-DBCLOSE-EXT.
+       910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢＤＥＬＥＴＥ処理
@@ -1427,7 +1547,7 @@
        910-DBDELETE-SEC                 SECTION.
       *
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -1441,7 +1561,7 @@
        910-DBINSERT-SEC                SECTION.
       *
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -1455,7 +1575,7 @@
        910-DBUPDATE-SEC                SECTION.
       *
            MOVE    "DBUPDATE"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -1469,7 +1589,7 @@
        900-PUT-WINDOW                  SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "MCPSUB"          USING
+           CALL   "MONFUNC"         USING
                                     MCPAREA
                                     MCPDATA-REC
       *
