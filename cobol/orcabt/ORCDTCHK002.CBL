@@ -917,6 +917,9 @@
       *    適応病名チェックサブ
            COPY    "CPORCSDTCHK01.INC".
       *
+      *    病名編集サブ
+           COPY    "CPORCSMKBYOMEI.INC".
+      *
       *    保険組合せ取得サブ
            COPY    "CPORCSDTCHK02.INC".
            01  LNK-HKNCOMBI-AREA.
@@ -4129,60 +4132,13 @@
       *****************************************************************
        2001121-PTBYO-BYOMEI-HEN-SEC       SECTION.
       *
-           MOVE       ZERO                 TO  FLG-UTAGAI
-                                               FLG-KYUSEI
+           INITIALIZE                  ORCSMKBYOMEIAREA
+           MOVE    PTBYO-UTAGAIFLG TO  SMKBYO-UTAGAIFLG
+           MOVE    PTBYO-BYOMEI    TO  SMKBYO-BYOMEI
+           CALL    "ORCSMKBYOMEI"  USING   ORCSMKBYOMEIAREA
       *
-           COMPUTE CNT-BYOMEIMOJI  =   PTBYO-BYOMEIMOJI    *   2
-           MOVE    PTBYO-BYOMEI            TO  WRK-HEN-PTBYOMEI
-      *
-           IF    ( PTBYO-UTAGAIFLG     =   "1" OR  "3" )
-               IF    ( CNT-BYOMEIMOJI  <=  8 )
-                   MOVE    PTBYO-BYOMEI    TO  WRK-STR
-               ELSE
-                   MOVE    PTBYO-BYOMEI (CNT-BYOMEIMOJI - 7:)
-                                           TO  WRK-STR
-               END-IF
-      *
-               MOVE    ZERO                TO  CNT-STR
-               INSPECT WRK-STR             TALLYING
-                       CNT-STR FOR ALL "疑"
-               IF    ( CNT-STR        <=   ZERO )
-                   MOVE    1               TO  FLG-UTAGAI
-               END-IF
-           END-IF
-      *
-           IF    ( PTBYO-UTAGAIFLG     =   "2" OR  "3" )
-               MOVE    ZERO                TO  CNT-STR
-               INSPECT PTBYO-BYOMEI        TALLYING
-                       CNT-STR FOR ALL "急性"
-               IF    ( CNT-STR        <=   ZERO )
-                   MOVE    1               TO  FLG-KYUSEI
-               END-IF
-           END-IF
-      *
-           IF    ( FLG-KYUSEI              =   1 )
-               MOVE    SPACE               TO  WRK-STR
-               MOVE    1                   TO  CNT-BYOMEIMOJI
-               STRING  "急性"              DELIMITED   BY  SIZE
-                       PTBYO-BYOMEI        DELIMITED   BY  SPACE
-               INTO    WRK-STR
-               WITH    POINTER             CNT-BYOMEIMOJI
-               END-STRING
-               MOVE    WRK-STR             TO  WRK-HEN-PTBYOMEI
-               COMPUTE CNT-BYOMEIMOJI      =   CNT-BYOMEIMOJI  -   1
-           END-IF
-      *
-           IF    ( FLG-UTAGAI              =   1 )
-               MOVE    SPACE               TO  WRK-STR
-               MOVE    1                   TO  CNT-BYOMEIMOJI
-               STRING  PTBYO-BYOMEI        DELIMITED   BY  SPACE
-                       "の疑い"            DELIMITED   BY  SIZE
-               INTO    WRK-STR
-               WITH    POINTER             CNT-BYOMEIMOJI
-               END-STRING
-               MOVE    WRK-STR             TO  WRK-HEN-PTBYOMEI
-               COMPUTE CNT-BYOMEIMOJI      =   CNT-BYOMEIMOJI  -   1
-           END-IF
+           MOVE    SMKBYO-BYOMEI   TO  WRK-HEN-PTBYOMEI
+           MOVE    SMKBYO-LENGTH   TO  CNT-BYOMEIMOJI
       *
            .
        2001121-PTBYO-BYOMEI-HEN-EXT.
