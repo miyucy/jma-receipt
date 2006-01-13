@@ -3136,6 +3136,9 @@
       *    入院会計作成サブの呼出し
            INITIALIZE            ORCSNYUACCT-AREA
            MOVE     "2"     TO   LNK-SCNYUACCT-SYORI-KBN
+           IF     SPA-GMN-I01-SYORIKBN-CD   =  "11"
+               MOVE     "A"   TO   LNK-SCNYUACCT-SYORI-KBN
+           END-IF
            MOVE     "1"                TO  SPA-NYUGAIKBN
            MOVE     PTNYUINRRK-PTID    TO  SPA-PTID
            MOVE     PTNYUINRRK-NYUINKA TO  SPA-SRYKA
