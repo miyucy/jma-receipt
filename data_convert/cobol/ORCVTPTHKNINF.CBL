@@ -1972,6 +1972,10 @@
                    MOVE    "B"             TO  PTHKN-HOJOKBN
                WHEN        "2"     ALSO    "2"
                    MOVE    "E"             TO  PTHKN-HOJOKBN
+               WHEN        "1"     ALSO    ANY
+                   MOVE    "9"             TO  PTHKN-HOJOKBN
+               WHEN        "2"     ALSO    ANY
+                   MOVE    "8"             TO  PTHKN-HOJOKBN
                END-EVALUATE
       *    πÒ ›
            WHEN    "060"
