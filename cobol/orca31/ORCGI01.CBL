@@ -996,7 +996,7 @@
       *
            INITIALIZE              SPA-GMN-I01-CMB-SYORIKBN
       *
-           MOVE    10              TO  SPA-GMN-I01-SYORIKBN-CNT
+           MOVE    11              TO  SPA-GMN-I01-SYORIKBN-CNT
       *
            MOVE    "01 Æþ±¡ÅÐÏ¿"   TO  SPA-GMN-I01-SYORIKBN-ITM (01)
            MOVE    "02 Âà±¡ÅÐÏ¿"   TO  SPA-GMN-I01-SYORIKBN-ITM (02)
@@ -1010,6 +1010,8 @@
                                    TO  SPA-GMN-I01-SYORIKBN-ITM (08)
            MOVE    "09 °ÛÆ°¼è¾Ã"   TO  SPA-GMN-I01-SYORIKBN-ITM (09)
            MOVE    "10 Âà±¡ºÆ·×»»" TO  SPA-GMN-I01-SYORIKBN-ITM (10)
+           MOVE    "11 Âà±¡ÅÐÏ¿¡Ê¿ÇÎÅÊÝÂ¸¡Ë"
+                                   TO  SPA-GMN-I01-SYORIKBN-ITM (11)
       *
       *
            .
@@ -1038,7 +1040,7 @@
       *
            INITIALIZE              SPA-GMN-I01-CMB-SYORIKBN
       *
-           MOVE    6               TO  SPA-GMN-I01-SYORIKBN-CNT
+           MOVE    7               TO  SPA-GMN-I01-SYORIKBN-CNT
       *
            MOVE    "02 Âà±¡ÅÐÏ¿"   TO  SPA-GMN-I01-SYORIKBN-ITM (01)
            MOVE    "03 ÊÑ¹¹"       TO  SPA-GMN-I01-SYORIKBN-ITM (02)
@@ -1048,6 +1050,8 @@
                                    TO  SPA-GMN-I01-SYORIKBN-ITM (05)
            MOVE    "08 Å¾²Ê¡¡Å¾Åï¡¡Å¾¼¼"
                                    TO  SPA-GMN-I01-SYORIKBN-ITM (06)
+           MOVE    "11 Âà±¡ÅÐÏ¿¡Ê¿ÇÎÅÊÝÂ¸¡Ë"
+                                   TO  SPA-GMN-I01-SYORIKBN-ITM (07)
       *
       *    Âà±¡ÍúÎò¥Á¥§¥Ã¥¯
            PERFORM 3101-TAIINRRK-CHK-SEC
@@ -1100,7 +1104,7 @@
       *
            INITIALIZE              SPA-GMN-I01-CMB-SYORIKBN
       *
-           MOVE    7               TO  SPA-GMN-I01-SYORIKBN-CNT
+           MOVE    8               TO  SPA-GMN-I01-SYORIKBN-CNT
       *
            MOVE    "02 Âà±¡ÅÐÏ¿"   TO  SPA-GMN-I01-SYORIKBN-ITM (01)
            MOVE    "03 ÊÑ¹¹"       TO  SPA-GMN-I01-SYORIKBN-ITM (02)
@@ -1111,6 +1115,8 @@
            MOVE    "08 Å¾²Ê¡¡Å¾Åï¡¡Å¾¼¼"
                                    TO  SPA-GMN-I01-SYORIKBN-ITM (06)
            MOVE    "09 °ÛÆ°¼è¾Ã"   TO  SPA-GMN-I01-SYORIKBN-ITM (07)
+           MOVE    "11 Âà±¡ÅÐÏ¿¡Ê¿ÇÎÅÊÝÂ¸¡Ë"
+                                   TO  SPA-GMN-I01-SYORIKBN-ITM (08)
       *
       *    Âà±¡ÍúÎò¥Á¥§¥Ã¥¯
            PERFORM 3101-TAIINRRK-CHK-SEC
@@ -3578,6 +3584,7 @@
                PERFORM 4101-WIDGET-NYUIN-STT-SEC
       *    Âà±¡ÅÐÏ¿
            WHEN    "02"
+           WHEN    "11"
       *
       *        Âà±¡Æü¤Ë¥·¥¹¥Æ¥àÆüÉÕ¤«Á°²ó°ÛÆ°Æü¤ÇÆüÉÕ¤Î¿·¤·¤¤Êý¤òÉ½¼¨
                IF    ( SPA-SYSYMD      >   SPA-NAI-I01-MAEIDOYMD )
@@ -6319,7 +6326,7 @@
       *****************************************************************
        480-TOUROKU-SEC                 SECTION.
       *
-           IF    ( SPA-GMN-I01-SYORIKBN-CD     =   "02" OR "10" )
+           IF    ( SPA-GMN-I01-SYORIKBN-CD  = "02" OR "10"  OR "11")
             AND  ( FLG-TEIKI-CHK       =   1 )
       *
       *        Äê´üÀÁµá½èÍýÃæ¥Á¥§¥Ã¥¯
@@ -6369,6 +6376,7 @@
       *
       *    Âà±¡ÅÐÏ¿
            WHEN    "02"
+           WHEN    "11"
       *
                IF    ( FLG-SYUARI  NOT =   ZERO )
                    MOVE    "3005"  TO  SPA-I0IDCD
@@ -6703,6 +6711,7 @@
                PERFORM 4801-NYUIN-TOUROKU-CHK-SEC
       *    Âà±¡ÅÐÏ¿
            WHEN    "02"
+           WHEN    "11"
                PERFORM 4801-TAIIN-TOUROKU-CHK-SEC
       *    ÊÑ¹¹
            WHEN    "03"
@@ -7314,7 +7323,7 @@
            MOVE    SPA-NAI-I01-NYUINYMD
                                    TO  PTNYUINRRK-NYUINYMD
       *    Âà±¡Æü¡¢Âà±¡»öÍ³
-           IF    ( SPA-GMN-I01-SYORIKBN-CD =   "02" )
+           IF    ( SPA-GMN-I01-SYORIKBN-CD =   "02"  OR  "11")
                MOVE    SPA-NAI-I01-TAIINYMD
                                    TO  PTNYUINRRK-TAIINYMD
                MOVE    SPA-GMN-I01-TAIINCD
