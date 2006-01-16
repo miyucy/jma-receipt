@@ -1054,3 +1054,31 @@ path	key45 	{
 	};
 };
 
+
+path	key46 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_key46_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syunou
+			WHERE   HOSPID     =   :HOSPID
+			AND   NYUGAIKBN    =   :NYUGAIKBN
+			AND   SRYYMD       =   :SRYYMD
+			AND   CREATEKBN   <>  '3'
+		;
+	};
+};
+
+
+path	key47 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_key47_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syunou
+			WHERE   HOSPID     =   :HOSPID
+			AND   NYUGAIKBN    =   :NYUGAIKBN
+			AND   DENPPRTYMD   =   :DENPPRTYMD
+			AND   CREATEKBN   <>  '3'
+		;
+	};
+};
+
