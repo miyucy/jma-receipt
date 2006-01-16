@@ -1,4 +1,5 @@
 SRCS = ORCGN21.CBL \
+       ORCGN22.CBL \
        ORCGN21ERR.CBL \
        ORCGN21ID1.CBL
 

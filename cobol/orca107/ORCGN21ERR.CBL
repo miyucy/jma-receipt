@@ -68,6 +68,7 @@
       *
        01  SCRAREA.
            COPY    "N21.INC".
+           COPY    "N22.INC".
            COPY    "N21ERR.INC".
            COPY    "N21ID1.INC".
       *

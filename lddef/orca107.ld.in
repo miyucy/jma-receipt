@@ -5,6 +5,7 @@ textsize	400;
 
 bind	""		"OpenCOBOL"	"ORCGN21";
 bind	"N21"		"OpenCOBOL"	"ORCGN21";
+bind	"N22"		"OpenCOBOL"	"ORCGN22";
 bind	"N21ERR"		"OpenCOBOL"	"ORCGN21ERR";
 bind	"N21ID1"		"OpenCOBOL"	"ORCGN21ID1";
 
@@ -15,6 +16,7 @@ data	{
 	spa	orcaspa;
 	window	{
 		N21;
+		N22;
 		N21ERR;
 		N21ID1;
 	};
@@ -24,7 +26,19 @@ db	{
 	tbl_inputcd;
 	tbl_tensu;
 	tbl_yakujyo;
+	tbl_yakujyo_temp;
+	tbl_jobkanri;
+	tbl_syskanri;
 };
 
+ db	"shell"	{
+	shell;
+};
+db	"system" {
+	metadb;
+};
+db      "blob_body" {
+         blob;
+};
 /* #include "orcadb.inc" */
 /* #include "orcadbh.inc" */

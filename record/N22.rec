@@ -1,0 +1,64 @@
+N22	{
+	fixed17	{
+		KENCD	{
+			value	varchar(9);
+		};
+		KENNAME	{
+			value	varchar(100);
+		};
+		scrolledwindow1	{
+			KEKKALST	{
+				count	int;
+				row	int;
+				rowattr	int;
+				item	{
+					value0	varchar(5);
+					value1	varchar(12);
+					value2	varchar(5);
+					value3	varchar(50);
+					value4	varchar(50);
+				}	[100];
+				select	bool[100];
+			};
+		};
+		SELNUM	{
+			value	number(3);
+		};
+		MESSAGE	{
+			style   varchar(20);
+			value	varchar(100);
+		};
+		GAZOKBNCOMBO	{
+			GAZOKBN	{
+				value	varchar(14);
+			};
+			count	int;
+			item	varchar(14)[4];
+		};
+		COPYKBNCOMBO	{
+			COPYKBN	{
+				value	varchar(14);
+			};
+			count	int;
+			item	varchar(14)[3];
+		};
+		GAZO1	{
+			imagedata	object;
+		};
+		GAZO2	{
+			imagedata	object;
+		};
+		GAZO3	{
+			imagedata	object;
+		};
+		GAZOLABEL1	{
+			value	varchar(14);
+		};
+		GAZOLABEL2	{
+			value	varchar(14);
+		};
+		GAZOLABEL3	{
+			value	varchar(14);
+		};
+	};
+};

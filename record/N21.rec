@@ -45,5 +45,8 @@ N21	{
 		PHOTO	{
 			value	varchar(256);
 		};
+		PHOTOAREA	{
+			imagedata	object;
+		};
 	};
 };

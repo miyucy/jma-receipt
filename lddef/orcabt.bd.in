@@ -3,6 +3,16 @@ name	orcabt;
 arraysize	20;
 textsize	400;
 
+handler "Ruby" {
+        class  "Exec";
+        serialize   "CGI";
+        start       "/usr/bin/ruby -Ke %p%m.rb";
+        loadpath    "=/cobol/orca107/";
+        locale      "euc-jp";
+};
+
+bind    "OrcSioriPull"  "Ruby";
+
 bind	"ORCR0010"	"OpenCOBOL";
 bind	"ORCR0020"	"OpenCOBOL";
 bind	"ORCR0030"	"OpenCOBOL";

@@ -40,6 +40,7 @@
       * 02.01.01     NACL-森脇     03/06/13  一括更新
       * 02.01.02     NACL-森脇     04/10/05  半角全角チェック追加
       * 02.01.03     NACL-森脇     04/10/22  CLOSE処理
+      * 02.02.01     NACL-森脇     05/12/13  薬剤情報参照追加
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -56,42 +57,9 @@
       *
       *    システム管理情報設定用共通パラメタ
            COPY    "N21COMMON-SPA".
+           COPY    "N21SCR-SPA".
       *
            COPY    "ENUM-VALUE".
-      *
-      *    画面用ＳＰＡ
-       01  SPA-N21.
-           03  SPA-N21-AREA.
-             05  SPA-GMN-PAGE  PIC 9(02).
-             05  SPA-GMN-LINE  PIC 9(02).
-             05  SPA-GMN-MAX   PIC 9(05).
-             05  SPA-GMN-CUR   PIC 9(02).
-      *
-             05  SPA-GMN-AREA.
-               07  SPA-GMN-KENCD       PIC X(21).
-               07  SPA-GMN-KENNAIYO    PIC X(27).
-               07  SPA-GMN-KENNAME     PIC X(101).
-               07  SPA-GMN-SELNUM      PIC 9(03).
-      *
-               07  SPA-GMN-TBL.
-                 09  SPA-GMN-TBL-G     OCCURS  200.
-                   11  SPA-GMN-TNO     PIC X(05).
-                   11  SPA-GMN-TNAME   PIC X(100).
-                 09  SPA-GMN-TCD       PIC X(09)   OCCURS  200.
-      *
-      *----(01.01.03)--UPD-START---
-               07  SPA-GMN-ENTRY.
-                 09  SPA-GMN-NAME      PIC X(80).
-                 09  SPA-GMN-EFFECT    PIC X(186).
-                 09  SPA-GMN-COLOR     PIC X(136).
-                 09  SPA-GMN-SHAPE     PIC X(136).
-                 09  SPA-GMN-MARK      PIC X(136).
-                 09  SPA-GMN-CAUTION   PIC X(410).
-                 09  SPA-GMN-PHOTO     PIC X(256).
-      *----(01.01.03)--UPD-END-----
-      *
-             05  SPA-NAI-AREA.
-               07  SPA-NAI-SRYCD       PIC X(09).
       *
        01  FLG-AREA.
            03  FLG-END         PIC 9(01).
@@ -99,6 +67,7 @@
            03  FLG-YAKUJYO     PIC 9(01).
            03  FLG-INPUTCD     PIC 9(01).
            03  FLG-OK          PIC 9(01).
+           03  FLG-GAZO        PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -109,6 +78,7 @@
        01  IDX-AREA.
            03  IDX         PIC 9(03).
            03  IDY         PIC 9(03).
+           03  IDZ         PIC 9(03).
       *
       *    システム領域
        01  SYS-AREA.
@@ -181,6 +151,8 @@
       *
       *    薬剤情報マスタ
            COPY    "CPYAKUJYO.INC".
+      *    薬剤情報参照用ＤＢ
+           COPY    "CPYAKUJYOTEMP.INC".
       *
       *    入力コードマスタ−
        01  INPUTCD-REC.
@@ -201,6 +173,9 @@
       *    LIKE使用KEY対応
            COPY    "CPORCSADDSIGN.INC".
       *
+           COPY    "ORCA-DBPATH".
+           COPY    "ORCA-BLOB".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -213,6 +188,7 @@
       *
        01  SCRAREA.
            COPY    "N21.INC".
+           COPY    "N22.INC".
            COPY    "N21ERR.INC".
            COPY    "N21ID1.INC".
       *
@@ -229,7 +205,7 @@
       *
            MOVE    SPA-COMMON  TO  SPA-AREA
            MOVE    SPA-WORK    TO  SPA-N21KYOUTU
-           MOVE    SPA-FREE    TO  SPA-N21
+           MOVE    SPA-FREE    TO  SPA-N21SCRAREA
       *
            MOVE    SPACE       TO  SPA-ERRCD
            MOVE    ZERO        TO  FLG-END
@@ -250,7 +226,7 @@
                PERFORM 500-SET-SCREEN
            END-IF
       *
-           MOVE    SPA-N21         TO  SPA-FREE
+           MOVE    SPA-N21SCRAREA  TO  SPA-FREE
            MOVE    SPA-N21KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
            .
@@ -318,6 +294,9 @@
       *    カーソル移動
                WHEN    "CLICKED"   ALSO    "B10"
                    PERFORM 440-CURMOVE-SEC
+      *    参照
+               WHEN    "CLICKED"   ALSO    "B11"
+                   PERFORM 440-SANSYO-SEC
            END-EVALUATE
       *
       *    カナ入力
@@ -374,6 +353,10 @@
                WHEN    "N21ID1"
                    PERFORM 320-N21ID1-SET-SEC
                    GO  TO  300-SCREEN-EXT
+      *    参照画面処理
+               WHEN    "N22"
+                   PERFORM 320-N22-SET-SEC
+                   GO  TO  300-SCREEN-EXT
            END-EVALUATE
       *
            MOVE    SPACE       TO  SPA-N21ID1-FLG
@@ -398,6 +381,26 @@
            . 
       *
        31O-SPASET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    参照画面（Ｎ２２）ＯＫ処理
+      *****************************************************************
+       320-N22-SET-SEC             SECTION.
+      *
+           IF      SPA-N22-FLG     =   "OK"
+               MOVE    SPACE               TO  SPA-N22-FLG
+               MOVE    10          TO  SPA-GMN-CUR
+           ELSE
+               GO  TO  320-N22-SET-EXT
+           END-IF
+      *
+      *     IF      SPA-GMN-PHOTO   NOT =   SPACE
+      *         PERFORM 430-GAZOCHK-SEC
+      *     END-IF
+           .
+      *
+       320-N22-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -766,6 +769,7 @@
            MOVE    N21-MARK        TO  SPA-GMN-MARK
            MOVE    N21-CAUTION     TO  SPA-GMN-CAUTION
            MOVE    N21-PHOTO       TO  SPA-GMN-PHOTO
+           INITIALIZE                  SPA-GMN-OBJECT
       *
       *----(02.01.02)--UPD-START---
       *    名前半角文字混在チェック
@@ -909,20 +913,101 @@
                    GO  TO  430-TEXTCHK-EXT
                END-IF
       *
-      *        ファイル存在チェック
-               INITIALIZE              ORCSFILECHKAREA
-               MOVE    SPA-GMN-PHOTO   TO  FILECHK-NAME
-               CALL    "ORCSFILECHK"       USING
-                                           ORCSFILECHKAREA
-               IF          FILECHK-RC      NOT     =   0
-                   MOVE    "0014"      TO  SPA-ERRCD
-                   MOVE    10          TO  SPA-GMN-CUR
-               END-IF
+               PERFORM 430-GAZOCHK-SEC
            END-IF
       *
            .
       *
        430-TEXTCHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画像ファイル存在チェック
+      *****************************************************************
+       430-GAZOCHK-SEC         SECTION.
+      *
+      *    ファイル存在チェック
+           INITIALIZE              ORCSFILECHKAREA
+           MOVE    SPA-GMN-PHOTO   TO  FILECHK-NAME
+           CALL    "ORCSFILECHK"       USING
+                                       ORCSFILECHKAREA
+           IF          FILECHK-RC      NOT     =   0
+               MOVE    "0014"          TO  SPA-ERRCD
+               MOVE    10              TO  SPA-GMN-CUR
+           ELSE
+               PERFORM 430-GAZOCHK2-SEC 
+               IF      FLG-GAZO = 1
+                   MOVE    "BLOBIMPORT"    TO  MCP-FUNC
+                   MOVE    "blob"          TO  MCP-TABLE
+                   MOVE    "primary"       TO  MCP-PATHNAME
+                   MOVE    SPA-GMN-PHOTO   TO  ORCA-BLOB-FILE
+                   CALL    "MONFUNC"           USING
+                                               MCPAREA
+                                               ORCA-BLOB
+      *             MOVE    "BLOBIMPORT"    TO  MCP-FUNC
+      *             MOVE    PATH-BLOB-PRIMARY
+      *                                     TO  MCP-PATH
+      *             MOVE    SPA-GMN-PHOTO   TO  ORCA-BLOB-FILE
+      *             CALL    "MCPSUB"            USING
+      *                                         MCPAREA
+      *                                         ORCA-BLOB
+                   MOVE    ORCA-BLOB-OBJECT    TO  SPA-GMN-OBJECT
+               ELSE
+                   MOVE    "0015"          TO  SPA-ERRCD
+                   MOVE    10              TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+           .
+      *
+       430-GAZOCHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画像ファイル存在チェック
+      *****************************************************************
+       430-GAZOCHK2-SEC         SECTION.
+      *
+           MOVE  ZERO    TO FLG-GAZO
+           PERFORM VARYING IDZ FROM 256 BY -1 
+                   UNTIL   IDZ <    1
+               IF  SPA-GMN-PHOTO(IDZ:1) NOT = SPACE
+                   COMPUTE IDZ = IDZ - 3
+                   IF  IDZ > ZERO
+                       EVALUATE    SPA-GMN-PHOTO(IDZ:4)
+                           WHEN    ".JPG"
+                           WHEN    ".GIF"
+                           WHEN    ".PNG"
+                           WHEN    ".jpg"
+                           WHEN    ".gif"
+                           WHEN    ".png"
+                              MOVE  1    TO FLG-GAZO
+                           WHEN    OTHER
+                              MOVE  ZERO    TO FLG-GAZO
+                       END-EVALUATE
+                   END-IF
+                   MOVE  1     TO  IDZ
+               END-IF
+           END-PERFORM
+           .
+      *
+       430-GAZOCHK2-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    参照処理
+      *****************************************************************
+       440-SANSYO-SEC              SECTION.
+      *
+           IF          SPA-NAI-SRYCD   =   SPACE
+               MOVE    "0011"          TO  SPA-ERRCD
+               MOVE    2               TO  SPA-GMN-CUR
+               GO  TO  440-SANSYO-EXT
+           END-IF
+      *
+           MOVE    "OK"            TO  SPA-N22-FLG
+           .
+      *
+       440-SANSYO-EXT.
            EXIT.
       *
       *****************************************************************
@@ -955,6 +1040,8 @@
       *****************************************************************
        450-BACK                SECTION.
       *
+           PERFORM 451-TEMP-DEL-SEC
+      *
            MOVE    "M02"       TO  SPA-SAKIPG
            MOVE    "N21"       TO  SPA-MOTOPG
       *
@@ -974,6 +1061,29 @@
            .
       *
        450-BACK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    削除処理
+      *****************************************************************
+       451-TEMP-DEL-SEC            SECTION.
+      *
+           MOVE    SPACE           TO  TEMP-REC
+           INITIALIZE                  TEMP-REC
+      *
+           MOVE    SPA-TERMID      TO  TEMP-TERMID
+      *
+           MOVE    TEMP-REC            TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_yakujyo_temp"  TO  MCP-TABLE
+           MOVE    "termid"            TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       451-TEMP-DEL-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1344,6 +1454,11 @@
                PERFORM 520-N21IDSET-SEC
                GO  TO  500-SET-SCREEN-EXT
            END-IF
+      *    ガイドメッセージ表示処理
+           IF          SPA-N22-FLG    =   "OK"
+               PERFORM 520-N22SET-SEC
+               GO  TO  500-SET-SCREEN-EXT
+           END-IF
       *
            MOVE    SPACE       TO  LINKAREA
       *
@@ -1446,6 +1561,9 @@
                WHEN    "0014"
                    MOVE    "フルパスを正しく入力して下さい"
                                            TO  SPA-ERRMSG
+               WHEN    "0015"
+                   MOVE    "画像ファイルではありません"
+                                           TO  SPA-ERRMSG
                WHEN    "1001"
                    MOVE    "登録できませんでした"
                                            TO  SPA-ERRMSG
@@ -1506,6 +1624,50 @@
            .
       *
        520-N21IDSET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    参照画面表示処理
+      *****************************************************************
+       520-N22SET-SEC              SECTION.
+      *
+           INITIALIZE                  SPA-N22-AREA
+           MOVE    SPA-NAI-SRYCD   TO  SPA-N22-KENCD
+           MOVE    SPA-GMN-KENNAME TO  SPA-N22-KENNAME
+      *
+           MOVE    SPACE           TO  SPA-MOTOPG
+           MOVE    SPA-N21KYOUTU   TO  SPA-WORK
+           MOVE    SPA-AREA        TO  SPA-COMMON
+           MOVE    SPA-N21SCRAREA  TO  SPA-FREE
+      *
+           MOVE    "LINK"          TO  MCP-STATUS
+           MOVE    SPACE           TO  MCP-EVENT
+      *
+           CALL    "ORCGN22"           USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA.
+      *
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-FREE        TO  SPA-N21SCRAREA
+           MOVE    SPA-WORK        TO  SPA-N21KYOUTU
+      *
+           MOVE    "SELNUM"        TO  MCP-WIDGET
+      *
+           MOVE    "N21"       TO  SPA-MOTOPG
+           MOVE    "N22"       TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"       TO  MCP-PUTTYPE
+           MOVE    "N22"       TO  MCP-WINDOW
+      *
+      *    ＰＵＴ処理
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1           TO  FLG-END
+           .
+      *
+       520-N22SET-EXT.
            EXIT.
       *
       *****************************************************************

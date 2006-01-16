@@ -232,6 +232,9 @@
       *    サブプロ用　領域
       *****************************************************************
       *
+      *    ファイル存在チェック
+           COPY    "CPORCSFILECHK.INC".
+      *
       *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
@@ -372,8 +375,21 @@
                    PERFORM 222-HENCAUTION-SET-SEC
       *            画像編集
                    IF      YAKUJYO-PHOTO       NOT =   SPACE
-                       MOVE  YAKUJYO-PHOTO
+      *            ファイル存在チェック
+                       INITIALIZE              ORCSFILECHKAREA
+                       MOVE    YAKUJYO-PHOTO   TO  FILECHK-NAME
+                       CALL    "ORCSFILECHK"       USING
+                                                   ORCSFILECHKAREA
+                       IF          FILECHK-RC      NOT     =   0
+      *                    空白の画像
+                           MOVE    FILE-NAME
                                            TO  WRK-YKJ-GAZO(CNT-LINE)
+      *                    形状編集
+                           PERFORM 230-KEIJYO-SET-SEC
+                       ELSE
+                           MOVE  YAKUJYO-PHOTO
+                                           TO  WRK-YKJ-GAZO(CNT-LINE)
+                       END-IF
                    ELSE
       *----(00.01.02)--UPD-START----
       *                空白の画像

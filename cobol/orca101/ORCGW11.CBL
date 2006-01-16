@@ -52,6 +52,7 @@
       * 02.00.10     NACL-多々納  05/02/16  入院指示せん追加
       * 02.00.11     NACL-小豆沢  05/07/14  自費１０項目の請求書兼領収書を
       *                                     選択できるよう変更
+      * 02.00.12     NACL-森脇    05/12/15  画像ファイルフォルダ指定追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -203,7 +204,9 @@
                            11  SPA-GMN-KARUTE3KBNLST      PIC X(20).
                        09  SPA-GMN-KARUTE3KBN-MAX
                                                   PIC 9(02).
-      *
+      *----(02.00.12)--ADD-START---
+                       09  SPA-GMN-GAZOFOLDER     PIC X(128).
+      *----(02.00.12)--ADD-END-----
       *----(02.00.03)--ADD-START---
       *
                05  SPA-NAIB-AREA.
@@ -604,6 +607,11 @@
       *        カルテ３号紙
                MOVE    SYS-1030-KARUTE3KBN
                                        TO  SPA-GMN-KARUTE3KBN
+      *----(02.00.12)--ADD-START---
+      *        画像ファイルフォルダ
+               MOVE    SYS-1030-GAZOFOLDER
+                                       TO  SPA-GMN-GAZOFOLDER
+      *----(02.00.12)--ADD-END-----
            ELSE
                MOVE    SPA-GMN-SYOHOGEPRTFLGL (1)
                                        TO  SPA-GMN-SYOHOGEPRTFLG
@@ -1494,6 +1502,9 @@
            MOVE    W11-SYOHOGEPRTFLG   TO  SPA-GMN-SYOHOGEPRTFLG-G
            MOVE    W11-SYOHODSPNAME    TO  SPA-GMN-SYOHODSPNAME
            MOVE    W11-KARUTE3KBN      TO  SPA-GMN-KARUTE3KBN-G
+      *----(02.00.12)--ADD-START---
+           MOVE    W11-GAZOFOLDER      TO  SPA-GMN-GAZOFOLDER
+      *----(02.00.12)--ADD-END-----
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -2531,6 +2542,24 @@
       *    カルテ３号紙内容
            MOVE    SPA-GMN-KARUTE3KBN
                                        TO  SYS-1030-KARUTE3KBN
+      *----(02.00.12)--ADD-START---
+      *    画像ファイルフォルダ
+           IF  SPA-GMN-GAZOFOLDER      NOT =   SPACE
+               PERFORM VARYING IDY FROM    128 BY  -1
+                       UNTIL   IDY <       1
+                   IF  SPA-GMN-GAZOFOLDER (IDY:1)    NOT =   SPACE
+                       IF  SPA-GMN-GAZOFOLDER (IDY:1)    NOT =   "/"
+                           COMPUTE IDY     =   IDY +   1
+                           MOVE  "/"   TO  SPA-GMN-GAZOFOLDER (IDY:1)
+                       END-IF
+                       MOVE    1                TO  IDY
+                   END-IF     
+               END-PERFORM
+      *
+               MOVE    SPA-GMN-GAZOFOLDER
+                                       TO  SYS-1030-GAZOFOLDER
+           END-IF
+      *----(02.00.12)--ADD-END-----
       *
            MOVE    SYS-1030-REC        TO  SYSKANRI-REC
       *
@@ -3098,6 +3127,10 @@
            END-PERFORM
            MOVE    SPA-GMN-KARUTE3KBN-MAX
                                        TO  W11-KARUTE3KBN-COUNT
+      *---(02.00.12)--ADD-START---
+      *    画像ファイルフォルダ
+           MOVE    SPA-GMN-GAZOFOLDER  TO  W11-GAZOFOLDER
+      *---(02.00.12)--ADD-END-----
       *
            MOVE    SPA-GMN-STYUKYMD     TO  W11-STYUKYMD
            MOVE    SPA-GMN-EDYUKYMD     TO  W11-EDYUKYMD

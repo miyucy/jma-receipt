@@ -103,4 +103,5 @@ db	{
 	tbl_hours;
 	tbl_chktrd;
 	tbl_tekioubyomei;
+	tbl_yakujyo_temp;
 };

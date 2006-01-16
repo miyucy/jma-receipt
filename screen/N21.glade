@@ -5,13 +5,9 @@
   <name>N21</name>
   <program_name>N21</program_name>
   <directory></directory>
-  <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
-  <language>C</language>
   <gnome_support>True</gnome_support>
   <gtkpanda_support>False</gtkpanda_support>
-  <gettext_support>True</gettext_support>
-  <output_main_file>False</output_main_file>
 </project>
 
 <widget>
@@ -29,7 +25,7 @@
     <handler>set_focus</handler>
     <last_modification_time>Fri, 22 Dec 2000 05:08:28 GMT</last_modification_time>
   </signal>
-  <signal>    
+  <signal>
     <name>delete_event</name>
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
@@ -257,7 +253,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 22 Dec 2000 05:02:40 GMT</last_modification_time>
       </signal>
-      <label></label>
+      <label>参照</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -282,134 +278,6 @@
       </signal>
       <label>登録</label>
       <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label452</name>
-      <x>680</x>
-      <y>472</y>
-      <width>56</width>
-      <height>24</height>
-      <label>注意事項</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label454</name>
-      <x>392</x>
-      <y>472</y>
-      <width>32</width>
-      <height>24</height>
-      <label>形</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label455</name>
-      <x>536</x>
-      <y>472</y>
-      <width>32</width>
-      <height>24</height>
-      <label>記号</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label453</name>
-      <x>256</x>
-      <y>472</y>
-      <width>32</width>
-      <height>24</height>
-      <label>色</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label417</name>
-      <x>240</x>
-      <y>416</y>
-      <width>56</width>
-      <height>24</height>
-      <label>選択番号</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label457</name>
-      <x>16</x>
-      <y>472</y>
-      <width>64</width>
-      <height>24</height>
-      <label>薬剤名</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label456</name>
-      <x>264</x>
-      <y>648</y>
-      <width>104</width>
-      <height>24</height>
-      <label>画像ファイル名</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label451</name>
-      <x>24</x>
-      <y>568</y>
-      <width>80</width>
-      <height>24</height>
-      <label>効能・効果</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
     </widget>
 
     <widget>
@@ -495,15 +363,6 @@
 	  <ypad>0</ypad>
 	</widget>
       </widget>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator1</name>
-      <x>8</x>
-      <y>448</y>
-      <width>992</width>
-      <height>16</height>
     </widget>
 
     <widget>
@@ -1556,8 +1415,8 @@
     <widget>
       <class>GtkPandaText</class>
       <name>EFFECT</name>
-      <x>24</x>
-      <y>592</y>
+      <x>240</x>
+      <y>496</y>
       <width>224</width>
       <height>104</height>
       <can_focus>True</can_focus>
@@ -1586,10 +1445,10 @@
     <widget>
       <class>GtkPandaText</class>
       <name>COLOR</name>
-      <x>264</x>
+      <x>512</x>
       <y>496</y>
       <width>128</width>
-      <height>136</height>
+      <height>56</height>
       <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
@@ -1618,10 +1477,10 @@
     <widget>
       <class>GtkPandaText</class>
       <name>SHAPE</name>
-      <x>400</x>
-      <y>496</y>
+      <x>512</x>
+      <y>552</y>
       <width>128</width>
-      <height>136</height>
+      <height>56</height>
       <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
@@ -1650,10 +1509,10 @@
     <widget>
       <class>GtkPandaText</class>
       <name>MARK</name>
-      <x>536</x>
-      <y>496</y>
+      <x>512</x>
+      <y>608</y>
       <width>128</width>
-      <height>136</height>
+      <height>56</height>
       <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
@@ -1682,7 +1541,7 @@
     <widget>
       <class>GtkPandaText</class>
       <name>CAUTION</name>
-      <x>680</x>
+      <x>656</x>
       <y>496</y>
       <width>296</width>
       <height>168</height>
@@ -1716,7 +1575,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>PHOTO</name>
-      <x>264</x>
+      <x>240</x>
       <y>672</y>
       <width>712</width>
       <height>24</height>
@@ -1739,6 +1598,155 @@
       <text>あいうえおかきくけこさしすせそたちつてとなにぬねのあいうえおかきくけこさしすせそたちつてとなにぬねの</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label457</name>
+      <x>16</x>
+      <y>472</y>
+      <width>64</width>
+      <height>24</height>
+      <label>薬剤名</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label455</name>
+      <x>472</x>
+      <y>608</y>
+      <width>32</width>
+      <height>24</height>
+      <label>記号</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator1</name>
+      <x>0</x>
+      <y>448</y>
+      <width>1024</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label417</name>
+      <x>240</x>
+      <y>416</y>
+      <width>56</width>
+      <height>24</height>
+      <label>選択番号</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label451</name>
+      <x>240</x>
+      <y>472</y>
+      <width>72</width>
+      <height>24</height>
+      <label>効能・効果</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label456</name>
+      <x>240</x>
+      <y>648</y>
+      <width>96</width>
+      <height>24</height>
+      <label>画像ファイル名</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label453</name>
+      <x>472</x>
+      <y>496</y>
+      <width>32</width>
+      <height>24</height>
+      <label>　色</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label454</name>
+      <x>472</x>
+      <y>552</y>
+      <width>32</width>
+      <height>24</height>
+      <label>　形</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label452</name>
+      <x>656</x>
+      <y>472</y>
+      <width>56</width>
+      <height>24</height>
+      <label>注意事項</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GnomePixmap</class>
+      <name>PHOTOAREA</name>
+      <x>40</x>
+      <y>584</y>
+      <width>170</width>
+      <height>90</height>
+      <scaled>true</scaled>
+      <scaled_width>170</scaled_width>
+      <scaled_height>90</scaled_height>
     </widget>
   </widget>
 </widget>

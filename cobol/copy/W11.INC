@@ -132,6 +132,8 @@
                     06  W11-KARUTE3KBN-COUNT   PIC S9(9)   BINARY.
                     06  W11-KARUTE3KBN-ITEM
                             PIC X(20)   OCCURS  2 TIMES.
+                  05  W11-GAZOFOLDER.
+                    06  W11-VALUE              PIC X(128).
                 04  W11-N02-STATE              PIC S9(9)    BINARY.
               03  W11-STYUKYMD                 PIC X(9).
               03  W11-EDYUKYMD                 PIC X(9).

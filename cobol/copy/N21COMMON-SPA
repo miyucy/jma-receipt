@@ -31,4 +31,8 @@
       *警告画面より
            05  SPA-N21ID1-AREA. 
                07  SPA-N21ID1-FLG          PIC X(02).
+      *参照画面より
+           05  SPA-N22-FLG         PIC X(02).
+           05  SPA-N22-GAZO        PIC X(01).
+           05  SPA-N22-COPY        PIC X(01).
       *

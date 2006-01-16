@@ -488,6 +488,9 @@ W11	{
 					count	int;
 					item	varchar(20)[2];
 				};
+				GAZOFOLDER	{
+					value	varchar(128);
+				};
 			};
 			            N02	{ state	int;
 			};

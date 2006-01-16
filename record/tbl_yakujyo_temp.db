@@ -1,0 +1,86 @@
+tbl_yakujyo_temp	{
+	termid  		char(64);
+	srycd			char(9);
+	yjcd			char(12);
+	rennum			number(2,0);
+	shape			varchar(360);
+	color			varchar(360);
+	mark			varchar(360);
+	effect			varchar(400);
+	caution			varchar(850);
+	make_company		varchar(400);
+	sale_company		varchar(400);
+	photo1_filename		varchar(256);
+	photo2_filename		varchar(256);
+	photo3_filename		varchar(256);
+	creymd   		char(8);
+};
+
+primary	{
+	termid,srycd,yjcd,rennum;
+};
+
+path	srycd	{
+	operation	DBSELECT	{
+		DECLARE	tbl_yakujyo_temp_srycd_csr	CURSOR	FOR
+		SELECT	*
+			FROM
+				tbl_yakujyo_temp
+			WHERE
+				srycd = :srycd
+		;
+	};
+	operation	DBFETCH	{
+		FETCH FROM tbl_yakujyo_temp_srycd_csr
+			INTO
+				:termid,
+				:srycd,
+				:yjcd,
+				:rennum,
+				:shape,
+				:color,
+				:mark,
+				:effect,
+				:caution,
+				:make_company,
+				:sale_company,
+				:photo1_filename,
+				:photo2_filename,
+				:photo3_filename,
+				:creymd
+			;
+	};
+	operation	DBCLOSECURSOR	{
+		CLOSE	tbl_yakujyo_temp_srycd_csr;
+	};
+	operation	DBINSERT	{
+		INSERT INTO 	tbl_yakujyo_temp
+			VALUES(
+				:termid,
+				:srycd,
+				:yjcd,
+				:rennum,
+				:shape,
+				:color,
+				:mark,
+				:effect,
+				:caution,
+				:make_company,
+				:sale_company,
+				:photo1_filename,
+				:photo2_filename,
+				:photo3_filename,
+				:creymd
+			);
+	};
+};
+
+path	termid	{
+	operation	DBDELETE	{
+		DELETE	FROM
+				tbl_yakujyo_temp
+			WHERE
+				termid = :termid
+		;
+	};
+};

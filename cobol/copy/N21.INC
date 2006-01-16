@@ -37,3 +37,4 @@
                 05  N21-MARK          PIC X(136).
                 05  N21-CAUTION       PIC X(410).
                 05  N21-PHOTO         PIC X(256).
+                05  N21-PHOTOAREA     PIC X(8).

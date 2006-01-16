@@ -47,9 +47,13 @@
       *カルテ３号紙内容
                05  SYS-1030-KARUTE3KBN
                                         PIC  X(01).
+      *薬剤情報−画像ファイルフォルダ
+               05  SYS-1030-GAZOFOLDER
+                                        PIC  X(128).
       *予備
       *****03  FILLER                   PIC  X(499).
-           03  FILLER                   PIC  X(478).
+      *     03  FILLER                   PIC  X(478).
+           03  FILLER                   PIC  X(350).
       *端末ＩＤ
            03  SYS-1030-TERMID          PIC  X(16).
       *オペーレータＩＤ
