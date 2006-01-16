@@ -50,6 +50,7 @@
       *    画面用ＳＰＡ
        01  SPA-I06.
            03  SPA-I06-AREA.
+               05  SPA-GMN-ALLIDOLST-PAGE          PIC 9(03).
                05  SPA-GMN-CUR                     PIC 9(03).
                05  SPA-GMN-KJNYMD                  PIC X(08).
                05  SPA-GMN-HEAD-AREA.
@@ -116,9 +117,11 @@
                    07  SPA-GMN-SELNUM              PIC S9(3).
                    07  SPA-GMN-UKEYMD              PIC X(10).
                05  SPA-GMN-ALLIDOLST-AREA.
+                   07  SPA-GMN-ALLIDOLST-NEXT      PIC 9(01).
                    07  SPA-GMN-ALLIDOLST-MAX       PIC  9(5).
                    07  SPA-GMN-ALLIDOLST-SEL       PIC  9(5).
                    07  SPA-GMN-ALLIDOLST-OCC       OCCURS  50.
+                       09  SPA-GMN-TALLNUM         PIC  9(5).
                        09  SPA-GMN-TALLIDOYMD      PIC X(10).
                        09  SPA-GMN-TALLIDOJIYU     PIC X(20).
                        09  SPA-GMN-TALLPTNUM       PIC X(20).
@@ -296,12 +299,14 @@
            03  CNT-STR                     PIC 9(05).
            03  CNT-ORDER                   PIC 9(05).
            03  CNT-DRCD                    PIC 9(05).
+           03  CNT-SKIP                    PIC 9(05).
       *
       *    添字領域
        01  IDX-AREA.
            03  IDX0                        PIC 9(05).
            03  IDX1                        PIC 9(05).
            03  IDX2                        PIC 9(05).
+           03  IDX3                        PIC 9(05).
            03  IDX-CMB                     PIC 9(05).
            03  IDX-LST                     PIC 9(05).
            03  IDX-MAX                     PIC 9(05).
@@ -361,6 +366,8 @@
            03  WRK-PTNUM-PTID              PIC 9(10).
            03  WRK-PTNUM-PTNUM             PIC X(20).
            03  WRK-ALLORDERID              PIC X(04).
+           03  WRK-SKIP-MAX                PIC 9(05).
+           03  WRK-TALLNUM                 PIC 9(05).
       *
        01  WRK-ROW-AREA.
            03  WRK-ALLIDOLST-ROW           PIC S9(9).
@@ -643,6 +650,8 @@
       *
       *    コンボボックス初期処理
            PERFORM 3101-COMBO-SYOKI-SEC
+      *
+           MOVE    1               TO  SPA-GMN-ALLIDOLST-PAGE
       *
       *    異動リスト編集処理
            PERFORM 3101-ALLIDOLST-SEC
@@ -1267,6 +1276,8 @@
       *
            PERFORM 900-ORDER-KEY4-SEL-SEC
       *
+           PERFORM 31011-ALLIDOLST-SKIP-SEC
+      *
            MOVE    ZERO            TO  IDX-MAX
       *
            PERFORM UNTIL ( FLG-ORDER   NOT =   ZERO )
@@ -1280,6 +1291,13 @@
                                    TO  SPA-NAI-TALLKARTE-KEY (IDX-MAX)
                MOVE    ORDER-ORDERNUM
                                    TO  SPA-NAI-TALLORDERNUM  (IDX-MAX)
+      *
+               COMPUTE WRK-TALLNUM
+                   =   CONST-ALLIDOLST-MAX
+                   * ( SPA-GMN-ALLIDOLST-PAGE    -   1 )
+                   +   IDX-MAX
+      *
+               MOVE    WRK-TALLNUM TO  SPA-GMN-TALLNUM    (IDX-MAX)
       *
                MOVE    ORDER-SRYYMD    TO  WRK-YMD
                PERFORM 800-SEIWA-HEN-SEC
@@ -1323,8 +1341,35 @@
                MOVE    1                   TO  SPA-GMN-CUR
            END-IF
       *
+           IF    ( FLG-ORDER       =   ZERO )
+               MOVE    1                   TO  SPA-GMN-ALLIDOLST-NEXT
+           END-IF
+      *
            .
        3101-ALLIDOLST-EXT.
+           EXIT.
+      *****************************************************************
+      *    異動リスト読み飛ばし処理
+      *****************************************************************
+       31011-ALLIDOLST-SKIP-SEC        SECTION.
+      *
+           COMPUTE WRK-SKIP-MAX
+               =   CONST-ALLIDOLST-MAX
+               * ( SPA-GMN-ALLIDOLST-PAGE  -   1 )
+      *
+           MOVE    ZERO            TO  CNT-SKIP
+      *
+           PERFORM UNTIL ( FLG-ORDER   NOT =   ZERO )
+                    OR   ( CNT-SKIP       >=  WRK-SKIP-MAX )
+      *
+               COMPUTE CNT-SKIP    =   CNT-SKIP    +   1
+      *
+               PERFORM 900-ORDER-KEY4-FET-SEC
+      *
+           END-PERFORM
+      *
+           .
+       31011-ALLIDOLST-SKIP-EXT.
            EXIT.
       *****************************************************************
       *    異動リスト編集処理
@@ -1506,6 +1551,12 @@
       *    翌日
            WHEN    "CLICKED"       ALSO    "B07"
                PERFORM 270-NEXTDAY-SEC
+      *    前頁
+           WHEN    "CLICKED"       ALSO    "B06S"
+               PERFORM 260-PREVPAGE-SEC
+      *    次頁
+           WHEN    "CLICKED"       ALSO    "B07S"
+               PERFORM 270-NEXTPAGE-SEC
       *    歴表示更新
            WHEN    "CLICKED"       ALSO    "B11"
                PERFORM 310-SPASET-SEC
@@ -1599,7 +1650,8 @@
       *
                IF    ( I06-ALLIDOLST-SELECT (IDX-LST)  =   "T" )
                    MOVE    IDX-LST TO  SPA-GMN-ALLIDOLST-SEL
-                                       SPA-GMN-SELNUM
+                   MOVE    SPA-GMN-TALLNUM  (IDX-LST)
+                                   TO  SPA-GMN-SELNUM
       *
                    PERFORM 41011-INPUT-AREA-SEC
       *
@@ -2712,7 +2764,7 @@
       *
            PERFORM 4101-SELNUM-CHK-SEC
            IF    ( SPA-ERRCD       =   SPACE )
-               MOVE    SPA-GMN-SELNUM  TO  SPA-GMN-ALLIDOLST-SEL
+               MOVE    IDX-LST     TO  SPA-GMN-ALLIDOLST-SEL
                PERFORM 41011-INPUT-AREA-HEN-SEC
                MOVE    ZERO        TO  SPA-GMN-CUR
            END-IF
@@ -2833,16 +2885,24 @@
       *****************************************************************
        4101-SELNUM-CHK-SEC             SECTION.
       *
-           IF    ( SPA-GMN-SELNUM      >=  1 )
-            AND  ( SPA-GMN-SELNUM      <=  SPA-GMN-ALLIDOLST-MAX )
-               CONTINUE
+           IF    ( SPA-GMN-SELNUM  =   ZERO )
+               MOVE    "1001"      TO  SPA-ERRCD
+               MOVE    1           TO  SPA-GMN-CUR
            ELSE
-               IF    ( SPA-GMN-SELNUM  =  ZERO )
-                   MOVE    "1001"      TO  SPA-ERRCD
-               ELSE
-                   MOVE    "0001"      TO  SPA-ERRCD
+               MOVE    ZERO        TO  IDX-LST
+               PERFORM VARYING IDX3    FROM    1   BY  1
+                       UNTIL ( IDX3    >   SPA-GMN-ALLIDOLST-MAX )
+                        OR   ( IDX-LST NOT =   ZERO )
+                   IF    ( SPA-GMN-SELNUM  =   SPA-GMN-TALLNUM (IDX3))
+                       MOVE    IDX3    TO  IDX-LST
+                   END-IF
+               END-PERFORM
+      *
+               IF    ( IDX-LST     =   ZERO )
+                   MOVE    "0001"  TO  SPA-ERRCD
+                   MOVE    1       TO  SPA-GMN-CUR
                END-IF
-               MOVE    1               TO  SPA-GMN-CUR
+      *
            END-IF
       *
            .
@@ -3662,6 +3722,8 @@
       *
            PERFORM 220-CLEAR-SEC
       *
+           MOVE    1                   TO  SPA-GMN-ALLIDOLST-PAGE
+      *
       *    異動リスト編集処理
            PERFORM 3101-ALLIDOLST-SEC
       *
@@ -3684,11 +3746,51 @@
       *
            PERFORM 220-CLEAR-SEC
       *
+           MOVE    1                   TO  SPA-GMN-ALLIDOLST-PAGE
+      *
       *    異動リスト編集処理
            PERFORM 3101-ALLIDOLST-SEC
       *
            .
        270-NEXTDAY-EXT.
+           EXIT.
+      *****************************************************************
+      *    前頁処理
+      *****************************************************************
+       260-PREVPAGE-SEC                SECTION.
+      *
+           IF    ( SPA-GMN-ALLIDOLST-PAGE  >   1 )
+      *
+               PERFORM 220-CLEAR-SEC
+      *
+               COMPUTE SPA-GMN-ALLIDOLST-PAGE
+                   =   SPA-GMN-ALLIDOLST-PAGE  -   1
+      *
+      *        異動リスト編集処理
+               PERFORM 3101-ALLIDOLST-SEC
+           END-IF
+      *
+           .
+       260-PREVPAGE-EXT.
+           EXIT.
+      *****************************************************************
+      *    次頁処理
+      *****************************************************************
+       270-NEXTPAGE-SEC                SECTION.
+      *
+           IF    ( SPA-GMN-ALLIDOLST-NEXT  =   1 )
+      *
+               PERFORM 220-CLEAR-SEC
+      *
+               COMPUTE SPA-GMN-ALLIDOLST-PAGE
+                   =   SPA-GMN-ALLIDOLST-PAGE  +   1
+      *
+      *        異動リスト編集処理
+               PERFORM 3101-ALLIDOLST-SEC
+           END-IF
+      *
+           .
+       270-NEXTPAGE-EXT.
            EXIT.
       *****************************************************************
       *    登録処理
@@ -4643,7 +4745,8 @@
            PERFORM VARYING IDX-LST     FROM    1   BY  1
                    UNTIL ( IDX-LST     >   SPA-GMN-ALLIDOLST-MAX )
       *
-               MOVE    IDX-LST             TO  WRK-ZZ9
+               MOVE    SPA-GMN-TALLNUM    (IDX-LST)
+                                           TO  WRK-ZZ9
                MOVE    WRK-ZZ9             TO  I06-TALLNUM    (IDX-LST)
                MOVE    SPA-GMN-TALLIDOYMD (IDX-LST)
                                            TO  I06-TALLIDOYMD (IDX-LST)
@@ -4763,10 +4866,12 @@
                                                I06-NYUKBN-ITEM-STATE
                                                I06-TOKNYUIN-STATE
                                                I06-TOKNYUIN-ITEM-STATE
-                                               I06-B12-STATE
                                                I06-SNTNYUIN-STATE
                                                I06-SKJTIME-STATE
                                                I06-SKJTIME-ITEM-STATE
+                                               I06-B06S-STATE
+                                               I06-B07S-STATE
+                                               I06-B12-STATE
       *
            IF    ( SPA-GMN-ALLIDOLST-SEL       =   ZERO )
                MOVE    WIDGET-NORMAL   TO      I06-BRMNUM-STATE
@@ -4913,6 +5018,14 @@
       *
            IF    ( SPA-GMN-SHOKAI      = "1" )
                MOVE    WIDGET-INSENSITIVE  TO  I06-SHONUM-STATE
+           END-IF
+      *
+           IF    ( SPA-GMN-ALLIDOLST-PAGE  >   1 )
+               MOVE    WIDGET-NORMAL       TO  I06-B06S-STATE
+           END-IF
+      *
+           IF    ( SPA-GMN-ALLIDOLST-NEXT  =   1 )
+               MOVE    WIDGET-NORMAL       TO  I06-B07S-STATE
            END-IF
       *
            .

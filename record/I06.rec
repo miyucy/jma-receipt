@@ -1,5 +1,11 @@
 I06	{
 	fixed6	{
+		B06S	{
+			state	int;
+		};
+		B07S	{
+			state	int;
+		};
 		B12	{
 			state	int;
 		};

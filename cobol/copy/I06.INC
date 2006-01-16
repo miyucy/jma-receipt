@@ -17,6 +17,8 @@
       ********************************************************************
         02  I06.
       *     02  I06-FIXED6.
+              03  I06-B06S-STATE               PIC S9(9)   BINARY.
+              03  I06-B07S-STATE               PIC S9(9)   BINARY.
               03  I06-B12-STATE                PIC S9(9)   BINARY.
               03  I06-PTNUM                    PIC X(20).
               03  I06-NAME                     PIC X(100).
