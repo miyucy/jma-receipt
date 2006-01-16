@@ -353,7 +353,7 @@
            MOVE    ZERO            TO  IDX
            PERFORM 900-TEMP-SELECT-SEC
            PERFORM UNTIL  (FLG-TEMP    =   1)
-                   OR     (IDX         =>  100)
+                   OR     (IDX         >=  100)
                COMPUTE IDX =   IDX     +   1
                MOVE    IDX             TO  WRK-ZZZZ9
                MOVE    WRK-ZZZZ9       TO  SPA-N22-TNO(IDX)
