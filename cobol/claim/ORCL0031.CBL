@@ -47,6 +47,7 @@
       *  01.00.15    NACL-多々納  05/09/26  加算のみの剤を有効とする
       *  01.00.16    NACL-多々納  05/12/06  受付対応
       *                                     MONFUNC対応
+      *  01.00.17    NACL-多々納  06/01/16  乳幼児特例対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -182,6 +183,7 @@
            03  WRK-ZAINUM          PIC 9(08).
       *
            03  WRK-JIKAN           PIC X(01).
+           03  WRK-TIMEKBN         PIC X(01).
       *
            03  WRK-CNT             PIC 9(05).
            03  WRK-KAISU           PIC 9(05).
@@ -1362,16 +1364,22 @@
       *            時間外の判定
                    IF     (LF04-SRYCD (IDX1)(1:2)  =   "11"
                                                    OR  "12") AND
-                           (TNS-DATAKBN     =   "2"  )  AND
-                           (TNS-TIMEKSNKBN  =   "1" OR "2"
-                                                    OR "3"  )
-                       IF      WRK-JIKAN       =   SPACE
-                            MOVE    TNS-TIMEKSNKBN      TO  WRK-JIKAN
-                       ELSE
+                           (TNS-DATAKBN     =   "2"  )
+      **************  AND  (TNS-TIMEKSNKBN  =   "1" OR "2"
+      **************                                OR "3"  )
+      *                時間外加算区分変更
+                       PERFORM 20029-JIKAN-HEN-SEC
+                       IF      WRK-TIMEKBN     NOT =   SPACE
+                         IF      WRK-JIKAN       =   SPACE
+      ********************* MOVE    TNS-TIMEKSNKBN      TO  WRK-JIKAN
+                            MOVE    WRK-TIMEKBN         TO  WRK-JIKAN
+                         ELSE
                            IF      TNS-TIMEKSNKBN   =   WRK-JIKAN
+                               OR  WRK-TIMEKBN      =   WRK-JIKAN
                                MOVE    SPACE        TO  LF04-IJICD
                                                (IDX1 IDX2)
                            END-IF
+                         END-IF
                        END-IF
                    END-IF
                END-IF
@@ -1405,6 +1413,92 @@
            END-IF
            .
        2002-ZAICHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    時間外加算区分変更処理
+      *****************************************************************
+       20029-JIKAN-HEN-SEC                SECTION.
+      *
+           MOVE    SPACE               TO  WRK-TIMEKBN
+      *    ６歳未満の乳幼児加算
+           EVALUATE    WRK-SRYCD
+      *        夜間（時間外）加算
+               WHEN    "111011570"
+                   MOVE    "5"                 TO  WRK-TIMEKBN
+      *        休日加算
+               WHEN    "111011670"
+                   MOVE    "6"                 TO  WRK-TIMEKBN
+      *        深夜加算
+               WHEN    "111011770"
+                   MOVE    "7"                 TO  WRK-TIMEKBN
+      *        再診
+      *        夜間（時間外）加算
+               WHEN    "112014170"
+                   MOVE    "5"                 TO  WRK-TIMEKBN
+      *        休日加算
+               WHEN    "112014270"
+                   MOVE    "6"                 TO  WRK-TIMEKBN
+      *        深夜加算
+               WHEN    "112014370"
+                   MOVE    "7"                 TO  WRK-TIMEKBN
+      *        外来診察料
+      *        夜間（時間外）加算
+               WHEN    "112014470"
+                   MOVE    "5"                 TO  WRK-TIMEKBN
+      *        休日加算
+               WHEN    "112014570"
+                   MOVE    "6"                 TO  WRK-TIMEKBN
+      *        深夜加算
+               WHEN    "112014670"
+                   MOVE    "7"                 TO  WRK-TIMEKBN
+      *        小児科外来診察料（初診）
+      *        夜間（時間外）加算
+               WHEN    "113007070"
+                   MOVE    "5"                 TO  WRK-TIMEKBN
+      *        休日加算
+               WHEN    "113007170"
+                   MOVE    "6"                 TO  WRK-TIMEKBN
+      *        深夜加算
+               WHEN    "113007270"
+                   MOVE    "7"                 TO  WRK-TIMEKBN
+      *        小児科外来診察料（再診）
+      *        夜間（時間外）加算
+               WHEN    "113007370"
+                   MOVE    "5"                 TO  WRK-TIMEKBN
+      *        休日加算
+               WHEN    "113007470"
+                   MOVE    "6"                 TO  WRK-TIMEKBN
+      *        深夜加算
+               WHEN    "113007570"
+                   MOVE    "7"                 TO  WRK-TIMEKBN
+      *        小児科外来診察料（外来診察料）
+      *        夜間（時間外）加算
+               WHEN    "113007670"
+                   MOVE    "5"                 TO  WRK-TIMEKBN
+      *        休日加算
+               WHEN    "113007770"
+                   MOVE    "6"                 TO  WRK-TIMEKBN
+      *        深夜加算
+               WHEN    "113007870"
+                   MOVE    "7"                 TO  WRK-TIMEKBN
+      *
+               WHEN    OTHER
+                   EVALUATE    TNS-TIMEKSNKBN
+                       WHEN    "1"
+                           MOVE    "1"                 TO  WRK-TIMEKBN
+                       WHEN    "2"
+                       WHEN    "3"
+                           MOVE    "2"                 TO  WRK-TIMEKBN
+                       WHEN    "4"
+                           MOVE    "3"                 TO  WRK-TIMEKBN
+                       WHEN    "5"
+                           MOVE    "4"                 TO  WRK-TIMEKBN
+                   END-EVALUATE
+           END-EVALUATE
+      *
+           .
+       20029-JIKAN-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1672,7 +1766,9 @@
            PERFORM 910-TENSU-READ-SEC
       *    入力コード
       *    診察で、手技料の時、時間外の自動加算
-           IF      (WRK-JIKAN          =   "1"  OR  "2"  OR  "3"  ) AND
+           IF      (WRK-JIKAN          =   "1"  OR  "2"  OR  "3"
+                                       OR  "4"  OR  "5"  OR  "6"
+                                       OR  "7"                    ) AND
                    (TBL-WKSRY-SRYKBN (TBL-MAX)
                                        =   "11"  OR  "12"  OR "13") AND
                    (TNS-DATAKBN        =   "1"   )
