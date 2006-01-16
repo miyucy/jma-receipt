@@ -1873,26 +1873,24 @@
                END-PERFORM
            END-IF
       *
-           MOVE    "B01"               TO  MCP-WIDGET
+           MOVE    "B11"               TO  MCP-WIDGET
            IF    ( G99-MSG             =   SPACE )
+               MOVE    "B01"           TO  MCP-WIDGET
                IF    ( G99-COUNT       >   ZERO )
                    MOVE    "処理は正常に終了しました"
-                                                TO  G99-MSG
-                   IF    ( SPA-GID1-FLG    =   "PV" )
-                    AND  ( WRK-PRT-PAGE    >   ZERO )
-                       MOVE    WIDGET-NORMAL    TO  G99-B12-STATE
-                       MOVE    "B12"            TO  MCP-WIDGET
-                   ELSE
-                       MOVE    "B01"            TO  MCP-WIDGET
-                   END-IF
+                                       TO  G99-MSG
                ELSE
                    MOVE    "該当する処理はありません"
-                                                TO  G99-MSG
+                                       TO  G99-MSG
                END-IF
            END-IF
       *
            IF    ( SPA-GID1-FLG    =   "PV" )
                MOVE    "F12:プレビュー"    TO  G99-B12-LABEL
+               IF    ( WRK-PRT-PAGE    >   ZERO )
+                   MOVE    WIDGET-NORMAL   TO  G99-B12-STATE
+                   MOVE    "B12"           TO  MCP-WIDGET
+               END-IF
            END-IF
       *
            MOVE    "G01"                TO  SPA-MOTOPG
