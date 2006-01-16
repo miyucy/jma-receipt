@@ -101,7 +101,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B10</name>
-      <x>160</x>
+      <x>140</x>
       <y>88</y>
       <width>120</width>
       <height>24</height>
@@ -124,7 +124,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B11</name>
-      <x>280</x>
+      <x>270</x>
       <y>88</y>
       <width>120</width>
       <height>24</height>
