@@ -1363,7 +1363,8 @@
                    END-EVALUATE
       *            時間外の判定
                    IF     (LF04-SRYCD (IDX1)(1:2)  =   "11"
-                                                   OR  "12") AND
+                                                   OR  "12"
+                                                   OR  "13") AND
                            (TNS-DATAKBN     =   "2"  )
       **************  AND  (TNS-TIMEKSNKBN  =   "1" OR "2"
       **************                                OR "3"  )
