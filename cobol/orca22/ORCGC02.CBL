@@ -168,6 +168,7 @@
       *                                     とする
       *
       *  02.07.01    NACL-藤原    05/10/31  MONFUNC対応
+      *  02.07.02    NACL-藤原    06/01/16  年齢表示を追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -370,6 +371,15 @@
       *
            03  WRK-C02-BYO-ROW     PIC S9(09).
       *
+      *    年齢表示
+           03  WRK-NENREI-G.
+               05  WRK-NENREI-Z    PIC ZZ9.
+               05  WRK-NENREI-MEI  PIC X(04).
+           03  WRK-NENREI-GR       REDEFINES   WRK-NENREI-G.
+               05  WRK-NENREI-ZN   PIC Z9.
+               05  WRK-NENREI-MEIN PIC X(04).
+               05  FILLER          PIC X(01).
+      *
       *    保険組合せ重複チェック用エリア
        01  WRK-CHK-HKNCOMBI-AREA.
            02  WRK-CHK-HKNCOMBI1   PIC 9(04).
@@ -494,6 +504,9 @@
       *
       *    半角チェックサブ
            COPY    "CPORCSKANACHK.INC".
+      *
+      *    保険年齢・負担割合算定サブ
+           COPY    "CPORCSAGECHK.INC".
       *
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
@@ -2388,6 +2401,25 @@
                    MOVE    WRK-HENYMDG       TO  SPA-GMN-C02-BIRTHDAY
                    MOVE    SPA-NAI-C02-PTID  TO  SPA-LAST-PTID
                    MOVE    SPA-GMN-C02-PTNUM TO  SPA-LAST-PTNUM 
+      *            年齢計算
+                   INITIALIZE                ORCSAGECHKAREA
+                   MOVE    SPA-HOSPID        TO  AGECHK-HOSPID
+                   MOVE    SPA-NAI-C02-PTID  TO  AGECHK-PTID
+                   MOVE    SPA-NAI-C02-SYSYMD
+                                             TO  AGECHK-SRYYMD
+                   MOVE    SPA-NAI-C02-BIRTHDAY
+                                             TO  AGECHK-BIRTHDAY
+                   CALL    "ORCSAGECHK"        USING
+                                               ORCSAGECHKAREA
+                   MOVE    SPACE             TO  WRK-NENREI-G
+                   IF      AGECHK-NENREI2-YY   =   ZERO
+                       MOVE    AGECHK-NENREI2-MM   TO  WRK-NENREI-ZN
+                       MOVE    "ヶ月"              TO  WRK-NENREI-MEIN
+                   ELSE
+                       MOVE    AGECHK-NENREI2-YY   TO  WRK-NENREI-Z
+                       MOVE    "才"                TO  WRK-NENREI-MEI
+                   END-IF
+                   MOVE    WRK-NENREI-G        TO  SPA-GMN-C02-AGE
                END-IF
            END-IF    
       *
@@ -8025,6 +8057,7 @@
            MOVE    SPA-GMN-C02-NAME        TO  C02-NAME
            MOVE    SPA-GMN-C02-SEX         TO  C02-SEX
            MOVE    SPA-GMN-C02-BIRTHDAY    TO  C02-BIRTHDAY
+           MOVE    SPA-GMN-C02-AGE         TO  C02-AGE
            MOVE    SPA-GMN-C02-HKNCOMBIMEIH
                                            TO  C02-HKNNAME
            MOVE    SPA-GMN-C02-FTNRATE     TO  C02-PTFTNRATE

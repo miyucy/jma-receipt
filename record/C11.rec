@@ -18,6 +18,9 @@ C11	{
 		BIRTHDAY	{
 			value	varchar(12);
 		};
+		AGE	{
+			value	varchar(6);
+		};
 		SELNUM1	{
 			value	number(3);
 		};

@@ -19,6 +19,9 @@ C02	{
 		BIRTHDAY	{
 			value	varchar(12);
 		};
+		AGE	{
+			value	varchar(6);
+		};
 		HKNNAME	{
 			value	varchar(60);
 		};

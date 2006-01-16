@@ -62,6 +62,7 @@
       *                                     の追加
       *  02.06.02    NACL-藤原    05/07/25  簡単修正画面の開始日を追加
       *  02.06.03    NACL-藤原    05/08/26  労災・自賠責存在フラグを追加
+      *  02.07.01    NACL-藤原    06/01/16  年齢を追加
       *****************************************************************
       *
        01  SPA-C02FREE.
@@ -121,6 +122,7 @@
                            11  SPA-GMN-C02-NAME        PIC X(30).
                            11  SPA-GMN-C02-SEX         PIC X(02).
                            11  SPA-GMN-C02-BIRTHDAY    PIC X(09).
+                           11  SPA-GMN-C02-AGE         PIC X(10).
       *
                        09  SPA-GMN-C02-HKN-TBL.
                            11  SPA-GMN-C02-HKN-TBLO    OCCURS   40.
@@ -647,6 +649,7 @@
                        09  SPA-GMN-C11-NAME        PIC X(30).
                        09  SPA-GMN-C11-SEX         PIC X(02).
                        09  SPA-GMN-C11-BIRTHDAY    PIC X(09).
+                       09  SPA-GMN-C11-AGE         PIC X(10).
       *                                             
                    07  SPA-GMN-C11-BODY.
                        09  SPA-GMN-C11-SELNUM1     PIC 9(03).

@@ -29,6 +29,8 @@
                 04  C02-VALUE   PIC X(2).
               03  C02-BIRTHDAY.
                 04  C02-VALUE   PIC X(12).
+              03  C02-AGE.
+                04  C02-VALUE   PIC X(6).
               03  C02-HKNNAME.
                 04  C02-VALUE   PIC X(60).
               03  C02-PTFTNRATE.

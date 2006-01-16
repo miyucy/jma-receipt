@@ -11,6 +11,8 @@
                 04  C11-VALUE   PIC X(2).
               03  C11-BIRTHDAY.
                 04  C11-VALUE   PIC X(12).
+              03  C11-AGE.
+                04  C11-VALUE   PIC X(6).
               03  C11-SELNUM1.
                 04  C11-VALUE   PIC S9(3).
               03  C11-OPENAME.

@@ -31,6 +31,7 @@
       *  01.00.02    NACL-藤原    05/03/03  訂正日指定対応
       *
       *  02.07.01    NACL-藤原    05/10/31  MONFUNC対応
+      *  02.07.02    NACL-藤原    06/01/16  年齢表示を追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -112,6 +113,15 @@
       *    入力項目名
            03  WRK-MCP-WIDGET      PIC X(64).
       *
+      *    年齢表示
+           03  WRK-NENREI-G.
+               05  WRK-NENREI-Z    PIC ZZ9.
+               05  WRK-NENREI-MEI  PIC X(04).
+           03  WRK-NENREI-GR       REDEFINES   WRK-NENREI-G.
+               05  WRK-NENREI-ZN   PIC Z9.
+               05  WRK-NENREI-MEIN PIC X(04).
+               05  FILLER          PIC X(01).
+      *
       *    日付変換用
            03  WRK-SYMD            PIC X(08).
            03  WRK-HENYMDG         PIC X(09).
@@ -171,6 +181,9 @@
       *
       *   画面日付変換サブ
           COPY    "CPORCSGDAY.INC".
+      *
+      *    保険年齢・負担割合算定サブ
+           COPY    "CPORCSAGECHK.INC".
       *
       *   患者番号変換サブ
            COPY    "CPORCSPTNUM.INC".
@@ -438,6 +451,7 @@
                MOVE    SPA-GMN-C02-SEX     TO  SPA-GMN-C11-SEX
                MOVE    SPA-GMN-C02-BIRTHDAY
                                            TO  SPA-GMN-C11-BIRTHDAY
+               MOVE    SPA-GMN-C02-AGE     TO  SPA-GMN-C11-AGE
       *
       *        一覧表示
                MOVE    1                   TO  SPA-GMN-C11-OPE-PAGE
@@ -1065,6 +1079,24 @@
                    MOVE    PTINF-BIRTHDAY      TO  WRK-SYMD
                    PERFORM 5002-HIZUKE-HEN-SEC
                    MOVE    WRK-HENYMDG         TO  SPA-GMN-C11-BIRTHDAY
+      *            年齢計算
+                   INITIALIZE                ORCSAGECHKAREA
+                   MOVE    SPA-HOSPID        TO  AGECHK-HOSPID
+                   MOVE    SPA-NAI-C11-PTID  TO  AGECHK-PTID
+                   MOVE    SPA-NAI-C02-SYSYMD
+                                             TO  AGECHK-SRYYMD
+                   MOVE    PTINF-BIRTHDAY    TO  AGECHK-BIRTHDAY
+                   CALL    "ORCSAGECHK"        USING
+                                               ORCSAGECHKAREA
+                   MOVE    SPACE             TO  WRK-NENREI-G
+                   IF      AGECHK-NENREI2-YY   =   ZERO
+                       MOVE    AGECHK-NENREI2-MM   TO  WRK-NENREI-ZN
+                       MOVE    "ヶ月"              TO  WRK-NENREI-MEIN
+                   ELSE
+                       MOVE    AGECHK-NENREI2-YY   TO  WRK-NENREI-Z
+                       MOVE    "才"                TO  WRK-NENREI-MEI
+                   END-IF
+                   MOVE    WRK-NENREI-G        TO  SPA-GMN-C11-AGE
                END-IF
            END-IF    
       *
@@ -2113,6 +2145,7 @@
            MOVE    SPA-GMN-C11-NAME        TO  C11-NAME
            MOVE    SPA-GMN-C11-SEX         TO  C11-SEX
            MOVE    SPA-GMN-C11-BIRTHDAY    TO  C11-BIRTHDAY
+           MOVE    SPA-GMN-C11-AGE         TO  C11-AGE
            MOVE    SPA-GMN-C11-SRYKA-G     TO  C11-SRYKA
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX         >   SPA-GMN-C11-SRYKA-MAX
