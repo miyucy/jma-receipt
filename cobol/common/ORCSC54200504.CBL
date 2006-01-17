@@ -32,6 +32,7 @@
       * 01.00.02     NACL-多々納  02/12/09  労災加算追加
       * 01.00.03     NACL-多々納  03/02/12  年齢加算・時間外加算計算修正
       * 01.00.04     NACL-多々納  03/07/30  通則加算区分追加
+      * 01.00.05     NACL-多々納  06/01/13  神経ブロック重複チェック追加
       *****************************************************************
       *
       *
@@ -87,6 +88,8 @@
            03  IDX-NEN             PIC 9(04).
            03  IDX-TUS             PIC 9(04).
       *
+           03  IDD                 PIC 9(02).
+      *
       *
       *    一時領域
        01  WRK-AREA.
@@ -141,6 +144,13 @@
                05  WRK-KAISU-Z     PIC ZZZZ.
       *
            03  WRK-INPUTCD         PIC X(22).
+      *
+      *    神経ブロック・トリガーポイント注射判定
+       01  TBL-CHK-AREA.
+           03  TBL-CHK-OCC             OCCURS   31.
+               05  TBL-CHK-L100        PIC 9(01).
+               05  TBL-CHK-L102        PIC 9(01).
+               05  TBL-CHK-L104        PIC 9(01).
       *
       *
       *    保存用
@@ -220,7 +230,11 @@
                    PERFORM 100-SEL-SYORI-SEC
       *        全体のチェック
                WHEN    "2"
-                   PERFORM 200-ALL-SYORI-SEC
+                   IF      SPA-HKNCOMBINUM     =   "9999"
+                       CONTINUE
+                   ELSE
+                       PERFORM 200-ALL-SYORI-SEC
+                   END-IF
       *        自動算定
                WHEN    "3"
                    PERFORM 300-AUTO-SYORI-SEC
@@ -241,11 +255,12 @@
            IF     (WRK-GMN-INPUTCD(IDX-MAX)(1:1)
                                        =   "."   )  OR
                   (SPA-ERRCD       NOT =   SPACE )
-               GO      TO      100-SEL-SYORI-EXT
-           END-IF
+               CONTINUE
+           ELSE
       *
-      *    点数計算
-           PERFORM 1002-TENSU-KEI-SEC
+      *        点数計算
+               PERFORM 1002-TENSU-KEI-SEC
+           END-IF
       *
            .
        100-SEL-SYORI-EXT.
@@ -1158,8 +1173,104 @@
       *****************************************************************
        200-ALL-SYORI-SEC                SECTION.
       *
+           INITIALIZE                  TBL-CHK-AREA
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   200  )  OR
+                              (WRK-GMN-INPUTCD(IDX) =   SPACE)  OR
+                              (SPA-ERRCD        NOT =   SPACE)
+      *        神経ブロック判定
+               IF     (WRK-COM-SRYKBN  (IDX)   =   "54" ) AND
+                      (WRK-COM-DATAKBN  (IDX)  =   "1"  ) AND
+                      (WRK-COM-CDKBN-KBN (IDX) =   "L"  )  AND
+                      (WRK-COM-CDKBN-KBNNUM (IDX)  =   "100"
+                                                   OR  "101"
+                                                   OR  "102"
+                                                   OR  "104" )
+                   PERFORM 2001-JYUFUKU-CHK-SEC
+               END-IF
+           END-PERFORM
            .
        200-ALL-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    重複判定処理
+      *****************************************************************
+       2001-JYUFUKU-CHK-SEC                SECTION.
+     *
+           IF      SPA-NYUGAIKBN       =   "2"
+               MOVE    SPA-SRYYMD(7:2)     TO  IDD
+               PERFORM 20011-BUROKU-CHK-SEC
+           ELSE
+      *        入力日分のチェック
+               PERFORM VARYING     IDX2    FROM    1   BY  1
+                       UNTIL      (IDX2    >   31  )   OR
+                                  (SPA-ERRCD   NOT =   SPACE )
+                   IF      WRK-COM-NYUINDAY (IDX IDX2)   >   ZERO
+                       MOVE    IDX2                TO  IDD
+                       PERFORM 20011-BUROKU-CHK-SEC
+                       IF      SPA-ERRCD       NOT =   SPACE
+                           MOVE    SPACE           TO  LNK-ORCSC-ERRMSG
+                           STRING  IDD             DELIMITED  BY  SIZE
+                                   "日に同時算定となります。"
+                                                   DELIMITED  BY  SIZE
+                                           INTO    LNK-ORCSC-ERRMSG
+                           END-STRING
+                       END-IF
+                   END-IF
+               END-PERFORM
+           END-IF
+           .
+       2001-JYUFUKU-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    神経ブロック・トリガーポイント注射重複判定処理
+      *****************************************************************
+       20011-BUROKU-CHK-SEC                SECTION.
+     *
+           EVALUATE    WRK-COM-CDKBN-KBNNUM (IDX)
+               WHEN    "100"
+               WHEN    "101"
+                   MOVE    1                   TO  TBL-CHK-L100(IDD)
+                   IF     (TBL-CHK-L102 (IDD)  =   1  )  OR
+                          (TBL-CHK-L104 (IDD)  =   1  )
+                       IF     (WRK-COM-KZMFLG (IDX)    =   SPACE)  AND
+                              (LNK-ORCSC-KEI-IDX       =   ZERO )
+                           MOVE    IDX             TO  LNK-ORCSC-KEI-IDX
+                           MOVE    "1"             TO  WRK-COM-KZMFLG
+                                                               (IDX)
+                           MOVE    "K540"          TO  SPA-ERRCD
+                       END-IF
+                   END-IF
+               WHEN    "102"
+                   MOVE    1                   TO  TBL-CHK-L102(IDD)
+                   IF     (TBL-CHK-L100 (IDD)  =   1  )  OR
+                          (TBL-CHK-L104 (IDD)  =   1  )
+                       IF     (WRK-COM-KZMFLG (IDX)    =   SPACE)  AND
+                              (LNK-ORCSC-KEI-IDX       =   ZERO )
+                           MOVE    IDX             TO  LNK-ORCSC-KEI-IDX
+                           MOVE    "1"             TO  WRK-COM-KZMFLG
+                                                               (IDX)
+                           MOVE    "K540"          TO  SPA-ERRCD
+                       END-IF
+                   END-IF
+               WHEN    "104"
+                   MOVE    1                   TO  TBL-CHK-L104(IDD)
+                   IF     (TBL-CHK-L100 (IDD)  =   1  )  OR
+                          (TBL-CHK-L102 (IDD)  =   1  )
+                       IF     (WRK-COM-KZMFLG (IDX)    =   SPACE)  AND
+                              (LNK-ORCSC-KEI-IDX       =   ZERO )
+                           MOVE    IDX             TO  LNK-ORCSC-KEI-IDX
+                           MOVE    "1"             TO  WRK-COM-KZMFLG
+                                                               (IDX)
+                           MOVE    "K540"          TO  SPA-ERRCD
+                       END-IF
+                   END-IF
+           END-EVALUATE
+           .
+       20011-BUROKU-CHK-EXT.
            EXIT.
       *
       *****************************************************************
