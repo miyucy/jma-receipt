@@ -1149,11 +1149,11 @@
                       (WRK-GMN-INPUTCD(IDX-ZS)(3:) NOT =   SPACE )
                    MOVE    WRK-COM-TIMEFLG(IDX-ZS) TO  WRK-TIMEFLG
                ELSE
-                   IF      LNK-ORCSC-TIMEFLG       =   ZERO
+      *!!          IF      LNK-ORCSC-TIMEFLG       =   ZERO
                        MOVE    ZERO                TO  WRK-TIMEFLG
                        MOVE    ZERO                TO  WRK-COM-TIMEFLG
                                                                 (IDX-ZS)
-                   END-IF
+      *!!          END-IF
                END-IF
            END-IF
       *
