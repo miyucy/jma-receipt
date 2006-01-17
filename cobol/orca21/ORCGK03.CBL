@@ -4603,6 +4603,7 @@
       *    ユーザプログラム起動
            IF      SPA-ERRCD           =   SPACE
                MOVE    3               TO  FLG-USERPG
+               MOVE    3               TO  SPA-USERPG-FLG
                MOVE    "JOIN"          TO  WRK-MCP-PUTTYPE
                PERFORM 4907-USERPG-SEC
            ELSE
