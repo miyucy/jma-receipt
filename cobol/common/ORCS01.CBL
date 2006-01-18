@@ -170,6 +170,8 @@
       *  01.02.18    NACL-ÌçÏÆ    05/09/21  Á´¹ñÅÚÌÚ·úÃÛ¡¢Á´¹ñÈÄ¶â¶È¡Ü
       *                                     Àº¿À¡¢·ë³ËÂÐ±þ
       *  01.02.19    NACL-ÌçÏÆ    05/10/03  µÜ¾ë¸©ÃÏÊý¸øÈñÂÐ±þ
+      *  01.02.20    NACL-ÌçÏÆ    06/01/17  ¹âÎð¼Ô¤Î¼çÊÝ¸±Ëô¤Ï£²£·Ï·¿Í¾ðÊó
+      *                                     ¡Ê±ßÃ±°Ì¡Ë½¤Àµ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -196,6 +198,7 @@
            03  WK-KNJFTNKIN            PIC 9(10).
            03  WK-KNJFTNKIN-ENTANI     PIC 9(08)V9(01).
            03  WK-ENTANI               PIC 9(08).
+           03  WK-ENTANI2              PIC 9(08).
            03  WK-CYOKI                PIC 9(08).
            03  WK-CYOKI-ENTANI         PIC 9(08).
            03  WK-CYOKI-ZAN            PIC 9(08).
@@ -709,6 +712,22 @@
       *
            03  WK-HEN-SYUCOMPFTN       PIC 9(07).
            03  WK-HEN-KOH1COMPFTN      PIC 9(07).
+      *
+      *
+           03  FLG-SANTEI1-HEN-ENTANI         PIC X(01).
+           03  FLG-SANTEI-SYU-HEN-ENTANI      PIC X(01).
+      *
+           03  FTN-KOHI1-D-HEN-ENTANI         PIC 9(08).
+           03  FTN-KOHI1-M-HEN-ENTANI         PIC 9(08).
+           03  ZAN-KOHI1-D-HEN-ENTANI         PIC 9(08).
+           03  ZAN-KOHI1-M-HEN-ENTANI         PIC 9(08).
+           03  ZAN-KOHI1-HEN-ENTANI           PIC 9(08).
+      *
+           03  FTN-SYU-M-HEN-ENTANI           PIC 9(08).
+           03  ZAN-SYU-M-HEN-ENTANI           PIC 9(08).
+      *
+           03  WK-HEN-SYUCOMPFTN-ENTANI       PIC 9(07).
+           03  WK-HEN-KOH1COMPFTN-ENTANI      PIC 9(07).
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -4369,8 +4388,14 @@
                         AND ( SYU-KOH1HKNNUM         = "027" )             
                           IF   LNK-SYU-SRYYMD(7:2)   =  SYU-SRYYMD(7:2)
                             ADD   WK-SYU-SYUCOMPFTN TO  FTN-KOHI1-D-HEN  
+                            COMPUTE WK-ENTANI2 =
+                                         SYU-KOH1COMPFTN-ENTANI + 0.9
+                            ADD   WK-ENTANI2 TO  FTN-KOHI1-D-HEN-ENTANI
                           END-IF                                          
                           ADD   WK-SYU-SYUCOMPFTN   TO  FTN-KOHI1-M-HEN  
+                          COMPUTE WK-ENTANI2 =
+                                         SYU-KOH1COMPFTN-ENTANI + 0.9
+                          ADD   WK-ENTANI2   TO  FTN-KOHI1-M-HEN-ENTANI
                         END-IF
                       END-IF
       ***
@@ -4414,6 +4439,9 @@
                         OR   (SYU-KOH4HKNNUM     NOT = SPACE))
                         AND ( SYU-SYUHKNNUM      NOT = SPACE )
                           ADD   WK-SYU-SYUCOMPFTN   TO   FTN-SYU-M-HEN  
+                          COMPUTE WK-ENTANI2 =
+                                         SYU-SYUCOMPFTN-ENTANI + 0.9
+                          ADD   WK-ENTANI2   TO   FTN-SYU-M-HEN-ENTANI
                         END-IF
                       END-IF
       ***
@@ -7835,8 +7863,10 @@
        2301-SYUHEN-ZANKIN-KEISAN-SEC           SECTION.
       *
       *    »»Äê²ÄÇ½¥Õ¥é¥°¤Î½é´ü²½
-           MOVE     SPACE                  TO     FLG-SANTEI1-HEN
-                                                  FLG-SANTEI-SYU-HEN.
+           MOVE     SPACE        TO     FLG-SANTEI1-HEN
+                                        FLG-SANTEI-SYU-HEN
+                                        FLG-SANTEI1-HEN-ENTANI
+                                        FLG-SANTEI-SYU-HEN-ENTANI.
       *
       *    ²áµî¤Î´µ¼ÔÊÝ¸±ÉéÃ´Îß·×³Û¤È¾å¸Â¶â³Û¤ÎÈæ³Ó
       *
@@ -7845,10 +7875,16 @@
                IF   FTN-KOHI1-D-HEN        >=     MAX-KIN-KOHI1-D
                        MOVE     "1"       TO     FLG-SANTEI1-HEN
                END-IF
+               IF   FTN-KOHI1-D-HEN-ENTANI >=     MAX-KIN-KOHI1-D
+                       MOVE     "1"       TO     FLG-SANTEI1-HEN-ENTANI
+               END-IF
              END-IF
              IF       MAX-KIN-KOHI1-M        NOT =  ZERO
                IF   FTN-KOHI1-M-HEN        >=     MAX-KIN-KOHI1-M
                        MOVE     "1"       TO     FLG-SANTEI1-HEN
+               END-IF
+               IF   FTN-KOHI1-M-HEN-ENTANI >=     MAX-KIN-KOHI1-M
+                       MOVE     "1"       TO     FLG-SANTEI1-HEN-ENTANI
                END-IF
              END-IF
            END-IF.
@@ -7856,6 +7892,9 @@
            IF         MAX-KIN-SYU-M          NOT =  ZERO
                IF  FTN-SYU-M-HEN           >=     MAX-KIN-SYU-M
                       MOVE  "1"           TO     FLG-SANTEI-SYU-HEN
+               END-IF
+               IF  FTN-SYU-M-HEN-ENTANI    >=     MAX-KIN-SYU-M
+                      MOVE  "1"    TO     FLG-SANTEI-SYU-HEN-ENTANI
                END-IF
            END-IF.
       *
@@ -7877,6 +7916,23 @@
                    END-IF
                END-IF
            END-IF.
+           IF  FLG-SANTEI1-HEN-ENTANI    =     "1"
+               MOVE     ZERO             TO    ZAN-KOHI1-D-HEN-ENTANI
+                                               ZAN-KOHI1-M-HEN-ENTANI
+           ELSE
+               IF  COMB-KOH1HKNNUM           =   "027"
+                   IF       MAX-KIN-KOHI1-D       NOT = ZERO
+                       COMPUTE  ZAN-KOHI1-D-HEN-ENTANI
+                                            =   MAX-KIN-KOHI1-D
+                                            -   FTN-KOHI1-D-HEN-ENTANI
+                   END-IF
+                   IF       MAX-KIN-KOHI1-M       NOT = ZERO
+                       COMPUTE  ZAN-KOHI1-M-HEN-ENTANI
+                                            =   MAX-KIN-KOHI1-M
+                                            -   FTN-KOHI1-M-HEN-ENTANI
+                   END-IF
+               END-IF
+           END-IF.
       *
            IF  FLG-SANTEI-SYU-HEN        =     "1"
                MOVE     ZERO             TO    ZAN-SYU-M-HEN
@@ -7884,6 +7940,15 @@
                IF       MAX-KIN-SYU-M    NOT = ZERO
                      COMPUTE  ZAN-SYU-M-HEN  =   MAX-KIN-SYU-M
                                              -   FTN-SYU-M-HEN
+               END-IF
+           END-IF.
+           IF  FLG-SANTEI-SYU-HEN-ENTANI =     "1"
+               MOVE     ZERO             TO    ZAN-SYU-M-HEN-ENTANI
+           ELSE
+               IF       MAX-KIN-SYU-M    NOT = ZERO
+                     COMPUTE  ZAN-SYU-M-HEN-ENTANI
+                                             =   MAX-KIN-SYU-M
+                                             -   FTN-SYU-M-HEN-ENTANI
                END-IF
            END-IF.
       *
@@ -7906,6 +7971,30 @@
                    WHEN  (MAX-KIN-KOHI1-D   =       ZERO)   AND
                          (MAX-KIN-KOHI1-M   =       ZERO)
                            MOVE   ZERO                TO   ZAN-KOHI1-HEN
+               END-EVALUATE
+      *
+               EVALUATE   TRUE
+                   WHEN  (MAX-KIN-KOHI1-D   NOT =   ZERO)   AND
+                         (MAX-KIN-KOHI1-M   NOT =   ZERO)
+                     IF    ZAN-KOHI1-D-HEN-ENTANI    >
+                                          ZAN-KOHI1-M-HEN-ENTANI
+                           MOVE   ZAN-KOHI1-M-HEN-ENTANI
+                                        TO   ZAN-KOHI1-HEN-ENTANI
+                     ELSE
+                           MOVE   ZAN-KOHI1-D-HEN-ENTANI
+                                        TO   ZAN-KOHI1-HEN-ENTANI
+                     END-IF
+                   WHEN  (MAX-KIN-KOHI1-D   NOT =   ZERO)   AND
+                         (MAX-KIN-KOHI1-M   =       ZERO)
+                           MOVE   ZAN-KOHI1-D-HEN-ENTANI
+                                        TO   ZAN-KOHI1-HEN-ENTANI
+                   WHEN  (MAX-KIN-KOHI1-D   =       ZERO)   AND
+                         (MAX-KIN-KOHI1-M   NOT =   ZERO)
+                           MOVE   ZAN-KOHI1-M-HEN-ENTANI
+                                        TO   ZAN-KOHI1-HEN-ENTANI
+                   WHEN  (MAX-KIN-KOHI1-D   =       ZERO)   AND
+                         (MAX-KIN-KOHI1-M   =       ZERO)
+                           MOVE   ZERO  TO   ZAN-KOHI1-HEN-ENTANI
                END-EVALUATE
       *
            END-IF.
@@ -8251,6 +8340,14 @@
                                 MOVE LNK-SYU-SYUCOMPFTN                
                                                  TO  WK-HEN-SYUCOMPFTN 
                               END-IF
+                              IF  ZAN-SYU-M-HEN-ENTANI
+                                          <  LNK-SYU-SYUCOMPFTN-ENTANI
+                                MOVE ZAN-SYU-M-HEN-ENTANI
+                                         TO  WK-HEN-SYUCOMPFTN-ENTANI
+                              ELSE
+                                MOVE LNK-SYU-SYUCOMPFTN-ENTANI
+                                         TO  WK-HEN-SYUCOMPFTN-ENTANI
+                              END-IF
                             END-IF
                             IF  ZAN-SYU-M     <     WK-TOKUTEI-COMPFTN2 
                                 MOVE ZAN-SYU-M   TO  LNK-SYU-SYUCOMPFTN
@@ -8314,6 +8411,14 @@
                               ELSE                                     
                                 MOVE LNK-SYU-SYUCOMPFTN                
                                                  TO  WK-HEN-SYUCOMPFTN 
+                              END-IF
+                              IF  ZAN-SYU-M-HEN-ENTANI
+                                          <  LNK-SYU-SYUCOMPFTN-ENTANI
+                                MOVE ZAN-SYU-M-HEN-ENTANI
+                                         TO  WK-HEN-SYUCOMPFTN-ENTANI
+                              ELSE
+                                MOVE LNK-SYU-SYUCOMPFTN-ENTANI
+                                         TO  WK-HEN-SYUCOMPFTN-ENTANI
                               END-IF
                             END-IF
                             IF  ZAN-SYU-M     <     WK-TOKUTEI-COMPFTN2 
@@ -8824,6 +8929,14 @@
                   ELSE
                      MOVE   LNK-SYU-KOH-COMPFTN(KOH-IDX)
                                             TO   WK-HEN-KOH1COMPFTN 
+                  END-IF
+                  IF    LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)   >
+                                            ZAN-KOHI1-HEN-ENTANI
+                     MOVE   ZAN-KOHI1-HEN-ENTANI
+                                        TO   WK-HEN-KOH1COMPFTN-ENTANI
+                  ELSE
+                     MOVE   LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)
+                                        TO   WK-HEN-KOH1COMPFTN-ENTANI
                   END-IF
                END-IF
                IF  ((LNK-S01-KOUREI-ZAITAKU-KBN   =   "1" )  OR         
@@ -11654,6 +11767,21 @@
       *
               END-IF
       *
+              IF   COMB-HKNNUM       NOT =   SPACE
+              AND  LNK-SYU-SYUCOMPFTN-ENTANI
+                                     NOT =   WK-HEN-SYUCOMPFTN-ENTANI
+      *
+                 IF   LNK-SYU-KOH1COMPFTN-ENTANI  >
+                                          WK-HEN-SYUCOMPFTN-ENTANI
+                    MOVE   LNK-SYU-KOH1COMPFTN-ENTANI
+                                TO   LNK-SYU-SYUCOMPFTN-ENTANI
+                 ELSE
+                    MOVE   WK-HEN-SYUCOMPFTN-ENTANI
+                                TO   LNK-SYU-SYUCOMPFTN-ENTANI
+                 END-IF
+      *
+              END-IF
+      *
               IF   COMB-KOH1HKNNUM            =   "027"
               AND  LNK-SYU-KOH1COMPFTN    NOT =   WK-HEN-KOH1COMPFTN
       *
@@ -11719,6 +11847,21 @@
       ***                           LNK-SYU-KOH4COMPYKZFTN
       ***             END-IF
       ***           END-IF
+      *
+              END-IF
+      *
+              IF   COMB-KOH1HKNNUM            =   "027"
+              AND  LNK-SYU-KOH1COMPFTN-ENTANI
+                                    NOT =   WK-HEN-KOH1COMPFTN-ENTANI
+      *
+                 IF   LNK-SYU-KOH2COMPFTN-ENTANI  >
+                                          WK-HEN-KOH1COMPFTN-ENTANI
+                    MOVE   LNK-SYU-KOH2COMPFTN-ENTANI
+                                TO   LNK-SYU-KOH1COMPFTN-ENTANI
+                 ELSE
+                    MOVE   WK-HEN-KOH1COMPFTN-ENTANI
+                                TO   LNK-SYU-KOH1COMPFTN-ENTANI
+                 END-IF
       *
               END-IF
       *
