@@ -117,6 +117,8 @@
                 04  U02-USERPG-COUNT   PIC S9(9)   BINARY.
                 04  U02-USERPG-ITEM
                         PIC X(20)   OCCURS  2 TIMES.
+              03  U02-NENREI.
+                04  U02-VALUE   PIC X(6).
               03  U02-B05.
                 04  U02-B05-STATE   PIC S9(9)   BINARY.
               03  U02-B06.
