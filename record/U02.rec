@@ -130,6 +130,9 @@ U02	{
 			count	int;
 			item	varchar(20)[2];
 		};
+		NENREI	{
+			value	varchar(6);
+		};
 		B05	{
 	           	state	int;
 		};

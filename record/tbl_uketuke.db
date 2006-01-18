@@ -103,7 +103,6 @@ path	del12 	{
 		;
 	};
 };
-
 path	key5 	{
 	DBSELECT	{
 		DECLARE tbl_uketuke_key5_csr CURSOR FOR
@@ -113,6 +112,23 @@ path	key5 	{
 			AND   UKEYMD      =   :UKEYMD
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
+			ORDER   BY        UKEID,
+                                          UKETIME
+		;
+	};
+};
+path	key6 	{
+	DBSELECT	{
+		DECLARE tbl_uketuke_key6_csr CURSOR FOR
+		SELECT *
+		FROM tbl_uketuke
+			WHERE   HOSPID    =   :HOSPID
+			AND   UKEYMD      =   :UKEYMD
+			AND   PTID        =   :PTID
+			AND   SRYKA       =   :SRYKA
+			AND   HKNCOMBI    =   :HKNCOMBI
+                        AND   UKEID       <>  0
+                        AND   KAIKEITIME  =   0
 			ORDER   BY        UKEID,
                                           UKETIME
 		;
