@@ -64,6 +64,7 @@
       *  02.00.13    NACL-多々納  05/02/04  受付マスタに保険組合せ追加
       *  02.00.14    NACL-多々納  05/10/07  ユーザプログラム起動追加
       *  02.00.15    NACL-多々納  05/12/07  送受信フラグ追加
+      *  02.00.16    NACL-多々納  05/12/07  年齢追加、警告追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -114,6 +115,7 @@
            03  FLG-IN-NAME             PIC 9(01).
            03  FLG-CLAIM               PIC 9(01).
            03  FLG-CHK                 PIC 9(01).
+           03  FLG-ERR                 PIC 9(01).
            03  FLG-HKNOK               PIC 9(01).
       *    ユーザプログラム起動
            03  FLG-GMN                 PIC 9(01).
@@ -198,6 +200,14 @@
            03  WRK-CNT-HKN2            PIC 9(04).
       *
            03  WRK-HKNCOMBI            PIC X(100).
+      *
+      *   年齢表示
+       01  WRK-NENREI-G.
+           03  WRK-NENREI-Z        PIC ZZ9.
+           03  WRK-NENREI-MEI      PIC X(02).
+       01  WRK-NENREI-GR           REDEFINES   WRK-NENREI-G.
+           03  WRK-NENREI-ZN       PIC Z9.
+           03  WRK-NENREI-MEIN     PIC X(04).
       *
       *D01  WRK-COMBO-SCODE-MAX                       PIC 9(03).
 026700*D01  WRK-COMBO-TBL.
@@ -355,6 +365,9 @@
       *
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
+      *
+      *    保険年齢・負担割合算定サブ
+           COPY    "CPORCSAGECHK.INC".
       *
       *===> For Claim Start
            COPY    "CPSHELLTBL.INC".
@@ -1276,6 +1289,7 @@
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (FLG-END             =   ZERO  )
                IF      FLG-TOUROKU         =   1
+                                           OR  2
                    PERFORM 4109-TOUROKU-CHK-SEC
                END-IF
            END-IF
@@ -1304,6 +1318,10 @@
                MOVE    1                   TO  FLG-IN-NAME
            END-IF
            MOVE    U02-NAME            TO  SPA-GMN-NAME
+      *
+           IF      U02-HKNCOMBI   NOT  =   SPA-GMN-COMBINUM
+               MOVE    ZERO                TO  SPA-NAI-KEIFLG
+           END-IF
       *
            MOVE    U02-SRYKA           TO  SPA-GMN-SRYKA-G
            MOVE    U02-DRNAME          TO  SPA-GMN-DRCD-G
@@ -1449,6 +1467,8 @@
            MOVE    PTINF-BIRTHDAY      TO  SPA-NAI-BIRTHDAY 
            MOVE    PTINF-SEX           TO  SPA-NAI-SEX
       *---- (01.00.03) LINE ADD END ---------------------------------- 
+      *    年齢計算
+           PERFORM 41011-NENREI-SET-SEC
       *    保険組合せ表示処理
            PERFORM 410114-KUMIHYOJI-SEC
       *    保険確認表示処理
@@ -1467,6 +1487,32 @@
            MOVE    SPA-GMN-PTID        TO  SPA-LAST-PTID
            .
        4101-PTNUM-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    年齢計算処理
+      *****************************************************************
+       41011-NENREI-SET-SEC            SECTION.
+      *
+           INITIALIZE                  ORCSAGECHKAREA
+           MOVE    SPA-HOSPID          TO  AGECHK-HOSPID
+           MOVE    SPA-GMN-PTID        TO  AGECHK-PTID
+           MOVE    SPA-SYSYMD          TO  AGECHK-SRYYMD
+           MOVE    SPA-NAI-BIRTHDAY    TO  AGECHK-BIRTHDAY
+           MOVE    "2"                 TO  AGECHK-NYUGAIKBN
+           CALL    "ORCSAGECHK"        USING
+                                       ORCSAGECHKAREA
+      *    画面表示用
+           IF      AGECHK-NENREI2-YY   =   ZERO
+               MOVE    AGECHK-NENREI2-MM   TO  WRK-NENREI-ZN
+               MOVE    "ヶ月"              TO  WRK-NENREI-MEIN
+           ELSE
+               MOVE    AGECHK-NENREI2-YY   TO  WRK-NENREI-Z
+               MOVE    "才"                TO  WRK-NENREI-MEI
+           END-IF
+           MOVE    WRK-NENREI-G        TO  SPA-GMN-NENREI
+           .
+       41011-NENREI-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1507,6 +1553,8 @@
                    MOVE    WRK-BIRTHDAYS       TO  SPA-NAI-BIRTHDAY 
                    MOVE    WRK-SEX             TO  SPA-NAI-SEX
       *---- (01.00.03) LINE ADD END ---------------------------------- 
+      *            年齢計算
+                   PERFORM 41011-NENREI-SET-SEC
                    PERFORM   410114-KUMIHYOJI-SEC
                    PERFORM   410115-KAKUHYOJI-SEC
       *---- (01.00.06) LINE MOD START ---------------------------------
@@ -1665,6 +1713,8 @@
                MOVE    ORCSDR-DRCD-MAX     TO  SPA-DRCD-MAX
       *        受診履歴よりドクター、保険組合せを決定する
                PERFORM 41031-JYURRK-SRYKA-SEC
+      *
+               MOVE    ZERO                TO  SPA-NAI-KEIFLG
            END-IF
       *
            MOVE    SPA-GMN-SRYKA       TO  SPA-MAE-SRYKA
@@ -1958,6 +2008,8 @@
                MOVE    WRK-HENYMDG         TO  SPA-GMN-BIRTHDAY
                MOVE    PTINF-BIRTHDAY      TO  SPA-NAI-BIRTHDAY
                MOVE    PTINF-SEX           TO  SPA-NAI-SEX
+      *        年齢計算
+               PERFORM 41011-NENREI-SET-SEC
            END-IF
            IF      SPA-GMN-THKNCOMBI(IDX)  =   SPACE  OR  ZERO
                MOVE    ZERO                TO  SPA-GMN-COMBINUM
@@ -2884,7 +2936,7 @@
       *****************************************************************
        495-PRINT-SEC             SECTION.
       *
-           MOVE    1                   TO  FLG-TOUROKU
+           MOVE    2                   TO  FLG-TOUROKU
       *    登録チェック処理
            PERFORM 410-INPUT-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
@@ -3178,17 +3230,86 @@
            IF      SPA-GMN-NAME            =  SPACE
                MOVE    "0001"              TO  SPA-ERRCD
                MOVE    3                   TO  SPA-GMN-CUR
-               GO  TO  4109-TOUROKU-CHK-EXT
            END-IF
       *
-           IF     (SPA-GMN-SRYKA           =  SPACE )  OR
-                  (SPA-GMN-SRYNAIYOCD-G    =  SPACE )
-               MOVE    "0026"              TO  SPA-ERRCD
-               MOVE    4                   TO  SPA-GMN-CUR
+           IF      FLG-TOUROKU         =   1
+               IF     (SPA-GMN-SRYKA           =  SPACE )  OR
+                      (SPA-GMN-SRYNAIYOCD-G    =  SPACE )
+                   IF      SPA-ERRCD           =   SPACE
+                       MOVE    "0026"              TO  SPA-ERRCD
+                       MOVE    4                   TO  SPA-GMN-CUR
+                   END-IF
+               END-IF
            END-IF
-      *
-          .
+           IF      FLG-TOUROKU         =   2
+               IF     (SPA-GMN-SRYKA           =  SPACE )
+                   IF      SPA-ERRCD           =   SPACE
+                       MOVE    "0026"              TO  SPA-ERRCD
+                       MOVE    4                   TO  SPA-GMN-CUR
+                   END-IF
+               END-IF
+           END-IF
+      *    受付重複チェック
+           IF     (FLG-TOUROKU         =   1     )  AND
+                  (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-GMN-PTID    NOT =   SPACE )
+               IF      SPA-NAI-KEIFLG      =   ZERO
+                   PERFORM 41091-UKETUKE-CHK-SEC
+               END-IF
+           END-IF
+           .
        4109-TOUROKU-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    受付重複チェック処理
+      *****************************************************************
+       41091-UKETUKE-CHK-SEC              SECTION.
+      *
+           INITIALIZE                       UKETUKE-REC
+           MOVE    SPA-HOSPID          TO  UKE-HOSPID
+           MOVE    SPA-SYSYMD          TO  UKE-UKEYMD
+           MOVE    SPA-GMN-PTID        TO  UKE-PTID
+           MOVE    SPA-GMN-SRYKA       TO  UKE-SRYKA
+      *    保険組合せ
+           MOVE    SPA-GMN-COMBINUM    TO  UKE-HKNCOMBI
+      *
+           MOVE    UKETUKE-REC         TO  MCPDATA-REC
+           MOVE    "tbl_uketuke"       TO  MCP-TABLE
+           MOVE    "key6"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key6"              TO  MCP-PATHNAME
+               PERFORM 910-UKETUKE-READ-SEC
+           ELSE
+                MOVE    1              TO  FLG-UKETUKE
+           END-IF
+           MOVE    ZERO                TO  FLG-ERR
+           PERFORM UNTIL   (FLG-UKETUKE    =   1  )  OR
+                           (FLG-ERR        =   1  )
+               IF      SPA-GMN-SELNUM      =   ZERO
+                   MOVE    1               TO  FLG-ERR
+               ELSE
+                   MOVE    SPA-GMN-SELNUM      TO  IDX
+                   IF      UKE-UKEID       NOT =   SPA-GMN-TUKEID(IDX)
+                       MOVE    1               TO  FLG-ERR
+                   END-IF
+               END-IF
+               MOVE    "key6"              TO  MCP-PATHNAME
+               PERFORM 910-UKETUKE-READ-SEC
+           END-PERFORM
+      *    カーソルクロース
+           MOVE    "tbl_uketuke"       TO  MCP-TABLE
+           MOVE    "key6"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-ERR             =   1
+               MOVE    "K001"              TO  SPA-ERRCD
+               MOVE    4                   TO  SPA-GMN-CUR
+               MOVE    1                   TO  SPA-NAI-KEIFLG
+           END-IF
+      *
+           .
+       41091-UKETUKE-CHK-EXT.
            EXIT.
       *****************************************************************
       *    受付追加処理
@@ -3660,6 +3781,15 @@
                MOVE    "1"                 TO  SPA-DRCD (1:1) 
                MOVE    SPA-GMN-DRCD        TO  SPA-DRCD (2:)
            END-IF
+      *    削除対応
+           MOVE    SPA-GMN-NAME        TO  SPA-NAME
+           EVALUATE    SPA-NAI-SEX
+               WHEN    "1"
+                    MOVE    "男"                TO  SPA-SEX
+                WHEN    "2"
+                    MOVE    "女"                TO  SPA-SEX
+            END-EVALUATE
+           MOVE    SPA-GMN-BIRTHDAY    TO  SPA-BIRTHDAYW
            MOVE    SPACE               TO  SPA-SRYYMD
       *
       *    画面移行用のパラメタ変更
@@ -4213,6 +4343,7 @@
            MOVE    SPA-GMN-PTNUM                TO  U02-PTNUM
            MOVE    SPA-GMN-NAME                 TO  U02-NAME
            MOVE    SPA-GMN-BIRTHDAY             TO  U02-BIRTHDAY
+           MOVE    SPA-GMN-NENREI               TO  U02-NENREI
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >       SPA-SRYKA-MAX
@@ -4635,6 +4766,10 @@
                                                 TO  SPA-ERRMSG(33:)
                WHEN    "0029"
                    MOVE    "ユーザプログラム起動選択エラー"
+                                                TO  SPA-ERRMSG
+               WHEN    "K001"
+                   MOVE
+                   "警告！同じ診療科・保険組合せで受付済みです。"
                                                 TO  SPA-ERRMSG
                WHEN    "2001"
                    MOVE    "前の未確認保険はありません。"
