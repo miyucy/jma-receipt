@@ -477,6 +477,9 @@
       *    入院会計室料差額区分コンボ
            PERFORM 310-CMB-NACCT-BRMSGK-SET-SEC
       *
+      *    入院会計外泊区分コンボ
+           PERFORM 310-CMB-NACCT-GAIHAKU-SET-SEC
+      *
            .
        310-CMB-SYOKI-EXT.
            EXIT.
@@ -738,6 +741,20 @@
        310-CMB-NACCT-BRMSGK-SET-EXT.
            EXIT.
       *****************************************************************
+      *    入院会計外泊区分コンボ
+      *****************************************************************
+       310-CMB-NACCT-GAIHAKU-SET-SEC   SECTION.
+      *
+           MOVE    2               TO  SPA-GMN-W24-NACCT-GAIHAKU-CNT
+      *
+           MOVE    "1 実更新なし"  TO  SPA-GMN-W24-NACCT-GAIHAKU-ITM (1)
+      *
+           MOVE    "2 実更新あり"  TO  SPA-GMN-W24-NACCT-GAIHAKU-ITM (2)
+      *
+           .
+       310-CMB-NACCT-GAIHAKU-SET-EXT.
+           EXIT.
+      *****************************************************************
       *    入力情報編集処理
       *****************************************************************
        310-INPUT-AREA-EDIT-SEC     SECTION.
@@ -816,6 +833,16 @@
            ELSE
                MOVE    SPA-GMN-W24-NACCT-BRMSGK-ITM (1)
                                            TO  SPA-GMN-W24-NACCT-BRMSGK
+           END-IF
+      *
+      *    入院会計外泊区分
+           MOVE    SYS-5000-NACCT-GAIHAKUKBN  TO  WRK-CMB-CD
+           PERFORM 4103-CMB-NACCT-GAIHAKU-SRH-SEC
+           IF    ( WRK-CMB-ITM     NOT =   SPACE )
+               MOVE    WRK-CMB-ITM         TO  SPA-GMN-W24-NACCT-GAIHAKU
+           ELSE
+               MOVE    SPA-GMN-W24-NACCT-GAIHAKU-ITM (1)
+                                           TO  SPA-GMN-W24-NACCT-GAIHAKU
            END-IF
       *
       *    入院料加算情報
@@ -1185,6 +1212,8 @@
            MOVE    W24-BRMSGK-TAX      TO  SPA-GMN-W24-BRMSGK-TAX
       *    入院会計室料差額区分
            MOVE    W24-NACCT-BRMSGK    TO  SPA-GMN-W24-NACCT-BRMSGK
+      *    入院会計外泊区分
+           MOVE    W24-NACCT-GAIHAKU   TO  SPA-GMN-W24-NACCT-GAIHAKU
       *
       *    入院加算情報
            PERFORM VARYING     IDX1    FROM    1   BY  1
@@ -1290,6 +1319,12 @@
       *
       *    入院会計室料差額区分
            PERFORM 4100-NACCT-BRMSGK-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    入院会計外泊区分
+           PERFORM 4100-NACCT-GAIHAKU-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -1704,6 +1739,10 @@
            MOVE    SPA-GMN-W24-NACCT-BRMSGK-CD
                                    TO  SYS-5000-NACCT-BRMSGKKBN
       *
+      *    入院会計外泊区分
+           MOVE    SPA-GMN-W24-NACCT-GAIHAKU-CD
+                                   TO  SYS-5000-NACCT-GAIHAKUKBN
+      *
       *    入院料加算情報
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL ( IDX1    >    20 )
@@ -2023,6 +2062,31 @@
       *
            .
        4100-NACCT-BRMSGK-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院会計外泊区分
+      *****************************************************************
+       4100-NACCT-GAIHAKU-CHK-SEC         SECTION.
+      *
+           IF    ( SPA-GMN-W24-NACCT-GAIHAKU =   SPACE )
+               MOVE    SPA-GMN-W24-NACCT-GAIHAKU-ITM (1)
+                                       TO  SPA-GMN-W24-NACCT-GAIHAKU
+               GO  TO  4100-NACCT-GAIHAKU-CHK-EXT
+           END-IF
+      *
+      *    該当コードのデータが存在するかチェック
+           MOVE    SPA-GMN-W24-NACCT-GAIHAKU-CD
+                                       TO  WRK-CMB-CD
+           PERFORM 4103-CMB-NACCT-GAIHAKU-SRH-SEC
+           IF    ( WRK-CMB-ITM     NOT =   SPACE )
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-NACCT-GAIHAKU
+           ELSE
+               MOVE    SPA-GMN-W24-NACCT-GAIHAKU-ITM (1)
+                                       TO  SPA-GMN-W24-NACCT-GAIHAKU
+           END-IF
+      *
+           .
+       4100-NACCT-GAIHAKU-CHK-EXT.
            EXIT.
       *****************************************************************
       *    入院加算情報チェック処理
@@ -3038,6 +3102,32 @@
        4103-CMB-NACCT-BRMSGK-SRH-EXT.
            EXIT.
       *****************************************************************
+      *    入院会計外泊区分サーチ処理
+      *****************************************************************
+       4103-CMB-NACCT-GAIHAKU-SRH-SEC     SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM
+                                       WRK-CMB-IDX
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-W24-NACCT-GAIHAKU-CNT )
+                    OR   ( SPA-GMN-W24-NACCT-GAIHAKU-ITM (IDX-CMB)
+                                                        (1 : 1)
+                                   =   WRK-CMB-CD )
+      *
+               CONTINUE
+      *
+           END-PERFORM
+      *
+           IF    ( IDX-CMB     <=  SPA-GMN-W24-NACCT-GAIHAKU-CNT )
+               MOVE    SPA-GMN-W24-NACCT-GAIHAKU-ITM (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+           END-IF
+      *
+           .
+       4103-CMB-NACCT-GAIHAKU-SRH-EXT.
+           EXIT.
+      *****************************************************************
       *    入力情報領域初期化処理
       *****************************************************************
        4201-INPUT-AREA-INIT-SEC        SECTION.
@@ -3086,6 +3176,9 @@
       *
            MOVE    SPA-GMN-W24-NACCT-BRMSGK-ITM (1)
                                    TO  SPA-GMN-W24-NACCT-BRMSGK
+      *
+           MOVE    SPA-GMN-W24-NACCT-GAIHAKU-ITM (1)
+                                   TO  SPA-GMN-W24-NACCT-GAIHAKU
       *
            MOVE    SPA-GMN-W24-SENTEI-FTNKBN-ITM (1)
                                    TO  SPA-GMN-W24-SENTEI-FTNKBN
@@ -3464,6 +3557,19 @@
       *
                MOVE    SPA-GMN-W24-NACCT-BRMSGK-ITM (IDX1)
                                    TO  W24-NACCT-BRMSGK-ITM (IDX1)
+      *
+           END-PERFORM
+      *
+      *    入院会計外泊区分
+           MOVE    SPA-GMN-W24-NACCT-GAIHAKU
+                                   TO  W24-NACCT-GAIHAKU
+           MOVE    SPA-GMN-W24-NACCT-GAIHAKU-CNT
+                                   TO  W24-NACCT-GAIHAKU-CNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   W24-NACCT-GAIHAKU-CNT )
+      *
+               MOVE    SPA-GMN-W24-NACCT-GAIHAKU-ITM (IDX1)
+                                   TO  W24-NACCT-GAIHAKU-ITM (IDX1)
       *
            END-PERFORM
       *

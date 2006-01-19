@@ -88,7 +88,12 @@
                  11  SPA-GMN-W24-NACCT-BRMSGK.
                    13  SPA-GMN-W24-NACCT-BRMSGK-CD     PIC X(01).
                    13                                  PIC X(01).
-                   13  SPA-GMN-W24-NACCT-BRMSGK-NM     PIC X(14).
+                   13  SPA-GMN-W24-NACCT-BRMSGK-NM     PIC X(12).
+      *          Æþ±¡²ñ·×³°ÇñÅÐÏ¿¶èÊ¬
+                 11  SPA-GMN-W24-NACCT-GAIHAKU.
+                   13  SPA-GMN-W24-NACCT-GAIHAKU-CD    PIC X(01).
+                   13                                  PIC X(01).
+                   13  SPA-GMN-W24-NACCT-GAIHAKU-NM    PIC X(12).
       *          Æþ±¡²Ã»»¾ðÊó
                  11  SPA-GMN-W24-FRAME3.
                    13  SPA-GMN-W24-CHK-NYUKSN.
@@ -287,6 +292,13 @@
                    13  SPA-GMN-W24-NACCT-BRMSGK-CNT    PIC S9(9)
                                                        BINARY.
                    13  SPA-GMN-W24-NACCT-BRMSGK-ITM    PIC X(16)
+                                                       OCCURS  5.
+      *
+      *          Æþ±¡²ñ·×³°Çñ¶èÊ¬
+                 11  SPA-GMN-W24-CMB-NACCT-GAIHAKU.
+                   13  SPA-GMN-W24-NACCT-GAIHAKU-CNT   PIC S9(9)
+                                                       BINARY.
+                   13  SPA-GMN-W24-NACCT-GAIHAKU-ITM   PIC X(14)
                                                        OCCURS  5.
       *
              07  SPA-NAI-W24-AREA.

@@ -80,6 +80,13 @@ W24	{
 			count	int;
 			item	varchar(16)[05];
 		};
+		CMB_NACCT_GAIHAKU	{
+			NACCT_GAIHAKU	{
+				value	varchar(14);
+			};
+			count	int;
+			item	varchar(14)[05];
+		};
 		frame3	{
 			fixed9	{
 				CHK_NYUKSN01	{

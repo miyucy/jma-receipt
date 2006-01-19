@@ -115,8 +115,11 @@
                    SYS-5000-SENTEI-RJN-KINGAKU-X.
                    07  SYS-5000-SENTEI-RJN-KINGAKU
                                            PIC  9(04).
+      *Æþ±¡²ñ·×³°Çñ¶èÊ¬
+               05  SYS-5000-NACCT-GAIHAKUKBN
+                                           PIC  X(01).
       *Í½È÷¡Ê£²¡Ë
-               05                          PIC  X(07).
+               05                          PIC  X(06).
       *Ã¼Ëö£É£Ä
            03  SYS-5000-TERMID             PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

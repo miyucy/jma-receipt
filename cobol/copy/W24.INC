@@ -80,6 +80,12 @@
                                                BINARY.
                 05  W24-NACCT-BRMSGK-ITM       PIC X(16)
                                                OCCURS  5.
+              04  W24-CMB-NACCT-GAIHAKU.
+                05  W24-NACCT-GAIHAKU          PIC X(14).
+                05  W24-NACCT-GAIHAKU-CNT      PIC S9(9)
+                                               BINARY.
+                05  W24-NACCT-GAIHAKU-ITM      PIC X(14)
+                                               OCCURS  5.
               04  W24-FRAME3.
                 05  W24-FIXED9.
                   06  W24-CHK-NYUKSN.
