@@ -40,6 +40,7 @@
       *  01.00.01    NACL-ÂÀÅÄ    04.03.04  Î×¾²¸¦½¤ÉÂ±¡Æþ±¡¿ÇÎÅ²Ã»»
       *                                     Î¥Åç²Ã»»ÄÉ²Ã
       *  01.00.02    NACL-ÂÀÅÄ    04.08.23  Æþ±¡²ñ·×¼¼ÎÁº¹³Û¶èÊ¬ÄÉ²Ã
+      *  01.00.03    NACL-¾®Æ¦Âô  06.01.19  ³°ÇñÅÐÏ¿»þ¤Î¼Â¹¹¿·¶èÊ¬ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -3913,6 +3914,8 @@
                MOVE    "BRMSGK_TAX"    TO  MCP-WIDGET
            WHEN    047
                MOVE    "NACCT_BRMSGK"  TO  MCP-WIDGET
+           WHEN    050
+               MOVE    "NACCT_GAIHAKU" TO  MCP-WIDGET
            WHEN    048
                IF    ( W24-SENTEI-TANKAIP-STATE
                                        =   WIDGET-NORMAL )
@@ -4048,6 +4051,8 @@
            WHEN    "BRMSGK_TAX"
                MOVE    047             TO  SPA-GMN-W24-CUR
            WHEN    "NACCT_BRMSGK"
+               MOVE    050             TO  SPA-GMN-W24-CUR
+           WHEN    "NACCT_GAIHAKU"
                MOVE    008             TO  SPA-GMN-W24-CUR
            END-EVALUATE
       *
