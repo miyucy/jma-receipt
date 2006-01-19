@@ -538,6 +538,10 @@
                    07  SPA-NAI-STYUKYMD       PIC 9(08).
                    07  SPA-NAI-EDYUKYMD       PIC 9(08).
       *
+                   07  SPA-NAI-2008-KBNCD.
+                       09  SPA-NAI-2008-KBNCD-9
+                                              PIC 9(08).
+      *
                05  SPA-1001-PREFNUM           PIC 9(02). 
       *
            COPY    "ENUM-VALUE".
@@ -549,6 +553,7 @@
            03  FLG-HKNJAINF        PIC 9(01).
       *
            03  FLG-ROW             PIC 9(01).
+           03  FLG-UPDFLG          PIC 9(01).
       *
       *    カウント領域
       *
@@ -578,6 +583,12 @@
                05  WRK-WDD         PIC 9(02).
       *
            03  WRK-MCP-WIDGET      PIC X(64).
+      *
+           03  WRK-MCP-TABLE       PIC X(64).
+           03  WRK-MCP-PATHNAME    PIC X(64).
+      *
+           03  WRK-KBNCD.
+               05  WRK-KBNCD-9     PIC 9(08).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -1106,11 +1117,14 @@
       *       医療機関情報
            MOVE    SPACE               TO  SYS-1001-REC
            INITIALIZE                      SYS-1001-REC
-           MOVE    "1001"                  TO  SYS-1001-KANRICD
-           MOVE    "*"                     TO  SYS-1001-KBNCD
-           MOVE    SPA-W01-SEL-STYUKYMD    TO  SYS-1001-STYUKYMD
-                                               SYS-1001-EDYUKYMD
-           MOVE    SYS-1001-REC            TO  MCPDATA-REC
+           MOVE    "1001"              TO  SYS-1001-KANRICD
+           MOVE    "*"                 TO  SYS-1001-KBNCD
+           MOVE    SPA-W01-SEL-STYUKYMD
+                                       TO  SYS-1001-STYUKYMD
+                                           SYS-1001-EDYUKYMD
+           MOVE    SYS-1001-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
+           MOVE    "key10"             TO  WRK-MCP-PATHNAME
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI            =   ZERO
                MOVE    MCPDATA-REC             TO  SYS-1001-REC
@@ -1120,11 +1134,15 @@
       *    レセプト・総括編集情報
            MOVE    SPACE               TO  SYS-2005-REC
            INITIALIZE                      SYS-2005-REC
-           MOVE    "2005"                  TO  SYS-2005-KANRICD
-           MOVE    "*"                     TO  SYS-2005-KBNCD
-           MOVE    SPA-W01-SEL-STYUKYMD    TO  SYS-2005-STYUKYMD
-           MOVE    SPA-W01-SEL-EDYUKYMD    TO  SYS-2005-EDYUKYMD
-           MOVE    SYS-2005-REC            TO  MCPDATA-REC
+           MOVE    "2005"              TO  SYS-2005-KANRICD
+           MOVE    "*"                 TO  SYS-2005-KBNCD
+           MOVE    SPA-W01-SEL-STYUKYMD
+                                       TO  SYS-2005-STYUKYMD
+           MOVE    SPA-W01-SEL-EDYUKYMD
+                                       TO  SYS-2005-EDYUKYMD
+           MOVE    SYS-2005-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"     TO  WRK-MCP-TABLE
+           MOVE    "key10"             TO  WRK-MCP-PATHNAME
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI            =   ZERO
                MOVE    MCPDATA-REC             TO  SYS-2005-REC
@@ -1443,14 +1461,19 @@
       *    レセプト（編綴順）情報
            MOVE    SPACE               TO  SYS-2008-REC
            INITIALIZE                      SYS-2008-REC
-           MOVE    "2008"                  TO  SYS-2008-KANRICD
-           MOVE    "*"                     TO  SYS-2008-KBNCD
-           MOVE    SPA-W01-SEL-STYUKYMD    TO  SYS-2008-STYUKYMD
-           MOVE    SPA-W01-SEL-EDYUKYMD    TO  SYS-2008-EDYUKYMD
-           MOVE    SYS-2008-REC            TO  MCPDATA-REC
+           MOVE    "2008"              TO  SYS-2008-KANRICD
+           MOVE    SPA-W01-SEL-STYUKYMD
+                                       TO  SYS-2008-STYUKYMD
+           MOVE    SPA-W01-SEL-EDYUKYMD
+                                       TO  SYS-2008-EDYUKYMD
+           MOVE    SYS-2008-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
+           MOVE    "key13"             TO  WRK-MCP-PATHNAME
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI            =   ZERO
                MOVE    MCPDATA-REC             TO  SYS-2008-REC
+      *
+               MOVE    SYS-2008-KBNCD      TO  SPA-NAI-2008-KBNCD
       *
                MOVE    SYS-2008-PREFKBN-PRTJYUN
                                            TO  SPA-GMN-PREFKBN-PRTJYUN
@@ -1541,7 +1564,9 @@
                MOVE    SPA-GMN-HKNJANUM    TO  HKNJA-HKNJANUM
                MOVE    HKNJAINF-REC        TO  MCPDATA-REC
                PERFORM 900-HKNJAINF-READ-SEC
-               MOVE    HKNJA-HKNJANAME     TO SPA-GMN-HKNJANAME
+               MOVE    HKNJA-HKNJANAME     TO  SPA-GMN-HKNJANAME
+           ELSE
+               MOVE    ZERO                TO  SPA-NAI-2008-KBNCD-9  
            END-IF
       *
            IF     SPA-GMN-BYOMEIHENKBN-G   =   SPACE
@@ -3015,6 +3040,8 @@
            MOVE    SPA-W01-SEL-STYUKYMD    TO  SYS-2005-STYUKYMD
            MOVE    SPA-W01-SEL-EDYUKYMD    TO  SYS-2005-EDYUKYMD
            MOVE    SYS-2005-REC            TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
+           MOVE    "key10"             TO  WRK-MCP-PATHNAME
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI            =   ZERO
                MOVE    MCPDATA-REC             TO  SYS-2005-REC
@@ -3095,22 +3122,8 @@
            END-IF      
       *
       *    レセプト（編綴順）情報
-           MOVE    SPACE               TO  SYS-2008-REC
-           INITIALIZE                      SYS-2008-REC
-           MOVE    "2008"                  TO  SYS-2008-KANRICD
-           MOVE    "*"                     TO  SYS-2008-KBNCD
-           MOVE    SPA-W01-SEL-STYUKYMD    TO  SYS-2008-STYUKYMD
-           MOVE    SPA-W01-SEL-EDYUKYMD    TO  SYS-2008-EDYUKYMD
-           MOVE    SYS-2008-REC            TO  MCPDATA-REC
-           PERFORM 900-SYSKANRI-INV-SEC
-           IF      FLG-SYSKANRI            =   ZERO
-               MOVE    MCPDATA-REC             TO  SYS-2008-REC
-           ELSE
-               MOVE    SPACE                   TO  SYS-2008-REC
-               INITIALIZE                          SYS-2008-REC
-               MOVE    "2008"                  TO  SYS-2008-KANRICD
-               MOVE    "*"                     TO  SYS-2008-KBNCD
-           END-IF
+      *
+           MOVE    ZERO                TO  FLG-UPDFLG
       *
       *    項目が未入力で未登録の場合は更新しない 
            IF    ( SPA-GMN-PREFKBN-PRTJYUN =   SPACE )
@@ -3122,52 +3135,89 @@
            AND   ( SPA-GMN-CHOUKI          =   SPACE )
            AND   ( SPA-GMN-HKNJANUM-PRTKBN =   SPACE )
            AND   ( SPA-GMN-HKNJANUM        =   SPACE )
-           AND   ( FLG-SYSKANRI            =   1     )
+           AND   ( SPA-NAI-2008-KBNCD-9    =   ZERO  )
                CONTINUE
            ELSE
-               MOVE    SPA-W01-STYUKYMD        TO  SYS-2008-STYUKYMD
-               MOVE    SPA-W01-EDYUKYMD        TO  SYS-2008-EDYUKYMD
-               MOVE    SPA-GMN-PREFKBN-PRTJYUN TO
+      *        項目に変更があった場合
+               IF      SPA-NAI-2008-KBNCD-9    >   ZERO
+                   MOVE    SPACE               TO  SYS-2008-REC
+                   INITIALIZE                      SYS-2008-REC
+                   MOVE    "2008"              TO  SYS-2008-KANRICD
+                   MOVE    SPA-NAI-2008-KBNCD  TO  SYS-2008-KBNCD
+                   MOVE    SPA-W01-SEL-STYUKYMD
+                                               TO  SYS-2008-STYUKYMD
+                   MOVE    SPA-W01-SEL-EDYUKYMD
+                                               TO  SYS-2008-EDYUKYMD
+                   MOVE    SYS-2008-REC        TO  MCPDATA-REC
+                   MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
+                   MOVE    "key10"             TO  WRK-MCP-PATHNAME
+                   PERFORM 900-SYSKANRI-INV-SEC
+                   IF    ( SPA-GMN-PREFKBN-PRTJYUN     =
+                                           SYS-2008-PREFKBN-PRTJYUN    )
+                   AND   ( SPA-GMN-HKNJANUM-PRTJYUN    =
+                                           SYS-2008-HKNJANUM-PRTJYUN   )
+                   AND   ( SPA-GMN-RECESYUBETU-PRTJYUN =
+                                           SYS-2008-RECESYUBETU-PRTJYUN)
+                   AND   ( SPA-GMN-ZAITAKU             =
+                                           SYS-2008-ZAITAKU            )
+                   AND   ( SPA-GMN-CHOUKI              =
+                                           SYS-2008-CHOUKI             )
+                   AND   ( SPA-GMN-HKNJANUM-PRTKBN     =
+                                           SYS-2008-HKNJANUM-PRTKBN    )
+                   AND   ( SPA-GMN-HKNJANUM            =
+                                           SYS-2008-HKNJANUM           )
+                       CONTINUE
+                   ELSE
+                       MOVE    1                   TO  FLG-UPDFLG
+                   END-IF
+               ELSE 
+                   MOVE    1                   TO  FLG-UPDFLG
+               END-IF
+      *
+               IF      FLG-UPDFLG          =   1    
+                   MOVE    SPACE               TO  SYS-2008-REC
+                   INITIALIZE                      SYS-2008-REC
+                   MOVE    "2008"              TO  SYS-2008-KANRICD
+                   MOVE    SPA-NAI-2008-KBNCD-9
+                                               TO  WRK-KBNCD-9
+                   IF      WRK-KBNCD-9         =   99999999
+                       MOVE    1                   TO  WRK-KBNCD-9
+                   ELSE
+                       ADD     1                   TO  WRK-KBNCD-9
+                   END-IF
+                   MOVE    WRK-KBNCD           TO  SYS-2008-KBNCD
+                   MOVE    SPA-W01-STYUKYMD    TO  SYS-2008-STYUKYMD
+                   MOVE    SPA-W01-EDYUKYMD    TO  SYS-2008-EDYUKYMD
+                   MOVE    SPA-GMN-PREFKBN-PRTJYUN TO
                                            SYS-2008-PREFKBN-PRTJYUN
-               MOVE    SPA-GMN-HKNJANUM-PRTJYUN
+                   MOVE    SPA-GMN-HKNJANUM-PRTJYUN
                                                TO
                                            SYS-2008-HKNJANUM-PRTJYUN
-               MOVE    SPA-GMN-RECESYUBETU-PRTJYUN
+                   MOVE    SPA-GMN-RECESYUBETU-PRTJYUN
                                                TO
                                            SYS-2008-RECESYUBETU-PRTJYUN
-               MOVE    SPA-GMN-ZAITAKU         TO  SYS-2008-ZAITAKU
-               MOVE    SPA-GMN-CHOUKI          TO  SYS-2008-CHOUKI 
-               MOVE    SPA-GMN-HKNJANUM-PRTKBN TO
+                   MOVE    SPA-GMN-ZAITAKU     TO  SYS-2008-ZAITAKU
+                   MOVE    SPA-GMN-CHOUKI      TO  SYS-2008-CHOUKI 
+                   MOVE    SPA-GMN-HKNJANUM-PRTKBN TO
                                            SYS-2008-HKNJANUM-PRTKBN
-               MOVE    SPA-GMN-HKNJANUM        TO  SYS-2008-HKNJANUM 
-               MOVE    SYS-2008-REC            TO  SYSKANRI-REC
+                   MOVE    SPA-GMN-HKNJANUM    TO  SYS-2008-HKNJANUM 
+                   MOVE    SYS-2008-REC        TO  SYSKANRI-REC
       *     
-               PERFORM 800-MCNDATE-SEC
-               IF      FLG-SYSKANRI            =   ZERO
-                   MOVE    SMCNDATE-YMD            TO  SYS-UPYMD
-                   MOVE    SMCNDATE-HMS            TO  SYS-UPHMS
-                   MOVE    SYS-KANRICD             TO  SYSUP-KANRICD
-                   MOVE    SYS-KBNCD               TO  SYSUP-KBNCD
-                   MOVE    SPA-W01-SEL-STYUKYMD    TO  SYSUP-STYUKYMD
-                   MOVE    SPA-W01-SEL-EDYUKYMD    TO  SYSUP-EDYUKYMD
-                   MOVE    "tbl_syskanri"          TO  MCP-TABLE
-                   MOVE    "upd1"                  TO  MCP-PATHNAME
-                   MOVE    "DBUPDATE"              TO  MCP-FUNC
-               ELSE
-                   MOVE    SMCNDATE-YMD            TO  SYS-CREYMD
-                                                       SYS-UPYMD
-                   MOVE    SMCNDATE-HMS            TO  SYS-UPHMS
-                   MOVE    "tbl_syskanri"          TO  MCP-TABLE
-                   MOVE    "key"                   TO  MCP-PATHNAME
-                   MOVE    "DBINSERT"              TO  MCP-FUNC
-               END-IF
-               MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-               CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
-               IF      MCP-RC              NOT =   ZERO 
-                   MOVE    "1003"                  TO  SPA-ERRCD
-                   GO  TO  490-KOUSHIN-EXT
+                   PERFORM 800-MCNDATE-SEC
+                   MOVE    SMCNDATE-YMD        TO  SYS-CREYMD
+                                                   SYS-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  SYS-UPHMS
+                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                   MOVE    "key"               TO  MCP-PATHNAME
+                   MOVE    "DBINSERT"          TO  MCP-FUNC
+                   MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+                   CALL    "MONFUNC"           USING
+                                               MCPAREA
+                                               MCPDATA-REC
+                   IF      MCP-RC          NOT =   ZERO 
+                       MOVE    "1003"              TO  SPA-ERRCD
+                       GO  TO  490-KOUSHIN-EXT
+                   END-IF
                END-IF
            END-IF          
       *
@@ -4033,14 +4083,14 @@
        900-SYSKANRI-INV-SEC         SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key10"             TO  MCP-PATHNAME
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                MOVE    "DBFETCH"           TO  MCP-FUNC
                CALL    "MONFUNC"           USING
                                            MCPAREA
@@ -4054,8 +4104,8 @@
                MOVE    1                   TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
            .

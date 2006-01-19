@@ -45,6 +45,7 @@
       *  02.06.01    NACL-藤原    05/06/22 自賠責レセプトの様式追加
       *
       *  02.07.01    NACL-藤原    05/10/31  MONFUNC対応
+      *  02.07.02    NACL-藤原    05/12/12  国保レセプト編綴順対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -477,6 +478,8 @@
                                            TO  SPA-R01-RECE07-STYMD
                                    MOVE    SPA-RECE07-EDYMD
                                            TO  SPA-R01-RECE07-EDYMD
+                                   MOVE    SPA-RECE07-HSEQNUM
+                                          TO  SPA-R01-RECE07-HSEQNUM
                                END-IF
                            END-IF   
                        END-IF
@@ -575,10 +578,6 @@
       *****************************************************************
        4501-REPRINT-CHK-SEC         SECTION.
       *
-      *****INITIALIZE              SPA-RECE07-KEY
-      *****                        SPA-RECE07-RECEKBN
-      *****                        SPA-RECE07-NYUGAIKBN
-      *****                        SPA-RECE07-SRYYM
            INITIALIZE              SPA-RECE07-REC
       *
       *
@@ -609,11 +608,21 @@
            MOVE    RECE07-REC          TO  MCPDATA-REC
            PERFORM 900-RECE07-INV-SEC
            IF      FLG-RECE07          =   ZERO
-      *********MOVE    RECE07-KEY          TO  SPA-RECE07-KEY
-      *********MOVE    RECE07-RECEKBN      TO  SPA-RECE07-RECEKBN
-      *********MOVE    RECE07-SRYYM        TO  SPA-RECE07-SRYYM
-      *********MOVE    RECE07-NYUGAIKBN    TO  SPA-RECE07-NYUGAIKBN
                MOVE    RECE07-REC          TO  SPA-RECE07-REC
+               MOVE    "99999999"          TO  SPA-RECE07-HKNJANUM 
+      *
+      *        一括作成で国保処理のとき編綴順設定の有無チェック
+               IF    ( SPA-R01-FILEKBN         =   "1"         )
+               AND   ( SPA-R01-RECEKBN         =   "0" OR  "2" )
+                   MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
+                   MOVE    "key6"              TO  WRK-MCP-PATHNAME
+                   MOVE    "2"                 TO  RECE07-TEISYUTUSAKI
+                   MOVE    RECE07-REC          TO  MCPDATA-REC
+                   PERFORM 900-RECE07-INV-SEC
+                   IF      FLG-RECE07          =   ZERO
+                       MOVE    RECE07-HKNJANUM TO  SPA-RECE07-HKNJANUM
+                   END-IF
+               END-IF  
            END-IF
       *
            .

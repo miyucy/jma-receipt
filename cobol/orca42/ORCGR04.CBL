@@ -50,6 +50,7 @@
       *  02.06.01    NACL-藤原    05/06/22 自賠責レセプトの様式追加
       *
       *  02.07.01    NACL-藤原    05/10/31  MONFUNC対応
+      *  02.07.02    NACL-藤原    05/12/12  国保レセプト編綴順対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2236,14 +2237,14 @@
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_recekanri"     TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "key10"             TO  MCP-PATHNAME
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "tbl_recekanri"     TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    "key10"             TO  MCP-PATHNAME
                CALL    "MONFUNC"           USING
                                            MCPAREA
                                            MCPDATA-REC
@@ -2258,7 +2259,7 @@
            END-IF
       *
            MOVE    "tbl_recekanri"     TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
            .

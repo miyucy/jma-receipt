@@ -959,7 +959,16 @@ R02	{
 			count	int;
 			item	varchar(27)[5];
 		};
+		PRTJYUN1_COMBO	{
+			state	int;
+			PRTJYUN1	{
+				value	varchar(27);
+			};
+			count	int;
+			item	varchar(27)[5];
+		};
 		PREFKBN_COMBO	{
+			state	int;
 			PREFKBN	{
 				value	varchar(20);
 			};

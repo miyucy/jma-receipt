@@ -3,24 +3,32 @@ tbl_receprt	{
         RECEYM              char(6);
         CREYMD              char(8);
         CREHMS              char(6);
-        PREFKBN             char(1);
-        PREFNUM             char(2);
+        TEISYUTUSAKI        char(1);
+        SRYKA               char(2);
+        PREFKBN_SRT         char(2);
+        HKNJANUM_SRT        char(1);
         HKNJANUM            char(8);
         TEKSTYMD            char(8);
-        TEISYUTUSAKI        char(1);
+        RECESYUBETU_SRT     char(3);
         RECESYUBETU         char(4);
+        PREFKBN             char(1);
+        PREFNUM             char(2);
         PTNUM               char(20);
         SRYYM               char(6);
         RENNUM              number(2);
         RECENUM             number(6);
         HKNKBN              char(1);
         KANANAME            char(100);
-        TERMID              char(32);
         PRTJYUN             number(2);
         PRTRENNUM           number(6);
         NYUGAIKBN           char(1);
+        ZAITAKU             char(1);
+        CHOUKI              char(1);
+        HKNJANUM_S          char(8);
         FORMID              char(20);
         PRTDATA             varchar(10000);
+        TERMID              char(64);
+        OPID                char(16);
 #-----> ¸¡º÷ÍÑ¹àÌÜ
 	STKANANAME			char(100),virtual;
 	EDKANANAME			char(100),virtual;
@@ -29,7 +37,8 @@ tbl_receprt	{
 };
 
 primary	{
-	PRTID,RECEYM,CREYMD,CREHMS,PREFKBN,PREFNUM,HKNJANUM,TEKSTYMD,TEISYUTUSAKI,RECESYUBETU,PTNUM,SRYYM,RENNUM,RECENUM;
+	PRTID,RECEYM,
+CREYMD,CREHMS,TEISYUTUSAKI,SRYKA,PREFKBN_SRT,HKNJANUM_SRT,HKNJANUM,RECESYUBETU,TEKSTYMD,ZAITAKU,CHOUKI,PTNUM,SRYYM,RENNUM,RECENUM;
 };
 
 path	key		{ 	
@@ -793,6 +802,32 @@ path	key36	{
                     AND     RENNUM       >=  :STRENNUM
                     AND     RENNUM       <=  :EDRENNUM
                    ORDER BY  PTNUM,SRYYM,RENNUM
+		;
+	};
+};
+
+path	key37	{
+	DBSELECT	{
+		DECLARE tbl_receprt_key37_csr CURSOR FOR
+		SELECT *
+		FROM tbl_receprt
+                    WHERE   PRTID        =   :PRTID
+                    AND     RECEYM       =   :RECEYM
+                    AND     CREYMD       =   :CREYMD
+                    AND     CREHMS       =   :CREHMS
+                    AND     TEISYUTUSAKI =   :TEISYUTUSAKI
+                    AND     PTNUM        >=  :STKANANAME
+                    AND     PTNUM        <=  :EDKANANAME 
+                    AND     NYUGAIKBN    =   :NYUGAIKBN 
+                    AND     RECESYUBETU  <>  '0000'
+                    AND     RECESYUBETU  <>  '8888' 
+                    AND     RECESYUBETU  <>  '6666' 
+                    AND     RENNUM       >=  :STRENNUM
+                    AND     RENNUM       <=  :EDRENNUM
+                    AND     HKNJANUM_S   =   :HKNJANUM_S
+                    AND     CHOUKI       LIKE :CHOUKI
+                    AND     ZAITAKU      LIKE :ZAITAKU
+                   ORDER BY  CHOUKI,ZAITAKU,RECESYUBETU_SRT,PTNUM
 		;
 	};
 };

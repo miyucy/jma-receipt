@@ -40,7 +40,14 @@
                   06  R02-VALUE   PIC X(27).
                 05  R02-PRTJYUN-COUNT   PIC S9(9)   BINARY.
                 05  R02-PRTJYUNLST  PIC X(27)   OCCURS  5 TIMES.
+              04  R02-PRTJYUN1-COMBO.
+                05  R02-PRTJYUN1-STATE   PIC S9(09) BINARY.
+                05  R02-PRTJYUN1.
+                  06  R02-VALUE   PIC X(27).
+                05  R02-PRTJYUN1-COUNT   PIC S9(9)   BINARY.
+                05  R02-PRTJYUN1LST  PIC X(27)   OCCURS  5 TIMES.
               04  R02-PREFKBN-COMBO.
+                05  R02-PREFKBN-STATE   PIC S9(09) BINARY.
                 05  R02-PREFKBN.
                   06  R02-VALUE   PIC X(20).
                 05  R02-PREFKBN-COUNT   PIC S9(9)   BINARY.

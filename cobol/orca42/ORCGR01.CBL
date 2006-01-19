@@ -88,6 +88,7 @@
       *  02.06.02    NACL-藤原    05/08/30 定期請求との排他制御処理
       *
       *  02.07.01    NACL-藤原    05/10/31  MONFUNC対応
+      *  02.07.02    NACL-藤原    05/12/12  国保レセプト編綴順対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2234,10 +2235,6 @@
       *****************************************************************
        4501-REPRINT-CHK-SEC         SECTION.
       *
-      *****INITIALIZE              SPA-RECE07-KEY
-      *****                        SPA-RECE07-RECEKBN
-      *****                        SPA-RECE07-NYUGAIKBN
-      *****                        SPA-RECE07-SRYYM
            INITIALIZE              SPA-RECE07-REC
       *
            INITIALIZE                  RECE07-REC
@@ -2254,27 +2251,21 @@
            IF      SPA-R01-FILEKBN         =   "1"
                MOVE    SPA-R01-SRYYM       TO  RECE07-SRYYM
                MOVE    "1"                 TO  RECE07-SYOKBN
-      *********MOVE    "2"                 TO  RECE07-NYUGAIKBN
                MOVE    SPA-R01-NYUGAIKBN   TO  RECE07-NYUGAIKBN
                MOVE    SPA-R01-RECEKBN     TO  RECE07-RECEKBN
                MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
                MOVE    "key7"              TO  WRK-MCP-PATHNAME
            ELSE
-      *********MOVE    ZERO                TO  RECE07-SRYYM
                MOVE    "2"                 TO  RECE07-SYOKBN
                MOVE    SPA-R01-NYUGAIKBN   TO  RECE07-NYUGAIKBN
-      *********MOVE    "RECEKANRI-KEY2"    TO  WRK-PATH
                MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
                MOVE    "key5"              TO  WRK-MCP-PATHNAME
            END-IF
            MOVE    RECE07-REC          TO  MCPDATA-REC
            PERFORM 900-RECE07-INV-SEC
            IF      FLG-RECE07          =   ZERO
-      *********MOVE    RECE07-KEY          TO  SPA-RECE07-KEY
-      *********MOVE    RECE07-RECEKBN      TO  SPA-RECE07-RECEKBN
-      *********MOVE    RECE07-SRYYM        TO  SPA-RECE07-SRYYM
-      *********MOVE    RECE07-NYUGAIKBN    TO  SPA-RECE07-NYUGAIKBN
                MOVE    RECE07-REC          TO  SPA-RECE07-REC
+               MOVE    "99999999"          TO  SPA-RECE07-HKNJANUM 
            END-IF
       *
            .
@@ -2735,6 +2726,8 @@
                                           TO  SPA-R01-RECE07-STYMD
                            MOVE    SPA-RECE07-EDYMD
                                           TO  SPA-R01-RECE07-EDYMD
+                           MOVE    SPA-RECE07-HSEQNUM
+                                          TO  SPA-R01-RECE07-HSEQNUM
                        END-IF
                      END-IF
                    ELSE

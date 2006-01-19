@@ -50,6 +50,8 @@
       *  02.06.01    NACL-藤原    05/07/20  レセコメントのコメントの長さ
       *                                     変更による対応
       *  02.06.02    NACL-藤原    05/09/05  複数枚レセの連番記載
+      *
+      *  02.07.01    NACL-藤原    05/12/12  国保レセプト編綴順対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1594,6 +1596,15 @@
            MOVE    TBL-RECE-RENNUM (IDXY)
                                        TO  RECE08-RENNUM
            MOVE    WRK-RECENUM         TO  RECE08-RECENUM
+      *
+           MOVE    "00"                TO  RECE08-SRYKA
+           MOVE    "99999999"          TO  RECE08-HKNJANUM-S
+           MOVE    "999"               TO  RECE08-RECESYUBETU-SRT
+           MOVE    "99"                TO  RECE08-PREFKBN-SRT
+           MOVE    "9"                 TO  RECE08-HKNJANUM-SRT
+                                           RECE08-ZAITAKU
+                                           RECE08-CHOUKI
+      *
            MOVE    RECE08-REC          TO  MCPDATA-REC
            PERFORM 900-RECE08-READ-SEC
            IF      FLG-RECE08          =   ZERO
@@ -1672,12 +1683,20 @@
            ELSE
                MOVE    "1"                 TO  RECE07-SYOKBN
            END-IF         
-           MOVE    RECE08-RECEYM       TO  RECE07-SRYYM
+           MOVE    WRK-PARA-RECEYM     TO  RECE07-SRYYM
            MOVE    RECE08-CREYMD       TO  RECE07-CREYMD
            MOVE    RECE08-CREHMS       TO  RECE07-CREHMS
            MOVE    RECE08-TEISYUTUSAKI TO  RECE07-TEISYUTUSAKI
            MOVE    RECE08-RECESYUBETU  TO  RECE07-RECESYUBETU
            MOVE    RECE08-NYUGAIKBN    TO  RECE07-NYUGAIKBN
+           MOVE    RECE08-SRYKA        TO  RECE07-SRYKA
+           MOVE    RECE08-HKNJANUM-S   TO  RECE07-HKNJANUM
+           MOVE    RECE08-PREFKBN-SRT  TO  RECE07-PREFKBN-SRT
+           MOVE    RECE08-ZAITAKU      TO  RECE07-ZAITAKU
+           MOVE    RECE08-CHOUKI       TO  RECE07-CHOUKI
+           MOVE    RECE08-HKNJANUM-SRT TO  RECE07-HKNJANUM-SRT
+           MOVE    RECE08-RECESYUBETU-SRT
+                                       TO  RECE07-RECESYUBETU-SRT
            MOVE    RECE07-REC          TO  MCPDATA-REC 
            PERFORM 900-RECE07-READ-SEC
            IF      FLG-RECE07          =   1
@@ -1688,16 +1707,24 @@
                ELSE
                    MOVE    "1"                 TO  RECE07-SYOKBN
                END-IF         
-               MOVE    RECE08-RECEYM       TO  RECE07-SRYYM
+               MOVE    WRK-PARA-RECEYM     TO  RECE07-SRYYM
                MOVE    RECE08-CREYMD       TO  RECE07-CREYMD
                MOVE    RECE08-CREHMS       TO  RECE07-CREHMS
                MOVE    RECE08-TEISYUTUSAKI TO  RECE07-TEISYUTUSAKI
                MOVE    RECE08-RECESYUBETU  TO  RECE07-RECESYUBETU
-               MOVE    1                   TO  RECE07-PAGE
-               MOVE    1                   TO  RECE07-KENSU
                MOVE    WRK-PARA-RECEKBN    TO  RECE07-RECEKBN
                MOVE    RECE08-NYUGAIKBN    TO  RECE07-NYUGAIKBN 
+               MOVE    RECE08-SRYKA        TO  RECE07-SRYKA
+               MOVE    RECE08-HKNJANUM-S   TO  RECE07-HKNJANUM
+               MOVE    RECE08-PREFKBN-SRT  TO  RECE07-PREFKBN-SRT
+               MOVE    RECE08-ZAITAKU      TO  RECE07-ZAITAKU
+               MOVE    RECE08-CHOUKI       TO  RECE07-CHOUKI
+               MOVE    RECE08-SRYKA        TO  RECE07-SRYKA
+               MOVE    RECE08-HKNJANUM-SRT TO  RECE07-HKNJANUM-SRT
+               MOVE    RECE08-RECESYUBETU-SRT
+                                           TO  RECE07-RECESYUBETU-SRT
                MOVE    RECE08-TERMID       TO  RECE07-TERMID
+               MOVE    RECE08-OPID         TO  RECE07-OPID
                IF      WRK-PARA-SYOKBN     =   "2"
                    EVALUATE    BTPARA-INFO-KBN
                        WHEN    "01"
@@ -1714,6 +1741,8 @@
                                                    TO  RECE07-EDYMD
                    END-EVALUATE
                END-IF 
+               MOVE    1                   TO  RECE07-PAGE
+               MOVE    1                   TO  RECE07-KENSU
            ELSE
                ADD     1                   TO  RECE07-PAGE
                IF    ( CNT-KENSU           =   1 )
@@ -2083,14 +2112,14 @@
        900-RECE07-READ-SEC           SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "RECEKANRI-KEY"     TO  ORC-DBPATH
+           MOVE    "RECEKANRI-KEY4"    TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "RECEKANRI-KEY"     TO  ORC-DBPATH
+               MOVE    "RECEKANRI-KEY4"    TO  ORC-DBPATH
                CALL    "ORCMCPSUB"          USING
                                             MCPAREA
                                             ORCMCPAREA
@@ -2106,7 +2135,7 @@
            END-IF
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "RECEKANRI-KEY"     TO  ORC-DBPATH
+           MOVE    "RECEKANRI-KEY4"    TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA

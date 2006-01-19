@@ -84,6 +84,9 @@
       *
       *  02.07.01    NACL-藤原    05/08/20  特別療養費対応
       *  02.07.02    NACL-藤原    05/12/12  保険履歴を年月日記載へ変更
+      *  02.07.03    NACL-藤原    06/01/05  山形県のレセプト様式変更対応
+      *                                     平成１８年１月分から標準的な
+      *                                     レセプト様式へ変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -5240,26 +5243,9 @@
                                PERFORM 900-SYSKANRI-HENSYU-SEC
                            END-IF
       *
-      *                    山形地方公費対応（国保）
-                           IF    ( SYS-1001-PREFNUM    =   "06" )
+      *                    福岡地方公費対応（国保）
+                           IF    ( SYS-1001-PREFNUM    =   "40" )
                            AND   ( RECE62-TEISYUTUSAKI =   "2"  ) 
-                               IF    ( RECE62-KOHNUM (1) (1:1)
-                                                       =   "1" OR  "2" )
-                               OR    ( RECE62-KOHNUM (2) (1:1)
-                                                       =   "1" OR  "2" )
-                               OR    ( RECE62-KOHNUM (3) (1:1)
-                                                       =   "1" OR  "2" )
-                               OR    ( RECE62-KOHNUM (4) (1:1)
-                                                       =   "1" OR  "2" )
-                                   CONTINUE
-                               ELSE
-                                   MOVE    1               TO  FLG-READ
-                               END-IF
-                           ELSE
-      *
-      *                      福岡地方公費対応（国保）
-                             IF    ( SYS-1001-PREFNUM    =   "40" )
-                             AND   ( RECE62-TEISYUTUSAKI =   "2"  ) 
                                IF    ( RECE62-KOHNUM (1) (1:1)
                                                        =   "1" OR  "2" )
                                OR    ( RECE62-KOHNUM (2) (1:1)
@@ -5281,9 +5267,8 @@
                                ELSE
                                    MOVE    1           TO  FLG-READ
                                END-IF
-                             ELSE
+                           ELSE
                                MOVE    1               TO  FLG-READ
-                             END-IF
                            END-IF
                        END-IF    
       *

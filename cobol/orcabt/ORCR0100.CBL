@@ -141,6 +141,8 @@
       *                                     編集修正
       *  02.06.01    NACL-藤原    05/07/20  レセコメントのコメントの長さ
       *                                     変更による対応
+      *
+      *  02.07.01    NACL-藤原    05/12/12  国保レセプト編綴順対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3613,6 +3615,12 @@
            MOVE    RECE02-SRYYM        TO  RECE08-SRYYM
            MOVE    CNT-PAGE            TO  RECE08-RENNUM
            MOVE    WRK-RECENUM         TO  RECE08-RECENUM
+           MOVE    "00"               TO  RECE08-SRYKA
+      *    編綴順項目の設定（初期値）
+           MOVE    "99"                TO  RECE08-PREFKBN-SRT
+           MOVE    "9"                 TO  RECE08-HKNJANUM-SRT
+                                           RECE08-ZAITAKU
+                                           RECE08-CHOUKI
            MOVE    RECE08-REC          TO  MCPDATA-REC
            PERFORM 900-RECE08-READ-SEC
            IF      FLG-RECE08          =   ZERO
@@ -3698,6 +3706,12 @@
            MOVE    RECE08-TEISYUTUSAKI TO  RECE07-TEISYUTUSAKI
            MOVE    RECE08-RECESYUBETU  TO  RECE07-RECESYUBETU
            MOVE    RECE08-NYUGAIKBN    TO  RECE07-NYUGAIKBN
+           MOVE    RECE08-SRYKA        TO  RECE07-SRYKA
+           MOVE    "99999999"          TO  RECE07-HKNJANUM
+           MOVE    RECE08-PREFKBN-SRT  TO  RECE07-PREFKBN-SRT
+           MOVE    RECE08-ZAITAKU      TO  RECE07-ZAITAKU
+           MOVE    RECE08-CHOUKI       TO  RECE07-CHOUKI
+           MOVE    RECE08-HKNJANUM-SRT TO  RECE07-HKNJANUM-SRT
            MOVE    RECE07-REC          TO  MCPDATA-REC 
            PERFORM 900-RECE07-READ-SEC
            IF      FLG-RECE07          =   1
@@ -3719,6 +3733,13 @@
                MOVE    WRK-PARA-RECEKBN    TO  RECE07-RECEKBN
                MOVE    RECE08-NYUGAIKBN    TO  RECE07-NYUGAIKBN 
                MOVE    RECE08-TERMID       TO  RECE07-TERMID
+               MOVE    RECE08-OPID         TO  RECE07-OPID
+               MOVE    RECE08-SRYKA        TO  RECE07-SRYKA
+               MOVE    "99999999"          TO  RECE07-HKNJANUM
+               MOVE    RECE08-PREFKBN-SRT  TO  RECE07-PREFKBN-SRT
+               MOVE    RECE08-ZAITAKU      TO  RECE07-ZAITAKU
+               MOVE    RECE08-CHOUKI       TO  RECE07-CHOUKI
+               MOVE    RECE08-HKNJANUM-SRT TO  RECE07-HKNJANUM-SRT
            ELSE
                ADD     1                   TO  RECE07-PAGE
                IF      CNT-KENSU           =   1

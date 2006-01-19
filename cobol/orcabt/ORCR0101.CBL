@@ -56,6 +56,8 @@
       *  02.06.01    NACL-竹田    05/05/30  realtime preview 処理追加
       *  02.06.02    NACL-藤原    05/07/13  国保の県内県外の印刷順の指定
       *                                     「４」の追加
+      *
+      *  02.07.01    NACL-藤原    05/12/12  国保レセプト編綴順対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -75,8 +77,6 @@
        01  RECEERR-REC             PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
-      *    シェル用領域
-      *****     COPY    "CPCOMMONSHELL.INC".
       *
       *    エラーファイル 名称領域 
            COPY    "CPCOMMONDAT2.INC"
@@ -130,14 +130,17 @@
                        09  WRK-PARA-RECE09-RECESYUBETU
                                                      PIC X(04).
                        09  WRK-PARA-RECE09-NYUGAIKBN PIC X(01).
-                    07  WRK-PARA-RECE09-PRTJYUN      PIC X(02).
-                05  WRK-PARA-RECE09-STDATA           PIC X(100).
-                05  WRK-PARA-RECE09-EDDATA           PIC X(100).
-                05  WRK-PARA-PRTJYUN           PIC 9(02).
-                05  WRK-PARA-SHELLID           PIC X(08).
-                05  WRK-PARA-JOBID             PIC 9(07).
-                05  WRK-PARA-PRTKBN            PIC X(01).
-                05  WRK-PARA-PREFKBN           PIC X(01).
+                   07  WRK-PARA-RECE09-PRTJYUN       PIC X(02).
+                   07  WRK-PARA-RECE09-CHOUKI        PIC X(01).
+                   07  WRK-PARA-RECE09-ZAITAKU       PIC X(01).
+                   07  WRK-PARA-RECE09-HKNJANUM      PIC X(08).
+               05  WRK-PARA-RECE09-STDATA            PIC X(100).
+               05  WRK-PARA-RECE09-EDDATA            PIC X(100).
+               05  WRK-PARA-PRTJYUN           PIC 9(02).
+               05  WRK-PARA-SHELLID           PIC X(08).
+               05  WRK-PARA-JOBID             PIC 9(07).
+               05  WRK-PARA-PRTKBN            PIC X(01).
+               05  WRK-PARA-PREFKBN           PIC X(01).
       *
            03  WRK-RECE08-PRTRENNUM    PIC 9(06).
       *
@@ -265,7 +268,6 @@
       *
            INITIALIZE                      RECE08-REC
            MOVE    WRK-PARA-RECE09-PRTID        TO  RECE08-PRTID
-      *****MOVE    WRK-PARA-RECE09-SRYYM        TO  RECE08-SRYYM
            MOVE    WRK-PARA-RECE09-SRYYM        TO  RECE08-RECEYM
            MOVE    WRK-PARA-RECE09-CREYMD       TO  RECE08-CREYMD
            MOVE    WRK-PARA-RECE09-CREHMS       TO  RECE08-CREHMS
@@ -273,6 +275,7 @@
            MOVE    WRK-PARA-RECE09-TEISYUTUSAKI TO  RECE08-TEISYUTUSAKI
            MOVE    WRK-PARA-RECE09-RECESYUBETU  TO  RECE08-RECESYUBETU
            MOVE    WRK-PARA-RECE09-NYUGAIKBN    TO  RECE08-NYUGAIKBN
+           MOVE    WRK-PARA-RECE09-HKNJANUM     TO  RECE08-HKNJANUM-S
       *
            MOVE    WRK-PARA-RECE09-STDATA       TO  RECE08-STKANANAME
            MOVE    WRK-PARA-RECE09-EDDATA       TO  RECE08-EDKANANAME
@@ -463,13 +466,14 @@
       *****************************************************************
        900-RECEPRT-SELECT-SEC          SECTION.
       *
-      *
-           MOVE    RECE08-REC          TO  MCPDATA-REC
-      *
-      *    個別作成時の入力順印刷
-           IF      WRK-PARA-RECE09-PRTJYUN      =   "05"
-               MOVE    PATH-TBL-RECEPRT-KEY30       TO  WRK-PATH
+      *    編綴順印刷
+           IF      WRK-PARA-RECE09-PRTJYUN      =   "06"
+               PERFORM 9001-RECEPRT-KEY-HENSYU-SEC
            ELSE
+      *    入力順印刷（個別作成時）
+            IF      WRK-PARA-RECE09-PRTJYUN      =   "05"
+               MOVE    PATH-TBL-RECEPRT-KEY30       TO  WRK-PATH
+            ELSE
              IF      WRK-PARA-PREFKBN           =   "4"
                IF      WRK-PARA-RECE09-RECESYUBETU  =   "9999"  
                    IF      WRK-PARA-RECE09-PRTJYUN      =   "03"
@@ -480,6 +484,7 @@
                ELSE 
                    IF      WRK-PARA-RECE09-RECESYUBETU  =   ZERO
                                                         OR  "8888"
+                                                        OR  "6666"
                        IF      WRK-PARA-RECE09-PRTJYUN  =   "01"  OR
                                                             "03" 
                            MOVE    PATH-TBL-RECEPRT-KEY33   TO  WRK-PATH
@@ -507,6 +512,7 @@
                    ELSE 
                        IF      WRK-PARA-RECE09-RECESYUBETU  =   ZERO
                                                             OR  "8888"
+                                                            OR  "6666"
                            IF      WRK-PARA-RECE09-PRTJYUN  =   "01"  OR
                                                                 "03" 
                                MOVE    PATH-TBL-RECEPRT-KEY14
@@ -535,6 +541,7 @@
                    ELSE 
                        IF      WRK-PARA-RECE09-RECESYUBETU  =   ZERO
                                                             OR  "8888"
+                                                            OR  "6666"
                            IF      WRK-PARA-RECE09-PRTJYUN  =   "01"  OR
                                                                 "03" 
                                MOVE    PATH-TBL-RECEPRT-KEY20
@@ -563,6 +570,7 @@
                    ELSE 
                        IF      WRK-PARA-RECE09-RECESYUBETU  =   ZERO
                                                             OR  "8888"
+                                                            OR  "6666"
                            IF      WRK-PARA-RECE09-PRTJYUN  =   "01"  OR
                                                                 "03" 
                                MOVE    PATH-TBL-RECEPRT-KEY26
@@ -583,7 +591,10 @@
                    END-IF
                END-EVALUATE
              END-IF
+            END-IF
            END-IF            
+      *
+           MOVE    RECE08-REC          TO  MCPDATA-REC
       *
            MOVE    WRK-PATH            TO  MCP-PATH
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -600,6 +611,20 @@
            END-IF
            .
        900-RECEPRT-SELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     入力コードマスタを主キーより検索処理
+      *****************************************************************
+       9001-RECEPRT-KEY-HENSYU-SEC    SECTION.
+      *
+           MOVE    WRK-PARA-RECE09-CHOUKI  TO  RECE08-CHOUKI
+           MOVE    WRK-PARA-RECE09-ZAITAKU TO  RECE08-ZAITAKU
+      *
+           MOVE    PATH-TBL-RECEPRT-KEY37  TO  WRK-PATH
+      *
+           .
+       9001-RECEPRT-KEY-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************

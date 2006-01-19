@@ -37,6 +37,7 @@ db	{
 	tbl_btpara;
 	tbl_hkncombi;
 	tbl_hknnum;
+	tbl_hknjainf;
 	tbl_jobkanri;
 	tbl_monthlynum;
 	tbl_nyuinacct;

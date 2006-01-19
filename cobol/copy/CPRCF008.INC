@@ -35,6 +35,15 @@
       *  01.02.01    NACL-藤原    02.09.26  帳票ＩＤ・入外区分の追加
       *
       *  02.06.01    NACL-藤原    05.07.13  検索用項目に連番を追加
+      *
+      *  02.07.02    NACL-藤原    05/12/12  国保レセプト編綴順対応
+      *                                     在総診・在医総
+      *                                     長期（長期高額療養費）  
+      *                                     県内県外印刷区分
+      *                                     保険者印刷区分
+      *                                     レセプト種別印刷区分
+      *                                     主科コード
+      *                                     保険者番号（検索用）
       *************************************************************
        01  RECE08-REC.
       *ＫＥＹ
@@ -47,18 +56,26 @@
                05  RECE08-CREYMD           PIC  X(08).
       *作成時間
                05  RECE08-CREHMS           PIC  X(06).
-      *県内・県外区分（１：県内　２：県外　）
-               05  RECE08-PREFKBN          PIC  X(01).
-      *県番号
-               05  RECE08-PREFNUM          PIC  X(02).
+      *審査支払機関
+               05  RECE08-TEISYUTUSAKI     PIC  X(01).
+      *主科コード（社保のみ使用）
+               05  RECE08-SRYKA            PIC  X(02).
+      *県内県外印刷区分（国保のみ使用）
+               05  RECE08-PREFKBN-SRT      PIC  X(02).
+      *保険者印刷区分（国保のみ使用）
+               05  RECE08-HKNJANUM-SRT     PIC  X(01).
       *保険者番号        
                05  RECE08-HKNJANUM         PIC  X(08).
       *適用開始年月日
                05  RECE08-TEKSTYMD         PIC  X(08). 
-      *審査支払機関
-               05  RECE08-TEISYUTUSAKI     PIC  X(01).
+      *レセプト種別印刷区分（国保のみ使用）
+               05  RECE08-RECESYUBETU-SRT  PIC  X(03).
       *レセプト種別
                05  RECE08-RECESYUBETU      PIC  X(04).
+      *県内・県外区分（１：県内　２：県外　）
+               05  RECE08-PREFKBN          PIC  X(01).
+      *県番号
+               05  RECE08-PREFNUM          PIC  X(02).
       *患者番号
                05  RECE08-PTNUM            PIC  X(20).
       *診療年月
@@ -71,19 +88,27 @@
            03  RECE08-HKNKBN               PIC  X(01).
       *患者カナ氏名
            03  RECE08-KANANAME             PIC  X(100).
-      *端末ＩＤ
-           03  RECE08-TERMID               PIC  X(32).
       *出力順識別番号
            03  RECE08-PRTJYUN              PIC  9(02).
       *出力順連番
            03  RECE08-PRTRENNUM            PIC  9(06).
       *入外区分
            03  RECE08-NYUGAIKBN            PIC  X(01).
+      *在総診・在医総
+           03  RECE08-ZAITAKU              PIC  X(01).
+      *長期（長期高額療養費）  
+           03  RECE08-CHOUKI               PIC  X(01).
+      *検索用保険者番号        
+           03  RECE08-HKNJANUM-S           PIC  X(08).
       *帳票ＩＤ
            03  RECE08-FORMID               PIC  X(20).
       *帳票データ
            03  RECE08-PRTDATA              PIC  X(10000).
-      *　　検索用項目
+      *端末ＩＤ
+           03  RECE08-TERMID               PIC  X(64).
+      *オペレータＩＤ
+           03  RECE08-OPID                 PIC  X(16).
+      *検索用項目
            03  RECE08-STKANANAME           PIC  X(100).
            03  RECE08-EDKANANAME           PIC  X(100).
            03  RECE08-STRENNUM             PIC  9(02).

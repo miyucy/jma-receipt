@@ -32,6 +32,8 @@
       *  中止処理追加
       *  01.03.01    NACL-藤原    04/09/28 中止ボタン状態フラグ等追加
       *  01.03.02    NACL-藤原    05/01/13 処理種別・日付指定追加
+      *
+      *  02.07.02    NACL-藤原    05/12/12  国保レセプト編綴順対応
       *****************************************************************
        01  SPA-R01KYOUTU.
       *
@@ -64,9 +66,21 @@
       *審査支払機関
                07  SPA-R01-RECE07-TEISYUTUSAKI
                                            PIC  X(01).
+      *主科コード
+               07  SPA-R01-RECE07-SRYKA    PIC  X(02).
+      *県内県外印刷順（国保のみ使用）
+               07  SPA-R01-PREFKBN-SRT     PIC  X(02).
+      *保険者印刷順（国保のみ使用）
+               07  SPA-R01-HKNJANUM-SRT    PIC  X(01).
+      *保険者番号
+               07  SPA-R01-RECE07-HKNJANUM PIC  X(08).
       *レセプト種別
                07  SPA-R01-RECE07-RECESYUBETU
                                            PIC  X(04).
+      *在総診（未使用）
+               07  SPA-R01-RECE07-ZAITAKU  PIC  X(01).
+      *長期（長期高額療養費）（未使用）
+               07  SPA-R01-RECE07-CHOUKI   PIC  X(01).
       *データ区分
            05  SPA-R01-RECE07-RECEKBN      PIC  X(01).
       *診療年月（一括：診療年月、個別：先頭の診療年月）
@@ -79,6 +93,8 @@
            05  SPA-R01-RECE07-STYMD        PIC  X(08).
       *日付指定（終了）
            05  SPA-R01-RECE07-EDYMD        PIC  X(08).
+      *編綴順情報
+           05  SPA-R01-RECE07-HSEQNUM      PIC  X(08).
       *
       *起動ジョブ数
            05  SPA-R01-JOBCNT              PIC  9(02).
