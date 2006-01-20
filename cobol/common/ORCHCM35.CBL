@@ -27,6 +27,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  00.00.01    NACL-¿¹ÏÆ    06/01/20  ÊÔÄÖÊ¬ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -75,6 +76,9 @@
       *    Åº»úÎÎ°è
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
+      *----(00.00.01)--ADD-START---
+           03  IDY                     PIC 9(04).
+      *----(00.00.01)--ADD-END-----
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -118,7 +122,9 @@
        01  PARA-SYAPRTNM               PIC X(16).
        01  PARA-FILEKBN                PIC X(40).
        01  PARA-TBL1.
-           03  PARA-TBL-OCC            OCCURS   2.
+      *----(00.00.01)--UPD-START---
+           03  PARA-TBL-OCC            OCCURS   30.
+      *----(00.00.01)--UPD-END-----
                05  PARA-TBL-G          OCCURS   36.
                    07  PARA-TPAGE      PIC 9(04).
                    07  PARA-TKENSU     PIC 9(04).
@@ -207,26 +213,38 @@
            ADD     1                   TO  CNT-LINE
       *
       *    ¹ñÊÝ
+      *----(00.00.01)--UPD-START---
+           PERFORM VARYING IDY     FROM    2   BY  1
+                   UNTIL   IDY     >   30
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >   36
+                   OR      PARA-TSYURUINAME(IDY IDX) =  SPACE
                IF      CNT-LINE    >=  35
       *            °õºþ½èÍý
                    PERFORM 400-PRINT-OUT-SEC
       *            Ä¢É¼¸«½ÐÊÔ½¸½èÍý
                    PERFORM 220-PRT-PAGE-SEC
                END-IF
-               ADD     1                   TO  CNT-LINE
-               MOVE    PARA-TSYURUINAME(2 IDX)
-                                           TO  HCMC001-NAME(CNT-LINE)
-               MOVE    PARA-TKENSU(2 IDX)  TO  WRK-Z10
-               MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 1)
-               MOVE    PARA-TPAGE(2 IDX)   TO  WRK-Z10
-               MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 2)
-               ADD     PARA-TPAGE(2 IDX)   TO  CNT-TPAGE
-               ADD     PARA-TKENSU(2 IDX)  TO  CNT-TKENSU
+               ADD     1                     TO  CNT-LINE
+               MOVE    PARA-TSYURUINAME(IDY IDX)
+                                             TO  HCMC001-NAME(CNT-LINE)
+               MOVE    PARA-TKENSU(IDY IDX)  TO  WRK-Z10
+               MOVE    WRK-Z10           TO  HCMC001-NAIYO(CNT-LINE 1)
+               MOVE    PARA-TPAGE(IDY IDX)   TO  WRK-Z10
+               MOVE    WRK-Z10           TO  HCMC001-NAIYO(CNT-LINE 2)
+               ADD     PARA-TPAGE(IDY IDX)   TO  CNT-TPAGE
+               ADD     PARA-TKENSU(IDY IDX)  TO  CNT-TKENSU
+           END-PERFORM
            END-PERFORM
       *
-           ADD     2                   TO  CNT-LINE
+           ADD     1                   TO  CNT-LINE
+           IF      CNT-LINE    >=  35
+      *        °õºþ½èÍý
+               PERFORM 400-PRINT-OUT-SEC
+      *        Ä¢É¼¸«½ÐÊÔ½¸½èÍý
+               PERFORM 220-PRT-PAGE-SEC
+           END-IF
+           ADD     1                   TO  CNT-LINE
            MOVE    "¹ñÊÝ¡¡¾®·×"        TO  HCMC001-NAME(CNT-LINE)
            MOVE    CNT-TKENSU          TO  WRK-Z10
            MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 1)
@@ -237,7 +255,14 @@
            ADD     CNT-TKENSU          TO  CNT-GKENSU
       *
       *    ¼«Èñ
-           ADD     2                   TO  CNT-LINE
+           ADD     1                   TO  CNT-LINE
+           IF      CNT-LINE    >=  35
+      *        °õºþ½èÍý
+               PERFORM 400-PRINT-OUT-SEC
+      *        Ä¢É¼¸«½ÐÊÔ½¸½èÍý
+               PERFORM 220-PRT-PAGE-SEC
+           END-IF
+           ADD     1                   TO  CNT-LINE
            MOVE    PARA-TSYURUINAME(1 35)
                                        TO  HCMC001-NAME(CNT-LINE)
            MOVE    PARA-TKENSU(1 35)   TO  WRK-Z10
@@ -247,6 +272,12 @@
            ADD     PARA-TPAGE(1 35)    TO  CNT-GPAGE
            ADD     PARA-TKENSU(1 35)   TO  CNT-GKENSU
       *
+           IF      CNT-LINE    >=  35
+      *        °õºþ½èÍý
+               PERFORM 400-PRINT-OUT-SEC
+      *        Ä¢É¼¸«½ÐÊÔ½¸½èÍý
+               PERFORM 220-PRT-PAGE-SEC
+           END-IF
       *    ÉÔÌÀ
            ADD     1                   TO  CNT-LINE
            MOVE    PARA-TSYURUINAME(1 36)
@@ -259,13 +290,21 @@
            ADD     PARA-TKENSU(1 36)   TO  CNT-GKENSU
       *
       *    ¹ç·×
-           ADD     2                   TO  CNT-LINE
+           ADD     1                   TO  CNT-LINE
+           IF      CNT-LINE    >=  35
+      *        °õºþ½èÍý
+               PERFORM 400-PRINT-OUT-SEC
+      *        Ä¢É¼¸«½ÐÊÔ½¸½èÍý
+               PERFORM 220-PRT-PAGE-SEC
+           END-IF
+           ADD     1                   TO  CNT-LINE
            MOVE    "¹ç¡¡¡¡·×"          TO  HCMC001-NAME(CNT-LINE)
            MOVE    CNT-GKENSU          TO  WRK-Z10
            MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 1)
            MOVE    CNT-GPAGE           TO  WRK-Z10
            MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 2)
       *
+      *----(00.00.01)--UPD-END-----
       *    °õºþ½èÍý
            PERFORM 400-PRINT-OUT-SEC
       *
