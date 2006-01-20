@@ -194,6 +194,13 @@
                WHEN    "0024"
                    MOVE    "施設基準ではありません。算定できません"
                                        TO  SPA-ERRMSG
+               WHEN    "2001"
+                   STRING   "埋め込み数値がすべてゼロになります。"
+                                       DELIMITED  BY  SIZE
+                            "正しい値を入力して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "0025"
                    MOVE    "時間入力の診療コードを入力してください"
                                        TO  SPA-ERRMSG

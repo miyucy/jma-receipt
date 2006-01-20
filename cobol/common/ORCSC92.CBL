@@ -90,6 +90,7 @@
            03  FLG-SANTEI-OK2      PIC 9(01).
       *    手術施設基準不適合
            03  FLG-SSTKIJUNCD-ERR      PIC  9(01).
+           03  FLG-INPUT-CHK           PIC  9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -1730,7 +1731,6 @@
       *
        2005332-SANTEI-CHK-EXT.
            EXIT.
-      *
       *****************************************************************
       *     労災・自賠責 チェック処理
       *****************************************************************
@@ -2033,6 +2033,8 @@
                                       TO  WRK-INPUT-SET (IDX-SST)
            END-PERFORM
       *
+           MOVE    ZERO                TO  FLG-INPUT-CHK
+      *
       *    入力値を桁数にあわせて数字変換する
            PERFORM VARYING IDX-SST     FROM    1   BY  1
                    UNTIL  (IDX-SST         >   4     )   OR
@@ -2055,6 +2057,10 @@
                        MOVE    SNUM-OUTEDT(WRK-KETA2:WRK-KETA)
                                                TO  SPA-COM-ATAI
                                                        (IDX-T IDX-SST)
+                       IF      SNUM-OUTEDT(WRK-KETA2:WRK-KETA)
+                                               NOT =   ZERO
+                           MOVE    1               TO  FLG-INPUT-CHK
+                       END-IF
                    END-IF
                ELSE
                    MOVE    SPACE           TO  SPA-COM-ATAI
@@ -2092,6 +2098,15 @@
                                                  (WRK-ICHI2:WRK-KETA)
                END-IF
            END-PERFORM
+      *
+      *    埋め込み値がすべてゼロの場合、エラー
+           IF     (FLG-INPUT-CHK       =   ZERO )  AND
+                 ((SPA-COM-ATAI1(IDX-T)    NOT =   SPACE )  OR
+                  (SPA-COM-ATAI2(IDX-T)    NOT =   SPACE )  OR
+                  (SPA-COM-ATAI3(IDX-T)    NOT =   SPACE )  OR
+                  (SPA-COM-ATAI4(IDX-T)    NOT =   SPACE ))
+               MOVE    "2001"              TO  SPA-ERRCD
+           END-IF
       *
            .
        3002-INPUT-MEISYO-EXT.

@@ -32,6 +32,7 @@
       *  01.00.02    NACL−多々納 03/01/12  半角記号入力可能追加
       *  01.00.03    NACL−多々納 03/04/14  全角判定修正、約束処方修正
       *  01.00.04    NACL-多々納  05/11/22  MONFUNC 対応 他
+      *  01.00.05    NACL-多々納  06/01/19  コメント８４対応
       *****************************************************************
       *
       *
@@ -1275,6 +1276,13 @@
                MOVE    SNUM-SEISUU         TO  LNK-SC97-SURYOFLG
                MOVE    WRK-SUR-MCNT        TO  LNK-SC97-SURYOCNT
                MOVE    SNUM-OUTNUM         TO  LNK-SC97-SURYO
+      *        入力値がないもの
+               IF     ((SPA-COM-INPUTCD(GMN-IDX)(1:2)   =   "84") OR
+                       (SPA-COM-INPUTCD(GMN-IDX)(1:4)   =   "0084"))
+                  AND ( WRK-MCNT2          >   ZERO )
+                   CONTINUE
+               ELSE
+      *
       *        ゼロ入力不可
                IF      SPA-SURYOZERO-FLG   =   ZERO
       *
@@ -1302,6 +1310,8 @@
                        MOVE    "1"          TO  LNK-SC97-AUTOFLG2
                    END-IF
                END-IF
+      *TEST
+           END-IF
       *TEST
            END-IF
       *
@@ -1351,6 +1361,33 @@
                END-IF
                MOVE    SPACE              TO  WRK-MOJI2
                MOVE    ZERO               TO  WRK-MCNT2
+           END-IF
+      *
+      *    入力値があるものの、行削除
+      *        入力値がないもの
+           IF     ((SPA-COM-INPUTCD(GMN-IDX)(1:2)   =   "84") OR
+                   (SPA-COM-INPUTCD(GMN-IDX)(1:4)   =   "0084"))  AND
+                  ( WRK-MCNT2         >   ZERO )
+               IF     ((WRK-MCNT2              >   ZERO )  AND
+                       (WRK-MOJI2(1:WRK-MCNT2) NOT =   ZERO )) OR
+                      ((WRK-MCNT3              >   ZERO )  AND
+                       (WRK-MOJI3(1:WRK-MCNT3) NOT =   ZERO )) OR
+                      ((WRK-MCNT4              >   ZERO )  AND
+                       (WRK-MOJI4(1:WRK-MCNT4) NOT =   ZERO ))
+                   IF     (WRK-SUR-MCNT        =   ZERO  )  OR
+                          (LNK-SC97-SURYO      =   ZERO  )
+                       MOVE    1               TO  LNK-SC97-SURYO
+                   END-IF
+               ELSE
+      *            行削除とする
+                   IF     (WRK-SUR-MCNT        >   ZERO  )  AND
+                          (LNK-SC97-SURYO      =   ZERO  )
+                       MOVE    "  "            TO  LNK-SC97-INPUTCD
+                       MOVE    ZERO            TO  LNK-SC97-SURYOCNT
+                       MOVE    ZERO            TO  LNK-SC97-SURYO
+                       MOVE    ZERO            TO  LNK-SC97-SURYOFLG
+                   END-IF
+               END-IF
            END-IF
       *
       *    コメント値
