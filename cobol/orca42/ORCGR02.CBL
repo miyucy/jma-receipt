@@ -304,6 +304,7 @@
            03  WRK-PAGE            PIC ZZZZ9.
            03  WRK-STYMD           PIC X(22).
            03  WRK-EDYMD           PIC X(22).
+           03  WRK-PRTJYUN         PIC X(02).
       *
            03  WRK-MCP-TABLE       PIC X(64).
            03  WRK-MCP-PATHNAME    PIC X(64).
@@ -1465,38 +1466,25 @@
                AND   ( SPA-GMN-PRTKBN  =   "1"         )
                AND   ( SPA-GMN-PREFKBN =   "1" OR  "4" )
                AND   ( SPA-RID1-FLG    =   "OK"        )
-                   PERFORM VARYING IDX FROM    1   BY  1
-                           UNTIL   IDX >       WRK-CONS-LINE-MAX
-                       IF      SPA-NAI-PRTJYUNI(1 IDX)   =   SPACE
-                           CONTINUE
-                       ELSE
-                           IF    ( SPA-GMN-TCHK-VALUE  (1 IDX)
-                                                           =   "T"   )
-                           AND   ( SPA-GMN-TSTDATA (1 IDX) =   SPACE )
-                           AND   ( SPA-GMN-TEDDATA (1 IDX) =   SPACE )
-                               MOVE    "1"     TO
-                                               SPA-GMN-TPRTFLG (1 IDX)
-                           END-IF
-                       END-IF 
-                   END-PERFORM
-                   IF      SPA-GMN-PRTJYUN     =   "01"    OR  "02"
+                   PERFORM VARYING IDW FROM    1   BY  1
+                           UNTIL   IDW >       SPA-GMN-PAGE-MAX
                        PERFORM VARYING IDX FROM    1   BY  1
                                UNTIL   IDX >       WRK-CONS-LINE-MAX
-                           IF      SPA-NAI-PRTJYUNI(2 IDX)   =   SPACE
+                           IF      SPA-NAI-PRTJYUNI(IDW IDX)   =   SPACE
                                CONTINUE
                            ELSE
-                               IF    ( SPA-GMN-TCHK-VALUE  (2 IDX)
+                               IF    ( SPA-GMN-TCHK-VALUE  (IDW IDX)
                                                            =   "T"   )
-                               AND   ( SPA-GMN-TSTDATA (2 IDX)
+                               AND   ( SPA-GMN-TSTDATA (IDW IDX)
                                                            =   SPACE )
-                               AND   ( SPA-GMN-TEDDATA (2 IDX)
+                               AND   ( SPA-GMN-TEDDATA (IDW IDX)
                                                            =   SPACE )
                                    MOVE    "1"     TO
-                                               SPA-GMN-TPRTFLG (2 IDX)
+                                               SPA-GMN-TPRTFLG (IDW IDX)
                                END-IF
-                           END-IF
+                           END-IF 
                        END-PERFORM
-                   END-IF
+                   END-PERFORM
                END-IF
            END-IF     
       *
@@ -1746,9 +1734,21 @@
       *                                    
            MOVE    R02-TSTDATA (IDX)  TO  SPA-GMN-TSTDATA (IDW IDX)
       *
+           IF      SPA-NAI-TEISYUTUSAKI (IDW IDX)
+                                      =   "1"
+               MOVE    SPA-GMN-PRTJYUN    TO  WRK-PRTJYUN
+           ELSE
+               IF      SPA-NAI-SYUBETU  (IDW IDX 1) =   "6666"
+                   MOVE    SPA-GMN-PRTJYUN    TO  WRK-PRTJYUN
+               ELSE
+                   MOVE    SPA-GMN-PRTJYUN1   TO  WRK-PRTJYUN
+               END-IF
+           END-IF    
+      *             
            IF      SPA-GMN-TSTDATA (IDW IDX)  NOT =   SPACE   
-               EVALUATE    SPA-GMN-PRTJYUN   
+               EVALUATE    WRK-PRTJYUN
                    WHEN    "01"
+                   WHEN    "03"
       *
       *                半角チェック
                        INITIALIZE                  ORCSKANACHKAREA
@@ -1772,6 +1772,8 @@
                            MOVE    "0001"             TO  SPA-ERRCD
                        END-IF
                    WHEN    "02"
+                   WHEN    "04"
+                   WHEN    "06"
       *
       *                半角チェック
                        INITIALIZE                  ORCSKANACHKAREA
@@ -1825,9 +1827,21 @@
       *                                     
            MOVE    R02-TEDDATA (IDX)  TO  SPA-GMN-TEDDATA (IDW IDX)
       *
+           IF      SPA-NAI-TEISYUTUSAKI (IDW IDX)
+                                      =   "1"
+               MOVE    SPA-GMN-PRTJYUN    TO  WRK-PRTJYUN
+           ELSE
+               IF      SPA-NAI-SYUBETU  (IDW IDX 1)    =   "6666"
+                   MOVE    SPA-GMN-PRTJYUN    TO  WRK-PRTJYUN
+               ELSE
+                   MOVE    SPA-GMN-PRTJYUN1   TO  WRK-PRTJYUN
+               END-IF
+           END-IF    
+      *
            IF      SPA-GMN-TEDDATA (IDW IDX)  NOT =   SPACE   
-               EVALUATE    SPA-GMN-PRTJYUN
+               EVALUATE    WRK-PRTJYUN
                    WHEN    "01"
+                   WHEN    "03"
       *
       *                半角チェック
                        INITIALIZE                  ORCSKANACHKAREA
@@ -1851,6 +1865,8 @@
                            MOVE    "0001"             TO  SPA-ERRCD
                        END-IF
                    WHEN    "02"
+                   WHEN    "04"
+                   WHEN    "06"
       *
       *                半角チェック
                        INITIALIZE                  ORCSKANACHKAREA
@@ -2199,7 +2215,7 @@
                                    =   ZERO
                IF      JOB-ENDYMD      =   SPACE
                    MOVE    "7777"          TO  SPA-ERRCD
-                   GO  TO  440-PRINT-KENSU-GIDMSG-EXT
+                   GO  TO  450-PRINT-GIDMSG-EXT
                END-IF
            END-IF    
       *
@@ -2258,7 +2274,7 @@
       *    レセプトが選択されているか
            MOVE    ZERO                TO  IDZ
            PERFORM VARYING IDW FROM    1   BY  1
-                   UNTIL   IDW >       2
+                   UNTIL   IDW >       SPA-GMN-PAGE-MAX
              PERFORM VARYING IDX FROM    1   BY  1
                      UNTIL   IDX >       WRK-CONS-LINE-MAX
                IF      SPA-GMN-TCHK-VALUE (IDW IDX)    =   "T"
@@ -2624,12 +2640,15 @@
            MOVE    WRK-PREFKBN         TO  WRK-RECE09-PREFKBN
            MOVE    SPA-R01-RECE07-NYUGAIKBN
                                        TO  WRK-RECE09-NYUGAIKBN
-           EVALUATE    WRK-TEISYUTUSAKI
-               WHEN    "1"
+           IF      WRK-TEISYUTUSAKI    =   "1"
+               MOVE    SPA-GMN-PRTJYUN     TO  WRK-RECE09-PRTJYUN
+           ELSE
+               IF      SPA-NAI-SYUBETU (IDW IDX IDY)   =   "6666"
                    MOVE    SPA-GMN-PRTJYUN     TO  WRK-RECE09-PRTJYUN
-               WHEN    "2"
+               ELSE
                    MOVE    SPA-GMN-PRTJYUN1    TO  WRK-RECE09-PRTJYUN
-           END-EVALUATE
+               END-IF
+           END-IF
       * 
            MOVE    SPA-GMN-TSTDATA (IDW IDX)
                                        TO  WRK-RECE09-STDATA
@@ -2869,24 +2888,12 @@
       *****************************************************************
        45031-RECEPRT-HENSYU-SEC             SECTION.
       *
-      *???
-           DISPLAY "WRK=" WRK-PREFKBN "#" WRK-CHOUKI "#" WRK-ZAITAKU "#"
-      *???
            PERFORM VARYING IDW FROM    2   BY  1
                    UNTIL   IDW >       SPA-GMN-PAGE-MAX
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       WRK-CONS-LINE-MAX
                        OR      SPA-NAI-PRTJYUNI(IDW IDX)   =   SPACE
                        OR      SPA-ERRCD               NOT =   SPACE    
-      *???
-               DISPLAY "SPA=" IDW "#" IDX "#"
-                    SPA-NAI-THKNJANUM   (IDW IDX) " "
-                    SPA-GMN-TCHK-VALUE  (IDW IDX) " "
-                   SPA-GMN-TPAGE        (IDW IDX) " "
-                    SPA-NAI-TPREFKBN    (IDW IDX)" "
-                   SPA-NAI-TPAGE-CHOUKI        (IDW IDX) " "
-                   SPA-NAI-TPAGE-ZAITAKU        (IDW IDX) " "
-      *???
                    IF    ( SPA-GMN-TCHK-VALUE  (IDW IDX)   =   "T"   )
                    AND   ( SPA-GMN-TPAGE       (IDW IDX)   >   ZERO  )
                    AND   ( WRK-PREFKBN                     =
