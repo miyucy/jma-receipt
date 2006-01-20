@@ -2199,7 +2199,7 @@
                                    =   ZERO
                IF      JOB-ENDYMD      =   SPACE
                    MOVE    "7777"          TO  SPA-ERRCD
-                   GO  TO  450-PRINT-GIDMSG-EXT
+                   GO  TO  440-PRINT-KENSU-GIDMSG-EXT
                END-IF
            END-IF    
       *
