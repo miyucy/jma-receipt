@@ -5840,6 +5840,14 @@
                                            "0000" )
                CONTINUE
            ELSE
+      *
+      *        検索用保険者番号
+               IF      RECE08-HKNJANUM(1:2)    =   "67"
+                   MOVE    RECE08-HKNJANUM(3:) TO  RECE08-HKNJANUM-S
+               ELSE
+                   MOVE    RECE08-HKNJANUM     TO  RECE08-HKNJANUM-S
+               END-IF
+      *
                EVALUATE    SYS-2008-PREFKBN-PRTJYUN
                                        ALSO    RECE08-PREFKBN
                    WHEN    "1"         ALSO    "1"
@@ -5851,21 +5859,14 @@
                    WHEN    "2"         ALSO    "2"
                        MOVE    "11"            TO  RECE08-PREFKBN-SRT
                END-EVALUATE
-               IF    ( SYS-2008-HKNJANUM   =   RECE08-HKNJANUM )
-               AND   ( RECE08-PREFKBN      =   "1"             )
+               IF    ( SYS-2008-HKNJANUM   =   RECE08-HKNJANUM-S )
+               AND   ( RECE08-PREFKBN      =   "1"               )
                    EVALUATE    SYS-2008-HKNJANUM-PRTKBN
                        WHEN    "1"
                            MOVE    "0"     TO  RECE08-PREFKBN-SRT (2:)
                        WHEN    "2"
                            MOVE    "9"     TO  RECE08-PREFKBN-SRT (2:)
                    END-EVALUATE
-               END-IF
-      *
-      *        検索用保険者番号
-               IF      RECE08-HKNJANUM(1:2)    =   "67"
-                   MOVE    RECE08-HKNJANUM(3:) TO  RECE08-HKNJANUM-S
-               ELSE
-                   MOVE    RECE08-HKNJANUM     TO  RECE08-HKNJANUM-S
                END-IF
       *
       *        保険者印刷区分を設定（県内分のみ）
