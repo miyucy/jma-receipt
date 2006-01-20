@@ -45,6 +45,7 @@
       *  02.00.02    NACL-太田    04.09.09  前月ボタン押下時フリーズする
       *                                     不具合の修正
       *  02.00.03    NACL-多々納  05.05.11  北海道療養担当手当て追加
+      *  02.00.04    NACL-多々納  06.01.20  外泊の削除追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1054,7 +1055,7 @@
            MOVE    ALL "9"             TO  SYS-5000-EDYUKYMD.
       *    システム管理検索
            MOVE    SYS-5000-REC        TO  MCPDATA-REC.
-           MOVE    SPA-NAI-SRYYM    TO  ORC-DBYMD(1:6).
+           MOVE    SPA-NAI-SRYYM       TO  ORC-DBYMD(1:6).
            MOVE    "01"                TO  ORC-DBYMD(7:2).
            MOVE    "DBSELECT"          TO  MCP-FUNC.
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH.
@@ -1078,6 +1079,9 @@
                    MOVE    SYS-5000-DSPCD (IDX)
                                            TO  SPA-5000-DSPCD-41 (IDX)
                END-PERFORM
+      *        入院会計外泊区分
+               MOVE    SYS-5000-NACCT-GAIHAKUKBN
+                                           TO  SPA-5000-NACCT-GAIHAKUKBN
            END-IF.
       *
        3500-KIHON-HEN-EXT.
@@ -3471,6 +3475,14 @@
                   (SPA-GMN-TSRYCD (IDG)    =   "099999913")
                PERFORM 47011-SYOKUJI-CHK-SEC
            END-IF
+      *
+      *    外泊の時、他の削除
+           MOVE    SPA-NAI-TBANGO (SPA-NAI-BANGO)  TO  IDG
+           IF     (SPA-NAI-TZAISKBKBN-41 (SPA-NAI-BANGO)
+                                           =   "2"   )  AND
+                  (SPA-5000-NACCT-GAIHAKUKBN   =   "2")
+               PERFORM 47012-GAIHAKU-CHK-SEC
+           END-IF
       *    変更入力欄
            INITIALIZE                  SPA-GMN-INPUT-41
       *
@@ -3516,6 +3528,39 @@
            END-IF
            .
        47011-SYOKUJI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    外泊の時、他の削除処理
+      *****************************************************************
+        47012-GAIHAKU-CHK-SEC             SECTION.
+      *
+           MOVE    ZERO                TO  IDX-KSN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-NAI-MAX-41
+               MOVE    SPA-NAI-TBANGO (IDX)    TO  IDG
+               EVALUATE     SPA-NAI-TZAISKBKBN-41 (IDX)
+      *            食事
+                   WHEN     "4"
+      *            加算
+                   WHEN     "6"
+      *            療養担当手当
+                   WHEN     "7"
+      *                外泊日の削除
+                       PERFORM VARYING     IDX-D   FROM    1   BY  1
+                               UNTIL       IDX-D   >   31
+                           IF      SPA-GMN-DAY-41(IDX-D)   =   ZERO
+                               CONTINUE
+                           ELSE
+                               MOVE    ZERO         TO  SPA-NAI-DAY-41
+                                                           (IDX IDX-D)
+                               MOVE    SPACE        TO  SPA-GMN-TDAY-41
+                                                           (IDG IDX-D)
+                           END-IF
+                       END-PERFORM
+               END-EVALUATE
+           END-PERFORM
+           .
+        47012-GAIHAKU-CHK-EXT.
            EXIT.
       *
       *****************************************************************
