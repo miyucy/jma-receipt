@@ -254,8 +254,25 @@
            ADD     CNT-TPAGE           TO  CNT-GPAGE
            ADD     CNT-TKENSU          TO  CNT-GKENSU
       *
-      *    ¼«Èñ
+      *    ÆÃÊÌÎÅÍÜÈñ
            ADD     1                   TO  CNT-LINE
+           IF      CNT-LINE    >=  35
+      *        °õºþ½èÍý
+               PERFORM 400-PRINT-OUT-SEC
+      *        Ä¢É¼¸«½ÐÊÔ½¸½èÍý
+               PERFORM 220-PRT-PAGE-SEC
+           END-IF
+           ADD     1                   TO  CNT-LINE
+           MOVE    PARA-TSYURUINAME(1 34)
+                                       TO  HCMC001-NAME(CNT-LINE)
+           MOVE    PARA-TKENSU(1 34)   TO  WRK-Z10
+           MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 1)
+           MOVE    PARA-TPAGE(1 34)    TO  WRK-Z10
+           MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 2)
+           ADD     PARA-TPAGE(1 34)    TO  CNT-GPAGE
+           ADD     PARA-TKENSU(1 34)   TO  CNT-GKENSU
+      *
+      *    ¼«Èñ
            IF      CNT-LINE    >=  35
       *        °õºþ½èÍý
                PERFORM 400-PRINT-OUT-SEC
