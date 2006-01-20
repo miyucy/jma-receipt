@@ -293,6 +293,9 @@
        01  BTPARA-REC.
            COPY    "CPBTPARA.INC".
       *
+      *    定期請求ジョブチェックサブ
+           COPY    "CPORCSTEIKIJOB.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -1464,40 +1467,22 @@
            IF    ( SPA-ERRCD       =   SPACE )
            AND   ( SPA-GMN-NYUGAIKBN   
                                    =   "1"   )
-               MOVE    "CHK"           TO  SJOBKANRI-MODE
-               INITIALIZE                  JOBKANRI-REC
-               MOVE    WRK-CONS-JOB-JOBID1
-                                       TO  JOB-JOBID
-               MOVE    WRK-CONS-JOB-SHELLID1
-                                       TO  JOB-SHELLID
-               CALL    "ORCSJOB"       USING
-                                       ORCSJOBKANRIAREA 
-                                       JOBKANRI-REC 
-               IF      SJOBKANRI-RETURN
-                                       =   ZERO
-                   IF      JOB-ENDYMD      =   SPACE
-                       EVALUATE    SPA-GMN-IKKATU
-                           WHEN    "T"
-                               IF    ( JOB-SYOKBN  =   "1"           )
-                               AND   ( JOB-SRYYM  
-                                               NOT =   SPA-NAI-SRYYM )
-                                   CONTINUE
-                               ELSE
-                                   MOVE    "7777"      TO  SPA-ERRCD
-                               END-IF
-                           WHEN    "F"
-                               MOVE    "7777"      TO  SPA-ERRCD
-                       END-EVALUATE
-                       IF      SPA-ERRCD         =   "7777"    
-                           MOVE    SPACE         TO  WRK-RECEERR
-                           STRING  "定期請求処理中です【"
-                                                 DELIMITED  BY  SIZE
-                               JOB-SHELLMSG      DELIMITED  BY  SPACE
-                               "】"              DELIMITED  BY  SIZE      
-                                                 INTO  WRK-RECEERR
-                           END-STRING
-                       END-IF 
-                   END-IF
+               INITIALIZE                  STEIKIJOB-AREA
+               MOVE    "1"             TO  STEIKIJOB-RECEKBN
+               MOVE    SPA-GMN-NYUGAIKBN
+                                       TO  STEIKIJOB-NYUGAIKBN
+               IF    ( SPA-GMN-IKKATU  =   "T" )
+                   MOVE    "1"         TO  STEIKIJOB-SYOKBN
+                   MOVE    SPA-NAI-SRYYM
+                                       TO  STEIKIJOB-SRYYM
+               ELSE
+                   MOVE    "2"         TO  STEIKIJOB-SYOKBN
+               END-IF
+      *
+               CALL    "ORCSTEIKIJOB"      USING   STEIKIJOB-AREA
+               IF    ( STEIKIJOB-ERRCD NOT =   SPACE )
+                   MOVE    STEIKIJOB-ERRCD     TO  SPA-ERRCD
+                   MOVE    STEIKIJOB-ERRMSG    TO  WRK-RECEERR
                END-IF
            END-IF        
            .

@@ -403,6 +403,9 @@
        01  BTPARA-REC.
            COPY    "CPBTPARA.INC".
       *
+      *    定期請求ジョブチェックサブ
+           COPY    "CPORCSTEIKIJOB.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -2203,29 +2206,19 @@
            IF    ( SPA-ERRCD       =   SPACE )
            AND   ( SPA-R01-NYUGAIKBN   
                                    =   "1"   ) 
-               MOVE    "CHK"           TO  SJOBKANRI-MODE
-               INITIALIZE                  JOBKANRI-REC
-               MOVE    WRK-CONS-JOB-JOBID1
-                                       TO  JOB-JOBID
-               MOVE    WRK-CONS-JOB-SHELLID1
-                                       TO  JOB-SHELLID
-               CALL    "ORCSJOB"       USING
-                                       ORCSJOBKANRIAREA 
-                                       JOBKANRI-REC 
-               IF      SJOBKANRI-RETURN
-                                       =   ZERO
-                   IF      JOB-ENDYMD      =   SPACE
-                       MOVE    "7777"          TO  SPA-ERRCD
-                       MOVE    SPACE             TO  WRK-RECEERR
-                       STRING  "定期請求処理中です【"
-                                                 DELIMITED  BY  SIZE
-                               JOB-SHELLMSG      DELIMITED  BY  SPACE
-                               "】"              DELIMITED  BY  SIZE      
-                                                 INTO  WRK-RECEERR
-                       END-STRING                          
-                   END-IF
+               INITIALIZE                  STEIKIJOB-AREA
+               MOVE    "1"             TO  STEIKIJOB-RECEKBN
+               MOVE    SPA-R01-NYUGAIKBN
+                                       TO  STEIKIJOB-NYUGAIKBN
+               MOVE    "2"             TO  STEIKIJOB-SYOKBN
+      *
+               CALL    "ORCSTEIKIJOB"      USING   STEIKIJOB-AREA
+               IF    ( STEIKIJOB-ERRCD
+                                   NOT =   SPACE )
+                   MOVE    STEIKIJOB-ERRCD     TO  SPA-ERRCD
+                   MOVE    STEIKIJOB-ERRMSG    TO  WRK-RECEERR
                END-IF
-           END-IF        
+           END-IF
            .
        4501-JOBKANRI-CHK-EXT.
            EXIT.
