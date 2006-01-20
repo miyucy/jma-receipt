@@ -130,5 +130,8 @@
            03  SPA-5000-GENSAN-INF-TBL-41.
                05  SPA-5000-GENSAN-INF-41        OCCURS  10.
                    07  SPA-5000-DSPCD-41         PIC  X(09).
+      *       Æþ±¡²ñ·×³°Çñ¶èÊ¬
+               05  SPA-5000-NACCT-GAIHAKUKBN
+                                           PIC  X(01).
       *
       *
