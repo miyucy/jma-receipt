@@ -246,7 +246,6 @@
            03  WRK-HZN-HKNCOMBINUM     PIC X(04).
            03  WRK-HZN-HKNKBN          PIC X(01).
            03  WRK-HZN-SRYKA           PIC X(02).
-      *!!
       *    ø«Œ≈π‘∞Ÿ…Ì≤√æ Û¿ﬂƒÍ° ≤ ÀË°À
            03  WRK-ACTP-AREA.
                05  WRK-ACTP-ZAINUM-G       OCCURS   10.
@@ -1738,6 +1737,7 @@
            PERFORM
                    UNTIL       FLG-JYURRK      =   1
       *?       IF      WRK-DOUJI-RENNUM    =   JYURRK-DOUJI-RENNUM
+      *
                    MOVE    JYURRK-RENNUM       TO  WRK-JYURRK-RENNUM
                    MOVE    JYURRK-RENNUM       TO  WRK-DEL-RENNUM
                    MOVE    JYURRK-DOUJI-RENNUM TO
@@ -1982,7 +1982,7 @@
       *!   MOVE    SPA-HKNCOMBINUM     TO  WRK-HZN-HKNCOMBINUM
       *!   MOVE    SPA-HKNKBN          TO  WRK-HZN-HKNKBN
       *!   MOVE    JYURRK-HKNCOMBINUM  TO  SPA-HKNCOMBINUM
-      *!   MOVE    JYURRK-HKNKBN       TO  SPA-HKNKBN
+      *    MOVE    JYURRK-HKNKBN       TO  SPA-HKNKBN
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   15  )  OR
@@ -2241,7 +2241,7 @@
       *    ø«Œ≈≤ 
            MOVE    SRY-SRYKA           TO  SSANTEI-SRYKA
            MOVE    ACCT-HKNCOMBI       TO  SSANTEI-HKNCOMBINUM
-           MOVE    SPA-HKNKBN          TO  SSANTEI-HKNKBN
+           MOVE    JYURRK-HKNKBN       TO  SSANTEI-HKNKBN
            CALL    "ORCSSANTEI"        USING
                                        ORCSSANTEIAREA
                                        SPA-AREA

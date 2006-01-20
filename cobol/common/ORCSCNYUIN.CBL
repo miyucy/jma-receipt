@@ -2278,6 +2278,8 @@
            MOVE    SRY-SRYKA           TO  SSANTEI-SRYKA
       *    保険区分は同じ
       *****MOVE    SPA-HKNKBN          TO  SSANTEI-HKNKBN
+           MOVE    ACCT-HKNCOMBI       TO  SSANTEI-HKNCOMBINUM
+           MOVE    JYURRK-HKNKBN       TO  SSANTEI-HKNKBN
            CALL    "ORCSSANTEI"        USING
                                        ORCSSANTEIAREA
                                        SPA-AREA
