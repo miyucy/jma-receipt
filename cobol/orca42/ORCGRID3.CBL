@@ -77,6 +77,7 @@
            COPY    "R02.INC".
            COPY    "R03.INC".
            COPY    "R04.INC".
+           COPY    "R05.INC".
            COPY    "R98.INC".
            COPY    "R99.INC".
            COPY    "RERR.INC".

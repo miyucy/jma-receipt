@@ -1,0 +1,28 @@
+R05	{
+	fi1	{
+		REC_PRTJYUN	{
+			value	varchar(30);
+		};
+		CHOUKI	{
+			value	varchar(26);
+		};
+		ZAITAKU	{
+			value	varchar(26);
+		};
+		HKNJANUM	{
+			value	varchar(8);
+		};
+		HKNJ_PRTKBN	{
+			value	varchar(24);
+		};
+		HKN_PRTJYUN	{
+			value	varchar(46);
+		};
+		PR_PRTJYUN	{
+			value	varchar(12);
+		};
+		HKNJANAME       {
+			value	varchar(50);
+		};
+	};
+};

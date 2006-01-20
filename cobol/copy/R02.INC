@@ -1,4 +1,5 @@
         02  R02.
+              04  R02-B13-STATE   PIC S9(09) BINARY.
               04  R02-SYOKBN.
                 05  R02-SYOKBN-VALUE   PIC X.
                 05  R02-SYOKBN-LABEL   PIC X(9).

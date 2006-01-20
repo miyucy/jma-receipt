@@ -218,6 +218,14 @@
                    07  SPA-NAI-2008-CHOUKI         PIC  X(01).
                    07  SPA-NAI-2008-PREFKBN-PRTJYUN
                                                    PIC  X(01).
+                   07  SPA-NAI-2008-HKNJANUM-PRTJYUN
+                                                   PIC  X(01).
+                   07  SPA-NAI-2008-RECESYUBETU-PRTJYUN
+                                                   PIC  X(01).
+                   07  SPA-NAI-2008-HKNJANUM       PIC  X(08).
+                   07  SPA-NAI-2008-HKNJANUM-PRTKBN
+                                                   PIC  X(01).
+                   07  SPA-NAI-2008-HKNJANAME      PIC  X(50).
       *
                    07  SPA-NAI-TBL.
                        09  SPA-NAI-TBL-OCC         OCCURS  30.
@@ -456,6 +464,7 @@
            COPY    "R02.INC".
            COPY    "R03.INC".
            COPY    "R04.INC".
+           COPY    "R05.INC".
            COPY    "R98.INC".
            COPY    "R99.INC".
            COPY    "RERR.INC".
@@ -569,6 +578,8 @@
                    GO      TO      300-SCREEN-EXT
                WHEN    "R99"
                    PERFORM 340-R99-SET-SEC
+                   GO      TO      300-SCREEN-EXT
+               WHEN    "R05"
                    GO      TO      300-SCREEN-EXT
            END-EVALUATE
       *
@@ -762,7 +773,27 @@
                    MOVE    SYS-2008-CHOUKI      TO  SPA-NAI-2008-CHOUKI
                    MOVE    SYS-2008-PREFKBN-PRTJYUN
                                                 TO
-                                            SPA-NAI-2008-PREFKBN-PRTJYUN
+                                        SPA-NAI-2008-PREFKBN-PRTJYUN
+                   MOVE    SYS-2008-HKNJANUM-PRTJYUN
+                                                TO
+                                       SPA-NAI-2008-HKNJANUM-PRTJYUN
+                   MOVE    SYS-2008-RECESYUBETU-PRTJYUN
+                                                TO
+                                       SPA-NAI-2008-RECESYUBETU-PRTJYUN
+                   MOVE    SYS-2008-HKNJANUM-PRTKBN
+                                                TO
+                                       SPA-NAI-2008-HKNJANUM-PRTKBN
+                   MOVE    SYS-2008-HKNJANUM    TO
+                                       SPA-NAI-2008-HKNJANUM
+                   MOVE    SPACE                TO  HKNJAINF-REC
+                   INITIALIZE                       HKNJAINF-REC
+                   MOVE    SPA-HOSPID           TO  HKNJA-HOSPID
+                   MOVE    SPA-NAI-2008-HKNJANUM
+                                                TO  HKNJA-HKNJANUM
+                   MOVE    HKNJAINF-REC         TO  MCPDATA-REC
+                   PERFORM 900-HKNJAINF-READ-SEC
+                   MOVE    HKNJA-HKNJANAME      TO
+                                                SPA-NAI-2008-HKNJANAME
                ELSE    
                    IF      SPA-GMN-PRTJYUN1L   (5)  =   "06"
                        MOVE    SPACE        TO  SPA-GMN-PRTJYUN1LST(5)
@@ -1563,8 +1594,11 @@
       *    °õºþ
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 450-PRINT-GIDMSG-SEC
-      *    ½èÍý³ÎÇ§
+      *    ÊÔÄÖ¾ðÊóÉ½¼¨
                WHEN    "CLICKED"       ALSO    "B13"
+                   PERFORM 490-HENTETU-SEC
+      *    ½èÍý³ÎÇ§
+               WHEN    "CLICKED"       ALSO    "B24"
                    PERFORM 490-KAKUNIN-SEC
       *     ¸ÄÊÌ½ÐÎÏ
                WHEN    "CLICKED"       ALSO    "CHK01"
@@ -2937,7 +2971,6 @@
        460-MAEGMN-EXT.
            EXIT.
       *
-      *
       *****************************************************************
       *    ¼¡ÊÇ¡¡½èÍý
       *****************************************************************
@@ -2954,6 +2987,114 @@
            .
        470-ATOGMN-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    ÊÔÄÖ¾ðÊóÉ½¼¨
+      *****************************************************************
+       490-HENTETU-SEC                    SECTION.
+      *
+           MOVE    SPACE               TO  R05
+      *
+           EVALUATE    SPA-NAI-2008-PREFKBN-PRTJYUN
+               WHEN    "1"
+                   MOVE    "¸©Æâ¡¦¸©³°"    TO  R05-PR-PRTJYUN
+               WHEN    "2"
+                   MOVE    "¸©³°¡¦¸©Æâ"    TO  R05-PR-PRTJYUN
+           END-EVALUATE
+      *
+           EVALUATE    SPA-NAI-2008-HKNJANUM-PRTJYUN
+               WHEN    "1"
+                   MOVE
+                       "»ÔÄ®Â¼¹ñÊÝ¡¦¹ñÊÝÁÈ¹ç¡¦¸©Æâ°·¤¤¤Î¸©³°¹ñÊÝÁÈ¹ç"
+                                           TO  R05-HKN-PRTJYUN
+               WHEN    "2"
+                   MOVE
+                       "»ÔÄ®Â¼¹ñÊÝ¡¦¸©Æâ°·¤¤¤Î¸©³°¹ñÊÝÁÈ¹ç¡¦¹ñÊÝÁÈ¹ç"
+                                           TO  R05-HKN-PRTJYUN
+               WHEN    "3"
+                   MOVE
+                       "¹ñÊÝÁÈ¹ç¡¦»ÔÄ®Â¼¹ñÊÝ¡¦¸©Æâ°·¤¤¤Î¸©³°¹ñÊÝÁÈ¹ç"
+                                           TO  R05-HKN-PRTJYUN
+               WHEN    "4"
+                   MOVE
+                       "¹ñÊÝÁÈ¹ç¡¦¸©Æâ°·¤¤¤Î¸©³°¹ñÊÝÁÈ¹ç¡¦»ÔÄ®Â¼¹ñÊÝ"
+                                           TO  R05-HKN-PRTJYUN
+               WHEN    "5"
+                   MOVE
+                       "¸©Æâ°·¤¤¤Î¸©³°¹ñÊÝÁÈ¹ç¡¦»ÔÄ®Â¼¹ñÊÝ¡¦¹ñÊÝÁÈ¹ç"
+                                           TO  R05-HKN-PRTJYUN
+               WHEN    "6"
+                   MOVE
+                       "¸©Æâ°·¤¤¤Î¸©³°¹ñÊÝÁÈ¹ç¡¦¹ñÊÝÁÈ¹ç¡¦»ÔÄ®Â¼¹ñÊÝ"
+                                           TO  R05-HKN-PRTJYUN
+           END-EVALUATE
+      *
+           EVALUATE    SPA-NAI-2008-HKNJANUM-PRTJYUN
+               WHEN    "1"
+                   MOVE    "¹ñÊÝ°ìÈÌ¡¦Ï·¿ÍÊÝ·ò¡¦Âà¿¦¹ñÊÝ"
+                                           TO  R05-REC-PRTJYUN
+               WHEN    "2"
+                   MOVE    "¹ñÊÝ°ìÈÌ¡¦Âà¿¦¹ñÊÝ¡¦Ï·¿ÍÊÝ·ò"
+                                           TO  R05-REC-PRTJYUN
+               WHEN    "3"
+                   MOVE    "Ï·¿ÍÊÝ·ò¡¦¹ñÊÝ°ìÈÌ¡¦Âà¿¦¹ñÊÝ"
+                                           TO  R05-REC-PRTJYUN
+               WHEN    "4"
+                   MOVE    "Ï·¿ÍÊÝ·ò¡¦Âà¿¦¹ñÊÝ¡¦¹ñÊÝ°ìÈÌ"
+                                           TO  R05-REC-PRTJYUN
+               WHEN    "5"
+                   MOVE    "Âà¿¦¹ñÊÝ¡¦¹ñÊÝ°ìÈÌ¡¦Ï·¿ÍÊÝ·ò"
+                                           TO  R05-REC-PRTJYUN
+               WHEN    "6"
+                   MOVE    "Âà¿¦¹ñÊÝ¡¦Ï·¿ÍÊÝ·ò¡¦¹ñÊÝ°ìÈÌ" 
+                                           TO  R05-REC-PRTJYUN
+           END-EVALUATE
+      *
+           EVALUATE    SPA-NAI-2008-ZAITAKU
+               WHEN    "1"
+                    MOVE    "¸©Æâ¡¦¸©³°¤ÎÀèÆ¬¤Ë°õºþ" 
+                                           TO  R05-ZAITAKU
+               WHEN    "2"
+                   MOVE    "ÊÝ¸±¼Ô¤ÎÀèÆ¬¤Ë°õºþ"
+                                           TO  R05-ZAITAKU
+           END-EVALUATE
+      *
+           EVALUATE    SPA-NAI-2008-CHOUKI
+               WHEN    "1"
+                    MOVE    "¸©Æâ¡¦¸©³°¤ÎÀèÆ¬¤Ë°õºþ" 
+                                           TO  R05-CHOUKI
+               WHEN    "2"
+                   MOVE    "ÊÝ¸±¼Ô¤ÎÀèÆ¬¤Ë°õºþ"
+                                           TO  R05-CHOUKI
+           END-EVALUATE
+      *
+           EVALUATE    SPA-NAI-2008-HKNJANUM-PRTKBN
+               WHEN    "1"
+                   MOVE    "»ÔÄ®Â¼¹ñÊÝ¤ÎÀèÆ¬¤Ë°õºþ" 
+                                           TO  R05-HKNJ-PRTKBN
+               WHEN    "2"
+                   MOVE    "»ÔÄ®Â¼¹ñÊÝ¤ÎºÇ¸å¤Ë°õºþ"
+                                           TO  R05-HKNJ-PRTKBN
+           END-EVALUATE
+      *
+           MOVE    SPA-NAI-2008-HKNJANUM   TO  R05-HKNJANUM
+           MOVE    SPA-NAI-2008-HKNJANAME  TO  R05-HKNJANAME
+      *
+           MOVE    "B01"                TO  MCP-WIDGET
+      *
+           MOVE    "R02"                TO  SPA-MOTOPG
+           MOVE    "R05"                TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"                TO  MCP-PUTTYPE
+           MOVE    "R05"                TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                    TO  FLG-END
+           .
+       490-HENTETU-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    ½èÍý³ÎÇ§½èÍý
@@ -3271,6 +3412,13 @@
                    END-IF
                END-IF
            END-PERFORM
+      *
+           IF    ( SPA-GMN-PRTJYUN1        =   "06" )
+           AND   ( SPA-GMN-PAGE-MAX        >   1    )
+               MOVE    WIDGET-NORMAL       TO  R02-B13-STATE
+           ELSE 
+               MOVE    WIDGET-INSENSITIVE  TO  R02-B13-STATE
+           END-IF
       *
            PERFORM 5001-MAPCUR-SEC
       *
