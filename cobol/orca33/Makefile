@@ -2,6 +2,7 @@ SRCS = ORCGO01.CBL \
        ORCGO02.CBL \
        ORCGO03.CBL \
        ORCGO04.CBL \
+       ORCGO05.CBL \
        ORCGO99.CBL \
        ORCGOERR.CBL \
        ORCGOID1.CBL \

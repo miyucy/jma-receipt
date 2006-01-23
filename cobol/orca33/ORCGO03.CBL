@@ -227,6 +227,7 @@
            COPY    "O02.INC".
            COPY    "O03.INC".
            COPY    "O04.INC".
+           COPY    "O05.INC".
            COPY    "O99.INC".
            COPY    "OERR.INC".
            COPY    "OID1.INC".
@@ -1304,9 +1305,11 @@
            MOVE    WIDGET-INSENSITIVE   TO  O99-B12-STATE
            IF    ( O99-MSG              =   SPACE )
                IF    ( O99-COUNT            >   ZERO )
-                   MOVE    "B12"                TO  MCP-WIDGET
+                   MOVE    "B01"                TO  MCP-WIDGET
                    MOVE    "処理は正常に終了しました"
                                                 TO  O99-MSG
+                   MOVE   100                   TO
+                                            O99-PROGRESSBAR-VALUE                             
                ELSE
                    MOVE    "B01"                TO  MCP-WIDGET
                    MOVE    "該当する処理はありません"

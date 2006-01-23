@@ -545,10 +545,26 @@
     </widget>
 
     <widget>
+      <class>GtkLabel</class>
+      <name>label2306</name>
+      <x>125</x>
+      <y>185</y>
+      <width>105</width>
+      <height>24</height>
+      <label>請求時入金処理</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
       <class>GtkPandaCombo</class>
       <name>CMB_SAISYORIKBN</name>
-      <x>256</x>
-      <y>216</y>
+      <x>255</x>
+      <y>215</y>
       <width>200</width>
       <height>25</height>
       <value_in_list>False</value_in_list>
@@ -602,18 +618,58 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label2306</name>
+      <name>label2309</name>
       <x>125</x>
-      <y>185</y>
-      <width>105</width>
-      <height>24</height>
-      <label>請求時入金処理</label>
+      <y>245</y>
+      <width>130</width>
+      <height>25</height>
+      <label>一括削除機能</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkPandaCombo</class>
+      <name>CMB_DELKBN</name>
+      <x>255</x>
+      <y>245</y>
+      <width>200</width>
+      <height>25</height>
+      <value_in_list>False</value_in_list>
+      <ok_if_empty>True</ok_if_empty>
+      <case_sensitive>False</case_sensitive>
+      <use_arrows>True</use_arrows>
+      <use_arrows_always>False</use_arrows_always>
+      <items></items>
+
+      <widget>
+	<class>GtkPandaEntry</class>
+	<child_name>GtkPandaCombo:entry</child_name>
+	<name>DELKBN</name>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>activate</name>
+	  <handler>send_event</handler>
+	  <data>ACTIVATE</data>
+	  <last_modification_time>Tue, 14 Oct 2003 08:35:33 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>changed</name>
+	  <handler>entry_changed</handler>
+	  <data>CHANGED</data>
+	  <last_modification_time>Tue, 14 Oct 2003 08:36:03 GMT</last_modification_time>
+	</signal>
+	<editable>True</editable>
+	<text_visible>True</text_visible>
+	<text_max_length>20</text_max_length>
+	<text>1 使用しない</text>
+	<input_mode>XIM</input_mode>
+	<xim_enabled>False</xim_enabled>
+      </widget>
     </widget>
   </widget>
 </widget>

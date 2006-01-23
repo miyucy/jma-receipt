@@ -295,6 +295,9 @@
       *    ファイルレイアウト
       *****************************************************************
       *
+      *    定期請求ジョブチェックサブ
+           COPY    "CPORCSTEIKIJOB.INC".
+      *
       *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
@@ -366,6 +369,7 @@
            COPY    "O02.INC".
            COPY    "O03.INC".
            COPY    "O04.INC".
+           COPY    "O05.INC".
            COPY    "O99.INC".
            COPY    "OERR.INC".
            COPY    "OID1.INC".
@@ -1950,22 +1954,35 @@
       *****************************************************************
        4501-JOBKANRICHK-SEC            SECTION.
       *
-      *    ジョブ管理チェック処理
-           MOVE    "CHK"           TO  SJOBKANRI-MODE
-           PERFORM 800-ORCSJOB-SEC
-           IF    ( SJOBKANRI-RETURN    =   ZERO )
-               IF    ( JOB-ENDYMD      =   SPACE )
-                   MOVE    "7777"          TO  SPA-ERRCD
-                   MOVE    SPACE             TO  WRK-TEIKIERR
-                   STRING  "定期請求処理中です【"
-                                             DELIMITED  BY  SIZE
-                           JOB-SHELLMSG      DELIMITED  BY  SPACE
-                           "】"              DELIMITED  BY  SIZE
-                                             INTO  WRK-TEIKIERR
-                   END-STRING
-               END-IF
+           MOVE    SPACE               TO  WRK-TEIKIERR
+           PERFORM 45011-TEIKI-CHK-SEC
+      *
+           IF    ( WRK-TEIKIERR    =   SPACE )
+               PERFORM 45011-RECEPT1-CHK-SEC
            END-IF
       *
+           .
+       4501-JOBKANRICHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    定期請求ジョブチェック処理
+      *****************************************************************
+       45011-TEIKI-CHK-SEC             SECTION.
+      *
+           INITIALIZE                  STEIKIJOB-AREA
+           CALL    "ORCSTEIKIJOB"      USING   STEIKIJOB-AREA
+           IF    ( STEIKIJOB-ERRCD NOT =   SPACE )
+               MOVE    STEIKIJOB-ERRCD     TO  SPA-ERRCD
+               MOVE    STEIKIJOB-ERRMSG    TO  WRK-TEIKIERR
+           END-IF
+      *
+           .
+       45011-TEIKI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院レセプトジョブチェック処理
+      *****************************************************************
+       45011-RECEPT1-CHK-SEC           SECTION.
       *
       *    ジョブ管理チェック処理
            MOVE    "CHK"               TO  SJOBKANRI-MODE
@@ -1999,7 +2016,7 @@
            END-IF
       *
            .
-       4501-JOBKANRICHK-EXT.
+       45011-RECEPT1-CHK-EXT.
            EXIT.
       *****************************************************************
       *    印刷画面へ遷移

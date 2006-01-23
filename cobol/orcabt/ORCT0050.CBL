@@ -72,6 +72,10 @@
        01  WRK-AREA.
            03  WRK-DBPATH              PIC  X(100).
       *
+       01  WRK-PARA.
+           03  WRK-PARA-JOBID          PIC  9(07).
+           03  WRK-PARA-SHELLID        PIC  X(08).
+      *
            COPY    "MCPAREA".
       *
            COPY    "COMMON-SPA".
@@ -98,7 +102,6 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
       ****************************************************************
        LINKAGE                 SECTION.
@@ -133,24 +136,15 @@
                                        SPA-AREA
       *
            UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
-                                       INTO    TEIKI1P-ARG1
-                                               TEIKI1P-SYOKBN
-                                               TEIKI1P-KIKAN-OCC (1)
-                                               TEIKI1P-KIKAN-OCC (2)
-                                               TEIKI1P-KIKAN-OCC (3)
-                                               TEIKI1P-DENPPRTYMD
-                                               TEIKI1P-JOBID
-                                               TEIKI1P-SHELLID
-                                               TEIKI1P-HOSPID
-                                               TEIKI1P-ERRFILE
+                                       INTO    WRK-PARA-JOBID
+                                               WRK-PARA-SHELLID
+                                               TEIKIERR
       *
            PERFORM 100-DBOPEN-SEC
       *
       *
            MOVE    ZERO                TO  FLG-END
                                            FLG-ERR
-      *
-           MOVE    TEIKI1P-ERRFILE     TO  TEIKIERR
       *
            .
        100-INIT-EXT.
@@ -168,8 +162,8 @@
       *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
-               MOVE    TEIKI1P-JOBID   TO  JOB-JOBID
-               MOVE    TEIKI1P-SHELLID
+               MOVE    WRK-PARA-JOBID   TO  JOB-JOBID
+               MOVE    WRK-PARA-SHELLID
                                        TO  JOB-SHELLID
                MOVE    TEIKIERR-REC    TO  JOB-YOBI
                MOVE    "9999"          TO  JOB-ERRCD
@@ -201,17 +195,19 @@
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
            MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC.
       *
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
            MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC.
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -221,17 +217,19 @@
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
            MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC.
       *
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
            MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC.
            .
        900-DBDISCONNECT-EXT.
            EXIT.

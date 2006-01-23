@@ -78,6 +78,7 @@
            COPY    "O02.INC".
            COPY    "O03.INC".
            COPY    "O04.INC".
+           COPY    "O05.INC".
            COPY    "O99.INC".
            COPY    "OERR.INC".
            COPY    "OID1.INC".

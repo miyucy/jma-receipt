@@ -1,5 +1,9 @@
 O01	{
 	fixed17	{
+		B04	{
+			label	varchar(10);
+			state	int;
+		};
 		SRYYM	{
 			value	varchar(7);
 		};

@@ -91,6 +91,8 @@
                        09  SPA-GMN-KIKAN-OCC       OCCURS  3.
                            11  SPA-GMN-KIKAN       PIC X(20).
       *
+               05  SPA-NAI-AREA.
+                   07  SPA-NAI-DELKBN              PIC X(01).
                05  SPA-NAI-O01-AREA.
                    07  SPA-NAI-SRYYM               PIC 9(06).
                    07  SPA-NAI-DENPPRTYMD          PIC X(08).
@@ -207,14 +209,17 @@
       *    サブプロ用　領域
       *****************************************************************
       *
-      *   日付変換サブ
-            COPY    "CPORCSDAY.INC".
-            COPY    "CPORCSLNK.INC".
+      *    定期請求ジョブチェックサブ
+           COPY    "CPORCSTEIKIJOB.INC".
       *
-      *   画面日付変換サブ
+      *    日付変換サブ
+           COPY    "CPORCSDAY.INC".
+           COPY    "CPORCSLNK.INC".
+      *
+      *    画面日付変換サブ
            COPY    "CPORCSGDAY.INC".
       *
-      *   ジョブ管理ＤＢ制御サブ
+      *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
       *    ＤＢ検索
@@ -243,6 +248,7 @@
            COPY    "O02.INC".
            COPY    "O03.INC".
            COPY    "O04.INC".
+           COPY    "O05.INC".
            COPY    "O99.INC".
            COPY    "OERR.INC".
            COPY    "OID1.INC".
@@ -401,7 +407,8 @@
        3101-TEIKI-KIKAN-GET-SEC        SECTION.
       *
            INITIALIZE                  SPA-GMN-KIKAN-VAL
-                                       SPA-NAI-KIKAN-VAL.
+                                       SPA-NAI-KIKAN-VAL
+                                       SPA-NAI-DELKBN
       *
            INITIALIZE                      SYS-5010-REC
            MOVE    "5010"              TO  SYS-5010-KANRICD
@@ -480,6 +487,12 @@
            MOVE    "F"             TO  SPA-GMN-CHK-KIKAN01
                                        SPA-GMN-CHK-KIKAN02
                                        SPA-GMN-CHK-KIKAN03
+      *
+           IF    ( SYS-5010-DELKBN =   SPACE )
+               MOVE    "1"             TO  SPA-NAI-DELKBN
+           ELSE
+               MOVE    SYS-5010-DELKBN TO  SPA-NAI-DELKBN
+           END-IF
       *
            .
        3101-TEIKI-KIKAN-GET-EXT.
@@ -620,6 +633,9 @@
       *    クリア
            WHEN    "CLICKED"       ALSO    "B02"
                PERFORM 310-SPASET-SEC
+      *    削除
+           WHEN    "CLICKED"       ALSO    "B04"
+               PERFORM 440-O05-SENI-SEC
       *    作成区分
            WHEN    "CLICKED"       ALSO    "B08"
                MOVE    "F"         TO      SPA-GMN-CHK-KIKAN01
@@ -923,6 +939,29 @@
            EXIT.
       *
       *****************************************************************
+      *    一括削除画面遷移処理
+      *****************************************************************
+       440-O05-SENI-SEC                SECTION.
+      *
+      *    画面移行用のパラメタ
+           PERFORM 45011-PARA-HENSYU-SEC
+      *
+           MOVE    "O05"               TO  SPA-SAKIPG
+           MOVE    "O01"               TO  SPA-MOTOPG
+           MOVE    "O01"               TO  SPA-O01-MOTOPG
+      *
+           MOVE   "JOIN"               TO  MCP-PUTTYPE
+           MOVE   SPA-SAKIPG           TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       440-O05-SENI-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    作表処理
       *****************************************************************
        450-TOUROKU-SEC                 SECTION.
@@ -978,22 +1017,35 @@
       *****************************************************************
        4501-JOBKANRICHK-SEC            SECTION.
       *
-      *    ジョブ管理チェック処理
-           MOVE    "CHK"               TO  SJOBKANRI-MODE
-           PERFORM 800-ORCSJOB-SEC
-           IF    ( SJOBKANRI-RETURN    =   ZERO )
-               IF      JOB-ENDYMD  =   SPACE
-                   MOVE    "7777"      TO  SPA-ERRCD
-                   MOVE    SPACE       TO  WRK-TEIKIERR
-                   STRING  "定期請求処理中です【"
-                                           DELIMITED  BY  SIZE
-                           JOB-SHELLMSG    DELIMITED  BY  SPACE
-                           "】"            DELIMITED  BY  SIZE
-                   INTO  WRK-TEIKIERR
-                   END-STRING
-               END-IF
+           MOVE    SPACE               TO  WRK-TEIKIERR
+           PERFORM 45011-TEIKI-CHK-SEC
+      *
+           IF    ( WRK-TEIKIERR    =   SPACE )
+               PERFORM 45011-RECEPT1-CHK-SEC
            END-IF
       *
+           .
+       4501-JOBKANRICHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    定期請求ジョブチェック処理
+      *****************************************************************
+       45011-TEIKI-CHK-SEC             SECTION.
+      *
+           INITIALIZE                  STEIKIJOB-AREA
+           CALL    "ORCSTEIKIJOB"      USING   STEIKIJOB-AREA
+           IF    ( STEIKIJOB-ERRCD NOT =   SPACE )
+               MOVE    STEIKIJOB-ERRCD     TO  SPA-ERRCD
+               MOVE    STEIKIJOB-ERRMSG    TO  WRK-TEIKIERR
+           END-IF
+      *
+           .
+       45011-TEIKI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院レセプトジョブチェック処理
+      *****************************************************************
+       45011-RECEPT1-CHK-SEC           SECTION.
       *
       *    ジョブ管理チェック処理
            MOVE    "CHK"               TO  SJOBKANRI-MODE
@@ -1033,7 +1085,7 @@
            END-IF
       *
            .
-       4501-JOBKANRICHK-EXT.
+       45011-RECEPT1-CHK-EXT.
            EXIT.
       *****************************************************************
       *    更新処理
@@ -1393,6 +1445,12 @@
            MOVE    SPA-GMN-KIKAN01     TO  O01-KIKAN01
            MOVE    SPA-GMN-KIKAN02     TO  O01-KIKAN02
            MOVE    SPA-GMN-KIKAN03     TO  O01-KIKAN03
+      *
+           MOVE    WIDGET-INSENSITIVE  TO  O01-B04-STATE
+           IF    ( SPA-NAI-DELKBN      =   "2" )
+               MOVE    WIDGET-NORMAL   TO  O01-B04-STATE
+               MOVE    "請求削除"      TO  O01-B04-LABEL
+           END-IF
       *
            PERFORM 5001-MAPCUR-SEC
       *

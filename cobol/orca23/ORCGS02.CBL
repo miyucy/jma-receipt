@@ -393,10 +393,6 @@
        01  PTTEIKIRRK-REC.
            COPY    "CPPTTEIKIRRK.INC".
       *
-      *    Äê´üÀÁµáÍúÎò
-       01  TEIKIRRK-REC.
-           COPY    "CPTEIKIRRK.INC".
-      *
       *    ¥¸¥ç¥Ö´ÉÍý¥Þ¥¹¥¿
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
@@ -2889,14 +2885,8 @@
       *
            IF    ( SYU-CREATEKBN   =   2 )
       *
-      *        ´µ¼ÔÄê´üÀÁµáÍúÎòºï½ü½èÍý
-               PERFORM 4301-PTTEIKIRRK-DEL-SEC
-               IF    ( SPA-ERRCD       NOT =   SPACE )
-                   GO  TO  430-TORIKESI-KOUSHIN-EXT
-               END-IF
-      *
-      *        Äê´üÀÁµáÍúÎòºï½ü½èÍý
-               PERFORM 4301-TEIKIRRK-UPD-SEC
+      *        ´µ¼ÔÄê´üÀÁµáÍúÎò¹¹¿·½èÍý
+               PERFORM 4301-PTTEIKIRRK-UPD-SEC
                IF    ( SPA-ERRCD       NOT =   SPACE )
                    GO  TO  430-TORIKESI-KOUSHIN-EXT
                END-IF
@@ -3081,155 +3071,32 @@
            EXIT.
       *
       **************************************************************
-      *    ´µ¼ÔÄê´üÀÁµáÍúÎòºï½ü½èÍý
+      *    ´µ¼ÔÄê´üÀÁµáÍúÎò¹¹¿·½èÍý
       **************************************************************
-       4301-PTTEIKIRRK-DEL-SEC         SECTION.
+       4301-PTTEIKIRRK-UPD-SEC         SECTION.
       *
+      *    ´µ¼ÔÄê´üÀÁµá¾ðÊó¹¹¿·
+           MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
            INITIALIZE  PTTEIKIRRK-REC
-           MOVE    SPA-NAI-SRYYM       TO  PTTEIKIRRK-SRYYM
            MOVE    SPA-HOSPID          TO  PTTEIKIRRK-HOSPID
            MOVE    SPA-GMN-PTID        TO  PTTEIKIRRK-PTID
            MOVE    SYU-DENPNUM         TO  PTTEIKIRRK-DENPNUM
+      *
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD        TO  PTTEIKIRRK-UPYMD
+           MOVE    SMCNDATE-HMS        TO  PTTEIKIRRK-UPHMS
+      *
            MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
-           MOVE    "PTTEIKIRRK-KEY6"   TO  ORC-DBPATH
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL "ORCMCPSUB"            USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
-      *
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    "PTTEIKIRRK-KEY6"
-                                       TO  ORC-DBPATH
-               PERFORM 980-PTTEIKIRRK-READ-SEC
-           ELSE
-               MOVE    1               TO  FLG-PTTEIKIRRK
-           END-IF
-      *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "PTTEIKIRRK-KEY6"   TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
-      *
-           IF    ( FLG-PTTEIKIRRK  =    1 )
-               MOVE    "1004"      TO   SPA-ERRCD
-               GO  TO  4301-PTTEIKIRRK-DEL-EXT
-           END-IF
-      *
-      *    ´µ¼ÔÄê´üÀÁµá¾ðÊóºï½ü
-           MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
-           MOVE    "PTTEIKIRRK-KEY"    TO  ORC-DBPATH
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    PATH-TBL-PTTEIKIRRK-UPD4
+                                       TO  MCP-PATH
+           PERFORM 910-DBUPDATE-SEC
            IF    ( MCP-RC          NOT =   ZERO )
                MOVE    "1004"      TO  SPA-ERRCD
-               GO  TO  4301-PTTEIKIRRK-DEL-EXT
+               GO  TO  4301-PTTEIKIRRK-UPD-EXT
            END-IF
       *
            .
-       4301-PTTEIKIRRK-DEL-EXT.
-           EXIT.
-      **************************************************************
-      *    Äê´üÀÁµáÍúÎò¹¹¿·½èÍý
-      **************************************************************
-       4301-TEIKIRRK-UPD-SEC           SECTION.
-      *
-           MOVE    ZERO            TO  FLG-PTTEIKIRRK
-      *
-           INITIALIZE  TEIKIRRK-REC
-           MOVE    PTTEIKIRRK-SRYYM
-                                   TO  TEIKIRRK-SRYYM
-           MOVE    PTTEIKIRRK-SAKKBN
-                                   TO  TEIKIRRK-SAKKBN
-      *
-           MOVE    TEIKIRRK-REC    TO  MCPDATA-REC
-           MOVE    "TEIKIRRK-KEY"  TO  ORC-DBPATH
-           MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    "TEIKIRRK-KEY"  TO  ORC-DBPATH
-               PERFORM 980-TEIKIRRK-READ-SEC
-           ELSE
-               MOVE    1           TO  FLG-PTTEIKIRRK
-           END-IF
-      *
-           MOVE    "TEIKIRRK-KEY"  TO  ORC-DBPATH
-           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
-      *
-           IF    ( FLG-PTTEIKIRRK  =   ZERO )
-      *
-      *    // ¹¹¿·½èÍý //
-      *
-               COMPUTE TEIKIRRK-SKYTEN
-                   =   TEIKIRRK-SKYTEN
-                   + ( SYU-TOTAL-HKNTEN      *   -1 )
-               COMPUTE TEIKIRRK-SKYMONEY
-                   =   TEIKIRRK-SKYMONEY
-                   + ( SYU-SKYMONEY          *   -1 )
-      *
-               MOVE    SPA-TERMID      TO  TEIKIRRK-TERMID
-               PERFORM 800-MCNDATE-SEC
-               MOVE    SMCNDATE-YMD    TO  TEIKIRRK-UPYMD
-               MOVE    SMCNDATE-HMS    TO  TEIKIRRK-UPHMS
-      *
-               MOVE    TEIKIRRK-REC    TO  MCPDATA-REC
-               MOVE    "TEIKIRRK-KEY"  TO  ORC-DBPATH
-               MOVE    "DBUPDATE"      TO  MCP-FUNC
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
-               IF    ( MCP-RC          NOT =   ZERO )
-                   MOVE    "1005"      TO  SPA-ERRCD
-                   GO  TO  4301-TEIKIRRK-UPD-EXT
-               END-IF
-           ELSE
-      *
-      *    // ÄÉ²Ã½èÍý //
-      *
-               INITIALIZE  TEIKIRRK-REC
-               MOVE    PTTEIKIRRK-SRYYM    TO  TEIKIRRK-SRYYM
-               MOVE    PTTEIKIRRK-SAKKBN   TO  TEIKIRRK-SAKKBN
-               MOVE    PTTEIKIRRK-SKYSTYMD TO  TEIKIRRK-SKYSTYMD
-               MOVE    PTTEIKIRRK-SKYEDYMD TO  TEIKIRRK-SKYEDYMD
-               COMPUTE TEIKIRRK-SKYTEN
-                   =   SYU-TOTAL-HKNTEN    *   -1
-               COMPUTE TEIKIRRK-SKYMONEY
-                   =   SYU-SKYMONEY        *   -1
-               MOVE    SPA-TERMID      TO  TEIKIRRK-TERMID
-      *
-               PERFORM 800-MCNDATE-SEC
-               MOVE    SMCNDATE-YMD    TO  TEIKIRRK-CREYMD
-                                           TEIKIRRK-UPYMD
-               MOVE    SMCNDATE-HMS    TO  TEIKIRRK-UPHMS
-      *
-               MOVE    TEIKIRRK-REC    TO  MCPDATA-REC
-               MOVE    "TEIKIRRK-KEY"  TO  ORC-DBPATH
-               MOVE    "DBINSERT"      TO  MCP-FUNC
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
-               IF    ( MCP-RC          NOT =   ZERO )
-                   MOVE    "1005"      TO  SPA-ERRCD
-                   GO  TO  4301-TEIKIRRK-UPD-EXT
-               END-IF
-           END-IF
-      *
-           .
-       4301-TEIKIRRK-UPD-EXT.
+       4301-PTTEIKIRRK-UPD-EXT.
            EXIT.
       **************************************************************
       *    ºÆ·×»»½èÍý
@@ -4693,49 +4560,6 @@
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼ÔÄê´üÀÁµáÍúÎòÆÉ¹þ
-      *****************************************************************
-       980-PTTEIKIRRK-READ-SEC          SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  PTTEIKIRRK-REC
-               MOVE    ZERO            TO  FLG-PTTEIKIRRK
-           ELSE
-               INITIALIZE                  PTTEIKIRRK-REC
-               MOVE    1               TO  FLG-PTTEIKIRRK
-           END-IF
-      *
-           .
-       980-PTTEIKIRRK-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    Äê´üÀÁµáÍúÎòÆÉ¹þ
-      *****************************************************************
-       980-TEIKIRRK-READ-SEC           SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  TEIKIRRK-REC
-               MOVE    ZERO            TO  FLG-TEIKIRRK
-           ELSE
-               INITIALIZE                  TEIKIRRK-REC
-               MOVE    1               TO  FLG-TEIKIRRK
-           END-IF
-      *
-           .
-       980-TEIKIRRK-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
       *****************************************************************
        900-TBL-SELECT-SEC              SECTION.
@@ -4938,6 +4762,20 @@
            .
       *
        910-DBDELETE-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ä£Â£Õ£Ð£Ä£Á£Ô£Å½èÍý
+      *****************************************************************
+       910-DBUPDATE-SEC                SECTION.
+      *
+           MOVE    "DBUPDATE"          TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       910-DBUPDATE-EXT.
            EXIT.
       *****************************************************************
       *    ÇÓÂ¾À©¸æ½èÍý

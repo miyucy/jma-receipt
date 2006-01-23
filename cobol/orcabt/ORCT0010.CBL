@@ -146,10 +146,12 @@
                    07  WRK-KIKANST         PIC X(08).
                    07  WRK-KIKANED         PIC X(08).
                    07  WRK-KIKANSAKKBN     PIC 9(01).
+                   07  WRK-KIKANKBT        PIC 9(01).
       *
            03  WRK-TEIKISTYMD              PIC X(08).
            03  WRK-TEIKIEDYMD              PIC X(08).
            03  WRK-TEIKISAKKBN             PIC X(01).
+           03  WRK-TEIKIKBT                PIC X(01).
            03  WRK-TEIKIGETUMATU           PIC X(01).
       *
            03  WRK-YMD.
@@ -166,6 +168,7 @@
            03  WRK-SEIKYUEDYMD             PIC X(08).
            03  WRK-CNT                     PIC 9(05).
            03  WRK-SAKKBN                  PIC X(01).
+           03  WRK-KBT                     PIC X(01).
            03  WRK-STR                     PIC X(200).
            03  WRK-LEN                     PIC 9(05).
            03  WRK-SHO                     PIC 9(05).
@@ -484,6 +487,7 @@
                    MOVE    TEIKI1P-KIKAN-ED (IDX10)
                                    TO  WRK-KIKANED (WRK-CNT)
                    MOVE    IDX10   TO  WRK-KIKANSAKKBN (WRK-CNT)
+                   MOVE    IDX10   TO  WRK-KIKANKBT    (WRK-CNT)
                END-IF
       *
            END-PERFORM
@@ -497,6 +501,8 @@
                                    TO  WRK-TEIKIEDYMD
                MOVE    WRK-KIKANSAKKBN (IDX10)
                                    TO  WRK-TEIKISAKKBN
+               MOVE    WRK-KIKANKBT    (IDX10)
+                                   TO  WRK-TEIKIKBT
       *
       *        一括処理（メイン）
                PERFORM 20011-IKKATU-SYORI-MAIN-SEC
@@ -613,6 +619,8 @@
            ELSE
                MOVE    "9"             TO  WRK-SAKKBN
            END-IF
+      *
+           MOVE    WRK-TEIKIKBT        TO  WRK-KBT
       *
            .
        20011-TAISYO-CHK-EXT.
@@ -814,6 +822,7 @@
            MOVE    SYU-HOSPID          TO  TEIKI01-HOSPID
            MOVE    SYU-PTID            TO  TEIKI01-PTID
            MOVE    WRK-SAKKBN          TO  TEIKI01-SAKKBN
+           MOVE    WRK-KBT             TO  TEIKI01-KBT
            MOVE    WRK-SEIKYUSTYMD     TO  TEIKI01-SKYSTYMD
            MOVE    WRK-SEIKYUEDYMD     TO  TEIKI01-SKYEDYMD
            MOVE    SYU-HKNCOMBINUM     TO  TEIKI01-HKNCOMBINUM
@@ -1029,6 +1038,8 @@
                                        TO  WRK-TEIKIEDYMD
                MOVE    WRK-KIKANSAKKBN (IDX10)
                                        TO  WRK-SAKKBN
+               MOVE    WRK-KIKANKBT    (IDX10)
+                                       TO  WRK-KBT
       *        入院履歴読み込み
       *
                MOVE    ZERO            TO  FLG-PTNYUINRRK
@@ -1080,19 +1091,6 @@
            INITIALIZE  WRK-KIKAN-TBL
            MOVE        ZERO            TO  WRK-CNT
       *
-      *    作成区分が“９”の場合、月末時のみ指定
-           IF    ( SYS-5012-SAKKBN     =   "9" )
-               MOVE    1               TO  WRK-KIKAN-MAX
-               MOVE    SYS-5012-SRYYM  (1 : 6)
-                                       TO  WRK-KIKANST (1)(1 : 6)
-               MOVE    "01"            TO  WRK-KIKANST (1)(7 : 2)
-               MOVE    SYS-5012-SRYYM      TO  WRK-YMD
-               PERFORM 20021-GETUMATU-GET-SEC
-               MOVE    WRK-YMD     TO  WRK-KIKANED (1)
-               MOVE    9               TO  WRK-KIKANSAKKBN (1)
-               GO  TO  20021-SEIKYU-KIKAN-GET-EXT
-           END-IF
-      *
       *    請求期間編集
            INITIALIZE                      SYS-5010-REC
            MOVE    "5010"              TO  SYS-5010-KANRICD
@@ -1107,6 +1105,29 @@
            ELSE
                MOVE    ERR-MES02           TO  WRK-TEIKIERR
                PERFORM 500-ERR-HENSYU-SEC
+           END-IF
+      *
+      *    作成区分が“９”の場合、月末時のみ指定
+           IF    ( SYS-5012-SAKKBN     =   "9" )
+               MOVE    1               TO  WRK-KIKAN-MAX
+               MOVE    SYS-5012-SRYYM  (1 : 6)
+                                       TO  WRK-KIKANST (1)(1 : 6)
+               MOVE    "01"            TO  WRK-KIKANST (1)(7 : 2)
+               MOVE    SYS-5012-SRYYM      TO  WRK-YMD
+               PERFORM 20021-GETUMATU-GET-SEC
+               MOVE    WRK-YMD         TO  WRK-KIKANED (1)
+               MOVE    9               TO  WRK-KIKANSAKKBN (1)
+      *
+               EVALUATE    TRUE
+               WHEN  ( SYS-5010-SEIKYU-DAY1    =   99 )
+                   MOVE    1           TO  WRK-KIKANKBT (1)
+               WHEN  ( SYS-5010-SEIKYU-DAY2    =   99 )
+                   MOVE    2           TO  WRK-KIKANKBT (1)
+               WHEN    OTHER
+                   MOVE    3           TO  WRK-KIKANKBT (1)
+               END-EVALUATE
+      *
+               GO  TO  20021-SEIKYU-KIKAN-GET-EXT
            END-IF
       *
            IF    ( SYS-5012-SAKKBN =   "0" OR  "1" )
@@ -1126,6 +1147,7 @@
                                        TO  WRK-KIKANED (WRK-CNT)(7 : 2)
                END-IF
                MOVE    1               TO  WRK-KIKANSAKKBN (WRK-CNT)
+               MOVE    1               TO  WRK-KIKANKBT    (WRK-CNT)
            END-IF
       *
            IF    ( SYS-5012-SAKKBN =   "0" OR  "2" )
@@ -1147,6 +1169,7 @@
                                        TO  WRK-KIKANED (WRK-CNT)(7 : 2)
                END-IF
                MOVE    2               TO  WRK-KIKANSAKKBN (WRK-CNT)
+               MOVE    2               TO  WRK-KIKANKBT    (WRK-CNT)
            END-IF
       *
            IF    ( SYS-5012-SAKKBN =   "0" OR  "3" )
@@ -1168,6 +1191,7 @@
                                        TO  WRK-KIKANED (WRK-CNT)(7 : 2)
                END-IF
                MOVE    3               TO  WRK-KIKANSAKKBN (WRK-CNT)
+               MOVE    3               TO  WRK-KIKANKBT    (WRK-CNT)
            END-IF
       *
            IF    ( WRK-KIKAN-MAX   <=  ZERO )

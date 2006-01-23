@@ -145,13 +145,6 @@
            COPY    "CPPTNYUINRRK.INC"  REPLACING  //PTNYUINRRK-//
                                        BY         //TRRK-//.
       *
-      *    定期請求履歴集計用ワーク
-       01  SUMTEIKIRRK-REC.
-         02    SUMTEIKIRRK-MAX         PIC 9(05).
-         02    SUMTEIKIRRK-OCC     OCCURS 50.
-           COPY  "CPTEIKIRRK.INC"  REPLACING  //TEIKIRRK-//
-                                           BY //SUMTEIKIRRK-//.
-      *
            COPY    "COMMON-SPA".
       *
       *****************************************************************
@@ -200,10 +193,6 @@
       *    患者定期請求履歴
         01 PTTEIKIRRK-REC.
            COPY     "CPPTTEIKIRRK.INC".
-      *
-      *    定期請求履歴
-        01 TEIKIRRK-REC.
-           COPY     "CPTEIKIRRK.INC".
       *
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
@@ -257,6 +246,9 @@
                                        BY         //LNK-PTNYUINRRK-//.
       *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
+      *
+      *    定期請求ジョブチェック
+           COPY    "CPORCSTEIKIJOB.INC".
       *
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
@@ -688,17 +680,10 @@
            MOVE    ZERO                TO  FLG-TEIKIJOB
       *
       *    ジョブ管理チェック処理
-           MOVE    "CHK"               TO  SJOBKANRI-MODE
-           INITIALIZE                      JOBKANRI-REC
-           MOVE    CONST-JOB-JOBID     TO  JOB-JOBID
-           MOVE    CONST-JOB-SHELLID   TO  JOB-SHELLID
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA
-                                   JOBKANRI-REC
-           IF    ( SJOBKANRI-RETURN    =   ZERO )
-               IF    ( JOB-ENDYMD      =   SPACE )
-                   MOVE    1           TO  FLG-TEIKIJOB
-               END-IF
+           INITIALIZE                  STEIKIJOB-AREA
+           CALL    "ORCSTEIKIJOB"      USING   STEIKIJOB-AREA
+           IF    ( STEIKIJOB-ERRCD NOT =   SPACE )
+                   MOVE    "1001"      TO  SPA-ERRCD
            END-IF
       *
            .
@@ -848,7 +833,17 @@
                MOVE    "1"             TO  WRK-ZOGENPTN
                MOVE    1               TO  WRK-ZOGEN
                PERFORM 800-CALENDAR-SEC
-               MOVE    WRK-KEISANYMD   TO  WRK-SKYSTYMD
+               IF    ( PTNYUINRRK-TEIKI-SEIKYUKBN   =   "2" )
+                   IF   ( PTNYUINRRK-NYUINYMD (1 : 6)
+                                       <   WRK-KEISANYMD    (1 : 6))
+                       MOVE    WRK-KEISANYMD (1 : 6)
+                                       TO  WRK-SKYSTYMD (1 : 6)
+                       MOVE    "01"    TO  WRK-SKYSTYMD (7 : 2)
+                   END-IF
+               ELSE
+                       MOVE    WRK-KEISANYMD
+                                       TO  WRK-SKYSTYMD
+               END-IF
       *
                MOVE    1               TO  FLG-TEIKIARI
       *
@@ -1215,14 +1210,9 @@
       *****************************************************************
        2101-TORIKESI-KOUSHIN-SEC       SECTION.
       *
-      *    患者定期請求履歴を削除する
+      *    患者定期請求履歴を更新する
            IF    ( FLG-END         =   ZERO )
-               PERFORM 2101-PTTEIKIRRK-DEL-SEC
-           END-IF
-      *
-      *    定期請求履歴を更新する
-           IF    ( FLG-END         =   ZERO )
-               PERFORM 2101-TEIKIRRK-UPD-SEC
+               PERFORM 2101-PTTEIKIRRK-UPD-SEC
            END-IF
       *
       *    収納データを更新する
@@ -1422,206 +1412,36 @@
        2101-SYUMEI-SAKUSEI-EXT.
            EXIT.
       *****************************************************************
-      *    患者定期請求履歴削除処理
+      *    患者定期請求履歴更新処理
       *****************************************************************
-       2101-PTTEIKIRRK-DEL-SEC         SECTION.
+       2101-PTTEIKIRRK-UPD-SEC         SECTION.
       *
-           INITIALIZE  SUMTEIKIRRK-REC
            MOVE    ZERO                TO  FLG-PTTEIKIRRK
       *
-           INITIALIZE  PTTEIKIRRK-REC
-           MOVE    SODR-HOSPID         TO  PTTEIKIRRK-HOSPID
-           MOVE    SODR-PTID           TO  PTTEIKIRRK-PTID
-           MOVE    WRK-SKYSTYMD        TO  PTTEIKIRRK-SKYSTYMD
-           MOVE    SODR-SRYYMD         TO  PTTEIKIRRK-SKYEDYMD
-           MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
-           MOVE    "tbl_ptteikirrk"    TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  PTTEIKIRRK-REC
-           ELSE
-               MOVE    1               TO  FLG-PTTEIKIRRK
-               INITIALIZE  PTTEIKIRRK-REC
-           END-IF
-      *
-           PERFORM UNTIL ( FLG-PTTEIKIRRK  NOT =   ZERO )
-      *
-               IF    ( PTTEIKIRRK-RRKNUM       =   TRRK-RRKNUM )
-      *
-      *            定期履歴管理情報集計
-                   PERFORM 21011-TEIKIRRK-SUM-SEC
-               END-IF
-      *
-               MOVE    "tbl_ptteikirrk"    TO  MCP-TABLE
-               MOVE    "key4"              TO  MCP-PATHNAME
-               PERFORM 910-DBFETCH-SEC
-               IF    ( MCP-RC              =   ZERO )
-                   MOVE    MCPDATA-REC TO  PTTEIKIRRK-REC
-               ELSE
-                   MOVE    1           TO  FLG-PTTEIKIRRK
-                   INITIALIZE  PTTEIKIRRK-REC
-               END-IF
-      *
-           END-PERFORM
-      *
-           MOVE    "tbl_ptteikirrk"    TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-      *    患者請求履歴削除
+      *    患者請求履歴更新
            INITIALIZE  PTTEIKIRRK-REC
            MOVE    SODR-HOSPID         TO  PTTEIKIRRK-HOSPID
            MOVE    SODR-PTID           TO  PTTEIKIRRK-PTID
            MOVE    WRK-SKYSTYMD        TO  PTTEIKIRRK-SKYSTYMD
            MOVE    SODR-SRYYMD         TO  PTTEIKIRRK-SKYEDYMD
            MOVE    TRRK-RRKNUM         TO  PTTEIKIRRK-RRKNUM
+           MOVE    SODR-UPYMD          TO  PTTEIKIRRK-UPYMD
+           MOVE    SODR-UPHMS          TO  PTTEIKIRRK-UPHMS
            MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptteikirrk"    TO  MCP-TABLE
-           MOVE    "del3"              TO  MCP-PATHNAME
-           PERFORM 910-DBDELETE-SEC
+           MOVE    "upd2"              TO  MCP-PATHNAME
+           PERFORM 910-DBUPDATE-SEC
            IF    ( MCP-RC          NOT =   ZERO )
-               DISPLAY "ORCSDR02 ERROR 006:PTTEIKIRRK DELETE ERR"
+               DISPLAY "ORCSDR02 ERROR 006:PTTEIKIRRK UPDATE ERR"
                        " PTID="        SODR-PTID
                        " KARTE-KEY="   SODR-UID8
                MOVE    1               TO  FLG-END
            END-IF
       *
            .
-       2101-PTTEIKIRRK-DEL-EXT.
+       2101-PTTEIKIRRK-UPD-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    定期請求管理情報集計（マイナス分）
-      *****************************************************************
-       21011-TEIKIRRK-SUM-SEC          SECTION.
-      *
-           INITIALIZE  SYUNOU-REC
-      *
-           MOVE    SODR-HOSPID         TO  SYU-HOSPID
-           MOVE    SODR-PTID           TO  SYU-PTID
-           MOVE    "1"                 TO  SYU-NYUGAIKBN
-           MOVE    PTTEIKIRRK-DENPNUM  TO  SYU-DENPNUM
-           MOVE    SYUNOU-REC          TO  MCPDATA-REC
-           MOVE    "tbl_syunou"        TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  SYUNOU-REC
-           ELSE
-               INITIALIZE                  SYUNOU-REC
-           END-IF
-      *
-           MOVE    "tbl_syunou"        TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-      *    定期請求管理情報集計（マイナス分）
-           PERFORM VARYING IDX1   FROM    1   BY  1
-                   UNTIL ( IDX1   >   100 )
-               EVALUATE SUMTEIKIRRK-SRYYM (IDX1)
-                                   ALSO    SUMTEIKIRRK-SAKKBN (IDX1)
-               WHEN    SPACE       ALSO    ANY
-                   MOVE    PTTEIKIRRK-SRYYM
-                                   TO  SUMTEIKIRRK-SRYYM   (IDX1)
-                   MOVE    PTTEIKIRRK-SAKKBN
-                                   TO  SUMTEIKIRRK-SAKKBN  (IDX1)
-                   MOVE    PTTEIKIRRK-SKYSTYMD
-                                   TO  SUMTEIKIRRK-SKYSTYMD(IDX1)
-                   MOVE    PTTEIKIRRK-SKYEDYMD
-                                   TO  SUMTEIKIRRK-SKYEDYMD(IDX1)
-                   COMPUTE SUMTEIKIRRK-SKYTEN (IDX1)
-                       =   SYU-TOTAL-HKNTEN    *   -1
-                   COMPUTE SUMTEIKIRRK-SKYMONEY (IDX1)
-                       =   SYU-SKYMONEY        *   -1
-                   COMPUTE SUMTEIKIRRK-MAX
-                       =   SUMTEIKIRRK-MAX     +   1
-                   MOVE    100         TO  IDX1
-               WHEN    PTTEIKIRRK-SRYYM
-                                   ALSO    PTTEIKIRRK-SAKKBN
-                   COMPUTE SUMTEIKIRRK-SKYTEN (IDX1)
-                       =   SUMTEIKIRRK-SKYTEN (IDX1)
-                       + ( SYU-TOTAL-HKNTEN    *  -1 )
-                   COMPUTE SUMTEIKIRRK-SKYMONEY (IDX1)
-                       =   SUMTEIKIRRK-SKYMONEY (IDX1)
-                       + ( SYU-SKYMONEY        *  -1 )
-                   MOVE    100         TO  IDX1
-               END-EVALUATE
-           END-PERFORM
-      *
-           .
-       21011-TEIKIRRK-SUM-EXT.
-           EXIT. 
-      *****************************************************************
-      *    定期請求履歴更新処理
-      *****************************************************************
-       2101-TEIKIRRK-UPD-SEC           SECTION.
-      *
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1        >   SUMTEIKIRRK-MAX )
-                    OR   ( FLG-END NOT =   ZERO )
-      *
-               INITIALIZE  TEIKIRRK-REC
-      *
-               MOVE    SUMTEIKIRRK-OCC (IDX1)
-                                       TO  TEIKIRRK-REC
-      *
-               MOVE    TEIKIRRK-REC    TO  MCPDATA-REC
-               MOVE    "tbl_teikirrk"  TO  MCP-TABLE
-               MOVE    "key"           TO  MCP-PATHNAME
-               PERFORM 910-DBSELECT-SEC
-      *        更新対象のデータがすでに存在する場合は更新
-      *        存在しない場合は追加
-               IF    ( MCP-RC        =   ZERO )
-                   MOVE    MCPDATA-REC TO  TEIKIRRK-REC
-      *
-                   COMPUTE TEIKIRRK-SKYTEN
-                       =   TEIKIRRK-SKYTEN
-                       +   SUMTEIKIRRK-SKYTEN   (IDX1)
-      *
-                   COMPUTE TEIKIRRK-SKYMONEY
-                       =   TEIKIRRK-SKYMONEY
-                       +   SUMTEIKIRRK-SKYMONEY (IDX1)
-      *
-                   MOVE    SODR-OPID       TO  TEIKIRRK-OPID
-                   MOVE    SODR-UPYMD      TO  TEIKIRRK-UPYMD
-                   MOVE    SODR-UPHMS      TO  TEIKIRRK-UPHMS
-      *
-      *            定期請求管理データ更新
-                   MOVE    TEIKIRRK-REC    TO  MCPDATA-REC
-                   MOVE    "tbl_teikirrk"  TO  MCP-TABLE
-                   MOVE    "key"           TO  MCP-PATHNAME
-                   PERFORM 910-DBUPDATE-SEC
-                   IF    ( MCP-RC      NOT =   ZERO )
-                       DISPLAY "ORCSDR02 ERROR 007:TEIKIRRK UPDATE ERR"
-                               " PTID="        SODR-PTID
-                               " KARTE-KEY="   SODR-UID8
-                       MOVE    1           TO  FLG-END
-                   END-IF
-               ELSE
-      *
-                   MOVE    SODR-OPID       TO  TEIKIRRK-OPID
-                   MOVE    SODR-UPYMD      TO  TEIKIRRK-CREYMD
-                                               TEIKIRRK-UPYMD
-                   MOVE    SODR-UPHMS      TO  TEIKIRRK-UPHMS
-      *
-                   MOVE    TEIKIRRK-REC    TO  MCPDATA-REC
-                   MOVE    "tbl_teikirrk"  TO  MCP-TABLE
-                   MOVE    "key"           TO  MCP-PATHNAME
-                   PERFORM 910-DBINSERT-SEC
-                   IF    ( MCP-RC      NOT =   ZERO )
-                       DISPLAY "ORCSDR02 ERROR 008:TEIKIRRK INSERT ERR"
-                               " PTID="        SODR-PTID
-                               " KARTE-KEY="   SODR-UID8
-                       MOVE    1           TO  FLG-END
-                   END-IF
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-       2101-TEIKIRRK-UPD-EXT.
-           EXIT. 
       *****************************************************************
       *    エラー情報編集処理
       *****************************************************************

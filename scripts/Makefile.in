@@ -63,6 +63,7 @@ shell_sources = \
 	allways/orcbs01.sh.in \
 	monthly/receipt_prv.sh.in \
 	allways/cachedl.sh.in \
+	monthly/teiki3.sh.in \
 
 ruby_scripts = \
 	daily/print-data.rb \

@@ -76,14 +76,14 @@
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-SS          PIC X(02).
       *
-       01  WRK-CONS-AREA.
-      *    ジョブ管理ＤＢのキー値  
-           03  WRK-CONS-JOB-SHELLID
-                                   PIC X(08)   VALUE   "TEIKI1".
-           03  WRK-CONS-JOB-JOBID  PIC 9(07)   VALUE   1.
-           03  WRK-CONS-JOB-SHELLID1
-                                   PIC X(08)   VALUE   "TEIKI2".
-           03  WRK-CONS-JOB-JOBID1 PIC 9(07)   VALUE   1.
+       01  CONST-AREA.
+      *    ジョブ管理ＤＢのキー値
+           03  CONST-SHELLID       PIC X(08)   VALUE   "TEIKI1".
+           03  CONST-JOBID         PIC 9(07)   VALUE   1.
+           03  CONST-SHELLID2      PIC X(08)   VALUE   "TEIKI2".
+           03  CONST-JOBID2        PIC 9(07)   VALUE   1.
+           03  CONST-SHELLID3      PIC X(08)   VALUE   "TEIKI3".
+           03  CONST-JOBID3        PIC 9(07)   VALUE   1.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -121,6 +121,7 @@
            COPY    "O02.INC".
            COPY    "O03.INC".
            COPY    "O04.INC".
+           COPY    "O05.INC".
            COPY    "O99.INC".
            COPY    "OERR.INC".
            COPY    "OID1.INC".
@@ -217,19 +218,19 @@
            MOVE    ZERO                TO  O99-COUNT
       *
       *    ジョブ管理チェック処理
-           MOVE    "CHK"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           IF    ( SPA-MOTOPG      =   "O03" )
-               MOVE    WRK-CONS-JOB-JOBID1
-                                   TO  JOB-JOBID
-               MOVE    WRK-CONS-JOB-SHELLID1
-                                   TO  JOB-SHELLID
-           ELSE
-               MOVE    WRK-CONS-JOB-JOBID
-                                   TO  JOB-JOBID
-               MOVE    WRK-CONS-JOB-SHELLID
-                                   TO  JOB-SHELLID
-           END-IF
+           MOVE    "CHK"               TO  SJOBKANRI-MODE
+           INITIALIZE                      JOBKANRI-REC
+           EVALUATE    SPA-MOTOPG
+           WHEN    "O03"
+               MOVE    CONST-JOBID2    TO  JOB-JOBID
+               MOVE    CONST-SHELLID2  TO  JOB-SHELLID
+           WHEN    "O05"
+               MOVE    CONST-JOBID3    TO  JOB-JOBID
+               MOVE    CONST-SHELLID3  TO  JOB-SHELLID
+           WHEN    OTHER
+               MOVE    CONST-JOBID     TO  JOB-JOBID
+               MOVE    CONST-SHELLID   TO  JOB-SHELLID
+           END-EVALUATE
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA 
                                    JOBKANRI-REC 
@@ -253,7 +254,7 @@
                                        TO  WRK-SS
                MOVE    WRK-HENTIME     TO  O99-ENDTIME  (IDX)
                MOVE    JOB-YOBI        TO  O99-ERRMSG   (IDX)
-               IF    ( SPA-MOTOPG  =   "O03" )
+               IF    ( SPA-MOTOPG  =   "O03" OR "O05")
                    COMPUTE O99-PROGRESSBAR-VALUE  =
                            JOB-STEPCNT  /  1 *   100
                ELSE
@@ -283,7 +284,7 @@
                                                 TO  O99-MSG
                    MOVE   100                   TO
                                             O99-PROGRESSBAR-VALUE                             
-                   IF    ( SPA-MOTOPG  =   "O03" )
+                   IF    ( SPA-MOTOPG  =   "O03" OR "O05" )
                        MOVE    "B01"                TO  MCP-WIDGET
                    ELSE
                        MOVE    WIDGET-NORMAL        TO  O99-B12-STATE

@@ -59,7 +59,7 @@ ERR_FILE=${10}
 ##   -- ORCT0040 START --  
         $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCT0040 -parameter "$1,$2,$3,$4,$5,$6,$7,$8,$9,${10}"
         if  [ -e $ERR_FILE ]; then
-            $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCT0050 -parameter "$1,$2,$3,$4,$5,$6,$7,$8,$9,${10}"
+            $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCT0050 -parameter "$7,$8,${10}"
             exit  
         fi 
 

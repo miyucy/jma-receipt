@@ -161,6 +161,7 @@
            03  IDX1                    PIC 9(04). 
            03  IDX2                    PIC 9(04). 
            03  IDX3                    PIC 9(04). 
+           03  IDX4                    PIC 9(04). 
       *
       *    一時領域
        01  WRK-AREA.
@@ -175,8 +176,6 @@
            03  WRK-SHO                 PIC 9(05).
            03  WRK-AMARI               PIC 9(05).
            03  WRK-CREYMD              PIC X(08).
-           03  WRK-TEIKIRRK-SKYTEN     PIC S9(09).
-           03  WRK-TEIKIRRK-SKYMONEY   PIC S9(09).
            03  WRK-DENPEDANUM          PIC 9(02).
            03  WRK-NYUKINRENNUM        PIC 9(02).
            03  WRK-KUGIRI              PIC X(02).
@@ -185,6 +184,10 @@
            03  WRK-NYUKIN-BUNRUI       PIC X(02).
            03  WRK-NYUKIN-JYOTAI       PIC X(01).
            03  WRK-NYUKIN-KBN          PIC X(01).
+           03  WRK-KBT-G.
+               05  WRK-KBT-9           PIC 9(01).
+               05  WRK-KBT-R   REDEFINES   WRK-KBT-9.
+                   07  WRK-KBT         PIC X(01).
       *
        01  SRH-AREA.
            03  SRH-IDX                     PIC 9(05).
@@ -249,18 +252,6 @@
          02    SUMTEIKIKANRI-OCC       OCCURS 50.
            COPY  "CPTEIKIKANRI.INC"    REPLACING  //TEIKIKANRI-//
                                        BY         //SUMTEIKIKANRI-//.
-      *
-      *    定期請求履歴集計用ワーク
-       01  SUMTEIKIRRK-REC.
-         02    SUMTEIKIRRK-MAX         PIC 9(05).
-         02    SUMTEIKIRRK-OCC         OCCURS 500.
-           COPY  "CPTEIKIRRK.INC"      REPLACING  //TEIKIRRK-//
-                                       BY         //SUMTEIKIRRK-//.
-      *
-      *    定期請求履歴情報ワーク
-       01  WKTEIKIRRK-REC.
-           COPY  "CPTEIKIRRK.INC"      REPLACING  //TEIKIRRK-//
-                                       BY         //WKTEIKIRRK-//.
       *
       *    日別収納退避ワーク
        01  WKSYUDAY-REC.
@@ -388,7 +379,6 @@
                                        WRK-AREA
                                        SPA-AREA
                                        SUMTEIKIKANRI-REC
-                                       SUMTEIKIRRK-REC
       *
            UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
                                        INTO    TEIKI1P-ARG1
@@ -533,8 +523,10 @@
       *    定期請求管理情報更新処理
            PERFORM 2005-TEIKIKANRI-KOUSIN-SEC
       *
-      *    定期請求履歴情報更新処理
-           PERFORM 2006-TEIKIRRK-KOUSIN-SEC
+           IF    ( TEIKI1P-SYOKBN  =   "1" )
+      *        定期請求履歴情報更新処理
+               PERFORM 2006-TEIKIRRK-KOUSIN-SEC
+           END-IF
       *
            MOVE    1                   TO  FLG-END
       *
@@ -559,9 +551,6 @@
       *
       *        収納データ更新処理
                PERFORM 20021-SYUNOU-KOUSIN-SEC
-      *
-      *        定期請求管理情報集計（マイナス分）
-               PERFORM 20021-TEIKIRRK-SUM-SEC
       *
       *        請求取消対象収納ファイル読込
                PERFORM 910-TEIKI07-READ-SEC
@@ -704,24 +693,23 @@
       *****************************************************************
        20021-PTTEIKIRRK-KOUSIN-SEC     SECTION.
       *
-      *    伝票番号より削除対象のデータを取得
-      *    （存在しない場合はエラー）
            INITIALIZE                      PTTEIKIRRK-REC
            MOVE    TEIKI07-HOSPID      TO  PTTEIKIRRK-HOSPID
            MOVE    TEIKI07-PTID        TO  PTTEIKIRRK-PTID
            MOVE    TEIKI07-DENPNUM     TO  PTTEIKIRRK-DENPNUM
       *
-           PERFORM 900-PTTEIKIRRK-KEY6-SEL-SEC
-           IF    ( FLG-PTTEIKIRRK  NOT =   ZERO )
-               MOVE    PTTEIKIRRK-PTID TO  ERR-PTID
-               MOVE    ERR-MES05       TO  ERR-ERRMSG
-               PERFORM 800-ERRMSG-EDIT-SEC
-           END-IF
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD        TO  PTTEIKIRRK-UPYMD
+           MOVE    SMCNDATE-HMS        TO  PTTEIKIRRK-UPHMS
       *
-      *    患者定期請求履歴を削除
+      *    患者定期請求履歴を更新
            MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
-           MOVE    "PTTEIKIRRK-KEY"    TO  ORC-DBPATH
-           PERFORM 910-DBDELETE-SEC
+           MOVE    "tbl_ptteikirrk"    TO  MCP-TABLE
+           MOVE    "upd4"              TO  MCP-PATHNAME
+           MOVE    "DBUPDATE"          TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF  (   MCP-RC          NOT =   ZERO )
                MOVE    PTTEIKIRRK-PTID TO  ERR-PTID
                MOVE    ERR-MES06       TO  ERR-ERRMSG
@@ -732,47 +720,6 @@
        20021-PTTEIKIRRK-KOUSIN-EXT.
            EXIT. 
       *
-      *****************************************************************
-      *    定期請求管理情報集計（マイナス分）
-      *****************************************************************
-       20021-TEIKIRRK-SUM-SEC          SECTION.
-      *
-      *    定期請求管理情報集計（マイナス分）
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   500 )
-               EVALUATE SUMTEIKIRRK-SRYYM (IDX1)
-                                   ALSO    SUMTEIKIRRK-SAKKBN (IDX1)
-               WHEN    SPACE       ALSO    ANY
-                   MOVE    PTTEIKIRRK-SRYYM
-                                   TO  SUMTEIKIRRK-SRYYM   (IDX1)
-                   MOVE    PTTEIKIRRK-SAKKBN
-                                   TO  SUMTEIKIRRK-SAKKBN  (IDX1)
-                   MOVE    PTTEIKIRRK-SKYSTYMD
-                                   TO  SUMTEIKIRRK-SKYSTYMD(IDX1)
-                   MOVE    PTTEIKIRRK-SKYEDYMD
-                                   TO  SUMTEIKIRRK-SKYEDYMD(IDX1)
-                   COMPUTE SUMTEIKIRRK-SKYTEN (IDX1)
-                       =   SYU-TOTAL-HKNTEN      *   -1
-                   COMPUTE SUMTEIKIRRK-SKYMONEY (IDX1)
-                       =   SYU-SKYMONEY          *   -1
-                   COMPUTE SUMTEIKIRRK-MAX
-                       =   SUMTEIKIRRK-MAX     +   1
-                   MOVE    500         TO  IDX1
-               WHEN    PTTEIKIRRK-SRYYM
-                                   ALSO    PTTEIKIRRK-SAKKBN
-                   COMPUTE SUMTEIKIRRK-SKYTEN (IDX1)
-                       =   SUMTEIKIRRK-SKYTEN (IDX1)
-                       + ( SYU-TOTAL-HKNTEN      *   -1 )
-                   COMPUTE SUMTEIKIRRK-SKYMONEY (IDX1)
-                       =   SUMTEIKIRRK-SKYMONEY (IDX1)
-                       + ( SYU-SKYMONEY          *   -1 )
-                   MOVE    500         TO  IDX1
-               END-EVALUATE
-           END-PERFORM
-      *
-           .
-       20021-TEIKIRRK-SUM-EXT.
-           EXIT. 
       *****************************************************************
       *    定期請求情報更新処理（新規追加）
       *****************************************************************
@@ -837,13 +784,6 @@
       *
       *        患者定期請求履歴更新処理
                PERFORM 20031-PTTEIKIRRK-KOUSIN-SEC
-      *
-      *        定期請求管理情報集計（プラス分）
-               MOVE    SYU-TOTAL-HKNTEN
-                                       TO  WRK-TEIKIRRK-SKYTEN
-               MOVE    SYU-SKYMONEY
-                                       TO  WRK-TEIKIRRK-SKYMONEY
-               PERFORM 20031-TEIKIRRK-SUM-SEC
       *
       *        最新病棟番号別集計処理
                PERFORM 20031-NOW-BTUNUM-SUM-SEC
@@ -934,6 +874,9 @@
            MOVE    SYU-SRYYMD (1:6)    TO  PTTEIKIRRK-SRYYM
            MOVE    TEIKI06-SAKKBN      TO  PTTEIKIRRK-SAKKBN
            MOVE    SYU-HKNCOMBINUM     TO  PTTEIKIRRK-HKNCOMBINUM
+           MOVE    ZERO                TO  PTTEIKIRRK-DELFLG
+           MOVE    TEIKI1P-SYOKBN      TO  PTTEIKIRRK-SYOKBN
+           MOVE    TEIKI06-KBT         TO  PTTEIKIRRK-KBT
            MOVE    TEIKI06-SKYSTYMD    TO  PTTEIKIRRK-SKYSTYMD
            MOVE    TEIKI06-SKYEDYMD    TO  PTTEIKIRRK-SKYEDYMD
            MOVE    SYU-TOTAL-HKNTEN    TO  PTTEIKIRRK-SKYTEN
@@ -1212,47 +1155,6 @@
        20031-TEIKIPRT-SAKUSEI-EXT.
             EXIT.
       *****************************************************************
-      *    定期請求管理情報集計（プラス分）
-      *****************************************************************
-       20031-TEIKIRRK-SUM-SEC          SECTION.
-      *
-      *    定期請求管理情報集計（プラス分）
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   500 )
-               EVALUATE SUMTEIKIRRK-SRYYM (IDX1)
-                                   ALSO    SUMTEIKIRRK-SAKKBN (IDX1)
-               WHEN    SPACE       ALSO    ANY
-                   MOVE    PTTEIKIRRK-SRYYM
-                                   TO  SUMTEIKIRRK-SRYYM   (IDX1)
-                   MOVE    PTTEIKIRRK-SAKKBN
-                                   TO  SUMTEIKIRRK-SAKKBN  (IDX1)
-                   MOVE    PTTEIKIRRK-SKYSTYMD
-                                   TO  SUMTEIKIRRK-SKYSTYMD(IDX1)
-                   MOVE    PTTEIKIRRK-SKYEDYMD
-                                   TO  SUMTEIKIRRK-SKYEDYMD(IDX1)
-                   COMPUTE SUMTEIKIRRK-SKYTEN (IDX1)
-                       =   WRK-TEIKIRRK-SKYTEN
-                   COMPUTE SUMTEIKIRRK-SKYMONEY (IDX1)
-                       =   WRK-TEIKIRRK-SKYMONEY
-                   COMPUTE SUMTEIKIRRK-MAX
-                       =   SUMTEIKIRRK-MAX     +   1
-                   MOVE    500         TO  IDX1
-               WHEN    PTTEIKIRRK-SRYYM
-                                   ALSO    PTTEIKIRRK-SAKKBN
-                   COMPUTE SUMTEIKIRRK-SKYTEN (IDX1)
-                       =   SUMTEIKIRRK-SKYTEN (IDX1)
-                       +   WRK-TEIKIRRK-SKYTEN
-                   COMPUTE SUMTEIKIRRK-SKYMONEY (IDX1)
-                       =   SUMTEIKIRRK-SKYMONEY (IDX1)
-                       +   WRK-TEIKIRRK-SKYMONEY
-                   MOVE    500         TO  IDX1
-               END-EVALUATE
-           END-PERFORM
-      *
-           .
-       20031-TEIKIRRK-SUM-EXT.
-           EXIT. 
-      *****************************************************************
       *    定期請求情報更新処理（訂正更新）
       *****************************************************************
        2007-SEIKYU-KOUSIN-SEC          SECTION.
@@ -1313,13 +1215,6 @@
       *
       *        患者定期請求履歴更新処理
                PERFORM 20071-PTTEIKIRRK-KOUSIN-SEC
-      *
-      *        定期請求管理情報集計（プラス分）
-               MOVE    TEIKI09-TSI-SKYTEN
-                                       TO  WRK-TEIKIRRK-SKYTEN
-               MOVE    TEIKI09-TSI-SKYMONEY
-                                       TO  WRK-TEIKIRRK-SKYMONEY
-               PERFORM 20031-TEIKIRRK-SUM-SEC
       *
       *        最新病棟番号別集計処理
                PERFORM 20031-NOW-BTUNUM-SUM-SEC
@@ -1411,12 +1306,15 @@
                PERFORM 800-ERRMSG-EDIT-SEC
            END-IF
       *
+           MOVE    PTTEIKIRRK-CREYMD    TO  WRK-CREYMD
+      *
            INITIALIZE                      PTTEIKIRRK-REC
            MOVE    SYU-HOSPID          TO  PTTEIKIRRK-HOSPID
            MOVE    SYU-PTID            TO  PTTEIKIRRK-PTID
            MOVE    SYU-SRYYMD (1:6)    TO  PTTEIKIRRK-SRYYM
            MOVE    TEIKI09-SAKKBN      TO  PTTEIKIRRK-SAKKBN
            MOVE    SYU-HKNCOMBINUM     TO  PTTEIKIRRK-HKNCOMBINUM
+           MOVE    ZERO                TO  PTTEIKIRRK-DELFLG
            MOVE    TEIKI09-SKYSTYMD    TO  PTTEIKIRRK-SKYSTYMD
            MOVE    TEIKI09-SKYEDYMD    TO  PTTEIKIRRK-SKYEDYMD
       *
@@ -1435,9 +1333,10 @@
       *
            MOVE    1                   TO  PTTEIKIRRK-SKYUPDFLG
       *
+           MOVE    WRK-CREYMD          TO  PTTEIKIRRK-CREYMD
+      *
            PERFORM 800-MCNDATE-SEC
-           MOVE    SMCNDATE-YMD        TO  PTTEIKIRRK-CREYMD
-                                           PTTEIKIRRK-UPYMD
+           MOVE    SMCNDATE-YMD        TO  PTTEIKIRRK-UPYMD
            MOVE    SMCNDATE-HMS        TO  PTTEIKIRRK-UPHMS
       *
       *    患者定期請求データ作成
@@ -1652,77 +1551,42 @@
       *****************************************************************
        2006-TEIKIRRK-KOUSIN-SEC        SECTION.
       *
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   SUMTEIKIRRK-MAX )
-      *
-               INITIALIZE  TEIKIRRK-REC
-      *
-               MOVE    SUMTEIKIRRK-SRYYM    (IDX1)
-                                       TO  TEIKIRRK-SRYYM
-               MOVE    SUMTEIKIRRK-SAKKBN   (IDX1)
-                                       TO  TEIKIRRK-SAKKBN
-               MOVE    SUMTEIKIRRK-SKYSTYMD (IDX1)
-                                       TO  TEIKIRRK-SKYSTYMD
-               MOVE    SUMTEIKIRRK-SKYEDYMD (IDX1)
-                                       TO  TEIKIRRK-SKYEDYMD
-               MOVE    SUMTEIKIRRK-SKYTEN   (IDX1)
-                                       TO  TEIKIRRK-SKYTEN
-               MOVE    SUMTEIKIRRK-SKYMONEY (IDX1)
-                                       TO  TEIKIRRK-SKYMONEY
-               MOVE    TEIKI1P-TERMID  TO  TEIKIRRK-TERMID
-      *
-               PERFORM 800-MCNDATE-SEC
-      *
-               MOVE    SMCNDATE-YMD    TO  TEIKIRRK-CREYMD
-                                           TEIKIRRK-UPYMD
-               MOVE    SMCNDATE-HMS    TO  TEIKIRRK-UPHMS
-      *
-               MOVE    TEIKIRRK-REC    TO  WKTEIKIRRK-REC
-      *
-               PERFORM 900-TEIKIRRK-KEY-SEL-SEC
-      *        更新対象のデータがすでに存在する場合は更新
-      *        存在しない場合は追加
-               IF    ( FLG-TEIKIRRK  =   ZERO )
-      *
-                   COMPUTE TEIKIRRK-SKYTEN
-                       =   TEIKIRRK-SKYTEN
-                       +   SUMTEIKIRRK-SKYTEN   (IDX1)
-      *
-                   COMPUTE TEIKIRRK-SKYMONEY
-                       =   TEIKIRRK-SKYMONEY
-                       +   SUMTEIKIRRK-SKYMONEY (IDX1)
+           PERFORM VARYING IDX4    FROM    1   BY  1
+                   UNTIL ( IDX4    >   3 )
+               IF    ( TEIKI1P-KIKAN-KBN (IDX4)    =   "1" )
       *
                    PERFORM 800-MCNDATE-SEC
-                   MOVE    SMCNDATE-YMD    TO  TEIKIRRK-UPYMD
-                   MOVE    SMCNDATE-HMS    TO  TEIKIRRK-UPHMS
       *
-      *            定期請求管理データ更新
-                   MOVE    TEIKIRRK-REC    TO  MCPDATA-REC
-                   MOVE    "TEIKIRRK-KEY"  TO  ORC-DBPATH
-                   PERFORM 910-DBUPDATE-SEC
-                   IF  (   MCP-RC          NOT =   ZERO )
-                       MOVE  ERR-MES18     TO  WRK-TEIKIERR
-                       PERFORM 500-ERR-HENSYU-SEC
-                   END-IF
-               ELSE
-      *
-                   MOVE    WKTEIKIRRK-REC  TO  TEIKIRRK-REC
-      *
-                   PERFORM 800-MCNDATE-SEC
-                   MOVE    SMCNDATE-YMD    TO  TEIKIRRK-CREYMD
-                                               TEIKIRRK-UPYMD
-                   MOVE    SMCNDATE-HMS    TO  TEIKIRRK-UPHMS
-      *
-      *            定期請求管理データ作成
-                   MOVE    TEIKIRRK-REC    TO  MCPDATA-REC
-                   MOVE    "TEIKIRRK-KEY"  TO  ORC-DBPATH
-                   PERFORM 910-DBINSERT-SEC
-                   IF  (   MCP-RC          NOT =   ZERO )
-                       MOVE  ERR-MES19     TO  WRK-TEIKIERR
-                       PERFORM 500-ERR-HENSYU-SEC
+                   INITIALIZE                  TEIKIRRK-REC
+                   MOVE    TEIKI1P-SRYYM   TO  TEIKIRRK-SRYYM
+                   MOVE    IDX4            TO  WRK-KBT-9
+                   MOVE    WRK-KBT         TO  TEIKIRRK-KBT
+                   PERFORM 900-TEIKIRRK-KEY-SEL-SEC
+                   IF    ( FLG-TEIKIRRK    =   ZERO )
+                       MOVE    SMCNDATE-YMD    TO  TEIKIRRK-UPYMD
+                       MOVE    SMCNDATE-HMS    TO  TEIKIRRK-UPHMS
+                       MOVE    "TEIKIRRK-KEY"  TO  ORC-DBPATH
+                       PERFORM 910-DBUPDATE-SEC
+                       IF  (   MCP-RC          NOT =   ZERO )
+                           MOVE  ERR-MES18     TO  WRK-TEIKIERR
+                           PERFORM 500-ERR-HENSYU-SEC
+                       END-IF
+                   ELSE
+                       INITIALIZE                  TEIKIRRK-REC
+                       MOVE    TEIKI1P-SRYYM   TO  TEIKIRRK-SRYYM
+                       MOVE    IDX4            TO  WRK-KBT-9
+                       MOVE    WRK-KBT         TO  TEIKIRRK-KBT
+                       MOVE    SMCNDATE-YMD    TO  TEIKIRRK-CREYMD
+                                                   TEIKIRRK-UPYMD
+                       MOVE    SMCNDATE-HMS    TO  TEIKIRRK-UPHMS
+                       MOVE    "TEIKIRRK-KEY"  TO  ORC-DBPATH
+                       PERFORM 910-DBINSERT-SEC
+                       IF  (   MCP-RC          NOT =   ZERO )
+                           MOVE  ERR-MES19     TO  WRK-TEIKIERR
+                           PERFORM 500-ERR-HENSYU-SEC
+                       END-IF
                    END-IF
                END-IF
-      *
       *
            END-PERFORM
       *

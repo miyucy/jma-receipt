@@ -56,8 +56,10 @@
                05  SYS-5010-SAISYORIKBN     PIC  X(01).
       *        Æþ¶â°õ»ú¶èÊ¬
                05  SYS-5010-NYUKINPRTKBN    PIC  X(01).
+      *        ºï½ü¶èÊ¬
+               05  SYS-5010-DELKBN          PIC  X(01).
       *        Í½È÷
-               05                           PIC  X(481).
+               05                           PIC  X(480).
       *Ã¼Ëö£É£Ä
            03  SYS-5010-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

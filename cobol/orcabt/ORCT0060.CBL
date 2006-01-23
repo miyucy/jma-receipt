@@ -459,6 +459,7 @@
            MOVE    TEIKI01-KEY         TO  TEIKI06-KEY
       *
            MOVE    TEIKI01-SAKKBN      TO  TEIKI06-SAKKBN
+           MOVE    TEIKI01-KBT         TO  TEIKI06-KBT
       *
            MOVE    TEIKI01-SYU-DAT     TO  TEIKI06-SYU-DAT
            MOVE    TEIKI01-SYUDAY-EXIST-FLG

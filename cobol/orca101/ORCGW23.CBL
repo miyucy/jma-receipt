@@ -35,6 +35,7 @@
       *  01.00.03    NACL-太田    03/10/14  入金区分を追加
       *  01.00.04    NACL-太田    03/11/18  更新日付編集対応
       *  01.00.05    NACL-太田    04/04/12  再処理の取り扱いを追加
+      *  02.07.00    NACL-太田    06/01/16  削除区分追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -92,6 +93,11 @@
                        09                     PIC   X(01).
                        09  SPA-GMN-SAISYORIKBNMEI
                                               PIC   X(58).
+                   07  SPA-GMN-DELKBN-G.
+                       09  SPA-GMN-DELKBN     PIC   X(01).
+                       09                     PIC   X(01).
+                       09  SPA-GMN-DELKBNMEI
+                                              PIC   X(18).
                    07  SPA-GMN-NYUKINKBNLST-G.
                        09  SPA-GMN-NYUKINKBN-MAX   PIC   9(03).
                        09  SPA-GMN-NYUKINKBNLST    OCCURS  2.
@@ -113,6 +119,13 @@
                            11                        PIC   X(01).
                            11  SPA-GMN-SAISYORIKBNMEIL
                                                      PIC   X(58).
+                   07  SPA-GMN-DELKBNLST-G.
+                       09  SPA-GMN-DELKBN-MAX   PIC   9(03).
+                       09  SPA-GMN-DELKBNLST    OCCURS  2.
+                           11  SPA-GMN-DELKBNL  PIC   X(01).
+                           11                        PIC   X(01).
+                           11  SPA-GMN-DELKBNMEIL
+                                                     PIC   X(18).
                05  SPA-NAI-AREA.
                    07  SPA-NAI-SEIKYU-VAL.
                        09  SPA-NAI-SEIKYU01   PIC 9(02).
@@ -163,7 +176,6 @@
       *
       *
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
@@ -351,9 +363,9 @@
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
-           MOVE    1                   TO  SPA-GMN-CUR.
-      *
            INITIALIZE   SPA-W23
+      *
+           MOVE    1                   TO  SPA-GMN-CUR
       *
            MOVE    SPA-W01-STYUKYMDH   TO  SPA-GMN-YUKOSTYMD
            MOVE    SPA-W01-EDYUKYMDH   TO  SPA-GMN-YUKOEDYMD
@@ -388,14 +400,23 @@
            MOVE    SPA-GMN-SAISYORIKBNLST(1)
                                        TO  SPA-GMN-SAISYORIKBN-G
       *
-           MOVE    SPACE               TO  SYS-5010-REC.
+           MOVE    2                   TO  SPA-GMN-DELKBN-MAX
+           MOVE    "1"                 TO  SPA-GMN-DELKBNL(1)
+           MOVE    "使用しない"        TO  SPA-GMN-DELKBNMEIL(1)
+           MOVE    "2"                 TO  SPA-GMN-DELKBNL(2)
+           MOVE    "使用する"          TO  SPA-GMN-DELKBNMEIL(2)
+           MOVE    SPA-GMN-DELKBNLST(1)
+                                       TO  SPA-GMN-DELKBN-G
+      *
            INITIALIZE                      SYS-5010-REC.
            MOVE    "5010"              TO  SYS-5010-KANRICD.
-           MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD.
-           MOVE    SYS-5010-REC        TO  MCPDATA-REC.
-           PERFORM 900-SYSKANRI-INV-SEC.
+           MOVE    "*"                 TO  SYS-5010-KBNCD
+           MOVE    SPA-W01-STYUKYMD    TO  SYS-5010-STYUKYMD
+                                           SYS-5010-EDYUKYMD
+           MOVE    SYS-5010-REC        TO  SYSKANRI-REC
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC.
            IF    ( FLG-SYSKANRI   =   ZERO )
-               MOVE    MCPDATA-REC     TO  SYS-5010-REC
+               MOVE    SYSKANRI-REC    TO  SYS-5010-REC
            ELSE
                INITIALIZE                  SYS-5010-REC
            END-IF
@@ -440,6 +461,17 @@
                                    =   SPA-GMN-SAISYORIKBNL (IDX1))
                    MOVE    SPA-GMN-SAISYORIKBNLST (IDX1)
                                        TO  SPA-GMN-SAISYORIKBN-G
+               END-IF
+      *
+           END-PERFORM
+      *
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   SPA-GMN-DELKBN-MAX )
+      *
+               IF    ( SYS-5010-DELKBN
+                                   =   SPA-GMN-DELKBNL (IDX1))
+                   MOVE    SPA-GMN-DELKBNLST (IDX1)
+                                       TO  SPA-GMN-DELKBN-G
                END-IF
       *
            END-PERFORM
@@ -514,6 +546,7 @@
            MOVE    W23-NYUKINKBN       TO  SPA-GMN-NYUKINKBN-G
            MOVE    W23-NYUKINPRTKBN    TO  SPA-GMN-NYUKINPRTKBN-G
            MOVE    W23-SAISYORIKBN     TO  SPA-GMN-SAISYORIKBN-G
+           MOVE    W23-DELKBN          TO  SPA-GMN-DELKBN-G
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -554,8 +587,14 @@
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
-      *    再処理区分区分チェック
+      *    再処理区分チェック
            PERFORM 4100-SAISYORIKBN-CHK-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    削除区分チェック
+           PERFORM 4100-DELKBN-CHK-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -781,6 +820,36 @@
       *
        4100-SAISYORIKBN-CHK-EXT.
            EXIT.
+      *****************************************************************
+      *    削除区分チェック処理
+      *****************************************************************
+       4100-DELKBN-CHK-SEC          SECTION.
+      *
+           IF    ( SPA-GMN-DELKBN-G =   SPACE )
+               MOVE    SPA-GMN-DELKBNLST(1)
+                                       TO  SPA-GMN-DELKBN-G
+               GO  TO  4100-DELKBN-CHK-EXT
+           END-IF
+      *
+           PERFORM VARYING IDXA    FROM    1   BY  1
+                   UNTIL ( IDXA    >   SPA-GMN-DELKBN-MAX )
+                     OR  ( SPA-GMN-DELKBN
+                                   =   SPA-GMN-DELKBNL (IDXA))
+               CONTINUE
+           END-PERFORM
+      *
+           IF    ( IDXA    >   SPA-GMN-DELKBN-MAX )
+               MOVE    SPA-GMN-DELKBNLST(1)
+                                       TO  SPA-GMN-DELKBN-G
+           ELSE
+               MOVE    SPA-GMN-DELKBNLST(IDXA)
+                                       TO  SPA-GMN-DELKBN-G
+           END-IF
+      *
+           .
+      *
+       4100-DELKBN-CHK-EXT.
+           EXIT.
       *
       *****************************************************************
       *    戻る　処理
@@ -813,10 +882,13 @@
            MOVE    SPACE                   TO  SYS-5010-REC
            INITIALIZE                          SYS-5010-REC
       *
-           MOVE    "5010"                  TO  SYS-5010-KANRICD
-           MOVE    SPA-W01-STYUKYMD        TO  ORC-DBYMD
-           MOVE    SYS-5010-REC            TO  MCPDATA-REC
-           PERFORM 900-SYSKANRI-INV-SEC
+           INITIALIZE                      SYS-5010-REC.
+           MOVE    "5010"              TO  SYS-5010-KANRICD.
+           MOVE    "*"                 TO  SYS-5010-KBNCD
+           MOVE    SPA-W01-STYUKYMD    TO  SYS-5010-STYUKYMD
+                                           SYS-5010-EDYUKYMD
+           MOVE    SYS-5010-REC        TO  SYSKANRI-REC
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            IF  FLG-SYSKANRI   =   ZERO
                MOVE    MCPDATA-REC             TO  SYS-5010-REC
            ELSE
@@ -834,6 +906,7 @@
            MOVE    SPA-GMN-NYUKINKBN       TO  SYS-5010-NYUKINKBN
            MOVE    SPA-GMN-NYUKINPRTKBN    TO  SYS-5010-NYUKINPRTKBN
            MOVE    SPA-GMN-SAISYORIKBN     TO  SYS-5010-SAISYORIKBN
+           MOVE    SPA-GMN-DELKBN          TO  SYS-5010-DELKBN
            MOVE    SPA-TERMID              TO  SYS-5010-TERMID
            MOVE    SPA-OPID                TO  SYS-5010-OPID
            MOVE    SYS-5010-REC            TO  SYSKANRI-REC
@@ -848,7 +921,8 @@
                MOVE    SYS-KBNCD               TO  SYSUP-KBNCD
                MOVE    SPA-W01-SEL-STYUKYMD    TO  SYSUP-STYUKYMD
                MOVE    SPA-W01-SEL-EDYUKYMD    TO  SYSUP-EDYUKYMD
-               MOVE    "SYSKANRI-UPD1"         TO  ORC-DBPATH
+               MOVE    "tbl_syskanri"          TO  MCP-TABLE
+               MOVE    "upd1"                  TO  MCP-PATHNAME
                MOVE    "DBUPDATE"              TO  MCP-FUNC
            ELSE
       *
@@ -857,14 +931,14 @@
                                                    SYS-UPYMD
                MOVE    SMCNDATE-HMS            TO  SYS-UPHMS
       *
-               MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
+               MOVE    "tbl_syskanri"          TO  MCP-TABLE
+               MOVE    "key"                   TO  MCP-PATHNAME
                MOVE    "DBINSERT"              TO  MCP-FUNC
            END-IF
       *
            MOVE    SYSKANRI-REC            TO  MCPDATA-REC
-           CALL    "ORCMCPSUB"             USING
+           CALL    "MONFUNC"               USING
                                            MCPAREA
-                                           ORCMCPAREA
                                            MCPDATA-REC
            IF    ( MCP-RC          NOT =   ZERO )
                MOVE    "2001"              TO  SPA-ERRCD
@@ -936,6 +1010,14 @@
                    UNTIL ( IDX1    >   SPA-GMN-SAISYORIKBN-MAX )
                MOVE    SPA-GMN-SAISYORIKBNLST(IDX1)
                                            TO  W23-SAISYORIKBNLST(IDX1)
+           END-PERFORM
+      *
+           MOVE    SPA-GMN-DELKBN-G        TO  W23-DELKBN
+           MOVE    SPA-GMN-DELKBN-MAX      TO  W23-DELKBN-COUNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   SPA-GMN-DELKBN-MAX )
+               MOVE    SPA-GMN-DELKBNLST(IDX1)
+                                           TO  W23-DELKBNLST(IDX1)
            END-PERFORM
       *
            IF    ( SPA-GMN-NYUKINKBN       =   "1" )
@@ -1054,6 +1136,8 @@
                    MOVE    "SAISYORIKBN"   TO  MCP-WIDGET
            WHEN    06
                    MOVE    "NYUKINPRTKBN"  TO  MCP-WIDGET
+           WHEN    07
+                   MOVE    "DELKBN"        TO  MCP-WIDGET
            WHEN    101
                    MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE.
@@ -1078,6 +1162,8 @@
            WHEN    "NYUKINPRTKBN"
                    MOVE    5           TO  SPA-GMN-CUR
            WHEN    "SAISYORIKBN"
+                   MOVE    7           TO  SPA-GMN-CUR
+           WHEN    "DELKBN"
                    MOVE    101         TO  SPA-GMN-CUR
            END-EVALUATE
       *
@@ -1091,7 +1177,7 @@
       *
            IF    ( SPA-GMN-CUR         =   6 )
                IF   ( W23-NYUKINPRTKBN-STATE   =   WIDGET-INSENSITIVE )
-                   MOVE    7           TO  SPA-GMN-CUR
+                   MOVE    5           TO  SPA-GMN-CUR
                END-IF
            END-IF
       *
@@ -1179,10 +1265,10 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"                   TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"                   USING
+           CALL   "MONFUNC"                     USING
                                                 MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC.
+                                                MCPDATA-REC
+           .
       *
        900-PUT-WINDOW-EXT.
            EXIT.
@@ -1190,37 +1276,40 @@
       *****************************************************************
       *    管理マスター読込（キー）
       *****************************************************************
-       900-SYSKANRI-INV-SEC         SECTION.
+       900-SYSKANRI-KEY10-SEL-SEC          SECTION.
       *
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC.
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           CALL   "MONFUNC"                    USING
+                                               MCPAREA
+                                               MCPDATA-REC
            IF  MCP-RC   =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               CALL   "MONFUNC"                USING
+                                               MCPAREA
+                                               MCPDATA-REC
                IF  MCP-RC   =   ZERO
                    MOVE    ZERO                TO  FLG-SYSKANRI
+                   MOVE    MCPDATA-REC         TO  SYSKANRI-REC
                ELSE
                    MOVE    1                   TO  FLG-SYSKANRI
                END-IF
            ELSE
                MOVE    1                   TO  FLG-SYSKANRI
-           END-IF.
+           END-IF
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC.
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           CALL   "MONFUNC"                    USING
+                                               MCPAREA
+                                               MCPDATA-REC
+           .
       *
-       900-SYSKANRI-INV-EXT.
+       900-SYSKANRI-KEY10-SEL-EXT.
            EXIT.
       *

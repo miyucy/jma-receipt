@@ -26,7 +26,7 @@
                   05  O99-ROWATTR PIC S9(9)   BINARY.
                   05  O99-ITEM        OCCURS  2 TIMES.
                     06  O99-RENNUM    PIC X(7).
-                    06  O99-SHORINM   PIC X(34).
+                    06  O99-SHORINM   PIC X(40).
                     06  O99-STARTTIME PIC X(8).
                     06  O99-ENDTIME   PIC X(8).
                     06  O99-ERRMSG    PIC X(100).

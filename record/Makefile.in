@@ -311,6 +311,7 @@ RECORD_files = \
         KAID1.rec \
         KAID2.rec \
         X05.rec \
+	O05.rec \
 
 DEF_files = \
 	HC01.def \

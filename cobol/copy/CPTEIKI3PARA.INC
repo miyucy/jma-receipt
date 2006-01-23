@@ -16,28 +16,22 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ´µ¼ÔÄê´üÀÁµá¼ýÇ¼¥Ç¡¼¥¿
-      *¡¡  COPY  (CPTEIKI01.INC)                                 *
+      *    ´µ¼ÔÄê´üÀÁµá-ÀÁµáºï½ü¥Ñ¥é¥á¡¼¥¿
+      *¡¡  COPY  (CPTEIKI3PARA.INC)                              *
       ************************************************************
       ************************************************************
       *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       ************************************************************
-      *01  TEIKI01-REC.
-           03  TEIKI01-KEY.
-               05  TEIKI01-HOSPID          PIC X(24).
-               05  TEIKI01-PTID            PIC 9(10).
-               05  TEIKI01-SKYSTYMD        PIC X(08).
-               05  TEIKI01-SKYEDYMD        PIC X(08).
-               05  TEIKI01-HKNCOMBINUM     PIC 9(04).
-           03  TEIKI01-SAKKBN              PIC X(01).
-           03  TEIKI01-KBT                 PIC X(01).
-           03  TEIKI01-SYU-DAT             PIC X(5000).
-           03  TEIKI01-TSI-SKYTEN          PIC S9(09).
-           03  TEIKI01-TSI-SKYMONEY-TAX-SAI
-                                           PIC S9(07).
-           03  TEIKI01-TSI-SKYMONEY        PIC S9(09).
-           03  TEIKI01-SYUDAY.
-               05  TEIKI01-SYUDAY-EXIST-FLG
-                                           PIC 9(01).
-               05  TEIKI01-SYUDAY-DAT      PIC X(5000).
+       01  TEIKI3PARA-AREA.
+           03  TEIKI3P-ERRFILE             PIC X(200).
+           03  TEIKI3P-HOSPID              PIC X(24).
+           03  TEIKI3P-TERMID              PIC X(64).
+           03  TEIKI3P-OPID                PIC X(16).
+           03  TEIKI3P-SYSYMD              PIC X(08).
+           03  TEIKI3P-JOBID               PIC 9(07).
+           03  TEIKI3P-SHELLID             PIC X(08).
+           03  TEIKI3P-SRYYM               PIC X(06).
+           03  TEIKI3P-KBT                 PIC X(01).
+           03  TEIKI3P-SKYSTYMD            PIC X(08).
+           03  TEIKI3P-SKYEDYMD            PIC X(08).
