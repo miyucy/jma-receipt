@@ -4,6 +4,10 @@ tbl_ptteikirrk {
        SRYYM           char(6);
        SAKKBN          char(1);
        HKNCOMBINUM     number(4);
+       DENPNUM         number(07);
+       DELFLG          number(01);
+       SYOKBN          char(1);
+       KBT	           char(1);
        SKYSTYMD        char(8);
        SKYEDYMD        char(8);
        SKYTEN          number(9);
@@ -11,7 +15,6 @@ tbl_ptteikirrk {
                        number(7);
        SKYMONEY        number(9);
        RRKNUM          number(03);
-       DENPNUM         number(07);
        DENPEDANUM      number(02);
        SKYUPDFLG       number(01);
        TERMID          varchar(16);
@@ -22,7 +25,7 @@ tbl_ptteikirrk {
 };
 
 primary	{
-	HOSPID,PTID,SRYYM,SAKKBN,HKNCOMBINUM;
+	HOSPID,PTID,SRYYM,SAKKBN,HKNCOMBINUM,DENPNUM;
 };
 
 path	key		{ 	
@@ -36,6 +39,7 @@ path	key		{
         AND    SRYYM   =   :SRYYM
         AND    SAKKBN  =   :SAKKBN
         AND    HKNCOMBINUM = :HKNCOMBINUM
+        AND    DELFLG  =   0
 		;
 	};
 };
@@ -48,6 +52,7 @@ path	key2		{
         WHERE  HOSPID  =   :HOSPID
         AND    PTID    =   :PTID
         AND    SRYYM   =   :SRYYM
+        AND    DELFLG  =   0
         		;
 	};
 };
@@ -59,6 +64,7 @@ path	key3		{
 		FROM tbl_ptteikirrk
         WHERE  HOSPID  =   :HOSPID
         AND    PTID    =   :PTID
+        AND    DELFLG  =   0
 		ORDER  BY  SKYEDYMD DESC
 		;
 	};
@@ -73,6 +79,7 @@ path	key4		{
         AND    PTID    =   :PTID
 		AND    SKYSTYMD   >= :SKYSTYMD
 		AND    SKYEDYMD   <= :SKYEDYMD
+        AND    DELFLG  =   0
 		;
 	};
 };
@@ -85,6 +92,7 @@ path	key5		{
         WHERE  HOSPID  =   :HOSPID
         AND    SRYYM   =   :SRYYM
         AND    SAKKBN  LIKE :SAKKBN
+        AND    DELFLG  =   0
 		;
 	};
 };
@@ -108,10 +116,12 @@ path	del1		{
 	};
 };
 
-path	del2		{ 	
-	DBDELETE	{
-		DELETE
-		FROM tbl_ptteikirrk
+path	upd1		{ 	
+	DBUPDATE	{
+		UPDATE tbl_ptteikirrk
+		SET    DELFLG  =   1,
+		       UPYMD   =   :UPYMD,
+		       UPHMS   =   :UPHMS
         WHERE  HOSPID  =   :HOSPID
         AND    PTID    =   :PTID
 		AND    SKYSTYMD   >= :SKYSTYMD
@@ -139,6 +149,7 @@ path	key6		{
                HOSPID  =   :HOSPID
         AND    PTID    =   :PTID
         AND    DENPNUM =   :DENPNUM
+        AND    DELFLG  =   0
 		;
 	};
 };
@@ -153,6 +164,7 @@ path	key7		{
                HOSPID  =   :HOSPID
         AND    PTID    =   :PTID
         AND    RRKNUM  =   :RRKNUM
+        AND    DELFLG  =   0
 		ORDER  BY  SKYEDYMD DESC
 		;
 	};
@@ -165,6 +177,7 @@ path	key8		{
 		FROM tbl_ptteikirrk
         WHERE  HOSPID  =   :HOSPID
         AND    PTID    =   :PTID
+        AND    DELFLG  =   0
 		ORDER  BY  SKYEDYMD DESC ,
 		           HKNCOMBINUM
 		;
@@ -180,14 +193,17 @@ path	key9		{
         AND    PTID    =   :PTID
         AND    SRYYM   =   :SRYYM
         AND    RRKNUM  =   :RRKNUM
+        AND    DELFLG  =   0
         		;
 	};
 };
 
-path	del3		{ 	
-	DBDELETE	{
-		DELETE
-		FROM tbl_ptteikirrk
+path	upd2		{ 	
+	DBUPDATE	{
+		UPDATE tbl_ptteikirrk
+		SET    DELFLG  =   1,
+		       UPYMD   =   :UPYMD,
+		       UPHMS   =   :UPHMS
         WHERE  HOSPID  =   :HOSPID
         AND    PTID    =   :PTID
 		AND    SKYSTYMD   >= :SKYSTYMD
@@ -197,13 +213,53 @@ path	del3		{
 	};
 };
 
-path	del4		{ 	
-	DBDELETE	{
-		DELETE
-		FROM tbl_ptteikirrk
+path	upd3		{ 	
+	DBUPDATE	{
+		UPDATE tbl_ptteikirrk
+		SET    DELFLG  =   1,
+		       UPYMD   =   :UPYMD,
+		       UPHMS   =   :UPHMS
         WHERE  HOSPID  =   :HOSPID
         AND    PTID    =   :PTID
         AND    RRKNUM  =   :RRKNUM
+		;
+	};
+};
+
+path	key10		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptteikirrk_key10_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptteikirrk
+        WHERE  HOSPID  =   :HOSPID
+        AND    SRYYM   =   :SRYYM
+        AND    KBT     =   :KBT
+        AND    DELFLG  =   0
+		;
+	};
+};
+
+path	upd4		{ 	
+	DBUPDATE	{
+		UPDATE tbl_ptteikirrk
+		SET    DELFLG  =   1,
+		       UPYMD   =   :UPYMD,
+		       UPHMS   =   :UPHMS
+        WHERE  HOSPID  =   :HOSPID
+        AND    PTID    =   :PTID
+        AND    DENPNUM     = :DENPNUM
+		;
+	};
+};
+
+path	key11		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptteikirrk_key11_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptteikirrk
+        WHERE  HOSPID  =   :HOSPID
+        AND    SRYYM   =   :SRYYM
+        AND    KBT     =   :KBT
 		;
 	};
 };

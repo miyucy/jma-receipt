@@ -34,6 +34,14 @@
            03  PTTEIKIRRK-SAKKBN           PIC  X(01).
       *保険組合せ
            03  PTTEIKIRRK-HKNCOMBINUM      PIC  9(04).
+      *収納−伝票番号
+           03  PTTEIKIRRK-DENPNUM          PIC  9(07).
+      *削除フラグ
+           03  PTTEIKIRRK-DELFLG           PIC  9(01).
+      *処理区分
+           03  PTTEIKIRRK-SYOKBN           PIC  X(01).
+      *期別
+           03  PTTEIKIRRK-KBT              PIC  X(01).
       *請求開始年月日
            03  PTTEIKIRRK-SKYSTYMD         PIC  X(08).
       *請求終了年月日
@@ -46,8 +54,6 @@
            03  PTTEIKIRRK-SKYMONEY         PIC  S9(09).
       *入院履歴−履歴連番
            03  PTTEIKIRRK-RRKNUM           PIC  9(03).
-      *収納−伝票番号
-           03  PTTEIKIRRK-DENPNUM          PIC  9(07).
       *収納−伝票番号枝番
            03  PTTEIKIRRK-DENPEDANUM       PIC  9(02).
       *請求データ更新フラグ（０：新規／１：訂正）
