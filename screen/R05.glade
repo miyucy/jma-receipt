@@ -13,8 +13,8 @@
 <widget>
   <class>GtkWindow</class>
   <name>R05</name>
-  <x>322</x>
-  <y>490</y>
+  <x>321</x>
+  <y>488</y>
   <width>692</width>
   <height>254</height>
   <signal>
