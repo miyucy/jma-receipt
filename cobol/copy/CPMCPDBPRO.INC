@@ -386,6 +386,7 @@
       *  01.01.171   NACL-ÂÀÅÄ    05/09/30  HOURS-ALLÄÉ²Ã
       *  01.01.172   NACL-¾®Æ¦Âô  05/12/12  NYUINACCT-KEY28ÄÉ²Ã
       *  01.01.173   NACL-ÂÀÅÄ    05/12/21  MEDYAKKO-ALLºï½ü
+      *  01.01.174   NACL-ÂÀÅÄ    06/01/19  PTTEIKIRRK-DEL2,DEL3¤òºï½ü
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1830,12 +1831,6 @@
                                        TO  WRK-PATH
                WHEN     "DBDELETE"     ALSO   "PTTEIKIRRK-DEL1"
                    MOVE    PATH-TBL-PTTEIKIRRK-DEL1
-                                       TO  WRK-PATH
-               WHEN     "DBDELETE"     ALSO   "PTTEIKIRRK-DEL2"
-                   MOVE    PATH-TBL-PTTEIKIRRK-DEL2
-                                       TO  WRK-PATH
-               WHEN     "DBDELETE"     ALSO   "PTTEIKIRRK-DEL3"
-                   MOVE    PATH-TBL-PTTEIKIRRK-DEL3
                                        TO  WRK-PATH
       *
                WHEN    ANY             ALSO   "SRYACCT-KEY"
