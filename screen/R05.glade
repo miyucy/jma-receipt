@@ -13,7 +13,7 @@
 <widget>
   <class>GtkWindow</class>
   <name>R05</name>
-  <x>330</x>
+  <x>322</x>
   <y>490</y>
   <width>692</width>
   <height>254</height>
@@ -49,7 +49,7 @@
       <class>GtkButton</class>
       <name>B01</name>
       <x>8</x>
-      <y>220</y>
+      <y>225</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
