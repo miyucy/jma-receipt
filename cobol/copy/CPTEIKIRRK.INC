@@ -25,19 +25,9 @@
       *01  TEIKIRRK-REC.
       *診療年月
            03  TEIKIRRK-SRYYM              PIC  X(06).
-      *作成区分（処理期）
-      *    １〜３：各処理期／９：月末時のみ（入退院登録で指定）
-           03  TEIKIRRK-SAKKBN             PIC  X(01).
-      *請求開始年月日
-           03  TEIKIRRK-SKYSTYMD           PIC  X(08).
-      *請求終了年月日
-           03  TEIKIRRK-SKYEDYMD           PIC  X(08).
-      *請求点数（合計）
-           03  TEIKIRRK-SKYTEN             PIC  S9(09).
-      *請求金額（合計）
-           03  TEIKIRRK-SKYMONEY           PIC  S9(09).
-      *再請求区分
-           03  TEIKIRRK-SAISKYKBN          PIC  X(1).
+      *期別
+      *    １〜３：各処理期
+           03  TEIKIRRK-KBT                PIC  X(01).
       *端末ＩＤ
            03  TEIKIRRK-TERMID             PIC  X(16).
       *オペーレータＩＤ
