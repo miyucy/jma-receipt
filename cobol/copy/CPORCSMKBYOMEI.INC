@@ -29,6 +29,13 @@
            03  SMKBYO-IO.
       *        病名
                05  SMKBYO-BYOMEI         PIC X(160).
+      *        病名コード
+               05  SMKBYO-BYOMEICD-G.
+                   07  SMKBYO-BYOMEICD   PIC X(07)
+                                         OCCURS   21.
+      *        編集病名フラグ
+               05  SMKBYO-BYOMEIHENFLG   PIC X(01).
+      *
            03  SMKBYO-OT.
       *        長さ（バイト数で返却）
                05  SMKBYO-LENGTH         PIC 9(05).

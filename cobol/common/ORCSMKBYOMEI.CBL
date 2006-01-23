@@ -47,13 +47,18 @@
       *
        01  IDX-AREA.
            03  IDX0                    PIC S9(05).
+           03  IDX1                    PIC 9(05).
            03  IDX-PNT                 PIC 9(05).
       *
        01  WRK-AREA.
            03  WRK-BYOMEI              PIC X(160).
       *
        01  CONST-AREA.
+           03  CONST-DEBUG             PIC 9(01)   VALUE   0.
            03  CONST-LEN               PIC 9(05)   VALUE   160.
+           03  CONST-CD-MAX            PIC 9(05)   VALUE   21.
+           03  CONST-UTAGAICD          PIC X(07)   VALUE   "ZZZ8002".
+           03  CONST-KYUSEICD          PIC X(07)   VALUE   "ZZZ4012".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -80,6 +85,10 @@
       *****************************************************************
        000-PROC-SEC                    SECTION.
       *
+           IF    ( CONST-DEBUG     =   1 )
+               PERFORM 800-DISPLAY-IN-SEC
+           END-IF
+      *
       *    初期処理
            PERFORM 100-INIT-SEC
       *
@@ -88,6 +97,10 @@
       *
       *    終了処理
            PERFORM 300-END-SEC
+      *
+           IF    ( CONST-DEBUG     =   1 )
+               PERFORM 800-DISPLAY-OT-SEC
+           END-IF
       *
            .
        000-PROC-EXT.
@@ -104,7 +117,6 @@
                                        WRK-AREA
                                        SMKBYO-OT
       *
-      *
            .
        100-INIT-EXT.
            EXIT.
@@ -113,6 +125,21 @@
       *    主処理
       *****************************************************************
        200-MAIN-SEC                    SECTION.
+      *
+           PERFORM 2001-EDIT-BYOMEI-SEC
+      *
+           IF    ( SMKBYO-BYOMEICD (1)     NOT =   SPACE )
+               PERFORM 2001-EDIT-BYOMEICD-SEC
+           END-IF
+      *
+           .
+       200-MAIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    病名編集処理
+      *****************************************************************
+       2001-EDIT-BYOMEI-SEC            SECTION.
       *
            PERFORM 210-GET-BYO-LENGTH-SEC
       *
@@ -161,9 +188,53 @@
            END-IF
       *
            .
-       200-MAIN-EXT.
+       2001-EDIT-BYOMEI-EXT.
            EXIT.
+      *****************************************************************
+      *    病名コード編集処理
+      *****************************************************************
+       2001-EDIT-BYOMEICD-SEC          SECTION.
       *
+           IF    ( SMKBYO-STS-UTAGAI   =   1 )
+               IF    ( SMKBYO-BYOMEICD (CONST-CD-MAX ) NOT =   SPACE )
+                   MOVE    "1"         TO  SMKBYO-BYOMEIHENFLG
+               ELSE
+                   PERFORM VARYING IDX1    FROM    1   BY  1
+                           UNTIL ( IDX1    >   CONST-CD-MAX )
+      *
+                       IF    ( SMKBYO-BYOMEICD (IDX1)  =   SPACE )
+                           MOVE    CONST-UTAGAICD
+                                           TO  SMKBYO-BYOMEICD (IDX1)
+                           MOVE    CONST-CD-MAX
+                                           TO  IDX1
+                       END-IF
+      *
+                   END-PERFORM
+               END-IF
+           END-IF
+      *
+           IF    ( SMKBYO-STS-KYUSEI   =   1 )
+               IF    ( SMKBYO-BYOMEICD (CONST-CD-MAX ) NOT =   SPACE )
+                   MOVE    "1"         TO  SMKBYO-BYOMEIHENFLG
+               ELSE
+                   PERFORM VARYING IDX1
+                           FROM    CONST-CD-MAX    BY  -1
+                           UNTIL ( IDX1    < 2 )
+      *
+                       MOVE    SMKBYO-BYOMEICD (IDX1 - 1)
+                                       TO  SMKBYO-BYOMEICD (IDX1)
+      *
+                   END-PERFORM
+      *
+                   MOVE    CONST-KYUSEICD
+                                       TO  SMKBYO-BYOMEICD (1)
+      *
+               END-IF
+           END-IF
+      *
+           .
+       2001-EDIT-BYOMEICD-EXT.
+           EXIT.
       *****************************************************************
       *    病名文字列長取得処理
       *****************************************************************
@@ -227,7 +298,6 @@
       *****************************************************************
        300-END-SEC                     SECTION.
       *
-      *    PERFORM 800-DISPLAY-SEC
       *
            .
        300-END-EXT.
@@ -236,19 +306,42 @@
       *****************************************************************
       *    引数表示
       *****************************************************************
-       800-DISPLAY-SEC                 SECTION.
+       800-DISPLAY-IN-SEC              SECTION.
       *
-           DISPLAY "UTAGAIFLG,BYOMEI,LENGTH,STS-MODIFY"
-                   ",STS-UTAGAI,STS-KYUSEI"
+           DISPLAY "== IN == "
+           DISPLAY "UTAGAIFLG   :" SMKBYO-UTAGAIFLG
+           DISPLAY "BYOMEI      :" SMKBYO-BYOMEI
       *
-           DISPLAY SMKBYO-UTAGAIFLG ","
-                   SMKBYO-BYOMEI  ","
-                   SMKBYO-LENGTH  ","
-                   SMKBYO-STS-MODIFY  ","
-                   SMKBYO-STS-UTAGAI  ","
-                   SMKBYO-STS-KYUSEI
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   CONST-CD-MAX )
+               DISPLAY "BYOMEICD (" IDX0 ")" SMKBYO-BYOMEICD (IDX0)
+           END-PERFORM
+      *
+           DISPLAY "BYOMEIHENFLG:" SMKBYO-BYOMEIHENFLG
       *
            .
-       800-DISPLAY-EXT.
+       800-DISPLAY-IN-EXT.
+           EXIT.
+      *****************************************************************
+      *    引数表示
+      *****************************************************************
+       800-DISPLAY-OT-SEC              SECTION.
+      *
+           DISPLAY "== OT == "
+           DISPLAY "BYOMEI      :" SMKBYO-BYOMEI
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   CONST-CD-MAX )
+               DISPLAY "BYOMEICD (" IDX0 ")" SMKBYO-BYOMEICD  (IDX0)
+           END-PERFORM
+      *
+           DISPLAY "BYOMEIHENFLG:" SMKBYO-BYOMEIHENFLG
+           DISPLAY "LENGTH      :" SMKBYO-LENGTH
+           DISPLAY "STS-MODIFY  :" SMKBYO-STS-MODIFY
+           DISPLAY "STS-UTAGAI  :" SMKBYO-STS-UTAGAI
+           DISPLAY "STS-KYUSEI  :" SMKBYO-STS-KYUSEI
+      *
+           .
+       800-DISPLAY-OT-EXT.
            EXIT.
       *
