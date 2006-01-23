@@ -721,6 +721,8 @@
                IF    ( SPA-R01-RECEKBN   =   ZERO    OR  "2" )
                AND   ( SPA-R01-RECE07-HSEQNUM
                                      NOT =   ZERO            )
+               AND   ( SPA-R01-RECE07-HKNJANUM
+                                     NOT =   "99999999"      )
                    MOVE    "06"              TO  SPA-GMN-PRTJYUN1L   (5)
                    MOVE    "ÊÔÄÖ½ç"          TO  SPA-GMN-PRTJYUN1MEIL(5)
                END-IF
@@ -753,8 +755,10 @@
       *    ¥ì¥»¥×¥ÈÊÔÄÖ½ç¾ðÊó
            IF    ( SPA-R01-FILEKBN       =   "1"             )
            AND   ( SPA-R01-RECEKBN       =   ZERO    OR  "2" )
+           AND   ( SPA-R01-RECE07-HKNJANUM
+                                     NOT =   "99999999"      )
            AND   ( SPA-R01-RECE07-HSEQNUM
-                                     NOT =   ZERO            )
+                                         >   ZERO            )
                MOVE    SPACE               TO  SYS-2008-REC
                INITIALIZE                      SYS-2008-REC
                MOVE    "2008"              TO  SYS-2008-KANRICD

@@ -1390,6 +1390,8 @@
                                           TO  SPA-R01-RECE07-EDYMD
                        MOVE    SPA-RECE07-HSEQNUM
                                           TO  SPA-R01-RECE07-HSEQNUM
+                       MOVE    SPA-RECE07-HKNJANUM
+                                          TO  SPA-R01-RECE07-HKNJANUM
                    END-IF    
            END-EVALUATE
       *
@@ -2042,6 +2044,8 @@
                                           TO  SPA-R01-RECE07-EDYMD
                            MOVE    SPA-RECE07-HSEQNUM
                                           TO  SPA-R01-RECE07-HSEQNUM
+                           MOVE    SPA-RECE07-HKNJANUM
+                                          TO  SPA-R01-RECE07-HKNJANUM
                        END-IF
                      END-IF 
                    ELSE
