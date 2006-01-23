@@ -205,6 +205,8 @@
       *    病棟情報取得
            PERFORM 2100-SYS-5001-GET-SEC
            IF    ( SBTUSENTEI-RC       NOT =   ZERO )
+               DISPLAY  "SBTUSENTEI-PTID1 = " SBTUSENTEI-PTID
+               DISPLAY  "SBTUSENTEI-RC1 = " SBTUSENTEI-RC
                GO  TO  200-MAIN-EXT
            END-IF
       *
@@ -330,6 +332,8 @@
       *        日単位で入院していた病棟の情報を編集する
                PERFORM 2100-DAY-BTUINF-EDIT-SEC
                IF    ( SBTUSENTEI-RC       NOT =   ZERO )
+                   DISPLAY "SBTUSENTEI-PTID2 = " SBTUSENTEI-PTID
+                   DISPLAY "SBTUSENTEI-RC2 = " SBTUSENTEI-RC
                    GO  TO  2100-PTNYUINRRK-EDIT-EXT
                END-IF
       *
