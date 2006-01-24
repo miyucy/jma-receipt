@@ -1,7 +1,7 @@
 top_srcdir = @top_srcdir@
 include $(top_srcdir)/Makefile.directories
 
-SUBDIRS = etc screen form record lddef cobol scripts init data doc tools
+SUBDIRS = bin etc screen form record lddef cobol scripts init data doc tools
 
 all:   
 	@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i all; done

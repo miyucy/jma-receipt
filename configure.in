@@ -188,6 +188,7 @@ cobol/Makefile
 cobol/Makefile.global
 cobol/orca00/ORCGM00.CBL
 cobol/copy/Makefile
+bin/Makefile
 lddef/Makefile
 record/Makefile
 screen/Makefile
