@@ -56,6 +56,7 @@
       *  02.06.05    NACL-門脇    05/12/01  労災レセプト回数対応の関連修正
       *
       *  02.07.01    NACL-藤原    05/12/12  国保レセプト編綴順対応
+      *  02.07.02    NACL-門脇    06/01/24  DBCLOSECURSOR追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1842,6 +1843,13 @@
       *                 
                PERFORM 900-RECECOM-READ-SEC
            END-PERFORM
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "RECECOM-KEY1"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            .
        360-HC101-COMMENT-HEN-EXT.

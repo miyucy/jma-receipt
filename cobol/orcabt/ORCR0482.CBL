@@ -52,6 +52,7 @@
       *  02.06.02    NACL-藤原    05/09/05  複数枚レセの連番記載
       *
       *  02.07.01    NACL-藤原    05/12/12  国保レセプト編綴順対応
+      *  02.07.02    NACL-門脇    06/01/24  DBCLOSECURSOR追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1410,6 +1411,13 @@
       *                 
                PERFORM 900-RECECOM-READ-SEC
            END-PERFORM
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "RECECOM-KEY3"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            .
        360-HC101-COMMENT-HEN-EXT.
