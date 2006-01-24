@@ -268,7 +268,7 @@
                        PERFORM 1002-ZAIBUNNRI-SEC
                    END-IF
                ELSE
-                  IF      FLG-KENSA-ARI       =   1
+                   IF      FLG-KENSA-ARI       =   1
                        PERFORM 200-KENSA-SORT-SEC
       *                ∫ﬁ ¨Œ•
                        PERFORM 1002-ZAIBUNNRI-SEC
@@ -935,12 +935,20 @@
                            MOVE    SPA-COM-HOUKNSKBN(IDX)
                                                    TO  SPA-COM-HOUKNSKBN
                                                                (IDX-1)
+      *                    ø«Œ≈ºÔ Ã
+                           MOVE    SPA-COM-SRYSYUKBN (IDX-1 - 1)
+                                                 TO  SPA-COM-SRYSYUKBN
+                                                             (IDX-1)
       *                    ∆±∞Ï∏°∫∫»ΩƒÍ•≥°º•…
                            MOVE    SPA-COM-INPUTCD(IDX-1)
                                                    TO  SPA-COM-KENGRP
                                                                (IDX)
                            MOVE    SPACE           TO  SPA-COM-ZAIEND
                                                          (IDX-1)
+                           MOVE    SPACE           TO  SPA-COM-ZAIEND
+                                                         (IDX-1 - 1)
+                           MOVE    SPA-COM-SRYSYUKBN (IDX-1 - 1)
+                                                   TO  WRK-SRYSYUKBN
                            IF      FLG-SYORI       =   2
                                MOVE    1               TO  FLG-SYORI
                            END-IF
@@ -979,6 +987,8 @@
                                                              (IDX-1)
                                MOVE    SPACE     TO  SPA-COM-ZAIEND
                                                              (IDX-1)
+                               MOVE    SPA-COM-SRYSYUKBN (IDX-1 - 1)
+                                                 TO  WRK-SRYSYUKBN
                            END-IF
                        END-IF
                    END-IF
