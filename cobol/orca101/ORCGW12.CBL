@@ -3152,21 +3152,27 @@
                    MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
                    MOVE    "key10"             TO  WRK-MCP-PATHNAME
                    PERFORM 900-SYSKANRI-INV-SEC
-                   IF    ( SPA-GMN-PREFKBN-PRTJYUN     =
+                   IF      FLG-SYSKANRI        =   ZERO
+                       MOVE    MCPDATA-REC         TO  SYS-2008-REC
+      *
+                       IF    ( SPA-GMN-PREFKBN-PRTJYUN     =
                                            SYS-2008-PREFKBN-PRTJYUN    )
-                   AND   ( SPA-GMN-HKNJANUM-PRTJYUN    =
+                       AND   ( SPA-GMN-HKNJANUM-PRTJYUN    =
                                            SYS-2008-HKNJANUM-PRTJYUN   )
-                   AND   ( SPA-GMN-RECESYUBETU-PRTJYUN =
+                       AND   ( SPA-GMN-RECESYUBETU-PRTJYUN =
                                            SYS-2008-RECESYUBETU-PRTJYUN)
-                   AND   ( SPA-GMN-ZAITAKU             =
+                       AND   ( SPA-GMN-ZAITAKU             =
                                            SYS-2008-ZAITAKU            )
-                   AND   ( SPA-GMN-CHOUKI              =
+                       AND   ( SPA-GMN-CHOUKI              =
                                            SYS-2008-CHOUKI             )
-                   AND   ( SPA-GMN-HKNJANUM-PRTKBN     =
+                       AND   ( SPA-GMN-HKNJANUM-PRTKBN     =
                                            SYS-2008-HKNJANUM-PRTKBN    )
-                   AND   ( SPA-GMN-HKNJANUM            =
+                       AND   ( SPA-GMN-HKNJANUM            =
                                            SYS-2008-HKNJANUM           )
-                       CONTINUE
+                           CONTINUE
+                       ELSE
+                           MOVE    1                   TO  FLG-UPDFLG
+                       END-IF
                    ELSE
                        MOVE    1                   TO  FLG-UPDFLG
                    END-IF
