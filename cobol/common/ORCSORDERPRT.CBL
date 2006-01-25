@@ -29,6 +29,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL−多々納 05/05/18  処方せんコメント追加
+      *  01.00.02    NACL-多々納  06/01/25  MONFUNCへ変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -165,8 +166,8 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
-           COPY    "ORCA-DBPATH".
+      **** COPY    "CPORCMCP.INC".
+      **** COPY    "ORCA-DBPATH".
       *
            COPY    "MCPAREA".
       *
@@ -247,8 +248,8 @@
            MOVE    SPA-HKNCOMBINUM     TO  WKSRY-HKNCOMBI
       *
            MOVE    WKSRYACT-REC        TO  MCPDATA-REC
-           MOVE    PATH-TBL-WKSRYACT-KEY2
-                                       TO  MCP-PATH
+           MOVE    "tbl_wksryact"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  WKSRYACT-REC
@@ -279,7 +280,8 @@
                                                       (LNK-WKSRYACT-MAX)
                END-IF
       *
-               MOVE    PATH-TBL-WKSRYACT-KEY2  TO  MCP-PATH
+               MOVE    "tbl_wksryact"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  WKSRYACT-REC
@@ -289,7 +291,8 @@
                    MOVE    1                   TO  FLG-WKSRYACT
                END-IF
            END-PERFORM
-           MOVE    PATH-TBL-WKSRYACT-KEY2  TO  MCP-PATH
+           MOVE    "tbl_wksryact"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *    剤毎に保存する
            IF      LNK-WKSRYACT-MAX   >    ZERO
@@ -709,9 +712,9 @@
       *
            MOVE    ORDERPRT-REC        TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    PATH-TBL-ORDERPRT-KEY
-                                       TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    "tbl_orderprt"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
@@ -986,10 +989,10 @@
            MOVE    "1"                 TO  ORDERPRT-PRTKBN
       *
            MOVE    ORDERPRT-REC        TO  MCPDATA-REC
-           MOVE    PATH-TBL-ORDERPRT-DEL1
-                                       TO  MCP-PATH
+           MOVE    "tbl_orderprt"      TO  MCP-TABLE
+           MOVE    "del1"              TO  MCP-PATHNAME
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
@@ -1009,7 +1012,8 @@
                                            TNS-YUKOEDYMD
       *
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-           MOVE    PATH-TBL-TENSU-KEY  TO  MCP-PATH
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
@@ -1019,7 +1023,8 @@
                MOVE    1                   TO  FLG-TENSU
            END-IF
       *
-           MOVE    PATH-TBL-TENSU-KEY  TO  MCP-PATH
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            .
@@ -1033,7 +1038,7 @@
            MOVE    ZERO            TO  MCP-RC
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -1050,7 +1055,7 @@
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -1065,7 +1070,7 @@
        990-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *

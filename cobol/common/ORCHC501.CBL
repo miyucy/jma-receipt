@@ -28,6 +28,8 @@
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       * 01.00.01     NACL-Â¿¡¹Ç¼  05/06/03  È÷¹Í¥³¥á¥ó¥ÈÄÉ²Ã
+      * 01.00.02     NACL-Â¿¡¹Ç¼  06/01/25  ÍÑÎÌ¥³¡¼¥ÉÈ½ÄêÄÉ²Ã
+      * 01.00.03     NACL-Â¿¡¹Ç¼  06/01/25  MONFUNC¤ØÊÑ¹¹
       *****************************************************************
       *
       *
@@ -68,6 +70,9 @@
       *
            03  FLG-OK              PIC 9(01).
            03  FLG-SP              PIC 9(01).
+      *---(01.00.17) LINE ADD START ------------------------------------
+           03  FLG-DATA            PIC 9(01).
+      *---(01.00.17) LINE ADD END   ------------------------------------
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -300,8 +305,8 @@
            COPY    "MCPAREA".
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
-           COPY    "ORCA-DBPATH".
+      *****COPY    "CPORCMCP.INC".
+      *****COPY    "ORCA-DBPATH".
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -367,8 +372,8 @@
            MOVE    SPA-PTID            TO  PTNYUINRRK-PTID
       *
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-           MOVE    PATH-TBL-PTNYUINRRK-KEY36
-                                       TO  MCP-PATH
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key36"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                PERFORM 900-PTNYUINRRK-READ-SEC
@@ -390,15 +395,16 @@
                END-IF
       *
                IF      FLG-OK              =   ZERO
-                   MOVE    PATH-TBL-PTNYUINRRK-KEY36
-                                               TO  MCP-PATH
+                   MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+                   MOVE    "key36"             TO  MCP-PATHNAME
                    PERFORM 900-PTNYUINRRK-READ-SEC
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
                INITIALIZE                  PTNYUINRRK-REC
            END-IF
-           MOVE    PATH-TBL-PTNYUINRRK-KEY36   TO  MCP-PATH
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key36"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
       *    ÉÂÅï
@@ -473,10 +479,12 @@
            MOVE    ORCHC501-SRYYMD     TO  SYS-5007-EDYUKYMD
       *
            MOVE    SYS-5007-REC        TO  MCPDATA-REC
-           MOVE    PATH-TBL-SYSKANRI-KEY2
-                                       TO  MCP-PATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 920-DBFETCH-SEC
            END-IF
            IF      MCP-RC              =   ZERO
@@ -508,7 +516,8 @@
                                            TO  WRK-SIJISEN-PRT2 (IDX)
                        END-PERFORM
                END-EVALUATE
-               MOVE    PATH-TBL-SYSKANRI-KEY2  TO  MCP-PATH
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  SYS-5007-REC
@@ -518,7 +527,8 @@
                END-IF
            END-PERFORM
       *
-           MOVE    PATH-TBL-SYSKANRI-KEY2  TO  MCP-PATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            .
@@ -654,8 +664,8 @@
            MOVE    WRK-PRTKBN          TO  ORDERPRT-PRTKBN
       *
            MOVE    ORDERPRT-REC        TO  MCPDATA-REC
-           MOVE    PATH-TBL-ORDERPRT-KEY1
-                                       TO  MCP-PATH
+           MOVE    "tbl_orderprt"      TO  MCP-TABLE
+           MOVE    "key1"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                PERFORM 900-ORDERPRT-READ-SEC
@@ -687,10 +697,12 @@
              END-IF
       *---(01.00.01) LINE ADD END   -----------------------------------
       *
-               MOVE    PATH-TBL-ORDERPRT-KEY1  TO  MCP-PATH
+               MOVE    "tbl_orderprt"      TO  MCP-TABLE
+               MOVE    "key1"              TO  MCP-PATHNAME
                PERFORM 900-ORDERPRT-READ-SEC
            END-PERFORM
-           MOVE    PATH-TBL-ORDERPRT-KEY1  TO  MCP-PATH
+           MOVE    "tbl_orderprt"      TO  MCP-TABLE
+           MOVE    "key1"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
       *    ºÞËè¤ËÊÔ½¸¤¹¤ë
@@ -718,11 +730,22 @@
       *
            MOVE    SPACE               TO  WRK-NAIYOU-AREA
            MOVE    ZERO                TO  IDX-S
+      *---(01.00.17) LINE ADD START ------------------------------------
+           MOVE    ZERO                TO  FLG-DATA
+      *---(01.00.17) LINE ADD END   ------------------------------------
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   LNK-ORDERPRT-MAX )  OR
                               (IDX-S   >=  100  )
                MOVE    LNK-ORDERPRT-SRYCD (IDX)    TO  WRK-SRYCD
-               PERFORM 2001-ORDERPRT-HEN-SEC
+      *---(01.00.17) LINE UPD START ------------------------------------
+      *        ÍÑÎÌ¥³¡¼¥É
+               IF      WRK-SRYCD (1:7)     =   "0992000"
+                   CONTINUE
+               ELSE
+                   MOVE    1                   TO  FLG-DATA
+                   PERFORM 2001-ORDERPRT-HEN-SEC
+               END-IF
+      *---(01.00.17) LINE UPD END   ------------------------------------
            END-PERFORM
       *    Æü¿ô
            MOVE    ZERO                TO  WRK-DAY
@@ -757,7 +780,11 @@
            END-IF
       *
       *    Ä¢É¼Ëè¤Î¥Æ¡¼¥Ö¥ë¤ØÊÔ½¸
-           PERFORM 2209-PRINT-HENSYU-SEC 
+      *---(01.00.17) LINE UPD START ------------------------------------
+           IF      FLG-DATA            =   1
+               PERFORM 2209-PRINT-HENSYU-SEC
+           END-IF
+      *---(01.00.17) LINE UPD END   ------------------------------------
       *
            INITIALIZE                  LNK-ORDERPRT-AREA
            INITIALIZE                  LNK-ORDERPRT-MAX
@@ -1047,8 +1074,8 @@
            MOVE    "98"                TO  ORDERPRT-SRYKBN
       *
            MOVE    ORDERPRT-REC        TO  MCPDATA-REC
-           MOVE    PATH-TBL-ORDERPRT-KEY2
-                                       TO  MCP-PATH
+           MOVE    "tbl_orderprt"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                PERFORM 900-ORDERPRT-READ-SEC
@@ -1062,13 +1089,15 @@
                       (ORDERPRT-RENNUM     =   1     )
                    PERFORM 20091-COMMENT-HENSYU-SEC
                END-IF
-               ADD     1               TO  LNK-ORDERPRT-MAX
-               MOVE    ORDERPRT-REC    TO  LNK-ORDERPRT-REC
+               ADD     1                   TO  LNK-ORDERPRT-MAX
+               MOVE    ORDERPRT-REC        TO  LNK-ORDERPRT-REC
                                               (LNK-ORDERPRT-MAX)
-               MOVE    PATH-TBL-ORDERPRT-KEY2  TO  MCP-PATH
+               MOVE    "tbl_orderprt"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-ORDERPRT-READ-SEC
            END-PERFORM
-           MOVE    PATH-TBL-ORDERPRT-KEY2  TO  MCP-PATH
+           MOVE    "tbl_orderprt"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *    ºÞËè¤ËÊÔ½¸¤¹¤ë
            IF      LNK-ORDERPRT-MAX    >   ZERO
@@ -1413,10 +1442,10 @@
            MOVE    WRK-PRTKBN          TO  ORDERPRT-PRTKBN
       *
            MOVE    ORDERPRT-REC        TO  MCPDATA-REC
-           MOVE    PATH-TBL-ORDERPRT-DEL1
-                                       TO  MCP-PATH
+           MOVE    "tbl_orderprt"      TO  MCP-TABLE
+           MOVE    "del1"              TO  MCP-PATHNAME
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
@@ -1486,10 +1515,12 @@
            MOVE    ORCHC501-SRYYMD     TO  SYS-EDYUKYMD
       *
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-           MOVE    PATH-TBL-SYSKANRI-KEY
-                                       TO  MCP-PATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 920-DBFETCH-SEC
            END-IF
            IF      MCP-RC              =   ZERO
@@ -1499,7 +1530,8 @@
                INITIALIZE                      SYSKANRI-REC
                MOVE    1                   TO  FLG-SYSKANRI
            END-IF
-           MOVE    PATH-TBL-SYSKANRI-KEY   TO  MCP-PATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            .
@@ -1511,7 +1543,8 @@
        900-PTINF-READ-SEC         SECTION.
       *
            MOVE    PTINF-REC           TO  MCPDATA-REC
-           MOVE    PATH-TBL-PTINF-KEY  TO  MCP-PATH
+           MOVE    "tbl_ptinf"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                PERFORM 920-DBFETCH-SEC
@@ -1523,7 +1556,8 @@
                INITIALIZE                      PTINF-REC
                MOVE    1                   TO  FLG-PTINF
            END-IF
-           MOVE    PATH-TBL-PTINF-KEY  TO  MCP-PATH
+           MOVE    "tbl_ptinf"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            .
@@ -1541,7 +1575,8 @@
                                            TNS-YUKOEDYMD
       *
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-           MOVE    PATH-TBL-TENSU-KEY  TO  MCP-PATH
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                PERFORM 920-DBFETCH-SEC
@@ -1554,7 +1589,8 @@
                MOVE    1                   TO  FLG-TENSU
            END-IF
       *
-           MOVE    PATH-TBL-TENSU-KEY  TO  MCP-PATH
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            .
@@ -1598,7 +1634,7 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -1611,7 +1647,7 @@
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -1626,7 +1662,7 @@
        990-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
