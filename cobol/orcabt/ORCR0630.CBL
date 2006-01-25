@@ -63,6 +63,7 @@
       *                                     Ï·¿ÍÀ­Ç§ÃÎ¾É¼À´µ¼£ÎÅÉÂÅïÆþ±¡ÎÁ£²
       *  02.06.04    NACL-ÌçÏÆ    06/01/05  ¥·¥¹´É¡Ê£µ£°£°£°¡Ë¤Î¿©»ö¾ðÊó¼è
       *                                     ÆÀ½¤Àµ
+      *  02.06.05    NACL-ÌçÏÆ    06/01/20  É¸·çÂÐ±þ
       *****************************************************************
       *
       *
@@ -218,6 +219,8 @@
            03  WRK-SRYYM-5000                          PIC X(06).
       *
            03  WRK-PREFNUM                             PIC X(02).
+      *
+           03  WRK-HYOKETU-TEN                         PIC 9(09)V99.
       *
            03  WRK-NYUINF-TABLE.
                05  WRK-NYUINF-TBL                      OCCURS  10.
@@ -2016,6 +2019,7 @@
            MOVE    ZERO               TO   WRK-SENTEI-ZAITEN
            MOVE    SPACE              TO   WRK-GAIHAKU-SRYCD
            MOVE    ZERO               TO   WRK-GAIHAKU-KHNTEN
+           MOVE    ZERO               TO   WRK-HYOKETU-TEN
       *
            INITIALIZE                      NYUINACT-REC
            MOVE    NACCT-HOSPID       TO   NSRY-HOSPID
@@ -2055,8 +2059,8 @@
                          IF   TNS-DATAKBN    =    1
                               MOVE   TNS-TEN   TO   WRK-KHNTEN
       *                       ½é´ü²Ã»»¡ÊµÚ¤ÓÄ¹´ü¸º»»¡Ë¤ÎÅÀ¿ô¼èÆÀ
-                              COMPUTE   WRK-KSNTEN  =  NACCT-ZAITEN
-                                                    -  WRK-KHNTEN
+      ***                     COMPUTE   WRK-KSNTEN  =  NACCT-ZAITEN
+      ***                                           -  WRK-KHNTEN
       *                       ´Ç¸îÈæÎ¨´ð½àÌ¤Ã£»þ¤ÎÆþ±¡´ðËÜÅÀ¿ô¤Î¼èÆÀ
                               PERFORM  20011231-GAIHAKU-NYUINKHN-SET-SEC
                               IF   WRK-GAIHAKU-KHNTEN  NOT =  ZERO
@@ -2065,7 +2069,16 @@
                               END-IF
                               MOVE   NYUINACT-IDX
                                                TO   NYUINACT-IDX2
-                              MOVE   1         TO   FLG-NYUKHN
+      ***                     MOVE   1         TO   FLG-NYUKHN
+                         ELSE
+                              EVALUATE  TNS-TENSIKIBETU
+                                WHEN     3
+                                    MOVE  TNS-TEN  TO  WRK-KSNTEN
+                                WHEN     8
+                                    COMPUTE  WRK-KSNTEN = TNS-TEN * -1
+                                WHEN     6
+                                    MOVE  TNS-TEN  TO  WRK-HYOKETU-TEN
+                              END-EVALUATE
                          END-IF
                      END-IF                  
                END-PERFORM
@@ -2121,6 +2134,13 @@
                        MOVE     TNS-TEN         TO    WRK-SENTEI-KHNTEN
                        COMPUTE  WRK-SENTEI-ZAITEN  =  WRK-SENTEI-KHNTEN
                                                    +  WRK-KSNTEN
+                       IF     WRK-HYOKETU-TEN    NOT =   ZERO
+      *                  É¸·ç¡§¡ó¸º»»
+                         COMPUTE    WRK-SENTEI-ZAITEN  =
+                                  ( WRK-SENTEI-ZAITEN  -
+                                   (WRK-SENTEI-ZAITEN  *
+                                    (WRK-HYOKETU-TEN   /  100)))  +  0.5
+                       END-IF
                     END-IF  
       *
                  END-IF
@@ -2142,6 +2162,14 @@
                                            MCPAREA
                                            ORCMCPAREA
                                            MCPDATA-REC
+      *
+           IF     WRK-HYOKETU-TEN    NOT =   ZERO
+      *      É¸·ç¡§¡ó¸º»»
+             COMPUTE    WRK-KHNTEN  =
+                      ( WRK-KHNTEN  -
+                       (WRK-KHNTEN  *
+                        (WRK-HYOKETU-TEN   /  100)))  +  0.5
+           END-IF
       *
            .
        2001123-NYUINKHN-GET-EXT.

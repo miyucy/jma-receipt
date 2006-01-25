@@ -54,15 +54,15 @@
       *入院基本料診療区分
                    07  LNK-SROUNYUIN-SRYKBN          PIC  X(02).
       *剤点数
-                   07  LNK-SROUNYUIN-ZAITEN          PIC  9(08).
+                   07  LNK-SROUNYUIN-ZAITEN          PIC S9(08).
       *診療コード計
                    07  LNK-SROUNYUIN-SRYCDTOTAL      PIC  9(14).
       *明細数
                    07  LNK-SROUNYUIN-MEISAISU        PIC  9(07).
       *診療コード
-                   07  LNK-SROUNYUIN-ROUSAI.
-                       09  LNK-SROUNYUIN-SRYCD       PIC  X(09)
-                                                     OCCURS 20.
+                   07  LNK-SROUNYUIN-ROUSAI          OCCURS  20.
+                       09  LNK-SROUNYUIN-SRYCD       PIC  X(09).
+                       09  LNK-SROUNYUIN-SRYCD-SK    PIC  X(01).
       *略称（特定入院料）
                    07  LNK-SROUNYUIN-RYAKUSYO        PIC  X(14).
       *入院会計剤識別区分６の剤点数

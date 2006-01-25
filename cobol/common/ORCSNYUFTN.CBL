@@ -71,6 +71,7 @@
       *                                     ¿ÇÎÅ½êÏ·¿Í°åÎÅ´ÉÍýÎÁ
       *                                     Ï·¿ÍÀ­Ç§ÃÎ¾É¼À´µ¼£ÎÅÉÂÅïÆþ±¡ÎÁ£±
       *                                     Ï·¿ÍÀ­Ç§ÃÎ¾É¼À´µ¼£ÎÅÉÂÅïÆþ±¡ÎÁ£²
+      *  01.00.28    NACL-ÌçÏÆ    06/01/20  É¸·çÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -91,6 +92,7 @@
            03  WRK-KBNCD.
                05  WRK-KBNCD-X             PIC 9(02).
            03  WRK-KBNCD2                  PIC X(06).
+           03  WRK-HYOKETU-TEN             PIC 9(09)V99.
       *
        01  WRK-ROSAI-AREA.
            03  WRK-SYUTEN                  PIC 9(09).
@@ -1676,9 +1678,9 @@
                    (NACCT-ZAITEN         NOT =  ZERO)
       *            Æþ±¡´ðËÜÎÁ¤È²Ã¸º»»ÅÀ¿ô¤Î¼èÆÀ
                    PERFORM   NYUINKHN-GET-SEC
-                   IF    WRK-GAIHAKU-SRYCD   NOT =   SPACE
-                         MOVE  WRK-GAIHAKU-KHNTEN  TO  WRK-KHNTEN
-                   END-IF
+      ***          IF    WRK-GAIHAKU-SRYCD   NOT =   SPACE
+      ***                MOVE  WRK-GAIHAKU-KHNTEN  TO  WRK-KHNTEN
+      ***          END-IF
       *            ÉÂÅïÀßÄê¤ÎÁªÄê¼«¸ÊÉéÃ´¾ðÊó¤Î¼èÆÀ
                    INITIALIZE                  ORCSBTUSENTEIAREA
                    MOVE    SYU-HOSPID          TO  SBTUSENTEI-HOSPID
@@ -2116,6 +2118,7 @@
       *
            MOVE    ZERO               TO   WRK-KHNTEN
            MOVE    ZERO               TO   WRK-KSNTEN
+           MOVE    ZERO               TO   WRK-HYOKETU-TEN
            MOVE    ZERO               TO   SENTEI-IDX
       *
            MOVE    SYU-HOSPID         TO   NSRY-HOSPID
@@ -2153,8 +2156,17 @@
                      IF       FLG-TENSU      =    ZERO
                          IF   TNS-DATAKBN    =    1
                               MOVE   TNS-TEN   TO   WRK-KHNTEN
-                              MOVE   1         TO   FLG-NYUKHN
+      ***                     MOVE   1         TO   FLG-NYUKHN
                               MOVE   NYUINACT-IDX  TO  SENTEI-IDX
+                         ELSE
+                              EVALUATE  TNS-TENSIKIBETU
+                                WHEN     3
+                                    MOVE  TNS-TEN  TO  WRK-KSNTEN
+                                WHEN     8
+                                    COMPUTE  WRK-KSNTEN = TNS-TEN * -1
+                                WHEN     6
+                                    MOVE  TNS-TEN  TO  WRK-HYOKETU-TEN
+                              END-EVALUATE
                          END-IF
                      END-IF                  
                END-PERFORM
@@ -2162,11 +2174,14 @@
       *
       *    ´Ç¸îÈæÎ¨´ð½àÌ¤Ã£»þ¤ÎÆþ±¡´ðËÜÅÀ¿ô¤Î¼èÆÀ
            PERFORM  GAIHAKU-NYUINKHN-SET-SEC
+           IF    WRK-GAIHAKU-SRYCD   NOT =   SPACE
+                 MOVE  WRK-GAIHAKU-KHNTEN  TO  WRK-KHNTEN
+           END-IF
       *
       *    ½é´ü²Ã»»¡ÊµÚ¤ÓÄ¹´ü¸º»»¡Ë¤ÎÅÀ¿ô¼èÆÀ
-           MOVE      ZERO              TO  WRK-KSNTEN
-           COMPUTE   WRK-KSNTEN        =   NACCT-ZAITEN   -
-                                           WRK-KHNTEN
+      ***  MOVE      ZERO              TO  WRK-KSNTEN
+      ***  COMPUTE   WRK-KSNTEN        =   NACCT-ZAITEN   -
+      ***                                  WRK-KHNTEN
       *
            MOVE   "NYUINACT-KEY2"      TO  WK-PATH
            PERFORM   CSR-CLOSE-SEC
@@ -2208,9 +2223,29 @@
                    MOVE   TNS-TEN      TO   WRK-SENTEI-KHNTEN
                    COMPUTE    WRK-SENTEI-ZAITEN  =  WRK-SENTEI-KHNTEN
                                                  +  WRK-KSNTEN
+                   IF     WRK-HYOKETU-TEN    NOT =   ZERO
+      *              É¸·ç¡§¡ó¸º»»
+                     COMPUTE    WRK-SENTEI-KHNTEN  =
+                              ( WRK-SENTEI-KHNTEN  -
+                               (WRK-SENTEI-KHNTEN  *
+                                (WRK-HYOKETU-TEN   /  100)))  +  0.5
+                     COMPUTE    WRK-SENTEI-ZAITEN  =
+                              ( WRK-SENTEI-ZAITEN  -
+                               (WRK-SENTEI-ZAITEN  *
+                                (WRK-HYOKETU-TEN   /  100)))  +  0.5
+                   END-IF
                END-IF                  
       *
            END-IF
+      *
+           IF     WRK-HYOKETU-TEN    NOT =   ZERO
+      *      É¸·ç¡§¡ó¸º»»
+             COMPUTE    WRK-KHNTEN  =
+                      ( WRK-KHNTEN  -
+                       (WRK-KHNTEN  *
+                        (WRK-HYOKETU-TEN   /  100)))  +  0.5
+           END-IF
+      *
            .
        NYUINKHN-GET-EXT.
            EXIT.

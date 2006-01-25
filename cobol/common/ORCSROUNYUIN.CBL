@@ -39,6 +39,7 @@
       *                                     ¿ÇÎÅ½êÏ·¿Í°åÎÅ´ÉÍýÎÁ
       *                                     Ï·¿ÍÀ­Ç§ÃÎ¾É¼À´µ¼£ÎÅÉÂÅïÆþ±¡ÎÁ£±
       *                                     Ï·¿ÍÀ­Ç§ÃÎ¾É¼À´µ¼£ÎÅÉÂÅïÆþ±¡ÎÁ£²
+      *  01.00.06    NACL-ÌçÏÆ    06/01/20  É¸·çÂÐ±þ
       *****************************************************************
       *
       *
@@ -74,6 +75,7 @@
        01  IDX-AREA.
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
+           03  IDX3                PIC 9(04).
            03  ID1                 PIC 9(04).
            03  KSN-IDX             PIC 9(04).
            03  GENSAN-IDX          PIC 9(04).
@@ -132,11 +134,17 @@
            03  WRK-GENSAN3-MIJISI          PIC 9(01).
            03  WRK-GENSAN4-MIJISI          PIC 9(01).
       *
+           03  WRK-SHOKIKSN-TAIHI          PIC X(09).
+           03  WRK-HYOKETU-TAIHI           PIC X(09).
+           03  WRK-HYOKETU-TEN             PIC 9(09)V99.
+           03  WRK-ZAITEN-HYOKETU          PIC 9(08).
+      *
       *    Ï«ºÒÆþ±¡²ñ·×¥ï¡¼¥¯
            03  WRK-ROUSAI-TABLE.
                05  WRK-ROUSAI-TBL          OCCURS  31.
                    07  WRK-NYUINKHN        PIC X(09).
                    07  WRK-SHOKIKSN        PIC X(09).
+                   07  WRK-HYOKETU         PIC X(09).
                    07  WRK-GAIHAKU         PIC X(09).
                    07  WRK-NYUKHNKSNKBN    PIC 9(03).
       *
@@ -409,6 +417,8 @@
                                               WRK-KSNKBN
                    MOVE      SPACE    TO      WRK-RYAKUSHO
                                               WRK-SRYKBN
+                                              WRK-SHOKIKSN-TAIHI
+                                              WRK-HYOKETU-TAIHI
                    IF    NACCT-SRYCDTOTAL     =    99999916
                        CONTINUE
                    ELSE
@@ -422,12 +432,29 @@
                                MOVE    NSRY-SRYCD(1)   TO  
                                                    WRK-NYUINKHN(IDX1)
       *
-                               IF   NSRY-SRYCD(2)  NOT =   SPACE
-                                   MOVE   NSRY-SRYCD(2)  TO
-                                                   WRK-SHOKIKSN(IDX1)
-                               END-IF
-      *
                                IF   FLG-RYAKU   =   ZERO
+      *
+                                  PERFORM  VARYING  IDX3  FROM  2  BY  1
+                                            UNTIL   IDX3   >    3
+                                    IF   NSRY-SRYCD(IDX3)  NOT =   SPACE
+                                      INITIALIZE         TNS-TENSU-REC
+                                      MOVE NSRY-SRYCD(IDX3)
+                                                     TO  TNS-SRYCD
+                                      MOVE LNK-SROUNYUIN-SANTEIYM
+                                                     TO  ORC-DBYMD(1:6)
+                                      MOVE    "01"   TO  ORC-DBYMD(7:2)
+                                      PERFORM 910-TENSU-READ-SEC
+                                      EVALUATE  TNS-TENSIKIBETU
+                                         WHEN     3
+                                         WHEN     8
+                                             MOVE   NSRY-SRYCD(IDX3)  TO
+                                                      WRK-SHOKIKSN-TAIHI
+                                         WHEN     6
+                                             MOVE   NSRY-SRYCD(IDX3)  TO
+                                                      WRK-HYOKETU-TAIHI
+                                      END-EVALUATE
+                                    END-IF
+                                  END-PERFORM
       *
                                   MOVE    NACCT-SRYKBN
                                                 TO  WRK-SRYKBN
@@ -442,6 +469,15 @@
                                   PERFORM   210-RYAKUSYO-HENSYU-SEC
       *
                                   MOVE    1     TO    FLG-RYAKU
+                               END-IF
+      *
+                               IF    WRK-SHOKIKSN-TAIHI  NOT = SPACE
+                                  MOVE  WRK-SHOKIKSN-TAIHI
+                                               TO  WRK-SHOKIKSN(IDX1)
+                               END-IF
+                               IF    WRK-HYOKETU-TAIHI   NOT = SPACE
+                                  MOVE  WRK-HYOKETU-TAIHI
+                                               TO  WRK-HYOKETU(IDX1)
                                END-IF
       *
                                MOVE  WRK-SRYKBN
@@ -802,11 +838,15 @@
                    ADD      1               TO  WRK-MEISAISU
                    MOVE   WRK-NYUINKHN(IDX1) TO  LNK-SROUNYUIN-SRYCD
                                            (IDX1 WRK-MEISAISU)
+                   MOVE    "1"           TO  LNK-SROUNYUIN-SRYCD-SK
+                                           (IDX1 WRK-MEISAISU)
                END-IF
       *        ³°Çñ
                IF         WRK-GAIHAKU(IDX1)   NOT =        SPACE
                    ADD      1               TO  WRK-MEISAISU
                    MOVE   WRK-GAIHAKU(IDX1)  TO  LNK-SROUNYUIN-SRYCD
+                                           (IDX1 WRK-MEISAISU)
+                   MOVE    "2"           TO  LNK-SROUNYUIN-SRYCD-SK
                                            (IDX1 WRK-MEISAISU)
                END-IF
       *        Æü¾ïÀ¸³è¾ã³²²Ã»»
@@ -814,10 +854,14 @@
                    ADD      1                 TO  WRK-MEISAISU
                    MOVE   CONS-NICHIJOU-KSN1  TO  LNK-SROUNYUIN-SRYCD
                                            (IDX1 WRK-MEISAISU)
+                   MOVE    "3"            TO  LNK-SROUNYUIN-SRYCD-SK
+                                           (IDX1 WRK-MEISAISU)
                END-IF
                IF         WRK-NICHIJOU-KSN2(IDX1)   NOT =   ZERO
                    ADD      1                 TO  WRK-MEISAISU
                    MOVE   CONS-NICHIJOU-KSN2  TO  LNK-SROUNYUIN-SRYCD
+                                           (IDX1 WRK-MEISAISU)
+                   MOVE    "3"            TO  LNK-SROUNYUIN-SRYCD-SK
                                            (IDX1 WRK-MEISAISU)
                END-IF
       *        ÃÔÊò²Ã»»
@@ -825,10 +869,14 @@
                    ADD      1                  TO  WRK-MEISAISU
                    MOVE   CONS-CHIHOU-KSN1     TO  LNK-SROUNYUIN-SRYCD
                                            (IDX1 WRK-MEISAISU)
+                   MOVE    "3"             TO  LNK-SROUNYUIN-SRYCD-SK
+                                           (IDX1 WRK-MEISAISU)
                END-IF
                IF         WRK-CHIHOU-KSN2(IDX1)     NOT =   ZERO
                    ADD      1                  TO  WRK-MEISAISU
                    MOVE   CONS-CHIHOU-KSN2     TO  LNK-SROUNYUIN-SRYCD
+                                           (IDX1 WRK-MEISAISU)
+                   MOVE    "3"             TO  LNK-SROUNYUIN-SRYCD-SK
                                            (IDX1 WRK-MEISAISU)
                END-IF
       *        êóáì´µ¼Ô´ÉÍý²Ã»»
@@ -836,10 +884,14 @@
                    ADD      1                  TO  WRK-MEISAISU
                    MOVE   CONS-JYOKU-KSN1      TO  LNK-SROUNYUIN-SRYCD
                                            (IDX1 WRK-MEISAISU)
+                   MOVE    "3"             TO  LNK-SROUNYUIN-SRYCD-SK
+                                           (IDX1 WRK-MEISAISU)
                END-IF
                IF         WRK-JYOKU-KSN2(IDX1)      NOT =   ZERO
                    ADD      1                  TO  WRK-MEISAISU
                    MOVE   CONS-JYOKU-KSN2      TO  LNK-SROUNYUIN-SRYCD
+                                           (IDX1 WRK-MEISAISU)
+                   MOVE    "3"             TO  LNK-SROUNYUIN-SRYCD-SK
                                            (IDX1 WRK-MEISAISU)
                END-IF
       *        Æþ±¡¿ÇÎÅ·×²èÌ¤¼Â»Ü¸º»»
@@ -847,10 +899,14 @@
                    ADD      1                  TO  WRK-MEISAISU
                    MOVE   CONS-KEIKAKU-GENSAN1 TO  LNK-SROUNYUIN-SRYCD
                                            (IDX1 WRK-MEISAISU)
+                   MOVE    "3"             TO  LNK-SROUNYUIN-SRYCD-SK
+                                           (IDX1 WRK-MEISAISU)
                END-IF
                IF         WRK-KEIKAKU-GENSAN2(IDX1) NOT =   ZERO
                    ADD      1                  TO  WRK-MEISAISU
                    MOVE   CONS-KEIKAKU-GENSAN2 TO  LNK-SROUNYUIN-SRYCD
+                                           (IDX1 WRK-MEISAISU)
+                   MOVE    "3"             TO  LNK-SROUNYUIN-SRYCD-SK
                                            (IDX1 WRK-MEISAISU)
                END-IF
       *        ±¡Æâ´¶À÷ËÉ»ßÂÐºöÌ¤¼Â»Ü¸º»»
@@ -858,10 +914,14 @@
                    ADD      1                  TO  WRK-MEISAISU
                    MOVE   CONS-INNAI-GENSAN1   TO  LNK-SROUNYUIN-SRYCD
                                            (IDX1 WRK-MEISAISU)
+                   MOVE    "3"             TO  LNK-SROUNYUIN-SRYCD-SK
+                                           (IDX1 WRK-MEISAISU)
                END-IF
                IF         WRK-INNAI-GENSAN2(IDX1) NOT =   ZERO
                    ADD      1                  TO  WRK-MEISAISU
                    MOVE   CONS-INNAI-GENSAN2   TO  LNK-SROUNYUIN-SRYCD
+                                           (IDX1 WRK-MEISAISU)
+                   MOVE    "3"             TO  LNK-SROUNYUIN-SRYCD-SK
                                            (IDX1 WRK-MEISAISU)
                END-IF
       *        °åÎÅ°ÂÁ´´ÉÍýÂÎÀ©Ì¤À°È÷¸º»»
@@ -869,10 +929,14 @@
                    ADD      1                  TO  WRK-MEISAISU
                    MOVE   CONS-ANZEN-GENSAN1   TO  LNK-SROUNYUIN-SRYCD
                                            (IDX1 WRK-MEISAISU)
+                   MOVE    "3"             TO  LNK-SROUNYUIN-SRYCD-SK
+                                           (IDX1 WRK-MEISAISU)
                END-IF
                IF         WRK-ANZEN-GENSAN2(IDX1) NOT =   ZERO
                    ADD      1                  TO  WRK-MEISAISU
                    MOVE   CONS-ANZEN-GENSAN2   TO  LNK-SROUNYUIN-SRYCD
+                                           (IDX1 WRK-MEISAISU)
+                   MOVE    "3"             TO  LNK-SROUNYUIN-SRYCD-SK
                                            (IDX1 WRK-MEISAISU)
                END-IF
       *        êóáìÂÐºöÌ¤¼Â»Ü¸º»»
@@ -880,10 +944,14 @@
                    ADD      1                  TO  WRK-MEISAISU
                    MOVE   CONS-JYOKU-GENSAN1   TO  LNK-SROUNYUIN-SRYCD
                                            (IDX1 WRK-MEISAISU)
+                   MOVE    "3"             TO  LNK-SROUNYUIN-SRYCD-SK
+                                           (IDX1 WRK-MEISAISU)
                END-IF
                IF         WRK-JYOKU-GENSAN2(IDX1) NOT =   ZERO
                    ADD      1                  TO  WRK-MEISAISU
                    MOVE   CONS-JYOKU-GENSAN2   TO  LNK-SROUNYUIN-SRYCD
+                                           (IDX1 WRK-MEISAISU)
+                   MOVE    "3"             TO  LNK-SROUNYUIN-SRYCD-SK
                                            (IDX1 WRK-MEISAISU)
                END-IF
       *        ¸º»»¾ðÊó¡Ê¥·¥¹¥Æ¥à´ÉÍý¡Ë
@@ -893,6 +961,8 @@
                    ADD      1               TO  WRK-MEISAISU
                    MOVE   WRK-GENSAN2       TO  LNK-SROUNYUIN-SRYCD
                                            (IDX1 WRK-MEISAISU)
+                   MOVE    "3"          TO  LNK-SROUNYUIN-SRYCD-SK
+                                           (IDX1 WRK-MEISAISU)
                    MOVE     1               TO  WRK-GENSAN2-MIJISI
                END-IF
                IF      (WRK-NYUINKHN(IDX1)   NOT =         SPACE)  AND
@@ -901,6 +971,8 @@
                    ADD      1               TO  WRK-MEISAISU
                    MOVE   WRK-GENSAN3       TO  LNK-SROUNYUIN-SRYCD
                                            (IDX1 WRK-MEISAISU)
+                   MOVE    "3"          TO  LNK-SROUNYUIN-SRYCD-SK
+                                           (IDX1 WRK-MEISAISU)
                    MOVE     1               TO  WRK-GENSAN3-MIJISI
                END-IF
                IF      (WRK-NYUINKHN(IDX1)   NOT =         SPACE)  AND
@@ -908,6 +980,8 @@
                        (WRK-GENSAN-JYOKU(IDX1)   NOT =     SPACE)
                    ADD      1               TO  WRK-MEISAISU
                    MOVE   WRK-GENSAN4       TO  LNK-SROUNYUIN-SRYCD
+                                           (IDX1 WRK-MEISAISU)
+                   MOVE    "3"          TO  LNK-SROUNYUIN-SRYCD-SK
                                            (IDX1 WRK-MEISAISU)
                    MOVE     1               TO  WRK-GENSAN4-MIJISI
                END-IF
@@ -918,9 +992,13 @@
                            ADD      1           TO  WRK-MEISAISU
                            MOVE   "101900010"   TO  LNK-SROUNYUIN-SRYCD
                                                (IDX1 WRK-MEISAISU)
+                           MOVE    "4"      TO  LNK-SROUNYUIN-SRYCD-SK
+                                               (IDX1 WRK-MEISAISU)
                        WHEN  "2"
                            ADD      1           TO  WRK-MEISAISU
                            MOVE   "101900020"   TO  LNK-SROUNYUIN-SRYCD
+                                               (IDX1 WRK-MEISAISU)
+                           MOVE    "4"      TO  LNK-SROUNYUIN-SRYCD-SK
                                                (IDX1 WRK-MEISAISU)
                    END-EVALUATE
                END-IF
@@ -929,6 +1007,16 @@
                        (WRK-SHOKIKSN(IDX1)   NOT =         SPACE)
                    ADD      1               TO  WRK-MEISAISU
                    MOVE   WRK-SHOKIKSN(IDX1) TO  LNK-SROUNYUIN-SRYCD
+                                           (IDX1 WRK-MEISAISU)
+                   MOVE    "5"           TO  LNK-SROUNYUIN-SRYCD-SK
+                                           (IDX1 WRK-MEISAISU)
+               END-IF
+      *        É¸·ç
+               IF       WRK-HYOKETU(IDX1)    NOT =         SPACE
+                   ADD      1               TO  WRK-MEISAISU
+                   MOVE   WRK-HYOKETU(IDX1)  TO  LNK-SROUNYUIN-SRYCD
+                                           (IDX1 WRK-MEISAISU)
+                   MOVE    "6"           TO  LNK-SROUNYUIN-SRYCD-SK
                                            (IDX1 WRK-MEISAISU)
                END-IF
       *        Æþ±¡ÎÁ²Ã»»¡ÊÆþ±¡²ñ·×¡Ë
@@ -949,12 +1037,31 @@
       *    ºÆ¹½ÃÛ¤·¤¿Ï«ºÒÆþ±¡²ñ·×¾ðÊó¤«¤éÅÀ¿ô¤Î»»Äê
            PERFORM      VARYING    IDX1   FROM   1  BY  1
                         UNTIL      IDX1   >   31
-      *        ÅÀ¿ô¥Þ¥¹¥¿¤ÎÆÉ¤ß¹þ¤ß
-               PERFORM   VARYING   IDX2    FROM   1  BY   1
-                         UNTIL (LNK-SROUNYUIN-SRYCD(IDX1 IDX2) = SPACE)
-                            OR (IDX2    >      20)
-                   PERFORM    210-TENSU-KEISAN-SEC
-               END-PERFORM
+      *
+               MOVE     ZERO       TO       WRK-HYOKETU-TEN
+                                            WRK-ZAITEN-HYOKETU
+               IF   WRK-HYOKETU(IDX1)   =   SPACE
+      *          ÅÀ¿ô¥Þ¥¹¥¿¤ÎÆÉ¤ß¹þ¤ß
+                 PERFORM   VARYING   IDX2    FROM   1  BY   1
+                      UNTIL (LNK-SROUNYUIN-SRYCD(IDX1 IDX2) = SPACE)
+                         OR (IDX2    >      20)
+                     PERFORM    210-TENSU-KEISAN-SEC
+                 END-PERFORM
+               ELSE
+      *          ÅÀ¿ô¥Þ¥¹¥¿¤ÎÆÉ¤ß¹þ¤ß
+                 INITIALIZE                          TNS-TENSU-REC
+                 MOVE    WRK-HYOKETU(IDX1)       TO  TNS-SRYCD
+                 MOVE    LNK-SROUNYUIN-SANTEIYM  TO  ORC-DBYMD(1:6)
+                 MOVE    "01"                    TO  ORC-DBYMD(7:2)
+                 PERFORM 910-TENSU-READ-SEC
+                 MOVE    TNS-TEN                 TO  WRK-HYOKETU-TEN
+      *
+                 PERFORM   VARYING   IDX2    FROM   1  BY   1
+                      UNTIL (LNK-SROUNYUIN-SRYCD(IDX1 IDX2) = SPACE)
+                         OR (IDX2    >      20)
+                     PERFORM    210-TENSU-KEISAN-HYOKETU-SEC
+                 END-PERFORM
+               END-IF
       *
                PERFORM   VARYING   KSN-IDX   FROM   1  BY   1
                          UNTIL (WRK-NYUKSN(KSN-IDX)  =  SPACE)  OR
@@ -1212,6 +1319,48 @@
       *
            .
        210-TENSU-KEISAN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÅÀ¿ô·×»»½èÍý¡ÊÉ¸·ç¡Ë
+      *****************************************************************
+       210-TENSU-KEISAN-HYOKETU-SEC            SECTION.
+      *
+           IF   LNK-SROUNYUIN-SRYCD-SK(IDX1 IDX2)       =   "5"
+              MOVE  LNK-SROUNYUIN-ZAITEN(IDX1)  TO  WRK-ZAITEN-HYOKETU
+              MOVE       ZERO      TO     LNK-SROUNYUIN-ZAITEN(IDX1)
+           END-IF
+      *
+           IF   LNK-SROUNYUIN-SRYCD-SK(IDX1 IDX2)   NOT =   "6"
+              PERFORM    210-TENSU-KEISAN-SEC
+           END-IF
+      *
+           IF      IDX2   =   1
+      *      É¸·ç¡§¡ó¸º»»
+             COMPUTE    LNK-SROUNYUIN-ZAITEN(IDX1)  =
+                      ( LNK-SROUNYUIN-ZAITEN(IDX1)  -
+                       (LNK-SROUNYUIN-ZAITEN(IDX1)  *
+                       (WRK-HYOKETU-TEN   /  100))) +  0.5
+      *      ¿ÇÎÅ¥³¡¼¥É·×
+             MOVE    WRK-HYOKETU(IDX1)   TO  WRK-SRYCD-X
+             COMPUTE LNK-SROUNYUIN-SRYCDTOTAL(IDX1)  =
+                     LNK-SROUNYUIN-SRYCDTOTAL(IDX1)  +   WRK-SRYCD-9
+             ADD      1          TO  LNK-SROUNYUIN-MEISAISU(IDX1)
+           END-IF
+      *
+           IF      LNK-SROUNYUIN-SRYCD-SK(IDX1 IDX2)  =   "5"
+      *      É¸·ç¡§¡ó¸º»»
+             COMPUTE    LNK-SROUNYUIN-ZAITEN(IDX1)  =
+                      ( LNK-SROUNYUIN-ZAITEN(IDX1)  -
+                       (LNK-SROUNYUIN-ZAITEN(IDX1)  *
+                       (WRK-HYOKETU-TEN   /  100))) +  0.5
+      *
+             COMPUTE LNK-SROUNYUIN-ZAITEN(IDX1)  =
+                     LNK-SROUNYUIN-ZAITEN(IDX1)  +  WRK-ZAITEN-HYOKETU
+           END-IF
+      *
+           .
+       210-TENSU-KEISAN-HYOKETU-EXT.
            EXIT.
       *
       **************************************************************
