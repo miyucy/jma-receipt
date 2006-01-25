@@ -3269,7 +3269,20 @@
                    END-IF
                END-IF
            END-IF
-                 
+      *
+      *    印刷順（国保）と編綴順設定の関連チェック
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-GMN-PRTJYUN3    =   "06"
+                   IF    ( SPA-GMN-PREFKBN-PRTJYUN =   SPACE )
+                   OR    ( SPA-GMN-HKNJANUM-PRTJYUN
+                                                   =   SPACE )
+                   OR   ( SPA-GMN-RECESYUBETU-PRTJYUN
+                                                   =   SPACE )
+                       MOVE    70                  TO  SPA-GMN-CUR
+                       MOVE    "0096"              TO  SPA-ERRCD
+                   END-IF
+               END-IF
+           END-IF                         
       *    
            .
        4900-KANRENCHK-EXT.
@@ -3719,6 +3732,13 @@
                WHEN    "0029"
                    MOVE    "所在地保険者は県内の保険者を入力して下さい"
                                                          TO  SPA-ERRMSG
+               WHEN    "0096"
+                   STRING  "一括作成出力順（国保）の指定が編綴順です。"
+                                               DELIMITED  BY  SIZE
+                           "編綴順の設定を行って下さい"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "0097"
                    MOVE    "印刷順に未入力の項目があります"
                                                TO  SPA-ERRMSG
