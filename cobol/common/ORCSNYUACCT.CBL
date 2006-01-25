@@ -1138,6 +1138,7 @@
                        COMPUTE WRK-GENZAN  =   TBL-TENSU  (IDX-SYU)
                                                *   TBL-TENSU  (IDX)
                                                /   100
+                                               -   0.5
                        ADD     WRK-GENZAN     TO  WRK-GENZAN-ALL
                END-EVALUATE
            END-PERFORM
