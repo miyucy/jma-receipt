@@ -1014,6 +1014,19 @@
                PERFORM 900-PRTKANRI-FET-SEC
       *
            END-PERFORM
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           IF      WRK-PARA-SYOKBN     =   "1"
+                   MOVE    PATH-TBL-PRTKANRI-KEY4
+                                           TO  MCP-PATH
+           ELSE
+                   MOVE    PATH-TBL-PRTKANRI-KEY5
+                                           TO  MCP-PATH
+           END-IF
+      *
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
            .
        2003-PRTDATA-DEL-EXT.
            EXIT.
