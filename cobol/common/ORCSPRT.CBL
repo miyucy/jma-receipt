@@ -346,6 +346,13 @@
                MOVE    1                   TO  FLG-PRTKANRI
            END-IF
       *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    PATH-TBL-PRTKANRI-KEY
+                                       TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
            .
        910-PRTKANRI-INV-EXT.
            EXIT.
