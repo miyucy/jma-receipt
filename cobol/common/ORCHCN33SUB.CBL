@@ -1587,9 +1587,9 @@
       *        ％減算
                WHEN    6
                    COMPUTE    WRK-SO-TEN(IDX1)  =
-                            ( WRK-SO-TEN(IDX1)  -
+                              WRK-SO-TEN(IDX1)  -
                              (WRK-SO-TEN(IDX1)  *
-                             (TNS-TEN   /  100)))        +  0.5
+                             (TNS-TEN   /  100))   +  0.5
       *        点数（マイナス）
                WHEN    8
                    COMPUTE  WRK-SO-TEN(IDX1)  =
