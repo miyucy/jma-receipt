@@ -35,6 +35,7 @@
       * 01.00.06     NACL-多々納  04/08/01  入院取消修正
       * 01.00.09     NACL-多々納  05/05/11  北海道療養担当手当追加
       * 01.00.10     NACL-多々納  06/01/13  処理区分 'A'追加
+      * 01.00.11     NACL-多々納  06/01/27  標欠追加（仮対応）
       *****************************************************************
       *
       *
@@ -174,6 +175,12 @@
       *    療養担当手当て
            03  WRK-RYO-STYMD           PIC X(08).
            03  WRK-RYO-EDYMD           PIC X(08).
+      *    標欠
+           03  WRK-HYOU-SRYCD           PIC X(09).
+           03  WRK-HYOU-STYMD           PIC X(08).
+           03  WRK-HYOU-EDYMD           PIC X(08).
+           03  WRK-KHN-STYMD-H          PIC X(08).
+           03  WRK-KHN-EDYMD-H          PIC X(08).
       *
        01  TBL-NYUIN-AREA.
            03  TBL-NYUIN-OCC           OCCURS   10.
@@ -414,6 +421,12 @@
       *****************************************************************
        200-NYUKHN-SYORI-SEC            SECTION.
       *
+      *@@  標欠設定
+           MOVE    "190108690"         TO  WRK-HYOU-SRYCD
+           MOVE    "20060301"          TO  WRK-HYOU-STYMD
+           MOVE    "20060331"          TO  WRK-HYOU-EDYMD
+      *@@
+      *
            MOVE    WRK-STYMD           TO  WRK-KHN-STYMD
            MOVE    WRK-EDYMD           TO  WRK-KHN-EDYMD
            MOVE    WRK-STYMD           TO  WRK-ENDYMD
@@ -495,6 +508,47 @@
            IF      WRK-KAGEN-SRYCD NOT =   SPACE
                ADD     1                   TO  IDX-N
                MOVE    WRK-KAGEN-SRYCD     TO  TBL-SRYCD (IDX-N)
+           END-IF
+      *    標欠設定
+           IF     (WRK-HYOU-SRYCD  NOT =   SPACE )
+               IF      (WRK-HYOU-STYMD     >   WRK-KHN-EDYMD ) OR
+                       (WRK-HYOU-EDYMD     <   WRK-KHN-STYMD )
+                   CONTINUE
+               ELSE
+                   MOVE    WRK-KHN-STYMD       TO  WRK-KHN-STYMD-H
+                   MOVE    WRK-KHN-EDYMD       TO  WRK-KHN-EDYMD-H
+                   IF      WRK-HYOU-STYMD      >   WRK-KHN-STYMD
+      *                開始日以前の作成
+                       MOVE    WRK-HYOU-STYMD  TO  WRK-INYMD
+                       MOVE    -1              TO  WRK-ZOGEN
+                       PERFORM 800-HIZUKE-KEI-SEC
+                       MOVE    WRK-OTYMD       TO  WRK-KHN-EDYMD
+      *                入院会計照会・診療行為作成処理
+                       MOVE    "1"                 TO  WRK-ACT-ZAISKBKBN
+                       MOVE    1                   TO  WRK-ACT-DAY
+                       PERFORM 400-NYUACT-SYORI-SEC
+                       MOVE    WRK-HYOU-STYMD      TO  WRK-KHN-STYMD
+                       MOVE    WRK-KHN-EDYMD-H     TO  WRK-KHN-EDYMD
+                   END-IF
+      *            標欠 追加
+                   ADD     1                   TO  IDX-N
+                   MOVE    WRK-HYOU-SRYCD      TO  TBL-SRYCD (IDX-N)
+                   IF      WRK-KHN-EDYMD-H     >   WRK-HYOU-EDYMD
+                       MOVE    WRK-HYOU-EDYMD      TO  WRK-KHN-EDYMD
+      *                入院会計照会・診療行為作成処理
+                       MOVE    "1"                 TO  WRK-ACT-ZAISKBKBN
+                       MOVE    1                   TO  WRK-ACT-DAY
+                       PERFORM 400-NYUACT-SYORI-SEC
+      *                終了日の＋１日算定
+                       MOVE    WRK-KHN-EDYMD       TO  WRK-INYMD
+                       MOVE    1                   TO  WRK-ZOGEN
+                       PERFORM 800-HIZUKE-KEI-SEC
+                       MOVE    WRK-OTYMD           TO  WRK-KHN-STYMD
+                       MOVE    WRK-KHN-EDYMD-H     TO  WRK-KHN-EDYMD
+                       MOVE    SPACE               TO  TBL-SRYCD (IDX-N)
+                       COMPUTE IDX-N               =   IDX-N   -   1
+                   END-IF
+               END-IF
            END-IF
       *    入院会計照会・診療行為作成処理
            MOVE    "1"                 TO  WRK-ACT-ZAISKBKBN
