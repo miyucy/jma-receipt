@@ -48,6 +48,8 @@
       *  01.00.17    NACL-Â¿¡¹Ç¼  05/04/20  ¿ÇÎÅ²ñ·×Éí²Ã¾ðÊóÄÉ²Ã
       *  01.00.18    NACL-Â¿¡¹Ç¼  05/08/19  ¿Ç¶è½çÄÉ²Ã
       *  01.00.19    NACL-Â¿¡¹Ç¼  05/11/24  MONFUNC ÂÐ±þ
+      *  01.00.20    NACL-Â¿¡¹Ç¼  06/01/20  ¿ÇÎÅ²Ê½é´üÉ½¼¨ÄÉ²Ã
+      *  01.00.21    NACL-Â¿¡¹Ç¼  06/01/23  ÍÑÎÌ³ä¹ç¡¦Êñ³ç¸¡ºº¿ôÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -353,6 +355,10 @@
            03  WRK-HKNKBN-MEI       PIC X(02).
       *
            03  WRK-ZAIKAISU        PIC 9(07).
+      *
+           03  WRK-HOUKNS-CNT          PIC 9(02).
+           03  WRK-HOUKNS-IDX          PIC 9(04).
+           03  WRK-HOUKNS-NAME         PIC X(100).
       *
       *    ¿ÇÎÅ¹Ô°ÙÌ¾¾Î
            03  WRK-SRYSYUMEI       PIC X(40).
@@ -695,6 +701,8 @@
       *
       *    ¼ýÇ¼°ì³çºîÀ®ÎÎ°è
            COPY    "CPORCSSAIKEISAN.INC".
+      *    É½¼¨Ì¾¾ÎÊÔ½¸¥Ñ¥é¥á¥¿ÎÎ°è
+           COPY    "CPORCSMEIHEN.INC".
       *
       *    ÆâÊ¬ÈçÉé²Ù»î¸³¹¹¿·¥Ñ¥é¥á¥¿
            COPY    "CPORCSSANFUKA.INC".
@@ -1648,6 +1656,14 @@
       *
       *    ¿ÇÎÅ²ÊÁªÂò¤Î¤Ê¤¤»þ¡¢°Ê²¼Ãæ»ß
            MOVE    ZERO                TO  SPA-GMN-MAX
+      *    É½¼¨¿ÇÎÅ²Ê
+      *    Á´²Ê
+           IF      SPA-NAI-SRYKA-FLG   =   2
+               MOVE    SPA-GMN-SRYKA-LIST(01)
+                                           TO  SPA-GMN-SRYKA-G
+               MOVE    SPA-GMN-SRYKA       TO  SPA-J01-SRYKA
+               MOVE    SPA-GMN-SRYKAMEI    TO  SPA-J01-SRYKAMEI
+           END-IF
       *    ¿ÇÎÅ²ÊÊÔ½¸
            IF      SPA-J01-SRYKA       =   SPACE
       *        ¼õ¿ÇÍúÎò¤è¤ê¿ÇÎÅ²Ê·èÄê
@@ -1823,6 +1839,7 @@
        3007-SRYKBN-FLG-HEN-SEC                  SECTION.
       *
            INITIALIZE                  SPA-NAI-SRYKBN-FLG
+           INITIALIZE                  SPA-NAI-SRYKA-FLG
       *    ¿ÇÎÅ²Ê
            MOVE    SPACE               TO  SYS-1043-REC
            MOVE    "1043"              TO  SYS-1043-KANRICD
@@ -1847,6 +1864,11 @@
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1043-REC
                MOVE    SYS-1043-SRYKBN-FLG TO  SPA-NAI-SRYKBN-FLG
+      *!       IF      SYS-1043-SRYKA-FLG  =   SPACE
+                   MOVE    ZERO                TO  SPA-NAI-SRYKA-FLG
+      *!       ELSE
+      *!           MOVE    SYS-1043-SRYKA-FLG  TO  SPA-NAI-SRYKA-FLG
+      *!       END-IF
            END-IF
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -2371,6 +2393,11 @@
                MOVE    1               TO  FLG-SRYACT
            END-IF
            MOVE    ZERO            TO  FLG-YAKUSOKU
+      *
+           MOVE    ZERO                TO  WRK-HOUKNS-CNT
+           MOVE    ZERO                TO  WRK-HOUKNS-IDX
+           MOVE    SPACE               TO  WRK-HOUKNS-NAME
+      *
            PERFORM UNTIL       FLG-SRYACT      =   1
       *
       *        ºÞÆâ£±¹ÔÌÜ
@@ -2395,13 +2422,19 @@
                    END-IF
                END-PERFORM
       *
-           MOVE    "tbl_sryact"        TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
+               MOVE    "tbl_sryact"        TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 930-SRYACT-RAED-SEC
            END-PERFORM
            MOVE    "tbl_sryact"        TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *!
+      *    Êñ³ç¸¡ºº¿ô
+           IF      WRK-HOUKNS-CNT      >   1
+               PERFORM 3009-INPUT-MEISYO-SEC
+           END-IF
+      *!
       *
            IF      IDG                 >   400
                GO      TO      3101-SRYACCT-SPA-EXT
@@ -2435,6 +2468,28 @@
       *
            .
        3101-SRYACCT-SPA-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     Êñ³ç¸¡ºº¿ôºÆÊÔ½¸½èÍý
+      *****************************************************************
+       3009-INPUT-MEISYO-SEC        SECTION.
+      *
+           INITIALIZE                  ORCSMEIHENAREA
+           MOVE    "2"                 TO  ORCSMEIHEN-KBN
+           MOVE    WRK-HOUKNS-CNT      TO  ORCSMEIHEN-SURYO
+           MOVE    WRK-HOUKNS-NAME     TO  ORCSMEIHEN-TNS-NAME
+           CALL    "ORCSMEIHEN"        USING
+                                       SPA-AREA
+                                       ORCSMEIHENAREA
+           MOVE    ORCSMEIHEN-MEISYO   TO  SPA-GMN-TMEISYO
+                                                   (WRK-HOUKNS-IDX)
+      *
+           MOVE    ZERO                TO  WRK-HOUKNS-CNT
+           MOVE    ZERO                TO  WRK-HOUKNS-IDX
+           MOVE    SPACE               TO  WRK-HOUKNS-NAME
+           .
+       3009-INPUT-MEISYO-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2557,6 +2612,14 @@
                 PERFORM 3100121-FUKIYO-MEISYO-SEC
                 MOVE    WRK-MEISYO    TO  SPA-GMN-TMEISYO (IDG)
            END-IF
+      *!
+      *    ÍÑÎÌ³ä¹çºÆÊÔ½¸
+           IF     (SRY-SRYCD (IDZ)(1:7)   =   "0992000")  AND
+                  (SRY-SRYSURYO (IDZ) NOT =   ZERO     )
+                PERFORM 3005-INPUT-MEISYO3-SEC
+                MOVE    WRK-MEISYO    TO  SPA-GMN-TMEISYO (IDG)
+           END-IF
+      *!
       *
       *    ÌóÂ«¤ÎÆâÍÆ¤Î»þ¡¢ºÆÊÔ½¸
            IF      FLG-YAKUSOKU        =   1
@@ -2607,6 +2670,17 @@
                PERFORM 310121-SURYO-HEN-SEC
                MOVE    WRK-SURYO-X         TO  SPA-GMN-TSURYOU (IDG)
            END-IF
+      *!
+      *    Êñ³ç¸¡ºº¤ÎÈ½Äê
+           IF     (SRY-SRYCD  (IDZ)(1:1)   =   "1" )  AND
+                  (SRY-SRYKBN              =   "60" ) AND
+                  (TNS-DATAKBN             =   1    ) AND
+                  (TNS-HOUKNSKBN       NOT =   ZERO )
+               ADD     1                   TO  WRK-HOUKNS-CNT
+               MOVE    IDG                 TO  WRK-HOUKNS-IDX
+               MOVE    SPA-GMN-TMEISYO(IDG)    TO  WRK-HOUKNS-NAME
+           END-IF
+      *!
       *
       *    Ï·¿ÍÅ¬ÍÑ¶èÊ¬¡ÊÆ±°ìºÞ¤ÏÆ±¤¸¡Ë
            IF      TNS-ROUTEKKBN       =   ZERO
@@ -2735,6 +2809,7 @@
            MOVE    "6"                 TO  ICD-CDSYU
            MOVE    SRY-SRYCD (IDZ)(1:6)
                                        TO  ICD-INPUTCD
+           MOVE    "%"                 TO  ICD-INPUTCD(7:1)
       *
            PERFORM 930-INPUTCD-READ-SEC
       *
@@ -2764,6 +2839,23 @@
                       "¡Û"             DELIMITED   BY  SIZE
                       INTO             WRK-MEISYO
            END-STRING
+           .
+       3100121-FUKIYO-MEISYO-EXT.
+           EXIT.
+      *****************************************************************
+      *     ÍÑÎÌ³ä¹çºÆÊÔ½¸½èÍý
+      *****************************************************************
+       3005-INPUT-MEISYO3-SEC        SECTION.
+      *
+           INITIALIZE                  ORCSMEIHENAREA
+           MOVE    "1"                 TO  ORCSMEIHEN-KBN
+           MOVE    SRY-SRYSURYO (IDZ)  TO  ORCSMEIHEN-SURYO
+           MOVE    SRY-SRYCD (IDZ)     TO  ORCSMEIHEN-SRYCD
+           MOVE    TNS-NAME            TO  ORCSMEIHEN-TNS-NAME
+           CALL    "ORCSMEIHEN"        USING
+                                       SPA-AREA
+                                       ORCSMEIHENAREA
+           MOVE    ORCSMEIHEN-MEISYO   TO  WRK-MEISYO
            .
        3100121-FUKIYO-MEISYO-EXT.
            EXIT.
@@ -3356,14 +3448,27 @@
                MOVE    SPA-GMN-SRYKAMEI    TO  SPA-J01-SRYKAMEI
                MOVE    1                   TO  FLG-HENSYU
            ELSE
-               MOVE    SPACE               TO  SPA-GMN-SRYKA-G
-               MOVE    SPACE               TO  SPA-J01-SRYKA
-               MOVE    SPACE               TO  SPA-J01-SRYKAMEI
-      ******** MOVE    ZERO                TO  FLG-HENSYU
-               MOVE    1                   TO  FLG-HENSYU
+      *        ¼õ¿ÇÍúÎò¤è¤ê
+               IF      SPA-NAI-SRYKA-FLG   =   0
+                                           OR  1
+                   MOVE    SPACE               TO  SPA-GMN-SRYKA-G
+                   MOVE    SPACE               TO  SPA-J01-SRYKA
+                   MOVE    SPACE               TO  SPA-J01-SRYKAMEI
+                   MOVE    1                   TO  FLG-HENSYU
+               END-IF
+      *        Á´²Ê
+               IF      SPA-NAI-SRYKA-FLG   =   2
+                   MOVE    SPA-GMN-SRYKA-LIST(01)
+                                               TO  SPA-GMN-SRYKA-G
+                   MOVE    SPA-GMN-SRYKA       TO  SPA-J01-SRYKA
+                   MOVE    SPA-GMN-SRYKAMEI    TO  SPA-J01-SRYKAMEI
+                   MOVE    1                   TO  FLG-HENSYU
+               END-IF
            END-IF
       *    Æþ±¡¤¬Â¸ºß¤¹¤ë¤«¤Î¥Á¥§¥Ã¥¯
-           IF      SPA-BEDSU           >   ZERO
+           IF     (SPA-BEDSU           >   ZERO )
+      *        Á´²Ê°Ê³°
+            AND   (SPA-NAI-SRYKA-FLG   NOT =   2 )
                PERFORM 410101-NYUINRRK-CHK-SEC
                IF      SPA-NAI-NYUINKA NOT =   SPACE
                    MOVE    SPA-NAI-NYUINKA     TO  SPA-J01-SRYKA
@@ -3784,14 +3889,26 @@
       *    ÊÝ¸±°ìÍ÷ÊÔ½¸
            PERFORM 3008-HKNCOMBI-HEN-SEC
       *
+      *    ¼õ¿ÇÍúÎò¤è¤ê
+           IF      SPA-NAI-SRYKA-FLG   =   0
+               MOVE    SPACE               TO  SPA-J01-SRYKA
+               MOVE    SPACE               TO  SPA-J01-SRYKAMEI
+           END-IF
+      *    Á´²Ê
+           IF      SPA-NAI-SRYKA-FLG   =   2
+               MOVE    SPA-GMN-SRYKA-LIST(01)
+                                           TO  SPA-GMN-SRYKA-G
+               MOVE    SPA-GMN-SRYKA       TO  SPA-J01-SRYKA
+               MOVE    SPA-GMN-SRYKAMEI    TO  SPA-J01-SRYKAMEI
+           END-IF
       *    ¼õ¿ÇÍúÎò¤è¤ê¿ÇÎÅ²Ê·èÄê
-           MOVE    SPACE               TO  SPA-J01-SRYKA
-           MOVE    SPACE               TO  SPA-J01-SRYKAMEI
-           PERFORM 310310-JYURRK-CHK-SEC
            IF      SPA-J01-SRYKA       =   SPACE
-               MOVE    "0020"          TO  SPA-ERRCD
-               MOVE    07              TO  SPA-GMN-CUR
-               GO      TO       410181-SRYYM-CHANGE-SYORI-EXT
+               PERFORM 310310-JYURRK-CHK-SEC
+               IF      SPA-J01-SRYKA       =   SPACE
+                   MOVE    "0020"          TO  SPA-ERRCD
+                   MOVE    07              TO  SPA-GMN-CUR
+                   GO      TO       410181-SRYYM-CHANGE-SYORI-EXT
+               END-IF
            END-IF
       *
            PERFORM 3101-SRYKA-HEN-SEC
@@ -7265,14 +7382,26 @@
       *    ÊÝ¸±°ìÍ÷ÊÔ½¸
            PERFORM 3008-HKNCOMBI-HEN-SEC
       *
+      *    ¼õ¿ÇÍúÎò¤è¤ê
+           IF      SPA-NAI-SRYKA-FLG   =   0
+               MOVE    SPACE               TO  SPA-J01-SRYKA
+               MOVE    SPACE               TO  SPA-J01-SRYKAMEI
+           END-IF
+      *    Á´²Ê
+           IF      SPA-NAI-SRYKA-FLG   =   2
+               MOVE    SPA-GMN-SRYKA-LIST(01)
+                                           TO  SPA-GMN-SRYKA-G
+               MOVE    SPA-GMN-SRYKA       TO  SPA-J01-SRYKA
+               MOVE    SPA-GMN-SRYKAMEI    TO  SPA-J01-SRYKAMEI
+           END-IF
       *    ¼õ¿ÇÍúÎò¤è¤ê¿ÇÎÅ²Ê·èÄê
-           MOVE    SPACE               TO  SPA-J01-SRYKA
-           MOVE    SPACE               TO  SPA-J01-SRYKAMEI
-           PERFORM 310310-JYURRK-CHK-SEC
            IF      SPA-J01-SRYKA       =   SPACE
-               MOVE    "0020"          TO  SPA-ERRCD
-               MOVE    07              TO  SPA-GMN-CUR
-               GO      TO       410181-ZENGETU-SYORI1-EXT
+               PERFORM 310310-JYURRK-CHK-SEC
+               IF      SPA-J01-SRYKA       =   SPACE
+                   MOVE    "0020"          TO  SPA-ERRCD
+                   MOVE    07              TO  SPA-GMN-CUR
+                   GO      TO       410181-ZENGETU-SYORI1-EXT
+               END-IF
            END-IF
       *
            PERFORM 3101-SRYKA-HEN-SEC
@@ -7500,14 +7629,26 @@
       *    ÊÝ¸±°ìÍ÷ÊÔ½¸
            PERFORM 3008-HKNCOMBI-HEN-SEC
       *
+      *    ¼õ¿ÇÍúÎò¤è¤ê
+           IF      SPA-NAI-SRYKA-FLG   =   0
+               MOVE    SPACE               TO  SPA-J01-SRYKA
+               MOVE    SPACE               TO  SPA-J01-SRYKAMEI
+           END-IF
+      *    Á´²Ê
+           IF      SPA-NAI-SRYKA-FLG   =   2
+               MOVE    SPA-GMN-SRYKA-LIST(01)
+                                           TO  SPA-GMN-SRYKA-G
+               MOVE    SPA-GMN-SRYKA       TO  SPA-J01-SRYKA
+               MOVE    SPA-GMN-SRYKAMEI    TO  SPA-J01-SRYKAMEI
+           END-IF
       *    ¼õ¿ÇÍúÎò¤è¤ê¿ÇÎÅ²Ê·èÄê
-           MOVE    SPACE               TO  SPA-J01-SRYKA
-           MOVE    SPACE               TO  SPA-J01-SRYKAMEI
-           PERFORM 310310-JYURRK-CHK-SEC
            IF      SPA-J01-SRYKA       =   SPACE
-               MOVE    "0020"          TO  SPA-ERRCD
-               MOVE    07              TO  SPA-GMN-CUR
-               GO      TO       410191-JIGETU-SYORI1-EXT
+               PERFORM 310310-JYURRK-CHK-SEC
+               IF      SPA-J01-SRYKA       =   SPACE
+                   MOVE    "0020"          TO  SPA-ERRCD
+                   MOVE    07              TO  SPA-GMN-CUR
+                   GO      TO       410191-JIGETU-SYORI1-EXT
+               END-IF
            END-IF
       *
            PERFORM 3101-SRYKA-HEN-SEC
@@ -11534,6 +11675,7 @@
       *****************************************************************
        940-HKNCOMBI-NEXT-SEC         SECTION.
       *
+           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
            PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  HKNCOMBI-REC
