@@ -432,6 +432,8 @@
       *
       *    薬情報印刷パラメタ
            COPY    "CPORCSCH30.INC".
+      *    表示名称編集パラメタ領域
+           COPY    "CPORCSMEIHEN.INC".
       *
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
@@ -1263,6 +1265,8 @@
                        (SRY-SRYCD (IDX)(1:3)   =   "059" 
                                                OR  "001"
                                                OR  "008" )
+      *                用量割合・粉砕
+                   OR  (SRY-SRYCD (IDX)(1:5)   =   "09920")
                    MOVE    1                   TO  FLG-OK
       *
                    ADD     1                   TO  IDY
@@ -1526,6 +1530,14 @@
       *
            MOVE    SPA-GMN-TMEISYO2(IDG)   TO  SPA-WKSRY-NAME
                                                    (SPA-WKSRY-MAX IDX-W)
+      *!
+      *    用量割合再編集
+           IF     (LNK-WKSRY-SRYCD(IDX IDZ)(1:7)  =   "0992000")  AND
+                  (LNK-WKSRY-SRYSURYO(IDX IDZ) NOT =   ZERO     )
+                PERFORM 3005-INPUT-MEISYO3-SEC
+                MOVE    WRK-MEISYO         TO  SPA-GMN-TMEISYO2(IDG)
+           END-IF
+      *!
       *
       *    数量（薬剤、器材のとき）
            IF     (LNK-WKSRY-SRYCD (IDX IDZ)(1:1)   =   "6"  OR  "7" )
@@ -1564,6 +1576,25 @@
                       "】"             DELIMITED   BY  SIZE
                       INTO             WRK-MEISYO
            END-STRING
+           .
+       3100121-FUKIYO-MEISYO-EXT.
+           EXIT.
+      *****************************************************************
+      *     用量割合再編集処理
+      *****************************************************************
+       3005-INPUT-MEISYO3-SEC        SECTION.
+      *
+           INITIALIZE                  ORCSMEIHENAREA
+           MOVE    "1"                 TO  ORCSMEIHEN-KBN
+           MOVE    LNK-WKSRY-SRYSURYO(IDX IDZ)
+                                       TO  ORCSMEIHEN-SURYO
+           MOVE    LNK-WKSRY-SRYCD(IDX IDZ)
+                                       TO  ORCSMEIHEN-SRYCD
+           MOVE    TNS-NAME            TO  ORCSMEIHEN-TNS-NAME
+           CALL    "ORCSMEIHEN"        USING
+                                       SPA-AREA
+                                       ORCSMEIHENAREA
+           MOVE    ORCSMEIHEN-MEISYO   TO  WRK-MEISYO
            .
        3100121-FUKIYO-MEISYO-EXT.
            EXIT.
@@ -1947,7 +1978,9 @@
                                        TO  SPA-NAI-SRYCD (IDX)
                IF     (SPA-WKSRY-SRYCD (IDX-W IDX)(1:1)   =   "6"
                                                           OR  "7" ) OR
-                      (SPA-WKSRY-SRYCD (IDX-W IDX)(1:3)   =   "059")
+                      (SPA-WKSRY-SRYCD (IDX-W IDX)(1:3)   =   "059") OR
+      *               用量割合再編集
+                      (SPA-WKSRY-SRYCD (IDX-W IDX)(1:7)   =   "0992000")
                    MOVE    SPA-WKSRY-SRYSURYO (IDX-W IDX)
                                            TO  SPA-NAI-SURYO (IDX)
                ELSE
@@ -1957,8 +1990,16 @@
                        MOVE    ZERO        TO  SPA-NAI-SURYO (IDX)
                    END-IF
                END-IF
-               MOVE    SPA-WKSRY-NAME (IDX-W IDX)
-                                       TO  SPA-GMN-INPUT (IDX)
+      *!
+      *        用量割合再編集
+               IF     (SPA-WKSRY-SRYCD (IDX-W IDX)(1:7)   =   "0992000")
+                  AND (SPA-WKSRY-SRYSURYO (IDX-W IDX) NOT =   ZERO     )
+                    PERFORM 41031-INPUT-MEISYO4-SEC
+                    MOVE    WRK-MEISYO     TO  SPA-GMN-INPUT (IDX)
+               ELSE
+                   MOVE    SPA-WKSRY-NAME (IDX-W IDX)
+                                           TO  SPA-GMN-INPUT (IDX)
+               END-IF
                PERFORM 400411-SUURYO-HEN-SEC
                MOVE    IDX             TO  SPA-INPUT-MAX
            END-PERFORM
@@ -2418,6 +2459,17 @@
                            MOVE    WRK-SURYO-J
                                                TO  SPA-GMN-TSURYOU (IDG)
                        END-IF
+      *!
+      *                用量割合再編集
+                       IF     (SPA-WKSRY-SRYCD (IDX-W IDX)(1:7)
+                                                   =   "0992000") AND
+                              (SPA-WKSRY-SRYSURYO (IDX-W IDX)
+                                               NOT =   ZERO     )
+                           PERFORM 41031-INPUT-MEISYO4-SEC
+                           MOVE    WRK-MEISYO      TO
+                                                SPA-GMN-TMEISYO2(IDG)
+                        END-IF
+      *!
                        IF      SPA-WKSRY-SRYSURYO (IDX-W IDX)
                                                =   ZERO
                            MOVE    "削"        TO  SPA-GMN-TFLG (IDG)
@@ -2451,6 +2503,27 @@
            .
        4103-INPUT-TBLSET-EXT.
            EXIT.
+      *****************************************************************
+      *     用量割合再編集処理
+      *****************************************************************
+       41031-INPUT-MEISYO4-SEC        SECTION.
+      *
+           INITIALIZE                  ORCSMEIHENAREA
+           MOVE    "1"                 TO  ORCSMEIHEN-KBN
+           MOVE    SPA-WKSRY-SRYSURYO (IDX-W IDX)
+                                       TO  ORCSMEIHEN-SURYO
+           MOVE    SPA-WKSRY-SRYCD (IDX-W IDX)
+                                       TO  ORCSMEIHEN-SRYCD
+           MOVE    SPA-WKSRY-NAME (IDX-W IDX)
+                                       TO  ORCSMEIHEN-TNS-NAME
+           CALL    "ORCSMEIHEN"        USING
+                                       SPA-AREA
+                                       ORCSMEIHENAREA
+           MOVE    ORCSMEIHEN-MEISYO   TO  WRK-MEISYO
+           .
+       41031-INPUT-MEISYO4-EXT.
+           EXIT.
+      *!
       *****************************************************************
       *    選択印刷処理
       *****************************************************************
