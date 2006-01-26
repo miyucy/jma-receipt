@@ -20,7 +20,7 @@
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : レセプト（労災・自賠責）
-      *  コンポーネント名  : 仮収納データ作成（労災）
+      *  コンポーネント名  : 仮収納データ作成（労災・自賠責）
       *  管理者            :
       *  作成日付    作業者        記述
       *  03/06/16    NACL−門脇    新規作成
@@ -39,6 +39,7 @@
       *                                     SRYACCT-KEY30 -> SRYACCT-KEY37
       *  01.01.02    NACL-門脇    05/01/28  ダミー収納削除処理の修正
       *  01.01.03    NACL-門脇    05/07/19  ダミー収納削除処理の修正
+      *  01.01.04    NACL-門脇    06/01/26  対象データ編集修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -153,12 +154,10 @@
            03  WRK-SHO                                 PIC 9(05).
            03  WRK-AMARI                               PIC 9(05).
       *
+           03  WRK-CONS-HKNNUM                         PIC X(03).
+      *
            COPY    "MCPAREA".
            COPY    "COMMON-SPA".
-      *
-       01  WRK-CONS-AREA.
-      *    労災保険番号 
-           03  WRK-CONS-ROUSAI-HKNNUM  PIC X(03)   VALUE   "971". 
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -272,6 +271,14 @@
            MOVE    WRK-PARA-SRYYM      TO  SYS-2001-SRYYM
            MOVE    WRK-PARA-SYOKBN     TO  SYS-2001-SYOKBN 
       *
+           EVALUATE  WRK-PARA-RECEKBN
+             WHEN      "3"
+                 MOVE    "971"         TO  WRK-CONS-HKNNUM
+             WHEN      "4"
+             WHEN      "5"
+                 MOVE    "973"         TO  WRK-CONS-HKNNUM
+           END-EVALUATE
+      *
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
       *
@@ -284,7 +291,7 @@
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
            MOVE    "ORCR0800"      TO  JOB-PGID
-           MOVE    "仮収納データ作成（労災）"
+           MOVE    "仮収納データ作成（労災・自賠責）"
                                    TO  JOB-SHELLMSG
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
@@ -458,7 +465,7 @@
                PERFORM  UNTIL
                               (FLG-SYUNOU             =    1)
       *
-                 IF   SYU-SYUHKNNUM   =  WRK-CONS-ROUSAI-HKNNUM
+                 IF   SYU-SYUHKNNUM   =  WRK-CONS-HKNNUM
       *
                    MOVE    SYUNOU-REC       TO      MCPDATA-REC
                    MOVE    "DBDELETE"       TO      MCP-FUNC
@@ -653,7 +660,7 @@
       *
                    IF      FLG-HKNCOMBI    =   ZERO
                        IF      COMB-HKNNUM     =
-                                              WRK-CONS-ROUSAI-HKNNUM
+                                              WRK-CONS-HKNNUM
                            MOVE    "1"             TO  WRK-ROUSAIKBN
                        END-IF
                    END-IF
@@ -703,7 +710,7 @@
       *
            MOVE    SPACE               TO  WRK-DATAKBN
       *
-      *    労災保険以外のとき処理しない
+      *    対象保険以外のとき処理しない
            IF      WRK-ROUSAIKBN       =   "1"
                CONTINUE
            ELSE
@@ -819,8 +826,8 @@
            PERFORM 910-HKNCOMBI-INV-SEC
       *
            IF      FLG-HKNCOMBI    =   ZERO
-      *        労災保険以外読み飛ばし
-               IF      COMB-HKNNUM     =   WRK-CONS-ROUSAI-HKNNUM
+      *        対象保険以外読み飛ばし
+               IF      COMB-HKNNUM     =   WRK-CONS-HKNNUM
                    CONTINUE
                ELSE    
                    MOVE    "1"         TO  WRK-SYOKBN
@@ -837,7 +844,7 @@
       *
            MOVE    SPACE               TO  WRK-DATAKBN
       *
-      *    労災保険以外のとき処理しない
+      *    対象保険以外のとき処理しない
            IF      WRK-SYOKBN       =   "1"
                GO  TO  200122-NYUINACCT-HENSYU-EXT
            END-IF
@@ -1032,7 +1039,7 @@
                             OR  ( LNK-SYU-SKYSTYMD (IDX1) =   SPACE )
                             OR  ( FLG-ERR                 =      1  )
       ****          IF  LNK-SYU-SYUHKNNUM(IDX1)  =
-      ****                                       WRK-CONS-ROUSAI-HKNNUM
+      ****                                       WRK-CONS-HKNNUM
                        PERFORM   20011-KARITEIKI-OUTPUT-SEC
       ****          END-IF
                   END-PERFORM
@@ -1324,7 +1331,7 @@
            MOVE    SPACE               TO  WRK-ROUSAIKBN
       *
            IF      FLG-HKNCOMBI        =   ZERO
-               IF      COMB-HKNNUM     =   WRK-CONS-ROUSAI-HKNNUM
+               IF      COMB-HKNNUM     =   WRK-CONS-HKNNUM
                    MOVE    "1"             TO  WRK-ROUSAIKBN
                END-IF    
            END-IF    
@@ -1856,7 +1863,7 @@
                             (FLG-SYUNOU     =    1)  OR
                             (FLG-DATA       =    1)
       *
-               IF   SYU-SYUHKNNUM   =  WRK-CONS-ROUSAI-HKNNUM
+               IF   SYU-SYUHKNNUM   =  WRK-CONS-HKNNUM
                        MOVE     1       TO     FLG-DATA
                END-IF
       *

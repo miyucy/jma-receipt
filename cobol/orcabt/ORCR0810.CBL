@@ -20,8 +20,8 @@
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : レセプト入院（労災・自賠責）
-      *  コンポーネント名  : 月次業務　労災明細書ファイル作成
-      *                      対象患者抽出（労災）
+      *  コンポーネント名  : 月次業務　労災自賠責明細書ファイル作成
+      *                      対象患者抽出（労災・自賠責）
       *  管理者            : 
       *  作成日付    作業者        記述
       *  03/06/01    NACL−藤原　  新規作成
@@ -43,6 +43,7 @@
       *  01.01.04    NACL-門脇    05/06/27  加算率３桁対応
       *  01.01.05    NACL-門脇    05/08/18  転帰事由編集修正
       *  01.01.06    NACL-門脇    05/12/01  労災レセプト回数対応
+      *  01.01.07    NACL-門脇    06/01/26  対象データ編集修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -177,6 +178,8 @@
            03  WRK-STYMD               PIC X(08).
            03  WRK-EDYMD               PIC X(08).
       *
+           03  WRK-CONS-HKNNUM         PIC X(03).
+      *
            03  WRK-ERR-AREA.
                05  WRK-UPDKBN          PIC X(01).
                05  WRK-TEISEIKBN       PIC X(01).
@@ -210,15 +213,6 @@
            03  WRK-HKNCOMBI-SYOKBN     PIC X(01).   
            03  WRK-HKNCOMBI-ERR-DAY    PIC 9(02).   
       *
-      *    固定値
-       01  WRK-CONS-AREA.
-      *    労災保険番号 
-           03  WRK-CONS-ROUSAI-HKNNUM
-                                   PIC X(03)   VALUE   "971". 
-      *    自賠責保険番号 
-           03  WRK-CONS-JIBAI-HKNNUM
-                                   PIC X(03)   VALUE   "973".       
-      * 
        01  WRK-RECE82-REC. 
            COPY    "CPRCF082.INC"  REPLACING  //RECE82//
                                    BY         //WRK-RECE82//.
@@ -333,6 +327,14 @@
            MOVE    WRK-PARA-SRYYM      TO  SYS-2001-SRYYM
            MOVE    WRK-PARA-SYOKBN     TO  SYS-2001-SYOKBN 
       *
+           EVALUATE  WRK-PARA-RECEKBN
+             WHEN      "3"
+                 MOVE    "971"         TO  WRK-CONS-HKNNUM
+             WHEN      "4"
+             WHEN      "5"
+                 MOVE    "973"         TO  WRK-CONS-HKNNUM
+           END-EVALUATE
+      *
            MOVE    "RECE820"           TO  RECE82PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE82PARA-TERMID
       *
@@ -348,7 +350,7 @@
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
            MOVE    "ORCR0810"      TO  JOB-PGID
-           MOVE    "対象患者抽出（労災）"                              
+           MOVE    "対象患者抽出（労災・自賠責）"                              
                                    TO  JOB-SHELLMSG
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
@@ -670,8 +672,8 @@
                    INITIALIZE                      WRK-ERR-AREA
       *
                    IF      FLG-HKNCOMBI    =   ZERO
-      *                労災保険の対象であるか
-                       IF      COMB-HKNNUM  =   WRK-CONS-ROUSAI-HKNNUM
+      *                対象の保険であるか
+                       IF      COMB-HKNNUM  =   WRK-CONS-HKNNUM
       *                    診療月内に摘要日が存在するか
                            IF      COMB-TEKSTYMD   <=  WRK-STYMD
                            AND     COMB-TEKEDYMD   >=  WRK-EDYMD
@@ -696,7 +698,7 @@
                            PERFORM 200111-SRYACCT-HENSYU-SEC 
                        END-IF    
       *
-      *                労災保険以外または日付変更がないとき
+      *                対象保険以外または日付変更がないとき
       *                または既にエラー対象のとき
       *                同じ患者ＩＤ・保険組合せは読み飛ばす
                        IF    ( WRK-ROUSAIKBN   =   "1"   )
@@ -909,7 +911,7 @@
                        MOVE    HKNCOMBI-REC    TO
                                            WRK-HKNCOMBI-REC  (IDX1)
                        IF      COMB-HKNNUM NOT =
-                                           WRK-CONS-ROUSAI-HKNNUM
+                                           WRK-CONS-HKNNUM
                            MOVE    "1"         TO
                                            WRK-HKNCOMBI-SYOKBN (IDX1)
                        END-IF
@@ -1432,7 +1434,7 @@
                INITIALIZE                      WRK-ERR-AREA
       *
                IF      FLG-HKNCOMBI    =   ZERO
-                   IF      COMB-HKNNUM  =   WRK-CONS-ROUSAI-HKNNUM
+                   IF      COMB-HKNNUM  =   WRK-CONS-HKNNUM
                        IF      COMB-TEKSTYMD   <=  WRK-STYMD
                        AND     COMB-TEKEDYMD   >=  WRK-EDYMD
                            MOVE    SPACE           TO  WRK-UPDKBN
