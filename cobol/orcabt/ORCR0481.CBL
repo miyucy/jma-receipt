@@ -1901,6 +1901,7 @@
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
+                                       MCPDATA-REC
       *
            .
        360-HC101-COMMENT-HEN-EXT.
