@@ -260,7 +260,12 @@
                        MOVE    SPA-COM-SURYO  (IDX)    TO  WRK-SURYO
                        PERFORM 2001-SURYO-HEN-SEC
                    END-IF
-      *
+      *            用量割合再編集
+                   IF     (SPA-COM-INPUTCD(IDX)(1:7)   =  "0992000") AND
+                          (SPA-COM-SURYO  (IDX)    NOT =  ZERO     )
+                       MOVE    SPA-COM-SURYO  (IDX)    TO  WRK-SURYO
+                       PERFORM 2001-SURYO-HEN-SEC
+                   END-IF
       *            コメント
                WHEN    "8"
                    IF      SPA-COM-INPUTCHI-G (IDX)    NOT =   SPACE

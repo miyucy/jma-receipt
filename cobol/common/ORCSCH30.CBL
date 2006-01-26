@@ -36,6 +36,7 @@
       * 01.00.07     NACL-多々納  05/09/28  ドクター複数科対応
       * 01.00.08     NACL-多々納  05/11/08  再印刷他対応
       *                                     MONFUNC対応
+      * 01.00.09     NACL-多々納  06/01/24  用量割合コード追加
       *****************************************************************
       *
       *
@@ -98,6 +99,9 @@
                05  WRK-TBL-OCC             OCCURS   99.
                    07  TBL-SRYCD           PIC X(09).
                    07  TBL-SURYO           PIC 9(05)V9(03).
+                   07  TBL-YOURYOU         PIC 9(05)V9(03)
+                                           OCCURS   4.
+                   07  TBL-SRYKAISU        PIC 9(03).
                05  WRK-YSRYCD              PIC X(09).
                05  WRK-SRYKBN              PIC X(02).
                05  WRK-SRYSYUKBN           PIC X(03).
@@ -224,6 +228,11 @@
                    UNTIL      IDX   >  ORCHC30-MAX
              DISPLAY "ORCHC30-SRYCD:" ORCHC30-SRYCD (IDX)
                      ",ORCHC30-YSRYCD:" ORCHC30-YSRYCD (IDX)
+                     ",ORCHC30-YOURYOU 1:" ORCHC30-YOURYOU (IDX 1)
+                     ",2:" ORCHC30-YOURYOU (IDX 2)
+                     ",3:" ORCHC30-YOURYOU (IDX 3)
+                     ",4:" ORCHC30-YOURYOU (IDX 4)
+                     ",ORCHC30-SRYKAISU:" ORCHC30-SRYKAISU (IDX)
            END-PERFORM 
       *TEST
       *
@@ -526,6 +535,7 @@
            END-IF
       *
            MOVE    SPACE               TO  WRK-TBL-AREA
+           INITIALIZE                      WRK-TBL-AREA
            MOVE    ZERO                TO  WRK-KAISU
            MOVE    ZERO                TO  IDX-S
            MOVE    ZERO                TO  IDXY
@@ -611,6 +621,11 @@
                END-IF
                MOVE    SRY-SRYCD (IDXA)    TO  TBL-SRYCD (IDX-S)
                MOVE    SRY-SRYSURYO (IDXA) TO  TBL-SURYO (IDX-S)
+      *        外用の日数
+               IF     (SRY-SRYKBN          =   "23"  )  AND
+                      (SRY-SRYKAISU (IDXA) >   1     )
+                   MOVE    SRY-SRYKAISU (IDXA) TO  TBL-SRYKAISU (IDX-S)
+               END-IF
            END-IF
       *    用法編集
            IF      SRY-SRYCD (IDXA)(1:3)   =   "001"
@@ -639,6 +654,28 @@
                    END-IF
                END-IF
            END-IF
+      *    用量割合コード
+           IF     (SRY-SRYCD (IDXA)(1:7)   =   "0992000" ) AND
+                  (IDX-S                   >   ZERO      )
+               EVALUATE    SRY-SRYCD (IDXA)
+      *            朝
+                   WHEN    "099200011"
+                       MOVE    SRY-SRYSURYO (IDXA) TO  TBL-YOURYOU
+                                                          (IDX-S 1)
+      *            昼
+                   WHEN    "099200012"
+                       MOVE    SRY-SRYSURYO (IDXA) TO  TBL-YOURYOU
+                                                          (IDX-S 2)
+      *            夜
+                   WHEN    "099200013"
+                       MOVE    SRY-SRYSURYO (IDXA) TO  TBL-YOURYOU
+                                                          (IDX-S 3)
+      *            寝
+                   WHEN    "099200014"
+                       MOVE    SRY-SRYSURYO (IDXA) TO  TBL-YOURYOU
+                                                          (IDX-S 4)
+               END-EVALUATE
+           END-IF
       *
            .
        20022-TBLSET-EXT.
@@ -656,6 +693,13 @@
                MOVE    ORCHC30-MAX         TO  IDY
                MOVE    TBL-SRYCD (IDX)     TO  ORCHC30-SRYCD (IDY)
                MOVE    TBL-SURYO (IDX)     TO  ORCHC30-SURYO (IDY)
+               PERFORM VARYING     IDXY    FROM    1   BY  1
+                       UNTIL       IDXY        >   4
+                   MOVE    TBL-YOURYOU (IDX IDXY)
+                                           TO  ORCHC30-YOURYOU
+                                                            (IDY IDXY)
+               END-PERFORM
+               MOVE    TBL-SRYKAISU (IDX)  TO  ORCHC30-SRYKAISU (IDY)
       *
                MOVE    WRK-YSRYCD          TO  ORCHC30-YSRYCD(IDY)
                MOVE    WRK-KAISU           TO  ORCHC30-KAISU (IDY)
@@ -755,6 +799,7 @@
       *
       *
            MOVE    SPACE               TO  WRK-TBL-AREA
+           INITIALIZE                      WRK-TBL-AREA
            MOVE    ZERO                TO  WRK-KAISU
            MOVE    ZERO                TO  IDX-S
            MOVE    ZERO                TO  IDXY
@@ -805,6 +850,7 @@
                    MOVE    WKSRY-ZAIKAIKEI     TO  WRK-KAISU
                    MOVE    ZERO                TO  FLG-OK
                    MOVE    SPACE               TO  WRK-TBL-AREA
+                   INITIALIZE                      WRK-TBL-AREA
                    MOVE    ZERO                TO  IDX-S
                    MOVE    ZERO                TO  IDXY
                    MOVE    SPACE               TO  WRK-YSRYCD
@@ -883,6 +929,13 @@
                    END-IF
                    MOVE    WKSRY-SRYCD (IDXA)      TO  TBL-SRYCD (IDX-S)
                    MOVE    WKSRY-SRYSURYO (IDXA)   TO  TBL-SURYO (IDX-S)
+      *            外用の日数
+                    IF     (WKSRY-SRYKBN           =   "23"  )  AND
+                           (WKSRY-SRYKAISU (IDXA)   >   1     )
+                       MOVE    WKSRY-SRYKAISU (IDXA)
+                                                   TO  TBL-SRYKAISU
+                                                                 (IDX-S)
+                   END-IF
                END-IF
       *        用法編集
                IF      WKSRY-SRYCD (IDXA)(1:3) =   "001"
@@ -912,6 +965,28 @@
                        END-IF
                    END-IF
                END-IF
+      *        用量割合コード
+               IF     (WKSRY-SRYCD (IDXA)(1:7) =   "0992000" ) AND
+                      (IDX-S                   >   ZERO      )
+                   EVALUATE    WKSRY-SRYCD (IDXA)
+      *            朝
+                   WHEN    "099200011"
+                       MOVE    WKSRY-SRYSURYO (IDXA) TO  TBL-YOURYOU
+                                                          (IDX-S 1)
+      *            昼
+                   WHEN    "099200012"
+                       MOVE    WKSRY-SRYSURYO (IDXA) TO  TBL-YOURYOU
+                                                          (IDX-S 2)
+      *            夜
+                   WHEN    "099200013"
+                       MOVE    WKSRY-SRYSURYO (IDXA) TO  TBL-YOURYOU
+                                                          (IDX-S 3)
+      *            寝
+                   WHEN    "099200014"
+                       MOVE    WKSRY-SRYSURYO (IDXA) TO  TBL-YOURYOU
+                                                          (IDX-S 4)
+                   END-EVALUATE
+               END-IF
       *
              END-IF
       *
@@ -929,6 +1004,7 @@
                    UNTIL      (IDT     >   ORCSCH30-ZAI-MAX)
       *
                MOVE    SPACE               TO  WRK-TBL-AREA
+               INITIALIZE                      WRK-TBL-AREA
                MOVE    ZERO                TO  IDX-S
                MOVE    ZERO                TO  IDXY
                MOVE    SPACE               TO  WRK-YSRYCD
@@ -968,6 +1044,13 @@
                END-IF
                MOVE    ORCSCH30-SRYCD(IDT IDXA)    TO  TBL-SRYCD (IDX-S)
                MOVE    ORCSCH30-SRYSURYO(IDT IDXA) TO  TBL-SURYO (IDX-S)
+      *        外用の日数
+               IF      (ORCSCH30-SRYKBN (IDT)          =   "23" )  AND
+                       (ORCSCH30-SRYKAISU(IDT IDXA)    >   1 )
+                   MOVE    ORCSCH30-SRYKAISU(IDT IDXA)
+                                                   TO  TBL-SRYKAISU
+                                                                 (IDX-S)
+               END-IF
            END-IF
       *    用法編集
            IF      ORCSCH30-SRYCD(IDT IDXA)(1:3)   =   "001"
@@ -998,6 +1081,30 @@
                    END-IF
                END-IF
            END-IF
+      *    用量割合コード
+           IF     (ORCSCH30-SRYCD(IDT IDXA)(1:7)
+                                           =   "0992000" ) AND
+                  (IDX-S                   >   ZERO      )
+               EVALUATE    ORCSCH30-SRYCD(IDT IDXA)
+      *            朝
+                   WHEN    "099200011"
+                       MOVE    ORCSCH30-SRYSURYO (IDT IDXA)
+                                           TO  TBL-YOURYOU (IDX-S 1)
+      *            昼
+                   WHEN    "099200012"
+                       MOVE    ORCSCH30-SRYSURYO (IDT IDXA)
+                                           TO  TBL-YOURYOU (IDX-S 2)
+      *            夜
+                   WHEN    "099200013"
+                       MOVE    ORCSCH30-SRYSURYO (IDT IDXA)
+                                           TO  TBL-YOURYOU (IDX-S 3)
+      *            寝
+                   WHEN    "099200014"
+                       MOVE    ORCSCH30-SRYSURYO (IDT IDXA)
+                                           TO  TBL-YOURYOU (IDX-S 4)
+               END-EVALUATE
+           END-IF
+      *
       *
            .
        3001-TBLSET-EXT.

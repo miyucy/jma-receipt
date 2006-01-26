@@ -52,6 +52,7 @@
       *  02.00.13    NACL-多々納  05/01/13  入院の消炎鎮痛処理と
       *                                     慢性疼痛管理料チェック追加
       *  02.00.14    NACL-多々納  05/11/22  MONFUNC 対応 他
+      *  02.00.15    NACL-多々納  06/01/23  用量割合コード追加
       *****************************************************************
       *
       *
@@ -92,6 +93,8 @@
            03  FLG-SSTKIJUNCD-ERR      PIC  9(01).
            03  FLG-INPUT-CHK           PIC  9(01).
       *
+           03  FLG-SP              PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -115,6 +118,8 @@
            03  IDX-END             PIC 9(02).
            03  IDX-Y3              PIC 9(02).
       *
+           03  IDM                 PIC 9(04).
+      *
       *    一時領域
        01  WRK-AREA.
       *    単位名称
@@ -131,6 +136,13 @@
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
                05  WRK-SURYO-S1    PIC 9(05).
                05  WRK-SURYO-S2    PIC 9(03).
+           03  WRK-SURYO-X.
+               05  WRK-SURYO-Z1    PIC ZZZZZ.
+               05  WRK-SURYO-Z1-9  REDEFINES   WRK-SURYO-Z1
+                                   PIC ZZZZ9.
+               05  WRK-SURYO-Z2    PIC X(01).
+               05  WRK-SURYO-Z3    PIC ZZZ.
+           03  WRK-SURYO-H         PIC X(18).
       *    年齢判定用
            03  WRK-KGNAGE          PIC 9(03).
            03  WRK-JGNAGE          PIC 9(03).
@@ -275,6 +287,8 @@
            COPY    "CPORCSKANACHK.INC".
       *    内分泌負荷試験更新パラメタ
            COPY    "CPORCSSANFUKA.INC".
+      *    表示名称編集パラメタ領域
+           COPY    "CPORCSMEIHEN.INC".
       *
       *    診療行為用共通パラメタ
            COPY    "K01COMMON-SPA".
@@ -1820,6 +1834,14 @@
                 PERFORM 3003-INPUT-MEISYO2-SEC
                 MOVE    WRK-MEISYO    TO  SPA-GMN-MEISYO (IDX-T)
            END-IF
+      *!
+      *    用量割合再編集
+           IF     (SPA-COM-INPUTCD (IDX-T)(1:7)    =   "0992000")  AND
+                  (SPA-COM-SURYO   (IDX-T)     NOT =   ZERO     )
+                PERFORM 3005-INPUT-MEISYO3-SEC
+                MOVE    WRK-MEISYO    TO  SPA-GMN-MEISYO (IDX-T)
+           END-IF
+      *!
       *
       *    数量単位（薬剤・器材の時）
            IF     (SPA-COM-INPUTCD (IDX-T)(1:1)   =   "6"  OR  "7" ) OR
@@ -2196,6 +2218,70 @@
            EXIT.
       *
       *****************************************************************
+      *     用量割合再編集処理
+      *****************************************************************
+       3005-INPUT-MEISYO3-SEC        SECTION.
+      *
+           INITIALIZE                  ORCSMEIHENAREA
+           MOVE    "1"                     TO  ORCSMEIHEN-KBN
+           MOVE    SPA-COM-SURYO (IDX-T)   TO  ORCSMEIHEN-SURYO
+           MOVE    SPA-COM-INPUTCD(IDX-T)  TO  ORCSMEIHEN-SRYCD
+           MOVE    TNS-NAME            TO  ORCSMEIHEN-TNS-NAME
+           CALL    "ORCSMEIHEN"        USING
+                                       SPA-AREA
+                                       ORCSMEIHENAREA
+           MOVE    ORCSMEIHEN-MEISYO   TO  WRK-MEISYO
+      *
+           GO      TO  3005-INPUT-MEISYO3-EXT.
+      *TEST
+           MOVE    SPACE               TO  WRK-SURYO-X
+           MOVE    WRK-SURYO-S1        TO  WRK-SURYO-Z1
+      *
+           MOVE    ZERO                TO  FLG-SP
+           PERFORM VARYING     IDM     FROM    3  BY  -1
+                   UNTIL       IDM     <   1
+               IF      WRK-SURYO-S2(IDM:1) NOT =   ZERO
+                   MOVE    1               TO  FLG-SP
+               END-IF
+               IF      FLG-SP          =   1
+                   MOVE    WRK-SURYO-S2(IDM:1) TO  WRK-SURYO-Z3(IDM:1)
+               END-IF
+           END-PERFORM
+           IF      WRK-SURYO-Z3        NOT =   SPACE
+               MOVE    "."                 TO  WRK-SURYO-Z2
+               MOVE    WRK-SURYO-S1        TO  WRK-SURYO-Z1-9
+           END-IF
+           MOVE    SPACE               TO  WRK-SURYO-H
+           PERFORM VARYING     IDM     FROM    1  BY  1
+                   UNTIL       IDM     >   9
+               IF      WRK-SURYO-X(IDM:1)  NOT =   SPACE
+                   MOVE    WRK-SURYO-X (IDM:)  TO  WRK-SURYO-H
+                   MOVE    9                   TO  IDM
+               END-IF
+           END-PERFORM
+      *    全角変換
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"                 TO  KANACHK-SYORI
+           MOVE    WRK-SURYO-H         TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           IF      KANACHK-RC          =   ZERO
+               MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                           TO  WRK-KANJI
+           ELSE
+               MOVE    SPACE               TO  WRK-KANJI
+           END-IF
+      *
+           MOVE    SPACE               TO  WRK-MEISYO
+           STRING  TNS-NAME            DELIMITED  BY  SPACE
+                   WRK-KANJI           DELIMITED  BY  SIZE
+                                       INTO    WRK-MEISYO
+           END-STRING
+           .
+       3005-INPUT-MEISYO3-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *     診療科名称編集処理
       *****************************************************************
        30031-SRYKA-MEI-HEN-SEC            SECTION.
@@ -2560,6 +2646,20 @@
                    MOVE    "0001"              TO  SPA-ERRCD
                END-IF
            END-IF
+      *!
+      *    用量割合再編集
+           IF     (SPA-COM-INPUTCD (IDX-T)(1:7)    =   "0992000")  AND
+                  (SPA-COM-SURYO   (IDX-T)     NOT =   ZERO     )
+               MOVE    LNK-SC92-SRYCD      TO  TNS-SRYCD
+               PERFORM 910-TENSU-READ-SEC
+               IF      FLG-TENSU           =   ZERO
+                   PERFORM 3005-INPUT-MEISYO3-SEC
+                   MOVE    WRK-MEISYO      TO  SPA-GMN-MEISYO (IDX-T)
+               ELSE
+                   MOVE    "0001"              TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *!
       *
       *    きざみ値計算識別判定
            IF     (SPA-COM-INPUTCD (IDX-T)(1:1)

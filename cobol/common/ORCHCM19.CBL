@@ -49,6 +49,7 @@
       *                                     備考欄を４２文字へ変更
       * 01.00.15     NACL-多々納  05/10/26  MONFUNCへ変更
       * 01.00.16     NACL-多々納  05/11/09  再印刷処理追加
+      * 01.00.17     NACL-多々納  06/01/24  用量コード判定追加
       *****************************************************************
       *
       *
@@ -1722,6 +1723,11 @@
                                                                "8") AND
                                   (SRY-SRYCD (IDXA)    NOT =
                                                            "630010002")
+      *---(01.00.17) LINE ADD START ------------------------------------
+      *                          用量コード対象外
+                              AND (SRY-SRYCD (IDXA)(1:7)
+                                                   NOT =   "0992000")
+      *---(01.00.17) LINE ADD END   ------------------------------------
                                MOVE    SRY-SRYCD (IDXA)    TO  WRK-SRYCD
                                PERFORM 3103-SRYACT-HEN-SEC
                            END-IF
@@ -2447,6 +2453,10 @@
                                                    "8") OR
                       (WKSRY-SRYCD (IDXA)(1:3) =   "059"))   AND
                       (WKSRY-SRYCD (IDXA)  NOT =  "630010002")
+      *---(01.00.17) LINE ADD START ------------------------------------
+      *             用量コード対象外
+                  AND (WKSRY-SRYCD (IDXA)(1:7)  NOT =  "0992000")
+      *---(01.00.17) LINE ADD END   ------------------------------------
                    MOVE    WKSRY-SRYCD (IDXA)  TO  SRY-SRYCD (IDXA)
       *            数量
                    MOVE    WKSRY-SRYSURYO (IDXA)
@@ -2652,7 +2662,15 @@
                    IF      WRK-SRYKBN          =   "98"
                        PERFORM 20042-ORCHC19-98-HEN-SEC
                    ELSE
-                       PERFORM 20041-ORCHC19-HEN-SEC
+      *---(01.00.17) LINE UPD START ------------------------------------
+      *                用量コード対象外
+                       IF      ORCHC19-SRYCD (IDX-L IDX-L2)(1:7)
+                                                   =   "0992000"
+                           CONTINUE
+                       ELSE
+                           PERFORM 20041-ORCHC19-HEN-SEC
+                       END-IF
+      *---(01.00.17) LINE UPD END   ------------------------------------
                    END-IF
                END-PERFORM
       *        剤終了時、編集へ

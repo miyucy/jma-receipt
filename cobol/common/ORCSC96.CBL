@@ -360,6 +360,9 @@
                    MOVE
                    "粉砕は内服以外は入力できません"
                                        TO  SPA-ERRMSG
+               WHEN    "2062"
+                   MOVE    "用量割合は投薬で入力して下さい。"
+                                       TO  SPA-ERRMSG
                WHEN    "0063"
                    MOVE
                    "粉砕の次には錠剤を入力して下さい"

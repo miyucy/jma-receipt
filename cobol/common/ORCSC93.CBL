@@ -51,6 +51,7 @@
       * 01.00.20     NACL-多々納  05/01/13  歯科薬剤の外用薬対応
       * 01.00.21     NACL-多々納  05/06/03  検体検査コメント対応
       * 01.00.22     NACL-多々納  05/08/12  包括検査 ０９，１０の追加
+      * 01.00.23     NACL-多々納  06/01/23  用量割合コード追加
       *****************************************************************
       *
       *
@@ -1351,6 +1352,22 @@
                            MOVE    "1"             TO  SPA-COM-ZAIEND
                                                                   (IDX)
                            MOVE    1               TO  FLG-ZAI
+      *TEST
+      *                用量割合
+                       WHEN    "099200011"
+                       WHEN    "099200012"
+                       WHEN    "099200013"
+                       WHEN    "099200014"
+                           IF     (SPA-COM-SRYKBN(IDX - 1) =   "21"
+                                                           OR  "22"
+                                                           OR  "23" )
+                               MOVE    SPA-COM-SRYKBN(IDX - 1)
+                                                     TO  SPA-COM-SRYKBN
+                                                                  (IDX)
+                           ELSE
+                               MOVE    "2062"        TO  SPA-ERRCD
+                           END-IF
+      *TEST
                        WHEN    OTHER
                            MOVE    "99"            TO  SPA-COM-SRYKBN
                                                                   (IDX)
