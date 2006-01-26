@@ -4787,6 +4787,11 @@
                                                        =   "0084") AND
                               (SPA-COM-SURFLG (SPA-GMN-IDX)
                                                        =   SPACE ))
+      *                  用量コメント
+                         OR  ((SPA-COM-INPUTCD(SPA-GMN-IDX)(1:7)
+                                                   =   "0992000" ) AND
+                              (SPA-COM-SURFLG (SPA-GMN-IDX)
+                                                       =   SPACE ))
                            MOVE    "_"             TO  SPA-GMN-INPUTCD
                                                      (SPA-GMN-IDX)
                                                      (WRK-IN-IDX2:)
@@ -4907,6 +4912,9 @@
                                                        "7" )  OR
                      ( SPA-COM-INPUTCD(SPA-GMN-IDX)(1:3)
                                                    =   "001" )
+      *                  用量コメント
+                 OR  ( SPA-COM-INPUTCD(SPA-GMN-IDX)(1:7)
+                                                   =   "0992000" )
       *            薬剤・器材・用法
                    MOVE    1                   TO  FLG-IN1
                END-IF
@@ -5355,6 +5363,7 @@
                       MOVE    1                TO  IDX-K2
                   ELSE
                       IF      SPA-COM-SRYKBN (IDX-K2)  =  "80"
+                                                       OR "54"
                            MOVE    SPACE           TO  SPA-COM-KZMFLG
                                                             (IDX-K2)
                            MOVE    SPACE           TO  SPA-COM-KZMFLG2
@@ -7567,6 +7576,7 @@
                                        SPA-AREA
                MOVE    LNK-ORCSC-CHK-IDX   TO  SPA-CHK-IDX
                MOVE    LNK-ORCSC-KIDCD     TO  SPA-KIDCD
+               MOVE    LNK-ORCSC-ERRMSG    TO  SPA-ERRMSG2
            END-IF
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO    520-ALL-CHEK-EXT

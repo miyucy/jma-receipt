@@ -454,6 +454,10 @@
            03  WRK-EDANUM            PIC 9(03).
            03  FLG-FUKU              PIC 9(01).
       *
+           03  WRK-HOUKNS-CNT          PIC 9(02).
+           03  WRK-HOUKNS-IDX          PIC 9(04).
+           03  WRK-HOUKNS-NAME         PIC X(100).
+      *
       *    継続の時、自動発生のチェック
        01  WRK-CONTCHK-TBL.
            03  WRK-IDX-Y               PIC 9(04).
@@ -654,6 +658,8 @@
            COPY    "CPORCHC502.INC".
       *    入院指示箋発行サブ
            COPY    "CPORCHC503.INC".
+      *    表示名称編集パラメタ領域
+           COPY    "CPORCSMEIHEN.INC".
       *
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
@@ -1421,6 +1427,10 @@
            MOVE    ZERO                TO  FLG-KAISUU-ARI2
            MOVE    ZERO                TO  FLG-KAISUU-ARI3
       *
+           MOVE    ZERO                TO  WRK-HOUKNS-CNT
+           MOVE    ZERO                TO  WRK-HOUKNS-IDX
+           MOVE    SPACE               TO  WRK-HOUKNS-NAME
+      *
       *    入院で日付指定の有無
            PERFORM VARYING     IDZ     FROM    1   BY  1
                    UNTIL      (IDZ         >   5   )  OR
@@ -1526,6 +1536,12 @@
                END-PERFORM
            END-PERFORM
       *
+      *!
+      *    包括検査数
+           IF      WRK-HOUKNS-CNT      >   1
+               PERFORM 3009-INPUT-MEISYO-SEC
+           END-IF
+      *!
       *    合計点数集計
            IF      WRK-SRYKAISUKEI     =   ZERO
                MOVE   1                    TO  WRK-SRYKAISUKEI
@@ -1601,6 +1617,28 @@
       *
             .
        3101-WKSRYACT-HEN-EXT.
+           EXIT.
+      *!
+      *****************************************************************
+      *     包括検査数再編集処理
+      *****************************************************************
+       3009-INPUT-MEISYO-SEC        SECTION.
+      *
+           INITIALIZE                  ORCSMEIHENAREA
+           MOVE    "2"                 TO  ORCSMEIHEN-KBN
+           MOVE    WRK-HOUKNS-CNT      TO  ORCSMEIHEN-SURYO
+           MOVE    WRK-HOUKNS-NAME     TO  ORCSMEIHEN-TNS-NAME
+           CALL    "ORCSMEIHEN"        USING
+                                       SPA-AREA
+                                       ORCSMEIHENAREA
+           MOVE    ORCSMEIHEN-MEISYO   TO  SPA-GMN-TMEISYO2
+                                                   (WRK-HOUKNS-IDX)
+      *
+           MOVE    ZERO                TO  WRK-HOUKNS-CNT
+           MOVE    ZERO                TO  WRK-HOUKNS-IDX
+           MOVE    SPACE               TO  WRK-HOUKNS-NAME
+           .
+       3009-INPUT-MEISYO-EXT.
            EXIT.
       *!
       *****************************************************************
@@ -2099,6 +2137,14 @@
                 PERFORM 3100121-FUKIYO-MEISYO-SEC
                 MOVE    WRK-MEISYO    TO  SPA-GMN-TMEISYO2(IDG)
            END-IF
+      *!
+      *    用量割合再編集
+           IF     (LNK-WKSRY-SRYCD(IDX IDZ)(1:7)   =   "0992000")  AND
+                  (LNK-WKSRY-SRYSURYO(IDX IDZ) NOT =   ZERO     )
+                PERFORM 3005-INPUT-MEISYO3-SEC
+                MOVE    WRK-MEISYO    TO  SPA-GMN-TMEISYO2(IDG)
+           END-IF
+      *!
       *
       *    約束の内容の時、再編集
            IF      FLG-YAKUSOKU        =   1
@@ -2149,6 +2195,17 @@
                MOVE    WRK-BUNGSU-J        TO  SPA-GMN-TTANMEI (IDG)
                MOVE    "分画"              TO  SPA-GMN-TTANI2  (IDG)
            END-IF
+      *!
+      *    包括検査の判定
+           IF     (LNK-WKSRY-SRYCD (IDX IDZ)(1:1) =   "1" )  AND
+                  (LNK-WKSRY-SRYKBN (IDX)      =   "60" ) AND
+                  (TNS-DATAKBN                 =   1    ) AND
+                  (TNS-HOUKNSKBN           NOT =   ZERO )
+               ADD     1                   TO  WRK-HOUKNS-CNT
+               MOVE    IDG                 TO  WRK-HOUKNS-IDX
+               MOVE    SPA-GMN-TMEISYO2(IDG)   TO  WRK-HOUKNS-NAME
+           END-IF
+      *!
            INSPECT SPA-GMN-TBANGO2 (IDG) REPLACING  ALL "  "  BY  "　"
            INSPECT SPA-GMN-TMEISYO2(IDG) REPLACING  ALL "  "  BY  "　"
            INSPECT SPA-GMN-TSURYOU (IDG) REPLACING  ALL "  "  BY  "　"
@@ -2372,6 +2429,25 @@
                       "】"             DELIMITED   BY  SIZE
                       INTO             WRK-MEISYO
            END-STRING
+           .
+       3100121-FUKIYO-MEISYO-EXT.
+           EXIT.
+      *****************************************************************
+      *     用量割合再編集処理
+      *****************************************************************
+       3005-INPUT-MEISYO3-SEC        SECTION.
+      *
+           INITIALIZE                  ORCSMEIHENAREA
+           MOVE    "1"                 TO  ORCSMEIHEN-KBN
+           MOVE    LNK-WKSRY-SRYSURYO(IDX IDZ)
+                                       TO  ORCSMEIHEN-SURYO
+           MOVE    LNK-WKSRY-SRYCD(IDX IDZ)
+                                       TO  ORCSMEIHEN-SRYCD
+           MOVE    TNS-NAME            TO  ORCSMEIHEN-TNS-NAME
+           CALL    "ORCSMEIHEN"        USING
+                                       SPA-AREA
+                                       ORCSMEIHENAREA
+           MOVE    ORCSMEIHEN-MEISYO   TO  WRK-MEISYO
            .
        3100121-FUKIYO-MEISYO-EXT.
            EXIT.

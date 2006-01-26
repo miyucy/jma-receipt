@@ -6407,6 +6407,11 @@
                                                    =   "0084" ) AND
                               (SPA-COM-SURFLG (SPA-GMN-IDX)
                                                        =   SPACE ))
+      **                 用量コメント
+                         OR  ((SPA-COM-INPUTCD(SPA-GMN-IDX)(1:7)
+                                                   =   "0992000" ) AND
+                              (SPA-COM-SURFLG (SPA-GMN-IDX)
+                                                       =   SPACE ))
                            MOVE    "_"             TO  SPA-GMN-INPUTCD
                                                      (SPA-GMN-IDX)
                                                      (WRK-IN-IDX2:)
@@ -6520,6 +6525,9 @@
                                                        "7" )  OR
                      ( SPA-COM-INPUTCD(SPA-GMN-IDX)(1:3)
                                                    =   "001" )
+      *                  用量コメント
+                 OR  ( SPA-COM-INPUTCD(SPA-GMN-IDX)(1:7)
+                                                   =   "0992000" )
       *            薬剤・器材・用法
                    MOVE    1                   TO  FLG-IN1
                END-IF
@@ -8912,6 +8920,9 @@
            MOVE    SPA-KYUSEI-90       TO  LNK-ORCSC-KYUSEI-90
            MOVE    SPA-KYUSEI-180      TO  LNK-ORCSC-KYUSEI-180
            MOVE    SPA-KYUSEI-FLG      TO  LNK-ORCSC-KYUSEI-FLG
+      *    急性発生日
+           MOVE    WRK-KYUSEI-YMD      TO  LNK-ORCSC-KYUSEI-YMD
+           MOVE    WRK-KYUSEI-END      TO  LNK-ORCSC-KYUSEI-END
       *    当月外来管理加算の取れない患者
            MOVE    SPA-GAIRAI-NASI     TO  LNK-ORCSC-GAIRAI-NASI
       *    労災用 外来管理点数
