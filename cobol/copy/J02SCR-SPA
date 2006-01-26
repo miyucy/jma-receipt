@@ -185,6 +185,7 @@
                05  SPA-SRYKBN-MAX                PIC 9(04).
       *
                05  SPA-NAI-SRYKBN-FLG            PIC 9(01).
+               05  SPA-NAI-SRYKA-FLG             PIC 9(01).
       *
       *入院点滴算定エラーメッセージ
                05  SPA-GMN-NYUIN-AREA.
