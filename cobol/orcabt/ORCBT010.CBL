@@ -54,6 +54,8 @@
       *                                     作成する
       *
       *  02.07.01    NACL-藤原    05/08/20  特別療養費対応
+      *  02.07.02    NACL-藤原    06/01/25  疑いフラグからの病名の編集方
+      *                                     法の変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -469,6 +471,9 @@
            COPY    "CPORCSAGECHK.INC".
       *    患者自己負担金レセプト記載判定
            COPY    "CPORCSFTNJGNCHK.INC".
+      *
+      *    病名組立サブ
+           COPY    "CPORCSMKBYOMEI.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -2663,87 +2668,18 @@
                                        TO  PTBYO-BYOMEICDSU    
       *
       *    疑いフラグより病名を編集
-           MOVE    SPACE               TO  WRK-HENFLG1
-                                           WRK-HENFLG2
-      *       
            IF      PTBYO-UTAGAIFLG NOT =   SPACE
-               COMPUTE WRK-MOJISU   =   PTBYO-BYOMEIMOJI   *   2
-               IF      PTBYO-UTAGAIFLG  =   "1" OR  "3"
-                   IF      WRK-MOJISU       <   8
-                       MOVE    1                TO  IDZ
-                   ELSE    
-                       COMPUTE IDZ     =   WRK-MOJISU    -   7
-                   END-IF    
-                   PERFORM VARYING IDX FROM    IDZ BY  2
-                           UNTIL   IDX >       WRK-MOJISU
-                       IF      PTBYO-BYOMEI (IDX:2)      =   "疑"
-                           MOVE    "1"              TO  WRK-HENFLG1
-                           MOVE    WRK-MOJISU       TO  IDX
-                       END-IF
-                   END-PERFORM
-               END-IF                
-               IF      PTBYO-UTAGAIFLG =   "2" OR  "3"
-                   PERFORM VARYING IDX FROM    1   BY  2
-                           UNTIL   IDX >       WRK-MOJISU
-                       IF      PTBYO-BYOMEI (IDX:4)      =   "急性"
-                           MOVE    "1"              TO  WRK-HENFLG2
-                           MOVE    WRK-MOJISU       TO  IDX
-                       END-IF
-                   END-PERFORM
-               END-IF
-           END-IF
-      *     
-      *    病名文字数を計算
-           COMPUTE WRK-MOJISU          =   PTBYO-BYOMEIMOJI   *   2
-           MOVE    PTBYO-BYOMEI      TO  WRK-BYOMEI
+               INITIALIZE                      ORCSMKBYOMEIAREA
+               MOVE    PTBYO-UTAGAIFLG     TO  SMKBYO-UTAGAIFLG
+               MOVE    PTBYO-BYOMEI        TO  SMKBYO-BYOMEI
+               MOVE    PTBYO-BYOMEIHENFLG  TO  SMKBYO-BYOMEIHENFLG
+               MOVE    PTBYO-BYOMEICD-G    TO  SMKBYO-BYOMEICD-G
+               CALL    "ORCSMKBYOMEI"      USING   ORCSMKBYOMEIAREA
       *
-      *    疑いフラグがセットされているとき
-           IF    ( PTBYO-UTAGAIFLG   =   "1" OR  "3" )
-           AND   ( WRK-HENFLG1         =   SPACE     )                         
-               MOVE    SPACE               TO  WRK-BYOMEI
-               STRING  PTBYO-BYOMEI        DELIMITED BY  SPACE
-                       WRK-CONS-UTAGAI     DELIMITED BY  SIZE
-                       INTO                WRK-BYOMEI
-               COMPUTE WRK-MOJISU          =      
-                                WRK-MOJISU +   WRK-CONS-UTAGAI-MOJISU
-               IF      PTBYO-BYOMEIHENFLG  =   SPACE
-                   IF      PTBYO-BYOMEICD (21)  NOT =   SPACE             
-                       MOVE    "1"             TO  PTBYO-BYOMEIHENFLG
-                   ELSE
-                       PERFORM VARYING IDX FROM    1   BY  1
-                               UNTIL   IDX >       21
-                           IF      PTBYO-BYOMEICD (IDX)    =   SPACE
-                               MOVE    WRK-CONS-BYOMEICD-UTAGAI
-                                               TO  PTBYO-BYOMEICD (IDX)
-                               MOVE    21           TO  IDX
-                           END-IF
-                       END-PERFORM
-                   END-IF
-               END-IF
-           END-IF    
-           IF    ( PTBYO-UTAGAIFLG   =   "2" OR  "3" )
-           AND   ( WRK-HENFLG2         =   SPACE     )                         
-               MOVE    SPACE               TO  WRK-BYOMEIW
-               STRING  WRK-CONS-KYUSEI     DELIMITED BY  SIZE
-                       WRK-BYOMEI          DELIMITED BY  SPACE
-                       INTO                WRK-BYOMEIW
-               COMPUTE WRK-MOJISU          =      
-                                WRK-MOJISU +   WRK-CONS-KYUSEI-MOJISU
-               MOVE    WRK-BYOMEIW         TO  WRK-BYOMEI  
-               IF      PTBYO-BYOMEIHENFLG  =   SPACE
-                   IF      PTBYO-BYOMEICD (21) NOT =   SPACE             
-                       MOVE    "1"             TO  PTBYO-BYOMEIHENFLG
-                   ELSE
-                       PERFORM VARYING IDX FROM    1   BY  1
-                               UNTIL   IDX >       21
-                           IF      PTBYO-BYOMEICD (IDX)    =   SPACE
-                               MOVE    WRK-CONS-BYOMEICD-KYUSEI
-                                               TO  PTBYO-BYOMEICD (IDX)
-                               MOVE    21           TO  IDX
-                           END-IF
-                       END-PERFORM
-                   END-IF
-               END-IF
+               COMPUTE PTBYO-BYOMEIMOJI    =   SMKBYO-LENGTH   /   2
+               MOVE    SMKBYO-BYOMEI       TO  PTBYO-BYOMEI
+               MOVE    SMKBYO-BYOMEIHENFLG TO  PTBYO-BYOMEIHENFLG
+               MOVE    SMKBYO-BYOMEICD-G   TO  PTBYO-BYOMEICD-G
            END-IF
       *
            INITIALIZE                      TOUKEI03-REC
@@ -2755,8 +2691,8 @@
            MOVE    PTBYO-SRYKA         TO  TOUKEI03-SRYKA
            MOVE    PTBYO-SRYYMD        TO  TOUKEI03-SRYYMD
            MOVE    PTBYO-RENNUM        TO  TOUKEI03-RENNUM
-           MOVE    WRK-BYOMEI          TO  TOUKEI03-BYOMEI
-           COMPUTE TOUKEI03-BYOMEIMOJI    =   WRK-MOJISU    /   2
+           MOVE    PTBYO-BYOMEI        TO  TOUKEI03-BYOMEI
+           MOVE    PTBYO-BYOMEIMOJI    TO  TOUKEI03-BYOMEIMOJI
            MOVE    PTBYO-UTAGAIFLG     TO  TOUKEI03-UTAGAIFLG
            MOVE    PTBYO-SYUBYOFLG     TO  TOUKEI03-SYUBYOFLG   
            MOVE    PTBYO-MANSEIKBN     TO  TOUKEI03-MANSEIKBN
@@ -2771,7 +2707,11 @@
            MOVE    PTBYO-HKNBYOMEIFLG  TO  TOUKEI03-HKNBYOMEIFLG
            MOVE    PTBYO-BYOMEIHENFLG  TO  TOUKEI03-BYOMEIHENFLG   
            MOVE    PTBYO-BYOMEICD-G    TO  TOUKEI03-BYOMEICD-G
-           MOVE    PTBYO-BYOMEICDSU    TO  TOUKEI03-BYOMEICDSU
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       21
+                   OR      PTBYO-BYOMEICD (IDX)    =   SPACE
+               MOVE    IDX                 TO  TOUKEI03-BYOMEICDSU
+           END-PERFORM
       *    レセプト診療科
            IF      PTBYO-SRYKA     NOT =   SPACE    
                INITIALIZE                      SYS-1005-REC

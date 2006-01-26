@@ -169,6 +169,8 @@
       *
       *  02.07.01    NACL-藤原    05/10/31  MONFUNC対応
       *  02.07.02    NACL-藤原    06/01/16  年齢表示を追加
+      *  02.07.01    NACL-藤原    06/01/25  疑いフラグからの病名の編集方
+      *                                     法の変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -534,6 +536,9 @@
       *
       *    レセプト作成管理マスタ更新サブ
            COPY    "CPORCSRECEUPD.INC".
+      *
+      *    病名組立サブ
+           COPY    "CPORCSMKBYOMEI.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -7565,53 +7570,18 @@
       *    疑いフラグが設定されているとき
            IF      WRK-PTBYO-CHK-UTAGAIFLG
                                        NOT =   SPACE
-               MOVE    SPACE               TO  WRK-HENFLG1
-                                               WRK-HENFLG2
+               INITIALIZE                      ORCSMKBYOMEIAREA
+               MOVE    WRK-PTBYO-CHK-UTAGAIFLG
+                                           TO  SMKBYO-UTAGAIFLG
+               MOVE    WRK-PTBYO-CHK-BYOMEI
+                                           TO  SMKBYO-BYOMEI
+               MOVE    WRK-BYOMEIHENFLG    TO  SMKBYO-BYOMEIHENFLG
+               MOVE    WRK-PTBYO-CHK-BYOMEICD-G
+                                           TO  SMKBYO-BYOMEICD-G
+               CALL    "ORCSMKBYOMEI"      USING   ORCSMKBYOMEIAREA
       *
-               IF      WRK-PTBYO-CHK-UTAGAIFLG =   "1" OR  "3"
-                   IF      WRK-MOJISU      <   8
-                       MOVE    1               TO  IDX4
-                   ELSE    
-                       COMPUTE IDX4    =   WRK-MOJISU    -   7
-                   END-IF    
-                   PERFORM VARYING IDX5    FROM    IDX4    BY  2
-                           UNTIL   IDX5    >       WRK-MOJISU
-                       IF      WRK-PTBYO-CHK-BYOMEI (IDX5:2) =   "疑"
-                           MOVE    "1"              TO  WRK-HENFLG1
-                           MOVE    WRK-MOJISU       TO  IDX5
-                       END-IF
-                   END-PERFORM
-               END-IF                
-               IF      WRK-PTBYO-CHK-UTAGAIFLG =   "2" OR  "3"
-                   PERFORM VARYING IDX5    FROM    1   BY  2
-                           UNTIL   IDX5    >       WRK-MOJISU
-                       IF      WRK-PTBYO-CHK-BYOMEI (IDX5:4) =  "急性"
-                           MOVE    "1"              TO  WRK-HENFLG2
-                           MOVE    WRK-MOJISU       TO  IDX5
-                       END-IF
-                   END-PERFORM
-               END-IF
-      *
-               IF    ( WRK-PTBYO-CHK-UTAGAIFLG
-                                           =   "1" OR  "3" )
-               AND   ( WRK-HENFLG1         =   SPACE       )       
-                   COMPUTE WRK-MOJISU          =      
-                                WRK-MOJISU +   WRK-CONS-UTAGAI-MOJISU
-                   IF      WRK-PTBYO-CHK-BYOMEICD (21)
-                                           NOT =   SPACE             
-                       MOVE    "1"             TO  WRK-BYOMEIHENFLG
-                   END-IF
-               END-IF    
-               IF    ( WRK-PTBYO-CHK-UTAGAIFLG
-                                           =   "2" OR  "3" )
-               AND   ( WRK-HENFLG2         =   SPACE       )     
-                   COMPUTE WRK-MOJISU          =      
-                                WRK-MOJISU +   WRK-CONS-KYUSEI-MOJISU
-                   IF      WRK-PTBYO-CHK-BYOMEICD (21)
-                                           NOT =   SPACE             
-                       MOVE    "1"             TO  WRK-BYOMEIHENFLG
-                   END-IF
-               END-IF
+               MOVE    SMKBYO-LENGTH       TO  WRK-MOJISU
+               MOVE    SMKBYO-BYOMEIHENFLG TO  WRK-BYOMEIHENFLG
            END-IF    
       *
            COMPUTE WRK-MOJISU      =   WRK-MOJISU  /   2

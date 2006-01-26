@@ -36,6 +36,8 @@
       *                                     編集を行なう
       *
       *  02.07.01    NACL-藤原    05/10/31  MONFUNC対応
+      *  02.07.01    NACL-藤原    06/01/25  疑いフラグからの病名の編集方
+      *                                     法の変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -135,14 +137,6 @@
       *    病名コードＭＡＸ
            03  WRK-CONS-BYOMEI-MAX PIC 9(02)   VALUE   21.
       *
-      *    疑い編集
-      *    の疑い
-           03  WRK-CONS-UTAGAI     PIC X(07)   VALUE   "ZZZ8002".                                     
-           03  WRK-CONS-UTAGAI-MOJISU
-                                   PIC 9(02)   VALUE   6.       
-      *    急性
-           03  WRK-CONS-KYUSEI-MOJISU
-                                   PIC 9(02)   VALUE   4. 
       *    
       *    ワーク病名
        01  WRK-BYOMEI-REC.
@@ -171,6 +165,9 @@
       *
       *    半角チェックサブ
            COPY    "CPORCSKANACHK.INC".
+      *
+      *    病名組立サブ
+           COPY    "CPORCSMKBYOMEI.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -291,13 +288,13 @@
       *    レセ電エラーフラグ
            PERFORM 200-RECEDENFLG-HENSYU-SEC
       *???
-      *****DISPLAY "LNK=" LNK-BYOMEI-KENSAKU-AREA "#"
-      *****DISPLAY "ERR=" LNK-BYOMEI-KENSAKU-ERR-AREA "#"
-      *****DISPLAY "MAX=" LNK-BYO-BYOMEI-MAX "#"     
-      *****PERFORM VARYING IDZ FROM    1   BY  1
-      *****        UNTIL   IDZ >       LNK-BYO-BYOMEI-MAX
-      *****  DISPLAY IDZ "=" LNK-BYO-BYOMEICD-G (IDZ) "#"     
-      *****END-PERFORM
+           DISPLAY "LNK=" LNK-BYOMEI-KENSAKU-AREA "#"
+           DISPLAY "ERR=" LNK-BYOMEI-KENSAKU-ERR-AREA "#"
+           DISPLAY "MAX=" LNK-BYO-BYOMEI-MAX "#"     
+           PERFORM VARYING IDZ FROM    1   BY  1
+                   UNTIL   IDZ >       LNK-BYO-BYOMEI-MAX
+             DISPLAY IDZ "=" LNK-BYO-BYOMEICD-G (IDZ) "#"     
+           END-PERFORM
       *???
            .
        000-PROC-EXT.
@@ -318,51 +315,22 @@
       *    疑いフラグが設定されているとき
            IF      LNK-BYO-UTAGAIFLG-IN
                                    NOT =   SPACE
-               MOVE    SPACE               TO  WRK-HENFLG1
-                                               WRK-HENFLG2
-      *     
-               IF      LNK-BYO-UTAGAIFLG-IN    =   "1" OR  "3"
-                   IF      WRK-MOJISU      <   8
-                       MOVE    1               TO  IDZ
-                   ELSE    
-                       COMPUTE IDZ     =   WRK-MOJISU    -   7
-                   END-IF    
-                   PERFORM VARYING IDY FROM    IDZ BY  2
-                           UNTIL   IDY >       WRK-MOJISU
-                       IF      LNK-BYO-BYOMEI  (IDY:2) =   "疑"
-                           MOVE    "1"              TO  WRK-HENFLG1
-                           MOVE    WRK-MOJISU       TO  IDY
-                       END-IF
-                   END-PERFORM
-               END-IF                
-               IF      LNK-BYO-UTAGAIFLG-IN    =   "2" OR  "3"
-                   PERFORM VARYING IDY FROM    1   BY  2
-                           UNTIL   IDY >       WRK-MOJISU
-                       IF      LNK-BYO-BYOMEI  (IDY:4) =  "急性"
-                           MOVE    "1"              TO  WRK-HENFLG2
-                           MOVE    WRK-MOJISU       TO  IDY
-                       END-IF
-                   END-PERFORM
-               END-IF
+               INITIALIZE                      ORCSMKBYOMEIAREA
+               MOVE    LNK-BYO-UTAGAIFLG-IN
+                                           TO  SMKBYO-UTAGAIFLG
+               MOVE    LNK-BYO-BYOMEI      TO  SMKBYO-BYOMEI
+               MOVE    WRK-BYOMEIHENFLG    TO  SMKBYO-BYOMEIHENFLG
+               PERFORM VARYING     IDZ     FROM    1   BY  1
+                       UNTIL       IDZ     >       21
+                   MOVE    LNK-BYO-TBYOMEICD (IDX)
+                                           TO  SMKBYO-BYOMEICD (IDX)
+               END-PERFORM
+               CALL    "ORCSMKBYOMEI"      USING   ORCSMKBYOMEIAREA
       *
-               IF    ( LNK-BYO-UTAGAIFLG-IN
-                                           =   "1" OR  "3" )
-               AND   ( WRK-HENFLG1         =   SPACE       )                         
-                   COMPUTE WRK-MOJISU          =      
-                                WRK-MOJISU +   WRK-CONS-UTAGAI-MOJISU
-                   IF      LNK-BYO-TBYOMEICD (21)   NOT =   SPACE             
-                       MOVE    "1"                 TO  WRK-BYOMEIHENFLG
-                   END-IF
-               END-IF    
-               IF    ( LNK-BYO-UTAGAIFLG-IN
-                                           =   "2" OR  "3" )
-               AND   ( WRK-HENFLG2         =   SPACE       )                         
-                   COMPUTE WRK-MOJISU          =      
-                                WRK-MOJISU +   WRK-CONS-KYUSEI-MOJISU
-                   IF      LNK-BYO-TBYOMEICD (21) NOT =   SPACE             
-                       MOVE    "1"                 TO  WRK-BYOMEIHENFLG
-                   END-IF
-               END-IF
+               MOVE    SMKBYO-LENGTH       TO  WRK-MOJISU
+               MOVE    SMKBYO-BYOMEIHENFLG TO  WRK-BYOMEIHENFLG
+      *??
+               DISPLAY "LEN=" WRK-MOJISU "#" WRK-BYOMEIHENFLG
            END-IF    
       *
            COMPUTE WRK-MOJISU      =   WRK-MOJISU  /   2
