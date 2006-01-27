@@ -729,6 +729,9 @@
       *
                MOVE    SPA-GMN-PRTJYUN1LST(01)
                                          TO  SPA-GMN-PRTJYUN1-G
+           ELSE
+               MOVE    SPA-GMN-PRTJYUNLST(01)
+                                         TO  SPA-GMN-PRTJYUN1-G
            END-IF
       *    ¸©Æâ¡¦¸©³°
            MOVE    "1"                   TO  SPA-GMN-PREFKBNL    (1)
@@ -899,6 +902,7 @@
                                            =   SPA-GMN-PRTJYUNL (IDX)
                        MOVE    SPA-GMN-PRTJYUNLST(IDX)
                                                TO  SPA-GMN-PRTJYUN-G
+                                                   SPA-GMN-PRTJYUN1-G
                        MOVE    5               TO  IDX
                    END-IF
                END-PERFORM
@@ -983,7 +987,6 @@
       *    ÊÇ¡¦·ï¿ô¤ÎÊÔ½¸½èÍý
       *****************************************************************
        3101-HENSYU-SEC                 SECTION.
-      *
       *
            MOVE    SPA-GMN-PREFKBNLST (1)
                                        TO  SPA-GMN-PREFKBN-G
@@ -1961,6 +1964,12 @@
                IF      WRK-HENFLG          =   ZERO     
                    MOVE    "0001"              TO  SPA-ERRCD
                END-IF    
+           END-IF
+      *
+           IF      SPA-R01-FILEKBN     =   "1"
+               CONTINUE
+           ELSE
+               MOVE    SPA-GMN-PRTJYUN-G   TO  SPA-GMN-PRTJYUN1-G
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
