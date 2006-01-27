@@ -31,6 +31,7 @@
       *                                     ø«Œ≈ΩÍœ∑øÕ∞ÂŒ≈¥…Õ˝Œ¡
       *                                     œ∑øÕ¿≠«ß√Œæ…º¿¥µº£Œ≈…¬≈Ô∆˛±°Œ¡£±
       *                                     œ∑øÕ¿≠«ß√Œæ…º¿¥µº£Œ≈…¬≈Ô∆˛±°Œ¡£≤
+      *  01.00.02    NACL-æÆ∆¶¬Ù  06/01/27  …∏∑Á¬–±˛
       *****************************************************************
       *
       *
@@ -108,6 +109,16 @@
            03  CONS-JYOKU-KSN2             PIC X(09) VALUE "190813390".
       *    ∆√ƒÍπ≥¿∫ø¿…¬ÃÙº£Œ≈¥…Õ˝≤√ªª
            03  CONS-TOKUSEIYAKU-KSN        PIC X(09) VALUE "190117570".
+      *    …∏∑Á∏∫≥€•≥°º•…
+           03  CONS-HYOUKETSU1             PIC X(09) VALUE "190107890".
+           03  CONS-HYOUKETSU2             PIC X(09) VALUE "190107990".
+           03  CONS-HYOUKETSU3             PIC X(09) VALUE "190108090".
+           03  CONS-HYOUKETSU4             PIC X(09) VALUE "190108190".
+           03  CONS-HYOUKETSU5             PIC X(09) VALUE "190108290".
+           03  CONS-HYOUKETSU6             PIC X(09) VALUE "190108390".
+           03  CONS-HYOUKETSU7             PIC X(09) VALUE "190108490".
+           03  CONS-HYOUKETSU8             PIC X(09) VALUE "190108590".
+           03  CONS-HYOUKETSU9             PIC X(09) VALUE "190108690".
       *    §Ω§Œ¬æø«Œ≈π‘∞Ÿ§«∆˛Œœ§∑§ø∆˛±°Œ¡≤√ªª
            03  CONS-ETCNYUIN-TBL.
              05  CONS-ETCNYUIN-KSN         PIC X(09)  OCCURS 10.
@@ -134,6 +145,7 @@
                    07  WRK-SRYKBN          PIC X(02).
                    07  WRK-NYUINKHN        PIC X(09).
                    07  WRK-SHOKIKSN        PIC X(09).
+                   07  WRK-HYOUKETSU       PIC X(09).
                    07  WRK-GAIHAKU         PIC X(09).
                    07  WRK-NYUKHNKSNKBN    PIC 9(03).
                    07  WRK-GAIHAKU-KBN     PIC 9(01).
@@ -266,7 +278,6 @@
       *    ∆˛±°≤ ¬‡»ÚÕ—•∆°º•÷•Î
            03  TABLE-NYUINKA.
                05  TBL-NYUINKA                 PIC X(01)   OCCURS  31.
-      *
       *
       *****************************************************************
       *    •’•°•§•Î•Ï•§•¢•¶•»
@@ -547,8 +558,74 @@
                                                    WRK-NYUINKHN(IDX1)
       *
                                IF   NSRY-SRYCD(2)  NOT =   SPACE
-                                   MOVE   NSRY-SRYCD(2)  TO
+                                   IF (NSRY-SRYCD(2) NOT =
+                                                    CONS-HYOUKETSU1) AND
+                                      (NSRY-SRYCD(2) NOT =
+                                                    CONS-HYOUKETSU2) AND
+                                      (NSRY-SRYCD(2) NOT =
+                                                    CONS-HYOUKETSU3) AND
+                                      (NSRY-SRYCD(2) NOT =
+                                                    CONS-HYOUKETSU4) AND
+                                      (NSRY-SRYCD(2) NOT =
+                                                    CONS-HYOUKETSU5) AND
+                                      (NSRY-SRYCD(2) NOT =
+                                                    CONS-HYOUKETSU6) AND
+                                      (NSRY-SRYCD(2) NOT =
+                                                    CONS-HYOUKETSU7) AND
+                                      (NSRY-SRYCD(2) NOT =
+                                                    CONS-HYOUKETSU8) AND
+                                      (NSRY-SRYCD(2) NOT =
+                                                    CONS-HYOUKETSU9)
+                                       MOVE   NSRY-SRYCD(2)  TO
                                                    WRK-SHOKIKSN(IDX1)
+                                   END-IF
+                               END-IF
+      *                        …∏∑Á•≥°º•…
+                               IF   NSRY-SRYCD(2)  NOT =   SPACE
+                                   IF (NSRY-SRYCD(2) =
+                                                    CONS-HYOUKETSU1) OR
+                                      (NSRY-SRYCD(2) =
+                                                    CONS-HYOUKETSU2) OR
+                                      (NSRY-SRYCD(2) =
+                                                    CONS-HYOUKETSU3) OR
+                                      (NSRY-SRYCD(2) =
+                                                    CONS-HYOUKETSU4) OR
+                                      (NSRY-SRYCD(2) =
+                                                    CONS-HYOUKETSU5) OR
+                                      (NSRY-SRYCD(2) =
+                                                    CONS-HYOUKETSU6) OR
+                                      (NSRY-SRYCD(2) =
+                                                    CONS-HYOUKETSU7) OR
+                                      (NSRY-SRYCD(2) =
+                                                    CONS-HYOUKETSU8) OR
+                                      (NSRY-SRYCD(2) =
+                                                    CONS-HYOUKETSU9)
+                                       MOVE   NSRY-SRYCD(2)  TO
+                                                   WRK-HYOUKETSU(IDX1)
+                                   END-IF
+                               END-IF
+                               IF   NSRY-SRYCD(3)  NOT =   SPACE
+                                   IF (NSRY-SRYCD(3) =
+                                                    CONS-HYOUKETSU1) OR
+                                      (NSRY-SRYCD(3) =
+                                                    CONS-HYOUKETSU2) OR
+                                      (NSRY-SRYCD(3) =
+                                                    CONS-HYOUKETSU3) OR
+                                      (NSRY-SRYCD(3) =
+                                                    CONS-HYOUKETSU4) OR
+                                      (NSRY-SRYCD(3) =
+                                                    CONS-HYOUKETSU5) OR
+                                      (NSRY-SRYCD(3) =
+                                                    CONS-HYOUKETSU6) OR
+                                      (NSRY-SRYCD(3) =
+                                                    CONS-HYOUKETSU7) OR
+                                      (NSRY-SRYCD(3) =
+                                                    CONS-HYOUKETSU8) OR
+                                      (NSRY-SRYCD(3) =
+                                                    CONS-HYOUKETSU9)
+                                       MOVE   NSRY-SRYCD(3)  TO
+                                                   WRK-HYOUKETSU(IDX1)
+                                   END-IF
                                END-IF
       *                        ø«Œ≈∂Ë ¨
                                MOVE    NACCT-SRYKBN
@@ -1043,6 +1120,12 @@
                        (WRK-SHOKIKSN(IDX1)   NOT =         SPACE)
                    ADD      1               TO  WRK-MEISAISU
                    MOVE   WRK-SHOKIKSN(IDX1) TO  WRK-SO-SRYCD
+                                           (IDX1 WRK-MEISAISU)
+               END-IF
+      *        …∏∑Á
+               IF      WRK-HYOUKETSU(IDX1)   NOT =         SPACE
+                   ADD      1               TO  WRK-MEISAISU
+                   MOVE   WRK-HYOUKETSU(IDX1) TO  WRK-SO-SRYCD
                                            (IDX1 WRK-MEISAISU)
                END-IF
       *        ≥∞«Ò
