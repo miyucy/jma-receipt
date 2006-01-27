@@ -1,0 +1,141 @@
+#!/bin/sh
+#
+# Project code name "ORCA"
+# 日医標準レセプトソフト(JMA standard receipt software)
+#
+# Copyright(C) 2002 JMA(Japan Medical Association)
+#
+# CREATE: 20060124
+#
+#
+# データベース構造変更処理起動
+#
+
+if test -z "$JMARECEIPT_ENV" ; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+if ! test -f "$JMARECEIPT_ENV" ; then
+    exit 0
+fi
+
+. $JMARECEIPT_ENV
+
+PATH=$PATH:/usr/lib/postgresql/bin
+
+FLAG=`id -u`
+
+if [ "${LANG}" = "ja_JP.eucJP" ] ; then
+    JMSG=1
+else
+    JMSG=0
+fi
+
+if [ ${FLAG} -ne 0 ] ; then
+    if [ ${JMSG} -eq 1 ] ; then
+	echo "ERROR: root権限で実行してください。"
+    else
+    	echo "ERROR: must be root permission."
+    fi
+    exit 1
+fi
+
+# Check for echo -n vs echo \c
+if echo '\c' | grep -s c >/dev/null
+then
+    ECHO_N="echo -n"
+    ECHO_C=""
+else
+    ECHO_N="echo"
+    ECHO_C='\c'
+fi
+
+#
+echo
+echo "version @VERSION@ データベース構造変更処理を行います。"
+if [ ${JMSG} -eq 1 ] ; then
+    $ECHO_N "よろしいですか？ (y/n) "$ECHO_C
+else
+    $ECHO_N "Are you sure? (y/n) "$ECHO_C
+fi
+read REPLY
+
+if [ "$?" -eq 1 ] ; then
+    if [ ${JMSG} -eq 1 ] ; then
+	echo "NOTICE: ユーザにより処理をキャンセルされました。"
+    else
+    	echo "NOTICE: user canceled."
+    fi
+    exit 1
+fi
+if [ "$REPLY" != "y" -a "$REPLY" != "Y" ] ; then
+    if [ ${JMSG} -eq 1 ] ; then
+	echo "NOTICE: ユーザにより処理をキャンセルされました。"
+    else
+    	echo "NOTICE: user canceled."
+    fi
+    exit 0
+fi
+
+#
+# データベースの存在確認
+#
+echo
+if su - postgres -c "psql template1 -l|grep ${DBNAME} >/dev/null"
+then
+    if [ ${JMSG} -eq 1 ] ; then
+	echo "${DBNAME} データベースは存在します。"
+    else
+	echo "${DBNAME} Database exist."
+    fi
+else
+    if [ ${JMSG} -eq 1 ] ; then
+	echo "${DBNAME} データベースは存在しません。"
+    else
+	echo "${DBNAME} Database not exist."
+    fi
+    exit 1
+fi
+#
+# メイン処理
+#
+echo
+
+RC=0
+
+sh "$INITDIR"/orca-db-create.sh
+if [ "$?" -eq 0 ] ; then
+    sh "$INITDIR"/orca-db-install.sh
+    if [ "$?" -eq 0 ] ; then
+	sh "$INITDIR"/orca-db-clear.sh
+	if [ "$?" -ne 0 ] ; then
+	    RC=1
+	fi
+    else
+	RC=1
+    fi
+else
+    RC=1
+fi
+if [ ${RC} -eq 0 -a -e "$INITDIR"/database-non-upgrade ] ; then
+    rm -f "$INITDIR"/database-non-upgrade
+fi
+
+#
+# 処理終了
+#
+echo
+if [ ${JMSG} -eq 1 ] ; then
+    if [ ${RC} -eq 0 ] ; then
+	echo "処理はすべて終了しました"
+    else
+        echo "処理は異常終了しました。"
+    fi
+else
+    if [ ${RC} -eq 0 ] ; then
+	echo "Done. Completed."
+    else
+        echo "Done. Incompleted."
+    fi
+fi
+echo
+exit ${RC}

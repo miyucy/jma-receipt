@@ -5,16 +5,32 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 
-BIN_files = \
+BIN_sources = \
+	orca-db-setup.sh.in
+
+BIN_bin = \
 	orca-hospid-set.sh
 
-all:   
+BIN_objs = $(BIN_sources:.sh.in=.sh)
+
+BIN_files = $(BIN_objs) $(BIN_bin)
+
+.SUFFIXES: .sh.in .sh
+
+.sh.in.sh:
+	sed -e 's,\@jma-receipt-env\@,$(sysconfdir)\/jma-receipt\.env,g' \
+	    -e 's,\@VERSION\@,$(VERSION),g' \
+	$< > $@
+	chmod +x $@
+
+all:	$(BIN_objs)   
 
 filecheck:
 
 clean: 
+	-rm -f $(BIN_objs)
 
-distclean: 
+distclean: clean
 	-rm -f Makefile
 
 install: all
