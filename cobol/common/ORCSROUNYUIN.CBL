@@ -1349,11 +1349,24 @@
            END-IF
       *
            IF      LNK-SROUNYUIN-SRYCD-SK(IDX1 IDX2)  =   "5"
-      *      筛风¨◇负换
-             COMPUTE    LNK-SROUNYUIN-ZAITEN(IDX1)  =
-                      ( LNK-SROUNYUIN-ZAITEN(IDX1)  -
-                       (LNK-SROUNYUIN-ZAITEN(IDX1)  *
-                       (WRK-HYOKETU-TEN   /  100))) +  0.5
+             IF    LNK-SROUNYUIN-ZAITEN(IDX1)   >=   ZERO
+      *        筛风¨◇负换
+               COMPUTE    LNK-SROUNYUIN-ZAITEN(IDX1)  =
+                        ( LNK-SROUNYUIN-ZAITEN(IDX1)  -
+                         (LNK-SROUNYUIN-ZAITEN(IDX1)  *
+                         (WRK-HYOKETU-TEN   /  100))) +  0.5
+             ELSE
+               COMPUTE    LNK-SROUNYUIN-ZAITEN(IDX1)  =
+                          LNK-SROUNYUIN-ZAITEN(IDX1)  *
+                          -1
+               COMPUTE    LNK-SROUNYUIN-ZAITEN(IDX1)  =
+                        ( LNK-SROUNYUIN-ZAITEN(IDX1)  -
+                         (LNK-SROUNYUIN-ZAITEN(IDX1)  *
+                         (WRK-HYOKETU-TEN   /  100))) +  0.5
+               COMPUTE    LNK-SROUNYUIN-ZAITEN(IDX1)  =
+                          LNK-SROUNYUIN-ZAITEN(IDX1)  *
+                          -1
+             END-IF
       *
              COMPUTE LNK-SROUNYUIN-ZAITEN(IDX1)  =
                      LNK-SROUNYUIN-ZAITEN(IDX1)  +  WRK-ZAITEN-HYOKETU
