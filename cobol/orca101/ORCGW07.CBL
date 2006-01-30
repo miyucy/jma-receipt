@@ -903,7 +903,7 @@
            MOVE    "1 и╫╪╗╓╧╓К"        TO  SPA-GMN-BYOHYOKBN-LIST(2)
       *    ╨чепо©╫Г╤Хй╛
            MOVE    "0 ©гне╤Хй╛╫Г"      TO  SPA-GMN-ZAIJUNKBN-LIST(1)
-           MOVE    "1 епо©╫Г"          TO  SPA-GMN-ZAIJUNKBN-LIST(2)
+           MOVE    "1 фЧно╫Г"          TO  SPA-GMN-ZAIJUNKBN-LIST(2)
       *
            MOVE    "0 ╓╧╓ы╓ф╓нибл╬"    TO  SPA-GMN-BYOMEIKBN-LIST(1)
            MOVE    "1 ╥ябЁибл╬╓н╓ъ"    TO  SPA-GMN-BYOMEIKBN-LIST(2)
