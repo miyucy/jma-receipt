@@ -479,6 +479,7 @@ DB_files = \
 	tbl_hours.db \
 	tbl_chktrd.db \
 	tbl_tekioubyomei.db \
+	tbl_yakujyo_temp.db \
 
 all:   
 
