@@ -128,6 +128,7 @@
            03  WRK-KHNTEN                      PIC S9(08).
            03  WRK-KSNTEN                      PIC S9(08).
            03  WRK-HYOKETU-TEN                 PIC S9(08).
+           03  WRK-SENTEI-ZAITEN               PIC  9(08).
            03  WRK-SENTEI-KHNTEN               PIC 9(08).
            03  WRK-SENTEISRYCD                 PIC X(09).
            03  WRK-SRYCDTOTAL                  PIC 9(09).
@@ -1542,8 +1543,7 @@
            MOVE    WRK-SENTEISRYCD     TO  WNYUINRYO-SRYCD
                                                    (IDXA IDXB IDX-KHN)
       *
-           COMPUTE WNYUINRYO-ZAITEN (IDXA IDXB)    =   WRK-SENTEI-KHNTEN
-                                                   +   WRK-KSNTEN
+           MOVE    WRK-SENTEI-ZAITEN   TO  WNYUINRYO-ZAITEN (IDXA IDXB)
       *
            .
        2001111-SENTEI-CHG-EXT.
@@ -1557,6 +1557,7 @@
       *
            MOVE    ZERO                TO  WRK-KHNTEN
                                            WRK-KSNTEN
+                                           WRK-SENTEI-ZAITEN
                                            WRK-SENTEI-KHNTEN
                                            WRK-HYOKETU-TEN
       *
@@ -1629,6 +1630,8 @@
            END-IF
       *
            MOVE    TNS-TEN             TO  WRK-SENTEI-KHNTEN
+           COMPUTE WRK-SENTEI-ZAITEN
+               =   WRK-SENTEI-KHNTEN   +   WRK-KSNTEN
       *
            IF    ( WRK-HYOKETU-TEN NOT =   ZERO )
       *
@@ -1636,6 +1639,11 @@
                COMPUTE WRK-SENTEI-KHNTEN
                    =   WRK-SENTEI-KHNTEN
                    -   WRK-SENTEI-KHNTEN * ( WRK-HYOKETU-TEN / 100 )
+                   +  0.5
+      *
+               COMPUTE WRK-SENTEI-ZAITEN
+                   =   WRK-SENTEI-ZAITEN
+                   -   WRK-SENTEI-ZAITEN * ( WRK-HYOKETU-TEN / 100 )
                    +  0.5
       *
                COMPUTE WRK-KHNTEN
