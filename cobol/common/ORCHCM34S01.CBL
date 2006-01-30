@@ -127,6 +127,7 @@
            03  WRK-GAIHAKU-TEN                 PIC 9(08).
            03  WRK-KHNTEN                      PIC S9(08).
            03  WRK-KSNTEN                      PIC S9(08).
+           03  WRK-HYOKETU-TEN                 PIC S9(08).
            03  WRK-SENTEI-KHNTEN               PIC 9(08).
            03  WRK-SENTEISRYCD                 PIC X(09).
            03  WRK-SRYCDTOTAL                  PIC 9(09).
@@ -1055,10 +1056,10 @@
       *
       *    入院基本料のコードを探す
            MOVE    ZERO                TO  WRK-KHNTEN
+           MOVE    ZERO                TO  WRK-HYOKETU-TEN
            MOVE    ZERO                TO  IDX-KHN
            PERFORM VARYING IDX2    FROM    1   BY  1
                    UNTIL ( IDX2    >   5 )
-                    OR   ( IDX-KHN NOT =   ZERO )
                MOVE    NSRY-SRYCD (IDX2)
                                        TO  WRK-TNS-SRYCD
                MOVE    NACCT-SRYYM     TO  WRK-DBYMD
@@ -1069,6 +1070,11 @@
                        MOVE    TNS-TEN             TO  WRK-KHNTEN
                        MOVE    TNS-NYUKHNKSNKBN    TO  WRK-NYUKHNKSNKBN
                        MOVE    IDX2                TO  IDX-KHN
+                   ELSE
+                       EVALUATE  TNS-TENSIKIBETU
+                       WHEN     6
+                           MOVE  TNS-TEN   TO  WRK-HYOKETU-TEN
+                       END-EVALUATE
                    END-IF
                END-IF
            END-PERFORM
@@ -1085,6 +1091,15 @@
            PERFORM 2001111-KNGMITATU-CHK-SEC
            IF    ( WRK-GAIHAKU-KHNTEN  NOT =   ZERO )
                MOVE    WRK-GAIHAKU-KHNTEN  TO  WRK-KHNTEN
+           END-IF
+      *
+           IF    ( WRK-HYOKETU-TEN NOT =   ZERO )
+      *
+      *       標欠：％減算
+               COMPUTE WRK-KHNTEN
+                   =   WRK-KHNTEN
+                   -   WRK-KHNTEN * ( WRK-HYOKETU-TEN / 100)
+                   +  0.5
            END-IF
       *
            .
@@ -1543,12 +1558,12 @@
            MOVE    ZERO                TO  WRK-KHNTEN
                                            WRK-KSNTEN
                                            WRK-SENTEI-KHNTEN
+                                           WRK-HYOKETU-TEN
       *
       *    入院基本料のコードを探す
            MOVE    ZERO                TO  IDX-KHN
            PERFORM VARYING IDXC    FROM    1   BY  1
                    UNTIL ( IDXC    >   5 )
-                    OR   ( IDX-KHN NOT =   ZERO )
                MOVE    NSRY-SRYCD (IDXC)
                                        TO  WRK-TNS-SRYCD
                MOVE    NACCT-SRYYM     TO  WRK-DBYMD
@@ -1558,6 +1573,15 @@
                    IF    ( TNS-DATAKBN =   1 )
                        MOVE    TNS-TEN TO  WRK-KHNTEN
                        MOVE    IDXC    TO  IDX-KHN
+                   ELSE
+                       EVALUATE  TNS-TENSIKIBETU
+                       WHEN     3
+                           MOVE  TNS-TEN   TO  WRK-KSNTEN
+                       WHEN     8
+                           COMPUTE WRK-KSNTEN  =   TNS-TEN *   -1
+                       WHEN     6
+                           MOVE  TNS-TEN   TO  WRK-HYOKETU-TEN
+                       END-EVALUATE
                    END-IF
                END-IF
            END-PERFORM
@@ -1568,7 +1592,7 @@
            END-IF
       *
       *    加算分の点数を求める
-           COMPUTE WRK-KSNTEN  =   NACCT-ZAITEN    -   WRK-KHNTEN
+      *    COMPUTE WRK-KSNTEN  =   NACCT-ZAITEN    -   WRK-KHNTEN
       *
       *    上で求めた入院基本料のコードを選定入院料のコードに置き換える
            MOVE    ZERO                TO  FLG-SENTEICDCHG
@@ -1605,6 +1629,20 @@
            END-IF
       *
            MOVE    TNS-TEN             TO  WRK-SENTEI-KHNTEN
+      *
+           IF    ( WRK-HYOKETU-TEN NOT =   ZERO )
+      *
+      *        標欠：％減算
+               COMPUTE WRK-SENTEI-KHNTEN
+                   =   WRK-SENTEI-KHNTEN
+                   -   WRK-SENTEI-KHNTEN * ( WRK-HYOKETU-TEN / 100 )
+                   +  0.5
+      *
+               COMPUTE WRK-KHNTEN
+                   =   WRK-KHNTEN
+                   -   WRK-KHNTEN * ( WRK-HYOKETU-TEN / 100)
+                   +  0.5
+           END-IF
       *
            .
        20011111-SENTEI-CHG-EXT.
