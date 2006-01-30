@@ -1278,7 +1278,8 @@
            ELSE
                MOVE    1               TO  FLG-SANTEI
            END-IF
-           MOVE    "DBFETCH"       TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           MOVE    "SANTEI-KEY"    TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA

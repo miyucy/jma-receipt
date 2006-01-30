@@ -1273,6 +1273,13 @@
                MOVE    1               TO  FLG-PTBYOMEI
            END-IF
       *
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           MOVE    "PTBYOMEI-KEY7" TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
       *    データがすでにある場合は最大連番から連番を振る
            IF      FLG-PTBYOMEI    =   ZERO
                MOVE    MCPDATA-REC     TO  PTBYOMEI-REC

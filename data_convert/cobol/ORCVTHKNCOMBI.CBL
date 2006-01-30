@@ -544,7 +544,7 @@
            IF      MCP-RC         NOT  =   ZERO
                INITIALIZE                  PTINF-REC
                MOVE    1               TO  FLG-PTINF
-               GO      TO              900-PTINF-SEQUENCE-EXT
+      ******** GO      TO              900-PTINF-SEQUENCE-EXT
            END-IF
       *
            PERFORM UNTIL   FLG-PTINF   =   1
@@ -1239,6 +1239,12 @@
            ELSE
                MOVE    1               TO  FLG-PTHKNINF
            END-IF
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           MOVE    "PTHKNINF-KEY"  TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            IF      FLG-PTHKNINF        =   1
                MOVE    HZN-PTHKNINF-REC    TO  PTHKNINF-REC
@@ -1284,7 +1290,7 @@
            PERFORM 900-PTNUM-READ-SEC
       *
            IF      FLG-PTNUM       =   ZERO
-               MOVE        PTNUM-PTID  TO  SPA-PTNUM
+      *********MOVE        PTNUM-PTID  TO  SPA-PTNUM
                EVALUATE    WRK-KEN-HKNKOH
                    WHEN    1
       *                ÊÝ¸±¹¹¿·
@@ -1415,6 +1421,12 @@
            ELSE
                MOVE    1               TO  FLG-PTKOHINF
            END-IF
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           MOVE    "PTKOHINF-KEY"  TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            IF      FLG-PTKOHINF        =   1
                MOVE    HZN-PTKOHINF-REC    TO  PTKOHINF-REC
@@ -1662,6 +1674,12 @@
                MOVE    "PARA-KEY2"         TO  ORC-DBPATH
                PERFORM 990-PARA-READ-SEC
            END-PERFORM
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           MOVE    "PARA-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            .
        240-HKNCOMBI-INSERT-EXT.
