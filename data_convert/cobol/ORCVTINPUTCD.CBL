@@ -1186,7 +1186,7 @@
            END-IF
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           MOVE    "TESNSU-KEY"    TO  ORC-DBPATH
+           MOVE    "TENSU-KEY"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
