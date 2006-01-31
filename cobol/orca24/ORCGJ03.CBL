@@ -926,6 +926,7 @@
                           (SRY-SRYCD (IDZ)(1:3)    =   "008")  OR
                           (SRY-SRYCD (IDZ)         =   "099209901") OR
                           (SRY-SRYCD (IDZ)         =   "099309901") OR
+                          (SRY-SRYCD (IDZ)(1:7)    =   "0992000"  ) OR
                           (SRY-AUTOKBN(IDZ)        =   "2"
                                                    OR  "3" )
                        CONTINUE
@@ -1038,46 +1039,51 @@
 059300                                       (IDX TBL-IDX2 TBL-IDX3)
                    END-IF
                END-IF
-059500     END-PERFORM
-059600*
-059700     .
-059800 310111-SINKOUI-01-EXT.
-059900     EXIT.
-060000*
-060100*****************************************************************
-060200*   コード表ごとの編集処理
-060300*****************************************************************
-060400 310112-SINKOUI-02-SEC           SECTION.
-060500*
-060600     MOVE    ZERO                TO  TBL-IDX2
-060700*
-060800*    コード表がない時、対象外
-060900     IF     (TNS-CDKBN-KBN       =   SPACE )  AND
-061000            (TNS-CDKBN-KBNNUM    =   ZERO  )  AND
-061100            (TNS-CDKBN-KBNNUM-EDA    =   ZERO  )
-061200         GO      TO      310112-SINKOUI-02-EXT
-061300     END-IF
+           END-PERFORM
+      *
+           .
+       310111-SINKOUI-01-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   コード表ごとの編集処理
+      *****************************************************************
+       310112-SINKOUI-02-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  TBL-IDX2
+      *
+      *    コード表がない時、対象外
+           IF     (TNS-CDKBN-KBN       =   SPACE )  AND
+                  (TNS-CDKBN-KBNNUM    =   ZERO  )  AND
+                  (TNS-CDKBN-KBNNUM-EDA    =   ZERO  )
+               GO      TO      310112-SINKOUI-02-EXT
+           END-IF
       *    手技料のみ
            IF      SRY-SRYCD (IDZ)(1:1)    NOT =   "1"
                GO      TO      310112-SINKOUI-02-EXT
            END-IF
-061400*
-061500*    診療行為より、対象チェック
-061600     PERFORM VARYING     TBL-IDX1    FROM    1   BY  1
-061700             UNTIL       TBL-IDX1       >    200
-061800         EVALUATE    TRUE
-061900             WHEN    WRK-TBL-KNO   (IDX TBL-IDX1)    =   SPACE
-062000                 MOVE    SRY-SRYCD (IDZ)     TO  WRK-TBL-SRYCD
-062100                                                 (IDX TBL-IDX1)
-062200                 MOVE    ACCT-SRYYM          TO  WRK-TBL-SRYYYMM
-062300                                                 (IDX TBL-IDX1)
-062400                 MOVE    TNS-CDKBN-KBN       TO  WRK-TBL-KNOKBN
-062500                                                 (IDX TBL-IDX1)
-062600                 MOVE    TNS-CDKBN-KBNNUM    TO  WRK-TBL-KNONO
-062700                                                 (IDX TBL-IDX1)
-062800                 MOVE    TNS-CDKBN-KBNNUM-EDA  TO  WRK-TBL-KNONO2
-062900                                                 (IDX TBL-IDX1)
-063000*
+      *    検体検査コメント以外
+           IF     (TNS-KENTAICOMMENT   NOT =   ZERO )  AND
+                  (ACCT-SRYKBN             =   "60" )
+               GO      TO      310112-SINKOUI-02-EXT
+           END-IF
+      *
+      *    診療行為より、対象チェック
+           PERFORM VARYING     TBL-IDX1    FROM    1   BY  1
+                   UNTIL       TBL-IDX1       >    200
+               EVALUATE    TRUE
+                   WHEN    WRK-TBL-KNO   (IDX TBL-IDX1)    =   SPACE
+                       MOVE    SRY-SRYCD (IDZ)     TO  WRK-TBL-SRYCD
+                                                       (IDX TBL-IDX1)
+                       MOVE    ACCT-SRYYM          TO  WRK-TBL-SRYYYMM
+                                                       (IDX TBL-IDX1)
+                       MOVE    TNS-CDKBN-KBN       TO  WRK-TBL-KNOKBN
+                                                       (IDX TBL-IDX1)
+                       MOVE    TNS-CDKBN-KBNNUM    TO  WRK-TBL-KNONO
+                                                       (IDX TBL-IDX1)
+                       MOVE    TNS-CDKBN-KBNNUM-EDA  TO  WRK-TBL-KNONO2
+                                                       (IDX TBL-IDX1)
+      *
 063100*                名称編集
 063200                 PERFORM 3101121-KNO-MEI-SEC
 063300*
