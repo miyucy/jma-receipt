@@ -121,6 +121,7 @@
            03  WRK-DBYMD                       PIC X(08).
            03  WRK-TNS-SRYCD                   PIC X(09).
            03  WRK-GAIHAKU-SRYCD               PIC X(09).
+           03  WRK-GAIHAKU-SRYCDTOTAL          PIC 9(14).
            03  WRK-GAIHAKU-KHNTEN              PIC 9(08).
            03  WRK-NYUKHNKSNKBN                PIC 9(03).
            03  WRK-NACCT-ZAISKBKBN             PIC X(01).
@@ -128,6 +129,7 @@
            03  WRK-KHNTEN                      PIC S9(08).
            03  WRK-KSNTEN                      PIC S9(08).
            03  WRK-HYOKETU-TEN                 PIC S9(08).
+           03  WRK-HYOKETU-SRYCD               PIC X(09).
            03  WRK-SENTEI-ZAITEN               PIC  9(08).
            03  WRK-SENTEI-KHNTEN               PIC 9(08).
            03  WRK-SENTEISRYCD                 PIC X(09).
@@ -205,6 +207,8 @@
                05  WGAIHAKU-OCC2               OCCURS 20.
       *            ソート用番号
                    07  WGAIHAKU-NUM            PIC 9(03).
+      *                診療行為コード合計
+                   07  WGAIHAKU-SRYCDTOTAL     PIC 9(14).
       *            入院基本料診療区分
                    07  WGAIHAKU-SRYKBN         PIC X(02).
       *            剤点数
@@ -212,7 +216,8 @@
       *            剤回数
                    07  WGAIHAKU-ZAIKAISU       PIC 9(07).
       *            診療コード
-                   07  WGAIHAKU-SRYCD          PIC X(09).
+                   07  WGAIHAKU-SRYCD          PIC X(09)
+                                               OCCURS 2.
       *            診療回数テーブル
                    07  WGAIHAKU-DAY-TBL.
                        09  WGAIHAKU-DAY        PIC 9(03)   OCCURS  31.
@@ -1050,15 +1055,17 @@
       *****************************************************************
        200111-GAIHAKU-KHNTEN-GET-SEC   SECTION.
       *
+      *    入院基本料のコードを探す
+           MOVE    ZERO                TO  WRK-KHNTEN
+           MOVE    ZERO                TO  WRK-HYOKETU-TEN
+           MOVE    SPACE               TO  WRK-HYOKETU-SRYCD
+           MOVE    ZERO                TO  IDX-KHN
+      *
            PERFORM 20011-NYUINACT-GET-SEC
            IF    ( FLG-NYUINACT        NOT =    ZERO )
                GO  TO  200111-GAIHAKU-KHNTEN-GET-EXT
            END-IF
       *
-      *    入院基本料のコードを探す
-           MOVE    ZERO                TO  WRK-KHNTEN
-           MOVE    ZERO                TO  WRK-HYOKETU-TEN
-           MOVE    ZERO                TO  IDX-KHN
            PERFORM VARYING IDX2    FROM    1   BY  1
                    UNTIL ( IDX2    >   5 )
                MOVE    NSRY-SRYCD (IDX2)
@@ -1074,6 +1081,7 @@
                    ELSE
                        EVALUATE  TNS-TENSIKIBETU
                        WHEN     6
+                           MOVE  TNS-SRYCD TO  WRK-HYOKETU-SRYCD
                            MOVE  TNS-TEN   TO  WRK-HYOKETU-TEN
                        END-EVALUATE
                    END-IF
@@ -1279,6 +1287,7 @@
        200111-GAIHAKU-SRYCD-GET-SEC    SECTION.
       *
            MOVE    SPACE               TO  WRK-GAIHAKU-SRYCD
+           MOVE    ZERO                TO  WRK-GAIHAKU-SRYCDTOTAL
       *
            IF    ( NACCT-SRYKBN            =   "90" )
                EVALUATE    FLG-GAIHAKUDAY (IDXD)
@@ -1310,6 +1319,22 @@
                        PERFORM 2001111-SENTEI-TAKIKAN-SEC
                    END-IF
                END-EVALUATE
+           END-IF
+      *
+           IF    ( WRK-GAIHAKU-SRYCD   NOT =   SPACE )
+           AND   ( WRK-GAIHAKU-SRYCD   IS  NUMERIC )
+               MOVE    WRK-GAIHAKU-SRYCD   TO  WRK-SRYCD
+               COMPUTE WRK-GAIHAKU-SRYCDTOTAL
+                   =   WRK-GAIHAKU-SRYCDTOTAL
+                   +   WRK-SRYCD-9
+           END-IF
+      *
+           IF    ( WRK-HYOKETU-SRYCD   NOT =   SPACE )
+            AND  ( WRK-HYOKETU-SRYCD       IS  NUMERIC )
+               MOVE    WRK-HYOKETU-SRYCD   TO  WRK-SRYCD
+               COMPUTE WRK-GAIHAKU-SRYCDTOTAL
+                   =   WRK-GAIHAKU-SRYCDTOTAL
+                   +   WRK-SRYCD-9
            END-IF
       *
            .
@@ -1439,8 +1464,8 @@
            PERFORM VARYING IDXB    FROM    1   BY  1
                    UNTIL ( IDXB    >   WGAIHAKU-OCC2-MAX (IDXA) )
                      OR  ( IDXB    >   CONST-WGAIHAKU-MAX )
-                     OR (( WRK-GAIHAKU-SRYCD
-                                   =   WGAIHAKU-SRYCD (IDXA IDXB)) 
+                     OR (( WRK-GAIHAKU-SRYCDTOTAL
+                                   =   WGAIHAKU-SRYCDTOTAL (IDXA IDXB)) 
                       AND( WRK-GAIHAKU-TEN
                                    =   WGAIHAKU-ZAITEN(IDXA IDXB)))
       *
@@ -1462,8 +1487,15 @@
                                        TO  WGAIHAKU-SRYKBN (IDXA IDXB)
                    MOVE    WRK-GAIHAKU-TEN
                                        TO  WGAIHAKU-ZAITEN (IDXA IDXB)
+                   MOVE    WRK-GAIHAKU-SRYCDTOTAL
+                                       TO  WGAIHAKU-SRYCDTOTAL
+                                                           (IDXA IDXB)
                    MOVE    WRK-GAIHAKU-SRYCD
-                                       TO  WGAIHAKU-SRYCD  (IDXA IDXB)
+                                       TO  WGAIHAKU-SRYCD  (IDXA IDXB 1)
+                   IF    ( WRK-HYOKETU-SRYCD   NOT =   SPACE )
+                       MOVE    WRK-HYOKETU-SRYCD
+                                       TO  WGAIHAKU-SRYCD  (IDXA IDXB 2)
+                   END-IF
                END-IF
            END-IF
       *
@@ -2841,8 +2873,10 @@
                                            TO  SRT-ZAIKAISU (SRT-MAX)
       *
                MOVE    "2"                 TO  SRT-ZAISKBKBN(SRT-MAX)
-               MOVE    WGAIHAKU-SRYCD (IDXA IDXB)
+               MOVE    WGAIHAKU-SRYCD (IDXA IDXB 1)
                                            TO  SRT-SRYCD    (SRT-MAX 1)
+               MOVE    WGAIHAKU-SRYCD (IDXA IDXB 2)
+                                           TO  SRT-SRYCD    (SRT-MAX 2)
       *
                PERFORM VARYING IDXD    FROM    1   BY  1
                        UNTIL ( IDXD    >   31 )
