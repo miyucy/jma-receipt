@@ -442,6 +442,9 @@
                             WRK-ZAITEN  -  TNS-TEN
            END-EVALUATE
       *
+           MOVE    "TENSU-KEY"    TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
       *
            .
        2001-ZAITEN-SET-EXT.
