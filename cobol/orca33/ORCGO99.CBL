@@ -499,7 +499,7 @@
       *
       *    複数起動対応前後で編集するメッセージを変える
            IF    ( CNT-BTPARA      =   ZERO )
-               PERFORM 4901-EDIT-SIN-MSG-SEC
+               PERFORM 4901-SIN-KAKUNIN-SEC
            ELSE
                PERFORM 4901-EDIT-MUL-MSG-SEC
            END-IF
