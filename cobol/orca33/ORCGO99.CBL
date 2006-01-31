@@ -302,6 +302,9 @@
            WHEN    "O05"
                MOVE    CONST-JOBID3    TO  JOB-JOBID
                MOVE    CONST-SHELLID3  TO  JOB-SHELLID
+           WHEN    OTHER
+               MOVE    1               TO  JOB-JOBID
+               MOVE    CONST-SHELLID   TO  JOB-SHELLID
            END-EVALUATE
       *
            CALL    "ORCSJOB"       USING
