@@ -77,6 +77,7 @@
            03  IDX4                PIC 9(04).
       *
        01  WRK-AREA.
+           03  WRK-SHELLID         PIC X(07).
            03  WRK-JOBID           PIC 9(07).
            03  WRK-PAGE            PIC ZZZZZZZZZ9.
       *
@@ -290,6 +291,7 @@
            INITIALIZE                      O99
       *
            MOVE    ZERO                TO  O99-COUNT
+           MOVE    SPACE               TO  WRK-SHELLID
       *
       *    ジョブ管理チェック処理
            MOVE    "CHK"               TO  SJOBKANRI-MODE
@@ -306,6 +308,8 @@
                MOVE    1               TO  JOB-JOBID
                MOVE    CONST-SHELLID   TO  JOB-SHELLID
            END-EVALUATE
+      *
+           MOVE    JOB-SHELLID         TO  WRK-SHELLID
       *
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA 
@@ -372,6 +376,12 @@
                    MOVE   100                   TO
                                                 O99-PROGRESSBAR-VALUE
                    MOVE    "B01"                TO  MCP-WIDGET
+                   IF    ( WRK-SHELLID  =   CONST-SHELLID )
+                       PERFORM 900-TEIKIKANRI-ALL-SEL-SEC
+                       IF    ( FLG-TEIKIKANRI  =   ZERO )
+                           MOVE    WIDGET-NORMAL   TO  O99-B12-STATE
+                       END-IF
+                   END-IF
                ELSE
                    MOVE    "B01"                TO  MCP-WIDGET
                    MOVE    "該当する処理はありません"
