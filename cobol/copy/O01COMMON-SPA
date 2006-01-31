@@ -48,3 +48,4 @@
                05  SPA-O99-FLG             PIC  X(02).
       *
            03  SPA-O01-MOTOPG              PIC  X(05).
+           03  SPA-O99-MSG                 PIC  X(100).

@@ -15,21 +15,16 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-        02  O99.
-      *     02  O99-FIXED6.
-              03  O99-MSG.
-                04  O99-VALUE   PIC X(100).
-              03  O99-SCROLLEDWINDOW28.
-                04  O99-JOBKANRILST.
-                  05  O99-COUNT   PIC S9(9)   BINARY.
-                  05  O99-ROW     PIC S9(9)   BINARY.
-                  05  O99-ROWATTR PIC S9(9)   BINARY.
-                  05  O99-ITEM        OCCURS  5 TIMES.
-                    06  O99-RENNUM    PIC X(7).
-                    06  O99-SHORINM   PIC X(40).
-                    06  O99-STARTTIME PIC X(8).
-                    06  O99-ENDTIME   PIC X(8).
-                    06  O99-ERRMSG    PIC X(100).
-                  05  O99-SELECT  PIC X       OCCURS  5 TIMES.
-              03  O99-B12-STATE   PIC S9(9)   BINARY.
-              03  O99-PROGRESSBAR-VALUE       PIC S9(9)   BINARY.
+      *----------------------------------------------------------*
+      *    定期請求実行中止チェックサブ  COPY (CPORCSTEIKI01.INC)
+      *----------------------------------------------------------*
+      ************************************************************
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      ************************************************************
+       01  ORCSTEIKI01AREA.
+           03  STEIKI01-IN.
+               05  STEIKI01-JOBID              PIC 9(07).
+               05  STEIKI01-SHELLID            PIC X(08).
+           03  STEIKI01-OT.
+               05  STEIKI01-STOP               PIC 9(01).

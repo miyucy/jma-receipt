@@ -40,3 +40,14 @@ path	del1 	{
 	};
 };
 
+path	key2		{ 	
+	DBSELECT	{
+		DECLARE tbl_teikikanri_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_teikikanri
+        WHERE   CREYMD     = :CREYMD
+	AND	CREHMS     = :CREHMS
+		;
+	};
+};
+

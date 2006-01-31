@@ -5,22 +5,18 @@
   <name>O99</name>
   <program_name>O99</program_name>
   <directory></directory>
-  <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
-  <language>C</language>
   <gnome_support>True</gnome_support>
   <gtkpanda_support>False</gtkpanda_support>
-  <gettext_support>True</gettext_support>
-  <output_main_file>False</output_main_file>
 </project>
 
 <widget>
   <class>GtkWindow</class>
   <name>O99</name>
-  <x>215</x>
-  <y>590</y>
-  <width>800</width>
-  <height>160</height>
+  <x>0</x>
+  <y>545</y>
+  <width>1024</width>
+  <height>200</height>
   <signal>
     <name>map_event</name>
     <handler>map_event</handler>
@@ -31,7 +27,7 @@
     <handler>set_focus</handler>
     <last_modification_time>Fri, 05 Jan 2001 11:20:35 GMT</last_modification_time>
   </signal>
-  <signal>    
+  <signal>
     <name>delete_event</name>
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
@@ -53,7 +49,7 @@
       <class>GtkButton</class>
       <name>B01</name>
       <x>8</x>
-      <y>128</y>
+      <y>172</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -76,7 +72,7 @@
       <class>GtkButton</class>
       <name>B11</name>
       <x>88</x>
-      <y>128</y>
+      <y>172</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -99,8 +95,8 @@
       <class>GtkPandaEntry</class>
       <name>MSG</name>
       <x>248</x>
-      <y>128</y>
-      <width>550</width>
+      <y>172</y>
+      <width>765</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <signal>
@@ -117,7 +113,7 @@
       </signal>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>80</text_max_length>
+      <text_max_length>100</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -127,7 +123,7 @@
       <class>GtkButton</class>
       <name>B12</name>
       <x>168</x>
-      <y>128</y>
+      <y>172</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -147,12 +143,47 @@
     </widget>
 
     <widget>
+      <class>GtkProgressBar</class>
+      <name>PROGRESSBAR</name>
+      <x>8</x>
+      <y>150</y>
+      <width>1000</width>
+      <height>16</height>
+      <value>0</value>
+      <lower>0</lower>
+      <upper>100</upper>
+      <bar_style>GTK_PROGRESS_CONTINUOUS</bar_style>
+      <orientation>GTK_PROGRESS_LEFT_TO_RIGHT</orientation>
+      <activity_mode>False</activity_mode>
+      <show_text>False</show_text>
+      <format>%P %%</format>
+      <text_xalign>0.5</text_xalign>
+      <text_yalign>0.5</text_yalign>
+    </widget>
+
+    <widget>
+      <class>GtkPandaTimer</class>
+      <name>pandatimer1</name>
+      <x>8</x>
+      <y>8</y>
+      <width>21</width>
+      <height>21</height>
+      <signal>
+	<name>timeout</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Fri, 30 Aug 2002 06:40:07 GMT</last_modification_time>
+      </signal>
+      <duration>5</duration>
+    </widget>
+
+    <widget>
       <class>GtkScrolledWindow</class>
       <name>scrolledwindow28</name>
       <x>10</x>
       <y>16</y>
-      <width>780</width>
-      <height>80</height>
+      <width>1000</width>
+      <height>130</height>
       <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
       <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
       <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
@@ -234,41 +265,6 @@
 	  <ypad>0</ypad>
 	</widget>
       </widget>
-    </widget>
-
-    <widget>
-      <class>GtkProgressBar</class>
-      <name>PROGRESSBAR</name>
-      <x>8</x>
-      <y>104</y>
-      <width>780</width>
-      <height>16</height>
-      <value>0</value>
-      <lower>0</lower>
-      <upper>100</upper>
-      <bar_style>GTK_PROGRESS_CONTINUOUS</bar_style>
-      <orientation>GTK_PROGRESS_LEFT_TO_RIGHT</orientation>
-      <activity_mode>False</activity_mode>
-      <show_text>False</show_text>
-      <format>%P %%</format>
-      <text_xalign>0.5</text_xalign>
-      <text_yalign>0.5</text_yalign>
-    </widget>
-
-    <widget>
-      <class>GtkPandaTimer</class>
-      <name>pandatimer1</name>
-      <x>8</x>
-      <y>8</y>
-      <width>21</width>
-      <height>21</height>
-      <signal>
-	<name>timeout</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Fri, 30 Aug 2002 06:40:07 GMT</last_modification_time>
-      </signal>
-      <duration>5</duration>
     </widget>
   </widget>
 </widget>

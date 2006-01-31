@@ -765,74 +765,34 @@
       *****************************************************************
        490-KAKUNIN-SEC            SECTION.
       *
-           MOVE    SPACE               TO  O99
-           MOVE    ZERO                TO  O99-COUNT
-                                           O99-PROGRESSBAR-VALUE
+           MOVE    "O05"           TO  SPA-MOTOPG
+           MOVE    SPA-O01KYOUTU   TO  SPA-WORK
+           MOVE    SPA-AREA        TO  SPA-COMMON
       *
-      *    ジョブ管理チェック処理
-           MOVE    "CHK"           TO  SJOBKANRI-MODE
-           PERFORM 800-ORCSJOB-SEC
-           IF    ( SJOBKANRI-RETURN    =   ZERO )
-               MOVE    1               TO  IDX1
-               MOVE    JOB-JOBID       TO  O99-RENNUM   (IDX1)
-               MOVE    JOB-SHELLMSG    TO  O99-SHORINM  (IDX1)
-               MOVE    JOB-STARTTIME(1:2)
-                                       TO  WRK-HH
-               MOVE    JOB-STARTTIME(3:2)
-                                       TO  WRK-MM
-               MOVE    JOB-STARTTIME(5:2)
-                                       TO  WRK-SS
-               MOVE    WRK-HENTIME     TO  O99-STARTTIME(IDX1)
-               MOVE    JOB-ENDTIME(1:2)
-                                       TO  WRK-HH
-               MOVE    JOB-ENDTIME(3:2)
-                                       TO  WRK-MM
-               MOVE    JOB-ENDTIME(5:2)
-                                       TO  WRK-SS
-               MOVE    WRK-HENTIME     TO  O99-ENDTIME  (IDX1)
-               MOVE    JOB-YOBI        TO  O99-ERRMSG   (IDX1)
-               IF    ( JOB-ENDYMD      =   SPACE )
-                   MOVE    "処理中です"    TO  O99-MSG
-               ELSE
-                   IF    ( JOB-ERRCD       =   SPACE )
-                       CONTINUE
-                   ELSE
-                       STRING  JOB-YOBI    DELIMITED  BY  SPACE
-                               "【"        DELIMITED  BY  SIZE
-                              JOB-SHELLMSG DELIMITED  BY  SPACE
-                              "】"         DELIMITED  BY  SIZE
-                                           INTO  O99-MSG
-                   END-IF
-               END-IF
-               MOVE    IDX1                TO  O99-COUNT
-           END-IF
+           MOVE    "LINK"          TO  MCP-STATUS
+           MOVE    SPACE           TO  MCP-EVENT
       *
-           MOVE    WIDGET-INSENSITIVE   TO  O99-B12-STATE
-           IF    ( O99-MSG              =   SPACE )
-               IF    ( O99-COUNT            >   ZERO )
-                   MOVE    "B01"                TO  MCP-WIDGET
-                   MOVE    "処理は正常に終了しました"
-                                                TO  O99-MSG
-                   MOVE   100                   TO
-                                            O99-PROGRESSBAR-VALUE                             
-               ELSE
-                   MOVE    "B01"                TO  MCP-WIDGET
-                   MOVE    "該当する処理はありません"
-                                                TO  O99-MSG
-               END-IF                                 
-           ELSE                                        
-               MOVE    "B11"                TO  MCP-WIDGET
-           END-IF                                 
+           CALL    "ORCGO99"       USING
+                                   MCPAREA
+                                   SPAAREA
+                                   LINKAREA
+                                   SCRAREA
       *
-           MOVE    "O05"                TO  SPA-MOTOPG
-           MOVE    "O99"                TO  SPA-SAKIPG
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-WORK        TO  SPA-O01KYOUTU
       *
-           MOVE    "NEW"                TO  MCP-PUTTYPE
-           MOVE    "O99"                TO  MCP-WINDOW
+      *
+           MOVE    "B01"           TO  MCP-WIDGET
+      *
+           MOVE    "O05"           TO  SPA-MOTOPG
+           MOVE    "O99"           TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"           TO  MCP-PUTTYPE
+           MOVE    "O99"           TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *
-           MOVE    1                    TO  FLG-END
+           MOVE    1               TO  FLG-END
            .
        490-KAKUNIN-EXT.
            EXIT.

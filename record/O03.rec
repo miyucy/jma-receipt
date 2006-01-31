@@ -426,5 +426,9 @@ O03	{
 			count	int;
 			item	varchar(25)[05];
 		};
+		LBLMSG	{
+			style   varchar(20);
+			value	varchar(100);
+		};
 	};
 };

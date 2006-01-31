@@ -1,7 +1,7 @@
 O99	{
 	fixed6	{
 		MSG	{
-			value	varchar(80);
+			value	varchar(100);
 		};
 		scrolledwindow28	{
 			JOBKANRILST	{
@@ -14,8 +14,8 @@ O99	{
 					value2	varchar(8);
 					value3	varchar(8);
 					value4	varchar(100);
-				}	[2];
-				select	bool[2];
+				}	[5];
+				select	bool[5];
 			};
 		};
 		B12	{

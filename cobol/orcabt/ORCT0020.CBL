@@ -60,6 +60,7 @@
            03  STS-TEIKIERR                PIC X(02).
       *
        01  FLG-AREA.
+           03  FLG-ERR                     PIC 9(01).
            03  FLG-END                     PIC 9(01).
            03  FLG-SYSKANRI                PIC 9(01).
            03  FLG-PTINF                   PIC 9(01).
@@ -78,7 +79,6 @@
       *    一時領域
        01  WRK-AREA.
            03  WRK-DBPATH                  PIC X(100).
-           03  WRK-TEIKIERR                PIC X(200).
       *
            03  WRK-YMD.
                05  WRK-YY                  PIC 9(04).
@@ -99,14 +99,22 @@
                    07  SRH-1041-KBNCDL     PIC X(02).
                    07  SRH-1041-JYOTAIL    PIC X(01).
       *
-       01  ERR-MES-AREA.
-           03  ERR-MES01                   PIC X(100)    VALUE
+       01  ERR-EDIT-AREA.
+           03  ERR-WARNING                 PIC 9(01).
+           03  ERR-PTID                    PIC 9(10).
+           03  ERR-PTNUM                   PIC X(20).
+           03  ERR-ERRCD                   PIC X(04).
+           03  ERR-ERRMSG                  PIC X(80).
+           03  ERR-HEN-ERRMSG              PIC X(80).
+      *
+       01  ERR-MSG-AREA.
+           03  ERR-MSG01                   PIC X(100)    VALUE
                "出力順の取得に失敗しました".
-           03  ERR-MES02                   PIC X(100)    VALUE
+           03  ERR-MSG02                   PIC X(100)    VALUE
                "収納情報の取得に失敗しました".
-           03  ERR-MES03                   PIC X(100)    VALUE
+           03  ERR-MSG03                   PIC X(100)    VALUE
                "患者定期請求情報の取得に失敗しました".
-           03  ERR-MES04                   PIC X(100)    VALUE
+           03  ERR-MSG04                   PIC X(100)    VALUE
                "処理対象のデータがありませんでした".
       *
            COPY    "MCPAREA".
@@ -213,6 +221,7 @@
       *
            INITIALIZE                  CNT-AREA
                                        WRK-AREA
+                                       ERR-EDIT-AREA
       *
       *
            UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
@@ -333,7 +342,7 @@
            WHEN    "04"
                MOVE    "TEIKIPRT-KEY5" TO  WRK-DBPATH
            WHEN    OTHER
-                MOVE  ERR-MES01        TO  WRK-TEIKIERR
+                MOVE  "0001"           TO  ERR-ERRCD
                 PERFORM 500-ERR-HENSYU-SEC
            END-EVALUATE
       *
@@ -458,7 +467,7 @@
       *
            PERFORM 900-SYUNOU-KEY-SEL-SEC
            IF    ( FLG-SYUNOU      NOT =   ZERO )
-                MOVE  ERR-MES02        TO  WRK-TEIKIERR
+                MOVE  "0002"           TO  ERR-ERRCD
                 PERFORM 500-ERR-HENSYU-SEC
            END-IF
       *
@@ -475,7 +484,7 @@
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  PTTEIKIRRK-REC
            ELSE
-               MOVE    ERR-MES03       TO  WRK-TEIKIERR
+                MOVE  "0003"           TO  ERR-ERRCD
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
       *
@@ -592,24 +601,28 @@
       *****************************************************************
        500-ERR-HENSYU-SEC              SECTION.
       *
+           PERFORM 800-GET-ERRMSG-SEC
+      *
            OPEN    OUTPUT              TEIKIERR-FILE
       *
-           MOVE    WRK-TEIKIERR    TO  TEIKIERR-REC
+           MOVE    ERR-ERRMSG      TO  TEIKIERR-REC
            WRITE   TEIKIERR-REC
            CLOSE   TEIKIERR-FILE
       *
-      *    ジョブ管理開始処理
+      *    ジョブ管理終了処理
            MOVE    "JBE"           TO  SJOBKANRI-MODE
+      *
            INITIALIZE                  JOBKANRI-REC
            MOVE    TEIKI2P-JOBID   TO  JOB-JOBID
-           MOVE    TEIKI2P-SHELLID TO  JOB-SHELLID
-           MOVE    WRK-TEIKIERR    TO  JOB-YOBI
-           MOVE    "9999"          TO  JOB-ERRCD
+           MOVE    TEIKI2P-SHELLID
+                                   TO  JOB-SHELLID
+           MOVE    ERR-ERRMSG      TO  JOB-YOBI
+           MOVE    ERR-ERRCD       TO  JOB-ERRCD
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
       *
-           MOVE    1               TO  FLG-END
+           MOVE    1               TO  FLG-ERR
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
@@ -621,12 +634,31 @@
            EXIT.
       *
       *****************************************************************
+      *    エラーメッセージ取得処理
+      *****************************************************************
+       800-GET-ERRMSG-SEC              SECTION.
+      *
+           EVALUATE    ERR-ERRCD
+           WHEN    "0001"
+               MOVE    ERR-MSG01       TO  ERR-ERRMSG
+           WHEN    "0002"
+               MOVE    ERR-MSG02       TO  ERR-ERRMSG
+           WHEN    "0003"
+               MOVE    ERR-MSG03       TO  ERR-ERRMSG
+           WHEN    "0004"
+               MOVE    ERR-MSG04       TO  ERR-ERRMSG
+           END-EVALUATE
+      *
+           .
+       800-GET-ERRMSG-EXT.
+           EXIT.
+      *****************************************************************
       *    終了処理
       *****************************************************************
        300-TERM-SEC                SECTION.
       *
            IF    ( CNT-OUT1            =   ZERO  )
-               MOVE    ERR-MES04       TO  WRK-TEIKIERR
+                MOVE  "0004"           TO  ERR-ERRCD
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
       *

@@ -128,23 +128,37 @@
       *
       *    一時領域
        01  WRK-AREA.
-           03  WRK-TEIKIERR                PIC X(200).
            03  WRK-STR                     PIC X(200).
            03  WRK-LEN                     PIC 9(05).
            03  WRK-SHO                     PIC 9(05).
            03  WRK-AMARI                   PIC 9(05).
            03  WRK-KUGIRI                  PIC X(02).
            03  WRK-PTID                    PIC 9(10).
+           03  WRK-SHELLMSG-G.
+               05  WRK-KBTMSG              PIC X(06).
+               05  WRK-MONMSG              PIC X(06).
+               05  WRK-SHELLMSG            PIC X(100).
+           03  WRK-YMD.
+               05  WRK-YY                  PIC X(04).
+               05  WRK-MM                  PIC X(02).
+               05  WRK-DD                  PIC X(02).
+           03  WRK-EDTYMD-G.
+               05  WRK-EDTYMD1             PIC X(10).
+               05  WRK-EDTYMD3             PIC X(22).
       *
        01  ERR-EDIT-AREA.
+           03  ERR-WARNING                 PIC 9(01).
            03  ERR-PTID                    PIC 9(10).
            03  ERR-PTNUM                   PIC X(20).
+           03  ERR-ERRCD                   PIC X(04).
            03  ERR-ERRMSG                  PIC X(80).
            03  ERR-HEN-ERRMSG              PIC X(80).
       *
-       01  ERR-MES-AREA.
-           03  ERR-MES01                   PIC X(100)    VALUE
+       01  ERR-MSG-AREA.
+           03  ERR-MSG01                   PIC X(100)    VALUE
                "患者定期請求履歴データの取得に失敗しました".
+           03  ERR-MSG88                   PIC X(100)    VALUE
+               "キャンセルしました".
       *
            COPY    "MCPAREA".
       *
@@ -180,6 +194,13 @@
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
+      *
+      *    日付変換サブ
+           COPY    "CPORCSDAY.INC".
+           COPY    "CPORCSLNK.INC".
+      *
+      *    定期請求サブ
+           COPY    "CPORCSTEIKI01.INC".
       *
       *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
@@ -236,6 +257,7 @@
                                        CNT-AREA
                                        WRK-AREA
                                        SPA-AREA
+                                       ERR-EDIT-AREA
       *
            UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
                                        INTO    TEIKI1P-ARG1
@@ -248,8 +270,13 @@
                                                TEIKI1P-SHELLID
                                                TEIKI1P-HOSPID
                                                TEIKI1P-ERRFILE
+                                               TEIKI1P-KBT
+                                               TEIKI1P-JOBYMD
+                                               TEIKI1P-JOBHMS
       *
            PERFORM 100-DBOPEN-SEC
+      *
+           PERFORM 1001-EDIT-SHELLMSG-SEC
       *
       *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
@@ -257,8 +284,7 @@
            MOVE    TEIKI1P-JOBID   TO  JOB-JOBID
            MOVE    TEIKI1P-SHELLID TO  JOB-SHELLID
            MOVE    "ORCT0030"      TO  JOB-PGID
-           MOVE    "収納データチェック"
-                                   TO  JOB-SHELLMSG
+           MOVE    WRK-SHELLMSG    TO  JOB-SHELLMSG
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA
                                    JOBKANRI-REC
@@ -266,13 +292,22 @@
            MOVE    ZERO            TO  FLG-END
                                        FLG-ERR
       *
+           MOVE    TEIKI1P-ERRFILE TO  TEIKIERR
+      *
+           INITIALIZE                  ORCSTEIKI01AREA
+           MOVE    TEIKI1P-JOBID   TO  STEIKI01-JOBID
+           MOVE    TEIKI1P-SHELLID TO  STEIKI01-SHELLID
+           CALL    "ORCSTEIKI01"   USING   ORCSTEIKI01AREA
+           IF    ( STEIKI01-STOP   =   1 )
+               MOVE    "8888"      TO  ERR-ERRCD
+               PERFORM 500-ERR-HENSYU-SEC
+           END-IF
+      *
            MOVE    "TEIKI003"      TO  TEIKI03PARA-FILE-ID
            MOVE    TEIKI1P-TERMID  TO  TEIKI03PARA-TERMID
       *
            MOVE    "TEIKI004"      TO  TEIKI04PARA-FILE-ID
            MOVE    TEIKI1P-TERMID  TO  TEIKI04PARA-TERMID
-      *
-           MOVE    TEIKI1P-ERRFILE TO  TEIKIERR
       *
       *    請求取消対象収納ファイル初期化
            OPEN    OUTPUT              TEIKI04CL-FILE
@@ -285,6 +320,38 @@
        100-INIT-EXT.
            EXIT.
       * 
+      *****************************************************************
+      *    シェルメッセージ編集処理
+      *****************************************************************
+       1001-EDIT-SHELLMSG-SEC          SECTION.
+      *
+           INITIALIZE                  WRK-SHELLMSG-G
+      *
+           IF    ( TEIKI1P-SYOKBN      =   "1" )
+               MOVE    TEIKI1P-SRYYM   TO  WRK-YMD
+               MOVE    "01"            TO  WRK-YMD (7:2)
+               PERFORM 800-WAREKI-HEN-SEC
+               MOVE    WRK-EDTYMD3 (11:6)  TO  WRK-MONMSG
+           END-IF
+      *
+           EVALUATE    TEIKI1P-KBT
+           WHEN    1
+               MOVE    "１期："        TO  WRK-KBTMSG
+           WHEN    2
+               MOVE    "２期："        TO  WRK-KBTMSG
+           WHEN    3
+               MOVE    "３期："        TO  WRK-KBTMSG
+           END-EVALUATE
+      *
+           STRING  WRK-MONMSG              DELIMITED   BY  SPACE
+                   WRK-KBTMSG              DELIMITED   BY  SIZE
+                   "収納データチェック"    DELIMITED   BY  SIZE
+           INTO    WRK-SHELLMSG
+           END-STRING
+      *
+           .
+       1001-EDIT-SHELLMSG-EXT.
+           EXIT.
       *****************************************************************
       *    主処理
       *****************************************************************
@@ -377,8 +444,8 @@
            PERFORM 900-PTTEIKIRRK-KEY6-SEL-SEC
            IF    ( FLG-PTTEIKIRRK  NOT =   ZERO )
                MOVE    SYU-PTID        TO  ERR-PTID
-               MOVE    ERR-MES01       TO  ERR-ERRMSG
-               PERFORM 800-ERRMSG-EDIT-SEC
+               MOVE    "0001"          TO  ERR-ERRCD
+               PERFORM 500-ERR-HENSYU-SEC
            END-IF
       *
            MOVE    SYU-HOSPID          TO  TEIKI04-HOSPID
@@ -400,29 +467,45 @@
       *****************************************************************
        500-ERR-HENSYU-SEC                SECTION.
       *
+      *
+           PERFORM 800-GET-ERRMSG-SEC
+      *
+           IF    ( ERR-PTID        NOT =   ZERO )
+               PERFORM 800-EDIT-ERRMSG-SEC
+           END-IF
+      *
            OPEN    OUTPUT              TEIKIERR-FILE
       *
-           MOVE    WRK-TEIKIERR        TO  TEIKIERR-REC
+           MOVE    ERR-ERRMSG      TO  TEIKIERR-REC
            WRITE   TEIKIERR-REC
            CLOSE   TEIKIERR-FILE
       *
-      *    ジョブ管理開始処理
-           MOVE    "JBE"               TO  SJOBKANRI-MODE
-           INITIALIZE                      JOBKANRI-REC
-           MOVE    TEIKI1P-JOBID       TO  JOB-JOBID
-           MOVE    TEIKI1P-SHELLID     TO  JOB-SHELLID
-           MOVE    WRK-TEIKIERR        TO  JOB-YOBI
-           MOVE    "9999"              TO  JOB-ERRCD
+           INITIALIZE                  JOBKANRI-REC
+           IF    ( ERR-WARNING     =   1 )
+      *        ジョブ管理終了処理
+               MOVE    "JBE"       TO  SJOBKANRI-MODE
+           ELSE
+      *        ジョブ管理キャンセル処理
+               MOVE    "CAN"       TO  SJOBKANRI-MODE
+               MOVE    2           TO  JOB-STOPFLG
+           END-IF
+      *
+           MOVE    TEIKI1P-JOBID   TO  JOB-JOBID
+           MOVE    TEIKI1P-SHELLID
+                                   TO  JOB-SHELLID
+           MOVE    ERR-ERRMSG      TO  JOB-YOBI
+           MOVE    ERR-ERRCD       TO  JOB-ERRCD
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
       *
-           MOVE    1                   TO  FLG-ERR
+           MOVE    1               TO  FLG-ERR
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
       *    プログラム終了処理
            PERFORM 990-PROGRAM-FINISH-SEC
+      *
            .
        500-ERR-HENSYU-EXT.
            EXIT.
@@ -454,9 +537,44 @@
            EXIT.
       *
       *****************************************************************
+      *    和暦変換処理
+      *****************************************************************
+       800-WAREKI-HEN-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  WRK-EDTYMD-G.
+      *
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY2-AREA
+           MOVE    "21"                TO  LNK-DAY2-IRAI
+           MOVE    WRK-YMD             TO  LNK-DAY2-YMD
+           CALL    "ORCSDAY"       USING   STS-AREA-DAY
+                                           LNK-DAY2-AREA
+           MOVE    LNK-DAY2-EDTYMD1    TO  WRK-EDTYMD1
+           MOVE    LNK-DAY2-EDTYMD3    TO  WRK-EDTYMD3
+      *
+      *
+           .
+       800-WAREKI-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    エラーメッセージ取得処理
+      *****************************************************************
+       800-GET-ERRMSG-SEC              SECTION.
+      *
+           EVALUATE    ERR-ERRCD
+           WHEN    "0001"
+               MOVE    ERR-MSG01       TO  ERR-ERRMSG
+           WHEN    "8888"
+               MOVE    ERR-MSG88       TO  ERR-ERRMSG
+           END-EVALUATE
+      *
+           .
+       800-GET-ERRMSG-EXT.
+           EXIT.
+      *****************************************************************
       *    エラーメッセージ編集処理
       *****************************************************************
-       800-ERRMSG-EDIT-SEC             SECTION.
+       800-EDIT-ERRMSG-SEC             SECTION.
       *
            MOVE    SPACE               TO  ERR-HEN-ERRMSG
 	                                   ERR-PTNUM
@@ -505,11 +623,11 @@
            INTO    ERR-HEN-ERRMSG
            END-STRING
       *
-           MOVE    ERR-HEN-ERRMSG      TO  WRK-TEIKIERR
+           MOVE    ERR-HEN-ERRMSG      TO  ERR-ERRMSG
            PERFORM 500-ERR-HENSYU-SEC
       *
            .
-       800-ERRMSG-EDIT-EXT.
+       800-EDIT-ERRMSG-EXT.
            EXIT.
       *
       *****************************************************************

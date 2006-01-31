@@ -35,15 +35,18 @@
        FILE-CONTROL.
       *
       *    エラーファイル
-           SELECT  TEIKIERR-FILE   ASSIGN  TEIKIERR
-                                   FILE    STATUS  IS  STS-TEIKIERR.
+           SELECT  TEIKIERR-FILE       ASSIGN  TEIKIERR
+                                       FILE    STATUS  IS  STS-TEIKIERR.
       *
        DATA                    DIVISION.
        FILE                    SECTION.
       *
       *    エラーファイル
        FD  TEIKIERR-FILE.
-       01  TEIKIERR-REC                    PIC X(200). 
+       01  TEIKIERR-REC.
+           03  TEIKIERR-ERRCD          PIC X(04).
+           03  TEIKIERR-WARNING        PIC 9(01).
+           03  TEIKIERR-ERRMSG         PIC X(195).
       *
        WORKING-STORAGE             SECTION.
       *
@@ -70,7 +73,6 @@
       *
       *    一時領域
        01  WRK-AREA.
-           03  WRK-TEIKIERR                PIC X(200).
            03  WRK-SHO                 PIC 9(05).
            03  WRK-AMARI               PIC 9(05).
            03  WRK-KUGIRI              PIC X(02).
@@ -85,25 +87,30 @@
            03  WRK-KBT-MSG             PIC X(04).
       *
        01  ERR-EDIT-AREA.
+           03  ERR-WARNING             PIC 9(10).
            03  ERR-PTID                PIC 9(10).
            03  ERR-PTNUM               PIC X(20).
+           03  ERR-ERRCD               PIC X(04).
            03  ERR-ERRMSG              PIC X(80).
            03  ERR-HEN-ERRMSG          PIC X(80).
       *
-       01  ERR-MES-AREA.
-           03  ERR-MES01                   PIC X(100)    VALUE
+       01  CONST-AREA.
+           03  CONST-SHELLID           PIC X(08)   VALUE   "TEIKI1".
+      *
+       01  ERR-MSG-AREA.
+           03  ERR-MSG01                   PIC X(100)    VALUE
                "定期請求印刷情報の削除に失敗しました".
-           03  ERR-MES02                   PIC X(100)    VALUE
+           03  ERR-MSG02                   PIC X(100)    VALUE
                "定期請求管理情報の削除に失敗しました".
-           03  ERR-MES03                   PIC X(100)    VALUE
+           03  ERR-MSG03                   PIC X(100)    VALUE
                "日別収納情報の削除に失敗しました".
-           03  ERR-MES04                   PIC X(100)    VALUE
+           03  ERR-MSG04                   PIC X(100)    VALUE
                "収納明細情報の削除に失敗しました".
-           03  ERR-MES05                   PIC X(100)    VALUE
+           03  ERR-MSG05                   PIC X(100)    VALUE
                "収納情報の削除に失敗しました".
-           03  ERR-MES06                   PIC X(100)    VALUE
+           03  ERR-MSG06                   PIC X(100)    VALUE
                "患者定期請求履歴情報の削除に失敗しました".
-           03  ERR-MES07                   PIC X(100)    VALUE
+           03  ERR-MSG07                   PIC X(100)    VALUE
                "定期請求履歴情報の削除に失敗しました".
       *
            COPY    "MCPAREA".
@@ -303,7 +310,7 @@
            MOVE    "del1"              TO  MCP-PATHNAME
            PERFORM 910-DBDELETE-SEC
            IF  (   MCP-RC          NOT =   ZERO )
-               MOVE    ERR-MES01       TO  WRK-TEIKIERR
+               MOVE    "0001"          TO  ERR-ERRCD
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
       *
@@ -320,7 +327,7 @@
            MOVE    "del1"              TO  MCP-PATHNAME
            PERFORM 910-DBDELETE-SEC
            IF  (   MCP-RC          NOT =   ZERO )
-               MOVE  ERR-MES02         TO  WRK-TEIKIERR
+               MOVE    "0001"          TO  ERR-ERRCD
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
       *
@@ -340,8 +347,9 @@
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBDELETE-SEC
            IF  (   MCP-RC          NOT =   ZERO )
-               MOVE    ERR-MES07       TO  ERR-ERRMSG
-               PERFORM 800-ERRMSG-EDIT-SEC
+               MOVE    ERR-MSG07       TO  ERR-ERRMSG
+               MOVE    "0007"          TO  ERR-ERRCD
+               PERFORM 500-ERR-HENSYU-SEC
            END-IF
       *
            .
@@ -363,8 +371,9 @@
            PERFORM 910-DBDELETE-SEC
            IF  (   MCP-RC          NOT =   ZERO )
                MOVE    PTTEIKIRRK-PTID TO  ERR-PTID
-               MOVE    ERR-MES03       TO  ERR-ERRMSG
-               PERFORM 800-ERRMSG-EDIT-SEC
+               MOVE    ERR-MSG03       TO  ERR-ERRMSG
+               MOVE    "0003"          TO  ERR-ERRCD
+               PERFORM 500-ERR-HENSYU-SEC
            END-IF
       *
            .
@@ -386,8 +395,9 @@
            PERFORM 910-DBDELETE-SEC
            IF  (   MCP-RC          NOT =   ZERO )
                MOVE    PTTEIKIRRK-PTID TO  ERR-PTID
-               MOVE    ERR-MES04       TO  ERR-ERRMSG
-               PERFORM 800-ERRMSG-EDIT-SEC
+               MOVE    ERR-MSG04       TO  ERR-ERRMSG
+               MOVE    "0004"          TO  ERR-ERRCD
+               PERFORM 500-ERR-HENSYU-SEC
            END-IF
       *
            .
@@ -409,8 +419,9 @@
            PERFORM 910-DBDELETE-SEC
            IF  (   MCP-RC          NOT =   ZERO )
                MOVE    PTTEIKIRRK-PTID TO  ERR-PTID
-               MOVE    ERR-MES05       TO  ERR-ERRMSG
-               PERFORM 800-ERRMSG-EDIT-SEC
+               MOVE    ERR-MSG05       TO  ERR-ERRMSG
+               MOVE    "0005"          TO  ERR-ERRCD
+               PERFORM 500-ERR-HENSYU-SEC
            END-IF
       *
            .
@@ -427,8 +438,9 @@
            PERFORM 910-DBDELETE-SEC
            IF  (   MCP-RC          NOT =   ZERO )
                MOVE    PTTEIKIRRK-PTID TO  ERR-PTID
-               MOVE    ERR-MES06       TO  ERR-ERRMSG
-               PERFORM 800-ERRMSG-EDIT-SEC
+               MOVE    ERR-MSG06       TO  ERR-ERRMSG
+               MOVE    "0006"          TO  ERR-ERRCD
+               PERFORM 500-ERR-HENSYU-SEC
            END-IF
       *
            .
@@ -437,7 +449,7 @@
       *****************************************************************
       *    エラー出力処理
       *****************************************************************
-       500-ERR-HENSYU-SEC                SECTION.
+       500-ERR-HENSYU-SEC              SECTION.
       *
            PERFORM 800-TEIKIERR-WRITE-SEC
       *
@@ -478,9 +490,18 @@
       *****************************************************************
        800-TEIKIERR-WRITE-SEC          SECTION.
       *
+           PERFORM 800-GET-ERRMSG-SEC
+      *
+           IF    ( ERR-PTID        NOT =   ZERO )
+               PERFORM 800-EDIT-ERRMSG-SEC
+           END-IF
+      *
            OPEN    OUTPUT              TEIKIERR-FILE
       *
-           MOVE    WRK-TEIKIERR        TO  TEIKIERR-REC
+           INITIALIZE                  TEIKIERR-REC
+           MOVE    ERR-ERRCD           TO  TEIKIERR-ERRCD
+           MOVE    ERR-WARNING         TO  TEIKIERR-WARNING
+           MOVE    ERR-ERRMSG          TO  TEIKIERR-ERRMSG
            WRITE   TEIKIERR-REC
            CLOSE   TEIKIERR-FILE
       *
@@ -488,9 +509,34 @@
        800-TEIKIERR-WRITE-EXT.
            EXIT.
       *****************************************************************
+      *    エラーメッセージ取得処理
+      *****************************************************************
+       800-GET-ERRMSG-SEC              SECTION.
+      *
+           EVALUATE    ERR-ERRCD
+           WHEN    "0001"
+               MOVE    ERR-MSG01       TO  ERR-ERRMSG
+           WHEN    "0002"
+               MOVE    ERR-MSG02       TO  ERR-ERRMSG
+           WHEN    "0003"
+               MOVE    ERR-MSG03       TO  ERR-ERRMSG
+           WHEN    "0004"
+               MOVE    ERR-MSG04       TO  ERR-ERRMSG
+           WHEN    "0005"
+               MOVE    ERR-MSG05       TO  ERR-ERRMSG
+           WHEN    "0006"
+               MOVE    ERR-MSG06       TO  ERR-ERRMSG
+           WHEN    "0007"
+               MOVE    ERR-MSG07       TO  ERR-ERRMSG
+           END-EVALUATE
+      *
+           .
+       800-GET-ERRMSG-EXT.
+           EXIT.
+      *****************************************************************
       *    エラーメッセージ編集処理
       *****************************************************************
-       800-ERRMSG-EDIT-SEC             SECTION.
+       800-EDIT-ERRMSG-SEC             SECTION.
       *
            MOVE    SPACE               TO  ERR-HEN-ERRMSG
 	                                   ERR-PTNUM
@@ -539,11 +585,10 @@
            INTO    ERR-HEN-ERRMSG
            END-STRING
       *
-           MOVE    ERR-HEN-ERRMSG      TO  WRK-TEIKIERR
-           PERFORM 500-ERR-HENSYU-SEC
+           MOVE    ERR-HEN-ERRMSG      TO  ERR-ERRMSG
       *
            .
-       800-ERRMSG-EDIT-EXT.
+       800-EDIT-ERRMSG-EXT.
            EXIT.
       *
       *****************************************************************

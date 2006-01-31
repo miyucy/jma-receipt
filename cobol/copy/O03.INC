@@ -54,3 +54,5 @@
                   05  O03-VALUE   PIC X(25).
                 04  O03-PRTJYUN-COUNT  PIC S9(9)   BINARY.
                 04  O03-PRTJYUNLST     PIC X(25)   OCCURS  5 TIMES.
+              03  O03-LBLMSG-STYLE PIC X(20).
+              03  O03-LBLMSG      PIC X(100).

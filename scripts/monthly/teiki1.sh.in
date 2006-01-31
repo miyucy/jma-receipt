@@ -25,6 +25,9 @@ fi
 #        $8 SHELLID
 #        $9 HOSPID
 #        ${10} エラーファイル
+#        ${11}処理対象の期別
+#        ${12}処理日
+#        ${13}処理時間
 #-------------------------------------------#
 
 ERR_FILE=${10}
@@ -39,25 +42,25 @@ ERR_FILE=${10}
         rm  /var/tmp/TEIKI*
 
 ##   -- ORCT0010 START --  
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCT0010 -parameter "$1,$2,$3,$4,$5,$6,$7,$8,$9,${10}"
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCT0010 -parameter "$1,$2,$3,$4,$5,$6,$7,$8,$9,${10},${11},${12},${13}"
         if  [ -e $ERR_FILE ]; then
             exit  
         fi
 
 ##   -- ORCT0030 START --  
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCT0030 -parameter "$1,$2,$3,$4,$5,$6,$7,$8,$9,${10}"
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCT0030 -parameter "$1,$2,$3,$4,$5,$6,$7,$8,$9,${10},${11},${12},${13}"
         if  [ -e $ERR_FILE ]; then
             exit  
         fi 
 
 ##   -- ORCT0060 START --  
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCT0060 -parameter "$1,$2,$3,$4,$5,$6,$7,$8,$9,${10}"
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCT0060 -parameter "$1,$2,$3,$4,$5,$6,$7,$8,$9,${10},${11},${12},${13}"
         if  [ -e $ERR_FILE ]; then
             exit  
         fi 
 
 ##   -- ORCT0040 START --  
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCT0040 -parameter "$1,$2,$3,$4,$5,$6,$7,$8,$9,${10}"
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCT0040 -parameter "$1,$2,$3,$4,$5,$6,$7,$8,$9,${10},${11},${12},${13}"
         if  [ -e $ERR_FILE ]; then
             $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCT0050 -parameter "$7,$8,${10}"
             exit  

@@ -42,7 +42,10 @@
       *
       *    エラーファイル
        FD  TEIKIERR-FILE.
-       01  TEIKIERR-REC                PIC X(200). 
+       01  TEIKIERR-REC.
+           03  TEIKIERR-ERRCD          PIC X(04).
+           03  TEIKIERR-WARNING        PIC 9(01).
+           03  TEIKIERR-ERRMSG         PIC X(195).
       *
        WORKING-STORAGE             SECTION.
       *
@@ -79,9 +82,6 @@
            COPY    "MCPAREA".
       *
            COPY    "COMMON-SPA".
-      *
-      *    定期請求一括処理パラメータ
-           COPY    "CPTEIKI1PARA.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -160,13 +160,20 @@
                READ    TEIKIERR-FILE
       *
       *        ジョブ管理開始処理
-               MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
-               MOVE    WRK-PARA-JOBID   TO  JOB-JOBID
+               IF    ( TEIKIERR-WARNING    =   1 )
+      *            ジョブ管理終了処理
+                   MOVE    "JBE"       TO  SJOBKANRI-MODE
+               ELSE
+      *            ジョブ管理キャンセル処理
+                   MOVE    "CAN"       TO  SJOBKANRI-MODE
+                   MOVE    2           TO  JOB-STOPFLG
+               END-IF
+               MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
                MOVE    WRK-PARA-SHELLID
                                        TO  JOB-SHELLID
-               MOVE    TEIKIERR-REC    TO  JOB-YOBI
-               MOVE    "9999"          TO  JOB-ERRCD
+               MOVE    TEIKIERR-ERRMSG TO  JOB-YOBI
+               MOVE    TEIKIERR-ERRCD  TO  JOB-ERRCD
                CALL    "ORCSJOB"       USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC

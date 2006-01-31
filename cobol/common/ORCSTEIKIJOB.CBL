@@ -42,6 +42,7 @@
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
+           03  FLG-SYSKANRI            PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -55,10 +56,14 @@
        01  CONST-AREA.
            03  CONST-SHELLID-TEIKI1    PIC X(08)   VALUE   "TEIKI1".
            03  CONST-SHELLID-TEIKI3    PIC X(08)   VALUE   "TEIKI3".
+           03  CONST-3003-KBNCD        PIC X(08)   VALUE   "033".
       *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
+      *
+           COPY    "CPSYSKANRI.INC".
+           COPY    "CPSK3003.INC".
       *
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
@@ -142,9 +147,25 @@
       *****************************************************************
        2001-TEIKI1-CHK-SEC             SECTION.
       *
-           MOVE    CONST-SHELLID-TEIKI1    TO  WRK-SHELLID
-           MOVE    1                       TO  WRK-JOBID
-           PERFORM 2001-ORCSJOB-SEC
+      *    ジョブ管理チェック
+           INITIALIZE                      SYS-3003-REC
+           MOVE    "3003"              TO  SYS-3003-KANRICD
+           MOVE    CONST-3003-KBNCD    TO  SYS-3003-KBNCD
+           MOVE    ZERO                TO  SYS-3003-STYUKYMD
+           MOVE    ALL "9"             TO  SYS-3003-EDYUKYMD
+           MOVE    SYS-3003-REC        TO  SYSKANRI-REC
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           IF    ( FLG-SYSKANRI        =   ZERO )
+               MOVE    SYSKANRI-REC    TO  SYS-3003-REC
+               PERFORM VARYING IDX0    FROM    1   BY  1
+                       UNTIL ( IDX0    >   SYS-3003-JOBID )
+                        OR   ( STEIKIJOB-ERRCD NOT =   SPACE )
+                   MOVE    CONST-SHELLID-TEIKI1
+                                       TO  WRK-SHELLID
+                   MOVE    IDX0        TO  WRK-JOBID
+                   PERFORM 2001-ORCSJOB-SEC
+               END-PERFORM
+           END-IF
       *
            .
        2001-TEIKI1-CHK-EXT.
@@ -219,7 +240,7 @@
            END-STRING
       *
            .
-       20011-HEN-EXT.
+       20011-ERRMES-HEN-EXT.
            EXIT.
       *****************************************************************
       *    終了処理
@@ -229,4 +250,88 @@
       *
            .
        300-END-EXT.
+           EXIT.
+      *****************************************************************
+      *    システム管理検索処理(KEY10)
+      *****************************************************************
+       900-SYSKANRI-KEY10-SEL-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYSKANRI
+      *
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYSKANRI-REC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+               INITIALIZE                  SYSKANRI-REC
+           END-IF
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       900-SYSKANRI-KEY10-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ検索処理（FHETCHも行う)
+      *****************************************************************
+       910-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF    ( MCP-RC          =   ZERO )
+               PERFORM 910-DBFETCH-SEC
+           END-IF
+      *
+           .
+      *
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ検索処理（FHETCHは行わない)
+      *****************************************************************
+       911-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       911-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ読み込み処理
+      *****************************************************************
+       910-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       910-DBFETCH-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢクローズ処理
+      *****************************************************************
+       910-DBCLOSECURSOR-SEC           SECTION.
+      *
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       910-DBCLOSECURSOR-EXT.
            EXIT.

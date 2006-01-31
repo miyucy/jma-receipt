@@ -119,10 +119,13 @@
            03  FLG-END                 PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-HAITA               PIC 9(01).
+           03  FLG-STOP                PIC 9(01).
+           03  FLG-RUN                 PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
            03  CNT-ERR                 PIC 9(06).
+           03  CNT-UPDCNT              PIC 9(06).
       *
       *    添字領域
        01  IDX-AREA.
@@ -137,6 +140,11 @@
       *
       *    一時領域
        01  WRK-AREA.
+           03  WRK-KBT-G.
+               05  WRK-KBT9            PIC 9(01).
+               05  WRK-KBTR   REDEFINES    WRK-KBT9.
+                   07  WRK-KBTX        PIC X(01).
+           03  WRK-JOBID               PIC 9(07).
            03  WRK-TEIKIERR            PIC X(200).
            03  WRK-SRYYM               PIC X(06).
            03  WRK-SRYYM-MOT           PIC X(06).
@@ -172,6 +180,8 @@
                    07  WRK-MM          PIC X(02).
                    07  WRK-DOT2        PIC X(01)   VALUE   ".".
                    07  WRK-SS          PIC X(02).
+           03  WRK-JOBYMD              PIC X(08).
+           03  WRK-JOBHMS              PIC X(06).
       *              
        01  WRK-SHELL-NAME.
            05  FILLER                  PIC X(16) VALUE
@@ -181,12 +191,14 @@
       *
        01  CONST-AREA.
       *    ジョブ管理ＤＢのキー値
-           03  CONST-JOB-SHELLID       PIC X(08)   VALUE   "TEIKI1".
-           03  CONST-JOB-JOBID         PIC 9(07)   VALUE   1.
+           03  CONST-SHELLID           PIC X(08)   VALUE   "TEIKI1".
       *
-           03  CONST-JOB-SHELLID-RECEPT1
+           03  CONST-SHELLID-RECEPT1
                                        PIC X(08)   VALUE   "RECEPT1".
-           03  CONST-JOB-JOBID-RECEPT1 PIC 9(07)   VALUE   1.
+           03  CONST-JOBID-RECEPT1     PIC 9(07)   VALUE   1.
+           03  CONST-3003-KBNCD        PIC X(08)   VALUE   "033".
+      *
+           COPY    "CPTEIKI1BTPARA.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -194,6 +206,8 @@
       *
       *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
+      *
+           COPY    "CPSK3003.INC".
       *
       *    請求管理マスタ
            COPY    "CPSK5010.INC".
@@ -204,6 +218,10 @@
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
+      *
+      *    パラメタ
+       01  BTPARA-REC.
+           COPY    "CPBTPARA.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -819,15 +837,30 @@
        210-BACK                    SECTION.
       *
       *    ジョブ管理チェック処理
-           MOVE    "CHK"           TO  SJOBKANRI-MODE
-           PERFORM 800-ORCSJOB-SEC
-           IF      SJOBKANRI-RETURN
-                                   =   ZERO
-               IF      JOB-ENDYMD      =   SPACE
-      *********AND     JOB-TERMID      =   SPA-TERMID
-                   MOVE    "6666"          TO  SPA-OIDCD
-                   GO  TO  210-BACK-EXT
-               END-IF
+           INITIALIZE                      SYS-3003-REC
+           MOVE    "3003"              TO  SYS-3003-KANRICD
+           MOVE    CONST-3003-KBNCD    TO  SYS-3003-KBNCD
+           MOVE    SPA-SYSYMD          TO  SYS-3003-STYUKYMD
+                                           SYS-3003-EDYUKYMD
+           MOVE    SYS-3003-REC        TO  SYSKANRI-REC
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           IF    ( FLG-SYSKANRI        =   ZERO )
+               MOVE    SYSKANRI-REC    TO  SYS-3003-REC
+               PERFORM VARYING IDX4    FROM    1   BY  1
+                       UNTIL ( IDX4    >   SYS-3003-JOBID )
+      *
+      *            ジョブ管理チェック処理
+                   MOVE    "CHK"           TO  SJOBKANRI-MODE
+                   MOVE    IDX4            TO  WRK-JOBID
+                   PERFORM 800-ORCSJOB-SEC
+                   IF    ( SJOBKANRI-RETURN
+                                       =   ZERO )
+                       IF    ( JOB-ENDYMD      =   SPACE )
+                           MOVE    "6666"          TO  SPA-OIDCD
+                           GO  TO  210-BACK-EXT
+                       END-IF
+                   END-IF
+               END-PERFORM
            END-IF
       *
            PERFORM 210-BACK-SYORI-SEC
@@ -1050,8 +1083,8 @@
       *    ジョブ管理チェック処理
            MOVE    "CHK"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
-           MOVE    CONST-JOB-JOBID-RECEPT1     TO  JOB-JOBID
-           MOVE    CONST-JOB-SHELLID-RECEPT1   TO  JOB-SHELLID
+           MOVE    CONST-JOBID-RECEPT1     TO  JOB-JOBID
+           MOVE    CONST-SHELLID-RECEPT1   TO  JOB-SHELLID
            MOVE    SPA-TERMID          TO  JOB-TERMID
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA 
@@ -1095,16 +1128,18 @@
       *    新規分作成のとき定期請求指示コード更新
            EVALUATE SPA-GMN-IKKATU
            WHEN    "T"
+      *
                PERFORM 4501-SYS5011-HEN-SEC
                IF    ( SPA-ERRCD       NOT =   SPACE )
                    GO  TO  450-KOUSHIN-EXT
                END-IF
       *
-      *        ジョブ開始セット
-               MOVE    "DEL"           TO  SJOBKANRI-MODE
-               PERFORM 800-ORCSJOB-SEC
+               PERFORM 4501-SYS3003-DEL-SEC
       *
-               MOVE    "JBS"           TO  SJOBKANRI-MODE
+               PERFORM 4501-BTPARA-DEL-SEC
+      *
+      *        ジョブ開始セット
+               MOVE    "ALL"           TO  SJOBKANRI-MODE
                PERFORM 800-ORCSJOB-SEC
       *
                MOVE    "TEIKIERR"          TO  TEIKIERR-FILE-ID
@@ -1126,42 +1161,87 @@
                MOVE    SPA-NAI-SRYYM   TO  WRK-SHELL-SRYYM
                MOVE    SPA-TERMID      TO  WRK-SHELL-TERMID
                MOVE    SPA-SYSYMD      TO  WRK-SHELL-SYSYMD
-               MOVE    WRK-SHELL-ARG1  TO  SHELLTBL-ARG1
-               MOVE    "1"             TO  SHELLTBL-ARG2
       *
-               PERFORM VARYING IDX0    FROM    1   BY  1
-                       UNTIL ( IDX0    >   3 )
-                  MOVE    SPA-NAI-KIKANST (IDX0)
-                                       TO  WRK-SHELL-KIKAN-ST (IDX0)
-                   MOVE   SPA-NAI-KIKANED (IDX0)
-                                       TO  WRK-SHELL-KIKAN-ED (IDX0)
-                   IF    ( SPA-GMN-CHK-KIKAN (IDX0)    =   "T" )
-                       MOVE    "1"     TO  WRK-SHELL-KIKAN-KBN(IDX0)
-                   ELSE
-                       MOVE    SPACE   TO  WRK-SHELL-KIKAN-KBN(IDX0)
+               MOVE    ZERO            TO  WRK-JOBID
+      *
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD    TO  WRK-JOBYMD
+               MOVE    SMCNDATE-HMS    TO  WRK-JOBHMS
+      *
+               PERFORM VARYING IDX3    FROM    1   BY  1
+                       UNTIL ( IDX3    >   3 )
+      *
+                   IF    ( SPA-GMN-CHK-KIKAN (IDX3)    =   "T" )
+      *
+                       MOVE    "JBS"           TO  SJOBKANRI-MODE
+                       COMPUTE WRK-JOBID   =   WRK-JOBID   +   1
+                       PERFORM 800-ORCSJOB-SEC
+      *
+                       MOVE    IDX3    TO  WRK-KBT9
+                       PERFORM 4501-BTPARA-INS-SEC
+                       IF    ( SPA-ERRCD   NOT =   SPACE )
+                           GO  TO  450-KOUSHIN-EXT
+                       END-IF
+      *
+                       INITIALIZE              WRK-SHELL-KIKAN-TBL
+                       MOVE    "1"         TO  WRK-SHELL-KIKAN-KBN(IDX3)
+      *
+                       PERFORM VARYING IDX0    FROM    1   BY  1
+                               UNTIL ( IDX0    >   3 )
+                           MOVE    SPA-NAI-KIKANST (IDX0)
+                                           TO  WRK-SHELL-KIKAN-ST (IDX0)
+                           MOVE    SPA-NAI-KIKANED (IDX0)
+                                           TO  WRK-SHELL-KIKAN-ED (IDX0)
+                           IF    ( SPA-GMN-CHK-KIKAN (IDX0)    =   "T" )
+                               MOVE    "1" TO  WRK-SHELL-KIKAN-KBN(IDX0)
+                           ELSE
+                               MOVE    SPACE
+                                           TO  WRK-SHELL-KIKAN-KBN(IDX0)
+                           END-IF
+                       END-PERFORM
+      *
+                       MOVE    WRK-SHELL-ARG1
+                                           TO  SHELLTBL-ARG1
+                       MOVE    "1"         TO  SHELLTBL-ARG2
+      *
+                       MOVE    WRK-SHELL-KIKAN-OCC (1)
+                                           TO  SHELLTBL-ARG3
+                       MOVE    WRK-SHELL-KIKAN-OCC (2)
+                                           TO  SHELLTBL-ARG4
+                       MOVE    WRK-SHELL-KIKAN-OCC (3)
+                                           TO  SHELLTBL-ARG5
+                       MOVE    SPA-NAI-DENPPRTYMD
+                                           TO  SHELLTBL-ARG6
+                       MOVE    WRK-JOBID
+                                           TO  SHELLTBL-ARG7
+                       MOVE    CONST-SHELLID
+                                           TO  SHELLTBL-ARG8
+                       MOVE    SPA-HOSPID
+                                           TO  SHELLTBL-ARG9
+                       MOVE    TEIKIERR    TO  SHELLTBL-ARG10
+      *
+                       MOVE    IDX3        TO  WRK-KBT9
+                       MOVE    WRK-KBTX    TO  SHELLTBL-ARG11
+                       MOVE    WRK-JOBYMD  TO  SHELLTBL-ARG12
+                       MOVE    WRK-JOBHMS  TO  SHELLTBL-ARG13
+      *
+                       MOVE    SHELLTBL    TO  MCPDATA-REC
+                       MOVE    "SHELL"     TO  MCP-FUNC
+                       MOVE    PATH-SHELL-SHELL
+                                           TO  MCP-PATH
+      *
+                       CALL    "MCPSUB"        USING
+                                               MCPAREA
+                                               MCPDATA-REC
                    END-IF
                END-PERFORM
       *
-               MOVE    WRK-SHELL-KIKAN-OCC (1)
-                                       TO  SHELLTBL-ARG3
-               MOVE    WRK-SHELL-KIKAN-OCC (2)
-                                       TO  SHELLTBL-ARG4
-               MOVE    WRK-SHELL-KIKAN-OCC (3)
-                                       TO  SHELLTBL-ARG5
-               MOVE    SPA-NAI-DENPPRTYMD
-                                       TO  SHELLTBL-ARG6
-               MOVE    CONST-JOB-JOBID TO  SHELLTBL-ARG7
-               MOVE    CONST-JOB-SHELLID
-                                       TO  SHELLTBL-ARG8
-               MOVE    SPA-HOSPID      TO  SHELLTBL-ARG9
-               MOVE    TEIKIERR        TO  SHELLTBL-ARG10
-               MOVE    SHELLTBL        TO  MCPDATA-REC
-               MOVE    "SHELL"         TO  MCP-FUNC
-               MOVE    PATH-SHELL-SHELL
-                                       TO  MCP-PATH
-               CALL    "MCPSUB"        USING
-                                           MCPAREA
-                                           MCPDATA-REC
+      *        ＪＯＢＩＤ更新処理
+               PERFORM 45012-JOBID-UPD-SEC
+               IF    ( SPA-ERRCD       NOT =   SPACE )
+                   GO  TO  450-KOUSHIN-EXT
+               END-IF
+      *
       *        情報確認画面を表示
                PERFORM 490-KAKUNIN-SEC
            WHEN    OTHER
@@ -1172,6 +1252,45 @@
        450-KOUSHIN-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    ＪＯＢＩＤ更新処理
+      *****************************************************************
+       45012-JOBID-UPD-SEC             SECTION.
+      *
+           INITIALIZE                      SYS-3003-REC
+           MOVE    "3003"              TO  SYS-3003-KANRICD
+           MOVE    CONST-3003-KBNCD    TO  SYS-3003-KBNCD
+           MOVE    SPA-SYSYMD          TO  SYS-3003-STYUKYMD
+                                           SYS-3003-EDYUKYMD
+           MOVE    SYS-3003-REC        TO  SYSKANRI-REC
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+      *
+           INITIALIZE                      SYS-3003-REC
+           MOVE    "3003"              TO  SYS-3003-KANRICD
+           MOVE    CONST-3003-KBNCD    TO  SYS-3003-KBNCD
+           MOVE    ZERO                TO  SYS-3003-STYUKYMD
+           MOVE    ALL "9"             TO  SYS-3003-EDYUKYMD
+           MOVE    CONST-SHELLID       TO  SYS-3003-TBL-KEY
+           MOVE    WRK-JOBID           TO  SYS-3003-JOBID
+      *
+           MOVE    SYS-3003-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           IF    ( FLG-SYSKANRI        =   ZERO )
+               MOVE    "DBUPDATE"      TO  MCP-FUNC
+           ELSE
+               MOVE    "DBINSERT"      TO  MCP-FUNC
+           END-IF
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF    ( MCP-RC          NOT =   ZERO )
+               MOVE    "4001"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       45012-JOBID-UPD-EXT.
+           EXIT.
       *****************************************************************
       *    定期請求作成指示編集処理
       *****************************************************************
@@ -1211,6 +1330,72 @@
            .
       *
        4501-SYS5011-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    ジョブ実行管理削除処理
+      *****************************************************************
+       4501-SYS3003-DEL-SEC            SECTION.
+      *
+           INITIALIZE                      SYS-3003-REC
+           MOVE    "3003"              TO  SYS-3003-KANRICD
+           MOVE    CONST-3003-KBNCD    TO  SYS-3003-KBNCD
+           MOVE    SPA-SYSYMD          TO  SYS-3003-STYUKYMD
+                                           SYS-3003-EDYUKYMD
+           MOVE    SYS-3003-REC        TO  SYSKANRI-REC
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           IF  (   FLG-SYSKANRI        =   ZERO )
+               MOVE    SYSKANRI-REC    TO  MCPDATA-REC
+               MOVE    PATH-TBL-SYSKANRI-KEY   TO  MCP-PATH
+               PERFORM 910-DBDELETE-SEC
+           END-IF
+      *
+           .
+       4501-SYS3003-DEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    バッチパラメタ削除処理
+      *****************************************************************
+       4501-BTPARA-DEL-SEC            SECTION.
+      *
+           INITIALIZE                      BTPARA-REC
+           MOVE    CONST-SHELLID       TO  BTPARA-SHELLID
+           MOVE    BTPARA-REC          TO  MCPDATA-REC
+           MOVE    PATH-TBL-BTPARA-DEL1    TO  MCP-PATH
+           PERFORM 910-DBDELETE-SEC
+      *
+           .
+       4501-BTPARA-DEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    バッチパラメタ更新処理
+      *****************************************************************
+       4501-BTPARA-INS-SEC            SECTION.
+      *
+           INITIALIZE              BTPARA-REC
+                                   TEIKI1BTPARA
+           MOVE    "1"             TO  TEIKI1BT-SYOKBN
+           MOVE    SPA-NAI-SRYYM   TO  TEIKI1BT-SRYYM
+           MOVE    WRK-KBT9        TO  TEIKI1BT-KBT
+           MOVE    CONST-SHELLID   TO  BTPARA-SHELLID
+           MOVE    WRK-JOBID       TO  BTPARA-RENNUM
+           MOVE    WRK-JOBID       TO  BTPARA-JOBID
+           MOVE    TEIKI1BTPARA    TO  BTPARA-INFO-PARA
+           MOVE    SPA-TERMID      TO  BTPARA-TERMID
+           MOVE    SPA-OPID        TO  BTPARA-OPID
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD    TO  BTPARA-CREYMD
+           MOVE    SMCNDATE-YMD    TO  BTPARA-UPYMD
+           MOVE    SMCNDATE-HMS    TO  BTPARA-UPHMS
+           MOVE    BTPARA-REC      TO  MCPDATA-REC
+           MOVE    PATH-TBL-BTPARA-KEY
+                                   TO  MCP-PATH
+           PERFORM 910-DBINSERT-SEC
+           IF    ( MCP-RC      NOT =   ZERO )
+               MOVE    "4002"      TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       4501-BTPARA-INS-EXT.
            EXIT.
       *****************************************************************
       *    更新処理
@@ -1275,78 +1460,33 @@
       *    画面移行用のパラメタ
            PERFORM 45011-PARA-HENSYU-SEC
       *
-           MOVE    SPACE               TO  O99
-           MOVE    ZERO                TO  O99-COUNT
-                                           O99-PROGRESSBAR-VALUE
+           MOVE    "O01"           TO  SPA-MOTOPG
+           MOVE    SPA-O01KYOUTU   TO  SPA-WORK
+           MOVE    SPA-AREA        TO  SPA-COMMON
       *
-      *    ジョブ管理チェック処理
-           MOVE    "CHK"           TO  SJOBKANRI-MODE
-           PERFORM 800-ORCSJOB-SEC
-           IF    ( SJOBKANRI-RETURN
-                                   =   ZERO )
-               MOVE    1               TO  IDX1
-               MOVE    JOB-JOBID       TO  O99-RENNUM   (IDX1)
-               MOVE    JOB-SHELLMSG    TO  O99-SHORINM  (IDX1)
-               MOVE    "."             TO  WRK-DOT1
-                                           WRK-DOT2
-               MOVE    JOB-STARTTIME(1:2)
-                                       TO  WRK-HH
-               MOVE    JOB-STARTTIME(3:2)
-                                       TO  WRK-MM
-               MOVE    JOB-STARTTIME(5:2)
-                                       TO  WRK-SS
-               MOVE    WRK-HENTIME     TO  O99-STARTTIME(IDX1)
-               MOVE    "."             TO  WRK-DOT1
-                                           WRK-DOT2
-               MOVE    JOB-ENDTIME(1:2)
-                                       TO  WRK-HH
-               MOVE    JOB-ENDTIME(3:2)
-                                       TO  WRK-MM
-               MOVE    JOB-ENDTIME(5:2)
-                                       TO  WRK-SS
-               MOVE    WRK-HENTIME     TO  O99-ENDTIME  (IDX1)
-               MOVE    JOB-YOBI        TO  O99-ERRMSG   (IDX1)
-               IF      JOB-ENDYMD      =   SPACE
-                   MOVE    "処理中です"    TO  O99-MSG
-               ELSE
-                   IF    (  JOB-ERRCD      =   SPACE )
-                       CONTINUE
-                   ELSE
-                       STRING  JOB-YOBI    DELIMITED  BY  SPACE
-                               "【"        DELIMITED  BY  SIZE
-                              JOB-SHELLMSG DELIMITED  BY  SPACE
-                              "】"         DELIMITED  BY  SIZE      
-                                           INTO  O99-MSG
-                   END-IF                          
-               END-IF    
-               MOVE    IDX1                TO  O99-COUNT    
-           END-IF
+           MOVE    "LINK"          TO  MCP-STATUS
+           MOVE    SPACE           TO  MCP-EVENT
       *
-           MOVE    WIDGET-INSENSITIVE   TO  O99-B12-STATE
-           IF    ( O99-MSG              =   SPACE )
-               IF      O99-COUNT            >   ZERO    
-                   MOVE    WIDGET-NORMAL        TO  O99-B12-STATE
-                   MOVE    "B12"                TO  MCP-WIDGET
-                   MOVE    "処理は正常に終了しました"
-                                                TO  O99-MSG
-               ELSE
-                   MOVE    "B01"                TO  MCP-WIDGET
-                   MOVE    "該当する処理はありません"
-                                                TO  O99-MSG
-               END-IF                                 
-           ELSE                                        
-               MOVE    "B11"                TO  MCP-WIDGET
-           END-IF
+           CALL    "ORCGO99"       USING
+                                   MCPAREA
+                                   SPAAREA
+                                   LINKAREA
+                                   SCRAREA
       *
-           MOVE    "O01"                TO  SPA-MOTOPG
-           MOVE    "O99"                TO  SPA-SAKIPG
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-WORK        TO  SPA-O01KYOUTU
       *
-           MOVE    "NEW"                TO  MCP-PUTTYPE
-           MOVE    "O99"                TO  MCP-WINDOW
+           MOVE    "B01"           TO  MCP-WIDGET
+      *
+           MOVE    "O01"           TO  SPA-MOTOPG
+           MOVE    "O99"           TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"           TO  MCP-PUTTYPE
+           MOVE    "O99"           TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *
-           MOVE    1                    TO  FLG-END
+           MOVE    1               TO  FLG-END
            .
        490-KAKUNIN-EXT.
            EXIT.
@@ -1364,7 +1504,7 @@
            MOVE    "O01"               TO  SPA-MOTOPG
            MOVE    "XB01"              TO  SPA-SAKIPG
       *
-           MOVE    CONST-JOB-SHELLID   TO  SPA-JOB-SHELLID
+           MOVE    CONST-SHELLID       TO  SPA-JOB-SHELLID
       *
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
       *
@@ -1577,6 +1717,12 @@
            WHEN    "0020"
                    MOVE    "対象の期間を選択してありません"
                                            TO  SPA-ERRMSG
+           WHEN    "4001"
+                   MOVE    "システム管理の更新に失敗しました"
+                                           TO  SPA-ERRMSG
+           WHEN    "4002"
+                   MOVE    "バッチパラメタの更新に失敗しました"
+                                           TO  SPA-ERRMSG
            WHEN    "7777"
                    MOVE    WRK-TEIKIERR    TO  SPA-ERRMSG
            WHEN    "9999"
@@ -1748,8 +1894,8 @@
        800-ORCSJOB-SEC                 SECTION.
       *
            INITIALIZE                      JOBKANRI-REC
-           MOVE    CONST-JOB-JOBID     TO  JOB-JOBID
-           MOVE    CONST-JOB-SHELLID   TO  JOB-SHELLID
+           MOVE    WRK-JOBID           TO  JOB-JOBID
+           MOVE    CONST-SHELLID       TO  JOB-SHELLID
            MOVE    SPA-TERMID          TO  JOB-TERMID
            IF    ( SJOBKANRI-MODE      =   "JBS" )
                MOVE    "1"             TO  JOB-SYOKBN

@@ -52,8 +52,10 @@
                05  SYS-5012-NYUINYMD    PIC  X(08).
       *Âà±¡Æü
                05  SYS-5012-TAIINYMD    PIC  X(08).
+      *´üÊÌ
+               05  SYS-5012-KBT         PIC  X(01).
       *Í½È÷
-           03                           PIC  X(463).
+           03                           PIC  X(462).
       *Ã¼Ëö£É£Ä
            03  SYS-5012-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
