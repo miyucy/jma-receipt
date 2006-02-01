@@ -485,6 +485,7 @@
                                        ZOUSYU-NYUKIN-TOTAL
                                        ZOUSYU-NYUKIN-KAISU
                                        ZOUSYU-NYUIN-RRKNUM
+                                       ZOUSYU-DAYINFFLG
                                        ZOUSYU-TERMID
                                        ZOUSYU-OPID
                                        ZOUSYU-CREYMD
@@ -501,6 +502,7 @@
                                        GENSYU-NYUKIN-TOTAL
                                        GENSYU-NYUKIN-KAISU
                                        GENSYU-NYUIN-RRKNUM
+                                       GENSYU-DAYINFFLG
                                        GENSYU-TERMID
                                        GENSYU-OPID
                                        GENSYU-CREYMD

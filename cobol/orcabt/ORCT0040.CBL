@@ -297,6 +297,10 @@
                "定期請求管理情報の作成に失敗しました".
            03  ERR-MSG39                   PIC X(100)    VALUE
                "定期請求管理情報の更新に失敗しました".
+           03  ERR-MSG40                   PIC X(100)    VALUE
+               "収納情報の更新に失敗しました".
+           03  ERR-MSG41                   PIC X(100)    VALUE
+               "収納情報の更新に失敗しました".
            03  ERR-MSG88                   PIC X(100)    VALUE
                "キャンセルしました".
       *
@@ -884,6 +888,8 @@
       *        日別収納作成処理
                IF    ( TEIKI06-SYUDAY-EXIST-FLG    =   1 )
                    PERFORM 20031-SYUDAY-SAKUSEI-SEC
+               ELSE
+                   PERFORM 20031-SYUDAY-DELETE-SEC
                END-IF
       *
       *        患者定期請求履歴更新処理
@@ -1024,6 +1030,24 @@
       *
            .
        20031-SYUDAY-SAKUSEI-EXT.
+           EXIT.
+      *****************************************************************
+      *    日別収納削除処理
+      *****************************************************************
+       20031-SYUDAY-DELETE-SEC         SECTION.
+      *
+           INITIALIZE                  WKSYUDAY-REC
+      *
+           MOVE    SYU-HOSPID      TO  WKSDAY-HOSPID
+           MOVE    SYU-NYUGAIKBN   TO  WKSDAY-NYUGAIKBN
+           MOVE    SYU-PTID        TO  WKSDAY-PTID
+           MOVE    SYU-DENPNUM     TO  WKSDAY-DENPNUM
+      *
+      *    日別収納更新処理
+           PERFORM 900-SYUDAY-DEL-SEC
+      *
+           .
+       20031-SYUDAY-DELETE-EXT.
            EXIT.
       *****************************************************************
       *    収納明細作成処理
@@ -1303,6 +1327,8 @@
       *        日別収納作成処理
                IF    ( TEIKI09-SYUDAY-EXIST-FLG    =   1 )
                    PERFORM 20071-SYUDAY-SAKUSEI-SEC
+               ELSE
+                   PERFORM 20071-SYUDAY-DELETE-SEC
                END-IF
       *
       *        収納明細作成処理
@@ -1371,6 +1397,24 @@
       *
            .
        20071-SYUDAY-SAKUSEI-EXT.
+           EXIT.
+      *****************************************************************
+      *    日別収納削除処理
+      *****************************************************************
+       20071-SYUDAY-DELETE-SEC         SECTION.
+      *
+           INITIALIZE                  WKSYUDAY-REC
+      *
+           MOVE    SYU-HOSPID      TO  WKSDAY-HOSPID
+           MOVE    SYU-NYUGAIKBN   TO  WKSDAY-NYUGAIKBN
+           MOVE    SYU-PTID        TO  WKSDAY-PTID
+           MOVE    SYU-DENPNUM     TO  WKSDAY-DENPNUM
+      *
+      *    日別収納更新処理
+           PERFORM 900-SYUDAY-DEL-SEC
+      *
+           .
+       20071-SYUDAY-DELETE-EXT.
            EXIT.
       *****************************************************************
       *    患者定期請求履歴データ更新処理
@@ -1724,6 +1768,30 @@
       *        削除
                WHEN    2
                    PERFORM 900-SYUDAY-DEL-SEC
+      *
+                   INITIALIZE  SYUNOU-REC
+                   MOVE    SDAY-HOSPID     TO  SYU-HOSPID
+                   MOVE    SDAY-NYUGAIKBN  TO  SYU-NYUGAIKBN
+                   MOVE    SDAY-PTID       TO  SYU-PTID
+                   MOVE    SDAY-DENPNUM    TO  SYU-DENPNUM
+                   PERFORM 900-SYUNOU-KEY-SEL-SEC
+                   IF    ( FLG-SYUNOU  NOT =   ZERO )
+                       MOVE    SDAY-PTID   TO  ERR-PTID
+                       MOVE    "0040"      TO  ERR-ERRCD
+                       PERFORM 500-ERR-HENSYU-SEC
+                   END-IF
+      *
+                   MOVE    SPACE           TO  SYU-DAYINFFLG
+                   MOVE    SYUNOU-REC      TO  MCPDATA-REC
+                   MOVE    "tbl_syunou"    TO  MCP-TABLE
+                   MOVE    "key"           TO  MCP-PATHNAME
+                   PERFORM 910-DBUPDATE-SEC
+                   IF    ( MCP-RC          NOT =   ZERO )
+                       MOVE    SYU-PTID    TO  ERR-PTID
+                       MOVE    "0041"      TO  ERR-ERRCD
+                       PERFORM 500-ERR-HENSYU-SEC
+                   END-IF
+      *
                END-EVALUATE
       *
                PERFORM 910-TEIKI08-READ-SEC
@@ -2491,7 +2559,7 @@
       *****************************************************************
       *    日別収納更新処理
       *****************************************************************
-       900-SYUDAY-UPD-SEC              SECTION.
+       900-SYUDAY-UPD-SEC              SECTION.	
       *
            MOVE    WKSYUDAY-REC        TO  SYUDAY-REC
            PERFORM 400-SYUDAY-CHK-SEC
@@ -2605,6 +2673,31 @@
       *
            .
        900-TEIKIKANRI-KEY2-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    収納マスター存在チェック
+      *****************************************************************
+       900-SYUNOU-KEY-SEL-SEC          SECTION.
+      *
+           MOVE    ZERO            TO  FLG-SYUNOU
+      *
+           MOVE    SYUNOU-REC      TO  MCPDATA-REC
+           MOVE    "tbl_syunou"    TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  SYUNOU-REC
+           ELSE
+               MOVE    1           TO  FLG-SYUNOU
+               INITIALIZE              SYUNOU-REC
+           END-IF
+      *
+           MOVE    "tbl_syunou"    TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       900-SYUNOU-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理（FHETCHも行う)
