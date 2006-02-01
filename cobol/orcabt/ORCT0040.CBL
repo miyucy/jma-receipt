@@ -302,6 +302,10 @@
                "収納情報の更新に失敗しました".
            03  ERR-MSG41                   PIC X(100)    VALUE
                "収納情報の更新に失敗しました".
+           03  ERR-MSG42                   PIC X(100)    VALUE
+               "収納情報の更新に失敗しました".
+           03  ERR-MSG43                   PIC X(100)    VALUE
+               "収納情報の更新に失敗しました".
            03  ERR-MSG88                   PIC X(100)    VALUE
                "キャンセルしました".
       *
@@ -1767,9 +1771,6 @@
       *        更新
                WHEN    1
                    PERFORM 900-SYUDAY-UPD-SEC
-      *        削除
-               WHEN    2
-                   PERFORM 900-SYUDAY-DEL-SEC
       *
                    INITIALIZE  SYUNOU-REC
                    MOVE    WKSDAY-HOSPID       TO  SYU-HOSPID
@@ -1783,7 +1784,7 @@
                        PERFORM 500-ERR-HENSYU-SEC
                    END-IF
       *
-                   MOVE    SPACE           TO  SYU-DAYINFFLG
+                   MOVE    "1"             TO  SYU-DAYINFFLG
                    MOVE    SYUNOU-REC      TO  MCPDATA-REC
                    MOVE    "tbl_syunou"    TO  MCP-TABLE
                    MOVE    "key"           TO  MCP-PATHNAME
@@ -1791,6 +1792,33 @@
                    IF    ( MCP-RC          NOT =   ZERO )
                        MOVE    SYU-PTID    TO  ERR-PTID
                        MOVE    "0041"      TO  ERR-ERRCD
+                       PERFORM 500-ERR-HENSYU-SEC
+                   END-IF
+      *
+      *        削除
+               WHEN    2
+                   PERFORM 900-SYUDAY-DEL-SEC
+      *
+                   INITIALIZE  SYUNOU-REC
+                   MOVE    WKSDAY-HOSPID       TO  SYU-HOSPID
+                   MOVE    WKSDAY-NYUGAIKBN    TO  SYU-NYUGAIKBN
+                   MOVE    WKSDAY-PTID         TO  SYU-PTID
+                   MOVE    WKSDAY-DENPNUM      TO  SYU-DENPNUM
+                   PERFORM 900-SYUNOU-KEY-SEL-SEC
+                   IF    ( FLG-SYUNOU  NOT =   ZERO )
+                       MOVE    WKSDAY-PTID TO  ERR-PTID
+                       MOVE    "0042"      TO  ERR-ERRCD
+                       PERFORM 500-ERR-HENSYU-SEC
+                   END-IF
+      *
+                   MOVE    SPACE           TO  SYU-DAYINFFLG
+                   MOVE    SYUNOU-REC      TO  MCPDATA-REC
+                   MOVE    "tbl_syunou"    TO  MCP-TABLE
+                   MOVE    "key"           TO  MCP-PATHNAME
+                   PERFORM 910-DBUPDATE-SEC
+                   IF    ( MCP-RC          NOT =   ZERO )
+                       MOVE    SYU-PTID    TO  ERR-PTID
+                       MOVE    "0043"      TO  ERR-ERRCD
                        PERFORM 500-ERR-HENSYU-SEC
                    END-IF
       *
