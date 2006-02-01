@@ -649,6 +649,12 @@
       *****************************************************************
        2001-TEIKI08-HEN-SEC            SECTION.
       *
+           MOVE    TEIKI01-SYU-DAT     TO  ZOUSYUNOU-REC
+           MOVE    TEIKI01-SYUDAY-DAT  TO  ZOUSYUDAY-REC
+      *
+           MOVE    TEIKI04-SYU-DAT     TO  GENSYUNOU-REC
+           MOVE    TEIKI04-SYUDAY-DAT  TO  GENSYUDAY-REC
+      *
            EVALUATE TEIKI01-SYUDAY-EXIST-FLG
                                        ALSO    TEIKI04-SYUDAY-EXIST-FLG
       *    新日別と旧日別がともに存在し、内容が異なる場合、
