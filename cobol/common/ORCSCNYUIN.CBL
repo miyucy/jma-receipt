@@ -123,6 +123,8 @@
            03  IDX-1               PIC 9(02).
            03  IDX-2               PIC 9(02).
       *
+           03  IDX-K               PIC 9(02).
+      *
            03  IDW                 PIC 9(04).
            03  IDW2                PIC 9(04).
       *
@@ -232,6 +234,10 @@
                05  HZN-KAISU           PIC 9(03).
                05  HZN-DAY             PIC 9(02)
                                        OCCURS   31.
+      *
+      *    Æþ±¡¼è¾Ã¿ÇÎÅ²Ê
+       01  TBL-NYU-SRYKA-AREA.
+           03  TBL-NYU-SRYKA           PIC X(02)   OCCURS   10.
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -529,6 +535,22 @@
                CALL    "ORCSKARRK"         USING
                                            ORCSKARRKAREA
                                            SPA-AREA
+               IF      SKARRK-RC       NOT =   ZERO
+                   MOVE    "0005"              TO  SPA-ERRCD
+               END-IF
+               IF     (SPA-SYORIFLG        =   1  )  AND
+                      (SPA-OLD-SRYKA   NOT =   SPACE )  AND
+                      (SPA-OLD-SRYKA   NOT =   SPA-SRYKA )
+                   INITIALIZE                  ORCSKARRKAREA
+                   MOVE    SPA-SRYYMD(1:6)     TO  SKARRK-SRYYM
+                   MOVE    SPA-OLD-SRYKA       TO  SKARRK-SRYKA
+                   CALL    "ORCSKARRK"         USING
+                                               ORCSKARRKAREA
+                                               SPA-AREA
+                   IF      SKARRK-RC       NOT =   ZERO
+                       MOVE    "0005"              TO  SPA-ERRCD
+                   END-IF
+               END-IF
            END-IF
       *
       *    Âà±¡Æü¤¬¤¢¤ë»þ¡¢ºÇ½ª¼õ¿ÇÆü¤òÊÔ½¸¤¹¤ë
@@ -2385,9 +2407,28 @@
            INITIALIZE                  ORCSKARRKAREA
            MOVE    ORCSCNYUIN-YMD(1:6) TO  SKARRK-SRYYM
            MOVE    ORCSCNYUIN-TAIINYMD TO  SKARRK-LASTYMD
+           MOVE    TBL-NYU-SRYKA (01)  TO  SKARRK-SRYKA
            CALL    "ORCSKARRK"         USING
                                        ORCSKARRKAREA
                                        SPA-AREA
+           IF      SKARRK-RC       NOT =   ZERO
+               MOVE    "0005"              TO  SPA-ERRCD
+           END-IF
+      *    Âà±¡²Ê°Ê³°¤Î¿ÇÎÅ²Ê
+           PERFORM VARYING     IDX-K   FROM    2   BY  1
+                   UNTIL      (IDX-K   >   10   )  OR
+                              (SPA-ERRCD   NOT =   SPACE)  OR
+                              (TBL-NYU-SRYKA (IDX-K)  =   SPACE)
+               INITIALIZE                  ORCSKARRKAREA
+               MOVE    ORCSCNYUIN-YMD(1:6) TO  SKARRK-SRYYM
+               MOVE    TBL-NYU-SRYKA(IDX-K)    TO  SKARRK-SRYKA
+               CALL    "ORCSKARRK"         USING
+                                           ORCSKARRKAREA
+                                           SPA-AREA
+               IF      SKARRK-RC       NOT =   ZERO
+                   MOVE    "0005"              TO  SPA-ERRCD
+               END-IF
+           END-PERFORM
            .
        500-SRYKARRK-UPD-EXT.
            EXIT.
@@ -2500,6 +2541,9 @@
       *    Âà±¡½èÍý¡Ê¿ÇÎÅ²ñ·×ºï½ü¡Ë½èÍý
       *****************************************************************
        200-TAIIN-SYORI-SEC             SECTION.
+      *
+           INITIALIZE                      TBL-NYU-SRYKA-AREA
+           MOVE    ZERO                TO  IDX-K
       *    Æþ±¡ÍúÎòÈ½Äê
            MOVE    SPACE               TO  PTNYUINRRK-REC
            INITIALIZE                  PTNYUINRRK-REC
@@ -2527,6 +2571,9 @@
                                            AND     "99999999" ) AND
                       (PTNYUINRRK-TAIINYMD     =   ORCSCNYUIN-TAIINYMD)
                    MOVE    PTNYUINRRK-NYUINKA  TO  WRK-SRYKA
+                   ADD     1                   TO  IDX-K
+                   MOVE    PTNYUINRRK-NYUINKA  TO  TBL-NYU-SRYKA
+                                                           (IDX-K)
                END-IF
       *
                MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
@@ -2564,6 +2611,19 @@
                MOVE    JYURRK-SRYYMD           TO  SPA-SRYYMD
       *        ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¤Î¿ÇÎÅ²ó¿ô¤ò¥¯¥ê¥¢¤¹¤ë
                PERFORM 4500112-TEISEI-SRYACCT-SEC
+      *        ¿ÇÎÅ²ÊÊÔ½¸
+               PERFORM VARYING     IDX-K   FROM    1   BY  1
+                       UNTIL       IDX-K   >   10
+                   IF      TBL-NYU-SRYKA (IDX-K)  =   JYURRK-SRYKA
+                       MOVE    10              TO  IDX-K
+                   ELSE
+                       IF      TBL-NYU-SRYKA (IDX-K)   =   SPACE
+                           MOVE    JYURRK-SRYKA    TO  TBL-NYU-SRYKA
+                                                           (IDX-K)
+                           MOVE    10              TO  IDX-K
+                       END-IF
+                   END-IF
+               END-PERFORM
       *
       *        ¼õ¿ÇÍúÎòºï½ü
                MOVE    JYURRK-REC          TO  MCPDATA-REC
@@ -2583,15 +2643,21 @@
            MOVE    "key14"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-           MOVE    WRK-SRYKA           TO  SPA-SRYKA
-      *
            IF      ORCSCNYUIN-TAIINYMD =   SPACE OR  ALL "9"
       *        Æþ±¡¼è¾Ã¤Î»þ¡¢¿ÇÎÅ²ÊÍúÎò¤Î½¤Àµ
-               INITIALIZE                  ORCSKARRKAREA
-               MOVE    ORCSCNYUIN-YMD(1:6) TO  SKARRK-SRYYM
-               CALL    "ORCSKARRK"         USING
-                                           ORCSKARRKAREA
-                                           SPA-AREA
+               PERFORM VARYING     IDX-K   FROM    1   BY  1
+                       UNTIL      (IDX-K   >   10   )  OR
+                                  (TBL-NYU-SRYKA (IDX-K)  =   SPACE)
+                   INITIALIZE                  ORCSKARRKAREA
+                   MOVE    ORCSCNYUIN-YMD(1:6) TO  SKARRK-SRYYM
+                   MOVE    TBL-NYU-SRYKA (IDX-K)   TO  SKARRK-SRYKA
+                   CALL    "ORCSKARRK"         USING
+                                               ORCSKARRKAREA
+                                               SPA-AREA
+                   IF      SKARRK-RC       NOT =   ZERO
+                       MOVE    "0005"              TO  SPA-ERRCD
+                   END-IF
+               END-PERFORM
            ELSE
       *        Âà±¡¤Î»þ¡¢ºÇ½ª¼õ¿ÇÆü¤òÊÔ½¸¤¹¤ë
                PERFORM 500-SRYKARRK-UPD-SEC

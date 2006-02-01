@@ -154,12 +154,18 @@
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
       *
+           IF      SKARRK-SRYKA        =   SPACE
+               MOVE    SPA-SRYKA           TO  SKARRK-SRYKA
+           END-IF
+      *
       *    ¿ÇÎÅ²ÊÍúÎò½é´ü½èÍý
            PERFORM 100-SRYKA-SYOKI-SEC
-      *    »»ÄêÍúÎò¥Á¥§¥Ã¥¯½èÍý
-           PERFORM 200-SANTEIRRK-CHK-SEC
-      *    ¿ÇÎÅ²ÊÍúÎò¹¹¿·½èÍý
-           PERFORM 300-SRYKARRK-HEN-SEC
+           IF      SKARRK-RC           =   ZERO
+      *        »»ÄêÍúÎò¥Á¥§¥Ã¥¯½èÍý
+               PERFORM 200-SANTEIRRK-CHK-SEC
+      *        ¿ÇÎÅ²ÊÍúÎò¹¹¿·½èÍý
+               PERFORM 300-SRYKARRK-HEN-SEC
+           END-IF
       *
            IF      SPA-ERRCD           NOT =   SPACE
                MOVE    "¿ÇÎÅ²ÊÍúÎò¹¹¿·¥¨¥é¡¼"      TO  SKARRK-ERRMSG
@@ -181,7 +187,7 @@
            INITIALIZE                      SRYKARRK-REC
            MOVE    SPA-HOSPID          TO  KARRK-HOSPID
            MOVE    SPA-PTID            TO  KARRK-PTID
-           MOVE    SPA-SRYKA           TO  KARRK-SRYKA
+           MOVE    SKARRK-SRYKA        TO  KARRK-SRYKA
       *
            MOVE    SRYKARRK-REC        TO  MCPDATA-REC
            MOVE    "tbl_srykarrk"      TO  MCP-TABLE
@@ -203,7 +209,13 @@
                INITIALIZE                      SRYKARRK-REC
                MOVE    SPA-HOSPID          TO  KARRK-HOSPID
                MOVE    SPA-PTID            TO  KARRK-PTID
-               MOVE    SPA-SRYKA           TO  KARRK-SRYKA
+               MOVE    SKARRK-SRYKA        TO  KARRK-SRYKA
+      *        ¿ÇÎÅ²Ê¤Î»ØÄê¤¬¤Ê¤¤¾ì¹ç¡¢¿·µ¬ÅÐÏ¿¤Ï¤·¤Ê¤¤
+               IF      SKARRK-SRYKA        =   SPACE  OR  ZERO
+                   MOVE    10              TO  SKARRK-RC
+                   MOVE    "¿ÇÎÅ²Ê¤¬ÀßÄê¤µ¤ì¤Æ¤¤¤Þ¤»¤ó"
+                                           TO  SKARRK-ERRMSG
+               END-IF
            END-IF
            .
       *
@@ -282,10 +294,10 @@
                    MOVE    ZERO                TO  SANTEI-SRYKA
                WHEN    3
                    MOVE    ZERO                TO  SANTEI-NYUGAIKBN
-                   MOVE    SPA-SRYKA           TO  SANTEI-SRYKA
+                   MOVE    SKARRK-SRYKA        TO  SANTEI-SRYKA
                WHEN    4
                    MOVE    SPA-NYUGAIKBN       TO  SANTEI-NYUGAIKBN
-                   MOVE    SPA-SRYKA           TO  SANTEI-SRYKA
+                   MOVE    SKARRK-SRYKA        TO  SANTEI-SRYKA
            END-EVALUATE
       *
            MOVE    SANTEI-REC          TO  MCPDATA-REC
@@ -354,7 +366,7 @@
            INITIALIZE                      JYURRK-REC
            MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
            MOVE    SPA-PTID            TO  JYURRK-PTID
-      *****MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
+      *****MOVE    SKARRK-SRYKA        TO  JYURRK-SRYKA
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
@@ -379,7 +391,7 @@
       *
       *        ¿ÇÎÅ²ÊÍúÎò¤Ï³°Íè¤Î¤ß¤ÇºîÀ®¤¹¤ë
                IF      JYURRK-NYUGAIKBN    =   "2"
-                   IF      SPA-SRYKA       =   JYURRK-SRYKA
+                   IF      SKARRK-SRYKA        =   JYURRK-SRYKA
                        IF      WRK-LST-SRYYMD      =   SPACE
                            MOVE    JYURRK-SRYYMD   TO  WRK-LST-SRYYMD
                        END-IF
@@ -399,7 +411,7 @@
                    END-IF
       *            Æþ±¡ÍúÎò
                ELSE
-                   IF      SPA-SRYKA       =   JYURRK-SRYKA
+                   IF      SKARRK-SRYKA       =   JYURRK-SRYKA
                        IF      WRK-NYULST-SRYYMD   =   SPACE
                            MOVE    JYURRK-SRYYMD   TO  WRK-NYULST-SRYYMD
                        END-IF
@@ -559,7 +571,7 @@
       *        ¹¹¿·
                MOVE    SPA-HOSPID          TO  KARRK-HOSPID
                MOVE    SPA-PTID            TO  KARRK-PTID
-               MOVE    SPA-SRYKA           TO  KARRK-SRYKA
+               MOVE    SKARRK-SRYKA        TO  KARRK-SRYKA
       *
                MOVE    SMCNDATE-YMD        TO  KARRK-UPYMD
                MOVE    SMCNDATE-HMS        TO  KARRK-UPHMS
@@ -579,8 +591,7 @@
       *        ¿·µ¬
                MOVE    SPA-HOSPID          TO  KARRK-HOSPID
                MOVE    SPA-PTID            TO  KARRK-PTID
-               MOVE    SPA-SRYKA           TO  KARRK-SRYKA
-      *
+               MOVE    SKARRK-SRYKA        TO  KARRK-SRYKA
       *
                MOVE    SMCNDATE-YMD        TO  KARRK-CREYMD
                MOVE    SMCNDATE-YMD        TO  KARRK-UPYMD
@@ -662,7 +673,7 @@
                                MOVE    IDY2                TO  WRK-DD
                            END-IF
                        END-PERFORM
-                       IF      SPA-SRYKA       =   JYURRK-SRYKA
+                       IF      SKARRK-SRYKA        =   JYURRK-SRYKA
                            MOVE    ACCT-SRYYM      TO  WRK-SYOSINYMD-RRK
                                                                  (1:6)
                            MOVE    WRK-DD          TO  WRK-SYOSINYMD-RRK
