@@ -25,6 +25,8 @@
            03  SKARRK-SRYYM              PIC  X(06).
       *ºÇ½ª¿ÇÎÅÆü
            03  SKARRK-LASTYMD            PIC  X(08).
+      *¿ÇÎÅ²Ê
+           03  SKARRK-SRYKA              PIC  X(02).
       *Éüµ¢¥³¡¼¥É
            03  SKARRK-RC                 PIC S9(9)   BINARY.
       *¥¨¥é¡¼Ì¾¾Î
