@@ -62,7 +62,9 @@
       *                                     の追加
       *  02.06.02    NACL-藤原    05/07/25  簡単修正画面の開始日を追加
       *  02.06.03    NACL-藤原    05/08/26  労災・自賠責存在フラグを追加
+      *
       *  02.07.01    NACL-藤原    06/01/16  年齢を追加
+      *  02.07.02    NACL-藤原    06/01/26  保険組合せを増やす
       *****************************************************************
       *
        01  SPA-C02FREE.
@@ -125,13 +127,13 @@
                            11  SPA-GMN-C02-AGE         PIC X(10).
       *
                        09  SPA-GMN-C02-HKN-TBL.
-                           11  SPA-GMN-C02-HKN-TBLO    OCCURS   40.
+                           11  SPA-GMN-C02-HKN-TBLO    OCCURS   200.
                                13  SPA-GMN-C02-THKNCOMBINUM
                                                        PIC 9(04).
                                13  SPA-GMN-C02-THKNCOMBIMEI
                                                        PIC X(40).
                                13  SPA-GMN-C02-TNUM    PIC 9(04).
-                           11  SPA-GMN-C02-HKN-MAX         PIC 9(04).
+                           11  SPA-GMN-C02-HKN-MAX     PIC 9(04).
       *                 
                        09  SPA-GMN-C02-KOUMOKU.
                            11  SPA-GMN-C02-BANGO           PIC 9(05).
@@ -224,12 +226,12 @@
                        09  SPA-GMN-C02-NYUGAIKBN-MAX       PIC 9(02).
       *
                        09  SPA-GMN-C02-HKNCOMBILST-G.                         
-                           11  SPA-GMN-C02-HKNCOMBILST     OCCURS  20.
+                           11  SPA-GMN-C02-HKNCOMBILST     OCCURS  100.
                                13  SPA-GMN-C02-HKNCOMBIL   PIC X(04).
                                13  SPA-GMN-F1L             PIC X(01).
                                13  SPA-GMN-C02-HKNCOMBIMEIL
                                                            PIC X(40).    
-                       09  SPA-GMN-C02-HKNCOMBI-MAX        PIC 9(02).
+                       09  SPA-GMN-C02-HKNCOMBI-MAX        PIC 9(03).
       *                         
                        09  SPA-GMN-C02-REZEFLGLST          OCCURS  2.
                            11  SPA-GMN-C02-REZEFLGL        PIC X(01).
@@ -308,7 +310,7 @@
                            11  SPA-NAI-C02-SRYKA-OLD       PIC X(02).
       *
                        09  SPA-NAI-C02-HKN-TBL.
-                           11  SPA-NAI-C02-HKN-TBLO    OCCURS   20.
+                           11  SPA-NAI-C02-HKN-TBLO    OCCURS   100.
                                13  SPA-NAI-C02-THKNCOMBINUM PIC 9(04).
                                13  SPA-NAI-C02-THKNCOMBIMEI PIC X(40).
                                13  SPA-NAI-C02-TEKSTYMD     PIC 9(08).
@@ -581,12 +583,12 @@
                        09  SPA-GMN-C10-NYUGAIKBN-MAX       PIC 9(02).
       *
                        09  SPA-GMN-C10-HKNCOMBILST-G.                         
-                           11  SPA-GMN-C10-HKNCOMBILST     OCCURS  21.
+                           11  SPA-GMN-C10-HKNCOMBILST     OCCURS  101.
                                13  SPA-GMN-C10-HKNCOMBIL   PIC X(04).
                                13  SPA-GMN-F1L             PIC X(01).
                                13  SPA-GMN-C10-HKNCOMBIMEIL
                                                            PIC X(40).    
-                       09  SPA-GMN-C10-HKNCOMBI-MAX        PIC 9(02).
+                       09  SPA-GMN-C10-HKNCOMBI-MAX        PIC 9(03).
       *                         
                        09  SPA-GMN-C10-TENKIKBNLST         OCCURS  5.
                            11  SPA-GMN-C10-TENKIKBNL       PIC X(01).

@@ -169,8 +169,9 @@
       *
       *  02.07.01    NACL-藤原    05/10/31  MONFUNC対応
       *  02.07.02    NACL-藤原    06/01/16  年齢表示を追加
-      *  02.07.01    NACL-藤原    06/01/25  疑いフラグからの病名の編集方
+      *  02.07.03    NACL-藤原    06/01/25  疑いフラグからの病名の編集方
       *                                     法の変更
+      *  02.07.04    NACL-藤原    06/01/26  保険組合せを増やす
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1296,10 +1297,9 @@
                MOVE    1               TO  FLG-HKNCOMBI
            END-IF
       *     
-           PERFORM UNTIL       (IDX            =   20   )  OR
+           PERFORM UNTIL       (IDX            =   100  )  OR
                                (FLG-HKNCOMBI   =   1    )
       *---- (01.00.01) LINE MOD START ---------------------------------
-      **       PERFORM 3102-HKNCOMBI-SPA-SEC
                IF      COMB-DELKBN           =   SPACE
                    PERFORM 3102-HKNCOMBI-SPA-SEC
                END-IF
@@ -1316,7 +1316,7 @@
       *                                 
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       SPA-NAI-C02-HKN-MAX
-                   OR      IDY =       40
+                   OR      IDY =       200
                PERFORM 3103-HKNCOMBI-GMN-SEC
            END-PERFORM                                
            .

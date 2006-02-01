@@ -29,7 +29,7 @@ C10	{
 				value	varchar(40);
 			};
 			count	int;
-			item	varchar(40)[21];
+			item	varchar(40)[101];
 		};
 		NYUGAIKBNCOMBO	{
 			NYUGAIKBN	{
