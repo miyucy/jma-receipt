@@ -553,13 +553,6 @@
            MOVE    "PTNYUINRRK-KEY3"           TO  ORC-DBPATH
            PERFORM   910-DB-CLOSE-SEC
       *
-           PERFORM   VARYING   IDX1   FROM   1   BY   1
-             UNTIL   IDX1    >   31
-                 DISPLAY  "IDX1 = " IDX1
-                 DISPLAY  "TBL-NYUINKA(IDX1) = " TBL-NYUINKA(IDX1)
-                 DISPLAY  "TBL-HKNCOMBI(IDX1) = " TBL-HKNCOMBI(IDX1)
-           END-PERFORM
-      *
            IF      LNK-ORCHCN33SUB-SRYKA   NOT =    "00"
                PERFORM    VARYING  IDX1   FROM  1  BY  1
                           UNTIL    IDX1   >    31
