@@ -665,7 +665,7 @@
                    MOVE    1       TO      TEIKI08-UPD-FLG
                    MOVE    ZOUSYUDAY-REC
                                    TO      TEIKI08-SYUDAY-DAT
-                   MOVE    GENSDAY-DENPNUM
+                   MOVE    GENSYU-DENPNUM
                                    TO      TEIKI08-SDAY-DENPNUM
                    WRITE   TEIKI08-REC
                    COMPUTE CNT-OUT3    =   CNT-OUT3    +   1
@@ -678,7 +678,7 @@
                MOVE    1       TO      TEIKI08-UPD-FLG
                MOVE    ZOUSYUDAY-REC
                                TO      TEIKI08-SYUDAY-DAT
-               MOVE    GENSDAY-DENPNUM
+               MOVE    GENSYU-DENPNUM
                                TO      TEIKI08-SDAY-DENPNUM
                WRITE   TEIKI08-REC
                COMPUTE CNT-OUT3    =   CNT-OUT3    +   1

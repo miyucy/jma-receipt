@@ -2175,6 +2175,14 @@
                MOVE    ERR-MSG38       TO  ERR-ERRMSG
            WHEN    "0039"
                MOVE    ERR-MSG39       TO  ERR-ERRMSG
+           WHEN    "0040"
+               MOVE    ERR-MSG40       TO  ERR-ERRMSG
+           WHEN    "0041"
+               MOVE    ERR-MSG41       TO  ERR-ERRMSG
+           WHEN    "0042"
+               MOVE    ERR-MSG42       TO  ERR-ERRMSG
+           WHEN    "0043"
+               MOVE    ERR-MSG43       TO  ERR-ERRMSG
            WHEN    "8888"
                MOVE    ERR-MSG88       TO  ERR-ERRMSG
            END-EVALUATE
