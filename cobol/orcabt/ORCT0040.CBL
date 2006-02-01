@@ -135,6 +135,7 @@
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-ERR                 PIC 9(01).
+           03  FLG-WARNING             PIC 9(01).
            03  FLG-TEIKI06             PIC 9(01).
            03  FLG-TEIKI07             PIC 9(01).
            03  FLG-TEIKI08             PIC 9(01).
@@ -438,7 +439,8 @@
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-           INITIALIZE                  INDEX-AREA
+           INITIALIZE                  FLG-AREA
+                                       INDEX-AREA
                                        CNT-AREA
                                        WRK-AREA
                                        SPA-AREA
@@ -1770,13 +1772,13 @@
                    PERFORM 900-SYUDAY-DEL-SEC
       *
                    INITIALIZE  SYUNOU-REC
-                   MOVE    SDAY-HOSPID     TO  SYU-HOSPID
-                   MOVE    SDAY-NYUGAIKBN  TO  SYU-NYUGAIKBN
-                   MOVE    SDAY-PTID       TO  SYU-PTID
-                   MOVE    SDAY-DENPNUM    TO  SYU-DENPNUM
+                   MOVE    WKSDAY-HOSPID       TO  SYU-HOSPID
+                   MOVE    WKSDAY-NYUGAIKBN    TO  SYU-NYUGAIKBN
+                   MOVE    WKSDAY-PTID         TO  SYU-PTID
+                   MOVE    WKSDAY-DENPNUM      TO  SYU-DENPNUM
                    PERFORM 900-SYUNOU-KEY-SEL-SEC
                    IF    ( FLG-SYUNOU  NOT =   ZERO )
-                       MOVE    SDAY-PTID   TO  ERR-PTID
+                       MOVE    WKSDAY-PTID TO  ERR-PTID
                        MOVE    "0040"      TO  ERR-ERRCD
                        PERFORM 500-ERR-HENSYU-SEC
                    END-IF
@@ -1828,6 +1830,12 @@
                    TEIKI08-FILE
                    TEIKI09-FILE
       *
+           IF    ( CNT-TEIKI06      =   ZERO )
+            AND  ( CNT-TEIKI09      =   ZERO )
+            AND  ( CNT-TEIKI08      >   ZERO )
+               MOVE    1            TO   FLG-WARNING
+           END-IF
+      *
       *    ステップ管理終了処理
            INITIALIZE                  JOBKANRI-REC
            MOVE    TEIKI1P-JOBID   TO  JOB-JOBID
@@ -1836,8 +1844,11 @@
            COMPUTE JOB-UPDCNT
                =   CNT-TEIKI06
                +   CNT-TEIKI09
-           MOVE    "処理は正常に終了しました"
+      *
+           IF    ( FLG-WARNING     =   ZERO )
+               MOVE    "処理は正常に終了しました"
                                    TO  JOB-YOBI
+           END-IF
       *
            MOVE    "STM"           TO  SJOBKANRI-MODE
            CALL    "ORCSJOB"       USING
@@ -1851,13 +1862,9 @@
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
-      *    日別収納の単独更新のみの場合は、対象データなしとして
-      *    エラーファイルを出力する
-           IF    ( CNT-TEIKI06      =   ZERO )
-            AND  ( CNT-TEIKI09      =   ZERO )
-            AND  ( CNT-TEIKI08      >   ZERO )
-               MOVE    1            TO  ERR-WARNING
-               MOVE    "0020"       TO  ERR-ERRCD
+           IF    ( FLG-WARNING     =   1 )
+               MOVE    1           TO  ERR-WARNING
+               MOVE    "0020"      TO  ERR-ERRCD
                PERFORM 800-TEIKIERR-WRITE-SEC
            END-IF
       *
