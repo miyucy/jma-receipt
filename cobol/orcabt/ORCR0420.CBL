@@ -101,6 +101,8 @@
       *  01.02.19    NACL-ÌçÏÆ    05/11/15  ½ýÉÂ¼êÅö¶â¡¢ÎÅÍÜÈñÆ±°Õ½ñ¤Î¼«Æ°
       *                                     µ­ºÜ¥Õ¥é¥°ÊÔ½¸½¤Àµ
       *  01.02.20    NACL-ÌçÏÆ    06/01/05  ¥¢¥Õ¥¿¡¼¥±¥¢ºßÂðÎÁÂÐ±þ
+      *  01.02.21    NACL-ÌçÏÆ    06/02/01  £°£¹£¹£²£°£°£°¤Ç»Ï¤Þ¤ëÅêÌôÍÑ
+      *                                     ¥³¥á¥ó¥È¤ÎÊÔ½¸ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1254,6 +1256,7 @@
              OR     ( SRY-SRYCD(IDX2)(1:3)  =  "001"        )
              OR     ((SRY-SRYCD(IDX2)(1:3)  =  "059") AND
                      (TNS-TEN               =  ZERO )       )
+             OR     ( SRY-SRYCD(IDX2)(1:7)  =  "0992000"    )
                   COMPUTE   RECE44-MEISAISU    =  RECE44-MEISAISU
                                                -  1
                   MOVE      SRY-SRYCD(IDX2)   TO  WRK-SRYCD
@@ -1283,6 +1286,7 @@
               OR     ( SRY-SRYCD(IDX2)(1:3)  =  "001"        )
               OR     ((SRY-SRYCD(IDX2)(1:3)  =  "059") AND
                       (TNS-TEN               =  ZERO )       )
+              OR     ( SRY-SRYCD(IDX2)(1:7)  =  "0992000"    )
       *
                CONTINUE
       *
@@ -1326,12 +1330,12 @@
                END-IF
       *
                IF     SRY-SRYCD(IDX2)  IS  NUMERIC
-                 IF  SRY-SRYCD(IDX2)(1:3) NOT = "001"
+      *          IF  SRY-SRYCD(IDX2)(1:3) NOT = "001"
                    MOVE    SRY-SRYCD(IDX2)  TO  WRK-SRYCD
                    COMPUTE  RECE44-RUIKEITOTAL  =
                             RECE44-RUIKEITOTAL  +
                            (WRK-SRYCD  *  SRY-SRYSURYO(IDX2))
-                 END-IF
+      *          END-IF
                END-IF
       *
                MOVE    SRY-SRYSURYO(IDX2) TO    RECE45-SRYSURYO(IDX4)
@@ -2579,6 +2583,7 @@
                                                        OR "7"       )
                    OR    (SRY-SRYCD(IDX3) (1:3)  = "001" OR "008"   
                                                          OR "059"   )
+                   OR    (SRY-SRYCD(IDX3) (1:7)  = "0992000"        )
                      IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                        COMPUTE   RECE41-TENSU(14)  =
                                  RECE41-TENSU(14)  -
@@ -2620,6 +2625,7 @@
                                                        OR "7"       )
                    OR    (SRY-SRYCD(IDX3) (1:3)  = "001" OR "008"   
                                                          OR "059"   )
+                   OR    (SRY-SRYCD(IDX3) (1:7)  = "0992000"        )
                        ADD    WK-ZAIKAISU    TO   RECE41-KAISU(17)
                        COMPUTE   RECE41-TENSU(17)  =
                                  RECE41-TENSU(17)  +
@@ -2982,6 +2988,7 @@
                                                        OR "7"       )
                    OR    (SRY-SRYCD(IDX3) (1:3)  = "001" OR "008"   
                                                          OR "059"   )
+                   OR    (SRY-SRYCD(IDX3) (1:7)  = "0992000"        )
                      IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                        COMPUTE   RECE41-TENSU(7)  =
                                  RECE41-TENSU(7)  -
@@ -3015,6 +3022,7 @@
                                                        OR "7"       )
                    OR    (SRY-SRYCD(IDX3) (1:3)  = "001" OR "008"   
                                                          OR "059"   )
+                   OR    (SRY-SRYCD(IDX3) (1:7)  = "0992000"        )
                        ADD    WK-ZAIKAISU    TO   RECE41-KAISU(10)
                        COMPUTE   RECE41-TENSU(10)  =
                                  RECE41-TENSU(10)  +
@@ -3338,6 +3346,7 @@
                                                        OR "7"       )
                    OR    (SRY-SRYCD(IDX3) (1:3)  = "001" OR "008"   
                                                          OR "059"   )
+                   OR    (SRY-SRYCD(IDX3) (1:7)  = "0992000"        )
                      IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                        COMPUTE   RECE41-TENSU-YAK(9)  =
                                  RECE41-TENSU-YAK(9)  -
@@ -3379,6 +3388,7 @@
                                                        OR "7"       )
                    OR    (SRY-SRYCD(IDX3) (1:3)  = "001" OR "008"   
                                                          OR "059"   )
+                   OR    (SRY-SRYCD(IDX3) (1:7)  = "0992000"        )
                        ADD    WK-ZAIKAISU    TO   RECE41-KAISU(12)
                        COMPUTE   RECE41-TENSU-YAK(12)  =
                                  RECE41-TENSU-YAK(12)  +
@@ -3818,6 +3828,7 @@
                                                        OR "7"       )
                    OR    (SRY-SRYCD(IDX3) (1:3)  = "001" OR "008"   
                                                          OR "059"   )
+                   OR    (SRY-SRYCD(IDX3) (1:7)  = "0992000"        )
                      IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                        COMPUTE   RECE41-TENSU(10)   =
                                  RECE41-TENSU(10)   -
@@ -3874,6 +3885,7 @@
                                                        OR "7"       )
                    OR    (SRY-SRYCD(IDX3) (1:3)  = "001" OR "008"   
                                                          OR "059"   )
+                   OR    (SRY-SRYCD(IDX3) (1:7)  = "0992000"        )
                        ADD    WK-ZAIKAISU    TO   RECE41-KAISU(13)
                        COMPUTE   RECE41-TENSU(13)   =
                                  RECE41-TENSU(13)   +

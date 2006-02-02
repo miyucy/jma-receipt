@@ -229,6 +229,8 @@
       *  02.07.05    NACL-門脇    05/11/11  コメントがある場合の編集修正
       *  02.07.06    NACL-門脇    05/11/15  傷病手当金、療養費同意書の自動
       *                                     記載フラグ編集修正
+      *  02.07.07    NACL-門脇    06/02/01  ０９９２０００で始まる投薬用
+      *                                     コメントの編集対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1903,6 +1905,7 @@
              IF     ( SRY-SRYCD(IDX2)(1:3)  =  "001"        )
              OR     ((SRY-SRYCD(IDX2)(1:3)  =  "059") AND
                      (TNS-TEN               =  ZERO )       )
+             OR     ( SRY-SRYCD(IDX2)(1:7)  =  "0992000"    )
                   COMPUTE   RECE04-MEISAISU    =  RECE04-MEISAISU
                                                -  1
                   MOVE      SRY-SRYCD(IDX2)   TO  WRK-SRYCD
@@ -1962,6 +1965,7 @@
               OR     ( SRY-SRYCD(IDX2)(1:3)  =  "001"        )
               OR     ((SRY-SRYCD(IDX2)(1:3)  =  "059") AND
                       (TNS-TEN               =  ZERO )       )
+              OR     ( SRY-SRYCD(IDX2)(1:7)  =  "0992000"    )
       *
                CONTINUE
       *
@@ -2013,12 +2017,12 @@
                END-IF
       *
                IF     SRY-SRYCD(IDX2)  IS  NUMERIC
-                 IF  SRY-SRYCD(IDX2)(1:3) NOT = "001"
+      *          IF  SRY-SRYCD(IDX2)(1:3) NOT = "001"
                    MOVE    SRY-SRYCD(IDX2)  TO  WRK-SRYCD
                    COMPUTE  RECE04-RUIKEITOTAL  =
                             RECE04-RUIKEITOTAL  +
                            (WRK-SRYCD  *  SRY-SRYSURYO(IDX2))
-                 END-IF
+      *          END-IF
                END-IF
       *
                IF      SRY-SRYKBN    =   "40" OR "50" OR "54" OR "60"
@@ -3618,6 +3622,7 @@
                                                        OR "7"       )
                    OR    (SRY-SRYCD(IDX3) (1:3)  = "001" OR "008"   
                                                          OR "059"   )
+                   OR    (SRY-SRYCD(IDX3) (1:7)  = "0992000"        )
                      IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                        IF    BUN-IDX        =   1
                            COMPUTE   RECE02-TENSU(14 BUN-IDX)  =
@@ -3744,6 +3749,7 @@
                                                        OR "7"       )
                    OR    (SRY-SRYCD(IDX3) (1:3)  = "001" OR "008"   
                                                          OR "059"   )
+                   OR    (SRY-SRYCD(IDX3) (1:7)  = "0992000"        )
                        ADD    WK-ZAIKAISU    TO   RECE02-KAISU(17)
                        IF    BUN-IDX        =   1
                            COMPUTE   RECE02-TENSU(17 BUN-IDX)  =
