@@ -19,7 +19,6 @@
 require	'socket';
 
 #VER="1.2.5";
-VER=ENV["MEDSIORIMONVER"];
 
 class	PG_Server
 	def get_event
@@ -49,14 +48,16 @@ class	PG_Server
 	  end
 	end
 
-	def	initialize(host,port,prog,user,pass)
+#MONTSUQI version add
+
+	def	initialize(host,port,monver,prog,user,pass)
 	  if  port  ==  0
 		port = 8012;
 	  end
 	  @host = host;
 	  @port = port;
 	  @s = TCPSocket.new(@host,@port);
-	  @s.printf("Start: %s %s %s %s\n",VER,user,pass,prog);
+	  @s.printf("Start: %s %s %s %s\n",monver,user,pass,prog);
 	  msg = @s.gets.chomp;
 	  if  (  msg  =~  /^Error\: (.*?)$/  )
 		printf("error: %s\n",$1);

@@ -9,10 +9,11 @@
 # 引数は環境変数 MEDSIORIPARAM から取得します
 #
 
-require	"monlib"
-require	"apslib"
+require	"/usr/lib/jma-receipt/scripts/daily/monlib.rb"
+require	"/usr/lib/jma-receipt/scripts/daily/apslib.rb"
 
 param = ENV["MEDSIORIPARAM"]
+monver = ENV["MEDSIORIMONVER"]
 wgetoption = ENV["WGETOPTION"]
 
 para = param.split(/,/)
@@ -30,7 +31,7 @@ tempdb = PandaTable.new(db,"tbl_yakujyo_temp")
 tempdb["tbl_yakujyo_temp.termid"] = termid
 tempdb.execFunction("DBDELETE","termid")
 	  
-server = PG_Server.new(siorisite,0,"panda:siori","guest","")
+server = PG_Server.new(siorisite,0,monver,"panda:siori","guest","")
 server.setEncoding("euc-jp")
 server.setValue("siori.siorikey.srycd", srycd)
 ev = server.event("Search")
