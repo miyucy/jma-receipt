@@ -467,8 +467,8 @@
        200-MAIN-SEC            SECTION.
       *
       *    テスト用
-           MOVE   "00"     TO    LNK-ORCHCN33SUB-SRYKA
-           MOVE   "2"     TO    LNK-ORCHCN33SUB-SHORIKBN
+      *     MOVE   "00"     TO    LNK-ORCHCN33SUB-SRYKA
+      *     MOVE   "2"     TO    LNK-ORCHCN33SUB-SHORIKBN
       *対象入院科の取得
            INITIALIZE                           TABLE-NYUINKA
            MOVE    ZERO                     TO  IDX-ST
