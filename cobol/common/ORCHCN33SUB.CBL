@@ -1557,7 +1557,7 @@
                END-PERFORM
            END-IF
       *    診療会計クローズ
-           MOVE    "SRYACCT-KEY22"      TO  ORC-DBPATH
+           MOVE    "SRYACCT-KEY30"      TO  ORC-DBPATH
            PERFORM   910-DB-CLOSE-SEC
       *
            .
