@@ -287,6 +287,7 @@
            END-IF
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1032-REC
+                                               SYSKANRI-REC
       *        独自開発分
                IF      SYS-1032-ORCACSTCHK     =   "T"
                    MOVE    SYS-1032-ORCACSTNM  TO  WRK-PRTPG
@@ -336,6 +337,7 @@
            END-IF
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1035-REC
+                                               SYSKANRI-REC
       *        独自開発分
                IF      SYS-1035-ORCACSTCHK     =   "T"
                    MOVE    SYS-1035-ORCACSTNM  TO  WRK-PRTPG
