@@ -6,10 +6,10 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 
 BIN_sources = \
-	orca-db-setup.sh.in
+	jma-receipt-db-setup.sh.in
 
 BIN_bin = \
-	orca-hospid-set.sh
+	jma-receipt-hospid-set.sh
 
 BIN_objs = $(BIN_sources:.sh.in=.sh)
 
