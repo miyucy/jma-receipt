@@ -1109,6 +1109,10 @@ COPYS = \
         CPORCSMEIHEN.INC \
         CPORCSTEIKI01.INC \
         CPTEIKI1BTPARA.INC \
+        R05.INC \
+        N22.INC \
+        N21SCR-SPA.INC \
+        CPYAKUJYOTEMP.INC \
 
 DBPATH = \
 	ORCA-DBPATH
