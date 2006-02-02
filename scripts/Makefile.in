@@ -34,6 +34,8 @@ shell_sources = \
 	daily/HCALL2.sh.in \
 	daily/HCALL_prv.sh.in \
 	daily/toukei2.sh.in \
+	daily/orc_medsiori_pull.sh.in \
+	daily/orc_medphoto_copy.sh.in \
 	monthly/recept1.sh.in \
 	monthly/recept2.sh.in \
 	monthly/recept3.sh.in \
@@ -72,6 +74,9 @@ ruby_scripts = \
 	daily/print_parent.rb \
 	daily/orcred2ps.rb \
 	daily/print_parent_prv.rb \
+	daily/OrcSioriPull.rb \
+	daily/apslib.rb \
+	daily/monlib.rb \
 	allways/cachedl.rb \
 	allways/cachetoprgdir.rb \
 

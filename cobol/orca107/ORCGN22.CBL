@@ -79,10 +79,10 @@
            03  WRK-SHELLID         PIC X(8).
       *
        01  SHELL-AREA.
-           03  SHELL-NAME1         PIC X(41)  VALUE
-               "scripts/allways/orc_medsiori_pull.sh".
-           03  SHELL-NAME2         PIC X(41)  VALUE
-               "scripts/allways/orc_medphoto_copy.sh".
+           03  SHELL-NAME1         PIC X(34)  VALUE
+               "scripts/daily/orc_medsiori_pull.sh".
+           03  SHELL-NAME2         PIC X(34)  VALUE
+               "scripts/daily/orc_medphoto_copy.sh".
        01  WRK-FILE-AREA.
            03  WRK-FILE-FOLDER     PIC X(14)  VALUE "/tmp/medphoto/".
       *****************************************************************
