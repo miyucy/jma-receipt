@@ -7,7 +7,7 @@ handler "Ruby" {
         class  "Exec";
         serialize   "CGI";
         start       "/usr/bin/ruby -Ke %p%m.rb";
-        loadpath    "=/cobol/orca107/";
+        loadpath    "=/scripts/daily";
         locale      "euc-jp";
 };
 
