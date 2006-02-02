@@ -198,6 +198,9 @@
                            11  SPA-GMN-Q01-RDKOHNUM-AND
                                                        PIC X(01).
                            11  SPA-GMN-Q01-RDKOHNUM-OR PIC X(01).
+                           11  SPA-GMN-Q01-RDHKNKOH-AND
+                                                       PIC X(01).
+                           11  SPA-GMN-Q01-RDHKNKOH-OR PIC X(01).
       *
       *                ибл╬║║©гне╧т╟ы
                        09  SPA-GMN-Q01-BYOMEI-AREA.
@@ -704,6 +707,7 @@
                            11  SPA-Q01-NUM             PIC X(40)
                                                        OCCURS  5.
       *
+                       09  SPA-Q01-HKNKOH-JKN          PIC X(01).
                        09  SPA-Q01-KOHNUM-JKN          PIC X(01).
       *
                        09  SPA-Q01-KOHNUM-G.

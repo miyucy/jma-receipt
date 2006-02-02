@@ -47,9 +47,11 @@
            03  FLG-JYOKEN-AND                      PIC 9(01).
            03  FLG-JYOKEN-OR                       PIC 9(01).
            03  FLG-PTBYOMEI-SQL                    PIC 9(01).
+           03  FLG-TBLNAME                         PIC 9(01).
       *
       *    ≈∫ª˙ŒŒ∞Ë
        01  IDX-AREA.
+           03  IDX0                                PIC 9(05).
            03  IDX1                                PIC 9(05).
            03  IDX2                                PIC 9(05).
            03  IDXA                                PIC 9(05).
@@ -81,16 +83,45 @@
            03  WRK-STTENKIYMD                      PIC X(08).
            03  WRK-EDTENKIYMD                      PIC X(08).
            03  WRK-EDPTNUM                         PIC X(20).
-           03  WRK-SQL-PNT                         PIC 9(05).
            03  WRK-SQL                             PIC X(20000).
+           03  WRK-SQL-PNT                         PIC 9(06).
+           03  WRK-PNT                             PIC 9(06).
            03  WRK-SQL-COUNT                       PIC X(20000).
+           03  WRK-SQL-COUNT-PNT                   PIC 9(06).
            03  WRK-NAME-SEQ                        PIC 9(01).
            03  WRK-KOHNUM                          PIC X(04).
            03  WRK-PAYKBN                          PIC X(02).
+           03  WRK-DISTINCT                        PIC X(08).
       *
       *    ∏«ƒÍ√ÕŒŒ∞Ë
        01  CONST-AREA.
-           03  CONST-PTINF-MAX     PIC 9(05)   VALUE 50.
+           03  CONST-ITEM-AREA.
+               05  CONST-ITEM-MAX          PIC 9(03) VALUE 10.
+               05  CONST-ITEM-VAL.
+                   07  CONST-PTID-TBL      PIC X(01) VALUE "A".
+                   07  CONST-PTID          PIC X(20) VALUE "PTID".
+                   07  CONST-KANANAME-TBL  PIC X(01) VALUE "A".
+                   07  CONST-KANANAME      PIC X(20) VALUE "KANANAME".
+                   07  CONST-NAME-TBL      PIC X(01) VALUE "A".
+                   07  CONST-NAME          PIC X(20) VALUE "NAME".
+                   07  CONST-SEX-TBL       PIC X(01) VALUE "A".
+                   07  CONST-SEX           PIC X(20) VALUE "SEX".
+                   07  CONST-BIRTHDAY-TBL  PIC X(01) VALUE "A".
+                   07  CONST-BIRTHDAY      PIC X(20) VALUE "BIRTHDAY".
+                   07  CONST-POST-TBL      PIC X(01) VALUE "A".
+                   07  CONST-POST          PIC X(20) VALUE "HOME_POST".
+                   07  CONST-ADRS-TBL      PIC X(01) VALUE "A".
+                   07  CONST-ADRS          PIC X(20) VALUE "HOME_ADRS".
+                   07  CONST-BANTI-TBL     PIC X(01) VALUE "A".
+                   07  CONST-BANTI         PIC X(20) VALUE "HOME_BANTI".
+                   07  CONST-TEL1-TBL      PIC X(01) VALUE "A".
+                   07  CONST-TEL1          PIC X(20) VALUE "HOME_TEL1".
+                   07  CONST-PTNUM-TBL     PIC X(01) VALUE "H".
+                   07  CONST-PTNUM         PIC X(20) VALUE "PTNUM".
+               05  CONST-ITEM-R    REDEFINES   CONST-ITEM-VAL.
+                   07  CONST-ITEM-OCC      OCCURS    10.
+                       09  CONST-ITEM-TBL  PIC X(01).
+                       09  CONST-ITEM      PIC X(20).
            03  CONST-TABLE-AREA.
                05  CONST-TBL-A     PIC X(20)   VALUE "TBL_PTINF    A".
                05  CONST-TBL-B     PIC X(20)   VALUE "TBL_SRYKARRK B".
@@ -158,27 +189,128 @@
       *****************************************************************
        100-JYOKEN-EDIT-SEC          SECTION.
       *
-           PERFORM 1001-JYOKEN-INIT-SEC
+           INITIALIZE                  WRK-SQL
+                                       WRK-SQL-COUNT
       *
-           PERFORM 1001-FROM-EDIT-SEC
+           MOVE    1               TO  WRK-SQL-PNT
+                                       WRK-SQL-COUNT-PNT
       *
-           PERFORM 1001-WHERE-EDIT-SEC
+           IF    ( SPA-Q01-HKNKOH-JKN  =   " " )
+            AND  ( SPA-Q01-GTBL (5)    =   "1" )
+            AND  ( SPA-Q01-GTBL (6)    =   "1" )
+               PERFORM 1001-JYOKEN-EDIT-SEC
+           ELSE
+               PERFORM 1002-JYOKEN-EDIT-SEC
+           END-IF
+      *
+           STRING  ") q_reference"
+           INTO    WRK-SQL
+           WITH    POINTER   WRK-SQL-PNT
+           END-STRING
+      *
+           STRING  "SELECT COUNT(PTID) FROM (" DELIMITED   BY  SIZE
+           INTO    WRK-SQL-COUNT
+           WITH    POINTER WRK-SQL-COUNT-PNT
+           END-STRING
+      *
+           MOVE    WRK-SQL (WRK-PNT:)  TO  WRK-SQL-COUNT
+                                              (WRK-SQL-COUNT-PNT :)
       *
            PERFORM 1001-ORDER-EDIT-SEC
+      *
+           MOVE    SPACE               TO  WRK-SQL (WRK-SQL-PNT:)
       *
            .
        100-JYOKEN-EDIT-EXT.
            EXIT.
       *
       *****************************************************************
+      *    ∏°∫˜æÚ∑Ô ‘Ω∏ΩËÕ˝
+      *****************************************************************
+       1001-JYOKEN-EDIT-SEC            SECTION.
+      *
+           MOVE    ZERO            TO  FLG-TBLNAME
+           MOVE    SPACE           TO  WRK-DISTINCT
+           PERFORM 10011-JYOKEN-INIT-SEC
+      *
+           STRING  " FROM ("       DELIMITED   BY  SIZE
+           INTO    WRK-SQL
+           WITH    POINTER   WRK-SQL-PNT
+           END-STRING
+      *
+           MOVE    WRK-SQL-PNT     TO  WRK-PNT
+      *
+           MOVE    "1"             TO  SPA-Q01-GTBL (5)
+           MOVE    SPACE           TO  SPA-Q01-GTBL (6)
+      *
+           PERFORM 1001-JYOKEN-INIT-SEC
+      *
+           PERFORM 1001-FROM-EDIT-SEC
+      *
+           PERFORM 1001-WHERE-EDIT-SEC
+      *
+           STRING  "UNION "        DELIMITED   BY  SIZE
+           INTO    WRK-SQL
+           WITH    POINTER   WRK-SQL-PNT
+           END-STRING
+      *
+           INITIALIZE              FLG-AREA
+                                   CNT-AREA
+      *
+           MOVE    SPACE           TO  SPA-Q01-GTBL (5)
+           MOVE    "1"             TO  SPA-Q01-GTBL (6)
+      *
+           PERFORM 1001-JYOKEN-INIT-SEC
+      *
+           PERFORM 1001-FROM-EDIT-SEC
+      *
+           PERFORM 1001-WHERE-EDIT-SEC
+      *
+           MOVE    "1"             TO  SPA-Q01-GTBL (5)
+           MOVE    "1"             TO  SPA-Q01-GTBL (6)
+      *
+           .
+       1001-JYOKEN-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ∏°∫˜æÚ∑Ô ‘Ω∏ΩËÕ˝
+      *****************************************************************
+       1002-JYOKEN-EDIT-SEC            SECTION.
+      *
+           MOVE    ZERO            TO  FLG-TBLNAME
+           MOVE    "DISTINCT"      TO  WRK-DISTINCT
+           PERFORM 10011-JYOKEN-INIT-SEC
+      *
+           STRING  " FROM ("
+           INTO    WRK-SQL
+           WITH    POINTER   WRK-SQL-PNT
+           END-STRING
+      *
+           MOVE    WRK-SQL-PNT     TO  WRK-PNT
+      *
+           PERFORM 1001-JYOKEN-INIT-SEC
+      *
+           PERFORM 1001-FROM-EDIT-SEC
+      *
+           PERFORM 1001-WHERE-EDIT-SEC
+      *
+           .
+       1002-JYOKEN-EDIT-EXT.
+           EXIT.
+      *****************************************************************
       *    ∏°∫˜æÚ∑Ô ‘Ω∏ΩÈ¥¸ΩËÕ˝
       *****************************************************************
        1001-JYOKEN-INIT-SEC            SECTION.
       *
-           INITIALIZE                  WRK-SQL
-                                       WRK-SQL-COUNT
+           MOVE    1               TO  FLG-TBLNAME
+           MOVE    SPACE           TO  WRK-DISTINCT
+           PERFORM 10011-JYOKEN-INIT-SEC
       *
-           MOVE    1               TO  WRK-SQL-PNT
+           STRING  " FROM TBL_PTINF A,TBL_PTNUM H "
+                                       DELIMITED   BY  SIZE
+           INTO    WRK-SQL
+           WITH    POINTER   WRK-SQL-PNT
+           END-STRING
       *
            IF      ( SPA-Q01-STSRYYMD  =   SPACE )
                MOVE    ALL "0"     TO  WRK-STSRYYMD
@@ -247,6 +379,54 @@
       *
            .
        1001-JYOKEN-INIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ∏°∫˜æÚ∑Ô ‘Ω∏ΩÈ¥¸ΩËÕ˝
+      *****************************************************************
+       10011-JYOKEN-INIT-SEC           SECTION.
+      *
+           STRING  "SELECT "       DELIMITED   BY  SIZE
+           INTO    WRK-SQL
+           WITH    POINTER   WRK-SQL-PNT
+           END-STRING
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   CONST-ITEM-MAX )
+      *
+               IF    ( IDX0    >   1 )
+                   STRING  ","         DELIMITED   BY  SIZE
+                   INTO    WRK-SQL
+                   WITH    POINTER   WRK-SQL-PNT
+                   END-STRING
+               ELSE
+      *
+                   IF    ( WRK-DISTINCT    NOT =   SPACE )
+                       STRING  WRK-DISTINCT        DELIMITED   BY  SPACE
+                               " "                 DELIMITED   BY  SIZE
+                       INTO    WRK-SQL
+                       WITH    POINTER   WRK-SQL-PNT
+                       END-STRING
+                   END-IF
+               END-IF
+      *
+               IF    ( FLG-TBLNAME =   ZERO )
+                   STRING  CONST-ITEM     (IDX0)   DELIMITED   BY  SPACE
+                   INTO    WRK-SQL
+                   WITH    POINTER   WRK-SQL-PNT
+                   END-STRING
+               ELSE
+                   STRING  CONST-ITEM-TBL (IDX0)   DELIMITED   BY  SPACE
+                           "."                     DELIMITED   BY  SIZE
+                           CONST-ITEM     (IDX0)   DELIMITED   BY  SPACE
+                   INTO    WRK-SQL
+                   WITH    POINTER   WRK-SQL-PNT
+                   END-STRING
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       10011-JYOKEN-INIT-EXT.
            EXIT.
       *****************************************************************
       *    FROM∂Á ‘Ω∏ΩËÕ˝
@@ -443,9 +623,6 @@
            MOVE    ZERO            TO  FLG-JYOKEN-AND
            PERFORM 1001-PTNUM-SQL-EDIT-SEC
            MOVE    1               TO  FLG-JYOKEN
-      *
-      *    ¡Ì∑ÔøÙºË∆¿Õ—§À£”£—£Ã ∏§Ú¬‡»Ú
-           MOVE    WRK-SQL         TO  WRK-SQL-COUNT
       *
            .
        1001-WHERE-EDIT-EXT.

@@ -35,3 +35,11 @@ path	key		{
 	};
 };
 
+path	key2		{ 	
+	DBSELECT	{
+		DECLARE query_ptinf_key2_csr CURSOR FOR
+		:SQL
+		;
+	};
+};
+

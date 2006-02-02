@@ -103,6 +103,8 @@
                     07  Q01-FTNJANUM           PIC X(8)    OCCURS 5.
                   06  Q01-RDKOHNUM-AND         PIC X.
                   06  Q01-RDKOHNUM-OR          PIC X.
+                  06  Q01-RDHKNKOH-AND         PIC X.
+                  06  Q01-RDHKNKOH-OR          PIC X.
                 05  Q01-FIXED18.
                   06  Q01-CMB-UTAGAIKBN.
                     07  Q01-UTAGAIKBN          PIC X(20).

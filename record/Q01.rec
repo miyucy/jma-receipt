@@ -337,6 +337,12 @@ Q01	{
 				RDKOHNUM_OR	{
 					value	bool;
 				};
+				RDHKNKOH_AND	{
+					value	bool;
+				};
+				RDHKNKOH_OR	{
+					value	bool;
+				};
 			};
 			fixed18	{
 				CMB_UTAGAIKBN	{

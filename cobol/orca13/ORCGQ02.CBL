@@ -839,7 +839,7 @@
       *
       *    患者マスタクローズ処理
            MOVE    "query_ptinf"       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            IF    ( SPA-GMN-Q02-SKIP-KNS     =   ZERO )
@@ -949,7 +949,7 @@
       *        検索結果件数を取得
       *        INITIALIZE                  MCPAREA
                MOVE    "query_ptinf_cnt"   TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    "key2"              TO  MCP-PATHNAME
                MOVE    SPACE               TO  QUERY-PTINF-CNT-REC
                MOVE    WRK-SQL-COUNT       TO  QUERY-PTINF-CNT-SQL
                MOVE    QUERY-PTINF-CNT-REC TO  MCPDATA-REC
@@ -2010,7 +2010,7 @@
       *
       *    INITIALIZE                  MCPAREA
            MOVE    "query_ptinf"       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "key2"              TO  MCP-PATHNAME
            MOVE    SPACE               TO  QUERY-PTINF-REC
            MOVE    WRK-SQL             TO  QUERY-PTINF-SQL
            MOVE    QUERY-PTINF-REC     TO  MCPDATA-REC
@@ -2032,7 +2032,7 @@
       *
       *    INITIALIZE              MCPAREA
            MOVE    "query_ptinf"       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    ZERO            TO  FLG-PTINF

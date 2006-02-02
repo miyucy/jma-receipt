@@ -10,3 +10,10 @@ path	key		{
 	};
 };
 
+path	key2		{ 	
+	DBSELECT	{
+		:SQL INTO :TOTAL
+		;
+	};
+};
+

@@ -589,6 +589,8 @@
            PERFORM 3101-RDIO-SYOKI-SEC
       *
       *    検索条件AND/OR切り替えラジオボタン初期化
+           MOVE    "T"                 TO  SPA-GMN-Q01-RDHKNKOH-AND
+           MOVE    "F"                 TO  SPA-GMN-Q01-RDHKNKOH-OR
            MOVE    "F"                 TO  SPA-GMN-Q01-RDKOHNUM-AND
            MOVE    "T"                 TO  SPA-GMN-Q01-RDKOHNUM-OR
            MOVE    "F"                 TO  SPA-GMN-Q01-RDBYOMEI-AND
@@ -1215,6 +1217,12 @@
                PERFORM 4101-GMN-SPA-SET-SEC
                MOVE    Q01-RDKOHNUM-AND    TO  SPA-GMN-Q01-RDKOHNUM-AND
                MOVE    Q01-RDKOHNUM-OR     TO  SPA-GMN-Q01-RDKOHNUM-OR
+           WHEN    "CLICKED"       ALSO    "RDHKNKOH_AND"
+           WHEN    "CLICKED"       ALSO    "RDHKNKOH_OR"
+      *        画面をＳＰＡにセット
+               PERFORM 4101-GMN-SPA-SET-SEC
+               MOVE    Q01-RDHKNKOH-AND    TO  SPA-GMN-Q01-RDHKNKOH-AND
+               MOVE    Q01-RDHKNKOH-OR     TO  SPA-GMN-Q01-RDHKNKOH-OR
            WHEN    "CLICKED"       ALSO    "RDBYOMEI_AND"
            WHEN    "CLICKED"       ALSO    "RDBYOMEI_OR"
       *        画面をＳＰＡにセット
@@ -4075,6 +4083,8 @@
                                        SPA-NAI-Q01-HOKEN-AREA
       *
       *        検索条件AND/OR切り替えラジオボタン初期化
+               MOVE    "T"         TO  SPA-GMN-Q01-RDHKNKOH-AND
+               MOVE    "F"         TO  SPA-GMN-Q01-RDHKNKOH-OR
                MOVE    "F"         TO  SPA-GMN-Q01-RDKOHNUM-AND
                MOVE    "T"         TO  SPA-GMN-Q01-RDKOHNUM-OR
       *
@@ -4614,6 +4624,12 @@
                MOVE    "1"                 TO  SPA-Q01-KOHNUM-JKN
            ELSE
                MOVE    SPACE               TO  SPA-Q01-KOHNUM-JKN
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-RDHKNKOH-AND    =   "T" )
+               MOVE    "1"                 TO  SPA-Q01-HKNKOH-JKN
+           ELSE
+               MOVE    SPACE               TO  SPA-Q01-HKNKOH-JKN
            END-IF
       *
            MOVE    SPA-GMN-Q01-HONKZKKBN   TO  SPA-Q01-HONKZKKBN
@@ -5388,6 +5404,8 @@
            END-PERFORM
       *
       *    検索条件AND/OR切り替えラジオボタン
+           MOVE    SPA-GMN-Q01-RDHKNKOH-AND    TO  Q01-RDHKNKOH-AND
+           MOVE    SPA-GMN-Q01-RDHKNKOH-OR     TO  Q01-RDHKNKOH-OR
            MOVE    SPA-GMN-Q01-RDKOHNUM-AND    TO  Q01-RDKOHNUM-AND
            MOVE    SPA-GMN-Q01-RDKOHNUM-OR     TO  Q01-RDKOHNUM-OR
       *
