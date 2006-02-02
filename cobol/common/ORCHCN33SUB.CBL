@@ -65,6 +65,8 @@
            03  FLG-SENTEICDCHG             PIC 9(01).
            03  FLG-TENSUWRK                PIC 9(01).
            03  FLG-PTNYUINRRK              PIC 9(01).
+           03  FLG-HKNCOMBI-MATCH          PIC 9(01).
+           03  FLG-NYUINKA-MATCH           PIC 9(01).
       *    添字領域
        01  IDX-AREA.
            03  IDX                         PIC 9(04).
@@ -83,6 +85,8 @@
            03  ETC-IDX                     PIC 9(02).
            03  IDX-ST                      PIC 9(02).
            03  IDX-ED                      PIC 9(02).
+           03  IDX-NYUINKA                 PIC 9(02).
+           03  IDX-HKNCOMBI                PIC 9(02).
       *
       *    コンスタント値
        01  CONSTANT-AREA.
@@ -275,7 +279,7 @@
            03  TABLE-SENTEI.
                05  TBL-SENTEI                  PIC 9(01)   OCCURS  31.
       *
-      *    入院科一致退避用テーブル
+      *    入院科一致判定用テーブル
            03  TABLE-KAMATCH.
                05  TBL-KAMATCH                 PIC X(01)   OCCURS  31.
       *
@@ -462,6 +466,9 @@
       *****************************************************************
        200-MAIN-SEC            SECTION.
       *
+      *    テスト用
+      *     MOVE   "00"     TO    LNK-ORCHCN33SUB-SRYKA
+      *     MOVE   "1"     TO    LNK-ORCHCN33SUB-SHORIKBN
       *対象入院科の取得
            INITIALIZE                           TABLE-NYUINKA
            MOVE    ZERO                     TO  IDX-ST
@@ -1168,18 +1175,26 @@
       **     END-PERFORM
       *
       *
-      *    カルテ３号用紙サブ返却エリアへのセット
-           PERFORM    VARYING   IDX1   FROM  1  BY  1
-                      UNTIL     (IDX1   >     31)
-               IF     WRK-SO-TEN(IDX1)       NOT =   ZERO
-                   MOVE   WRK-SO-TEN(IDX1)   TO
-                                   LNK-ORCHCN33SUB-TEN(IDX1)
-               END-IF
-           END-PERFORM
+      *    カルテ３号用紙サブ返却エリアへ入院点数セット
+           IF   LNK-ORCHCN33SUB-SHORIKBN       =   SPACE
+               PERFORM    VARYING   IDX1   FROM  1  BY  1
+                          UNTIL     (IDX1   >     31)
+                    IF     WRK-SO-TEN(IDX1)       NOT =   ZERO
+                        MOVE   WRK-SO-TEN(IDX1)   TO
+                                       LNK-ORCHCN33SUB-TEN(IDX1)
+                   END-IF
+               END-PERFORM
+           END-IF
       *
-      *食事情報の取得
+      *    カルテ３号用紙サブ返却エリアへ食事情報のセット
            IF   LNK-ORCHCN33SUB-SHORIKBN       =   SPACE
                PERFORM    210-SKJ-SET-SEC
+           END-IF
+      *
+      *
+      *    入院点数取得返却エリアへのセット
+           IF   LNK-ORCHCN33SUB-SHORIKBN       =   "1"
+               PERFORM    210-NYUINTEN-SET-SEC
            END-IF
       *
            .
@@ -2111,6 +2126,103 @@
       *
            .
        210-SKJ-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院点数取得返却エリアへのセット処理
+      *****************************************************************
+       210-NYUINTEN-SET-SEC            SECTION.
+      *
+           PERFORM    VARYING  IDX1   FROM  1  BY  1
+                UNTIL    IDX1   >    31
+              DISPLAY "IDX1= " IDX1
+              DISPLAY "TBL-HKNCOMBI(IDX1) = " TBL-HKNCOMBI(IDX1)
+              DISPLAY "TBL-NYUINKA(IDX1) = " TBL-NYUINKA(IDX1)
+           END-PERFORM
+      *
+           PERFORM    VARYING   IDX1   FROM  1  BY  1
+                      UNTIL     (IDX1   >     31)
+               IF     WRK-SO-TEN(IDX1)       NOT =   ZERO
+                    MOVE   ZERO    TO   FLG-HKNCOMBI-MATCH
+                    MOVE   ZERO    TO   FLG-NYUINKA-MATCH
+                    PERFORM   VARYING  IDX-HKNCOMBI  FROM  1  BY  1
+                      UNTIL  (IDX-HKNCOMBI         >  10)    OR
+                             (FLG-HKNCOMBI-MATCH   =   1)    OR
+                             (LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM
+                                 (IDX-HKNCOMBI)   =   ZERO)
+                        DISPLAY "IDX1 = " IDX1
+                        DISPLAY "TBL-HKNCOMBI(IDX1) = "
+                                 TBL-HKNCOMBI(IDX1)
+                        DISPLAY "IDX-HKNCOMBI = " IDX-HKNCOMBI
+                        DISPLAY "LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM="
+                                 LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM
+                                 (IDX-HKNCOMBI)
+                        IF  LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM
+                              (IDX-HKNCOMBI)    =   TBL-HKNCOMBI(IDX1)
+                             DISPLAY "MATCING OK"
+                             MOVE   1    TO   FLG-HKNCOMBI-MATCH
+                             PERFORM  VARYING  IDX-NYUINKA FROM 1 BY 1
+                               UNTIL (IDX-NYUINKA   >   50)     OR
+                                     (FLG-NYUINKA-MATCH  =  1)  OR
+                                     (LNK-ORCHCN33SUB-NYUINKA
+                                     (IDX-HKNCOMBI IDX-NYUINKA) = SPACE)
+                                 IF  LNK-ORCHCN33SUB-NYUINKA
+                                     (IDX-HKNCOMBI IDX-NYUINKA)
+                                                   = TBL-NYUINKA(IDX1)
+                                     MOVE   1    TO  FLG-NYUINKA-MATCH
+                                     ADD  WRK-SO-TEN(IDX1)  TO
+                                        LNK-ORCHCN33SUB-TENSU
+                                           (IDX-HKNCOMBI IDX-NYUINKA)
+                                 END-IF
+                             END-PERFORM
+                             IF      FLG-NYUINKA-MATCH   =   ZERO
+                                 MOVE  TBL-NYUINKA(IDX1)    TO
+                                    LNK-ORCHCN33SUB-NYUINKA
+                                      (IDX-HKNCOMBI  IDX-NYUINKA)
+                                 MOVE  WRK-SO-TEN(IDX1)  TO
+                                        LNK-ORCHCN33SUB-TENSU
+                                           (IDX-HKNCOMBI IDX-NYUINKA)
+                             END-IF
+                        END-IF
+                    END-PERFORM
+                    IF      FLG-HKNCOMBI-MATCH   =   ZERO
+                        DISPLAY "UNMATCH-SHORI"
+                        MOVE  TBL-HKNCOMBI(IDX1)   TO
+                              LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM
+                                                      (IDX-HKNCOMBI)
+                        MOVE  TBL-NYUINKA(IDX1)    TO
+                              LNK-ORCHCN33SUB-NYUINKA
+                                 (IDX-HKNCOMBI  1)
+                        MOVE  WRK-SO-TEN(IDX1)  TO
+                                  LNK-ORCHCN33SUB-TENSU
+                                           (IDX-HKNCOMBI 1)
+                    END-IF
+               END-IF
+           END-PERFORM
+      *
+      *     DISPLAY   "返却情報表示"
+      *     DISPLAY   "保険組合せ１ = " 
+      *                LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM (1)
+      *     DISPLAY   "入院科１　１ = "
+      *                LNK-ORCHCN33SUB-NYUINKA (1 1)
+      *     DISPLAY   "点数１　１ = "
+      *                LNK-ORCHCN33SUB-TENSU (1 1)
+      *     DISPLAY   "入院科１　２ = "
+      *                LNK-ORCHCN33SUB-NYUINKA (1 2)
+      *     DISPLAY   "点数１　２ = "
+      *                LNK-ORCHCN33SUB-TENSU (1 2)
+      *     DISPLAY   "保険組合せ２ = " 
+      *                LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM (2)
+      *     DISPLAY   "入院科２　１ = "
+      *                LNK-ORCHCN33SUB-NYUINKA (2 1)
+      *     DISPLAY   "点数２　１ = "
+      *                LNK-ORCHCN33SUB-TENSU (2 1)
+      *     DISPLAY   "入院科２　２ = "
+      *                LNK-ORCHCN33SUB-NYUINKA (2 2)
+      *     DISPLAY   "点数２　２ = "
+      *                LNK-ORCHCN33SUB-TENSU (2 2)
+           .
+       210-NYUINTEN-SET-EXT.
            EXIT.
       *
       *****************************************************************
