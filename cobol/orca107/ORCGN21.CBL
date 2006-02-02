@@ -769,7 +769,7 @@
            MOVE    N21-MARK        TO  SPA-GMN-MARK
            MOVE    N21-CAUTION     TO  SPA-GMN-CAUTION
            MOVE    N21-PHOTO       TO  SPA-GMN-PHOTO
-           INITIALIZE                  SPA-GMN-OBJECT
+           MOVE    N21-PHOTOAREA   TO  SPA-GMN-OBJECT
       *
       *----(02.01.02)--UPD-START---
       *    名前半角文字混在チェック
@@ -1487,6 +1487,7 @@
            MOVE    SPA-GMN-MARK        TO  N21-MARK
            MOVE    SPA-GMN-CAUTION     TO  N21-CAUTION
            MOVE    SPA-GMN-PHOTO       TO  N21-PHOTO
+           MOVE    SPA-GMN-OBJECT      TO  N21-PHOTOAREA
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >       SPA-GMN-MAX
