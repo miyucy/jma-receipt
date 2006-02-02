@@ -1111,7 +1111,7 @@ COPYS = \
         CPTEIKI1BTPARA.INC \
         R05.INC \
         N22.INC \
-        N21SCR-SPA.INC \
+        N21SCR-SPA \
         CPYAKUJYOTEMP.INC \
 
 DBPATH = \
