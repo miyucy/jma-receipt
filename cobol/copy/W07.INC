@@ -303,5 +303,11 @@
                     06  W07-SRYKBN-FLG-COUNT   PIC S9(9)   BINARY.
                     06  W07-SRYKBN-FLG-ITEM
                             PIC X(12)   OCCURS  2 TIMES.
+                  05  W07-SRYKA-FLG-COMB.
+                    06  W07-SRYKA-FLG.
+                      07  W07-VALUE   PIC X(20).
+                    06  W07-SRYKA-FLG-COUNT   PIC S9(9)   BINARY.
+                    06  W07-SRYKA-FLG-ITEM
+                            PIC X(20)   OCCURS  5 TIMES.
                 04  W07-TAGNAME6.
                   05  W07-TAGNAME6-STATE   PIC S9(9)   BINARY.
