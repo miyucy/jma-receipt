@@ -504,6 +504,13 @@ W07	{
 					count	int;
 					item	varchar(12)[2];
 				};
+				SRYKA_FLG_COMB	{
+					SRYKA_FLG	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[5];
+				};
 			};
 			TAGNAME6    {
 			  	state   int;
