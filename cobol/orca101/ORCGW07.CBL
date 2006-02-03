@@ -74,6 +74,7 @@
       *  02.01.22    NACL-多々納  05/12/21  病名表示区分
       *                                     剤登録順区分追加
       *                                     MONFUNC 対応
+      *  02.01.23    NACL-多々納  06/01/20  会計照会 診療科初期表示追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -481,6 +482,15 @@
                            11  SPA-GMN-SRYKBN-LIST         PIC X(12)
                                                            OCCURS  2.
                        09  SPA-GMN-SRYKBN-MAX              PIC 9(04).
+      *                初期表示
+                       09  SPA-GMN-SRYKA-FLG-G.
+                           11  SPA-GMN-SRYKA-FLG          PIC X(01).
+                           11  SPA-GMN-SRYKA-F1           PIC X(01).
+                           11  SPA-GMN-SRYKA-MEI          PIC X(18).
+                       09  SPA-GMN-SRYKA-COMB.
+                           11  SPA-GMN-SRYKA-LIST         PIC X(20)
+                                                           OCCURS  5.
+                       09  SPA-GMN-SRYKA-MAX              PIC 9(04).
       *
                    07  SPA-GMN-DATALST        OCCURS  2.
                        09  SPA-GMN-DATAL      PIC X(01).
@@ -1006,6 +1016,11 @@
            MOVE    "0 診療科順"        TO  SPA-GMN-SRYKBN-LIST(1)
            MOVE    "1 診療区分順"      TO  SPA-GMN-SRYKBN-LIST(2)
            MOVE    2                   TO  SPA-GMN-SRYKBN-MAX
+      *    診療科初期表示
+           MOVE    "0 標準"            TO  SPA-GMN-SRYKA-LIST(1)
+           MOVE    "1 前回表示科"      TO  SPA-GMN-SRYKA-LIST(2)
+           MOVE    "2 全科"            TO  SPA-GMN-SRYKA-LIST(3)
+           MOVE    3                   TO  SPA-GMN-SRYKA-MAX
       *
            EVALUATE    SPA-W01-KANRICD
       *        診療行為情報
@@ -2053,9 +2068,12 @@
                INITIALIZE  SYS-1043-REC
            END-IF
       *
-      *    主病名確認メッセージ表示有無
+      *    全科の表示順区分
            MOVE    SYS-1043-SRYKBN-FLG
                                        TO  SPA-GMN-SRYKBN-FLG
+      *    診療科の初期表示
+           MOVE    SYS-1043-SRYKA-FLG
+                                       TO  SPA-GMN-SRYKA-FLG
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING IDY         FROM    1   BY  1
@@ -2073,6 +2091,24 @@
            IF      FLG-OK              =   ZERO
                MOVE    SPA-GMN-SRYKBN-LIST (1)
                                        TO  SPA-GMN-SRYKBN-FLG-G
+           END-IF
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-GMN-SRYKA-MAX
+               IF      SPA-GMN-SRYKA-FLG
+                                       =   SPA-GMN-SRYKA-LIST(IDY)
+                                                             (1:1)
+                   MOVE    SPA-GMN-SRYKA-LIST(IDY)
+                                           TO  SPA-GMN-SRYKA-FLG-G
+                   MOVE    1               TO  FLG-OK
+                   MOVE    SPA-GMN-SRYKA-MAX
+                                           TO  IDY
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-SRYKA-LIST (1)
+                                       TO  SPA-GMN-SRYKA-FLG-G
            END-IF
       *
            MOVE    100                 TO  SPA-GMN-CUR
@@ -2251,8 +2287,9 @@
            MOVE    W07-SRYKA-DSPKBN    TO  SPA-GMN-SRYKA-DSPKBN-G
            MOVE    W07-SYOKBN-DSPKBN   TO  SPA-GMN-SYOKBN-DSPKBN-G
       *
-      *    病名機能情報
+      *    会計照会機能情報 
            MOVE    W07-SRYKBN-FLG      TO  SPA-GMN-SRYKBN-FLG-G
+           MOVE    W07-SRYKA-FLG       TO  SPA-GMN-SRYKA-FLG-G
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -2433,6 +2470,10 @@
       *            会計照会全科表示順
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4311-SRYKBN-FLG-CHK-SEC
+                   END-IF
+      *            診療科の初期表示
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4311-SRYKA-FLG-CHK-SEC
                    END-IF
            END-EVALUATE
       *
@@ -3787,6 +3828,30 @@
            .
        4311-SRYKBN-FLG-CHK-EXT.
            EXIT.
+      *****************************************************************
+      *    診療科の初期表示チェック処理（会計照会機能情報）
+      *****************************************************************
+       4311-SRYKA-FLG-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-SRYKA-MAX
+               IF      SPA-GMN-SRYKA-FLG
+                                       =   SPA-GMN-SRYKA-LIST(IDX)
+                                                             (1:1)
+                   MOVE    SPA-GMN-SRYKA-LIST(IDX)
+                                           TO  SPA-GMN-SRYKA-FLG-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    101             TO  SPA-GMN-CUR
+               MOVE    "5002"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       4311-SRYKA-FLG-CHK-EXT.
+           EXIT.
       *
       *****************************************************************
       *    戻る　処理
@@ -4686,6 +4751,7 @@
            MOVE    SPA-W01-STYUKYMD        TO  SYS-1043-STYUKYMD
            MOVE    SPA-W01-EDYUKYMD        TO  SYS-1043-EDYUKYMD
            MOVE    SPA-GMN-SRYKBN-FLG      TO  SYS-1043-SRYKBN-FLG
+           MOVE    SPA-GMN-SRYKA-FLG       TO  SYS-1043-SRYKA-FLG
       *
            MOVE    SYS-1043-REC            TO  SYSKANRI-REC
       *
@@ -5317,6 +5383,14 @@
                                        TO  W07-SRYKBN-FLG-ITEM(IDX)
            END-PERFORM
            MOVE    SPA-GMN-SRYKBN-MAX  TO  W07-SRYKBN-FLG-COUNT
+      *    診療科の初期表示（会計照会機能情報）
+           MOVE    SPA-GMN-SRYKA-FLG-G TO  W07-SRYKA-FLG
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-SRYKA-MAX
+               MOVE    SPA-GMN-SRYKA-LIST (IDX)
+                                       TO  W07-SRYKA-FLG-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-SRYKA-MAX   TO  W07-SRYKA-FLG-COUNT
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -5570,6 +5644,9 @@
       *        会計照会機能情報
                WHEN    "5001"
                    MOVE    "全科の表示順区分がありません。"
+                                                       TO  SPA-ERRMSG
+               WHEN    "5002"
+                   MOVE    "診療科の初期表示区分がありません。"
                                                        TO  SPA-ERRMSG
       *
                WHEN    "0099"
@@ -5840,6 +5917,8 @@
       *
                WHEN    100
                    MOVE  "SRYKBN_FLG"      TO   MCP-WIDGET
+               WHEN    101
+                   MOVE  "SRYKA_FLG"       TO   MCP-WIDGET
       *
                WHEN    99
                    MOVE  "B12"             TO   MCP-WIDGET
@@ -6062,6 +6141,8 @@
                    MOVE    99              TO  SPA-GMN-CUR
       *
                WHEN    "SRYKBN_FLG"
+                   MOVE    101             TO  SPA-GMN-CUR
+               WHEN    "SRYKA_FLG"
                    MOVE    99              TO  SPA-GMN-CUR
            END-EVALUATE
       *
