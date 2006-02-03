@@ -154,6 +154,10 @@
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
       *
+           IF      SKARRK-SRYYM        =   SPACE
+               MOVE    SPA-SRYYMD(1:6)     TO  SKARRK-SRYYM
+           END-IF
+      *
            IF      SKARRK-SRYKA        =   SPACE
                MOVE    SPA-SRYKA           TO  SKARRK-SRYKA
            END-IF

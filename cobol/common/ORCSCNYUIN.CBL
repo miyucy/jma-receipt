@@ -427,6 +427,7 @@
       *
            MOVE    SPA-WORK            TO  SPA-K01KYOUTU
            MOVE    ZERO                TO  FLG-TOUYAKU
+           INITIALIZE                      TBL-NYU-SRYKA-AREA
       *
       *    剤番号テーブル
            INITIALIZE                  WRK-TBL-ZAINUM-AREA
@@ -557,6 +558,7 @@
            IF      ORCSCNYUIN-TAIINYMD =   SPACE OR  ALL "9"
                CONTINUE
            ELSE
+               MOVE    SPA-SRYKA           TO  TBL-NYU-SRYKA (01)
                PERFORM 500-SRYKARRK-UPD-SEC
            END-IF
       *
@@ -2406,6 +2408,9 @@
       *    退院日がある時、最終受診日を編集する
            INITIALIZE                  ORCSKARRKAREA
            MOVE    ORCSCNYUIN-YMD(1:6) TO  SKARRK-SRYYM
+           IF      ORCSCNYUIN-YMD      =   SPACE
+               MOVE    SPA-SRYYMD(1:6)     TO  SKARRK-SRYYM
+           END-IF
            MOVE    ORCSCNYUIN-TAIINYMD TO  SKARRK-LASTYMD
            MOVE    TBL-NYU-SRYKA (01)  TO  SKARRK-SRYKA
            CALL    "ORCSKARRK"         USING
@@ -2421,6 +2426,9 @@
                               (TBL-NYU-SRYKA (IDX-K)  =   SPACE)
                INITIALIZE                  ORCSKARRKAREA
                MOVE    ORCSCNYUIN-YMD(1:6) TO  SKARRK-SRYYM
+               IF      ORCSCNYUIN-YMD      =   SPACE
+                   MOVE    SPA-SRYYMD(1:6)     TO  SKARRK-SRYYM
+               END-IF
                MOVE    TBL-NYU-SRYKA(IDX-K)    TO  SKARRK-SRYKA
                CALL    "ORCSKARRK"         USING
                                            ORCSKARRKAREA
