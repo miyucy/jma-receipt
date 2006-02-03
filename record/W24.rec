@@ -36,13 +36,6 @@ W24	{
 		};
 		frame2	{
 			fixed8	{
-				CMB_GN_NYUSRY	{
-					GN_NYUSRY	{
-						value	varchar(28);
-					};
-					count	int;
-					item	varchar(28)[05];
-				};
 				CMB_GN_INKANSEN	{
 					GN_INKANSEN	{
 						value	varchar(28);

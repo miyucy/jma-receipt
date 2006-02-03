@@ -1605,7 +1605,7 @@
       *
            MOVE    W02-DISCOUNTBODY    TO  SPA-GMN-DISCOUNT-BODY
            MOVE    W02-DISCOUNTKBN     TO  SPA-GMN-DISCOUNT-KBN-G
-           MOVE    W02-DISCOUNTOBJ     TO  SPA-GMN-DISCOUNT-OBJ-G
+      *    MOVE    W02-DISCOUNTOBJ     TO  SPA-GMN-DISCOUNT-OBJ-G
       *
            MOVE    W02-CONDITIONBODY   TO  SPA-GMN-CONDITION-BODY
            MOVE    W02-CONDITIONWORD   TO  SPA-GMN-CONDITION-WORD
@@ -3444,13 +3444,13 @@
            END-PERFORM    
            MOVE    SPA-GMN-DISCOUNT-BODY    TO  W02-DISCOUNTBODY
            MOVE    SPA-GMN-DISCOUNT-KBN-G   TO  W02-DISCOUNTKBN
-           MOVE    3                   TO  W02-DISCOUNTOBJ-COUNT
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL ( IDX >       3 )
-               MOVE    SPA-GMN-DISCOUNT-OBJLST (IDX)
-                                       TO  W02-DISCOUNTOBJLST (IDX)
-           END-PERFORM    
-           MOVE    SPA-GMN-DISCOUNT-OBJ-G   TO  W02-DISCOUNTOBJ
+      *    MOVE    3                   TO  W02-DISCOUNTOBJ-COUNT
+      *    PERFORM VARYING IDX FROM    1   BY  1
+      *            UNTIL ( IDX >       3 )
+      *        MOVE    SPA-GMN-DISCOUNT-OBJLST (IDX)
+      *                                TO  W02-DISCOUNTOBJLST (IDX)
+      *    END-PERFORM    
+      *    MOVE    SPA-GMN-DISCOUNT-OBJ-G   TO  W02-DISCOUNTOBJ
       *
       *    医療機関情報ー状態コメント情報
            MOVE    SPA-GMN-CONDITION-BODY   TO  W02-CONDITIONBODY

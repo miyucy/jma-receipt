@@ -225,9 +225,6 @@ O04	{
 		SKJFTN	{
 			value	number(8);
 		};
-		YKZFTN	{
-			value	number(8);
-		};
 		RJNFTN	{
 			value	number(8);
 		};

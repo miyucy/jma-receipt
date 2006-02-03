@@ -237,9 +237,6 @@ S03N	{
 		SKJFTN	{
 			value	number(10);
 		};
-		YKZFTN	{
-			value	number(10);
-		};
 		RJNFTN	{
 			value	number(10);
 		};

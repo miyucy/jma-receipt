@@ -942,29 +942,6 @@
 
     <widget>
       <class>GtkNumberEntry</class>
-      <name>MAEUKE</name>
-      <x>2000</x>
-      <y>300</y>
-      <width>85</width>
-      <height>24</height>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Tue, 26 Dec 2000 01:04:18 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Tue, 26 Dec 2000 01:04:36 GMT</last_modification_time>
-      </signal>
-      <editable>True</editable>
-      <format>ZZZZZ</format>
-    </widget>
-
-    <widget>
-      <class>GtkNumberEntry</class>
       <name>SELNUM</name>
       <x>75</x>
       <y>675</y>
@@ -985,22 +962,6 @@
       </signal>
       <editable>True</editable>
       <format>ZZZ</format>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label2326</name>
-      <x>2000</x>
-      <y>300</y>
-      <width>14</width>
-      <height>24</height>
-      <label>円</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
     </widget>
 
     <widget>
@@ -1075,22 +1036,6 @@
       <width>70</width>
       <height>24</height>
       <label>保険組合せ</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label15</name>
-      <x>2000</x>
-      <y>300</y>
-      <width>56</width>
-      <height>24</height>
-      <label>前受け金</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>

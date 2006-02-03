@@ -160,10 +160,6 @@ I01	{
 			value	varchar(60);
 			state	int;
 		};
-		MAEUKE	{
-			value	number(5);
-			state	int;
-		};
 		CMB_SEIKYU	{
 			SEIKYU	{
 				value	varchar(24);

@@ -1851,7 +1851,7 @@
       *    特定入院
            MOVE    I01-TOKNYUIN        TO  SPA-GMN-I01-TOKNYUIN
       *    前受け金
-           MOVE    I01-MAEUKE          TO  SPA-GMN-I01-MAEUKE
+      *    MOVE    I01-MAEUKE          TO  SPA-GMN-I01-MAEUKE
       *    定期請求
            MOVE    I01-SEIKYU          TO  SPA-GMN-I01-SEIKYU
       *    検索時患者表示
@@ -13211,7 +13211,7 @@
            MOVE    SPA-GMN-I01-SNTNYUIN    TO  I01-SNTNYUIN
       *
       *    前受け金
-           MOVE    SPA-GMN-I01-MAEUKE      TO  I01-MAEUKE
+      *    MOVE    SPA-GMN-I01-MAEUKE      TO  I01-MAEUKE
       *
       *    定期請求
            MOVE    SPA-GMN-I01-SEIKYU      TO  I01-SEIKYU
@@ -13373,8 +13373,8 @@
            MOVE    SPA-GMN-I01-SNTNYUIN-STT
                                        TO  I01-SNTNYUIN-STT
       *    前受け金
-           MOVE    SPA-GMN-I01-MAEUKE-STT
-                                       TO  I01-MAEUKE-STT
+      *    MOVE    SPA-GMN-I01-MAEUKE-STT
+      *                                TO  I01-MAEUKE-STT
       *    定期請求
            MOVE    SPA-GMN-I01-SEIKYU-STT
                                        TO  I01-SEIKYU-STT

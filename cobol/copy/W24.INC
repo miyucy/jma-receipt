@@ -44,12 +44,6 @@
                                                OCCURS  5.
               04  W24-FRAME2.
                 05  W24-FIXED8.
-                  06  W24-CMB-GN-NYUSRY.
-                    07  W24-GN-NYUSRY          PIC X(28).
-                    07  W24-GN-NYUSRY-CNT      PIC S9(9)
-                                               BINARY.
-                    07  W24-GN-NYUSRY-ITM      PIC X(28)
-                                               OCCURS  5.
                   06  W24-CMB-GN-INKANSEN.
                     07  W24-GN-INKANSEN        PIC X(28).
                     07  W24-GN-INKANSEN-CNT    PIC S9(9)

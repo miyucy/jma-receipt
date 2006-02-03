@@ -1248,7 +1248,7 @@
       *    入金方法
            MOVE    S06-NYKNHOHO        TO  SPA-GMN-NYKNHOHO-G
       *    請求書発行区分
-           MOVE    S06-SKYPRTKBN       TO  SPA-GMN-SKYPRTKBN-G
+      *    MOVE    S06-SKYPRTKBN       TO  SPA-GMN-SKYPRTKBN-G
       *    外来入金額
            MOVE    S06-GAI-NYUKIN      TO  SPA-GMN-GAI-NYUKIN
       *    入院入金額
@@ -2228,15 +2228,15 @@
                                        TO  S06-NYKNHOHO-ITEM (IDX1)
            END-PERFORM
       *
-           MOVE    SPA-GMN-SKYPRTKBN-G
-                                       TO  S06-SKYPRTKBN
-           MOVE    SPA-GMN-SKYPRTKBN-MAX
-                                       TO  S06-SKYPRTKBN-COUNT
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   SPA-GMN-SKYPRTKBN-MAX )
-               MOVE    SPA-GMN-SKYPRTKBNLST (IDX1)
-                                       TO  S06-SKYPRTKBN-ITEM (IDX1)
-           END-PERFORM
+      *    MOVE    SPA-GMN-SKYPRTKBN-G
+      *                                TO  S06-SKYPRTKBN
+      *    MOVE    SPA-GMN-SKYPRTKBN-MAX
+      *                                TO  S06-SKYPRTKBN-COUNT
+      *    PERFORM VARYING IDX1    FROM    1   BY  1
+      *            UNTIL ( IDX1    >   SPA-GMN-SKYPRTKBN-MAX )
+      *        MOVE    SPA-GMN-SKYPRTKBNLST (IDX1)
+      *                                TO  S06-SKYPRTKBN-ITEM (IDX1)
+      *    END-PERFORM
       *
            MOVE    SPA-GMN-NYU-NYUKIN  TO  S06-NYU-NYUKIN
            MOVE    SPA-GMN-NYU-NYUKIN-MAX

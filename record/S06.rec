@@ -52,13 +52,6 @@ S06	{
 			count	int;
 			item	varchar(33)[50];
 		};
-		CMB_SKYPRTKBN	{
-			SKYPRTKBN	{
-				value	varchar(14);
-			};
-			count	int;
-			item	varchar(14)[2];
-		};
 		GAI_NYUKIN	{
 			value	number(9);
 			state	int;

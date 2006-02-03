@@ -432,38 +432,6 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label2326</name>
-      <x>2000</x>
-      <y>300</y>
-      <width>14</width>
-      <height>24</height>
-      <label>円</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label15</name>
-      <x>2000</x>
-      <y>300</y>
-      <width>56</width>
-      <height>24</height>
-      <label>前受け金</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkPandaEntry</class>
       <name>SNTNYUIN</name>
       <x>95</x>

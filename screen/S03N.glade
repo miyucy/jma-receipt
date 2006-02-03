@@ -1057,17 +1057,6 @@
 
     <widget>
       <class>GtkNumberEntry</class>
-      <name>YKZFTN</name>
-      <x>2000</x>
-      <y>436</y>
-      <width>88</width>
-      <height>24</height>
-      <editable>False</editable>
-      <format>ZZ,ZZZ,ZZZ</format>
-    </widget>
-
-    <widget>
-      <class>GtkNumberEntry</class>
       <name>RJNFTN</name>
       <x>680</x>
       <y>192</y>
@@ -1367,22 +1356,6 @@
       <y>56</y>
       <width>1024</width>
       <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label365</name>
-      <x>2000</x>
-      <y>440</y>
-      <width>96</width>
-      <height>18</height>
-      <label>ÃÙ∫ﬁ∞Ï…Ù…È√¥</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
     </widget>
 
     <widget>
