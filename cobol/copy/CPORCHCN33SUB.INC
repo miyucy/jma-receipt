@@ -47,8 +47,10 @@
              04  LNK-ORCHCN33SUB-HENKYAKU-TABLE.
       *入院料返却テーブル
                05  LNK-ORCHCN33SUB-HENKYAKU-TBL      OCCURS  31.
-      *点数
+      *入院点数
                    07  LNK-ORCHCN33SUB-TEN           PIC  9(07).
+      *その他点数（療養担当手当）
+                   07  LNK-ORCHCN33SUB-ETCTEN        PIC  9(07).
       *食事療養
                    07  LNK-ORCHCN33SUB-SKJ           PIC  9(07).
       *診療科別入院点数返却テーブル

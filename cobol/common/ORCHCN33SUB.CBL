@@ -934,6 +934,39 @@
            MOVE    "NYUINACCT-KEY17"           TO  ORC-DBPATH
            PERFORM   910-DB-CLOSE-SEC
       *
+      *ËÌ³¤Æ»¤ÎÎÅÍÜÃ´Åö¼êÅö¼èÆÀ¡ÊÆþ±¡²ñ·×¤è¤ê¡Ë
+           MOVE    ZERO                    TO  KSN-IDX
+           INITIALIZE                          NYUINACCT-REC
+           MOVE    LNK-ORCHCN33SUB-HOSPID   TO  NACCT-HOSPID
+           MOVE    LNK-ORCHCN33SUB-PTID     TO  NACCT-PTID
+           MOVE    LNK-ORCHCN33SUB-SANTEIYM TO  NACCT-SRYYM
+           MOVE    "7"                     TO  NACCT-ZAISKBKBN
+           MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
+           PERFORM 910-NYUINACCT-SELECT-SEC
+           IF      FLG-NYUINACCT           =   ZERO
+               MOVE     "NYUINACCT-KEY17"  TO  ORC-DBPATH
+               PERFORM   910-NYUINACCT-READ-SEC
+               PERFORM   UNTIL   (FLG-NYUINACCT    =   1)
+      *            Æþ±¡ÎÁ²Ã»»¤ÎÂàÈò
+                   PERFORM    VARYING   IDX1   FROM   1   BY   1
+                              UNTIL     IDX1   >   31
+                       IF    (WRK-NYUINKHN(IDX1) NOT = SPACE)
+                       AND   (WRK-GAIHAKU-KBN(IDX1)  =  ZERO  OR  4)
+                       AND   (NACCT-DAY(IDX1)    NOT =  ZERO)
+                           MOVE   NACCT-ZAITEN  
+                                        TO  LNK-ORCHCN33SUB-ETCTEN
+                                                             (IDX1)
+      *
+                       END-IF
+                   END-PERFORM
+                   MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
+                   PERFORM 910-NYUINACCT-READ-SEC
+               END-PERFORM
+           END-IF
+      *    Æþ±¡²ñ·×¥¯¥í¡¼¥º
+           MOVE    "NYUINACCT-KEY17"           TO  ORC-DBPATH
+           PERFORM   910-DB-CLOSE-SEC
+      *
       *    ¿ÇÎÅ²ñ·×¥Æ¡¼¥Ö¥ë¤è¤êÆþ±¡ÎÁ²Ã»»¤Î¼èÆÀ
            IF   LNK-ORCHCN33SUB-SHORIKBN       =   SPACE
                PERFORM    210-NYUKSN-SRYACCT-GET-SEC
@@ -1202,6 +1235,11 @@
                PERFORM    210-NYUINDAY-SET-SEC
            END-IF
       *
+      *     PERFORM   VARYING   IDX1   FROM  1  BY  1
+      *              UNTIL   IDX1  >  31
+      *         DISPLAY "IDX1 = "  IDX1
+      *         DISPLAY "ETCTEN = "  LNK-ORCHCN33SUB-ETCTEN(IDX1)
+      *     END-PERFORM
            .
        200-MAIN-EXT.
            EXIT.
