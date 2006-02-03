@@ -1277,6 +1277,8 @@
            MOVE    LNK-ORCHCN33SUB-TEN(IDX)    TO  TBL-DAY-ZAITEN(08)
       *    食事療養
            MOVE    LNK-ORCHCN33SUB-SKJ(IDX)    TO  TBL-DAY-ZAITEN(10)
+      *    その他点数（療養担当手当）
+           ADD     LNK-ORCHCN33SUB-ETCTEN(IDX) TO  TBL-DAY-ZAITEN(07)
       *
            PERFORM VARYING     IDX1    FROM    1   BY  1
                    UNTIL       IDX1    >   11
