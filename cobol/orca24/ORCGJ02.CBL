@@ -1864,11 +1864,11 @@
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1043-REC
                MOVE    SYS-1043-SRYKBN-FLG TO  SPA-NAI-SRYKBN-FLG
-      *!       IF      SYS-1043-SRYKA-FLG  =   SPACE
+               IF      SYS-1043-SRYKA-FLG  =   SPACE
                    MOVE    ZERO                TO  SPA-NAI-SRYKA-FLG
-      *!       ELSE
-      *!           MOVE    SYS-1043-SRYKA-FLG  TO  SPA-NAI-SRYKA-FLG
-      *!       END-IF
+               ELSE
+                   MOVE    SYS-1043-SRYKA-FLG  TO  SPA-NAI-SRYKA-FLG
+               END-IF
            END-IF
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -5291,7 +5291,6 @@
            END-IF
       *
       *    ¿ÇÎÅ²ÊÍúÎòÊÑ¹¹
-           MOVE    SPA-SRYKA           TO  WRK-SRYKA
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   10  )   OR
                               (TBL-SRYKA (IDX)     =   SPACE)  OR
@@ -5299,12 +5298,14 @@
                INITIALIZE                  ORCSKARRKAREA
                MOVE    SPA-GMN-PTID        TO  SPA-PTID
                MOVE    SPA-NAI-SRYYM       TO  SKARRK-SRYYM
-               MOVE    TBL-SRYKA (IDX)     TO  SPA-SRYKA
+               MOVE    TBL-SRYKA (IDX)     TO  SKARRK-SRYKA
                CALL    "ORCSKARRK"         USING
                                            ORCSKARRKAREA
                                            SPA-AREA
+               IF      SKARRK-RC       NOT =   ZERO
+                   MOVE    "0010"              TO  SPA-ERRCD
+               END-IF
            END-PERFORM
-           MOVE    WRK-SRYKA           TO  SPA-SRYKA
       *
       *    ¼õ¿ÇÏ¢ÈÖ¤ÎÊÑ¹¹ÆüºÆÊÔ½¸
            MOVE    ZERO                TO  FLG-JYURRK-UPD
@@ -5836,7 +5837,6 @@
            PERFORM 990-DBCLOSE-SEC
       *
       *    ¿ÇÎÅ²ÊÍúÎòÊÑ¹¹
-           MOVE    SPA-SRYKA           TO  WRK-SRYKA
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   10  )   OR
                               (TBL-SRYKA (IDX)     =   SPACE)  OR
@@ -5844,12 +5844,14 @@
                INITIALIZE                  ORCSKARRKAREA
                MOVE    SPA-GMN-PTID        TO  SPA-PTID
                MOVE    SPA-NAI-SRYYM       TO  SKARRK-SRYYM
-               MOVE    TBL-SRYKA (IDX)     TO  SPA-SRYKA
+               MOVE    TBL-SRYKA (IDX)     TO  SKARRK-SRYKA
                CALL    "ORCSKARRK"         USING
                                            ORCSKARRKAREA
                                            SPA-AREA
+               IF      SKARRK-RC       NOT =   ZERO
+                   MOVE    "0010"              TO  SPA-ERRCD
+               END-IF
            END-PERFORM
-           MOVE    WRK-SRYKA           TO  SPA-SRYKA
       *
            IF     (SPA-NYUGAIKBN       =   "2"   )  AND
                   (SPA-RRK-HKNCOMBI(SPA-NAI-RRKSELNUM)
@@ -6252,6 +6254,10 @@
       *****INITIALIZE                  SPA-J02-AREA
            IF      SPA-GMN-NYUGAIKBN   =   "2"
                INITIALIZE                  SPA-GMN-NYUIN-AREA
+           ELSE
+      *       Æþ±¡´ü´Ö
+               PERFORM 410101-NYUINRRK-CHK-SEC
+               MOVE    "1"             TO  SPA-NYUGAIKBN
            END-IF
       *
       *    ¼õ¿ÇÍúÎòÊÔ½¸
@@ -8508,11 +8514,13 @@
                        MOVE    SPA-GMN-PTID        TO  SPA-PTID
                        MOVE    SPA-NAI-SRYYM       TO  SKARRK-SRYYM
                        MOVE    SPA-NAI-SRYKA (IDX)
-                                                   TO  SPA-SRYKA
-      *
+                                                   TO  SKARRK-SRYKA
                        CALL    "ORCSKARRK"         USING
                                                    ORCSKARRKAREA
                                                    SPA-AREA
+                       IF      SKARRK-RC       NOT =   ZERO
+                           MOVE    "0010"              TO  SPA-ERRCD
+                       END-IF
                    END-IF
                END-PERFORM
                MOVE    WRK-SRYKA           TO  SPA-SRYKA
@@ -8523,13 +8531,10 @@
                INITIALIZE                  ORCSKARRKAREA
                MOVE    SPA-GMN-PTID        TO  SPA-PTID
                MOVE    SPA-NAI-SRYYM       TO  SKARRK-SRYYM
-               MOVE    SPA-SRYKA           TO  WRK-SRYKA
-               MOVE    SPA-J01-SRYKA       TO  SPA-SRYKA
-      *
+               MOVE    SPA-J01-SRYKA       TO  SKARRK-SRYKA
                CALL    "ORCSKARRK"         USING
                                            ORCSKARRKAREA
                                            SPA-AREA
-               MOVE    WRK-SRYKA           TO  SPA-SRYKA
       *
                IF      SKARRK-ERRMSG   NOT =   SPACE
                    MOVE    "0010"              TO  SPA-ERRCD
