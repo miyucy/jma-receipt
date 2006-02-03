@@ -32,6 +32,8 @@
       *                                     Ï·¿ÍÀ­Ç§ÃÎ¾É¼À´µ¼£ÎÅÉÂÅïÆþ±¡ÎÁ£±
       *                                     Ï·¿ÍÀ­Ç§ÃÎ¾É¼À´µ¼£ÎÅÉÂÅïÆþ±¡ÎÁ£²
       *  01.00.02    NACL-¾®Æ¦Âô  06/01/27  É¸·çÂÐ±þ
+      *  01.00.03    NACL-¾®Æ¦Âô  06/02/01  ¼ç²Ê»»ÄêÍÑ¤ÎÊÖµÑÃÍÂÐ±þ
+      *  01.00.04    NACL-¾®Æ¦Âô  06/02/03  ÎÅÍÜÃ´Åö¼êÅö¤ÆÊÖµÑÃÍÂÐ±þ
       *****************************************************************
       *
       *
@@ -468,7 +470,7 @@
       *
       *    ¥Æ¥¹¥ÈÍÑ
       *     MOVE   "00"     TO    LNK-ORCHCN33SUB-SRYKA
-      *     MOVE   "2"     TO    LNK-ORCHCN33SUB-SHORIKBN
+      *     MOVE   "1"     TO    LNK-ORCHCN33SUB-SHORIKBN
       *ÂÐ¾ÝÆþ±¡²Ê¤Î¼èÆÀ
            INITIALIZE                           TABLE-NYUINKA
            MOVE    ZERO                     TO  IDX-ST
@@ -1235,11 +1237,6 @@
                PERFORM    210-NYUINDAY-SET-SEC
            END-IF
       *
-      *     PERFORM   VARYING   IDX1   FROM  1  BY  1
-      *              UNTIL   IDX1  >  31
-      *         DISPLAY "IDX1 = "  IDX1
-      *         DISPLAY "ETCTEN = "  LNK-ORCHCN33SUB-ETCTEN(IDX1)
-      *     END-PERFORM
            .
        200-MAIN-EXT.
            EXIT.
@@ -2178,6 +2175,7 @@
       *
            PERFORM    VARYING   IDX1   FROM  1  BY  1
                       UNTIL     (IDX1   >     31)
+               ADD    LNK-ORCHCN33SUB-ETCTEN(IDX1)  TO  WRK-SO-TEN(IDX1)
                IF     WRK-SO-TEN(IDX1)       NOT =   ZERO
                     MOVE   ZERO    TO   FLG-HKNCOMBI-MATCH
                     MOVE   ZERO    TO   FLG-NYUINKA-MATCH
@@ -2186,13 +2184,6 @@
                              (FLG-HKNCOMBI-MATCH   =   1)    OR
                              (LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM
                                  (IDX-HKNCOMBI)   =   ZERO)
-                        DISPLAY "IDX1 = " IDX1
-                        DISPLAY "TBL-HKNCOMBI(IDX1) = "
-                                 TBL-HKNCOMBI(IDX1)
-                        DISPLAY "IDX-HKNCOMBI = " IDX-HKNCOMBI
-                        DISPLAY "LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM="
-                                 LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM
-                                 (IDX-HKNCOMBI)
                         IF  LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM
                               (IDX-HKNCOMBI)    =   TBL-HKNCOMBI(IDX1)
                              DISPLAY "MATCING OK"
