@@ -533,6 +533,11 @@
            IF      SPA-ERRCD           =   SPACE
                INITIALIZE                  ORCSKARRKAREA
                MOVE    SPA-SRYYMD(1:6)     TO  SKARRK-SRYYM
+               IF      ORCSCNYUIN-TAIINYMD =   SPACE OR  ALL "9"
+                   CONTINUE
+               ELSE
+                   MOVE    ORCSCNYUIN-TAIINYMD TO  SKARRK-LASTYMD
+               END-IF
                CALL    "ORCSKARRK"         USING
                                            ORCSKARRKAREA
                                            SPA-AREA
@@ -554,13 +559,13 @@
                END-IF
            END-IF
       *
-      *    退院日がある時、最終受診日を編集する
-           IF      ORCSCNYUIN-TAIINYMD =   SPACE OR  ALL "9"
-               CONTINUE
-           ELSE
-               MOVE    SPA-SRYKA           TO  TBL-NYU-SRYKA (01)
-               PERFORM 500-SRYKARRK-UPD-SEC
-           END-IF
+      *****退院日がある時、最終受診日を編集する
+      *    IF      ORCSCNYUIN-TAIINYMD =   SPACE OR  ALL "9"
+      *        CONTINUE
+      *    ELSE
+      *        MOVE    SPA-SRYKA           TO  TBL-NYU-SRYKA (01)
+      *        PERFORM 500-SRYKARRK-UPD-SEC
+      *****END-IF
       *
       *    ワーク診療行為マスタ−が存在した時、削除する
            PERFORM 400-WKSRYACT-DEL-SEC
