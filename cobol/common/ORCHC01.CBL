@@ -47,6 +47,7 @@
       *  02.00.03    NACL-多々納  03/10/27  継続病名のみ編集追加
       *  02.00.04    NACL-多々納  05/03/03  病名なし追加
       *  02.00.04    NACL-多々納  05/10/26  MONFUNCへ変更
+      *  02.00.05    NACL-多々納  06/02/06  一括印刷追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -296,6 +297,10 @@
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
       *
+      *一括用
+      *    印刷ＤＢ更新サブ
+           COPY    "CPORCSPRT.INC".
+      *
       *    保険者号マスタ
        01  HKNJAINF-REC.
            COPY    "CPHKNJAINF.INC".
@@ -313,7 +318,7 @@
         LINKAGE                     SECTION.
       *
            COPY    "COMMON-SPA".
-      *    入院カルテ出力パラメタ
+      *    カルテ出力パラメタ
            COPY    "CPORCHC01.INC".
       *
        PROCEDURE                   DIVISION    USING
@@ -333,12 +338,17 @@
            END-IF
       *
            EVALUATE    ORCHC01-SYORIKBN
-      *        カルテ印刷
+      *        カルテ印刷（オンライン）
                WHEN    "1"
                    PERFORM 200-ALL-PRT-SEC
-      *        続紙頭書
+      *        続紙頭書（オンライン）
                WHEN    "2"
                    PERFORM 300-HEAD-PRT-SEC
+      *---(02.00.05) LINE ADD START ------------------------------------
+      *        一括印刷
+               WHEN    "3"
+                   PERFORM 400-BACHI-PRT-SEC
+      *---(02.00.05) LINE ADD END   ------------------------------------
            END-EVALUATE
       *
            .
@@ -441,6 +451,25 @@
       *    カルテ印刷処理
       *****************************************************************
        20031-HC01-PRINT-SEC             SECTION.
+      *---(02.00.05) LINE UPD START ------------------------------------
+      *
+           EVALUATE    ORCHC01-SYORIKBN
+      *        オンライン
+               WHEN    "1"
+               WHEN    "2"
+                   PERFORM 20031-HC01-ONL-SEC
+      *        一括印刷
+               WHEN    "3"
+                   PERFORM 40001-HC01-BAT-SEC
+           END-EVALUATE
+      *
+           .
+       20031-HC01-PRINT-EXT.
+           EXIT.
+      *****************************************************************
+      *    カルテ印刷処理（オンライン）
+      *****************************************************************
+       20031-HC01-ONL-SEC             SECTION.
       *
       *    ファイルＯＰＥＮ
            MOVE    "HC01"              TO  HC01PARA-FORM-ID
@@ -465,13 +494,32 @@
                                       ORCSMKPRTAREA
       *
            .
-       20031-HC01-PRINT-EXT.
+       20031-HC01-ONL-EXT.
            EXIT.
       *
       *****************************************************************
       *    続紙印刷処理
       *****************************************************************
        20032-HC011-PRINT-SEC             SECTION.
+      *
+           EVALUATE    ORCHC01-SYORIKBN
+      *        オンライン
+               WHEN    "1"
+               WHEN    "2"
+                   PERFORM 20032-HC011-ONL-SEC
+      *        一括印刷
+               WHEN    "3"
+                   PERFORM 40002-HC011-BAT-SEC
+           END-EVALUATE
+      *
+           .
+       20032-HC011-PRINT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    続紙印刷処理（オンライン）
+      *****************************************************************
+       20032-HC011-ONL-SEC             SECTION.
       *
       *    ファイルＯＰＥＮ
            MOVE    "HC01"              TO  HC01PARA-FORM-ID
@@ -496,8 +544,9 @@
                                       ORCSMKPRTAREA
       *
            .
-       20032-HC011-PRINT-EXT.
+       20032-HC011-ONL-EXT.
            EXIT.
+      *---(02.00.05) LINE UPD END   ------------------------------------
       *
       *****************************************************************
       *    カルテ編集処理
@@ -1075,7 +1124,74 @@
            .
        300-HEAD-PRT-EXT.
            EXIT.
+      *---(02.00.05) LINE ADD START ------------------------------------
+      *****************************************************************
+      *    バッチ一括印刷処理
+      *****************************************************************
+       400-BACHI-PRT-SEC        SECTION.
       *
+           MOVE    ORCHC01-BYOMEIFLG   TO  SYS-1017-KARUTE-BYOMEI
+      *    印刷項目編集
+           PERFORM 2001-HC01-SYORI-SEC
+      *    病名を印刷する
+           IF      SYS-1017-KARUTE-BYOMEI  =   "2"
+      *        病名なしの時
+      *        カルテ印刷
+               PERFORM 20031-HC01-PRINT-SEC
+           ELSE
+               PERFORM 2002-BYOMEI-HEN-SEC
+           END-IF
+      *
+           .
+       400-BACHI-PRT-EXT.
+           EXIT.
+      *****************************************************************
+      *    カルテ印刷処理（パッチ）
+      *****************************************************************
+       40001-HC01-BAT-SEC             SECTION.
+      *
+           MOVE    ORCHC01-PRTAREA     TO  ORCSPRTAREA
+      *
+           MOVE    HC01                TO  SPRT-PRTDATA
+           MOVE    "1"                 TO  SPRT-SITEKBN
+           MOVE    "HCM01.red"         TO  SPRT-PRTID
+           MOVE    "診療録（カルテ１号紙）（外来）一括"
+                                       TO  SPRT-TITLE
+           CALL    "ORCSPRT"           USING
+                                       ORCSPRTAREA
+           IF      SPRT-RETURN         =   ZERO
+               ADD     1               TO  ORCHC01-CNT
+           ELSE
+               MOVE    9               TO  ORCHC01-RC
+           END-IF
+      *
+           .
+       40001-HC01-BAT-EXT.
+           EXIT.
+      *****************************************************************
+      *    続紙印刷処理（パッチ）
+      *****************************************************************
+       40002-HC011-BAT-SEC             SECTION.
+      *
+           MOVE    ORCHC01-PRTAREA     TO  ORCSPRTAREA
+      *
+           MOVE    HC011               TO  SPRT-PRTDATA
+           MOVE    "1"                 TO  SPRT-SITEKBN
+           MOVE    "HCM011.red"        TO  SPRT-PRTID
+           MOVE    "診療録（カルテ１号紙）（外来）一括"
+                                       TO  SPRT-TITLE
+           CALL    "ORCSPRT"           USING
+                                       ORCSPRTAREA
+           IF      SPRT-RETURN         =   ZERO
+               ADD     1               TO  ORCHC01-CNT
+           ELSE
+               MOVE    9               TO  ORCHC01-RC
+           END-IF
+      *
+           .
+       40002-HC011-BAT-EXT.
+           EXIT.
+      *---(02.00.05) LINE ADD END   ------------------------------------
       *****************************************************************
       *    西暦日本語変換処理
       *****************************************************************
