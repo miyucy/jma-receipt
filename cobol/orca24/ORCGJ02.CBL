@@ -5299,6 +5299,12 @@
                MOVE    SPA-GMN-PTID        TO  SPA-PTID
                MOVE    SPA-NAI-SRYYM       TO  SKARRK-SRYYM
                MOVE    TBL-SRYKA (IDX)     TO  SKARRK-SRYKA
+               IF     (SPA-NYUGAIKBN       =   "1"  )  AND
+                      (TBL-SRYKA (IDX)     =   SPA-NAI-NYUINKA) AND
+                      (SPA-NAI-TAIINYMD    NOT =   "99999999"
+                                               AND  SPACE    )
+                   MOVE    SPA-NAI-TAIINYMD    TO  SKARRK-LASTYMD
+               END-IF
                CALL    "ORCSKARRK"         USING
                                            ORCSKARRKAREA
                                            SPA-AREA
@@ -5845,6 +5851,12 @@
                MOVE    SPA-GMN-PTID        TO  SPA-PTID
                MOVE    SPA-NAI-SRYYM       TO  SKARRK-SRYYM
                MOVE    TBL-SRYKA (IDX)     TO  SKARRK-SRYKA
+               IF     (SPA-NYUGAIKBN       =   "1"  )  AND
+                      (TBL-SRYKA (IDX)     =   SPA-NAI-NYUINKA) AND
+                      (SPA-NAI-TAIINYMD    NOT =   "99999999"
+                                               AND  SPACE    )
+                   MOVE    SPA-NAI-TAIINYMD    TO  SKARRK-LASTYMD
+               END-IF
                CALL    "ORCSKARRK"         USING
                                            ORCSKARRKAREA
                                            SPA-AREA
@@ -8515,6 +8527,13 @@
                        MOVE    SPA-NAI-SRYYM       TO  SKARRK-SRYYM
                        MOVE    SPA-NAI-SRYKA (IDX)
                                                    TO  SKARRK-SRYKA
+                      IF     (SPA-NYUGAIKBN       =   "1"  )  AND
+                             (TBL-SRYKA (IDX)     =   SPA-NAI-NYUINKA)
+                      AND    (SPA-NAI-TAIINYMD    NOT =   "99999999"
+                                                  AND  SPACE    )
+                           MOVE    SPA-NAI-TAIINYMD
+                                                  TO  SKARRK-LASTYMD
+                       END-IF
                        CALL    "ORCSKARRK"         USING
                                                    ORCSKARRKAREA
                                                    SPA-AREA
@@ -8532,6 +8551,12 @@
                MOVE    SPA-GMN-PTID        TO  SPA-PTID
                MOVE    SPA-NAI-SRYYM       TO  SKARRK-SRYYM
                MOVE    SPA-J01-SRYKA       TO  SKARRK-SRYKA
+               IF     (SPA-NYUGAIKBN       =   "1"  )  AND
+                      (SPA-J01-SRYKA       =   SPA-NAI-NYUINKA) AND
+                      (SPA-NAI-TAIINYMD    NOT =   "99999999"
+                                               AND  SPACE    )
+                   MOVE    SPA-NAI-TAIINYMD    TO  SKARRK-LASTYMD
+               END-IF
                CALL    "ORCSKARRK"         USING
                                            ORCSKARRKAREA
                                            SPA-AREA
