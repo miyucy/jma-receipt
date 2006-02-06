@@ -770,3 +770,19 @@ path	key32 	{
 	};
 };
 
+path	key33	{
+	DBSELECT	{
+		DECLARE tbl_jyurrk_key33_csr CURSOR FOR
+		SELECT *
+		FROM tbl_jyurrk
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+                        AND  (SRYYMD      >=  :SRYYMD
+                        AND   SRYYMD      <=  :UPSRYYMD)
+			AND   HKNCOMBINUM <>  '9999'
+                        AND   EDANUM      =    1
+			ORDER   BY        HKNCOMBINUM,SRYKA,SRYYMD
+		;
+	};
+};

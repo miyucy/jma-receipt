@@ -1113,6 +1113,7 @@ COPYS = \
         N22.INC \
         N21SCR-SPA \
         CPYAKUJYOTEMP.INC \
+        CPORCSTOTALACCT.INC \
 
 DBPATH = \
 	ORCA-DBPATH
