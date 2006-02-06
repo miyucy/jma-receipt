@@ -467,7 +467,7 @@
       *
       *    最終受診日（退院日）
            IF      SKARRK-LASTYMD  NOT =   SPACE
-               IF      SKARRK-LASTYMD      >=  WRK-NYULST-SRYYMD
+               IF      SKARRK-LASTYMD      >=  WRK-LST-SRYYMD
                    MOVE    SKARRK-LASTYMD  TO  WRK-LST-SRYYMD
                END-IF
            END-IF
