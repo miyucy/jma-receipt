@@ -81,6 +81,7 @@
       *                                     ÆÀ½¤Àµ
       *  01.02.25    NACL-ÌçÏÆ    06/02/01  £°£¹£¹£²£°£°£°¤Ç»Ï¤Þ¤ëÅêÌôÍÑ
       *                                     ¥³¥á¥ó¥È¤ÎÊÔ½¸ÂÐ±þ
+      *  01.02.26    NACL-ÌçÏÆ    06/02/07  ¿©»ö´ðËÜÎÁ¾ðÊó¡Ê¤½¤ÎÂ¾¡ËÊÔ½¸
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -234,6 +235,7 @@
            03  FLG-NYUINACCT                           PIC 9(01).
            03  FLG-NYUINACT                            PIC 9(01).
            03  FLG-ARI                                 PIC 9(01).
+           03  FLG-ARI2                                PIC 9(01).
            03  FLG-DAY21                               PIC 9(01).
            03  FLG-DAY24                               PIC 9(01).
            03  FLG-TENTEKI                             PIC 9(01).
@@ -288,6 +290,7 @@
            03  ID1                                     PIC 9(03).
            03  ID2                                     PIC 9(03).
            03  ID3                                     PIC 9(03).
+           03  ID4                                     PIC 9(03).
            03  IDU                                     PIC 9(03).
            03  NUM-IDX                                 PIC 9(01).
            03  SYUKEI-IDX                              PIC 9(03).
@@ -5214,6 +5217,30 @@
                   MOVE  SYU-SHOKUJI(ID1)        TO
                                        RECE82-SHOKUJIKHNRYO(ID2)
               END-IF
+      *
+              IF  FLG-ARI  =  ZERO
+              AND ID2      >   2
+                MOVE     ZERO     TO    FLG-ARI2
+                PERFORM  VARYING  ID4    FROM    1   BY  1
+                          UNTIL   ID4                           > 3
+                            OR    RECE82-SHOKUJIKHNRYO-ETC(ID4) = ZERO
+                            OR    FLG-ARI2                      = 1
+                    IF  SYU-SHOKUJI(ID1)   =
+                                         RECE82-SHOKUJIKHNRYO-ETC(ID4)
+                          ADD   SYU-SHOKUJI-NISSU(ID1)  TO
+                                         RECE82-SHOKUJIKHNNISSU-ETC(ID4)
+                          MOVE  1   TO   FLG-ARI2
+                    END-IF
+                END-PERFORM
+                IF  FLG-ARI2  =  ZERO
+                AND ID4      <=   3
+                    ADD   SYU-SHOKUJI-NISSU(ID1)  TO
+                                         RECE82-SHOKUJIKHNNISSU-ETC(ID4)
+                    MOVE  SYU-SHOKUJI(ID1)        TO
+                                         RECE82-SHOKUJIKHNRYO-ETC(ID4)
+                END-IF
+              END-IF
+      *
             END-IF
       *
            END-PERFORM

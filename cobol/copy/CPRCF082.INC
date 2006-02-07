@@ -29,6 +29,7 @@
       *                                     労災レセ回数記載：回数
       *                                     労災レセプト回数
       *                                     労災レセ回数記載の追加
+      *  01.01.05   NACL-門脇     06.02.07  食事基本料情報（その他）追加
       ************************************************************
       *01  RECE82-REC.
            03  RECE82-KEY.
@@ -223,6 +224,12 @@
                05  RECE82-SHOKUJIKHNRYO   PIC  9(09).
       *食事日数
                05  RECE82-SHOKUJIKHNNISSU PIC  9(02).
+      *食事基本料情報（その他）
+           03  RECE82-SHOKUJIKHNINF-ETC       OCCURS   3.
+      *食事基本料
+               05  RECE82-SHOKUJIKHNRYO-ETC   PIC  9(09).
+      *食事日数
+               05  RECE82-SHOKUJIKHNNISSU-ETC PIC  9(02).
       *合計日数（食事）
            03  RECE82-SHOKUJITOTALDAY     PIC  9(02).
       *合計金額（食事）（ハ又はホ）
