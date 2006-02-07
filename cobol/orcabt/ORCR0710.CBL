@@ -119,6 +119,8 @@
       *                                     Ï·¿Í¤ÏµëÉÕ³ä¹ç¤òµ­ºÜ
       *  02.07.05    NACL-Æ£¸¶    05/12/12  ÊÝ¸±ÍúÎò¤òÇ¯·îÆüµ­ºÜ¤ØÊÑ¹¹
       *  02.07.06    NACL-Æ£¸¶    05/12/12  ¹ñÊÝ¥ì¥»¥×¥ÈÊÔÄÖ½çÂÐ±þ
+      *  02.07.07    NACL-ÌçÏÆ    06/02/03  µÜ¾ë¸©ÃÏÊý¸øÈñ¿©»öÎÅÍÜÈñµ­ºÜÂÐ±þ
+      *  02.07.08    NACL-ÌçÏÆ    06/02/03  ¹âÃÎ¸©ÆýÍÄ»ùÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -4842,15 +4844,23 @@
                END-IF
            ELSE
                IF      RECE62-FUKUSHIFLG-SKJ(1)   =    "1"
-                 MOVE    RECE62-SHOKUJINISSU (IDX2)
-                                             TO  WRK-KGK2 
-                 MOVE    WRK-KGK2            TO  HC06-SYONISSU(2)
-                 MOVE    RECE62-SHOKUJIRYOYOHI (IDX2)
-                                             TO  WRK-KGK6
-                 MOVE    WRK-KGK6            TO  HC06-SYOTOTALTEN(2)
-                 MOVE    RECE62-SHOKUJIFTN (IDX2)
-                                             TO  WRK-KGK7
-                 MOVE    WRK-KGK7            TO  HC06-SYOFTNMONEY(2)
+                 EVALUATE   SYS-1001-PREFNUM
+                   WHEN    "04"
+                     MOVE    RECE62-SHOKUJINISSU (IDX2)
+                                                 TO  WRK-KGK2 
+                     MOVE    WRK-KGK2            TO  HC06-SYONISSU(2)
+                   WHEN    "38"
+                   WHEN    "39"
+                     MOVE    RECE62-SHOKUJINISSU (IDX2)
+                                                 TO  WRK-KGK2 
+                     MOVE    WRK-KGK2            TO  HC06-SYONISSU(2)
+                     MOVE    RECE62-SHOKUJIRYOYOHI (IDX2)
+                                                 TO  WRK-KGK6
+                     MOVE    WRK-KGK6            TO  HC06-SYOTOTALTEN(2)
+                     MOVE    RECE62-SHOKUJIFTN (IDX2)
+                                                 TO  WRK-KGK7
+                     MOVE    WRK-KGK7            TO  HC06-SYOFTNMONEY(2)
+                 END-EVALUATE
                END-IF
            END-IF
       *     
@@ -4921,15 +4931,23 @@
                END-IF
            ELSE
                IF      RECE62-FUKUSHIFLG-SKJ(2)   =    "1"
-                 MOVE    RECE62-SHOKUJINISSU (IDX3)
-                                             TO  WRK-KGK2 
-                 MOVE    WRK-KGK2            TO  HC06-SYONISSU(3)
-                 MOVE    RECE62-SHOKUJIRYOYOHI (IDX3)
-                                             TO  WRK-KGK6
-                 MOVE    WRK-KGK6            TO  HC06-SYOTOTALTEN(3)
-                 MOVE    RECE62-SHOKUJIFTN (IDX3)
-                                             TO  WRK-KGK7
-                 MOVE    WRK-KGK7            TO  HC06-SYOFTNMONEY(3)
+                 EVALUATE   SYS-1001-PREFNUM
+                   WHEN    "04"
+                     MOVE    RECE62-SHOKUJINISSU (IDX3)
+                                                 TO  WRK-KGK2 
+                     MOVE    WRK-KGK2            TO  HC06-SYONISSU(3)
+                   WHEN    "38"
+                   WHEN    "39"
+                     MOVE    RECE62-SHOKUJINISSU (IDX3)
+                                                 TO  WRK-KGK2 
+                     MOVE    WRK-KGK2            TO  HC06-SYONISSU(3)
+                     MOVE    RECE62-SHOKUJIRYOYOHI (IDX3)
+                                                 TO  WRK-KGK6
+                     MOVE    WRK-KGK6            TO  HC06-SYOTOTALTEN(3)
+                     MOVE    RECE62-SHOKUJIFTN (IDX3)
+                                                 TO  WRK-KGK7
+                     MOVE    WRK-KGK7            TO  HC06-SYOFTNMONEY(3)
+                 END-EVALUATE
                END-IF
            END-IF
       *

@@ -169,6 +169,8 @@
       *  02.07.07    NACL-ÃÁœ∆    06/01/20  …∏∑Á¬–±˛
       *  02.07.08    NACL-ÃÁœ∆    06/02/01  £∞£π£π£≤£∞£∞£∞§«ªœ§ﬁ§Î≈ÍÃÙÕ—
       *                                     •≥•·•Û•»§Œ ‘Ω∏¬–±˛
+      *  02.07.09    NACL-ÃÁœ∆    06/02/03  µ‹æÎ∏©√œ ˝∏¯»Òø©ªˆŒ≈Õ‹»Òµ≠∫‹¬–±˛
+      *  02.07.10    NACL-ÃÁœ∆    06/02/03  π‚√Œ∏©∆˝Õƒª˘¬–±˛
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -311,7 +313,6 @@
            03  FLG-HOUSIJI-COM                         PIC 9(01).
            03  FLG-SYOBYO-COM                          PIC 9(01).
            03  FLG-RYOYO-COM                           PIC 9(01).
-           03  FLG-FUKUSHI-SKJ                         PIC 9(01).
            03  FLG-RECESKYKBN                          PIC 9(01).
       *****03  FLG-HKNNUM                              PIC 9(01).
            03  FLG-RECE69                              PIC 9(01).
@@ -1466,8 +1467,6 @@
       *
            INITIALIZE          WRK-DAY-TABLE
                                WRK-MIJ-TABLE
-      *
-           MOVE    ZERO   TO   FLG-FUKUSHI-SKJ
       *
       ***  PERFORM    VARYING    IDX    FROM   1   BY   1
       ***             UNTIL     (IDX      >   10)  OR
@@ -6634,7 +6633,6 @@
                        IF      SYU-HKNCOMBINUM   =
                                                 RECE62-HKNCOMBI (IDX1)
                            IF  SYU-DENPJTIKBN    NOT =  "3"
-                               PERFORM   21043-KUMIAWASE-HANBETU-SEC
                                PERFORM   21044-RECE62-FTN-HENSYU-SEC
                            END-IF
                            MOVE    10              TO  IDX1
@@ -6817,38 +6815,6 @@
            EXIT.
       *
       *****************************************************************
-      *    ¡»§ﬂπÁ§Ô§ª»Ω Ã°  °ª„Õ—°À√œ ˝∏¯»Ò§Úª˝§ƒæÏπÁ
-      *****************************************************************
-       21043-KUMIAWASE-HANBETU-SEC               SECTION.
-      *
-           MOVE     ZERO      TO      FLG-FUKUSHI-SKJ
-      *
-           IF      IDZ             =   1 
-             EVALUATE   WRK-PREFNUM
-      *
-               WHEN    "38"
-      *
-                 IF ( RECE62-KOHNUMHC(IDX1 1)(1:1)  
-                                             >=  "1" AND <=  "8")  OR
-                    ( RECE62-KOHNUMHC(IDX1 2)(1:1)
-                                             >=  "1" AND <=  "8")  OR
-                    ( RECE62-KOHNUMHC(IDX1 3)(1:1)
-                                             >=  "1" AND <=  "8")  OR
-                    ( RECE62-KOHNUMHC(IDX1 4)(1:1)
-                                             >=  "1" AND <=  "8")    
-      *
-                      MOVE     1       TO      FLG-FUKUSHI-SKJ
-      *
-                 END-IF
-      *
-             END-EVALUATE
-           END-IF
-      *
-           .
-       21043-KUMIAWASE-HANBETU-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    •Ï•ª•◊•»√Ê¥÷•’•°•§•Î§Œπ‡Ã‹≈æ¡˜°›…È√¥∂‚° £∆£∞£∞£≤°À
       *****************************************************************
        21044-RECE62-FTN-HENSYU-SEC               SECTION.
@@ -6994,9 +6960,24 @@
                          END-IF
                       END-IF
       *
-                      IF     FLG-FUKUSHI-SKJ  =   1
-                      AND    RECE62-KOHNUM(1)(1:1)
-                                             >=  "1" AND <=  "8"
+                      IF ((WRK-PREFNUM           =  "38"          ) AND
+                          (RECE62-KOHNUM(1)(1:1)
+                                           >=  "1" AND <=  "8"    ) AND
+                          (IDZ                   =   1            ))
+                      OR ((WRK-PREFNUM           =  "04"          ) AND
+                          (RECE62-KOHNUM(1) = "183" OR "383"
+                                                    OR "483"      ) AND
+                          (RECE62-KOHFTNJANUM(1)(1:7)  NOT =
+                                      "8304004" AND "8304009" AND
+                                      "8304017" AND "8304023" AND
+                                      "8304026" AND "8304028" AND
+                                      "8304036" AND "8304041"     ) AND
+                          (SYU-SKJ-FTNKBN(IDX3)  =  "1"           ) AND
+                          (RECE62-SRYYM         >=  "200510"      ))
+                      OR ((WRK-PREFNUM           =  "39"          ) AND
+                          (RECE62-KOHHBTNUM(1)   =  "72" OR "73" OR
+                                                    "74" OR "75"  ) AND
+                          (RECE62-SRYYM         >=  "200510"      ))
                          IF  SYU-SKJ-NISSU(IDX3)  NOT =  ZERO
                              MOVE    "1"      TO  
                                          RECE62-FUKUSHIFLG-SKJ(1)
@@ -7071,9 +7052,24 @@
                          END-IF
                       END-IF
       *
-                      IF     FLG-FUKUSHI-SKJ  =   1
-                      AND    RECE62-KOHNUM(2)(1:1)
-                                             >=  "1" AND <=  "8"
+                      IF ((WRK-PREFNUM           =  "38"          ) AND
+                          (RECE62-KOHNUM(2)(1:1)
+                                           >=  "1" AND <=  "8"    ) AND
+                          (IDZ                   =   1            ))
+                      OR ((WRK-PREFNUM           =  "04"          ) AND
+                          (RECE62-KOHNUM(2) = "183" OR "383"
+                                                    OR "483"      ) AND
+                          (RECE62-KOHFTNJANUM(2)(1:7)  NOT =
+                                      "8304004" AND "8304009" AND
+                                      "8304017" AND "8304023" AND
+                                      "8304026" AND "8304028" AND
+                                      "8304036" AND "8304041"     ) AND
+                          (SYU-SKJ-FTNKBN(IDX3)  =  "1"           ) AND
+                          (RECE62-SRYYM         >=  "200510"      ))
+                      OR ((WRK-PREFNUM           =  "39"          ) AND
+                          (RECE62-KOHHBTNUM(2)   =  "72" OR "73" OR
+                                                    "74" OR "75"  ) AND
+                          (RECE62-SRYYM         >=  "200510"      ))
                          IF  SYU-SKJ-NISSU(IDX3)  NOT =  ZERO
                              MOVE    "1"      TO  
                                          RECE62-FUKUSHIFLG-SKJ(2)
@@ -7148,9 +7144,24 @@
                          END-IF
                       END-IF
       *
-                      IF     FLG-FUKUSHI-SKJ  =   1
-                      AND    RECE62-KOHNUM(3)(1:1)
-                                             >=  "1" AND <=  "8"
+                      IF ((WRK-PREFNUM           =  "38"          ) AND
+                          (RECE62-KOHNUM(3)(1:1)
+                                           >=  "1" AND <=  "8"    ) AND
+                          (IDZ                   =   1            ))
+                      OR ((WRK-PREFNUM           =  "04"          ) AND
+                          (RECE62-KOHNUM(3) = "183" OR "383"
+                                                    OR "483"      ) AND
+                          (RECE62-KOHFTNJANUM(3)(1:7)  NOT =
+                                      "8304004" AND "8304009" AND
+                                      "8304017" AND "8304023" AND
+                                      "8304026" AND "8304028" AND
+                                      "8304036" AND "8304041"     ) AND
+                          (SYU-SKJ-FTNKBN(IDX3)  =  "1"           ) AND
+                          (RECE62-SRYYM         >=  "200510"      ))
+                      OR ((WRK-PREFNUM           =  "39"          ) AND
+                          (RECE62-KOHHBTNUM(3)   =  "72" OR "73" OR
+                                                    "74" OR "75"  ) AND
+                          (RECE62-SRYYM         >=  "200510"      ))
                          IF  SYU-SKJ-NISSU(IDX3)  NOT =  ZERO
                              MOVE    "1"      TO  
                                          RECE62-FUKUSHIFLG-SKJ(3)
@@ -7225,9 +7236,24 @@
                          END-IF
                       END-IF
       *
-                      IF     FLG-FUKUSHI-SKJ  =   1
-                      AND    RECE62-KOHNUM(4)(1:1)
-                                             >=  "1" AND <=  "8"
+                      IF ((WRK-PREFNUM           =  "38"          ) AND
+                          (RECE62-KOHNUM(4)(1:1)
+                                           >=  "1" AND <=  "8"    ) AND
+                          (IDZ                   =   1            ))
+                      OR ((WRK-PREFNUM           =  "04"          ) AND
+                          (RECE62-KOHNUM(4) = "183" OR "383"
+                                                    OR "483"      ) AND
+                          (RECE62-KOHFTNJANUM(4)(1:7)  NOT =
+                                      "8304004" AND "8304009" AND
+                                      "8304017" AND "8304023" AND
+                                      "8304026" AND "8304028" AND
+                                      "8304036" AND "8304041"     ) AND
+                          (SYU-SKJ-FTNKBN(IDX3)  =  "1"           ) AND
+                          (RECE62-SRYYM         >=  "200510"      ))
+                      OR ((WRK-PREFNUM           =  "39"          ) AND
+                          (RECE62-KOHHBTNUM(4)   =  "72" OR "73" OR
+                                                    "74" OR "75"  ) AND
+                          (RECE62-SRYYM         >=  "200510"      ))
                          IF  SYU-SKJ-NISSU(IDX3)  NOT =  ZERO
                              MOVE    "1"      TO  
                                          RECE62-FUKUSHIFLG-SKJ(4)
@@ -7644,6 +7670,26 @@
              END-IF
       *
            END-PERFORM
+      *
+      *    π‚√Œ£∑£≤∆˝Õƒª˘
+      *
+           EVALUATE   WRK-PREFNUM
+      *
+             WHEN    "39"
+      *
+               IF   RECE62-SRYYM   >=  "200510"
+                  PERFORM    VARYING   KOHFTN-IDX   FROM   1   BY   1
+                              UNTIL    KOHFTN-IDX     >    4
+      *
+                    IF   RECE62-KOHHBTNUM(KOHFTN-IDX) =  "72" OR "73"
+                                                      OR "74" OR "75"
+                       MOVE   ZERO  TO  RECE62-FTNMONEY(KOHFTN-IDX + 1)
+                    END-IF
+      *
+                  END-PERFORM
+               END-IF
+      *
+           END-EVALUATE
       *
       *    ∏¯»Ò∞Ï…Ù…È√¥∂‚•Ï•ªµ≠∫‹•’•È•∞§Œ ‘Ω∏
       *    ∏¯»Ò∞Ï…Ù…È√¥∂‚£∞±ﬂµ≠∫‹•’•È•∞§Œ ‘Ω∏

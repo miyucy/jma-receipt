@@ -231,6 +231,7 @@
       *                                     µ­ºÜ¥Õ¥é¥°ÊÔ½¸½¤Àµ
       *  02.07.07    NACL-ÌçÏÆ    06/02/01  £°£¹£¹£²£°£°£°¤Ç»Ï¤Þ¤ëÅêÌôÍÑ
       *                                     ¥³¥á¥ó¥È¤ÎÊÔ½¸ÂÐ±þ
+      *  02.07.08    NACL-ÌçÏÆ    06/02/03  ¹âÃÎ¸©ÆýÍÄ»ùÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -5212,8 +5213,23 @@
            END-PERFORM
       *
       *    Ê¡²¬£´£±Ï·¿Í
+      *    ¹âÃÎ£·£²ÆýÍÄ»ù
       *
            EVALUATE   SYS-1001-PREFNUM
+      *
+             WHEN    "39"
+      *
+                IF   RECE02-SRYYM   >=  "200510"
+                   PERFORM    VARYING   KOHFTN-IDX   FROM   1   BY   1
+                               UNTIL    KOHFTN-IDX     >    4
+      *
+                     IF   RECE02-KOHHBTNUM(KOHFTN-IDX) =  "72" OR "73"
+                                                       OR "74" OR "75"
+                        MOVE  ZERO  TO  RECE02-FTNMONEY(KOHFTN-IDX + 1)
+                     END-IF
+      *
+                   END-PERFORM
+                END-IF
       *
              WHEN    "40"
       *

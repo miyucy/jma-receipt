@@ -117,6 +117,7 @@
       *                                     ¼çÊÝ¸±Ëô¤Ï£²£·Ï·¿Í¤Î£·£²£³£°£°
       *                                     ¡Ü¡÷ÂÐ±þ
       *  01.01.27    NACL-ÌçÏÆ    06/01/26  ·²ÇÏ¸©¹âºê»ÔÏ·¿ÍÂÐ±þ
+      *  01.01.28    NACL-ÌçÏÆ    06/02/03  µÜ¾ë¸©ÃÏÊý¸øÈñ¿©»öÎÅÍÜÈñµ­ºÜÂÐ±þ
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -8408,6 +8409,17 @@
                           ELSE
                              MOVE   ZERO   TO  
                                       LNK-SYU-SKJ-FTN(KOH-IDX) 
+                          END-IF
+                          IF   FLG-MIYAGI  NOT  =   ZERO
+                            IF   LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
+                                              >   WK-NYUSKJJYOGAK2
+                             COMPUTE   LNK-SYU-SKJ-FTN-RECE(KOH-IDX) =
+                                       LNK-SYU-SKJ-FTN-RECE(KOH-IDX) -
+                                       WK-NYUSKJJYOGAK2
+                            ELSE
+                             MOVE   ZERO   TO
+                                      LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
+                            END-IF
                           END-IF
                        END-IF
                        IF   LNK-SYU-SKJ-FTNKBN(KOH-IDX)  =  "2"
