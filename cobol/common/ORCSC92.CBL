@@ -1848,10 +1848,16 @@
                   (SPA-COM-INPUTCD (IDX-T)(1:3)   =   "059" )  
       *       単位があるもの（画像診断以外）
               OR ((SPA-COM-INPUTCD (IDX-T)(1:1)   =   "1" )  AND
-                  (TNS-SRYKBN                 NOT =   "70" ) AND
                   (TNS-TANICD                 NOT =   ZERO ))
-               PERFORM 3004-TANI-HENSYU-SEC
-               MOVE    WRK-TANINAME        TO  SPA-GMN-TANINAME (IDX-T)
+      *        画像診断で
+               IF     (TNS-SRYKBN             NOT =   "70" )   OR
+                     ((TNS-SRYKBN                 =   "70" ) AND
+                      (TNS-SRYSYUKBN              =   "700"))
+                   PERFORM 3004-TANI-HENSYU-SEC
+                   MOVE    WRK-TANINAME    TO  SPA-GMN-TANINAME (IDX-T)
+               ELSE
+                   MOVE    SPACE           TO  SPA-GMN-TANINAME (IDX-T)
+               END-IF
            ELSE
                MOVE    SPACE               TO  SPA-GMN-TANINAME (IDX-T)
            END-IF
