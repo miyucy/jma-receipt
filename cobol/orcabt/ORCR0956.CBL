@@ -32,6 +32,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  02.07.01    NACL-藤原    05/12/12  国保レセプト編綴順対応
       *  02.07.02    NACL-門脇    06/01/24  DBCLOSECURSOR追加
+      *  02.07.03    NACL-門脇    06/02/08  食事基本料情報（その他）編集
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -328,6 +329,18 @@
                05  WRK-PAGE1       PIC Z9.
                05  WRK-PAGE-HEN    PIC X(01).
                05  WRK-PAGE2       PIC Z9.
+      *                 
+      *    食事基本料情報（その他）（摘要欄）
+           03  WRK-SHOKUJIKHNINF-ETC-AREA.
+               05  WRK-SHOKUJIKHNRYO-ETC       PIC X(08).
+               05  WRK-SHOKUJIKHNRYO-ETC-FL    PIC X(04).
+               05  WRK-SHOKUJIKHNNISSU-ETC     PIC X(04).
+               05  WRK-SHOKUJIKHNNISSU-ETC-FL  PIC X(04).
+      *
+           03  WRK-HENSYU-KIN.
+               05  WRK-HENSYU-KIN-9            PIC 9(04).
+           03  WRK-HENSYU-DAY.
+               05  WRK-HENSYU-DAY-9            PIC 9(02).
       *
       *    レセプト格納用
        01  TABLE-AREA                          VALUE   SPACE.
@@ -1691,6 +1704,63 @@
                                        TO  HC23-TEKIYO (WRK-LINETEK)
                    ELSE
                            MOVE    RECE82-NYUSYUBETU (IDXX)
+                                       TO  HC29-TEKIYO(WRK-LINETEK)
+                   END-IF
+               END-PERFORM
+               IF      WRK-LINETEK         >=  WRK-TEKIYOU-LINE
+                   PERFORM 34120-PAGE-SEC
+               END-IF
+               ADD     1               TO  WRK-LINETEK
+           END-IF
+      *
+      *       <食事基本料情報（その他）>
+           MOVE    SPACE               TO  WRK-SHOKUJIKHNINF-ETC-AREA
+           IF      RECE82-SHOKUJIKHNRYO-ETC(1)  NOT =   ZERO
+               PERFORM VARYING IDXX    FROM     1   BY  1
+                       UNTIL   IDXX    >        3
+                       OR      RECE82-SHOKUJIKHNRYO-ETC(IDXX)  =  ZERO
+                   IF  WRK-LINETEK         >=  WRK-TEKIYOU-LINE
+                       PERFORM 34120-PAGE-SEC
+                   END-IF
+                   ADD     1               TO  WRK-LINETEK
+      *
+                   MOVE  RECE82-SHOKUJIKHNRYO-ETC(IDXX)
+                                           TO  WRK-HENSYU-KIN-9
+                   INITIALIZE                  ORCSKANACHKAREA
+                   MOVE    "2"             TO  KANACHK-SYORI
+                   MOVE    WRK-HENSYU-KIN  TO  KANACHK-MAE-INPUT
+                   CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                   IF      KANACHK-RC      =   ZERO
+                        MOVE    KANACHK-OUT-INPUT(1:8)
+                                           TO  WRK-SHOKUJIKHNRYO-ETC
+                   ELSE
+                        MOVE    SPACE      TO  WRK-SHOKUJIKHNRYO-ETC
+                   END-IF
+      *
+                   MOVE  RECE82-SHOKUJIKHNNISSU-ETC(IDXX)
+                                           TO  WRK-HENSYU-DAY-9
+                   IF      WRK-HENSYU-DAY(1:1) =  "0"
+                      MOVE      SPACE      TO  WRK-HENSYU-DAY(1:1)
+                   END-IF
+                   INITIALIZE                  ORCSKANACHKAREA
+                   MOVE    "2"             TO  KANACHK-SYORI
+                   MOVE    WRK-HENSYU-DAY  TO  KANACHK-MAE-INPUT
+                   CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                   IF      KANACHK-RC      =   ZERO
+                        MOVE    KANACHK-OUT-INPUT(1:4)
+                                           TO  WRK-SHOKUJIKHNNISSU-ETC
+                   ELSE
+                        MOVE    SPACE      TO  WRK-SHOKUJIKHNNISSU-ETC
+                   END-IF
+      *
+                   MOVE    "円×"   TO   WRK-SHOKUJIKHNRYO-ETC-FL
+                   MOVE    "日間"   TO   WRK-SHOKUJIKHNNISSU-ETC-FL
+      *
+                   IF      CNT-PAGE        =   1
+                       MOVE    WRK-SHOKUJIKHNINF-ETC-AREA
+                                       TO  HC23-TEKIYO(WRK-LINETEK)
+                   ELSE
+                       MOVE    WRK-SHOKUJIKHNINF-ETC-AREA
                                        TO  HC29-TEKIYO(WRK-LINETEK)
                    END-IF
                END-PERFORM

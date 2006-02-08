@@ -47,6 +47,7 @@
       *  02.07.02    NACL-小豆沢  05/10/28  特記事項　先進、制超　対応
       *  02.07.03    NACL-藤原    05/12/12  保険履歴を年月日記載へ変更
       *  02.07.04    NACL-藤原    05/12/12  国保レセプト編綴順対応
+      *  02.07.05    NACL-門脇    06/02/08  食事基本料情報（その他）編集
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -540,6 +541,18 @@
       *
            03  WRK-MCP-TABLE       PIC X(64).
            03  WRK-MCP-PATHNAME    PIC X(64).
+      *                 
+      *    食事基本料情報（その他）（摘要欄）
+           03  WRK-SHOKUJIKHNINF-ETC-AREA.
+               05  WRK-SHOKUJIKHNRYO-ETC       PIC X(08).
+               05  WRK-SHOKUJIKHNRYO-ETC-FL    PIC X(04).
+               05  WRK-SHOKUJIKHNNISSU-ETC     PIC X(04).
+               05  WRK-SHOKUJIKHNNISSU-ETC-FL  PIC X(02).
+      *
+           03  WRK-HENSYU-KIN.
+               05  WRK-HENSYU-KIN-9            PIC 9(04).
+           03  WRK-HENSYU-DAY.
+               05  WRK-HENSYU-DAY-9            PIC 9(02).
       *
       *    レセプト格納用
        01  TABLE-AREA                          VALUE   SPACE.
@@ -5472,6 +5485,72 @@
                END-IF    
                ADD     1               TO  WRK-LINETEK     
            END-IF    
+      *
+      *       <食事基本料情報（その他）>
+           MOVE    SPACE               TO  WRK-SHOKUJIKHNINF-ETC-AREA
+           IF      RECE62-SHOKUJIKHNRYO-ETC(1)  NOT =   ZERO
+               PERFORM VARYING IDXX    FROM     1   BY  1
+                       UNTIL   IDXX    >        3
+                       OR      RECE62-SHOKUJIKHNRYO-ETC(IDXX)  =  ZERO
+                   IF  WRK-LINETEK         >=  WRK-TEKIYOU-LINE
+                       PERFORM 34120-PAGE-SEC
+                   END-IF
+                   ADD     1               TO  WRK-LINETEK
+      *
+                   MOVE  RECE62-SHOKUJIKHNRYO-ETC(IDXX)
+                                           TO  WRK-HENSYU-KIN-9
+                   INITIALIZE                  ORCSKANACHKAREA
+                   MOVE    "2"             TO  KANACHK-SYORI
+                   MOVE    WRK-HENSYU-KIN  TO  KANACHK-MAE-INPUT
+                   CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                   IF      KANACHK-RC      =   ZERO
+                        MOVE    KANACHK-OUT-INPUT(1:8)
+                                           TO  WRK-SHOKUJIKHNRYO-ETC
+                   ELSE
+                        MOVE    SPACE      TO  WRK-SHOKUJIKHNRYO-ETC
+                   END-IF
+      *
+                   MOVE  RECE62-SHOKUJIKHNNISSU-ETC(IDXX)
+                                           TO  WRK-HENSYU-DAY-9
+                   IF      WRK-HENSYU-DAY(1:1) =  "0"
+                      MOVE      SPACE      TO  WRK-HENSYU-DAY(1:1)
+                   END-IF
+                   INITIALIZE                  ORCSKANACHKAREA
+                   MOVE    "2"             TO  KANACHK-SYORI
+                   MOVE    WRK-HENSYU-DAY  TO  KANACHK-MAE-INPUT
+                   CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                   IF      KANACHK-RC      =   ZERO
+                        MOVE    KANACHK-OUT-INPUT(1:4)
+                                           TO  WRK-SHOKUJIKHNNISSU-ETC
+                   ELSE
+                        MOVE    SPACE      TO  WRK-SHOKUJIKHNNISSU-ETC
+                   END-IF
+      *
+                   MOVE    "円×"   TO   WRK-SHOKUJIKHNRYO-ETC-FL
+                   MOVE    "日"     TO   WRK-SHOKUJIKHNNISSU-ETC-FL
+      *
+                   IF      CNT-PAGE        =   1
+                       MOVE    WRK-SHOKUJIKHNINF-ETC-AREA
+                                       TO  HC06-TEKIYO (WRK-LINETEK)
+                   ELSE
+                       EVALUATE    SYS-2005-NEXTPRTKBN
+                           WHEN    ZERO
+                               MOVE    WRK-SHOKUJIKHNINF-ETC-AREA
+                                       TO  HC061-TEKIYO(WRK-LINETEK)
+                           WHEN    "1"
+                               MOVE    WRK-SHOKUJIKHNINF-ETC-AREA
+                                       TO  HC062-TEKIYO(WRK-LINETEK)
+                           WHEN    "2"
+                               MOVE    WRK-SHOKUJIKHNINF-ETC-AREA
+                                       TO  HC063-TEKIYO(WRK-LINETEK)
+                       END-EVALUATE
+                   END-IF
+               END-PERFORM
+               IF      WRK-LINETEK         >=  WRK-TEKIYOU-LINE
+                   PERFORM 34120-PAGE-SEC
+               END-IF
+               ADD     1               TO  WRK-LINETEK
+           END-IF
       *
            .
        380-HC101-NYUTAI-RIREKI-HEN-EXT.
