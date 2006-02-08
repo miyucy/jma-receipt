@@ -48,6 +48,8 @@
       *  01.00.16    NACL-多々納  05/12/06  受付対応
       *                                     MONFUNC対応
       *  01.00.17    NACL-多々納  06/01/16  乳幼児特例対応
+      *  01.00.18    NACL-藤原    06/01/25  疑いフラグからの病名の編集方
+      *                                     法の変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -441,6 +443,9 @@
       *
       *    入院サブ
            COPY    "CPORCL0031N.INC".
+      *
+      *    病名組立サブ
+           COPY    "CPORCSMKBYOMEI.INC".
       * 
       *****************************************************************
       *    連絡　領域
@@ -2793,76 +2798,29 @@
       *
       *        レセ電エラーフラグ（疑いフラグが設定されているとき）
                IF    ( PTBYO-RECEDENFLG        =   SPACE ) 
-               AND   ( PTBYO-UTAGAIFLG         NOT =   SPACE )
-                   MOVE    SPACE               TO  WRK-HENFLG1
-                                                   WRK-HENFLG2
-      *     
-      *            病名文字数を計算
-                   COMPUTE WRK-MOJISU      =   PTBYO-BYOMEIMOJI       
-                                               *   2
-                   IF      PTBYO-UTAGAIFLG         =   "1" OR  "3"
-                       IF      WRK-MOJISU      <   8
-                           MOVE    1               TO  IDZ
-                       ELSE    
-                           COMPUTE IDZ     =   WRK-MOJISU    -   7
-                       END-IF    
-                       PERFORM VARYING IDY FROM    IDZ BY  2
-                               UNTIL   IDY >       WRK-MOJISU
-                           IF      PTBYO-BYOMEI        (IDY:2) =   "疑"
-                               MOVE    "1"              TO  WRK-HENFLG1
-                               MOVE    WRK-MOJISU       TO  IDY
-                           END-IF
-                       END-PERFORM
-                   END-IF                
-                   IF      PTBYO-UTAGAIFLG         =   "2" OR  "3"
-                       PERFORM VARYING IDY FROM    1   BY  2
-                               UNTIL   IDY >       WRK-MOJISU
-                           IF      PTBYO-BYOMEI        (IDY:4) =  "急性"
-                               MOVE    "1"              TO  WRK-HENFLG2
-                               MOVE    WRK-MOJISU       TO  IDY
-                           END-IF
-                       END-PERFORM
-                   END-IF
+               AND   ( PTBYO-UTAGAIFLG     NOT =   SPACE )
+                   INITIALIZE                      ORCSMKBYOMEIAREA
+                   MOVE    PTBYO-UTAGAIFLG     TO  SMKBYO-UTAGAIFLG
+                   MOVE    PTBYO-BYOMEI        TO  SMKBYO-BYOMEI
+                   MOVE    PTBYO-BYOMEIHENFLG  TO  SMKBYO-BYOMEIHENFLG
+                   MOVE    PTBYO-BYOMEICD-G    TO  SMKBYO-BYOMEICD-G
+                   CALL    "ORCSMKBYOMEI"      USING   ORCSMKBYOMEIAREA
       *
-      *            疑いフラグがセットされているとき
-                   IF    ( PTBYO-UTAGAIFLG     =   "1" OR  "3" )
-                   AND   ( WRK-HENFLG1         =   SPACE       )                         
-                       COMPUTE WRK-MOJISU          =      
-                                WRK-MOJISU +   WRK-CONS-UTAGAI-MOJISU
-                       IF      PTBYO-BYOMEICD (21) NOT =   SPACE             
-                           EVALUATE    PTBYO-SYUBYOFLG       
-                               WHEN    "1"
-                                   IF      WRK-MOJISU      >   17
-                                       MOVE    "1"     TO
-                                                       PTBYO-RECEDENFLG       
-                                   END-IF
-                               WHEN    SPACE
-                                   IF      WRK-MOJISU      >   20
-                                       MOVE    "1"     TO
-                                                       PTBYO-RECEDENFLG       
-                                   END-IF
-                           END-EVALUATE
-                       END-IF
+                   MOVE    SMKBYO-BYOMEIHENFLG TO  PTBYO-BYOMEIHENFLG
+      *
+                   COMPUTE WRK-MOJISU      =   SMKBYO-LENGTH  /   2
+                   IF      PTBYO-BYOMEIHENFLG    =   "1"
+                       EVALUATE    PTBYO-SYUBYOFLG
+                           WHEN    "1"
+                               IF      WRK-MOJISU  >   17
+                                   MOVE    "1"     TO  PTBYO-RECEDENFLG
+                               END-IF
+                           WHEN    SPACE
+                               IF      WRK-MOJISU  >   20
+                                   MOVE    "1"     TO  PTBYO-RECEDENFLG
+                               END-IF
+                       END-EVALUATE
                    END-IF    
-                   IF    ( PTBYO-UTAGAIFLG     =   "2" OR  "3" )
-                   AND   ( WRK-HENFLG2         =   SPACE       )                         
-                       COMPUTE WRK-MOJISU          =      
-                                WRK-MOJISU +   WRK-CONS-KYUSEI-MOJISU
-                       IF      PTBYO-BYOMEICD (21) NOT =   SPACE             
-                           EVALUATE    PTBYO-SYUBYOFLG       
-                               WHEN    "1"
-                                   IF      WRK-MOJISU      >   17
-                                       MOVE    "1"     TO
-                                                       PTBYO-RECEDENFLG       
-                                   END-IF
-                               WHEN    SPACE
-                                   IF      WRK-MOJISU      >   20
-                                       MOVE    "1"     TO
-                                                       PTBYO-RECEDENFLG       
-                                   END-IF
-                           END-EVALUATE
-                       END-IF
-                   END-IF
                END-IF    
            ELSE
       *        疾患コードがエラー又は未コード化傷病名コードのとき
