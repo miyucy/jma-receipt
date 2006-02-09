@@ -46,7 +46,7 @@
       *¿ÇÎÅ²Ê
                        09  LNK-ORCSTOTALACCT-SRYKA     PIC  X(02).
       *ÅÀ¿ô
-                       09  LNK-ORCSTOTALACCT-TENSU     PIC S9(07).
+                       09  LNK-ORCSTOTALACCT-TENSU     PIC S9(08).
       *¼õ¿Ç²ó¿ô
                        09  LNK-ORCSTOTALACCT-KAISU     PIC  9(03).
       *
