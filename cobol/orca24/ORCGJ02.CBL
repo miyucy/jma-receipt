@@ -469,7 +469,7 @@
       *    コラムリスト位置
            03  WRK-J02-DATALIST-ROW    PIC S9(09).
            03  WRK-J02-RRKLIST-ROW     PIC S9(09).
-           03  FLG-GMN-INIT            PIC  9(01).
+           03  FLG-GMN-INIT            PIC 9(01).
       *    剤変更チェック用
            03  TBL-MAE-ZAINUM-AREA.
                05  TBL-MAE-ZAINUM      PIC 9(08)
@@ -972,6 +972,9 @@
                    PERFORM 3002-J022-HEN-SEC
       *        レセコメントより
                WHEN    "J023"
+                   CONTINUE
+      *        カルテ印刷より
+               WHEN    "J026"
                    CONTINUE
       *            確認画面より
                WHEN    "JID1"
@@ -1658,11 +1661,16 @@
            MOVE    ZERO                TO  SPA-GMN-MAX
       *    表示診療科
       *    全科
-           IF      SPA-NAI-SRYKA-FLG   =   2
-               MOVE    SPA-GMN-SRYKA-LIST(01)
-                                           TO  SPA-GMN-SRYKA-G
-               MOVE    SPA-GMN-SRYKA       TO  SPA-J01-SRYKA
-               MOVE    SPA-GMN-SRYKAMEI    TO  SPA-J01-SRYKAMEI
+           IF      SPA-MOTOPG          =   "J04"  OR  "J03"
+                                       OR  "J021"
+               CONTINUE
+           ELSE
+               IF      SPA-NAI-SRYKA-FLG   =   2
+                   MOVE    SPA-GMN-SRYKA-LIST(01)
+                                               TO  SPA-GMN-SRYKA-G
+                   MOVE    SPA-GMN-SRYKA       TO  SPA-J01-SRYKA
+                   MOVE    SPA-GMN-SRYKAMEI    TO  SPA-J01-SRYKAMEI
+               END-IF
            END-IF
       *    診療科編集
            IF      SPA-J01-SRYKA       =   SPACE
@@ -3069,6 +3077,8 @@
                       (SPA-GMN-TBANGO(IDX) NOT =   ZERO  )  AND
                       (SPA-GMN-TBANGO(IDX)     =   SPA-GMN-BANGO )
                    MOVE    "T"             TO  J02-DATALIST-SELECT(IDX)
+                   MOVE    IDX             TO  J02-DATALIST-ROW
+                   MOVE    2               TO  J02-DATALIST-ROWATTR
                ELSE
                    MOVE    "F"             TO  J02-DATALIST-SELECT(IDX)
                END-IF
