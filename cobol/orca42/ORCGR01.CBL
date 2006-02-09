@@ -89,6 +89,7 @@
       *
       *  02.07.01    NACL-藤原    05/10/31  MONFUNC対応
       *  02.07.02    NACL-藤原    05/12/12  国保レセプト編綴順対応
+      *  02.07.03    NACL-藤原    06/02/09  エラー時のカーソル位置の変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1473,6 +1474,12 @@
                    END-IF                                  
                END-IF
            END-IF              
+      *
+           IF      SPA-ERRCD            =   SPACE
+               CONTINUE
+           ELSE
+               MOVE    5                    TO  SPA-GMN-CUR
+           END-IF             
            .
        4204-SRYYM-CHK-EXT.
            EXIT.
@@ -1486,6 +1493,7 @@
       * 
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       100
+                   OR      SPA-ERRCD   NOT =   SPACE
                IF      IDX         =   IDY 
                    CONTINUE
                ELSE
@@ -1493,11 +1501,17 @@
                    AND     SPA-GMN-TSRYYM    (IDX) =   SPA-GMN-SRYYM
                    AND     SPA-GMN-TNYUGAIKBN(IDX) =
                                                    SPA-GMN-NYUGAIKBN
-                       MOVE    "0002"              TO  SPA-ERRCD
+                       MOVE    "0005"              TO  SPA-ERRCD
                        MOVE    100                 TO  IDX
                    END-IF
                END-IF
            END-PERFORM
+      *
+           IF      SPA-ERRCD            =   SPACE
+               CONTINUE
+           ELSE
+               MOVE    5                    TO  SPA-GMN-CUR
+           END-IF             
            .                   
        4202-INTBL-CHK-EXT.
            EXIT.
@@ -3070,7 +3084,7 @@
                    MOVE    "対象のデータを選択してありません"
                                                        TO  SPA-ERRMSG
                WHEN    "0005"
-                   MOVE    "対象のデータが選択してあります"
+                   MOVE    "同じ診療年月で既に入力済です"
                                                        TO  SPA-ERRMSG
                WHEN    "0006"
                    MOVE    "対象の診療会計がありません"
