@@ -250,6 +250,7 @@
            03  FLG-SYS-1901        PIC 9(01).
            03  FLG-SYS-1902        PIC 9(01).
            03  FLG-SYS-2008        PIC 9(01).
+           03  FLG-SHOKUJI-ETC     PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -544,6 +545,7 @@
       *                 
       *    食事基本料情報（その他）（摘要欄）
            03  WRK-SHOKUJIKHNINF-ETC-AREA.
+               05  WRK-SHOKUJIKHNRYO-ETC-NM    PIC X(06).
                05  WRK-SHOKUJIKHNRYO-ETC       PIC X(08).
                05  WRK-SHOKUJIKHNRYO-ETC-FL    PIC X(04).
                05  WRK-SHOKUJIKHNNISSU-ETC     PIC X(04).
@@ -5487,7 +5489,7 @@
            END-IF    
       *
       *       <食事基本料情報（その他）>
-           MOVE    SPACE               TO  WRK-SHOKUJIKHNINF-ETC-AREA
+           MOVE    ZERO                TO  FLG-SHOKUJI-ETC
            IF      RECE62-SHOKUJIKHNRYO-ETC(1)  NOT =   ZERO
                PERFORM VARYING IDXX    FROM     1   BY  1
                        UNTIL   IDXX    >        3
@@ -5496,6 +5498,8 @@
                        PERFORM 34120-PAGE-SEC
                    END-IF
                    ADD     1               TO  WRK-LINETEK
+      *
+                   MOVE    SPACE    TO     WRK-SHOKUJIKHNINF-ETC-AREA
       *
                    MOVE  RECE62-SHOKUJIKHNRYO-ETC(IDXX)
                                            TO  WRK-HENSYU-KIN-9
@@ -5506,8 +5510,6 @@
                    IF      KANACHK-RC      =   ZERO
                         MOVE    KANACHK-OUT-INPUT(1:8)
                                            TO  WRK-SHOKUJIKHNRYO-ETC
-                   ELSE
-                        MOVE    SPACE      TO  WRK-SHOKUJIKHNRYO-ETC
                    END-IF
       *
                    MOVE  RECE62-SHOKUJIKHNNISSU-ETC(IDXX)
@@ -5522,10 +5524,14 @@
                    IF      KANACHK-RC      =   ZERO
                         MOVE    KANACHK-OUT-INPUT(1:4)
                                            TO  WRK-SHOKUJIKHNNISSU-ETC
-                   ELSE
-                        MOVE    SPACE      TO  WRK-SHOKUJIKHNNISSU-ETC
                    END-IF
       *
+                   IF   FLG-SHOKUJI-ETC  =  ZERO
+                     MOVE  "食事　" TO   WRK-SHOKUJIKHNRYO-ETC-NM
+                     MOVE   1       TO   FLG-SHOKUJI-ETC
+                   ELSE
+                     MOVE  "　　　" TO   WRK-SHOKUJIKHNRYO-ETC-NM
+                   END-IF
                    MOVE    "円×"   TO   WRK-SHOKUJIKHNRYO-ETC-FL
                    MOVE    "日"     TO   WRK-SHOKUJIKHNNISSU-ETC-FL
       *
