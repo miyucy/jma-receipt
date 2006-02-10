@@ -73,8 +73,8 @@
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
-           COPY    "ORCA-DBPATH".
+      *    COPY    "CPORCMCP.INC".
+      *    COPY    "ORCA-DBPATH".
       *
            COPY    "MCPAREA".
       *
@@ -209,14 +209,16 @@
            MOVE    LNK-ORCSTOTALACCT-NYUGAIKBN  TO  ACCT-NYUGAIKBN
            MOVE    LNK-ORCSTOTALACCT-PTID       TO  ACCT-PTID
            MOVE    LNK-ORCSTOTALACCT-SANTEIYM   TO  ACCT-SRYYM
-           MOVE    PATH-TBL-SRYACCT-KEY44       TO  MCP-PATH
+           MOVE    "tbl_sryacct"                TO  MCP-TABLE
+           MOVE    "key44"                      TO  MCP-PATHNAME
            MOVE    SRYACCT-REC                  TO  MCPDATA-REC
            MOVE    "DBSELECT"                   TO  MCP-FUNC
-           CALL    "MCPSUB"                     USING
+           CALL    "MONFUNC"                    USING
                                                 MCPAREA
                                                 MCPDATA-REC
            IF      MCP-RC               =       ZERO
-               MOVE    PATH-TBL-SRYACCT-KEY44   TO  MCP-PATH
+               MOVE    "tbl_sryacct"            TO  MCP-TABLE
+               MOVE    "key44"                  TO  MCP-PATHNAME
                PERFORM  900-SRYACCT-READ-SEC
                PERFORM   UNTIL   FLG-SRYACCT  =  1
                    MOVE     ZERO     TO     FLG-ARI
@@ -238,14 +240,16 @@
                         PERFORM   20011-SRYKA-HENSYU-SEC
                      END-IF
                    END-IF
-                   MOVE    PATH-TBL-SRYACCT-KEY44   TO  MCP-PATH
+                   MOVE    "tbl_sryacct"            TO  MCP-TABLE
+                   MOVE    "key44"                  TO  MCP-PATHNAME
                    PERFORM  900-SRYACCT-READ-SEC
                END-PERFORM
            ELSE
                MOVE    5    TO     LNK-ORCSTOTALACCT-RC
            END-IF
       *
-           MOVE    PATH-TBL-SRYACCT-KEY44    TO   MCP-PATH
+           MOVE    "tbl_sryacct"                TO  MCP-TABLE
+           MOVE    "key44"                      TO  MCP-PATHNAME
            PERFORM 910-DB-CLOSE-SEC
       *
            .
@@ -319,14 +323,16 @@
            MOVE    "01"                        TO  JYURRK-SRYYMD(7:2)
            MOVE    LNK-ORCSTOTALACCT-SANTEIYM  TO  JYURRK-UPSRYYMD(1:6)
            MOVE    "31"                        TO  JYURRK-UPSRYYMD(7:2)
-           MOVE    PATH-TBL-JYURRK-KEY33       TO  MCP-PATH
+           MOVE    "tbl_jyurrk"                TO  MCP-TABLE
+           MOVE    "key33"                     TO  MCP-PATHNAME
            MOVE    JYURRK-REC                  TO  MCPDATA-REC
            MOVE    "DBSELECT"                  TO  MCP-FUNC
-           CALL    "MCPSUB"                     USING
+           CALL    "MONFUNC"                    USING
                                                 MCPAREA
                                                 MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    PATH-TBL-JYURRK-KEY33   TO  MCP-PATH
+               MOVE    "tbl_jyurrk"            TO  MCP-TABLE
+               MOVE    "key33"                 TO  MCP-PATHNAME
                PERFORM   900-JYURRK-READ-SEC
                PERFORM   UNTIL   FLG-JYURRK   =    1
                    MOVE     ZERO     TO     FLG-ARI
@@ -348,14 +354,16 @@
                         PERFORM   20021-SRYKA-HENSYU2-SEC
                      END-IF
                    END-IF
-                   MOVE    PATH-TBL-JYURRK-KEY33   TO  MCP-PATH
+                   MOVE    "tbl_jyurrk"                TO  MCP-TABLE
+                   MOVE    "key33"                     TO  MCP-PATHNAME
                    PERFORM   900-JYURRK-READ-SEC
                END-PERFORM
            ELSE
                MOVE    6    TO     LNK-ORCSTOTALACCT-RC
            END-IF
       *
-           MOVE    PATH-TBL-JYURRK-KEY33   TO   MCP-PATH
+           MOVE    "tbl_jyurrk"                TO  MCP-TABLE
+           MOVE    "key33"                     TO  MCP-PATHNAME
            PERFORM 910-DB-CLOSE-SEC
       *
            .
@@ -406,16 +414,18 @@
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
-           MOVE    PATH-TBL-PTINF-KEY  TO  MCP-PATH
+           MOVE    "tbl_ptinf"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    PATH-TBL-PTINF-KEY  TO  MCP-PATH
+               MOVE    "tbl_ptinf"         TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
                MOVE    "DBFETCH"           TO  MCP-FUNC
-               CALL    "MCPSUB"            USING
+               CALL    "MONFUNC"           USING
                                            MCPAREA
                                            MCPDATA-REC
                IF      MCP-RC          =   ZERO
@@ -430,7 +440,8 @@
                MOVE    1               TO  FLG-PTINF
            END-IF
       *
-           MOVE    PATH-TBL-PTINF-KEY  TO  MCP-PATH
+           MOVE    "tbl_ptinf"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DB-CLOSE-SEC
       *
            .
@@ -443,7 +454,7 @@
        900-SRYACCT-READ-SEC        SECTION.
       *
            MOVE    "DBFETCH"            TO  MCP-FUNC
-           CALL    "MCPSUB"             USING
+           CALL    "MONFUNC"            USING
                                         MCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
@@ -464,7 +475,7 @@
        900-JYURRK-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "MCPSUB"             USING
+           CALL    "MONFUNC"            USING
                                         MCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
@@ -485,7 +496,7 @@
        910-DB-CLOSE-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
