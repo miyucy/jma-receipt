@@ -327,8 +327,8 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>KBT</name>
-      <x>240</x>
-      <y>80</y>
+      <x>105</x>
+      <y>115</y>
       <width>168</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -355,8 +355,8 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>KIKAN</name>
-      <x>416</x>
-      <y>80</y>
+      <x>280</x>
+      <y>115</y>
       <width>170</width>
       <height>25</height>
       <can_focus>True</can_focus>
@@ -383,9 +383,9 @@
     <widget>
       <class>GtkLabel</class>
       <name>label01</name>
-      <x>104</x>
-      <y>80</y>
-      <width>135</width>
+      <x>105</x>
+      <y>85</y>
+      <width>105</width>
       <height>25</height>
       <label>削除を行う期間</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
@@ -399,11 +399,27 @@
     <widget>
       <class>GtkLabel</class>
       <name>LBLMSG</name>
-      <x>240</x>
-      <y>130</y>
+      <x>105</x>
+      <y>175</y>
       <width>335</width>
       <height>25</height>
       <label>あああ</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label2</name>
+      <x>215</x>
+      <y>85</y>
+      <width>140</width>
+      <height>25</height>
+      <label>（最終一括作成期間）</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
