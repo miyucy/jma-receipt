@@ -1867,7 +1867,7 @@
            MOVE    ZERO                TO  FLG-SYSKANRI
            INITIALIZE                      SYSKANRI-REC
            MOVE    "5000"              TO  SYS-KANRICD
-           MOVE    "*%"                TO  SYS-KBNCD
+           MOVE    "*"                 TO  SYS-KBNCD
            MOVE    LNK-ORCHCN33SUB-SANTEIYM
                                        TO  SYS-STYUKYMD(1:6)
            MOVE    "__"                TO  SYS-STYUKYMD(7:2)
@@ -1906,7 +1906,7 @@
            MOVE    ZERO                TO  FLG-SYSKANRI
            INITIALIZE                      SYSKANRI-REC
            MOVE    "5000"              TO  SYS-KANRICD
-           MOVE    "*%"                TO  SYS-KBNCD
+           MOVE    "*"                 TO  SYS-KBNCD
            MOVE    LNK-ORCHCN33SUB-SANTEIYM
                                        TO  SYS-STYUKYMD(1:6)
            MOVE    "__"                TO  SYS-STYUKYMD(7:2)
