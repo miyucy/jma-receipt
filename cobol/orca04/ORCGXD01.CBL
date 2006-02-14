@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-多々納  06/02/14  MONFUNC 対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -131,8 +132,8 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
-           COPY    "ORCA-DBPATH".
+      **** COPY    "CPORCMCP.INC".
+      **** COPY    "ORCA-DBPATH".
       *
       *****************************************************************
       *    連絡　領域
@@ -256,8 +257,6 @@
       *
            MOVE    SPA-MOTOPG          TO  SPA-MAE-MOTOPG
       *
-      *    管理コード決定
-           PERFORM 30011-KANRICD-SEC
       *    処理区分
            EVALUATE    SPA-SYORI-FLG
                WHEN    1
@@ -275,6 +274,8 @@
            ELSE
                MOVE    SPA-SRYYMDW(1:9)    TO  SPA-GMN-SRYYMD
            END-IF
+      *    管理コード決定
+           PERFORM 30011-KANRICD-SEC
       *
            EVALUATE    SPA-SYORI-FLG
                WHEN    1
@@ -289,14 +290,16 @@
            MOVE    SPACE               TO  SYS-1005-REC
            INITIALIZE                  SYS-1005-REC
            MOVE    "1005"              TO  SYS-1005-KANRICD
-           MOVE    "00000000"          TO  SYS-1005-STYUKYMD
-           MOVE    "99999999"          TO  SYS-1005-EDYUKYMD
+           MOVE    SPA-SRYYMD          TO  SYS-1005-STYUKYMD
+           MOVE    SPA-SRYYMD          TO  SYS-1005-EDYUKYMD
       *
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
-           MOVE    PATH-TBL-SYSKANRI-KEY2  TO  MCP-PATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    PATH-TBL-SYSKANRI-KEY2  TO  MCP-PATH
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
            ELSE
                MOVE    SPACE               TO  SYS-1005-REC
@@ -311,10 +314,12 @@
                MOVE    SYS-1005-SRYKANAME1   TO  SPA-GMN-SRYKAMEIL(IDX)
                MOVE    IDX                   TO  SPA-SRYKA-MAX
       *
-               MOVE    PATH-TBL-SYSKANRI-KEY2  TO  MCP-PATH
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
            END-PERFORM
-           MOVE    PATH-TBL-SYSKANRI-KEY2  TO  MCP-PATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
       *    初期表示
@@ -432,14 +437,16 @@
            MOVE    SPACE               TO  SYS-9701-REC
            INITIALIZE                  SYS-9701-REC
            MOVE    SPA-NAI-KANRICD     TO  SYS-9701-KANRICD
-           MOVE    "00000000"          TO  SYS-9701-STYUKYMD
-           MOVE    "99999999"          TO  SYS-9701-EDYUKYMD
+           MOVE    SPA-SRYYMD          TO  SYS-9701-STYUKYMD
+           MOVE    SPA-SRYYMD          TO  SYS-9701-EDYUKYMD
       *
            MOVE    SYS-9701-REC        TO  MCPDATA-REC
-           MOVE    PATH-TBL-SYSKANRI-KEY2  TO  MCP-PATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    PATH-TBL-SYSKANRI-KEY2  TO  MCP-PATH
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
            ELSE
                MOVE    SPACE               TO  SYS-9701-REC
@@ -454,10 +461,12 @@
                    PERFORM 30012-SYORINM-HEN-SEC
                END-IF
       *
-               MOVE    PATH-TBL-SYSKANRI-KEY2  TO  MCP-PATH
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
            END-PERFORM
-           MOVE    PATH-TBL-SYSKANRI-KEY2  TO  MCP-PATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            MOVE    SPA-GMN-SYORINML(1) TO  SPA-GMN-SYORINM
@@ -478,18 +487,21 @@
            INITIALIZE                      SYS-9700-REC
            MOVE    "9700"              TO  SYS-9700-KANRICD
            MOVE    "1%"                TO  SYS-9700-KBNCD
-           MOVE    "00000000"          TO  SYS-9700-STYUKYMD
-           MOVE    "99999999"          TO  SYS-9700-EDYUKYMD
+           MOVE    SPA-SRYYMD          TO  SYS-9700-STYUKYMD
+           MOVE    SPA-SRYYMD          TO  SYS-9700-EDYUKYMD
            MOVE    SYS-9700-REC        TO  MCPDATA-REC
-           MOVE    PATH-TBL-SYSKANRI-KEY   TO  MCP-PATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    PATH-TBL-SYSKANRI-KEY   TO  MCP-PATH
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-SYSKANRI
            END-IF
-           MOVE    PATH-TBL-SYSKANRI-KEY   TO  MCP-PATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
            MOVE    SPACE               TO  SPA-NAI-KANRICD
            IF      FLG-SYSKANRI        =   ZERO
@@ -1223,21 +1235,24 @@
                    "%"                 DELIMITED  BY  SIZE
                                   INTO     SYS-9701-KBNCD
            END-STRING
-           MOVE    "00000000"          TO  SYS-9701-STYUKYMD
-           MOVE    "99999999"          TO  SYS-9701-EDYUKYMD
+           MOVE    SPA-SRYYMD          TO  SYS-9701-STYUKYMD
+           MOVE    SPA-SRYYMD          TO  SYS-9701-EDYUKYMD
       *
            MOVE    SYS-9701-REC        TO  MCPDATA-REC
-           MOVE    PATH-TBL-SYSKANRI-KEY   TO  MCP-PATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    PATH-TBL-SYSKANRI-KEY   TO  MCP-PATH
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
            ELSE
                MOVE    SPACE               TO  SYS-9701-REC
                INITIALIZE                  SYS-9701-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
-           MOVE    PATH-TBL-SYSKANRI-KEY   TO  MCP-PATH
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
            IF      FLG-SYSKANRI       =   ZERO
                MOVE    MCPDATA-REC             TO  SYS-9701-REC
@@ -1577,7 +1592,8 @@
        900-PTINF-READ-SEC         SECTION.
       *
            MOVE    PTINF-REC           TO  MCPDATA-REC
-           MOVE    PATH-TBL-PTINF-KEY  TO  MCP-PATH
+           MOVE    "tbl_ptinf"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                PERFORM 920-DBFETCH-SEC
@@ -1593,7 +1609,8 @@
                INITIALIZE                  PTINF-REC
            END-IF
       *
-           MOVE    PATH-TBL-PTINF-KEY  TO  MCP-PATH
+           MOVE    "tbl_ptinf"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            .
@@ -1621,7 +1638,7 @@
        910-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -1634,7 +1651,7 @@
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -1649,7 +1666,7 @@
        990-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -1662,11 +1679,10 @@
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *
-           MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"   USING
-                                MCPAREA
-                                ORCMCPAREA
-                                MCPDATA-REC.
+           MOVE   "PUTWINDOW"          TO  MCP-FUNC.
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        900-PUT-WINDOW-EXT.
