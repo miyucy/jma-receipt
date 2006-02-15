@@ -1983,11 +1983,17 @@
                        PERFORM 410109-K02IDOU-SEC
                    ELSE
       *                Âà±¡Æü¤ò¿ÇÎÅÆü¤Ø
-                       MOVE    SPA-K02N-TAIINYMD   TO  WRK-SYMD
+                       IF      SPA-K02N-TAIINYMD   =   SPACE
+                                                   OR  "99999999"
+                           MOVE    SPA-SYSYMD          TO  WRK-SYMD
+                       ELSE
+                           MOVE    SPA-K02N-TAIINYMD   TO  WRK-SYMD
+                       END-IF
                        PERFORM 520-SEIWA-HEN-SEC
                        MOVE    WRK-HENYMDG         TO  SPA-SRYYMDW
-                       MOVE    SPA-K02N-TAIINYMD   TO  SPA-SRYYMD
+                       MOVE    WRK-SYMD            TO  SPA-SRYYMD
                        MOVE    SPA-GMN-PTNUM       TO  K02N-PTNUM
+                       MOVE    "1"                 TO  SPA-NYUGAIKBN
                        PERFORM 41010-PTNUM-SYORI-SEC
                    END-IF
       *
