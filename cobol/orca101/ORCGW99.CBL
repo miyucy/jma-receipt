@@ -32,6 +32,7 @@
       *                                     ２０件に拡張
       *                                     一括入力対応
       *  01.00.02    NACL−太田   04/03/03  患者登録送信ボタン等追加
+      *  02.07.00    NACL−太田   06/02/15  入院オーダー取込ボタン追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -113,6 +114,9 @@
                                               PIC X(01) OCCURS 2.
                    07  SPA-GMN-BYOMEI-SYNC-G.
                        09  SPA-GMN-BYOMEI-SYNC
+                                              PIC X(01) OCCURS 2.
+                   07  SPA-GMN-NYU-ORDER-G.
+                       09  SPA-GMN-NYU-ORDER
                                               PIC X(01) OCCURS 2.
                    07  SPA-GMN-TBL.            
                        09  SPA-GMN-TBL-G      OCCURS  20.
@@ -518,6 +522,14 @@
                    MOVE    "F"         TO  SPA-GMN-BYOMEI-SYNC (2)
                END-IF
       *
+               IF    ( SYS-9000-NYU-ORDER-FLG   =   "1" )
+                   MOVE    "F"         TO  SPA-GMN-NYU-ORDER (1)
+                   MOVE    "T"         TO  SPA-GMN-NYU-ORDER (2)
+               ELSE
+                   MOVE    "T"         TO  SPA-GMN-NYU-ORDER (1)
+                   MOVE    "F"         TO  SPA-GMN-NYU-ORDER (2)
+               END-IF
+      *
            ELSE
                MOVE    "T" 
                                        TO  SPA-GMN-UKEBUTTON (1)  
@@ -540,6 +552,8 @@
                MOVE    "F"             TO  SPA-GMN-BYOMEI-AGG (2)
                MOVE    "T"             TO  SPA-GMN-BYOMEI-SYNC (1)
                MOVE    "F"             TO  SPA-GMN-BYOMEI-SYNC (2)
+               MOVE    "T"             TO  SPA-GMN-NYU-ORDER (1)
+               MOVE    "F"             TO  SPA-GMN-NYU-ORDER (2)
       *
            END-IF             
       *
@@ -646,6 +660,10 @@
                WHEN    "CLICKED"       ALSO    "BYOMEI_SYNC1"
                WHEN    "CLICKED"       ALSO    "BYOMEI_SYNC2"
                    PERFORM 450-BYOMEI-SYNC-SEC
+      *    入院オーダー取込
+               WHEN    "CLICKED"       ALSO    "NYU_ORDER1"
+               WHEN    "CLICKED"       ALSO    "NYU_ORDER2"
+                   PERFORM 450-NYU-ORDER-SEC
            END-EVALUATE
       *
            .
@@ -902,10 +920,27 @@
            MOVE    W99-BYOMEI-SYNC1    TO  SPA-GMN-BYOMEI-SYNC (1)
            MOVE    W99-BYOMEI-SYNC2    TO  SPA-GMN-BYOMEI-SYNC (2)
       *
-           MOVE    9                   TO  SPA-GMN-CUR
+           MOVE    109                 TO  SPA-GMN-CUR
       *
            .
        450-BYOMEI-SYNC-EXT.
+           EXIT.
+      *****************************************************************
+      *   入院オーダー取込
+      *****************************************************************
+       450-NYU-ORDER-SEC               SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
+           MOVE    W99-NYU-ORDER1      TO  SPA-GMN-NYU-ORDER (1)
+           MOVE    W99-NYU-ORDER2      TO  SPA-GMN-NYU-ORDER (2)
+      *
+      *
+           MOVE    9                   TO  SPA-GMN-CUR
+      *
+           .
+       450-NYU-ORDER-EXT.
            EXIT.
       *****************************************************************
       *   ＩＰアドレス入力チェック処理 
@@ -1258,6 +1293,12 @@
                MOVE    SPACE               TO  SYS-9000-BYOMEI-DOUKI-FLG
            END-IF
       *     
+           IF    ( SPA-GMN-NYU-ORDER (2)       =   "T" )
+               MOVE    "1"                 TO  SYS-9000-NYU-ORDER-FLG
+           ELSE
+               MOVE    SPACE               TO  SYS-9000-NYU-ORDER-FLG
+           END-IF
+      *     
            MOVE    SYS-9000-REC            TO  SYSKANRI-REC
       *     
            IF      FLG-SYSKANRI            =   ZERO
@@ -1470,6 +1511,8 @@
            MOVE    SPA-GMN-BYOMEI-AGG (2)      TO   W99-BYOMEI-AGG2
            MOVE    SPA-GMN-BYOMEI-SYNC (1)     TO   W99-BYOMEI-SYNC1
            MOVE    SPA-GMN-BYOMEI-SYNC (2)     TO   W99-BYOMEI-SYNC2
+           MOVE    SPA-GMN-NYU-ORDER (1)       TO   W99-NYU-ORDER1
+           MOVE    SPA-GMN-NYU-ORDER (2)       TO   W99-NYU-ORDER2
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -1713,6 +1756,10 @@
                MOVE  "BYOMEI_SYNC1"    TO   MCP-WIDGET
            WHEN    108
                MOVE  "BYOMEI_SYNC2"    TO   MCP-WIDGET
+           WHEN    109
+               MOVE  "NYU_ORDER1"      TO   MCP-WIDGET
+           WHEN    110
+               MOVE  "NYU_ORDER2"      TO   MCP-WIDGET
            END-EVALUATE
            .
        5001-MAPCUR-EXT.

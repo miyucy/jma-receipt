@@ -17,6 +17,7 @@ I01	{
 		};
 		B24	{
 			label	varchar(10);
+			state	int;
 		};
 		PTNUM	{
 			value	varchar(20);

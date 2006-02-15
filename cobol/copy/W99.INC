@@ -54,3 +54,7 @@
                     06  W99-VALUE   PIC X.
                   05  W99-BYOMEI-SYNC2.
                     06  W99-VALUE   PIC X.
+                  05  W99-NYU-ORDER1.
+                    06  W99-VALUE   PIC X.
+                  05  W99-NYU-ORDER2.
+                    06  W99-VALUE   PIC X.

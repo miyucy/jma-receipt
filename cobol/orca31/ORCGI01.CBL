@@ -106,6 +106,7 @@
       *  01.00.54    NACL-小豆沢  05.07.19  自費１０項目対応
       *  01.00.55    NACL-小豆沢  06.01.13  退院日以降の診療会計を残す処理
       *                                     を可能とする区分を追加
+      *  02.07.00    NACL-太田    06.02.15  入院オーダー確認画面遷移制御追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -510,6 +511,8 @@
            COPY    "CPSK5111.INC".
       *    
            COPY    "CPSK5013.INC".
+      *    
+           COPY    "CPSK9000.INC".
       *
       *    患者マスタ
        01  PTINF-REC.
@@ -931,11 +934,27 @@
        310-SPASET-SEC              SECTION.
       *
       *    入外区分
-           MOVE    "1"             TO  SPA-NYUGAIKBN
+           MOVE    "1"                 TO  SPA-NYUGAIKBN
+      *
       *
            INITIALIZE              I01
                                    SPA-I0FREE
                                    SPA-I0KYOUTU
+      *
+           INITIALIZE                      SYS-9000-REC
+           MOVE    "9000"              TO  SYS-9000-KANRICD
+           MOVE    "*"                 TO  SYS-9000-KBNCD
+           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           MOVE    SYS-9000-REC        TO  MCPDATA-REC
+           MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           MOVE    MCPDATA-REC         TO  SYS-9000-REC
+      *
+           MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+           MOVE    SYS-9000-NYU-ORDER-FLG
+                                       TO  SPA-GMN-I01-ORDERKBN
       *
       *    コンボボックス初期化
            MOVE    SPA-SYSYMD      TO  WRK-KJNYMD
@@ -13311,6 +13330,14 @@
       *    登録ボタン
            MOVE    SPA-GMN-I01-B12-STT
                                        TO  I01-B12-STT
+      *
+      *    入院オーダー遷移
+           MOVE    WIDGET-INSENSITIVE  TO  I01-B24-STATE
+           IF    ( SPA-GMN-I01-ORDERKBN    =   "1" )
+               MOVE    "オーダー"      TO  I01-B24-LABEL
+               MOVE    WIDGET-NORMAL   TO  I01-B24-STATE
+           END-IF
+      *
       *    異動日
            MOVE    SPA-GMN-I01-IDOYMD-STT
                                        TO  I01-IDOYMD-STT

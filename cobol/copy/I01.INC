@@ -23,6 +23,7 @@
               04  I01-B05-STATE                    PIC S9(9)   BINARY.
               04  I01-B21-STATE                    PIC S9(9)   BINARY.
               04  I01-B24-LABEL                    PIC X(10).
+              04  I01-B24-STATE                    PIC S9(9)   BINARY.
               04  I01-PTNUM                        PIC X(20).
               04  I01-NAME                         PIC X(60).
               04  I01-SEX                          PIC X(4).

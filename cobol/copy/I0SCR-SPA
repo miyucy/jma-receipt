@@ -24,6 +24,7 @@
              07  SPA-GMN-I01-MAX                   PIC 9(03).
              07  SPA-GMN-I01-CUR                   PIC 9(03).
              07  SPA-GMN-I01-KBN                   PIC X(02).
+             07  SPA-GMN-I01-ORDERKBN              PIC X(01).
       *      07  SPA-GMN-I01-KJNYMD                PIC X(08).
       *      エラー情報退避テーブル（患者番号・処理区分）
              07  SPA-GMN-I01-ERRCD-TBL.

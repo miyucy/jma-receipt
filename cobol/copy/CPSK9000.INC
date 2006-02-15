@@ -58,6 +58,9 @@
       *病名同期フラグ
            03  SYS-9000-BYOMEI-DOUKI-FLG
                                         PIC  X(01).
+      *入院オーダー取込フラグ
+           03  SYS-9000-NYU-ORDER-FLG
+                                        PIC  X(01).
       *予備
            03                           PIC  X(488).
       *端末ＩＤ

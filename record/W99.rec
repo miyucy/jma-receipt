@@ -220,6 +220,12 @@ W99	{
 				BYOMEI_SYNC2	{
 					value	bool;
 				};
+				NYU_ORDER1	{
+					value	bool;
+				};
+				NYU_ORDER2	{
+					value	bool;
+				};
 			};
 		};
 	};

@@ -1964,34 +1964,93 @@
     </widget>
 
     <widget>
+      <class>GtkRadioButton</class>
+      <name>UKEBUTTON2</name>
+      <x>275</x>
+      <y>220</y>
+      <width>45</width>
+      <height>25</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Thu, 31 Oct 2002 06:36:46 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Tue, 12 Nov 2002 04:48:11 GMT</last_modification_time>
+      </signal>
+      <label>有</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+      <group>UKETUKE</group>
+    </widget>
+
+    <widget>
+      <class>GtkRadioButton</class>
+      <name>UKEBUTTON1</name>
+      <x>230</x>
+      <y>220</y>
+      <width>45</width>
+      <height>25</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Thu, 31 Oct 2002 06:36:28 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Tue, 12 Nov 2002 04:47:57 GMT</last_modification_time>
+      </signal>
+      <label>無</label>
+      <active>True</active>
+      <draw_indicator>True</draw_indicator>
+      <group>UKETUKE</group>
+    </widget>
+
+    <widget>
+      <class>GtkRadioButton</class>
+      <name>SYNBUTTON2</name>
+      <x>535</x>
+      <y>220</y>
+      <width>45</width>
+      <height>25</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Thu, 31 Oct 2002 06:37:57 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Tue, 12 Nov 2002 04:48:57 GMT</last_modification_time>
+      </signal>
+      <label>有</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+      <group>SINRYO</group>
+    </widget>
+
+    <widget>
       <class>GtkFrame</class>
       <name>frame1</name>
       <x>680</x>
       <y>80</y>
-      <width>260</width>
-      <height>150</height>
+      <width>264</width>
+      <height>176</height>
       <label_xalign>0</label_xalign>
       <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
 
       <widget>
 	<class>GtkFixed</class>
 	<name>fixed2</name>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label245</name>
-	  <x>10</x>
-	  <y>105</y>
-	  <width>60</width>
-	  <height>25</height>
-	  <label>病名同期</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
 
 	<widget>
 	  <class>GtkLabel</class>
@@ -2093,31 +2152,6 @@
 
 	<widget>
 	  <class>GtkRadioButton</class>
-	  <name>PTINF_SEND1</name>
-	  <x>140</x>
-	  <y>15</y>
-	  <width>45</width>
-	  <height>25</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>send_event</handler>
-	    <data>CLICKED</data>
-	    <last_modification_time>Thu, 31 Oct 2002 06:37:39 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>toggled</name>
-	    <handler>button_toggled</handler>
-	    <last_modification_time>Tue, 12 Nov 2002 04:48:46 GMT</last_modification_time>
-	  </signal>
-	  <label>無</label>
-	  <active>True</active>
-	  <draw_indicator>True</draw_indicator>
-	  <group>PTINF_SEND</group>
-	</widget>
-
-	<widget>
-	  <class>GtkRadioButton</class>
 	  <name>PTINF_SEND2</name>
 	  <x>185</x>
 	  <y>15</y>
@@ -2143,8 +2177,8 @@
 
 	<widget>
 	  <class>GtkRadioButton</class>
-	  <name>BYOMEI_AGG1</name>
-	  <x>140</x>
+	  <name>BYOMEI_AGG2</name>
+	  <x>185</x>
 	  <y>75</y>
 	  <width>45</width>
 	  <height>25</height>
@@ -2153,17 +2187,49 @@
 	    <name>clicked</name>
 	    <handler>send_event</handler>
 	    <data>CLICKED</data>
-	    <last_modification_time>Thu, 31 Oct 2002 06:36:46 GMT</last_modification_time>
+	    <last_modification_time>Thu, 31 Oct 2002 06:36:28 GMT</last_modification_time>
 	  </signal>
 	  <signal>
 	    <name>toggled</name>
 	    <handler>button_toggled</handler>
-	    <last_modification_time>Tue, 12 Nov 2002 04:48:11 GMT</last_modification_time>
+	    <last_modification_time>Tue, 12 Nov 2002 04:47:57 GMT</last_modification_time>
 	  </signal>
-	  <label>無</label>
-	  <active>False</active>
+	  <label>有</label>
+	  <active>True</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>BYOMEI_AGG</group>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label245</name>
+	  <x>10</x>
+	  <y>105</y>
+	  <width>60</width>
+	  <height>25</height>
+	  <label>病名同期</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label246</name>
+	  <x>10</x>
+	  <y>135</y>
+	  <width>120</width>
+	  <height>25</height>
+	  <label>入院オーダー取込</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
 	</widget>
 
 	<widget>
@@ -2193,8 +2259,8 @@
 
 	<widget>
 	  <class>GtkRadioButton</class>
-	  <name>BYOMEI_AGG2</name>
-	  <x>185</x>
+	  <name>BYOMEI_AGG1</name>
+	  <x>140</x>
 	  <y>75</y>
 	  <width>45</width>
 	  <height>25</height>
@@ -2203,17 +2269,67 @@
 	    <name>clicked</name>
 	    <handler>send_event</handler>
 	    <data>CLICKED</data>
-	    <last_modification_time>Thu, 31 Oct 2002 06:36:28 GMT</last_modification_time>
+	    <last_modification_time>Thu, 31 Oct 2002 06:36:46 GMT</last_modification_time>
 	  </signal>
 	  <signal>
 	    <name>toggled</name>
 	    <handler>button_toggled</handler>
-	    <last_modification_time>Tue, 12 Nov 2002 04:47:57 GMT</last_modification_time>
+	    <last_modification_time>Tue, 12 Nov 2002 04:48:11 GMT</last_modification_time>
 	  </signal>
-	  <label>有</label>
-	  <active>True</active>
+	  <label>無</label>
+	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>BYOMEI_AGG</group>
+	</widget>
+
+	<widget>
+	  <class>GtkRadioButton</class>
+	  <name>PTINF_SEND1</name>
+	  <x>140</x>
+	  <y>15</y>
+	  <width>45</width>
+	  <height>25</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>send_event</handler>
+	    <data>CLICKED</data>
+	    <last_modification_time>Thu, 31 Oct 2002 06:37:39 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>toggled</name>
+	    <handler>button_toggled</handler>
+	    <last_modification_time>Tue, 12 Nov 2002 04:48:46 GMT</last_modification_time>
+	  </signal>
+	  <label>無</label>
+	  <active>True</active>
+	  <draw_indicator>True</draw_indicator>
+	  <group>PTINF_SEND</group>
+	</widget>
+
+	<widget>
+	  <class>GtkRadioButton</class>
+	  <name>NYU_ORDER1</name>
+	  <x>140</x>
+	  <y>135</y>
+	  <width>45</width>
+	  <height>25</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>send_event</handler>
+	    <data>CLICKED</data>
+	    <last_modification_time>Thu, 31 Oct 2002 06:37:23 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>toggled</name>
+	    <handler>button_toggled</handler>
+	    <last_modification_time>Tue, 12 Nov 2002 04:48:33 GMT</last_modification_time>
+	  </signal>
+	  <label>無</label>
+	  <active>False</active>
+	  <draw_indicator>True</draw_indicator>
+	  <group>NYU_ORDER</group>
 	</widget>
 
 	<widget>
@@ -2240,82 +2356,32 @@
 	  <draw_indicator>True</draw_indicator>
 	  <group>BYOMEI_SYNC</group>
 	</widget>
+
+	<widget>
+	  <class>GtkRadioButton</class>
+	  <name>NYU_ORDER2</name>
+	  <x>185</x>
+	  <y>135</y>
+	  <width>45</width>
+	  <height>25</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>send_event</handler>
+	    <data>CLICKED</data>
+	    <last_modification_time>Thu, 31 Oct 2002 06:37:04 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>toggled</name>
+	    <handler>button_toggled</handler>
+	    <last_modification_time>Tue, 03 Dec 2002 06:05:43 GMT</last_modification_time>
+	  </signal>
+	  <label>有</label>
+	  <active>True</active>
+	  <draw_indicator>True</draw_indicator>
+	  <group>NYU_ORDER</group>
+	</widget>
       </widget>
-    </widget>
-
-    <widget>
-      <class>GtkRadioButton</class>
-      <name>UKEBUTTON2</name>
-      <x>275</x>
-      <y>220</y>
-      <width>45</width>
-      <height>25</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 31 Oct 2002 06:36:46 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Tue, 12 Nov 2002 04:48:11 GMT</last_modification_time>
-      </signal>
-      <label>有</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-      <group>UKETUKE</group>
-    </widget>
-
-    <widget>
-      <class>GtkRadioButton</class>
-      <name>UKEBUTTON1</name>
-      <x>230</x>
-      <y>220</y>
-      <width>45</width>
-      <height>25</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 31 Oct 2002 06:36:28 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Tue, 12 Nov 2002 04:47:57 GMT</last_modification_time>
-      </signal>
-      <label>無</label>
-      <active>True</active>
-      <draw_indicator>True</draw_indicator>
-      <group>UKETUKE</group>
-    </widget>
-
-    <widget>
-      <class>GtkRadioButton</class>
-      <name>SYNBUTTON2</name>
-      <x>535</x>
-      <y>220</y>
-      <width>45</width>
-      <height>25</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 31 Oct 2002 06:37:57 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Tue, 12 Nov 2002 04:48:57 GMT</last_modification_time>
-      </signal>
-      <label>有</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-      <group>SINRYO</group>
     </widget>
   </widget>
 </widget>
