@@ -1063,3 +1063,22 @@ path	key44 	{
 	};
 };
 
+path	key45 	{
+	DBSELECT	{
+		DECLARE tbl_sryacct_key45_csr CURSOR FOR
+		SELECT *
+		FROM tbl_sryacct
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   PTID        =   :PTID
+			AND   SRYYM       =   :SRYYM
+                        AND   HKNCOMBI   <>  '9999'
+			AND  (SRYCDTOTAL  =   197001210  OR
+		 	      SRYCDTOTAL  =   197000470)
+			ORDER  BY   SRYKA,
+                                    SRYKBN,
+                                    ZAINUM
+		;
+	};
+};
+
