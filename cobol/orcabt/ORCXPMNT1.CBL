@@ -27,6 +27,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-伊藤    06/02/15  修正プログラム処理該当件数
+      *                                     をファイルに書き出す
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -39,6 +41,11 @@
                                    ASS-IN
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-IN.
+      *    該当件数ファイル
+           SELECT  CNT-FILE        ASSIGN
+                                   ASS-CNT
+                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   FILE    STATUS  IS  STS-CNT.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
@@ -47,16 +54,22 @@
        FD  IN-FILE.
        01  IN-REC.
            COPY    "CPPGKANRIC.INC".
+      *    該当件数ファイル
+       FD  CNT-FILE.
+       01  CNT-REC.
+           03  CNT-PGKANRIUPD          PIC 9(04).
       *
        WORKING-STORAGE             SECTION.
       *
       *    ファイル指定領域
        01  ASS-AREA.
            03  ASS-IN                  PIC X(256).
+           03  ASS-CNT                 PIC X(256).
       *
       *    フラグ領域
        01  STS-AREA.
            03  STS-IN                  PIC X(02).
+           03  STS-CNT                 PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -80,6 +93,9 @@
                05  WRK-SYY2            PIC 9(02).
                05  WRK-SMM2            PIC 9(02).
                05  WRK-SDD2            PIC 9(02).
+       01  PARA-AREA.
+           03  PARA-DBFILE             PIC X(256).
+           03  PARA-CNTFILE            PIC X(256).
       *
       *****************************************************************
       *    ファイル定義
@@ -94,14 +110,13 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
+      *****COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
-       01  PARA-REC.
-           03  PARA-DBFILE             PIC X(256).
+       01  PARA-REC                    PIC X(512).
       *
        PROCEDURE                   DIVISION
            USING
@@ -130,6 +145,11 @@
            MOVE    ZERO            TO  FLG-AREA
            MOVE    ZERO            TO  CNT-AREA
            INITIALIZE                  WRK-AREA
+      *
+           UNSTRING    PARA-REC    DELIMITED  BY  ","
+                                   INTO  PARA-DBFILE
+                                         PARA-CNTFILE
+           END-UNSTRING
       *
       *    DB OPEN
            PERFORM 100-DBOPEN-SEC
@@ -251,17 +271,17 @@
       *
            MOVE    PGKANRI-REC     TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "PGKANRI-KEY"   TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_pgkanri"   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"       USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"       TO  MCP-FUNC
-               MOVE    "PGKANRI-KEY"   TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
+               MOVE    "tbl_pgkanri"   TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
+               CALL    "MONFUNC"       USING
                                            MCPAREA
-                                           ORCMCPAREA
                                            MCPDATA-REC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC     TO  PGKANRI-REC
@@ -275,10 +295,10 @@
            END-IF
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           MOVE    "PGKANRI-KEY"   TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_pgkanri"   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"       USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
       *
            .
@@ -313,10 +333,10 @@
       *
            MOVE    PGKANRI-REC     TO  MCPDATA-REC
            MOVE    "DBINSERT"      TO  MCP-FUNC
-           MOVE    "PGKANRI-KEY"   TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_pgkanri"   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"       USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                 MOVE    6              TO  FLG-ERR
@@ -336,7 +356,10 @@
       *    DB DISCONNECT
            PERFORM 900-DBDISCONNECT-SEC
       *
-      *    帳票出力　終了処理
+      *    該当件数：ファイル出力
+           PERFORM 310-PGKANRI-CNT-WRITE-SEC
+      *
+      *    出力　終了処理
            CLOSE   IN-FILE
       *
            DISPLAY "*(ORCXPMNT1)* IN      /I CNT[" CNT-IN      "]"
@@ -345,6 +368,31 @@
       *
            .
        300-END-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＰＧ管理情報　登録処理
+      *****************************************************************
+       310-PGKANRI-CNT-WRITE-SEC       SECTION.
+      *
+           MOVE    PARA-CNTFILE    TO  ASS-CNT
+      *
+      *    出力　初期処理
+           OPEN    OUTPUT          CNT-FILE
+           IF      STS-CNT         NOT =   ZERO
+               MOVE    1           TO  FLG-IN
+               DISPLAY "*(ORCXPMNT1)* CNT-FILE OPN STS[" STS-CNT "]"
+               GO  TO  310-PGKANRI-CNT-WRITE-EXT
+           ELSE
+               MOVE    SPACE       TO  CNT-REC
+               MOVE    CNT-PGKANRI TO  CNT-PGKANRIUPD
+               WRITE   CNT-REC
+           END-IF
+      *
+           CLOSE   CNT-FILE
+      *
+           .
+       310-PGKANRI-CNT-WRITE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -372,18 +420,16 @@
        100-DBOPEN-SEC              SECTION.
       *
            MOVE    "DBOPEN"        TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"       USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "DBOPEN ERROR"
            END-IF
       *
            MOVE    "DBSTART"       TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"       USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "DBSTART ERROR"
@@ -398,18 +444,16 @@
        900-DBDISCONNECT-SEC        SECTION.
       *
            MOVE    "DBCOMMIT"      TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"       USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "DBCOMMIT ERROR"
            END-IF
       *
            MOVE    "DBDISCONNECT"  TO  MCP-FUNC
-           CALL    "ORCMCPSUB"         USING
+           CALL    "MONFUNC"       USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "DBDISCONNECT ERROR"
