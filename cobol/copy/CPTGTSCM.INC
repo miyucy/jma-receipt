@@ -75,7 +75,7 @@
                05  PIC X(23)   VALUE "045tbl_jinmei".
                05  PIC X(23)   VALUE "046tbl_monthlynum".
                05  PIC X(23)   VALUE "000view_Q001".
-               05  PIC X(23)   VALUE "052tbl_yakujyo".
+               05  PIC X(23)   VALUE "052tbl_tekioubyomei".
                05  PIC X(23)   VALUE "055tbl_nyuinkhn".
                05  PIC X(23)   VALUE "058tbl_ptnyuinrrk".
                05  PIC X(23)   VALUE "059tbl_pttainfuka".
