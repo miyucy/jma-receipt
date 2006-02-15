@@ -118,6 +118,8 @@
       *                                     ¡Ü¡÷ÂÐ±þ
       *  01.01.27    NACL-ÌçÏÆ    06/01/26  ·²ÇÏ¸©¹âºê»ÔÏ·¿ÍÂÐ±þ
       *  01.01.28    NACL-ÌçÏÆ    06/02/03  µÜ¾ë¸©ÃÏÊý¸øÈñ¿©»öÎÅÍÜÈñµ­ºÜÂÐ±þ
+      *  01.01.28    NACL-¾®Æ¦Âô  06/02/15  Ï«ºÒÆþ±¡Ãæ¤ÎÆÃÊÌ¿©²Ã»»ÂàÈò
+      *                                     ½èÍý¤Î¿ÇÎÅ²ñ·×¸¡º÷£Ð£Á£Ô£ÈÊÑ¹¹
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -5832,21 +5834,56 @@
                                            MCPDATA-REC.
       *
       *
+      *    ½èÍý¹âÂ®²½¤Î°Ù MONFUNCÂÐ±þ¤³¤³¤«¤é
+      *     INITIALIZE                            SRYACCT-REC.
+      *     MOVE    LNK-SYU-HOSPID        TO      ACCT-HOSPID.
+      *     MOVE    LNK-SYU-NYUGAIKBN     TO      ACCT-NYUGAIKBN.
+      *     MOVE    LNK-SYU-PTID          TO      ACCT-PTID.
+      *     MOVE    LNK-SYU-SRYYMD(1:6)   TO      ACCT-SRYYM.
+      *     MOVE    SRYACCT-REC           TO      MCPDATA-REC.
+      *     MOVE    "DBSELECT"            TO      MCP-FUNC.
+      *     MOVE    "SRYACCT-KEY33"       TO      ORC-DBPATH.
+      *     CALL    "ORCMCPSUB"           USING   MCPAREA
+      *                                           ORCMCPAREA
+      *                                           MCPDATA-REC.
+      *     IF      MCP-RC             =       ZERO
+      **
+      *         MOVE    "SRYACCT-KEY33"   TO      ORC-DBPATH
+      *         PERFORM  SRYACCT-READ-SEC
+      *         PERFORM  UNTIL  (FLG-SRYACCT    =    "1")
+      *
+      *           IF     LNK-SYU-HKNCOMBINUM  =    ACCT-HKNCOMBI
+      *             IF     ACCT-SRYCDTOTAL    =    197001210  OR
+      *                                            197000470
+      *                       PERFORM        23043-ROSAITOKU-TAIHI-SEC
+      *             END-IF
+      *           END-IF
+      **
+      *           MOVE     "SRYACCT-KEY33"  TO   ORC-DBPATH
+      *           PERFORM   SRYACCT-READ-SEC
+      *         END-PERFORM
+      **
+      *     END-IF.
+      **
+      *     MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC.
+      *     MOVE    "SRYACCT-KEY33"         TO  ORC-DBPATH.
+      *     CALL    "ORCMCPSUB"             USING
+      *                                     MCPAREA
+      *                                     ORCMCPAREA
+      *
            INITIALIZE                            SRYACCT-REC.
            MOVE    LNK-SYU-HOSPID        TO      ACCT-HOSPID.
            MOVE    LNK-SYU-NYUGAIKBN     TO      ACCT-NYUGAIKBN.
            MOVE    LNK-SYU-PTID          TO      ACCT-PTID.
            MOVE    LNK-SYU-SRYYMD(1:6)   TO      ACCT-SRYYM.
-           MOVE    SRYACCT-REC           TO      MCPDATA-REC.
-           MOVE    "DBSELECT"            TO      MCP-FUNC.
-           MOVE    "SRYACCT-KEY33"       TO      ORC-DBPATH.
-           CALL    "ORCMCPSUB"           USING   MCPAREA
-                                                 ORCMCPAREA
-                                                 MCPDATA-REC.
-           IF      MCP-RC             =       ZERO
+           MOVE    "tbl_sryacct"         TO      MCP-TABLE.
+           MOVE    "key45"               TO      MCP-PATHNAME.
+           PERFORM 910-SRYACCT-SELECT-SEC.
+           IF      FLG-SRYACCT           =       ZERO
       *
-               MOVE    "SRYACCT-KEY33"   TO      ORC-DBPATH
-               PERFORM  SRYACCT-READ-SEC
+               MOVE    "tbl_sryacct"         TO      MCP-TABLE
+               MOVE    "key45"               TO      MCP-PATHNAME
+               PERFORM  910-SRYACCT-READ-SEC
                PERFORM  UNTIL  (FLG-SRYACCT    =    "1")
       *
                  IF     LNK-SYU-HKNCOMBINUM  =    ACCT-HKNCOMBI
@@ -5856,19 +5893,19 @@
                    END-IF
                  END-IF
       *
-                 MOVE     "SRYACCT-KEY33"  TO   ORC-DBPATH
-                 PERFORM   SRYACCT-READ-SEC
+                 MOVE    "tbl_sryacct"       TO      MCP-TABLE
+                 MOVE    "key45"             TO      MCP-PATHNAME
+                 PERFORM   910-SRYACCT-READ-SEC
                END-PERFORM
       *
            END-IF.
       *
-           MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC.
-           MOVE    "SRYACCT-KEY33"         TO  ORC-DBPATH.
-           CALL    "ORCMCPSUB"             USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC.
+      *    ¿ÇÎÅ²ñ·×¥¯¥í¡¼¥º
+           MOVE    "tbl_sryacct"        TO  MCP-TABLE.
+           MOVE    "key45"              TO  MCP-PATHNAME.
+           PERFORM   910-DB-CLOSE-SEC.
       *
+      *    ½èÍý¹âÂ®²½¤Î°Ù MONFUNCÂÐ±þ¤³¤³¤Þ¤Ç
       *
            IF    WK-SHOKUJIRYOYO-OCC   NOT =  ZERO
              INITIALIZE                            NYUINACCT-REC
@@ -12582,3 +12619,59 @@
        PTHKNINF-READ-EXT.
            EXIT.
       *
+      *
+      *****************************************************************
+      *    ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡¼¸¡º÷ (MONFUNC)
+      *****************************************************************
+       910-SRYACCT-SELECT-SEC        SECTION.
+      *
+           MOVE    SRYACCT-REC         TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "MONFUNC"            USING
+                                        MCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO               TO  FLG-SRYACCT
+           ELSE
+               MOVE    1                  TO  FLG-SRYACCT
+           END-IF
+      *
+           .
+       910-SRYACCT-SELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡¼ÆÉ¹þ (MONFUNC)
+      *****************************************************************
+       910-SRYACCT-READ-SEC        SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MONFUNC"            USING
+                                        MCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC        TO  SRYACCT-REC
+               MOVE    ZERO               TO  FLG-SRYACCT
+           ELSE
+               INITIALIZE                     SRYACCT-REC
+               MOVE    1                  TO  FLG-SRYACCT
+           END-IF
+      *
+           .
+       910-SRYACCT-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    £Ä£Â¥¯¥í¡¼¥º½èÍý (MONFUNC)
+      *****************************************************************
+       910-DB-CLOSE-SEC                 SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
+           CALL    "MONFUNC"            USING
+                                        MCPAREA
+                                        MCPDATA-REC
+      *
+           .
+      *
+       910-DB-CLOSE-EXT.
+           EXIT.
