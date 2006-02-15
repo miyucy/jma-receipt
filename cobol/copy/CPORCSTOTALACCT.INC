@@ -52,5 +52,5 @@
       *
       *復帰コード
       *
-           03  LNK-ORCSTOTALACCT-RC                    PIC  9(02).
+           03  LNK-ORCSTOTALACCT-RC                    PIC S9(9) BINARY.
       *

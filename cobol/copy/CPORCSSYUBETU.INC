@@ -66,4 +66,4 @@
       *                ２：診療年月エラー（平成１４年９月以前）
       *                ３：年齢取得エラー
       *                ９：対象レセプトなし
-           03  LNK-SYUBETU-RC              PIC 9(01).
+           03  LNK-SYUBETU-RC              PIC S9(9) BINARY.
