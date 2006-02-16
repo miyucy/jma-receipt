@@ -56,6 +56,7 @@
       *  01.02.18    NACL-多々納  05/05/17  病床数フラグ追加
       *  01.02.19    NACL-多々納  05/10/14  データ収集作成フラグ、
       *                                     データ収集提出方法区分追加
+      *  02.07.00    NACL-竹田　  06/02/16  リダイレクタ不整表示(仮)
       *****************************************************************
       *
       *
@@ -562,6 +563,18 @@
                MOVE    "1001"              TO  SPA-ERRCD
            END-IF
       *
+      *     リダイレクタ不整チェック追加
+           IF  MCP-DBSTATUS                =   "DISC"
+               MOVE    "1006"              TO  SPA-ERRCD
+           END-IF
+           IF  MCP-DBSTATUS                =   "WAIT"
+               MOVE    "1007"              TO  SPA-ERRCD
+           END-IF
+           IF  MCP-DBSTATUS                =   "RERR"
+               MOVE    "1008"              TO  SPA-ERRCD
+           END-IF
+
+      *
            .
        310-SPASET-EXT.
            EXIT.
@@ -945,6 +958,17 @@
                    MOVE    "処理を終了してください。"
                                                TO  SPA-ERRMSG (41:)
       *---- (01.00.02) LINE ADD END   --------------------------------
+               WHEN    "1006"
+                   MOVE    "主従のデータベースに不整合が発生していま"
+                                               TO  SPA-ERRMSG (1:40)
+                   MOVE    "す。"
+                                               TO  SPA-ERRMSG (41:)
+               WHEN    "1007"
+                   MOVE    "リダイレクタ接続待ちです。"
+                                               TO  SPA-ERRMSG (1:40)
+               WHEN    "1008"
+                   MOVE    "リダイレクタ接続に失敗しました。"
+                                               TO  SPA-ERRMSG (1:40)
            END-EVALUATE
 	   .
       *
