@@ -118,8 +118,11 @@
       *                                     ¡Ü¡÷ÂÐ±þ
       *  01.01.27    NACL-ÌçÏÆ    06/01/26  ·²ÇÏ¸©¹âºê»ÔÏ·¿ÍÂÐ±þ
       *  01.01.28    NACL-ÌçÏÆ    06/02/03  µÜ¾ë¸©ÃÏÊý¸øÈñ¿©»öÎÅÍÜÈñµ­ºÜÂÐ±þ
-      *  01.01.28    NACL-¾®Æ¦Âô  06/02/15  Ï«ºÒÆþ±¡Ãæ¤ÎÆÃÊÌ¿©²Ã»»ÂàÈò
+      *  01.01.29    NACL-¾®Æ¦Âô  06/02/15  Ï«ºÒÆþ±¡Ãæ¤ÎÆÃÊÌ¿©²Ã»»ÂàÈò
       *                                     ½èÍý¤Î¿ÇÎÅ²ñ·×¸¡º÷£Ð£Á£Ô£ÈÊÑ¹¹
+      *  01.01.30    NACL-ÌçÏÆ    06/02/16  ¹âÎð¼Ô£²³ä¡ÜËÌ³¤Æ»½Å¿´¤Î
+      *                                     ¼çÊÝ¸±Ëô¤Ï£²£·Ï·¿Í¤Î£·£²£³£°£°
+      *                                     ¡Ü¡÷ÂÐ±þ
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -2669,8 +2672,12 @@
                    AND ( COMB-KOH4HKNNUM        =    SPACE)
                           MOVE    "1"    TO   FLG-SYUHEN
                           IF   MAX-KIN-KOHI1-M    =  72300
-                            IF   WK-1001-PREFNUM  =   27
-                            AND  COMB-KOH2HKNNUM  =  "188"
+                            IF  ((WK-1001-PREFNUM =   27  ) AND
+                                 (COMB-KOH2HKNNUM =  "188"))
+                            OR  ((WK-1001-PREFNUM =   01  ) AND
+                                 (COMB-KOH2HKNNUM =  "143" OR "243"
+                                                  OR "343" OR "443"
+                                                  OR "543"))
                              MOVE   WK-ZENGAKU  TO   WK-KOUREI-IRYOHI
                              MOVE   3           TO   FLG-IRYOHI
                             END-IF
@@ -2711,8 +2718,12 @@
                    AND ( COMB-KOH4HKNNUM        =    SPACE)
                           MOVE    "1"    TO   FLG-SYUHEN
                           IF   MAX-KIN-SYU-M      =  72300
-                            IF   WK-1001-PREFNUM  =   27
-                            AND  COMB-KOH1HKNNUM  =  "188"
+                            IF  ((WK-1001-PREFNUM =   27  ) AND
+                                 (COMB-KOH1HKNNUM =  "188"))
+                            OR  ((WK-1001-PREFNUM =   01  ) AND
+                                 (COMB-KOH1HKNNUM =  "143" OR "243"
+                                                  OR "343" OR "443"
+                                                  OR "543"))
                              MOVE   WK-ZENGAKU  TO   WK-KOUREI-IRYOHI
                              MOVE   4           TO   FLG-IRYOHI
                             END-IF
