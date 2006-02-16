@@ -1048,7 +1048,7 @@ path	key43	{
 path	key44 	{
 	DBSELECT	{
 		DECLARE tbl_sryacct_key44_csr CURSOR FOR
-		SELECT *
+		SELECT HKNCOMBI,SRYKA,SRYCDTOTAL,ZAITEN,ZAIKAISU
 		FROM tbl_sryacct
 			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
