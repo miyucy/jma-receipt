@@ -96,6 +96,7 @@
       *  02.07.02    NACL-藤原    05/10/06  公費単独の三歳未満の割合設定
       *                                     をしないようにする
       *  02.07.03    NACL-門脇    06/01/11  病棟区分編集修正
+      *  02.07.04    NACL-門脇    06/02/17  高齢者フラグ編集修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1123,7 +1124,7 @@
                       FLG-ROUJINHOKEN      =   1      )
                   MOVE    "1"                 TO  RECE62-KOUREI
       *
-                  IF  RECE62-RECESYUBETU   =   "8888"
+                  IF  RECE62-RECESYUBETU   =   "8888" OR "6666"
                       MOVE  SPACE       TO  RECE62-KOUREI
                   END-IF
                   IF  RECE62-HKNNUM        =   SPACE 
