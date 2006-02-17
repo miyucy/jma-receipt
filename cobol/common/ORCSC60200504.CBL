@@ -1135,6 +1135,7 @@
       *    当月最初で、２回以上はエラーとする
            IF     (LNK-ORCSC-TEIGEN-SANTEI(IDX-TEI)    =   ZERO )  AND
                   (LNK-ORCSC-TEIGEN-CNT   (IDX-TEI)    =   ZERO )  AND
+                  (WRK-COM-TEIGEN-FLG (IDX-TEIGEN)     =   ZERO )  AND
                   (LNK-ORCSC-KAISU                 >   1     OR
                    WRK-COM-NYU-KAI(IDX-TEIGEN)     >   1    )
                MOVE    "0096"              TO  WRK-ERRCD
