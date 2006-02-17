@@ -172,6 +172,7 @@
       *  01.02.19    NACL-ÃÁœ∆    05/10/03  µ‹æÎ∏©√œ ˝∏¯»Ò¬–±˛
       *  01.02.20    NACL-ÃÁœ∆    06/01/17  π‚Œº‘§ŒºÁ ›∏±ÀÙ§œ£≤£∑œ∑øÕæ Û
       *                                     ° ±ﬂ√±∞Ã°ÀΩ§¿µ
+      *  01.02.21    NACL-ÃÁœ∆    05/02/17  ∆√ ÃŒ≈Õ‹»Ò¬–±˛
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -8268,6 +8269,14 @@
                                                 HKN-TSY-GAIKFTNRATE
                                                 HKN-TNK-GAIKFTNRATE
                END-EVALUATE
+           END-IF.
+      *
+      *    ∆√ ÃŒ≈Õ‹»Ò
+           IF    COMB-HKNNUM    =    "068" OR "069"
+                          MOVE   100       TO   HKN-HON-GAIKFTNRATE
+                                                HKN-KZK-GAIKFTNRATE
+                                                HKN-TSY-GAIKFTNRATE
+                                                HKN-TNK-GAIKFTNRATE
            END-IF.
       *
       *    ¥µº‘…È√¥∂‚ªªΩ–¡∞§Œ£±£∞£∞°Û…È√¥≥€ªªΩ–
