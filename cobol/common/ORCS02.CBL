@@ -2191,7 +2191,8 @@
                IF  COMB-SYU-HKNKOHSBTKBN   =   "8"
                    MOVE  SPACE       TO  LNK-S02-KOUREI-NYUIN-KBN
                END-IF
-               IF  COMB-HKNNUM  =  "971"  OR  "973"
+               IF  COMB-HKNNUM  =  "971"  OR  "973"  OR
+                                   "068"  OR  "069"
                    MOVE  SPACE       TO  LNK-S02-KOUREI-NYUIN-KBN
                END-IF
            END-IF.                                               
@@ -2768,7 +2769,10 @@
            PERFORM    2108-ROUJIN41-JYOGEN-HENSYU-SEC.
       *
            IF  ( FLG-SANSHOU3        =   SPACE          )
-           OR  ( LNK-SYU-SYUHKNNUM   =   "971" OR "973" )
+           OR  ( LNK-SYU-SYUHKNNUM   =   "971" OR "973" OR
+                                         "068" OR "069" )
+           OR  ( LNK-SYU-SYUHKNNUM(1:2)
+                                     =   "98"           )
                  CONTINUE
            ELSE
                  IF  FLG-SANSHOU3     =   "1"
@@ -3742,7 +3746,8 @@
            MOVE     ZERO     TO     FLG-KOUREI.                         
       *
            IF  LNK-S02-KOUREI-NYUIN-KBN   =   "1"
-               IF ( SYU-SYUHKNNUM       =  "971" OR "973" )
+               IF ( SYU-SYUHKNNUM       =  "971" OR "973" OR
+                                           "068" OR "069" )
                OR ( SYU-SYUHKNNUM(1:2)  =  "98"           )
       *
                  CONTINUE
@@ -6559,7 +6564,8 @@
               END-IF
       *
               IF   ( COMB-SYU-HKNKOHSBTKBN   =   "8"            )
-              OR   ( COMB-HKNNUM             =  "971"  OR  "973")
+              OR   ( COMB-HKNNUM             =  "971"  OR  "973"  OR
+                                                "068"  OR  "069")
                 ADD   WK-SHOKUJI-JIHI    TO   WK-SHOKUJI-FTN
               ELSE
                 EVALUATE   FLG-SKJ
@@ -6951,10 +6957,14 @@
       *
       *    ∆√ ÃŒ≈Õ‹»Ò
            IF    COMB-HKNNUM    =    "068" OR "069"
-                          MOVE   100       TO   HKN-HON-GAIKFTNRATE
-                                                HKN-KZK-GAIKFTNRATE
-                                                HKN-TSY-GAIKFTNRATE
-                                                HKN-TNK-GAIKFTNRATE
+                          MOVE   100       TO   HKN-HON-NYUKFTNRATE
+                                                HKN-KZK-NYUKFTNRATE
+                                                HKN-TSY-NYUKFTNRATE
+                                                HKN-TNK-NYUKFTNRATE
+                          MOVE   "1"       TO   HKN-HON-NYUSKJRYYKBN
+                                                HKN-KZK-NYUSKJRYYKBN
+                                                HKN-TSY-NYUSKJRYYKBN
+                                                HKN-TNK-NYUSKJRYYKBN
            END-IF.
       *
       *    ¥µº‘…È√¥∂‚ªªΩ–¡∞§Œ£±£∞£∞°Û…È√¥≥€ªªΩ–

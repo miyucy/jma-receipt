@@ -2573,7 +2573,8 @@
                IF  COMB-SYU-HKNKOHSBTKBN   =   "8"
                    MOVE  SPACE       TO  LNK-S01-KOUREI-ZAITAKU-KBN
                END-IF
-               IF  COMB-HKNNUM  =  "971"  OR  "973"
+               IF  COMB-HKNNUM  =  "971"  OR  "973"  OR
+                                   "068"  OR  "069"
                    MOVE  SPACE       TO  LNK-S01-KOUREI-ZAITAKU-KBN
                END-IF
            END-IF.
@@ -2631,7 +2632,8 @@
                IF  COMB-SYU-HKNKOHSBTKBN   =   "8"
                    MOVE  SPACE       TO  FLG-KOUREI-KBN
                END-IF
-               IF  COMB-HKNNUM  =  "971"  OR  "973"
+               IF  COMB-HKNNUM  =  "971"  OR  "973"  OR
+                                   "068"  OR  "069"
                    MOVE  SPACE       TO  FLG-KOUREI-KBN
                END-IF
            END-IF.   
@@ -4367,7 +4369,8 @@
            IF  (LNK-S01-KOUREI-ZAITAKU-KBN   =   "1")
            OR  (FLG-SYUHEN                   =   "1")
       *
-               IF ( SYU-SYUHKNNUM       =  "971" OR "973" )
+               IF ( SYU-SYUHKNNUM       =  "971" OR "973" OR
+                                           "068" OR "069" )
                OR ( SYU-SYUHKNNUM(1:2)  =  "98"           )
       *
                  CONTINUE
@@ -4475,7 +4478,8 @@
            IF   ( LNK-S01-KOUREI-ZAITAKU-KBN       =   "1" )
            OR   ( FLG-KOUREI-KBN                   =   "1" )
       *
-               IF ( SYU-SYUHKNNUM       =  "971" OR "973" )
+               IF ( SYU-SYUHKNNUM       =  "971" OR "973" OR
+                                           "068" OR "069" )
                OR ( SYU-SYUHKNNUM(1:2)  =  "98"           )
       *
                  CONTINUE
