@@ -573,6 +573,9 @@
            IF  MCP-DBSTATUS                =   "RERR"
                MOVE    "1008"              TO  SPA-ERRCD
            END-IF
+           IF  MCP-DBSTATUS                =   "NORE"
+               MOVE    "1009"              TO  SPA-ERRCD
+           END-IF
 
       *
            .
@@ -968,6 +971,9 @@
                                                TO  SPA-ERRMSG (1:40)
                WHEN    "1008"
                    MOVE    "リダイレクタ接続に失敗しました。"
+                                               TO  SPA-ERRMSG (1:40)
+               WHEN    "1009"
+                   MOVE    "リダイレクタ未起動です。"
                                                TO  SPA-ERRMSG (1:40)
            END-EVALUATE
 	   .
