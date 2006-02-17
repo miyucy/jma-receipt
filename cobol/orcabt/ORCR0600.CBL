@@ -44,6 +44,7 @@
       *                                     グループ化に変更
       *                                     SRYACCT-KEY29 -> SRYACCT-KEY36
       *                                     SRYACCT-KEY30 -> SRYACCT-KEY37
+      *  02.07.03    NACL-門脇    05/02/17  診療会計個別処理の編集条件修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1557,7 +1558,7 @@
            PERFORM         UNTIL   FLG-SRYACCT     =   1 
                            OR      FLG-ERR         =   1
                            OR      KEY-NEW     NOT =   KEY-OLD
-               IF      WRK-ROUSAIKBN      =   ZERO
+               IF      WRK-ROUSAIKBN      =   SPACE
       *          社保・国保の読み飛ばし
                  EVALUATE    WRK-PARA-RECEKBN
                    WHEN    "0"
