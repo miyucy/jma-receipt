@@ -1359,7 +1359,7 @@
                WHEN    "K540"
                    STRING  "警告！神経ブロック・トリガーポイント注射・"
                                        DELIMITED   BY  SIZE
-                           "精神幹内注射は同時算定できません。"
+                           "神経幹内注射は同時算定できません。"
                                        DELIMITED   BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
