@@ -814,6 +814,13 @@
                   (FLG-OK              =   ZERO      )
                MOVE    HZN-SRYKARRK-REC    TO  SRYKARRK-REC
                MOVE    WRK-SYOSINYMD2      TO  KARRK-SYOSINYMD2
+      *        初診算定日１は算定日２の前であること
+               IF     (KARRK-SYOSINYMD1    NOT =   SPACE )  AND
+                      (KARRK-SYOSINYMD2    NOT =   SPACE )
+                   IF      KARRK-SYOSINYMD1    >   KARRK-SYOSINYMD2
+                       MOVE    KARRK-SYOSINYMD2    TO  KARRK-SYOSINYMD1
+                   END-IF
+               END-IF
       *
                MOVE    SMCNDATE-YMD        TO  KARRK-UPYMD
                MOVE    SMCNDATE-HMS        TO  KARRK-UPHMS
