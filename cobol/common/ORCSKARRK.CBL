@@ -508,6 +508,13 @@
                    MOVE    WRK-SYOSINYMD2      TO  KARRK-LASTYMD
                END-IF
            END-IF
+      *    ½é¿Ç»»ÄêÆü£±¤Ï»»ÄêÆü£²¤ÎÁ°¤Ç¤¢¤ë¤³¤È
+           IF     (KARRK-SYOSINYMD1    NOT =   SPACE )  AND
+                  (KARRK-SYOSINYMD2    NOT =   SPACE )
+               IF      KARRK-SYOSINYMD1    >   KARRK-SYOSINYMD2
+                   MOVE    KARRK-SYOSINYMD2    TO  KARRK-SYOSINYMD1
+               END-IF
+           END-IF
       *    ½é¿ÇÎÁ£±
       *    IF    ( KARRK-SYOSINYMD1    =   SPACE    )  OR
       *          ( SKARRK-SRYYM        =   KARRK-SYOSINYMD1(1:6))
