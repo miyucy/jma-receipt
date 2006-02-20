@@ -3348,8 +3348,14 @@
            END-PERFORM
            IF      SPA-R01-FILEKBN     =   "1"
                MOVE    WIDGET-NORMAL       TO  R02-PRTJYUN1-STATE
+               MOVE    "  社保"            TO  R02-LABEL1
+               MOVE    "  国保"            TO  R02-LABEL2
+               MOVE    "出力順"            TO  R02-LABEL3
            ELSE 
                MOVE    WIDGET-INSENSITIVE  TO  R02-PRTJYUN1-STATE
+               MOVE    "出力順"            TO  R02-LABEL1
+               MOVE    SPACE               TO  R02-LABEL2
+                                               R02-LABEL3
            END-IF
       *
            MOVE    SPA-GMN-PREFKBN-G   TO  R02-PREFKBN
