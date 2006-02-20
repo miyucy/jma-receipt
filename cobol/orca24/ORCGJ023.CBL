@@ -2997,6 +2997,7 @@
            END-IF
       *
            MOVE    RECECOM-REC         TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_rececom"       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            CALL    "MONFUNC"           USING
