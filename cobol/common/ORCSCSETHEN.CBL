@@ -417,9 +417,11 @@
                       (FLG-SYORI           =   1    ) OR
                       (ISET-INPUTCD        =   "799990070"  OR
                                                "770020070" )  OR
-                      (ISET-INPUTCD(1:1)
+                     ((ISET-INPUTCD(1:1)
                                        NOT =   "6"   AND
-                                               "7" )
+                                               "7" )  AND
+                      (ISET-INPUTCD(1:3)
+                                       NOT =   "059" ))
                    MOVE    1           TO  SPA-COM-SURYO
                                                          (SPA-GMN-IDX)
                ELSE
