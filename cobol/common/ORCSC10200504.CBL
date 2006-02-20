@@ -2377,6 +2377,7 @@
                    MOVE    SPACE            TO  WRK-SYOKAI-YMD
                END-IF
            END-IF
+      *
       *    すでに初回算定日がある時、初回算定日に入れる
            IF      LNK-ORCSC-TOKTEI-YMD    NOT =   SPACE
                MOVE    LNK-ORCSC-TOKTEI-YMD    TO  WRK-SYOKAI-YMD
@@ -2582,6 +2583,8 @@
            IF      WRK-SYOKAI-YMD      >   LNK-ORCSC-TOKTEI-YMD
                MOVE    WRK-SYOKAI-YMD      TO  LNK-ORCSC-TOKTEI-YMD
            END-IF
+
+      *
            .
        10011-TOKUYAKU-EXT.
            EXIT.
@@ -2851,8 +2854,8 @@
                                                           (IDX-Z)
                            MOVE    "1"          TO  WRK-COM-KZMFLG
                                                           (IDX-Z)
-                       ELSE
-                           MOVE    SPACE        TO  LNK-ORCSC-TOKTEI-YMD
+      ******           ELSE
+     ******                MOVE    SPACE        TO  LNK-ORCSC-TOKTEI-YMD
                        END-IF
                    END-IF
                END-IF
