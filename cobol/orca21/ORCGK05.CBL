@@ -2828,8 +2828,10 @@
            IF      SPA-SURYOZERO-FLG   =   1
                IF     (WRK-SUR-MCNT        >   ZERO )  AND
                       (WRK-SURYO           =   ZERO )
-                   IF     (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:1)
-                                               =   "6"  OR  "7") AND
+                   IF    ((SPA-COM-INPUTCD(SPA-GMN-IDX)(1:1)
+                                               =   "6"  OR  "7") OR
+                          (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:3)
+                                               =   "059"      )) AND
                           (SPA-GMN-SETCODE(1:1)    =   "P"    )
                        CONTINUE
                    ELSE
@@ -3496,7 +3498,8 @@
                IF      ISET-SURYO1     =   ZERO
       *            数量ゼロフラグ
                    IF     (SPA-SURYOZERO-FLG   =   1      )  AND
-                          (ISET-INPUTCD(1:1)   =   "7"  OR  "6") AND
+                         ((ISET-INPUTCD(1:1)   =   "7"  OR  "6") OR
+                          (ISET-INPUTCD(1:3)   =   "059"     )) AND
                           (ISET-INPUTCD    NOT =   "799990070"
                                                AND "770020070" )
                        MOVE    ZERO        TO  SPA-COM-SURYO

@@ -6491,8 +6491,10 @@
       *    数量ゼロはエラーとする
            IF     (WRK-SUR-MCNT        >   ZERO  )  AND
                   (WRK-SURYO           =   ZERO  )
-               IF      SPA-COM-INPUTCD(SPA-GMN-IDX)(1:1)
-                                               =   "6"  OR  "7"
+               IF     (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:1)
+                                               =   "6"  OR  "7") OR
+                      (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:3)
+                                               =   "059"   )
                    MOVE    "A001"              TO  SPA-ERRCD
                ELSE
                    MOVE    "A002"              TO  SPA-ERRCD
