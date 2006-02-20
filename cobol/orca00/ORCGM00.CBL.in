@@ -576,7 +576,6 @@
            IF  MCP-DBSTATUS                =   "NORE"
                MOVE    "1009"              TO  SPA-ERRCD
            END-IF
-
       *
            .
        310-SPASET-EXT.
