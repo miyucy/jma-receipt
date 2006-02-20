@@ -6244,22 +6244,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>labe2495</name>
-      <x>260</x>
-      <y>38</y>
-      <width>70</width>
-      <height>18</height>
-      <label>総件数</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label538</name>
       <x>400</x>
       <y>38</y>
@@ -6375,22 +6359,6 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label537</name>
-      <x>740</x>
-      <y>25</y>
-      <width>50</width>
-      <height>18</height>
-      <label>出力順</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkPandaCombo</class>
       <name>PRTKBN_COMBO</name>
       <x>580</x>
@@ -6454,38 +6422,6 @@
       <width>70</width>
       <height>18</height>
       <label>出力内容  </label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label550</name>
-      <x>782</x>
-      <y>8</y>
-      <width>40</width>
-      <height>18</height>
-      <label>社保</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label551</name>
-      <x>782</x>
-      <y>38</y>
-      <width>40</width>
-      <height>18</height>
-      <label>国保</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6613,6 +6549,70 @@
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>labe2495</name>
+      <x>260</x>
+      <y>38</y>
+      <width>70</width>
+      <height>18</height>
+      <label>総件数</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LABEL1</name>
+      <x>765</x>
+      <y>8</y>
+      <width>55</width>
+      <height>18</height>
+      <label>  社保</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LABEL2</name>
+      <x>765</x>
+      <y>38</y>
+      <width>55</width>
+      <height>18</height>
+      <label>  国保</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LABEL3</name>
+      <x>738</x>
+      <y>25</y>
+      <width>50</width>
+      <height>18</height>
+      <label>出力順</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>

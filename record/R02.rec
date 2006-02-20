@@ -985,5 +985,14 @@ R02	{
 			count	int;
 			item	varchar(14)[3];
 		};
+		LABEL1	{
+			label	varchar(6);
+		};
+		LABEL2	{
+			label	varchar(6);
+		};
+		LABEL3	{
+			label	varchar(6);
+		};
 	};
 };
