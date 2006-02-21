@@ -3218,6 +3218,9 @@
                 WHEN   303
                     MOVE  "KARUTE3KBN"
                                        TO  MCP-WIDGET
+                WHEN   304
+                    MOVE  "GAZOFOLDER"
+                                       TO  MCP-WIDGET
                  WHEN   999
                     MOVE  "B12"        TO  MCP-WIDGET
            END-EVALUATE
@@ -3390,6 +3393,8 @@
                WHEN    "SYOHODSPNAME"
                    MOVE    303         TO  SPA-GMN-CUR
                WHEN    "KARUTE3KBN"
+                   MOVE    304         TO  SPA-GMN-CUR
+               WHEN    "GAZOFOLDER"
                    MOVE    999         TO  SPA-GMN-CUR
            END-EVALUATE
       *
