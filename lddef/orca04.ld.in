@@ -20,5 +20,16 @@ data	{
 	};
 };
 
-#include "orcadb.inc"
+db	{
+	tbl_syskanri;
+	tbl_hkncombi;
+	tbl_hknnum;
+	tbl_jyurrk;
+	tbl_pthkninf;
+	tbl_ptkohinf;
+	tbl_ptrsiinf;
+	tbl_ptinf;
+};
+
+/* #include "orcadb.inc" */
 #include "orcadbh.inc"
