@@ -828,16 +828,18 @@
                   MOVE    CNT-COMB            TO  PARA-EDANUM
                   INITIALIZE                      NC01PARA-REC
                   MOVE    WRK-LCOMB-REC (IDZ) TO  WRK-TCOMB-REC
-                  INITIALIZE                  STS-AREA-DAY
-                  INITIALIZE                  LNK-DAY6-AREA
-                  MOVE    "61"            TO  LNK-DAY6-IRAI
-                  MOVE    WRK-SYOCYO-TEKSTYMD
-                                          TO  LNK-DAY6-KIJUN
-                  MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
-                  MOVE    -1              TO  LNK-DAY6-ZOGEN
-                  CALL    "ORCSDAY"       USING   STS-AREA-DAY
-                                                  LNK-DAY6-AREA
-                  MOVE    LNK-DAY6-KEISAN TO  WRK-TCOMB-TEKEDYMD
+                  IF      WRK-TCOMB-TEKEDYMD  >=  WRK-SYOCYO-TEKSTYMD
+                    INITIALIZE                  STS-AREA-DAY
+                    INITIALIZE                  LNK-DAY6-AREA
+                    MOVE    "61"            TO  LNK-DAY6-IRAI
+                    MOVE    WRK-SYOCYO-TEKSTYMD
+                                            TO  LNK-DAY6-KIJUN
+                    MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
+                    MOVE    -1              TO  LNK-DAY6-ZOGEN
+                    CALL    "ORCSDAY"       USING   STS-AREA-DAY
+                                                    LNK-DAY6-AREA
+                    MOVE    LNK-DAY6-KEISAN TO  WRK-TCOMB-TEKEDYMD
+                  END-IF
                   MOVE    WRK-TCOMB-REC       TO  PARA-NC01-REC
                   MOVE    NC01PARA-REC        TO  PARA-DATA-REC
       *
@@ -862,16 +864,18 @@
                   MOVE    CNT-COMB            TO  PARA-EDANUM
                   INITIALIZE                      NC01PARA-REC
                   MOVE    WRK-LCOMB-REC (IDZ) TO  WRK-TCOMB-REC
-                  INITIALIZE                  STS-AREA-DAY
-                  INITIALIZE                  LNK-DAY6-AREA
-                  MOVE    "61"            TO  LNK-DAY6-IRAI
-                  MOVE    WRK-SYOCYO-TEKEDYMD
-                                          TO  LNK-DAY6-KIJUN
-                  MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
-                  MOVE     1              TO  LNK-DAY6-ZOGEN
-                  CALL    "ORCSDAY"       USING   STS-AREA-DAY
-                                                  LNK-DAY6-AREA
-                  MOVE    LNK-DAY6-KEISAN TO  WRK-TCOMB-TEKSTYMD
+                  IF      WRK-TCOMB-TEKSTYMD  <=  WRK-SYOCYO-TEKEDYMD
+                    INITIALIZE                  STS-AREA-DAY
+                    INITIALIZE                  LNK-DAY6-AREA
+                    MOVE    "61"            TO  LNK-DAY6-IRAI
+                    MOVE    WRK-SYOCYO-TEKEDYMD
+                                            TO  LNK-DAY6-KIJUN
+                    MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
+                    MOVE     1              TO  LNK-DAY6-ZOGEN
+                    CALL    "ORCSDAY"       USING   STS-AREA-DAY
+                                                    LNK-DAY6-AREA
+                    MOVE    LNK-DAY6-KEISAN TO  WRK-TCOMB-TEKSTYMD
+                  END-IF
                   MOVE    WRK-TCOMB-REC       TO  PARA-NC01-REC
                   MOVE    NC01PARA-REC        TO  PARA-DATA-REC
       *
