@@ -3499,6 +3499,17 @@
                   (FLG-HENSYU          =   ZERO  )
                GO      TO      41010-PTNUM-SYORI-EXT
            END-IF
+      *    Á´²Ê¤Î»þ
+           IF     (SPA-J01-SRYKA       =   "00" ) AND
+                  (SPA-GMN-SRYKBN      =   "00"  OR  "01" )
+               IF      SPA-NAI-SRYKBN-FLG  =   1
+                   MOVE    SPA-GMN-SRYKBN-LST (02)
+                                           TO  SPA-GMN-SRYKBN-G
+               ELSE
+                   MOVE    SPA-GMN-SRYKBN-LST (01)
+                                           TO  SPA-GMN-SRYKBN-G
+               END-IF
+           END-IF
       *
       *    ¼õ¿ÇÍúÎòÊÔ½¸
       *????PERFORM 3103-JYURRK-HEN-SEC
