@@ -172,6 +172,12 @@
            02  WRK-LCOMB-REC       OCCURS   100.
            COPY  "CPHKNCOMBI.INC" REPLACING //COMB-//
                                          BY //WRK-LCOMB-//.
+      *
+       01  WRK-TCOMB-AREA.
+      *    　組合せ退避用（省庁用）
+           02  WRK-TCOMB-REC.
+           COPY  "CPHKNCOMBI.INC" REPLACING //COMB-//
+                                         BY //WRK-TCOMB-//.
       *    新組合せパラメタデータ用レイアウト
        01  NC01PARA-REC.
            03  PARA-NC01-REC           PIC X(500).
@@ -308,6 +314,9 @@
                    07  WRK-KOH-GENHKNNUM2  PIC X(03).
                    07  WRK-KOH-GENHKNNUM3  PIC X(03).
       *
+           03  WRK-SYOCYO-TEKSTYMD         PIC 9(08).
+           03  WRK-SYOCYO-TEKEDYMD         PIC 9(08).
+      *
        01  WRK-HIYATOI-AREA.
            03  WRK-HIYATOI-FLG             PIC 9(01).
            03  WRK-HIYATOI-TEKSTYMD        PIC X(08).
@@ -406,10 +415,14 @@
            INITIALIZE                  WRK-KCOMB-AREA
            INITIALIZE                  WRK-RCOMB-AREA
            INITIALIZE                  WRK-LCOMB-AREA
+           INITIALIZE                  WRK-TCOMB-AREA
            INITIALIZE                  WRK-IDXSRT-AREA
            INITIALIZE                  WRK-HOKEN-AREA
            INITIALIZE                  WRK-KOUHI-AREA
            INITIALIZE                  WRK-FTNKBN-AREA
+      *
+           MOVE    99999999    TO      WRK-SYOCYO-TEKSTYMD
+           MOVE    ZERO        TO      WRK-SYOCYO-TEKEDYMD
       *
       *    パラメータファイル読込
            PERFORM 320-PARAFILE-KENSAKU-SEC
@@ -576,6 +589,13 @@
       *
            IF      PTKOH-KOHNUM(1:2) = "99"
                 MOVE    1     TO     FLG-SYOCYO
+      *
+                IF   PTKOH-TEKSTYMD   <   WRK-SYOCYO-TEKSTYMD
+                  MOVE   PTKOH-TEKSTYMD  TO  WRK-SYOCYO-TEKSTYMD
+                END-IF
+                IF   PTKOH-TEKEDYMD   >   WRK-SYOCYO-TEKEDYMD
+                  MOVE   PTKOH-TEKEDYMD  TO  WRK-SYOCYO-TEKEDYMD
+                END-IF
            END-IF
       *
            MOVE    PTKOH-KOHID          TO  WRK-KOH-KOHID     (CNT-KOH)
@@ -794,6 +814,75 @@
                CALL    "MONFUNC"           USING
                                            MCPAREA
                                            MCPDATA-REC
+              ELSE
+               IF   (WRK-LCOMB-TEKSTYMD    <    WRK-SYOCYO-TEKSTYMD)
+               AND  (WRK-SYOCYO-TEKSTYMD  NOT = 99999999           )
+                  ADD     1               TO  CNT-COMB
+                  MOVE    SPA-HOSPID      TO  WRK-LCOMB-HOSPID     (IDZ)
+                  MOVE    SPA-PTID        TO  WRK-LCOMB-PTID       (IDZ)
+                  MOVE    ZERO            TO  WRK-LCOMB-HKNCOMBINUM(IDZ)
+                  INITIALIZE                      PARA-REC
+                  MOVE    "P02"               TO  PARA-GYOUMUID
+                  MOVE    SPA-TERMID          TO  PARA-TERMID
+                  MOVE    "NC01PARA"          TO  PARA-FILEMEI
+                  MOVE    CNT-COMB            TO  PARA-EDANUM
+                  INITIALIZE                      NC01PARA-REC
+                  MOVE    WRK-LCOMB-REC (IDZ) TO  WRK-TCOMB-REC
+                  INITIALIZE                  STS-AREA-DAY
+                  INITIALIZE                  LNK-DAY6-AREA
+                  MOVE    "61"            TO  LNK-DAY6-IRAI
+                  MOVE    WRK-SYOCYO-TEKSTYMD
+                                          TO  LNK-DAY6-KIJUN
+                  MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
+                  MOVE    -1              TO  LNK-DAY6-ZOGEN
+                  CALL    "ORCSDAY"       USING   STS-AREA-DAY
+                                                  LNK-DAY6-AREA
+                  MOVE    LNK-DAY6-KEISAN TO  WRK-TCOMB-TEKEDYMD
+                  MOVE    WRK-TCOMB-REC       TO  PARA-NC01-REC
+                  MOVE    NC01PARA-REC        TO  PARA-DATA-REC
+      *
+                  MOVE    PARA-REC            TO  MCPDATA-REC
+                  MOVE    "DBINSERT"          TO  MCP-FUNC
+                  MOVE    "tbl_para"          TO  MCP-TABLE
+                  MOVE    "key"               TO  MCP-PATHNAME
+                  CALL    "MONFUNC"           USING
+                                              MCPAREA
+                                              MCPDATA-REC
+               END-IF
+               IF   (WRK-LCOMB-TEKEDYMD    >    WRK-SYOCYO-TEKEDYMD)
+               AND  (WRK-SYOCYO-TEKEDYMD  NOT = ZERO               )
+                  ADD     1               TO  CNT-COMB
+                  MOVE    SPA-HOSPID      TO  WRK-LCOMB-HOSPID     (IDZ)
+                  MOVE    SPA-PTID        TO  WRK-LCOMB-PTID       (IDZ)
+                  MOVE    ZERO            TO  WRK-LCOMB-HKNCOMBINUM(IDZ)
+                  INITIALIZE                      PARA-REC
+                  MOVE    "P02"               TO  PARA-GYOUMUID
+                  MOVE    SPA-TERMID          TO  PARA-TERMID
+                  MOVE    "NC01PARA"          TO  PARA-FILEMEI
+                  MOVE    CNT-COMB            TO  PARA-EDANUM
+                  INITIALIZE                      NC01PARA-REC
+                  MOVE    WRK-LCOMB-REC (IDZ) TO  WRK-TCOMB-REC
+                  INITIALIZE                  STS-AREA-DAY
+                  INITIALIZE                  LNK-DAY6-AREA
+                  MOVE    "61"            TO  LNK-DAY6-IRAI
+                  MOVE    WRK-SYOCYO-TEKEDYMD
+                                          TO  LNK-DAY6-KIJUN
+                  MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
+                  MOVE     1              TO  LNK-DAY6-ZOGEN
+                  CALL    "ORCSDAY"       USING   STS-AREA-DAY
+                                                  LNK-DAY6-AREA
+                  MOVE    LNK-DAY6-KEISAN TO  WRK-TCOMB-TEKSTYMD
+                  MOVE    WRK-TCOMB-REC       TO  PARA-NC01-REC
+                  MOVE    NC01PARA-REC        TO  PARA-DATA-REC
+      *
+                  MOVE    PARA-REC            TO  MCPDATA-REC
+                  MOVE    "DBINSERT"          TO  MCP-FUNC
+                  MOVE    "tbl_para"          TO  MCP-TABLE
+                  MOVE    "key"               TO  MCP-PATHNAME
+                  CALL    "MONFUNC"           USING
+                                              MCPAREA
+                                              MCPDATA-REC
+               END-IF
               END-IF
              END-IF
            END-PERFORM
