@@ -107,6 +107,8 @@
            03  FLG-NAIBUN                PIC 9(01).
       *    ∆‚…˛ƒ˛∏∫§¢§Í
            03  FLG-GEN-ARI               PIC 9(01).
+      *
+           03  FLG-SRYKA-OK              PIC 9(01).
       *    ≈∫ª˙ŒŒ∞Ë
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -257,23 +259,23 @@
                05  IDX-GEN2                PIC 9(04).
       *
       *    ø«Œ≈π‘∞Ÿ∆‚Õ∆»Ê≥”Õ—•∆°º•÷•Î
-       01  TBL-AREA.
-           03  TBL-MAE-AREA.
-               05  TBL-MAE-REC     OCCURS   50.
-                   07  TBL-MAE-SRYCD       PIC  X(09).
-                   07  TBL-MAE-SRYSURYO    PIC  9(05)V9(03).
-                   07  TBL-MAE-SRYKAISU    PIC  9(03).
-                   07  TBL-MAE-INPUTCOMENT PIC  X(40).
-                   07  TBL-MAE-ATAI-G.
-                       09  TBL-MAE-ATAI    PIC  X(08)  OCCURS  3.
-           03  TBL-ATO-AREA.
-               05  TBL-ATO-REC     OCCURS   50.
-                   07  TBL-ATO-SRYCD       PIC  X(09).
-                   07  TBL-ATO-SRYSURYO    PIC  9(05)V9(03).
-                   07  TBL-ATO-SRYKAISU    PIC  9(03).
-                   07  TBL-ATO-INPUTCOMENT PIC  X(40).
-                   07  TBL-ATO-ATAI-G.
-                       09  TBL-ATO-ATAI    PIC  X(08)  OCCURS  3.
+      *01  TBL-AREA.
+      *    03  TBL-MAE-AREA.
+      *        05  TBL-MAE-REC     OCCURS   50.
+      *            07  TBL-MAE-SRYCD       PIC  X(09).
+      *            07  TBL-MAE-SRYSURYO    PIC  9(05)V9(03).
+      *            07  TBL-MAE-SRYKAISU    PIC  9(03).
+      *            07  TBL-MAE-INPUTCOMENT PIC  X(40).
+      *            07  TBL-MAE-ATAI-G.
+      *                09  TBL-MAE-ATAI    PIC  X(08)  OCCURS  3.
+      *    03  TBL-ATO-AREA.
+      *        05  TBL-ATO-REC     OCCURS   50.
+      *            07  TBL-ATO-SRYCD       PIC  X(09).
+      *            07  TBL-ATO-SRYSURYO    PIC  9(05)V9(03).
+      *            07  TBL-ATO-SRYKAISU    PIC  9(03).
+      *            07  TBL-ATO-INPUTCOMENT PIC  X(40).
+      *            07  TBL-ATO-ATAI-G.
+      ***              09  TBL-ATO-ATAI    PIC  X(08)  OCCURS  3.
       *
       *    ∫ﬁ•∆°º•÷•ÎŒŒ∞Ë
        01  WRK-TBL-ZAINUM-AREA.
@@ -401,7 +403,7 @@
            COPY    "CPORCSLNK.INC".
       *
       *    ø«Œ≈π‘∞Ÿ∆˛Œœπ‡Ã‹ —¥π•—•È•·•ø
-           COPY    "CPORCSC97.INC".
+      **** COPY    "CPORCSC97.INC".
       *
       *   ªªƒÍÕ˙ŒÚππø∑•µ•÷
            COPY    "CPORCSSANTEI.INC".
@@ -418,7 +420,7 @@
       *    ∆¸ Û•≠°ººË∆¿•µ•÷
            COPY    "CPORCSDAILYKEY.INC".
       *
-      *    £”£–£¡•—•È•·•ø° ORCSC97.CBL Õ—§ŒDAMMY)
+      *    £”£–£¡•—•È•·•ø° ORCSSANFUKA.CBL Õ—§ŒDAMMY)
        01  SPA-SCR-REC.
            COPY    "CPK02SPASCR.INC".
       *
@@ -1706,15 +1708,37 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   15  )   OR
                               (WRK-TEI-SRYKA (IDX) =   SPACE )
+               IF      (WRK-TEI-SRYKA (IDX)    =   SPA-SRYKA)
+                   MOVE    1               TO  FLG-SRYKA-OK
+               ELSE
+                   MOVE    ZERO            TO  FLG-SRYKA-OK
+               END-IF
+               PERFORM VARYING     IDH     FROM    1   BY  1
+                       UNTIL      (IDH     >   15  )
+                               OR (SPA-TBL-HKNCOMBI(IDH)   =   SPACE)
+                               OR (FLG-SRYKA-OK   =   1  )
+                   PERFORM VARYING     IDH2    FROM    1   BY  1
+                           UNTIL      (IDH2    >   15  )  OR
+                                   (SPA-TBL-SRYKA(IDH IDH2) =   SPACE)
+                                   OR (FLG-SRYKA-OK   =   1  )
+                       IF      SPA-TBL-SRYKA(IDH IDH2) =
+                                             WRK-TEI-SRYKA (IDX)
+                           MOVE    1             TO  FLG-SRYKA-OK
+                       END-IF
+                   END-PERFORM
+               END-PERFORM
+      *
+               IF      FLG-SRYKA-OK           =   ZERO
       *        ø«Œ≈≤ Õ˙ŒÚ —ππ
-               INITIALIZE                  ORCSKARRKAREA
-               MOVE    SPA-SRYYMD(1:6)     TO  SKARRK-SRYYM
-               MOVE    WRK-TEI-SRYKA (IDX) TO  SKARRK-SRYKA
-               CALL    "ORCSKARRK"         USING
-                                           ORCSKARRKAREA
-                                           SPA-AREA
-               IF      SKARRK-RC       NOT =   ZERO
-                   MOVE    "0005"              TO  SPA-ERRCD
+                   INITIALIZE                  ORCSKARRKAREA
+                   MOVE    SPA-SRYYMD(1:6)     TO  SKARRK-SRYYM
+                   MOVE    WRK-TEI-SRYKA (IDX) TO  SKARRK-SRYKA
+                   CALL    "ORCSKARRK"         USING
+                                               ORCSKARRKAREA
+                                               SPA-AREA
+                   IF      SKARRK-RC       NOT =   ZERO
+                       MOVE    "0005"              TO  SPA-ERRCD
+                   END-IF
                END-IF
            END-PERFORM
       *
