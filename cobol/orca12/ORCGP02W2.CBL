@@ -815,7 +815,7 @@
                                            MCPAREA
                                            MCPDATA-REC
               ELSE
-               IF   (WRK-LCOMB-TEKSTYMD    <    WRK-SYOCYO-TEKSTYMD)
+               IF   (WRK-LCOMB-TEKSTYMD(IDZ)  < WRK-SYOCYO-TEKSTYMD)
                AND  (WRK-SYOCYO-TEKSTYMD  NOT = 99999999           )
                   ADD     1               TO  CNT-COMB
                   MOVE    SPA-HOSPID      TO  WRK-LCOMB-HOSPID     (IDZ)
@@ -851,7 +851,7 @@
                                               MCPAREA
                                               MCPDATA-REC
                END-IF
-               IF   (WRK-LCOMB-TEKEDYMD    >    WRK-SYOCYO-TEKEDYMD)
+               IF   (WRK-LCOMB-TEKEDYMD(IDZ)  > WRK-SYOCYO-TEKEDYMD)
                AND  (WRK-SYOCYO-TEKEDYMD  NOT = ZERO               )
                   ADD     1               TO  CNT-COMB
                   MOVE    SPA-HOSPID      TO  WRK-LCOMB-HOSPID     (IDZ)
