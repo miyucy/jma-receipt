@@ -1,5 +1,8 @@
 N21	{
 	fixed17	{
+		B11	{
+			state   int;
+		};
 		scrolledwindow1	{
 			KEKKALST	{
 				count	int;

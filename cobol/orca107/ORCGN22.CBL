@@ -57,7 +57,6 @@
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-TEMP            PIC 9(01).
-           03  FLG-SYSKANRI        PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -91,9 +90,6 @@
       *
       *    薬剤情報参照用ＤＢ
            COPY    "CPYAKUJYOTEMP.INC".
-      *
-      *    システム管理
-           COPY    "CPSK1030.INC".
       *
       *    ジョブ管理
        01  JOBKANRI-REC.
@@ -414,11 +410,8 @@
                    GO  TO  400-GAZOCOPY-SEC-EXT
            END-EVALUATE
       *
-           PERFORM 900-SYS1030-READ-SEC
-      *
            INITIALIZE                  WRK-GAZOFILE
-           STRING  SYS-1030-GAZOFOLDER
-                                       DELIMITED  BY  SPACE
+           STRING  SPA-GMN-FOLDER      DELIMITED  BY  SPACE
                    SPA-N22-KENCD       DELIMITED  BY  SIZE
                    "-"                 DELIMITED  BY  SIZE
                    WRK-GAZO            DELIMITED  BY  SPACE
@@ -449,8 +442,7 @@
            MOVE    SHELL-NAME2     TO  MKPASS-IN-01
            MOVE    SPA-N22-KENCD   TO  SHELLTBL-ARG1
            MOVE    WRK-GAZO        TO  SHELLTBL-ARG2
-           MOVE    SYS-1030-GAZOFOLDER
-                                   TO  SHELLTBL-ARG3
+           MOVE    SPA-GMN-FOLDER  TO  SHELLTBL-ARG3
            MOVE    "0000001"       TO  SHELLTBL-ARG4
            MOVE    "SIORI2"        TO  SHELLTBL-ARG5
       *
@@ -1018,57 +1010,6 @@
            .
       *
        820-JOBKANRI-JBS-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    システム管理マスタ検索処理
-      *****************************************************************
-       900-SYS1030-READ-SEC        SECTION.
-      *
-      *     MOVE    SPACE           TO  SYS-1030-REC
-           INITIALIZE                  SYS-1030-REC
-           INITIALIZE                  ORCSADDSIGNAREA
-           MOVE    "1030"          TO  SYS-1030-KANRICD
-           MOVE    "*"             TO  SADDSIGN-STR
-           CALL    "ORCSADDSIGN"       USING
-                                       ORCSADDSIGNAREA
-           MOVE    SADDSIGN-STR    TO  SYS-1030-KBNCD
-           MOVE    SPA-SYSYMD      TO  SYS-1030-STYUKYMD
-                                       SYS-1030-EDYUKYMD
-           MOVE    SYS-1030-REC    TO  MCPDATA-REC
-      *
-           MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_syskanri"  TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
-      *
-           IF      MCP-RC          =   ZERO
-               MOVE    "DBFETCH"       TO  MCP-FUNC
-               MOVE    "tbl_syskanri"  TO  MCP-TABLE
-               MOVE    "key"           TO  MCP-PATHNAME
-               CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
-               IF      MCP-RC          =   ZERO
-                   MOVE    ZERO            TO  FLG-SYSKANRI
-                   MOVE    MCPDATA-REC     TO  SYS-1030-REC
-               ELSE
-                   MOVE    1               TO  FLG-SYSKANRI
-               END-IF
-           ELSE
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-      *
-           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           MOVE    "tbl_syskanri"  TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
-           .
-       900-SYS1030-READ-EXT.
            EXIT.
       *
       *****************************************************************

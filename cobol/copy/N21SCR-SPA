@@ -28,6 +28,7 @@
          03  SPA-N21-AREA.
              05  SPA-GMN-CUR           PIC 9(02).
              05  SPA-GMN-MAX           PIC 9(05).
+             05  SPA-GMN-FOLDER        PIC X(128).
       *
              05  SPA-GMN-AREA.
                07  SPA-GMN-KENCD       PIC X(21).

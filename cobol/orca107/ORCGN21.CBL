@@ -68,6 +68,7 @@
            03  FLG-INPUTCD     PIC 9(01).
            03  FLG-OK          PIC 9(01).
            03  FLG-GAZO        PIC 9(01).
+           03  FLG-SYSKANRI    PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -148,6 +149,9 @@
       *
       *    点数マスタ
            COPY    "CPTENSU.INC".
+      *
+      *    システム管理
+           COPY    "CPSK1030.INC".
       *
       *    薬剤情報マスタ
            COPY    "CPYAKUJYO.INC".
@@ -378,6 +382,11 @@
            INITIALIZE          WRK-PIN-AREA
       *
            MOVE    2           TO  SPA-GMN-CUR
+      *
+           PERFORM 900-SYS1030-READ-SEC
+      *
+           MOVE    SYS-1030-GAZOFOLDER
+                               TO  SPA-GMN-FOLDER
            . 
       *
        31O-SPASET-EXT.
@@ -1502,6 +1511,13 @@
       *
            MOVE    SPA-GMN-MAX     TO  N21-COUNT
       *
+      *    参照ボタン非活性
+           IF      SPA-GMN-FOLDER  =   SPACE
+               MOVE    WIDGET-INSENSITIVE  TO  N21-B11-STATE
+           ELSE
+               MOVE    WIDGET-NORMAL       TO  N21-B11-STATE
+           END-IF
+      *
            PERFORM 530-MAPCUR-SEC
       *
            .
@@ -1990,6 +2006,57 @@
                                        MCPDATA-REC
             .
        900-YAKUJYO-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システム管理マスタ検索処理
+      *****************************************************************
+       900-SYS1030-READ-SEC        SECTION.
+      *
+      *     MOVE    SPACE           TO  SYS-1030-REC
+           INITIALIZE                  SYS-1030-REC
+           INITIALIZE                  ORCSADDSIGNAREA
+           MOVE    "1030"          TO  SYS-1030-KANRICD
+           MOVE    "*"             TO  SADDSIGN-STR
+           CALL    "ORCSADDSIGN"       USING
+                                       ORCSADDSIGNAREA
+           MOVE    SADDSIGN-STR    TO  SYS-1030-KBNCD
+           MOVE    SPA-SYSYMD      TO  SYS-1030-STYUKYMD
+                                       SYS-1030-EDYUKYMD
+           MOVE    SYS-1030-REC    TO  MCPDATA-REC
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           IF      MCP-RC          =   ZERO
+               MOVE    "DBFETCH"       TO  MCP-FUNC
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC          =   ZERO
+                   MOVE    ZERO            TO  FLG-SYSKANRI
+                   MOVE    MCPDATA-REC     TO  SYS-1030-REC
+               ELSE
+                   MOVE    1               TO  FLG-SYSKANRI
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           .
+       900-SYS1030-READ-EXT.
            EXIT.
       *
       *****************************************************************
