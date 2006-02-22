@@ -971,9 +971,9 @@
                WHEN    "1008"
                    MOVE    "リダイレクタ接続に失敗しました。"
                                                TO  SPA-ERRMSG (1:40)
-               WHEN    "1009"
-                   MOVE    "リダイレクタ未起動です。"
-                                               TO  SPA-ERRMSG (1:40)
+      *        WHEN    "1009"
+      *            MOVE    "リダイレクタ未起動です。"
+      *                                        TO  SPA-ERRMSG (1:40)
            END-EVALUATE
 	   .
       *
