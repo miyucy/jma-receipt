@@ -6498,6 +6498,8 @@
                          ELSE
                           IF    ( RECE02-PREFNUM      =   "40"    )
                           AND   ( RECE02-TEISYUTUSAKI =   "2"     )
+                          AND   ( RECE02-RECESYUBETU
+                                                 NOT  =   "6666"  )
                             GO  TO  990-RECE02-READ-SEC
                           ELSE
                            DISPLAY "RECE02  PTNUM=" RECE02-PTNUM     
