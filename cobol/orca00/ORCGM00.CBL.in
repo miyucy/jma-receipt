@@ -281,10 +281,10 @@
       *---- (01.00.04) LINE ADD START --------------------------------
       *    日付セット画面より
       *****IF      SPA-MOTOPG          =   "M95"  OR
-           IF      SPA-MOTOPG          =   "MVER"
-               MOVE    1               TO  SPA-GMN-CUR
-               GO      TO      3OO-SCREEN-EXT
-           END-IF
+      *    IF      SPA-MOTOPG          =   "MVER"
+      *        MOVE    1               TO  SPA-GMN-CUR
+      *        GO      TO      3OO-SCREEN-EXT
+      *    END-IF
       *---- (01.00.04) LINE ADD END   --------------------------------
       *
            IF      LNK-KYOUTU      NOT =   SPACE
@@ -312,6 +312,7 @@
            IF      SPA-MOTOPG          =   "M01"
                                        OR  "M01N"
                                        OR  "M95"
+                                       OR  "MVER"
                MOVE    SPA-SYSYMDWH        TO  WRK-WSYSYMDH
                MOVE    SPA-SYSYMD          TO  WRK-SYSYMD
                MOVE    SPA-SYSYMDW         TO  WRK-WYMD
@@ -573,9 +574,9 @@
            IF  MCP-DBSTATUS                =   "RERR"
                MOVE    "1008"              TO  SPA-ERRCD
            END-IF
-           IF  MCP-DBSTATUS                =   "NORE"
-               MOVE    "1009"              TO  SPA-ERRCD
-           END-IF
+      *    IF  MCP-DBSTATUS                =   "NORE"
+      *        MOVE    "1009"              TO  SPA-ERRCD
+      *    END-IF
       *
            .
        310-SPASET-EXT.
