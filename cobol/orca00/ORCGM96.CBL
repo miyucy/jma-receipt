@@ -33,6 +33,7 @@
       *  01.00.02    ÂÀÅÄ         04/02/03  MCPAREA¤Î½é´ü²½¤òºï½ü
       *  01.00.03    NACL-°ËÆ£    04/02/05  M97¤ÎÄÉ²Ã
       *  01.00.04    NACL-Â¿¡¹Ç¼  05/04/04  ¥Þ¥¹¥¿¹¹¿·´ÉÍý¾ðÊó¤ÎÊ¬³ä
+      *  01.00.05    NACL-°ËÆ£    06/02/22  MONFUNC ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -112,9 +113,6 @@
            COPY    "CPJOBKANRI.INC".
       *
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
-      *
-           COPY    "ORCA-DBPATH".
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -301,10 +299,12 @@
       *    £Ä£Â´ÉÍý¸¡º÷½èÍý
            INITIALIZE                  DBKANRI-REC
            MOVE    DBKANRI-REC         TO  MCPDATA-REC
-           MOVE    PATH-TBL-DBKANRI-ALL 
-                                       TO  MCP-PATH
+           MOVE    "tbl_dbkanri"       TO  MCP-TABLE 
+           MOVE    "all"               TO  MCP-PATHNAME 
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
+               MOVE    "tbl_dbkanri"   TO  MCP-TABLE 
+               MOVE    "all"           TO  MCP-PATHNAME 
                PERFORM 900-DBKANRI-READ-SEC
            ELSE
                INITIALIZE                      DBKANRI-REC
@@ -319,10 +319,12 @@
                IF      DBKANRI-KANRICD(7:2)    NUMERIC
                    PERFORM 3102-LIST3-HENSYU-SEC
                END-IF
-               MOVE    PATH-TBL-DBKANRI-ALL    TO  MCP-PATH
+               MOVE    "tbl_dbkanri"   TO  MCP-TABLE 
+               MOVE    "all"           TO  MCP-PATHNAME 
                PERFORM 900-DBKANRI-READ-SEC
            END-PERFORM
-           MOVE    PATH-TBL-DBKANRI-ALL    TO  MCP-PATH
+           MOVE    "tbl_dbkanri"       TO  MCP-TABLE 
+           MOVE    "all"               TO  MCP-PATHNAME 
            PERFORM 990-DBCLOSE-SEC
       *
       *    £Ê£Ï£Â´ÉÍý¸¡º÷
@@ -630,8 +632,9 @@
            MOVE    SHELLTBL             TO  MCPDATA-REC
       *
            MOVE    "SHELL"              TO  MCP-FUNC
-           MOVE    PATH-SHELL-SHELL     TO  MCP-PATH
-           CALL    "MCPSUB"             USING
+           MOVE    "shell"              TO  MCP-TABLE
+           MOVE    "shell"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"            USING
                                         MCPAREA
                                         MCPDATA-REC
       *
@@ -961,7 +964,7 @@
        900-DBKANRI-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"       USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
@@ -983,7 +986,7 @@
            MOVE    ZERO            TO  MCP-RC
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
+           CALL    "MONFUNC"       USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -997,9 +1000,9 @@
        990-DBCLOSE-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
       *
            .
        990-DBCLOSE-EXT.
@@ -1010,11 +1013,10 @@
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *
-           MOVE   "PUTWINDOW"                   TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"                   USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC.
+           MOVE   "PUTWINDOW"          TO  MCP-FUNC.
+           CALL   "MONFUNC"            USING
+                                           MCPAREA
+                                           MCPDATA-REC.
       *
        900-PUT-WINDOW-EXT.
            EXIT.

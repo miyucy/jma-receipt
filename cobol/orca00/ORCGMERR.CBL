@@ -31,6 +31,7 @@
       *  01.02.01    MCC-Æ£¸¶     01/11/21  ORCMCPSUB¤ØÊÑ¹¹  
       *  01.02.02    MCC-Â¿¡¹Ç¼   02/02/22  MID1¤ÎÄÉ²Ã
       *  01.02.03    NACL-°ËÆ£    04/02/05  M97¤ÎÄÉ²Ã
+      *  01.02.04    NACL-°ËÆ£    06/02/22  MONFUNC ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -62,14 +63,11 @@
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
       *
-           COPY    "CPORCMCP.INC".     
-      *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *****COPY    "MCPAREA.INC".
            COPY    MCPAREA.
            COPY    "ORCA-SPA".
       *
@@ -147,9 +145,8 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
+           CALL   "MONFUNC"         USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
       *
            .

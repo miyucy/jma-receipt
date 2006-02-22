@@ -24,10 +24,11 @@
       *  管理者            : 
       *  作成日付    作業者        記述
       *  04/01/16    NACL-森脇     新規作成
-      *  04/12/ 2    NACL-伊藤     画面表示明細数を超えた場合の処置
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.01.01    NACL-伊藤    04/12/02  画面表示明細数を超えた場合の処置
+      *  01.01.02    NACL-伊藤    06/02/22  MONFUNC 対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -42,8 +43,6 @@
       *
       *    画面活性非活性
            COPY    "ENUM-VALUE".
-      *
-           COPY    "ORCA-DBPATH".
       *
            COPY    "CPSHELLTBL.INC".
       *
@@ -133,7 +132,6 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
       *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
@@ -435,8 +433,9 @@
            MOVE    SHELLTBL        TO  MCPDATA-REC
       *
            MOVE    "SHELL"         TO  MCP-FUNC
-           MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    "shell"         TO  MCP-TABLE
+           MOVE    "shell"         TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
       *
@@ -651,8 +650,9 @@
            MOVE    SHELLTBL        TO  MCPDATA-REC
       *
            MOVE    "SHELL"         TO  MCP-FUNC
-           MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
-           CALL    "MCPSUB"            USING
+           MOVE    "shell"         TO  MCP-TABLE
+           MOVE    "shell"         TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            DISPLAY "420-KOUSHIN-END"
@@ -994,10 +994,10 @@
       *
            INITIALIZE                  PGKANRI-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "PGKANRI-ALL"   TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_pgkanri"   TO  MCP-TABLE
+           MOVE    "all"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"       USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          =   ZERO
                MOVE    ZERO        TO  FLG-PGKANRI
@@ -1016,10 +1016,10 @@
        900-PGKANRI-FETCH-SEC       SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           MOVE    "PGKANRI-ALL"   TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_pgkanri"   TO  MCP-TABLE
+           MOVE    "all"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"       USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
       *
            IF      MCP-RC          =   ZERO
@@ -1039,10 +1039,10 @@
        900-PGKANRI-CLOSE-SEC       SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           MOVE    "PGKANRI-ALL"   TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
+           MOVE    "tbl_pgkanri"   TO  MCP-TABLE
+           MOVE    "all"           TO  MCP-PATHNAME
+           CALL    "MONFUNC"       USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            .
       *
@@ -1055,9 +1055,8 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"      TO  MCP-FUNC
-           CALL   "ORCMCPSUB"          USING
+           CALL   "MONFUNC"        USING
                                        MCPAREA
-                                       ORCMCPAREA
                                        MCPDATA-REC
            .
       *

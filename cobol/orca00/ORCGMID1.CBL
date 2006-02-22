@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-伊藤    04/02/05  M97の追加
+      *  01.00.02    NACL-伊藤    06/02/22  MONFUNC 対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -57,7 +58,6 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -165,11 +165,10 @@
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *
-           MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"   USING
-                                MCPAREA
-                                ORCMCPAREA
-                                MCPDATA-REC.
+           MOVE   "PUTWINDOW"      TO  MCP-FUNC.
+           CALL   "MONFUNC"        USING
+                                       MCPAREA
+                                       MCPDATA-REC.
       *
            .
        900-PUT-WINDOW-EXT.
