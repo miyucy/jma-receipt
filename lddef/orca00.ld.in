@@ -34,6 +34,14 @@ data	{
 	};
 };
 
-#include "orcadb.inc"
-#include "orcadbh.inc"
+db	{
+	tbl_syskanri;
+	tbl_jobkanri;
+	tbl_dbkanri;
+	tbl_ldmap;
+	tbl_lock;
+        tbl_pgkanri;
+};
 
+/* #include "orcadb.inc" */
+#include "orcadbh.inc"
