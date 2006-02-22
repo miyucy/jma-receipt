@@ -1821,6 +1821,7 @@
                    MOVE    WRK-JYURRK-DOUJI-RENNUM
                                                TO  WRK-TEI-DOUJI-RENNUM
                                                                  (IDX)
+                   MOVE    15                  TO  IDX
                END-IF
            END-PERFORM
       *
