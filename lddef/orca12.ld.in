@@ -44,6 +44,7 @@ data	{
 	};
 };
 
+/*
 db	{
 	tbl_syskanri;
 	tbl_byomei;
@@ -96,6 +97,7 @@ db	{
 	tbl_receupd;
 	tbl_sryacctplus;
 };
+*/
 
-/* #include "orcadb.inc" */
+#include "orcadb.inc"
 #include "orcadbh.inc"
