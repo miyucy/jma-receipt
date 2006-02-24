@@ -228,6 +228,7 @@
       *
       *    リハビリ回数集計
         01  WRK-RIGAKU-NCNT-AREA.
+            03  WRK-ORCSC-RIGAKU-TBL.
       *        １:理学、２：作業、３：言語
                05  WRK-DCNT-TBL        OCCURS  3.
       *        集団
@@ -243,8 +244,12 @@
                    07  WRK-TCNT-K          PIC 9(03).
                    07  WRK-TCNT-KN         PIC 9(03).
       *        早期リハ等加算（逓減対象外）
-               05  WRK-GAICNT-G.
+           03  WRK-GAICNT-G.
                    07  WRK-GCNT            PIC 9(01)   OCCURS  31.
+      *    早期リハ等加算（今回入力分）
+           03  WRK-ORCSC-GAI-FLG-G.
+               05  WRK-ORCSC-GAI-FLG           PIC 9(01)   OCCURS  31.
+           03  WRK-RIGAKU-INT              PIC X(01).
       *
       *    保存用
        01  HZN-SCR-REC.
@@ -259,7 +264,6 @@
       *
       *    酸素コードテーブル
            COPY     "CMSANSOTBL.INC".
-      *
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -298,6 +302,9 @@
       *
       *    診療行為点数編集・基本チェック
            COPY    "CPORCSC92.INC".
+      *
+      *    リハビリ当月算定カウントパラメタ
+           COPY    "CPORCSC80CNT.INC".
       *
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -338,10 +345,28 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
-           MOVE    LNK-ORCSC-RIGAKU-TBL    TO  WRK-RIGAKU-NCNT-AREA
+           MOVE    LNK-RIGAKU-NCNT-AREA    TO  WRK-RIGAKU-NCNT-AREA
       *
            IF      LNK-ORCSC-PG        =   "K02"
                MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+           END-IF
+      *    初回に当月分編集
+           IF      LNK-ORCSC-PG        =   "K02"
+               IF      WRK-RIGAKU-INT      =   SPACE
+                   INITIALIZE                  WRK-RIGAKU-NCNT-AREA
+      *            リハビリの回数編集
+                   INITIALIZE                  ORCSC80CNTAREA
+                   MOVE    LNK-ORCSC-SYORIFLG  TO  ORCSC80CNT-SYORIFLG
+                   CALL    "ORCSC80CNT"        USING
+                                               SPA-AREA
+                                               ORCSC00AREA
+                                               ORCSC80CNTAREA
+                   MOVE    ORCSC80CNT-RIGAKU-AREA
+                                           TO  WRK-ORCSC-RIGAKU-TBL
+                   MOVE    "1"             TO  WRK-RIGAKU-INT
+               END-IF
+           ELSE
+               INITIALIZE              WRK-RIGAKU-NCNT-AREA
            END-IF
       *
            EVALUATE    LNK-ORCSC-KBN
@@ -357,11 +382,12 @@
                WHEN    OTHER
                    MOVE    "1001"          TO  SPA-ERRCD
            END-EVALUATE
-           MOVE    WRK-RIGAKU-NCNT-AREA    TO  LNK-ORCSC-RIGAKU-TBL
+           MOVE    WRK-RIGAKU-NCNT-AREA    TO  LNK-RIGAKU-NCNT-AREA
       *
            .
            EXIT    PROGRAM
            .
+      *
       *****************************************************************
       *    剤別のチェック、編集、自動算定処理
       *****************************************************************
@@ -1632,7 +1658,7 @@
                    PERFORM VARYING     IDY     FROM    IDX-DAY  BY  1
                            UNTIL       IDY     >   IDD
                        IF     (WRK-GCNT (IDY)      =   ZERO    )  AND
-                              (LNK-ORCSC-GAI-FLG (IDY) =   ZERO)
+                              (WRK-ORCSC-GAI-FLG (IDY) =   ZERO)
                            COMPUTE WRK-TUKI-CNT    =   WRK-TUKI-CNT
                                                    +   WRK-DCNT-KN
                                                           (IDX-R1 IDY)
@@ -1740,7 +1766,7 @@
       *    当日に早期リハ加算等がある時、早期リハありとする
            IF     (FLG-SOUKI-ARI       =   1    )
                OR (WRK-GCNT (IDD)      >   ZERO )
-               OR (LNK-ORCSC-GAI-FLG(IDD)  >   ZERO )
+               OR (WRK-ORCSC-GAI-FLG(IDD)  >   ZERO )
       *        急性発生９０日以内の時、上限回数変更
            OR     ((LNK-ORCSC-KYUSEI-FLG   =   1   )  OR
                    (LNK-ORCSC-KYUSEI-90    >   WRK-SRYYMD))
@@ -1790,7 +1816,7 @@
            END-EVALUATE
       *    早期リハビリ他
            IF      FLG-SOUKI-ARI       =   1
-               ADD     1                   TO  LNK-ORCSC-GAI-FLG (IDD)
+               ADD     1                   TO  WRK-ORCSC-GAI-FLG (IDD)
            END-IF
       *
            .
@@ -2120,7 +2146,7 @@
                    MOVE    WRK-COM-KAISU(IDX-Z)   TO  WRK-KAISU
       *            当日に早期リハ加算がある時、ありとする
                    IF     (WRK-GCNT (IDD)          >   ZERO) OR
-                          (LNK-ORCSC-GAI-FLG (IDD) >   ZERO )
+                          (WRK-ORCSC-GAI-FLG (IDD) >   ZERO )
                        MOVE    1                   TO  FLG-SOUKI-ARI2
                    ELSE
                        MOVE    ZERO                TO  FLG-SOUKI-ARI2
@@ -2232,7 +2258,7 @@
                    PERFORM VARYING     IDY     FROM    IDX-DAY   BY  1
                            UNTIL       IDY     >   IDD
                        IF     (WRK-GCNT (IDY)      =   ZERO) AND
-                              (LNK-ORCSC-GAI-FLG (IDY)
+                              (WRK-ORCSC-GAI-FLG (IDY)
                                                    =   ZERO)
                            COMPUTE WRK-TUKI-CNT    =   WRK-TUKI-CNT
                                                    +   WRK-DCNT-KN

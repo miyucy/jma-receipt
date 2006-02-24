@@ -26,6 +26,7 @@
       * 01.00.02     多々納       02/04/19  生活習慣病指導算定時の追加
       * 01.00.03     NACL-多々納  02/10/25  入院対応
       * 01.00.04     NACL-多々納  04/03/08  時間外加算特例乳幼児加算追加
+      * 01.00.05     NACL-多々納  05/12/26  急性発生日追加（入院）
       ************************************************************
       *
        01  ORCSC00AREA.
@@ -180,7 +181,7 @@
       *
       *    診療行為月別チェック用（検査用）
            03  LNK-NAIACCT-AREA.
-               05  LNK-ACCT-TBL             OCCURS   200.
+               05  LNK-ACCT-TBL             OCCURS   100.
                    07  LNK-ACCT-SRYKBN          PIC  X(02).
                    07  LNK-ACCT-SRYCD           PIC  X(09).
                    07  LNK-ACCT-CDKBN.
@@ -251,27 +252,28 @@
                05  LNK-ORCSC-JYO2            PIC X(01).
       *
       *リハビリ当月内回数集計
-           03  LNK-ORCSC-RIGAKU-TBL.
+           03  LNK-RIGAKU-NCNT-AREA          PIC X(700).
+      ***  03  LNK-ORCSC-RIGAKU-TBL.
       *        １:理学、２：作業、３：言語
-               05  LNK-ORCSC-DCNT-TBL        OCCURS  3.
+      *        05  LNK-ORCSC-DCNT-TBL        OCCURS  3.
       *        集団
-                   07  LNK-ORCSC-DCNT-SN-G.
-                       09  LNK-ORCSC-DCNT-SN     PIC 9(03)   OCCURS  31.
+      *            07  LNK-ORCSC-DCNT-SN-G.
+      *                09  LNK-ORCSC-DCNT-SN     PIC 9(03)   OCCURS  31.
       *            当日
-                   07  LNK-ORCSC-TCNT-S          PIC 9(03).
+      *            07  LNK-ORCSC-TCNT-S          PIC 9(03).
       *            月計
-                   07  LNK-ORCSC-TCNT-SN         PIC 9(03).
+      *            07  LNK-ORCSC-TCNT-SN         PIC 9(03).
       *        個別
-                   07  LNK-ORCSC-DCNT-KN-G.
-                       09  LNK-ORCSC-DCNT-KN     PIC 9(03)   OCCURS  31.
-                   07  LNK-ORCSC-TCNT-K          PIC 9(03).
-                   07  LNK-ORCSC-TCNT-KN         PIC 9(03).
+      *            07  LNK-ORCSC-DCNT-KN-G.
+      *                09  LNK-ORCSC-DCNT-KN     PIC 9(03)   OCCURS  31.
+      *            07  LNK-ORCSC-TCNT-K          PIC 9(03).
+      *            07  LNK-ORCSC-TCNT-KN         PIC 9(03).
       *        早期リハ等加算（逓減対象外）
-               05  LNK-ORCSC-GAICNT-G.
-                   07  LNK-ORCSC-GCNT            PIC 9(01)   OCCURS  31.
+      *        05  LNK-ORCSC-GAICNT-G.
+      *            07  LNK-ORCSC-GCNT            PIC 9(01)   OCCURS  31.
       *    早期リハ等加算（今回入力分）
-           03  LNK-ORCSC-GAI-FLG-G.
-               05  LNK-ORCSC-GAI-FLG           PIC 9(01)   OCCURS  31.
+      *    03  LNK-ORCSC-GAI-FLG-G.
+      *********05  LNK-ORCSC-GAI-FLG           PIC 9(01)   OCCURS  31.
       *
       *    検査逓減領域
            03  LNK-ORCSC-TEIGEN-AREA.

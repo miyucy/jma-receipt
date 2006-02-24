@@ -255,6 +255,10 @@
                05  SPA-K02N-TAIINYMD           PIC X(08).
       *        当月入院有無（算定履歴チェック用）
                05  SPA-K02N-NYUINFLG          PIC  9(01).
+      *   入院期間
+               05  SPA-K02-NYUIN-AREA.
+                   07  SPA-K02-NYUDAY         PIC 9(01)
+                                              OCCURS   31.
       *
       *複数診療科用
            03  SPA-FUKU-AREA.
@@ -327,8 +331,8 @@
                05  SPA-KYUSEI-END          PIC  X(08).
       *急性発症（当日）
                05  SPA-KYUSEI-FLG          PIC  9(01).
-      *急性発症編集日
-               05  SPA-GMN-KYUSEI                PIC X(62).
+      *急性発症編集日(K02SCR-SPA へ）
+      *********05  SPA-GMN-KYUSEI                PIC X(62).
       *当月外来管理加算の取れない患者
                05  SPA-GAIRAI-NASI         PIC  9(01).
       *労災外来管理加算点数

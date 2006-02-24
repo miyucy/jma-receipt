@@ -2274,7 +2274,7 @@
       *
       *T   同月内の検査区分番号のチェック
       *    PERFORM VARYING IDX-ACT     FROM    1   BY  1
-      *            UNTIL  (IDX-ACT     >   200  )  OR
+      *            UNTIL  (IDX-ACT     >   100  )  OR
       *                   (LNK-ACCT-SRYCD (IDX-ACT)    =   SPACE )
       *        IF      LNK-ACCT-CDKBN (IDX-ACT)    =   "D100" OR
       *                                                "D101"
@@ -2285,8 +2285,8 @@
       *    今回入力の検査区分番号のチェック
            PERFORM VARYING IDX-ACT     FROM    1   BY  1
                    UNTIL  (IDX-ACT     >   200  )  OR
-                          (WRK-GMN-INPUTCD (IDX-ACT)  =   SPACE   AND
-                           WRK-COM-INPUTCD (IDX-ACT)  =   SPACE )
+                         ((WRK-GMN-INPUTCD (IDX-ACT)  =   SPACE )  AND
+                          (WRK-COM-INPUTCD (IDX-ACT)  =   SPACE ))
                IF     (IDX-ACT         NOT =   IDX-Z  )  AND
                       (WRK-COM-CDKBN-KBN   (IDX-ACT)
                                            =   "D"   )  AND
@@ -2303,7 +2303,7 @@
                    PERFORM 10060-SINDAN-ACCT-HEN-SEC
                END-IF
                PERFORM VARYING IDX-ACT     FROM    1   BY  1
-                       UNTIL  (IDX-ACT     >   200  )  OR
+                       UNTIL  (IDX-ACT     >   100  )  OR
                               (LNK-ACCT-SRYCD (IDX-ACT)    =   SPACE )
                    IF      LNK-ACCT-CDKBN (IDX-ACT)    =   "D100" OR
                                                            "D101"
@@ -2452,19 +2452,26 @@
       *                点数マスタより、区分番号編集
                        MOVE    SRY-SRYCD (IDX2)    TO  TNS-SRYCD
                        PERFORM 910-TENSU-READ-SEC
-                       ADD     1                   TO  IDX-ACT
-                       IF      IDX-ACT             >   200
-                           MOVE    200             TO  IDX-ACT
-                       END-IF
-                       MOVE    ACCT-SRYKBN         TO  LNK-ACCT-SRYKBN
+                       IF     (TNS-DATAKBN         =   "1" )  AND
+                              (TNS-CDKBN-KBN       =   "D" )  AND
+                              (TNS-CDKBN-KBNNUM    =   "100"
+                                                   OR  "101" )
+                           ADD     1               TO  IDX-ACT
+                           IF      IDX-ACT         >   100
+                               MOVE    100         TO  IDX-ACT
+                           END-IF
+                           MOVE    ACCT-SRYKBN     TO  LNK-ACCT-SRYKBN
                                                       (IDX-ACT)
-                       MOVE    SRY-SRYCD (IDX2)    TO  LNK-ACCT-SRYCD
-                                                       (IDX-ACT)
-                       MOVE    TNS-CDKBN-KBN   TO  LNK-ACCT-CDKBN-KBN
+                           MOVE    SRY-SRYCD (IDX2)
+                                                   TO  LNK-ACCT-SRYCD
+                                                           (IDX-ACT)
+                           MOVE    TNS-CDKBN-KBN
+                                               TO  LNK-ACCT-CDKBN-KBN
                                                           (IDX-ACT)
-                       MOVE    TNS-CDKBN-KBNNUM
+                           MOVE    TNS-CDKBN-KBNNUM
                                                TO  LNK-ACCT-CDKBN-KBNNUM
                                                           (IDX-ACT)
+                       END-IF
                    END-IF
                END-PERFORM
       *

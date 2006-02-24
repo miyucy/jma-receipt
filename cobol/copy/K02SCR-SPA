@@ -92,6 +92,8 @@
                    07  SPA-GMN-TABOO-REC         OCCURS  32.
                        09  SPA-GMN-TABOO         PIC X(62).
                    07  SPA-TABOO-MAX             PIC 9(04).
+      *        急性発症編集日
+               05  SPA-GMN-KYUSEI                PIC X(62).
       *        病名内容
                05  SPA-GMN-BYOMEITBL.
                    07  SPA-GMN-BYOMEI-TBL        OCCURS  100.
@@ -168,7 +170,7 @@
       *        診療行為月別チェック用 
                05  SPA-NAIACCT-AREA.
       *            検査チェック用 
-                   07  SPA-ACCT-TBL             OCCURS   200.
+                   07  SPA-ACCT-TBL             OCCURS   100.
                        09  SPA-ACCT-SRYKBN          PIC  X(02).
                        09  SPA-ACCT-SRYCD           PIC  X(09).
                        09  SPA-ACCT-CDKBN.
@@ -482,4 +484,5 @@
                05  SPA-K021-INPUTAREA.
                    07  SPA-K021-GMN-SELNUM         PIC X(03).
                    07  SPA-K021-SELNUM             PIC 9(03).
+      *
       *

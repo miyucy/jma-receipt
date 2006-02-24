@@ -131,11 +131,15 @@
            COPY    "COMMON-SPA".
       *
       *    ²èÌÌ¥¹¥ÑÎÎ°è
-           COPY    "K02SCR-SPA".
+      *??  COPY    "K02SCR-SPA".
+      *
+      *    ¿ÇÎÅ¹Ô°Ù»»ÄêÍÑ¶¦ÄÌ¥Ñ¥é¥á¥¿
+           COPY    "CPORCSC00.INC".
       *
        PROCEDURE                   DIVISION    USING
            SPA-AREA
-           SPA-K02
+      *??  SPA-K02
+           ORCSC00AREA
            ORCSC80CNTAREA
            .
       *
@@ -256,11 +260,11 @@
            IF      ORCSC80CNT-SYORIFLG     =   1
                PERFORM VARYING     IDZ     FROM    1   BY  1
                        UNTIL      (IDZ     >   100 )  OR
-                                  (SPA-K02-TEI-SRYCD(IDZ)
+                                  (LNK-ORCSC-TEI-SRYCD(IDZ)
                                            =   SPACE )
-                   IF      WRK-SRYCD           =   SPA-K02-TEI-SRYCD
+                   IF      WRK-SRYCD           =   LNK-ORCSC-TEI-SRYCD
                                                                  (IDZ)
-                       ADD     SPA-K02-TEI-KAISU(IDZ)
+                       ADD     LNK-ORCSC-TEI-KAISU(IDZ)
                                                TO  WRK-TEI-CNT
                    END-IF
                END-PERFORM
@@ -566,11 +570,11 @@
                IF      ORCSC80CNT-SYORIFLG     =   1
                    PERFORM VARYING     IDZ     FROM    1   BY  1
                            UNTIL      (IDZ     >   100 )  OR
-                                      (SPA-K02-TEI-SRYCD(IDZ)
+                                      (LNK-ORCSC-TEI-SRYCD(IDZ)
                                                =   SPACE )
-                       IF      WRK-SRYCD           =   SPA-K02-TEI-SRYCD
+                       IF      WRK-SRYCD       =   LNK-ORCSC-TEI-SRYCD
                                                                  (IDZ)
-                           ADD     SPA-K02-TEI-KAISU(IDZ)
+                           ADD     LNK-ORCSC-TEI-KAISU(IDZ)
                                                    TO  WRK-TEI-CNT
                        END-IF
                    END-PERFORM
@@ -659,9 +663,7 @@
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
-      *
            .
-      *
        920-DBFETCH-EXT.
            EXIT.
       *
@@ -674,7 +676,6 @@
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
-      *
            .
        990-DBCLOSE-EXT.
            EXIT.
