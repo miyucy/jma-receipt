@@ -33,6 +33,8 @@
       *
       *  02.06.01    NACL-藤原    05/05/20  削除ボタンをＦ４に変更
       *  02.06.02    NACL-藤原    05/08/03  条件に負担者番号を追加
+      *
+      *  02.08.01    NACL-藤原    06/02/25  有効期間の未入力時の更新処理
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2144,6 +2146,9 @@
                    MOVE    "2006"              TO  SYS-2006-KANRICD
                    MOVE    WRK-2006-KBNCD      TO  SYS-2006-KBNCD
                    MOVE    SPA-NAI-STYUKYMD    TO  SYS-2006-STYUKYMD
+                   IF      SPA-NAI-EDYUKYMD    =   ZERO
+                       MOVE    99999999            TO  SPA-NAI-EDYUKYMD
+                   END-IF 
                    MOVE    SPA-NAI-EDYUKYMD    TO  SYS-2006-EDYUKYMD
                ELSE
                    MOVE    SPA-NAI-STYUKYMD    TO  SYS-2006-STYUKYMD
