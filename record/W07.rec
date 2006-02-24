@@ -297,6 +297,13 @@ W07	{
 					count	int;
 					item	varchar(60)[5];
 				};
+				KOHONLY_CHKFLG_COMBO	{
+					KOHONLY_CHKFLG	{
+						value	varchar(28);
+					};
+					count	int;
+					item	varchar(28)[2];
+				};
 			};
 			TAGNAME2    {
 			    state   int;
