@@ -148,6 +148,13 @@ W02	{
 					count	int;
 					item	varchar(14)[5];
 				};
+				JIHIPOSITION_COMB	{
+					JIHIPOSITION	{
+						value	varchar(12);
+					};
+					count	int;
+					item	varchar(12)[2];
+				};
 			};
 	            N01	{
 	            	state	int;

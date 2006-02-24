@@ -54,6 +54,7 @@
       *  01.00.23    NACL-多々納  05/09/13  入金状態の追加
       *  01.00.24    NACL-多々納  05/09/26  入金状態の追加（入院）
       *  01.00.25    NACL-多々納  05/10/14  データ収集フラグ追加
+      *  01.05.26    NACL-太田    06/02/22  自費保険集計先区分追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -157,6 +158,13 @@
                            11  SPA-GMN-F13L           PIC X(01).
                            11  SPA-GMN-HIWARIKBNMEIL
                                                       PIC X(18).
+                       09  SPA-GMN-JIHIPOSITIONLST
+                                                      OCCURS  2.
+                           11  SPA-GMN-JIHIPOSITIONL
+                                                      PIC X(01).
+                           11  SPA-GMN-F14L           PIC X(01).
+                           11  SPA-GMN-JIHIPOSITIONMEIL
+                                                      PIC X(10).
                        09  SPA-GMN-KOUMOKU.
                            11  SPA-GMN-PREFNUM-G.
                                13  SPA-GMN-PREFNUM    PIC X(02).
@@ -247,6 +255,12 @@
                                13  SPA-GMN-F13        PIC X(01).
                                13  SPA-GMN-HIWARIKBNMEI
                                                       PIC X(18).
+                           11  SPA-GMN-JIHIPOSITION-G.
+                               13  SPA-GMN-JIHIPOSITION
+                                                      PIC X(01).
+                               13  SPA-GMN-F16        PIC X(01).
+                               13  SPA-GMN-JIHIPOSITIONMEI
+                                                      PIC X(10).
       *                データ収集
                        09  SPA-GMN-DATASYU.
       *                    データ作成フラグ
@@ -887,6 +901,11 @@
            MOVE    "1 自動で送信"      TO  SPA-GMN-DATATEISYUTU-LST (2)
            MOVE    "2 手動で送信"      TO  SPA-GMN-DATATEISYUTU-LST (3)
            MOVE    3                   TO  SPA-DATATEISYUTU-MAX
+      *    自費保険集計先区分
+           MOVE    "1"                 TO  SPA-GMN-JIHIPOSITIONL (1)
+           MOVE    "保険分欄"          TO  SPA-GMN-JIHIPOSITIONMEIL (1)
+           MOVE    "2"                 TO  SPA-GMN-JIHIPOSITIONL (2)
+           MOVE    "自費分欄"          TO  SPA-GMN-JIHIPOSITIONMEIL (2)
       * 
       *    割引率区分設定処理
            PERFORM 3101-DISCOUNT-KBN-SET-SEC
@@ -1384,6 +1403,21 @@
                 END-IF
            END-PERFORM
       *
+      *    データ提出方法区分 空白の時、"0"とする
+           IF      SYS-1001-JIHIPOSITION   =   SPACE
+               MOVE    "1"             TO  SYS-1001-JIHIPOSITION
+           END-IF
+      *
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >       2
+               IF      SYS-1001-JIHIPOSITION
+                                       =   SPA-GMN-JIHIPOSITIONL(IDY)
+                   MOVE    SPA-GMN-JIHIPOSITIONLST (IDY)
+                                       TO  SPA-GMN-JIHIPOSITION-G
+                   MOVE    2           TO  IDY
+                END-IF
+           END-PERFORM
+      *
            . 
        31091-KIHON-HENSYU-EXT.
            EXIT.
@@ -1591,6 +1625,7 @@
            MOVE    W02-HIWARIKBN       TO  SPA-GMN-HIWARIKBN-G
            MOVE    W02-DATACREATE      TO  SPA-GMN-DATACREATE-G
            MOVE    W02-DATATEISYU      TO  SPA-GMN-DATATEISYUTU-G
+           MOVE    W02-JIHIPOSITION    TO  SPA-GMN-JIHIPOSITION-G
       *
       *    連絡先情報タグ
            MOVE    W02-POST            TO  SPA-GMN-POST
@@ -1786,6 +1821,10 @@
       *
            IF      SPA-ERRCD           =   SPACE
                PERFORM 4131-DATATEISYUTU-CHK-SEC
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4131-JIHIPOSITION-CHK-SEC
            END-IF
       *
            .
@@ -2436,6 +2475,30 @@
        4131-DATATEISYUTU-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    データ収集提出方法フラグ
+      *****************************************************************
+       4131-JIHIPOSITION-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       2
+               IF      SPA-GMN-JIHIPOSITION
+                                       =   SPA-GMN-JIHIPOSITIONL (IDY)
+                   MOVE    SPA-GMN-JIHIPOSITIONLST (IDY)
+                                       TO  SPA-GMN-JIHIPOSITION-G
+                   MOVE    2           TO  IDY
+                   MOVE    1           TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    "0205"          TO  SPA-ERRCD
+               MOVE    205             TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       4131-JIHIPOSITION-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    郵便番号チェック処理
       *****************************************************************
        4112-POST-CHK-SEC           SECTION.
@@ -2912,6 +2975,8 @@
                                        TO  SYS-1001-DATACREATEFLG
                    MOVE    SPA-GMN-DATATEISYUTU
                                        TO  SYS-1001-DATATEISYUTUKBN
+                   MOVE    SPA-GMN-JIHIPOSITION
+                                       TO  SYS-1001-JIHIPOSITION
                    MOVE    SYS-1001-REC    TO  SYSKANRI-REC
       * 
       *    医療機関情報ー所在地、連絡先情報
@@ -3411,6 +3476,14 @@
                                        TO  W02-DATATEISYU-ITEM (IDX)
            END-PERFORM
            MOVE    SPA-DATATEISYUTU-MAX  TO  W02-DATATEISYU-COUNT
+      *
+           MOVE    SPA-GMN-JIHIPOSITION-G    TO  W02-JIHIPOSITION
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       2
+               MOVE    SPA-GMN-JIHIPOSITIONLST (IDX)
+                                       TO  W02-JIHIPOSITION-ITEM (IDX)
+           END-PERFORM
+           MOVE    2                   TO  W02-JIHIPOSITION-COUNT
       *----(01.00.09) LINE ADD END   ----------------------------------
       *
       *    医療機関情報ー所在地、連絡先情報
@@ -3651,6 +3724,9 @@
                WHEN    "0204"
                    MOVE    "データ収集提出方法区分入力エラー"
                                                TO  SPA-ERRMSG
+               WHEN    "0205"
+                   MOVE    "自費保険集計先区分入力エラー"
+                                               TO  SPA-ERRMSG
                WHEN    "0030"
                    MOVE    "自費名称は全角で入力して下さい。"
                                                TO  SPA-ERRMSG
@@ -3799,6 +3875,8 @@
                 WHEN    204
                     MOVE  "DATATEISYU"
                                            TO   MCP-WIDGET
+                WHEN    205
+                    MOVE  "JIHIPOSITION"   TO   MCP-WIDGET
       *
                 WHEN    40
                     MOVE  "TEIRITU"        TO   MCP-WIDGET
@@ -3923,6 +4001,8 @@
               WHEN    "DATACREATE"
                   MOVE    204              TO  SPA-GMN-CUR
               WHEN    "DATATEISYU"
+                  MOVE    205              TO  SPA-GMN-CUR
+              WHEN    "JIHIPOSITION"
                   MOVE    01               TO  SPA-GMN-CUR
       *       連絡先情報
               WHEN    "POST"

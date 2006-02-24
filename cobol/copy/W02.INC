@@ -120,6 +120,12 @@
                     06  W02-DATATEISYU-COUNT   PIC S9(9)   BINARY.
                     06  W02-DATATEISYU-ITEM
                             PIC X(14)   OCCURS  5 TIMES.
+                  05  W02-JIHIPOSITION-COMB.
+                    06  W02-JIHIPOSITION.
+                      07  W02-VALUE   PIC X(12).
+                    06  W02-JIHIPOSITION-COUNT   PIC S9(9)   BINARY.
+                    06  W02-JIHIPOSITION-ITEM
+                            PIC X(12)   OCCURS  2 TIMES.
                 04  W02-N01-STATE   PIC S9(9)   BINARY.
                 04  W02-FIXED24.
                   05  W02-POST.
