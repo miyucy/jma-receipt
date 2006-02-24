@@ -173,6 +173,7 @@
       *  01.02.20    NACL-ÌçÏÆ    06/01/17  ¹âÎð¼Ô¤Î¼çÊÝ¸±Ëô¤Ï£²£·Ï·¿Í¾ðÊó
       *                                     ¡Ê±ßÃ±°Ì¡Ë½¤Àµ
       *  01.02.21    NACL-ÌçÏÆ    05/02/17  ÆÃÊÌÎÅÍÜÈñÂÐ±þ
+      *  01.02.22    NACL-ÌçÏÆ    05/02/22  ¼«ÈñÊÝ¸±·×»»¡¦½¸·×ÀèÊÔ½¸½¤Àµ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -227,6 +228,9 @@
            03  WK-MIYAGI-COMPFTN       PIC 9(07).
            03  WK-JYOSEIGAKU           PIC 9(07).
            03  WK-KEISU                PIC 9V99.
+           03  WK-JIHIGAKU             PIC 9(10).
+           03  WK-JIHIGAKU2            PIC 9(10).
+           03  WK-JIHIFTN              PIC 9V99.
        01  SHOHOUSEN-AREA.
            03  FLG-INNAI               PIC X(01).
            03  FLG-INGAI               PIC X(01).
@@ -283,6 +287,7 @@
            03  WK-1001-HOSPID          PIC X(24).
            03  WK-1001-HOSPSBT         PIC 9(01).
            03  WK-1001-ROUPAYKBN       PIC X(01).
+           03  WK-1001-JIHIPOSITION    PIC X(01).
       *
            03  WK-GAIJGNKBN            PIC X(01).
            03  WK-GAIJGNGAK            PIC 9(07).
@@ -889,6 +894,7 @@
            MOVE   SYS-1001-HOSPID             TO   WK-1001-HOSPID.
            MOVE   SYS-1001-HOSPSBT            TO   WK-1001-HOSPSBT.
            MOVE   SYS-1001-ROUPAYKBN          TO   WK-1001-ROUPAYKBN.
+           MOVE   SYS-1001-JIHIPOSITION       TO   WK-1001-JIHIPOSITION.
       *
       *    ÊÝ¸±ÁÈ¹ç¤»¥Þ¥¹¥¿¤Î»²¾ÈÉôÊ¬³ÎÄê
            PERFORM   100-KAKUTEI-SEC.
@@ -924,6 +930,8 @@
                                                  ORCMCPAREA
                                                  MCPDATA-REC.
       *
+      *    ¼«ÈñÊÝ¸±¤Î¥Ç¡¼¥¿ÊÔ½¸
+           PERFORM   104-JIHIHOKEN-DATA-HENSYU-SEC.
       *    ÊÝ¸±ÁÈ¹ç¤»¤Î¾å¸Â¶èÊ¬ÊÔ½¸
            PERFORM   105-JYOGENKBN-HENSYU-SEC.
       *
@@ -1020,15 +1028,16 @@
            IF     (LNK-SYU-SKYMONEY      NOT =   ZERO)   OR
                   (LNK-SYU-YKZ-FTN       NOT =   ZERO)
                IF   WK-HKNKBN            NOT =   "1"
-                 IF   FLG-KUMAMOTO       NOT =   "1"
+                 IF   FLG-KUMAMOTO           =   "1"
+                 OR   COMB-SYU-HKNKOHSBTKBN  =   "8"
+                   COMPUTE  LNK-SYU-SKYMONEY = LNK-SYU-SKYMONEY  +
+                                               LNK-SYU-YKZ-FTN
+                 ELSE
                    COMPUTE  LNK-SYU-SKYMONEY = LNK-SYU-SKYMONEY  +
                                                LNK-SYU-YKZ-FTN
                    COMPUTE  LNK-SYU-SKYMONEY = LNK-SYU-SKYMONEY  +  5
                    COMPUTE  WK-SEIKYUGK      = LNK-SYU-SKYMONEY  /  10
                    COMPUTE  LNK-SYU-SKYMONEY = WK-SEIKYUGK       *  10
-                 ELSE
-                   COMPUTE  LNK-SYU-SKYMONEY = LNK-SYU-SKYMONEY  +
-                                               LNK-SYU-YKZ-FTN
                  END-IF
                ELSE
                    COMPUTE  LNK-SYU-SKYMONEY = LNK-SYU-SKYMONEY  +
@@ -1918,6 +1927,99 @@
            END-EVALUATE.                                    
       *
        100-KAKUTEI-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    ¼«ÈñÊÝ¸±¤Î¥Ç¡¼¥¿ÊÔ½¸                                *
+      ******************************************************************
+       104-JIHIHOKEN-DATA-HENSYU-SEC          SECTION.
+      *
+           IF    COMB-HKNNUM            NOT =  SPACE
+           AND   COMB-SYU-HKNKOHSBTKBN      =   "8"
+           AND   WK-1001-JIHIPOSITION       =   "2"
+           AND   LNK-SYU-SRYYMD(1:6)       >=   "200604"
+      *
+      *      ³ºÅöÊÝ¸±ÈÖ¹æ¥Æ¡¼¥Ö¥ë¤Î¸¡º÷
+             INITIALIZE                      HKNNUM-REC
+             MOVE   COMB-HOSPID        TO    HKN-HOSPID
+             MOVE   COMB-HKNNUM        TO    HKN-HKNNUM
+             MOVE   "00"               TO    WK-PAYKBN
+             MOVE   HKNNUM-REC         TO    MCPDATA-REC
+             MOVE   "DBSELECT"         TO    MCP-FUNC
+             MOVE   "HKNNUM-KEY2"      TO    ORC-DBPATH
+             CALL   "ORCMCPSUB"         USING MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC
+             IF      MCP-RC            =     ZERO
+                 MOVE    "HKNNUM-KEY2" TO    ORC-DBPATH
+                 PERFORM  HKNNUM-READ-SEC
+                 PERFORM  UNTIL
+                  ( FLG-HKNNUM           =  1                   ) OR
+                  ((HKN-TEKSTYMD(1:6)   <=  LNK-SYU-SRYYMD(1:6)) AND
+                   (LNK-SYU-SRYYMD(1:6) <=  HKN-TEKEDYMD(1:6)  ) AND
+                   (WK-PAYKBN            =  HKN-PAYKBN         ))
+                     PERFORM   HKNNUM-READ-SEC
+                 END-PERFORM
+             END-IF
+      *
+             MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
+             MOVE    "HKNNUM-KEY2"        TO  ORC-DBPATH
+             CALL    "ORCMCPSUB"           USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+      *
+             IF  HKN-TENTNK   =   ZERO
+                 MOVE     10      TO      HKN-TENTNK
+             END-IF
+      *
+             IF   COMB-HONKZKKBN        =   "1"
+               IF  HKN-HON-GAIKFTNRATE   NOT =   ZERO
+                  IF  HKN-TENTNK   =   10
+                      COMPUTE  WK-JIHIFTN   =
+                               HKN-HON-GAIKFTNRATE  /  100
+                  ELSE
+                      MOVE       1     TO      WK-JIHIFTN
+                  END-IF
+               ELSE
+                  MOVE     ZERO        TO      WK-JIHIFTN
+               END-IF
+             ELSE
+               IF  HKN-KZK-GAIKFTNRATE   NOT =   ZERO
+                  IF  HKN-TENTNK   =   10
+                      COMPUTE  WK-JIHIFTN   =
+                               HKN-KZK-GAIKFTNRATE  /  100
+                  ELSE
+                      MOVE       1     TO      WK-JIHIFTN
+                  END-IF
+               ELSE
+                  MOVE     ZERO        TO      WK-JIHIFTN
+               END-IF
+             END-IF
+      *
+             IF     WK-JIHIFTN    NOT =    ZERO
+               PERFORM   VARYING   IDX9    FROM    1   BY  1
+                          UNTIL    IDX9       >   12
+      *
+                 COMPUTE WK-JIHIGAKU   =
+                         LNK-SYU-HKNTEN (IDX9) *  HKN-TENTNK
+      *
+                 COMPUTE WK-JIHIGAKU2  =
+                         WK-JIHIGAKU           *  WK-JIHIFTN
+      *
+                 COMPUTE LNK-SYU-TGMONEY(IDX9) =
+                         LNK-SYU-TGMONEY(IDX9) +  WK-JIHIGAKU2
+      *
+                 MOVE    ZERO    TO      LNK-SYU-HKNTEN(IDX9)
+      *
+               END-PERFORM
+             END-IF
+      *
+           END-IF
+      *
+           .
+      *
+       104-JIHIHOKEN-DATA-HENSYU-EXT.
            EXIT.
       *
       ******************************************************************
@@ -8299,6 +8401,16 @@
                             (LNK-SYU-HKNTEN (IDX9) *  HKN-TENTNK)
            END-PERFORM.
       *
+           IF    COMB-SYU-HKNKOHSBTKBN       =   "8"
+           AND   HKN-TENTNK              NOT =   10
+               IF   HKN-HON-GAIKFTNRATE     NOT =   ZERO
+                   MOVE     100       TO   HKN-HON-GAIKFTNRATE
+               END-IF
+               IF   HKN-KZK-GAIKFTNRATE     NOT =   ZERO
+                   MOVE     100       TO   HKN-KZK-GAIKFTNRATE
+               END-IF
+           END-IF.
+      *
       *    ¡Ê£×£Ë¡Ý£È£Ë£Î£Ë£Â£Î¡¡¶õÇò¡§°åÊÝ¡¡£±¡§Ï«ºÒ¡¡£²¡§¼«ÇåÀÕ¡Ë
            EVALUATE   WK-HKNKBN
              WHEN   SPACE
@@ -8322,12 +8434,16 @@
                               END-IF                                    
                               MOVE      LNK-SYU-SYUCOMPFTN
                                                  TO WK-TOKUTEI-COMPFTN2
-                              COMPUTE   LNK-SYU-SYUCOMPFTN =
-                                        LNK-SYU-SYUCOMPFTN  +  5
-                              COMPUTE   WK-FTN      =
-                                        LNK-SYU-SYUCOMPFTN  /  10
-                              COMPUTE   LNK-SYU-SYUCOMPFTN =
-                                        WK-FTN   *  10
+                              IF   COMB-SYU-HKNKOHSBTKBN  =  "8"
+                                 CONTINUE
+                              ELSE
+                                 COMPUTE   LNK-SYU-SYUCOMPFTN =
+                                           LNK-SYU-SYUCOMPFTN  +  5
+                                 COMPUTE   WK-FTN      =
+                                           LNK-SYU-SYUCOMPFTN  /  10
+                                 COMPUTE   LNK-SYU-SYUCOMPFTN =
+                                           WK-FTN   *  10
+                              END-IF
                         END-IF
                         MOVE  HKN-HON-GAIYKZFTNKBN
                                              TO   LNK-SYU-SYUYKZFTNKBN
@@ -8394,12 +8510,16 @@
                                         WK-ZENGAKU   *  WK-FUTANWARI
                               MOVE      LNK-SYU-SYUCOMPFTN
                                                  TO WK-TOKUTEI-COMPFTN2
-                              COMPUTE   LNK-SYU-SYUCOMPFTN =
-                                        LNK-SYU-SYUCOMPFTN  +  5
-                              COMPUTE   WK-FTN      =
-                                        LNK-SYU-SYUCOMPFTN  /  10
-                              COMPUTE   LNK-SYU-SYUCOMPFTN =
-                                        WK-FTN   *  10
+                              IF   COMB-SYU-HKNKOHSBTKBN  =  "8"
+                                 CONTINUE
+                              ELSE
+                                 COMPUTE   LNK-SYU-SYUCOMPFTN =
+                                           LNK-SYU-SYUCOMPFTN  +  5
+                                 COMPUTE   WK-FTN      =
+                                           LNK-SYU-SYUCOMPFTN  /  10
+                                 COMPUTE   LNK-SYU-SYUCOMPFTN =
+                                           WK-FTN   *  10
+                              END-IF
                         END-IF
                         MOVE  HKN-KZK-GAIYKZFTNKBN
                                              TO   LNK-SYU-SYUYKZFTNKBN
@@ -11678,6 +11798,7 @@
       *    ¼çÊÝ¸±¡¦Ï·¿ÍÊÝ¸±¤Î¶â³ÛÃÖ¤­´¹¤¨
            IF   COMB-HKNNUM            NOT =   SPACE
            AND  LNK-SYU-SYUCOMPFTN     NOT =    ZERO
+           AND  COMB-SYU-HKNKOHSBTKBN  NOT =    "8"
       *
                  COMPUTE   LNK-SYU-SYUCOMPFTN  =
                            LNK-SYU-SYUCOMPFTN  +  5
