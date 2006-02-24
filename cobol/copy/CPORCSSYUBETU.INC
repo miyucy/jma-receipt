@@ -57,6 +57,9 @@
       *            保険者番号
                    07  LNK-SYUBETU-HKNJANUM
                                        PIC X(08).
+      *            補助区分
+                   07  LNK-SYUBETU-HOJOKBN
+                                       PIC X(08).
       *            保険組合せ番号
                    07  LNK-SYUBETU-HKNCOMBI-AREA.
                        09  LNK-SYUBETU-HKNCOMBI

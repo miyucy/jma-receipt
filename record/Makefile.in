@@ -482,6 +482,7 @@ DB_files = \
 	tbl_chktrd.db \
 	tbl_tekioubyomei.db \
 	tbl_yakujyo_temp.db \
+        tbl_syuka.db \
 
 all:   
 

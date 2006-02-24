@@ -211,3 +211,34 @@
                     06  W12-KKHPRTKBN-COUNT   PIC S9(9)   BINARY.
                     06  W12-KKHPRTKBNLST
                             PIC X(20)   OCCURS  2 TIMES.
+                04  W12-FI27.
+                  05  W12-SYUKA-KBN-COMBO.
+                    06  W12-SYUKA-KBN.
+                      07  W12-VALUE   PIC X(22).
+                    06  W12-SYUKA-KBN-COUNT   PIC S9(9)   BINARY.
+                    06  W12-SYUKA-KBNLST
+                            PIC X(22)   OCCURS  2 TIMES.
+                  05  W12-SYUKA-NYUIN-COMBO.
+                    06  W12-SYUKA-NYUIN.
+                      07  W12-VALUE   PIC X(22).
+                    06  W12-SYUKA-NYUIN-COUNT   PIC S9(9)   BINARY.
+                    06  W12-SYUKA-NYUINLST
+                            PIC X(22)   OCCURS  5 TIMES.
+                  05  W12-SYUKA-GAIRAI-COMBO.
+                    06  W12-SYUKA-GAIRAI.
+                      07  W12-VALUE   PIC X(22).
+                    06  W12-SYUKA-GAIRAI-COUNT   PIC S9(9)   BINARY.
+                    06  W12-SYUKA-GAIRAILST
+                            PIC X(22)   OCCURS  5 TIMES.
+                  05  W12-SYUKA-SELECT-COMBO.
+                    06  W12-SYUKA-SELECT.
+                      07  W12-VALUE   PIC X(22).
+                    06  W12-SYUKA-SELECT-COUNT   PIC S9(9)   BINARY.
+                    06  W12-SYUKA-SELECTLST
+                            PIC X(22)   OCCURS  5 TIMES.
+                  05  W12-SYUKA-MODE-COMBO.
+                    06  W12-SYUKA-MODE.
+                      07  W12-VALUE   PIC X(22).
+                    06  W12-SYUKA-MODE-COUNT   PIC S9(9)   BINARY.
+                    06  W12-SYUKA-MODELST
+                            PIC X(22)   OCCURS  2 TIMES.

@@ -306,7 +306,7 @@
       *
            PERFORM 300-END-SEC
       *??
-           DISPLAY "OT=" LNK-SYUBETU-RC
+           DISPLAY "LNK-SYUBETU-RC=" LNK-SYUBETU-RC
            PERFORM VARYING IDX FROM 1 BY  1
                    UNTIL   IDX >    100
                    OR  LNK-SYUBETU-TEISYUTUSAKI (IDX) =   ZERO
@@ -364,7 +364,9 @@
                END-IF
            END-IF
       *
-           IF      LNK-SYUBETU-RC      NOT =   ZERO
+           IF      LNK-SYUBETU-RC      =   ZERO
+               CONTINUE
+           ELSE
                MOVE    1                   TO  FLG-END
                GO  TO  100-INIT-EXT
            END-IF
@@ -1422,7 +1424,7 @@
       *
            IF      LNK-SYUBETU-RC      =   ZERO
                IF      TBL-RECE61-HOSPID (1)   =   SPACE
-                   MOVE    3               TO  LNK-SYUBETU-RC
+                   MOVE    4               TO  LNK-SYUBETU-RC
                ELSE
       *            レセプト種別編集処理
                    PERFORM   3001-RECESYUBETU-HENSYU-SEC
@@ -1460,6 +1462,9 @@
       *        保険者番号
                MOVE    WRK-RECE61-HKNJANUM 
                                    TO  LNK-SYUBETU-HKNJANUM (IDXX)
+      *        補助区分
+               MOVE    WRK-RECE61-HOJOKBN
+                                   TO  LNK-SYUBETU-HOJOKBN  (IDXX)
       *        保険組合せ
                PERFORM VARYING IDX     FROM    1   BY  1
                        UNTIL   IDX     >       10

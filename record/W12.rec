@@ -259,6 +259,43 @@ W12	{
 					item	varchar(20)[2];
 				};
 			};
+			fi27	{
+				SYUKA_KBN_COMBO	{
+					SYUKA_KBN	{
+						value	varchar(22);
+					};
+					count	int;
+					item	varchar(22)[2];
+				};
+				SYUKA_NYUIN_COMBO	{
+					SYUKA_NYUIN	{
+						value	varchar(22);
+					};
+					count	int;
+					item	varchar(22)[5];
+				};
+				SYUKA_GAIRAI_COMBO	{
+					SYUKA_GAIRAI	{
+						value	varchar(22);
+					};
+					count	int;
+					item	varchar(22)[5];
+				};
+				SYUKA_SELECT_COMBO	{
+					SYUKA_SELECT	{
+						value	varchar(22);
+					};
+					count	int;
+					item	varchar(22)[5];
+				};
+				SYUKA_MODE_COMBO	{
+					SYUKA_MODE	{
+						value	varchar(22);
+					};
+					count	int;
+					item	varchar(22)[2];
+				};
+			};
 		};
 	};
 };
