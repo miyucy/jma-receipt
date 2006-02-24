@@ -277,6 +277,7 @@ FORM_files = \
               HCM2OV02.red \
               HCM2PV02.red \
               HCM45.red \
+              HCM46.red \
 
 all:   
 
