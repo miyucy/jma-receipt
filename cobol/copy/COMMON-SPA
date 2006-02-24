@@ -51,6 +51,8 @@
       * 01.00.24     NACL-多々納  05/10/07  処理フラグ追加
       * 01.00.25     NACL-多々納  05/10/14  データ収集作成フラグ、
       *                                     データ収集提出方法区分追加
+      * 01.00.26     NACL-多々納  06/02/24  処方区分等削除（移動）
+      *                                     主科領域追加
       *****************************************************************
       *
       *     共通ＳＰＡ     (RL=6200)
@@ -58,9 +60,6 @@
       *
            02  SPA-KYOUTU.
       *端末ＩＤ
-      ***    03  SPA-TERMID-G.
-      *          05  SPA-PORT              PIC X(04).
-      ***        05  SPA-TERMID            PIC X(32).
              03  SPA-TERMID-G.
                  05  SPA-TERMID            PIC X(64).
       *オペレーターＩＤ
@@ -106,18 +105,8 @@
                  05  SPA-GSRAUTH-31        PIC X(01).
                  05  SPA-GSRAUTH-32        PIC X(01).
       *
-      *----(01.00.01) LINE ADD START ----------------------------------
-      *予備１
-      *******03  SPA-YOBI1             PIC 9(01).
-      *院外処方せん発行フラグ
-             03  SPA-SYOHOPRTFLG       PIC  9(01).
-      *----(01.00.01) LINE ADD END   ----------------------------------
       *老人支払区分
              03  SPA-ROUPAYKBN         PIC X(01).
-      *処方区分
-             03  SPA-SYOHOKBN          PIC X(01).
-      *請求書発行フラグ
-             03  SPA-SKYPRTFLG         PIC X(01).
       *病床数
              03  SPA-BEDSU             PIC 9(04).
       *病床数（一般）
@@ -165,6 +154,18 @@
       *    拡張構成後桁数
                    07  SPA-1009-KKCKSIATOKETA       PIC 9(02).
       *----(01.00.02) LINE ADD END   ----------------------------------
+      *主科対応領域
+             03  SPA-SYUKA-INFO.
+      *主科設定フラグ
+                 05  SPA-SYUKA-KBN       PIC  X(01).
+      *主科設定情報（入院）
+                 05  SPA-SYUKA-NYUIN     PIC  X(01).
+      *主科設定情報（入院外）
+                 05  SPA-SYUKA-GAIRAI    PIC  X(01).
+      *主科情報取得フラグ
+                 05  SPA-SYUKA-MODE      PIC  X(01).
+      *複数科同一選択
+                 05  SPA-SYUKA-SELECT    PIC  X(01).
       *----(01.00.03) LINE ADD START ----------------------------------
       *前回患者ＩＤ
              03  SPA-LAST-PTID            PIC 9(10).
@@ -173,7 +174,7 @@
       *----(01.00.03) LINE ADD END   ----------------------------------
       *数量０入力フラグ
              03  SPA-SURYOZERO-FLG        PIC  9(01).
-      *処理フラグ
+      *処理フラグ（Ｕ・Ｐ起動）
              03  SPA-SYORI-FLG            PIC  9(01).
       *共通内容
              03  SPA-KYOTU-SET.
@@ -203,20 +204,6 @@
                  05  SPA-BIRTHDAY          PIC X(08).
       *患者生年月日（和暦編集）
                  05  SPA-BIRTHDAYW         PIC X(09).
-      *患者旧姓氏名
-      ***********05  SPA-KYUSEINAME        PIC X(50).
-      ***********05  SPA-KYUSEINAME        PIC X(30).
-      *診療日
-      *          05  SPA-SRYYMD            PIC X(08).
-      *診療日（和暦編集済）
-      ***********05  SPA-SRYYMDW           PIC X(09).
-      *          05  SPA-SRYYMDW           PIC X(14).
-      *診療科
-      *          05  SPA-SRYKA             PIC X(02).
-      *診療科名
-      ***********05  SPA-SRYKAMEI          PIC X(30).
-      *入外区分
-      ***********05  SPA-NYUGAIKBN         PIC X(01).
       *ドクターコード
                  05  SPA-DRCD              PIC X(05).
       *保険組合番号
@@ -227,8 +214,6 @@
                  05  SPA-FTNRATE           PIC 9(03).
       *負担率名称
                  05  SPA-FTNRATEMEI        PIC X(10).
-      *受付時間
-      ***********05  SPA-UKETIME           PIC X(06).
       *受付時間ＩＤ
                  05  SPA-P02-UKEID         PIC 9(05).
       *受付選択番号
@@ -248,8 +233,6 @@
                  05  SPA-RSI-HASSYOYMD3    PIC  X(08).
       *傷病年月日＋３月（労災・自賠責用）
                  05  SPA-RSI-SHOBYOYMD3    PIC  X(08).
-      *主保険ＩＤ
-      ***********05  SPA-HKNID             PIC 9(10).
       *エラーコード
              03  SPA-ERRCD                 PIC X(04).
              03  SPA-ERRMSG                PIC X(80).
@@ -259,6 +242,6 @@
       ****** 03  SPA-WORK                  PIC X(5552).
       ****** 03  SPA-WORK                  PIC X(5550).
       *******03  SPA-WORK                  PIC X(5549).
-             03  SPA-WORK                  PIC X(5547).
+             03  SPA-WORK                  PIC X(5545).
       *----(01.00.02) LINE UPD END   ----------------------------------
       *

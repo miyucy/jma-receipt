@@ -36,6 +36,12 @@
            03  SPA-K02SYS-AREA.
       *前回処方表示フラグ
                05  SPA-ZENSYOHOFLG         PIC  X(01).
+      *院外処方せん発行フラグ
+               05  SPA-SYOHOPRTFLG         PIC  9(01).
+      *処方区分
+               05  SPA-SYOHOKBN            PIC X(01).
+      *請求書発行フラグ
+               05  SPA-SKYPRTFLG           PIC X(01).
       *相互作用チェック期間
                05  SPA-INTERACT-KIKAN      PIC 9(02).
       *外来管理加算チェック

@@ -58,6 +58,7 @@
       *                                     データ収集提出方法区分追加
       *  02.07.00    NACL-竹田　  06/02/16  リダイレクタ不整表示(仮)
       *  02.07.01    NACL-伊藤　  06/02/22  MONFUNC 対応
+      *  02.07.02    NACL-多々納  06/02/24  主科設定情報追加
       *****************************************************************
       *
       *
@@ -149,6 +150,8 @@
       *    排他管理情報
            COPY  "CPSK9800.INC".
       *---- (01.02.08) LINE ADD END   --------------------------------
+      *    主科設定情報
+           COPY  "CPSK2009.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -388,8 +391,8 @@
                    MOVE    SYS-1001-HOSPID     TO  SPA-HOSPID
                    MOVE    SYS-1001-HOSPSBT    TO  SPA-HOSPSBT
                    MOVE    SYS-1001-ROUPAYKBN  TO  SPA-ROUPAYKBN
-                   MOVE    SYS-1001-SYOHOKBN   TO  SPA-SYOHOKBN
-                   MOVE    SYS-1001-SKYPRTFLG  TO  SPA-SKYPRTFLG
+      *************MOVE    SYS-1001-SYOHOKBN   TO  SPA-SYOHOKBN
+      ************ MOVE    SYS-1001-SKYPRTFLG  TO  SPA-SKYPRTFLG
       *            病床数
                    MOVE    SYS-1001-BEDSU      TO  SPA-BEDSU
       *            病床数（一般）
@@ -622,6 +625,42 @@
            END-IF
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+      *    主科設定情報
+           INITIALIZE                      SPA-SYUKA-INFO
+           MOVE    SPACE               TO  SYS-2009-REC
+           INITIALIZE                  SYS-2009-REC
+           MOVE    "2009"              TO  SYS-2009-KANRICD
+           MOVE    "*"                 TO  SYS-2009-KBNCD
+           MOVE    SPA-SYSYMD          TO  SYS-2009-STYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-2009-EDYUKYMD
+           MOVE    SYS-2009-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key10"         TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+               IF      FLG-SYSKANRI        =   ZERO
+                   MOVE    MCPDATA-REC         TO  SYS-2009-REC
+                   MOVE    SYS-2009-SYUKA-KBN  TO  SPA-SYUKA-KBN
+                   MOVE    SYS-2009-SYUKA-NYUIN
+                                               TO  SPA-SYUKA-NYUIN
+                   MOVE    SYS-2009-SYUKA-GAIRAI
+                                               TO  SPA-SYUKA-GAIRAI
+                   MOVE    SYS-2009-SYUKA-MODE TO  SPA-SYUKA-MODE
+                   MOVE    SYS-2009-SYUKA-SELECT
+                                               TO  SPA-SYUKA-SELECT
+               ELSE
+                   MOVE    "0"                 TO  SPA-SYUKA-KBN
+               END-IF
+           ELSE
+               MOVE    "0"                 TO  SPA-SYUKA-KBN
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
       *     リダイレクタ不整チェック追加

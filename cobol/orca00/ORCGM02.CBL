@@ -119,6 +119,8 @@
            COPY  "CPSK1010.INC".
       *    医療機関情報
            COPY  "CPSK1001.INC".
+      *    主科設定情報
+           COPY  "CPSK2009.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -240,6 +242,7 @@
            IF      LINKAREA        NOT =   SPACE
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
                PERFORM 320-SYS-1010-SPASET-SEC
+               PERFORM 321-SYS-2009-SPASET-SEC
            END-IF
       *
            PERFORM 310-SPASET-SEC
@@ -355,6 +358,50 @@
       *****MOVE    SYS-1010-REC         TO  SPA-WORK   
            .
        320-SYS-1010-SPASET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    スパ初期編集処理
+      *****************************************************************
+       321-SYS-2009-SPASET-SEC           SECTION.
+      *
+      *    主科設定情報
+           INITIALIZE                      SPA-SYUKA-INFO
+           MOVE    SPACE               TO  SYS-2009-REC
+           INITIALIZE                  SYS-2009-REC
+           MOVE    "2009"              TO  SYS-2009-KANRICD
+           MOVE    "*"                 TO  SYS-2009-KBNCD
+           MOVE    SPA-SYSYMD          TO  SYS-2009-STYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-2009-EDYUKYMD
+           MOVE    SYS-2009-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key10"         TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+               IF      FLG-SYSKANRI        =   ZERO
+                   MOVE    MCPDATA-REC         TO  SYS-2009-REC
+                   MOVE    SYS-2009-SYUKA-KBN  TO  SPA-SYUKA-KBN
+                   MOVE    SYS-2009-SYUKA-NYUIN
+                                               TO  SPA-SYUKA-NYUIN
+                   MOVE    SYS-2009-SYUKA-GAIRAI
+                                               TO  SPA-SYUKA-GAIRAI
+                   MOVE    SYS-2009-SYUKA-MODE TO  SPA-SYUKA-MODE
+                   MOVE    SYS-2009-SYUKA-SELECT
+                                               TO  SPA-SYUKA-SELECT
+               ELSE
+                   MOVE    "0"                 TO  SPA-SYUKA-KBN
+               END-IF
+           ELSE
+               MOVE    "0"                 TO  SPA-SYUKA-KBN
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       321-SYS-2009-SPASET-EXT.
            EXIT.
       *
       *****************************************************************
