@@ -5511,6 +5511,7 @@
       *    保険組合せ公費単独チェック
            IF     (SPA-NAI-KOHONLY     =   ZERO ) AND
                   (SPA-TAGU-FLG        =   ZERO )
+              AND (SPA-NAI-KOHONLY-CHKFLG  =   "1"  )
                PERFORM 4901-KOHONLY-CHK-SEC
            END-IF
       *

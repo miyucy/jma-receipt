@@ -823,6 +823,9 @@
       *        二重登録疑いチェック区分
                MOVE    SYS-1017-JYUFUKU-CHKKBN TO
                                                SPA-NAI-JYUFUKU-CHKKBN
+      *        地方公費単独チェック
+               MOVE    SYS-1017-KOHONLY-CHKFLG TO
+                                               SPA-NAI-KOHONLY-CHKFLG
            ELSE
       *        未登録の時、ゼロとする
                MOVE    ZERO                    TO  SPA-NAI-JINMEI-USE
@@ -834,6 +837,10 @@
            END-IF
            IF      SPA-NAI-JYUFUKU-CHKKBN  =   SPACE
                MOVE    ZERO                TO  SPA-NAI-JYUFUKU-CHKKBN
+           END-IF
+      *    地方公費単独チェックはチェックするを初期とする
+           IF      SPA-NAI-KOHONLY-CHKFLG  =   SPACE
+               MOVE    "1"                 TO  SPA-NAI-KOHONLY-CHKFLG
            END-IF
       *
            .
