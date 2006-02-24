@@ -1082,3 +1082,29 @@ path	key45 	{
 	};
 };
 
+path	key46	{
+	DBSELECT	{
+		DECLARE tbl_sryacct_key46_csr CURSOR FOR
+		SELECT A.*
+		FROM tbl_sryacct A,tbl_sryact B
+			WHERE   A.HOSPID    =   :HOSPID
+			AND   A.PTID        =   :PTID
+			AND   A.SRYYM       >=  :STSRYYM
+			AND   A.SRYYM       <=  :EDSRYYM
+			AND   A.ZAIKAISU    >   0
+                        AND   A.HOSPID    = B.HOSPID
+                        AND   A.NYUGAIKBN = B.NYUGAIKBN
+                        AND   A.PTID      = B.PTID
+                        AND   A.SRYYM     = B.SRYYM
+                        AND   A.ZAINUM    = B.ZAINUM
+		        AND  ((SRYCD1 LIKE '6%' )
+			   OR (SRYCD2 LIKE '6%' )
+			   OR (SRYCD3 LIKE '6%' )
+			   OR (SRYCD4 LIKE '6%' )
+			   OR (SRYCD5 LIKE '6%' ))
+			ORDER  BY   A.SRYYM DESC,
+                                    A.ZAINUM
+		;
+	};
+};
+
