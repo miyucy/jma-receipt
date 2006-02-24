@@ -67,6 +67,8 @@
            03  SPA-NAI-DOUMEI-CHKFLG      PIC X(01).
       *    二重登録疑いチェック区分
            03  SPA-NAI-JYUFUKU-CHKKBN     PIC X(01).
+      *    地方公費単独チェック
+           03  SPA-NAI-KOHONLY-CHKFLG     PIC X(01).
       *
       *    更新時警告あり
            03  SPA-KEI-FLG                PIC 9(01).

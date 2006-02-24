@@ -211,6 +211,12 @@
                     06  W07-JYUFUKU-CHKKBN-COUNT   PIC S9(9)   BINARY.
                     06  W07-JYUFUKU-CHKKBN-ITEM
                             PIC X(60)   OCCURS  5 TIMES.
+                  05  W07-KOHONLY-CHKFLG-COMBO.
+                    06  W07-KOHONLY-CHKFLG.
+                      07  W07-VALUE   PIC X(28).
+                    06  W07-KOHONLY-CHKFLG-COUNT   PIC S9(9)   BINARY.
+                    06  W07-KOHONLY-CHKFLG-ITEM
+                            PIC X(28)   OCCURS  2 TIMES.
                 04  W07-TAGNAME2.
                   05  W07-TAGNAME2-STATE   PIC S9(9)   BINARY.
                 04  W07-TAG3.
