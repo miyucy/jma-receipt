@@ -174,8 +174,8 @@
                IF     (UKE-UKEID           >   ZERO  )   AND
                       (UKE-KAIKEITIME      =   ZERO  )   AND
                       (UKE-SRYKA           =   LNK-SRYKA )
-                   IF      (LNK-HKNCOMBI       =   SPACE )  OR
-                          ((LNK-HKNCOMBI   NOT =   SPACE )  AND
+                   IF      (LNK-HKNCOMBI       =   "@@@@")  OR
+                          ((LNK-HKNCOMBI   NOT =   "@@@@")  AND
                            (LNK-HKNCOMBI       =   UKE-HKNCOMBI))
       *                Á÷¿®´°Î»
                        MOVE    1                   TO  FLG-OK
