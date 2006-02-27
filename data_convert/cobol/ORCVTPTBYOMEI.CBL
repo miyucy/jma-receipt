@@ -792,6 +792,9 @@
       *    ４：病名
            WHEN    4
                PERFORM 2410-BYOMEI-SET-SEC
+      *    １３：疑いフラグ
+           WHEN    13
+               PERFORM 2410-UTAGAIFLG-SET-SEC
       *    １４：主病名フラグ
            WHEN    14
                PERFORM 2410-SYUBYOFLG-SET-SEC
@@ -1022,6 +1025,36 @@
       *
            .
        2410-BYOMEI-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    項目１３：疑いフラグ　処理
+      *****************************************************************
+       2410-UTAGAIFLG-SET-SEC      SECTION.
+      *
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-UTAGAIFLG-SET-EXT
+           END-IF
+      *
+           IF      WRK-MO-CNT      NOT =   1
+               MOVE    2               TO  FLG-ERR
+               GO  TO  2410-UTAGAIFLG-SET-EXT
+           END-IF
+      *
+      *    疑いフラグセット
+           EVALUATE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+           WHEN    "0"
+               CONTINUE
+           WHEN    "1"
+               MOVE    "1"             TO  WKPTBYO-UTAGAIFLG
+           WHEN    "2"
+               MOVE    "2"             TO  WKPTBYO-UTAGAIFLG
+           WHEN    OTHER
+               MOVE    3               TO  FLG-ERR
+           END-EVALUATE
+      *
+           .
+       2410-UTAGAIFLG-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1321,6 +1354,8 @@
            MOVE    SPACE           TO  ORCSBYOMEIAREA
            INITIALIZE                  ORCSBYOMEIAREA
            MOVE    "1"             TO  LNK-BYO-SYORI
+           MOVE    WKPTBYO-UTAGAIFLG
+                                   TO  LNK-BYO-UTAGAIFLG
            MOVE    WKPTBYO-SYUBYOFLG
                                    TO  LNK-BYO-SYUBYOFLG
            MOVE    WKPTBYO-BYOMEI  TO  LNK-BYO-BYOMEI
@@ -1628,6 +1663,9 @@
       *    ４：病名
            WHEN    4
                MOVE    "病名    :"       TO  ERR1-KOMOKU(IDE)
+      *    １３：疑いフラグ
+           WHEN    13
+               MOVE    "疑い区分:"       TO  ERR1-KOMOKU(IDE)
       *    １４：主病名フラグ
            WHEN    14
                MOVE    "主病区分:"       TO  ERR1-KOMOKU(IDE)
