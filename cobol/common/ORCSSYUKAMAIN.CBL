@@ -117,7 +117,7 @@
            INITIALIZE                  WRK-AREA
       *
            MOVE    ZERO            TO  LNK-SYUACC-RC
-           INITIALIZE                  LNK-SYUACC-IO
+      *****INITIALIZE                  LNK-SYUACC-IO
       *
       *    入力項目チェック
            IF      SPA-SYUKA-KBN   =   ZERO
