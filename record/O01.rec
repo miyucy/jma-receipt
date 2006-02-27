@@ -4,11 +4,29 @@ O01	{
 			label	varchar(10);
 			state	int;
 		};
+		B13	{
+			state	int;
+		};
+		LBLSRYYM	{
+			value	varchar(10);
+		};
+		LBLDENPPRTYMD	{
+			value	varchar(10);
+		};
+		CMB_PRTKBN	{
+			PRTKBN	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[05];
+		};
 		SRYYM	{
 			value	varchar(7);
+			state	int;
 		};
 		DENPPRTYMD	{
 			value	varchar(10);
+			state	int;
 		};
 		IKKATU	{
 			value	bool;

@@ -136,7 +136,13 @@
 	<key>GDK_F5</key>
 	<signal>clicked</signal>
       </accelerator>
-      <label></label>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Fri, 10 Feb 2006 00:47:15 GMT</last_modification_time>
+      </signal>
+      <label>ºÆ°õºþ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -182,7 +188,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 15 Apr 2002 00:32:21 GMT</last_modification_time>
       </signal>
-      <label></label>
+      <label>°õºþ¶èÊ¬</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -572,15 +578,6 @@
 
     <widget>
       <class>GtkHSeparator</class>
-      <name>hseparator3</name>
-      <x>10</x>
-      <y>420</y>
-      <width>1000</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
       <name>hseparator2</name>
       <x>176</x>
       <y>370</y>
@@ -604,22 +601,6 @@
       <y>200</y>
       <width>1</width>
       <height>170</height>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label01</name>
-      <x>264</x>
-      <y>104</y>
-      <width>72</width>
-      <height>24</height>
-      <label>ÀÁµáÇ¯·î</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
     </widget>
 
     <widget>
@@ -651,13 +632,103 @@
     </widget>
 
     <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator3</name>
+      <x>10</x>
+      <y>420</y>
+      <width>1000</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator4</name>
+      <x>10</x>
+      <y>64</y>
+      <width>1000</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
       <class>GtkLabel</class>
-      <name>label2</name>
+      <name>label3</name>
+      <x>130</x>
+      <y>30</y>
+      <width>60</width>
+      <height>23</height>
+      <label>°õºþ¶èÊ¬</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkPandaCombo</class>
+      <name>CMB_PRTKBN</name>
+      <x>195</x>
+      <y>30</y>
+      <width>175</width>
+      <height>24</height>
+      <value_in_list>False</value_in_list>
+      <ok_if_empty>True</ok_if_empty>
+      <case_sensitive>False</case_sensitive>
+      <use_arrows>True</use_arrows>
+      <use_arrows_always>False</use_arrows_always>
+      <items></items>
+
+      <widget>
+	<class>GtkPandaEntry</class>
+	<child_name>GtkPandaCombo:entry</child_name>
+	<name>PRTKBN</name>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>activate</name>
+	  <handler>send_event</handler>
+	  <data>ACTIVATE</data>
+	  <last_modification_time>Wed, 08 Feb 2006 07:34:43 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>changed</name>
+	  <handler>entry_changed</handler>
+	  <data>CHANGED</data>
+	  <last_modification_time>Wed, 08 Feb 2006 07:35:08 GMT</last_modification_time>
+	</signal>
+	<editable>True</editable>
+	<text_visible>True</text_visible>
+	<text_max_length>20</text_max_length>
+	<text></text>
+	<input_mode>XIM</input_mode>
+	<xim_enabled>False</xim_enabled>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLDENPPRTYMD</name>
       <x>264</x>
       <y>144</y>
       <width>76</width>
       <height>24</height>
       <label>ÅÁÉ¼È¯¹ÔÆü</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLSRYYM</name>
+      <x>264</x>
+      <y>104</y>
+      <width>72</width>
+      <height>24</height>
+      <label>ÀÁµáÇ¯·î</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>

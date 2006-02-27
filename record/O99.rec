@@ -20,6 +20,7 @@ O99	{
 		};
 		B12	{
 	           	state	int;
+			label	varchar(14);
 		};
 		PROGRESSBAR	{
 	           	value	int;

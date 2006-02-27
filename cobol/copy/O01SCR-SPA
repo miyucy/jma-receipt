@@ -38,12 +38,12 @@
                    07  SPA-GMN-O03-SKYPRTKBN-G.
                        09  SPA-GMN-O03-SKYPRTKBN       PIC X(01).
                        09  SPA-GMN-O03-F1              PIC X(01).
-                       09  SPA-GMN-O03-SKYPRTKBNMEI
-                                                   PIC X(28).
+                       09  SPA-GMN-O03-SKYPRTKBNMEI    PIC X(28).
                    07  SPA-GMN-O03-PRTJYUN-G.
                        09  SPA-GMN-O03-PRTJYUN         PIC X(02).
                        09  SPA-GMN-O03-F1              PIC X(01).
                        09  SPA-GMN-O03-PRTJYUNMEI      PIC X(22).
+                   07  SPA-GMN-O03-CHKTAIIN            PIC X(01).
                    07  SPA-GMN-O03-SKYPRTKBNLST-G.
                        09  SPA-GMN-O03-SKYPRTKBN-MAX   PIC 9(05).
                        09  SPA-GMN-O03-SKYPRTKBNLST    OCCURS  5.
@@ -51,34 +51,31 @@
                            11  SPA-GMN-O03-F1L         PIC X(01).
                            11  SPA-GMN-O03-SKYPRTKBNMEIL
                                                    PIC X(28).
-                   07  SPA-GMN-O03-PRTJYUNLST          OCCURS  5.
-                       09  SPA-GMN-O03-PRTJYUNL        PIC X(02).
-                       09  SPA-GMN-O03-F1L             PIC X(01).
-                       09  SPA-GMN-O03-PRTJYUNMEIL     PIC X(22).
+                   07  SPA-GMN-O03-PRTJYUNLST-G.
+                       09  SPA-GMN-O03-PRTJYUN-MAX     PIC 9(05).
+                       09  SPA-GMN-O03-PRTJYUNLST      OCCURS 10.
+                           11  SPA-GMN-O03-PRTJYUNL    PIC X(02).
+                           11  SPA-GMN-O03-F1L         PIC X(01).
+                           11  SPA-GMN-O03-PRTJYUNMEIL PIC X(22).
                    07  SPA-GMN-O03-TBL.
-                       09  SPA-GMN-O03-TBL-OCC         OCCURS   2.
-                           11  SPA-GMN-O03-TBL-G       OCCURS   36.
-                               13  SPA-GMN-O03-TCHK.
-                                   15  SPA-GMN-O03-TCHK-VALUE
-                                                   PIC X(01).
-                                   15  SPA-GMN-O03-TCHK-STYLE
-                                                   PIC X(20).
-                   07  SPA-GMN-O03-TBL1.
-                       09  SPA-GMN-O03-TBL-OCC         OCCURS   2.
-                           11  SPA-GMN-O03-TBL-G       OCCURS   36.
+                       09  SPA-GMN-O03-TBL-PAGE-MAX    PIC 9(03).
+                       09  SPA-GMN-O03-TBL-OCC         OCCURS   50.
+                           11  SPA-GMN-O03-TBL-G       OCCURS   30.
+                               13  SPA-GMN-O03-TCHK    PIC X(01).
                                13  SPA-GMN-O03-TPAGE   PIC 9(04).
                                13  SPA-GMN-O03-TKENSU  PIC 9(04).
                                13  SPA-GMN-O03-TSYURUINAME
-                                                   PIC X(20).
+                                                       PIC X(20).
       *
                05  SPA-NAI-O03-AREA.
+                   07  SPA-NAI-O03-SRYYM               PIC X(06).
                    07  SPA-NAI-O03-TBL.
-                       09  SPA-NAI-O03-TBL-OCC         OCCURS  2.
-                           11  SPA-NAI-O03-TBL-G       OCCURS  36.
-                               13  SPA-NAI-O03-PRTJYUNI
-                                                   PIC X(02).
+                       09  SPA-NAI-O03-TBL-OCC         OCCURS  50.
+                           11  SPA-NAI-O03-TBL-G       OCCURS  30.
                                13  SPA-NAI-O03-BTUNUM
-                                                   PIC X(02).
+                                                       PIC X(02).
+                               13  SPA-NAI-O03-BRMNUM
+                                                       PIC X(08).
       *
            03  SPA-O04-AREA.
                05  SPA-GMN-O04-PAGE                    PIC 9(02).

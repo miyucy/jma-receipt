@@ -268,10 +268,6 @@
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
-           PERFORM 2001-TEIKIPRT-DEL-SEC
-      *
-           PERFORM 2001-TEIKIKANRI-DEL-SEC
-      *
            PERFORM 2001-TEIKIRRK-DEL-SEC
       *
            PERFORM 900-PTTEIKIRRK-KEY11-SEL-SEC
@@ -283,6 +279,8 @@
                PERFORM 2001-SYUMEI-DEL-SEC
       *
                PERFORM 2001-SYUNOU-DEL-SEC
+      *
+               PERFORM 2001-TEIKIPRT-DEL-SEC
       *
                PERFORM 2001-PTTEIKIRRK-DEL-SEC
       *
@@ -301,40 +299,6 @@
            EXIT.
       *
       *****************************************************************
-      *    Äê´üÀÁµá°õºþºï½ü½èÍý
-      *****************************************************************
-       2001-TEIKIPRT-DEL-SEC           SECTION.
-      *
-           MOVE    SPACE               TO  MCPDATA-REC
-           MOVE    "tbl_teikiprt"      TO  MCP-TABLE
-           MOVE    "del1"              TO  MCP-PATHNAME
-           PERFORM 910-DBDELETE-SEC
-           IF  (   MCP-RC          NOT =   ZERO )
-               MOVE    "0001"          TO  ERR-ERRCD
-               PERFORM 500-ERR-HENSYU-SEC
-           END-IF
-      *
-           .
-       2001-TEIKIPRT-DEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    Äê´üÀÁµá´ÉÍýºï½ü½èÍý
-      *****************************************************************
-       2001-TEIKIKANRI-DEL-SEC         SECTION.
-      *
-           MOVE    SPACE               TO  MCPDATA-REC
-           MOVE    "tbl_teikikanri"    TO  MCP-TABLE
-           MOVE    "del1"              TO  MCP-PATHNAME
-           PERFORM 910-DBDELETE-SEC
-           IF  (   MCP-RC          NOT =   ZERO )
-               MOVE    "0001"          TO  ERR-ERRCD
-               PERFORM 500-ERR-HENSYU-SEC
-           END-IF
-      *
-           .
-       2001-TEIKIKANRI-DEL-EXT.
-           EXIT.
-      *****************************************************************
       *    Äê´üÍúÎòºï½ü½èÍý
       *****************************************************************
        2001-TEIKIRRK-DEL-SEC           SECTION.
@@ -347,7 +311,6 @@
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBDELETE-SEC
            IF  (   MCP-RC          NOT =   ZERO )
-               MOVE    ERR-MSG07       TO  ERR-ERRMSG
                MOVE    "0007"          TO  ERR-ERRCD
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -371,7 +334,6 @@
            PERFORM 910-DBDELETE-SEC
            IF  (   MCP-RC          NOT =   ZERO )
                MOVE    PTTEIKIRRK-PTID TO  ERR-PTID
-               MOVE    ERR-MSG03       TO  ERR-ERRMSG
                MOVE    "0003"          TO  ERR-ERRCD
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -395,7 +357,6 @@
            PERFORM 910-DBDELETE-SEC
            IF  (   MCP-RC          NOT =   ZERO )
                MOVE    PTTEIKIRRK-PTID TO  ERR-PTID
-               MOVE    ERR-MSG04       TO  ERR-ERRMSG
                MOVE    "0004"          TO  ERR-ERRCD
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -419,13 +380,33 @@
            PERFORM 910-DBDELETE-SEC
            IF  (   MCP-RC          NOT =   ZERO )
                MOVE    PTTEIKIRRK-PTID TO  ERR-PTID
-               MOVE    ERR-MSG05       TO  ERR-ERRMSG
                MOVE    "0005"          TO  ERR-ERRCD
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
       *
            .
        2001-SYUNOU-DEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    Äê´üÀÁµá°õºþºï½ü½èÍý
+      *****************************************************************
+       2001-TEIKIPRT-DEL-SEC           SECTION.
+      *
+           INITIALIZE                      TEIKIPRT-REC
+           MOVE    PTTEIKIRRK-DENPNUM  TO  TEIKIPRT-DENPNUM
+           MOVE    PTTEIKIRRK-PTID     TO  TEIKIPRT-PTID
+           MOVE    TEIKIPRT-REC        TO  MCPDATA-REC
+           MOVE    "tbl_teikiprt"      TO  MCP-TABLE
+           MOVE    "del2"              TO  MCP-PATHNAME
+           PERFORM 910-DBDELETE-SEC
+           IF  (   MCP-RC          NOT =   ZERO )
+               MOVE    PTTEIKIRRK-PTID TO  ERR-PTID
+               MOVE    "0001"          TO  ERR-ERRCD
+               PERFORM 500-ERR-HENSYU-SEC
+           END-IF
+      *
+           .
+       2001-TEIKIPRT-DEL-EXT.
            EXIT.
       *****************************************************************
       *    ´µ¼ÔÄê´üÀÁµáÍúÎòºï½ü½èÍý
@@ -438,7 +419,6 @@
            PERFORM 910-DBDELETE-SEC
            IF  (   MCP-RC          NOT =   ZERO )
                MOVE    PTTEIKIRRK-PTID TO  ERR-PTID
-               MOVE    ERR-MSG06       TO  ERR-ERRMSG
                MOVE    "0006"          TO  ERR-ERRCD
                PERFORM 500-ERR-HENSYU-SEC
            END-IF

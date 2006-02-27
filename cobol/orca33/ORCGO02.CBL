@@ -395,6 +395,7 @@
            COPY    "OERR.INC".
            COPY    "OID1.INC".
            COPY    "OID2.INC".
+           COPY    "OID3.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -2240,7 +2241,8 @@
       *
       *    画面移行用のパラメタ変更
       *
-           MOVE    SPA-NAI-TSRYYM (1)  TO  SPA-O01-SRYYM
+      *    MOVE    SPA-NAI-TSRYYM (1)  TO  SPA-O01-SRYYM
+           MOVE    "1"                 TO  SPA-O01-PRTKBN
       *
            MOVE    SPA-O01KYOUTU       TO  SPA-WORK
       * 

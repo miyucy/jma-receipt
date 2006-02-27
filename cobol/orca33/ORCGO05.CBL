@@ -229,6 +229,7 @@
            COPY    "OERR.INC".
            COPY    "OID1.INC".
            COPY    "OID2.INC".
+           COPY    "OID3.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA

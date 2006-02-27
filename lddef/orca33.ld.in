@@ -13,6 +13,7 @@ bind	"O99"		"OpenCOBOL"	"ORCGO99";
 bind	"OERR"		"OpenCOBOL"	"ORCGOERR";
 bind	"OID1"		"OpenCOBOL"	"ORCGOID1";
 bind	"OID2"		"OpenCOBOL"	"ORCGOID2";
+bind	"OID3"		"OpenCOBOL"	"ORCGOID3";
 
 multiplex_group	orca33;
 
@@ -30,6 +31,7 @@ data	{
 		OERR;
 		OID1;
 		OID2;
+		OID3;
 	};
 };
 

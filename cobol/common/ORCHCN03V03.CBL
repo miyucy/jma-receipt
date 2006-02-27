@@ -28,6 +28,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  02.08.00    NACL-太田    06.02.15  再印刷、プレビュー対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -47,6 +48,8 @@
       *    印刷用データ
        FD  PRT-FILE.
        01  PRT-REC.
+           03  PRT-SRYYMD              PIC X(08).
+           03  PRT-PTID                PIC 9(10).
            03  PRT-PRTID               PIC X(30).
            03  PRT-PRTNM               PIC X(20).
            03  PRT-SITEKBN             PIC X(01).
@@ -817,6 +820,8 @@
       *
       *    印刷用データ出力
            MOVE    SPACE               TO  PRT-REC
+           MOVE    SYU-SRYYMD          TO  PRT-SRYYMD
+           MOVE    SYU-PTID            TO  PRT-PTID
            MOVE    "HCN03V03.red"      TO  PRT-PRTID
            MOVE    WRK-PRTNM           TO  PRT-PRTNM
            MOVE    "1"                 TO  PRT-SITEKBN
@@ -1259,22 +1264,25 @@
       *
            CLOSE   PRT-FILE
       *
-           MOVE    SPACE           TO  SHELLTBL
+      *    MOVE    SPACE           TO  SHELLTBL
       *    ファイルデイレクトリ位置指定
-           INITIALIZE              ORCSMKPASSAREA
-           MOVE    "scripts/daily/HCALL2.sh"
-                                   TO  MKPASS-IN-01
-           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
-           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+      *    INITIALIZE              ORCSMKPASSAREA
+      *    MOVE    "scripts/daily/HCALL2.sh"
+      *                            TO  MKPASS-IN-01
+      *    CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+      *    MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
       *
-           MOVE    HC01PARA        TO  SHELLTBL-ARG1
-           MOVE    SHELLTBL        TO  MCPDATA-REC
-           MOVE    "SHELL"         TO  MCP-FUNC
-           MOVE    PATH-SHELL-SHELL
-                                   TO  MCP-PATH
-           CALL    "MCPSUB"        USING
-                                       MCPAREA
-                                       MCPDATA-REC
+      *    MOVE    HC01PARA        TO  SHELLTBL-ARG1
+      *    MOVE    SHELLTBL        TO  MCPDATA-REC
+      *    MOVE    "SHELL"         TO  MCP-FUNC
+      *    MOVE    PATH-SHELL-SHELL
+      *                            TO  MCP-PATH
+      *    CALL    "MCPSUB"        USING
+      *                                MCPAREA
+      *                                MCPDATA-REC
+      *
+           CALL    "ORCHCN03S01"   USING   ORCHCN03AREA
+                                           HC01PARA
       *
            .
        300-PRINT-EXT.

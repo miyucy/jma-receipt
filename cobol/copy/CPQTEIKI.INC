@@ -16,28 +16,22 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    患者定期請求一括処理パラメータ
-      *　  COPY  (CPTEIKI1PARA.INC)                              *
+      *    定期請求用クエリ        COPY (CPQTEIKI.INC)           *
       ************************************************************
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
-       01  TEIKI2PARA-AREA.
-           03  TEIKI2P-SYOKBN              PIC X(01).
-           03  TEIKI2P-PRTJYUN             PIC X(02).
-           03  TEIKI2P-SYSYMD              PIC X(08).
-           03  TEIKI2P-TERMID              PIC X(64).
-           03  TEIKI2P-JOBID               PIC 9(07).
-           03  TEIKI2P-SHELLID             PIC X(08).
-           03  TEIKI2P-HOSPID              PIC X(24).
-           03  TEIKI2P-STAFFCD             PIC X(05).
-           03  TEIKI2P-ERRFILE             PIC X(200).
-           03  TEIKI2P-SKYPRT              PIC X(01).
-           03  TEIKI2P-PRTKBN              PIC X(01).
-           03  TEIKI2P-SRYYM               PIC X(06).
-           03  TEIKI2P-KBT-G.
-               05  TEIKI2P-KBT             PIC X(01)
-                                           OCCURS  3.
-           03  TEIKI2P-OID1-FLG            PIC X(02).
-           03  TEIKI2P-SUMKBN              PIC X(01).
+      *01  QTEIKI-REC.
+           03  QTEIKI-SRYYM            PIC X(6).
+           03  QTEIKI-KBT              PIC X(1).
+           03  QTEIKI-BTUNUM           PIC X(2).
+           03  QTEIKI-BRMNUM           PIC X(8).
+           03  QTEIKI-PTID             PIC 9(10).
+           03  QTEIKI-PTNUM            PIC X(20).
+           03  QTEIKI-DENPNUM          PIC 9(07).
+           03  QTEIKI-KANANAME         PIC X(100).
+           03  QTEIKI-KENSU            PIC 9(10).
+           03  QTEIKI-TENNYUYMD        PIC X(08).
+           03  QTEIKI-SELKBT           PIC X(01) OCCURS 3.
+           03  QTEIKI-SELTAIINYMD      PIC X(08) OCCURS 2.

@@ -314,6 +314,7 @@ RECORD_files = \
 	O05.rec \
 	R05.rec \
 	N22.rec \
+	OID3.rec \
 
 DEF_files = \
 	HC01.def \
@@ -483,6 +484,7 @@ DB_files = \
 	tbl_tekioubyomei.db \
 	tbl_yakujyo_temp.db \
         tbl_syuka.db \
+	query_teiki.db \
 
 all:   
 

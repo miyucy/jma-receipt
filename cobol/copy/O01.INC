@@ -20,10 +20,18 @@
       *     02  O01-FIXED17.
               03  O01-B04-LABEL       PIC X(10).
               03  O01-B04-STATE       PIC S9(9)   BINARY.
-              03  O01-SRYYM.
-                04  O01-VALUE   PIC X(7).
-              03  O01-DENPPRTYMD.
-                04  O01-VALUE   PIC X(10).
+              03  O01-B13-STATE       PIC S9(9)   BINARY.
+              03  O01-LBLSRYYM        PIC X(10).
+              03  O01-LBLDENPPRTYMD   PIC X(10).
+              03  O01-CMB-PRTKBN.
+                04  O01-PRTKBN.
+                  05  O01-VALUE       PIC X(20).
+                04  O01-PRTKBN-COUNT  PIC S9(9)   BINARY.
+                04  O01-PRTKBNLST     PIC X(20)   OCCURS  5 TIMES.
+              03  O01-SRYYM           PIC X(7).
+              03  O01-SRYYM-STATE     PIC S9(9)   BINARY.
+              03  O01-DENPPRTYMD          PIC X(10).
+              03  O01-DENPPRTYMD-STATE    PIC S9(9)   BINARY.
               03  O01-IKKATU.
                 04  O01-VALUE   PIC X.
               03  O01-KOBETU.

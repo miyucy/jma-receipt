@@ -17,7 +17,7 @@ path	key		{
 		SELECT *
 		FROM tbl_teikiprt
         WHERE   BTUNUM      =   :BTUNUM
-	AND	DENPNUM     =   :DENPNUM
+		AND	DENPNUM     =   :DENPNUM
 		;
 	};
 };
@@ -75,6 +75,17 @@ path	del1 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_teikiprt
+		;
+	};
+};
+
+
+path	del2 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_teikiprt
+        WHERE   DENPNUM     =   :DENPNUM
+		AND		PTID        =   :PTID
 		;
 	};
 };

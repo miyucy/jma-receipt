@@ -31,6 +31,12 @@
            03  SPA-O01-FILEKBN             PIC  X(01).
       *請求年月
            03  SPA-O01-SRYYM               PIC  9(06).
+      *期別
+           03  SPA-O01-KBT-G.
+               05  SPA-O01-KBT             PIC X(01)
+                                           OCCURS  3.
+      *印刷区分
+           03  SPA-O01-PRTKBN              PIC X(01).
       *伝票発行日
            03  SPA-O01-DENPPRTYMD          PIC  X(08).
       *請求期間チェックボタン
@@ -49,3 +55,4 @@
       *
            03  SPA-O01-MOTOPG              PIC  X(05).
            03  SPA-O99-MSG                 PIC  X(100).
+           03  SPA-O01-TBL-GROUP           PIC  X(14).

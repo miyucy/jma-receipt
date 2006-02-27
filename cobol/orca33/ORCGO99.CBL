@@ -61,7 +61,7 @@
            03  FLG-RUN             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-BTPARA          PIC 9(01).
-           03  FLG-TEIKIKANRI      PIC 9(01).
+           03  FLG-TEIKIPRT      PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -123,9 +123,9 @@
            COPY    "CPSYSKANRI.INC".
            COPY    "CPSK3003.INC".
       *
-      *    定期管理マスタ
-       01  TEIKIKANRI-REC.
-           COPY    "CPTEIKIKANRI.INC".
+      *    定期印刷マスタ
+       01  TEIKIPRT-REC.
+           COPY    "CPTEIKIPRT.INC".
       *
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
@@ -275,6 +275,12 @@
                PERFORM 4901-MUL-KAKUNIN-SEC
            END-EVALUATE
       *
+           IF    ( SPA-MOTOPG      =   "O03" )
+               MOVE    "F12:プレビュー"    TO  O99-B12-LABEL
+           ELSE
+               MOVE    "F12:印　刷"        TO  O99-B12-LABEL
+           END-IF
+      *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE
            MOVE    "O99    "           TO  MCP-WINDOW
       *
@@ -293,6 +299,7 @@
            MOVE    ZERO                TO  O99-COUNT
            MOVE    SPACE               TO  WRK-SHELLID
       *
+           MOVE    ZERO                TO  CNT-UPDCNT
       *    ジョブ管理チェック処理
            MOVE    "CHK"               TO  SJOBKANRI-MODE
       *
@@ -355,13 +362,46 @@
                        END-STRING
                    END-IF                          
                END-IF    
+               MOVE    JOB-UPDCNT              TO  CNT-UPDCNT
                MOVE    IDX                     TO  O99-COUNT    
            END-IF
       *
-           PERFORM 4901-EDIT-SIN-MSG-SEC
+           IF    ( SPA-MOTOPG      =   "O03" )
+               PERFORM 4901-EDIT-PRV-MSG-SEC
+           ELSE
+               PERFORM 4901-EDIT-SIN-MSG-SEC
+           END-IF
       *
            .
        4901-SIN-KAKUNIN-EXT.
+           EXIT.
+      *****************************************************************
+      *    メッセージ編集処理
+      *****************************************************************
+       4901-EDIT-PRV-MSG-SEC           SECTION.
+      *
+           MOVE    WIDGET-INSENSITIVE   TO  O99-B12-STATE
+           IF    ( O99-MSG              =   SPACE )
+               IF      O99-COUNT            >  ZERO    
+                   MOVE    "処理は正常に終了しました"
+                                        TO  O99-MSG
+                   MOVE   100           TO  O99-PROGRESSBAR-VALUE
+                   MOVE    "B01"        TO  MCP-WIDGET
+                   IF    ( SPA-OID1-FLG =   "PV" )
+                    AND  ( CNT-UPDCNT   >   ZERO )
+                       MOVE    WIDGET-NORMAL   TO  O99-B12-STATE
+                   END-IF
+               ELSE
+                   MOVE    "B01"        TO  MCP-WIDGET
+                   MOVE    "該当する処理はありません"
+                                        TO  O99-MSG
+               END-IF
+           ELSE
+               MOVE    "B11"            TO  MCP-WIDGET
+           END-IF
+      *
+           .
+       4901-EDIT-SIN-MSG-EXT.
            EXIT.
       *****************************************************************
       *    メッセージ編集処理
@@ -370,15 +410,15 @@
       *
            MOVE    WIDGET-INSENSITIVE   TO  O99-B12-STATE
            IF      O99-MSG              =   SPACE
-               IF      O99-COUNT            >   ZERO    
+               IF      O99-COUNT            >  ZERO    
                    MOVE    "処理は正常に終了しました"
-                                                TO  O99-MSG
-                   MOVE   100                   TO
-                                                O99-PROGRESSBAR-VALUE
-                   MOVE    "B01"                TO  MCP-WIDGET
+                                               TO  O99-MSG
+                   MOVE   100                  TO
+                                               O99-PROGRESSBAR-VALUE
+                   MOVE    "B01"               TO  MCP-WIDGET
                    IF    ( WRK-SHELLID  =   CONST-SHELLID )
-                       PERFORM 900-TEIKIKANRI-ALL-SEL-SEC
-                       IF    ( FLG-TEIKIKANRI  =   ZERO )
+                       PERFORM 900-TEIKIPRT-ALL-SEL-SEC
+                       IF    ( FLG-TEIKIPRT    =   ZERO )
                            MOVE    WIDGET-NORMAL   TO  O99-B12-STATE
                        END-IF
                    END-IF
@@ -531,8 +571,8 @@
                            MOVE    "B12"           TO  MCP-WIDGET
                            MOVE    "処理は正常に終了しました"
                                                    TO  O99-MSG
-                           PERFORM 900-TEIKIKANRI-ALL-SEL-SEC
-                           IF    ( FLG-TEIKIKANRI  =   ZERO )
+                           PERFORM 900-TEIKIPRT-ALL-SEL-SEC
+                           IF    ( FLG-TEIKIPRT    =   ZERO )
                                MOVE    WIDGET-NORMAL   TO  O99-B12-STATE
                            END-IF
                        ELSE
@@ -571,8 +611,8 @@
                                END-STRING
                                MOVE    O99-MSG         TO  SPA-O99-MSG
                                MOVE    "B12"           TO  MCP-WIDGET
-                               PERFORM 900-TEIKIKANRI-ALL-SEL-SEC
-                               IF    ( FLG-TEIKIKANRI  =   ZERO )
+                               PERFORM 900-TEIKIPRT-ALL-SEL-SEC
+                               IF    ( FLG-TEIKIPRT    =   ZERO )
                                    MOVE    WIDGET-NORMAL
                                                        TO  O99-B12-STATE
                                END-IF
@@ -663,30 +703,30 @@
        900-BTPARA-KEY5-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    定期管理検索処理（ALL）
+      *    定期印刷検索処理（ALL）
       *****************************************************************
-       900-TEIKIKANRI-ALL-SEL-SEC      SECTION.
+       900-TEIKIPRT-ALL-SEL-SEC      SECTION.
       *
-           MOVE    ZERO                TO  FLG-TEIKIKANRI
+           MOVE    ZERO                TO  FLG-TEIKIPRT
       *
-           INITIALIZE                      TEIKIKANRI-REC
-           MOVE    TEIKIKANRI-REC      TO  MCPDATA-REC
-           MOVE    "tbl_teikikanri"    TO  MCP-TABLE
+           INITIALIZE                      TEIKIPRT-REC
+           MOVE    TEIKIPRT-REC        TO  MCPDATA-REC
+           MOVE    "tbl_teikiprt"      TO  MCP-TABLE
            MOVE    "all"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  TEIKIKANRI-REC
+               MOVE    MCPDATA-REC     TO  TEIKIPRT-REC
            ELSE
-               MOVE    1               TO  FLG-TEIKIKANRI
-               INITIALIZE                  TEIKIKANRI-REC
+               MOVE    1               TO  FLG-TEIKIPRT
+               INITIALIZE                  TEIKIPRT-REC
            END-IF
       *
-           MOVE    "tbl_teikikanri"    TO  MCP-TABLE
+           MOVE    "tbl_teikiprt"      TO  MCP-TABLE
            MOVE    "all"               TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
-       900-TEIKIKANRI-ALL-SEL-EXT.
+       900-TEIKIPRT-ALL-SEL-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理
