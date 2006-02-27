@@ -214,44 +214,48 @@
                        PERFORM 2004-ORCSSYUACC-SEC
                END-EVALUATE
            ELSE
-               IF      SPA-SYUKA-MODE  =   "2"
+               IF      LNK-SYUACC-I-KBN    =   "01"    OR  "02"
                    PERFORM 2004-ORCSSYUACC-SEC
                ELSE
-                   EVALUATE    SPA-NYUGAIKBN
-                       WHEN    "1"
-                           EVALUATE    LNK-SYUACC-I-KBN
-                               WHEN    "04"
-                                   PERFORM 2001-ORCSSYUBETU-SEC
-                                   IF      FLG-END         =   1
-                                       GO  TO  200-MAIN-EXT
-                                   END-IF
-                                   PERFORM 2003-ORCHCN33SUB-SEC
-                                   IF      FLG-END         =   1
-                                       GO  TO  200-MAIN-EXT
-                                   END-IF
-                                   PERFORM 2004-ORCSSYUACC-SEC
-                               WHEN    "03"
-                                   PERFORM 2001-ORCSSYUBETU-SEC
-                                   IF      FLG-END         =   1
-                                       GO  TO  200-MAIN-EXT
-                                   END-IF
-                                   PERFORM 2002-ORCSTOTALACCT-SEC
-                                   IF      FLG-END         =   1
-                                       GO  TO  200-MAIN-EXT
-                                   END-IF
-                                   PERFORM 2004-ORCSSYUACC-SEC
-                           END-EVALUATE    
-                       WHEN    "2"
-                           PERFORM 2001-ORCSSYUBETU-SEC
-                           IF      FLG-END         =   1
-                               GO  TO  200-MAIN-EXT
-                           END-IF
-                           PERFORM 2002-ORCSTOTALACCT-SEC
-                           IF      FLG-END         =   1
-                                GO  TO  200-MAIN-EXT
-                           END-IF
-                           PERFORM 2004-ORCSSYUACC-SEC
-                   END-EVALUATE
+                   IF      SPA-SYUKA-MODE  =   "2"
+                       PERFORM 2004-ORCSSYUACC-SEC
+                   ELSE
+                       EVALUATE    SPA-NYUGAIKBN
+                           WHEN    "1"
+                               EVALUATE    LNK-SYUACC-I-KBN
+                                   WHEN    "04"
+                                       PERFORM 2001-ORCSSYUBETU-SEC
+                                       IF      FLG-END         =   1
+                                           GO  TO  200-MAIN-EXT
+                                       END-IF
+                                       PERFORM 2003-ORCHCN33SUB-SEC
+                                       IF      FLG-END         =   1
+                                           GO  TO  200-MAIN-EXT
+                                       END-IF
+                                       PERFORM 2004-ORCSSYUACC-SEC
+                                   WHEN    "03"
+                                       PERFORM 2001-ORCSSYUBETU-SEC
+                                       IF      FLG-END         =   1
+                                           GO  TO  200-MAIN-EXT
+                                       END-IF
+                                       PERFORM 2002-ORCSTOTALACCT-SEC
+                                       IF      FLG-END         =   1
+                                           GO  TO  200-MAIN-EXT
+                                       END-IF
+                                       PERFORM 2004-ORCSSYUACC-SEC
+                               END-EVALUATE    
+                           WHEN    "2"
+                               PERFORM 2001-ORCSSYUBETU-SEC
+                               IF      FLG-END         =   1
+                                   GO  TO  200-MAIN-EXT
+                               END-IF
+                               PERFORM 2002-ORCSTOTALACCT-SEC
+                               IF      FLG-END         =   1
+                                    GO  TO  200-MAIN-EXT
+                               END-IF
+                               PERFORM 2004-ORCSSYUACC-SEC
+                       END-EVALUATE
+                   END-IF
                END-IF
            END-IF    
       *
