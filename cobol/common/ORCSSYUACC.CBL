@@ -183,7 +183,7 @@
       *
            PERFORM                 UNTIL   FLG-SYUKA   =   1
                IF      SYUKA-RECESYUBETU   =   "XXXX" 
-                   MOVE    SYUKA-SRYKA     TO  LNK-SYUACC-IO-H-SRYKA
+                   MOVE    SYUKA-SRYKA-INPUT   TO  LNK-SYUACC-IO-H-SRYKA
                ELSE
                    PERFORM VARYING IDX     FROM    1   BY  1
                            UNTIL   IDX >   100
