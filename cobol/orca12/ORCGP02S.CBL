@@ -247,6 +247,9 @@
                        CONTINUE
                    ELSE
                        PERFORM 4902-KOUSIN-SYORI-SEC
+                       IF      SPA-ERRCD       NOT =   SPACE
+                           PERFORM 510-ERRSET-SEC
+                       END-IF
                    END-IF
                    MOVE    SPACE           TO  SPA-PIDCD
                WHEN    OTHER
@@ -420,6 +423,7 @@
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
       *        Ã·§Î
                WHEN    "CLICKED"       ALSO    "B01"
+                   MOVE    SPACE               TO  MCP-PUTTYPE
                    PERFORM 210-BACK
       *        ≥ŒƒÍ
                WHEN    "CLICKED"       ALSO    "B12"
@@ -582,6 +586,7 @@
            MOVE    SPA-P02S-NAI-SRYYM   TO  SPA-NAI-SYUKAYM
            MOVE    SPA-P02S-GMN-SRYYM   TO  SPA-NAI-SYUKAYMG
       *
+           MOVE    SPACE               TO  MCP-PUTTYPE
            PERFORM 210-BACK
            .
        4901-SINKI-SYORI-EXT.
@@ -735,7 +740,7 @@
       *
            MOVE    SPACE               TO  LNK-KYOUTU
       *
-           MOVE    "JOIN"              TO  MCP-PUTTYPE.
+           MOVE    "JOIN"              TO  MCP-PUTTYPE
            MOVE    "P02"               TO  MCP-WINDOW.
       *
            PERFORM 900-PUT-WINDOW
