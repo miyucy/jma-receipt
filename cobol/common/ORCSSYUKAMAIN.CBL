@@ -175,6 +175,14 @@
                                IF      FLG-END         =   1
                                    GO  TO  200-MAIN-EXT
                                END-IF
+                               PERFORM VARYING IDY FROM    1   BY  1
+                                       UNTIL   IDY >       100
+                                       OR      LNK-SYUBETU-TEISYUTUSAKI
+                                                              (IDY)
+                                                   =   ZERO
+                                   INITIALIZE  LNK-SYUACC-IO-SYUKA-AREA
+                                                                  (IDY)
+                               END-PERFORM
                                PERFORM 2003-ORCHCN33SUB-SEC
                                IF      FLG-END         =   1
                                    GO  TO  200-MAIN-EXT
