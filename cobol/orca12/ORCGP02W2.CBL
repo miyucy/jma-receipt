@@ -48,6 +48,8 @@
       *  02.00.09    NACL-¾®Æ¦Âô  05/10/25  ¸øÈñÅ¬ÍÑ´ü´Ö£±ÆüÂÐ±þ
       *  02.00.10    NACL-¾®Æ¦Âô  05/10/26  ¸øÈñÅ¬ÍÑ´ü´Ö£±ÆüÂÐ±þ¡ÊÀ¸³èÊÝ¸î¡Ë
       *  02.00.11    NACL-Â¿¡¹Ç¼  05/11/14  MONFUNC ÂÐ±þÂ¾
+      *  02.00.12    NACL-ÌçÏÆ    06/02/24  053»ùÆ¸ÊÝ¸î¡¢019¸¶Çú¤Ë´Ø¤¹¤ë
+      *                                     ÁÈ¹ç¤»ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1311,11 +1313,12 @@
       *         IF  ( WRK-COMB-SYUKOHIDX    NOT =   IDZ  )      AND
       *             ( WRK-KOH-SAKJOKBN  (IDZ)   =   SPACE)      AND
       *             ( WRK-KOH-SBT       (IDZ)   =   "7")        AND
-               IF  ( WRK-COMB-SYUKOHIDX    NOT =   IDZ  )      AND
-                   ( WRK-KOH-SAKJOKBN  (IDZ)   =   SPACE)      AND
-                   ( WRK-KOH-SBT       (IDZ)   =   "7" OR "A") AND
+               IF  ( WRK-COMB-SYUKOHIDX    NOT =   IDZ        ) AND
+                   ( WRK-KOH-SAKJOKBN  (IDZ)   =   SPACE      ) AND
+                   ( WRK-KOH-SBT       (IDZ)   =   "7" OR "A" ) AND
       *----(01.00.04) LINE MOD END   -------------------------------
-                   ( WRK-KOH-HKNKOHKBN (IDZ)   =   "2" OR "3")
+                   ((WRK-KOH-HKNKOHKBN (IDZ)   =   "2" OR "3") OR
+                    (WRK-KOH-HKNNUM(IDZ)   =  "019" OR "053" ))
       ****         ( WRK-KOH-HKNKOHKBN (IDZ)   =   "2" OR "3") AND
       ****         ((WRK-KOH-GENHKNNUM1(IDZ)   =   SPACE)  OR
       ****          (WRK-KOH-GENHKNNUM1(IDZ)
@@ -3455,7 +3458,15 @@
                                        =   WRK-SRT-HJO-KOHNO)  OR
                         (WRK-KOH-GENHKNNUM3(WRK-COMB-HJOIDX)
                                        =   WRK-SRT-HJO-KOHNO)
+                       IF  WRK-KOH-HKNNUM(WRK-COMB-HJOIDX) =
+                               "019" OR "053"
+                         IF  WRK-SRT-HJO-KOHNO             =
+                               "010" OR "021" OR "015" OR "016"
+                            PERFORM 5701413-SYUKOH-HJO-SEC
+                         END-IF
+                       ELSE
                           PERFORM 5701413-SYUKOH-HJO-SEC
+                       END-IF
                      END-IF
                    END-IF
                  END-PERFORM
@@ -3523,10 +3534,59 @@
                END-IF
       *
              WHEN    "2"
+      ***>     ADD     1                 TO  WRK-RCOMB-MAX
+      ***>     MOVE    WRK-KCOMB-REC (IDX2)
+      ***>                               TO  WRK-RCOMB-REC
+      ***>                                         (WRK-RCOMB-MAX)
+      *
+      *        ¸øÈñÉ½Ãæ¤è¤êÊä½õ¸øÈñ¤ò¸¡º÷¤·Å¬ÍÑ³«»ÏÆü½ç¤Ë
+      *                                   ¥¤¥ó¥Ç¥Ã¥¯¥¹¼èÆÀ
+               MOVE    WRK-KCOMB-TEKSTYMD (IDX2)
+                                           TO  WRK-SRT-STYMD
+               MOVE    WRK-KCOMB-TEKEDYMD (IDX2)
+                                           TO  WRK-SRT-EDYMD
+               IF  WRK-KCOMB-KOH1-HKNKOHSBTKBN (IDX2)  =   "3"
+                   MOVE    WRK-KCOMB-KOH2HKNNUM (IDX2)
+                                           TO  WRK-SRT-HJO-KOHNO
+               ELSE
+                   MOVE    WRK-KCOMB-KOH1HKNNUM (IDX2)
+                                           TO  WRK-SRT-HJO-KOHNO
+               END-IF
+               PERFORM 5701412-HJOIDX-SORT-SEC
+               IF  WRK-SRT-HJO-CNT     >   ZERO
                  ADD     1                 TO  WRK-RCOMB-MAX
                  MOVE    WRK-KCOMB-REC (IDX2)
                                            TO  WRK-RCOMB-REC
                                                      (WRK-RCOMB-MAX)
+      *          Êä½õ¸øÈñ¤ò¸¡º÷
+                 PERFORM     VARYING   IDZ   FROM  1   BY  1
+                             UNTIL     IDZ   >     WRK-SRT-HJO-CNT
+                   MOVE    WRK-SRT-HJO-IDX (IDZ)
+                                             TO  WRK-COMB-HJOIDX
+                   IF   WRK-KOH-HKNNUM(WRK-COMB-HJOIDX)(1:2) = "99"
+                     IF   WRK-SRT-HJO-KOHNO(1:2) = "99"
+                       CONTINUE
+                     ELSE
+                       IF (WRK-KOH-GENHKNNUM1(WRK-COMB-HJOIDX)
+                                         =               SPACE)  OR
+                          (WRK-KOH-GENHKNNUM1(WRK-COMB-HJOIDX)
+                                         =   WRK-SRT-HJO-KOHNO)  OR
+                          (WRK-KOH-GENHKNNUM2(WRK-COMB-HJOIDX)
+                                         =   WRK-SRT-HJO-KOHNO)  OR
+                          (WRK-KOH-GENHKNNUM3(WRK-COMB-HJOIDX)
+                                         =   WRK-SRT-HJO-KOHNO)
+                            PERFORM 5701413-SYUKOH-HJO-SEC
+                       END-IF
+                     END-IF
+                   END-IF
+                 END-PERFORM
+               ELSE
+                 ADD     1                 TO  WRK-RCOMB-MAX
+                 MOVE    WRK-KCOMB-REC (IDX2)
+                                           TO  WRK-RCOMB-REC
+                                                     (WRK-RCOMB-MAX)
+               END-IF
+      *
              END-EVALUATE
            END-PERFORM
       *
