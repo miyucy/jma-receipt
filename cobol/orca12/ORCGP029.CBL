@@ -39,6 +39,7 @@
       *  02.00.03    NACL-多々納  03/04/22  保険組合変更時メッセージ追加
       *  02.00.04    NACL-多々納  03/06/27  カスタマイズ帳票名取得サブ追加
       *  02.00.05    NACL-多々納  05/11/11  MONFUNC 対応 他
+      *  02.00.06    NACL-多々納  06/02/27  主科対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -279,6 +280,8 @@
       *
       *    レセプト作成管理マスタ更新サブ
            COPY    "CPORCSRECEUPD.INC".
+      *    主情報アクセス用パラメタ
+           COPY    "CPORCSSYUACC.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -429,6 +432,12 @@
       *    レセプト作成管理マスタ更新
            IF      SPA-ERRCD           =   SPACE
                PERFORM 2009-RECEUPD-UPDATE-SEC
+           END-IF
+      *    主科情報設定
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-P02-SYORI       =   1     )  AND
+                  (SPA-NAI-SYUKAYM NOT =   SPACE )
+               PERFORM 2110-SYUKA-INSERT-SEC
            END-IF
       *
       *    カルテ／処方箋発行処理
@@ -1609,6 +1618,30 @@
        300-PTKOHFTN-SYORI-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    主科情報設定処理
+      *****************************************************************
+       2110-SYUKA-INSERT-SEC         SECTION.
+      *
+           INITIALIZE                      ORCSSYUACCAREA
+      *    処理区分
+           MOVE    "02"                TO  LNK-SYUACC-I-KBN
+      *    診療年月
+           MOVE    SPA-NAI-SYUKAYM     TO  LNK-SYUACC-I-SRYYM
+           MOVE    SPA-NAI-SYUKA       TO  LNK-SYUACC-IO-H-SRYKA
+           MOVE    SPA-GMN-PTID        TO  SPA-PTID
+           MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
+           CALL    "ORCSSYUKAMAIN"     USING
+                                       SPA-AREA
+                                       ORCSSYUACCAREA
+           IF       LNK-SYUACC-RC  NOT =   ZERO
+               DISPLAY "P029 ORCSSYUKAMAIN INS ERR:" LNK-SYUACC-RC
+               MOVE    "9000"              TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       2110-SYUKA-INSERT-EXT.
+           EXIT.
       *
       *****************************************************************
       *    カルテ　出力へ

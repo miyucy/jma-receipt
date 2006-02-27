@@ -39,6 +39,8 @@
                 04  P02-VALUE   PIC X(6).
               03  P02-KYUSEIH.
                 04  P02-VALUE   PIC X(50).
+              03  P02-B10S.
+                04  P02-B10S-STATE   PIC S9(9)   BINARY.
               03  P02-NB2.
                 04  P02-PAGENO  PIC S9(9)   BINARY.
                 04  P02-FIXPAGE1.

@@ -24,6 +24,9 @@ P02	{
 		KYUSEIH	{
 			value	varchar(50);
 		};
+		B10S	{
+	           	state	int;
+		};
 		nb2	{
 			pageno	int;
 			FP1	{

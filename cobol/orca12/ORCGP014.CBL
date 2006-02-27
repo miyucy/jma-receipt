@@ -185,6 +185,7 @@
            COPY    "P982.INC".
            COPY    "P100.INC".
            COPY    "P02X.INC".
+           COPY    "P02S.INC".
            COPY    "PERR.INC".
            COPY    "PID1.INC".
       *

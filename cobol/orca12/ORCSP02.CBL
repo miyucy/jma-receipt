@@ -38,6 +38,7 @@
       * 02.00.06     NACL-多々納  03/03/24  公費負担額追加
       * 02.00.07     NACL-多々納  05/02/10  特定の受給者番号表示追加
       * 02.00.08     NACL-多々納  05/11/14  MONFUNC 対応
+      * 02.00.09     NACL-多々納  06/02/24  主科対応対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -204,6 +205,9 @@
       *
       *    全角空白
        01  WRK-SPACE           PIC X(02)   VALUE  "　".
+      *
+      *   
+           COPY    "ENUM-VALUE".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -2520,6 +2524,13 @@
            PERFORM 2001-P024-SET-SEC
       *
            PERFORM 2001-P025-SET-SEC
+      *
+      *    主科対応
+           IF      SPA-SYUKA-KBN       =   "1"
+               MOVE    WIDGET-NORMAL       TO  P02-B10S-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  P02-B10S-STATE
+           END-IF
            .
        200-P02-SET-EXT.
            EXIT.

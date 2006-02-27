@@ -315,6 +315,7 @@ RECORD_files = \
 	R05.rec \
 	N22.rec \
 	OID3.rec \
+	P02S.rec \
 
 DEF_files = \
 	HC01.def \

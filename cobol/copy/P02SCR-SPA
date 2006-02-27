@@ -34,6 +34,7 @@
       *  02.00.07    NACL-多々納  05/09/13  入金方法追加
       *  02.00.08    NACL-多々納  05/10/07  Ｕ・Ｐ追加
       *  02.00.09    NACL-多々納  05/12/07  労災レセ回数記載追加
+      *  02.00.10    NACL-多々納  06/02/27  主科対応追加
       *****************************************************************
        01  SPA-P02SCRAREA.
       *
@@ -386,6 +387,11 @@
       *        ユーザプログラム起動フラグ
                    07  SPA-NAI-GYOUMU-FLG          PIC X(01).
                    07  SPA-NAI-GYOUMU-ARI          PIC X(01).
+      *        新患時の主科
+                   07  SPA-NAI-SYUKA-AREA.
+                       09  SPA-NAI-SYUKA           PIC X(02).
+                       09  SPA-NAI-SYUKAYM         PIC X(06).
+                       09  SPA-NAI-SYUKAYMG        PIC X(06).
       *            保険表示連番
       **************7  SPA-NAI-HKNEDANUM       PIC 9(04).
       *
@@ -1185,21 +1191,20 @@
                        09  SPA-GMN2F-PTID          PIC 9(10).
                    07  SPA-GMN2F-MAX           PIC 9(04).
       *
-      *    P02K (患者番号欠番一覧画面）
-           03  SPA-P02K-AREA.
-               05  SPA-GMN2K-MAX         PIC 9(02).
-               05  SPA-GMN2K-CUR         PIC 9(02).
-               05  SPA-GMN2K-AREA.
-                   07  SPA-GMN2K-TBL             OCCURS   20.
-                       09  SPA-GMN2K-NUM         PIC 9(04).
-                       09  SPA-GMN2K-TPTNUM      PIC X(20).
-               05  SPA-GMN2K-SELNUM          PIC 9(03).
+      *    P02S (主科設定画面）
+           03  SPA-P02S-AREA.
+               05  SPA-P02S-CUR            PIC 9(02).
+               05  SPA-P02S-GMN-SRYYM      PIC X(07).
+               05  SPA-P02S-SYUKA-G.
+                   07  SPA-P02S-SYUKA          PIC X(02).
+                   07  SPA-P02S-SYUKAF         PIC X(01).
+                   07  SPA-P02S-SYUKA-MEI      PIC X(18).
+      *        診療科一覧
+               05  SPA-P02S-SYUKA-COB.
+                   07  SPA-P02S-SYUKA-LST      PIC X(20)  OCCURS 40.
+               05  SPA-P02S-SYUKA-MAX          PIC 9(04).
       *
-               05  SPA-GMN2K-STRPTNUM        PIC X(20).
-               05  SPA-GMN2K-ENDPTNUM        PIC X(20).
-               05  SPA-GMN2K-PTNUM           PIC X(20).
-      *
-               05  SPA-NAI2K-LSTPTNUM        PIC X(20).
+               05  SPA-P02S-NAI-SRYYM      PIC X(06).
       *
       *    ＣＬＡＩＭ画面（Ｐ０２Ｘ）
            03  SPA-P02X-AREA.

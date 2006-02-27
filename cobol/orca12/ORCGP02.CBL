@@ -53,6 +53,7 @@
       *  02.00.08    NACL-多々納  03/07/08  保険者異動日チェック追加
       *  02.00.09    NACL-多々納  04/04/01  患者削除のＤＢ追加
       *  02.00.10    NACL-多々納  05/11/11  MONFUNC 対応 他
+      *  02.00.11    NACL-多々納  06/02/24  主科対応対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -372,6 +373,10 @@
        01  SYUTTL-REC.
            COPY    "CPSYUTOTAL.INC".
       *
+      *    主科テーブル
+       01  SYUKA-REC.
+           COPY    "CPSYUKA.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -666,6 +671,12 @@
                        MOVE    "LINK"              TO  MCP-STATUS
                        PERFORM 3002-GMNSET-SEC
                    END-IF
+      *        主科設定画面
+               WHEN    "P02S"
+                   MOVE    "P02"               TO  SPA-P02-GAMEN
+                   MOVE    1                   TO  SPA-GMN-CUR
+                   MOVE    SPACE               TO  SPA-P02-WIDGET
+                   MOVE    1                   TO  P02-PAGENO
       *        ＣＬＡＩＭ画面より
                WHEN    "P02X"
                    MOVE    "P02"               TO  SPA-P02-GAMEN
@@ -1014,6 +1025,9 @@
       *    受付一覧へ
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 490-UKEICHI-SEC
+      *    主科設定
+               WHEN    "CLICKED"       ALSO    "B10S"
+                   PERFORM 498-SYUKA-SEC
       *    複写処理
                WHEN    "CLICKED"       ALSO    "B11S"
                    PERFORM 499-COPY-SEC
@@ -1630,6 +1644,60 @@
       *
            .
        420-ZENPTNUM-EXT.
+           EXIT.
+      *****************************************************************
+      *    主科設定処理
+      *****************************************************************
+       498-SYUKA-SEC           SECTION.
+      *
+           IF      SPA-GMN-PTNUM       =   SPACE
+               MOVE    "1021"              TO  SPA-ERRCD
+           ELSE
+      *        主科設定画面へ
+               PERFORM 4981-P02S-SYORI-SEC
+           END-IF
+      *
+           .
+       498-SYUKA-EXT.
+           EXIT.
+      *****************************************************************
+      *    主科設定画面処理
+      *****************************************************************
+       4981-P02S-SYORI-SEC            SECTION.
+      *
+           INITIALIZE                  SPA-P02S-AREA
+      *
+           MOVE    SPA-P02KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-P02SCRAREA      TO  SPA-FREE
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGP02S"          USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA.
+      *
+           MOVE    SPA-COMMON          TO  SPA-AREA
+           MOVE    SPA-FREE            TO  SPA-P02SCRAREA
+           MOVE    SPA-WORK            TO  SPA-P02KYOUTU
+      *
+           MOVE    "P02"               TO  SPA-MOTOPG
+           MOVE    "P02S"              TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "P02S"              TO  MCP-WINDOW
+      *    カーソル移動
+           MOVE    "SYUKA"             TO  MCP-WIDGET
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       4981-P02S-SYORI-EXT.
            EXIT.
       *****************************************************************
       *    再発行処理
@@ -2513,6 +2581,19 @@
            MOVE    SRYACCTPLUS-REC     TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_sryacctplus"   TO  MCP-TABLE
+           MOVE    "del1"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+      *    主科テーブル
+           INITIALIZE                  SYUKA-REC
+           MOVE    SPA-HOSPID          TO  SYUKA-HOSPID
+           MOVE    SPA-GMN-PTID        TO  SYUKA-PTID
+      *
+           MOVE    SYUKA-REC           TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_syuka"         TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
            CALL    "MONFUNC"           USING
                                        MCPAREA
