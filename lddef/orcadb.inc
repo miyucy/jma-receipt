@@ -105,4 +105,5 @@ db	{
 	tbl_tekioubyomei;
 	tbl_yakujyo_temp;
         query_teiki;
+        tbl_syuka;
 };
