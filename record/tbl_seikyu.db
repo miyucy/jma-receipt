@@ -1513,3 +1513,18 @@ path	key41	{
 	};
 };
 
+path	key42	{
+	DBSELECT	{
+		DECLARE tbl_seikyu_key42_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu
+                WHERE (      HOSPID      =   :HOSPID     )
+                  AND (      SRYYM       <=  :SRYYM      )
+                  AND (      SKYYM       <>  '000000'    )
+                  AND (      SKYYM       <=  :SKYYM      )
+                  AND (      SKYKBN      =   '2'         ) 
+                  AND (      NYUGAIKBN   =   :NYUGAIKBN  )
+                ORDER  BY  PTID,SRYYM
+		;
+	};
+};
