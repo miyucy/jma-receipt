@@ -68,25 +68,26 @@
                    07  LNK-SYUACC-IO-SYUKA-INPUT
                                        PIC X(02).
       *            主科別情報
-                   07  LNK-SYUACC-IO-SRYKATBL      OCCURS  50.
-      *            主科
-                       09  LNK-SYUACC-IO-SRYKA
+                   07  LNK-SYUACC-IO-SYUKA-AREA.
+                       09  LNK-SYUACC-IO-SRYKATBL      OCCURS  50.
+      *                    主科
+                           11  LNK-SYUACC-IO-SRYKA
                                        PIC X(02).
-      *            保険組合せ番号
-                       09  LNK-SYUACC-IO-HKNCOMBI-AREA.
-                           11  LNK-SYUACC-IO-HKNCOMBI
+      *                    保険組合せ番号
+                           11  LNK-SYUACC-IO-HKNCOMBI-AREA.
+                               13  LNK-SYUACC-IO-HKNCOMBI
                                        PIC 9(04)   OCCURS  10.
-      *            請求点数合計
-                       09  LNK-SYUACC-IO-TENSU
+      *                    請求点数合計
+                           11  LNK-SYUACC-IO-TENSU
                                        PIC S9(09).
-      *            受診回数合計(入院外)
-                       09  LNK-SYUACC-IO-KAISU    
+      *                    受診回数合計(入院外)
+                           11  LNK-SYUACC-IO-KAISU    
                                        PIC 9(03).
-      *            通算日数合計(入院)
-                       09  LNK-SYUACC-IO-NISSU
+      *                    通算日数合計(入院)
+                           11  LNK-SYUACC-IO-NISSU
                                        PIC 9(03).
-      *            終了日
-                       09  LNK-SYUACC-IO-EDDAY
+      *                    終了日
+                           11  LNK-SYUACC-IO-EDDAY
                                        PIC 9(02).
       *
       *    復帰コード
