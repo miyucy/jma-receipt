@@ -314,13 +314,13 @@
                        MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
                        MOVE    "key3"              TO  MCP-PATHNAME
                        PERFORM 910-PTRSIINF-READ-SEC
+                       MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
+                       MOVE    "key3"              TO  MCP-PATHNAME
+                       PERFORM 910-TBL-CLOSE-SEC
                        IF      FLG-PTRSIINF  NOT =   ZERO
       *                    ÂàÈò½èÍý
                            PERFORM   210-TAIHI-SEC
                        END-IF
-                       MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
-                       MOVE    "key3"              TO  MCP-PATHNAME
-                       PERFORM 910-TBL-CLOSE-SEC
       *
                        MOVE    "tbl_seikyu"        TO  MCP-TABLE
                        MOVE    "key42"             TO  MCP-PATHNAME
@@ -359,13 +359,13 @@
                        MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
                        MOVE    "key3"              TO  MCP-PATHNAME
                        PERFORM 910-PTRSIINF-READ-SEC
+                       MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
+                       MOVE    "key3"              TO  MCP-PATHNAME
+                       PERFORM 910-TBL-CLOSE-SEC
                        IF      FLG-PTRSIINF  NOT =   ZERO
       *                    ÂàÈò½èÍý
                            PERFORM   210-TAIHI-SEC
                        END-IF
-                       MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
-                       MOVE    "key3"              TO  MCP-PATHNAME
-                       PERFORM 910-TBL-CLOSE-SEC
       *
                    MOVE    "tbl_seikyu"        TO  MCP-TABLE
                    MOVE    "key42"             TO  MCP-PATHNAME
@@ -390,7 +390,7 @@
            DISPLAY "RECE10-SRYYM = " RECE10-SRYYM
       *    ÀÁµá´ÉÍýÂàÈò
            MOVE     RECE10-REC         TO  MCPDATA-REC
-           MOVE    "bak_tbl_seikyu"        TO  MCP-TABLE
+           MOVE    "bak_tbl_seikyu"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    "DBINSERT"          TO  MCP-FUNC
            CALL    "MONFUNC"           USING
