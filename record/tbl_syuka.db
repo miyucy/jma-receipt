@@ -115,3 +115,12 @@ path	upd1	{
 	};
 };
 
+path	del1 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_syuka
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+		;
+	};
+};
