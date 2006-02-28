@@ -8,6 +8,7 @@ if ! test -f "$JMARECEIPT_ENV" ; then
 fi
 
 . $JMARECEIPT_ENV
+export COB_LIBRARY_PATH="$ORCALIBDIR":/usr/lib/panda:/usr/lib/open-cobol
 
 cd $exec_prefix
 

@@ -288,13 +288,13 @@
       *    レセ電エラーフラグ
            PERFORM 200-RECEDENFLG-HENSYU-SEC
       *???
-           DISPLAY "LNK=" LNK-BYOMEI-KENSAKU-AREA "#"
-           DISPLAY "ERR=" LNK-BYOMEI-KENSAKU-ERR-AREA "#"
-           DISPLAY "MAX=" LNK-BYO-BYOMEI-MAX "#"     
-           PERFORM VARYING IDZ FROM    1   BY  1
-                   UNTIL   IDZ >       LNK-BYO-BYOMEI-MAX
-             DISPLAY IDZ "=" LNK-BYO-BYOMEICD-G (IDZ) "#"     
-           END-PERFORM
+      *    DISPLAY "LNK=" LNK-BYOMEI-KENSAKU-AREA "#"
+      *    DISPLAY "ERR=" LNK-BYOMEI-KENSAKU-ERR-AREA "#"
+      *    DISPLAY "MAX=" LNK-BYO-BYOMEI-MAX "#"     
+      *    PERFORM VARYING IDZ FROM    1   BY  1
+      *            UNTIL   IDZ >       LNK-BYO-BYOMEI-MAX
+      *      DISPLAY IDZ "=" LNK-BYO-BYOMEICD-G (IDZ) "#"     
+      *    END-PERFORM
       *???
            .
        000-PROC-EXT.
@@ -330,7 +330,7 @@
                MOVE    SMKBYO-LENGTH       TO  WRK-MOJISU
                MOVE    SMKBYO-BYOMEIHENFLG TO  WRK-BYOMEIHENFLG
       *??
-               DISPLAY "LEN=" WRK-MOJISU "#" WRK-BYOMEIHENFLG
+      *        DISPLAY "LEN=" WRK-MOJISU "#" WRK-BYOMEIHENFLG
            END-IF    
       *
            COMPUTE WRK-MOJISU      =   WRK-MOJISU  /   2
