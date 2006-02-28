@@ -63,10 +63,7 @@
            03  FLG-SEIKYU                  PIC 9(01).
            03  FLG-PTRSIINF                PIC 9(01).
            03  FLG-NYUINACCT               PIC 9(01).
-           03  FLG-NYUINACCT-UPD           PIC 9(01).
            03  FLG-NYUINACT                PIC 9(01).
-           03  FLG-TENSU                   PIC 9(01).
-           03  FLG-DBRC                    PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -96,17 +93,10 @@
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
-           03  WRK-DBPATH                          PIC X(100).
            03  WRK-ERRNO                           PIC 9(2).
            03  WRK-RECEERR                         PIC X(200).
            03  WRK-HOSPID                          PIC X(24).
-           03  WRK-MEISAISU                        PIC 9(07).
-           03  WRK-SURYOTOTAL                      PIC 9(07).
-           03  WRK-SRYCDTOTAL                      PIC 9(14).
-           03  WRK-SRYCDX                          PIC X(09).
-           03  WRK-SRYCD9       REDEFINES     WRK-SRYCDX
-                                                   PIC 9(09).
-           03  WRK-ZAITEN                          PIC 9(08).
+           03  WRK-PTRSI-PTID                      PIC 9(10).
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -290,6 +280,7 @@
       *    Æþ±¡Ê¬ÂàÈò½èÍý
       *
            IF   SYS-1001-BEDSU          NOT =  ZERO
+               MOVE    ZERO                TO  WRK-PTRSI-PTID
                MOVE    ZERO                TO  FLG-SEIKYU
                INITIALIZE                      RECE10-REC
                MOVE    SYS-1001-HOSPID     TO  RECE10-HOSPID
@@ -306,17 +297,20 @@
                    PERFORM 910-SEIKYU-READ-SEC
                    PERFORM  UNTIL  FLG-SEIKYU    =    1
       *                Ï«ºÒÊÝ¸±¤ÎÈ½Äê
-                       MOVE    SYS-1001-HOSPID     TO  PTRSI-HOSPID
-                       MOVE    RECE10-PTID         TO  PTRSI-PTID
-                       MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
-                       MOVE    "key3"              TO  MCP-PATHNAME
-                       PERFORM 910-PTRSIINF-SELECT-SEC
-                       MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
-                       MOVE    "key3"              TO  MCP-PATHNAME
-                       PERFORM 910-PTRSIINF-READ-SEC
-                       MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
-                       MOVE    "key3"              TO  MCP-PATHNAME
-                       PERFORM 910-TBL-CLOSE-SEC
+                       IF      RECE10-PTID       NOT =  WRK-PTRSI-PTID
+                           MOVE    SYS-1001-HOSPID     TO  PTRSI-HOSPID
+                           MOVE    RECE10-PTID         TO  PTRSI-PTID
+                           MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
+                           MOVE    "key3"              TO  MCP-PATHNAME
+                           PERFORM 910-PTRSIINF-SELECT-SEC
+                           MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
+                           MOVE    "key3"              TO  MCP-PATHNAME
+                           PERFORM 910-PTRSIINF-READ-SEC
+                           MOVE     PTRSI-PTID         TO WRK-PTRSI-PTID
+                           MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
+                           MOVE    "key3"              TO  MCP-PATHNAME
+                           PERFORM 910-TBL-CLOSE-SEC
+                       END-IF
                        IF      FLG-PTRSIINF  NOT =   ZERO
       *                    ÂàÈò½èÍý
                            PERFORM   210-TAIHI-SEC
@@ -335,6 +329,7 @@
       *
       *    Æþ±¡³°Ê¬ÂàÈò½èÍý
       *
+           MOVE    ZERO                TO  WRK-PTRSI-PTID
            MOVE    ZERO                TO  FLG-SEIKYU
            INITIALIZE                      RECE10-REC
            MOVE    SYS-1001-HOSPID     TO  RECE10-HOSPID
@@ -351,17 +346,20 @@
                PERFORM 910-SEIKYU-READ-SEC
                PERFORM  UNTIL  FLG-SEIKYU    =    1
       *                Ï«ºÒÊÝ¸±¤ÎÈ½Äê
-                       MOVE    SYS-1001-HOSPID     TO  PTRSI-HOSPID
-                       MOVE    RECE10-PTID         TO  PTRSI-PTID
-                       MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
-                       MOVE    "key3"              TO  MCP-PATHNAME
-                       PERFORM 910-PTRSIINF-SELECT-SEC
-                       MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
-                       MOVE    "key3"              TO  MCP-PATHNAME
-                       PERFORM 910-PTRSIINF-READ-SEC
-                       MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
-                       MOVE    "key3"              TO  MCP-PATHNAME
-                       PERFORM 910-TBL-CLOSE-SEC
+                       IF      RECE10-PTID       NOT =  WRK-PTRSI-PTID
+                           MOVE    SYS-1001-HOSPID     TO  PTRSI-HOSPID
+                           MOVE    RECE10-PTID         TO  PTRSI-PTID
+                           MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
+                           MOVE    "key3"              TO  MCP-PATHNAME
+                           PERFORM 910-PTRSIINF-SELECT-SEC
+                           MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
+                           MOVE    "key3"              TO  MCP-PATHNAME
+                           PERFORM 910-PTRSIINF-READ-SEC
+                           MOVE     PTRSI-PTID         TO WRK-PTRSI-PTID
+                           MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
+                           MOVE    "key3"              TO  MCP-PATHNAME
+                           PERFORM 910-TBL-CLOSE-SEC
+                       END-IF
                        IF      FLG-PTRSIINF  NOT =   ZERO
       *                    ÂàÈò½èÍý
                            PERFORM   210-TAIHI-SEC
