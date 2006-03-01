@@ -599,6 +599,7 @@
                                            TO  SYUKA-NISSU
                    MOVE    LNK-SYUACC-IO-EDDAY    (IDX IDY)
                                            TO  SYUKA-EDDAY
+                   MOVE    SPACE           TO  SYUKA-DLT-FLG
       *
                    IF      FLG-SYUKA       =   1
                        MOVE    SMCNDATE-YMD        TO  SYUKA-CREYMD
