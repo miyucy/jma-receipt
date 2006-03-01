@@ -51,6 +51,7 @@
       *
       *  02.07.01    NACL-藤原    05/10/31  MONFUNC対応
       *  02.07.02    NACL-藤原    05/12/12  国保レセプト編綴順対応
+      *  02.07.03    NACL-藤原    06/03/01  通勤災害の総件数集計の訂正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -709,10 +710,19 @@
                    ADD     RECE07-PAGE     TO  SPA-GMN-TPAGE (IDX)
                                                SPA-GMN-PAGEH
                    ADD     RECE07-KENSU    TO  SPA-GMN-TKENSU(IDX)
-                   IF      RECE07-RECESYUBETU (4:1)
-                                       NOT =   "3" AND "2"
-                       ADD     RECE07-KENSU    TO  SPA-GMN-KENSUH
-                   END-IF    
+                   EVALUATE    SPA-R01-RECE07-RECEKBN
+                       WHEN    "3"
+                           IF      RECE07-RECESYUBETU (4:1)
+                                           NOT =   "3"
+                               ADD     RECE07-KENSU    TO SPA-GMN-KENSUH
+                           END-IF    
+                       WHEN    "4"
+                       WHEN    "5"
+                           IF      RECE07-RECESYUBETU (4:1)
+                                           NOT =   "2"
+                               ADD     RECE07-KENSU    TO SPA-GMN-KENSUH
+                           END-IF
+                   END-EVALUATE
                END-IF
            END-PERFORM
       *    レセプト種別不明のレセプトのページ数     
