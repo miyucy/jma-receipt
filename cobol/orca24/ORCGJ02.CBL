@@ -565,6 +565,8 @@
            COPY    "CPSK0041.INC".
       *    会計照会機能情報
            COPY  "CPSK1043.INC".
+      * 
+           COPY  "CPSK1041.INC".
       *
       *    点数マスタ−
       *01  TENSU-REC.
@@ -3439,6 +3441,8 @@
            ELSE
                MOVE    PTINF-NYUKIN-HOHO   TO  SPA-NYUKIN-HOHO
            END-IF
+      *    入金状態編集
+           PERFORM 410109-JYOTAI-SET-SEC
       *
       *    排他制御処理
            PERFORM 990-LOCK-IN-SEC
@@ -3543,6 +3547,44 @@
       *
            .
        41010-PTNUM-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入金状態編集処理
+      *****************************************************************
+       410109-JYOTAI-SET-SEC         SECTION.
+      *
+           MOVE    SPACE               TO  SYS-1041-REC
+           MOVE    "1041"              TO  SYS-1041-KANRICD
+           MOVE    SPA-NYUKIN-HOHO     TO  SYS-1041-KBNCD
+           MOVE    SPA-SYSYMD          TO  SYS-1041-STYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-1041-EDYUKYMD
+      *    システム管理検索
+           MOVE    SYS-1041-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-KANRIMST-READ-SEC
+           ELSE
+               INITIALIZE                  SYS-1041-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1041-REC
+               MOVE    SYS-1041-NYKN-JYOTAI
+                                           TO  SPA-NYUKIN-JYOTAI
+           ELSE
+               MOVE    "1"                 TO  SPA-NYUKIN-JYOTAI
+           END-IF
+      *
+           .
+       410109-JYOTAI-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -9490,8 +9532,13 @@
            IF      FLG-ERR         =   1
                MOVE    ZERO            TO  SYU-SKYMONEY
            END-IF
+      *    入金状態が未入金の時、入金額ゼロ
+           IF     (SPA-NYUKIN-JYOTAI   =   "2" ) 
+               MOVE    ZERO                TO  SYU-NYUKIN-TOTAL
+           ELSE
       *    入返金額
-           MOVE    SYU-SKYMONEY        TO  SYU-NYUKIN-TOTAL
+               MOVE    SYU-SKYMONEY        TO  SYU-NYUKIN-TOTAL
+           END-IF
       *    入金回数
            MOVE    1                   TO  SYU-NYUKIN-KAISU
       *    伝票状態区分
@@ -9647,8 +9694,9 @@
            MOVE    01                  TO  SMEI-NYUKINRENNUM
            MOVE    SYU-SRYKA           TO  SMEI-SRYKA
       *
-      *    入金額がゼロの時、入金力なし
-           IF      SYU-NYUKIN-TOTAL    =   ZERO
+      *    請求額がゼロの時、入金力なし
+      *****IF      SYU-NYUKIN-TOTAL    =   ZERO
+           IF      SYU-SKYMONEY        =   ZERO
       *入金方法
                MOVE    ZERO                TO  SMEI-NYUKIN-HOHO
            ELSE

@@ -66,6 +66,7 @@
                                            OCCURS   31.
       *患者の入金方法
                05  SPA-NYUKIN-HOHO         PIC   X(02).
+               05  SPA-NYUKIN-JYOTAI       PIC   X(01).
       *
       *開始パラメタ番号
                05  SPA-MAE-STRNUM          PIC 9(04).
