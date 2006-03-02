@@ -108,6 +108,7 @@
            03  FLG-HKNCOMBI            PIC 9(01).
            03  FLG-HKNNUM              PIC 9(01).
            03  FLG-PTRSIINF            PIC 9(01).
+           03  FLG-SRYKARRK            PIC 9(01).
       *
            03  FLG-HENFLG              PIC 9(01).
            03  FLG-TOUROKU             PIC 9(01).
@@ -205,6 +206,7 @@
        01  WRK-NENREI-G.
            03  WRK-NENREI-Z        PIC ZZ9.
            03  WRK-NENREI-MEI      PIC X(02).
+           03  WRK-NENREI-B        PIC X(01).
        01  WRK-NENREI-GR           REDEFINES   WRK-NENREI-G.
            03  WRK-NENREI-ZN       PIC Z9.
            03  WRK-NENREI-MEIN     PIC X(04).
@@ -321,6 +323,10 @@
       *    患者労災保険情報
        01  PTRSIINF-REC.
            COPY    "CPPTRSIINF.INC".
+      *    診療科履歴
+       01  SRYKARRK-REC.
+           COPY    "CPSRYKARRK.INC".
+      *
       *
       *****************************************************************
       *    サブプロ用領域
@@ -1008,6 +1014,10 @@
                INITIALIZE                  JYURRK-REC
                MOVE    1               TO  FLG-JYURRK
            END-IF
+      *    カーソルクロース
+           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-JYURRK          =   ZERO
                INITIALIZE                      STS-AREA-DAY
@@ -1017,15 +1027,53 @@
                CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                    LNK-DAY2-AREA
                MOVE    LNK-DAY2-EDTYMD1    TO  SPA-GMN-TRRKYMD (IDX)
+           ELSE
+      *        診療科履歴から
+               PERFORM 31020-SRYKARRK-HEN-SEC
            END-IF
-      *
-      *    カーソルクロース
-           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-           MOVE    "key8"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
            .
        31019-JYURRK-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療科履歴から最終受診日セット処理
+      *****************************************************************
+       31020-SRYKARRK-HEN-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  SRYKARRK-REC
+           INITIALIZE                  SRYKARRK-REC
+           MOVE    SPA-HOSPID          TO  KARRK-HOSPID
+           MOVE    SPA-GMN-TPTID (IDX) TO  KARRK-PTID
+      *
+           MOVE    SRYKARRK-REC        TO  MCPDATA-REC
+           MOVE    "tbl_srykarrk"      TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_srykarrk"      TO  MCP-TABLE
+               MOVE    "key4"              TO  MCP-PATHNAME
+               PERFORM 975-SRYKARRK-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SRYKARRK
+               MOVE    SPACE               TO  SRYKARRK-REC
+               INITIALIZE                  SRYKARRK-REC
+           END-IF
+           MOVE    "tbl_srykarrk"      TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           IF      FLG-SRYKARRK        =   ZERO
+      *        最終受診日
+               INITIALIZE                      STS-AREA-DAY
+               INITIALIZE                      LNK-DAY2-AREA
+               MOVE    "21"                TO  LNK-DAY2-IRAI
+               MOVE    KARRK-LASTYMD       TO  LNK-DAY2-YMD
+               CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY2-AREA
+               MOVE    LNK-DAY2-EDTYMD1    TO  SPA-GMN-TRRKYMD (IDX)
+           END-IF
+      *
+           .
+       31020-SRYKARRK-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1503,6 +1551,7 @@
            CALL    "ORCSAGECHK"        USING
                                        ORCSAGECHKAREA
       *    画面表示用
+           MOVE    SPACE               TO  WRK-NENREI-G
            IF      AGECHK-NENREI2-YY   =   ZERO
                MOVE    AGECHK-NENREI2-MM   TO  WRK-NENREI-ZN
                MOVE    "ヶ月"              TO  WRK-NENREI-MEIN
@@ -5191,6 +5240,29 @@
       *
            .
        993-PTRSIINF-NEXT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療科歴データ主キー検索
+      *****************************************************************
+       975-SRYKARRK-READ-SEC           SECTION.
+      *
+           MOVE    "tbl_srykarrk"      TO  MCP-TABLE
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  SRYKARRK-REC
+               MOVE    ZERO                TO  FLG-SRYKARRK
+           ELSE
+               MOVE    1                   TO  FLG-SRYKARRK
+               INITIALIZE                  SRYKARRK-REC
+           END-IF
+      *
+           .
+       975-SRYKARRK-READ-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理
