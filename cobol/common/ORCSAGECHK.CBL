@@ -237,16 +237,18 @@
                                        -   1
            END-IF
       *    Ç¯Îð´ü´Ö»»Äê
-           INITIALIZE                      STS-AREA-DAY
-           INITIALIZE                      LNK-DAY5-AREA
-           MOVE    "51"                TO  LNK-DAY5-IRAI
-           MOVE    WRK-BIRTHDAY        TO  LNK-DAY5-START
-           MOVE    AGECHK-SRYYMD       TO  LNK-DAY5-END
-           CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                               LNK-DAY5-AREA
-           IF      LNK-DAY5-NISSU2     <=  31
-               MOVE    LNK-DAY5-NISSU2     TO  WRK-NENREI-DD
-               MOVE    ZERO                TO  WRK-NENREI-MM
+           IF      WRK-NENREI-MM       =   ZERO
+               INITIALIZE                      STS-AREA-DAY
+               INITIALIZE                      LNK-DAY5-AREA
+               MOVE    "51"                TO  LNK-DAY5-IRAI
+               MOVE    WRK-BIRTHDAY        TO  LNK-DAY5-START
+               MOVE    AGECHK-SRYYMD       TO  LNK-DAY5-END
+               CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY5-AREA
+               IF      LNK-DAY5-NISSU2     <=  31
+                   MOVE    LNK-DAY5-NISSU2     TO  WRK-NENREI-DD
+                   MOVE    ZERO                TO  WRK-NENREI-MM
+               END-IF
            END-IF
            MOVE    WRK-NENREI-YY       TO  AGECHK-NENREI2-YY
            MOVE    WRK-NENREI-MM       TO  AGECHK-NENREI2-MM
