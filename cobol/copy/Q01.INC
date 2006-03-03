@@ -76,6 +76,14 @@
                                                            OCCURS 99.
                   06  Q01-COMMENT-TBL.
                     07  Q01-COMMENT            PIC X(50)   OCCURS 3.
+                  06  Q01-CMB-TEL-TO.
+                      08  Q01-TEL-TO               PIC X(20).
+                      08  Q01-CMB-TEL-TO-COUNT     PIC S9(9)
+                                                           BINARY.
+                      08  Q01-CMB-TEL-TO-ITEM      PIC X(20)
+                                                           OCCURS 5.
+                  06  Q01-TEL-TBL.
+                    07  Q01-TEL                    PIC X(15) OCCURS 3.
                 05  Q01-FIXED17.
                   06  Q01-CMB-HONKZKKBN.
                     07  Q01-HONKZKKBN          PIC X(10).

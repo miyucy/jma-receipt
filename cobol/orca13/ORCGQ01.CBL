@@ -561,6 +561,11 @@
       *    状態３コンボ初期処理
            PERFORM 3101-CONDITION3-CMB-SYOKI-SEC
       *
+      *    電話先コンボ初期処理
+           PERFORM 3101-TEL-TO-CMB-SYOKI-SEC
+           MOVE    SPA-GMN-Q01-TEL-TOLST (1)
+                                       TO  SPA-GMN-Q01-TEL-TO-G
+      *
       *    本人家族コンボ初期処理
            PERFORM 3101-HONKZKKBN-CMB-SYOKI-SEC
       *
@@ -810,6 +815,23 @@
       *
            .
        3101-CONDITION3-CMB-SYOKI-EXT.
+           EXIT.
+      *****************************************************************
+      *    電話先コンボ初期処理
+      *****************************************************************
+       3101-TEL-TO-CMB-SYOKI-SEC          SECTION.
+      *
+           MOVE    3                   TO  SPA-GMN-Q01-TEL-TOLST-MAX
+      *
+           MOVE    "1"                 TO  SPA-GMN-Q01-TEL-TOL    (1)
+           MOVE    "自宅"              TO  SPA-GMN-Q01-TEL-TOMEIL (1)
+           MOVE    "2"                 TO  SPA-GMN-Q01-TEL-TOL    (2)
+           MOVE    "連絡先"            TO  SPA-GMN-Q01-TEL-TOMEIL (2)
+           MOVE    "3"                 TO  SPA-GMN-Q01-TEL-TOL    (3)
+           MOVE    "自宅・連絡先"      TO  SPA-GMN-Q01-TEL-TOMEIL (3)
+      *
+           .
+       3101-TEL-TO-CMB-SYOKI-EXT.
            EXIT.
       *****************************************************************
       *    本人家族コンボ初期処理
@@ -1370,6 +1392,8 @@
            MOVE    Q01-STPTNUM             TO  SPA-GMN-Q01-STPTNUM
       *    終了患者番号
            MOVE    Q01-EDPTNUM             TO  SPA-GMN-Q01-EDPTNUM
+      *    電話先
+           MOVE    Q01-TEL-TO              TO  SPA-GMN-Q01-TEL-TO-G
       *
            PERFORM VARYING IDXB    FROM    1   BY  1
                    UNTIL   IDXB    >       5
@@ -1405,6 +1429,8 @@
       *        コメント
                MOVE    Q01-COMMENT (IDXB)
                                        TO  SPA-GMN-Q01-COMMENT  (IDXB)
+      *        電話番号
+               MOVE    Q01-TEL (IDXB)  TO  SPA-GMN-Q01-TEL (IDXB)
            END-PERFORM
       *
       *    本人家族
@@ -1640,6 +1666,23 @@
                    UNTIL ( IDXA    >   3 )
       *
                PERFORM 4113-COMMENT-CHK-SEC
+               IF    ( SPA-ERRCD   NOT =   SPACE )
+                   GO  TO  4101-KHN-INPUT-CHK-EXT
+               END-IF
+      *
+           END-PERFORM
+      *
+      *    電話先チェック
+           PERFORM 4113-TEL-TO-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4101-KHN-INPUT-CHK-EXT
+           END-IF
+      *
+      *    電話番号チェック
+           PERFORM VARYING IDXA    FROM    1   BY  1
+                   UNTIL ( IDXA    >   3 )
+      *
+               PERFORM 4113-TEL-CHK-SEC
                IF    ( SPA-ERRCD   NOT =   SPACE )
                    GO  TO  4101-KHN-INPUT-CHK-EXT
                END-IF
@@ -2655,6 +2698,45 @@
        4113-COMMENT-CHK-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    電話先チェック処理
+      *****************************************************************
+       4113-TEL-TO-CHK-SEC             SECTION.
+      *
+           PERFORM VARYING IDX2    FROM    1   BY  1
+                   UNTIL ( IDX2    >   SPA-GMN-Q01-TEL-TOLST-MAX )
+                      OR ( SPA-GMN-Q01-TEL-TO
+                                   =   SPA-GMN-Q01-TEL-TOL (IDX2))
+      *
+               CONTINUE
+      *
+           END-PERFORM
+      *
+           IF    ( IDX2            <=  SPA-GMN-Q01-TEL-TOLST-MAX )
+               MOVE    SPA-GMN-Q01-TEL-TOLST (IDX2)
+                                       TO  SPA-GMN-Q01-TEL-TO-G
+           ELSE
+               MOVE    SPA-GMN-Q01-TEL-TOLST (1)
+                                       TO  SPA-GMN-Q01-TEL-TO-G
+           END-IF
+      *
+           .
+       4113-TEL-TO-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    電話番号チェック処理
+      *****************************************************************
+       4113-TEL-CHK-SEC                SECTION.
+      *
+           MOVE    SPA-GMN-Q01-TEL (IDXA)
+                                   TO  WRK-KANACHK-MAE-INPUT
+           PERFORM 800-KANACHK-CHK-SEC
+           MOVE    WRK-KANACHK-OUT-INPUT
+                                   TO  SPA-GMN-Q01-TEL (IDXA)
+      *
+           .
+       4113-TEL-CHK-EXT.
+           EXIT.
       *****************************************************************
       *    本人家族チェック処理
       *****************************************************************
@@ -4603,6 +4685,18 @@
       *
            END-PERFORM
       *
+           EVALUATE    SPA-GMN-Q01-TEL-TO
+           WHEN    "1"
+               MOVE    "1"                 TO  SPA-Q01-TEL-TO-HOME1
+           WHEN    "2"
+               MOVE    "1"                 TO  SPA-Q01-TEL-TO-HOME2
+           WHEN    "3"
+               MOVE    "1"                 TO  SPA-Q01-TEL-TO-HOME1
+                                               SPA-Q01-TEL-TO-HOME2
+           WHEN    OTHER
+               MOVE    "1"                 TO  SPA-Q01-TEL-TO-HOME1
+           END-EVALUATE
+      *
            PERFORM VARYING IDXC    FROM    1   BY  1
                    UNTIL ( IDXC    >   3 )
       *
@@ -4617,6 +4711,9 @@
       *
                MOVE    SPA-GMN-Q01-COMMENT (IDXC)
                                            TO  SPA-Q01-COMMENT (IDXC)
+      *
+               MOVE    SPA-GMN-Q01-TEL (IDXC)
+                                           TO  SPA-Q01-TEL (IDXC)
            END-PERFORM
       *
       *    保険　公費
@@ -4863,6 +4960,14 @@
                        END-IF
                    END-IF
       *
+      *            電話番号
+                   IF    ( SPA-Q01-TEL (IDX6)  NOT =   SPACE )
+                       IF    ( SPA-Q01-TEL (IDX6)
+                                       =   SPA-Q01-TEL (IDX7))
+                           MOVE    SPACE   TO  SPA-Q01-TEL (IDX7)
+                       END-IF
+                   END-IF
+      *
                END-PERFORM
            END-PERFORM
       *
@@ -4935,6 +5040,7 @@
             OR ( SPA-Q01-STBIRTHDAY        NOT =   SPACE )
             OR ( SPA-Q01-EDBIRTHDAY        NOT =   SPACE )
             OR ( SPA-Q01-SEX               NOT =   SPACE )
+            OR ( SPA-Q01-TEL-G             NOT =   SPACE )
       *
                MOVE    "1"                 TO  SPA-Q01-GTBL(7)
       *
@@ -5210,6 +5316,22 @@
       *        コメント
                MOVE    SPA-GMN-Q01-COMMENT (IDX1)
                                            TO  Q01-COMMENT (IDX1)
+      *
+      *        コメント
+               MOVE    SPA-GMN-Q01-TEL (IDX1)
+                                           TO  Q01-TEL (IDX1)
+           END-PERFORM
+      *
+      *    電話先
+           MOVE    SPA-GMN-Q01-TEL-TO-G TO  Q01-TEL-TO
+           MOVE    SPA-GMN-Q01-TEL-TOLST-MAX
+                                           TO  Q01-CMB-TEL-TO-COUNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   SPA-GMN-Q01-TEL-TOLST-MAX )
+      *
+               MOVE    SPA-GMN-Q01-TEL-TOLST (IDX1)
+                                   TO  Q01-CMB-TEL-TO-ITEM (IDX1)
+      *
            END-PERFORM
       *
       *    本人家族
@@ -5548,6 +5670,14 @@
                MOVE  "COMMENT2"    TO  MCP-WIDGET
            WHEN   143
                MOVE  "COMMENT3"    TO  MCP-WIDGET
+           WHEN   145
+               MOVE  "TEL_TO"      TO  MCP-WIDGET
+           WHEN   146
+               MOVE  "TEL1"        TO  MCP-WIDGET
+           WHEN   147
+               MOVE  "TEL2"        TO  MCP-WIDGET
+           WHEN   148
+               MOVE  "TEL3"        TO  MCP-WIDGET
       *
       *    保険・公費タブ
            WHEN   201
@@ -5782,6 +5912,14 @@
            WHEN   "COMMENT2"
                MOVE  143           TO  SPA-GMN-Q01-CUR
            WHEN   "COMMENT3"
+               MOVE  145           TO  SPA-GMN-Q01-CUR
+           WHEN   "TEL_TO"
+               MOVE  146           TO  SPA-GMN-Q01-CUR
+           WHEN   "TEL1"
+               MOVE  147           TO  SPA-GMN-Q01-CUR
+           WHEN   "TEL2"
+               MOVE  148           TO  SPA-GMN-Q01-CUR
+           WHEN   "TEL3"
                MOVE  001           TO  SPA-GMN-Q01-CUR
       *
       *    保険・公費タブ

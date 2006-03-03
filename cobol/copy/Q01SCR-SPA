@@ -150,6 +150,16 @@
                            11  SPA-GMN-Q01-COMMENTTBL.
                                13  SPA-GMN-Q01-COMMENT PIC X(50)
                                                        OCCURS  3.
+      *                    ≈≈œ√¿Ë
+                           11  SPA-GMN-Q01-TEL-TO-G.
+                               13  SPA-GMN-Q01-TEL-TO  PIC X(01).
+                               13                      PIC X(01).
+                               13  SPA-GMN-Q01-TEL-TOMEI
+                                                       PIC X(18).
+      *                    ≈≈œ√»÷πÊ
+                           11  SPA-GMN-Q01-TELTBL.
+                               13  SPA-GMN-Q01-TEL     PIC X(15)
+                                                       OCCURS  3.
       *                 ›∏±°°∏¯»Ò
                        09  SPA-GMN-Q01-HOKEN-AREA.
                            11  SPA-GMN-Q01-HONKZKKBN-G.
@@ -387,6 +397,13 @@
                                13                          PIC X(01).
                                13  SPA-GMN-Q01-CONDITION3MEIL
                                                            PIC X(20).
+                       09  SPA-GMN-Q01-TEL-TOLST-G.
+                           11  SPA-GMN-Q01-TEL-TOLST-MAX
+                                                           PIC 9(05).
+                           11  SPA-GMN-Q01-TEL-TOLST       OCCURS  5.
+                               13  SPA-GMN-Q01-TEL-TOL     PIC X(01).
+                               13                          PIC X(01).
+                               13  SPA-GMN-Q01-TEL-TOMEIL  PIC X(18).
                        09  SPA-GMN-Q01-HONKZKKBNLST-G.
                            11  SPA-GMN-Q01-HONKZKKBNLST-MAX
                                                             PIC 9(05).
@@ -689,6 +706,11 @@
                                                        OCCURS  3.
                        09  SPA-Q01-COMMENT-G.
                            11  SPA-Q01-COMMENT         PIC X(50)
+                                                       OCCURS  5.
+                       09  SPA-Q01-TEL-TO-HOME1        PIC X(01).
+                       09  SPA-Q01-TEL-TO-HOME2        PIC X(01).
+                       09  SPA-Q01-TEL-G.
+                           11  SPA-Q01-TEL             PIC X(15)
                                                        OCCURS  5.
       *             ›∏±°°∏¯»Ò
                    07  SPA-Q01-HOKEN-AREA.

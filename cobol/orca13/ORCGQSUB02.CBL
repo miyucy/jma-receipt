@@ -580,7 +580,8 @@
                END-IF
            END-IF
       *
-      *    生年月日・性別・住所・状態１・状態２・状態３・コメント
+      *    生年月日・性別・住所・状態１・状態２・状態３・コメント・
+      *    電話番号
            IF   ( SPA-Q01-GTBL (7)  =   "1" )
                MOVE    FLG-JYOKEN      TO  FLG-JYOKEN-AND
                PERFORM     1001-PTINF-SQL-EDIT3-SEC
@@ -804,6 +805,9 @@
       *
       *    コメント検索条件編集処理
            PERFORM 10011-COMMENT-SELECT-EDIT-SEC
+      *
+      *    電話番号検索条件編集処理
+           PERFORM 10011-TEL-SELECT-EDIT-SEC
       *
            .
        1001-PTINF-SQL-EDIT3-EXT.
@@ -2273,6 +2277,67 @@
       *
            .
        10011-COMMENT-SELECT-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    電話番号検索条件編集処理
+      *****************************************************************
+       10011-TEL-SELECT-EDIT-SEC        SECTION.
+      *
+           MOVE    ZERO    TO      CNT-JYOKEN
+           PERFORM VARYING IDX1    FROM    1   BY  1
+               UNTIL   (   IDX1    >   5 )
+               IF  ( SPA-Q01-TEL (IDX1) NOT =   SPACE)
+      *
+      *            電話番号の項目長を求める
+                   MOVE    1               TO  WRK-STR-LEN
+                   MOVE    SPACE           TO  WRK-STR
+                   STRING  SPA-Q01-TEL (IDX1)  DELIMITED   BY  SIZE
+                   INTO    WRK-STR
+                   WITH POINTER WRK-STR-LEN
+                   END-STRING
+                   COMPUTE WRK-STR-LEN =   WRK-STR-LEN -   1
+      *
+      *            電話番号の実際の文字列長を求める
+                   MOVE    SPA-Q01-TEL (IDX1)  TO  WRK-STR
+                   PERFORM 900-STR-LEN-GET-SEC
+      *
+                   IF    ( SPA-Q01-TEL-TO-HOME1    =   1 )
+      *
+                       COMPUTE CNT-JYOKEN  =   CNT-JYOKEN  +   1
+      *
+                       PERFORM 900-SQL-JYOKEN-EDIT2-SEC
+      *
+                       STRING  "(HOME_TEL1 LIKE '" DELIMITED   BY  SIZE
+                           SPA-Q01-TEL (IDX1)(1: WRK-STR-LEN) 
+                                                   DELIMITED   BY  SIZE
+                           "%')"                   DELIMITED   BY  SIZE
+                       INTO    WRK-SQL
+                       WITH    POINTER WRK-SQL-PNT
+                       END-STRING
+                   END-IF
+      *
+                   IF    ( SPA-Q01-TEL-TO-HOME2    =   1 )
+      *
+                       COMPUTE CNT-JYOKEN  =   CNT-JYOKEN  +   1
+      *
+                       PERFORM 900-SQL-JYOKEN-EDIT2-SEC
+      *
+                       STRING  "(HOME_TEL2 LIKE '" DELIMITED   BY  SIZE
+                           SPA-Q01-TEL (IDX1)(1: WRK-STR-LEN) 
+                                                   DELIMITED   BY  SIZE
+                           "%')"                   DELIMITED   BY  SIZE
+                       INTO    WRK-SQL
+                       WITH    POINTER WRK-SQL-PNT
+                       END-STRING
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           PERFORM 900-SQL-JYOKEN-EDIT3-SEC
+      *
+      *
+           .
+       10011-TEL-SELECT-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    診療科編集処理

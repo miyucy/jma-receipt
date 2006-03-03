@@ -192,6 +192,22 @@ Q01	{
 				COMMENT3	{
 					value	varchar(50);
 				};
+				CMB_TEL_TO{
+					TEL_TO{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[05];
+				};
+				TEL1	{
+					value	varchar(15);
+				};
+				TEL2	{
+					value	varchar(15);
+				};
+				TEL3	{
+					value	varchar(15);
+				};
 			};
 			fixed17	{
 				CMB_HONKZKKBN{
