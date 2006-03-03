@@ -46,6 +46,7 @@
       *
       *    添字領域
        01  IDX-AREA.
+           03  IDW                 PIC 9(04).
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
@@ -144,6 +145,8 @@
                    PERFORM 2003-KBN03-HENSYU-SEC
                WHEN    "06"
                    PERFORM 2001-KBN06-HENSYU-SEC
+               WHEN    "07"
+                   PERFORM 2001-KBN07-HENSYU-SEC
            END-EVALUATE
       *
            MOVE    1               TO  FLG-END
@@ -842,6 +845,129 @@
            END-IF
            .
        2001-KBN06-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    主科テーブル情報取得処理
+      *****************************************************************
+       2001-KBN07-HENSYU-SEC       SECTION.
+      *
+           INITIALIZE              WRK-SRYACC-AREA
+      * 
+           INITIALIZE                  SYUKA-REC
+           IF  LNK-IO2-SYU-HOSPID(1)   =   SPACE
+               MOVE    1               TO  FLG-SYUKA
+           END-IF
+      *
+           IF      FLG-SYUKA       =   1
+               MOVE    1               TO  LNK-SYUACC-RC
+           ELSE
+               MOVE    LNK-SYUACC-IO2-OCC(1)
+                                       TO  SYUKA-REC
+               MOVE    1               TO  IDW
+           END-IF
+      *
+           PERFORM                 UNTIL   FLG-SYUKA   =   1
+               IF      SYUKA-RECESYUBETU   =   "XXXX" 
+                   MOVE    SYUKA-SRYKA-INPUT   TO  LNK-SYUACC-IO-H-SRYKA
+               ELSE
+                   PERFORM VARYING IDX     FROM    1   BY  1
+                           UNTIL   IDX >   100
+                       IF      LNK-SYUACC-IO-TEISYUTUSAKI  (IDX)
+                                               =   ZERO
+                           MOVE    SYUKA-NYUGAIKBN
+                                   TO  LNK-SYUACC-IO-NYUGAIKBN   (IDX)
+                           MOVE    SYUKA-TEISYUTUSAKI
+                                   TO  LNK-SYUACC-IO-TEISYUTUSAKI(IDX)
+                           MOVE    SYUKA-RECESYUBETU
+                                   TO  LNK-SYUACC-IO-RECESYUBETU (IDX)
+                           MOVE    SYUKA-HKNJANUM
+                                   TO  LNK-SYUACC-IO-HKNJANUM    (IDX)
+                           MOVE    SYUKA-HOJOKBN
+                                   TO  LNK-SYUACC-IO-HOJOKBN     (IDX)
+                       END-IF
+                       IF    ( SYUKA-NYUGAIKBN
+                                   =   LNK-SYUACC-IO-NYUGAIKBN   (IDX) )
+                       AND   ( SYUKA-TEISYUTUSAKI
+                                   =   LNK-SYUACC-IO-TEISYUTUSAKI(IDX) )
+                       AND   ( SYUKA-RECESYUBETU
+                                   =   LNK-SYUACC-IO-RECESYUBETU (IDX) )
+                       AND   ( SYUKA-HKNJANUM
+                                   =   LNK-SYUACC-IO-HKNJANUM    (IDX) )
+                       AND   ( SYUKA-HOJOKBN
+                                   =   LNK-SYUACC-IO-HOJOKBN     (IDX) )
+      *
+                           PERFORM 20011-KBN01-SYUACC-HENSYU-SEC
+                       END-IF
+                   END-PERFORM
+               END-IF          
+      *        
+               ADD     1           TO  IDW
+               IF  LNK-IO2-SYU-HOSPID(IDW)   =   SPACE
+                   MOVE    1                 TO  FLG-SYUKA
+               ELSE
+                   MOVE    LNK-SYUACC-IO2-OCC(IDW)
+                                       TO  SYUKA-REC
+               END-IF
+           END-PERFORM   
+      *     
+      *
+      *    
+      *    請求点数によるシステム主科の設定（入院）
+           INITIALIZE              WRK-SRYACC-AREA
+      *
+           IF    ( SPA-NYUGAIKBN       =   "1" )
+           AND   ( SPA-SYUKA-NYUIN     =   "2" )
+               PERFORM VARYING IDX     FROM    1   BY  1
+                       UNTIL   IDX     >   100
+                       OR      LNK-SYUACC-IO-TEISYUTUSAKI  (IDX)
+                                       =   ZERO
+                   DISPLAY "loop1--------------->"
+                   PERFORM VARYING IDY     FROM    1   BY  1
+                           UNTIL   IDY     >       50
+                           OR      LNK-SYUACC-IO-SRYKA (IDX IDY)
+                                           =   SPACE
+                   DISPLAY "loop2--------------->"
+                       IF      LNK-SYUACC-IO-TENSU (IDX IDY)
+                                           =   WRK-SYUACC-TENSU (IDX)
+                           EVALUATE    SPA-SYUKA-SELECT    
+                               WHEN    "0"
+                                   MOVE    SPACE       TO
+                                           LNK-SYUACC-IO-SYUKA-AUTO(IDX)
+                               WHEN    "1"
+                                   IF      LNK-SYUACC-IO-SRYKA (IDX IDY)
+                                                       <
+                                           LNK-SYUACC-IO-SYUKA-AUTO(IDX)
+                                       MOVE    LNK-SYUACC-IO-SRYKA
+                                                               (IDX IDY)
+                                                       TO  
+                                           LNK-SYUACC-IO-SYUKA-AUTO(IDX)
+                                   END-IF
+                               WHEN    "2"
+                                   IF      LNK-SYUACC-IO-SRYKA (IDX IDY)
+                                                       >
+                                           LNK-SYUACC-IO-SYUKA-AUTO(IDX)
+                                       MOVE    LNK-SYUACC-IO-SRYKA
+                                                               (IDX IDY)
+                                                       TO  
+                                           LNK-SYUACC-IO-SYUKA-AUTO(IDX)
+                                   END-IF
+                           END-EVALUATE
+                       ELSE
+                           IF      LNK-SYUACC-IO-TENSU (IDX IDY)
+                                               >   WRK-SYUACC-TENSU(IDX)
+                               MOVE    LNK-SYUACC-IO-TENSU (IDX IDY)
+                                           TO  WRK-SYUACC-TENSU (IDX) 
+                               MOVE    LNK-SYUACC-IO-SRYKA (IDX IDY)  
+                                           TO  LNK-SYUACC-IO-SYUKA-AUTO
+                                                                (IDX)
+                           END-IF
+                       END-IF
+                   END-PERFORM
+               END-PERFORM         
+           END-IF
+           .
+       2001-KBN07-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
