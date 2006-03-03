@@ -90,5 +90,56 @@
                            11  LNK-SYUACC-IO-EDDAY
                                        PIC 9(02).
       *
+           03  LNK-SYUACC-IO2.
+             05  LNK-SYUACC-IO2-OCC               OCCURS  100.
+               07  LNK-IO2-SYU-KEY.
+      *医療機関ＩＤ
+                 09  LNK-IO2-SYU-HOSPID        PIC X(24).
+      *入外区分
+                 09  LNK-IO2-SYU-NYUGAIKBN     PIC X(01).
+      *患者ＩＤ
+                 09  LNK-IO2-SYU-PTID          PIC 9(10).
+      *会計区分
+                 09  LNK-IO2-SYU-TEN-KBN       PIC X(01).
+      *診療年月
+                 09  LNK-IO2-SYU-SRYYM         PIC 9(06).
+      *審査支払機関
+                 09  LNK-IO2-SYU-TEISYUTUSAKI  PIC 9(01).
+      *保険者番号
+                 09  LNK-IO2-SYU-HKNJANUM      PIC X(08).
+      *補助区分
+                 09  LNK-IO2-SYU-HOJOKBN       PIC X(01).
+      *レセプト種別
+                 09  LNK-IO2-SYU-RECESYUBETU   PIC X(04).
+      *診療科
+                 09  LNK-IO2-SYU-SRYKA         PIC X(02).
+      *診療科（入力）
+               07  LNK-IO2-SYU-SRYKA-INPUT     PIC X(02).
+      *保険組合せ番号
+               07  LNK-IO2-SYU-HKNCOMBI-AREA.
+                 09  LNK-IO2-SYU-HKNCOMBI      PIC 9(04)
+                                               OCCURS  10.
+      *請求点数合計
+               07  LNK-IO2-SYU-TENSU           PIC S9(09).
+      *受診回数合計(入院外)
+               07  LNK-IO2-SYU-KAISU           PIC 9(03).
+      *通算日数合計(入院)
+               07  LNK-IO2-SYU-NISSU           PIC 9(03).
+      *終了日
+               07  LNK-IO2-SYU-EDDAY           PIC 9(02).
+      *未請求レセで使う予定
+               07  LNK-IO2-SYU-MISEIKYU-FLG    PIC X(02).
+      *削除フラグ
+               07  LNK-IO2-SYU-DLT-FLG         PIC X(01).
+      *端末ＩＤ
+               07  LNK-IO2-SYU-TERMID          PIC X(16).
+      *オペーレータＩＤ
+               07  LNK-IO2-SYU-OPID            PIC X(16).
+      *作成年月日
+               07  LNK-IO2-SYU-CREYMD          PIC X(08).
+      *更新年月日
+               07  LNK-IO2-SYU-UPYMD           PIC X(08).
+      *更新時間
+               07  LNK-IO2-SYU-UPHMS           PIC X(06).
       *    復帰コード
            03  LNK-SYUACC-RC           PIC S9(9) BINARY.
