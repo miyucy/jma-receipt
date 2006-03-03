@@ -128,7 +128,8 @@
                        IF      LNK-SYUACC-I-KBN
                                            =   "01"    OR  "02"    OR
                                                "03"    OR  "04"    OR
-                                               "05"    OR  "06" 
+                                               "05"    OR  "06"    OR
+                                               "07"
                            CONTINUE
                        ELSE
                            MOVE    1               TO  FLG-END
@@ -136,7 +137,8 @@
                    WHEN    "2"
                        IF      LNK-SYUACC-I-KBN
                                            =   "01"    OR  "02"    OR
-                                               "05"    OR  "06"
+                                               "05"    OR  "06"    OR
+                                               "07"
                            CONTINUE
                        ELSE
                            MOVE    1               TO  FLG-END
@@ -215,7 +217,7 @@
                END-EVALUATE
            ELSE
                IF      LNK-SYUACC-I-KBN    =   "01"    OR  "02"    OR  
-                                               "06"
+                                               "06"    OR  "07"
                    PERFORM 2004-ORCSSYUACC-SEC
                ELSE
                    IF      SPA-SYUKA-MODE  =   "2"
