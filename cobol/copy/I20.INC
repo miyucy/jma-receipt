@@ -16,7 +16,6 @@
       * 113-8621, Japan.
       *****************************************************************
             02  I20.
-              03  I20-B04-STATE PIC S9(9)   BINARY.
               03  I20-B06-STATE PIC S9(9)   BINARY.
               03  I20-B07-STATE PIC S9(9)   BINARY.
               03  I20-B10-STATE PIC S9(9)   BINARY.

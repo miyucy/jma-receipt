@@ -2991,9 +2991,6 @@
                MOVE    SPA-GMN-MAX         TO  I20-COUNT   
            END-IF                  
       *
-      *    暫定定期に詳細ボタンを非活性にする
-           MOVE    WIDGET-INSENSITIVE      TO  I20-B04-STATE
-      *
       *
            IF    ( SPA-GMN-PAGE           <=   1 )
                MOVE    WIDGET-INSENSITIVE  TO  I20-B06-STATE

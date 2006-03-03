@@ -1,8 +1,5 @@
 I20	{
 	fixed6	{
-		B04	{
-			state	int;
-		};
 		B06	{
 			state	int;
 		};
