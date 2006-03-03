@@ -142,6 +142,8 @@
                WHEN    "03"
                WHEN    "04"
                    PERFORM 2003-KBN03-HENSYU-SEC
+               WHEN    "06"
+                   PERFORM 2001-KBN06-HENSYU-SEC
            END-EVALUATE
       *
            MOVE    1               TO  FLG-END
@@ -169,9 +171,9 @@
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
-           IF      FLG-SYUKA           =   ZERO
-               MOVE    "tbl_syuka"         TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
+           IF      MCP-RC          =   ZERO
+               MOVE    "tbl_syuka"     TO  MCP-TABLE
+               MOVE    "key2"          TO  MCP-PATHNAME
                PERFORM 910-SYUKA-READ-N-SEC
            ELSE
                MOVE    1               TO  FLG-SYUKA
@@ -649,7 +651,7 @@
                CALL    "MONFUNC"           USING
                                            MCPAREA
                                            MCPDATA-REC
-               IF      FLG-SYUKA           =   ZERO
+               IF      MCP-RC          =   ZERO
                    MOVE    "tbl_syuka"         TO  MCP-TABLE
                    MOVE    "key3"              TO  MCP-PATHNAME
                    PERFORM 910-SYUKA-READ-N-SEC
@@ -721,6 +723,125 @@
            END-IF
            .
        2003-KBN03-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    主科テーブル情報取得処理
+      *****************************************************************
+       2001-KBN06-HENSYU-SEC       SECTION.
+      *
+           INITIALIZE              WRK-SRYACC-AREA
+      *
+      *    手入力による主科情報の取得
+           INITIALIZE                  SYUKA-REC
+           MOVE    SPA-HOSPID      TO  SYUKA-HOSPID
+           MOVE    SPA-PTID        TO  SYUKA-PTID
+           MOVE    LNK-SYUACC-I-SRYYM
+                                   TO  SYUKA-SRYYM
+           MOVE    SYUKA-REC       TO  MCPDATA-REC
+           MOVE    "tbl_syuka"     TO  WRK-MCP-TABLE
+           MOVE    "key4"          TO  WRK-MCP-PATHNAME
+           PERFORM 900-SYUKA-READ-SEC
+           IF      FLG-SYUKA       =   ZERO
+               MOVE    SYUKA-SRYKA-INPUT   TO  LNK-SYUACC-IO-H-SRYKA
+           END-IF
+      * 
+           INITIALIZE                  SYUKA-REC
+           MOVE    SPA-HOSPID      TO  SYUKA-HOSPID
+           MOVE    SPA-PTID        TO  SYUKA-PTID
+           MOVE    SPA-NYUGAIKBN   TO  SYUKA-NYUGAIKBN
+           MOVE    LNK-SYUACC-I-SRYYM
+                                   TO  SYUKA-SRYYM
+           MOVE    LNK-SYUACC-IO-RECESYUBETU (1)
+                                   TO  SYUKA-RECESYUBETU
+           MOVE    LNK-SYUACC-IO-HKNJANUM    (1)
+                                   TO  SYUKA-HKNJANUM
+           MOVE    LNK-SYUACC-IO-HOJOKBN     (1)
+                                   TO  SYUKA-HOJOKBN
+           MOVE    LNK-SYUACC-IO-TEISYUTUSAKI (1)
+                                   TO  SYUKA-TEISYUTUSAKI
+           MOVE    SYUKA-REC       TO  MCPDATA-REC
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           MOVE    "tbl_syuka"     TO  MCP-TABLE
+           MOVE    "key7"          TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          =   ZERO
+               MOVE    "tbl_syuka"         TO  MCP-TABLE
+               MOVE    "key7"              TO  MCP-PATHNAME
+               PERFORM 910-SYUKA-READ-N-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYUKA
+           END-IF
+      *
+           IF      FLG-SYUKA       =   1
+               MOVE    1               TO  LNK-SYUACC-RC
+           END-IF
+      *
+           PERFORM                 UNTIL   FLG-SYUKA   =   1
+               MOVE    1               TO  IDX
+               PERFORM 20011-KBN01-SYUACC-HENSYU-SEC
+      *        
+               MOVE    "tbl_syuka"         TO  MCP-TABLE
+               MOVE    "key7"              TO  MCP-PATHNAME
+               PERFORM 910-SYUKA-READ-N-SEC
+           END-PERFORM   
+      *     
+           MOVE    "tbl_syuka"     TO  MCP-TABLE
+           MOVE    "key7"          TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+      *    
+      *    請求点数によるシステム主科の設定（入院）
+           INITIALIZE              WRK-SRYACC-AREA
+      *
+           IF    ( SPA-NYUGAIKBN       =   "1" )
+           AND   ( SPA-SYUKA-NYUIN     =   "2" )
+               MOVE   1                TO  IDX
+               PERFORM VARYING IDY     FROM    1   BY  1
+                       UNTIL   IDY     >       50
+                       OR      LNK-SYUACC-IO-SRYKA (IDX IDY)
+                                       =   SPACE
+                   IF      LNK-SYUACC-IO-TENSU (IDX IDY)
+                                       =   WRK-SYUACC-TENSU (IDX)
+                       EVALUATE    SPA-SYUKA-SELECT    
+                           WHEN    "0"
+                               MOVE    SPACE       TO
+                                       LNK-SYUACC-IO-SYUKA-AUTO(IDX)
+                           WHEN    "1"
+                               IF      LNK-SYUACC-IO-SRYKA (IDX IDY)
+                                                   <
+                                       LNK-SYUACC-IO-SYUKA-AUTO(IDX)
+                                   MOVE    LNK-SYUACC-IO-SRYKA
+                                                           (IDX IDY)
+                                                   TO  
+                                           LNK-SYUACC-IO-SYUKA-AUTO(IDX)
+                               END-IF
+                           WHEN    "2"
+                               IF      LNK-SYUACC-IO-SRYKA (IDX IDY)
+                                                   >
+                                       LNK-SYUACC-IO-SYUKA-AUTO(IDX)
+                                   MOVE    LNK-SYUACC-IO-SRYKA
+                                                           (IDX IDY)
+                                                   TO  
+                                           LNK-SYUACC-IO-SYUKA-AUTO(IDX)
+                               END-IF
+                       END-EVALUATE
+                   ELSE
+                       IF      LNK-SYUACC-IO-TENSU (IDX IDY)
+                                               >   WRK-SYUACC-TENSU(IDX)
+                           MOVE    LNK-SYUACC-IO-TENSU (IDX IDY)
+                                           TO  WRK-SYUACC-TENSU (IDX) 
+                           MOVE    LNK-SYUACC-IO-SRYKA (IDX IDY)  
+                                           TO  LNK-SYUACC-IO-SYUKA-AUTO
+                                                                (IDX)
+                       END-IF
+                   END-IF
+               END-PERFORM
+           END-IF
+           .
+       2001-KBN06-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************

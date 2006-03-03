@@ -128,7 +128,7 @@
                        IF      LNK-SYUACC-I-KBN
                                            =   "01"    OR  "02"    OR
                                                "03"    OR  "04"    OR
-                                               "05"
+                                               "05"    OR  "06" 
                            CONTINUE
                        ELSE
                            MOVE    1               TO  FLG-END
@@ -136,7 +136,7 @@
                    WHEN    "2"
                        IF      LNK-SYUACC-I-KBN
                                            =   "01"    OR  "02"    OR
-                                               "05"
+                                               "05"    OR  "06"
                            CONTINUE
                        ELSE
                            MOVE    1               TO  FLG-END
@@ -214,7 +214,8 @@
                        PERFORM 2004-ORCSSYUACC-SEC
                END-EVALUATE
            ELSE
-               IF      LNK-SYUACC-I-KBN    =   "01"    OR  "02"
+               IF      LNK-SYUACC-I-KBN    =   "01"    OR  "02"    OR  
+                                               "06"
                    PERFORM 2004-ORCSSYUACC-SEC
                ELSE
                    IF      SPA-SYUKA-MODE  =   "2"
@@ -555,9 +556,10 @@
       *
       *??
            DISPLAY "SYUKAMAIN OT=" LNK-SYUACC-RC
+           DISPLAY " H-SRYKA=" LNK-SYUACC-IO-H-SRYKA
            DISPLAY "--------------------------------------------------"
            DISPLAY "|種別|保険者NO|提|au|科|保1 |保2 |保3 |   点数   |"
-                   "日数|科"
+                   "日数|回数|最終日|"
            PERFORM VARYING     IDX       FROM    1   BY  1
                    UNTIL      (IDX       >   100   )
                IF    LNK-SYUACC-IO-RECESYUBETU (IDX) = SPACE
