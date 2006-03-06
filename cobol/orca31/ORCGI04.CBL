@@ -390,6 +390,9 @@
       *    定期請求ジョブチェック
            COPY    "CPORCSTEIKIJOB.INC".
       *
+      *    主科情報アクセス用パラメタ
+           COPY    "CPORCSSYUACC.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
@@ -2569,6 +2572,8 @@
                GO  TO  451-TOUROKU-SYORI-EXT
            END-IF
       *
+           PERFORM 800-ORCSSYUKAMAIN-SEC
+      *
            .
        451-TOUROKU-SYORI-EXT.
            EXIT.
@@ -2852,6 +2857,8 @@
                    END-IF
                END-IF
            END-PERFORM
+      *
+           PERFORM 800-ORCSSYUKAMAIN-SEC
       *
            .
        452-TOUROKU-SYORI-EXT.
@@ -3852,6 +3859,31 @@
            .
       *
        800-MCNDATE-EXT.
+           EXIT.
+      *****************************************************************
+      *    主科決定サブ
+      *****************************************************************
+       800-ORCSSYUKAMAIN-SEC           SECTION.
+      *
+           PERFORM 900-PTINF-KEY-SEL-SEC
+      *
+           INITIALIZE                  ORCSSYUACCAREA
+      *
+           MOVE    PTINF-PTID          TO  SPA-PTID
+           MOVE    "1"                 TO  SPA-NYUGAIKBN
+           MOVE    PTINF-BIRTHDAY      TO  SPA-BIRTHDAY
+      *
+           INITIALIZE                      ORCSSYUACCAREA
+           MOVE    "04"                TO  LNK-SYUACC-I-KBN
+           MOVE    SPA-NAI-I04-TAIINYMD (1:6)
+                                       TO  LNK-SYUACC-I-SRYYM
+           CALL    "ORCSSYUKAMAIN"     USING
+                                       SPA-AREA
+                                       ORCSSYUACCAREA
+      *
+           .
+      *
+       800-ORCSSYUKAMAIN-EXT.
            EXIT.
       *****************************************************************
       *    患者情報検索処理

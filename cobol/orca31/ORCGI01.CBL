@@ -342,8 +342,6 @@
            03  WRK-SAGAKU-KBN              PIC X(02).
            03  WRK-SAGAKU-KBN9  REDEFINES  WRK-SAGAKU-KBN
                                            PIC 9(02).
-           03  WRK-ZI-SAISIN-RRKNUM        PIC 9(03).
-           03  WRK-ZI-SAISIN-RRKEDANUM     PIC 9(03).
            03  WRK-KANRICD                 PIC X(04).
            03  WRK-KBNCD                   PIC X(08).
            03  WRK-TOKNYUIN-NM             PIC X(60).
@@ -428,6 +426,9 @@
            03  WRK-NAI-NYUINYMD.
                05  WRK-NAI-NYUINYM         PIC X(06).
                05  WRK-NAI-NYUINDD         PIC 9(02).
+           03  WRK-SYUKA-G.
+               05  WRK-SYUKA-KBN           PIC X(02).
+               05  WRK-SYUKA-YMD           PIC X(08).
       *
       *    患者年齢算出用エリア
        01  WRK-NENREI-AREA.
@@ -484,6 +485,9 @@
        01  WRK-PTNYUINRRK-REC.
            COPY  "CPPTNYUINRRK.INC"  REPLACING  //PTNYUINRRK-//
                                             BY  //WRK-PTNYUINRRK-//.
+       01  LASTRRK-REC.
+           COPY  "CPPTNYUINRRK.INC"  REPLACING  //PTNYUINRRK-//
+                                            BY  //LASTRRK-//.
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -669,6 +673,9 @@
       *
       *    定期請求ジョブチェック
            COPY    "CPORCSTEIKIJOB.INC".
+      *
+      *    主科情報アクセス用パラメタ
+           COPY    "CPORCSSYUACC.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -6544,6 +6551,7 @@
            END-IF
       *
       *    患者情報の入院歴番号を更新する
+      *    主科情報も更新する
            PERFORM 4801-PTINF-UPD-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
                GO  TO  4801-PTNYUINRRK-UPD-EXT
@@ -7486,6 +7494,8 @@
       *****************************************************************
        4801-PTNYUINRRK-EDIT-MAE-SEC    SECTION.
       *
+           INITIALIZE                  WRK-SYUKA-G
+      *
            MOVE    SPACE           TO  WRK-CREYMD
                                        WRK-TENNYUYMD
                                        WRK-TENSTUYMD
@@ -7615,6 +7625,9 @@
                                    TO  WRK-TENSTUYMD
                    MOVE    PTNYUINRRK-CREYMD
                                    TO  WRK-CREYMD
+      *
+                   PERFORM 48011-EDIT-SYUKA-PARA-SEC
+      *
                END-IF
            ELSE
       *        更新・削除処理時、対象データが存在しなければエラーとする
@@ -7624,11 +7637,55 @@
                    MOVE    "4003"  TO  SPA-ERRCD
                    GO  TO  4801-PTNYUINRRK-EDIT-MAE-EXT
                END-IF
+      *
+               PERFORM 48011-EDIT-SYUKA-PARA-SEC
+      *
            END-IF
       *
       *
            .
        4801-PTNYUINRRK-EDIT-MAE-EXT.
+           EXIT.
+      *****************************************************************
+      *    主科決定サブパラメタ編集処理
+      *****************************************************************
+       48011-EDIT-SYUKA-PARA-SEC       SECTION.
+      *
+           EVALUATE    SPA-GMN-I01-SYORIKBN-CD
+           WHEN    "01"
+               MOVE    "04"                    TO  WRK-SYUKA-KBN
+               MOVE    SPA-NAI-I01-NYUINYMD    TO  WRK-SYUKA-YMD
+           WHEN    "02"
+               MOVE    "05"                    TO  WRK-SYUKA-KBN
+               MOVE    SPA-NAI-I01-TAIINYMD    TO  WRK-SYUKA-YMD
+           WHEN    "03"
+               MOVE    "04"                    TO  WRK-SYUKA-KBN
+               MOVE    PTNYUINRRK-TENNYUYMD    TO  WRK-SYUKA-YMD
+           WHEN    "05"
+               MOVE    "04"                    TO  WRK-SYUKA-KBN
+               MOVE    SPA-NAI-I01-NYUINYMD    TO  WRK-SYUKA-YMD
+           WHEN    "06"
+               MOVE    "05"                    TO  WRK-SYUKA-KBN
+               MOVE    SPA-NAI-I01-NYUINYMD    TO  WRK-SYUKA-YMD
+           WHEN    "07"
+               MOVE    "04"                    TO  WRK-SYUKA-KBN
+               MOVE    SPA-NAI-I01-TAIINYMD    TO  WRK-SYUKA-YMD
+           WHEN    "08"
+               MOVE    "04"                    TO  WRK-SYUKA-KBN
+               MOVE    SPA-NAI-I01-IDOYMD      TO  WRK-SYUKA-YMD
+           WHEN    "09"
+               MOVE    "04"                    TO  WRK-SYUKA-KBN
+               MOVE    PTNYUINRRK-TENNYUYMD    TO  WRK-SYUKA-YMD
+           WHEN    "10"
+               MOVE    "04"                    TO  WRK-SYUKA-KBN
+               MOVE    SPA-NAI-I01-TAIINYMD    TO  WRK-SYUKA-YMD
+           WHEN    "11"
+               MOVE    "04"                    TO  WRK-SYUKA-KBN
+               MOVE    SPA-NAI-I01-TAIINYMD    TO  WRK-SYUKA-YMD
+           END-EVALUATE
+      *
+           .
+       48011-EDIT-SYUKA-PARA-EXT.
            EXIT.
       *****************************************************************
       *    初回番号取得処理
@@ -12157,6 +12214,8 @@
       *****************************************************************
        4801-PTINF-UPD-SEC          SECTION.
       *
+           INITIALIZE                      LASTRRK-REC
+      *
            MOVE    ZERO                TO  FLG-ZI-SAISIN
       *    入院歴より最新の歴情報を取得
            INITIALIZE  PTNYUINRRK-REC
@@ -12175,10 +12234,8 @@
                    CONTINUE
                ELSE
                    MOVE    1           TO  FLG-ZI-SAISIN
-                   MOVE    PTNYUINRRK-RRKNUM
-                                       TO  WRK-ZI-SAISIN-RRKNUM
-                   MOVE    PTNYUINRRK-RRKEDANUM
-                                       TO  WRK-ZI-SAISIN-RRKEDANUM
+                   MOVE    PTNYUINRRK-REC
+                                       TO  LASTRRK-REC
                END-IF
       *
                MOVE    "PTNYUINRRK-KEY3"   TO  WRK-DBPATH
@@ -12214,9 +12271,8 @@
       *
       *    患者情報の入院歴番号を更新する
            IF    ( FLG-ZI-SAISIN       =   1 )
-               MOVE   WRK-ZI-SAISIN-RRKNUM
-                                       TO  PTINF-RRKNUM
-               MOVE   WRK-ZI-SAISIN-RRKEDANUM
+               MOVE   LASTRRK-RRKNUM   TO  PTINF-RRKNUM
+               MOVE   LASTRRK-RRKEDANUM
                                        TO  PTINF-RRKEDANUM
            ELSE
                MOVE    ZERO            TO  PTINF-RRKNUM
@@ -12235,6 +12291,8 @@
                MOVE    "4027"          TO  SPA-ERRCD
                GO  TO  4801-PTINF-UPD-EXT
            END-IF
+      *
+           PERFORM 800-ORCSSYUKAMAIN-SEC
       *
            .
        4801-PTINF-UPD-EXT.
@@ -14214,6 +14272,28 @@
            .
       *
        800-MCNDATE-EXT.
+           EXIT.
+      *****************************************************************
+      *    主科決定サブ
+      *****************************************************************
+       800-ORCSSYUKAMAIN-SEC           SECTION.
+      *
+           INITIALIZE                  ORCSSYUACCAREA
+      *
+           MOVE    PTINF-PTID          TO  SPA-PTID
+           MOVE    "1"                 TO  SPA-NYUGAIKBN
+           MOVE    PTINF-BIRTHDAY      TO  SPA-BIRTHDAY
+      *
+           INITIALIZE                      ORCSSYUACCAREA
+           MOVE    WRK-SYUKA-KBN       TO  LNK-SYUACC-I-KBN
+           MOVE    WRK-SYUKA-YMD (1:6) TO  LNK-SYUACC-I-SRYYM
+           CALL    "ORCSSYUKAMAIN"     USING
+                                       SPA-AREA
+                                       ORCSSYUACCAREA
+      *
+           .
+      *
+       800-ORCSSYUKAMAIN-EXT.
            EXIT.
       *****************************************************************
       *    点数マスタ検索処理

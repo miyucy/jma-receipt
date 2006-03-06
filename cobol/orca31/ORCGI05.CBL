@@ -59,6 +59,7 @@
        01  FLG-AREA.
            03  FLG-END                     PIC 9(01).
            03  FLG-SYSKANRI                PIC 9(01).
+           03  FLG-PTINF                   PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -81,6 +82,10 @@
       *
            COPY    "CPSK5013.INC".
       *
+      *    患者マスタ
+       01  PTINF-REC.
+           COPY    "CPPTINF.INC".
+      *
       *    患者入院履歴
        01  PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC".
@@ -88,6 +93,9 @@
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
+      *
+      *    主科情報アクセス用パラメタ
+           COPY    "CPORCSSYUACC.INC".
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
@@ -490,6 +498,8 @@
                GO  TO  220-TOUROKU-EXT
            END-IF
       *
+           PERFORM 800-ORCSSYUKAMAIN-SEC
+      *
            MOVE    SPA-GMN-I05-TAIINCD-CD
                                        TO  SPA-I02-I05-TAIINCD
       *
@@ -632,6 +642,57 @@
            .
       *
        800-MCNDATE-EXT.
+           EXIT.
+      *****************************************************************
+      *    主科決定サブ
+      *****************************************************************
+       800-ORCSSYUKAMAIN-SEC           SECTION.
+      *
+           PERFORM 900-PTINF-KEY-SEL-SEC
+      *
+           INITIALIZE                  ORCSSYUACCAREA
+      *
+           MOVE    PTINF-PTID          TO  SPA-PTID
+           MOVE    "1"                 TO  SPA-NYUGAIKBN
+           MOVE    PTINF-BIRTHDAY      TO  SPA-BIRTHDAY
+      *
+           INITIALIZE                      ORCSSYUACCAREA
+           MOVE    "04"                TO  LNK-SYUACC-I-KBN
+           MOVE    SPA-I02-I05-TAIINYMD (1:6)
+                                       TO  LNK-SYUACC-I-SRYYM
+           CALL    "ORCSSYUKAMAIN"     USING
+                                       SPA-AREA
+                                       ORCSSYUACCAREA
+      *
+           .
+      *
+       800-ORCSSYUKAMAIN-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者情報検索処理(KEY)
+      *****************************************************************
+       900-PTINF-KEY-SEL-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-PTINF
+      *
+           INITIALIZE                      PTINF-REC
+           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+           MOVE    SPA-I02-I05-PTID    TO  PTINF-PTID
+           MOVE    PTINF-REC           TO  MCPDATA-REC
+           MOVE    PATH-TBL-PTINF-KEY  TO  MCP-PATH
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC     TO  PTINF-REC
+           ELSE
+               MOVE    1               TO  FLG-PTINF
+               INITIALIZE                  PTINF-REC
+           END-IF
+      *
+           MOVE    PATH-TBL-PTINF-KEY  TO  MCP-PATH
+           PERFORM 910-DBCLOSE-SEC
+      *
+           .
+       900-PTINF-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理
