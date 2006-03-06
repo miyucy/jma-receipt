@@ -488,6 +488,9 @@
       *    保険組合せセット領域
            COPY    "CPORCSHKNSET.INC".
       *
+      *    主科情報アクセス用パラメタ
+           COPY    "CPORCSSYUACC.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
@@ -6005,6 +6008,11 @@
                                            ",KEY:" ACCT-KEY
                         MOVE    "2000"         TO  SPA-ERRCD
                    END-IF
+      *            主科設定
+                   IF    NACCT-ZAISKBKBN   =   "1"  OR  "6"  OR  "7"
+                       PERFORM    600-SYUKA-SET-SEC
+                   END-IF
+      *
                ELSE
                    DISPLAY "I41 NYUINACCT READ ERR:" NACCT-KEY
                    MOVE    "2000"         TO  SPA-ERRCD
@@ -6228,6 +6236,11 @@
                                                ",KEY:" NACCT-KEY
                         MOVE    "2000"          TO  SPA-ERRCD
                    END-IF
+      *            主科設定
+                   IF    NACCT-ZAISKBKBN   =   "1"  OR  "6"  OR  "7"
+                       PERFORM    600-SYUKA-SET-SEC
+                   END-IF
+      *
                ELSE
       *             DISPLAY "I41 NYUINACCT READ ERR02:" NACCT-KEY
                     MOVE    "2000"          TO  SPA-ERRCD
@@ -6615,6 +6628,33 @@
       *
        520-JIDSET-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    自画面編集処理
+      *****************************************************************
+       600-SYUKA-SET-SEC              SECTION.
+      *
+      *     DISPLAY "== SYUKA-SET-SEC ==="
+      *     DISPLAY "NACCT-SRYYM   = " NACCT-SRYYM
+      *     DISPLAY "SPA-HOSPID    = " SPA-HOSPID
+      *     DISPLAY "SPA-PREFNUM   = " SPA-PREFNUM
+      *     DISPLAY "SPA-PTID      = " SPA-PTID
+      *     DISPLAY "SPA-NYUGAIKBN = " SPA-NYUGAIKBN
+      *     DISPLAY "SPA-BIRTHDAY  = " SPA-BIRTHDAY
+      *
+           INITIALIZE                 ORCSSYUACCAREA
+           MOVE    "04"           TO  LNK-SYUACC-I-KBN
+           MOVE    NACCT-SRYYM    TO  LNK-SYUACC-I-SRYYM
+           CALL    "ORCSSYUKAMAIN"    USING
+                                      SPA-AREA
+                                      ORCSSYUACCAREA
+      *
+      *
+           .
+      *
+       600-SYUKA-SET-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    マシン日付取得サブ
       *****************************************************************
