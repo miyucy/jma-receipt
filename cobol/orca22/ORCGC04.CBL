@@ -870,7 +870,12 @@
                                            TO  SPA-GMN-C04-INPUTCD(IDZ)
                        PERFORM 410021-INPUTCD-HENSYU-SEC
                    END-IF
-               END-IF    
+               END-IF
+           ELSE 
+               IF      SPA-C01-INDEX   >   ZERO
+                   MOVE    "0008"              TO  SPA-ERRCD
+                   GO  TO  41002-SELNUM2-CHK-EXT
+               END-IF
            END-IF
       *
            IF      SPA-CIDCD2      NOT =   SPACE

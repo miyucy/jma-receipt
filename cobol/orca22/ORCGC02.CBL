@@ -1892,7 +1892,7 @@
                    MOVE    SPA-NAI-C04-BYOMEICD-O (IDZ IDX3)
                                        TO  SPA-NAI-C02-BYOMEICD-O
                                                           (IDZ IDX3)
-                   MOVE    SPA-NAI-C04-BYOMEI-O (IDX IDX3)
+                   MOVE    SPA-NAI-C04-BYOMEI-O   (IDZ IDX3)
                                        TO  SPA-NAI-C02-BYOMEI-O
                                                           (IDZ IDX3)
                END-PERFORM 
