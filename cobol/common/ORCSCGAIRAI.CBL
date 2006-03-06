@@ -587,7 +587,10 @@
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
-             IF      FLG-NAIBUN          =   1
+      *        ºÁ≤ ¿ﬂƒÍ
+               PERFORM 1009-ORCSSYUKAMAIN-SEC
+           END-IF
+           IF      FLG-NAIBUN          =   1
       *        ∆‚ ¨»Á…È≤ŸªÓ∏≥ Ò≥Á≈¿øÙ•¡•ß•√•Ø
                INITIALIZE                  ORCSSANFUKAAREA
                INITIALIZE                  SPA-SCR-REC
@@ -601,9 +604,6 @@
                IF      LNK-SANFUKA-ERRMSG  NOT =   SPACE
                    MOVE    LNK-SANFUKA-ERRMSG  TO  SPA-ERRMSG2
                END-IF
-             END-IF
-      *      ºÁ≤ ¿ﬂƒÍ
-             PERFORM 1009-ORCSSYUKAMAIN-SEC
            END-IF
            .
       *
