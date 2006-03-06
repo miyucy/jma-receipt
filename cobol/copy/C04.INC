@@ -16,14 +16,19 @@
       * 113-8621, Japan.
       ********************************************************************
           02  C04.
+              03  C04-B04-STATE PIC S9(9)   BINARY.
+              03  C04-TITLE     PIC X(10).
               03  C04-SELNUM2.
                 04  C04-VALUE   PIC S9(5).
-              03  C04-INPUTCD-G.
-                04  C04-INPUTCD PIC X(10)    OCCURS  6.
+              03  C04-INPUTCD-G    OCCURS  6.
+                04  C04-INPUTCD-STATE   PIC S9(9)   BINARY.
+                04  C04-INPUTCD PIC X(10).
               03  C04-BYOMEI.
                 04  C04-VALUE   PIC X(400).
+              03  C04-BUNRUICD-STATE   PIC S9(9)   BINARY.
               03  C04-BUNRUICD.
                 04  C04-VALUE   PIC S9(3).
+              03  C04-KENBYOMEI-STATE  PIC S9(9)   BINARY.
               03  C04-KENBYOMEI.
                 04  C04-VALUE   PIC X(50).
               03  C04-SCR-ACTLST.

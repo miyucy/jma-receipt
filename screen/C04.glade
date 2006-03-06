@@ -590,12 +590,12 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label528</name>
-      <x>64</x>
+      <name>TITLE</name>
+      <x>50</x>
       <y>8</y>
-      <width>64</width>
+      <width>70</width>
       <height>24</height>
-      <label>¸¡º÷ÉÂÌ¾  </label>
+      <label></label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>

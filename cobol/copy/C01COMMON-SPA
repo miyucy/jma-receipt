@@ -13,6 +13,8 @@
       *  新患者病名マスタ対応
       *  01/01/01    NACL-藤原    03.12.15  病名コードを２１個に変更
       *                                     分類コードを追加
+      *
+      *  02.07.01    NACL-藤原    06/02/01  検索自院病名コード追加
       *****************************************************************
       *
        01  SPA-C01KYOUTU.
@@ -24,14 +26,19 @@
                    09  SPA-C01-TRECECD     PIC X(07).
                    09  SPA-C01-TUSERBYOMEIFLG
                                            PIC X(01).                          
+                   09  SPA-C01-TBYOMEITOP  PIC X(01).
+                   09  SPA-C01-TBYOMEISBT  PIC X(01).
       *検索病名
            05  SPA-C01-BYOMEI              PIC X(80).             
       *患者ＩＤ
            05  SPA-C01-PTID                PIC 9(10).             
       *診療科
            05  SPA-C01-SRYKA               PIC X(02).             
-      *分類コード
+      *検索分類コード
            05  SPA-C01-BUNRUICD            PIC 9(03).             
+      *検索自院病名コード
+           05  SPA-C01-BYOMEIINPUTCD       PIC X(10). 
+           05  SPA-C01-INDEX               PIC 9(01).            
       *簡単修正項目
            05  SPA-C01-HENSYU-NUM-G.
                07  SPA-C01-STNUM-O         PIC 9(05)   OCCURS  5.
