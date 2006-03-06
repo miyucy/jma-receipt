@@ -3874,7 +3874,11 @@
            MOVE    PTINF-BIRTHDAY      TO  SPA-BIRTHDAY
       *
            INITIALIZE                      ORCSSYUACCAREA
-           MOVE    "04"                TO  LNK-SYUACC-I-KBN
+           IF    ( SPA-I01-I04-PROCKBN =   "1" )
+               MOVE    "05"            TO  LNK-SYUACC-I-KBN
+           ELSE
+               MOVE    "04"            TO  LNK-SYUACC-I-KBN
+           END-IF
            MOVE    SPA-NAI-I04-TAIINYMD (1:6)
                                        TO  LNK-SYUACC-I-SRYYM
            CALL    "ORCSSYUKAMAIN"     USING
