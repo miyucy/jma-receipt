@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-太田    03.11.17  更新日付編集対応
       *  02.00.00    NACL-多々納  04.05.06  チェック追加等
+      *  02.00.01    NACL-小豆沢  06.03.06  主科設定対応追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -468,6 +469,9 @@
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
+      *
+      *    主科情報アクセス用パラメタ
+           COPY    "CPORCSSYUACC.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -3382,6 +3386,8 @@
                                         MCPDATA-REC.
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "I44 NYUINACCT UPD ERR:"  MCP-RC
+           ELSE
+               PERFORM   600-SYUKA-SET-SEC
            END-IF.
       *
        4502-NYUKAI-KOU-EXT.
@@ -3801,6 +3807,31 @@
            MOVE    1                   TO  FLG-END.
       *
        520-JIDSET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    主科設定処理
+      *****************************************************************
+       600-SYUKA-SET-SEC              SECTION.
+      *
+      *     DISPLAY "== SYUKA-SET-SEC ==="
+      *     DISPLAY "NACCT-SRYYM   = " NACCT-SRYYM
+      *     DISPLAY "SPA-HOSPID    = " SPA-HOSPID
+      *     DISPLAY "SPA-PREFNUM   = " SPA-PREFNUM
+      *     DISPLAY "SPA-PTID      = " SPA-PTID
+      *     DISPLAY "SPA-NYUGAIKBN = " SPA-NYUGAIKBN
+      *     DISPLAY "SPA-BIRTHDAY  = " SPA-BIRTHDAY
+      *
+           INITIALIZE                 ORCSSYUACCAREA
+           MOVE    "04"           TO  LNK-SYUACC-I-KBN
+           MOVE    NACCT-SRYYM    TO  LNK-SYUACC-I-SRYYM
+           CALL    "ORCSSYUKAMAIN"    USING
+                                      SPA-AREA
+                                      ORCSSYUACCAREA
+      *
+           .
+      *
+       600-SYUKA-SET-EXT.
            EXIT.
       *
       *****************************************************************
