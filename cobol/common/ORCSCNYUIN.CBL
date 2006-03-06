@@ -33,6 +33,7 @@
       *  01.00.04    NACL-多々納  04/11/11  調剤料算定判定の追加
       *  01.00.05    NACL-多々納  05/04/22  レセ電対応
       *  01.00.06    NACL-多々納  05/11/28  MONFUNC 対応
+      *  01.00.07    NACL-多々納  06/03/06  主科設定追加
       *****************************************************************
       *
       *
@@ -368,6 +369,9 @@
       *    内分泌負荷試験更新パラメタ
            COPY    "CPORCSSANFUKA.INC".
       *
+      *    主情報アクセス用パラメタ
+           COPY    "CPORCSSYUACC.INC".
+      *
            COPY    "MCPAREA".
            COPY    "ORCA-SPA".
       *
@@ -505,9 +509,32 @@
            ELSE
                PERFORM 1001-SAKUSEI-SYORI2-SEC
            END-IF
+      *    主科設定
+           IF     (SPA-ERRCD       NOT =   SPACE ) OR 
+                  (SPA-HKNCOMBINUM     =   "9999")
+               CONTINUE
+           ELSE
+               PERFORM 1009-ORCSSYUKAMAIN-SEC
+           END-IF
       *
            .
        100-SAKUSEI-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    主科設定処理
+      *****************************************************************
+       1009-ORCSSYUKAMAIN-SEC             SECTION.
+      *
+           INITIALIZE                      ORCSSYUACCAREA
+           MOVE    "03"                TO  LNK-SYUACC-I-KBN
+      *    診療年月
+           MOVE    SPA-SRYYMD(1:6)     TO  LNK-SYUACC-I-SRYYM
+           CALL    "ORCSSYUKAMAIN"     USING
+                                       SPA-AREA
+                                       ORCSSYUACCAREA
+           .
+      *
+       1009-ORCSSYUKAMAIN-EXT.
            EXIT.
       *
       *****************************************************************

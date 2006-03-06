@@ -31,6 +31,7 @@
       *  01.00.02    NACL-小豆沢  05/10/17  入金額ゼロでも入金方法を
       *                                     セットする
       *  01.00.03    NACL-多々納  05/11/28  MONFUNC 対応
+      *  01.00.04    NACL-多々納  06/03/06  主科設定追加
       *****************************************************************
       *
       *
@@ -393,7 +394,6 @@
            02  TBL-JYURRK-REC        OCCURS   10.
            COPY    "CPJYURRK.INC"  REPLACING
                                      //JYURRK-// BY //TBL-JYURRK-//.
-      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -435,6 +435,9 @@
       *
       *    レセプト作成管理マスタ更新サブ
            COPY    "CPORCSRECEUPD.INC".
+      *
+      *    主情報アクセス用パラメタ
+           COPY    "CPORCSSYUACC.INC".
       *
            COPY    "MCPAREA".
            COPY    "ORCA-SPA".
@@ -583,7 +586,8 @@
                END-IF
            END-IF
       *
-           IF      FLG-NAIBUN          =   1
+           IF      SPA-ERRCD           =   SPACE
+             IF      FLG-NAIBUN          =   1
       *        内分泌負荷試験包括点数チェック
                INITIALIZE                  ORCSSANFUKAAREA
                INITIALIZE                  SPA-SCR-REC
@@ -597,11 +601,35 @@
                IF      LNK-SANFUKA-ERRMSG  NOT =   SPACE
                    MOVE    LNK-SANFUKA-ERRMSG  TO  SPA-ERRMSG2
                END-IF
+             END-IF
+      *      主科設定
+             PERFORM 1009-ORCSSYUKAMAIN-SEC
            END-IF
-      *
            .
       *
        100-SAKUSEI-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    主科設定処理
+      *****************************************************************
+       1009-ORCSSYUKAMAIN-SEC             SECTION.
+      *
+      *    包括まとめ入力以外
+           IF      SPA-HKNCOMBINUM     =   "9999"
+               CONTINUE
+           ELSE
+               INITIALIZE                      ORCSSYUACCAREA
+               MOVE    "03"                TO  LNK-SYUACC-I-KBN
+      *        診療年月
+               MOVE    SPA-SRYYMD(1:6)     TO  LNK-SYUACC-I-SRYYM
+               CALL    "ORCSSYUKAMAIN"     USING
+                                           SPA-AREA
+                                           ORCSSYUACCAREA
+           END-IF
+           .
+      *
+       1009-ORCSSYUKAMAIN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -613,9 +641,13 @@
            IF      SPA-HKNCOMBINUM     =   "9999"
                CONTINUE
            ELSE
-               IF      SPA-SYORIFLG        =   ZERO
+      *        診療科履歴判定
+               PERFORM 45009-SRYKARRK-SYOKI-SEC
+               IF     (SPA-SYORIFLG        =   ZERO )  OR
+                      (FLG-SRYKARRK        =   1    )
+      *            新規か訂正で診療科履歴なしの時
       *            診療科履歴作成処理
-                   PERFORM 45009-SRYKARRK-SYOKI-SEC
+                   PERFORM 45010-SRYKARRK-SYORI-SEC
                ELSE
       *            診療科履歴変更
                    INITIALIZE                  ORCSKARRKAREA
@@ -2502,6 +2534,16 @@
            MOVE    "tbl_srykarrk"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       45009-SRYKARRK-SYOKI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療科履歴更新処理
+      *****************************************************************
+       45010-SRYKARRK-SYORI-SEC           SECTION.
+      *
            IF      FLG-SRYKARRK        =   ZERO
       *        最終受診日更新
                IF      KARRK-LASTYMD       <   SPA-SRYYMD
@@ -2528,7 +2570,7 @@
            PERFORM 45009-SRYKARRK-OUT-SEC
       *
            .
-       45009-SRYKARRK-SYOKI-EXT.
+       45010-SRYKARRK-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3931,6 +3973,10 @@
            IF      SPA-ERRCD           =   SPACE
       *        ワーク診療行為マスタ−が存在した時、削除する
                PERFORM 45002-WKSRYACT-DEL-SEC
+           END-IF
+      *    主科設定
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 1009-ORCSSYUKAMAIN-SEC
            END-IF
       *
            .
