@@ -468,6 +468,8 @@
                    OR    (FLG-HKNCOMBI  NOT =   ZERO)
       *
                  IF    COMB-DELKBN          =   SPACE
+                 AND   COMB-TEKSTYMD(1:6)  <=   LNK-FTNJGNCHK-SRYYM
+                 AND   LNK-FTNJGNCHK-SRYYM <=   COMB-TEKEDYMD(1:6)
       *
                    ADD     1       TO      IDX
                    MOVE    COMB-HKNCOMBINUM  TO
