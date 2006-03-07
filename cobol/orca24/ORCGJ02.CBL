@@ -708,6 +708,9 @@
       *
       *    内分泌負荷試験更新パラメタ
            COPY    "CPORCSSANFUKA.INC".
+      *
+      *    主情報アクセス用パラメタ
+           COPY    "CPORCSSYUACC.INC".
       *    ＳＰＡパラメタ（ORCSC97.CBL 用のDAMMY)
        01  LNK-K02SCR-REC.
            COPY    "CPK02SPASCR.INC"    REPLACING
@@ -5379,6 +5382,9 @@
       *    受診連番の変更日再編集
            MOVE    ZERO                TO  FLG-JYURRK-UPD
            PERFORM 4101613-JYURRK-SEISET-SEC
+      *!
+      *    主科設定
+           PERFORM 410029-ORCSSYUKAMAIN-SEC
       *
            MOVE    ZERO                TO  SPA-NAI-RRKSELNUM
            MOVE    SPACE               TO  SPA-NAI-HENSRYYMD
@@ -5416,6 +5422,22 @@
            END-IF
            .
        410161-HENSRYYMD-UPDSYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    主科設定処理
+      *****************************************************************
+       410029-ORCSSYUKAMAIN-SEC             SECTION.
+      *
+           INITIALIZE                      ORCSSYUACCAREA
+           MOVE    "03"                TO  LNK-SYUACC-I-KBN
+      *    診療年月
+           MOVE    SPA-NAI-SRYYM       TO  LNK-SYUACC-I-SRYYM
+           CALL    "ORCSSYUKAMAIN"     USING
+                                       SPA-AREA
+                                       ORCSSYUACCAREA
+           .
+      *
+       410029-ORCSSYUKAMAIN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -8638,6 +8660,11 @@
                    PERFORM 42001-TENTEKI-SYORI-SEC
                END-IF
            END-IF
+      *!
+           IF      SPA-ERRCD           =   SPACE
+      *        主科設定
+               PERFORM 410029-ORCSSYUKAMAIN-SEC
+           END-IF
       *
       *    内分泌負荷試験エラー判定
            IF      SPA-ERRCD           =   SPACE
@@ -10809,6 +10836,8 @@
                MOVE    "3333"              TO  SPA-ERRCD
                GO      TO      4110-CHOZAI-EXT
            END-IF
+      *    主科設定
+           PERFORM 410029-ORCSSYUKAMAIN-SEC
       *
       *    受診履歴編集
            PERFORM 3103-JYURRK-HEN-SEC

@@ -730,6 +730,9 @@
       *    レセプト作成管理マスタ更新サブ
            COPY    "CPORCSRECEUPD.INC".
       *
+      *    主情報アクセス用パラメタ
+           COPY    "CPORCSSYUACC.INC".
+      *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -3122,6 +3125,8 @@
            INITIALIZE                      INPUTSET-REC
            MOVE    SPA-HOSPID          TO  ISET-HOSPID
            MOVE    WRK-SETCD           TO  ISET-SETCD
+           MOVE    SPA-J02-SRYYMD      TO  ISET-YUKOSTYMD
+           MOVE    SPA-J02-SRYYMD      TO  ISET-YUKOEDYMD
       *
            MOVE    INPUTSET-REC        TO  MCPDATA-REC
            MOVE    "tbl_inputset"      TO  MCP-TABLE
@@ -4825,6 +4830,9 @@
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      41002-KOUSIN-SYORI-EXT
            END-IF
+      *    主科設定
+           PERFORM 410029-ORCSSYUKAMAIN-SEC
+      *
       *    内分泌負荷試験判定
            IF      FLG-NAIBUN          =   1
       *        内分泌負荷試験包括点数チェック
@@ -4857,6 +4865,28 @@
       *
            .
        41002-KOUSIN-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    主科設定処理
+      *****************************************************************
+       410029-ORCSSYUKAMAIN-SEC             SECTION.
+      *
+      *    包括まとめ入力以外
+           IF      SPA-HKNCOMBINUM     =   "9999"
+               CONTINUE
+           ELSE
+               INITIALIZE                      ORCSSYUACCAREA
+               MOVE    "03"                TO  LNK-SYUACC-I-KBN
+      *        診療年月
+               MOVE    SPA-J02-SRYYMD(1:6) TO  LNK-SYUACC-I-SRYYM
+               CALL    "ORCSSYUKAMAIN"     USING
+                                           SPA-AREA
+                                           ORCSSYUACCAREA
+           END-IF
+           .
+      *
+       410029-ORCSSYUKAMAIN-EXT.
            EXIT.
       *
       *****************************************************************
