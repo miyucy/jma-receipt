@@ -30,6 +30,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL−多々納 05/02/01  残量廃棄判定追加
       *  01.00.02    NACL-多々納  05/12/22  MONFUNC 対応
+      *  01.00.03    NACL-多々納  06/03/02  セット期間対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -226,6 +227,8 @@
            INITIALIZE                      INPUTSET-REC
            MOVE    SPA-HOSPID          TO  ISET-HOSPID
            MOVE    WRK-SETCD           TO  ISET-SETCD
+           MOVE    SPA-SRYYMD          TO  ISET-YUKOSTYMD
+           MOVE    SPA-SRYYMD          TO  ISET-YUKOEDYMD
       *
            MOVE    INPUTSET-REC        TO  MCPDATA-REC
            MOVE    "tbl_inputset"      TO  MCP-TABLE
@@ -239,6 +242,9 @@
                MOVE    1                   TO  FLG-INPUTSET
            END-IF
       *
+           IF      FLG-INPUTSET        =   1
+               MOVE    "0150"              TO  SPA-ERRCD
+           END-IF
       *
            MOVE    SPACE               TO  WRK-ERRCD
            MOVE    SPACE               TO  WRK-ERRCD1
@@ -314,6 +320,10 @@
            MOVE    "tbl_inputset"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *    セットなし
+           IF       SPA-ERRCD           =   "0150"
+               GO      TO    100-PSET-TENKAI-EXT
+           END-IF
       *   エラーの為展開できない
           IF      (SPA-ERRCD       NOT =   SPACE )  AND
                   (FLG-INPUTSET        =   ZERO  )
@@ -501,8 +511,6 @@
            MOVE    SPA-LSTSRYKA        TO  LNK-SC92-LSTSRYKA
            MOVE    SPA-LSTSRYKAMEI     TO  LNK-SC92-LSTSRYKAMEI
            MOVE    SPA-K02-TEISEI-AREA TO  LNK-SC92-TEISEI-AREA
-      *    当月入院有無
-           MOVE    SPA-K02N-NYUINFLG   TO  LNK-SC92-NYUINFLG
            CALL    "ORCSC92"           USING
                                        MCPAREA
                                        ORCSC92AREA
@@ -722,6 +730,8 @@
            INITIALIZE                      INPUTSET-REC
            MOVE    SPA-HOSPID          TO  ISET-HOSPID
            MOVE    WRK-SETCD           TO  ISET-SETCD
+           MOVE    SPA-SRYYMD          TO  ISET-YUKOSTYMD
+           MOVE    SPA-SRYYMD          TO  ISET-YUKOEDYMD
       *
            MOVE    INPUTSET-REC        TO  MCPDATA-REC
            MOVE    "tbl_inputset"      TO  MCP-TABLE
@@ -733,6 +743,9 @@
                PERFORM 910-INPUTSET-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-INPUTSET
+           END-IF
+           IF      FLG-INPUTSET        =   1
+               MOVE    "0150"              TO  SPA-ERRCD
            END-IF
       *
            PERFORM
@@ -796,8 +809,14 @@
            MOVE    "tbl_inputset"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-           IF      (SPA-ERRCD       NOT =   SPACE )  AND
-                   (FLG-INPUTSET        =   ZERO  )
+      *    セットなし
+           IF       SPA-ERRCD           =   "0150"
+               GO      TO    200-SSET-TENKAI-EXT
+           END-IF
+      *    行オーバー
+           IF     ((SPA-ERRCD       NOT =   SPACE )  AND
+                   (FLG-INPUTSET        =   ZERO  ))  OR
+                  ( SPA-ERRCD           =   "0150" )
                MOVE    WRK-SCR-REC        TO  SPA-SCR-REC
                MOVE    WRK-GMN-IDX        TO  SPA-GMN-IDX
                MOVE    ZERO               TO  IDX-IP

@@ -297,6 +297,9 @@
                WHEN    "0050"
                    MOVE    "入力コードがありません"
                                        TO  SPA-ERRMSG
+               WHEN    "0150"
+                   MOVE    "対象期間の入力セットはありません。"
+                                       TO  SPA-ERRMSG
                WHEN    "0051"
                    MOVE    "数量は５桁までです"
                                        TO  SPA-ERRMSG
@@ -1424,6 +1427,24 @@
                                        TO  SPA-ERRMSG
                WHEN    "5021"
                    MOVE    "老人一般区分がありません。"
+                                       TO  SPA-ERRMSG
+               WHEN    "5022"
+                   MOVE    "有効開始日暦日エラー"
+                                       TO  SPA-ERRMSG
+               WHEN    "5023"
+                   MOVE    "有効終了日暦日エラー"
+                                       TO  SPA-ERRMSG
+               WHEN    "5024"
+                   MOVE    "有効開始日＜有効終了日で入力して下さい。"
+                                       TO  SPA-ERRMSG
+               WHEN    "5025"
+                   MOVE    "選択番号がありません。"
+                                       TO  SPA-ERRMSG
+               WHEN    "5026"
+                   MOVE    "期間設定は約束セットの時のみです。"
+                                       TO  SPA-ERRMSG
+               WHEN    "5027"
+                   MOVE    "期間が重複しています。"
                                        TO  SPA-ERRMSG
                WHEN    OTHER
                    MOVE    SPA-ERRCD
