@@ -1135,6 +1135,7 @@
            END-IF
       *    保険変更があった時、終了日を変更する
            IF      HZN-HKN-TEKSTYMD (2)    NOT =   SPACE
+              AND (HZN-HKN-TEKEDYMD (2)        >=  PTHKN-TEKSTYMD)
                MOVE    PTHKN-TEKEDYMD          TO  WRK-TEKEDYMD
                MOVE    HZN-HKN-TEKEDYMD (2)    TO  PTHKN-TEKEDYMD
       *        開始日が保険より前の時、開始日を保険の開始日にする
@@ -1334,6 +1335,7 @@
            END-IF
       *    保険変更があった時、終了日を変更する
            IF      HZN-HKN-TEKSTYMD (2)    NOT =   SPACE
+              AND (HZN-HKN-TEKEDYMD (2)        >=  PTKOH-TEKSTYMD)
                MOVE    PTKOH-TEKEDYMD          TO  WRK-TEKEDYMD
                MOVE    HZN-HKN-TEKEDYMD (2)    TO  PTKOH-TEKEDYMD
       *        開始日が保険より前の時、開始日を保険の開始日にする
