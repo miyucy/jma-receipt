@@ -1,6 +1,8 @@
 tbl_inputset {
 	HOSPID				char(24);
 	SETCD   			char(6);
+	YUKOSTYMD  			char(8);
+	YUKOEDYMD	  		char(8);
 	SETSEQ  			number(3);
 	INPUTCD				char(9);
 	SURYO1  			number(10,3);
@@ -18,7 +20,7 @@ tbl_inputset {
 	UPHMS				char(6);
 };
 primary	{
-	HOSPID,SETCD,SETSEQ;
+	HOSPID,SETCD,YUKOSTYMD,YUKOEDYMD,SETSEQ;
 };
 
 path	key 	{
@@ -28,6 +30,8 @@ path	key 	{
 		FROM tbl_inputset
 			WHERE   HOSPID    =   :HOSPID
 			AND   SETCD       =   :SETCD
+			AND   YUKOSTYMD  <=   :YUKOSTYMD
+			AND   YUKOEDYMD  >=   :YUKOEDYMD
 			AND   SETSEQ      =   :SETSEQ
 		;
 	};
@@ -40,6 +44,8 @@ path	key2	{
 		FROM tbl_inputset
 			WHERE   HOSPID    =   :HOSPID
 			AND   SETCD       =   :SETCD
+			AND   YUKOSTYMD  <=   :YUKOSTYMD
+			AND   YUKOEDYMD  >=   :YUKOEDYMD
 			ORDER   BY        SETSEQ
 		;
 	};
@@ -50,6 +56,8 @@ path	del11	{
 		FROM tbl_inputset
 			WHERE   HOSPID    =   :HOSPID
 			AND   SETCD       =   :SETCD
+			AND   YUKOSTYMD   =   :YUKOSTYMD
+			AND   YUKOEDYMD   =   :YUKOEDYMD
 		;
 	};
 };
@@ -58,6 +66,10 @@ path	all 	{
 		DECLARE tbl_inputset_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_inputset
+			ORDER   BY        SETCD,
+                                          YUKOSTYMD,
+                                          YUKOEDYMD,
+                                          SETSEQ
  		;
 	};
 };
@@ -69,6 +81,7 @@ path	key3	{
 		FROM tbl_inputset
 			WHERE   HOSPID    =   :HOSPID
 			ORDER   BY        SETCD,
+                                          YUKOSTYMD,
 			                  SETSEQ
 		;
 	};
@@ -82,6 +95,20 @@ path	key4	{
                         AND     SETCD     >=  :SETCD
                         AND     SETCD     <=  :UPHMS
 			ORDER   BY        SETCD,
+                                          YUKOSTYMD,
+			                  SETSEQ
+		;
+	};
+};
+path	key5	{
+	DBSELECT	{
+		DECLARE tbl_inputset_key5_csr CURSOR FOR
+		SELECT *
+		FROM tbl_inputset
+			WHERE   HOSPID    =   :HOSPID
+			AND   SETCD       =   :SETCD
+			AND   SETSEQ      =   1
+			ORDER   BY        YUKOSTYMD,
 			                  SETSEQ
 		;
 	};

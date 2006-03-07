@@ -305,10 +305,6 @@ K05	{
  		    style   varchar(20);
 			value	varchar(20);
 		};
-		SYORINAME	{
-		    style   varchar(20);
-			value	varchar(20);
-		};
 		NYUGAIKBNCOMB	{
 			NYUGAIKBN	{
 				value	varchar(10);
@@ -316,12 +312,38 @@ K05	{
 			count	int;
 			item	varchar(10)[2];
 		};
+		scrolledwindow1	{
+			RRKLIST	{
+				count	int;
+				row	int;
+				rowattr	int;
+				item	{
+					value0	varchar(3);
+					value1	varchar(12);
+					value2	varchar(12);
+				}	[10];
+				select	bool[10];
+			};
+		};
 		ROUJINCOMB	{
 			ROUJIN	{
 				value	varchar(10);
 			};
 			count	int;
 			item	varchar(10)[3];
+		};
+		SELNUM	{
+			value	number(3);
+		};
+		YUKOSTYMD	{
+			value	varchar(13);
+		};
+		YUKOEDYMD	{
+			value	varchar(13);
+		};
+		SYORINAME	{
+		    style   varchar(20);
+			value	varchar(20);
 		};
 	};
 };
