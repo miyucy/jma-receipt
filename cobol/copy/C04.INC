@@ -17,6 +17,7 @@
       ********************************************************************
           02  C04.
               03  C04-B04-STATE PIC S9(9)   BINARY.
+              03  C04-B12-STATE PIC S9(9)   BINARY.
               03  C04-TITLE     PIC X(10).
               03  C04-SELNUM2.
                 04  C04-VALUE   PIC S9(5).

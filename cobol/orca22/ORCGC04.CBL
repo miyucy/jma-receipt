@@ -244,12 +244,35 @@
       *    エラー画面より
            IF      SPA-MOTOPG          =   "CERR"
                MOVE    SPACE               TO  SPA-MOTOPG
-               PERFORM 5001-MAPCUR-SEC
+               IF    ( SPA-C01-ERRCD       =   "0075" )
+               AND   ( SPA-C01-INDEX       >   ZERO   )
+                   MOVE    SPACE           TO  SPA-C01-ERRCD
+                   PERFORM 450-KAKUTEI-SEC
+                   IF      SPA-ERRCD           =   SPACE
+                       GO  TO  100-INIT-EXT
+                   END-IF
+      *            画面編集
+                   PERFORM 500-GMNHEN-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       PERFORM 510-ERRSET-SEC
+                       GO  TO  100-INIT-EXT
+                   END-IF
+      *
+                   PERFORM 5001-MAPCUR-SEC
+               END-IF
+               MOVE    SPACE           TO  SPA-C01-ERRCD
            ELSE
       *        初期画面セット
                PERFORM 300-SCREEN-SEC
+               IF      FLG-END             =   1
+                   GO  TO  100-INIT-EXT
+               END-IF
       *        画面編集
                PERFORM 500-GMNHEN-SEC
+               IF      SPA-ERRCD       NOT =   SPACE
+                   PERFORM 510-ERRSET-SEC
+                   GO  TO  100-INIT-EXT
+               END-IF
            END-IF
       *
            MOVE    SPACE               TO  LINKAREA
@@ -295,13 +318,24 @@
                        END-STRING
                    END-PERFORM        
                END-IF
+      *
                MOVE    SPACE           TO  SPA-CIDCD2
                                            SPA-ERRCD
                                            WRK-HAISIYMDH
-               PERFORM 410022-BYOMEI-HENSYU-SEC
-               ADD     1                   TO  SPA-GMN-C04-CUR
-               IF      SPA-GMN-C04-CUR     >   8
-                   MOVE    2                   TO  SPA-GMN-C04-CUR
+      *      
+               IF      SPA-C01-INDEX   =   ZERO
+                   PERFORM 410022-BYOMEI-HENSYU-SEC
+               ELSE
+                   PERFORM 410023-BYOMEI-HENSYU-SEC
+               END-IF 
+      *
+               IF      SPA-C01-INDEX   =   ZERO
+                   ADD     1                   TO  SPA-GMN-C04-CUR
+                   IF      SPA-GMN-C04-CUR     >   8
+                       MOVE    2                   TO  SPA-GMN-C04-CUR
+                   END-IF
+               ELSE
+                   PERFORM 450-KAKUTEI-SEC
                END-IF
                GO      TO      300-SCREEN-EXT
            END-IF
@@ -326,36 +360,43 @@
                                        TO  SPA-GMN-C04-INPUTCD(IDX)
       *
                  IF      SPA-C01-TUSERBYOMEIFLG (IDX)    =   "1"
-                   INITIALIZE                  USERBYOMEI-REC
-                   MOVE    SPA-HOSPID          TO  USBYO-HOSPID
-                   MOVE    SPA-GMN-C04-INPUTCD(IDX)
-                                               TO  USBYO-BYOMEIINPUTCD
-                   PERFORM 900-USBYO-INV-SEC                            
-                   IF      FLG-USERBYOMEI      =   ZERO
-                       MOVE    USBYO-BYOMEI        TO
+                   IF      SPA-C01-INDEX   =   ZERO
+                     INITIALIZE                  USERBYOMEI-REC
+                     MOVE    SPA-HOSPID          TO  USBYO-HOSPID
+                     MOVE    SPA-GMN-C04-INPUTCD(IDX)
+                                                 TO  USBYO-BYOMEIINPUTCD
+                     PERFORM 900-USBYO-INV-SEC                            
+                     IF      FLG-USERBYOMEI      =   ZERO
+                         MOVE    USBYO-BYOMEI        TO
                                             SPA-NAI-C04-BYOMEI   (IDX)
-                       MOVE    USBYO-BYOMEISBT     TO
+                         MOVE    USBYO-BYOMEISBT     TO
                                            SPA-NAI-C04-BYOMEISBT (IDX)
-                       PERFORM VARYING IDY FROM    1   BY  1
-                               UNTIL   IDY >       21
-                               OR      USBYO-BYOMEICD (IDY)    =   SPACE
-                           MOVE    USBYO-BYOMEICD (IDY)    TO
+                         PERFORM VARYING IDY FROM    1   BY  1
+                                 UNTIL   IDY >       21
+                                 OR      USBYO-BYOMEICD(IDY) =   SPACE
+                             MOVE    USBYO-BYOMEICD (IDY)    TO
                                        SPA-NAI-C04-BYOMEICD-O (IDX IDY)
-                           IF      SPA-NAI-C04-BYOMEICD-O (IDX IDY)
+                             IF      SPA-NAI-C04-BYOMEICD-O (IDX IDY)
                                                    =   WRK-CONS-BYOMEICD
-                               MOVE    SPA-NAI-C04-BYOMEI   (IDX)
+                                 MOVE    SPA-NAI-C04-BYOMEI   (IDX)
                                            TO
                                        SPA-NAI-C04-BYOMEI-O (IDX IDY)
-                           ELSE                           
-                               MOVE    SPA-NAI-C04-BYOMEICD-O (IDX IDY)
+                             ELSE                           
+                                 MOVE    SPA-NAI-C04-BYOMEICD-O(IDX IDY)
                                            TO   BYO-BYOMEICD
-                               PERFORM 900-BYOMEI-READ-SEC
-                               IF      FLG-BYOMEI        =   ZERO
-                                   MOVE    BYO-BYOMEI    TO
+                                 PERFORM 900-BYOMEI-READ-SEC
+                                 IF      FLG-BYOMEI        =   ZERO
+                                     MOVE    BYO-BYOMEI    TO
                                        SPA-NAI-C04-BYOMEI-O    (IDX IDY)
-                               END-IF 
-                           END-IF    
-                       END-PERFORM   
+                                 END-IF 
+                             END-IF    
+                         END-PERFORM   
+                     END-IF
+                   ELSE
+                     MOVE    SPA-C01-TBYOMEI (IDX)     TO
+                                            SPA-NAI-C04-BYOMEI   (IDX)
+                     MOVE    SPA-C01-TBYOMEISBT (IDX)  TO
+                                           SPA-NAI-C04-BYOMEISBT (IDX)
                    END-IF
                  ELSE
                    MOVE    SPA-C01-TBYOMEI  (IDX)
@@ -1372,29 +1413,43 @@
       *
            MOVE    WRK-SELNO           TO  WRK-BANGO
       * 
-           MOVE    ZERO            TO  IDZ
-           PERFORM VARYING IDXX    FROM    1   BY  1
-                   UNTIL   IDXX    >       6
-               IF      SPA-GMN-C04-INPUTCD (IDXX)  =   SPACE
-                   MOVE    SPA-GMN-C04-TINPUTCD   (WRK-BANGO)
-                                       TO  SPA-GMN-C04-INPUTCD(IDXX)
-                   MOVE    IDXX        TO  IDZ
-                   PERFORM 410021-INPUTCD-HENSYU-SEC
+           IF      SPA-C01-INDEX       =   ZERO
+               MOVE    ZERO            TO  IDZ
+               PERFORM VARYING IDXX    FROM    1   BY  1
+                       UNTIL   IDXX    >       6
+                   IF      SPA-GMN-C04-INPUTCD (IDXX)  =   SPACE
+                       MOVE    SPA-GMN-C04-TINPUTCD   (WRK-BANGO)
+                                           TO  SPA-GMN-C04-INPUTCD(IDXX)
+                       MOVE    IDXX        TO  IDZ
+                       PERFORM 410021-INPUTCD-HENSYU-SEC
       *
-                   MOVE    6       TO  IDXX
-               END-IF
-           END-PERFORM
+                       MOVE    6           TO  IDXX
+                   END-IF
+               END-PERFORM
+           ELSE
+               MOVE    SPA-C01-INDEX   TO  IDZ
+               MOVE    SPA-GMN-C04-TINPUTCD (WRK-BANGO)
+                                       TO  SPA-GMN-C04-INPUTCD(IDZ)
+               PERFORM 410021-INPUTCD-HENSYU-SEC
+           END-IF
       *
            IF      SPA-CIDCD2      NOT =   SPACE
                GO  TO  41020-BYOMEISEL-EXT
            END-IF
       *
-           PERFORM 410022-BYOMEI-HENSYU-SEC 
-      *
            IF      SPA-C01-INDEX   =   ZERO
-                   MOVE    2                   TO  SPA-GMN-C04-CUR     
-               ELSE
+               PERFORM 410022-BYOMEI-HENSYU-SEC
+           ELSE
+               PERFORM 410023-BYOMEI-HENSYU-SEC
+           END-IF 
+      *
+           MOVE    2               TO  SPA-GMN-C04-CUR     
+           IF      SPA-C01-INDEX   =   ZERO
+               CONTINUE
+           ELSE
+               IF      SPA-ERRCD       =   SPACE
                    PERFORM 450-KAKUTEI-SEC
+               END-IF 
            END-IF
            .
        41020-BYOMEISEL-EXT.
@@ -1592,6 +1647,33 @@
            END-IF
       *
       *    病名重複チェック
+           MOVE    SPACE                   TO  WRK-BYOMEI-AREA
+           MOVE    ZERO                    TO  IDY
+      *
+           MOVE    SPA-NAI-C04-BYOMEI (1)  TO  WRK-BYOMEI
+      *     
+           PERFORM VARYING IDX FROM    2   BY  1
+                   UNTIL   IDX >       6
+               IF      SPA-GMN-C04-INPUTCD (IDX)
+                                   NOT =   SPACE
+                   IF      SPA-NAI-C04-BYOMEITOP (IDX) =   "1"
+                       IF      WRK-BYOMEI  NOT =   SPACE
+                           ADD     1           TO  IDY
+                           MOVE    WRK-BYOMEI  TO  WRK-BYOMEI-O (IDY)
+                       END-IF
+                       MOVE    SPACE           TO  WRK-BYOMEI
+                   END-IF
+                   STRING  WRK-BYOMEI              DELIMITED   BY  SPACE
+                           SPA-NAI-C04-BYOMEI(IDX) DELIMITED   BY  SPACE
+                                                   INTO    WRK-BYOMEI
+                   END-STRING
+               END-IF    
+           END-PERFORM    
+           IF      WRK-BYOMEI      NOT =   SPACE
+               ADD     1               TO  IDY
+               MOVE    WRK-BYOMEI      TO  WRK-BYOMEI-O (IDY)
+           END-IF
+      *
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       6
                    OR      WRK-BYOMEI-O (IDX)  =   SPACE
@@ -1744,6 +1826,7 @@
       *
            IF      SPA-C01-INDEX   =   ZERO
                MOVE    WIDGET-NORMAL       TO  C04-B04-STATE
+                                               C04-B12-STATE
                                                C04-BUNRUICD-STATE
                                                C04-KENBYOMEI-STATE
                PERFORM VARYING     IDX     FROM   1   BY  1
@@ -1752,6 +1835,7 @@
                END-PERFORM
            ELSE
                MOVE    WIDGET-INSENSITIVE  TO  C04-B04-STATE
+                                               C04-B12-STATE
                                                C04-BUNRUICD-STATE
                                                C04-KENBYOMEI-STATE
                PERFORM VARYING     IDX     FROM   1   BY  1
@@ -1807,7 +1891,9 @@
       *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
+      *
            MOVE    SPACE               TO  SPA-ERRMSG
+           MOVE    SPA-ERRCD           TO  SPA-C01-ERRCD
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"

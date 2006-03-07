@@ -4301,7 +4301,17 @@
                MOVE    SPA-NAI-C02-BYOMEICD (IDZ) TO  BYO-BYOMEICD
                PERFORM 410111-BYOMEI-HENSYU-SEC
                IF      FLG-BYOMEI      NOT =   ZERO
-                   MOVE    "0054"              TO  SPA-ERRCD
+      *            ¼«±¡ÉÂÌ¾¸¡º÷
+                   PERFORM 41029-USERBYOMEICD-KENSAKU-SEC
+                   IF      SPA-ERRCD       =   "0053"
+                       MOVE    "0054"              TO  SPA-ERRCD
+                   ELSE
+                       IF      SPA-ERRCD       =   SPACE
+                           PERFORM 41021-BYOMEICD-HENSYU-SEC
+                           MOVE    SPACE           TO  SPA-ERRCD
+                           GO  TO  4102-BYOMEICD-CHK-EXT
+                       END-IF
+                   END-IF
                ELSE
                    IF    ( BYO-IKOSAKICD   NOT =   SPACE )
                    AND   ( SPA-C02-1042-MSG2-DSPKBN
@@ -4875,19 +4885,13 @@
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       6
                IF      SPA-GMN-C02-BYOMEICD (IDX)  NOT =   SPACE             
-                   MOVE    ZERO                TO  WRK-LENGTH                    
-                   PERFORM VARYING IDXX    FROM    10  BY  -1
-                           UNTIL   IDXX    <       1
-                       IF      SPA-GMN-C02-BYOMEICD(IDX)(IDXX:1)
-                                           NOT =   SPACE
-                           MOVE    IDXX            TO  WRK-LENGTH
-                           MOVE    1               TO  IDXX
-                       END-IF
-                       IF      WRK-LENGTH           =   7    
-                           MOVE    "0069"              TO  SPA-ERRCD
-                           GO  TO  41029-USERBYOMEICD-KENSAKU-EXT 
-                       END-IF
-                   END-PERFORM
+                   IF    ( SPA-NAI-C02-USERBYOMEIFLG (IDX)
+                                           =   SPACE )
+                   AND   ( SPA-NAI-C02-BYOMEI (IDX)(1:2)
+                                       NOT =   "¢£"  )
+                       MOVE    "0069"              TO  SPA-ERRCD
+                       GO  TO  41029-USERBYOMEICD-KENSAKU-EXT 
+                   END-IF
                END-IF
            END-PERFORM
       *
@@ -4921,11 +4925,8 @@
                        MOVE    SPA-NAI-C02-USERBYOMEIFLG (IDX)
                                            TO  SPA-C01-TUSERBYOMEIFLG
                                                                   (IDY)
-                       IF      SPA-NAI-C02-USERBYOMEIFLG (IDX)
-                                           =   SPACE
-                           MOVE    SPA-NAI-C02-BYOMEI    (IDX)
+                       MOVE    SPA-NAI-C02-BYOMEI    (IDX)
                                            TO  SPA-C01-TBYOMEI    (IDY)
-                       END-IF
                    END-IF
                END-IF                              
            END-PERFORM
@@ -4964,7 +4965,6 @@
        41029-USERBYOMEICD-KENSAKU-EXT.
            EXIT.
       *     
-      *
       *****************************************************************
       *    µ¿¤¤¡¡ÆþÎÏ½èÍý
       *****************************************************************
@@ -7691,19 +7691,13 @@
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       6
                IF      SPA-GMN-C02-BYOMEICD (IDX)  NOT =   SPACE             
-                   MOVE    ZERO                TO  WRK-LENGTH                    
-                   PERFORM VARYING IDZ FROM    10  BY  -1
-                           UNTIL   IDZ <       1
-                       IF      SPA-GMN-C02-BYOMEICD(IDX)(IDZ:1)
-                                           NOT =   SPACE
-                           MOVE    IDZ             TO  WRK-LENGTH
-                           MOVE    1               TO  IDZ
-                       END-IF
-                       IF      WRK-LENGTH           =   7    
-                           MOVE    "0069"              TO  SPA-ERRCD
-                           GO  TO  490-USERBYOMEI-KENSAKU-EXT 
-                       END-IF
-                   END-PERFORM
+                   IF    ( SPA-NAI-C02-USERBYOMEIFLG (IDX)
+                                           =   SPACE )
+                   AND   ( SPA-NAI-C02-BYOMEI (IDX)(1:2)
+                                       NOT =   "¢£"  )
+                       MOVE    "0069"              TO  SPA-ERRCD
+                       GO  TO  490-USERBYOMEI-KENSAKU-EXT 
+                   END-IF
                END-IF
            END-PERFORM
       *

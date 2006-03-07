@@ -49,6 +49,9 @@
       *戻り先
            05  SPA-C01-MOTOPG              PIC  X(08).
       *
+      *エラーメッセージ
+           05  SPA-C01-ERRCD               PIC  X(04).
+      *
       *警告メッセージ
            05  SPA-CIDCD-AREA. 
                07  SPA-CIDCD               PIC  X(04).

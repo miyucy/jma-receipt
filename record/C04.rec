@@ -3,6 +3,9 @@ C04	{
 		B04	{
 			state	int;
 		};
+		B12	{
+			state	int;
+		};
 		TITLE	{
 			value	varchar(10);
 		};
