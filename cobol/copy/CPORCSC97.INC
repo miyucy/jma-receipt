@@ -52,40 +52,43 @@
                05  LNK-SC97-INCDCNT        PIC 9(02).
       *        入力コード種別
                05  LNK-SC97-CDSYU          PIC X(01).
+      *        編集値
+               05  LNK-SC97-INPUT-G.
       *        数量
-               05  LNK-SC97-SURYO          PIC 9(07)V9(03).
+                   07  LNK-SC97-SURYO          PIC 9(07)V9(03).
       *        回数
-               05  LNK-SC97-KAISU          PIC 9(04).
+                   07  LNK-SC97-KAISU          PIC 9(04).
       *        分画数
-               05  LNK-SC97-BUNGSU         PIC 9(03).
+                   07  LNK-SC97-BUNGSU         PIC 9(03).
       *        その入力値
-               05  LNK-SC97-MOJI1          PIC X(10).
-               05  LNK-SC97-MOJI2          PIC X(10).
-               05  LNK-SC97-MOJI3          PIC X(10).
-               05  LNK-SC97-MOJI4          PIC X(10).
+                   07  LNK-SC97-MOJI1          PIC X(10).
+                   07  LNK-SC97-MOJI2          PIC X(10).
+                   07  LNK-SC97-MOJI3          PIC X(10).
+                   07  LNK-SC97-MOJI4          PIC X(10).
       *        時間外フラグ
-               05  LNK-SC97-JIKAN          PIC 9(01).
+                   07  LNK-SC97-JIKAN          PIC 9(01).
       *
       *        数量
-               05  LNK-SC97-SURYOFLG      PIC 9(02).
-               05  LNK-SC97-SURYOCNT      PIC 9(02).
+                   07  LNK-SC97-SURYOFLG      PIC 9(02).
+                   07  LNK-SC97-SURYOCNT      PIC 9(02).
       *        回数（＊アリ）
-               05  LNK-SC97-KAISUCNT       PIC 9(02).
+                   07  LNK-SC97-KAISUCNT       PIC 9(02).
       *        回数（＊アリ）
-               05  LNK-SC97-KAISUFLG       PIC 9(01).
+                   07  LNK-SC97-KAISUFLG       PIC 9(01).
       *        分画数
-               05  LNK-SC97-BUNGSUFLG      PIC 9(01).
+                   07  LNK-SC97-BUNGSUFLG      PIC 9(01).
       *        その入力値
-               05  LNK-SC97-MCNT1          PIC 9(02).
-               05  LNK-SC97-MCNT2          PIC 9(02).
-               05  LNK-SC97-MCNT3          PIC 9(02).
-               05  LNK-SC97-MCNT4          PIC 9(02).
+                   07  LNK-SC97-MCNT1          PIC 9(02).
+                   07  LNK-SC97-MCNT2          PIC 9(02).
+                   07  LNK-SC97-MCNT3          PIC 9(02).
+                   07  LNK-SC97-MCNT4          PIC 9(02).
+      *        残量廃棄
+                   07  LNK-SC97-AUTOFLG2        PIC X(01).
+      *
       *        検索画面へ
                05  LNK-SC97-KENSAKU        PIC X(01).
       *        入院回数
                05  LNK-SC97-NYUIN-KAISU.
                    07  LNK-SC97-NYU-DAY    PIC 9(02)
                                            OCCURS   31.
-      *        残量廃棄
-               05  LNK-SC97-AUTOFLG2        PIC X(01).
       *

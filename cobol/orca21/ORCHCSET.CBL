@@ -81,6 +81,9 @@
            03  FLG-ZAITAKU         PIC 9(01).
       *
            03  FLG-PRINT           PIC 9(01).
+           03  FLG-KIKAN           PIC 9(01).
+           03  FLG-ZENKAKU          PIC 9(01).
+           03  FLG-HANKAKU          PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -88,6 +91,7 @@
            03  IDX-P               PIC 9(04).
            03  IDY                 PIC 9(04).
       *
+           03  IDX3                PIC 9(04).
            03  IDX2                PIC 9(04).
            03  IDX-MAX             PIC 9(04).
       *
@@ -113,7 +117,6 @@
                05  WRK-WYY         PIC X(03).
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
-           03  WRK-HENYMDG         PIC X(22).
            03  WRK-SRYYMD          PIC X(08).
       *
            03  WRK-SURYO           PIC 9(05)V9(03).
@@ -133,6 +136,13 @@
            03  WRK-KAISU           PIC 9(05).
       *
            03  WRK-TNS-NAME        PIC X(200).
+      *
+           03  WRK-KEY-KIKAN.
+               05  WRK-YUKOSTYMD       PIC X(08).
+               05  WRK-YUKOEDYMD       PIC X(08).
+      *
+           03  WRK-INPUTCD-G.
+               05  WRK-INPUTCD         PIC X(20)   OCCURS  5.
       *
       *    文字変換
            03  WRK-ZENKAKU-G.
@@ -161,10 +171,19 @@
            03  H02-DSPNAME             PIC X(100).
        01  HEAD-03.
            03  FILLER                  PIC X(01).
-           03  H03-MIDASI              PIC X(14).
-           03  H03-INPUTCD-G           OCCURS  5.
-               05  H03-INPUTCD         PIC X(10).
-               05  H03-YOBI1           PIC X(01).
+           03  H03-MIDASI              PIC X(12).
+           03  FILLER                  PIC X(01).
+           03  H03-INPUTCD-G           PIC X(76).
+      ***  03  H03-INPUTCD-G           OCCURS  5.
+      *        05  H03-INPUTCD         PIC X(14).
+      ***      05  H03-YOBI1           PIC X(01).
+       01  HEAD-04.
+           03  FILLER                  PIC X(01).
+           03  H04-MIDASI              PIC X(14).
+           03  FILLER                  PIC X(01).
+           03  H04-YUKOSTYMD           PIC X(12).
+           03  H04-KARA                PIC X(02).
+           03  H04-YUKOEDYMD           PIC X(12).
        01  BODY-01.
            03  B01-YOBI1               PIC X(04).
            03  B01-ZUMIFLG             PIC X(02).
@@ -215,12 +234,15 @@
       *
            03  WRK-PAGE-MAX            PIC 9(03).
       *
-      *   日本語数字
-       01  TBL-SUJI-AREA.
-           03  FILLER          PIC X(20)   VALUE
-              "１２３４５６７８９０".
-       01  TBL-SUJI-R          REDEFINES   TBL-SUJI-AREA.
-           03  TBL-SUJI        PIC X(02)   OCCURS   10.
+       01  WRK-HENYMD-AREA.
+           03  WRK-HENYMDG         PIC X(09).
+           03  WRK-HENYMD.
+               05  WRK-HGO         PIC X(01).
+               05  WRK-HYY         PIC 9(02).
+               05  FILLER          PIC X(01)   VALUE   ".".
+               05  WRK-HMM         PIC 9(02).
+               05  FILLER          PIC X(01)   VALUE   ".".
+               05  WRK-HDD         PIC 9(02).
       *
       *    診療種別名テーブル
            COPY    "CPORCSSRYSYU.INC".
@@ -253,6 +275,9 @@
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
+      *
+      *    全角チェックパラメタ
+           COPY    "CPORCSKANACHK.INC".
       *
       *    印刷パラメタ
            COPY    "CPORCSMKPRT.INC".
@@ -479,19 +504,37 @@
        200-MEISAI-SYORI-SEC            SECTION.
       *
            INITIALIZE                  WRK-HEN-AREA
+           MOVE    ZERO                TO  FLG-KIKAN
            MOVE    ZERO                TO  IDX
            MOVE    ISET-SETCD          TO  WRK-KEY-SETCD
       *    見出し編集
            MOVE    ZERO                TO  WRK-HEN-MAX
            PERFORM 2001-HEAD-HEN-SEC
+           MOVE    SPACE               TO  WRK-YUKOSTYMD
+           MOVE    SPACE               TO  WRK-YUKOEDYMD
       *
            PERFORM 2002-MEISAI-HEN-SEC
                    UNTIL    (FLG-END       =    1    )  OR
                             (ISET-SETCD    NOT =   WRK-KEY-SETCD)
       *
+      *    印刷編集処理
+           PERFORM 2100-PRINT-HENSYU-SEC
+      *
+           ADD     1                   TO  IDX-P
+           IF      IDX-P               <=  69
+               MOVE    ALL "-"             TO  HCPOM-MOJI  (IDX-P)
+           END-IF
+      *
+           .
+       200-MEISAI-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    印刷編集処理
+      *****************************************************************
+       2100-PRINT-HENSYU-SEC          SECTION.
+      *
       *    最大行数のセット
            MOVE    69                  TO  IDX-MAX
-      *
       *    編集処理
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   WRK-HEN-MAX
@@ -509,14 +552,10 @@
                ADD     1                   TO  IDX-P
                MOVE    WRK-TBL-REC (IDX)   TO  HCPOM-MOJI  (IDX-P)
            END-PERFORM
-      *
-           ADD     1                   TO  IDX-P
-           IF      IDX-P               <=  69
-               MOVE    ALL "-"             TO  HCPOM-MOJI  (IDX-P)
-           END-IF
-      *
+           INITIALIZE                  WRK-HEN-AREA
+           MOVE    ZERO                TO  WRK-HEN-MAX
            .
-       200-MEISAI-SYORI-EXT.
+       2100-PRINT-HENSYU-EXT.
            EXIT.
       *****************************************************************
       *    見出し編集処理
@@ -534,6 +573,7 @@
       *
            MOVE    SPACE               TO  HEAD-02
            MOVE    SPACE               TO  HEAD-03
+           MOVE    SPACE               TO  WRK-INPUTCD-G
       *    入力ＣＤ
            MOVE    ISET-SETCD          TO  H02-SETCD
       *
@@ -562,7 +602,7 @@
                ELSE
                    ADD     1                   TO  IDY
                    IF      IDY                 <=  5
-                       MOVE    ICD-INPUTCD     TO  H03-INPUTCD (IDY)
+                       MOVE    ICD-INPUTCD     TO  WRK-INPUTCD (IDY)
       *****************IF      IDY             >   1
       *                    MOVE    ","         TO  H03-YOBI1 (IDY - 1)
       *****************END-IF
@@ -583,6 +623,7 @@
            IF      IDY                 >   ZERO
                ADD     1                   TO  WRK-HEN-MAX
                MOVE    "【入力ＣＤ】"      TO  H03-MIDASI
+               PERFORM 20011-INPUTCD-HEN-SEC
                MOVE    HEAD-03             TO  WRK-TBL-REC (WRK-HEN-MAX)
            END-IF
       *
@@ -590,10 +631,113 @@
        2001-HEAD-HEN-EXT.
            EXIT.
       *****************************************************************
+      *    入力ＣＤ間編集処理
+      *****************************************************************
+       20011-INPUTCD-HEN-SEC          SECTION.
+      *
+           MOVE    1                    TO  IDX3
+           MOVE    ZERO                 TO  FLG-ZENKAKU
+           MOVE    ZERO                 TO  FLG-HANKAKU
+           PERFORM VARYING     IDX2     FROM    1   BY  1
+                   UNTIL       IDX2     >  IDY
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"                 TO  KANACHK-SYORI
+               MOVE    WRK-INPUTCD (IDX2)  TO  KANACHK-MAE-INPUT
+               MOVE    20                  TO  KANACHK-MAX-CNT
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
+               IF      IDX2                >   1
+                  AND (H03-INPUTCD-G   NOT =   SPACE)
+      *            全角
+                   IF      KANACHK-SYUBETU     =   2
+                       IF      FLG-HANKAKU     =   1
+      *                    前に半角がある時、行を変える
+                           MOVE    ","            TO  H03-INPUTCD-G
+                                                          (IDX3:)
+                           MOVE    HEAD-03     TO  WRK-TBL-REC
+                                                       (WRK-HEN-MAX)
+                           ADD     1               TO  WRK-HEN-MAX
+                           MOVE    SPACE           TO  HEAD-03
+                           MOVE    1               TO  IDX3
+                           MOVE    ZERO            TO  FLG-HANKAKU
+                       ELSE
+                           MOVE    "　　，"        TO  H03-INPUTCD-G
+                                                          (IDX3:)
+                           ADD     6               TO  IDX3
+                       END-IF
+                   ELSE
+                       MOVE    ","            TO  H03-INPUTCD-G
+                                                          (IDX3:)
+                       ADD     1               TO  IDX3
+                   END-IF
+               END-IF
+               IF     (IDX3  +   KANACHK-MAX)  >   76
+                   MOVE    HEAD-03         TO  WRK-TBL-REC (WRK-HEN-MAX)
+                   ADD     1                   TO  WRK-HEN-MAX
+                   MOVE    SPACE               TO  HEAD-03
+                   MOVE    1                   TO  IDX3
+               END-IF
+               IF      KANACHK-SYUBETU     =   2
+                   MOVE    1               TO  FLG-ZENKAKU
+               ELSE
+                   MOVE    1               TO  FLG-HANKAKU
+               END-IF
+               MOVE    WRK-INPUTCD (IDX2)(1:KANACHK-MAX)
+                                           TO  H03-INPUTCD-G(IDX3:)
+               ADD     KANACHK-MAX         TO  IDX3
+           END-PERFORM
+      *
+           .
+       20011-INPUTCD-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    期間編集処理
+      *****************************************************************
+       2009-HEAD04-PRINT-SEC          SECTION.
+      *
+           IF      FLG-KIKAN           =   1
+      *        印刷編集処理
+               PERFORM 2100-PRINT-HENSYU-SEC
+           END-IF
+      *
+           MOVE    1                   TO  FLG-KIKAN
+           MOVE    SPACE               TO  HEAD-04
+           MOVE    "【有効期間】"      TO  H04-MIDASI
+      *
+           MOVE    ISET-YUKOSTYMD      TO  WRK-SYMD
+           PERFORM 800-SEIWA-HEN-SEC
+           MOVE    WRK-HENYMDG         TO  H04-YUKOSTYMD
+           MOVE    ISET-YUKOEDYMD      TO  WRK-SYMD
+           PERFORM 800-SEIWA-HEN-SEC
+           MOVE    WRK-HENYMDG         TO  H04-YUKOEDYMD
+           MOVE    "〜"                TO  H04-KARA
+      *
+           ADD     1                   TO  WRK-HEN-MAX
+           MOVE    HEAD-04             TO  WRK-TBL-REC (WRK-HEN-MAX)
+           .
+       2009-HEAD04-PRINT-EXT.
+           EXIT.
+      *****************************************************************
       *    内容編集処理
       *****************************************************************
        2002-MEISAI-HEN-SEC          SECTION.
       *
+      *    期間編集
+           IF     (ISET-YUKOSTYMD      =   "00000000" )  AND
+                  (ISET-YUKOEDYMD      =   "99999999" )
+               MOVE    ISET-YUKOSTYMD      TO  WRK-YUKOSTYMD
+               MOVE    ISET-YUKOEDYMD      TO  WRK-YUKOEDYMD
+           ELSE
+               IF     (ISET-YUKOSTYMD      =   WRK-YUKOSTYMD ) AND
+                      (ISET-YUKOEDYMD      =   WRK-YUKOEDYMD )
+                   CONTINUE
+               ELSE
+      *            期間印刷
+                   PERFORM 2009-HEAD04-PRINT-SEC
+                   MOVE    ISET-YUKOSTYMD      TO  WRK-YUKOSTYMD
+                   MOVE    ISET-YUKOEDYMD      TO  WRK-YUKOEDYMD
+               END-IF
+           END-IF
            MOVE    SPACE               TO  BODY-01
            MOVE    SPACE               TO  WRK-NAME
            MOVE    ISET-INPUTCD        TO  B01-SRYCD
@@ -785,14 +929,39 @@
                GO      TO      20023-SRYCD-HEN-EXT
            END-IF
       *    用法
-           IF     (ISET-INPUTCD(1:3)       =   "001"  )  OR
-                  (ISET-KAISU               >   1     )
+           IF     (ISET-INPUTCD(1:3)       =   "001" )  OR
+                  (ISET-KAISU              >   1     )
                MOVE    ISET-KAISU          TO  B01-KAISU
                MOVE    "×"                TO  B01-KAKERU
                MOVE    WRK-HEN-KAISU       TO  B01-KAISU-HEN
            END-IF
            .
        20023-SRYCD-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    西暦和暦編集処理
+      *****************************************************************
+       800-SEIWA-HEN-SEC             SECTION.
+      *
+           IF      WRK-SYMD            =   ALL "9"  OR   SPACE
+                                                    OR   ZERO
+               MOVE    SPACE               TO  WRK-HGO
+               MOVE    WRK-SYMD(3:2)       TO  WRK-HYY
+               MOVE    WRK-SYMD(5:2)       TO  WRK-HMM
+               MOVE    WRK-SYMD(7:2)       TO  WRK-HDD
+               MOVE    WRK-SYMD            TO  WRK-HENYMDG
+           ELSE
+               INITIALIZE                      STS-AREA-DAY
+               INITIALIZE                      LNK-DAY2-AREA
+               MOVE    "21"                TO  LNK-DAY2-IRAI
+               MOVE    WRK-SYMD            TO  LNK-DAY2-YMD
+               CALL    "ORCSDAY"            USING   STS-AREA-DAY
+                                                   LNK-DAY2-AREA
+               MOVE    LNK-DAY2-EDTYMD1    TO  WRK-HENYMDG
+           END-IF
+           .
+       800-SEIWA-HEN-EXT.
            EXIT.
       *****************************************************************
       *    点数マスター読込

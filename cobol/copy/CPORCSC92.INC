@@ -29,6 +29,8 @@
       *
       *    1:追加分（追加ＯＫ時、'２'へ変更）３：チェックのみ
            03  LNK-SC92-KBN            PIC X(01).
+      *    １：入力値あり
+           03  LNK-SC92-INFLG          PIC X(01).
       *    訂正フラグ（１：訂正）
            03  LNK-SC92-SYORIFLG       PIC 9(01).
       *    1:注加算チェックなし（画像診断の乳幼児加算等）
@@ -89,4 +91,8 @@
                                            OCCURS  10.
       *    エラーメッセージ（併用算定）
            03  LNK-SC92-ERRMSG         PIC X(100).
+      *
+      *    入力値（ORCSC97）（診療行為画面入力時のみ）
+           03  LNK-SC92-INPUT-G        PIC X(100).
+           03  LNK-SC92-TIMEFLG        PIC X(01).
       *

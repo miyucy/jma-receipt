@@ -28,6 +28,10 @@
                05 ISET-HOSPID          PIC  X(24).
       *セットコード
                05 ISET-SETCD           PIC  X(06).
+      *有効開始年月日
+               05 ISET-YUKOSTYMD       PIC  X(08).
+      *有効終了年月日
+               05 ISET-YUKOEDYMD       PIC  X(08).
       *セット内番号
                05 ISET-SETSEQ          PIC  9(03).
       *入力（診療）コード
