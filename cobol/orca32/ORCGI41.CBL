@@ -6009,11 +6009,6 @@
                                            ",KEY:" ACCT-KEY
                         MOVE    "2000"         TO  SPA-ERRCD
                    END-IF
-      *            主科設定
-                   IF    NACCT-ZAISKBKBN   =   "1"  OR  "6"  OR  "7"
-                       PERFORM    600-SYUKA-SET-SEC
-                   END-IF
-      *
                ELSE
                    DISPLAY "I41 NYUINACCT READ ERR:" NACCT-KEY
                    MOVE    "2000"         TO  SPA-ERRCD
@@ -6025,6 +6020,8 @@
                    PERFORM 49011-NYUINACCT-ALLUPD-SEC
                END-IF
            END-PERFORM
+      *    主科設定
+           PERFORM    600-SYUKA-SET-SEC
       *
            .
        4901-NYUINACCT-UPD-EXT.
@@ -6237,11 +6234,6 @@
                                                ",KEY:" NACCT-KEY
                         MOVE    "2000"          TO  SPA-ERRCD
                    END-IF
-      *            主科設定
-                   IF    NACCT-ZAISKBKBN   =   "1"  OR  "6"  OR  "7"
-                       PERFORM    600-SYUKA-SET-SEC
-                   END-IF
-      *
                ELSE
       *             DISPLAY "I41 NYUINACCT READ ERR02:" NACCT-KEY
                     MOVE    "2000"          TO  SPA-ERRCD
@@ -6635,13 +6627,15 @@
       *****************************************************************
        600-SYUKA-SET-SEC              SECTION.
       *
-      *     DISPLAY "== SYUKA-SET-SEC ==="
-      *     DISPLAY "NACCT-SRYYM   = " NACCT-SRYYM
-      *     DISPLAY "SPA-HOSPID    = " SPA-HOSPID
-      *     DISPLAY "SPA-PREFNUM   = " SPA-PREFNUM
-      *     DISPLAY "SPA-PTID      = " SPA-PTID
-      *     DISPLAY "SPA-NYUGAIKBN = " SPA-NYUGAIKBN
-      *     DISPLAY "SPA-BIRTHDAY  = " SPA-BIRTHDAY
+           DISPLAY "== SYUKA-SET-SEC ==="
+           DISPLAY "NACCT-SRYYM   = " NACCT-SRYYM
+           DISPLAY "SPA-HOSPID    = " SPA-HOSPID
+           DISPLAY "SPA-PREFNUM   = " SPA-PREFNUM
+           DISPLAY "SPA-PTID      = " SPA-PTID
+           DISPLAY "SPA-NYUGAIKBN = " SPA-NYUGAIKBN
+           DISPLAY "SPA-BIRTHDAY  = " SPA-BIRTHDAY
+           DISPLAY "NACCT-ZAISKBKBN = " NACCT-ZAISKBKBN
+           DISPLAY "NACCT-SRYCDTOTAL = " NACCT-SRYCDTOTAL
       *
            INITIALIZE                 ORCSSYUACCAREA
            MOVE    "04"           TO  LNK-SYUACC-I-KBN
