@@ -1845,7 +1845,7 @@
            END-IF
       *
       *    ７０歳になる日が期間をまたがるときはレコードを分ける
-           IF    ( WRK-HEN-TEKSTYMD    <=  WRK-BYMD-70 ) AND
+           IF    ( WRK-HEN-TEKSTYMD    <   WRK-BYMD-70 ) AND
                  ( WRK-HEN-TEKEDYMD    >=  WRK-BYMD-70 ) AND
                  ( WRK-HEN-TEKEDYMD    >=  "20021001"  )
       *        補助区分等セット
