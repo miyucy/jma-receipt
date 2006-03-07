@@ -112,3 +112,7 @@
                   05  Z04-VALUE   PIC X(43).
                 04  Z04-BUNRUIKBN-COUNT   PIC S9(9)   BINARY.
                 04  Z04-BUNRUIKBNLST   PIC X(43)   OCCURS  20 TIMES.
+              03  Z04-CHNGCD.
+                04  Z04-VALUE   PIC X(9).
+              03  Z04-CHNGENAME.
+                04  Z04-VALUE   PIC X(100).

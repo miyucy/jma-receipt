@@ -137,5 +137,11 @@ Z04	{
 			count	int;
 			item	varchar(43)[20];
 		};
+		CHNGCD	{
+			value	varchar(9);
+		};
+		CHNGENAME	{
+			value	varchar(100);
+		};
 	};
 };
