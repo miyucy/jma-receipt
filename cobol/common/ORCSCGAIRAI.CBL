@@ -437,7 +437,8 @@
            COPY    "CPORCSRECEUPD.INC".
       *
       *    主情報アクセス用パラメタ
-           COPY    "CPORCSSYUACC.INC".
+           01  ORCSSYUACCAREA.
+               COPY    "CPORCSSYUACC.INC".
       *
            COPY    "MCPAREA".
            COPY    "ORCA-SPA".

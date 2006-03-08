@@ -710,7 +710,8 @@
            COPY    "CPORCSSANFUKA.INC".
       *
       *    主情報アクセス用パラメタ
-           COPY    "CPORCSSYUACC.INC".
+           01  ORCSSYUACCAREA.
+               COPY    "CPORCSSYUACC.INC".
       *    ＳＰＡパラメタ（ORCSC97.CBL 用のDAMMY)
        01  LNK-K02SCR-REC.
            COPY    "CPK02SPASCR.INC"    REPLACING

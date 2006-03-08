@@ -122,7 +122,8 @@
           COPY    "CPORCSGDAY.INC".
       *
       *    主情報アクセス用パラメタ
-           COPY    "CPORCSSYUACC.INC".
+           01  ORCSSYUACCAREA.
+               COPY    "CPORCSSYUACC.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".

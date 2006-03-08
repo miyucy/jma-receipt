@@ -731,7 +731,8 @@
            COPY    "CPORCSRECEUPD.INC".
       *
       *    主情報アクセス用パラメタ
-           COPY    "CPORCSSYUACC.INC".
+           01  ORCSSYUACCAREA.
+               COPY    "CPORCSSYUACC.INC".
       *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).

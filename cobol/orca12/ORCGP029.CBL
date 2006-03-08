@@ -281,7 +281,8 @@
       *    レセプト作成管理マスタ更新サブ
            COPY    "CPORCSRECEUPD.INC".
       *    主情報アクセス用パラメタ
-           COPY    "CPORCSSYUACC.INC".
+           01  ORCSSYUACCAREA.
+               COPY    "CPORCSSYUACC.INC".
       *
       *****************************************************************
       *    連絡　領域
