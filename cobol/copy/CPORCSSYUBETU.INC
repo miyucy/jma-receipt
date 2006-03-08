@@ -60,6 +60,9 @@
       *            補助区分
                    07  LNK-SYUBETU-HOJOKBN
                                        PIC X(08).
+      *            保険番号（主保険）
+                   07  LNK-SYUBETU-HKNNUM
+                                       PIC X(03).
       *            保険組合せ番号
                    07  LNK-SYUBETU-HKNCOMBI-AREA.
                        09  LNK-SYUBETU-HKNCOMBI
