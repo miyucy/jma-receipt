@@ -103,6 +103,7 @@
            03  FLG-END                         PIC 9(01).
            03  FLG-TENSU                       PIC 9(01).
            03  FLG-INPUTCD                     PIC 9(01).
+           03  FLG-SRYCDCHG                     PIC 9(01).
       *
            03  FLG-KANJI                       PIC 9(01).
            03  FLG-KENSAKU                     PIC 9(01).
@@ -158,6 +159,9 @@
       *    入力コード
         01  INPUTCD-REC.
             COPY    "CPINPUTCD.INC".
+      *    老人一般コード変換
+       01  SRYCDCHG-REC.
+           COPY    "CPSRYCDCHG.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -468,7 +472,7 @@
            END-PERFORM
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key20"             TO  MCP-PATHNAME
-           PERFORM 990-DBLOSEC-SEC
+           PERFORM 990-DBCLOSE-SEC
       *    最大件数編集
            MOVE    IDX                 TO  SPA-TENSU-MAX
       *
@@ -492,7 +496,7 @@
                END-IF
                MOVE    "tbl_inputcd"       TO  MCP-TABLE
                MOVE    "key4"               TO  MCP-PATHNAME
-               PERFORM 990-DBLOSEC-SEC
+               PERFORM 990-DBCLOSE-SEC
                IF      FLG-INPUTCD         =   ZERO
                    MOVE    ICD-INPUTCD     TO  SPA-GMN-TINPUTCD (IDX)
                END-IF
@@ -637,6 +641,8 @@
                                        TO  SPA-NAI-OLD-YKZKBN
       *    入力コード編集
            INITIALIZE                      SPA-GMN-INPUTCD-G
+           MOVE    SPACE               TO  SPA-GMN-SRYCD-G
+           MOVE    SPACE               TO  SPA-GMN-NAME
       *
            MOVE    SPACE               TO  INPUTCD-REC
            INITIALIZE                      INPUTCD-REC
@@ -663,18 +669,57 @@
                MOVE    ICD-CDSYU           TO  SPA-GMN-CDSYU   (IDX)
       *
                MOVE    "tbl_inputcd"       TO  MCP-TABLE
-               MOVE    "key4"               TO  MCP-PATHNAME
+               MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM 920-INPUTCD-READ-SEC
       *
            END-PERFORM
            MOVE    "tbl_inputcd"       TO  MCP-TABLE
            MOVE    "key4"               TO  MCP-PATHNAME
-           PERFORM 990-DBLOSEC-SEC
+           PERFORM 990-DBCLOSE-SEC
       *
-           MOVE    3                   TO  SPA-GMN-CUR
+      *    経過措置コード判定
+           PERFORM 40021-SRYCDCHG-CHK-SEC
       *
            .
        4002-SELNUM-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   経過措置コード判定処理
+      *****************************************************************
+       40021-SRYCDCHG-CHK-SEC                    SECTION.
+      *
+           INITIALIZE                  SRYCDCHG-REC 
+           MOVE    SPA-GMN-OLD-SRYCD   TO  CHG-IPNSRYCD
+      *
+           MOVE    SRYCDCHG-REC        TO  MCPDATA-REC
+           MOVE    "tbl_srycdchg"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_srycdchg"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 990-SRYCDCHG-READ-SEC
+           ELSE
+               INITIALIZE                  SRYCDCHG-REC
+               MOVE    1               TO  FLG-SRYCDCHG
+           END-IF
+           MOVE    "tbl_srycdchg"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-SRYCDCHG        =   ZERO
+      *        点数マスタ編集
+               MOVE    CHG-RJNSRYCD        TO   SPA-GMN-SRYCD
+               PERFORM 40041-TENSU-CHK-SEC
+               MOVE    4                   TO  SPA-GMN-CUR
+           ELSE
+               MOVE    SPACE               TO  SPA-GMN-SRYCD
+               MOVE    3                   TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       40021-SRYCDCHG-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -777,7 +822,7 @@
            END-IF
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBLOSEC-SEC
+           PERFORM 990-DBCLOSE-SEC
            IF      FLG-TENSU           =   1
                MOVE    "0006"          TO  SPA-ERRCD
                MOVE    3               TO  SPA-GMN-CUR
@@ -804,7 +849,7 @@
            END-IF
            MOVE    "tbl_inputcd"       TO  MCP-TABLE
            MOVE    "key4"               TO  MCP-PATHNAME
-           PERFORM 990-DBLOSEC-SEC
+           PERFORM 990-DBCLOSE-SEC
            IF      FLG-INPUTCD         =   ZERO
                MOVE    "0007"          TO  SPA-ERRCD
                MOVE    3               TO  SPA-GMN-CUR
@@ -1064,7 +1109,7 @@
       *
            MOVE    "tbl_inputcd"       TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 990-DBLOSEC-SEC
+           PERFORM 990-DBCLOSE-SEC
       *
            IF     (FLG-INPUTCD         =   ZERO  )  AND
                   (SPA-GMN-INPUTCD(IDX)
@@ -1359,7 +1404,7 @@
                END-IF
                MOVE    "tbl_inputcd"       TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 990-DBLOSEC-SEC
+               PERFORM 990-DBCLOSE-SEC
       *        入力コード更新
                IF      (FLG-INPUTCD        =   ZERO )  AND
                        (SPA-GMN-OLD-SRYCD  =   ICD-SRYCD )
@@ -1475,7 +1520,7 @@
            END-PERFORM
            MOVE    "tbl_inputcd"       TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
-           PERFORM 990-DBLOSEC-SEC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        41211-OLD-INPUTCD-EXT.
@@ -1759,6 +1804,23 @@
        920-INPUTCD-READ-EXT.
            EXIT.
       *****************************************************************
+      *    老人一般コード変換読込
+      *****************************************************************
+       990-SRYCDCHG-READ-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  SRYCDCHG-REC
+               MOVE    ZERO                TO  FLG-SRYCDCHG
+           ELSE
+               INITIALIZE                      SRYCDCHG-REC
+               MOVE    1                   TO  FLG-SRYCDCHG
+           END-IF
+      *
+           .
+       990-SRYCDCHG-READ-EXT.
+           EXIT.
+      *****************************************************************
       *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
@@ -1788,7 +1850,7 @@
       *****************************************************************
       *   ＤＢクローズ処理
       *****************************************************************
-       990-DBLOSEC-SEC                 SECTION.
+       990-DBCLOSE-SEC                 SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            CALL    "MONFUNC"           USING
