@@ -19,6 +19,8 @@
       *      02  W11-FIXED2.
               03  W11-B03.
                 04  W11-B03-STATE              PIC S9(9)   BINARY.
+              03  W11-B08.
+                04  W11-B08-STATE              PIC S9(9)   BINARY.
               03  W11-NOTE3.
                 04  W11-PAGENO                 PIC S9(9)   BINARY.
                 04  W11-FI23.
