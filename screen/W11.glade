@@ -194,7 +194,18 @@
       <y>720</y>
       <width>80</width>
       <height>24</height>
-      <label></label>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F8</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Wed, 08 Mar 2006 05:50:28 GMT</last_modification_time>
+      </signal>
+      <label>オフセット</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -4651,8 +4662,8 @@
 	  <name>GAZOFOLDER</name>
 	  <x>260</x>
 	  <y>300</y>
-      <width>222</width>
-      <height>24</height>
+	  <width>222</width>
+	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
 	    <name>activate</name>
