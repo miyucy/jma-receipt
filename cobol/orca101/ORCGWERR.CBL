@@ -81,6 +81,7 @@
            COPY    "W09.INC".
            COPY    "W10.INC".
            COPY    "W11.INC".
+           COPY    "W111.INC".
            COPY    "W12.INC".
            COPY    "W13.INC".
            COPY    "W14.INC".

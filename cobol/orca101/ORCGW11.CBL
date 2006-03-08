@@ -53,6 +53,7 @@
       * 02.00.11     NACL-小豆沢  05/07/14  自費１０項目の請求書兼領収書を
       *                                     選択できるよう変更
       * 02.00.12     NACL-森脇    05/12/15  画像ファイルフォルダ指定追加
+      * 02.00.13     NACL-多々納  06/03/08  帳票オフセット登録画面追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -74,171 +75,7 @@
            COPY    "W01COMMON-SPA".
       *
       *    画面用ＳＰＡ
-       01  SPA-W11.
-           03  SPA-W11-AREA.
-               05  SPA-GMN-PAGE        PIC 9(02).
-               05  SPA-GMN-LINE        PIC 9(02).
-               05  SPA-GMN-MAX         PIC 9(04).
-               05  SPA-GMN-CUR         PIC 9(04).
-      *
-               05  SPA-GMN-AREA.
-                   07  SPA-GMN-STYUKYMD    PIC X(09).
-                   07  SPA-GMN-EDYUKYMD    PIC X(09).
-      *
-                   07  SPA-GMN-PAGENO      PIC 9(01).
-      *            出力先プリンタ割り当て情報
-                   07  SPA-GMN-1031-AREA.
-      *----(02.00.03)--ADD-START---
-                       09  SPA-GMN-USERKBN-G.
-                           11  SPA-GMN-USERKBN     PIC X(01).
-                           11  SPA-GMN-U1          PIC X(01).
-                           11  SPA-GMN-USERKBNMEI  PIC X(18).
-      *
-                       09  SPA-GMN-USERKBNLST      OCCURS  5.
-                           11  SPA-GMN-USERKBNL    PIC X(01).
-                           11  SPA-GMN-U1L         PIC X(01).
-                           11  SPA-GMN-USERKBNMEIL PIC X(18).
-                       09  SPA-GMN-USERKBN-MAX     PIC 9(01).
-      *                有効判定
-                       09  SPA-GMN-YUKOKBN-G.
-                           11  SPA-GMN-YUKOKBN     PIC X(01).
-                           11  SPA-GMN-Y1          PIC X(01).
-                           11  SPA-GMN-YUKOKBNMEI  PIC X(18).
-      *
-                       09  SPA-GMN-YUKOKBNLST      OCCURS  2.
-                           11  SPA-GMN-YUKOKBNL    PIC X(01).
-                           11  SPA-GMN-Y1L         PIC X(01).
-                           11  SPA-GMN-YUKOKBNMEIL PIC X(18).
-                       09  SPA-GMN-YUKOKBN-MAX     PIC 9(01).
-      *
-                       09  SPA-GMN-USERLSTSCROLLE.
-                           11  SPA-GMN-USERLST         OCCURS  100.
-                               13  SPA-GMN-USERNUML.
-                                   15  SPA-GMN-UNUM    PIC X(03).
-                                   15  SPA-GMN-UMARK   PIC X(01).
-                               13  SPA-GMN-USERMEIL    PIC X(16).
-                           11  SPA-GMN-USERLST-MAX     PIC 9(03).
-      *
-                       09  SPA-GMN-SELNUM          PIC 9(03).
-      *----(02.00.03)--ADD-END-----
-                       09  SPA-GMN-TBL.
-      *----(01.00.03) LINE UPD START --------------------------
-      *----(01.00.05) LINE UPD START --------------------------
-      *                    外来・プリンタ名
-                           11  SPA-GMN-TBL01       OCCURS  20.
-                               13  SPA-GMN-TNAME   PIC X(30).
-                               13  SPA-GMN-TPRTNM  PIC X(16).
-      *----(02.00.03)--UPD-START---
-      *----(02.00.08)--UPD-START---
-      *                    外来・プログラム名
-      *                     11  SPA-GMN-TBL02       OCCURS  5.
-                           11  SPA-GMN-TBL02       OCCURS  7.
-      *----(02.00.08)--UPD-END-----
-                               13  SPA-GMN-TORGPGNM
-                                                   PIC X(20).
-                               13  SPA-GMN-TORGPGCHK
-                                                   PIC X(01).
-                               13  SPA-GMN-TCSTPGNM
-                                                   PIC X(20).
-                               13  SPA-GMN-TCSTPGCHK
-                                                   PIC X(01).
-                           11  SPA-GPGNM-MAX       PIC 9(04).
-      *
-                       09  SPA-GMN-ORGPGNM03LST-G.
-                           11  SPA-GMN-ORGPGNM03MEIL  PIC X(20)
-                                                   OCCURS  3.
-                           11  SPA-GMN-ORGPGNM03-MAX
-                                                   PIC 9(04).
-      *----(02.00.03)--UPD-END-----
-      *----(01.00.05) LINE UPD END   --------------------------
-      *----(01.00.03) LINE UPD END   --------------------------
-      *                    入院帳票
-      *                    入院・プリンタ名
-                           11  SPA-GMN-TBL01-N         OCCURS  20.
-                               13  SPA-GMN-TNAME-N     PIC X(30).
-                               13  SPA-GMN-TPRTNM-N    PIC X(16).
-      *                    入院・プログラム名
-                           11  SPA-GMN-TBL02-N         OCCURS  7.
-                               13  SPA-GMN-TORGPGNM-N
-                                                       PIC X(20).
-                               13  SPA-GMN-TORGPGCHK-N
-                                                       PIC X(01).
-                               13  SPA-GMN-TCSTPGNM-N
-                                                       PIC X(20).
-                               13  SPA-GMN-TCSTPGCHK-N
-                                                       PIC X(01).
-                           11  SPA-NPGNM-MAX           PIC 9(04).
-                           11  SPA-NPGNM-MAX2          PIC 9(04).
-      *
-                       09  SPA-GMN-ORGPGNM03NLST-G.
-                           11  SPA-GMN-ORGPGNM03NMEIL PIC X(20)
-                                                   OCCURS  3.
-                           11  SPA-GMN-ORGPGNM03N-MAX
-                                                   PIC 9(04).
-      *
-      *            帳票編集区分情報
-                   07  SPA-GMN-1030-AREA.
-                       09  SPA-GMN-SYOHOGEPRTFLG-G.
-                           11  SPA-GMN-SYOHOGEPRTFLG
-                                                  PIC X(01).
-                           11  SPA-GMN-F1         PIC X(01).
-                           11  SPA-GMN-SYOHOGEPRTFLGMEI
-                                                  PIC X(10).
-      *
-                       09  SPA-GMN-SYOHOGEPRTFLGLST    OCCURS  2.
-                           11  SPA-GMN-SYOHOGEPRTFLGL
-                                              PIC X(01).
-                           11  SPA-GMN-F1L        PIC X(01).
-                           11  SPA-GMN-SYOHOGEPRTFLGMEIL
-                                                  PIC X(10).
-                       09  SPA-GMN-SYOHOGEPRTFLG-MAX
-                                                  PIC 9(02).
-      *
-                       09  SPA-GMN-SYOHODSPNAME   PIC X(10).
-      *                カルテ３号紙様式
-                       09  SPA-GMN-KARUTE3KBN-G.
-                           11  SPA-GMN-KARUTE3KBN      PIC X(01).
-                           11  SPA-GMN-KARUTE3KBNF1    PIC X(01).
-                           11  SPA-GMN-KARUTE3KBN-MEI     PIC X(18).
-                       09  SPA-GMN-KARUTE3KBNLST-G  OCCURS  2.
-                           11  SPA-GMN-KARUTE3KBNLST      PIC X(20).
-                       09  SPA-GMN-KARUTE3KBN-MAX
-                                                  PIC 9(02).
-      *----(02.00.12)--ADD-START---
-                       09  SPA-GMN-GAZOFOLDER     PIC X(128).
-      *----(02.00.12)--ADD-END-----
-      *----(02.00.03)--ADD-START---
-      *
-               05  SPA-NAIB-AREA.
-                   07  SPA-NAI-TBL.
-                       09  SPA-NAI-TBLO           OCCURS  100.
-                           11  SPA-NAI-USERCD     PIC 9(5).
-      *
-      *        出力先プリンタ割り当て 標準情報
-               05  SPA-HYOJUN-AREA.
-                   07  SPA-NAI-TBL01           OCCURS  20.
-                       09  SPA-NAI-TNAME       PIC X(30).
-                       09  SPA-NAI-TPRTNM      PIC X(16).
-      *
-      *----(02.00.08)--UPD-START---
-      *             07  SPA-NAI-TBL02           OCCURS  5.
-                   07  SPA-NAI-TBL02           OCCURS  7.
-      *----(02.00.08)--UPD-END-----
-                       09  SPA-NAI-TORGPGNM    PIC X(20).
-                       09  SPA-NAI-TORGPGCHK   PIC X(01).
-                       09  SPA-NAI-TCSTPGNM    PIC X(20).
-                       09  SPA-NAI-TCSTPGCHK   PIC X(01).
-      *
-                   07  SPA-NAI-TBL01-N         OCCURS  20.
-                       09  SPA-NAI-TNAME-N     PIC X(30).
-                       09  SPA-NAI-TPRTNM-N    PIC X(16).
-      *
-                   07  SPA-NAI-TBL02-N         OCCURS  7.
-                       09  SPA-NAI-TORGPGNM-N  PIC X(20).
-                       09  SPA-NAI-TORGPGCHK-N PIC X(01).
-                       09  SPA-NAI-TCSTPGNM-N  PIC X(20).
-                       09  SPA-NAI-TCSTPGCHK-N PIC X(01).
-      *----(02.00.03)--ADD-END-----
+           COPY    "W11SCR-SPA".
       *
       *    フラグエリア
        01  FLG-AREA.
@@ -394,6 +231,7 @@
            COPY    "W09.INC".
            COPY    "W10.INC".
            COPY    "W11.INC".
+           COPY    "W111.INC".
            COPY    "W12.INC".
            COPY    "W13.INC".
            COPY    "W14.INC".
@@ -482,26 +320,24 @@
            ELSE
       *        初期画面セット
                PERFORM 300-SCREEN-SEC
-               IF      FLG-END         =   1
-                   GO  TO  100-INIT-EXT
-               END-IF
-      *        画面編集
-               PERFORM 500-GMNHEN-SEC
-               PERFORM 510-GSRAUTH-SEC
-               IF      SPA-ERRCD       NOT =   SPACE
-                   PERFORM 510-ERRSET-SEC
-                   GO  TO  100-INIT-EXT
+               IF      FLG-END         =   ZERO
+      *            画面編集
+                   PERFORM 500-GMNHEN-SEC
+                   PERFORM 510-GSRAUTH-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       PERFORM 510-ERRSET-SEC
+                   END-IF
                END-IF
            END-IF
       *
-           MOVE    SPACE               TO  LINKAREA
+           IF      FLG-END         =   ZERO
+               MOVE    SPACE               TO  LINKAREA
       *
-           MOVE    SPACE               TO  MCP-PUTTYPE
-           MOVE    "W11    "           TO  MCP-WINDOW
-      *
-           PERFORM 900-PUT-WINDOW.
-      *
-           MOVE    1                   TO  FLG-END
+               MOVE    SPACE               TO  MCP-PUTTYPE
+               MOVE    "W11    "           TO  MCP-WINDOW
+               PERFORM 900-PUT-WINDOW
+               MOVE    1                   TO  FLG-END
+           END-IF
            .
        100-INIT-EXT.
            EXIT.
@@ -519,10 +355,11 @@
            EVALUATE    SPA-MOTOPG
                WHEN    "WID1"
                    PERFORM 330-WID1-SET-SEC
-                   GO      TO      300-SCREEN-EXT
+               WHEN    "W111"
+                   CONTINUE
+               WHEN    OTHER
+                   PERFORM 310-SPASET-SEC
            END-EVALUATE
-      *
-           PERFORM 310-SPASET-SEC
       *
            .
        300-SCREEN-EXT.
@@ -1411,6 +1248,11 @@
            WHEN    "CLICKED"       ALSO    "N0101"
            WHEN    "CLICKED"       ALSO    "N0102"
                PERFORM 460-TAGUCHG-SEC
+      *    帳票オフセット
+           WHEN    "CLICKED"       ALSO    "B08"
+               IF      SPA-W01-KANRICD     =   "1031"
+                   PERFORM  4110-W111-SYORI-SEC
+               END-IF
       *
            END-EVALUATE
            .
@@ -2145,7 +1987,51 @@
            .
        410-SAKUJYO-EXT.
            EXIT.
+      *****************************************************************
+      *    帳票オフセット画面処理
+      *****************************************************************
+       4110-W111-SYORI-SEC             SECTION.
       *
+      *    初期画面セット
+           MOVE    SPACE               TO  LINKAREA
+           MOVE    SPACE               TO  SPA-MOTOPG
+           MOVE    SPA-W11             TO  SPA-FREE
+           MOVE    SPA-W01KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGW111"          USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+           MOVE    SPA-COMMON          TO  SPA-AREA
+           MOVE    SPA-FREE            TO  SPA-W11
+           MOVE    SPA-WORK            TO  SPA-W01KYOUTU
+      *
+           MOVE    "W111"              TO  SPA-SAKIPG
+           MOVE    "W11"               TO  SPA-MOTOPG
+      *
+           MOVE    SPACE               TO  LINKAREA
+      *
+           IF      SPA-W111-LIST-MAX   =   ZERO
+               MOVE    "FORMID"            TO  MCP-WIDGET
+           ELSE
+               MOVE    "SELNUM"            TO  MCP-WIDGET
+           END-IF
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "W111"              TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       4110-W111-SYORI-EXT.
+           EXIT.
       *----(02.00.03)--ADD-END-----
       *****************************************************************
       *       登録処理
@@ -3141,6 +3027,7 @@
                MOVE    WIDGET-INSENSITIVE  TO  W11-YUKOKBN-STATE
                MOVE    WIDGET-INSENSITIVE  TO  W11-SELNUM-STATE
                MOVE    WIDGET-INSENSITIVE  TO  W11-B03-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  W11-B08-STATE
            WHEN    "1031"
                EVALUATE    SPA-GMN-USERKBN
                WHEN    "*"
@@ -3152,6 +3039,7 @@
                    MOVE    WIDGET-NORMAL       TO  W11-SELNUM-STATE
                    MOVE    WIDGET-NORMAL       TO  W11-B03-STATE
                END-EVALUATE
+               MOVE    WIDGET-NORMAL      TO  W11-B08-STATE
            END-EVALUATE
       *----(02.00.03)--ADD-END-----
       *
