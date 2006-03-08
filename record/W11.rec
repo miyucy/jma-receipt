@@ -3,6 +3,9 @@ W11	{
 		B03	{
 			state	int;
 		};
+		B08	{
+			state	int;
+		};
 		n3	{
 			pageno	int;
 			fi23	{

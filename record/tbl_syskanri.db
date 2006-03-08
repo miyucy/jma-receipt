@@ -242,3 +242,17 @@ path	key14	{
 		;
 	};
 };
+
+path	key15	{
+	DBSELECT	{
+		DECLARE tbl_syskanri_key15_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syskanri
+			WHERE   KANRICD      =   :KANRICD
+			AND     STYUKYMD     <=  :STYUKYMD
+			AND     EDYUKYMD     >=  :EDYUKYMD
+			ORDER BY KANRITBL,
+                                 KBNCD
+		;
+	};
+};
