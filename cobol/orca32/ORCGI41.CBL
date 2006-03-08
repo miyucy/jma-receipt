@@ -490,6 +490,7 @@
            COPY    "CPORCSHKNSET.INC".
       *
       *    主科情報アクセス用パラメタ
+       01  ORCSSYUACCAREA.
            COPY    "CPORCSSYUACC.INC".
       *
       *    ＤＢ検索
