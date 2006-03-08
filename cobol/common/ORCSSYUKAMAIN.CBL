@@ -84,6 +84,7 @@
        LINKAGE                     SECTION.
       *
            COPY    "COMMON-SPA".
+       01  ORCSSYUACCAREA.
            COPY    "CPORCSSYUACC.INC".
       *****************************************************************
      *
@@ -558,6 +559,7 @@
       *
       *??
            DISPLAY "SYUKAMAIN OT=" LNK-SYUACC-RC
+           DISPLAY "    PTID=" SPA-PTID
            DISPLAY " H-SRYKA=" LNK-SYUACC-IO-H-SRYKA
            DISPLAY "--------------------------------------------------"
            DISPLAY "|種別|保険者NO|提|au|科|保1 |保2 |保3 |   点数   |"

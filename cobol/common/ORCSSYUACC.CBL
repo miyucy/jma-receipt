@@ -93,6 +93,7 @@
        LINKAGE                     SECTION.
       *
            COPY    "COMMON-SPA".
+       01  ORCSSYUACCAREA.
            COPY    "CPORCSSYUACC.INC".
       *****************************************************************
      *
@@ -144,9 +145,9 @@
                WHEN    "04"
                    PERFORM 2003-KBN03-HENSYU-SEC
                WHEN    "06"
-                   PERFORM 2001-KBN06-HENSYU-SEC
+                   PERFORM 2006-KBN06-HENSYU-SEC
                WHEN    "07"
-                   PERFORM 2001-KBN07-HENSYU-SEC
+                   PERFORM 2007-KBN07-HENSYU-SEC
            END-EVALUATE
       *
            MOVE    1               TO  FLG-END
@@ -204,6 +205,8 @@
                                    TO  LNK-SYUACC-IO-HKNJANUM    (IDX)
                            MOVE    SYUKA-HOJOKBN
                                    TO  LNK-SYUACC-IO-HOJOKBN     (IDX)
+      ****                 MOVE    SYUKA-HKNNUM
+      ****                         TO  LNK-SYUACC-IO-HKNNUM      (IDX)
                        END-IF
                        IF    ( SYUKA-NYUGAIKBN
                                    =   LNK-SYUACC-IO-NYUGAIKBN   (IDX) )
@@ -591,6 +594,8 @@
                                                TO  SYUKA-HKNJANUM
                        MOVE    LNK-SYUACC-IO-HOJOKBN     (IDX)
                                                TO  SYUKA-HOJOKBN
+      ****             MOVE    LNK-SYUACC-IO-HKNNUM      (IDX)
+      ****                                     TO  SYUKA-HKNNUM
                        MOVE    LNK-SYUACC-IO-SRYKA (IDX IDY)
                                                TO  SYUKA-SRYKA
                    END-IF
@@ -731,7 +736,7 @@
       *****************************************************************
       *    主科テーブル情報取得処理
       *****************************************************************
-       2001-KBN06-HENSYU-SEC       SECTION.
+       2006-KBN06-HENSYU-SEC       SECTION.
       *
            INITIALIZE              WRK-SRYACC-AREA
       *
@@ -844,30 +849,26 @@
                END-PERFORM
            END-IF
            .
-       2001-KBN06-HENSYU-EXT.
+       2006-KBN06-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
       *    主科テーブル情報取得処理
       *****************************************************************
-       2001-KBN07-HENSYU-SEC       SECTION.
+       2007-KBN07-HENSYU-SEC       SECTION.
       *
            INITIALIZE              WRK-SRYACC-AREA
       * 
-           INITIALIZE                  SYUKA-REC
            IF  LNK-IO2-SYU-HOSPID(1)   =   SPACE
-               MOVE    1               TO  FLG-SYUKA
-           END-IF
-      *
-           IF      FLG-SYUKA       =   1
                MOVE    1               TO  LNK-SYUACC-RC
-           ELSE
-               MOVE    LNK-SYUACC-IO2-OCC(1)
-                                       TO  SYUKA-REC
-               MOVE    1               TO  IDW
            END-IF
       *
-           PERFORM                 UNTIL   FLG-SYUKA   =   1
+           PERFORM VARYING IDW     FROM    1   BY  1
+                   UNTIL   IDW >   100
+                   OR      LNK-IO2-SYU-HOSPID (IDW)    =   SPACE
+               MOVE    LNK-SYUACC-IO2-OCC (IDW)
+                                           TO  SYUKA-REC
+      *
                IF      SYUKA-RECESYUBETU   =   "XXXX" 
                    MOVE    SYUKA-SRYKA-INPUT   TO  LNK-SYUACC-IO-H-SRYKA
                ELSE
@@ -901,17 +902,7 @@
                        END-IF
                    END-PERFORM
                END-IF          
-      *        
-               ADD     1           TO  IDW
-               IF  LNK-IO2-SYU-HOSPID(IDW)   =   SPACE
-                   MOVE    1                 TO  FLG-SYUKA
-               ELSE
-                   MOVE    LNK-SYUACC-IO2-OCC(IDW)
-                                       TO  SYUKA-REC
-               END-IF
            END-PERFORM   
-      *     
-      *
       *    
       *    請求点数によるシステム主科の設定（入院）
            INITIALIZE              WRK-SRYACC-AREA
@@ -922,12 +913,10 @@
                        UNTIL   IDX     >   100
                        OR      LNK-SYUACC-IO-TEISYUTUSAKI  (IDX)
                                        =   ZERO
-                   DISPLAY "loop1--------------->"
                    PERFORM VARYING IDY     FROM    1   BY  1
                            UNTIL   IDY     >       50
                            OR      LNK-SYUACC-IO-SRYKA (IDX IDY)
                                            =   SPACE
-                   DISPLAY "loop2--------------->"
                        IF      LNK-SYUACC-IO-TENSU (IDX IDY)
                                            =   WRK-SYUACC-TENSU (IDX)
                            EVALUATE    SPA-SYUKA-SELECT    
@@ -967,7 +956,7 @@
                END-PERFORM         
            END-IF
            .
-       2001-KBN07-HENSYU-EXT.
+       2007-KBN07-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************

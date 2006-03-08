@@ -1465,6 +1465,9 @@
       *        Êä½õ¶èÊ¬
                MOVE    WRK-RECE61-HOJOKBN
                                    TO  LNK-SYUBETU-HOJOKBN  (IDXX)
+      *        ÊÝ¸±ÈÖ¹æ¡Ê¼çÊÝ¸±¡Ë
+               MOVE    WRK-RECE61-HKNNUM
+                                   TO  LNK-SYUBETU-HKNNUM   (IDXX)
       *        ÊÝ¸±ÁÈ¹ç¤»
                PERFORM VARYING IDX     FROM    1   BY  1
                        UNTIL   IDX     >       10
