@@ -6251,14 +6251,9 @@
       *
            IF    ( PTINF-KANANAME          NOT =   SPACE )
                MOVE    PTINF-KANANAME      TO  WRK-KANACHK-MAE-INPUT
-               PERFORM 800-KANA-CHK-SEC
+               PERFORM 800-KATAKANA-CHK-SEC
                IF  ( FLG-KANACHK   NOT =   ZERO )
-      *
-                   IF    ( FLG-KANACHK =   2 )
-                       MOVE    "130006"    TO  WRK-ERRCD
-                   ELSE
-                       MOVE    "130002"    TO  WRK-ERRCD
-                   END-IF
+                   MOVE    "130002"        TO  WRK-ERRCD
                    PERFORM 210-ERRMES-HEN-SEC
                END-IF
       *
@@ -7829,6 +7824,33 @@
       *
            .
        800-KANA-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    全角カタカナ入力チェック
+      *****************************************************************
+       800-KATAKANA-CHK-SEC                    SECTION.
+      *
+           MOVE    ZERO                TO  FLG-KANACHK
+      *
+           IF  ( WRK-KANACHK-MAE-INPUT =   SPACE )
+               GO  TO  800-KANA-CHK-EXT
+           END-IF
+      *
+           INSPECT WRK-KANACHK-MAE-INPUT   REPLACING
+                                           ALL "　" BY "ン"
+      *
+           INITIALIZE                  ORCXKANACONVAREA
+           MOVE    300                 TO  KANACONV-LEN
+           MOVE    1000                TO  KANACONV-STLEN
+           MOVE    0                   TO  KANACONV-CONV-FLAG
+           MOVE    4                   TO  KANACONV-CHAR-TYPE
+           MOVE    WRK-KANACHK-MAE-INPUT
+                                       TO  KANACONV-INDATA
+           CALL    "kanaconv"          USING ORCXKANACONVAREA
+           MOVE    KANACONV-RETURN     TO  FLG-KANACHK
+      *
+           .
+       800-KATAKANA-CHK-EXT.
            EXIT.
       *****************************************************************
       *    半角ェック
