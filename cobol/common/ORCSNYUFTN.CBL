@@ -72,6 +72,7 @@
       *                                     Ï·¿ÍÀ­Ç§ÃÎ¾É¼À´µ¼£ÎÅÉÂÅïÆþ±¡ÎÁ£±
       *                                     Ï·¿ÍÀ­Ç§ÃÎ¾É¼À´µ¼£ÎÅÉÂÅïÆþ±¡ÎÁ£²
       *  01.00.28    NACL-ÌçÏÆ    06/01/20  É¸·çÂÐ±þ
+      *  01.03.01    NACL-ÌçÏÆ    06/03/09  ¤¤¤ï¤­»Ô½Å¿´ÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -1125,6 +1126,14 @@
                      (WRK-HANBETU-KOH4HKNNUM(IDX)   =   "245"   ))
                          MOVE     1     TO    FLG-TOKUSYU
                 END-IF
+                IF  ( WRK-PREFNUM(1)                =    07      )
+                AND ( LNK-S02-SKYSTYMD(1:6)        >=   "200604" )
+                AND ((WRK-HANBETU-KOH1HKNNUM(IDX)   =   "346"   ) OR
+                     (WRK-HANBETU-KOH2HKNNUM(IDX)   =   "346"   ) OR
+                     (WRK-HANBETU-KOH3HKNNUM(IDX)   =   "346"   ) OR
+                     (WRK-HANBETU-KOH4HKNNUM(IDX)   =   "346"   ))
+                         MOVE     1     TO    FLG-TOKUSYU
+                END-IF
               END-IF
               IF   WRK-HANBETU-SKYYM(IDX)  =  WRK-SKYYM(2)
                 IF  ( WRK-PREFNUM(2)                =    07      )
@@ -1133,6 +1142,14 @@
                      (WRK-HANBETU-KOH2HKNNUM(IDX)   =   "245"   ) OR
                      (WRK-HANBETU-KOH3HKNNUM(IDX)   =   "245"   ) OR
                      (WRK-HANBETU-KOH4HKNNUM(IDX)   =   "245"   ))
+                         MOVE     1     TO    FLG-TOKUSYU
+                END-IF
+                IF  ( WRK-PREFNUM(2)                =    07      )
+                AND ( LNK-S02-SKYSTYMD(1:6)        >=   "200604" )
+                AND ((WRK-HANBETU-KOH1HKNNUM(IDX)   =   "346"   ) OR
+                     (WRK-HANBETU-KOH2HKNNUM(IDX)   =   "346"   ) OR
+                     (WRK-HANBETU-KOH3HKNNUM(IDX)   =   "346"   ) OR
+                     (WRK-HANBETU-KOH4HKNNUM(IDX)   =   "346"   ))
                          MOVE     1     TO    FLG-TOKUSYU
                 END-IF
               END-IF
