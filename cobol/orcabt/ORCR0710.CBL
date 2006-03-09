@@ -122,6 +122,9 @@
       *  02.07.07    NACL-門脇    06/02/03  宮城県地方公費食事療養費記載対応
       *  02.07.08    NACL-門脇    06/02/03  高知県乳幼児対応
       *  02.07.09    NACL-門脇    06/02/08  食事基本料情報（その他）編集
+      *
+      *  02.08.01    NACL-藤原    06/03/09  realtime preview 処理時の削除
+      *                                     処理対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1051,7 +1054,9 @@
                PERFORM 120-HOSPINF-GET-SEC
            END-IF
       *
-           IF      SPA-STS             =   ZERO
+           IF    ( WRK-PARA-SHELLID
+                                   NOT =   "RECEPTX" )
+           AND   ( SPA-STS             =   ZERO      )
                PERFORM 5001-DB-DELETE-SEC
            END-IF
       *
@@ -6983,7 +6988,7 @@
            EXIT.
       * 
       *****************************************************************
-      *    中止処理時データ削除処理（一括作成のみ）
+      *    中止処理時データ削除処理
       *****************************************************************
        5001-DB-DELETE-SEC               SECTION.
       *
@@ -7252,12 +7257,12 @@
                                                SYS-2002-EDYUKYMD
                MOVE    SYS-2002-REC        TO  MCPDATA-REC
                MOVE    "DBSELECT"          TO  MCP-FUNC
-              MOVE    "tbl_syskanri"      TO  MCP-TABLE
-              MOVE    "key2"              TO  MCP-PATHNAME
-              CALL    "MONFUNC"       USING
-                                          MCPAREA
-                                          MCPDATA-REC
-              IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               CALL    "MONFUNC"       USING
+                                           MCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC              =   ZERO
                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
                   MOVE    "key2"              TO  MCP-PATHNAME
                    PERFORM 900-KANRIMST-NEXT-SEC
