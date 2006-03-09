@@ -59,6 +59,9 @@
       *            補助区分
                    07  LNK-SYUACC-IO-HOJOKBN
                                        PIC X(01).
+      *            保険番号（主保険）
+                   07  LNK-SYUACC-IO-HKNNUM
+                                       PIC X(03).
       *            システム主科
                    07  LNK-SYUACC-IO-SYUKA-AUTO
                                        PIC X(02).
@@ -111,6 +114,8 @@
                  09  LNK-IO2-SYU-RECESYUBETU   PIC X(04).
       *診療科
                  09  LNK-IO2-SYU-SRYKA         PIC X(02).
+      *保険番号（主保険）
+               07  LNK-IO2-SYU-HKNNUM          PIC X(03).
       *診療科（入力）
                07  LNK-IO2-SYU-SRYKA-INPUT     PIC X(02).
       *保険組合せ番号
