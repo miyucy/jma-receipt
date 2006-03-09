@@ -297,6 +297,8 @@
                                    TO  LNK-SYUACC-IO-HKNJANUM     (IDY)
                    MOVE    LNK-SYUBETU-HOJOKBN      (IDY)
                                    TO  LNK-SYUACC-IO-HOJOKBN      (IDY)
+                   MOVE    LNK-SYUBETU-HKNNUM       (IDY)
+                                   TO  LNK-SYUACC-IO-HKNNUM       (IDY)
                END-PERFORM
            ELSE
                MOVE    LNK-SYUBETU-RC  TO  LNK-SYUACC-RC
@@ -562,7 +564,8 @@
            DISPLAY "    PTID=" SPA-PTID
            DISPLAY " H-SRYKA=" LNK-SYUACC-IO-H-SRYKA
            DISPLAY "--------------------------------------------------"
-           DISPLAY "|種別|保険者NO|提|au|科|保1 |保2 |保3 |   点数   |"
+           DISPLAY
+                "|種別|保険者NO|HKN|提|au|科|保1 |保2 |保3 |   点数   |"
                    "日数|回数|最終日|"
            PERFORM VARYING     IDX       FROM    1   BY  1
                    UNTIL      (IDX       >   100   )
@@ -575,6 +578,7 @@
                                          NOT  =  SPACE
                          DISPLAY LNK-SYUACC-IO-RECESYUBETU(IDX) "   "
                          LNK-SYUACC-IO-HKNJANUM(IDX) " "
+                         LNK-SYUACC-IO-HKNNUM  (IDX) " "
                          LNK-SYUACC-IO-TEISYUTUSAKI(IDX) " "
                          LNK-SYUACC-IO-SYUKA-AUTO(IDX) " "
                          LNK-SYUACC-IO-SRYKA (IDX IDY) " "
