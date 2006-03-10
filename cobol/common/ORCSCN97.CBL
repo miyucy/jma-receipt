@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL−多々納 03.01.24  入院追加
+      *  01.00.02    NACL−多々納 06/03/XX  回数チェック追加
       *****************************************************************
       *
       *
@@ -248,6 +249,15 @@
       *                編集チェックへ
                        PERFORM 10011-CHK-SEC
                END-EVALUATE
+      *        入院の時、回数は１のみ
+               IF     (WRK-COM-SRYSYUKBN(IDX-Z)  =   "900" OR
+                                                     "920" )
+                   IF      (WRK-COM-KAIFLG (IDX-Z)  =   1  )  AND
+                           (WRK-COM-KAISU(IDX-Z)    >   1  )
+                       MOVE    "0008"          TO  WRK-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+                   END-IF
+               END-IF
            END-PERFORM
       *
            IF     (WRK-ERRCD           =   SPACE)   AND
