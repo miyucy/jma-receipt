@@ -966,7 +966,7 @@
                        AND     KANACHK-SYUBETU     =   "1"
                            IF      SPA-GMN-TSTDATA (IDX)(1:1)
                                               <  "0"    OR
-                                              >  "9"
+                                              >  "z"
                                MOVE    "0001"             TO  SPA-ERRCD
                            END-IF                        
                        ELSE
@@ -1031,7 +1031,7 @@
                        AND     KANACHK-SYUBETU     =   "1"
                            IF      SPA-GMN-TEDDATA (IDX)(1:1)
                                               <  "0"    OR
-                                              >  "9"
+                                              >  "z"
                                MOVE    "0001"             TO  SPA-ERRCD
                            END-IF                        
                        ELSE
