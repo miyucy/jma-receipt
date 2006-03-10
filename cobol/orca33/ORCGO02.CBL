@@ -1058,6 +1058,10 @@
                IF    ( FLG-PTNYUINRRK  =   ZERO )
                    MOVE    WRK-KIKAN-SKYSTYMD (IDX1)  TO  WRK-STYMD
                    MOVE    WRK-KIKAN-SKYEDYMD (IDX1)  TO  WRK-EDYMD
+                   IF    ( WRK-STYMD (1:6) =   PTNYUINRRK-NYUINYMD(1:6))
+                       MOVE    PTNYUINRRK-NYUINYMD (7:2)
+                                           TO  WRK-STYMD (7:2)
+                   END-IF
                    PERFORM 4150-SYUNOU-SEL-SEC
                    IF    ( FLG-SYUARI  =   1 )
                        MOVE    1   TO  FLG-KIKAN
