@@ -127,7 +127,6 @@
            03  IDZ                     PIC 9(04).
            03  IDS                     PIC 9(04).
            03  IDE                     PIC 9(04).
-           03  IDI                     PIC 9(02).
       *
       *    パラメータ保存
        01  PARA-SAVE.
@@ -172,7 +171,6 @@
                05  WRK-SRYCD           PIC X(09).
                05  WRK-NUMCNT          PIC 9(04).
                05  WRK-SPCFLG          PIC 9(01).
-               05  WRK-INPUTCD-G       PIC X(20)   OCCURS 5.
       *
       *    帳票出力領域
        01  MES-AREA.
@@ -189,7 +187,8 @@
                    07  FILLER          PIC X(10) VALUE "LINENO ERR".
                    07  FILLER          PIC X(42) VALUE
                    " [1]必須未入力        [2]項目桁数不正     ".
-                   07  FILLER          PIC X(41) VALUE " [3]誤入力".
+                   07  FILLER          PIC X(41) VALUE
+                   " [3]誤入力            [4]ＣＤ件数オーバー".
                05  MES-TITLE2-L2.
                    07  FILLER          PIC X(10) VALUE SPACE.
                    07  FILLER          PIC X(41) VALUE
@@ -453,6 +452,7 @@
       *
            MOVE    ZERO            TO  WRK-POINT-AREA
            INITIALIZE                  WRK-INPUTCD-AREA
+      *
            MOVE    ZERO            TO  IDX-AREA
            MOVE    ZERO            TO  FLG-ERRARI
            MOVE    ZERO            TO  FLG-DATAEND
@@ -463,7 +463,8 @@
            PERFORM VARYING   IDX   FROM    1   BY  1
                    UNTIL   ( IDX           >   20   )
                    OR      ( WRK-PO-ED     >=  3000 )
-                   OR      ( IDE           >   4    )
+                   OR      ( FLG-ERRARI    =   1 )
+      *             OR      ( IDE           >    4    )
       *
                MOVE    ZERO            TO  FLG-AREA1
                COMPUTE     WRK-PO-ST   =   WRK-PO-ED   +   1
@@ -484,16 +485,7 @@
            END-PERFORM
       *
       *    エラーチェック
-           IF      FLG-ERRARI          =   ZERO
-      *        入力ＣＤマスタ　更新処理
-               PERFORM 250-INPUTCD-INSERT-SEC
-               IF      FLG-ERR         NOT =   ZERO
-      *            エラーリスト編集/出力処理
-                   PERFORM 290-ERRREC-EDIT-SEC
-                   MOVE    2           TO  FLG-ERRARI
-                   PERFORM 2950-ERRLST-OUT-SEC
-               END-IF
-           ELSE
+           IF      FLG-ERRARI           NOT =  ZERO
       *        エラーリスト出力処理
                PERFORM 2950-ERRLST-OUT-SEC
            END-IF
@@ -601,28 +593,22 @@
                PERFORM 2410-SRYCD-SET-SEC
       *    １６：入力コード１
            WHEN    16
-               MOVE    1           TO  IDI
                PERFORM 2450-INPUTCD-SET-SEC
       *    １７：入力コード２
            WHEN    17
-               MOVE    2           TO  IDI
                PERFORM 2450-INPUTCD-SET-SEC
       *    １８：入力コード３
            WHEN    18
-               MOVE    3           TO  IDI
                PERFORM 2450-INPUTCD-SET-SEC
       *    １９：入力コード４
            WHEN    19
-               MOVE    4           TO  IDI
                PERFORM 2450-INPUTCD-SET-SEC
       *    ２０：入力コード５
            WHEN    20
-               MOVE    5           TO  IDI
                PERFORM 2450-INPUTCD-SET-SEC
            END-EVALUATE
       *
-           IF  FLG-ERR         NOT =   ZERO
-               MOVE    1           TO  FLG-ERRARI
+           IF      FLG-ERR     NOT =   ZERO
                PERFORM 290-ERRREC-EDIT-SEC
            END-IF
       *
@@ -633,7 +619,7 @@
       *****************************************************************
       *    全角桁数・空白処理
       *****************************************************************
-       2402-ZENKAKU-HEN-SEC              SECTION.
+       2402-ZENKAKU-HEN-SEC        SECTION.
       *
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
@@ -723,6 +709,12 @@
       *
            MOVE  CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-SRYCD
+      *    点数マスタ読み込み
+           PERFORM 900-TENSU-READ-SEC
+           IF  FLG-TENSU           NOT = ZERO
+               MOVE    5           TO  FLG-ERR
+               GO  TO  2410-SRYCD-SET-EXT
+           END-IF
       *
            .
        2410-SRYCD-SET-EXT.
@@ -752,8 +744,10 @@
            PERFORM 2402-ZENKAKU-HEN-SEC
            IF      FLG-ERR         =   ZERO
                MOVE    WRK-DATA (1:WRK-LEN)
-                                   TO  WRK-INPUTCD-G(IDI)
+                                   TO  WRK-INPUTCD
            END-IF
+      *
+           PERFORM 250-INPUTCD-INSERT-SEC
       *
            .
        2450-INPUTCD-SET-EXT.
@@ -762,37 +756,13 @@
       *****************************************************************
       *    入力ＣＤ登録　処理
       *****************************************************************
-       250-INPUTCD-INSERT-SEC      SECTION.
-      *
-      *    点数マスタ読み込み
-           PERFORM 900-TENSU-READ-SEC
-           IF  FLG-TENSU           NOT = ZERO
-               MOVE    5           TO  FLG-ERR
-               GO  TO  250-INPUTCD-INSERT-EXT
-           END-IF
+       250-INPUTCD-INSERT-SEC     SECTION.
       *
            MOVE    ZERO            TO  WRK-DSPSEQ
-           PERFORM VARYING IDI     FROM 1 BY 1
-                   UNTIL ( IDI     >   5 ) OR
-                         ( FLG-ERR    NOT =   ZERO )
-               IF      WRK-INPUTCD-G(IDI) NOT = SPACE
-                   MOVE    WRK-INPUTCD-G(IDI) TO  WRK-INPUTCD
-                   PERFORM 250-INPUTCD-INSERT2-SEC
-               END-IF
-           END-PERFORM
-      *
-           .
-       250-INPUTCD-INSERT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    入力ＣＤ登録　処理
-      *****************************************************************
-       250-INPUTCD-INSERT2-SEC     SECTION.
       *
            PERFORM 250-CDSYU-SET-SEC
-           IF  FLG-ERR         NOT = ZERO
-               GO  TO  250-INPUTCD-INSERT2-EXT
+           IF  FLG-ERR         NOT =   ZERO
+               GO  TO  250-INPUTCD-INSERT-EXT
            END-IF
       *
       *    重複データが無いかチェック
@@ -824,7 +794,12 @@
                                        ORCMCPAREA
                                        MCPDATA-REC
            IF      FLG-ERR         NOT =   ZERO
-               GO  TO  250-INPUTCD-INSERT2-EXT
+               GO  TO  250-INPUTCD-INSERT-EXT
+           END-IF
+      *
+           IF      WRK-DSPSEQ      >  10
+                MOVE    4              TO  FLG-ERR
+                GO  TO  250-INPUTCD-INSERT-EXT
            END-IF
       *
       *    入力コード作成
@@ -852,12 +827,12 @@
                                        MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                 MOVE    6              TO  FLG-ERR
-                GO  TO  250-INPUTCD-INSERT2-EXT
+                GO  TO  250-INPUTCD-INSERT-EXT
            END-IF
            ADD     1               TO  CNT-ICD
       *
            .
-       250-INPUTCD-INSERT2-EXT.
+       250-INPUTCD-INSERT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -941,15 +916,21 @@
       *
            IF  FLG-ERR             <=  3
                ADD     1               TO  IDE
-               IF  IDE                 >   1
+               IF  IDE                 >   4
                    GO  TO  290-ERRREC-EDIT-EXT
                END-IF
-               IF  IDE                 =   4
+               IF  IDE                 =   1
                    ADD     1               TO  CNT-ERR
                    MOVE    SPACE           TO  ERR-REC1
                    MOVE    CNT-CSV         TO  ERR1-LINENO
                    MOVE    "ERR"           TO  ERR1-NAIYO
                END-IF
+           END-IF
+      *
+           IF      WRK-KOUMOKU-NO  <   16
+               MOVE    1           TO  FLG-ERRARI
+           ELSE
+               MOVE    2           TO  FLG-ERRARI
            END-IF
       *
            EVALUATE    FLG-ERR
@@ -960,11 +941,16 @@
       *    項目エラー
            WHEN    3
                PERFORM 2910-ERRREC-EDIT-BETU1-SEC
+      *    入力ＣＤ件数オーバーエラー
+           WHEN    4
       *    点数情報取得エラー
            WHEN    5
+               PERFORM 2910-ERRREC-EDIT-BETU2-SEC
       *    入力ＣＤ出力エラー
            WHEN    6
                PERFORM 2910-ERRREC-EDIT-BETU2-SEC
+               PERFORM 2950-ERRLST-OUT-SEC
+               MOVE    0           TO  FLG-ERRARI
            END-EVALUATE
       *
            .
@@ -1004,7 +990,6 @@
       *    ２０：入力コード５
            WHEN    20
                MOVE    "入力CD５:"     TO  ERR1-KOMOKU(IDE)
-      *
            END-EVALUATE
       *
       *    エラー値転送

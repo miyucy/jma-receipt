@@ -187,7 +187,8 @@
                    07  FILLER          PIC X(10) VALUE "LINENO ERR".
                    07  FILLER          PIC X(42) VALUE
                    " [1]必須未入力        [2]項目桁数不正     ".
-                   07  FILLER          PIC X(41) VALUE " [3]誤入力".
+                   07  FILLER          PIC X(41) VALUE
+                   " [3]誤入力            [4]ＣＤ件数オーバー".
                05  MES-TITLE2-L2.
                    07  FILLER          PIC X(10) VALUE SPACE.
                    07  FILLER          PIC X(41) VALUE
@@ -772,6 +773,11 @@
                GO  TO  250-INPUTCD-INSERT-EXT
            END-IF
       *
+           IF      WRK-DSPSEQ      >   10
+               MOVE    4               TO  FLG-ERR
+               GO  TO  250-INPUTCD-INSERT-EXT
+           END-IF
+      *
       *    入力コード作成
            MOVE    SPACE       TO  INPUTCD-REC
            INITIALIZE              INPUTCD-REC
@@ -909,6 +915,8 @@
       *    項目エラー
            WHEN    3
                PERFORM 2910-ERRREC-EDIT-BETU1-SEC
+      *    入力ＣＤ件数オーバーエラー
+           WHEN    4
       *    点数情報取得エラー
            WHEN    5
       *    入力ＣＤ出力エラー
