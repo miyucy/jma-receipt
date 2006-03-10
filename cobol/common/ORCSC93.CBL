@@ -52,6 +52,7 @@
       * 01.00.21     NACL-多々納  05/06/03  検体検査コメント対応
       * 01.00.22     NACL-多々納  05/08/12  包括検査 ０９，１０の追加
       * 01.00.23     NACL-多々納  06/01/23  用量割合コード追加
+      * 01.00.24     NACL-多々納  06/03/XX  Ｈ１８．４改正対応
       *****************************************************************
       *
       *
@@ -1367,7 +1368,29 @@
                            ELSE
                                MOVE    "2062"        TO  SPA-ERRCD
                            END-IF
-      *TEST
+      *                後発医薬品への変更可（処方せん毎）
+                       WHEN    "099209902"
+                           MOVE    "98"            TO  SPA-COM-SRYKBN
+                                                                  (IDX)
+                           MOVE    "980"           TO  SPA-COM-SRYSYUKBN
+                                                                  (IDX)
+      *                    １剤１明細とする
+                           MOVE    "1"             TO  SPA-COM-ZAIEND
+                                                                  (IDX)
+                           MOVE    1               TO  FLG-ZAI
+      *                後発医薬品への変更不可（薬剤毎）
+                       WHEN    "099209903"
+                           IF     (SPA-COM-SRYKBN(IDX - 1) =   "21"
+                                                           OR  "22"
+                                                           OR  "23"
+                                                           OR  "14" )
+                               MOVE    SPA-COM-SRYKBN(IDX - 1)
+                                                     TO  SPA-COM-SRYKBN
+                                                                  (IDX)
+                           ELSE
+                               MOVE    "2063"        TO  SPA-ERRCD
+                           END-IF
+      *
                        WHEN    OTHER
                            MOVE    "99"            TO  SPA-COM-SRYKBN
                                                                   (IDX)

@@ -1043,6 +1043,15 @@
                                INTO        SPA-K98-GMN-NAME(IDX)
                 END-STRING
            END-IF
+      *    ∏Â»Ø∞ÂÃÙ… ∫∆ ‘Ω∏
+           IF     (TNS-SRYCD(1:1)      =   "6") AND
+                  (TNS-KOUHATUKBN      =   1  )
+                MOVE    SPACE              TO  SPA-K98-GMN-NAME (IDX)
+                STRING  "°⁄∏Â»Ø°€"
+                        TNS-NAME      DELIMITED   BY  SIZE
+                               INTO        SPA-K98-GMN-NAME(IDX)
+                END-STRING
+           END-IF
       *
            .
        31012-INPUTCD-HEN-EXT.

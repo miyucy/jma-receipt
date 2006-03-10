@@ -50,6 +50,7 @@
       * 01.00.15     NACL-多々納  05/10/26  MONFUNCへ変更
       * 01.00.16     NACL-多々納  05/11/09  再印刷処理追加
       * 01.00.17     NACL-多々納  06/01/24  用量コード判定追加
+      * 01.00.18     NACL-多々納  06/03/XX  Ｈ１８年４月改正対応
       *****************************************************************
       *
       *
@@ -122,6 +123,12 @@
       *---(01.00.16) LINE ADD START ------------------------------------
            03  FLG-INGAI           PIC 9(01).
       *---(01.00.16) LINE ADD END   ------------------------------------
+           03  FLG-HENSYU              PIC 9(01).
+      *    後発医薬品変更可
+           03  FLG-KOUHATU-HEN         PIC 9(01).
+           03  FLG-KOUHATU-CHK         PIC 9(01).
+           03  FLG-KOUHATU             PIC 9(01).
+           03  FLG-NAME                PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -185,13 +192,10 @@
            03  WRK-HKNJA-G         PIC X(16).
       *
            03  WRK-FTNSNO          PIC X(16).
-      *****03  WRK-JKYSNO          PIC X(14).
            03  WRK-JKYSNO          PIC X(20).
            03  WRK-FTNJA1          PIC X(16).
-      **** 03  WRK-JKYSNUM1        PIC X(14).
            03  WRK-JKYSNUM1        PIC X(20).
            03  WRK-FTNJA2          PIC X(16).
-      **** 03  WRK-JKYSNUM2        PIC X(14).
            03  WRK-JKYSNUM2        PIC X(20).
       *
            03  WRK-SURYO           PIC 9(05)V9(03).
@@ -211,7 +215,9 @@
            03  WRK-ZZZ             PIC ZZZ.
            03  WRK-KAISU           PIC 9(05).
       *
+           03  WRK-COM-NAME        PIC X(200).
            03  WRK-TNS-NAME        PIC X(200).
+           03  WRK-NAME            PIC X(200).
       *
            03  WRK-ZAITENKEI       PIC 9(07).
            03  WRK-YKZTEN          PIC 9(07).
@@ -257,14 +263,24 @@
                    07  WRK-FIL11           PIC X(06).
                05  WRK-NAIYOU-R2           REDEFINES   WRK-NAIYOU-Z.
                    07  WRK-FIL21           PIC X(06).
-                   07  WRK-MEISYOU2        PIC X(44).
-                   07  WRK-FIL22           PIC X(22).
+                   07  WRK-MEISYOU2        PIC X(66).
+      ****         07  WRK-FIL22           PIC X(22).
                    07  WRK-K3              PIC X(02).
                    07  WRK-KAISUU          PIC X(06).
                    07  WRK-HINICHI         PIC X(06).
                05  WRK-NAIYOU-R3           REDEFINES   WRK-NAIYOU-Z.
                    07  WRK-FIL23           PIC X(06).
                    07  WRK-MEISYOU3        PIC X(80).
+      *    薬剤編集
+       01  WRK-MEISAI-AREA.
+           03  WRK-M-SRYCD               PIC X(09).
+           03  WRK-M-NAME                PIC X(100).
+           03  WRK-M-KETA                PIC 9(03).
+           03  WRK-M-SURYOU              PIC X(18).
+           03  WRK-M-TANI                PIC X(12).
+      *
+           03  WRK-KOU-NAME            PIC X(100).
+           03  WRK-KOU-KETA            PIC 9(03).
       *
       *    処方内容
        01  WRK-SYOHOU-AREA.
@@ -273,6 +289,11 @@
                    07  WRK-NAIYOU          PIC X(86).
       *
            03  WRK-PAGE-MAX                PIC 9(03).
+      *
+      *---(01.00.18) LINE ADD START -----------------------------------
+      *    処方せん明細行
+       01  LINE-MAX                PIC 9(03)  VALUE 20.
+      *---(01.00.18) LINE END START -----------------------------------
       *
       *    免除判定領域
        01  WRK-MENJYO-ARAE.
@@ -750,6 +771,9 @@
            MOVE    ZERO                TO  IDX
            MOVE    ZERO                TO  IDX-Z
            MOVE    ZERO                TO  FLG-MAYAKU
+           MOVE    ZERO                TO  FLG-KOUHATU-HEN
+           MOVE    ZERO                TO  FLG-KOUHATU-CHK
+           MOVE    ZERO                TO  FLG-KOUHATU
       *
       *---(01.00.14) LINE ADD START -----------------------------------
            INITIALIZE                  WRK-BIKOU-AREA
@@ -841,12 +865,12 @@
            ELSE
       *        最終行のメッセージ編集
                IF     (WRK-NAIYOU (WRK-PAGE-MAX IDX)   =   SPACE ) AND
-                      (IDX             =   20  )
+                      (IDX             =   LINE-MAX  )
                    MOVE    "　　　　　　以下余白"
                                        TO  WRK-NAIYOU (WRK-PAGE-MAX IDX)
                END-IF
                ADD     1               TO  IDX
-               IF      IDX             <=  20
+               IF      IDX             <=  LINE-MAX
                    MOVE    "　　　　　　以下余白"
                                        TO  WRK-NAIYOU (WRK-PAGE-MAX IDX)
                END-IF
@@ -1436,7 +1460,7 @@
       *
       *    処方内容
            PERFORM VARYING     IDX2    FROM    1   BY  1
-                   UNTIL       IDX2    >   20
+                   UNTIL       IDX2    >   LINE-MAX
                MOVE    WRK-NAIYOU (IDX IDX2)   TO  HCM19-NAIYO (IDX2)
            END-PERFORM
       *
@@ -1464,6 +1488,13 @@
                PERFORM 3009-COMMENT-HEN-SEC
            END-IF
       *---(01.00.14) LINE ADD END   -----------------------------------
+      *
+      *    後発医薬品変更可
+           IF     (FLG-KOUHATU-HEN     =   1 )  AND
+                  (FLG-KOUHATU-CHK     =   1 )
+      *        ドクター
+               MOVE    SYS-1010-NAME       TO  HCM19-HKNINAME
+           END-IF
       *
            .
        300-HCM19-HEN-EXT.
@@ -1513,8 +1544,22 @@
                               (IDX-B   >=  9   )
                IF      WRK-BIKOU-NAME2(IDX-BIKOU)  NOT =   SPACE
                    ADD     1                   TO  IDX-B
-                   MOVE    WRK-BIKOU-NAME2(IDX-BIKOU)
+      *            ７行目から２５文字編集
+                   IF      IDX-B               <   7
+                       MOVE    WRK-BIKOU-NAME2(IDX-BIKOU)
                                                TO  HCM19-BIKOH (IDX-B)
+                   ELSE
+                       MOVE    WRK-BIKOU-NAME2(IDX-BIKOU)(1:50)
+                                               TO  HCM19-BIKOH (IDX-B)
+                       IF      WRK-BIKOU-NAME2(IDX-BIKOU)(51:)
+                                               NOT =   SPACE
+                           ADD     1           TO  IDX-B
+                           IF      IDX-B       <=  9
+                              MOVE    WRK-BIKOU-NAME2(IDX-BIKOU)(51:)
+                                               TO  HCM19-BIKOH (IDX-B)
+                           END-IF
+                       END-IF
+                   END-IF
                END-IF
            END-PERFORM
       *
@@ -1599,6 +1644,8 @@
            MOVE    ZERO                TO  FLG-KAISU
            MOVE    ZERO                TO  FLG-ZAITAKU
            MOVE    ZERO                TO  FLG-ZAITAKU-ARI
+           INITIALIZE                  WRK-MEISAI-AREA
+           MOVE    ZERO                TO  FLG-HENSYU
            PERFORM
                    UNTIL   FLG-SRYACT      =   1
       *
@@ -1715,6 +1762,7 @@
                          IF      SRY-SRYKBN        =   "14"
                            IF      SRY-SRYCD (IDXA)(1:1)   NOT =   "1"
                                MOVE    SRY-SRYCD (IDXA)    TO  WRK-SRYCD
+                               MOVE    ZERO                TO  FLG-NAME
                                PERFORM 3103-SRYACT-HEN-SEC
                            END-IF
                          ELSE
@@ -1729,6 +1777,7 @@
                                                    NOT =   "0992000")
       *---(01.00.17) LINE ADD END   ------------------------------------
                                MOVE    SRY-SRYCD (IDXA)    TO  WRK-SRYCD
+                               MOVE    ZERO                TO  FLG-NAME
                                PERFORM 3103-SRYACT-HEN-SEC
                            END-IF
                          END-IF
@@ -1757,6 +1806,12 @@
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
+           IF      FLG-HENSYU          =   1
+               PERFORM 31031-NAIYOU-HENSYU-SEC
+               INITIALIZE                  WRK-MEISAI-AREA
+               MOVE    ZERO                TO  FLG-HENSYU
+           END-IF
+      *
       *    剤ごとに、編集する
            IF      IDX-S               =   ZERO
                CONTINUE
@@ -1781,6 +1836,10 @@
                PERFORM VARYING     IDXA    FROM    1   BY  1
                        UNTIL      (IDXA    >   5   )  OR
                                   (SRY-SRYCD (IDXA)   =   SPACE)
+      *        後発医薬品への変更
+               IF      SRY-SRYCD (IDXA)    =   "099209902"
+                   MOVE    1                   TO  FLG-KOUHATU-HEN
+               ELSE
                    MOVE    SRY-SRYCD (IDXA)    TO  TNS-SRYCD
                    PERFORM 910-TENSU-READ-SEC
       *            用法
@@ -1804,6 +1863,8 @@
                        MOVE    WRK-TNS-NAME        TO  WRK-BIKOU-NAME
                                                            (IDX-BIKOU)
                    END-IF
+               END-IF
+      *
                END-PERFORM
            END-IF
            .
@@ -1859,7 +1920,7 @@
            INSPECT WRK-NAIYOU-Z (IDX-S)    REPLACING  ALL "  "  BY  "　"
            INSPECT WRK-KAISUU   (IDX-S)    REPLACING  ALL "  "  BY  "　"
            INSPECT WRK-FIL21    (IDX-S)    REPLACING  ALL "  "  BY  "　"
-           INSPECT WRK-FIL22    (IDX-S)    REPLACING  ALL "  "  BY  "　"
+      **** INSPECT WRK-FIL22    (IDX-S)    REPLACING  ALL "  "  BY  "　"
            INSPECT WRK-K3       (IDX-S)    REPLACING  ALL "  "  BY  "　"
            INSPECT WRK-MEISYOU2 (IDX-S)    REPLACING  ALL "  "  BY  "　"
       *
@@ -1929,11 +1990,13 @@
        20022-PRINT-HEN-SEC         SECTION.
       *
       *    最大行数のセット
-           MOVE    19                  TO  IDX-MAX
+      **** MOVE    19                  TO  IDX-MAX
+           COMPUTE IDX-MAX             =   LINE-MAX   -   1
       *
            IF     (IDX-S   +   IDX)    >   IDX-MAX
                MOVE    "次ページへ続く"    TO  WRK-NAIYOU
-                                                 (WRK-PAGE-MAX 20)(50:)
+                                                (WRK-PAGE-MAX LINE-MAX)
+                                                                (50:)
                IF      IDX             >   ZERO
       *            改ページ
                    ADD     1                   TO  WRK-PAGE-MAX
@@ -1957,16 +2020,58 @@
       *****************************************************************
        3103-SRYACT-HEN-SEC         SECTION.
       *
-           ADD     1               TO  IDX-S
+           IF      SRY-SRYCD (IDXA)    =   "099209903"
+      *        後発医薬品へ変更不可
+               PERFORM 31039-KOUHATU-NAME-SEC
+           ELSE
+               IF      FLG-HENSYU          =   1
+                   PERFORM 31031-NAIYOU-HENSYU-SEC
+                   INITIALIZE                  WRK-MEISAI-AREA
+                   MOVE    ZERO                TO  FLG-HENSYU
+               END-IF
+      *        コード毎の編集
+               PERFORM 31032-TENSU-HENSYU-SEC
+               MOVE    1                   TO  FLG-HENSYU
+           END-IF
       *
+           .
+       3103-SRYACT-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    後発医薬品へ変更不可編集処理
+      *****************************************************************
+       31039-KOUHATU-NAME-SEC         SECTION.
+      *
+           MOVE    SRY-SRYCD (IDXA)    TO  TNS-SRYCD
+           PERFORM 910-TENSU-READ-SEC
+           IF      FLG-TENSU           =   ZERO
+               STRING  "【"            DELIMITED  BY  SIZE
+                       TNS-NAME        DELIMITED  BY  SPACE
+                       "】"            DELIMITED  BY  SIZE
+                                       INTO    WRK-KOU-NAME
+               END-STRING
+               COMPUTE WRK-KOU-KETA        =  (TNS-YUKOKETA  * 2)
+                                           +   4
+           END-IF
+           MOVE    ZERO               TO  FLG-KOUHATU
+      *
+           .
+       31039-KOUHATU-NAME-EXT.
+           EXIT.
+      *****************************************************************
+      *    処方内容編集処理
+      *****************************************************************
+       31031-NAIYOU-HENSYU-SEC         SECTION.
+      *
+           ADD     1               TO  IDX-S
       *    １剤で２０行以上の時
-           IF      IDX-S               >=  20
-               MOVE    19              TO  IDX-S
+           IF      IDX-S               >=  LINE-MAX
+               COMPUTE IDX-S           =   LINE-MAX   -   1
       *        帳票編集処理
                PERFORM 20022-PRINT-HEN-SEC
                MOVE    SPACE               TO  WRK-NAIYOU-AREA
                MOVE    1                   TO  IDX-S
-               MOVE    1                   TO  FLG-KAISU 
+               MOVE    1                   TO  FLG-KAISU
            END-IF
       *
            IF     (IDX-S           =   1   )  AND
@@ -1983,6 +2088,38 @@
                MOVE    ALL "　"        TO  WRK-NO     (IDX-S)
                MOVE    ALL "　"        TO  WRK-K2     (IDX-S)
            END-IF
+      *    名称編集
+           PERFORM 31031-MEISYOU-HEN-SEC
+      *
+           IF     (WRK-M-SRYCD(1:1)     =   "6"  OR  "7" )  OR
+                  (WRK-M-SRYCD(1:3)     =   "059"        )
+      *        数量
+               IF      WRK-SURYOU (IDX-S)  NOT =   SPACE
+                   ADD     1               TO  IDX-S
+                   MOVE    ALL "　"        TO  WRK-NO     (IDX-S)
+                   MOVE    ALL "　"        TO  WRK-K2     (IDX-S)
+               END-IF
+               MOVE    WRK-M-SURYOU        TO  WRK-SURYOU (IDX-S)
+               MOVE    WRK-M-TANI          TO  WRK-TANI (IDX-S)
+           END-IF
+      *
+           INSPECT WRK-MEISYOU1 (IDX-S)  REPLACING  ALL "  "  BY  "　"
+           INSPECT WRK-SURYOU (IDX-S)    REPLACING  ALL "  "  BY  "　"
+           INSPECT WRK-TANI   (IDX-S)    REPLACING  ALL "  "  BY  "　"
+      *
+      *    後発医薬品変更可能判定
+           IF      FLG-KOUHATU         =   1
+               MOVE    1               TO  FLG-KOUHATU-CHK
+           END-IF
+           MOVE    ZERO                TO  FLG-KOUHATU
+      *
+           .
+       31031-NAIYOU-HENSYU-EXT.
+           EXIT.
+      *****************************************************************
+      *    コード毎の編集処理
+      *****************************************************************
+       31032-TENSU-HENSYU-SEC         SECTION.
       *
       *    点数検索
            MOVE    SRY-SRYCD (IDXA)    TO  TNS-SRYCD
@@ -2009,10 +2146,10 @@
                                                +   1
                        MOVE    SYS-1030-SYOHODSPNAME
                                                TO  WRK-TNS-NAME(KETA:)
+                   ELSE
+                       MOVE    1               TO  FLG-KOUHATU
                    END-IF
                END-IF
-      *        名称編集
-               PERFORM 31031-MEISYOU-HEN-SEC
       *        麻薬判定
                IF      TNS-MADOKUKBN       =   1
                    MOVE   1                TO  FLG-MAYAKU
@@ -2024,23 +2161,23 @@
                    STRING     "【"             DELIMITED   BY  SIZE
                               TNS-NAME         DELIMITED   BY  "    "
                               "】"             DELIMITED   BY  SIZE
-      ********************INTO                 WRK-MEISYOU1 (IDX-S)
                           INTO                 WRK-TNS-NAME
                    END-STRING
                ELSE
       *            その他
-                   IF      SRY-INPUTNUM (IDXA)     =   ZERO
-                       MOVE    TNS-NAME        TO  WRK-TNS-NAME
+                   IF      FLG-NAME            =   ZERO
+                       IF      SRY-INPUTNUM (IDXA) =   ZERO
+                           MOVE    TNS-NAME        TO  WRK-TNS-NAME
+                       ELSE
+                           PERFORM 31032-PTCOM-SET-SEC
+                       END-IF
                    ELSE
-                       PERFORM 31032-PTCOM-SET-SEC
+                       MOVE    WRK-COM-NAME        TO  WRK-TNS-NAME
                    END-IF
                END-IF
-      *        名称編集
-               PERFORM 31031-MEISYOU-HEN-SEC
-      *********END-IF
            END-IF
-      *
-           INSPECT WRK-MEISYOU1 (IDX-S)    REPLACING  ALL "  "  BY  "　"
+           MOVE    SRY-SRYCD (IDXA)    TO  WRK-M-SRYCD
+           MOVE    WRK-TNS-NAME        TO  WRK-M-NAME
       *
            IF     (SRY-SRYCD (IDXA)(1:1)   =   "6"  OR  "7" )  OR
                   (SRY-SRYCD (IDXA)(1:3)   =   "059"        )
@@ -2051,16 +2188,10 @@
                ELSE
                    PERFORM 10011-SURYO-HEN-SEC
                END-IF
-               MOVE    WRK-SURYO-N             TO  WRK-SURYOU (IDX-S)
+               MOVE    WRK-SURYO-N             TO  WRK-M-SURYOU
       *        数量単位
-               MOVE    TNS-TANINAME            TO  WRK-TANI   (IDX-S)
-      *D   ELSE
-      *D       MOVE    ALL "　"                TO  WRK-SURYOU (IDX-S)
-      *D       MOVE    ALL "　"                TO  WRK-TANI   (IDX-S)
+               MOVE    TNS-TANINAME            TO  WRK-M-TANI
            END-IF
-      *
-           INSPECT WRK-SURYOU (IDX-S)    REPLACING  ALL "  "  BY  "　"
-           INSPECT WRK-TANI   (IDX-S)    REPLACING  ALL "  "  BY  "　"
       *
       *    免除の判定（在宅薬剤で注射以外のもの）
            IF      FLG-ZAITAKU         =   1
@@ -2071,7 +2202,7 @@
            END-IF
       *
            .
-       3103-SRYACT-HEN-EXT.
+       31032-TENSU-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2079,30 +2210,65 @@
       *****************************************************************
        31031-MEISYOU-HEN-SEC           SECTION.
       *
-           MOVE    WRK-TNS-NAME        TO  WRK-MEISYOU1   (IDX-S)
-           IF      WRK-TNS-NAME(45:)   NOT =   SPACE
-               MOVE    WRK-TNS-NAME        TO  WRK-MEISYOU3   (IDX-S)
-               IF    ((SRY-SRYCD (IDXA)(1:1)   =   "6"  OR  "7" )  OR
-                      (SRY-SRYCD (IDXA)(1:3)   =   "059"  ))
-                 AND  (WRK-TNS-NAME(81:)       =   SPACE   )
-                   ADD     1                   TO  IDX-S
-                   MOVE    ALL "　"            TO  WRK-NO     (IDX-S)
-                   MOVE    ALL "　"            TO  WRK-K2     (IDX-S)
-               END-IF
-           END-IF
-           IF      WRK-TNS-NAME(81:)   NOT =   SPACE
-               ADD     1                   TO  IDX-S
-               MOVE    WRK-TNS-NAME(81:)   TO  WRK-MEISYOU3 (IDX-S)
-               IF     (SRY-SRYCD (IDXA)(1:1)   =   "6"  OR  "7" )  OR
-                      (SRY-SRYCD (IDXA)(1:3)   =   "059"  )
-                   ADD     1                   TO  IDX-S
-                   MOVE    ALL "　"            TO  WRK-NO     (IDX-S)
-                   MOVE    ALL "　"            TO  WRK-K2     (IDX-S)
+      *    桁数
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    WRK-M-NAME          TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-MAX         TO  WRK-M-KETA
+      *    薬剤・器材編集
+           IF     (WRK-M-SRYCD(1:1)    =   "6"  OR  "7" )  OR
+                  (WRK-M-SRYCD(1:3)    =   "059"  )
+               PERFORM 310311-MEISYOU-HEN2-SEC
+           ELSE
+               MOVE    WRK-TNS-NAME    TO  WRK-MEISYOU3(IDX-S)
+               IF      WRK-M-KETA      >   80
+                   ADD     1               TO  IDX-S
+                   MOVE    ALL "　"        TO  WRK-NO     (IDX-S)
+                   MOVE    ALL "　"        TO  WRK-K2     (IDX-S)
+                   MOVE    WRK-TNS-NAME(81:)   TO  WRK-MEISYOU3(IDX-S)
                END-IF
            END-IF
       *
            .
        31031-MEISYOU-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     名称編集処理
+      *****************************************************************
+       310311-MEISYOU-HEN2-SEC            SECTION.
+      *
+           MOVE    SPACE               TO  WRK-TNS-NAME
+           IF      (WRK-M-KETA +   WRK-KOU-KETA)  <=  80
+               STRING   WRK-M-NAME     DELIMITED  BY  SPACE
+                        WRK-KOU-NAME   DELIMITED  BY  SPACE
+                                       INTO  WRK-TNS-NAME
+               END-STRING
+               MOVE    WRK-TNS-NAME    TO  WRK-MEISYOU3 (IDX-S)
+           ELSE
+               MOVE    WRK-M-NAME      TO  WRK-MEISYOU3 (IDX-S)
+               IF      WRK-M-KETA      <=  80
+                   ADD     1               TO  IDX-S
+                   MOVE    ALL "　"        TO  WRK-NO (IDX-S)
+                   MOVE    ALL "　"        TO  WRK-K2 (IDX-S)
+                   MOVE    WRK-KOU-NAME    TO  WRK-MEISYOU3 (IDX-S)
+               ELSE
+                   MOVE    WRK-M-NAME(81:) TO  WRK-NAME
+                   STRING  WRK-NAME        DELIMITED  BY  SPACE
+                           WRK-KOU-NAME    DELIMITED  BY  SPACE
+                                           INTO  WRK-TNS-NAME
+                   END-STRING
+                   ADD     1               TO  IDX-S
+                   MOVE    ALL "　"        TO  WRK-NO (IDX-S)
+                   MOVE    ALL "　"        TO  WRK-K2 (IDX-S)
+                   MOVE    WRK-TNS-NAME    TO  WRK-MEISYOU3 (IDX-S)
+               END-IF
+           END-IF
+      *
+           .
+       310311-MEISYOU-HEN2-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2352,6 +2518,11 @@
                        END-IF
                    END-IF
                END-PERFORM
+               IF      FLG-HENSYU          =   1
+                   PERFORM 31031-NAIYOU-HENSYU-SEC
+                   INITIALIZE                  WRK-MEISAI-AREA
+                   MOVE    ZERO                TO  FLG-HENSYU
+               END-IF
       *        剤終了時、編集へ
                IF      IDX-S           >   ZERO
                    PERFORM 20032-PRINT-HENSYU-SEC
@@ -2391,6 +2562,12 @@
       *---(01.00.14) LINE ADD START -----------------------------------
            INITIALIZE                  WRK-BIKOU-AREA
       *---(01.00.14) LINE ADD END   -----------------------------------
+           MOVE    ZERO                TO  FLG-KOUHATU-HEN
+           MOVE    ZERO                TO  FLG-KOUHATU-CHK
+           MOVE    ZERO                TO  FLG-KOUHATU
+           INITIALIZE                  WRK-MEISAI-AREA
+           MOVE    ZERO                TO  FLG-HENSYU
+      *
            .
        20031-WKSYOHOU-INIT-EXT.
            EXIT.
@@ -2400,6 +2577,11 @@
        20032-WKSRYACT-CHK-SEC         SECTION.
       *
            IF      WKSRY-RENNUM        =   1
+               IF      FLG-HENSYU          =   1
+                   PERFORM 31031-NAIYOU-HENSYU-SEC
+                   INITIALIZE                  WRK-MEISAI-AREA
+                   MOVE    ZERO                TO  FLG-HENSYU
+               END-IF
       *        剤終了時、編集へ
                IF      IDX-S           >   ZERO
                    PERFORM 20032-PRINT-HENSYU-SEC
@@ -2465,20 +2647,19 @@
                    MOVE    WKSRY-SRYKAISU (IDXA)
                                                TO  SRY-SRYKAISU (IDXA)
                    MOVE    WKSRY-SRYCD (IDXA)  TO  WRK-SRYCD
-      *            内容編集
-                   PERFORM 3103-SRYACT-HEN-SEC
       *
+                   MOVE    SPACE               TO  WRK-COM-NAME
+                   MOVE    ZERO                TO  FLG-NAME
                    IF    ((WKSRY-SRYCD (IDXA)(1:1) =    "8")   OR
                           (WKSRY-SRYCD (IDXA)(1:3) =    "008")) AND
                           (WKSRY-INPUTCOMENT (IDXA)
                                                NOT =   SPACE)
                        MOVE    WKSRY-INPUTCOMENT (IDXA)
-                                               TO  WRK-TNS-NAME
-      *                名称編集
-                       PERFORM 31031-MEISYOU-HEN-SEC
-                       INSPECT WRK-MEISYOU1 (IDX-S)
-                                       REPLACING  ALL "  "  BY  "　"
+                                               TO  WRK-COM-NAME
+                       MOVE    1               TO  FLG-NAME
                    END-IF
+      *            内容編集
+                   PERFORM 3103-SRYACT-HEN-SEC
                END-IF
       *
            END-PERFORM
@@ -2494,6 +2675,11 @@
            PERFORM VARYING     IDXA    FROM    1   BY  1
                    UNTIL      (IDXA    >   5   )  OR
                               (WKSRY-SRYCD (IDXA) =   SPACE)
+      *        後発医薬品への変更
+               IF      WKSRY-SRYCD (IDXA)      =   "099209902"
+                   MOVE    1                   TO  FLG-KOUHATU-HEN
+               ELSE
+      *
                MOVE    WKSRY-SRYCD (IDXA)  TO  TNS-SRYCD
                PERFORM 910-TENSU-READ-SEC
                IF    ((WKSRY-SRYCD (IDXA)(1:1) =    "8"  ) OR
@@ -2517,6 +2703,8 @@
                IF      IDX-BIKOU           <=  9
                    MOVE    WRK-TNS-NAME        TO  WRK-BIKOU-NAME
                                                            (IDX-BIKOU)
+               END-IF
+      *
                END-IF
            END-PERFORM
       *
@@ -2651,6 +2839,7 @@
                MOVE    ORCHC19-SRYSYUKBN(IDX-L)   TO  WRK-SRYSYUKBN
                MOVE    ORCHC19-SRYKBN   (IDX-L)   TO  WRK-SRYKBN
                MOVE    SPACE               TO  WRK-SRYCD
+               MOVE    ZERO                TO  FLG-HENSYU
                MOVE    ZERO                TO  IDX-S
                MOVE    ZERO                TO  IDXA
                INITIALIZE                  SRYACT-REC
@@ -2673,6 +2862,12 @@
       *---(01.00.17) LINE UPD END   ------------------------------------
                    END-IF
                END-PERFORM
+      *
+               IF      FLG-HENSYU          =   1
+                   PERFORM 31031-NAIYOU-HENSYU-SEC
+                   INITIALIZE                  WRK-MEISAI-AREA
+                   MOVE    ZERO                TO  FLG-HENSYU
+               END-IF
       *        剤終了時、編集へ
                IF      IDX-S           >   ZERO
                    PERFORM 20043-END-HENSYU-SEC
@@ -2701,6 +2896,11 @@
            MOVE    ZERO                TO  FLG-MAYAKU
       *
            INITIALIZE                  WRK-BIKOU-AREA
+           MOVE    ZERO                TO  FLG-KOUHATU-HEN
+           MOVE    ZERO                TO  FLG-KOUHATU-CHK
+           MOVE    ZERO                TO  FLG-KOUHATU
+           INITIALIZE                  WRK-MEISAI-AREA
+           MOVE    ZERO                TO  FLG-HENSYU
       *
            .
        200411-SYOHOU-SPAINIT-EXT.
@@ -2725,9 +2925,9 @@
                                        TO  SRY-SRYKAISU (IDXA)
            MOVE    ORCHC19-SRYCD (IDX-L IDX-L2)
                                        TO  WRK-SRYCD
-      *    内容編集
-           PERFORM 3103-SRYACT-HEN-SEC
       *
+           MOVE    SPACE               TO  WRK-COM-NAME
+           MOVE    ZERO                TO  FLG-NAME
            IF    ((ORCHC19-SRYCD (IDX-L IDX-L2)(1:1)
                                        =    "8")   OR
                   (ORCHC19-SRYCD (IDX-L IDX-L2)(1:3)
@@ -2735,12 +2935,11 @@
                   (ORCHC19-INPUTCOMENT (IDX-L IDX-L2)
                                    NOT =   SPACE)
                MOVE    ORCHC19-INPUTCOMENT (IDX-L IDX-L2)
-                                           TO  WRK-TNS-NAME
-      *        名称編集
-               PERFORM 31031-MEISYOU-HEN-SEC
-               INSPECT WRK-MEISYOU1 (IDX-S)
-                                        REPLACING  ALL "  "  BY  "　"
+                                           TO  WRK-COM-NAME
+               MOVE    1                   TO  FLG-NAME
            END-IF
+      *    内容編集
+           PERFORM 3103-SRYACT-HEN-SEC
       *
            .
        20041-ORCHC19-HEN-EXT.
@@ -2749,6 +2948,11 @@
       *    前回処方（選択なし）処理
       *****************************************************************
        20042-ORCHC19-98-HEN-SEC         SECTION.
+      *
+      *    後発医薬品への変更
+           IF      ORCHC19-SRYCD (IDX-L IDX-L2)    =   "099209902"
+               MOVE    1                   TO  FLG-KOUHATU-HEN
+           ELSE
       *
            MOVE    ORCHC19-SRYCD (IDX-L IDX-L2)
                                        TO  TNS-SRYCD
@@ -2776,6 +2980,8 @@
            IF      IDX-BIKOU           <=  9
                MOVE    WRK-TNS-NAME        TO  WRK-BIKOU-NAME
                                                            (IDX-BIKOU)
+           END-IF
+      *
            END-IF
            .
        20042-ORCHC19-98-HEN-EXT.

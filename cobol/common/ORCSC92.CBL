@@ -2084,6 +2084,17 @@
                    PERFORM 3001-FUKIYO-MEISYO-SEC
                    MOVE    WRK-MEISYO    TO  SPA-GMN-MEISYO (IDX-T)
                END-IF
+      *        後発医薬品区分編集
+               IF     (SPA-COM-INPUTCD (IDX-T)(1:1)    =   "6") AND
+                      (TNS-KOUHATUKBN                  =   1  )
+                   PERFORM 3002-KOUHATU-MEISYO-SEC
+                   MOVE    WRK-MEISYO    TO  SPA-GMN-MEISYO (IDX-T)
+               END-IF
+      *       後発医薬品変更再編集
+              IF      SPA-COM-INPUTCD (IDX-T)  =   "099209903"
+                   PERFORM 30021-KOUHEN-MEISYO-SEC
+                   MOVE    WRK-MEISYO    TO  SPA-GMN-MEISYO (IDX-T)
+               END-IF
            END-IF
       *    入力値のある時、再編集
            IF     (SPA-COM-INPUTCD (IDX-T)(1:2)    =   "84" )  OR
@@ -2308,7 +2319,36 @@
            .
        3001-FUKIYO-MEISYO-EXT.
            EXIT.
+      *****************************************************************
+      *     後発医薬品区分再編集処理
+      *****************************************************************
+       3002-KOUHATU-MEISYO-SEC        SECTION.
       *
+           MOVE    SPACE               TO  WRK-MEISYO
+      *
+           STRING     "【後】"         DELIMITED   BY  SIZE
+                      TNS-NAME         DELIMITED   BY  SIZE
+                      INTO             WRK-MEISYO
+           END-STRING
+           .
+       3002-KOUHATU-MEISYO-EXT.
+           EXIT.
+      ******************************************************************
+      *     後発医薬品変更再編集処理
+      *****************************************************************
+       30021-KOUHEN-MEISYO-SEC        SECTION.
+      *
+           MOVE    SPACE               TO  WRK-MEISYO
+      *
+           STRING     "【"             DELIMITED   BY  SIZE
+                      TNS-NAME         DELIMITED   BY  "    "
+                      "】"             DELIMITED   BY  SIZE
+                      INTO             WRK-MEISYO
+           END-STRING
+           .
+       30021-KOUHEN-MEISYO-EXT.
+           EXIT.
+     *
       *****************************************************************
       *     入力値コメントの時、再編集処理
       *****************************************************************

@@ -989,6 +989,23 @@
                                        TO  SPA-ERRMSG
                    MOVE    "従たる手術の逓減を入力して下さい。"
                                        TO  SPA-ERRMSG(39:)
+      *H18.4改正追加
+               WHEN    "2063"
+                   MOVE    "後発医薬品への変更不可は入力できません。"
+                                       TO  SPA-ERRMSG
+               WHEN    "2064"
+                   STRING  "後発医薬品への変更不可は"
+                                               DELIMITED  BY  SIZE
+                           "薬剤の下に入力して下さい。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "2065"
+                   STRING  "上の薬剤は後発医薬品です。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+      *
            END-EVALUATE
            .
        100-KYOUTU-ERRMSG-EXT.

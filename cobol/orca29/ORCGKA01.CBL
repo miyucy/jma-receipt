@@ -1519,6 +1519,11 @@
                 PERFORM 3100121-FUKIYO-MEISYO-SEC
                 MOVE    WRK-MEISYO    TO  SPA-GMN-TMEISYO2(IDG)
            END-IF
+      *    後発医薬品変更再編集
+           IF      LNK-WKSRY-SRYCD (IDX IDZ)   =   "099209903"
+                PERFORM 3100122-KOUHATU-MEISYO-SEC
+                MOVE    WRK-MEISYO    TO  SPA-GMN-TMEISYO2(IDG)
+           END-IF
       *
       *    コメントの時、内容設定
            IF    ((LNK-WKSRY-SRYCD   (IDX IDZ)(1:1)  =   "8"   ) OR
@@ -1578,6 +1583,21 @@
            END-STRING
            .
        3100121-FUKIYO-MEISYO-EXT.
+           EXIT.
+      *****************************************************************
+      *     後発医薬品変更再編集処理
+      *****************************************************************
+       3100122-KOUHATU-MEISYO-SEC        SECTION.
+      *
+           MOVE    SPACE               TO  WRK-MEISYO
+      *
+           STRING     "【"             DELIMITED   BY  SIZE
+                      TNS-NAME         DELIMITED   BY  "    "
+                      "】"             DELIMITED   BY  SIZE
+                      INTO             WRK-MEISYO
+           END-STRING
+           .
+       3100122-KOUHATU-MEISYO-EXT.
            EXIT.
       *****************************************************************
       *     用量割合再編集処理
@@ -2133,6 +2153,10 @@
       *    基本チェックと別画面処理
            PERFORM 4102-KIHON-CHK-SEC
       *
+           IF      FLG-KOUSIN          =   2
+               PERFORM 4103-KOUSIN-CHK-SEC
+           END-IF
+      *
            .
        410-INPUT-CHK-EXT.
            EXIT.
@@ -2344,6 +2368,14 @@
            END-PERFORM
            .
        4103-SURYO-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    更新前チェック処理
+      *****************************************************************
+       4103-KOUSIN-CHK-SEC            SECTION.
+      *
+           .
+       4103-KOUSIN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2747,7 +2779,7 @@
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
-               MOVE    "0106"          TO  SPA-KAID1CD
+               MOVE    "0106"              TO  SPA-KAID1CD
                MOVE    1                   TO  SPA-PRINT-SYORI
            END-IF
            .
@@ -2886,6 +2918,14 @@
                                                    =   SPACE)
                        IF      SPA-WKSRY-SRYSURYO (IDX-W IDX-W2)
                                                    >   ZERO
+      *                    後発医薬品への変更不可判定
+                           IF     (SPA-WKSRY-SRYCD (IDX-W IDX-W2)
+                                                       =   "099209903")
+                             AND  (SPA-WKSRY-SRYSURYO (IDX-W IDX-W2 - 1)
+                                                       =   ZERO   )
+                              CONTINUE
+                           ELSE
+      *
                            ADD     1           TO  IDX2
                            MOVE    SPA-WKSRY-SRYCD (IDX-W IDX-W2)
                                            TO  ORCHC19-SRYCD (IDX1 IDX2)
@@ -2898,6 +2938,7 @@
                            MOVE    SPA-WKSRY-INPUTCOMENT (IDX-W IDX-W2)
                                            TO  ORCHC19-INPUTCOMENT
                                                              (IDX1 IDX2)
+                       END-IF
                        END-IF
                    END-PERFORM
                END-IF
@@ -2988,9 +3029,12 @@
                                                    =   SPACE)
       *            （減）は対象外
                        IF     (SPA-WKSRY-SRYSURYO (IDX-W IDX-W2)
-                                                   >   ZERO )  AND
+                                                   =   ZERO )  OR
                               (SPA-WKSRY-SRYCD (IDX-W IDX-W2)
-                                               NOT =   "820000047" )
+                                                   =   "820000047"
+                                                   OR  "099209902" )
+                           CONTINUE
+                       ELSE
                            ADD     1           TO  IDX2
                            MOVE    SPA-WKSRY-SRYCD (IDX-W IDX-W2)
                                            TO  ORCSCH30-SRYCD(IDX1 IDX2)

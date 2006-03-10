@@ -7459,6 +7459,8 @@
       *
                WHEN    "26"
                WHEN    "27"
+      *            処方せんコメント
+               WHEN    "98"
                    CALL    "ORCSC20"       USING
                                            MCPAREA
                                            ORCSC00AREA

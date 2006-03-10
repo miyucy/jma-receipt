@@ -2634,6 +2634,11 @@
                 MOVE    WRK-MEISYO    TO  SPA-GMN-TMEISYO (IDG)
            END-IF
       *!
+      *    後発医薬品変更再編集
+           IF      SRY-SRYCD (IDZ)     =   "099209903"
+                PERFORM 3100122-KOUHATU-MEISYO-SEC
+                MOVE    WRK-MEISYO    TO  SPA-GMN-TMEISYO (IDG)
+           END-IF
       *
       *    約束の内容の時、再編集
            IF      FLG-YAKUSOKU        =   1
@@ -2855,6 +2860,21 @@
            END-STRING
            .
        3100121-FUKIYO-MEISYO-EXT.
+           EXIT.
+      *****************************************************************
+      *     後発医薬品変更再編集処理
+      *****************************************************************
+       3100122-KOUHATU-MEISYO-SEC        SECTION.
+      *
+           MOVE    SPACE               TO  WRK-MEISYO
+      *
+           STRING     "【"             DELIMITED   BY  SIZE
+                      TNS-NAME         DELIMITED   BY  "    "
+                      "】"             DELIMITED   BY  SIZE
+                      INTO             WRK-MEISYO
+           END-STRING
+           .
+       3100122-KOUHATU-MEISYO-EXT.
            EXIT.
       *****************************************************************
       *     用量割合再編集処理

@@ -45,6 +45,7 @@
       *  01.00.16    NACL-多々納  05/06/30  プレビュー追加
       *  01.00.17    NACL-多々納  05/11/17  MONFUNC 対応
       *  01.00.18    NACL-多々納  05/12/21  登録順追加
+      *  01.00.19    NACL-多々納  06/01/23  用量割合・包括検査数追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2145,6 +2146,11 @@
                 MOVE    WRK-MEISYO    TO  SPA-GMN-TMEISYO2(IDG)
            END-IF
       *!
+      *    後発医薬品変更再編集
+           IF      LNK-WKSRY-SRYCD (IDX IDZ)   =   "099209903"
+                PERFORM 3100122-KOUHATU-MEISYO-SEC
+                MOVE    WRK-MEISYO    TO  SPA-GMN-TMEISYO2(IDG)
+           END-IF
       *
       *    約束の内容の時、再編集
            IF      FLG-YAKUSOKU        =   1
@@ -2253,6 +2259,11 @@
       *    薬剤服用コメントの時、再編集
            IF      LNK-WKSRY-SRYCD (IDX IDZ)(1:3)  =   "001"
                 PERFORM 3100121-FUKIYO-MEISYO-SEC
+                MOVE    WRK-MEISYO    TO  SPA-GMN-TMEISYO2(IDG)
+           END-IF
+      *    後発医薬品変更再編集
+           IF      LNK-WKSRY-SRYCD (IDX IDZ)   =   "099209903"
+                PERFORM 3100122-KOUHATU-MEISYO-SEC
                 MOVE    WRK-MEISYO    TO  SPA-GMN-TMEISYO2(IDG)
            END-IF
       *    コメントの時、内容設定
@@ -2431,6 +2442,21 @@
            END-STRING
            .
        3100121-FUKIYO-MEISYO-EXT.
+           EXIT.
+      *****************************************************************
+      *     後発医薬品変更再編集処理
+      *****************************************************************
+       3100122-KOUHATU-MEISYO-SEC        SECTION.
+      *
+           MOVE    SPACE               TO  WRK-MEISYO
+      *
+           STRING     "【"             DELIMITED   BY  SIZE
+                      TNS-NAME         DELIMITED   BY  "    "
+                      "】"             DELIMITED   BY  SIZE
+                      INTO             WRK-MEISYO
+           END-STRING
+           .
+       3100122-KOUHATU-MEISYO-EXT.
            EXIT.
       *****************************************************************
       *     用量割合再編集処理

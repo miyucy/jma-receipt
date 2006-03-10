@@ -30,6 +30,7 @@
       * 01.00.01     NACL-多々納  03/04/11  履歴に科表示追加
       * 01.00.02     NACL-多々納  04/01/23  回数変更追加
       * 01.00.03     NACL-多々納  05/11/17  MONFUNC 対応
+      * 01.00.04     NACL-多々納  06/01/23  用量割合・包括検査数追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1686,6 +1687,11 @@
                 MOVE    WRK-MEISYO    TO  SPA-GMN-TMEISYO2(IDG)
            END-IF
       *!
+      *    後発医薬品変更再編集
+           IF      LNK-WKSRY-SRYCD (IDX IDZ)   =   "099209903"
+                PERFORM 3100122-KOUHATU-MEISYO-SEC
+                MOVE    WRK-MEISYO    TO  SPA-GMN-TMEISYO2(IDG)
+           END-IF
       *    用量割合再編集
            IF     (LNK-WKSRY-SRYCD(IDX IDZ)(1:7)   =   "0992000")  AND
                   (LNK-WKSRY-SRYSURYO(IDX IDZ) NOT =   ZERO     )
@@ -1908,6 +1914,21 @@
            END-STRING
            .
        3100121-FUKIYO-MEISYO-EXT.
+           EXIT.
+      *****************************************************************
+      *     後発医薬品変更再編集処理
+      *****************************************************************
+       3100122-KOUHATU-MEISYO-SEC        SECTION.
+      *
+           MOVE    SPACE               TO  WRK-MEISYO
+      *
+           STRING     "【"             DELIMITED   BY  SIZE
+                      TNS-NAME         DELIMITED   BY  "    "
+                      "】"             DELIMITED   BY  SIZE
+                      INTO             WRK-MEISYO
+           END-STRING
+           .
+       3100122-KOUHATU-MEISYO-EXT.
            EXIT.
       *
       *****************************************************************
