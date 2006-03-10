@@ -11,7 +11,9 @@ tbl_syuka {
     RECESYUBETU         char(4);
     SRYKA               char(2);
 #------> key
+    HKNNUM              char(3);
     SRYKA_INPUT         char(2);
+    SRYKA_AUTO          char(2);
     HKNCOMBI_1          number(4,0);
     HKNCOMBI_2          number(4,0);
     HKNCOMBI_3          number(4,0);
@@ -84,6 +86,7 @@ path	key3		{
 			WHERE   HOSPID         =   :HOSPID
 			AND     NYUGAIKBN      =   :NYUGAIKBN
 			AND     PTID           =   :PTID
+			AND     SRYYM          =   :SRYYM
 			AND     TEN_KBN        =   :TEN_KBN
 			ORDER   BY  TEISYUTUSAKI,HKNJANUM,HOJOKBN,RECESYUBETU,SRYKA
 		;
@@ -169,6 +172,59 @@ path	key8		{
 			AND     PTID           =    :PTID
 			AND     DLT_FLG        <>   '1'
 			ORDER BY TEN_KBN,TEISYUTUSAKI,HKNJANUM,HOJOKBN,RECESYUBETU,SRYKA
+		;
+	};
+};
+
+path	key9		{ 	
+	DBSELECT	{
+		DECLARE tbl_syuka_key9_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syuka
+			WHERE   HOSPID         =    :HOSPID
+			AND     SRYYM          =    :SRYYM
+			AND     NYUGAIKBN      =    :NYUGAIKBN
+			AND     TEISYUTUSAKI   LIKE :TEISYUTUSAKI
+			AND     PTID           =    :PTID
+			AND     DLT_FLG        <>   '1'
+			ORDER BY TEN_KBN,TEISYUTUSAKI,HKNJANUM,HOJOKBN,RECESYUBETU,SRYKA
+		;
+	};
+};
+
+path	key10		{ 	
+	DBSELECT	{
+		DECLARE tbl_syuka_key10_csr CURSOR FOR
+		SELECT a.*
+		FROM tbl_syuka a,tbl_ptnum b
+			WHERE   a.HOSPID       =   :HOSPID
+			AND     SRYYM          =   :SRYYM
+			AND     NYUGAIKBN      =   :NYUGAIKBN
+			AND     TEISYUTUSAKI   =   '1'
+			AND     RECESYUBETU    <>  '8888'
+			AND     a.HOSPID       =   b.HOSPID
+			AND     a.PTID         =   b.PTID
+			AND     DLT_FLG        <>   '1'
+			ORDER   BY  PTNUM,TEN_KBN,TEISYUTUSAKI,HKNJANUM,HOJOKBN,RECESYUBETU,SRYKA
+		;
+	};
+};
+
+path	key11		{ 	
+	DBSELECT	{
+		DECLARE tbl_syuka_key11_csr CURSOR FOR
+		SELECT a.*
+		FROM tbl_syuka a,tbl_ptnum b
+			WHERE   a.HOSPID       =   :HOSPID
+			AND     SRYYM          =   :SRYYM
+			AND     NYUGAIKBN      =   :NYUGAIKBN
+			AND     TEISYUTUSAKI   =   '1'
+			AND     RECESYUBETU    <>  '8888'
+			AND     a.HOSPID       =   b.HOSPID
+			AND     a.PTID         =   b.PTID
+			AND     DLT_FLG        <>   '1'
+			AND     SRYKA_INPUT    =   ''
+			ORDER   BY  PTNUM,TEN_KBN,TEISYUTUSAKI,HKNJANUM,HOJOKBN,RECESYUBETU,SRYKA
 		;
 	};
 };

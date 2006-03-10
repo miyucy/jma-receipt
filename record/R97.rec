@@ -1,0 +1,100 @@
+R97	{
+	fixed1	{
+		B06     {
+			state   int;
+		};
+		B07     {
+			state   int;
+		};
+		SRYYM	{
+			value	varchar(7);
+		};
+		NYUGAIKBNCOMBO	{
+			NYUGAIKBN	{
+				value	varchar(8);
+			};
+			count	int;
+			item	varchar(8)[2];
+		};
+		HYOUJIKBNCOMBO	{
+			HYOUJIKBN	{
+				value	varchar(10);
+			};
+			count	int;
+			item	varchar(10)[2];
+		};
+		SELNUM	{
+			value	number(5);
+		};
+		PTNUM	{
+			value	varchar(20);
+		};
+		NAME	{
+			value	varchar(30);
+		};
+		RECESYUBETU	{
+			value	varchar(20);
+		};
+		HKNJANUM	{
+			value	varchar(8);
+		};
+		HKNJAMEI	{
+			value	varchar(20);
+		};
+		HOJOKBN	{
+			value	varchar(10);
+		};
+		SYUKA_INPUT	{
+			value	varchar(15);
+		};
+		SYUKA_AUTO	{
+			value	varchar(15);
+		};
+		SYUKA_INPUT1	{
+			value	varchar(15);
+		};
+		SYUKACOMB	{
+			SYUKA	{
+				value	varchar(21);
+			};
+			count	int;
+			item	varchar(21)[40];
+		};
+		scrolledwindow1	{
+			hpos	int;
+			vpos	int;
+			SYUKALST	{
+				count	int;
+				row	int;
+				item	{
+					value0	varchar(5);
+					value1	varchar(2);
+					value2	varchar(20);
+					value3	varchar(30);
+					value4	varchar(10);
+					value5	varchar(8);
+					value6	varchar(10);
+					value7	varchar(6);
+					value8	varchar(6);
+				}	[500];
+				select	bool[500];
+			};
+		};
+		scrolledwindow2	{
+			hpos	int;
+			vpos	int;
+			PTNUMLST	{
+				HYODAI  {
+				    value	varchar(4);
+				};
+				count	int;
+				row	int;
+				item	{
+					value2	varchar(15);
+					value3	varchar(10);
+				}	[100];
+				select	bool[100];
+			};
+		};
+	};
+};

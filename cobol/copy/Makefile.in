@@ -506,6 +506,7 @@ COPYS = \
 	R02.INC \
 	R03.INC \
 	R04.INC \
+	R97.INC \
 	R98.INC \
 	R99.INC \
 	RERR.INC \

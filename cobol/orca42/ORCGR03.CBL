@@ -79,6 +79,7 @@
       *
       *  02.07.01    NACL-藤原    05/10/31  MONFUNC対応
       *  02.07.02    NACL-藤原    05/12/12  国保レセプト編綴順対応
+      *  02.07.03    NACL-藤原    06/02/20  主科対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -336,6 +337,7 @@
            COPY    "R03.INC".
            COPY    "R04.INC".
            COPY    "R05.INC".
+           COPY    "R97.INC".
            COPY    "R98.INC".
            COPY    "R99.INC".
            COPY    "RERR.INC".
@@ -454,6 +456,7 @@
                WHEN    "R04"
                WHEN    "R02"
                WHEN    "R01"
+               WHEN    "R97"
                WHEN    "R98"
                    PERFORM 350-R02SPASET-SEC
                    GO      TO      300-SCREEN-EXT
@@ -775,6 +778,9 @@
       *     再印刷
                WHEN    "CLICKED"       ALSO    "B05"
                    PERFORM 450-REPRINT-SEC
+      *     主科設定
+               WHEN    "CLICKED"       ALSO    "B10"
+                   PERFORM 490-SYUKA-ENTRY-SEC
       *     情報削除
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 490-JYOUHOU-DEL-SEC
@@ -784,7 +790,7 @@
       *    処理確認
                WHEN    "CLICKED"       ALSO    "B13"
                    PERFORM 490-KAKUNIN-SEC
-      *     まとめ入力
+      *     生保まとめ入力
                WHEN    "CLICKED"       ALSO    "B09"
                     PERFORM 460-SEH-ENTRY-SEC
       *     印刷区分
@@ -1274,6 +1280,55 @@
       *
            .
        460-SEH-ENTRY-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    主科入力処理
+      *****************************************************************
+       490-SYUKA-ENTRY-SEC       SECTION.
+      *
+      *    ジョブ管理チェック処理
+           MOVE    "CHK"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-CONS-JOB-JOBID
+                                   TO  JOB-JOBID
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC 
+           IF      SJOBKANRI-RETURN
+                                   =   ZERO
+               IF      JOB-ENDYMD      =   SPACE
+                   MOVE    "7777"          TO  SPA-ERRCD
+                   MOVE    SPACE             TO  WRK-RECEERR
+                   STRING  "レセプト作成処理中です【"
+                                             DELIMITED  BY  SIZE
+                           JOB-SHELLMSG      DELIMITED  BY  SPACE
+                           "】"              DELIMITED  BY  SIZE      
+                                             INTO  WRK-RECEERR
+                   END-STRING                          
+                   GO  TO  490-SYUKA-ENTRY-EXT
+               END-IF
+           END-IF    
+      * 
+           MOVE    "R03"               TO  SPA-MOTOPG
+           MOVE    "R97"               TO  SPA-SAKIPG
+      *
+      *    画面移行用のパラメタ変更
+           PERFORM 45011-PARA-HENSYU-SEC
+      *
+           MOVE    SPA-R01KYOUTU       TO  SPA-WORK       
+      *
+           MOVE   "CHANGE"             TO  MCP-PUTTYPE
+           MOVE   SPA-SAKIPG           TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       490-SYUKA-ENTRY-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2250,6 +2305,11 @@
                MOVE    WIDGET-INSENSITIVE  TO  R03-B23-STATE
            ELSE
                MOVE    WIDGET-NORMAL       TO  R03-B23-STATE
+           END-IF
+           IF      SPA-SYUKA-KBN       =   ZERO
+               MOVE    WIDGET-INSENSITIVE  TO  R03-B10-STATE
+           ELSE
+               MOVE    WIDGET-NORMAL       TO  R03-B10-STATE
            END-IF
       *
            PERFORM 5001-MAPCUR-SEC

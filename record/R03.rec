@@ -1,5 +1,8 @@
 R03	{
 	fixed6	{
+		B10	{
+			state	int;
+		};
 		B23	{
 			state	int;
 		};

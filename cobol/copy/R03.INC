@@ -1,4 +1,5 @@
         02  R03.
+              03  R03-B10-STATE   PIC S9(09) BINARY.
               03  R03-B23-STATE   PIC S9(09) BINARY.
               03  R03-SRYYM.
                 04  R03-VALUE   PIC X(7).

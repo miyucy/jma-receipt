@@ -118,6 +118,8 @@
                07  LNK-IO2-SYU-HKNNUM          PIC X(03).
       *診療科（入力）
                07  LNK-IO2-SYU-SRYKA-INPUT     PIC X(02).
+      *診療科（システム）
+               07  LNK-IO2-SYU-SRYKA-AUTO      PIC X(02).
       *保険組合せ番号
                07  LNK-IO2-SYU-HKNCOMBI-AREA.
                  09  LNK-IO2-SYU-HKNCOMBI      PIC 9(04)

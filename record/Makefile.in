@@ -164,6 +164,7 @@ RECORD_files = \
 	R02.rec \
 	R03.rec \
 	R04.rec \
+	R97.rec \
 	R98.rec \
 	R99.rec \
 	RERR.rec \

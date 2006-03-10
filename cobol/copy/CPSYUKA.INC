@@ -44,8 +44,12 @@
                05  SYUKA-RECESYUBETU   PIC X(04).
       *診療科
                05  SYUKA-SRYKA         PIC X(02).
+      *保険番号（主保険）
+           03  SYUKA-HKNNUM            PIC X(03).
       *診療科（入力）
            03  SYUKA-SRYKA-INPUT       PIC X(02).
+      *診療科（システム）
+           03  SYUKA-SRYKA-AUTO        PIC X(02).
       *保険組合せ番号
            03  SYUKA-HKNCOMBI-AREA.
                05  SYUKA-HKNCOMBI      PIC 9(04)   OCCURS  10.

@@ -205,8 +205,8 @@
                                    TO  LNK-SYUACC-IO-HKNJANUM    (IDX)
                            MOVE    SYUKA-HOJOKBN
                                    TO  LNK-SYUACC-IO-HOJOKBN     (IDX)
-      ****                 MOVE    SYUKA-HKNNUM
-      ****                         TO  LNK-SYUACC-IO-HKNNUM      (IDX)
+                           MOVE    SYUKA-HKNNUM
+                                   TO  LNK-SYUACC-IO-HKNNUM      (IDX)
                        END-IF
                        IF    ( SYUKA-NYUGAIKBN
                                    =   LNK-SYUACC-IO-NYUGAIKBN   (IDX) )
@@ -594,11 +594,11 @@
                                                TO  SYUKA-HKNJANUM
                        MOVE    LNK-SYUACC-IO-HOJOKBN     (IDX)
                                                TO  SYUKA-HOJOKBN
-      ****             MOVE    LNK-SYUACC-IO-HKNNUM      (IDX)
-      ****                                     TO  SYUKA-HKNNUM
                        MOVE    LNK-SYUACC-IO-SRYKA (IDX IDY)
                                                TO  SYUKA-SRYKA
                    END-IF
+                   MOVE    LNK-SYUACC-IO-HKNNUM   (IDX)
+                                           TO  SYUKA-HKNNUM
                    MOVE    LNK-SYUACC-IO-HKNCOMBI-AREA (IDX IDY)
                                            TO  SYUKA-HKNCOMBI-AREA
                    MOVE    LNK-SYUACC-IO-TENSU    (IDX IDY)
@@ -646,6 +646,8 @@
                MOVE    SPA-HOSPID      TO  SYUKA-HOSPID
                MOVE    SPA-PTID        TO  SYUKA-PTID
                MOVE    SPA-NYUGAIKBN   TO  SYUKA-NYUGAIKBN
+               MOVE    LNK-SYUACC-I-SRYYM
+                                       TO  SYUKA-SRYYM
                EVALUATE    LNK-SYUACC-I-KBN
                    WHEN    "03"
                        MOVE    "1"             TO  SYUKA-TEN-KBN
@@ -886,6 +888,8 @@
                                    TO  LNK-SYUACC-IO-HKNJANUM    (IDX)
                            MOVE    SYUKA-HOJOKBN
                                    TO  LNK-SYUACC-IO-HOJOKBN     (IDX)
+                           MOVE    SYUKA-HKNNUM
+                                   TO  LNK-SYUACC-IO-HKNNUM      (IDX)
                        END-IF
                        IF    ( SYUKA-NYUGAIKBN
                                    =   LNK-SYUACC-IO-NYUGAIKBN   (IDX) )

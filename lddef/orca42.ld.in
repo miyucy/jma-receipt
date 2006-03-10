@@ -9,6 +9,7 @@ bind	"R02"		"OpenCOBOL"	"ORCGR02";
 bind	"R03"		"OpenCOBOL"	"ORCGR03";
 bind	"R04"		"OpenCOBOL"	"ORCGR04";
 bind	"R05"		"OpenCOBOL"	"ORCGR05";
+bind    "R97"		"OpenCOBOL"	"ORCGR97";
 bind    "R98"		"OpenCOBOL"	"ORCGR98";
 bind	"R99"		"OpenCOBOL"	"ORCGR99";
 bind	"RERR"		"OpenCOBOL"	"ORCGRERR";
@@ -27,6 +28,7 @@ data	{
 		R03;
 		R04;
 		R05;
+		R97;
 		R98;
 		R99;
 		RERR;
@@ -41,15 +43,22 @@ db	{
 	tbl_hknnum;
 	tbl_hknjainf;
 	tbl_jobkanri;
+        tbl_jyurrk;
 	tbl_monthlynum;
 	tbl_nyuinacct;
+        tbl_nyuinact;
 	tbl_ptinf;
 	tbl_ptkohinf;
 	tbl_ptnum;
+        tbl_ptnyuinrrk;
 	tbl_recekanri;
 	tbl_receprt;
+        tbl_senteicdchg;
 	tbl_sryacct;
+        tbl_sryact;
 	tbl_syskanri;
+	tbl_syuka;
+        tbl_tensu;
 };
 
 /* #include "orcadb.inc" */
