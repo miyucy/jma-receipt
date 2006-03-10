@@ -30,3 +30,5 @@
             02  HCM19-MENJYO    PIC X(6).
             02  HCM19-BIKOH
                     PIC X(86)   OCCURS  9 TIMES.
+            02  HCM19-HENKOUKA  PIC X(16).
+            02  HCM19-HKNINAME  PIC X(16).
