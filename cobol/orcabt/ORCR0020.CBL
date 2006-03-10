@@ -135,6 +135,8 @@
       *  02.07.03    NACL-藤原    06/01/05  山形県のレセプト様式変更対応
       *                                     平成１８年１月分から標準的な
       *                                     レセプト様式へ変更
+      *
+      *  02.08.01    NACL-藤原    06/02/20  主科対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -304,20 +306,8 @@
       *
            03  WRK-SYS-SRYYMD                          PIC  X(08).
       *
-      *    患者年齢算出用エリア
-       01  WRK-NENREI-AREA.
-           03  WRK-NENREI                PIC 9(03).
-           03  WRK-YMDS1.
-               05  WRK-YYS1              PIC 9(04).
-               05  WRK-MMS1              PIC 9(02).
-               05  WRK-DDS1              PIC 9(02).
-           03  WRK-YMDS2.
-               05  WRK-YYS2              PIC 9(04).
-               05  WRK-MMS2              PIC 9(02).
-               05  WRK-DDS2              PIC 9(02).
-           03  WRK-YMDS2R    REDEFINES   WRK-YMDS2.
-               05  WRK-YYMMS2R           PIC 9(06).
-               05  WRK-DDS2R             PIC 9(02).
+           03  WRK-MCP-TABLE       PIC X(64).
+           03  WRK-MCP-PATHNAME    PIC X(64).
       *
            03  WRK-RECEERR               PIC X(200).
       *
@@ -336,6 +326,21 @@
            03  WRK-TEISYOTOKU-YMD.
                05  WRK-TEISYOTOKU-YM     PIC 9(06).
                05  WRK-TEISYOTOKU-DD     PIC 9(02).
+      *
+      *    患者年齢算出用エリア
+       01  WRK-NENREI-AREA.
+           03  WRK-NENREI                PIC 9(03).
+           03  WRK-YMDS1.
+               05  WRK-YYS1              PIC 9(04).
+               05  WRK-MMS1              PIC 9(02).
+               05  WRK-DDS1              PIC 9(02).
+           03  WRK-YMDS2.
+               05  WRK-YYS2              PIC 9(04).
+               05  WRK-MMS2              PIC 9(02).
+               05  WRK-DDS2              PIC 9(02).
+           03  WRK-YMDS2R    REDEFINES   WRK-YMDS2.
+               05  WRK-YYMMS2R           PIC 9(06).
+               05  WRK-DDS2R             PIC 9(02).
       *
            COPY    "MCPAREA".
       *
@@ -414,6 +419,8 @@
       *    医療機関情報
            COPY  "CPSK1001.INC".
       *
+           COPY    "CPSK2009.INC".
+      *
       *    月代わり受給者番号
        01  MONTHLYNUM-REC.
            COPY    "CPMONTHLYNUM.INC".
@@ -451,6 +458,10 @@
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
+      *
+      *    主科取得サブ
+       01  ORCSSYUACCAREA.
+           COPY    "CPORCSSYUACC.INC".
       *
       ****************************************************************
        LINKAGE                 SECTION.
@@ -514,6 +525,27 @@
                                        JOBKANRI-REC
       *    処理中止設定処理
                PERFORM 500-CANCEL-HENSYU-SEC
+           END-IF
+      *         
+      *    レセプト編集区分情報
+           MOVE    SPACE           TO  SYSKANRI-REC
+           INITIALIZE                  SYSKANRI-REC
+           MOVE    "2009"          TO  SYS-KANRICD
+           MOVE    "*"             TO  SYS-KBNCD
+           MOVE    WRK-PARA-SRYYM  TO  SYS-STYUKYMD (1:6)
+           MOVE    "01"            TO  SYS-STYUKYMD (7:2)
+           MOVE    SYS-STYUKYMD    TO  SYS-EDYUKYMD
+           MOVE    "tbl_syskanri"  TO  WRK-MCP-TABLE
+           MOVE    "key10"         TO  WRK-MCP-PATHNAME
+           PERFORM 960-KANRIMST-READ-SEC
+           IF      FLG-SYSKANRI    =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-2009-REC
+           ELSE    
+               INITIALIZE                  SYS-2009-REC
+           END-IF
+           IF      SYS-2009-SYUKA-KBN
+                                   =   SPACE
+               MOVE    ZERO            TO  SYS-2009-SYUKA-KBN
            END-IF
       *
           .
@@ -1084,6 +1116,42 @@
                                                MCPDATA-REC
                END-PERFORM
            END-IF
+      *
+      *    主科設定
+           IF    ( IDZ                 =   1      )
+           AND   ( SYS-2009-SYUKA-KBN  =   "1"    )
+           AND   ( RECE02-TEISYUTUSAKI =   "1"    )
+           AND   ( RECE02-RECESYUBETU  
+                                   NOT =   "8888" )
+               INITIALIZE                      ORCSSYUACCAREA
+               MOVE    RECE02-HOSPID   TO  SPA-HOSPID
+               MOVE    RECE02-SRYYM    TO  LNK-SYUACC-I-SRYYM
+               MOVE    RECE02-PTID     TO  SPA-PTID
+               MOVE    RECE02-NYUGAIKBN
+                                       TO  SPA-NYUGAIKBN
+               MOVE    RECE02-RECESYUBETU
+                                       TO  LNK-SYUACC-IO-RECESYUBETU (1)
+               MOVE    RECE02-HKNJANUM TO  LNK-SYUACC-IO-HKNJANUM    (1)
+               MOVE    RECE02-HOJOKBN  TO  LNK-SYUACC-IO-HOJOKBN     (1)
+               MOVE    RECE02-TEISYUTUSAKI
+                                       TO  LNK-SYUACC-IO-TEISYUTUSAKI(1)
+               MOVE    "06"            TO  LNK-SYUACC-I-KBN
+               CALL    "ORCSSYUKAMAIN" USING   SPA-AREA
+                                               ORCSSYUACCAREA
+               IF      LNK-SYUACC-IO-H-SRYKA
+                                       NOT =   SPACE
+                   MOVE    LNK-SYUACC-IO-H-SRYKA   TO  RECE02-SYUKA
+               ELSE
+                   IF      LNK-SYUACC-IO-SYUKA-INPUT (1)
+                                           NOT =   SPACE
+                       MOVE    LNK-SYUACC-IO-SYUKA-INPUT (1)
+                                                       TO  RECE02-SYUKA
+                   ELSE
+                       MOVE    LNK-SYUACC-IO-SYUKA-AUTO (1) 
+                                                       TO  RECE02-SYUKA
+                   END-IF
+               END-IF    
+           END-IF    
       *
            PERFORM     220-DATA-WRITE-SEC
            .
@@ -2726,66 +2794,51 @@
        SRYACT-READ-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    管理マスタ読み込み
-      *****************************************************************
-       800-SYSKANRI-READ-SEC           SECTION.
       *
+      *****************************************************************
+      *    システム管理マスタ読込
+      *****************************************************************
+       960-KANRIMST-READ-SEC         SECTION.
+      *
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    WRK-PATH            TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC     TO  SYSKANRI-REC
-                   MOVE    ZERO            TO  FLG-SYSKANRI
-               ELSE
-                   INITIALIZE                  SYSKANRI-REC
-                   MOVE    1               TO  FLG-SYSKANRI
-               END-IF
+           CALL    "MONFUNC"       USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          =   ZERO
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+               PERFORM 900-KANRIMST-NEXT-SEC
            ELSE
-               INITIALIZE                  SYSKANRI-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      *
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
            .
-       800-SYSKANRI-READ-EXT.
+       960-KANRIMST-READ-EXT.
            EXIT.
       *
       *****************************************************************
-      *    管理マスタ読み込み
+      *    システム管理マスタ読み込み処理
       *****************************************************************
-       810-SYSKANRI-READ-SEC         SECTION.
+       900-KANRIMST-NEXT-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "MONFUNC"       USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  SYSKANRI-REC
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
-               INITIALIZE                  SYSKANRI-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
+      *
            .
-       810-SYSKANRI-READ-EXT.
+       900-KANRIMST-NEXT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2874,6 +2927,20 @@
            END-READ
            .
        900-RECE09-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    テーブルクローズ処理
+      *****************************************************************
+       900-CLOSE-SEC               SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+      *
+           .
+       900-CLOSE-EXT.
            EXIT.
       *
       *****************************************************************

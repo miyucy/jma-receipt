@@ -114,6 +114,8 @@
       *  02.07.07    NACL-藤原    06/01/05  山形県のレセプト様式変更対応
       *                                     平成１８年１月分から標準的な
       *                                     レセプト様式へ変更
+      *
+      *  02.08.01    NACL-藤原    06/02/20  主科対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -825,6 +827,8 @@
       *    医療機関情報
            COPY    "CPSK1001.INC".
            COPY    "CPSK1002.INC".
+      *
+           COPY    "CPSK1005.INC".
       *
       *    医療機関編集情報
            COPY    "CPSK1900.INC".
@@ -2179,6 +2183,47 @@
       *     ELSE
                MOVE    SPACE           TO  HC06-SRYKA
       *     END-IF
+      *     主科設定ありのときの記載
+           IF      RECE02-SYUKA     NOT =   SPACE
+               MOVE    SPACE                TO  SYSKANRI-REC
+               INITIALIZE                       SYSKANRI-REC
+               MOVE    "1005"               TO  SYS-KANRICD
+               MOVE    RECE02-SYUKA         TO  SYS-KBNCD
+               MOVE    RECE02-SRYYM         TO  SYS-STYUKYMD (1:6)
+               MOVE    "01"                 TO  SYS-STYUKYMD (7:2)
+               MOVE    SYS-STYUKYMD         TO  SYS-EDYUKYMD
+               MOVE    "tbl_syskanri"       TO  WRK-MCP-TABLE
+               MOVE    "key10"              TO  WRK-MCP-PATHNAME
+               PERFORM 960-KANRIMST-READ-SEC
+               IF      FLG-KANRIMST     =   ZERO
+                   MOVE    MCPDATA-REC         TO  SYS-1005-REC
+               ELSE
+                   INITIALIZE                      SYS-1005-REC
+               END-IF
+               IF      SYS-1005-RECESRYKA  NOT =   SPACE
+                   INITIALIZE                  ORCSKANACHKAREA
+                   MOVE    "2"                 TO  KANACHK-SYORI 
+                   MOVE    SYS-1005-RECESRYKA  TO  KANACHK-MAE-INPUT
+                   CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
+                   IF      KANACHK-RC      =   ZERO
+                       STRING  "（"            DELIMITED   BY  SIZE
+                               KANACHK-OUT-INPUT(1:KANACHK-MAX)    
+                                               DELIMITED   BY  SIZE
+                               SYS-1005-SRYKANAME
+                                               DELIMITED   BY  SPACE 
+                               "）"            DELIMITED   BY  SIZE
+                                               INTO  HC06-SRYKA
+                       END-STRING
+                   END-IF
+               ELSE
+                   STRING  "（"            DELIMITED   BY  SIZE
+                           SYS-1005-SRYKANAME
+                                           DELIMITED   BY  SPACE 
+                           "）"            DELIMITED   BY  SIZE
+                                           INTO  HC06-SRYKA
+                   END-STRING
+               END-IF
+           END-IF    
       *     県単用項目
             IF      FLG-RECE11         =   ZERO
                 IF      RECE11-SRYKA   NOT =   SPACE
