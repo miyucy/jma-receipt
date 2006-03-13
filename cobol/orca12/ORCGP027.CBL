@@ -498,6 +498,8 @@
                IF      LNK-COMB-KOH1HKNNUM (IDX)   =   "051"
                                                    OR  "052"
                                                    OR  "091"
+                                                   OR  "015"
+                                                   OR  "016"
                    MOVE    LNK-COMB-KOH1HKNNUM (IDX)   TO  WRK-KOHNUM
                    MOVE    LNK-COMB-KOH1ID (IDX)       TO  WRK-KOHID
                    PERFORM 3202-JKYSNUM-HENSYU-SEC
@@ -505,6 +507,8 @@
                IF      LNK-COMB-KOH2HKNNUM (IDX)   =   "051"
                                                    OR  "052"
                                                    OR  "091"
+                                                   OR  "015"
+                                                   OR  "016"
                    MOVE    LNK-COMB-KOH2HKNNUM (IDX)   TO  WRK-KOHNUM
                    MOVE    LNK-COMB-KOH2ID (IDX)       TO  WRK-KOHID
                    PERFORM 3202-JKYSNUM-HENSYU-SEC
@@ -512,6 +516,8 @@
                IF      LNK-COMB-KOH3HKNNUM (IDX)   =   "051"
                                                    OR  "052"
                                                    OR  "091"
+                                                   OR  "015"
+                                                   OR  "016"
                    MOVE    LNK-COMB-KOH3HKNNUM (IDX)   TO  WRK-KOHNUM
                    MOVE    LNK-COMB-KOH3ID (IDX)       TO  WRK-KOHID
                    PERFORM 3202-JKYSNUM-HENSYU-SEC
@@ -519,6 +525,8 @@
                IF      LNK-COMB-KOH4HKNNUM (IDX)   =   "051"
                                                    OR  "052"
                                                    OR  "091"
+                                                   OR  "015"
+                                                   OR  "016"
                    MOVE    LNK-COMB-KOH4HKNNUM (IDX)   TO  WRK-KOHNUM
                    MOVE    LNK-COMB-KOH4ID (IDX)       TO  WRK-KOHID
                    PERFORM 3202-JKYSNUM-HENSYU-SEC
