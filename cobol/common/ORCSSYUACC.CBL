@@ -490,6 +490,8 @@
                DISPLAY "ORCSSYUACC SYUKA KEY=" 
                                        MCP-FUNC " " SYUKA-KEY
            END-IF
+      *
+           GO  TO  2002-KBN02-HENSYU-EXT
       * 
       *    手入力による主科情報以外の更新
            IF      FLG-END         =   ZERO
