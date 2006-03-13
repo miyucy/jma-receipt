@@ -170,6 +170,8 @@
       *  02.07.03    NACL-藤原    06/01/05  山形県のレセプト様式変更対応
       *                                     平成１８年１月分からレセ電に
       *                                     記載
+      *
+      *  02.08.01    NACL-藤原    06/02/20  主科対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1445,7 +1447,11 @@
       *    予備
            PERFORM 5004-MOJI-HENSYU-SEC         
       *    診療科コード
-           MOVE    RECE02-RECEKA       TO  WRK-DATA
+           IF      RECE02-SYUKA    NOT =   SPACE
+               MOVE    RECE02-RECESYUKA    TO  WRK-DATA
+           ELSE
+               MOVE    RECE02-RECEKA       TO  WRK-DATA
+           END-IF
            MOVE    1                   TO  WRK-END 
            MOVE    2                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC         

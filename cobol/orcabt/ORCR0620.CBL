@@ -97,6 +97,8 @@
       *                                     をしないようにする
       *  02.07.03    NACL-門脇    06/01/11  病棟区分編集修正
       *  02.07.04    NACL-門脇    06/02/17  高齢者フラグ編集修正
+      *
+      *  02.08.01    NACL-藤原    06/02/20  主科対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -419,12 +421,16 @@
       *
       *    医療機関情報
            COPY    "CPSK1001.INC".
+      *    
+           COPY    "CPSK1005.INC".
       *
       *    病棟情報                                                     
            COPY    "CPSK5001.INC".                                      
       *
       *    患者番号構成管理情報
-           COPY  "CPSK1009.INC".
+           COPY    "CPSK1009.INC".
+      *
+           COPY    "CPSK2009.INC".
       *
       *    月代わり受給者番号
        01  MONTHLYNUM-REC.
@@ -458,6 +464,10 @@
            COPY    "CPORCSJOBKANRI.INC".
       *   保険算定用年齢・割合計算サブ
            COPY    "CPORCSAGECHK.INC".
+      *
+      *    主科取得サブ
+       01  ORCSSYUACCAREA.
+           COPY    "CPORCSSYUACC.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -613,6 +623,26 @@
                                            TO  WRK-RECEERR
                    PERFORM 500-ERR-HENSYU-SEC
                    MOVE    1                   TO  FLG-END
+               END-IF
+           END-IF
+      *
+           IF      FLG-END             =   ZERO
+      *        レセプト編集区分情報
+               MOVE    SPACE           TO  SYSKANRI-REC
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    "2009"          TO  SYS-KANRICD
+               MOVE    "*"             TO  SYS-KBNCD
+               MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)              
+               MOVE    "01"                TO  ORC-DBYMD (7:2)              
+               PERFORM 960-SYSKANRI-READ-SEC
+               IF      FLG-SYSKANRI    =   ZERO
+                   MOVE    MCPDATA-REC     TO  SYS-2009-REC
+               ELSE    
+                   INITIALIZE                  SYS-2009-REC
+               END-IF
+               IF      SYS-2009-SYUKA-KBN
+                                       =   SPACE
+                   MOVE    "0"             TO  SYS-2009-SYUKA-KBN
                END-IF
            END-IF
       *
@@ -1189,6 +1219,71 @@
                    PERFORM CSR-CLOSE-SEC
                END-PERFORM
            END-IF
+      *
+      *    主科設定
+           IF    ( IDZ                 =   1      )
+           AND   ( SYS-2009-SYUKA-KBN  =   "1"    )
+           AND   ( RECE62-TEISYUTUSAKI =   "1"    )
+           AND   ( RECE62-RECESYUBETU  
+                                   NOT =   "8888" )
+               INITIALIZE                      ORCSSYUACCAREA
+               MOVE    RECE62-HOSPID   TO  SPA-HOSPID
+               MOVE    RECE62-SRYYM    TO  LNK-SYUACC-I-SRYYM
+               MOVE    RECE62-PTID     TO  SPA-PTID
+               MOVE    RECE62-NYUGAIKBN
+                                       TO  SPA-NYUGAIKBN
+               MOVE    SYS-2009-SYUKA-KBN
+                                       TO  SPA-SYUKA-KBN
+               MOVE    SYS-2009-SYUKA-NYUIN
+                                       TO  SPA-SYUKA-NYUIN
+               MOVE    SYS-2009-SYUKA-GAIRAI
+                                       TO  SPA-SYUKA-GAIRAI
+               MOVE    SYS-2009-SYUKA-MODE
+                                       TO  SPA-SYUKA-MODE
+               MOVE    SYS-2009-SYUKA-SELECT
+                                       TO  SPA-SYUKA-SELECT
+               MOVE    RECE62-RECESYUBETU
+                                       TO  LNK-SYUACC-IO-RECESYUBETU (1)
+               MOVE    RECE62-HKNJANUM TO  LNK-SYUACC-IO-HKNJANUM    (1)
+               MOVE    RECE62-HOJOKBN  TO  LNK-SYUACC-IO-HOJOKBN     (1)
+               MOVE    RECE62-TEISYUTUSAKI
+                                       TO  LNK-SYUACC-IO-TEISYUTUSAKI(1)
+               MOVE    "06"            TO  LNK-SYUACC-I-KBN
+               CALL    "ORCSSYUKAMAIN" USING   SPA-AREA
+                                               ORCSSYUACCAREA
+               IF      LNK-SYUACC-IO-H-SRYKA
+                                       NOT =   SPACE
+                   MOVE    LNK-SYUACC-IO-H-SRYKA   TO  RECE62-SYUKA
+               ELSE
+                   IF      LNK-SYUACC-IO-SYUKA-INPUT (1)
+                                           NOT =   SPACE
+                       MOVE    LNK-SYUACC-IO-SYUKA-INPUT (1)
+                                                       TO  RECE62-SYUKA
+                   ELSE
+                       IF      LNK-SYUACC-IO-SYUKA-AUTO (1)
+                                               NOT =   SPACE
+                           MOVE    LNK-SYUACC-IO-SYUKA-AUTO (1) 
+                                                       TO  RECE62-SYUKA
+                       ELSE
+                           MOVE    "XX"                TO  RECE62-SYUKA
+                       END-IF
+                   END-IF
+               END-IF    
+               MOVE    SPACE           TO  SYSKANRI-REC
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    "1005"          TO  SYS-KANRICD
+               MOVE    RECE62-SYUKA    TO  SYS-KBNCD
+               MOVE    WRK-PARA-SRYYM  TO  ORC-DBYMD (1:6)              
+               MOVE    "01"            TO  ORC-DBYMD (7:2)              
+               PERFORM 960-SYSKANRI-READ-SEC
+               IF      FLG-SYSKANRI    =   ZERO
+                   MOVE    MCPDATA-REC     TO  SYS-1005-REC
+               ELSE
+                  INITIALIZE                   SYS-1005-REC
+               END-IF
+               MOVE    SYS-1005-RECESRYKA  TO  RECE62-RECESYUKA
+               MOVE    SYS-1005-SRYKANAME  TO  RECE62-SYUKANAME
+           END-IF    
       *
            PERFORM     220-DATA-WRITE-SEC
       *

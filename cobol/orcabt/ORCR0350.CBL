@@ -90,6 +90,7 @@
       *
       *  02.08.01    NACL-藤原    06/03/01  入退院履歴情報の入院中区分に
       *                                     よる記載方法の変更
+      *  02.08.02    NACL-藤原    06/02/20  主科対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1673,7 +1674,11 @@
       *    予備
            PERFORM 5004-MOJI-HENSYU-SEC         
       *    診療科コード
-           MOVE    RECE62-RECEKA       TO  WRK-DATA
+           IF      RECE62-SYUKA    NOT =   SPACE
+               MOVE    RECE62-RECESYUKA    TO  WRK-DATA
+           ELSE
+               MOVE    RECE62-RECEKA       TO  WRK-DATA
+           END-IF
            MOVE    1                   TO  WRK-END 
            MOVE    2                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC         

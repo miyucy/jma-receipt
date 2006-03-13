@@ -125,6 +125,7 @@
       *
       *  02.08.01    NACL-藤原    06/03/09  realtime preview 処理時の削除
       *                                     処理対応
+      *  02.08.02    NACL-藤原    06/02/20  主科対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -890,6 +891,8 @@
            COPY    "CPSK2005.INC".
       *
            COPY    "CPSK2008.INC".
+      *
+           COPY    "CPSK2009.INC".
       *     
       *    県内扱い保険者情報
            COPY    "CPSK1033.INC".
@@ -1439,6 +1442,27 @@
            IF      SYS-2008-PREFKBN-PRTJYUN
                                 NOT =   SPACE
                MOVE    1                TO  FLG-SYS-2008
+           END-IF
+      *         
+      *    レセプト編集区分情報
+           MOVE    SPACE           TO  SYSKANRI-REC
+           INITIALIZE                  SYSKANRI-REC
+           MOVE    "2009"          TO  SYS-KANRICD
+           MOVE    "*"             TO  SYS-KBNCD
+           MOVE    WRK-PARA-SRYYM  TO  SYS-STYUKYMD (1:6)
+           MOVE    "01"            TO  SYS-STYUKYMD (7:2)
+           MOVE    SYS-STYUKYMD    TO  SYS-EDYUKYMD
+           MOVE    "tbl_syskanri"  TO  WRK-MCP-TABLE
+           MOVE    "key10"         TO  WRK-MCP-PATHNAME
+           PERFORM 960-KANRIMST-READ-SEC
+           IF      FLG-KANRIMST     =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-2009-REC
+           ELSE    
+               INITIALIZE                  SYS-2009-REC
+           END-IF
+           IF      SYS-2009-SYUKA-KBN
+                                   =   SPACE
+               MOVE    "0"             TO  SYS-2009-SYUKA-KBN
            END-IF
       * 
       *    県内扱い保険者情報
@@ -2235,34 +2259,18 @@
                MOVE    SYS-1002-TEL        TO  HC06-HOSPTEL
            END-IF
       *
-      *    診療科（シス管の設定により編集を行なう）
-           IF      SYS-2005-SRYKAHENKBN
-                                       =   ZERO
-               MOVE    SPACE                TO  SYSKANRI-REC
-               INITIALIZE                       SYSKANRI-REC
-               MOVE    "1005"               TO  SYS-KANRICD
-               MOVE    RECE62-LASTSRYKA     TO  SYS-KBNCD
-               MOVE    RECE62-SRYYM         TO  SYS-STYUKYMD (1:6)
-               MOVE    "01"                 TO  SYS-STYUKYMD (7:2)
-               MOVE    SYS-STYUKYMD         TO  SYS-EDYUKYMD
-               MOVE    "tbl_syskanri"       TO  WRK-MCP-TABLE
-               MOVE    "key10"              TO  WRK-MCP-PATHNAME
-               PERFORM 960-KANRIMST-READ-SEC
-               IF      FLG-KANRIMST     =   ZERO
-                   MOVE    MCPDATA-REC         TO  SYS-1005-REC
-               ELSE
-                   INITIALIZE                      SYS-1005-REC
-               END-IF
-               IF      SYS-1005-RECESRYKA  NOT =   SPACE
+      *     主科設定ありのときの記載
+           IF      RECE62-SYUKA     NOT =   SPACE  AND "XX"
+               IF      RECE62-RECESYUKA NOT =   SPACE
                    INITIALIZE                  ORCSKANACHKAREA
                    MOVE    "2"                 TO  KANACHK-SYORI 
-                   MOVE    SYS-1005-RECESRYKA  TO  KANACHK-MAE-INPUT
+                   MOVE    RECE62-RECESYUKA    TO  KANACHK-MAE-INPUT
                    CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
                    IF      KANACHK-RC      =   ZERO
                        STRING  "（"            DELIMITED   BY  SIZE
                                KANACHK-OUT-INPUT(1:KANACHK-MAX)    
                                                DELIMITED   BY  SIZE
-                               SYS-1005-SRYKANAME
+                               RECE62-SYUKANAME
                                                DELIMITED   BY  SPACE 
                                "）"            DELIMITED   BY  SIZE
                                                INTO  HC06-SRYKA
@@ -2270,12 +2278,56 @@
                    END-IF
                ELSE
                    STRING  "（"            DELIMITED   BY  SIZE
-                           SYS-1005-SRYKANAME
+                           RECE62-SYUKANAME
                                            DELIMITED   BY  SPACE 
                            "）"            DELIMITED   BY  SIZE
                                            INTO  HC06-SRYKA
                    END-STRING
                END-IF
+           ELSE
+      *        診療科（シス管の設定により編集を行なう）
+               IF      SYS-2005-SRYKAHENKBN
+                                           =   ZERO
+                   MOVE    SPACE                TO  SYSKANRI-REC
+                   INITIALIZE                       SYSKANRI-REC
+                   MOVE    "1005"               TO  SYS-KANRICD
+                   MOVE    RECE62-LASTSRYKA     TO  SYS-KBNCD
+                   MOVE    RECE62-SRYYM         TO  SYS-STYUKYMD (1:6)
+                   MOVE    "01"                 TO  SYS-STYUKYMD (7:2)
+                   MOVE    SYS-STYUKYMD         TO  SYS-EDYUKYMD
+                   MOVE    "tbl_syskanri"       TO  WRK-MCP-TABLE
+                   MOVE    "key10"              TO  WRK-MCP-PATHNAME
+                   PERFORM 960-KANRIMST-READ-SEC
+                   IF      FLG-KANRIMST     =   ZERO
+                       MOVE    MCPDATA-REC         TO  SYS-1005-REC
+                   ELSE
+                       INITIALIZE                      SYS-1005-REC
+                   END-IF
+                   IF      SYS-1005-RECESRYKA  NOT =   SPACE
+                       INITIALIZE                  ORCSKANACHKAREA
+                       MOVE    "2"                 TO  KANACHK-SYORI 
+                       MOVE    SYS-1005-RECESRYKA  TO  KANACHK-MAE-INPUT
+                       CALL    "ORCSKANACHK"       USING
+                                                       ORCSKANACHKAREA
+                       IF      KANACHK-RC      =   ZERO
+                           STRING  "（"            DELIMITED   BY  SIZE
+                                   KANACHK-OUT-INPUT(1:KANACHK-MAX)    
+                                                   DELIMITED   BY  SIZE
+                                   SYS-1005-SRYKANAME
+                                                   DELIMITED   BY  SPACE 
+                                   "）"            DELIMITED   BY  SIZE
+                                                   INTO  HC06-SRYKA
+                           END-STRING
+                       END-IF
+                   ELSE
+                       STRING  "（"            DELIMITED   BY  SIZE
+                               SYS-1005-SRYKANAME
+                                               DELIMITED   BY  SPACE 
+                               "）"            DELIMITED   BY  SIZE
+                                               INTO  HC06-SRYKA
+                       END-STRING
+                   END-IF
+               END-IF    
            END-IF    
       *    県単用項目
            IF      FLG-RECE67         =   ZERO
@@ -6240,6 +6292,13 @@
            MOVE    "9"                 TO  RECE08-HKNJANUM-SRT
                                            RECE08-ZAITAKU
                                            RECE08-CHOUKI
+      *    主科設定
+           IF    ( SYS-2009-SYUKA-KBN  =   "1"                )
+           AND   ( RECE62-TEISYUTUSAKI =   "1"                )
+           AND   ( RECE62-RECESYUBETU  
+                                   NOT =   "8888"  AND "0000" )
+               MOVE    RECE62-SYUKA        TO  RECE08-SRYKA
+           END-IF
       *
       *    編綴順項目の設定（国保特別療養費以外）
            IF    ( FLG-SYS-2008        =   ZERO   )
@@ -6611,16 +6670,32 @@
            IF      RECE62-RECESYUBETU      =   "0000"  OR  "8888"
                GO  TO  3904-RECE10-HENSYU-EXT
            END-IF
+      *
+      *     主科設定のとき未設定なら更新しない
+           IF    ( SYS-2009-SYUKA-KBN  =   "1"                )
+           AND   ( RECE62-TEISYUTUSAKI =   "1"                )
+           AND   ( RECE62-RECESYUBETU  
+                                   NOT =   "8888"  AND "0000" )
+           AND   ( RECE62-SYUKA        =   "XX"               )
+               GO  TO  3904-RECE10-HENSYU-EXT
+           END-IF
       *          
            INITIALIZE                  RECE10-REC
            MOVE    RECE62-HOSPID       TO  RECE10-HOSPID
            MOVE    RECE62-SRYYM        TO  RECE10-SRYYM
            MOVE    RECE62-NYUGAIKBN    TO  RECE10-NYUGAIKBN
            MOVE    RECE62-PTID         TO  RECE10-PTID
-           IF      RECE62-RECEKA       =   SPACE
-               MOVE    ZERO            TO  RECE10-RECEKA
+           IF    ( SYS-2009-SYUKA-KBN  =   "1"                )
+           AND   ( RECE62-TEISYUTUSAKI =   "1"                )
+           AND   ( RECE62-RECESYUBETU  
+                                   NOT =   "8888"  AND "0000" )
+               MOVE    RECE62-SYUKA        TO  RECE10-RECEKA
            ELSE
-               MOVE    RECE62-RECEKA   TO  RECE10-RECEKA
+               IF      RECE62-RECEKA       =   SPACE
+                   MOVE    ZERO            TO  RECE10-RECEKA
+               ELSE
+                   MOVE    RECE62-RECEKA   TO  RECE10-RECEKA
+               END-IF
            END-IF
            MOVE    RECE62-TEISYUTUSAKI TO  RECE10-TEISYUTUSAKI
            MOVE    RECE62-RECESYUBETU  TO  RECE10-RECESYUBETU

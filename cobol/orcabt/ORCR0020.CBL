@@ -417,7 +417,9 @@
            COPY    "CPSYSKANRI.INC".
       *
       *    °åÎÅµ¡´Ø¾ðÊó
-           COPY  "CPSK1001.INC".
+           COPY    "CPSK1001.INC".
+      *    
+           COPY    "CPSK1005.INC".
       *
            COPY    "CPSK2009.INC".
       *
@@ -545,7 +547,7 @@
            END-IF
            IF      SYS-2009-SYUKA-KBN
                                    =   SPACE
-               MOVE    ZERO            TO  SYS-2009-SYUKA-KBN
+               MOVE    "0"             TO  SYS-2009-SYUKA-KBN
            END-IF
       *
           .
@@ -1129,6 +1131,16 @@
                MOVE    RECE02-PTID     TO  SPA-PTID
                MOVE    RECE02-NYUGAIKBN
                                        TO  SPA-NYUGAIKBN
+               MOVE    SYS-2009-SYUKA-KBN
+                                       TO  SPA-SYUKA-KBN
+               MOVE    SYS-2009-SYUKA-NYUIN
+                                       TO  SPA-SYUKA-NYUIN
+               MOVE    SYS-2009-SYUKA-GAIRAI
+                                       TO  SPA-SYUKA-GAIRAI
+               MOVE    SYS-2009-SYUKA-MODE
+                                       TO  SPA-SYUKA-MODE
+               MOVE    SYS-2009-SYUKA-SELECT
+                                       TO  SPA-SYUKA-SELECT
                MOVE    RECE02-RECESYUBETU
                                        TO  LNK-SYUACC-IO-RECESYUBETU (1)
                MOVE    RECE02-HKNJANUM TO  LNK-SYUACC-IO-HKNJANUM    (1)
@@ -1147,10 +1159,32 @@
                        MOVE    LNK-SYUACC-IO-SYUKA-INPUT (1)
                                                        TO  RECE02-SYUKA
                    ELSE
-                       MOVE    LNK-SYUACC-IO-SYUKA-AUTO (1) 
+                       IF      LNK-SYUACC-IO-SYUKA-AUTO (1)
+                                               NOT =   SPACE
+                           MOVE    LNK-SYUACC-IO-SYUKA-AUTO (1) 
                                                        TO  RECE02-SYUKA
+                       ELSE
+                           MOVE    "XX"                TO  RECE02-SYUKA
+                       END-IF
                    END-IF
                END-IF    
+               MOVE    SPACE                TO  SYSKANRI-REC
+               INITIALIZE                       SYSKANRI-REC
+               MOVE    "1005"               TO  SYS-KANRICD
+               MOVE    RECE02-SYUKA         TO  SYS-KBNCD
+               MOVE    RECE02-SRYYM         TO  SYS-STYUKYMD (1:6)
+               MOVE    "01"                 TO  SYS-STYUKYMD (7:2)
+               MOVE    SYS-STYUKYMD         TO  SYS-EDYUKYMD
+               MOVE    "tbl_syskanri"       TO  WRK-MCP-TABLE
+               MOVE    "key10"              TO  WRK-MCP-PATHNAME
+               PERFORM 960-KANRIMST-READ-SEC
+               IF      FLG-SYSKANRI         =   ZERO
+                   MOVE    MCPDATA-REC         TO  SYS-1005-REC
+               ELSE
+                   INITIALIZE                      SYS-1005-REC
+               END-IF
+               MOVE    SYS-1005-RECESRYKA  TO  RECE02-RECESYUKA
+               MOVE    SYS-1005-SRYKANAME  TO  RECE02-SYUKANAME
            END-IF    
       *
            PERFORM     220-DATA-WRITE-SEC

@@ -114,8 +114,14 @@
                05  RECE62-TEKEDYMD-X      PIC  X(08). 
       *記載用レセプト種別（特別療養費）
            03  RECE62-RECESYUBETU-X       PIC  X(04).
+      *主科情報
+           03  RECE62-SYUKA-AREA.
       *主科
-           03  RECE62-SYUKA               PIC  X(02).
+               05  RECE62-SYUKA           PIC  X(02).
+      *主科（レセ電算診療科）
+               05  RECE62-RECESYUKA       PIC  X(02).
+      *主科診療科名
+               05  RECE62-SYUKANAME       PIC  X(80).
       *主保険情報
            03  RECE62-HKN.
       *主保険−保険ＩＤ

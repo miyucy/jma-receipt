@@ -76,6 +76,7 @@ path	key3		{
                     AND     CREHMS       =   :CREHMS
                     AND     TEISYUTUSAKI =   :TEISYUTUSAKI
                     AND     NYUGAIKBN    =   :NYUGAIKBN
+                    AND     SRYKA        like :SRYKA
                     AND     RECESYUBETU  <>  '0000'
                     AND     RECESYUBETU  <>  '8888'
                     AND     RECESYUBETU  <>  '6666'
@@ -218,6 +219,7 @@ path	key9		{
                     AND     TEISYUTUSAKI =   :TEISYUTUSAKI
                     AND     NYUGAIKBN    =   :NYUGAIKBN
                     AND     RECESYUBETU  =   :RECESYUBETU
+                    AND     SRYKA        like :SRYKA
                     GROUP BY RECESYUBETU
 		;
 	};
