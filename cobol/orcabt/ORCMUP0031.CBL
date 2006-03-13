@@ -115,6 +115,7 @@
            03  SYS-DD                  PIC 9(02).
       *    一時領域
        01  WRK-AREA.
+           03  WRK-DBPATH              PIC X(100).
            03  WRK-SYMD.
                05  WRK-SYY             PIC 9(04).
                05  WRK-SMM             PIC 9(02).
@@ -332,6 +333,10 @@
                ADD     1               TO  CNT-INS
            END-IF
       *
+      *    病名マスタクローズ
+           MOVE    "BYOMEI-KEY"        TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
            .
        2010-INSERT-SYORI-EXT.
            EXIT.
@@ -369,6 +374,11 @@
            IF      WRK-ERRCD       =   ZERO
                ADD     1               TO  CNT-UPD
            END-IF
+      *
+      *    病名マスタクローズ
+           MOVE    "BYOMEI-KEY"        TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
            .
        2020-UPDATE-SYORI-EXT.
            EXIT.
@@ -615,3 +625,18 @@
        900-DBCLOSE-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    テーブルクローズ処理
+      *****************************************************************
+       900-TBL-CLOSE-SEC               SECTION.
+      *
+           MOVE    WRK-DBPATH      TO  ORC-DBPATH
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       900-TBL-CLOSE-EXT.
+           EXIT.
