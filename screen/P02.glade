@@ -7360,7 +7360,7 @@
 	<widget>
 	  <class>GtkPandaEntry</class>
 	  <name>P024_GAIJGNGAK</name>
-	  <x>876</x>
+	  <x>884</x>
 	  <y>532</y>
 	  <width>91</width>
 	  <height>20</height>
@@ -7388,7 +7388,7 @@
 	<widget>
 	  <class>GtkPandaEntry</class>
 	  <name>P024_NYUJGNGAK</name>
-	  <x>876</x>
+	  <x>884</x>
 	  <y>560</y>
 	  <width>91</width>
 	  <height>20</height>
@@ -7492,38 +7492,6 @@
 	  <width>80</width>
 	  <height>20</height>
 	  <label>適用期間</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label2038</name>
-	  <x>784</x>
-	  <y>532</y>
-	  <width>80</width>
-	  <height>20</height>
-	  <label>外来上限額</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label2039</name>
-	  <x>784</x>
-	  <y>564</y>
-	  <width>80</width>
-	  <height>16</height>
-	  <label>入院上限額</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -7844,6 +7812,38 @@
 	  <height>24</height>
 	  <label></label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>FTNMSG1</name>
+	  <x>784</x>
+	  <y>532</y>
+	  <width>96</width>
+	  <height>20</height>
+	  <label></label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>FTNMSG2</name>
+	  <x>784</x>
+	  <y>560</y>
+	  <width>96</width>
+	  <height>20</height>
+	  <label></label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
 	  <yalign>0.5</yalign>
