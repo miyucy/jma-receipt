@@ -38,15 +38,12 @@
        DATA                    DIVISION.
       *
        WORKING-STORAGE             SECTION.
-      *
-       01  LNK-TIMEOFDAY       PIC X(100).
       *    スパ領域
            COPY    "COMMON-SPA".
       *
       *    レセプト作成指示共通パラメタ
            COPY    "R01COMMON-SPA".
       *
-      *   
            COPY    "ENUM-VALUE".
       *
       *    画面用ＳＰＡ
@@ -228,6 +225,7 @@
            03  WRK-SYUKA-ROW       PIC S9(9)   BINARY.
            03  WRK-PTNUM-ROW       PIC S9(9)   BINARY.
            03  WRK-RECEERR         PIC X(200).
+           03  WRK-STR             PIC 9(05).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -551,6 +549,11 @@
       *
            INITIALIZE                  WRK-ORCSSYUACCAREA
       *
+      *    指定頁に表示する開始件数
+           COMPUTE WRK-STR         = ( SPA-GMN-PAGE  -  1 )
+                                   *   WRK-CONS-LINE-SYUKA-MAX
+                                   +   1
+      *
            MOVE    ZERO            TO  IDX1
                                        IDX2
                                        IDX
@@ -672,14 +675,16 @@
            END-IF
       *
       *    該当頁に表示するデータかどうか
+      *
            INITIALIZE                  ORCSPTIDAREA
            MOVE    SPA-HOSPID      TO  SPTID-HOSPID
            MOVE    WRK-PTID        TO  SPTID-PTID
            CALL    "ORCSPTID"      USING   ORCSPTIDAREA
                                            SPA-1009-TBL
-           IF      SPTID-PTNUM     <   SPA-NAI-ST-PTNUM (SPA-GMN-PAGE)
-               GO  TO  31011-SYUKA-GMN-HENSYU-EXT
-           END-IF
+      **     IF      SPTID-PTNUM     <   SPA-NAI-ST-PTNUM
+      **                                    (SPA-GMN-PAGE)
+      **         GO  TO  31011-SYUKA-GMN-HENSYU-EXT
+      **     END-IF
       *
       *    連番号と表示行の計算
            MOVE    IDX             TO  IDXX
@@ -690,6 +695,10 @@
                ADD     1                   TO  IDXX
                                                IDXY
            END-PERFORM
+      *
+           IF      IDXY            <   WRK-STR
+               GO  TO  31011-SYUKA-GMN-HENSYU-EXT
+           END-IF
       *
       *    該当頁に同一患者の情報を表示できるか
            IF      IDXX            >   WRK-CONS-LINE-SYUKA-MAX
@@ -761,11 +770,17 @@
                    END-EVALUATE
                END-EVALUATE
                MOVE    LNK-SYUACC-IO-HOJOKBN    (IDX1)
-                                        TO  SPA-NAI-THOJOKBN   (IDX)
+                                       TO  SPA-NAI-THOJOKBN    (IDX)
                MOVE    LNK-SYUACC-IO-SYUKA-AUTO (IDX1)
                                        TO  SPA-GMN-TSYUKA-AUTO (IDX)
-               MOVE    LNK-SYUACC-IO-SYUKA-INPUT(IDX1)
-                                       TO  SPA-GMN-TSYUKA-INPUT(IDX)
+               IF      LNK-SYUACC-IO-H-SRYKA
+                                   NOT =   SPACE
+                   MOVE    LNK-SYUACC-IO-H-SRYKA
+                                           TO  SPA-GMN-TSYUKA-INPUT(IDX)
+               ELSE    
+                   MOVE    LNK-SYUACC-IO-SYUKA-INPUT(IDX1)
+                                           TO  SPA-GMN-TSYUKA-INPUT(IDX)
+               END-IF
            END-PERFORM
       *
            MOVE    IDX             TO  SPA-GMN-SYUKA-TBL-MAX
