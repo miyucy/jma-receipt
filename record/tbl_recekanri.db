@@ -8,8 +8,8 @@ tbl_recekanri	{
         PREFKBN_SRT         char(2);
         HKNJANUM_SRT        char(1);
         HKNJANUM            char(8);
-        RECESYUBETU_SRT     char(3);
         RECESYUBETU         char(4);
+        RECESYUBETU_SRT     char(3);
         ZAITAKU             char(1);
         CHOUKI              char(1);
         NYUGAIKBN           char(1);

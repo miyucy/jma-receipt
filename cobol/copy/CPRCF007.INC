@@ -57,10 +57,10 @@
                05  RECE07-HKNJANUM-SRT     PIC  X(01).
       *保険者番号（国保のみ使用、99999999は編綴順指定無しで作成）        
                05  RECE07-HKNJANUM         PIC  X(08).
-      *レセプト種別印刷区分（国保のみ使用）
-               05  RECE07-RECESYUBETU-SRT  PIC  X(03).
       *レセプト種別
                05  RECE07-RECESYUBETU      PIC  X(04).
+      *レセプト種別印刷区分（国保のみ使用）
+               05  RECE07-RECESYUBETU-SRT  PIC  X(03).
       *在総診（未使用）
                05  RECE07-ZAITAKU          PIC  X(01).
       *長期（長期高額療養費）（未使用）
