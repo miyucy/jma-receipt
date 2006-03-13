@@ -35,6 +35,8 @@
       * 01.00.06     NACL-多々納  04/08/01  入院取消修正
       * 01.00.09     NACL-多々納  05/05/11  北海道療養担当手当追加
       * 01.00.10     NACL-多々納  06/01/13  処理区分 'A'追加
+      *平成１８年４月改定対応
+      * 01.00.11     NACL-小豆沢  06/03/13  入院会計作成月の制限追加
       *****************************************************************
       *
       *
@@ -387,22 +389,29 @@
       *
       *    開始日の翌月の末日を求める
            MOVE    WRK-STYMD           TO  WRK-EDYMD
-           COMPUTE WRK-EDMM            =   WRK-EDMM
-                                       +   1
-           IF      WRK-EDMM            >   12
-               COMPUTE WRK-EDYY            =   WRK-EDYY
+      *    平成１８年４月改定対応
+      *    入院年月日が平成１８年３月であれば
+      *    ３月分の入院会計しか作成しないこととする。
+           IF   WRK-STYMD(1:6)         =   "200603"
+               MOVE    "20060331"      TO  WRK-EDYMD
+           ELSE
+               COMPUTE WRK-EDMM            =   WRK-EDMM
                                            +   1
-               MOVE    1                   TO  WRK-EDMM
-           END-IF
-      *    月末算定
-           INITIALIZE                      STS-AREA-DAY
-           INITIALIZE                      LNK-DAY7-AREA
-           MOVE    "71"                TO  LNK-DAY7-IRAI
-           MOVE    WRK-EDYYMM          TO  LNK-DAY7-YM
-           CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                               LNK-DAY7-AREA
-           IF      STS-DAY-RC1         =   ZERO
-               MOVE    LNK-DAY7-KOYOMI     TO  WRK-EDYMD
+               IF      WRK-EDMM            >   12
+                   COMPUTE WRK-EDYY            =   WRK-EDYY
+                                               +   1
+                   MOVE    1                   TO  WRK-EDMM
+               END-IF
+      *        月末算定
+               INITIALIZE                      STS-AREA-DAY
+               INITIALIZE                      LNK-DAY7-AREA
+               MOVE    "71"                TO  LNK-DAY7-IRAI
+               MOVE    WRK-EDYYMM          TO  LNK-DAY7-YM
+               CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY7-AREA
+               IF      STS-DAY-RC1         =   ZERO
+                   MOVE    LNK-DAY7-KOYOMI     TO  WRK-EDYMD
+               END-IF
            END-IF
       *
            .
