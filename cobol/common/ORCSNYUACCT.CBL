@@ -69,6 +69,8 @@
            03  FLG-CHK             PIC 9(01).
       *    選定療養費
            03  FLG-SENTEI              PIC 9(01).
+      *    食事
+           03  FLG-SYOKUJI             PIC 9(01).
       *    取消
            03  FLG-DELETE              PIC 9(01).
            03  FLG-DELETE-OK           PIC 9(01).
@@ -652,15 +654,21 @@
       *
       *    食事診療コード
            IF      LNK-SCNYUACCT-SHOKUJI-SRYCD  NOT =   SPACE
-               INITIALIZE                  TBL-NYUIN-AREA
-               MOVE    LNK-SCNYUACCT-SHOKUJI-SRYCD
+      *    平成１８年４月改定対応
+      *        朝・昼・晩毎で作成する
+               IF      WRK-STYMD(1:6)      >=  "200604"
+                   PERFORM 2202-SYOKUJI-SYORI-SEC
+               ELSE
+                   INITIALIZE                  TBL-NYUIN-AREA
+                   MOVE    LNK-SCNYUACCT-SHOKUJI-SRYCD
                                            TO  TBL-SRYCD (1)
-               MOVE    WRK-STYMD           TO  WRK-KHN-STYMD
-               MOVE    WRK-EDYMD           TO  WRK-KHN-EDYMD
-               MOVE    "4"                 TO  WRK-ACT-ZAISKBKBN
-               MOVE    LNK-SCNYUACCT-SHOKUJIKBN
-                                           TO  WRK-ACT-DAY
-               PERFORM 400-NYUACT-SYORI-SEC
+                   MOVE    WRK-STYMD           TO  WRK-KHN-STYMD
+                   MOVE    WRK-EDYMD           TO  WRK-KHN-EDYMD
+                   MOVE    "4"                 TO  WRK-ACT-ZAISKBKBN
+                   MOVE    LNK-SCNYUACCT-SHOKUJIKBN
+                                               TO  WRK-ACT-DAY
+                   PERFORM 400-NYUACT-SYORI-SEC
+               END-IF
            END-IF
       *
       *    食堂加算
@@ -715,6 +723,49 @@
       *
            .
        220-SONOTA-SYORI-EXT.
+           EXIT.
+      *平成１８年４月改定対応
+      *****************************************************************
+      *    食事診療コード作成処理
+      *****************************************************************
+       2202-SYOKUJI-SYORI-SEC            SECTION.
+      *
+      *    朝
+           INITIALIZE                  TBL-NYUIN-AREA
+           MOVE    "099999918"         TO  TBL-SRYCD (1)
+           MOVE    WRK-STYMD           TO  WRK-KHN-STYMD
+           MOVE    WRK-EDYMD           TO  WRK-KHN-EDYMD
+           MOVE    "4"                 TO  WRK-ACT-ZAISKBKBN
+           MOVE    LNK-SCNYUACCT-SHOKUJIKBN
+                                       TO  WRK-ACT-DAY
+           MOVE    1                   TO  FLG-SYOKUJI
+           PERFORM 400-NYUACT-SYORI-SEC
+           MOVE    ZERO                TO  FLG-SYOKUJI
+      *    昼
+           INITIALIZE                  TBL-NYUIN-AREA
+           MOVE    "099999919"         TO  TBL-SRYCD (1)
+           MOVE    WRK-STYMD           TO  WRK-KHN-STYMD
+           MOVE    WRK-EDYMD           TO  WRK-KHN-EDYMD
+           MOVE    "4"                 TO  WRK-ACT-ZAISKBKBN
+           MOVE    LNK-SCNYUACCT-SHOKUJIKBN
+                                       TO  WRK-ACT-DAY
+           MOVE    1                   TO  FLG-SYOKUJI
+           PERFORM 400-NYUACT-SYORI-SEC
+           MOVE    ZERO                TO  FLG-SYOKUJI
+      *    晩
+           INITIALIZE                  TBL-NYUIN-AREA
+           MOVE    "099999920"         TO  TBL-SRYCD (1)
+           MOVE    WRK-STYMD           TO  WRK-KHN-STYMD
+           MOVE    WRK-EDYMD           TO  WRK-KHN-EDYMD
+           MOVE    "4"                 TO  WRK-ACT-ZAISKBKBN
+           MOVE    LNK-SCNYUACCT-SHOKUJIKBN
+                                       TO  WRK-ACT-DAY
+           MOVE    1                   TO  FLG-SYOKUJI
+           PERFORM 400-NYUACT-SYORI-SEC
+           MOVE    ZERO                TO  FLG-SYOKUJI
+      *
+           .
+       2202-SYOKUJI-SYORI-EXT.
            EXIT.
       *****************************************************************
       *    北海道療養担当手当て作成処理
@@ -1177,6 +1228,8 @@
            MOVE    WRK-ACT-STYMD(1:6)  TO  NACCT-SRYYM
            IF     (TBL-SRYCD (01)(2:2) =   "97" )  OR
                   (TBL-SRYCD (01)      =   "099999913")
+      *        食事
+               OR (FLG-SYOKUJI         =   1    )
                MOVE    "97"                TO  WRK-SRYKBN
                MOVE    "970"               TO  WRK-SRYSYUKBN
            ELSE
