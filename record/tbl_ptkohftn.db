@@ -45,6 +45,8 @@ path	key2 	{
 		FROM tbl_ptkohftn
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
+			ORDER   BY        KOHNUM,
+		                          TEKSTYMD DESC
 		;
 	};
 };
