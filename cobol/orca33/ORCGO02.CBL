@@ -353,6 +353,13 @@
       *    サブプロ用　領域
       *****************************************************************
       *
+      *    同日入院チェックサブ
+           COPY    "CPORCSDNTCHK.INC".
+      *
+       01  LNKNRRK-REC.
+           COPY    "CPPTNYUINRRK.INC"  REPLACING  //PTNYUINRRK-// 
+                                       BY         //LNKNRRK-//.
+      *
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
@@ -1058,8 +1065,9 @@
                IF    ( FLG-PTNYUINRRK  =   ZERO )
                    MOVE    WRK-KIKAN-SKYSTYMD (IDX1)  TO  WRK-STYMD
                    MOVE    WRK-KIKAN-SKYEDYMD (IDX1)  TO  WRK-EDYMD
-                   IF    ( WRK-STYMD (1:6) =   PTNYUINRRK-NYUINYMD(1:6))
-                       MOVE    PTNYUINRRK-NYUINYMD (7:2)
+                   PERFORM 800-ORCSDNTCHK-SEC
+                   IF    ( WRK-STYMD (1:6) =   SDNTCHK-STYMD(1:6))
+                       MOVE    SDNTCHK-STYMD (7:2)
                                            TO  WRK-STYMD (7:2)
                    END-IF
                    PERFORM 4150-SYUNOU-SEL-SEC
@@ -2747,6 +2755,19 @@
       *
            .
        800-HIZUKE-YMD-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    同日再入院チェックサブ
+      *****************************************************************
+       800-ORCSDNTCHK-SEC              SECTION.
+      *
+           INITIALIZE                  SDNTCHK-AREA
+           MOVE    PTNYUINRRK-REC      TO      LNKNRRK-REC
+           CALL    "ORCSDNTCHK"        USING   SDNTCHK-AREA
+                                               LNKNRRK-REC
+      *
+           .
+       800-ORCSDNTCHK-EXT.
            EXIT.
       *****************************************************************
       *    ＰＵＴ　処理
