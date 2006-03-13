@@ -556,21 +556,25 @@
                   05  P02-P024-PTKOHFTNLST2.
                     06  P02-P024-PTKOHFTN2.
                       07  P02-P024-HFTNLST2-COUNT   PIC S9(9)   BINARY.
-                      07  P02-P024-HFTNLST-ROW      PIC S9(9)   BINARY.
-                      07  P02-P024-HFTNLST-ROWATTR  PIC S9(9)   BINARY.
-                      07  P02-ITEM        OCCURS  50 TIMES.
+                      07  P02-P024-HFTNLST2-ROW      PIC S9(9)   BINARY.
+                      07  P02-P024-HFTNLST2-ROWATTR  PIC S9(9)   BINARY.
+                      07  P02-ITEM        OCCURS 100 TIMES.
                         08  P02-P024-TFTNNUM2  PIC X(3).
                         08  P02-P024-TFTNSTYMD  PIC X(9).
                         08  P02-P024-TFTNEDYMD  PIC X(9).
                         08  P02-P024-TGAIJGNGAK PIC X(9).
                         08  P02-P024-TNYUJGNGAK PIC X(9).
-                      07  P02-P024-HFTNLST2-SELECT  PIC X   OCCURS  50.
+                      07  P02-P024-HFTNLST2-SELECT  PIC X   OCCURS 100.
                   05  P02-P024-FTNSELNUM.
                     06  P02-VALUE   PIC S9(3).
                   05  P02-P024-FTNSELNUM2.
                     06  P02-VALUE   PIC S9(3).
                   05  P02-P024-JKYSNUM.
                     06  P02-VALUE   PIC X(40).
+                  05  P02-FTNMSG1.
+                    06  P02-VALUE   PIC X(16).
+                  05  P02-FTNMSG2.
+                    06  P02-VALUE   PIC X(16).
                 04  P02-FIXPAGE8.
                   05  P02-P025-SELNUM1.
                     06  P02-VALUE   PIC X(4).

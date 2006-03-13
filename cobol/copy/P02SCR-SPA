@@ -798,8 +798,11 @@
       *            特定の受給者番号
                    07  SPA-GMN24-JKYSNUM                 PIC X(20).
       *
+                   07  SPA-GMN24-FTNMSG1             PIC X(16).
+                   07  SPA-GMN24-FTNMSG2             PIC X(16).
+      *
                    07  SPA-GMN24-KOHFTNTBL2.
-                       09  SPA-GMN24-FTNTBL2-OCC         OCCURS  50.
+                       09  SPA-GMN24-FTNTBL2-OCC         OCCURS  100.
                            11  SPA-GMN24-TGMNNUM2        PIC 9(03).
                            11  SPA-GMN24-TFTNSTYMD       PIC X(10).
                            11  SPA-GMN24-TFTNEDYMD       PIC X(10).
@@ -811,6 +814,8 @@
                            11  SPA-NAI24-TFTNSTYMD       PIC X(08).
                            11  SPA-NAI24-TFTNEDYMD       PIC X(08).
                        09  SPA-FTN2-MAX                  PIC 9(03).
+                       09  SPA-NAI24-INIT2               PIC 9(01).
+      *
                    07  SPA-GMN24-FTN-AREA.
                        09  SPA-GMN24-FTNSELNUM           PIC 9(03).
                        09  SPA-NAI24-FTNSELNUM           PIC 9(03).
