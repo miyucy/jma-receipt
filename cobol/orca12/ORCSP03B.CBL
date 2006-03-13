@@ -39,6 +39,7 @@
       * 01.00.10     NACL-多々納  05/01/13  有効開始日の初期設定追加
       * 01.00.11     NACL-多々納  05/02/10  特定の重複登録可能
       * 01.00.12     NACL-多々納  05/11/15  MONFUNC 対応
+      * 01.00.13     NACL-多々納  06/03/10  '015更正','016育成'重複可
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1727,7 +1728,9 @@
                                            =   SPA-GMN-KOHNUM(IDK2))
                        AND    (SPA-GMN-KOHNUM(IDX-K)
                                            =   "051"  OR  "052"
-                                           OR  "091"       )
+                                           OR  "091"
+      *                更正・育成追加
+                                           OR  "015"  OR  "016"    )
                            CONTINUE
                        ELSE
       *
@@ -1838,7 +1841,9 @@
                                            =   SPA-PTKOH-KOHNUM(IDX))
                    AND    (SPA-GMN-KOHNUM(IDX-K)
                                            =   "051"  OR  "052"
-                                           OR  "091"       )
+                                           OR  "091" 
+      *                更正・育成追加
+                                           OR  "015"  OR  "016"    )
                      CONTINUE
                    ELSE
       *

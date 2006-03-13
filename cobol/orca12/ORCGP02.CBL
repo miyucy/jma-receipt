@@ -3380,11 +3380,11 @@
                        MOVE  "P027_SELNUM"     TO   MCP-WIDGET
                    WHEN    3
                        MOVE  "P021_FAX"        TO   MCP-WIDGET
+      ***********  WHEN    4
+      ***********      MOVE  "P023_SELNUM"     TO   MCP-WIDGET
                    WHEN    4
-                       MOVE  "P023_SELNUM"     TO   MCP-WIDGET
-                   WHEN    5
                        MOVE  "P024_TSRSELNUM"  TO   MCP-WIDGET
-                   WHEN    6
+                   WHEN    5
                        MOVE  "P025_SELNUM1"    TO   MCP-WIDGET
                END-EVALUATE
            ELSE

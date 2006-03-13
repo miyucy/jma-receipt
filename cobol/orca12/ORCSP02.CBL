@@ -167,6 +167,8 @@
            03  WRK-HKNID-MAX           PIC 9(10).
            03  WRK-KOHID-MAX           PIC 9(10).
       *
+      *
+           03  WRK-HFTNLST2-ROW        PIC S9(09).
       *   年齢表示
        01  WRK-NENREI-AREA.
            03  WRK-YMDS1.
@@ -2476,6 +2478,14 @@
       *****************************************************************
        200-P02-SET-SEC         SECTION.
       *
+           IF     (SPA-NAI24-INIT2     =   1   )  OR
+                  (SPA-FTN2-MAX        =   ZERO )
+               MOVE    ZERO                TO  WRK-HFTNLST2-ROW
+               MOVE    ZERO                TO  SPA-NAI24-INIT2
+           ELSE
+               MOVE    P02-P024-HFTNLST2-ROW   TO  WRK-HFTNLST2-ROW
+           END-IF
+      *
            MOVE    SPACE               TO  P02
       *
            EVALUATE    SPA-P02-GAMEN
@@ -3401,6 +3411,7 @@
                    IF      IDY                 =   SPA-GMN24-FTNSELNUM
                        MOVE    "T"         TO  P02-P024-HFTNLST-SELECT
                                                                  (IDY)
+                       MOVE    IDY         TO  P02-P024-HFTNLST-ROW
                    ELSE
                        MOVE    "F"         TO  P02-P024-HFTNLST-SELECT
                                                                  (IDY)
@@ -3409,6 +3420,10 @@
            END-PERFORM
            MOVE    IDY                 TO  P02-P024-HFTNLST-COUNT
       *
+           MOVE    ZERO                TO  P02-P024-HFTNLST2-ROW
+           IF      WRK-HFTNLST2-ROW    NOT =   ZERO
+               MOVE    WRK-HFTNLST2-ROW    TO  P02-P024-HFTNLST2-ROW
+           END-IF
            MOVE    ZERO                TO  IDY
            PERFORM VARYING     IDX     FROM    1   BY  1
                     UNTIL      IDX     >   SPA-FTN2-MAX
@@ -3437,6 +3452,7 @@
                    IF      IDY                 =   SPA-GMN24-FTNSELNUM2
                        MOVE    "T"         TO  P02-P024-HFTNLST2-SELECT
                                                                  (IDY)
+                       MOVE    IDY         TO  P02-P024-HFTNLST2-ROW
                    ELSE
                        MOVE    "F"         TO  P02-P024-HFTNLST2-SELECT
                                                                  (IDY)
@@ -3449,6 +3465,14 @@
       *
            MOVE    SPA-GMN24-FTNSELNUM2
                                        TO  P02-P024-FTNSELNUM2
+      *
+           IF      SPA-GMN24-FTNMSG1   =   SPACE
+               MOVE    "外来上限額"        TO  P02-FTNMSG1
+               MOVE    "入院上限額"        TO  P02-FTNMSG2
+           ELSE
+               MOVE    SPA-GMN24-FTNMSG1   TO  P02-FTNMSG1
+               MOVE    SPA-GMN24-FTNMSG2   TO  P02-FTNMSG2
+           END-IF
       *
            MOVE    SPA-GMN24-FTNSTYMD  TO  P02-P024-FTNTEKSTYMD
            MOVE    SPA-GMN24-FTNEDYMD  TO  P02-P024-FTNTEKEDYMD

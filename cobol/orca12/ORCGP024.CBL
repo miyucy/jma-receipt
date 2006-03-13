@@ -37,6 +37,7 @@
       *  02.00.03    NACL-多々納  03/10/14  公費負担額初期編集追加
       *  02.00.04    NACL-多々納  05/02/10  特定の受給者番号表示追加
       *  02.00.05    NACL-多々納  05/11/11  MONFUNC 対応 他
+      *  02.00.06    NACL-多々納  06/03/10  精神通院、名称変更対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -189,7 +190,7 @@
       *    公費負担更新保存
        01  HZN-PTKOHFTN-AREA.
            03  HZN-PTKOHFTN-OCC           OCCURS  50.
-               05  HZN-PTKOHFTN-OCC2          OCCURS  50.
+               05  HZN-PTKOHFTN-OCC2          OCCURS  100.
                    07  HZN-PTKOHFTN-REC       PIC X(200).
       *
       *****************************************************************
@@ -480,6 +481,7 @@
            IF      (SPA-GMN24-FTNSELNUM    =   ZERO )  AND
                    (SPA-MAE24-FTNSELNUM    =   ZERO )
                INITIALIZE                  SPA-GMN24-KOHFTNTBL2
+               MOVE    1                   TO  SPA-NAI24-INIT2
            END-IF
       *    特定の受給者番号
            MOVE    SPACE               TO  SPA-GMN24-JKYSNUM
@@ -488,12 +490,29 @@
                        (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
                                            =   "051"
                                            OR  "052"
+                                           OR  "015"
+                                           OR  "016"
                                            OR  "091"    )
                    MOVE    "受給者番号："      TO  SPA-GMN24-JKYSNUM
                    MOVE    SPA-NAI24-TJKYSNUM (SPA-NAI24-FTNSELNUM)
                                                TO  SPA-GMN24-JKYSNUM
                                                           (13:)
                END-IF
+      *    名称
+             IF     (SPA-NAI24-FTNSELNUM >   ZERO   ) 
+                 IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
+                                           =   "021"
+                                           OR  "015"
+                                           OR  "016"     )  AND
+                      (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
+                                           >=   "20060401"  )
+                   MOVE    "入外上限額"         TO  SPA-GMN24-FTNMSG1
+                   MOVE    "他一部負担累計"     TO  SPA-GMN24-FTNMSG2
+               ELSE
+                   MOVE    "外来上限額"         TO  SPA-GMN24-FTNMSG1
+                   MOVE    "入院上限額"         TO  SPA-GMN24-FTNMSG2
+               END-IF
+             END-IF
            END-IF
       *TEST
            .
@@ -543,6 +562,7 @@
            MOVE    ZERO                TO  WRK-PARA-EDANUM
            MOVE    SPACE               TO  LNK-PTKOHFTN-AREA
            INITIALIZE                  SPA-GMN24-KOHFTNTBL2
+           MOVE    1                   TO  SPA-NAI24-INIT2
            PERFORM
                UNTIL   FLG-PARA            =   1
                MOVE    PARA-DATA-REC           TO  PTKOHFTN-REC
@@ -550,7 +570,7 @@
                IF      PTKOHFTN-KOHID      =   SPA-NAI24-KOHID
                                                         (WRK-FTN1-IDX)
                    ADD     1                   TO  IDX
-                   IF      IDX                 <=  50
+                   IF      IDX                 <=  100
                        MOVE    PARA-DATA-REC   TO  LNK-PTKOHFTN-REC
                                                              (IDX)
                        MOVE    IDX             TO  SPA-FTN2-MAX
@@ -1395,7 +1415,10 @@
       *
            INITIALIZE                  SPA-GMN24-KOHFTNTBL2
            INITIALIZE                  SPA-GMN24-FTN-AREA2
+           MOVE    1                   TO  SPA-NAI24-INIT2
            MOVE    SPACE               TO  SPA-GMN24-JKYSNUM
+           MOVE    SPACE               TO  SPA-GMN24-FTNMSG1
+           MOVE    SPACE               TO  SPA-GMN24-FTNMSG2
       *
            MOVE    ZERO                TO  WRK-FTN1-IDX
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -1422,11 +1445,29 @@
            IF     (SPA-NAI24-FTNSELNUM >   ZERO   )  AND
                   (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
                                        =   "051"  OR   "052"
-                                       OR  "091"    )
+                                       OR  "015"
+                                       OR  "016"
+                                       OR  "091"
+                                       OR  "021"    )
                MOVE    "受給者番号："      TO  SPA-GMN24-JKYSNUM
                MOVE    SPA-NAI24-TJKYSNUM (SPA-NAI24-FTNSELNUM)
                                            TO  SPA-GMN24-JKYSNUM
                                                           (13:)
+           END-IF
+      *    名称
+           IF     (SPA-NAI24-FTNSELNUM >   ZERO   ) 
+               IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
+                                           =   "021"
+                                           OR  "015"
+                                           OR  "016"     )  AND
+                      (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
+                                           >=   "20060401"  )
+                   MOVE    "入外上限額"         TO  SPA-GMN24-FTNMSG1
+                   MOVE    "他一部負担累計"     TO  SPA-GMN24-FTNMSG2
+               ELSE
+                   MOVE    "外来上限額"         TO  SPA-GMN24-FTNMSG1
+                   MOVE    "入院上限額"         TO  SPA-GMN24-FTNMSG2
+               END-IF
            END-IF
       *
       *    対象のデータをパラメタファイルより編集する
@@ -1458,7 +1499,7 @@
                IF      PTKOHFTN-KOHID      =   SPA-NAI24-KOHID
                                                         (WRK-FTN1-IDX)
                    ADD     1                   TO  IDX
-                   IF      IDX                 <=  50
+                   IF      IDX                 <=  100
                        MOVE    PARA-DATA-REC   TO  LNK-PTKOHFTN-REC
                                                              (IDX)
                        MOVE    IDX             TO  SPA-FTN2-MAX
@@ -1474,6 +1515,7 @@
            MOVE    "tbl_para"          TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *
       *    画面テーブルへ編集する
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-FTN2-MAX
@@ -1583,7 +1625,7 @@
                    CONTINUE
                ELSE
                    ADD     1                   TO  IDP-2
-                   IF      IDP-2               <=  50
+                   IF      IDP-2               <=  100
                        MOVE    PARA-DATA-REC   TO  HZN-PTKOHFTN-REC
                                                         (IDP-1 IDP-2)
                    END-IF
@@ -1608,7 +1650,7 @@
            ADD     1                   TO  IDP-1
            MOVE    ZERO                TO  IDP-2
            IF      IDP-1               >   50
-               DISPLAY "GP024 KOHFTN PARA 50 OVER"
+               DISPLAY "GP024 KOHFTN PARA 50  OVER"
                MOVE    "2499"          TO  SPA-ERRCD
            END-IF
       *
@@ -1683,7 +1725,7 @@
            PERFORM VARYING IDX         FROM    1   BY  1
                    UNTIL   IDX         >   IDP-1
                PERFORM VARYING IDY         FROM    1   BY  1
-                       UNTIL  (IDY         >   50  )  OR
+                       UNTIL  (IDY         >   100 )  OR
                               (HZN-PTKOHFTN-REC(IDX IDY) =   SPACE)
                    ADD     1                   TO  WRK-PARA-EDANUM
                    MOVE    SPACE               TO  PARA-REC
