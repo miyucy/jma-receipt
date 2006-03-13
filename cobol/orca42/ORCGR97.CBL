@@ -1008,12 +1008,23 @@
            MOVE    WRK-SRYKAMEI    TO  SPA-GMN-SRYKAMEI-AUTO
       *
            MOVE    LNK-SYUACC-IO-SYUKA-INPUT (1)
-                                   TO  SPA-GMN-SYUKA
-                                       SPA-GMN-SRYKA-INPUT1
+                                   TO  SPA-GMN-SRYKA-INPUT1
+           MOVE    SPA-GMN-SRYKA-INPUT1
+                                   TO  WRK-SRYKA
+           PERFORM 9001-SRYKA-HENSYU-SEC
+           MOVE    WRK-SRYKAMEI    TO  SPA-GMN-SRYKAMEI-INPUT1
+      *
+           IF      LNK-SYUACC-IO-H-SRYKA
+                               NOT =   SPACE
+               MOVE    LNK-SYUACC-IO-H-SRYKA
+                                       TO  SPA-GMN-SYUKA
+           ELSE
+               MOVE    LNK-SYUACC-IO-SYUKA-INPUT (1)
+                                       TO  SPA-GMN-SYUKA
+           END-IF
            MOVE    SPA-GMN-SYUKA   TO  WRK-SRYKA
            PERFORM 9001-SRYKA-HENSYU-SEC
            MOVE    WRK-SRYKAMEI    TO  SPA-GMN-SYUKAMEI
-                                       SPA-GMN-SRYKAMEI-INPUT1
       *
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       50
