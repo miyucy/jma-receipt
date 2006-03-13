@@ -808,8 +808,8 @@ P02	{
 							value2	varchar(9);
 							value3	varchar(9);
 							value4	varchar(9);
-						}	[50];
-						select	bool[50];
+						}	[100];
+						select	bool[100];
 					};
 				};
 				P024_FTNSELNUM	{
@@ -820,6 +820,12 @@ P02	{
 				};
 				P024_JKYSNUM	{
 					value	varchar(40);
+				};
+				FTNMSG1	{
+					value	varchar(16);
+				};
+				FTNMSG2	{
+					value	varchar(16);
 				};
 			};
 			FP8	{
