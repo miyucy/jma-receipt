@@ -243,6 +243,12 @@
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-SS          PIC X(02).
       *
+      *    主科（退避用）
+       01  WRK-SYUKA-REC.
+           COPY    "CPSYUKA.INC"   REPLACING  //SYUKA-//
+                                   BY         //WRK-SYUKA-//.
+       01  WRK-FLG-SYUKA           PIC 9(01). 
+      *
        01  WRK-ORCSSYUACCAREA.
            COPY    "CPORCSSYUACC.INC"
                                    REPLACING  //LNK-SYUACC//
@@ -565,8 +571,6 @@
                                        SPA-NAI-KOUMOKU
       *
       *    患者情報画面編集処理
-           MOVE    "key10"         TO  WRK-MCP-PATHNAME
-      *
            INITIALIZE                  SYUKA-REC
            MOVE    SPA-HOSPID      TO  SYUKA-HOSPID
            MOVE    SPA-NAI-SRYYM   TO  SYUKA-SRYYM
@@ -575,15 +579,13 @@
            MOVE    SYUKA-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "tbl_syuka"     TO  MCP-TABLE
-           MOVE    WRK-MCP-PATHNAME
-                                   TO  MCP-PATHNAME
+           MOVE    "key10"         TO  MCP-PATHNAME
            CALL    "MONFUNC"           USING
                                        MCPAREA
                                        MCPDATA-REC
            IF      MCP-RC          =   ZERO
                MOVE    "tbl_syuka"     TO  MCP-TABLE
-               MOVE    WRK-MCP-PATHNAME
-                                       TO  MCP-PATHNAME
+               MOVE    "key10"         TO  MCP-PATHNAME
                PERFORM 910-SYUKA-NEXT-SEC
            ELSE
                MOVE    1               TO  FLG-SYUKA
@@ -613,19 +615,37 @@
                    MOVE  SYUKA-REC     TO  LNK-SYUACC-IO2-OCC(IDW)
       *
                    MOVE    "tbl_syuka"     TO  MCP-TABLE
-                   MOVE    WRK-MCP-PATHNAME
-                                       TO  MCP-PATHNAME
+                   MOVE    "key10"         TO  MCP-PATHNAME
                    PERFORM 910-SYUKA-NEXT-SEC
                END-PERFORM
       *
-               IF      FLG-DSP      =   1 
+               IF      FLG-DSP      =   1
+                   MOVE   SYUKA-REC     TO  WRK-SYUKA-REC
+                   MOVE    FLG-SYUKA    TO  WRK-FLG-SYUKA
+      *
+      *            手入力による主科情報の取得
+                   INITIALIZE                  SYUKA-REC
+                   MOVE    SPA-HOSPID      TO  SYUKA-HOSPID
+                   MOVE    SPA-NAI-SRYYM   TO  SYUKA-SRYYM
+                   MOVE    WRK-PTID        TO  SYUKA-PTID
+                   MOVE    SYUKA-REC       TO  MCPDATA-REC
+                   MOVE    "tbl_syuka"     TO  WRK-MCP-TABLE
+                   MOVE    "key4"          TO  WRK-MCP-PATHNAME
+                   PERFORM 900-SYUKA-READ-SEC
+                   IF      FLG-SYUKA       =   ZERO
+                       ADD     1               TO  IDW
+                       MOVE    SYUKA-REC       TO
+                                               LNK-SYUACC-IO2-OCC (IDW)
+                   END-IF
+                   MOVE    WRK-SYUKA-REC   TO  SYUKA-REC
+                   MOVE    WRK-FLG-SYUKA   TO  FLG-SYUKA
+      *
                    PERFORM 31011-SYUKA-GMN-HENSYU-SEC
                END-IF 
            END-PERFORM
       *
            MOVE    "tbl_syuka"     TO  MCP-TABLE
-           MOVE    WRK-MCP-PATHNAME
-                                   TO  MCP-PATHNAME
+           MOVE    "key10"         TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
       *    次ページの有無
