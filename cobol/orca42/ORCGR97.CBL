@@ -1445,13 +1445,8 @@
                                    MCP-FUNC " " SYUKA-KEY
                MOVE    "1001"          TO  SPA-ERRCD
            ELSE
-               IF      SPA-NAI-SELNUM  >   ZERO
-                   MOVE    SPA-GMN-SYUKA   TO
-                                           SPA-GMN-TSYUKA-INPUT
-                                                   (SPA-NAI-SELNUM)
-               END-IF 
       *
-      *        手入力による主科情報の削除
+      *        手入力による主科情報のクリア
                INITIALIZE                  SYUKA-REC
                MOVE    SPA-HOSPID      TO  SYUKA-HOSPID
                MOVE    SPA-PTID        TO  SYUKA-PTID
@@ -1462,8 +1457,9 @@
                MOVE    "key4"          TO  WRK-MCP-PATHNAME
                PERFORM 900-SYUKA-READ-SEC
                IF      FLG-SYUKA       =   ZERO
+                   MOVE    SPACE           TO  SYUKA-SRYKA-INPUT
                    MOVE    SYUKA-REC       TO  MCPDATA-REC
-                   MOVE    "DBDELETE"      TO  MCP-FUNC
+                   MOVE    "DBUPDATE"      TO  MCP-FUNC
                    MOVE    "tbl_syuka"     TO  MCP-TABLE
                    MOVE    "key"           TO  MCP-PATHNAME
                    CALL    "MONFUNC"           USING
@@ -1472,12 +1468,53 @@
                    IF      MCP-RC      NOT =   ZERO
                        DISPLAY "SYUKA KEY=" 
                                        MCP-FUNC " " SYUKA-KEY
-                       MOVE    "1002"          TO  SPA-ERRCD
+                       MOVE    "1001"          TO  SPA-ERRCD
                    END-IF
                END-IF
            END-IF
       *
-           IF      SPA-ERRCD           =   SPACE 
+           IF      SPA-ERRCD           =   SPACE
+      *        該当患者の再表示
+               IF      SPA-NAI-SELNUM  >   ZERO
+                   PERFORM VARYING IDX FROM    1   BY  1
+                           UNTIL   IDX >       SPA-GMN-SYUKA-TBL-MAX
+                       IF      SPA-NAI-PTID
+                                           =   SPA-NAI-TPTID (IDX)
+                           INITIALIZE                  ORCSSYUACCAREA
+                           MOVE    "06"            TO  LNK-SYUACC-I-KBN
+                           MOVE    SPA-NAI-SRYYM   TO
+                                           LNK-SYUACC-I-SRYYM
+                           MOVE    SPA-GMN-NYUGAIKBN
+                                                   TO  SPA-NYUGAIKBN
+                           MOVE    SPA-NAI-PTID    TO  SPA-PTID
+                           MOVE    SPA-NAI-TRECESYUBETU (IDX)
+                                                   TO
+                                           LNK-SYUACC-IO-RECESYUBETU (1)
+                           MOVE    SPA-GMN-THKNJANUM (IDX)
+                                                   TO
+                                           LNK-SYUACC-IO-HKNJANUM    (1)
+                           MOVE    SPA-NAI-THOJOKBN (IDX)
+                                                   TO
+                                           LNK-SYUACC-IO-HOJOKBN     (1)
+                           MOVE    1               TO
+                                           LNK-SYUACC-IO-TEISYUTUSAKI(1)
+                           CALL    "ORCSSYUKAMAIN" USING
+                                                       SPA-AREA
+                                                       ORCSSYUACCAREA
+                           MOVE    LNK-SYUACC-IO-SYUKA-AUTO (1)
+                                           TO  SPA-GMN-TSYUKA-AUTO (IDX)
+                           IF      LNK-SYUACC-IO-H-SRYKA
+                                           NOT =   SPACE
+                               MOVE    LNK-SYUACC-IO-H-SRYKA
+                                           TO  SPA-GMN-TSYUKA-INPUT(IDX)
+                           ELSE    
+                               MOVE    LNK-SYUACC-IO-SYUKA-INPUT(1)
+                                           TO  SPA-GMN-TSYUKA-INPUT(IDX)
+                           END-IF
+                       END-IF
+                   END-PERFORM        
+               END-IF
+      *
                INITIALIZE              SPA-GMN-PTNUM-TABLE
                                        SPA-GMN-KOUMOKU
                                        SPA-NAI-KOUMOKU 
