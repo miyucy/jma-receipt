@@ -11,47 +11,22 @@ W24	{
 		};
 		frame1	{
 			fixed7	{
-				CMB_SK_NYUSYOKU	{
-					SK_NYUSYOKU	{
+				CMB_SYOKUJI01	{
+					SYOKUJI01	{
 						value	varchar(28);
 					};
 					count	int;
 					item	varchar(28)[05];
 				};
-				CMB_SK_TOKKSN	{
-					SK_TOKKSN	{
+				CMB_SYOKUJI02	{
+					SYOKUJI02	{
 						value	varchar(28);
 					};
 					count	int;
 					item	varchar(28)[05];
 				};
-				CMB_SK_SYOKUDO	{
-					SK_SYOKUDO	{
-						value	varchar(28);
-					};
-					count	int;
-					item	varchar(28)[05];
-				};
-			};
-		};
-		frame2	{
-			fixed8	{
-				CMB_GN_INKANSEN	{
-					GN_INKANSEN	{
-						value	varchar(28);
-					};
-					count	int;
-					item	varchar(28)[05];
-				};
-				CMB_GN_ANZEN	{
-					GN_ANZEN	{
-						value	varchar(28);
-					};
-					count	int;
-					item	varchar(28)[05];
-				};
-				CMB_GN_JOKUSO	{
-					GN_JOKUSO	{
+				CMB_SYOKUJI03	{
+					SYOKUJI03	{
 						value	varchar(28);
 					};
 					count	int;
@@ -81,6 +56,7 @@ W24	{
 			item	varchar(14)[05];
 		};
 		frame3	{
+			label	varchar(20);
 			fixed9	{
 				CHK_NYUKSN01	{
 					value	bool;

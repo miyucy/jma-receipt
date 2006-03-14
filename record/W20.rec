@@ -22,19 +22,19 @@ W20	{
 		B12	{
 			state	int;
 		};
-		BTU_NUM	{
+		BTUNUM	{
 			value	number(2);
 		};
-		BTU_NAME	{
+		NAME	{
 			value	varchar(20);
 			state	int;
 		};
-		BTU_TANNAME	{
+		TANNAME	{
 			value	varchar(10);
 			state	int;
 		};
-		CMB_BTU_TOKUTEINYUIN	{
-			BTU_TOKUTEINYUIN	{
+		CMB_TOKUTEINYUIN	{
+			TOKUTEINYUIN	{
 				value	varchar(33);
 				state	int;
 			};
@@ -42,8 +42,8 @@ W20	{
 			item	varchar(33)[15];
 			state	int;
 		};
-		CMB_BTU_KA	{
-			BTU_KA	{
+		CMB_SRYKA	{
+			SRYKA	{
 				value	varchar(23);
 				state	int;
 			};
@@ -51,8 +51,8 @@ W20	{
 			item	varchar(23)[99];
 			state	int;
 		};
-		CMB_BTU_SBT	{
-			BTU_SBT	{
+		CMB_SBT	{
+			SBT	{
 				value	varchar(23);
 				state	int;
 			};
@@ -60,26 +60,8 @@ W20	{
 			item	varchar(23)[15];
 			state	int;
 		};
-		CMB_BTU_HEIKINZAIKBN	{
-			BTU_HEIKINZAIKBN	{
-				value	varchar(15);
-				state	int;
-			};
-			count	int;
-			item	varchar(15)[15];
-			state	int;
-		};
-		CMB_BTU_KNGHAICHIKBN	{
-			BTU_KNGHAICHIKBN	{
-				value	varchar(17);
-				state	int;
-			};
-			count	int;
-			item	varchar(17)[20];
-			state	int;
-		};
-		CMB_BTU_KNGHIRITUKBN	{
-			BTU_KNGHIRITUKBN	{
+		CMB_KNGHJOKSN	{
+			KNGHJOKSN	{
 				value	varchar(23);
 				state	int;
 			};
@@ -87,26 +69,8 @@ W20	{
 			item	varchar(23)[10];
 			state	int;
 		};
-		CMB_BTU_KNGHJOHAI	{
-			BTU_KNGHJOHAI	{
-				value	varchar(15);
-				state	int;
-			};
-			count	int;
-			item	varchar(15)[10];
-			state	int;
-		};
-		CMB_BTU_KNGHJOKSN	{
-			BTU_KNGHJOKSN	{
-				value	varchar(13);
-				state	int;
-			};
-			count	int;
-			item	varchar(13)[10];
-			state	int;
-		};
-		CMB_BTU_YAKANKNGKSN	{
-			BTU_YAKANKNGKSN	{
+		CMB_YAKANKNGKSN	{
+			YAKANKNGKSN	{
 				value	varchar(23);
 				state	int;
 			};
@@ -114,19 +78,12 @@ W20	{
 			item	varchar(23)[10];
 			state	int;
 		};
-		CHK_BTU_SYOKUDOKBN	{
+		CHK_SYOKUDOKBN	{
 			value	bool;
+			label	varchar(10);
 			state	int;
 		};
-		CHK_BTU_ISISUKBN	{
-			value	bool;
-			state	int;
-		};
-		CHK_BTU_KNGSISUKBN	{
-			value	bool;
-			state	int;
-		};
-		CHK_BTU_HIKSISUKBN	{
+		CHK_HIKSISUKBN	{
 			value	bool;
 			state	int;
 		};
@@ -147,8 +104,8 @@ W20	{
 			value	varchar(10);
 			state	int;
 		};
-		CMB_BTU_EDKBN	{
-			BTU_EDKBN	{
+		CMB_EDKBN	{
+			EDKBN	{
 				value	varchar(8);
 				state	int;
 			};
@@ -156,8 +113,8 @@ W20	{
 			item	varchar(8)[2];
 			state	int;
 		};
-		CMB_BTU_KHNRYO	{
-			BTU_KHNRYO	{
+		CMB_KHNRYO	{
+			KHNRYO	{
 				value	varchar(63);
 				state	int;
 			};
@@ -165,7 +122,7 @@ W20	{
 			item	varchar(63)[50];
 			state	int;
 		};
-		BTU_KHNTEN	{
+		KHNTEN	{
 			value	number(6);
 			state	int;
 		};
@@ -186,18 +143,8 @@ W20	{
 					value5	varchar(30);
 					value6	varchar(12);
 					value7	varchar(10);
-					value8	varchar(14);
-					value9	varchar(20);
-					value10	varchar(12);
-					value11	varchar(10);
-					value12	varchar(12);
-					value13	varchar(20);
-					value14	varchar(06);
-					value15	varchar(08);
-					value16	varchar(08);
-					value17	varchar(08);
-					value18	varchar(09);
-					value19	varchar(09);
+					value8	varchar(09);
+					value9	varchar(09);
 				}	[50];
 				select	bool[50];
 			};

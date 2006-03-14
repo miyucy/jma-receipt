@@ -394,10 +394,7 @@
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
-           MOVE    SPACE           TO  SPA-W21
-                                           W21
-           INITIALIZE                  SPA-W21
-                                           W21
+           INITIALIZE              SPA-W21-AREA
       *
       *    病棟情報取得処理
            PERFORM 3101-SYS-5001-GET-SEC

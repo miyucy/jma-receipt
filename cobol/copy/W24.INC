@@ -24,43 +24,11 @@
               04  W24-EDYUKYMD                 PIC X(10).
               04  W24-FRAME1.
                 05  W24-FIXED7.
-                  06  W24-CMB-SK-NYUSYOKU.
-                    07  W24-SK-NYUSYOKU        PIC X(28).
-                    07  W24-SK-NYUSYOKU-CNT    PIC S9(9)
+                  06  W24-CMB-SYOKUJI-OCC      OCCURS 3.
+                    07  W24-SYOKUJI            PIC X(28).
+                    07  W24-SYOKUJI-CNT        PIC S9(9)
                                                BINARY.
-                    07  W24-SK-NYUSYOKU-ITM    PIC X(28)
-                                               OCCURS  5.
-                  06  W24-CMB-SK-TOKKSN.
-                    07  W24-SK-TOKKSN          PIC X(28).
-                    07  W24-SK-TOKKSN-CNT      PIC S9(9)
-                                               BINARY.
-                    07  W24-SK-TOKKSN-ITM      PIC X(28)
-                                               OCCURS  5.
-                  06  W24-CMB-SK-SYOKUDO.
-                    07  W24-SK-SYOKUDO         PIC X(28).
-                    07  W24-SK-SYOKUDO-CNT     PIC S9(9)
-                                               BINARY.
-                    07  W24-SK-SYOKUDO-ITM     PIC X(28)
-                                               OCCURS  5.
-              04  W24-FRAME2.
-                05  W24-FIXED8.
-                  06  W24-CMB-GN-INKANSEN.
-                    07  W24-GN-INKANSEN        PIC X(28).
-                    07  W24-GN-INKANSEN-CNT    PIC S9(9)
-                                               BINARY.
-                    07  W24-GN-INKANSEN-ITM    PIC X(28)
-                                               OCCURS  5.
-                  06  W24-CMB-GN-ANZEN.
-                    07  W24-GN-ANZEN           PIC X(28).
-                    07  W24-GN-ANZEN-CNT       PIC S9(9)
-                                               BINARY.
-                    07  W24-GN-ANZEN-ITM       PIC X(28)
-                                               OCCURS  5.
-                  06  W24-CMB-GN-JOKUSO.
-                    07  W24-GN-JOKUSO          PIC X(28).
-                    07  W24-GN-JOKUSO-CNT      PIC S9(9)
-                                               BINARY.
-                    07  W24-GN-JOKUSO-ITM      PIC X(28)
+                    07  W24-SYOKUJI-ITM        PIC X(28)
                                                OCCURS  5.
               04  W24-CMB-BRMSGK-TAX.
                 05  W24-BRMSGK-TAX             PIC X(10).
@@ -81,12 +49,12 @@
                 05  W24-NACCT-GAIHAKU-ITM      PIC X(14)
                                                OCCURS  5.
               04  W24-FRAME3.
+                05  W24-FRAME3-LABEL           PIC X(20).
                 05  W24-FIXED9.
-                  06  W24-CHK-NYUKSN.
-                    07 W24-CHK-NYUKSN-OCC      OCCURS 20.
-                      08 W24-CHK-NYUKSNFLG     PIC X(01).
-                      08 W24-CHK-NYUKSNNM      PIC X(01).
-                  06  W24-NYUKSNNM             PIC X(32)
+                  06 W24-CHK-NYUKSN-OCC        OCCURS 20.
+                    07  W24-CHK-NYUKSN         PIC X(01).
+                    07  W24-CHK-LBL-NYUKSN     PIC X(01).
+                  06  W24-NYUKSNMEI            PIC X(32)
                                                OCCURS 20.
                   06  W24-CMB-CHIIKIKSN.
                     07  W24-CHIIKIKSN          PIC X(28).
