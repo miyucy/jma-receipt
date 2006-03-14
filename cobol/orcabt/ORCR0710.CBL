@@ -452,6 +452,8 @@
       *
            03  WRK-HSEQNUM         PIC 9(08).
       *
+           03  WRK-HC06-HEAD4-G    PIC X(128).
+      *
            03  WRK-1033-TABLE.
                05  WRK-1033-TBL    OCCURS  5.
                    07  WRK-1033-HKNJANUM-G.
@@ -876,6 +878,9 @@
       *
            03  WRK-ERR-MSG-5           PIC X(48)  VALUE
                "地方公費のみ選択されています。主保険がありません".
+      *
+           03  WRK-ERR-MSG-6           PIC X(14)  VALUE
+               "【主科未設定】".
       *
        01  WRK-RECE07-REC. 
            COPY    "CPRCF007.INC"  REPLACING  //RECE07//
@@ -2400,7 +2405,10 @@
                IF      RECE62-RECESYUBETU  =    ZERO
                    PERFORM 3101-FUMEI-HENSYU-SEC
                ELSE 
-                   IF      FLG-RECE67          =   ZERO
+                   IF      RECE62-SYUKA         =   "XX"
+                       MOVE    WRK-ERR-MSG-6   TO   HC06-HEAD4-G (5:)
+                   ELSE 
+                     IF      FLG-RECE67          =   ZERO
                        INSPECT RECE67-HC06-HEAD1-G  REPLACING   ALL "  "
                                                         BY  "　" 
                        INSPECT RECE67-HC06-HEAD2-G  REPLACING   ALL "  "
@@ -2413,6 +2421,7 @@
                        MOVE    RECE67-HC06-HEAD2-G TO  HC06-HEAD2-G
                        MOVE    RECE67-HC06-HEAD3-G TO  HC06-HEAD3-G
                        MOVE    RECE67-HEAD4-G      TO  HC06-HEAD4-G
+                     END-IF
                    END-IF
                END-IF
            END-IF
@@ -2524,8 +2533,15 @@
                    MOVE    WRK-ERR-MSG-4   TO   HC06-HEAD4-G (5:)
                WHEN    7
                    MOVE    WRK-ERR-MSG-5   TO   HC06-HEAD4-G (5:)
-           END-EVALUATE        
+           END-EVALUATE
            INSPECT HC06-HEAD4-G  REPLACING ALL "  "    BY  "　"
+      *
+      *    主科未設定のとき     
+           IF      RECE62-SYUKA         =   "XX"
+               MOVE    HC06-HEAD4-G (5:)    TO  WRK-HC06-HEAD4-G
+               MOVE    WRK-ERR-MSG-6        TO  HC06-HEAD4-G (5:)
+               MOVE    WRK-HC06-HEAD4-G     TO  HC06-HEAD4-G (19:)
+           END-IF
       *
       *    特別療養費の場合「特別療養費」文字記載を行う
            IF      RECE62-HKNNUM       =   "068"   OR  "069"

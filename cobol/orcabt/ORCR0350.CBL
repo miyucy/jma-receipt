@@ -902,6 +902,8 @@
       *
            COPY    "CPSK2005.INC".
       *
+           COPY    "CPSK2009.INC".
+      *
       *    医療機関情報
            COPY   "CPSK1001.INC".
       *
@@ -1163,6 +1165,25 @@
            END-IF
            IF      SYS-2005-RECECOMKBN      =   SPACE
                MOVE    ZERO             TO  SYS-2005-RECECOMKBN
+           END-IF
+      *         
+      *    レセプト編集区分情報
+           MOVE    SPACE           TO  SYS-2009-REC
+           INITIALIZE                  SYS-2009-REC
+           MOVE    "2009"          TO  SYS-2009-KANRICD
+           MOVE    "*"             TO  SYS-2009-KBNCD
+           MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)
+           MOVE    "01"                TO  ORC-DBYMD (7:2)
+           MOVE    SYS-2009-REC        TO  MCPDATA-REC
+           PERFORM 910-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-2009-REC
+           ELSE    
+               INITIALIZE                  SYS-2009-REC
+           END-IF
+           IF      SYS-2009-SYUKA-KBN
+                                   =   SPACE
+               MOVE    "0"             TO  SYS-2009-SYUKA-KBN
            END-IF
       *    
            .
@@ -4680,10 +4701,15 @@
            MOVE    RECE62-SRYYM        TO  RECEDEN-SRYYM
            MOVE    RECE62-NYUGAIKBN    TO  RECEDEN-NYUGAIKBN
            MOVE    RECE62-PTID         TO  RECEDEN-PTID
-           IF      RECE62-RECEKA       =   SPACE
-               MOVE    ZERO            TO  RECEDEN-RECEKA
+           IF    ( SYS-2009-SYUKA-KBN  =   "1"                )
+           AND   ( RECE62-TEISYUTUSAKI =   "1"                )
+               MOVE    RECE62-SYUKA        TO  RECEDEN-RECEKA
            ELSE
-               MOVE    RECE62-RECEKA   TO  RECEDEN-RECEKA
+               IF      RECE62-RECEKA       =   SPACE
+                   MOVE    ZERO            TO  RECEDEN-RECEKA
+               ELSE
+                   MOVE    RECE62-RECEKA   TO  RECEDEN-RECEKA
+               END-IF
            END-IF
            MOVE    RECE62-TEISYUTUSAKI TO  RECEDEN-TEISYUTUSAKI
            MOVE    RECE62-RECESYUBETU  TO  RECEDEN-RECESYUBETU

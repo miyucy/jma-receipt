@@ -417,6 +417,8 @@
       *
            03  WRK-HSEQNUM         PIC 9(08).
       *
+           03  WRK-HC06-HEAD4-G    PIC X(128).
+      *
            03  WRK-1033-TABLE.
                05  WRK-1033-TBL    OCCURS  5.
                    07  WRK-1033-HKNJANUM-G.
@@ -800,6 +802,9 @@
       *
            03  WRK-ERR-MSG-4           PIC X(48)  VALUE
                "地方公費のみ選択されています。主保険がありません".
+      *
+           03  WRK-ERR-MSG-5           PIC X(14)  VALUE
+               "【主科未設定】".
       *
        01  WRK-CONS-SRYYM             PIC X(06)   VALUE   "200304". 
       *
@@ -2297,11 +2302,15 @@
       *
       *    県単用項目
       *    但し、レセプト種別不明のときは原因を編集する
+      *    主科未設定の場合は記載する
            IF      CNT-PAGE            =   1
                IF      RECE02-RECESYUBETU  =    ZERO
                    PERFORM 3101-FUMEI-HENSYU-SEC
                ELSE 
-                   IF      FLG-RECE11          =   ZERO
+                   IF      RECE02-SYUKA         =   "XX"
+                       MOVE    WRK-ERR-MSG-5   TO   HC06-HEAD4-G (5:)
+                   ELSE 
+                     IF      FLG-RECE11          =   ZERO
                        INSPECT RECE11-HC06-HEAD1-G  REPLACING   ALL "  "
                                                         BY  "　" 
                        INSPECT RECE11-HC06-HEAD2-G  REPLACING   ALL "  "
@@ -2314,6 +2323,7 @@
                        MOVE    RECE11-HC06-HEAD2-G TO  HC06-HEAD2-G
                        MOVE    RECE11-HC06-HEAD3-G TO  HC06-HEAD3-G
                        MOVE    RECE11-HEAD4-G      TO  HC06-HEAD4-G
+                     END-IF
                    END-IF
                END-IF
            END-IF
@@ -2326,7 +2336,6 @@
       *    レセプト種別不明のとき不明の原因を編集処理
       *****************************************************************
        3101-FUMEI-HENSYU-SEC              SECTION.
-      *
       *
            EVALUATE    RECE02-ERR-ERRKBN
                WHEN    1
@@ -2408,6 +2417,13 @@
                    MOVE    WRK-ERR-MSG-4   TO   HC06-HEAD4-G (5:)
            END-EVALUATE        
            INSPECT HC06-HEAD4-G  REPLACING ALL "  "    BY  "　"
+      *
+      *    主科未設定のとき     
+           IF      RECE02-SYUKA         =   "XX"
+               MOVE    HC06-HEAD4-G (5:)    TO  WRK-HC06-HEAD4-G
+               MOVE    WRK-ERR-MSG-5        TO  HC06-HEAD4-G (5:)
+               MOVE    WRK-HC06-HEAD4-G     TO  HC06-HEAD4-G (19:)
+           END-IF
       *
       *    特別療養費の場合「特別療養費」文字記載を行う
            IF      RECE02-HKNNUM       =   "068"   OR  "069"
