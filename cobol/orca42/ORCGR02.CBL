@@ -86,7 +86,8 @@
       *  02.07.02    NACL-藤原    05/10/31  MONFUNC対応
       *  02.07.03    NACL-藤原    05/12/12  国保レセプト編綴順対応
       *
-      *  02.08.01    NACL-藤原    05/10/31  患者番号順の範囲指定を変更
+      *  02.08.01    NACL-藤原    06/03/10  患者番号順の範囲指定を変更
+      *  02.08.02    NACL-藤原    06/03/14  編綴順情報の表示の修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3052,7 +3053,7 @@
                                            TO  R05-HKN-PRTJYUN
            END-EVALUATE
       *
-           EVALUATE    SPA-NAI-2008-HKNJANUM-PRTJYUN
+           EVALUATE    SPA-NAI-2008-RECESYUBETU-PRTJYUN
                WHEN    "1"
                    MOVE    "国保一般・老人保健・退職国保"
                                            TO  R05-REC-PRTJYUN
