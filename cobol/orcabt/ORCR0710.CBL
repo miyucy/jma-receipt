@@ -2265,30 +2265,34 @@
            END-IF
       *
       *     主科設定ありのときの記載
-           IF      RECE62-SYUKA     NOT =   SPACE  AND "XX"
-               IF      RECE62-RECESYUKA NOT =   SPACE
-                   INITIALIZE                  ORCSKANACHKAREA
-                   MOVE    "2"                 TO  KANACHK-SYORI 
-                   MOVE    RECE62-RECESYUKA    TO  KANACHK-MAE-INPUT
-                   CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
-                   IF      KANACHK-RC      =   ZERO
+           IF    ( SYS-2009-SYUKA-KBN  =   "1"                )
+           AND   ( RECE62-TEISYUTUSAKI =   "1"                )
+               IF      RECE62-SYUKA     NOT =   "XX"
+                   IF      RECE62-RECESYUKA NOT =   SPACE
+                       INITIALIZE                  ORCSKANACHKAREA
+                       MOVE    "2"                 TO  KANACHK-SYORI 
+                       MOVE    RECE62-RECESYUKA    TO  KANACHK-MAE-INPUT
+                       CALL    "ORCSKANACHK"       USING
+                                                   ORCSKANACHKAREA
+                       IF      KANACHK-RC      =   ZERO
+                           STRING  "（"            DELIMITED   BY  SIZE
+                                   KANACHK-OUT-INPUT(1:KANACHK-MAX)    
+                                                   DELIMITED   BY  SIZE
+                                   RECE62-SYUKANAME
+                                                   DELIMITED   BY  SPACE 
+                                   "）"            DELIMITED   BY  SIZE
+                                                   INTO  HC06-SRYKA
+                           END-STRING
+                       END-IF
+                   ELSE
                        STRING  "（"            DELIMITED   BY  SIZE
-                               KANACHK-OUT-INPUT(1:KANACHK-MAX)    
-                                               DELIMITED   BY  SIZE
                                RECE62-SYUKANAME
                                                DELIMITED   BY  SPACE 
                                "）"            DELIMITED   BY  SIZE
                                                INTO  HC06-SRYKA
                        END-STRING
                    END-IF
-               ELSE
-                   STRING  "（"            DELIMITED   BY  SIZE
-                           RECE62-SYUKANAME
-                                           DELIMITED   BY  SPACE 
-                           "）"            DELIMITED   BY  SIZE
-                                           INTO  HC06-SRYKA
-                   END-STRING
-               END-IF
+               END-IF 
            ELSE
       *        診療科（シス管の設定により編集を行なう）
                IF      SYS-2005-SRYKAHENKBN
