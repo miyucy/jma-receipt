@@ -472,10 +472,10 @@ path	key2	{
 		DECLARE tbl_seikyu_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_seikyu
-                WHERE   HOSPID      =   :HOSPID
-                  AND   SRYYM       =   :SRYYM
-                  AND   PTID        =   :PTID
-                  AND   RECEKA      =   :RECEKA 
+                WHERE   HOSPID      =    :HOSPID
+                  AND   SRYYM       =    :SRYYM
+                  AND   PTID        =    :PTID
+                  AND   RECEKA      like :RECEKA 
 		;
 	};
 };
@@ -1525,6 +1525,24 @@ path	key42	{
                   AND (      SKYKBN      =   '2'         ) 
                   AND (      NYUGAIKBN   =   :NYUGAIKBN  )
                 ORDER  BY  PTID,SRYYM
+		;
+	};
+};
+
+
+path	key43		{ 	
+	DBSELECT	{
+		DECLARE tbl_seikyu_key43_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu
+                WHERE   HOSPID      =   :HOSPID
+                  AND   SRYYM       =   :SRYYM
+                  AND   NYUGAIKBN   =   :NYUGAIKBN
+                  AND   PTID        =   :PTID
+                  AND   TEISYUTUSAKI =  :TEISYUTUSAKI
+                  AND   HKNJANUM    =   :HKNJANUM
+                  AND   HOJOKBN_KEY =   :HOJOKBN_KEY
+                  AND   TEKSTYMD    =   :TEKSTYMD
 		;
 	};
 };
