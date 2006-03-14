@@ -5272,6 +5272,7 @@
                        OR  (   RECE62-RECESYUBETU  =   ZERO   OR 
                                                        8888   OR 
                                                        6666        )
+                       OR  (   RECE62-SYUKA        =   "XX"        )
                            CONTINUE
                        ELSE
       *

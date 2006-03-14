@@ -5101,6 +5101,7 @@
                        OR  (   RECE02-RECESYUBETU  =   ZERO   OR 
                                                        8888   OR 
                                                        6666        )
+                       OR  ( RECE02-SYUKA        =   "XX"          )
                            CONTINUE
                        ELSE
                          IF    ( RECE02-TOTALTEN (1) =   ZERO     )
