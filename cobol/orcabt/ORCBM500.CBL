@@ -43,6 +43,8 @@
       *  02.07.01    NACL-藤原    05/12/02  レセ電データ複数枚対応
       *                                     出力場所「1」「3」のときのみ
       *  02.07.02    NACL-藤原    05/12/02  MONFUNC対応
+      *
+      *  02.08.03    NACL-藤原    06/02/20  主科対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -107,7 +109,7 @@
       *
        01  INDEX-AREA.
            03  IDW                     PIC 9(03).
-           03  IDX                     PIC 9(03). 
+           03  IDX                     PIC 9(05). 
            03  IDY                     PIC 9(03). 
            03  IDZ                     PIC 9(03).
            03  IDY1                    PIC 9(03).
@@ -1059,7 +1061,8 @@
                MOVE    ZERO                TO  FLG-END
                MOVE    MCPDATA-REC         TO  RECE10-REC
                ADD     1                   TO  CNT-RECE10
-               MOVE    RECE10-RECEKA       TO  KEY-N-SRYKA
+      *        MOVE    RECE10-RECEKA       TO  KEY-N-SRYKA
+               MOVE    "00"                TO  KEY-N-SRYKA 
            ELSE
                MOVE    1                   TO  FLG-END
            END-IF
