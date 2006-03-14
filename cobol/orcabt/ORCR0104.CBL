@@ -429,25 +429,6 @@
                    07  WRK-1033-EDYUKYMD 
                                    PIC X(08).                                       
       *
-      *    県単用項目ファイル用ワーク     
-           COPY    "HC06.INC"     REPLACING  //HC06//
-                                   BY         //RECE11-HC06//.
-      *
-       01  WRK-HENSYU-AREA.
-           03  WRK-HENYMDG         PIC X(22).
-           03  WRK-HENYMD.
-               05  WRK-HGO         PIC X(01).
-               05  WRK-HYY         PIC Z9.
-               05  FILLER          PIC X(01)   VALUE  ".".
-               05  WRK-HMM         PIC Z9.
-               05  FILLER          PIC X(01)   VALUE  ".".
-               05  WRK-HDD         PIC Z9.
-      *
-           03  WRK-HENTIME.
-               05  WRK-THH         PIC 99.
-               05  FILLER          PIC X(01)   VALUE  ":".
-               05  WRK-TMM         PIC 99.
-      *
            03  WRK-BYO-OLD.
                05  WRK-BO-SYUBYOFLG            PIC X(01).
                05  WRK-BO-SRYYMD               PIC X(08).
@@ -571,6 +552,25 @@
       *
            03  WRK-MCP-TABLE       PIC X(64).
            03  WRK-MCP-PATHNAME    PIC X(64).
+      *
+      *    県単用項目ファイル用ワーク     
+           COPY    "HC06.INC"     REPLACING  //HC06//
+                                   BY         //RECE11-HC06//.
+      *
+       01  WRK-HENSYU-AREA.
+           03  WRK-HENYMDG         PIC X(22).
+           03  WRK-HENYMD.
+               05  WRK-HGO         PIC X(01).
+               05  WRK-HYY         PIC Z9.
+               05  FILLER          PIC X(01)   VALUE  ".".
+               05  WRK-HMM         PIC Z9.
+               05  FILLER          PIC X(01)   VALUE  ".".
+               05  WRK-HDD         PIC Z9.
+      *
+           03  WRK-HENTIME.
+               05  WRK-THH         PIC 99.
+               05  FILLER          PIC X(01)   VALUE  ":".
+               05  WRK-TMM         PIC 99.
       *
       *    レセプト格納用
        01  TABLE-AREA                          VALUE   SPACE.
@@ -1871,11 +1871,13 @@
       *    レセプト種別を請求管理より編集
            INITIALIZE                      RECE10-REC
            MOVE    KOHSKY-KEY          TO  RECE10-KEY
-           MOVE    "SEIKYU-KEY15"      TO  WRK-PATH
+           MOVE    "tbl_seikyu"        TO  WRK-MCP-TABLE
+           MOVE    "key43"             TO  WRK-MCP-PATHNAME
            PERFORM 900-SEIKYU-INV-SEC
            IF      FLG-SEIKYU          =   ZERO
                MOVE    MCPDATA-REC         TO  RECE10-REC
                MOVE    RECE10-RECESYUBETU  TO  KOHSKY-RECESYUBETU
+               MOVE    RECE10-RECEKA       TO  KOHSKY-RECEKA
            ELSE
                 GO  TO  20022-KOHSKY-WRITE-EXT
       *         STRING  "レセプト種別が設定不能 PTNUM="
@@ -6037,7 +6039,8 @@
                MOVE    RECE02-TEKSTYMD TO  RECE10-TEKSTYMD
            END-IF
       *
-           MOVE    "SEIKYU-KEY"        TO  WRK-PATH
+           MOVE    "tbl_seikyu"        TO  WRK-MCP-TABLE
+           MOVE    "key"               TO  WRK-MCP-PATHNAME
            PERFORM 900-SEIKYU-INV-SEC
            IF      FLG-SEIKYU          =   ZERO
                MOVE    MCPDATA-REC         TO  RECE10-REC
@@ -6987,27 +6990,44 @@
       *
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           CALL    "MONFUNC"       USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    WRK-PATH        TO  ORC-DBPATH
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 900-SEIKYU-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-SEIKYU
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            .
        900-SEIKYU-INV-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    請求マスター読込
+      *****************************************************************
+       900-SEIKYU-READ-SEC           SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MONFUNC"       USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO            TO  FLG-SEIKYU
+           ELSE
+               MOVE    1               TO  FLG-SEIKYU
+           END-IF
+      *
+           .
+       900-SEIKYU-READ-EXT.
            EXIT.
       *
       *****************************************************************
@@ -7049,25 +7069,6 @@
        900-KOHSKY-INV-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    請求マスター読込
-      *****************************************************************
-       900-SEIKYU-READ-SEC           SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    ZERO            TO  FLG-SEIKYU
-           ELSE
-               MOVE    1               TO  FLG-SEIKYU
-           END-IF
-      *
-           .
-       900-SEIKYU-READ-EXT.
-           EXIT.
       *****************************************************************
       *    レセプトコメントマスタ　ＲＥＡＤ
       *****************************************************************

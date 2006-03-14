@@ -1814,11 +1814,13 @@
       *        レセプト種別を請求管理より編集
                INITIALIZE                      RECE10-REC
                MOVE    KOHSKY-KEY          TO  RECE10-KEY
-               MOVE    "SEIKYU-KEY15"      TO  WRK-PATH
+               MOVE    "tbl_seikyu"        TO  WRK-MCP-TABLE
+               MOVE    "key43"             TO  WRK-MCP-PATHNAME
                PERFORM 900-SEIKYU-INV-SEC
                IF      FLG-SEIKYU          =   ZERO
                    MOVE    MCPDATA-REC         TO  RECE10-REC
                    MOVE    RECE10-RECESYUBETU  TO  KOHSKY-RECESYUBETU
+                   MOVE    RECE10-RECEKA       TO  KOHSKY-RECEKA
       *********ELSE
       *            STRING  "レセプト種別が設定不能 PTNUM="
       *                                     DELIMITED  BY  SIZE
@@ -6316,7 +6318,8 @@
                MOVE    RECE62-TEKSTYMD TO  RECE10-TEKSTYMD
            END-IF
       *
-           MOVE    "SEIKYU-KEY"        TO  WRK-PATH   
+           MOVE    "tbl_seikyu"        TO  WRK-MCP-TABLE
+           MOVE    "key"               TO  WRK-MCP-PATHNAME
            PERFORM 900-SEIKYU-INV-SEC
            IF      FLG-SEIKYU          =   ZERO
                MOVE    MCPDATA-REC         TO  RECE10-REC
@@ -7105,24 +7108,22 @@
       *
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           CALL    "MONFUNC"       USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE   WRK-PATH             TO  ORC-DBPATH
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 900-SEIKYU-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-SEIKYU
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
            .
        900-SEIKYU-INV-EXT.
@@ -7134,10 +7135,9 @@
        900-SEIKYU-READ-SEC           SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "MONFUNC"       USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-SEIKYU
            ELSE
