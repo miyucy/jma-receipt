@@ -143,6 +143,8 @@
       *
                05  SPA-HKN-TEKEDYMD         PIC X(08).
                05  SPA-HKN2-KOHNUM          PIC X(03).
+               05  SPA-HKN2-KOHID           PIC 9(10).
+               05  SPA-HKN2-JKYSNUM         PIC X(20).
                05  SPA-HKN2-TEKSTYMD        PIC X(08).
                05  SPA-HKN2-TEKEDYMD        PIC X(08).
       *
