@@ -136,7 +136,7 @@
                        09  SPA-GMN-SDOKNRYOMEI     PIC X(50).
                    07  SPA-GMN-SDOKNRYOCOB-G.
                        09  SPA-GMN-SDOKNRYOCOB     PIC X(54)
-                                                   OCCURS  50.
+                                                   OCCURS  100.
                    07  SPA-SDOKNRYO-MAX            PIC 9(04).
       *
                    07  SPA-GMN-YKZKNRKBN-G.

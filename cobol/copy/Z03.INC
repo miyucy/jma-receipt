@@ -88,7 +88,7 @@
                     06  Z03-SDOKNRYO.
                       07  Z03-VALUE   PIC X(50).
                     06  Z03-SDOKNRYO-COUNT   PIC S9(9)   BINARY.
-                    06  Z03-SDOKNRYO-ITEM    PIC X(50)   OCCURS  50.
+                    06  Z03-SDOKNRYO-ITEM    PIC X(50)   OCCURS  100.
                   05  Z03-HKNTEKKBNCOB.
                     06  Z03-HKNTEKKBN.
                       07  Z03-VALUE   PIC X(20).

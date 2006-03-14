@@ -100,7 +100,7 @@ Z03	{
 						value	varchar(50);
 					};
 					count	int;
-					item	varchar(50)[50];
+					item	varchar(50)[100];
 				};
 				HKNTEKKBNCOB	{
 					HKNTEKKBN	{
