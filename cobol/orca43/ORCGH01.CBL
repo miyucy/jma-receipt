@@ -52,6 +52,8 @@
       *
       *  02.07.01    NACL-藤原    05/08/20  特別療養費対応
       *  02.07.02    NACL-藤原    05/10/31  MONFUNC対応
+      *
+      *  02.08.01    NACL-藤原    06/02/20  主科対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -914,7 +916,8 @@
       *    請求管理ＤＢ検索処理
       *
            IF      SPA-ERRCD               =   SPACE
-               IF      SPA-SYS-1001-HOSPSBT1   =   ZERO 
+               IF      SPA-SYS-1001-HOSPSBT1   =   ZERO
+                   MOVE    SPACE               TO  SPA-H01GMN-SRYKA 
                    PERFORM 41021-SEIKYU-KENSAKU-SEC
                ELSE
                    MOVE    3               TO  SPA-H01GMN-CUR
@@ -977,7 +980,7 @@
            MOVE    SPA-HOSPID          TO  RECE10-HOSPID
            MOVE    SPA-H01NAI-PTID     TO  RECE10-PTID
            IF      SPA-H01GMN-SRYKA    =   SPACE
-               MOVE    ZERO                TO  RECE10-RECEKA
+               MOVE    "%%"                TO  RECE10-RECEKA
            ELSE
                MOVE    SPA-H01GMN-SRYKA    TO  RECE10-RECEKA
            END-IF
@@ -1036,6 +1039,14 @@
       *
       *    見出し編集
            PERFORM 3101-MIDASI-HENSYU-SEC
+      *
+      *    主科対応のとき主科を表示する
+           IF    ( SPA-SYUKA-KBN      =   "1"  )
+           AND   ( RECE10-TEISYUTUSAKI 
+                                      =   "1"  )
+           AND   ( RECE10-RECEKA  NOT =   "00" )
+               MOVE    RECE10-RECEKA      TO  SPA-H01GMN-SRYKA
+           END-IF
       *
            IF      RECE10-NYUGAIKBN   =   "1"
                MOVE    "入　院"       TO  SPA-H01GMN-HNYUGAIKBN
@@ -2024,7 +2035,7 @@
                                            H01-HHOJOKBN-STYLE
       *
       *    入力の設定
-           IF      SPA-SYS-1001-HOSPSBT1   =   0
+           IF      SPA-SYS-1001-HOSPSBT1   =   "0"
                MOVE    WIDGET-INSENSITIVE  TO  H01-SRYKA-STATE
            ELSE
                MOVE    WIDGET-NORMAL       TO  H01-SRYKA-STATE

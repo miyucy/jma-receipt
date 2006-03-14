@@ -42,6 +42,8 @@
       *
       *  02.07.01    NACL-Æ£¸¶    05/08/20  ÆÃÊÌÎÅÍÜÈñÂÐ±þ
       *  02.07.02    NACL-Æ£¸¶    05/10/31  MONFUNCÂÐ±þ
+      *
+      *  02.08.01    NACL-Æ£¸¶    06/02/20  ¼ç²ÊÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -281,7 +283,7 @@
            MOVE    SPA-HOSPID          TO  RECE10-HOSPID
            MOVE    SPA-H99NAI-PTID     TO  RECE10-PTID
            IF      SPA-H99GMN-SRYKA    =   SPACE
-               MOVE    ZERO                TO  RECE10-RECEKA
+               MOVE    "%%"                TO  RECE10-RECEKA
            ELSE
                MOVE    SPA-H99GMN-SRYKA    TO  RECE10-RECEKA
            END-IF
@@ -666,7 +668,7 @@
            MOVE    "blue"              TO  H99-NAME-STYLE
                                            H99-SRYKANAME-STYLE
       *            
-           IF      SPA-SYS-1001-HOSPSBT1   =   0
+           IF      SPA-SYS-1001-HOSPSBT1   =   "0"
                MOVE    WIDGET-INSENSITIVE  TO  H99-SRYKA-STATE
            ELSE
                MOVE    WIDGET-NORMAL       TO  H99-SRYKA-STATE

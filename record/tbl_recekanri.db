@@ -236,7 +236,7 @@ path	key10		{
                     AND     CREHMS       =   :CREHMS
                     AND     TEISYUTUSAKI =   :TEISYUTUSAKI
                     AND     RECESYUBETU  =   :RECESYUBETU
-                    AND     SRYKA        =   :SRYKA
+                    AND     SRYKA        like :SRYKA
 		;
 	};
 };
