@@ -234,5 +234,8 @@ W03	{
 		SSTKIJUN25	{
 			value	number(1);
 		};
+		SELCD	{
+			value	varchar(4);
+		};
 	};
 };

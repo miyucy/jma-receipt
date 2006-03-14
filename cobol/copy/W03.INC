@@ -30,3 +30,5 @@
                 04  W03-VALUE   PIC X(9).
               03  W03-SSTKIJUN-G  OCCURS  25.
                 04  W03-SSTKIJUN   PIC S9(1).
+              03  W03-SELCD.
+                04  W03-VALUE   PIC X(4).

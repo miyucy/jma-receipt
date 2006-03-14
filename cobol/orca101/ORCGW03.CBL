@@ -65,6 +65,8 @@
                            11  SPA-GMN-TCD         PIC X(04).
                            11  SPA-GMN-TNAME       PIC X(100).
                            11  SPA-GMN-TSSTKIJUN   PIC 9(01).
+               05  SPA-GMN-SELCD                   PIC X(04).
+      *
                05  SPA-NAI-AREA.
                    07  SPA-NAI-TBL.
                        09  SPA-NAI-TBLO            OCCURS  1000.
@@ -76,6 +78,8 @@
        01  FLG-AREA.
            03  FLG-END                            PIC 9(01).
            03  FLG-SYSKANRI                       PIC 9(01).
+           03  FLG-SELCD                          PIC 9(01).
+           03  FLG-TOUROKU                        PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -108,6 +112,9 @@
       *
            03  WRK-EDYUKYMD        PIC X(08).
       *
+           03  WRK-TCD             PIC 9(04).
+           03  WRK-PAGE            PIC 9(04).
+      *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-HENYMD.
@@ -139,6 +146,8 @@
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
+      *    数字変換領域
+           COPY    "CPORCSNUM.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -579,6 +588,9 @@
       *        削除
                WHEN    "CLICKED"       ALSO    "B03"
                    PERFORM  403-DEL-SEC
+      *        カーソル移動
+               WHEN    "CLICKED"       ALSO    "B09"
+                   PERFORM  409-CURSET-SEC
            END-EVALUATE
            .
       *
@@ -587,11 +599,12 @@
       *****************************************************************
       *    会話　処理
       *****************************************************************
-       200-ENTRY                             SECTION.
+       200-ENTRY                       SECTION.
       *
            MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
            MOVE    ZERO                TO  SPA-GMN-CUR
       *
+           MOVE    ZERO                TO  FLG-TOUROKU
       *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
            .
@@ -611,6 +624,19 @@
                GO      TO      410-INPUT-CHK-EXT
            END-IF
       *
+           IF      FLG-TOUROKU         =   ZERO
+               IF      (SPA-GMN-SELCD  NOT =   SPACE )  AND
+                       (FLG-SELCD          =   ZERO  )
+      *            コード表示へ
+                   PERFORM 4103-SELCD-HENSYU-SEC
+               END-IF
+               IF      (SPA-GMN-SELCD  NOT =   SPACE )  AND
+                       (SPA-ERRCD          =   SPACE  ) AND
+                       (WRK-MCP-WIDGET     =   "SELCD")
+      *            カーソル移動
+                   PERFORM 4103-SELCD-CUR-SEC
+               END-IF
+           END-IF
            .
        410-INPUT-CHK-EXT.
            EXIT.
@@ -619,6 +645,8 @@
       *    画面をＳＰＡセット処理
       *****************************************************************
        4101-GMN-SPA-SET-SEC       SECTION.
+      *
+           MOVE    W03-SELCD           TO  SPA-GMN-SELCD
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   25
@@ -633,6 +661,8 @@
       *    基本チェック処理
       *****************************************************************
        4102-KIHON-CHK-SEC       SECTION.
+      *
+           PERFORM  4101-SELCD-CHK-SEC
       *
            PERFORM  4101-SSTKIJUN-CHK-SEC
       *
@@ -660,10 +690,37 @@
            EXIT.
       *
       *****************************************************************
+      *    選択コードチェック処理
+      *****************************************************************
+       4101-SELCD-CHK-SEC                         SECTION.
+      *
+           IF      SPA-GMN-SELCD       =   SPACE
+               CONTINUE
+           ELSE
+               INITIALIZE                      ORCSNUMAREA
+               MOVE    SPA-GMN-SELCD       TO  SNUM-INX
+               CALL    "ORCSNUM"           USING
+                                           ORCSNUMAREA
+               IF     (SNUM-RC         NOT =   ZERO  )   OR
+                      (SNUM-MINKBN         =   "1"   )   OR
+                      (SNUM-SEISUU         >   4     )   OR
+                      (SNUM-SYOSUU         >   ZERO  )
+                   MOVE    "0001"              TO  SPA-ERRCD
+                   MOVE    90                  TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    SNUM-OUTEDT(12:4)   TO  SPA-GMN-SELCD
+               END-IF
+           END-IF
+           .
+       4101-SELCD-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *  　施設基準チェック
       *****************************************************************
        4101-SSTKIJUN-CHK-SEC                         SECTION.
       *
+           MOVE    ZERO                TO  FLG-SELCD
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   25  )  OR
@@ -676,6 +733,10 @@
                AND     SPA-GMN-TSSTKIJUN (IDX) =   1
                    MOVE    "0002"             TO  SPA-ERRCD
                    MOVE    IDX                TO  SPA-GMN-CUR
+               END-IF
+      *
+               IF      SPA-GMN-TCD (IDX)   =   SPA-GMN-SELCD
+                   MOVE    1               TO  FLG-SELCD
                END-IF
       *
                IF      SPA-ERRCD           =   SPACE
@@ -692,6 +753,42 @@
            END-PERFORM
            .
        4101-SSTKIJUN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    コード表示へ処理
+      *****************************************************************
+       4103-SELCD-HENSYU-SEC             SECTION.
+      *
+           MOVE    SPA-GMN-SELCD       TO  WRK-TCD
+           COMPUTE WRK-PAGE            =  ((WRK-TCD - 1  )
+                                       /   25 )
+                                       +   1
+           IF      WRK-PAGE            >   SPA-GMN-PAGE-MAX
+               MOVE    "0010"              TO  SPA-ERRCD
+               MOVE    90                  TO  SPA-GMN-CUR
+           ELSE
+               MOVE    WRK-PAGE            TO  SPA-GMN-PAGE
+               PERFORM 3101-SSTKIJUN-HENSYU-SEC
+           END-IF
+           .
+       4103-SELCD-HENSYU-EXT.
+           EXIT.
+      *****************************************************************
+      *    カーソル移動処理
+      *****************************************************************
+       4103-SELCD-CUR-SEC             SECTION.
+      *    カーソル
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   25  )
+               IF      SPA-GMN-TCD (IDX)   =   SPA-GMN-SELCD
+                   MOVE    IDX             TO  SPA-GMN-CUR
+                   MOVE    25              TO  IDX
+               END-IF
+           END-PERFORM
+           MOVE    SPACE           TO  SPA-GMN-SELCD
+      *
+           .
+       4103-SELCD-CUR-EXT.
            EXIT.
       *****************************************************************
       *    前頁　処理
@@ -741,6 +838,7 @@
       *****************************************************************
        410-KAKUTEI-SEC           SECTION.
       *
+           MOVE    1                TO  FLG-TOUROKU
            PERFORM 4901-KANRENCHK-SEC
            IF      SPA-ERRCD        =   SPACE
                IF      SPA-SYORIFLG     =   ZERO
@@ -844,6 +942,15 @@
       *****END-PERFORM      
            .
        4901-KANRENCHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    カーソル移動処理
+      *****************************************************************
+       409-CURSET-SEC                               SECTION.
+      *
+           MOVE    90                  TO  SPA-GMN-CUR
+           .
+       409-CURSET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1000,6 +1107,8 @@
       *
            MOVE    SPA-GMN-STYUKYMD     TO  W03-STYUKYMD
            MOVE    SPA-GMN-EDYUKYMD     TO  W03-EDYUKYMD
+      *
+           MOVE    SPA-GMN-SELCD        TO  W03-SELCD
       *    業務権限非活性処理
            PERFORM 510-GSRAUTH-SEC
       *
@@ -1037,6 +1146,9 @@
                END-IF
                MOVE    WRK-WIDGET2         TO  SPA-GMN-CUR
                ADD     1                   TO  SPA-GMN-CUR
+               IF      SPA-GMN-CUR         =   26
+                   MOVE    90              TO  SPA-GMN-CUR
+               END-IF
            END-IF
       *
            EVALUATE    SPA-GMN-CUR
@@ -1090,6 +1202,8 @@
                     MOVE  "SSTKIJUN24"    TO  MCP-WIDGET
                 WHEN   25
                     MOVE  "SSTKIJUN25"    TO  MCP-WIDGET
+                 WHEN   90
+                    MOVE  "SELCD"         TO  MCP-WIDGET
                  WHEN   99
                     MOVE  "B12"        TO  MCP-WIDGET
            END-EVALUATE
@@ -1106,6 +1220,8 @@
            MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
+               WHEN    "0001"
+                   MOVE    "選択コード入力エラー"    TO  SPA-ERRMSG
                WHEN    "0002"
                    MOVE    "入力エラー"               TO  SPA-ERRMSG
                WHEN    "0003"
@@ -1117,6 +1233,9 @@
                    MOVE    "前頁はありません"         TO  SPA-ERRMSG
                WHEN    "0007"
                    MOVE    "次頁はありません"         TO  SPA-ERRMSG
+               WHEN    "0010"
+                   MOVE    "選択コードはありません"
+                                                       TO  SPA-ERRMSG
                WHEN    "1001"
                    MOVE    "更新ができませんでした"
                                                       TO  SPA-ERRMSG
