@@ -2032,8 +2032,9 @@
                   IF  ((SPA-HKN2-KOHID NOT =   ZERO  )  AND
                        (SPA-HKN2-KOHID     =   SPA-PTKOH-KOHID(IDX)))
                    OR ( SPA-HKN2-JKYSNUM   =   SPA-PTKOH-JKYSNUM (IDX))
-                   PERFORM 31012-IPN-KOHHEN-SEC
-                   MOVE    SPA-PTKOH-MAX       TO  IDX
+                       PERFORM 31012-IPN-KOHHEN-SEC
+                       MOVE    SPA-PTKOH-MAX       TO  IDX
+                   END-IF
                END-IF
              ELSE
       *        Ï·¿Í¸øÈñ
