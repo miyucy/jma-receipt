@@ -1340,6 +1340,10 @@
                  AND  (SPA-NAI-KTEKEDYMD(IDX-K) >=  WRK-HKN2-TEKSTYMD)
                    MOVE    WRK-HKN2-TEKSTYMD       TO  SPA-HKN2-TEKSTYMD
                    MOVE    SPA-GMN-KOHNUM(IDX-K)   TO  SPA-HKN2-KOHNUM
+                   MOVE    SPA-NAI-PTKOH-KOHID(IDX-K)
+                                                   TO  SPA-HKN2-KOHID
+                   MOVE    SPA-GMN-JKYSNUM(IDX-K)
+                                                   TO  SPA-HKN2-JKYSNUM
                    IF      SPA-NAI-KTEKEDYMD(IDX-K)
                                                 <=  WRK-HKN2-TEKEDYMD
                        MOVE    SPA-NAI-KTEKEDYMD(IDX-K)
@@ -2024,7 +2028,10 @@
                    UNTIL       IDX     >   SPA-PTKOH-MAX
       *      Ï·¿Í¸øÈñ°Ê³°
              IF    SPA-HKN2-TEKSTYMD   NOT =   SPACE
-               IF      SPA-HKN2-KOHNUM     =   SPA-PTKOH-KOHNUM (IDX)
+               IF     (SPA-HKN2-KOHNUM     =   SPA-PTKOH-KOHNUM (IDX))
+                  IF  ((SPA-HKN2-KOHID NOT =   ZERO  )  AND
+                       (SPA-HKN2-KOHID     =   SPA-PTKOH-KOHID(IDX)))
+                   OR ( SPA-HKN2-JKYSNUM   =   SPA-PTKOH-JKYSNUM (IDX))
                    PERFORM 31012-IPN-KOHHEN-SEC
                    MOVE    SPA-PTKOH-MAX       TO  IDX
                END-IF
