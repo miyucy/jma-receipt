@@ -302,6 +302,7 @@
       **             MOVE   "190097310"   TO  NYUKHN-KAGENCD (2)
       **             MOVE   "190119710"   TO  NYUKHN-KAGENCD (3)
       **             MOVE   "190119810"   TO  NYUKHN-KAGENCD (4)
+               END-IF
            END-IF
       *    ワーク加減算テーブルに診療行為コードと有効期間を設定
            INITIALIZE              WRK-KGNTEN-TBL
