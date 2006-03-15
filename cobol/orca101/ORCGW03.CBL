@@ -402,7 +402,7 @@
                                         ORCMCPAREA
                                         MCPDATA-REC
       *    £È£±£¸Ç¯£´·î°Ê¹ß¤Ï¡¢£±£°£°¤È¤¹¤ë
-           IF      SPA-GMN-EDYUKYMD    >=  "20060401"
+           IF      SPA-W01-EDYUKYMD    >=  "20060401"
                IF      IDX                 <   1000
                    MOVE    1000            TO  IDX
                END-IF
