@@ -1146,3 +1146,22 @@ path	key93	{
 	};
 };
 
+path	key25	{
+	DBSELECT	{
+		DECLARE tbl_tensu_key25_csr CURSOR FOR
+		SELECT *
+		FROM tbl_tensu
+			WHERE SRYCD        LIKE '19%'
+			AND   YUKOSTYMD    <=  :YUKOSTYMD
+			AND   YUKOEDYMD    >=  :YUKOEDYMD
+			AND   CDKBN_KBN     =  :CDKBN_KBN
+			AND  ((   CDKBN_KBNNUM  =  :TK_CDKBN_KBNNUM 
+			      AND CDKBN_KOUBAN  =  :TK_CDKBN_KOUBAN )
+               OR (   CDKBN_KBNNUM  =  :CDKBN_KBNNUM ))
+			AND   DATAKBN       =  1
+			AND   CHUKSNTSUBAN  =  '0'
+			AND   NYUKHNKSNKBN  >  0
+			ORDER   BY          KOUHYOJYUNNUM
+			;
+	};
+};
