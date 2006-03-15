@@ -31,6 +31,8 @@
       *                                     （医師配置適合）の追加
       *  00.00.02    NACL-小豆沢  04/04/21  有床診療所１群入院基本料１
       *                                     （看護・医師配置適合）の追加
+      *平成１８年４月改定対応
+      *  00.00.03    NACL-小豆沢  06/03/15  有床診療所入院基本料対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -48,6 +50,7 @@
        01  FLG-AREA.
            03  FLG-ERR                     PIC 9(01).
            03  FLG-DBRC                    PIC 9(01).
+           03  FLG-SINRYOJO-VAL-1804       PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -116,6 +119,21 @@
                05  CONST-SINRYOJO-03-ED    PIC X(4)    VALUE   "1030".
                05  CONST-SINRYOJO-04-ST    PIC X(4)    VALUE   "1031".
                05  CONST-SINRYOJO-04-ED    PIC X(4)    VALUE   "1090".
+               05  CONST-SINRYOJO-05-ST    PIC X(4)    VALUE   "1091".
+               05  CONST-SINRYOJO-05-ED    PIC X(4)    VALUE   "1180".
+               05  CONST-SINRYOJO-06-ST    PIC X(4)    VALUE   "1181".
+               05  CONST-SINRYOJO-06-ED    PIC X(4)    VALUE   "3001".
+               05  CONST-SINRYOJO-07-ST    PIC X(4)    VALUE   "1180".
+               05  CONST-SINRYOJO-07-ED    PIC X(4)    VALUE   "9999".
+           03  CONST-SINRYOJO-VAL-1804.
+               05  CONST-SINRYOJO-01-ST    PIC X(4)    VALUE   "1001".
+               05  CONST-SINRYOJO-01-ED    PIC X(4)    VALUE   "1007".
+               05  CONST-SINRYOJO-02-ST    PIC X(4)    VALUE   "1008".
+               05  CONST-SINRYOJO-02-ED    PIC X(4)    VALUE   "1014".
+               05  CONST-SINRYOJO-03-ST    PIC X(4)    VALUE   "1015".
+               05  CONST-SINRYOJO-03-ED    PIC X(4)    VALUE   "1030".
+               05  CONST-SINRYOJO-04-ST    PIC X(4)    VALUE   "1031".
+               05  CONST-SINRYOJO-04-ED    PIC X(4)    VALUE   "1999".
                05  CONST-SINRYOJO-05-ST    PIC X(4)    VALUE   "1091".
                05  CONST-SINRYOJO-05-ED    PIC X(4)    VALUE   "1180".
                05  CONST-SINRYOJO-06-ST    PIC X(4)    VALUE   "1181".
@@ -243,8 +261,17 @@
             OR                                 "190813270"
             OR                                 "190117670"
             OR                                 "190813870"
-                                                           )
-               MOVE    CONST-SINRYOJO-VAL  TO  WRK-KIKAN-TBL
+            OR                                 "099999950"
+            OR                                 "099999951"   )
+      *        平成１８年４月改定対応（有床診療所入院基本料）
+               IF  (SYOKIKSN-IN-KHNSRYCD  = "099999950"  OR
+                                            "099999951") AND
+                   SYOKIKSN-IN-SANTEISTYMD(1:6) >= "200604"
+                   MOVE    1       TO    FLG-SINRYOJO-VAL-1804
+                   MOVE    CONST-SINRYOJO-VAL-1804  TO  WRK-KIKAN-TBL
+               ELSE
+                   MOVE    CONST-SINRYOJO-VAL  TO  WRK-KIKAN-TBL
+               END-IF
            ELSE
                MOVE    CONST-KGNTEN-VAL    TO  WRK-KIKAN-TBL
            END-IF
@@ -258,6 +285,24 @@
                GO  TO  200-EDIT-EXT
            END-IF
       *
+      *    平成１８年４月改定対応（有床診療所入院基本料）
+           DISPLAY  "FLG-SINRYOJO-VAL-1804 = " FLG-SINRYOJO-VAL-1804
+           IF   FLG-SINRYOJO-VAL-1804     =    1
+               IF   SYOKIKSN-IN-KHNSRYCD  = "099999950"
+                   MOVE    SPACE        TO  SYOKIKSN-IN-KHNSRYCD
+      *            有床診療所入院基本料１
+      **             MOVE   "190097010"   TO  NYUKHN-KAGENCD (1)
+      **             MOVE   "190097110"   TO  NYUKHN-KAGENCD (2)
+      **             MOVE   "190119510"   TO  NYUKHN-KAGENCD (3)
+      **             MOVE   "190119610"   TO  NYUKHN-KAGENCD (4)
+               ELSE
+                   MOVE    SPACE        TO  SYOKIKSN-IN-KHNSRYCD
+      *            有床診療所入院基本料１
+      **             MOVE   "190097210"   TO  NYUKHN-KAGENCD (1)
+      **             MOVE   "190097310"   TO  NYUKHN-KAGENCD (2)
+      **             MOVE   "190119710"   TO  NYUKHN-KAGENCD (3)
+      **             MOVE   "190119810"   TO  NYUKHN-KAGENCD (4)
+           END-IF
       *    ワーク加減算テーブルに診療行為コードと有効期間を設定
            INITIALIZE              WRK-KGNTEN-TBL
            PERFORM VARYING IDX1    FROM    1   BY  1
