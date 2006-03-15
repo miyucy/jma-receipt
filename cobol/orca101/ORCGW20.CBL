@@ -70,6 +70,7 @@
            03  FLG-NYUKHN                          PIC 9(01).
            03  FLG-SYS5001                         PIC 9(01).
            03  FLG-HIZUKE-ERR                      PIC 9(01).
+           03  FLG-SETKHNRYO                       PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -115,7 +116,8 @@
            03  WRK-CDKOUBAN                        PIC 9(02).
            03  WRK-TK-CDKBNNUM                     PIC 9(03).
            03  WRK-TK-CDKOUBAN                     PIC 9(02).
-           03  WRK-SRYCD-KEY                       PIC X(09).
+           03  WRK-TNS-SRYCD                       PIC X(09).
+           03  WRK-TNS-KJNYMD                      PIC X(08).
            03  WRK-99                              PIC 9(02).
            03  WRK-BTULST-SEL                      PIC 9(02).
            03  WRK-STATE                           PIC S9(9) BINARY.
@@ -152,8 +154,9 @@
                05                      PIC X(09) VALUE "190102270".
                05                      PIC X(09) VALUE "190102370".
                05                      PIC X(09) VALUE "190102470".
-           03  CONST-KANGOCD-R     REDEFINES   CONST-KANGOCD-VAL.
+           03  CONST-KANGOCD-R         REDEFINES   CONST-KANGOCD-VAL.
                05  CONST-KANGOCD       PIC X(09) OCCURS 5.
+           03  CONST-H180401           PIC X(08) VALUE "20060401".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -1903,6 +1906,12 @@
                MOVE    SPACE       TO  SPA-GMN-W20-KNGHJOKSN-G
            END-IF
       *
+           IF    ( SPA-NAI-W20-YUKOSTYMD  >=   CONST-H180401 )
+               IF    ( SPA-GMN-W20-SBT NOT =   "04" )
+                   MOVE    SPACE       TO  SPA-GMN-W20-YKNKNGKSN-G
+               END-IF
+           END-IF
+      *
            MOVE    SPA-GMN-W20-SBT     TO  WRK-CMB-CD
            PERFORM 4201-RECEDSPKBNLST-CHK-SEC
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-W20-RECEDSPKBN-G
@@ -2046,34 +2055,100 @@
                        SPA-GMN-W20-KHNRYOLST-G
                        SPA-NAI-W20-KHNTENLST-G
       *
+           MOVE    ZERO            TO  IDX-CMB
+      *
+           IF    ( SPA-NAI-W20-YUKOSTYMD  >=   CONST-H180401 )
+            AND  ( SPA-GMN-W20-SBT         =   "08" )
+               PERFORM 41001-KHNRYO-CMB-EDT-SEC
+           ELSE
+               PERFORM 41002-KHNRYO-CMB-EDT-SEC
+           END-IF
+      *
+           .
+      *
+       4100-KHNRYO-CMB-EDT-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院基本料コンボ編集処理
+      *****************************************************************
+       41001-KHNRYO-CMB-EDT-SEC     SECTION.
+      *
+           MOVE    "099999950"         TO  WRK-TNS-SRYCD
+           MOVE    SPA-NAI-W20-YUKOSTYMD
+                                       TO  WRK-TNS-KJNYMD
+           PERFORM 900-TENSU-KEY-SEL-SEC
+           IF    ( FLG-TENSU           =   ZERO )
+               PERFORM 410011-KHNRYO-CMB-SET-SEC
+           END-IF
+      *
+           MOVE    "099999951"         TO  WRK-TNS-SRYCD
+           MOVE    SPA-NAI-W20-YUKOSTYMD
+                                       TO  WRK-TNS-KJNYMD
+      *
+           PERFORM 900-TENSU-KEY-SEL-SEC
+           IF    ( FLG-TENSU           =   ZERO )
+               PERFORM 410011-KHNRYO-CMB-SET-SEC
+           END-IF
+      *
+           .
+      *
+       41001-KHNRYO-CMB-EDT-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院基本料コンボ編集処理
+      *****************************************************************
+       410011-KHNRYO-CMB-SET-SEC       SECTION.
+      *
+           COMPUTE IDX-CMB     =   IDX-CMB    +   1
+           MOVE    IDX-CMB     TO  SPA-GMN-W20-KHNRYO-MAX
+      *
+           MOVE    TNS-SRYCD   TO  SPA-NAI-W20-KHNSRYCDLST
+                                               (IDX-CMB)
+      *
+           MOVE    IDX-CMB     TO  WRK-99
+           MOVE    WRK-99      TO  SPA-GMN-W20-KHNRYOL
+                                                   (IDX-CMB)
+           MOVE    TNS-NAME    TO  SPA-GMN-W20-KHNRYOMEIL
+                                                   (IDX-CMB)
+           MOVE    TNS-TEN     TO  SPA-NAI-W20-KHNTENLST
+                                                   (IDX-CMB)
+      *
+           .
+       410011-KHNRYO-CMB-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院基本料コンボ編集処理
+      *****************************************************************
+       41002-KHNRYO-CMB-EDT-SEC     SECTION.
+      *
       *    点数マスタ検索処理
            PERFORM 900-TENSU-SEL-SEC
       *
-           MOVE    ZERO            TO  IDX-CMB
            PERFORM UNTIL ( FLG-TENSU   NOT =   ZERO )
                 OR       ( IDX-CMB        >=   CONST-KHNRYO-MAX  )
+      *
+               MOVE    1           TO  FLG-SETKHNRYO
       *
       *        選定入院料は読み飛ばす
                MOVE    ZERO        TO  CNT-STR
                INSPECT TNS-NAME    TALLYING   CNT-STR
-                       FOR     ALL "（選）"
+                       FOR     ALL "（選）", ALL "（選定療養）"
+      *
       *
                IF    ( CNT-STR     >   ZERO )
-                   CONTINUE
-               ELSE
-                   COMPUTE IDX-CMB    =   IDX-CMB    +   1
-                   MOVE    IDX-CMB     TO  SPA-GMN-W20-KHNRYO-MAX
+                   MOVE    ZERO    TO  FLG-SETKHNRYO
+               END-IF
       *
-                   MOVE    TNS-SRYCD   TO  SPA-NAI-W20-KHNSRYCDLST
-                                                       (IDX-CMB)
+               IF    ( TNS-ROUTEKKBN       =   "2" )
+                   MOVE    ZERO    TO  FLG-SETKHNRYO
+               END-IF
       *
-                   MOVE    IDX-CMB     TO  WRK-99
-                   MOVE    WRK-99      TO  SPA-GMN-W20-KHNRYOL
-                                                       (IDX-CMB)
-                   MOVE    TNS-NAME    TO  SPA-GMN-W20-KHNRYOMEIL
-                                                       (IDX-CMB)
-                   MOVE    TNS-TEN     TO  SPA-NAI-W20-KHNTENLST
-                                                       (IDX-CMB)
+               DISPLAY WRK-PATHNAME " " 
+               FLG-SETKHNRYO "-"TNS-ROUTEKKBN " " 
+                TNS-SRYCD " " TNS-NAME
+      *
+               IF    ( FLG-SETKHNRYO   =   1 )
+                   PERFORM 410011-KHNRYO-CMB-SET-SEC
                END-IF
       *
       *        点数マスタ読込処理
@@ -2087,7 +2162,7 @@
       *
            .
       *
-       4100-KHNRYO-CMB-EDT-EXT.
+       41002-KHNRYO-CMB-EDT-EXT.
            EXIT.
       *****************************************************************
       *    看護補助加算
@@ -2221,8 +2296,17 @@
                PERFORM 4100-SYS-KANRI-SAI-SET-SEC
            END-IF
       *
-           IF    ( SPA-NAI-W20-YUKOSTYMD  >=   "20060401" )
-               MOVE    "F"         TO  SPA-GMN-W20-CHK-SYOKUDOKBN
+           IF    ( SPA-NAI-W20-YUKOSTYMD  >=   CONST-H180401 )
+               IF    ( SPA-NAI-W20-YUKOSTYMD-MOT   <   CONST-H180401 )
+                   INITIALIZE              SPA-NAI-W20-KHNSRYCD
+                                           SPA-NAI-W20-KHNTEN
+                                           SPA-GMN-W20-KHNRYO-G
+               END-IF
+      *
+               IF    ( SPA-GMN-W20-SBT NOT =   "04" )
+                   MOVE    SPACE   TO  SPA-GMN-W20-YKNKNGKSN-G
+               END-IF
+      *
            END-IF
       *
            MOVE    SPA-NAI-W20-YUKOSTYMD
@@ -3306,11 +3390,7 @@
       *
            END-PERFORM
       *
-           IF    ( SPA-NAI-W20-YUKOSTYMD  >=   "20060401" )
-               CONTINUE
-           ELSE
-               MOVE    "食堂加算"      TO  W20-CHK-SYOKUDOKBN-LBL
-           END-IF
+           MOVE    "食堂加算"          TO  W20-CHK-SYOKUDOKBN-LBL
       *
       *    項目状態編集
            PERFORM 500-EDIT-GMNHEN-STATE-SEC
@@ -3385,11 +3465,12 @@
                                        TO  W20-B06-STATE
            END-IF
       *
-           DISPLAY "SPA-NAI-W20-YUKOSTYMD =" SPA-NAI-W20-YUKOSTYMD
-      *
-           IF    ( SPA-NAI-W20-YUKOSTYMD  >=   "20060401" )
-               MOVE    WIDGET-INSENSITIVE
-                                       TO  W20-CHK-SYOKUDOKBN-STATE
+           IF    ( SPA-NAI-W20-YUKOSTYMD  >=   CONST-H180401 )
+               IF    ( SPA-GMN-W20-SBT NOT =   "04" )
+                   MOVE    WIDGET-INSENSITIVE
+                                       TO  W20-YAKANKNGKSN-STATE
+                                           W20-YKNKNGKSN-ITM-STATE
+               END-IF
            END-IF
       *
            .
@@ -3469,6 +3550,13 @@
                IF    ( W20-KNGHJOKSN-STATE
                                        =   WIDGET-INSENSITIVE )
                    MOVE    8           TO  SPA-GMN-W20-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-W20-CUR     =   8 )
+               IF    ( W20-YAKANKNGKSN-STATE
+                                       =   WIDGET-INSENSITIVE )
+                   MOVE    9           TO  SPA-GMN-W20-CUR
                END-IF
            END-IF
       *
@@ -4041,6 +4129,34 @@
       *
            INITIALIZE                  TNS-TENSU-REC
       *
+           DISPLAY "SPA-NAI-W20-YUKOSTYMD ="  SPA-NAI-W20-YUKOSTYMD
+      *
+           IF    ( SPA-NAI-W20-YUKOSTYMD  >=   CONST-H180401 )
+               PERFORM 9002-EDIT-TENSU-PATH-SEC
+           ELSE
+               PERFORM 9001-EDIT-TENSU-PATH-SEC
+           END-IF
+      *
+           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC      =   ZERO )
+               MOVE    MCPDATA-REC TO  TNS-TENSU-REC
+           ELSE
+               MOVE    1           TO  FLG-TENSU
+               INITIALIZE              TNS-TENSU-REC
+           END-IF
+      *
+           .
+      *
+       900-TENSU-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    点数マスタ検索パス編集処理（平成１７年度まで）
+      *****************************************************************
+       9001-EDIT-TENSU-PATH-SEC         SECTION.
+      *
            IF    ( SPA-GMN-W20-SBT =   "07" )
                MOVE    "-"         TO  TNS-CDKBN-KBN
            ELSE
@@ -4070,23 +4186,11 @@
                MOVE    "key13"     TO  WRK-PATHNAME
            END-EVALUATE
       *
-           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-           MOVE    "tbl_tensu"         TO  MCP-TABLE
-           MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC      =   ZERO )
-               MOVE    MCPDATA-REC TO  TNS-TENSU-REC
-           ELSE
-               MOVE    1           TO  FLG-TENSU
-               INITIALIZE              TNS-TENSU-REC
-           END-IF
-      *
            .
-      *
-       900-TENSU-SEL-EXT.
+       9001-EDIT-TENSU-PATH-EXT.
            EXIT.
       *****************************************************************
-      *    区分番号設定処理
+      *    区分番号設定処理（平成１７年度まで）
       *****************************************************************
        9001-CDKBNNUM-SET-SEC           SECTION.
       *
@@ -4137,6 +4241,74 @@
        9001-CDKBNNUM-SET-EXT.
            EXIT.
       *****************************************************************
+      *    点数マスタ検索パス編集処理（平成１８年度以降）
+      *****************************************************************
+       9002-EDIT-TENSU-PATH-SEC         SECTION.
+      *
+           MOVE    "A"             TO  TNS-CDKBN-KBN
+      *
+      *    区分番号設定処理
+           PERFORM 9002-CDKBNNUM-SET-SEC
+           MOVE    WRK-CDKBNNUM    TO  TNS-CDKBN-KBNNUM
+           MOVE    WRK-CDKOUBAN    TO  TNS-CDKBN-KOUBAN
+           MOVE    WRK-TK-CDKBNNUM TO  TNSXX-TK-CDKBN-KBNNUM
+           MOVE    WRK-TK-CDKOUBAN TO  TNSXX-TK-CDKBN-KOUBAN
+      *
+           MOVE    SPA-NAI-W20-YUKOSTYMD
+                                   TO  TNS-YUKOSTYMD
+                                       TNS-YUKOEDYMD
+      *
+      *    点数マスタ検索
+           MOVE    "key25"         TO  WRK-PATHNAME
+      *
+           .
+       9002-EDIT-TENSU-PATH-EXT.
+           EXIT.
+      *****************************************************************
+      *    区分番号設定処理（平成１８年度以降）
+      *****************************************************************
+       9002-CDKBNNUM-SET-SEC           SECTION.
+      *
+           INITIALIZE                  WRK-CDKBNNUM
+                                       WRK-CDKOUBAN
+                                       WRK-TK-CDKBNNUM
+                                       WRK-TK-CDKOUBAN
+      *
+           EVALUATE    SPA-GMN-W20-SBT
+      *    一般病棟
+           WHEN    "01"
+               MOVE    104             TO  WRK-TK-CDKBNNUM
+               MOVE    1               TO  WRK-TK-CDKOUBAN
+               MOVE    100             TO  WRK-CDKBNNUM
+      *    精神病棟
+           WHEN    "02"
+               MOVE    104             TO  WRK-TK-CDKBNNUM
+               MOVE    3               TO  WRK-TK-CDKOUBAN
+               MOVE    103             TO  WRK-CDKBNNUM
+      *    結核病棟
+           WHEN    "03"
+               MOVE    104             TO  WRK-TK-CDKBNNUM
+               MOVE    2               TO  WRK-TK-CDKOUBAN
+               MOVE    102             TO  WRK-CDKBNNUM
+      *    療養病棟
+           WHEN    "04"
+               MOVE    101             TO  WRK-CDKBNNUM
+      *    障害者施設
+           WHEN    "05"
+               MOVE    106             TO  WRK-CDKBNNUM
+      *    専門病院
+           WHEN    "06"
+               MOVE    105             TO  WRK-CDKBNNUM
+      *    有床診療所療養病床入院料
+           WHEN    "09"
+               MOVE    109             TO  WRK-CDKBNNUM
+           END-EVALUATE
+      *
+           .
+      *
+       9002-CDKBNNUM-SET-EXT.
+           EXIT.
+      *****************************************************************
       *    点数マスタFETCH処理
       *****************************************************************
        900-TENSU-FET-SEC               SECTION.
@@ -4156,6 +4328,39 @@
            .
       *
        900-TENSU-FET-EXT.
+           EXIT.
+      *****************************************************************
+      *    点数マスタ検索処理(KEY)
+      *****************************************************************
+       900-TENSU-KEY-SEL-SEC       SECTION.
+      *
+           MOVE    ZERO            TO  FLG-TENSU
+      *
+           INITIALIZE                  TNS-TENSU-REC
+      *
+           MOVE    WRK-TNS-SRYCD   TO  TNS-SRYCD
+           MOVE    WRK-TNS-KJNYMD  TO  TNS-YUKOSTYMD
+                                       TNS-YUKOEDYMD
+           MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
+      *
+           MOVE    "tbl_tensu"     TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  TNS-TENSU-REC
+           ELSE
+               INITIALIZE              TNS-TENSU-REC
+               MOVE    1           TO  FLG-TENSU
+           END-IF
+      *
+      *    点数マスタクローズ
+           MOVE    "tbl_tensu"     TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+      *
+       900-TENSU-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理（FHETCHも行う)

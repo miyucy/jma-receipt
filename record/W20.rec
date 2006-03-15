@@ -62,11 +62,11 @@ W20	{
 		};
 		CMB_KNGHJOKSN	{
 			KNGHJOKSN	{
-				value	varchar(23);
+				value	varchar(41);
 				state	int;
 			};
 			count	int;
-			item	varchar(23)[10];
+			item	varchar(41)[10];
 			state	int;
 		};
 		CMB_YAKANKNGKSN	{

@@ -66,11 +66,11 @@
       *
               04  W20-CMB-KNGHJOKSN.
       *
-                05  W20-KNGHJOKSN          PIC X(23).
+                05  W20-KNGHJOKSN          PIC X(41).
                 05  W20-KNGHJOKSN-STATE    PIC S9(9)   BINARY.
       *
                 05  W20-KNGHJOKSN-CNT      PIC S9(9)   BINARY.
-                05  W20-KNGHJOKSN-ITM      PIC X(23)   OCCURS  10.
+                05  W20-KNGHJOKSN-ITM      PIC X(41)   OCCURS  10.
                 05  W20-KNGHJOKSN-ITM-STATE
                                            PIC S9(9)   BINARY.
       *

@@ -58,7 +58,7 @@
                        09  SPA-GMN-W20-KNGHJOKSN-G.
                            11  SPA-GMN-W20-KNGHJOKSN       PIC X(02).
                            11                              PIC X(01).
-                           11  SPA-GMN-W20-KNGHJOKSNMEI    PIC X(20).
+                           11  SPA-GMN-W20-KNGHJOKSNMEI    PIC X(38).
       *                Ìë´Ö¶ÐÌ³Åù´Ç¸î²Ã»»
                        09  SPA-GMN-W20-YKNKNGKSN-G.
                            11  SPA-GMN-W20-YKNKNGKSN       PIC X(02).
@@ -120,7 +120,7 @@
                                13  SPA-GMN-W20-KNGHJOKSNL  PIC X(02).
                                13                          PIC X(01).
                                13  SPA-GMN-W20-KNGHJOKSNMEIL
-                                                           PIC X(20).
+                                                           PIC X(38).
       *                Ìë´Ö¶ÐÌ³Åù´Ç¸î²Ã»»¥³¥ó¥Ü
                        09  SPA-GMN-W20-YKNKNGKSNLST-G.
                            11  SPA-GMN-W20-YKNKNGKSN-MAX   PIC 9(03).
