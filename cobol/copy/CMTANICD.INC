@@ -24,6 +24,7 @@
       * 01.00.01     MCC-多々納   02/03/19  124 菌種追加(H14.4改正)
       * 01.00.02     NACL-多々納  02/12/13  060 シート追加(H14.12改正)
       * 01.00.03     NACL-多々納  04/12/22  000 単位なし追加
+      * 01.00.04     NACL-多々納  06/03/15  125 から 128追加(H18.4改正）
       *****************************************************************
        01  MTANI-DATA-REC.
            03  FILLER          PIC X(03)  VALUE   "000".
@@ -282,13 +283,25 @@
            03  FILLER          PIC X(03)  VALUE   "124".
            03  FILLER          PIC X(24)  VALUE   "菌種".
       *
+           03  FILLER          PIC X(03)  VALUE   "125".
+           03  FILLER          PIC X(24)  VALUE   "項目".
+      *
+           03  FILLER          PIC X(03)  VALUE   "126".
+           03  FILLER          PIC X(24)  VALUE   "箇所".
+      *
+           03  FILLER          PIC X(03)  VALUE   "127".
+           03  FILLER          PIC X(24)  VALUE   "椎弓".
+      *
+           03  FILLER          PIC X(03)  VALUE   "128".
+           03  FILLER          PIC X(24)  VALUE   "食".
+      *
       *
        01  MTANI-DATA-REC-R         REDEFINES   MTANI-DATA-REC.
       *****03  MTANI-TBL-OCC        OCCURS    59   INDEXED   MTANI-IDX.
       **** 03  MTANI-TBL-OCC        OCCURS    83   INDEXED   MTANI-IDX.
-           03  MTANI-TBL-OCC        OCCURS    85   INDEXED   MTANI-IDX.
+           03  MTANI-TBL-OCC        OCCURS    89   INDEXED   MTANI-IDX.
                05  MTANI-TANICD        PIC X(03).
                05  MTANI-TANINAME      PIC X(24).
       *
-       01  MTANI-MAX                   PIC 9(04)   VALUE   85.
+       01  MTANI-MAX                   PIC 9(04)   VALUE   89.
       *
