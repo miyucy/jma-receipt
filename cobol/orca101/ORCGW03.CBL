@@ -51,10 +51,10 @@
       *    ²èÌÌÍÑ£Ó£Ð£Á
        01  SPA-W03.
            03  SPA-W03-AREA.
-               05  SPA-GMN-PAGE        PIC 9(02).
+               05  SPA-GMN-PAGE        PIC 9(04).
                05  SPA-GMN-LINE        PIC 9(02).
                05  SPA-GMN-MAX         PIC 9(04).
-               05  SPA-GMN-PAGE-MAX    PIC 9(02).
+               05  SPA-GMN-PAGE-MAX    PIC 9(04).
                05  SPA-GMN-CUR         PIC 9(02).
       *
                05  SPA-GMN-AREA.
@@ -384,11 +384,11 @@
                MOVE    ZERO                TO  SPA-SYORIFLG
                MOVE    MCPDATA-REC         TO  SYS-1006-REC
                PERFORM VARYING IDY FROM    1   BY  1
-                       UNTIL   IDY >       500      
+                       UNTIL   IDY >       500
                    ADD     1               TO  IDX
                    MOVE    SYS-1006-SSTKIJUN  (IDY)
                                            TO  SPA-NAI-TSSTKIJUN (IDX)
-               END-PERFORM   
+               END-PERFORM
       *
                MOVE    "SYSKANRI-KEY2"       TO  ORC-DBPATH
                PERFORM 900-SYSKANRI-READ-SEC
@@ -401,6 +401,12 @@
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
+      *    £È£±£¸Ç¯£´·î°Ê¹ß¤Ï¡¢£±£°£°¤È¤¹¤ë
+           IF      SPA-GMN-EDYUKYMD    >=  "20060401"
+               IF      IDX                 <   1000
+                   MOVE    1000            TO  IDX
+               END-IF
+           END-IF
       *
            END-IF
       *
@@ -495,7 +501,7 @@
       *    ÂÐ¾Ý¤¬¤Ê¤¤»þ¡¢£±¥ì¥³¡¼¥ÉÊ¬¤È¤¹¤ë
            IF      IDX                 =   ZERO
                MOVE    1               TO  SPA-SYORIFLG
-               MOVE    500             TO  IDX
+               MOVE    1000            TO  IDX
            END-IF
       *
            .
@@ -885,7 +891,7 @@
                MOVE    WRK-KBNCD               TO  SYS-1006-KBNCD
       *    
                PERFORM VARYING IDY FROM    1   BY  1
-                       UNTIL   IDY >       500      
+                       UNTIL   IDY >       500
                    ADD     1               TO  IDX
                    MOVE    SPA-NAI-TSSTKIJUN (IDX)
                                            TO  SYS-1006-SSTKIJUN  (IDY)
