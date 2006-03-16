@@ -26,6 +26,7 @@
       *                                     基準不適合逓減区分
       *                                     基準不適合逓減施設 追加
       * 01.00.02     NACL-多々納  04/12/20  検索点数キー追加
+      * 01.00.03     NACL-伊藤    06/03/15  ドナー分集計区分 追加
       ************************************************************
        01  TNSWK-TENSU-REC.
       *(1)
@@ -87,6 +88,7 @@
            03  TNSWK-LASERKBN            PIC  9(01).
            03  TNSWK-CHPMESUKSN          PIC  9(01).
            03  TNSWK-MICMESUKSN          PIC  9(01).
+           03  TNSWK-DONORKBN            PIC  9(01).
            03  TNSWK-KNSJISKBN           PIC  9(01).
            03  TNSWK-KNSJISGRPKBN        PIC  9(02).
            03  TNSWK-TEIGENKBN           PIC  9(01).

@@ -26,6 +26,7 @@
       *                                     基準不適合逓減区分
       *                                     基準不適合逓減施設 追加
       * 01.00.02     NACL-多々納  04/12/20  検索点数キー追加
+      * 01.00.03     NACL-伊藤    06/03/15  ドナー分集計区分 追加
       ************************************************************
        01  TNS-TENSU-REC.
       *(1)
@@ -85,6 +86,7 @@
            03  TNS-LASERKBN            PIC  9(01).
            03  TNS-CHPMESUKSN          PIC  9(01).
            03  TNS-MICMESUKSN          PIC  9(01).
+           03  TNS-DONORKBN            PIC  9(01).
            03  TNS-KNSJISKBN           PIC  9(01).
            03  TNS-KNSJISGRPKBN        PIC  9(02).
            03  TNS-TEIGENKBN           PIC  9(01).
