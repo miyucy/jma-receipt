@@ -36,6 +36,14 @@
            03  TNSP-INPCHKKBN           PIC  9(01).
       *    添付資料用薬剤分類区分
            03  TNSP-TENPUYAKKBN         PIC  X(02).
+      *    全数量記載区分
+           03  TNSP-ALLSURYOKBN         PIC  X(01).
+      *    数量換算単位コード
+           03  TNSP-KANZANTANICD        PIC  X(03).
+      *    数量換算単位名称
+           03  TNSP-KANZANTANINAME      PIC  X(24).
+      *    数量換算値
+           03  TNSP-KANZANCHI           PIC  9(05)V9(05).
       *
            03  TNSP-TERMID              PIC  X(16).
            03  TNSP-OPID                PIC  X(16).
