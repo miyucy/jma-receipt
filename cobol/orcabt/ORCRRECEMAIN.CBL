@@ -28,6 +28,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *
+      *  02.08.01    NACL-藤原    06/02/20  主科対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -472,6 +474,7 @@
            MOVE     SPACE       TO WRK-ARG
            STRING   "1,"        DELIMITED   BY  SIZE
                     "1,"        DELIMITED   BY  SIZE
+                    "%%,"       DELIMITED   BY  SIZE
                     WRK-PARA-A5 DELIMITED   BY  SPACE
                     ","         DELIMITED   BY  SIZE
                     WRK-PARA-A6 DELIMITED   BY  SPACE

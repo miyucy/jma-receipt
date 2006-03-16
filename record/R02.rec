@@ -985,6 +985,14 @@ R02	{
 			count	int;
 			item	varchar(14)[3];
 		};
+		SYUKA_COMBO	{
+			state	int;
+			SYUKA	{
+				value	varchar(21);
+			};
+			count	int;
+			item	varchar(21)[40];
+		};
 		LABEL1	{
 			label	varchar(6);
 		};

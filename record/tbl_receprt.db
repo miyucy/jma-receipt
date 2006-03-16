@@ -217,6 +217,9 @@ path	key10		{
                     AND     KANANAME     >=  :STKANANAME
                     AND     KANANAME     <=  :EDKANANAME 
                     AND     NYUGAIKBN    =   :NYUGAIKBN
+                    AND     SRYKA        LIKE :SRYKA
+                    AND     RENNUM       >=  :STRENNUM
+                    AND     RENNUM       <=  :EDRENNUM
                    ORDER BY  PREFKBN,PREFNUM,HKNKBN,HKNJANUM,KANANAME,PTNUM,SRYYM,RENNUM
 		;
 	};
@@ -237,6 +240,9 @@ path	key11	{
                     AND     PTNUM        >=  :STKANANAME
                     AND     PTNUM        <=  :EDKANANAME 
                     AND     NYUGAIKBN    =   :NYUGAIKBN
+                    AND     SRYKA        LIKE :SRYKA
+                    AND     RENNUM       >=  :STRENNUM
+                    AND     RENNUM       <=  :EDRENNUM
                    ORDER BY  PREFKBN,PREFNUM,HKNKBN,HKNJANUM,PTNUM,SRYYM,RENNUM
 		;
 	};
@@ -287,6 +293,8 @@ path	key14		{
                     AND     KANANAME     >=  :STKANANAME
                     AND     KANANAME     <=  :EDKANANAME 
                     AND     NYUGAIKBN    =   :NYUGAIKBN
+                    AND     RENNUM       >=  :STRENNUM
+                    AND     RENNUM       <=  :EDRENNUM
                    ORDER BY  PREFKBN,PREFNUM,HKNKBN,HKNJANUM,KANANAME,PTNUM,SRYYM,RENNUM
 		;
 	};
@@ -305,6 +313,8 @@ path	key15	{
                     AND     PTNUM        >=  :STKANANAME
                     AND     PTNUM        <=  :EDKANANAME 
                     AND     NYUGAIKBN    =   :NYUGAIKBN
+                    AND     RENNUM       >=  :STRENNUM
+                    AND     RENNUM       <=  :EDRENNUM
                    ORDER BY  PREFKBN,PREFNUM,HKNKBN,HKNJANUM,PTNUM,SRYYM,RENNUM
 		;
 	};
@@ -326,6 +336,9 @@ path	key16		{
                     AND     NYUGAIKBN    =   :NYUGAIKBN 
                     AND     RECESYUBETU  <>  '0000'
                     AND     RECESYUBETU  <>  '8888' 
+                    AND     SRYKA        LIKE :SRYKA
+                    AND     RENNUM       >=  :STRENNUM
+                    AND     RENNUM       <=  :EDRENNUM
                    ORDER BY  KANANAME,PTNUM,SRYYM,RENNUM
 		;
 	};
@@ -347,6 +360,9 @@ path	key17	{
                     AND     NYUGAIKBN    =   :NYUGAIKBN 
                     AND     RECESYUBETU  <>  '0000'
                     AND     RECESYUBETU  <>  '8888' 
+                    AND     SRYKA        LIKE :SRYKA
+                    AND     RENNUM       >=  :STRENNUM
+                    AND     RENNUM       <=  :EDRENNUM
                    ORDER BY  PTNUM,SRYYM,RENNUM
 		;
 	};
@@ -691,6 +707,7 @@ path	key31		{
                     AND     KANANAME     >=  :STKANANAME
                     AND     KANANAME     <=  :EDKANANAME 
                     AND     NYUGAIKBN    =   :NYUGAIKBN
+                    AND     SRYKA        LIKE :SRYKA
                     AND     RENNUM       >=  :STRENNUM
                     AND     RENNUM       <=  :EDRENNUM
                    ORDER BY  HKNKBN,HKNJANUM,KANANAME,PTNUM,SRYYM,RENNUM
@@ -713,6 +730,7 @@ path	key32	{
                     AND     PTNUM        >=  :STKANANAME
                     AND     PTNUM        <=  :EDKANANAME 
                     AND     NYUGAIKBN    =   :NYUGAIKBN
+                    AND     SRYKA        LIKE :SRYKA
                     AND     RENNUM       >=  :STRENNUM
                     AND     RENNUM       <=  :EDRENNUM
                    ORDER BY  HKNKBN,HKNJANUM,PTNUM,SRYYM,RENNUM
@@ -776,6 +794,7 @@ path	key35		{
                     AND     NYUGAIKBN    =   :NYUGAIKBN 
                     AND     RECESYUBETU  <>  '0000'
                     AND     RECESYUBETU  <>  '8888' 
+                    AND     SRYKA        LIKE :SRYKA
                     AND     RENNUM       >=  :STRENNUM
                     AND     RENNUM       <=  :EDRENNUM
                    ORDER BY  KANANAME,PTNUM,SRYYM,RENNUM
@@ -799,6 +818,7 @@ path	key36	{
                     AND     NYUGAIKBN    =   :NYUGAIKBN 
                     AND     RECESYUBETU  <>  '0000'
                     AND     RECESYUBETU  <>  '8888' 
+                    AND     SRYKA        LIKE :SRYKA
                     AND     RENNUM       >=  :STRENNUM
                     AND     RENNUM       <=  :EDRENNUM
                    ORDER BY  PTNUM,SRYYM,RENNUM

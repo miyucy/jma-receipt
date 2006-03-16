@@ -58,6 +58,12 @@
                   06  R02-VALUE   PIC X(14).
                 05  R02-PRTKBN-COUNT   PIC S9(9)   BINARY.
                 05  R02-PRTKBNLST  PIC X(14)   OCCURS  3 TIMES.
+              04  R02-SYUKA-COMBO.
+                05  R02-SYUKA-STATE   PIC S9(09) BINARY.
+                05  R02-SYUKA.
+                  06  R02-VALUE   PIC X(21).
+                05  R02-SYUKA-COUNT   PIC S9(9)   BINARY.
+                05  R02-SYUKALST  PIC X(21)   OCCURS  40 TIMES.
               04  R02-LABEL1       PIC X(06).
               04  R02-LABEL2       PIC X(06).
               04  R02-LABEL3       PIC X(06).

@@ -90,6 +90,8 @@
       *  02.07.01    NACL-藤原    05/10/31  MONFUNC対応
       *  02.07.02    NACL-藤原    05/12/12  国保レセプト編綴順対応
       *  02.07.03    NACL-藤原    06/02/09  エラー時のカーソル位置の変更
+      *
+      *  02.08.01    NACL-藤原    06/02/20  主科対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2275,6 +2277,7 @@
            IF      FLG-RECE07          =   ZERO
                MOVE    RECE07-REC          TO  SPA-RECE07-REC
                MOVE    "99999999"          TO  SPA-RECE07-HKNJANUM 
+               MOVE    "00"                TO  SPA-RECE07-SRYKA 
            END-IF
       *
            .

@@ -46,6 +46,8 @@
       *
       *  02.07.01    NACL-藤原    05/10/31  MONFUNC対応
       *  02.07.02    NACL-藤原    05/12/12  国保レセプト編綴順対応
+      *
+      *  02.08.01    NACL-藤原    06/02/20  主科対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -613,7 +615,8 @@
            PERFORM 900-RECE07-INV-SEC
            IF      FLG-RECE07          =   ZERO
                MOVE    RECE07-REC          TO  SPA-RECE07-REC
-               MOVE    "99999999"          TO  SPA-RECE07-HKNJANUM 
+               MOVE    "99999999"          TO  SPA-RECE07-HKNJANUM
+               MOVE    "00"                TO  SPA-RECE07-SRYKA 
       *
       *        一括作成で国保処理のとき編綴順設定の有無チェック
                IF    ( SPA-R01-FILEKBN         =   "1"         )
@@ -625,6 +628,20 @@
                    PERFORM 900-RECE07-INV-SEC
                    IF      FLG-RECE07          =   ZERO
                        MOVE    RECE07-HKNJANUM TO  SPA-RECE07-HKNJANUM
+                   END-IF
+               END-IF  
+      *
+      *        一括作成で社保処理のとき主科設定の有無チェック
+               IF    ( SPA-R01-FILEKBN         =   "1"         )
+               AND   ( SPA-R01-RECEKBN         =   "0" OR  "1" )
+               AND   ( SPA-SYUKA-KBN           =   "1"         )
+                   MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
+                   MOVE    "key6"              TO  WRK-MCP-PATHNAME
+                   MOVE    "1"                 TO  RECE07-TEISYUTUSAKI
+                   MOVE    RECE07-REC          TO  MCPDATA-REC
+                   PERFORM 900-RECE07-INV-SEC
+                   IF      FLG-RECE07          =   ZERO
+                       MOVE    RECE07-SRYKA    TO  SPA-RECE07-SRYKA
                    END-IF
                END-IF  
            END-IF

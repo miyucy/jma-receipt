@@ -34,6 +34,8 @@
       *
       *  中止処理追加
       *  01.03.01    NACL-藤原    04/12/01  印刷中止処理の追加
+      *
+      *  02.08.01    NACL-藤原    06/02/20  主科対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -236,9 +238,12 @@
            MOVE    WRK-PARA-RECE09-TEISYUTUSAKI TO  RECE08-TEISYUTUSAKI
       **** MOVE    WRK-PARA-RECE09-RECESYUBETU  TO  RECE08-RECESYUBETU
            MOVE    WRK-PARA-RECE09-NYUGAIKBN    TO  RECE08-NYUGAIKBN
+           MOVE    "%%"                         TO  RECE08-SRYKA
       *
            MOVE    WRK-PARA-RECE09-STDATA       TO  RECE08-STKANANAME
            MOVE    WRK-PARA-RECE09-EDDATA       TO  RECE08-EDKANANAME
+           MOVE    1                            TO  RECE08-STRENNUM
+           MOVE    99                           TO  RECE08-EDRENNUM
            PERFORM 900-RECEPRT-SELECT-SEC
       *
            .
