@@ -488,6 +488,9 @@
            MOVE    "2"     TO  SPA-GMN-W20-EDKBNL    (2)
            MOVE    "廃止"  TO  SPA-GMN-W20-EDKBNMEIL (2)
       *
+      *    入院基本料コンボ編集処理
+           PERFORM 4100-KHNRYO-CMB-EDT-SEC
+      *
            .
        3101-CMB-SYOKI-EXT.
            EXIT.
@@ -2777,9 +2780,6 @@
            MOVE    SPA-NAI-W20-YUKOSTYMD
                                    TO  WRK-KJN-YUKSTYMD
            PERFORM 3101-CMB-SYOKI-SEC
-      *
-      *    入院基本料コンボ編集処理
-           PERFORM 4100-KHNRYO-CMB-EDT-SEC
       *
            .
       *
