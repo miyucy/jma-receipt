@@ -53,10 +53,14 @@
       *後発医薬品への変更可署名
                05  SYS-1030-KOUHATUKA
                                         PIC  X(01).
+      *処方せん保険医署名記載区分
+               05  SYS-1030-KISAIKBN
+                                        PIC  X(01).
       *予備
       *****03  FILLER                   PIC  X(499).
       *     03  FILLER                   PIC  X(478).
-           03  FILLER                   PIC  X(349).
+      *     03  FILLER                   PIC  X(349).
+           03  FILLER                   PIC  X(348).
       *端末ＩＤ
            03  SYS-1030-TERMID          PIC  X(16).
       *オペーレータＩＤ

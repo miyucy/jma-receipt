@@ -424,6 +424,12 @@
            MOVE    "記載する"          TO  SPA-GMN-KOUHATUKALST(2)(3:)
            MOVE    2                   TO  SPA-GMN-KOUHATUKA-MAX
       *
+           MOVE    "0"                 TO  SPA-GMN-KISAIKBNLST(1)
+           MOVE    "記載しない"        TO  SPA-GMN-KISAIKBNLST(1)(3:)
+           MOVE    "1"                 TO  SPA-GMN-KISAIKBNLST(2)
+           MOVE    "記載する"          TO  SPA-GMN-KISAIKBNLST(2)(3:)
+           MOVE    2                   TO  SPA-GMN-KISAIKBN-MAX
+      *
            MOVE    SPACE               TO  SYSKANRI-REC
            INITIALIZE                      SYSKANRI-REC
            MOVE    "1030"              TO  SYS-KANRICD
@@ -454,6 +460,9 @@
       *        後発医薬品への変更可署名
                MOVE    SYS-1030-KOUHATUKA
                                        TO  SPA-GMN-KOUHATUKA
+      *        処方せん保険医署名記載区分
+               MOVE    SYS-1030-KISAIKBN
+                                       TO  SPA-GMN-KISAIKBN
       *----(02.00.12)--ADD-START---
       *        画像ファイルフォルダ
                MOVE    SYS-1030-GAZOFOLDER
@@ -477,6 +486,13 @@
            ELSE
                MOVE    SPA-GMN-KOUHATUKALST(1)
                                        TO  SPA-GMN-KOUHATUKA-G
+           END-IF
+           IF      SPA-GMN-KISAIKBN  =   "1"
+               MOVE    SPA-GMN-KISAIKBNLST(2)
+                                       TO  SPA-GMN-KISAIKBN-G
+           ELSE
+               MOVE    SPA-GMN-KISAIKBNLST(1)
+                                       TO  SPA-GMN-KISAIKBN-G
            END-IF
       *
            MOVE    305                 TO  SPA-GMN-CUR
@@ -1365,6 +1381,7 @@
       *----(02.00.12)--ADD-START---
            MOVE    W11-GAZOFOLDER      TO  SPA-GMN-GAZOFOLDER
       *----(02.00.12)--ADD-END-----
+           MOVE    W11-KISAIKBN      TO  SPA-GMN-KISAIKBN-G
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -1413,6 +1430,10 @@
       *            カルテ３号
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4300-KARUTE3KBN-CHK-SEC
+                   END-IF
+      *            処方せん保険医署名記載区分
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4400-KISAIKBN-CHK-SEC
                    END-IF
            END-EVALUATE
       *
@@ -1730,6 +1751,33 @@
       *
            .
        4300-KARUTE3KBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   処方せん保険医署名記載区分チェック
+      *****************************************************************
+       4400-KISAIKBN-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >       SPA-GMN-KISAIKBN-MAX
+               IF      SPA-GMN-KISAIKBN
+                                   =   SPA-GMN-KISAIKBNLST (IDY)(1:1)
+                   MOVE    SPA-GMN-KISAIKBNLST (IDY)
+                                           TO  SPA-GMN-KISAIKBN-G
+                   MOVE    SPA-GMN-KISAIKBN-MAX
+                                           TO  IDY
+                   MOVE    1               TO  FLG-CHK
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-CHK             =   ZERO
+               MOVE    "0014"              TO  SPA-ERRCD
+               MOVE    306                 TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       4400-KISAIKBN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2479,6 +2527,9 @@
       *    後発医薬品への変更可署名
            MOVE    SPA-GMN-KOUHATUKA
                                        TO  SYS-1030-KOUHATUKA
+      *    処方せん保険医署名記載区分
+           MOVE    SPA-GMN-KISAIKBN
+                                       TO  SYS-1030-KISAIKBN
       *----(02.00.12)--ADD-START---
       *    画像ファイルフォルダ
            IF  SPA-GMN-GAZOFOLDER      NOT =   SPACE
@@ -3073,6 +3124,16 @@
            END-PERFORM
            MOVE    SPA-GMN-KOUHATUKA-MAX
                                        TO  W11-KOUHATUKA-COUNT
+      *    処方せん保険医署名記載区分
+           MOVE    SPA-GMN-KISAIKBN-G  TO  W11-KISAIKBN
+      *
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-KISAIKBN-MAX
+               MOVE    SPA-GMN-KISAIKBNLST (IDY)
+                                       TO  W11-KISAIKBN-ITEM (IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-KISAIKBN-MAX
+                                       TO  W11-KISAIKBN-COUNT
       *---(02.00.12)--ADD-START---
       *    画像ファイルフォルダ
            MOVE    SPA-GMN-GAZOFOLDER  TO  W11-GAZOFOLDER
@@ -3171,6 +3232,9 @@
                                        TO  MCP-WIDGET
                 WHEN   304
                     MOVE  "GAZOFOLDER"
+                                       TO  MCP-WIDGET
+                WHEN   306
+                    MOVE  "KISAIKBN"
                                        TO  MCP-WIDGET
                  WHEN   999
                     MOVE  "B12"        TO  MCP-WIDGET
@@ -3346,11 +3410,12 @@
                WHEN    "SYOHODSPNAME"
                    MOVE    303         TO  SPA-GMN-CUR
                WHEN    "KARUTE3KBN"
+                   MOVE    306         TO  SPA-GMN-CUR
+               WHEN    "KISAIKBN"
                    MOVE    304         TO  SPA-GMN-CUR
                WHEN    "GAZOFOLDER"
                    MOVE    999         TO  SPA-GMN-CUR
            END-EVALUATE
-      *
       *
            .
        50011-CUR-SET-EXT.

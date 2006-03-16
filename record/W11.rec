@@ -491,6 +491,13 @@ W11	{
 					count	int;
 					item	varchar(20)[2];
 				};
+				KISAIKBN_COMBO	{
+					KISAIKBN	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[2];
+				};
 				GAZOFOLDER	{
 					value	varchar(128);
 				};

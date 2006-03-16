@@ -134,6 +134,12 @@
                     06  W11-KARUTE3KBN-COUNT   PIC S9(9)   BINARY.
                     06  W11-KARUTE3KBN-ITEM
                             PIC X(20)   OCCURS  2 TIMES.
+                  05  W11-KISAIKBN-COMBO.
+                    06  W11-KISAIKBN.
+                      07  W11-VALUE   PIC X(20).
+                    06  W11-KISAIKBN-COUNT   PIC S9(9)   BINARY.
+                    06  W11-KISAIKBN-ITEM
+                            PIC X(20)   OCCURS  2 TIMES.
                   05  W11-GAZOFOLDER.
                     06  W11-VALUE              PIC X(128).
                   05  W11-KOUHATUKA-COMB.
