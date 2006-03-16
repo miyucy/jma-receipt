@@ -1855,7 +1855,8 @@
       *    後発医薬品への変更判定
            IF      FLG-KOUHATU         =   ZERO
       *        後発医薬品への変更可があり、薬剤に変更不可がない場合
-               IF      (FLG-KOUHATU-HEN1   =   1   )  AND
+               IF     ((SPA-KOUHATUKA      =   "1" )  OR
+                       (FLG-KOUHATU-HEN1   =   1   )) AND
                        (FLG-KOUHATU-HEN2   =   1   )
                    MOVE    1               TO  FLG-KOUHATU
                END-IF

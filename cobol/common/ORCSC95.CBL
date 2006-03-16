@@ -291,6 +291,8 @@
       *
            COPY    "CPSK1038.INC".
       *
+           COPY    "CPSK1030.INC".
+      *
       *    患者マスタ−
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
@@ -721,6 +723,8 @@
                MOVE    "1"                 TO  SPA-TEISEI-FLG
                MOVE    "0"                 TO  SPA-TEISEITOKU-FLG
                MOVE    "1"                 TO  SPA-BYOHYOKBN-FLG
+      *        検体検査加算自動発生
+               MOVE    "0"                 TO  SPA-KENSAAUTO-FLG
            END-IF
       *
       *    診療科
@@ -766,47 +770,8 @@
       *    院外処方区分
            MOVE    SPA-SYOHOKBN        TO  SPA-INGAIKBN
       *
-      *    小児科外来診療科編集
-           MOVE    SPACE               TO  SYS-1006-REC
-           INITIALIZE                      SYS-1006-REC
-           MOVE    "1006"              TO  SYS-1006-KANRICD
-           MOVE    "1"                 TO  SYS-1006-KBNCD
-           MOVE    SPA-SRYYMD          TO  SYS-1006-STYUKYMD
-           MOVE    SPA-SRYYMD          TO  SYS-1006-EDYUKYMD
-      *    システム管理検索（施設基準）
-           MOVE    SYS-1006-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "key10"             TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
-           ELSE
-               MOVE    SPACE               TO  SYS-1006-REC
-               INITIALIZE                  SYS-1006-REC
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1006-REC
-               IF      SYS-1006-SSTKIJUN (121) =   1
-                   MOVE    1               TO  SPA-SYONIKA
-               END-IF
-      *
-               IF      SYS-1006-SSTKIJUN (128) =   1
-                   MOVE    1               TO  SPA-ROUMANSEI
-               END-IF
-      *        時間外特例医療機関
-               IF      SYS-1006-SSTKIJUN (011) =   1
-                   MOVE    1               TO  SPA-JIKANTOKU
-               END-IF
-      *
-           END-IF
-      *    時間外特例医療機関の施設基準はすべてありとする
-           MOVE    1                   TO  SPA-JIKANTOKU
-      *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
+      *    施設基準検索
+           PERFORM 1009-SISETU-KIJUN-SEC
       *
       *    システム管理検索（施設基準）
            MOVE    SPACE               TO  SYS-1007-REC
@@ -860,7 +825,7 @@
       *
       *    システム管理検索（診療行為一括入金管理情報）
            MOVE    SPACE               TO  SYS-1038-REC
-           INITIALIZE                  SYS-1007-REC
+           INITIALIZE                  SYS-1038-REC
            MOVE    "1038"              TO  SYS-1038-KANRICD
            MOVE    "*"                 TO  SYS-1038-KBNCD
            MOVE    SPA-SRYYMD          TO  SYS-1038-STYUKYMD
@@ -891,10 +856,99 @@
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *    後発医薬品への変更可署名
+           MOVE    SPACE               TO  SYS-1030-REC
+           INITIALIZE                  SYS-1030-REC
+           MOVE    "1030"              TO  SYS-1030-KANRICD
+           MOVE    "*"                 TO  SYS-1030-KBNCD
+           MOVE    SPA-SRYYMD          TO  SYS-1030-STYUKYMD
+           MOVE    SPA-SRYYMD          TO  SYS-1030-EDYUKYMD
+           MOVE    SYS-1030-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYS-1030-REC
+               INITIALIZE                  SYS-1030-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1030-REC
+               MOVE    SYS-1030-KOUHATUKA  TO  SPA-KOUHATUKA
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+      *
+           IF      SPA-KOUHATUKA       =   SPACE
+               MOVE    "0"                 TO  SPA-KOUHATUKA
+          END-IF
       *
            .
        100-K01KYOUTU-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    施設基準設定処理
+      *****************************************************************
+       1009-SISETU-KIJUN-SEC            SECTION.
+      *
+           MOVE    SPACE               TO  SYS-1006-REC
+           INITIALIZE                      SYS-1006-REC
+           MOVE    "1006"              TO  SYS-1006-KANRICD
+           MOVE    SPA-SRYYMD          TO  SYS-1006-STYUKYMD
+           MOVE    SPA-SRYYMD          TO  SYS-1006-EDYUKYMD
+      *    システム管理検索（施設基準）
+           MOVE    SYS-1006-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYS-1006-REC
+               INITIALIZE                  SYS-1006-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           PERFORM UNTIL   FLG-SYSKANRI    =   1
+               MOVE    MCPDATA-REC         TO  SYS-1006-REC
+               IF      SYS-1006-KBNCD      =   "1"
+      *            小児科外来診療科
+                   IF      SYS-1006-SSTKIJUN (121) =   1
+                       MOVE    1               TO  SPA-SYONIKA
+                   END-IF
+      *            老人外来総合診察
+                   IF      SYS-1006-SSTKIJUN (128) =   1
+                       MOVE    1               TO  SPA-ROUMANSEI
+                   END-IF
+      *            時間外特例医療機関
+                   IF      SYS-1006-SSTKIJUN (011) =   1
+                       MOVE    1               TO  SPA-JIKANTOKU
+                   END-IF
+               END-IF
+               IF      SYS-1006-KBNCD      =   "2"
+      *            電子化加算
+                   IF      SYS-1006-SSTKIJUN (100) =   1
+                       MOVE    1               TO  SPA-DENSIKA
+                   END-IF
+               END-IF
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+      *    時間外特例医療機関の施設基準はすべてありとする
+           MOVE    1                   TO  SPA-JIKANTOKU
+      *
+           .
+       1009-SISETU-KIJUN-EXT.
       *
       *****************************************************************
       *    職員情報より発行フラグ再設定処理
@@ -1158,7 +1212,8 @@
                MOVE    "1"                 TO  SPA-TEISEI-FLG
                MOVE    "0"                 TO  SPA-TEISEITOKU-FLG
                MOVE    "1"                 TO  SPA-BYOHYOKBN-FLG
-           END-IF
+               MOVE    "0"                 TO  SPA-KENSAAUTO-FLG
+          END-IF
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -1207,47 +1262,8 @@
       *    院外処方区分
            MOVE    SPA-SYOHOKBN        TO  SPA-INGAIKBN
       *
-      *    小児科外来診療科編集
-           MOVE    SPACE               TO  SYS-1006-REC
-           INITIALIZE                      SYS-1006-REC
-           MOVE    "1006"              TO  SYS-1006-KANRICD
-           MOVE    "1"                 TO  SYS-1006-KBNCD
-           MOVE    SPA-SRYYMD          TO  SYS-1006-STYUKYMD
-           MOVE    SPA-SRYYMD          TO  SYS-1006-EDYUKYMD
-      *    システム管理検索（施設基準）
-           MOVE    SYS-1006-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "key10"             TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
-           ELSE
-               MOVE    SPACE               TO  SYS-1006-REC
-               INITIALIZE                  SYS-1006-REC
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1006-REC
-               IF      SYS-1006-SSTKIJUN (121) =   1
-                   MOVE    1               TO  SPA-SYONIKA
-               END-IF
-      *
-               IF      SYS-1006-SSTKIJUN (128) =   1
-                   MOVE    1               TO  SPA-ROUMANSEI
-               END-IF
-      *        時間外特例医療機関
-               IF      SYS-1006-SSTKIJUN (011) =   1
-                   MOVE    1               TO  SPA-JIKANTOKU
-               END-IF
-      *
-           END-IF
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-      *    時間外特例医療機関の施設基準はすべてありとする
-           MOVE    1                   TO  SPA-JIKANTOKU
+      *    施設基準検索
+           PERFORM 1009-SISETU-KIJUN-SEC
       *
       *    システム管理検索（施設基準）
            MOVE    SPACE               TO  SYS-1007-REC
@@ -3706,49 +3722,8 @@
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    小児科外来診療科編集
-           MOVE    SPACE               TO  SYS-1006-REC
-           INITIALIZE                      SYS-1006-REC
-           MOVE    "1006"              TO  SYS-1006-KANRICD
-           MOVE    "1"                 TO  SYS-1006-KBNCD
-           MOVE    SPA-SRYYMD          TO  SYS-1006-STYUKYMD
-           MOVE    SPA-SRYYMD          TO  SYS-1006-EDYUKYMD
-      *    システム管理検索（施設基準）
-           MOVE    SYS-1006-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "key10"             TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
-           ELSE
-               MOVE    SPACE               TO  SYS-1006-REC
-               INITIALIZE                  SYS-1006-REC
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-           MOVE    ZERO                TO  SPA-SYONIKA
-           MOVE    ZERO                TO  SPA-ROUMANSEI
-      *    時間外特例医療機関の施設基準はすべてありとする
-           MOVE    1                   TO  SPA-JIKANTOKU
-      *
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1006-REC
-               IF      SYS-1006-SSTKIJUN (121) =   1
-                   MOVE    1               TO  SPA-SYONIKA
-               END-IF
-      *
-               IF      SYS-1006-SSTKIJUN (128) =   1
-                   MOVE    1               TO  SPA-ROUMANSEI
-               END-IF
-      *        時間外特例医療機関
-               IF      SYS-1006-SSTKIJUN (011) =   1
-                   MOVE    1               TO  SPA-JIKANTOKU
-               END-IF
-      *
-           END-IF
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
+      *    施設基準検索
+           PERFORM 1009-SISETU-KIJUN-SEC
       *
       *    患者情報の再セット
            PERFORM 1001-SPA-JYUSIN-SEC
@@ -4225,7 +4200,12 @@
                    MOVE    SPACE               TO  WKSRY-INPUTCD(1)
                    MOVE    "$"                 TO  WKSRY-INPUTCD(1)(1:1)
                    MOVE    JYURRK-SRYKA        TO  WKSRY-INPUTCD(1)(2:2)
-                   MOVE    JYURRK-DRCD(2:4)    TO  WKSRY-INPUTCD(1)(5:4)
+                   IF      JYURRK-DRCD(2:4)    =   ZERO
+                       CONTINUE
+                   ELSE
+                       MOVE    JYURRK-DRCD(2:4)
+                                               TO  WKSRY-INPUTCD(1)(5:4)
+                   END-IF
                    PERFORM 490211-WKSRYACT-OUT-SEC
                END-IF
                IF      WRK-KEY-HKNCOMBI    NOT =   JYURRK-HKNCOMBINUM

@@ -200,6 +200,11 @@
            03  WRK-NAIYOU              PIC X(22).
            03  WRK-PATH                PIC X(64).
       *
+      *    施設規準テーブル
+       01  WRK-TBL-SSTKIJUN-AREA.
+           03  WRK-TBL-SSTKIJUN-OCC       OCCURS  1000.
+               05  WRK-TBL-SSTKIJUN       PIC 9(01).
+      *
       *   日本語数字
        01  TBL-SUJI-AREA.
            03  FILLER          PIC X(20)   VALUE
@@ -1173,33 +1178,41 @@
       *****************************************************************
        2002-SSTKIJUN-CHK-SEC      SECTION.
       *
+           INITIALIZE                  WRK-TBL-SSTKIJUN-AREA
       *    施設基準情報検索
            MOVE    SPACE               TO  SYS-1006-REC
            MOVE    "1006"              TO  SYS-1006-KANRICD
-           MOVE    "1"                 TO  SYS-1006-KBNCD
            MOVE    SPA-SRYYMD          TO  SYS-1006-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1006-EDYUKYMD
       *    システム管理検索
            MOVE    SYS-1006-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key10"             TO  MCP-PATHNAME
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-KANRIMST-READ-SEC
            ELSE
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
-           IF      FLG-SYSKANRI        =   ZERO
+           MOVE    ZERO                TO  IDX
+           PERFORM UNTIL   (FLG-SYSKANRI   =   1    )
+                   OR      (IDX            >=  1000 )
                MOVE    MCPDATA-REC         TO  SYS-1006-REC
-           ELSE
-               INITIALIZE                  SYS-1006-REC
-           END-IF
+               PERFORM VARYING IDY         FROM    1   BY  1
+                       UNTIL   IDY         >       500
+                   ADD     1               TO  IDX
+                   MOVE    SYS-1006-SSTKIJUN  (IDY)
+                                           TO  WRK-TBL-SSTKIJUN (IDX)
+               END-PERFORM
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-KANRIMST-READ-SEC
+           END-PERFORM
       *
-      *    カーソルクロース
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            MOVE    ZERO                TO  FLG-SST
@@ -1210,7 +1223,7 @@
                    CONTINUE
                ELSE
                    MOVE    TNS-SSTKIJUNCD (IDX)    TO  IDY
-                   IF      SYS-1006-SSTKIJUN (IDY) =   1
+                   IF      WRK-TBL-SSTKIJUN (IDY)  =   1
                        MOVE    1               TO  FLG-SST
                    END-IF
                END-IF

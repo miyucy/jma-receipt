@@ -991,8 +991,12 @@
                                        TO  SPA-ERRMSG(39:)
       *H18.4改正追加
                WHEN    "2063"
-                   MOVE    "後発医薬品への変更不可は入力できません。"
-                                       TO  SPA-ERRMSG
+                   STRING  "後発医薬品への変更不可は投薬の"
+                                               DELIMITED  BY  SIZE
+                           "薬剤の下に入力して下さい。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "2064"
                    STRING  "後発医薬品への変更不可は"
                                                DELIMITED  BY  SIZE
@@ -1002,6 +1006,13 @@
                    END-STRING
                WHEN    "2065"
                    STRING  "上の薬剤は後発医薬品です。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "2067"
+                   STRING  "当日に初診の算定がありません。"
+                                               DELIMITED  BY  SIZE
+                           "同日初診は算定できません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING

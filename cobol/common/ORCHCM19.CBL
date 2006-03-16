@@ -1135,6 +1135,16 @@
                MOVE    SPACE           TO  WRK-FTNJA1
                MOVE    SPACE           TO  WRK-JKYSNUM1
            END-IF
+      *@@@ 埼玉県対応
+      *    負担者番号編集なし
+           IF     SYS-1001-PREFNUM     =   "11"
+               IF      COMB-KOH1HKNNUM     =   "342"
+                                           OR  "343"
+                                           OR  "344"
+                   MOVE    SPACE           TO  WRK-FTNJA1
+               END-IF
+           END-IF
+      *@@@ 埼玉県対応
       *
       *    公費情報２
            INITIALIZE                  PTKOHINF-REC
@@ -1150,6 +1160,16 @@
                MOVE    SPACE           TO  WRK-FTNJA2
                MOVE    SPACE           TO  WRK-JKYSNUM2
            END-IF
+      *@@@ 埼玉県対応
+      *    負担者番号編集なし
+           IF     SYS-1001-PREFNUM     =   "11"
+               IF      COMB-KOH2HKNNUM     =   "342"
+                                           OR  "343"
+                                           OR  "344"
+                   MOVE    SPACE           TO  WRK-FTNJA2
+               END-IF
+           END-IF
+      *@@@ 埼玉県対応
       *
       *    記号・番号
       *    全角変換
@@ -1490,7 +1510,8 @@
       *---(01.00.14) LINE ADD END   -----------------------------------
       *
       *    後発医薬品変更可
-           IF     (FLG-KOUHATU-HEN     =   1 )  AND
+           IF    ((FLG-KOUHATU-HEN     =   1 )  OR
+                  (SYS-1030-KOUHATUKA  =   "1"))  AND
                   (FLG-KOUHATU-CHK     =   1 )
       *        ドクター
                MOVE    SYS-1010-NAME       TO  HCM19-HKNINAME
