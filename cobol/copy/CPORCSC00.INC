@@ -224,6 +224,7 @@
                        09  LNK-ORCSC-SRYKBN        PIC X(02).
                        09  LNK-ORCSC-SRYCD         PIC X(09).
                        09  LNK-ORCSC-TENSU         PIC 9(05)V9(03).
+                       09  LNK-ORCSC-SURYO         PIC 9(05)V9(03).
                        09  LNK-ORCSC-SRYCD-KS      PIC X(09).
                        09  LNK-ORCSC-TENSU-KS      PIC 9(05)V9(03).
                        09  LNK-ORCSC-ATAI-G.
@@ -253,27 +254,6 @@
       *
       *リハビリ当月内回数集計
            03  LNK-RIGAKU-NCNT-AREA          PIC X(700).
-      ***  03  LNK-ORCSC-RIGAKU-TBL.
-      *        １:理学、２：作業、３：言語
-      *        05  LNK-ORCSC-DCNT-TBL        OCCURS  3.
-      *        集団
-      *            07  LNK-ORCSC-DCNT-SN-G.
-      *                09  LNK-ORCSC-DCNT-SN     PIC 9(03)   OCCURS  31.
-      *            当日
-      *            07  LNK-ORCSC-TCNT-S          PIC 9(03).
-      *            月計
-      *            07  LNK-ORCSC-TCNT-SN         PIC 9(03).
-      *        個別
-      *            07  LNK-ORCSC-DCNT-KN-G.
-      *                09  LNK-ORCSC-DCNT-KN     PIC 9(03)   OCCURS  31.
-      *            07  LNK-ORCSC-TCNT-K          PIC 9(03).
-      *            07  LNK-ORCSC-TCNT-KN         PIC 9(03).
-      *        早期リハ等加算（逓減対象外）
-      *        05  LNK-ORCSC-GAICNT-G.
-      *            07  LNK-ORCSC-GCNT            PIC 9(01)   OCCURS  31.
-      *    早期リハ等加算（今回入力分）
-      *    03  LNK-ORCSC-GAI-FLG-G.
-      *********05  LNK-ORCSC-GAI-FLG           PIC 9(01)   OCCURS  31.
       *
       *    検査逓減領域
            03  LNK-ORCSC-TEIGEN-AREA.

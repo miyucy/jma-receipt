@@ -29,6 +29,7 @@
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       * 02.00.02     MCC¡ÝÂ¿¡¹Ç¼  02/03/11  ²þÀµËè¤Ë¥µ¥Ö¥×¥í¤òÊ¬Î¥
       * 02.00.03     NACL-Â¿¡¹Ç¼  04/03/00  £È£±£¶Ç¯£´·î²þÀµÄÉ²Ã
+      * 02.00.04     NACL-Â¿¡¹Ç¼  06/03/16  £È£±£¸Ç¯£´·î²þÀµÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -96,8 +97,16 @@
                                                SPA-AREA
       *
                WHEN   (SPA-SRYYMD          >=  "20050401" )  AND
-                      (SPA-SRYYMD          <   "99999999" )
+                      (SPA-SRYYMD          <   "20060401" )
                    CALL    "ORCSC40200504"     USING
+                                               MCPAREA
+                                               ORCSC00AREA
+                                               WRK-SCR-REC
+                                               SPA-AREA
+      *
+               WHEN   (SPA-SRYYMD          >=  "20060401" )  AND
+                      (SPA-SRYYMD          <   "99999999" )
+                   CALL    "ORCSC40200604"     USING
                                                MCPAREA
                                                ORCSC00AREA
                                                WRK-SCR-REC

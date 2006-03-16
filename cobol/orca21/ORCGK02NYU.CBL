@@ -655,6 +655,7 @@
                05  WRK-KSN-ATAI-G.
                    07  WRK-KSN-ATAI        PIC X(08)   OCCURS  4.
                05  WRK-KSN-TENSU           PIC 9(08).
+               05  WRK-KSN-SURYO           PIC 9(05)V9(03).
                05  WRK-KSN-ZAINUM          PIC 9(08).
                05  WRK-KSN-ZAIEND          PIC X(01).
                05  WRK-KSN-INPUTCD         PIC X(22).
@@ -4695,131 +4696,6 @@
       *****************************************************************
        4101113-INPUTCD-CHK-SEC       SECTION.
       *
-      *
-      *    入力コード変更ありの時
-      *@   IF      LNK-SC97-NYURYOKU   =   1
-      *
-      *        診療行為コードをもとに点数マスター検索
-      *        MOVE    ZERO                TO  FLG-TENSU
-      *        MOVE    SPA-COM-INPUTCD(SPA-GMN-IDX)
-      *                                    TO  TNS-SRYCD
-      *
-      *        PERFORM 910-TENSU-READ-SEC
-      *        IF      FLG-TENSU           =   1
-      *            MOVE    "0001"              TO  SPA-ERRCD
-      *            GO      TO      4101113-INPUTCD-CHK-EXT
-      *@       END-IF
-      *
-      *@   END-IF
-      *
-           MOVE    SPACE               TO  SPA-COM-IN3 (SPA-GMN-IDX)
-      *
-      *    数量ゼロはエラーとする
-      *    IF     (WRK-SUR-MCNT        >   ZERO  )  AND
-      *           (WRK-SURYO           =   ZERO  )
-      *        IF     (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:1)
-      *                                        =   "6"  OR  "7") OR
-      *               (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:3)
-      *                                        =   "059"      )
-      *            MOVE    "A001"              TO  SPA-ERRCD
-      *        ELSE
-      *            MOVE    "A002"              TO  SPA-ERRCD
-      *        END-IF
-      *        IF      LNK-SC97-NYURYOKU   =   1
-      *            MOVE    TNS-NAME        TO  SPA-GMN-MEISYO
-      *                                              (SPA-GMN-IDX)
-      *        END-IF
-      *        GO      TO      4101113-INPUTCD-CHK-EXT
-      *    END-IF
-      *
-      *
-      *    数量以降入力なし（’＿’編集用）
-      *    IF     (WRK-SUR-MCNT        =   ZERO )  AND
-      *           (WRK-ACCT-MCNT       =   ZERO )  AND
-      *           (WRK-MCNT1           =   ZERO )  AND
-      *           (WRK-MCNT2           =   ZERO )  AND
-      *           (WRK-MCNT3           =   ZERO )  AND
-      *           (WRK-MCNT4           =   ZERO )  AND
-      *           (FLG-KAISU           =   ZERO )
-      *        MOVE    ZERO                TO  FLG-IN1
-      *        薬剤と数量入力必須の診療行為、薬剤コメント
-      *        IF      SPA-COM-INPUTCD(SPA-GMN-IDX)(1:3)   =   "059"
-      *:           MOVE    "7"                     TO  WRK-MOJI
-      *        ELSE
-      **           MOVE    SPA-COM-INPUTCD(SPA-GMN-IDX)(1:1)
-      *                                            TO  WRK-MOJI
-      *        END-IF
-      *        数量の入力の有無
-      *        IF     (WRK-MOJI                    =   "6" OR
-      *                                                "7" )  OR
-      *              ( SPA-COM-INPUTCD(SPA-GMN-IDX)(1:3)
-      *                                            =   "001" )
-      *                  用量コメント
-      *          OR  ( SPA-COM-INPUTCD(SPA-GMN-IDX)(1:7)
-      *                                            =   "0992000" )
-      *            薬剤・器材・用法
-      *            MOVE    1                   TO  FLG-IN1
-      *        END-IF
-      *        IF      WRK-MOJI                =   "1"
-      *            IF       LNK-SC97-NYURYOKU      =   1
-      *            診察料で、基準があるもの
-      *                IF  (TNS-SRYSYUKBN(1:1)      NOT =   "7" ) AND
-      *                    (TNS-KZMCOMPSIKIBETU     NOT =   0   )
-      *                    MOVE    1                   TO  FLG-IN1
-      *                END-IF
-      *            ELSE
-      *                IF  (SPA-COM-SRYSYUKBN(SPA-GMN-IDX)(1:1)
-      *                                             NOT =   "7" ) AND
-      *                    (SPA-COM-KZMCOMPSIKIBETU(SPA-GMN-IDX)
-      *:                                            NOT =   0   )
-      *                    MOVE    1                   TO  FLG-IN1
-      *                END-IF
-      *            END-IF
-      *        END-IF
-      *:       IF     (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:2)
-      *                                            =   "84"  )  OR
-      *               (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:4)
-      *                                            =   "0084")
-      *            コメント
-      *            MOVE    1                   TO  FLG-IN1
-      *        END-IF
-      *        IF     (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:5)
-      *                                            =   "09500" OR
-      *                                                "09600" )
-      *            自費
-      *            IF     (LNK-SC97-NYURYOKU       =   1    )  AND
-      *                   (TNS-TEN                 =   ZERO )
-      *:               MOVE    1                   TO  FLG-IN1
-      *            END-IF
-      *            自費
-      *            IF     (LNK-SC97-NYURYOKU       =   ZERO  )  AND
-      *                   (SPA-COM-TEN (SPA-GMN-IDX)   =   ZERO )
-      *                MOVE    1                   TO  FLG-IN1
-      *            END-IF
-      *        END-IF
-      *
-      *        IF      FLG-IN1             =   1
-      *            MOVE    "2"             TO  SPA-COM-IN2 (SPA-GMN-IDX)
-      *            MOVE    "1"             TO  SPA-COM-IN3 (SPA-GMN-IDX)
-      *        END-IF
-      *    END-IF
-      *
-      *    数量５文字以上はエラー
-      *    IF     (SPA-COM-INPUTCD(SPA-GMN-IDX) (1:2)
-      *                            NOT =   "09"  )  AND
-      *           (LNK-SC97-SURYOFLG    >   5    )
-      *        MOVE    "0051"          TO  SPA-ERRCD
-      *\       GO      TO      4101113-INPUTCD-CHK-EXT
-      *    END-IF
-      *
-      *    数量・回数編集
-      *    PERFORM 4101122-KOMOKU-HENSYU-SEC
-      *
-      *    数量・回数入力チェック
-      *:   PERFORM 4101121-INPUTCD-CHECK-SEC
-      *    IF      SPA-ERRCD       NOT =   SPACE
-      *        GO      TO      4101113-INPUTCD-CHK-EXT
-      ***  END-IF
       *    入力値の入力判定用
            MOVE    SPA-COM-ATAI1 (SPA-GMN-IDX) TO  WRK-HZN-ATAI1
            MOVE    SPA-COM-ATAI2 (SPA-GMN-IDX) TO  WRK-HZN-ATAI2
@@ -9147,6 +9023,8 @@
                                                                 (IDX)
                MOVE    WRK-KSN-TENSU (IDX) TO  ORCSCWKSRY-KSN-TENSU
                                                                 (IDX)
+               MOVE    WRK-KSN-SURYO (IDX) TO  ORCSCWKSRY-KSN-SURYO
+                                                                (IDX)
                MOVE    WRK-KSN-ZAINUM(IDX) TO  ORCSCWKSRY-KSN-ZAINUM
                                                                 (IDX)
                MOVE    WRK-KSN-ZAIEND(IDX) TO  ORCSCWKSRY-KSN-ZAIEND
@@ -9241,6 +9119,8 @@
                                                               (IDX-S)
                    MOVE    LNK-ORCSC-TENSU (IDX IDY)
                                            TO  WRK-KSN-TENSU  (IDX-S)
+                   MOVE    LNK-ORCSC-SURYO (IDX IDY)
+                                           TO  WRK-KSN-SURYO  (IDX-S)
       ************ MOVE    "3"             TO  WRK-KSN-AUTOKBN(IDX-S)
                    IF      LNK-ORCSC-AUTOKBN(IDX IDY)  =   SPACE
                        MOVE    "3"         TO  WRK-KSN-AUTOKBN  (IDX-S)

@@ -512,6 +512,16 @@
                   (LNK-SC92-INFLG      =   "1"    )
                PERFORM 200-INPUT-SURYO-CHK-SEC
            END-IF
+      *    算定回数チェック
+           IF      LNK-SC92-KBN    NOT =   "6"
+               IF     (TNS-SANTEIRRKKBN    =   ZERO   )  OR
+                      (SPA-HKNCOMBINUM     =   "9999" )
+                   OR (LNK-SC92-PG     NOT =   "K02"  )
+                   CONTINUE
+               ELSE
+                   PERFORM 2001-SANTEI-CHK-SEC
+               END-IF
+           END-IF
       *
       *    基本チェック２
            IF      SPA-ERRCD           =   SPACE
@@ -699,17 +709,6 @@
       *
       *    労災・自賠責チェック
            PERFORM 20088-RSIJIB-CHK-SEC
-      *
-      *    算定回数チェック
-           IF      LNK-SC92-KBN    NOT =   "6"
-               IF     (TNS-SANTEIRRKKBN    =   ZERO   )  OR
-                      (SPA-HKNCOMBINUM     =   "9999" )
-                   OR (LNK-SC92-PG     NOT =   "K02"  )
-                   CONTINUE
-               ELSE
-                   PERFORM 2001-SANTEI-CHK-SEC
-               END-IF
-           END-IF
       *
            .
        200-INPUTCD-KIHON-EXT.
@@ -1156,6 +1155,18 @@
            MOVE    IDX-T               TO  LNK-SC91-GMN-IDX
            MOVE    SPA-COM-KAISU (IDX-T)
                                        TO  LNK-SC91-KAISU
+      *    数量反映
+           IF      SPA-COM-SURYO (IDX-T)   >   1
+               COMPUTE LNK-SC91-KAISU  =   SPA-COM-SURYO (IDX-T)
+                                       *   LNK-SC91-KAISU
+           END-IF
+      *TEST
+           DISPLAY "LNK-SC92-SRYCD:" LNK-SC92-SRYCD
+                  ",KAISU:" SPA-COM-KAISU (IDX-T)
+                  ",SURYO:" SPA-COM-SURYO (IDX-T)
+                  ",LNK-SC91-KAISU:" LNK-SC91-KAISU
+      *TEST
+      *
            MOVE    LNK-SC92-TEISEI-AREA
                                        TO  LNK-SC91-TEISEI-AREA
       *
@@ -2884,6 +2895,9 @@
       *    数量・回数のみ変更の時の編集処理
       *****************************************************************
        300-SURYOHEN-SEC         SECTION.
+      *TEST
+           DISPLAY "LNK-SC92-INFLG:" LNK-SC92-INFLG
+      *TEST
       *
       *    入力値チェック
            IF      LNK-SC92-INFLG      =   "1"
@@ -2899,9 +2913,10 @@
            IF      SPA-ERRCD           =   SPACE
       *
       *    回数が１以上の時、算定回数チェック
-           IF     (SPA-COM-INPUTCD(IDX-T)(1:1)     =   "1" )  AND
+             IF     (SPA-COM-INPUTCD(IDX-T)(1:1)     =   "1" )  AND
                   (SPA-COM-SRYKBN (IDX-T)(1:1) NOT =  "9"  )  AND
-                  (SPA-COM-KAISU  (IDX-T)          >  1    )
+                 ((SPA-COM-KAISU  (IDX-T)          >  1    )
+             OR   (SPA-COM-SURYO  (IDX-T)          >  1    ))
                MOVE    LNK-SC92-SRYCD      TO  TNS-SRYCD
                PERFORM 910-TENSU-READ-SEC
       *        算定回数チェック
@@ -2910,8 +2925,11 @@
                    CONTINUE
                ELSE
                    PERFORM 2001-SANTEI-CHK-SEC
-               END-IF
+              END-IF
+            END-IF
            END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
       *
       *    入力値のある時、再編集
            IF     (SPA-COM-INPUTCD (IDX-T)(1:2)    =   "84" )  OR

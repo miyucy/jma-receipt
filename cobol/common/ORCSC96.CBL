@@ -364,7 +364,7 @@
                    "粉砕は内服以外は入力できません"
                                        TO  SPA-ERRMSG
                WHEN    "2062"
-                   MOVE    "用量割合は投薬で入力して下さい。"
+                   MOVE    "用法割合は投薬で入力して下さい。"
                                        TO  SPA-ERRMSG
                WHEN    "0063"
                    MOVE

@@ -201,6 +201,14 @@
                   (SSANTEI-HKNCOMBINUM =   SPACE )
                MOVE    SPA-HKNCOMBINUM TO  SSANTEI-HKNCOMBINUM
            END-IF
+      *    回数変更
+           IF      SSANTEI-KAISU       =   ZERO
+               MOVE    1               TO  SSANTEI-KAISU
+           END-IF
+           IF      SSANTEI-SRYSURYO    >   1
+               COMPUTE SSANTEI-KAISU   =   SSANTEI-KAISU
+                                       *   SSANTEI-SRYSURYO
+           END-IF
       *
            EVALUATE    SSANTEI-SYORI
       *        新規、変更
@@ -416,7 +424,8 @@
            MOVE    WRK-SRYCD           TO  TNS-SRYCD
            PERFORM 910-TENSU-READ-SEC
            IF     (WRK-SRYCD (1:3)     =   "099"  )  OR
-                  (TNS-SRYKBN      NOT =   "70"   )
+                 ((TNS-SRYKBN      NOT =   "70"   )
+            AND   (TNS-SRYSYUKBN   NOT =   "810"  ))
                CONTINUE
            ELSE
       *        ＣＴ、ＭＲＩの時算定のコードを置換える
@@ -499,6 +508,13 @@
       *        四肢
                WHEN    203
                    MOVE    "099700103"         TO  WRK-SRYCD
+           END-EVALUATE
+      *
+      *    リハビリテーション（H18/4から）
+           EVALUATE    TNS-SRYSYUKBN
+      *        頭部
+               WHEN    "810"
+                   MOVE    "099800201"         TO  WRK-SRYCD
            END-EVALUATE
            .
        10010-SANTEI-SRYCD-EXT.

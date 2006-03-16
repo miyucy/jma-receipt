@@ -702,6 +702,13 @@
                    MOVE    SYS-1008-BYOHYOKBN-FLG
                                            TO  SPA-BYOHYOKBN-FLG
                END-IF
+      *        検体検査加算自動発生
+               IF      SYS-1008-KENSAAUTO-FLG   =   SPACE
+                   MOVE    "0"             TO  SPA-KENSAAUTO-FLG
+               ELSE
+                   MOVE    SYS-1008-KENSAAUTO-FLG
+                                           TO  SPA-KENSAAUTO-FLG
+               END-IF
            ELSE
                MOVE    ZERO                TO  SPA-INTERACT-KIKAN
                MOVE    "1"                 TO  SPA-GAIKANRIKBN-CHK
@@ -1194,6 +1201,13 @@
                ELSE
                    MOVE    SYS-1008-BYOHYOKBN-FLG
                                            TO  SPA-BYOHYOKBN-FLG
+               END-IF
+      *        検体検査加算自動発生
+               IF      SYS-1008-KENSAAUTO-FLG   =   SPACE
+                   MOVE    "0"             TO  SPA-KENSAAUTO-FLG
+               ELSE
+                   MOVE    SYS-1008-KENSAAUTO-FLG
+                                           TO  SPA-KENSAAUTO-FLG
                END-IF
            ELSE
                MOVE    ZERO                TO  SPA-INTERACT-KIKAN

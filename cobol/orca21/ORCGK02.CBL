@@ -721,6 +721,7 @@
                05  WRK-KSN-ATAI-G.
                    07  WRK-KSN-ATAI        PIC X(08)   OCCURS  4.
                05  WRK-KSN-TENSU           PIC 9(08).
+               05  WRK-KSN-SURYO           PIC 9(05)V9(03).
                05  WRK-KSN-ZAINUM          PIC 9(08).
                05  WRK-KSN-AUTOKBN         PIC X(01).
                05  WRK-KSN-INPUTCD         PIC X(22).
@@ -6837,6 +6838,11 @@
            MOVE    SPA-GMN-IDX         TO  LNK-SC91-GMN-IDX
            MOVE    SPA-COM-KAISU   (SPA-GMN-IDX)
                                        TO  LNK-SC91-KAISU
+      *    ¿ôÎÌÈ¿±Ç
+           IF      SPA-COM-SURYO (SPA-GMN-IDX)    >   1
+               COMPUTE LNK-SC91-KAISU  =   SPA-COM-SURYO (SPA-GMN-IDX)
+                                       *   LNK-SC91-KAISU
+           END-IF
            MOVE    SPA-K02-TEISEI-AREA TO  LNK-SC91-TEISEI-AREA
       *
            CALL    "ORCSC91"           USING    MCPAREA
@@ -10738,6 +10744,8 @@
                                                                 (IDX)
                MOVE    WRK-KSN-TENSU (IDX) TO  ORCSCWKSRY-KSN-TENSU
                                                                 (IDX)
+               MOVE    WRK-KSN-SURYO (IDX) TO  ORCSCWKSRY-KSN-SURYO
+                                                                (IDX)
                MOVE    WRK-KSN-ZAINUM(IDX) TO  ORCSCWKSRY-KSN-ZAINUM
                                                                 (IDX)
                MOVE    WRK-KSN-ZAIEND(IDX) TO  ORCSCWKSRY-KSN-ZAIEND
@@ -10843,6 +10851,8 @@
                                                               (IDX-S)
                    MOVE    LNK-ORCSC-TENSU (IDX IDY)
                                            TO  WRK-KSN-TENSU  (IDX-S)
+                   MOVE    LNK-ORCSC-SURYO (IDX IDY)
+                                           TO  WRK-KSN-SURYO  (IDX-S)
                    IF      LNK-ORCSC-AUTOKBN(IDX IDY)  =   SPACE
                        MOVE    "3"         TO  WRK-KSN-AUTOKBN  (IDX-S)
                    ELSE

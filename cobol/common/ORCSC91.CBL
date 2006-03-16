@@ -262,6 +262,25 @@
            IF      TNS-SANTEIRRKKBN    =   ZERO
                GO      TO      000-PROC-EXT
            END-IF
+      *TEST
+           DISPLAY "LNK-SC91-SRYCD:" LNK-SC91-SRYCD
+                  ",TNS-SRYSYUKBN:" TNS-SRYSYUKBN
+      *TEST
+      *    リハビリチェック（H18.4)
+           IF     (LNK-SC91-SRYCD(1:1) =   "1" )  AND
+                  (TNS-SRYSYUKBN       =   "810" )
+               MOVE    "099800201"          TO  LNK-SC91-SRYCD
+               MOVE    LNK-SC91-SRYCD      TO  TNS-SRYCD
+               PERFORM 910-TENSU-READ-SEC
+               IF      FLG-TENSU           =   1
+                   MOVE    "0001"              TO  LNK-SC91-ERRCD
+                   GO      TO      000-PROC-EXT
+               END-IF
+      *TEST
+           DISPLAY "2 LNK-SC91-SRYCD:" LNK-SC91-SRYCD
+                  ",LNK-SC91-KAISU:" LNK-SC91-KAISU
+      *TEST
+           END-IF
       *
       *    K02,K02NYUの場合のみとする（薬剤情報提供料チェックの為）
            MOVE    SPA-WORK            TO  SPA-K01KYOUTU
@@ -1272,7 +1291,7 @@
        910-TENSU-READ-SEC         SECTION.
       *
       *    算定履歴に関する項目のみ
-           MOVE    SPA-SRYYMD         TO  TNS-YUKOSTYMD
+           MOVE    SPA-SRYYMD          TO  TNS-YUKOSTYMD
            MOVE    SPA-SRYYMD          TO  TNS-YUKOEDYMD
       *
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC

@@ -168,6 +168,8 @@
                05  WRK-SRYMM           PIC 9(02).
                05  WRK-SRYDD           PIC 9(02).
       *
+           03  WRK-SRYSURYO           PIC 9(07)V9(03).
+      *
            03  WRK-ZAINUM          PIC 9(08).
            03  WRK-H-ZAINUM        PIC 9(08).
       *    ¿ÇÎÅ²ñ·×ÍÑ½¸·×
@@ -2268,6 +2270,7 @@
       *                ¥·¥¹¥Æ¥àÍ½Ìó¥³¡¼¥É
                        OR (SRY-SRYCD (IDY)(1:3)    =   "099" )
                        MOVE    SRY-SRYCD (IDY)     TO  WRK-SRYCD
+                       MOVE    SRY-SRYSURYO (IDY)  TO  WRK-SRYSURYO
       *
                        MOVE    WRK-SRYCD           TO  TNS-SRYCD
                        PERFORM 910-TENSU-READ-SEC
@@ -2313,6 +2316,8 @@
            MOVE    SPA-PTID            TO  SSANTEI-PTID
            MOVE    SPA-SRYYMD          TO  SSANTEI-SRYYMD
            MOVE    WRK-KAISU           TO  SSANTEI-KAISU
+      *    ¿ôÎÌ
+           MOVE    WRK-SRYSURYO        TO  SSANTEI-SRYSURYO
       *    ¿ÇÎÅ²Ê
            MOVE    SRY-SRYKA           TO  SSANTEI-SRYKA
            MOVE    ACCT-HKNCOMBI       TO  SSANTEI-HKNCOMBINUM
@@ -3232,6 +3237,8 @@
                                                            "96"  )
                        MOVE    LNK-WKSRY-SRYCD (IDX IDY)
                                                    TO  WRK-SRYCD
+                       MOVE    LNK-WKSRY-SRYSURYO (IDX IDY)
+                                                   TO  WRK-SRYSURYO
       *
                        MOVE    WRK-SRYCD           TO  TNS-SRYCD
                        PERFORM 910-TENSU-READ-SEC
@@ -3300,6 +3307,8 @@
                MOVE    SPA-TOKTEI-YMD  TO  SSANTEI-SYOKAIYMD
            END-IF
            MOVE    WRK-KAISU           TO  SSANTEI-KAISU
+      *    ¿ôÎÌ
+           MOVE    WRK-SRYSURYO        TO  SSANTEI-SRYSURYO
       *    ½é¿ÇÎÁ»»ÄêÆü
       *    ÄûÀµ¤Î»þ
            IF      SPA-SYORIFLG        =   1
@@ -4475,6 +4484,7 @@
            IF      TNS-SANTEIRRKKBN    NOT =   ZERO
                MOVE    ZERO            TO  FLG-TOKTEI
                MOVE    1               TO  WRK-KAISU
+               MOVE    1               TO  WRK-SRYSURYO
                MOVE    SPA-SRYKA       TO  WRK-SRYKA
                MOVE    SPA-HKNCOMBINUM TO  WRK-HKNCOMBI
                MOVE    1               TO  FLG-SYOSIN-DUMMY
