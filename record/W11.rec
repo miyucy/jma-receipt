@@ -494,6 +494,13 @@ W11	{
 				GAZOFOLDER	{
 					value	varchar(128);
 				};
+				KOUHATUKA_COMB	{
+					KOUHATUKA	{
+						value	varchar(12);
+					};
+					count	int;
+					item	varchar(12)[2];
+				};
 			};
 			            N02	{ state	int;
 			};
