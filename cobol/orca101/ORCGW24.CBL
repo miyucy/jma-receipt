@@ -74,6 +74,27 @@
            03  FLG-KANJI                           PIC 9(01).
            03  FLG-KENSAKU                         PIC 9(01).
            03  FLG-ENTRYCHK                        PIC 9(01).
+           03  FLG-SSTKIJUNERR                     PIC 9(01).
+           03  FLG-HIZUKE-ERR                      PIC 9(01).
+           03  FLG-NYUKSNCD-G.
+               05  FLG-190098870                   PIC 9(01).
+               05  FLG-190098970                   PIC 9(01).
+               05  FLG-190099170                   PIC 9(01).
+               05  FLG-190099270                   PIC 9(01).
+               05  FLG-190099570                   PIC 9(01).
+               05  FLG-190099870                   PIC 9(01).
+               05  FLG-190099970                   PIC 9(01).
+               05  FLG-190100370                   PIC 9(01).
+               05  FLG-190100470                   PIC 9(01).
+               05  FLG-190100670                   PIC 9(01).
+               05  FLG-190100770                   PIC 9(01).
+               05  FLG-190100970                   PIC 9(01).
+               05  FLG-190107170                   PIC 9(01).
+               05  FLG-190117170                   PIC 9(01).
+               05  FLG-190117270                   PIC 9(01).
+               05  FLG-190119910                   PIC 9(01).
+               05  FLG-190120410                   PIC 9(01).
+               05  FLG-190120510                   PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -86,6 +107,9 @@
            03  IDXY                                PIC 9(05).
            03  IDXZ                                PIC 9(05).
            03  IDX-CMB                             PIC 9(05).
+           03  IDX-SYS                             PIC 9(05).
+           03  IDX-SKJ                             PIC 9(05).
+           03  IDX-KSN                             PIC 9(05).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -111,12 +135,26 @@
            03  WRK-EDYUKYMD                        PIC X(08).
            03  WRK-CREYMD                          PIC X(08).
            03  WRK-MAX                             PIC 9(05).
+           03  WRK-BASE-CUR                        PIC 9(05).
            03  WRK-CHIIKIKSN-G.
                05  WRK-CHIIKIKSN                   PIC 9(01).
                05  WRK-CHIIKIKSNFL                 PIC X(27).
       *
+       01  SSTKJN-AREA.
+           03  SSTKJN-VAL.
+               05  SSTKJN-VAL1                     PIC X(500).
+               05  SSTKJN-VAL2                     PIC X(500).
+           03  SSTKJN-R    REDEFINES       SSTKJN-VAL.
+               05  SSTKJN-CD                       PIC 9(01)
+                                                   OCCURS  1000.
+      *
       *    ¸ÇÄêÃÍÎÎ°è
        01  CONST-AREA.
+      *
+           03  CONST-H180401           PIC X(08)   VALUE "20060401".
+           03  CONST-H160401           PIC X(08)   VALUE "20040401".
+           03  CONST-SRYACT-MAX        PIC 9(03)   VALUE 10.
+      *
       *    ÁªÄêÎÅÍÜÈñ¡ÝÅÀ¿ôÃ±²Á
            03  CONST-SENTEI-TANKA      PIC 9(03)   VALUE 10.
       *    Æþ±¡»þ¿©»öÎÅÍÜ
@@ -129,96 +167,144 @@
                    07  CONST-SHOKUJIRYOYOCD
                                        PIC X(09).
       *    ¿©»ö¾ðÊó
-           03  CONST-SHOKU-VAL.
-               05                      PIC X(09)   VALUE   "197000270".
-               05                      PIC X(09)   VALUE   "197000570".
-               05                      PIC X(09)   VALUE   "         ".
-               05                      PIC X(09)   VALUE   "         ".
-               05                      PIC X(09)   VALUE   "         ".
-           03  CONST-SHOKU-R
-                       REDEFINES   CONST-SHOKU-VAL.
-               05  CONST-SHOKU-OCC                 OCCURS  5.
-                   07  CONST-SHOKUCD
-                                       PIC X(09).
+           03  CONST-SKJSRY-AREA.
+               05  CONST-SKJSRY-MAX    PIC 9(05)   VALUE   2.
+               05  CONST-SKJSRY-H1804-G.
+                   07  CONST-SKJSRY-H1804-VAL.
+                       09              PIC X(09)   VALUE   "197000570".
+                       09              PIC X(09)   VALUE   "         ".
+                   07  CONST-SKJSRY-H1804-R
+                               REDEFINES   CONST-SKJSRY-H1804-VAL.
+                       09  CONST-SKJSRY-H1804-OCC  OCCURS  2.
+                           11  CONST-SKJSRY-H1804  PIC X(09).
+               05  CONST-SKJSRY-G.
+                   07  CONST-SKJSRY-VAL.
+                       09              PIC X(09)   VALUE   "197000270".
+                       09              PIC X(09)   VALUE   "197000570".
+                   07  CONST-SKJSRY-R  REDEFINES   CONST-SKJSRY-VAL.
+                       09  CONST-SKJSRY-OCC        OCCURS  2.
+                           11  CONST-SKJSRY-SRYCD  PIC X(09).
       *
       *    °åÎÅµ¡´Ø¸º»»¾ðÊó
-           03  CONST-GEN-VAL.
-               05                      PIC X(09)   VALUE   "190080470".
-               05                      PIC X(09)   VALUE   "190080570".
-               05                      PIC X(09)   VALUE   "190111690".
-               05                      PIC X(09)   VALUE   "190111790".
-               05                      PIC X(09)   VALUE   "         ".
-           03  CONST-GEN-R
-                       REDEFINES   CONST-GEN-VAL.
-               05  CONST-GEN-OCC                   OCCURS  5.
-                   07  CONST-GENCD
-                                       PIC X(09).
+           03  CONST-GEN-AREA.
+               05  CONST-GEN-MAX       PIC 9(05)   VALUE   4.
+               05  CONST-GEN-VAL.
+                   07                  PIC X(09)   VALUE   "190080470".
+                   07                  PIC X(09)   VALUE   "190080570".
+                   07                  PIC X(09)   VALUE   "190111690".
+                   07                  PIC X(09)   VALUE   "190111790".
+               05  CONST-GEN-R REDEFINES   CONST-GEN-VAL.
+                   07  CONST-GEN-OCC               OCCURS  4.
+                       09  CONST-GENCD PIC X(09).
       *
       *    Æþ±¡²Ã»»¾ðÊó
-           03  CONST-NYUKSN-SRYCD-G.
-               05  CONST-NYUKSN-SRYCD-VAL.
-                   07                  PIC X(09)   VALUE   "190098870".
-                   07                  PIC X(09)   VALUE   "190098970".
-                   07                  PIC X(09)   VALUE   "190099170".
-                   07                  PIC X(09)   VALUE   "190099270".
-                   07                  PIC X(09)   VALUE   "190099570".
-                   07                  PIC X(09)   VALUE   "190099870".
-                   07                  PIC X(09)   VALUE   "190099970".
-                   07                  PIC X(09)   VALUE   "190100370".
-                   07                  PIC X(09)   VALUE   "190100470".
-                   07                  PIC X(09)   VALUE   "190100770".
-                   07                  PIC X(09)   VALUE   "190100670".
-                   07                  PIC X(09)   VALUE   "190100970".
-                   07                  PIC X(09)   VALUE   "190107170".
-                   07                  PIC X(09)   VALUE   "190117170".
-                   07                  PIC X(09)   VALUE   "190117270".
-                   07                  PIC X(09)   VALUE   "         ".
-                   07                  PIC X(09)   VALUE   "         ".
-                   07                  PIC X(09)   VALUE   "         ".
-                   07                  PIC X(09)   VALUE   "         ".
-                   07                  PIC X(09)   VALUE   "         ".
-               05  CONST-NYUKSN-SRYCD-R
-                           REDEFINES   CONST-NYUKSN-SRYCD-VAL.
-                   07  CONST-NYUKSN-SRYCD
+           03  CONST-NYUKSN-AREA.
+               05  CONST-NYUKSN-MAX    PIC 9(05)   VALUE   20.
+               05  CONST-NYUKSN-H1804-G.
+                   07  CONST-NYUKSN-H1804-VAL.
+                       09              PIC X(09)   VALUE   "190098870".
+                       09              PIC X(09)   VALUE   "190099870".
+                       09              PIC X(09)   VALUE   "190100370".
+                       09              PIC X(09)   VALUE   "190100470".
+                       09              PIC X(09)   VALUE   "190100770".
+                       09              PIC X(09)   VALUE   "190100670".
+                       09              PIC X(09)   VALUE   "190100970".
+                       09              PIC X(09)   VALUE   "190107170".
+                       09              PIC X(09)   VALUE   "190117170".
+                       09              PIC X(09)   VALUE   "190119910".
+                       09              PIC X(09)   VALUE   "190117270".
+                       09              PIC X(09)   VALUE   "190120510".
+                       09              PIC X(09)   VALUE   "190120410".
+                       09              PIC X(09)   VALUE   "         ".
+                       09              PIC X(09)   VALUE   "         ".
+                       09              PIC X(09)   VALUE   "         ".
+                       09              PIC X(09)   VALUE   "         ".
+                       09              PIC X(09)   VALUE   "         ".
+                       09              PIC X(09)   VALUE   "         ".
+                       09              PIC X(09)   VALUE   "         ".
+                   07  CONST-NYUKSN-H1804-R
+                               REDEFINES   CONST-NYUKSN-H1804-VAL.
+                       09  CONST-NYUKSN-H1804
                                        PIC X(09)   OCCURS   20.
-           03  CONST-NYUKSN-SRYCD-040331-G.
-               05  CONST-NYUKSN-SRYCD-040331-VAL.
-                   07                  PIC X(09)   VALUE   "190098870".
-                   07                  PIC X(09)   VALUE   "190098970".
-                   07                  PIC X(09)   VALUE   "190099170".
-                   07                  PIC X(09)   VALUE   "190099270".
-                   07                  PIC X(09)   VALUE   "190099570".
-                   07                  PIC X(09)   VALUE   "190099870".
-                   07                  PIC X(09)   VALUE   "190099970".
-                   07                  PIC X(09)   VALUE   "190100370".
-                   07                  PIC X(09)   VALUE   "190100470".
-                   07                  PIC X(09)   VALUE   "190100770".
-                   07                  PIC X(09)   VALUE   "190100670".
-                   07                  PIC X(09)   VALUE   "190100970".
-                   07                  PIC X(09)   VALUE   "190107170".
-                   07                  PIC X(09)   VALUE   "         ".
-                   07                  PIC X(09)   VALUE   "         ".
-                   07                  PIC X(09)   VALUE   "         ".
-                   07                  PIC X(09)   VALUE   "         ".
-                   07                  PIC X(09)   VALUE   "         ".
-                   07                  PIC X(09)   VALUE   "         ".
-                   07                  PIC X(09)   VALUE   "         ".
-               05  CONST-NYUKSN-SRYCD-040331-R
-                           REDEFINES   CONST-NYUKSN-SRYCD-040331-VAL.
-                   07  CONST-NYUKSN-SRYCD-040331
+               05  CONST-NYUKSN-H1604-G.
+                   07  CONST-NYUKSN-H1604-VAL.
+                       09              PIC X(09)   VALUE   "190098870".
+                       09              PIC X(09)   VALUE   "190098970".
+                       09              PIC X(09)   VALUE   "190099170".
+                       09              PIC X(09)   VALUE   "190099270".
+                       09              PIC X(09)   VALUE   "190099570".
+                       09              PIC X(09)   VALUE   "190099870".
+                       09              PIC X(09)   VALUE   "190099970".
+                       09              PIC X(09)   VALUE   "190100370".
+                       09              PIC X(09)   VALUE   "190100470".
+                       09              PIC X(09)   VALUE   "190100770".
+                       09              PIC X(09)   VALUE   "190100670".
+                       09              PIC X(09)   VALUE   "190100970".
+                       09              PIC X(09)   VALUE   "190107170".
+                       09              PIC X(09)   VALUE   "190117170".
+                       09              PIC X(09)   VALUE   "190117270".
+                       09              PIC X(09)   VALUE   "         ".
+                       09              PIC X(09)   VALUE   "         ".
+                       09              PIC X(09)   VALUE   "         ".
+                       09              PIC X(09)   VALUE   "         ".
+                       09              PIC X(09)   VALUE   "         ".
+                   07  CONST-NYUKSN-H1604-R
+                               REDEFINES   CONST-NYUKSN-H1604-VAL.
+                       09  CONST-NYUKSN-H1604
+                                       PIC X(09)   OCCURS   20.
+               05  CONST-NYUKSN-SRYCD-G.
+                   07  CONST-NYUKSN-SRYCD-VAL.
+                       09              PIC X(09)   VALUE   "190098870".
+                       09              PIC X(09)   VALUE   "190098970".
+                       09              PIC X(09)   VALUE   "190099170".
+                       09              PIC X(09)   VALUE   "190099270".
+                       09              PIC X(09)   VALUE   "190099570".
+                       09              PIC X(09)   VALUE   "190099870".
+                       09              PIC X(09)   VALUE   "190099970".
+                       09              PIC X(09)   VALUE   "190100370".
+                       09              PIC X(09)   VALUE   "190100470".
+                       09              PIC X(09)   VALUE   "190100770".
+                       09              PIC X(09)   VALUE   "190100670".
+                       09              PIC X(09)   VALUE   "190100970".
+                       09              PIC X(09)   VALUE   "190107170".
+                       09              PIC X(09)   VALUE   "         ".
+                       09              PIC X(09)   VALUE   "         ".
+                       09              PIC X(09)   VALUE   "         ".
+                       09              PIC X(09)   VALUE   "         ".
+                       09              PIC X(09)   VALUE   "         ".
+                       09              PIC X(09)   VALUE   "         ".
+                       09              PIC X(09)   VALUE   "         ".
+                   07  CONST-NYUKSN-SRYCD-R
+                               REDEFINES   CONST-NYUKSN-SRYCD-VAL.
+                       09  CONST-NYUKSN-SRYCD
                                        PIC X(09)   OCCURS   20.
       *
       *    ÃÏ°è²Ã»»¾ðÊó
-           03  CONST-CHIIKIKSNSRYCD-VAL.
-               05                      PIC X(09)   VALUE   "190077070".
-               05                      PIC X(09)   VALUE   "190077170".
-               05                      PIC X(09)   VALUE   "190077270".
-               05                      PIC X(09)   VALUE   "190077370".
-               05                      PIC X(09)   VALUE   "         ".
-           03  CONST-CHIIKIKSNSRYCD-R
-                       REDEFINES   CONST-CHIIKIKSNSRYCD-VAL.
-               05  CONST-CHIIKIKSNSRYCD-OCC    OCCURS  5.
-                   07  CONST-CHIIKIKSNSRYCD    PIC X(09).
+           03  CONST-CHIIKIKSN-SRYCD-AREA.
+               05  CONST-CHIIKIKSN-H1804-G.
+                   07  CONST-CHIIKIKSN-H1804-VAL.
+                       09              PIC X(09)   VALUE   "190077070".
+                       09              PIC X(09)   VALUE   "190077170".
+                       09              PIC X(09)   VALUE   "190120010".
+                       09              PIC X(09)   VALUE   "190077270".
+                       09              PIC X(09)   VALUE   "190120110".
+                       09              PIC X(09)   VALUE   "190077370".
+                   07  CONST-CHIIKIKSN-H1804-R
+                           REDEFINES   CONST-CHIIKIKSN-H1804-VAL.
+                       09  CONST-CHIIKIKSN-H1804
+                                       PIC X(09)   OCCURS  6.
+               05  CONST-CHIIKIKSN-SRYCD-G.
+                   07  CONST-CHIIKIKSN-SRYCD-VAL.
+                       09              PIC X(09)   VALUE   "190077070".
+                       09              PIC X(09)   VALUE   "190077170".
+                       09              PIC X(09)   VALUE   "190077270".
+                       09              PIC X(09)   VALUE   "190077370".
+                       09              PIC X(09)   VALUE   "         ".
+                       09              PIC X(09)   VALUE   "         ".
+                   07  CONST-CHIIKIKSN-SRYCD-R
+                           REDEFINES   CONST-CHIIKIKSN-SRYCD-VAL.
+                       09  CONST-CHIIKIKSN-SRYCD
+                                       PIC X(09)   OCCURS  6.
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -422,6 +508,8 @@
            INITIALIZE                  SPA-W24
                                            W24
       *
+           PERFORM 800-H1804-KAISEI-CHK-SEC
+      *
       *    ¥³¥ó¥Ü¥Ü¥Ã¥¯¥¹½é´ü²½
            PERFORM 310-CMB-SYOKI-SEC
       *
@@ -445,11 +533,8 @@
       *    Æþ±¡»þ¿©»öÎÅÍÜ¥³¥ó¥Ü
            PERFORM 310-SKJRYOYOLST-SET-SEC
       *
-      *    ÆÃÊÌ´ÉÍý²Ã»»¥³¥ó¥Ü
-           PERFORM 310-TOKKNRKSNLST-SET-SEC
-      *
-      *    ¿©Æ²²Ã»»¥³¥ó¥Ü
-           PERFORM 310-SYOKUDOKSNLST-SET-SEC
+      *    ¿©»ö¿ÇÎÅ¹Ô°Ù¥³¥ó¥Ü
+           PERFORM 310-SKJSRYLST-SET-SEC
       *
       *    ÃÏ°è²Ã»»¥³¥ó¥Ü
            PERFORM 310-CHIIKIKSNLST-SET-SEC
@@ -503,55 +588,53 @@
        310-SKJRYOYOLST-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ÆÃÊÌ´ÉÍý²Ã»»¥³¥ó¥Ü
+      *    ¿©»ö¿ÇÎÅ¹Ô°Ù¥³¥ó¥Ü
       *****************************************************************
-       310-TOKKNRKSNLST-SET-SEC        SECTION.
+       310-SKJSRYLST-SET-SEC           SECTION.
       *
-           MOVE    2               TO  SPA-GMN-W24-TOKKNRKSN-MAX
+           MOVE    2               TO  SPA-GMN-W24-SKJSRY-MAX
       *
-           MOVE    "1"             TO  SPA-GMN-W24-TOKKNRKSNL    (1)
-           MOVE    "»»Äê¤·¤Ê¤¤"    TO  SPA-GMN-W24-TOKKNRKSNMEIL (1)
+           MOVE    "1"             TO  SPA-GMN-W24-SKJSRYL    (1)
+           MOVE    "»»Äê¤·¤Ê¤¤"    TO  SPA-GMN-W24-SKJSRYMEIL (1)
       *
-           MOVE    "2"             TO  SPA-GMN-W24-TOKKNRKSNL    (2)
-           MOVE    "»»Äê¤¹¤ë"      TO  SPA-GMN-W24-TOKKNRKSNMEIL (2)
+           MOVE    "2"             TO  SPA-GMN-W24-SKJSRYL    (2)
+           MOVE    "»»Äê¤¹¤ë"      TO  SPA-GMN-W24-SKJSRYMEIL (2)
       *
            .
-       310-TOKKNRKSNLST-SET-EXT.
-           EXIT.
-      *****************************************************************
-      *    ¿©Æ²²Ã»»¥³¥ó¥Ü
-      *****************************************************************
-       310-SYOKUDOKSNLST-SET-SEC       SECTION.
-      *
-           MOVE    2               TO  SPA-GMN-W24-SYOKUDOKSN-MAX
-      *
-           MOVE    "1"             TO  SPA-GMN-W24-SYOKUDOKSNL    (1)
-           MOVE    "»»Äê¤·¤Ê¤¤"    TO  SPA-GMN-W24-SYOKUDOKSNMEIL (1)
-      *
-           MOVE    "2"             TO  SPA-GMN-W24-SYOKUDOKSNL    (2)
-           MOVE    "»»Äê¤¹¤ë"      TO  SPA-GMN-W24-SYOKUDOKSNMEIL (2)
-      *
-           .
-       310-SYOKUDOKSNLST-SET-EXT.
+       310-SKJSRYLST-SET-EXT.
            EXIT.
       *****************************************************************
       *    ÃÏ°è²Ã»»¥³¥ó¥Ü
       *****************************************************************
        310-CHIIKIKSNLST-SET-SEC        SECTION.
       *
-           MOVE    4               TO  SPA-GMN-W24-CHIIKIKSN-MAX
+           IF    ( SPA-W01-EDYUKYMD    >=  CONST-H180401 )
+               MOVE    6               TO  SPA-GMN-W24-CHIIKIKSN-MAX
       *
-           MOVE    "1"             TO  SPA-GMN-W24-CHIIKIKSNL    (1)
-           MOVE    "£±¼ïÃÏ°è²Ã»»"  TO  SPA-GMN-W24-CHIIKIKSNMEIL (1)
+               MOVE    "1"             TO  SPA-GMN-W24-CHIIKIKSNL(1)
+               MOVE    "£±µéÃÏÃÏ°è²Ã»»" TO  SPA-GMN-W24-CHIIKIKSNMEIL(1)
+               MOVE    "2"             TO  SPA-GMN-W24-CHIIKIKSNL    (2)
+               MOVE    "£²µéÃÏÃÏ°è²Ã»»" TO  SPA-GMN-W24-CHIIKIKSNMEIL(2)
+               MOVE    "3"             TO  SPA-GMN-W24-CHIIKIKSNL    (3)
+               MOVE    "£³µéÃÏÃÏ°è²Ã»»" TO  SPA-GMN-W24-CHIIKIKSNMEIL(3)
+               MOVE    "4"             TO  SPA-GMN-W24-CHIIKIKSNL    (4)
+               MOVE    "£´µéÃÏÃÏ°è²Ã»»" TO  SPA-GMN-W24-CHIIKIKSNMEIL(4)
+               MOVE    "5"             TO  SPA-GMN-W24-CHIIKIKSNL    (5)
+               MOVE    "£µµéÃÏÃÏ°è²Ã»»" TO  SPA-GMN-W24-CHIIKIKSNMEIL(5)
+               MOVE    "6"             TO  SPA-GMN-W24-CHIIKIKSNL    (6)
+               MOVE    "£¶µéÃÏÃÏ°è²Ã»»" TO  SPA-GMN-W24-CHIIKIKSNMEIL(6)
+           ELSE
+               MOVE    4               TO  SPA-GMN-W24-CHIIKIKSN-MAX
       *
-           MOVE    "2"             TO  SPA-GMN-W24-CHIIKIKSNL    (2)
-           MOVE    "£²¼ïÃÏ°è²Ã»»"  TO  SPA-GMN-W24-CHIIKIKSNMEIL (2)
-      *
-           MOVE    "3"             TO  SPA-GMN-W24-CHIIKIKSNL    (3)
-           MOVE    "£³¼ïÃÏ°è²Ã»»"  TO  SPA-GMN-W24-CHIIKIKSNMEIL (3)
-      *
-           MOVE    "4"             TO  SPA-GMN-W24-CHIIKIKSNL    (4)
-           MOVE    "£´¼ïÃÏ°è²Ã»»"  TO  SPA-GMN-W24-CHIIKIKSNMEIL (4)
+               MOVE    "1"             TO  SPA-GMN-W24-CHIIKIKSNL    (1)
+               MOVE    "£±¼ïÃÏ°è²Ã»»"  TO  SPA-GMN-W24-CHIIKIKSNMEIL (1)
+               MOVE    "2"             TO  SPA-GMN-W24-CHIIKIKSNL    (2)
+               MOVE    "£²¼ïÃÏ°è²Ã»»"  TO  SPA-GMN-W24-CHIIKIKSNMEIL (2)
+               MOVE    "3"             TO  SPA-GMN-W24-CHIIKIKSNL    (3)
+               MOVE    "£³¼ïÃÏ°è²Ã»»"  TO  SPA-GMN-W24-CHIIKIKSNMEIL (3)
+               MOVE    "4"             TO  SPA-GMN-W24-CHIIKIKSNL    (4)
+               MOVE    "£´¼ïÃÏ°è²Ã»»"  TO  SPA-GMN-W24-CHIIKIKSNMEIL (4)
+           END-IF
       *
            .
        310-CHIIKIKSNLST-SET-EXT.
@@ -719,11 +802,15 @@
       *
       *    °åÎÅµ¡´ØÆþ±¡´ðËÜ¾ðÊó¸¡º÷½èÍý
            PERFORM 310-SYS-5000-SEL-SEC
-           IF    ( FLG-SYSKANRI    NOT =   ZERO )
+           IF    ( FLG-SYSKANRI    =   ZERO )
+               CONTINUE
+           ELSE
       *
       *        °åÎÅµ¡´ØÆþ±¡´ðËÜ¾ðÊó¸¡º÷½èÍý¡Ê´ü´ÖÀÚ¤êÂØ¤¨¥Á¥§¥Ã¥¯¡Ë
                PERFORM 311-SYS-5000-SEL-SEC
-               IF    ( FLG-SYSKANRI    NOT =   ZERO )
+               IF    ( FLG-SYSKANRI    =   ZERO )
+                   CONTINUE
+               ELSE
                    GO  TO  310-INPUT-AREA-EDIT-EXT
                END-IF
       *
@@ -742,14 +829,38 @@
            END-IF
       *
       *    ÆÃÊÌ´ÉÍý²Ã»»
-           MOVE    SYS-5000-SHOKUKBN (1)   TO  WRK-CMB-CD
-           PERFORM 4200-TOKKNRKSNLST-CHK-SEC
-           MOVE    WRK-CMB-ITM             TO  SPA-GMN-W24-TOKKNRKSN-G
+           IF    ( SPA-W01-EDYUKYMD    >=  CONST-H180401 )
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDX0    FROM    1   BY  1
+                       UNTIL ( IDX0    >   CONST-SKJSRY-MAX )
+                        OR   ( SPA-NAI-W24-SKJSRY-SRYCD (IDX0)
+                                   =   SPACE )
+                   IF    ( SYS-5000-SHOKUCD (1)
+                                   =   SPA-NAI-W24-SKJSRY-SRYCD (IDX0))
+                       MOVE    SYS-5000-SHOKUKBN (1)
+                                       TO  WRK-CMB-CD
+                       PERFORM 4200-SKJSRYLST-CHK-SEC
+                       MOVE    WRK-CMB-ITM TO  SPA-GMN-W24-SKJSRY-OCC
+                                                                (IDX0)
+                   END-IF
+               END-PERFORM
+           END-IF
       *
       *    ¿©Æ²²Ã»»
-           MOVE    SYS-5000-SHOKUKBN (2)   TO  WRK-CMB-CD
-           PERFORM 4200-SYOKUDOKSNLST-CHK-SEC
-           MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-SYOKUDOKSN-G
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   CONST-SKJSRY-MAX )
+                    OR   ( SPA-NAI-W24-SKJSRY-SRYCD (IDX0)
+                                   =   SPACE )
+               IF    ( SYS-5000-SHOKUCD (2)
+                                   =   SPA-NAI-W24-SKJSRY-SRYCD (IDX0))
+                   MOVE    SYS-5000-SHOKUKBN (2)
+                                       TO  WRK-CMB-CD
+                   PERFORM 4200-SKJSRYLST-CHK-SEC
+                   MOVE    WRK-CMB-ITM TO  SPA-GMN-W24-SKJSRY-OCC
+                                                                (IDX0)
+               END-IF
+           END-PERFORM
       *
       *    ¼¼ÎÁº¹³Û¾ÃÈñÀÇ¶èÊ¬
            MOVE    SYS-5000-BRMSGK-TAXKBN  TO  WRK-CMB-CD
@@ -782,33 +893,30 @@
            END-IF
       *
       *    Æþ±¡ÎÁ²Ã»»¾ðÊó
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >    20 )
-               IF    ( SYS-5000-KSNKBN (IDX0)
-                                   =    "2" )
-                   MOVE    "T"     TO   SPA-GMN-W24-CHK-NYUKSN (IDX0)
-               ELSE
-                   MOVE    "F"     TO   SPA-GMN-W24-CHK-NYUKSN (IDX0)
-               END-IF
-           END-PERFORM
+           PERFORM 3101-INPUT-AREA-KSN-SET-SEC
       *
       *    ÃÏ°è²Ã»»¾ðÊó
-           IF    ( SYS-5000-CHIIKIKSN  NOT =   SPACE )
-               PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   5 )
+           IF       (( SYS-5000-STYUKYMD   <   CONST-H180401 )
+            AND      ( SPA-W01-EDYUKYMD    >=  CONST-H180401 ))
+               MOVE    SPACE       TO  SPA-GMN-W24-CHIIKIKSN-G
+           ELSE
+               IF    ( SYS-5000-CHIIKIKSN  NOT =   SPACE )
+                   PERFORM VARYING IDX0 FROM    1   BY  1
+                           UNTIL ( IDX0 >   SPA-GMN-W24-CHIIKIKSN-MAX )
       *
-                   IF    ( CONST-CHIIKIKSNSRYCD (IDX0)
+                       IF    ( CONST-CHIIKIKSN-SRYCD (IDX0)
                                        =   SYS-5000-CHIIKIKSN )
-                       MOVE    SPA-GMN-W24-CHIIKIKSNLST (IDX0)
+                           MOVE    SPA-GMN-W24-CHIIKIKSNLST (IDX0)
                                    TO  SPA-GMN-W24-CHIIKIKSN-G
-                   END-IF
+                       END-IF
       *
-               END-PERFORM
+                   END-PERFORM
+               END-IF
            END-IF
       *
       *    Æþ±¡²ñ·×¥Æ¡¼¥Ö¥ëÉ½¼¨¾ðÊó
            PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >    10 )
+                   UNTIL ( IDX0    >   CONST-SRYACT-MAX )
                MOVE    SYS-5000-DSPCD (IDX0)
                                        TO  SPA-GMN-W24-SRYCD  (IDX0)
                                        WRK-SRYCD
@@ -922,7 +1030,9 @@
            END-IF
       *
       *    ¸º»»¾ðÊó
-           IF    ( SPA-W01-STYUKYMD    <   "20060401" )
+           IF    ( SPA-W01-EDYUKYMD    >=  CONST-H180401 )
+               CONTINUE
+           ELSE
                PERFORM 3101-GENZAN-EDIT-SEC
            END-IF
       *
@@ -930,14 +1040,50 @@
        310-INPUT-AREA-EDIT-EXT.
            EXIT.
       *****************************************************************
+      *    ²Ã»»ÀßÄê½èÍý
+      *****************************************************************
+       3101-INPUT-AREA-KSN-SET-SEC     SECTION.
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   CONST-NYUKSN-MAX )
+      *
+               MOVE    "F"     TO  SPA-GMN-W24-CHK-NYUKSN (IDX0)
+      *
+               EVALUATE    SPA-NAI-W24-NYUKSN-SRYCD (IDX0)
+               WHEN    SPACE
+                   CONTINUE
+               WHEN    OTHER
+                   PERFORM VARYING IDX-SYS FROM    1   BY  1
+                           UNTIL ( IDX-SYS >   CONST-NYUKSN-MAX )
+      *
+                       IF    ( SPA-NAI-W24-NYUKSN-SRYCD (IDX0)
+                                           =   SYS-5000-KSNCD (IDX-SYS))
+                           IF    ( SYS-5000-KSNKBN (IDX-SYS)
+                                           =   "2" )
+                               MOVE    "T"
+                                   TO   SPA-GMN-W24-CHK-NYUKSN (IDX0)
+                           END-IF
+                       END-IF
+      *
+      *
+                   END-PERFORM
+      *
+               END-EVALUATE
+      *
+           END-PERFORM
+      *
+           .
+       3101-INPUT-AREA-KSN-SET-EXT.
+           EXIT.
+      *****************************************************************
       *    ¸º»»¾ðÊóÊÔ½¸½èÍý
       *****************************************************************
        3101-GENZAN-EDIT-SEC            SECTION.
       *
-           IF    ( SPA-W01-STYUKYMD    <   "20040401" )
-               MOVE    14          TO  IDX0
-           ELSE
+           IF    ( SPA-W01-EDYUKYMD   >=   CONST-H160401 )
                MOVE    16          TO  IDX0
+           ELSE
+               MOVE    14          TO  IDX0
            END-IF
       *
            MOVE    2               TO  IDX1
@@ -1115,13 +1261,13 @@
        4101-GMN-SPA-SET-SEC            SECTION.
       *
       *    Æþ±¡»þ¿©»öÎÅÍÜ
-           MOVE    W24-SYOKUJI (1)     TO  SPA-GMN-W24-SKJRYOYO-G
+           MOVE    W24-SKJRYOYO        TO  SPA-GMN-W24-SKJRYOYO-G
       *
-      *    ÆÃÊÌ´ÉÍý²Ã»»
-           MOVE    W24-SYOKUJI (2)     TO  SPA-GMN-W24-TOKKNRKSN-G
+      *    ¿©»ö¿ÇÎÅ¹Ô°Ù
+           MOVE    W24-SYOKUJI (1)     TO  SPA-GMN-W24-SKJSRY-OCC (1)
       *
-      *    ¿©Æ²²Ã»»
-           MOVE    W24-SYOKUJI (3)     TO  SPA-GMN-W24-SYOKUDOKSN-G
+      *    ¿©»ö¿ÇÎÅ¹Ô°Ù
+           MOVE    W24-SYOKUJI (2)     TO  SPA-GMN-W24-SKJSRY-OCC (2)
       *
       *    ¼¼ÎÁº¹³Û¾ÃÈñÀÇ¶èÊ¬
            MOVE    W24-BRMSGK-TAX      TO  SPA-GMN-W24-BRMSGK-TAX-G
@@ -1190,17 +1336,15 @@
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
-      *    ÆÃÊÌ´ÉÍý²Ã»»¥Á¥§¥Ã¥¯½èÍý
-           PERFORM 4101-TOKKNRKSN-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
-           END-IF
-      *
-      *    ¿©Æ²²Ã»»¥Á¥§¥Ã¥¯½èÍý
-           PERFORM 4101-SYOKUDOKSN-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
-           END-IF
+      *    ¿©»ö¿ÇÎÅ¹Ô°Ù¥Á¥§¥Ã¥¯½èÍý
+           PERFORM VARYING IDX-SKJ     FROM    1   BY  1
+                   UNTIL ( IDX-SKJ     >   CONST-SKJSRY-MAX )
+                    OR   ( SPA-NAI-W24-SKJSRY-SRYCD (IDX-SKJ) )
+               PERFORM 4101-SKJSRY-CHK-SEC
+               IF    ( SPA-ERRCD   NOT =   SPACE )
+                   GO  TO  4102-KIHON-CHK-EXT
+               END-IF
+           END-PERFORM
       *
       *    ¼¼ÎÁº¹³Û¾ÃÈñÀÇ¶èÊ¬
            PERFORM 4101-BRMSGK-TAX-CHK-SEC
@@ -1582,13 +1726,38 @@
            END-EVALUATE
       *
       *    ÆÃÊÌ´ÉÍý²Ã»»
-           MOVE    CONST-SHOKUCD (1)   TO  SYS-5000-SHOKUCD  (1)
-           MOVE    SPA-GMN-W24-TOKKNRKSN
+           IF    ( SPA-W01-EDYUKYMD    >=  CONST-H180401 )
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDX-SKJ FROM    1   BY  1
+                       UNTIL ( IDX-SKJ >   CONST-SKJSRY-MAX )
+                        OR   ( SPA-NAI-W24-SKJSRY-SRYCD (IDX-SKJ)
+                                       =   SPACE )
+      *
+                   IF    ( SPA-NAI-W24-SKJSRY-SRYCD (IDX-SKJ)
+                                   =   "197000270" )
+                       MOVE    SPA-NAI-W24-SKJSRY-SRYCD (IDX-SKJ)
+                                       TO  SYS-5000-SHOKUCD  (1)
+                       MOVE    SPA-GMN-W24-SKJSRY (IDX-SKJ)
                                        TO  SYS-5000-SHOKUKBN (1)
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
       *    ¿©Æ²²Ã»»
-           MOVE    CONST-SHOKUCD (2)   TO  SYS-5000-SHOKUCD  (2)
-           MOVE    SPA-GMN-W24-SYOKUDOKSN
-                                       TO  SYS-5000-SHOKUKBN (2)
+           PERFORM VARYING IDX-SKJ FROM    1   BY  1
+                   UNTIL ( IDX-SKJ >   CONST-SKJSRY-MAX )
+                    OR   ( SPA-NAI-W24-SKJSRY-SRYCD (IDX-SKJ)
+                                       =   SPACE )
+      *
+               IF    ( SPA-NAI-W24-SKJSRY-SRYCD (IDX-SKJ)
+                               =   "197000570" )
+                   MOVE    SPA-NAI-W24-SKJSRY-SRYCD (IDX-SKJ)
+                                   TO  SYS-5000-SHOKUCD  (2)
+                   MOVE    SPA-GMN-W24-SKJSRY (IDX-SKJ)
+                                   TO  SYS-5000-SHOKUKBN (2)
+               END-IF
+           END-PERFORM
       *
       *    ¼¼ÎÁº¹³Û¾ÃÈñÀÇ¶èÊ¬
            MOVE    SPA-GMN-W24-BRMSGK-TAX
@@ -1602,11 +1771,14 @@
            MOVE    SPA-GMN-W24-NACCT-GAIHAKU
                                    TO  SYS-5000-NACCT-GAIHAKUKBN
       *
-           IF    ( SPA-W01-STYUKYMD    <   "20040401" )
+           EVALUATE    TRUE
+           WHEN  ( SPA-W01-EDYUKYMD   >=   CONST-H180401 )
                MOVE    13          TO  WRK-MAX
-           ELSE
+           WHEN  ( SPA-W01-EDYUKYMD   >=   CONST-H160401 )
                MOVE    15          TO  WRK-MAX
-           END-IF
+           WHEN    OTHER
+               MOVE    13          TO  WRK-MAX
+           END-EVALUATE
       *
       *    Æþ±¡ÎÁ²Ã»»¾ðÊó
            PERFORM VARYING IDX1    FROM    1   BY  1
@@ -1623,9 +1795,9 @@
       *
       *    ÃÏ°è²Ã»»¾ðÊó
            IF    ( SPA-GMN-W24-CHIIKIKSN   >=  "1")
-            AND  ( SPA-GMN-W24-CHIIKIKSN   <=  "4" )
+            AND  ( SPA-GMN-W24-CHIIKIKSN   <=  "6" )
                MOVE    SPA-GMN-W24-CHIIKIKSN   TO  WRK-CHIIKIKSN-G
-               MOVE    CONST-CHIIKIKSNSRYCD (WRK-CHIIKIKSN)
+               MOVE    CONST-CHIIKIKSN-SRYCD (WRK-CHIIKIKSN)
                                    TO  SYS-5000-CHIIKIKSN
            END-IF
       *
@@ -1682,7 +1854,9 @@
       *
       *
       *    ¸º»»¾ðÊó
-           IF    ( SPA-W01-STYUKYMD    <   "20060401" )
+           IF    ( SPA-W01-EDYUKYMD    >=  CONST-H180401 )
+               CONTINUE
+           ELSE
                PERFORM 48111-GENZAN-EDIT-SEC
            END-IF
       *
@@ -1695,15 +1869,15 @@
       *****************************************************************
        48111-GENZAN-EDIT-SEC           SECTION.
       *
-           IF    ( SPA-W01-STYUKYMD    <   "20040401" )
-               MOVE    14          TO  IDX0
-           ELSE
+           IF    ( SPA-W01-EDYUKYMD   >=   CONST-H160401 )
                MOVE    16          TO  IDX0
+           ELSE
+               MOVE    14          TO  IDX0
            END-IF
       *
            MOVE    2               TO  IDX1
       *
-           PERFORM UNTIL ( IDX1    >   4 )
+           PERFORM UNTIL ( IDX1    >   CONST-GEN-MAX )
       *
                MOVE    CONST-GENCD (IDX1)
                                    TO  SYS-5000-GENCD (IDX1)
@@ -1748,60 +1922,43 @@
        4101-SKJRYOYO-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ÆÃÊÌ´ÉÍý²Ã»»¥Á¥§¥Ã¥¯½èÍý
+      *    ¿©»ö¿ÇÎÅ¹Ô°Ù¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
-       4101-TOKKNRKSN-CHK-SEC        SECTION.
+       4101-SKJSRY-CHK-SEC         SECTION.
       *
-           IF    ( SPA-GMN-W24-TOKKNRKSN-G =   SPACE )
-               MOVE   "1"              TO  WRK-CMB-CD
-               PERFORM 4200-TOKKNRKSNLST-CHK-SEC
-               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-TOKKNRKSN-G
-               GO  TO  4101-TOKKNRKSN-CHK-EXT
+           IF    ( SPA-GMN-W24-SKJSRY-OCC (IDX-SKJ)
+                                       =   SPACE )
+               MOVE   "1"          TO  WRK-CMB-CD
+               PERFORM 4200-SKJSRYLST-CHK-SEC
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-W24-SKJSRY-OCC (IDX-SKJ)
+               GO  TO  4101-SKJSRY-CHK-EXT
            END-IF
       *
       *    ³ºÅö¥³¡¼¥É¤Î¥Ç¡¼¥¿¤¬Â¸ºß¤¹¤ë¤«¥Á¥§¥Ã¥¯
-           MOVE    SPA-GMN-W24-TOKKNRKSN
+           MOVE    SPA-GMN-W24-SKJSRY (IDX-SKJ)
                                        TO  WRK-CMB-CD
-           PERFORM 4200-TOKKNRKSNLST-CHK-SEC
+           PERFORM 4200-SKJSRYLST-CHK-SEC
            IF   (  WRK-CMB-ITM     =   SPACE )
-               MOVE    2           TO  SPA-GMN-W24-CUR
-               MOVE    "0006"      TO  SPA-ERRCD
+      *
+               COMPUTE SPA-GMN-W24-CUR =   IDX-SKJ +   1
+      *
+               EVALUATE    SPA-NAI-W24-SKJSRY-SRYCD (IDX-SKJ)
+               WHEN    "197000270"
+                   MOVE    "0006"      TO  SPA-ERRCD
+               WHEN    "197000570"
+                   MOVE    "0007"      TO  SPA-ERRCD
+               WHEN    OTHER
+                   MOVE    "0001"      TO  SPA-ERRCD
+               END-EVALUATE
+      *
            ELSE
-               MOVE    WRK-CMB-ITM TO  SPA-GMN-W24-TOKKNRKSN-G
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-W24-SKJSRY-OCC (IDX-SKJ)
            END-IF
       *
       *
            .
       *
-       4101-TOKKNRKSN-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    ¿©Æ²²Ã»»¥Á¥§¥Ã¥¯½èÍý
-      *****************************************************************
-       4101-SYOKUDOKSN-CHK-SEC         SECTION.
-      *
-           IF    ( SPA-GMN-W24-SYOKUDOKSN-G    =   SPACE )
-               MOVE   "1"              TO  WRK-CMB-CD
-               PERFORM 4200-SYOKUDOKSNLST-CHK-SEC
-               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-SYOKUDOKSN-G
-               GO  TO  4101-SYOKUDOKSN-CHK-EXT
-           END-IF
-      *
-      *    ³ºÅö¥³¡¼¥É¤Î¥Ç¡¼¥¿¤¬Â¸ºß¤¹¤ë¤«¥Á¥§¥Ã¥¯
-           MOVE    SPA-GMN-W24-SYOKUDOKSN
-                                       TO  WRK-CMB-CD
-           PERFORM 4200-SYOKUDOKSNLST-CHK-SEC
-           IF   (  WRK-CMB-ITM     =   SPACE )
-               MOVE    3           TO  SPA-GMN-W24-CUR
-               MOVE    "0007"      TO  SPA-ERRCD
-           ELSE
-               MOVE    WRK-CMB-ITM TO  SPA-GMN-W24-SYOKUDOKSN-G
-           END-IF
-      *
-      *
-           .
-      *
-       4101-SYOKUDOKSN-CHK-EXT.
+       4101-SKJSRY-CHK-EXT.
            EXIT.
       *****************************************************************
       *    ¼¼ÎÁº¹³Û¾ÃÈñÀÇ¶èÊ¬
@@ -1879,250 +2036,184 @@
       *
       *    »ÜÀß´ð½à¸¡º÷½èÍý
            PERFORM 4101-SYS-1006-SEL-SEC
-           IF    ( FLG-SYSKANRI    NOT =   ZERO )
-               GO  TO  4101-SSTKIJUN-CHK-EXT
-           END-IF
       *
-      *    Æþ±¡»þ°å³Ø´ÉÍýÎÁ¥Á¥§¥Ã¥¯½èÍý
-           PERFORM 4101-A200-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4101-SSTKIJUN-CHK-EXT
-           END-IF
+           MOVE    7               TO  WRK-BASE-CUR
       *
-      *    ¾Ò²ð³°Íè²Ã»»¥Á¥§¥Ã¥¯½èÍý
-           PERFORM 4101-A201-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4101-SSTKIJUN-CHK-EXT
-           END-IF
+           PERFORM VARYING IDX-KSN FROM    1   BY  1
+                   UNTIL ( IDX-KSN         >   CONST-NYUKSN-MAX )
+                    OR   ( SPA-ERRCD   NOT =   SPACE )
       *
-      *    µÞÀ­´üÆþ±¡²Ã»»¥Á¥§¥Ã¥¯½èÍý
-           PERFORM 4101-A202-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4101-SSTKIJUN-CHK-EXT
-           END-IF
-      *
-      *    µÞÀ­´üÆÃÄêÆþ±¡²Ã»»¥Á¥§¥Ã¥¯½èÍý
-           PERFORM 4101-A203-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4101-SSTKIJUN-CHK-EXT
-           END-IF
-      *
-      *    ÃÏ°è»Ù±çÉÂ±¡Æþ±¡¿ÇÎÅ²Ã»»¥Á¥§¥Ã¥¯½èÍý
-           PERFORM 4101-A204-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4101-SSTKIJUN-CHK-EXT
-           END-IF
-      *
-      *    ¿ÇÎÅÏ¿´ÉÍýÂÎÀ©²Ã»»¥Á¥§¥Ã¥¯½èÍý
-           PERFORM 4101-A207-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4101-SSTKIJUN-CHK-EXT
-           END-IF
-      *
-      *    Æý»ù²Ã»»¡¦ÍÄ»ù²Ã»»¥Á¥§¥Ã¥¯½èÍý
-           PERFORM 4101-A208-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4101-SSTKIJUN-CHK-EXT
-           END-IF
-      *
-      *    Àº¿ÀÉÂÅïÆþ±¡»þ°å³Ø´ÉÍýÎÁ¥Á¥§¥Ã¥¯½èÍý
-           PERFORM 4101-A230-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4101-SSTKIJUN-CHK-EXT
-           END-IF
+               IF    ( SPA-GMN-W24-CHK-NYUKSN (IDX-KSN)  =   "T" )
+                   PERFORM 41011-SSTKIJUN-CHK-SEC
+               END-IF
+           END-PERFORM
       *
            .
        4101-SSTKIJUN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡»þ°å³Ø´ÉÍýÎÁ¥Á¥§¥Ã¥¯½èÍý
+      *    »ÜÀß´ð½à¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
-       4101-A200-CHK-SEC               SECTION.
+       41011-SSTKIJUN-CHK-SEC          SECTION.
       *
-           IF    ( SPA-GMN-W24-CHK-NYUKSN (01)  =   "T" )
-               IF  ( SYS-1006-SSTKIJUN (201)   =   1 )
+           MOVE    ZERO            TO  FLG-SSTKIJUNERR
+      *
+           EVALUATE    SPA-NAI-W24-NYUKSN-SRYCD (IDX-KSN)
+           WHEN    "190098870"
+      *        Æþ±¡»þ°å³Ø´ÉÍýÎÁ¥Á¥§¥Ã¥¯
+               IF  ( SSTKJN-CD (201)   =   1 )
                    CONTINUE
                ELSE
-                   MOVE    8       TO  SPA-GMN-W24-CUR
-                   MOVE    "0004"  TO  SPA-ERRCD
-                   MOVE    "F"     TO  SPA-GMN-W24-CHK-NYUKSN (01)
-                   GO  TO  4101-A200-CHK-EXT
+                   MOVE    1           TO  FLG-SSTKIJUNERR
                END-IF
+           WHEN    "190098970"
+      *        ¾Ò²ð³°Íè²Ã»»¡ÊÆÃÄêµ¡Ç½ÉÂ±¡°Ê³°¡Ë
+               IF    ( SSTKJN-CD (202) =   1 )
+                AND (( SSTKJN-CD (147) =   1 )
+                 OR  ( SSTKJN-CD (148) =   1 )
+                 OR  ( SSTKJN-CD (107) =   1 )
+                 OR  ( SSTKJN-CD (108) =   1 ))
+                   CONTINUE
+               ELSE
+                   MOVE    1           TO  FLG-SSTKIJUNERR
+               END-IF
+           WHEN    "190099170"
+      *        ¾Ò²ð³°ÍèÆÃÊÌ²Ã»»
+               IF    ( SSTKJN-CD (202) =   1 )
+                AND  ( SSTKJN-CD (203) =   1 )
+                AND (( SSTKJN-CD (147) =   1 )
+                 OR  ( SSTKJN-CD (148) =   1 )
+                 OR  ( SSTKJN-CD (107) =   1 )
+                 OR  ( SSTKJN-CD (108) =   1 ))
+                   CONTINUE
+               ELSE
+                   MOVE    1           TO  FLG-SSTKIJUNERR
+               END-IF
+           WHEN    "190099270"
+      *        µÞÀ­´üÆþ±¡²Ã»»
+               IF  ( SSTKJN-CD (323)   =   1 )
+                   CONTINUE
+               ELSE
+                   MOVE    1           TO  FLG-SSTKIJUNERR
+               END-IF
+           WHEN    "190099570"
+      *        µÞÀ­´üÆÃÄêÆþ±¡²Ã»»
+               IF  ( SSTKJN-CD (324)   =   1 )
+                   CONTINUE
+               ELSE
+                   MOVE    1           TO  FLG-SSTKIJUNERR
+               END-IF
+      *        ÃÏ°è°åÎÅ»Ù±çÉÂ±¡Æþ±¡¿ÇÎÅ²Ã»»
+           WHEN    "190099870"
+               IF  ( SSTKJN-CD (146)   =   1 )
+                   CONTINUE
+               ELSE
+                   MOVE    1           TO  FLG-SSTKIJUNERR
+               END-IF
+           WHEN    "190099970"
+      *        ÃÏ°è°åÎÅ»Ù±çÉÂ±¡Æþ±¡¿ÇÎÅ²Ã»»£²
+               IF    ( SSTKJN-CD (146)   =   1 )
+                AND  ( SSTKJN-CD (147)   =   1 )
+                AND  ( SSTKJN-CD (156)   =   1 )
+                   CONTINUE
+               ELSE
+                   MOVE    1           TO  FLG-SSTKIJUNERR
+               END-IF
+           WHEN    "190117170"
+           WHEN    "190119910"
+      *        Ã±ÆÈ·¿µÚ¤Ó´ÉÍý·¿Î×¾²¸¦½¤ÉÂ±¡Æþ±¡¿ÇÎÅ²Ã»»¡ÊÆþ±¡½éÆü¡Ë
+      *        ¶¨ÎÏ·¿Î×¾²¸¦½¤ÉÂ±¡Æþ±¡¿ÇÎÅ²Ã»»¡ÊÆþ±¡½éÆü¡Ë
+               IF    ( SSTKJN-CD (206)   =   1 )
+                AND  ( SSTKJN-CD (364)   =   1 )
+                   CONTINUE
+               ELSE
+                   MOVE    1           TO  FLG-SSTKIJUNERR
+               END-IF
+           WHEN    "190100370"
+      *        ¿ÇÎÅÏ¿´ÉÍýÂÎÀ©²Ã»»
+               IF    ( SSTKJN-CD (206)   =   1 )
+                   CONTINUE
+               ELSE
+                   MOVE    1           TO  FLG-SSTKIJUNERR
+               END-IF
+           WHEN    "190100470"
+           WHEN    "190100770"
+           WHEN    "190100670"
+           WHEN    "190100970"
+      *        ÆýÍÄ»ù²Ã»»¡ÊÉÂ±¡¡Ë
+      *        ÍÄ»ù²Ã»»¡ÊÉÂ±¡¡Ë
+      *        ÆýÍÄ»ù²Ã»»¡Ê¿ÇÎÅ½ê¡Ë
+      *        ÍÄ»ù²Ã»»¡Ê¿ÇÎÅ½ê¡Ë
+               CONTINUE
+           WHEN    "190107170"
+      *        Àº¿ÀÉÂÅïÆþ±¡»þ°å³Ø´ÉÍý²Ã»»
+               IF    ( SSTKJN-CD (207)   =   1 )
+                   CONTINUE
+               ELSE
+                   MOVE    1           TO  FLG-SSTKIJUNERR
+               END-IF
+           WHEN    "190117270"
+      *        Î¥Åç²Ã»»
+                   CONTINUE
+           WHEN    "190120510"
+      *        °åÎÅ°ÂÁ´ÂÐºö²Ã»»¡ÊÆþ±¡½éÆü¡Ë
+               IF    ( SSTKJN-CD (605)   =   1 )
+                   CONTINUE
+               ELSE
+                   MOVE    1           TO  FLG-SSTKIJUNERR
+               END-IF
+           WHEN    "190120410"
+      *        ±ÉÍÜ´ÉÍý¼Â»Ü²Ã»»
+               IF    ( SSTKJN-CD (604)   =   1 )
+                   CONTINUE
+               ELSE
+                   MOVE    1           TO  FLG-SSTKIJUNERR
+               END-IF
+           END-EVALUATE
+      *
+           IF    ( FLG-SSTKIJUNERR     =   1 )
+               COMPUTE SPA-GMN-W24-CUR
+                   =   WRK-BASE-CUR    +   IDX-KSN
+               MOVE    "0004"  TO  SPA-ERRCD
+               MOVE    "F"     TO  SPA-GMN-W24-CHK-NYUKSN (IDX-KSN)
            END-IF
       *
            .
-       4101-A200-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    ¾Ò²ð³°Íè²Ã»»¥Á¥§¥Ã¥¯½èÍý
-      *****************************************************************
-       4101-A201-CHK-SEC               SECTION.
-      *
-           IF    ( SPA-GMN-W24-CHK-NYUKSN (02)  =   "T" )
-               IF    ( SYS-1006-SSTKIJUN (202) =   1 )
-                AND (( SYS-1006-SSTKIJUN (147) =   1 )
-                 OR  ( SYS-1006-SSTKIJUN (148) =   1 )
-                 OR  ( SYS-1006-SSTKIJUN (107) =   1 )
-                 OR  ( SYS-1006-SSTKIJUN (108) =   1 ))
-                   CONTINUE
-               ELSE
-                   MOVE    9       TO  SPA-GMN-W24-CUR
-                   MOVE    "0004"  TO  SPA-ERRCD
-                   MOVE    "F"     TO  SPA-GMN-W24-CHK-NYUKSN (02)
-                   GO  TO  4101-A201-CHK-EXT
-               END-IF
-           END-IF
-      *
-           IF    ( SPA-GMN-W24-CHK-NYUKSN (03)  =   "T" )
-               IF    ( SYS-1006-SSTKIJUN (202) =   1 )
-                AND  ( SYS-1006-SSTKIJUN (203) =   1 )
-                AND (( SYS-1006-SSTKIJUN (147) =   1 )
-                 OR  ( SYS-1006-SSTKIJUN (148) =   1 )
-                 OR  ( SYS-1006-SSTKIJUN (107) =   1 )
-                 OR  ( SYS-1006-SSTKIJUN (108) =   1 ))
-                   CONTINUE
-               ELSE
-                   MOVE    10      TO  SPA-GMN-W24-CUR
-                   MOVE    "0004"  TO  SPA-ERRCD
-                   MOVE    "F"     TO  SPA-GMN-W24-CHK-NYUKSN (03)
-                   GO  TO  4101-A201-CHK-EXT
-               END-IF
-           END-IF
-      *
-           .
-       4101-A201-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    µÞÀ­´üÆþ±¡²Ã»»¥Á¥§¥Ã¥¯½èÍý
-      *****************************************************************
-       4101-A202-CHK-SEC               SECTION.
-      *
-           IF    ( SPA-GMN-W24-CHK-NYUKSN (04)  =   "T" )
-               IF  ( SYS-1006-SSTKIJUN (323)   =   1 )
-                   CONTINUE
-               ELSE
-                   MOVE    11      TO  SPA-GMN-W24-CUR
-                   MOVE    "0004"  TO  SPA-ERRCD
-                   MOVE    "F"     TO  SPA-GMN-W24-CHK-NYUKSN (04)
-                   GO  TO  4101-A202-CHK-EXT
-               END-IF
-           END-IF
-      *
-           .
-       4101-A202-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    µÞÀ­´üÆÃÄêÆþ±¡²Ã»»¥Á¥§¥Ã¥¯½èÍý
-      *****************************************************************
-       4101-A203-CHK-SEC               SECTION.
-      *
-           IF    ( SPA-GMN-W24-CHK-NYUKSN (05)  =   "T" )
-               IF  ( SYS-1006-SSTKIJUN (324)   =   1 )
-                   CONTINUE
-               ELSE
-                   MOVE    12      TO  SPA-GMN-W24-CUR
-                   MOVE    "0004"  TO  SPA-ERRCD
-                   MOVE    "F"     TO  SPA-GMN-W24-CHK-NYUKSN (05)
-                   GO  TO  4101-A203-CHK-EXT
-               END-IF
-           END-IF
-      *
-           .
-       4101-A203-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    ÃÏ°è»Ù±çÉÂ±¡Æþ±¡¿ÇÎÅ²Ã»»¥Á¥§¥Ã¥¯½èÍý
-      *****************************************************************
-       4101-A204-CHK-SEC               SECTION.
-      *
-           IF    ( SPA-GMN-W24-CHK-NYUKSN (06)  =   "T" )
-               IF  ( SYS-1006-SSTKIJUN (146)   =   1 )
-                   CONTINUE
-               ELSE
-                   MOVE    13      TO  SPA-GMN-W24-CUR
-                   MOVE    "0004"  TO  SPA-ERRCD
-                   MOVE    "F"     TO  SPA-GMN-W24-CHK-NYUKSN (06)
-                   GO  TO  4101-A204-CHK-EXT
-               END-IF
-           END-IF
-      *
-           IF    ( SPA-GMN-W24-CHK-NYUKSN (07)  =   "T" )
-               IF    ( SYS-1006-SSTKIJUN (146)   =   1 )
-                AND  ( SYS-1006-SSTKIJUN (147)   =   1 )
-                AND  ( SYS-1006-SSTKIJUN (156)   =   1 )
-                   CONTINUE
-               ELSE
-                   MOVE    14      TO  SPA-GMN-W24-CUR
-                   MOVE    "0004"  TO  SPA-ERRCD
-                   MOVE    "F"     TO  SPA-GMN-W24-CHK-NYUKSN (07)
-                   GO  TO  4101-A204-CHK-EXT
-               END-IF
-           END-IF
-      *
-           .
-       4101-A204-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    ¿ÇÎÅÏ¿´ÉÍýÂÎÀ©²Ã»»¥Á¥§¥Ã¥¯½èÍý
-      *****************************************************************
-       4101-A207-CHK-SEC               SECTION.
-      *
-           IF    ( SPA-GMN-W24-CHK-NYUKSN (08)  =   "T" )
-               IF    ( SYS-1006-SSTKIJUN (206)   =   1 )
-                   CONTINUE
-               ELSE
-                   MOVE    15      TO  SPA-GMN-W24-CUR
-                   MOVE    "0004"  TO  SPA-ERRCD
-                   MOVE    "F"     TO  SPA-GMN-W24-CHK-NYUKSN (08)
-                   GO  TO  4101-A207-CHK-EXT
-               END-IF
-           END-IF
-      *
-           .
-       4101-A207-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    Æý»ù²Ã»»¡¦ÍÄ»ù²Ã»»¥Á¥§¥Ã¥¯½èÍý
-      *****************************************************************
-       4101-A208-CHK-SEC               SECTION.
-      *
-      *
-           .
-       4101-A208-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    Àº¿ÀÉÂÅïÆþ±¡»þ°å³Ø´ÉÍýÎÁ¥Á¥§¥Ã¥¯½èÍý
-      *****************************************************************
-       4101-A230-CHK-SEC               SECTION.
-      *
-           IF    ( SPA-GMN-W24-CHK-NYUKSN (13)  =   "T" )
-               IF    ( SYS-1006-SSTKIJUN (207)   =   1 )
-                   CONTINUE
-               ELSE
-                   MOVE    20      TO  SPA-GMN-W24-CUR
-                   MOVE    "0004"  TO  SPA-ERRCD
-                   MOVE    "F"     TO  SPA-GMN-W24-CHK-NYUKSN (13)
-                   GO  TO  4101-A230-CHK-EXT
-               END-IF
-           END-IF
-      *
-           .
-       4101-A230-CHK-EXT.
+       41011-SSTKIJUN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    »ÜÀß´ð½à¸¡º÷½èÍý
       *****************************************************************
        4101-SYS-1006-SEL-SEC           SECTION.
       *
+           MOVE    ZERO            TO  SSTKJN-AREA
+      *
       *    »ÜÀß´ð½à¾ðÊó¸¡º÷
            INITIALIZE  SYSKANRI-REC
            MOVE    "1006"          TO  SYS-KANRICD
-           MOVE    "1"             TO  SYS-KBNCD
-           MOVE    SPA-W01-STYUKYMD
+           MOVE    SPA-W01-EDYUKYMD
                                    TO  SYS-STYUKYMD
                                        SYS-EDYUKYMD
-           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
-           MOVE    SYSKANRI-REC    TO  SYS-1006-REC
+           PERFORM 900-SYSKANRI-KEY2-SEL-SEC
+      *
+           PERFORM UNTIL ( FLG-SYSKANRI    =   1 )
+      *
+               MOVE    SYSKANRI-REC    TO  SYS-1006-REC
+      *
+               EVALUATE    SYS-1006-KBNCD
+               WHEN    "1"
+                   MOVE    SYS-1006-TBL    TO  SSTKJN-VAL1
+               WHEN    "2"
+                   MOVE    SYS-1006-TBL    TO  SSTKJN-VAL2
+               END-EVALUATE
+      *
+               PERFORM 900-SYSKANRI-KEY2-FET-SEC
+      *
+           END-PERFORM
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        4101-SYS-1006-SEL-EXT.
@@ -2445,19 +2536,19 @@
        4200-SKJRYOYOLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ÆÃÊÌ´ÉÍý²Ã»»¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *    ¿©»ö¿ÇÎÅ¹Ô°Ù¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
-       4200-TOKKNRKSNLST-CHK-SEC      SECTION.
+       4200-SKJSRYLST-CHK-SEC      SECTION.
       *
            INITIALIZE                  WRK-CMB-ITM-G
       *
            PERFORM VARYING IDX-CMB     FROM    1   BY  1
-                   UNTIL ( IDX-CMB     >   SPA-GMN-W24-TOKKNRKSN-MAX )
+                   UNTIL ( IDX-CMB     >   SPA-GMN-W24-SKJSRY-MAX )
                     OR   ( WRK-CMB-ITM NOT =   SPACE )
       *
-               IF    ( SPA-GMN-W24-TOKKNRKSNL (IDX-CMB)
+               IF    ( SPA-GMN-W24-SKJSRYL (IDX-CMB)
                                        =   WRK-CMB-CD )
-                   MOVE    SPA-GMN-W24-TOKKNRKSNLST (IDX-CMB)
+                   MOVE    SPA-GMN-W24-SKJSRYLST (IDX-CMB)
                                        TO  WRK-CMB-ITM
                    MOVE    IDX-CMB     TO  WRK-CMB-IDX
                END-IF
@@ -2466,31 +2557,7 @@
       *
            .
       *
-       4200-TOKKNRKSNLST-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    ¿©Æ²²Ã»»¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
-      *****************************************************************
-       4200-SYOKUDOKSNLST-CHK-SEC      SECTION.
-      *
-           INITIALIZE                  WRK-CMB-ITM-G
-      *
-           PERFORM VARYING IDX-CMB     FROM    1   BY  1
-                   UNTIL ( IDX-CMB     >   SPA-GMN-W24-SYOKUDOKSN-MAX )
-                    OR   ( WRK-CMB-ITM NOT =   SPACE )
-      *
-               IF    ( SPA-GMN-W24-SYOKUDOKSNL (IDX-CMB)
-                                       =   WRK-CMB-CD )
-                   MOVE    SPA-GMN-W24-SYOKUDOKSNLST (IDX-CMB)
-                                       TO  WRK-CMB-ITM
-                   MOVE    IDX-CMB     TO  WRK-CMB-IDX
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-      *
-       4200-SYOKUDOKSNLST-CHK-EXT.
+       4200-SKJSRYLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    ÃÏ°è²Ã»»¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
@@ -2737,15 +2804,41 @@
                        SPA-NAI-W24-AREA
       *
            PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   20 )
+                   UNTIL ( IDX0    >   CONST-SKJSRY-MAX )
       *
-               IF    ( SPA-W01-STYUKYMD    <   "20040401" )
-                   MOVE    CONST-NYUKSN-SRYCD-040331 (IDX0)
-                                   TO  SPA-NAI-W24-NYUKSN-SRYCD  (IDX0)
+               IF    ( SPA-W01-EDYUKYMD    >=  CONST-H180401 )
+                   MOVE    CONST-SKJSRY-H1804 (IDX0)
+                                   TO  SPA-NAI-W24-SKJSRY-SRYCD  (IDX0)
                ELSE
+                   MOVE    CONST-SKJSRY-SRYCD (IDX0)
+                                   TO  SPA-NAI-W24-SKJSRY-SRYCD  (IDX0)
+               END-IF
+      *
+               IF    ( SPA-NAI-W24-SKJSRY-SRYCD  (IDX0)
+                                           NOT =   SPACE )
+                   MOVE    SPA-NAI-W24-SKJSRY-SRYCD (IDX0)
+                                       TO  WRK-SRYCD
+                   PERFORM 900-TENSU-KEY-SEL-SEC
+                   MOVE    TNS-NAME    TO  SPA-GMN-W24-LBLSKJSRY (IDX0)
+               END-IF
+      *
+           END-PERFORM
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   CONST-NYUKSN-MAX )
+      *
+               EVALUATE    TRUE
+               WHEN  ( SPA-W01-EDYUKYMD    >=  CONST-H180401 )
+                   MOVE    CONST-NYUKSN-H1804 (IDX0)
+                                   TO  SPA-NAI-W24-NYUKSN-SRYCD  (IDX0)
+               WHEN  ( SPA-W01-EDYUKYMD    >=  CONST-H160401 )
+                   MOVE    CONST-NYUKSN-H1604 (IDX0)
+                                   TO  SPA-NAI-W24-NYUKSN-SRYCD  (IDX0)
+               WHEN    OTHER
                    MOVE    CONST-NYUKSN-SRYCD (IDX0)
                                    TO  SPA-NAI-W24-NYUKSN-SRYCD  (IDX0)
-               END-IF
+               END-EVALUATE
+      *
                MOVE    "F"         TO  SPA-GMN-W24-CHK-NYUKSN (IDX0)
       *
            END-PERFORM
@@ -2755,11 +2848,9 @@
            MOVE    SPA-W01-EDYUKYMDH
                                    TO  SPA-GMN-W24-EDYUKYMD
       *
-           MOVE    SPA-GMN-W24-TOKKNRKSNLST (1)
-                                   TO  SPA-GMN-W24-TOKKNRKSN-G
-      *
-           MOVE    SPA-GMN-W24-SYOKUDOKSNLST (1)
-                                   TO  SPA-GMN-W24-SYOKUDOKSN-G
+           MOVE    SPA-GMN-W24-SKJSRYLST (1)
+                                   TO  SPA-GMN-W24-SKJSRY-OCC (1)
+                                       SPA-GMN-W24-SKJSRY-OCC (2)
       *
            MOVE    SPA-GMN-W24-BRMSGK-TAXLST (1)
                                    TO  SPA-GMN-W24-BRMSGK-TAX-G
@@ -2792,7 +2883,9 @@
            PERFORM 4201-NYUKSNMEI-EDIT-SEC
       *
       *    Æþ±¡¸º»»Ì¾¾ÎÊÔ½¸½èÍý
-           IF    ( SPA-W01-STYUKYMD    <   "20060401" )
+           IF    ( SPA-W01-EDYUKYMD   >=   CONST-H180401 )
+               CONTINUE
+           ELSE
                PERFORM 4201-GENZANMEI-EDIT-SEC
            END-IF
       *
@@ -2808,7 +2901,7 @@
        4201-NYUKSNMEI-EDIT-SEC         SECTION.
       *
            PERFORM VARYING IDX0    FROM    1   BY  1
-               UNTIL     ( IDX0    >   20 )
+               UNTIL     ( IDX0    >   CONST-NYUKSN-MAX )
                     OR   ( SPA-NAI-W24-NYUKSN-SRYCD (IDX0) =   SPACE )
                MOVE    SPA-NAI-W24-NYUKSN-SRYCD (IDX0)
                                    TO  WRK-SRYCD
@@ -2828,15 +2921,15 @@
       *****************************************************************
        4201-GENZANMEI-EDIT-SEC         SECTION.
       *
-           IF    ( SPA-W01-STYUKYMD    <   "20040401" )
-               MOVE    14          TO  IDX0
-           ELSE
+           IF    ( SPA-W01-EDYUKYMD    >=  CONST-H160401 )
                MOVE    16          TO  IDX0
+           ELSE
+               MOVE    14          TO  IDX0
            END-IF
       *
            MOVE    2               TO  IDX1
       *
-           PERFORM UNTIL ( IDX1    >   4 )
+           PERFORM UNTIL ( IDX1    >   CONST-GEN-MAX )
       *
                 MOVE    CONST-GENCD (IDX1)  TO  WRK-SRYCD
                 PERFORM 900-TENSU-KEY-SEL-SEC
@@ -2859,7 +2952,7 @@
            INITIALIZE  SYSKANRI-REC
            MOVE    "1001"              TO  SYS-KANRICD
            MOVE    "*"                 TO  SYS-KBNCD
-           MOVE    SPA-W01-STYUKYMD    TO  SYS-STYUKYMD
+           MOVE    SPA-W01-EDYUKYMD    TO  SYS-STYUKYMD
                                            SYS-EDYUKYMD
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            MOVE    SYSKANRI-REC        TO  SYS-1001-REC
@@ -2872,22 +2965,75 @@
       *****************************************************************
        4900-KANRENCHK-SEC              SECTION.
       *
+           INITIALIZE      FLG-NYUKSNCD-G
+           PERFORM VARYING  IDX-KSN FROM    1   BY  1
+                   UNTIL (  IDX-KSN >   CONST-NYUKSN-MAX )
+      *
+               IF    ( SPA-GMN-W24-CHK-NYUKSN (IDX-KSN)  =   "T" )
+                   EVALUATE    SPA-NAI-W24-NYUKSN-SRYCD (IDX-KSN)
+                   WHEN    "190098870"
+                       MOVE    1           TO  FLG-190098870
+                   WHEN    "190098970"
+                       MOVE    1           TO  FLG-190098970
+                   WHEN    "190099170"
+                       MOVE    1           TO  FLG-190099170
+                   WHEN    "190099270"
+                       MOVE    1           TO  FLG-190099270
+                   WHEN    "190099570"
+                       MOVE    1           TO  FLG-190099570
+                   WHEN    "190099870"
+                       MOVE    1           TO  FLG-190099870
+                   WHEN    "190099970"
+                       MOVE    1           TO  FLG-190099970
+                   WHEN    "190100370"
+                       MOVE    1           TO  FLG-190100370
+                   WHEN    "190100470"
+                       MOVE    1           TO  FLG-190100470
+                   WHEN    "190100670"
+                       MOVE    1           TO  FLG-190100670
+                   WHEN    "190100770"
+                       MOVE    1           TO  FLG-190100770
+                   WHEN    "190100970"
+                       MOVE    1           TO  FLG-190100970
+                   WHEN    "190107170"
+                       MOVE    1           TO  FLG-190107170
+                   WHEN    "190117170"
+                       MOVE    1           TO  FLG-190117170
+                   WHEN    "190117270"
+                       MOVE    1           TO  FLG-190117270
+                   WHEN    "190119910"
+                       MOVE    1           TO  FLG-190119910
+                   WHEN    "190120410"
+                       MOVE    1           TO  FLG-190120410
+                   WHEN    "190120510"
+                       MOVE    1           TO  FLG-190120510
+                   END-EVALUATE
+               END-IF
+      *
+           END-PERFORM
+      *
       *    µÞÀ­´üÉÂ±¡²Ã»»¤ÈµÞÀ­´üÆÃÄêÉÂ±¡²Ã»»¤¬
       *    Æ±»þ¤Ë»»Äê¤µ¤ì¤Æ¤¤¤Ê¤¤¤³¤È
-           IF    ( SPA-GMN-W24-CHK-NYUKSN (04)  =   "T" )
-            AND  ( SPA-GMN-W24-CHK-NYUKSN (05)  =   "T" )
-             MOVE    11            TO  SPA-GMN-W24-CUR
-             MOVE    "1001"        TO  SPA-ERRCD
-             GO  TO  4900-KANRENCHK-EXT
+           IF    ( SPA-W01-EDYUKYMD      >=    CONST-H180401 )
+               CONTINUE
+           ELSE
+               IF    ( FLG-190099270           =   1 )
+                AND  ( FLG-190099570           =   1 )
+                   MOVE    "1001"      TO  SPA-ERRCD
+                   GO  TO  4900-KANRENCHK-EXT
+               END-IF
            END-IF
       *
       *    ÃÏ°è°åÎÅ»Ù±çÉÂ±¡Æþ±¡¿ÇÎÅ²Ã»»£±¤È£²¤¬
       *    Æ±»þ¤Ë»»Äê¤µ¤ì¤Æ¤¤¤Ê¤¤¤³¤È
-           IF    ( SPA-GMN-W24-CHK-NYUKSN (06)  =   "T" )
-            AND  ( SPA-GMN-W24-CHK-NYUKSN (07)  =   "T" )
-             MOVE    13            TO  SPA-GMN-W24-CUR
-             MOVE    "1002"        TO  SPA-ERRCD
-             GO  TO  4900-KANRENCHK-EXT
+           IF    ( SPA-W01-EDYUKYMD      >=    CONST-H180401 )
+               CONTINUE
+           ELSE
+               IF    ( FLG-190099870           =   1 )
+                AND  ( FLG-190099970           =   1 )
+                   MOVE   "1002"       TO  SPA-ERRCD
+                   GO  TO  4900-KANRENCHK-EXT
+               END-IF
            END-IF
       *
       *    °åÎÅµ¡´Ø¾ðÊó¤è¤êÉÂ±¡¤«¿ÇÎÅ½ê¤òÈ½ÃÇ¤·¡¢
@@ -2895,27 +3041,15 @@
            PERFORM 4201-SYS-1001-SEL-SEC
            EVALUATE    SYS-1001-HOSPSBT
            WHEN    "1"
-               IF    ( SPA-GMN-W24-CHK-NYUKSN (11)  =   "T" )
-                   MOVE    18            TO  SPA-GMN-W24-CUR
-                   MOVE    "1003"        TO  SPA-ERRCD
-                   GO  TO  4900-KANRENCHK-EXT
-               END-IF
-      *
-               IF    ( SPA-GMN-W24-CHK-NYUKSN (12)  =   "T" )
-                   MOVE    19            TO  SPA-GMN-W24-CUR
+               IF    ( FLG-190100670     =   1 )
+                OR   ( FLG-190100970     =   1 )
                    MOVE    "1003"        TO  SPA-ERRCD
                    GO  TO  4900-KANRENCHK-EXT
                END-IF
       *
            WHEN    "2"
-               IF    ( SPA-GMN-W24-CHK-NYUKSN (09)  =   "T" )
-                   MOVE    16            TO  SPA-GMN-W24-CUR
-                   MOVE    "1004"        TO  SPA-ERRCD
-                   GO  TO  4900-KANRENCHK-EXT
-               END-IF
-      *
-               IF    ( SPA-GMN-W24-CHK-NYUKSN (10)  =   "T" )
-                   MOVE    17            TO  SPA-GMN-W24-CUR
+               IF    ( FLG-190100470     =   1 )
+                OR   ( FLG-190100770     =   1 )
                    MOVE    "1004"        TO  SPA-ERRCD
                    GO  TO  4900-KANRENCHK-EXT
                END-IF
@@ -3016,40 +3150,38 @@
       *    Í­¸ú½ªÎ»Æü
            MOVE    SPA-GMN-W24-EDYUKYMD    TO  W24-EDYUKYMD
       *    Æþ±¡»þ¿©»öÎÅÍÜ
-           MOVE    SPA-GMN-W24-SKJRYOYO-G  TO  W24-SYOKUJI (01)
+           MOVE    SPA-GMN-W24-SKJRYOYO-G  TO  W24-SKJRYOYO
            MOVE    SPA-GMN-W24-SKJRYOYO-MAX
-                                           TO  W24-SYOKUJI-CNT (01)
+                                           TO  W24-SKJRYOYO-CNT
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0        >   SPA-GMN-W24-SKJRYOYO-MAX )
       *
                MOVE    SPA-GMN-W24-SKJRYOYOLST (IDX0)
-                                           TO  W24-SYOKUJI-ITM (1 IDX0)
+                                           TO  W24-SKJRYOYO-ITM (IDX0)
       *
            END-PERFORM
       *
-      *    ÆÃÊÌ´ÉÍý²Ã»»
-           MOVE    SPA-GMN-W24-TOKKNRKSN-G TO  W24-SYOKUJI (02)
-           MOVE    SPA-GMN-W24-TOKKNRKSN-MAX
-                                           TO  W24-SYOKUJI-CNT (02)
+      *    ¿©»ö¿ÇÎÅ¹Ô°Ù
            PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   SPA-GMN-W24-TOKKNRKSN-MAX )
+                   UNTIL ( IDX0    >   CONST-SKJSRY-MAX )
+                    OR   ( SPA-NAI-W24-SKJSRY-SRYCD (IDX0) =   SPACE )
       *
-               MOVE    SPA-GMN-W24-TOKKNRKSNLST (IDX0)
-                                           TO  W24-SYOKUJI-ITM (2 IDX0)
+               MOVE    SPA-GMN-W24-LBLSKJSRY (IDX0)
+                                       TO  W24-LBLSYOKUJI (IDX0)
+               MOVE    SPA-GMN-W24-SKJSRY-OCC (IDX0)
+                                       TO  W24-SYOKUJI (IDX0)
+               MOVE    SPA-GMN-W24-SKJSRY-MAX
+                                       TO  W24-SYOKUJI-CNT (IDX0)
+               PERFORM VARYING IDX1    FROM    1   BY  1
+                       UNTIL ( IDX1    >   SPA-GMN-W24-SKJSRY-MAX )
+      *
+                   MOVE    SPA-GMN-W24-SKJSRYLST (IDX1)
+                                       TO  W24-SYOKUJI-ITM (IDX0 IDX1)
+      *
+               END-PERFORM
       *
            END-PERFORM
       *
-      *    ¿©Æ²²Ã»»
-           MOVE    SPA-GMN-W24-SYOKUDOKSN-G TO W24-SYOKUJI (03)
-           MOVE    SPA-GMN-W24-SYOKUDOKSN-MAX
-                                           TO  W24-SYOKUJI-CNT (03)
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   SPA-GMN-W24-SYOKUDOKSN-MAX )
-      *
-               MOVE    SPA-GMN-W24-SYOKUDOKSNLST (IDX0)
-                                           TO  W24-SYOKUJI-ITM (3 IDX0)
-      *
-           END-PERFORM
       *
       *    ¼¼ÎÁº¹³Û¾ÃÈñÀÇ¶èÊ¬
            MOVE    SPA-GMN-W24-BRMSGK-TAX-G TO W24-BRMSGK-TAX
@@ -3091,7 +3223,7 @@
       *
       *    Æþ±¡²Ã»»¾ðÊó
            PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   20 )
+                   UNTIL ( IDX0    >   CONST-NYUKSN-MAX )
                MOVE    SPA-GMN-W24-NYUKSNMEI (IDX0)
                                            TO  W24-NYUKSNMEI (IDX0)
                MOVE    SPA-GMN-W24-CHK-NYUKSN (IDX0)
@@ -3100,7 +3232,7 @@
       *
       *    Æþ±¡²ñ·×É½¼¨¾ðÊó
            PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   10 )
+                   UNTIL ( IDX0    >   CONST-SRYACT-MAX )
                MOVE    SPA-GMN-W24-SRYCD (IDX0)
                                            TO  W24-SRYCD (IDX0)
                MOVE    SPA-GMN-W24-SRYACT (IDX0)
@@ -3226,10 +3358,10 @@
       *
            END-PERFORM
       *
-           IF    ( SPA-W01-STYUKYMD    <   "20060401" )
-               MOVE    "Æþ±¡²Ã»»¡¦¸º»»¾ðÊó"    TO  W24-FRAME3-LABEL
-           ELSE
+           IF    ( SPA-W01-EDYUKYMD    >=  CONST-H180401 )
                MOVE    "Æþ±¡²Ã»»¾ðÊó"          TO  W24-FRAME3-LABEL
+           ELSE
+               MOVE    "Æþ±¡²Ã»»¡¦¸º»»¾ðÊó"    TO  W24-FRAME3-LABEL
            END-IF
       *
       *    ¹àÌÜ¾õÂÖÊÔ½¸
@@ -3250,6 +3382,10 @@
            MOVE    WIDGET-NORMAL       TO  W24-SENTEI-TANKAIP-STATE
            MOVE    WIDGET-NORMAL       TO  W24-SENTEI-TANKARJ-STATE
            MOVE    WIDGET-NORMAL       TO  W24-B03-STATE
+           MOVE    WIDGET-NORMAL       TO  W24-SYOKUJI-STATE (1)
+           MOVE    WIDGET-NORMAL       TO  W24-SYOKUJI-STATE (2)
+           MOVE    WIDGET-NORMAL       TO  W24-SYOKUJI-ITM-STATE (1)
+           MOVE    WIDGET-NORMAL       TO  W24-SYOKUJI-ITM-STATE (2)
       *
            IF    ( SPA-W01-STYUKYMD    =   ZERO )
                MOVE    WIDGET-INSENSITIVE
@@ -3260,6 +3396,18 @@
                MOVE    WIDGET-INSENSITIVE
                                        TO  W24-SENTEI-TANKAIP-STATE
                                            W24-SENTEI-TANKARJ-STATE
+           END-IF
+      *
+           IF    ( SPA-NAI-W24-SKJSRY-SRYCD (1)   =   SPACE )
+               MOVE    WIDGET-INSENSITIVE
+                                       TO  W24-SYOKUJI-STATE (1)
+                                           W24-SYOKUJI-ITM-STATE (1)
+           END-IF
+      *
+           IF    ( SPA-NAI-W24-SKJSRY-SRYCD (2)   =   SPACE )
+               MOVE    WIDGET-INSENSITIVE
+                                       TO  W24-SYOKUJI-STATE (2)
+                                           W24-SYOKUJI-ITM-STATE (2)
            END-IF
       *
            .
@@ -3280,11 +3428,11 @@
       *
            EVALUATE    SPA-GMN-W24-CUR
            WHEN    001
-               MOVE    "SYOKUJI01"     TO  MCP-WIDGET
+               MOVE    "SKJRYOYO"      TO  MCP-WIDGET
            WHEN    002
-               MOVE    "SYOKUJI02"     TO  MCP-WIDGET
+               MOVE    "SYOKUJI01"     TO  MCP-WIDGET
            WHEN    003
-               MOVE    "SYOKUJI03"     TO  MCP-WIDGET
+               MOVE    "SYOKUJI02"     TO  MCP-WIDGET
            WHEN    008
                MOVE    "CHK_NYUKSN01"  TO  MCP-WIDGET
            WHEN    009
@@ -3388,11 +3536,11 @@
        5011-INPUT-CUR-SEC          SECTION.
       *
            EVALUATE    MCP-WIDGET
-           WHEN    "SYOKUJI01"
+           WHEN    "SKJRYOYO"
                MOVE    002             TO  SPA-GMN-W24-CUR
-           WHEN    "SYOKUJI02"
+           WHEN    "SYOKUJI01"
                MOVE    003             TO  SPA-GMN-W24-CUR
-           WHEN    "SYOKUJI03"
+           WHEN    "SYOKUJI02"
                MOVE    046             TO  SPA-GMN-W24-CUR
            WHEN    "CHK_NYUKSN01"
                MOVE    009             TO  SPA-GMN-W24-CUR
@@ -3497,6 +3645,18 @@
       *    ¥«¡¼¥½¥ë¥¹¥­¥Ã¥×½èÍý
       *****************************************************************
        5012-SKIP-CUR-SEC               SECTION.
+      *
+           IF    ( SPA-GMN-W24-CUR =   2 )
+               IF    ( W24-SYOKUJI-STATE (1)   =   WIDGET-INSENSITIVE )
+                   MOVE    3           TO  SPA-GMN-W24-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-W24-CUR =   3 )
+               IF    ( W24-SYOKUJI-STATE (2)   =   WIDGET-INSENSITIVE )
+                   MOVE    46          TO  SPA-GMN-W24-CUR
+               END-IF
+           END-IF
       *
            PERFORM VARYING IDX0    FROM    8   BY  1
                    UNTIL ( IDX0    >   27 )
@@ -3653,25 +3813,6 @@
            EXIT.
       *
       *****************************************************************
-      *    ÆüÉÕ¥Á¥§¥Ã¥¯¡¦ÊÔ½¸½èÍý
-      *****************************************************************
-       5002-HIZUKE-CHK-SEC             SECTION.
-      *
-      *    ÆüÉÕ²èÌÌ¥Á¥§¥Ã¥¯¥µ¥Ö
-           INITIALIZE                      ORCSGDAYAREA
-           MOVE    WRK-YMD             TO  SGDAY-INDAY
-           CALL    "ORCSGDAY"          USING
-                                           ORCSGDAYAREA
-           IF  ( SGDAY-RC              =   ZERO )
-               MOVE    SGDAY-OTDAY     TO  WRK-HENYMDG
-               MOVE    SGDAY-SDAY      TO  WRK-SYMD
-           ELSE
-               MOVE    "0001"          TO  SPA-ERRCD
-           END-IF
-           .
-       5002-HIZUKE-CHK-EXT.
-           EXIT.
-      *****************************************************************
       *    Á´³ÑÈ¾³Ñº®ºß¥Á¥§¥Ã¥¯
       *****************************************************************
        800-ENRTRY-CHK-SEC              SECTION.
@@ -3703,6 +3844,37 @@
        800-ENRTRY-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    À¾ÎñÆüËÜ¸ìÊÑ´¹½èÍý
+      *****************************************************************
+       800-SEIWA-HEN-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-HIZUKE-ERR
+           MOVE    SPACE               TO  WRK-SYMD
+                                           WRK-HENYMDG
+      *
+           IF    ( WRK-YMD         =   "00000000" 
+                                   OR  "99999999" )
+               MOVE    WRK-YMD     TO  WRK-HENYMDG
+                                       WRK-SYMD
+               GO  TO  800-SEIWA-HEN-EXT
+           END-IF
+      *
+      *    ÆüÉÕ²èÌÌ¥Á¥§¥Ã¥¯¥µ¥Ö
+           INITIALIZE                      ORCSGDAYAREA
+           MOVE    WRK-YMD             TO  SGDAY-INDAY
+           CALL    "ORCSGDAY"          USING
+                                           ORCSGDAYAREA
+           IF  ( SGDAY-RC              =   ZERO )
+               MOVE    SGDAY-OTDAY     TO  WRK-HENYMDG
+               MOVE    SGDAY-SDAY      TO  WRK-SYMD
+           ELSE
+               MOVE    1               TO  FLG-HIZUKE-ERR
+           END-IF
+      *
+           .
+       800-SEIWA-HEN-EXT.
+           EXIT.
+      *****************************************************************
       *    ¥Þ¥·¥óÆüÉÕ¼èÆÀ¥µ¥Ö
       *****************************************************************
        800-MCNDATE-SEC         SECTION.
@@ -3712,6 +3884,145 @@
            .
       *
        800-MCNDATE-EXT.
+           EXIT.
+      *****************************************************************
+      *    Ê¿À®£±£¸Ç¯ÅÙ²þÀµ¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       800-H1804-KAISEI-CHK-SEC            SECTION.
+      *
+           IF    ( SPA-W01-SELNUM      >   ZERO )
+               IF    ( CONST-H180401   >   SPA-W01-SEL-STYUKYMD )
+                AND  ( CONST-H180401  <=   SPA-W01-EDYUKYMD )
+                   PERFORM 310-SYS-5000-SEL-SEC
+                   IF    ( FLG-SYSKANRI    =   ZERO )
+                       MOVE    SYS-5000-EDYUKYMD   TO  WRK-EDYUKYMD
+                       MOVE    "20060331"          TO  SYS-5000-EDYUKYMD
+                       PERFORM 800-MCNDATE-SEC
+                       MOVE    SMCNDATE-YMD    TO  SYS-5000-UPYMD
+                       MOVE    SMCNDATE-HMS    TO  SYS-5000-UPHMS
+                       MOVE    SYS-5000-REC    TO  SYSKANRI-REC
+                       MOVE    SYS-5000-KANRICD    TO  SYSUP-KANRICD
+                       MOVE    SYS-5000-KBNCD      TO  SYSUP-KBNCD
+                       MOVE    SYS-5000-STYUKYMD   TO  SYSUP-STYUKYMD
+                       MOVE    WRK-EDYUKYMD        TO  SYSUP-EDYUKYMD
+                       MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+                       MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                       MOVE    "upd1"              TO  MCP-PATHNAME
+                       PERFORM 910-DBUPDATE-SEC
+                       IF    ( MCP-RC  NOT =   ZERO )
+                           DISPLAY "DBUPDATE ERR"
+                       END-IF
+      *
+                       IF    ( CONST-H180401  <=   SPA-W01-SEL-EDYUKYMD)
+                           MOVE    CONST-H180401       TO  SYS-STYUKYMD
+                           MOVE    WRK-EDYUKYMD        TO  SYS-EDYUKYMD
+                           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+                           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                           MOVE    "key"               TO  MCP-PATHNAME
+                           PERFORM 910-DBINSERT-SEC
+                           IF    ( MCP-RC  NOT =   ZERO )
+                               DISPLAY "DBINSERT ERR"
+                           END-IF
+                       END-IF
+      *
+                       MOVE    "20060331"  TO  SPA-W01-SEL-EDYUKYMD
+                                               SPA-W01-EDYUKYMD
+                       MOVE    SPA-W01-EDYUKYMD    TO  WRK-YMD
+                       PERFORM 800-SEIWA-HEN-SEC
+                       MOVE    WRK-HENYMDG TO  SPA-W01-EDYUKYMDH
+      *
+                   END-IF
+               END-IF
+           ELSE
+               IF    ( CONST-H180401   >  SPA-W01-STYUKYMD )
+                AND  ( CONST-H180401  <=  SPA-W01-EDYUKYMD )
+                   MOVE    SPA-W01-EDYUKYMD    TO  WRK-EDYUKYMD
+                   MOVE    "20060331"          TO  SPA-W01-EDYUKYMD
+                   PERFORM 4201-INPUT-AREA-INIT-SEC
+                   PERFORM 4811-HOSP-NYUINKHN-EDIT-SEC
+      *
+                   PERFORM 800-MCNDATE-SEC
+                   MOVE    SMCNDATE-YMD    TO  SYS-5000-CREYMD
+                                               SYS-5000-UPYMD
+                   MOVE    SMCNDATE-HMS    TO  SYS-5000-UPHMS
+      *
+                   MOVE    SYS-5000-REC    TO  SYSKANRI-REC
+                   MOVE    SYSKANRI-REC    TO  MCPDATA-REC
+                   MOVE    "tbl_syskanri"  TO  MCP-TABLE
+                   MOVE    "key"           TO  MCP-PATHNAME
+                   PERFORM 910-DBINSERT-SEC
+                   IF    ( MCP-RC  NOT =   ZERO )
+                       DISPLAY "DBINSERT ERR"
+                   END-IF
+      *
+                   MOVE    CONST-H180401       TO  SYS-STYUKYMD
+                   MOVE    WRK-EDYUKYMD        TO  SYS-EDYUKYMD
+                   MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                   MOVE    "key"               TO  MCP-PATHNAME
+                   PERFORM 910-DBINSERT-SEC
+                   IF    ( MCP-RC  NOT =   ZERO )
+                           DISPLAY "DBINSERT ERR"
+                   END-IF
+      *
+                   MOVE    CONST-H180401   TO  SPA-W01-STYUKYMD
+                   MOVE    WRK-EDYUKYMD    TO  SPA-W01-EDYUKYMD
+      *
+                   MOVE    SPA-W01-STYUKYMD    TO  WRK-YMD
+                   PERFORM 800-SEIWA-HEN-SEC
+                   MOVE    WRK-HENYMDG TO  SPA-W01-STYUKYMDH
+      *
+                   MOVE    SPA-W01-EDYUKYMD    TO  WRK-YMD
+                   PERFORM 800-SEIWA-HEN-SEC
+                   MOVE    WRK-HENYMDG TO  SPA-W01-EDYUKYMDH
+      *
+               END-IF
+           END-IF
+      *
+           .
+      *
+       800-H1804-KAISEI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷½èÍý(KEY2)
+      *****************************************************************
+       900-SYSKANRI-KEY2-SEL-SEC       SECTION.
+      *
+           MOVE    ZERO            TO  FLG-SYSKANRI
+      *
+           MOVE    SYSKANRI-REC    TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  SYSKANRI-REC
+           ELSE
+               MOVE    1           TO  FLG-SYSKANRI
+               INITIALIZE              SYSKANRI-REC
+           END-IF
+      *
+           .
+       900-SYSKANRI-KEY2-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¥·¥¹¥Æ¥à´ÉÍýFETCH½èÍý(KEY2)
+      *****************************************************************
+       900-SYSKANRI-KEY2-FET-SEC       SECTION.
+      *
+           MOVE    ZERO            TO  FLG-SYSKANRI
+      *
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  SYSKANRI-REC
+           ELSE
+               MOVE    1           TO  FLG-SYSKANRI
+               INITIALIZE              SYSKANRI-REC
+           END-IF
+      *
+           .
+       900-SYSKANRI-KEY2-FET-EXT.
            EXIT.
       *****************************************************************
       *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷½èÍý(KEY10)

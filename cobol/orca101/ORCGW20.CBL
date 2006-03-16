@@ -2143,10 +2143,6 @@
                    MOVE    ZERO    TO  FLG-SETKHNRYO
                END-IF
       *
-               DISPLAY WRK-PATHNAME " " 
-               FLG-SETKHNRYO "-"TNS-ROUTEKKBN " " 
-                TNS-SRYCD " " TNS-NAME
-      *
                IF    ( FLG-SETKHNRYO   =   1 )
                    PERFORM 410011-KHNRYO-CMB-SET-SEC
                END-IF
@@ -4128,8 +4124,6 @@
            MOVE    ZERO            TO  FLG-TENSU
       *
            INITIALIZE                  TNS-TENSU-REC
-      *
-           DISPLAY "SPA-NAI-W20-YUKOSTYMD ="  SPA-NAI-W20-YUKOSTYMD
       *
            IF    ( SPA-NAI-W20-YUKOSTYMD  >=   CONST-H180401 )
                PERFORM 9002-EDIT-TENSU-PATH-SEC

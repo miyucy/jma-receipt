@@ -24,12 +24,24 @@
               04  W24-EDYUKYMD                 PIC X(10).
               04  W24-FRAME1.
                 05  W24-FIXED7.
-                  06  W24-CMB-SYOKUJI-OCC      OCCURS 3.
+                  06  W24-CMB-SKJRYOYO.
+                    07  W24-SKJRYOYO           PIC X(28).
+                    07  W24-SKJRYOYO-CNT       PIC S9(9)
+                                               BINARY.
+                    07  W24-SKJRYOYO-ITM       PIC X(28)
+                                               OCCURS  5.
+                  06  W24-LBLSYOKUJI           PIC X(20)
+                                               OCCURS 2.
+                  06  W24-CMB-SYOKUJI-OCC      OCCURS 2.
                     07  W24-SYOKUJI            PIC X(28).
+                    07  W24-SYOKUJI-STATE      PIC S9(9)
+                                               BINARY.
                     07  W24-SYOKUJI-CNT        PIC S9(9)
                                                BINARY.
                     07  W24-SYOKUJI-ITM        PIC X(28)
                                                OCCURS  5.
+                    07  W24-SYOKUJI-ITM-STATE  PIC S9(9)
+                                               BINARY.
               04  W24-CMB-BRMSGK-TAX.
                 05  W24-BRMSGK-TAX             PIC X(10).
                 05  W24-BRMSGK-TAX-CNT         PIC S9(9)
@@ -61,7 +73,7 @@
                     07  W24-CHIIKIKSN-CNT      PIC S9(9)
                                                BINARY.
                     07  W24-CHIIKIKSN-ITM      PIC X(28)
-                                               OCCURS  5.
+                                               OCCURS  6.
               04  W24-FRAME4.
                 05  W24-FIXED10.
                   06  W24-SRYCD                PIC X(09)

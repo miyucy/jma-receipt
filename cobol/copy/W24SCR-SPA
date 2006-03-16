@@ -45,16 +45,14 @@
                      15  SPA-GMN-W24-SKJRYOYO          PIC X(01).
                      15                                PIC X(01).
                      15  SPA-GMN-W24-SKJRYOYOMEI       PIC X(26).
-      *            ÆÃÊÌ´ÉÍý²Ã»»
-                   13  SPA-GMN-W24-TOKKNRKSN-G.
-                     15  SPA-GMN-W24-TOKKNRKSN         PIC X(01).
-                     15                                PIC X(01).
-                     15  SPA-GMN-W24-TOKKNRKSNMEI      PIC X(26).
-      *            ¿©Æ²²Ã»»
-                   13  SPA-GMN-W24-SYOKUDOKSN-G.
-                     15  SPA-GMN-W24-SYOKUDOKSN        PIC X(01).
-                     15                                PIC X(01).
-                     15  SPA-GMN-W24-SYOKUDOKSNMEI     PIC X(26).
+      *            ¿©»ö¿ÇÎÅ¹Ô°Ù
+                   13  SPA-GMN-W24-LBLSKJSRY           PIC X(20)
+                                                       OCCURS  2.
+                   13  SPA-GMN-W24-SKJSRY-G.
+                     15  SPA-GMN-W24-SKJSRY-OCC        OCCURS  2.
+                       17  SPA-GMN-W24-SKJSRY          PIC X(01).
+                       17                              PIC X(01).
+                       17  SPA-GMN-W24-SKJSRYMEI       PIC X(26).
       *
       *          ¼¼ÎÁº¹³Û¾ÃÈñÀÇ¶èÊ¬
                  11  SPA-GMN-W24-BRMSGK-TAX-G.
@@ -140,24 +138,17 @@
                        15  SPA-GMN-W24-SKJRYOYOL       PIC X(01).
                        15                              PIC X(01).
                        15  SPA-GMN-W24-SKJRYOYOMEIl    PIC X(26).
-      *          ÆÃÊÌ´ÉÍý²Ã»»
-                 11  SPA-GMN-W24-TOKKNRKSNLST-G.
-                   13  SPA-GMN-W24-TOKKNRKSN-MAX       PIC 9(03).
-                   13  SPA-GMN-W24-TOKKNRKSNLST        OCCURS  5.
-                       15  SPA-GMN-W24-TOKKNRKSNL      PIC X(01).
+      *          ¿©»ö¿ÇÎÅ¹Ô°Ù
+                 11  SPA-GMN-W24-SKJSRYLST-G.
+                   13  SPA-GMN-W24-SKJSRY-MAX          PIC 9(03).
+                   13  SPA-GMN-W24-SKJSRYLST           OCCURS  5.
+                       15  SPA-GMN-W24-SKJSRYL         PIC X(01).
                        15                              PIC X(01).
-                       15  SPA-GMN-W24-TOKKNRKSNMEIL   PIC X(26).
-      *          ¿©Æ²²Ã»»
-                 11  SPA-GMN-W24-SYOKUDOKSNLST-G.
-                   13  SPA-GMN-W24-SYOKUDOKSN-MAX      PIC 9(03).
-                   13  SPA-GMN-W24-SYOKUDOKSNLST       OCCURS  5.
-                       15  SPA-GMN-W24-SYOKUDOKSNL     PIC X(01).
-                       15                              PIC X(01).
-                       15  SPA-GMN-W24-SYOKUDOKSNMEIL  PIC X(26).
+                       15  SPA-GMN-W24-SKJSRYMEIL      PIC X(26).
       *          ÃÏ°è²Ã»»
                  11  SPA-GMN-W24-CHIIKIKSNLST-G.
                    13  SPA-GMN-W24-CHIIKIKSN-MAX       PIC 9(03).
-                   13  SPA-GMN-W24-CHIIKIKSNLST        OCCURS  5.
+                   13  SPA-GMN-W24-CHIIKIKSNLST        OCCURS  6.
                        15  SPA-GMN-W24-CHIIKIKSNL      PIC X(01).
                        15                              PIC X(01).
                        15  SPA-GMN-W24-CHIIKIKSNMEIL   PIC X(26).
@@ -235,14 +226,12 @@
                        15  SPA-GMN-W24-NACCT-GAIHAKUMEIL PIC X(12).
       *
              07  SPA-NAI-W24-AREA.
+               09  SPA-NAI-W24-SKJSRY-SRYCD-G.
+                 11  SPA-NAI-W24-SKJSRY-SRYCD-OCC      OCCURS  2.
+                     13  SPA-NAI-W24-SKJSRY-SRYCD      PIC X(09).
                09  SPA-NAI-W24-NYUKSN-SRYCD-G.
                  11  SPA-NAI-W24-NYUKSN-SRYCD-OCC      OCCURS  20.
                      13  SPA-NAI-W24-NYUKSN-SRYCD      PIC X(09).
-      *              0:²Ã»»
-      *              1:±¡Æâ´¶À÷ËÉ»ßÂÐºöÌ¤¼Â»Ü¸º»»
-      *              2:°åÎÅ°ÂÁ´´ÉÍýÂÎÀ©Ì¤¼Â»Ü¸º»»
-      *              3:êóáìÆþ±¡¿ÇÎÅ·×²èÌ¤¼Â»Ü¸º»»
-                     13  SPA-NAI-W24-NYUKSN-KBN        PIC X(01).
       *
       *    ¿ÇÎÅ¹Ô°Ù¸¡º÷²èÌÌ£Ó£Ð£Á
            03  SPA-W25-MOTOPG                    PIC X(08).

@@ -11,26 +11,36 @@ W24	{
 		};
 		frame1	{
 			fixed7	{
-				CMB_SYOKUJI01	{
-					SYOKUJI01	{
+				CMB_SKJRYOYO	{
+					SKJRYOYO	{
 						value	varchar(28);
 					};
 					count	int;
 					item	varchar(28)[05];
+				};
+				LBLSYOKUJI01	{
+					value	varchar(20);
+				};
+				LBLSYOKUJI02	{
+					value	varchar(20);
+				};
+				CMB_SYOKUJI01	{
+					SYOKUJI01	{
+						value	varchar(28);
+						state	int;
+					};
+					count	int;
+					item	varchar(28)[05];
+					state	int;
 				};
 				CMB_SYOKUJI02	{
 					SYOKUJI02	{
 						value	varchar(28);
+						state	int;
 					};
 					count	int;
 					item	varchar(28)[05];
-				};
-				CMB_SYOKUJI03	{
-					SYOKUJI03	{
-						value	varchar(28);
-					};
-					count	int;
-					item	varchar(28)[05];
+					state	int;
 				};
 			};
 		};
@@ -203,7 +213,7 @@ W24	{
 						value	varchar(28);
 					};
 					count	int;
-					item	varchar(28)[05];
+					item	varchar(28)[06];
 				};
 			};
 		};
