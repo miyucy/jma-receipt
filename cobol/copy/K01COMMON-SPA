@@ -56,6 +56,8 @@
                05  SPA-ROUMANSEI           PIC  9(01).
       *時間外特例医療機関
                05  SPA-JIKANTOKU           PIC  9(01).
+      *電子化加算
+               05  SPA-DENSIKA             PIC  9(01).
       *
       *病院種別
                05  SPA-NAI-HOSPSBT         PIC 9(01).
@@ -103,6 +105,8 @@
                05  SPA-JIKANCHK-ERR        PIC X(01).
       *複数科まとめ集計
                05  SPA-KAGRPFLG            PIC X(01).
+      *後発医薬品変更可
+               05  SPA-KOUHATUKA           PIC  X(01).
       *患者取消確認チェック
                05  SPA-CLEARCHK-FLG        PIC X(01).
       *薬剤情報提供料チェック
@@ -115,6 +119,8 @@
                05  SPA-TEISEITOKU-FLG      PIC X(01).
       *病名表示区分
                05  SPA-BYOHYOKBN-FLG      PIC X(01).
+      *検体検査加算自動発生
+               05  SPA-KENSAAUTO-FLG      PIC X(01).
       *
            03  SPA-K01SET-AREA.
       *処理フラグ（０：通常、１：訂正）
