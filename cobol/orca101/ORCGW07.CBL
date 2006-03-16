@@ -251,6 +251,14 @@
                        09  SPA-GMN-ZAIJUNKBN-COMB.
                            11  SPA-GMN-ZAIJUNKBN-LIST      PIC X(16)
                                                            OCCURS  2.
+      *                検体検査加算自動発生
+                       09  SPA-GMN-KENSAAUTO-G.
+                           11  SPA-GMN-KENSAAUTO           PIC X(01).
+                           11  SPA-GMN-KENSAAUTO-F1        PIC X(01).
+                           11  SPA-GMN-KENSAAUTO-MEI       PIC X(10).
+                       09  SPA-GMN-KENSAAUTO-COMB.
+                           11  SPA-GMN-KENSAAUTO-LIST      PIC X(12)
+                                                           OCCURS  2.
       *
                    07  SPA-GMN-PAGE2-AREA.
       *                カルテの病名対象
@@ -925,6 +933,9 @@
       *    剤登録順区分
            MOVE    "0 診療区分順"      TO  SPA-GMN-ZAIJUNKBN-LIST(1)
            MOVE    "1 入力順"          TO  SPA-GMN-ZAIJUNKBN-LIST(2)
+      *    検体検査加算自動発生
+           MOVE    "0 算定しない"      TO  SPA-GMN-KENSAAUTO-LIST(1)
+           MOVE    "1 算定する"        TO  SPA-GMN-KENSAAUTO-LIST(2)
       *
            MOVE    "0 すべての病名"    TO  SPA-GMN-BYOMEIKBN-LIST(1)
            MOVE    "1 継続病名のみ"    TO  SPA-GMN-BYOMEIKBN-LIST(2)
@@ -1188,6 +1199,13 @@
                ELSE
                    MOVE    SYS-1008-ZAIJUNKBN-FLG
                                            TO  SPA-GMN-ZAIJUNKBN
+               END-IF
+      *        検体検査加算自動発生
+               IF     SYS-1008-KENSAAUTO-FLG   =   SPACE
+                   MOVE    "0"             TO  SPA-GMN-KENSAAUTO
+               ELSE
+                   MOVE    SYS-1008-KENSAAUTO-FLG
+                                           TO  SPA-GMN-KENSAAUTO
                END-IF
       *
       *        時間外加算特例乳幼児
@@ -1528,6 +1546,18 @@
                 WHEN    OTHER
                     MOVE    SPA-GMN-ZAIJUNKBN-LIST(1)
                                                TO  SPA-GMN-ZAIJUNKBN-G
+            END-EVALUATE
+      *    検体検査加算自動発生
+           EVALUATE    SPA-GMN-KENSAAUTO
+                WHEN    "0"
+                    MOVE    SPA-GMN-KENSAAUTO-LIST(1)
+                                               TO  SPA-GMN-KENSAAUTO-G
+                WHEN    "1"
+                    MOVE    SPA-GMN-KENSAAUTO-LIST(2)
+                                               TO  SPA-GMN-KENSAAUTO-G
+                WHEN    OTHER
+                    MOVE    SPA-GMN-KENSAAUTO-LIST(1)
+                                               TO  SPA-GMN-KENSAAUTO-G
             END-EVALUATE
       *
             MOVE    2                  TO  SPA-GMN-CUR
@@ -2276,6 +2306,7 @@
            MOVE    W07-HOUKATU         TO  SPA-GMN-HOUKATU-G
            MOVE    W07-BYOHYOKBN       TO  SPA-GMN-BYOHYOKBN-G
            MOVE    W07-ZAIJUNKBN       TO  SPA-GMN-ZAIJUNKBN-G
+           MOVE    W07-KENSAAUTO       TO  SPA-GMN-KENSAAUTO-G
       *
       *    患者登録情報
            MOVE    W07-BYOMEIKBN       TO  SPA-GMN-BYOMEIKBN-G
@@ -2370,6 +2401,10 @@
       *            訂正時の自動発生（特定疾患処方管理）
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4103-TEISEITOKU-CHK-SEC
+                   END-IF
+      *            検体検査加算自動発生）
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4103-KENSAAUTO-CHK-SEC
                    END-IF
       *            外来管理加算チェック
                    IF      SPA-ERRCD           =   SPACE
@@ -2707,6 +2742,31 @@
       *
           .
        4103-TEISEITOKU-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    検体検査加算自動発生チェック処理
+      *****************************************************************
+       4103-KENSAAUTO-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+      *
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL       IDY     >   2
+               IF      SPA-GMN-KENSAAUTO  =    SPA-GMN-KENSAAUTO-LIST
+                                                         (IDY)(1:1)
+                   MOVE    SPA-GMN-KENSAAUTO-LIST(IDY)
+                                           TO  SPA-GMN-KENSAAUTO-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-OK              =   ZERO
+               MOVE    "0082"              TO  SPA-ERRCD
+               MOVE    84                  TO  SPA-GMN-CUR
+           END-IF
+      *
+          .
+       4103-KENSAAUTO-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4361,6 +4421,8 @@
            MOVE    SPA-GMN-BYOHYOKBN       TO  SYS-1008-BYOHYOKBN-FLG
       *    剤登録順区分
            MOVE    SPA-GMN-ZAIJUNKBN       TO  SYS-1008-ZAIJUNKBN-FLG
+      *    検体検査加算自動発生
+           MOVE    SPA-GMN-KENSAAUTO       TO  SYS-1008-KENSAAUTO-FLG
       *
       *    時間外加算乳幼児チェック
            MOVE    SPA-GMN-JIKANTOKU-CHK   TO
@@ -5200,6 +5262,15 @@
            END-PERFORM
            MOVE    2                   TO  W07-ZAIJUNKBN-COUNT
       *
+      *    検体検査加算自動発生
+           MOVE    SPA-GMN-KENSAAUTO-G TO  W07-KENSAAUTO
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   2
+               MOVE    SPA-GMN-KENSAAUTO-LIST (IDX)
+                                       TO  W07-KENSAAUTO-ITEM(IDX)
+           END-PERFORM
+           MOVE    2                   TO  W07-KENSAAUTO-COUNT
+      *
       *    時間外加算チェック
            MOVE    SPA-GMN-JIKANTOKU-CHK-G TO  W07-JIKANTOKU-CHK
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -5615,6 +5686,9 @@
                                                     TO  SPA-ERRMSG
                    MOVE    "チェックエラー"
                                                     TO  SPA-ERRMSG(37:)
+               WHEN    "0082"
+                   MOVE    "検体検査加算自動発生チェックエラー"
+                                                    TO  SPA-ERRMSG
                WHEN    "0030"
                    MOVE    "時間外加算（乳幼児）チェックエラー"
                                                        TO  SPA-ERRMSG
@@ -5876,6 +5950,8 @@
                    MOVE  "BYOHYOKBN"       TO   MCP-WIDGET
                WHEN    83
                    MOVE  "ZAIJUNKBN"       TO   MCP-WIDGET
+               WHEN    84
+                   MOVE  "KENSAAUTO"       TO   MCP-WIDGET
       *        時間外加算チェック
                WHEN    50
                    MOVE  "JIKANTOKU_CHK"   TO   MCP-WIDGET
@@ -6069,6 +6145,8 @@
                WHEN    "TEISEI"
                    MOVE    81              TO  SPA-GMN-CUR
                WHEN    "TEISEITOKU"
+                   MOVE    84              TO  SPA-GMN-CUR
+               WHEN    "KENSAAUTO"
                    MOVE    10              TO  SPA-GMN-CUR
       *
                WHEN    "KIKAN"
