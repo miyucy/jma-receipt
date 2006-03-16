@@ -43,7 +43,7 @@
                        09  SPA-GMN-W20-TOKNYUIN-G.
                            11  SPA-GMN-W20-TOKNYUIN        PIC X(02).
                            11                              PIC X(01).
-                           11  SPA-GMN-W20-TOKNYUINMEI     PIC X(30).
+                           11  SPA-GMN-W20-TOKNYUINMEI     PIC X(40).
       *                病棟科名
                        09  SPA-GMN-W20-SRYKA-G.
                            11  SPA-GMN-W20-SRYKA           PIC X(02).
@@ -94,11 +94,11 @@
       *                特定入院料コンボ
                        09  SPA-GMN-W20-TOKNYUINLST-G.
                            11  SPA-GMN-W20-TOKNYUIN-MAX    PIC 9(03).
-                           11  SPA-GMN-W20-TOKNYUINLST     OCCURS  15.
+                           11  SPA-GMN-W20-TOKNYUINLST     OCCURS  20.
                                13  SPA-GMN-W20-TOKNYUINL   PIC X(02).
                                13                          PIC X(01).
                                13  SPA-GMN-W20-TOKNYUINMEIL
-                                                           PIC X(30).
+                                                           PIC X(40).
       *                病棟科名コンボ
                        09  SPA-GMN-W20-SRYKALST-G.
                            11  SPA-GMN-W20-SRYKA-MAX       PIC 9(03).

@@ -35,14 +35,14 @@
       *
               04  W20-CMB-TOKUTEINYUIN.
       *
-                05  W20-TOKUTEINYUIN       PIC X(33).
+                05  W20-TOKUTEINYUIN       PIC X(43).
                 05  W20-TOKUTEINYUIN-STATE
                                            PIC S9(9)   BINARY.
       *
                 05  W20-TOKUTEINYUIN-CNT
                                            PIC S9(9)   BINARY.
                 05  W20-TOKUTEINYUIN-ITM
-                                           PIC X(33)   OCCURS  15.
+                                           PIC X(43)   OCCURS  20.
                 05  W20-TOKUTEINYUIN-ITM-STATE
                                            PIC S9(9)   BINARY.
       *

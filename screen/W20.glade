@@ -1282,7 +1282,7 @@
     <widget>
       <class>GtkLabel</class>
       <name>label918</name>
-      <x>405</x>
+      <x>395</x>
       <y>430</y>
       <width>75</width>
       <height>25</height>
@@ -1298,9 +1298,9 @@
     <widget>
       <class>GtkPandaCombo</class>
       <name>CMB_TOKUTEINYUIN</name>
-      <x>485</x>
+      <x>470</x>
       <y>430</y>
-      <width>260</width>
+      <width>280</width>
       <height>25</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
@@ -1329,7 +1329,7 @@
 	</signal>
 	<editable>True</editable>
 	<text_visible>True</text_visible>
-	<text_max_length>33</text_max_length>
+	<text_max_length>43</text_max_length>
 	<text>99 £±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
