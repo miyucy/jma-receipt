@@ -535,6 +535,35 @@
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
       *
+      *    対象レセプトが存在しないとき削除フラグをセット
+           IF      LNK-SYUACC-IO-TEISYUTUSAKI (1)
+                                       =   ZERO
+               INITIALIZE                  SYUKA-REC
+               MOVE    SPA-HOSPID      TO  SYUKA-HOSPID
+               MOVE    SPA-PTID        TO  SYUKA-PTID
+               MOVE    SPA-NYUGAIKBN   TO  SYUKA-NYUGAIKBN
+               MOVE    LNK-SYUACC-I-SRYYM
+                                       TO  SYUKA-SRYYM
+               MOVE    "1"                 TO  SYUKA-DLT-FLG
+               MOVE    SMCNDATE-YMD        TO  SYUKA-UPYMD
+               MOVE    SMCNDATE-HMS        TO  SYUKA-UPHMS
+      *
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    "tbl_syuka"         TO  MCP-TABLE
+               MOVE    "upd3"              TO  MCP-PATHNAME
+               MOVE    SYUKA-REC           TO  MCPDATA-REC  
+               CALL    "MONFUNC"               USING
+                                               MCPAREA
+                                               MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO
+                   MOVE    1                   TO  FLG-END
+                   MOVE    9                   TO  LNK-SYUACC-RC
+                   DISPLAY "ORCSSYUACC SYUKA KEY=" 
+                                       MCP-FUNC " " SYUKA-KEY
+               END-IF
+               GO  TO  2003-KBN03-HENSYU-EXT
+           END-IF        
+      *
       *    取得情報から更新
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       100 

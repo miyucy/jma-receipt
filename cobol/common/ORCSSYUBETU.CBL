@@ -1424,7 +1424,8 @@
       *
            IF      LNK-SYUBETU-RC      =   ZERO
                IF      TBL-RECE61-HOSPID (1)   =   SPACE
-                   MOVE    4               TO  LNK-SYUBETU-RC
+      *********    MOVE    4               TO  LNK-SYUBETU-RC
+                   CONTINUE 
                ELSE
       *            レセプト種別編集処理
                    PERFORM   3001-RECESYUBETU-HENSYU-SEC
