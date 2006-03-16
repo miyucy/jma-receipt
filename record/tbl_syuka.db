@@ -260,12 +260,37 @@ path	upd2	{
 	};
 };
 
+path	upd3	{ 	
+	DBUPDATE	{
+		UPDATE	tbl_syuka 
+				SET
+					DLT_FLG        =   :DLT_FLG, 
+					UPYMD          =   :UPYMD,
+					UPHMS          =   :UPHMS
+			WHERE   HOSPID         =   :HOSPID
+			AND	    NYUGAIKBN      =   :NYUGAIKBN
+			AND	    PTID           =   :PTID
+			AND	    SRYYM          =   :SRYYM
+			AND	    RECESYUBETU    <>  'XXXX'
+		;
+	};
+};
+
 path	del1 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_syuka
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
+		;
+	};
+};
+
+path	all	{
+	DBSELECT	{
+		DECLARE tbl_syuka_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syuka
 		;
 	};
 };
