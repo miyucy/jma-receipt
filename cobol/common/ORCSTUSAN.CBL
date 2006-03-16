@@ -97,8 +97,10 @@
            03  WRK-DAY-X                   PIC X(02).
            03  WRK-DAY-R   REDEFINES   WRK-DAY-X.
                05  WRK-DAY-9               PIC 9(02).
+           03  WRK-SRYYMD                  PIC X(08). 
       *
        01  CONST-AREA.
+           03  CONST-H180401               PIC X(08)   VALUE "20060401".
            03  CONST-TOKUTEI-SRYCD-MAX     PIC 9(03)   VALUE 10.
       *
       *    ´µ¼ÔÆþ±¡ÍúÎò¥ï¡¼¥¯
@@ -530,6 +532,8 @@
                    MOVE    MCPDATA-REC     TO  TNS-TENSU-REC
                    IF    ( TNS-DATAKBN     =   1 )
                        MOVE    1           TO  FLG-HIT
+                       MOVE    NACCT-SRYYM TO  WRK-SRYYMD(1:6)
+                       MOVE    "01"        TO  WRK-SRYYMD(7:2)
                        PERFORM 2121-SENTEICDCHG-CHK-SEC
                        PERFORM 2121-TOKUTEI-CHK-SEC
                    END-IF
@@ -617,21 +621,34 @@
       *
            MOVE    ZERO            TO  FLG-SENTEICDCHG
       *
-           INITIALIZE  SENTEICDCHG-REC
-           MOVE    TNS-SRYCD       TO  SENCHG-IPNSRYCD
-           MOVE    SENTEICDCHG-REC TO  MCPDATA-REC
-           MOVE    PATH-TBL-SENTEICDCHG-KEY2
-                                   TO  MCP-PATH
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC      =   ZERO  )
-               CONTINUE
-           ELSE
+           IF    ( WRK-SRYYMD      >=  CONST-H180401 )
+            AND  ( TNS-SRYCD       =   "190080610"
+                                    OR "190080710"
+                                    OR "190081310"
+                                    OR "190081410"
+                                    OR "190098210"
+                                    OR "190098310"  )
+      *
                MOVE    1           TO  FLG-SENTEICDCHG
+      *
+           ELSE
+               INITIALIZE  SENTEICDCHG-REC
+               MOVE    TNS-SRYCD       TO  SENCHG-IPNSRYCD
+               MOVE    SENTEICDCHG-REC TO  MCPDATA-REC
+               MOVE    PATH-TBL-SENTEICDCHG-KEY2
+                                   TO  MCP-PATH
+               PERFORM 910-DBSELECT-SEC
+               IF    ( MCP-RC      =   ZERO  )
+                   CONTINUE
+               ELSE
+                   MOVE    1           TO  FLG-SENTEICDCHG
+               END-IF
+      *
+               MOVE    PATH-TBL-SENTEICDCHG-KEY2
+                                       TO  MCP-PATH
+               PERFORM 910-DBCLOSE-SEC
            END-IF
       *
-           MOVE    PATH-TBL-SENTEICDCHG-KEY2
-                                   TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
       *
            .
        2121-SENTEICDCHG-CHK-EXT.
