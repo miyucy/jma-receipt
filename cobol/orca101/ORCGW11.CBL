@@ -54,6 +54,7 @@
       *                                     選択できるよう変更
       * 02.00.12     NACL-森脇    05/12/15  画像ファイルフォルダ指定追加
       * 02.00.13     NACL-多々納  06/03/08  帳票オフセット登録画面追加
+      * 02.00.14     NACL-多々納  06/03/16  後発医薬品への変更可追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -417,6 +418,12 @@
            MOVE    "日毎１行"          TO  SPA-GMN-KARUTE3KBNLST(2)(3:)
            MOVE    2                   TO  SPA-GMN-KARUTE3KBN-MAX
       *
+           MOVE    "0"                 TO  SPA-GMN-KOUHATUKALST(1)
+           MOVE    "記載しない"        TO  SPA-GMN-KOUHATUKALST(1)(3:)
+           MOVE    "1"                 TO  SPA-GMN-KOUHATUKALST(2)
+           MOVE    "記載する"          TO  SPA-GMN-KOUHATUKALST(2)(3:)
+           MOVE    2                   TO  SPA-GMN-KOUHATUKA-MAX
+      *
            MOVE    SPACE               TO  SYSKANRI-REC
            INITIALIZE                      SYSKANRI-REC
            MOVE    "1030"              TO  SYS-KANRICD
@@ -444,6 +451,9 @@
       *        カルテ３号紙
                MOVE    SYS-1030-KARUTE3KBN
                                        TO  SPA-GMN-KARUTE3KBN
+      *        後発医薬品への変更可署名
+               MOVE    SYS-1030-KOUHATUKA
+                                       TO  SPA-GMN-KOUHATUKA
       *----(02.00.12)--ADD-START---
       *        画像ファイルフォルダ
                MOVE    SYS-1030-GAZOFOLDER
@@ -461,8 +471,15 @@
                MOVE    SPA-GMN-KARUTE3KBNLST(1)
                                        TO  SPA-GMN-KARUTE3KBN-G
            END-IF
+           IF      SPA-GMN-KOUHATUKA  =   "1"
+               MOVE    SPA-GMN-KOUHATUKALST(2)
+                                       TO  SPA-GMN-KOUHATUKA-G
+           ELSE
+               MOVE    SPA-GMN-KOUHATUKALST(1)
+                                       TO  SPA-GMN-KOUHATUKA-G
+           END-IF
       *
-           MOVE    301                 TO  SPA-GMN-CUR
+           MOVE    305                 TO  SPA-GMN-CUR
       *
            .
        3101-SYS1030-SYOKI-EXT.
@@ -1169,7 +1186,7 @@
                    WHEN    "1031"
                        MOVE    101                  TO  SPA-GMN-CUR
                    WHEN    "1030"
-                       MOVE    301                 TO  SPA-GMN-CUR
+                       MOVE    305                 TO  SPA-GMN-CUR
                END-EVALUATE
            END-IF
       *----(02.00.03)--UPD-END-----
@@ -1344,6 +1361,7 @@
            MOVE    W11-SYOHOGEPRTFLG   TO  SPA-GMN-SYOHOGEPRTFLG-G
            MOVE    W11-SYOHODSPNAME    TO  SPA-GMN-SYOHODSPNAME
            MOVE    W11-KARUTE3KBN      TO  SPA-GMN-KARUTE3KBN-G
+           MOVE    W11-KOUHATUKA       TO  SPA-GMN-KOUHATUKA-G
       *----(02.00.12)--ADD-START---
            MOVE    W11-GAZOFOLDER      TO  SPA-GMN-GAZOFOLDER
       *----(02.00.12)--ADD-END-----
@@ -1381,6 +1399,10 @@
                        PERFORM 4101-NYU-CSTPGNM-SET-SEC
                    END-IF
                WHEN    "1030"
+      *            後発医薬品への変更可署名
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4100-KOUHATUKA-CHK-SEC
+                   END-IF
       *            帳票編集区分
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4100-SYOHOGEPRTFLG-CHK-SEC
@@ -1608,6 +1630,32 @@
       *
            .
        210-BACK-EXT.
+           EXIT.
+      *****************************************************************
+      *    後発医薬品への変更可署名チェック
+      *****************************************************************
+       4100-KOUHATUKA-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >       SPA-GMN-KOUHATUKA-MAX
+               IF      SPA-GMN-KOUHATUKA
+                                   =   SPA-GMN-KOUHATUKALST (IDY)(1:1)
+                   MOVE    SPA-GMN-KOUHATUKALST (IDY)
+                                           TO  SPA-GMN-KOUHATUKA-G
+                   MOVE    SPA-GMN-KOUHATUKA-MAX
+                                           TO  IDY
+                   MOVE    1               TO  FLG-CHK
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-CHK             =   ZERO
+               MOVE    "0001"              TO  SPA-ERRCD
+               MOVE    305                 TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       4100-KOUHATUKA-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2428,6 +2476,9 @@
       *    カルテ３号紙内容
            MOVE    SPA-GMN-KARUTE3KBN
                                        TO  SYS-1030-KARUTE3KBN
+      *    後発医薬品への変更可署名
+           MOVE    SPA-GMN-KOUHATUKA
+                                       TO  SYS-1030-KOUHATUKA
       *----(02.00.12)--ADD-START---
       *    画像ファイルフォルダ
            IF  SPA-GMN-GAZOFOLDER      NOT =   SPACE
@@ -3013,6 +3064,15 @@
            END-PERFORM
            MOVE    SPA-GMN-KARUTE3KBN-MAX
                                        TO  W11-KARUTE3KBN-COUNT
+      *
+           MOVE    SPA-GMN-KOUHATUKA-G    TO  W11-KOUHATUKA
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-KOUHATUKA-MAX
+               MOVE    SPA-GMN-KOUHATUKALST (IDY)
+                                       TO  W11-KOUHATUKA-ITEM (IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-KOUHATUKA-MAX
+                                       TO  W11-KOUHATUKA-COUNT
       *---(02.00.12)--ADD-START---
       *    画像ファイルフォルダ
            MOVE    SPA-GMN-GAZOFOLDER  TO  W11-GAZOFOLDER
@@ -3097,6 +3157,9 @@
                     MOVE  "SELNUM"
                                        TO  MCP-WIDGET
       *----(02.00.03)--ADD-END-----
+                WHEN   305
+                    MOVE  "KOUHATUKA"
+                                       TO  MCP-WIDGET
                 WHEN   301
                     MOVE  "SYOHOGEPRTFLG"
                                        TO  MCP-WIDGET
@@ -3276,6 +3339,8 @@
       *----(02.00.03)--ADD-END-----
       *
       *        帳票編集区分情報
+               WHEN    "KOUHATUKA"
+                   MOVE    301         TO  SPA-GMN-CUR
                WHEN    "SYOHOGEPRTFLG"
                    MOVE    302         TO  SPA-GMN-CUR
                WHEN    "SYOHODSPNAME"

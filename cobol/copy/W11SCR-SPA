@@ -146,6 +146,16 @@
                                                   PIC 9(02).
                        09  SPA-GMN-GAZOFOLDER     PIC X(128).
       *
+      *                後発医薬品への変更可署名
+                       09  SPA-GMN-KOUHATUKA-G.
+                           11  SPA-GMN-KOUHATUKA       PIC X(01).
+                           11  SPA-GMN-KOUHATUKAF1     PIC X(01).
+                           11  SPA-GMN-KOUHATUKA-MEI   PIC X(10).
+                       09  SPA-GMN-KOUHATUKALST-G  OCCURS  2.
+                           11  SPA-GMN-KOUHATUKALST    PIC X(12).
+                       09  SPA-GMN-KOUHATUKA-MAX
+                                                  PIC 9(02).
+      *
                05  SPA-NAIB-AREA.
                    07  SPA-NAI-TBL.
                        09  SPA-NAI-TBLO           OCCURS  100.
