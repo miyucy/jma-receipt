@@ -250,6 +250,13 @@ W07	{
 					count	int;
 					item	varchar(16)[2];
 				};
+				KENSAAUTO_COMB	{
+					KENSAAUTO	{
+						value	varchar(12);
+					};
+					count	int;
+					item	varchar(12)[2];
+				};
 			};
 			TAGNAME1    {
 			    state   int;
