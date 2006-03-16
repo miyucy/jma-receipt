@@ -47,6 +47,9 @@
       *  02.00.03    NACL-Â¿¡¹Ç¼  05.05.11  ËÌ³¤Æ»ÎÅÍÜÃ´Åö¼êÅö¤ÆÄÉ²Ã
       *  02.00.04    NACL-Â¿¡¹Ç¼  06.01.20  ³°Çñ¤Îºï½üÄÉ²Ã
       *  02.00.05    NACL-¾®Æ¦Âô  06.03.06  ¼ç²ÊÀßÄêÂÐ±þÄÉ²Ã
+      *Ê¿À®£±£¸Ç¯£´·î²þÄêÂÐ±þ
+      *  02.08.01    NACL-¾®Æ¦Âô  06/03/16  Æþ±¡ÎÁÏ·¿Í¥³¡¼¥ÉÃÖ¤­´¹¤¨¤ÏÎÅÍÜÉÂÅï
+      *                                     ¤Þ¤¿¤ÏÎÅÍÜÉÂ¾²¤Î¤ß¤òÂÐ¾Ý¤È¤¹¤ë
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -5745,24 +5748,52 @@
                   (AGECHK-ROUJIN2      =   ZERO     )
                CONTINUE
            ELSE
-               INITIALIZE              SRYCDCHG-REC
+      *        Ê¿À®£±£¸Ç¯£´·î²þÄêÂÐ±þ
+      *        Ï·¿Í¥³¡¼¥ÉÃÖ¤­´¹¤¨¤ÏÎÅÍÜÉÂÅï¡¢ÎÅÍÜÉÂ¾²¤Î¤ß
+               IF   SYOKIKSN-IN-SANTEISTYMD(1:6)  >=  "200604"
+                   IF   SYOKIKSN-IN-KHNSRYCD  =  "190080610" OR
+                                                 "190080710" OR
+                                                 "190081310" OR
+                                                 "190081410" OR
+                                                 "190098210" OR
+                                                 "190098310"
+                       INITIALIZE              SRYCDCHG-REC
+                       MOVE    SYOKIKSN-IN-KHNSRYCD
+                                               TO   CHG-IPNSRYCD
+                       MOVE    SRYCDCHG-REC    TO   MCPDATA-REC
+                       MOVE    "SRYCDCHG-KEY2" TO   WRK-DBPATH
+                       PERFORM 900-TBL-SELECT-SEC 
+                       IF    ( FLG-DBRC    =   ZERO )
+                           MOVE    MCPDATA-REC
+                                               TO   SRYCDCHG-REC
+                           IF   CHG-RJNSRYCD   NOT =   SPACE
+                                MOVE   CHG-RJNSRYCD
+                                               TO  SYOKIKSN-IN-KHNSRYCD
+                           END-IF
+                       END-IF
       *
-               MOVE    SYOKIKSN-IN-KHNSRYCD
-                                       TO   CHG-IPNSRYCD
-               MOVE    SRYCDCHG-REC    TO   MCPDATA-REC
-               MOVE    "SRYCDCHG-KEY2" TO   WRK-DBPATH
-               PERFORM 900-TBL-SELECT-SEC 
-               IF    ( FLG-DBRC    =   ZERO )
-                   MOVE    MCPDATA-REC
-                                       TO   SRYCDCHG-REC
-                   IF   CHG-RJNSRYCD   NOT =   SPACE
-                        MOVE   CHG-RJNSRYCD
-                                       TO  SYOKIKSN-IN-KHNSRYCD
+                       MOVE    "SRYCDCHG-KEY2" TO   WRK-DBPATH
+                       PERFORM 900-TBL-CLOSE-SEC
                    END-IF
-               END-IF
+               ELSE
+                   INITIALIZE              SRYCDCHG-REC
+                   MOVE    SYOKIKSN-IN-KHNSRYCD
+                                           TO   CHG-IPNSRYCD
+                   MOVE    SRYCDCHG-REC    TO   MCPDATA-REC
+                   MOVE    "SRYCDCHG-KEY2" TO   WRK-DBPATH
+                   PERFORM 900-TBL-SELECT-SEC 
+                   IF    ( FLG-DBRC    =   ZERO )
+                       MOVE    MCPDATA-REC
+                                           TO   SRYCDCHG-REC
+                       IF   CHG-RJNSRYCD   NOT =   SPACE
+                            MOVE   CHG-RJNSRYCD
+                                           TO  SYOKIKSN-IN-KHNSRYCD
+                       END-IF
+                   END-IF
       *
-               MOVE    "SRYCDCHG-KEY2" TO   WRK-DBPATH
-               PERFORM 900-TBL-CLOSE-SEC
+                   MOVE    "SRYCDCHG-KEY2" TO   WRK-DBPATH
+                   PERFORM 900-TBL-CLOSE-SEC
+               END-IF
            END-IF
       *
            .
