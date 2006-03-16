@@ -107,6 +107,9 @@
       *  01.00.55    NACL-小豆沢  06.01.13  退院日以降の診療会計を残す処理
       *                                     を可能とする区分を追加
       *  02.07.00    NACL-太田    06.02.15  入院オーダー確認画面遷移制御追加
+      *平成１８年４月改定対応
+      *  02.08.01    NACL-小豆沢  06/03/16  入院料老人コード置き換えは療養病棟
+      *                                     または療養病床のみを対象とする
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -12106,24 +12109,53 @@
            IF    ( FLG-RJN         =   1 )    AND
                  ( COMB-HKNNUM     NOT =   "971" )  AND
                  ( COMB-HKNNUM     NOT =   "973" )
-               INITIALIZE              SRYCDCHG-REC
       *
-               MOVE    SYOKIKSN-IN-KHNSRYCD
-                                       TO   CHG-IPNSRYCD
-               MOVE    SRYCDCHG-REC    TO   MCPDATA-REC
-               MOVE    "SRYCDCHG-KEY2" TO   WRK-DBPATH
-               PERFORM 900-TBL-SELECT-SEC 
-               IF    ( FLG-DBRC    =   ZERO )
-                   MOVE    MCPDATA-REC
-                                       TO   SRYCDCHG-REC
-                   IF   CHG-RJNSRYCD   NOT =   SPACE
-                        MOVE   CHG-RJNSRYCD
-                                       TO  SYOKIKSN-IN-KHNSRYCD
+      *        平成１８年４月改定対応
+      *        老人コード置き換えは療養病棟、療養病床のみ
+               IF   SYOKIKSN-IN-SANTEISTYMD(1:6)  >=  "200604"
+                   IF   SYOKIKSN-IN-KHNSRYCD  =  "190080610" OR
+                                                 "190080710" OR
+                                                 "190081310" OR
+                                                 "190081410" OR
+                                                 "190098210" OR
+                                                 "190098310"
+                       INITIALIZE              SRYCDCHG-REC
+                       MOVE    SYOKIKSN-IN-KHNSRYCD
+                                           TO   CHG-IPNSRYCD
+                       MOVE    SRYCDCHG-REC    TO   MCPDATA-REC
+                       MOVE    "SRYCDCHG-KEY2" TO   WRK-DBPATH
+                       PERFORM 900-TBL-SELECT-SEC 
+                       IF    ( FLG-DBRC    =   ZERO )
+                           MOVE    MCPDATA-REC
+                                               TO   SRYCDCHG-REC
+                           IF   CHG-RJNSRYCD   NOT =   SPACE
+                                MOVE   CHG-RJNSRYCD
+                                               TO  SYOKIKSN-IN-KHNSRYCD
+                           END-IF
+                       END-IF
+      *
+                       MOVE    "SRYCDCHG-KEY2" TO   WRK-DBPATH
+                       PERFORM 900-TBL-CLOSE-SEC
                    END-IF
-               END-IF
+               ELSE
+                   INITIALIZE              SRYCDCHG-REC
+                   MOVE    SYOKIKSN-IN-KHNSRYCD
+                                           TO   CHG-IPNSRYCD
+                   MOVE    SRYCDCHG-REC    TO   MCPDATA-REC
+                   MOVE    "SRYCDCHG-KEY2" TO   WRK-DBPATH
+                   PERFORM 900-TBL-SELECT-SEC 
+                   IF    ( FLG-DBRC    =   ZERO )
+                       MOVE    MCPDATA-REC
+                                           TO   SRYCDCHG-REC
+                       IF   CHG-RJNSRYCD   NOT =   SPACE
+                            MOVE   CHG-RJNSRYCD
+                                           TO  SYOKIKSN-IN-KHNSRYCD
+                       END-IF
+                   END-IF
       *
-               MOVE    "SRYCDCHG-KEY2" TO   WRK-DBPATH
-               PERFORM 900-TBL-CLOSE-SEC
+                   MOVE    "SRYCDCHG-KEY2" TO   WRK-DBPATH
+                   PERFORM 900-TBL-CLOSE-SEC
+               END-IF
            END-IF
       *
            .
