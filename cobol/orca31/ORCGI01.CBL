@@ -8751,7 +8751,7 @@
            END-IF
       *
       *    Ç¾Â´Ãæ¥±¥¢¥æ¥Ë¥Ã¥ÈÆþ±¡°åÎÅ´ÉÍýÎÁ¡Ê£±£´Æü¤ò¸ÂÅÙ¡Ë
-           IF    SYOKIKSN-IN-KHNSRYCD   =   "190117310"
+           IF    SYOKIKSN-IN-KHNSRYCD   =   "190120810"
                  MOVE   SPACE       TO   IPN-NYUKAIKEI-SAKUSEI-FLG
                  MOVE   SPACE       TO   SYOKIKSN-IN-KHNSRYCD
                                          LNK-SCNYUACCT-NYUKHN-SRYCD(1)
@@ -8777,7 +8777,7 @@
                  MOVE   SPA-NAI-I01-NYUINYMD
                                            TO  LNK-DAY6-KIJUN
                  MOVE    "1"               TO  LNK-DAY6-ZOGENPTN
-                 MOVE     15               TO  LNK-DAY6-ZOGEN
+                 MOVE     14               TO  LNK-DAY6-ZOGEN
                  CALL  "ORCSDAY"           USING   STS-AREA-DAY
                                                    LNK-DAY6-AREA
                  MOVE    LNK-DAY6-KEISAN
