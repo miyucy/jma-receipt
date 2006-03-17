@@ -30,6 +30,8 @@
       *平成１８年４月改定対応
       *  02.08.01    NACL-小豆沢  06/03/16  入院料老人コード置き換えは療養病棟
       *                                     または療養病床のみを対象とする
+      *              NACL-小豆沢  06/03/17  特定入院料対応
+      *                                     脳卒中ケアユニット入院医療管理料
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1333,11 +1335,12 @@
       *    救命救急入院料
       *    一類感染症患者入院医療管理料
       *    ハイケアユニット入院医療管理料
+      *    脳卒中ケアユニット入院医療管理料
            IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
                IF   PTNYUINRRK-TOKUTEI-NYUIN = "03" OR "04" OR "05" OR
                                                "06" OR "07" OR "08" OR
                                                "09" OR "14" OR "16" OR
-                                               "17"
+                                               "17" OR "19"
                    MOVE    SPACE   TO    WRK-TOKUTEI-NYUIN
                END-IF
            END-IF
@@ -2115,6 +2118,8 @@
                        MOVE   "190117310"   TO  SYOKIKSN-IN-KHNSRYCD
                    WHEN    "18"
                        MOVE   "190117410"   TO  SYOKIKSN-IN-KHNSRYCD
+                   WHEN    "19"
+                       MOVE   "190120810"   TO  SYOKIKSN-IN-KHNSRYCD
                    WHEN    "20"
                        MOVE   "190076710"   TO  SYOKIKSN-IN-KHNSRYCD
                    WHEN    "21"
