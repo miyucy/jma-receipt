@@ -131,8 +131,11 @@
            03  WRK-CD-MCNT                         PIC 9(02).
            03  WRK-TNS-SRYCD                       PIC X(09).
            03  WRK-TNS-NAME                        PIC X(100).
+           03  WRK-SELNUM                          PIC 9(05).
            03  WRK-STYUKYMD                        PIC X(08).
            03  WRK-EDYUKYMD                        PIC X(08).
+           03  WRK-SEL-STYUKYMD                    PIC X(08).
+           03  WRK-SEL-EDYUKYMD                    PIC X(08).
            03  WRK-CREYMD                          PIC X(08).
            03  WRK-MAX                             PIC 9(05).
            03  WRK-BASE-CUR                        PIC 9(05).
@@ -505,10 +508,21 @@
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
+           PERFORM 800-H1804-KAISEI-CHK-SEC
+      *
+           PERFORM 3101-SPASET-SEC
+      *
+           .
+       310-SPASET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    スパ初期編集処理
+      *****************************************************************
+       3101-SPASET-SEC             SECTION.
+      *
            INITIALIZE                  SPA-W24
                                            W24
-      *
-           PERFORM 800-H1804-KAISEI-CHK-SEC
       *
       *    コンボボックス初期化
            PERFORM 310-CMB-SYOKI-SEC
@@ -520,9 +534,8 @@
            PERFORM 310-INPUT-AREA-EDIT-SEC
       *
            .
-       310-SPASET-EXT.
+       3101-SPASET-EXT.
            EXIT.
-      *
       *****************************************************************
       *    コンボボックス初期処理
       *****************************************************************
@@ -1815,7 +1828,6 @@
       *    選定入院消費税区分
            MOVE    SPA-GMN-W24-SENTEI-TAX
                                    TO  SYS-5000-SENTEI-TAXKBN
-      *
       *    選定入院単価（金額）
            EVALUATE    SPA-GMN-W24-SENTEI-FTNKBN
            WHEN    "1"
@@ -1833,7 +1845,7 @@
            WHEN    OTHER
                MOVE    ZERO        TO  SYS-5000-SENTEI-KINGAKU
                MOVE    ZERO        TO  SYS-5000-SENTEI-IPN-KINGAKU
-               MOVE    ZERO        TO  SYS-5000-SENTEI-IPN-KINGAKU
+               MOVE    ZERO        TO  SYS-5000-SENTEI-RJN-KINGAKU
            END-EVALUATE
       *
       *    入院歴表示区分
@@ -1851,7 +1863,6 @@
       *    退院証明書発行区分
            MOVE    SPA-GMN-W24-TAIPRTKBN
                                    TO  SYS-5000-TAIPRTKBN
-      *
       *
       *    減算情報
            IF    ( SPA-W01-EDYUKYMD    >=  CONST-H180401 )
@@ -3910,26 +3921,51 @@
                        MOVE    "upd1"              TO  MCP-PATHNAME
                        PERFORM 910-DBUPDATE-SEC
                        IF    ( MCP-RC  NOT =   ZERO )
-                           DISPLAY "DBUPDATE ERR"
+                           DISPLAY "1:DBUPDATE ERR"
                        END-IF
       *
                        IF    ( CONST-H180401  <=   SPA-W01-SEL-EDYUKYMD)
-                           MOVE    CONST-H180401       TO  SYS-STYUKYMD
-                           MOVE    WRK-EDYUKYMD        TO  SYS-EDYUKYMD
-                           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-                           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-                           MOVE    "key"               TO  MCP-PATHNAME
+      *
+                           MOVE    SPA-W01-SELNUM  TO  WRK-SELNUM
+                           MOVE    SPA-W01-SEL-STYUKYMD
+                                                   TO  WRK-SEL-STYUKYMD
+                           MOVE    SPA-W01-SEL-EDYUKYMD
+                                                   TO  WRK-SEL-EDYUKYMD
+      *
+                           INITIALIZE              SPA-W01-SELNUM
+                                                   SPA-W01-SEL-STYUKYMD
+                                                   SPA-W01-SEL-EDYUKYMD
+      *
+                           MOVE    CONST-H180401   TO  SPA-W01-STYUKYMD
+                           MOVE    WRK-EDYUKYMD    TO  SPA-W01-EDYUKYMD
+                           PERFORM 3101-SPASET-SEC
+                           PERFORM 4811-HOSP-NYUINKHN-EDIT-SEC
+      *
+                           PERFORM 800-MCNDATE-SEC
+                           MOVE    SMCNDATE-YMD    TO  SYS-5000-CREYMD
+                                                       SYS-5000-UPYMD
+                           MOVE    SMCNDATE-HMS    TO  SYS-5000-UPHMS
+      *
+                           MOVE    SYS-5000-REC    TO  SYSKANRI-REC
+                           MOVE    SYSKANRI-REC    TO  MCPDATA-REC
+                           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+                           MOVE    "key"           TO  MCP-PATHNAME
                            PERFORM 910-DBINSERT-SEC
                            IF    ( MCP-RC  NOT =   ZERO )
-                               DISPLAY "DBINSERT ERR"
+                               DISPLAY "2:DBINSERT ERR"
                            END-IF
+                           MOVE    WRK-SELNUM  TO  SPA-W01-SELNUM
+                           MOVE    WRK-SEL-STYUKYMD
+                                               TO  SPA-W01-SEL-STYUKYMD
+                           MOVE    WRK-SEL-EDYUKYMD
+                                               TO  SPA-W01-SEL-EDYUKYMD
                        END-IF
       *
-                       MOVE    "20060331"  TO  SPA-W01-SEL-EDYUKYMD
-                                               SPA-W01-EDYUKYMD
+                       MOVE    20060331        TO  SPA-W01-SEL-EDYUKYMD
+                                                   SPA-W01-EDYUKYMD
                        MOVE    SPA-W01-EDYUKYMD    TO  WRK-YMD
                        PERFORM 800-SEIWA-HEN-SEC
-                       MOVE    WRK-HENYMDG TO  SPA-W01-EDYUKYMDH
+                       MOVE    WRK-HENYMDG     TO  SPA-W01-EDYUKYMDH
       *
                    END-IF
                END-IF
@@ -3937,7 +3973,8 @@
                IF    ( CONST-H180401   >  SPA-W01-STYUKYMD )
                 AND  ( CONST-H180401  <=  SPA-W01-EDYUKYMD )
                    MOVE    SPA-W01-EDYUKYMD    TO  WRK-EDYUKYMD
-                   MOVE    "20060331"          TO  SPA-W01-EDYUKYMD
+                   MOVE    20060331            TO  SPA-W01-EDYUKYMD
+                   PERFORM 310-CMB-SYOKI-SEC
                    PERFORM 4201-INPUT-AREA-INIT-SEC
                    PERFORM 4811-HOSP-NYUINKHN-EDIT-SEC
       *
@@ -3952,17 +3989,26 @@
                    MOVE    "key"           TO  MCP-PATHNAME
                    PERFORM 910-DBINSERT-SEC
                    IF    ( MCP-RC  NOT =   ZERO )
-                       DISPLAY "DBINSERT ERR"
+                       DISPLAY "3:DBINSERT ERR"
                    END-IF
       *
-                   MOVE    CONST-H180401       TO  SYS-STYUKYMD
-                   MOVE    WRK-EDYUKYMD        TO  SYS-EDYUKYMD
-                   MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
-                   MOVE    "key"               TO  MCP-PATHNAME
+                   MOVE    CONST-H180401   TO  SPA-W01-STYUKYMD
+                   MOVE    WRK-EDYUKYMD    TO  SPA-W01-EDYUKYMD
+                   PERFORM 3101-SPASET-SEC
+                   PERFORM 4811-HOSP-NYUINKHN-EDIT-SEC
+      *
+                   PERFORM 800-MCNDATE-SEC
+                   MOVE    SMCNDATE-YMD    TO  SYS-5000-CREYMD
+                                               SYS-5000-UPYMD
+                   MOVE    SMCNDATE-HMS    TO  SYS-5000-UPHMS
+      *
+                   MOVE    SYS-5000-REC    TO  SYSKANRI-REC
+                   MOVE    SYSKANRI-REC    TO  MCPDATA-REC
+                   MOVE    "tbl_syskanri"  TO  MCP-TABLE
+                   MOVE    "key"           TO  MCP-PATHNAME
                    PERFORM 910-DBINSERT-SEC
                    IF    ( MCP-RC  NOT =   ZERO )
-                           DISPLAY "DBINSERT ERR"
+                       DISPLAY "4:DBINSERT ERR"
                    END-IF
       *
                    MOVE    CONST-H180401   TO  SPA-W01-STYUKYMD
