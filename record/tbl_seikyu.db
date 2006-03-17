@@ -1179,6 +1179,7 @@ path	key27	{
                   AND (      NYUGAIKBN   LIKE :NYUGAIKBN  )
                   AND (      ZAITAKU     <>   '1'         )
                   AND (      HENREIYM    <>   '000000'    )
+                  ORDER BY RECEKA
 		;
 	};
 };
@@ -1204,6 +1205,7 @@ path	key28	{
                   AND (      NYUGAIKBN   LIKE :NYUGAIKBN  )
                   AND (      ZAITAKU     <>   '1'         )
                   AND (      HENREIYM    =    '000000'    )
+                  ORDER BY RECEKA
 		;
 	};
 };
@@ -1229,6 +1231,7 @@ path	key29	{
                   AND (      NYUGAIKBN   LIKE :NYUGAIKBN  )
                   AND (      ZAITAKU     =    '1'         )
                   AND (      HENREIYM    <>   '000000'    )
+                  ORDER BY RECEKA
 		;
 	};
 };
@@ -1254,6 +1257,7 @@ path	key30	{
                   AND (      NYUGAIKBN   LIKE :NYUGAIKBN  )
                   AND (      ZAITAKU     =    '1'         )
                   AND (      HENREIYM    =    '000000'    )
+                  ORDER BY RECEKA
 		;
 	};
 };
@@ -1278,6 +1282,7 @@ path	key31	{
                   AND (      SRYYM       <    :XXSRYYM    )
                   AND (      NYUGAIKBN   LIKE :NYUGAIKBN  )
                   AND (      HENREIYM    <>   '000000'    )
+                  ORDER BY RECEKA
 		;
 	};
 };
@@ -1302,6 +1307,7 @@ path	key32	{
                   AND (      SRYYM       <    :XXSRYYM    )
                   AND (      NYUGAIKBN   LIKE :NYUGAIKBN  )
                   AND (      HENREIYM    =    '000000'    )
+                  ORDER BY RECEKA
 		;
 	};
 };

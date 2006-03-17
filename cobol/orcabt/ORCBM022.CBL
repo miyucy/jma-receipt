@@ -44,7 +44,10 @@
       *ÊÖÌáÊ¬ÂÐ±þ  
       *  01.02.01    NACL-Æ£¸¶    05/02/25  ÊÖÌáÊ¬ÂÐ±þ
       *  01.02.03    NACL-Æ£¸¶    05/03/22  È÷¹ÍÍó¤Î°ìÉôÉéÃ´¶â¤ÎÊÔ½¸ÊýË¡
-      *                                     ¤ÎÊÑ¹¹ 
+      *                                     ¤ÎÊÑ¹¹
+      *
+      *  02.08.01    NACL-Æ£¸¶    06/02/20  ¼ç²ÊÂÐ±þ
+      *                                     £²£°£°£³Ç¯£´·î°Ê¹ß¤Î¤ßºîÀ®
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -97,11 +100,13 @@
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SEIKYU          PIC 9(01).
+           03  FLG-PTINF           PIC 9(01).
+           03  FLG-RECE10          PIC 9(01).
+           03  FLG-SYSKANRI        PIC 9(01).
+      *
            03  FLG-UPD             PIC 9(01).
            03  FLG-UPDFILE         PIC 9(01). 
            03  FLG-ERR             PIC 9(01).
-           03  FLG-PTINF           PIC 9(01).
-           03  FLG-RECE10          PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -109,6 +114,8 @@
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
+           03  IDXX                PIC 9(04).
+           03  IDXY                PIC 9(04).
       *     
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
@@ -117,6 +124,7 @@
            03  IDY1                PIC 9(04).
            03  IDY2                PIC 9(04).
            03  IDY3                PIC 9(04).
+           03  IDY4                PIC 9(04).
       *
       *    ¥Ñ¥é¥á¥¿ÎÎ°è
        01  WRK-PARA.
@@ -152,6 +160,8 @@
       *
       *    ½¸·×ÎÎ°è
        01  SUM-AREA.
+         02  SUM-TABLE-OCC         OCCURS  100.
+           03  SUM-TBL-SRYKA       PIC X(02).
       *    1:¤½¤ÎÂ¾¤Î¥ì¥»¡¢2:ºßÁí¿Ç¤ò»»Äê¤·¤¿¥ì¥» 
            03  SUM-TBL-OCC         OCCURS  2.
       *        °åÎÅÊÝ¸±¡¡1,2:£·£°°Ê¾å 3:ËÜ¿Í 4:²ÈÂ² 5:»°ºÐ 
@@ -234,6 +244,11 @@
            COPY    "CPPTINF.INC".
       *
            COPY    "CPRCF010.INC".
+      *
+      *    °åÎÅµ¡´Ø¾ðÊó¾ðÊó
+           COPY    "CPSK1001.INC".
+      *
+           COPY    "CPSK2009.INC".
       *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
@@ -322,8 +337,56 @@
       *
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
+      *
+      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿¾ðÊó¼èÆÀ
+           PERFORM 110-SYSKANRI-GET-SEC
+      *
            .
        100-INIT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿¾ðÊó¼èÆÀ
+      *****************************************************************
+       110-SYSKANRI-GET-SEC            SECTION.
+      *
+      *    °åÎÅµ¡´Ø¾ðÊó
+           INITIALIZE                      SYS-1001-REC
+           MOVE    "1001"              TO  SYS-1001-KANRICD
+           MOVE    "*"                 TO  SYS-1001-KBNCD
+           MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1001-STYUKYMD (1:6)
+           MOVE    "01"                TO  SYS-1001-STYUKYMD (7:2)
+           MOVE    SYS-1001-STYUKYMD   TO  SYS-1001-EDYUKYMD
+           MOVE    SYS-1001-REC        TO  MCPDATA-REC
+           PERFORM 800-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC        TO  SYS-1001-REC
+           ELSE
+               MOVE    "°åÎÅµ¡´Ø¾ðÊó¤¬¼èÆÀ¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿"
+                                           TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+               MOVE    1                   TO  FLG-END
+           END-IF 
+      *         
+      *    ¥ì¥»¥×¥ÈÊÔ½¸¶èÊ¬¾ðÊó
+           INITIALIZE                      SYS-2009-REC
+           MOVE    "2009"              TO  SYS-2009-KANRICD
+           MOVE    "*"                 TO  SYS-2009-KBNCD
+           MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-2009-STYUKYMD (1:6)
+           MOVE    "01"                TO  SYS-2009-STYUKYMD (7:2)
+           MOVE    SYS-2009-STYUKYMD   TO  SYS-2009-EDYUKYMD
+           PERFORM 800-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI    =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-2009-REC
+           ELSE    
+               INITIALIZE                  SYS-2009-REC
+           END-IF
+           IF      SYS-2009-SYUKA-KBN
+                                   =   SPACE
+               MOVE    "0"             TO  SYS-2009-SYUKA-KBN
+           END-IF
+           .
+       110-SYSKANRI-GET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -367,7 +430,8 @@
       *
            MOVE    "2"                 TO  WRK-NYUGAIKBN
       *   
-           PERFORM VARYING WRK-PRTFLG  FROM    1   BY  1
+      *****PERFORM VARYING WRK-PRTFLG  FROM    1   BY  1
+           PERFORM VARYING WRK-PRTFLG  FROM    2   BY  1
                    UNTIL   WRK-PRTFLG  >       2
       *
                IF      WRK-PRTFLG          =   2
@@ -414,7 +478,8 @@
       *
            IF      WRK-PARA-NYUGAIKBN  =   "1"
            AND     FLG-ERR             =   ZERO
-               PERFORM VARYING WRK-PRTFLG  FROM    1   BY  1
+      *****    PERFORM VARYING WRK-PRTFLG  FROM    1   BY  1
+               PERFORM VARYING WRK-PRTFLG  FROM    2   BY  1
                        UNTIL   WRK-PRTFLG  >       2
       *
                    IF      WRK-PRTFLG          =   2
@@ -534,7 +599,24 @@
            MOVE    ZERO                TO  IDX-AREA
                                            FLG-UPD
       *
-           MOVE    WRK-INDEX           TO  IDY3 
+           MOVE    WRK-INDEX           TO  IDY3
+      *
+      *    ¼ç²ÊÊÌ
+           IF      RECE10-RECEKA       =   "00"
+               MOVE    RECE10-RECEKA   TO  SUM-TBL-SRYKA (1)
+               MOVE    1                   TO  IDXX
+           ELSE
+               PERFORM VARYING IDXY    FROM    2   BY  1
+                       UNTIL   IDXY    >       99
+                   IF      SUM-TBL-SRYKA (IDXY)    =   SPACE
+                       MOVE    RECE10-RECEKA   TO  SUM-TBL-SRYKA (IDXY)
+                   END-IF 
+                   IF      SUM-TBL-SRYKA (IDXY)    =   RECE10-RECEKA
+                       MOVE    IDXY            TO  IDXX
+                       MOVE    99              TO  IDXY
+                   END-IF
+               END-PERFORM
+           END-IF        
       *
       *    Ï·¿ÍÊÝ·òÍó
            IF      RECE10-RJNHKNNUM    NOT =   SPACE
@@ -549,7 +631,12 @@
                ELSE
                    MOVE    2                   TO  IDY2
                END-IF
-               PERFORM 210-ROU-SYUKEI-SEC
+               IF      IDXX            >   ZERO
+                   MOVE    IDXX            TO  IDY4
+                   PERFORM 210-ROU-SYUKEI-SEC
+                   MOVE    100             TO  IDY4
+                   PERFORM 210-ROU-SYUKEI-SEC
+               END-IF
            END-IF
       *     
       *    °åÎÅÊÝ¸±Íó
@@ -750,7 +837,12 @@
                            END-EVALUATE
                    END-EVALUATE        
                END-IF
-               PERFORM 210-HKN-SYUKEI-SEC
+               IF      IDXX            >   ZERO
+                   MOVE    IDXX            TO  IDY4
+                   PERFORM 210-HKN-SYUKEI-SEC
+                   MOVE    100             TO  IDY4
+                   PERFORM 210-HKN-SYUKEI-SEC
+               END-IF
            END-IF    
       *
       *    ¸øÈñÉéÃ´Ê¬     
@@ -759,16 +851,31 @@
                OR      RECE10-HKNNUM       NOT =   SPACE
       *            ¸øÈñ¤È°åÊÝ¡¦Ï·¿Í¤ÎÊ»ÍÑÍó
                    MOVE    1               TO  IDX1
-                   PERFORM 220-KOH-SYUKEI-SEC
+                   IF      IDXX            >   ZERO
+                       MOVE    IDXX            TO  IDY4
+                       PERFORM 220-KOH-SYUKEI-SEC
+                       MOVE    100              TO  IDY4
+                       PERFORM 220-KOH-SYUKEI-SEC
+                   END-IF
                ELSE
                    IF      RECE10-KOHNUM (2)   NOT =   SPACE  
       *            ¸øÈñ¤È¸øÈñ¤ÎÊ»ÍÑÍó
                        MOVE    2               TO  IDX1
-                       PERFORM 220-KOH-SYUKEI-SEC
+                       IF      IDXX            >   ZERO
+                           MOVE    IDXX            TO  IDY4
+                           PERFORM 220-KOH-SYUKEI-SEC
+                           MOVE    100             TO  IDY4
+                           PERFORM 220-KOH-SYUKEI-SEC
+                       END-IF
                    ELSE
       *            ¸øÈñÃ±ÆÈÍó
                        MOVE    3               TO  IDX1
-                       PERFORM 220-KOH-SYUKEI-SEC
+                       IF      IDXX            >   ZERO
+                           MOVE    IDXX            TO  IDY4
+                           PERFORM 220-KOH-SYUKEI-SEC
+                           MOVE    100             TO  IDY4
+                           PERFORM 220-KOH-SYUKEI-SEC
+                       END-IF
                    END-IF
                END-IF     
            END-IF                
@@ -809,45 +916,47 @@
            MOVE    1                         TO  IDX1
       *
       *    ·ï¿ô
-           ADD     1           TO  SUM-ROU-KENSU (IDY3 IDY1 IDY2)
+           ADD     1           TO  SUM-ROU-KENSU (IDY4 IDY3 IDY1 IDY2)
            IF      RECE10-SHOKUJINISSU(IDX1)   >   ZERO
-               ADD     1       TO  SUM-ROU-SHOKUJIKENSU (IDY3 IDY1 IDY2)
+               ADD     1       TO  SUM-ROU-SHOKUJIKENSU
+                                                 (IDY4 IDY3 IDY1 IDY2)
            END-IF
       *    ¡Ê£²¡Ë¹ç·×¡¢Áí·ï¿ô
-           ADD     1                   TO  SUM-GOK-KENSU (IDY3 2)
-                                           SUM-GOK-KENSU (IDY3 4)
+           ADD     1                   TO  SUM-GOK-KENSU (IDY4 IDY3 2)
+                                           SUM-GOK-KENSU (IDY4 IDY3 4)
            IF      RECE10-SHOKUJINISSU(IDX1)   >   ZERO
-               ADD     1               TO  SUM-GOK-SHOKENSU (IDY3 2)
-                                           SUM-GOK-SHOKENSU (IDY3 4) 
+               ADD     1               TO
+                                       SUM-GOK-SHOKENSU (IDY4 IDY3 2)
+                                       SUM-GOK-SHOKENSU (IDY4 IDY3 4) 
            END-IF
       *
       *    ¿ÇÎÅ¼ÂÆü¿ô¡Á°ìÉôÉéÃ´¶â 
            ADD     RECE10-JNISSU         (IDX1)
-                             TO  SUM-ROU-NISSU          (IDY3 IDY1 IDY2)
-                                 SUM-ROU-GOK-NISSU      (IDY3)
+                         TO  SUM-ROU-NISSU         (IDY4 IDY3 IDY1 IDY2)
+                             SUM-ROU-GOK-NISSU     (IDY4 IDY3)
            ADD     RECE10-TOTALTEN       (IDX1)
-                             TO  SUM-ROU-TOTALTEN       (IDY3 IDY1 IDY2)
-                                 SUM-ROU-GOK-TOTALTEN   (IDY3)
+                         TO  SUM-ROU-TOTALTEN      (IDY4 IDY3 IDY1 IDY2)
+                             SUM-ROU-GOK-TOTALTEN  (IDY4 IDY3)
            ADD     RECE10-FTNMONEY       (IDX1)
-                             TO  SUM-ROU-FTNMONEY       (IDY3 IDY1 IDY2)
-                                 SUM-ROU-GOK-FTNMONEY   (IDY3)
+                         TO  SUM-ROU-FTNMONEY      (IDY4 IDY3 IDY1 IDY2)
+                             SUM-ROU-GOK-FTNMONEY  (IDY4 IDY3)
       *                           
            ADD     RECE10-SHOKUJINISSU   (IDX1)
-                             TO  SUM-ROU-SHOKUJINISSU   (IDY3 IDY1 IDY2)
-                                 SUM-ROU-GOK-SHOKUJINISSU(IDY3)
+                         TO  SUM-ROU-SHOKUJINISSU  (IDY4 IDY3 IDY1 IDY2)
+                             SUM-ROU-GOK-SHOKUJINISSU(IDY4 IDY3)
            ADD     RECE10-SHOKUJIRYOYOHI (IDX1)
-                             TO  SUM-ROU-SHOKUJIRYOYOHI (IDY3 IDY1 IDY2)
-                                 SUM-ROU-GOK-SHOKUJIRYOYOHI(IDY3)
+                         TO  SUM-ROU-SHOKUJIRYOYOHI(IDY4 IDY3 IDY1 IDY2)
+                             SUM-ROU-GOK-SHOKUJIRYOYOHI(IDY4 IDY3)
            ADD     RECE10-SHOKUJIFTN     (IDX1)
-                             TO  SUM-ROU-SHOKUJIFTN     (IDY3 IDY1 IDY2)
-                                 SUM-ROU-GOK-SHOKUJIFTN (IDY3)
+                         TO  SUM-ROU-SHOKUJIFTN    (IDY4 IDY3 IDY1 IDY2)
+                             SUM-ROU-GOK-SHOKUJIFTN(IDY4 IDY3)
       *
       *    ¾®·×   
-           ADD     1         TO  SUM-ROU-KENSU    (IDY3 IDY1 3)
+           ADD     1         TO  SUM-ROU-KENSU    (IDY4 IDY3 IDY1 3)
            ADD     RECE10-FTNMONEY       (IDX1)
-                             TO  SUM-ROU-FTNMONEY (IDY3 IDY1 3)
+                             TO  SUM-ROU-FTNMONEY (IDY4 IDY3 IDY1 3)
            IF      RECE10-SHOKUJINISSU(IDX1)   >   ZERO
-               ADD     1       TO  SUM-ROU-SHOKUJIKENSU (IDY3 IDY1 3)
+               ADD     1     TO  SUM-ROU-SHOKUJIKENSU (IDY4 IDY3 IDY1 3)
            END-IF
       *
       *    ¸øÈñºÆ·Ç                      
@@ -885,40 +994,44 @@
                    IF      IDY1                >   ZERO 
                        COMPUTE IDX1    =   IDW     +       1
                        ADD     1
-                             TO  SUM-ROU-KOH-KENSU          (IDY3 IDY1)
+                             TO  SUM-ROU-KOH-KENSU (IDY4 IDY3 IDY1)
                        ADD     RECE10-JNISSU         (IDX1)
-                             TO  SUM-ROU-KOH-NISSU          (IDY3 IDY1)
+                             TO  SUM-ROU-KOH-NISSU (IDY4 IDY3 IDY1)
                        EVALUATE    WRK-NYUGAIKBN
                                            ALSO    RECE10-ZAITAKU
                            WHEN    "1"     ALSO    ANY
                            WHEN    "2"     ALSO    "1"
                                ADD     RECE10-FTNMONEY-FTN      (IDX1)
                                            TO  SUM-ROU-KOH-ITBFTN
-                                                           (IDY3 IDY1)
+                                                       (IDY4 IDY3 IDY1)
                                ADD     RECE10-FTNMONEY          (IDX1)
                                            TO  SUM-ROU-KOH-FTNMONEY
-                                                           (IDY3 IDY1)
+                                                       (IDY4 IDY3 IDY1)
                            WHEN    "2"     ALSO    SPACE
                                IF      IDY1        =   1
                                    ADD     RECE10-FTNMONEY-FTN  (IDX1)
                                            TO  SUM-ROU-KOH-ITBFTN
-                                                           (IDY3 IDY1)
+                                                       (IDY4 IDY3 IDY1)
                                END-IF
                                    ADD     RECE10-FTNMONEY      (IDX1)
                                            TO  SUM-ROU-KOH-FTNMONEY
-                                                           (IDY3 IDY1)
+                                                       (IDY4 IDY3 IDY1)
                        END-EVALUATE
       *                           
                        IF      RECE10-SHOKUJINISSU(IDX1)   >   ZERO
                            ADD     1
-                             TO  SUM-ROU-KOH-SHOKUJIKENSU   (IDY3 IDY1)
+                             TO  SUM-ROU-KOH-SHOKUJIKENSU
+                                                      (IDY4 IDY3 IDY1)
                        END-IF
                        ADD     RECE10-SHOKUJINISSU   (IDX1)
-                             TO  SUM-ROU-KOH-SHOKUJINISSU   (IDY3 IDY1)
+                             TO  SUM-ROU-KOH-SHOKUJINISSU
+                                                      (IDY4 IDY3 IDY1)
                        ADD     RECE10-SHOKUJIRYOYOHI (IDX1)
-                             TO  SUM-ROU-KOH-SHOKUJIRYOYOHI (IDY3 IDY1)
+                             TO  SUM-ROU-KOH-SHOKUJIRYOYOHI
+                                                      (IDY4 IDY3 IDY1)
                        ADD     RECE10-SHOKUJIFTN     (IDX1)
-                             TO  SUM-ROU-KOH-SHOKUJIFTN     (IDY3 IDY1)
+                             TO  SUM-ROU-KOH-SHOKUJIFTN
+                                                      (IDY4 IDY3 IDY1)
                    END-IF           
                END-PERFORM
            END-IF
@@ -937,41 +1050,45 @@
       *
                    IF      IDY1                >   ZERO 
                        ADD     1
-                             TO  SUM-ROU-KOH-KENSU     (IDY3 IDY1)
+                             TO  SUM-ROU-KOH-KENSU     (IDY4 IDY3 IDY1)
                        ADD     RECE10-ETC-JNISSU  (IDW)
-                             TO  SUM-ROU-KOH-NISSU     (IDY3 IDY1)
+                             TO  SUM-ROU-KOH-NISSU     (IDY4 IDY3 IDY1)
                        EVALUATE    WRK-NYUGAIKBN
                                            ALSO    RECE10-ZAITAKU
                            WHEN    "1"     ALSO    ANY
                            WHEN    "2"     ALSO    "1"
                                ADD     RECE10-ETC-FTNMONEY-FTN   (IDW)
                                            TO  SUM-ROU-KOH-ITBFTN
-                                                           (IDY3 IDY1)
+                                                       (IDY4 IDY3 IDY1)
                                ADD     RECE10-ETC-FTNMONEY       (IDW)
                                            TO  SUM-ROU-KOH-FTNMONEY
-                                                           (IDY3 IDY1)
+                                                       (IDY4 IDY3 IDY1)
                            WHEN    "2"     ALSO    SPACE
                                IF      IDY1        =   1
                                    ADD     RECE10-ETC-FTNMONEY-FTN(IDW)
                                            TO  SUM-ROU-KOH-ITBFTN
-                                                           (IDY3 IDY1)
+                                                       (IDY4 IDY3 IDY1)
                                END-IF
                                    ADD     RECE10-ETC-FTNMONEY    (IDW)
                                            TO  SUM-ROU-KOH-FTNMONEY
-                                                           (IDY3 IDY1)
+                                                       (IDY4 IDY3 IDY1)
                        END-EVALUATE
       *                           
                        IF      RECE10-ETC-SHOKUJINISSU (IDW)
                                                  >   ZERO
                            ADD     1
-                             TO  SUM-ROU-KOH-SHOKUJIKENSU   (IDY3 IDY1)
+                             TO  SUM-ROU-KOH-SHOKUJIKENSU
+                                                     (IDY4 IDY3 IDY1)
                        END-IF
                        ADD     RECE10-ETC-SHOKUJINISSU   (IDW)
-                             TO  SUM-ROU-KOH-SHOKUJINISSU   (IDY3 IDY1)
+                             TO  SUM-ROU-KOH-SHOKUJINISSU
+                                                     (IDY4 IDY3 IDY1)
                        ADD     RECE10-ETC-SHOKUJIRYOYOHI (IDW)
-                             TO  SUM-ROU-KOH-SHOKUJIRYOYOHI (IDY3 IDY1)
+                             TO  SUM-ROU-KOH-SHOKUJIRYOYOHI
+                                                     (IDY4 IDY3 IDY1)
                        ADD     RECE10-ETC-SHOKUJIFTN     (IDW)
-                             TO  SUM-ROU-KOH-SHOKUJIFTN     (IDY3 IDY1)
+                             TO  SUM-ROU-KOH-SHOKUJIFTN
+                                                     (IDY4 IDY3 IDY1)
                    END-IF           
                END-PERFORM
            END-IF                  
@@ -986,74 +1103,72 @@
       *****************************************************************
        210-HKN-SYUKEI-SEC          SECTION.
       *
-           IF      IDY1            =   ZERO
-           OR      IDY2            =   ZERO
+           IF    ( IDY1            =   ZERO )
+           OR    ( IDY2            =   ZERO )
                GO  TO  210-HKN-SYUKEI-EXT
            END-IF
       *     
            MOVE    1                   TO  IDX1
       *    
       *    ·ï¿ô
-           ADD     1               TO  SUM-KENSU (IDY3 IDY1 IDY2)
+           ADD     1               TO  SUM-KENSU (IDY4 IDY3 IDY1 IDY2)
            IF      RECE10-SHOKUJINISSU(IDX1)   >   ZERO
-               ADD     1           TO  SUM-SHOKUJIKENSU (IDY3 IDY1 IDY2)
+               ADD     1           TO  SUM-SHOKUJIKENSU
+                                      (IDY4 IDY3 IDY1 IDY2)
            END-IF
       *    ¡Ê£±¡Ë¹ç·×¡¢Áí·ï¿ô
-           ADD     1                   TO  SUM-GOK-KENSU (IDY3 1)
-                                           SUM-GOK-KENSU (IDY3 4)
+           ADD     1                   TO  SUM-GOK-KENSU (IDY4 IDY3 1)
+                                           SUM-GOK-KENSU (IDY4 IDY3 4)
            IF      RECE10-SHOKUJINISSU(IDX1)   >   ZERO
-               ADD     1               TO  SUM-GOK-SHOKENSU (IDY3 1)
-                                           SUM-GOK-SHOKENSU (IDY3 4) 
+               ADD     1               TO  SUM-GOK-SHOKENSU(IDY4 IDY3 1)
+                                           SUM-GOK-SHOKENSU(IDY4 IDY3 4) 
            END-IF
       *
       *    ¿ÇÎÅ¼ÂÆü¿ô¡Á°ìÉôÉéÃ´¶â 
            ADD     RECE10-JNISSU         (IDX1)
-                                 TO  SUM-NISSU          (IDY3 IDY1 IDY2)
+                                 TO  SUM-NISSU     (IDY4 IDY3 IDY1 IDY2)
            ADD     RECE10-TOTALTEN       (IDX1)
-                                 TO  SUM-TOTALTEN       (IDY3 IDY1 IDY2)
-           IF      IDY1              =   3   OR  4                          
-               ADD     RECE10-YKZFTN         (IDX1)
-                                 TO  SUM-YKZFTN         (IDY3 IDY1 IDY2)
-           END-IF
+                                 TO  SUM-TOTALTEN  (IDY4 IDY3 IDY1 IDY2)
            IF    (  IDY1              <   3        )
            OR    ( (IDY1              =   3 ) AND
                    (IDY2              =   3 )      )                          
                ADD     RECE10-FTNMONEY       (IDX1)
-                                 TO  SUM-FTNMONEY       (IDY3 IDY1 IDY2)
+                                 TO  SUM-FTNMONEY  (IDY4 IDY3 IDY1 IDY2)
            END-IF                          
            ADD     RECE10-SHOKUJINISSU   (IDX1)
-                                 TO  SUM-SHOKUJINISSU   (IDY3 IDY1 IDY2)
+                                 TO  SUM-SHOKUJINISSU
+                                                   (IDY4 IDY3 IDY1 IDY2)
            ADD     RECE10-SHOKUJIRYOYOHI (IDX1)
-                                 TO  SUM-SHOKUJIRYOYOHI (IDY3 IDY1 IDY2)
+                                 TO  SUM-SHOKUJIRYOYOHI
+                                                   (IDY4 IDY3 IDY1 IDY2)
            ADD     RECE10-SHOKUJIFTN     (IDX1)
-                                 TO  SUM-SHOKUJIFTN     (IDY3 IDY1 IDY2)
+                                 TO  SUM-SHOKUJIFTN(IDY4 IDY3 IDY1 IDY2)
       *
       *    ¾®·×
            IF      IDY2            >   1
       *        ·ï¿ô
-               ADD     1           TO  SUM-KENSU (IDY3 IDY1 12)
+               ADD     1           TO  SUM-KENSU (IDY4 IDY3 IDY1 12)
                IF      RECE10-SHOKUJINISSU(IDX1)   >   ZERO
-                   ADD     1       TO  SUM-SHOKUJIKENSU (IDY3 IDY1 12)
+                   ADD     1       TO  SUM-SHOKUJIKENSU
+                                                 (IDY4 IDY3 IDY1 12)
                END-IF
       *        ¿ÇÎÅ¼ÂÆü¿ô¡Á°ìÉôÉéÃ´¶â 
                ADD     RECE10-JNISSU         (IDX1)
-                                   TO  SUM-NISSU          (IDY3 IDY1 12)    
+                                   TO  SUM-NISSU     (IDY4 IDY3 IDY1 12)    
                ADD     RECE10-TOTALTEN       (IDX1)
-                                   TO  SUM-TOTALTEN       (IDY3 IDY1 12)
-               IF      IDY1              =   3   OR  4                          
-                   ADD     RECE10-YKZFTN         (IDX1)
-                                   TO  SUM-YKZFTN         (IDY3 IDY1 12)
-               END-IF                      
+                                   TO  SUM-TOTALTEN  (IDY4 IDY3 IDY1 12)
                IF      IDY1              <   3                          
                    ADD     RECE10-FTNMONEY       (IDX1)
-                                   TO  SUM-FTNMONEY       (IDY3 IDY1 12)
+                                   TO  SUM-FTNMONEY  (IDY4 IDY3 IDY1 12)
                END-IF                      
                ADD     RECE10-SHOKUJINISSU   (IDX1)
-                                   TO  SUM-SHOKUJINISSU   (IDY3 IDY1 12)
+                                   TO  SUM-SHOKUJINISSU
+                                                     (IDY4 IDY3 IDY1 12)
                ADD     RECE10-SHOKUJIRYOYOHI (IDX1)
-                                   TO  SUM-SHOKUJIRYOYOHI (IDY3 IDY1 12)
+                                   TO  SUM-SHOKUJIRYOYOHI
+                                                     (IDY4 IDY3 IDY1 12)
                ADD     RECE10-SHOKUJIFTN     (IDX1)
-                                   TO  SUM-SHOKUJIFTN     (IDY3 IDY1 12)
+                                   TO  SUM-SHOKUJIFTN(IDY4 IDY3 IDY1 12)
            END-IF                              
       *
            MOVE    1               TO  FLG-UPD 
@@ -1077,12 +1192,15 @@
       *
                PERFORM VARYING IDX2    FROM    1   BY  1
                        UNTIL   IDX2 >          100
-                   IF      SUM-KOH-KOHNUM (IDY3 IDX1 IDX2) =   SPACE
+                   IF      SUM-KOH-KOHNUM (IDY4 IDY3 IDX1 IDX2)
+                                               =   SPACE
                        MOVE    RECE10-KOHNUM (IDZ)     TO 
-                                       SUM-KOH-KOHNUM (IDY3 IDX1 IDX2)
+                                       SUM-KOH-KOHNUM
+                                                   (IDY4 IDY3 IDX1 IDX2)
                    END-IF                                
                    IF      RECE10-KOHNUM (IDZ) 
-                                   =   SUM-KOH-KOHNUM (IDY3 IDX1 IDX2)
+                                   =   SUM-KOH-KOHNUM
+                                                   (IDY4 IDY3 IDX1 IDX2)
                        PERFORM 2201-KOH-SYUKEI-01-SEC
                        MOVE    100             TO  IDX2
                    END-IF
@@ -1100,32 +1218,30 @@
            COMPUTE IDY     =   IDZ     +   1
       *    
       *    ·ï¿ô
-           ADD     1           TO  SUM-KOH-KENSU (IDY3 IDX1 IDX2)
+           ADD     1           TO  SUM-KOH-KENSU (IDY4 IDY3 IDX1 IDX2)
            IF      RECE10-SHOKUJINISSU(IDY)    >   ZERO
-               ADD     1       TO  SUM-KOH-SHOKUJIKENSU (IDY3 IDX1 IDX2)
+               ADD     1       TO  SUM-KOH-SHOKUJIKENSU
+                                                 (IDY4 IDY3 IDX1 IDX2)
            END-IF
       *   ¡Ê£³¡Ë¹ç·×¡¢Áí·ï¿ô
-           ADD     1                   TO  SUM-GOK-KENSU (IDY3 3)
-                                           SUM-GOK-KENSU (IDY3 4)
+           ADD     1                   TO  SUM-GOK-KENSU (IDY4 IDY3 3)
+                                           SUM-GOK-KENSU (IDY4 IDY3 4)
            IF      RECE10-SHOKUJINISSU(IDY)   >   ZERO
-               ADD     1               TO  SUM-GOK-SHOKENSU (IDY3 3)
-                                           SUM-GOK-SHOKENSU (IDY3 4) 
+               ADD     1               TO  SUM-GOK-SHOKENSU(IDY4 IDY3 3)
+                                           SUM-GOK-SHOKENSU(IDY4 IDY3 4) 
            END-IF
       *
       *    ¿ÇÎÅ¼ÂÆü¿ô¡Á°ìÉôÉéÃ´¶â 
            ADD     RECE10-TOTALTEN       (IDY)
-                             TO  SUM-KOH-TOTALTEN       (IDY3 IDX1 IDX2)
+                             TO  SUM-KOH-TOTALTEN  (IDY4 IDY3 IDX1 IDX2)
            ADD     RECE10-FTNMONEY       (IDY)
-                             TO  SUM-KOH-FTNMONEY       (IDY3 IDX1 IDX2)
+                             TO  SUM-KOH-FTNMONEY  (IDY4 IDY3 IDX1 IDX2)
       *                           
            ADD     RECE10-SHOKUJIRYOYOHI (IDY)
-                             TO  SUM-KOH-SHOKUJIRYOYOHI (IDY3 IDX1 IDX2)
+                             TO  SUM-KOH-SHOKUJIRYOYOHI
+                                                   (IDY4 IDY3 IDX1 IDX2)
            ADD     RECE10-SHOKUJIFTN     (IDY)
-                             TO  SUM-KOH-SHOKUJIFTN     (IDY3 IDX1 IDX2)
-           IF      IDX1          =   1                      
-               ADD     RECE10-YKZFTN     (IDY)
-                                 TO  SUM-KOH-YKZFTN     (IDY3 IDX1 IDX2)
-           END-IF                      
+                             TO  SUM-KOH-SHOKUJIFTN(IDY4 IDY3 IDX1 IDX2)
       *
            MOVE    1               TO  FLG-UPD 
       *
@@ -1442,6 +1558,55 @@
       *
            .
        910-SEIKYU-INV-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ´ÉÍý¥Þ¥¹¥¿ÆÉ¤ß¹þ¤ß
+      *****************************************************************
+       800-SYSKANRI-READ-SEC           SECTION.
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "MONFUNC"       USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               CALL    "MONFUNC"           USING
+                                               MCPAREA
+                                               MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO            TO  FLG-SYSKANRI
+               ELSE
+                   MOVE    1               TO  FLG-SYSKANRI
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       800-SYSKANRI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥Æ¡¼¥Ö¥ë¥¯¥í¡¼¥º½èÍý
+      *****************************************************************
+       900-CLOSE-SEC               SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+      *
+           .
+       900-CLOSE-EXT.
            EXIT.
       *      
       *****************************************************************
