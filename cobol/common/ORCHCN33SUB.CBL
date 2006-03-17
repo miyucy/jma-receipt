@@ -445,7 +445,6 @@
                PERFORM 910-NYUINACCT-READ-SEC
                IF   FLG-NYUINACCT          NOT =   ZERO
                     MOVE    4              TO  LNK-ORCHCN33SUB-RC
-                    GO  TO  100-PRM-CHK-EXT
                ELSE
                     PERFORM    VARYING   IDX1   FROM   1   BY   1
                                UNTIL     IDX1   >      31
