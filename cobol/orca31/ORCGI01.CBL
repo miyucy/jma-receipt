@@ -385,6 +385,8 @@
            03  WRK-PRINT-PG                PIC X(20).
            03  WRK-ORCSHKN-HKNCOMBINUM     PIC X(04).
            03  WRK-TOKUBETSU-NYUIN         PIC X(01).
+      *    プレイルーム、保育士加算加算退避領域
+           03  WRK-BTU-HIKSISUKBN          PIC X(01).
       *    会計作成用退避領域
            03  WRK-TAIHI-HKN               PIC 9(03).
            03  WRK-TAIHI-SHOKUJI           PIC 9(03).
@@ -9115,9 +9117,9 @@
                END-IF
       *
       *        小児入院医療管理料加算（保育士１人以上）
+               MOVE  SPACE       TO   WRK-BTU-HIKSISUKBN
                IF    SYS-5001-BTU-HIKSISUKBN   =   "2"
-                   ADD      1          TO     IDX8
-                   MOVE  "190111370"   TO  WRK-NYUKHNKSN-SRYCD(IDX8)
+                   MOVE   "2"    TO   WRK-BTU-HIKSISUKBN
                END-IF
       *
       *        病棟入院料加算
@@ -9231,6 +9233,14 @@
                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX9)
                          END-IF
            END-PERFORM
+      *
+      *    小児入院医療管理料加算（保育士１人以上）
+           IF    (WRK-BTU-HIKSISUKBN   =   "2")  AND
+                 (IDX9    <   20 )
+               ADD    1            TO  IDX9
+               MOVE  "190111370"   TO
+                                   LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX9)
+           END-IF
       *
            .
       *
