@@ -543,7 +543,7 @@
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
-           MOVE    6                   TO  SPA-GMN-CUR
+           MOVE    5                   TO  SPA-GMN-CUR
       *
            .
        310-SPASET-EXT.
