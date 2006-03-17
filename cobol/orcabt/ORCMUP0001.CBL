@@ -30,6 +30,8 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     MCC-太田     02/03/18  点数マスタレイアウト変更
       *                                     対応
+      * 01.00.02     NACL-伊藤     6/03/17  点数マスタレイアウト変更
+      *                                     対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -185,6 +187,12 @@
                03  TNSWK-V01-AREA-02   PIC X(136).
                03  TNSWK-V01-AREA-03   PIC X(192).
       *---(01.00.01) LINE ADD START -------------------------------------
+      *---(01.00.02) LINE ADD START -------------------------------------
+      *    旧マスタデータ退避領域
+           01  TNSWK-TENSU-REC-V02.
+               03  TNSWK-V02-AREA-01   PIC X(969).
+               03  TNSWK-V02-AREA-02   PIC X(300).
+      *---(01.00.02) LINE ADD START -------------------------------------
       *****************************************************************
       *    ファイル定義
       *****************************************************************
@@ -897,6 +905,9 @@
            WHEN    LNK-DBRVERSION (3:6)    <   "000907"
                PERFORM 900-TNSWK-V01-SET
       *
+           WHEN    LNK-DBRVERSION (3:6)    <   "020800"
+               PERFORM 900-TNSWK-V02-SET
+      *
            WHEN    OTHER
                MOVE    IN-REC      TO  TNSWK-TENSU-REC
            END-EVALUATE
@@ -923,6 +934,24 @@
       *
           .
        900-TNSWK-V01-EXT.
+           EXIT.
+      *
+      *---(01.00.01) LINE ADD END   -------------------------------------
+      *---(01.00.02) LINE ADD START -------------------------------------
+      *****************************************************************
+      *    変更後レイアウト移送処理
+      *****************************************************************
+       900-TNSWK-V02-SET          SECTION.
+      *
+           MOVE    IN-REC              TO  TNSWK-TENSU-REC-V02
+      *
+           MOVE    TNSWK-V02-AREA-01   TO  TNSWK-TENSU-REC (1    : 969)
+      *     MOVE    ZERO                TO  TNSWK-DONORKBN
+           MOVE    ZERO                TO  TNSWK-TENSU-REC (970  : 1)
+           MOVE    TNSWK-V02-AREA-02   TO  TNSWK-TENSU-REC (971  : 300)
+      *
+          .
+       900-TNSWK-V02-EXT.
            EXIT.
       *
       *---(01.00.01) LINE ADD END   -------------------------------------
