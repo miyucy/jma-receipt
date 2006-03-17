@@ -144,15 +144,6 @@
                            11  SPA-GMN-KARUTE3KBNLST      PIC X(20).
                        09  SPA-GMN-KARUTE3KBN-MAX
                                                   PIC 9(02).
-      *                処方せん保険医署名記載区分
-                       09  SPA-GMN-KISAIKBN-G.
-                           11  SPA-GMN-KISAIKBN      PIC X(01).
-                           11  SPA-GMN-KISAIKBNF1    PIC X(01).
-                           11  SPA-GMN-KISAIKBN-MEI     PIC X(18).
-                       09  SPA-GMN-KISAIKBNLST-G  OCCURS  2.
-                           11  SPA-GMN-KISAIKBNLST      PIC X(20).
-                       09  SPA-GMN-KISAIKBN-MAX
-                                                  PIC 9(02).
                        09  SPA-GMN-GAZOFOLDER     PIC X(128).
       *
       *                後発医薬品への変更可署名
