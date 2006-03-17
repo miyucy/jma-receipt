@@ -440,6 +440,12 @@
                    PERFORM 330-RID1-SET-SEC
                    GO      TO      300-SCREEN-EXT
                WHEN    "R99"
+                   INITIALIZE          SPA-GMN-SYUKA-TABLE
+                                       SPA-GMN-PTNUM-TABLE
+                                       SPA-NAI-SYUKA-TABLE
+                                       SPA-GMN-KOUMOKU
+                                       SPA-NAI-KOUMOKU
+                   MOVE    5           TO  SPA-GMN-CUR
                    GO      TO      300-SCREEN-EXT
            END-EVALUATE
       *
