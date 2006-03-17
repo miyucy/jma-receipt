@@ -147,8 +147,8 @@
                END-EVALUATE
            END-IF
       *???
-           DISPLAY "FLG-END=" FLG-END "#" SPA-SYUKA-KBN "#" 
-                             SPA-SYUKA-MODE "#" LNK-SYUACC-I-KBN "#"
+      *     DISPLAY "FLG-END=" FLG-END "#" SPA-SYUKA-KBN "#" 
+      *                      SPA-SYUKA-MODE "#" LNK-SYUACC-I-KBN "#"
       *??
            .
        100-INIT-EXT.
@@ -305,7 +305,7 @@
                MOVE    1               TO  FLG-END
            END-IF
       *???
-           DISPLAY "ORCSSYUBETU=" LNK-SYUACC-RC
+      *     DISPLAY "ORCSSYUBETU=" LNK-SYUACC-RC
       *???
            .
        2001-ORCSSYUBETU-EXT.
@@ -337,7 +337,7 @@
                MOVE    LNK-ORCSTOTALACCT-RC    TO  LNK-SYUACC-RC
                MOVE    1                       TO  FLG-END
       *???
-           DISPLAY "ORCSTOTALACCT=" LNK-SYUACC-RC
+      *     DISPLAY "ORCSTOTALACCT=" LNK-SYUACC-RC
       *???
                GO  TO  2002-ORCSTOTALACCT-EXT
            END-IF
@@ -560,39 +560,39 @@
        300-END-SEC                 SECTION.
       *
       *??
-           DISPLAY "SYUKAMAIN OT=" LNK-SYUACC-RC
-           DISPLAY "    PTID=" SPA-PTID
-           DISPLAY " H-SRYKA=" LNK-SYUACC-IO-H-SRYKA
-           DISPLAY "--------------------------------------------------"
-           DISPLAY
-                "|種別|保険者NO|HKN|提|au|科|保1 |保2 |保3 |   点数   |"
-                   "日数|回数|最終日|"
-           PERFORM VARYING     IDX       FROM    1   BY  1
-                   UNTIL      (IDX       >   100   )
-               IF    LNK-SYUACC-IO-RECESYUBETU (IDX) = SPACE
-                     MOVE  100   TO  IDX
-               ELSE
-                     PERFORM VARYING     IDY       FROM    1   BY  1
-                             UNTIL      (IDY       >   50   )
-                       IF   LNK-SYUACC-IO-SRYKA (IDX IDY)
-                                         NOT  =  SPACE
-                         DISPLAY LNK-SYUACC-IO-RECESYUBETU(IDX) "   "
-                         LNK-SYUACC-IO-HKNJANUM(IDX) " "
-                         LNK-SYUACC-IO-HKNNUM  (IDX) " "
-                         LNK-SYUACC-IO-TEISYUTUSAKI(IDX) " "
-                         LNK-SYUACC-IO-SYUKA-AUTO(IDX) " "
-                         LNK-SYUACC-IO-SRYKA (IDX IDY) " "
-                         LNK-SYUACC-IO-HKNCOMBI (IDX IDY 1) " "
-                         LNK-SYUACC-IO-HKNCOMBI (IDX IDY 2) " "
-                         LNK-SYUACC-IO-HKNCOMBI (IDX IDY 3) " "
-                         LNK-SYUACC-IO-TENSU(IDX IDY) "  "
-                         LNK-SYUACC-IO-NISSU(IDX IDY)       "   "
-                         LNK-SYUACC-IO-KAISU(IDX IDY)       "   "
-                         LNK-SYUACC-IO-EDDAY(IDX IDY)
-                       END-IF
-                   END-PERFORM
-               END-IF
-           END-PERFORM
+      *     DISPLAY "SYUKAMAIN OT=" LNK-SYUACC-RC
+      *     DISPLAY "    PTID=" SPA-PTID
+      *     DISPLAY " H-SRYKA=" LNK-SYUACC-IO-H-SRYKA
+      *     DISPLAY "--------------------------------------------------"
+      *     DISPLAY
+      *          "|種別|保険者NO|HKN|提|au|科|保1 |保2 |保3 |   点数   |"
+      *             "日数|回数|最終日|"
+      *     PERFORM VARYING     IDX       FROM    1   BY  1
+      *             UNTIL      (IDX       >   100   )
+      *         IF    LNK-SYUACC-IO-RECESYUBETU (IDX) = SPACE
+      *               MOVE  100   TO  IDX
+      *         ELSE
+      *               PERFORM VARYING     IDY       FROM    1   BY  1
+      *                       UNTIL      (IDY       >   50   )
+      *                 IF   LNK-SYUACC-IO-SRYKA (IDX IDY)
+      *                                   NOT  =  SPACE
+      *                   DISPLAY LNK-SYUACC-IO-RECESYUBETU(IDX) "   "
+      *                   LNK-SYUACC-IO-HKNJANUM(IDX) " "
+      *                   LNK-SYUACC-IO-HKNNUM  (IDX) " "
+      *                   LNK-SYUACC-IO-TEISYUTUSAKI(IDX) " "
+      *                   LNK-SYUACC-IO-SYUKA-AUTO(IDX) " "
+      *                   LNK-SYUACC-IO-SRYKA (IDX IDY) " "
+      *                   LNK-SYUACC-IO-HKNCOMBI (IDX IDY 1) " "
+      *                   LNK-SYUACC-IO-HKNCOMBI (IDX IDY 2) " "
+      *                   LNK-SYUACC-IO-HKNCOMBI (IDX IDY 3) " "
+      *                   LNK-SYUACC-IO-TENSU(IDX IDY) "  "
+      *                   LNK-SYUACC-IO-NISSU(IDX IDY)       "   "
+      *                   LNK-SYUACC-IO-KAISU(IDX IDY)       "   "
+      *                   LNK-SYUACC-IO-EDDAY(IDX IDY)
+      *                 END-IF
+      *             END-PERFORM
+      *         END-IF
+      *     END-PERFORM
       *??
       *
            .
