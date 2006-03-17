@@ -714,7 +714,11 @@
                    MOVE    "0001"              TO  SPA-ERRCD
                    MOVE    90                  TO  SPA-GMN-CUR
                ELSE
-                   MOVE    SNUM-OUTEDT(12:4)   TO  SPA-GMN-SELCD
+                   IF    ( SNUM-OUTEDT     =   ZERO )
+                       MOVE    SPACE       TO  SPA-GMN-SELCD
+                   ELSE
+                       MOVE    SNUM-OUTEDT(12:4)   TO  SPA-GMN-SELCD
+                   END-IF
                END-IF
            END-IF
            .
