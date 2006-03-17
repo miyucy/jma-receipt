@@ -136,6 +136,9 @@
            03  WRK-NAIYO                           PIC X(100).
            03  WRK-KANACHK-MAE-INPUT               PIC X(400).
       *
+      *    プレイルーム、保育士加算加算退避領域
+           03  WRK-BTU-HIKSISUKBN                  PIC X(01).
+      *
       *    入院会計作成用ワーク
            03  WRK-YMD             PIC X(10). 
            03  WRK-NAI-SRYYM-41.
@@ -2358,9 +2361,9 @@
                END-IF
       *
       *        小児入院医療管理料加算（保育士１人以上）
+               MOVE  SPACE       TO   WRK-BTU-HIKSISUKBN
                IF    SYS-5001-BTU-HIKSISUKBN   =   "2"
-                   ADD      1          TO     IDX8
-                   MOVE  "190111370"   TO  WRK-NYUKHNKSN-SRYCD(IDX8)
+                   MOVE   "2"    TO   WRK-BTU-HIKSISUKBN
                END-IF
       *
       *        病棟入院料加算
@@ -2474,6 +2477,14 @@
                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX9)
                END-IF
            END-PERFORM
+      *
+      *    小児入院医療管理料加算（保育士１人以上）
+           IF    (WRK-BTU-HIKSISUKBN   =   "2")  AND
+                 (IDX9    <   20 )
+               ADD    1            TO  IDX9
+               MOVE  "190111370"   TO
+                                   LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX9)
+           END-IF
       *
            .
       *
