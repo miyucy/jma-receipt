@@ -328,6 +328,18 @@
                MOVE    1                   TO  FLG-TENSUPLUS
            END-IF
       *
+      *    新規で付加情報が登録されていないときは作成しない
+      *    チェック
+           IF    ( ZS02-INPCHKKBN       =   ZERO  ) AND
+                 ( ZS02-TENPUYAKKBN     =   SPACE ) AND
+                 ( ZS02-ALLSURYOKBN     =   SPACE ) AND
+                 ( ZS02-KANZANTANICD    =   SPACE ) AND
+                 ( ZS02-KANZANCHI       =   ZERO  )
+               IF      FLG-TENSUPLUS    =  1
+                   GO  TO  200-TENSUPLUS-UPD-EXT
+               END-IF
+           END-IF
+      *
       *    有効期限更新
            IF      FLG-TENSUPLUS       =   ZERO
                EVALUATE    SPA-Z01-SYORIKBN
@@ -433,6 +445,14 @@
            MOVE    ZS02-SHOYUKOKETA    TO  TNSP-SHOYUKOKETA
       *    分類区分
            MOVE    ZS02-TENPUYAKKBN    TO  TNSP-TENPUYAKKBN
+      *    全数量記載区分
+           MOVE    ZS02-ALLSURYOKBN    TO  TNSP-ALLSURYOKBN
+      *    数量換算単位コード
+           MOVE    ZS02-KANZANTANICD   TO  TNSP-KANZANTANICD
+      *    数量換算単位名称
+           MOVE    ZS02-KANZANTANINAME TO  TNSP-KANZANTANINAME
+      *    数量換算値
+           MOVE    ZS02-KANZANCHI      TO  TNSP-KANZANCHI
       *
            .
        2001-TENSUPLUS-HEN-EXT.

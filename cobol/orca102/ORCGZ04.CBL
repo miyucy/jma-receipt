@@ -84,7 +84,7 @@
                    07  SPA-GMN-TANICDL         PIC X(03).
                    07  SPA-GMN-F1L             PIC X(01).
                    07  SPA-GMN-TANICDMEIL      PIC X(10).
-               05  SPA-TANICD-MAX              PIC 9(04).
+               05  SPA-GMN-TANICD-MAX          PIC 9(04).
                05  SPA-GMN-MADOKUKBNLST        OCCURS  5.
                    07  SPA-GMN-MADOKUKBNL      PIC X(01).
                    07  SPA-GMN-F1L             PIC X(01).
@@ -111,11 +111,24 @@
                    07  SPA-GMN-ZAIGATAKBNL     PIC X(01).
                    07  SPA-GMN-F1L             PIC X(01).
                    07  SPA-GMN-ZAIGATAKBNMEIL  PIC X(34).
-               05  SPA-GMN-BUNRUIKBNLST   OCCURS  20.
+               05  SPA-GMN-BUNRUIKBNLST        OCCURS  20.
                    07  SPA-GMN-BUNRUIKBNL      PIC X(02).
                    07  SPA-GMN-F1L             PIC X(01).
                    07  SPA-GMN-BUNRUIKBNMEIL   PIC X(40).
-               05  SPA-GMN-BUNRUIKBN-MAX       PIC 9(05).
+               05  SPA-GMN-BUNRUIKBN-MAX       PIC 9(04).
+      *
+               05  SPA-GMN-ALLSURYOKBNLST      OCCURS  2.
+                   07  SPA-GMN-ALLSURYOKBNL    PIC X(01).
+                   07  SPA-GMN-F1L             PIC X(01).
+                   07  SPA-GMN-ALLSURYOKBNMEIL PIC X(12).
+               05  SPA-GMN-ALLSURYOKBN-MAX     PIC 9(05).
+               05  SPA-GMN-KANZANTANICDLST     OCCURS  90.
+                   07  SPA-GMN-KANZANTANICDL   PIC X(03).
+                   07  SPA-GMN-F1L             PIC X(01).
+                   07  SPA-GMN-KANZANTANICDMEIL
+                                               PIC X(10).
+               05  SPA-GMN-KANZANTANICD-MAX    PIC 9(04).
+      *
       *        ∏Â»Ø∞ÂÃÙ… 
                05  SPA-GMN-KOUHATUKBNLST       OCCURS  2.
                    07  SPA-GMN-KOUHATUKBNL     PIC X(01).
@@ -185,6 +198,16 @@
                    07  SPA-GMN-BUNRUIKBN       PIC X(02).
                    07  SPA-GMN-F1L             PIC X(01).
                    07  SPA-GMN-BUNRUIKBNMEI    PIC X(40).
+      *
+               05  SPA-GMN-ALLSURYOKBN-G.
+                   07  SPA-GMN-ALLSURYOKBN     PIC X(01).
+                   07  SPA-GMN-F1L             PIC X(01).
+                   07  SPA-GMN-ALLSURYOKBNMEI  PIC X(12).
+               05  SPA-GMN-KANZANTANICD-G.
+                   07  SPA-GMN-KANZANTANICD    PIC X(03).
+                   07  SPA-GMN-F1              PIC X(01).
+                   07  SPA-GMN-KANZANTANICDMEI PIC X(10).
+               05  SPA-GMN-KANZANCHI           PIC 9(5)V9(5).
       *
                05  SPA-GMN-CHNGCD              PIC X(09).
                05  SPA-GMN-CHNGCDNAME          PIC X(100).
@@ -456,103 +479,111 @@
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *    ≈¿øÙ•ﬁ•π•ø≥∫≈ˆ•«°º•ø∆…§ﬂΩ–§∑
-           INITIALIZE                 SPA-Z04
+           INITIALIZE                  SPA-Z04
       *
-           MOVE    SPA-Z01-SRYCD      TO  SPA-GMN-SRYCDH
+           MOVE    SPA-Z01-SRYCD       TO  SPA-GMN-SRYCDH
       *
-           MOVE    SPA-Z01-YUKOSTYMD  TO  SPA-NAI-YUKOSTYMD
-           IF      SPA-Z01-SYORIKBN   =   2
-               MOVE  SPA-Z01-YUKOSTYMDH   TO  SPA-GMN-YUKOSTYMDH
+           MOVE    SPA-Z01-YUKOSTYMD   TO  SPA-NAI-YUKOSTYMD
+           IF      SPA-Z01-SYORIKBN    =   2
+               MOVE  SPA-Z01-YUKOSTYMDH    TO  SPA-GMN-YUKOSTYMDH
            END-IF
-           MOVE    SPA-Z01-YUKOSTYMDH TO  SPA-GMN-YUKOSTYMD
+           MOVE    SPA-Z01-YUKOSTYMDH  TO  SPA-GMN-YUKOSTYMD
       *
-           MOVE    SPA-Z01-YUKOEDYMD  TO  SPA-NAI-YUKOEDYMD
-           IF      SPA-Z01-SYORIKBN       =   2
-               MOVE  SPA-Z01-YUKOEDYMDH       TO  SPA-GMN-YUKOEDYMDH
+           MOVE    SPA-Z01-YUKOEDYMD   TO  SPA-NAI-YUKOEDYMD
+           IF      SPA-Z01-SYORIKBN        =   2
+               MOVE  SPA-Z01-YUKOEDYMDH    TO  SPA-GMN-YUKOEDYMDH
            END-IF
-           MOVE  SPA-Z01-YUKOEDYMDH   TO  SPA-GMN-YUKOEDYMD
+           MOVE  SPA-Z01-YUKOEDYMDH    TO  SPA-GMN-YUKOEDYMD
       *
-           MOVE    "1"                TO  SPA-GMN-TENSIKIBETUL   (1) 
-           MOVE    "∂‚≥€"             TO  SPA-GMN-TENSIKIBETUMEIL(1)
-           MOVE    "2"                TO  SPA-GMN-TENSIKIBETUL   (2)
-           MOVE    "≈‘∆ª…‹∏©πÿ∆˛≤¡≥ " TO  SPA-GMN-TENSIKIBETUMEIL(2)
-           MOVE    "7"                TO  SPA-GMN-TENSIKIBETUL   (3)
-           MOVE    "∏∫≈¿"             TO  SPA-GMN-TENSIKIBETUMEIL(3)
+           MOVE    "1"                 TO  SPA-GMN-TENSIKIBETUL   (1)
+           MOVE    "∂‚≥€"              TO  SPA-GMN-TENSIKIBETUMEIL(1)
+           MOVE    "2"                 TO  SPA-GMN-TENSIKIBETUL   (2)
+           MOVE    "≈‘∆ª…‹∏©πÿ∆˛≤¡≥ "  TO  SPA-GMN-TENSIKIBETUMEIL(2)
+           MOVE    "7"                 TO  SPA-GMN-TENSIKIBETUL   (3)
+           MOVE    "∏∫≈¿"              TO  SPA-GMN-TENSIKIBETUMEIL(3)
       *
-           MOVE    "1"                TO  SPA-GMN-OLDTENSKBL     (1) 
-           MOVE    "∂‚≥€"             TO  SPA-GMN-OLDTENSKBMEIL  (1)
-           MOVE    "2"                TO  SPA-GMN-OLDTENSKBL     (2)
-           MOVE    "≈‘∆ª…‹∏©πÿ∆˛≤¡≥ " TO  SPA-GMN-OLDTENSKBMEIL  (2)
-           MOVE    "7"                TO  SPA-GMN-OLDTENSKBL     (3)
-           MOVE    "∏∫≈¿"             TO  SPA-GMN-OLDTENSKBMEIL  (3)
+           MOVE    "1"                 TO  SPA-GMN-OLDTENSKBL     (1)
+           MOVE    "∂‚≥€"              TO  SPA-GMN-OLDTENSKBMEIL  (1)
+           MOVE    "2"                 TO  SPA-GMN-OLDTENSKBL     (2)
+           MOVE    "≈‘∆ª…‹∏©πÿ∆˛≤¡≥ "  TO  SPA-GMN-OLDTENSKBMEIL  (2)
+           MOVE    "7"                 TO  SPA-GMN-OLDTENSKBL     (3)
+           MOVE    "∏∫≈¿"              TO  SPA-GMN-OLDTENSKBMEIL  (3)
       *
-           MOVE    "0"                TO  SPA-GMN-MADOKUKBNL     (1) 
-           MOVE    "§ §∑"             TO  SPA-GMN-MADOKUKBNMEIL  (1)
-           MOVE    "1"                TO  SPA-GMN-MADOKUKBNL     (2)
-           MOVE    "À„ÃÙ"             TO  SPA-GMN-MADOKUKBNMEIL  (2)
-           MOVE    "2"                TO  SPA-GMN-MADOKUKBNL     (3) 
-           MOVE    "∆«ÃÙ"             TO  SPA-GMN-MADOKUKBNMEIL  (3)
-           MOVE    "3"                TO  SPA-GMN-MADOKUKBNL     (4)
-           MOVE    "≥–§ª§§∫ﬁ∏∂Œ¡"     TO  SPA-GMN-MADOKUKBNMEIL  (4)
-           MOVE    "5"                TO  SPA-GMN-MADOKUKBNL     (5) 
-           MOVE    "∏˛¿∫ø¿ÃÙ"         TO  SPA-GMN-MADOKUKBNMEIL  (5)
+           MOVE    "0"                 TO  SPA-GMN-MADOKUKBNL     (1)
+           MOVE    "§ §∑"              TO  SPA-GMN-MADOKUKBNMEIL  (1)
+           MOVE    "1"                 TO  SPA-GMN-MADOKUKBNL     (2)
+           MOVE    "À„ÃÙ"              TO  SPA-GMN-MADOKUKBNMEIL  (2)
+           MOVE    "2"                 TO  SPA-GMN-MADOKUKBNL     (3)
+           MOVE    "∆«ÃÙ"              TO  SPA-GMN-MADOKUKBNMEIL  (3)
+           MOVE    "3"                 TO  SPA-GMN-MADOKUKBNL     (4)
+           MOVE    "≥–§ª§§∫ﬁ∏∂Œ¡"      TO  SPA-GMN-MADOKUKBNMEIL  (4)
+           MOVE    "5"                 TO  SPA-GMN-MADOKUKBNL     (5)
+           MOVE    "∏˛¿∫ø¿ÃÙ"          TO  SPA-GMN-MADOKUKBNMEIL  (5)
       *
-           MOVE    "0"                TO  SPA-GMN-SINKEIHAKAIKBNL   (1)
-           MOVE    "§ §∑"             TO  SPA-GMN-SINKEIHAKAIKBNMEIL(1)
-           MOVE    "1"                TO  SPA-GMN-SINKEIHAKAIKBNL   (2)
-           MOVE    "ø¿∑–«À≤ı∫ﬁ"       TO  SPA-GMN-SINKEIHAKAIKBNMEIL(2)
+           MOVE    "0"                 TO  SPA-GMN-SINKEIHAKAIKBNL   (1)
+           MOVE    "§ §∑"              TO  SPA-GMN-SINKEIHAKAIKBNMEIL(1)
+           MOVE    "1"                 TO  SPA-GMN-SINKEIHAKAIKBNL   (2)
+           MOVE    "ø¿∑–«À≤ı∫ﬁ"        TO  SPA-GMN-SINKEIHAKAIKBNMEIL(2)
       *
-           MOVE    "0"                TO  SPA-GMN-SEIBUTUGAKUKBNL   (1)
-           MOVE    "§ §∑"             TO  SPA-GMN-SEIBUTUGAKUKBNMEIL(1)
-           MOVE    "1"                TO  SPA-GMN-SEIBUTUGAKUKBNL   (2)
+           MOVE    "0"                 TO  SPA-GMN-SEIBUTUGAKUKBNL   (1)
+           MOVE    "§ §∑"              TO  SPA-GMN-SEIBUTUGAKUKBNMEIL(1)
+           MOVE    "1"                 TO  SPA-GMN-SEIBUTUGAKUKBNL   (2)
            MOVE    "¿∏ ™≥ÿ≈™¿Ω∫ﬁ≤√ªª¬–æ›… Ã‹"
-                                      TO  SPA-GMN-SEIBUTUGAKUKBNMEIL(2)
+                                       TO  SPA-GMN-SEIBUTUGAKUKBNMEIL(2)
       *
-           MOVE    "0"                TO  SPA-GMN-ZOEIZAIKBNL    (1) 
-           MOVE    "§ §∑"             TO  SPA-GMN-ZOEIZAIKBNMEIL (1)
-           MOVE    "1"                TO  SPA-GMN-ZOEIZAIKBNL    (2)
-           MOVE    "¬§±∆∫ﬁ"           TO  SPA-GMN-ZOEIZAIKBNMEIL (2)
-           MOVE    "2"                TO  SPA-GMN-ZOEIZAIKBNL    (3) 
-           MOVE    "¬§±∆ ‰Ωı∫ﬁ"       TO  SPA-GMN-ZOEIZAIKBNMEIL (3)
+           MOVE    "0"                 TO  SPA-GMN-ZOEIZAIKBNL    (1)
+           MOVE    "§ §∑"              TO  SPA-GMN-ZOEIZAIKBNMEIL (1)
+           MOVE    "1"                 TO  SPA-GMN-ZOEIZAIKBNL    (2)
+           MOVE    "¬§±∆∫ﬁ"            TO  SPA-GMN-ZOEIZAIKBNMEIL (2)
+           MOVE    "2"                 TO  SPA-GMN-ZOEIZAIKBNL    (3)
+           MOVE    "¬§±∆ ‰Ωı∫ﬁ"        TO  SPA-GMN-ZOEIZAIKBNMEIL (3)
       *
-           MOVE    "1"                TO  SPA-GMN-YKZKBNL        (1) 
-           MOVE    "∆‚Õ—ÃÙ"           TO  SPA-GMN-YKZKBNMEIL     (1)
-           MOVE    "3"                TO  SPA-GMN-YKZKBNL        (2)
-           MOVE    "§Ω§Œ¬æ"           TO  SPA-GMN-YKZKBNMEIL     (2)
-           MOVE    "4"                TO  SPA-GMN-YKZKBNL        (3) 
-           MOVE    "√ÌºÕÃÙ"           TO  SPA-GMN-YKZKBNMEIL     (3)
-           MOVE    "6"                TO  SPA-GMN-YKZKBNL        (4)
-           MOVE    "≥∞Õ—ÃÙ"           TO  SPA-GMN-YKZKBNMEIL     (4)
-           MOVE    "8"                TO  SPA-GMN-YKZKBNL        (5) 
-           MOVE    "ªı≤ Õ—ÃÙ∫ﬁ"       TO  SPA-GMN-YKZKBNMEIL     (5)
-           MOVE    "9"                TO  SPA-GMN-YKZKBNL        (6) 
-           MOVE    "ªı≤ ∆√ƒÍÃÙ∫ﬁ"     TO  SPA-GMN-YKZKBNMEIL     (6)
+           MOVE    "1"                 TO  SPA-GMN-YKZKBNL        (1)
+           MOVE    "∆‚Õ—ÃÙ"            TO  SPA-GMN-YKZKBNMEIL     (1)
+           MOVE    "3"                 TO  SPA-GMN-YKZKBNL        (2)
+           MOVE    "§Ω§Œ¬æ"            TO  SPA-GMN-YKZKBNMEIL     (2)
+           MOVE    "4"                 TO  SPA-GMN-YKZKBNL        (3)
+           MOVE    "√ÌºÕÃÙ"            TO  SPA-GMN-YKZKBNMEIL     (3)
+           MOVE    "6"                 TO  SPA-GMN-YKZKBNL        (4)
+           MOVE    "≥∞Õ—ÃÙ"            TO  SPA-GMN-YKZKBNMEIL     (4)
+           MOVE    "8"                 TO  SPA-GMN-YKZKBNL        (5)
+           MOVE    "ªı≤ Õ—ÃÙ∫ﬁ"        TO  SPA-GMN-YKZKBNMEIL     (5)
+           MOVE    "9"                 TO  SPA-GMN-YKZKBNL        (6)
+           MOVE    "ªı≤ ∆√ƒÍÃÙ∫ﬁ"      TO  SPA-GMN-YKZKBNMEIL     (6)
       *
-           MOVE    "0"                TO  SPA-GMN-ZAIGATAKBNL    (1) 
+           MOVE    "0"                 TO  SPA-GMN-ZAIGATAKBNL    (1)
            MOVE    "ª∂∫ﬁ°¢˘Œ≥∫ﬁ° ∫ŸŒ≥∫ﬁ°À°¢±’∫ﬁ∞ ≥∞"
-                                      TO  SPA-GMN-ZAIGATAKBNMEIL (1)
-           MOVE    "1"                TO  SPA-GMN-ZAIGATAKBNL    (2)
-           MOVE    "ª∂∫ﬁ"             TO  SPA-GMN-ZAIGATAKBNMEIL (2)
-           MOVE    "2"                TO  SPA-GMN-ZAIGATAKBNL    (3) 
-           MOVE    "˘Œ≥∫ﬁ° ∫ŸŒ≥∫ﬁ°À" TO  SPA-GMN-ZAIGATAKBNMEIL (3)
-           MOVE    "3"                TO  SPA-GMN-ZAIGATAKBNL    (4)
-           MOVE    "±’∫ﬁ"             TO  SPA-GMN-ZAIGATAKBNMEIL (4)
+                                       TO  SPA-GMN-ZAIGATAKBNMEIL (1)
+           MOVE    "1"                 TO  SPA-GMN-ZAIGATAKBNL    (2)
+           MOVE    "ª∂∫ﬁ"              TO  SPA-GMN-ZAIGATAKBNMEIL (2)
+           MOVE    "2"                 TO  SPA-GMN-ZAIGATAKBNL    (3)
+           MOVE    "˘Œ≥∫ﬁ° ∫ŸŒ≥∫ﬁ°À"  TO  SPA-GMN-ZAIGATAKBNMEIL (3)
+           MOVE    "3"                 TO  SPA-GMN-ZAIGATAKBNL    (4)
+           MOVE    "±’∫ﬁ"              TO  SPA-GMN-ZAIGATAKBNMEIL (4)
       *
-           MOVE    "0"                TO  SPA-GMN-KOUHATUKBNL    (1) 
-           MOVE    "∏Â»Ø∞ÂÃÙ… ∞ ≥∞"
-                                      TO  SPA-GMN-KOUHATUKBNMEIL (1)
-           MOVE    "1"                TO  SPA-GMN-KOUHATUKBNL    (2) 
-           MOVE    "∏Â»Ø∞ÂÃÙ… "       TO  SPA-GMN-KOUHATUKBNMEIL (2)
+           MOVE    "0"                 TO  SPA-GMN-KOUHATUKBNL    (1)
+           MOVE    "∏Â»Ø∞ÂÃÙ… ∞ ≥∞"    TO  SPA-GMN-KOUHATUKBNMEIL (1)
+           MOVE    "1"                 TO  SPA-GMN-KOUHATUKBNL    (2)
+           MOVE    "∏Â»Ø∞ÂÃÙ… "        TO  SPA-GMN-KOUHATUKBNMEIL (2)
       *
-           MOVE    ZERO                TO  SPA-TANICD-MAX
+           MOVE    "0"                 TO  SPA-GMN-ALLSURYOKBNL   (1)
+           MOVE    "µ≠∫‹§∑§ §§"        TO  SPA-GMN-ALLSURYOKBNMEIL(1)
+           MOVE    "1"                 TO  SPA-GMN-ALLSURYOKBNL   (2)
+           MOVE    "µ≠∫‹§π§Î"          TO  SPA-GMN-ALLSURYOKBNMEIL(2)
+      *
+           MOVE    ZERO                TO  SPA-GMN-TANICD-MAX
+                                           SPA-GMN-KANZANTANICD-MAX
            PERFORM VARYING IDXX    FROM    1   BY  1
       ************ UNTIL   IDXX    >       59
                    UNTIL   IDXX    >       MTANI-MAX
                MOVE    MTANI-TANICD  (IDXX)
                                        TO  SPA-GMN-TANICDL   (IDXX)
+                                           SPA-GMN-KANZANTANICDL(IDXX)
                MOVE    MTANI-TANINAME(IDXX)
                                        TO  SPA-GMN-TANICDMEIL(IDXX)
-               MOVE    IDXX            TO  SPA-TANICD-MAX
+                                       SPA-GMN-KANZANTANICDMEIL(IDXX)
+               MOVE    IDXX            TO  SPA-GMN-TANICD-MAX
+                                           SPA-GMN-KANZANTANICD-MAX
            END-PERFORM
       *
       *    π‚≥€¿¡µ·ªÒŒ¡Õ—ÃÙ∫ﬁ ¨Œ‡æ Û
@@ -837,6 +868,32 @@
       *
            END-PERFORM
       *
+      *    ¡¥øÙŒÃµ≠∫‹∂Ë ¨
+           PERFORM VARYING IDXX    FROM    1   BY  1
+                   UNTIL   IDXX    >       2
+               IF      TNSP-ALLSURYOKBN 
+                                       =   SPA-GMN-ALLSURYOKBNL(IDXX)
+                   MOVE    SPA-GMN-ALLSURYOKBNLST (IDXX)
+                                           TO  SPA-GMN-ALLSURYOKBN-G
+                   MOVE    2               TO  IDXX
+               END-IF
+           END-PERFORM
+      *
+      *    øÙŒÃ¥πªª√±∞Ã•≥°º•…
+           PERFORM VARYING IDXX    FROM    1   BY  1
+                   UNTIL   IDXX    >       SPA-GMN-KANZANTANICD-MAX
+               IF      TNSP-KANZANTANICD 
+                                       =   SPA-GMN-KANZANTANICDL(IDXX)
+                   MOVE    SPA-GMN-KANZANTANICDLST (IDXX)
+                                           TO  SPA-GMN-KANZANTANICD-G
+                   MOVE    SPA-GMN-KANZANTANICD-MAX
+                                           TO  IDXX
+               END-IF
+           END-PERFORM
+      *
+      *    øÙŒÃ¥πªª√Õ
+           MOVE    TNSP-KANZANCHI      TO  SPA-GMN-KANZANCHI
+      *
            .
       *
        3002-SPASET-TENSUPLUS-EXT.
@@ -1030,6 +1087,9 @@
            MOVE    Z04-KEIKASOCHIYMD   TO  SPA-GMN-KEIKASOCHIYMD
            MOVE    Z04-INPCHKKBN       TO  SPA-GMN-INPCHKKBN
            MOVE    Z04-BUNRUIKBN       TO  SPA-GMN-BUNRUIKBN-G
+           MOVE    Z04-ALLSURYOKBN     TO  SPA-GMN-ALLSURYOKBN-G
+           MOVE    Z04-KANZANTANICD    TO  SPA-GMN-KANZANTANICD-G
+           MOVE    Z04-KANZANCHI       TO  SPA-GMN-KANZANCHI
       *
            MOVE    ZERO                TO  FLG-CHNGE
            IF      Z04-CHNGCD      NOT =   SPA-NAI-CHNGCD
@@ -1113,11 +1173,23 @@
            END-IF
       *    ∆˛Œœ•¡•ß•√•Ø∂Ë ¨
            IF      SPA-ERRCD           =   SPACE
-               PERFORM  524-INPCHKKBN-SEC
+               PERFORM  524-INPCHKKBNCHK-SEC
            END-IF
       *     ¨Œ‡∂Ë ¨
            IF      SPA-ERRCD           =   SPACE
                PERFORM 524-BUNRUIKBNCHK-SEC
+           END-IF
+      *    ¡¥øÙŒÃµ≠∫‹∂Ë ¨
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 524-ALLSURYOKBNCHK-SEC
+           END-IF
+      *    øÙŒÃ¥πªª√±∞Ã•≥°º•…
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 524-KANZANTANICDCHK-SEC
+           END-IF
+      *    ¥πªª√Õ
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 524-KANZANCHICHK-SEC
            END-IF
       *    ∑–≤·¡º√÷
            IF      FLG-CHNGE           =   1
@@ -1742,6 +1814,10 @@
            MOVE    CNT-STRING          TO  ZS02-SHOYUKOKETA
            MOVE    SPA-GMN-INPCHKKBN   TO  ZS02-INPCHKKBN
            MOVE    SPA-GMN-BUNRUIKBN   TO  ZS02-TENPUYAKKBN
+           MOVE    SPA-GMN-ALLSURYOKBN TO  ZS02-ALLSURYOKBN
+           MOVE    SPA-GMN-KANZANTANICD    TO  ZS02-KANZANTANICD
+           MOVE    SPA-GMN-KANZANTANICDMEI TO  ZS02-KANZANTANINAME
+           MOVE    SPA-GMN-KANZANCHI   TO  ZS02-KANZANCHI
       *    ∆˛Œœ•≥°º•…ππø∑
            CALL    "ORCGZS02"          USING
                                        MCPAREA
@@ -2073,7 +2149,7 @@
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDXX    FROM    1   BY  1
-                   UNTIL      (IDXX    >   SPA-TANICD-MAX ) OR
+                   UNTIL      (IDXX    >   SPA-GMN-TANICD-MAX ) OR
                               (FLG-OK  =   1              )
                IF      SPA-GMN-TANICD      =   SPA-GMN-TANICDL (IDXX)
                    MOVE    SPA-GMN-TANICDLST (IDXX)
@@ -2285,16 +2361,20 @@
       *****************************************************************
       *    ∆˛Œœ•¡•ß•√•Ø∂Ë ¨•¡•ß•√•Ø
       *****************************************************************
-       524-INPCHKKBN-SEC                    SECTION.
+       524-INPCHKKBNCHK-SEC        SECTION.
       *
            .
-       524-INPCHKKBN-EXT.
+       524-INPCHKKBNCHK-EXT.
            EXIT.
       *        
       *****************************************************************
       *     ¨Œ‡∂Ë ¨•¡•ß•√•Ø
       *****************************************************************
        524-BUNRUIKBNCHK-SEC                    SECTION.
+      *
+           IF      SPA-GMN-BUNRUIKBN   =   SPACE
+               GO  TO  524-BUNRUIKBNCHK-EXT
+           END-IF
       *
            MOVE    ZERO                TO  FLG-OK
       *
@@ -2324,6 +2404,85 @@
            EXIT.
       *
       *****************************************************************
+      *    ¡¥øÙŒÃµ≠∫‹∂Ë ¨•¡•ß•√•Ø
+      *****************************************************************
+       524-ALLSURYOKBNCHK-SEC      SECTION.
+      *
+           IF      SPA-GMN-ALLSURYOKBN   =   SPACE
+               GO  TO  524-ALLSURYOKBNCHK-EXT
+           END-IF
+      *
+           MOVE    ZERO                TO  FLG-OK
+      *
+      *     ¨Œ‡∂Ë ¨
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   2 )
+      *
+               IF    ( SPA-GMN-ALLSURYOKBN
+                                  =    SPA-GMN-ALLSURYOKBNL (IDX1))
+                   MOVE    SPA-GMN-ALLSURYOKBNLST (IDX1)
+                                       TO   SPA-GMN-ALLSURYOKBN-G
+                   MOVE    1           TO   FLG-OK
+                   MOVE    2           TO   IDX1
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF     (FLG-OK                  =   ZERO )
+               MOVE    "0018"              TO  SPA-ERRCD
+               MOVE    28                  TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       524-ALLSURYOKBNCHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    øÙŒÃ¥πªª√±∞Ã•≥°º•…•¡•ß•√•Ø
+      *****************************************************************
+       524-KANZANTANICDCHK-SEC     SECTION.
+      *
+           IF      SPA-GMN-KANZANTANICD   =   SPACE
+               GO  TO  524-KANZANTANICDCHK-EXT
+           END-IF
+      *
+           MOVE    ZERO                TO  FLG-OK
+      *
+      *     ¨Œ‡∂Ë ¨
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   SPA-GMN-KANZANTANICD-MAX )
+      *
+               IF    ( SPA-GMN-KANZANTANICD
+                                  =    SPA-GMN-KANZANTANICDL (IDX1))
+                   MOVE    SPA-GMN-KANZANTANICDLST (IDX1)
+                                       TO   SPA-GMN-KANZANTANICD-G
+                   MOVE    1           TO   FLG-OK
+                   MOVE    SPA-GMN-KANZANTANICD-MAX
+                                       TO   IDX1
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF     (SPA-GMN-KANZANTANICD-MAX    >   ZERO  )  AND
+                  (FLG-OK                  =   ZERO )
+               MOVE    "0019"              TO  SPA-ERRCD
+               MOVE    29                  TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       524-KANZANTANICDCHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥πªª√Õ•¡•ß•√•Ø
+      *****************************************************************
+       524-KANZANCHICHK-SEC        SECTION.
+      *
+           .
+       524-KANZANCHICHK-EXT.
+           EXIT.
+      * 
+      *****************************************************************
       *    ∑–≤·¡º√÷•≥°º•…•¡•ß•√•ØΩËÕ˝
       *****************************************************************
        524-CHNGCD-CHK-SEC             SECTION.
@@ -2335,7 +2494,7 @@
                       (SPA-NAI-KEIKASOCHIYMD
                                       NOT  =   SPA-NAI-YUKOEDYMD)
                    MOVE    "8002"              TO  SPA-ERRCD
-                   MOVE    30                  TO  SPA-GMN-CUR
+                   MOVE    31                  TO  SPA-GMN-CUR
                ELSE
       *            ≈¿øÙ•ﬁ•π•ø ‘Ω∏
                    INITIALIZE                      TNS-TENSU-REC
@@ -2359,11 +2518,11 @@
                        MOVE    TNS-NAME        TO  SPA-GMN-CHNGCDNAME
                        IF      TNS-YUKOEDYMD   <=  SPA-NAI-YUKOEDYMD
                            MOVE    "8001"          TO  SPA-ERRCD
-                           MOVE    30              TO  SPA-GMN-CUR
+                           MOVE    31              TO  SPA-GMN-CUR
                        END-IF
                    ELSE
                        MOVE    "8000"          TO  SPA-ERRCD
-                       MOVE    30              TO  SPA-GMN-CUR
+                       MOVE    31              TO  SPA-GMN-CUR
                    END-IF
                END-IF
            END-IF
@@ -2405,7 +2564,7 @@
            IF      FLG-SRYCDCHG        =   ZERO
                IF      CHG-IPNSRYCD    NOT =   SPA-Z01-SRYCD
                    MOVE    "8003"          TO  SPA-ERRCD
-                   MOVE    30              TO  SPA-GMN-CUR
+                   MOVE    31              TO  SPA-GMN-CUR
                END-IF
            END-IF
       *
@@ -2498,7 +2657,7 @@
            MOVE    ZERO                TO  IDX
            PERFORM VARYING IDXX    FROM    1   BY  1
       ************ UNTIL   IDXX    >       59
-                   UNTIL   IDXX    >       SPA-TANICD-MAX
+                   UNTIL   IDXX    >       SPA-GMN-TANICD-MAX
                IF      SPA-GMN-TANICDLST(IDXX)  NOT =   SPACE
                    ADD     1               TO  IDX
                    MOVE    SPA-GMN-TANICDLST(IDXX)
@@ -2565,6 +2724,31 @@
       *
            MOVE    SPA-GMN-CHNGCD      TO  Z04-CHNGCD
            MOVE    SPA-GMN-CHNGCDNAME  TO  Z04-CHNGENAME
+      *
+      *    ¡¥øÙŒÃµ≠∫‹∂Ë ¨
+           PERFORM VARYING IDXX    FROM    1   BY  1
+                   UNTIL   IDXX    >       2
+               MOVE    SPA-GMN-ALLSURYOKBNLST(IDXX)
+                                       TO  Z04-ALLSURYOKBNLST  (IDXX)
+           END-PERFORM
+           MOVE    2                   TO  Z04-ALLSURYOKBN-COUNT
+           MOVE    SPA-GMN-ALLSURYOKBN-G   TO  Z04-ALLSURYOKBN
+      *
+      *    øÙŒÃ¥πªª√±∞Ã•≥°º•…
+           MOVE    ZERO                TO  IDX
+           PERFORM VARYING IDXX    FROM    1   BY  1
+                   UNTIL   IDXX    >       SPA-GMN-KANZANTANICD-MAX
+               IF      SPA-GMN-KANZANTANICDLST(IDXX)  NOT =   SPACE
+                   ADD     1               TO  IDX
+                   MOVE    SPA-GMN-KANZANTANICDLST(IDXX)
+                                           TO  Z04-KANZANTANICDLST(IDX)
+                   MOVE    IDX             TO  Z04-KANZANTANICD-COUNT
+               END-IF
+           END-PERFORM
+           MOVE    SPA-GMN-KANZANTANICD-G  TO  Z04-KANZANTANICD
+      *
+      *    øÙŒÃ¥πªª√Õ
+           MOVE  SPA-GMN-KANZANCHI     TO  Z04-KANZANCHI
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -2636,7 +2820,13 @@
                       MOVE  "INPCHKKBN"        TO  MCP-WIDGET
                   WHEN   27
                       MOVE  "BUNRUIKBN"        TO  MCP-WIDGET
+                  WHEN   28
+                      MOVE  "ALLSURYOKBN"      TO  MCP-WIDGET
+                  WHEN   29
+                      MOVE  "KANZANTANICD"     TO  MCP-WIDGET
                   WHEN   30
+                      MOVE  "KANZANCHI"        TO  MCP-WIDGET
+                  WHEN   31
                       MOVE  "CHNGCD"           TO  MCP-WIDGET
                   WHEN   99
                       MOVE  "B12"              TO  MCP-WIDGET
@@ -2705,7 +2895,13 @@
                WHEN    "INPCHKKBN"
                    MOVE    27          TO  SPA-GMN-CUR
                WHEN    "BUNRUIKBN"
-                   MOVE    99          TO  SPA-GMN-CUR
+                   MOVE    28          TO  SPA-GMN-CUR
+               WHEN    "ALLSURYOKBN"
+                   MOVE    29          TO  SPA-GMN-CUR
+               WHEN    "KANZANTANICD"
+                   MOVE    30          TO  SPA-GMN-CUR
+               WHEN    "KANZANCHI"
+                   MOVE    31          TO  SPA-GMN-CUR
                WHEN    "CHNGCD"
                    MOVE    99          TO  SPA-GMN-CUR
            END-EVALUATE
@@ -2771,6 +2967,12 @@
                                                  TO  SPA-ERRMSG
                WHEN    "0017"
                    MOVE    " ¨Œ‡∂Ë ¨§¨§¢§Í§ﬁ§ª§Û"
+                                                 TO  SPA-ERRMSG
+               WHEN    "0018"
+                   MOVE    "µ≠∫‹∂Ë ¨§¨§¢§Í§ﬁ§ª§Û"
+                                                 TO  SPA-ERRMSG
+               WHEN    "0019"
+                   MOVE    "¥πªª√±∞Ã§¨§¢§Í§ﬁ§ª§Û"
                                                  TO  SPA-ERRMSG
       *
       *        ∞ ≤º∂¶ƒÃ

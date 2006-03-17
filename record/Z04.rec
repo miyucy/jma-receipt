@@ -137,6 +137,23 @@ Z04	{
 			count	int;
 			item	varchar(43)[20];
 		};
+		ALLSURYOKBN_COMBO	{
+			ALLSURYOKBN{
+				value	varchar(14);
+			};
+			count	int;
+			item	varchar(14)[2];
+		};
+		KANZANTANICD_COMBO	{
+			KANZANTANICD	{
+				value	varchar(14);
+			};
+			count	int;
+			item	varchar(14)[90];
+		};
+		KANZANCHI	{
+			value	number(10,5);
+		};
 		CHNGCD	{
 			value	varchar(9);
 		};

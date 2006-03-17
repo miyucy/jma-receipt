@@ -40,4 +40,12 @@
       *    分類区分
            03  ZS02-TENPUYAKKBN        PIC  X(02).
       *
+      *    全数量記載区分
+           03  ZS02-ALLSURYOKBN        PIC  X(01).
+      *    数量換算単位コード
+           03  ZS02-KANZANTANICD       PIC  X(03).
+      *    数量換算単位名称
+           03  ZS02-KANZANTANINAME     PIC  X(24).
+      *    数量換算値
+           03  ZS02-KANZANCHI          PIC  9(05)V9(05).
       *

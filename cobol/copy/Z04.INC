@@ -112,6 +112,18 @@
                   05  Z04-VALUE   PIC X(43).
                 04  Z04-BUNRUIKBN-COUNT   PIC S9(9)   BINARY.
                 04  Z04-BUNRUIKBNLST   PIC X(43)   OCCURS  20 TIMES.
+              03  Z04-ALLSURYOKBN-COMBO.
+                04  Z04-ALLSURYOKBN.
+                  05  Z04-VALUE   PIC X(14).
+                04  Z04-ALLSURYOKBN-COUNT   PIC S9(9)   BINARY.
+                04  Z04-ALLSURYOKBNLST   PIC X(14)   OCCURS  2 TIMES.
+              03  Z04-KANZANTANICD-COMBO.
+                04  Z04-KANZANTANICD.
+                  05  Z04-VALUE   PIC X(14).
+                04  Z04-KANZANTANICD-COUNT   PIC S9(9)   BINARY.
+                04  Z04-KANZANTANICDLST   PIC X(14)   OCCURS  90 TIMES.
+              03  Z04-KANZANCHI.
+                04  Z04-VALUE   PIC 9(5)V9(5).
               03  Z04-CHNGCD.
                 04  Z04-VALUE   PIC X(9).
               03  Z04-CHNGENAME.
