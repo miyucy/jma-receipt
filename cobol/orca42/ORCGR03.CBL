@@ -1254,8 +1254,7 @@
                IF      JOB-ENDYMD      =   SPACE
                    MOVE    "7777"          TO  SPA-ERRCD
                    MOVE    SPACE             TO  WRK-RECEERR
-                   STRING  "レセプト作成処理中です【"
-                                             DELIMITED  BY  SIZE
+                   STRING  "処理中です【"    DELIMITED  BY  SIZE
                            JOB-SHELLMSG      DELIMITED  BY  SPACE
                            "】"              DELIMITED  BY  SIZE      
                                              INTO  WRK-RECEERR
@@ -1303,7 +1302,7 @@
                IF      JOB-ENDYMD      =   SPACE
                    MOVE    "7777"          TO  SPA-ERRCD
                    MOVE    SPACE             TO  WRK-RECEERR
-                   STRING  "レセプト作成処理中です【"
+                   STRING  "処理中です【"
                                              DELIMITED  BY  SIZE
                            JOB-SHELLMSG      DELIMITED  BY  SPACE
                            "】"              DELIMITED  BY  SIZE      

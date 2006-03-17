@@ -574,7 +574,8 @@
                                                 TO  R99-MSG
                END-IF                                 
            ELSE
-               IF      JOB-STOPFLG          =   ZERO
+               IF    ( JOB-STOPFLG          =   ZERO  )
+               AND   ( SPA-R01-GMNKBN   NOT =   "R97" ) 
                    MOVE    WIDGET-NORMAL        TO  R99-B21-STATE
                END-IF
                MOVE    "B11"                TO  MCP-WIDGET

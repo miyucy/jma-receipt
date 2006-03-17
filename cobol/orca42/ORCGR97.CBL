@@ -864,6 +864,9 @@
       *        一括取得
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 450-TOUROKU-MAE-SEC
+      *    処理確認
+               WHEN    "CLICKED"       ALSO    "B13"
+                   PERFORM 490-KAKUNIN-SEC
            END-EVALUATE
       *
            .
@@ -1780,8 +1783,7 @@
                IF      JOB-ENDYMD      =   SPACE
                    MOVE    "7777"          TO  SPA-ERRCD
                    MOVE    SPACE             TO  WRK-RECEERR
-                   STRING  "レセプト作成処理中です【"
-                                             DELIMITED  BY  SIZE
+                   STRING  "処理中です【"    DELIMITED  BY  SIZE
                            JOB-SHELLMSG      DELIMITED  BY  SPACE
                            "】"              DELIMITED  BY  SIZE      
                                              INTO  WRK-RECEERR
@@ -2270,6 +2272,8 @@
                WHEN    "1002"
                    MOVE    "主科マスタが削除できませんでした"
                                                        TO  SPA-ERRMSG
+               WHEN    "7777"
+                   MOVE    WRK-RECEERR                 TO  SPA-ERRMSG
            END-EVALUATE
       *
            MOVE    SPACE                TO  RERR
