@@ -165,6 +165,7 @@
                05  WRK-JIHIMONEY           PIC  9(08).
       *    ≤ÛøÙ
            03  WRK-KAISU           PIC 9(08).
+           03  WRK-SRYSURYO       PIC 9(07)V9(03).
       *
            03  WRK-JYURRK-RENNUM           PIC 9(01).
            03  WRK-JYURRK-EDANUM           PIC 9(01).
@@ -1451,6 +1452,8 @@
                                                            "96" )
                        MOVE    LNK-WKSRY-SRYCD (IDX IDY)
                                                    TO  WRK-SRYCD
+                       MOVE    LNK-WKSRY-SRYSURYO (IDX IDY)
+                                                   TO  WRK-SRYSURYO
       *
                        MOVE    WRK-SRYCD           TO  TNS-SRYCD
                        PERFORM 910-TENSU-READ-SEC
@@ -1520,6 +1523,8 @@
                MOVE    SPA-TOKTEI-YMD  TO  SSANTEI-SYOKAIYMD
            END-IF
            MOVE    WRK-KAISU           TO  SSANTEI-KAISU
+      *    øÙŒÃ
+           MOVE    WRK-SRYSURYO        TO  SSANTEI-SRYSURYO
       *    ∆‚ ¨»Á…È≤ŸªÓ∏≥Õ—
            IF      LNK-WKSRYP-MSANTEITFLG(IDX)   =   1
                MOVE    LNK-WKSRYP-MSANTEITEN (IDX)
@@ -2288,6 +2293,7 @@
       *            •∑•π•∆•‡ÕΩÃÛ•≥°º•…
                    OR (SRY-SRYCD (IDY)(1:3)    =   "099")
                    MOVE    SRY-SRYCD (IDY)     TO  WRK-SRYCD
+                   MOVE    SRY-SRYSURYO (IDY)  TO  WRK-SRYSURYO
       *
                    MOVE    WRK-SRYCD           TO  TNS-SRYCD
                    PERFORM 910-TENSU-READ-SEC
@@ -2331,6 +2337,8 @@
            MOVE    SPA-PTID            TO  SSANTEI-PTID
            MOVE    SPA-SRYYMD          TO  SSANTEI-SRYYMD
            MOVE    WRK-KAISU           TO  SSANTEI-KAISU
+      *    øÙŒÃ
+           MOVE    WRK-SRYSURYO        TO  SSANTEI-SRYSURYO
       *    ø«Œ≈≤ 
            MOVE    SRY-SRYKA           TO  SSANTEI-SRYKA
       *     ›∏±∂Ë ¨§œ∆±§∏

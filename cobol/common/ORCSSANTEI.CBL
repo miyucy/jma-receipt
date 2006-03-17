@@ -123,6 +123,8 @@
       *
       *    保険別算定履歴テーブル
            COPY   "CMSANTEITBL.INC".
+      *    リハビリ同一算定コードテーブル
+           COPY   "CMRIHACDTBL.INC".
       *
       *    算定履歴
        01  WRK-SANTEI-REC.
@@ -208,6 +210,20 @@
            IF      SSANTEI-SRYSURYO    >   1
                COMPUTE SSANTEI-KAISU   =   SSANTEI-KAISU
                                        *   SSANTEI-SRYSURYO
+      *
+               PERFORM VARYING     IDX-Y2  FROM    1   BY  1
+                       UNTIL       IDX-Y2  >   31
+                   IF      SSANTEI-DAY (IDX-Y2)    >   ZERO
+                       COMPUTE SSANTEI-DAY (IDX-Y2)
+                                           =   SSANTEI-DAY (IDX-Y2)
+                                           *   SSANTEI-SRYSURYO
+                   END-IF
+                   IF      SSANTEI-MAE-DAY (IDX-Y2)    >   ZERO
+                       COMPUTE SSANTEI-MAE-DAY (IDX-Y2)
+                                           =   SSANTEI-MAE-DAY (IDX-Y2)
+                                           *   SSANTEI-SRYSURYO
+                   END-IF
+               END-PERFORM
            END-IF
       *
            EVALUATE    SSANTEI-SYORI
@@ -425,7 +441,7 @@
            PERFORM 910-TENSU-READ-SEC
            IF     (WRK-SRYCD (1:3)     =   "099"  )  OR
                  ((TNS-SRYKBN      NOT =   "70"   )
-            AND   (TNS-SRYSYUKBN   NOT =   "810"  ))
+            AND   (TNS-SRYKBN      NOT =   "80"   ))
                CONTINUE
            ELSE
       *        ＣＴ、ＭＲＩの時算定のコードを置換える
@@ -511,11 +527,17 @@
            END-EVALUATE
       *
       *    リハビリテーション（H18/4から）
-           EVALUATE    TNS-SRYSYUKBN
-      *        頭部
-               WHEN    "810"
-                   MOVE    "099800201"         TO  WRK-SRYCD
-           END-EVALUATE
+           SET     TBL-RIH             TO  1
+           SEARCH  TBL-RIHABIRI-OCC    VARYING   TBL-RIH
+                   AT  END
+                       MOVE    ZERO            TO  FLG-RIHA-OK
+                   WHEN    WRK-SRYCD       =   TBL-RIHA-SRYCD
+                                                           (TBL-RIH)
+                       MOVE    1               TO  FLG-RIHA-OK
+           END-SEARCH
+           IF      FLG-RIHA-OK         =   1
+               MOVE    "099800201"         TO  WRK-SRYCD
+           END-IF
            .
        10010-SANTEI-SRYCD-EXT.
            EXIT.

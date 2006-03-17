@@ -364,7 +364,7 @@
                    "粉砕は内服以外は入力できません"
                                        TO  SPA-ERRMSG
                WHEN    "2062"
-                   MOVE    "用法割合は投薬で入力して下さい。"
+                   MOVE    "用量割合は投薬で入力して下さい。"
                                        TO  SPA-ERRMSG
                WHEN    "0063"
                    MOVE
@@ -1013,6 +1013,46 @@
                    STRING  "当日に初診の算定がありません。"
                                                DELIMITED  BY  SIZE
                            "同日初診は算定できません。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "8027"
+                   STRING  "リハビリテーション料が"
+                                               DELIMITED  BY  SIZE
+                           "１日９単位以上になります。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "K827"
+                   STRING  "警告！１日６単位以上になります。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "K831"
+                   STRING  "警告！心大血管疾患リハビリテーション"
+                                               DELIMITED  BY  SIZE
+                           "発生日から１５０日以上です。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "K832"
+                   STRING  "警告！脳血管疾患リハビリテーション"
+                                               DELIMITED  BY  SIZE
+                           "発生日から１８０日以上です。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "K833"
+                   STRING  "警告！運動器リハビリテーション"
+                                               DELIMITED  BY  SIZE
+                           "発生日から１５０日以上です。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "K834"
+                   STRING  "警告！呼吸器リハビリテーション"
+                                               DELIMITED  BY  SIZE
+                           "発生日から９０日以上です。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING

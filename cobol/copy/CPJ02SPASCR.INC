@@ -94,4 +94,6 @@
                        09  SPA-NAI-JGNCNTERR       PIC  9(01).
       *                ∆‚ ¨»Á…È≤ŸªÓ∏≥»ΩƒÍ
                        09  SPA-NAI-HOUKNSKBN       PIC  9(02).
+      *                ∆‚øÙŒÃ
+                       09  SPA-NAI-TSURYO          PIC  9(05).
       *

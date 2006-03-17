@@ -482,6 +482,7 @@
            03  WRK-REN                 PIC 9(01).
       *    回数
            03  WRK-CNT-TUKI            PIC 9(03).
+           03  WRK-DAYCNT              PIC 9(03).
       *
        01  TBL-GRP-AREA.
            03  TBL-GRP-OCC             OCCURS   10.
@@ -2683,7 +2684,8 @@
       *
       *    撮影回数（フィルムなしの場合）
            IF     (SRY-SRYCD  (IDZ)(1:1)   =   "1" )  AND
-                  (SRY-AUTOKBN(IDZ)        =   "S" )  AND
+                  (SRY-AUTOKBN(IDZ)        =   "S"
+                                           OR  "4"  )  AND
                   (SRY-SRYSURYO (IDZ)      >   1   )
                MOVE    SRY-SRYSURYO (IDZ)  TO  WRK-SURYO
                PERFORM 310121-SURYO-HEN-SEC
@@ -2737,6 +2739,8 @@
                MOVE    TNS-JGNCNTERR       TO  SPA-NAI-JGNCNTERR (IDX)
       *        内分泌負荷試験判定
                MOVE    TNS-HOUKNSKBN       TO  SPA-NAI-HOUKNSKBN (IDX)
+      *        数量
+               MOVE    SRY-SRYSURYO(IDZ)   TO  SPA-NAI-TSURYO (IDX)
            END-IF
       *
       *    コメント以外の最終行セット
@@ -8076,7 +8080,9 @@
       *    日上限
            IF     (SPA-NAI-JGNCNT1D (IDX-C)    >   ZERO  )  AND
                   (SPA-NAI-JGNCNTERR (IDX-C)   NOT =   9 )
-               IF      SPA-GMN-DAY (IDX)   >   SPA-NAI-JGNCNT1D (IDX-C)
+               COMPUTE WRK-DAYCNT          =   SPA-NAI-TSURYO (IDX-C)
+                                           *   SPA-GMN-DAY (IDX)
+               IF      WRK-DAYCNT          >   SPA-NAI-JGNCNT1D (IDX-C)
                    IF      SPA-NAI-KEIFLG      =   ZERO
                        MOVE    "K004"              TO  SPA-ERRCD
                        MOVE    1                   TO  SPA-NAI-KEIFLG
@@ -10032,6 +10038,10 @@
            MOVE    ZERO                TO  SSANTEI-MSANTEICNT
       *    保険組合せ
            MOVE    ACCT-HKNCOMBI       TO  SPA-HKNCOMBINUM
+      *    数量
+           IF      SRY-SRYSURYO(IDZ)   >   ZERO
+               MOVE    SRY-SRYSURYO(IDZ)   TO  SSANTEI-SRYSURYO
+           END-IF
       *!   保険内容編集
       *!   MOVE    SPA-HKNCOMBINUM     TO  WRK-HKNCOMBI
       *!   PERFORM 510-HKNCOMBI-MEI-SEC

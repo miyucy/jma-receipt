@@ -271,6 +271,9 @@
       *
        01  WRK-SYSTIME               PIC 9(08).
       *
+      *    リハビリ同一算定コードテーブル
+           COPY   "CMRIHACDTBL.INC".
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -4510,11 +4513,20 @@
                                                              (IDX-TEI)
                            MOVE    WRK-ZAIKAISU    TO  SPA-K02-TEI-KAISU
                                                              (IDX-TEI)
+                           IF     (TNS-SANTEIRRKKBN NOT =   ZERO )
+                           AND    (TNS-SRYCD (1:1)      =   "1"  )
+                               IF     SRY-SRYSURYO(IDX)   >   1
+                                   COMPUTE SPA-K02-TEI-KAISU (IDX-TEI)
+                                                   =   SRY-SRYSURYO(IDX)
+                                                   *   WRK-ZAIKAISU
+                               END-IF
+                           END-IF
                        END-IF
                    END-IF
       *            ＣＴ・ＭＲＩの時、コード変更
-                   IF      TNS-SRYSYUKBN   =   "723"  OR  "724"
-                                           OR  "713"  OR  "714"
+                   IF     (TNS-SRYSYUKBN   =   "723"  OR  "724"
+                                           OR  "713"  OR  "714")
+                     OR   (TNS-SRYKBN      =   "80"         )
                        PERFORM 490111-CTMRT-HEN-SEC
                    END-IF
                END-IF
@@ -4547,6 +4559,23 @@
                WHEN    "203"
                    MOVE    "099700103"        TO  WRK-HEN-SRYCD
            END-EVALUATE
+      *    リハビリ
+           IF     (SRY-SRYCD (IDX)(1:1)    =   "1"   )  AND
+                  (TNS-SRYKBN              =   "80"  )  AND
+                  (TNS-DATAKBN             =   "1"   )  AND
+                  (TNS-SANTEIRRKKBN    NOT =   ZERO )
+               SET     TBL-RIH             TO  1
+               SEARCH  TBL-RIHABIRI-OCC    VARYING   TBL-RIH
+                   AT  END
+                       MOVE    ZERO            TO  FLG-RIHA-OK
+                   WHEN    SRY-SRYCD (IDX)     =   TBL-RIHA-SRYCD
+                                                           (TBL-RIH)
+                       MOVE    1               TO  FLG-RIHA-OK
+               END-SEARCH 
+               IF      FLG-RIHA-OK         =   1
+                   MOVE    "099800201"         TO  WRK-HEN-SRYCD
+               END-IF
+           END-IF
       *
            IF      WRK-HEN-SRYCD   NOT =   SPACE
                IF      TNS-SANTEIRRKKBN        =   ZERO
@@ -4555,8 +4584,9 @@
                IF      IDX-TEI             <=  200
                   MOVE    WRK-HEN-SRYCD       TO  SPA-K02-TEI-SRYCD
                                                             (IDX-TEI)
-                   MOVE    WRK-ZAIKAISU        TO  SPA-K02-TEI-KAISU
-                                                            (IDX-TEI)
+                  COMPUTE SPA-K02-TEI-KAISU (IDX-TEI)
+                                               =   SRY-SRYSURYO(IDX)
+                                               *   WRK-ZAIKAISU
                END-IF
            END-IF
       *

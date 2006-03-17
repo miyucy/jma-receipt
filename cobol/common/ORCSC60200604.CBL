@@ -3722,7 +3722,7 @@
            ELSE
                IF     (LNK-SC91-DAYCNT +   WRK-KENTAI2-CNT)
                                            >   5
-                   COMPUTE WRK-KENTAI2-CNT =   WRK-KENTAI2-CNT
+                   COMPUTE WRK-KENTAI2-CNT =   5
                                            -   LNK-SC91-DAYCNT
                END-IF
            END-IF
@@ -3731,7 +3731,7 @@
       *TEST
       *    入力にないとき、検査数で自動発生
            IF      FLG-INPUT           =   ZERO
-               MOVE    WRK-SCR-REC         TO  HZN-SCR-REC
+      ******** MOVE    WRK-SCR-REC         TO  HZN-SCR-REC
       *        点数マスタ編集・基本チェック
                INITIALIZE                  ORCSC92AREA
                MOVE    "2"                 TO  LNK-SC92-KBN

@@ -188,6 +188,8 @@
       *
       *    保険別算定履歴テーブル
            COPY   "CMSANTEITBL.INC".
+      *    リハビリ同一算定コードテーブル
+           COPY   "CMRIHACDTBL.INC".
       *
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
@@ -262,24 +264,26 @@
            IF      TNS-SANTEIRRKKBN    =   ZERO
                GO      TO      000-PROC-EXT
            END-IF
-      *TEST
-           DISPLAY "LNK-SC91-SRYCD:" LNK-SC91-SRYCD
-                  ",TNS-SRYSYUKBN:" TNS-SRYSYUKBN
-      *TEST
       *    リハビリチェック（H18.4)
            IF     (LNK-SC91-SRYCD(1:1) =   "1" )  AND
-                  (TNS-SRYSYUKBN       =   "810" )
-               MOVE    "099800201"          TO  LNK-SC91-SRYCD
-               MOVE    LNK-SC91-SRYCD      TO  TNS-SRYCD
-               PERFORM 910-TENSU-READ-SEC
-               IF      FLG-TENSU           =   1
-                   MOVE    "0001"              TO  LNK-SC91-ERRCD
-                   GO      TO      000-PROC-EXT
+                  (TNS-SRYKBN          =   "80" )
+               SET     TBL-RIH             TO  1
+               SEARCH  TBL-RIHABIRI-OCC    VARYING   TBL-RIH
+                   AT  END
+                       MOVE    ZERO            TO  FLG-RIHA-OK
+                   WHEN    LNK-SC91-SRYCD      =   TBL-RIHA-SRYCD
+                                                           (TBL-RIH)
+                       MOVE    1               TO  FLG-RIHA-OK
+               END-SEARCH 
+               IF      FLG-RIHA-OK         =   1
+                   MOVE    "099800201"         TO  LNK-SC91-SRYCD
+                   MOVE    LNK-SC91-SRYCD      TO  TNS-SRYCD
+                   PERFORM 910-TENSU-READ-SEC
+                   IF      FLG-TENSU           =   1
+                       MOVE    "0001"              TO  LNK-SC91-ERRCD
+                       GO      TO      000-PROC-EXT
+                   END-IF
                END-IF
-      *TEST
-           DISPLAY "2 LNK-SC91-SRYCD:" LNK-SC91-SRYCD
-                  ",LNK-SC91-KAISU:" LNK-SC91-KAISU
-      *TEST
            END-IF
       *
       *    K02,K02NYUの場合のみとする（薬剤情報提供料チェックの為）
