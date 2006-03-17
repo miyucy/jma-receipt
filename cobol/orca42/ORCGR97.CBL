@@ -436,9 +436,10 @@
        300-SCREEN-SEC              SECTION.
       *
            EVALUATE    SPA-MOTOPG
-      *    作表処理
                WHEN    "RID1"
                    PERFORM 330-RID1-SET-SEC
+                   GO      TO      300-SCREEN-EXT
+               WHEN    "R99"
                    GO      TO      300-SCREEN-EXT
            END-EVALUATE
       *
@@ -1724,6 +1725,10 @@
       *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
+      *    
+           MOVE    SPACE               TO  SPA-R01-GMNKBN
+      *
+           MOVE    SPA-R01KYOUTU       TO  SPA-WORK       
       *
            MOVE    "R03"               TO  SPA-SAKIPG
            MOVE    "R97"               TO  SPA-MOTOPG
@@ -1735,7 +1740,7 @@
            MOVE    1                   TO  FLG-END
       *
            .
-       210-BACK-SYORI-EXT.
+       210-BACK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1743,15 +1748,13 @@
       *****************************************************************
        450-TOUROKU-MAE-SEC                SECTION.
       *
-           GO  TO  450-TOUROKU-MAE-EXT
-      *
       *    ジョブ管理チェック処理
            PERFORM 4501-JOBKANRI-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO  TO  450-TOUROKU-MAE-EXT
            END-IF    
       *
-           MOVE    "1001"              TO  SPA-RIDCD
+           MOVE    "1002"              TO  SPA-RIDCD
            .
        450-TOUROKU-MAE-EXT.
            EXIT.
@@ -1824,15 +1827,21 @@
            MOVE    SPACE           TO  SHELLTBL
       *    ファイルデイレクトリ位置指定
            INITIALIZE              ORCSMKPASSAREA
-           MOVE    "recept12.sh"
+           MOVE    "recept50.sh"
                                    TO  WRK-SHELL-SHELL
            MOVE    WRK-SHELL-NAME  TO  MKPASS-IN-01
            CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
            MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
       *             
-           MOVE    SPA-NAI-SRYYM   TO  SHELLTBL-ARG1
-           MOVE    SPA-GMN-NYUGAIKBN
+           MOVE    WRK-CONS-JOB-JOBID
+                                   TO  SHELLTBL-ARG1
+           MOVE    WRK-CONS-JOB-SHELLID
                                    TO  SHELLTBL-ARG2
+           MOVE    SPA-HOSPID      TO  SHELLTBL-ARG3
+           MOVE    SPA-NAI-SRYYM   TO  SHELLTBL-ARG4
+           MOVE    SPA-GMN-NYUGAIKBN
+                                   TO  SHELLTBL-ARG5
+           MOVE    SPA-PREFNUM     TO  SHELLTBL-ARG6
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
@@ -1850,6 +1859,9 @@
       *    処理確認処理
       *****************************************************************
        490-KAKUNIN-SEC            SECTION.
+      *                                     
+      *    画面移行用のパラメタ
+           PERFORM 45011-PARA-HENSYU-SEC
       *
            MOVE    SPACE               TO  R99
            MOVE    ZERO                TO  R99-COUNT
@@ -1931,6 +1943,19 @@
            MOVE    1                    TO  FLG-END
            .
        490-KAKUNIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面移行用のパラメタ変更処理
+      *****************************************************************
+       45011-PARA-HENSYU-SEC            SECTION.       
+      *    
+           MOVE    "R97"               TO  SPA-R01-GMNKBN
+      *
+           MOVE    SPA-R01KYOUTU       TO  SPA-WORK       
+      *
+           .
+       45011-PARA-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2287,7 +2312,7 @@
            MOVE    SPA-RIDCD            TO  RID1-ID1CODE
            MOVE    WRK-RIDMSG           TO  RID1-ID1MSG
            EVALUATE    SPA-RIDCD
-               WHEN    "1003"
+               WHEN    "1002"
                    MOVE    "戻る"       TO  RID1-B01-LABEL
                WHEN    "1001"
                    MOVE    "ＮＯ"       TO  RID1-B01-LABEL

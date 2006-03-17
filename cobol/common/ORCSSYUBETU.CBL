@@ -293,12 +293,12 @@
       *****************************************************************
        000-PROC-SEC                 SECTION.
       *??
-           DISPLAY "HOSPID   =" LNK-SYUBETU-HOSPID
-           DISPLAY "PREFNUM  =" LNK-SYUBETU-PREFNUM
-           DISPLAY "SRYYM    =" LNK-SYUBETU-SRYYM
-           DISPLAY "NYUGAIKBN=" LNK-SYUBETU-NYUGAIKBN
-           DISPLAY "PTID     =" LNK-SYUBETU-PTID
-           DISPLAY "BIRTHDAY =" LNK-SYUBETU-BIRTHDAY
+      *     DISPLAY "HOSPID   =" LNK-SYUBETU-HOSPID
+      *     DISPLAY "PREFNUM  =" LNK-SYUBETU-PREFNUM
+      *     DISPLAY "SRYYM    =" LNK-SYUBETU-SRYYM
+      *     DISPLAY "NYUGAIKBN=" LNK-SYUBETU-NYUGAIKBN
+      *     DISPLAY "PTID     =" LNK-SYUBETU-PTID
+      *     DISPLAY "BIRTHDAY =" LNK-SYUBETU-BIRTHDAY
       *
            PERFORM 100-INIT-SEC
       *
@@ -306,15 +306,15 @@
       *
            PERFORM 300-END-SEC
       *??
-           DISPLAY "LNK-SYUBETU-RC=" LNK-SYUBETU-RC
-           PERFORM VARYING IDX FROM 1 BY  1
-                   UNTIL   IDX >    100
-                   OR  LNK-SYUBETU-TEISYUTUSAKI (IDX) =   ZERO
-              DISPLAY "IDX=" IDX " " LNK-SYUBETU-TEISYUTUSAKI (IDX) "#"
-                                     LNK-SYUBETU-RECESYUBETU (IDX) "#"
-                                     LNK-SYUBETU-HKNJANUM (IDX) "#"
-                                     LNK-SYUBETU-HKNCOMBI-AREA (IDX)
-           END-PERFORM
+      *     DISPLAY "LNK-SYUBETU-RC=" LNK-SYUBETU-RC
+      *     PERFORM VARYING IDX FROM 1 BY  1
+      *             UNTIL   IDX >    100
+      *             OR  LNK-SYUBETU-TEISYUTUSAKI (IDX) =   ZERO
+      *        DISPLAY "IDX=" IDX " " LNK-SYUBETU-TEISYUTUSAKI (IDX) "#"
+      *                               LNK-SYUBETU-RECESYUBETU (IDX) "#"
+      *                               LNK-SYUBETU-HKNJANUM (IDX) "#"
+      *                               LNK-SYUBETU-HKNCOMBI-AREA (IDX)
+      *     END-PERFORM
       *??
            .
        000-PROC-EXT.
@@ -371,7 +371,7 @@
                GO  TO  100-INIT-EXT
            END-IF
       *??
-           DISPLAY "AGE       =" WRK-NENREI
+      *     DISPLAY "AGE       =" WRK-NENREI
       *??
       *     
       *    レセプト編集区分情報
@@ -1672,12 +1672,6 @@
                END-IF
            END-IF    
       *
-      *??          
-           DISPLAY "HONKZKKBN="  WK-HONKZKKBN
-                   " NYUGAIKBN="  LNK-SYUBETU-NYUGAIKBN
-                   " IHO=" WK-IHO " WK-KOKUHO=" WK-KOKUHO
-                   " WK-RJN=" WK-RJN " CNT=" WK-KOHI-CNT " "
-      *??          
       *    平成１４年１０月改正対応
            EVALUATE  WK-HONKZKKBN ALSO LNK-SYUBETU-NYUGAIKBN   ALSO
                     WK-IHO ALSO WK-KOKUHO ALSO WK-RJN ALSO WK-KOHI-CNT
@@ -2069,7 +2063,7 @@
                MOVE    "0000"        TO  LNK-SYUBETU-RECESYUBETU(IDXX)
            END-IF
       *??
-           DISPLAY "SYUBETU=" LNK-SYUBETU-RECESYUBETU(IDXX) 
+      *     DISPLAY "SYUBETU=" LNK-SYUBETU-RECESYUBETU(IDXX) 
       *??          
            .
         30011-RECESYUBETU-SET-EXT.

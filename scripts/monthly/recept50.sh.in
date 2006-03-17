@@ -1,0 +1,33 @@
+#!/bin/sh
+
+if test -z "$JMARECEIPT_ENV" ; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
+. $JMARECEIPT_ENV
+
+#-------------------------------------------#
+#    主科情報一括取得処理
+#        $1 JOBID 
+#        $2 SHELLID
+#        $3 HOSPID
+#        $4 SRYYM
+#        $5 NYUGAIKBN
+#        $6 PREFNUM
+#-------------------------------------------#
+
+
+##  エラーファイル削除
+	echo $#
+
+#   主科情報一括取得
+
+    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCRSYUKA01 -parameter ${1},${2},${3},${4},${5},${6} > /home/orca/recept50.log
+        
+
+    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${1}${2} >> /home/orca/recept50.log
+
+    exit 

@@ -358,7 +358,11 @@
                    MOVE    "F12:プレビュー"    TO  R99-B12-LABEL
                END-IF
            ELSE
-               MOVE    "F12:印    刷"      TO  R99-B12-LABEL
+               IF      SPA-R01-GMNKBN  =   "R97"
+                   CONTINUE
+               ELSE
+                   MOVE    "F12:印    刷"      TO  R99-B12-LABEL
+               END-IF
            END-IF
       *
       *    中止ボタン状態フラグによる中止フラグのセット
@@ -456,6 +460,7 @@
                ELSE
                    IF      JOB-ERRCD       =   SPACE
                        IF      SPA-R01-GMNKBN  =   "R02"   OR  "R04"
+                                               OR  "R97"
                            CONTINUE
                        ELSE
                            IF      JOB-UPDCNT      =   ZERO    
@@ -551,6 +556,9 @@
                            MOVE    "B01"            TO  MCP-WIDGET
                        END-IF
                    ELSE
+                     IF      SPA-R01-GMNKBN  =   "R97"
+                         MOVE    "B01"                TO  MCP-WIDGET
+                     ELSE
                        MOVE    WIDGET-NORMAL        TO  R99-B12-STATE
                        MOVE    "B12"                TO  MCP-WIDGET
                        IF      SPA-R01-AUTODSPKBN   =   "1"
@@ -558,6 +566,7 @@
                            PERFORM 4501-NEXT-GMN-SEC
                            GO  TO  490-KAKUNIN-EXT
                        END-IF
+                     END-IF 
                    END-IF 
                ELSE
                    MOVE    "B01"                TO  MCP-WIDGET
