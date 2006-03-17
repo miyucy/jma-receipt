@@ -1142,7 +1142,8 @@
            INITIALIZE                      SYSKANRI-REC
            MOVE    "5000"              TO  SYS-KANRICD
            MOVE    "*"                 TO  SYS-KBNCD
-           PERFORM 900-SYSKANRI-KEY8-SEL-SEC
+           MOVE    SPA-W01-STYUKYMD    TO  SYS-STYUKYMD
+           PERFORM 900-SYSKANRI-KEY16-SEL-SEC
            MOVE    MCPDATA-REC         TO  SYS-5000-REC
            .
       *
@@ -3974,8 +3975,7 @@
                 AND  ( CONST-H180401  <=  SPA-W01-EDYUKYMD )
                    MOVE    SPA-W01-EDYUKYMD    TO  WRK-EDYUKYMD
                    MOVE    20060331            TO  SPA-W01-EDYUKYMD
-                   PERFORM 310-CMB-SYOKI-SEC
-                   PERFORM 4201-INPUT-AREA-INIT-SEC
+                   PERFORM 3101-SPASET-SEC
                    PERFORM 4811-HOSP-NYUINKHN-EDIT-SEC
       *
                    PERFORM 800-MCNDATE-SEC
@@ -4096,15 +4096,15 @@
        900-SYSKANRI-KEY10-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    システム管理検索処理(KEY8)
+      *    システム管理検索処理(KEY16)
       *****************************************************************
-       900-SYSKANRI-KEY8-SEL-SEC       SECTION.
+       900-SYSKANRI-KEY16-SEL-SEC       SECTION.
       *
            MOVE    ZERO                TO  FLG-SYSKANRI
       *
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key8"              TO  MCP-PATHNAME
+           MOVE    "key16"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  SYSKANRI-REC
@@ -4114,11 +4114,11 @@
            END-IF
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key8"              TO  MCP-PATHNAME
+           MOVE    "key16"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
-       900-SYSKANRI-KEY8-SEL-EXT.
+       900-SYSKANRI-KEY16-SEL-EXT.
            EXIT.
       *****************************************************************
       *    点数マスタ検索処理
