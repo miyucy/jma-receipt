@@ -3925,48 +3925,47 @@
                            DISPLAY "1:DBUPDATE ERR"
                        END-IF
       *
-                       IF    ( CONST-H180401  <=   SPA-W01-SEL-EDYUKYMD)
-      *
-                           MOVE    SPA-W01-SELNUM  TO  WRK-SELNUM
-                           MOVE    SPA-W01-SEL-STYUKYMD
+                       MOVE    SPA-W01-STYUKYMD    TO  WRK-STYUKYMD
+                       MOVE    SPA-W01-SELNUM      TO  WRK-SELNUM
+                       MOVE    SPA-W01-SEL-STYUKYMD
                                                    TO  WRK-SEL-STYUKYMD
-                           MOVE    SPA-W01-SEL-EDYUKYMD
-                                                   TO  WRK-SEL-EDYUKYMD
       *
-                           INITIALIZE              SPA-W01-SELNUM
+                       INITIALIZE                  SPA-W01-SELNUM
                                                    SPA-W01-SEL-STYUKYMD
                                                    SPA-W01-SEL-EDYUKYMD
       *
-                           MOVE    CONST-H180401   TO  SPA-W01-STYUKYMD
-                           MOVE    WRK-EDYUKYMD    TO  SPA-W01-EDYUKYMD
-                           PERFORM 3101-SPASET-SEC
-                           PERFORM 4811-HOSP-NYUINKHN-EDIT-SEC
+                       MOVE    CONST-H180401       TO  SPA-W01-STYUKYMD
+                       PERFORM 3101-SPASET-SEC
+                       PERFORM 4811-HOSP-NYUINKHN-EDIT-SEC
       *
-                           PERFORM 800-MCNDATE-SEC
-                           MOVE    SMCNDATE-YMD    TO  SYS-5000-CREYMD
+                       PERFORM 800-MCNDATE-SEC
+                       MOVE    SMCNDATE-YMD        TO  SYS-5000-CREYMD
                                                        SYS-5000-UPYMD
-                           MOVE    SMCNDATE-HMS    TO  SYS-5000-UPHMS
+                       MOVE    SMCNDATE-HMS        TO  SYS-5000-UPHMS
       *
-                           MOVE    SYS-5000-REC    TO  SYSKANRI-REC
-                           MOVE    SYSKANRI-REC    TO  MCPDATA-REC
-                           MOVE    "tbl_syskanri"  TO  MCP-TABLE
-                           MOVE    "key"           TO  MCP-PATHNAME
-                           PERFORM 910-DBINSERT-SEC
-                           IF    ( MCP-RC  NOT =   ZERO )
-                               DISPLAY "2:DBINSERT ERR"
-                           END-IF
-                           MOVE    WRK-SELNUM  TO  SPA-W01-SELNUM
-                           MOVE    WRK-SEL-STYUKYMD
-                                               TO  SPA-W01-SEL-STYUKYMD
-                           MOVE    WRK-SEL-EDYUKYMD
-                                               TO  SPA-W01-SEL-EDYUKYMD
+                       MOVE    SYS-5000-REC    TO  SYSKANRI-REC
+                       MOVE    SYSKANRI-REC    TO  MCPDATA-REC
+                       MOVE    "tbl_syskanri"  TO  MCP-TABLE
+                       MOVE    "key"           TO  MCP-PATHNAME
+                       PERFORM 910-DBINSERT-SEC
+                       IF    ( MCP-RC  NOT =   ZERO )
+                           DISPLAY "2:DBINSERT ERR"
                        END-IF
+                       MOVE    WRK-SELNUM      TO  SPA-W01-SELNUM
+                       MOVE    WRK-STYUKYMD    TO  SPA-W01-STYUKYMD
+                       MOVE    WRK-SEL-STYUKYMD
+                                               TO  SPA-W01-SEL-STYUKYMD
       *
                        MOVE    20060331        TO  SPA-W01-SEL-EDYUKYMD
                                                    SPA-W01-EDYUKYMD
+      *
+                       MOVE    SPA-W01-STYUKYMD    TO  WRK-YMD
+                       PERFORM 800-SEIWA-HEN-SEC
+                       MOVE    WRK-HENYMDG TO  SPA-W01-STYUKYMDH
+      *
                        MOVE    SPA-W01-EDYUKYMD    TO  WRK-YMD
                        PERFORM 800-SEIWA-HEN-SEC
-                       MOVE    WRK-HENYMDG     TO  SPA-W01-EDYUKYMDH
+                       MOVE    WRK-HENYMDG TO  SPA-W01-EDYUKYMDH
       *
                    END-IF
                END-IF
