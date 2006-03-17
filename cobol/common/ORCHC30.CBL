@@ -843,6 +843,9 @@
        242-HENNAIYO-SURYO-SET-SEC  SECTION.
       *
       *----(02.01.06)--UPD-START---
+      *    全数量
+           COMPUTE WRK-SURYO   =   ORCHC30-SURYO(CNT-PARA)
+                               *   ORCHC30-KAISU(CNT-PARA)
            MOVE   TNS-TANINAME     TO  WRK-TANINAME
       *
       *    換算単位があれば変換
@@ -871,11 +874,10 @@
            END-IF
       *
       *    換算値で数量を割る
-           COMPUTE WRK-WARI    =   ORCHC30-SURYO(CNT-PARA)
+           COMPUTE WRK-WARI    =   WRK-SURYO
                                /   TNSP-KANZANCHI
       *    割り切れなければ処理抜ける
-           IF      ORCHC30-SURYO(CNT-PARA)
-                           NOT = ( WRK-WARI    *   TNSP-KANZANCHI )
+           IF      WRK-SURYO   NOT = ( WRK-WARI    *   TNSP-KANZANCHI )
                GO  TO  242-HENNAIYO-KANZAN-SET-EXT
            END-IF
       *
@@ -904,7 +906,7 @@
            PERFORM 241-HENNAIYO-SET-SEC
       *
       *    全数数量＆単位セット
-           MOVE    WRK-WARI            TO  ORCHC30-SURYO(CNT-PARA)
+           MOVE    WRK-WARI            TO  WRK-SURYO
            MOVE    TNSP-KANZANTANINAME TO  WRK-TANINAME
       *
            .
@@ -916,9 +918,6 @@
       *****************************************************************
        242-HENNAIYO-ZENSU-SET-SEC  SECTION.
       *
-      *    全数量
-           COMPUTE WRK-SURYO   =   ORCHC30-SURYO(CNT-PARA)
-                               *   ORCHC30-KAISU(CNT-PARA)
       *    数量Ｚ編集
            PERFORM 250-ZHEN-SURYO-SET-SEC
       *
@@ -958,6 +957,19 @@
                COMPUTE ORCHC30-SURYO(CNT-PARA)
                            = ( ORCHC30-SURYO(CNT-PARA)
                            /   ORCHC30-SRYKAISU(CNT-PARA))
+           END-IF
+      *
+      *    換算値があれば割る
+           IF      TNSP-KANZANCHI  >   ZERO
+               COMPUTE WRK-WARI    =   ORCHC30-SURYO(CNT-PARA)
+                                   /   TNSP-KANZANCHI
+      *        割り切れなければ処理抜ける
+               IF      ORCHC30-SURYO(CNT-PARA)
+                       NOT = ( WRK-WARI    *   TNSP-KANZANCHI )
+                   GO  TO  243-HENKBN-SET-EXT
+               ELSE
+                   MOVE    WRK-WARI    TO  ORCHC30-SURYO(CNT-PARA)
+               END-IF
            END-IF
       *
       *    用量コード設定分セット
