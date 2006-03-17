@@ -843,50 +843,82 @@
        242-HENNAIYO-SURYO-SET-SEC  SECTION.
       *
       *----(02.01.06)--UPD-START---
-           COMPUTE WRK-SURYO   =   ORCHC30-SURYO(CNT-PARA)
-                               *   ORCHC30-KAISU(CNT-PARA)
            MOVE   TNS-TANINAME     TO  WRK-TANINAME
       *
-      *    変換単位があれば全数表示
+      *    換算単位があれば変換
            IF    ( TNSP-KANZANTANICD   NOT =   SPACE ) AND
                  ( TNSP-KANZANTANICD   NOT =   "000" )
-               IF      TNSP-KANZANCHI  =   0
-                   MOVE    TNSP-KANZANTANINAME TO  WRK-TANINAME
-               ELSE
-                   COMPUTE WRK-WARI    =   WRK-SURYO
-                                       /   TNSP-KANZANCHI
-      *            割り切れれば全数表示へ
-                   IF      WRK-SURYO   = ( WRK-WARI
-                                       *   TNSP-KANZANCHI )
-                       MOVE    ORCHC30-SURYO(CNT-PARA) TO  WRK-SURYO
-      *                数量Ｚ編集
-                       PERFORM 250-ZHEN-SURYO-SET-SEC
-      *
-      *                全角変換
-                       MOVE    SPACE           TO  ORCSKANACHKAREA
-                       INITIALIZE                  ORCSKANACHKAREA
-                       MOVE    "2"             TO  KANACHK-SYORI
-                       MOVE    WRK-HENSURYO    TO  KANACHK-MAE-INPUT
-                       CALL    "ORCSKANACHK"       USING
-                                                   ORCSKANACHKAREA
-      *                １日分数量文字セット
-                       MOVE    SPACE       TO  WRK-HENNAIYO
-                       STRING  "（"            DELIMITED  BY  SIZE
-                               KANACHK-OUT-INPUT(1:KANACHK-MAX)
-                                               DELIMITED  BY  SIZE
-                               TNS-TANINAME    DELIMITED  BY  SPACE
-                               "）"            DELIMITED  BY  SIZE
-                                               INTO    WRK-HENNAIYO
-                       END-STRING
-                       PERFORM 241-HENNAIYO-SET-SEC
-      *                全数数量＆単位セット
-                       MOVE    WRK-WARI            TO  WRK-SURYO
-                       MOVE    TNSP-KANZANTANINAME TO  WRK-TANINAME
-                   END-IF
-               END-IF
+               PERFORM 242-HENNAIYO-KANZAN-SET-SEC
            END-IF
-      *----(02.01.06)--ADD-END-----
       *
+      *    全数表示
+           PERFORM 242-HENNAIYO-ZENSU-SET-SEC
+      *----(02.01.06)--ADD-END-----
+           .
+       242-HENNAIYO-SURYO-SET-EXT.
+           EXIT.
+      *
+      *----(02.01.06)--ADD-SART-----
+      *****************************************************************
+      *   帳票内容データ数量換算分編集処理
+      *****************************************************************
+       242-HENNAIYO-KANZAN-SET-SEC  SECTION.
+      *
+      *    換算値がなければ単位のみ変換
+           IF      TNSP-KANZANCHI  =   0
+               MOVE    TNSP-KANZANTANINAME TO  WRK-TANINAME
+               GO  TO  242-HENNAIYO-KANZAN-SET-EXT
+           END-IF
+      *
+      *    換算値で数量を割る
+           COMPUTE WRK-WARI    =   ORCHC30-SURYO(CNT-PARA)
+                               /   TNSP-KANZANCHI
+      *    割り切れなければ処理抜ける
+           IF      ORCHC30-SURYO(CNT-PARA)
+                           NOT = ( WRK-WARI    *   TNSP-KANZANCHI )
+               GO  TO  242-HENNAIYO-KANZAN-SET-EXT
+           END-IF
+      *
+      *    入力された一回分の数量
+           MOVE    ORCHC30-SURYO(CNT-PARA) TO  WRK-SURYO
+      *    数量Ｚ編集
+           PERFORM 250-ZHEN-SURYO-SET-SEC
+      *
+      *    全角変換
+           MOVE    SPACE           TO  ORCSKANACHKAREA
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"             TO  KANACHK-SYORI
+           MOVE    WRK-HENSURYO    TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+      *    １日分数量文字セット
+           MOVE    SPACE           TO  WRK-HENNAIYO
+           STRING  "（"            DELIMITED  BY  SIZE
+                   KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                   DELIMITED  BY  SIZE
+                   TNS-TANINAME    DELIMITED  BY  SPACE
+                   "）"            DELIMITED  BY  SIZE
+                           INTO    WRK-HENNAIYO
+           END-STRING
+      *
+           PERFORM 241-HENNAIYO-SET-SEC
+      *
+      *    全数数量＆単位セット
+           MOVE    WRK-WARI            TO  ORCHC30-SURYO(CNT-PARA)
+           MOVE    TNSP-KANZANTANINAME TO  WRK-TANINAME
+      *
+           .
+       242-HENNAIYO-KANZAN-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   帳票内容データ数量全数編集処理
+      *****************************************************************
+       242-HENNAIYO-ZENSU-SET-SEC  SECTION.
+      *
+      *    全数量
+           COMPUTE WRK-SURYO   =   ORCHC30-SURYO(CNT-PARA)
+                               *   ORCHC30-KAISU(CNT-PARA)
       *    数量Ｚ編集
            PERFORM 250-ZHEN-SURYO-SET-SEC
       *
@@ -906,16 +938,15 @@
                                        TO  WRK-HENNAIYO(3:KANACHK-MAX)
                COMPUTE IDZ     =   KANACHK-MAX     +   3
                MOVE    WRK-TANINAME        TO  WRK-HENNAIYO(IDZ:)
-           ELSE
-               MOVE    "　　　　　　　　"  TO  WRK-HENNAIYO
            END-IF
       *
            MOVE    8                   TO  IDX
       *
            .
-       242-HENNAIYO-SURYO-SET-EXT.
+       242-HENNAIYO-ZENSU-SET-EXT.
            EXIT.
       *
+      *----(02.01.06)--ADD-END-------
       *****************************************************************
       *   帳票区分データ編集処理
       *****************************************************************
@@ -929,58 +960,23 @@
                            /   ORCHC30-SRYKAISU(CNT-PARA))
            END-IF
       *
-      *    換算値で割る
-           IF      TNSP-KANZANCHI  >   ZERO
-               COMPUTE ORCHC30-SURYO(CNT-PARA)
-                               =   ORCHC30-SURYO(CNT-PARA)
-                               /   TNSP-KANZANCHI
-           END-IF
-      *
       *    用量コード設定分セット
-           MOVE    ZERO            TO  WRK-FLG
            MOVE    SPACE           TO  WRK-HENKBN-G
+           MOVE    ZERO            TO  WRK-FLG
+      *
            PERFORM VARYING WRK-KBN FROM    1   BY  1
                    UNTIL ( WRK-KBN     >   4 )
                    OR    ( WRK-FLG     =   1 )
+      *        用量コードがあった場合
                IF      ORCHC30-YOURYOU(CNT-PARA WRK-KBN)    >   ZERO
-                   IF      TNSP-KANZANCHI  >   ZERO
-                       COMPUTE ORCHC30-YOURYOU(CNT-PARA WRK-KBN)
-                               =   ORCHC30-YOURYOU(CNT-PARA WRK-KBN)
-                               /   TNSP-KANZANCHI
-                   END-IF
-                   MOVE   ORCHC30-YOURYOU(CNT-PARA WRK-KBN)
-                                           TO  WRK-SURYO
-                   PERFORM 250-ZHEN-SURYO-SET-SEC
-      *            ３桁以上ならエラー
-                   IF      WRK-HENSURYO(4:)    NOT =   SPACE
-                       MOVE    1               TO  WRK-FLG
-                   ELSE
-                       MOVE    WRK-HENSURYO    TO  WRK-HENKBN(WRK-KBN)
-                       COMPUTE ORCHC30-SURYO(CNT-PARA)
-                               =   ORCHC30-SURYO(CNT-PARA)
-                               -   ORCHC30-YOURYOU(CNT-PARA WRK-KBN)
-                       COMPUTE CNT-KAISU   =   CNT-KAISU   -   1
-                   END-IF
+                   PERFORM 243-HENKBN-YOURYOU-SET-SEC
                END-IF
            END-PERFORM
-      *----(02.01.05)--ADD-END-----
       *
-           MOVE    SPACE               TO  WRK-HENSURYO
-      *
-      *    区分セット
-      *     EVALUATE    TNS-TANICD
-      *         WHEN    "032"
-      *         WHEN    "033"
-      *             MOVE    "○"            TO  WRK-HENSURYO
-      *         WHEN    OTHER
-      *             COMPUTE WRK-SURYO   =   ORCHC30-SURYO(CNT-PARA)
-      *                                     /   CNT-KAISU
-      *            数量Ｚ編集
-      *             PERFORM 250-ZHEN-SURYO-SET-SEC
-      *             IF      WRK-HENSURYO(4:)   NOT =   SPACE
-      *                 MOVE    1               TO  WRK-FLG
-      *             END-IF
-      *     END-EVALUATE
+      *    エラーなら処理抜ける
+           IF      WRK-FLG  =   1
+               GO  TO  243-HENKBN-SET-EXT
+           END-IF
       *
       *    入力分をセット
            COMPUTE WRK-SURYO   =   ORCHC30-SURYO(CNT-PARA)
@@ -989,11 +985,6 @@
            PERFORM 250-ZHEN-SURYO-SET-SEC
       *    ３桁以上ならエラー
            IF      WRK-HENSURYO(4:)    NOT =   SPACE
-               MOVE    1               TO  WRK-FLG
-           END-IF
-      *
-      *    ３桁以上なら処理抜ける
-           IF      WRK-FLG  =   1
                GO  TO  243-HENKBN-SET-EXT
            END-IF
       *
@@ -1001,15 +992,13 @@
            PERFORM VARYING  WRK-KBN FROM    1   BY  1
                    UNTIL    WRK-KBN     >   4
                IF      WRK-SSTKIJUNCD( WRK-KBN:1)   =   "1"
-      *----(00.01.05)--ADD-START----
-                   IF      WRK-HENKBN(WRK-KBN)  >   ZERO
+                   IF      WRK-HENKBN(WRK-KBN)  NOT =   SPACE
                        MOVE    WRK-HENKBN(WRK-KBN)
                                        TO  WRK-YKJ-KBN(CNT-LINE WRK-KBN)
                    ELSE
                        MOVE    WRK-HENSURYO
                                        TO  WRK-YKJ-KBN(CNT-LINE WRK-KBN)
                    END-IF
-      *----(00.01.05)--ADD-END-----
                END-IF
            END-PERFORM
            .
@@ -1017,6 +1006,61 @@
        243-HENKBN-SET-EXT.
            EXIT.
       *
+      *----(00.01.06)--ADD-START----
+      *****************************************************************
+      *   帳票区分データ用量コード編集処理
+      *****************************************************************
+       243-HENKBN-YOURYOU-SET-SEC  SECTION.
+      *
+      *    指定してない服用時点ならエラー
+           IF      WRK-SSTKIJUNCD(WRK-KBN:1)   NOT  =   "1"
+               MOVE    1               TO  WRK-FLG
+               GO  TO  243-HENKBN-YOURYOU-SET-EXT
+           END-IF
+      *
+      *    換算値があれば割る
+           IF      TNSP-KANZANCHI  >   ZERO
+               COMPUTE WRK-WARI    =   ORCHC30-YOURYOU(CNT-PARA WRK-KBN)
+                                   /   TNSP-KANZANCHI
+      *        割り切れなければ処理抜ける
+               IF      ORCHC30-YOURYOU(CNT-PARA WRK-KBN)
+                           NOT = ( WRK-WARI    *   TNSP-KANZANCHI )
+                   MOVE    1               TO  WRK-FLG
+                   GO  TO  243-HENKBN-YOURYOU-SET-EXT
+               ELSE
+                    MOVE    WRK-WARI   TO
+                            ORCHC30-YOURYOU(CNT-PARA WRK-KBN)
+               END-IF
+           END-IF
+      *
+      *    用量の方が多い場合エラー
+           IF     ORCHC30-SURYO(CNT-PARA)
+                  <= ORCHC30-YOURYOU(CNT-PARA WRK-KBN)
+               MOVE    1               TO  WRK-FLG
+               GO  TO  243-HENKBN-YOURYOU-SET-EXT
+           END-IF
+      *
+           MOVE   ORCHC30-YOURYOU(CNT-PARA WRK-KBN)
+                                        TO  WRK-SURYO
+           PERFORM 250-ZHEN-SURYO-SET-SEC
+      *    ３桁以上ならエラー
+           IF      WRK-HENSURYO(4:)    NOT =   SPACE
+               MOVE    1               TO  WRK-FLG
+               GO  TO  243-HENKBN-YOURYOU-SET-EXT
+           END-IF
+      *
+           MOVE    WRK-HENSURYO    TO  WRK-HENKBN(WRK-KBN)
+      *
+      *    用量コード使用分は計算にいれない
+           COMPUTE ORCHC30-SURYO(CNT-PARA) =   ORCHC30-SURYO(CNT-PARA)
+                               -   ORCHC30-YOURYOU(CNT-PARA WRK-KBN)
+           COMPUTE CNT-KAISU   =   CNT-KAISU   -   1
+           .
+      *
+       243-HENKBN-YOURYOU-SET-EXT.
+           EXIT.
+      *
+      *----(00.01.06)--ADD-END------
       *****************************************************************
       *   その他の用法処理
       *****************************************************************
