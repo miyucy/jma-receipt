@@ -55,6 +55,8 @@
       *  01.00.24    NACL-多々納  05/09/26  入金状態の追加（入院）
       *  01.00.25    NACL-多々納  05/10/14  データ収集フラグ追加
       *  01.05.26    NACL-太田    06/02/22  自費保険集計先区分追加
+      *  01.00.27    NACL-藤原    06/03/18  旧総合病院フラグと主科設定の
+      *                                     チェック追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -400,6 +402,9 @@
                    07  SPA-1001-STYUKYMD          PIC X(08).
                    07  SPA-1001-EDYUKYMD          PIC X(08).
                    07  SPA-1001-ADD               PIC 9(01).
+      * 
+      *        主科設定フラグ
+               05  SPA-2009-SYUKA-KBN             PIC X(01).
       *   
            COPY    "ENUM-VALUE".
       *
@@ -480,6 +485,9 @@
       *
       *    入金方法情報
            COPY  "CPSK1041.INC".
+      *
+      *    レセプト印刷情報（主科設定）
+           COPY  "CPSK2009.INC".
       *
       *
       *****************************************************************
@@ -1121,6 +1129,24 @@
                                            TO  SPA-GMN-NYKN-JYOTAI-T-G
                END-EVALUATE
            END-IF 
+      *
+      *    レセプト情報（主科設定）
+           MOVE    SPACE               TO  SYS-2009-REC
+           INITIALIZE                      SYS-2009-REC
+           MOVE    "2009"              TO  SYS-2009-KANRICD
+           MOVE    "*"                 TO  SYS-2009-KBNCD
+           MOVE    SYS-2009-REC        TO  MCPDATA-REC
+           MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-2009-REC
+           ELSE
+               INITIALIZE                      SYS-2009-REC               
+           END-IF
+           IF       SYS-2009-SYUKA-KBN =   SPACE
+               MOVE    "0"                 TO  SYS-2009-SYUKA-KBN
+           END-IF
+           MOVE    SYS-2009-SYUKA-KBN  TO  SPA-2009-SYUKA-KBN
       *  
       *
            EVALUATE    SPA-W01-KANRICD
@@ -2177,6 +2203,14 @@
                MOVE    "0005"              TO  SPA-ERRCD
                MOVE    11                  TO  SPA-GMN-CUR
            END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+               IF    ( SPA-GMN-HOSPSBT1    =   "1" )
+               AND   ( SPA-2009-SYUKA-KBN  =   "1" )
+                   MOVE    "0031"              TO  SPA-ERRCD
+                   MOVE    11                  TO  SPA-GMN-CUR
+               END-IF
+           END-IF 
       *
            .
        4110-HOSPSBT1-CHK-EXT.
@@ -3730,6 +3764,9 @@
                                                TO  SPA-ERRMSG
                WHEN    "0030"
                    MOVE    "自費名称は全角で入力して下さい。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0031"
+                   MOVE    "旧総合病院であるとき主科設定はできません。"
                                                TO  SPA-ERRMSG
       *----(01.00.09) LINE ADD END   ----------------------------------
                WHEN    "0099"
