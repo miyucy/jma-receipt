@@ -618,6 +618,7 @@
                                               PIC 9(08).
       *
                05  SPA-1001-PREFNUM           PIC 9(02). 
+               05  SPA-1001-HOSPSBT1          PIC 9(01). 
       *
            COPY    "ENUM-VALUE".
       *
@@ -1240,7 +1241,7 @@
            INITIALIZE                      SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
            MOVE    "*"                 TO  SYS-1001-KBNCD
-           MOVE    SPA-W01-SEL-STYUKYMD
+           MOVE    SPA-W01-SEL-EDYUKYMD
                                        TO  SYS-1001-STYUKYMD
                                            SYS-1001-EDYUKYMD
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
@@ -1250,6 +1251,7 @@
            IF      FLG-SYSKANRI            =   ZERO
                MOVE    MCPDATA-REC             TO  SYS-1001-REC
                MOVE    SYS-1001-PREFNUM        TO  SPA-1001-PREFNUM
+               MOVE    SYS-1001-HOSPSBT1       TO  SPA-1001-HOSPSBT1 
            END-IF 
       *
       *    レセプト・総括編集情報
@@ -3185,8 +3187,7 @@
       *****************************************************************
        4135-SYUKA-KBN-CHK-SEC   SECTION.
       *
-           IF      SPA-GMN-SYUKA-KBN
-                                           =   SPACE
+           IF      SPA-GMN-SYUKA-KBN   =   SPACE
                MOVE    SPA-GMN-SYUKA-KBNLST (1)
                                                TO  SPA-GMN-SYUKA-KBN-G
            ELSE
@@ -3207,7 +3208,7 @@
                    MOVE    90                      TO  SPA-GMN-CUR
                    MOVE    "0030"                  TO  SPA-ERRCD
                END-IF
-           END-IF    
+           END-IF
            .
        4135-SYUKA-KBN-CHK-EXT.
            EXIT.
@@ -3758,16 +3759,21 @@
                            MOVE    "0100"              TO  SPA-ERRCD
                        END-IF
                    ELSE
-                       IF   ( SPA-GMN-SYUKA-GAIRAI     =   SPACE )
-                       OR   ( SPA-GMN-SYUKA-MODE       =   SPACE )
-                       OR   ( SPA-GMN-SYUKA-SELECT     =   SPACE )
-                           MOVE    91                  TO  SPA-GMN-CUR
-                           MOVE    "0099"              TO  SPA-ERRCD
-                       END-IF
-                       IF    ( SPA-BEDSU               >   ZERO  )
-                       AND   ( SPA-GMN-SYUKA-NYUIN     =   SPACE )
-                           MOVE    91                  TO  SPA-GMN-CUR
-                           MOVE    "0099"              TO  SPA-ERRCD
+                       IF      SPA-1001-HOSPSBT1   =   1
+                           MOVE    90                  TO  SPA-GMN-CUR
+                           MOVE    "0101"              TO  SPA-ERRCD
+                       ELSE
+                           IF   ( SPA-GMN-SYUKA-GAIRAI     =   SPACE )
+                           OR   ( SPA-GMN-SYUKA-MODE       =   SPACE )
+                           OR   ( SPA-GMN-SYUKA-SELECT     =   SPACE )
+                               MOVE    91              TO  SPA-GMN-CUR
+                               MOVE    "0099"          TO  SPA-ERRCD
+                           END-IF
+                           IF    ( SPA-BEDSU               >   ZERO  )
+                           AND   ( SPA-GMN-SYUKA-NYUIN     =   SPACE )
+                               MOVE    91              TO  SPA-GMN-CUR
+                               MOVE    "0099"          TO  SPA-ERRCD
+                           END-IF
                        END-IF
                    END-IF
                END-IF
@@ -4300,6 +4306,9 @@
                WHEN    "0100"
                    MOVE
                    "主科対応をしないときに設定されている項目があります"
+                                               TO  SPA-ERRMSG
+               WHEN    "0101"
+                   MOVE    "旧総合病院のとき主科設定はできません"
                                                TO  SPA-ERRMSG
       *
                WHEN    "1003"
