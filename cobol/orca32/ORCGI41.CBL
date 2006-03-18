@@ -56,6 +56,7 @@
       *                                       精神科急性期治療病棟入院料１
       *                                       精神科急性期治療病棟入院料２
       *                                     看護補助加算の変更
+      *                                     選択食の廃止対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1015,18 +1016,29 @@
            MOVE    "02"                TO  SPA-GMN-SAGAKUNO-41 (3)
            MOVE    "食事療養＋特食"    TO  SPA-GMN-SAGAKU-41   (3)
       *
-           MOVE    "03"                TO  SPA-GMN-SAGAKUNO-41 (4)
-           MOVE    "食事療養＋選択食"  TO  SPA-GMN-SAGAKU-41   (4)
+           IF      SPA-NAI-SRYYM       <=   "200603"
+               MOVE    "03"                TO  SPA-GMN-SAGAKUNO-41 (4)
+               MOVE    "食事療養＋選択食"  TO  SPA-GMN-SAGAKU-41   (4)
       *
-           MOVE    "04"                TO  SPA-GMN-SAGAKUNO-41 (5)
-           MOVE    "食事療養＋特食＋選択食"
-                                       TO  SPA-GMN-SAGAKU-41   (5)
+               MOVE    "04"                TO  SPA-GMN-SAGAKUNO-41 (5)
+               MOVE    "食事療養＋特食＋選択食"
+                                           TO  SPA-GMN-SAGAKU-41   (5)
       *
-           MOVE    5                   TO  SPA-SAGAKU-MAX-41
+               MOVE    5                   TO  SPA-SAGAKU-MAX-41
+           ELSE
+               MOVE    SPACE               TO  SPA-GMN-SAGAKUNO-41 (4)
+               MOVE    SPACE               TO  SPA-GMN-SAGAKU-41   (4)
+      *
+               MOVE    SPACE               TO  SPA-GMN-SAGAKUNO-41 (5)
+               MOVE    SPACE               TO  SPA-GMN-SAGAKU-41   (5)
+      *
+               MOVE    3                   TO  SPA-SAGAKU-MAX-41
+           END-IF
       *
            .
        3113-SHOKUJI-HEN-EXT.
            EXIT.
+      *
       *****************************************************************
       *    外泊初期編集
       *****************************************************************
@@ -3048,15 +3060,27 @@
                    IF      SPA-CHK-NYUIN (IDX-D)   =   SPACE
                        MOVE    "0033"             TO  SPA-ERRCD
                    END-IF
-                   IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
-                                                   OR  1
-                                                   OR  2
-                                                   OR  3
-                                                   OR  4
-                       CONTINUE
+                   IF      SPA-NAI-SRYYM         <=  "200603"
+                       IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
+                                                       OR  1
+                                                       OR  2
+                                                       OR  3
+                                                       OR  4
+                           CONTINUE
+                       ELSE
+                           IF      SPA-ERRCD       =   SPACE
+                               MOVE    "0038"         TO  SPA-ERRCD
+                           END-IF
+                       END-IF
                    ELSE
-                       IF      SPA-ERRCD       =   SPACE
-                           MOVE    "0038"         TO  SPA-ERRCD
+                       IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
+                                                       OR  1
+                                                       OR  2
+                           CONTINUE
+                       ELSE
+                           IF      SPA-ERRCD       =   SPACE
+                               MOVE    "0049"         TO  SPA-ERRCD
+                           END-IF
                        END-IF
                    END-IF
       *            外泊中でないこと
@@ -6713,6 +6737,11 @@
                                        TO  WRK-ERRMSG
                    MOVE    "療養担当手当の設定はできません。"
                                        TO  WRK-ERRMSG(33:)
+               WHEN    "0049"
+                   MOVE    "食事での入力可能な区分は０、１、２"
+                                       TO  WRK-ERRMSG(1:34)
+                   MOVE    "のいずれかです。"
+                                       TO  WRK-ERRMSG(35:16)
                WHEN    "1005"
                    MOVE    "受診履歴番号が存在しません。"
                                        TO  WRK-ERRMSG
