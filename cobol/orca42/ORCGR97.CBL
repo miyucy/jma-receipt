@@ -144,6 +144,8 @@
                        09  SPA-NAI-SYUKAMEIL       PIC X(12).
       *
                    07  SPA-NAI-SRYYM               PIC 9(06).
+                   07  SPA-NAI-SRYYMH              PIC X(16).
+                   07  SPA-NAI-NYUGAIKBN           PIC X(06).
                    07  SPA-NAI-KOUMOKU. 
                        09  SPA-NAI-PTID            PIC 9(10).
                        09  SPA-NAI-HOJOKBN         PIC X(01).
@@ -210,11 +212,13 @@
            03  WRK-MCP-WIDGET      PIC X(64).
            03  WRK-GMN-CUR         PIC 9(02).
       *
-           03  WRK-RIDMSG          PIC X(70).
            03  WRK-BANGO           PIC S9(05).
            03  WRK-NUM             PIC ZZZZ9.
            03  WRK-TENSUZ          PIC ZZZZZZZZ9.
            03  WRK-SELNUM          PIC 9(03).
+           03  WRK-LINE            PIC 9(04).
+           03  WRK-PAGE            PIC 9(05).
+           03  WRK-RENNUM          PIC 9(04).
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).
                05  WRK-SMM         PIC 9(02).
@@ -224,8 +228,9 @@
       *
            03  WRK-SYUKA-ROW       PIC S9(9)   BINARY.
            03  WRK-PTNUM-ROW       PIC S9(9)   BINARY.
+      *
            03  WRK-RECEERR         PIC X(200).
-           03  WRK-STR             PIC 9(05).
+           03  WRK-RIDMSG          PIC X(70).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -480,6 +485,7 @@
            MOVE    "01"                TO  WRK-SYMD (7:2) 
            PERFORM 5002-HIZUKE-HEN-SEC
            MOVE    WRK-HENYMDG1(1:6)   TO  SPA-GMN-SRYYM
+           MOVE    WRK-HENYMDG3(1:16)  TO  SPA-NAI-SRYYMH
       *
       *    入外区分
            IF      SPA-BEDSU       >   ZERO
@@ -495,6 +501,8 @@
            END-IF
            MOVE    SPA-GMN-NYUGAIKBNLST (1)
                                        TO  SPA-GMN-NYUGAIKBN-G
+           MOVE    SPA-GMN-NYUGAIKBNMEI
+                                       TO  SPA-NAI-NYUGAIKBN
       *
            MOVE    "1"                 TO  SPA-GMN-HYOUJIKBNL       (1)
            MOVE    "全体"              TO  SPA-GMN-HYOUJIKBNMEIL    (1)
@@ -562,14 +570,9 @@
       *
            INITIALIZE                  WRK-ORCSSYUACCAREA
       *
-      *    指定頁に表示する開始件数
-           COMPUTE WRK-STR         = ( SPA-GMN-PAGE  -  1 )
-                                   *   WRK-CONS-LINE-SYUKA-MAX
-                                   +   1
-      *
-           MOVE    ZERO            TO  IDX1
-                                       IDX2
-                                       IDX
+           MOVE    1               TO  WRK-PAGE
+           MOVE    ZERO            TO  WRK-RENNUM
+                                       WRK-LINE
       *
            INITIALIZE                  SPA-GMN-SYUKA-TABLE
                                        SPA-GMN-PTNUM-TABLE
@@ -598,7 +601,7 @@
                MOVE    1               TO  FLG-SYUKA
            END-IF
       *
-           PERFORM UNTIL   IDX         >=  WRK-CONS-LINE-SYUKA-MAX
+           PERFORM UNTIL   WRK-PAGE    >   SPA-GMN-PAGE
                    OR      FLG-SYUKA   =   1
                MOVE    ZERO            TO  IDW
                MOVE    WRK-ORCSSYUACCAREA
@@ -656,8 +659,8 @@
            PERFORM 900-CLOSE-SEC
       *
       *    次ページの有無
-           IF    ( IDX                 >=  WRK-CONS-LINE-SYUKA-MAX )
-           AND   ( FLG-SYUKA           =   ZERO                    )
+           IF    ( WRK-PAGE            >   SPA-GMN-PAGE )
+           AND   ( FLG-SYUKA           =   ZERO         )
                MOVE    1                   TO  SPA-GMN-NEXT
            ELSE
                MOVE    ZERO                TO  SPA-GMN-NEXT
@@ -701,37 +704,35 @@
                END-IF
            END-IF
       *
-      *    該当頁に表示するデータかどうか
+      *    連番号と表示行の仮計算
+           MOVE    WRK-LINE        TO  IDXX
+           MOVE    WRK-RENNUM      TO  IDXY
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL   IDX1    >       100
+                   OR      LNK-SYUACC-IO-RECESYUBETU (IDX1)    = SPACE
+               ADD     1               TO  IDXX
+                                           IDXY
+           END-PERFORM
       *
+      *    該当頁に同一患者の情報を表示できるか
+           IF      IDXX            >   WRK-CONS-LINE-SYUKA-MAX
+               ADD     1               TO  WRK-PAGE
+               MOVE    ZERO            TO  WRK-LINE
+           END-IF
+      *
+      *    該当頁に表示するデータかどうか
+           IF      WRK-PAGE    NOT =   SPA-GMN-PAGE
+               MOVE    IDXY            TO  WRK-RENNUM
+               MOVE    IDXX            TO  WRK-LINE 
+               GO  TO  31011-SYUKA-GMN-HENSYU-EXT
+           END-IF
+      *
+      *    主科情報表示
            INITIALIZE                  ORCSPTIDAREA
            MOVE    SPA-HOSPID      TO  SPTID-HOSPID
            MOVE    WRK-PTID        TO  SPTID-PTID
            CALL    "ORCSPTID"      USING   ORCSPTIDAREA
                                            SPA-1009-TBL
-      **     IF      SPTID-PTNUM     <   SPA-NAI-ST-PTNUM
-      **                                    (SPA-GMN-PAGE)
-      **         GO  TO  31011-SYUKA-GMN-HENSYU-EXT
-      **     END-IF
-      *
-      *    連番号と表示行の計算
-           MOVE    IDX             TO  IDXX
-           MOVE    IDX2            TO  IDXY
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL   IDX1    >       100
-                   OR      LNK-SYUACC-IO-RECESYUBETU (IDX1)    = SPACE
-               ADD     1                   TO  IDXX
-                                               IDXY
-           END-PERFORM
-      *
-           IF      IDXY            <   WRK-STR
-               GO  TO  31011-SYUKA-GMN-HENSYU-EXT
-           END-IF
-      *
-      *    該当頁に同一患者の情報を表示できるか
-           IF      IDXX            >   WRK-CONS-LINE-SYUKA-MAX
-               MOVE    IDXX            TO  IDX
-               GO  TO  31011-SYUKA-GMN-HENSYU-EXT
-           END-IF
       *
            MOVE    SPA-HOSPID      TO  PTINF-HOSPID
            MOVE    WRK-PTID        TO  PTINF-PTID
@@ -740,41 +741,38 @@
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL   IDX1    >       100
                    OR      LNK-SYUACC-IO-RECESYUBETU (IDX1)    = SPACE
-               ADD     1               TO  IDX2
-               ADD     1               TO  IDX
+               ADD     1               TO  WRK-RENNUM
+               ADD     1               TO  WRK-LINE
       *
-               IF      IDX             =   1
-                    MOVE    WRK-PTID        TO
-                                   SPA-NAI-ST-PTID  (SPA-GMN-PAGE)    
-                   MOVE    SPTID-PTNUM     TO
-                                   SPA-NAI-ST-PTNUM (SPA-GMN-PAGE)
-               END-IF
-      *
-               MOVE    IDX2            TO  SPA-GMN-TRENNUM     (IDX)
+               MOVE    WRK-RENNUM      TO  SPA-GMN-TRENNUM    (WRK-LINE)
                IF      PTINF-TSTPTNUMKBN   =   "0"
                    CONTINUE
                ELSE
-                   MOVE    "◎"        TO  SPA-GMN-TTSTPTNUMKBN (IDX)
+                   MOVE    "◎"        TO  SPA-GMN-TTSTPTNUMKBN
+                                                              (WRK-LINE)
                END-IF
-               MOVE    WRK-PTID        TO  SPA-NAI-TPTID       (IDX)
-               MOVE    SPTID-PTNUM     TO  SPA-NAI-TPTNUM      (IDX)
-               MOVE    PTINF-NAME      TO  SPA-NAI-TNAME       (IDX)
+               MOVE    WRK-PTID        TO  SPA-NAI-TPTID      (WRK-LINE)
+               MOVE    SPTID-PTNUM     TO  SPA-NAI-TPTNUM     (WRK-LINE)
+               MOVE    PTINF-NAME      TO  SPA-NAI-TNAME      (WRK-LINE)
                IF      IDX1            =   1
-                   MOVE    SPTID-PTNUM     TO  SPA-GMN-TPTNUM  (IDX)
-                   MOVE    PTINF-NAME      TO  SPA-GMN-TNAME   (IDX)
+                   MOVE    SPTID-PTNUM     TO  SPA-GMN-TPTNUM (WRK-LINE)
+                   MOVE    PTINF-NAME      TO  SPA-GMN-TNAME  (WRK-LINE)
                END-IF
       *
                MOVE    LNK-SYUACC-IO-RECESYUBETU(IDX1)
-                                       TO  SPA-NAI-TRECESYUBETU(IDX)
+                                       TO  SPA-NAI-TRECESYUBETU
+                                                              (WRK-LINE)
                IF      LNK-SYUACC-IO-RECESYUBETU(IDX1)
                                        =   "0000"
-                   MOVE    "不明分"        TO  SPA-GMN-TRECESYUBETU(IDX)
+                   MOVE    "不明分"    TO  SPA-GMN-TRECESYUBETU
+                                                              (WRK-LINE)
                ELSE
                    MOVE    LNK-SYUACC-IO-RECESYUBETU(IDX1)
-                                           TO  SPA-GMN-TRECESYUBETU(IDX)
+                                       TO  SPA-GMN-TRECESYUBETU
+                                                              (WRK-LINE)
                END-IF
                MOVE    LNK-SYUACC-IO-HKNJANUM   (IDX1)
-                                       TO  SPA-GMN-THKNJANUM   (IDX)
+                                       TO  SPA-GMN-THKNJANUM  (WRK-LINE)
                EVALUATE    LNK-SYUACC-IO-HKNNUM (IDX1) 
                    WHEN    "002"
                    WHEN    "031"  THRU  "034"
@@ -783,34 +781,39 @@
                            WHEN    "A"
                            WHEN    "D"
                                MOVE    "職務上" 
-                                           TO  SPA-GMN-THOJOKBN   (IDX)
+                                           TO  SPA-GMN-THOJOKBN
+                                                              (WRK-LINE)
                            WHEN    "2"
                            WHEN    "B"
                            WHEN    "E"
                                MOVE    "下船後３ヶ月以内"
-                                           TO  SPA-GMN-THOJOKBN   (IDX)
+                                           TO  SPA-GMN-THOJOKBN
+                                                              (WRK-LINE)
                            WHEN    "3"
                            WHEN    "C"
                            WHEN    "F"
                                MOVE    "通勤災害"
-                                           TO  SPA-GMN-THOJOKBN   (IDX)
+                                           TO  SPA-GMN-THOJOKBN
+                                                              (WRK-LINE)
                    END-EVALUATE
                END-EVALUATE
                MOVE    LNK-SYUACC-IO-HOJOKBN    (IDX1)
-                                       TO  SPA-NAI-THOJOKBN    (IDX)
+                                       TO  SPA-NAI-THOJOKBN   (WRK-LINE)
                MOVE    LNK-SYUACC-IO-SYUKA-AUTO (IDX1)
-                                       TO  SPA-GMN-TSYUKA-AUTO (IDX)
+                                       TO  SPA-GMN-TSYUKA-AUTO(WRK-LINE)
                IF      LNK-SYUACC-IO-H-SRYKA
                                    NOT =   SPACE
                    MOVE    LNK-SYUACC-IO-H-SRYKA
-                                           TO  SPA-GMN-TSYUKA-INPUT(IDX)
+                                       TO  SPA-GMN-TSYUKA-INPUT
+                                                              (WRK-LINE)
                ELSE    
                    MOVE    LNK-SYUACC-IO-SYUKA-INPUT(IDX1)
-                                           TO  SPA-GMN-TSYUKA-INPUT(IDX)
+                                       TO  SPA-GMN-TSYUKA-INPUT
+                                                              (WRK-LINE)
                END-IF
            END-PERFORM
       *
-           MOVE    IDX             TO  SPA-GMN-SYUKA-TBL-MAX
+           MOVE    WRK-LINE            TO  SPA-GMN-SYUKA-TBL-MAX
       *
            .
        31011-SYUKA-GMN-HENSYU-EXT.
@@ -885,7 +888,7 @@
       *
            MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
       *
-           EVALUATE    MCP-EVENT   ALSO    MCP-WIDGET
+           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
                WHEN    "ACTIVATE"      ALSO    "SRYYM"
                    PERFORM 41023-SRYYM-CHK-SEC
       *
@@ -1340,6 +1343,7 @@
       *
            MOVE   R97-SRYYM           TO  SPA-GMN-SRYYM
            MOVE    ZERO               TO  SPA-NAI-SRYYM
+           MOVE    SPACE              TO  SPA-NAI-SRYYMH
       *
       *    日付画面チェックサブ
            INITIALIZE                      ORCSGDAYAREA
@@ -1350,6 +1354,9 @@
            IF      SGDAY-RC            =   ZERO
                MOVE    SGDAY-OTDAY(1:6)    TO  SPA-GMN-SRYYM
                MOVE    SGDAY-SDAY (1:6)    TO  SPA-NAI-SRYYM
+               MOVE    SGDAY-SDAY          TO  WRK-SYMD
+               PERFORM 5002-HIZUKE-HEN-SEC
+               MOVE    WRK-HENYMDG3(1:16)  TO  SPA-NAI-SRYYMH
            ELSE
                MOVE    "0007"          TO  SPA-ERRCD
                GO  TO  41023-SRYYM-CHK-EXT
@@ -1373,6 +1380,7 @@
            MOVE    5                    TO  SPA-GMN-CUR
       *
            MOVE    R97-NYUGAIKBN        TO  SPA-GMN-NYUGAIKBN-G
+           MOVE    SPACE                TO  SPA-NAI-NYUGAIKBN
       *
            PERFORM VARYING IDY FROM   1   BY  1
                    UNTIL   IDY >      SPA-GMN-NYUGAIKBN-MAX
@@ -1389,6 +1397,8 @@
                MOVE    "0008"              TO  SPA-ERRCD
            ELSE
                MOVE    6                   TO  SPA-GMN-CUR
+               MOVE    SPA-GMN-NYUGAIKBNMEI 
+                                           TO  SPA-NAI-NYUGAIKBN
            END-IF
       *             
            .
@@ -1573,21 +1583,23 @@
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
-               INITIALIZE                     STS-AREA-DAY
-               INITIALIZE                     LNK-DAY6-AREA
-               MOVE    "61"                   TO  LNK-DAY6-IRAI
-               MOVE    SPA-NAI-SRYYM          TO  LNK-DAY6-KIJUN (1:6)
-               MOVE    "01"                   TO  LNK-DAY6-KIJUN (7:2)  
-               MOVE    "2"                    TO  LNK-DAY6-ZOGENPTN
-               MOVE    -1                     TO  LNK-DAY6-ZOGEN
-               CALL    "ORCSDAY"              USING   STS-AREA-DAY
-                                                      LNK-DAY6-AREA
-               MOVE    LNK-DAY6-KEISAN(1:6)   TO  SPA-NAI-SRYYM
+               INITIALIZE                  STS-AREA-DAY
+               INITIALIZE                  LNK-DAY6-AREA
+               MOVE    "61"                TO  LNK-DAY6-IRAI
+               MOVE    SPA-NAI-SRYYM       TO  LNK-DAY6-KIJUN (1:6)
+               MOVE    "01"                TO  LNK-DAY6-KIJUN (7:2)  
+               MOVE    "2"                 TO  LNK-DAY6-ZOGENPTN
+               MOVE    -1                  TO  LNK-DAY6-ZOGEN
+               CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY6-AREA
+               MOVE    LNK-DAY6-KEISAN(1:6)
+                                           TO  SPA-NAI-SRYYM
       *
                MOVE    SPA-NAI-SRYYM       TO  WRK-SYMD (1:6)
                MOVE    "01"                TO  WRK-SYMD (7:2) 
                PERFORM 5002-HIZUKE-HEN-SEC
                MOVE    WRK-HENYMDG1(1:6)   TO  SPA-GMN-SRYYM
+               MOVE    WRK-HENYMDG3(1:16)  TO  SPA-NAI-SRYYMH
       *
                MOVE    1                   TO  SPA-GMN-PAGE
                INITIALIZE                      SPA-NAI-PTID-TABLE
@@ -1669,6 +1681,7 @@
                MOVE    "01"                TO  WRK-SYMD (7:2) 
                PERFORM 5002-HIZUKE-HEN-SEC
                MOVE    WRK-HENYMDG1(1:6)   TO  SPA-GMN-SRYYM
+               MOVE    WRK-HENYMDG3(1:16)  TO  SPA-NAI-SRYYMH
       *
                MOVE    1                   TO  SPA-GMN-PAGE
                INITIALIZE                      SPA-NAI-PTID-TABLE
@@ -2314,8 +2327,13 @@
               "選択された主科は、診療(情報)が存在しません。更新しますか"
                                                TO  WRK-RIDMSG
                WHEN    "1002"
-                   MOVE    "一括取得処理を行います"
-                                               TO  WRK-RIDMSG
+                   STRING   SPA-NAI-SRYYMH     DELIMITED   BY  SIZE
+                            "　"               DELIMITED   BY  SIZE
+                            SPA-NAI-NYUGAIKBN  DELIMITED   BY  SPACE
+                            "分一括取得処理を行います"
+                                               DELIMITED   BY  SIZE  
+                                               INTO    WRK-RIDMSG
+                   END-STRING
            END-EVALUATE
       *
            MOVE    SPACE                TO  RID1
