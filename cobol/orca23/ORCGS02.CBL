@@ -99,6 +99,7 @@
       *  01.00.37    NACL-¬¿≈ƒ    04.02.09  •≥•È•‡•Í•π•» ‘Ω∏Ω§¿µ
       *  01.00.38    NACL-ÃÁœ∆    04.07.16  ∫∆∑◊ªª§Ú•µ•÷§ÿΩ§¿µ
       *  01.00.39    NACL-ÃÁœ∆    04.12.01  º˝«º≥∞ÕË∞Ï≥Á∫∆∑◊ªª¬–±˛
+      *  01.00.40    NACL-ÃÁœ∆    06.03.20  º´Œ©ªŸ±ÁÀ°¬–±˛
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -177,6 +178,8 @@
                            11  SPA-GMN-TSEIKYU     PIC 9(10).
                            11  SPA-GMN-TMISYU      PIC S9(10).
                            11  SPA-GMN-TJYOTAI     PIC X(16).
+                           11  SPA-GMN-FTNHENFLG   PIC 9(02).
+                           11  SPA-GMN-SIKIBETUFLG PIC X(01).
                        09  SPA-GMN-TBL-SEL         PIC 9(05).
       *
                    07  SPA-GMN-INPUT.
@@ -304,6 +307,9 @@
       *
            03  WRK-DENPNUM-END-TABLE.
                05  WRK-DENPNUM-END PIC 9(07)   OCCURS  15.
+      *
+           03  WRK-FTNHENFLG1      PIC 9(01).
+           03  WRK-FTNHENFLG2      PIC 9(01).
       *
        01  WRK-ROW.
            05  WRK-SYULIST-ROW     PIC S9(9)   BINARY.
@@ -1733,6 +1739,18 @@
                MOVE    "≥∞"            TO  SPA-GMN-TNYUGAIKBN  (IDX1)
            END-EVALUATE
       *
+           IF   SYU-DENPJTIKBN   NOT =  "3"
+             EVALUATE    SYU-NYNSHOKAISU
+               WHEN         1
+                 MOVE  SYU-NYNSHOKAISU TO  SPA-GMN-FTNHENFLG  (IDX1)
+                 MOVE  SYU-NYUGAIKBN   TO  SPA-GMN-SIKIBETUFLG(IDX1)
+               WHEN         2
+                 MOVE  SYU-NYNSHOKAISU TO  SPA-GMN-FTNHENFLG  (IDX1)
+                 MOVE  SYU-NYUGAIKBN   TO  SPA-GMN-SIKIBETUFLG(IDX1)
+                 MOVE    "°˚"      TO  SPA-GMN-TNYUGAIKBN(IDX1)(3:2)
+             END-EVALUATE
+           END-IF
+      *
       *    ø«Œ≈≤ Ãæ
            PERFORM VARYING IDX9    FROM    1   BY  1
                    UNTIL ( IDX9        >   SPA-GMN-SRYKA-MAX )
@@ -2108,6 +2126,9 @@
            MOVE    WIDGET-INSENSITIVE  TO  S02-B03S-STATE
       *    ª√ƒÍ ED
       *
+           MOVE    ZERO                TO  WRK-FTNHENFLG1
+                                           WRK-FTNHENFLG2
+      *
            PERFORM VARYING     IDX1     FROM    1   BY  1
                    UNTIL     ( IDX1     >       SPA-GMN-MAX )
                MOVE    SPA-GMN-TBANGO (IDX1)   TO  WRK-TBANGO-W
@@ -2141,11 +2162,65 @@
                ELSE
                    MOVE    "F"             TO  S02-SYULIST-SELECT (IDX1)
                END-IF
+      *
+               EVALUATE   SPA-GMN-SIKIBETUFLG(IDX1)
+                 WHEN         "1"
+                   EVALUATE   SPA-GMN-FTNHENFLG(IDX1)
+                     WHEN         1
+                       EVALUATE   WRK-FTNHENFLG1
+                         WHEN        ZERO
+                           MOVE   1   TO   WRK-FTNHENFLG1
+                         WHEN         2
+                           MOVE   3   TO   WRK-FTNHENFLG1
+                       END-EVALUATE
+                     WHEN         2
+                       EVALUATE   WRK-FTNHENFLG1
+                         WHEN        ZERO
+                           MOVE   2   TO   WRK-FTNHENFLG1
+                         WHEN         1
+                           MOVE   3   TO   WRK-FTNHENFLG1
+                       END-EVALUATE
+                   END-EVALUATE
+                 WHEN         "2"
+                   EVALUATE   SPA-GMN-FTNHENFLG(IDX1)
+                     WHEN         1
+                       EVALUATE   WRK-FTNHENFLG2
+                         WHEN        ZERO
+                           MOVE   1   TO   WRK-FTNHENFLG2
+                         WHEN         2
+                           MOVE   3   TO   WRK-FTNHENFLG2
+                       END-EVALUATE
+                     WHEN         2
+                       EVALUATE   WRK-FTNHENFLG2
+                         WHEN        ZERO
+                           MOVE   2   TO   WRK-FTNHENFLG2
+                         WHEN         1
+                           MOVE   3   TO   WRK-FTNHENFLG2
+                       END-EVALUATE
+                   END-EVALUATE
+               END-EVALUATE
+      *
            END-PERFORM
            MOVE    SPA-GMN-MAX                 TO  S02-SYULIST-COUNT
       *
            MOVE    SPA-GMN-SELBAN              TO  WRK-SELBAN-W
            MOVE    WRK-SELBAN-W                TO  S02-SELNUM
+      *
+           IF     (WRK-FTNHENFLG1  =  3) AND (WRK-FTNHENFLG2  NOT =  3)
+           MOVE    "red"       TO    S02-LBLMSG-STYLE
+       MOVE "º´Œ©ªŸ±Á∞ÂŒ≈…È√¥≥‰πÁ —ππ°°∆±∑Ó¿¡µ· ¨≥Œ«ßµ⁄§”∫∆¿¡µ·° ∆˛°À"
+                               TO    S02-LBLMSG
+           END-IF
+           IF     (WRK-FTNHENFLG1  NOT =  3) AND (WRK-FTNHENFLG2  =  3)
+           MOVE    "red"       TO    S02-LBLMSG-STYLE
+       MOVE "º´Œ©ªŸ±Á∞ÂŒ≈…È√¥≥‰πÁ —ππ°°∆±∑Ó¿¡µ· ¨≥Œ«ßµ⁄§”∫∆¿¡µ·° ≥∞°À"
+                               TO    S02-LBLMSG
+           END-IF
+           IF     (WRK-FTNHENFLG1      =  3) AND (WRK-FTNHENFLG2  =  3)
+           MOVE    "red"       TO    S02-LBLMSG-STYLE
+       MOVE "º´Œ©ªŸ±Á∞ÂŒ≈…È√¥≥‰πÁ —ππ°°∆±∑Ó¿¡µ· ¨≥Œ«ßµ⁄§”∫∆¿¡µ·° ∆˛≥∞°À"
+                               TO    S02-LBLMSG
+           END-IF
       *
            MOVE    SPA-GMN-GAI-MISYU           TO  S02-GAI-MISYU
       *

@@ -9,6 +9,10 @@ S02	{
 		B03S	{
 	           	state	int;
 		};
+		LBLMSG	{
+			style   varchar(20);
+			value	varchar(60);
+		};
 		PTNUM	{
 	           	state	int;
 			value	varchar(20);

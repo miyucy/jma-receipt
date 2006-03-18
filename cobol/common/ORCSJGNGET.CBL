@@ -27,6 +27,7 @@
       ****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-門脇    05/03/20  自立支援法対応
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -157,53 +158,57 @@
                                        FLG-AREA
                                        WRK-AREA
       *
-      *    更正・育成計算区分の取得
-           INITIALIZE                         SYS-1001-REC
-           MOVE    "1001"               TO    SYS-1001-KANRICD
-           MOVE    "*"                  TO    SYS-1001-KBNCD
-           MOVE    LNK-ORCSJGNGET-SRYYM TO    ORC-DBYMD(1:6)
-           MOVE    "01"                 TO    ORC-DBYMD(7:2)
-           MOVE    SYS-1001-REC         TO    MCPDATA-REC
-           MOVE    "DBSELECT"           TO    MCP-FUNC
-           MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH
-           CALL    "ORCMCPSUB"    USING       MCPAREA
-                                              ORCMCPAREA
-                                              MCPDATA-REC
-           IF      MCP-RC               =     ZERO
-               MOVE     "SYSKANRI-KEY"  TO    ORC-DBPATH
-               PERFORM   900-SYSKANRI-READ-SEC
-               IF    FLG-SYSKANRI   =   ZERO
-                  MOVE  SYS-1001-HIWARIKBN  TO    WRK-HIWARIKBN
-                  IF    WRK-HIWARIKBN  =   SPACE
-                      MOVE    "1"           TO    WRK-HIWARIKBN
-                  END-IF
-               ELSE
-                  MOVE     11           TO    LNK-ORCSJGNGET-RC
-               END-IF
+           IF     LNK-ORCSJGNGET-SRYYM    >=   "200604"
+             PERFORM    100-KEISAN1-SEC
            ELSE
-                  MOVE     11           TO    LNK-ORCSJGNGET-RC
-           END-IF
+      *      更正・育成計算区分の取得
+             INITIALIZE                         SYS-1001-REC
+             MOVE    "1001"               TO    SYS-1001-KANRICD
+             MOVE    "*"                  TO    SYS-1001-KBNCD
+             MOVE    LNK-ORCSJGNGET-SRYYM TO    ORC-DBYMD(1:6)
+             MOVE    "01"                 TO    ORC-DBYMD(7:2)
+             MOVE    SYS-1001-REC         TO    MCPDATA-REC
+             MOVE    "DBSELECT"           TO    MCP-FUNC
+             MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH
+             CALL    "ORCMCPSUB"    USING       MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
+             IF      MCP-RC               =     ZERO
+                 MOVE     "SYSKANRI-KEY"  TO    ORC-DBPATH
+                 PERFORM   900-SYSKANRI-READ-SEC
+                 IF    FLG-SYSKANRI   =   ZERO
+                    MOVE  SYS-1001-HIWARIKBN  TO    WRK-HIWARIKBN
+                    IF    WRK-HIWARIKBN  =   SPACE
+                        MOVE    "1"           TO    WRK-HIWARIKBN
+                    END-IF
+                 ELSE
+                    MOVE     11           TO    LNK-ORCSJGNGET-RC
+                 END-IF
+             ELSE
+                    MOVE     11           TO    LNK-ORCSJGNGET-RC
+             END-IF
       *
-           MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+             MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
+             MOVE    "SYSKANRI-KEY"       TO  ORC-DBPATH
+             CALL    "ORCMCPSUB"          USING
+                                          MCPAREA
+                                          ORCMCPAREA
+                                          MCPDATA-REC
       *
-           IF    LNK-ORCSJGNGET-RC   =   ZERO
-               EVALUATE   LNK-ORCSJGNGET-KOHHKNNUM
-                  WHEN     "015"
-                  WHEN     "016"
-                     EVALUATE   WRK-HIWARIKBN
-                        WHEN     "1"
-                          PERFORM    100-KEISAN1-SEC
-                        WHEN     "2"
-                          PERFORM    200-KEISAN2-SEC
-                     END-EVALUATE
-                  WHEN     OTHER
-                          PERFORM    100-KEISAN1-SEC
-               END-EVALUATE
+             IF    LNK-ORCSJGNGET-RC   =   ZERO
+                 EVALUATE   LNK-ORCSJGNGET-KOHHKNNUM
+                    WHEN     "015"
+                    WHEN     "016"
+                       EVALUATE   WRK-HIWARIKBN
+                          WHEN     "1"
+                            PERFORM    100-KEISAN1-SEC
+                          WHEN     "2"
+                            PERFORM    200-KEISAN2-SEC
+                       END-EVALUATE
+                    WHEN     OTHER
+                            PERFORM    100-KEISAN1-SEC
+                 END-EVALUATE
+             END-IF
            END-IF
       *
            .
@@ -287,6 +292,18 @@
                                          MCPAREA
                                          ORCMCPAREA
                                          MCPDATA-REC
+      *
+           IF     LNK-ORCSJGNGET-SRYYM   >=   "200604"
+               EVALUATE   LNK-ORCSJGNGET-KOHHKNNUM
+                  WHEN     "015"
+                  WHEN     "016"
+                  WHEN     "021"
+                     MOVE   LNK-ORCSJGNGET-NYUJGNGAK
+                                TO  LNK-ORCSJGNGET-TAFTNRUIKEI
+                     MOVE   LNK-ORCSJGNGET-GAIJGNGAK
+                                TO  LNK-ORCSJGNGET-NYUJGNGAK
+               END-EVALUATE
+           END-IF
       *
            .
       *

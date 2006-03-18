@@ -73,6 +73,7 @@
       *                                     Ï·¿ÍÀ­Ç§ÃÎ¾É¼À´µ¼£ÎÅÉÂÅïÆþ±¡ÎÁ£²
       *  01.00.28    NACL-ÌçÏÆ    06/01/20  É¸·çÂÐ±þ
       *  01.03.01    NACL-ÌçÏÆ    06/03/09  ¤¤¤ï¤­»Ô½Å¿´ÂÐ±þ
+      *  01.03.02    NACL-ÌçÏÆ    06/03/20  ¼«Î©»Ù±çË¡ÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -195,6 +196,7 @@
            03  FLG-SANTEI                  PIC 9(01).
            03  FLG-TOKUSYU                 PIC 9(01).
            03  FLG-KOUREISYA               PIC 9(01).
+           03  FLG-JIRITU-SAI              PIC 9(01).
       *
       * ¼¼ÎÁº¹³ÛÂàÈòÍÑ¥Æ¡¼¥Ö¥ë     
        01  TABLE-RMSAGAKU.
@@ -312,11 +314,13 @@
            03  FILLER          PIC X(09)   VALUE    "113003510".
       *    ¾®»ù²Ê³°Íè¿ÇÎÅÎÁ¡Ê±¡Æâ½èÊý¡Ë½é¿Ç»þ
            03  FILLER          PIC X(09)   VALUE    "113003710".
+      *    Æ±Æü½é¿Ç
+           03  FILLER          PIC X(09)   VALUE    "111011810".
       *
        01  TBL-SYOSIN-R        REDEFINES   TBL-SYOSIN-AREA.
-           03  TBL-SYOSIN      PIC X(09)   OCCURS    6.
+           03  TBL-SYOSIN      PIC X(09)   OCCURS    7.
       *
-       01  TBL-SYOSIN-MAX      PIC 9(02)   VALUE     6.
+       01  TBL-SYOSIN-MAX      PIC 9(02)   VALUE     7.
       *
       *    Ê¡²¬¸©¸øÈñ¤ÎµëÉÕÂÐ¾Ý³°È½ÄêÍÑ¤Î½é¿ÇÂàÈò¥Æ¡¼¥Ö¥ë
        01  TBL-FUKUOKA.
@@ -566,10 +570,16 @@
                      MOVE      1       TO     FLG-KOUREISYA
                 END-IF
       *
+                IF      (LNK-S02-SKYSTYMD(1:6)     >=  "200604")
+                AND     (LNK-S02-JIRITU-SAI-KBN     =    "1"   )
+                     MOVE      1       TO     FLG-JIRITU-SAI
+                END-IF
+      *
            END-PERFORM.
       *
       *    ÆÃ¼ì·×»»¡ÊºÆ·×»»¡Ë
-           IF     ( FLG-TOKUSYU           =    1 )
+           IF     ( FLG-TOKUSYU           =    1  )
+           OR     ( FLG-JIRITU-SAI        =    1  )
            OR     ((FLG-KOUREISYA         =    1 ) AND
                    (LNK-S02-TEIKI-KBN     =   "X"))
                 PERFORM     TOKUSYU-SANTEI-SEC

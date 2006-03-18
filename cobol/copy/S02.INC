@@ -22,6 +22,8 @@
                 04  S02-B04S-STATE   PIC S9(9)   BINARY.
               03  S02-B03S.
                 04  S02-B03S-STATE   PIC S9(9)   BINARY.
+              03  S02-LBLMSG-STYLE   PIC X(20).
+              03  S02-LBLMSG         PIC X(60).
               03  S02-PTNUM-STATE
                                 PIC S9(9)   BINARY.
               03  S02-PTNUM     PIC X(20).
