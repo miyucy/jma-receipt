@@ -116,6 +116,7 @@
            03  IDZ                 PIC 9(04).
            03  IDXX                PIC 9(04).
            03  IDXY                PIC 9(04).
+           03  IDXZ                PIC 9(04).
       *     
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
@@ -632,8 +633,10 @@
                    MOVE    2                   TO  IDY2
                END-IF
                IF      IDXX            >   ZERO
+                   MOVE    IDY1            TO  IDXZ
                    MOVE    IDXX            TO  IDY4
                    PERFORM 210-ROU-SYUKEI-SEC
+                   MOVE    IDXZ            TO  IDY1
                    MOVE    100             TO  IDY4
                    PERFORM 210-ROU-SYUKEI-SEC
                END-IF
@@ -951,7 +954,7 @@
                          TO  SUM-ROU-SHOKUJIFTN    (IDY4 IDY3 IDY1 IDY2)
                              SUM-ROU-GOK-SHOKUJIFTN(IDY4 IDY3)
       *
-      *    小計   
+      *    小計
            ADD     1         TO  SUM-ROU-KENSU    (IDY4 IDY3 IDY1 3)
            ADD     RECE10-FTNMONEY       (IDX1)
                              TO  SUM-ROU-FTNMONEY (IDY4 IDY3 IDY1 3)
