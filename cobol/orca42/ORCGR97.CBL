@@ -193,6 +193,7 @@
            03  IDZ                 PIC 9(04).
            03  IDXX                PIC 9(04).
            03  IDXY                PIC 9(04).
+           03  IDXZ                PIC 9(04).
       *
            03  IDX1                PIC 9(04). 
            03  IDX2                PIC 9(04).
@@ -707,11 +708,13 @@
       *    連番号と表示行の仮計算
            MOVE    WRK-LINE        TO  IDXX
            MOVE    WRK-RENNUM      TO  IDXY
+           MOVE    ZERO            TO  IDXZ
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL   IDX1    >       100
                    OR      LNK-SYUACC-IO-RECESYUBETU (IDX1)    = SPACE
                ADD     1               TO  IDXX
                                            IDXY
+                                           IDXZ
            END-PERFORM
       *
       *    該当頁に同一患者の情報を表示できるか
@@ -719,11 +722,13 @@
                ADD     1               TO  WRK-PAGE
                MOVE    ZERO            TO  WRK-LINE
            END-IF
+           IF      WRK-PAGE        <   SPA-GMN-PAGE
+               ADD     IDXZ            TO  WRK-LINE
+                                           WRK-RENNUM
+           END-IF
       *
-      *    該当頁に表示するデータかどうか
+      *    該当頁に表示するデータか
            IF      WRK-PAGE    NOT =   SPA-GMN-PAGE
-               MOVE    IDXY            TO  WRK-RENNUM
-               MOVE    IDXX            TO  WRK-LINE 
                GO  TO  31011-SYUKA-GMN-HENSYU-EXT
            END-IF
       *
