@@ -660,7 +660,7 @@
       *
       *    次ページの有無
            IF    ( WRK-PAGE            >   SPA-GMN-PAGE )
-           AND   ( FLG-SYUKA           =   ZERO         )
+      *****AND   ( FLG-SYUKA           =   ZERO         )
                MOVE    1                   TO  SPA-GMN-NEXT
            ELSE
                MOVE    ZERO                TO  SPA-GMN-NEXT
