@@ -51,10 +51,11 @@
       *  02.08.01    NACL-小豆沢  06/03/16  入院料老人コード置き換えは療養病棟
       *                                     または療養病床のみを対象とする
       *              NACL-小豆沢  06/03/17  特定入院料対応
-      *                                     脳卒中ケアユニット入院医療管理料
-      *                                     精神科救急入院料
-      *                                     精神科急性期治療病棟入院料１
-      *                                     精神科急性期治療病棟入院料２
+      *                                       脳卒中ケアユニット入院医療管理料
+      *                                       精神科救急入院料
+      *                                       精神科急性期治療病棟入院料１
+      *                                       精神科急性期治療病棟入院料２
+      *                                     看護補助加算の変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -5462,6 +5463,18 @@
                            MOVE  "190103970"   TO
                                               WRK-NYUKHNKSN-SRYCD(IDX8)
                        WHEN     "05"
+                           MOVE  "190104070"   TO
+                                              WRK-NYUKHNKSN-SRYCD(IDX8)
+                       WHEN     "06"
+                           MOVE  "190103770"   TO
+                                              WRK-NYUKHNKSN-SRYCD(IDX8)
+                       WHEN     "07"
+                           MOVE  "190103870"   TO
+                                              WRK-NYUKHNKSN-SRYCD(IDX8)
+                       WHEN     "08"
+                           MOVE  "190103970"   TO
+                                              WRK-NYUKHNKSN-SRYCD(IDX8)
+                       WHEN     "09"
                            MOVE  "190104070"   TO
                                               WRK-NYUKHNKSN-SRYCD(IDX8)
                    END-EVALUATE

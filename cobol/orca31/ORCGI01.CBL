@@ -115,6 +115,7 @@
       *                                     Àº¿À²ÊµßµÞÆþ±¡ÎÁ
       *                                     Àº¿À²ÊµÞÀ­´ü¼£ÎÅÉÂÅïÆþ±¡ÎÁ£±
       *                                     Àº¿À²ÊµÞÀ­´ü¼£ÎÅÉÂÅïÆþ±¡ÎÁ£²
+      *                                     ´Ç¸îÊä½õ²Ã»»¤ÎÊÑ¹¹
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -9089,6 +9090,19 @@
                            MOVE  "190103970"   TO
                                               WRK-NYUKHNKSN-SRYCD(IDX8)
                        WHEN     "05"
+                           MOVE  "190104070"   TO
+                                              WRK-NYUKHNKSN-SRYCD(IDX8)
+      *                Ê¿À®£±£¸Ç¯£´·î²þÀµÂÐ±þ
+                       WHEN     "06"
+                           MOVE  "190103770"   TO
+                                              WRK-NYUKHNKSN-SRYCD(IDX8)
+                       WHEN     "07"
+                           MOVE  "190103870"   TO
+                                              WRK-NYUKHNKSN-SRYCD(IDX8)
+                       WHEN     "08"
+                           MOVE  "190103970"   TO
+                                              WRK-NYUKHNKSN-SRYCD(IDX8)
+                       WHEN     "09"
                            MOVE  "190104070"   TO
                                               WRK-NYUKHNKSN-SRYCD(IDX8)
                    END-EVALUATE
