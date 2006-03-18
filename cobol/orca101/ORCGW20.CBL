@@ -1604,6 +1604,8 @@
                GO  TO  4201-BTU-UPDATE-EXT
            END-IF
       *
+           MOVE    SYSKANRI-REC    TO  SYS-5001-REC
+      *
       *    ÉÂÅï¾ðÊóÊÔ½¸½èÍý
            PERFORM 4201-BTU-EDIT-SEC
       *
@@ -1800,13 +1802,20 @@
            MOVE    CONST-SEISINCD  TO  SYS-5001-SEISIN-CD
            MOVE    "1"             TO  SYS-5001-SEISIN-KBN
       *
-      *    ´Ç¸îÇÛÃÖ²Ã»»
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   5 )
-               MOVE    CONST-KANGOCD (IDX1)
-                                   TO  SYS-5001-KANGO-CD (IDX1)
-               MOVE    "1"         TO  SYS-5001-KANGO-KBN (IDX1)
-           END-PERFORM
+      *
+           IF    ( SPA-NAI-W20-YUKOSTYMD   >=  CONST-H180401 )
+               MOVE    CONST-KANGOCD (1)
+                                   TO  SYS-5001-KANGO-CD  (1)
+               MOVE    "1"         TO  SYS-5001-KANGO-KBN (1)
+           ELSE
+      *        ´Ç¸îÇÛÃÖ²Ã»»
+               PERFORM VARYING IDX1    FROM    1   BY  1
+                       UNTIL ( IDX1    >   5 )
+                   MOVE    CONST-KANGOCD (IDX1)
+                                       TO  SYS-5001-KANGO-CD (IDX1)
+                   MOVE    "1"         TO  SYS-5001-KANGO-KBN (IDX1)
+               END-PERFORM
+           END-IF
       *
            .
        4201-BTU-KSN-EDIT-EXT.

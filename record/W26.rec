@@ -22,40 +22,49 @@ W26	{
 		EDYUKYMD	{
 			value	varchar(10);
 		};
-		CHK_NANBYO	{
+		CHK_KSN01	{
 			value	bool;
+			label	varchar(80);
 			state	int;
 		};
-		CHK_TOKUSYU	{
+		CHK_KSN02	{
 			value	bool;
+			label	varchar(80);
 			state	int;
 		};
-		CHK_JIDO	{
+		CHK_KSN03	{
 			value	bool;
+			label	varchar(80);
 			state	int;
 		};
-		CHK_SEISIN	{
+		CHK_KSN04	{
 			value	bool;
+			label	varchar(80);
 			state	int;
 		};
-		CHK_KANGO1	{
+		CHK_KSN05	{
 			value	bool;
+			label	varchar(80);
 			state	int;
 		};
-		CHK_KANGO2	{
+		CHK_KSN06	{
 			value	bool;
+			label	varchar(80);
 			state	int;
 		};
-		CHK_KANGO3	{
+		CHK_KSN07	{
 			value	bool;
+			label	varchar(80);
 			state	int;
 		};
-		CHK_KANGO4	{
+		CHK_KSN08	{
 			value	bool;
+			label	varchar(80);
 			state	int;
 		};
-		CHK_KANGO5	{
+		CHK_KSN09	{
 			value	bool;
+			label	varchar(80);
 			state	int;
 		};
 		SELNUM	{

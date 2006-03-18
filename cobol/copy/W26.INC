@@ -14,21 +14,10 @@
                 04  W26-VALUE   PIC X(10).
               03  W26-EDYUKYMD.
                 04  W26-VALUE   PIC X(10).
-              03  W26-CHK-NANBYO.
-                04  W26-VALUE   PIC X.
-              03  W26-CHK-NANBYO-STATE     PIC S9(9)   BINARY.
-              03  W26-CHK-TOKUSYU.
-                04  W26-VALUE   PIC X.
-              03  W26-CHK-TOKUSYU-STATE    PIC S9(9)   BINARY.
-              03  W26-CHK-JIDO.
-                04  W26-VALUE   PIC X.
-              03  W26-CHK-JIDO-STATE       PIC S9(9)   BINARY.
-              03  W26-CHK-SEISIN.
-                04  W26-VALUE   PIC X.
-              03  W26-CHK-SEISIN-STATE     PIC S9(9)   BINARY.
-              03  W26-CHK-KANGO-OCC OCCURS 5.
-                04  W26-CHK-KANGO          PIC X.
-                04  W26-CHK-KANGO-STATE    PIC S9(9)   BINARY.
+              03  W26-CHK-KSN-OCC          OCCURS 9.
+                04  W26-CHK-KSN            PIC X(01).
+                04  W26-CHK-KSN-LBL        PIC X(80).
+                04  W26-CHK-KSN-STATE      PIC S9(9)   BINARY.
               03  W26-SELNUM.
                 04  W26-VALUE   PIC S9(3).
               03  W26-SCROLLEDWINDOW1.

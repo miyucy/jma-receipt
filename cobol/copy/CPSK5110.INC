@@ -36,6 +36,8 @@
                05  SYS-5110-EDYUKYMD    PIC  X(08).
       *管理テーブル
            03  SYS-5110-TBL.
+      *診療コード
+               05  SYS-5110-SRYCD       PIC  X(09).
       *特定入院料名称
                05  SYS-5110-BTU-TOKUTEINYUIN-NM
                                         PIC  X(40).
@@ -43,7 +45,7 @@
                05  SYS-5110-BTU-TOKUTEINYUIN-NM2
                                         PIC  X(20).
       *予備
-           03                           PIC  X(440).
+               05                       PIC  X(431).
       *端末ＩＤ
            03  SYS-5110-TERMID          PIC  X(16).
       *オペーレータＩＤ

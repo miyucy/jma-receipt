@@ -32,65 +32,60 @@
       *        ヘッダ項目領域
                09  SPA-GMN-W26-HEAD-AREA.
       *          病棟名称
-                 11  SPA-GMN-W26-BTU-NAME.
-                   13  SPA-GMN-W26-BTU-NAME-CD         PIC X(02).
+                 11  SPA-GMN-W26-BTUNUM-G.
+                   13  SPA-GMN-W26-BTUNUM              PIC X(02).
                    13                                  PIC X(01).
-                   13  SPA-GMN-W26-BTU-NAME-NM         PIC X(20).
-      *          病棟種別
-                 11  SPA-GMN-W26-BTU-SBT               PIC X(20).
-      *          入院基本料
-                 11  SPA-GMN-W26-BTU-KHNRYO            PIC X(60).
+                   13  SPA-GMN-W26-BTUNUMMEI           PIC X(20).
       *        入力項目領域
                09  SPA-GMN-W26-INPUT-AREA.
-      *          入力領域状態
-                 11  SPA-GMN-W26-STATE                 PIC S9(9)
-                                                       BINARY.
+      *          病棟種別
+                 11  SPA-GMN-W26-SBT                   PIC X(20).
+      *          入院基本料
+                 11  SPA-GMN-W26-KHNRYO                PIC X(60).
       *          有効開始日
                  11  SPA-GMN-W26-STYUKYMD              PIC X(10).
-                 11  SPA-GMN-W26-STYUKYMD-S            PIC X(08).
       *          有効終了日
                  11  SPA-GMN-W26-EDYUKYMD              PIC X(10).
-                 11  SPA-GMN-W26-EDYUKYMD-S            PIC X(08).
-      *          難病患者等特別入院診療加算
-                 11  SPA-GMN-W26-CHK-NANBYO            PIC X.
-      *          特殊疾患入院施設管理加算
-                 11  SPA-GMN-W26-CHK-TOKUSYU           PIC X.
-      *          療養病棟療養環境加算
-      *          11  SPA-GMN-W26-CHK-YORYO             PIC X
-      *                                                OCCURS 3.
-      *          児童・思春期精神科入院医療管理加算
-                 11  SPA-GMN-W26-CHK-JIDO              PIC X.
-      *          精神科応急入院施設管理加算
-                 11  SPA-GMN-W26-CHK-SEISIN            PIC X.
-      *          看護配置加算
-                 11  SPA-GMN-W26-CHK-KANGO             PIC X
-                                                       OCCURS 5.
+                 11  SPA-GMN-W26-KSNNAME-G.
+                     13  SPA-GMN-W26-KSNNAME           PIC X(80)
+                                                       OCCURS  9.
+                 11  SPA-GMN-W26-CHK-KSN-G.
+                     13  SPA-GMN-W26-CHK-KSN           PIC X(01)
+                                                       OCCURS  9.
       *          選択番号
                  11  SPA-GMN-W26-SELNUM                PIC 9(03).
       *        有効期間リスト
                09  SPA-GMN-W26-YUKOYMDLST.
-                 11 SPA-GMN-W26-YUKOYMDLST-CNT         PIC 9(05).
-                 11 SPA-GMN-W26-YUKOYMDLST-ITM         OCCURS  100.
+                 11 SPA-GMN-W26-YUKOYMDLST-MAX         PIC 9(05).
+                 11 SPA-GMN-W26-YUKOYMDLST-OCC         OCCURS  100.
                     13  SPA-GMN-W26-TSELNUM            PIC 9(3).
                     13  SPA-GMN-W26-TSTYUKYMD          PIC X(9).
-                    13  SPA-GMN-W26-TSTYUKYMD-S        PIC X(8).
                     13  SPA-GMN-W26-TEDYUKYMD          PIC X(9).
-                    13  SPA-GMN-W26-TEDYUKYMD-S        PIC X(8).
                  11 SPA-GMN-W26-YUKOYMDLST-SEL         PIC 9(05).
       *
       *        コンボ項目領域
-               09  SPA-GMN-W26-CMB-DAT-AREA.
+               09  SPA-GMN-W26-CMB-AREA.
       *          病棟名称コンボ
-                 11  SPA-GMN-W26-CMB-BTU-NAME.
-                   13  SPA-GMN-W26-BTU-NAME-CNT        PIC S9(9)
-                                                       BINARY.
-                   13  SPA-GMN-W26-BTU-NAME-ITM-OCC    OCCURS  50 TIMES
-                                               INDEXED BY  CMB-IDX01.
-                     15  SPA-GMN-W26-BTU-NAME-ITM      PIC X(23).
-      *                ITM2には病棟種別をセット
-                     15  SPA-GMN-W26-BTU-NAME-ITM2     PIC X(20).
-      *                ITM3には入院料をセット
-                     15  SPA-GMN-W26-BTU-NAME-ITM3     PIC X(60).
+                 11  SPA-GMN-W26-BTUNUMLST-G.
+                   13  SPA-GMN-W26-BTUNUM-MAX          PIC 9(03).
+                   13  SPA-GMN-W26-BTUNUMLST          OCCURS 50.
+                     15  SPA-GMN-W26-BTUNUML          PIC X(02).
+                     15                                PIC X(01).
+                     15  SPA-GMN-W26-BTUNUMMEIL       PIC X(20).
+               09  SPA-NAI-W26-INPUT-AREA.
+                 11  SPA-NAI-W26-KHNRYO                PIC X(09).
+                 11  SPA-NAI-W26-KSNKBN                PIC X(03).
+                 11  SPA-NAI-W26-STYUKYMD              PIC X(08).
+                 11  SPA-NAI-W26-EDYUKYMD              PIC X(08).
+                 11  SPA-NAI-W26-CHK-KSN-G.
+                     13  SPA-NAI-W26-CHK-KSN-OCC           OCCURS 9.
+                         15   SPA-NAI-W26-CHK-KSN-SRYCD    PIC X(09).
+                         15   SPA-NAI-W26-CHK-KSN-KSNKBN   PIC X(03).
+      *
+               09  SPA-NAI-W26-YUKOYMDLST.
+                 11 SPA-NAI-W26-YUKOYMDLST-OCC         OCCURS  100.
+                    13  SPA-NAI-W26-TSTYUKYMD          PIC X(8).
+                    13  SPA-NAI-W26-TEDYUKYMD          PIC X(8).
       *  病室入院基本料加算情報設定画面ＳＰＡ
          03  SPA-W27.
            05  SPA-W27-AREA.
