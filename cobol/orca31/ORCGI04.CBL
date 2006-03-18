@@ -2573,7 +2573,7 @@
                GO  TO  451-TOUROKU-SYORI-EXT
            END-IF
       *
-           PERFORM 800-ORCSSYUKAMAIN-SEC
+      *    PERFORM 800-ORCSSYUKAMAIN-SEC
       *
            .
        451-TOUROKU-SYORI-EXT.

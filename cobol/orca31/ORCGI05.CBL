@@ -499,7 +499,7 @@
                GO  TO  220-TOUROKU-EXT
            END-IF
       *
-           PERFORM 800-ORCSSYUKAMAIN-SEC
+      *    PERFORM 800-ORCSSYUKAMAIN-SEC
       *
            MOVE    SPA-GMN-I05-TAIINCD-CD
                                        TO  SPA-I02-I05-TAIINCD

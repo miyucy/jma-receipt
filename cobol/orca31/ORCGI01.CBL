@@ -13098,7 +13098,7 @@
                GO  TO  4801-PTINF-UPD-EXT
            END-IF
       *
-           PERFORM 800-ORCSSYUKAMAIN-SEC
+      *    PERFORM 800-ORCSSYUKAMAIN-SEC
       *
            .
        4801-PTINF-UPD-EXT.
