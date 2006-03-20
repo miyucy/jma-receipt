@@ -286,6 +286,30 @@ path	del1 	{
 	};
 };
 
+path	del2 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_syuka
+			WHERE   HOSPID         =   :HOSPID
+			AND     NYUGAIKBN      =   :NYUGAIKBN
+			AND     PTID           =   :PTID
+			AND     SRYYM          >   :SRYYM
+		;
+	};
+};
+
+path	del3 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_syuka
+			WHERE   HOSPID         =   :HOSPID
+			AND     NYUGAIKBN      =   :NYUGAIKBN
+			AND     PTID           =   :PTID
+			AND     TEN_KBN        =   :TEN_KBN
+			AND     SRYYM          >   :SRYYM
+		;
+	};
+};
 path	all	{
 	DBSELECT	{
 		DECLARE tbl_syuka_all_csr CURSOR FOR
