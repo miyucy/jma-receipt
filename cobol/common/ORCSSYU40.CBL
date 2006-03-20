@@ -450,7 +450,11 @@
            END-IF
       *
       *    初診料点数を給付対象外点数へ
-           PERFORM 10013-SYOSIN-TEN-SEC
+           IF      SPA-SRYYMD(1:6)     <   "200604"
+               PERFORM 10013-SYOSIN-TEN-SEC
+           ELSE
+               PERFORM 10013-SYOSIN02-TEN-SEC
+           END-IF
       *
            .
        1001-SYOUNIKA-HEN-EXT.
@@ -529,6 +533,66 @@
       *
            .
        10013-SYOSIN-TEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    初診料点数を給付対象外点数設定処理
+      *****************************************************************
+       10013-SYOSIN02-TEN-SEC            SECTION.
+      *
+           MOVE    ZERO                TO  WRK-ZAITEN
+      *    診療コードから点数計算
+           IF      FLG-OK              =   1
+      *        病院
+               MOVE    "111000110"         TO  WRK-SRYCD
+               PERFORM 10011-TENSU-SET-SEC
+               ADD     WRK-TENSU               TO  WRK-ZAITEN
+      *
+      *        乳幼児加算
+      *        時間外
+               EVALUATE    WRK-KASAN
+                   WHEN    "1"
+      *                時間外
+                       MOVE    "111011970"         TO  WRK-SRYCD
+                   WHEN    "2"
+      *                休日
+                       MOVE    "111012070"         TO  WRK-SRYCD
+                   WHEN    "3"
+      *                深夜
+                       MOVE    "111012170"         TO  WRK-SRYCD
+                   WHEN    "4"
+      *                時間外特例休日
+                       MOVE    "111012270"         TO  WRK-SRYCD
+                   WHEN    "5"
+      *                乳幼児夜間
+                       MOVE    "111011570"         TO  WRK-SRYCD
+                   WHEN    "2"
+      *                乳幼児休日
+                       MOVE    "111011670"         TO  WRK-SRYCD
+                   WHEN    "3"
+      *                乳幼児深夜
+                       MOVE    "111011770"         TO  WRK-SRYCD
+                   WHEN    OTHER
+      *                時間外なし
+                       MOVE    "111000370"         TO  WRK-SRYCD
+               END-EVALUATE
+               IF      WRK-SRYCD       NOT =   SPACE
+                   PERFORM 10011-TENSU-SET-SEC
+                   ADD     WRK-TENSU               TO  WRK-ZAITEN
+               END-IF
+           END-IF
+      *
+           IF      WRK-HEN-SRYCD   NOT =   SPACE
+               MOVE    WRK-HEN-SRYCD       TO  WRK-SRYCD
+               PERFORM 10011-TENSU-SET-SEC
+               ADD     WRK-TENSU               TO  WRK-ZAITEN
+           END-IF
+      *
+      *    給付対象外点数（指導）
+           ADD     WRK-ZAITEN         TO  SYU-KYUFUGAI-SIDOU-TEN
+      *
+           .
+       10013-SYOSIN02-TEN-EXT.
            EXIT.
       *
       *****************************************************************

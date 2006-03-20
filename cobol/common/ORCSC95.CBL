@@ -892,7 +892,7 @@
            END-IF
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
+           PERFORM 990-DBCLOSE-SEC
       *
            IF      SPA-KOUHATUKA       =   SPACE
                MOVE    "0"                 TO  SPA-KOUHATUKA

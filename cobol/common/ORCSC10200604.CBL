@@ -3606,13 +3606,19 @@
            IF     (IDX-ZAI1            >   ZERO) AND
                   (IDX-ZAI2            >   ZERO) AND
                   (IDX-SYU2            >   ZERO)
-               MOVE    "0017"          TO  SPA-ERRCD
-               MOVE    "1"             TO  WRK-COM-CUR (IDX-SYU2)
-               GO      TO      200-ALL-SYORI-EXT
+      *        同日初診は再診と同時
+               IF      (FLG-DOUJITU        =   1    )  AND
+                       (IDX-ZAI1           =   1    )
+                   CONTINUE
+               ELSE
+                   MOVE    "0017"          TO  SPA-ERRCD
+                   MOVE    "1"             TO  WRK-COM-CUR (IDX-SYU2)
+                   GO      TO      200-ALL-SYORI-EXT
+               END-IF
            END-IF
       *    同日初診
-           IF     (IDX-ZAI1            =   2   )  AND
-                  (IDX-ZAI2            =   ZERO)  AND
+           IF    ((IDX-ZAI1            <=  2   )  OR
+                  (IDX-ZAI2            >   ZERO)) AND
                   (FLG-DOUJITU         =   1   )
                CONTINUE
            ELSE
@@ -3922,18 +3928,6 @@
                        MOVE    "8050"          TO  WRK-ERRCD
                        MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
                    END-IF
-               END-IF
-           END-IF
-      *    同日初診
-           IF     (WRK-KBN             =   "F" )  AND
-                  (WRK-KBN2            =   "D" )
-      *        当日に初診を算定していること
-               IF      (LNK-ORCSC-SYOSIN2  =   1   )  OR
-                       (SPA-SYOYMD         =   SPA-SRYYMD)
-                   CONTINUE
-               ELSE
-                   MOVE    "2067"          TO  WRK-ERRCD
-                   MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
                END-IF
            END-IF
       *
