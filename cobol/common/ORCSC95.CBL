@@ -4979,13 +4979,16 @@
       *
       *    ¾®»ù²Ê³°Íè¿Ç»¡ÎÁ¤ÎÈ½Äê
            PERFORM VARYING     IDXF    FROM    1   BY  1
-                   UNTIL      (IDXF        >   5   )  OR
-                              (FLG-CHK     =   1   )
+                   UNTIL      (IDXF        >   5   )
                IF      WKSRY-SRYCD(IDXF)       =   "113003510"
                                                OR  "113003610"
                                                OR  "113003710"
                                                OR  "113003810"
                    MOVE    1               TO  FLG-CHK
+               END-IF
+      *        Æ±Æü½é¿Ç¤ÏÂÐ¾Ý
+               IF      WKSRY-SRYCD(IDXF)       =   "111011810"
+                   MOVE    ZERO            TO  FLG-CHK
                END-IF
            END-PERFORM
            .
