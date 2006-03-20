@@ -527,13 +527,11 @@
                        MOVE    PTNYUINRRK-PTID   TO  WRK-PTID
       *                入院会計存在チェック
                        PERFORM    2001-NYUINACCT-CHK-SEC
-                       IF         FLG-NYUINACCTARI   =    ZERO
-      *                     前月分入院会計の存在チェック
-      *                     （併せて保険組合せと食事の情報を退避）
-                            PERFORM     2001-NYUINACCT-MAECHK-SEC
-      *                     入院会計作成処理
-                            PERFORM     2001-NYUINACCT-INS-SEC
-                       END-IF
+      *                前月分入院会計の存在チェック
+      *                （併せて保険組合せと食事の情報を退避）
+                       PERFORM     2001-NYUINACCT-MAECHK-SEC
+      *                入院会計作成処理
+                       PERFORM     2001-NYUINACCT-INS-SEC
                    MOVE    "PTNYUINRRK-KEY27"    TO      ORC-DBPATH
                    PERFORM  910-PTNYUINRRK-READ-SEC
                END-PERFORM
@@ -735,7 +733,12 @@
            ELSE
                EVALUATE    WRK-ERRCD
                    WHEN    SPACE
-                       MOVE  "入院会計を作成しました" TO  WRK-NAIYO
+                       IF   FLG-NYUINACCTARI   =   0
+                           MOVE  "入院会計を作成しました" TO  WRK-NAIYO
+                       ELSE
+                           MOVE  "入院会計を更新（再作成）しました"  
+                                                     TO  WRK-NAIYO
+                       END-IF
                    WHEN    "2003"
                        MOVE  "通算日数の取得に失敗しました"
                                                       TO  WRK-NAIYO
