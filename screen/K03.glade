@@ -2024,22 +2024,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label160</name>
-      <x>20</x>
-      <y>168</y>
-      <width>56</width>
-      <height>24</height>
-      <label>ªÿ∆≥Œ¡</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label161</name>
       <x>20</x>
       <y>200</y>
@@ -2783,6 +2767,22 @@
       <width>68</width>
       <height>24</height>
       <label>£’°¶£–</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label160</name>
+      <x>20</x>
+      <y>168</y>
+      <width>56</width>
+      <height>24</height>
+      <label>¥…Õ˝Œ¡</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
