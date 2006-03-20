@@ -1738,16 +1738,16 @@
       *    主科セット（退院月）
            INITIALIZE                 ORCSSYUACCAREA
            MOVE    LNK-SCNYUACCT-EDSRYYMD(1:6)  TO  LNK-SYUACC-I-SRYYM
-           LNK-SCNYUACCT-SYORI-KBN   =   "4"   OR  "A"
+           IF  LNK-SCNYUACCT-SYORI-KBN   =   "4"   OR  "A"
       *
                PERFORM   810-SYUKA04-SET-SEC
       *
       *        退院翌月以降の主科テーブル削除（入院会計）
                INITIALIZE                      SYUKA-REC
                MOVE    SPA-HOSPID          TO  SYUKA-HOSPID
-               MOVE    "2"                 TO  SYUKA-NYUGAIKBN
+               MOVE    "1"                 TO  SYUKA-NYUGAIKBN
                MOVE    SPA-PTID            TO  SYUKA-PTID
-               MOVE    "1"                 TO  SYUKA-TENKBN
+               MOVE    "2"                 TO  SYUKA-TENKBN
                MOVE    LNK-SCNYUACCT-EDSRYYMD(1:6)
                                            TO  SYUKA-SRYYM
                MOVE    SYUKA-REC           TO  MCPDATA-REC
@@ -1779,9 +1779,9 @@
       *        退院翌月以降の主科テーブル削除（入院会計）
                INITIALIZE                      SYUKA-REC
                MOVE    SPA-HOSPID          TO  SYUKA-HOSPID
-               MOVE    "2"                 TO  SYUKA-NYUGAIKBN
+               MOVE    "1"                 TO  SYUKA-NYUGAIKBN
                MOVE    SPA-PTID            TO  SYUKA-PTID
-               MOVE    "1"                 TO  SYUKA-TENKBN
+               MOVE    "2"                 TO  SYUKA-TENKBN
                MOVE    LNK-SCNYUACCT-EDSRYYMD(1:6)
                                            TO  SYUKA-SRYYM
                MOVE    SYUKA-REC           TO  MCPDATA-REC
