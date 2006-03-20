@@ -734,7 +734,7 @@
            END-IF
       *
            IF    ( SYS-5000-SHOKUJIRYOYOCD         =   "197000110" )
-               IF    ( SYS-5000-SHOKUKBN(1)    NOT =   "1" )
+               IF    ( SYS-5000-SHOKUKBN(1)        =   "2" )
                    PERFORM VARYING IDX0    FROM    WRK-STIDX   BY  1
                            UNTIL ( IDX0        >   WRK-EDIDX )
                        MOVE    1           TO  WRK-TOKUKANRIKASAN (IDX0)
