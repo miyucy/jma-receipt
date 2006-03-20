@@ -7555,7 +7555,6 @@
            MOVE    LNK-ORCSC-KIDCD     TO  SPA-KIDCD
       *
            MOVE    LNK-ORCSC-ERRMSG    TO  SPA-ERRMSG2
-      *
       *    エラーコードを保存する
            IF      SPA-ERRCD       NOT =   SPACE
                IF      SPA-ERRCD(1:1)      =   "K"

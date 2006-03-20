@@ -2353,9 +2353,6 @@
       *****************************************************************
        3302-IKUJIEIYO-SET-SEC                  SECTION.
       *
-      *TEST
-           DISPLAY "SPA-DENSIKA:" SPA-DENSIKA
-      *TEST
       *    電子化加算
            IF      SPA-DENSIKA         =   1
                MOVE    "111012370"         TO  WRK-SRYCD
@@ -5170,13 +5167,6 @@
                IF      SPA-SRYKA           =   WRK-SRYKA
                    MOVE    1               TO  FLG-CHK
                END-IF
-      *TEST
-           DISPLAY "IDX:" IDX
-             ",CD:" SPA-COM-INPUTCD (IDX)
-             ",FLG-DOUSYOSIN:" FLG-DOUSYOSIN
-             ",FLG-SYOSIN-ARI:" FLG-SYOSIN-ARI
-             ",SPA-COM-SRYKBN:" SPA-COM-SRYKBN  (IDX)
-      *TEST
                IF     (SPA-COM-SRYKBN  (IDX)   =   "11" ) AND
                      ((SPA-COM-INPUTCD (IDX)(1:1)  =   "1" )  OR
                       (SPA-COM-INPUTCD (IDX)(1:3)  =   "099"))
