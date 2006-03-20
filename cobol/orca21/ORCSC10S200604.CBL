@@ -5140,11 +5140,40 @@
                   (SPA-ERRCD           =   SPACE)  AND
                   (LNK-SC10S-SYORI     =   "A"
                                        OR  "D"   )
-               PERFORM 101511-SRYKA-INS-SEC
+      *        同時初診判定
+               PERFORM 101510-DOUJI-CHK-SEC
+               IF      FLG-DOUSYOSIN       =   ZERO
+                   PERFORM 101511-SRYKA-INS-SEC
+               END-IF
            END-IF
       *
            .
        10151-SRYKA-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    同時初診判定処理
+      *****************************************************************
+       101510-DOUJI-CHK-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-DOUSYOSIN
+           PERFORM VARYING     IDX     FROM    IDX-A   BY  1
+                   UNTIL      (IDX         >   200 )  OR
+                             ((SPA-COM-INPUTCD (IDX) =   SPACE ) AND
+                              (SPA-GMN-INPUTCD (IDX) =   SPACE )) OR
+                              (FLG-DOUSYOSIN           =   1   )
+               IF     (IDX-A                   NOT =   IDX )  AND
+                      (SPA-GMN-INPUTCD(IDX)(1:1)   =   "$" )
+                   MOVE    200                 TO  IDX
+               ELSE
+      *            同日初診
+                   IF      SPA-COM-INPUTCD (IDX)   =   "111011810"
+                       MOVE    1               TO  FLG-DOUSYOSIN
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           .
+       101510-DOUJI-CHK-EXT.
            EXIT.
       *****************************************************************
       *    他科にて算定済み処理
@@ -5155,7 +5184,6 @@
            MOVE    ZERO                TO  FLG-CHK
            MOVE    ZERO                TO  FLG-SRYKBN
            MOVE    SPACE               TO  WRK-HEN-SRYKA
-           MOVE    ZERO                TO  FLG-DOUSYOSIN
            MOVE    ZERO                TO  FLG-SYOSIN-ARI
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >=  IDX-A    )  OR
