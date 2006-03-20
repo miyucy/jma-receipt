@@ -440,6 +440,7 @@
            03  WRK-SYUKA-G.
                05  WRK-SYUKA-KBN           PIC X(02).
                05  WRK-SYUKA-YMD           PIC X(08).
+           03  WRK-CHK-YMD                 PIC X(08).
       *
       *    患者年齢算出用エリア
        01  WRK-NENREI-AREA.
@@ -462,6 +463,7 @@
            03  WRK-NYUREKILST-ROW          PIC S9(9)   BINARY.
       *
        01  CONST-AREA.
+           03  CONST-H180401               PIC X(08)   VALUE "20060401".
            03  CONST-NYUREKILST-MAX        PIC 9(05)   VALUE   100.
            03  CONST-JOB-SHELLID           PIC X(08)   VALUE   "TEIKI1".
            03  CONST-JOB-JOBID             PIC 9(07)   VALUE   1.
@@ -6724,8 +6726,91 @@
                END-IF
            END-IF
       *
+           PERFORM 48011-H18-KAISEI-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4801-KANREN-CHK-EXT
+           END-IF
+      *
            .
        4801-KANREN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    処理別関連チェック処理
+      *****************************************************************
+       48011-H18-KAISEI-CHK-SEC        SECTION.
+      *
+           MOVE       ZERO         TO  WRK-CHK-YMD
+           EVALUATE    SPA-GMN-I01-SYORIKBN-CD
+      *    入院登録
+           WHEN    "01"
+               MOVE    SPA-NAI-I01-NYUINYMD
+                                   TO  WRK-CHK-YMD
+      *    退院登録
+           WHEN    "02"
+           WHEN    "10"
+           WHEN    "11"
+               MOVE    SPA-NAI-I01-TAIINYMD
+                                   TO  WRK-CHK-YMD
+      *    転科　転棟　転室
+           WHEN    "08"
+      *
+               MOVE    SPA-NAI-I01-IDOYMD
+                                   TO  WRK-CHK-YMD
+           END-EVALUATE
+      *
+           IF    ( WRK-CHK-YMD     >=  CONST-H180401 )
+      *
+               INITIALIZE  SYS-5001-REC
+               MOVE    "5001"              TO  SYS-5001-KANRICD
+               MOVE    SPA-GMN-I01-BTUNAME-CD  TO  SYS-5001-KBNCD
+               MOVE    WRK-CHK-YMD         TO  ORC-DBYMD
+               MOVE    SYS-5001-REC        TO  MCPDATA-REC
+               MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
+               PERFORM 900-TBL-SELECT-SEC
+               IF    ( FLG-DBRC    =   ZERO )
+                   MOVE    MCPDATA-REC     TO  SYS-5001-REC
+               ELSE
+                  INITIALIZE                   SYS-5001-REC
+               END-IF
+      *
+               MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
+               PERFORM 900-TBL-CLOSE-SEC
+      *
+               IF    ( SYS-5001-STYUKYMD NOT =  SPACE )
+                AND  ( SYS-5001-STYUKYMD   >=  CONST-H180401 )
+                   CONTINUE
+               ELSE
+                   MOVE    "1039"          TO  SPA-ERRCD
+                   GO  TO  48011-H18-KAISEI-CHK-EXT
+               END-IF
+      *
+               INITIALIZE  SYS-5000-REC
+               MOVE    "5000"              TO  SYS-5000-KANRICD
+               MOVE    "*"                 TO  SYS-5000-KBNCD
+               MOVE    WRK-CHK-YMD         TO  ORC-DBYMD
+               MOVE    SYS-5000-REC        TO  MCPDATA-REC
+               MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
+               PERFORM 900-TBL-SELECT-SEC
+               IF    ( FLG-DBRC    =   ZERO )
+                   MOVE    MCPDATA-REC     TO  SYS-5000-REC
+               ELSE
+                  INITIALIZE                  SYS-5000-REC
+               END-IF
+      *
+               MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
+               PERFORM 900-TBL-CLOSE-SEC
+      *
+               IF    ( SYS-5000-STYUKYMD NOT =  SPACE )
+                 AND ( SYS-5000-STYUKYMD    >=  CONST-H180401 )
+                   CONTINUE
+               ELSE
+                   MOVE    "1040"          TO  SPA-ERRCD
+               END-IF
+      *
+           END-IF
+      *
+           .
+       48011-H18-KAISEI-CHK-EXT.
            EXIT.
       *****************************************************************
       *    処理別関連チェック処理
@@ -14769,6 +14854,16 @@
            WHEN    "1038"
                MOVE    "同日再入院は継続入院のみ可能です"
                                        TO  SPA-ERRMSG
+           WHEN    "1039"
+               MOVE    "システム管理の病棟管理情報の有効期間を平"
+                                       TO  SPA-ERRMSG (1 : 40)
+               MOVE    "成１８年４月１日で区切ってください"
+                                       TO  SPA-ERRMSG (41 : )
+           WHEN    "1040"
+               MOVE    "システム管理の医療機関−入院基本の有効期"
+                                       TO  SPA-ERRMSG (1 : 40)
+               MOVE    "間を平成１８年４月１日で区切ってください"
+                                       TO  SPA-ERRMSG (41 : )
            WHEN    "2012"
                MOVE    "退院計算に必要な会計情報が作成されていません"
                                        TO  SPA-ERRMSG
