@@ -9028,6 +9028,9 @@
                WHEN   "01"
                    MOVE   SPA-NAI-I01-NYUINYMD
                                    TO  ORC-DBYMD
+               WHEN   "07"
+                   MOVE   SPA-NAI-I01-TAIINYMD
+                                   TO  ORC-DBYMD
                WHEN   "08"
                    MOVE   SPA-NAI-I01-IDOYMD
                                    TO  ORC-DBYMD
@@ -12683,6 +12686,9 @@
                WHEN   "01"
                    MOVE   SPA-NAI-I01-NYUINYMD
                                    TO  ORC-DBYMD
+               WHEN   "07"
+                   MOVE   SPA-NAI-I01-TAIINYMD
+                                   TO  ORC-DBYMD
                WHEN   "08"
                    MOVE   SPA-NAI-I01-IDOYMD
                                    TO  ORC-DBYMD
@@ -12725,6 +12731,9 @@
            EVALUATE   SPA-GMN-I01-SYORIKBN-CD
                WHEN   "01"
                    MOVE   SPA-NAI-I01-NYUINYMD
+                                   TO  ORC-DBYMD
+               WHEN   "07"
+                   MOVE   SPA-NAI-I01-TAIINYMD
                                    TO  ORC-DBYMD
                WHEN   "08"
                    MOVE   SPA-NAI-I01-IDOYMD
