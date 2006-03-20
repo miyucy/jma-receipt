@@ -8326,9 +8326,9 @@
                             END-EVALUATE
                         END-IF
                      ELSE
-                        IF    WK-SYO-NYUKFTNRATE  =  20  OR  30
-                        AND   WK-JIRITU-TENSURUIKEI(KOH-IDX)
-                                                  >  77655
+                        IF   (WK-SYO-NYUKFTNRATE  =  20  OR  30)
+                        AND  (WK-JIRITU-TENSURUIKEI(KOH-IDX)
+                                                  >  77655     )
                             MOVE   WK-SYO-NYUKFTNRATE
                                             TO  WK-NYUKFTNRATE
                                                 LNK-SYU-YKZKENNUM

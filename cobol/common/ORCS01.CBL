@@ -5529,6 +5529,7 @@
                              END-IF                                     
                    END-EVALUATE
                END-IF
+             END-IF
            END-IF.
       *
       *    ¸øÈñ£²¥«¥¦¥ó¥È
@@ -5998,6 +5999,7 @@
                              END-IF                                     
                    END-EVALUATE
                END-IF
+             END-IF
            END-IF.
       *    ¸øÈñ£³¥«¥¦¥ó¥È
            IF  (COMB-KOH3HKNNUM               NOT = SPACE)   AND
@@ -6468,6 +6470,7 @@
                              END-IF                                     
                    END-EVALUATE
                END-IF
+             END-IF
            END-IF.
       *    ¸øÈñ£´¥«¥¦¥ó¥È
            IF  (COMB-KOH4HKNNUM               NOT = SPACE)   AND
@@ -6940,6 +6943,7 @@
                              END-IF                                     
                    END-EVALUATE
                END-IF
+             END-IF
            END-IF.
       *
        2202-SYUNOU-COUNT-EXT.
@@ -9522,9 +9526,9 @@
                            END-IF
                         END-IF
                      ELSE
-                        IF    WK-SYO-GAIKFTNRATE  =  20  OR  30
-                        AND   WK-JIRITU-TENSURUIKEI(KOH-IDX)
-                                                  >  77655
+                        IF   (WK-SYO-GAIKFTNRATE  =  20  OR  30)
+                        AND  (WK-JIRITU-TENSURUIKEI(KOH-IDX)
+                                                  >  77655     )
                             MOVE   WK-SYO-GAIKFTNRATE
                                             TO  WK-GAIKFTNRATE
                                                 LNK-SYU-YKZKENNUM
