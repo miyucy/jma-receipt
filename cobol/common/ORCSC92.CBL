@@ -1160,12 +1160,6 @@
                COMPUTE LNK-SC91-KAISU  =   SPA-COM-SURYO (IDX-T)
                                        *   LNK-SC91-KAISU
            END-IF
-      *TEST
-           DISPLAY "LNK-SC92-SRYCD:" LNK-SC92-SRYCD
-                  ",KAISU:" SPA-COM-KAISU (IDX-T)
-                  ",SURYO:" SPA-COM-SURYO (IDX-T)
-                  ",LNK-SC91-KAISU:" LNK-SC91-KAISU
-      *TEST
       *
            MOVE    LNK-SC92-TEISEI-AREA
                                        TO  LNK-SC91-TEISEI-AREA
@@ -2288,6 +2282,9 @@
       *Ｈ１６年４月から
       *    手術施設基準不適合
            MOVE    FLG-SSTKIJUNCD-ERR  TO  SPA-COM-KIJUNCHK-FLG (IDX-T)
+      *Ｈ１８年４月から
+      *    処置乳幼児加算区分
+           MOVE    TNS-LASERKBN        TO  SPA-COM-LASERKBN (IDX-T)
       *
       *    点数マスタ付加情報より編集
            PERFORM 3006-TENSUPLUS-HEN-SEC
@@ -2895,9 +2892,6 @@
       *    数量・回数のみ変更の時の編集処理
       *****************************************************************
        300-SURYOHEN-SEC         SECTION.
-      *TEST
-           DISPLAY "LNK-SC92-INFLG:" LNK-SC92-INFLG
-      *TEST
       *
       *    入力値チェック
            IF      LNK-SC92-INFLG      =   "1"

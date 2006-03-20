@@ -1031,28 +1031,28 @@
                WHEN    "K831"
                    STRING  "警告！心大血管疾患リハビリテーション"
                                                DELIMITED  BY  SIZE
-                           "発生日から１５０日以上です。"
+                           "発症日から１５０日以上です。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K832"
                    STRING  "警告！脳血管疾患リハビリテーション"
                                                DELIMITED  BY  SIZE
-                           "発生日から１８０日以上です。"
+                           "発症日から１８０日以上です。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K833"
                    STRING  "警告！運動器リハビリテーション"
                                                DELIMITED  BY  SIZE
-                           "発生日から１５０日以上です。"
+                           "発症日から１５０日以上です。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K834"
                    STRING  "警告！呼吸器リハビリテーション"
                                                DELIMITED  BY  SIZE
-                           "発生日から９０日以上です。"
+                           "発症日から９０日以上です。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING

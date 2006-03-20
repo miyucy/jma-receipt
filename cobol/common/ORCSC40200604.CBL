@@ -1074,7 +1074,10 @@
            MOVE    IDX-ZS2             TO  IDX-S
       *
       *    年齢加算処理
-           PERFORM 10013-NENREI-SET-SEC
+      *    ６歳未満に行なう
+           IF      LNK-ORCSC-NENREI-YY     <   6
+               PERFORM 10013-NENREI-SET-SEC
+           END-IF
       *
       *    外来で診察料の無い場合の時間加算
            IF      (SPA-NYUGAIKBN          =   "2"  )  AND
@@ -1331,13 +1334,21 @@
       *****************************************************************
        10013-NENREI-SET-SEC            SECTION.
       *
-           PERFORM VARYING     IDX2    FROM    1   BY  1
-                   UNTIL      (IDX2        >   4       )   OR
-                              (WRK-COM-AGEKSNSRYCD(IDX-ZS IDX2)
-                                               =   SPACE  OR
-                                                   ZERO )
-      *        加算追加
-               MOVE    WRK-COM-AGEKSNSRYCD (IDX-ZS IDX2)  TO  WRK-SRYCD
+           MOVE    SPACE               TO  WRK-SRYCD
+      *    処置乳幼児加算区分判定
+           EVALUATE    WRK-COM-LASERKBN(IDX-ZS)
+               WHEN    1
+                   MOVE    "140049170"     TO  WRK-SRYCD
+               WHEN    2
+                   MOVE    "140049470"     TO  WRK-SRYCD
+               WHEN    3
+                   MOVE    "140031870"     TO  WRK-SRYCD
+               WHEN    4
+                   MOVE    "140049370"     TO  WRK-SRYCD
+               WHEN    5
+                   MOVE    "140050670"     TO  WRK-SRYCD
+           END-EVALUATE
+           IF      WRK-SRYCD       NOT =   SPACE
       *        加算料チェック処理
                PERFORM 100111-KASAN-CHK-SEC
       *        加算料追加処理
@@ -1348,7 +1359,31 @@
                    MOVE    1                   TO  FLG-KASAN-ARI
                    MOVE    4                   TO  IDX2
                END-IF
-           END-PERFORM
+           END-IF
+      *
+           IF    (WRK-SRYCD            =   SPACE ) AND
+                 (WRK-COM-LASERKBN(IDX-ZS) =   0 )
+      *        処置乳幼児加算区分判定
+               PERFORM VARYING     IDX2    FROM    1   BY  1
+                   UNTIL      (IDX2        >   4       )   OR
+                              (WRK-COM-AGEKSNSRYCD(IDX-ZS IDX2)
+                                               =   SPACE  OR
+                                                   ZERO )
+      *            加算追加
+                   MOVE    WRK-COM-AGEKSNSRYCD (IDX-ZS IDX2)
+                                               TO  WRK-SRYCD
+      *            加算料チェック処理
+                   PERFORM 100111-KASAN-CHK-SEC
+      *            加算料追加処理
+                   PERFORM 1002-KASAN-SET-SEC
+                   IF      FLG-ADD             =   1
+                       MOVE    1                   TO  WRK-COM-SANFLG
+                                                           (IDX-S)
+                       MOVE    1                   TO  FLG-KASAN-ARI
+                       MOVE    4                   TO  IDX2
+                   END-IF
+               END-PERFORM
+           END-IF
       *
            .
        10013-NENREI-SET-EXT.
