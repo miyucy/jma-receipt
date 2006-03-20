@@ -474,6 +474,8 @@
                WHEN  OTHER
                    MOVE    3           TO  SPA-GMN-CUR
            END-EVALUATE
+      *
+           MOVE    SPA-GMN-KENCD   TO  SPA-NAI-KENCD
       *----(00.01.01)--ADD-END------
            .
       *
@@ -1153,6 +1155,8 @@
       *        画面初期化
                PERFORM 310-SPASET-SEC
            ELSE
+               MOVE    SPA-NAI-KENCD   TO  SPA-GMN-KENCD
+               MOVE    ZERO            TO  SPA-GMN-SELNUM
                INITIALIZE          SPA-GMN-ENTRY
                MOVE    3       TO  SPA-GMN-CUR
            END-IF
@@ -1245,6 +1249,8 @@
       *        画面初期化
                PERFORM 310-SPASET-SEC
            ELSE
+               MOVE    SPA-NAI-KENCD   TO  SPA-GMN-KENCD
+               MOVE    ZERO            TO  SPA-GMN-SELNUM
                INITIALIZE          SPA-GMN-ENTRY
                MOVE    3       TO  SPA-GMN-CUR
            END-IF
@@ -1484,6 +1490,8 @@
       *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  N21
       *
            MOVE    SPA-GMN-KENCD       TO  N21-KENCD
            MOVE    SPA-GMN-KENNAIYO    TO  N21-KENNAIYO

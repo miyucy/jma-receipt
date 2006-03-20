@@ -55,6 +55,7 @@
       *
            05  SPA-NAI-AREA.
              07  SPA-NAI-SRYCD         PIC X(09).
+             07  SPA-NAI-KENCD         PIC X(21).
       *
       *  ÌôºÞ¾ðÊóÅÐÏ¿¡Ê£Î£²£²¡Ë
            03  SPA-N22-AREA.
