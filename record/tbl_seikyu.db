@@ -1552,3 +1552,26 @@ path	key43		{
 		;
 	};
 };
+
+path	key44	{
+	DBSELECT	{
+		DECLARE tbl_seikyu_key44_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu
+                WHERE (      HOSPID      =    :HOSPID     )
+                  AND (      HKNNUM_S    <>   '060'       )
+                  AND (      HKNNUM_S    <>   '067'       ) 
+                  AND (      HKNNUM_S    <>   '068'       )
+                  AND (      HKNNUM_S    <>   '069'       ) 
+                  AND (      RECESYUBETU <>   '0000'      )
+                  AND (   (( SRYYM       =    :SKYYM   )
+                       AND ( SKYKBN      <>   '0'      )
+                       AND (( SKYYM       =   '000000' ) OR ( SKYYM = :SKYYM )))
+                       OR (( SKYYM       =    :SKYYM   )
+                       AND ( SKYKBN      <>   '0'      )))
+                  AND (      RECEKA      LIKE :RECEKA     )
+                  ORDER BY RECEKA,NYUGAIKBN,SRYYM,SKYYM,HKNJANUM,PTNUM   
+		;
+	};
+};
+

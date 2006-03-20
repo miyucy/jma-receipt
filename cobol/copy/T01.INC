@@ -3,6 +3,7 @@
                 04  T01-VALUE   PIC X(7).
               03  T01-B06-STATE   PIC S9(9)   BINARY.
               03  T01-B07-STATE   PIC S9(9)   BINARY.
+              03  T01-B20-STATE   PIC S9(9)   BINARY.
               03  T01-B21-STATE   PIC S9(9)   BINARY.
               03  T01-SRYYM-STATE   PIC S9(9)   BINARY.
               03  T01-SRYYM-VALUE   PIC X(20).

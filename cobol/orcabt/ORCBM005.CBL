@@ -41,6 +41,9 @@
       *  01.02.01    NACL-藤原    05.03.08  実日数１、実日数２の追加
       *
       *  02.07.01    NACL-藤原    05/08/20  特別療養費対応
+      *
+      *  02.08.01    NACL-藤原    06/02/20  主科対応
+      *                                     HCM05V02.red に変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -68,7 +71,8 @@
            03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *****COPY    "HCM05.INC"     REPLACING  //HCM05//
-           COPY    "HCM05V01.INC"  REPLACING  //HCM05V01//
+      *****COPY    "HCM05V01.INC"  REPLACING  //HCM05V01//
+           COPY    "HCM05V02.INC"  REPLACING  //HCM05V02//
                                    BY         //HC05//.
       *    スパ領域
        01  STS-AREA.
@@ -310,7 +314,7 @@
            PERFORM 900-SEIKYU-CLOSE-SEC
       *
            .
-       100-INIT-EXT.
+       200-MAIN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -354,6 +358,9 @@
            MOVE    WRK-SYSYMDWH        TO  HC05-SYSYMD
            MOVE    CNT-PAGE            TO  WRK-PAGE
            MOVE    WRK-PAGE            TO  HC05-PAGE
+      * 
+           MOVE    "＊＊＊　総括チェックリスト　＊＊＊"
+                                       TO  HC05-TITLE
       *
            EVALUATE    FLG-SYORI   ALSO    KEY-N-TEISYUTUSAKI  ALSO
                                        KEY-N-NYUGAIKBN
@@ -535,7 +542,8 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
       *****MOVE    "HCM05.red"         TO  SPRT-PRTID
-           MOVE    "HCM05V01.red"      TO  SPRT-PRTID
+      *****MOVE    "HCM05V01.red"      TO  SPRT-PRTID
+           MOVE    "HCM05V02.red"      TO  SPRT-PRTID
            MOVE    "総括チェックリスト"TO  SPRT-TITLE
            MOVE    HC05                TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
@@ -783,6 +791,8 @@
                MOVE    RECE10-TEISYUTUSAKI TO  KEY-N-TEISYUTUSAKI
                MOVE    RECE10-NYUGAIKBN    TO  KEY-N-NYUGAIKBN
                ADD     1                   TO  CNT-IN
+      *
+               DISPLAY "PTNUM=" RECE10-PTNUM 
            ELSE
                MOVE    1                   TO  FLG-END 
                MOVE    HIGH-VALUE          TO  KEY-NEW

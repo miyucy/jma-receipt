@@ -76,6 +76,8 @@
       *
       *  02.07.01    NACL-藤原    05/10/31  MONFUNC対応
       *  02.07.02    NACL-藤原    05/12/02  レセ電データ複数枚対応
+      *
+      *  02.08.01    NACL-藤原    06/02/20  主科対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -605,6 +607,12 @@
                                            SPA-DATAKBN6-STATE       
                                            SPA-B21-STATE
       *
+           IF      SPA-SYUKA-KBN      =   "0"
+               MOVE    WIDGET-INSENSITIVE  TO  SPA-B20-STATE
+           ELSE
+               MOVE    WIDGET-NORMAL       TO  SPA-B20-STATE
+           END-IF
+      *
            MOVE    "T"                TO  SPA-DATAKBN4-VALUE  
            MOVE    "T"                TO  SPA-DATAKBN5-VALUE  
            MOVE    "T"                TO  SPA-DATAKBN3-VALUE  
@@ -1061,6 +1069,7 @@
                            END-IF
                        END-IF
                    WHEN    "1011"
+                   WHEN    "1019"
                        PERFORM 480-PRINT-SEC
                    WHEN    OTHER
       *                ジョブ管理チェック処理
@@ -1332,6 +1341,9 @@
       *     印刷
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 450-PRINT-GID-SEC
+      *     主科未設定一覧
+               WHEN    "CLICKED"       ALSO    "B20"
+                   PERFORM 480-PRINT-GID-SEC
       *    公費個別指定
                WHEN    "CLICKED"       ALSO    "B21"
                    PERFORM 490-KOBETU-SEC
@@ -2952,6 +2964,8 @@
                        MOVE    "1012"              TO  SPA-TIDCD
                    WHEN    "B10" 
                        MOVE    "1013"              TO  SPA-TIDCD
+                   WHEN    "B20" 
+                       MOVE    "1019"              TO  SPA-TIDCD
                END-EVALUATE
            END-IF
            .
@@ -2970,6 +2984,7 @@
       *
            EVALUATE    SPA-TIDCD
                WHEN    "1011"
+               WHEN    "1019"
       *            ジョブ管理削除処理
                    MOVE    "ALL"           TO  SJOBKANRI-MODE
                    INITIALIZE                  JOBKANRI-REC
@@ -3057,6 +3072,11 @@
                    MOVE    WRK-CONS-JOB-SHELLID
                                            TO  SHELLTBL-ARG14         
                    MOVE    RECEERR         TO  SHELLTBL-ARG15
+                   IF       SPA-TIDCD      =   "1011"
+                       MOVE    "1"             TO  SHELLTBL-ARG16
+                   ELSE
+                       MOVE    "2"             TO  SHELLTBL-ARG16
+                   END-IF
                    MOVE    SHELLTBL        TO  MCPDATA-REC
                    MOVE    "SHELL"         TO  MCP-FUNC
                    MOVE    "shell"         TO  MCP-TABLE
@@ -3431,6 +3451,7 @@
                    WHEN    "1016"
                    WHEN    "1017"
                    WHEN    "1018"  
+                   WHEN    "1019"  
                        PERFORM 530-TID2SET-SEC
                        GO  TO  500-SET-SCREEN-EXT
                    WHEN    OTHER
@@ -3464,6 +3485,7 @@
       *
            MOVE    SPA-B06-STATE       TO  T01-B06-STATE
            MOVE    SPA-B07-STATE       TO  T01-B07-STATE
+           MOVE    SPA-B20-STATE       TO  T01-B20-STATE
            MOVE    SPA-B21-STATE       TO  T01-B21-STATE
            MOVE    SPA-DATA-STATE      TO  T01-DATA-STATE
            MOVE    SPA-NYUGAIKBN-STATE TO  T01-NYUGAIKBN-STATE
@@ -3803,6 +3825,9 @@
                                        TO  WRK-TIDMSG
                    MOVE    "（症状詳記の印刷を指定）"
                                        TO  WRK-TIDMSG (49:)
+               WHEN    "1019"
+                   MOVE    "主科未設定リストの印刷処理を行います"
+                                       TO  WRK-TIDMSG
            END-EVALUATE
       *
            MOVE    SPACE                TO  TID2

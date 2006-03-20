@@ -25,7 +25,10 @@
       * 公費個別発行機能対応
       *  01.00.01    NACL-藤原    04/10/25  公費個別発行機能の追加
       *  01.00.02    NACL-藤原    05/02/10  レセ電総括表対応
+      *
       *  02.07.01    NACL-藤原    05/12/02  レセ電データ複数枚対応
+      *
+      *  02.08.01    NACL-藤原    06/02/20  主科対応
       *****************************************************************
       *
        01  SPA-T01FREE.
@@ -85,6 +88,7 @@
                05  SPA-STATE.             
                    07  SPA-B06-STATE               PIC S9(09)  BINARY.
                    07  SPA-B07-STATE               PIC S9(09)  BINARY.
+                   07  SPA-B20-STATE               PIC S9(09)  BINARY.
                    07  SPA-B21-STATE               PIC S9(09)  BINARY.
                    07  SPA-DATA-STATE              PIC S9(09)  BINARY.
                    07  SPA-NYUGAIKBN-STATE         PIC S9(09)  BINARY.

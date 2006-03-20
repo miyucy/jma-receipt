@@ -9,6 +9,9 @@ T01	{
 		B07	{
 			state	int;
 		};
+		B20	{
+			state	int;
+		};
 		B21	{
 			state	int;
 		};

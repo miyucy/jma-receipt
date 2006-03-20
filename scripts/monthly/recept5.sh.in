@@ -18,6 +18,7 @@ RENNUM=0
 #        ${13} ジョブＩＤ
 #        ${14} シェルＩＤ
 #        ${15} エラーファイル名 
+#        ${16} 帳票区分 1:チェックリスト 2:主科未設定リスト 
 #-------------------------------------------#
 ##      エラーファイル削除
 	echo $#
@@ -28,12 +29,16 @@ RENNUM=0
 
 ##      未請求一覧
         RENNUM=$(expr $RENNUM + 1) 
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM005 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15}
+        if  [ ${16} -eq '1' ]; then
+            $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM005 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15} > /home/orca/recept5.log
+        else
+            $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM006 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15} > /home/orca/recept5.log
+        fi
         if  [ -e ${15} ]; then
             exit
         fi
        
-       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${13}${14}
+       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${13}${14} >> /home/orca/recept5.log
 
         exit 
 
