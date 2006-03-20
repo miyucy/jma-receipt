@@ -315,6 +315,8 @@
       *    Ｈ１８．改正分
       *                処置乳幼児加算区分
                        09  SPA-COM-LASERKBN            PIC  9(01).
+      *                極低出生体重児加算区分
+                       09  SPA-COM-CHPMESUKSN          PIC  9(01).
       *    点数マスタ付加情報より
       *                採血区分
                        09  SPA-COM-SAIKETUKBN          PIC 9(01).

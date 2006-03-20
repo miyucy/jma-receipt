@@ -313,6 +313,10 @@
                05  SPA-KAIHOU1-ARI         PIC  9(01).
                05  SPA-KAIHOU2-ARI         PIC  9(01).
       *
+      *ºßÂð»þ°å³ØÁí¹ç´ÉÍýÎÁ»»Äê¤¢¤ê
+               05  SPA-ZAIKANRI-ARI         PIC  9(01).
+               05  SPA-ZAIKANRI-ARI2        PIC  9(01).
+      *
       *¼õ¿Ç²ó¿ô
                05  SPA-SINSATU-CNT         PIC  9(03).
       *£±£µºÐÌ¤ËþºÆ¿Ç²Ê»»ÄêÍ­¤ê
