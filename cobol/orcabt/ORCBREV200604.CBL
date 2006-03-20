@@ -2557,16 +2557,13 @@
            PERFORM 900-TBL-SELECT-SEC
            IF    ( FLG-DBRC            =   ZERO )
                MOVE    MCPDATA-REC         TO  NYUKSNCHK-REC
+               IF    ( NYUKSNCHK-CHKKBN    =   "1" OR "2" )
+                   CONTINUE
+               ELSE
+                   MOVE   1        TO     FLG-NYUKSN
+               END-IF
            ELSE
-               MOVE   1                    TO  FLG-NYUKSN
-               GO  TO          4801-NYUKSN-CHK-EXT
-           END-IF
-      *
-           IF    ( NYUKSNCHK-CHKKBN    =   "1" OR "2" )
-               CONTINUE
-           ELSE
-               MOVE   1        TO     FLG-NYUKSN
-               GO  TO  4801-NYUKSN-CHK-EXT
+               MOVE   1            TO  FLG-NYUKSN
            END-IF
       *
            MOVE    "NYUKSNCHK-KEY"    TO  WRK-DBPATH
