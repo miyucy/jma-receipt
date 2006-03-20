@@ -421,6 +421,8 @@
                                        WRK-PARA-SRYYM
            END-UNSTRING
       *
+           MOVE   "200604"             TO   WRK-PARA-SRYYM
+      *
       *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
