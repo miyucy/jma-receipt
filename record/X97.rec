@@ -19,5 +19,9 @@ X97	{
 				select	bool[30];
 			};
 		};
+		B12	{
+	       	state	int;
+			label	varchar(14);
+		};
 	};
 };

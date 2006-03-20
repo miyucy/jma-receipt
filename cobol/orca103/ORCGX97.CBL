@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.02    NACL-森脇    06/03/20  プレビュー追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -42,6 +43,11 @@
       *
       *    スパ領域
            COPY    "COMMON-SPA".
+      *----(01.00.02)--ADD-START---
+           COPY    "X01COMMON-SPA".
+      *
+           COPY    "ENUM-VALUE".
+      *----(01.00.02)--ADD-END-----
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -54,6 +60,9 @@
       *
        01  WRK-AREA.
            03  WRK-PAGE            PIC ZZZZZZZZZ9.
+      *----(01.00.02)--ADD-START---
+           03  WRK-PRT-PAGE        PIC 9(10).
+      *----(01.00.02)--ADD-END-----
       *     
        01  WRK-HEN-AREA.
            03  WRK-HENTIME.
@@ -131,6 +140,9 @@
        000-PROC-SEC                SECTION.
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
+      *----(01.00.02)--ADD-START---
+           MOVE    SPA-WORK        TO  SPA-X01KYOUTU
+      *----(01.00.02)--ADD-END-----
       * 
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
@@ -140,6 +152,9 @@
                    PERFORM 200-GMNSENI
            END-EVALUATE.
       *
+      *----(01.00.02)--ADD-START---
+           MOVE    SPA-X01KYOUTU   TO  SPA-WORK
+      *----(01.00.02)--ADD-END-----
            MOVE    SPA-AREA        TO  SPA-COMMON
       *
            .
@@ -167,6 +182,11 @@
                WHEN    "CLICKED"       ALSO    "pandatimer1"
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 490-KAKUNIN-SEC
+      *----(01.00.02)--ADD-START---
+      *    プレビュー画面へ
+               WHEN    "CLICKED"       ALSO    "B12"
+                   PERFORM 4501-NEXT-GMN-SEC
+      *----(01.00.02)--ADD-END-----
            END-EVALUATE
       *
            .
@@ -177,6 +197,10 @@
       *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
+      *
+      *----(01.00.02)--ADD-START---
+           MOVE    SPACE               TO  SPA-X97-FLG
+      *----(01.00.02)--ADD-END-----
       *
            MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
            MOVE    "X97"               TO  SPA-MOTOPG
@@ -192,6 +216,28 @@
        210-BACK-EXT.
            EXIT.
       *
+      *----(01.00.02)--ADD-START---
+      *****************************************************************
+      *    更新処理
+      *****************************************************************
+       4501-NEXT-GMN-SEC            SECTION.
+      *
+           MOVE    "OK"                TO  SPA-X97-FLG
+      *     
+           MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
+           MOVE    "X97"               TO  SPA-MOTOPG
+      *
+           MOVE    "JOIN"              TO  MCP-PUTTYPE
+           MOVE    SPA-SAKIPG          TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       4501-NEXT-GMN-EXT.
+           EXIT.
+      *----(01.00.02)--ADD-END-----
       *****************************************************************
       *    処理確認処理
       *****************************************************************
@@ -199,80 +245,78 @@
       *
            MOVE    SPACE               TO  X97
            MOVE    ZERO                TO  X97-COUNT
+      *----(01.00.02)--ADD-START---
+           MOVE    WIDGET-INSENSITIVE  TO  X97-B12-STATE
+           MOVE    ZERO                TO  WRK-PRT-PAGE
+      *----(01.00.02)--ADD-END-----
       *        
-           MOVE    SPACE               TO  SYS-3003-REC 
-           INITIALIZE                      SYS-3003-REC
-           MOVE    "3003"              TO  SYS-3003-KANRICD
-           MOVE    WRK-CONS-3003-KBNCD TO  SYS-3003-KBNCD
-           MOVE    SPA-SYSYMD          TO  SYS-3003-STYUKYMD
-                                           SYS-3003-EDYUKYMD
-           MOVE    SYS-3003-REC        TO  MCPDATA-REC
-           PERFORM 900-SYSKANRI-INV-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-3003-REC 
-               PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       SYS-3003-JOBID
-      *            ジョブ管理チェック処理
-                   MOVE    "CHK"           TO  SJOBKANRI-MODE
-                   INITIALIZE                  JOBKANRI-REC
-                   MOVE    IDX             TO  JOB-JOBID
-                   MOVE    WRK-CONS-JOB-SHELLID
-                                           TO  JOB-SHELLID
-                   CALL    "ORCSJOB"       USING
-                                           ORCSJOBKANRIAREA  
-                                           JOBKANRI-REC 
-                   IF      SJOBKANRI-RETURN    =   ZERO
-                       MOVE    JOB-JOBID       TO  X97-RENNUM   (IDX)
-                       MOVE    JOB-SHELLMSG    TO  X97-SHORINM  (IDX)
-                       MOVE    JOB-STARTTIME(1:2)
-                                               TO  WRK-HH
-                       MOVE    JOB-STARTTIME(3:2)
-                                               TO  WRK-MM
-                       MOVE    JOB-STARTTIME(5:2)
-                                               TO  WRK-SS
-                       MOVE    WRK-HENTIME     TO  X97-STARTTIME(IDX)
-                       MOVE    JOB-ENDTIME(1:2)
-                                               TO  WRK-HH
-                       MOVE    JOB-ENDTIME(3:2)
-                                               TO  WRK-MM
-                       MOVE    JOB-ENDTIME(5:2)
-                                               TO  WRK-SS
-                       MOVE    WRK-HENTIME     TO  X97-ENDTIME  (IDX)
-                       MOVE    JOB-UPDCNT      TO  WRK-PAGE
-                       MOVE    WRK-PAGE        TO  X97-PAGE     (IDX)
-                       MOVE    JOB-YOBI        TO  X97-ERRMSG   (IDX)
-                       IF      JOB-ENDYMD      =   SPACE
-                           MOVE    "処理中です"    TO  X97-MSG
-                       ELSE
-                           IF      JOB-ERRCD       =   SPACE
-                               CONTINUE
-                           ELSE
-                               INITIALIZE          X97-MSG
-                               STRING  JOB-YOBI    DELIMITED  BY  SPACE
-                                       "【"        DELIMITED  BY  SIZE
-                                      JOB-SHELLMSG DELIMITED  BY  SPACE
-                                      "】"         DELIMITED  BY  SIZE      
-                                                   INTO  X97-MSG
-                           END-IF                          
-                       END-IF    
-                       MOVE    IDX                     TO  X97-COUNT    
-                   END-IF
-               END-PERFORM
+      *----(01.00.02)--UPD-START---
+           IF      SPA-MOTOPG          =   "X91"
+               MOVE    SPACE               TO  SYS-3003-REC 
+               INITIALIZE                      SYS-3003-REC
+               MOVE    "3003"              TO  SYS-3003-KANRICD
+               MOVE    WRK-CONS-3003-KBNCD TO  SYS-3003-KBNCD
+               MOVE    SPA-SYSYMD          TO  SYS-3003-STYUKYMD
+                                               SYS-3003-EDYUKYMD
+               MOVE    SYS-3003-REC        TO  MCPDATA-REC
+               PERFORM 900-SYSKANRI-INV-SEC
+               IF      FLG-SYSKANRI        =   ZERO
+                   MOVE    MCPDATA-REC         TO  SYS-3003-REC 
+                   PERFORM VARYING IDX FROM    1   BY  1
+                           UNTIL   IDX >       SYS-3003-JOBID
+      *                ジョブ管理チェック処理
+                       MOVE    "CHK"           TO  SJOBKANRI-MODE
+                       INITIALIZE                  JOBKANRI-REC
+                       MOVE    IDX             TO  JOB-JOBID
+                       MOVE    WRK-CONS-JOB-SHELLID
+                                               TO  JOB-SHELLID
+                       CALL    "ORCSJOB"       USING
+                                               ORCSJOBKANRIAREA  
+                                               JOBKANRI-REC 
+                       IF      SJOBKANRI-RETURN    =   ZERO
+                           PERFORM 4901-KAKUNIN-HYOUJI-SEC
+                       END-IF
+                   END-PERFORM
+               END-IF
+           ELSE
+      *        ジョブ管理チェック処理
+               MOVE    "CHK"           TO  SJOBKANRI-MODE
+               INITIALIZE                  JOBKANRI-REC
+               MOVE    WRK-CONS-JOB-JOBID
+                                       TO  JOB-JOBID
+               MOVE    WRK-CONS-JOB-SHELLID
+                                       TO  JOB-SHELLID
+               CALL    "ORCSJOB"       USING
+                                       ORCSJOBKANRIAREA
+                                       JOBKANRI-REC
+               MOVE    1               TO  IDX 
+               IF      SJOBKANRI-RETURN    =   ZERO
+                   PERFORM 4901-KAKUNIN-HYOUJI-SEC
+               END-IF
            END-IF
-           IF      X97-MSG              =   SPACE
-               MOVE    "B01"                TO  MCP-WIDGET
-               IF      X97-COUNT            >   ZERO    
+      *
+           MOVE    "B01"                TO  MCP-WIDGET
+           IF    ( X97-MSG              =   SPACE )
+               IF    ( X97-COUNT        >   ZERO  )
                    MOVE    "処理は正常に終了しました"
                                                 TO  X97-MSG
                ELSE
                    MOVE    "該当する処理はありません"
                                                 TO  X97-MSG
                END-IF 
-           ELSE                                        
-               MOVE    "B11"                TO  MCP-WIDGET
            END-IF                                 
       *
            MOVE    SPACE               TO  LINKAREA
+      *
+      *----(01.00.02)--ADD-START---
+           IF    ( SPA-XID1-FLG    =   "PV" )
+               MOVE    "F12:プレビュー"    TO  X97-B12-LABEL
+               IF    ( WRK-PRT-PAGE    >   ZERO )
+                       MOVE    WIDGET-NORMAL    TO  X97-B12-STATE
+                       MOVE    "B12"            TO  MCP-WIDGET
+               END-IF
+           END-IF
+      *----(01.00.02)--UPD-END-----
       *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE
            MOVE    "X97    "           TO  MCP-WINDOW
@@ -282,6 +326,89 @@
        490-KAKUNIN-EXT.
            EXIT.
       *
+      *----(01.00.02)--ADD-START---
+      *****************************************************************
+      *    処理確認処理
+      *****************************************************************
+       4901-KAKUNIN-HYOUJI-SEC     SECTION.
+      *     
+           MOVE    JOB-JOBID       TO  X97-RENNUM   (IDX)
+           MOVE    JOB-SHELLMSG    TO  X97-SHORINM  (IDX)
+           MOVE    JOB-STARTTIME(1:2)
+                                   TO  WRK-HH
+           MOVE    JOB-STARTTIME(3:2)
+                                   TO  WRK-MM
+           MOVE    JOB-STARTTIME(5:2)
+                                   TO  WRK-SS
+           MOVE    WRK-HENTIME     TO  X97-STARTTIME(IDX)
+           MOVE    JOB-ENDTIME(1:2)
+                                   TO  WRK-HH
+           MOVE    JOB-ENDTIME(3:2)
+                                   TO  WRK-MM
+           MOVE    JOB-ENDTIME(5:2)
+                                   TO  WRK-SS
+           MOVE    WRK-HENTIME     TO  X97-ENDTIME  (IDX)
+           MOVE    JOB-UPDCNT      TO  WRK-PAGE
+           MOVE    WRK-PAGE        TO  X97-PAGE     (IDX)
+           MOVE    JOB-YOBI        TO  X97-ERRMSG   (IDX)
+           IF      JOB-ENDYMD      =   SPACE
+               MOVE    "処理中です"    TO  X97-MSG
+           ELSE
+               IF      JOB-ERRCD       =   SPACE
+                   CONTINUE
+               ELSE
+                   INITIALIZE          X97-MSG
+                   STRING  JOB-YOBI    DELIMITED  BY  SPACE
+                           "【"        DELIMITED  BY  SIZE
+                           JOB-SHELLMSG DELIMITED  BY  SPACE
+                           "】"         DELIMITED  BY  SIZE      
+                                        INTO  X97-MSG
+                   END-STRING
+               END-IF
+           END-IF
+           MOVE    IDX                     TO  X97-COUNT    
+          IF    ( JOB-JOBID   =   SPA-X91-JOB-JOBID )
+              MOVE    JOB-UPDCNT  TO  WRK-PRT-PAGE
+          END-IF
+           .
+       4901-KAKUNIN-HYOUJI-EXT.
+           EXIT.
+      *
+     *****************************************************************
+      *    エラーメッセージセット処理
+      *****************************************************************
+       4901-JOB-ERRSET-SEC             SECTION.
+      *
+           EVALUATE    JOB-ERRCD
+               WHEN    "0001"
+                   MOVE    "【ファイルがありません】" 
+                                               TO  X97-MSG
+               WHEN    "0002"
+                   MOVE    "【ｆｄｄが起動されていません】" 
+                                               TO  X97-MSG
+               WHEN    "0003"
+               WHEN    "0004"
+                   MOVE    "【ｆｄｄで処理が失敗しました】" 
+                                               TO  X97-MSG
+               WHEN    "0011"
+                   MOVE    "【媒体がマウントできませんでした】" 
+                                               TO  X97-MSG
+               WHEN    "0012"
+                   MOVE    "【媒体がアンマウントできませんでした】" 
+                                               TO  X97-MSG
+               WHEN    "0021"
+                   MOVE    "【ファイルコピーでエラーが発生しました】" 
+                                               TO  X97-MSG
+               WHEN    "0127"
+                   MOVE    "【スクリプトが実行できませんでした】" 
+                                               TO  X97-MSG
+           END-EVALUATE
+      *
+           .
+       4901-JOB-ERRSET-EXT.
+           EXIT.
+      *
+      *----(01.00.02)--ADD-END-----
       *****************************************************************
       *    管理マスター読込（キー）
       *****************************************************************

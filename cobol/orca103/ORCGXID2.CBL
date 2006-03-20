@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.02     NACL-森脇    06/03/20  プレビュー追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -129,6 +130,12 @@
                WHEN    "CLICKED"                 ALSO    "B01"
                    MOVE    SPACE                 TO  SPA-XID1-FLG
                    PERFORM 210-BACK
+      *----(01.00.02)--ADD-START---
+      *     プレビュー
+               WHEN    "CLICKED"                 ALSO    "B10"
+                   MOVE    "PV"                  TO  SPA-XID1-FLG
+                   PERFORM 210-BACK
+      *----(01.00.02)--ADD-END-----
       *     印刷しない
                WHEN    "CLICKED"                 ALSO    "B11"
                    MOVE    "NO"                  TO  SPA-XID1-FLG

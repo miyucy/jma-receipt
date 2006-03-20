@@ -27,6 +27,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-森脇    04/07/29  直前ジョブ管理チェック追加
+      *  02.00.06    NACL-森脇    06/03/20  プレビュー表示
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -34,8 +35,20 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
+      *----(02.00.06)--ADD-START---
+006900*    エラーファイル
+           SELECT  CHKMERR-FILE    ASSIGN  CHKMERR
+                                   FILE    STATUS  IS  STS-CHKMERR.
+      *----(02.00.06)--ADD-END-----
+      *
        DATA                    DIVISION.
        FILE                        SECTION.
+      *
+      *----(02.00.06)--ADD-START---
+006900*    エラーファイル
+       FD  CHKMERR-FILE.
+       01  CHKMERR-REC                 PIC X(200).
+      *----(02.00.06)--ADD-END-----
       *
        WORKING-STORAGE             SECTION.
       *
@@ -47,9 +60,6 @@
       *
       *    画面活性非活性
            COPY    "ENUM-VALUE".
-      *
-      *    SHELL用
-           COPY    "CPSHELLTBL.INC".
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -93,10 +103,21 @@
            03  FLG-KANJI               PIC 9(01).
            03  FLG-KENSAKU             PIC 9(01).
       *
+      *----(02.00.06)--ADD-START---
+      *    フラグ領域
+       01  STS-AREA.
+           03  STS-CHKMERR                     PIC X(02).
+      *----(02.00.06)--ADD-END-----
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX0                    PIC 9(05).
            03  IDX1                    PIC 9(05).
+      *
+      *----(02.00.06)--ADD-START---
+      *    ファイルデイレクトリ位置指定サブ
+           COPY  "CPMKPASS.INC".
+      *----(02.00.06)--ADD-END-----
       *      
       *    システム領域
        01  SYS-AREA.
@@ -138,13 +159,20 @@
            03  WRK-STR-IN              PIC X(500).
            03  WRK-STR-OUT             PIC X(500).
            03  WRK-STR-LEN             PIC 9(8).
-      *
-      *    ファイルデイレクトリ位置指定サブ
-           COPY  "CPMKPASS.INC".
+      *----(02.00.06)--ADD-START---
+           03  WRK-CHKMERR         PIC X(200).
+           03  WRK-PRT-PAGE        PIC 9(10).
+      *----(02.00.06)--ADD-END-----
       *
        01  WRK-LNK-AREA.
            COPY    "CPORCSPRTLNK.INC".
+      *----(02.00.06)--ADD-START---
+      *    プレビュー用情報
+           COPY    "CPXC01LNK.INC".
+      *----(02.00.06)--ADD-END-----
       *
+      *    SHELL用
+           COPY    "CPSHELLTBL.INC".
       *
        01  WRK-CONS-AREA.
            03  WRK-CONS-CHKKBN-MAX     PIC 9(02)   VALUE   6.
@@ -344,13 +372,14 @@
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
+      *----(02.00.06)--UPD-START---
       *    他のＬＤより
            IF    ( LINKAREA        NOT =   SPACE )
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
-               MOVE    SPA-MOTOPG          TO  WRK-MOTOPG
+      *         MOVE    SPA-MOTOPG          TO  WRK-MOTOPG
       *
       *        元の画面へ戻す
-               IF    ( WRK-MOTOPG      =   "XA01"  OR  "XB01" )
+               IF    (  SPA-MOTOPG     =   "XA01" OR "XB01" OR "XC01" )
                    MOVE    LNK-COMMON      TO  SPA-KYOTUKEY
                    MOVE    LNK-SCRSPA      TO  SPA-X91
                    MOVE    SPA-WORK        TO  SPA-X01KYOUTU
@@ -359,12 +388,16 @@
       *
                MOVE    SPA-MOTOPG          TO  SPA-MOTOPG2
       *
-               MOVE    SPACE               TO  SPA-XID1-FLG
-               MOVE    SPACE               TO  SPA-XIDCD
+      *         MOVE    SPACE               TO  SPA-XID1-FLG
+      *         MOVE    SPACE               TO  SPA-XIDCD
            END-IF
+      *----(02.00.06)--UPD-END-----
       *
            EVALUATE    SPA-MOTOPG
            WHEN    "X97"
+      *----(02.00.06)--ADD-START-----
+               PERFORM 340-X97-SET-SEC
+      *----(02.00.06)--ADD-END-------
                GO  TO      300-SCREEN-EXT
            WHEN    "X98"
                PERFORM 320-X98SPASET-SEC
@@ -448,6 +481,7 @@
                END-EVALUATE
            END-IF
       *
+           MOVE    SPACE           TO  SPA-X97-FLG
            MOVE    SPACE           TO  SPA-XID1-FLG
            MOVE    SPACE           TO  SPA-XIDCD
       *
@@ -460,7 +494,8 @@
       *****************************************************************
        350-XID2-SET-SEC            SECTION.
       *
-           IF    ( SPA-XID1-FLG    =   "OK"    OR  "NO" )
+      *----(02.00.06)--UPD-START---
+           IF    ( SPA-XID1-FLG    NOT =   SPACE )
       *----(01.00.01)--UPD-START---
       *        ジョブ管理チェック
                PERFORM 4501-JOBKANRI-CHK-SEC
@@ -468,15 +503,80 @@
                    PERFORM 490-PRINT-SEC
                END-IF
       *----(01.00.01)--UPD-END-----
+           ELSE
+               MOVE    SPACE           TO  SPA-XID1-FLG
            END-IF
       *
-           MOVE    SPACE           TO  SPA-XID1-FLG
+           MOVE    SPACE           TO  SPA-X97-FLG
            MOVE    SPACE           TO  SPA-XIDCD
+      *----(02.00.06)--UPD-END-----
       *
            .
        350-XID2-SET-EXT.
            EXIT.
       *
+      *----(02.00.06)--ADD-START---
+      *****************************************************************
+      *    処理表示画面戻り処理
+      *****************************************************************
+       340-X97-SET-SEC             SECTION.
+      *
+           IF    ( SPA-X97-FLG     =   "OK" )
+               PERFORM 4501-NEXT-GMN-SEC
+           END-IF
+      *
+           MOVE    ZERO            TO  SPA-GMN-CUR
+      *
+           MOVE    SPACE           TO  SPA-X97-FLG
+           MOVE    SPACE           TO  SPA-XID1-FLG
+           MOVE    SPACE           TO  SPA-XIDCD
+      *
+           .
+       340-X97-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    プレビュー処理
+      *****************************************************************
+       4501-NEXT-GMN-SEC            SECTION.
+      *
+      *    画面移行用のパラメタ変更
+           MOVE    "X91"               TO  SPA-MOTOPG
+           MOVE    "XC01"              TO  SPA-SAKIPG
+      *
+           MOVE    0                   TO  WRK-STPAGE
+           MOVE    0                   TO  WRK-EDPAGE
+      *
+           INITIALIZE                  LNK-XC01-AREA
+      *
+           MOVE    WRK-CONS-PRTKANRI-TBL-KEY
+                                       TO  SPA-PRTKANRI-TBL-KEY
+           MOVE    ZERO                TO  LNK-XC01-RENNUM
+           MOVE    SPA-X91-TBL-GROUP   TO  LNK-XC01-TBL-GROUP
+           MOVE    ZERO                TO  LNK-XC01-SHORI-RENNUM
+           MOVE    WRK-STPAGE          TO  LNK-XC01-ST-PAGE
+           MOVE    WRK-EDPAGE          TO  LNK-XC01-ED-PAGE
+           MOVE    "X91"               TO  LNK-XC01-MOTOPG
+           MOVE    SPACE               TO  LNK-XC01-MODE
+      *
+           MOVE    LNK-XC01-AREA       TO  SPA-WORK
+      *
+           MOVE    SPACE               TO  LINKAREA
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+           MOVE    SPA-KYOUTU          TO  LNK-COMMON
+           MOVE    SPA-X91             TO  LNK-SCRSPA
+      *
+           MOVE   "JOIN"               TO  MCP-PUTTYPE
+           MOVE   "XC01   "            TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       4501-NEXT-GMN-EXT.
+           EXIT.
+      *----(02.00.06)--ADD-END-----
       *****************************************************************
       *    画面遷移処理
       *****************************************************************
@@ -1222,6 +1322,10 @@
       *****************************************************************
        490-PRINT-SEC                       SECTION.
       * 
+      *----(02.00.06)--ADD-START---
+           INITIALIZE                      SPA-X91-TBL-GROUP
+                                           SPA-X91-JOB-JOBID
+      *----(02.00.06)--ADD-END-----
       *    ＪＯＢＩＤ（３００４）削除処理
            MOVE    SPACE               TO  SYS-3003-REC
            INITIALIZE                      SYS-3003-REC
@@ -1262,20 +1366,6 @@
                GO  TO  490-PRINT-EXT
            END-IF
       *
-      *    出力先プリンタ名割り当て情報編集
-           INITIALIZE                      SYS-1031-REC
-           INITIALIZE                      ORCSPRTNMAREA
-           MOVE    "2"                 TO  ORCSPRTNM-KBN
-           MOVE    SPA-SYSYMD          TO  ORCSPRTNM-SRYYMD
-           MOVE    "2"                 TO  ORCSPRTNM-NYUGAIKBN
-           CALL    "ORCSPRTNM"         USING
-                                           ORCSPRTNMAREA
-                                           SPA-AREA
-                                           SYS-1031-REC
-           IF    ( ORCSPRTNM-RC    NOT =   ZERO )
-               INITIALIZE                  SYS-1031-REC
-           END-IF 
-      *
       *    印刷処理
            ACCEPT  SYS-YMD         FROM    DATE
            COMPUTE WRK-SYSYY       =   SYS-YY      +   2000
@@ -1293,6 +1383,20 @@
       *
            MOVE    "CHKMERR"           TO  CHKMERR-FILE-ID
            MOVE    SPA-TERMID          TO  CHKMERR-TERMID
+      *
+      *    出力先プリンタ名割り当て情報編集
+           INITIALIZE                      SYS-1031-REC
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "2"                 TO  ORCSPRTNM-KBN
+           MOVE    SPA-SYSYMD          TO  ORCSPRTNM-SRYYMD
+           MOVE    "2"                 TO  ORCSPRTNM-NYUGAIKBN
+           CALL    "ORCSPRTNM"         USING
+                                           ORCSPRTNMAREA
+                                           SPA-AREA
+                                           SYS-1031-REC
+           IF    ( ORCSPRTNM-RC    NOT =   ZERO )
+               INITIALIZE                  SYS-1031-REC
+           END-IF 
       *
            MOVE    SPACE               TO  WRK-SRTKBN
       *
@@ -1317,10 +1421,15 @@
            END-PERFORM
       *
       *    印刷処理
-      *
-           IF    ( SPA-XID1-FLG        =   "OK" )
-      *
+      *----(02.00.06)--UPD-START---
+           IF      SPA-XID1-FLG        =   "OK"  OR "PV"
+      *----(02.00.06)--UPD-END-----
                PERFORM 45011-JOBKANRI-HENSYU-SEC
+      *
+               MOVE    WRK-CONS-PRTKANRI-TBL-GROUP
+                                           TO  SPA-X91-TBL-GROUP
+               MOVE    WRK-CONS-JOB-JOBID
+                                           TO  SPA-X91-JOB-JOBID
       *
                MOVE    0                   TO  WRK-STPAGE
                MOVE    99999               TO  WRK-EDPAGE
@@ -1329,7 +1438,7 @@
       *
       *        ファイルデイレクトリ位置指定
                INITIALIZE                  ORCSMKPASSAREA
-               MOVE    "scripts/allways/print.sh"
+               MOVE    "scripts/allways/print_prv.sh"
                                            TO  MKPASS-IN-01
                CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
                MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
@@ -1343,7 +1452,7 @@
                MOVE    ZERO                TO  LNK-PRTKANRI-SHORI-RENNUM
                MOVE    SPA-SYSYMD(1:6)     TO  LNK-PRTKANRI-SRYYM
                MOVE    SPA-SYSYMD          TO  LNK-PRTKANRI-SKYYMD
-               MOVE    "print.sh"          TO  LNK-PRTKANRI-SHELLID
+               MOVE    "print_prv.sh"      TO  LNK-PRTKANRI-SHELLID
                MOVE    ZERO                TO  LNK-PRTKANRI-PRIORITY
                MOVE    SPA-TERMID          TO  LNK-PRTKANRI-TERMID
                MOVE    SPA-OPID            TO  LNK-PRTKANRI-OPID
@@ -1370,6 +1479,14 @@
                                            TO  SHELLTBL-ARG14
                MOVE    WRK-STPAGE          TO  SHELLTBL-ARG15
                MOVE    WRK-EDPAGE          TO  SHELLTBL-ARG16
+               EVALUATE    SPA-XID1-FLG
+               WHEN    "PV"
+                   MOVE    "3"             TO  SHELLTBL-ARG17
+      *         WHEN    "NO"
+      *             MOVE    "3"             TO  SHELLTBL-ARG17
+               WHEN    "OK"
+                   MOVE    "2"             TO  SHELLTBL-ARG17
+               END-EVALUATE
                MOVE    SHELLTBL            TO  MCPDATA-REC
                MOVE    "shell"             TO  MCP-TABLE
                MOVE    "shell"             TO  MCP-PATHNAME
@@ -1395,14 +1512,7 @@
       *
            PERFORM 45011-JOBKANRI-HENSYU-SEC
       *
-           MOVE    SPACE           TO  SHELLTBL 
-      *
       *    ファイルデイレクトリ位置指定
-           INITIALIZE              ORCSMKPASSAREA
-           MOVE    "scripts/allways/chkmst.sh"
-                                   TO  MKPASS-IN-01
-           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
-           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
            MOVE    SPACE           TO  LNK-PRTKANRI-AREA
            INITIALIZE                  LNK-PRTKANRI-AREA
            ADD     1               TO  WRK-PRTKANRI-RENNUM
@@ -1420,6 +1530,13 @@
            MOVE    SPA-OPID        TO  LNK-PRTKANRI-OPID
            MOVE    SYS-1031-PRTNM (6)
                                    TO  LNK-PRTKANRI-PRTNM
+      *
+           MOVE    SPACE           TO  SHELLTBL 
+           INITIALIZE              ORCSMKPASSAREA
+           MOVE    "scripts/allways/chkmst.sh"
+                                   TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
            MOVE    LNK-PRTKANRI-RENNUM
                                    TO  SHELLTBL-ARG1
            MOVE    LNK-PRTKANRI-TBL-KEY
@@ -1555,6 +1672,10 @@
       *
            MOVE    SPACE               TO  X97
            MOVE    ZERO                TO  X97-COUNT
+      *----(02.00.06)--ADD-START---
+           MOVE    WIDGET-INSENSITIVE  TO  X97-B12-STATE
+           MOVE    ZERO                TO  WRK-PRT-PAGE
+      *----(02.00.06)--ADD-END-----
       *
            MOVE    SPACE               TO  SYS-3003-REC 
            INITIALIZE                      SYS-3003-REC
@@ -1621,7 +1742,10 @@
                END-PERFORM
            END-IF
       *
+      *----(02.00.06)--UPDA-START---
+           MOVE    "B11"               TO  MCP-WIDGET
            IF    ( X97-MSG             =   SPACE )
+               MOVE    "B01"           TO  MCP-WIDGET
                IF    ( X97-COUNT       >   ZERO )
                    MOVE    "処理は正常に終了しました"
                                        TO  X97-MSG
@@ -1631,7 +1755,14 @@
                END-IF
            END-IF
       *
-           MOVE    "B01"               TO  MCP-WIDGET
+           IF    ( SPA-XID1-FLG    =   "PV" )
+               MOVE    "F12:プレビュー"    TO  X97-B12-LABEL
+               IF    ( WRK-PRT-PAGE    >   ZERO )
+                   MOVE    WIDGET-NORMAL   TO  X97-B12-STATE
+                   MOVE    "B12"           TO  MCP-WIDGET
+               END-IF
+           END-IF
+      *----(02.00.06)--UPD-END-----
       *
            MOVE    "X91"               TO  SPA-MOTOPG
            MOVE    "X97"               TO  SPA-SAKIPG
