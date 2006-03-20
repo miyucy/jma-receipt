@@ -30,6 +30,7 @@
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  01.00.01    NACL-Â¿¡¹Ç¼  04/03/11  £È£±£¶¡¥£´²þÀµÂÐ±þ
       *  01.00.02    NACL-Â¿¡¹Ç¼  05/11/11  MONFUNC ÂÐ±þ Â¾
+      *  01.00.03    NACL-Â¿¡¹Ç¼  06/03/20  £È£±£¸¡¥£´²þÀµÂÐ±þ
       *****************************************************************
       *
       *
@@ -105,6 +106,8 @@
            03  FILLER              PIC X(13)   VALUE   "111003610 1 0".
       *    ½é¿ÇÎÁ¡ÊÏ·¿Í ¿ÇÎÅ½ê¡Ë
            03  FILLER              PIC X(13)   VALUE   "111700210 1 0".
+      *    Æ±Æü½é¿Ç
+           03  FILLER              PIC X(14)   VALUE   "111011810 1 0".
       *
       *    ±ý¿ÇÎÁ
            03  FILLER              PIC X(13)   VALUE   "114000110 1 0".
@@ -147,7 +150,7 @@
       *
        01  TBL-SINSATU-AREAR       REDEFINES   TBL-SINSATU-AREA.
       *****03  TBL-SINSATU-OCC         OCCURS  18    INDEXED  TBL-IDX.
-           03  TBL-SINSATU-OCC         OCCURS  21    INDEXED  TBL-IDX.
+           03  TBL-SINSATU-OCC         OCCURS  22    INDEXED  TBL-IDX.
       *        ¿ÇÎÅ¥³¡¼¥É
                05  TBL-SRYCD           PIC X(09).
       *
