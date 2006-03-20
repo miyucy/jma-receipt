@@ -2319,6 +2319,15 @@
            IF      LNK-SCNYUACCT-RC    NOT =   ZERO
                GO      TO     800-TENSYUTU-SYORI-EXT
            END-IF
+      *
+      *    主科セット
+           INITIALIZE                 ORCSSYUACCAREA
+           MOVE    WRK-STYMD(1:6)    TO  LNK-SYUACC-I-SRYYM
+           PERFORM   810-SYUKA04-SET-SEC
+      *    主科（翌月分）
+           INITIALIZE                 ORCSSYUACCAREA
+           MOVE    WRK-EDYMD(1:6)    TO  LNK-SYUACC-I-SRYYM
+           PERFORM   810-SYUKA04-SET-SEC
            .
       *
        800-TENSYUTU-SYORI-EXT.
