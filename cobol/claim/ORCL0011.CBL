@@ -38,6 +38,7 @@
       * 01.00.03     NACL-¬ø°π«º  04/02/17  ø«Œ≈≤ °«£ÿ£ÿ°«ƒ…≤√
       * 01.00.04     NACL-¬ø°π«º  04/10/29   ›∏±¡»πÁ§ª§Œ¡™¬Ú ¨§Ú∫«ΩÈ§ÿ
       * 01.00.05     NACL-√›≈ƒ    05/03/02  ∏¯»ÒΩ–ŒœΩÁ —ππ
+      * 01.00.06     NACL-¬ø°π«º  06/03/20  £»£±£∏«Ø£¥∑Ó≤˛¿µ¬–±˛
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1928,6 +1929,15 @@
            ELSE
                MOVE    ZERO            TO  FLG-ROUJIN
            END-IF
+      *£»£±£∏°ø£¥≤˛¿µ¬–±˛
+      *    §π§Ÿ§∆∞Ï»Ã
+           MOVE    SYS-1001-HOSPSBT    TO  WRK-HOSPSBT
+           IF      LNK-SYSYMD(1:6)     >=  "200604"
+               MOVE    ZERO                TO  FLG-ROUJIN
+               IF      WRK-KBN             =   "F"
+                   MOVE    1               TO  WRK-HOSPSBT
+               END-IF
+           END-IF
       *
       *    ø«ª°Œ¡•ª•√•»
            SET     TBL-IDX             TO  1
@@ -1938,7 +1948,7 @@
                                SYS-1001-HOSPSBT " SYOSIN=" WRK-SYOSIN 
                    WHEN   (WRK-KAISU           =   TBL-KAISU (TBL-IDX))
                      AND  (FLG-ROUJIN          =   TBL-ROUJIN(TBL-IDX))
-                     AND  (SYS-1001-HOSPSBT    =   TBL-HOSPSBT(TBL-IDX))
+                     AND  (WRK-HOSPSBT         =   TBL-HOSPSBT(TBL-IDX))
                      AND  (WRK-KBN             =   TBL-KBN    (TBL-IDX))
                      AND  (WRK-KBN2            =   TBL-KBN2   (TBL-IDX))
                      AND  (WRK-SRYKBN          =   TBL-SRYCD(TBL-IDX)
