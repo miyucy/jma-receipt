@@ -1640,7 +1640,7 @@
                                MOVE    "113007070"     TO  WRK-SRYCD
                            WHEN    2
       *                        初診時休日加算
-                               MOVE    "113007100"     TO  WRK-SRYCD
+                               MOVE    "113007170"     TO  WRK-SRYCD
                            WHEN    3
       *                        初診時深夜加算
                                MOVE    "113007270"     TO  WRK-SRYCD
@@ -1677,10 +1677,6 @@
       *
                END-EVALUATE
            END-IF
-      *TEST
-           DISPLAY "IDX-Z:" IDX-Z ",INPUT:" WRK-COM-INPUTCD (IDX-Z)
-               ",WRK-SRYCD:" WRK-SRYCD
-      *TEST
       *
       *    ６歳未満の時間外加算
            IF     (LNK-ORCSC-NENREI-YY     <   6  )
@@ -3665,13 +3661,6 @@
       *???????????    (LNK-ORCSC-LSTYMD    =   SPA-SRYYMD )  AND
       *               同日再診有無
                       (LNK-ORCSC-RRK-LSTYMD    NOT =   SPACE )
-      *TEST
-             DISPLAY " SPA-DOUJITU:" SPA-DOUJITU
-               ",SPA-SYOYMD:" SPA-SYOYMD
-               ",LNK-ORCSC-RRK-LSTYMD:" LNK-ORCSC-RRK-LSTYMD
-               ",IDX-ZAI1:" IDX-ZAI1
-               ",FLG-DOUJITU:" FLG-DOUJITU
-      *TEST
       *            労災には同日再診はないのでチェックなし
                    IF     (SPA-HKNKBN          =   1  )
       *            当日に診察料が算定してないときはチェックなし
@@ -3936,12 +3925,6 @@
                END-IF
            END-IF
       *    同日初診
-      *TEST
-           DISPLAY "WRK-KBN:" WRK-KBN
-                ",WRK-KBN2:" WRK-KBN2
-                ",LNK-ORCSC-SYOSIN2:" LNK-ORCSC-SYOSIN2
-                ",SPA-SYOYMD:" SPA-SYOYMD
-      *TEST
            IF     (WRK-KBN             =   "F" )  AND
                   (WRK-KBN2            =   "D" )
       *        当日に初診を算定していること
