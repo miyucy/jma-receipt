@@ -959,23 +959,12 @@
       *
            MOVE    SPACE               TO  WRK-SRYCD
       *
-      *    新生児加算
-           MOVE    "150000190"         TO  WRK-SRYCD
-      *
-      *    加算料追加処理
-           PERFORM 100111-KASAN-CHK-SEC
-           IF      FLG-ARI             =   ZERO
-      *        最後の通則年齢加算位置
-               MOVE    IDX-NEN             TO  IDX-S
-           END-IF
-      *    加算料追加処理
-           PERFORM 1002-KASAN-SET-SEC
-      *
-           IF      FLG-ADD             =   1
-      *        自動追加分（入力時に追加）
-               MOVE    "2"                 TO  WRK-COM-AUTOKBN (IDX-S)
-               MOVE    1                   TO  WRK-COM-SANFLG (IDX-S)
-               GO      TO      10011-YOUJIKASAN-SET-EXT
+      *    極低出生体重児加算区分
+           IF      WRK-COM-CHPMESUKSN (IDX-ZS)  =   1
+               PERFORM 100112-TEITAIJYU-CHK-SEC
+               IF      FLG-ADD             =   1
+                   GO      TO      10011-YOUJIKASAN-SET-EXT
+               END-IF
            END-IF
       *
       *    ３歳児未満の加算
@@ -997,6 +986,36 @@
       *
            .
        10011-YOUJIKASAN-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    極低出生体重児加算区分処理
+      *****************************************************************
+       100112-TEITAIJYU-CHK-SEC        SECTION.
+      *
+      *    低体重児加算
+           MOVE    "150306890"         TO  WRK-SRYCD
+           PERFORM 100111-KASAN-CHK-SEC
+      *    入力なし
+           IF      FLG-ARI             =   ZERO
+      *        新生児加算
+               MOVE    "150000190"         TO  WRK-SRYCD
+      *        加算料追加処理
+               PERFORM 100111-KASAN-CHK-SEC
+               IF      FLG-ARI             =   ZERO
+      *            最後の通則年齢加算位置
+                   MOVE    IDX-NEN             TO  IDX-S
+               END-IF
+      *        加算料追加処理
+               PERFORM 1002-KASAN-SET-SEC
+               IF      FLG-ADD             =   1
+      *            自動追加分（入力時に追加）
+                   MOVE    "2"             TO  WRK-COM-AUTOKBN (IDX-S)
+                   MOVE    1               TO  WRK-COM-SANFLG (IDX-S)
+               END-IF
+           END-IF
+           .
+       100112-TEITAIJYU-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1261,6 +1280,15 @@
            IF      FLG-ARI             =   ZERO
                MOVE    "0013"          TO  SPA-ERRCD
                MOVE    "1"             TO  WRK-COM-CUR(IDX-Z)
+           END-IF
+      *    低体重児加算チェック
+           IF      SPA-ERRCD           =   SPACE
+               IF      WRK-COM-INPUTCD(IDX-Z)   =   "150306890" 
+                   IF      WRK-COM-CHPMESUKSN(IDX-Z) =   ZERO
+                       MOVE    "2068"          TO  SPA-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR(IDX-Z)
+                   END-IF
+               END-IF
            END-IF
       *
            .

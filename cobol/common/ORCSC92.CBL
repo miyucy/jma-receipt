@@ -2285,6 +2285,8 @@
       *Ｈ１８年４月から
       *    処置乳幼児加算区分
            MOVE    TNS-LASERKBN        TO  SPA-COM-LASERKBN (IDX-T)
+      *    極低出生体重児加算区分
+           MOVE    TNS-CHPMESUKSN      TO  SPA-COM-CHPMESUKSN (IDX-T)
       *
       *    点数マスタ付加情報より編集
            PERFORM 3006-TENSUPLUS-HEN-SEC

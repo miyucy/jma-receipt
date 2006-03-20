@@ -516,6 +516,8 @@
                            (LNK-ORCSC-SEIKATU-ARI      =   ZERO) AND
                            (SPA-ZAIMATU-ARI2           =   ZERO) AND
                            (SPA-ZAIMATU-ARI            =   ZERO)
+                       AND (SPA-ZAIKANRI-ARI           =   ZERO)
+      *??              AND (SPA-ZAIKANRI-ARI2          =   ZERO)
       *************    MOVE    "0074"          TO  WRK-ERRCD
       *                MOVE    "1"             TO  WRK-COM-CUR
       *************                                          (IDX-Z)

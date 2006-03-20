@@ -1016,6 +1016,11 @@
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "2068"
+                   STRING  "極低体重出生時加算の算定できない手術です。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "8027"
                    STRING  "リハビリテーション料が"
                                                DELIMITED  BY  SIZE
