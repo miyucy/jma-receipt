@@ -230,6 +230,14 @@
       *    システム管理（自動算定情報・チェック機能）
            COPY    "CPSK1007.INC".
       *
+      *    主科情報アクセス用パラメタ
+       01  ORCSSYUACCAREA.
+           COPY    "CPORCSSYUACC.INC".
+      *
+      *    主科マスタ−
+       01  SYUKA-REC.
+           COPY    "CPSYUKA.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
@@ -380,6 +388,14 @@
                GO      TO     100-SINKI-SYORI-EXT
            END-IF
       *
+      *    主科セット
+           INITIALIZE                 ORCSSYUACCAREA
+           MOVE    WRK-STYMD(1:6)    TO  LNK-SYUACC-I-SRYYM
+           PERFORM   810-SYUKA04-SET-SEC
+      *    主科（翌月分）
+           INITIALIZE                 ORCSSYUACCAREA
+           MOVE    WRK-EDYMD(1:6)    TO  LNK-SYUACC-I-SRYYM
+           PERFORM   810-SYUKA04-SET-SEC
            .
        100-SINKI-SYORI-EXT.
            EXIT.
@@ -1119,7 +1135,7 @@
            PERFORM 4002-NYUSRYACCT-SYORI-SEC
       *    診療行為追加
            IF      FLG-SINKI           =   1
-               PERFORM 4003-NYUSYRACT-SYORI-SEC
+               PERFORM 4003-NYUSRYACT-SYORI-SEC
            END-IF
       *
            .
@@ -1574,7 +1590,7 @@
       *****************************************************************
       *    診療行為マスター処理
       *****************************************************************
-       4003-NYUSYRACT-SYORI-SEC          SECTION.
+       4003-NYUSRYACT-SYORI-SEC          SECTION.
       *
            MOVE    ZERO                TO  WRK-RENNUM
            MOVE    ZERO                TO  IDX-S
@@ -1602,7 +1618,7 @@
       *
            .
       *
-       4003-NYUSYRACT-SYORI-EXT.
+       4003-NYUSRYACT-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1719,6 +1735,28 @@
            CALL    "ORCSCNYUIN"        USING
                                        SPA-AREA
                                        ORCSCNYUINAREA
+      *    主科セット（退院月）
+           INITIALIZE                 ORCSSYUACCAREA
+           MOVE    LNK-SCNYUACCT-EDSRYYMD(1:6)  TO  LNK-SYUACC-I-SRYYM
+           PERFORM   810-SYUKA05-SET-SEC
+      *    退院翌月以降の主科テーブル削除
+           INITIALIZE                      SYUKA-REC
+           MOVE    SPA-HOSPID          TO  SYUKA-HOSPID
+           MOVE    "1"                 TO  SYUKA-NYUGAIKBN
+           MOVE    SPA-PTID            TO  SYUKA-PTID
+           MOVE    LNK-SCNYUACCT-EDSRYYMD(1:6)
+                                       TO  SYUKA-SRYYM
+           MOVE    SYUKA-REC           TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_syuka"         TO  MCP-TABLE
+           MOVE    "del2"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"            USING
+                                        MCPAREA
+                                        MCPDATA-REC
+      *
+      **     INITIALIZE                 ORCSSYUACCAREA
+      **     MOVE    WRK-EDYMD(1:6)    TO  LNK-SYUACC-I-SRYYM
+      **     PERFORM   810-SYUKA05-SET-SEC
       *
            .
        200-TAIIN-SYORI-EXT.
@@ -2337,6 +2375,11 @@
            IF      LNK-SCNYUACCT-RC    NOT =   ZERO
                GO      TO     900-NEXTTUKI-SYORI-EXT
            END-IF
+      *
+      *    主科セット
+           INITIALIZE                 ORCSSYUACCAREA
+           MOVE    WRK-EDYMD(1:6)    TO  LNK-SYUACC-I-SRYYM
+           PERFORM   810-SYUKA04-SET-SEC
            .
       *
        900-NEXTTUKI-SYORI-EXT.
@@ -2365,6 +2408,64 @@
       *
            .
        800-HIZUKE-KEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    主科設定処理（処理区分０４）
+      *****************************************************************
+       810-SYUKA04-SET-SEC              SECTION.
+      *
+      **     DISPLAY "810-SYUKA04-SET-SEC"
+      **     DISPLAY "== SYUKA-SET-SEC ==="
+      **     DISPLAY "NACCT-SRYYM   = " NACCT-SRYYM
+      **     DISPLAY "SPA-HOSPID    = " SPA-HOSPID
+      **     DISPLAY "SPA-PREFNUM   = " SPA-PREFNUM
+      **     DISPLAY "SPA-PTID      = " SPA-PTID
+      **     DISPLAY "SPA-NYUGAIKBN = " SPA-NYUGAIKBN
+      **     DISPLAY "SPA-BIRTHDAY  = " SPA-BIRTHDAY
+      **     DISPLAY "NACCT-ZAISKBKBN = " NACCT-ZAISKBKBN
+      **     DISPLAY "NACCT-SRYCDTOTAL = " NACCT-SRYCDTOTAL
+      *
+      *     INITIALIZE                 ORCSSYUACCAREA
+           MOVE    "04"           TO  LNK-SYUACC-I-KBN
+      *     MOVE    NACCT-SRYYM    TO  LNK-SYUACC-I-SRYYM
+           CALL    "ORCSSYUKAMAIN"    USING
+                                      SPA-AREA
+                                      ORCSSYUACCAREA
+      *
+      *
+           .
+      *
+       810-SYUKA04-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    主科設定処理（処理区分０５）
+      *****************************************************************
+       810-SYUKA05-SET-SEC              SECTION.
+      *
+      **     DISPLAY "810-SYUKA05-SET-SEC"
+      **     DISPLAY "== SYUKA-SET-SEC ==="
+      **     DISPLAY "NACCT-SRYYM   = " NACCT-SRYYM
+      **     DISPLAY "SPA-HOSPID    = " SPA-HOSPID
+      **     DISPLAY "SPA-PREFNUM   = " SPA-PREFNUM
+      **     DISPLAY "SPA-PTID      = " SPA-PTID
+      **     DISPLAY "SPA-NYUGAIKBN = " SPA-NYUGAIKBN
+      **     DISPLAY "SPA-BIRTHDAY  = " SPA-BIRTHDAY
+      **     DISPLAY "NACCT-ZAISKBKBN = " NACCT-ZAISKBKBN
+      **     DISPLAY "NACCT-SRYCDTOTAL = " NACCT-SRYCDTOTAL
+      *
+      *     INITIALIZE                 ORCSSYUACCAREA
+           MOVE    "05"           TO  LNK-SYUACC-I-KBN
+      *     MOVE    NACCT-SRYYM    TO  LNK-SYUACC-I-SRYYM
+           CALL    "ORCSSYUKAMAIN"    USING
+                                      SPA-AREA
+                                      ORCSSYUACCAREA
+      *
+      *
+           .
+      *
+       810-SYUKA05-SET-EXT.
            EXIT.
       *
       *****************************************************************
