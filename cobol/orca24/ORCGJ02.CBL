@@ -11023,6 +11023,11 @@
       *    プレビュー処理
       *****************************************************************
        4010-PREVIEW-SYORI-SEC          SECTION.
+      *@@@ レセプト更新まで
+           IF       SPA-NAI-SRYYM      >=   "200604"
+               MOVE    "9009"          TO  SPA-ERRCD
+           END-IF
+      *@@@
       *
            IF      SPA-GMN-BANGO   NOT =   ZERO
                MOVE    "0009"          TO  SPA-ERRCD
@@ -11496,6 +11501,11 @@
                WHEN    "K004"
                    MOVE    "警告！！日上限回数をオーバーしています。"
                                        TO  WRK-ERRMSG
+      *@@
+               WHEN    "9009"
+                   MOVE    "改正対応前です。プレビューできません。"
+                                       TO  WRK-ERRMSG
+      *@@
       *
                WHEN    "9999"
                    MOVE    "他端末で使用中です。"
