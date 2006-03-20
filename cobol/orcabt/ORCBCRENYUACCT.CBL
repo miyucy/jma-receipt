@@ -2107,6 +2107,7 @@
            PERFORM 910-PTINF-SELECT-SEC
            PERFORM 910-PTINF-READ-SEC
            MOVE     PTINF-BIRTHDAY     TO  WRK-BIRTHDAY-15
+                                           SPA-BIRTHDAY
            ADD      15                 TO  WRK-BIRTHDAY-15Y
            IF       WRK-SENTEI-STYMD   <=  WRK-BIRTHDAY-15
                MOVE   WRK-BIRTHDAY-15  TO  LNK-SCNYUACCT-SENTEI-STYMD
