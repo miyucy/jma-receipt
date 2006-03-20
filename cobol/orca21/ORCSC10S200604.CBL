@@ -2226,18 +2226,18 @@
       *        ·ÑÂ³´ÉÍý²Ã»»ÄÉ²Ã½èÍý
       *        PERFORM 3302-KEIZOKU-HEN-SEC
       *****END-IF
-      *
+      *@£È£±£¸¡¥£´¤«¤éÇÑ»ß
       *    ¿²¤¿¤­¤êÏ·¿ÍºßÂðÁí¹ç¿ÇÎÅ²Ê»»Äê½èÍý
-           IF     (SPA-NAI-ROUJIN      =   1   )  AND
-                  (SPA-NYUGAIKBN       =   "2" )
-               MOVE    ZERO            TO  WRK-IDX-IN
-               PERFORM 3305-NETAKIRI-SET-SEC
-               IF     (SPA-NETAKIRI-ARI    NOT =   ZERO )  OR
-                      (SPA-NETAKIRI-ARI2   NOT =   ZERO )
+      *    IF     (SPA-NAI-ROUJIN      =   1   )  AND
+      *           (SPA-NYUGAIKBN       =   "2" )
+      *        MOVE    ZERO            TO  WRK-IDX-IN
+      *        PERFORM 3305-NETAKIRI-SET-SEC
+      *        IF     (SPA-NETAKIRI-ARI    NOT =   ZERO )  OR
+      *               (SPA-NETAKIRI-ARI2   NOT =   ZERO )
       *        ¿²¤¿¤­¤êÏ·¿Í¤¬Åö·î»»ÄêºÑ¤ß¤Î»þ¡¢Ï·¿ÍËýÀ­¼À´µ¤ò»»Äê¤·¤Ê¤¤
-                   GO      TO      3301-SYOSIN-SYORI-EXT
-               END-IF
-           END-IF
+      *            GO      TO      3301-SYOSIN-SYORI-EXT
+      *        END-IF
+      *@@  END-IF
       *
            .
        3301-SYOSIN-SYORI-EXT.
@@ -2900,26 +2900,27 @@
        330121-TOKUTEI-SIDOU-SEC      SECTION.
       *
       *    »ØÆ³ÎÁ¤Î¼«Æ°È¯À¸
-           EVALUATE    SPA-NAI-ROUJIN  ALSO  SPA-HOSPSBT
-      *        Ï·¿Í¡¡ÉÂ±¡
-               WHEN    1        ALSO         1
-                   IF      SPA-BEDSU           <   100
-                       MOVE    "113700710"         TO  WRK-SRYCD
-                   ELSE
-                       MOVE    "113700810"         TO  WRK-SRYCD
-                   END-IF
+      *!!  EVALUATE    SPA-NAI-ROUJIN  ALSO  SPA-HOSPSBT
+      *!!      Ï·¿Í¡¡ÉÂ±¡
+      *        WHEN    1        ALSO         1
+      *            IF      SPA-BEDSU           <   100
+      *                MOVE    "113700710"         TO  WRK-SRYCD
+      *            ELSE
+      *                MOVE    "113700810"         TO  WRK-SRYCD
+      *            END-IF
       *        Ï·¿Í¡¢¿ÇÎÅ½ê
-               WHEN    1        ALSO         2
-                   MOVE    "113700610"         TO  WRK-SRYCD
+      *        WHEN    1        ALSO         2
+      *!!!         MOVE    "113700610"         TO  WRK-SRYCD
+           EVALUATE    SPA-HOSPSBT
       *        °ìÈÌ¡¡ÉÂ±¡
-               WHEN    ZERO     ALSO         1
+               WHEN    1
                    IF      SPA-BEDSU           <   100
                        MOVE    "113001910"         TO  WRK-SRYCD
                    ELSE
                        MOVE    "113002010"         TO  WRK-SRYCD
                    END-IF
       *        °ìÈÌ¡¢¿ÇÎÅ½ê
-               WHEN    ZERO     ALSO         2
+               WHEN    2
                    MOVE    "113001810"         TO  WRK-SRYCD
            END-EVALUATE
       *
