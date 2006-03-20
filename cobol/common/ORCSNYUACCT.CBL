@@ -304,7 +304,7 @@
                    PERFORM 100-SINKI-SYORI-SEC
       *        Âà±¡
                WHEN    "2"
-      *        Âà±¡¡ÊÆþ±¡²ñ·×¤Î¤ß¡Ë
+      *        °ÛÆ°¼è¾Ã¡ÊÆþ±¡²ñ·×¤Î¤ß¡Ë
                WHEN    "4"
       *        Âà±¡¡Ê¿ÇÎÅ¹Ô°Ù¤ò»Ä¤¹¡Ë
                WHEN    "A"
@@ -1738,25 +1738,60 @@
       *    ¼ç²Ê¥»¥Ã¥È¡ÊÂà±¡·î¡Ë
            INITIALIZE                 ORCSSYUACCAREA
            MOVE    LNK-SCNYUACCT-EDSRYYMD(1:6)  TO  LNK-SYUACC-I-SRYYM
-           PERFORM   810-SYUKA05-SET-SEC
-      *    Âà±¡Íâ·î°Ê¹ß¤Î¼ç²Ê¥Æ¡¼¥Ö¥ëºï½ü
-           INITIALIZE                      SYUKA-REC
-           MOVE    SPA-HOSPID          TO  SYUKA-HOSPID
-           MOVE    "1"                 TO  SYUKA-NYUGAIKBN
-           MOVE    SPA-PTID            TO  SYUKA-PTID
-           MOVE    LNK-SCNYUACCT-EDSRYYMD(1:6)
-                                       TO  SYUKA-SRYYM
-           MOVE    SYUKA-REC           TO  MCPDATA-REC
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_syuka"         TO  MCP-TABLE
-           MOVE    "del2"              TO  MCP-PATHNAME
-           CALL    "MONFUNC"            USING
-                                        MCPAREA
-                                        MCPDATA-REC
+           LNK-SCNYUACCT-SYORI-KBN   =   "4"   OR  "A"
       *
-      **     INITIALIZE                 ORCSSYUACCAREA
-      **     MOVE    WRK-EDYMD(1:6)    TO  LNK-SYUACC-I-SRYYM
-      **     PERFORM   810-SYUKA05-SET-SEC
+               PERFORM   810-SYUKA04-SET-SEC
+      *
+      *        Âà±¡Íâ·î°Ê¹ß¤Î¼ç²Ê¥Æ¡¼¥Ö¥ëºï½ü¡ÊÆþ±¡²ñ·×¡Ë
+               INITIALIZE                      SYUKA-REC
+               MOVE    SPA-HOSPID          TO  SYUKA-HOSPID
+               MOVE    "2"                 TO  SYUKA-NYUGAIKBN
+               MOVE    SPA-PTID            TO  SYUKA-PTID
+               MOVE    "1"                 TO  SYUKA-TENKBN
+               MOVE    LNK-SCNYUACCT-EDSRYYMD(1:6)
+                                           TO  SYUKA-SRYYM
+               MOVE    SYUKA-REC           TO  MCPDATA-REC
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               MOVE    "tbl_syuka"         TO  MCP-TABLE
+               MOVE    "del3"              TO  MCP-PATHNAME
+               CALL    "MONFUNC"            USING
+                                            MCPAREA
+                                            MCPDATA-REC
+           ELSE
+      *
+               PERFORM   810-SYUKA05-SET-SEC
+      *
+      *        Âà±¡Íâ·î°Ê¹ß¤Î¼ç²Ê¥Æ¡¼¥Ö¥ëºï½ü¡Ê¿ÇÎÅ¹Ô°Ù¡Ë
+               INITIALIZE                      SYUKA-REC
+               MOVE    SPA-HOSPID          TO  SYUKA-HOSPID
+               MOVE    "1"                 TO  SYUKA-NYUGAIKBN
+               MOVE    SPA-PTID            TO  SYUKA-PTID
+               MOVE    "1"                 TO  SYUKA-TENKBN
+               MOVE    LNK-SCNYUACCT-EDSRYYMD(1:6)
+                                           TO  SYUKA-SRYYM
+               MOVE    SYUKA-REC           TO  MCPDATA-REC
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               MOVE    "tbl_syuka"         TO  MCP-TABLE
+               MOVE    "del3"              TO  MCP-PATHNAME
+               CALL    "MONFUNC"            USING
+                                            MCPAREA
+                                            MCPDATA-REC
+      *        Âà±¡Íâ·î°Ê¹ß¤Î¼ç²Ê¥Æ¡¼¥Ö¥ëºï½ü¡ÊÆþ±¡²ñ·×¡Ë
+               INITIALIZE                      SYUKA-REC
+               MOVE    SPA-HOSPID          TO  SYUKA-HOSPID
+               MOVE    "2"                 TO  SYUKA-NYUGAIKBN
+               MOVE    SPA-PTID            TO  SYUKA-PTID
+               MOVE    "1"                 TO  SYUKA-TENKBN
+               MOVE    LNK-SCNYUACCT-EDSRYYMD(1:6)
+                                           TO  SYUKA-SRYYM
+               MOVE    SYUKA-REC           TO  MCPDATA-REC
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               MOVE    "tbl_syuka"         TO  MCP-TABLE
+               MOVE    "del3"              TO  MCP-PATHNAME
+               CALL    "MONFUNC"            USING
+                                            MCPAREA
+                                            MCPDATA-REC
+           END-IF
       *
            .
        200-TAIIN-SYORI-EXT.
