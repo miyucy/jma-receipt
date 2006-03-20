@@ -1738,60 +1738,39 @@
       *    ¼ç²Ê¥»¥Ã¥È¡ÊÂà±¡·î¡Ë
            INITIALIZE                 ORCSSYUACCAREA
            MOVE    LNK-SCNYUACCT-EDSRYYMD(1:6)  TO  LNK-SYUACC-I-SRYYM
-           IF  LNK-SCNYUACCT-SYORI-KBN   =   "4"   OR  "A"
       *
-               PERFORM   810-SYUKA04-SET-SEC
+           PERFORM   810-SYUKA05-SET-SEC
       *
-      *        Âà±¡Íâ·î°Ê¹ß¤Î¼ç²Ê¥Æ¡¼¥Ö¥ëºï½ü¡ÊÆþ±¡²ñ·×¡Ë
-               INITIALIZE                      SYUKA-REC
-               MOVE    SPA-HOSPID          TO  SYUKA-HOSPID
-               MOVE    "1"                 TO  SYUKA-NYUGAIKBN
-               MOVE    SPA-PTID            TO  SYUKA-PTID
-               MOVE    "2"                 TO  SYUKA-TEN-KBN
-               MOVE    LNK-SCNYUACCT-EDSRYYMD(1:6)
-                                           TO  SYUKA-SRYYM
-               MOVE    SYUKA-REC           TO  MCPDATA-REC
-               MOVE    "DBDELETE"          TO  MCP-FUNC
-               MOVE    "tbl_syuka"         TO  MCP-TABLE
-               MOVE    "del3"              TO  MCP-PATHNAME
-               CALL    "MONFUNC"            USING
-                                            MCPAREA
-                                            MCPDATA-REC
-           ELSE
-      *
-               PERFORM   810-SYUKA05-SET-SEC
-      *
-      *        Âà±¡Íâ·î°Ê¹ß¤Î¼ç²Ê¥Æ¡¼¥Ö¥ëºï½ü¡Ê¿ÇÎÅ¹Ô°Ù¡Ë
-               INITIALIZE                      SYUKA-REC
-               MOVE    SPA-HOSPID          TO  SYUKA-HOSPID
-               MOVE    "1"                 TO  SYUKA-NYUGAIKBN
-               MOVE    SPA-PTID            TO  SYUKA-PTID
-               MOVE    "1"                 TO  SYUKA-TEN-KBN
-               MOVE    LNK-SCNYUACCT-EDSRYYMD(1:6)
-                                           TO  SYUKA-SRYYM
-               MOVE    SYUKA-REC           TO  MCPDATA-REC
-               MOVE    "DBDELETE"          TO  MCP-FUNC
-               MOVE    "tbl_syuka"         TO  MCP-TABLE
-               MOVE    "del3"              TO  MCP-PATHNAME
-               CALL    "MONFUNC"            USING
-                                            MCPAREA
-                                            MCPDATA-REC
-      *        Âà±¡Íâ·î°Ê¹ß¤Î¼ç²Ê¥Æ¡¼¥Ö¥ëºï½ü¡ÊÆþ±¡²ñ·×¡Ë
-               INITIALIZE                      SYUKA-REC
-               MOVE    SPA-HOSPID          TO  SYUKA-HOSPID
-               MOVE    "1"                 TO  SYUKA-NYUGAIKBN
-               MOVE    SPA-PTID            TO  SYUKA-PTID
-               MOVE    "2"                 TO  SYUKA-TEN-KBN
-               MOVE    LNK-SCNYUACCT-EDSRYYMD(1:6)
-                                           TO  SYUKA-SRYYM
-               MOVE    SYUKA-REC           TO  MCPDATA-REC
-               MOVE    "DBDELETE"          TO  MCP-FUNC
-               MOVE    "tbl_syuka"         TO  MCP-TABLE
-               MOVE    "del3"              TO  MCP-PATHNAME
-               CALL    "MONFUNC"            USING
-                                            MCPAREA
-                                            MCPDATA-REC
-           END-IF
+      *    Âà±¡Íâ·î°Ê¹ß¤Î¼ç²Ê¥Æ¡¼¥Ö¥ëºï½ü¡Ê¿ÇÎÅ¹Ô°Ù¡Ë
+           INITIALIZE                      SYUKA-REC
+           MOVE    SPA-HOSPID          TO  SYUKA-HOSPID
+           MOVE    "1"                 TO  SYUKA-NYUGAIKBN
+           MOVE    SPA-PTID            TO  SYUKA-PTID
+           MOVE    "1"                 TO  SYUKA-TEN-KBN
+           MOVE    LNK-SCNYUACCT-EDSRYYMD(1:6)
+                                       TO  SYUKA-SRYYM
+           MOVE    SYUKA-REC           TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_syuka"         TO  MCP-TABLE
+           MOVE    "del3"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *    Âà±¡Íâ·î°Ê¹ß¤Î¼ç²Ê¥Æ¡¼¥Ö¥ëºï½ü¡ÊÆþ±¡²ñ·×¡Ë
+           INITIALIZE                      SYUKA-REC
+           MOVE    SPA-HOSPID          TO  SYUKA-HOSPID
+           MOVE    "1"                 TO  SYUKA-NYUGAIKBN
+           MOVE    SPA-PTID            TO  SYUKA-PTID
+           MOVE    "2"                 TO  SYUKA-TEN-KBN
+           MOVE    LNK-SCNYUACCT-EDSRYYMD(1:6)
+                                       TO  SYUKA-SRYYM
+           MOVE    SYUKA-REC           TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_syuka"         TO  MCP-TABLE
+           MOVE    "del3"              TO  MCP-PATHNAME
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
       *
            .
        200-TAIIN-SYORI-EXT.
