@@ -71,6 +71,7 @@
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
+           03  FLG-OK              PIC 9(01).
       *
       *    システム領域
        01  SYS-AREA.
@@ -336,10 +337,27 @@
                END-IF
            ELSE
                INITIALIZE                  SYS-1010-REC
+               MOVE    1                   TO  FLG-SYSKANRI
            END-IF
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM UNTIL       FLG-SYSKANRI    =   1
+               MOVE    MCPDATA-REC     TO  SYS-1010-REC
+               IF      SPA-OPID            =   SYS-1010-USERID
+                   MOVE    1                   TO  FLG-OK
+                   MOVE    1                   TO  FLG-SYSKANRI
+               ELSE
+                   MOVE    "tbl_syskanri"  TO  MCP-TABLE
+                   MOVE    "key3"          TO  MCP-PATHNAME
+                   PERFORM 900-SYSKANRI-READ-SEC
+               END-IF
+           END-PERFORM
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *    職員情報なし
+           IF     FLG-OK               =   ZERO
+               INITIALIZE                  SYS-1010-REC
+           END-IF
       *
       *2001.9.27 強制プロテクト（ＰＧ未作成）
            MOVE    "0"                 TO  SYS-1010-GSRAUTH(3:1)
