@@ -1747,7 +1747,7 @@
                MOVE    SPA-HOSPID          TO  SYUKA-HOSPID
                MOVE    "1"                 TO  SYUKA-NYUGAIKBN
                MOVE    SPA-PTID            TO  SYUKA-PTID
-               MOVE    "2"                 TO  SYUKA-TENKBN
+               MOVE    "2"                 TO  SYUKA-TEN-KBN
                MOVE    LNK-SCNYUACCT-EDSRYYMD(1:6)
                                            TO  SYUKA-SRYYM
                MOVE    SYUKA-REC           TO  MCPDATA-REC
@@ -1766,7 +1766,7 @@
                MOVE    SPA-HOSPID          TO  SYUKA-HOSPID
                MOVE    "1"                 TO  SYUKA-NYUGAIKBN
                MOVE    SPA-PTID            TO  SYUKA-PTID
-               MOVE    "1"                 TO  SYUKA-TENKBN
+               MOVE    "1"                 TO  SYUKA-TEN-KBN
                MOVE    LNK-SCNYUACCT-EDSRYYMD(1:6)
                                            TO  SYUKA-SRYYM
                MOVE    SYUKA-REC           TO  MCPDATA-REC
@@ -1781,7 +1781,7 @@
                MOVE    SPA-HOSPID          TO  SYUKA-HOSPID
                MOVE    "1"                 TO  SYUKA-NYUGAIKBN
                MOVE    SPA-PTID            TO  SYUKA-PTID
-               MOVE    "2"                 TO  SYUKA-TENKBN
+               MOVE    "2"                 TO  SYUKA-TEN-KBN
                MOVE    LNK-SCNYUACCT-EDSRYYMD(1:6)
                                            TO  SYUKA-SRYYM
                MOVE    SYUKA-REC           TO  MCPDATA-REC
