@@ -1859,6 +1859,14 @@
            END-IF
       *    食事区分
            MOVE    "099999913"         TO  LNK-SCNYUACCT-SHOKUJI-SRYCD
+      *    選択食廃止による変換
+           EVALUATE   WRK-TAIHI-SHOKUJI
+               WHEN   3
+                      MOVE   1         TO  WRK-TAIHI-SHOKUJI
+               WHEN   4
+                      MOVE   2         TO  WRK-TAIHI-SHOKUJI
+           END-EVALUATE
+      *
            MOVE   WRK-TAIHI-SHOKUJI    TO  LNK-SCNYUACCT-SHOKUJIKBN
       *    食堂加算
            PERFORM 4801-BTUSEL-SEC
