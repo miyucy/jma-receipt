@@ -851,6 +851,8 @@
            IF   (  WRK-CMB-ITM     =   SPACE )
                MOVE    1           TO  SPA-GMN-W26-CUR
                MOVE    "0002"      TO  SPA-ERRCD
+           ELSE
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-W26-BTUNUM-G
            END-IF
       *
            .
@@ -962,9 +964,6 @@
       *
            PERFORM 4201-INPUT-AREA-CLEAR-SEC
       *
-           MOVE    WRK-STYUKYMD    TO  WRK-KSNKJNYMD
-           PERFORM 42011-KSN-SYOKI-SEC
-      *
            INITIALIZE                  SYSKANRI-REC
       *
            MOVE    "5001"          TO  SYS-KANRICD
@@ -979,6 +978,9 @@
            END-IF
       *
            MOVE    SYSKANRI-REC    TO  SYS-5001-REC
+      *
+           MOVE    SYS-5001-STYUKYMD   TO  WRK-KSNKJNYMD
+           PERFORM 42011-KSN-SYOKI-SEC
       *
       *    …¬≈ÔºÔ Ã
            INITIALIZE                      SYSKANRI-REC
@@ -1546,7 +1548,7 @@
                IF    ( SPA-GMN-W26-CUR =   WRK-BASE-CUR )
                    IF    ( W26-CHK-KSN-STATE (IDX-KSN)
                                        =   WIDGET-INSENSITIVE )
-                       IF    ( SPA-GMN-W26-CUR =   10 )
+                       IF    ( IDX-KSN =   CONST-KSN-MAX )
                            COMPUTE SPA-GMN-W26-CUR
                                =   212
                        ELSE

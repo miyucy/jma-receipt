@@ -46,38 +46,65 @@ W27	{
 		KJNYMD	{
 			value	varchar(10);
 		};
-		CHK_SINSEIJI	{
+		CHK_KSN01	{
 			value	bool;
+			label	varchar(80);
+			state	int;
 		};
-		CHK_SNR_RYOYO1	{
+		CHK_KSN02	{
 			value	bool;
+			label	varchar(80);
+			state	int;
 		};
-		CHK_SNR_RYOYO2	{
+		CHK_KSN03	{
 			value	bool;
+			label	varchar(80);
+			state	int;
 		};
-		CHK_HOSYASEN	{
+		CHK_KSN04	{
 			value	bool;
+			label	varchar(80);
+			state	int;
 		};
-		CHK_RYOYO	{
+		CHK_KSN05	{
 			value	bool;
+			label	varchar(80);
+			state	int;
 		};
-		CHK_BTU_RYOYO1	{
+		CHK_KSN06	{
 			value	bool;
+			label	varchar(80);
+			state	int;
 		};
-		CHK_BTU_RYOYO2	{
+		CHK_KSN07	{
 			value	bool;
+			label	varchar(80);
+			state	int;
 		};
-		CHK_BTU_RYOYO3	{
+		CHK_KSN08	{
 			value	bool;
+			label	varchar(80);
+			state	int;
 		};
-		CHK_JYUTOK1	{
+		CHK_KSN09	{
 			value	bool;
+			label	varchar(80);
+			state	int;
 		};
-		CHK_JYUTOK2	{
+		CHK_KSN10	{
 			value	bool;
+			label	varchar(80);
+			state	int;
 		};
-		CHK_MUKIN	{
+		CHK_KSN11	{
 			value	bool;
+			label	varchar(80);
+			state	int;
+		};
+		CHK_KSN12	{
+			value	bool;
+			label	varchar(80);
+			state	int;
 		};
 	};
 };

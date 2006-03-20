@@ -135,6 +135,7 @@
       *
       *    ∏«ƒÍ√ÕŒŒ∞Ë
        01  CONST-AREA.
+           03  CONST-H180401           PIC X(08) VALUE "20060401".
            03  CONST-SINSEIJI          PIC X(09) VALUE "190109770".
            03  CONST-SNR-RYOYO-VAL.
                05                      PIC X(09) VALUE "190106370".
@@ -150,6 +151,7 @@
                05                      PIC X(09) VALUE "190106270".
            03  CONST-BTU-RYOYO-R   REDEFINES   CONST-BTU-RYOYO-VAL.
                05  CONST-BTU-RYOYO     PIC X(09) OCCURS 3.
+           03  CONST-BTU-RYOYO-H18     PIC X(09) VALUE "190120210".
            03  CONST-JYUTOK1           PIC X(09) VALUE "190105870".
            03  CONST-JYUTOK2           PIC X(09) VALUE "190105970".
            03  CONST-MUKIN             PIC X(09) VALUE "190106570".
@@ -2168,6 +2170,13 @@
       *
       *    Ãµ∂›º£Œ≈ºº¥…Õ˝≤√ªª
            MOVE    CONST-MUKIN     TO  SYS-5002-MUKIN-CD
+      *
+           IF    ( SPA-NAI-W20-YUKOSTYMD   >=  CONST-H180401 )
+      *        Œ≈Õ‹…¬≈ÔŒ≈Õ‹¥ƒ∂≠≤√ªª
+               MOVE    CONST-BTU-RYOYO-H18
+                                   TO  SYS-5002-BTU-RYOYO-H18-CD
+               MOVE    "1"         TO  SYS-5002-BTU-RYOYO-H18-KBN
+           END-IF
       *
            .
        4201-BRM-KSN-EDIT-EXT.

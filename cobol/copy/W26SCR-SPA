@@ -97,14 +97,14 @@
       *        •ÿ•√•¿π‡Ã‹ŒŒ∞Ë
                09  SPA-GMN-W27-HEAD-AREA.
       *          …¬≈ÔÃææŒ
-                 11  SPA-GMN-W27-BTU-NAME.
-                   13  SPA-GMN-W27-BTU-NAME-CD         PIC X(02).
+                 11  SPA-GMN-W27-BTUNUM-G.
+                   13  SPA-GMN-W27-BTUNUM              PIC X(02).
                    13                                  PIC X(01).
-                   13  SPA-GMN-W27-BTU-NAME-NM         PIC X(20).
+                   13  SPA-GMN-W27-BTUNUMMEI           PIC X(20).
       *          …¬≈ÔºÔ Ã
-                 11  SPA-GMN-W27-BTU-SBT               PIC X(20).
+                 11  SPA-GMN-W27-SBT                   PIC X(20).
       *          ∆˛±°¥À‹Œ¡
-                 11  SPA-GMN-W27-BTU-KHNRYO            PIC X(60).
+                 11  SPA-GMN-W27-KHNRYO                PIC X(60).
       *        ∆˛Œœπ‡Ã‹ŒŒ∞Ë
                09  SPA-GMN-W27-INPUT-AREA.
       *              ≥´ªœ¡™¬Ú»÷πÊ
@@ -116,31 +116,18 @@
                  11  SPA-GMN-W27-STBRMNUM2             PIC X(6).
       *              Ω™Œª…¬ºº»÷πÊ
                  11  SPA-GMN-W27-EDBRMNUM              PIC X(6).
-      *              ø∑¿∏ª˘∆˛±°∞ÂŒ≈¥…Õ˝≤√ªª
-                 11  SPA-GMN-W27-CHK-SINSEIJI          PIC X.
-      *              ø«Œ≈ΩÍŒ≈Õ‹…¬æ≤Œ≈Õ‹¥ƒ∂≠≤√ªª
-                 11  SPA-GMN-W27-CHK-SNR-RYOYO         PIC X
-                                                       OCCURS 2.
-      *               ¸ºÕ¿˛º£Œ≈…¬ºº¥…Õ˝≤√ªª
-                 11  SPA-GMN-W27-CHK-HOSYASEN          PIC X.
-      *              Œ≈Õ‹¥ƒ∂≠≤√ªª
-                 11  SPA-GMN-W27-CHK-RYOYO             PIC X.
-      *              Œ≈Õ‹…¬≈Ô¥ƒ∂≠≤√ªª
-                 11  SPA-GMN-W27-CHK-BTU-RYOYO         PIC X
-                                                       OCCURS 3.
-      *              Ω≈æ…º‘≈˘Œ≈Õ‹¥ƒ∂≠∆√ Ã≤√ªª° ∏ƒºº°À
-                 11  SPA-GMN-W27-CHK-JYUTOK1           PIC X.
-      *              Ω≈æ…º‘≈˘Œ≈Õ‹¥ƒ∂≠∆√ Ã≤√ªª° £≤øÕ…Ù≤∞°À
-                 11  SPA-GMN-W27-CHK-JYUTOK2           PIC X.
-      *              Ãµ∂›º£Œ≈ºº¥…Õ˝≤√ªª
-                 11  SPA-GMN-W27-CHK-MUKIN             PIC X.
+                 11  SPA-GMN-W27-KSNNAME-G.
+                     13  SPA-GMN-W27-KSNNAME           PIC X(80)
+                                                       OCCURS  12.
+                 11  SPA-GMN-W27-CHK-KSN-G.
+                     13  SPA-GMN-W27-CHK-KSN           PIC X(01)
+                                                       OCCURS  12.
       *        ¥Ω‡∆¸
                09    SPA-GMN-W27-KJNYMD-AREA.
                  11  SPA-GMN-W27-KJNYMD                PIC X(10).
-                 11  SPA-GMN-W27-KJNYMD-S              PIC X(08).
       *        …¬ººæ Û•Í•π•»ŒŒ∞Ë
                09  SPA-GMN-W27-BRMLST-AREA.
-                 11  SPA-GMN-W27-BRMLST-CNT            PIC S9(9).
+                 11  SPA-GMN-W27-BRMLST-MAX            PIC S9(9).
                  11  SPA-GMN-W27-BRMLST-ITM            OCCURS  400.
       *                Õ≠∏˙° £∞°ßÃµ∏˙°ø£±°ßÕ≠∏˙°À
                    13  SPA-GMN-W27-TYUKO-FLG           PIC 9(1).
@@ -150,7 +137,6 @@
                    13  SPA-GMN-W27-TBRMNUM             PIC X(08).
                    13  SPA-GMN-W27-TBRMNUM2            PIC X(06).
       *                ∆√ƒÍ∆˛±°Œ¡
-                   13  SPA-GMN-W27-TTOKNYUIN-CD        PIC X(02).
                    13  SPA-GMN-W27-TTOKNYUIN           PIC X(24).
       *                …¬ºººÔ Ã
                    13  SPA-GMN-W27-TBRMSBT             PIC X(20).
@@ -158,42 +144,43 @@
                    13  SPA-GMN-W27-TSAGAKU             PIC 9(10).
       *                ≥´ªœÕ≠∏˙«Ø∑Ó∆¸
                    13  SPA-GMN-W27-TSTYUKYMD           PIC X(9).
-                   13  SPA-GMN-W27-TSTYUKYMD-S         PIC X(8).
       *                Ω™ŒªÕ≠∏˙«Ø∑Ó∆¸
                    13  SPA-GMN-W27-TEDYUKYMD           PIC X(9).
-                   13  SPA-GMN-W27-TEDYUKYMD-S         PIC X(8).
-      *
-      *                ø∑¿∏ª˘∆˛±°∞ÂŒ≈¥…Õ˝≤√ªª
-                   13  SPA-GMN-W27-TSINSEIJI-KBN       PIC X(01).
-      *                ø«Œ≈ΩÍŒ≈Õ‹…¬æ≤Œ≈Õ‹¥ƒ∂≠≤√ªª
-                   13  SPA-GMN-W27-TSNR-RYOYO-KBN      PIC X(01)
-                                                       OCCURS 2.
-      *                 ¸ºÕ¿˛º£Œ≈…¬ºº¥…Õ˝≤√ªª
-                   13  SPA-GMN-W27-THOSYASEN-KBN       PIC X(01).
-      *                Œ≈Õ‹¥ƒ∂≠≤√ªª
-                   13  SPA-GMN-W27-TRYOYO-KBN          PIC X(01).
-      *                Œ≈Õ‹…¬≈Ô¥ƒ∂≠≤√ªª
-                   13  SPA-GMN-W27-TBTU-RYOYO-KBN      PIC X(01)
-                                                       OCCURS 3.
-      *                Ω≈æ…º‘≈˘Œ≈Õ‹¥ƒ∂≠∆√ Ã≤√ªª° ∏ƒºº°À
-                   13  SPA-GMN-W27-TJYUTOK1-KBN        PIC X(01).
-      *                Ω≈æ…º‘≈˘Œ≈Õ‹¥ƒ∂≠∆√ Ã≤√ªª° £≤øÕ…Ù≤∞°À
-                   13  SPA-GMN-W27-TJYUTOK2-KBN        PIC X(01).
-      *                Ãµ∂›º£Œ≈ºº¥…Õ˝≤√ªª
-                   13  SPA-GMN-W27-TMUKIN-KBN          PIC X(01).
       *
                  11  SPA-GMN-W27-BRMLST-SEL            PIC 9(05).
       *
       *        •≥•Û•‹π‡Ã‹ŒŒ∞Ë
-               09  SPA-GMN-W27-CMB-DAT-AREA.
+               09  SPA-GMN-W27-CMB-AREA.
       *          …¬≈ÔÃææŒ•≥•Û•‹
-                 11  SPA-GMN-W27-CMB-BTU-NAME.
-                   13  SPA-GMN-W27-BTU-NAME-CNT        PIC S9(9)
-                                                       BINARY.
-                   13  SPA-GMN-W27-BTU-NAME-ITM-OCC    OCCURS  50 TIMES
-                                          INDEXED BY   CMB-IDX21.
-                     15  SPA-GMN-W27-BTU-NAME-ITM      PIC X(23).
-      *                ITM2§À§œ…¬≈ÔºÔ Ã§Ú•ª•√•»
-                     15  SPA-GMN-W27-BTU-NAME-ITM2     PIC X(20).
-      *                ITM3§À§œ∆˛±°Œ¡§Ú•ª•√•»
-                     15  SPA-GMN-W27-BTU-NAME-ITM3     PIC X(60).
+                 11  SPA-GMN-W27-BTUNUMLST-G.
+                   13  SPA-GMN-W27-BTUNUM-MAX          PIC 9(03).
+                   13  SPA-GMN-W27-BTUNUMLST           OCCURS 50.
+                     15  SPA-GMN-W27-BTUNUML           PIC X(02).
+                     15                                PIC X(01).
+                     15  SPA-GMN-W27-BTUNUMMEIL        PIC X(20).
+               09  SPA-NAI-W27-HEAD-AREA.
+                 11  SPA-NAI-W27-KIHONRYO              PIC X(09).
+                 11  SPA-NAI-W27-KSNKBN                PIC X(03).
+                 11  SPA-NAI-W27-SBT                   PIC X(02).
+                 11  SPA-NAI-W27-STYUKYMD              PIC X(08).
+               09  SPA-NAI-W27-INPUT-AREA.
+                 11  SPA-NAI-W27-STSELNUM              PIC S9(3).
+                 11  SPA-NAI-W27-EDSELNUM              PIC S9(3).
+                 11  SPA-NAI-W27-CHK-KSN-G.
+                     13  SPA-NAI-W27-CHK-KSN-OCC           OCCURS 12.
+                         15   SPA-NAI-W27-CHK-KSN-SRYCD    PIC X(09).
+                         15   SPA-NAI-W27-CHK-KSN-KSNKBN   PIC X(03).
+      *
+               09  SPA-NAI-W27-KJNYMD-AREA.
+                 11  SPA-NAI-W27-KJNYMD                PIC X(08).
+               09  SPA-NAI-W27-BRMLST-AREA.
+                 11  SPA-NAI-W27-BRMLST-OCC            OCCURS  400.
+                   13  SPA-NAI-W27-TTOKNYUIN           PIC X(09).
+                   13  SPA-NAI-W27-TSTYUKYMD           PIC X(8).
+                   13  SPA-NAI-W27-TEDYUKYMD           PIC X(8).
+               09  SPA-NAI-W27-CMB-AREA.
+                 11  SPA-NAI-W27-BTUNUMLST-G.
+                   13  SPA-NAI-W27-BTUNUMLST           OCCURS 50.
+                     15  SPA-NAI-W27-SBTL              PIC X(02).
+                     15  SPA-NAI-W27-KIHONRYOL         PIC X(09).
+                     15  SPA-NAI-W27-STYUKYMDL         PIC X(08).

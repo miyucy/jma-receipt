@@ -43,11 +43,7 @@
               04  W27-STBRMNUM             PIC X(6).
               04  W27-EDBRMNUM             PIC X(6).
               04  W27-KJNYMD               PIC X(10).
-              04  W27-CHK-SINSEIJI         PIC X.
-              04  W27-CHK-SNR-RYOYO        PIC X   OCCURS  2.
-              04  W27-CHK-HOSYASEN         PIC X.
-              04  W27-CHK-RYOYO            PIC X.
-              04  W27-CHK-BTU-RYOYO        PIC X   OCCURS  3.
-              04  W27-CHK-JYUTOK1          PIC X.
-              04  W27-CHK-JYUTOK2          PIC X.
-              04  W27-CHK-MUKIN            PIC X.
+              03  W27-CHK-KSN-OCC          OCCURS 12.
+                04  W27-CHK-KSN            PIC X(01).
+                04  W27-CHK-KSN-LBL        PIC X(80).
+                04  W27-CHK-KSN-STATE      PIC S9(9)   BINARY.

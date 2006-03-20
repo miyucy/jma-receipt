@@ -92,9 +92,13 @@
                    07  SYS-5002-MUKIN.
                        09  SYS-5002-MUKIN-CD       PIC X(09).
                        09  SYS-5002-MUKIN-KBN      PIC X(01).
+      *Œ≈Õ‹…¬≈ÔŒ≈Õ‹¥ƒ∂≠≤√ªª£±
+                   07  SYS-5002-BTU-RYOYO-H18.
+                       09  SYS-5002-BTU-RYOYO-H18-CD   PIC X(09).
+                       09  SYS-5002-BTU-RYOYO-H18-KBN  PIC X(01).
       *∆˛±°Œ¡≤√ªª∫∆ƒÍµ¡
                05  SYS-5002-KSNTBLR  REDEFINES  SYS-5002-KSNAREA.
-                 07  SYS-5002-KSN              OCCURS  11.
+                 07  SYS-5002-KSN              OCCURS  12.
                    09  SYS-5002-KSNCD              PIC X(09).
                    09  SYS-5002-KSNKBN             PIC X(01).
       *ÕΩ»˜
