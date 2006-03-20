@@ -269,3 +269,15 @@ path	st_key1 	{
 		;
 	};
 };
+
+path	del13 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_nyuinact
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   '1'
+			AND   PTID        =   :PTID
+			AND   SRYYM       >=  :SRYYM
+		;
+	};
+};

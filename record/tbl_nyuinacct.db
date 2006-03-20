@@ -597,3 +597,16 @@ path	key28	{
 		;
 	};
 };
+
+path	del2 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_nyuinacct
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   '1'
+			AND   PTID        =   :PTID
+			AND   SRYYM       >=  :SRYYM
+		;
+	};
+};
+
