@@ -461,6 +461,7 @@
                PERFORM     910-SYSKANRI-READ-SEC
                    IF    FLG-SYSKANRI  =   ZERO
                          MOVE    SYS-1001-HOSPID  TO  WRK-HOSPID
+                         MOVE    SYS-1001-PREFNUM TO  SPA-PREFNUM
                    ELSE
                          MOVE  "医療機関情報が取得できませんでした。"
                                            TO  WRK-RECEERR
