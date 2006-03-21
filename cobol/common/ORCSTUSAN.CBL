@@ -100,7 +100,7 @@
            03  WRK-SRYYMD                  PIC X(08). 
       *
        01  CONST-AREA.
-           03  CONST-H180401               PIC X(08)   VALUE "20060401".
+           03  CONST-H180701               PIC X(08)   VALUE "20060701".
            03  CONST-TOKUTEI-SRYCD-MAX     PIC 9(03)   VALUE 10.
       *
       *    ´µ¼ÔÆþ±¡ÍúÎò¥ï¡¼¥¯
@@ -621,7 +621,7 @@
       *
            MOVE    ZERO            TO  FLG-SENTEICDCHG
       *
-           IF    ( WRK-SRYYMD      >=  CONST-H180401 )
+           IF    ( WRK-SRYYMD      >=  CONST-H180701 )
             AND  ( TNS-SRYCD       =   "190080610"
                                     OR "190080710"
                                     OR "190081310"
