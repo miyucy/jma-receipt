@@ -2208,17 +2208,17 @@
       *
            IF     (WRK-FTNHENFLG1  =  3) AND (WRK-FTNHENFLG2  NOT =  3)
            MOVE    "red"       TO    S02-LBLMSG-STYLE
-       MOVE "自立支援医療負担割合変更　同月請求分確認及び再請求（入）"
+       MOVE "自立支援医療負担割合変更  同月請求分確認及び再請求（入）"
                                TO    S02-LBLMSG
            END-IF
            IF     (WRK-FTNHENFLG1  NOT =  3) AND (WRK-FTNHENFLG2  =  3)
            MOVE    "red"       TO    S02-LBLMSG-STYLE
-       MOVE "自立支援医療負担割合変更　同月請求分確認及び再請求（外）"
+       MOVE "自立支援医療負担割合変更  同月請求分確認及び再請求（外）"
                                TO    S02-LBLMSG
            END-IF
            IF     (WRK-FTNHENFLG1      =  3) AND (WRK-FTNHENFLG2  =  3)
            MOVE    "red"       TO    S02-LBLMSG-STYLE
-       MOVE "自立支援医療負担割合変更　同月請求分確認及び再請求（入外）"
+       MOVE "自立支援医療負担割合変更  同月請求分確認及び再請求（入外）"
                                TO    S02-LBLMSG
            END-IF
       *
