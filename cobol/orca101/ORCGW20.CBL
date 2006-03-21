@@ -71,6 +71,8 @@
            03  FLG-SYS5001                         PIC 9(01).
            03  FLG-HIZUKE-ERR                      PIC 9(01).
            03  FLG-SETKHNRYO                       PIC 9(01).
+           03  FLG-BTULST-ROW                      PIC 9(01).
+
       *
       *    添字領域
        01  IDX-AREA.
@@ -127,6 +129,9 @@
            03  WRK-YUKOEDYMD                       PIC X(08).
            03  WRK-KJN-YUKSTYMD                    PIC X(08).
            03  WRK-PATHNAME                        PIC X(64).
+      *
+       01  WRK-ROW.
+           03  WRK-BTULST-ROW                      PIC S9(9)   BINARY.
       *
       *    固定値領域
        01  CONST-AREA.
@@ -737,6 +742,8 @@
            MOVE    "key7"          TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
+           MOVE    1               TO  FLG-BTULST-ROW
+      *
            .
        3101-EDIT-BTULST-EXT.
            EXIT.
@@ -1257,6 +1264,11 @@
                MOVE    "1001"      TO  SPA-ERRCD
            END-IF
       *
+           IF    ( SPA-GMN-W20-BTULST-SEL  =   SPA-GMN-W20-BTULST-MAX )
+               MOVE    2           TO  FLG-BTULST-ROW
+           ELSE
+               MOVE    ZERO        TO  FLG-BTULST-ROW
+           END-IF
       *
            .
        420-TUIKA-EXT.
@@ -1340,6 +1352,8 @@
       *        画面を初期化する
                PERFORM 420-CLEAR-SEC
            END-IF
+      *
+           MOVE    ZERO            TO  FLG-BTULST-ROW
       *
            .
        420-HENKOU-EXT.
@@ -1449,6 +1463,9 @@
       *        画面を初期化する
                PERFORM 420-CLEAR-SEC
            END-IF
+      *
+           MOVE    ZERO            TO  FLG-BTULST-ROW
+      *
            .
        421-SAKUJO-EXT.
            EXIT.
@@ -2309,6 +2326,7 @@
                    INITIALIZE              SPA-NAI-W20-KHNSRYCD
                                            SPA-NAI-W20-KHNTEN
                                            SPA-GMN-W20-KHNRYO-G
+                                           SPA-GMN-W20-KNGHJOKSN-G
                END-IF
       *
                IF    ( SPA-GMN-W20-SBT NOT =   "04" )
@@ -3201,6 +3219,8 @@
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
+           MOVE    W20-BTULST-ROW          TO  WRK-BTULST-ROW
+      *
            INITIALIZE                          W20
       *
       *    病室ボタン
@@ -3396,6 +3416,18 @@
            END-PERFORM
       *
            MOVE    "食堂加算"          TO  W20-CHK-SYOKUDOKBN-LBL
+      *
+           EVALUATE    FLG-BTULST-ROW
+           WHEN    1
+               MOVE    ZERO               TO  W20-BTULST-ROW
+               MOVE    ZERO               TO  W20-BTULST-ROWATTR
+           WHEN    2
+               MOVE    W20-BTULST-CNT     TO  W20-BTULST-ROW
+               MOVE    1                  TO  W20-BTULST-ROWATTR
+           WHEN    OTHER
+               MOVE    WRK-BTULST-ROW     TO  W20-BTULST-ROW
+               MOVE    ZERO               TO  W20-BTULST-ROWATTR
+           END-EVALUATE
       *
       *    項目状態編集
            PERFORM 500-EDIT-GMNHEN-STATE-SEC
