@@ -5343,7 +5343,9 @@
                IF     (SPA-COM-SRYKBN  (IDX)   =   "11" ) AND
                      ((SPA-COM-INPUTCD (IDX)(1:1)  =   "1" )  OR
                       (SPA-COM-INPUTCD (IDX)(1:3)  =   "099"))
-                   MOVE    1               TO  FLG-SRYKBN
+                   IF      SPA-COM-SRYKA(IDX)  =   SPA-SRYKA
+                       MOVE    1               TO  FLG-SRYKBN
+                   END-IF
       *            ╫И©гна
                    IF     (SPA-COM-INPUTCD (IDX)(1:1)  =   "1" )
                      AND  (SPA-COM-DATAKBN (IDX)   =   "1"  )
