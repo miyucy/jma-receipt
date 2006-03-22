@@ -128,7 +128,7 @@
                    07  SPA-GMN-SANSOKBNMEI         PIC X(26).
                05  SPA-GMN-SANSOKBNCOB-G.
                    07  SPA-GMN-SANSOKBNCOB         PIC X(30)
-                                                   OCCURS   2.
+                                                   OCCURS   7.
                05  SPA-SANSOKBN-MAX             PIC 9(04).
       *
                05  SPA-GMN-TOKUKIZAISBT1-G.
@@ -656,9 +656,19 @@
       *    »ÀÁÇ
            MOVE    "0 »ÀÁÇ¡¢ÃâÁÇ°Ê³°"
                                        TO  SPA-GMN-SANSOKBNCOB (1)
-           MOVE    "1 »ÀÁÇ¡¢ÃâÁÇ¤Ë·¸¤ï¤ë¤â¤Î"
+           MOVE    "1 »ÀÁÇÊäÀµÎ¨¡¢¹âµ¤°µ»ÀÁÇ²Ã»»"
                                        TO  SPA-GMN-SANSOKBNCOB (2)
-           MOVE    2                   TO  SPA-SANSOKBN-MAX
+           MOVE    "2 ÄêÃÖ¼°±Õ²½»ÀÁÇÃùÁå"
+                                       TO  SPA-GMN-SANSOKBNCOB (3)
+           MOVE    "3 ²ÄÈÂ¼°±Õ²½»ÀÁÇÍÆ´ï"
+                                       TO  SPA-GMN-SANSOKBNCOB (4)
+           MOVE    "4 Âç·¿¥Ü¥ó¥Ù"
+                                       TO  SPA-GMN-SANSOKBNCOB (5)
+           MOVE    "5 ¾®·¿¥Ü¥ó¥Ù"
+                                       TO  SPA-GMN-SANSOKBNCOB (6)
+           MOVE    "9 ÃâÁÇ"
+                                       TO  SPA-GMN-SANSOKBNCOB (7)
+           MOVE    7                   TO  SPA-SANSOKBN-MAX
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-SANSOKBN-MAX
                IF      SPA-GMN-SANSOKBN    =   SPA-GMN-SANSOKBNCOB

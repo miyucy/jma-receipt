@@ -93,4 +93,4 @@
                 04  Z05-SANSOKBN.
                   05  Z05-VALUE   PIC X(30).
                 04  Z05-SANSOKBN-COUNT   PIC S9(9)   BINARY.
-                04  Z05-SANSOKBN-ITEM    PIC X(30)   OCCURS  2 TIMES.
+                04  Z05-SANSOKBN-ITEM    PIC X(30)   OCCURS  7 TIMES.

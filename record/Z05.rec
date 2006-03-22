@@ -109,7 +109,7 @@ Z05	{
 				value	varchar(30);
 			};
 			count	int;
-			item	varchar(30)[2];
+			item	varchar(30)[7];
 		};
 	};
 };
