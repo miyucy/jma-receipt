@@ -73,6 +73,7 @@
                      15                                PIC X(01).
                      15  SPA-GMN-W26-BTUNUMMEIL       PIC X(20).
                09  SPA-NAI-W26-INPUT-AREA.
+                 11  SPA-NAI-W26-KHNSRYCD              PIC X(09).
                  11  SPA-NAI-W26-KHNRYO                PIC X(09).
                  11  SPA-NAI-W26-KSNKBN                PIC X(03).
                  11  SPA-NAI-W26-STYUKYMD              PIC X(08).

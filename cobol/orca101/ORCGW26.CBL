@@ -62,6 +62,7 @@
            03  FLG-HIZUKE-ERR                      PIC 9(01).
            03  FLG-NYUKSNCHK                       PIC 9(01).
            03  FLG-SSTKIJUNERR                     PIC 9(01).
+           03  FLG-DRKNGTEK                        PIC 9(01).
            03  FLG-KSNCD-G.
                05  FLG-190101770                   PIC 9(01).
                05  FLG-190101970                   PIC 9(01).
@@ -132,6 +133,7 @@
        01  CONST-AREA.
            03  CONST-H180401               PIC X(08)   VALUE "20060401".
            03  CONST-BTUNAME-MAX           PIC 9(03) VALUE   50.
+           03  CONST-SYSKSN-MAX            PIC 9(03) VALUE   14.
            03  CONST-KSN-AREA.
                05  CONST-KSN-MAX           PIC 9(03) VALUE   9.
                05  CONST-KSN-H1804-G.
@@ -812,18 +814,18 @@
                    MOVE    SPA-NAI-W26-CHK-KSN-SRYCD (IDX-KSN)
                                            TO  SYS-5001-KNGTEK-CD
                    IF    ( SPA-GMN-W26-CHK-KSN (IDX-KSN)  =   "F" )
-                       MOVE    "1"         TO  SYS-5001-KNGTEK-CD
+                       MOVE    "1"         TO  SYS-5001-KNGTEK-KBN
                    ELSE
-                       MOVE    "2"         TO  SYS-5001-KNGTEK-CD
+                       MOVE    "2"         TO  SYS-5001-KNGTEK-KBN
                    END-IF
                WHEN    "190117070"
       *            Ê£¿ô°å»ÕµÚ¤Ó´Ç¸îÇÛÃÖÅ¬¹ç²Ã»»
                    MOVE    SPA-NAI-W26-CHK-KSN-SRYCD (IDX-KSN)
                                            TO  SYS-5001-DRTEK-CD
                    IF    ( SPA-GMN-W26-CHK-KSN (IDX-KSN)  =   "F" )
-                       MOVE    "1"         TO  SYS-5001-DRTEK-CD
+                       MOVE    "1"         TO  SYS-5001-DRTEK-KBN
                    ELSE
-                       MOVE    "2"         TO  SYS-5001-DRTEK-CD
+                       MOVE    "2"         TO  SYS-5001-DRTEK-KBN
                    END-IF
                END-EVALUATE
       *
@@ -1013,6 +1015,9 @@
            MOVE    SYSKANRI-REC        TO  SYS-5101-REC
            MOVE    SYS-5101-BTU-SBT-NM TO  SPA-GMN-W26-SBT
       *
+           MOVE    SYS-5001-BTU-KHNSRYCD
+                                       TO  SPA-NAI-W26-KHNSRYCD
+      *
       *    Æþ±¡ÎÁ
            IF    ( SYS-5001-BTU-TOKTEI-NYUIN
                                        =   SPACE )
@@ -1071,7 +1076,7 @@
                    CONTINUE
                WHEN    OTHER
                    PERFORM VARYING IDX-SYS FROM    1   BY  1
-                           UNTIL ( IDX-SYS >   CONST-KSN-MAX )
+                           UNTIL ( IDX-SYS >   CONST-SYSKSN-MAX )
       *
                        IF    ( SPA-NAI-W26-CHK-KSN-SRYCD (IDX-KSN)
                                            =   SYS-5001-KSNCD (IDX-SYS))
@@ -1188,7 +1193,11 @@
                IF    ( SPA-NAI-W26-CHK-KSN-SRYCD (IDX-KSN)
                                            =   "190109670"
                                             OR "190117070" )
-                   CONTINUE
+                   IF    ( SPA-NAI-W26-KHNSRYCD
+                                       NOT =   "099999950" )
+                       MOVE    "0005"  TO  SPA-ERRCD
+                       MOVE    "F"     TO  SPA-GMN-W26-CHK-KSN (IDX-KSN)
+                   END-IF
                ELSE
                    MOVE    SPA-NAI-W26-KSNKBN
                                TO  WRK-BTU-NYUKSNKBN

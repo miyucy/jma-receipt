@@ -166,6 +166,7 @@
        01  CONST-AREA.
            03  CONST-H180401               PIC X(08) VALUE "20060401".
            03  CONST-KSN-MAX               PIC 9(03) VALUE  12.
+           03  CONST-SYSKSN-MAX            PIC 9(03) VALUE  12.
            03  CONST-BTUNAME-MAX           PIC 9(03) VALUE  50.
            03  CONST-KSN-AREA.
                05  CONST-KSN-H1804-G.
@@ -1238,7 +1239,7 @@
                    CONTINUE
                WHEN    OTHER
                    PERFORM VARYING IDX-SYS FROM    1   BY  1
-                           UNTIL ( IDX-SYS >   CONST-KSN-MAX )
+                           UNTIL ( IDX-SYS >   CONST-SYSKSN-MAX )
       *
                        IF    ( SPA-NAI-W27-CHK-KSN-SRYCD (IDX-KSN)
                                            =   SYS-5002-KSNCD (IDX-SYS))
