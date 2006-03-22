@@ -25,8 +25,10 @@
       *  作成日付    作業者        記述
       *  02/04/24    MCC-森脇      新規作成
       *****************************************************************
+      *  00.00.01    NACL-森脇     順番並び替え
+      *****************************************************************
       *
-       ENVIRONMENT             DIVISION.
+       ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
@@ -38,6 +40,18 @@
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
+      *----(00.00.01)--ADD-START---
+      *    並び換え用
+           SELECT  TOKEI-FILE      ASSIGN  TOKEIPARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  TOKEI-KEY
+                                   FILE    STATUS  IS  STS-TOKEI.
+      *    並び換え用
+           SELECT  TOKEIX-FILE     ASSIGN  TOKEIPARA
+                                   FILE    STATUS  IS  STS-TOKEIX.
+      *----(00.00.01)--ADD-END-----
+      *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
@@ -47,7 +61,23 @@
       *
       *    エラーファイル
        FD  RECEERR-FILE.
-       01  RECEERR-REC             PIC X(200). 
+       01  RECEERR-REC             PIC X(200).
+      *
+      *----(00.00.01)--ADD-START---
+      *    並び換え用ファイル
+       FD  TOKEI-FILE.
+       01  TOKEI-REC.
+           03  TOKEI-KEY.
+               05  TOKEI-BUNRUICD      PIC X(03).
+               05  TOKEI-DSPSEQ        PIC 9(02).
+               05  TOKEI-BYOMEIINPUTCD PIC X(20).
+           03  TOKEI-BYOMEI            PIC X(160).
+           03  TOKEI-MANSEIKBN         PIC 9(02).
+           03  TOKEI-UTAGAIFLG         PIC X(01).
+      *    クリア用
+       FD  TOKEIX-FILE.
+       01  TOKEIX-REC                  PIC X(200).
+      *----(00.00.01)--ADD-END-----
       *
        WORKING-STORAGE             SECTION.
       *
@@ -58,15 +88,24 @@
            COPY    "CPSHELLTBL.INC".
            COPY    "ORCA-DBPATH".
       *    エラーファイル 名称領域 
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING  //RECE01PARA//
-                                   BY         //RECEERR//.
-           03                      PIC X(04)   VALUE   ".dat".
+           COPY    "CPCOMMONDAT2.INC"  REPLACING  //RECE01PARA//
+                                       BY         //RECEERR//.
+           03                          PIC X(04)   VALUE   ".dat".
+      *----(00.00.01)--ADD-START---
+      *    並び換え用 名称領域 
+           COPY    "CPCOMMONDAT2.INC"  REPLACING  //RECE01//
+                                       BY         //TOKEI//.
+           03  FILLER                  PIC X(04)   VALUE   ".dat".
+      *----(00.00.01)--ADD-END-----
       *
       *    スパ領域
        01  STS-AREA.
            03  STS-PARA            PIC X(02).
            03  STS-RECEERR         PIC X(02).
+      *----(00.00.01)--ADD-START---
+           03  STS-TOKEI           PIC X(02).
+           03  STS-TOKEIX          PIC X(02).
+      *----(00.00.01)--ADD-END-----
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -74,9 +113,13 @@
            03  FLG-BYOMEI          PIC 9(01).
            03  FLG-BUNRUI          PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
+      *----(00.00.01)--ADD-START---
+           03  FLG-TOKEI           PIC 9(01).
+      *----(00.00.01)--ADD-END-----
       *
       *    カウント領域
        01  CNT-AREA.
+           03  CNT-BYOMEI          PIC 9(04).
            03  CNT-LINE            PIC 9(02).
            03  CNT-PAGE            PIC 9(03).
       *
@@ -87,29 +130,29 @@
       *    一時領域
        01  WRK-AREA. 
            03  WRK-PARA.
-               05  WRK-PARA-TERMID    PIC X(64).
-               05  WRK-PARA-SYSYMD    PIC X(8).
-               05  WRK-PARA-HOSPID    PIC X(24).               
+               05  WRK-PARA-TERMID PIC X(64).
+               05  WRK-PARA-SYSYMD PIC X(8).
+               05  WRK-PARA-HOSPID PIC X(24).
       *
-           03  WRK-RECEERR           PIC X(200).   
+           03  WRK-RECEERR         PIC X(200).
       *  
            03  WRK-SYSYMD.
-               05  WRK-SYSYY         PIC 9(04).
-               05  WRK-SYSMM         PIC 9(02).
-               05  WRK-SYSDD         PIC 9(02).
+               05  WRK-SYSYY       PIC 9(04).
+               05  WRK-SYSMM       PIC 9(02).
+               05  WRK-SYSDD       PIC 9(02).
            03  WRK-SYMD.
-               05  WRK-SYY           PIC 9(04).
-               05  WRK-SMM           PIC 9(02).
-               05  WRK-SDD           PIC 9(02).
-           03  WRK-HENYMDG           PIC X(22).
+               05  WRK-SYY         PIC 9(04).
+               05  WRK-SMM         PIC 9(02).
+               05  WRK-SDD         PIC 9(02).
+           03  WRK-HENYMDG         PIC X(22).
       *
-      *     03  WRK-IN                PIC X.
+      *     03  WRK-IN             PIC X.
       *
-           03  WRK-PAGE              PIC ZZ,ZZ9.
+           03  WRK-PAGE            PIC ZZ,ZZ9.
       *
-       01  WRK-JOBKANRI-AREA.                             
-           03  WRK-JOBKANRI-MODE       PIC X(03). 
-018900     03  WRK-JOBKANRI-RETURN     PIC S9(03).
+       01  WRK-JOBKANRI-AREA.
+           03  WRK-JOBKANRI-MODE   PIC X(03).
+018900     03  WRK-JOBKANRI-RETURN PIC S9(03).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -134,6 +177,12 @@
       *    サブプロ用　領域
       *****************************************************************
       *
+      *----(00.00.01)--ADD-ATART---
+      *    ファイル削除パラメタ
+           COPY    "CPORCSFDEL.INC".
+      *    印刷パラメタ
+           COPY    "CPORCSMKPRT.INC".
+      *----(00.00.01)--ADD-END-----
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
@@ -150,11 +199,11 @@
        LINKAGE                     SECTION.
       *
        01  COMMAND-PARAM.
-           02  FILLER      PIC X(256).          
+           02  FILLER              PIC X(256).
       *
       ******************************************************************
-       PROCEDURE                       DIVISION
-                                       USING     COMMAND-PARAM.
+       PROCEDURE                   DIVISION
+                                   USING     COMMAND-PARAM.
       *
       *****************************************************************
       *    主　　処理
@@ -164,7 +213,7 @@
            PERFORM 100-INIT-SEC
       *
            PERFORM 200-MAIN-SEC
-                   UNTIL       FLG-END     =   1
+                   UNTIL   FLG-END     =   1
       *
            PERFORM 300-END-SEC
       *
@@ -186,9 +235,13 @@
                                        INTO    WRK-PARA-TERMID
                                                WRK-PARA-SYSYMD
                                                WRK-PARA-HOSPID
-      *     
-           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
+      *
+           MOVE    "RECEERR"       TO  RECEERR-FILE-ID
+           MOVE    WRK-PARA-TERMID TO  RECEERR-TERMID
+      *----(00.00.01)--ADD-START---
+           MOVE    "TOKEIZZ"       TO  TOKEIPARA-FILE-ID
+           MOVE    WRK-PARA-TERMID TO  TOKEIPARA-TERMID
+      *----(00.00.01)--ADD-END-----
       *
       *    パラメタ編集処理
            PERFORM 120-DBOPEN-SEC
@@ -201,20 +254,20 @@
       *****************************************************************
       *    パラメタ編集処理
       *****************************************************************
-       110-PARA-HENSYU-SEC                   SECTION.              
+       110-PARA-HENSYU-SEC         SECTION.
       *      
       *    出力先プリンタ名割り当て情報編集
-           MOVE    SPACE               TO  SYS-1031-REC
+           MOVE    SPACE           TO  SYS-1031-REC
            INITIALIZE                  SYS-1031-REC
-           MOVE    "1031"              TO  SYS-1031-KANRICD
-           MOVE    "*"                 TO  SYS-1031-KBNCD
-           MOVE    SYS-1031-REC        TO  MCPDATA-REC
+           MOVE    "1031"          TO  SYS-1031-KANRICD
+           MOVE    "*"             TO  SYS-1031-KBNCD
+           MOVE    SYS-1031-REC    TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1031-REC
+               MOVE    MCPDATA-REC     TO  SYS-1031-REC
            ELSE    
                INITIALIZE                  SYS-1031-REC
-           END-IF                                     
+           END-IF
            .
       *
        110-PARA-HENSYU-EXT.
@@ -225,49 +278,122 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-           MOVE    ZERO                TO  FLG-BYOMEI
-           MOVE    ZERO                TO  FLG-BUNRUI
-           INITIALIZE                  CNT-AREA
-      *     
-      *    帳票印刷開始処理 
+      *    並び換え用ファイルをクリアする
+           OPEN    OUTPUT              TOKEIX-FILE
+           CLOSE                       TOKEIX-FILE
+      *    並び換え用ファイルを開く
+           OPEN    I-O                 TOKEI-FILE
+      *
+      *----(00.00.01)--UPD-START---
+      *    自院病名セット
            PERFORM 900-DBSELECT-SEC
+           PERFORM UNTIL   FLG-BYOMEI  =   1
+               PERFORM 210-TOKEI-SET-SEC
+               PERFORM 900-DBFETCH-SEC
+           END-PERFORM
+           PERFORM 900-DBCLOSE-SEC
       *
-           IF  FLG-BYOMEI  =  ZERO
-               PERFORM     UNTIL   FLG-BYOMEI   =   1 
-      *            帳票編集<見出し>処理
-                   PERFORM 310-HEAD-HEN-SEC
-      *            帳票編集<明細>処理
-                   PERFORM 320-BODY-HEN-SEC
-      *            帳票印刷処理
-                   PERFORM 390-PRINT-OUT-SEC
-               END-PERFORM
+      *    並び換え用ファイルを閉じる
+           CLOSE                       TOKEI-FILE
+      *    並び換え用ファイルを開く
+           OPEN    INPUT               TOKEI-FILE
       *
-           END-IF
+      *    印刷処理
+           PERFORM 300-INSATSU-SEC
       *
-           PERFORM 900-DBCLOSE-SEC 
+      *    並び換え用ファイルを閉じる
+           CLOSE                       TOKEI-FILE
+      *    並び換え用ファイルをクリアする
+           OPEN    OUTPUT              TOKEIX-FILE
+           CLOSE                       TOKEIX-FILE
       *
-            MOVE    1               TO  FLG-END 
+      *    ファイル削除
+           MOVE    ZERO            TO  IF-RESULT
+           MOVE    TOKEIPARA       TO  IF-FILENAME
+           CALL    "orcfiledel"        USING
+                                       ORCSFDELAREA
+      *----(00.00.01)--UPD-END-----
+      *
+           MOVE    1               TO  FLG-END
            .
        200-MAIN-EXT.
            EXIT.
       *
+      *----(00.00.01)--ADD-START---
+      *****************************************************************
+      *    並び換えようセット処理
+      *****************************************************************
+       210-TOKEI-SET-SEC           SECTION.
+      *
+           MOVE    ZERO            TO  FLG-TOKEI
+      *
+           INITIALIZE                  TOKEI-REC
+           MOVE    USBYO-BUNRUICD  TO  TOKEI-BUNRUICD
+           MOVE    USBYO-DSPSEQ    TO  TOKEI-DSPSEQ
+           MOVE    USBYO-BYOMEIINPUTCD
+                                   TO  TOKEI-BYOMEIINPUTCD
+           PERFORM 900-TOKEI-READ-SEC
+      *
+           IF      FLG-TOKEI       NOT =   1
+               GO  TO  210-TOKEI-SET-EXT
+           END-IF
+      *
+           MOVE    USBYO-BYOMEI    TO  TOKEI-BYOMEI
+           MOVE    USBYO-MANSEIKBN TO  TOKEI-MANSEIKBN
+           MOVE    USBYO-UTAGAIFLG TO  TOKEI-UTAGAIFLG
+           WRITE   TOKEI-REC
+           .
+       210-TOKEI-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    帳票セット処理
+      *****************************************************************
+       300-INSATSU-SEC             SECTION.
+      *
+           IF      CNT-BYOMEI      =   ZERO
+               GO  TO  300-INSATSU-EXT
+           END-IF
+      *
+           MOVE    ZERO            TO  CNT-PAGE
+           MOVE    ZERO            TO  CNT-LINE
+      *
+      *    統計ファイル読み込み
+           INITIALIZE                  TOKEI-REC
+           PERFORM 900-TOKEI-NEXT-SEC
+      *
+      *    帳票印刷開始処理
+           PERFORM UNTIL   FLG-TOKEI    =   1
+      *        帳票編集<見出し>処理
+               PERFORM 310-HEAD-HEN-SEC
+      *        帳票編集<明細>処理
+               PERFORM 320-BODY-HEN-SEC
+      *        帳票印刷処理
+               PERFORM 390-PRINT-OUT-SEC
+           END-PERFORM
+      *
+           .
+       300-INSATSU-EXT.
+           EXIT.
+      *
+      *----(00.00.01)--ADD-END-----
       *****************************************************************
       *    帳票編集<ヘッダー部>処理
       *****************************************************************
-       310-HEAD-HEN-SEC          SECTION.
+       310-HEAD-HEN-SEC            SECTION.
       *
-           MOVE    ZERO                TO  CNT-LINE
-           ADD     1                   TO  CNT-PAGE
+           MOVE    ZERO            TO  CNT-LINE
+           ADD     1               TO  CNT-PAGE
       *
-           INITIALIZE                      HCML09
-           MOVE    SPACE               TO  HCML09
+           INITIALIZE                  HCML09
+           MOVE    SPACE           TO  HCML09
       *
-           MOVE    WRK-PARA-SYSYMD     TO  WRK-SYMD
+           MOVE    WRK-PARA-SYSYMD TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
-           MOVE    WRK-HENYMDG         TO  HCML09-SAKUSEIYMD
+           MOVE    WRK-HENYMDG     TO  HCML09-SAKUSEIYMD
       *
-           MOVE    CNT-PAGE            TO  WRK-PAGE
-           MOVE    WRK-PAGE            TO  HCML09-PAGE
+           MOVE    CNT-PAGE        TO  WRK-PAGE
+           MOVE    WRK-PAGE        TO  HCML09-PAGE
       *
            .
        310-HEAD-HEN-EXT.
@@ -276,49 +402,49 @@
       *****************************************************************
       *    帳票編集<明細行>処理
       *****************************************************************
-       320-BODY-HEN-SEC      SECTION.
+       320-BODY-HEN-SEC            SECTION.
       *
-           MOVE    ZERO                TO  CNT-LINE
+           MOVE    ZERO            TO  CNT-LINE
       *
-           PERFORM     UNTIL   FLG-BYOMEI   =   1
-                       OR      CNT-LINE    =   28  
-      *          
+           PERFORM UNTIL   FLG-TOKEI   =   1
+                   OR      CNT-LINE    =   28
+      *
                ADD     1                 TO  CNT-LINE
-               MOVE    USBYO-BYOMEIINPUTCD
+               MOVE    TOKEI-BYOMEIINPUTCD
                                TO  HCML09-BYOMEIINPUTCD(CNT-LINE)
-               MOVE    USBYO-BYOMEI      TO  HCML09-BYOMEI(CNT-LINE)
+               MOVE    TOKEI-BYOMEI      TO  HCML09-BYOMEI(CNT-LINE)
       *
-               EVALUATE  USBYO-MANSEIKBN
-                   WHEN  "00"
+               EVALUATE    TOKEI-MANSEIKBN
+                   WHEN    "00"
                        MOVE    SPACE     TO  HCML09-MANSEIKBN(CNT-LINE)
-                   WHEN  "03"
+                   WHEN    "03"
                        MOVE   "皮膚１"   TO  HCML09-MANSEIKBN(CNT-LINE)
-                   WHEN  "04"
+                   WHEN    "04"
                        MOVE   "皮膚２"   TO  HCML09-MANSEIKBN(CNT-LINE)
-                   WHEN  "05"
+                   WHEN    "05"
                        MOVE   "特定疾患" TO  HCML09-MANSEIKBN(CNT-LINE)
-                   WHEN  "07"
+                   WHEN    "07"
                        MOVE   "皮膚３"   TO  HCML09-MANSEIKBN(CNT-LINE)
-               END-EVALUATE             
+               END-EVALUATE
       *
-               EVALUATE  USBYO-UTAGAIFLG
-                   WHEN  "0"
+               EVALUATE    TOKEI-UTAGAIFLG
+                   WHEN    "0"
                        MOVE    SPACE     TO  HCML09-UTAGAIFLG(CNT-LINE)
-                   WHEN  "1"
+                   WHEN    "1"
                        MOVE   "疑い"     TO  HCML09-UTAGAIFLG(CNT-LINE)
-                   WHEN  "2"
+                   WHEN    "2"
                        MOVE   "急性"     TO  HCML09-UTAGAIFLG(CNT-LINE)
-                   WHEN  "3"
+                   WHEN    "3"
                        MOVE   "急疑"     TO  HCML09-UTAGAIFLG(CNT-LINE)
-               END-EVALUATE      
-      * 
-               IF  USBYO-BUNRUICD  NOT  =  SPACE
+               END-EVALUATE
+      *
+              IF  TOKEI-BUNRUICD  NOT  =  SPACE
                    PERFORM 900-DBREAD-SEC
                END-IF
-      * 
-               PERFORM 900-DBFETCH-SEC  
-      *              
-           END-PERFORM     
+      *
+               PERFORM 900-TOKEI-NEXT-SEC
+      *
+           END-PERFORM
       *
            .
        320-BODY-HEN-EXT.
@@ -327,11 +453,11 @@
       *****************************************************************
       *    帳票印刷処理
       *****************************************************************
-       390-PRINT-OUT-SEC                SECTION.
+       390-PRINT-OUT-SEC           SECTION.
       *
-           IF  CNT-LINE  =  0
-               GO TO 390-PRINT-OUT-EXT
-           END-IF
+      *     IF      CNT-LINE        =   0
+      *         GO  TO  390-PRINT-OUT-EXT
+      *     END-IF
       *
       *    ファイルＯＰＥＮ
            MOVE    "HCML"              TO  HC01PARA-FORM-ID
@@ -342,6 +468,7 @@
            WRITE   HCML09
            CLOSE                       PRT-FILE
       *
+      *----(00.00.01)--UPD-START---
            MOVE   "HC01.sh"            TO  SHELL-ID
            MOVE   "HCML09.dia"         TO  SHELL-DIA
            MOVE   "HCML09.def"         TO  SHELL-DEF
@@ -359,7 +486,8 @@
            MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
            CALL    "MCPSUB"            USING
                                        MCPAREA
-                                       MCPDATA-REC                        
+                                       MCPDATA-REC
+      *----(00.00.01)--UPD-END-----
            .
       *
        390-PRINT-OUT-EXT.
@@ -368,7 +496,7 @@
       *****************************************************************
       *    エラー出力処理
       *****************************************************************
-       500-ERR-HENSYU-SEC                SECTION.
+       500-ERR-HENSYU-SEC          SECTION.
       *
            OPEN    INPUT   RECEERR-FILE
       *     
@@ -377,13 +505,13 @@
            ELSE
                OPEN    OUTPUT              RECEERR-FILE
       *
-               MOVE    WRK-RECEERR         TO  RECEERR-REC
+               MOVE    WRK-RECEERR     TO  RECEERR-REC
                WRITE   RECEERR-REC
            END-IF
       *
            CLOSE   RECEERR-FILE
       *
-           MOVE    1               TO  FLG-END 
+           MOVE    1               TO  FLG-END
       * 
            .
        500-ERR-HENSYU-EXT.
@@ -403,39 +531,71 @@
       *****************************************************************
       *    西暦日本語変換処理
       *****************************************************************
-       31012-SEIWA-HEN-SEC        SECTION.
+       31012-SEIWA-HEN-SEC         SECTION.
       *
-           INITIALIZE                      STS-AREA-DAY
-           INITIALIZE                      LNK-DAY2-AREA
-           MOVE    "21"                TO  LNK-DAY2-IRAI
-           MOVE    WRK-SYMD            TO  LNK-DAY2-YMD
-           CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                               LNK-DAY2-AREA
+           INITIALIZE                  STS-AREA-DAY
+           INITIALIZE                  LNK-DAY2-AREA
+           MOVE    "21"            TO  LNK-DAY2-IRAI
+           MOVE    WRK-SYMD        TO  LNK-DAY2-YMD
+           CALL    "ORCSDAY"           USING
+                                       STS-AREA-DAY
+                                       LNK-DAY2-AREA
            MOVE    LNK-DAY2-EDTYMD3    TO  WRK-HENYMDG
            INSPECT WRK-HENYMDG    REPLACING  ALL "  "  BY  "　"
            .
        31012-SEIWA-HEN-EXT.
            EXIT.
       *
+      *----(00.00.01)--UPD-START---
+      *****************************************************************
+      *    並び換え用ファイル読込
+      *****************************************************************
+       900-TOKEI-READ-SEC           SECTION.
+      *
+           READ    TOKEI-FILE
+               INVALID
+                   MOVE    1           TO  FLG-TOKEI
+               NOT INVALID
+                   MOVE    ZERO        TO  FLG-TOKEI
+           END-READ
+           .
+       900-TOKEI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    並び換え用ファイル順読込
+      *****************************************************************
+       900-TOKEI-NEXT-SEC           SECTION.
+      *
+           READ    TOKEI-FILE       NEXT
+               AT  END
+                   MOVE    1           TO  FLG-TOKEI
+               NOT AT  END
+                   MOVE    ZERO        TO  FLG-TOKEI
+           END-READ
+           .
+       900-TOKEI-NEXT-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    自院病名マスタ　検索 
       *****************************************************************
-       900-DBSELECT-SEC                 SECTION.
+       900-DBSELECT-SEC            SECTION.
       *
            INITIALIZE                  USBYO-REC
            MOVE    WRK-PARA-HOSPID     TO  USBYO-HOSPID
            MOVE    USBYO-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "USERBYOMEI-KEY3"   TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                PERFORM 900-DBFETCH-SEC
            ELSE
-               MOVE    1                   TO  FLG-BYOMEI
-           END-IF        
+               MOVE    1               TO  FLG-BYOMEI
+           END-IF
            .
        900-DBSELECT-EXT.
            EXIT.
@@ -443,17 +603,18 @@
       *****************************************************************
       *     自院病名マスタを検索処理
       *****************************************************************
-       900-DBFETCH-SEC                SECTION.
+       900-DBFETCH-SEC             SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
            MOVE    "USERBYOMEI-KEY3"   TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          =   ZERO
                MOVE    ZERO            TO  FLG-BYOMEI
                MOVE    MCPDATA-REC     TO  USBYO-REC
+               ADD     1               TO  CNT-BYOMEI
            ELSE
                MOVE    1               TO  FLG-BYOMEI
            END-IF  
@@ -464,18 +625,19 @@
       *****************************************************************
       *    自院病名マスタ　クローズ処理
       *****************************************************************
-       900-DBCLOSE-SEC                 SECTION.
+       900-DBCLOSE-SEC             SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "USERBYOMEI-KEY3"   TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            .
        900-DBCLOSE-EXT.
            EXIT.
       *
+      *----(00.00.01)--UPD-END-----
       *****************************************************************
       *    自院病名マスタ　検索 
       *****************************************************************
@@ -484,7 +646,7 @@
            INITIALIZE                  USBUN-REC
            MOVE    WRK-PARA-HOSPID     TO  USBUN-HOSPID
            MOVE    "C"                 TO  USBUN-CDSYU
-           MOVE    USBYO-BUNRUICD      TO  USBUN-BYOMEIINPUTCD
+           MOVE    TOKEI-BUNRUICD      TO  USBUN-BYOMEIINPUTCD
       *
            MOVE    USBUN-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -525,22 +687,22 @@
       *****************************************************************
       *    システム管理マスタ読み込み
       *****************************************************************
-       800-SYSKANRI-READ-SEC           SECTION.
+       800-SYSKANRI-READ-SEC       SECTION.
       *
-           MOVE    WRK-PARA-SYSYMD     TO  ORC-DBYMD
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    WRK-PARA-SYSYMD TO  ORC-DBYMD
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+               MOVE    "DBFETCH"       TO  MCP-FUNC
+               MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO            TO  FLG-SYSKANRI
                ELSE
@@ -550,32 +712,33 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            .
        800-SYSKANRI-READ-EXT.
            EXIT.
+      *
       *****************************************************************
       *    ＤＢ　オープン処理
       *****************************************************************
-       120-DBOPEN-SEC                SECTION.
+       120-DBOPEN-SEC              SECTION.
       *
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    "DBOPEN"        TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
       *
-           MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    "DBSTART"       TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -583,19 +746,19 @@
       *****************************************************************
       *    ＤＢ　クローズ処理
       *****************************************************************
-       900-DBDISCONNECT-SEC            SECTION.
+       900-DBDISCONNECT-SEC        SECTION.
       *
-           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    "DBCOMMIT"      TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
+           MOVE    "DBDISCONNECT"  TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
            .
        900-DBCLOSE-EXT.
            EXIT.
