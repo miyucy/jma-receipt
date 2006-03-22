@@ -514,7 +514,7 @@
                    MOVE    "（返戻分）"  TO  HCM2L-TITLE1
            END-EVALUATE           
       *
-           MOVE    SYS-1005-SRYKANAME    TO  HCM2K-SRYKA
+           MOVE    SYS-1005-SRYKANAME    TO  HCM2L-SRYKA
       *
            .
        310-HEAD-HEN-02-EXT.
