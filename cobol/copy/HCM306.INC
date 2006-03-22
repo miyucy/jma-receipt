@@ -22,7 +22,7 @@
               03  HCM306-KEIJYO
                       PIC X(16)   OCCURS  10 TIMES.
               03  HCM306-KBN
-                      PIC X(2)    OCCURS  4 TIMES.
+                      PIC X(3)    OCCURS  4 TIMES.
               03  HCM306-NAIYO
                       PIC X(16)   OCCURS  8 TIMES.
               03  HCM306-CYUJKO
