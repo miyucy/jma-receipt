@@ -500,8 +500,16 @@
                MOVE    "入院外"        TO  SPA-GMN-NYUGAIKBNMEIL    (1)
                MOVE    1               TO  SPA-GMN-NYUGAIKBN-MAX
            END-IF
-           MOVE    SPA-GMN-NYUGAIKBNLST (1)
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       SPA-GMN-NYUGAIKBN-MAX
+               IF      SPA-R01-NYUGAIKBN 
+                               =   SPA-GMN-NYUGAIKBNL (IDX)
+                   MOVE    SPA-GMN-NYUGAIKBNLST (IDX)
                                        TO  SPA-GMN-NYUGAIKBN-G
+                   MOVE    SPA-GMN-NYUGAIKBN-MAX
+                                       TO  IDX
+               END-IF
+           END-PERFORM
            MOVE    SPA-GMN-NYUGAIKBNMEI
                                        TO  SPA-NAI-NYUGAIKBN
       *
@@ -2329,7 +2337,7 @@
            EVALUATE    SPA-RIDCD
                WHEN    "1001"
                    MOVE
-              "選択された主科は、診療(情報)が存在しません。更新しますか"
+              "選択された主科は、診療がありません。更新しますか"
                                                TO  WRK-RIDMSG
                WHEN    "1002"
                    STRING   SPA-NAI-SRYYMH     DELIMITED   BY  SIZE
