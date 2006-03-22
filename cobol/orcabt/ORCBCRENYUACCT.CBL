@@ -139,6 +139,8 @@
       *
       *    ¥×¥ì¥¤¥ë¡¼¥à¡¢ÊÝ°é»Î²Ã»»²Ã»»ÂàÈòÎÎ°è
            03  WRK-BTU-HIKSISUKBN                  PIC X(01).
+           03  WRK-BTU-KNGTEK-KBN                  PIC X(01).
+           03  WRK-BTU-DRTEK-KBN                   PIC X(01).
       *
       *    Æþ±¡²ñ·×ºîÀ®ÍÑ¥ï¡¼¥¯
            03  WRK-YMD             PIC X(10). 
@@ -2383,28 +2385,41 @@
       *
       *        ÉÂÅïÆþ±¡ÎÁ²Ã»»
                PERFORM VARYING     IDX7    FROM   1  BY  1
-                   UNTIL          (IDX7    >   12)
-                   IF      IDX7            =   6
-      *                 »ùÆ¸»×½Õ´üÀº¿À²ÊÆþ±¡°åÎÅ´ÉÍý²Ã»»¡Ê£²£°ºÍÌ¤Ëþ¡Ë
-                       IF      SYS-5001-KSNKBN(IDX7)   =   "2"
-                           PERFORM   4801-PT-AGE-SEC
-                           IF      WRK-NENREI          <      20
-                               ADD    1                TO  IDX8
-                               MOVE   SYS-5001-KSNCD(IDX7) TO
-                                               WRK-NYUKHNKSN-SRYCD(IDX8)
-                           END-IF
-                       END-IF
-                   ELSE
-                       IF      IDX7            =   3  OR  4  OR  5
+                   UNTIL          (IDX7    >   14)
+                   EVALUATE   IDX7
+                       WHEN   3
+                       WHEN   4
+                       WHEN   5
                            CONTINUE
-                       ELSE
+      *                »ùÆ¸»×½Õ´üÀº¿À²ÊÆþ±¡°åÎÅ´ÉÍý²Ã»»¡Ê£²£°ºÍÌ¤Ëþ¡Ë
+                       WHEN   6
+                           IF      SYS-5001-KSNKBN(IDX7)   =   "2"
+                               PERFORM   4801-PT-AGE-SEC
+                               IF      WRK-NENREI          <      20
+                                   ADD    1                TO  IDX8
+                                   MOVE   SYS-5001-KSNCD(IDX7) TO
+                                               WRK-NYUKHNKSN-SRYCD(IDX8)
+                               END-IF
+                           END-IF
+      *                ´Ç¸îÇÛÃÖÅ¬¹ç²Ã»»
+                       WHEN   13
+                           MOVE  SPACE       TO   WRK-BTU-KNGTEK-KBN
+                           IF    SYS-5001-KNGTEK-KBN   =   "2"
+                               MOVE   "2"    TO   WRK-BTU-KNGTEK-KBN
+                           END-IF
+      *                Ê£¿ô°å»ÕµÚ¤Ó´Ç¸îÇÛÃÖÅ¬¹ç²Ã»»
+                       WHEN   14
+                           MOVE  SPACE       TO   WRK-BTU-DRTEK-KBN
+                           IF    SYS-5001-DRTEK-KBN   =   "2"
+                               MOVE   "2"    TO   WRK-BTU-DRTEK-KBN
+                           END-IF
+                       WHEN   OTHER
                            IF     SYS-5001-KSNKBN(IDX7)    =   "2"
                                ADD    1                TO  IDX8
                                MOVE   SYS-5001-KSNCD(IDX7) TO
                                             WRK-NYUKHNKSN-SRYCD(IDX8)
                            END-IF
-                       END-IF
-                   END-IF
+                   END-EVALUATE
                END-PERFORM
            END-IF
       *
@@ -2498,6 +2513,22 @@
                  (IDX9    <   20 )
                ADD    1            TO  IDX9
                MOVE  "190111370"   TO
+                                   LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX9)
+           END-IF
+      *
+      *    ´Ç¸îÇÛÃÖÅ¬¹ç²Ã»»
+           IF    (WRK-BTU-KNGTEK-KBN   =   "2")  AND
+                 (IDX9    <   20 )
+               ADD    1            TO  IDX9
+               MOVE  "190109670"   TO
+                                   LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX9)
+           END-IF
+      *
+      *    Ê£¿ô°å»ÕµÚ¤Ó´Ç¸îÇÛÃÖÅ¬¹ç²Ã»»
+           IF    (WRK-BTU-DRTEK-KBN   =   "2")  AND
+                 (IDX9    <   20 )
+               ADD    1            TO  IDX9
+               MOVE  "190117070"   TO
                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX9)
            END-IF
       *
