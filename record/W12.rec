@@ -283,10 +283,10 @@ W12	{
 				};
 				SYUKA_SELECT_COMBO	{
 					SYUKA_SELECT	{
-						value	varchar(22);
+						value	varchar(30);
 					};
 					count	int;
-					item	varchar(22)[5];
+					item	varchar(30)[5];
 				};
 				SYUKA_MODE_COMBO	{
 					SYUKA_MODE	{

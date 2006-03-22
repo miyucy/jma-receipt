@@ -232,10 +232,10 @@
                             PIC X(22)   OCCURS  5 TIMES.
                   05  W12-SYUKA-SELECT-COMBO.
                     06  W12-SYUKA-SELECT.
-                      07  W12-VALUE   PIC X(22).
+                      07  W12-VALUE   PIC X(30).
                     06  W12-SYUKA-SELECT-COUNT   PIC S9(9)   BINARY.
                     06  W12-SYUKA-SELECTLST
-                            PIC X(22)   OCCURS  5 TIMES.
+                            PIC X(30)   OCCURS  5 TIMES.
                   05  W12-SYUKA-MODE-COMBO.
                     06  W12-SYUKA-MODE.
                       07  W12-VALUE   PIC X(22).

@@ -320,7 +320,7 @@
                                               PIC X(01).
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-SYUKA-SELECTMEI
-                                              PIC X(20).
+                                              PIC X(28).
       *                                        
                    07  SPA-GMN-BYOMEIHENKBNLST        OCCURS  2.
                        09  SPA-GMN-BYOMEIHENKBNL
@@ -597,7 +597,7 @@
                                               PIC X(01).
                        09  SPA-GMN-F1L        PIC X(01).
                        09  SPA-GMN-SYUKA-SELECTMEIL
-                                              PIC X(20).
+                                              PIC X(28).
                    07  SPA-GMN-SYUKA-SELECT-MAX
                                               PIC 9(02).   
       * 
@@ -1223,10 +1223,10 @@
            MOVE    "主科を設定しない"
                                    TO  SPA-GMN-SYUKA-SELECTMEIL  (1)
            MOVE    "1"             TO  SPA-GMN-SYUKA-SELECTL     (2)
-           MOVE    "先頭の科で設定"
+           MOVE    "診療科コードの小さい科で設定"
                                    TO  SPA-GMN-SYUKA-SELECTMEIL  (2)
            MOVE    "2"             TO  SPA-GMN-SYUKA-SELECTL     (3)
-           MOVE    "最後の科で設定"
+           MOVE    "診療科コードの大きい科で設定"
                                    TO  SPA-GMN-SYUKA-SELECTMEIL  (3)
            MOVE    3               TO  SPA-GMN-SYUKA-SELECT-MAX 
       *
