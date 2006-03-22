@@ -2171,6 +2171,11 @@
                        MOVE    1               TO  FLG-KOUHATU
                    END-IF
                END-IF
+      *
+      *        ∏Â»Ø∞ÂÃÙ… ∂Ë ¨
+               IF      TNS-KOUHATUKBN          =   ZERO
+                  MOVE    1                TO  FLG-KOUHATU
+               END-IF
       *        À„ÃÙ»ΩƒÍ
                IF      TNS-MADOKUKBN       =   1
                    MOVE   1                TO  FLG-MAYAKU
