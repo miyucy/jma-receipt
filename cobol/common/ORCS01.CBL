@@ -11000,6 +11000,33 @@
                    END-IF
            END-EVALUATE
       *
+           IF   COMB-HKNNUM            NOT   =   SPACE
+           AND  COMB-KOH1HKNNUM        NOT   =   "027"
+           AND  LNK-SYU-SYUCOMPFTN           =    ZERO
+               MOVE     ZERO     TO     WK-TOKUSYU-COMPFTN
+               IF    HKN-RECEFTNDSPKBN      =  "2"
+                 MOVE   ZERO     TO     WK-TOKUSYU-COMPFTN2
+               END-IF
+               MOVE     ZERO     TO     WK-TOKUSYU-ENTANI
+           END-IF
+      *
+           IF   COMB-HKNNUM            NOT   =   SPACE
+           AND  COMB-KOH1HKNNUM        NOT   =   "027"
+           AND  LNK-SYU-SYUCOMPFTN     NOT   =    ZERO
+             IF  LNK-S01-KOUREI-ZAITAKU-KBN   =   "1"
+                 EVALUATE   COMB-HOJOKBN
+                   WHEN   "1"
+                   WHEN   "4"
+                   WHEN   "9"
+                     MOVE     ZERO     TO     WK-TOKUSYU-COMPFTN
+                     IF    HKN-RECEFTNDSPKBN      =  "2"
+                       MOVE   ZERO     TO     WK-TOKUSYU-COMPFTN2
+                     END-IF
+                     MOVE     ZERO     TO     WK-TOKUSYU-ENTANI
+                 END-EVALUATE
+             END-IF
+           END-IF
+      *
            .
       *
        23054-TOKUSYU-SANTEI-EXT.

@@ -12284,10 +12284,14 @@
            END-EVALUATE.
       *
            IF   FLG-KOUGAKUCYO3        NOT =    ZERO
-              IF ((FLG-IRYOHI3X = 11 OR 12) AND (FLG-HIKAKU     =  1 ))
-              OR ((FLG-IRYOHI3X = 21 OR 22) AND (FLG-HIKAKU     =  2 ))
+              IF ((FLG-IRYOHI3X = 11      ) AND (FLG-SYOUKAN(1) = "1")
+                                            AND (FLG-HIKAKU     =  1 ))
+              OR ((FLG-IRYOHI3X = 21      ) AND (FLG-SYOUKAN(2) = "1")
+                                            AND (FLG-HIKAKU     =  2 ))
+              OR ((FLG-IRYOHI3X = 12      ) AND (FLG-HIKAKU     =  1 ))
               OR ((FLG-IRYOHI3X = 12      ) AND (FLG-SYOUKAN(2) = "1")
                                             AND (FLG-HIKAKU     =  2 ))
+              OR ((FLG-IRYOHI3X = 22      ) AND (FLG-HIKAKU     =  2 ))
               OR ((FLG-IRYOHI3X = 22      ) AND (FLG-SYOUKAN(3) = "1")
                                             AND (FLG-HIKAKU     =  3 ))
                   CONTINUE
