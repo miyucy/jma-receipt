@@ -3840,6 +3840,10 @@
       *            在宅患者入院共同指導料（１）
                    WHEN    "180015910"
                        MOVE    1               TO  SPA-KAIHOU1-ARI
+      *            地域連帯退院時共同指導料（１）
+                   WHEN    "113008610"
+                   WHEN    "113008710"
+                       MOVE    1               TO  SPA-KAIHOU1-ARI
       *            寝たきり老人退院時共同指導料（１）
                    WHEN    "190766710"
                        MOVE    1               TO  SPA-KAIHOU2-ARI
