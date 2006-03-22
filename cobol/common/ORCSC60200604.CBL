@@ -140,6 +140,8 @@
            03  IDX-STR             PIC 9(04).
       *
            03  IDX-SANSO           PIC 9(04).
+      *
+           03  IDX-KEN             PIC 9(04).
       *    一時領域
        01  WRK-AREA.
       *
@@ -210,6 +212,7 @@
            03  FLG-KENTAI              PIC 9(01).
            03  WRK-KENTAI-DAY          PIC 9(02).
       *    検体検査加算
+           03  FLG-KENTAI-CHK          PIC 9(01).
            03  FLG-KENTAI2             PIC 9(01).
            03  WRK-KENTAI-SRYKA        PIC X(02). 
            03  WRK-KENTAI-HKNCOMBI     PIC X(04). 
@@ -517,6 +520,31 @@
            03  WRK-JYU-KBN             PIC X(02).
            03  WRK-JYU-KEN             PIC 9(01).
            03  WRK-JYU-FLG             PIC X(01).
+      *
+      *    検体検査迅速実施加算対象外
+       01  TBL-KENSA-GAI-AREA.
+           03  FILLER          PIC X(09)  VALUE    "160000310".
+           03  FILLER          PIC X(09)  VALUE    "160005010".
+           03  FILLER          PIC X(09)  VALUE    "160007610".
+           03  FILLER          PIC X(09)  VALUE    "160000550".
+           03  FILLER          PIC X(09)  VALUE    "160000650".
+           03  FILLER          PIC X(09)  VALUE    "160000750".
+           03  FILLER          PIC X(09)  VALUE    "160000850".
+           03  FILLER          PIC X(09)  VALUE    "160000950".
+           03  FILLER          PIC X(09)  VALUE    "160001050".
+           03  FILLER          PIC X(09)  VALUE    "160149650".
+           03  FILLER          PIC X(09)  VALUE    "160149750".
+           03  FILLER          PIC X(09)  VALUE    "160149850".
+           03  FILLER          PIC X(09)  VALUE    "160163050".
+           03  FILLER          PIC X(09)  VALUE    "160027710".
+           03  FILLER          PIC X(09)  VALUE    "160168150".
+           03  FILLER          PIC X(09)  VALUE    "160169810".
+           03  FILLER          PIC X(09)  VALUE    "160169450".
+      *
+       01  TBL-KENSA-GAI-AREA-R    REDEFINES  TBL-KENSA-GAI-AREA.
+           03  TBL-KENSA-GAI-OCC        OCCURS  17  INDEXED  GAI-IDX.
+               05  TBL-GAI-SRYCD        PIC X(09).
+       01  KEN-GAI-MAX                  PIC 9(04)   VALUE   17.
       *
       *    診療行為用共通パラメタ
            COPY    "K01COMMON-SPA".
@@ -3040,23 +3068,10 @@
                                                            (WRK-KENIDX)
                            END-IF
                        END-IF
-      *!
-      *TEST
-           DISPLAY "WRK-COM-INPUTCD:" WRK-COM-INPUTCD(IDX)
-             ",WRK-KENIDX:" WRK-KENIDX
-      *TEST
-      *            検体検査加算
-                   IF      WRK-KENIDX          >=  1  AND  <=  6
-                       IF      FLG-KENTAI2     =   ZERO
-                           MOVE    WRK-KEN-SRYKA (IDX)
-                                               TO  WRK-KENTAI-SRYKA
-                           MOVE    WRK-KEN-HKNCOMBI (IDX)
-                                               TO  WRK-KENTAI-HKNCOMBI
+      *                検体検査加算
+                       IF      WRK-KENIDX          >=  1  AND  <=  6
+                           PERFORM 3004-KENTAI-CHK-SEC
                        END-IF
-                       MOVE    1               TO  FLG-KENTAI2
-                       ADD     1               TO  WRK-KENTAI2-CNT
-                   END-IF
-      *!
       *
       *                判断料の判定
       *---(01.00.02)   LINE UPD START  ---------------------------------
@@ -3396,6 +3411,37 @@
            EXIT.
       *
       *****************************************************************
+      *    検体検査加算チェック処理
+      *****************************************************************
+       3004-KENTAI-CHK-SEC              SECTION.
+      *
+           MOVE    ZERO               TO  FLG-KENTAI-CHK
+           PERFORM VARYING      IDX-KEN   FROM    1   BY  1
+                   UNTIL       (IDX-KEN   >   KEN-GAI-MAX)
+                           OR  (FLG-KENTAI-CHK    =   1  )
+               SET     GAI-IDX            TO  IDX-KEN
+               IF      WRK-COM-INPUTCD(IDX)    =   TBL-GAI-SRYCD
+                                                              (IDX-KEN)
+                   MOVE    1              TO  FLG-KENTAI-CHK
+                   MOVE    KEN-GAI-MAX    TO  IDX-KEN
+               END-IF
+           END-PERFORM
+           IF      FLG-KENTAI-CHK      =   ZERO
+               IF      FLG-KENTAI2         =   ZERO
+                   MOVE    WRK-KEN-SRYKA (WRK-KENIDX)
+                                               TO  WRK-KENTAI-SRYKA
+                   MOVE    WRK-KEN-HKNCOMBI (WRK-KENIDX)
+                                               TO  WRK-KENTAI-HKNCOMBI
+               END-IF
+               MOVE    1               TO  FLG-KENTAI2
+               ADD     1               TO  WRK-KENTAI2-CNT
+           END-IF
+      *
+           .
+       3004-KENTAI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    院外　算定処理
       *****************************************************************
        3009-NYUINKAISU-SEC              SECTION.
@@ -3713,10 +3759,6 @@
                                        SPA-AREA
                                        TNS-TENSU-REC
       *
-      *TEST
-           DISPLAY "LNK-SC91-DAYCNT:" LNK-SC91-DAYCNT
-                ", WRK-KENTAI2-CNT:"  WRK-KENTAI2-CNT
-      *TEST
            IF      LNK-SC91-DAYCNT     >=  5
                MOVE    1               TO  FLG-INPUT
            ELSE
@@ -3726,12 +3768,8 @@
                                            -   LNK-SC91-DAYCNT
                END-IF
            END-IF
-      *TEST
-           DISPLAY " WRK-KENTAI2-CNT:"  WRK-KENTAI2-CNT
-      *TEST
       *    入力にないとき、検査数で自動発生
            IF      FLG-INPUT           =   ZERO
-      ******** MOVE    WRK-SCR-REC         TO  HZN-SCR-REC
       *        点数マスタ編集・基本チェック
                INITIALIZE                  ORCSC92AREA
                MOVE    "2"                 TO  LNK-SC92-KBN
