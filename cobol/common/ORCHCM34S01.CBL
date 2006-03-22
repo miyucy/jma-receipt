@@ -38,6 +38,8 @@
       *                                     診療所老人医療管理料
       *                                     老人性認知症疾患治療病棟入院料１
       *                                     老人性認知症疾患治療病棟入院料２
+      *  01.00.06    NACL-小豆沢  06/03/22  特定入院料追加分（脳卒中ケアユニ）
+      *                                     外泊置き換え処理
       *****************************************************************
       *
       *
@@ -1351,7 +1353,7 @@
            WHEN    221 THRU    222
            WHEN    224
            WHEN    227 THRU    228
-           WHEN    230 THRU    232
+           WHEN    230 THRU    233
                MOVE    "190108790"     TO  WRK-GAIHAKU-SRYCD
            WHEN    013 THRU    021
            WHEN    101 THRU    109
@@ -1377,7 +1379,7 @@
            WHEN    221 THRU  222
            WHEN    224
            WHEN    227 THRU  228
-           WHEN    230 THRU  232
+           WHEN    230 THRU  233
                MOVE    "190116590"     TO  WRK-GAIHAKU-SRYCD
            WHEN    013 THRU  021
            WHEN    101 THRU  109

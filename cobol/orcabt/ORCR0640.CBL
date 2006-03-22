@@ -172,6 +172,8 @@
       *  02.07.09    NACL-門脇    06/02/03  宮城県地方公費食事療養費記載対応
       *  02.07.10    NACL-門脇    06/02/03  高知県乳幼児対応
       *  02.07.11    NACL-門脇    06/02/07  食事基本料情報（その他）編集
+      *  02.08.01    NACL-小豆沢  06/03/22  特定入院料追加分（脳卒中ケアユニ）
+      *                                     外泊置き換え処理
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -5328,7 +5330,7 @@
                WHEN   221  THRU  222
                WHEN   224
                WHEN   227  THRU  228
-               WHEN   230  THRU  232
+               WHEN   230  THRU  233
                   MOVE   "190108790" TO  WRK-GAI2-SRYCD(SYUKEI-IDX3)
                WHEN   013  THRU  021
                WHEN   101  THRU  109
@@ -5357,7 +5359,7 @@
                WHEN   221  THRU  222
                WHEN   224
                WHEN   227  THRU  228
-               WHEN   230  THRU  232
+               WHEN   230  THRU  233
                   MOVE   "190116590" TO  WRK-GAI2-SRYCD(SYUKEI-IDX3)
                WHEN   013  THRU  021
                WHEN   101  THRU  109
