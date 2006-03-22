@@ -31,6 +31,7 @@
       *  01.00.01    NACL-門脇    04/10/01  自賠責特定器材等消費税対応
       *  01.00.02    NACL-門脇    04/11/25  福島県乳幼児特殊計算対応
       *  01.00.03    NACL-門脇    05/07/19  収納項目追加に伴う修正
+      *  01.00.04    NACL-門脇    06/03/22  自立支援法対応
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -54,6 +55,8 @@
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-OK                      PIC 9(01).
+           03  FLG-JIRITU-SAI              PIC 9(01).
+           03  FLG-TOKUSYU-SAI             PIC 9(01).
       *
       *    ワーク領域
        01  WRK-AREA.
@@ -256,6 +259,8 @@
       *
       *    合計レコードをもつレコードのフラグ等、引数のセット
       *
+           INITIALIZE                  FLG-AREA.
+      *
            MOVE       SPACE     TO     WRK-TAIHI-HKNCOMBINUM.
            MOVE       ZERO      TO     WRK-SYUTEN.
            MOVE       ZERO      TO     WRK-SINDAN.
@@ -442,7 +447,20 @@
                 MOVE     SYUNOU-REC           TO  LNK-SYUNOU-REC(IDX)
                 MOVE     WRK-ORCS01-REC       TO  LNK-ORCS01-REC
       *
+                IF       LNK-S01-JIRITU-SAI-KBN     =    "1"
+                     MOVE      1       TO     FLG-JIRITU-SAI
+                END-IF
+                IF       LNK-S01-TOKUSYU-SAI-KBN    =    "1"
+                     MOVE      1       TO     FLG-TOKUSYU-SAI
+                END-IF
+      *
            END-PERFORM.
+      *
+      *    特殊計算（再計算）
+           IF      (FLG-JIRITU-SAI        =    1)
+           OR      (FLG-TOKUSYU-SAI       =    1)
+              PERFORM     100-TOKUSYU-SANTEI-SEC
+           END-IF.
       *
       *    収納の項目再編集の為の差額算出
       *
@@ -1338,4 +1356,113 @@
        MAIN-EXT.
            EXIT PROGRAM
            STOP RUN.
+      *
+      ******************************************************************
+      *    特殊計算（再計算）
+      ******************************************************************
+       100-TOKUSYU-SANTEI-SEC                     SECTION.
+      *
+           PERFORM    VARYING   IDX    FROM   1   BY   1
+                              UNTIL  (IDX                 >    15 )
+                                OR   (LNK-SYU-SRYYMD(IDX) =  SPACE)
+                                OR   (LNK-S01-RC      NOT =  ZERO )
+      *
+                MOVE     WRK-ZAITAKU-KBN      TO
+                                      LNK-S01-KOUREI-ZAITAKU-KBN
+      *
+                MOVE     LNK-ORCS01-REC       TO  WRK-ORCS01-REC
+                MOVE     IDX                  TO  WRK-S01-IDX
+                MOVE     LNK-SYUNOU-REC(IDX)  TO  SYUNOU-REC
+      *
+                MOVE     SPACE                TO  WRK-SYUNOU-REC-T
+                INITIALIZE                        WRK-SYUNOU-REC-T
+      *
+                MOVE     ZERO      TO     IDZ
+                IF   SYU-SRYKA  =  "00"
+                  PERFORM  VARYING  IDY  FROM  1  BY  1
+                            UNTIL  (IDY                 >   15  )
+                             OR    (LNK-SYU-SRYYMD(IDY) =  SPACE)
+                    IF    IDY  =  IDX
+                      CONTINUE
+                    ELSE
+                      IF   WRK-S01-TTLARIFLG(IDY)  =    "1"
+                        IF   LNK-SYU-SRYKA(IDY)       =  "00"
+                            ADD   1      TO  IDZ
+                            MOVE  LNK-SYUNOU-REC(IDY)
+                                         TO  WRK-SYUNOU-REC(IDZ)
+                        END-IF
+                      ELSE
+      *                 当該収納が合計レコードで、
+      *                 合計レコードをもたないレコードを読む込む場合
+                        IF   LNK-SYU-SRYKA(IDY)   NOT =  "00"
+                            ADD   1      TO  IDZ
+                            MOVE  LNK-SYUNOU-REC(IDY)
+                                         TO  WRK-SYUNOU-REC(IDZ)
+                        END-IF
+                      END-IF
+                    END-IF
+                  END-PERFORM
+                ELSE
+                  PERFORM  VARYING  IDY  FROM  1  BY  1
+                            UNTIL  (IDY                 >   15  )
+                             OR    (LNK-SYU-SRYYMD(IDY) =  SPACE)
+                    IF    IDY  =  IDX
+                      CONTINUE
+                    ELSE
+                      IF  WRK-S01-TTLARIFLG(IDX)  =    "1"
+                          IF     LNK-SYU-SRYKA(IDY)   NOT =  "00"
+                              ADD   1      TO  IDZ
+                              MOVE  LNK-SYUNOU-REC(IDY)
+                                           TO  WRK-SYUNOU-REC(IDZ)
+                          END-IF
+                      ELSE
+                        IF   WRK-S01-TTLARIFLG(IDY)  =    "1"
+                          IF     WRK-S01-KAGRPFLG       =   "0"
+      *                     ＜複数科まとめ集計する場合＞
+      *                     当該収納が合計レコードをもたないレコードで、
+      *                     合計レコードをもつレコードを読む込む場合
+                            IF   LNK-SYU-SRYKA(IDY)       =  "00"
+                              ADD   1      TO  IDZ
+                              MOVE  LNK-SYUNOU-REC(IDY)
+                                           TO  WRK-SYUNOU-REC(IDZ)
+                            END-IF
+                          ELSE
+                            IF   LNK-SYU-SRYKA(IDY)   NOT =  "00"
+                              ADD   1      TO  IDZ
+                              MOVE  LNK-SYUNOU-REC(IDY)
+                                           TO  WRK-SYUNOU-REC(IDZ)
+                            END-IF
+                          END-IF
+                        ELSE
+                          IF     LNK-SYU-SRYKA(IDY)   NOT =  "00"
+                              ADD   1      TO  IDZ
+                              MOVE  LNK-SYUNOU-REC(IDY)
+                                           TO  WRK-SYUNOU-REC(IDZ)
+                          END-IF
+                        END-IF
+                      END-IF
+                    END-IF
+                  END-PERFORM
+                END-IF
+      *
+      *         複数科まとめ集計しない場合、合計レコードは処理しない
+                IF     WRK-S01-KAGRPFLG          =   "1"
+                AND    SYU-SRYKA                 =  "00"
+                    CONTINUE
+                ELSE
+                    CALL     "ORCS01"     USING    MCPAREA
+                                                   WRK-ORCS01-REC
+                                                   SYUNOU-REC
+                                                   WRK-SYUNOU-REC-T
+                END-IF
+      *
+                MOVE     SYUNOU-REC           TO  LNK-SYUNOU-REC(IDX)
+                MOVE     WRK-ORCS01-REC       TO  LNK-ORCS01-REC
+      *
+           END-PERFORM
+      *
+           .
+      *
+       100-TOKUSYU-SANTEI-EXT.
+           EXIT.
       *

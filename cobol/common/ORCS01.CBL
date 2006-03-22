@@ -9555,6 +9555,11 @@
                         END-IF
                      END-IF
                    END-IF
+      *
+                   IF   LNK-SYU-NYNSHOKAISU  =   2
+                        MOVE     "1"     TO    LNK-S01-JIRITU-SAI-KBN
+                   END-IF
+      *
               END-IF
            END-IF.
       *
@@ -9857,6 +9862,7 @@
                OR ((WK-1001-PREFNUM             =  07      ) AND
                    (LNK-SYU-KOH-HKNNUM(KOH-IDX) = "246"    ) AND
                    (LNK-SYU-SRYYMD(1:6)        >= "200604" ))
+                  MOVE     "1"     TO    LNK-S01-TOKUSYU-SAI-KBN
                   PERFORM   23054-TOKUSYU-SANTEI-SEC
                   GO    TO  2305-KOH-KEISAN-EXT
                END-IF
