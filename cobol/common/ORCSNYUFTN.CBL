@@ -198,6 +198,9 @@
            03  FLG-KOUREISYA               PIC 9(01).
            03  FLG-JIRITU-SAI              PIC 9(01).
       *
+       01  CNT-AREA.
+           03  CNT-KENSU                   PIC 9(03).
+      *
       * ¼¼ÎÁº¹³ÛÂàÈòÍÑ¥Æ¡¼¥Ö¥ë     
        01  TABLE-RMSAGAKU.
            03  TBL-RMSAGAKU                PIC 9(05)   OCCURS  99.
@@ -471,7 +474,8 @@
                          WRK-HANBETU2-TABLE
                          WRK-JIBAI-TABLE
                          WRK-SYOSIN-TABLE
-                         FLG-AREA.
+                         FLG-AREA
+                         CNT-AREA.
       *
       *    Ä´ºÞÎÁ°ì³çÊÑ¹¹½èÍý
       ****     PERFORM       NYUIN-CHOZAI-SEC.
@@ -508,6 +512,8 @@
                               UNTIL  (IDX            >    10)
                                 OR   (LNK-SYU-SRYYMD(IDX) =  SPACE)
                                 OR   (LNK-S02-RC        NOT =  ZERO )
+      *
+                ADD      1                    TO  CNT-KENSU
       *
                 MOVE     WRK-HANBETU-SENINFLG2(IDX)                     
                                               TO  LNK-S02-SENINFLG      
@@ -578,11 +584,13 @@
            END-PERFORM.
       *
       *    ÆÃ¼ì·×»»¡ÊºÆ·×»»¡Ë
-           IF     ( FLG-TOKUSYU           =    1  )
-           OR     ( FLG-JIRITU-SAI        =    1  )
-           OR     ((FLG-KOUREISYA         =    1 ) AND
-                   (LNK-S02-TEIKI-KBN     =   "X"))
-                PERFORM     TOKUSYU-SANTEI-SEC
+           IF       CNT-KENSU  >   1
+              IF     ( FLG-TOKUSYU           =    1  )
+              OR     ( FLG-JIRITU-SAI        =    1  )
+              OR     ((FLG-KOUREISYA         =    1 ) AND
+                      (LNK-S02-TEIKI-KBN     =   "X"))
+                   PERFORM     TOKUSYU-SANTEI-SEC
+              END-IF
            END-IF.
       *
        MAIN-EXT.

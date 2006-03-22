@@ -58,6 +58,10 @@
            03  FLG-JIRITU-SAI              PIC 9(01).
            03  FLG-TOKUSYU-SAI             PIC 9(01).
       *
+      *    カウント領域
+       01  CNT-AREA.
+           03  CNT-KENSU                   PIC 9(03).
+      *
       *    ワーク領域
        01  WRK-AREA.
            03  WRK-TAIHI-HKNCOMBINUM       PIC X(04).
@@ -259,7 +263,8 @@
       *
       *    合計レコードをもつレコードのフラグ等、引数のセット
       *
-           INITIALIZE                  FLG-AREA.
+           INITIALIZE                  FLG-AREA
+                                       CNT-AREA.
       *
            MOVE       SPACE     TO     WRK-TAIHI-HKNCOMBINUM.
            MOVE       ZERO      TO     WRK-SYUTEN.
@@ -359,6 +364,8 @@
                                 OR   (LNK-SYU-SRYYMD(IDX) =  SPACE)
                                 OR   (LNK-S01-RC      NOT =  ZERO )
       *
+                ADD      1                    TO  CNT-KENSU
+      *
                 MOVE     WRK-ZAITAKU-KBN      TO
                                       LNK-S01-KOUREI-ZAITAKU-KBN
       *
@@ -457,9 +464,11 @@
            END-PERFORM.
       *
       *    特殊計算（再計算）
-           IF      (FLG-JIRITU-SAI        =    1)
-           OR      (FLG-TOKUSYU-SAI       =    1)
-              PERFORM     100-TOKUSYU-SANTEI-SEC
+           IF       CNT-KENSU  >   1
+              IF      (FLG-JIRITU-SAI        =    1)
+              OR      (FLG-TOKUSYU-SAI       =    1)
+                 PERFORM     100-TOKUSYU-SANTEI-SEC
+              END-IF
            END-IF.
       *
       *    収納の項目再編集の為の差額算出
