@@ -673,11 +673,9 @@
       *****************************************************************
        10012-KAISU-CHK-SEC            SECTION.
       *
-      *    診療情報提供料（Ａ），（Ｂ）（Ｄ）は重複ＯＫとする
+      *    診療情報提供料（１）は重複ＯＫとする
            IF     (IDX-SYU             >   ZERO )  AND
                   (WRK-COM-INPUTCD (IDX-SYU)   =   "180016110"
-                                               OR  "180016210"
-                                               OR  "113004410"
       *??                                      OR  "113009510"
       *        傷病手当意見書交付料
                                                OR  "180000710"
@@ -1097,18 +1095,15 @@
       *
       *----(01.00.02) LINE ADD START ----------------------------------
       *    寝たきり老人在宅総合診療科を算定時、加算を追加
-           IF      WRK-COM-INPUTCD (IDX-Z)     =   "114701210"  OR
-                                                   "114701710"
-               PERFORM 1009-NETAKIRI-HEN-SEC
-           END-IF
+      *    IF      WRK-COM-INPUTCD (IDX-Z)     =   "114701210"  OR
+      *                                            "114701710"
+      *        PERFORM 1009-NETAKIRI-HEN-SEC
+      *    END-IF
       *----(01.00.02) LINE ADD END   ----------------------------------
       *
       *----(01.00.03) LINE ADD START ----------------------------------
       *    診療情報提供料を入力時、算定日のコメントを自動加算
-           IF      WRK-COM-INPUTCD (IDX-Z)     =   "180016110"  OR
-                                                   "180016210"  OR
-                                                   "180016310"  OR
-                                                   "113004410"
+           IF      WRK-COM-INPUTCD (IDX-Z)     =   "180016110"
                                                OR  "113009510"
                IF      LNK-ORCSC-PG        =   "K02"
                    PERFORM 10010-COMMT-SEC
@@ -3630,6 +3625,30 @@
                    MOVE    "0017"          TO  SPA-ERRCD
                    MOVE    "1"             TO  WRK-COM-CUR(IDX-SYU2)
                    GO      TO      200-ALL-SYORI-EXT
+               END-IF
+           END-IF
+      *    同日初診チェック
+           IF     (FLG-DOUJITU         =   1   )
+      *        同日初診は科が違うこと
+               IF      IDX-SYU2        >   ZERO
+                    IF      WRK-COM-SRYKA(IDX-SYU2)
+                                       =   WRK-COM-SRYKA(IDX-SINSATU2)
+                       MOVE    "2067"          TO  SPA-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR
+                                                       (IDX-SINSATU2)
+                       GO      TO      200-ALL-SYORI-EXT
+                   END-IF
+               ELSE
+      *            当日に他の受診があること
+                   IF     ( SPA-SYORIFLG        =   ZERO     ) AND
+                          ( SPA-RRK-LSTYMD      =   SPA-SRYYMD)
+                       CONTINUE
+                   ELSE
+                       MOVE    "2069"          TO  SPA-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR
+                                                       (IDX-SINSATU2)
+                       GO      TO      200-ALL-SYORI-EXT
+                   END-IF
                END-IF
            END-IF
       *    新規患者入力の時、必ず初診料であること

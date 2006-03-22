@@ -1010,7 +1010,14 @@
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "2067"
-                   STRING  "当日に初診の算定がありません。"
+                   STRING  "初診・再診と同日初診の診療科が同じです。"
+                                               DELIMITED  BY  SIZE
+                           "算定できません。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "2069"
+                   STRING  "当日に初診・再診が算定されていません。"
                                                DELIMITED  BY  SIZE
                            "同日初診は算定できません。"
                                                DELIMITED  BY  SIZE
