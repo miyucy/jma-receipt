@@ -80,6 +80,9 @@
       *                                     の種別を変更できるようにする
       *
       *  02.07.01    NACL-藤原    05/10/31  MONFUNC対応
+      *
+      *  02.08.01    NACL-藤原    06/03/22  改正対応
+      *                                     疾患区分の表示を変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -800,14 +803,9 @@
                                    TO  SPA-GMN-MANSEIKBNMEIL    (2)
            MOVE    "皮膚（２）"    TO  SPA-GMN-MANSEIKBNTANL    (2)
            MOVE    "05"            TO  SPA-GMN-MANSEIKBNL       (3)
-           MOVE    "特定疾患療養指導料／老人慢性疾患生活指導料"
+           MOVE    "特定疾患療養管理料"
                                    TO  SPA-GMN-MANSEIKBNMEIL    (3)
-           MOVE    "老人"          TO  SPA-GMN-MANSEIKBNTANL    (3)
-      *****MOVE    "07"            TO  SPA-GMN-MANSEIKBNL       (4)
-      *    MOVE    "皮膚科特定疾患指導管理料(３)"
-      *                            TO  SPA-GMN-MANSEIKBNMEIL    (4)
-      *    MOVE    "皮膚（３）"    TO  SPA-GMN-MANSEIKBNTANL    (4)
-      *****MOVE    4               TO  SPA-GMN-MANSEIKBN-MAX
+           MOVE    "特定疾患"      TO  SPA-GMN-MANSEIKBNTANL    (3)
            MOVE    3               TO  SPA-GMN-MANSEIKBN-MAX
       *
            MOVE    "1"             TO  SPA-GMN-HKNBYOMEIFLGL    (1)

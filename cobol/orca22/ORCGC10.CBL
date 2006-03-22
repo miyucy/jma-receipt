@@ -39,6 +39,9 @@
       *                                     ので修正
       *
       *  02.07.01    NACL-藤原    05/10/31  MONFUNC対応
+      *
+      *  02.08.01    NACL-藤原    06/03/22  改正対応
+      *                                     疾患区分の表示を変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -483,7 +486,7 @@
            MOVE    "皮膚科特定疾患指導管理料(２)"
                                    TO  SPA-GMN-C10-MANSEIKBNMEIL    (3)
            MOVE    "05"            TO  SPA-GMN-C10-MANSEIKBNL       (4)
-           MOVE    "特定疾患療養指導料／老人慢性疾患生活指導料"
+           MOVE    "特定疾患療養管理料"
                                    TO  SPA-GMN-C10-MANSEIKBNMEIL    (4)
            MOVE    4               TO  SPA-GMN-C10-MANSEIKBN-MAX
       *

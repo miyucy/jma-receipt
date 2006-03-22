@@ -177,6 +177,8 @@
       *                                      科指定で削除処理した後の一覧
       *                                      表示が消えるのを修正
       *  02.08.02    NACL-藤原    06/02/01  自院病名コード検索追加
+      *  02.08.03    NACL-藤原    06/03/22  改正対応
+      *                                     疾患区分の表示を変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1015,6 +1017,27 @@
                                    WRK-PTBYOMEI-REC (5)
                                    WRK-PTBYOMEI-REC (6)
                                    WRK-HAISIYMD-OCC
+      *      
+      *    システム日付
+           IF    ( SPA-C02-MOTOPG      =   "K02"   OR  "U02"
+                                                   OR  "K02N")
+               MOVE    SPA-SRYYMDW     TO  SPA-GMN-C02-SYSYMD
+               MOVE    SPA-SRYYMD      TO  SPA-NAI-C02-SYSYMD
+           ELSE    
+               MOVE    SPA-SYSYMDWH    TO  SPA-GMN-C02-SYSYMD
+               MOVE    SPA-SYSYMD      TO  SPA-NAI-C02-SYSYMD
+           END-IF   
+      *
+      *    システム日付の前月
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY6-AREA
+           MOVE    "61"                TO  LNK-DAY6-IRAI
+           MOVE    SPA-NAI-C02-SYSYMD  TO  LNK-DAY6-KIJUN 
+           MOVE    "2"                 TO  LNK-DAY6-ZOGENPTN
+           MOVE    -1                  TO  LNK-DAY6-ZOGEN
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY6-AREA
+           MOVE    LNK-DAY6-KEISAN     TO  SPA-NAI-C02-SYSYMD-BACK
       *
            MOVE    "1"             TO  SPA-GMN-C02-TENKIKBNL        (1)
            MOVE    "治ゆ"          TO  SPA-GMN-C02-TENKIKBNMEIL     (1)
@@ -1047,13 +1070,9 @@
                                    TO  SPA-GMN-C02-MANSEIKBNMEIL    (2)
            MOVE    "皮膚（２）"    TO  SPA-GMN-C02-MANSEIKBNTANL    (2)
            MOVE    "05"            TO  SPA-GMN-C02-MANSEIKBNL       (3)
-           MOVE    "特定疾患療養指導料／老人慢性疾患生活指導料"
+           MOVE    "特定疾患療養管理料"
                                    TO  SPA-GMN-C02-MANSEIKBNMEIL    (3)
            MOVE    "特定疾患"      TO  SPA-GMN-C02-MANSEIKBNTANL    (3)
-      *     MOVE    "07"            TO  SPA-GMN-C02-MANSEIKBNL       (4)
-      *     MOVE    "皮膚科特定疾患指導管理料(３)"
-      *                             TO  SPA-GMN-C02-MANSEIKBNMEIL    (4)
-      *     MOVE    "皮膚（３）"    TO  SPA-GMN-C02-MANSEIKBNTANL    (4)
            MOVE    3               TO  SPA-GMN-C02-MANSEIKBN-MAX
       *
            MOVE    "1"             TO  SPA-GMN-C02-NYUGAIKBNL       (1)
@@ -1091,27 +1110,6 @@
       *
            MOVE    SPA-GMN-C02-HNYUGAIKBNLST (1)
                                    TO  SPA-GMN-C02-HNYUGAIKBN-G
-      *      
-      *    システム日付
-           IF    ( SPA-C02-MOTOPG      =   "K02"   OR  "U02"
-                                                   OR  "K02N")
-               MOVE    SPA-SRYYMDW     TO  SPA-GMN-C02-SYSYMD
-               MOVE    SPA-SRYYMD      TO  SPA-NAI-C02-SYSYMD
-           ELSE    
-               MOVE    SPA-SYSYMDWH    TO  SPA-GMN-C02-SYSYMD
-               MOVE    SPA-SYSYMD      TO  SPA-NAI-C02-SYSYMD
-           END-IF   
-      *
-      *    システム日付の前月
-           INITIALIZE                      STS-AREA-DAY
-           INITIALIZE                      LNK-DAY6-AREA
-           MOVE    "61"                TO  LNK-DAY6-IRAI
-           MOVE    SPA-NAI-C02-SYSYMD  TO  LNK-DAY6-KIJUN 
-           MOVE    "2"                 TO  LNK-DAY6-ZOGENPTN
-           MOVE    -1                  TO  LNK-DAY6-ZOGEN
-           CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                               LNK-DAY6-AREA
-           MOVE    LNK-DAY6-KEISAN     TO  SPA-NAI-C02-SYSYMD-BACK
       *         
       *    主病名編集フラグ情報
            MOVE    SPACE            TO  SYSKANRI-REC
