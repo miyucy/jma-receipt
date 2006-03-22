@@ -57,6 +57,7 @@
       *                                       Àº¿À²ÊµÞÀ­´ü¼£ÎÅÉÂÅïÆþ±¡ÎÁ£²
       *                                     ´Ç¸îÊä½õ²Ã»»¤ÎÊÑ¹¹
       *                                     ÁªÂò¿©¤ÎÇÑ»ßÂÐ±þ
+      *                                     ²þÄê¤Ë¤è¤ëÆÃÄêÆþ±¡ÎÁ¼¡·îºîÀ®ÊÑ¹¹
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -163,6 +164,8 @@
            03  IDX-D2              PIC 9(02).
       *
            03  IDX-KSN             PIC 9(04).
+           03  KIKAN-IDX1          PIC 9(04).
+           03  KIKAN-IDX2          PIC 9(04).
       *
       *    ÅÀ¿ô¥Þ¥¹¥¿Í½Ìó¥³¡¼¥ÉÎÎ°è¡ÊÁªÄêÆþ±¡ÎÁ¡Ë
        01  WRK-YOYAKU.
@@ -4559,8 +4562,7 @@
       *    ¿ÇÎÅ½êÏ·¿Í°åÎÅ´ÉÍýÎÁ
            IF      SYOKIKSN-IN-KHNSRYCD    =   "190774110"
                MOVE   SPACE            TO  SYOKIKSN-IN-KHNSRYCD
-               MOVE   "190774210"      TO  LNK-SCNYUACCT-NYUKHN-SRYCD
-                                                                    (1)
+                                           LNK-SCNYUACCT-NYUKHN-SRYCD(1)
                MOVE   "190774110"      TO  LNK-SCNYUACCT-KAGEN-SRYCD(1)
                MOVE   PTNYUINRRK-TENNYUYMD
                                        TO  LNK-SCNYUACCT-KAGEN-STYUKYMD
@@ -4591,6 +4593,7 @@
                                                                   (2)
                MOVE    "99999999"      TO  LNK-SCNYUACCT-KAGEN-EDYUKYMD
                                                                   (2)
+               PERFORM    4801-KIKAN-CHG-SEC
            END-IF
       *    Ï·¿ÍÀ­ÃÔÊò¼À´µ¼£ÎÅÉÂÅïÆþ±¡ÎÁ
            IF      SYOKIKSN-IN-KHNSRYCD    =   "190739910"
@@ -6023,6 +6026,52 @@
       *
            .
        4801-RJNCD-CHG-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÆÃÄêÆþ±¡ÎÁ¤Î»»Äê´ü´ÖÃÖ¤­´¹¤¨
+      *****************************************************************
+       4801-KIKAN-CHG-SEC   SECTION.
+      *
+           MOVE      ZERO              TO   KIKAN-IDX2
+           PERFORM   VARYING   KIKAN-IDX1   FROM  1  BY  1
+             UNTIL  (KIKAN-IDX1        >    6  )
+              IF    LNK-SCNYUACCT-KAGEN-STYUKYMD(KIKAN-IDX1)
+                                    <  LNK-SCNYUACCT-STSRYYMD
+                IF    LNK-SCNYUACCT-STSRYYMD    <=
+                          LNK-SCNYUACCT-KAGEN-EDYUKYMD(KIKAN-IDX1)
+                    ADD   1       TO   KIKAN-IDX2
+                    MOVE  LNK-SCNYUACCT-KAGEN-SRYCD(KIKAN-IDX1) TO
+                          LNK-SCNYUACCT-KAGEN-SRYCD(KIKAN-IDX2)
+                    MOVE  LNK-SCNYUACCT-STSRYYMD   TO
+                          LNK-SCNYUACCT-KAGEN-STYUKYMD(KIKAN-IDX2)
+                    MOVE  LNK-SCNYUACCT-KAGEN-EDYUKYMD(KIKAN-IDX1) TO
+                          LNK-SCNYUACCT-KAGEN-EDYUKYMD(KIKAN-IDX2)
+                END-IF
+              ELSE
+                    ADD   1       TO   KIKAN-IDX2
+                    MOVE  LNK-SCNYUACCT-KAGEN-SRYCD(KIKAN-IDX1) TO
+                          LNK-SCNYUACCT-KAGEN-SRYCD(KIKAN-IDX2)
+                    MOVE  LNK-SCNYUACCT-KAGEN-STYUKYMD(KIKAN-IDX1) TO
+                          LNK-SCNYUACCT-KAGEN-STYUKYMD(KIKAN-IDX2)
+                    MOVE  LNK-SCNYUACCT-KAGEN-EDYUKYMD(KIKAN-IDX1) TO
+                          LNK-SCNYUACCT-KAGEN-EDYUKYMD(KIKAN-IDX2)
+              END-IF
+           END-PERFORM 
+      *
+           IF    KIKAN-IDX2    NOT =  ZERO
+             ADD       1         TO    KIKAN-IDX2
+             PERFORM   VARYING   KIKAN-IDX1   FROM  KIKAN-IDX2  BY  1
+               UNTIL  (KIKAN-IDX1        >    6  )
+                 MOVE   SPACE   TO  
+                             LNK-SCNYUACCT-KAGEN-SRYCD(KIKAN-IDX1)
+                             LNK-SCNYUACCT-KAGEN-STYUKYMD(KIKAN-IDX1)
+                             LNK-SCNYUACCT-KAGEN-EDYUKYMD(KIKAN-IDX1)
+             END-PERFORM
+           END-IF
+
+           .
+       4801-KIKAN-CHG-EXT.
            EXIT.
       *
       *****************************************************************
