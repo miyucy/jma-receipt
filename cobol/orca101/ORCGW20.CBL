@@ -161,6 +161,8 @@
                05                      PIC X(09) VALUE "190102470".
            03  CONST-KANGOCD-R         REDEFINES   CONST-KANGOCD-VAL.
                05  CONST-KANGOCD       PIC X(09) OCCURS 5.
+           03  CONST-KNGTEKCD          PIC X(09) VALUE "190109670".
+           03  CONST-DRTEKCD           PIC X(09) VALUE "190117070".
            03  CONST-H180401           PIC X(08) VALUE "20060401".
       *
       *****************************************************************
@@ -1832,6 +1834,16 @@
                                        TO  SYS-5001-KANGO-CD (IDX1)
                    MOVE    "1"         TO  SYS-5001-KANGO-KBN (IDX1)
                END-PERFORM
+           END-IF
+      *
+           IF    ( SPA-NAI-W20-YUKOSTYMD   >=  CONST-H180401 )
+               MOVE    CONST-KNGTEKCD
+                                   TO  SYS-5001-KNGTEK-CD
+               MOVE    "1"         TO  SYS-5001-KNGTEK-KBN
+      *
+               MOVE    CONST-DRTEKCD
+                                   TO  SYS-5001-DRTEK-CD
+               MOVE    "1"         TO  SYS-5001-DRTEK-KBN
            END-IF
       *
            .

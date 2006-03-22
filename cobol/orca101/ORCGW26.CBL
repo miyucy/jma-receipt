@@ -72,6 +72,8 @@
                05  FLG-190102270                   PIC 9(01).
                05  FLG-190102370                   PIC 9(01).
                05  FLG-190102470                   PIC 9(01).
+               05  FLG-190109670                   PIC 9(01).
+               05  FLG-190117070                   PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -139,8 +141,8 @@
                        09                  PIC X(09) VALUE "190110170".
                        09                  PIC X(09) VALUE "190106970".
                        09                  PIC X(09) VALUE "190102070".
-                       09                  PIC X(09) VALUE "         ".
-                       09                  PIC X(09) VALUE "         ".
+                       09                  PIC X(09) VALUE "190109670".
+                       09                  PIC X(09) VALUE "190117070".
                        09                  PIC X(09) VALUE "         ".
                        09                  PIC X(09) VALUE "         ".
                    07  CONST-KSN-H1804-R
@@ -805,6 +807,24 @@
                    ELSE
                        MOVE    "2"         TO  SYS-5001-KANGO-KBN(5)
                    END-IF
+               WHEN    "190109670"
+      *            看護配置適合加算
+                   MOVE    SPA-NAI-W26-CHK-KSN-SRYCD (IDX-KSN)
+                                           TO  SYS-5001-KNGTEK-CD
+                   IF    ( SPA-GMN-W26-CHK-KSN (IDX-KSN)  =   "F" )
+                       MOVE    "1"         TO  SYS-5001-KNGTEK-CD
+                   ELSE
+                       MOVE    "2"         TO  SYS-5001-KNGTEK-CD
+                   END-IF
+               WHEN    "190117070"
+      *            複数医師及び看護配置適合加算
+                   MOVE    SPA-NAI-W26-CHK-KSN-SRYCD (IDX-KSN)
+                                           TO  SYS-5001-DRTEK-CD
+                   IF    ( SPA-GMN-W26-CHK-KSN (IDX-KSN)  =   "F" )
+                       MOVE    "1"         TO  SYS-5001-DRTEK-CD
+                   ELSE
+                       MOVE    "2"         TO  SYS-5001-DRTEK-CD
+                   END-IF
                END-EVALUATE
       *
            END-PERFORM
@@ -1142,6 +1162,20 @@
       *        看護配置加算（入院基本料７）
       *
                CONTINUE
+           WHEN    "190109670"
+      *        看護配置適合加算
+               IF    ( SSTKJN-CD (399) =   1 )
+                   CONTINUE
+               ELSE
+                   MOVE    1           TO  FLG-SSTKIJUNERR
+               END-IF
+           WHEN    "190117070"
+      *        複数医師及び看護配置適合加算
+               IF    ( SSTKJN-CD (397) =   1 )
+                   CONTINUE
+               ELSE
+                   MOVE    1           TO  FLG-SSTKIJUNERR
+               END-IF
       *
            END-EVALUATE
       *
@@ -1151,18 +1185,24 @@
                MOVE    "0003"  TO  SPA-ERRCD
                MOVE    "F"     TO  SPA-GMN-W26-CHK-KSN (IDX-KSN)
            ELSE
-               MOVE    SPA-NAI-W26-KSNKBN
-                               TO  WRK-BTU-NYUKSNKBN
-               MOVE    SPA-NAI-W26-CHK-KSN-KSNKBN (IDX-KSN)
-                               TO  WRK-KSN-NYUKSNKBN
-               PERFORM 900-NYUKSNCHK-KEY-SEL-SEC
-               IF    ( NYUKSNCHK-CHKKBN    =   "1" OR "2" )
+               IF    ( SPA-NAI-W26-CHK-KSN-SRYCD (IDX-KSN)
+                                           =   "190109670"
+                                            OR "190117070" )
                    CONTINUE
                ELSE
-                   COMPUTE SPA-GMN-W26-CUR
-                       =   WRK-BASE-CUR    +   IDX-KSN
-                   MOVE    "0005"  TO  SPA-ERRCD
-                   MOVE    "F"     TO  SPA-GMN-W26-CHK-KSN (IDX-KSN)
+                   MOVE    SPA-NAI-W26-KSNKBN
+                               TO  WRK-BTU-NYUKSNKBN
+                   MOVE    SPA-NAI-W26-CHK-KSN-KSNKBN (IDX-KSN)
+                               TO  WRK-KSN-NYUKSNKBN
+                   PERFORM 900-NYUKSNCHK-KEY-SEL-SEC
+                   IF    ( NYUKSNCHK-CHKKBN    =   "1" OR "2" )
+                       CONTINUE
+                   ELSE
+                       COMPUTE SPA-GMN-W26-CUR
+                           =   WRK-BASE-CUR    +   IDX-KSN
+                       MOVE    "0005"  TO  SPA-ERRCD
+                       MOVE    "F"     TO  SPA-GMN-W26-CHK-KSN (IDX-KSN)
+                   END-IF
                END-IF
            END-IF
       *
@@ -1317,6 +1357,10 @@
                        MOVE    1       TO  FLG-190102370
                    WHEN    "190102470"
                        MOVE    1       TO  FLG-190102470
+                   WHEN    "190109670"
+                       MOVE    1       TO  FLG-190109670
+                   WHEN    "190117070"
+                       MOVE    1       TO  FLG-190117070
                    END-EVALUATE
                END-IF
       *
@@ -1351,6 +1395,12 @@
       *
            IF    ( WRK-SEL-CNT     >   1 )
                MOVE    "1003"          TO  SPA-ERRCD
+               GO  TO  4900-KANRENCHK-EXT
+           END-IF
+      *
+           IF    ( FLG-190109670       =   1 )
+            AND  ( FLG-190117070       =   1 )
+               MOVE    "1004"          TO  SPA-ERRCD
                GO  TO  4900-KANRENCHK-EXT
            END-IF
       *
@@ -1636,6 +1686,11 @@
                MOVE    "看護配置加算はいずれか１つのみ選択してく"
                                        TO  SPA-ERRMSG (1 : 40)
                MOVE    "ださい"        TO  SPA-ERRMSG (41 : )
+           WHEN    "1004"
+               MOVE    "看護配置適合と複数医師及び看護配置適合は"
+                                       TO  SPA-ERRMSG (1 : 40)
+               MOVE    "同時に加算できません" 
+                                       TO  SPA-ERRMSG (41 : )
            WHEN    "1201"
            WHEN    "1202"
                MOVE    "更新できませんでした"

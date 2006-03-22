@@ -118,13 +118,21 @@
                  07  SYS-5001-KANGO              OCCURS  5.
                    09  SYS-5001-KANGO-CD       PIC X(09).
                    09  SYS-5001-KANGO-KBN      PIC X(01).
+      *看護配置適合加算
+                 07  SYS-5001-KNGTEK.
+                   09  SYS-5001-KNGTEK-CD      PIC X(09).
+                   09  SYS-5001-KNGTEK-KBN     PIC X(01).
+      *複数医師配置適合加算
+                 07  SYS-5001-DRTEK.
+                   09  SYS-5001-DRTEK-CD       PIC X(09).
+                   09  SYS-5001-DRTEK-KBN      PIC X(01).
       *入院料加算再定義
-               05  SYS-5001-KSNTBLR  REDEFINES  SYS-5001-KSNAREA.
-                 07  SYS-5001-KSN              OCCURS  12.
+               05  SYS-5001-KSNTBLR  REDEFINES SYS-5001-KSNAREA.
+                 07  SYS-5001-KSN              OCCURS  14.
                    09  SYS-5001-KSNCD          PIC X(09).
                    09  SYS-5001-KSNKBN         PIC X(01).
       *予備 ** 予備の後にも項目があるので注意すること **
-               05  SYS-5001-YOBI               PIC  X(277).
+               05  SYS-5001-YOBI               PIC  X(257).
       *選定入院特別料金（一般）
                05  SYS-5001-SENTEI-IPN-KINGAKU-X
                                                PIC  X(04).
