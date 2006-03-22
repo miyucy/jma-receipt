@@ -102,21 +102,27 @@ echo
 RC=0
 
 sh "$INITDIR"/orca-db-create.sh
-if [ "$?" -eq 0 ] ; then
+if [ $? -eq 0 ] ; then
     sh "$INITDIR"/orca-db-install.sh
-    if [ "$?" -eq 0 ] ; then
+    if [ $? -eq 0 ] ; then
 	sh "$INITDIR"/orca-db-clear.sh
-	if [ "$?" -ne 0 ] ; then
+	if [ $? -ne 0 ] ; then
 	    RC=1
 	fi
     else
-	RC=1
+        RC=1
     fi
 else
     RC=1
 fi
-if [ ${RC} -eq 0 -a -e "$INITDIR"/database-non-upgrade ] ; then
-    rm -f "$INITDIR"/database-non-upgrade
+
+if [ ${RC} -eq 0 ] ; then
+    sh "$ORCALIBDIR"/bin/jma-receipt-db-check.sh
+    if [ $? -eq 0 ] ; then
+	if [ -e "$SYSCONFDIR"/database-non-upgrade ] ; then
+	    rm -f "$SYSCONFDIR"/database-non-upgrade
+	fi
+    fi
 fi
 
 #

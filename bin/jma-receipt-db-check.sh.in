@@ -50,7 +50,8 @@ DBLIST=`awk '/--------|row/ {skip = ! skip; next};/};/ {exit}; (skip == 1) {gsub
 DBVERSION=`echo $DBLIST | awk '{i=split($0,arr,"|"); print arr[2]} ' `
 DBVERSION1=`echo $DBVERSION | awk '{gsub(/[-)]/,""); print } ' `
 
-if [ `echo $DBVERSION1 $VERDATA1 | awk '{print($1<=$2) ? "true" : "false"} '` = "true" ];	then
+echo
+if [ `echo $DBVERSION1 $VERDATA1 | awk '{print($1==$2) ? "true" : "false"} '` = "true" ];	then
     echo "Very Good!"
 else
     echo "package  version=" $VERDATA1
