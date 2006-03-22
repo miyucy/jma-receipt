@@ -29,9 +29,9 @@
 # 引数7 = dataファイル
 
 # dataファイルフォーマット
-# +------------------+------------+---------------+---------------+-----------------------+
-# |ファイル名(30Byte)|LP名(20Byte)|site区分(1Byte)|出力区分(1Byte)|出力先フォルダ(165byte)|
-# +------------------+------------+---------------+---------------+-----------------------+
+# +------------------+------------+---------------+---------------+---------------+---------------+-----------------------+
+# |ファイル名(30Byte)|LP名(20Byte)|offset-x(5byte)|offset-y(5byte)|site区分(1Byte)|出力区分(1Byte)|出力先フォルダ(165byte)|
+# +------------------+------------+---------------+---------------+---------------+---------------+-----------------------+
 # +------------------+-----------+----------------+-----------------+-------------+--------------------------+
 # |tbl_key情報(8byte)|連番(4byte)|グループ(14byte)|処理内連番(4byte)|ページ(5byte)|帳票データ(Max10000バイト)|
 # +------------------+-----------+----------------+-----------------+-------------+--------------------------+
@@ -96,7 +96,7 @@ DEFAULT_LP = 'lp1'
 # 領域の初期化
 
 # ファイル名領域
-temp_file = ''; exec_file = ''; dia_file = ''; def_file = ''; data_file = ''; lp_name = ''
+temp_file = ''; exec_file = ''; dia_file = ''; def_file = ''; data_file = ''; lp_name = ''; offset_x = ''; offset_y = ''
 temp_file2 = ''; exec_file2 = ''; dia_file2 = ''; def_file2 = ''; data_file2 = ''; lp_name2 = ''
 site_flag = ''; base_dir = ''
 #---- (2003/01/20 ) start
@@ -197,9 +197,9 @@ site_record = add_slash(site_record)
 
 
 # デバッグ用の表示
-#puts "一時ファイル   = [" + temp_file + "]"
-#puts "起動プログラム = [" + exec_file + "]"
-#puts "dataファイル   = [" + data_file + "]"
+puts "一時ファイル   = [" + temp_file + "]"
+puts "起動プログラム = [" + exec_file + "]"
+puts "dataファイル   = [" + data_file + "]"
 
 
 # ============================================================
@@ -267,8 +267,8 @@ li_cnt1 = 0
 	puts '[start ' + `date` + ']'
 word2.each do |d2|
 # 印刷処理実行可能判定
-stop_file_1 = d2[217, 8].strip		# key情報の取得
-stop_file_2 = d2[229, 14].strip		# group情報の取得
+stop_file_1 = d2[227, 8].strip		# key情報の取得
+stop_file_2 = d2[239, 14].strip		# group情報の取得
 puts stop_file_1
 puts stop_file_2
 stop_file = '/tmp/' + stop_file_1 + stop_file_2 + '.tmp'
@@ -298,7 +298,7 @@ end
 	red_file = ''
 	ls_w1 = ''	# 一時用文字列領域
 	ls_w1 = d2[0, 30].strip	# ファイル名を後ろの空白を除いて取得
-	site_flag = d2[50, 1].strip		# site固有判定フラグの取得
+	site_flag = d2[60, 1].strip		# site固有判定フラグの取得
 	if ls_w1 =~ /.red$/
 		# .redファイルである
 
@@ -313,15 +313,17 @@ end
 		end
 
 		lp_name = d2[30, 20].strip				# LP名のセット
+		offset_x = d2[50, 5].strip				# offset-xのセット
+		offset_y = d2[55, 5].strip				# offset-yのセット
 #---- (2003/07/03 ) add start
-		prt_flg = d2[51, 1].strip                       	# 出力フラグのセット
-		psfile_name_folder = d2[52, 165].strip	                # PSファイル格納フォルダのセット
+		prt_flg = d2[61, 1].strip                       	# 出力フラグのセット
+		psfile_name_folder = d2[62, 165].strip	                # PSファイル格納フォルダのセット
 		psfile_name_folder = add_slash(psfile_name_folder) 	#/を付加
-		psfile_name = psfile_name_folder.strip + d2[217, 8].strip + d2[225, 4].strip \
-		+ d2[229, 14].strip + d2[243, 4].strip + d2[247, 5].strip
+		psfile_name = psfile_name_folder.strip + d2[227, 8].strip + d2[235, 4].strip \
+		+ d2[239, 14].strip + d2[253, 4].strip + d2[257, 5].strip
 									# PSファイル名のセット
 #		word3 = d2[51, (d2_len - 51)]				# 一時ファイルへ出力する内容のセット
-		word3 = d2[252, (d2_len - 252)]				# 一時ファイルへ出力する内容のセット
+		word3 = d2[262, (d2_len - 262)]				# 一時ファイルへ出力する内容のセット
 #---- (2003/07/03 ) add end
 
 		# 一時ファイルへの書き込み
@@ -347,6 +349,14 @@ end
 		if lp_name == ''
 			lp_name = DEFAULT_LP
 		end
+		# offset-xが指定されていなかったら、0にする
+		if offset_x == ''
+			offset_x = '0'
+		end
+		# offset-yが指定されていなかったら、0にする
+		if offset_y == ''
+			offset_y = '0'
+		end
 
 #---- (2003/01/20 ) start
 #		w_exec = RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -p ' + lp_name
@@ -359,15 +369,16 @@ end
 			puts	'出力区分未設定'
 		when	'1'     # 印刷のみの指示
 		puts	'take Start [' + psfile_name + ']'
-			w_exec = RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -p ' + lp_name
+			w_exec = RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -x ' + offset_x + ' -y ' + offset_y + ' -p ' + lp_name
 		when	'2'     # 印刷＆PSファイル出力の指示
 		puts	'take Start [' + psfile_name + ']'
 			# 出力ファイル名が指定されていなかったら、通常の印刷処理を行う
 			if psfile_name == ''
 				puts	'出力ファイル名未設定'
-				w_exec = RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -p ' + lp_name
+				w_exec = RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -x ' + offset_x + ' -y ' + offset_y + ' -p ' + lp_name
 			else
-				w_exec = RED_EXECPS + ' ' + red_file + ' ' + temp_file + ' -p ' + lp_name + ' -o ' + psfile_name
+#				w_exec = RED_EXECPS + ' ' + red_file + ' ' + temp_file + ' -p ' + lp_name + ' -o ' + psfile_name
+				w_exec = RED_EXECPS + ' ' + red_file + ' ' + temp_file + ' -x ' + offset_x + ' -y ' + offset_y + ' -p ' + lp_name + ' -o ' + psfile_name
 			end
 		when	'3'     # PSファイル出力の指示
 			# 出力ファイル名が指定されていなかったら、通常の印刷処理を行う
@@ -432,15 +443,15 @@ end
 
 		lp_name = d2[30, 20].strip	# LP名のセット
 #---- (2003/01/20 ) start
-		prt_flg = d2[51, 1].strip                       	# 出力フラグのセット
+		prt_flg = d2[61, 1].strip                       	# 出力フラグのセット
 #---- (2003/07/03 ) add start
-		psfile_name_folder = d2[52, 165].strip	                # PSファイル格納フォルダのセット
+		psfile_name_folder = d2[62, 165].strip	                # PSファイル格納フォルダのセット
 		psfile_name_folder = add_slash(psfile_name_folder) 	#/を付加
-		psfile_name = psfile_name_folder.strip + d2[217, 8].strip + d2[225, 4].strip \
-		+ d2[229, 14].strip + d2[243, 4].strip + d2[247, 5].strip
+		psfile_name = psfile_name_folder.strip + d2[227, 8].strip + d2[235, 4].strip \
+		+ d2[239, 14].strip + d2[253, 4].strip + d2[257, 5].strip
 									# PSファイル名のセット
 #		word3 = d2[51, (d2_len - 51)]				# 一時ファイルへ出力する内容のセット
-		word3 = d2[252, (d2_len - 252)]				# 一時ファイルへ出力する内容のセット
+		word3 = d2[262, (d2_len - 262)]				# 一時ファイルへ出力する内容のセット
 #---- (2003/07/03 ) add end
 #---- (2003/01/20 ) end
 

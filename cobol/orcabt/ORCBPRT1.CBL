@@ -34,6 +34,7 @@
       *                                     印刷用ファイルにサイト区分を追加
       *  01.01.02    NACL-藤原    03/01/20  プレビューＤＢ処理追加
       *  01.01.03    NACL-藤原    04/11/29  引数にエラーファイル名を追加
+      *  01.01.04    NACL-伊藤    06/03/07  オフセット対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -59,6 +60,8 @@
        01  PRT-REC.
            03  PRT-PRTID           PIC X(30).
            03  PRT-PRTNM           PIC X(20).
+           03  PRT-OFFSET-X        PIC X(05).
+           03  PRT-OFFSET-Y        PIC X(05).
            03  PRT-SITEKBN         PIC X(01).
       *  01.01.02  ADD START 
            03  PRT-PRTKBN          PIC X(01).
@@ -164,6 +167,9 @@
       *
       *    出力先プリンタ名割り当て情報
            COPY    "CPSK1031.INC".
+      *
+      *    オフセット情報
+           COPY    "CPSK1044.INC".
       *
       *    印刷管理ＤＢ
        01  PRTKANRI-REC.
@@ -395,6 +401,12 @@
            ELSE
                MOVE    PRTDATA-PRTNM       TO  PRT-PRTNM
            END-IF
+      *
+      *    オフセット
+           PERFORM 2002-OFFSET-GET-SEC
+           MOVE    SYS-1044-OFFSET-X   TO  PRT-OFFSET-X
+           MOVE    SYS-1044-OFFSET-Y   TO  PRT-OFFSET-Y
+      *
            EVALUATE    PRTDATA-SITEKBN
                WHEN    "1"
                WHEN    "2"               
@@ -433,6 +445,60 @@
            PERFORM 2002-PRTDATA-UPD-SEC
            .
        2001-PRTDATA-PRINT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    オフセット取得処理
+      *****************************************************************
+       2002-OFFSET-GET-SEC             SECTION.
+      *
+           MOVE    SPACE               TO  SYS-1044-REC
+           INITIALIZE                  SYS-1044-REC
+           MOVE    "1044"              TO  SYS-1044-KANRICD
+           MOVE    PRT-PRTID           TO  SYS-1044-FORMID
+           STRING  PRT-PRTNM           DELIMITED  BY  SPACE
+                   "%"                 DELIMITED  BY  SIZE
+                                       INTO    SYS-1044-TBL(21:)
+           END-STRING
+           MOVE    "99999999"          TO  SYS-1044-STYUKYMD
+           MOVE    "99999999"          TO  SYS-1044-EDYUKYMD
+           MOVE    SYS-1044-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key3"          TO  MCP-PATHNAME
+               MOVE    "DBFETCH"       TO  MCP-FUNC
+               CALL    "MONFUNC"       USING
+                                       MCPAREA
+                                       MCPDATA-REC
+               IF      MCP-RC          =   ZERO
+                   MOVE  MCPDATA-REC   TO  SYS-1044-REC
+                   IF   (SYS-1044-FORMID  =   PRT-PRTID)  AND
+                        (SYS-1044-PRTNM   =   PRT-PRTNM)
+                         CONTINUE
+                   ELSE
+                         INITIALIZE    SYS-1044-REC
+                   END-IF
+               ELSE
+                   INITIALIZE          SYS-1044-REC
+               END-IF
+           ELSE
+               INITIALIZE              SYS-1044-REC
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       2002-OFFSET-GET-EXT.
            EXIT.
       *
       *****************************************************************

@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  00.00.01    NACL-伊藤    06/03/03  オフセット対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -85,6 +86,8 @@
       *    サブプロ用　領域
       *****************************************************************
       *
+      *    オフセット用
+           COPY   "CPSK1044.INC".
       *    ディレクトリ位置編集サブ
            COPY   "CPMKPASS.INC".
       *
@@ -235,6 +238,8 @@
            END-STRING
            CALL    "ORCSMKPASSSITE"    USING   ORCSMKPASSAREA
       *
+           PERFORM 201-OFFSET-GET-SEC
+      *
       *    SHELL
            MOVE    SPACE               TO  SHELLTBL
            INITIALIZE                      SHELLTBL
@@ -250,6 +255,9 @@
            MOVE    MKPRT-DAT           TO  SHELLTBL-ARG4
       *    印刷位置
            MOVE    MKPRT-PRTNM         TO  SHELLTBL-ARG5
+      *    オフセット
+           MOVE    SYS-1044-OFFSET-X   TO  SHELLTBL-ARG6
+           MOVE    SYS-1044-OFFSET-Y   TO  SHELLTBL-ARG7
       *
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
@@ -261,4 +269,57 @@
       *
            .
        200-MON-PRINT-EXT.
+           EXIT.
+      *****************************************************************
+      *    オフセット取得処理
+      *****************************************************************
+       201-OFFSET-GET-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  SYS-1044-REC
+           INITIALIZE                  SYS-1044-REC
+           MOVE    "1044"              TO  SYS-1044-KANRICD
+           MOVE    MKPRT-DIA           TO  SYS-1044-FORMID
+           STRING  MKPRT-PRTNM         DELIMITED  BY  SPACE
+                   "%"                 DELIMITED  BY  SIZE
+                                       INTO    SYS-1044-TBL(21:)
+           END-STRING
+           MOVE    "99999999"          TO  SYS-1044-STYUKYMD
+           MOVE    "99999999"          TO  SYS-1044-EDYUKYMD
+           MOVE    SYS-1044-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key3"          TO  MCP-PATHNAME
+               MOVE    "DBFETCH"       TO  MCP-FUNC
+               CALL    "MONFUNC"       USING
+                                       MCPAREA
+                                       MCPDATA-REC
+               IF      MCP-RC          =   ZERO
+                   MOVE  MCPDATA-REC   TO  SYS-1044-REC
+                   IF   (SYS-1044-FORMID  =   MKPRT-DIA  )  AND
+                        (SYS-1044-PRTNM   =   MKPRT-PRTNM)
+                         CONTINUE
+                   ELSE
+                         INITIALIZE    SYS-1044-REC
+                   END-IF
+               ELSE
+                   INITIALIZE          SYS-1044-REC
+               END-IF
+           ELSE
+               INITIALIZE              SYS-1044-REC
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       201-OFFSET-GET-EXT.
            EXIT.

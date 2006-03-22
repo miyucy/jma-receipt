@@ -35,6 +35,7 @@
       *  01.01.02    NACL-藤原    03/03/04  印刷ＤＢへのプリンタ名追加による
       *                                     修正
       *  01.01.03    NACL-藤原    04/11/29  引数にエラーファイル名を追加
+      *  01.01.04    NACL-伊藤    06/03/08  オフセット対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -60,6 +61,8 @@
        01  PRT-REC.
            03  PRT-PRTID           PIC X(30).
            03  PRT-PRTNM           PIC X(20).
+           03  PRT-OFFSET-X        PIC X(05).
+           03  PRT-OFFSET-Y        PIC X(05).
            03  PRT-SITEKBN         PIC X(01).
            03  PRT-PRTDATA         PIC X(10000).
       *

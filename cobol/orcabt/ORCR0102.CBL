@@ -122,6 +122,8 @@
        01  PRT-REC.
            03  PRT-PRTID           PIC X(30).
            03  PRT-PRTNM           PIC X(20).
+           03  PRT-OFFSET-X        PIC X(05).
+           03  PRT-OFFSET-Y        PIC X(05).
            03  PRT-SITEKBN         PIC X(01).
            03  PRT-PRTKBN          PIC X(01).
            03  PRT-OUT             PIC X(165).
@@ -284,6 +286,9 @@
            COPY    "CPSK2005.INC".
       *
            COPY    "CPRCF008.INC".
+      *
+      *    オフセット情報
+           COPY    "CPSK1044.INC".
       *
        01  PRTKANRI-REC.
            COPY    "CPPRTKANRI.INC".
@@ -607,6 +612,12 @@
                    MOVE    WRK-PARA-KKHPRTNM-NEXT
                                                TO  PRT-PRTNM
            END-EVALUATE
+      *
+      *    オフセット
+           PERFORM 2002-OFFSET-GET-SEC
+           MOVE    SYS-1044-OFFSET-X   TO  PRT-OFFSET-X
+           MOVE    SYS-1044-OFFSET-Y   TO  PRT-OFFSET-Y
+      *
            MOVE    "1"                 TO  PRT-SITEKBN
            MOVE    WRK-PARA-PRTKBN     TO  PRT-PRTKBN
            MOVE    "/var/tmp/.orca_ps/"
@@ -799,6 +810,60 @@
       *
            .
        2001-RECEPRT-PRINT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    オフセット取得処理
+      *****************************************************************
+       2002-OFFSET-GET-SEC             SECTION.
+      *
+           MOVE    SPACE               TO  SYS-1044-REC
+           INITIALIZE                  SYS-1044-REC
+           MOVE    "1044"              TO  SYS-1044-KANRICD
+           MOVE    PRT-PRTID           TO  SYS-1044-FORMID
+           STRING  PRT-PRTNM           DELIMITED  BY  SPACE
+                   "%"                 DELIMITED  BY  SIZE
+                                       INTO    SYS-1044-TBL(21:)
+           END-STRING
+           MOVE    "99999999"          TO  SYS-1044-STYUKYMD
+           MOVE    "99999999"          TO  SYS-1044-EDYUKYMD
+           MOVE    SYS-1044-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key3"          TO  MCP-PATHNAME
+               MOVE    "DBFETCH"       TO  MCP-FUNC
+               CALL    "MONFUNC"       USING
+                                       MCPAREA
+                                       MCPDATA-REC
+               IF      MCP-RC          =   ZERO
+                   MOVE  MCPDATA-REC   TO  SYS-1044-REC
+                   IF   (SYS-1044-FORMID  =   PRT-PRTID)  AND
+                        (SYS-1044-PRTNM   =   PRT-PRTNM)
+                         CONTINUE
+                   ELSE
+                         INITIALIZE    SYS-1044-REC
+                   END-IF
+               ELSE
+                   INITIALIZE          SYS-1044-REC
+               END-IF
+           ELSE
+               INITIALIZE              SYS-1044-REC
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       2002-OFFSET-GET-EXT.
            EXIT.
       *
       *****************************************************************

@@ -33,6 +33,9 @@
            03  MKPRT-DAT                PIC  X(90).
       *    印刷位置
            03  MKPRT-PRTNM              PIC  X(16).
+      *    オフセット
+      **     03  MKPRT-OFFSET-X           PIC  S9(2)V9(1).
+      **     03  MKPRT-OFFSET-Y           PIC  S9(2)V9(1).
       *
       *    復帰コード
            03  MKPRT-RC                 PIC  9(04).
