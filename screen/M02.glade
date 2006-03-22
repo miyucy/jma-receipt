@@ -532,7 +532,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 24 Feb 2001 06:18:47 GMT</last_modification_time>
       </signal>
-      <label>109　ヘルプマスタ           　　</label>
+      <label>109　ヘルプマスタ　　　　　</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
   </widget>
