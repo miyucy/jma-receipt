@@ -134,6 +134,7 @@ path	key6		{
                     AND     RECESYUBETU  <>  '6666'
                     AND     RECESYUBETU  <>  '8888'
                     AND     NYUGAIKBN    =   :NYUGAIKBN
+                    ORDER BY  SRYKA DESC
 		;
 	};
 };
