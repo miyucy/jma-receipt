@@ -122,7 +122,7 @@
                  07  SYS-5001-KNGTEK.
                    09  SYS-5001-KNGTEK-CD      PIC X(09).
                    09  SYS-5001-KNGTEK-KBN     PIC X(01).
-      * £øÙ∞Âª’«€√÷≈¨πÁ≤√ªª
+      * £øÙ∞Âª’µ⁄§”¥«∏Ó«€√÷≈¨πÁ≤√ªª
                  07  SYS-5001-DRTEK.
                    09  SYS-5001-DRTEK-CD       PIC X(09).
                    09  SYS-5001-DRTEK-KBN      PIC X(01).
