@@ -200,7 +200,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label484</name>
-	  <label>ｘ数羹 m/m</label>
+	  <label>ｘ数羹 (cm)</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -213,7 +213,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label485</name>
-	  <label>ｙ数羹 m/m</label>
+	  <label>ｙ数羹 (cm)</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
