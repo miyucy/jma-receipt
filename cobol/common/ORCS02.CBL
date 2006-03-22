@@ -10822,6 +10822,24 @@
                    END-IF
            END-EVALUATE
       *
+           IF  ( LNK-S02-KOUREI-NYUIN-KBN     =      "1"   )
+           AND ( COMB-HKNNUM            NOT   =     SPACE  )
+      *
+              MOVE   ZERO   TO   LNK-SYU-KOH-COMPFTN(KOH-IDX)
+                                 LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)
+                                 WK-TOKUSYU-COMPFTN
+                                 WK-TOKUSYU-ENTANI
+      *
+              IF    HKN-RECEFTNDSPKBN    =  "2"
+                   MOVE   ZERO   TO    WK-KOH-COMPFTN(KOH-IDX)
+                                       WK-TOKUSYU-COMPFTN2
+              END-IF
+      *
+              COMPUTE   LNK-SYU-KOH-COMPTOTAL(KOH-IDX)   =
+                        LNK-SYU-KOH-COMPFTN(KOH-IDX)
+      *
+           END-IF
+      *
            .
       *
        23076-TOKUSYU-SANTEI-EXT.

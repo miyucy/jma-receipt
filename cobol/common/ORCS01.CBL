@@ -11000,31 +11000,26 @@
                    END-IF
            END-EVALUATE
       *
-           IF   COMB-HKNNUM            NOT   =   SPACE
-           AND  COMB-KOH1HKNNUM        NOT   =   "027"
-           AND  LNK-SYU-SYUCOMPFTN           =    ZERO
-               MOVE     ZERO     TO     WK-TOKUSYU-COMPFTN
-               IF    HKN-RECEFTNDSPKBN      =  "2"
-                 MOVE   ZERO     TO     WK-TOKUSYU-COMPFTN2
-               END-IF
-               MOVE     ZERO     TO     WK-TOKUSYU-ENTANI
-           END-IF
+      *    いわき市重心
       *
-           IF   COMB-HKNNUM            NOT   =   SPACE
-           AND  COMB-KOH1HKNNUM        NOT   =   "027"
-           AND  LNK-SYU-SYUCOMPFTN     NOT   =    ZERO
-             IF  LNK-S01-KOUREI-ZAITAKU-KBN   =   "1"
-                 EVALUATE   COMB-HOJOKBN
-                   WHEN   "1"
-                   WHEN   "4"
-                   WHEN   "9"
-                     MOVE     ZERO     TO     WK-TOKUSYU-COMPFTN
-                     IF    HKN-RECEFTNDSPKBN      =  "2"
-                       MOVE   ZERO     TO     WK-TOKUSYU-COMPFTN2
-                     END-IF
-                     MOVE     ZERO     TO     WK-TOKUSYU-ENTANI
-                 END-EVALUATE
-             END-IF
+           IF  ((LNK-S01-KOUREI-ZAITAKU-KBN   =       "1" ) OR
+                (FLG-KOUREI-KBN               =       "1" ))
+           AND ( COMB-HKNNUM            NOT   =     SPACE  )
+      *
+              MOVE   ZERO   TO   LNK-SYU-KOH-COMPFTN(KOH-IDX)
+                                 LNK-SYU-KOH-COMPFTN-ENTANI(KOH-IDX)
+                                 WK-TOKUSYU-COMPFTN
+                                 WK-TOKUSYU-ENTANI
+      *
+              IF    HKN-RECEFTNDSPKBN    =  "2"
+                   MOVE   ZERO   TO    WK-KOH-COMPFTN(KOH-IDX)
+                                       WK-TOKUSYU-COMPFTN2
+              END-IF
+      *
+              COMPUTE   LNK-SYU-KOH-COMPTOTAL(KOH-IDX)   =
+                        LNK-SYU-KOH-COMPFTN(KOH-IDX)     +
+                        LNK-SYU-KOH-COMPYKZFTN(KOH-IDX)
+      *
            END-IF
       *
            .
