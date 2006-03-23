@@ -3825,30 +3825,6 @@
            END-IF
       *
            MOVE    "08"                TO  WRK-SYORINO
-      *収納請求額のチェックを行う
-           MOVE    SPA-HOSPID          TO  SYU-HOSPID
-      *****MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
-           MOVE    SPA-NAI-TNYUGAIKBN (SPA-GMN-SELBAN)
-                                       TO  SYU-NYUGAIKBN
-           MOVE    SPA-GMN-PTID        TO  SYU-PTID
-           MOVE    SPA-GMN-TDENPNUM (SPA-GMN-SELBAN) (1:7)
-                                       TO  SYU-DENPNUM
-           PERFORM 900-SYUNOU-READ-SEC
-      *     
-           IF      FLG-SYUNOU          =   1
-                   CONTINUE
-           ELSE
-      *収納請求額がゼロならばエラー
-             IF    SYU-SKYMONEY      =  ZERO
-                   MOVE    "0007"     TO    SPA-ERRCD
-                   GO    TO    490-RIREKI-EXT
-             END-IF
-      *収納伝票状態のチェック（請求取消）はエラー
-             IF    SYU-DENPJTIKBN     =     "3"
-                   MOVE    "0007"     TO    SPA-ERRCD
-                   GO    TO    490-RIREKI-EXT
-             END-IF
-           END-IF
       *
       *****MOVE    SPA-GMN-THKNCOMBI(SPA-GMN-SELBAN) TO
       *****                            SPA-HKNCOMBIMEI

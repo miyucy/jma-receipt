@@ -1964,6 +1964,7 @@
             OR   ( SPA-GMN-NYUKIN  =   ZERO )
                CONTINUE
            ELSE
+               MOVE    2           TO  SPA-GMN-CUR
                MOVE    "0013"      TO  SPA-ERRCD
            END-IF
       *

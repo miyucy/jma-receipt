@@ -171,6 +171,7 @@
                        09  SPA-NAI-NYUKIN-MOTO     PIC S9(10).
                        09  SPA-NAI-DENPEDANUM      PIC X(02).
                        09  SPA-NAI-DENPJTIKBN      PIC X(01).
+                       09  SPA-NAI-LASTHENKINFLG   PIC 9(01).
                    07  SPA-NAI-NYKN-HOHOLST-G.
                        09  SPA-NAI-NYKN-HOHOLST    OCCURS  50.
                            11  SPA-NAI-NYKN-HOHOMEIL
@@ -180,6 +181,7 @@
                    07  SPA-NAI-SMEITBL-OCC         OCCURS  50.
                        09  SPA-NAI-TNYKN-HOHO      PIC X(02).
                        09  SPA-NAI-TJOUTAIKBN      PIC X(1).
+                       09  SPA-NAI-TLASTHENKINFLG  PIC 9(1).
                        09  SPA-NAI-TSYORIYMD       PIC X(08).
       *
       *    フラグ領域
@@ -192,6 +194,7 @@
       *
            03  FLG-SMEILIST1-ROW                   PIC 9(01).
            03  FLG-HIZUKE-ERR                      PIC 9(01).
+           03  FLG-TORIKESHI                       PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -463,14 +466,14 @@
       *
            INITIALIZE                  SPA-S03N
       *
+      *    収納項目設定処理
+           PERFORM 3101-SYUNOU-SET-SEC
+      *
       *    コンボ編集処理
            PERFORM 3101-COMBO-SET-SEC
       *
       *    基本項目設定処理
            PERFORM 3101-KHN-SET-SEC
-      *
-      *    収納項目設定処理
-           PERFORM 3101-SYUNOU-SET-SEC
       *
       *    収納明細項目設定処理
            PERFORM 3101-SYUMEI-SET-SEC
@@ -536,16 +539,28 @@
       *
            INITIALIZE                      SPA-GMN-SYORIKBNLST-G
       *
-           MOVE    "1"                 TO  SPA-GMN-SYORIKBNL (1)
-           MOVE    "入金"              TO  SPA-GMN-SYORIKBNMEIL (1)
+           IF    ( SPA-NAI-HEAD-DENPJTIKBN =   "3" )
       *
-           MOVE    "2"                 TO  SPA-GMN-SYORIKBNL (2)
-           MOVE    "履歴修正"          TO  SPA-GMN-SYORIKBNMEIL (2)
+               MOVE    "2"                 TO  SPA-GMN-SYORIKBNL (1)
+               MOVE    "履歴修正"          TO  SPA-GMN-SYORIKBNMEIL (1)
       *
-           MOVE    "3"                 TO  SPA-GMN-SYORIKBNL (3)
-           MOVE    "照会"              TO  SPA-GMN-SYORIKBNMEIL (3)
+               MOVE    "3"                 TO  SPA-GMN-SYORIKBNL (2)
+               MOVE    "照会"              TO  SPA-GMN-SYORIKBNMEIL (2)
       *
-           MOVE    3                   TO  SPA-GMN-SYORIKBN-MAX
+               MOVE    2                   TO  SPA-GMN-SYORIKBN-MAX
+           ELSE
+      *
+               MOVE    "1"                 TO  SPA-GMN-SYORIKBNL (1)
+               MOVE    "入金"              TO  SPA-GMN-SYORIKBNMEIL (1)
+      *
+               MOVE    "2"                 TO  SPA-GMN-SYORIKBNL (2)
+               MOVE    "履歴修正"          TO  SPA-GMN-SYORIKBNMEIL (2)
+      *
+               MOVE    "3"                 TO  SPA-GMN-SYORIKBNL (3)
+               MOVE    "照会"              TO  SPA-GMN-SYORIKBNMEIL (3)
+      *
+               MOVE    3                   TO  SPA-GMN-SYORIKBN-MAX
+           END-IF
       *
            .
        3101-SYORIKBNLST-SET-EXT.
@@ -679,9 +694,6 @@
       *
            END-IF
       *
-           IF    ( SPA-NAI-HEAD-DENPJTIKBN =    "3" )
-               MOVE    SPACE       TO  SPA-GMN-SKYPRT-G
-           END-IF
       *
            .
        3101-SKYPRTLST-SYOKI-EXT.
@@ -710,15 +722,14 @@
       *    処理区分
            EVALUATE    SPA-S01-SYORINO
            WHEN    CONST-PROC-NYUKIN
-               MOVE    SPA-GMN-SYORIKBNLST (1)
-                                       TO  SPA-GMN-SYORIKBN-G
+               MOVE    "1"             TO  WRK-CMB-CD
            WHEN    CONST-PROC-RRKSYU
-               MOVE    SPA-GMN-SYORIKBNLST (2)
-                                       TO  SPA-GMN-SYORIKBN-G
+               MOVE    "2"             TO  WRK-CMB-CD
            WHEN    CONST-PROC-SYOKAI
-               MOVE    SPA-GMN-SYORIKBNLST (3)
-                                       TO  SPA-GMN-SYORIKBN-G
+               MOVE    "3"             TO  WRK-CMB-CD
            END-EVALUATE
+           PERFORM 4200-SYORIKBNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-SYORIKBN-G
       *
            .
        3101-KHN-SET-EXT.
@@ -909,6 +920,7 @@
                INITIALIZE                  SYUMEI-REC
            END-IF
       *
+           MOVE     ZERO               TO  FLG-TORIKESHI
            MOVE     ZERO               TO  IDX1
            PERFORM UNTIL ( FLG-SYUMEI NOT  =   ZERO )
                     OR   ( IDX1           >=   CONST-SMEILIST-MAX )
@@ -942,9 +954,13 @@
       *
                WHEN    "4"
                    MOVE    "返金"      TO  SPA-GMN-TJOUTAI (IDX1)
+                   IF    ( FLG-TORIKESHI       =   1 )
+                       MOVE    1       TO  SPA-NAI-TLASTHENKINFLG (IDX1)
+                   END-IF
       *
                WHEN    "5"
                    MOVE    "請求取消"  TO  SPA-GMN-TJOUTAI (IDX1)
+                   MOVE    1           TO  FLG-TORIKESHI
       *
                WHEN    "6"
                    MOVE    "入金取消"  TO  SPA-GMN-TJOUTAI (IDX1)
@@ -1284,14 +1300,20 @@
            WHEN    CONST-PROC-RRKSYU
                MOVE    SPA-GMN-NYUKIN      TO  S03N-NYUKINGK2
                MOVE    SPA-GMN-NYUKINYMD   TO  S03N-NYUKINYMD
-               MOVE    SPA-GMN-NYKN-HOHO-G TO  S03N-NYUKINHOUHOU
-               MOVE    SPA-GMN-NYKN-HOHO-MAX
+      *
+               IF    ( SPA-S01-SYORINO     =   CONST-PROC-RRKSYU )
+                AND  ( SPA-NAI-DENPJTIKBN  =   "4" OR "6" )
+                   CONTINUE
+               ELSE
+                   MOVE    SPA-GMN-NYKN-HOHO-G TO  S03N-NYUKINHOUHOU
+                   MOVE    SPA-GMN-NYKN-HOHO-MAX
                                            TO  S03N-NYUKINHOUHOU-COUNT
-               PERFORM VARYING IDX0    FROM    1   BY  1
-                       UNTIL ( IDX0    >   SPA-GMN-NYKN-HOHO-MAX )
-                   MOVE    SPA-GMN-NYKN-HOHOLST (IDX0)
+                   PERFORM VARYING IDX0    FROM    1   BY  1
+                           UNTIL ( IDX0    >   SPA-GMN-NYKN-HOHO-MAX )
+                       MOVE    SPA-GMN-NYKN-HOHOLST (IDX0)
                                        TO  S03N-NYUKINHOUHOULST(IDX0)
-               END-PERFORM
+                   END-PERFORM
+               END-IF
       *
                MOVE    SPA-GMN-SKYPRT-G    TO  S03N-SKYPRT
                MOVE    SPA-GMN-SKYPRT-MAX  TO  S03N-SKYPRT-COUNT
@@ -1357,6 +1379,14 @@
                                            S03N-NAIYO-STATE
                                            S03N-NAIYOLST-STATE
       *
+           IF    ( SPA-S01-SYORINO     =   CONST-PROC-RRKSYU )
+               IF    ( SPA-NAI-DENPJTIKBN  =   "4" OR "6" )
+                   MOVE    WIDGET-INSENSITIVE
+                                       TO  S03N-NYUKINHOUHOU-STATE
+                                           S03N-NYUKINHOUHOULST-STATE
+               END-IF
+           END-IF
+      *
            IF    ( SPA-S01-SYORINO     =   CONST-PROC-SYOKAI )
                MOVE    WIDGET-INSENSITIVE
                                        TO  S03N-NYUKINGK2-STATE
@@ -1369,23 +1399,19 @@
            END-IF
       *
            IF    ( SPA-NAI-HEAD-DENPJTIKBN =   "3" )
-               MOVE    WIDGET-INSENSITIVE
-                                       TO  S03N-NYUKINGK2-STATE
-                                           S03N-NYUKINYMD-STATE
-                                           S03N-NYUKINHOUHOU-STATE
-                                           S03N-NYUKINHOUHOULST-STATE
-                                           S03N-SKYPRT-STATE
-                                           S03N-SKYPRTLST-STATE
-                                           S03N-B12-STATE
-                                           S03N-NAIYO-STATE
-                                           S03N-NAIYOLST-STATE
-      *
-               MOVE    SPACE               TO  S03N-B03-LABEL
-      *
-           ELSE
       *
                EVALUATE SPA-S01-SYORINO
+               WHEN    CONST-PROC-RRKSYU
+                   MOVE    "照会"          TO  S03N-B03-LABEL
       *
+               WHEN    CONST-PROC-SYOKAI
+                   MOVE    "履歴修正"      TO  S03N-B03-LABEL
+      *
+               WHEN    OTHER
+                   MOVE    "照会"          TO  S03N-B03-LABEL
+               END-EVALUATE
+           ELSE
+               EVALUATE SPA-S01-SYORINO
                WHEN    CONST-PROC-NYUKIN
                    MOVE    "履歴修正"      TO  S03N-B03-LABEL
       *
@@ -1674,7 +1700,11 @@
            PERFORM 4101-SELNUM-CHK-SEC
       *
            IF    ( SPA-ERRCD           =   SPACE )
-               PERFORM 4101-NYUKIN-CHK-SEC
+               IF    ( SPA-NAI-DENPJTIKBN  =   "4" OR  "6" )
+                   PERFORM 4102-NYUKIN-CHK-SEC
+               ELSE
+                   PERFORM 4101-NYUKIN-CHK-SEC
+               END-IF
            END-IF
       *
            IF    ( SPA-ERRCD           =   SPACE )
@@ -1733,21 +1763,40 @@
            END-PERFORM
       *
            IF    ( SPA-S01-SYORINO     =   CONST-PROC-RRKSYU )
-               IF    ( SPA-NAI-DENPJTIKBN  =   "1" OR "2" OR "8" OR "9")
-                   CONTINUE
+               IF    ( SPA-NAI-HEAD-DENPJTIKBN =   "3" )
+                   IF    ( SPA-NAI-LASTHENKINFLG
+                           =   1 )
+                       CONTINUE
+                   ELSE
+      *
+                       MOVE    "0015"  TO  SPA-ERRCD
+                       MOVE    1       TO  SPA-GMN-CUR
+      *
+                       INITIALIZE          SPA-GMN-INPUT-AREA
+                                           SPA-NAI-INPUT-AREA
+      *
+                       MOVE    SPA-SYSYMD  TO  WRK-SYMD
+                       PERFORM 800-SEIWA-HEN-SEC
+                       MOVE    WRK-HENYMDG TO  SPA-GMN-NYUKINYMD
+                       MOVE    WRK-SYMD    TO  SPA-NAI-NYUKINYMD
+                   END-IF
                ELSE
+                   IF    ( SPA-NAI-DENPJTIKBN
+                           =   "1" OR "2" OR "8" OR "4" OR "6" OR "9" )
+                       CONTINUE
+                   ELSE
       *
-                   MOVE    "0009"  TO  SPA-ERRCD
-                   MOVE    1       TO  SPA-GMN-CUR
+                       MOVE    "0009"  TO  SPA-ERRCD
+                       MOVE    1       TO  SPA-GMN-CUR
       *
-                   INITIALIZE          SPA-GMN-INPUT-AREA
-                                       SPA-NAI-INPUT-AREA
+                       INITIALIZE          SPA-GMN-INPUT-AREA
+                                           SPA-NAI-INPUT-AREA
       *
-                   MOVE    SPA-SYSYMD  TO  WRK-SYMD
-                   PERFORM 800-SEIWA-HEN-SEC
-                   MOVE    WRK-HENYMDG TO  SPA-GMN-NYUKINYMD
-                   MOVE    WRK-SYMD    TO  SPA-NAI-NYUKINYMD
-      *
+                       MOVE    SPA-SYSYMD  TO  WRK-SYMD
+                       PERFORM 800-SEIWA-HEN-SEC
+                       MOVE    WRK-HENYMDG TO  SPA-GMN-NYUKINYMD
+                       MOVE    WRK-SYMD    TO  SPA-NAI-NYUKINYMD
+                   END-IF
                END-IF
            END-IF
       *
@@ -1829,12 +1878,31 @@
       *
            IF    ( SPA-ERRCD       =   SPACE )
                IF    ( SPA-S01-SYORINO     =   CONST-PROC-RRKSYU )
-                   IF    ( SPA-NAI-TJOUTAIKBN (SPA-GMN-SELNUM)
-                                           =   "1" OR "2" OR "8" OR "9")
-                       CONTINUE
+                   IF    ( SPA-NAI-HEAD-DENPJTIKBN =   "3" )
+                       IF    ( SPA-NAI-TLASTHENKINFLG(SPA-GMN-SELNUM)
+                           =   1 )
+                           CONTINUE
+                       ELSE
+      *
+                           MOVE    "0015"  TO  SPA-ERRCD
+                           MOVE    1       TO  SPA-GMN-CUR
+      *
+                           INITIALIZE          SPA-GMN-INPUT-AREA
+                                               SPA-NAI-INPUT-AREA
+      *
+                           MOVE    SPA-SYSYMD  TO  WRK-SYMD
+                           PERFORM 800-SEIWA-HEN-SEC
+                           MOVE    WRK-HENYMDG TO  SPA-GMN-NYUKINYMD
+                           MOVE    WRK-SYMD    TO  SPA-NAI-NYUKINYMD
+                       END-IF
                    ELSE
-                       MOVE    "0009"  TO  SPA-ERRCD
-                       MOVE    1       TO  SPA-GMN-CUR
+                       IF    ( SPA-NAI-TJOUTAIKBN (SPA-GMN-SELNUM)
+                           =   "1" OR "2" OR "8" OR "4" OR "6" OR "9" )
+                           CONTINUE
+                       ELSE
+                           MOVE    "0009"  TO  SPA-ERRCD
+                           MOVE    1       TO  SPA-GMN-CUR
+                       END-IF
                    END-IF
                END-IF
            END-IF
@@ -1864,6 +1932,8 @@
                                        TO  SPA-NAI-DENPEDANUM
            MOVE    SPA-NAI-TJOUTAIKBN(SPA-GMN-SELNUM)
                                        TO  SPA-NAI-DENPJTIKBN
+           MOVE    SPA-NAI-TLASTHENKINFLG(SPA-GMN-SELNUM)
+                                       TO  SPA-NAI-LASTHENKINFLG
       *
            .
        41001-INPUT-AREA-HEN-EXT.
@@ -1931,6 +2001,13 @@
            END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
+               IF    ( SPA-GMN-NYUKIN  <  ZERO )
+                   MOVE    2       TO  SPA-GMN-CUR
+                   MOVE    "0014"  TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
                IF    ( WRK-NYUKIN  <  ZERO )
                    MOVE    2       TO  SPA-GMN-CUR
                    MOVE    "0008"  TO  SPA-ERRCD
@@ -1950,6 +2027,22 @@
       *
            .
        4101-NYUKIN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    入金額チェック処理（入金取消、返金の履歴修正）
+      *****************************************************************
+       4102-NYUKIN-CHK-SEC             SECTION.
+      *
+           IF    ( SPA-GMN-NYUKIN  =   SPA-NAI-NYUKIN-MOTO )
+            OR   ( SPA-GMN-NYUKIN  =   ZERO )
+               CONTINUE
+           ELSE
+               MOVE    2           TO  SPA-GMN-CUR
+               MOVE    "0013"      TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       4102-NYUKIN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    入金日チェック処理
@@ -2258,6 +2351,7 @@
                END-IF
            END-IF
       *
+      *
            IF    ( SPA-ERRCD           =   SPACE )
                IF    ( SPA-GMN-NYKN-HOHO-G =   SPACE )
                    MOVE    4           TO  SPA-GMN-CUR
@@ -2286,9 +2380,13 @@
            END-IF
       *
            IF    ( SPA-ERRCD           =   SPACE )
-               IF    ( SPA-GMN-NYKN-HOHO-G =   SPACE )
-                   MOVE    4           TO  SPA-GMN-CUR
-                   MOVE    "0004"      TO  SPA-ERRCD
+               IF    ( SPA-NAI-DENPJTIKBN  =   "4" OR "6" )
+                   CONTINUE
+               ELSE
+                   IF    ( SPA-GMN-NYKN-HOHO-G =   SPACE )
+                       MOVE    4           TO  SPA-GMN-CUR
+                       MOVE    "0004"      TO  SPA-ERRCD
+                   END-IF
                END-IF
            END-IF
       *
@@ -2348,10 +2446,14 @@
       *
                COMPUTE SYU-NYUKIN-KAISU    =   SYU-NYUKIN-KAISU    +   1
       *
-               IF    ( SYU-SKYMONEY    >   SYU-NYUKIN-TOTAL )
-                   MOVE    "2"             TO    SYU-DENPJTIKBN
+               IF    ( SPA-NAI-HEAD-DENPJTIKBN =   "3" )
+                   CONTINUE
                ELSE
-                   MOVE    "1"             TO    SYU-DENPJTIKBN
+                   IF    ( SYU-SKYMONEY    >   SYU-NYUKIN-TOTAL )
+                       MOVE    "2"         TO    SYU-DENPJTIKBN
+                   ELSE
+                       MOVE    "1"         TO    SYU-DENPJTIKBN
+                   END-IF
                END-IF
       *
                PERFORM 800-MCNDATE-SEC
@@ -2530,7 +2632,9 @@
                END-IF
       *
       *        伝票状態区分
-               IF    ( SPA-NAI-DENPJTIKBN  NOT = "8" )
+               IF    ( SPA-NAI-DENPJTIKBN      = "8" OR "4" OR "6" )
+                   CONTINUE
+               ELSE
                    IF    ( SPA-NAI-DENPJTIKBN  = "9" )
                        IF   (  SYU-SKYMONEY    >   SYU-NYUKIN-TOTAL )
                            MOVE    "9"     TO  SMEI-JOUTAIKBN
@@ -2572,7 +2676,20 @@
       **************************************************************
        430-SYORIKBN-SEC                SECTION.
       *
-           IF    ( SPA-NAI-HEAD-DENPJTIKBN NOT =   "3" )
+           IF    ( SPA-NAI-HEAD-DENPJTIKBN =   "3" )
+      *
+               EVALUATE SPA-S01-SYORINO
+      *
+               WHEN    CONST-PROC-RRKSYU
+               MOVE    CONST-PROC-SYOKAI   TO  SPA-S01-SYORINO
+      *
+               WHEN    CONST-PROC-SYOKAI
+               MOVE    CONST-PROC-RRKSYU   TO  SPA-S01-SYORINO
+      *
+               WHEN    OTHER
+               MOVE    CONST-PROC-SYOKAI   TO  SPA-S01-SYORINO
+               END-EVALUATE
+           ELSE
       *
                EVALUATE SPA-S01-SYORINO
       *
@@ -2588,12 +2705,11 @@
                WHEN    OTHER
                MOVE    CONST-PROC-SYOKAI   TO  SPA-S01-SYORINO
                END-EVALUATE
-      *
-               PERFORM 4200-SPA-SET-SEC
-      *
-               MOVE    1               TO  FLG-SMEILIST1-ROW
-      *
            END-IF
+      *
+           PERFORM 4200-SPA-SET-SEC
+      *
+           MOVE    1               TO  FLG-SMEILIST1-ROW
       *
            .
        430-SYORIKBN-EXT.
@@ -2652,6 +2768,27 @@
            EXIT.
       *
       *
+      *****************************************************************
+      *    処理区分コンボチェック処理
+      *****************************************************************
+       4200-SYORIKBNLST-CHK-SEC        SECTION.
+      *
+           MOVE    SPACE               TO  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+               UNTIL ( IDX-CMB         >   SPA-GMN-SYORIKBN-MAX )
+                OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+                IF   ( WRK-CMB-CD  =   SPA-GMN-SYORIKBNL (IDX-CMB) )
+                    MOVE    SPA-GMN-SYORIKBNLST (IDX-CMB)
+                                   TO  WRK-CMB-ITM
+                END-IF
+      *
+           END-PERFORM
+      *
+           .
+       4200-SYORIKBNLST-CHK-EXT.
+           EXIT.
       *****************************************************************
       *    入金コンボチェック処理
       *****************************************************************
@@ -2750,6 +2887,15 @@
                                        TO  SPA-ERRMSG
            WHEN    "0012"
                MOVE    "入金日を入力してください"
+                                       TO  SPA-ERRMSG
+           WHEN    "0013"
+               MOVE    "入金額は０円への変更のみ可能です"
+                                       TO  SPA-ERRMSG
+           WHEN    "0014"
+               MOVE    "入金額が０円を下回ります"
+                                       TO  SPA-ERRMSG
+           WHEN    "0015"
+               MOVE    "請求取消後の返金データのみ修正可能です"
                                        TO  SPA-ERRMSG
            WHEN    "1001"
            WHEN    "1002"
