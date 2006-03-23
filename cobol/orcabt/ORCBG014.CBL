@@ -1061,7 +1061,6 @@
       *
            MOVE    ZERO                TO  FLG-TOKEI
            MOVE    ZERO                TO  WRK-RENNUM
-           MOVE    "                   A"  TO  RECE10-PTNUM
       *
       *    患者連番最大９まで
            PERFORM UNTIL ( FLG-TOKEI   =    1 )
