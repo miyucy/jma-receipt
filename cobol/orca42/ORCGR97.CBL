@@ -161,11 +161,6 @@
                            11  SPA-NAI-THOJOKBN    PIC X(01).
                            11  SPA-NAI-TRECESYUBETU
                                                    PIC X(04).
-      *
-                   07  SPA-NAI-PTID-TABLE.
-                       09  SPA-NAI-PTID-TBL        OCCURS  100.
-                           11  SPA-NAI-ST-PTID     PIC 9(10).
-                           11  SPA-NAI-ST-PTNUM    PIC X(20).
       *        入力項目名
                05  SPA-MCP-WIDGET                  PIC X(64).
       *
@@ -446,12 +441,9 @@
                    PERFORM 330-RID1-SET-SEC
                    GO      TO      300-SCREEN-EXT
                WHEN    "R99"
-                   INITIALIZE          SPA-GMN-SYUKA-TABLE
-                                       SPA-GMN-PTNUM-TABLE
-                                       SPA-NAI-SYUKA-TABLE
-                                       SPA-GMN-KOUMOKU
-                                       SPA-NAI-KOUMOKU
-                   MOVE    5           TO  SPA-GMN-CUR
+      *            検索処理
+                   MOVE    1                   TO  SPA-GMN-PAGE
+                   PERFORM 3101-SYUKA-HENSYU-SEC     
                    GO      TO      300-SCREEN-EXT
            END-EVALUATE
       *
@@ -1375,6 +1367,12 @@
                GO  TO  41023-SRYYM-CHK-EXT
            END-IF
       *
+           INITIALIZE                  SPA-GMN-SYUKA-TABLE
+                                       SPA-GMN-PTNUM-TABLE
+                                       SPA-NAI-SYUKA-TABLE
+                                       SPA-GMN-KOUMOKU
+                                       SPA-NAI-KOUMOKU
+      *
            MOVE    5                  TO  SPA-GMN-CUR
            .
        41023-SRYYM-CHK-EXT.
@@ -1409,9 +1407,17 @@
                                        =   SPACE
                MOVE    "0008"              TO  SPA-ERRCD
            ELSE
-               MOVE    6                   TO  SPA-GMN-CUR
                MOVE    SPA-GMN-NYUGAIKBNMEI 
                                            TO  SPA-NAI-NYUGAIKBN
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+               INITIALIZE                  SPA-GMN-SYUKA-TABLE
+                                           SPA-GMN-PTNUM-TABLE
+                                           SPA-NAI-SYUKA-TABLE
+                                           SPA-GMN-KOUMOKU
+                                           SPA-NAI-KOUMOKU
+               MOVE    6                   TO  SPA-GMN-CUR
            END-IF
       *             
            .
@@ -1445,7 +1451,14 @@
            IF      SPA-GMN-HYOUJIKBNMEI
                                        =   SPACE
                MOVE    "0009"              TO  SPA-ERRCD
-           ELSE
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+               INITIALIZE                  SPA-GMN-SYUKA-TABLE
+                                           SPA-GMN-PTNUM-TABLE
+                                           SPA-NAI-SYUKA-TABLE
+                                           SPA-GMN-KOUMOKU
+                                           SPA-NAI-KOUMOKU
                MOVE    91                  TO  SPA-GMN-CUR
            END-IF
       *             
@@ -1615,7 +1628,6 @@
                MOVE    WRK-HENYMDG3(1:16)  TO  SPA-NAI-SRYYMH
       *
                MOVE    1                   TO  SPA-GMN-PAGE
-               INITIALIZE                      SPA-NAI-PTID-TABLE
       *     
                PERFORM 3101-SYUKA-HENSYU-SEC
            END-IF
@@ -1697,7 +1709,6 @@
                MOVE    WRK-HENYMDG3(1:16)  TO  SPA-NAI-SRYYMH
       *
                MOVE    1                   TO  SPA-GMN-PAGE
-               INITIALIZE                      SPA-NAI-PTID-TABLE
       *     
                PERFORM 3101-SYUKA-HENSYU-SEC
            END-IF
@@ -1717,8 +1728,6 @@
            END-IF
       *
            MOVE    1                   TO  SPA-GMN-PAGE
-      *
-           INITIALIZE                      SPA-NAI-PTID-TABLE
       *
       *    該当診療月の主科情報編集処理
            PERFORM 3101-SYUKA-HENSYU-SEC     
