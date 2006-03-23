@@ -267,6 +267,7 @@
            COPY    "CPSK5000.INC".
            COPY    "CPSK5001.INC".
            COPY    "CPSK5002.INC".
+           COPY    "CPSK2009.INC".
       *
       *    患者情報
        01  PTINF-REC.
@@ -463,6 +464,7 @@
                PERFORM     910-SYSKANRI-READ-SEC
                    IF    FLG-SYSKANRI  =   ZERO
                          MOVE    SYS-1001-HOSPID  TO  WRK-HOSPID
+                                                      SPA-HOSPID
                          MOVE    SYS-1001-PREFNUM TO  SPA-PREFNUM
                    ELSE
                          MOVE  "医療機関情報が取得できませんでした。"
@@ -475,6 +477,43 @@
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  100-INIT-EXT
+           END-IF
+      *
+           MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+      *    主科情報取得
+           INITIALIZE                      SYS-2009-REC
+           MOVE    "2009"              TO  SYS-2009-KANRICD
+           MOVE    "*"                 TO  SYS-2009-KBNCD
+           MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)
+           MOVE    "01"                TO  ORC-DBYMD (7:2)
+           MOVE    SYS-2009-REC        TO  MCPDATA-REC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-2009-REC
+               IF      SYS-2009-SYUKA-KBN  =  "1"
+                   MOVE   "1"          TO  SPA-SYUKA-KBN
+                   DISPLAY "SYS-2009-SYUKA-NYUIN = "
+                            SYS-2009-SYUKA-NYUIN
+                   MOVE   SYS-2009-SYUKA-NYUIN
+                                       TO  SPA-SYUKA-NYUIN
+                   MOVE   SYS-2009-SYUKA-MODE
+                                       TO  SPA-SYUKA-MODE
+                   MOVE   SYS-2009-SYUKA-SELECT
+                                       TO  SPA-SYUKA-SELECT
+               END-IF
            END-IF
       *
            MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
@@ -2740,6 +2779,7 @@
            PERFORM 910-PTINF-SELECT-SEC
            PERFORM 910-PTINF-READ-SEC
            MOVE    PTINF-BIRTHDAY      TO  AGECHK-BIRTHDAY
+                                           SPA-BIRTHDAY
            CALL    "ORCSAGECHK"        USING
                                            ORCSAGECHKAREA
            IF    ( AGECHK-RC           =   ZERO )
