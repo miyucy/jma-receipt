@@ -44,6 +44,7 @@
       *  02.00.01    NACL-多々納  03/12/19  入力ＣＤのみ変更可能へ
       *  02.00.02    NACL-多々納  05/12/09  登録コードチェック追加
       *                                     MONFUNC対応 他
+      *  02.00.03    NACL-多々納  06/03/23  Ｈ１８／４改正対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -233,7 +234,7 @@
            03  FILLER          PIC X(32)  VALUE   "2 TUSOKUGAIKBN".
            03  FILLER          PIC X(32)  VALUE   "2 LASERKSN".
            03  FILLER          PIC X(32)  VALUE   "2 CHPMESUKSN".
-           03  FILLER          PIC X(32)  VALUE   "2 MICMESUKSN".
+           03  FILLER          PIC X(32)  VALUE   "2 DONORKBN".
            03  FILLER          PIC X(32)  VALUE   "2 SEKIZUISOKUTEI".
            03  FILLER          PIC X(32)  VALUE   "2 KEIBUJYUTU".
            03  FILLER          PIC X(32)  VALUE   "2 AUTOHOUGO".
@@ -255,6 +256,7 @@
            03  FILLER          PIC X(32)  VALUE   "2 NYUKHNKSNKBN".
            03  FILLER          PIC X(32)  VALUE   "2 KANGOKSN".
            03  FILLER          PIC X(32)  VALUE   "2 CHIIKIKSN".
+           03  FILLER          PIC X(32)  VALUE   "2 MICMESUKSN".
       *各番号等
            03  FILLER          PIC X(32)  VALUE   "3 SSTKIJUNCD1".
            03  FILLER          PIC X(32)  VALUE   "3 SSTKIJUNCD2".
@@ -287,13 +289,13 @@
       *
        01  TBL-GMN-JUN-R       REDEFINES   TBL-GMN-JUN.
       *****03  TBL-GMN-OCC                 OCCURS  107
-           03  TBL-GMN-OCC                 OCCURS  108
+           03  TBL-GMN-OCC                 OCCURS  109
                                            INDEXED  IDX-GMN.
                05  TBL-PAGE                PIC 9(01).
                05  TBL-YOBI1               PIC X(01).
                05  TBL-WIDGET              PIC X(30).
       *
-       01  TBL-GMN-MAX                     PIC 9(04)   VALUE   108.
+       01  TBL-GMN-MAX                     PIC 9(04)   VALUE   109.
       *
       *    単位の項目順テーブル
            COPY    "CMTANICD.INC".
@@ -855,6 +857,7 @@
            MOVE  TNS-TUSOKUGAIKBN          TO  SPA-GMN-TUSOKUGAIKBN    
            MOVE  TNS-LASERKBN              TO  SPA-GMN-LASERKSN        
            MOVE  TNS-CHPMESUKSN            TO  SPA-GMN-CHPMESUKSN      
+           MOVE  TNS-DONORKBN              TO  SPA-GMN-DONORKBN      
            MOVE  TNS-MICMESUKSN            TO  SPA-GMN-MICMESUKSN      
            MOVE  TNS-SEKIZUISOKUTEI        TO  SPA-GMN-SEKIZUISOKUTEI  
            MOVE  TNS-KEIBUJYUTU            TO  SPA-GMN-KEIBUJYUTU      
@@ -1592,11 +1595,13 @@
       *
       *        通則加算対象外
            MOVE    Z03-TUSOKUGAIKBN    TO  SPA-GMN-TUSOKUGAIKBN
-      *        レーザー照射
+      *        処置乳幼児加算（レーザー照射）
            MOVE    Z03-LASERKSN        TO  SPA-GMN-LASERKSN
-      *        超音波メス
+      *        極低出生体重児加算（超音波メス）
            MOVE    Z03-CHPMESUKSN      TO  SPA-GMN-CHPMESUKSN
-      *        マイクロ波メス
+      *        ドナー分集計区分
+           MOVE    Z03-DONORKBN        TO  SPA-GMN-DONORKBN 
+      *        入院基本料減算（マイクロ波メス）
            MOVE    Z03-MICMESUKSN      TO  SPA-GMN-MICMESUKSN 
       *        脊髄測定
            MOVE    Z03-SEKIZUISOKUTEI  TO  SPA-GMN-SEKIZUISOKUTEI
@@ -1888,8 +1893,10 @@
                WHEN    "LASERKSN"
       *        超音波メス
                WHEN    "CHPMESUKSN"
-      *        マイクロ波メス
+      *        ドナー分集計区分
                WHEN    "MICMESUKSN"
+      *        マイクロ波メス
+               WHEN    "DONORKBN"
       *        脊髄測定
                WHEN    "SEKIZUISOKUTEI"
       *        頸部術
@@ -3582,6 +3589,8 @@
       *
            MOVE  SPA-GMN-MICMESUKSN            TO  TNS-MICMESUKSN      
       *
+           MOVE  SPA-GMN-DONORKBN              TO  TNS-DONORKBN      
+      *
            MOVE  SPA-GMN-SEKIZUISOKUTEI        TO  TNS-SEKIZUISOKUTEI  
       *
            MOVE  SPA-GMN-KEIBUJYUTU            TO  TNS-KEIBUJYUTU      
@@ -3982,6 +3991,7 @@
            MOVE  SPA-GMN-LASERKSN              TO  Z03-LASERKSN        
            MOVE  SPA-GMN-CHPMESUKSN            TO  Z03-CHPMESUKSN      
            MOVE  SPA-GMN-MICMESUKSN            TO  Z03-MICMESUKSN      
+           MOVE  SPA-GMN-DONORKBN              TO  Z03-DONORKBN      
            MOVE  SPA-GMN-SEKIZUISOKUTEI        TO  Z03-SEKIZUISOKUTEI  
            MOVE  SPA-GMN-KEIBUJYUTU            TO  Z03-KEIBUJYUTU      
            MOVE  SPA-GMN-AUTOHOUGO             TO  Z03-AUTOHOUGO       
