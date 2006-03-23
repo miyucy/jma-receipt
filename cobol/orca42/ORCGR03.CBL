@@ -1599,9 +1599,10 @@
                END-IF  
       *
       *        一括作成で社保処理のとき主科設定の有無チェック
-               IF    ( SPA-R01-FILEKBN         =   "1"         )
-               AND   ( SPA-R01-RECEKBN         =   "0" OR  "1" )
-               AND   ( SPA-SYUKA-KBN           =   "1"         )
+      **       IF    ( SPA-R01-FILEKBN         =   "1"         )
+      **       AND   ( SPA-R01-RECEKBN         =   "0" OR  "1" )
+      **       AND   ( SPA-SYUKA-KBN           =   "1"         )
+               IF    ( SPA-SYUKA-KBN           =   "1"         )
                    MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
                    MOVE    "key6"              TO  WRK-MCP-PATHNAME
                    MOVE    "1"                 TO  RECE07-TEISYUTUSAKI
@@ -2136,8 +2137,14 @@
                IF      R99-COUNT            >   ZERO    
                    MOVE    WIDGET-NORMAL        TO  R99-B12-STATE
                    MOVE    "B12"                TO  MCP-WIDGET
-                   MOVE    "処理は正常に終了しました"
+                   IF      SPA-R01-RECE07-SRYKA    =   "XX"
+                       MOVE
+                      "処理は正常に終了しましたが主科未設定分があります"
                                                 TO  R99-MSG
+                   ELSE
+                       MOVE    "処理は正常に終了しました"
+                                                TO  R99-MSG
+                   END-IF
                    MOVE   100                   TO
                                                 R99-PROGRESSBAR-VALUE
                ELSE
