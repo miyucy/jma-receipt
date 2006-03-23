@@ -50,6 +50,7 @@
       *  02.00.11    NACL-多々納  05/11/14  MONFUNC 対応他
       *  02.00.12    NACL-門脇    06/02/24  053児童保護、019原爆に関する
       *                                     組合せ追加
+      *  02.00.13    NACL-門脇    06/03/23  021精神通院に関する編集修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4262,6 +4263,20 @@
                  MOVE    "3"            TO  WRK-FTN-FLG
              END-IF
            END-IF
+      *
+           IF  ((WRK-KCOMB-KOH1-HKNKOHSBTKBN (IDX2)  =  "3" ) AND
+                (WRK-KCOMB-KOH2HKNNUM (IDX2)         = "021"))
+           OR  ( WRK-KCOMB-KOH1HKNNUM (IDX2)         = "021" )
+              IF  (WRK-GAI-KBN (1)         =   "2")  AND
+                  (WRK-GAI-KBN (2)         =   "2")  AND
+                  (WRK-GAI-KBN (3)         =   "2")  AND
+                  (WRK-NYU-KBN (1)         =   "0")  AND
+                  (WRK-NYU-KBN (2)         =   "0")  AND
+                  (WRK-NYU-KBN (3)         =   "0")
+                 MOVE    "3"            TO  WRK-FTN-FLG
+              END-IF
+           END-IF
+      *
            .
        5701411-FUKA-HANTEI-EXT.
            EXIT.
