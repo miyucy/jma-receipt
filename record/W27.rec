@@ -106,5 +106,20 @@ W27	{
 			label	varchar(80);
 			state	int;
 		};
+		CHK_KSN13	{
+			value	bool;
+			label	varchar(80);
+			state	int;
+		};
+		CHK_KSN14	{
+			value	bool;
+			label	varchar(80);
+			state	int;
+		};
+		CHK_KSN15	{
+			value	bool;
+			label	varchar(80);
+			state	int;
+		};
 	};
 };

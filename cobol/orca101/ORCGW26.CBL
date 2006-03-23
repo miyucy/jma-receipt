@@ -1447,6 +1447,8 @@
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
+           INITIALIZE                          W26
+      *
       *    有効開始日
            MOVE    SPA-GMN-W26-STYUKYMD    TO  W26-STYUKYMD
       *    有効終了日

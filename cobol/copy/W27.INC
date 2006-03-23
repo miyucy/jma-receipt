@@ -43,7 +43,7 @@
               04  W27-STBRMNUM             PIC X(6).
               04  W27-EDBRMNUM             PIC X(6).
               04  W27-KJNYMD               PIC X(10).
-              03  W27-CHK-KSN-OCC          OCCURS 12.
+              03  W27-CHK-KSN-OCC          OCCURS 15.
                 04  W27-CHK-KSN            PIC X(01).
                 04  W27-CHK-KSN-LBL        PIC X(80).
                 04  W27-CHK-KSN-STATE      PIC S9(9)   BINARY.

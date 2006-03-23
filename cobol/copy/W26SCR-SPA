@@ -119,10 +119,10 @@
                  11  SPA-GMN-W27-EDBRMNUM              PIC X(6).
                  11  SPA-GMN-W27-KSNNAME-G.
                      13  SPA-GMN-W27-KSNNAME           PIC X(80)
-                                                       OCCURS  12.
+                                                       OCCURS  15.
                  11  SPA-GMN-W27-CHK-KSN-G.
                      13  SPA-GMN-W27-CHK-KSN           PIC X(01)
-                                                       OCCURS  12.
+                                                       OCCURS  15.
       *        ´ð½àÆü
                09    SPA-GMN-W27-KJNYMD-AREA.
                  11  SPA-GMN-W27-KJNYMD                PIC X(10).
@@ -168,7 +168,7 @@
                  11  SPA-NAI-W27-STSELNUM              PIC S9(3).
                  11  SPA-NAI-W27-EDSELNUM              PIC S9(3).
                  11  SPA-NAI-W27-CHK-KSN-G.
-                     13  SPA-NAI-W27-CHK-KSN-OCC           OCCURS 12.
+                     13  SPA-NAI-W27-CHK-KSN-OCC           OCCURS 15.
                          15   SPA-NAI-W27-CHK-KSN-SRYCD    PIC X(09).
                          15   SPA-NAI-W27-CHK-KSN-KSNKBN   PIC X(03).
       *

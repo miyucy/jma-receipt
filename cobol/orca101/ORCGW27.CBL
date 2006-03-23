@@ -165,7 +165,7 @@
       *    固定値領域
        01  CONST-AREA.
            03  CONST-H180401               PIC X(08) VALUE "20060401".
-           03  CONST-KSN-MAX               PIC 9(03) VALUE  12.
+           03  CONST-KSN-MAX               PIC 9(03) VALUE  15.
            03  CONST-SYSKSN-MAX            PIC 9(03) VALUE  12.
            03  CONST-BTUNAME-MAX           PIC 9(03) VALUE  50.
            03  CONST-KSN-AREA.
@@ -183,9 +183,12 @@
                        09                  PIC X(09) VALUE "190105870".
                        09                  PIC X(09) VALUE "190105970".
                        09                  PIC X(09) VALUE "190106570".
+                       09                  PIC X(09) VALUE "         ".
+                       09                  PIC X(09) VALUE "         ".
+                       09                  PIC X(09) VALUE "         ".
                    07  CONST-KSN-H1804-R
                                        REDEFINES   CONST-KSN-H1804-VAL.
-                       09  CONST-KSN-H1804 PIC X(09) OCCURS 12.
+                       09  CONST-KSN-H1804 PIC X(09) OCCURS 15.
                05  CONST-KSN-G.
                    07  CONST-KSN-VAL.
                        09                  PIC X(09) VALUE "190109770".
@@ -200,8 +203,11 @@
                        09                  PIC X(09) VALUE "190105970".
                        09                  PIC X(09) VALUE "190106570".
                        09                  PIC X(09) VALUE "         ".
+                       09                  PIC X(09) VALUE "         ".
+                       09                  PIC X(09) VALUE "         ".
+                       09                  PIC X(09) VALUE "         ".
                    07  CONST-KSN-R     REDEFINES   CONST-KSN-VAL.
-                       09  CONST-KSN-SRYCD PIC X(09) OCCURS 12.
+                       09  CONST-KSN-SRYCD PIC X(09) OCCURS 15.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -562,7 +568,7 @@
                PERFORM 480-TOUROKU-SEC
       *    入院加算情報
            WHEN    "CLICKED"       ALSO    "CHK_KSN01"
-                                   THRU    "CHK_KSN12"
+                                   THRU    "CHK_KSN15"
       *
       *        入力個所のセット
                PERFORM 400-GMN-INPUT-SEC
@@ -1061,7 +1067,7 @@
       *
            MOVE   SPACE        TO  SPA-GMN-W27-STBRMNUM
            MOVE   SPACE        TO  SPA-GMN-W27-STBRMNUM2
-           MOVE    ZERO        TO  SPA-NAI-W27-STSELNUM
+           MOVE   ZERO         TO  SPA-NAI-W27-STSELNUM
                                    SPA-NAI-W27-EDSELNUM
       *
            MOVE   W27-STSELNUM TO  SPA-GMN-W27-STSELNUM
@@ -1080,9 +1086,6 @@
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4100-STSELNUM-CHK-EXT
            END-IF
-      *
-           MOVE    SPA-GMN-W27-STSELNUM    TO  SPA-NAI-W27-STSELNUM
-           MOVE    SPA-GMN-W27-EDSELNUM    TO  SPA-NAI-W27-EDSELNUM
       *
            MOVE    ZERO        TO   SPA-GMN-W27-CUR
       *
@@ -1256,6 +1259,9 @@
                END-EVALUATE
       *
            END-PERFORM
+      *
+           MOVE    SPA-GMN-W27-STSELNUM    TO  SPA-NAI-W27-STSELNUM
+           MOVE    SPA-GMN-W27-EDSELNUM    TO  SPA-NAI-W27-EDSELNUM
       *
            .
       *
@@ -1815,7 +1821,6 @@
             AND  ( FLG-190106470   =   1 )
       *
                MOVE    "1005"  TO  SPA-ERRCD
-               MOVE    5       TO  SPA-GMN-W27-CUR
                GO  TO  4900-KANRENCHK-EXT
       *
            END-IF
@@ -1852,7 +1857,6 @@
             AND  ( FLG-190105970   =   1 )
       *
                MOVE    "1007"  TO  SPA-ERRCD
-               MOVE    12       TO  SPA-GMN-W27-CUR
                GO  TO  4900-KANRENCHK-EXT
       *
            END-IF
@@ -1889,6 +1893,8 @@
       *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
+      *
+           INITIALIZE                          W27
       *
       *    病棟名称
            MOVE    SPA-GMN-W27-BTUNUM-G    TO  W27-BTU-NAME
@@ -1940,14 +1946,15 @@
                INITIALIZE                  WRK-DSPSELNUM-G
                MOVE    SPA-GMN-W27-TSELNUM (IDX1)
                                            TO  WRK-DSPSELNUM
-               IF    ( SPA-NAI-W27-EDSELNUM    >   SPA-NAI-W27-STSELNUM)
+               IF    ( SPA-NAI-W27-STSELNUM    >   ZERO )
+                AND  ( SPA-NAI-W27-EDSELNUM    >   ZERO )
+                AND  ( SPA-NAI-W27-EDSELNUM    >   SPA-NAI-W27-STSELNUM)
                    IF    ( SPA-GMN-W27-TSELNUM (IDX1)
                                                >=  SPA-NAI-W27-STSELNUM)
                     AND  ( SPA-GMN-W27-TSELNUM (IDX1)
                                                <=  SPA-NAI-W27-EDSELNUM)
                     AND  ( SPA-GMN-W27-TYUKO-FLG (IDX1)
                                            =   1 )
-
                        MOVE    "*"         TO  WRK-DSPMARK
                    END-IF
                END-IF
@@ -2037,6 +2044,8 @@
                PERFORM 5011-INPUT-CUR-SEC
            END-IF
       *
+           PERFORM 5012-SKIP-CUR-SEC
+      *
            EVALUATE    SPA-GMN-W27-CUR
            WHEN    001
                MOVE    "BTU_NAME"          TO  MCP-WIDGET
@@ -2068,6 +2077,12 @@
                MOVE    "CHK_KSN11"         TO  MCP-WIDGET
            WHEN    015
                MOVE    "CHK_KSN12"         TO  MCP-WIDGET
+           WHEN    016
+               MOVE    "CHK_KSN13"         TO  MCP-WIDGET
+           WHEN    017
+               MOVE    "CHK_KSN14"         TO  MCP-WIDGET
+           WHEN    018
+               MOVE    "CHK_KSN15"         TO  MCP-WIDGET
            WHEN    100
                MOVE    "KJNYMD"            TO  MCP-WIDGET
            WHEN    212
@@ -2140,6 +2155,12 @@
            WHEN    "CHK_KSN11"
                MOVE    015             TO  SPA-GMN-W27-CUR
            WHEN    "CHK_KSN12"
+               MOVE    016             TO  SPA-GMN-W27-CUR
+           WHEN    "CHK_KSN13"
+               MOVE    017             TO  SPA-GMN-W27-CUR
+           WHEN    "CHK_KSN14"
+               MOVE    018             TO  SPA-GMN-W27-CUR
+           WHEN    "CHK_KSN15"
                MOVE    212             TO  SPA-GMN-W27-CUR
            END-EVALUATE
       *
