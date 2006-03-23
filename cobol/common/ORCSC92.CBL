@@ -215,6 +215,9 @@
       *    保険別算定履歴テーブル
            COPY   "CMSANTEITBL.INC".
       *
+      *    酸素コードテーブル
+           COPY     "CMSANSOTBL.INC".
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -2221,6 +2224,10 @@
                                                                (IDX-T)
       *    酸素等区分
            MOVE    TNS-SANSOKBN        TO  SPA-COM-SANSOKBN (IDX-T)
+      *    酸素・窒素の時、酸素区分再設定
+           IF      TNS-TOKUKIZAISBT1    =   2
+               PERFORM 3009-SANSO-CHK-SEC
+           END-IF
       *    特定器材種別１
            MOVE    TNS-TOKUKIZAISBT1   TO  SPA-COM-TOKUKIZAISBT1(IDX-T)
       *    上限点数（器材の上限）
@@ -2295,6 +2302,30 @@
        300-TENSU-HENSYU-EXT.
            EXIT.
       *
+      *****************************************************************
+      *     酸素・窒素の時、酸素区分再設定処理
+      *****************************************************************
+       3009-SANSO-CHK-SEC        SECTION.
+      *
+           SET     TBL-SANSO           TO  1
+           SEARCH      TBL-SANSO-OCC   VARYING   TBL-SANSO
+                   AT  END
+                       MOVE    ZERO            TO  FLG-SANSO-OK
+                   WHEN    TNS-SRYCD       =   TBL-SANSO-SRYCD
+                                                           (TBL-SANSO)
+                       MOVE    1               TO  FLG-SANSO-OK
+           END-SEARCH
+      *
+           IF      FLG-SANSO-OK        =   1
+      *        酸素
+               MOVE    1               TO  SPA-COM-SANSOKBN (IDX-T)
+           ELSE
+      *        窒素
+               MOVE    ZERO            TO  SPA-COM-SANSOKBN (IDX-T)
+           END-IF
+           .
+       3009-SANSO-CHK-EXT.
+           EXIT.
       *
       *****************************************************************
       *     労災・自賠責 編集処理
