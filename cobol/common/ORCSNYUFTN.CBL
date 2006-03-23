@@ -74,6 +74,7 @@
       *  01.00.28    NACL-ÌçÏÆ    06/01/20  É¸·çÂÐ±þ
       *  01.03.01    NACL-ÌçÏÆ    06/03/09  ¤¤¤ï¤­»Ô½Å¿´ÂÐ±þ
       *  01.03.02    NACL-ÌçÏÆ    06/03/20  ¼«Î©»Ù±çË¡ÂÐ±þ
+      *  01.03.03    NACL-¾®Æ¦Âô  06/03/23  Ê¡²¬¸©¤Ç¤ÎÆ±Æü½é¿ÇµëÉÕÂÐ¾Ý³°
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -2996,7 +2997,7 @@
       *        Åö³º´µ¼Ô¤Î½é¿Ç»»ÄêÍúÎò¤ò¥ï¡¼¥¯¥Æ¡¼¥Ö¥ë¤ËÀßÄê
                IF   FLG-KYUFUGAI     =     1
                    PERFORM   VARYING  FUKU-IDX    FROM   1  BY  1
-                             UNTIL    FUKU-IDX    >   6
+                             UNTIL    FUKU-IDX    >   7
                        MOVE        SPACE        TO  SANTEI-REC
                        INITIALIZE                   SANTEI-REC
                        MOVE    SYU-HOSPID       TO  SANTEI-HOSPID
