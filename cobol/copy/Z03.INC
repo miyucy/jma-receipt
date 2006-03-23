@@ -206,7 +206,7 @@
                     06  Z03-VALUE   PIC S9(1).
                   05  Z03-SEKIZUISOKUTEI.
                     06  Z03-VALUE   PIC S9(1).
-                  05  Z03-MICMESUKSN.
+                  05  Z03-DONORKBN.
                     06  Z03-VALUE   PIC S9(1).
                   05  Z03-CHPMESUKSN.
                     06  Z03-VALUE   PIC S9(1).
@@ -238,6 +238,8 @@
                     06  Z03-VALUE   PIC S9(1).
                   05  Z03-KIJUNTEIGENCD.
                     06  Z03-VALUE   PIC S9(3).
+                  05  Z03-MICMESUKSN.
+                    06  Z03-VALUE   PIC S9(1).
                 04  Z03-FIXED12.
                   05  Z03-SSTKIJUNCD1.
                     06  Z03-VALUE   PIC S9(3).

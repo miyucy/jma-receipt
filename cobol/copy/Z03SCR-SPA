@@ -254,6 +254,8 @@
                    07  SPA-GMN-LASERKSN        PIC 9(1).
                    07  SPA-GMN-CHPMESUKSN      PIC 9(1).
                    07  SPA-GMN-MICMESUKSN      PIC 9(1).
+      *            ドナー分集計区分
+                   07  SPA-GMN-DONORKBN        PIC 9(1).
                    07  SPA-GMN-SEKIZUISOKUTEI  PIC 9(1).
                    07  SPA-GMN-KEIBUJYUTU      PIC 9(1).
                    07  SPA-GMN-AUTOHOUGO       PIC 9(1).
