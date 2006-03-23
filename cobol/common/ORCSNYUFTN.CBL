@@ -74,7 +74,6 @@
       *  01.00.28    NACL-ÌçÏÆ    06/01/20  É¸·çÂÐ±þ
       *  01.03.01    NACL-ÌçÏÆ    06/03/09  ¤¤¤ï¤­»Ô½Å¿´ÂÐ±þ
       *  01.03.02    NACL-ÌçÏÆ    06/03/20  ¼«Î©»Ù±çË¡ÂÐ±þ
-      *  01.03.03    NACL-¾®Æ¦Âô  06/03/23  Ê¡²¬¸©¤Ç¤ÎÆ±Æü½é¿ÇµëÉÕÂÐ¾Ý³°
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -318,13 +317,11 @@
            03  FILLER          PIC X(09)   VALUE    "113003510".
       *    ¾®»ù²Ê³°Íè¿ÇÎÅÎÁ¡Ê±¡Æâ½èÊý¡Ë½é¿Ç»þ
            03  FILLER          PIC X(09)   VALUE    "113003710".
-      *    Æ±Æü½é¿Ç
-           03  FILLER          PIC X(09)   VALUE    "111011810".
       *
        01  TBL-SYOSIN-R        REDEFINES   TBL-SYOSIN-AREA.
-           03  TBL-SYOSIN      PIC X(09)   OCCURS    7.
+           03  TBL-SYOSIN      PIC X(09)   OCCURS    6.
       *
-       01  TBL-SYOSIN-MAX      PIC 9(02)   VALUE     7.
+       01  TBL-SYOSIN-MAX      PIC 9(02)   VALUE     6.
       *
       *    Ê¡²¬¸©¸øÈñ¤ÎµëÉÕÂÐ¾Ý³°È½ÄêÍÑ¤Î½é¿ÇÂàÈò¥Æ¡¼¥Ö¥ë
        01  TBL-FUKUOKA.
@@ -2997,7 +2994,7 @@
       *        Åö³º´µ¼Ô¤Î½é¿Ç»»ÄêÍúÎò¤ò¥ï¡¼¥¯¥Æ¡¼¥Ö¥ë¤ËÀßÄê
                IF   FLG-KYUFUGAI     =     1
                    PERFORM   VARYING  FUKU-IDX    FROM   1  BY  1
-                             UNTIL    FUKU-IDX    >   7
+                             UNTIL    FUKU-IDX    >   TBL-SYOSIN-MAX
                        MOVE        SPACE        TO  SANTEI-REC
                        INITIALIZE                   SANTEI-REC
                        MOVE    SYU-HOSPID       TO  SANTEI-HOSPID

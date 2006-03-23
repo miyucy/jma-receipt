@@ -3384,7 +3384,6 @@
                        WHEN    "113003510"
                        WHEN    "113003710"
                        WHEN    "101110010"
-                       WHEN    "111011810"
                            MOVE    1             TO  FLG-SYOSIN-OK
                    END-EVALUATE
                END-PERFORM
