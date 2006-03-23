@@ -373,6 +373,7 @@
       *
            03  WK-JIRITU-SRYYMD            PIC  X(08).
            03  WK-KOHHKNNUM                PIC  X(03).
+           03  WK-FTNHENFLG                PIC  9(01).
       *
       *    ¸øÈñ¤Î´µ¼ÔÉéÃ´¾å¸Â²ó¿ô¤È¾å¸Â¶â³Û¤ÎÂàÈòÍÑ¥¨¥ê¥¢
        01  HOKEN-MAX-AREA.
@@ -4429,6 +4430,8 @@
       *
            MOVE     ZERO        TO    FLG-NYUGAI.
       *
+           MOVE     ZERO        TO    WK-FTNHENFLG.
+      *
            INITIALIZE                 WK-TAIHI-DENPNUMXX-OCC.
            MOVE     ZERO        TO    FLG-GRPNYURYOKU.
            MOVE     ZERO        TO    WK-CYOKI.
@@ -5110,6 +5113,22 @@
                     IF   (LNK-SYU-KOH1HKNNUM  = "015" OR "016" OR "021")
                     AND  (WK-JIRITU-CYUKANSOU(1)   =  1                )
                        ADD  SYU-HKNTEN(12)  TO  WK-JIRITU-TENSURUIKEI(1)
+                       EVALUATE   SYU-NYNSHOKAISU
+                         WHEN         1
+                           EVALUATE   WK-FTNHENFLG
+                             WHEN        ZERO
+                               MOVE   1   TO   WK-FTNHENFLG
+                             WHEN         2
+                               MOVE   3   TO   WK-FTNHENFLG
+                           END-EVALUATE
+                         WHEN         2
+                           EVALUATE   WK-FTNHENFLG
+                             WHEN        ZERO
+                               MOVE   2   TO   WK-FTNHENFLG
+                             WHEN         1
+                               MOVE   3   TO   WK-FTNHENFLG
+                           END-EVALUATE
+                       END-EVALUATE
                     END-IF
                    END-IF
       *
@@ -5551,6 +5570,22 @@
                     IF   (LNK-SYU-KOH2HKNNUM  = "015" OR "016" OR "021")
                     AND  (WK-JIRITU-CYUKANSOU(2)   =  1                )
                        ADD  SYU-HKNTEN(12)  TO  WK-JIRITU-TENSURUIKEI(2)
+                       EVALUATE   SYU-NYNSHOKAISU
+                         WHEN         1
+                           EVALUATE   WK-FTNHENFLG
+                             WHEN        ZERO
+                               MOVE   1   TO   WK-FTNHENFLG
+                             WHEN         2
+                               MOVE   3   TO   WK-FTNHENFLG
+                           END-EVALUATE
+                         WHEN         2
+                           EVALUATE   WK-FTNHENFLG
+                             WHEN        ZERO
+                               MOVE   2   TO   WK-FTNHENFLG
+                             WHEN         1
+                               MOVE   3   TO   WK-FTNHENFLG
+                           END-EVALUATE
+                       END-EVALUATE
                     END-IF
                    END-IF
       *
@@ -6020,6 +6055,22 @@
                     IF   (LNK-SYU-KOH3HKNNUM  = "015" OR "016" OR "021")
                     AND  (WK-JIRITU-CYUKANSOU(3)   =  1                )
                        ADD  SYU-HKNTEN(12)  TO  WK-JIRITU-TENSURUIKEI(3)
+                       EVALUATE   SYU-NYNSHOKAISU
+                         WHEN         1
+                           EVALUATE   WK-FTNHENFLG
+                             WHEN        ZERO
+                               MOVE   1   TO   WK-FTNHENFLG
+                             WHEN         2
+                               MOVE   3   TO   WK-FTNHENFLG
+                           END-EVALUATE
+                         WHEN         2
+                           EVALUATE   WK-FTNHENFLG
+                             WHEN        ZERO
+                               MOVE   2   TO   WK-FTNHENFLG
+                             WHEN         1
+                               MOVE   3   TO   WK-FTNHENFLG
+                           END-EVALUATE
+                       END-EVALUATE
                     END-IF
                    END-IF
       *
@@ -6491,6 +6542,22 @@
                     IF   (LNK-SYU-KOH4HKNNUM  = "015" OR "016" OR "021")
                     AND  (WK-JIRITU-CYUKANSOU(4)   =  1                )
                        ADD  SYU-HKNTEN(12)  TO  WK-JIRITU-TENSURUIKEI(4)
+                       EVALUATE   SYU-NYNSHOKAISU
+                         WHEN         1
+                           EVALUATE   WK-FTNHENFLG
+                             WHEN        ZERO
+                               MOVE   1   TO   WK-FTNHENFLG
+                             WHEN         2
+                               MOVE   3   TO   WK-FTNHENFLG
+                           END-EVALUATE
+                         WHEN         2
+                           EVALUATE   WK-FTNHENFLG
+                             WHEN        ZERO
+                               MOVE   2   TO   WK-FTNHENFLG
+                             WHEN         1
+                               MOVE   3   TO   WK-FTNHENFLG
+                           END-EVALUATE
+                       END-EVALUATE
                     END-IF
                    END-IF
       *
@@ -9561,6 +9628,27 @@
                    END-IF
       *
               END-IF
+      *
+              EVALUATE  LNK-SYU-NYNSHOKAISU
+                 WHEN         1
+                    EVALUATE   WK-FTNHENFLG
+                      WHEN        ZERO
+                         MOVE   1   TO   WK-FTNHENFLG
+                      WHEN         2
+                         MOVE   3   TO   WK-FTNHENFLG
+                    END-EVALUATE
+                 WHEN         2
+                    EVALUATE   WK-FTNHENFLG
+                      WHEN        ZERO
+                         MOVE   2   TO   WK-FTNHENFLG
+                      WHEN         1
+                         MOVE   3   TO   WK-FTNHENFLG
+                    END-EVALUATE
+              END-EVALUATE
+              IF     WK-FTNHENFLG   =    3
+                    MOVE     "1"    TO   LNK-S01-JIRITU-FTNHEN-KBN
+              END-IF
+      *
            END-IF.
       *
        2304-KOH-HKNREAD-EXT.
