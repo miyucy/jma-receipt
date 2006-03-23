@@ -303,10 +303,9 @@
            ELSE
                MOVE    LNK-SYUBETU-RC  TO  LNK-SYUACC-RC
                MOVE    1               TO  FLG-END
+      *
+               DISPLAY "ORCSSYUBETU=" LNK-SYUACC-RC
            END-IF
-      *???
-      *     DISPLAY "ORCSSYUBETU=" LNK-SYUACC-RC
-      *???
            .
        2001-ORCSSYUBETU-EXT.
            EXIT.
@@ -336,9 +335,9 @@
            ELSE
                MOVE    LNK-ORCSTOTALACCT-RC    TO  LNK-SYUACC-RC
                MOVE    1                       TO  FLG-END
-      *???
-      *     DISPLAY "ORCSTOTALACCT=" LNK-SYUACC-RC
-      *???
+      *
+              DISPLAY "ORCSTOTALACCT=" LNK-SYUACC-RC
+      *
                GO  TO  2002-ORCSTOTALACCT-EXT
            END-IF
       *
@@ -443,6 +442,9 @@
            ELSE
                MOVE    LNK-ORCHCN33SUB-RC      TO  LNK-SYUACC-RC
                MOVE    1                       TO  FLG-END
+      *
+               DISPLAY "ORCHCN33SUB=" LNK-SYUACC-RC
+      *
                GO  TO  2003-ORCHCN33SUB-EXT
            END-IF
       *
@@ -548,6 +550,9 @@
            IF      LNK-SYUACC-RC   =   ZERO
                CONTINUE
            ELSE
+      *
+               DISPLAY "ORCSSYUACC=" LNK-SYUACC-RC
+      *
                MOVE    1                       TO  FLG-END
            END-IF
            .
