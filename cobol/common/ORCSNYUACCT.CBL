@@ -2003,6 +2003,67 @@
                                            ORCSCNYUINAREA
            END-IF
       *
+      *    主科セット
+           IF   LNK-SCNYUACCT-SYORI-KBN = "5"
+      *        入院取消月処理
+               INITIALIZE                 ORCSSYUACCAREA
+               MOVE  LNK-SCNYUACCT-STSRYYMD(1:6)  TO  LNK-SYUACC-I-SRYYM
+               PERFORM   810-SYUKA04-SET-SEC
+      *
+      *        退院翌月以降の主科テーブル削除（入院会計）
+               INITIALIZE                      SYUKA-REC
+               MOVE    SPA-HOSPID          TO  SYUKA-HOSPID
+               MOVE    "1"                 TO  SYUKA-NYUGAIKBN
+               MOVE    SPA-PTID            TO  SYUKA-PTID
+               MOVE    "2"                 TO  SYUKA-TEN-KBN
+               MOVE    LNK-SCNYUACCT-STSRYYMD(1:6)
+                                           TO  SYUKA-SRYYM
+               MOVE    SYUKA-REC           TO  MCPDATA-REC
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               MOVE    "tbl_syuka"         TO  MCP-TABLE
+               MOVE    "del3"              TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+           ELSE
+      *        入院取消月処理
+               INITIALIZE                 ORCSSYUACCAREA
+               MOVE  LNK-SCNYUACCT-STSRYYMD(1:6)  TO  LNK-SYUACC-I-SRYYM
+               PERFORM   810-SYUKA05-SET-SEC
+      *
+      *        退院翌月以降の主科テーブル削除（診療行為）
+               INITIALIZE                      SYUKA-REC
+               MOVE    SPA-HOSPID          TO  SYUKA-HOSPID
+               MOVE    "1"                 TO  SYUKA-NYUGAIKBN
+               MOVE    SPA-PTID            TO  SYUKA-PTID
+               MOVE    "1"                 TO  SYUKA-TEN-KBN
+               MOVE    LNK-SCNYUACCT-STSRYYMD(1:6)
+                                           TO  SYUKA-SRYYM
+               MOVE    SYUKA-REC           TO  MCPDATA-REC
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               MOVE    "tbl_syuka"         TO  MCP-TABLE
+               MOVE    "del3"              TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+      *        退院翌月以降の主科テーブル削除（入院会計）
+               INITIALIZE                      SYUKA-REC
+               MOVE    SPA-HOSPID          TO  SYUKA-HOSPID
+               MOVE    "1"                 TO  SYUKA-NYUGAIKBN
+               MOVE    SPA-PTID            TO  SYUKA-PTID
+               MOVE    "2"                 TO  SYUKA-TEN-KBN
+               MOVE    LNK-SCNYUACCT-STSRYYMD(1:6)
+                                           TO  SYUKA-SRYYM
+               MOVE    SYUKA-REC           TO  MCPDATA-REC
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               MOVE    "tbl_syuka"         TO  MCP-TABLE
+               MOVE    "del3"              TO  MCP-PATHNAME
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
+      *
+           END-IF
+      *
            .
       *
        500-NYUINDEL-SYORI-EXT.
