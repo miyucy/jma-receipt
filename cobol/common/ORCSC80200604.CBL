@@ -97,6 +97,8 @@
            03  FLG-SOUKIKSN          PIC 9(01).
            03  FLG-KYUSEI-CHK        PIC 9(01).
       *
+           03  FLG-NENREI            PIC 9(01).
+      *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -1033,21 +1035,10 @@
       *****************************************************************
        100113-SEISIN-CHK-SEC            SECTION.
       *
+           MOVE    ZERO                TO  FLG-NENREI
       *    Êñ³ç¤Þ¤È¤áÆþÎÏ¤ÏÂÐ¾Ý³°
            IF      SPA-HKNCOMBINUM     =   "9999"
                GO      TO      100113-SEISIN-CHK-EXT
-           END-IF
-      *
-           IF      WRK-COM-INPUTCD (IDX-Z) =   "180012210"  OR
-                                               "180012310"  OR
-                                               "180020410"  OR
-                                               "180020570"
-      *             ²ÈÂ²
-                                           OR  "180007250"
-                                           OR  "180007350"
-               CONTINUE
-           ELSE
-               GO     TO      100113-SEISIN-CHK-EXT
            END-IF
       *
            IF      LNK-ORCSC-SYORIFLG      =   1
@@ -1061,44 +1052,22 @@
                   (LNK-ORCSC-SYOSIN2   =   1      )
                MOVE    SPA-SRYYMD          TO  WRK-SYOYMD
            END-IF
-      **** MOVE    LNK-ORCSC-SYOYMD    TO  WRK-SYOYMD
-      *    COMPUTE WRK-SYO-MM          =   WRK-SYO-MM    +   6
-      *    IF      WRK-SYO-MM          >   12
-      *        COMPUTE WRK-SYO-YY      =   WRK-SYO-YY    +   1
-      *        COMPUTE WRK-SYO-MM      =   WRK-SYO-MM    -   12
-      *****END-IF
       *    ½é¿ÇÎÁ»»ÄêÆü¡Ü£¶·î¸å
            INITIALIZE                      STS-AREA-DAY
            INITIALIZE                      LNK-DAY6-AREA
            MOVE    "61"                TO  LNK-DAY6-IRAI
-      *****MOVE    LNK-ORCSC-SYOYMD    TO  LNK-DAY6-KIJUN
            MOVE    WRK-SYOYMD          TO  LNK-DAY6-KIJUN
            MOVE    "2"                 TO  LNK-DAY6-ZOGENPTN
            MOVE    6                   TO  LNK-DAY6-ZOGEN
            CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                LNK-DAY6-AREA
            MOVE    LNK-DAY6-KOYOMI     TO  WRK-SYOYMD
-      *
+      *    £¶¥ö·î°Ê¾å
+           IF      SPA-SRYYMD          >   WRK-SYOYMD
+               MOVE    1               TO  FLG-NENREI
+           END-IF
       *
            EVALUATE    WRK-COM-INPUTCD(IDX-Z)
-               WHEN    "180012210"
-               WHEN    "180012310"
-               WHEN    "180020410"
-      *             ²ÈÂ²
-               WHEN    "180007250"
-               WHEN    "180007350"
-                   IF      SPA-SRYYMD          <=  WRK-SYOYMD
-      *            Äþ¸º¤¢¤ê
-                       MOVE    IDX-Z               TO  IDX-S
-                       MOVE    "180020570"         TO  WRK-SRYCD
-                       IF      WRK-COM-INPUTCD (IDX-Z + 1) =   WRK-SRYCD
-                           CONTINUE
-                       ELSE
-                           MOVE    IDX-Z           TO  IDX-S
-                           MOVE    ZERO            TO  FLG-ARI
-                           PERFORM 1002-KASAN-SET-SEC
-                       END-IF
-                   END-IF
                WHEN    "180020570"
       *            Äþ¸º¥Á¥§¥Ã¥¯
                    IF      WRK-COM-INPUTCD (IDX-Z - 1)
@@ -1288,8 +1257,18 @@
       *****************************************************************
        10011-NENREI-SET-SEC            SECTION.
       *
+      *    ÄÌ±¡Àº¿À¤Î»þ¡¢½é¿ÇÆü¤«¤é£¶¥ö·î°ÊÆâ¥Á¥§¥Ã¥¯
+           IF     (WRK-COM-CDKBN-KBN (IDX-Z)   =   "I" )  AND
+                  (WRK-COM-CDKBN-KBNNUM(IDX-Z) =   "002") AND
+                  (LNK-ORCSC-PG        =   "K02"  )
+               PERFORM 100113-SEISIN-CHK-SEC 
+           ELSE
+               MOVE    ZERO            TO  FLG-NENREI
+           END-IF
+      *
            PERFORM VARYING     IDX2    FROM    1   BY  1
                    UNTIL      (IDX2        >   4       )   OR
+                              (FLG-NENREI  =   1       )   OR
                               (WRK-COM-AGEKSNSRYCD(IDX-Z IDX2)
                                                =   SPACE  OR
                                                    ZERO )
