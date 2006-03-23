@@ -102,12 +102,5 @@ C03	{
 			count	int;
 			item	varchar(46)[5];
 		};
-		SYUKBNCOMBO	{
-			SYUKBN	{
-				value	varchar(32);
-			};
-			count	int;
-			item	varchar(32)[3];
-		};
 	};
 };
