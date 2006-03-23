@@ -274,7 +274,7 @@ Z03	{
 				SEKIZUISOKUTEI	{
 					value	number(1);
 				};
-				MICMESUKSN	{
+				DONORKBN	{
 					value	number(1);
 				};
 				CHPMESUKSN	{
@@ -321,6 +321,9 @@ Z03	{
 				};
 				KIJUNTEIGENCD	{
 					value	number(3);
+				};
+				MICMESUKSN	{
+					value	number(1);
 				};
 			};
 			fixed12	{
