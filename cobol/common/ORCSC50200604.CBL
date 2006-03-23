@@ -962,7 +962,8 @@
       *    ¶ËÄã½ÐÀ¸ÂÎ½Å»ù²Ã»»¶èÊ¬
            IF      WRK-COM-CHPMESUKSN (IDX-ZS)  =   1
                PERFORM 100112-TEITAIJYU-CHK-SEC
-               IF      FLG-ADD             =   1
+               IF     (FLG-ADD             =   1 )  OR
+                      (FLG-ARI             =   1 )
                    GO      TO      10011-YOUJIKASAN-SET-EXT
                END-IF
            END-IF
