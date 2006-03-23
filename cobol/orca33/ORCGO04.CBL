@@ -1312,14 +1312,21 @@
            MOVE    SPA-GMN-O04-CHOSEIIN    TO  O04-CHOSEIIN
            MOVE    SPA-GMN-O04-NYUKIN      TO  O04-KINGAKU
            MOVE    SPA-GMN-O04-NYUKINYMD   TO  O04-NYUKINYMD
-           MOVE    SPA-GMN-O04-NYKN-HOHO-G TO  O04-NYUKINHOUHOU
-           MOVE    SPA-GMN-O04-NYKN-HOHO-MAX
+      *
+           IF   (  SPA-NAI-O04-DENPJTIKBN  =   "4" OR "6" )
+               CONTINUE
+           ELSE
+               MOVE    SPA-GMN-O04-NYKN-HOHO-G
+                                           TO  O04-NYUKINHOUHOU
+               MOVE    SPA-GMN-O04-NYKN-HOHO-MAX
                                            TO  O04-NYUKINHOUHOU-COUNT
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   SPA-GMN-O04-NYKN-HOHO-MAX )
-               MOVE    SPA-GMN-O04-NYKN-HOHOLST (IDX0)
+      *
+               PERFORM VARYING IDX0    FROM    1   BY  1
+                       UNTIL ( IDX0    >   SPA-GMN-O04-NYKN-HOHO-MAX )
+                   MOVE    SPA-GMN-O04-NYKN-HOHOLST (IDX0)
                                            TO  O04-NYUKINHOUHOULST(IDX0)
-           END-PERFORM
+               END-PERFORM
+           END-IF
       *
            MOVE    SPA-GMN-O04-SKYPRT-G    TO  O04-SKYPRT
            MOVE    SPA-GMN-O04-SKYPRT-MAX  TO  O04-SKYPRT-COUNT
@@ -1424,6 +1431,14 @@
                                            O04-NYUKINHOUHOU-STATE
                                            O04-NYUKINHOUHOULST-STATE
       *
+           IF    ( SPA-GMN-O04-SYORIKBN    =   CONST-PROC-RRKSYU )
+               IF    ( SPA-NAI-O04-DENPJTIKBN  =   "4" OR "6" )
+                   MOVE    WIDGET-INSENSITIVE
+                                       TO  O04-NYUKINHOUHOU-STATE
+                                           O04-NYUKINHOUHOULST-STATE
+               END-IF
+           END-IF
+      *
            IF    ( SPA-NAI-O04-SKYTBL-PAGE  <=   1 )
                MOVE    WIDGET-INSENSITIVE  TO  O04-B06-STATE
            END-IF
@@ -1433,7 +1448,7 @@
            END-IF
       *
            IF    ( SPA-GMN-O04-SYORIKBN      =   CONST-PROC-RRKSYU )
-            AND  ( SPA-NAI-O04-PROC-FLG      =   3  )
+            AND  ( SPA-NAI-O04-PROC-FLG      =   3  OR 4)
                MOVE    WIDGET-INSENSITIVE
                                        TO  O04-BTNSKY-STATE
                                            O04-CHOSEIIN-STATE
@@ -1751,7 +1766,11 @@
            END-IF
       *
            IF    ( SPA-ERRCD           =   SPACE )
-               PERFORM 4101-NYUKIN-CHK-SEC
+               IF    ( SPA-NAI-O04-DENPJTIKBN  =   "4" OR  "6" )
+                   PERFORM 4102-NYUKIN-CHK-SEC
+               ELSE
+                   PERFORM 4101-NYUKIN-CHK-SEC
+               END-IF
            END-IF
       *
            IF    ( SPA-ERRCD           =   SPACE )
@@ -1803,7 +1822,7 @@
       *
            IF    ( SPA-GMN-O04-SYORIKBN     =   CONST-PROC-RRKSYU )
                IF    ( SPA-NAI-O04-DENPJTIKBN
-                                   =   " " OR "1" OR "2"
+                                   =   " " OR "1" OR "2" OR "4" OR "6"
                                            OR "8" OR "9" )
                    CONTINUE
                ELSE
@@ -2334,7 +2353,7 @@
            IF    ( SPA-ERRCD       =   SPACE )
                IF    ( SPA-GMN-O04-SYORIKBN     =   CONST-PROC-RRKSYU )
                    IF    ( SPA-NAI-O04-TJOUTAIKBN (SPA-GMN-O04-SELNUM)
-                                   =   " " OR "1" OR "2"
+                                   =   " " OR "1" OR "2" OR "4" OR "6"
                                            OR "8" OR "9" )
                        CONTINUE
                    ELSE
@@ -2385,6 +2404,9 @@
                MOVE    2               TO  SPA-NAI-O04-PROC-FLG
            WHEN    "2"
                MOVE    3               TO  SPA-NAI-O04-PROC-FLG
+           WHEN    "4"
+           WHEN    "6"
+               MOVE    4               TO  SPA-NAI-O04-PROC-FLG
            END-EVALUATE
       *
            .
@@ -2499,6 +2521,13 @@
                    +   SPA-GMN-O04-NYUKIN
            END-IF
       *
+            IF    ( SPA-ERRCD       =   SPACE )
+               IF    ( SPA-GMN-O04-NYUKIN  <  ZERO )
+                   MOVE    4       TO  SPA-GMN-O04-CUR
+                   MOVE    "0018"  TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
            IF    ( WRK-NYUKIN  <  ZERO )
                MOVE    4           TO  SPA-GMN-O04-CUR
                MOVE    "0008"      TO  SPA-ERRCD
@@ -2518,6 +2547,22 @@
       *
            .
        4101-NYUKIN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    入金額チェック処理（入金取消、返金の履歴修正）
+      *****************************************************************
+       4102-NYUKIN-CHK-SEC             SECTION.
+      *
+           IF    ( SPA-GMN-O04-NYUKIN  =   SPA-NAI-O04-NYUKIN-MOTO )
+            OR   ( SPA-GMN-O04-NYUKIN  =   ZERO )
+               CONTINUE
+           ELSE
+               MOVE    4           TO  SPA-GMN-O04-CUR
+               MOVE    "0017"      TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       4102-NYUKIN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    入金日チェック処理
@@ -2872,10 +2917,14 @@
                        +   SPA-GMN-O04-NYUKIN
                END-IF
       *
-               IF    ( WRK-SKYMONEY    <   WRK-NYUKIN )
-                   MOVE    "2001"  TO  SPA-OIDCD
+               IF    ( SPA-NAI-O04-PROC-FLG    =   4 )
+                       PERFORM 4101-TOROKU-SEC
                ELSE
-                   PERFORM 4101-TOROKU-SEC
+                   IF    ( WRK-SKYMONEY    <   WRK-NYUKIN )
+                       MOVE    "2001"  TO  SPA-OIDCD
+                   ELSE
+                       PERFORM 4101-TOROKU-SEC
+                   END-IF
                END-IF
       *
            END-IF
@@ -3383,6 +3432,7 @@
                        MOVE    "9"     TO  SMEI-JOUTAIKBN
                    END-IF
                WHEN    2
+               WHEN    4
                    CONTINUE
                WHEN    OTHER
                    IF    ( SPA-GMN-O04-NYUKIN     >=   ZERO )
@@ -3683,6 +3733,12 @@
                                        TO  SPA-ERRMSG
            WHEN    "0016"
                MOVE    "請求金額を入力してください"
+                                       TO  SPA-ERRMSG
+           WHEN    "0017"
+               MOVE    "入金額は０円への変更のみ可能です"
+                                       TO  SPA-ERRMSG
+           WHEN    "0018"
+               MOVE    "入金額が０円を下回ります"
                                        TO  SPA-ERRMSG
            WHEN    "1001"
            WHEN    "1002"
