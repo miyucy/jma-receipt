@@ -262,3 +262,17 @@ path	key11 	{
 	};
 };
 
+path	key12 	{
+	DBSELECT	{
+		DECLARE tbl_santei_key12_csr CURSOR FOR
+		SELECT *
+		FROM tbl_santei
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   SRYCD       =   :SRYCD
+               ORDER   BY
+                       SRYYM    DESC
+		;
+	};
+};
+
