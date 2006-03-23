@@ -629,3 +629,54 @@ path	key29	{
 		;
 	};
 };
+
+path	key30	{
+	DBSELECT	{
+		DECLARE tbl_nyuinacct_key30_csr CURSOR FOR
+		SELECT *
+		FROM tbl_nyuinacct
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   '1'
+			AND   PTID        =   :PTID
+			AND   SRYYM       =   :SRYYM
+                        AND   ZAISKBKBN   =   '4'
+                        AND   SRYCDTOTAL  =   99999918
+			ORDER  BY  PTID,HKNCOMBI,SRYKA,
+                                   ZAINUM
+		;
+	};
+};
+
+path	key31	{
+	DBSELECT	{
+		DECLARE tbl_nyuinacct_key31_csr CURSOR FOR
+		SELECT *
+		FROM tbl_nyuinacct
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   '1'
+			AND   PTID        =   :PTID
+			AND   SRYYM       =   :SRYYM
+                        AND   ZAISKBKBN   =   '4'
+                        AND   SRYCDTOTAL  =   99999919
+			ORDER  BY  PTID,HKNCOMBI,SRYKA,
+                                   ZAINUM
+		;
+	};
+};
+
+path	key32	{
+	DBSELECT	{
+		DECLARE tbl_nyuinacct_key32_csr CURSOR FOR
+		SELECT *
+		FROM tbl_nyuinacct
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   '1'
+			AND   PTID        =   :PTID
+			AND   SRYYM       =   :SRYYM
+                        AND   ZAISKBKBN   =   '4'
+                        AND   SRYCDTOTAL  =   99999920
+			ORDER  BY  PTID,HKNCOMBI,SRYKA,
+                                   ZAINUM
+		;
+	};
+};
