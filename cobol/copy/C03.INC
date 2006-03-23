@@ -80,3 +80,8 @@
                   05  C03-VALUE   PIC X(46).
                 04  C03-MANSEIFLG-COUNT     PIC S9(9)   BINARY.
                 04  C03-MANSEIFLG-ITEM      PIC X(46)   OCCURS  5 TIMES.
+              03  C03-SYUKBNCOMBO.
+                04  C03-SYUKBN.
+                  05  C03-VALUE   PIC X(32).
+                04  C03-SYUKBN-COUNT        PIC S9(9) BINARY.
+                04  C03-SYUKBN-ITEM         PIC X(32) OCCURS  3 TIMES.

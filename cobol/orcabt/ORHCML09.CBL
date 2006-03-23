@@ -68,9 +68,10 @@
        FD  TOKEI-FILE.
        01  TOKEI-REC.
            03  TOKEI-KEY.
-               05  TOKEI-BUNRUICD      PIC X(03).
-               05  TOKEI-DSPSEQ        PIC 9(02).
-               05  TOKEI-BYOMEIINPUTCD PIC X(20).
+               05  TOKEI-KEY-NAIYO     PIC X(25).
+           03  TOKEI-DSPSEQ            PIC 9(02).
+           03  TOKEI-BYOMEIINPUTCD     PIC X(20).
+           03  TOKEI-BUNRUICD          PIC X(03).
            03  TOKEI-BYOMEI            PIC X(160).
            03  TOKEI-MANSEIKBN         PIC 9(02).
            03  TOKEI-UTAGAIFLG         PIC X(01).
@@ -133,6 +134,9 @@
                05  WRK-PARA-TERMID PIC X(64).
                05  WRK-PARA-SYSYMD PIC X(8).
                05  WRK-PARA-HOSPID PIC X(24).
+      *----(00.00.01)--ADD-START---
+               05  WRK-PARA-SYUKBN PIC X(01).
+      *----(00.00.01)--ADD-END-----
       *
            03  WRK-RECEERR         PIC X(200).
       *  
@@ -149,6 +153,21 @@
       *     03  WRK-IN             PIC X.
       *
            03  WRK-PAGE            PIC ZZ,ZZ9.
+      *
+      *----(00.00.01)--ADD-START---
+           03  WRK-KEY0-AREA.
+               05  WRK-KEY0-DSPSEQ        PIC 9(02).
+               05  WRK-KEY0-BYOMEIINPUTCD PIC X(20).
+               05  WRK-KEY0-BUNRUICD      PIC X(03).
+           03  WRK-KEY1-AREA.
+               05  WRK-KEY1-BUNRUICD      PIC X(03).
+               05  WRK-KEY1-DSPSEQ        PIC 9(02).
+               05  WRK-KEY1-BYOMEIINPUTCD PIC X(20).
+           03  WRK-KEY2-AREA.
+               05  WRK-KEY2-BYOMEIINPUTCD PIC X(20).
+               05  WRK-KEY2-BUNRUICD      PIC X(03).
+               05  WRK-KEY2-DSPSEQ        PIC 9(02).
+      *----(00.00.01)--ADD-END-----
       *
        01  WRK-JOBKANRI-AREA.
            03  WRK-JOBKANRI-MODE   PIC X(03).
@@ -235,6 +254,9 @@
                                        INTO    WRK-PARA-TERMID
                                                WRK-PARA-SYSYMD
                                                WRK-PARA-HOSPID
+      *----(00.00.01)--ADD-START---
+                                               WRK-PARA-SYUKBN
+      *----(00.00.01)--ADD-END-----
       *
            MOVE    "RECEERR"       TO  RECEERR-FILE-ID
            MOVE    WRK-PARA-TERMID TO  RECEERR-TERMID
@@ -328,16 +350,43 @@
            MOVE    ZERO            TO  FLG-TOKEI
       *
            INITIALIZE                  TOKEI-REC
-           MOVE    USBYO-BUNRUICD  TO  TOKEI-BUNRUICD
-           MOVE    USBYO-DSPSEQ    TO  TOKEI-DSPSEQ
-           MOVE    USBYO-BYOMEIINPUTCD
-                                   TO  TOKEI-BYOMEIINPUTCD
+      *
+      *    並び換え指定
+           EVALUATE    WRK-PARA-SYUKBN
+               WHEN    "0"
+               WHEN    SPACE
+                   INITIALIZE                  WRK-KEY0-AREA
+                   MOVE    USBYO-BUNRUICD  TO  WRK-KEY0-BUNRUICD
+                   MOVE    USBYO-DSPSEQ    TO  WRK-KEY0-DSPSEQ
+                   MOVE    USBYO-BYOMEIINPUTCD
+                                           TO  WRK-KEY0-BYOMEIINPUTCD
+                   MOVE    WRK-KEY0-AREA   TO  TOKEI-KEY-NAIYO
+               WHEN    "1"
+                   INITIALIZE                  WRK-KEY1-AREA
+                   MOVE    USBYO-BUNRUICD  TO  WRK-KEY1-BUNRUICD
+                   MOVE    USBYO-DSPSEQ    TO  WRK-KEY1-DSPSEQ
+                   MOVE    USBYO-BYOMEIINPUTCD
+                                           TO  WRK-KEY1-BYOMEIINPUTCD
+                   MOVE    WRK-KEY1-AREA   TO  TOKEI-KEY-NAIYO
+               WHEN    "2"
+                   INITIALIZE                  WRK-KEY2-AREA
+                   MOVE    USBYO-BUNRUICD  TO  WRK-KEY2-BUNRUICD
+                   MOVE    USBYO-DSPSEQ    TO  WRK-KEY2-DSPSEQ
+                   MOVE    USBYO-BYOMEIINPUTCD
+                                           TO  WRK-KEY2-BYOMEIINPUTCD
+                   MOVE    WRK-KEY2-AREA   TO  TOKEI-KEY-NAIYO
+           END-EVALUATE
+      *
            PERFORM 900-TOKEI-READ-SEC
       *
            IF      FLG-TOKEI       NOT =   1
                GO  TO  210-TOKEI-SET-EXT
            END-IF
       *
+           MOVE    USBYO-BUNRUICD  TO  TOKEI-BUNRUICD
+           MOVE    USBYO-DSPSEQ    TO  TOKEI-DSPSEQ
+           MOVE    USBYO-BYOMEIINPUTCD
+                                   TO  TOKEI-BYOMEIINPUTCD
            MOVE    USBYO-BYOMEI    TO  TOKEI-BYOMEI
            MOVE    USBYO-MANSEIKBN TO  TOKEI-MANSEIKBN
            MOVE    USBYO-UTAGAIFLG TO  TOKEI-UTAGAIFLG

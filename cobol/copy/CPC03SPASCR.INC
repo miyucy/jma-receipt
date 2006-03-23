@@ -28,6 +28,7 @@
       *
       *  01.01.01    NACL-藤原    03/08/28  登録数の制限をなくす
       *                                     コード別編集病名フラグを追加
+      *  02.08.01    NACL-森脇    06/03/22  リスト出力区分追加
       *****************************************************************
       *
       *01  SPA-SCR-REC.
@@ -92,6 +93,12 @@
                                13  SPA-GMN-BYOMEISBT       PIC X(01).
                                13  SPA-GMN-F1              PIC X(01).
                                13  SPA-GMN-BYOMEISBTMEI    PIC X(06).
+      *----(02.08.01)--ADD-START---
+                           11  SPA-GMN-SYUKBN-G.
+                               13  SPA-GMN-SYUKBN          PIC X(01).
+                               13  SPA-GMN-F1              PIC X(01).
+                               13  SPA-GMN-SYUKBNMEI       PIC X(30).
+      *----(02.08.01)--ADD-END-----
       *
                        09  SPA-GMN-UTAGAIFLGLST        OCCURS  5.
                            11  SPA-GMN-UTAGAIFLGL      PIC X(01).
@@ -115,7 +122,14 @@
                            11  SPA-GMN-BYOMEISBTL      PIC X(01).
                            11  SPA-GMN-F1L             PIC X(01).
                            11  SPA-GMN-BYOMEISBTMEIL   PIC X(06).
-                       09  SPA-GMN-BYOMEISBT-MAX       PIC 9(02).                                    
+                       09  SPA-GMN-BYOMEISBT-MAX       PIC 9(02).   
+      *----(02.08.01)--ADD-START---
+                       09  SPA-GMN-SYUKBNLST           OCCURS  3.
+                           11  SPA-GMN-SYUKBNL         PIC X(01).
+                           11  SPA-GMN-F1L             PIC X(01).
+                           11  SPA-GMN-SYUKBNMEIL      PIC X(30).
+                       09  SPA-GMN-SYUKBN-MAX          PIC 9(02). 
+      *----(02.08.01)--ADD-END-----
       *
                    07  SPA-NAIB-AREA.
                        09  SPA-NAI-KOUMOKU.
