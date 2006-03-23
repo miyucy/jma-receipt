@@ -61,6 +61,8 @@
        01  PRT-REC.
            03  PRT-PRTID               PIC X(30).
            03  PRT-PRTNM               PIC X(20).
+           03  PRT-OFFSET-X            PIC X(05).
+           03  PRT-OFFSET-Y            PIC X(05).
            03  PRT-SITEKBN             PIC X(01).
            03  PRT-PRTDATA             PIC X(10000).
       *
@@ -88,12 +90,14 @@
       *    一時領域
        01  WRK-AREA.
            03  WRK-ASSIGN              PIC X(500).
+           03  WRK-REDFILE             PIC X(20).
       *
       *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
       *
+           COPY    "CPSK1044.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -228,6 +232,9 @@
                MOVE    IN01-PRTID          TO  PRT-PRTID
                MOVE    IN01-PRTNM          TO  PRT-PRTNM
                MOVE    IN01-PRTDATA        TO  PRT-PRTDATA
+               PERFORM 800-OFFSET-GET-SEC
+               MOVE    SYS-1044-OFFSET-X   TO  PRT-OFFSET-X
+               MOVE    SYS-1044-OFFSET-Y   TO  PRT-OFFSET-Y
                MOVE    IN01-SITEKBN        TO  PRT-SITEKBN
       *
                WRITE   PRT-REC
@@ -270,6 +277,44 @@
            EXIT.
       *
       *****************************************************************
+      *    オフセット取得処理
+      *****************************************************************
+       800-OFFSET-GET-SEC              SECTION.
+      *
+           INITIALIZE                  SYS-1044-REC
+           MOVE    "1044"              TO  SYS-1044-KANRICD
+           MOVE    IN01-PRTID          TO  SYS-1044-FORMID
+           STRING  IN01-PRTNM          DELIMITED  BY  SPACE
+                   "%"                 DELIMITED  BY  SIZE
+           INTO    SYS-1044-TBL(21:)
+           END-STRING
+           MOVE    "99999999"          TO  SYS-1044-STYUKYMD
+           MOVE    "99999999"          TO  SYS-1044-EDYUKYMD
+           MOVE    SYS-1044-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE  MCPDATA-REC       TO  SYS-1044-REC
+           ELSE
+               INITIALIZE                  SYS-1044-REC
+           END-IF
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           IF   (  SYS-1044-FORMID  =   IN01-PRTID  )
+            AND (  SYS-1044-PRTNM   =   IN01-PRTNM  )
+               CONTINUE
+           ELSE
+               INITIALIZE  SYS-1044-REC
+           END-IF
+      *
+           .
+       800-OFFSET-GET-EXT.
+            EXIT.
+      *****************************************************************
       *    印刷用データ読込処理
       *****************************************************************
        900-IN01-READ-SEC           SECTION.
@@ -285,3 +330,62 @@
        900-IN01-READ-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    ＤＢ検索処理（FHETCHも行う)
+      *****************************************************************
+       910-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF    ( MCP-RC          =   ZERO )
+               PERFORM 910-DBFETCH-SEC
+           END-IF
+      *
+           .
+      *
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ検索処理（FHETCHは行わない)
+      *****************************************************************
+       911-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       911-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ読み込み処理
+      *****************************************************************
+       910-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       910-DBFETCH-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢクローズ処理
+      *****************************************************************
+       910-DBCLOSECURSOR-SEC                 SECTION.
+      *
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           CALL    "MONFUNC"           USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       910-DBCLOSECURSOR-EXT.
+           EXIT.

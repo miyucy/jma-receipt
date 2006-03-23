@@ -33,9 +33,9 @@
 # 引数7 = dataファイル
 
 # dataファイルフォーマット
-# +------------------+------------+---------------+--------------------------+
-# |ファイル名(30Byte)|LP名(20Byte)|site区分(1Byte)|帳票データ(Max10000バイト)|
-# +------------------+------------+---------------+--------------------------+
+# +------------------+------------+---------------+---------------+---------------+--------------------------+
+# |ファイル名(30Byte)|LP名(20Byte)|offset-x(5byte)|offset-y(5byte)|site区分(1Byte)|帳票データ(Max10000バイト)|
+# +------------------+------------+---------------+---------------+---------------+--------------------------+
 # ファイル名に、拡張子とディレクトリ名を付加したものを子プロセスの引数に渡す
 #    site区分
 #      1 = orca標準
@@ -96,7 +96,7 @@ DEFAULT_LP = 'lp1'
 # 領域の初期化
 
 # ファイル名領域
-temp_file = ''; exec_file = ''; dia_file = ''; def_file = ''; data_file = ''; lp_name = ''
+temp_file = ''; exec_file = ''; dia_file = ''; def_file = ''; data_file = ''; lp_name = ''; offset_x = ''; offset_y = ''
 temp_file2 = ''; exec_file2 = ''; dia_file2 = ''; def_file2 = ''; data_file2 = ''; lp_name2 = ''
 site_flag = ''; base_dir = ''
 # 文字列領域
@@ -264,7 +264,7 @@ word2.each do |d2|
 	red_file = ''
 	ls_w1 = ''	# 一時用文字列領域
 	ls_w1 = d2[0, 30].strip	# ファイル名を後ろの空白を除いて取得
-	site_flag = d2[50, 1].strip		# site固有判定フラグの取得
+	site_flag = d2[60, 1].strip		# site固有判定フラグの取得
 	if ls_w1 =~ /.red$/
 		# .redファイルである
 
@@ -279,7 +279,9 @@ word2.each do |d2|
 		end
 
 		lp_name = d2[30, 20].strip	# LP名のセット
-		word3 = d2[51, (d2_len - 51)]	# 一時ファイルへ出力する内容のセット
+		offset_x = d2[50, 5].strip				# offset-xのセット
+		offset_y = d2[55, 5].strip				# offset-yのセット
+		word3 = d2[61, (d2_len - 61)]	# 一時ファイルへ出力する内容のセット
 
 		# 一時ファイルへの書き込み
 		open(temp_file, "w") do |fp|
@@ -305,7 +307,18 @@ word2.each do |d2|
 			lp_name = DEFAULT_LP
 		end
 
-		w_exec = RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -p ' + lp_name
+		# offset-xが指定されていなかったら、0にする
+		if offset_x == ''
+			offset_x = '0'
+		end
+		# offset-yが指定されていなかったら、0にする
+		if offset_y == ''
+			offset_y = '0'
+		end
+
+#		w_exec = RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -p ' + lp_name
+		puts RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -x ' + offset_x + ' -y ' + offset_y + ' -p ' + lp_name
+		w_exec = RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -x ' + offset_x + ' -y ' + offset_y + ' -p ' + lp_name
 
 # デバッグ用の表示
 #		puts w_exec
