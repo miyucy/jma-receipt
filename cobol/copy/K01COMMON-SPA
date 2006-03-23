@@ -118,9 +118,11 @@
       *訂正時の自動発生（特定疾患処方管理）
                05  SPA-TEISEITOKU-FLG      PIC X(01).
       *病名表示区分
-               05  SPA-BYOHYOKBN-FLG      PIC X(01).
+               05  SPA-BYOHYOKBN-FLG       PIC X(01).
       *検体検査加算自動発生
-               05  SPA-KENSAAUTO-FLG      PIC X(01).
+               05  SPA-KENSAAUTO-FLG       PIC X(01).
+      *自立支援負担変更区分
+               05  SPA-FTNHEN-KBN          PIC X(01).
       *
            03  SPA-K01SET-AREA.
       *処理フラグ（０：通常、１：訂正）

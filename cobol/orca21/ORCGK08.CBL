@@ -3437,6 +3437,8 @@
                                        MCPAREA
                                        LNK-ORCS01-REC
                                        LNK-SYUNOU2-AREA
+      *    ¼«Î©»Ù±çÉéÃ´ÊÑ¹¹¶èÊ¬
+           MOVE    LNK-S01-JIRITU-FTNHEN-KBN   TO  SPA-FTNHEN-KBN
       *
            IF      SPA-KAGRPFLG        =   "0"
       *        Ê£¿ô²Ê¤Þ¤È¤á½¸·×¤Îº¹³Û·×»»

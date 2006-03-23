@@ -355,6 +355,10 @@
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-HDD         PIC 9(02).
       *
+       01  WRK-COM-FTNHEN.
+           03  FILLER              PIC X(50)   VALUE
+           "º´Œ©ªŸ±Á∞ÂŒ≈…È√¥≥‰πÁ —ππ°°∆±∑Ó¿¡µ· ¨≥Œ«ß".
+      *
        01  WRK-SYSTIME.
            03  WRK-SYSTIME-X       PIC X(08).
       *
@@ -869,6 +873,13 @@
            PERFORM 3102-JIHIMSG-HEN-SEC
       *     £øÙ≤  ‘Ω∏
            PERFORM 3104-FUKU-HEN-SEC
+      *
+      *    º´Œ©ªŸ±Á…È√¥ —ππ∂Ë ¨ ‘Ω∏
+           EVALUATE    SPA-FTNHEN-KBN
+               WHEN    "1"
+                   MOVE    WRK-COM-FTNHEN      TO  SPA-GMN-FUKUMSG
+           END-EVALUATE
+      *
       *    ∆˛∂‚ºË∞∑§§
            PERFORM 3105-NYUKINKBN-HEN-SEC
       *

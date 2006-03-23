@@ -184,7 +184,7 @@
       *            入金合計
                    07  SPA-GMN-NYUKINMSG         PIC X(50).
       *            複数科処理中
-                   07  SPA-GMN-FUKUMSG           PIC X(20).
+                   07  SPA-GMN-FUKUMSG           PIC X(50).
       *            複数科まとめ請求額
                    07  SPA-MAT-SKYMONEY          PIC 9(07).
       *            （１：まとめ継続、２：まとめ確定）

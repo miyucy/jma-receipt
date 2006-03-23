@@ -225,7 +225,7 @@
                 04  K03-VALUE   PIC X(30).
               03  K03-FUKUMSG.
                 04  K03-FUKUMSG-STYLE   PIC X(20).
-                04  K03-FUKUMSG-VALUE   PIC X(20).
+                04  K03-FUKUMSG-VALUE   PIC X(50).
               03  K03-NYUKINMSG.
                 04  K03-VALUE   PIC X(50).
               03  K03-NYUMISYU.
