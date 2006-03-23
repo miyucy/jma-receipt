@@ -2193,7 +2193,7 @@
            END-PERFORM
            MOVE    SPA-GMN-SYUKA-MAX   TO  R97-SYUKA-COUNT
       *
-           IF      SPA-GMN-PAGE        =   1     
+           IF      SPA-GMN-PAGE        <=  1     
                MOVE    WIDGET-INSENSITIVE  TO  R97-B06-STATE
            ELSE
                MOVE    WIDGET-NORMAL       TO  R97-B06-STATE
