@@ -280,8 +280,8 @@
        2001-SANTEI-CHK-SEC                SECTION.
       *
       *
-           MOVE    WRK-SRYCD           TO  TNS-SRYCD
-           PERFORM 910-TENSU-READ-SEC
+      *!!  MOVE    WRK-SRYCD           TO  TNS-SRYCD
+      *!!  PERFORM 910-TENSU-READ-SEC
       *
       *    »»ÄêÍúÎò¸¡º÷
            INITIALIZE                  SANTEI-REC
@@ -289,28 +289,28 @@
            MOVE    SPA-PTID            TO  SANTEI-PTID
       *****MOVE    SKARRK-SRYYM        TO  SANTEI-SRYYM
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
-           EVALUATE    TNS-SANTEIRRKKBN
-               WHEN    1
-                   MOVE    ZERO                TO  SANTEI-NYUGAIKBN
-                   MOVE    ZERO                TO  SANTEI-SRYKA
-               WHEN    2
-                   MOVE    SPA-NYUGAIKBN       TO  SANTEI-NYUGAIKBN
-                   MOVE    ZERO                TO  SANTEI-SRYKA
-               WHEN    3
-                   MOVE    ZERO                TO  SANTEI-NYUGAIKBN
-                   MOVE    SKARRK-SRYKA        TO  SANTEI-SRYKA
-               WHEN    4
-                   MOVE    SPA-NYUGAIKBN       TO  SANTEI-NYUGAIKBN
-                   MOVE    SKARRK-SRYKA        TO  SANTEI-SRYKA
-           END-EVALUATE
+      ***  EVALUATE    TNS-SANTEIRRKKBN
+      *        WHEN    1
+      *            MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+      *            MOVE    ZERO                TO  SANTEI-SRYKA
+      *        WHEN    2
+      *            MOVE    SPA-NYUGAIKBN       TO  SANTEI-NYUGAIKBN
+      *            MOVE    ZERO                TO  SANTEI-SRYKA
+      *        WHEN    3
+      *            MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+      *            MOVE    SKARRK-SRYKA        TO  SANTEI-SRYKA
+      *        WHEN    4
+      *            MOVE    SPA-NYUGAIKBN       TO  SANTEI-NYUGAIKBN
+      *            MOVE    SKARRK-SRYKA        TO  SANTEI-SRYKA
+      *****END-EVALUATE
       *
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei"        TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
+           MOVE    "key12"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_santei"        TO  MCP-TABLE
-               MOVE    "key3"              TO  MCP-PATHNAME
+               MOVE    "key12"             TO  MCP-PATHNAME
                PERFORM 920-SANTEI-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-SANTEI
@@ -340,12 +340,12 @@
                END-IF
       *
                MOVE    "tbl_santei"        TO  MCP-TABLE
-               MOVE    "key3"              TO  MCP-PATHNAME
+               MOVE    "key12"             TO  MCP-PATHNAME
                PERFORM 920-SANTEI-READ-SEC
            END-PERFORM
       *
            MOVE    "tbl_santei"        TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
+           MOVE    "key12"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            .
