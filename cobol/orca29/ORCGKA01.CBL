@@ -2513,8 +2513,11 @@
            PERFORM VARYING     IDG     FROM    IDX-G   BY  1
                    UNTIL      (IDG     >   SPA-MEISAI-MAX )
                IF     (SPA-GMN-SELNUM2     =   SPA-GMN-TBANGO (IDG))
-                 AND  (SPA-WKSRY-ZAIKAIKEI(IDX-W)  =   ZERO )
-                   MOVE    "ºï"            TO  SPA-GMN-TFLG (IDG)
+                   IF      (SPA-WKSRY-ZAIKAIKEI(IDX-W)  =   ZERO )
+                       MOVE    "ºï"            TO  SPA-GMN-TFLG (IDG)
+                   ELSE
+                       MOVE    SPACE           TO  SPA-GMN-TFLG (IDG)
+                   END-IF
                END-IF
                IF          SPA-NAI-KAIFLG (IDG)    =   1
                    MOVE    SPA-WKSRY-ZAIKAIKEI(IDX-W)
