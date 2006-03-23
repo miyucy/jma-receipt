@@ -173,7 +173,7 @@
                                IF      FLG-END         =   1
                                    GO  TO  200-MAIN-EXT
                                END-IF
-                               MOVE    '03'        TO  LNK-SYUACC-I-KBN
+                               MOVE    "03"        TO  LNK-SYUACC-I-KBN
                                PERFORM 2004-ORCSSYUACC-SEC
                                IF      FLG-END         =   1
                                    GO  TO  200-MAIN-EXT
@@ -190,7 +190,7 @@
                                IF      FLG-END         =   1
                                    GO  TO  200-MAIN-EXT
                                END-IF
-                               MOVE    '04'        TO  LNK-SYUACC-I-KBN
+                               MOVE    "04"        TO  LNK-SYUACC-I-KBN
                                PERFORM 2004-ORCSSYUACC-SEC
                            WHEN    OTHER
                                PERFORM 2001-ORCSSYUBETU-SEC
@@ -201,7 +201,7 @@
                                IF      FLG-END         =   1
                                    GO  TO  200-MAIN-EXT
                                END-IF
-                               MOVE    '04'        TO  LNK-SYUACC-I-KBN
+                               MOVE    "04"        TO  LNK-SYUACC-I-KBN
                                PERFORM 2004-ORCSSYUACC-SEC
                        END-EVALUATE
                    WHEN    "2"
@@ -213,7 +213,7 @@
                        IF      FLG-END         =   1
                            GO  TO  200-MAIN-EXT
                        END-IF
-                       MOVE    '03'        TO  LNK-SYUACC-I-KBN
+                       MOVE    "03"        TO  LNK-SYUACC-I-KBN
                        PERFORM 2004-ORCSSYUACC-SEC
                END-EVALUATE
            ELSE
@@ -314,6 +314,12 @@
       *    診療会計請求点取得サブ
       *****************************************************************
        2002-ORCSTOTALACCT-SEC        SECTION.
+      *
+      *    対象レセプトが存在しないとき処理はしない
+           IF      LNK-SYUACC-IO-TEISYUTUSAKI (1)
+                                       =   ZERO
+               GO  TO  2002-ORCSTOTALACCT-EXT
+           END-IF
       *
            INITIALIZE                  ORCSTOTALACCT-AREA
            MOVE    SPA-HOSPID      TO  LNK-ORCSTOTALACCT-HOSPID
@@ -423,6 +429,12 @@
       *****************************************************************
        2003-ORCHCN33SUB-SEC        SECTION.
       *
+      *    対象レセプトが存在しないとき処理はしない
+           IF      LNK-SYUACC-IO-TEISYUTUSAKI (1)
+                                       =   ZERO
+               GO  TO  2003-ORCHCN33SUB-EXT
+           END-IF
+      *
            INITIALIZE                  ORCHCN33SUB-AREA
            MOVE    SPA-HOSPID      TO  LNK-ORCHCN33SUB-HOSPID
            MOVE    SPA-PTID        TO  LNK-ORCHCN33SUB-PTID
@@ -440,12 +452,17 @@
            IF      LNK-ORCHCN33SUB-RC  =   ZERO
                CONTINUE
            ELSE
-               MOVE    LNK-ORCHCN33SUB-RC      TO  LNK-SYUACC-RC
-               MOVE    1                       TO  FLG-END
+               IF      LNK-ORCHCN33SUB-RC  =   4
+                   DISPLAY "ORCHCN33SUB=" LNK-ORCHCN33SUB-RC
+                   GO  TO  2003-ORCHCN33SUB-EXT
+               ELSE
+                   MOVE    LNK-ORCHCN33SUB-RC      TO  LNK-SYUACC-RC
+                   MOVE    1                       TO  FLG-END
       *
-               DISPLAY "ORCHCN33SUB=" LNK-SYUACC-RC
+                   DISPLAY "ORCHCN33SUB=" LNK-SYUACC-RC
       *
-               GO  TO  2003-ORCHCN33SUB-EXT
+                   GO  TO  2003-ORCHCN33SUB-EXT
+               END-IF
            END-IF
       *
       *    レセプト別集計
