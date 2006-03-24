@@ -1033,6 +1033,15 @@
                                INTO        SPA-J98-GMN-NAME(IDX)
                 END-STRING
            END-IF
+      *    後発医薬品再編集
+           IF     (TNS-SRYCD(1:1)      =   "6") AND
+                  (TNS-KOUHATUKBN      =   1  )
+                MOVE    SPACE              TO  SPA-J98-GMN-NAME (IDX)
+                STRING  "【後発】"
+                        TNS-NAME      DELIMITED   BY  SIZE
+                               INTO        SPA-J98-GMN-NAME(IDX)
+                END-STRING
+           END-IF
       *
            .
        31012-INPUTCD-HEN-EXT.
@@ -1197,6 +1206,10 @@
       *        システム予約の入力不可分
                IF      SPA-J98-GMN-SYORI3      =   "U6"
                    IF      TNS-SRYCD           >=  "099999911"
+                       MOVE    1               TO  FLG-CHK
+                   END-IF
+      *            リハビリ算定
+                   IF      TNS-SRYCD           =   "099800201"
                        MOVE    1               TO  FLG-CHK
                    END-IF
                    IF      TNS-SRYCD(1:4)      =   "0996"
@@ -1492,6 +1505,15 @@
                        TNS-NAME            DELIMITED   BY  SIZE
                        INTO                    SPA-J98-GMN-NAME(IDX)
                END-STRING
+           END-IF
+      *    後発医薬品再編集
+           IF     (TNS-SRYCD(1:1)      =   "6") AND
+                  (TNS-KOUHATUKBN      =   1  )
+                MOVE    SPACE              TO  SPA-J98-GMN-NAME (IDX)
+                STRING  "【後発】"
+                        TNS-NAME      DELIMITED   BY  SIZE
+                               INTO        SPA-J98-GMN-NAME(IDX)
+                END-STRING
            END-IF
       *
       *    検査の時、包括の編集

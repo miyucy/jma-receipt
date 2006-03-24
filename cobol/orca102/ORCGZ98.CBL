@@ -1129,6 +1129,10 @@
                    IF      TNS-SRYCD           >=  "099999911"
                        MOVE    1               TO  FLG-CHK
                    END-IF
+      *            リハビリ算定
+                   IF      TNS-SRYCD           =   "099800201"
+                       MOVE    1               TO  FLG-CHK
+                   END-IF
                    IF      TNS-SRYCD(1:4)      =   "0996"
                                                OR  "0997"
                        MOVE    1               TO  FLG-CHK
