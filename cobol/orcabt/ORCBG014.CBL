@@ -271,8 +271,6 @@
            03  WRK-Z4                  PIC ZZZZ.
            03  WRK-Z5                  PIC ZZZZ9.
            03  WRK-Z8                  PIC ZZZZZZZ9.
-           03  WRK-HENPTNUM            PIC X(20).
-           03  WRK-HENPTNUM2           PIC X(08).
       *
       *    印刷編集領域
        01  WRK-PRT-AREA.
@@ -303,7 +301,7 @@
                05  WRK-PRT2-HKNJANAME  PIC X(40).
       *    レセプト種別明細
            03  WRK-PRT3-AREA.
-               05  WRK-PRT3-FILLER1    PIC X(02).
+               05  WRK-PRT3-FILLER1    PIC X(24).
                05  WRK-PRT3-GOKEI      PIC X(22).
                05  WRK-PRT3-KENSU      PIC X(05).
                05  WRK-PRT3-FILLER2    PIC X(02).
@@ -313,9 +311,9 @@
                05  WRK-PRT3-FILLER4    PIC X(02).
       *    患者明細
            03  WRK-PRT4-AREA.
-               05  WRK-PRT4-G              OCCURS  3.
-                   07  WRK-PRT4-FILLER1    PIC X(02).
-                   07  WRK-PRT4-PTNUM      PIC X(08).
+               05  WRK-PRT4-G              OCCURS  2.
+                   07  WRK-PRT4-FILLER1    PIC X(10).
+                   07  WRK-PRT4-PTNUM      PIC X(20).
                    07  WRK-PRT4-FILLER2    PIC X(02).
                    07  WRK-PRT4-NAME       PIC X(18).
                    07  WRK-PRT4-NISSU      PIC X(05).
@@ -1924,40 +1922,12 @@
        3202-BODY-SUB-SET-SEC       SECTION.
       *
            ADD     1                   TO  IDX
-           MOVE    "　"                TO  WRK-PRT4-FILLER1(IDX)
+           MOVE    "　　　　　"        TO  WRK-PRT4-FILLER1(IDX)
            MOVE    SPACE               TO  WRK-PRT4-FILLER2(IDX)
            MOVE    "日"                TO  WRK-PRT4-FILLER3(IDX)
            MOVE    "点"                TO  WRK-PRT4-FILLER4(IDX)
       *
-           INSPECT TOKEI-PTNUM  REPLACING  ALL " "  BY  ""
-           MOVE    SPACE               TO  WRK-HENPTNUM
-           MOVE    ZERO                TO  IDZ
-      *
-           PERFORM VARYING     IDY     FROM    1   BY  1
-                   UNTIL       IDY     >   20
-               IF      TOKEI-PTNUM(IDY:1)   NOT =  SPACE
-                   COMPUTE IDZ =   IDZ +   1
-                   MOVE    TOKEI-PTNUM(IDY:1)   TO  WRK-HENPTNUM(IDZ:1)
-               END-IF
-           END-PERFORM
-      *
-           MOVE    SPACE               TO  WRK-HENPTNUM2
-           MOVE    8                   TO  IDZ
-      *
-           PERFORM VARYING     IDY     FROM    8   BY  -1
-                   UNTIL       IDY     <   1
-               IF      WRK-HENPTNUM(IDY:)   NOT =  SPACE
-                   MOVE    WRK-HENPTNUM(IDY:1)  TO  WRK-HENPTNUM2(IDZ:1)
-                   COMPUTE IDZ =   IDZ -   1
-               END-IF
-           END-PERFORM
-      *
-           PERFORM VARYING     IDY     FROM    IDZ   BY  -1
-                   UNTIL       IDY     <   1
-               MOVE    " "             TO  WRK-HENPTNUM2(IDY:1)
-           END-PERFORM
-      *
-           MOVE    WRK-HENPTNUM2       TO  WRK-PRT4-PTNUM(IDX)
+           MOVE    TOKEI-PTNUM         TO  WRK-PRT4-PTNUM(IDX)
       *
            MOVE    TOKEI-NISSU         TO  WRK-Z5
            MOVE    WRK-Z5              TO  WRK-PRT4-NISSU(IDX)
@@ -2036,7 +2006,7 @@
                                            SUM-GOK-TENSU(3)
       *
       *    患者情報セット
-           IF      IDX             =   3
+           IF      IDX             =   2
                MOVE    WRK-PRT4-AREA   TO  WRK-PRT-LINE
                PERFORM 320-BODY-SET-SEC
                MOVE    SPACE           TO  WRK-PRT4-AREA
@@ -2075,7 +2045,8 @@
       *
            MOVE    SPACE           TO  WRK-PRT3-AREA
       *
-           MOVE    "　"            TO  WRK-PRT3-FILLER1
+           MOVE    "　　　　　　　　　　　　"
+                                   TO  WRK-PRT3-FILLER1
            MOVE    "件"            TO  WRK-PRT3-FILLER2
            MOVE    "日"            TO  WRK-PRT3-FILLER3
            MOVE    "点"            TO  WRK-PRT3-FILLER4
