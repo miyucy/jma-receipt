@@ -2245,46 +2245,61 @@
            PERFORM 3101-HENSYU-SEC
       *        
            INITIALIZE                  SPA-GMN-TBL
-           EVALUATE    SPA-GMN-SYUKA
-               WHEN    "00"
+      *
+           EVALUATE    SPA-GMN-SYOKBN
+      *            *»ØÄê°õºþ
+               WHEN    "F"
+                   MOVE    4               TO  SPA-GMN-CUR
                    PERFORM VARYING IDW FROM    1   BY  1
                            UNTIL   IDW >       WRK-CONS-PAGE-MAX
-                       PERFORM VARYING IDX FROM    1   BY  1
-                               UNTIL   IDX >       WRK-CONS-LINE-MAX
-                               OR      SPA-NAI-PRTJYUNI (IDW IDX)
-                                                       =   SPACE
-                           MOVE    "T"     TO
-                                           SPA-GMN-TCHK-VALUE (IDW IDX)
-                       END-PERFORM
+                     PERFORM VARYING IDX FROM    1   BY  1
+                             UNTIL   IDX >       WRK-CONS-LINE-MAX
+                             OR      SPA-NAI-PRTJYUNI (IDW IDX)
+                                           =   SPACE
+                       MOVE    "F"     TO  SPA-GMN-TCHK-VALUE (IDW IDX)
+                     END-PERFORM 
                    END-PERFORM
-                   MOVE    "T"         TO  SPA-GMN-TCHK-VALUE (1 34)
-                                           SPA-GMN-TCHK-VALUE (1 35)
-                                           SPA-GMN-TCHK-VALUE (1 36)
-               WHEN    OTHER    
-                   PERFORM VARYING IDW FROM    1   BY  1
-                           UNTIL   IDW >       WRK-CONS-PAGE-MAX
-                       PERFORM VARYING IDX FROM    1   BY  1
-                               UNTIL   IDX >       WRK-CONS-LINE-MAX
-                               OR      SPA-NAI-PRTJYUNI (IDW IDX)
-                                                    =   SPACE
-                           EVALUATE    SPA-NAI-TEISYUTUSAKI(IDW IDX)
-                               WHEN    "1"              
-                                   IF      SPA-GMN-SYOKBN  =   "F"
-                                       MOVE    "F"     TO
+                   MOVE    "F"      TO  SPA-GMN-TCHK-VALUE (1 34)
+                                        SPA-GMN-TCHK-VALUE (1 35)
+                                        SPA-GMN-TCHK-VALUE (1 36)
+      *            *Á´·ï°õºþ
+               WHEN    "T"
+                   MOVE    199             TO  SPA-GMN-CUR
+                   IF      SPA-GMN-SYUKA   =   "00"
+                       PERFORM VARYING IDW FROM    1   BY  1
+                               UNTIL   IDW >       WRK-CONS-PAGE-MAX
+                           PERFORM VARYING IDX FROM    1   BY  1
+                                   UNTIL   IDX >       WRK-CONS-LINE-MAX
+                                   OR      SPA-NAI-PRTJYUNI (IDW IDX)
+                                                       =   SPACE
+                               MOVE    "T"     TO
                                            SPA-GMN-TCHK-VALUE (IDW IDX)
-                                   ELSE
-                                       MOVE    "T"     TO
+                           END-PERFORM
+                       END-PERFORM
+                       MOVE    "T"      TO  SPA-GMN-TCHK-VALUE (1 34)
+                                            SPA-GMN-TCHK-VALUE (1 35)
+                                            SPA-GMN-TCHK-VALUE (1 36)
+                   ELSE
+                       PERFORM VARYING IDW FROM    1   BY  1
+                               UNTIL   IDW >       WRK-CONS-PAGE-MAX
+                           PERFORM VARYING IDX FROM    1   BY  1
+                                   UNTIL   IDX >       WRK-CONS-LINE-MAX
+                                   OR      SPA-NAI-PRTJYUNI (IDW IDX)
+                                                        =   SPACE
+                               IF      SPA-NAI-TEISYUTUSAKI(IDW IDX)
+                                                            =   "1"
+                                   MOVE    "T"     TO
                                            SPA-GMN-TCHK-VALUE (IDW IDX)
-                                   END-IF
-                               WHEN    "2"              
+                               ELSE
                                    MOVE    "F"     TO
                                            SPA-GMN-TCHK-VALUE (IDW IDX)
-                           END-EVALUATE
+                               END-IF
+                           END-PERFORM
                        END-PERFORM
-                   END-PERFORM
-                   MOVE    "F"         TO  SPA-GMN-TCHK-VALUE (1 34)
-                                           SPA-GMN-TCHK-VALUE (1 35)
-                                           SPA-GMN-TCHK-VALUE (1 36)
+                       MOVE    "F"         TO  SPA-GMN-TCHK-VALUE (1 34)
+                                               SPA-GMN-TCHK-VALUE (1 35)
+                                               SPA-GMN-TCHK-VALUE (1 36)
+                   END-IF    
            END-EVALUATE    
            .
        4109-SYUKA-CHK-EXT.
