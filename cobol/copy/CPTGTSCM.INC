@@ -75,7 +75,7 @@
                05  PIC X(23)   VALUE "045tbl_jinmei".
                05  PIC X(23)   VALUE "046tbl_monthlynum".
                05  PIC X(23)   VALUE "000view_Q001".
-               05  PIC X(23)   VALUE "052tbl_tekioubyomei".
+               05  PIC X(23)   VALUE "052tbl_yakujyo".
                05  PIC X(23)   VALUE "055tbl_nyuinkhn".
                05  PIC X(23)   VALUE "058tbl_ptnyuinrrk".
                05  PIC X(23)   VALUE "059tbl_pttainfuka".
@@ -124,8 +124,9 @@
                05  PIC X(23)   VALUE "090tbl_santei_prv".
                05  PIC X(23)   VALUE "091tbl_srykarrk_prv".
                05  PIC X(23)   VALUE "094tbl_hours".
+               05  PIC X(23)   VALUE "095tbl_tekioubyomei".
            03  TGTSCM-R     REDEFINES TGTSCM-VAL.
-               05  TGTSCM-OCC  OCCURS  100.
+               05  TGTSCM-OCC  OCCURS  101.
                    07  TGTSCM-NO     PIC 9(03).
                    07  TGTSCM-ID     PIC X(20).
-           03  TGTSCM-MAX      PIC 9(05)   VALUE 100.
+           03  TGTSCM-MAX      PIC 9(05)   VALUE 101.
