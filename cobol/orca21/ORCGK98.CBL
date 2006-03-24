@@ -1218,6 +1218,10 @@
                    IF      TNS-SRYCD           >=  "099999911"
                        MOVE    1               TO  FLG-CHK
                    END-IF
+      *            •Í•œ•”•ÍªªƒÍ
+                   IF      TNS-SRYCD           =   "099800201"
+                       MOVE    1               TO  FLG-CHK
+                   END-IF
                    IF      TNS-SRYCD(1:4)      =   "0996"
                                                OR  "0997"
                        MOVE    1               TO  FLG-CHK
@@ -1511,6 +1515,15 @@
                        TNS-NAME            DELIMITED   BY  SIZE
                        INTO                    SPA-K98-GMN-NAME(IDX)
                END-STRING
+           END-IF
+      *    ∏Â»Ø∞ÂÃÙ… ∫∆ ‘Ω∏
+           IF     (TNS-SRYCD(1:1)      =   "6") AND
+                  (TNS-KOUHATUKBN      =   1  )
+                MOVE    SPACE              TO  SPA-K98-GMN-NAME (IDX)
+                STRING  "°⁄∏Â»Ø°€"
+                        TNS-NAME      DELIMITED   BY  SIZE
+                               INTO        SPA-K98-GMN-NAME(IDX)
+                END-STRING
            END-IF
       *
       *    ∏°∫∫§Œª˛°¢ Ò≥Á§Œ ‘Ω∏
