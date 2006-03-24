@@ -301,7 +301,7 @@
                05  WRK-PRT2-HKNJANAME  PIC X(40).
       *    レセプト種別明細
            03  WRK-PRT3-AREA.
-               05  WRK-PRT3-FILLER1    PIC X(24).
+               05  WRK-PRT3-FILLER1    PIC X(22).
                05  WRK-PRT3-GOKEI      PIC X(22).
                05  WRK-PRT3-KENSU      PIC X(05).
                05  WRK-PRT3-FILLER2    PIC X(02).
@@ -1922,7 +1922,7 @@
        3202-BODY-SUB-SET-SEC       SECTION.
       *
            ADD     1                   TO  IDX
-           MOVE    "　　　　　"        TO  WRK-PRT4-FILLER1(IDX)
+           MOVE    "　"                TO  WRK-PRT4-FILLER1(IDX)
            MOVE    SPACE               TO  WRK-PRT4-FILLER2(IDX)
            MOVE    "日"                TO  WRK-PRT4-FILLER3(IDX)
            MOVE    "点"                TO  WRK-PRT4-FILLER4(IDX)
@@ -2045,8 +2045,7 @@
       *
            MOVE    SPACE           TO  WRK-PRT3-AREA
       *
-           MOVE    "　　　　　　　　　　　　"
-                                   TO  WRK-PRT3-FILLER1
+           MOVE    "　"            TO  WRK-PRT3-FILLER1
            MOVE    "件"            TO  WRK-PRT3-FILLER2
            MOVE    "日"            TO  WRK-PRT3-FILLER3
            MOVE    "点"            TO  WRK-PRT3-FILLER4
