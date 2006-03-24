@@ -503,7 +503,7 @@
            END-PERFORM
       *
       *
-           IF     (IDX                 =   200 )  AND
+           IF     (IDX                 >=   200 )  AND
                   (FLG-TENSU           =   ZERO)
                MOVE    "0003"          TO  SPA-ERRCD
                MOVE    1               TO  SPA-GMN-NEXT
