@@ -2336,6 +2336,7 @@
                         END-IF
                     END-PERFORM
                     IF      FLG-HKNCOMBI-MATCH   =   ZERO
+                      IF  TBL-HKNCOMBI(IDX1)   NOT =   ZERO
                         MOVE  TBL-HKNCOMBI(IDX1)   TO
                               LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM
                                                       (IDX-HKNCOMBI)
@@ -2348,6 +2349,7 @@
                                                  (IDX-HKNCOMBI 1)
                         ADD   1        TO   LNK-ORCHCN33SUB-DAY
                                                  (IDX-HKNCOMBI 1)
+                      END-IF
                     END-IF
       *         END-IF
            END-PERFORM
