@@ -121,6 +121,9 @@
            03  FLG-DEL             PIC 9(01).
            03  FLG-TIME-NYU        PIC 9(01).
            03  FLG-DOUJITU        PIC 9(01).
+      *    同日初診チェック
+           03  FLG-TAKA-2          PIC 9(01).
+           03  FLG-TAKA-3          PIC 9(01).
            03  FLG-SINSATU2       PIC 9(01).
       *
       *    添字領域
@@ -1437,17 +1440,6 @@
                IF      WRK-SYONIKA-KBN     =   "4"
                    GO      TO      1005-KASAN-CHK-EXT
                END-IF
-      ******** EVALUATE    WRK-COM-INPUTCD (IDX-Z) 
-      *            再診時時間外加算
-      *            WHEN    "112005770"
-      *            再診時休日加算
-      *            WHEN    "112005870"
-      *            再診時深夜加算
-      *            WHEN    "112005970"
-      *            再診時時間外特例
-      *            WHEN    "112006070"
-      *                GO      TO      1005-KASAN-CHK-EXT
-      ******** END-EVALUATE
            END-IF
       *    寝たきり在宅があり、在宅指導料はＯＫとする
            IF     (LNK-ORCSC-NETAKIRI-ARI  NOT =   ZERO  )  OR
@@ -1956,7 +1948,7 @@
       *****************************************************************
       *    年齢加算時間外自動振替処理
       *****************************************************************
-       1008-NENREI-CHENGE-SEC           SECTION.
+      *1008-NENREI-CHENGE-SEC           SECTION.
       *
       *    MOVE    WRK-NYU-SRYCD       TO  WRK-SRYCD
       *    加算存在チェック
@@ -1993,9 +1985,9 @@
       *            END-IF
       *    END-EVALUATE
       ****
-           .
-       1008-NENREI-CHENGE-EXT.
-           EXIT.
+      *    .
+      *1008-NENREI-CHENGE-EXT.
+      *    EXIT.
       *
       *****************************************************************
       *    ６歳未満の乳幼児加算追加処理
@@ -2129,71 +2121,71 @@
       *****************************************************************
       *    寝たきり老人在宅総合診療科に加算追加処理
       *****************************************************************
-       1009-NETAKIRI-HEN-SEC           SECTION.
+      *1009-NETAKIRI-HEN-SEC           SECTION.
       *
       *    既に自動発生した場合、自動加算しない
-           IF      WRK-COM-AUTOFLG (IDX-Z)     =   "1"
-               GO      TO      1009-NETAKIRI-HEN-EXT
-           END-IF
-           MOVE    "1"                 TO  WRK-COM-AUTOFLG (IDX-Z)
+      *    IF      WRK-COM-AUTOFLG (IDX-Z)     =   "1"
+      *        GO      TO      1009-NETAKIRI-HEN-EXT
+      *    END-IF
+      *    MOVE    "1"                 TO  WRK-COM-AUTOFLG (IDX-Z)
       *    初回以外自動加算しない
-           IF      LNK-ORCSC-NETAKIRI-ARI3 =   1
-               GO      TO      1009-NETAKIRI-HEN-EXT
-           END-IF
+      *    IF      LNK-ORCSC-NETAKIRI-ARI3 =   1
+      *        GO      TO      1009-NETAKIRI-HEN-EXT
+      *    END-IF
       *
       *    既に入力のある時、自動加算しない
       *    ２４時間連携体制加算（１)
-           MOVE    "114701870"         TO  WRK-SRYCD
-           PERFORM 1110-KASAN-CHK-SEC
-           IF      FLG-ARI             =   1
-               GO      TO      1009-NETAKIRI-HEN-EXT
-           END-IF
+      *    MOVE    "114701870"         TO  WRK-SRYCD
+      *    PERFORM 1110-KASAN-CHK-SEC
+      *    IF      FLG-ARI             =   1
+      *        GO      TO      1009-NETAKIRI-HEN-EXT
+      *    END-IF
       *    ２４時間連携体制加算（２)
-           MOVE    "114703970"         TO  WRK-SRYCD
-           PERFORM 1110-KASAN-CHK-SEC
-           IF      FLG-ARI             =   1
-               GO      TO      1009-NETAKIRI-HEN-EXT
-           END-IF
+      *    MOVE    "114703970"         TO  WRK-SRYCD
+      *    PERFORM 1110-KASAN-CHK-SEC
+      *    IF      FLG-ARI             =   1
+      *        GO      TO      1009-NETAKIRI-HEN-EXT
+      *    END-IF
       *    ２４時間連携体制加算（３)
-           MOVE    "114703770"         TO  WRK-SRYCD
-           PERFORM 1110-KASAN-CHK-SEC
-           IF      FLG-ARI             =   1
-               GO      TO      1009-NETAKIRI-HEN-EXT
-           END-IF
+      *    MOVE    "114703770"         TO  WRK-SRYCD
+      *    PERFORM 1110-KASAN-CHK-SEC
+      *    IF      FLG-ARI             =   1
+      *        GO      TO      1009-NETAKIRI-HEN-EXT
+      *    END-IF
       *
       *    ２４時間連携体制加算（１)
-           MOVE    "114701870"         TO  WRK-SRYCD
-           MOVE    IDX-Z               TO  IDX-S
-           PERFORM 1100-KASAN-SET-SEC
-           IF      FLG-ADD             =   1
+      *    MOVE    "114701870"         TO  WRK-SRYCD
+      *    MOVE    IDX-Z               TO  IDX-S
+      *    PERFORM 1100-KASAN-SET-SEC
+      *    IF      FLG-ADD             =   1
       *        自動追加分を止める
-               MOVE    SPACE               TO  WRK-COM-AUTOKBN (IDX-S)
-               GO      TO      1009-NETAKIRI-HEN-EXT
-           END-IF
+      *        MOVE    SPACE               TO  WRK-COM-AUTOKBN (IDX-S)
+      *        GO      TO      1009-NETAKIRI-HEN-EXT
+      *    END-IF
       *
       *    ２４時間連携体制加算（２)
-           MOVE    "114703970"         TO  WRK-SRYCD
-           MOVE    IDX-Z               TO  IDX-S
-           PERFORM 1100-KASAN-SET-SEC
-           IF      FLG-ADD             =   1
+      *    MOVE    "114703970"         TO  WRK-SRYCD
+      *    MOVE    IDX-Z               TO  IDX-S
+      *    PERFORM 1100-KASAN-SET-SEC
+      *    IF      FLG-ADD             =   1
       *        自動追加分を止める
-               MOVE    SPACE               TO  WRK-COM-AUTOKBN (IDX-S)
-               GO      TO      1009-NETAKIRI-HEN-EXT
-           END-IF
+      *        MOVE    SPACE               TO  WRK-COM-AUTOKBN (IDX-S)
+      *        GO      TO      1009-NETAKIRI-HEN-EXT
+      *    END-IF
       *
       *    ２４時間連携体制加算（３)
-           MOVE    "114703770"         TO  WRK-SRYCD
-           MOVE    IDX-Z               TO  IDX-S
-           PERFORM 1100-KASAN-SET-SEC
-           IF      FLG-ADD             =   1
+      *    MOVE    "114703770"         TO  WRK-SRYCD
+      *    MOVE    IDX-Z               TO  IDX-S
+      *    PERFORM 1100-KASAN-SET-SEC
+      *    IF      FLG-ADD             =   1
       *        自動追加分を止める
-               MOVE    SPACE               TO  WRK-COM-AUTOKBN (IDX-S)
-               GO      TO      1009-NETAKIRI-HEN-EXT
-           END-IF
+      *        MOVE    SPACE               TO  WRK-COM-AUTOKBN (IDX-S)
+      *        GO      TO      1009-NETAKIRI-HEN-EXT
+      *    END-IF
       *
-           .
-       1009-NETAKIRI-HEN-EXT.
-           EXIT.
+      *    .
+      *1009-NETAKIRI-HEN-EXT.
+      **** EXIT.
       *****************************************************************
       *    診療情報提供算定日追加処理
       *****************************************************************
@@ -3280,6 +3272,7 @@
            MOVE    ZERO                TO  LNK-ORCSC-GAIRAI-TEN
       *
            MOVE    ZERO                TO  FLG-TAKA
+           MOVE    ZERO                TO  FLG-TAKA-2
            MOVE    ZERO                TO  FLG-DOUJITU
            MOVE    ZERO                TO  IDX-SINSATU2
       *
@@ -3347,6 +3340,7 @@
                                   (WRK-COM-SRYKA(IDX-Z)
                                                NOT =   SPA-SRYKA)
                                COMPUTE IDX-ZAI2    =   IDX-ZAI2  -  1
+                               MOVE    1               TO  FLG-TAKA-2
                            ELSE
                                MOVE   IDX-Z            TO  IDX-SYU2
                                MOVE    1               TO  FLG-TAKA
@@ -3359,6 +3353,7 @@
                                   (WRK-COM-SRYKA(IDX-Z)
                                                NOT =   SPA-SRYKA)
                                COMPUTE IDX-ZAI1    =   IDX-ZAI1  -  1
+                               MOVE    1               TO  FLG-TAKA-2
                            ELSE
                                MOVE   IDX-Z            TO  IDX-SYU2
                                MOVE    1               TO  FLG-TAKA
@@ -3629,27 +3624,7 @@
            END-IF
       *    同日初診チェック
            IF     (FLG-DOUJITU         =   1   )
-      *        同日初診は科が違うこと
-               IF      IDX-SYU2        >   ZERO
-                    IF      WRK-COM-SRYKA(IDX-SYU2)
-                                       =   WRK-COM-SRYKA(IDX-SINSATU2)
-                       MOVE    "2067"          TO  SPA-ERRCD
-                       MOVE    "1"             TO  WRK-COM-CUR
-                                                       (IDX-SINSATU2)
-                       GO      TO      200-ALL-SYORI-EXT
-                   END-IF
-               ELSE
-      *            当日に他の受診があること
-                   IF     ( SPA-SYORIFLG        =   ZERO     ) AND
-                          ( SPA-RRK-LSTYMD      =   SPA-SRYYMD)
-                       CONTINUE
-                   ELSE
-                       MOVE    "2069"          TO  SPA-ERRCD
-                       MOVE    "1"             TO  WRK-COM-CUR
-                                                       (IDX-SINSATU2)
-                       GO      TO      200-ALL-SYORI-EXT
-                   END-IF
-               END-IF
+               PERFORM 20015-DOUJIT-CHK-SEC
            END-IF
       *    新規患者入力の時、必ず初診料であること
            IF     (LNK-ORCSC-PG        =   "K02"  )  AND
@@ -3779,6 +3754,63 @@
        200-ALL-SYORI-EXT.
            EXIT.
       *****************************************************************
+      *    同日初診チェック処理
+      *****************************************************************
+       20015-DOUJIT-CHK-SEC               SECTION.
+      *
+      *    同日初診は科が違うこと
+           IF      IDX-SYU2        >   ZERO
+                IF      WRK-COM-SRYKA(IDX-SYU2)
+                                       =   WRK-COM-SRYKA(IDX-SINSATU2)
+                   MOVE    "2067"          TO  SPA-ERRCD
+                   MOVE    "1"             TO  WRK-COM-CUR
+                                                       (IDX-SINSATU2)
+               END-IF
+           ELSE
+      *        当日に他の受診があること（外来のみ）
+               IF     ( SPA-SYORIFLG        =   ZERO     ) AND
+                      ( SPA-RRK-LSTYMD      =   SPA-SRYYMD)
+                   CONTINUE
+               ELSE
+                   IF      SPA-NYUGAIKBN       =   "2"
+                       MOVE    "2069"          TO  SPA-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR
+                                                       (IDX-SINSATU2)
+                   END-IF
+               END-IF
+           END-IF
+      *    複数科コメントがある時、自動発生分は削除
+           IF     (FLG-TAKA-2          =   1 ) AND
+                  (SPA-ERRCD           =   SPACE )
+               MOVE    ZERO                TO  FLG-TAKA-3
+               PERFORM VARYING IDX-Z   FROM    1   BY  1
+                       UNTIL  (IDX-Z       >=  IDX-SINSATU2 )   OR
+                              (SPA-ERRCD       NOT =   SPACE )
+                   IF      WRK-GMN-INPUTCD(IDX-Z)(1:1) =   "$"
+                       MOVE    1               TO  FLG-TAKA-3
+                   END-IF
+      *            同日初診と同じ科
+                   IF     (WRK-COM-SRYKA (IDX-Z)
+                                           =   WRK-COM-SRYKA
+                                                       (IDX-SINSATU2))
+                      AND (FLG-TAKA-3      =   1    )
+                       IF    ((WRK-COM-INPUTCD(IDX-Z)  =  "830000020")
+                         AND  (WRK-COM-SRYKBN (IDX-Z)  =  "11"      ))
+                        OR   ((WRK-COM-INPUTCD(IDX-Z)  =  "830000021")
+                         AND  (WRK-COM-SRYKBN (IDX-Z)  =  "12"      ))
+                           MOVE    SPACE           TO  WRK-GMN-INPUTCD
+                                                               (IDX-Z)
+                           MOVE    SPACE           TO  WRK-GMN-INPUTCD
+                                                         (IDX-Z - 1)
+                       END-IF
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+           .
+       20015-DOUJIT-TAKACHK-EXT.
+           EXIT.
+      *****************************************************************
       *    重複チェック処理
       *****************************************************************
        2000-JYUFUKU-CHK-SEC               SECTION.
@@ -3800,10 +3832,8 @@
                    ELSE
                        MOVE    1                 TO  FLG-CHK
                    END-IF
-      *            診療情報提供料（Ａ），(Ｂ),(Ｄ)は重複時警告とする
+      *            診療情報提供料（１）は重複時警告とする
                    IF    WRK-COM-INPUTCD (IDX-Z) =   "180016110"
-                                                 OR  "180016210"
-                                                 OR  "113004410"
       *??                                        OR  "113009510"
                       MOVE    1                  TO  FLG-KEI
                    END-IF
