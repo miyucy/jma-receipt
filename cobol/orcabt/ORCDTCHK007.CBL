@@ -492,12 +492,16 @@
       *
       *    ´µ¼ÔÈÖ¹æ
            IF    ( DTCHK004-PTNUM      =   SPACE )
-               MOVE    DTCHK004-PTID   TO  WRK-MAE-INPUT
+               MOVE   SPACE            TO  WRK-MAE-INPUT
+               STRING "´µ¼Ô£É£Ä"       DELIMITED   BY  SIZE
+                      DTCHK004-PTID    DELIMITED   BY  SIZE
+               INTO   HCM402-PTNUM
+               END-STRING
            ELSE
                MOVE    DTCHK004-PTNUM  TO  WRK-MAE-INPUT
+               PERFORM 800-ZENKAKU-HEN-SEC
+               MOVE    WRK-OUT-INPUT   TO  HCM402-PTNUM
            END-IF
-           PERFORM 800-ZENKAKU-HEN-SEC
-           MOVE    WRK-OUT-INPUT       TO  HCM402-PTNUM
       *
       *    ´µ¼Ô»áÌ¾
            MOVE    DTCHK004-NAME       TO  HCM402-NAME

@@ -312,6 +312,7 @@
            03  IDX-SRY                                 PIC 9(05).
            03  IDX-ZAI                                 PIC 9(05).
            03  IDX-MAX                                 PIC 9(05).
+           03  IDX-KANA                                PIC 9(05).
       *
        01  WRK-AREA.
            03  WRK-SYMD                                PIC X(08).
@@ -748,6 +749,8 @@
       *
       *    ¸ÇÄêÃÍÎÎ°è
        01  CONST-AREA.
+           03  CONST-INPUT-MAX                     PIC 9(05)
+                                                   VALUE   400.
            03  CONST-THKNID-MAX                    PIC 9(05)
                                                    VALUE   20.
            03  CONST-TKOHID-MAX                    PIC 9(05)
@@ -7808,11 +7811,12 @@
       *
            MOVE    ZERO                TO  FLG-KANACHK
       *
+           INITIALIZE                  ORCXKANACONVAREA
+      *
            IF  ( WRK-KANACHK-MAE-INPUT =   SPACE )
                GO  TO  800-KANA-CHK-EXT
            END-IF
       *
-           INITIALIZE                  ORCXKANACONVAREA
            MOVE    300                 TO  KANACONV-LEN
            MOVE    1000                TO  KANACONV-STLEN
            MOVE    0                   TO  KANACONV-CONV-FLAG
@@ -7832,14 +7836,27 @@
       *
            MOVE    ZERO                TO  FLG-KANACHK
       *
+           INITIALIZE                  ORCXKANACONVAREA
+      *
            IF  ( WRK-KANACHK-MAE-INPUT =   SPACE )
                GO  TO  800-KANA-CHK-EXT
            END-IF
       *
-           INSPECT WRK-KANACHK-MAE-INPUT   REPLACING
-                                           ALL "¡¡" BY "¥ó"
+           PERFORM VARYING IDX-KANA    FROM    1   BY  2
+                   UNTIL ( IDX-KANA    >   CONST-INPUT-MAX )
+                    OR   ( WRK-KANACHK-MAE-INPUT (IDX-KANA : )
+                                       =   SPACE )
       *
-           INITIALIZE                  ORCXKANACONVAREA
+               IF    ( WRK-KANACHK-MAE-INPUT (IDX-KANA : 2 )
+                                   =   "¡¡" OR "¡¼" OR "¡«" OR "¡¬" )
+      *
+                   MOVE    "¥ó"
+                           TO  WRK-KANACHK-MAE-INPUT (IDX-KANA : 2 )
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
            MOVE    300                 TO  KANACONV-LEN
            MOVE    1000                TO  KANACONV-STLEN
            MOVE    0                   TO  KANACONV-CONV-FLAG
@@ -7859,11 +7876,12 @@
       *
            MOVE    ZERO                TO  FLG-KANACHK
       *
+           INITIALIZE                  ORCXKANACONVAREA
+      *
            IF  ( WRK-KANACHK-MAE-INPUT =   SPACE )
                GO  TO  800-HANKAKU-CHK-EXT
            END-IF
       *
-           INITIALIZE                  ORCXKANACONVAREA
            MOVE    300                 TO  KANACONV-LEN
            MOVE    1000                TO  KANACONV-STLEN
            MOVE    0                   TO  KANACONV-CONV-FLAG

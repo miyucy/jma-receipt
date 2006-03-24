@@ -499,7 +499,11 @@
       *
       *    ´µ¼ÔÈÖ¹æ
            IF    ( DTCHK004-PTNUM      =   SPACE )
-               MOVE    DTCHK004-PTID   TO  WRK-MAE-INPUT
+               MOVE   SPACE            TO  WRK-MAE-INPUT
+               STRING "´µ¼Ô£É£Ä"       DELIMITED   BY  SIZE
+                      DTCHK004-PTID    DELIMITED   BY  SIZE
+               INTO   WRK-MAE-INPUT
+               END-STRING
            ELSE
                MOVE    DTCHK004-PTNUM  TO  WRK-MAE-INPUT
            END-IF
