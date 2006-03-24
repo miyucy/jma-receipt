@@ -2487,7 +2487,7 @@
                                    =   ZERO
                IF      JOB-ENDYMD      =   SPACE
                    MOVE    "7777"          TO  SPA-ERRCD
-                   GO  TO  450-PRINT-GIDMSG-EXT
+                   GO  TO  440-PRINT-KENSU-GIDMSG-EXT
                END-IF
            END-IF    
       *
@@ -2558,6 +2558,15 @@
            IF      IDZ                 =   ZERO
                MOVE    "0008"          TO  SPA-ERRCD
                GO  TO  450-PRINT-GIDMSG-EXT
+           END-IF
+      *
+      *    主科設定のとき主科が選択されているか
+           IF      SPA-GMN-SYUKA-MAX   >   ZERO
+               IF      SPA-GMN-SYUKAMEI    =   SPACE
+                   MOVE    "0012"              TO  SPA-ERRCD
+                   MOVE    181                 TO  SPA-GMN-CUR
+                   GO  TO  450-PRINT-GIDMSG-EXT
+               END-IF
            END-IF
       *
       *    ガイドメッセージセット
