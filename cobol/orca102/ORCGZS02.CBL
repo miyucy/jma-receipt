@@ -89,6 +89,16 @@
            03  TBL-TNSP-SAIKETUKBN          PIC  9(01).
       *    入力チェック区分
            03  TBL-TNSP-INPCHKKBN           PIC  9(01).
+      *    添付資料用薬剤分類区分
+           03  TBL-TNSP-TENPUYAKKBN         PIC  X(02).
+      *    全数量記載区分
+           03  TBL-TNSP-ALLSURYOKBN         PIC  X(01).
+      *    数量換算単位コード
+           03  TBL-TNSP-KANZANTANICD        PIC  X(03).
+      *    数量換算単位名称
+           03  TBL-TNSP-KANZANTANINAME      PIC  X(24).
+      *    数量換算値
+           03  TBL-TNSP-KANZANCHI           PIC  9(05)V9(05).
       *
            03  TBL-TNSP-TERMID              PIC  X(16).
            03  TBL-TNSP-OPID                PIC  X(16).
@@ -330,10 +340,13 @@
       *
       *    新規で付加情報が登録されていないときは作成しない
       *    チェック
-           IF    ( ZS02-INPCHKKBN       =   ZERO  ) AND
+           IF    ( ZS02-SHONAME         =   SPACE  ) AND
+                 ( ZS02-SAIKETUKBN      =   ZERO  ) AND
+                 ( ZS02-INPCHKKBN       =   ZERO  ) AND
                  ( ZS02-TENPUYAKKBN     =   SPACE ) AND
                  ( ZS02-ALLSURYOKBN     =   SPACE ) AND
                  ( ZS02-KANZANTANICD    =   SPACE ) AND
+                 ( ZS02-KANZANTANINAME  =   SPACE ) AND
                  ( ZS02-KANZANCHI       =   ZERO  )
                IF      FLG-TENSUPLUS    =  1
                    GO  TO  200-TENSUPLUS-UPD-EXT
