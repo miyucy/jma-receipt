@@ -730,9 +730,10 @@
            MOVE    WRK-NYUGAIKBN       TO  SCL31N-NYUGAIKBN
            MOVE    WRK-SRYYMD          TO  SCL31N-SRYYMD
       *
-           CALL    "ORCL0031N"         USING
-                                       SCL31N-LNK
-                                       LF04-REC
+      *    暫定的にコメント化
+      *     CALL    "ORCL0031N"         USING
+      *                                 SCL31N-LNK
+      *                                 LF04-REC
       *
            .
        2007-ORCL0031N-EXT.
