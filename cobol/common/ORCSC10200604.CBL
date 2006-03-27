@@ -3770,7 +3770,12 @@
       *        当日に他の受診があること（外来のみ）
                IF     ( SPA-SYORIFLG        =   ZERO     ) AND
                       ( SPA-RRK-LSTYMD      =   SPA-SRYYMD)
-                   CONTINUE
+      *            他科の診療
+                   IF    ( SPA-TAKA-SRYKA-R    =   SPACE  )
+                       MOVE    "2067"          TO  SPA-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR
+                                                       (IDX-SINSATU2)
+                   END-IF
                ELSE
                    IF      SPA-NYUGAIKBN       =   "2"
                        MOVE    "2069"          TO  SPA-ERRCD
