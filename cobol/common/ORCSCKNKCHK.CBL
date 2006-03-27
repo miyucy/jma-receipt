@@ -1,3 +1,4 @@
+      *VER.2.8.0外来用
       *******************************************************************
       * Project code name "ORCA"
       * 日医標準レセプトソフト（JMA standard receipt software）
@@ -207,8 +208,8 @@
            MOVE    SPA-WORK            TO  SPA-K01KYOUTU
       *
            EVALUATE    ORCSCKNKCHK-KBN
-      *TE      WHEN    "1"
-      *TE          PERFORM 100-SRYACT-SPASET-SEC
+               WHEN    "1"
+                   PERFORM 100-SRYACT-SPASET-SEC
                WHEN    "2"
                    PERFORM 200-KNKCHK-IN-SEC
                WHEN    "3"
@@ -323,6 +324,27 @@
       *****************************************************************
        1001-KNKYAKSET-HENSYU-SEC              SECTION.
       *
+      *外来用（月数のチェック）
+      *
+           PERFORM
+                   UNTIL   SPA-SRYYMD(1:6)     <   WRK-SRYYM
+              PERFORM 3203-KNKYAKSET-HENSYU02-SEC
+      *
+              ADD     1                    TO  WRK-SRYMM
+              IF      WRK-SRYMM            >   12
+                   ADD     1                   TO  WRK-SRYYY
+                   MOVE    1                   TO  WRK-SRYMM
+               END-IF
+           END-PERFORM
+           .
+       1001-KNKYAKSET-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    禁忌薬剤チェック用編集処理
+      *****************************************************************
+       3203-KNKYAKSET-HENSYU02-SEC              SECTION.
+      *
       *    診療会計マスタよりチェックする
            MOVE    SPACE               TO  SRYACCT-REC
            INITIALIZE                      SRYACCT-REC
@@ -356,7 +378,7 @@
            PERFORM 990-DBCLOSE-SEC
       *
            .
-       1001-KNKYAKSET-HENSYU-EXT.
+       3203-KNKYAKSET-HENSYU02-EXT.
            EXIT.
       *
       *****************************************************************
@@ -503,10 +525,10 @@
            END-IF
       *TEST
       *    １回目
-           IF     (FLG-INTERACT        =   ZERO )  AND
-                  (SPA-KNK-SRYCD (100) =   SPACE )
-               PERFORM 2000-KNK-SPASET-SEC
-           END-IF
+      *    IF     (FLG-INTERACT        =   ZERO )  AND
+      *           (SPA-KNK-SRYCD (100) =   SPACE )
+      *        PERFORM 2000-KNK-SPASET-SEC
+      *    END-IF
       *TEST
       *
       *    禁忌チェック
