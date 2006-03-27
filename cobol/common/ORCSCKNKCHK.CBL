@@ -55,6 +55,7 @@
            03  FLG-KINKI           PIC 9(01).
            03  FLG-KINKI-ARI       PIC 9(01).
            03  FLG-KINKI-ARI2      PIC 9(01).
+           03  FLG-CHK             PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -85,6 +86,7 @@
                05  WRK-TOUYY       PIC 9(04).
                05  WRK-TOUMM       PIC 9(02).
                05  WRK-TOUDD       PIC 9(02).
+           03  WRK-SRYYM-CHK           PIC X(06).
       *    禁忌薬剤チェック
            03  WRK-KNKYAK-AREA.
               05  WRK-KNKYAK-TBL             OCCURS   100.
@@ -244,14 +246,41 @@
                COMPUTE WRK-SRYYY           =   WRK-SRYYY
                                            -   1
            END-IF
+      *    受診履歴より算定日チェック
+           MOVE    ZERO                TO  FLG-CHK
+           MOVE    SPACE               TO  WRK-SRYYM-CHK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   SPA-GMN-MAX1 )
+                          OR  (FLG-CHK     =   1   )
+               IF      SPA-NAI-RRKYMD (IDX)(1:6)    <=  WRK-SRYYM
+                   MOVE    1                TO  FLG-CHK
+               ELSE
+                   IF      SPA-NAI-RRKYMD (IDX)(1:6) >   WRK-SRYYM-CHK
+                       MOVE    SPA-NAI-RRKYMD (IDX)(1:6)
+                                               TO  WRK-SRYYM-CHK
+                   END-IF
+               END-IF
+           END-PERFORM
+           MOVE    ZERO                TO  FLG-END
+           IF     (FLG-CHK             =   ZERO ) AND
+                  (SPA-GMN-MAX1        <   150  )
+               IF      WRK-SRYYM-CHK       =   SPACE
+                   MOVE    1               TO  FLG-END
+               ELSE
+                   MOVE    WRK-SRYYM-CHK   TO  WRK-SRYYM
+               END-IF
+           END-IF
       *
       *    禁忌薬剤チェック用編集処理
-           PERFORM 1001-KNKYAKSET-HENSYU-SEC
+           IF      FLG-END             =   ZERO
+               PERFORM 1001-KNKYAKSET-HENSYU-SEC
+           END-IF
       *
       *    相互作用レコードより、禁忌有無のチェックを行う
            INITIALIZE                  SPA-KNKYAK-AREA
            PERFORM VARYING     IDX3    FROM    1   BY  1
-                   UNTIL       IDX3        >   100
+                   UNTIL      (IDX3        >   100 )  OR
+                              (FLG-END     =   1   )
                IF      WRK-KNKYAK-SRYCD (IDX3) NOT =   SPACE
                    INITIALIZE                  INTERACT-REC
                    MOVE    WRK-KNKYAK-SRYCD (IDX3)
@@ -284,6 +313,7 @@
                    END-IF
                END-IF
            END-PERFORM
+      *
            .
        100-SRYACT-SPASET-EXT.
            EXIT.
