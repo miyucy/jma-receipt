@@ -2449,11 +2449,11 @@
                    IF      LNK-ORCSC-YAKJYO-2  =    1
                                                OR   2
                        MOVE    "113701310"         TO  WRK-SRYCD
-                       MOVE    "113701410"         TO  WRK-SRYCD2
+                       MOVE    "120002370"         TO  WRK-SRYCD2
                    END-IF
                    IF      LNK-ORCSC-YAKJYO-3  =   1
                                                OR   2
-                       MOVE    "113701410"         TO  WRK-SRYCD
+                       MOVE    "120002370"         TO  WRK-SRYCD
                        MOVE    "113701310"         TO  WRK-SRYCD2
                    END-IF
                END-IF
