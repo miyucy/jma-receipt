@@ -7759,8 +7759,6 @@
                      ADD     WK-KEISAN-XX TO WK-SHOKUJI-FTN
                      MOVE    WK-KEISAN-XX TO WK-DAY-SKJFTN(IDY)
                 END-EVALUATE
-                DISPLAY "IDY=" IDY
-                DISPLAY "WK-DAY-SKJFTN=" WK-DAY-SKJFTN(IDY)
               END-IF
       *
              END-IF
@@ -7844,14 +7842,6 @@
              END-IF
       *
            END-PERFORM
-      *
-           DISPLAY "WK-SHOKUJI-NISSU=" WK-SHOKUJI-NISSU
-           DISPLAY "WK-SHOKUJI-RYOYOHI=" WK-SHOKUJI-RYOYOHI
-           DISPLAY "WK-SHOKUJI-FTN=" WK-SHOKUJI-FTN
-           DISPLAY "WK-SHOKUJI-RYOYOHI95=" WK-SHOKUJI-RYOYOHI95
-           DISPLAY "WK-SHOKUJI-FTN95=" WK-SHOKUJI-FTN95
-           DISPLAY "WK-SHOKUJI-RYOYOHI96=" WK-SHOKUJI-RYOYOHI96
-           DISPLAY "WK-SHOKUJI-FTN96=" WK-SHOKUJI-FTN96
       *
            .
       *
