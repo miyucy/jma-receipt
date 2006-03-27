@@ -51,6 +51,7 @@
       *  02.00.12    NACL-門脇    06/02/24  053児童保護、019原爆に関する
       *                                     組合せ追加
       *  02.00.13    NACL-門脇    06/03/23  021精神通院に関する編集修正
+      *  02.00.14    NACL-門脇    06/03/27  020精神入院に関する編集修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -125,6 +126,7 @@
            03  FLG-RJN             PIC 9(01).
       *----(01.00.01) LINE ADD END   ---------------------------------
            03  FLG-SYOCYO          PIC 9(01).
+           03  FLG-HANTEI          PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -3419,6 +3421,7 @@
       *        1:通常 / 3:通常 / 2:補助公費つけない
              MOVE    SPACE             TO  WRK-FTNKBN-AREA
              INITIALIZE                    WRK-FTNKBN-AREA
+             MOVE    1                 TO  FLG-HANTEI
              PERFORM 5701411-FUKA-HANTEI-SEC
       *
              EVALUATE    WRK-FTN-FLG
@@ -3463,6 +3466,7 @@
                                "019" OR "053"
                          IF  WRK-SRT-HJO-KOHNO             =
                                "010" OR "021" OR "015" OR "016"
+                                                       OR "020"
                             PERFORM 5701413-SYUKOH-HJO-SEC
                          END-IF
                        ELSE
@@ -3624,6 +3628,7 @@
              MOVE    SPACE             TO  WRK-FTN-FLG
              MOVE    SPACE             TO  WRK-FTNKBN-AREA
              INITIALIZE                    WRK-FTNKBN-AREA
+             MOVE    2                 TO  FLG-HANTEI
              PERFORM 5701411-FUKA-HANTEI-SEC
       *
              EVALUATE    WRK-FTN-FLG
@@ -4264,17 +4269,31 @@
              END-IF
            END-IF
       *
-           IF  ((WRK-KCOMB-KOH1-HKNKOHSBTKBN (IDX2)  =  "3" ) AND
-                (WRK-KCOMB-KOH2HKNNUM (IDX2)         = "021"))
-           OR  ( WRK-KCOMB-KOH1HKNNUM (IDX2)         = "021" )
-              IF  (WRK-GAI-KBN (1)         =   "2")  AND
-                  (WRK-GAI-KBN (2)         =   "2")  AND
-                  (WRK-GAI-KBN (3)         =   "2")  AND
-                  (WRK-NYU-KBN (1)         =   "0")  AND
-                  (WRK-NYU-KBN (2)         =   "0")  AND
-                  (WRK-NYU-KBN (3)         =   "0")
-                 MOVE    "3"            TO  WRK-FTN-FLG
-              END-IF
+           IF    FLG-HANTEI   =    1
+             IF  ((WRK-KCOMB-KOH1-HKNKOHSBTKBN (IDX2)  =  "3" ) AND
+                  (WRK-KCOMB-KOH2HKNNUM (IDX2)         = "021"))
+             OR  ( WRK-KCOMB-KOH1HKNNUM (IDX2)         = "021" )
+                IF  (WRK-GAI-KBN (1)         =   "2")  AND
+                    (WRK-GAI-KBN (2)         =   "2")  AND
+                    (WRK-GAI-KBN (3)         =   "2")  AND
+                    (WRK-NYU-KBN (1)         =   "0")  AND
+                    (WRK-NYU-KBN (2)         =   "0")  AND
+                    (WRK-NYU-KBN (3)         =   "0")
+                   MOVE    "3"            TO  WRK-FTN-FLG
+                END-IF
+             END-IF
+             IF  ((WRK-KCOMB-KOH1-HKNKOHSBTKBN (IDX2)  =  "3" ) AND
+                  (WRK-KCOMB-KOH2HKNNUM (IDX2)         = "020"))
+             OR  ( WRK-KCOMB-KOH1HKNNUM (IDX2)         = "020" )
+                IF  (WRK-GAI-KBN (1)         =   "0")  AND
+                    (WRK-GAI-KBN (2)         =   "0")  AND
+                    (WRK-GAI-KBN (3)         =   "0")  AND
+                    (WRK-NYU-KBN (1)         =   "2")  AND
+                    (WRK-NYU-KBN (2)         =   "2")  AND
+                    (WRK-NYU-KBN (3)         =   "2")
+                   MOVE    "3"            TO  WRK-FTN-FLG
+                END-IF
+             END-IF
            END-IF
       *
            .
