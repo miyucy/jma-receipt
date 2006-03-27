@@ -677,6 +677,8 @@
       *    当月に５回以上の時、逓減
       *    （介達牽引のみ）
            IF     (WRK-SYOCHI-KBN      =   "04")
+               CONTINUE
+           ELSE
                GO      TO      100112-SYOEN-CHK-EXT
            END-IF
       *
