@@ -680,3 +680,21 @@ path	key32	{
 		;
 	};
 };
+
+path	key33	{
+	DBSELECT	{
+		DECLARE tbl_nyuinacct_key33_csr CURSOR FOR
+		SELECT *
+		FROM tbl_nyuinacct
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   '1'
+			AND   PTID        =   :PTID
+			AND   SRYYM       =   :SRYYM
+                        AND   ZAISKBKBN   =   '4'
+                        AND  ((SRYCDTOTAL =    99999918) OR
+                              (SRYCDTOTAL =    99999919) OR
+                              (SRYCDTOTAL =    99999920))
+			ORDER  BY  ZAINUM
+		;
+	};
+};
