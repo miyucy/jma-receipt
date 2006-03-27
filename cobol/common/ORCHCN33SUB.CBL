@@ -37,6 +37,7 @@
       *  01.00.05    NACL-小豆沢  06/02/02  MONFUNC 対応
       *  01.00.06    NACL-小豆沢  06/03/22  特定入院料追加分（脳卒中ケアユニ）
       *                                     外泊置き換え処理
+      *  01.00.07    NACL-門脇    06/03/27  食事改正対応（２００６年４月）
       *****************************************************************
       *
       *
@@ -271,6 +272,19 @@
                    07  WRK-SKJ3-SRYKA-DAY      PIC X(01).
                    07  WRK-SKJ3-TOKU-SHOKU     PIC X(09).
                    07  WRK-SKJ3-KAISU          PIC 9(02).
+      *
+      *    食事ワーク２００６０４
+           03  WRK-SKJ200604-TABLE.
+               05  WRK-SKJ200604-TBL     OCCURS  31.
+                   07  WRK-SKJ200604-ASA       PIC 9(04).
+                   07  WRK-SKJ200604-HIRU      PIC 9(04).
+                   07  WRK-SKJ200604-YORU      PIC 9(04).
+                   07  WRK-SKJ200604-NYUINJI   PIC 9(04).
+                   07  WRK-SKJ200604-TOKUSYO   PIC 9(04).
+               05  WRK-SKJ200604-TBL2    OCCURS   4.
+                   07  WRK-SKJ200604-KINGAKU   PIC 9(07).
+      *
+           03  WRK-KEISAN                      PIC 9(07).
       *
       *    点数マスタ退避ワーク
            03  WRK-TENSU-OCC                   OCCURS  200.
@@ -1259,7 +1273,11 @@
       *
       *    カルテ３号用紙サブ返却エリアへ食事情報のセット
            IF   LNK-ORCHCN33SUB-SHORIKBN       =   SPACE
-               PERFORM    210-SKJ-SET-SEC
+               IF   LNK-ORCHCN33SUB-SANTEIYM  >=  "200604"
+                  PERFORM    210-SKJ-SET200604-SEC
+               ELSE
+                  PERFORM    210-SKJ-SET-SEC
+               END-IF
            END-IF
       *
       *
@@ -2130,16 +2148,20 @@
                                END-EVALUATE
                        END-EVALUATE
       *                特別管理加算
-                       IF    WRK-SYS5000-SHOKUCD(2 IDX1)  NOT = SPACE
+                       IF    WRK-SYS5000-SHOKUCD(1 IDX1) = "197000110"
+                        IF    WRK-SYS5000-SHOKUCD(2 IDX1)  NOT = SPACE
                            MOVE  WRK-SYS5000-SHOKUCD(2 IDX1)
                                           TO  WRK-SKJ-TOKU-KANRI(IDX1)
                            ADD   200          TO  WRK-SKJ-MONEY(IDX1)
+                        END-IF
                        END-IF
       *                食堂加算
-                       IF    WRK-SYS5000-SHOKUCD(3 IDX1)  NOT = SPACE
+                       IF    WRK-SYS5000-SHOKUCD(1 IDX1) = "197000110"
+                        IF    WRK-SYS5000-SHOKUCD(3 IDX1)  NOT = SPACE
                            MOVE  WRK-SYS5000-SHOKUCD(3 IDX1)
                                           TO  WRK-SKJ-SHOKUDOU(IDX1)
                            ADD    50          TO  WRK-SKJ-MONEY(IDX1)
+                        END-IF
                        END-IF
                    END-IF
                END-PERFORM
@@ -2204,6 +2226,168 @@
       *
            .
        210-SKJ-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    食事情報取得処理（平成１８年４月以降）
+      *****************************************************************
+       210-SKJ-SET200604-SEC            SECTION.
+      *
+      *    食事情報の取得（入院会計）
+           INITIALIZE                           NYUINACCT-REC
+           MOVE    LNK-ORCHCN33SUB-HOSPID   TO  NACCT-HOSPID
+           MOVE    LNK-ORCHCN33SUB-PTID     TO  NACCT-PTID
+           MOVE    LNK-ORCHCN33SUB-SANTEIYM TO  NACCT-SRYYM
+           MOVE    "key33"                  TO  MCP-PATHNAME
+           PERFORM 910-NYUINACCT-SELECT-SEC
+           IF      FLG-NYUINACCT            =   ZERO
+               MOVE     "key33"             TO  MCP-PATHNAME
+               PERFORM   910-NYUINACCT-READ-SEC
+               PERFORM   UNTIL   FLG-NYUINACCT   =    1
+      *
+                 EVALUATE   NACCT-SRYCDTOTAL
+                    WHEN      099999918
+                      PERFORM    VARYING   IDX1   FROM   1   BY   1
+                                  UNTIL    IDX1    >    31
+                        IF       NACCT-DAY(IDX1)   NOT =  ZERO
+                          MOVE   NACCT-DAY(IDX1) TO
+                                               WRK-SKJ200604-ASA (IDX1)
+                        END-IF
+                      END-PERFORM
+                    WHEN      099999919
+                      PERFORM    VARYING   IDX1   FROM   1   BY   1
+                                  UNTIL    IDX1    >    31
+                        IF       NACCT-DAY(IDX1)   NOT =  ZERO
+                          MOVE   NACCT-DAY(IDX1) TO
+                                               WRK-SKJ200604-HIRU(IDX1)
+                        END-IF
+                      END-PERFORM
+                    WHEN      099999920
+                      PERFORM    VARYING   IDX1   FROM   1   BY   1
+                                  UNTIL    IDX1    >    31
+                        IF       NACCT-DAY(IDX1)   NOT =  ZERO
+                          MOVE   NACCT-DAY(IDX1) TO
+                                               WRK-SKJ200604-YORU(IDX1)
+                        END-IF
+                      END-PERFORM
+                 END-EVALUATE
+      *
+                 MOVE     "key33"             TO  MCP-PATHNAME
+                 PERFORM   910-NYUINACCT-READ-SEC
+               END-PERFORM
+           END-IF
+           MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+           MOVE    "key33"                 TO  MCP-PATHNAME
+           PERFORM   910-DB-CLOSE-SEC
+      *
+      *    入院時食事療養と特別食加算の振り分け
+           PERFORM    VARYING   IDX1   FROM   1   BY   1
+                       UNTIL    IDX1    >    31
+              EVALUATE   WRK-SKJ200604-ASA (IDX1)
+                WHEN        1
+                    ADD   1     TO   WRK-SKJ200604-NYUINJI(IDX1)
+                WHEN        2
+                    ADD   1     TO   WRK-SKJ200604-NYUINJI(IDX1)
+                                     WRK-SKJ200604-TOKUSYO(IDX1)
+              END-EVALUATE
+              EVALUATE   WRK-SKJ200604-HIRU(IDX1)
+                WHEN        1
+                    ADD   1     TO   WRK-SKJ200604-NYUINJI(IDX1)
+                WHEN        2
+                    ADD   1     TO   WRK-SKJ200604-NYUINJI(IDX1)
+                                     WRK-SKJ200604-TOKUSYO(IDX1)
+              END-EVALUATE
+              EVALUATE   WRK-SKJ200604-YORU(IDX1)
+                WHEN        1
+                    ADD   1     TO   WRK-SKJ200604-NYUINJI(IDX1)
+                WHEN        2
+                    ADD   1     TO   WRK-SKJ200604-NYUINJI(IDX1)
+                                     WRK-SKJ200604-TOKUSYO(IDX1)
+              END-EVALUATE
+           END-PERFORM
+      *
+      *    入院時食事療養（１）
+           INITIALIZE                      TNS-TENSU-REC
+           MOVE    "197000110"         TO  TNS-SRYCD
+           MOVE    LNK-ORCHCN33SUB-SANTEIYM
+                                       TO  TNS-YUKOSTYMD(1:6)
+           MOVE    "01"                TO  TNS-YUKOSTYMD(7:2)
+           MOVE    TNS-YUKOSTYMD       TO  TNS-YUKOEDYMD
+           PERFORM 910-TENSU-READ-SEC
+           MOVE    TNS-TEN             TO  WRK-SKJ200604-KINGAKU(1)
+      *
+      *    入院時食事療養（２）
+           INITIALIZE                      TNS-TENSU-REC
+           MOVE    "197000710"         TO  TNS-SRYCD
+           MOVE    LNK-ORCHCN33SUB-SANTEIYM
+                                       TO  TNS-YUKOSTYMD(1:6)
+           MOVE    "01"                TO  TNS-YUKOSTYMD(7:2)
+           MOVE    TNS-YUKOSTYMD       TO  TNS-YUKOEDYMD
+           PERFORM 910-TENSU-READ-SEC
+           MOVE    TNS-TEN             TO  WRK-SKJ200604-KINGAKU(2)
+      *
+      *    特別食加算
+           INITIALIZE                      TNS-TENSU-REC
+           MOVE    "197000470"         TO  TNS-SRYCD
+           MOVE    LNK-ORCHCN33SUB-SANTEIYM
+                                       TO  TNS-YUKOSTYMD(1:6)
+           MOVE    "01"                TO  TNS-YUKOSTYMD(7:2)
+           MOVE    TNS-YUKOSTYMD       TO  TNS-YUKOEDYMD
+           PERFORM 910-TENSU-READ-SEC
+           MOVE    TNS-TEN             TO  WRK-SKJ200604-KINGAKU(3)
+      *
+      *    食堂加算
+           INITIALIZE                      TNS-TENSU-REC
+           MOVE    "197000570"         TO  TNS-SRYCD
+           MOVE    LNK-ORCHCN33SUB-SANTEIYM
+                                       TO  TNS-YUKOSTYMD(1:6)
+           MOVE    "01"                TO  TNS-YUKOSTYMD(7:2)
+           MOVE    TNS-YUKOSTYMD       TO  TNS-YUKOEDYMD
+           PERFORM 910-TENSU-READ-SEC
+           MOVE    TNS-TEN             TO  WRK-SKJ200604-KINGAKU(4)
+      *
+      *    食事療養費計算
+           PERFORM    VARYING   IDX1   FROM   1   BY   1
+                       UNTIL    IDX1     >   31
+      *
+             IF    (WRK-SRYKA-DAY(IDX1)          NOT = SPACE)
+             AND   (WRK-SKJ200604-NYUINJI(IDX1)  NOT =  ZERO)
+             AND   (WRK-NYUINKHN(IDX1)           NOT = SPACE)
+             AND   (WRK-GAIHAKU-KBN(IDX1)     =  ZERO  OR  4)
+      *
+               EVALUATE   WRK-SYS5000-SHOKUCD(1 IDX1)
+      *
+                 WHEN     "197000110"
+      *
+                   COMPUTE WRK-KEISAN   =  WRK-SKJ200604-KINGAKU(1)
+                                        *  WRK-SKJ200604-NYUINJI(IDX1)
+                   ADD     WRK-KEISAN   TO LNK-ORCHCN33SUB-SKJ(IDX1)
+      *
+                   IF   WRK-SKJ200604-TOKUSYO(IDX1)  NOT = ZERO
+                     COMPUTE WRK-KEISAN =  WRK-SKJ200604-KINGAKU(3)
+                                        *  WRK-SKJ200604-TOKUSYO(IDX1)
+                     ADD     WRK-KEISAN TO LNK-ORCHCN33SUB-SKJ(IDX1)
+                   END-IF
+      *
+                   IF   WRK-SYS5000-SHOKUCD(3 IDX1)  NOT = SPACE
+                     COMPUTE WRK-KEISAN =  WRK-SKJ200604-KINGAKU(4)
+                     ADD     WRK-KEISAN TO LNK-ORCHCN33SUB-SKJ(IDX1)
+                   END-IF
+      *
+                 WHEN     "197000710"
+      *
+                   COMPUTE WRK-KEISAN   =  WRK-SKJ200604-KINGAKU(2)
+                                        *  WRK-SKJ200604-NYUINJI(IDX1)
+                   ADD     WRK-KEISAN   TO LNK-ORCHCN33SUB-SKJ(IDX1)
+      *
+               END-EVALUATE
+      *
+             END-IF
+      *
+           END-PERFORM
+      *
+           .
+       210-SKJ-SET200604-EXT.
            EXIT.
       *
       *****************************************************************
