@@ -1088,6 +1088,7 @@ path	key46	{
 		SELECT A.*
 		FROM tbl_sryacct A,tbl_sryact B
 			WHERE   A.HOSPID    =   :HOSPID
+                        AND   A.NYUGAIKBN   =   :NYUGAIKBN
 			AND   A.PTID        =   :PTID
 			AND   A.SRYYM       >=  :STSRYYM
 			AND   A.SRYYM       <=  :EDSRYYM
